@@ -158,3 +158,11 @@
     background-repeat:   no-repeat;
     background-color:    black;
 }
+
+
+#zoomIconOverlay
+{
+    display:             block;
+    position:            absolute;
+    height:              20;
+}

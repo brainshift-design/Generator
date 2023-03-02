@@ -35,8 +35,8 @@
     font-family:          Inter;
     font-size:            11;
     font-variant-numeric: tabular-nums;
-    pointer-events:       none;
     letter-spacing:       -0.35px;
+    pointer-events:       none;
     position:             absolute;
     left:                 50%;
     transform:            translateX(-50%);

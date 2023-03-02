@@ -473,8 +473,12 @@ function initGeneratorMenus()
 
 
     btnZoom = new MenuButton('', menuZoom, { useMenuName: true, selectLast: false, highlight: () => currentMenus.includes(menuZoom) });
+    btnZoom.div.appendChild(createDiv('', 'zoomIconOverlay'));
 
-        
+    btnZoom.divIcon.style.textAlign          = 'center';
+    btnZoom.divIcon.style.fontVariantNumeric = 'tabular-nums';
+    btnZoom.divIcon.style.letterSpacing      = '-0.8px';
+
 
     btnMain.div.style.paddingLeft = '6px';
 
