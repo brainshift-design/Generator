@@ -1,9 +1,10 @@
 class Graph
 {
+    view         = null;
+
     nodes        = [];
     deferNodeIds = [];
     
-    mutex        = false;
 
     connections  = [];
 
@@ -86,16 +87,16 @@ class Graph
         node.id = this.getNewNodeId(node.id, node.id);
         
         this.nodes.push(node);
-        graphView.appendChild(node.div);
+        this.view.div.appendChild(node.div);
         
         if (placeNode)
-            graphView.placeNewNode(node);
+            this.view.placeNewNode(node);
 
-        node.div.style.zIndex = graph.nodes.length-1;
-        graphView.putNodeOnTop(node);
+        node.div.style.zIndex = this.view.graph.nodes.length-1;
+        this.view.putNodeOnTop(node);
 
 
-        graphView.updateScrollWithBounds();
+        this.view.updateScrollWithBounds();
     }
     
 
@@ -135,18 +136,18 @@ class Graph
             node.div.style.display = 'none';
 
             removeFromArray(this.nodes, node);  
-            graphView.removeChild(node.div);
+            this.view.div.removeChild(node.div);
         }
 
 
-        graphView.updateScrollWithBounds();
+        this.view.updateScrollWithBounds();
     }
 
 
 
     connect(output, input, inputId = '', outputOrder = -1)
     {
-        //console.log('graph.connect()');
+        //console.log('this.view.graph.connect()');
 
         if (input.connectedOutput == output)
             return null;
@@ -202,7 +203,7 @@ class Graph
         input.connectedOutput = output;
 
         
-        graphView.addConnWires(conn);
+        this.view.addConnWires(conn);
 
         this.connections.push(conn);
 
@@ -224,7 +225,7 @@ class Graph
         //const outputOrder = input.connection.outputOrder;
 
 
-        graphView.removeConnWires(input.connection);
+        this.view.removeConnWires(input.connection);
 
         removeFromArray(this.connections, input.connection);
         removeFromArray(output.connectedInputs, input);
@@ -393,6 +394,8 @@ function createNode(nodeType, creatingButton = null, createdNodeId = -1, options
         case STAR:                    node = new OpStar();              break;
       
         case CUSTOM:                  node = new OpCustom();            break;
+        case CUSTOM_INPUTS:           node = new OpCustomInputs();      break;
+        case CUSTOM_OUTPUTS:          node = new OpCustomOutputs();     break;
 
         case COMMENT:                 node = new OpComment();           break;
      
@@ -409,18 +412,4 @@ function createNode(nodeType, creatingButton = null, createdNodeId = -1, options
 function idFromNode(node)
 {
     return node ? node.id : '';
-}
-
-
-
-function nodeFromId(id)
-{
-    return graph.nodes.find(n => n.id == id);
-}
-
-
-
-function nodesFromIds(ids)
-{
-    return ids.map(id => nodeFromId(id));
 }

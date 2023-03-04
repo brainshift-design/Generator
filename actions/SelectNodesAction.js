@@ -6,9 +6,10 @@ extends Action
 
 
 
-    constructor(selectedIds, prevSelectedIds)
+    constructor(graph, selectedIds, prevSelectedIds)
     {
         super(
+            graph,
             SELECT_ACTION,
               'SELECT ' + selectedIds.length 
             + ' ' + countString('node', selectedIds.length));
@@ -24,34 +25,34 @@ extends Action
     do(updateNodes)
     {
         // this happens in the UI
-        updateComments(this.prevSelectedIds);
+        updateComments(this.graph, this.prevSelectedIds);
     }
 
 
 
     undo(updateNodes)
     {
-        graphView.selectByIds(this.prevSelectedIds);
-        updateComments(this.selectedIds);
+        this.graph.view.selectByIds(this.prevSelectedIds);
+        updateComments(this.graph, this.selectedIds);
     }
 
 
 
     redo(updateNodes)
     {
-        graphView.selectByIds(this.selectedIds);
+        this.graph.view.selectByIds(this.selectedIds);
 
-        updateComments(this.selectedIds);
-        updateComments(this.prevSelectedIds);
+        updateComments(this.graph, this.selectedIds);
+        updateComments(this.graph, this.prevSelectedIds);
     }
 }
 
 
 
-function updateComments(nodeIds)
+function updateComments(graph, nodeIds)
 {
     nodeIds
-        .map(id => nodeFromId(id))
+        .map(id => graph.nodeFromId(id))
         .filter(n => n.type == COMMENT)
         .forEach(n => n.updateNode());
 }

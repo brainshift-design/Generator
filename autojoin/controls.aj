@@ -1,7 +1,14 @@
+../controls/NumberControl/NumberControl.js
+../controls/NumberControl/NumberControl textbox.js
+../controls/NumberControl/NumberControl ranges.js
+../controls/NumberControl/NumberControl events.js
+
+../controls/ColorControl/ColorControl.js
+../controls/ColorControl/ColorControl textbox.js
+../controls/ColorControl/ColorControl events.js
+
 ../controls/menu/*.js
 ../controls/toggleButton/*.js
-../controls/numberControl/*.js
-../controls/colorControl/*.js
 ../controls/select/*.js
 ../controls/menuSelect/*.js
 ../controls/checkbox/*.js
@@ -9,10 +16,11 @@
 
 // graphView files included explicitly because of dependencies
 
-../controls/graphView/graphView.js
-../controls/graphView/graphView events.js
-../controls/graphView/graphView pan & zoom.js
-../controls/graphView/graphView selection.js
-../controls/graphView/graphView connection.js
-../controls/graphView/graphView scrollbars.js
-../controls/graphView/graphView wires.js
+../controls/GraphView/GraphView.js
+../controls/GraphView/GraphView nodes.js
+../controls/GraphView/GraphView connection.js
+../controls/GraphView/GraphView wires.js
+../controls/GraphView/GraphView events.js
+../controls/GraphView/GraphView pan & zoom.js
+../controls/GraphView/GraphView selection.js
+../controls/GraphView/GraphView scrollbars.js

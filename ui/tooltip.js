@@ -91,12 +91,12 @@ function showTooltip(source, tooltip, bottomArrow)
     tooltip.style.left = Math.min(Math.max(
         margin, 
         srcRect.x + srcRect.width/2 - tooltip.offsetWidth/2), 
-        graphView.offsetWidth - tooltip.offsetWidth - margin);
+        graphView.div.offsetWidth - tooltip.offsetWidth - margin);
 
     tooltipArrow.style.left = srcRect.x + srcRect.width/2;// - tooltipArrow.offsetWidth/2;
 
     
-    const graphHeight = graphView.offsetHeight - menuBarHeight;
+    const graphHeight = graphView.div.offsetHeight - menuBarHeight;
 
     if (bottomArrow)
     {
@@ -104,7 +104,7 @@ function showTooltip(source, tooltip, bottomArrow)
 
         let top = srcRect.y;
 
-        if (srcRect.y + tooltip.offsetHeight > graphView.offsetHeight-8)
+        if (srcRect.y + tooltip.offsetHeight > graphView.div.offsetHeight-8)
             top = menuBarHeight + Math.max(8, graphHeight - tooltip.offsetHeight);
 
         tooltip.style.top = top - tooltipArrow.offsetHeight - ttRect.height;
@@ -116,7 +116,7 @@ function showTooltip(source, tooltip, bottomArrow)
     {
         let top = srcRect.y;
 
-        if (srcRect.y + tooltip.offsetHeight > graphView.offsetHeight-8)
+        if (srcRect.y + tooltip.offsetHeight > graphView.div.offsetHeight-8)
             top = menuBarHeight + Math.max(8, graphHeight - tooltip.offsetHeight);
 
         tooltip.style.top = top + srcRect.height + tooltipArrow.offsetHeight;
@@ -129,9 +129,9 @@ function showTooltip(source, tooltip, bottomArrow)
     }
 
 
-    // const graphHeight = graphView.offsetHeight - menuBarHeight;
+    // const graphHeight = graphView.div.offsetHeight - menuBarHeight;
 
-    // if (top + tooltip.offsetHeight > graphView.offsetHeight-8)
+    // if (top + tooltip.offsetHeight > graphView.div.offsetHeight-8)
     //     top = menuBarHeight + Math.max(8, graphHeight - tooltip.offsetHeight);
 
     // tooltip.style.top = top;

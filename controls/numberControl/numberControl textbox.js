@@ -1,39 +1,39 @@
-function initNumberControlTextbox(control)
+NumberControl.prototype.initTextbox = function()
 {
-    control.textbox = createTextbox('numberControlTextbox');
-    control.textbox.control = control;
+    this.textbox = createTextbox('numberControlTextbox');
+    this.textbox.control = this;
     
 
 
-    control.textbox.addEventListener('pointerdown', e =>
+    this.textbox.addEventListener('pointerdown', e =>
     {
         e.stopPropagation();
     });
     
     
     
-    control.textbox.addEventListener('pointerup', e =>
+    this.textbox.addEventListener('pointerup', e =>
     {
         e.stopPropagation();
 
         if (e.button == 2)
         {
-            initTextMenu(control.textbox);
+            initTextMenu(this.textbox);
             menuText.showAt(e.clientX, e.clientY, false);
         }
     });
 
 
 
-    control.textbox.addEventListener('pointermove', e =>
+    this.textbox.addEventListener('pointermove', e =>
     {
         e.stopPropagation();
-        control.textbox.style.cursor = 'default';
+        this.textbox.style.cursor = 'default';
     });
 
 
 
-    control.textbox.addEventListener('keydown', e =>
+    this.textbox.addEventListener('keydown', e =>
     {
         e.stopPropagation();
 
@@ -43,7 +43,7 @@ function initNumberControlTextbox(control)
         {
             e.preventDefault();
             document.execCommand('copy');
-            clearSelectedText(control.textbox);
+            clearSelectedText(this.textbox);
         }
 
         else if (   e.code == 'KeyC'
@@ -55,53 +55,53 @@ function initNumberControlTextbox(control)
 
         else if (e.code == 'KeyV'
               && getCtrlKey(e)
-              && !control.readOnly)
+              && !this.readOnly)
         {
             // let the OS do its thing here
         }
         
         else if (   (   e.code == 'Enter'
                      || e.code == 'NumpadEnter')
-                 && !control.readOnly)
+                 && !this.readOnly)
         {
-            control.textbox.keyBlur = true;
-            control.textbox.finish(true);
+            this.textbox.keyBlur = true;
+            this.textbox.finish(true);
         }
 
         else if (e.code == 'Escape')
         {
-            control.textbox.keyBlur = true;
-            control.textbox.finish(false);
+            this.textbox.keyBlur = true;
+            this.textbox.finish(false);
         }
         else if (e.code == 'Tab')
         {
             e.preventDefault();
             e.stopPropagation();
             
-            if (control.param)
+            if (this.param)
             {
-                const params = control.param.node.params;
-                let   index  = control.param.index;
+                const params = this.param.node.params;
+                let   index  = this.param.index;
 
-                control.textbox.keyBlur = true;
-                control.textbox.finish(true, false);
+                this.textbox.keyBlur = true;
+                this.textbox.finish(true, false);
 
                 if (   e.shiftKey 
                     && index > 0)
                 {
-                    while (params[--index].control.readOnly);
-                    params[index].control.showTextbox();
+                    while (params[--index].this.readOnly);
+                    params[index].this.showTextbox();
                 }
                 else if (!e.shiftKey 
                       && index < params.length-1) 
                 {
-                    while (params[++index].control.readOnly);
-                    params[index].control.showTextbox();
+                    while (params[++index].this.readOnly);
+                    params[index].this.showTextbox();
                 }
             }
 
             // let tabs  = document.querySelectorAll('.numberControl, .selectControl, .select, .menuSelect, button, .menuButton');
-            // let index = control.tabIndex;
+            // let index = this.tabIndex;
 
             // for (let i = 0; i < tabs.length; i++) 
             // {
@@ -123,23 +123,23 @@ function initNumberControlTextbox(control)
 
         else if ((   e.key == 'ArrowUp'
                   || e.key == 'ArrowDown')
-              && !control.readOnly)
+              && !this.readOnly)
         {
             e.preventDefault();
 
-            let text = control.textbox.value;
+            let text = this.textbox.value;
 
-            if (   control.valueCanContainSuffix   
-                && text.length >= control.suffix.length
-                && text.substring(text.length - control.suffix.length) == control.suffix)
-                text = text.substring(0, text.length - control.suffix.length);
+            if (   this.valueCanContainSuffix   
+                && text.length >= this.suffix.length
+                && text.substring(text.length - this.suffix.length) == this.suffix)
+                text = text.substring(0, text.length - this.suffix.length);
 
 
-            if (control.textbox.selectionStart != control.textbox.selectionEnd)
-                control.textbox.selectionStart =  control.textbox.selectionEnd;
+            if (this.textbox.selectionStart != this.textbox.selectionEnd)
+                this.textbox.selectionStart =  this.textbox.selectionEnd;
 
             const pos = Math.min(
-                control.textbox.selectionStart,
+                this.textbox.selectionStart,
                 text.length);
 
             const revPos = text.length - pos;
@@ -160,8 +160,8 @@ function initNumberControlTextbox(control)
                     if (e.shiftKey) 
                         dec *= 10;
 
-                    control.setValue((val + sign * dec) / control.valueScale);
-                    control.updateTextbox();
+                    this.setValue((val + sign * dec) / this.valueScale);
+                    this.updateTextbox();
                 }
                 else // floating point
                 {
@@ -175,40 +175,40 @@ function initNumberControlTextbox(control)
                     if (e.shiftKey) 
                         dec *= 10;
 
-                    control.displayDec = text.length-1 - decIndex;
-                    control.setValue((val + sign * dec) / control.valueScale);
-                    control.updateTextbox();
+                    this.displayDec = text.length-1 - decIndex;
+                    this.setValue((val + sign * dec) / this.valueScale);
+                    this.updateTextbox();
                 }
 
-                control.textbox.selectionStart =
-                control.textbox.selectionEnd   = control.textbox.savedValue.length - revPos - control.suffix.length;
+                this.textbox.selectionStart =
+                this.textbox.selectionEnd   = this.textbox.savedValue.length - revPos - this.suffix.length;
             }
         }
         else 
         {
-            let curVal = control.textbox.value;
+            let curVal = this.textbox.value;
 
             if (      e.key.length == 1
                    && !isDigit(e.key)
                    && e.key != NAN_CHAR
-                   && (   !control.valueCanContainSuffix
-                       || !control.suffix.includes(e.key))
-                   && (   !control.showHex 
+                   && (   !this.valueCanContainSuffix
+                       || !this.suffix.includes(e.key))
+                   && (   !this.showHex 
                        || !isHexDigit(e.key))
-                   && (   control.showHex
+                   && (   this.showHex
                        ||    e.key != '.'
                           && e.key != ',')
                    && !(   ((      e.code == 'Minus'
                                 || e.code == 'NumpadSubtract')
                              && !curVal.includes('-'))
-                        && control.min < 0)
-                ||     control.readOnly
+                        && this.min < 0)
+                ||     this.readOnly
                    && !isArrowKey(e.code))
                 e.preventDefault();
 
             if (    e.key == '.'
-                &&  control.dec == 0
-                && !control.allowEditDecimals)
+                &&  this.dec == 0
+                && !this.allowEditDecimals)
                 e.preventDefault();
                 
                     
@@ -216,157 +216,157 @@ function initNumberControlTextbox(control)
                    curVal ==     NAN_DISPLAY
                 || curVal == UNKNOWN_DISPLAY
                 ? ''
-                :   curVal.substring(0, control.textbox.selectionStart) 
-                  + curVal.substring(control.textbox.selectionEnd, curVal.length);
+                :   curVal.substring(0, this.textbox.selectionStart) 
+                  + curVal.substring(this.textbox.selectionEnd, curVal.length);
 
                   
             const nextVal = parseFloat(curVal + e.key);
 
-            if (   nextVal < control.min - 0.001
-                || nextVal > control.max)
+            if (   nextVal < this.min - 0.001
+                || nextVal > this.max)
                 e.preventDefault();            
         }
     });
 
 
 
-    control.textbox.addEventListener('paste', function(e)
+    this.textbox.addEventListener('paste', e =>
     {
         e.preventDefault();
 
         const str = e.clipboardData.getData('text/plain');
 
         let val = 
-            control.showHex
+            this.showHex
             ? parseInt(str, 16)
             : parseFloat(str);
 
-        val = Math.min(Math.max(control.min, val), control.max);
+        val = Math.min(Math.max(this.min, val), this.max);
 
-        control.textbox.value = isNaN(val) ? '' : val;
+        this.textbox.value = isNaN(val) ? '' : val;
     });
 
 
 
-    control.textbox.addEventListener('focusout', function()
+    this.textbox.addEventListener('focusout', () =>
     {
-        if (!control.textbox.keyBlur) control.textbox.finish(control.textbox.value.trim() != '');
-        else                          control.textbox.keyBlur = false;
+        if (!this.textbox.keyBlur) this.textbox.finish(this.textbox.value.trim() != '');
+        else                       this.textbox.keyBlur = false;
 
 
-        if (control.savedSuccessOnFocusOut != null)
+        if (this.savedSuccessOnFocusOut != null)
         {
-            control.successOnFocusOut      = control.savedSuccessOnFocusOut;
-            control.savedSuccessOnFocusOut = null;
+            this.successOnFocusOut      = this.savedSuccessOnFocusOut;
+            this.savedSuccessOnFocusOut = null;
         }
 
 
-        control.parentNode.removeChild(control.textbox);
-        control.clicked = false;
+        this.div.parentNode.removeChild(this.textbox);
+        this.clicked = false;
     });
     
 
 
-    control.textbox.finish = function(success, focusControl = true)
+    this.textbox.finish = (success, focusControl = true) =>
     {
-        let   value      = control.textbox.value;
-        const savedValue = control.textbox.savedValue;
+        let   value      = this.textbox.value;
+        const savedValue = this.textbox.savedValue;
 
-        value = value.replace(control.suffix, '');
+        value = value.replace(this.suffix, '');
         
         
         let val = 
             value.trim() == NAN_CHAR 
             ? Number.NaN 
-            : (control.showHex 
+            : (this.showHex 
                ? parseInt(value, 16) 
                : parseFloat(value));
 
         let savedVal = 
             savedValue.trim() == NAN_CHAR  
             ? Number.NaN 
-            : (control.showHex 
+            : (this.showHex 
                ? parseInt(savedValue, 16) 
                : parseFloat(savedValue));
 
         
         if (!isNaN(val))
-            val /= control.valueScale;
+            val /= this.valueScale;
 
        
         const e = new CustomEvent('finishedit', { 'detail': {
             'success':         success,
-            'value':           value     .replace(control.suffix, ''),
-            'oldValue':        savedValue.replace(control.suffix, ''),
+            'value':           value     .replace(this.suffix, ''),
+            'oldValue':        savedValue.replace(this.suffix, ''),
             'preventSetValue': false }});
 
-        control.dispatchEvent(e);
+        this.dispatchEvent(e);
 
 
         if (!e.preventSetValue)
         {
             if (success) 
             {
-                control.setValue(
+                this.setValue(
                        value.trim() != '' 
                     && value.trim() != NAN_CHAR
                     ? val 
                     : savedVal);
             }
             else
-                control.setValue(savedVal);
+                this.setValue(savedVal);
         }
          
         
-        control.textbox.blur();
+        this.textbox.blur();
 
-        control.text.style.display = 'block';
+        this.text.style.display = 'block';
 
-        if (   control.inFocus
+        if (   this.inFocus
             && focusControl)
-            control.focus();
+            this.focus();
     };    
-    
-    
-
-    control.showTextbox = function()
-    {
-        control.text.style.display = 'none';
-
-        control.inFocus = 
-               hasFocus(control)
-            && !control.clicked;
-
-            
-        control.textbox.style.boxShadow = '0 0 0 1px var(--figma-color-bg-brand)';
-        control.textbox.style.outline   = 'none';
-        control.textbox.style.textAlign = 'center';
+};
 
 
-        control.updateTextbox();
+
+NumberControl.prototype.showTextbox = function()
+{
+    this.text.style.display = 'none';
+
+    this.inFocus = 
+           hasFocus(this.div)
+        && !this.clicked;
+
         
-        control.parentNode.appendChild(control.textbox);
+    this.textbox.style.boxShadow = '0 0 0 1px var(--figma-color-bg-brand)';
+    this.textbox.style.outline   = 'none';
+    this.textbox.style.textAlign = 'center';
+
+
+    this.updateTextbox();
+    
+    this.div.parentNode.appendChild(this.textbox);
+    
+    this.textbox.focus();
+    this.textbox.select();
+
+    this.textbox.style.cursor = 'default';
+};
+
+
+
+NumberControl.prototype.updateTextbox = function()
+{
+    this.textbox.value =
+        (isNaN(this.value)
+         ? NAN_CHAR
+         : numToString(
+               this.value * this.valueScale, 
+               this.displayDec, 
+               this.showHex
+           ).toUpperCase())
+        + (this.valueCanContainSuffix ? this.suffix : '');
         
-        control.textbox.focus();
-        control.textbox.select();
-
-        control.textbox.style.cursor = 'default';
-    }
-
-
-
-    control.updateTextbox = function()
-    {
-        control.textbox.value =
-            (isNaN(control.value)
-             ? NAN_CHAR
-             : numToString(
-                   control.value * control.valueScale, 
-                   control.displayDec, 
-                   control.showHex
-               ).toUpperCase())
-            + (control.valueCanContainSuffix ? control.suffix : '');
-            
-        control.textbox.savedValue = control.textbox.value;
-    };
-}
+    this.textbox.savedValue = this.textbox.value;
+};

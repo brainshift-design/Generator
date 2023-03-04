@@ -5,7 +5,7 @@
 }
 
 
-#graphView
+.graphView
 {
     z-index:  0;
     display:  block;
@@ -15,7 +15,7 @@
 }
 
 
-#wireContainer
+.wireContainer
 {
     position:       absolute;
     width:          100%;
@@ -23,5 +23,4 @@
     z-index:        0;
     pointer-events: none;
     overflow:       hidden;
-    /* box-shadow: 0 0 0 1px red inset; */
 }

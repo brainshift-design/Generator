@@ -45,7 +45,7 @@ function initWhatsNewDialog()
             whatsNewScrollbarY.pStart = e.clientY;
             whatsNewScrollbarY.setPointerCapture(e.pointerId);
     
-            for (const node of graph.nodes)
+            for (const node of graphView.graph.nodes)
                 node.div.sly = node.div.offsetTop;
     
             whatsNewDialogContent.topStart = whatsNewDialogContent.offsetTop;
@@ -64,7 +64,7 @@ function initWhatsNewDialog()
  
             let bounds = Rect.NaN;
     
-            for (const node of graph.nodes)
+            for (const node of graphView.graph.nodes)
                 bounds = expandRect(bounds, boundingRect(node.div));
     
             // if (bounds.t >= 0 && bounds.b < whatsNewDialog.clientHeight)

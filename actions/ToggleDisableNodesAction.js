@@ -5,9 +5,10 @@ extends Action
 
 
 
-    constructor(selectedIds)
+    constructor(graph, selectedIds)
     {
         super(
+            graph,
             TOGGLE_DISABLE_ACTION,
               'TOGGLE DISABLE ' + selectedIds.length 
             + ' ' + countString('node', selectedIds.length));
@@ -19,10 +20,10 @@ extends Action
 
     do(updateNodes)
     {
-        const nodes = this.selectedIds.map(id => nodeFromId(id));
+        const nodes = this.selectedIds.map(id => this.graph.nodeFromId(id));
 
         uiToggleDisableNodes(nodes);
-        uiSaveNodes(nodes.map(n => n.id));
+        uiSaveNodes(this.graph, nodes.map(n => n.id));
 
         pushUnique(updateNodes, nodes);
     }

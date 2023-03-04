@@ -3,7 +3,7 @@
     ../css/*.css
     ../ui/*.css
 
-    ../controls/graphView/*.css
+    ../controls/GraphView/*.css
     ../controls/menu/*.css
     ../controls/toggleButton/*.css
     ../controls/numberControl/*.css

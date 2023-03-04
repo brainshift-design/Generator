@@ -11,14 +11,14 @@ extends OperatorBase
         this.textbox.addEventListener('input', e =>
         {
             this.updateNode();
-            graphView.updateNodeTransform(this);
+            this.updateTransform();
         });
 
 
         this.textbox.addEventListener('change', e =>
         {
             if (this.textbox.value.trim() == '')
-                actionManager.do(new DeleteNodesAction([this.id], false), true);
+                actionManager.do(new DeleteNodesAction(graphView.graph, [this.id]), true);
         });
     }
 

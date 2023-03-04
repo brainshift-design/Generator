@@ -131,8 +131,7 @@ extends OpColorBase
 
 
         this.initCorrections(this._color[0]);
-
-        endNodeProgress(this);
+        this.endNodeProgress();
 
 
         super.updateValues(requestId, actionId, updateParamId, paramIds, values);
@@ -283,7 +282,7 @@ extends OpColorBase
         }
 
         if (!dataColorIsValid(this._color))
-            uiInitNodeProgress(this.id);
+            this.uiInitNodeProgress();//this.id);
     }
 }
 

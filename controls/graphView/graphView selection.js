@@ -1,87 +1,62 @@
-graphView._selectedNodes     = [];
-graphView._prevSelectedNodes = [];
-graphView.lastSelectedNodes  = [];
-
-
-Object.defineProperty(graphView, 'selectedNodes',
+GraphView.prototype.deselectAll = function()
 {
-    get: () => graphView._selectedNodes,
-    set: selectedNodes =>
-    {
-        graphView.deselectAll();
-
-        graphView._selectedNodes = [...selectedNodes];
-    
-        for (const node of graphView._selectedNodes)
-            node.setSelected(true);
-    }
-});
-
-
-
-graphView.deselectAll = () =>
-{
-    for (const node of graphView._selectedNodes)            
+    for (const node of this._selectedNodes)            
         node.setSelected(false);
 
-    graphView._selectedNodes = [];
+    this._selectedNodes = [];
 };
 
 
 
-graphView.selectByIds = (nodeIds) =>
+GraphView.prototype.selectByIds = function(nodeIds)
 {
-    graphView.selectedNodes = nodeIds.map(id => nodeFromId(id));
+    this.selectedNodes = nodeIds.map(id => this.graph.nodeFromId(id));
 };
 
 
 
-graphView.startSelection = (pointerId, x, y, shiftKey, ctrlKey) =>
+GraphView.prototype.startSelection = function(pointerId, x, y, shiftKey, ctrlKey)
 {
-    graphView.setPointerCapture(pointerId);
+    this.div.setPointerCapture(pointerId);
 
-    graphView.selecting = true;
+    this.selecting = true;
 
-    graphView.selectionRect = new Rect(x, y, 0, 0);
-    graphView._prevSelectedNodes = [];
+    this.selectionRect = new Rect(x, y, 0, 0);
+    this._prevSelectedNodes = [];
    
     selectBox.style.visibility = 'visible';
 
-    graphView.updateSelectBox(shiftKey, ctrlKey);
+    this.updateSelectBox(shiftKey, ctrlKey);
 };
 
 
 
-graphView.updateSelection = (x, y, shiftKey, ctrlKey) =>
+GraphView.prototype.updateSelection = function(x, y, shiftKey, ctrlKey)
 {
-    if (!graphView.selecting) return;
+    if (!this.selecting) return;
 
-    graphView.selectionRect.w = x - graphView.selectionRect.x;
-    graphView.selectionRect.h = y - graphView.selectionRect.y;
+    this.selectionRect.w = x - this.selectionRect.x;
+    this.selectionRect.h = y - this.selectionRect.y;
 
-    // log(
-    //       'selection =' + JSON.stringify(graphView.selectionRect)
-    //     + '<br/>pan =' + JSON.stringify(graphView.pan));
-
-    setTimeout(() => graphView.updateSelectBox(shiftKey, ctrlKey));
+    setTimeout(() => this.updateSelectBox(shiftKey, ctrlKey));
 };
 
  
 
-graphView.updateSelectBox = function(shiftKey, ctrlKey)
+GraphView.prototype.updateSelectBox = function(shiftKey, ctrlKey)
 {
-    if (   isNaN(graphView.selectionRect.w)
-        || isNaN(graphView.selectionRect.h))
+    if (   isNaN(this.selectionRect.w)
+        || isNaN(this.selectionRect.h))
         return;
 
 
     const wndRect = new Rect(
         1,
         menuBarHeight + 1,
-        graphViewClient.width  - 2,
-        graphViewClient.height - 5);
+        this.measureData.clientRect.width  - 2,
+        this.measureData.clientRect.height - 5);
 
-    let selection = validateRect(graphView.selectionRect);
+    let selection = validateRect(this.selectionRect);
     
     selection = clipRect(selection, wndRect);
     
@@ -96,7 +71,7 @@ graphView.updateSelectBox = function(shiftKey, ctrlKey)
 
     const selected = [];
 
-    for (const node of graph.nodes)
+    for (const node of this.graph.nodes)
     {
         if (rectsIntersect(
                 node.measureData.divBounds,
@@ -106,11 +81,11 @@ graphView.updateSelectBox = function(shiftKey, ctrlKey)
 
 
     if (shiftKey)
-        graphView.selectedNodes = graphView.lastSelectedNodes
-            .filter(node => !selected.includes(node))
-            .concat(selected.filter(node => !graphView.lastSelectedNodes.includes(node)));
+        this.selectedNodes = this.lastSelectedNodes
+            .filter(n => !selected.includes(n))
+            .concat(selected.filter(n => !this.lastSelectedNodes.includes(n)));
     else
-        graphView.selectedNodes = selected;
+        this.selectedNodes = selected;
     
         
     selectBox.style.zIndex = MAX_INT32-3;
@@ -118,37 +93,78 @@ graphView.updateSelectBox = function(shiftKey, ctrlKey)
         
     const nodes = [
         ...selected,                    
-        ...graphView._prevSelectedNodes,
-        ...graphView.lastSelectedNodes];
+        ...this._prevSelectedNodes,
+        ...this.lastSelectedNodes];
 
     nodes.forEach(n => n.updateBorder());
-    updateComments(nodes.map(n => n.id));
+    updateComments(this.graph, nodes.map(n => n.id));
 
-    graphView._prevSelectedNodes = selected;
+    this._prevSelectedNodes = selected;
 };
 
 
 
-graphView.endSelection = pointerId =>
+GraphView.prototype.endSelection = function(pointerId)
 {
-    if (   !isEmpty(graphView.selectedNodes    )
-        || !isEmpty(graphView.lastSelectedNodes))
+    if (   !isEmpty(this.selectedNodes    )
+        || !isEmpty(this.lastSelectedNodes))
     {
         actionManager.do(new SelectNodesAction(
-            graphView.selectedNodes    .map(n => n.id), 
-            graphView.lastSelectedNodes.map(n => n.id)));
+            this.graph,
+            this.selectedNodes    .map(n => n.id), 
+            this.lastSelectedNodes.map(n => n.id)));
     }
 
 
-    graphView.releasePointerCapture(pointerId);
+    this.div.releasePointerCapture(pointerId);
 
-    graphView.selecting     = false;
-    graphView.selectionRect = Rect.NaN;
-    graphView._prevSelectedNodes = [];
+    this.selecting     = false;
+    this.selectionRect = Rect.NaN;
+    this._prevSelectedNodes = [];
 
     selectBox.style.visibility = 'hidden';
 
 
-    graphView.selectionRect.w = Number.NaN;
-    graphView.selectionRect.h = Number.NaN;
+    this.selectionRect.w = Number.NaN;
+    this.selectionRect.h = Number.NaN;
 };
+
+
+
+GraphView.prototype.selectFromClick = function(node, ctrl, shift, alt)
+{
+    node.div.moved = false;
+
+
+    if (   ctrl
+        && shift
+        && alt)
+    {
+        this.selectedNodes = getAllNodesFromNode(node);
+    }
+    else if (shift
+          && alt)
+    {
+        if (isMac) this.selectedNodes = [node, ...getNodesBeforeNode(node)];
+        else       this.selectedNodes = [node, ...getNodesAfterNode(node)];
+    }
+    else if (ctrl
+          && shift)
+    {
+        if (isMac) this.selectedNodes = [node, ...getNodesAfterNode(node)];
+        else       this.selectedNodes = [node, ...getNodesBeforeNode(node)];
+    }
+    else if (ctrl
+          && alt)
+        this.selectedNodes = [node, ...getNodesAcrossNode(node)];
+
+    else if (!node.selected)
+    {
+        if (shift) node.selected      = true;
+        else       this.selectedNodes = [node];
+    }
+    else if (node.selected)
+    {
+        if (shift) node.selected = false;
+    }
+}

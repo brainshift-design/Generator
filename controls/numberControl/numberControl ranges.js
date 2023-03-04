@@ -23,38 +23,57 @@ class NumberControlRange
 
 
 
-function updateControlRanges(control, controlWidth, controlHeight)
+NumberControl.prototype.updateRanges = function(controlWidth, controlHeight)
 {
-    if (control.overrideText != '') // assuming this is only used in emergencies where ranges are irrelevant
-        resetControlRangeDivs(control);
+    if (this.overrideText != '') // assuming this is only used in emergencies where ranges are irrelevant
+        this.resetRangeDivs();
 
-    else if (control.ranges.length == control.rangeDivs.length) // update
+    else if (this.ranges.length == this.rangeDivs.length) // update
     {
-        for (let i = 0; i < control.ranges.length; i++)
+        for (let i = 0; i < this.ranges.length; i++)
         {
             updateControlRangeDiv(
-                control.ranges   [i],
-                control.rangeDivs[i],
+                this.ranges   [i],
+                this.rangeDivs[i],
                 controlWidth,
                 controlHeight);
         }
     }
     else // recreate
     {
-        resetControlRangeDivs(control);
+        this.resetRangeDivs();
 
-        for (let i = 0; i < control.ranges.length; i++)
+        for (const range of this.ranges)
         {
-            const range = control.ranges[i];
-
             const div = createDiv('numberControlRange');
+            
             div.style.zIndex = 0;
-            control.rangeDivs.push(div);
-            control.appendChild(div);
+
+            this.rangeDivs.push(div);
+            this.div.appendChild(div);
         
             updateControlRangeDiv(range, div, controlWidth, controlHeight);
         }
     }
+};
+
+
+
+NumberControl.prototype.resetRanges = function()
+{
+    this.ranges = [];
+    this.resetRangeDivs();        
+};
+
+
+
+NumberControl.prototype.resetRangeDivs = function()
+{
+    for (const div of this.rangeDivs)
+        if (this.div.contains(div))
+            this.div.removeChild(div);
+
+    this.rangeDivs = [];
 };
 
 
@@ -73,22 +92,3 @@ function updateControlRangeDiv(range, div, controlWidth, controlHeight)
         div.style.background = range.background;
     }
 };
-
-
-
-function resetControlRanges(control)
-{
-    control.ranges = [];
-    resetControlRangeDivs(control);        
-};
-
-
-
-function resetControlRangeDivs(control)
-{
-    for (const div of control.rangeDivs)
-        if (control.contains(div))
-            control.removeChild(div);
-
-    control.rangeDivs = [];
-}

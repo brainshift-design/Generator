@@ -13,7 +13,6 @@ var btnZoom;
 
 var menuMain;
 var menuMainPreferences;
-var menuMainMinZoomForParams;
 var menuMainDebug;
 var menuMainHelp;
 
@@ -132,6 +131,7 @@ var menuItemNodeRemove;
 var menuItemNodeLayout;
 var menuItemNodeSep1;
 var menuItemNodeRename;
+var menuItemNodeEdit;
 var menuItemNodeSep2;
 var menuItemNodeSelect;
 // var menuItemNodeBringToFront;
@@ -143,20 +143,18 @@ var menuItemLicenseSep1;
 var menuItemLicenseRemove;
 
 
+var menuItemCustomInputs;
+var menuItemCustomOutputs;
+
+
 
 function initGeneratorMenus()
 {
-    // menuMainMinZoomForParams = new Menu('Min zoom for params', false);
-    // menuMainMinZoomForParams.addItems([
-    //     menuItemMinZoomForParams = new MenuItem('Smallest adjustment zoom...', {callback: () => showMinZoomDialog()})]);
-
-
     menuMainPreferences = new Menu('Preferences', false);
     menuMainPreferences.addItems([
         menuItemShowAllColorSpaces    = new MenuItem('Show all color spaces',        {checkCallback: () => settings.showAllColorSpaces,    callback: () => { updateSettingAndMenu('showAllColorSpaces',    true, !settings.showAllColorSpaces);    updateMenuItemShowAllColorSpaces();   }}),
                                         new MenuItem('',                             {separator: true}),    
         menuItemAutoConnectNewNodes   = new MenuItem('Auto-connect new nodes',       {checkCallback: () => settings.autoConnectNewNodes,   callback: () => { updateSettingAndMenu('autoConnectNewNodes',   true, !settings.autoConnectNewNodes);                                         }}),
-      //menuItemEnableZoomedOutParams = new MenuItem('',                             {checkCallback: () => settings.enableZoomedOutParams, callback: () => { updateSettingAndMenu('enableZoomedOutParams', true, !settings.enableZoomedOutParams); }, childMenu: menuMainMinZoomForParams}),
         menuItemShowOperationResults  = new MenuItem('Show operation results',       {checkCallback: () => settings.showOperationResults,  callback: () => { updateSettingAndMenu('showOperationResults',  true, !settings.showOperationResults);  updateMenuItemShowOperationResults(); }}),
         menuItemShowBoolValues        = new MenuItem('Show boolean values as  ✓ ✗', {checkCallback: () => settings.showBoolValues,        callback: () => { updateSettingAndMenu('showBoolValues',        true, !settings.showBoolValues);        updateMenuItemShowBoolValues();       }}),
         menuItemShowClearUndoWarning  = new MenuItem('Show clear undo warning',      {checkCallback: () => settings.showClearUndoWarning,  callback: () => { updateSettingAndMenu('showClearUndoWarning',  true, !settings.showClearUndoWarning);                                        }}),
@@ -165,24 +163,10 @@ function initGeneratorMenus()
                                         new MenuItem('',                             {separator: true}),    
         menuItemShowDebugMenu         = new MenuItem('Show debug menu',              {checkCallback: () => settings.showDebugMenu,         callback: () => { updateSettingAndMenu('showDebugMenu',         true, !settings.showDebugMenu);         updateMenuItemShowDebugMenu();        }}),
         menuItemEnableBetaFeatures    = new MenuItem('Enable beta features',         {checkCallback: () => settings.enableBetaFeatures,    callback: () => { updateSettingAndMenu('enableBetaFeatures',    true, !settings.enableBetaFeatures);    enableFeatures(true, settings.enableBetaFeatures); }})]);
-
-    // menuMainPreferences.init = () => 
-    // {
-    //     menuItemEnableZoomedOutParams.setName('Adjust values at zoom  <  ' + numToString(settings.minZoomForParams * 100, 0) + '%');
-    // };
         
 
     menuMainDebug = new Menu('Debug', false);
     menuMainDebug.addItems([
-        // menuItemShowWires = new MenuItem('Show wires',
-        // {
-        //     checkCallback: () => settings.showWires, 
-        //     callback:      () => 
-        //     {
-        //         updateSettingAndMenu('showWires', true, !settings.showWires);
-        //         graphView.updateShowWires(settings.showWires);  
-        //     }
-        // }),
         menuItemDataMode         = new MenuItem('Restart in debug mode',      {checkCallback: () => settings.dataMode           , callback: () => updateSettingAndMenu('dataMode',         true, !settings.dataMode        ), setting: true}),
                                    new MenuItem('',                           {separator: true}),   
         menuItemShowNodeId       = new MenuItem('Show node IDs',
@@ -192,13 +176,13 @@ function initGeneratorMenus()
                                        {
                                            updateSettingAndMenu('showNodeId', true, !settings.showNodeId);
                                            
-                                           graph.nodes.forEach(n => n.updateNode());
-                                           graph.nodes.forEach(n => n.updateMeasureData());
-                                           graph.nodes.forEach(n => updateHeaderLabelOffsetX(n));
+                                           graphView.graph.nodes.forEach(n => n.updateNode());
+                                           graphView.graph.nodes.forEach(n => n.updateMeasureData());
+                                           graphView.graph.nodes.forEach(n => n.updateHeaderLabelOffsetX());
                                        }
                                    }),
                                  //new MenuItem('',                             {separator: true}),
-                                 //new MenuItem('Re-save all connections',      {callback:      () => uiSaveConnections(graph.connections)}),                                   
+                                 //new MenuItem('Re-save all connections',      {callback:      () => uiSaveConnections(graphView.graph.connections)}),                                   
                                  //new MenuItem('Delete connections to...',     {callback:      () => showDeleteConnectionsDialog()}),                                   new MenuItem('',                           {separator: true}),
                                  //new MenuItem('',                             {separator: true}),   
                                  //new MenuItem('Log all connection keys',      {callback:      () => { hideAllMenus(); uiQueueMessageToFigma({cmd: 'figLogAllSavedConnKeys'}); }}),
@@ -254,7 +238,9 @@ function initGeneratorMenus()
         menuItemRepeat = new MenuItem('Repeat',            {icon: iconRepeat, callback: e => actionManager.do(getCreateNodeAction(REPEAT,  btnNumber.div, {insert: e.ctrlKey}))}),
         menuFlowSep3   = new MenuItem('',                  {separator: true}),
         menuItemCache  = new MenuItem('Cache',             {icon: iconCache,  callback: e => actionManager.do(getCreateNodeAction(CACHE,   btnNumber.div, {insert: e.ctrlKey}))}),
-        menuItemCopy   = new MenuItem('Copy',              {icon: iconCopy,   callback: e => actionManager.do(getCreateNodeAction(COPY,    btnNumber.div, {insert: e.ctrlKey}))})]);
+        menuItemCopy   = new MenuItem('Copy',              {icon: iconCopy,   callback: e => actionManager.do(getCreateNodeAction(COPY,    btnNumber.div, {insert: e.ctrlKey}))}),
+        menuItemCustomInputs   = new MenuItem('Custom inputs',     {callback: e => actionManager.do(getCreateNodeAction(CUSTOM_INPUTS,    btnNumber.div, {insert: e.ctrlKey}))}),
+        menuItemCustomOutputs   = new MenuItem('Custom outputs',    {callback: e => actionManager.do(getCreateNodeAction(CUSTOM_OUTPUTS,    btnNumber.div, {insert: e.ctrlKey}))})]);
     
     
     menuMath = new Menu('Math', true, false);
@@ -368,15 +354,15 @@ function initGeneratorMenus()
                             new MenuItem('Zoom in',      {shortcut: osCtrl () + '+', callback: () => graphView.zoom *= Math.pow(2, 1/2)}),
                             new MenuItem('Zoom out',     {shortcut: osCtrl () + '-', callback: () => graphView.zoom /= Math.pow(2, 1/2)}),
                             new MenuItem('Zoom to fit',  {shortcut: osShift() + '1', callback: () => graphView.zoomToFit()}),
-        menuItemZoomTo100 = new MenuItem('Zoom to 100%', {shortcut: osCtrl () + '0', callback: () => graphView.setPanAndZoom(isEmpty(graph.nodes) ? point(0, 0) : graphView.pan, 1)})]);//,
+        menuItemZoomTo100 = new MenuItem('Zoom to 100%', {shortcut: osCtrl () + '0', callback: () => graphView.setPanAndZoom(isEmpty(graphView.graph.nodes) ? point(0, 0) : graphView.pan, 1)})]);//,
                         //  new MenuItem('',             {separator: true}),
                         //  new MenuItem('Window',       {childMenu: menuWindow})]);
 
 
     menuGraph = new Menu('Graph menu', false, false);
     menuGraph.addItems([
-        menuItemGraphPaste          = new MenuItem('Paste here',      {shortcut: osCtrl()             + 'V', callback: e => { hideAllMenus(); pasteCopiedNodes(false, e.clientX, e.clientY - menuBarHeight); }}),
-        menuItemGraphPasteConnected = new MenuItem('Paste connected', {shortcut: osCtrl() + osShift() + 'V', callback: e => { hideAllMenus(); pasteCopiedNodes(true,  e.clientX, e.clientY - menuBarHeight); }})]);
+        menuItemGraphPaste          = new MenuItem('Paste here',      {shortcut: osCtrl()             + 'V', callback: e => { hideAllMenus(); graphView.pasteCopiedNodes(false, e.clientX, e.clientY - menuBarHeight); }}),
+        menuItemGraphPasteConnected = new MenuItem('Paste connected', {shortcut: osCtrl() + osShift() + 'V', callback: e => { hideAllMenus(); graphView.pasteCopiedNodes(true,  e.clientX, e.clientY - menuBarHeight); }})]);
 
     menuGraph.init = () => 
     {
@@ -395,20 +381,21 @@ function initGeneratorMenus()
 
     menuNode = new Menu('Node menu', false, false);
     menuNode.addItems([
-        menuItemNodeCopy               = new MenuItem('Copy',                {shortcut:  osCtrl() + 'C',              callback: () => copySelectedNodes() }),
-        menuItemNodeDuplicate          = new MenuItem('Duplicate',           {shortcut:  osCtrl() + 'D',              callback: e => { hideAllMenus(); duplicateSelectedNodes(false); }}),
-        menuItemNodeDuplicateConnected = new MenuItem('Duplicate connected', {shortcut:  osCtrl() + osShift() + 'D',  callback: e => { hideAllMenus(); duplicateSelectedNodes(true ); }}),
+        menuItemNodeCopy               = new MenuItem('Copy',                {shortcut:  osCtrl() + 'C',              callback: () => graphView.copySelectedNodes() }),
+        menuItemNodeDuplicate          = new MenuItem('Duplicate',           {shortcut:  osCtrl() + 'D',              callback: e => { hideAllMenus(); graphView.duplicateSelectedNodes(false); }}),
+        menuItemNodeDuplicateConnected = new MenuItem('Duplicate connected', {shortcut:  osCtrl() + osShift() + 'D',  callback: e => { hideAllMenus(); graphView.duplicateSelectedNodes(true ); }}),
                                        //new MenuItem('',                    {separator: true}),
+      //menuItemNodeLayout             = new MenuItem('Layout',              {enabled:   false, shortcut: osCtrl() + 'L', callback: e => { hideAllMenus(); layoutSelectedNodes(); }}),
         menuItemNodeSep1               = new MenuItem('',                    {separator: true}),
-    //  menuItemNodeLayout             = new MenuItem('Layout',              {enabled:   false, shortcut: osCtrl() + 'L', callback: e => { hideAllMenus(); layoutSelectedNodes(); }}),
-        menuItemNodeRename             = new MenuItem('Rename',              {shortcut:  osCtrl() + 'R',              callback: e => { hideAllMenus(); renameSelectedNode(); }}),
-        menuItemNodeSep2               = new MenuItem('',                    {separator: true}),
         menuItemNodeSelect             = new MenuItem('Select',              {childMenu: menuNodeSelect}),
+        menuItemNodeSep2               = new MenuItem('',                    {separator: true}),
+        menuItemNodeRename             = new MenuItem('Rename',              {shortcut:  osCtrl() + 'R',              callback: e => { hideAllMenus(); graphView.renameSelectedNode(); }}),
+        menuItemNodeEdit               = new MenuItem('Edit...',             {callback: e => { hideAllMenus();  }}),
                                          new MenuItem('',                    {separator: true}),
         menuItemNodeActivate           = new MenuItem('Activate',            {callback: () => makeSelectedNodesActive()}),
-        menuItemNodeEnableDisable      = new MenuItem('Enable/Disable',      {shortcut:  osCtrl() + osShift() + 'E',  callback: () => actionManager.do(new ToggleDisableNodesAction(graphView.selectedNodes.map(n => n.id)))}),
+        menuItemNodeEnableDisable      = new MenuItem('Enable/Disable',      {shortcut:  osCtrl() + osShift() + 'E',  callback: () => actionManager.do(new ToggleDisableNodesAction(graphView.graph, graphView.selectedNodes.map(n => n.id)))}),
                                          new MenuItem('',                    {separator: true}),
-        menuItemNodeRemove             = new MenuItem('Remove',              {shortcut:  osShift() + '⌫',            callback: e => { hideAllMenus(); removeSelectedNodes(true); }})]);
+        menuItemNodeRemove             = new MenuItem('Remove',              {shortcut:  osShift() + '⌫',            callback: e => { hideAllMenus(); graphView.removeSelectedNodes(true); }})]);
 
 
     menuRemoveLicense = new Menu('Remove license', false, false);
@@ -428,8 +415,14 @@ function initGeneratorMenus()
         const single   = graphView.selectedNodes.length == 1;
         const parallel = nodesAreParallel(graphView.selectedNodes);
 
+        const custom  = 
+               graphView.selectedNodes.length == 1 
+            && graphView.selectedNodes[0].type == CUSTOM;
+
+
         updateMenuItemDisplay(menuItemNodeSep1    .div, single);
         updateMenuItemDisplay(menuItemNodeRename  .div, single);
+        updateMenuItemDisplay(menuItemNodeEdit    .div, custom);
         updateMenuItemDisplay(menuItemNodeSep2    .div, single);
         updateMenuItemDisplay(menuItemNodeSelect  .div, single);
         updateMenuItemDisplay(menuItemNodeActivate.div, single || parallel);
@@ -450,7 +443,7 @@ function initGeneratorMenus()
 
     btnCustom   = new MenuButton('Custom nodes', null, {callback: () => 
     {
-        const create = new CreateNodeAction(CUSTOM, btnCustom.div);
+        const create = new CreateNodeAction(graphView.graph, CUSTOM, btnCustom.div);
         actionManager.do(create);
 
         graphView.update([create.node]);
@@ -466,7 +459,7 @@ function initGeneratorMenus()
 
     btnComment = new MenuButton('Add comment', null, {callback: () => 
     {
-        const create = new CreateNodeAction(COMMENT, btnComment.div);
+        const create = new CreateNodeAction(graphView.graph, COMMENT, btnComment.div);
         actionManager.do(create);
 
         graphView.update([create.node]);

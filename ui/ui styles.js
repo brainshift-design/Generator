@@ -27,7 +27,7 @@ function uiLinkNodeToExistingColorStyle(node, styleId, styleName, paints)
         node.paramValue.setValue(ColorValue.NaN);
 
         // if (node.paramValue.input.connected)
-        //     actionManager.do(new DisconnectAction(node.paramValue.input), true);
+        //     actionManager.do(new DisconnectAction(node.graph, node.paramValue.input), true);
     }
 
 
@@ -44,7 +44,7 @@ function uiLinkNodeToExistingColorStyle(node, styleId, styleName, paints)
 
 function uiStylePropertyChange(msg)
 {
-    const node = graph.nodes.find(n => 
+    const node = graphView.graph.nodes.find(n => 
            n.type == COLOR_STYLE 
         && n.linkedStyleId == cleanStyleId(msg.styleId));
 
@@ -94,7 +94,7 @@ function uiStylePropertyChange(msg)
 
 function uiStyleDelete(msg)
 {
-    const node = graph.nodes.find(n => 
+    const node = graphView.graph.nodes.find(n => 
            n.type == COLOR_STYLE 
         && n.linkedStyleId == cleanStyleId(msg.styleId));
 
@@ -123,14 +123,14 @@ function uiReturnFigGetAllLocalColorStyles(msg)
 
 function uiSetStyleId(msg)
 {
-    nodeFromId(msg.nodeId).linkedStyleId = msg.styleId;
+    graphView.graph.nodeFromId(msg.nodeId).linkedStyleId = msg.styleId;
 }
 
 
 
 function initLocalStylesMenu(styles, nodeId)
 {
-    const node = nodeFromId(nodeId);
+    const node = graphView.graph.nodeFromId(nodeId);
     console.assert(node.type == COLOR_STYLE, 'node must be COLOR_STYLE');
 
 
@@ -152,6 +152,7 @@ function initLocalStylesMenu(styles, nodeId)
 
         options.callback = () => actionManager.do(
             new LinkExistingStyleAction(
+                graphView.graph,
                 nodeId,
                 style.id, 
                 style.name,
@@ -171,7 +172,7 @@ function initLocalStylesMenu(styles, nodeId)
         
     menuLocalStyles.addItems([
         new MenuItem('None', {
-            callback: e => actionManager.do(new LinkExistingStyleAction(nodeId, NULL, '', [])),
+            callback: e => actionManager.do(new LinkExistingStyleAction(node.graph, nodeId, NULL, '', [])),
             enabled:  node.linkedStyleId != NULL})
     ]);
 }

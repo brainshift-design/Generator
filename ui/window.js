@@ -87,7 +87,7 @@ function uiReturnFigResizeWindow()
         updateWhatsNewScrollbar(0);
     }
 
-    graphViewClient = clientRect(graphView);
+    graphView.updateMeasureData();
 }
 
 

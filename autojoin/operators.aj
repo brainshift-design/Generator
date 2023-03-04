@@ -8,22 +8,21 @@
 ../parameters/StrokeParam.js
 //../parameters/StyleParam.js
 
-../graph/Graph.js
-../graph/tree.js
-
 
 // these have to be added in order because of dependencies
 
 ../operators/Input.js
 ../operators/Output.js
 ../operators/Connection.js
+../operators/Wire.js
 ../operators/Operator.js
-../operators/OperatorBase.js
-../operators/OperatorWithValue.js
-../operators/OperatorWithSymbol.js
 ../operators/Operator node.js
 ../operators/Operator label.js
 ../operators/Operator textbox.js
+../operators/Operator update.js
+../operators/OperatorBase.js
+../operators/OperatorWithValue.js
+../operators/OperatorWithSymbol.js
 
 
 ../operators/flow/OpList.js
@@ -98,7 +97,14 @@
 
 
 
-../operators/OpCustom.js
+../operators/custom/OpCustom.js
+../operators/custom/OpCustomInputs.js
+../operators/custom/OpCustomOutputs.js
 
 
 ../operators/OpComment.js
+
+
+../Graph/Graph.js
+../Graph/Graph nodes.js
+../Graph/Graph tree.js

@@ -4,104 +4,103 @@ var  oldReorderIndex = Number.NaN;
 
 
 
-function createOperatorNode(node)
+Operator.prototype.createNode = function()
 {
-    node.div                    = createDiv('node');
-    node.div.node               = node;
+    this.div                    = createDiv('node');
+    this.div.node               = this;
        
-    node.div.style.width        = node.defaultWidth + 'px';
+    this.div.style.width        = this.defaultWidth + 'px';
            
-    node.div.over               = false;
-    node.div.dragging           = false;
-    node.div.shiftOnPointerDown = false;
-    node.div.moved              = false;
+    this.div.over               = false;
+    this.div.dragging           = false;
+    this.div.shiftOnPointerDown = false;
+    this.div.moved              = false;
     
-    node.enterTimer             = null;
+    this.enterTimer             = null;
 
 
-    node.inner = createDiv('nodeInner');
-    node.div.appendChild(node.inner);
+    this.inner = createDiv('nodeInner');
+    this.div.appendChild(this.inner);
 
 
-    node.div.addEventListener('pointerenter', e =>
+    this.div.addEventListener('pointerenter', e =>
     {
-        node.div.over      = true;
-        graphView.overNode = node;
+        this.div.over            = true;
+        this.graph.view.overNode = this;
         
         if (    e.altKey
             && !getCtrlKey(e)
             && !e.shiftKey
-            &&  graphView._soloNode != node
+            &&  graphView._soloNode != this
             && !altPressedInMenu) 
-            graphView.soloNode(node);
+            graphView.soloNode(this);
         
-        node.updateNode();
+        this.updateNode();
     });
 
     
-    node.div.addEventListener('pointerleave', e =>
+    this.div.addEventListener('pointerleave', e =>
     {
-        node.div.over      = false;
-        graphView.overNode = null;
+        this.div.over            = false;
+        this.graph.view.overNode = null;
         
         if (   (  !e.altKey
                 || getCtrlKey(e)
                 || e.shiftKey)
-            && graphView._soloNode == node)
+            && graphView._soloNode == this)
             graphView.unsoloNode();
 
-        node.updateNode();
+        this.updateNode();
     });
 
     
-    node.paramBack       = createDiv('nodeParamBack');
-    node.hiddenParamBack = createDiv('nodeHiddenParamBack');
+    this.paramBack       = createDiv('nodeParamBack');
+    this.hiddenParamBack = createDiv('nodeHiddenParamBack');
 
 
-    createNodeHeader(node);
+    this.createHeader();
+    this.createInfo();
 
-    createNodeInfo(node);
 
+    this.subscribeCover = createDiv('subscribeCover');
 
-    node.subscribeCover = createDiv('subscribeCover');
+    this.subscribeCover.addEventListener('pointerenter', e => { e.preventDefault(); e.stopImmediatePropagation(); });
+    this.subscribeCover.addEventListener('pointermove',  e => { e.preventDefault(); e.stopImmediatePropagation(); });
+    this.subscribeCover.addEventListener('pointermove',  e => { e.preventDefault(); e.stopImmediatePropagation(); });
 
-    node.subscribeCover.addEventListener('pointerenter', e => { e.preventDefault(); e.stopImmediatePropagation(); });
-    node.subscribeCover.addEventListener('pointermove',  e => { e.preventDefault(); e.stopImmediatePropagation(); });
-    node.subscribeCover.addEventListener('pointermove',  e => { e.preventDefault(); e.stopImmediatePropagation(); });
+    this.subscribeLabel = createDiv('subscribeLabel');
+    this.subscribeLabel.innerHTML = 'SUBSCRIBE';
 
-    node.subscribeLabel = createDiv('subscribeLabel');
-    node.subscribeLabel.innerHTML = 'SUBSCRIBE';
-
-    node.div.appendChild(node.subscribeCover);
-    node.div.appendChild(node.subscribeLabel);
+    this.div.appendChild(this.subscribeCover);
+    this.div.appendChild(this.subscribeLabel);
 }     
 
 
 
-function createNodeHeader(node)
+Operator.prototype.createHeader = function()
 {
-    node.header = createDiv('nodeHeader');
+    this.header = createDiv('nodeHeader');
     
-    node.header.connectionPadding = 8;
-    node.header.ignoreDoubleClick = false; // used by child objects that need to be double clicked
+    this.header.connectionPadding = 8;
+    this.header.ignoreDoubleClick = false; // used by child objects that need to be double clicked
 
 
-    createNodeLabel(node);
+    this.createLabel();
 
     
-    node. inputControls = createDiv('inputControls');
-    node.outputControls = createDiv('outputControls');
+    this. inputControls = createDiv('inputControls');
+    this.outputControls = createDiv('outputControls');
 
-    node.header.appendChild(node. inputControls);
-    node.header.appendChild(node.outputControls);
+    this.header.appendChild(this. inputControls);
+    this.header.appendChild(this.outputControls);
 
-    node.inner.appendChild(node.header);
+    this.inner.appendChild(this.header);
 
 
 
-    node.header.addEventListener('pointerdown', e =>
+    this.header.addEventListener('pointerdown', e =>
     {
-        if (isPanning(e))
+        if (this.graph.view.isPanning(e))
             return;
 
 
@@ -111,12 +110,15 @@ function createNodeHeader(node)
         e.preventDefault();
 
 
-        graphView.lastSelectedNodes = [...graphView.selectedNodes];
+        const view = this.graph.view;
+
+
+        view.lastSelectedNodes = [...view.selectedNodes];
         
-        graphView.putNodeOnTop(node);
+        view.putNodeOnTop(this);
 
 
-        for (const param of node.params)
+        for (const param of this.params)
         {
             if (param.textboxHasFocus())
                 param.control.textbox.finish(true);
@@ -130,7 +132,7 @@ function createNodeHeader(node)
         if (   e.button == 0
             || e.button == 2)
         {
-            node.div.shiftOnPointerDown = 
+            this.div.shiftOnPointerDown = 
                    e.shiftKey
                 && !getCtrlKey(e)
                 && !e.altKey;
@@ -138,32 +140,32 @@ function createNodeHeader(node)
 
 
         if (    e.button == 0
-            && !graphView.overOutput
-            && !graphView.overInput)
+            && !view.overOutput
+            && !view.overInput)
         {
             e.stopPropagation();
 
-            selectFromClick(node, getCtrlKey(e), e.shiftKey, e.altKey);
+            view.selectFromClick(this, getCtrlKey(e), e.shiftKey, e.altKey);
 
                         
-            node.div.sx = e.clientX;
-            node.div.sy = e.clientY;
+            this.sx = e.clientX;
+            this.sy = e.clientY;
 
-            for (const n of graphView.selectedNodes)
+            for (const n of view.selectedNodes)
             {
-                n.div.slx = n.div.offsetLeft;
-                n.div.sly = n.div.offsetTop;
+                n.slx = n.div.offsetLeft;
+                n.sly = n.div.offsetTop;
             }
 
-            node.div.dragging = true;
-            node.header.setPointerCapture(e.pointerId);
+            this.div.dragging = true;
+            this.header.setPointerCapture(e.pointerId);
         }
 
         else if (e.button == 2)
         {
             e.stopPropagation();
 
-            selectFromClick(node, getCtrlKey(e), e.shiftKey, e.altKey);
+            view.selectFromClick(this, getCtrlKey(e), e.shiftKey, e.altKey);
 
             menuNode.showAt(e.clientX, e.clientY);
         }
@@ -174,76 +176,79 @@ function createNodeHeader(node)
 
 
 
-    node.header.addEventListener('pointermove', e =>
+    this.header.addEventListener('pointermove', e =>
     {
-        if (isPanning(e))
+        if (this.graph.view.isPanning(e))
             return;
+
+
+        const view = this.graph.view;
 
 
         //console.log(node.id + '.header.pointermove');
 
-        const toTheRightOfInputs = e.clientX - boundingRect(node.header).x > 12 * graphView.zoom;
+        const toTheRightOfInputs = e.clientX - boundingRect(this.header).x > 12 * graphView.zoom;
 
-        const tempConn  = graphView. tempConn;
-        let   savedConn = graphView.savedConn;
+        const tempConn  = view. tempConn;
+        let   savedConn = view.savedConn;
 
 
-        if (node.div.dragging)
+        if (this.div.dragging)
         {
-            const x       = graphView.clientLeft;
-            const w       = graphView.clientWidth;
-            const h       = graphView.clientHeight;
-            const bounds  = graphView.getAllNodeBounds();
+            const x       = view.div.clientLeft;
+            const w       = view.div.clientWidth;
+            const h       = view.div.clientHeight;
+            const bounds  = view.getAllNodeBounds();
+
             const yOffset = menuBarHeight;
-        
-            setNodePositions(
-                graphView.selectedNodes,
-                (e.clientX - node.div.sx) / graphView.zoom,
 
-                (e.clientY - node.div.sy) / graphView.zoom);
+            view.setNodePositions(
+                view.selectedNodes,
+                (e.clientX - this.sx) / view.zoom,
+                (e.clientY - this.sy) / view.zoom);
             
-            node.div.moved = true;
+            this.div.moved = true;
 
-            graphView.updateScroll(x, w, h, bounds, yOffset);
+            view.updateScroll(x, w, h, bounds, yOffset);
         }
         else if (   tempConn
                  && toTheRightOfInputs)
         {
             if (    tempConn.output
-                && !tempConn.output.node.isOrFollows(node))
+                && !tempConn.output.node.isOrFollows(this))
             {
-                if (   node.variableInputs
+                if (   this.variableInputs
                     && savedConn
-                    && node == savedConn.input.node)
+                    && this == savedConn.input.node)
                 {
-                    const rect    = boundingRect(node.div);
-                    const padding = node.header.connectionPadding;
+                    const rect    = boundingRect(this.div);
+                    const padding = this.header.connectionPadding;
 
 
                     const index = Math.min(Math.max(0, Math.round(
-                          ((e.clientY - rect.y) / graphView.zoom - padding - (connectionSize + connectionGap)/2) 
+                          ((e.clientY - rect.y) / view.zoom - padding - (connectionSize + connectionGap)/2) 
                         / (connectionSize + connectionGap))),
-                        node.headerInputs.length-(node.headerInputs.length > 1 ? 2 : 1));
+                        this.headerInputs.length-(this.headerInputs.length > 1 ? 2 : 1));
 
                     if (index != prevReorderIndex)
                     {
                         newReorderIndex = index;
 
                         moveInArray(
-                            node.inputs, 
-                            node.inputs.indexOf(savedConn.input),
+                            this.inputs, 
+                            this.inputs.indexOf(savedConn.input),
                             newReorderIndex);
 
-                        node.updateNode();
+                        this.updateNode();
                          
                         prevReorderIndex = newReorderIndex;
                     }
 
                     
-                    graphView.overInput   = savedConn.input;
-                    graphView.headerInput = savedConn.input;
+                    view.overInput   = savedConn.input;
+                    view.headerInput = savedConn.input;
 
-                    graphView.overInput.updateControl();
+                    view.overInput.updateControl();
 
                     
                     const inputRect = boundingRect(savedConn.input.div);
@@ -254,11 +259,11 @@ function createNodeHeader(node)
                 }
                 else
                 {
-                    const input = node.getAutoInput(tempConn.output);
+                    const input = this.getAutoInput(tempConn.output);
                     if (!input) return;
 
-                    graphView.overInput   = input;
-                    graphView.headerInput = input;
+                    view.overInput   = input;
+                    view.headerInput = input;
                         
                     input.mouseOver = true;
                     input.updateControl();
@@ -271,13 +276,13 @@ function createNodeHeader(node)
                 }
             }
             else if ( tempConn.input
-                  && !node.isOrFollows(tempConn.input.node))
+                  && !this.isOrFollows(tempConn.input.node))
             {
-                const output = node.getAutoOutput(tempConn.input.types);
+                const output = this.getAutoOutput(tempConn.input.types);
                 if (!output) return;
 
-                graphView.overOutput   = output;
-                graphView.headerOutput = output;
+                view.overOutput   = output;
+                view.headerOutput = output;
                     
                 output.mouseOver = true;
                 output.updateControl();
@@ -297,72 +302,80 @@ function createNodeHeader(node)
 
 
 
-    node.header.addEventListener('pointerup', e =>
+    this.header.addEventListener('pointerup', e =>
     {
-        if (isPanning(e))
+        if (this.graph.view.isPanning(e))
             return;
 
 
+        const view = this.graph.view;
+
+
         if (   e.button == 0
-            && node.div.dragging)
+            && this.div.dragging)
         {
-            if (node.div.moved)
+            if (this.div.moved)
             {
                 actionManager.do(new SelectMoveNodesAction(
-                    graphView.lastSelectedNodes.map(n => n.id), 
-                    graphView.selectedNodes.map(n => n.id), 
-                    point(node.div.slx,        node.div.sly      ),
-                    point(node.div.offsetLeft, node.div.offsetTop),
-                    node.div.shiftOnPointerDown ));
+                    this.graph,
+                    view.lastSelectedNodes.map(n => n.id), 
+                    view.selectedNodes.map(n => n.id), 
+                    point(this.div.slx,        this.div.sly      ),
+                    point(this.div.offsetLeft, this.div.offsetTop),
+                    this.div.shiftOnPointerDown ));
             }
-            else if (!arraysAreEqual(graphView.selectedNodes, graphView.lastSelectedNodes))
-                 //   !isEmpty(graphView.selectedNodes)
-                 //    && !node.selected)
+            else if (!arraysAreEqual(view.selectedNodes, view.lastSelectedNodes))
+                 //   !isEmpty(view.selectedNodes)
+                 //    && !this.selected)
             {
                 actionManager.do(new SelectNodesAction(
-                    graphView.selectedNodes    .map(n => n.id), 
-                    graphView.lastSelectedNodes.map(n => n.id)));
+                    this.graph,
+                    view.selectedNodes    .map(n => n.id), 
+                    view.lastSelectedNodes.map(n => n.id)));
             }
 
 
-            node.div.dragging = false;
-            node.header.releasePointerCapture(e.pointerId);
+            this.div.dragging = false;
+            this.header.releasePointerCapture(e.pointerId);
         }
-        else if (graphView.tempConn)
+        else if (view.tempConn)
         {
-            if (    graphView.tempConn.output
-                && !graphView.tempConn.output.node.isOrFollows(node)
-                &&  graphView.overInput)
+            if (    view.tempConn.output
+                && !view.tempConn.output.node.isOrFollows(this)
+                &&  view.overInput)
             {
-                graphView          .endConnection(e.pointerId, getCtrlKey(e));
-                graphView.overInput.endConnection();
+                view          .endConnection(e.pointerId, getCtrlKey(e));
+                view.overInput.endConnection();
             }
-            else if ( graphView.tempConn.input
-                  && !node.isOrFollows(graphView.tempConn.input.node)
-                  &&  graphView.overOutput)
+            else if ( view.tempConn.input
+                  && !this.isOrFollows(view.tempConn.input.node)
+                  &&  view.overOutput)
             {
-                graphView           .endConnection(e.pointerId, getCtrlKey(e));
-                graphView.overOutput.endConnection();
+                view           .endConnection(e.pointerId, getCtrlKey(e));
+                view.overOutput.endConnection();
             }
         }
 
 
-        node.div.shiftOnPointerDown = false;
+        this.div.shiftOnPointerDown = false;
     });
     
     
 
-    node.header.addEventListener('pointerleave', e => 
+    this.header.addEventListener('pointerleave', e => 
     { 
-        if (graphView.tempConn)
+        const view = this.graph.view;
+
+
+        if (view.tempConn)
         {
-            if (   graphView.tempConn.output
-                && graphView.tempConn.output.node != node)
+            if (   view.tempConn.output
+                && view.tempConn.output.node != this)
             {
-                const input = graphView.headerInput;
+                const input = view.headerInput;
                 
-                graphView.overInput   = null;
-                graphView.headerInput = null;
+                view.overInput   = null;
+                view.headerInput = null;
                 
                 if (input) // will be null if data types don't match or there's no auto input for someo other reason
                 {
@@ -370,15 +383,15 @@ function createNodeHeader(node)
                     input.updateControl();
                 }
                 
-                graphView.tempConn.wire.inputPos = point_NaN;
+                view.tempConn.wire.inputPos = point_NaN;
             }
-            else if (graphView.tempConn.input
-                  && graphView.tempConn.input.node != node)
+            else if (view.tempConn.input
+                  && view.tempConn.input.node !=  this)
             {
-                const output = graphView.headerOutput;
+                const output = view.headerOutput;
                 
-                graphView.overOutput   = null;
-                graphView.headerOutput = null;
+                view.overOutput   = null;
+                view.headerOutput = null;
 
                 if (output) // will be null if data types don't match or there's no auto output for someo other reason
                 {
@@ -386,160 +399,88 @@ function createNodeHeader(node)
                     output.updateControl();
                 }
 
-                graphView.tempConn.wire.outputPos = point_NaN;
+                view.tempConn.wire.outputPos = point_NaN;
                 
-                graphView.tempConn.input.updateControl();
+                view.tempConn.input.updateControl();
            }
         }
     });
 
 
 
-    node.header.addEventListener('dblclick', e =>
+    this.header.addEventListener('dblclick', e =>
     {
         e.preventDefault();
 
         
-        const bounds = boundingRect(node.label);
+        const bounds = boundingRect(this.label);
 
         if (  !getCtrlKey(e)
             && e.clientX >= bounds.left && e.clientX < bounds.right
             && e.clientY >= bounds.top  && e.clientY < bounds.bottom)
-            node.showLabelTextbox();
-        else if (!node.header.ignoreDoubleClick)
-            actionManager.do(new MakeActiveNodesAction([node.id]));
+            this.showLabelTextbox();
+        else if (!this.header.ignoreDoubleClick)
+            actionManager.do(new MakeActiveNodesAction(this.graph, [this.id]));
 
-        node.header.ignoreDoubleClick = false;
+            this.header.ignoreDoubleClick = false;
     });
-}
+};
 
 
 
-function createNodeInfo(node)
+Operator.prototype.createInfo = function()
 {
-    node.divDisabled = createDiv();
-    node.div.appendChild(node.divDisabled);
+    this.divDisabled = createDiv();
+    this.div.appendChild(this.divDisabled);
 
-    node.divDisabled.style.display       = 'none';
-    node.divDisabled.style.position      = 'absolute';
-    node.divDisabled.style.width         = 5;
-    node.divDisabled.style.height        = 100;
-    node.divDisabled.style.background    = '#e88b';
-    node.divDisabled.style.pointerEvents = 'none';
-}
+    this.divDisabled.style.display       = 'none';
+    this.divDisabled.style.position      = 'absolute';
+    this.divDisabled.style.width         = 5;
+    this.divDisabled.style.height        = 100;
+    this.divDisabled.style.background    = '#e88b';
+    this.divDisabled.style.pointerEvents = 'none';
+};
 
 
 
-function createNodeProgressBar(node)
+Operator.prototype.createNodeProgressBar = function()
 {
-    node.hasProgressBar  = true;
+    this.hasProgressBar  = true;
 
-    node.progressWrapper = createDiv('progressWrapper');
-    node.progressBar     = createDiv('progressBar');
+    this.progressWrapper = createDiv('progressWrapper');
+    this.progressBar     = createDiv('progressBar');
 
-    node.progressWrapper.appendChild(node.progressBar);
-    node.header         .appendChild(node.progressWrapper);
-}
+    this.progressWrapper.appendChild(this.progressBar);
+    this.header         .appendChild(this.progressWrapper);
+};
 
 
 
-function uiInitNodeProgress(nodeId)
+Operator.prototype.initProgress = function()
 {
-    const node = nodeFromId(nodeId);
-    if (!isValid(node)) return;
+    // const node = nodeFromId(nodeId);
+    // if (!isValid(node)) return;
 
-    node.progressWrapper.style.display = 'block';
+    this.progressWrapper.style.display = 'block';
 
-    node.progressBar    .style.left    =   '0%';
-    node.progressBar    .style.width   = '100%';
-}
+    this.progressBar    .style.left    = '0%';
+    this.progressBar    .style.width   = '100%';
+};
 
 
 
-function uiUpdateNodeProgress(nodeId, progress)
+Operator.prototype.updateProgress = function(progress)
 {
-    const node = nodeFromId(nodeId);
-    if (!isValid(node)) return;
+    // const node = nodeFromId(nodeId);
+    // if (!isValid(node)) return;
 
-    node.progressBar.style.left  = (   progress  * 100) + '%';
-    node.progressBar.style.width = ((1-progress) * 100) + '%';
-}
+    this.progressBar.style.left  = (   progress  * 100) + '%';
+    this.progressBar.style.width = ((1-progress) * 100) + '%';
+};
 
 
 
-function endNodeProgress(node)
+Operator.prototype.endNodeProgress = function()
 {
-    node.progressWrapper.style.display = 'none';
-}
-
-
-
-function setNodePositions(nodes, dx, dy, updateTransform = true)
-{
-    //console.log('setNodePositions()');
-
-    for (const node of nodes)
-    {
-        node.div.style.left = node.div.slx + dx;
-        node.div.style.top  = node.div.sly + dy;
-    }
-
-    if (updateTransform)
-        graphView.updateNodeTransforms(nodes);
-}
-
-
-
-function setNodePosition(node, x, y, updateTransform = true)
-{
-    //console.log('setNodePosition()');
-
-    node.div.style.left = x;
-    node.div.style.top  = y;
-
-    if (updateTransform)
-    {
-        node.div.style.display = 'block';
-        graphView.updateNodeTransform(node);
-    }
-}
-
-
-
-function selectFromClick(node, ctrl, shift, alt)
-{
-    node.div.moved = false;
-
-
-    if (   ctrl
-        && shift
-        && alt)
-    {
-        graphView.selectedNodes = getAllNodesFromNode(node);
-    }
-    else if (shift
-          && alt)
-    {
-        if (isMac) graphView.selectedNodes = [node, ...getNodesBeforeNode(node)];
-        else       graphView.selectedNodes = [node, ...getNodesAfterNode(node)];
-    }
-    else if (ctrl
-          && shift)
-    {
-        if (isMac) graphView.selectedNodes = [node, ...getNodesAfterNode(node)];
-        else       graphView.selectedNodes = [node, ...getNodesBeforeNode(node)];
-    }
-    else if (ctrl
-          && alt)
-        graphView.selectedNodes = [node, ...getNodesAcrossNode(node)];
-
-    else if (!node.selected)
-    {
-        if (shift) node     .selected      = true;
-        else       graphView.selectedNodes = [node];
-    }
-    else if (node.selected)
-    {
-        if (shift) node.selected = false;
-    }
-}
+    this.progressWrapper.style.display = 'none';
+};

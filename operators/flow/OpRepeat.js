@@ -56,7 +56,7 @@ extends OperatorBase
     {
         const count = values[paramIds.findIndex(id => id == 'count')];
         if (count) this.paramCount.setValue(count, false, true, false);
-   }
+    }
 
 
 
@@ -67,15 +67,3 @@ extends OperatorBase
         this.updateParamControls();
     }
 }
-
-
-
-// function OpRepeat_onConnectInput(node)
-// {
-//     const inOutput = node.inputs[0].connectedOutput;
-
-//     // node.outputs[0].types = [...inOutput.types];
-
-//          if (inOutput.supportsTypes(NUMBER_TYPES)) node.addParam(node.paramNumber);
-//     else if (inOutput.supportsTypes( COLOR_TYPES)) node.addParam(node.paramColor );
-// }

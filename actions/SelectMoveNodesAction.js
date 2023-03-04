@@ -14,9 +14,10 @@ extends Action
 
 
 
-    constructor(prevSelectedIds, newSelectedIds, fromPos, toPos, shiftPressed)
+    constructor(graph, prevSelectedIds, newSelectedIds, fromPos, toPos, shiftPressed)
     {
         super(
+            graph,
             SELECT_MOVE_ACTION,
               'SELECT MOVE ' + newSelectedIds.length 
             + ' ' + countString('node', newSelectedIds.length));
@@ -42,7 +43,7 @@ extends Action
 
         for (const id of this.getMovedIds())
         {
-            const node = nodeFromId(id);
+            const node = this.graph.nodeFromId(id);
 
             this.from.push([id, point(node.div.slx,      node.div.sly     )]);
             this.to  .push([id, point(node.div.slx + dx, node.div.sly + dy)]);
@@ -68,12 +69,12 @@ extends Action
     do(updateNodes)
     {
         const movedIds   = [...this.getMovedIds()];
-        const movedNodes = graph.nodes.filter(n => movedIds.includes(n.id));
+        const movedNodes = this.graph.nodes.filter(n => movedIds.includes(n.id));
 
         for (let i = 0; i < movedNodes.length; i++)
         {
             const p = this.to.find(t => t[0] == movedNodes[i].id)[1];
-            setNodePosition(movedNodes[i].div.node, p.x, p.y);
+            movedNodes[i].setPosition(p.x, p.y);
         }
 
         for (const node of movedNodes)
@@ -83,7 +84,7 @@ extends Action
         }
 
 
-        uiSaveNodes(movedIds);
+        uiSaveNodes(this.graph, movedIds);
     }
 
 
@@ -91,20 +92,20 @@ extends Action
     undo(updateNodes)
     {
         const movedIds   = [...this.getMovedIds()];
-        const movedNodes = graph.nodes.filter(n => movedIds.includes(n.id));
+        const movedNodes = this.graph.nodes.filter(n => movedIds.includes(n.id));
 
         for (let i = 0; i < movedNodes.length; i++)
         {
             const p = this.from.find(t => t[0] == movedNodes[i].id)[1];
-            setNodePosition(movedNodes[i].div.node, p.x, p.y);
+            movedNodes[i].setPosition(p.x, p.y);
         }
 
         for (const node of movedNodes)
             node.updateNode();
             
-        graphView.selectByIds(this.prevSelectedIds);
+        this.graph.view.selectByIds(this.prevSelectedIds);
 
-        uiSaveNodes(movedIds);
+        uiSaveNodes(this.graph, movedIds);
     }
 
 
@@ -113,6 +114,6 @@ extends Action
     {
         this.do(updateNodes);
 
-        graphView.selectByIds(this.getMovedIds());
+        this.graph.view.selectByIds(this.getMovedIds());
     }
 }

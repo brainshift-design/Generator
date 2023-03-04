@@ -467,6 +467,8 @@ function rgbHeaderFromType(type, active)
                  : rgbColor;
 
         case CUSTOM:
+        case CUSTOM_INPUTS:
+        case CUSTOM_OUTPUTS:
             return active 
                  ? (darkMode ? rgbActiveCustomDark : rgbActiveCustomLight)
                  : (darkMode ? rgbCustomDark       : rgbCustomLight      );
@@ -2333,68 +2335,8 @@ function isMultiplier(node)
 function getCreateNodeAction(type, creatingButton, options)
 {
     return !!options.insert
-           ? new CreateInsertNodeAction(type, creatingButton, options)
-           : new CreateNodeAction      (type, creatingButton, options, settings.autoConnectNewNodes);
-}
-
-
-
-function isPanning(e)
-{
-    if (panMode)
-    {
-        e.preventDefault();
-        setCursor(panCursor);
-        return true;
-    }
-
-    if (graphView.spaceDown)
-    {
-        e.preventDefault();
-        return true;
-    }
-
-    return false;
-}
-
-
-
-function point2screen(p)
-{
-    return point(
-        (p.x + graphView.pan.x / graphView.zoom) * graphView.zoom,
-        (p.y + graphView.pan.y / graphView.zoom) * graphView.zoom);
-}
-
-
-
-function screen2point(p)
-{
-    return point(
-        p.x / graphView.zoom - graphView.pan.x / graphView.zoom,
-        p.y / graphView.zoom - graphView.pan.y / graphView.zoom);
-}
-
-
-
-function rect2screen(rect)
-{
-    return new Rect(
-        (rect.x + graphView.pan.x / graphView.zoom) * graphView.zoom,
-        (rect.y + graphView.pan.y / graphView.zoom) * graphView.zoom,
-        rect.width  * graphView.zoom,
-        rect.height * graphView.zoom);
-}
-
-
-
-function screen2rect(rect)
-{
-    return new Rect(
-        rect.x / graphView.zoom - graphView.pan.x / graphView.zoom,
-        rect.y / graphView.zoom - graphView.pan.y / graphView.zoom,
-        rect.width  / graphView.zoom,
-        rect.height / graphView.zoom);
+           ? new CreateInsertNodeAction(graphView.graph, type, creatingButton, options)
+           : new CreateNodeAction      (graphView.graph, type, creatingButton, options, settings.autoConnectNewNodes);
 }
 
 
@@ -3478,9 +3420,8 @@ const GRADIENT_VALUE   = 'GRAD#';
 const GRADIENT         = 'GRAD';
 const GRADIENT_TYPES   = [GRADIENT_VALUE, GRADIENT];
 
-//const COLOR_STYLE_VALUE = 'CSTL#';
-const COLOR_STYLE       = 'CSTL';
-//const COLOR_STYLE_TYPES = [COLOR_STYLE_VALUE, COLOR_STYLE];
+
+const COLOR_STYLE      = 'CSTL';
 
 
 const SHAPE_VALUE      = 'SHP#'; // abstract placeholder
@@ -3540,27 +3481,28 @@ const ALL_TYPES =
     ...FILL_TYPES,
     ...STROKE_TYPES,
     ...GRADIENT_TYPES,
-    //...COLOR_STYLE_TYPES,
     COLOR_STYLE,
     ...SHAPE_TYPES
 ];
 
 
-const CUSTOM        = 'CUST';   // ???? count O...
+const CUSTOM         = 'CUST';
+const CUSTOM_INPUTS  = 'CUSTIN';
+const CUSTOM_OUTPUTS = 'CUSTOUT';
 
 
-const COMMENT       = 'CMNT';
+const COMMENT        = 'CMNT';
 
 
-const ACTIVE        = 'ACT';
-const BEFORE_ACTIVE = 'BEF';
-const DISABLED      = 'DIS';
-const NOCACHE       = 'NOC';
+const ACTIVE         = 'ACT';
+const BEFORE_ACTIVE  = 'BEF';
+const DISABLED       = 'DIS';
+const NOCACHE        = 'NOC';
+ 
+const PARAM          = 'PARAM'; // nodeId paramId
+ 
 
-const PARAM         = 'PARAM'; // nodeId paramId
-
-
-const LOG           = 'LOG';
+const LOG            = 'LOG';
 
 
 
@@ -3610,24 +3552,25 @@ const CONDITION_OPS =
 
 
 
-const EMPTY_ACTION          = 'EMPTY';
-const CONNECT_ACTION        = 'CONNECT';
-const CREATE_ACTION         = 'CREATE';
-const CREATE_INSERT_ACTION  = 'CREATE_INSERT';
-const DELETE_ACTION         = 'DELETE';
-const DISCONNECT_ACTION     = 'DISCONNECT';
-const LINK_STYLE_ACTION     = 'LINK_STYLE';
-const MAKE_ACTIVE_ACTION    = 'MAKE_ACTIVE';
-const PASTE_ACTION          = 'PASTE';
-const RECONNECT_ACTION      = 'RECONNECT';
-const REMOVE_ACTION         = 'REMOVE';
-const RENAME_ACTION         = 'RENAME';
-const REORDER_ACTION        = 'REORDER';
-const SELECT_ACTION         = 'SELECT';
-const SELECT_MOVE_ACTION    = 'SELECT_MOVE';
-const SET_VALUE_ACTION      = 'SET_VALUE';
-const TOGGLE_DISABLE_ACTION = 'TOGGLE_DISABLE';
-const TOGGLE_SYMBOL_ACTION  = 'TOGGLE_SYMBOL';
+const EMPTY_ACTION               = 'EMPTY';
+const CONNECT_ACTION             = 'CONNECT';
+const CREATE_ACTION              = 'CREATE';
+const CREATE_INSERT_ACTION       = 'CREATE_INSERT';
+const DELETE_ACTION              = 'DELETE';
+const DISCONNECT_ACTION          = 'DISCONNECT';
+const LINK_STYLE_ACTION          = 'LINK_STYLE';
+const MAKE_ACTIVE_ACTION         = 'MAKE_ACTIVE';
+const PASTE_ACTION               = 'PASTE';
+const RECONNECT_ACTION           = 'RECONNECT';
+const REMOVE_ACTION              = 'REMOVE';
+const RENAME_ACTION              = 'RENAME';
+const REORDER_INPUTS_ACTION      = 'REORDER_INPUTS';
+const REORDER_CONNECTIONS_ACTION = 'REORDER_CONNECTIONS';
+const SELECT_ACTION              = 'SELECT';
+const SELECT_MOVE_ACTION         = 'SELECT_MOVE';
+const SET_VALUE_ACTION           = 'SET_VALUE';
+const TOGGLE_DISABLE_ACTION      = 'TOGGLE_DISABLE';
+const TOGGLE_SYMBOL_ACTION       = 'TOGGLE_SYMBOL';
 
 
 
@@ -10915,6 +10858,107 @@ extends GOperator
 
 
 
+class GCustomInputs
+extends GOperator
+{
+    input = null;
+
+    //item0
+    //item1
+    //item2
+    //...
+
+
+
+    constructor(nodeId, options)
+    {
+        super(ITEMS, nodeId, options);
+    }
+
+
+
+    copy()
+    {
+        const copy = new GCustomInputs(this.nodeId, this.options);
+        
+        copy.copyBase(this);
+
+        if (this.input) 
+            copy.input = this.input.copy();
+        
+        for (const key of this.keys())
+        {
+            if (   key.length > 4
+                && key.substring(0, 4) == 'item')
+                Object.assign(copy, {[key]: this[key]});
+        }
+
+        return copy;
+    }
+
+
+
+    eval(parse)
+    {
+        if (this.isCached())
+            return this;
+
+
+        if (this.input)
+        {
+            if (!this.input.value)
+                this.input.eval(parse);
+
+            this.value = this.input.toValue();
+        }
+        else
+            this.value = ListValue.NaN;
+
+
+        if (    this.value.isValid()
+            && !isEmpty(this.value.items))
+        {
+            for (let i = 0; i < this.value.items.length; i++)
+            {
+                const item = this.value.items[i];
+
+                Object.assign(this, {['item' + i]: item});
+                genPushUpdateValue(parse, this.nodeId, 'item' + i, item);
+            }
+        }
+        else
+            genPushUpdateValue(parse, this.nodeId, '', NullValue);
+
+
+        this.validate();
+
+        return this;
+    }
+
+
+
+    getParamFromId(paramId)
+    {
+        if (   paramId.length > 4
+            && paramId.substring(0, 4) == 'item'
+            && strIsNum(paramId.substring(4)))
+            return this[paramId];
+
+        return null;
+    }
+
+
+
+    toValue()
+    {
+        return this.value.copy();
+    }
+}
+
+
+
+
+
 class GComment
 extends GOperator
 {
@@ -11126,7 +11170,7 @@ function updateMenuItemShowAllColorSpaces()
 {
     uiSetPageData('showAllColorSpaces', boolToString(settings.showAllColorSpaces));
 
-    graph.nodes
+    graphView.graph.nodes
         .filter(n => COLOR_TYPES.includes(n.type))
         .forEach(n => n.updateNode());
 }
@@ -11135,7 +11179,7 @@ function updateMenuItemShowAllColorSpaces()
 
 function updateMenuItemShowBoolValues()
 {
-    graph.nodes
+    graphView.graph.nodes
         .filter(n => 
                  BOOLEAN_TYPES.includes(n.type)
             || CONDITION_TYPES.includes(n.type))
@@ -11146,7 +11190,7 @@ function updateMenuItemShowBoolValues()
 
 function updateMenuItemShowOperationResults()
 {
-    graph.nodes
+    graphView.graph.nodes
         .filter(n => n.params.find(p => p.isResult))
         .forEach(n => n.updateNode());
 }
@@ -11172,6 +11216,8 @@ function enableFeatures(subscription, beta)
     updateMenuItemDisplay(menuFlowSep3.div,             subscription && beta);
     updateMenuItemDisplay(menuItemCache.div,            subscription && beta);
     updateMenuItemDisplay(menuItemCopy.div,             subscription && beta);
+    updateMenuItemDisplay(menuItemCustomInputs.div,     subscription && beta);
+    updateMenuItemDisplay(menuItemCustomOutputs.div,    subscription && beta);
     
     updateMenuItemDisplay(menuItemCorrectColor    .div, subscription);
 
@@ -11182,7 +11228,7 @@ function enableFeatures(subscription, beta)
     updateMenuItemDisplay(menuItemSeries.div,           subscription && beta);    
 
 
-    graph.nodes.forEach(n => n.updateSubscribeStatus(subscription));
+    graphView.graph.nodes.forEach(n => n.updateSubscribeStatus(subscription));
 }
 
 
@@ -12057,6 +12103,94 @@ function genParseColorInterpolate(parse)
 }
 
 
+function genParseCustom(parse)
+{
+    const [, nodeId, options, ignore] = genParseNodeStart(parse);
+
+
+    const custom = new GCustom(nodeId, options);
+
+
+    // let nInputs = -1;
+    
+    // if (!ignore)
+    // {
+    //     nInputs = parseInt(parse.move());
+    //     console.assert(nInputs == 0 || nInputs == 1, 'nInputs must be [0, 1]');
+    // }
+
+
+    if (parse.settings.logRequests) 
+        logReq(custom, parse, ignore);//, nInputs);
+
+
+    if (ignore) 
+    {
+        genParseNodeEnd(parse, custom);
+        return parse.parsedNodes.find(n => n.nodeId == nodeId);
+    }
+
+
+    parse.nTab++;
+
+
+    // if (nInputs == 1)
+    //     cache.input = genParse(parse);
+
+
+    parse.nTab--;
+
+
+    genParseNodeEnd(parse, custom);
+    return custom;
+}
+
+
+
+function genParseCustomInputs(parse)
+{
+    const [, nodeId, options, ignore] = genParseNodeStart(parse);
+
+
+    const custIn = new GCustomInputs(nodeId, options);
+
+
+    // let nInputs = -1;
+    
+    // if (!ignore)
+    // {
+    //     nInputs = parseInt(parse.move());
+    //     console.assert(nInputs == 0 || nInputs == 1, 'nInputs must be [0, 1]');
+    // }
+
+
+    if (parse.settings.logRequests) 
+        logReq(custIn, parse, ignore);//, nInputs);
+
+
+    if (ignore) 
+    {
+        genParseNodeEnd(parse, custIn);
+        return parse.parsedNodes.find(n => n.nodeId == nodeId);
+    }
+
+
+    parse.nTab++;
+
+
+    // if (nInputs == 1)
+    //     cache.input = genParse(parse);
+
+
+    parse.nTab--;
+
+
+    genParseNodeEnd(parse, custIn);
+    return custIn;
+}
+
+
+
 function genParseComment(parse)
 {
     const [, nodeId, options, ignore] = genParseNodeStart(parse);
@@ -12353,7 +12487,6 @@ function genParseRepeat(parse)
 
     if (parse.settings.logRequests) 
         logReq(rep, parse, ignore, nInputs);
-        // logReqRepeat(rep, nInputs, parse, ignore);
 
 
     if (ignore) 
@@ -13749,6 +13882,8 @@ function genParse(parse, inParam = true)
     else if (parse.next == STAR                   ) result = genParseStar            (parse);
 
     else if (parse.next == CUSTOM                 ) result = genParseCustom          (parse);
+    else if (parse.next == CUSTOM_INPUTS          ) result = genParseCustomInputs    (parse);
+    else if (parse.next == CUSTOM_OUTPUTS         ) result = genParseCustomOutputs   (parse);
 
     else if (parse.next == COMMENT                ) result = genParseComment         (parse);
 
@@ -13897,7 +14032,7 @@ function genParseCustom(parse)
 
 
     if (parse.settings.logRequests) 
-        logReq(cache, parse, ignore, nInputs);
+        logReq(cache, parse, ignore);//, nInputs);
 
 
     if (ignore) 

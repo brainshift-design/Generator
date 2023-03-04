@@ -51,7 +51,7 @@ extends EventTarget
         this.input              = null;
         this.output             = null;
 
-        enableElementText(this.div, true);
+        //enableElementText(this.div, true);
     }
 
 
@@ -179,7 +179,7 @@ extends EventTarget
                 if (createAction)
                 {
                     actionManager.do(
-                        new SetParamValueAction(this, value), 
+                        new SetParamValueAction(this.node.graph, this, value), 
                           !isEmpty(actionManager.actions)
                         && lastOf(actionManager.actions).type == SET_VALUE_ACTION);
 
@@ -242,7 +242,7 @@ function setParamValue(param, value, updateParamId = '')
 
 function checkControlVisible(param, control)
 {
-    control.style.display = 
+    control.div.style.display = 
           !param.isResult
         || settings.showOperationResults
         ? 'inline-block'

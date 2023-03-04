@@ -380,7 +380,7 @@
 
 
 
-function canAutoConnectNode(node)
+function canAutoConnectNode(graph, node)
 {
     const selNode = graph.nodes.find(n => n.selected);
 
@@ -396,9 +396,9 @@ function canAutoConnectNode(node)
 
 
 
-function uiDeleteNodes(nodeIds)
+function uiDeleteNodes(graph, nodeIds)
 {
-    nodeIds.forEach(id => nodeFromId(id).makePassive());
+    nodeIds.forEach(id => graph.nodeFromId(id).makePassive());
 
     graph.deleteNodes(nodeIds);
 
@@ -422,15 +422,6 @@ function uiDeleteObjectsAndStyles(nodeIds, mustDelete = true)
 function uiCommitFigmaUndo()
 {
     uiQueueMessageToFigma({cmd: 'figCommitUndo'});
-}
-
-
-
-function uiSetNodeId(nodeId, newId)
-{
-    const node = nodeFromId(nodeId);
-
-    node.id = newId;
 }
 
 
@@ -465,7 +456,7 @@ function uiVariableConnectFromOutput(output, inputNode, inputId, outputOrder = -
         if (outputOrder > -1)
             conn.outputOrder = outputOrder;
 
-        uiUpdateSavedConnectionsToNodeId(inputNode.id);
+        uiUpdateSavedConnectionsToNodeId(inputNode.graph, inputNode.id);
 
         return conn;
     }
@@ -477,7 +468,7 @@ function uiVariableConnectFromOutput(output, inputNode, inputId, outputOrder = -
 
 function uiConnect(output, input, inputId = '', outputOrder = -1)
 {
-    return graph.connect(output, input, inputId, outputOrder);
+    return output.node.graph.connect(output, input, inputId, outputOrder);
 }
 
 
@@ -488,10 +479,10 @@ function uiDisconnect(input)
     
     const node = input.node;
 
-    graph.disconnect(input);
+    node.graph.disconnect(input);
 
     if (node.variableInputs)
-        uiUpdateSavedConnectionsToNodeId(node.id);
+        uiUpdateSavedConnectionsToNodeId(node.graph, node.id);
 }
 
 
@@ -500,18 +491,16 @@ function uiDisconnectAny(input)
 {
     //console.log('uiDisconnect()');
     
-    const node = input.node;
-
     uiDeleteSavedConnectionsToNodeId(input.node.id);
 
-    graph.disconnect(input);
+    input.node.graph.disconnect(input);
 }
 
 
 
-function uiUpdateSavedConnectionsToNodeId(nodeId)
+function uiUpdateSavedConnectionsToNodeId(graph, nodeId)
 {
-    const node = nodeFromId(nodeId);
+    const node = graph.nodeFromId(nodeId);
 
 
     uiDeleteSavedConnectionsToNodeId(node.id);
@@ -533,7 +522,7 @@ function uiUpdateSavedConnectionsToNodeId(nodeId)
 function makeSelectedNodesActive()
 {
     if (graphView.selectedNodes.find(n => !n.active))
-        actionManager.do(new MakeActiveNodesAction(graphView.selectedNodes.map(n => n.id)));
+        actionManager.do(new MakeActiveNodesAction(graphView.graph, graphView.selectedNodes.map(n => n.id)));
 }
 
 
@@ -563,7 +552,7 @@ function uiMakeNodesActive(nodes)
     {
         if (node.active) continue;
         
-        pushUnique(graphView.activeNodes, node);
+        pushUnique(node.graph.view.activeNodes, node);
         node._active = true;
     }
 }
@@ -611,12 +600,12 @@ function uiMakeNodeRightPassive(node, fromNode = null)
 
 
 
-function uiShowParamValue(nodeId, paramName, value)
+function uiShowParamValue(graph, nodeId, paramName, value)
 {
-    const node = nodeFromId(nodeId);
+    const node = graph.nodeFromId(nodeId);
 
     if (!!node) // this is for deleted nodes which still exist
-    {           // in genGraph but no longer in graph
+    {           // in genGraph but no longer in graphView.graph
         const param = node.params.find(p => p.name == paramName);
         param.control.setValue(value, false);
     }
@@ -624,7 +613,7 @@ function uiShowParamValue(nodeId, paramName, value)
 
 
 
-function uiCopyNodes(nodeIds)
+function uiCopyNodes(graph, nodeIds)
 {
     const nodes      = graph.nodes.filter(n => nodeIds.includes(n.id));
     const copiedJson = nodesToJson(nodes, true, false);
@@ -636,11 +625,11 @@ function uiCopyNodes(nodeIds)
 
 
 
-function uiPasteNodes(nodesJson, pasteConnected, x, y, updateNodes)
+function uiPasteNodes(graph, nodesJson, pasteConnected, x, y, updateNodes)
 {
     //console.log(nodesJson);
 
-    graphView.pastingNodes = true;
+    graph.view.pastingNodes = true;
 
 
     pasteOffset.x += pasteOffsetDelta.x;
@@ -657,7 +646,7 @@ function uiPasteNodes(nodesJson, pasteConnected, x, y, updateNodes)
 
         for (let i = 0; i < data.nodes.length; i++)
         {
-            data.nodes[i].x = x + positions[i].x - positions[0].x + 5 / graphView.zoom;
+            data.nodes[i].x = x + positions[i].x - positions[0].x + 5 / graph.view.zoom;
             data.nodes[i].y = y + positions[i].y - positions[0].y;
         }
     }
@@ -685,13 +674,13 @@ function uiPasteNodes(nodesJson, pasteConnected, x, y, updateNodes)
     if (data.connections)
     {
         correctNodeNamesInConnections(data);
-        parseConnectionsAndConnect(data, pasteConnected);
+        parseConnectionsAndConnect(graph, data, pasteConnected);
     }
     else
         data.connections = []; // return an empty array if no data was loaded
 
 
-    graphView.selectedNodes = nodes;
+    graph.view.selectedNodes = nodes;
 
 
     finishLoadingNodes(data.nodes, nodes, updateNodes, true);
@@ -729,45 +718,11 @@ function correctNodeNamesInConnections(data)
 
 function updateGraphNodes()
 {
-    //console.log('updateGraphNodes()');
-
     [...graphView.selectedNodes,     
      ...graphView._prevSelectedNodes,
      ...graphView.lastSelectedNodes]
         .forEach(n => n.updateNode());
 }
-
-
-
-// function uiUpdateNodes(nodeIds)
-// {
-//     if (graph.mutex)
-//     {
-//         for (const nodeId of nodeIds)
-//             graph.deferNodeIds.push(nodeId);
-
-//         return;
-//     }
-
-//     graph.mutex = true;
-// }
-
-
-
-// function uiUpdateGraph()
-// {
-//     graph.mutex = false;
-
-
-//     if (!isEmpty(graph.deferNodeIds))
-//     {
-//         let deferNodes = filterUnique(graph.deferNodeIds);
-
-//         graph.deferNodeIds = [];
-
-//         uiUpdateNodes(deferNodes);
-//     }
-// }
 
 
 
@@ -840,7 +795,7 @@ function uiUpdateValuesAndObjects(requestId, actionId, updateNodeId, updateParam
         const nodeId = values[i++];
         const count  = values[i++];
 
-        const node   = nodeFromId(nodeId);
+        const node   = graphView.graph.nodeFromId(nodeId);
 
 
         if (node)
@@ -864,17 +819,16 @@ function uiUpdateValuesAndObjects(requestId, actionId, updateNodeId, updateParam
 
                 switch (type)
                 {
-                    case       LIST_VALUE:  value = parseListValue     (values[i++])[0];  break;
-                    case     NUMBER_VALUE:  value = parseNumberValue   (values[i++])[0];  break;
-                    case      COLOR_VALUE:  value = parseColorValue    (values[i++])[0];  break;
-                    case       FILL_VALUE:  value = parseFillValue     (values[i++])[0];  break;
-                    case     STROKE_VALUE:  value = parseStrokeValue   (values[i++])[0];  break;
-                    //case COLOR_STOP_VALUE: value = parseColorStopValue(values[i++])[0]; break;
-                    case  RECTANGLE_VALUE:  value = parseRectangleValue(values[i++])[0];  break;
-                    case       LINE_VALUE:  value = parseLineValue     (values[i++])[0];  break;
-                    case    ELLIPSE_VALUE:  value = parseEllipseValue  (values[i++])[0];  break;
-                    case    POLYGON_VALUE:  value = parsePolygonValue  (values[i++])[0];  break;
-                    case       STAR_VALUE:  value = parseStarValue     (values[i++])[0];  break;
+                    case      LIST_VALUE:  value = parseListValue     (values[i++])[0];  break;
+                    case    NUMBER_VALUE:  value = parseNumberValue   (values[i++])[0];  break;
+                    case     COLOR_VALUE:  value = parseColorValue    (values[i++])[0];  break;
+                    case      FILL_VALUE:  value = parseFillValue     (values[i++])[0];  break;
+                    case    STROKE_VALUE:  value = parseStrokeValue   (values[i++])[0];  break;
+                    case RECTANGLE_VALUE:  value = parseRectangleValue(values[i++])[0];  break;
+                    case      LINE_VALUE:  value = parseLineValue     (values[i++])[0];  break;
+                    case   ELLIPSE_VALUE:  value = parseEllipseValue  (values[i++])[0];  break;
+                    case   POLYGON_VALUE:  value = parsePolygonValue  (values[i++])[0];  break;
+                    case      STAR_VALUE:  value = parseStarValue     (values[i++])[0];  break;
                     
                     default: console.assert(false, 'unknown type \'' + type + '\'');
                 }
@@ -917,7 +871,7 @@ function uiUpdateValuesAndObjects(requestId, actionId, updateNodeId, updateParam
     }
 
     
-    uiSaveNodes(nodes.map(n => n.id));
+    uiSaveNodes(graphView.graph, nodes.map(n => n.id));
 
 
     for (const node of nodes)
@@ -956,31 +910,17 @@ function uiUpdateValuesAndObjects(requestId, actionId, updateNodeId, updateParam
 
 function uiToggleDisableNodes(nodes)
 {
-    const update = [];
-
-    nodes.forEach(n => 
-    {
-        n.enabled = !n.enabled;
-
-        //if (!n.enabled)
-        // n.updateMeasureData();
-        // n.updateNode();
-
-        //pushUnique(update, n.id);
-    });
-
-
-    //update.forEach(_id => uiDeleteObjectsAndStyles([getActiveAfterNode(nodeFromId(_id)).id]));
+    nodes.forEach(n => { n.enabled = !n.enabled; });
 }
 
 
 
-function uiSaveNodes(nodeIds)
+function uiSaveNodes(graph, nodeIds)
 {
     const nodeJson = [];
 
     for (const id of nodeIds)
-        nodeJson.push(nodeFromId(id).toJson());
+        nodeJson.push(graph.nodeFromId(id).toJson());
 
     if (!isEmpty(nodeJson))
     {
@@ -1157,9 +1097,9 @@ function uiRemoveSavedNodesAndConns(nodeIds)
 
 
 
-function uiRemoveConnsToNodes(nodeIds)
+function uiRemoveConnsToNodes(graph, nodeIds)
 {
-    const nodes = nodeIds.map(id => nodeFromId(id));
+    const nodes = nodeIds.map(id => graph.nodeFromId(id));
 
     for (const node of nodes)
         for (const input of node.inputs)
@@ -1220,16 +1160,6 @@ function uiLogAllSavedConns()
         settings: settings
     });
 }
-
-
-
-// function uiValidateLicense(license)
-// {
-//     uiQueueMessageToFigma({
-//         cmd:    'figValidateLicense',
-//         license: license
-//     });
-// }
 
 
 

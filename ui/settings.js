@@ -159,7 +159,7 @@ function updateMenuItemShowAllColorSpaces()
 {
     uiSetPageData('showAllColorSpaces', boolToString(settings.showAllColorSpaces));
 
-    graph.nodes
+    graphView.graph.nodes
         .filter(n => COLOR_TYPES.includes(n.type))
         .forEach(n => n.updateNode());
 }
@@ -168,7 +168,7 @@ function updateMenuItemShowAllColorSpaces()
 
 function updateMenuItemShowBoolValues()
 {
-    graph.nodes
+    graphView.graph.nodes
         .filter(n => 
                  BOOLEAN_TYPES.includes(n.type)
             || CONDITION_TYPES.includes(n.type))
@@ -179,7 +179,7 @@ function updateMenuItemShowBoolValues()
 
 function updateMenuItemShowOperationResults()
 {
-    graph.nodes
+    graphView.graph.nodes
         .filter(n => n.params.find(p => p.isResult))
         .forEach(n => n.updateNode());
 }
@@ -205,6 +205,8 @@ function enableFeatures(subscription, beta)
     updateMenuItemDisplay(menuFlowSep3.div,             subscription && beta);
     updateMenuItemDisplay(menuItemCache.div,            subscription && beta);
     updateMenuItemDisplay(menuItemCopy.div,             subscription && beta);
+    updateMenuItemDisplay(menuItemCustomInputs.div,     subscription && beta);
+    updateMenuItemDisplay(menuItemCustomOutputs.div,    subscription && beta);
     
     updateMenuItemDisplay(menuItemCorrectColor    .div, subscription);
 
@@ -215,7 +217,7 @@ function enableFeatures(subscription, beta)
     updateMenuItemDisplay(menuItemSeries.div,           subscription && beta);    
 
 
-    graph.nodes.forEach(n => n.updateSubscribeStatus(subscription));
+    graphView.graph.nodes.forEach(n => n.updateSubscribeStatus(subscription));
 }
 
 

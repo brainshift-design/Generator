@@ -1,287 +1,328 @@
-graphView.addEventListener('pointerenter', e => 
+GraphView.prototype.createEvents = function()
 {
-    if (    graphView.hasPointerCapture(e.pointerId)
-        && !graphView.tempConn)
-        graphView.releasePointerCapture(e.pointerId);
-});
-
-
-
-graphView.addEventListener('pointerleave', e => 
-{
-    if (graphView.tempConn)
-        graphView.setPointerCapture(e.pointerId);
-});
-
-
-
-graphView.addEventListener('pointerdown', e =>
-{
-    graphView.pStart = point(e.clientX, e.clientY);
-
-    const sx = e.clientX;
-    const sy = e.clientY;
-
-    if (   e.button == 0
-        && !graphView.panning
-        && !graphView.tempConn
-        && !document.canResizeL
-        && !document.canResizeR
-        && !document.canResizeB
-        && !scrollbarX.moving
-        && !scrollbarY.moving)
+    this.div.addEventListener('pointerenter', e => 
     {
-        if (   graphView.spaceDown
-            || panMode)
-        {
-            if (getCtrlKey(e)) graphView.startZoomSelection(e.pointerId, e.clientX, e.clientY);
-            else               graphView.startPan(e.pointerId);
-        }
-        else if (graphView.overOutput)
-        {
-            graphView.overOutput.connecting = true;
-            graphView.startConnectionFromOutput(e.pointerId, graphView.overOutput, true, getCtrlKey(e));
+        if (    this.div.hasPointerCapture(e.pointerId)
+            && !this.tempConn)
+            this.div.releasePointerCapture(e.pointerId);
+    });
 
-            updateWire(graphView.tempConn.wire, sx, sy);
-        }
-        else if (graphView.overInput)
-        {
-            if (graphView.overInput.connectedOutput) // begin to disconnect
-            {
-                oldReorderIndex = graphView.overInput.index;
 
-                graphView.startConnectionFromOutput(e.pointerId, graphView.overInput.connectedOutput, false, getCtrlKey(e));
 
-                updateWire(graphView.tempConn.wire, sx, sy);
-
-                graphView.savedConn = graphView.overInput.connection;
-
-                hideElement(graphView.savedConn.wire);
-            }
-            else
-            {
-                graphView.overInput.connecting = true;
-                graphView.startConnectionFromInput(e.pointerId, graphView.overInput, getCtrlKey(e));
-
-                updateWire(graphView.tempConn.wire, sx, sy);
-            }
-        }
-        else if (document.activeElement.type != 'text') // selection, unless a textbox is in focus
-        {
-            graphView.lastSelectedNodes = [...graphView.selectedNodes];
-
-            graphView.startSelection(
-                e.pointerId,
-                e.clientX,
-                e.clientY,
-                e.shiftKey,
-                getCtrlKey(e));
-        }
-    }
-
-    else if (e.button == 1)
+    this.div.addEventListener('pointerleave', e => 
     {
+        if (this.tempConn)
+            this.div.setPointerCapture(e.pointerId);
+    });
+
+
+
+    this.div.addEventListener('pointerdown', e =>
+    {
+        this.pStart = point(e.clientX, e.clientY);
+
+        const sx = e.clientX;
+        const sy = e.clientY;
+
+        if (   e.button == 0
+            && !this.panning
+            && !this.tempConn
+            && !this.scrollbarX.moving
+            && !this.scrollbarY.moving
+            && !document.canResizeL
+            && !document.canResizeR
+            && !document.canResizeB)
+        {
+            if (   this.spaceDown
+                || panMode)
+            {
+                if (getCtrlKey(e)) this.startZoomSelection(e.pointerId, e.clientX, e.clientY);
+                else               this.startPan(e.pointerId);
+            }
+            else if (this.overOutput)
+            {
+                this.overOutput.connecting = true;
+                this.startConnectionFromOutput(e.pointerId, this.overOutput, true, getCtrlKey(e));
+
+                this.tempConn.wire.update(sx, sy);
+            }
+            else if (this.overInput)
+            {
+                if (this.overInput.connectedOutput) // begin to disconnect
+                {
+                    oldReorderIndex = this.overInput.index;
+
+                    this.startConnectionFromOutput(e.pointerId, this.overInput.connectedOutput, false, getCtrlKey(e));
+
+                    this.tempConn.wire.update(sx, sy);
+
+                    this.savedConn = this.overInput.connection;
+
+                    this.savedConn.wire.show(false);
+                }
+                else
+                {
+                    this.overInput.connecting = true;
+                    this.startConnectionFromInput(e.pointerId, this.overInput, getCtrlKey(e));
+
+                    this.tempConn.wire.update(sx, sy);
+                }
+            }
+            else if (document.activeElement.type != 'text') // selection, unless a textbox is in focus
+            {
+                this.lastSelectedNodes = [...this.selectedNodes];
+
+                this.startSelection(
+                    e.pointerId,
+                    e.clientX,
+                    e.clientY,
+                    e.shiftKey,
+                    getCtrlKey(e));
+            }
+        }
+
+        else if (e.button == 1)
+        {
+            e.preventDefault();
+            
+            this.btn1down = true;
+            setCursor(panCursor);
+            this.startPan(e.pointerId);
+        }
+
+        else if (e.button == 2)
+        {
+            e.stopPropagation();
+
+            if (isEmpty(currentMenus)) menuGraph.showAt(e.clientX, e.clientY, false);
+            else                       hideAllMenus();
+        }
+    });
+
+
+
+    this.div.addEventListener('pointermove', graphView_onpointermove);
+
+
+
+    this.div.addEventListener('pointerup', e => 
+    {
+        if (   e.button == 0
+            && (   this.spaceDown
+                || panMode))
+        {
+            if (getCtrlKey(e))
+            {
+                if (    this.selectionRect.w != 0
+                    &&  this.selectionRect.h != 0
+                    && !this.altDown)
+                {
+                    this.oldZoom = this.zoom;
+                    this.endZoomSelection(e.pointerId, true);
+                }
+                else if (this.altDown)
+                {
+                    const wndRect = new Rect(
+                        1,
+                        menuBarHeight + 1,
+                        this.measureData.clientRect.width  - 2,
+                        this.measureData.clientRect.height - 5);
+
+                    const selection = Rect.fromTypical(this.selectionRect);
+
+
+                    this.oldZoom = this.zoom;
+                    this.endZoomSelection(e.pointerId, false);
+
+                    this.zoom /= 2;
+                    
+                    
+                    this.pan.x += wndRect.c - selection.c;
+                    this.pan.y += wndRect.m - selection.m;
+
+
+                    this.update();
+                }
+                else
+                this.endZoomSelection(e.pointerId, false);
+            }
+
+            this.endPan(e.pointerId, false);
+
+
+            if (this.panZoomTimer)
+            {
+                clearTimeout(this.panZoomTimer); 
+                this.panZoomTimer = null;
+            };
+        }
+
+        else if (e.button == 0
+            && !this.selectionRect.isNaN)
+            this.endSelection(e.pointerId);
+
+        else if (e.button == 0
+            && this.tempConn)
+            this.endConnection(e.pointerId, getCtrlKey(e));
+
+        else if (e.button == 1
+            && this.panning)
+        {
+            this.btn1down = false;
+            this.endPan(e.pointerId, true);
+        }
+    });
+
+
+
+    this.div.addEventListener('wheel', e =>
+    {
+        if (this.btn1down)
+            return;
+
+
+        // if button is not pressed wheel pans
+        // if button is pressed, wheel does nothing if it's a touchpad
+
         e.preventDefault();
-        
-        graphView.btn1down = true;
-        setCursor(panCursor);
-        graphView.startPan(e.pointerId);
-    }
 
-    else if (e.button == 2)
+
+        const dZoom = Math.log(this.zoom) / Math.log(2);
+
+
+        const touchpad = isTouchpad(e);
+
+        const dWheelX = e.deltaX / (touchpad ? 20 : 100);
+        const dWheelY = e.deltaY / (touchpad ? 20 : 100);
+
+
+        if (   e.ctrlKey //getCtrlKey(e)
+            ||     panMode
+               && !touchpad)
+        {
+            let pos = point(
+                e.clientX, 
+                e.clientY - menuBarHeight);
+
+            const zoom = Math.max(0.0001, Math.pow(2, dZoom - dWheelY / (touchpad ? 4 : 10)));
+            const pan  = subv(this.pan, mulvs(subv(pos, this.pan), zoom / this.zoom - 1));
+
+            this.setPanAndZoom(pan, zoom);
+
+            this.updateWheelTimer();
+        }
+        else
+        {
+            const dPanX = (e.shiftKey ? dWheelY : dWheelX) * 20 / Math.pow(this.zoom, 0.1);
+            const dPanY = (e.shiftKey ? dWheelX : dWheelY) * 20 / Math.pow(this.zoom, 0.1);
+
+            this.pan = point(
+                this.pan.x - dPanX,
+                this.pan.y - dPanY);
+
+            
+            if (this.selecting)
+            {
+                this.selectionRect.x -= dPanX;
+                this.selectionRect.w += dPanX;
+
+                this.selectionRect.y -= dPanY;
+                this.selectionRect.h += dPanY;
+
+                this.updateSelection(
+                    e.clientX,
+                    e.clientY,
+                    e.shiftKey);
+            } 
+
+
+            this.updateWheelTimer();
+        }
+
+
+        if (this.tempConn)
+            graphView_onpointermove(e);
+    });
+
+
+
+    this.div.addEventListener('gesturestart', e => { this.zoomStart = this.zoom; });
+
+
+
+    this.div.addEventListener('gesturechange', e => 
     {
-        e.stopPropagation();
+        const p = point(
+            this.p.x,
+            this.p.y - menuBarHeight);
 
-        if (isEmpty(currentMenus)) menuGraph.showAt(e.clientX, e.clientY, false);
-        else                       hideAllMenus();
-    }
-});
+        const zoom = this.zoomStart * e.scale;
+        const pan  = subv(this.pan, mulvs(subv(p, this.pan), zoom / this.zoom - 1));
 
-
-
-graphView.addEventListener('pointermove', graphView_onpointermove);
-
+        this.setPanAndZoom(pan, zoom);
+    });
 
 
-function graphView_onpointermove(e)
-{
-    graphView.p = point(e.clientX, e.clientY);
 
-
-    if (   (   graphView.panning
-            || panMode)
-        && graphView.hasPointerCapture(e.pointerId))
+    this.div.addEventListener('touchstart', e =>
     {
-        setCursor(panCursor);
+        this.touches.push(e);
+        e.preventDefault();
+    });
 
-        const dp = subv(graphView.p, graphView.pStart);
 
-        graphView.setPanAndZoom(
-            addv(graphView.panStart, dp), 
-            graphView.zoom);
-    }
 
-    else if (graphView.selecting)
-        graphView.updateSelection(e.clientX, e.clientY, e.shiftKey, getCtrlKey(e));
+    this.div.addEventListener('touchmove', e =>
+    {
+        for (let i = 0; i < this.touches.length; i++)
+            if (this.touches[i].pointerId == e.pointerId)
+            {
+                this.touches[i] = e;
+                break;
+            }
 
-    else if (graphView.zoomSelecting)
-        graphView.updateZoomSelection(e.clientX, e.clientY);
+        e.preventDefault();
+    });
 
-    else if (graphView.tempConn)
-        updateWire(graphView.tempConn.wire, e.clientX, e.clientY);
+
+
+    this.div.addEventListener('touchend', e =>
+    {
+        for (let i = 0; i < this.touches.length; i++)
+            if (this.touches[i].pointerId == e.pointerId)
+            {
+                this.touches.splice(i, 1);
+                break;
+            }
+
+        e.preventDefault();
+    });
+
+
+
+    this.div.addEventListener('touchcancel', e =>
+    {
+        for (let i = 0; i < this.touches.length; i++)
+            if (this.touches[i].pointerId == e.pointerId)
+            {
+                this.touches.splice(i, 1);
+                break;
+            }
+
+        e.preventDefault();
+    });
 }
 
 
 
-graphView.addEventListener('pointerup', e => 
+GraphView.prototype.updateWheelTimer = function()
 {
-    if (   e.button == 0
-        && (   graphView.spaceDown
-            || panMode))
+    if (this.wheelTimer) 
+        clearTimeout(this.wheelTimer);
+
+    this.wheelTimer = setTimeout(() => 
     {
-        if (getCtrlKey(e))
-        {
-            if (    graphView.selectionRect.w != 0
-                &&  graphView.selectionRect.h != 0
-                && !graphView.altDown)
-            {
-                graphView.oldZoom = graphView.zoom;
-                graphView.endZoomSelection(e.pointerId, true);
-            }
-            else if (graphView.altDown)
-            {
-                const wndRect = new Rect(
-                    1,
-                    menuBarHeight + 1,
-                    graphViewClient.width  - 2,
-                    graphViewClient.height - 5);
-
-                const selection = Rect.fromTypical(graphView.selectionRect);
-
-
-                graphView.oldZoom = graphView.zoom;
-                graphView.endZoomSelection(e.pointerId, false);
-
-                graphView.zoom /= 2;
-                
-                
-                graphView.pan.x += wndRect.c - selection.c;
-                graphView.pan.y += wndRect.m - selection.m;
-
-
-                graphView.update();
-            }
-            else
-               graphView.endZoomSelection(e.pointerId, false);
-        }
-
-        graphView.endPan(e.pointerId, false);
-
-
-        if (graphView.panZoomTimer)
-        {
-            clearTimeout(graphView.panZoomTimer); 
-            graphView.panZoomTimer = null;
-        };
-    }
-
-    else if (e.button == 0
-         && !graphView.selectionRect.isNaN)
-        graphView.endSelection(e.pointerId);
-
-    else if (e.button == 0
-          && graphView.tempConn)
-        graphView.endConnection(e.pointerId, getCtrlKey(e));
-
-    else if (e.button == 1
-          && graphView.panning)
-    {
-        graphView.btn1down = false;
-        graphView.endPan(e.pointerId, true);
-    }
-});
-
-
-
-graphView.addEventListener('wheel', e =>
-{
-    if (graphView.btn1down)
-        return;
-
-
-    // if button is not pressed wheel pans
-    // if button is pressed, wheel does nothing if it's a touchpad
-
-    e.preventDefault();
-
-
-    const dZoom = Math.log(graphView.zoom) / Math.log(2);
-
-
-    const touchpad = isTouchpad(e);
-
-    const dWheelX = e.deltaX / (touchpad ? 20 : 100);
-    const dWheelY = e.deltaY / (touchpad ? 20 : 100);
-
-
-    if (   e.ctrlKey //getCtrlKey(e)
-        ||     panMode
-           && !touchpad)
-    {
-        let pos = point(
-            e.clientX, 
-            e.clientY - menuBarHeight);
-
-        const zoom = Math.max(0.0001, Math.pow(2, dZoom - dWheelY / (touchpad ? 4 : 10)));
-        const pan  = subv(graphView.pan, mulvs(subv(pos, graphView.pan), zoom / graphView.zoom - 1));
-
-        graphView.setPanAndZoom(pan, zoom);
-
-        graphView.updateWheelTimer();
-    }
-    else
-    {
-        const dPanX = (e.shiftKey ? dWheelY : dWheelX) * 20 / Math.pow(graphView.zoom, 0.1);
-        const dPanY = (e.shiftKey ? dWheelX : dWheelY) * 20 / Math.pow(graphView.zoom, 0.1);
-
-        graphView.pan = point(
-            graphView.pan.x - dPanX,
-            graphView.pan.y - dPanY);
-
-        
-        if (graphView.selecting)
-        {
-            graphView.selectionRect.x -= dPanX;
-            graphView.selectionRect.w += dPanX;
-
-            graphView.selectionRect.y -= dPanY;
-            graphView.selectionRect.h += dPanY;
-
-            graphView.updateSelection(
-                e.clientX,
-                e.clientY,
-                e.shiftKey);
-        } 
-
-
-        graphView.updateWheelTimer();
-    }
-
-
-    if (graphView.tempConn)
-        graphView_onpointermove(e);
-});
-
-
-
-graphView.updateWheelTimer = function()
-{
-    if (graphView.wheelTimer) 
-        clearTimeout(graphView.wheelTimer);
-
-    graphView.wheelTimer = setTimeout(() => 
-    {
-        graphView.wheelTimer = null;
+        this.wheelTimer = null;
 
         if (overNumberControl)
             overNumberControl.updateCursor();
@@ -293,68 +334,36 @@ graphView.updateWheelTimer = function()
 
 
 
-graphView.addEventListener('gesturestart', e => { graphView.zoomStart = graphView.zoom; });
-
-
-
-graphView.addEventListener('gesturechange', e => 
+function graphView_onpointermove(e)
 {
-    const p = point(
-        graphView.p.x,
-        graphView.p.y - menuBarHeight);
+    const view = graphView;//e.target.view;
 
-    const zoom = graphView.zoomStart * e.scale;
-    const pan  = subv(graphView.pan, mulvs(subv(p, graphView.pan), zoom / graphView.zoom - 1));
-
-    graphView.setPanAndZoom(pan, zoom);
-});
+    
+    view.p = point(e.clientX, e.clientY);
 
 
+    if (   (   view.panning
+            || panMode)
+        && view.div.hasPointerCapture(e.pointerId))
+    {
+        setCursor(panCursor);
 
-graphView.addEventListener('touchstart', e =>
-{
-    graphView.touches.push(e);
-    e.preventDefault();
-});
+        const dp = subv(view.p, view.pStart);
 
+        view.setPanAndZoom(
+            addv(view.panStart, dp), 
+            view.zoom);
+    }
 
+    else if (view.selecting)
+        view.updateSelection(e.clientX, e.clientY, e.shiftKey, getCtrlKey(e));
 
-graphView.addEventListener('touchmove', e =>
-{
-    for (let i = 0; i < graphView.touches.length; i++)
-        if (graphView.touches[i].pointerId == e.pointerId)
-        {
-            graphView.touches[i] = e;
-            break;
-        }
+    else if (view.zoomSelecting)
+        view.updateZoomSelection(e.clientX, e.clientY);
 
-    e.preventDefault();
-});
+    else if (view.tempConn)
+        view.tempConn.wire.update(e.clientX, e.clientY);
+}
 
 
 
-graphView.addEventListener('touchend', e =>
-{
-    for (let i = 0; i < graphView.touches.length; i++)
-        if (graphView.touches[i].pointerId == e.pointerId)
-        {
-            graphView.touches.splice(i, 1);
-            break;
-        }
-
-    e.preventDefault();
-});
-
-
-
-graphView.addEventListener('touchcancel', e =>
-{
-    for (let i = 0; i < graphView.touches.length; i++)
-        if (graphView.touches[i].pointerId == e.pointerId)
-        {
-            graphView.touches.splice(i, 1);
-            break;
-        }
-
-    e.preventDefault();
-});

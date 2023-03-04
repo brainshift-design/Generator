@@ -226,13 +226,6 @@ function getActiveInBranchFromNode(node, alreadyChecked = [])
 
 
 
-function getActiveFromNodeId(nodeId, alreadyChecked = [])
-{
-    return getActiveFromNode(nodeFromId(nodeId), alreadyChecked);
-}
-
-
-
 function getActiveFromNode(node, alreadyChecked = [])
 {
     if (    node.active
@@ -359,43 +352,6 @@ function getActiveAfterNode(node, includeParams = false, alreadyChecked = [])
 
 
     return null;
-}
-
-
-
-function getActiveNodesAfterNodeId(nodeId, alreadyChecked = [])
-{
-    const rightActive = [];
-    
-   
-    const node = nodeFromId(nodeId);
-    
-    if (node.active) 
-        rightActive.push(node);
-
-
-    for (const output of node.headerOutputs)
-    {
-        for (const input of output.connectedInputs.filter(i => !i.param))
-        {
-            if (!alreadyChecked.includes(input.node))
-            {
-                rightActive.push(...getActiveNodesAfterNodeId(
-                    input.node.id, 
-                    [...alreadyChecked, node]));
-            }
-        }
-    }
-
-
-    return rightActive;
-}
-
-
-
-function getActiveNodesFromNodeId(nodeId, alreadyChecked = [])
-{
-    return getActiveNodesFromNode(nodeFromId(nodeId), alreadyChecked);
 }
 
 

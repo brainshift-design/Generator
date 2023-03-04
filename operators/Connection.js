@@ -7,6 +7,8 @@ class Connection
     output;
     outputOrder; // in which connections FROM THIS OUTPUT were made
     
+    graph;
+
     input;
 
     wire;
@@ -17,130 +19,16 @@ class Connection
 
     constructor(output, input)
     {
-        this.id                          = Connection.nextId++;
+        this.id          = Connection.nextId++;
 
-        this.output                      = output;
-        this.outputOrder                 = -1;
+        this.output      = output;
+        this.outputOrder = -1;
                  
-        this.input                       = input;
+        this.input       = input;
 
-
-        this.wire                        = this.createWire(this.wire);
-   
-        this.wire.output                 = this.output;
-        this.wire.input                  = this.input;
-
-        this.wire.outBall                = createSvg('circle');
-        this.wire.outBall.style.position = 'absolute';
-
-        this.wire.inBall                 = createSvg('circle');
-        this.wire.inBall.style.position  = 'absolute';
-
-        this.wire.arrow                  = createSvg('polygon');
-        this.wire.arrow.style.position   = 'absolute';
-
-
-        // this.wire.needsFilter = 
-        //     output
-        //     ? arraysIntersect(output.types, COLOR_TYPES)
-        //     : input
-        //       ? arraysIntersect(input.types, COLOR_TYPES)
-        //       : false;
-
-
-        this.wire.appendChild(this.wire.curve  );
-        this.wire.appendChild(this.wire.curve2 );
-        this.wire.appendChild(this.wire.xp1    );
-        this.wire.appendChild(this.wire.xp2    );
-        this.wire.appendChild(this.wire.arrow  );
-        this.wire.appendChild(this.wire.outBall);
-        this.wire.appendChild(this.wire.inBall );
-
+        this.graph       = output ? output.node.graph : input.node.graph;
         
-        this.wire.update = (x1, y1, x2, y2) =>
-        {
-            const cw = graphView.clientWidth;
-            const ch = graphView.clientHeight;
-
-            updateWireCurve  (this.wire, x1, y1, x2, y2);
-            updateWireOutBall(this.wire, x1, y1        );
-            updateWireInBall (this.wire,         x2, y2);
-            updateWireStyle  (this.wire);
-
-            this.wire .setAttribute('width',  cw);
-            this.wire .setAttribute('height', ch);
-        };
-
-
-
-        this.wire.getColor = () =>
-        {
-            const types = [];
-
-
-            if (this.output)
-            {
-                if (!isEmpty(this.output.types)) types.push(...this.output.types);
-                else                             types.push(this.output.node.type);
-            }
-            else if (this.input)
-            {
-                if (   graphView.overOutput
-                    && this.input.canConnectFrom(graphView.overOutput)) 
-                    types.push(...graphView.overOutput.types);
-                else
-                {
-                    if (!isEmpty(this.input.types)) types.push(...this.input.types);
-                    else                            types.push(this.input.node.type);
-                }
-            }
-
-
-            return     this.output
-                   && !rgbIsNaN(this.output.wireColor)
-                 ?  this.output.wireColor
-                 :     this.input
-                   && !rgbIsNaN(this.input.wireColor)
-                   ?  this.input.wireColor
-                   : !isEmpty(types)
-                     ? rgb_a(rgbHeaderFromType(types[0], true), 1)
-                     : rgbaInvalid;
-        };
-    }
-
-
-
-    createWire(wire)
-    {
-        wire                       = createSvg('svg');
-        wire.connection            = this;
-        wire.style.position        = 'absolute';
-        wire.style.left            = 0;
-        wire.style.top             = 0;
-        wire.style.overflow        = 'hidden';
-  
-        wire.curve                 = createSvg('path');
-        wire.curve.style.position  = 'absolute';
-        wire.curve.style.fill      = 'none';
-
-        wire.curve2                = createSvg('path');
-        wire.curve2.style.position = 'absolute';
-        wire.curve2.style.fill     = 'none';
-
-        wire.xp1                   = createSvg('path');
-        wire.xp1.style.position    = 'absolute';
-        wire.xp1.style.fill        = 'none';
-  
-        wire.xp2                   = createSvg('path');
-        wire.xp2.style.position    = 'absolute';
-        wire.xp2.style.fill        = 'none';
-
-
-        wire.outputPos             = point_NaN;
-        wire. inputPos             = point_NaN;
-
-
-        return wire;
+        this.wire        = new Wire(this);
     }
 
 
@@ -178,13 +66,13 @@ class Connection
 
 
 
-function parseConnectionJsonAndConnect(_conn, pasteConnected)
+function parseConnectionJsonAndConnect(graph, _conn, pasteConnected)
 {
-    const outputNode  = nodeFromId(_conn.outputNodeId);
+    const outputNode  = graph.nodeFromId(_conn.outputNodeId);
     const outputId    = _conn.outputId;
     const outputOrder = parseInt(_conn.outputOrder);
 
-    const inputNode   = nodeFromId(_conn.inputNodeId);
+    const inputNode   = graph.nodeFromId(_conn.inputNodeId);
     const inputId     = _conn.inputId;
 
 

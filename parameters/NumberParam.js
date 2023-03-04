@@ -15,17 +15,9 @@ extends NumberParamBase
         super(NUMBER_VALUE, id, name);
 
         
-        this.control        = createDiv('numberControl');
-        
-        this.control.param  = this;
-        this.control.zIndex = 0;
-   
-        this.defaultValue   = new NumberValue(defaultValue, decimals);
-
-
-        initNumberControl(
+        this.control = new NumberControl(
+            createDiv('numberControl'),
             this,
-            this.control,
             120, // width
             20,  // height
             this.id,
@@ -37,12 +29,19 @@ extends NumberParamBase
             decimals,   
             dragScale); 
 
+            
+        this.control.div.zIndex = 0;
+
+        this.control.div.style.display = 'inline-block';
+        this.control.div.style.width   = '100%';
+
+   
+        this.defaultValue = new NumberValue(defaultValue, decimals);
+
+
         this.control.successOnFocusOut = true;
 
-        this.control.style.display = 'inline-block';
-        this.control.style.width   = '100%';
-
-        this.div.appendChild(this.control);
+        this.div.appendChild(this.control.div);
 
        
         if (hasInput)  this.initInput(NUMBER_TYPES, getParamInputValuesForUndo, this.input_getBackInitValue);
@@ -57,7 +56,7 @@ extends NumberParamBase
 
         this.control.addEventListener('confirm', () => 
         { 
-            actionManager.do(new EmptyAction(), true);
+            actionManager.do(new EmptyAction(this.node.graph), true);
         });
 
 

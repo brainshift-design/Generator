@@ -1,237 +1,231 @@
-scrollbarX.moving = false;
-scrollbarY.moving = false;
-
-
-
-graphView.updateScrollWithBounds = () =>
+GraphView.prototype.updateScrollWithBounds = function()
 {
-    const bounds = graphView.getAllNodeBounds();
+    const bounds = this.getAllNodeBounds();
 
-    graphView.updateScroll(
-        graphView.clientLeft,
-        graphView.clientWidth,
-        graphView.clientHeight,
+    this.updateScroll(
+        this.div.clientLeft,
+        this.div.clientWidth,
+        this.div.clientHeight,
         bounds,
         menuBarHeight);
 };
 
 
 
-graphView.updateScroll = (x, w, h, bounds, yOffset) =>
+GraphView.prototype.updateScroll = function(x, w, h, bounds, yOffset)
 {
-    graphView.updateScrollX(   w, h, bounds);
-    graphView.updateScrollY(x, w, h, bounds, yOffset);
+    this.updateScrollX(   w, h, bounds);
+    this.updateScrollY(x, w, h, bounds, yOffset);
 
-    scrollbarX.style.zIndex = MAX_INT32-1;
-    scrollbarY.style.zIndex = MAX_INT32-2;
+    this.scrollbarX.style.zIndex = MAX_INT32-1;
+    this.scrollbarY.style.zIndex = MAX_INT32-2;
 };
 
 
 
-/////////////////////////////////////////////////////////////////////////////////////
-
-
-
-graphView.updateScrollX = (w, h, bounds) =>
+GraphView.prototype.updateScrollX = function(w, h, bounds)
 {
     if (   bounds.l < 0
         && bounds.r >= w)
     {
         const width = sqr(w) / bounds.width - (smallScrollGap + largeScrollGap);
 
-        scrollbarX.style.display = 'inline-block';
-        scrollbarX.style.width   =  width;
-        scrollbarX.style.left    =  smallScrollGap + (w - smallScrollGap - largeScrollGap - width) * -bounds.l / (-bounds.l + bounds.r - w);
-        scrollbarX.style.top     =  h - smallScrollGap - 6;
+        this.scrollbarX.style.display = 'inline-block';
+        this.scrollbarX.style.width   =  width;
+        this.scrollbarX.style.left    =  smallScrollGap + (w - smallScrollGap - largeScrollGap - width) * -bounds.l / (-bounds.l + bounds.r - w);
+        this.scrollbarX.style.top     =  h - smallScrollGap - 6;
     }
     else if (bounds.l < 0)
     {
         const width = sqr(w) / (w - bounds.l) - (smallScrollGap + largeScrollGap);
 
-        scrollbarX.style.display = 'inline-block';
-        scrollbarX.style.width   =  width;
-        scrollbarX.style.left    =  w - largeScrollGap - width;
-        scrollbarX.style.top     =  h - smallScrollGap - 6;
+        this.scrollbarX.style.display = 'inline-block';
+        this.scrollbarX.style.width   =  width;
+        this.scrollbarX.style.left    =  w - largeScrollGap - width;
+        this.scrollbarX.style.top     =  h - smallScrollGap - 6;
     }
     else if (bounds.r >= w)
     {
         const width = sqr(w) / bounds.r - (smallScrollGap + largeScrollGap);
 
-        scrollbarX.style.display = 'inline-block';
-        scrollbarX.style.width   =  width;
-        scrollbarX.style.left    =  smallScrollGap;
-        scrollbarX.style.top     =  h - smallScrollGap - 6;
+        this.scrollbarX.style.display = 'inline-block';
+        this.scrollbarX.style.width   =  width;
+        this.scrollbarX.style.left    =  smallScrollGap;
+        this.scrollbarX.style.top     =  h - smallScrollGap - 6;
     }
     else
-        scrollbarX.style.display = 'none';
+        this.scrollbarX.style.display = 'none';
 };
 
 
 
-scrollbarX.addEventListener('pointerdown', e =>
-{
-    if (e.button == 0)
-    {
-        scrollbarX.moving = true;
-        scrollbarX.xStart = scrollbarX.offsetLeft;
-        scrollbarX.wStart = scrollbarX.offsetWidth;
-        scrollbarX.pStart = e.clientX;
-        scrollbarX.setPointerCapture(e.pointerId);
-
-        graphView.panStart = graphView.pan;
-
-        for (const node of graph.nodes)
-            node.div.slx = node.div.offsetLeft;
-    }
-});
-
-
-
-scrollbarX.addEventListener('pointerup', e =>
-{
-    if (   e.button == 0
-        && scrollbarX.moving)
-    {
-        scrollbarX.moving = false;
-        scrollbarX.releasePointerCapture(e.pointerId);
-
-        let bounds = Rect.NaN;
-
-        for (const node of graph.nodes)
-            bounds = expandRect(bounds, boundingRect(node.div));
-
-        if (bounds.l >= 0 && bounds.r < graphView.clientWidth)
-            scrollbarX.style.display = 'none';
-    }
-});
-
-
-
-scrollbarX.addEventListener('pointermove', e =>
-{
-    if (scrollbarX.moving)
-    {
-        const x = scrollbarX.xStart + e.clientX - scrollbarX.pStart;
-
-        let   l = x;
-        let   r = l + scrollbarX.wStart;
-
-        l = Math.max(smallScrollGap, l);
-        r = Math.min(r, graphView.clientWidth - largeScrollGap);
-
-        l = Math.max(smallScrollGap, Math.min(l, r - smallScrollGap));
-        r = Math.max(l + smallScrollGap, r);
-
-        scrollbarX.style.left  = l;
-        scrollbarX.style.width = r-l;
-
-        graphView.pan = point(
-            graphView.panStart.x - (e.clientX - scrollbarX.pStart) / scrollbarX.wStart * graphView.clientWidth,
-            graphView.panStart.y);
-    }
-});
-
-
-
-/////////////////////////////////////////////////////////////////////////////////////
-
-
-
-graphView.updateScrollY = (x, w, h, bounds, yOffset) =>
+GraphView.prototype.updateScrollY = function(x, w, h, bounds, yOffset)
 {
     if (   bounds.t <  yOffset
         && bounds.b >= h + yOffset)
     {
         const height = sqr(h) / bounds.height - (smallScrollGap + largeScrollGap);
 
-        scrollbarY.style.display = 'inline-block';
-        scrollbarY.style.height  =  height;
-        scrollbarY.style.top     =  smallScrollGap + (h - height + smallScrollGap) * (yOffset - bounds.t) / (yOffset - bounds.t + bounds.b - h);
-        scrollbarY.style.left    =  x + w - smallScrollGap - 6;
+        this.scrollbarY.style.display = 'inline-block';
+        this.scrollbarY.style.height  =  height;
+        this.scrollbarY.style.top     =  smallScrollGap + (h - height + smallScrollGap) * (yOffset - bounds.t) / (yOffset - bounds.t + bounds.b - h);
+        this.scrollbarY.style.left    =  x + w - smallScrollGap - 6;
     }
     else if (bounds.t < yOffset)
     {
         const height = sqr(h) / (h - (bounds.t - yOffset)) - (smallScrollGap + largeScrollGap);
 
-        scrollbarY.style.display = 'inline-block';
-        scrollbarY.style.height  = height;
-        scrollbarY.style.top     = h - largeScrollGap - height;
-        scrollbarY.style.left    = x + w - smallScrollGap - 6;
+        this.scrollbarY.style.display = 'inline-block';
+        this.scrollbarY.style.height  = height;
+        this.scrollbarY.style.top     = h - largeScrollGap - height;
+        this.scrollbarY.style.left    = x + w - smallScrollGap - 6;
     }
     else if (bounds.b >= h + yOffset)
     {
         const height = sqr(h) / (bounds.b - yOffset) - (smallScrollGap + largeScrollGap);
 
-        scrollbarY.style.display = 'inline-block';
-        scrollbarY.style.height  = height;
-        scrollbarY.style.top     = smallScrollGap;
-        scrollbarY.style.left    = x + w - smallScrollGap - 6;
+        this.scrollbarY.style.display = 'inline-block';
+        this.scrollbarY.style.height  = height;
+        this.scrollbarY.style.top     = smallScrollGap;
+        this.scrollbarY.style.left    = x + w - smallScrollGap - 6;
     }
     else
-        scrollbarY.style.display = 'none';
+        this.scrollbarY.style.display = 'none';
 };
 
 
 
-scrollbarY.addEventListener('pointerdown', e =>
+GraphView.prototype.createScrollbarMethods = function()
 {
-    if (e.button == 0)
+    this.scrollbarX.addEventListener('pointerdown', e =>
     {
-        scrollbarY.moving = true;
-        scrollbarY.yStart = scrollbarY.offsetTop;
-        scrollbarY.hStart = scrollbarY.offsetHeight;
-        scrollbarY.pStart = e.clientY;
-        scrollbarY.setPointerCapture(e.pointerId);
+        if (e.button == 0)
+        {
+            this.scrollbarX.moving = true;
+            this.scrollbarX.xStart = this.scrollbarX.offsetLeft;
+            this.scrollbarX.wStart = this.scrollbarX.offsetWidth;
+            this.scrollbarX.pStart = e.clientX;
+            this.scrollbarX.setPointerCapture(e.pointerId);
 
-        for (const node of graph.nodes)
-            node.div.sly = node.div.offsetTop;
+            this.panStart = this.pan;
 
-        graphView.panStart = graphView.pan;
-    }
-});
+            for (const node of this.graph.nodes)
+                node.slx = node.div.offsetLeft;
+        }
+    });
 
 
 
-scrollbarY.addEventListener('pointerup', e =>
-{
-    if (   e.button == 0
-        && scrollbarY.moving)
+    this.scrollbarX.addEventListener('pointerup', e =>
     {
-        scrollbarY.moving = false;
-        scrollbarY.releasePointerCapture(e.pointerId);
+        if (   e.button == 0
+            && this.scrollbarX.moving)
+        {
+            this.scrollbarX.moving = false;
+            this.scrollbarX.releasePointerCapture(e.pointerId);
 
-        let bounds = Rect.NaN;
+            let bounds = Rect.NaN;
 
-        for (const node of graph.nodes)
-            bounds = expandRect(bounds, boundingRect(node.div));
+            for (const node of this.graph.nodes)
+                bounds = expandRect(bounds, boundingRect(node.div));
 
-        if (bounds.t >= 0 && bounds.b < graphView.clientHeight)
-            scrollbarY.style.display = 'none';
-    }
-});
+            if (bounds.l >= 0 && bounds.r < this.clientWidth)
+                this.scrollbarX.style.display = 'none';
+        }
+    });
 
 
 
-scrollbarY.addEventListener('pointermove', e =>
-{
-    if (scrollbarY.moving)
+    this.scrollbarX.addEventListener('pointermove', e =>
     {
-        const y = scrollbarY.yStart + e.clientY - scrollbarY.pStart;
+        if (this.scrollbarX.moving)
+        {
+            const x = this.scrollbarX.xStart + e.clientX - this.scrollbarX.pStart;
 
-        let   t = y;
-        let   b = t + scrollbarY.hStart;
+            let   l = x;
+            let   r = l + this.scrollbarX.wStart;
 
-        t = Math.max(smallScrollGap, t);
-        b = Math.min(b, graphView.clientHeight - largeScrollGap);
+            l = Math.max(smallScrollGap, l);
+            r = Math.min(r, this.clientWidth - largeScrollGap);
 
-        t = Math.max(smallScrollGap, Math.min(t, b - smallScrollGap));
-        b = Math.max(t + smallScrollGap, b);
+            l = Math.max(smallScrollGap, Math.min(l, r - smallScrollGap));
+            r = Math.max(l + smallScrollGap, r);
 
-        scrollbarY.style.top    = t;
-        scrollbarY.style.height = b-t;
+            this.scrollbarX.style.left  = l;
+            this.scrollbarX.style.width = r-l;
 
-        graphView.pan = point(
-            graphView.panStart.x, 
-            graphView.panStart.y - (e.clientY - scrollbarY.pStart) / scrollbarY.hStart * graphView.clientHeight);
-    }
-});
+            this.pan = point(
+                this.panStart.x - (e.clientX - this.scrollbarX.pStart) / this.scrollbarX.wStart * this.clientWidth,
+                this.panStart.y);
+        }
+    });
+
+
+
+    /////////////////////////////////////////////////////////////////////////////////////
+
+
+
+    this.scrollbarY.addEventListener('pointerdown', e =>
+    {
+        if (e.button == 0)
+        {
+            this.scrollbarY.moving = true;
+            this.scrollbarY.yStart = this.scrollbarY.offsetTop;
+            this.scrollbarY.hStart = this.scrollbarY.offsetHeight;
+            this.scrollbarY.pStart = e.clientY;
+            this.scrollbarY.setPointerCapture(e.pointerId);
+
+            for (const node of this.graph.nodes)
+                node.div.sly = node.div.offsetTop;
+
+            this.panStart = this.pan;
+        }
+    });
+
+
+
+    this.scrollbarY.addEventListener('pointerup', e =>
+    {
+        if (   e.button == 0
+            && this.scrollbarY.moving)
+        {
+            this.scrollbarY.moving = false;
+            this.scrollbarY.releasePointerCapture(e.pointerId);
+
+            let bounds = Rect.NaN;
+
+            for (const node of this.graph.nodes)
+                bounds = expandRect(bounds, boundingRect(node.div));
+
+            if (bounds.t >= 0 && bounds.b < this.div.clientHeight)
+                this.scrollbarY.style.display = 'none';
+        }
+    });
+
+
+
+    this.scrollbarY.addEventListener('pointermove', e =>
+    {
+        if (this.scrollbarY.moving)
+        {
+            const y = this.scrollbarY.yStart + e.clientY - this.scrollbarY.pStart;
+
+            let   t = y;
+            let   b = t + this.scrollbarY.hStart;
+
+            t = Math.max(smallScrollGap, t);
+            b = Math.min(b, this.div.clientHeight - largeScrollGap);
+
+            t = Math.max(smallScrollGap, Math.min(t, b - smallScrollGap));
+            b = Math.max(t + smallScrollGap, b);
+
+            this.scrollbarY.style.top    = t;
+            this.scrollbarY.style.height = b-t;
+
+            this.pan = point(
+                this.panStart.x, 
+                this.panStart.y - (e.clientY - this.scrollbarY.pStart) / this.scrollbarY.hStart * this.div.clientHeight);
+        }
+    });
+}

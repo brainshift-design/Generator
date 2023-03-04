@@ -294,7 +294,6 @@ function genParseRepeat(parse)
 
     if (parse.settings.logRequests) 
         logReq(rep, parse, ignore, nInputs);
-        // logReqRepeat(rep, nInputs, parse, ignore);
 
 
     if (ignore) 

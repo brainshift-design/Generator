@@ -1,4 +1,4 @@
-class ReorderInputAction
+class ReorderInputsAction
 extends Action
 {
     nodeId;
@@ -8,11 +8,12 @@ extends Action
  
 
 
-    constructor(nodeId, oldIndex, newIndex)
+    constructor(graph, nodeId, oldIndex, newIndex)
     {
         super(
-            REORDER_ACTION,
-              'REORDER ' + nodeFromId(nodeId).id 
+            graph,
+            REORDER_INPUTS_ACTION,
+              'REORDER INPUTS ' + graph.nodeFromId(nodeId).id 
             + '.' + oldIndex
             + ' to .' + newIndex);
 
@@ -29,17 +30,17 @@ extends Action
 
         this.saveInputConnections();
         
-        pushUnique(updateNodes, nodeFromId(this.nodeId));
+        pushUnique(updateNodes, this.graph.nodeFromId(this.nodeId));
     }
 
 
 
     undo(updateNodes)
     {
-        const node = nodeFromId(this.nodeId);
+        const node = this.graph.nodeFromId(this.nodeId);
 
         moveInArray(node.inputs, this.newIndex, this.oldIndex);
-        uiSaveNodes([this.nodeId]);
+        uiSaveNodes(this.graph, [this.nodeId]);
         
         this.saveInputConnections();
 
@@ -50,10 +51,10 @@ extends Action
 
     redo(updateNodes)
     {
-        const node = nodeFromId(this.nodeId);
+        const node = this.graph.nodeFromId(this.nodeId);
 
         moveInArray(node.inputs, this.oldIndex, this.newIndex);
-        uiSaveNodes([this.nodeId]);
+        uiSaveNodes(this.graph, [this.nodeId]);
 
         this.saveInputConnections();
 
@@ -66,7 +67,7 @@ extends Action
     {
         uiDeleteSavedConnectionsToNodeId(this.nodeId);
         
-        const node = nodeFromId(this.nodeId);
+        const node = this.graph.nodeFromId(this.nodeId);
 
         for (const input of node.inputs.filter(i => i.connected))
             uiSaveConn(input.connection);

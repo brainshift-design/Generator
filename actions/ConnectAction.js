@@ -21,21 +21,22 @@ extends Action
     backInit              = false;
    
 
-    get outputNode()    { return nodeFromId(this.outputNodeId); }
+    get outputNode()    { return this.graph.nodeFromId(this.outputNodeId); }
     get output()        { return this.outputNode.outputFromId(this.outputId); }
     
-    get inputNode()     { return nodeFromId(this.inputNodeId); }
+    get inputNode()     { return this.graph.nodeFromId(this.inputNodeId); }
     get input()         { return this.inputNode.inputFromId(this.inputId); }
     
 
-    get oldOutputNode() { return nodeFromId(this.oldOutputNodeId); }
+    get oldOutputNode() { return this.graph.nodeFromId(this.oldOutputNodeId); }
     get oldOutput()     { return this.oldOutputNode.outputFromId(this.oldOutputId); }
 
 
 
-    constructor(output, input, options = {})
+    constructor(graph, output, input, options = {})
     {
         super(
+            graph,
             CONNECT_ACTION,
              'CONNECT ' 
             + output.node.id + '.' + output.id
@@ -115,14 +116,14 @@ function connectAction_backInitOutputValue(act)
 
 function connectAction_saveOutputActiveNodes(act)
 {
-    act.oldOutputActiveNodeId = idFromNode(getActiveFromNodeId(act.outputNodeId));
+    act.oldOutputActiveNodeId = idFromNode(act.graph.getActiveFromNodeId(act.outputNodeId));
 }
 
 
 
 function connectAction_saveInputActiveNodes(act)
 {
-    act.inputActiveNodeIds = getActiveNodesAfterNodeId(act.inputNodeId).map(n => n.id);
+    act.inputActiveNodeIds = act.graph.getActiveNodesAfterNodeId(act.inputNodeId).map(n => n.id);
 }
 
 
@@ -179,7 +180,7 @@ function connectAction_updateOldOutput(act, updateNodes)
         act.newActiveNodeIds.push(act.oldOutputNodeId);
 
         if (act.oldOutputActiveNodeId != NULL)
-            pushUnique(updateNodes, nodeFromId(act.oldOutputActiveNodeId));
+            pushUnique(updateNodes, act.graph.nodeFromId(act.oldOutputActiveNodeId));
     }
 }
 
@@ -188,13 +189,13 @@ function connectAction_updateOldOutput(act, updateNodes)
 function connectAction_updateInputActiveNodes(act, updateNodes)
 {
     const inputActiveNodeIds = [...act.inputActiveNodeIds].sort((x, y) => 
-        (nodeFromId(x) === nodeFromId(y)) ? 0 : nodeFromId(y).isOrFollows(nodeFromId(x)) ? -1 : 1);
+        (nodeFromId(x) === act.graph.nodeFromId(y)) ? 0 : act.graph.nodeFromId(y).isOrFollows(nodeFromId(x)) ? -1 : 1);
 
     for (const id of inputActiveNodeIds)
     {
         act.newActiveNodeIds.push(id);
 
-        const node = nodeFromId(id);
+        const node = act.graph.nodeFromId(id);
 
         uiMakeNodeActive(node);
         pushUnique(updateNodes, node);
@@ -289,7 +290,7 @@ function connectAction_activateOldActiveNodes(act, updateNodes)
 
     for (const id of act.inputActiveNodeIds)
     {
-        const oldInputActiveNode = nodeFromId(id);
+        const oldInputActiveNode = act.graph.nodeFromId(id);
         
         uiMakeNodeActive(oldInputActiveNode);
         pushUnique(updateNodes, oldInputActiveNode);
@@ -301,7 +302,7 @@ function connectAction_activateOldActiveNodes(act, updateNodes)
     {
         console.assert(act.oldOutputActiveNodeId != NULL, 'there should be an old output active node ID at this point')
 
-        const oldOutputActiveNode = nodeFromId(act.oldOutputActiveNodeId);
+        const oldOutputActiveNode = act.graph.nodeFromId(act.oldOutputActiveNodeId);
 
         uiMakeNodeActive(oldOutputActiveNode);
         pushUnique(updateNodes, oldOutputActiveNode);

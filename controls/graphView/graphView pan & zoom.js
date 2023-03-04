@@ -1,106 +1,50 @@
-graphView._pan = point(0, 0);
-  
-Object.defineProperty(graphView, 'pan',
+GraphView.prototype.setPanAndZoom = function(pan, zoom)
 {
-    get: () => graphView._pan,
-    set: pan =>
+    if (  (   pan  != this._pan
+           || zoom != this._zoom)
+        && zoom >= 0.02
+        && zoom <= 50)
     {
-        if (graphView._pan == pan) return;
+        this.oldZoom = this.zoom;
 
-        graphView._pan = pan;
+        this._zoom = zoom;
+        this._pan  = pan;
+
         
         uiSaveGraphView();
-        graphView.updatePanAndZoom(true);
-    }
-});
 
 
-
-graphView.panning = false;
-graphView.panStart;
-
-graphView.spaceDown = false;
-
-
-graphView._zoom   = 1;
-graphView.oldZoom = 1;
-
-Object.defineProperty(graphView, 'zoom',
-{
-    get: () => graphView._zoom,
-    set: zoom =>
-    {
-        if (graphView._zoom == zoom) return;
-
-        let pos = point(
-            window.innerWidth /2,
-            window.innerHeight/2);
-
-        pos.y -= menuBarHeight;
-
-        const pan = subv(graphView.pan, mulvs(subv(pos, graphView.pan), zoom / graphView.zoom - 1));
-
-        graphView.setPanAndZoom(pan, zoom);
-    }
-});
-
-
-
-graphView.zooming   = false;
-graphView.zoomStart = 1;
-
-graphView.zoomSelecting = false;
-
-
-graphView.panZoomTimer = null;
-
-
-
-graphView.setPanAndZoom = function(pan, zoom)
-{
-    if ((   pan  != graphView._pan
-         || zoom != graphView._zoom)
-        && zoom >= 0.02
-        && zoom <= 50) 
-    {
-        graphView.oldZoom = graphView.zoom;
-
-        graphView._zoom = zoom;
-        graphView._pan  = pan;
-
-        uiSaveGraphView();
-
-  
-        graphView.panZoomTimer = setTimeout(() => 
+        this.panZoomTimer = setTimeout(() => 
         {
-            graphView.updatePanAndZoom(graphView.zoom != graphView.oldZoom);
-            graphView.panZoomTimer = null;
+            this.updatePanAndZoom(this.zoom != this.oldZoom);
+            this.panZoomTimer = null;
         });
     }
 };
 
 
 
-graphView.updatePanAndZoom = function(updateNodes)
+GraphView.prototype.updatePanAndZoom = function(updateNodes)
 {
-    graphView.update(graph.nodes, updateNodes);
+    this.update(this.graph.nodes, updateNodes);
     
+
     setTimeout(() =>
     {
-        btnZoom.divIcon.innerHTML       = Math.round(graphView.zoom * 100) + '%';
+        btnZoom.divIcon.innerHTML       =  Math.round(this.zoom * 100) + '%';
         btnZoom.divIcon.style.transform = 'translateX(2px) translateY(-16px)';
 
 
-        if (   graphView.zoom < settings.minZoomForParams
-            && graphView.zoom < 1)
+        if (   this.zoom < settings.minZoomForParams
+            && this.zoom < 1)
         {
             zoomIconOverlay.style.left       = '14px';
             zoomIconOverlay.style.top        = '10px';
             zoomIconOverlay.style.width      = '28';
             zoomIconOverlay.style.background = 'url(\'data:image/svg+xml;utf8,<svg width="28" height="20" viewBox="0 0 28 20" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M4 0.5H24C25.933 0.5 27.5 2.067 27.5 4V19.5H0.5V4C0.5 2.067 2.067 0.5 4 0.5Z" stroke="white"/></svg>\')';
         }
-        else if (graphView.zoom < settings.minZoomForParams
-              && graphView.zoom < 10)
+        else if (this.zoom < settings.minZoomForParams
+              && this.zoom < 10)
         {
             zoomIconOverlay.style.left       = '12px';
             zoomIconOverlay.style.top        = '10px';
@@ -116,24 +60,23 @@ graphView.updatePanAndZoom = function(updateNodes)
         zoomIconOverlay.style.backgroundColor    = 'transparent';
 
 
-        menuItemZoomTo100.setChecked(equal(graphView.zoom, 1, 0.0001));
+        menuItemZoomTo100.setChecked(equal(this.zoom, 1, 0.0001));
     });
-    
 };
 
 
 
-graphView.update = function(nodes = null, updateNodes = true)
+GraphView.prototype.update = function(nodes = null, updateNodes = true)
 {
     if (!nodes)
-        nodes = graph.nodes;
+        nodes = this.graph.nodes;
         
     
     documentBodyClient = clientRect(document.body);
 
 
-    graphView.updateNodeTransforms(nodes, false);
-    graphView.updateNodeTransforms(nodes); // this has to be done twice //because getAllNodeBounds() forces a reflow
+    this.updateNodeTransforms(nodes, false);
+    this.updateNodeTransforms(nodes); // this has to be done twice //because getAllNodeBounds() forces a reflow
 
     nodes.forEach(n => n.updateMeasureData());
 
@@ -149,34 +92,34 @@ graphView.update = function(nodes = null, updateNodes = true)
     }
 
 
-    const x = graphViewClient.left;
-    const w = graphViewClient.width;
-    const h = graphViewClient.height;
+    const x = this.measureData.clientRect.left;
+    const w = this.measureData.clientRect.width;
+    const h = this.measureData.clientRect.height;
     
-    const bounds = graphView.getAllNodeBounds();
-    
-    graphView.updateScroll(x, w, h, bounds, menuBarHeight);
+    const bounds = this.getAllNodeBounds();
+
+    this.updateScroll(x, w, h, bounds, menuBarHeight);
 };
 
 
 
-graphView.startPan = function(pointerId)
+GraphView.prototype.startPan = function(pointerId)
 {
-    graphView.setPointerCapture(pointerId);
+    this.div.setPointerCapture(pointerId);
 
-    graphView.panning  = true;
-    graphView.panStart = graphView.pan;
+    this.panning  = true;
+    this.panStart = this.pan;
 
     setCursor(panCursor);
 };
 
 
 
-graphView.endPan = (pointerId, changeCursor) =>
+GraphView.prototype.endPan = function(pointerId, changeCursor)
 {
-    graphView.panning = false;
+    this.panning = false;
 
-    graphView.releasePointerCapture(pointerId);
+    this.div.releasePointerCapture(pointerId);
 
     if (changeCursor)
         setAutoCursor();
@@ -184,35 +127,35 @@ graphView.endPan = (pointerId, changeCursor) =>
 
 
 
-graphView.startZoomSelection = function(pointerId, x, y)
+GraphView.prototype.startZoomSelection = function(pointerId, x, y)
 {
-    graphView.setPointerCapture(pointerId);
+    this.div.setPointerCapture(pointerId);
 
-    graphView.zoomSelecting = true;
-    graphView.selectionRect = new Rect(x, y, 0, 0);
+    this.zoomSelecting = true;
+    this.selectionRect = new Rect(x, y, 0, 0);
     
     selectBox.style.visibility = 'visible';
     
-    graphView.updateZoomSelectBox();
+    this.updateZoomSelectBox();
 };
 
 
 
-graphView.updateZoomSelection = (x, y) =>
+GraphView.prototype.updateZoomSelection = function(x, y)
 {
-    if (!graphView.zoomSelecting) return;
+    if (!this.zoomSelecting) return;
 
-    graphView.selectionRect.w = x - graphView.selectionRect.x;
-    graphView.selectionRect.h = y - graphView.selectionRect.y;
+    this.selectionRect.w = x - this.selectionRect.x;
+    this.selectionRect.h = y - this.selectionRect.y;
 
-    graphView.updateZoomSelectBox();
+    this.updateZoomSelectBox();
 };
 
 
 
-graphView.updateZoomSelectBox = function()
+GraphView.prototype.updateZoomSelectBox = function()
 {
-    const selection = Rect.fromTypical(graphView.selectionRect);
+    const selection = Rect.fromTypical(this.selectionRect);
 
     selectBox.style.left   = selection.x + Math.min(selection.w, 0);
     selectBox.style.top    = selection.y + Math.min(selection.h, 0);
@@ -224,74 +167,76 @@ graphView.updateZoomSelectBox = function()
 
 
 
-graphView.endZoomSelection = function(pointerId, zoom)
+GraphView.prototype.endZoomSelection = function(pointerId, zoom)
 {
     if (zoom)
     {
-        graphView.oldZoom = graphView.zoom;
+        this.oldZoom = this.zoom;
 
 
         const wndRect = new Rect(
             1,
             menuBarHeight + 1,
-            graphViewClient.width  - 2,
-            graphViewClient.height - 5);
+            this.measureData.clientRect.width  - 2,
+            this.measureData.clientRect.height - 5);
     
-        let selection = validateRect(graphView.selectionRect);
+        let selection = validateRect(this.selectionRect);
         selection = clipRect(selection, wndRect);
     
         selection.y -= menuBarHeight;
 
         
-        const rect = screen2rect(selection);
+        const rect = this.screen2rect(selection);
 
         for (let i = 0; i < 5; i++)
-            graphView.zoomToRect(rect);
+            this.zoomToRect(rect);
     }
 
 
-    graphView.selectionRect = Rect.NaN;
+    this.selectionRect = Rect.NaN;
 
 
-    graphView.releasePointerCapture(pointerId);
+    this.div.releasePointerCapture(pointerId);
 
-    graphView.zoomSelecting    = false;
+    this.zoomSelecting    = false;
     selectBox.style.visibility = 'hidden';
 };
 
 
 
-graphView.zoomToFit = function()
+GraphView.prototype.zoomToFit = function()
 {
-    if (!isEmpty(graph.nodes))
+    if (!isEmpty(this.graph.nodes))
     {
         const nodes = 
-            !isEmpty(graphView.selectedNodes)
-            ? graphView.selectedNodes
-            : graph.nodes;
+            !isEmpty(this.selectedNodes)
+            ? this.selectedNodes
+            : this.graph.nodes;
         
         nodes.forEach(n => n.updateMeasureData());
-        const offset = graphView.getAllNodeOffsets(nodes);
+        const offset = this.getAllNodeOffsets(nodes);
 
         for (let i = 0; i < 5; i++) // need to do it a few times
-            graphView.zoomToRect(offset);
+            this.zoomToRect(offset);
     }
     else
-        graphView.setPanAndZoom(point(0, 0), 1);
+        this.setPanAndZoom(point(0, 0), 1);
 };
 
 
 
-graphView.zoomToRect = function(rect, margin = 40)
+GraphView.prototype.zoomToRect = function(rect, margin = 40)
 {
-    margin /= graphView.zoom;
+    const viewRect = this.measureData.clientRect;
 
-    graphView.zoom = Math.min(
-          Math.min(graphViewClient.width, graphViewClient.height)
+    margin /= this.zoom;
+
+    this.zoom = Math.min(
+          Math.min(viewRect.width, viewRect.height)
         / Math.max(rect.width + margin*2, rect.height + margin*2));
 
-    graphView.pan = {
-        x: graphViewClient.width /2 - (rect.x + rect.width /2) * graphView.zoom,
-        y: graphViewClient.height/2 - (rect.y + rect.height/2) * graphView.zoom
+    this.pan = {
+        x: viewRect.width /2 - (rect.x + rect.width /2) * this.zoom,
+        y: viewRect.height/2 - (rect.y + rect.height/2) * this.zoom
     };
 };

@@ -21,7 +21,7 @@ var allUpdateNodes   = [];
 
 //uiClearLocalData('showWhatsNew');
 
-//uiSetLocalData('enableBetaFeatures', "true");
+//uiSetLocalData('enableBetaFeatures', 'true');
 //uiSetLocalData('logRawLoading', 'false');
 
 
@@ -38,20 +38,22 @@ var currentUser = null;
 var productKey  = NULL;
 
 
-const graph = new Graph();
-
 const generator = new Worker(
     window.URL.createObjectURL(
         new Blob([generatorScript.textContent])));
         
 
-var panMode             = false;        
+const mainGraph = new Graph();
+var   graphView = new GraphView(_graphView, mainGraph);
 
-var     copiedNodesJson = '';
-var duplicatedNodesJson = '';
 
-var pasteOffset         = point(0,  0);
-var pasteOffsetDelta    = point(50, 50);
+var   panMode             = false;        
+
+var       copiedNodesJson = '';
+var   duplicatedNodesJson = '';
+
+var   pasteOffset         = point(0,  0);
+var   pasteOffsetDelta    = point(50, 50);
 
 
 
@@ -74,7 +76,9 @@ function uiReturnFigStartGenerator(msg)
     initThemeColors();
     loadLocalSettings();
 
-    graphViewClient = clientRect(graphView);
+
+    graphView.updateMeasureData();
+
     
     uiGetLocalData('showWhatsNew');
 

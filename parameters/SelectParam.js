@@ -18,18 +18,9 @@ extends NumberParamBase
     {
         super(NUMBER_VALUE, id, name);
 
-        this.control        = createDiv();
-        
-        this.control.param  = this;
-        this.control.zIndex = 0;
-
-       
-        this.defaultValue   = new NumberValue(defaultValue);
-
-
-        initNumberControl(
+        this.control = new NumberControl(
+            createDiv(),
             this,
-            this.control,
             120, // width
             20,  // height
             this.id,
@@ -42,6 +33,15 @@ extends NumberParamBase
             0.02);
 
 
+        this.control.div.zIndex = 0;
+
+        this.control.div.style.display = 'inline-block';
+        this.control.div.style.width   = '100%';
+
+       
+        this.defaultValue = new NumberValue(defaultValue);
+
+
         this.setOptions(options);
 
         this.control.allowEditDecimals = false;
@@ -49,10 +49,7 @@ extends NumberParamBase
         this.control.successOnFocusOut = true;
         this.control.barTop            = 0.8;
 
-        this.control.style.display     = 'inline-block';
-        this.control.style.width       = '100%';
-
-        this.div.appendChild(this.control);
+        this.div.appendChild(this.control.div);
 
 
         if (hasInput)  this.initInput(NUMBER_TYPES, getParamInputValuesForUndo, this.input_getBackInitValue);

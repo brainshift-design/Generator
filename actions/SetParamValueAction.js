@@ -6,7 +6,7 @@ extends Action
 
     get param() 
     { 
-        return nodeFromId(this.nodeId).params
+        return this.graph.nodeFromId(this.nodeId).params
                .find(p => p.id == this.paramId); 
     } 
 
@@ -16,9 +16,10 @@ extends Action
 
 
 
-    constructor(param, value)
+    constructor(graph, param, value)
     {
         super(
+            graph,
             SET_VALUE_ACTION,
             'SET VALUE ' + param.node.id + '.' + param.id + ' = ' + value.toDisplayString());
 
@@ -37,7 +38,7 @@ extends Action
         this.oldValue = this.param.oldValue;
         pushUpdateFromParam(this, [this.param.node], this.param);
         
-        uiSaveNodes([this.nodeId]);
+        uiSaveNodes(this.graph, [this.nodeId]);
     }
 
 
@@ -47,7 +48,7 @@ extends Action
         this.param.setValue(this.oldValue, false, true);
         pushUpdateFromParam(this, [this.param.node], this.param);
 
-        uiSaveNodes([this.nodeId]);
+        uiSaveNodes(this.graph, [this.nodeId]);
     }
 
 
@@ -57,6 +58,6 @@ extends Action
         this.param.setValue(this.newValue);
         pushUpdateFromParam(this, [this.param.node], this.param);
 
-        uiSaveNodes([this.nodeId]);
+        uiSaveNodes(this.graph, [this.nodeId]);
     }
 }

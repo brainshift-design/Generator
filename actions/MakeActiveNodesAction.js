@@ -7,9 +7,10 @@ extends Action
 
 
 
-    constructor(activeNodeIds)
+    constructor(graph, activeNodeIds)
     {
         super(
+            graph,
             MAKE_ACTIVE_ACTION, 
             'MAKE ACTIVE ' + nodeIdArrayToString(activeNodeIds));
 
@@ -26,16 +27,16 @@ extends Action
         this.newActiveNodeIds.forEach(id =>
             pushUnique(
                 this.oldActiveNodeIds, 
-                getActiveNodesFromNodeId(id).map(n => n.id))); 
+                this.graph.getActiveNodesFromNodeId(id).map(n => n.id))); 
 
         uiDeleteObjectsAndStyles(this.oldActiveNodeIds, false);
 
-        const newActiveNodes = this.newActiveNodeIds.map(id => nodeFromId(id));
+        const newActiveNodes = this.newActiveNodeIds.map(id => this.graph.nodeFromId(id));
 
         uiMakeNodesActive(newActiveNodes);
         pushUnique(updateNodes, newActiveNodes);
 
-        uiSaveNodes(filterUnique([...this.newActiveNodeIds, ...this.oldActiveNodeIds]));
+        uiSaveNodes(this.graph, filterUnique([...this.newActiveNodeIds, ...this.oldActiveNodeIds]));
     }
 
 
@@ -44,13 +45,13 @@ extends Action
     {
         for (const id of this.newActiveNodeIds)
             if (!this.oldActiveNodeIds.includes(id))
-                uiMakeNodePassive(nodeFromId(id));
+                uiMakeNodePassive(this.graph.nodeFromId(id));
 
         for (const id of this.oldActiveNodeIds)
-            uiMakeNodeActive(nodeFromId(id));
+            uiMakeNodeActive(this.graph.nodeFromId(id));
 
-        pushUnique(updateNodes, this.oldActiveNodeIds.map(id => nodeFromId(id)));
+        pushUnique(updateNodes, this.oldActiveNodeIds.map(id => this.graph.nodeFromId(id)));
 
-        uiSaveNodes(filterUnique([...this.newActiveNodeIds, ...this.oldActiveNodeIds]));
+        uiSaveNodes(this.graph, filterUnique([...this.newActiveNodeIds, ...this.oldActiveNodeIds]));
     }
 }

@@ -41,22 +41,10 @@ extends Parameter
         super(COLOR_VALUE, id, name);
 
         this.checkers       = createDiv();
-        this.control        = createDiv();
-        
-        this.control.param  = this;
-        this.control.zIndex = 0;
-   
-        this.defaultValue   = defaultValue;
 
-
-        this._warningOverlay = createDiv('colorWarningOverlay');
-        this._warningOverlay.style.zIndex = 21;
-        this.div.appendChild(this._warningOverlay);
-
-
-        initColorControl(
+        this.control = new ColorControl(
+            null,
             this,
-            this.control,
             120, // width
             20,  // height
             this.id,
@@ -66,6 +54,16 @@ extends Parameter
             dragScale); 
 
         this.control.successOnFocusOut = true;
+        this.control.div.zIndex = 0;
+
+        
+        this.defaultValue = defaultValue;
+
+
+        this._warningOverlay = createDiv('colorWarningOverlay');
+        this._warningOverlay.style.zIndex = 21;
+        
+        this.div.appendChild(this._warningOverlay);
 
 
         this.checkers.style.position      = 'absolute';
@@ -75,12 +73,12 @@ extends Parameter
         this.checkers.style.pointerEvents = 'none';
 
 
-        this.control .style.display       = 'inline-block';
-        this.control .style.width         = '100%';
+        this.control.div.style.display       = 'inline-block';
+        this.control.div.style.width         = '100%';
 
 
         this.div.appendChild(this.checkers);
-        this.div.appendChild(this.control );
+        this.div.appendChild(this.control.div);
 
        
         if (hasInput)  this.initInput(COLOR_TYPES, getParamInputValuesForUndo, this.input_getBackInitValue);
@@ -149,7 +147,7 @@ extends Parameter
 
     isVisible()
     {
-        return this.control.style.display != 'none';
+        return this.control.div.style.display != 'none';
     }
 
 
@@ -276,8 +274,12 @@ extends Parameter
 
     enableControlText(enable)
     {
-        enable &= !this.input || !this.input.connected;
-        enableElementText(this.control, enable);
+        enable &= 
+               !this.input 
+            || !this.input.connected;
+
+        enableElementText(this.control.div, enable);
+        
         this.control.readOnly = !enable;
     }
     

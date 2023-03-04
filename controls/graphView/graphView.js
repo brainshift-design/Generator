@@ -1,484 +1,509 @@
-graphView.wires           = [];
- 
+class GraphView
+{
+    div;
 
-graphView.creatingNodes   = false;
-graphView.loadingNodes    = false;
-graphView.pastingNodes    = false;
-graphView.restoringNodes  = false;
+    wireContainer;
 
-
-graphView.canUpdateNodes  = true;
+    scrollbarX;
+    scrollbarY;
 
 
-graphView.activeNodes     = [];
+    graph;
 
 
-graphView.overNode        = null;
-graphView.overInput       = null;
-graphView.overOutput      = null;
+    wires          = [];
     
-graphView.headerInput     = null; // same as overInput, but when snapping from a header
-graphView.headerOutput    = null; // same as overOutput, but when snapping from a header
-    
-graphView.tempConn        = null;
-graphView.savedConn       = null;
-graphView.tempConnected   = false;
 
-graphView.connPointerId   = -1;
-
-graphView._soloNode       = null;
-   
-graphView.selecting       = false;
-graphView.selectionRect   = Rect.NaN;
-
-graphView.btn1down        = false; // this is to help deal with mouse wheels that send X values as
-                                   // sometimes a MMB press is followed by wheelX as a "deeper" middle-click
-
-graphView.pan             = point(0, 0);
-graphView.zoom            = 1;
- 
-graphView.altDown         = false;
-
-graphView.panning         = false;
- 
-graphView.pViewport; 
-graphView.pStart          = point(0, 0);
-graphView.zoomStart;
+    creatingNodes  = false;
+    loadingNodes   = false;
+    pastingNodes   = false;
+    restoringNodes = false;
 
 
-scrollbarX.style.zIndex   = MAX_INT32-1;
-scrollbarY.style.zIndex   = MAX_INT32-2;
+    canUpdateNodes = true;
 
 
-graphView.touches         = [];
+    activeNodes    = [];
 
 
-graphView.wheelTimer      = null;
-
-
-var graphViewClient       = null; // rect
-
-
-
-graphView.getAllNodeBounds = function(onlySelected = false)
-{
-    let bounds = Rect.NaN;
-
-    const nodes =
-            onlySelected
-        && !isEmpty(graphView.selectedNodes)
-        ? graphView.selectedNodes
-        : graph.nodes;
-
-    for (const node of nodes)
-        bounds = expandRect(bounds, boundingRect(node.div));
-
-    return bounds;
-};
-
-
-
-graphView.getAllNodeOffsets = function(nodes = null)
-{
-    let bounds = Rect.NaN;
-
-    if (!nodes)
-        nodes = graph.nodes;
-
-    for (const node of nodes)
-        bounds = expandRect(bounds, offsetRect(node.div));
-
-    return bounds;
-};
-
-
-
-graphView.getAllNodeBounds = function()
-{
-    let bounds = Rect.NaN;
-
-    for (const node of graph.nodes)
-        bounds = expandRect(bounds, boundingRect(node.div));
-
-    return bounds;
-};
-
-
-
-graphView.getNodeBounds = node =>
-{
-    const bounds = boundingRect(node.div);
-
-    return new Rect(
-        parseFloat(node.div.style.left ),
-        parseFloat(node.div.style.top  ),
-        parseFloat(node.div.style.width),
-        bounds.h / graphView.zoom); // node height isn't defined
-}
-
-
-
-graphView.getZoomedNodeBounds = node =>
-{
-    const bounds = graphView.getNodeBounds(node);
-
-    bounds.x += graphView.pan.x / graphView.zoom;
-    bounds.y += graphView.pan.y / graphView.zoom;
-    bounds.w /= graphView.zoom;
-    bounds.h /= graphView.zoom;
-
-    return bounds;
-};
-
-
-
-graphView.getIntersectingNodes = node =>
-{
-    const nodeBounds = graphView.getZoomedNodeBounds(node);
-
-    const intersecting = [];
-    
-    for (const n of graph.nodes)
-    {
-        const nBounds = graphView.getZoomedNodeBounds(n);
+    overNode       = null;
+    overInput      = null;
+    overOutput     = null;
         
-        if (   n != node
-            && rectsIntersect(nBounds, nodeBounds))
-            intersecting.push(n);
+    headerInput    = null; // same as overInput, but when snapping from a header
+    headerOutput   = null; // same as overOutput, but when snapping from a header
+        
+    tempConn       = null;
+    savedConn      = null;
+    tempConnected  = false;
+
+    connPointerId  = -1;
+
+    _soloNode      = null;
+    
+    selecting      = false;
+    selectionRect  = Rect.NaN;
+
+    btn1down       = false; // this is to help deal with mouse wheels that send X values as
+                             // sometimes a MMB press is followed by wheelX as a "deeper" middle-click
+
+    // pan            = point(0, 0);
+    // zoom           = 1;
+    
+    altDown        = false;
+
+    panning        = false;
+    
+    pViewport; 
+    pStart         = point(0, 0);
+    zoomStart;
+
+
+    touches        = [];
+
+
+    wheelTimer     = null;
+
+
+    measureData    = {};
+
+
+
+    _pan = point(0, 0);
+        
+    get pan() { return this._pan; }
+    set pan(pan)
+    {
+        if (this._pan == pan) return;
+
+        this._pan = pan;
+        
+        uiSaveGraphView();
+        this.updatePanAndZoom(true);
+    }
+    
+
+    panning = false;
+    panStart;
+
+    spaceDown = false;
+
+    
+
+    _zoom   = 1;
+    oldZoom = 1;
+
+    get zoom() { return this._zoom; }
+    set zoom(zoom)
+    {
+        if (this._zoom == zoom) return;
+
+        let pos = point(
+            window.innerWidth /2,
+            window.innerHeight/2);
+
+        pos.y -= menuBarHeight;
+
+        const _pan = subv(this.pan, mulvs(subv(pos, this.pan), zoom / this.zoom - 1));
+
+        this.setPanAndZoom(_pan, zoom);
     }
 
-    return intersecting;
-}
+
+
+    zooming       = false;
+    zoomStart     = 1;
+
+    zoomSelecting = false;
+
+
+    panZoomTimer  = null;
 
 
 
-graphView.placeNewNode = function(node)
-{
-    //console.log('graphView.placeNewNode()');
-
-    const nodeRect = boundingRect(node.div);
+    _selectedNodes     = [];
+    _prevSelectedNodes = [];
+    lastSelectedNodes  = [];
     
-    const btn = node._creatingButton;
-
-    if (btn)
+    
+    get selectedNodes() { return this._selectedNodes; }
+    set selectedNodes(nodes)
     {
-        node.div.style.left = (btn.offsetLeft + btn.offsetWidth/2 - graphView.pan.x) / graphView.zoom - nodeRect.width/2;
-        node.div.style.top  = (20 - graphView.pan.y) / graphView.zoom;
+        this.deselectAll();
+
+        this._selectedNodes = [...nodes];
+    
+        for (const node of this._selectedNodes)
+            node.setSelected(true);
     }
-    else
+
+
+
+    constructor(div, graph)
     {
-        node.div.style.left = (graphView.offsetWidth /2 - graphView.pan.x                       ) / graphView.zoom - nodeRect.width /2;
-        node.div.style.top  = (graphView.offsetHeight/2 - graphView.pan.y - menuBarHeight) / graphView.zoom - nodeRect.height/2;
+        this.div           = div;
+        this.div.view      = this;
+
+        this.graph         = graph;
+        this.graph.view    = this;
+
+        
+        this.wireContainer = createDiv('wireContainer');
+        this.scrollbarX    = createDiv('scrollbar', 'scrollbarX');
+        this.scrollbarY    = createDiv('scrollbar', 'scrollbarY');
+
+
+        this.scrollbarX.style.zIndex = MAX_INT32-1;
+        this.scrollbarY.style.zIndex = MAX_INT32-2;
+
+        this.scrollbarX.moving = false;
+        this.scrollbarY.moving = false;
+
+
+        this.div.appendChild(this.wireContainer);
+        this.div.appendChild(this.scrollbarX);
+        this.div.appendChild(this.scrollbarY);
+
+
+        this.createEvents();
+        this.createScrollbarMethods();
     }
-};
 
 
 
-graphView.autoPlaceNewNode = function(output, input)
-{
-    //console.log('graphView.autoPlaceNewNode()');
-
-    const defaultPlacementGap = 30;
-
-    input.node.div.style.left = output.node.div.offsetLeft + output.node.div.offsetWidth + defaultPlacementGap;
-    input.node.div.style.top  = output.node.div.offsetTop;//outputRect.y - graphView.pan.y/graphView.zoom - (inputRect.y - inputNodeRect.y);
-};
-
-
-
-graphView.putNodeOnTop = function(node)
-{
-    const topIndices = 
-          1 
-        + node.inputs.filter(i => i.connected).length 
-        + (node.outputs.find(o => o.connected) ? 1 : 0);
-        
-    for (const n of graph.nodes)
-        n.div.style.zIndex = Math.max(0, Number(n.div.style.zIndex) - topIndices);
-        
-    node.div.style.zIndex = MAX_INT32-3; // -3 is for scrollbars;
-
-    graphView.putWiresOnTop(node);
-};
-
-
-
-graphView.putWiresOnTop = function(node)
-{
-    // changing z-index doesn't work so easily with SVG,
-    // so reinsert the wires on top instead 🤷‍♂️
-
-    let z = MAX_INT32;
-
-    for (const input of node.inputs.filter(i => i.connected))
+    updateMeasureData()
     {
-        wireContainer.removeChild(input.connection.wire);
-        wireContainer.appendChild(input.connection.wire);
+        this.measureData.clientRect = clientRect(this.div);
     }
-        
-    for (const output of node.outputs)
+
+
+
+    getAllNodeBounds(onlySelected = false)
     {
-        for (const connInput of output.connectedInputs)
+        let bounds = Rect.NaN;
+
+        const nodes =
+                onlySelected
+            && !isEmpty(this.selectedNodes)
+            ? this.selectedNodes
+            : this.graph.nodes;
+
+        for (const node of nodes)
+            bounds = expandRect(bounds, boundingRect(node.div));
+
+        return bounds;
+    }
+
+
+
+    getAllNodeOffsets(nodes = null)
+    {
+        let bounds = Rect.NaN;
+
+        if (!nodes)
+            nodes = this.graph.nodes;
+
+        for (const node of nodes)
+            bounds = expandRect(bounds, offsetRect(node.div));
+
+        return bounds;
+    }
+
+
+
+    getAllNodeBounds()
+    {
+        let bounds = Rect.NaN;
+
+        for (const node of this.graph.nodes)
+            bounds = expandRect(bounds, boundingRect(node.div));
+
+        return bounds;
+    }
+
+
+
+    getNodeBounds(node)
+    {
+        const bounds = boundingRect(node.div);
+
+        return new Rect(
+            parseFloat(node.div.style.left ),
+            parseFloat(node.div.style.top  ),
+            parseFloat(node.div.style.width),
+            bounds.h / this.zoom); // node height isn't defined
+    }
+
+
+
+    getZoomedNodeBounds(node)
+    {
+        const bounds = this.getNodeBounds(node);
+
+        bounds.x += this.pan.x / this.zoom;
+        bounds.y += this.pan.y / this.zoom;
+        bounds.w /= this.zoom;
+        bounds.h /= this.zoom;
+
+        return bounds;
+    }
+
+
+
+    getIntersectingNodes(node)
+    {
+        const nodeBounds = this.getZoomedNodeBounds(node);
+
+        const intersecting = [];
+        
+        for (const n of this.graph.nodes)
         {
-            wireContainer.removeChild(connInput.connection.wire);
-            wireContainer.appendChild(connInput.connection.wire);
+            const nBounds = this.getZoomedNodeBounds(n);
+            
+            if (   n != node
+                && rectsIntersect(nBounds, nodeBounds))
+                intersecting.push(n);
+        }
+
+        return intersecting;
+    }
+
+
+
+    placeNewNode(node)
+    {
+        //console.log('GraphView.placeNewNode()');
+
+        const nodeRect = boundingRect(node.div);
+        
+        const btn = node._creatingButton;
+
+        if (btn)
+        {
+            node.div.style.left = (btn.offsetLeft + btn.offsetWidth/2 - this.pan.x) / this.zoom - nodeRect.width/2;
+            node.div.style.top  = (20 - this.pan.y) / this.zoom;
+        }
+        else
+        {
+            node.div.style.left = (this.div.offsetWidth /2 - this.pan.x                ) / this.zoom - nodeRect.width /2;
+            node.div.style.top  = (this.div.offsetHeight/2 - this.pan.y - menuBarHeight) / this.zoom - nodeRect.height/2;
         }
     }
-};
 
 
 
-graphView.updateNodeTransforms = function(nodes, _updateWires = true)
-{
-    const nodeLeft = nodes.map(n => n.div.offsetLeft);
-    const nodeTop  = nodes.map(n => n.div.offsetTop);
-    const nodeRect = nodes.map(n => graphView.getNodeOffsetRect(n.div));
-    
-    for (let i = 0; i < nodes.length; i++)
-        graphView.setNodeTransform(nodes[i], nodeLeft[i], nodeTop[i], nodeRect[i]);
-
-
-    if (_updateWires)
-        graphView.updateNodeWireTransforms(nodes);
-};
-
-
-
-graphView.updateNodeWireTransforms = function(nodes)
-{
-    const wires = [];
-
-    for (const node of nodes)
+    autoPlaceNewNode(output, input)
     {
-        for (const input of node.inputs)
-            if (   input.connected
-                && input.connection
-                && !wires.includes(input.connection.wire))
-                wires.push(input.connection.wire);        
+        //console.log('GraphView.autoPlaceNewNode()');
 
-        for (const output of node.outputs)
-            for (const connInput of output.connectedInputs)
-                if (   connInput.connection
-                    && !wires.includes(connInput.connection.wire))
-                    wires.push(connInput.connection.wire);
+        const defaultPlacementGap = 30;
+
+        input.node.div.style.left = output.node.div.offsetLeft + output.node.div.offsetWidth + defaultPlacementGap;
+        input.node.div.style.top  = output.node.div.offsetTop;//outputRect.y - this.pan.y/this.zoom - (inputRect.y - inputNodeRect.y);
     }
 
 
-    updateWires(wires);
-}
 
-
-
-graphView.updateNodeTransform = function(node)
-{
-    const nodeLeft = node.div.offsetLeft;
-    const nodeTop  = node.div.offsetTop;
-    const nodeRect = graphView.getNodeOffsetRect(node.div);
-    
-    graphView.setNodeTransform(node, nodeLeft, nodeTop, nodeRect);
-    graphView.updateNodeWireTransform(node);
-};
-
-
-
-graphView.updateNodeWireTransform = function(node)
-{
-    const wires = [];
-
-    for (const input of node.inputs)
-        if (   input.connected
-            && input.connection)
-            wires.push(input.connection.wire);        
-
-    for (const output of node.outputs)
-        for (const connInput of output.connectedInputs)
-            if (connInput.connection)
-                wires.push(connInput.connection.wire);
-
-    updateWires(wires);
-}
-
-
-
-graphView.setNodeTransform = function(node, nodeLeft, nodeTop, nodeRect)
-{
-    node.div.style.transform =
-          'translate(' 
-        + (graphView.pan.x * graphView.zoom) + 'px, '  
-        + (graphView.pan.y * graphView.zoom) + 'px) '
-        + 'scale(' + graphView.zoom + ')';
-    
-    node.div.style.transformOrigin = 
-          ((graphView.pan.x - nodeLeft) / nodeRect.width  * 100) + '% ' 
-        + ((graphView.pan.y - nodeTop ) / nodeRect.height * 100) + '%';  
-};
-
-
-
-graphView.getNodeOffsetRect = function(node)
-{
-    const ox   = -graphView.pan.x / graphView.zoom;
-    const oy   = -graphView.pan.y / graphView.zoom;
-
-    const rect = boundingRect(node);
-
-    return new DOMRect(
-        ox + (rect.left / graphView.zoom),
-        oy + (rect.top  / graphView.zoom), 
-        rect.width      / graphView.zoom, 
-        rect.height     / graphView.zoom);
-};
-
-
-
-graphView.soloNode = function(node)
-{
-    graphView._soloNode = node;
-
-    graph.nodes.forEach(n => 
-        n.div.style.opacity = 
-               n == graphView._soloNode
-            || n.isConnectedTo(graphView._soloNode)
-            ? 1 
-            : 0.12);
-
-    graph.connections.forEach(c =>
-    { 
-        c.wire .style.opacity = 
-               c.input  && graphView._soloNode == c.input .node
-            || c.output && graphView._soloNode == c.output.node
-            ? 1 
-            : 0.09;
-    });
-
-    updateWires(graph.connections.map(c => c.wire));
-};
-
-
-
-graphView.unsoloNode = function()
-{
-    graphView._soloNode = null;
-
-    graph.nodes      .forEach(n => n.div.style.opacity = 1);
-    graph.connections.forEach(c => c.wire .style.opacity = 1);
-
-    updateWires(graph.connections.map(c => c.wire));
-};
-
-
-
-graphView.updateShowWires = function(updateNodes = true)
-{
-    graph.connections.forEach(c => showElement(c.wire, true));//settings.showWires));
-
-    if (updateNodes) 
-        graph.nodes.forEach(n => n.updateNode());
-};
-
-
-
-graphView.toJson = function()
-{
-    const tab = '\n' + TAB;
-
-    return '{'
-        + tab + '"zoom": "' + graphView.zoom  + '",'
-        + tab + '"panx": "' + graphView.pan.x + '",'
-        + tab + '"pany": "' + graphView.pan.y + '"'
-        + '\n}';
-};
-
-
-
-function selectAllNodes(invert)
-{
-    const lastSelected = [...graphView.selectedNodes];
-
-    graphView.selectedNodes = 
-        invert
-        ? graph.nodes.filter(n => !lastSelected.includes(n))
-        : graph.nodes;
-        
-    actionManager.do(new SelectNodesAction(
-        graphView.selectedNodes.map(n => n.id), 
-        lastSelected           .map(n => n.id)));
-}
-
-
-
-function copySelectedNodes()
-{
-    pasteOffset     = point(0, 0);
-    copiedNodesJson = uiCopyNodes(graphView.selectedNodes.map(n => n.id));
-
-    writeTextToClipboard(copiedNodesJson);
-}
-
-
-
-function pasteCopiedNodes(pasteConnected, clientX = Number.NaN, clientY = Number.NaN)
-{
-    readTextFromClipboard().then(clipboardText =>
+    putNodeOnTop(node)
     {
-        if (clipboardText == '')//if (copiedNodesJson == '')
-            return;
-
-        const x = (clientX - graphView.pan.x) / graphView.zoom;
-        const y = (clientY - graphView.pan.y) / graphView.zoom;
+        const topIndices = 
+               1 
+            +  node.inputs.filter(i => i.connected).length 
+            + (node.outputs.find(o => o.connected) ? 1 : 0);
             
-        actionManager.do(new PasteNodesAction(clipboardText, pasteConnected, false, x, y));
-    });
-}
+        for (const n of this.graph.nodes)
+            n.div.style.zIndex = Math.max(0, Number(n.div.style.zIndex) - topIndices);
+            
+        node.div.style.zIndex = MAX_INT32-3; // -3 is for scrollbars;
 
-
-
-function duplicateSelectedNodes(pasteConnected)
-{
-    if (!isEmpty(graphView.selectedNodes))
-    {
-        pasteOffset = point(0, 0);
-        actionManager.do(new PasteNodesAction(uiCopyNodes(graphView.selectedNodes.map(n => n.id)), pasteConnected, true));
+        this.putWiresOnTop(node);
     }
-}
 
 
 
-function deleteSelectedNodes()
-{
-    const nodeIds = graphView.selectedNodes.map(n => n.id);
-
-    if (!isEmpty(nodeIds))
+    putWiresOnTop(node)
     {
-        actionManager.do(new DeleteNodesAction(nodeIds));
-        graphView._selected = [];
+        // changing z-index doesn't work so easily with SVG,
+        // so reinsert the wires on top instead 🤷‍♂️
+
+        let z = MAX_INT32;
+
+        for (const input of node.inputs.filter(i => i.connected))
+        {
+            this.wireContainer.removeChild(input.connection.wire.svg);
+            this.wireContainer.appendChild(input.connection.wire.svg);
+        }
+            
+        for (const output of node.outputs)
+        {
+            for (const connInput of output.connectedInputs)
+            {
+                this.wireContainer.removeChild(connInput.connection.wire.svg);
+                this.wireContainer.appendChild(connInput.connection.wire.svg);
+            }
+        }
     }
-}
 
 
 
-function removeSelectedNodes()
-{
-    const nodeIds = graphView.selectedNodes.map(n => n.id);
-
-    if (!isEmpty(nodeIds))
+    updateNodeTransforms(nodes, _updateWires = true)
     {
-        actionManager.do(new RemoveNodesAction(nodeIds));
-        graphView._selected = [];
+        const nodeLeft = nodes.map(n => n.div.offsetLeft);
+        const nodeTop  = nodes.map(n => n.div.offsetTop);
+        const nodeRect = nodes.map(n => n.getOffsetRect());
+
+        for (let i = 0; i < nodes.length; i++)
+            nodes[i].setTransform(nodeLeft[i], nodeTop[i], nodeRect[i]);
+
+
+        if (_updateWires)
+            this.updateNodeWireTransforms(nodes);
     }
-}
 
 
 
-function layoutSelectedNodes()
-{
+    updateNodeWireTransforms(nodes)
+    {
+        const wires = [];
+
+        for (const node of nodes)
+        {
+            for (const input of node.inputs)
+                if (   input.connected
+                    && input.connection
+                    && !wires.includes(input.connection.wire))
+                    wires.push(input.connection.wire);        
+
+            for (const output of node.outputs)
+                for (const connInput of output.connectedInputs)
+                    if (   connInput.connection
+                        && !wires.includes(connInput.connection.wire))
+                        wires.push(connInput.connection.wire);
+        }
+
+
+        this.updateWires(wires);
+    }
+
+
+
+    soloNode(node)
+    {
+        this._soloNode = node;
+
+        this.graph.nodes.forEach(n => 
+            n.div.style.opacity = 
+                   n == this._soloNode
+                || n.isConnectedTo(this._soloNode)
+                ? 1 
+                : 0.12);
+
+        this.graph.connections.forEach(c =>
+        { 
+            c.wire.svg.style.opacity = 
+                   c.input  && this._soloNode == c.input .node
+                || c.output && this._soloNode == c.output.node
+                ? 1 
+                : 0.09;
+        });
+
+
+        this.updateWires(this.graph.connections.map(c => c.wire));
+    };
+
+
+
+    unsoloNode()
+    {
+        this._soloNode = null;
+
+        this.graph.nodes      .forEach(n => n.div     .style.opacity = 1);
+        this.graph.nodes      .forEach(n => n.div     .style.opacity = 1);
+        this.graph.connections.forEach(c => c.wire.svg.style.opacity = 1);
+
+        this.updateWires(this.graph.connections.map(c => c.wire));
+    };
+
+
+
+    updateShowWires(updateNodes = true)
+    {
+        this.graph.connections.forEach(c => showElement(c.wire.svg, true));
+
+        if (updateNodes) 
+            this.graph.nodes.forEach(n => n.updateNode());
+    }
+
+
+
+    isPanning(e)
+    {
+        if (panMode)
+        {
+            e.preventDefault();
+            setCursor(panCursor);
+            return true;
+        }
     
-}
+        if (this.spaceDown)
+        {
+            e.preventDefault();
+            return true;
+        }
+    
+        return false;
+    }
+    
+    
+    
+    // point2screen(p)
+    // {
+    //     return point(
+    //         (p.x + this.pan.x / this.zoom) * this.zoom,
+    //         (p.y + this.pan.y / this.zoom) * this.zoom);
+    // }
+    
+    
+    
+    // screen2point(p)
+    // {
+    //     return point(
+    //         p.x / this.zoom - this.pan.x / this.zoom,
+    //         p.y / this.zoom - this.pan.y / this.zoom);
+    // }
+    
+    
+    
+    // rect2screen(rect)
+    // {
+    //     return new Rect(
+    //         (rect.x + this.pan.x / this.zoom) * this.zoom,
+    //         (rect.y + this.pan.y / this.zoom) * this.zoom,
+    //         rect.width  * this.zoom,
+    //         rect.height * this.zoom);
+    // }
+    
+    
+    
+    screen2rect(rect)
+    {
+        return new Rect(
+            rect.x / this.zoom - this.pan.x / this.zoom,
+            rect.y / this.zoom - this.pan.y / this.zoom,
+            rect.width  / this.zoom,
+            rect.height / this.zoom);
+    }
+    
+    
+    
+    toJson()
+    {
+        const tab = '\n' + TAB;
 
-
-
-function renameSelectedNode()
-{
-    if (graphView.selectedNodes.length == 1)
-        graphView.selectedNodes[0].showLabelTextbox();
+        return '{'
+            + tab + '"zoom": "' + this.zoom  + '",'
+            + tab + '"panx": "' + this.pan.x + '",'
+            + tab + '"pany": "' + this.pan.y + '"'
+            + '\n}';
+    };
 }

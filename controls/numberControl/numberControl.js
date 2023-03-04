@@ -1,136 +1,187 @@
-function initNumberControlChildren(control)
+class NumberControl
+extends EventTarget
 {
-    control.bar   = createDiv('numberControlBar');
-    control.text  = createDiv('numberControlText');
-    control.focus = createDiv('numberControlFocus');
+    div;
 
-    control.appendChild(control.bar);
-    control.appendChild(control.text);
-    control.appendChild(control.focus);
-}
+    param;
 
-
-
-function initNumberControl(param, control, width, height, id, name, showName, defaultValue, min = Number.MIN_SAFE_INTEGER, max = Number.MAX_SAFE_INTEGER, dec = 0, dragScale = 0.05, wheelScale = 1, acc = 0, suffix = '')
-{
-    // control is also the div
+    id;
     
-    control.param                  = param;
-     
-    control.name                   = '';
-    control.savedName              = '';
-
-    control.width                  = width;
-    control.height                 = height;
-             
-    control.style.width            = width;
-    control.style.height           = height;
-             
-    control.value                  = defaultValue;
-
-    control.min                    = min;
-    control.max                    = max;
-
-    control.displayMin             = min;
-    control.displayMax             = max;
-
-    control.thinMinus              = false;
-    control.displayAbsolute        = false;
+    name;
+    savedName              = '';
     
-    control.epsilon                = Epsilon;
+    width;
+    height;
+             
+    value;
 
-    control.acc                    = acc;
+    min;
+    max;
+
+    displayMin;
+    displayMax;
+
+    thinMinus              = false;
+    displayAbsolute        = false;
+    
+    epsilon                = Epsilon;
+
+    acc;
      
-    control.dec                    =
-    control.displayDec             = dec;
+    dec;
+    displayDec;
          
-    control.valueScale             = 1;
+    valueScale             = 1;
                 
-    control.id                     = id;
-    control.name                   = name;
-    control.suffix                 = suffix;
-    control.valueCanContainSuffix  = false;
+    suffix;
+    valueCanContainSuffix  = false;
      
-    control.dragReverse            = false;
-    control.dragScale              = dragScale;
-    control.wheelScale             = wheelScale;
+    dragReverse            = false;
+    dragScale;
+    wheelScale;
              
-    control.backStyleLight         = 'rgba(255, 255, 255, 0.95)';
-    control.valueStyleLight        = '#7772';
-    control.textStyleLight         = '#000';
+    backStyleLight         = 'rgba(255, 255, 255, 0.95)';
+    valueStyleLight        = '#7772';
+    textStyleLight         = '#000';
                 
-    control.backStyleDark          = 'rgba(56, 56, 56, 0.95)';
-    control.valueStyleDark         = '#ffffff20';
-    control.textStyleDark          = '#eee';
+    backStyleDark          = 'rgba(56, 56, 56, 0.95)';
+    valueStyleDark         = '#ffffff20';
+    textStyleDark          = '#eee';
                 
-    control.fontSize               = 11;
+    fontSize               = 11;
              
-    control.style.display          = 'inline';
+            
+    mouseOver              = false;
+    buttonDown0            = false;
+    buttonDown1            = false;
              
-    control.mouseOver              = false;
-    control.buttonDown0            = false;
-    control.buttonDown1            = false;
-             
-    control.clickSize              = 4;
-    control.moved                  = false;
+    clickSize              = 4;
+    moved                  = false;
          
-    control.tabIndex               = 0;
-    control.inFocus                = false;
-    control.clicked                = false;
+    tabIndex               = 0;
+    inFocus                = false;
+    clicked                = false;
  
-    control.startValue             = 0;
-    control.oldValue; 
+    startValue             = 0;
+    oldValue; 
  
-    control.wrapValue              = false;
+    wrapValue              = false;
     
-    control.showName               = showName;
-    control.showHex                = false;
+    showName               = true;
+    showHex                = false;
 
-    control.enableChangeEvent      = true;
+    enableChangeEvent      = true;
     
-    control.successOnFocusOut      = false;
-    control.keyBlur                = false;
+    successOnFocusOut      = false;
+    keyBlur                = false;
     
-    control.pointerEvents          = true;
-    control.readOnly               = false;
+    pointerEvents          = true;
+    readOnly               = false;
      
-    control.allowEditDecimals      = true;
+    allowEditDecimals      = true;
     
-    control.valueText              = '';
-    control.overrideText           = '';
+    valueText              = '';
+    overrideText           = '';
 
-    control.showNanValueName       = true; // show the name even if the value is NaN
-    control.showBar                = true;
+    showNanValueName       = true; // show the name even if the value is NaN
+    showBar                = true;
 
-    control.barTop                 = 0;
-    control.barBottom              = 1;
+    barTop                 = 0;
+    barBottom              = 1;
      
-    control.ranges                 = [];
-    control.rangeDivs              = [];
+    ranges                 = [];
+    rangeDivs              = [];
      
-    control.options                = []; // if dec == 0, show named choices instead of a value
+    options                = []; // if dec == 0, show named choices instead of a value
 
-    control.measureData            = { divBounds: new Rect(0, 0, 0, 0) };
+    measureData            = { divBounds: new Rect(0, 0, 0, 0) };
  
 
-    control.confirmTimer           = null;
-
-     
-    control.onstartchange          = new Event('startchange');
-    control.onchange               = new Event('change');
-    control.onconfirm              = new Event('confirm');
+    confirmTimer           = null;
 
 
-    initNumberControlChildren(control);    
-    initNumberControlTextbox (control);
-    initNumberControlEvents  (control);
+    
+    get view() { return this.param.node.graph.view; }
 
 
 
-    control.canReact = function(e)
+    constructor(div, param, width, height, id, name, showName, defaultValue, min = Number.MIN_SAFE_INTEGER, max = Number.MAX_SAFE_INTEGER, dec = 0, dragScale = 0.05, wheelScale = 1, acc = 0, suffix = '')
+    {
+        super();
+
+
+        this.div                    = div ? div : createDiv();
+        this.div.control            = this;
+        
+        this.param                  = param;
+        
+        this.id                     = id;
+        this.name                   = name;
+        this.showName               = showName;
+        
+        
+        this.width                  = width;
+        this.height                 = height;
+        
+        this.div.style.width        = width;
+        this.div.style.height       = height;
+        
+        this.div.style.display      = 'inline';
+
+        
+        this.value                  = defaultValue;
+    
+        this.min                    = min;
+        this.max                    = max;
+    
+        this.displayMin             = min;
+        this.displayMax             = max;
+    
+        this.thinMinus              = false;
+        this.displayAbsolute        = false;
+        
+        this.epsilon                = Epsilon;
+    
+        this.acc                    = acc;
+         
+        this.dec                    =
+        this.displayDec             = dec;
+             
+        this.valueScale             = 1;
+                    
+        this.suffix                 = suffix;
+        this.valueCanContainSuffix  = false;
+         
+
+        this.dragReverse            = false;
+        this.dragScale              = dragScale;
+        this.wheelScale             = wheelScale;
+    
+
+        this.bar   = createDiv('numberControlBar');
+        this.text  = createDiv('numberControlText');
+        this.focus = createDiv('numberControlFocus');
+    
+        this.div.appendChild(this.bar);
+        this.div.appendChild(this.text);
+        this.div.appendChild(this.focus);
+
+
+        this.initTextbox();
+        this.initEvents ();
+
+
+        this.onstartchange = new Event('startchange');
+        this.onchange      = new Event('change');
+        this.onconfirm     = new Event('confirm');
+    }
+
+
+
+    canReact(e)
     {
         if (   settings.enableZoomedOutParams
-            || graphView.zoom > settings.minZoomForParams)
+            || this.view.zoom > settings.minZoomForParams)
             return true;
 
         e.preventDefault();
@@ -143,301 +194,314 @@ function initNumberControl(param, control, width, height, id, name, showName, de
 
 
 
-    control.setName = function(name)
+    setName(name)
     {
-        control.name      = name;
-        control.savedName = name;
+        this.name      = name;
+        this.savedName = name;
         
-        control.update();
-    };
+        this.update();
+    }
 
 
 
-    control.setValue = function(value, fireChangeEvent = true, confirm = true, fullRange = true)
+    setValue(value, fireChangeEvent = true, confirm = true, fullRange = true)
     {
         if (typeof value != 'number')
             console.assert(false, 'numberControl.setValue(value) is ' + typeof value + ', must be a number');
 
             
-        const oldValue = control.value;
+        const oldValue = this.value;
 
         
-        if (control.wrapValue)
+        if (this.wrapValue)
         {
-            const range = control.displayMax - control.displayMin;
+            const range = this.displayMax - this.displayMin;
 
             value %= range;
 
-            while (value < control.displayMin) value += range;
+            while (value < this.displayMin) value += range;
         }
 
         else if (fullRange)
-            value = Math.min(Math.max(control.min, value), control.max);
+            value = Math.min(Math.max(this.min, value), this.max);
 
         else
-            value = Math.min(Math.max(control.displayMin, value), control.displayMax);
+            value = Math.min(Math.max(this.displayMin, value), this.displayMax);
 
          
         if (    isNaN(value) && !isNaN(oldValue)
             || !isNaN(value) &&  isNaN(oldValue)
             || Math.abs(value - oldValue) > Number.EPSILON)
         {
-            if (   value > -control.epsilon
+            if (   value > -this.epsilon
                 && value <  0) // guard against -0
                 value = 0;
 
-            control.value = value;
+            this.value = value;
 
-            control.update();
+            this.update();
 
             if (   fireChangeEvent
-                && control.enableChangeEvent
-                && value != control.prevValue)
-                control.dispatchEvent(control.onchange);
+                && this.enableChangeEvent
+                && value != this.prevValue)
+                this.dispatchEvent(this.onchange);
         }
 
 
         if (   confirm
-            && control.enableChangeEvent)
-            control.dispatchEvent(control.onconfirm);
-    };
+            && this.enableChangeEvent)
+            this.dispatchEvent(this.onconfirm);
+    }
 
 
 
 
-    control.updateMeasureData = function()
+    updateMeasureData()
     {
-        control.measureData = 
+        this.measureData = 
         {
-            //divBounds:  boundingRect(control),
-            offsetRect: offsetRect(control),
-            clientRect: clientRect(control)
+            offsetRect: offsetRect(this.div),
+            clientRect: clientRect(this.div)
         };
-    };
+    }
 
 
     
-    control.setSuffix = function(suffix, valueCanContainSuffix = false)
+    setSuffix(suffix, valueCanContainSuffix = false)
     {
-        control.suffix                = suffix;
-        control.valueCanContainSuffix = valueCanContainSuffix;
-    };
+        this.suffix                = suffix;
+        this.valueCanContainSuffix = valueCanContainSuffix;
+    }
     
 
 
-    control.setMin = (min, displayMin = min) =>
+    setMin(min, displayMin = min)
     {
-        control.min        = min;
-        control.displayMin = displayMin;
-    };
+        this.min        = min;
+        this.displayMin = displayMin;
+    }
 
 
 
-    control.setMax = (max, displayMax = max) =>
+    setMax(max, displayMax = max)
     {
-        control.max        = max;
-        control.displayMax = displayMax;
-    };
+        this.max        = max;
+        this.displayMax = displayMax;
+    }
 
 
 
-    control.setDecimals = (dec, dspDec = dec) =>
+    setDecimals(dec, dspDec = dec)
     {
-        control.dec        = dec;
-        control.displayDec = dspDec;
-    };
+        this.dec        = dec;
+        this.displayDec = dspDec;
+    }
 
 
 
-    control.update = function()
+    update()
     {
-        if (typeof control.value !== 'number')
-            console.assert(false, 'numberControl.update() value is ' + typeof control.value + ', must be a number');
+        if (typeof this.value !== 'number')
+            console.assert(false, 'numberControl.update() value is ' + typeof this.value + ', must be a number');
 
-        if (!control.measureData.offsetRect)
+        if (!this.measureData.offsetRect)
             return;
 
-        const sx =  control.measureData.offsetRect.x;
-        const sw =  control.measureData.clientRect.width;
-        const sh =  control.measureData.clientRect.height;
+        const sx =  this.measureData.offsetRect.x;
+        const sw =  this.measureData.clientRect.width;
+        const sh =  this.measureData.clientRect.height;
 
-        const cx = -control.displayMin / (control.displayMax - control.displayMin) * sw;
+        const cx = -this.displayMin / (this.displayMax - this.displayMin) * sw;
 
         const v = 
-            control.displayAbsolute
-            ?   Math.abs(control.value) 
-              / (control.value < 0 
-                 ? (-control.displayMin - Math.max(0, control.displayMin))
-                 : ( control.displayMax - Math.max(0, control.displayMin)))
-            : control.value / (control.displayMax - control.displayMin);
+            this.displayAbsolute
+            ?   Math.abs(this.value) 
+              / (this.value < 0 
+                 ? (-this.displayMin - Math.max(0, this.displayMin))
+                 : ( this.displayMax - Math.max(0, this.displayMin)))
+            : this.value / (this.displayMax - this.displayMin);
 
 
-        control.updateBar(sx, cx, v, sw, sh);
-        control.updateColors();
-        control.updateText();
-        control.updateFocus(sw, sh);
+        this.updateBar(sx, cx, v, sw, sh);
+        this.updateColors();
+        this.updateText();
+        this.updateFocus(sw, sh);
         
 
-        updateControlRanges(control, sw, sh);
-    };
+        this.updateRanges(sw, sh);
+    }
 
 
 
-    control.updateBar = function(sx, cx, v, sw, sh)
+    updateBar(sx, cx, v, sw, sh)
     {
-        if (control.dragReverse)
+        if (this.dragReverse)
             v *= -1;
 
             
-        if (    isNaN(control.value)
-            ||  control.overrideText != '' // assuminng the display bar is irrelevant in override mode
-            || !control.showBar)
-            control.bar.style.display = 'none';
+        if (    isNaN(this.value)
+            ||  this.overrideText != '' // assuminng the display bar is irrelevant in override mode
+            || !this.showBar)
+            this.bar.style.display = 'none';
 
         else
         {
-            control.bar.style.display = 'block';
+            this.bar.style.display = 'block';
 
             const x =
-                control.displayAbsolute
+                this.displayAbsolute
                 ? 0
                 : (v >= 0
                    ? cx
                    : cx + v * sw);
 
-            control.bar.style.left   = Math.max(0, x);
-            control.bar.style.width  = Math.min(Math.max(0, Math.round(Math.abs(v) * sw) + Math.min(0, x)), control.measureData.offsetRect.width);
+            this.bar.style.left   = Math.max(0, x);
+            this.bar.style.width  = Math.min(Math.max(0, Math.round(Math.abs(v) * sw) + Math.min(0, x)), this.measureData.offsetRect.width);
 
-            control.bar.style.top    = sh * control.barTop;
-            control.bar.style.height = sh * (control.barBottom - control.barTop);
+            this.bar.style.top    = sh * this.barTop;
+            this.bar.style.height = sh * (this.barBottom - this.barTop);
         }
-    };
+    }
 
 
 
-    control.updateColors = function()
+    updateColors()
     {
-        control     .style.background = darkMode ? control. backStyleDark : control. backStyleLight;
-        control.bar .style.background = darkMode ? control.valueStyleDark : control.valueStyleLight;
-        control.text.style.color      = darkMode ? control. textStyleDark : control. textStyleLight;
-    };
+        this.div .style.background = darkMode ? this. backStyleDark : this. backStyleLight;
+        this.bar .style.background = darkMode ? this.valueStyleDark : this.valueStyleLight;
+        this.text.style.color      = darkMode ? this. textStyleDark : this. textStyleLight;
+    }
 
 
 
-    control.updateText = function()
+    updateText()
     {
-        if (control.overrideText != '')
-            control.text.innerHTML = control.overrideText;
+        if (this.overrideText != '')
+            this.text.innerHTML = this.overrideText;
 
         else
         {
-            control.text.innerHTML = '';
+            this.text.innerHTML = '';
             
-            if (   control.name.length > 0
-                && control.showName
-                && (  !isNaN(control.value) 
-                    || control.showNanValueName))
+            if (   this.name.length > 0
+                && this.showName
+                && (  !isNaN(this.value) 
+                    || this.showNanValueName))
             {
                 const nameStyle = 
                     darkMode 
-                    ? rgba2style(rgb_a(style2rgba(control.textStyleDark ), 0.4))
-                    : rgba2style(rgb_a(style2rgba(control.textStyleLight), 0.6));
+                    ? rgba2style(rgb_a(style2rgba(this.textStyleDark ), 0.4))
+                    : rgba2style(rgb_a(style2rgba(this.textStyleLight), 0.6));
 
-                control.text.innerHTML += '<span style="color: ' + nameStyle + ';">' + control.name + "</span>&nbsp;&nbsp;";
+                this.text.innerHTML += '<span style="color: ' + nameStyle + ';">' + this.name + "</span>&nbsp;&nbsp;";
             }
 
             
-            const valueText = control.getValueText();
+            const valueText = this.getValueText();
 
-            control.text.innerHTML += 
+            this.text.innerHTML += 
                   valueText 
                 + (valueText == UNKNOWN_DISPLAY
                    ? ''
-                   : control.suffix);
+                   : this.suffix);
         }
-    };
+    }
 
 
 
-    control.updateFocus = function(sw, sh)
+    updateFocus(sw, sh)
     {
-        control.focus.style.left   = 0;
-        control.focus.style.top    = 0;
-        control.focus.style.width  = sw;
-        control.focus.style.height = sh;
-    };
+        this.focus.style.left   = 0;
+        this.focus.style.top    = 0;
+        this.focus.style.width  = sw;
+        this.focus.style.height = sh;
+    }
 
 
 
-    control.getValueText = function()
+    updateCursor()
     {
-        if (control.valueText != '')
+        this.div.style.cursor = 
+               this.readOnly 
+            || containsChild(this.div, this.textbox)
+            ||    this.view 
+               && this.view.wheelTimer 
+            || overNumberControlCtrl == this
+            ? 'default'
+            : 'ew-resize';
+    };
+    
+    
+    
+    getValueText()
+    {
+        if (this.valueText != '')
         {
-            return control.valueText;
+            return this.valueText;
         }
-        else if (  !isEmpty(control.options)
-                 && control.displayDec == 0)
+        else if (  !isEmpty(this.options)
+                 && this.displayDec == 0)
         {
-            if (   control.value <  0 
-                || control.value >= control.options.length)
+            if (   this.value <  0 
+                || this.value >= this.options.length)
                 return NAN_DISPLAY;
             else
-                return control.options[Math.round(control.value)];
+                return this.options[Math.round(this.value)];
         }
         else
         {
-            if (isNaN(control.value))
+            if (isNaN(this.value))
                 return NAN_DISPLAY;
 
 
             let str;
           
 
-            if (Math.abs(control.value * control.valueScale) > 999999)
-                str = (control.value * control.valueScale).toExponential(1);
+            if (Math.abs(this.value * this.valueScale) > 999999)
+                str = (this.value * this.valueScale).toExponential(1);
             else
             {
-                // if (   control.param
-                //     && control.param.showFullPrecision)
+                // if (   this.param
+                //     && this.param.showFullPrecision)
                 //     str = numToString(
-                //         control.value * control.valueScale, 
+                //         this.value * this.valueScale, 
                 //         10, 
-                //         control.showHex);
+                //         this.showHex);
                 // else
                     str = numToString(
-                        control.value * control.valueScale, 
-                        control.displayDec, 
-                        control.showHex);
+                        this.value * this.valueScale, 
+                        this.displayDec, 
+                        this.showHex);
 
                 str = str.toUpperCase();
             }
 
 
-            if (control.thinMinus)
+            if (this.thinMinus)
                 str = str.replace('-', '<span style="font-weight: 300;">-</span>');
 
 
             return str;
         }
-    };
+    }
 
 
 
-    control.lockPointer = function(pointerId)
+    lockPointer(pointerId)
     {
-        clearTimeout(control.clickTimer);
+        clearTimeout(this.clickTimer);
 
-        control.requestPointerLock =    
-               control.      requestPointerLock 
-            || control.   mozRequestPointerLock
-            || control.webkitRequestPointerLock;
+        this.div.requestPointerLock =    
+               this.div.      requestPointerLock 
+            || this.div.   mozRequestPointerLock
+            || this.div.webkitRequestPointerLock;
 
-        control.requestPointerLock();
-    };
+        this.div.requestPointerLock();
+    }
 
 
 
-    control.unlockPointer = function(pointerId)
+    unlockPointer(pointerId)
     {
         document.exitPointerLock =    
                document.      exitPointerLock    
@@ -445,14 +509,14 @@ function initNumberControl(param, control, width, height, id, name, showName, de
             || document.webkitExitPointerLock;
 
         document.exitPointerLock();
-    };
+    }
 
 
 
-    control.isPointerLocked = function()
+    isPointerLocked()
     {
-        return (document.      pointerLockElement === control 
-             || document.   mozPointerLockElement === control
-             || document.webkitPointerLockElement === control);
+        return (document.      pointerLockElement === this.div 
+             || document.   mozPointerLockElement === this.div
+             || document.webkitPointerLockElement === this.div);
     }
 }

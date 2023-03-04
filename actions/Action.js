@@ -5,7 +5,11 @@ class Action
     id;
     type;
     name;
-  
+
+    
+    graph;
+    
+
     prevAction; // these are used to link actions into sequences
     nextAction; 
   
@@ -32,10 +36,12 @@ class Action
 
 
 
-    constructor(type, name)
+    constructor(graph, type, name)
     {
-        this.type = type;
-        this.name = name;
+        this.graph = graph;
+
+        this.type  = type;
+        this.name  = name;
 
         console.assert(
                this.name != undefined
@@ -65,7 +71,7 @@ class Action
 
     saveOldConnections()
     {
-        for (const conn of graph.connections)
+        for (const conn of this.graph.connections)
         {
             this.oldConnectionData.push(conn.toDataObject());
  
@@ -83,7 +89,7 @@ class Action
     {
         this.oldConnectionData = this.oldConnectionData
             .filter(c => 
-                  !graph.connections.find(gc => 
+                  !this.graph.connections.find(gc => 
                          gc.id == c.id
                       && (   !gc.output.param
                           || !gc.output.param.volatile)));
@@ -113,7 +119,7 @@ class Action
                 _conn.inputId,
                 _conn.list);
   
-            uiDisconnect(nodeFromId(_conn.inputNodeId).inputFromId(_conn.inputId));
+            uiDisconnect(this.graph.nodeFromId(_conn.inputNodeId).inputFromId(_conn.inputId));
         }
 
         this.newConnectionData = [];
@@ -125,7 +131,7 @@ class Action
     {
         for (const _conn of this.oldConnectionData)
         {
-            const outputNode = nodeFromId(_conn.outputNodeId);
+            const outputNode = this.graph.nodeFromId(_conn.outputNodeId);
             let   output     = outputNode.outputFromId(_conn.outputId);
 
             if (!isValid(output))
@@ -136,7 +142,7 @@ class Action
 
                 output = param.output;
 
-                const node = nodeFromId(_conn.outputNodeId);
+                const node = this.graph.nodeFromId(_conn.outputNodeId);
                 
                 param ._node = node;
                 output._node = node; 
@@ -150,7 +156,7 @@ class Action
 
             const oldConn = uiVariableConnectFromOutput(
                 output,
-                nodeFromId(_conn.inputNodeId), _conn.inputId,
+                this.graph.nodeFromId(_conn.inputNodeId), _conn.inputId,
                 _conn.outputOrder);
 
  
@@ -171,7 +177,7 @@ class Action
     deactivateNewActiveNodes()
     {
         for (const id of this.newActiveNodeIds)
-            uiMakeNodePassive(nodeFromId(id));
+            uiMakeNodePassive(this.graph.nodeFromId(id));
     
         uiDeleteObjectsAndStyles(this.newActiveNodeIds, false); 
     }

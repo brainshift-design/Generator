@@ -1,82 +1,80 @@
-graphView.startConnectionFromOutput = (pointerId, output, updateTempWire = true, backInit = false) =>
+GraphView.prototype.startConnectionFromOutput = function(pointerId, output, updateTempWire = true, backInit = false)
 {
-    graphView.connPointerId = pointerId;
+    this.connPointerId = pointerId;
 
-    graphView.tempConn = new Connection(output, null);
+    this.tempConn          = new Connection(output, null);
+    this.tempConn.backInit = backInit;
 
-    graphView.tempConn.wire.output = output;
-    graphView.tempConn.backInit    = backInit;
-
-    //graphView.tempConnected = false;
-    graphView.addConnWires(graphView.tempConn, false);
+    //this.tempConnected = false;
+    this.addConnWires(this.tempConn, false);
 
     if (updateTempWire)
-        updateWire(graphView.tempConn.wire, graphView.pStart.x, graphView.pStart.y);
+        this.tempConn.wire.update(this.pStart.x, this.pStart.y);
 
     output.updateControl();
 };
 
 
 
-graphView.startConnectionFromInput = (pointerId, input, backInit = false) =>
+GraphView.prototype.startConnectionFromInput = function(pointerId, input, backInit = false)
 {
-    graphView.connPointerId = pointerId;
+    this.connPointerId = pointerId;
 
-    graphView.tempConn = new Connection(null, input);
-    graphView.tempConn.backInit = backInit;
+    this.tempConn          = new Connection(null, input);
+    this.tempConn.backInit = backInit;
     
-    graphView.addConnWires(graphView.tempConn, false);
+    this.addConnWires(this.tempConn, false);
 
-    updateWire(graphView.tempConn.wire, graphView.pStart.x, graphView.pStart.y);
+    this.tempConn.wire.update(this.pStart.x, this.pStart.y);
 
     input.updateControl();
 };
 
 
 
-graphView.cancelConnection = (pointerId) =>
+GraphView.prototype.cancelConnection = function(pointerId)
 {
-    const output = graphView.tempConn.output;
-    const input  = graphView.tempConn.input;
+    const output = this.tempConn.output;
+    const input  = this.tempConn.input;
 
-    graphView.removeConnWires(graphView.tempConn);    
+    this.removeConnWires(this.tempConn);    
 
-    if (graphView.savedConn)
-        updateWire(graphView.savedConn.wire);
+    if (this.savedConn)
+        this.savedConn.wire.update();
 
-    graphView.savedConn = null;
-    graphView.tempConn  = null;
+    this.savedConn = null;
+    this.tempConn  = null;
 
     if (output) output.updateControl();
     if (input ) input .updateControl();
 
-    if (graphView.overInput ) graphView.overInput .updateControl();
-    if (graphView.overOutput) graphView.overOutput.updateControl();
+    if (this.overInput ) this.overInput .updateControl();
+    if (this.overOutput) this.overOutput.updateControl();
 
 
-    if (graphView.hasPointerCapture(pointerId))
-        graphView.releasePointerCapture(pointerId);
+    if (this.div.hasPointerCapture(pointerId))
+        this.div.releasePointerCapture(pointerId);
 
-    graphView.connPointerId = -1;
+    this.connPointerId = -1;
 
 
-     newReorderIndex = Number.NaN;
+    newReorderIndex  = Number.NaN;
     prevReorderIndex = Number.NaN;
-     oldReorderIndex = Number.NaN;
+    oldReorderIndex  = Number.NaN;
 };
 
 
 
-graphView.endConnection = function(pointerId, backInit = false)
+GraphView.prototype.endConnection = function(pointerId, backInit = false)
 {
-    if (graphView.tempConn.output) // FROM OUTPUT
+    if (this.tempConn.output) // FROM OUTPUT
     {
-        let output = graphView.tempConn.output;
-        let input  = graphView.overInput;
+        let output = this.tempConn.output;
+        let input  = this.overInput;
 
         let savedConnInput = 
-            graphView.savedConn
-            ? graphView.savedConn.input
+            this.savedConn
+            ? this.savedConn.input
             : null;
 
         output.connecting = false;
@@ -92,69 +90,78 @@ graphView.endConnection = function(pointerId, backInit = false)
                 &&  input.node.variableInputs
                 && !input.param
                 && !isLastInArray(input.node.headerInputs, input))
-                actionManager.do(new ReorderInputAction(input.node.id, oldReorderIndex, newReorderIndex));
+                actionManager.do(new ReorderInputsAction(this.graph, input.node.id, oldReorderIndex, newReorderIndex));
 
             else if (savedConnInput
-                  && savedConnInput.connectedOutput == graphView.tempConn.output
-                  && savedConnInput.index != input.index
-                  && (  !input.node.variableInputs && input.index < input.node.headerInputs.length
-                      || input.node.variableInputs && input.index < input.node.headerInputs.length-1))
+                && savedConnInput.connectedOutput == this.tempConn.output
+                && savedConnInput.index != input.index
+                && (  !input.node.variableInputs && input.index < input.node.headerInputs.length
+                    || input.node.variableInputs && input.index < input.node.headerInputs.length-1))
             {
-                moveInArray(
-                    input.node.inputs,
-                    input.node.inputs.indexOf(savedConnInput),
-                    input.index);
+                if (input.node.variableInputs)
+                {
+                    moveInArray(
+                        input.node.inputs,
+                        input.node.inputs.indexOf(savedConnInput),
+                        input.index);
 
-                actionManager.do(new ReorderInputAction(savedConnInput.node.id, oldReorderIndex, savedConnInput.index));
+                    actionManager.do(new ReorderInputsAction(this.graph, savedConnInput.node.id, oldReorderIndex, savedConnInput.index));
+                }
+                else
+                {
+                    actionManager.do(new ReorderInputConnectionsAction(this.graph, savedConnInput.node.id, savedConnInput.id, input.id));
+                }
             }
             else if (   input == savedConnInput
-                     && input.connection) // reconnect old
+                    && input.connection) // reconnect old
             {
-                graphView.savedConn = null; // done here to redraw the saved wire correctly
-                showWire(input.connection.wire, true);
+                this.savedConn = null; // done here to redraw the saved wire correctly
+                input.connection.wire.show(true);
             }
 
             else if (savedConnInput
-                  && savedConnInput.connectedOutput == output
-                  && (  !input.node.variableInputs
-                      || input.index >= input.node.headerInputs.length
-                      ||    input.node.headerInputs.length > 1 
-                         && input.index < input.node.headerInputs.length-1
-                      ||    input.node.headerInputs.length == 1 
-                         && input.index == 0))
-                actionManager.do(new ReconnectAction(output, savedConnInput, input));
+                && savedConnInput.connectedOutput == output
+                && (  !input.node.variableInputs
+                    || input.index >= input.node.headerInputs.length
+                    ||    input.node.headerInputs.length > 1 
+                        && input.index < input.node.headerInputs.length-1
+                    ||    input.node.headerInputs.length == 1 
+                        && input.index == 0))
+            {
+                actionManager.do(new ReconnectAction(this.graph, output, savedConnInput, input));
+            }
 
             else if (   !savedConnInput
-                     && (  !input.connected
-                         || input.connectedOutput != graphView.tempConn.output)) // connect new
-                createConnectAction(output, input, backInit);
+                    && (  !input.connected
+                        || input.connectedOutput != this.tempConn.output)) // connect new
+                createConnectAction(this.graph, output, input, backInit);
         }
         else if (savedConnInput) // disconnect old
-            actionManager.do(new DisconnectAction(savedConnInput));
+            actionManager.do(new DisconnectAction(this.graph, savedConnInput));
         
 
-        if (graphView.savedConn) showWire(graphView.savedConn.wire, true);
-        graphView.cancelConnection(pointerId);
+        if (this.savedConn) this.savedConn.wire.show(true);
+        this.cancelConnection(pointerId);
     }
     
-    else if (graphView.tempConn.input) // FROM INPUT
+    else if (this.tempConn.input) // FROM INPUT
     {
-        let input  = graphView.tempConn.input;
-        let output = graphView.overOutput;
+        let input  = this.tempConn.input;
+        let output = this.overOutput;
 
         input.connecting = false;
 
         if (   output
             && input.canConnectFrom(output)) // TO OUTPUT
-            createConnectAction(output, input, backInit);
+            createConnectAction(this.graph, output, input, backInit);
 
-        graphView.cancelConnection(pointerId);
+        this.cancelConnection(pointerId);
     }
-}
+};
 
 
 
-function createConnectAction(output, input, backInit)
+function createConnectAction(graph, output, input, backInit)
 {
-    actionManager.do(new ConnectAction(output, input, {backInit: backInit}));
+    actionManager.do(new ConnectAction(graph, output, input, {backInit: backInit}));
 }

@@ -41,30 +41,13 @@ extends Parameter
     {
         super(FILL_VALUE, id, name);
 
-        this.checkers              = createDiv();
-        this.controlWrapper        = createDiv();
-
-        this.colorControl          = createDiv();
-        this.opacityControl        = createDiv();
-        
-        this.  colorControl.param  = this;
-        this.opacityControl.param  = this;
-
-        this.  colorControl.zIndex = 0;
-        this.opacityControl.zIndex = 0;
-   
-        this.defaultValue          = defaultValue;
-        this.value                 = defaultValue;
-
-        
-        this._warningOverlay = createDiv('colorWarningOverlay');
-        this._warningOverlay.style.zIndex = 21;
-        this.div.appendChild(this._warningOverlay);
+        this.checkers       = createDiv();
+        this.controlWrapper = createDiv();
 
 
-        initColorControl(
+        this.colorControl = new ColorControl(
+            null,
             this,
-            this.colorControl,
             120, // width
             20,  // height
             this.id,
@@ -76,9 +59,9 @@ extends Parameter
         this.colorControl.showColor = false;
 
 
-        initNumberControl(
+        this.opacityControl = new NumberControl(
+            null,
             this,
-            this.opacityControl,
             120, // width
             20,  // height
             this.id,
@@ -88,8 +71,21 @@ extends Parameter
             0,
             100,
             0);
-
+        
         this.opacityControl.setSuffix('%', true);
+
+
+        this.  colorControl.div.zIndex = 0;
+        this.opacityControl.div.zIndex = 0;
+   
+        this.defaultValue          = defaultValue;
+        this.value                 = defaultValue;
+
+        
+        this._warningOverlay = createDiv('colorWarningOverlay');
+        this._warningOverlay.style.zIndex = 21;
+
+        this.div.appendChild(this._warningOverlay);
 
 
         this.checkers.style.position                   = 'absolute';
@@ -112,10 +108,10 @@ extends Parameter
 
     
         this.opacityControl.successOnFocusOut          = true;
-        this.opacityControl.style.display              = 'inline';
-        this.opacityControl.style.width                = '40%';
-        this.opacityControl.style.position             = 'absolute';
-        this.opacityControl.style.right                = 0;
+        this.opacityControl.div.style.display              = 'inline';
+        this.opacityControl.div.style.width                = '40%';
+        this.opacityControl.div.style.position             = 'absolute';
+        this.opacityControl.div.style.right                = 0;
 
 
         this.  colorControl.text.style.transform       = 'translateX(-45%)';
@@ -138,7 +134,7 @@ extends Parameter
 
 
         this.controlWrapper.appendChild(this.  colorControl);
-        this.controlWrapper.appendChild(this.opacityControl);
+        this.controlWrapper.appendChild(this.opacityControl.div);
         
         this.div.appendChild(this.checkers);
         this.div.appendChild(this.controlWrapper);
@@ -281,7 +277,7 @@ extends Parameter
 
     updateControls()
     {
-        checkControlVisible(this, this.colorControl);
+        checkControlVisible(this, this.colorControl  );
         checkControlVisible(this, this.opacityControl);
 
 
@@ -404,8 +400,8 @@ extends Parameter
             || !this.input.connected 
             ||  this.input.connectedOutput.supportsTypes(COLOR_TYPES);
 
-        enableElementText(this.  colorControl, enable);
-        enableElementText(this.opacityControl, opEnable);
+        enableElementText(this.  colorControl.div, enable);
+        enableElementText(this.opacityControl.div, opEnable);
         
         this.  colorControl.readOnly = !enable;
         this.opacityControl.readOnly = !opEnable;

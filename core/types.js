@@ -179,9 +179,8 @@ const GRADIENT_VALUE   = 'GRAD#';
 const GRADIENT         = 'GRAD';
 const GRADIENT_TYPES   = [GRADIENT_VALUE, GRADIENT];
 
-//const COLOR_STYLE_VALUE = 'CSTL#';
-const COLOR_STYLE       = 'CSTL';
-//const COLOR_STYLE_TYPES = [COLOR_STYLE_VALUE, COLOR_STYLE];
+
+const COLOR_STYLE      = 'CSTL';
 
 
 const SHAPE_VALUE      = 'SHP#'; // abstract placeholder
@@ -241,27 +240,28 @@ const ALL_TYPES =
     ...FILL_TYPES,
     ...STROKE_TYPES,
     ...GRADIENT_TYPES,
-    //...COLOR_STYLE_TYPES,
     COLOR_STYLE,
     ...SHAPE_TYPES
 ];
 
 
-const CUSTOM        = 'CUST';   // ???? count O...
+const CUSTOM         = 'CUST';
+const CUSTOM_INPUTS  = 'CUSTIN';
+const CUSTOM_OUTPUTS = 'CUSTOUT';
 
 
-const COMMENT       = 'CMNT';
+const COMMENT        = 'CMNT';
 
 
-const ACTIVE        = 'ACT';
-const BEFORE_ACTIVE = 'BEF';
-const DISABLED      = 'DIS';
-const NOCACHE       = 'NOC';
+const ACTIVE         = 'ACT';
+const BEFORE_ACTIVE  = 'BEF';
+const DISABLED       = 'DIS';
+const NOCACHE        = 'NOC';
+ 
+const PARAM          = 'PARAM'; // nodeId paramId
+ 
 
-const PARAM         = 'PARAM'; // nodeId paramId
-
-
-const LOG           = 'LOG';
+const LOG            = 'LOG';
 
 
 
@@ -311,21 +311,22 @@ const CONDITION_OPS =
 
 
 
-const EMPTY_ACTION          = 'EMPTY';
-const CONNECT_ACTION        = 'CONNECT';
-const CREATE_ACTION         = 'CREATE';
-const CREATE_INSERT_ACTION  = 'CREATE_INSERT';
-const DELETE_ACTION         = 'DELETE';
-const DISCONNECT_ACTION     = 'DISCONNECT';
-const LINK_STYLE_ACTION     = 'LINK_STYLE';
-const MAKE_ACTIVE_ACTION    = 'MAKE_ACTIVE';
-const PASTE_ACTION          = 'PASTE';
-const RECONNECT_ACTION      = 'RECONNECT';
-const REMOVE_ACTION         = 'REMOVE';
-const RENAME_ACTION         = 'RENAME';
-const REORDER_ACTION        = 'REORDER';
-const SELECT_ACTION         = 'SELECT';
-const SELECT_MOVE_ACTION    = 'SELECT_MOVE';
-const SET_VALUE_ACTION      = 'SET_VALUE';
-const TOGGLE_DISABLE_ACTION = 'TOGGLE_DISABLE';
-const TOGGLE_SYMBOL_ACTION  = 'TOGGLE_SYMBOL';
+const EMPTY_ACTION               = 'EMPTY';
+const CONNECT_ACTION             = 'CONNECT';
+const CREATE_ACTION              = 'CREATE';
+const CREATE_INSERT_ACTION       = 'CREATE_INSERT';
+const DELETE_ACTION              = 'DELETE';
+const DISCONNECT_ACTION          = 'DISCONNECT';
+const LINK_STYLE_ACTION          = 'LINK_STYLE';
+const MAKE_ACTIVE_ACTION         = 'MAKE_ACTIVE';
+const PASTE_ACTION               = 'PASTE';
+const RECONNECT_ACTION           = 'RECONNECT';
+const REMOVE_ACTION              = 'REMOVE';
+const RENAME_ACTION              = 'RENAME';
+const REORDER_INPUTS_ACTION      = 'REORDER_INPUTS';
+const REORDER_CONNECTIONS_ACTION = 'REORDER_CONNECTIONS';
+const SELECT_ACTION              = 'SELECT';
+const SELECT_MOVE_ACTION         = 'SELECT_MOVE';
+const SET_VALUE_ACTION           = 'SET_VALUE';
+const TOGGLE_DISABLE_ACTION      = 'TOGGLE_DISABLE';
+const TOGGLE_SYMBOL_ACTION       = 'TOGGLE_SYMBOL';

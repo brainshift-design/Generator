@@ -40,6 +40,8 @@ function rgbHeaderFromType(type, active)
                  : rgbColor;
 
         case CUSTOM:
+        case CUSTOM_INPUTS:
+        case CUSTOM_OUTPUTS:
             return active 
                  ? (darkMode ? rgbActiveCustomDark : rgbActiveCustomLight)
                  : (darkMode ? rgbCustomDark       : rgbCustomLight      );

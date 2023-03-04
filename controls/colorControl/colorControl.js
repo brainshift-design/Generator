@@ -1,99 +1,133 @@
-function initColorControlChildren(control)
+class ColorControl
+extends EventTarget
 {
-    control.text  = createDiv('colorControlText');
-    control.focus = createDiv('colorControlFocus');
-
-    control.appendChild(control.text);
-    control.appendChild(control.focus);
-}
-
-
-
-function initColorControl(param, control, width, height, id, name, showName, defaultValue, dragScale = 0.05, wheelScale = 1, acc = 0)
-{
-    // control is also the div
-
-    control.param             = param;
+    div;
+    
+    param;
      
-    control.className         = 'colorControl';
-     
-    control.width             = width;
-    control.height            = height;
+    id;
+
+    name;
+
+    width;
+    height;
              
-    control.style.width       = width;
-    control.style.height      = height;
-             
-    control.showColor         = true;
+    showColor         = true;
 
-    control.value             = defaultValue;
-    control.acc               = acc;
+    value;
+    acc;
      
-    control.id                = id;
-    control.name              = name;
      
-    control.dragReverse       = false;
-    control.dragScale         = dragScale;
-    control.wheelScale        = wheelScale;
+    dragReverse       = false;
+    dragScale;
+    wheelScale;
              
-    control.backStyleLight    = 'rgba(255, 255, 255, 0.95)';
-    control.valueStyleLight   = 'transparent';
-    control.textStyleLight    = '#000';
+    backStyleLight    = 'rgba(255, 255, 255, 0.95)';
+    valueStyleLight   = 'transparent';
+    textStyleLight    = '#000';
                 
-    control.backStyleDark     = 'rgba(56, 56, 56, 0.95)';
-    control.valueStyleDark    = 'transparent';
-    control.textStyleDark     = '#eee';
+    backStyleDark     = 'rgba(56, 56, 56, 0.95)';
+    valueStyleDark    = 'transparent';
+    textStyleDark     = '#eee';
 
-    control.fontSize          = 11;
+    fontSize          = 11;
              
-    control.style.display     = 'inline';
+    mouseOver         = false;
+    buttonDown0       = false;
+    buttonDown1       = false;
              
-    control.mouseOver         = false;
-    control.buttonDown0       = false;
-    control.buttonDown1       = false;
-             
-    control.clickSize         = 4;
-    control.moved             = false;
+    clickSize         = 4;
+    moved             = false;
          
-    control.tabIndex          = 0;
-    control.inFocus           = false;
-    control.clicked           = false;
+    tabIndex          = 0;
+    inFocus           = false;
+    clicked           = false;
  
-    control.startValue        = 0;
-    control.oldValue; 
+    startValue        = 0;
+    oldValue; 
  
-    control.wrapValue         = false;
+    wrapValue         = false;
      
-    control.showName          = showName;
-    control.showHex           = false;
+    showName;
+    showHex           = false;
          
-    control.enableChangeEvent = true;
+    enableChangeEvent = true;
     
-    control.successOnFocusOut = false;
-    control.keyBlur           = false;
+    successOnFocusOut = false;
+    keyBlur           = false;
     
-    control.pointerEvents     = true;
-    control.readOnly          = false;
+    pointerEvents     = true;
+    readOnly          = false;
      
-    control.valueText         = '';
+    valueText         = '';
      
-    control.measureData       = {};
+    measureData       = {};
+    
+    
 
-
-    control.onstartchange     = new Event('startchange');
-    control.onchange          = new Event('change');
-    control.onconfirm         = new Event('confirm');
-
-
-    initColorControlChildren(control);    
-    initColorControlTextbox (control);
-    initColorControlEvents  (control);
+    get view() { return this.param.node.graph.view; }
 
 
 
-    control.canReact = function(e)
+    constructor(div, param, width, height, id, name, showName, defaultValue, dragScale = 0.05, wheelScale = 1, acc = 0)
+    {
+        super();
+
+
+        this.div               = div ? div : createDiv('colorControl');
+        this.div.control       = this;
+
+        this.param             = param;
+
+
+        this.id                = id;
+
+        this.name              = name;
+        this.showName          = showName;
+
+    
+        this.width             = width;
+        this.height            = height;
+                 
+        this.div.style.width   = width;
+        this.div.style.height  = height;
+                 
+        this.div.style.display = 'inline';
+
+
+        this.showColor         = true;
+    
+        this.value             = defaultValue;
+        this.acc               = acc;
+         
+        
+        this.dragReverse       = false;
+        this.dragScale         = dragScale;
+        this.wheelScale        = wheelScale;
+                 
+
+        this.text  = createDiv('colorControlText');
+        this.focus = createDiv('colorControlFocus');
+    
+        this.div.appendChild(this.text);
+        this.div.appendChild(this.focus);
+
+        
+        this.initTextbox();
+        this.initEvents ();
+
+        
+        this.onstartchange = new Event('startchange');
+        this.onchange      = new Event('change');
+        this.onconfirm     = new Event('confirm');
+    }    
+    
+
+    
+    canReact(e)
     {
         if (   settings.enableZoomedOutParams
-            || graphView.zoom > settings.minZoomForParams)
+            || this.view.zoom > settings.minZoomForParams)
             return true;
 
         e.preventDefault();
@@ -106,154 +140,154 @@ function initColorControl(param, control, width, height, id, name, showName, def
 
 
 
-    control.setName = function(name)
+    setName(name)
     {
-        control.name = name;
-        control.update();
+        this.name = name;
+        this.update();
     };
 
 
 
-    control.setValue = function(value, fireChangeEvent = true, confirm = true)
+    setValue(value, fireChangeEvent = true, confirm = true)
     {
         if (!(value instanceof ColorValue))
             console.assert(false, 'colorControl.setValue(value) is ' + typeof value + ', must be a ColorValue');
 
 
-        const oldValue = control.value.copy();
+        const oldValue = this.value.copy();
 
-        control.value = value.copy();
+        this.value = value.copy();
 
 
-        if (control.showColor)
+        if (this.showColor)
         {
-            const rgb = control.value.toRgb();
+            const rgb = this.value.toRgb();
 
             if (!rgbIsNaN(rgb))
             {
-                control.valueStyleLight =
-                control.valueStyleDark  = rgb2style(rgb);
+                this.valueStyleLight =
+                this.valueStyleDark  = rgb2style(rgb);
 
-                control.textStyleLight  = 
-                control.textStyleDark   = rgba2style(getTextColorFromBackColor(rgb));
+                this.textStyleLight  = 
+                this.textStyleDark   = rgba2style(getTextColorFromBackColor(rgb));
             }
             else
             {
-                control.valueStyleLight =
-                control.valueStyleDark  = 'var(--figma-color-bg)';
+                this.valueStyleLight =
+                this.valueStyleDark  = 'var(--figma-color-bg)';
                 
-                control.textStyleLight  = 'black';
-                control.textStyleDark   = 'white';
+                this.textStyleLight  = 'black';
+                this.textStyleDark   = 'white';
             }
         }
 
 
-        control.update();
+        this.update();
 
 
         if (   fireChangeEvent
-            && control.enableChangeEvent
-            && !value.equals(control.prevValue))
-            control.dispatchEvent(control.onchange);
+            && this.enableChangeEvent
+            && !value.equals(this.prevValue))
+            this.dispatchEvent(this.onchange);
 
         if (   confirm
-            && control.enableChangeEvent
+            && this.enableChangeEvent
             && !value.equals(oldValue))
-            control.dispatchEvent(control.onconfirm);
+            this.dispatchEvent(this.onconfirm);
     };
 
 
 
 
-    control.updateMeasureData = function()
+    updateMeasureData()
     {
-        control.measureData = 
+        this.measureData = 
         {
-            offsetRect: offsetRect(control),
-            clientRect: clientRect(control)
+            offsetRect: offsetRect(this.div),
+            clientRect: clientRect(this.div)
         };
     };
 
 
 
-    control.update = function()
+    update()
     {
-        if (!control.measureData.offsetRect)
+        if (!this.measureData.offsetRect)
             return;
 
-        const sw = control.measureData.clientRect.width;
-        const sh = control.measureData.clientRect.height;
+        const sw = this.measureData.clientRect.width;
+        const sh = this.measureData.clientRect.height;
 
-        control.updateColors();
-        control.updateText();
-        control.updateFocus(sw, sh);
+        this.updateColors();
+        this.updateText();
+        this.updateFocus(sw, sh);
     };
 
 
 
-    control.updateColors = function()
+    updateColors()
     {
-        control        .style.background = 
-        control.textbox.style.background = 
-            control.showColor
+        this.div    .style.background = 
+        this.textbox.style.background = 
+            this.showColor
             ? (darkMode 
-               ? control.valueStyleDark 
-               : control.valueStyleLight)
+               ? this.valueStyleDark 
+               : this.valueStyleLight)
             : (darkMode
-               ? control.backStyleDark 
-               : control.backStyleLight);
+               ? this.backStyleDark 
+               : this.backStyleLight);
 
-        control.text   .style.color = 
-        control.textbox.style.color = 
+        this.text   .style.color = 
+        this.textbox.style.color = 
             darkMode 
-            ? control.textStyleDark 
-            : control.textStyleLight;
+            ? this.textStyleDark 
+            : this.textStyleLight;
     };
 
 
 
-    control.updateText = function()
+    updateText()
     {
-        control.text.innerHTML = '';
+        this.text.innerHTML = '';
         
-        if (   control.name.length > 0
-            && control.showName)
-            control.text.innerHTML += (control.name.trim() != '' ? '<span class="colorControlName">' + control.name + '</span>&nbsp;&nbsp;' : '');
+        if (   this.name.length > 0
+            && this.showName)
+            this.text.innerHTML += (this.name.trim() != '' ? '<span class="colorControlName">' + this.name + '</span>&nbsp;&nbsp;' : '');
 
-        control.text.innerHTML += 
-               control.value.isValid()
-            && rgbIsValid(control.value.toRgb())
-            ? rgb2hex(control.value.toRgb())
+        this.text.innerHTML += 
+               this.value.isValid()
+            && rgbIsValid(this.value.toRgb())
+            ? rgb2hex(this.value.toRgb())
             : UNKNOWN_DISPLAY;
     };
 
 
 
-    control.updateFocus = function(sw, sh)
+    updateFocus(sw, sh)
     {
-        control.focus.style.left   = 0;
-        control.focus.style.top    = 0;
-        control.focus.style.width  = sw;
-        control.focus.style.height = sh;
+        this.focus.style.left   = 0;
+        this.focus.style.top    = 0;
+        this.focus.style.width  = sw;
+        this.focus.style.height = sh;
     };
 
 
 
-    control.lockPointer = function(pointerId)
+    lockPointer(pointerId)
     {
-        clearTimeout(control.clickTimer);
+        clearTimeout(this.clickTimer);
 
-        control.requestPointerLock =    
-               control.      requestPointerLock 
-            || control.   mozRequestPointerLock
-            || control.webkitRequestPointerLock;
+        this.requestPointerLock =    
+               this.div.      requestPointerLock 
+            || this.div.   mozRequestPointerLock
+            || this.div.webkitRequestPointerLock;
 
-        control.requestPointerLock();
+        this.requestPointerLock();
     };
 
 
 
-    control.unlockPointer = function(pointerId)
+    unlockPointer(pointerId)
     {
         document.exitPointerLock =    
                document.      exitPointerLock    
@@ -265,10 +299,10 @@ function initColorControl(param, control, width, height, id, name, showName, def
 
 
 
-    control.isPointerLocked = function()
+    isPointerLocked()
     {
-        return (document.      pointerLockElement === control 
-             || document.   mozPointerLockElement === control
-             || document.webkitPointerLockElement === control);
+        return (document.      pointerLockElement === this.div 
+             || document.   mozPointerLockElement === this.div
+             || document.webkitPointerLockElement === this.div);
     }
 }

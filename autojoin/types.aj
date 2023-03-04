@@ -108,7 +108,9 @@
 ../generator/types/style/GStroke.js
 
 
-../generator/types/GCustom.js
+../generator/types/custom/GCustom.js
+../generator/types/custom/GCustomInputs.js
+../generator/types/custom/GCustomOutputs.js
 
 
 ../generator/types/GComment.js

@@ -17,11 +17,12 @@ extends Action
 
 
 
-    constructor(copiedNodesJson, pasteConnected, isDuplicate = false, x = Number.NaN, y = Number.NaN)
+    constructor(graph, copiedNodesJson, pasteConnected, isDuplicate = false, x = Number.NaN, y = Number.NaN)
     {
         const data = JSON.parse(copiedNodesJson);
 
         super(
+            graph,
             PASTE_ACTION,
             'PASTE ' + data.nodes.length + ' ' + countString('node', data.nodes.length));
 
@@ -38,16 +39,16 @@ extends Action
 
     do(updateNodes)
     {
-        this.prevSelectedNodeIds = graphView.selectedNodes.map(n => n.id);
+        this.prevSelectedNodeIds = this.graph.view.selectedNodes.map(n => n.id);
 
 
         this.oldActiveNodeIds = [];
 
         for (const nodeId of this.prevSelectedNodeIds)
-            pushUnique(this.oldActiveNodeIds, getActiveNodesFromNodeId(nodeId).map(n => n.id));
+            pushUnique(this.oldActiveNodeIds, this.graph.getActiveNodesFromNodeId(nodeId).map(n => n.id));
 
 
-        const [nodes, _conns] = uiPasteNodes(this.copiedNodesJson, this.pasteConnected, this.x, this.y, updateNodes);
+        const [nodes, _conns] = uiPasteNodes(this.graph, this.copiedNodesJson, this.pasteConnected, this.x, this.y, updateNodes);
 
         pushUnique(this.newConnectionData, _conns);
 
@@ -69,14 +70,10 @@ extends Action
                         conn.inputNodeId,
                         conn.inputId,
                         boolToString(
-                            nodeFromId(conn.outputNodeId)
+                            this.graph.nodeFromId(conn.outputNodeId)
                             .outputFromId(conn.outputId)
                             .supportsTypes(LIST_TYPES))));
         }
-
-
-        //graphView.updateNodeTransforms(nodes);
-        //nodes.forEach(n => n.updateNode());
 
 
         this.pastedNodeIds = nodes.map(n => n.id);
@@ -90,19 +87,19 @@ extends Action
 
     undo(updateNodes)
     {
-        uiDeleteNodes(this.pastedNodeIds);
+        uiDeleteNodes(this.graph, this.pastedNodeIds);
         
         pasteOffset.x -= pasteOffsetDelta.x;
         pasteOffset.y -= pasteOffsetDelta.y;
 
-        graphView.selectedNodes = graph.nodes.filter(n => this.prevSelectedNodeIds.includes(n.id));
+        this.graph.view.selectedNodes = this.graph.view.graph.nodes.filter(n => this.prevSelectedNodeIds.includes(n.id));
 
 
         let oldActiveNodeIds = [...this.oldActiveNodeIds];
-        oldActiveNodeIds.sort((x, y) => (nodeFromId(x) === nodeFromId(y)) ? 0 : nodeFromId(y).isOrFollows(nodeFromId(x)) ? -1 : 1);
+        oldActiveNodeIds.sort((x, y) => (this.graph.nodeFromId(x) === this.graph.nodeFromId(y)) ? 0 : this.graph.nodeFromId(y).isOrFollows(this.graph.nodeFromId(x)) ? -1 : 1);
 
         for (const id of oldActiveNodeIds)
-            uiMakeNodeActive(nodeFromId(id));
+            uiMakeNodeActive(this.graph.nodeFromId(id));
     }
 
 

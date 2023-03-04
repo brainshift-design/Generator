@@ -149,6 +149,8 @@ function genParse(parse, inParam = true)
     else if (parse.next == STAR                   ) result = genParseStar            (parse);
 
     else if (parse.next == CUSTOM                 ) result = genParseCustom          (parse);
+    else if (parse.next == CUSTOM_INPUTS          ) result = genParseCustomInputs    (parse);
+    else if (parse.next == CUSTOM_OUTPUTS         ) result = genParseCustomOutputs   (parse);
 
     else if (parse.next == COMMENT                ) result = genParseComment         (parse);
 
@@ -297,7 +299,7 @@ function genParseCustom(parse)
 
 
     if (parse.settings.logRequests) 
-        logReq(cache, parse, ignore, nInputs);
+        logReq(cache, parse, ignore);//, nInputs);
 
 
     if (ignore) 

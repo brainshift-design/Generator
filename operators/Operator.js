@@ -26,7 +26,7 @@ class Operator
     subscription = false;
 
 
-    graph = null;
+    graph        = null;
     
     
     #type; // used in the code, not for generation
@@ -115,12 +115,12 @@ class Operator
     set selected(sel) 
     {
         if (this._selected)
-            removeFromArray(graphView.selectedNodes, this);
+            removeFromArray(this.graph.view.selectedNodes, this);
 
         this.setSelected(sel);     
 
         if (this._selected)
-            graphView.selectedNodes.push(this);
+            this.graph.view.selectedNodes.push(this);
     }        
 
 
@@ -155,7 +155,7 @@ class Operator
         
         this.valid             = false;
 
-        createOperatorNode(this);
+        this.createNode();
 
         if (progressBar)
             createNodeProgressBar(this);
@@ -207,17 +207,20 @@ class Operator
             && i.canConnectFrom(output));
 
         
-        if (   graphView.overInput
-            && inputs.includes(graphView.overInput))
-            return graphView.overInput;
+        const view = this.graph.view;
 
 
-        if (   graphView.savedConn
-            && graphView.savedConn.input
-            && graphView.savedConn.input.node == this)
-            return graphView.savedConn.input;
+        if (   view.overInput
+            && inputs.includes(view.overInput))
+            return view.overInput;
+
+
+        if (   view.savedConn
+            && view.savedConn.input
+            && view.savedConn.input.node == this)
+            return view.savedConn.input;
         
-        else if (!graphView.tempConn.output.node.isOrFollows(this))
+        else if (!view.tempConn.output.node.isOrFollows(this))
         {
             if (this.variableInputs)
                 return lastOf(inputs.filter(i => !i.param));
@@ -292,7 +295,7 @@ class Operator
         const outputs = this.headerOutputs.filter(o => arraysIntersect(o.types, inputTypes));
 
         return  outputs.length == 1
-            && !this.isOrFollows(graphView.tempConn.input.node)
+            && !this.isOrFollows(this.graph.view.tempConn.input.node)
             ? outputs[0]
             : null;
     }
@@ -452,10 +455,12 @@ class Operator
     {
         this._active = true;
 
-        if (    graphView
-            &&  graphView.activeNodes
-            && !graphView.activeNodes.includes(this))
-            graphView.activeNodes.push(this);
+        const view = this.graph.view;
+
+        if (    view
+            &&  view.activeNodes
+            && !view.activeNodes.includes(this))
+            view.activeNodes.push(this);
     }
 
 
@@ -465,8 +470,8 @@ class Operator
         if (!this._active) 
             return;
             
-        if (graphView.activeNodes.includes(this))
-            removeFromArray(graphView.activeNodes, this);
+        if (this.graph.view.activeNodes.includes(this))
+            removeFromArray(this.graph.view.activeNodes, this);
 
         this._active = false;
     }
@@ -478,9 +483,25 @@ class Operator
         this._name = newName;
 
         this.updateMeasureData();
-        updateHeaderLabelOffsetX(this);
+        this.updateHeaderLabelOffsetX();
 
         return true;
+    }
+
+
+
+    setPosition(x, y, updateTransform = true)
+    {
+        //console.log('Operator.setPosition()');
+   
+        this.div.style.left = x + 'px';
+        this.div.style.top  = y + 'px';
+
+        if (updateTransform)
+        {
+            this.div.style.display = 'block';
+            this.updateTransform();
+        }
     }
 
 
@@ -703,254 +724,37 @@ class Operator
 
 
 
-    updateNode() 
+    setTransform(nodeLeft, nodeTop, nodeRect)
     {
-        this.      paramBack.style.backgroundColor = darkMode ? '#363636' : 'white';
-        this.hiddenParamBack.style.backgroundColor = darkMode ? '#363636' : 'white';
+        const view = this.graph.view;
 
-        this.updateHeader();
-        this.updateHeaderLabel();
-        this.updateBorder();
-        this.updateParams();
-        this.updateDisabled();
-        this.updateSubscribe();
+        this.div.style.transform =
+              'translate(' 
+            + (view.pan.x * view.zoom) + 'px, '
+            + (view.pan.y * view.zoom) + 'px) '
+            + 'scale(' + view.zoom + ')';
 
-
-        if (!isEmpty(this.params.filter(p => p.isVisible())))
-        {
-            this.div   .style.borderBottomLeftRadius  = '0px';        
-            this.inner .style.borderBottomLeftRadius  = '0px';        
-            this.header.style.borderBottomLeftRadius  = '0px';        
-
-            this.div   .style.borderBottomRightRadius = '0px';        
-            this.inner .style.borderBottomRightRadius = '0px';        
-            this.header.style.borderBottomRightRadius = '0px';        
-        }
-        else
-        {
-            this.div   .style.borderRadius = '4px';        
-            this.inner .style.borderRadius = '4px';        
-            this.header.style.borderRadius = '4px';        
-        }
+        this.div.style.transformOrigin = 
+              ((view.pan.x - nodeLeft) / nodeRect.width  * 100) + '% ' 
+            + ((view.pan.y - nodeTop ) / nodeRect.height * 100) + '%';  
     }
 
 
 
-    updateBorder()
+    getOffsetRect()
     {
-        const scale = 
-            graphView.zoom >= 1
-            ? 3
-            : 3 * (((1 / graphView.zoom - 1) / 2) + 1);
+        const view = this.graph.view;
 
-        this.div.style.boxShadow = 
-            this._selected
-            ? '0 0 0 ' + scale + 'px var(--figma-color-bg-brand)'
-            : 'none';
-    }
+        const ox   = -view.pan.x / view.zoom;
+        const oy   = -view.pan.y / view.zoom;
 
+        const rect = boundingRect(this.div);
 
-
-    updateHeader()
-    {
-        //console.log(this.id + '.Operator.updateHeader()');
-        
-        const height = Math.max(25, this.updateHeaderInputsAndOutputs());
-
-        this.header.style.height = height;
-        this.updateParamBack(height);
-
-        this.updateHeaderLabel();
-    }
-
-
-
-    updateParams()
-    {
-        for (const param of this.params)
-            param.enableControlText(true);
-
-        this.updateParamControls();
-    }
-
-
-
-    updateParamControls()
-    {
-        for (const param of this.params)
-            param.updateControls();
-    }
-
-
-
-    updateDisabled()
-    {
-        if (!this.measureData)
-            return;
-
-        this.divDisabled.style.display   = this.enabled ? 'none' : 'inline-block';
-        this.divDisabled.style.zIndex    = 1000;
-        this.divDisabled.style.transform = 'rotate(45deg)';
-        this.divDisabled.style.height    = Math.min(this.measureData.divOffset.width, this.measureData.divOffset.height) + 70;
-        this.divDisabled.style.left      = (this.measureData.divOffset.width  - this.measureData.disabledOffset.width ) / 2;
-        this.divDisabled.style.top       = (this.measureData.divOffset.height - this.measureData.disabledOffset.height) / 2;
-    }
-
-
-
-    updateSubscribe()
-    {
-        if (!this.measureData)
-            return;
-
-        this.subscribeCover.style.top    = this.measureData.headerOffset.height;
-        this.subscribeCover.style.height = this.measureData.divOffset.height - this.measureData.headerOffset.height;
-    }
-
-
-
-    updateSubscribeStatus(subbed)
-    {
-        const sub = 
-                subbed
-            || !this.subscription;
-
-
-        this.subscribeCover.style.display = !sub ? 'block' : 'none';
-        this.subscribeLabel.style.display = !sub ? 'block' : 'none';
-
-        this.inner.style.opacity = !sub ? '50%' : '100%';
- 
-
-        if (!sub)
-            this.updateSubscribe();
-    }
-
-
-
-    updateParamBack(headerHeight)
-    {
-        this.      paramBack.style.height =
-        this.hiddenParamBack.style.height = this.measureData.innerOffset.height - headerHeight;
-
-        this.      paramBack.style.top    =
-        this.hiddenParamBack.style.top    = headerHeight;
-    }
-
-
-
-    updateMeasureData()
-    {
-        this.measureData = 
-        {
-            divBounds:          boundingRect(this.div),
-            divOffset:          offsetRect  (this.div),
-            innerOffset:        offsetRect  (this.inner),
-            headerOffset:       offsetRect  (this.header),
-            labelWrapperBounds: boundingRect(this.labelWrapper),
-            labelWrapperOffset: offsetRect  (this.labelWrapper),
-            labelBounds:        boundingRect(this.label),
-            labelOffset:        offsetRect  (this.label),
-            disabledOffset:     offsetRect  (this.divDisabled),
-            subscribeOffset:    offsetRect  (this.subscribeLabel)
-        };
-
-        this.params
-            .filter(p => p.control)
-            .forEach(p => 
-                {
-                    p.control.updateMeasureData();
-
-                    if (p. input) p. input.updateMeasureData();
-                    if (p.output) p.output.updateMeasureData();
-                });
-    }
-
-
-
-    updateHeaderLabel()
-    {
-        this.updateHeaderLabelText();
-
-        
-        this.label.style.top = Math.floor(this.measureData.labelWrapperOffset.height/2 - this.measureData.labelOffset.height/2) + 'px';
-
-
-        updateHeaderLabelOffsetX(this);
-
-
-        const colors = this.getHeaderColors();
-
-        
-        let fontSize = 11;
-
-        // compensate for bold active header names look THINNER when zoomed out
-             if (graphView.zoom < 0.5 ) fontSize = 17;
-        else if (graphView.zoom < 0.75) fontSize = 15;
-        else if (graphView.zoom < 1   ) fontSize = 13;
-        else if (graphView.zoom < 1.5 ) fontSize = 12;
-
-        this.label.style.color      = rgba2style(colors.text);
-        this.label.style.fontSize   = this.active ? fontSize : 11;
-        this.label.style.height     = this.active ? fontSize * 14 / 11 : 14;
-
-        this.label.style.fontWeight = graphView.zoom < 1.2 ? '600' : 'normal';
-    }
-
-
-
-    updateHeaderLabelText()
-    {
-        this.labelText.innerHTML = 
-              (settings.showNodeId ? 'ID: ' + this.id : this.name)
-            + (this.active && this.showActiveArrow ? '  ‣' : '');
-    }
-
-
-
-    updateHeaderInputsAndOutputs()
-    {
-        const inputs  = this.headerInputs;
-        const outputs = this.headerOutputs;
-
-        const padding = this.header.connectionPadding;
-            
-        const [ inputY,  inputHeight] = getHeaderConnY(inputs,  padding, 5);
-        const [outputY, outputHeight] = getHeaderConnY(outputs, padding, 2);
-
-             if ( inputHeight > outputHeight) for (let i = 0; i < outputs.length; i++) outputY[i] += (inputHeight - outputHeight)/2;
-        else if (outputHeight >  inputHeight) for (let i = 0; i < inputs .length; i++)  inputY[i] += (outputHeight - inputHeight)/2;
-
-
-        for (let i = 0; i < inputs.length; i++)
-        {
-            inputs[i].div.style.top = inputY[i];
-            inputs[i].updateControl();
-        }
-
-        for (let i = 0; i < outputs.length; i++) 
-        {
-            outputs[i].div.style.top = outputY[i];
-            outputs[i].updateControl();
-        }
-
-
-        return Math.max(inputHeight, outputHeight) 
-             + this.header.connectionPadding * 2;
-    }
-
-
-
-    updateValues(requestId, actionId, updateParamId, paramIds, values) // virtual
-    {
-        for (let i = 0; i < paramIds.length; i++)
-        {
-            const index = this.params.findIndex(p => p.id == paramIds[i]);
-
-            if (   paramIds[index] != updateParamId
-                && index > -1)
-                this.params[index].setValue(values[i], false, true, false);
-        }
+        return new DOMRect(
+            ox + (rect.left / view.zoom),
+            oy + (rect.top  / view.zoom), 
+            rect.width      / view.zoom, 
+            rect.height     / view.zoom);
     }
 
 
@@ -998,7 +802,7 @@ class Operator
         if (   node
             && !isEmpty(node.outputs)
             && !isEmpty(inputs))
-            actionManager.do(new ConnectAction(node.outputs[0], inputs[0]), true);
+            actionManager.do(new ConnectAction(this.graph, node.outputs[0], inputs[0]), true);
     }
 
 

@@ -2,16 +2,17 @@ class RenameNodeAction
 extends Action
 {
     nodeId;
-    get node() { return nodeFromId(this.nodeId) } 
+    get node() { return this.graph.nodeFromId(this.nodeId) } 
 
     oldName;
     newName;
 
 
 
-    constructor(nodeId, newName)
+    constructor(graph, nodeId, newName)
     {
         super(
+            graph,
             RENAME_ACTION,
             'RENAME ' + nodeId + ' to \'' + newName + '\'');
 
@@ -28,7 +29,7 @@ extends Action
         this.oldName = this.node.name;
         this.node.setName(this.newName, {updateNodes: updateNodes});
 
-        uiSaveNodes([this.nodeId]);
+        uiSaveNodes(this.graph, [this.nodeId]);
     }
 
 
@@ -38,7 +39,7 @@ extends Action
         this.node.setName(this.oldName, {updateNodes: updateNodes});
         this.node.updateNode();
 
-        uiSaveNodes([this.nodeId]);
+        uiSaveNodes(this.graph, [this.nodeId]);
     }
 
 
@@ -48,6 +49,6 @@ extends Action
         this.node.setName(this.newName, {updateNodes: updateNodes});
         this.node.updateNode();
         
-        uiSaveNodes([this.nodeId]);
+        uiSaveNodes(this.graph, [this.nodeId]);
     }
 }

@@ -2,7 +2,7 @@ class LinkExistingStyleAction
 extends Action
 {
     nodeId;
-    get node() { return nodeFromId(this.nodeId) } 
+    get node() { return this.graph.nodeFromId(this.nodeId) } 
 
     get  inputNode() { return this.node; } // dummy for ConnectAction_...
     get outputNode() { return this.node; } // dummy for ConnectAction_...
@@ -22,9 +22,10 @@ extends Action
     inputValues  = []; // in id,value pairs, to be restored on undo
 
 
-    constructor(nodeId, styleId, styleName, paints)
+    constructor(graph, nodeId, styleId, styleName, paints)
     {
         super(
+            graph,
             LINK_STYLE_ACTION, 
             'LINK STYLE \'' + nodeId + ' ⟶ ' + styleName + ')');
         
@@ -56,7 +57,7 @@ extends Action
 
         pushUnique(updateNodes, this.node);
 
-        uiSaveNodes([this.nodeId]);
+        uiSaveNodes(this.graph, [this.nodeId]);
     }
 
 
@@ -74,7 +75,7 @@ extends Action
 
         this.node.updateNode();
 
-        uiSaveNodes([this.nodeId]);
+        uiSaveNodes(this.graph, [this.nodeId]);
 
         if (this.node.paramValue.input.connected)
             uiTriggerUndo();

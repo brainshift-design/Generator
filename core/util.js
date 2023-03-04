@@ -295,66 +295,6 @@ function isMultiplier(node)
 function getCreateNodeAction(type, creatingButton, options)
 {
     return !!options.insert
-           ? new CreateInsertNodeAction(type, creatingButton, options)
-           : new CreateNodeAction      (type, creatingButton, options, settings.autoConnectNewNodes);
-}
-
-
-
-function isPanning(e)
-{
-    if (panMode)
-    {
-        e.preventDefault();
-        setCursor(panCursor);
-        return true;
-    }
-
-    if (graphView.spaceDown)
-    {
-        e.preventDefault();
-        return true;
-    }
-
-    return false;
-}
-
-
-
-function point2screen(p)
-{
-    return point(
-        (p.x + graphView.pan.x / graphView.zoom) * graphView.zoom,
-        (p.y + graphView.pan.y / graphView.zoom) * graphView.zoom);
-}
-
-
-
-function screen2point(p)
-{
-    return point(
-        p.x / graphView.zoom - graphView.pan.x / graphView.zoom,
-        p.y / graphView.zoom - graphView.pan.y / graphView.zoom);
-}
-
-
-
-function rect2screen(rect)
-{
-    return new Rect(
-        (rect.x + graphView.pan.x / graphView.zoom) * graphView.zoom,
-        (rect.y + graphView.pan.y / graphView.zoom) * graphView.zoom,
-        rect.width  * graphView.zoom,
-        rect.height * graphView.zoom);
-}
-
-
-
-function screen2rect(rect)
-{
-    return new Rect(
-        rect.x / graphView.zoom - graphView.pan.x / graphView.zoom,
-        rect.y / graphView.zoom - graphView.pan.y / graphView.zoom,
-        rect.width  / graphView.zoom,
-        rect.height / graphView.zoom);
+           ? new CreateInsertNodeAction(graphView.graph, type, creatingButton, options)
+           : new CreateNodeAction      (graphView.graph, type, creatingButton, options, settings.autoConnectNewNodes);
 }

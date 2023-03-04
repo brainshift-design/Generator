@@ -1,9 +1,15 @@
 class   OpCustom
 extends OperatorBase
 {
+    graph;
+
+
+    
     constructor()
     {
         super(CUSTOM, 'custom');
+
+        //graphView.graph = new Graph();
     }
     
     
@@ -37,10 +43,10 @@ extends OperatorBase
 
 
 
-    updateValues(requestId, actionId, updateParamId, paramIds, values) // virtual
-    {
-        super.updateValues(requestId, actionId, updateParamId, paramIds, values);
-    }
+    // updateValues(requestId, actionId, updateParamId, paramIds, values) // virtual
+    // {
+    //     super.updateValues(requestId, actionId, updateParamId, paramIds, values);
+    // }
 
 
 

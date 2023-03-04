@@ -66,7 +66,7 @@ extends Parameter
 
     isVisible()
     {
-        return this.control.style.display != 'none';
+        return this.control.div.style.display != 'none';
     }
 
 
@@ -144,9 +144,9 @@ extends Parameter
                !this.input 
             || !this.input.connected;
             
-        enableElementText(this.control, enable);
-        this.control.readOnly = !enable;
+        enableElementText(this.control.div, enable);
 
+        this.control.readOnly = !enable;
 
         this.updateValueText();
     }

@@ -37,7 +37,18 @@ extends Parameter
         this.checkers                     = createDiv();
 
         this.textControl                  = createDiv('colorControlText');
-        this.control                      = createDiv();
+
+        this.control = new NumberControl(
+            createDiv(),
+            this,
+            100, // width
+            20,  // height
+            this.id,
+            'stroke', 
+            true,
+            defaultValue.weight.value,
+            0);
+
 
         this.defaultValue                 = defaultValue;
         this.value                        = defaultValue;
@@ -53,18 +64,6 @@ extends Parameter
         this._warningOverlay = createDiv('colorWarningOverlay');
         this._warningOverlay.style.zIndex = 21;
         this.div.appendChild(this._warningOverlay);
-
-
-        initNumberControl(
-            this,
-            this.control,
-            100, // width
-            20,  // height
-            this.id,
-            'stroke', 
-            true,
-            defaultValue.weight.value,
-            0);
 
 
         this.control.style.position       = 'absolute';
@@ -308,7 +307,7 @@ extends Parameter
             ||  this.input.connectedOutput.support(COLOR_TYPES);
 
         enableElementText(this.textControl, enable);
-        enableElementText(this.control,     opEnable);
+        enableElementText(this.control.div, opEnable);
 
         this.textControl.readOnly = !enable;
         this.control    .readOnly = !opEnable;

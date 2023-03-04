@@ -104,7 +104,7 @@ function uiReturnFigGetLocalData(msg)
             initThemeColors();
             
             if (!settings.dataMode)
-                graph.nodes.forEach(n => n.updateNode());
+                graphView.graph.nodes.forEach(n => n.updateNode());
         });
     }
 
@@ -144,7 +144,6 @@ function uiLoadGraphView(json)
     graphView.loadingNodes   = true;
     graphView.canUpdateNodes = false;
    
-
     let pan  = point(0, 0);
     let zoom = 1;
 
@@ -185,14 +184,14 @@ function uiReturnFigLoadNodesAndConns(msg)
             'background: #fed',
             msg.nodeJson
                 .replaceAll('\\n', '\n')
-                .replaceAll('\\"', '\"'));
+                .replaceAll('\\"', '"'));
 
         console.log(
             '%cconnections JSON = %s', 
             'background: #fed',
             msg.connJson
                 .replaceAll('\\n', '\n')
-                .replaceAll('\\"', '\"'));
+                .replaceAll('\\"', '"'));
     }
 
     
@@ -236,7 +235,7 @@ function uiReturnFigLoadNodesAndConns(msg)
         _nodes = _nodes.map(n => JSON.parse(n));
         _conns = _conns.map(c => JSON.parse(c));
             
-        graph.clear();
+        graphView.graph.clear();
 
         loadNodesAndConnsAsync(_nodes, _conns, setLoadingProgress);
     }
@@ -286,7 +285,7 @@ function loadNodesAndConnsAsync(_nodes, _conns, setProgress)
 
     promise.then(nodes => 
     {
-        graph.addNodes(nodes, false, false);
+        graphView.graph.addNodes(nodes, false, false);
         loadConnectionsAsync(_nodes, _conns, nodes, setProgress);    
     });
 }
@@ -324,6 +323,7 @@ function loadConnectionsAsync(_nodes, _conns, loadedNodes, setProgress)
             promise = promise.then(() => 
             {
                 const res = resolveConnections(
+                    graphView.graph,
                     _nodes,
                     _conns, 
                     i, 
@@ -378,7 +378,7 @@ function finishLoadingNodes(_nodes, loadedNodes, updateNodes, duplicates = false
 {
     _nodes
         .filter(_n => _n.active)
-        .map(_n => nodeFromId(duplicates ? _n.newId : _n.id))
+        .map(_n => graphView.graph.nodeFromId(duplicates ? _n.newId : _n.id))
         .forEach(n => n.makeActive());
 
     //graphView.updateNodeTransforms(loadedNodes);
@@ -402,7 +402,7 @@ function resolveNodes(_nodes, first, last, nodes, pasting)
 
 
 
-function resolveConnections(nodes, _connections, first, last)
+function resolveConnections(graph, nodes, _connections, first, last)
 {
     return new Promise(resolve => 
         requestAnimationFrame(() => 
@@ -430,7 +430,7 @@ function resolveConnections(nodes, _connections, first, last)
                 }
 
 
-                parseConnectionJsonAndConnect(_conn, false);
+                parseConnectionJsonAndConnect(graph, _conn, false);
             }
 
             resolve();
@@ -459,9 +459,7 @@ function loadNode(_node, pasting)
 
     node.loadFromParsedJson(_node, pasting);
 
-
-    setNodePosition(
-        node, 
+    node.setPosition(
         parseFloat(_node.x), 
         parseFloat(_node.y),
         false);
@@ -472,7 +470,7 @@ function loadNode(_node, pasting)
 
 
 
-function parseConnectionsAndConnect(data, pasteConnected, setProgress = null)
+function parseConnectionsAndConnect(graph, data, pasteConnected, setProgress = null)
 {
     data.connections.sort((c1, c2) =>
     {
@@ -490,7 +488,7 @@ function parseConnectionsAndConnect(data, pasteConnected, setProgress = null)
         if (      data.nodes.find(n => (n.newId ? n.newId : n.id) == _conn.outputNodeId)
                && data.nodes.find(n => (n.newId ? n.newId : n.id) == _conn. inputNodeId)
             || pasteConnected)
-            parseConnectionJsonAndConnect(_conn, pasteConnected);
+            parseConnectionJsonAndConnect(graph, _conn, pasteConnected);
 
         if (setProgress)
             setProgress(((data.nodes.length + i) / (data.nodes.length + data.connections.length)));

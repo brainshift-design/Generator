@@ -18,7 +18,7 @@ document.addEventListener('keydown', e =>
     // copy
     if (   e.code == 'KeyC'
         && getCtrlKey(e))
-        copySelectedNodes();
+        graphView.copySelectedNodes();
         
     // paste
     else if (e.code == 'KeyV'
@@ -26,7 +26,7 @@ document.addEventListener('keydown', e =>
           && !e.altKey)
     {
         e.preventDefault();
-        pasteCopiedNodes(e.shiftKey);
+        graphView.pasteCopiedNodes(e.shiftKey);
     }
 
     // duplicate
@@ -37,7 +37,7 @@ document.addEventListener('keydown', e =>
         if (e.shiftKey)
             e.preventDefault();
             
-        duplicateSelectedNodes(e.shiftKey);
+        graphView.duplicateSelectedNodes(e.shiftKey);
         return false;
     }
 
@@ -47,7 +47,7 @@ document.addEventListener('keydown', e =>
           && e.shiftKey)
     {
         e.preventDefault();
-        actionManager.do(new ToggleDisableNodesAction(graphView.selectedNodes.map(n => n.id)));
+        actionManager.do(new ToggleDisableNodesAction(graphView.graph, graphView.selectedNodes.map(n => n.id)));
         return false;
     }
 
@@ -70,8 +70,8 @@ document.addEventListener('keydown', e =>
     else if (   e.key == 'Delete'
              || e.key == 'Backspace')
     {
-        if (e.shiftKey) removeSelectedNodes();
-        else            deleteSelectedNodes();
+        if (e.shiftKey) graphView.removeSelectedNodes();
+        else            graphView.deleteSelectedNodes();
     }
 
     // select all
@@ -101,7 +101,7 @@ document.addEventListener('keydown', e =>
 
                 setTimeout(() => 
                 {
-                    updateWire(savedConn.wire);
+                    savedConn.wire.update();
                     savedConn.input.updateControl();
                 });
             }
@@ -287,8 +287,7 @@ document.addEventListener('keyup', e =>
 
             const tc = graphView.tempConn;
 
-            updateWire(
-                tc.wire, 
+            tc.wire.update( 
                 tc.wire.clientX,
                 tc.wire.clientY);
         }

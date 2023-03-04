@@ -1,13 +1,13 @@
-function initLabelTextbox(node)
+Operator.prototype.initLabelTextbox = function()
 {
-    node.textbox = createTextbox('nodeLabelTextbox');
+    this.textbox = createTextbox('nodeLabelTextbox');
 
-    node.textbox.spellcheck     = false;
-    node.textbox.keyboardFinish = false;
+    this.textbox.spellcheck     = false;
+    this.textbox.keyboardFinish = false;
     
 
 
-    node.textbox.addEventListener('keydown', function(e)
+    this.textbox.addEventListener('keydown', function(e)
     {
         e.stopPropagation();
 
@@ -29,14 +29,14 @@ function initLabelTextbox(node)
         else if (e.code == 'Enter'
               || e.code == 'NumpadEnter')
         {
-            node.textbox.keyboardFinish = true;
-            node.textbox.finish(true);
+            this.textbox.keyboardFinish = true;
+            this.textbox.finish(true);
         }
 
         else if (e.code == 'Escape')
         {
-            node.textbox.keyboardFinish = true;
-            node.textbox.finish(false);
+            this.textbox.keyboardFinish = true;
+            this.textbox.finish(false);
         }
 
         else if (e.code == 'Tab')
@@ -44,7 +44,7 @@ function initLabelTextbox(node)
             e.preventDefault();
             
             const tabs  = document.querySelectorAll('.node, .figmaSelect, .menuSelect #hexValue, button');
-            const index = node.tabIndex;
+            const index = this.tabIndex;
 
             for (let i = 0; i < tabs.length; i++) 
             {
@@ -70,125 +70,125 @@ function initLabelTextbox(node)
 
 
     
-    // node.textbox.addEventListener('input', function()
+    // this.textbox.addEventListener('input', function()
     // {
-    //     node.setValue(parseFloat(node.textbox.value));
+    //     this.setValue(parseFloat(this.textbox.value));
     // });
 
 
 
-    node.textbox.addEventListener('pointerdown', e => e.stopPropagation());
-    node.textbox.addEventListener('pointermove', e => node.textbox.style.cursor = 'default');
+    this.textbox.addEventListener('pointerdown', e => e.stopPropagation());
+    this.textbox.addEventListener('pointermove', e => this.textbox.style.cursor = 'default');
 
 
 
-    node.textbox.addEventListener('pointerup', e =>
+    this.textbox.addEventListener('pointerup', e =>
     {
         e.stopPropagation();
 
         if (e.button == 2)
         {
-            initTextMenu(node.textbox);
+            initTextMenu(this.textbox);
             menuText.showAt(e.clientX, e.clientY, false);
         }
     });
 
 
 
-    node.textbox.addEventListener('paste', function(e)
+    this.textbox.addEventListener('paste', function(e)
     {
         e.preventDefault();
-        node.textbox.value = e.clipboardData.getData('text/plain');
+        this.textbox.value = e.clipboardData.getData('text/plain');
     });
 
     
     
-    node.textbox.addEventListener('focus', () => node.textbox.keyboardFinish = false);
+    this.textbox.addEventListener('focus', () => this.textbox.keyboardFinish = false);
 
     
     
-    node.textbox.addEventListener('focusout', function()
+    this.textbox.addEventListener('focusout', function()
     {
-        if (    node.textbox.value != ''
-            && !node.textbox.keyboardFinish)
-            node.textbox.finish(true);
+        if (    this.textbox.value != ''
+            && !this.textbox.keyboardFinish)
+            this.textbox.finish(true);
 
-        node.label.style.display = 'block';
+            this.label.style.display = 'block';
 
-        node.header.removeChild(node.textbox);
-        node.clicked = false;
+        this.header.removeChild(this.textbox);
+        this.clicked = false;
     });
     
 
 
-    node.textbox.finish = function(success)
+    this.textbox.finish = function(success)
     {
-        const enteredValue = node.textbox.value;
-        const   savedValue = node.textbox.savedValue;
+        const enteredValue = this.textbox.value;
+        const   savedValue = this.textbox.savedValue;
 
         if (success) 
         {
             if (   enteredValue != ''
                 && enteredValue != savedValue)
             {
-                const newName = node.textbox.value;
-                setTimeout(() => node.setName(newName));
-                actionManager.do(new RenameNodeAction(node.id, newName));
+                const newName = this.textbox.value;
+                setTimeout(() => this.setName(newName));
+                actionManager.do(new RenameNodeAction(this.graph, this.id, newName));
             }
         }
         else
-            node.textbox.value = node.textbox.savedValue;
+            this.textbox.value = this.textbox.savedValue;
 
 
-        node.textbox.dispatchEvent(new CustomEvent('finishedit', { 'detail': {
+        this.textbox.dispatchEvent(new CustomEvent('finishedit', { 'detail': {
             'success':  success,
             'value':    enteredValue,
             'oldValue': savedValue }}));
     
 
-        node.textbox.blur();
+        this.textbox.blur();
         
-        node.label.style.display = 'block';
+        this.label.style.display = 'block';
 
         setTimeout(() => 
         {
-            node.updateHeaderLabel();
+            this.updateHeaderLabel();
             
-            if (node.inFocus)
-                node.focus();
+            if (this.inFocus)
+                this.focus();
         });
     };    
  
     
     
-    node.showLabelTextbox = function()
+    this.showLabelTextbox = function()
     {
-        node.inFocus = 
-                hasFocus(node)
-            && !node.clicked;
+        this.inFocus = 
+                hasFocus(this)
+            && !this.clicked;
     
-        node.textbox.style.width           = node.header.offsetWidth  - 2;
-        node.textbox.style.height          = node.header.offsetHeight - 4;
-        node.textbox.style.position        = 'absolute';
-        node.textbox.style.left            = '50%';
-        node.textbox.style.top             = '50%';
-        node.textbox.style.transform       = 'translateX(-50%) translateY(-50%)';
-        node.textbox.style.textAlign       = 'center';
-        //node.textbox.style.boxShadow       = '0 0 0 1px #a0a inset';
+        this.textbox.style.width           = this.header.offsetWidth  - 2;
+        this.textbox.style.height          = this.header.offsetHeight - 4;
+        this.textbox.style.position        = 'absolute';
+        this.textbox.style.left            = '50%';
+        this.textbox.style.top             = '50%';
+        this.textbox.style.transform       = 'translateX(-50%) translateY(-50%)';
+        this.textbox.style.textAlign       = 'center';
+      //this.textbox.style.boxShadow       = '0 0 0 1px #a0a inset';
 
-        node.textbox.style.backgroundColor = node.header.style.backgroundColor;
-        node.textbox.style.color           = node.label.style.color;
+        this.textbox.style.backgroundColor = this.header.style.backgroundColor;
+        this.textbox.style.color           = this.label.style.color;
 
-        node.textbox.value                 = node.name;
-        node.textbox.savedValue            = node.textbox.value;
+        this.textbox.value                 = this.name;
+        this.textbox.savedValue            = this.textbox.value;
         
-        node.header.appendChild(node.textbox);
+        this.header.appendChild(this.textbox);
 
-        node.label.style.display           = 'none';
+        this.label.style.display           = 'none';
         
-        node.updateNode();
+        this.updateNode();
         
-        node.textbox.focus();
-        node.textbox.select();
+        this.textbox.focus();
+        this.textbox.select();
     }
 }

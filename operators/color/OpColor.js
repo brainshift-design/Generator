@@ -269,10 +269,12 @@ extends OpColorBase
             this.paramSpace.setValue(space, false, true, false);
 
 
+            const view = this.graph.view;
+
             if (   convert.value != space.value
-                || graphView.pastingNodes
-                || graphView.loadingNodes
-                || graphView.restoringNodes)
+                || view.pastingNodes
+                || view.loadingNodes
+                || view.restoringNodes)
                 switchToSpace(this, colorSpace(space.value));
             
 
@@ -444,7 +446,7 @@ extends OpColorBase
         this.param3    .enableControlText(enable);
 
 
-        enableElementText(this.paramColor.control, !this.isConnected());
+        enableElementText(this.paramColor.control.div, !this.isConnected());
 
 
         this.updateParamControls();
@@ -454,9 +456,9 @@ extends OpColorBase
 
     resetAllControlRanges()
     {
-        resetControlRanges(this.param1.control);
-        resetControlRanges(this.param2.control);
-        resetControlRanges(this.param3.control);
+        this.param1.control.resetRanges();
+        this.param2.control.resetRanges();
+        this.param3.control.resetRanges();
     }
 
 
@@ -574,7 +576,7 @@ extends OpColorBase
             lastOf(ranges).end = 1;
         else if (!open
               && isEmpty(ranges))
-            resetControlRanges(control);
+            control.resetRanges();
 
 
         control.ranges = ranges;

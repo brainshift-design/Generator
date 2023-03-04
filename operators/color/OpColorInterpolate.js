@@ -37,29 +37,6 @@ extends OpColorBase
         this.header.connectionPadding = 12.5;
 
         
-        // this.inputs[0].addEventListener('connect', () => 
-        // {
-        //     if (   !this.inputs[1].connected
-        //         && !graphView.loadingNodes) 
-        //         this.paramSpace.setValue(
-        //             colorSpaceIndex(this.inputs[0].data.color[0]),
-        //             true, true, false);
-        // });
-
-
-        // this.inputs[1].addEventListener('connect', () => 
-        // {
-        //     if (   !this.inputs[0].connected
-        //         && !graphView.loadingNodes) 
-        //         this.paramSpace.setValue(
-        //             colorSpaceIndex(this.inputs[1].data.color[0]),
-        //             true, true, false);
-        // });
-
-
-        //this.paramSpace.control.addEventListener('change', () => hideTooltip(ttInterpolationSpace));
-
-
         createTooltip(ttInterpolationSpace);
         this.paramSpace.getTooltip = () => ttInterpolationSpace;
     }

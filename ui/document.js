@@ -108,8 +108,8 @@ document.addEventListener('pointerup', function(e)
     document.resizingR = false;
     document.resizingB = false;
 
-    scrollbarX.moving  = false;
-    scrollbarY.moving  = false;
+    graphView.scrollbarX.moving  = false;
+    graphView.scrollbarY.moving  = false;
 });
 
 

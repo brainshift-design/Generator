@@ -2,9 +2,9 @@
 // {
 //     switch (e.detail.selectedValue)
 //     {
-//         case 'saveLocal':  saveToLocalFile('graph.json'); break;
+//         case 'saveLocal':  saveToLocalFile('graphView.graph.json'); break;
 //         case 'loadLocal':  loadFromLocalFile();           break;
-//         case 'duplicate':  console.log(graph.toJson());     break;
+//         case 'duplicate':  console.log(graphView.graph.toJson());     break;
 //         case 'productKey': showProductKeyDialog();        break;
 //     }
 // });
