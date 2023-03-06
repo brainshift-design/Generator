@@ -1,12 +1,15 @@
 class Graph
 {
-    view         = null;
+    view             = null;
 
-    nodes        = [];
-    deferNodeIds = [];
+    parentNodeGroup = null;
+
+
+    nodes            = [];
+    deferNodeIds     = [];
     
 
-    connections  = [];
+    connections      = [];
 
 
 
@@ -82,7 +85,7 @@ class Graph
 
     addNode(node, placeNode = true, updateLabel = true)
     {
-        node.graph = this;
+        node.parentGraph = this;
 
         node.id = this.getNewNodeId(node.id, node.id);
         
@@ -130,8 +133,8 @@ class Graph
         {
             const node = this.nodes.find(n => n.id == id);
 
-            node.selected = false;
-            node.graph    = null;
+            node.selected    = false;
+            node.parentGraph = null;
 
             node.div.style.display = 'none';
 
@@ -393,9 +396,9 @@ function createNode(nodeType, creatingButton = null, createdNodeId = -1, options
         case POLYGON:                 node = new OpPolygon();           break;
         case STAR:                    node = new OpStar();              break;
       
-        case CUSTOM:                  node = new OpCustom();            break;
-        case CUSTOM_INPUTS:           node = new OpCustomInputs();      break;
-        case CUSTOM_OUTPUTS:          node = new OpCustomOutputs();     break;
+        case NODE_GROUP:              node = new OpNodeGroup();         break;
+        case NODE_INPUTS:             node = new OpNodeInputs();        break;
+        case NODE_OUTPUTS:            node = new OpNodeOutputs();       break;
 
         case COMMENT:                 node = new OpComment();           break;
      

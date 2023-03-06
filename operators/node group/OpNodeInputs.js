@@ -1,4 +1,4 @@
-class   OpCustomInputs
+class   OpNodeInputs
 extends OperatorBase
 {
     paramCount;
@@ -7,7 +7,7 @@ extends OperatorBase
 
     constructor()
     {
-        super(CUSTOM_INPUTS, 'inputs');
+        super(NODE_INPUTS, 'inputs');
 
         //this.inert = true;
 
@@ -108,7 +108,7 @@ extends OperatorBase
 
                     if (_conn)
                     {
-                        const conn = uiConnect(param.output, this.graph.nodeFromId(_conn.inputNodeId).inputFromId(_conn.inputId));
+                        const conn = uiConnect(param.output, this.parentGraph.nodeFromId(_conn.inputNodeId).inputFromId(_conn.inputId));
                         uiSaveConn(conn);
                     }
                 }

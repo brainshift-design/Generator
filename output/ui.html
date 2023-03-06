@@ -1696,7 +1696,7 @@ a
     position:       absolute;
     width:          100%;
     height:         calc(100% - 1px);
-    z-index:        0;
+    z-index:        1;
     pointer-events: none;
     overflow:       hidden;
 }
@@ -2682,7 +2682,6 @@ a
     z-index:        10;
     white-space:    nowrap;
     font-weight:    600;
-    text-rendering: geometricPrecision;
  /* box-shadow:     0 0 0 1px magenta inset; */
 }
 
@@ -2700,6 +2699,7 @@ a
     white-space:    nowrap;
     vertical-align: top;
     left:           50%;
+    text-rendering: geometricPrecision;
  /* box-shadow:     0 0 0 1px green inset; */
 }
 
@@ -3143,7 +3143,7 @@ a
                 <h1 style='margin-top: 20px;'>What's new in Generator</h1>
 
                 <p>Fixed zoom to fit.</p>
-                <p>Added min. zoom indicator to zoom botton.</p>
+                <p>Added min. zoom indicator to zoom button.</p>
                 <p>Added copy/paste menu to all textboxes.</p>
                 <p>Consolidated value change undo into a single action.</p>
                 <p>Fixed UI issues.</p>
@@ -3817,12 +3817,15 @@ function rgbHeaderFromType(type, active)
                  ? rgbActiveColor  
                  : rgbColor;
 
-        case CUSTOM:
-        case CUSTOM_INPUTS:
-        case CUSTOM_OUTPUTS:
+        case NODE_GROUP:
+        case NODE_INPUTS:
+        case NODE_OUTPUTS:
             return active 
-                 ? (darkMode ? rgbActiveCustomDark : rgbActiveCustomLight)
-                 : (darkMode ? rgbCustomDark       : rgbCustomLight      );
+                 ? (darkMode ? rgbActiveFlowDark : rgbActiveFlowLight)
+                 : (darkMode ? rgbFlowDark       : rgbFlowLight      );
+            // return active 
+            //      ? (darkMode ? rgbActiveCustomDark : rgbActiveCustomLight)
+            //      : (darkMode ? rgbCustomDark       : rgbCustomLight      );
     }
 
     return 'magenta';
@@ -6837,9 +6840,9 @@ const ALL_TYPES =
 ];
 
 
-const CUSTOM         = 'CUST';
-const CUSTOM_INPUTS  = 'CUSTIN';
-const CUSTOM_OUTPUTS = 'CUSTOUT';
+const NODE_GROUP     = 'NGRP';
+const NODE_INPUTS    = 'NGIN';
+const NODE_OUTPUTS   = 'NGOUT';
 
 
 const COMMENT        = 'CMNT';
@@ -6855,6 +6858,8 @@ const PARAM          = 'PARAM'; // nodeId paramId
 
 const LOG            = 'LOG';
 
+
+const GRAPH          = 'GRAPH';
 
 
 const MATH_OPS = 
@@ -6922,6 +6927,7 @@ const SELECT_MOVE_ACTION         = 'SELECT_MOVE';
 const SET_VALUE_ACTION           = 'SET_VALUE';
 const TOGGLE_DISABLE_ACTION      = 'TOGGLE_DISABLE';
 const TOGGLE_SYMBOL_ACTION       = 'TOGGLE_SYMBOL';
+const SET_CURRENT_GRAPH_ACTION   = 'SET_URRENT_GRAPH';
 
 
 
@@ -14149,7 +14155,7 @@ extends GObjectBase
 }
 
 
-class GCustom
+class GNodeGroup
 extends GOperator
 {
     // input = null;
@@ -14158,14 +14164,14 @@ extends GOperator
 
     constructor(nodeId, options)
     {
-        super(CUSTOM, nodeId, options);
+        super(NODE_GROUP, nodeId, options);
     }
 
 
     
     copy()
     {
-        const copy = new GCustom(this.nodeId, this.options);
+        const copy = new GNodeGroup(this.nodeId, this.options);
 
         copy.copyBase(this);
 
@@ -14209,7 +14215,7 @@ extends GOperator
 
 
 
-class GCustomInputs
+class GNodeInputs
 extends GOperator
 {
     input = null;
@@ -14230,7 +14236,7 @@ extends GOperator
 
     copy()
     {
-        const copy = new GCustomInputs(this.nodeId, this.options);
+        const copy = new GNodeInputs(this.nodeId, this.options);
         
         copy.copyBase(this);
 
@@ -15459,7 +15465,7 @@ function genParseCustom(parse)
     const [, nodeId, options, ignore] = genParseNodeStart(parse);
 
 
-    const custom = new GCustom(nodeId, options);
+    const group = new GNodeGroup(nodeId, options);
 
 
     // let nInputs = -1;
@@ -15472,12 +15478,12 @@ function genParseCustom(parse)
 
 
     if (parse.settings.logRequests) 
-        logReq(custom, parse, ignore);//, nInputs);
+        logReq(group, parse, ignore);//, nInputs);
 
 
     if (ignore) 
     {
-        genParseNodeEnd(parse, custom);
+        genParseNodeEnd(parse, group);
         return parse.parsedNodes.find(n => n.nodeId == nodeId);
     }
 
@@ -15492,8 +15498,8 @@ function genParseCustom(parse)
     parse.nTab--;
 
 
-    genParseNodeEnd(parse, custom);
-    return custom;
+    genParseNodeEnd(parse, group);
+    return group;
 }
 
 
@@ -17232,9 +17238,9 @@ function genParse(parse, inParam = true)
     else if (parse.next == POLYGON                ) result = genParsePolygon         (parse);
     else if (parse.next == STAR                   ) result = genParseStar            (parse);
 
-    else if (parse.next == CUSTOM                 ) result = genParseCustom          (parse);
-    else if (parse.next == CUSTOM_INPUTS          ) result = genParseCustomInputs    (parse);
-    else if (parse.next == CUSTOM_OUTPUTS         ) result = genParseCustomOutputs   (parse);
+    else if (parse.next == NODE_GROUP             ) result = genParseCustom          (parse);
+    else if (parse.next == NODE_INPUTS            ) result = genParseCustomInputs    (parse);
+    else if (parse.next == NODE_OUTPUTS           ) result = genParseCustomOutputs   (parse);
 
     else if (parse.next == COMMENT                ) result = genParseComment         (parse);
 
@@ -17370,7 +17376,7 @@ function genParseCustom(parse)
     const [, nodeId, options, ignore] = genParseNodeStart(parse);
 
 
-    const cache = new GCustom(nodeId, options);
+    const cache = new GNodeGroup(nodeId, options);
 
 
     // let nInputs = -1;
@@ -20755,12 +20761,15 @@ function rgbHeaderFromType(type, active)
                  ? rgbActiveColor  
                  : rgbColor;
 
-        case CUSTOM:
-        case CUSTOM_INPUTS:
-        case CUSTOM_OUTPUTS:
+        case NODE_GROUP:
+        case NODE_INPUTS:
+        case NODE_OUTPUTS:
             return active 
-                 ? (darkMode ? rgbActiveCustomDark : rgbActiveCustomLight)
-                 : (darkMode ? rgbCustomDark       : rgbCustomLight      );
+                 ? (darkMode ? rgbActiveFlowDark : rgbActiveFlowLight)
+                 : (darkMode ? rgbFlowDark       : rgbFlowLight      );
+            // return active 
+            //      ? (darkMode ? rgbActiveCustomDark : rgbActiveCustomLight)
+            //      : (darkMode ? rgbCustomDark       : rgbCustomLight      );
     }
 
     return 'magenta';
@@ -25994,9 +26003,9 @@ const ALL_TYPES =
 ];
 
 
-const CUSTOM         = 'CUST';
-const CUSTOM_INPUTS  = 'CUSTIN';
-const CUSTOM_OUTPUTS = 'CUSTOUT';
+const NODE_GROUP     = 'NGRP';
+const NODE_INPUTS    = 'NGIN';
+const NODE_OUTPUTS   = 'NGOUT';
 
 
 const COMMENT        = 'CMNT';
@@ -26012,6 +26021,8 @@ const PARAM          = 'PARAM'; // nodeId paramId
 
 const LOG            = 'LOG';
 
+
+const GRAPH          = 'GRAPH';
 
 
 const MATH_OPS = 
@@ -26079,6 +26090,7 @@ const SELECT_MOVE_ACTION         = 'SELECT_MOVE';
 const SET_VALUE_ACTION           = 'SET_VALUE';
 const TOGGLE_DISABLE_ACTION      = 'TOGGLE_DISABLE';
 const TOGGLE_SYMBOL_ACTION       = 'TOGGLE_SYMBOL';
+const SET_CURRENT_GRAPH_ACTION   = 'SET_URRENT_GRAPH';
 
 
 
@@ -33306,7 +33318,7 @@ extends GObjectBase
 }
 
 
-class GCustom
+class GNodeGroup
 extends GOperator
 {
     // input = null;
@@ -33315,14 +33327,14 @@ extends GOperator
 
     constructor(nodeId, options)
     {
-        super(CUSTOM, nodeId, options);
+        super(NODE_GROUP, nodeId, options);
     }
 
 
     
     copy()
     {
-        const copy = new GCustom(this.nodeId, this.options);
+        const copy = new GNodeGroup(this.nodeId, this.options);
 
         copy.copyBase(this);
 
@@ -33366,7 +33378,7 @@ extends GOperator
 
 
 
-class GCustomInputs
+class GNodeInputs
 extends GOperator
 {
     input = null;
@@ -33387,7 +33399,7 @@ extends GOperator
 
     copy()
     {
-        const copy = new GCustomInputs(this.nodeId, this.options);
+        const copy = new GNodeInputs(this.nodeId, this.options);
         
         copy.copyBase(this);
 
@@ -33788,6 +33800,48 @@ function loadLocalSettings()
 }
 
 
+class EmptyControl
+extends EventTarget
+{
+    div;
+
+    param;
+
+    
+
+    constructor(div, param)
+    {
+        super();
+
+
+        this.div         = div ? div : createDiv();
+        this.div.control = this;
+        this.div.style.boxShadow = '0 0 0 1px red inset';
+        
+        this.param       = param;
+    }
+
+
+
+    canReact(e)
+    {
+        return false;
+    }
+
+
+
+    updateMeasureData()
+    {
+        this.measureData = 
+        {
+            offsetRect: offsetRect(this.div),
+            clientRect: clientRect(this.div)
+        };
+    }
+}
+
+
+
 class NumberControl
 extends EventTarget
 {
@@ -33891,7 +33945,7 @@ extends EventTarget
 
 
     
-    get view() { return this.param.node.graph.view; }
+    get view() { return this.param.node.parentGraph.view; }
 
 
 
@@ -33918,7 +33972,7 @@ extends EventTarget
         
         this.div.style.display      = 'inline';
 
-        
+
         this.value                  = defaultValue;
     
         this.min                    = min;
@@ -34789,7 +34843,7 @@ NumberControl.prototype.initEvents = function()
     this.div.addEventListener('pointerenter', e =>
     {
         const param = this.param;
-        const view  = param.node.graph.view;
+        const view  = param.node.parentGraph.view;
         
 
         if (!this.canReact(e))
@@ -34849,7 +34903,7 @@ NumberControl.prototype.initEvents = function()
     this.div.addEventListener('pointerdown', e =>
     {
         const param = this.param;
-        const view  = param.node.graph.view;
+        const view  = param.node.parentGraph.view;
 
 
         if (!this.canReact(e))
@@ -34962,7 +35016,7 @@ NumberControl.prototype.initEvents = function()
     this.div.addEventListener('pointermove', e =>
     {
         const param = this.param;
-        const view  = param.node.graph.view;
+        const view  = param.node.parentGraph.view;
 
 
         if (!this.canReact(e))
@@ -35108,7 +35162,7 @@ NumberControl.prototype.initEvents = function()
     this.div.addEventListener('pointerleave', e =>
     {
         const param = this.param;
-        const view  = param.node.graph.view;
+        const view  = param.node.parentGraph.view;
 
 
         if (!this.canReact(e))
@@ -35183,7 +35237,7 @@ NumberControl.prototype.initEvents = function()
     this.div.addEventListener('pointerup', e =>
     {
         const param = this.param;
-        const view  = param.node.graph.view;
+        const view  = param.node.parentGraph.view;
 
 
         if (!this.canReact(e))
@@ -35280,7 +35334,7 @@ NumberControl.prototype.initEvents = function()
     this.div.addEventListener('wheel', e =>
     {
         const param = this.param;
-        const view  = param.node.graph.view;
+        const view  = param.node.parentGraph.view;
 
 
         if (!this.canReact(e))
@@ -35356,7 +35410,7 @@ NumberControl.prototype.initEvents = function()
 
     this.div.addEventListener('focus', () =>
     {
-        if (   !this.this.param.node.graph.view.spaceDown
+        if (   !this.this.param.node.parentGraph.view.spaceDown
             && !panMode
             && !this.buttonDown1
             &&  this.pointerEvents)
@@ -35432,7 +35486,7 @@ extends EventTarget
     
     
 
-    get view() { return this.param.node.graph.view; }
+    get view() { return this.param.node.parentGraph.view; }
 
 
 
@@ -36535,7 +36589,7 @@ const iconEllipse           = '<svg width="16" height="16" viewBox="0 0 16 16" f
 const iconPolygon           = '<svg width="20" height="16" viewBox="0 0 20 16" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M1.82238 15.4885L10.0496 1.23853L18.2769 15.4885H1.82238Z" stroke="white"/></svg>';
 const iconStar              = '<svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M8.8156 2.24924L10.4021 7.13198L10.5144 7.47747H10.8776H16.0116L11.8581 10.4952L11.5642 10.7087L11.6765 11.0542L13.263 15.9369L9.10949 12.9192L8.8156 12.7057L8.5217 12.9192L4.3682 15.9369L5.9547 11.0542L6.06695 10.7087L5.77306 10.4952L1.61955 7.47747H6.75357H7.11684L7.2291 7.13198L8.8156 2.24924Z" stroke="white"/></svg>';
  
-const iconCustom            = '<svg width="19" height="17" viewBox="0 0 19 17" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="13.5" cy="8.5" r="1" stroke="white"/><circle cx="5.5" cy="5.5" r="1.5" fill="white"/><circle cx="5.5" cy="11.5" r="1.5" fill="white"/><path d="M6.5 5.5C9.29122 5.5 9.55053 8.5 12.5 8.5C9.55053 8.5 9.29122 11.5 6.5 11.5" stroke="white"/><path d="M3 0.5H16C17.3807 0.5 18.5 1.61929 18.5 3V16.5H0.5V3C0.5 1.61929 1.61929 0.5 3 0.5Z" stroke="white"/></svg>';
+const iconNodeGroup            = '<svg width="19" height="17" viewBox="0 0 19 17" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="13.5" cy="8.5" r="1" stroke="white"/><circle cx="5.5" cy="5.5" r="1.5" fill="white"/><circle cx="5.5" cy="11.5" r="1.5" fill="white"/><path d="M6.5 5.5C9.29122 5.5 9.55053 8.5 12.5 8.5C9.55053 8.5 9.29122 11.5 6.5 11.5" stroke="white"/><path d="M3 0.5H16C17.3807 0.5 18.5 1.61929 18.5 3V16.5H0.5V3C0.5 1.61929 1.61929 0.5 3 0.5Z" stroke="white"/></svg>';
 
 const iconHand              = '<svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" clip-rule="evenodd" d="M1.85653 12.2494L1.8554 12.2484C1.32015 11.771 1.2929 10.8911 1.7976 10.3815C2.3023 9.87193 3.1824 9.89065 3.665 10.4213L3.67129 10.4282L3.67773 10.435L4.27294 11.0653L5.99999 12.8943V10.3788V4C5.99999 3.46423 6.46423 3 6.99999 3C7.16906 3 7.33572 3.04789 7.48718 3.13836L7.99999 3.44469V9H8.99999V4.04203V3V2.27986V2C8.99999 1.46423 9.46423 1 9.99999 1C10.4142 1 10.807 1.27942 10.9437 1.66905L11.0597 2H11V9H12V2.4661L12.4437 2.16905C12.6058 2.06052 12.804 2 13 2C13.5358 2 14 2.46423 14 3V4V4.27549V6.02711V9H15V5.43676L15.5084 5.13662C15.6583 5.04814 15.8261 5 16 5C16.5358 5 17 5.46423 17 6V13.5C17 15.6001 15.7227 17.6052 13.812 18.4904C11.8955 19.3783 9.56768 19.0654 7.95351 17.7039L1.85653 12.2494ZM15 4.27549V4V3.17508V3C15 1.91195 14.088 1 13 1C12.9434 1 12.8868 1.00246 12.8304 1.00733C12.4943 1.03638 12.1668 1.15099 11.8873 1.3381C11.7759 1.02046 11.5846 0.741833 11.341 0.522228C10.9792 0.195965 10.5019 0 9.99999 0C9.18005 0 8.46014 0.517876 8.15511 1.23874C8.05538 1.47446 7.99999 1.73188 7.99999 2V2.27986C7.70403 2.10307 7.36184 2.00018 7.00094 2H6.99999C5.91195 2 4.99999 2.91195 4.99999 4V8.92652V9.18641V9.20713V10.3788L4.40481 9.74846C4.2821 9.61355 4.14593 9.49706 3.99999 9.39906C3.11355 8.80379 1.86654 8.89082 1.08709 9.67785C0.179345 10.5944 0.227074 12.136 1.18978 12.9947L7.2972 18.4585C9.20886 20.0788 11.9586 20.4512 14.2324 19.3978C16.4971 18.3486 18 15.989 18 13.5V6C18 4.91195 17.088 4 16 4C15.6382 4 15.2958 4.10085 15 4.27549Z" fill="white"/></svg>';
 
@@ -36697,8 +36751,8 @@ class Menu
 
     show(srcDiv, right = false)
     {
-        if (graphView._soloNode);
-            graphView.unsoloNode();
+        if (currentView._soloNode);
+            currentView.unsoloNode();
 
 
         this.initMenu();
@@ -36731,7 +36785,7 @@ class Menu
             right
             ? (this.showOnLeft ? srcRect.x - this.div.offsetWidth : srcRect.x + srcRect.width)
             : srcRect.x + srcRect.width/2 - this.div.offsetWidth/2),
-            graphView.div.offsetWidth - this.div.offsetWidth - margin);
+            currentView.div.offsetWidth - this.div.offsetWidth - margin);
 
         this.div.style.top =
             right
@@ -36758,8 +36812,8 @@ class Menu
 
     showAt(x, y, hidePrev = true)
     {
-        if (graphView._soloNode);
-            graphView.unsoloNode();
+        if (currentView._soloNode);
+            currentView.unsoloNode();
 
 
         if (hidePrev)
@@ -36777,7 +36831,7 @@ class Menu
 
         const margin = 8;
 
-        let   left   = Math.min(Math.max(margin, x), graphView.div.offsetWidth - this.div.offsetWidth - margin) - 6;
+        let   left   = Math.min(Math.max(margin, x), currentView.div.offsetWidth - this.div.offsetWidth - margin) - 6;
         let   top    = y - 4;
 
 
@@ -36788,9 +36842,9 @@ class Menu
                 height += item.separator ? 17 : 25;
 
 
-        const graphHeight = graphView.div.offsetHeight - menuBarHeight;
+        const graphHeight = currentView.div.offsetHeight - menuBarHeight;
 
-        if (top + height > graphView.div.offsetHeight-8)
+        if (top + height > currentView.div.offsetHeight-8)
         {
             height = Math.min(height, graphHeight - 16);
             top    = menuBarHeight + Math.max(8, graphHeight - height);
@@ -37689,8 +37743,8 @@ function initGeneratorMenus()
         menuFlowSep3   = new MenuItem('',                  {separator: true}),
         menuItemCache  = new MenuItem('Cache',             {icon: iconCache,  callback: e => actionManager.do(getCreateNodeAction(CACHE,   btnNumber.div, {insert: e.ctrlKey}))}),
         menuItemCopy   = new MenuItem('Copy',              {icon: iconCopy,   callback: e => actionManager.do(getCreateNodeAction(COPY,    btnNumber.div, {insert: e.ctrlKey}))}),
-        menuItemCustomInputs   = new MenuItem('Custom inputs',     {callback: e => actionManager.do(getCreateNodeAction(CUSTOM_INPUTS,    btnNumber.div, {insert: e.ctrlKey}))}),
-        menuItemCustomOutputs   = new MenuItem('Custom outputs',    {callback: e => actionManager.do(getCreateNodeAction(CUSTOM_OUTPUTS,    btnNumber.div, {insert: e.ctrlKey}))})]);
+        menuItemCustomInputs   = new MenuItem('Custom inputs',     {callback: e => actionManager.do(getCreateNodeAction(NODE_INPUTS,    btnNumber.div, {insert: e.ctrlKey}))}),
+        menuItemCustomOutputs   = new MenuItem('Custom outputs',    {callback: e => actionManager.do(getCreateNodeAction(NODE_OUTPUTS,    btnNumber.div, {insert: e.ctrlKey}))})]);
     
     
     menuMath = new Menu('Math', true, false);
@@ -37839,13 +37893,32 @@ function initGeneratorMenus()
         menuItemNodeSep1               = new MenuItem('',                    {separator: true}),
         menuItemNodeSelect             = new MenuItem('Select',              {childMenu: menuNodeSelect}),
         menuItemNodeSep2               = new MenuItem('',                    {separator: true}),
-        menuItemNodeRename             = new MenuItem('Rename',              {shortcut:  osCtrl() + 'R',              callback: e => { hideAllMenus(); graphView.renameSelectedNode(); }}),
-        menuItemNodeEdit               = new MenuItem('Edit...',             {callback: e => { hideAllMenus();  }}),
+        // menuItemNodeRename             = new MenuItem('Rename',              {shortcut:  osCtrl() + 'R',              callback: e => { hideAllMenus(); graphView.renameSelectedNode(); }}),
+        menuItemNodeEdit               = new MenuItem('Edit...',             {callback: e => { hideAllMenus(); graphView.editSelectedCustomNode(); }}),
                                          new MenuItem('',                    {separator: true}),
         menuItemNodeActivate           = new MenuItem('Activate',            {callback: () => makeSelectedNodesActive()}),
         menuItemNodeEnableDisable      = new MenuItem('Enable/Disable',      {shortcut:  osCtrl() + osShift() + 'E',  callback: () => actionManager.do(new ToggleDisableNodesAction(graphView.graph, graphView.selectedNodes.map(n => n.id)))}),
                                          new MenuItem('',                    {separator: true}),
         menuItemNodeRemove             = new MenuItem('Remove',              {shortcut:  osShift() + '⌫',            callback: e => { hideAllMenus(); graphView.removeSelectedNodes(true); }})]);
+
+
+    menuNode.init = () => 
+    {
+        const single   = graphView.selectedNodes.length == 1;
+        const parallel = nodesAreParallel(graphView.selectedNodes);
+
+        const group = 
+               graphView.selectedNodes.length == 1 
+            && graphView.selectedNodes[0].type == NODE_GROUP;
+
+
+        updateMenuItemDisplay(menuItemNodeSep1    .div, single);
+      //updateMenuItemDisplay(menuItemNodeRename  .div, single);
+        updateMenuItemDisplay(menuItemNodeEdit    .div, single && group);
+        updateMenuItemDisplay(menuItemNodeSep2    .div, single && group);
+        updateMenuItemDisplay(menuItemNodeSelect  .div, single);
+        updateMenuItemDisplay(menuItemNodeActivate.div, single || parallel);
+    };
 
 
     menuRemoveLicense = new Menu('Remove license', false, false);
@@ -37860,26 +37933,7 @@ function initGeneratorMenus()
     menuText = new Menu('Text menu', false, false);
 
 
-    menuNode.init = () => 
-    {
-        const single   = graphView.selectedNodes.length == 1;
-        const parallel = nodesAreParallel(graphView.selectedNodes);
-
-        const custom  = 
-               graphView.selectedNodes.length == 1 
-            && graphView.selectedNodes[0].type == CUSTOM;
-
-
-        updateMenuItemDisplay(menuItemNodeSep1    .div, single);
-        updateMenuItemDisplay(menuItemNodeRename  .div, single);
-        updateMenuItemDisplay(menuItemNodeEdit    .div, custom);
-        updateMenuItemDisplay(menuItemNodeSep2    .div, single);
-        updateMenuItemDisplay(menuItemNodeSelect  .div, single);
-        updateMenuItemDisplay(menuItemNodeActivate.div, single || parallel);
-    };
-
-
-    menuLocalStyles = new Menu('Local styles', true, true);
+    menuLocalStyles = new Menu('Local styles',   true,  true);
     menuSelectParam = new Menu('Select options', false, true);
 
     
@@ -37891,9 +37945,9 @@ function initGeneratorMenus()
     btnStyle    = new MenuButton('', menuStyle,  {useMenuName: true, highlight: () => currentMenus.includes(menuStyle ), callback: () => updatePanMode(false)});
     btnShape    = new MenuButton('', menuShape,  {useMenuName: true, highlight: () => currentMenus.includes(menuShape ), callback: () => updatePanMode(false)});
 
-    btnCustom   = new MenuButton('Custom nodes', null, {callback: () => 
+    btnCustom   = new MenuButton('Node groups', null, {callback: () => 
     {
-        const create = new CreateNodeAction(graphView.graph, CUSTOM, btnCustom.div);
+        const create = new CreateNodeAction(graphView.graph, NODE_GROUP, btnCustom.div);
         actionManager.do(create);
 
         graphView.update([create.node]);
@@ -37940,7 +37994,7 @@ function initGeneratorMenus()
 
     btnMain   .setIcon(iconGenerator);
     btnShape  .setIcon(iconShapes);
-    btnCustom .setIcon(iconCustom);
+    btnCustom .setIcon(iconNodeGroup);
     btnHand   .setIcon(iconHand);
     btnComment.setIcon(iconComment);
 }
@@ -39328,7 +39382,6 @@ class GraphView
         for (let i = 0; i < nodes.length; i++)
             nodes[i].setTransform(nodeLeft[i], nodeTop[i], nodeRect[i]);
 
-
         if (_updateWires)
             this.updateNodeWireTransforms(nodes);
     }
@@ -39588,9 +39641,15 @@ GraphView.prototype.layoutSelectedNodes = function()
 GraphView.prototype.renameSelectedNode = function()
 {
     if (this.selectedNodes.length == 1)
-    this.selectedNodes[0].showLabelTextbox();
+        this.selectedNodes[0].showLabelTextbox();
 };
 
+
+
+GraphView.prototype.editSelectedCustomNode = function()
+{
+    actionManager.do(new SetCurrentGraphAction(this.selectedNodes[0].graph));
+};
 
 
 GraphView.prototype.startConnectionFromOutput = function(pointerId, output, updateTempWire = true, backInit = false)
@@ -40983,7 +41042,7 @@ extends EventTarget
     
     isVisible()
     {
-        return false;
+        return true;
     }
 
 
@@ -41047,7 +41106,7 @@ extends EventTarget
                 if (createAction)
                 {
                     actionManager.do(
-                        new SetParamValueAction(this.node.graph, this, value), 
+                        new SetParamValueAction(this.node.parentGraph, this, value), 
                           !isEmpty(actionManager.actions)
                         && lastOf(actionManager.actions).type == SET_VALUE_ACTION);
 
@@ -41363,7 +41422,7 @@ extends NumberParamBase
 
         this.control.addEventListener('confirm', () => 
         { 
-            actionManager.do(new EmptyAction(this.node.graph), true);
+            actionManager.do(new EmptyAction(this.node.parentGraph), true);
         });
 
 
@@ -42815,6 +42874,35 @@ extends Parameter
 }
 
 
+class   ViewParam
+extends Parameter
+{
+    control;
+
+
+
+    constructor(id, node)
+    {
+        super(GRAPH, id);
+
+        this.control = new EmptyControl(null, this);
+
+        this.div.appendChild(this.control.div);
+
+        this.control.div.style.width  = '100%';
+        this.control.div.style.height = 'calc(90% - ' + node.header.offsetHeight + 'px)';
+        //this.control.div.style.minHeight = '20px';
+    }
+
+
+
+    updateControls()
+    {
+
+    }
+}
+
+
 class   Input
 extends EventTarget
 {
@@ -43223,7 +43311,7 @@ class Output
                 return false;
 
 
-            const view = this.node.graph.view;
+            const view = this.node.parentGraph.view;
 
 
             if (view.headerOutput)
@@ -43278,7 +43366,7 @@ class Output
 
     endConnection()
     {
-        const view = this.node.graph.view;
+        const view = this.node.parentGraph.view;
 
 
         view.overOutput = null; 
@@ -43316,7 +43404,7 @@ class Output
     canReact(e)
     {
         if (   settings.enableZoomedOutParams
-            || this.node.graph.view.zoom > settings.minZoomForParams)
+            || this.node.parentGraph.view.zoom > settings.minZoomForParams)
             return true;
 
         e.preventDefault();
@@ -43341,7 +43429,7 @@ class Output
     
     updateControl()
     {
-        const view = this.node.graph.view;
+        const view = this.node.parentGraph.view;
 
 
         const mouseOver =
@@ -43438,7 +43526,7 @@ class Connection
     output;
     outputOrder; // in which connections FROM THIS OUTPUT were made
     
-    graph;
+    parentGraph;
 
     input;
 
@@ -43457,7 +43545,7 @@ class Connection
                  
         this.input       = input;
 
-        this.graph       = output ? output.node.graph : input.node.graph;
+        this.parentGraph = output ? output.node.parentGraph : input.node.parentGraph;
         
         this.wire        = new Wire(this);
     }
@@ -43591,29 +43679,29 @@ class Wire
 
     constructor(connection)
     {
-        this.connection            = connection;
-
-        this.svg                   = createSvg('svg');
-        this.svg.style.position    = 'absolute';
-        this.svg.style.left        = 0;
-        this.svg.style.top         = 0;
-        this.svg.style.overflow    = 'hidden';
-    
-        this.curve                 = createSvg('path');
-        this.curve.style.position  = 'absolute';
-        this.curve.style.fill      = 'none';
-
-        this.curve2                = createSvg('path');
-        this.curve2.style.position = 'absolute';
-        this.curve2.style.fill     = 'none';
-
-        this.xp1                   = createSvg('path');
-        this.xp1.style.position    = 'absolute';
-        this.xp1.style.fill        = 'none';
-    
-        this.xp2                   = createSvg('path');
-        this.xp2.style.position    = 'absolute';
-        this.xp2.style.fill        = 'none';
+        this.connection             = connection;
+ 
+        this.svg                    = createSvg('svg');
+        this.svg.style.position     = 'absolute';
+        this.svg.style.left         = 0;
+        this.svg.style.top          = 0;
+        this.svg.style.overflow     = 'hidden';
+     
+        this.curve                  = createSvg('path');
+        this.curve.style.position   = 'absolute';
+        this.curve.style.fill       = 'none';
+ 
+        this.curve2                 = createSvg('path');
+        this.curve2.style.position  = 'absolute';
+        this.curve2.style.fill      = 'none';
+ 
+        this.xp1                    = createSvg('path');
+        this.xp1.style.position     = 'absolute';
+        this.xp1.style.fill         = 'none';
+     
+        this.xp2                    = createSvg('path');
+        this.xp2.style.position     = 'absolute';
+        this.xp2.style.fill         = 'none';
 
 
         this.outBall                = createSvg('circle');
@@ -43645,7 +43733,7 @@ class Wire
         const output = this.connection.output;
         const input  = this.connection.input;
         
-        const view   = this.connection.graph.view;
+        const view   = this.connection.parentGraph.view;
 
 
         if (output)
@@ -43723,17 +43811,19 @@ class Wire
         this.updateInBall (        x2, y2);
         this.updateStyle  ();
 
-        const view = this.connection.graph.view;
+        const view = this.connection.parentGraph.view;
 
         this.svg.setAttribute('width',  view.div.clientWidth);
         this.svg.setAttribute('height', view.div.clientHeight);
+
+        this.svg.style.zIndex = 1;
     }
 
 
 
     updateCurve(x1, y1, x2, y2)
     {
-        const view = this.connection.graph.view;
+        const view = this.connection.parentGraph.view;
 
 
         if (!pointIsNaN(this.outputPos))
@@ -43830,7 +43920,7 @@ class Wire
     
     updateArrow(x0, y0, x1, y1, x2, y2, x3, y3)
     {
-        const view = this.connection.graph.view;
+        const view = this.connection.parentGraph.view;
 
 
         if (!pointIsNaN(this.outputPos))
@@ -43904,7 +43994,7 @@ class Wire
         const conn  = this.connection;
         let   color = this.getColor();
     
-        const view  = conn.graph.view;
+        const view  = conn.parentGraph.view;
     
 
         const l = rgb2hclok(color)[2];
@@ -44035,8 +44125,6 @@ class Wire
     
         this. inBall.style.r = 3 * view.zoom;
         this.outBall.style.r = 3 * view.zoom;
-    
-        this.svg.style.zIndex    = 1;
     }
     
     
@@ -44090,7 +44178,7 @@ class Operator
     subscription = false;
 
 
-    graph        = null;
+    parentGraph  = null;
     
     
     #type; // used in the code, not for generation
@@ -44127,6 +44215,8 @@ class Operator
     scrollName       = true;
 
     showActiveArrow  = false;
+
+    sharpBottomCorners = false;
     
 
     defaultWidth;
@@ -44179,12 +44269,12 @@ class Operator
     set selected(sel) 
     {
         if (this._selected)
-            removeFromArray(this.graph.view.selectedNodes, this);
+            removeFromArray(this.parentGraph.view.selectedNodes, this);
 
         this.setSelected(sel);     
 
         if (this._selected)
-            this.graph.view.selectedNodes.push(this);
+            this.parentGraph.view.selectedNodes.push(this);
     }        
 
 
@@ -44271,7 +44361,7 @@ class Operator
             && i.canConnectFrom(output));
 
         
-        const view = this.graph.view;
+        const view = this.parentGraph.view;
 
 
         if (   view.overInput
@@ -44359,7 +44449,7 @@ class Operator
         const outputs = this.headerOutputs.filter(o => arraysIntersect(o.types, inputTypes));
 
         return  outputs.length == 1
-            && !this.isOrFollows(this.graph.view.tempConn.input.node)
+            && !this.isOrFollows(this.parentGraph.view.tempConn.input.node)
             ? outputs[0]
             : null;
     }
@@ -44519,7 +44609,7 @@ class Operator
     {
         this._active = true;
 
-        const view = this.graph.view;
+        const view = this.parentGraph.view;
 
         if (    view
             &&  view.activeNodes
@@ -44534,8 +44624,8 @@ class Operator
         if (!this._active) 
             return;
             
-        if (this.graph.view.activeNodes.includes(this))
-            removeFromArray(this.graph.view.activeNodes, this);
+        if (this.parentGraph.view.activeNodes.includes(this))
+            removeFromArray(this.parentGraph.view.activeNodes, this);
 
         this._active = false;
     }
@@ -44560,6 +44650,36 @@ class Operator
    
         this.div.style.left = x + 'px';
         this.div.style.top  = y + 'px';
+
+        if (updateTransform)
+        {
+            this.div.style.display = 'block';
+            this.updateTransform();
+        }
+    }
+
+
+
+    setSize(w, h, updateTransform = true)
+    {
+        this.div.style.width  = w + 'px';
+        this.div.style.height = h + 'px';
+
+        if (updateTransform)
+        {
+            this.div.style.display = 'block';
+            this.updateTransform();
+        }
+    }
+
+
+
+    setRect(x, y, w, h, updateTransform = true)
+    {
+        this.div.style.left   = x + 'px';
+        this.div.style.top    = y + 'px';
+        this.div.style.width  = w + 'px';
+        this.div.style.height = h + 'px';
 
         if (updateTransform)
         {
@@ -44790,7 +44910,7 @@ class Operator
 
     setTransform(nodeLeft, nodeTop, nodeRect)
     {
-        const view = this.graph.view;
+        const view = this.parentGraph.view;
 
         this.div.style.transform =
               'translate(' 
@@ -44807,7 +44927,7 @@ class Operator
 
     getOffsetRect()
     {
-        const view = this.graph.view;
+        const view = this.parentGraph.view;
 
         const ox   = -view.pan.x / view.zoom;
         const oy   = -view.pan.y / view.zoom;
@@ -44866,7 +44986,7 @@ class Operator
         if (   node
             && !isEmpty(node.outputs)
             && !isEmpty(inputs))
-            actionManager.do(new ConnectAction(this.graph, node.outputs[0], inputs[0]), true);
+            actionManager.do(new ConnectAction(this.parentGraph, node.outputs[0], inputs[0]), true);
     }
 
 
@@ -44911,7 +45031,7 @@ class Operator
             + pos + tab + '"enabled": "' + boolToString(this.enabled)     + '",\n'
             + pos + tab + '"x": "'       + this.div.style.left            + '",\n'
             + pos + tab + '"y": "'       + this.div.style.top             + '",\n'
-            + pos + tab + '"z": "'       + this.graph.nodes.indexOf(this) + '"';
+            + pos + tab + '"z": "'       + this.parentGraph.nodes.indexOf(this) + '"';
 
         if (this.active)
             json += ',\n' + pos + tab + '"active": "' + this.active + '"';
@@ -45153,7 +45273,7 @@ Operator.prototype.createNode = function()
     this.div.addEventListener('pointerenter', e =>
     {
         this.div.over            = true;
-        this.graph.view.overNode = this;
+        this.parentGraph.view.overNode = this;
         
         if (    e.altKey
             && !getCtrlKey(e)
@@ -45169,7 +45289,7 @@ Operator.prototype.createNode = function()
     this.div.addEventListener('pointerleave', e =>
     {
         this.div.over            = false;
-        this.graph.view.overNode = null;
+        this.parentGraph.view.overNode = null;
         
         if (   (  !e.altKey
                 || getCtrlKey(e)
@@ -45213,6 +45333,7 @@ Operator.prototype.createHeader = function()
 
 
     this.createLabel();
+    this.initLabelTextbox();
 
     
     this. inputControls = createDiv('inputControls');
@@ -45227,7 +45348,7 @@ Operator.prototype.createHeader = function()
 
     this.header.addEventListener('pointerdown', e =>
     {
-        if (this.graph.view.isPanning(e))
+        if (this.parentGraph.view.isPanning(e))
             return;
 
 
@@ -45237,7 +45358,7 @@ Operator.prototype.createHeader = function()
         e.preventDefault();
 
 
-        const view = this.graph.view;
+        const view = this.parentGraph.view;
 
 
         view.lastSelectedNodes = [...view.selectedNodes];
@@ -45305,11 +45426,11 @@ Operator.prototype.createHeader = function()
 
     this.header.addEventListener('pointermove', e =>
     {
-        if (this.graph.view.isPanning(e))
+        if (this.parentGraph.view.isPanning(e))
             return;
 
 
-        const view = this.graph.view;
+        const view = this.parentGraph.view;
 
 
         //console.log(node.id + '.header.pointermove');
@@ -45431,11 +45552,11 @@ Operator.prototype.createHeader = function()
 
     this.header.addEventListener('pointerup', e =>
     {
-        if (this.graph.view.isPanning(e))
+        if (this.parentGraph.view.isPanning(e))
             return;
 
 
-        const view = this.graph.view;
+        const view = this.parentGraph.view;
 
 
         if (   e.button == 0
@@ -45444,7 +45565,7 @@ Operator.prototype.createHeader = function()
             if (this.div.moved)
             {
                 actionManager.do(new SelectMoveNodesAction(
-                    this.graph,
+                    this.parentGraph,
                     view.lastSelectedNodes.map(n => n.id), 
                     view.selectedNodes.map(n => n.id), 
                     point(this.div.slx,        this.div.sly      ),
@@ -45456,7 +45577,7 @@ Operator.prototype.createHeader = function()
                  //    && !this.selected)
             {
                 actionManager.do(new SelectNodesAction(
-                    this.graph,
+                    this.parentGraph,
                     view.selectedNodes    .map(n => n.id), 
                     view.lastSelectedNodes.map(n => n.id)));
             }
@@ -45491,7 +45612,7 @@ Operator.prototype.createHeader = function()
 
     this.header.addEventListener('pointerleave', e => 
     { 
-        const view = this.graph.view;
+        const view = this.parentGraph.view;
 
 
         if (view.tempConn)
@@ -45547,7 +45668,7 @@ Operator.prototype.createHeader = function()
             && e.clientY >= bounds.top  && e.clientY < bounds.bottom)
             this.showLabelTextbox();
         else if (!this.header.ignoreDoubleClick)
-            actionManager.do(new MakeActiveNodesAction(this.graph, [this.id]));
+            actionManager.do(new MakeActiveNodesAction(this.parentGraph, [this.id]));
 
             this.header.ignoreDoubleClick = false;
     });
@@ -45651,9 +45772,6 @@ Operator.prototype.createLabel = function()
               && x <  wrect.width - viewMargin) this.updateHeaderLabelOffsetX((x - viewMargin) / (wrect.width - viewMargin*2));
         else                                    this.updateHeaderLabelOffsetX();
     });
-
-
-    this.initLabelTextbox();
 };
 
 
@@ -45724,13 +45842,13 @@ Operator.prototype.updateHeaderLabelOffsetX = function(f = this.labelOffsetFacto
 Operator.prototype.initLabelTextbox = function()
 {
     this.textbox = createTextbox('nodeLabelTextbox');
-
+    
     this.textbox.spellcheck     = false;
     this.textbox.keyboardFinish = false;
     
 
 
-    this.textbox.addEventListener('keydown', function(e)
+    this.textbox.addEventListener('keydown', e =>
     {
         e.stopPropagation();
 
@@ -45818,7 +45936,7 @@ Operator.prototype.initLabelTextbox = function()
 
 
 
-    this.textbox.addEventListener('paste', function(e)
+    this.textbox.addEventListener('paste', e =>
     {
         e.preventDefault();
         this.textbox.value = e.clipboardData.getData('text/plain');
@@ -45830,7 +45948,7 @@ Operator.prototype.initLabelTextbox = function()
 
     
     
-    this.textbox.addEventListener('focusout', function()
+    this.textbox.addEventListener('focusout', () =>
     {
         if (    this.textbox.value != ''
             && !this.textbox.keyboardFinish)
@@ -45844,7 +45962,7 @@ Operator.prototype.initLabelTextbox = function()
     
 
 
-    this.textbox.finish = function(success)
+    this.textbox.finish = success =>
     {
         const enteredValue = this.textbox.value;
         const   savedValue = this.textbox.savedValue;
@@ -45856,7 +45974,7 @@ Operator.prototype.initLabelTextbox = function()
             {
                 const newName = this.textbox.value;
                 setTimeout(() => this.setName(newName));
-                actionManager.do(new RenameNodeAction(this.graph, this.id, newName));
+                actionManager.do(new RenameNodeAction(this.parentGraph, this.id, newName));
             }
         }
         else
@@ -45881,40 +45999,41 @@ Operator.prototype.initLabelTextbox = function()
                 this.focus();
         });
     };    
- 
-    
-    
-    this.showLabelTextbox = function()
-    {
-        this.inFocus = 
-                hasFocus(this)
-            && !this.clicked;
-    
-        this.textbox.style.width           = this.header.offsetWidth  - 2;
-        this.textbox.style.height          = this.header.offsetHeight - 4;
-        this.textbox.style.position        = 'absolute';
-        this.textbox.style.left            = '50%';
-        this.textbox.style.top             = '50%';
-        this.textbox.style.transform       = 'translateX(-50%) translateY(-50%)';
-        this.textbox.style.textAlign       = 'center';
-      //this.textbox.style.boxShadow       = '0 0 0 1px #a0a inset';
-
-        this.textbox.style.backgroundColor = this.header.style.backgroundColor;
-        this.textbox.style.color           = this.label.style.color;
-
-        this.textbox.value                 = this.name;
-        this.textbox.savedValue            = this.textbox.value;
-        
-        this.header.appendChild(this.textbox);
-
-        this.label.style.display           = 'none';
-        
-        this.updateNode();
-        
-        this.textbox.focus();
-        this.textbox.select();
-    }
 }
+
+
+
+Operator.prototype.showLabelTextbox = function()
+{
+    this.inFocus = 
+            hasFocus(this.div)
+        && !this.clicked;
+
+    this.textbox.style.width           = this.header.offsetWidth  - 2;
+    this.textbox.style.height          = this.header.offsetHeight - 4;
+    this.textbox.style.position        = 'absolute';
+    this.textbox.style.left            = '50%';
+    this.textbox.style.top             = '50%';
+    this.textbox.style.transform       = 'translateX(-50%) translateY(-50%)';
+    this.textbox.style.textAlign       = 'center';
+  //this.textbox.style.boxShadow       = '0 0 0 1px #a0a inset';
+
+    this.textbox.style.backgroundColor = this.header.style.backgroundColor;
+    this.textbox.style.color           = this.label.style.color;
+
+    this.textbox.value                 = this.name;
+    this.textbox.savedValue            = this.textbox.value;
+    
+    this.header.appendChild(this.textbox);
+
+    this.label.style.display           = 'none';
+    
+    this.updateNode();
+    
+    this.textbox.focus();
+    this.textbox.select();
+}
+
 
 
 Operator.prototype.updateTransform = function()
@@ -45943,7 +46062,7 @@ Operator.prototype.updateWireTransform = function()
             if (connInput.connection)
                 wires.push(connInput.connection.wire);
 
-    this.graph.view.updateWires(wires);
+    this.parentGraph.view.updateWires(wires);
 }
 
 
@@ -45961,7 +46080,8 @@ Operator.prototype.updateNode = function()
     this.updateSubscribe();
 
 
-    if (!isEmpty(this.params.filter(p => p.isVisible())))
+    if (  !isEmpty(this.params.filter(p => p.isVisible()))
+        || this.sharpBottomCorners)
     {
         this.div   .style.borderBottomLeftRadius  = '0px';        
         this.inner .style.borderBottomLeftRadius  = '0px';        
@@ -46336,7 +46456,7 @@ extends OperatorWithValue
                     this._symbol.clicked0      = false;
                     this._symbol.style.opacity = 1;
 
-                    actionManager.do(new ToggleOperatorSymbolAction(this.graph, this.id, true));
+                    actionManager.do(new ToggleOperatorSymbolAction(this.parentGraph, this.id, true));
 
                     this.header.ignoreDoubleClick = true;
                 }
@@ -46354,7 +46474,7 @@ extends OperatorWithValue
         this.textbox.addEventListener('finishedit', e => 
         {
             if (this._showOnlySymbol)
-                actionManager.do(new ToggleOperatorSymbolAction(this.graph, this.id, false), e.detail.value != e.detail.oldValue);
+                actionManager.do(new ToggleOperatorSymbolAction(this.parentGraph, this.id, false), e.detail.value != e.detail.oldValue);
         });
     }
     
@@ -46580,7 +46700,7 @@ extends OperatorBase
 
                     if (_conn)
                     {
-                        const conn = uiConnect(param.output, this.graph.nodeFromId(_conn.inputNodeId).inputFromId(_conn.inputId));
+                        const conn = uiConnect(param.output, this.parentGraph.nodeFromId(_conn.inputNodeId).inputFromId(_conn.inputId));
                         uiSaveConn(conn);
                     }
                 }
@@ -49058,7 +49178,7 @@ extends OpColorBase
             this.paramSpace.setValue(space, false, true, false);
 
 
-            const view = this.graph.view;
+            const view = this.parentGraph.view;
 
             if (   convert.value != space.value
                 || view.pastingNodes
@@ -50953,7 +51073,7 @@ extends OpColorBase
 
 
         this.addParam(this.paramContrast = new NumberParam('contrast', '', false, false, true, 0));
-        this.addParam(this.paramStandard = new SelectParam('standard', '', false, true,  true, ['WCAG 2', 'WCAG 3'], 1));
+        this.addParam(this.paramStandard = new SelectParam('standard', '', false, true,  true, ['WCAG 2', 'APCA'], 1));
       
         this.paramContrast.control.thinMinus = true;
 
@@ -52505,26 +52625,320 @@ extends OpColorBase
     //     if (    node
     //         && !isEmpty(node.outputs)
     //         && !isEmpty(inputs))
-    //         actionManager.do(new ConnectAction(node.graph, node.outputs[0], inputs[0]), true);
+    //         actionManager.do(new ConnectAction(node.parentGraph, node.outputs[0], inputs[0]), true);
     // }
 }
 
 
-class   OpCustom
+class   OpNodeGroup
 extends OperatorBase
 {
-    graph;
+    // graph;
+    // view;
+
+    //paramView;
 
 
+    canResizeL  = false;
+    canResizeR  = false;
+    canResizeT  = false;
+    canResizeB  = false;
+
+    canResizeTL = false;
+    canResizeTR = false;
+    canResizeBL = false;
+    canResizeBR = false;
     
+
+    resizingL   = false;
+    resizingR   = false;
+    resizingT   = false;
+    resizingB   = false;
+
+    resizingTL  = false;
+    resizingTR  = false;
+    resizingBL  = false;
+    resizingBR  = false;
+
+    resizing    = false;
+    
+
+
     constructor()
     {
-        super(CUSTOM, 'custom');
+        super(NODE_GROUP, 'group');
 
-        //graphView.graph = new Graph();
+        // mainGraph = mainGraph;
+        // this.view  = graphView;
+
+        //mainGraph.parentNodeGroup = this;
+        this.sharpBottomCorners = true;
+        
+        this.div.style.height = '100px';
+
+        //this.addParam(this.paramValue = new ViewParam('view', this));
+
+
+        this.div.addEventListener('pointerdown', e =>
+        {
+            if (e.button == 0)
+            {
+                this.resizing = false;
+
+                if (this.canResizeTL) { this.resizingTL = this.resizing = true; }
+                if (this.canResizeTR) { this.resizingTR = this.resizing = true; }
+                if (this.canResizeBL) { this.resizingBL = this.resizing = true; }
+                if (this.canResizeBR) { this.resizingBR = this.resizing = true; }
+                if (this.canResizeL ) { this.resizingL  = this.resizing = true; }
+                if (this.canResizeR ) { this.resizingR  = this.resizing = true; }
+                if (this.canResizeT ) { this.resizingT  = this.resizing = true; }
+                if (this.canResizeB ) { this.resizingB  = this.resizing = true; }
+
+                if (this.resizing)
+                {
+                    e.preventDefault();
+                    e.stopImmediatePropagation();
+
+                    this.div.setPointerCapture(e.pointerId);
+
+                    this.sx = e.clientX;
+                    this.sy = e.clientY;
+
+                    this.startRect = this.measureData.divOffset;
+                }
+            }        
+        });
+
+
+        this.div.addEventListener('pointermove', e =>
+        {
+            const dx = this.resizing ? (e.clientX - this.sx) / mainGraph.view.zoom : 0;
+            const dy = this.resizing ? (e.clientY - this.sy) / mainGraph.view.zoom : 0;
+            
+            
+            if (this.resizingTL)
+            {
+                this.setRect(
+                    this.startRect.x + dx, 
+                    this.startRect.y + dy,
+                    this.startRect.w - dx,
+                    this.startRect.h - dy);
+            }
+            else if (this.resizingTR)
+            {
+                this.setRect(
+                    this.startRect.x, 
+                    this.startRect.y + dy,
+                    this.startRect.w + dx,
+                    this.startRect.h - dy);
+            }
+            else if (this.resizingBL)
+            {
+                this.setRect(
+                    this.startRect.x + dx, 
+                    this.startRect.y,
+                    this.startRect.w - dx,
+                    this.startRect.h + dy);
+            }
+            else if (this.resizingBR)
+            {
+                this.setRect(
+                    this.startRect.x, 
+                    this.startRect.y,
+                    this.startRect.w + dx,
+                    this.startRect.h + dy);
+            }
+            else if (this.resizingL)
+            {
+                this.setRect(
+                    this.startRect.x + dx, 
+                    this.startRect.y,
+                    this.startRect.w - dx,
+                    this.startRect.h);
+            }
+            else if (this.resizingR)
+            {
+                this.setRect(
+                    this.startRect.x, 
+                    this.startRect.y,
+                    this.startRect.w + dx,
+                    this.startRect.h);
+            }
+            else if (this.resizingT)
+            {
+                this.setRect(
+                    this.startRect.x, 
+                    this.startRect.y + dy,
+                    this.startRect.w,
+                    this.startRect.h - dy);
+            }
+            else if (this.resizingB)
+            {
+                this.setRect(
+                    this.startRect.x, 
+                    this.startRect.y,
+                    this.startRect.w,
+                    this.startRect.h + dy);
+            }
+            else
+                this.checkResizing(e);
+
+
+            if (this.resizing)
+            {
+                e.preventDefault();
+                e.stopImmediatePropagation();
+
+                this.updateMeasureData();
+            }
+        });
+        
+        
+        this.div.addEventListener('pointerup', e =>
+        {
+            this.resizingL  = false;
+            this.resizingR  = false;
+            this.resizingT  = false;
+            this.resizingB  = false;
+        
+            this.resizingTL = false;
+            this.resizingTR = false;
+            this.resizingBL = false;
+            this.resizingBR = false;
+
+            this.resizing   = false;
+
+            
+            if (this.div.hasPointerCapture(e.pointerId))
+                this.div.releasePointerCapture(e.pointerId);
+        });
     }
     
     
+
+    checkResizing(e)
+    {
+        if (   e.clientX >= this.measureData.divBounds.l
+            && e.clientX <  this.measureData.divBounds.l + resizeEdgeWidth
+            && e.clientY >= this.measureData.divBounds.t + resizeEdgeWidth
+            && e.clientY <  this.measureData.divBounds.b - resizeEdgeWidth)
+        {
+            this.canResizeL = true;
+            this.div.style.cursor = 'ew-resize';
+            return true;
+        }
+        else if (e.clientX >= this.measureData.divBounds.r - resizeEdgeWidth
+              && e.clientX <  this.measureData.divBounds.r
+              && e.clientY >= this.measureData.divBounds.t + resizeEdgeWidth
+              && e.clientY <  this.measureData.divBounds.b - resizeEdgeWidth)
+        {
+            this.canResizeR = true;
+            this.div.style.cursor = 'ew-resize';
+            return true;
+        }
+        else if (e.clientX >= this.measureData.divBounds.l + resizeEdgeWidth
+              && e.clientX <  this.measureData.divBounds.r - resizeEdgeWidth
+              && e.clientY >= this.measureData.divBounds.t
+              && e.clientY <  this.measureData.divBounds.t + resizeEdgeWidth)
+        {
+            this.canResizeT = true;
+            this.div.style.cursor = 'ns-resize';
+            return true;
+        }
+        else if (e.clientX >= this.measureData.divBounds.l + resizeEdgeWidth
+              && e.clientX <  this.measureData.divBounds.r - resizeEdgeWidth
+              && e.clientY >= this.measureData.divBounds.b - resizeEdgeWidth
+              && e.clientY <  this.measureData.divBounds.b)
+        {
+            this.canResizeB = true;
+            this.div.style.cursor = 'ns-resize';
+            return true;
+        }
+        else if (e.clientX >= this.measureData.divBounds.l
+              && e.clientX <  this.measureData.divBounds.l + resizeEdgeWidth
+              && e.clientY >= this.measureData.divBounds.t
+              && e.clientY <  this.measureData.divBounds.t + resizeEdgeWidth)
+        {
+            this.canResizeTL = true;
+            this.div.style.cursor = 'nwse-resize';
+            return true;
+        }
+        else if (e.clientX >= this.measureData.divBounds.r - resizeEdgeWidth
+              && e.clientX <  this.measureData.divBounds.r 
+              && e.clientY >= this.measureData.divBounds.t
+              && e.clientY <  this.measureData.divBounds.t + resizeEdgeWidth)
+        {
+            this.canResizeTR = true;
+            this.div.style.cursor = 'nesw-resize';
+            return true;
+        }
+        else if (e.clientX >= this.measureData.divBounds.l
+              && e.clientX <  this.measureData.divBounds.l + resizeEdgeWidth
+              && e.clientY >= this.measureData.divBounds.b - resizeEdgeWidth
+              && e.clientY <  this.measureData.divBounds.b )
+        {
+            this.canResizeBL = true;
+            this.div.style.cursor = 'nesw-resize';
+            return true;
+        }
+        else if (e.clientX >= this.measureData.divBounds.r - resizeEdgeWidth
+              && e.clientX <  this.measureData.divBounds.r 
+              && e.clientY >= this.measureData.divBounds.b - resizeEdgeWidth
+              && e.clientY <  this.measureData.divBounds.b )
+        {
+            this.canResizeBR = true;
+            this.div.style.cursor = 'nwse-resize';
+            return true;
+        }
+        else
+        {
+            this.canResizeL  = false;
+            this.canResizeR  = false;
+            this.canResizeT  = false;
+            this.canResizeB  = false;
+        
+            this.canResizeTL = false;
+            this.canResizeTR = false;
+            this.canResizeBL = false;
+            this.canResizeBR = false;
+
+            this.div.style.cursor = 'default';
+
+            return false;
+        }
+    }
+
+
+
+    updateNode()
+    {
+        super.updateNode();
+
+        this.div.style.zIndex = 0;
+
+        this.inner.style.height = this.div.offsetHeight;
+        this.inner.style.backgroundColor = 'var(--figma-color-border-disabled)';
+    }
+
+
+
+    setSize(w, h, updateTransform = true)
+    {
+        super.setSize(w, Math.max(this.header.offsetHeight, h), updateTransform);
+
+        this.inner.style.height = this.div.offsetHeight;
+    }
+
+
+
+    setRect(x, y, w, h, updateTransform = true)
+    {
+        super.setRect(x, y, w, Math.max(this.header.offsetHeight, h), updateTransform);
+
+        this.inner.style.height = this.div.offsetHeight;
+    }
+
+
 
     genRequest(gen)
     {
@@ -52570,7 +52984,7 @@ extends OperatorBase
 
 
 
-class   OpCustomInputs
+class   OpNodeInputs
 extends OperatorBase
 {
     paramCount;
@@ -52579,7 +52993,7 @@ extends OperatorBase
 
     constructor()
     {
-        super(CUSTOM_INPUTS, 'inputs');
+        super(NODE_INPUTS, 'inputs');
 
         //this.inert = true;
 
@@ -52680,7 +53094,7 @@ extends OperatorBase
 
                     if (_conn)
                     {
-                        const conn = uiConnect(param.output, this.graph.nodeFromId(_conn.inputNodeId).inputFromId(_conn.inputId));
+                        const conn = uiConnect(param.output, this.parentGraph.nodeFromId(_conn.inputNodeId).inputFromId(_conn.inputId));
                         uiSaveConn(conn);
                     }
                 }
@@ -52851,13 +53265,16 @@ extends OperatorBase
 
 class Graph
 {
-    view         = null;
+    view             = null;
 
-    nodes        = [];
-    deferNodeIds = [];
+    parentNodeGroup = null;
+
+
+    nodes            = [];
+    deferNodeIds     = [];
     
 
-    connections  = [];
+    connections      = [];
 
 
 
@@ -52933,7 +53350,7 @@ class Graph
 
     addNode(node, placeNode = true, updateLabel = true)
     {
-        node.graph = this;
+        node.parentGraph = this;
 
         node.id = this.getNewNodeId(node.id, node.id);
         
@@ -52981,8 +53398,8 @@ class Graph
         {
             const node = this.nodes.find(n => n.id == id);
 
-            node.selected = false;
-            node.graph    = null;
+            node.selected    = false;
+            node.parentGraph = null;
 
             node.div.style.display = 'none';
 
@@ -53244,9 +53661,9 @@ function createNode(nodeType, creatingButton = null, createdNodeId = -1, options
         case POLYGON:                 node = new OpPolygon();           break;
         case STAR:                    node = new OpStar();              break;
       
-        case CUSTOM:                  node = new OpCustom();            break;
-        case CUSTOM_INPUTS:           node = new OpCustomInputs();      break;
-        case CUSTOM_OUTPUTS:          node = new OpCustomOutputs();     break;
+        case NODE_GROUP:              node = new OpNodeGroup();         break;
+        case NODE_INPUTS:             node = new OpNodeInputs();        break;
+        case NODE_OUTPUTS:            node = new OpNodeOutputs();       break;
 
         case COMMENT:                 node = new OpComment();           break;
      
@@ -56086,6 +56503,47 @@ function updateComments(graph, nodeIds)
 }
 
 
+class SetCurrentGraphAction
+extends Action
+{
+    graph;
+    oldGraph;
+
+
+
+    constructor(graph)
+    {
+        const graphName =
+            graph.parentNodeGroup
+            ? (settings.showNodeId ? graph.parentNodeGroup.id : graph.parentNodeGroup.name)
+            : '';
+
+        super(
+            graph,
+            SET_CURRENT_GRAPH_ACTION,
+            'SET CURRENT GRAPH TO \'' + graphName + '\'');
+
+        this.affectsConnections = false;
+
+        this.oldGraph = currentGraph;
+    }
+
+
+
+    do(updateNodes)
+    {
+        setCurrentGraph(this.graph);
+    }
+
+
+
+    undo(updateNodes)
+    {
+        setCurrentGraph(this.oldGraph);
+    }
+}
+
+
 class SetParamValueAction
 extends Action
 {
@@ -57266,17 +57724,13 @@ const generator = new Worker(
         new Blob([generatorScript.textContent])));
         
 
-const mainGraph = new Graph();
-var   graphView = new GraphView(_graphView, mainGraph);
+var panMode             = false;        
 
+var     copiedNodesJson = '';
+var duplicatedNodesJson = '';
 
-var   panMode             = false;        
-
-var       copiedNodesJson = '';
-var   duplicatedNodesJson = '';
-
-var   pasteOffset         = point(0,  0);
-var   pasteOffsetDelta    = point(50, 50);
+var pasteOffset         = point(0,  0);
+var pasteOffsetDelta    = point(50, 50);
 
 
 
@@ -59591,7 +60045,7 @@ function uiVariableConnectFromOutput(output, inputNode, inputId, outputOrder = -
         if (outputOrder > -1)
             conn.outputOrder = outputOrder;
 
-        uiUpdateSavedConnectionsToNodeId(inputNode.graph, inputNode.id);
+        uiUpdateSavedConnectionsToNodeId(inputNode.parentGraph, inputNode.id);
 
         return conn;
     }
@@ -59603,7 +60057,7 @@ function uiVariableConnectFromOutput(output, inputNode, inputId, outputOrder = -
 
 function uiConnect(output, input, inputId = '', outputOrder = -1)
 {
-    return output.node.graph.connect(output, input, inputId, outputOrder);
+    return output.node.parentGraph.connect(output, input, inputId, outputOrder);
 }
 
 
@@ -59614,10 +60068,10 @@ function uiDisconnect(input)
     
     const node = input.node;
 
-    node.graph.disconnect(input);
+    node.parentGraph.disconnect(input);
 
     if (node.variableInputs)
-        uiUpdateSavedConnectionsToNodeId(node.graph, node.id);
+        uiUpdateSavedConnectionsToNodeId(node.parentGraph, node.id);
 }
 
 
@@ -59628,7 +60082,7 @@ function uiDisconnectAny(input)
     
     uiDeleteSavedConnectionsToNodeId(input.node.id);
 
-    input.node.graph.disconnect(input);
+    input.node.parentGraph.disconnect(input);
 }
 
 
@@ -59687,7 +60141,7 @@ function uiMakeNodesActive(nodes)
     {
         if (node.active) continue;
         
-        pushUnique(node.graph.view.activeNodes, node);
+        pushUnique(node.parentGraph.view.activeNodes, node);
         node._active = true;
     }
 }
@@ -60335,7 +60789,7 @@ function uiLinkNodeToExistingColorStyle(node, styleId, styleName, paints)
         node.paramValue.setValue(ColorValue.NaN);
 
         // if (node.paramValue.input.connected)
-        //     actionManager.do(new DisconnectAction(node.graph, node.paramValue.input), true);
+        //     actionManager.do(new DisconnectAction(node.parentGraph, node.paramValue.input), true);
     }
 
 
@@ -60480,7 +60934,7 @@ function initLocalStylesMenu(styles, nodeId)
         
     menuLocalStyles.addItems([
         new MenuItem('None', {
-            callback: e => actionManager.do(new LinkExistingStyleAction(node.graph, nodeId, NULL, '', [])),
+            callback: e => actionManager.do(new LinkExistingStyleAction(node.parentGraph, nodeId, NULL, '', [])),
             enabled:  node.linkedStyleId != NULL})
     ]);
 }
@@ -60488,6 +60942,9 @@ function initLocalStylesMenu(styles, nodeId)
 
 
 
+
+
+const resizeEdgeWidth = 8;
 
 
 var overNumberControl     = null;
@@ -60580,6 +61037,31 @@ function uiHideClearUndoWarning()
         'showClearUndoWarning',  
          true, 
         !settings.showClearUndoWarning);
+}
+
+
+const mainGraph    = new Graph();
+var   graphView    = new GraphView(_graphView, mainGraph);
+
+var   currentGraph = mainGraph;
+var   currentView  = graphView;
+
+
+
+function setCurrentGraph(graph)
+{
+    console.assert(currentView, 'there should be a valid currentView');
+
+    const elements = Array.prototype.slice.call(document.children);
+    const index    = elements.indexOf(currentView.div);
+
+    document.body.removeChild(currentView.div);
+    document.body.insertBefore(graph.view.div, document.children[index]);
+
+    currentGraph = graph;
+    currentView  = graph.view;
+
+    currentView.updateMeasureData();
 }
 
 
@@ -60803,8 +61285,6 @@ function checkResize(x, y)
         return;
     }
 
-
-    const resizeEdgeWidth = 8;
 
     document.canResizeL = !dialogShown && false;//x <= resizeEdgeWidth;
     document.canResizeR = !dialogShown && documentBodyClient.width  - x <= resizeEdgeWidth;

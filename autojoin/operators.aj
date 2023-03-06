@@ -6,6 +6,7 @@
 ../parameters/ColorParam.js
 ../parameters/FillParam.js
 ../parameters/StrokeParam.js
+../parameters/ViewParam.js
 //../parameters/StyleParam.js
 
 
@@ -97,9 +98,9 @@
 
 
 
-../operators/custom/OpCustom.js
-../operators/custom/OpCustomInputs.js
-../operators/custom/OpCustomOutputs.js
+../operators/node group/OpNodeGroup.js
+../operators/node group/OpNodeInputs.js
+../operators/node group/OpNodeOutputs.js
 
 
 ../operators/OpComment.js

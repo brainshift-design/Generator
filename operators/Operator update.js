@@ -24,7 +24,7 @@ Operator.prototype.updateWireTransform = function()
             if (connInput.connection)
                 wires.push(connInput.connection.wire);
 
-    this.graph.view.updateWires(wires);
+    this.parentGraph.view.updateWires(wires);
 }
 
 
@@ -42,7 +42,8 @@ Operator.prototype.updateNode = function()
     this.updateSubscribe();
 
 
-    if (!isEmpty(this.params.filter(p => p.isVisible())))
+    if (  !isEmpty(this.params.filter(p => p.isVisible()))
+        || this.sharpBottomCorners)
     {
         this.div   .style.borderBottomLeftRadius  = '0px';        
         this.inner .style.borderBottomLeftRadius  = '0px';        

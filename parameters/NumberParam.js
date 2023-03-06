@@ -56,7 +56,7 @@ extends NumberParamBase
 
         this.control.addEventListener('confirm', () => 
         { 
-            actionManager.do(new EmptyAction(this.node.graph), true);
+            actionManager.do(new EmptyAction(this.node.parentGraph), true);
         });
 
 

@@ -269,7 +269,7 @@ extends OpColorBase
             this.paramSpace.setValue(space, false, true, false);
 
 
-            const view = this.graph.view;
+            const view = this.parentGraph.view;
 
             if (   convert.value != space.value
                 || view.pastingNodes

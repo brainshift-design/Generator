@@ -104,5 +104,12 @@ GraphView.prototype.layoutSelectedNodes = function()
 GraphView.prototype.renameSelectedNode = function()
 {
     if (this.selectedNodes.length == 1)
-    this.selectedNodes[0].showLabelTextbox();
+        this.selectedNodes[0].showLabelTextbox();
+};
+
+
+
+GraphView.prototype.editSelectedCustomNode = function()
+{
+    actionManager.do(new SetCurrentGraphAction(this.selectedNodes[0].graph));
 };

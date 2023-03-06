@@ -26,7 +26,7 @@ class Operator
     subscription = false;
 
 
-    graph        = null;
+    parentGraph  = null;
     
     
     #type; // used in the code, not for generation
@@ -63,6 +63,8 @@ class Operator
     scrollName       = true;
 
     showActiveArrow  = false;
+
+    sharpBottomCorners = false;
     
 
     defaultWidth;
@@ -115,12 +117,12 @@ class Operator
     set selected(sel) 
     {
         if (this._selected)
-            removeFromArray(this.graph.view.selectedNodes, this);
+            removeFromArray(this.parentGraph.view.selectedNodes, this);
 
         this.setSelected(sel);     
 
         if (this._selected)
-            this.graph.view.selectedNodes.push(this);
+            this.parentGraph.view.selectedNodes.push(this);
     }        
 
 
@@ -207,7 +209,7 @@ class Operator
             && i.canConnectFrom(output));
 
         
-        const view = this.graph.view;
+        const view = this.parentGraph.view;
 
 
         if (   view.overInput
@@ -295,7 +297,7 @@ class Operator
         const outputs = this.headerOutputs.filter(o => arraysIntersect(o.types, inputTypes));
 
         return  outputs.length == 1
-            && !this.isOrFollows(this.graph.view.tempConn.input.node)
+            && !this.isOrFollows(this.parentGraph.view.tempConn.input.node)
             ? outputs[0]
             : null;
     }
@@ -455,7 +457,7 @@ class Operator
     {
         this._active = true;
 
-        const view = this.graph.view;
+        const view = this.parentGraph.view;
 
         if (    view
             &&  view.activeNodes
@@ -470,8 +472,8 @@ class Operator
         if (!this._active) 
             return;
             
-        if (this.graph.view.activeNodes.includes(this))
-            removeFromArray(this.graph.view.activeNodes, this);
+        if (this.parentGraph.view.activeNodes.includes(this))
+            removeFromArray(this.parentGraph.view.activeNodes, this);
 
         this._active = false;
     }
@@ -496,6 +498,36 @@ class Operator
    
         this.div.style.left = x + 'px';
         this.div.style.top  = y + 'px';
+
+        if (updateTransform)
+        {
+            this.div.style.display = 'block';
+            this.updateTransform();
+        }
+    }
+
+
+
+    setSize(w, h, updateTransform = true)
+    {
+        this.div.style.width  = w + 'px';
+        this.div.style.height = h + 'px';
+
+        if (updateTransform)
+        {
+            this.div.style.display = 'block';
+            this.updateTransform();
+        }
+    }
+
+
+
+    setRect(x, y, w, h, updateTransform = true)
+    {
+        this.div.style.left   = x + 'px';
+        this.div.style.top    = y + 'px';
+        this.div.style.width  = w + 'px';
+        this.div.style.height = h + 'px';
 
         if (updateTransform)
         {
@@ -726,7 +758,7 @@ class Operator
 
     setTransform(nodeLeft, nodeTop, nodeRect)
     {
-        const view = this.graph.view;
+        const view = this.parentGraph.view;
 
         this.div.style.transform =
               'translate(' 
@@ -743,7 +775,7 @@ class Operator
 
     getOffsetRect()
     {
-        const view = this.graph.view;
+        const view = this.parentGraph.view;
 
         const ox   = -view.pan.x / view.zoom;
         const oy   = -view.pan.y / view.zoom;
@@ -802,7 +834,7 @@ class Operator
         if (   node
             && !isEmpty(node.outputs)
             && !isEmpty(inputs))
-            actionManager.do(new ConnectAction(this.graph, node.outputs[0], inputs[0]), true);
+            actionManager.do(new ConnectAction(this.parentGraph, node.outputs[0], inputs[0]), true);
     }
 
 
@@ -847,7 +879,7 @@ class Operator
             + pos + tab + '"enabled": "' + boolToString(this.enabled)     + '",\n'
             + pos + tab + '"x": "'       + this.div.style.left            + '",\n'
             + pos + tab + '"y": "'       + this.div.style.top             + '",\n'
-            + pos + tab + '"z": "'       + this.graph.nodes.indexOf(this) + '"';
+            + pos + tab + '"z": "'       + this.parentGraph.nodes.indexOf(this) + '"';
 
         if (this.active)
             json += ',\n' + pos + tab + '"active": "' + this.active + '"';

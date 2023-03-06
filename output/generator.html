@@ -466,12 +466,15 @@ function rgbHeaderFromType(type, active)
                  ? rgbActiveColor  
                  : rgbColor;
 
-        case CUSTOM:
-        case CUSTOM_INPUTS:
-        case CUSTOM_OUTPUTS:
+        case NODE_GROUP:
+        case NODE_INPUTS:
+        case NODE_OUTPUTS:
             return active 
-                 ? (darkMode ? rgbActiveCustomDark : rgbActiveCustomLight)
-                 : (darkMode ? rgbCustomDark       : rgbCustomLight      );
+                 ? (darkMode ? rgbActiveFlowDark : rgbActiveFlowLight)
+                 : (darkMode ? rgbFlowDark       : rgbFlowLight      );
+            // return active 
+            //      ? (darkMode ? rgbActiveCustomDark : rgbActiveCustomLight)
+            //      : (darkMode ? rgbCustomDark       : rgbCustomLight      );
     }
 
     return 'magenta';
@@ -3486,9 +3489,9 @@ const ALL_TYPES =
 ];
 
 
-const CUSTOM         = 'CUST';
-const CUSTOM_INPUTS  = 'CUSTIN';
-const CUSTOM_OUTPUTS = 'CUSTOUT';
+const NODE_GROUP     = 'NGRP';
+const NODE_INPUTS    = 'NGIN';
+const NODE_OUTPUTS   = 'NGOUT';
 
 
 const COMMENT        = 'CMNT';
@@ -3504,6 +3507,8 @@ const PARAM          = 'PARAM'; // nodeId paramId
 
 const LOG            = 'LOG';
 
+
+const GRAPH          = 'GRAPH';
 
 
 const MATH_OPS = 
@@ -3571,6 +3576,7 @@ const SELECT_MOVE_ACTION         = 'SELECT_MOVE';
 const SET_VALUE_ACTION           = 'SET_VALUE';
 const TOGGLE_DISABLE_ACTION      = 'TOGGLE_DISABLE';
 const TOGGLE_SYMBOL_ACTION       = 'TOGGLE_SYMBOL';
+const SET_CURRENT_GRAPH_ACTION   = 'SET_URRENT_GRAPH';
 
 
 
@@ -10798,7 +10804,7 @@ extends GObjectBase
 }
 
 
-class GCustom
+class GNodeGroup
 extends GOperator
 {
     // input = null;
@@ -10807,14 +10813,14 @@ extends GOperator
 
     constructor(nodeId, options)
     {
-        super(CUSTOM, nodeId, options);
+        super(NODE_GROUP, nodeId, options);
     }
 
 
     
     copy()
     {
-        const copy = new GCustom(this.nodeId, this.options);
+        const copy = new GNodeGroup(this.nodeId, this.options);
 
         copy.copyBase(this);
 
@@ -10858,7 +10864,7 @@ extends GOperator
 
 
 
-class GCustomInputs
+class GNodeInputs
 extends GOperator
 {
     input = null;
@@ -10879,7 +10885,7 @@ extends GOperator
 
     copy()
     {
-        const copy = new GCustomInputs(this.nodeId, this.options);
+        const copy = new GNodeInputs(this.nodeId, this.options);
         
         copy.copyBase(this);
 
@@ -12108,7 +12114,7 @@ function genParseCustom(parse)
     const [, nodeId, options, ignore] = genParseNodeStart(parse);
 
 
-    const custom = new GCustom(nodeId, options);
+    const group = new GNodeGroup(nodeId, options);
 
 
     // let nInputs = -1;
@@ -12121,12 +12127,12 @@ function genParseCustom(parse)
 
 
     if (parse.settings.logRequests) 
-        logReq(custom, parse, ignore);//, nInputs);
+        logReq(group, parse, ignore);//, nInputs);
 
 
     if (ignore) 
     {
-        genParseNodeEnd(parse, custom);
+        genParseNodeEnd(parse, group);
         return parse.parsedNodes.find(n => n.nodeId == nodeId);
     }
 
@@ -12141,8 +12147,8 @@ function genParseCustom(parse)
     parse.nTab--;
 
 
-    genParseNodeEnd(parse, custom);
-    return custom;
+    genParseNodeEnd(parse, group);
+    return group;
 }
 
 
@@ -13881,9 +13887,9 @@ function genParse(parse, inParam = true)
     else if (parse.next == POLYGON                ) result = genParsePolygon         (parse);
     else if (parse.next == STAR                   ) result = genParseStar            (parse);
 
-    else if (parse.next == CUSTOM                 ) result = genParseCustom          (parse);
-    else if (parse.next == CUSTOM_INPUTS          ) result = genParseCustomInputs    (parse);
-    else if (parse.next == CUSTOM_OUTPUTS         ) result = genParseCustomOutputs   (parse);
+    else if (parse.next == NODE_GROUP             ) result = genParseCustom          (parse);
+    else if (parse.next == NODE_INPUTS            ) result = genParseCustomInputs    (parse);
+    else if (parse.next == NODE_OUTPUTS           ) result = genParseCustomOutputs   (parse);
 
     else if (parse.next == COMMENT                ) result = genParseComment         (parse);
 
@@ -14019,7 +14025,7 @@ function genParseCustom(parse)
     const [, nodeId, options, ignore] = genParseNodeStart(parse);
 
 
-    const cache = new GCustom(nodeId, options);
+    const cache = new GNodeGroup(nodeId, options);
 
 
     // let nInputs = -1;

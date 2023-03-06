@@ -148,9 +148,9 @@ function genParse(parse, inParam = true)
     else if (parse.next == POLYGON                ) result = genParsePolygon         (parse);
     else if (parse.next == STAR                   ) result = genParseStar            (parse);
 
-    else if (parse.next == CUSTOM                 ) result = genParseCustom          (parse);
-    else if (parse.next == CUSTOM_INPUTS          ) result = genParseCustomInputs    (parse);
-    else if (parse.next == CUSTOM_OUTPUTS         ) result = genParseCustomOutputs   (parse);
+    else if (parse.next == NODE_GROUP             ) result = genParseCustom          (parse);
+    else if (parse.next == NODE_INPUTS            ) result = genParseCustomInputs    (parse);
+    else if (parse.next == NODE_OUTPUTS           ) result = genParseCustomOutputs   (parse);
 
     else if (parse.next == COMMENT                ) result = genParseComment         (parse);
 
@@ -286,7 +286,7 @@ function genParseCustom(parse)
     const [, nodeId, options, ignore] = genParseNodeStart(parse);
 
 
-    const cache = new GCustom(nodeId, options);
+    const cache = new GNodeGroup(nodeId, options);
 
 
     // let nInputs = -1;

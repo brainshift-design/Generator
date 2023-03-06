@@ -27,29 +27,29 @@ class Wire
 
     constructor(connection)
     {
-        this.connection            = connection;
-
-        this.svg                   = createSvg('svg');
-        this.svg.style.position    = 'absolute';
-        this.svg.style.left        = 0;
-        this.svg.style.top         = 0;
-        this.svg.style.overflow    = 'hidden';
-    
-        this.curve                 = createSvg('path');
-        this.curve.style.position  = 'absolute';
-        this.curve.style.fill      = 'none';
-
-        this.curve2                = createSvg('path');
-        this.curve2.style.position = 'absolute';
-        this.curve2.style.fill     = 'none';
-
-        this.xp1                   = createSvg('path');
-        this.xp1.style.position    = 'absolute';
-        this.xp1.style.fill        = 'none';
-    
-        this.xp2                   = createSvg('path');
-        this.xp2.style.position    = 'absolute';
-        this.xp2.style.fill        = 'none';
+        this.connection             = connection;
+ 
+        this.svg                    = createSvg('svg');
+        this.svg.style.position     = 'absolute';
+        this.svg.style.left         = 0;
+        this.svg.style.top          = 0;
+        this.svg.style.overflow     = 'hidden';
+     
+        this.curve                  = createSvg('path');
+        this.curve.style.position   = 'absolute';
+        this.curve.style.fill       = 'none';
+ 
+        this.curve2                 = createSvg('path');
+        this.curve2.style.position  = 'absolute';
+        this.curve2.style.fill      = 'none';
+ 
+        this.xp1                    = createSvg('path');
+        this.xp1.style.position     = 'absolute';
+        this.xp1.style.fill         = 'none';
+     
+        this.xp2                    = createSvg('path');
+        this.xp2.style.position     = 'absolute';
+        this.xp2.style.fill         = 'none';
 
 
         this.outBall                = createSvg('circle');
@@ -81,7 +81,7 @@ class Wire
         const output = this.connection.output;
         const input  = this.connection.input;
         
-        const view   = this.connection.graph.view;
+        const view   = this.connection.parentGraph.view;
 
 
         if (output)
@@ -159,17 +159,19 @@ class Wire
         this.updateInBall (        x2, y2);
         this.updateStyle  ();
 
-        const view = this.connection.graph.view;
+        const view = this.connection.parentGraph.view;
 
         this.svg.setAttribute('width',  view.div.clientWidth);
         this.svg.setAttribute('height', view.div.clientHeight);
+
+        this.svg.style.zIndex = 1;
     }
 
 
 
     updateCurve(x1, y1, x2, y2)
     {
-        const view = this.connection.graph.view;
+        const view = this.connection.parentGraph.view;
 
 
         if (!pointIsNaN(this.outputPos))
@@ -266,7 +268,7 @@ class Wire
     
     updateArrow(x0, y0, x1, y1, x2, y2, x3, y3)
     {
-        const view = this.connection.graph.view;
+        const view = this.connection.parentGraph.view;
 
 
         if (!pointIsNaN(this.outputPos))
@@ -340,7 +342,7 @@ class Wire
         const conn  = this.connection;
         let   color = this.getColor();
     
-        const view  = conn.graph.view;
+        const view  = conn.parentGraph.view;
     
 
         const l = rgb2hclok(color)[2];
@@ -471,8 +473,6 @@ class Wire
     
         this. inBall.style.r = 3 * view.zoom;
         this.outBall.style.r = 3 * view.zoom;
-    
-        this.svg.style.zIndex    = 1;
     }
     
     

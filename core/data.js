@@ -39,12 +39,15 @@ function rgbHeaderFromType(type, active)
                  ? rgbActiveColor  
                  : rgbColor;
 
-        case CUSTOM:
-        case CUSTOM_INPUTS:
-        case CUSTOM_OUTPUTS:
+        case NODE_GROUP:
+        case NODE_INPUTS:
+        case NODE_OUTPUTS:
             return active 
-                 ? (darkMode ? rgbActiveCustomDark : rgbActiveCustomLight)
-                 : (darkMode ? rgbCustomDark       : rgbCustomLight      );
+                 ? (darkMode ? rgbActiveFlowDark : rgbActiveFlowLight)
+                 : (darkMode ? rgbFlowDark       : rgbFlowLight      );
+            // return active 
+            //      ? (darkMode ? rgbActiveCustomDark : rgbActiveCustomLight)
+            //      : (darkMode ? rgbCustomDark       : rgbCustomLight      );
     }
 
     return 'magenta';

@@ -26,7 +26,7 @@ Operator.prototype.createNode = function()
     this.div.addEventListener('pointerenter', e =>
     {
         this.div.over            = true;
-        this.graph.view.overNode = this;
+        this.parentGraph.view.overNode = this;
         
         if (    e.altKey
             && !getCtrlKey(e)
@@ -42,7 +42,7 @@ Operator.prototype.createNode = function()
     this.div.addEventListener('pointerleave', e =>
     {
         this.div.over            = false;
-        this.graph.view.overNode = null;
+        this.parentGraph.view.overNode = null;
         
         if (   (  !e.altKey
                 || getCtrlKey(e)
@@ -86,6 +86,7 @@ Operator.prototype.createHeader = function()
 
 
     this.createLabel();
+    this.initLabelTextbox();
 
     
     this. inputControls = createDiv('inputControls');
@@ -100,7 +101,7 @@ Operator.prototype.createHeader = function()
 
     this.header.addEventListener('pointerdown', e =>
     {
-        if (this.graph.view.isPanning(e))
+        if (this.parentGraph.view.isPanning(e))
             return;
 
 
@@ -110,7 +111,7 @@ Operator.prototype.createHeader = function()
         e.preventDefault();
 
 
-        const view = this.graph.view;
+        const view = this.parentGraph.view;
 
 
         view.lastSelectedNodes = [...view.selectedNodes];
@@ -178,11 +179,11 @@ Operator.prototype.createHeader = function()
 
     this.header.addEventListener('pointermove', e =>
     {
-        if (this.graph.view.isPanning(e))
+        if (this.parentGraph.view.isPanning(e))
             return;
 
 
-        const view = this.graph.view;
+        const view = this.parentGraph.view;
 
 
         //console.log(node.id + '.header.pointermove');
@@ -304,11 +305,11 @@ Operator.prototype.createHeader = function()
 
     this.header.addEventListener('pointerup', e =>
     {
-        if (this.graph.view.isPanning(e))
+        if (this.parentGraph.view.isPanning(e))
             return;
 
 
-        const view = this.graph.view;
+        const view = this.parentGraph.view;
 
 
         if (   e.button == 0
@@ -317,7 +318,7 @@ Operator.prototype.createHeader = function()
             if (this.div.moved)
             {
                 actionManager.do(new SelectMoveNodesAction(
-                    this.graph,
+                    this.parentGraph,
                     view.lastSelectedNodes.map(n => n.id), 
                     view.selectedNodes.map(n => n.id), 
                     point(this.div.slx,        this.div.sly      ),
@@ -329,7 +330,7 @@ Operator.prototype.createHeader = function()
                  //    && !this.selected)
             {
                 actionManager.do(new SelectNodesAction(
-                    this.graph,
+                    this.parentGraph,
                     view.selectedNodes    .map(n => n.id), 
                     view.lastSelectedNodes.map(n => n.id)));
             }
@@ -364,7 +365,7 @@ Operator.prototype.createHeader = function()
 
     this.header.addEventListener('pointerleave', e => 
     { 
-        const view = this.graph.view;
+        const view = this.parentGraph.view;
 
 
         if (view.tempConn)
@@ -420,7 +421,7 @@ Operator.prototype.createHeader = function()
             && e.clientY >= bounds.top  && e.clientY < bounds.bottom)
             this.showLabelTextbox();
         else if (!this.header.ignoreDoubleClick)
-            actionManager.do(new MakeActiveNodesAction(this.graph, [this.id]));
+            actionManager.do(new MakeActiveNodesAction(this.parentGraph, [this.id]));
 
             this.header.ignoreDoubleClick = false;
     });

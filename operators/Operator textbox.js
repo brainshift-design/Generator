@@ -1,13 +1,13 @@
 Operator.prototype.initLabelTextbox = function()
 {
     this.textbox = createTextbox('nodeLabelTextbox');
-
+    
     this.textbox.spellcheck     = false;
     this.textbox.keyboardFinish = false;
     
 
 
-    this.textbox.addEventListener('keydown', function(e)
+    this.textbox.addEventListener('keydown', e =>
     {
         e.stopPropagation();
 
@@ -95,7 +95,7 @@ Operator.prototype.initLabelTextbox = function()
 
 
 
-    this.textbox.addEventListener('paste', function(e)
+    this.textbox.addEventListener('paste', e =>
     {
         e.preventDefault();
         this.textbox.value = e.clipboardData.getData('text/plain');
@@ -107,7 +107,7 @@ Operator.prototype.initLabelTextbox = function()
 
     
     
-    this.textbox.addEventListener('focusout', function()
+    this.textbox.addEventListener('focusout', () =>
     {
         if (    this.textbox.value != ''
             && !this.textbox.keyboardFinish)
@@ -121,7 +121,7 @@ Operator.prototype.initLabelTextbox = function()
     
 
 
-    this.textbox.finish = function(success)
+    this.textbox.finish = success =>
     {
         const enteredValue = this.textbox.value;
         const   savedValue = this.textbox.savedValue;
@@ -133,7 +133,7 @@ Operator.prototype.initLabelTextbox = function()
             {
                 const newName = this.textbox.value;
                 setTimeout(() => this.setName(newName));
-                actionManager.do(new RenameNodeAction(this.graph, this.id, newName));
+                actionManager.do(new RenameNodeAction(this.parentGraph, this.id, newName));
             }
         }
         else
@@ -158,37 +158,37 @@ Operator.prototype.initLabelTextbox = function()
                 this.focus();
         });
     };    
- 
-    
-    
-    this.showLabelTextbox = function()
-    {
-        this.inFocus = 
-                hasFocus(this)
-            && !this.clicked;
-    
-        this.textbox.style.width           = this.header.offsetWidth  - 2;
-        this.textbox.style.height          = this.header.offsetHeight - 4;
-        this.textbox.style.position        = 'absolute';
-        this.textbox.style.left            = '50%';
-        this.textbox.style.top             = '50%';
-        this.textbox.style.transform       = 'translateX(-50%) translateY(-50%)';
-        this.textbox.style.textAlign       = 'center';
-      //this.textbox.style.boxShadow       = '0 0 0 1px #a0a inset';
+}
 
-        this.textbox.style.backgroundColor = this.header.style.backgroundColor;
-        this.textbox.style.color           = this.label.style.color;
 
-        this.textbox.value                 = this.name;
-        this.textbox.savedValue            = this.textbox.value;
-        
-        this.header.appendChild(this.textbox);
 
-        this.label.style.display           = 'none';
-        
-        this.updateNode();
-        
-        this.textbox.focus();
-        this.textbox.select();
-    }
+Operator.prototype.showLabelTextbox = function()
+{
+    this.inFocus = 
+            hasFocus(this.div)
+        && !this.clicked;
+
+    this.textbox.style.width           = this.header.offsetWidth  - 2;
+    this.textbox.style.height          = this.header.offsetHeight - 4;
+    this.textbox.style.position        = 'absolute';
+    this.textbox.style.left            = '50%';
+    this.textbox.style.top             = '50%';
+    this.textbox.style.transform       = 'translateX(-50%) translateY(-50%)';
+    this.textbox.style.textAlign       = 'center';
+  //this.textbox.style.boxShadow       = '0 0 0 1px #a0a inset';
+
+    this.textbox.style.backgroundColor = this.header.style.backgroundColor;
+    this.textbox.style.color           = this.label.style.color;
+
+    this.textbox.value                 = this.name;
+    this.textbox.savedValue            = this.textbox.value;
+    
+    this.header.appendChild(this.textbox);
+
+    this.label.style.display           = 'none';
+    
+    this.updateNode();
+    
+    this.textbox.focus();
+    this.textbox.select();
 }

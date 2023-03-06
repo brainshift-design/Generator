@@ -44,7 +44,7 @@ extends OpColorBase
 
 
         this.addParam(this.paramContrast = new NumberParam('contrast', '', false, false, true, 0));
-        this.addParam(this.paramStandard = new SelectParam('standard', '', false, true,  true, ['WCAG 2', 'WCAG 3'], 1));
+        this.addParam(this.paramStandard = new SelectParam('standard', '', false, true,  true, ['WCAG 2', 'APCA'], 1));
       
         this.paramContrast.control.thinMinus = true;
 

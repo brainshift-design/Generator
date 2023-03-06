@@ -36,9 +36,6 @@ Operator.prototype.createLabel = function()
               && x <  wrect.width - viewMargin) this.updateHeaderLabelOffsetX((x - viewMargin) / (wrect.width - viewMargin*2));
         else                                    this.updateHeaderLabelOffsetX();
     });
-
-
-    this.initLabelTextbox();
 };
 
 

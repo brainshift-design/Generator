@@ -239,8 +239,8 @@ function initGeneratorMenus()
         menuFlowSep3   = new MenuItem('',                  {separator: true}),
         menuItemCache  = new MenuItem('Cache',             {icon: iconCache,  callback: e => actionManager.do(getCreateNodeAction(CACHE,   btnNumber.div, {insert: e.ctrlKey}))}),
         menuItemCopy   = new MenuItem('Copy',              {icon: iconCopy,   callback: e => actionManager.do(getCreateNodeAction(COPY,    btnNumber.div, {insert: e.ctrlKey}))}),
-        menuItemCustomInputs   = new MenuItem('Custom inputs',     {callback: e => actionManager.do(getCreateNodeAction(CUSTOM_INPUTS,    btnNumber.div, {insert: e.ctrlKey}))}),
-        menuItemCustomOutputs   = new MenuItem('Custom outputs',    {callback: e => actionManager.do(getCreateNodeAction(CUSTOM_OUTPUTS,    btnNumber.div, {insert: e.ctrlKey}))})]);
+        menuItemCustomInputs   = new MenuItem('Custom inputs',     {callback: e => actionManager.do(getCreateNodeAction(NODE_INPUTS,    btnNumber.div, {insert: e.ctrlKey}))}),
+        menuItemCustomOutputs   = new MenuItem('Custom outputs',    {callback: e => actionManager.do(getCreateNodeAction(NODE_OUTPUTS,    btnNumber.div, {insert: e.ctrlKey}))})]);
     
     
     menuMath = new Menu('Math', true, false);
@@ -389,13 +389,32 @@ function initGeneratorMenus()
         menuItemNodeSep1               = new MenuItem('',                    {separator: true}),
         menuItemNodeSelect             = new MenuItem('Select',              {childMenu: menuNodeSelect}),
         menuItemNodeSep2               = new MenuItem('',                    {separator: true}),
-        menuItemNodeRename             = new MenuItem('Rename',              {shortcut:  osCtrl() + 'R',              callback: e => { hideAllMenus(); graphView.renameSelectedNode(); }}),
-        menuItemNodeEdit               = new MenuItem('Edit...',             {callback: e => { hideAllMenus();  }}),
+        // menuItemNodeRename             = new MenuItem('Rename',              {shortcut:  osCtrl() + 'R',              callback: e => { hideAllMenus(); graphView.renameSelectedNode(); }}),
+        menuItemNodeEdit               = new MenuItem('Edit...',             {callback: e => { hideAllMenus(); graphView.editSelectedCustomNode(); }}),
                                          new MenuItem('',                    {separator: true}),
         menuItemNodeActivate           = new MenuItem('Activate',            {callback: () => makeSelectedNodesActive()}),
         menuItemNodeEnableDisable      = new MenuItem('Enable/Disable',      {shortcut:  osCtrl() + osShift() + 'E',  callback: () => actionManager.do(new ToggleDisableNodesAction(graphView.graph, graphView.selectedNodes.map(n => n.id)))}),
                                          new MenuItem('',                    {separator: true}),
         menuItemNodeRemove             = new MenuItem('Remove',              {shortcut:  osShift() + '⌫',            callback: e => { hideAllMenus(); graphView.removeSelectedNodes(true); }})]);
+
+
+    menuNode.init = () => 
+    {
+        const single   = graphView.selectedNodes.length == 1;
+        const parallel = nodesAreParallel(graphView.selectedNodes);
+
+        const group = 
+               graphView.selectedNodes.length == 1 
+            && graphView.selectedNodes[0].type == NODE_GROUP;
+
+
+        updateMenuItemDisplay(menuItemNodeSep1    .div, single);
+      //updateMenuItemDisplay(menuItemNodeRename  .div, single);
+        updateMenuItemDisplay(menuItemNodeEdit    .div, single && group);
+        updateMenuItemDisplay(menuItemNodeSep2    .div, single && group);
+        updateMenuItemDisplay(menuItemNodeSelect  .div, single);
+        updateMenuItemDisplay(menuItemNodeActivate.div, single || parallel);
+    };
 
 
     menuRemoveLicense = new Menu('Remove license', false, false);
@@ -410,26 +429,7 @@ function initGeneratorMenus()
     menuText = new Menu('Text menu', false, false);
 
 
-    menuNode.init = () => 
-    {
-        const single   = graphView.selectedNodes.length == 1;
-        const parallel = nodesAreParallel(graphView.selectedNodes);
-
-        const custom  = 
-               graphView.selectedNodes.length == 1 
-            && graphView.selectedNodes[0].type == CUSTOM;
-
-
-        updateMenuItemDisplay(menuItemNodeSep1    .div, single);
-        updateMenuItemDisplay(menuItemNodeRename  .div, single);
-        updateMenuItemDisplay(menuItemNodeEdit    .div, custom);
-        updateMenuItemDisplay(menuItemNodeSep2    .div, single);
-        updateMenuItemDisplay(menuItemNodeSelect  .div, single);
-        updateMenuItemDisplay(menuItemNodeActivate.div, single || parallel);
-    };
-
-
-    menuLocalStyles = new Menu('Local styles', true, true);
+    menuLocalStyles = new Menu('Local styles',   true,  true);
     menuSelectParam = new Menu('Select options', false, true);
 
     
@@ -441,9 +441,9 @@ function initGeneratorMenus()
     btnStyle    = new MenuButton('', menuStyle,  {useMenuName: true, highlight: () => currentMenus.includes(menuStyle ), callback: () => updatePanMode(false)});
     btnShape    = new MenuButton('', menuShape,  {useMenuName: true, highlight: () => currentMenus.includes(menuShape ), callback: () => updatePanMode(false)});
 
-    btnCustom   = new MenuButton('Custom nodes', null, {callback: () => 
+    btnCustom   = new MenuButton('Node groups', null, {callback: () => 
     {
-        const create = new CreateNodeAction(graphView.graph, CUSTOM, btnCustom.div);
+        const create = new CreateNodeAction(graphView.graph, NODE_GROUP, btnCustom.div);
         actionManager.do(create);
 
         graphView.update([create.node]);
@@ -490,7 +490,7 @@ function initGeneratorMenus()
 
     btnMain   .setIcon(iconGenerator);
     btnShape  .setIcon(iconShapes);
-    btnCustom .setIcon(iconCustom);
+    btnCustom .setIcon(iconNodeGroup);
     btnHand   .setIcon(iconHand);
     btnComment.setIcon(iconComment);
 }

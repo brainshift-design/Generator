@@ -407,9 +407,9 @@ const ALL_TYPES = [
     COLOR_STYLE,
     ...SHAPE_TYPES
 ];
-const CUSTOM = 'CUST';
-const CUSTOM_INPUTS = 'CUSTIN';
-const CUSTOM_OUTPUTS = 'CUSTOUT';
+const NODE_GROUP = 'NGRP';
+const NODE_INPUTS = 'NGIN';
+const NODE_OUTPUTS = 'NGOUT';
 const COMMENT = 'CMNT';
 const ACTIVE = 'ACT';
 const BEFORE_ACTIVE = 'BEF';
@@ -417,6 +417,7 @@ const DISABLED = 'DIS';
 const NOCACHE = 'NOC';
 const PARAM = 'PARAM'; // nodeId paramId
 const LOG = 'LOG';
+const GRAPH = 'GRAPH';
 const MATH_OPS = [
     [NUMBER_SUBTRACT, '−'],
     [NUMBER_ADD, '+'],
@@ -468,6 +469,7 @@ const SELECT_MOVE_ACTION = 'SELECT_MOVE';
 const SET_VALUE_ACTION = 'SET_VALUE';
 const TOGGLE_DISABLE_ACTION = 'TOGGLE_DISABLE';
 const TOGGLE_SYMBOL_ACTION = 'TOGGLE_SYMBOL';
+const SET_CURRENT_GRAPH_ACTION = 'SET_URRENT_GRAPH';
 const base32chars = '12345679ABCDEFGHJKLMNPQRSTUVWXYZ';
 function arrayToBase32(array, chars = base32chars) {
     let base32 = '';

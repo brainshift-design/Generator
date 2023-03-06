@@ -1,4 +1,4 @@
-class GCustom
+class GNodeGroup
 extends GOperator
 {
     // input = null;
@@ -7,14 +7,14 @@ extends GOperator
 
     constructor(nodeId, options)
     {
-        super(CUSTOM, nodeId, options);
+        super(NODE_GROUP, nodeId, options);
     }
 
 
     
     copy()
     {
-        const copy = new GCustom(this.nodeId, this.options);
+        const copy = new GNodeGroup(this.nodeId, this.options);
 
         copy.copyBase(this);
 

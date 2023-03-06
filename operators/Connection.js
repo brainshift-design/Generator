@@ -7,7 +7,7 @@ class Connection
     output;
     outputOrder; // in which connections FROM THIS OUTPUT were made
     
-    graph;
+    parentGraph;
 
     input;
 
@@ -26,7 +26,7 @@ class Connection
                  
         this.input       = input;
 
-        this.graph       = output ? output.node.graph : input.node.graph;
+        this.parentGraph = output ? output.node.parentGraph : input.node.parentGraph;
         
         this.wire        = new Wire(this);
     }

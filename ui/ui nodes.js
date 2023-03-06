@@ -456,7 +456,7 @@ function uiVariableConnectFromOutput(output, inputNode, inputId, outputOrder = -
         if (outputOrder > -1)
             conn.outputOrder = outputOrder;
 
-        uiUpdateSavedConnectionsToNodeId(inputNode.graph, inputNode.id);
+        uiUpdateSavedConnectionsToNodeId(inputNode.parentGraph, inputNode.id);
 
         return conn;
     }
@@ -468,7 +468,7 @@ function uiVariableConnectFromOutput(output, inputNode, inputId, outputOrder = -
 
 function uiConnect(output, input, inputId = '', outputOrder = -1)
 {
-    return output.node.graph.connect(output, input, inputId, outputOrder);
+    return output.node.parentGraph.connect(output, input, inputId, outputOrder);
 }
 
 
@@ -479,10 +479,10 @@ function uiDisconnect(input)
     
     const node = input.node;
 
-    node.graph.disconnect(input);
+    node.parentGraph.disconnect(input);
 
     if (node.variableInputs)
-        uiUpdateSavedConnectionsToNodeId(node.graph, node.id);
+        uiUpdateSavedConnectionsToNodeId(node.parentGraph, node.id);
 }
 
 
@@ -493,7 +493,7 @@ function uiDisconnectAny(input)
     
     uiDeleteSavedConnectionsToNodeId(input.node.id);
 
-    input.node.graph.disconnect(input);
+    input.node.parentGraph.disconnect(input);
 }
 
 
@@ -552,7 +552,7 @@ function uiMakeNodesActive(nodes)
     {
         if (node.active) continue;
         
-        pushUnique(node.graph.view.activeNodes, node);
+        pushUnique(node.parentGraph.view.activeNodes, node);
         node._active = true;
     }
 }

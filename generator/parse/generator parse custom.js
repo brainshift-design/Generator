@@ -3,7 +3,7 @@ function genParseCustom(parse)
     const [, nodeId, options, ignore] = genParseNodeStart(parse);
 
 
-    const custom = new GCustom(nodeId, options);
+    const group = new GNodeGroup(nodeId, options);
 
 
     // let nInputs = -1;
@@ -16,12 +16,12 @@ function genParseCustom(parse)
 
 
     if (parse.settings.logRequests) 
-        logReq(custom, parse, ignore);//, nInputs);
+        logReq(group, parse, ignore);//, nInputs);
 
 
     if (ignore) 
     {
-        genParseNodeEnd(parse, custom);
+        genParseNodeEnd(parse, group);
         return parse.parsedNodes.find(n => n.nodeId == nodeId);
     }
 
@@ -36,8 +36,8 @@ function genParseCustom(parse)
     parse.nTab--;
 
 
-    genParseNodeEnd(parse, custom);
-    return custom;
+    genParseNodeEnd(parse, group);
+    return group;
 }
 
 

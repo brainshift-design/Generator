@@ -43,17 +43,13 @@ const generator = new Worker(
         new Blob([generatorScript.textContent])));
         
 
-const mainGraph = new Graph();
-var   graphView = new GraphView(_graphView, mainGraph);
+var panMode             = false;        
 
+var     copiedNodesJson = '';
+var duplicatedNodesJson = '';
 
-var   panMode             = false;        
-
-var       copiedNodesJson = '';
-var   duplicatedNodesJson = '';
-
-var   pasteOffset         = point(0,  0);
-var   pasteOffsetDelta    = point(50, 50);
+var pasteOffset         = point(0,  0);
+var pasteOffsetDelta    = point(50, 50);
 
 
 

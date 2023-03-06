@@ -355,7 +355,6 @@ class GraphView
         for (let i = 0; i < nodes.length; i++)
             nodes[i].setTransform(nodeLeft[i], nodeTop[i], nodeRect[i]);
 
-
         if (_updateWires)
             this.updateNodeWireTransforms(nodes);
     }
