@@ -375,7 +375,7 @@ class GraphView
 
             for (const output of node.outputs)
                 for (const connInput of output.connectedInputs)
-                    if (   connInput.connection
+                    if (    connInput.connection
                         && !wires.includes(connInput.connection.wire))
                         wires.push(connInput.connection.wire);
         }

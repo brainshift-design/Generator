@@ -6925,6 +6925,7 @@ const REORDER_CONNECTIONS_ACTION = 'REORDER_CONNECTIONS';
 const SELECT_ACTION              = 'SELECT';
 const SELECT_MOVE_ACTION         = 'SELECT_MOVE';
 const SET_VALUE_ACTION           = 'SET_VALUE';
+const SET_NODE_RECT_ACTION       = 'SET_NODE_RECT';
 const TOGGLE_DISABLE_ACTION      = 'TOGGLE_DISABLE';
 const TOGGLE_SYMBOL_ACTION       = 'TOGGLE_SYMBOL';
 const SET_CURRENT_GRAPH_ACTION   = 'SET_URRENT_GRAPH';
@@ -26088,6 +26089,7 @@ const REORDER_CONNECTIONS_ACTION = 'REORDER_CONNECTIONS';
 const SELECT_ACTION              = 'SELECT';
 const SELECT_MOVE_ACTION         = 'SELECT_MOVE';
 const SET_VALUE_ACTION           = 'SET_VALUE';
+const SET_NODE_RECT_ACTION       = 'SET_NODE_RECT';
 const TOGGLE_DISABLE_ACTION      = 'TOGGLE_DISABLE';
 const TOGGLE_SYMBOL_ACTION       = 'TOGGLE_SYMBOL';
 const SET_CURRENT_GRAPH_ACTION   = 'SET_URRENT_GRAPH';
@@ -33945,7 +33947,7 @@ extends EventTarget
 
 
     
-    get view() { return this.param.node.parentGraph.view; }
+    get view() { return this.param.node.graph.view; }
 
 
 
@@ -34843,7 +34845,7 @@ NumberControl.prototype.initEvents = function()
     this.div.addEventListener('pointerenter', e =>
     {
         const param = this.param;
-        const view  = param.node.parentGraph.view;
+        const view  = param.node.graph.view;
         
 
         if (!this.canReact(e))
@@ -34903,7 +34905,7 @@ NumberControl.prototype.initEvents = function()
     this.div.addEventListener('pointerdown', e =>
     {
         const param = this.param;
-        const view  = param.node.parentGraph.view;
+        const view  = param.node.graph.view;
 
 
         if (!this.canReact(e))
@@ -35016,7 +35018,7 @@ NumberControl.prototype.initEvents = function()
     this.div.addEventListener('pointermove', e =>
     {
         const param = this.param;
-        const view  = param.node.parentGraph.view;
+        const view  = param.node.graph.view;
 
 
         if (!this.canReact(e))
@@ -35162,7 +35164,7 @@ NumberControl.prototype.initEvents = function()
     this.div.addEventListener('pointerleave', e =>
     {
         const param = this.param;
-        const view  = param.node.parentGraph.view;
+        const view  = param.node.graph.view;
 
 
         if (!this.canReact(e))
@@ -35237,7 +35239,7 @@ NumberControl.prototype.initEvents = function()
     this.div.addEventListener('pointerup', e =>
     {
         const param = this.param;
-        const view  = param.node.parentGraph.view;
+        const view  = param.node.graph.view;
 
 
         if (!this.canReact(e))
@@ -35334,7 +35336,7 @@ NumberControl.prototype.initEvents = function()
     this.div.addEventListener('wheel', e =>
     {
         const param = this.param;
-        const view  = param.node.parentGraph.view;
+        const view  = param.node.graph.view;
 
 
         if (!this.canReact(e))
@@ -35410,7 +35412,7 @@ NumberControl.prototype.initEvents = function()
 
     this.div.addEventListener('focus', () =>
     {
-        if (   !this.this.param.node.parentGraph.view.spaceDown
+        if (   !this.this.param.node.graph.view.spaceDown
             && !panMode
             && !this.buttonDown1
             &&  this.pointerEvents)
@@ -35486,7 +35488,7 @@ extends EventTarget
     
     
 
-    get view() { return this.param.node.parentGraph.view; }
+    get view() { return this.param.node.graph.view; }
 
 
 
@@ -36975,10 +36977,10 @@ class MenuButton
 
     initOptions(options)
     {
-        this.callback    = options.callback    != undefined ? options.callback    : null;
-        this.highlight   = options.highlight   != undefined ? options.highlight   : null;
-        this.useMenuName = options.useMenuName != undefined ? options.useMenuName : false;
-        this.selectLast  = options.selectLast  != undefined ? options.selectLast  : true;
+        this.callback    ??= options.callback;
+        this.highlight   ??= options.highlight;
+        this.useMenuName ??= options.useMenuName;
+        this.selectLast  ??= options.selectLast
     }
 
 
@@ -39402,7 +39404,7 @@ class GraphView
 
             for (const output of node.outputs)
                 for (const connInput of output.connectedInputs)
-                    if (   connInput.connection
+                    if (    connInput.connection
                         && !wires.includes(connInput.connection.wire))
                         wires.push(connInput.connection.wire);
         }
@@ -41106,7 +41108,7 @@ extends EventTarget
                 if (createAction)
                 {
                     actionManager.do(
-                        new SetParamValueAction(this.node.parentGraph, this, value), 
+                        new SetParamValueAction(this.node.graph, this, value), 
                           !isEmpty(actionManager.actions)
                         && lastOf(actionManager.actions).type == SET_VALUE_ACTION);
 
@@ -41422,7 +41424,7 @@ extends NumberParamBase
 
         this.control.addEventListener('confirm', () => 
         { 
-            actionManager.do(new EmptyAction(this.node.parentGraph), true);
+            actionManager.do(new EmptyAction(this.node.graph), true);
         });
 
 
@@ -43311,7 +43313,7 @@ class Output
                 return false;
 
 
-            const view = this.node.parentGraph.view;
+            const view = this.node.graph.view;
 
 
             if (view.headerOutput)
@@ -43366,7 +43368,7 @@ class Output
 
     endConnection()
     {
-        const view = this.node.parentGraph.view;
+        const view = this.node.graph.view;
 
 
         view.overOutput = null; 
@@ -43404,7 +43406,7 @@ class Output
     canReact(e)
     {
         if (   settings.enableZoomedOutParams
-            || this.node.parentGraph.view.zoom > settings.minZoomForParams)
+            || this.node.graph.view.zoom > settings.minZoomForParams)
             return true;
 
         e.preventDefault();
@@ -43429,7 +43431,7 @@ class Output
     
     updateControl()
     {
-        const view = this.node.parentGraph.view;
+        const view = this.node.graph.view;
 
 
         const mouseOver =
@@ -43526,7 +43528,7 @@ class Connection
     output;
     outputOrder; // in which connections FROM THIS OUTPUT were made
     
-    parentGraph;
+    graph;
 
     input;
 
@@ -43545,7 +43547,7 @@ class Connection
                  
         this.input       = input;
 
-        this.parentGraph = output ? output.node.parentGraph : input.node.parentGraph;
+        this.graph = output ? output.node.graph : input.node.graph;
         
         this.wire        = new Wire(this);
     }
@@ -43733,7 +43735,7 @@ class Wire
         const output = this.connection.output;
         const input  = this.connection.input;
         
-        const view   = this.connection.parentGraph.view;
+        const view   = this.connection.graph.view;
 
 
         if (output)
@@ -43811,7 +43813,7 @@ class Wire
         this.updateInBall (        x2, y2);
         this.updateStyle  ();
 
-        const view = this.connection.parentGraph.view;
+        const view = this.connection.graph.view;
 
         this.svg.setAttribute('width',  view.div.clientWidth);
         this.svg.setAttribute('height', view.div.clientHeight);
@@ -43823,7 +43825,7 @@ class Wire
 
     updateCurve(x1, y1, x2, y2)
     {
-        const view = this.connection.parentGraph.view;
+        const view = this.connection.graph.view;
 
 
         if (!pointIsNaN(this.outputPos))
@@ -43920,7 +43922,7 @@ class Wire
     
     updateArrow(x0, y0, x1, y1, x2, y2, x3, y3)
     {
-        const view = this.connection.parentGraph.view;
+        const view = this.connection.graph.view;
 
 
         if (!pointIsNaN(this.outputPos))
@@ -43994,7 +43996,7 @@ class Wire
         const conn  = this.connection;
         let   color = this.getColor();
     
-        const view  = conn.parentGraph.view;
+        const view  = conn.graph.view;
     
 
         const l = rgb2hclok(color)[2];
@@ -44178,7 +44180,7 @@ class Operator
     subscription = false;
 
 
-    parentGraph  = null;
+    graph  = null;
     
     
     #type; // used in the code, not for generation
@@ -44269,12 +44271,12 @@ class Operator
     set selected(sel) 
     {
         if (this._selected)
-            removeFromArray(this.parentGraph.view.selectedNodes, this);
+            removeFromArray(this.graph.view.selectedNodes, this);
 
         this.setSelected(sel);     
 
         if (this._selected)
-            this.parentGraph.view.selectedNodes.push(this);
+            this.graph.view.selectedNodes.push(this);
     }        
 
 
@@ -44361,7 +44363,7 @@ class Operator
             && i.canConnectFrom(output));
 
         
-        const view = this.parentGraph.view;
+        const view = this.graph.view;
 
 
         if (   view.overInput
@@ -44449,7 +44451,7 @@ class Operator
         const outputs = this.headerOutputs.filter(o => arraysIntersect(o.types, inputTypes));
 
         return  outputs.length == 1
-            && !this.isOrFollows(this.parentGraph.view.tempConn.input.node)
+            && !this.isOrFollows(this.graph.view.tempConn.input.node)
             ? outputs[0]
             : null;
     }
@@ -44609,7 +44611,7 @@ class Operator
     {
         this._active = true;
 
-        const view = this.parentGraph.view;
+        const view = this.graph.view;
 
         if (    view
             &&  view.activeNodes
@@ -44624,8 +44626,8 @@ class Operator
         if (!this._active) 
             return;
             
-        if (this.parentGraph.view.activeNodes.includes(this))
-            removeFromArray(this.parentGraph.view.activeNodes, this);
+        if (this.graph.view.activeNodes.includes(this))
+            removeFromArray(this.graph.view.activeNodes, this);
 
         this._active = false;
     }
@@ -44910,7 +44912,7 @@ class Operator
 
     setTransform(nodeLeft, nodeTop, nodeRect)
     {
-        const view = this.parentGraph.view;
+        const view = this.graph.view;
 
         this.div.style.transform =
               'translate(' 
@@ -44927,7 +44929,7 @@ class Operator
 
     getOffsetRect()
     {
-        const view = this.parentGraph.view;
+        const view = this.graph.view;
 
         const ox   = -view.pan.x / view.zoom;
         const oy   = -view.pan.y / view.zoom;
@@ -44986,7 +44988,7 @@ class Operator
         if (   node
             && !isEmpty(node.outputs)
             && !isEmpty(inputs))
-            actionManager.do(new ConnectAction(this.parentGraph, node.outputs[0], inputs[0]), true);
+            actionManager.do(new ConnectAction(this.graph, node.outputs[0], inputs[0]), true);
     }
 
 
@@ -45031,7 +45033,7 @@ class Operator
             + pos + tab + '"enabled": "' + boolToString(this.enabled)     + '",\n'
             + pos + tab + '"x": "'       + this.div.style.left            + '",\n'
             + pos + tab + '"y": "'       + this.div.style.top             + '",\n'
-            + pos + tab + '"z": "'       + this.parentGraph.nodes.indexOf(this) + '"';
+            + pos + tab + '"z": "'       + this.graph.nodes.indexOf(this) + '"';
 
         if (this.active)
             json += ',\n' + pos + tab + '"active": "' + this.active + '"';
@@ -45273,7 +45275,7 @@ Operator.prototype.createNode = function()
     this.div.addEventListener('pointerenter', e =>
     {
         this.div.over            = true;
-        this.parentGraph.view.overNode = this;
+        this.graph.view.overNode = this;
         
         if (    e.altKey
             && !getCtrlKey(e)
@@ -45289,7 +45291,7 @@ Operator.prototype.createNode = function()
     this.div.addEventListener('pointerleave', e =>
     {
         this.div.over            = false;
-        this.parentGraph.view.overNode = null;
+        this.graph.view.overNode = null;
         
         if (   (  !e.altKey
                 || getCtrlKey(e)
@@ -45348,7 +45350,7 @@ Operator.prototype.createHeader = function()
 
     this.header.addEventListener('pointerdown', e =>
     {
-        if (this.parentGraph.view.isPanning(e))
+        if (this.graph.view.isPanning(e))
             return;
 
 
@@ -45358,7 +45360,7 @@ Operator.prototype.createHeader = function()
         e.preventDefault();
 
 
-        const view = this.parentGraph.view;
+        const view = this.graph.view;
 
 
         view.lastSelectedNodes = [...view.selectedNodes];
@@ -45426,11 +45428,11 @@ Operator.prototype.createHeader = function()
 
     this.header.addEventListener('pointermove', e =>
     {
-        if (this.parentGraph.view.isPanning(e))
+        if (this.graph.view.isPanning(e))
             return;
 
 
-        const view = this.parentGraph.view;
+        const view = this.graph.view;
 
 
         //console.log(node.id + '.header.pointermove');
@@ -45552,11 +45554,11 @@ Operator.prototype.createHeader = function()
 
     this.header.addEventListener('pointerup', e =>
     {
-        if (this.parentGraph.view.isPanning(e))
+        if (this.graph.view.isPanning(e))
             return;
 
 
-        const view = this.parentGraph.view;
+        const view = this.graph.view;
 
 
         if (   e.button == 0
@@ -45565,7 +45567,7 @@ Operator.prototype.createHeader = function()
             if (this.div.moved)
             {
                 actionManager.do(new SelectMoveNodesAction(
-                    this.parentGraph,
+                    this.graph,
                     view.lastSelectedNodes.map(n => n.id), 
                     view.selectedNodes.map(n => n.id), 
                     point(this.div.slx,        this.div.sly      ),
@@ -45573,11 +45575,9 @@ Operator.prototype.createHeader = function()
                     this.div.shiftOnPointerDown ));
             }
             else if (!arraysAreEqual(view.selectedNodes, view.lastSelectedNodes))
-                 //   !isEmpty(view.selectedNodes)
-                 //    && !this.selected)
             {
                 actionManager.do(new SelectNodesAction(
-                    this.parentGraph,
+                    this.graph,
                     view.selectedNodes    .map(n => n.id), 
                     view.lastSelectedNodes.map(n => n.id)));
             }
@@ -45612,7 +45612,7 @@ Operator.prototype.createHeader = function()
 
     this.header.addEventListener('pointerleave', e => 
     { 
-        const view = this.parentGraph.view;
+        const view = this.graph.view;
 
 
         if (view.tempConn)
@@ -45668,7 +45668,7 @@ Operator.prototype.createHeader = function()
             && e.clientY >= bounds.top  && e.clientY < bounds.bottom)
             this.showLabelTextbox();
         else if (!this.header.ignoreDoubleClick)
-            actionManager.do(new MakeActiveNodesAction(this.parentGraph, [this.id]));
+            actionManager.do(new MakeActiveNodesAction(this.graph, [this.id]));
 
             this.header.ignoreDoubleClick = false;
     });
@@ -45974,7 +45974,7 @@ Operator.prototype.initLabelTextbox = function()
             {
                 const newName = this.textbox.value;
                 setTimeout(() => this.setName(newName));
-                actionManager.do(new RenameNodeAction(this.parentGraph, this.id, newName));
+                actionManager.do(new RenameNodeAction(this.graph, this.id, newName));
             }
         }
         else
@@ -46062,7 +46062,7 @@ Operator.prototype.updateWireTransform = function()
             if (connInput.connection)
                 wires.push(connInput.connection.wire);
 
-    this.parentGraph.view.updateWires(wires);
+    this.graph.view.updateWires(wires);
 }
 
 
@@ -46223,12 +46223,12 @@ Operator.prototype.updateMeasureData = function()
     this.params
         .filter(p => p.control)
         .forEach(p => 
-            {
-                p.control.updateMeasureData();
+        {
+            p.control.updateMeasureData();
 
-                if (p. input) p. input.updateMeasureData();
-                if (p.output) p.output.updateMeasureData();
-            });
+            if (p. input) p. input.updateMeasureData();
+            if (p.output) p.output.updateMeasureData();
+        });
 }
 
 
@@ -46456,7 +46456,7 @@ extends OperatorWithValue
                     this._symbol.clicked0      = false;
                     this._symbol.style.opacity = 1;
 
-                    actionManager.do(new ToggleOperatorSymbolAction(this.parentGraph, this.id, true));
+                    actionManager.do(new ToggleOperatorSymbolAction(this.graph, this.id, true));
 
                     this.header.ignoreDoubleClick = true;
                 }
@@ -46474,7 +46474,7 @@ extends OperatorWithValue
         this.textbox.addEventListener('finishedit', e => 
         {
             if (this._showOnlySymbol)
-                actionManager.do(new ToggleOperatorSymbolAction(this.parentGraph, this.id, false), e.detail.value != e.detail.oldValue);
+                actionManager.do(new ToggleOperatorSymbolAction(this.graph, this.id, false), e.detail.value != e.detail.oldValue);
         });
     }
     
@@ -46700,7 +46700,7 @@ extends OperatorBase
 
                     if (_conn)
                     {
-                        const conn = uiConnect(param.output, this.parentGraph.nodeFromId(_conn.inputNodeId).inputFromId(_conn.inputId));
+                        const conn = uiConnect(param.output, this.graph.nodeFromId(_conn.inputNodeId).inputFromId(_conn.inputId));
                         uiSaveConn(conn);
                     }
                 }
@@ -49178,7 +49178,7 @@ extends OpColorBase
             this.paramSpace.setValue(space, false, true, false);
 
 
-            const view = this.parentGraph.view;
+            const view = this.graph.view;
 
             if (   convert.value != space.value
                 || view.pastingNodes
@@ -49607,7 +49607,7 @@ function getColorInputValuesForUndo(input)
 {
     return [{
         paramId: 'color', 
-        value:   ColorValue.fromDataColor(input.node._color)
+        value:    ColorValue.fromDataColor(input.node._color)
     }];
 }
 
@@ -52625,7 +52625,7 @@ extends OpColorBase
     //     if (    node
     //         && !isEmpty(node.outputs)
     //         && !isEmpty(inputs))
-    //         actionManager.do(new ConnectAction(node.parentGraph, node.outputs[0], inputs[0]), true);
+    //         actionManager.do(new ConnectAction(node.graph, node.outputs[0], inputs[0]), true);
     // }
 }
 
@@ -52672,6 +52672,7 @@ extends OperatorBase
         // this.view  = graphView;
 
         //mainGraph.parentNodeGroup = this;
+        this.alwaysLoadParams   = true;
         this.sharpBottomCorners = true;
         
         this.div.style.height = '100px';
@@ -52679,20 +52680,23 @@ extends OperatorBase
         //this.addParam(this.paramValue = new ViewParam('view', this));
 
 
+
         this.div.addEventListener('pointerdown', e =>
         {
             if (e.button == 0)
             {
+                this.startRect = offsetRect(this.div);
+
                 this.resizing = false;
 
-                if (this.canResizeTL) { this.resizingTL = this.resizing = true; }
-                if (this.canResizeTR) { this.resizingTR = this.resizing = true; }
-                if (this.canResizeBL) { this.resizingBL = this.resizing = true; }
-                if (this.canResizeBR) { this.resizingBR = this.resizing = true; }
-                if (this.canResizeL ) { this.resizingL  = this.resizing = true; }
-                if (this.canResizeR ) { this.resizingR  = this.resizing = true; }
-                if (this.canResizeT ) { this.resizingT  = this.resizing = true; }
-                if (this.canResizeB ) { this.resizingB  = this.resizing = true; }
+                     if (this.canResizeTL) { this.resizingTL = this.resizing = true; }
+                else if (this.canResizeTR) { this.resizingTR = this.resizing = true; }
+                else if (this.canResizeBL) { this.resizingBL = this.resizing = true; }
+                else if (this.canResizeBR) { this.resizingBR = this.resizing = true; }
+                else if (this.canResizeL ) { this.resizingL  = this.resizing = true; }
+                else if (this.canResizeR ) { this.resizingR  = this.resizing = true; }
+                else if (this.canResizeT ) { this.resizingT  = this.resizing = true; }
+                else if (this.canResizeB ) { this.resizingB  = this.resizing = true; }
 
                 if (this.resizing)
                 {
@@ -52703,11 +52707,10 @@ extends OperatorBase
 
                     this.sx = e.clientX;
                     this.sy = e.clientY;
-
-                    this.startRect = this.measureData.divOffset;
                 }
             }        
         });
+
 
 
         this.div.addEventListener('pointermove', e =>
@@ -52793,71 +52796,71 @@ extends OperatorBase
             }
         });
         
+
         
         this.div.addEventListener('pointerup', e =>
         {
-            this.resizingL  = false;
-            this.resizingR  = false;
-            this.resizingT  = false;
-            this.resizingB  = false;
-        
-            this.resizingTL = false;
-            this.resizingTR = false;
-            this.resizingBL = false;
-            this.resizingBR = false;
+            if (e.button == 0)
+            {
+                if (this.resizing)
+                {
+                    actionManager.do(new SetNodeRectAction(
+                        this.graph, 
+                        this.id, 
+                        this.startRect, 
+                        offsetRect(this.div)));
+                }
 
-            this.resizing   = false;
 
-            
-            if (this.div.hasPointerCapture(e.pointerId))
-                this.div.releasePointerCapture(e.pointerId);
+                this.resetResize();
+
+                
+                if (this.div.hasPointerCapture(e.pointerId))
+                    this.div.releasePointerCapture(e.pointerId);
+            }
         });
     }
     
     
 
+    resetResize(resetResizing = true)
+    {
+        this.canResizeL  = false;
+        this.canResizeR  = false;
+        this.canResizeT  = false;
+        this.canResizeB  = false;
+    
+        this.canResizeTL = false;
+        this.canResizeTR = false;
+        this.canResizeBL = false;
+        this.canResizeBR = false;
+
+        if (resetResizing)
+        {
+            this.resizingL   = false;
+            this.resizingR   = false;
+            this.resizingT   = false;
+            this.resizingB   = false;
+        
+            this.resizingTL  = false;
+            this.resizingTR  = false;
+            this.resizingBL  = false;
+            this.resizingBR  = false;
+
+            this.resizing    = false;
+        }
+    }
+
+
+
     checkResizing(e)
     {
+        this.resetResize(false);
+
         if (   e.clientX >= this.measureData.divBounds.l
             && e.clientX <  this.measureData.divBounds.l + resizeEdgeWidth
-            && e.clientY >= this.measureData.divBounds.t + resizeEdgeWidth
-            && e.clientY <  this.measureData.divBounds.b - resizeEdgeWidth)
-        {
-            this.canResizeL = true;
-            this.div.style.cursor = 'ew-resize';
-            return true;
-        }
-        else if (e.clientX >= this.measureData.divBounds.r - resizeEdgeWidth
-              && e.clientX <  this.measureData.divBounds.r
-              && e.clientY >= this.measureData.divBounds.t + resizeEdgeWidth
-              && e.clientY <  this.measureData.divBounds.b - resizeEdgeWidth)
-        {
-            this.canResizeR = true;
-            this.div.style.cursor = 'ew-resize';
-            return true;
-        }
-        else if (e.clientX >= this.measureData.divBounds.l + resizeEdgeWidth
-              && e.clientX <  this.measureData.divBounds.r - resizeEdgeWidth
-              && e.clientY >= this.measureData.divBounds.t
-              && e.clientY <  this.measureData.divBounds.t + resizeEdgeWidth)
-        {
-            this.canResizeT = true;
-            this.div.style.cursor = 'ns-resize';
-            return true;
-        }
-        else if (e.clientX >= this.measureData.divBounds.l + resizeEdgeWidth
-              && e.clientX <  this.measureData.divBounds.r - resizeEdgeWidth
-              && e.clientY >= this.measureData.divBounds.b - resizeEdgeWidth
-              && e.clientY <  this.measureData.divBounds.b)
-        {
-            this.canResizeB = true;
-            this.div.style.cursor = 'ns-resize';
-            return true;
-        }
-        else if (e.clientX >= this.measureData.divBounds.l
-              && e.clientX <  this.measureData.divBounds.l + resizeEdgeWidth
-              && e.clientY >= this.measureData.divBounds.t
-              && e.clientY <  this.measureData.divBounds.t + resizeEdgeWidth)
+            && e.clientY >= this.measureData.divBounds.t
+            && e.clientY <  this.measureData.divBounds.t + resizeEdgeWidth)
         {
             this.canResizeTL = true;
             this.div.style.cursor = 'nwse-resize';
@@ -52890,20 +52893,45 @@ extends OperatorBase
             this.div.style.cursor = 'nwse-resize';
             return true;
         }
+        else if (e.clientX >= this.measureData.divBounds.l
+              && e.clientX <  this.measureData.divBounds.l + resizeEdgeWidth
+              && e.clientY >= this.measureData.divBounds.t + resizeEdgeWidth
+              && e.clientY <  this.measureData.divBounds.b - resizeEdgeWidth)
+        {
+            this.canResizeL = true;
+            this.div.style.cursor = 'ew-resize';
+            return true;
+        }
+        else if (e.clientX >= this.measureData.divBounds.r - resizeEdgeWidth
+              && e.clientX <  this.measureData.divBounds.r
+              && e.clientY >= this.measureData.divBounds.t + resizeEdgeWidth
+              && e.clientY <  this.measureData.divBounds.b - resizeEdgeWidth)
+        {
+            this.canResizeR = true;
+            this.div.style.cursor = 'ew-resize';
+            return true;
+        }
+        else if (e.clientX >= this.measureData.divBounds.l + resizeEdgeWidth
+              && e.clientX <  this.measureData.divBounds.r - resizeEdgeWidth
+              && e.clientY >= this.measureData.divBounds.t
+              && e.clientY <  this.measureData.divBounds.t + resizeEdgeWidth)
+        {
+            this.canResizeT = true;
+            this.div.style.cursor = 'ns-resize';
+            return true;
+        }
+        else if (e.clientX >= this.measureData.divBounds.l + resizeEdgeWidth
+              && e.clientX <  this.measureData.divBounds.r - resizeEdgeWidth
+              && e.clientY >= this.measureData.divBounds.b - resizeEdgeWidth
+              && e.clientY <  this.measureData.divBounds.b)
+        {
+            this.canResizeB = true;
+            this.div.style.cursor = 'ns-resize';
+            return true;
+        }
         else
         {
-            this.canResizeL  = false;
-            this.canResizeR  = false;
-            this.canResizeT  = false;
-            this.canResizeB  = false;
-        
-            this.canResizeTL = false;
-            this.canResizeTR = false;
-            this.canResizeBL = false;
-            this.canResizeBR = false;
-
             this.div.style.cursor = 'default';
-
             return false;
         }
     }
@@ -52976,9 +53004,41 @@ extends OperatorBase
 
 
 
+    toJsonBase(nTab = 0) 
+    {
+        let   pos = ' '.repeat(nTab);
+        const tab = TAB;
+
+        let json = super.toJsonBase(nTab);
+
+        json += ',\n' + pos + tab + '"width": "'  + this.div.offsetWidth  + 'px"';
+        json += ',\n' + pos + tab + '"height": "' + this.div.offsetHeight + 'px"';
+
+        return json;
+    }
+
+
+
     paramsToJson(nTab = 0)
     {
         return '';
+    }
+
+
+
+    loadParams(_node, pasting)
+    {
+        super.loadParams(_node, pasting);
+
+
+        if (   _node.width
+            && _node.height)
+        {
+            this.setSize(
+                parseFloat(_node.width), 
+                parseFloat(_node.height),
+                false);
+        }
     }
 }
 
@@ -53094,7 +53154,7 @@ extends OperatorBase
 
                     if (_conn)
                     {
-                        const conn = uiConnect(param.output, this.parentGraph.nodeFromId(_conn.inputNodeId).inputFromId(_conn.inputId));
+                        const conn = uiConnect(param.output, this.graph.nodeFromId(_conn.inputNodeId).inputFromId(_conn.inputId));
                         uiSaveConn(conn);
                     }
                 }
@@ -53350,7 +53410,7 @@ class Graph
 
     addNode(node, placeNode = true, updateLabel = true)
     {
-        node.parentGraph = this;
+        node.graph = this;
 
         node.id = this.getNewNodeId(node.id, node.id);
         
@@ -53399,7 +53459,7 @@ class Graph
             const node = this.nodes.find(n => n.id == id);
 
             node.selected    = false;
-            node.parentGraph = null;
+            node.graph = null;
 
             node.div.style.display = 'none';
 
@@ -56544,6 +56604,80 @@ extends Action
 }
 
 
+class SetNodeRectAction
+extends Action
+{
+    nodeId;
+    get node() { return this.graph.nodeFromId(this.nodeId) } 
+
+    oldRect;
+    newRect;
+
+
+
+    constructor(graph, nodeId, oldRect, newRect)
+    {
+        super(
+            graph,
+            SET_NODE_RECT_ACTION,
+           'SET NODE ' + nodeId + ' RECT to \'' + newRect.toString() + '\'');
+
+        this.affectsConnections = false;
+
+        this.nodeId  = nodeId;
+
+        console.log('oldRect =', oldRect);
+        console.log('newRect =', newRect);
+
+        this.oldRect = Rect.fromTypical(oldRect);
+        this.newRect = Rect.fromTypical(newRect);
+    }
+
+
+
+    do(updateNodes)
+    {
+        // this.node.setRect( // already done
+        //     this.newRect.x,
+        //     this.newRect.y,
+        //     this.newRect.w,
+        //     this.newRect.h);
+
+        uiSaveNodes(this.graph, [this.nodeId]);
+    }
+
+
+
+    undo(updateNodes)
+    {
+        this.node.setRect(
+            this.oldRect.x,
+            this.oldRect.y,
+            this.oldRect.w,
+            this.oldRect.h);
+
+        this.node.updateNode();
+
+        uiSaveNodes(this.graph, [this.nodeId]);
+    }
+
+
+
+    redo(updateNodes)
+    {
+        this.node.setRect(
+            this.newRect.x,
+            this.newRect.y,
+            this.newRect.w,
+            this.newRect.h);
+
+        this.node.updateNode();
+        
+        uiSaveNodes(this.graph, [this.nodeId]);
+    }
+}
+
+
 class SetParamValueAction
 extends Action
 {
@@ -59274,8 +59408,8 @@ function resolveConnections(graph, nodes, _connections, first, last)
             {
                 const _conn = _connections[i];
 
-                const outputNode = nodes.find(n => (n.newId ? n.newId : n.id) == _conn.outputNodeId);
-                const  inputNode = nodes.find(n => (n.newId ? n.newId : n.id) == _conn. inputNodeId);
+                const outputNode = nodes.find(n => (n.newId ?? n.id) == _conn.outputNodeId);
+                const  inputNode = nodes.find(n => (n.newId ?? n.id) == _conn. inputNodeId);
 
 
                 const strConn = connToString(_conn);
@@ -59348,8 +59482,8 @@ function parseConnectionsAndConnect(graph, data, pasteConnected, setProgress = n
     {
         const _conn = data.connections[i];
         
-        if (      data.nodes.find(n => (n.newId ? n.newId : n.id) == _conn.outputNodeId)
-               && data.nodes.find(n => (n.newId ? n.newId : n.id) == _conn. inputNodeId)
+        if (      data.nodes.find(n => (n.newId ?? n.id) == _conn.outputNodeId)
+               && data.nodes.find(n => (n.newId ?? n.id) == _conn. inputNodeId)
             || pasteConnected)
             parseConnectionJsonAndConnect(graph, _conn, pasteConnected);
 
@@ -60045,7 +60179,7 @@ function uiVariableConnectFromOutput(output, inputNode, inputId, outputOrder = -
         if (outputOrder > -1)
             conn.outputOrder = outputOrder;
 
-        uiUpdateSavedConnectionsToNodeId(inputNode.parentGraph, inputNode.id);
+        uiUpdateSavedConnectionsToNodeId(inputNode.graph, inputNode.id);
 
         return conn;
     }
@@ -60057,7 +60191,7 @@ function uiVariableConnectFromOutput(output, inputNode, inputId, outputOrder = -
 
 function uiConnect(output, input, inputId = '', outputOrder = -1)
 {
-    return output.node.parentGraph.connect(output, input, inputId, outputOrder);
+    return output.node.graph.connect(output, input, inputId, outputOrder);
 }
 
 
@@ -60068,10 +60202,10 @@ function uiDisconnect(input)
     
     const node = input.node;
 
-    node.parentGraph.disconnect(input);
+    node.graph.disconnect(input);
 
     if (node.variableInputs)
-        uiUpdateSavedConnectionsToNodeId(node.parentGraph, node.id);
+        uiUpdateSavedConnectionsToNodeId(node.graph, node.id);
 }
 
 
@@ -60082,7 +60216,7 @@ function uiDisconnectAny(input)
     
     uiDeleteSavedConnectionsToNodeId(input.node.id);
 
-    input.node.parentGraph.disconnect(input);
+    input.node.graph.disconnect(input);
 }
 
 
@@ -60141,7 +60275,7 @@ function uiMakeNodesActive(nodes)
     {
         if (node.active) continue;
         
-        pushUnique(node.parentGraph.view.activeNodes, node);
+        pushUnique(node.graph.view.activeNodes, node);
         node._active = true;
     }
 }
@@ -60789,7 +60923,7 @@ function uiLinkNodeToExistingColorStyle(node, styleId, styleName, paints)
         node.paramValue.setValue(ColorValue.NaN);
 
         // if (node.paramValue.input.connected)
-        //     actionManager.do(new DisconnectAction(node.parentGraph, node.paramValue.input), true);
+        //     actionManager.do(new DisconnectAction(node.graph, node.paramValue.input), true);
     }
 
 
@@ -60934,7 +61068,7 @@ function initLocalStylesMenu(styles, nodeId)
         
     menuLocalStyles.addItems([
         new MenuItem('None', {
-            callback: e => actionManager.do(new LinkExistingStyleAction(node.parentGraph, nodeId, NULL, '', [])),
+            callback: e => actionManager.do(new LinkExistingStyleAction(node.graph, nodeId, NULL, '', [])),
             enabled:  node.linkedStyleId != NULL})
     ]);
 }

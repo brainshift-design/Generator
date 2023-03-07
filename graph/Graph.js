@@ -85,7 +85,7 @@ class Graph
 
     addNode(node, placeNode = true, updateLabel = true)
     {
-        node.parentGraph = this;
+        node.graph = this;
 
         node.id = this.getNewNodeId(node.id, node.id);
         
@@ -134,7 +134,7 @@ class Graph
             const node = this.nodes.find(n => n.id == id);
 
             node.selected    = false;
-            node.parentGraph = null;
+            node.graph = null;
 
             node.div.style.display = 'none';
 

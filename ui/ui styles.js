@@ -27,7 +27,7 @@ function uiLinkNodeToExistingColorStyle(node, styleId, styleName, paints)
         node.paramValue.setValue(ColorValue.NaN);
 
         // if (node.paramValue.input.connected)
-        //     actionManager.do(new DisconnectAction(node.parentGraph, node.paramValue.input), true);
+        //     actionManager.do(new DisconnectAction(node.graph, node.paramValue.input), true);
     }
 
 
@@ -172,7 +172,7 @@ function initLocalStylesMenu(styles, nodeId)
         
     menuLocalStyles.addItems([
         new MenuItem('None', {
-            callback: e => actionManager.do(new LinkExistingStyleAction(node.parentGraph, nodeId, NULL, '', [])),
+            callback: e => actionManager.do(new LinkExistingStyleAction(node.graph, nodeId, NULL, '', [])),
             enabled:  node.linkedStyleId != NULL})
     ]);
 }

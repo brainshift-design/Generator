@@ -257,6 +257,6 @@ extends OpColorBase
     //     if (    node
     //         && !isEmpty(node.outputs)
     //         && !isEmpty(inputs))
-    //         actionManager.do(new ConnectAction(node.parentGraph, node.outputs[0], inputs[0]), true);
+    //         actionManager.do(new ConnectAction(node.graph, node.outputs[0], inputs[0]), true);
     // }
 }

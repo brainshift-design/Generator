@@ -179,7 +179,7 @@ extends EventTarget
                 if (createAction)
                 {
                     actionManager.do(
-                        new SetParamValueAction(this.node.parentGraph, this, value), 
+                        new SetParamValueAction(this.node.graph, this, value), 
                           !isEmpty(actionManager.actions)
                         && lastOf(actionManager.actions).type == SET_VALUE_ACTION);
 

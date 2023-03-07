@@ -30,7 +30,7 @@ extends OperatorWithValue
                     this._symbol.clicked0      = false;
                     this._symbol.style.opacity = 1;
 
-                    actionManager.do(new ToggleOperatorSymbolAction(this.parentGraph, this.id, true));
+                    actionManager.do(new ToggleOperatorSymbolAction(this.graph, this.id, true));
 
                     this.header.ignoreDoubleClick = true;
                 }
@@ -48,7 +48,7 @@ extends OperatorWithValue
         this.textbox.addEventListener('finishedit', e => 
         {
             if (this._showOnlySymbol)
-                actionManager.do(new ToggleOperatorSymbolAction(this.parentGraph, this.id, false), e.detail.value != e.detail.oldValue);
+                actionManager.do(new ToggleOperatorSymbolAction(this.graph, this.id, false), e.detail.value != e.detail.oldValue);
         });
     }
     

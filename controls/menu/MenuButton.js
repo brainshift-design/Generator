@@ -46,10 +46,10 @@ class MenuButton
 
     initOptions(options)
     {
-        this.callback    = options.callback    != undefined ? options.callback    : null;
-        this.highlight   = options.highlight   != undefined ? options.highlight   : null;
-        this.useMenuName = options.useMenuName != undefined ? options.useMenuName : false;
-        this.selectLast  = options.selectLast  != undefined ? options.selectLast  : true;
+        this.callback    ??= options.callback;
+        this.highlight   ??= options.highlight;
+        this.useMenuName ??= options.useMenuName;
+        this.selectLast  ??= options.selectLast
     }
 
 

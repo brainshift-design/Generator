@@ -89,7 +89,7 @@ class Output
                 return false;
 
 
-            const view = this.node.parentGraph.view;
+            const view = this.node.graph.view;
 
 
             if (view.headerOutput)
@@ -144,7 +144,7 @@ class Output
 
     endConnection()
     {
-        const view = this.node.parentGraph.view;
+        const view = this.node.graph.view;
 
 
         view.overOutput = null; 
@@ -182,7 +182,7 @@ class Output
     canReact(e)
     {
         if (   settings.enableZoomedOutParams
-            || this.node.parentGraph.view.zoom > settings.minZoomForParams)
+            || this.node.graph.view.zoom > settings.minZoomForParams)
             return true;
 
         e.preventDefault();
@@ -207,7 +207,7 @@ class Output
     
     updateControl()
     {
-        const view = this.node.parentGraph.view;
+        const view = this.node.graph.view;
 
 
         const mouseOver =

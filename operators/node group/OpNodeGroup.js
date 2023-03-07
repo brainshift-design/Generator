@@ -40,6 +40,7 @@ extends OperatorBase
         // this.view  = graphView;
 
         //mainGraph.parentNodeGroup = this;
+        this.alwaysLoadParams   = true;
         this.sharpBottomCorners = true;
         
         this.div.style.height = '100px';
@@ -47,20 +48,23 @@ extends OperatorBase
         //this.addParam(this.paramValue = new ViewParam('view', this));
 
 
+
         this.div.addEventListener('pointerdown', e =>
         {
             if (e.button == 0)
             {
+                this.startRect = offsetRect(this.div);
+
                 this.resizing = false;
 
-                if (this.canResizeTL) { this.resizingTL = this.resizing = true; }
-                if (this.canResizeTR) { this.resizingTR = this.resizing = true; }
-                if (this.canResizeBL) { this.resizingBL = this.resizing = true; }
-                if (this.canResizeBR) { this.resizingBR = this.resizing = true; }
-                if (this.canResizeL ) { this.resizingL  = this.resizing = true; }
-                if (this.canResizeR ) { this.resizingR  = this.resizing = true; }
-                if (this.canResizeT ) { this.resizingT  = this.resizing = true; }
-                if (this.canResizeB ) { this.resizingB  = this.resizing = true; }
+                     if (this.canResizeTL) { this.resizingTL = this.resizing = true; }
+                else if (this.canResizeTR) { this.resizingTR = this.resizing = true; }
+                else if (this.canResizeBL) { this.resizingBL = this.resizing = true; }
+                else if (this.canResizeBR) { this.resizingBR = this.resizing = true; }
+                else if (this.canResizeL ) { this.resizingL  = this.resizing = true; }
+                else if (this.canResizeR ) { this.resizingR  = this.resizing = true; }
+                else if (this.canResizeT ) { this.resizingT  = this.resizing = true; }
+                else if (this.canResizeB ) { this.resizingB  = this.resizing = true; }
 
                 if (this.resizing)
                 {
@@ -71,11 +75,10 @@ extends OperatorBase
 
                     this.sx = e.clientX;
                     this.sy = e.clientY;
-
-                    this.startRect = this.measureData.divOffset;
                 }
             }        
         });
+
 
 
         this.div.addEventListener('pointermove', e =>
@@ -161,71 +164,71 @@ extends OperatorBase
             }
         });
         
+
         
         this.div.addEventListener('pointerup', e =>
         {
-            this.resizingL  = false;
-            this.resizingR  = false;
-            this.resizingT  = false;
-            this.resizingB  = false;
-        
-            this.resizingTL = false;
-            this.resizingTR = false;
-            this.resizingBL = false;
-            this.resizingBR = false;
+            if (e.button == 0)
+            {
+                if (this.resizing)
+                {
+                    actionManager.do(new SetNodeRectAction(
+                        this.graph, 
+                        this.id, 
+                        this.startRect, 
+                        offsetRect(this.div)));
+                }
 
-            this.resizing   = false;
 
-            
-            if (this.div.hasPointerCapture(e.pointerId))
-                this.div.releasePointerCapture(e.pointerId);
+                this.resetResize();
+
+                
+                if (this.div.hasPointerCapture(e.pointerId))
+                    this.div.releasePointerCapture(e.pointerId);
+            }
         });
     }
     
     
 
+    resetResize(resetResizing = true)
+    {
+        this.canResizeL  = false;
+        this.canResizeR  = false;
+        this.canResizeT  = false;
+        this.canResizeB  = false;
+    
+        this.canResizeTL = false;
+        this.canResizeTR = false;
+        this.canResizeBL = false;
+        this.canResizeBR = false;
+
+        if (resetResizing)
+        {
+            this.resizingL   = false;
+            this.resizingR   = false;
+            this.resizingT   = false;
+            this.resizingB   = false;
+        
+            this.resizingTL  = false;
+            this.resizingTR  = false;
+            this.resizingBL  = false;
+            this.resizingBR  = false;
+
+            this.resizing    = false;
+        }
+    }
+
+
+
     checkResizing(e)
     {
+        this.resetResize(false);
+
         if (   e.clientX >= this.measureData.divBounds.l
             && e.clientX <  this.measureData.divBounds.l + resizeEdgeWidth
-            && e.clientY >= this.measureData.divBounds.t + resizeEdgeWidth
-            && e.clientY <  this.measureData.divBounds.b - resizeEdgeWidth)
-        {
-            this.canResizeL = true;
-            this.div.style.cursor = 'ew-resize';
-            return true;
-        }
-        else if (e.clientX >= this.measureData.divBounds.r - resizeEdgeWidth
-              && e.clientX <  this.measureData.divBounds.r
-              && e.clientY >= this.measureData.divBounds.t + resizeEdgeWidth
-              && e.clientY <  this.measureData.divBounds.b - resizeEdgeWidth)
-        {
-            this.canResizeR = true;
-            this.div.style.cursor = 'ew-resize';
-            return true;
-        }
-        else if (e.clientX >= this.measureData.divBounds.l + resizeEdgeWidth
-              && e.clientX <  this.measureData.divBounds.r - resizeEdgeWidth
-              && e.clientY >= this.measureData.divBounds.t
-              && e.clientY <  this.measureData.divBounds.t + resizeEdgeWidth)
-        {
-            this.canResizeT = true;
-            this.div.style.cursor = 'ns-resize';
-            return true;
-        }
-        else if (e.clientX >= this.measureData.divBounds.l + resizeEdgeWidth
-              && e.clientX <  this.measureData.divBounds.r - resizeEdgeWidth
-              && e.clientY >= this.measureData.divBounds.b - resizeEdgeWidth
-              && e.clientY <  this.measureData.divBounds.b)
-        {
-            this.canResizeB = true;
-            this.div.style.cursor = 'ns-resize';
-            return true;
-        }
-        else if (e.clientX >= this.measureData.divBounds.l
-              && e.clientX <  this.measureData.divBounds.l + resizeEdgeWidth
-              && e.clientY >= this.measureData.divBounds.t
-              && e.clientY <  this.measureData.divBounds.t + resizeEdgeWidth)
+            && e.clientY >= this.measureData.divBounds.t
+            && e.clientY <  this.measureData.divBounds.t + resizeEdgeWidth)
         {
             this.canResizeTL = true;
             this.div.style.cursor = 'nwse-resize';
@@ -258,20 +261,45 @@ extends OperatorBase
             this.div.style.cursor = 'nwse-resize';
             return true;
         }
+        else if (e.clientX >= this.measureData.divBounds.l
+              && e.clientX <  this.measureData.divBounds.l + resizeEdgeWidth
+              && e.clientY >= this.measureData.divBounds.t + resizeEdgeWidth
+              && e.clientY <  this.measureData.divBounds.b - resizeEdgeWidth)
+        {
+            this.canResizeL = true;
+            this.div.style.cursor = 'ew-resize';
+            return true;
+        }
+        else if (e.clientX >= this.measureData.divBounds.r - resizeEdgeWidth
+              && e.clientX <  this.measureData.divBounds.r
+              && e.clientY >= this.measureData.divBounds.t + resizeEdgeWidth
+              && e.clientY <  this.measureData.divBounds.b - resizeEdgeWidth)
+        {
+            this.canResizeR = true;
+            this.div.style.cursor = 'ew-resize';
+            return true;
+        }
+        else if (e.clientX >= this.measureData.divBounds.l + resizeEdgeWidth
+              && e.clientX <  this.measureData.divBounds.r - resizeEdgeWidth
+              && e.clientY >= this.measureData.divBounds.t
+              && e.clientY <  this.measureData.divBounds.t + resizeEdgeWidth)
+        {
+            this.canResizeT = true;
+            this.div.style.cursor = 'ns-resize';
+            return true;
+        }
+        else if (e.clientX >= this.measureData.divBounds.l + resizeEdgeWidth
+              && e.clientX <  this.measureData.divBounds.r - resizeEdgeWidth
+              && e.clientY >= this.measureData.divBounds.b - resizeEdgeWidth
+              && e.clientY <  this.measureData.divBounds.b)
+        {
+            this.canResizeB = true;
+            this.div.style.cursor = 'ns-resize';
+            return true;
+        }
         else
         {
-            this.canResizeL  = false;
-            this.canResizeR  = false;
-            this.canResizeT  = false;
-            this.canResizeB  = false;
-        
-            this.canResizeTL = false;
-            this.canResizeTR = false;
-            this.canResizeBL = false;
-            this.canResizeBR = false;
-
             this.div.style.cursor = 'default';
-
             return false;
         }
     }
@@ -344,8 +372,40 @@ extends OperatorBase
 
 
 
+    toJsonBase(nTab = 0) 
+    {
+        let   pos = ' '.repeat(nTab);
+        const tab = TAB;
+
+        let json = super.toJsonBase(nTab);
+
+        json += ',\n' + pos + tab + '"width": "'  + this.div.offsetWidth  + 'px"';
+        json += ',\n' + pos + tab + '"height": "' + this.div.offsetHeight + 'px"';
+
+        return json;
+    }
+
+
+
     paramsToJson(nTab = 0)
     {
         return '';
+    }
+
+
+
+    loadParams(_node, pasting)
+    {
+        super.loadParams(_node, pasting);
+
+
+        if (   _node.width
+            && _node.height)
+        {
+            this.setSize(
+                parseFloat(_node.width), 
+                parseFloat(_node.height),
+                false);
+        }
     }
 }

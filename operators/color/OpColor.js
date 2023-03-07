@@ -269,7 +269,7 @@ extends OpColorBase
             this.paramSpace.setValue(space, false, true, false);
 
 
-            const view = this.parentGraph.view;
+            const view = this.graph.view;
 
             if (   convert.value != space.value
                 || view.pastingNodes
@@ -698,7 +698,7 @@ function getColorInputValuesForUndo(input)
 {
     return [{
         paramId: 'color', 
-        value:   ColorValue.fromDataColor(input.node._color)
+        value:    ColorValue.fromDataColor(input.node._color)
     }];
 }
 

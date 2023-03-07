@@ -81,7 +81,7 @@ class Wire
         const output = this.connection.output;
         const input  = this.connection.input;
         
-        const view   = this.connection.parentGraph.view;
+        const view   = this.connection.graph.view;
 
 
         if (output)
@@ -159,7 +159,7 @@ class Wire
         this.updateInBall (        x2, y2);
         this.updateStyle  ();
 
-        const view = this.connection.parentGraph.view;
+        const view = this.connection.graph.view;
 
         this.svg.setAttribute('width',  view.div.clientWidth);
         this.svg.setAttribute('height', view.div.clientHeight);
@@ -171,7 +171,7 @@ class Wire
 
     updateCurve(x1, y1, x2, y2)
     {
-        const view = this.connection.parentGraph.view;
+        const view = this.connection.graph.view;
 
 
         if (!pointIsNaN(this.outputPos))
@@ -268,7 +268,7 @@ class Wire
     
     updateArrow(x0, y0, x1, y1, x2, y2, x3, y3)
     {
-        const view = this.connection.parentGraph.view;
+        const view = this.connection.graph.view;
 
 
         if (!pointIsNaN(this.outputPos))
@@ -342,7 +342,7 @@ class Wire
         const conn  = this.connection;
         let   color = this.getColor();
     
-        const view  = conn.parentGraph.view;
+        const view  = conn.graph.view;
     
 
         const l = rgb2hclok(color)[2];

@@ -3,7 +3,7 @@ NumberControl.prototype.initEvents = function()
     this.div.addEventListener('pointerenter', e =>
     {
         const param = this.param;
-        const view  = param.node.parentGraph.view;
+        const view  = param.node.graph.view;
         
 
         if (!this.canReact(e))
@@ -63,7 +63,7 @@ NumberControl.prototype.initEvents = function()
     this.div.addEventListener('pointerdown', e =>
     {
         const param = this.param;
-        const view  = param.node.parentGraph.view;
+        const view  = param.node.graph.view;
 
 
         if (!this.canReact(e))
@@ -176,7 +176,7 @@ NumberControl.prototype.initEvents = function()
     this.div.addEventListener('pointermove', e =>
     {
         const param = this.param;
-        const view  = param.node.parentGraph.view;
+        const view  = param.node.graph.view;
 
 
         if (!this.canReact(e))
@@ -322,7 +322,7 @@ NumberControl.prototype.initEvents = function()
     this.div.addEventListener('pointerleave', e =>
     {
         const param = this.param;
-        const view  = param.node.parentGraph.view;
+        const view  = param.node.graph.view;
 
 
         if (!this.canReact(e))
@@ -397,7 +397,7 @@ NumberControl.prototype.initEvents = function()
     this.div.addEventListener('pointerup', e =>
     {
         const param = this.param;
-        const view  = param.node.parentGraph.view;
+        const view  = param.node.graph.view;
 
 
         if (!this.canReact(e))
@@ -494,7 +494,7 @@ NumberControl.prototype.initEvents = function()
     this.div.addEventListener('wheel', e =>
     {
         const param = this.param;
-        const view  = param.node.parentGraph.view;
+        const view  = param.node.graph.view;
 
 
         if (!this.canReact(e))
@@ -570,7 +570,7 @@ NumberControl.prototype.initEvents = function()
 
     this.div.addEventListener('focus', () =>
     {
-        if (   !this.this.param.node.parentGraph.view.spaceDown
+        if (   !this.this.param.node.graph.view.spaceDown
             && !panMode
             && !this.buttonDown1
             &&  this.pointerEvents)

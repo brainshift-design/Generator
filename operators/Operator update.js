@@ -24,7 +24,7 @@ Operator.prototype.updateWireTransform = function()
             if (connInput.connection)
                 wires.push(connInput.connection.wire);
 
-    this.parentGraph.view.updateWires(wires);
+    this.graph.view.updateWires(wires);
 }
 
 
@@ -185,12 +185,12 @@ Operator.prototype.updateMeasureData = function()
     this.params
         .filter(p => p.control)
         .forEach(p => 
-            {
-                p.control.updateMeasureData();
+        {
+            p.control.updateMeasureData();
 
-                if (p. input) p. input.updateMeasureData();
-                if (p.output) p.output.updateMeasureData();
-            });
+            if (p. input) p. input.updateMeasureData();
+            if (p.output) p.output.updateMeasureData();
+        });
 }
 
 

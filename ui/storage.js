@@ -411,8 +411,8 @@ function resolveConnections(graph, nodes, _connections, first, last)
             {
                 const _conn = _connections[i];
 
-                const outputNode = nodes.find(n => (n.newId ? n.newId : n.id) == _conn.outputNodeId);
-                const  inputNode = nodes.find(n => (n.newId ? n.newId : n.id) == _conn. inputNodeId);
+                const outputNode = nodes.find(n => (n.newId ?? n.id) == _conn.outputNodeId);
+                const  inputNode = nodes.find(n => (n.newId ?? n.id) == _conn. inputNodeId);
 
 
                 const strConn = connToString(_conn);
@@ -485,8 +485,8 @@ function parseConnectionsAndConnect(graph, data, pasteConnected, setProgress = n
     {
         const _conn = data.connections[i];
         
-        if (      data.nodes.find(n => (n.newId ? n.newId : n.id) == _conn.outputNodeId)
-               && data.nodes.find(n => (n.newId ? n.newId : n.id) == _conn. inputNodeId)
+        if (      data.nodes.find(n => (n.newId ?? n.id) == _conn.outputNodeId)
+               && data.nodes.find(n => (n.newId ?? n.id) == _conn. inputNodeId)
             || pasteConnected)
             parseConnectionJsonAndConnect(graph, _conn, pasteConnected);
 

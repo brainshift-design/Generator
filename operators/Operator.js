@@ -26,7 +26,7 @@ class Operator
     subscription = false;
 
 
-    parentGraph  = null;
+    graph  = null;
     
     
     #type; // used in the code, not for generation
@@ -117,12 +117,12 @@ class Operator
     set selected(sel) 
     {
         if (this._selected)
-            removeFromArray(this.parentGraph.view.selectedNodes, this);
+            removeFromArray(this.graph.view.selectedNodes, this);
 
         this.setSelected(sel);     
 
         if (this._selected)
-            this.parentGraph.view.selectedNodes.push(this);
+            this.graph.view.selectedNodes.push(this);
     }        
 
 
@@ -209,7 +209,7 @@ class Operator
             && i.canConnectFrom(output));
 
         
-        const view = this.parentGraph.view;
+        const view = this.graph.view;
 
 
         if (   view.overInput
@@ -297,7 +297,7 @@ class Operator
         const outputs = this.headerOutputs.filter(o => arraysIntersect(o.types, inputTypes));
 
         return  outputs.length == 1
-            && !this.isOrFollows(this.parentGraph.view.tempConn.input.node)
+            && !this.isOrFollows(this.graph.view.tempConn.input.node)
             ? outputs[0]
             : null;
     }
@@ -457,7 +457,7 @@ class Operator
     {
         this._active = true;
 
-        const view = this.parentGraph.view;
+        const view = this.graph.view;
 
         if (    view
             &&  view.activeNodes
@@ -472,8 +472,8 @@ class Operator
         if (!this._active) 
             return;
             
-        if (this.parentGraph.view.activeNodes.includes(this))
-            removeFromArray(this.parentGraph.view.activeNodes, this);
+        if (this.graph.view.activeNodes.includes(this))
+            removeFromArray(this.graph.view.activeNodes, this);
 
         this._active = false;
     }
@@ -758,7 +758,7 @@ class Operator
 
     setTransform(nodeLeft, nodeTop, nodeRect)
     {
-        const view = this.parentGraph.view;
+        const view = this.graph.view;
 
         this.div.style.transform =
               'translate(' 
@@ -775,7 +775,7 @@ class Operator
 
     getOffsetRect()
     {
-        const view = this.parentGraph.view;
+        const view = this.graph.view;
 
         const ox   = -view.pan.x / view.zoom;
         const oy   = -view.pan.y / view.zoom;
@@ -834,7 +834,7 @@ class Operator
         if (   node
             && !isEmpty(node.outputs)
             && !isEmpty(inputs))
-            actionManager.do(new ConnectAction(this.parentGraph, node.outputs[0], inputs[0]), true);
+            actionManager.do(new ConnectAction(this.graph, node.outputs[0], inputs[0]), true);
     }
 
 
@@ -879,7 +879,7 @@ class Operator
             + pos + tab + '"enabled": "' + boolToString(this.enabled)     + '",\n'
             + pos + tab + '"x": "'       + this.div.style.left            + '",\n'
             + pos + tab + '"y": "'       + this.div.style.top             + '",\n'
-            + pos + tab + '"z": "'       + this.parentGraph.nodes.indexOf(this) + '"';
+            + pos + tab + '"z": "'       + this.graph.nodes.indexOf(this) + '"';
 
         if (this.active)
             json += ',\n' + pos + tab + '"active": "' + this.active + '"';

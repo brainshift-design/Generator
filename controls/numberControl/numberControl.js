@@ -101,7 +101,7 @@ extends EventTarget
 
 
     
-    get view() { return this.param.node.parentGraph.view; }
+    get view() { return this.param.node.graph.view; }
 
 
 
