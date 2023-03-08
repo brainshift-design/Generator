@@ -30,9 +30,9 @@ extends OpShapeBase
         this.paramWidth .addEventListener('change', () => this.updateRound());
         this.paramHeight.addEventListener('change', () => this.updateRound());
 
-        this.paramAngle.control.setSuffix('°', true);
-        this.paramAngle.control.wrapValue   = true;
-        this.paramAngle.control.dragReverse = true;
+        this.paramAngle.controls[0].setSuffix('°', true);
+        this.paramAngle.controls[0].wrapValue   = true;
+        this.paramAngle.controls[0].dragReverse = true;
 
 
         this.addBaseParams();
@@ -44,9 +44,9 @@ extends OpShapeBase
     {
         const min = Math.min(this.paramWidth.value.value, this.paramHeight.value.value);
 
-        this.paramRound.control.displayMin = 0;
-        this.paramRound.control.displayMax = min/2;
+        this.paramRound.controls[0].displayMin = 0;
+        this.paramRound.controls[0].displayMax = min/2;
 
-        this.paramRound.control.update();
+        this.paramRound.controls[0].update();
     }
 }

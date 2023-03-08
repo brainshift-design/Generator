@@ -24,9 +24,9 @@ extends OpShapeBase
         this.addParam(this.paramAngle  = new NumberParam('angle',  'angle',  true, true, false,   0, -180,   180));
         
 
-        this.paramAngle.control.setSuffix('°', true);
-        this.paramAngle.control.wrapValue   = true;
-        this.paramAngle.control.dragReverse = true;
+        this.paramAngle.controls[0].setSuffix('°', true);
+        this.paramAngle.controls[0].wrapValue   = true;
+        this.paramAngle.controls[0].dragReverse = true;
 
 
         this.addBaseParams();

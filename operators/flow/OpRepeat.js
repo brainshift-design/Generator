@@ -15,7 +15,7 @@ extends OperatorBase
         this.addParam(this.paramCount = new NumberParam('count', 'count', true, true, false, 1, 0, 100, 0));
 
 
-        this.paramCount.control.allowEditDecimals = false;
+        this.paramCount.controls[0].allowEditDecimals = false;
         this.paramCount.affectsHeader = false;
     }
     

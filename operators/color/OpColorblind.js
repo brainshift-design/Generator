@@ -20,9 +20,9 @@ extends OpColorBase
         this.addParam(this.paramM = new NumberParam('m', 'M', false, true, true, 2, 0, 2, 0, 0.02));
         this.addParam(this.paramS = new NumberParam('s', 'S', false, true, true, 2, 0, 2, 0, 0.02));
 
-        this.paramL.addEventListener('change', () => this.paramL.control.dragScale = decCount(numToString(this.paramL.value, this.paramL.control.displayDec)) == 0 ? 0.02 : 0.05);
-        this.paramM.addEventListener('change', () => this.paramM.control.dragScale = decCount(numToString(this.paramM.value, this.paramM.control.displayDec)) == 0 ? 0.02 : 0.05);
-        this.paramS.addEventListener('change', () => this.paramS.control.dragScale = decCount(numToString(this.paramS.value, this.paramS.control.displayDec)) == 0 ? 0.02 : 0.05);
+        this.paramL.addEventListener('change', () => this.paramL.controls[0].dragScale = decCount(numToString(this.paramL.value, this.paramL.controls[0].displayDec)) == 0 ? 0.02 : 0.05);
+        this.paramM.addEventListener('change', () => this.paramM.controls[0].dragScale = decCount(numToString(this.paramM.value, this.paramM.controls[0].displayDec)) == 0 ? 0.02 : 0.05);
+        this.paramS.addEventListener('change', () => this.paramS.controls[0].dragScale = decCount(numToString(this.paramS.value, this.paramS.controls[0].displayDec)) == 0 ? 0.02 : 0.05);
 
 
         this.header.connectionPadding = 18;
@@ -94,8 +94,8 @@ extends OpColorBase
     {
         const v = Math.round(param.value.value);
 
-             if (v == 2) param.control.valueText = cone;
-        else if (v == 1) param.control.valueText = cone + ' weak';
-        else             param.control.valueText = cone + ' blind';
+             if (v == 2) param.controls[0].valueText = cone;
+        else if (v == 1) param.controls[0].valueText = cone + ' weak';
+        else             param.controls[0].valueText = cone + ' blind';
     }
 }

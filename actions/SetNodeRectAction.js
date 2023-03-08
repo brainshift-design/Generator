@@ -34,8 +34,6 @@ extends Action
         //     this.newRect.w,
         //     this.newRect.h);
 
-        this.node.updateChildren();
-
         uiSaveNodes(this.graph, [this.nodeId]);
     }
 
@@ -50,7 +48,6 @@ extends Action
             this.oldRect.h);
 
         this.node.updateNode();
-        this.node.updateChildren();
 
         uiSaveNodes(this.graph, [this.nodeId]);
     }
@@ -66,7 +63,6 @@ extends Action
             this.newRect.h);
 
         this.node.updateNode();
-        this.node.updateChildren();
         
         uiSaveNodes(this.graph, [this.nodeId]);
     }

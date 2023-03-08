@@ -172,13 +172,14 @@ extends OperatorBase
 
     updateChildren()
     {
-        this.childern = [];
+        this.children = [];
 
         for (const node of mainGraph.nodes)//.filter(n => !this.children.includes(n)))
         {
-            if (rectInside(node.measureData.divOffset, this.measureData.divOffset))
+            if (rectInside(node.measureData.divOffset, offsetRect(this.div)))//measureData.divOffset))
                 pushUnique(this.children, node);
         }
+
 
         // for (const node of this.children)
         // {
@@ -214,13 +215,15 @@ extends OperatorBase
         //     }
         // }
         
+console.log('this.children =', this.children.map(n => n.id));        
         for (const node of this.children)
         {
             for (const param of node.params)
             {
+                console.log('checking');
                 if (    param.input
                     &&  param.input.connected
-                    && !this.children.includes(param.input.connectedOutput.node))
+                    && !this.children.find(n => n.id == param.input.connectedOutput.node.id))
                 {
                     console.log('adding');
                     this.addParam(new ProxyParam(param));
@@ -358,6 +361,15 @@ extends OperatorBase
 
 
 
+    setPosition(x, y, updateTransform = true)
+    {
+        super.setPosition(x, y, updateTransform);
+
+        this.updateChildren();
+    }
+
+
+
     setSize(w, h, updateTransform = true)
     {
         super.setSize(
@@ -366,6 +378,8 @@ extends OperatorBase
             updateTransform);
 
         this.inner.style.height = this.div.offsetHeight;
+
+        this.updateChildren();
     }
 
 
@@ -379,6 +393,8 @@ extends OperatorBase
             Math.max(this.header.offsetHeight + 20, h), updateTransform);
 
         this.inner.style.height = this.div.offsetHeight;
+
+        this.updateChildren();
     }
 
 

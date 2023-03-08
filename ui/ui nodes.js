@@ -607,7 +607,7 @@ function uiShowParamValue(graph, nodeId, paramName, value)
     if (!!node) // this is for deleted nodes which still exist
     {           // in genGraph but no longer in mainGraph
         const param = node.params.find(p => p.name == paramName);
-        param.control.setValue(value, false);
+        param.controls[0].setValue(value, false);
     }
 }
 

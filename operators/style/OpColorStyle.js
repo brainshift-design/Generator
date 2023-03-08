@@ -120,8 +120,8 @@ extends OperatorBase
 
         this.paramValue.enableControlText(enabled);
 
-        this.paramValue.control.valueText =  this.isUnknown() ? UNKNOWN_DISPLAY : '';
-        this.paramValue.control.showBar   = !this.isUnknown();
+        this.paramValue.controls[0].valueText =  this.isUnknown() ? UNKNOWN_DISPLAY : '';
+        this.paramValue.controls[0].showBar   = !this.isUnknown();
 
         this.updateParamControls();
     }

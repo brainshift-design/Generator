@@ -1,8 +1,6 @@
 class   NumberParamBase
 extends Parameter
 {
-    control;
-
     showFullPrecision = false;
 
     
@@ -10,8 +8,8 @@ extends Parameter
     get value() 
     { 
         return new NumberValue(
-            this.control.value, 
-            this.control.displayDec); 
+            this.controls[0].value, 
+            this.controls[0].displayDec); 
     }
 
     oldValue = null;
@@ -20,11 +18,11 @@ extends Parameter
     defaultValue;
 
 
-    get valueText() { return this.control.valueText; }
+    get valueText() { return this.controls[0].valueText; }
     set valueText(text) 
     {
-        this.control.valueText = text;
-        this.control.update();
+        this.controls[0].valueText = text;
+        this.controls[0].update();
     }
 
 
@@ -43,8 +41,8 @@ extends Parameter
         
         if (updateControl)
         {
-            this.control.setDecimals(value.decimals, value.decimals);
-            this.control.setValue(value.value, false, false); 
+            this.controls[0].setDecimals(value.decimals, value.decimals);
+            this.controls[0].setValue(value.value, false, false); 
         }
 
 
@@ -58,22 +56,22 @@ extends Parameter
 
     showValue(show)
     {
-        this.control.showValue = show;
-        this.control.update();
+        this.controls[0].showValue = show;
+        this.controls[0].update();
     }
 
 
 
     isVisible()
     {
-        return this.control.div.style.display != 'none';
+        return this.controls[0].div.style.display != 'none';
     }
 
 
 
     resetControls()
     {
-        this.control.valueText = '';
+        this.controls[0].valueText = '';
     }
 
 
@@ -83,10 +81,10 @@ extends Parameter
         return {
             paramId:    this.id, 
             value:      this.value,
-            min:        this.control.min,
-            max:        this.control.max,
-            displayMin: this.control.displayMin,
-            displayMax: this.control.displayMax
+            min:        this.controls[0].min,
+            max:        this.controls[0].max,
+            displayMin: this.controls[0].displayMin,
+            displayMax: this.controls[0].displayMax
         };
     }
 
@@ -115,8 +113,8 @@ extends Parameter
         else request.push( 
             NUMBER_VALUE, 
             new NumberValue(
-                this.control.value, 
-                this.control.displayDec).toString());
+                this.controls[0].value, 
+                this.controls[0].displayDec).toString());
 
 
         return request;
@@ -133,7 +131,7 @@ extends Parameter
 
     textboxHasFocus()
     {
-        return hasFocus(this.control.textbox);
+        return hasFocus(this.controls[0].textbox);
     }
 
 
@@ -144,9 +142,9 @@ extends Parameter
                !this.input 
             || !this.input.connected;
             
-        enableElementText(this.control.div, enable);
+        enableElementText(this.controls[0].div, enable);
 
-        this.control.readOnly = !enable;
+        this.controls[0].readOnly = !enable;
 
         this.updateValueText();
     }
@@ -167,9 +165,9 @@ extends Parameter
 
 
         if (unknown)
-            this.control.valueText = UNKNOWN_DISPLAY;
+            this.controls[0].valueText = UNKNOWN_DISPLAY;
 
-        this.control.showBar = !unknown;
+        this.controls[0].showBar = !unknown;
     }
 
 

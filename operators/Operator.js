@@ -494,7 +494,7 @@ class Operator
 
     setPosition(x, y, updateTransform = true)
     {
-        //console.log('Operator.setPosition()');
+        console.log('Operator.setPosition()');
    
         this.div.style.left = x + 'px';
         this.div.style.top  = y + 'px';
@@ -504,6 +504,12 @@ class Operator
             this.div.style.display = 'block';
             this.updateTransform();
         }
+
+        this.updateMeasureData();
+
+        mainGraph.nodes
+            .filter(n => n.type == NODE_GROUP)
+            .forEach(n => n.updateChildren());
     }
 
 
@@ -677,8 +683,8 @@ class Operator
 
         if (value.type == NUMBER_VALUE)
         {
-            param.control.setMin(value.min, value.displayMin);
-            param.control.setMax(value.max, value.displayMax);
+            param.controls[0].setMin(value.min, value.displayMin);
+            param.controls[0].setMax(value.max, value.displayMax);
         }
             
         param.setValue(value.value, true, true, false);
@@ -1083,8 +1089,8 @@ function nodesAreParallel(nodes)
 //             if (   value.min != undefined
 //                 && value.max != undefined)
 //             {
-//                 param.control.setMin(value.min);
-//                 param.control.setMax(value.max);
+//                 param.controls[0].setMin(value.min);
+//                 param.controls[0].setMax(value.max);
 //             }
                 
 //             param.setValue(value.value, true, true, false);

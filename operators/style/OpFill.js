@@ -28,7 +28,7 @@ extends OpColorBase
         this.addParam(this.paramColor   = new ColorParam ('color',   '',        false, true, true, ColorValue.fromRgb(rgbDefaultFill)));
         this.addParam(this.paramOpacity = new NumberParam('opacity', 'opacity', true,  true, true, 100, 0, 100));
 
-        this.paramOpacity.control.suffix = '%';
+        this.paramOpacity.controls[0].suffix = '%';
     }
     
     
@@ -127,22 +127,22 @@ extends OpColorBase
                 : 0;
 
 
-        this.paramColor.control. backStyleLight = 
-        this.paramColor.control. backStyleDark  = 
-        this.paramColor.control.valueStyleLight = 
-        this.paramColor.control.valueStyleDark  = rgba2style(rgb_a(colors.back, 1));
+        this.paramColor.controls[0]. backStyleLight = 
+        this.paramColor.controls[0]. backStyleDark  = 
+        this.paramColor.controls[0].valueStyleLight = 
+        this.paramColor.controls[0].valueStyleDark  = rgba2style(rgb_a(colors.back, 1));
 
-        this.paramColor.control.textStyleLight  = 
-        this.paramColor.control.textStyleDark   = rgba2style(colors.text);
+        this.paramColor.controls[0].textStyleLight  = 
+        this.paramColor.controls[0].textStyleDark   = rgba2style(colors.text);
 
-        this.paramColor. input.colorLight       =
-        this.paramColor. input.colorDark        = colors.input;
+        this.paramColor. input.colorLight           =
+        this.paramColor. input.colorDark            = colors.input;
         
-        this.paramColor.output.colorLight       =
-        this.paramColor.output.colorDark        = colors.output;
+        this.paramColor.output.colorLight           =
+        this.paramColor.output.colorDark            = colors.output;
         
-        //this.paramColor. input.wireColor        = rgb_a(colors.wire, 1);
-        //this.paramColor.output.wireColor        = rgb_a(colors.wire, 1);
+        //this.paramColor. input.wireColor          = rgb_a(colors.wire, 1);
+        //this.paramColor.output.wireColor          = rgb_a(colors.wire, 1);
     }
 
 

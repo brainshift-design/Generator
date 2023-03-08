@@ -100,8 +100,8 @@ extends OperatorBase
         {
             paramValue.enableControlText(false);
 
-            paramValue.control.valueText =  this.isUnknown() ? UNKNOWN_DISPLAY : '';
-            paramValue.control.showBar   = !this.isUnknown();
+            paramValue.controls[0].valueText =  this.isUnknown() ? UNKNOWN_DISPLAY : '';
+            paramValue.controls[0].showBar   = !this.isUnknown();
         }
 
         

@@ -60,22 +60,22 @@ extends OperatorWithSymbol
 
         const v = Math.round(this.paramValue.value.value);
 
-             if (this.isUnknown())       this.paramValue.control.valueText = UNKNOWN_DISPLAY;
+             if (this.isUnknown())       this.paramValue.controls[0].valueText = UNKNOWN_DISPLAY;
         else if (settings.showBoolValues
-              && !isNaN(v))              this.paramValue.control.valueText = v != 0 ? TRUE_DISPLAY : FALSE_DISPLAY;
-        else                             this.paramValue.control.valueText = '';
+              && !isNaN(v))              this.paramValue.controls[0].valueText = v != 0 ? TRUE_DISPLAY : FALSE_DISPLAY;
+        else                             this.paramValue.controls[0].valueText = '';
 
 
-        this.paramValue.control.text.style.fontStyle = 
+        this.paramValue.controls[0].text.style.fontStyle = 
                settings.showBoolValues 
-            && this.paramValue.control.valueText != UNKNOWN_DISPLAY
+            && this.paramValue.controls[0].valueText != UNKNOWN_DISPLAY
             ? 'normal' 
             : 'italic';
 
 
-        //this.paramValue.control.text.style.letterSpacing = settings.showBoolValues ? '0.1em' : 0; // this is if "true" and "false" are used
+        //this.paramValue.controls[0].text.style.letterSpacing = settings.showBoolValues ? '0.1em' : 0; // this is if "true" and "false" are used
         
-        this.paramValue.control.showBar = !this.isUnknown();
+        this.paramValue.controls[0].showBar = !this.isUnknown();
 
 
         this.updateParamControls();

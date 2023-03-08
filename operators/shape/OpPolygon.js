@@ -27,9 +27,9 @@ extends OpShapeBase
         this.addParam(this.paramCorners = new NumberParam('corners', 'corners', true, true, false,   3,    3));
         
 
-        this.paramAngle.control.setSuffix('°', true);
-        this.paramAngle.control.wrapValue   = true;
-        this.paramAngle.control.dragReverse = true;
+        this.paramAngle.controls[0].setSuffix('°', true);
+        this.paramAngle.controls[0].wrapValue   = true;
+        this.paramAngle.controls[0].dragReverse = true;
 
 
         this.addBaseParams();
@@ -39,12 +39,12 @@ extends OpShapeBase
 
     updateRound()
     {
-        const control = this.paramRound.control;
+        const control = this.paramRound.controls[0];
         const min     = Math.min(this.paramWidth.value, this.paramHeight.value);
 
         control.setMin(0);
         control.setMax(min/2);
 
-        this.paramRound.control.update();
+        control.update();
     }
 }

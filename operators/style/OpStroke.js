@@ -38,7 +38,7 @@ extends OpColorBase
         this.addParam(this.paramJoin   = new SelectParam('join',   'join',   true,  true, true, ['miter', 'bevel', 'round'], 0));
         this.addParam(this.paramMiter  = new NumberParam('miter',  'miter',  true,  true, true, 28.96, 0, 180, 2));
 
-        this.paramMiter.control.setSuffix('°', true);
+        this.paramMiter.controls[0].setSuffix('°', true);
         this.paramMiter.canShow = () => this.paramJoin.value == 0;
 
 

@@ -18,7 +18,7 @@ extends OpColorBase
 
         //this.paramFill.setValue([FillValue.default], false, true, false);
         
-        this.paramPosition.control.suffix = '%';
+        this.paramPosition.controls[0].suffix = '%';
     }
     
     

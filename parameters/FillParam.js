@@ -15,15 +15,13 @@ extends Parameter
     checkers;
     controlWrapper;
 
-    colorControl;
-    opacityControl;
+   
     
-    
-    get valueText() { return this.colorControl.valueText; }
+    get valueText() { return this.controls[0].valueText; }
     set valueText(text) 
     {
-        this.colorControl.valueText = text;
-        this.colorControl.update();
+        this.controls[0].valueText = text;
+        this.controls[0].update();
     }
 
     
@@ -45,7 +43,7 @@ extends Parameter
         this.controlWrapper = createDiv();
 
 
-        this.colorControl = new ColorControl(
+        this.controls.push(ColorControl(
             null,
             this,
             120, // width
@@ -54,12 +52,12 @@ extends Parameter
             'color', 
             showName,
             defaultValue.color,   
-            dragScale); 
+            dragScale)); 
 
-        this.colorControl.showColor = false;
+        this.controls[0].showColor = false;
 
 
-        this.opacityControl = new NumberControl(
+        this.controls.push(new NumberControl(
             null,
             this,
             120, // width
@@ -70,16 +68,16 @@ extends Parameter
             defaultValue.opacity.value,
             0,
             100,
-            0);
+            0));
         
-        this.opacityControl.setSuffix('%', true);
+        this.controls[1].setSuffix('%', true);
 
 
-        this.  colorControl.div.zIndex = 0;
-        this.opacityControl.div.zIndex = 0;
+        this.controls[0].div.zIndex = 0;
+        this.controls[1].div.zIndex = 0;
    
-        this.defaultValue          = defaultValue;
-        this.value                 = defaultValue;
+        this.defaultValue           = defaultValue;
+        this.value                  = defaultValue;
 
         
         this._warningOverlay = createDiv('colorWarningOverlay');
@@ -88,53 +86,53 @@ extends Parameter
         this.div.appendChild(this._warningOverlay);
 
 
-        this.checkers.style.position                   = 'absolute';
-        this.checkers.style.width                      = '100%';
-        this.checkers.style.height                     = '20px';
+        this.checkers.style.position                = 'absolute';
+        this.checkers.style.width                   = '100%';
+        this.checkers.style.height                  = '20px';
 
 
-        this.controlWrapper.style.position             = 'relative';
-        this.controlWrapper.style.display              = 'inline-block';
-        this.controlWrapper.style.width                = '100%';
-        this.controlWrapper.style.height               = '20px';
-        this.controlWrapper.style.zIndex               = 1;
+        this.controlWrapper.style.position          = 'relative';
+        this.controlWrapper.style.display           = 'inline-block';
+        this.controlWrapper.style.width             = '100%';
+        this.controlWrapper.style.height            = '20px';
+        this.controlWrapper.style.zIndex            = 1;
 
 
-        this.  colorControl.successOnFocusOut          = true;
-        this.  colorControl.style.display              = 'inline';
-        this.  colorControl.style.width                = '60%';
-        this.  colorControl.style.position             = 'absolute';
-        this.  colorControl.style.left                 = 0;
+        this.controls[0].successOnFocusOut          = true;
+        this.controls[0].style.display              = 'inline';
+        this.controls[0].style.width                = '60%';
+        this.controls[0].style.position             = 'absolute';
+        this.controls[0].style.left                 = 0;
 
     
-        this.opacityControl.successOnFocusOut          = true;
-        this.opacityControl.div.style.display              = 'inline';
-        this.opacityControl.div.style.width                = '40%';
-        this.opacityControl.div.style.position             = 'absolute';
-        this.opacityControl.div.style.right                = 0;
+        this.controls[1].successOnFocusOut          = true;
+        this.controls[1].div.style.display          = 'inline';
+        this.controls[1].div.style.width            = '40%';
+        this.controls[1].div.style.position         = 'absolute';
+        this.controls[1].div.style.right            = 0;
 
 
-        this.  colorControl.text.style.transform       = 'translateX(-45%)';
-        this.opacityControl.text.style.transform       = 'translateX(-70%)';
+        this.controls[0].text.style.transform       = 'translateX(-45%)';
+        this.controls[1].text.style.transform       = 'translateX(-70%)';
 
 
-        this.  colorControl.textbox.style.position     = 'absolute';
-        this.  colorControl.textbox.style.left         =  0;
-        this.  colorControl.textbox.style.width        = '60%';
-        this.  colorControl.textbox.style.transform    = 'translateX(0)';
-        this.  colorControl.textbox.style.textAlign    = 'right';
-        this.  colorControl.textbox.style.paddingLeft  =  11;
+        this.controls[0].textbox.style.position     = 'absolute';
+        this.controls[0].textbox.style.left         =  0;
+        this.controls[0].textbox.style.width        = '60%';
+        this.controls[0].textbox.style.transform    = 'translateX(0)';
+        this.controls[0].textbox.style.textAlign    = 'right';
+        this.controls[0].textbox.style.paddingLeft  =  11;
         
-        this.opacityControl.textbox.style.position     = 'absolute';
-        this.opacityControl.textbox.style.right        =  0;
-        this.opacityControl.textbox.style.width        = '40%';
-        this.opacityControl.textbox.style.transform    = 'translateX(25%)';
-        this.opacityControl.textbox.style.textAlign    = 'left';
-        this.opacityControl.textbox.style.paddingRight =  10;
+        this.controls[1].textbox.style.position     = 'absolute';
+        this.controls[1].textbox.style.right        =  0;
+        this.controls[1].textbox.style.width        = '40%';
+        this.controls[1].textbox.style.transform    = 'translateX(25%)';
+        this.controls[1].textbox.style.textAlign    = 'left';
+        this.controls[1].textbox.style.paddingRight =  10;
 
 
-        this.controlWrapper.appendChild(this.  colorControl);
-        this.controlWrapper.appendChild(this.opacityControl.div);
+        this.controlWrapper.appendChild(this.controls[0].div);
+        this.controlWrapper.appendChild(this.controls[1].div);
         
         this.div.appendChild(this.checkers);
         this.div.appendChild(this.controlWrapper);
@@ -144,25 +142,28 @@ extends Parameter
         if (hasOutput) this.initOutput([FILL_VALUE], this.output_genRequest);
 
 
-        this.colorControl.addEventListener('confirm', () =>
+
+        this.controls[0].addEventListener('confirm', () =>
         { 
             this.setValue(new FillValue(
-                this.colorControl.value, 
-                new NumberValue(this.opacityControl.value, this.opacityControl.dec)), 
+                this.controls[0].value, 
+                new NumberValue(this.controls[1].value, this.controls[1].dec)), 
                 true, false);
         });
 
 
-        this.opacityControl.addEventListener('confirm', () =>
+
+        this.controls[1].addEventListener('confirm', () =>
         {
             this.setValue(new FillValue(
-                this.colorControl.value, 
-                new NumberValue(this.opacityControl.value, this.opacityControl.dec)), 
+                this.controls[0].value, 
+                new NumberValue(this.controls[1].value, this.controls[1].dec)), 
                 true, false);
         });
 
 
-        this.colorControl.addEventListener('finishedit', e =>
+
+        this.controls[0].addEventListener('finishedit', e =>
         { 
             if (!e.detail.success)
                 return;
@@ -172,7 +173,7 @@ extends Parameter
                 const  rgb = validHex2rgb(e.detail.value);
                 const _rgb = scaleRgb(rgb);
 
-                this.setValue(FillValue.fromRgb(_rgb, this.opacityControl.value), true);
+                this.setValue(FillValue.fromRgb(_rgb, this.controls[1].value), true);
                 
                 e.preventSetValue = true;
             }
@@ -200,8 +201,8 @@ extends Parameter
 
         if (updateControl)
         {
-            this.  colorControl.setValue(this.value.color,         false, false); 
-            this.opacityControl.setValue(this.value.opacity.value, false, false, false); 
+            this.controls[0].setValue(this.value.color,         false, false); 
+            this.controls[1].setValue(this.value.opacity.value, false, false, false); 
         }
 
 
@@ -215,16 +216,16 @@ extends Parameter
 
     isVisible()
     {
-        return this.colorControl  .style.display != 'none'
-            || this.opacityControl.style.display != 'none';
+        return this.controls[0]  .style.display != 'none'
+            || this.controls[1].style.display != 'none';
     }
 
 
 
     resetControls()
     {
-        this.colorControl  .valueText = '';
-        this.opacityControl.valueText = '';
+        this.controls[0]  .valueText = '';
+        this.controls[1].valueText = '';
     }
 
 
@@ -254,8 +255,8 @@ extends Parameter
                 request.push(
                     NUMBER_VALUE, 
                     new NumberValue(
-                        this.opacityControl.value, 
-                        this.opacityControl.displayDec).toString());
+                        this.controls[1].value, 
+                        this.controls[1].displayDec).toString());
             }
         }
 
@@ -277,8 +278,8 @@ extends Parameter
 
     updateControls()
     {
-        checkControlVisible(this, this.colorControl  );
-        checkControlVisible(this, this.opacityControl);
+        checkControlVisible(this, this.controls[0]  );
+        checkControlVisible(this, this.controls[1]);
 
 
         // const noColor = 
@@ -290,7 +291,7 @@ extends Parameter
         const rgbaText = getTextColorFromBackColor(rgbaVal, rgbaVal[3]);
 
 
-        const fillStyle = rgba2style(rgb_a(rgbaVal, this.opacityControl.value/100));
+        const fillStyle = rgba2style(rgb_a(rgbaVal, this.controls[1].value/100));
 
         this.controlWrapper.style.background = 
               !rgbaIsNaN(rgbaVal) 
@@ -343,25 +344,25 @@ extends Parameter
         this.checkers.style.backgroundPosition = '0 0, 10px 10px';
 
         
-        this.colorControl. backStyleLight   = 
-        this.colorControl. backStyleDark    = 
-        this.colorControl.valueStyleLight   = 
-        this.colorControl.valueStyleDark    = 'transparent';
+        this.controls[0]. backStyleLight   = 
+        this.controls[0]. backStyleDark    = 
+        this.controls[0].valueStyleLight   = 
+        this.controls[0].valueStyleDark    = 'transparent';
 
-        this.colorControl.textStyleLight    = 
-        this.colorControl.textStyleDark     = rgba2style(rgbaText);
+        this.controls[0].textStyleLight    = 
+        this.controls[0].textStyleDark     = rgba2style(rgbaText);
 
 
-        this.opacityControl. backStyleLight = 
-        this.opacityControl. backStyleDark  = 
-        this.opacityControl.valueStyleLight = 
-        this.opacityControl.valueStyleDark  = 'transparent';
+        this.controls[1]. backStyleLight = 
+        this.controls[1]. backStyleDark  = 
+        this.controls[1].valueStyleLight = 
+        this.controls[1].valueStyleDark  = 'transparent';
 
-        this.opacityControl.textStyleLight  = 
-        this.opacityControl.textStyleDark   = rgba2style(rgbaText);
+        this.controls[1].textStyleLight  = 
+        this.controls[1].textStyleDark   = rgba2style(rgbaText);
 
-        this.  colorControl.update();
-        this.opacityControl.update();
+        this.controls[0].update();
+        this.controls[1].update();
 
 
         if (this.input ) this.input .updateControl();
@@ -373,7 +374,7 @@ extends Parameter
     setName(name, dispatchEvents = true)
     {
         super.setName(name, dispatchEvents);
-        this.colorControl.setName(name);
+        this.controls[0].setName(name);
     }
 
 
@@ -384,8 +385,8 @@ extends Parameter
 
     // textboxHasFocus()
     // {
-    //     return hasFocus(this.  colorControl.textbox)
-    //         || hasFocus(this.opacityControl.textbox);
+    //     return hasFocus(this.controls[0].textbox)
+    //         || hasFocus(this.controls[1].textbox);
     // }
 
 
@@ -400,11 +401,11 @@ extends Parameter
             || !this.input.connected 
             ||  this.input.connectedOutput.supportsTypes(COLOR_TYPES);
 
-        enableElementText(this.  colorControl.div, enable);
-        enableElementText(this.opacityControl.div, opEnable);
+        enableElementText(this.controls[0].div, enable);
+        enableElementText(this.controls[1].div, opEnable);
         
-        this.  colorControl.readOnly = !enable;
-        this.opacityControl.readOnly = !opEnable;
+        this.controls[0].readOnly = !enable;
+        this.controls[1].readOnly = !opEnable;
     }
     
     

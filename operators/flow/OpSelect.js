@@ -19,7 +19,7 @@ extends OperatorBase
 
         this.addParam(this.paramIndex = new NumberParam('index', 'index', true, true, false, 0, 0));
 
-        this.paramIndex.control.allowEditDecimals = false;
+        this.paramIndex.controls[0].allowEditDecimals = false;
 
 
         this.paramNumber = new NumberParam('value', '', false, false, false);
@@ -87,7 +87,7 @@ extends OperatorBase
             && val) 
             paramValue = this.addParamByType(val.type, 'value', false, false, true);
 
-        this.paramIndex.control.setMax(
+        this.paramIndex.controls[0].setMax(
                length
             && length.value > 0
             ? length.value-1
@@ -109,7 +109,7 @@ extends OperatorBase
         // if (paramValue)
         // {
         //     paramValue.enableControlText(true);
-        //     paramValue.control.valueText = this.paramIndex.value < 0 ? UNKNOWN_DISPLAY : '';
+        //     paramValue.controls[0].valueText = this.paramIndex.value < 0 ? UNKNOWN_DISPLAY : '';
         // }
 
 

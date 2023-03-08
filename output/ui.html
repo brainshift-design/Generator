@@ -19520,13 +19520,13 @@ function switchToRgbControls(node)
         'G', 0, rgbScale[1], 
         'B', 0, rgbScale[2]);  
 
-    node.param1.control.min = 
-    node.param2.control.min = 
-    node.param3.control.min = Number.MIN_SAFE_INTEGER; // allow extrapolation
+    node.param1.controls[0].min = 
+    node.param2.controls[0].min = 
+    node.param3.controls[0].min = Number.MIN_SAFE_INTEGER; // allow extrapolation
 
-    node.param1.control.max = 
-    node.param2.control.max = 
-    node.param3.control.max = Number.MAX_SAFE_INTEGER; // allow extrapolation
+    node.param1.controls[0].max = 
+    node.param2.controls[0].max = 
+    node.param3.controls[0].max = Number.MAX_SAFE_INTEGER; // allow extrapolation
 
     showRgbControlHex(node, false);    
 }
@@ -19540,11 +19540,11 @@ function switchToHs_Controls(node, v_or_l)
         'S',    0, hs_Scale[1], 
         v_or_l, 0, hs_Scale[2]);  
 
-    node.param2.control.min = 
-    node.param3.control.min = Number.MIN_SAFE_INTEGER; // allow extrapolation
+    node.param2.controls[0].min = 
+    node.param3.controls[0].min = Number.MIN_SAFE_INTEGER; // allow extrapolation
 
-    node.param2.control.max = 
-    node.param3.control.max = Number.MAX_SAFE_INTEGER; // allow extrapolation
+    node.param2.controls[0].max = 
+    node.param3.controls[0].max = Number.MAX_SAFE_INTEGER; // allow extrapolation
 
     showRgbControlHex(node, false); 
 }
@@ -19558,11 +19558,11 @@ function switchToHclControls(node, scale)
         'C', 0, scale[1], 
         'L', 0, scale[2]);  
 
-    node.param2.control.min = 
-    node.param3.control.min = Number.MIN_SAFE_INTEGER; // allow extrapolation
+    node.param2.controls[0].min = 
+    node.param3.controls[0].min = Number.MIN_SAFE_INTEGER; // allow extrapolation
 
-    node.param2.control.max = 
-    node.param3.control.max = Number.MAX_SAFE_INTEGER; // allow extrapolation
+    node.param2.controls[0].max = 
+    node.param3.controls[0].max = Number.MAX_SAFE_INTEGER; // allow extrapolation
 
     showRgbControlHex(node, false); 
 }
@@ -19595,9 +19595,9 @@ function switchToLuvControls  (node) { switchToOppControls(node, 'u', 'v', luvSc
 
 function showRgbControlHex(node, show)
 {
-    node.param1.control.showHex = show;
-    node.param2.control.showHex = show;
-    node.param3.control.showHex = show;
+    node.param1.controls[0].showHex = show;
+    node.param2.controls[0].showHex = show;
+    node.param3.controls[0].showHex = show;
 }
 
 
@@ -19610,16 +19610,16 @@ function switchToControls(node, c1, c1min, c1max, c1suffix, c1wrap, c2, c2min, c
     node.param2.setName(c2, false); 
     node.param3.setName(c3, false);
 
-    node.param1.control.wrapValue = c1wrap;
-    node.param1.control.setSuffix(c1suffix, c1suffix != '');
+    node.param1.controls[0].wrapValue = c1wrap;
+    node.param1.controls[0].setSuffix(c1suffix, c1suffix != '');
 
-    node.param1.control.setMin(c1min); 
-    node.param2.control.setMin(c2min);
-    node.param3.control.setMin(c3min);
+    node.param1.controls[0].setMin(c1min); 
+    node.param2.controls[0].setMin(c2min);
+    node.param3.controls[0].setMin(c3min);
     
-    node.param1.control.setMax(c1max); 
-    node.param2.control.setMax(c2max); 
-    node.param3.control.setMax(c3max); 
+    node.param1.controls[0].setMax(c1max); 
+    node.param2.controls[0].setMax(c2max); 
+    node.param3.controls[0].setMax(c3max); 
     
     node.param1.updateControls();
     node.param2.updateControls();
@@ -41067,6 +41067,11 @@ extends EventTarget
     get index() { return this.node.params.indexOf(this); }
 
 
+    controls       = [];
+
+    proxy          = null;
+
+
     input;
     output;
 
@@ -41203,9 +41208,9 @@ extends EventTarget
 
     updateControls()
     {
-        checkControlVisible(this, this.control);
+        checkControlVisible(this, this.controls[0]);
 
-        this.control.update();
+        this.controls[0].update();
         
         if (this.input ) this.input .updateControl();
         if (this.output) this.output.updateControl();
@@ -41244,6 +41249,9 @@ extends EventTarget
                 }
             }
         }
+
+        if (this.proxy) 
+            this.proxy.updateControls();
     }
 
 
@@ -41310,8 +41318,6 @@ function checkControlVisible(param, control)
 class   NumberParamBase
 extends Parameter
 {
-    control;
-
     showFullPrecision = false;
 
     
@@ -41319,8 +41325,8 @@ extends Parameter
     get value() 
     { 
         return new NumberValue(
-            this.control.value, 
-            this.control.displayDec); 
+            this.controls[0].value, 
+            this.controls[0].displayDec); 
     }
 
     oldValue = null;
@@ -41329,11 +41335,11 @@ extends Parameter
     defaultValue;
 
 
-    get valueText() { return this.control.valueText; }
+    get valueText() { return this.controls[0].valueText; }
     set valueText(text) 
     {
-        this.control.valueText = text;
-        this.control.update();
+        this.controls[0].valueText = text;
+        this.controls[0].update();
     }
 
 
@@ -41352,8 +41358,8 @@ extends Parameter
         
         if (updateControl)
         {
-            this.control.setDecimals(value.decimals, value.decimals);
-            this.control.setValue(value.value, false, false); 
+            this.controls[0].setDecimals(value.decimals, value.decimals);
+            this.controls[0].setValue(value.value, false, false); 
         }
 
 
@@ -41367,22 +41373,22 @@ extends Parameter
 
     showValue(show)
     {
-        this.control.showValue = show;
-        this.control.update();
+        this.controls[0].showValue = show;
+        this.controls[0].update();
     }
 
 
 
     isVisible()
     {
-        return this.control.div.style.display != 'none';
+        return this.controls[0].div.style.display != 'none';
     }
 
 
 
     resetControls()
     {
-        this.control.valueText = '';
+        this.controls[0].valueText = '';
     }
 
 
@@ -41392,10 +41398,10 @@ extends Parameter
         return {
             paramId:    this.id, 
             value:      this.value,
-            min:        this.control.min,
-            max:        this.control.max,
-            displayMin: this.control.displayMin,
-            displayMax: this.control.displayMax
+            min:        this.controls[0].min,
+            max:        this.controls[0].max,
+            displayMin: this.controls[0].displayMin,
+            displayMax: this.controls[0].displayMax
         };
     }
 
@@ -41424,8 +41430,8 @@ extends Parameter
         else request.push( 
             NUMBER_VALUE, 
             new NumberValue(
-                this.control.value, 
-                this.control.displayDec).toString());
+                this.controls[0].value, 
+                this.controls[0].displayDec).toString());
 
 
         return request;
@@ -41442,7 +41448,7 @@ extends Parameter
 
     textboxHasFocus()
     {
-        return hasFocus(this.control.textbox);
+        return hasFocus(this.controls[0].textbox);
     }
 
 
@@ -41453,9 +41459,9 @@ extends Parameter
                !this.input 
             || !this.input.connected;
             
-        enableElementText(this.control.div, enable);
+        enableElementText(this.controls[0].div, enable);
 
-        this.control.readOnly = !enable;
+        this.controls[0].readOnly = !enable;
 
         this.updateValueText();
     }
@@ -41476,9 +41482,9 @@ extends Parameter
 
 
         if (unknown)
-            this.control.valueText = UNKNOWN_DISPLAY;
+            this.controls[0].valueText = UNKNOWN_DISPLAY;
 
-        this.control.showBar = !unknown;
+        this.controls[0].showBar = !unknown;
     }
 
 
@@ -41511,7 +41517,7 @@ extends NumberParamBase
         super(NUMBER_VALUE, id, name);
 
         
-        this.control = new NumberControl(
+        this.controls[0] = new NumberControl(
             createDiv('numberControl'),
             this,
             120, // width
@@ -41526,37 +41532,37 @@ extends NumberParamBase
             dragScale); 
 
             
-        this.control.div.zIndex = 0;
+        this.controls[0].div.zIndex = 0;
 
-        this.control.div.style.display = 'inline-block';
-        this.control.div.style.width   = '100%';
+        this.controls[0].div.style.display = 'inline-block';
+        this.controls[0].div.style.width   = '100%';
 
    
         this.defaultValue = new NumberValue(defaultValue, decimals);
 
 
-        this.control.successOnFocusOut = true;
+        this.controls[0].successOnFocusOut = true;
 
-        this.div.appendChild(this.control.div);
+        this.div.appendChild(this.controls[0].div);
 
        
         if (hasInput)  this.initInput(NUMBER_TYPES, getParamInputValuesForUndo, this.input_getBackInitValue);
         if (hasOutput) this.initOutput([NUMBER_VALUE], this.output_genRequest, getParamOutputValuesForUndo, this.output_backInit);
 
 
-        this.control.addEventListener('change', () => 
+        this.controls[0].addEventListener('change', () => 
         { 
             this.setValue(this.value, true, false, true); 
         });
 
 
-        this.control.addEventListener('confirm', () => 
+        this.controls[0].addEventListener('confirm', () => 
         { 
             actionManager.do(new EmptyAction(this.node.graph), true);
         });
 
 
-        this.control.addEventListener('finishedit', e =>
+        this.controls[0].addEventListener('finishedit', e =>
         { 
             let   dec    = decCount(e.detail.value); 
             const oldDec = decCount(e.detail.oldValue);
@@ -41572,10 +41578,10 @@ extends NumberParamBase
                 this.setValue(new NumberValue(parseFloat(e.detail.value), dec), true);
                 e.preventSetValue = true;
             }
-            else if (this.control.allowEditDecimals)
+            else if (this.controls[0].allowEditDecimals)
             {
                 if (Math.abs(parseFloat(e.detail.value) - parseFloat(e.detail.oldValue)) <= Number.EPSILON)
-                    dec += Math.log10(this.control.valueScale);
+                    dec += Math.log10(this.controls[0].valueScale);
                 else
                     dec = oldDec;
 
@@ -41586,9 +41592,9 @@ extends NumberParamBase
 
 
 
-        createTooltipSrc(this.control, this.control, () => 
+        createTooltipSrc(this.controls[0], this.controls[0], () => 
         {
-            this.control.addEventListener('change', () => 
+            this.controls[0].addEventListener('change', () => 
             {
                 const tooltip = this.getTooltip();
                 if (tooltip) hideTooltip(tooltip);
@@ -41607,7 +41613,7 @@ extends NumberParamBase
     setName(name, dispatchEvents = true)
     {
         super.setName(name, dispatchEvents);
-        this.control.setName(name);
+        this.controls[0].setName(name);
     }
 
 
@@ -41652,7 +41658,7 @@ extends NumberParamBase
     {
         super(NUMBER_VALUE, id, name);
 
-        this.control = new NumberControl(
+        this.controls[0] = new NumberControl(
             createDiv(),
             this,
             120, // width
@@ -41667,10 +41673,10 @@ extends NumberParamBase
             0.02);
 
 
-        this.control.div.zIndex = 0;
+        this.controls[0].div.zIndex = 0;
 
-        this.control.div.style.display = 'inline-block';
-        this.control.div.style.width   = '100%';
+        this.controls[0].div.style.display = 'inline-block';
+        this.controls[0].div.style.width   = '100%';
 
        
         this.defaultValue = new NumberValue(defaultValue);
@@ -41678,19 +41684,19 @@ extends NumberParamBase
 
         this.setOptions(options);
 
-        this.control.allowEditDecimals = false;
+        this.controls[0].allowEditDecimals = false;
 
-        this.control.successOnFocusOut = true;
-        this.control.barTop            = 0.8;
+        this.controls[0].successOnFocusOut = true;
+        this.controls[0].barTop            = 0.8;
 
-        this.div.appendChild(this.control.div);
+        this.div.appendChild(this.controls[0].div);
 
 
         if (hasInput)  this.initInput(NUMBER_TYPES, getParamInputValuesForUndo, this.input_getBackInitValue);
         if (hasOutput) this.initOutput([NUMBER_VALUE], this.output_genRequest, getParamOutputValuesForUndo, this.output_backInit);
 
             
-        this.control.addEventListener('confirm', () => { this.setValue(this.value, true, true); });
+        this.controls[0].addEventListener('confirm', () => { this.setValue(this.value, true, true); });
 
 
         // this.tooltip = createDiv('tooltip');
@@ -41698,14 +41704,14 @@ extends NumberParamBase
 
         //createTooltip(this.tooltip);
 
-        createTooltipSrc(this.control, this.control, () => 
+        createTooltipSrc(this.controls[0], this.controls[0], () => 
         {
             const tooltip = this.getTooltip();
 
             if (tooltip)
                 this.initTooltip(tooltip, this.options);
 
-            this.control.addEventListener('change', () => 
+            this.controls[0].addEventListener('change', () => 
             {
                 if (tooltip) hideTooltip(tooltip);
             });
@@ -41738,7 +41744,7 @@ extends NumberParamBase
     setOptions(options)
     {
         this        .options = [...options];
-        this.control.options = [...options];
+        this.controls[0].options = [...options];
     }
 
 
@@ -41772,7 +41778,7 @@ extends NumberParamBase
 
             : [ NUMBER_VALUE, 
                 this.value.toString(), 
-                this.control.displayDec.toString() ];
+                this.controls[0].displayDec.toString() ];
     }
 }
 
@@ -41783,8 +41789,8 @@ function initSelectParamMenu(param)
     menuSelectParam.clearItems();
 
 
-    const s = !param.reverseMenu ? 0 : param.control.displayMax;
-    const c = !param.reverseMenu ? i => i <= param.control.displayMax : i => i >= 0;
+    const s = !param.reverseMenu ? 0 : param.controls[0].displayMax;
+    const c = !param.reverseMenu ? i => i <= param.controls[0].displayMax : i => i >= 0;
     const d = !param.reverseMenu ? 1 : -1;
 
 
@@ -41798,7 +41804,7 @@ function initSelectParamMenu(param)
 
         const options = { callback: () => param.setValue(new NumberValue(i), true) };
 
-        if (param.control.readOnly)
+        if (param.controls[0].readOnly)
             options['enabled'] = false;
 
             
@@ -41831,19 +41837,17 @@ extends Parameter
 
     checkers;
     
-    control;
-    
 
     
-    get valueText() { return this.control.valueText; }
+    get valueText() { return this.controls[0].valueText; }
     set valueText(text) 
     {
-        this.control.valueText = text;
-        this.control.update();
+        this.controls[0].valueText = text;
+        this.controls[0].update();
     }
 
     
-    get value() { return this.control.value; }
+    get value() { return this.controls[0].value; }
     
 
     
@@ -41859,7 +41863,7 @@ extends Parameter
 
         this.checkers       = createDiv();
 
-        this.control = new ColorControl(
+        this.controls[0] = new ColorControl(
             null,
             this,
             120, // width
@@ -41870,8 +41874,8 @@ extends Parameter
             defaultValue,   
             dragScale); 
 
-        this.control.successOnFocusOut = true;
-        this.control.div.zIndex = 0;
+        this.controls[0].successOnFocusOut = true;
+        this.controls[0].div.zIndex = 0;
 
         
         this.defaultValue = defaultValue;
@@ -41890,25 +41894,25 @@ extends Parameter
         this.checkers.style.pointerEvents = 'none';
 
 
-        this.control.div.style.display       = 'inline-block';
-        this.control.div.style.width         = '100%';
+        this.controls[0].div.style.display       = 'inline-block';
+        this.controls[0].div.style.width         = '100%';
 
 
         this.div.appendChild(this.checkers);
-        this.div.appendChild(this.control.div);
+        this.div.appendChild(this.controls[0].div);
 
        
         if (hasInput)  this.initInput(COLOR_TYPES, getParamInputValuesForUndo, this.input_getBackInitValue);
         if (hasOutput) this.initOutput([COLOR_VALUE], this.output_genRequest, getParamOutputValuesForUndo, this.output_backInit);
 
 
-        this.control.addEventListener('confirm', () => 
+        this.controls[0].addEventListener('confirm', () => 
         {
-            this.setValue(this.control.value, true, false); 
+            this.setValue(this.controls[0].value, true, false); 
         });
 
 
-        this.control.addEventListener('finishedit', e =>
+        this.controls[0].addEventListener('finishedit', e =>
         { 
             if (!e.detail.success)
                 return;
@@ -41953,7 +41957,7 @@ extends Parameter
     setName(name, dispatchEvents = true)
     {
         super.setName(name, dispatchEvents);
-        this.control.setName(name);
+        this.controls[0].setName(name);
     }
 
 
@@ -41964,14 +41968,14 @@ extends Parameter
 
     isVisible()
     {
-        return this.control.div.style.display != 'none';
+        return this.controls[0].div.style.display != 'none';
     }
 
 
 
     resetControls()
     {
-        this.control.valueText = '';
+        this.controls[0].valueText = '';
     }
 
 
@@ -41985,10 +41989,10 @@ extends Parameter
             
         this.preSetValue(value, createAction, dispatchEvents);
 
-        this.control.value = value.copy();
+        this.controls[0].value = value.copy();
 
         if (updateControl)
-            this.control.setValue(this.control.value, true, false); 
+            this.controls[0].setValue(this.controls[0].value, true, false); 
 
 
         super.setValue(value, createAction, updateControl, dispatchEvents);
@@ -42084,7 +42088,7 @@ extends Parameter
 
     textboxHasFocus()
     {
-        return hasFocus(this.control.textbox);
+        return hasFocus(this.controls[0].textbox);
     }
 
 
@@ -42095,9 +42099,9 @@ extends Parameter
                !this.input 
             || !this.input.connected;
 
-        enableElementText(this.control.div, enable);
+        enableElementText(this.controls[0].div, enable);
         
-        this.control.readOnly = !enable;
+        this.controls[0].readOnly = !enable;
     }
     
     
@@ -42177,15 +42181,13 @@ extends Parameter
     checkers;
     controlWrapper;
 
-    colorControl;
-    opacityControl;
+   
     
-    
-    get valueText() { return this.colorControl.valueText; }
+    get valueText() { return this.controls[0].valueText; }
     set valueText(text) 
     {
-        this.colorControl.valueText = text;
-        this.colorControl.update();
+        this.controls[0].valueText = text;
+        this.controls[0].update();
     }
 
     
@@ -42207,7 +42209,7 @@ extends Parameter
         this.controlWrapper = createDiv();
 
 
-        this.colorControl = new ColorControl(
+        this.controls.push(ColorControl(
             null,
             this,
             120, // width
@@ -42216,12 +42218,12 @@ extends Parameter
             'color', 
             showName,
             defaultValue.color,   
-            dragScale); 
+            dragScale)); 
 
-        this.colorControl.showColor = false;
+        this.controls[0].showColor = false;
 
 
-        this.opacityControl = new NumberControl(
+        this.controls.push(new NumberControl(
             null,
             this,
             120, // width
@@ -42232,16 +42234,16 @@ extends Parameter
             defaultValue.opacity.value,
             0,
             100,
-            0);
+            0));
         
-        this.opacityControl.setSuffix('%', true);
+        this.controls[1].setSuffix('%', true);
 
 
-        this.  colorControl.div.zIndex = 0;
-        this.opacityControl.div.zIndex = 0;
+        this.controls[0].div.zIndex = 0;
+        this.controls[1].div.zIndex = 0;
    
-        this.defaultValue          = defaultValue;
-        this.value                 = defaultValue;
+        this.defaultValue           = defaultValue;
+        this.value                  = defaultValue;
 
         
         this._warningOverlay = createDiv('colorWarningOverlay');
@@ -42250,53 +42252,53 @@ extends Parameter
         this.div.appendChild(this._warningOverlay);
 
 
-        this.checkers.style.position                   = 'absolute';
-        this.checkers.style.width                      = '100%';
-        this.checkers.style.height                     = '20px';
+        this.checkers.style.position                = 'absolute';
+        this.checkers.style.width                   = '100%';
+        this.checkers.style.height                  = '20px';
 
 
-        this.controlWrapper.style.position             = 'relative';
-        this.controlWrapper.style.display              = 'inline-block';
-        this.controlWrapper.style.width                = '100%';
-        this.controlWrapper.style.height               = '20px';
-        this.controlWrapper.style.zIndex               = 1;
+        this.controlWrapper.style.position          = 'relative';
+        this.controlWrapper.style.display           = 'inline-block';
+        this.controlWrapper.style.width             = '100%';
+        this.controlWrapper.style.height            = '20px';
+        this.controlWrapper.style.zIndex            = 1;
 
 
-        this.  colorControl.successOnFocusOut          = true;
-        this.  colorControl.style.display              = 'inline';
-        this.  colorControl.style.width                = '60%';
-        this.  colorControl.style.position             = 'absolute';
-        this.  colorControl.style.left                 = 0;
+        this.controls[0].successOnFocusOut          = true;
+        this.controls[0].style.display              = 'inline';
+        this.controls[0].style.width                = '60%';
+        this.controls[0].style.position             = 'absolute';
+        this.controls[0].style.left                 = 0;
 
     
-        this.opacityControl.successOnFocusOut          = true;
-        this.opacityControl.div.style.display              = 'inline';
-        this.opacityControl.div.style.width                = '40%';
-        this.opacityControl.div.style.position             = 'absolute';
-        this.opacityControl.div.style.right                = 0;
+        this.controls[1].successOnFocusOut          = true;
+        this.controls[1].div.style.display          = 'inline';
+        this.controls[1].div.style.width            = '40%';
+        this.controls[1].div.style.position         = 'absolute';
+        this.controls[1].div.style.right            = 0;
 
 
-        this.  colorControl.text.style.transform       = 'translateX(-45%)';
-        this.opacityControl.text.style.transform       = 'translateX(-70%)';
+        this.controls[0].text.style.transform       = 'translateX(-45%)';
+        this.controls[1].text.style.transform       = 'translateX(-70%)';
 
 
-        this.  colorControl.textbox.style.position     = 'absolute';
-        this.  colorControl.textbox.style.left         =  0;
-        this.  colorControl.textbox.style.width        = '60%';
-        this.  colorControl.textbox.style.transform    = 'translateX(0)';
-        this.  colorControl.textbox.style.textAlign    = 'right';
-        this.  colorControl.textbox.style.paddingLeft  =  11;
+        this.controls[0].textbox.style.position     = 'absolute';
+        this.controls[0].textbox.style.left         =  0;
+        this.controls[0].textbox.style.width        = '60%';
+        this.controls[0].textbox.style.transform    = 'translateX(0)';
+        this.controls[0].textbox.style.textAlign    = 'right';
+        this.controls[0].textbox.style.paddingLeft  =  11;
         
-        this.opacityControl.textbox.style.position     = 'absolute';
-        this.opacityControl.textbox.style.right        =  0;
-        this.opacityControl.textbox.style.width        = '40%';
-        this.opacityControl.textbox.style.transform    = 'translateX(25%)';
-        this.opacityControl.textbox.style.textAlign    = 'left';
-        this.opacityControl.textbox.style.paddingRight =  10;
+        this.controls[1].textbox.style.position     = 'absolute';
+        this.controls[1].textbox.style.right        =  0;
+        this.controls[1].textbox.style.width        = '40%';
+        this.controls[1].textbox.style.transform    = 'translateX(25%)';
+        this.controls[1].textbox.style.textAlign    = 'left';
+        this.controls[1].textbox.style.paddingRight =  10;
 
 
-        this.controlWrapper.appendChild(this.  colorControl);
-        this.controlWrapper.appendChild(this.opacityControl.div);
+        this.controlWrapper.appendChild(this.controls[0].div);
+        this.controlWrapper.appendChild(this.controls[1].div);
         
         this.div.appendChild(this.checkers);
         this.div.appendChild(this.controlWrapper);
@@ -42306,25 +42308,28 @@ extends Parameter
         if (hasOutput) this.initOutput([FILL_VALUE], this.output_genRequest);
 
 
-        this.colorControl.addEventListener('confirm', () =>
+
+        this.controls[0].addEventListener('confirm', () =>
         { 
             this.setValue(new FillValue(
-                this.colorControl.value, 
-                new NumberValue(this.opacityControl.value, this.opacityControl.dec)), 
+                this.controls[0].value, 
+                new NumberValue(this.controls[1].value, this.controls[1].dec)), 
                 true, false);
         });
 
 
-        this.opacityControl.addEventListener('confirm', () =>
+
+        this.controls[1].addEventListener('confirm', () =>
         {
             this.setValue(new FillValue(
-                this.colorControl.value, 
-                new NumberValue(this.opacityControl.value, this.opacityControl.dec)), 
+                this.controls[0].value, 
+                new NumberValue(this.controls[1].value, this.controls[1].dec)), 
                 true, false);
         });
 
 
-        this.colorControl.addEventListener('finishedit', e =>
+
+        this.controls[0].addEventListener('finishedit', e =>
         { 
             if (!e.detail.success)
                 return;
@@ -42334,7 +42339,7 @@ extends Parameter
                 const  rgb = validHex2rgb(e.detail.value);
                 const _rgb = scaleRgb(rgb);
 
-                this.setValue(FillValue.fromRgb(_rgb, this.opacityControl.value), true);
+                this.setValue(FillValue.fromRgb(_rgb, this.controls[1].value), true);
                 
                 e.preventSetValue = true;
             }
@@ -42362,8 +42367,8 @@ extends Parameter
 
         if (updateControl)
         {
-            this.  colorControl.setValue(this.value.color,         false, false); 
-            this.opacityControl.setValue(this.value.opacity.value, false, false, false); 
+            this.controls[0].setValue(this.value.color,         false, false); 
+            this.controls[1].setValue(this.value.opacity.value, false, false, false); 
         }
 
 
@@ -42377,16 +42382,16 @@ extends Parameter
 
     isVisible()
     {
-        return this.colorControl  .style.display != 'none'
-            || this.opacityControl.style.display != 'none';
+        return this.controls[0]  .style.display != 'none'
+            || this.controls[1].style.display != 'none';
     }
 
 
 
     resetControls()
     {
-        this.colorControl  .valueText = '';
-        this.opacityControl.valueText = '';
+        this.controls[0]  .valueText = '';
+        this.controls[1].valueText = '';
     }
 
 
@@ -42416,8 +42421,8 @@ extends Parameter
                 request.push(
                     NUMBER_VALUE, 
                     new NumberValue(
-                        this.opacityControl.value, 
-                        this.opacityControl.displayDec).toString());
+                        this.controls[1].value, 
+                        this.controls[1].displayDec).toString());
             }
         }
 
@@ -42439,8 +42444,8 @@ extends Parameter
 
     updateControls()
     {
-        checkControlVisible(this, this.colorControl  );
-        checkControlVisible(this, this.opacityControl);
+        checkControlVisible(this, this.controls[0]  );
+        checkControlVisible(this, this.controls[1]);
 
 
         // const noColor = 
@@ -42452,7 +42457,7 @@ extends Parameter
         const rgbaText = getTextColorFromBackColor(rgbaVal, rgbaVal[3]);
 
 
-        const fillStyle = rgba2style(rgb_a(rgbaVal, this.opacityControl.value/100));
+        const fillStyle = rgba2style(rgb_a(rgbaVal, this.controls[1].value/100));
 
         this.controlWrapper.style.background = 
               !rgbaIsNaN(rgbaVal) 
@@ -42505,25 +42510,25 @@ extends Parameter
         this.checkers.style.backgroundPosition = '0 0, 10px 10px';
 
         
-        this.colorControl. backStyleLight   = 
-        this.colorControl. backStyleDark    = 
-        this.colorControl.valueStyleLight   = 
-        this.colorControl.valueStyleDark    = 'transparent';
+        this.controls[0]. backStyleLight   = 
+        this.controls[0]. backStyleDark    = 
+        this.controls[0].valueStyleLight   = 
+        this.controls[0].valueStyleDark    = 'transparent';
 
-        this.colorControl.textStyleLight    = 
-        this.colorControl.textStyleDark     = rgba2style(rgbaText);
+        this.controls[0].textStyleLight    = 
+        this.controls[0].textStyleDark     = rgba2style(rgbaText);
 
 
-        this.opacityControl. backStyleLight = 
-        this.opacityControl. backStyleDark  = 
-        this.opacityControl.valueStyleLight = 
-        this.opacityControl.valueStyleDark  = 'transparent';
+        this.controls[1]. backStyleLight = 
+        this.controls[1]. backStyleDark  = 
+        this.controls[1].valueStyleLight = 
+        this.controls[1].valueStyleDark  = 'transparent';
 
-        this.opacityControl.textStyleLight  = 
-        this.opacityControl.textStyleDark   = rgba2style(rgbaText);
+        this.controls[1].textStyleLight  = 
+        this.controls[1].textStyleDark   = rgba2style(rgbaText);
 
-        this.  colorControl.update();
-        this.opacityControl.update();
+        this.controls[0].update();
+        this.controls[1].update();
 
 
         if (this.input ) this.input .updateControl();
@@ -42535,7 +42540,7 @@ extends Parameter
     setName(name, dispatchEvents = true)
     {
         super.setName(name, dispatchEvents);
-        this.colorControl.setName(name);
+        this.controls[0].setName(name);
     }
 
 
@@ -42546,8 +42551,8 @@ extends Parameter
 
     // textboxHasFocus()
     // {
-    //     return hasFocus(this.  colorControl.textbox)
-    //         || hasFocus(this.opacityControl.textbox);
+    //     return hasFocus(this.controls[0].textbox)
+    //         || hasFocus(this.controls[1].textbox);
     // }
 
 
@@ -42562,11 +42567,11 @@ extends Parameter
             || !this.input.connected 
             ||  this.input.connectedOutput.supportsTypes(COLOR_TYPES);
 
-        enableElementText(this.  colorControl.div, enable);
-        enableElementText(this.opacityControl.div, opEnable);
+        enableElementText(this.controls[0].div, enable);
+        enableElementText(this.controls[1].div, opEnable);
         
-        this.  colorControl.readOnly = !enable;
-        this.opacityControl.readOnly = !opEnable;
+        this.controls[0].readOnly = !enable;
+        this.controls[1].readOnly = !opEnable;
     }
     
     
@@ -42669,7 +42674,7 @@ extends Parameter
 
         this.textControl                  = createDiv('colorControlText');
 
-        this.control = new NumberControl(
+        this.controls[0] = new NumberControl(
             createDiv(),
             this,
             100, // width
@@ -42697,29 +42702,29 @@ extends Parameter
         this.div.appendChild(this._warningOverlay);
 
 
-        this.control.style.position       = 'absolute';
-        this.control.style.display        = 'block';
-        this.control.style.width          = '100%';
-        this.control.style.height         = '20px';
+        this.controls[0].style.position       = 'absolute';
+        this.controls[0].style.display        = 'block';
+        this.controls[0].style.width          = '100%';
+        this.controls[0].style.height         = '20px';
 
 
         this.div.appendChild(this.checkers);
 
         this.div.appendChild(this.textControl);
-        this.div.appendChild(this.control);
+        this.div.appendChild(this.controls[0]);
 
        
         if (hasInput)  this.initInput([...STROKE_TYPES, ...FILL_TYPES, ...COLOR_TYPES]);
         if (hasOutput) this.initOutput([STROKE_VALUE], this.output_genRequest);
 
 
-        this.control.addEventListener('confirm', () => 
+        this.controls[0].addEventListener('confirm', () => 
         { 
             const value = this.value.copy();
 
             value.weight = new NumberValue(
-                this.control.value, 
-                this.control.dec);
+                this.controls[0].value, 
+                this.controls[0].dec);
 
             this.setValue(value, true, false);
         });
@@ -42760,11 +42765,11 @@ extends Parameter
 
         if (updateControl)
         {
-            this.control.setDecimals(
+            this.controls[0].setDecimals(
                 this.value.weight.decimals, 
                 this.value.weight.decimals);
                 
-            this.control.setValue(this.value.weight.value, false, false); 
+            this.controls[0].setValue(this.value.weight.value, false, false); 
         }
 
 
@@ -42799,8 +42804,8 @@ extends Parameter
             if (   this.input.connectedOutput.support( FILL_TYPES)
                 || this.input.connectedOutput.support(COLOR_TYPES))
             {
-                const val = noNaN(this.control.value,      1);
-                const dec = noNaN(this.control.displayDec, 0);
+                const val = noNaN(this.controls[0].value,      1);
+                const dec = noNaN(this.controls[0].displayDec, 0);
                 
                 request.push(
                     NUMBER_VALUE, 
@@ -42861,17 +42866,17 @@ extends Parameter
             this.checkers.style.backgroundPosition = '0 0, 10px 10px';
 
             
-            this.control.style.display     = 'inline-block';
+            this.controls[0].style.display     = 'inline-block';
             
-            this.control. backStyleLight   = 
-            this.control. backStyleDark    = 
-            this.control.valueStyleLight   = 
-            this.control.valueStyleDark    = rgba2style(rgbaVal);
+            this.controls[0]. backStyleLight   = 
+            this.controls[0]. backStyleDark    = 
+            this.controls[0].valueStyleLight   = 
+            this.controls[0].valueStyleDark    = rgba2style(rgbaVal);
 
-            this.control.textStyleLight    = 
-            this.control.textStyleDark     = rgba2style(rgbaText);
+            this.controls[0].textStyleLight    = 
+            this.controls[0].textStyleDark     = rgba2style(rgbaText);
 
-            this.control.update();
+            this.controls[0].update();
             
 
             this.textControl.style.display = 'none';
@@ -42894,7 +42899,7 @@ extends Parameter
 
 
             this.checkers.style.display    = 'none';
-            this.control .style.display    = 'none';
+            this.controls[0].style.display = 'none';
             
             this.textControl.style.display = 'inline-block';
             this.textControl.style.color   = rgba2style(rgbaText);
@@ -42940,8 +42945,8 @@ extends Parameter
         enableElementText(this.textControl, enable);
         enableElementText(this.control.div, opEnable);
 
-        this.textControl.readOnly = !enable;
-        this.control    .readOnly = !opEnable;
+        this.controls[0].readOnly = !enable;
+        this.controls[1].readOnly = !opEnable;
     }
     
     
@@ -43004,33 +43009,33 @@ extends Parameter
 }
 
 
-class   ViewParam
-extends Parameter
-{
-    control;
+// class   ViewParam
+// extends Parameter
+// {
+//     control;
 
 
 
-    constructor(id, node)
-    {
-        super(GRAPH, id);
+//     constructor(id, node)
+//     {
+//         super(GRAPH, id);
 
-        this.control = new EmptyControl(null, this);
+//         this.control = new EmptyControl(null, this);
 
-        this.div.appendChild(this.control.div);
+//         this.div.appendChild(this.control.div);
 
-        this.control.div.style.width  = '100%';
-        this.control.div.style.height = 'calc(90% - ' + node.header.offsetHeight + 'px)';
-        //this.control.div.style.minHeight = '20px';
-    }
+//         this.control.div.style.width  = '100%';
+//         this.control.div.style.height = 'calc(90% - ' + node.header.offsetHeight + 'px)';
+//         //this.control.div.style.minHeight = '20px';
+//     }
 
 
 
-    updateControls()
-    {
+//     updateControls()
+//     {
 
-    }
-}
+//     }
+// }
 
 
 class   ProxyParam
@@ -43038,34 +43043,59 @@ extends Parameter
 {
     refParam;
 
-    controls = [];
+    controls    = [];
+    connections = [];
 
 
     constructor(param)
     {
         super(param.type, param.node.id + '_' + param.id);
 
-        this.refParam = param;
 
-        this.div.style.boxShadow = '0 0 0 1px green inset';
+        this.refParam = param;
+        param.proxy = this;
+
+        this.div.style.height = 20;
+        this.div.style.boxShadow = '0 0 0 1px yellow inset';
+
 
         switch (param.type)
         {
             case NUMBER_VALUE: 
             {
-                this.controls = [param.control.copy()];
-                this.div.appendChild(this.controls[0]);
+                this.controls = [param.controls[0].copy()];
+                this.controls[0].param = this;
+
+                this.controls[0].div.style.display = 'inline-block';
+                this.controls[0].div.style.width   = '100%';
+
+                this.div.appendChild(this.controls[0].div);
+
                 break;
             }
         }
 
+
+        if (param.input )
+        {
+            this.initInput (param.input.types,  getParamInputValuesForUndo, null);
+        }
+
+
+        if (param.output) 
+        {
+            this.initOutput(param.output.types, null, getParamOutputValuesForUndo, null);
+        }
     }
 
 
 
     updateControls()
     {
-
+        for (let i = 0; i < this.controls.length; i++)
+        {
+            this.controls[i].setValue(this.refParam.controls[i].value, false, true, false);
+        }
     }
 }
 
@@ -44816,7 +44846,7 @@ class Operator
 
     setPosition(x, y, updateTransform = true)
     {
-        //console.log('Operator.setPosition()');
+        console.log('Operator.setPosition()');
    
         this.div.style.left = x + 'px';
         this.div.style.top  = y + 'px';
@@ -44826,6 +44856,12 @@ class Operator
             this.div.style.display = 'block';
             this.updateTransform();
         }
+
+        this.updateMeasureData();
+
+        mainGraph.nodes
+            .filter(n => n.type == NODE_GROUP)
+            .forEach(n => n.updateChildren());
     }
 
 
@@ -44999,8 +45035,8 @@ class Operator
 
         if (value.type == NUMBER_VALUE)
         {
-            param.control.setMin(value.min, value.displayMin);
-            param.control.setMax(value.max, value.displayMax);
+            param.controls[0].setMin(value.min, value.displayMin);
+            param.controls[0].setMax(value.max, value.displayMax);
         }
             
         param.setValue(value.value, true, true, false);
@@ -45405,8 +45441,8 @@ function nodesAreParallel(nodes)
 //             if (   value.min != undefined
 //                 && value.max != undefined)
 //             {
-//                 param.control.setMin(value.min);
-//                 param.control.setMax(value.max);
+//                 param.controls[0].setMin(value.min);
+//                 param.controls[0].setMax(value.max);
 //             }
                 
 //             param.setValue(value.value, true, true, false);
@@ -45539,7 +45575,7 @@ Operator.prototype.createHeader = function()
         for (const param of this.params)
         {
             if (param.textboxHasFocus())
-                param.control.textbox.finish(true);
+                param.controls[0].textbox.finish(true);
         }
 
 
@@ -46389,10 +46425,10 @@ Operator.prototype.updateMeasureData = function()
     };
 
     this.params
-        .filter(p => p.control)
-        .forEach(p => 
+        .forEach(p =>
         {
-            p.control.updateMeasureData();
+            for (const control of p.controls)
+                control.updateMeasureData();
 
             if (p. input) p. input.updateMeasureData();
             if (p.output) p.output.updateMeasureData();
@@ -46571,14 +46607,14 @@ extends OperatorBase
             : [0, 0, 0, 0.09]; 
 
 
-        // this.paramValue.control.backStyleLight  =
-        // this.paramValue.control.backStyleDark   = rgb2style_a(rgbHeaderFromType(this.type, this.active), 0.95);
+        // this.paramValue.controls[0].backStyleLight  =
+        // this.paramValue.controls[0].backStyleDark   = rgb2style_a(rgbHeaderFromType(this.type, this.active), 0.95);
 
-        // this.paramValue.control.valueStyleLight =
-        // this.paramValue.control.valueStyleDark  = rgba2style(colSpaceBar);
+        // this.paramValue.controls[0].valueStyleLight =
+        // this.paramValue.controls[0].valueStyleDark  = rgba2style(colSpaceBar);
 
-        // this.paramValue.control.textStyleLight  =
-        // this.paramValue.control.textStyleDark   = rgba2style(colors.text);
+        // this.paramValue.controls[0].textStyleLight  =
+        // this.paramValue.controls[0].textStyleDark   = rgba2style(colors.text);
     }
 
 
@@ -46917,7 +46953,7 @@ extends OperatorBase
 
         this.addParam(this.paramIndex = new NumberParam('index', 'index', true, true, false, 0, 0));
 
-        this.paramIndex.control.allowEditDecimals = false;
+        this.paramIndex.controls[0].allowEditDecimals = false;
 
 
         this.paramNumber = new NumberParam('value', '', false, false, false);
@@ -46985,7 +47021,7 @@ extends OperatorBase
             && val) 
             paramValue = this.addParamByType(val.type, 'value', false, false, true);
 
-        this.paramIndex.control.setMax(
+        this.paramIndex.controls[0].setMax(
                length
             && length.value > 0
             ? length.value-1
@@ -47007,7 +47043,7 @@ extends OperatorBase
         // if (paramValue)
         // {
         //     paramValue.enableControlText(true);
-        //     paramValue.control.valueText = this.paramIndex.value < 0 ? UNKNOWN_DISPLAY : '';
+        //     paramValue.controls[0].valueText = this.paramIndex.value < 0 ? UNKNOWN_DISPLAY : '';
         // }
 
 
@@ -47197,7 +47233,7 @@ extends OperatorBase
         this.addParam(this.paramCount = new NumberParam('count', 'count', true, true, false, 1, 0, 100, 0));
 
 
-        this.paramCount.control.allowEditDecimals = false;
+        this.paramCount.controls[0].allowEditDecimals = false;
         this.paramCount.affectsHeader = false;
     }
     
@@ -47504,8 +47540,8 @@ extends OperatorBase
         {
             paramValue.enableControlText(false);
 
-            paramValue.control.valueText =  this.isUnknown() ? UNKNOWN_DISPLAY : '';
-            paramValue.control.showBar   = !this.isUnknown();
+            paramValue.controls[0].valueText =  this.isUnknown() ? UNKNOWN_DISPLAY : '';
+            paramValue.controls[0].showBar   = !this.isUnknown();
         }
 
         
@@ -47644,8 +47680,8 @@ extends OperatorBase
         
         this.paramValue.enableControlText(!input.connected);
 
-        this.paramValue.control.valueText =  this.isUnknown() ? UNKNOWN_DISPLAY : '';
-        this.paramValue.control.showBar   = !this.isUnknown();
+        this.paramValue.controls[0].valueText =  this.isUnknown() ? UNKNOWN_DISPLAY : '';
+        this.paramValue.controls[0].showBar   = !this.isUnknown();
 
 
         this.updateParamControls();
@@ -47864,7 +47900,7 @@ extends OperatorBase
         this.addParam(this.paramMin  = new NumberParam('min',  'min',  true, true, true,   0));
         this.addParam(this.paramMax  = new NumberParam('max',  'max',  true, true, true, 255));
 
-        this.paramSeed.control.allowEditDecimals = false;
+        this.paramSeed.controls[0].allowEditDecimals = false;
         this.paramSeed.isDefault = () => false;
     }
 
@@ -47961,10 +47997,10 @@ extends OperatorWithValue
         this.addParam(this.paramAmount = new NumberParam('amount', '', true, true, true, 50, 0, 100, 0));
 
         
-        this.paramAmount.control.min = Number.MIN_SAFE_INTEGER; // allow
-        this.paramAmount.control.max = Number.MAX_SAFE_INTEGER; // extrapolation
+        this.paramAmount.controls[0].min = Number.MIN_SAFE_INTEGER; // allow
+        this.paramAmount.controls[0].max = Number.MAX_SAFE_INTEGER; // extrapolation
         
-        this.paramAmount.control.setSuffix('%', true);
+        this.paramAmount.controls[0].setSuffix('%', true);
     }
 
 
@@ -48169,8 +48205,8 @@ extends OperatorWithSymbol
     {
         this.paramValue.enableControlText(false);
                 
-        this.paramValue.control.valueText =  this.isUnknown() ? UNKNOWN_DISPLAY : '';
-        this.paramValue.control.showBar   = !this.isUnknown();
+        this.paramValue.controls[0].valueText =  this.isUnknown() ? UNKNOWN_DISPLAY : '';
+        this.paramValue.controls[0].showBar   = !this.isUnknown();
 
         this.updateParamControls();
     }
@@ -48370,7 +48406,7 @@ extends OperatorWithValue
         this.paramValue    .enableControlText(false);
         this.paramOperation.enableControlText(true);
 
-        this.paramValue.control.text.style.fontStyle = 
+        this.paramValue.controls[0].text.style.fontStyle = 
                settings.showBoolValues 
             && this.paramValue.value.isValid()
             ? 'normal' 
@@ -48379,14 +48415,14 @@ extends OperatorWithValue
 
         const v = Math.round(this.paramValue.value.value);
 
-             if (this.isUnknown())        this.paramValue.control.valueText = UNKNOWN_DISPLAY;
+             if (this.isUnknown())        this.paramValue.controls[0].valueText = UNKNOWN_DISPLAY;
         else if (settings.showBoolValues
-              && !isNaN(v))               this.paramValue.control.valueText = v != 0 ? TRUE_DISPLAY : FALSE_DISPLAY;
-        else                              this.paramValue.control.valueText = '';
+              && !isNaN(v))               this.paramValue.controls[0].valueText = v != 0 ? TRUE_DISPLAY : FALSE_DISPLAY;
+        else                              this.paramValue.controls[0].valueText = '';
 
-        this.paramValue.control.text.style.letterSpacing = settings.showBoolValues ? '0.1em' : 0;
+        this.paramValue.controls[0].text.style.letterSpacing = settings.showBoolValues ? '0.1em' : 0;
 
-        this.paramValue.control.showBar = !this.isUnknown();
+        this.paramValue.controls[0].showBar = !this.isUnknown();
 
 
         this.updateParamControls();
@@ -48466,22 +48502,22 @@ extends OperatorWithValue
 
         const v = Math.round(this.paramValue.value.value);
 
-             if (this.isUnknown())        this.paramValue.control.valueText = UNKNOWN_DISPLAY;
+             if (this.isUnknown())        this.paramValue.controls[0].valueText = UNKNOWN_DISPLAY;
         else if (settings.showBoolValues
-              && !isNaN(v))               this.paramValue.control.valueText = v != 0 ? TRUE_DISPLAY : FALSE_DISPLAY;
-        else                              this.paramValue.control.valueText = '';
+              && !isNaN(v))               this.paramValue.controls[0].valueText = v != 0 ? TRUE_DISPLAY : FALSE_DISPLAY;
+        else                              this.paramValue.controls[0].valueText = '';
 
 
-        this.paramValue.control.text.style.fontStyle = 
+        this.paramValue.controls[0].text.style.fontStyle = 
                settings.showBoolValues 
             && this.paramValue.value.isValid()
             ? 'normal' 
             : 'italic';
 
 
-        //this.paramValue.control.text.style.letterSpacing = settings.showBoolValues ? '0.1em' : 0; // this is if "true" and "false" are used
+        //this.paramValue.controls[0].text.style.letterSpacing = settings.showBoolValues ? '0.1em' : 0; // this is if "true" and "false" are used
         
-        this.paramValue.control.showBar = !this.isUnknown();
+        this.paramValue.controls[0].showBar = !this.isUnknown();
 
 
         this.updateParamControls();
@@ -48616,7 +48652,7 @@ extends OperatorWithValue
 
 function updateParamConditionText(param, unknown)
 {
-    param.control.text.style.fontStyle = 
+    param.controls[0].text.style.fontStyle = 
            settings.showBoolValues 
         && param.value.isValid()
         ? 'normal' 
@@ -48627,12 +48663,12 @@ function updateParamConditionText(param, unknown)
 
          if (unknown)        param.controllueText = UNKNOWN_DISPLAY;
     else if (settings.showBoolValues
-            && !isNaN(v))    param.control.valueText = v != 0 ? TRUE_DISPLAY : FALSE_DISPLAY;
-    else                     param.control.valueText = '';
+            && !isNaN(v))    param.controls[0].valueText = v != 0 ? TRUE_DISPLAY : FALSE_DISPLAY;
+    else                     param.controls[0].valueText = '';
 
-    //param.control.text.style.letterSpacing = settings.showBoolValues ? '0.1em' : 0;
+    //param.controls[0].text.style.letterSpacing = settings.showBoolValues ? '0.1em' : 0;
 
-    param.control.showBar = unknown;
+    param.controls[0].showBar = unknown;
 }
 
 
@@ -48698,22 +48734,22 @@ extends OperatorWithSymbol
 
         const v = Math.round(this.paramValue.value.value);
 
-             if (this.isUnknown())       this.paramValue.control.valueText = UNKNOWN_DISPLAY;
+             if (this.isUnknown())       this.paramValue.controls[0].valueText = UNKNOWN_DISPLAY;
         else if (settings.showBoolValues
-              && !isNaN(v))              this.paramValue.control.valueText = v != 0 ? TRUE_DISPLAY : FALSE_DISPLAY;
-        else                             this.paramValue.control.valueText = '';
+              && !isNaN(v))              this.paramValue.controls[0].valueText = v != 0 ? TRUE_DISPLAY : FALSE_DISPLAY;
+        else                             this.paramValue.controls[0].valueText = '';
 
 
-        this.paramValue.control.text.style.fontStyle = 
+        this.paramValue.controls[0].text.style.fontStyle = 
                settings.showBoolValues 
-            && this.paramValue.control.valueText != UNKNOWN_DISPLAY
+            && this.paramValue.controls[0].valueText != UNKNOWN_DISPLAY
             ? 'normal' 
             : 'italic';
 
 
-        //this.paramValue.control.text.style.letterSpacing = settings.showBoolValues ? '0.1em' : 0; // this is if "true" and "false" are used
+        //this.paramValue.controls[0].text.style.letterSpacing = settings.showBoolValues ? '0.1em' : 0; // this is if "true" and "false" are used
         
-        this.paramValue.control.showBar = !this.isUnknown();
+        this.paramValue.controls[0].showBar = !this.isUnknown();
 
 
         this.updateParamControls();
@@ -49126,9 +49162,9 @@ extends OpColorBase
         this.addParam(this.paramColor = new ColorParam ('color', '',      false, false, false, ColorValue.fromRgb(scaleRgb(dataColor2rgb(this._color)))));
 
 
-        this.param1.control.epsilon = ColorEpsilon;
-        this.param2.control.epsilon = ColorEpsilon;
-        this.param3.control.epsilon = ColorEpsilon;
+        this.param1.controls[0].epsilon = ColorEpsilon;
+        this.param2.controls[0].epsilon = ColorEpsilon;
+        this.param3.controls[0].epsilon = ColorEpsilon;
 
         
         this.paramSpace.input.outputMustBeCached = true;
@@ -49148,21 +49184,21 @@ extends OpColorBase
         });
 
 
-        this.param1.setValue(new NumberValue(roundTo(this._color[1] * rgbFactor[0], this.param1.control.dec)), false, true, false);
-        this.param2.setValue(new NumberValue(roundTo(this._color[2] * rgbFactor[1], this.param2.control.dec)), false, true, false);
-        this.param3.setValue(new NumberValue(roundTo(this._color[3] * rgbFactor[2], this.param3.control.dec)), false, true, false);
+        this.param1.setValue(new NumberValue(roundTo(this._color[1] * rgbFactor[0], this.param1.controls[0].dec)), false, true, false);
+        this.param2.setValue(new NumberValue(roundTo(this._color[2] * rgbFactor[1], this.param2.controls[0].dec)), false, true, false);
+        this.param3.setValue(new NumberValue(roundTo(this._color[3] * rgbFactor[2], this.param3.controls[0].dec)), false, true, false);
 
 
-        this.paramSpace.control.barTop = 0.8;
+        this.paramSpace.controls[0].barTop = 0.8;
 
-        this.paramSpace.control.addEventListener('pointerenter', () => { this.header.over = true;  this.updateHeader(); });
-        this.paramSpace.control.addEventListener('pointerleave', () => { this.header.over = false; this.updateHeader(); });
+        this.paramSpace.controls[0].addEventListener('pointerenter', () => { this.header.over = true;  this.updateHeader(); });
+        this.paramSpace.controls[0].addEventListener('pointerleave', () => { this.header.over = false; this.updateHeader(); });
 
 
-        this.paramSpace.control.wheelScale = 1;
-        this.param1    .control.wheelScale = 1;
-        this.param2    .control.wheelScale = 1;
-        this.param3    .control.wheelScale = 1;
+        this.paramSpace.controls[0].wheelScale = 1;
+        this.param1    .controls[0].wheelScale = 1;
+        this.param2    .controls[0].wheelScale = 1;
+        this.param3    .controls[0].wheelScale = 1;
 
 
         // hex is default, remove default sliders
@@ -49171,7 +49207,7 @@ extends OpColorBase
         this.inner.removeChild(this.param3.div);
 
         
-        this.paramColor.control.showColor = false;
+        this.paramColor.controls[0].showColor = false;
 
         this.paramColor.addEventListener('change', () => 
         {
@@ -49410,7 +49446,7 @@ extends OpColorBase
 
     updateNode()
     {
-        if (!hasFocus(this.paramColor.control))
+        if (!hasFocus(this.paramColor.controls[0]))
             this.paramColor.setValue(ColorValue.fromRgb(scaleRgb(dataColor2rgb(this._color))), false, true, false);// = 
         
 
@@ -49423,24 +49459,24 @@ extends OpColorBase
             : [0, 0, 0, 0.09]; 
 
 
-        this.paramSpace.control.setMax(colorSpaceCount()-1);
+        this.paramSpace.controls[0].setMax(colorSpaceCount()-1);
 
 
-        this.paramSpace.control.backStyleLight  =
-        this.paramSpace.control.backStyleDark   = 'transparent';
+        this.paramSpace.controls[0].backStyleLight  =
+        this.paramSpace.controls[0].backStyleDark   = 'transparent';
 
-        this.paramSpace.control.valueStyleLight =
-        this.paramSpace.control.valueStyleDark  = rgba2style(colSpaceBar);
+        this.paramSpace.controls[0].valueStyleLight =
+        this.paramSpace.controls[0].valueStyleDark  = rgba2style(colSpaceBar);
 
-        this.paramSpace.control.textStyleLight  =
-        this.paramSpace.control.textStyleDark   = rgba2style(colors.text);
+        this.paramSpace.controls[0].textStyleLight  =
+        this.paramSpace.controls[0].textStyleDark   = rgba2style(colors.text);
 
 
-        this.paramSpace. input.colorLight       =
-        this.paramSpace. input.colorDark        = colors.input;
+        this.paramSpace. input.colorLight           =
+        this.paramSpace. input.colorDark            = colors.input;
 
-        this.paramSpace.output.colorLight       =
-        this.paramSpace.output.colorDark        = colors.output;
+        this.paramSpace.output.colorLight           =
+        this.paramSpace.output.colorDark            = colors.output;
 
 
         super.updateNode();
@@ -49523,7 +49559,7 @@ extends OpColorBase
         this.param3    .enableControlText(enable);
 
 
-        enableElementText(this.paramColor.control.div, !this.isConnected());
+        enableElementText(this.paramColor.controls[0].div, !this.isConnected());
 
 
         this.updateParamControls();
@@ -49533,9 +49569,9 @@ extends OpColorBase
 
     resetAllControlRanges()
     {
-        this.param1.control.resetRanges();
-        this.param2.control.resetRanges();
-        this.param3.control.resetRanges();
+        this.param1.controls[0].resetRanges();
+        this.param2.controls[0].resetRanges();
+        this.param3.controls[0].resetRanges();
     }
 
 
@@ -49562,17 +49598,17 @@ extends OpColorBase
             const rangesR = [];
             if (this._color[1] < 0) rangesR.push(new NumberControlRange(0, Math.min(-this._color[1], 1), warnLineStyle, 0.8));
             if (this._color[1] > 1) rangesR.push(new NumberControlRange(2-Math.min(this._color[1], 2), 1, warnLineStyle, 0.8));
-            this.param1.control.ranges = rangesR;
+            this.param1.controls[0].ranges = rangesR;
 
             const rangesG = [];
             if (this._color[2] < 0) rangesG.push(new NumberControlRange(0, Math.min(-this._color[2], 1), warnLineStyle, 0.8));
             if (this._color[2] > 1) rangesG.push(new NumberControlRange(2-Math.min(this._color[2], 2), 1, warnLineStyle, 0.8));
-            this.param2.control.ranges = rangesG;
+            this.param2.controls[0].ranges = rangesG;
             
             const rangesB = [];
             if (this._color[3] < 0) rangesB.push(new NumberControlRange(0, Math.min(-this._color[3], 1), warnLineStyle, 0.8));
             if (this._color[3] > 1) rangesB.push(new NumberControlRange(2-Math.min(this._color[3], 2), 1, warnLineStyle, 0.8));
-            this.param3.control.ranges = rangesB;
+            this.param3.controls[0].ranges = rangesB;
         }
         else if ((   space == 2  // HSV
                   || space == 3) // HSL
@@ -49582,36 +49618,36 @@ extends OpColorBase
             const rangesS = [];
             if (this._color[2] < 0) rangesS.push(new NumberControlRange(0, Math.min(-this._color[2], 1), warnLineStyle, 0.8));
             if (this._color[2] > 1) rangesS.push(new NumberControlRange(2-Math.min(this._color[2], 2), 1, warnLineStyle, 0.8));
-            this.param2.control.ranges = rangesS;
+            this.param2.controls[0].ranges = rangesS;
             
             const rangesVL = [];
             if (this._color[3] < 0) rangesVL.push(new NumberControlRange(0, Math.min(-this._color[3], 1), warnLineStyle, 0.8));
             if (this._color[3] > 1) rangesVL.push(new NumberControlRange(2-Math.min(this._color[3], 2), 1, warnLineStyle, 0.8));
-            this.param3.control.ranges = rangesVL;
+            this.param3.controls[0].ranges = rangesVL;
         }
         else if ( space > 3 // HCL
               && !dataColorIsNaN(this._color))
         {
-            this.updateControlRanges(this.param1.control, f =>
+            this.updateControlRanges(this.param1.controls[0], f =>
                 dataColor2rgb([
                     this._color[0],
-                    (this.param1.control.displayMin + f * (this.param1.control.displayMax - this.param1.control.displayMin)) / colorSpaceFactor(this._color[0])[0],
+                    (this.param1.controls[0].displayMin + f * (this.param1.controls[0].displayMax - this.param1.controls[0].displayMin)) / colorSpaceFactor(this._color[0])[0],
                     this._color[2],
                     this._color[3]]));
 
-            this.updateControlRanges(this.param2.control, f =>
+            this.updateControlRanges(this.param2.controls[0], f =>
                 dataColor2rgb([
                     this._color[0],
                     this._color[1],
-                    (this.param2.control.displayMin + f * (this.param2.control.displayMax - this.param2.control.displayMin)) / colorSpaceFactor(this._color[0])[1],
+                    (this.param2.controls[0].displayMin + f * (this.param2.controls[0].displayMax - this.param2.controls[0].displayMin)) / colorSpaceFactor(this._color[0])[1],
                     this._color[3]]));
 
-            this.updateControlRanges(this.param3.control, f =>
+            this.updateControlRanges(this.param3.controls[0], f =>
                 dataColor2rgb([
                     this._color[0],
                     this._color[1],
                     this._color[2],
-                    (this.param3.control.displayMin + f * (this.param3.control.displayMax - this.param3.control.displayMin)) / colorSpaceFactor(this._color[0])[2]]));
+                    (this.param3.controls[0].displayMin + f * (this.param3.controls[0].displayMax - this.param3.controls[0].displayMin)) / colorSpaceFactor(this._color[0])[2]]));
         }
         else // no warning ranges
         {
@@ -49948,13 +49984,13 @@ function switchToRgbControls(node)
         'G', 0, rgbScale[1], 
         'B', 0, rgbScale[2]);  
 
-    node.param1.control.min = 
-    node.param2.control.min = 
-    node.param3.control.min = Number.MIN_SAFE_INTEGER; // allow extrapolation
+    node.param1.controls[0].min = 
+    node.param2.controls[0].min = 
+    node.param3.controls[0].min = Number.MIN_SAFE_INTEGER; // allow extrapolation
 
-    node.param1.control.max = 
-    node.param2.control.max = 
-    node.param3.control.max = Number.MAX_SAFE_INTEGER; // allow extrapolation
+    node.param1.controls[0].max = 
+    node.param2.controls[0].max = 
+    node.param3.controls[0].max = Number.MAX_SAFE_INTEGER; // allow extrapolation
 
     showRgbControlHex(node, false);    
 }
@@ -49968,11 +50004,11 @@ function switchToHs_Controls(node, v_or_l)
         'S',    0, hs_Scale[1], 
         v_or_l, 0, hs_Scale[2]);  
 
-    node.param2.control.min = 
-    node.param3.control.min = Number.MIN_SAFE_INTEGER; // allow extrapolation
+    node.param2.controls[0].min = 
+    node.param3.controls[0].min = Number.MIN_SAFE_INTEGER; // allow extrapolation
 
-    node.param2.control.max = 
-    node.param3.control.max = Number.MAX_SAFE_INTEGER; // allow extrapolation
+    node.param2.controls[0].max = 
+    node.param3.controls[0].max = Number.MAX_SAFE_INTEGER; // allow extrapolation
 
     showRgbControlHex(node, false); 
 }
@@ -49986,11 +50022,11 @@ function switchToHclControls(node, scale)
         'C', 0, scale[1], 
         'L', 0, scale[2]);  
 
-    node.param2.control.min = 
-    node.param3.control.min = Number.MIN_SAFE_INTEGER; // allow extrapolation
+    node.param2.controls[0].min = 
+    node.param3.controls[0].min = Number.MIN_SAFE_INTEGER; // allow extrapolation
 
-    node.param2.control.max = 
-    node.param3.control.max = Number.MAX_SAFE_INTEGER; // allow extrapolation
+    node.param2.controls[0].max = 
+    node.param3.controls[0].max = Number.MAX_SAFE_INTEGER; // allow extrapolation
 
     showRgbControlHex(node, false); 
 }
@@ -50023,9 +50059,9 @@ function switchToLuvControls  (node) { switchToOppControls(node, 'u', 'v', luvSc
 
 function showRgbControlHex(node, show)
 {
-    node.param1.control.showHex = show;
-    node.param2.control.showHex = show;
-    node.param3.control.showHex = show;
+    node.param1.controls[0].showHex = show;
+    node.param2.controls[0].showHex = show;
+    node.param3.controls[0].showHex = show;
 }
 
 
@@ -50038,16 +50074,16 @@ function switchToControls(node, c1, c1min, c1max, c1suffix, c1wrap, c2, c2min, c
     node.param2.setName(c2, false); 
     node.param3.setName(c3, false);
 
-    node.param1.control.wrapValue = c1wrap;
-    node.param1.control.setSuffix(c1suffix, c1suffix != '');
+    node.param1.controls[0].wrapValue = c1wrap;
+    node.param1.controls[0].setSuffix(c1suffix, c1suffix != '');
 
-    node.param1.control.setMin(c1min); 
-    node.param2.control.setMin(c2min);
-    node.param3.control.setMin(c3min);
+    node.param1.controls[0].setMin(c1min); 
+    node.param2.controls[0].setMin(c2min);
+    node.param3.controls[0].setMin(c3min);
     
-    node.param1.control.setMax(c1max); 
-    node.param2.control.setMax(c2max); 
-    node.param3.control.setMax(c3max); 
+    node.param1.controls[0].setMax(c1max); 
+    node.param2.controls[0].setMax(c2max); 
+    node.param3.controls[0].setMax(c3max); 
     
     node.param1.updateControls();
     node.param2.updateControls();
@@ -50928,9 +50964,9 @@ extends OpColorBase
         this.addParam(this.param2 = new NumberParam('margin2', '', true, true, true, 0));
         this.addParam(this.param3 = new NumberParam('margin3', '', true, true, true, 0));
         
-        this.param1.control.showNaNValueName = false;
-        this.param2.control.showNaNValueName = false;
-        this.param3.control.showNaNValueName = false;
+        this.param1.controls[0].showNaNValueName = false;
+        this.param2.controls[0].showNaNValueName = false;
+        this.param3.controls[0].showNaNValueName = false;
 
 
         this.initCorrections('');
@@ -51129,10 +51165,10 @@ extends OpColorBase
         const correctionName = '<span style="position: relative; top: -1px; font-weight: 200;">±</span>&thinsp;' + correction.name;
 
         margin.setName(correctionName, false);
-        margin.control.name = correctionName;
+        margin.controls[0].name = correctionName;
 
-        margin.control.setMin(0);
-        margin.control.setMax(correction.max);
+        margin.controls[0].setMin(0);
+        margin.controls[0].setMax(correction.max);
     }
 
 
@@ -51140,9 +51176,9 @@ extends OpColorBase
     resetMargin(margin)
     {
         margin.setName('', false);
-        margin.control.name = '';
-        margin.control.setMin(0);
-        margin.control.setMax(Number.MAX_SAFE_INTEGER);
+        margin.controls[0].name = '';
+        margin.controls[0].setMin(0);
+        margin.controls[0].setMax(Number.MAX_SAFE_INTEGER);
     }
 
 
@@ -51243,7 +51279,7 @@ extends OpColorBase
         this.addParam(this.paramContrast = new NumberParam('contrast', '', false, false, true, 0));
         this.addParam(this.paramStandard = new SelectParam('standard', '', false, true,  true, ['WCAG 2', 'APCA'], 1));
       
-        this.paramContrast.control.thinMinus = true;
+        this.paramContrast.controls[0].thinMinus = true;
 
 
         createTooltip(ttWcag2);
@@ -51337,31 +51373,31 @@ extends OpColorBase
                 if (rating != '')
                     rating = '&nbsp;&nbsp;' + rating;
 
-                this.paramContrast.control.min        = 
-                this.paramContrast.control.displayMin = 0;
+                this.paramContrast.controls[0].min        = 
+                this.paramContrast.controls[0].displayMin = 0;
 
-                this.paramContrast.control.max        = 
-                this.paramContrast.control.displayMax = 21;
+                this.paramContrast.controls[0].max        = 
+                this.paramContrast.controls[0].displayMax = 21;
 
-                this.paramContrast.control.setDecimals(2);
-                this.paramContrast.control.setSuffix(rating);
+                this.paramContrast.controls[0].setDecimals(2);
+                this.paramContrast.controls[0].setSuffix(rating);
 
-                this.paramContrast.control.displayAbsolute = false;
+                this.paramContrast.controls[0].displayAbsolute = false;
             }
             else
             {
-                this.paramContrast.control.min        = -108;
-                this.paramContrast.control.max        =  106;
+                this.paramContrast.controls[0].min        = -108;
+                this.paramContrast.controls[0].max        =  106;
                 
-                this.paramContrast.control.displayMin = -105;
-                this.paramContrast.control.displayMax =  105;
+                this.paramContrast.controls[0].displayMin = -105;
+                this.paramContrast.controls[0].displayMax =  105;
 
-                this.paramContrast.control.displayAbsolute = true;
+                this.paramContrast.controls[0].displayAbsolute = true;
 
-                this.paramContrast.control.setDecimals(1);
-                this.paramContrast.control.setSuffix('<span style="font-size: 5; position: relative; top: -7px; left: 2px;">L</span><span style="font-size: 3; font-weight: bold; position: relative; top: -9px; left: 2px;">c</span>');
+                this.paramContrast.controls[0].setDecimals(1);
+                this.paramContrast.controls[0].setSuffix('<span style="font-size: 5; position: relative; top: -7px; left: 2px;">L</span><span style="font-size: 3; font-weight: bold; position: relative; top: -9px; left: 2px;">c</span>');
 
-                this.paramContrast.control.setValue(contrast.value, false, false);
+                this.paramContrast.controls[0].setValue(contrast.value, false, false);
             }
 
 
@@ -51433,7 +51469,7 @@ extends OpColorBase
            
             if (darkMode)
             {
-                this.paramContrast.control.ranges = [ 
+                this.paramContrast.controls[0].ranges = [ 
                     new NumberControlRange(0  /21,  3  /21, rgb2style_a(rgb2dark1, is1 ? 1 : 0.2 ), 0.8),
                     new NumberControlRange(3  /21,  4.5/21, rgb2style_a(rgb2dark2, is2 ? 1 : 0.27), 0.8),
                     new NumberControlRange(4.5/21,  7  /21, rgb2style_a(rgb2dark3, is3 ? 1 : 0.27), 0.8),
@@ -51441,7 +51477,7 @@ extends OpColorBase
             }
             else
             {
-                this.paramContrast.control.ranges = [ 
+                this.paramContrast.controls[0].ranges = [ 
                     new NumberControlRange(0  /21,  3  /21, rgb2style_a(rgb2light1, is1 ? 1 : 0.2 ), 0.8),
                     new NumberControlRange(3  /21,  4.5/21, rgb2style_a(rgb2light2, is2 ? 1 : 0.27), 0.8),
                     new NumberControlRange(4.5/21,  7  /21, rgb2style_a(rgb2light3, is3 ? 1 : 0.27), 0.8),
@@ -51462,7 +51498,7 @@ extends OpColorBase
 
             if (darkMode)
             {
-                this.paramContrast.control.ranges = [ 
+                this.paramContrast.controls[0].ranges = [ 
                     new NumberControlRange( 0/105,  15/105, rgb2style_a(rgb3dark1, is1 ? 1 : 0.2), 0.8),
                     new NumberControlRange(15/105,  30/105, rgb2style_a(rgb3dark2, is2 ? 1 : 0.2), 0.8),
                     new NumberControlRange(30/105,  45/105, rgb2style_a(rgb3dark3, is3 ? 1 : 0.2), 0.8),
@@ -51473,7 +51509,7 @@ extends OpColorBase
             }
             else
             {
-                this.paramContrast.control.ranges = [
+                this.paramContrast.controls[0].ranges = [
                     new NumberControlRange( 0/105,  15/105, rgb2style_a(rgb3light1, is1 ? 1 : 0.2), 0.8),
                     new NumberControlRange(15/105,  30/105, rgb2style_a(rgb3light2, is2 ? 1 : 0.2), 0.8),
                     new NumberControlRange(30/105,  45/105, rgb2style_a(rgb3light3, is3 ? 1 : 0.2), 0.8),
@@ -51509,9 +51545,9 @@ extends OpColorBase
         this.addParam(this.paramM = new NumberParam('m', 'M', false, true, true, 2, 0, 2, 0, 0.02));
         this.addParam(this.paramS = new NumberParam('s', 'S', false, true, true, 2, 0, 2, 0, 0.02));
 
-        this.paramL.addEventListener('change', () => this.paramL.control.dragScale = decCount(numToString(this.paramL.value, this.paramL.control.displayDec)) == 0 ? 0.02 : 0.05);
-        this.paramM.addEventListener('change', () => this.paramM.control.dragScale = decCount(numToString(this.paramM.value, this.paramM.control.displayDec)) == 0 ? 0.02 : 0.05);
-        this.paramS.addEventListener('change', () => this.paramS.control.dragScale = decCount(numToString(this.paramS.value, this.paramS.control.displayDec)) == 0 ? 0.02 : 0.05);
+        this.paramL.addEventListener('change', () => this.paramL.controls[0].dragScale = decCount(numToString(this.paramL.value, this.paramL.controls[0].displayDec)) == 0 ? 0.02 : 0.05);
+        this.paramM.addEventListener('change', () => this.paramM.controls[0].dragScale = decCount(numToString(this.paramM.value, this.paramM.controls[0].displayDec)) == 0 ? 0.02 : 0.05);
+        this.paramS.addEventListener('change', () => this.paramS.controls[0].dragScale = decCount(numToString(this.paramS.value, this.paramS.controls[0].displayDec)) == 0 ? 0.02 : 0.05);
 
 
         this.header.connectionPadding = 18;
@@ -51583,9 +51619,9 @@ extends OpColorBase
     {
         const v = Math.round(param.value.value);
 
-             if (v == 2) param.control.valueText = cone;
-        else if (v == 1) param.control.valueText = cone + ' weak';
-        else             param.control.valueText = cone + ' blind';
+             if (v == 2) param.controls[0].valueText = cone;
+        else if (v == 1) param.controls[0].valueText = cone + ' weak';
+        else             param.controls[0].valueText = cone + ' blind';
     }
 }
 
@@ -51615,15 +51651,15 @@ extends OpColorBase
         this.addParam(this.paramGamma  = new NumberParam('gamma',  'γ', true,  true, true, 1,  0.01, 4, 2));
       
         
-        this.paramSpace.control.setMin(1);
+        this.paramSpace.controls[0].setMin(1);
         this.paramSpace.excludeFromMenu.push(0);
         this.paramSpace.input.outputMustBeCached = true;
 
         
-        this.paramAmount.control.min = Number.MIN_SAFE_INTEGER; // allow
-        this.paramAmount.control.max = Number.MAX_SAFE_INTEGER; // extrapolation
+        this.paramAmount.controls[0].min = Number.MIN_SAFE_INTEGER; // allow
+        this.paramAmount.controls[0].max = Number.MAX_SAFE_INTEGER; // extrapolation
 
-        this.paramAmount.control.setSuffix('%', true);
+        this.paramAmount.controls[0].setSuffix('%', true);
         
 
         this.header.connectionPadding = 12.5;
@@ -51829,9 +51865,9 @@ extends OpShapeBase
         this.paramWidth .addEventListener('change', () => this.updateRound());
         this.paramHeight.addEventListener('change', () => this.updateRound());
 
-        this.paramAngle.control.setSuffix('°', true);
-        this.paramAngle.control.wrapValue   = true;
-        this.paramAngle.control.dragReverse = true;
+        this.paramAngle.controls[0].setSuffix('°', true);
+        this.paramAngle.controls[0].wrapValue   = true;
+        this.paramAngle.controls[0].dragReverse = true;
 
 
         this.addBaseParams();
@@ -51843,10 +51879,10 @@ extends OpShapeBase
     {
         const min = Math.min(this.paramWidth.value.value, this.paramHeight.value.value);
 
-        this.paramRound.control.displayMin = 0;
-        this.paramRound.control.displayMax = min/2;
+        this.paramRound.controls[0].displayMin = 0;
+        this.paramRound.controls[0].displayMax = min/2;
 
-        this.paramRound.control.update();
+        this.paramRound.controls[0].update();
     }
 }
 
@@ -51874,9 +51910,9 @@ extends OpShapeBase
         this.addParam(this.paramAngle  = new NumberParam('angle',  'angle',  true, true, false,   0, -180,   180));
         
 
-        this.paramAngle.control.setSuffix('°', true);
-        this.paramAngle.control.wrapValue   = true;
-        this.paramAngle.control.dragReverse = true;
+        this.paramAngle.controls[0].setSuffix('°', true);
+        this.paramAngle.controls[0].wrapValue   = true;
+        this.paramAngle.controls[0].dragReverse = true;
 
 
         this.addBaseParams();
@@ -51910,9 +51946,9 @@ extends OpShapeBase
         this.addParam(this.paramAngle  = new NumberParam('angle',  'angle',  true, true, false,   0, -180,   180));
         
 
-        this.paramAngle.control.setSuffix('°', true);
-        this.paramAngle.control.wrapValue   = true;
-        this.paramAngle.control.dragReverse = true;
+        this.paramAngle.controls[0].setSuffix('°', true);
+        this.paramAngle.controls[0].wrapValue   = true;
+        this.paramAngle.controls[0].dragReverse = true;
 
 
         this.addBaseParams();
@@ -51949,9 +51985,9 @@ extends OpShapeBase
         this.addParam(this.paramCorners = new NumberParam('corners', 'corners', true, true, false,   3,    3));
         
 
-        this.paramAngle.control.setSuffix('°', true);
-        this.paramAngle.control.wrapValue   = true;
-        this.paramAngle.control.dragReverse = true;
+        this.paramAngle.controls[0].setSuffix('°', true);
+        this.paramAngle.controls[0].wrapValue   = true;
+        this.paramAngle.controls[0].dragReverse = true;
 
 
         this.addBaseParams();
@@ -51961,13 +51997,13 @@ extends OpShapeBase
 
     updateRound()
     {
-        const control = this.paramRound.control;
+        const control = this.paramRound.controls[0];
         const min     = Math.min(this.paramWidth.value, this.paramHeight.value);
 
         control.setMin(0);
         control.setMax(min/2);
 
-        this.paramRound.control.update();
+        control.update();
     }
 }
 
@@ -52003,11 +52039,11 @@ extends OpShapeBase
         this.addParam(this.paramConvex = new NumberParam('convex', 'convex', true, true, false,   38.2, 0, 100));
         
 
-        this.paramAngle.control.setSuffix('°', true);
-        this.paramAngle.control.wrapValue   = true;
-        this.paramAngle.control.dragReverse = true;
+        this.paramAngle.controls[0].setSuffix('°', true);
+        this.paramAngle.controls[0].wrapValue   = true;
+        this.paramAngle.controls[0].dragReverse = true;
 
-        this.paramConvex.control.setSuffix('%', true);
+        this.paramConvex.controls[0].setSuffix('%', true);
 
 
         this.addBaseParams();
@@ -52017,13 +52053,13 @@ extends OpShapeBase
 
     updateRound()
     {
-        const control = this.paramRound.control;
+        const control = this.paramRound.controls[0];
         const min     = Math.min(this.paramWidth.value, this.paramHeight.value);
 
         control.setMin(0);
         control.setMax(min/2);
 
-        this.paramRound.control.update();
+        this.paramRound.controls[0].update();
     }
 }
 
@@ -52150,8 +52186,8 @@ extends OperatorBase
 
         this.paramValue.enableControlText(enabled);
 
-        this.paramValue.control.valueText =  this.isUnknown() ? UNKNOWN_DISPLAY : '';
-        this.paramValue.control.showBar   = !this.isUnknown();
+        this.paramValue.controls[0].valueText =  this.isUnknown() ? UNKNOWN_DISPLAY : '';
+        this.paramValue.controls[0].showBar   = !this.isUnknown();
 
         this.updateParamControls();
     }
@@ -52307,7 +52343,7 @@ extends OpColorBase
         this.addParam(this.paramColor   = new ColorParam ('color',   '',        false, true, true, ColorValue.fromRgb(rgbDefaultFill)));
         this.addParam(this.paramOpacity = new NumberParam('opacity', 'opacity', true,  true, true, 100, 0, 100));
 
-        this.paramOpacity.control.suffix = '%';
+        this.paramOpacity.controls[0].suffix = '%';
     }
     
     
@@ -52406,22 +52442,22 @@ extends OpColorBase
                 : 0;
 
 
-        this.paramColor.control. backStyleLight = 
-        this.paramColor.control. backStyleDark  = 
-        this.paramColor.control.valueStyleLight = 
-        this.paramColor.control.valueStyleDark  = rgba2style(rgb_a(colors.back, 1));
+        this.paramColor.controls[0]. backStyleLight = 
+        this.paramColor.controls[0]. backStyleDark  = 
+        this.paramColor.controls[0].valueStyleLight = 
+        this.paramColor.controls[0].valueStyleDark  = rgba2style(rgb_a(colors.back, 1));
 
-        this.paramColor.control.textStyleLight  = 
-        this.paramColor.control.textStyleDark   = rgba2style(colors.text);
+        this.paramColor.controls[0].textStyleLight  = 
+        this.paramColor.controls[0].textStyleDark   = rgba2style(colors.text);
 
-        this.paramColor. input.colorLight       =
-        this.paramColor. input.colorDark        = colors.input;
+        this.paramColor. input.colorLight           =
+        this.paramColor. input.colorDark            = colors.input;
         
-        this.paramColor.output.colorLight       =
-        this.paramColor.output.colorDark        = colors.output;
+        this.paramColor.output.colorLight           =
+        this.paramColor.output.colorDark            = colors.output;
         
-        //this.paramColor. input.wireColor        = rgb_a(colors.wire, 1);
-        //this.paramColor.output.wireColor        = rgb_a(colors.wire, 1);
+        //this.paramColor. input.wireColor          = rgb_a(colors.wire, 1);
+        //this.paramColor.output.wireColor          = rgb_a(colors.wire, 1);
     }
 
 
@@ -52574,7 +52610,7 @@ extends OpColorBase
         this.addParam(this.paramJoin   = new SelectParam('join',   'join',   true,  true, true, ['miter', 'bevel', 'round'], 0));
         this.addParam(this.paramMiter  = new NumberParam('miter',  'miter',  true,  true, true, 28.96, 0, 180, 2));
 
-        this.paramMiter.control.setSuffix('°', true);
+        this.paramMiter.controls[0].setSuffix('°', true);
         this.paramMiter.canShow = () => this.paramJoin.value == 0;
 
 
@@ -52972,13 +53008,14 @@ extends OperatorBase
 
     updateChildren()
     {
-        this.childern = [];
+        this.children = [];
 
         for (const node of mainGraph.nodes)//.filter(n => !this.children.includes(n)))
         {
-            if (rectInside(node.measureData.divOffset, this.measureData.divOffset))
+            if (rectInside(node.measureData.divOffset, offsetRect(this.div)))//measureData.divOffset))
                 pushUnique(this.children, node);
         }
+
 
         // for (const node of this.children)
         // {
@@ -53014,13 +53051,15 @@ extends OperatorBase
         //     }
         // }
         
+console.log('this.children =', this.children.map(n => n.id));        
         for (const node of this.children)
         {
             for (const param of node.params)
             {
+                console.log('checking');
                 if (    param.input
                     &&  param.input.connected
-                    && !this.children.includes(param.input.connectedOutput.node))
+                    && !this.children.find(n => n.id == param.input.connectedOutput.node.id))
                 {
                     console.log('adding');
                     this.addParam(new ProxyParam(param));
@@ -53158,6 +53197,15 @@ extends OperatorBase
 
 
 
+    setPosition(x, y, updateTransform = true)
+    {
+        super.setPosition(x, y, updateTransform);
+
+        this.updateChildren();
+    }
+
+
+
     setSize(w, h, updateTransform = true)
     {
         super.setSize(
@@ -53166,6 +53214,8 @@ extends OperatorBase
             updateTransform);
 
         this.inner.style.height = this.div.offsetHeight;
+
+        this.updateChildren();
     }
 
 
@@ -53179,6 +53229,8 @@ extends OperatorBase
             Math.max(this.header.offsetHeight + 20, h), updateTransform);
 
         this.inner.style.height = this.div.offsetHeight;
+
+        this.updateChildren();
     }
 
 
@@ -56819,8 +56871,6 @@ extends Action
         //     this.newRect.w,
         //     this.newRect.h);
 
-        this.node.updateChildren();
-
         uiSaveNodes(this.graph, [this.nodeId]);
     }
 
@@ -56835,7 +56885,6 @@ extends Action
             this.oldRect.h);
 
         this.node.updateNode();
-        this.node.updateChildren();
 
         uiSaveNodes(this.graph, [this.nodeId]);
     }
@@ -56851,7 +56900,6 @@ extends Action
             this.newRect.h);
 
         this.node.updateNode();
-        this.node.updateChildren();
         
         uiSaveNodes(this.graph, [this.nodeId]);
     }
@@ -60509,7 +60557,7 @@ function uiShowParamValue(graph, nodeId, paramName, value)
     if (!!node) // this is for deleted nodes which still exist
     {           // in genGraph but no longer in mainGraph
         const param = node.params.find(p => p.name == paramName);
-        param.control.setValue(value, false);
+        param.controls[0].setValue(value, false);
     }
 }
 

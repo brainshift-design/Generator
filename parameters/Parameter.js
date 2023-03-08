@@ -11,6 +11,11 @@ extends EventTarget
     get index() { return this.node.params.indexOf(this); }
 
 
+    controls       = [];
+
+    proxy          = null;
+
+
     input;
     output;
 
@@ -147,9 +152,9 @@ extends EventTarget
 
     updateControls()
     {
-        checkControlVisible(this, this.control);
+        checkControlVisible(this, this.controls[0]);
 
-        this.control.update();
+        this.controls[0].update();
         
         if (this.input ) this.input .updateControl();
         if (this.output) this.output.updateControl();
@@ -188,6 +193,9 @@ extends EventTarget
                 }
             }
         }
+
+        if (this.proxy) 
+            this.proxy.updateControls();
     }
 
 

@@ -29,11 +29,11 @@ extends OpShapeBase
         this.addParam(this.paramConvex = new NumberParam('convex', 'convex', true, true, false,   38.2, 0, 100));
         
 
-        this.paramAngle.control.setSuffix('°', true);
-        this.paramAngle.control.wrapValue   = true;
-        this.paramAngle.control.dragReverse = true;
+        this.paramAngle.controls[0].setSuffix('°', true);
+        this.paramAngle.controls[0].wrapValue   = true;
+        this.paramAngle.controls[0].dragReverse = true;
 
-        this.paramConvex.control.setSuffix('%', true);
+        this.paramConvex.controls[0].setSuffix('%', true);
 
 
         this.addBaseParams();
@@ -43,12 +43,12 @@ extends OpShapeBase
 
     updateRound()
     {
-        const control = this.paramRound.control;
+        const control = this.paramRound.controls[0];
         const min     = Math.min(this.paramWidth.value, this.paramHeight.value);
 
         control.setMin(0);
         control.setMax(min/2);
 
-        this.paramRound.control.update();
+        this.paramRound.controls[0].update();
     }
 }

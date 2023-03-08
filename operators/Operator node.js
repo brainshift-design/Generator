@@ -122,7 +122,7 @@ Operator.prototype.createHeader = function()
         for (const param of this.params)
         {
             if (param.textboxHasFocus())
-                param.control.textbox.finish(true);
+                param.controls[0].textbox.finish(true);
         }
 
 

@@ -19,7 +19,7 @@ extends OperatorBase
         this.addParam(this.paramMin  = new NumberParam('min',  'min',  true, true, true,   0));
         this.addParam(this.paramMax  = new NumberParam('max',  'max',  true, true, true, 255));
 
-        this.paramSeed.control.allowEditDecimals = false;
+        this.paramSeed.controls[0].allowEditDecimals = false;
         this.paramSeed.isDefault = () => false;
     }
 

@@ -34,9 +34,9 @@ extends OpColorBase
         this.addParam(this.param2 = new NumberParam('margin2', '', true, true, true, 0));
         this.addParam(this.param3 = new NumberParam('margin3', '', true, true, true, 0));
         
-        this.param1.control.showNaNValueName = false;
-        this.param2.control.showNaNValueName = false;
-        this.param3.control.showNaNValueName = false;
+        this.param1.controls[0].showNaNValueName = false;
+        this.param2.controls[0].showNaNValueName = false;
+        this.param3.controls[0].showNaNValueName = false;
 
 
         this.initCorrections('');
@@ -235,10 +235,10 @@ extends OpColorBase
         const correctionName = '<span style="position: relative; top: -1px; font-weight: 200;">±</span>&thinsp;' + correction.name;
 
         margin.setName(correctionName, false);
-        margin.control.name = correctionName;
+        margin.controls[0].name = correctionName;
 
-        margin.control.setMin(0);
-        margin.control.setMax(correction.max);
+        margin.controls[0].setMin(0);
+        margin.controls[0].setMax(correction.max);
     }
 
 
@@ -246,9 +246,9 @@ extends OpColorBase
     resetMargin(margin)
     {
         margin.setName('', false);
-        margin.control.name = '';
-        margin.control.setMin(0);
-        margin.control.setMax(Number.MAX_SAFE_INTEGER);
+        margin.controls[0].name = '';
+        margin.controls[0].setMin(0);
+        margin.controls[0].setMax(Number.MAX_SAFE_INTEGER);
     }
 
 

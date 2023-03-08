@@ -23,15 +23,15 @@ extends OpColorBase
         this.addParam(this.paramGamma  = new NumberParam('gamma',  'γ', true,  true, true, 1,  0.01, 4, 2));
       
         
-        this.paramSpace.control.setMin(1);
+        this.paramSpace.controls[0].setMin(1);
         this.paramSpace.excludeFromMenu.push(0);
         this.paramSpace.input.outputMustBeCached = true;
 
         
-        this.paramAmount.control.min = Number.MIN_SAFE_INTEGER; // allow
-        this.paramAmount.control.max = Number.MAX_SAFE_INTEGER; // extrapolation
+        this.paramAmount.controls[0].min = Number.MIN_SAFE_INTEGER; // allow
+        this.paramAmount.controls[0].max = Number.MAX_SAFE_INTEGER; // extrapolation
 
-        this.paramAmount.control.setSuffix('%', true);
+        this.paramAmount.controls[0].setSuffix('%', true);
         
 
         this.header.connectionPadding = 12.5;

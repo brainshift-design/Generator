@@ -38,7 +38,7 @@ extends Parameter
 
         this.textControl                  = createDiv('colorControlText');
 
-        this.control = new NumberControl(
+        this.controls[0] = new NumberControl(
             createDiv(),
             this,
             100, // width
@@ -66,29 +66,29 @@ extends Parameter
         this.div.appendChild(this._warningOverlay);
 
 
-        this.control.style.position       = 'absolute';
-        this.control.style.display        = 'block';
-        this.control.style.width          = '100%';
-        this.control.style.height         = '20px';
+        this.controls[0].style.position       = 'absolute';
+        this.controls[0].style.display        = 'block';
+        this.controls[0].style.width          = '100%';
+        this.controls[0].style.height         = '20px';
 
 
         this.div.appendChild(this.checkers);
 
         this.div.appendChild(this.textControl);
-        this.div.appendChild(this.control);
+        this.div.appendChild(this.controls[0]);
 
        
         if (hasInput)  this.initInput([...STROKE_TYPES, ...FILL_TYPES, ...COLOR_TYPES]);
         if (hasOutput) this.initOutput([STROKE_VALUE], this.output_genRequest);
 
 
-        this.control.addEventListener('confirm', () => 
+        this.controls[0].addEventListener('confirm', () => 
         { 
             const value = this.value.copy();
 
             value.weight = new NumberValue(
-                this.control.value, 
-                this.control.dec);
+                this.controls[0].value, 
+                this.controls[0].dec);
 
             this.setValue(value, true, false);
         });
@@ -129,11 +129,11 @@ extends Parameter
 
         if (updateControl)
         {
-            this.control.setDecimals(
+            this.controls[0].setDecimals(
                 this.value.weight.decimals, 
                 this.value.weight.decimals);
                 
-            this.control.setValue(this.value.weight.value, false, false); 
+            this.controls[0].setValue(this.value.weight.value, false, false); 
         }
 
 
@@ -168,8 +168,8 @@ extends Parameter
             if (   this.input.connectedOutput.support( FILL_TYPES)
                 || this.input.connectedOutput.support(COLOR_TYPES))
             {
-                const val = noNaN(this.control.value,      1);
-                const dec = noNaN(this.control.displayDec, 0);
+                const val = noNaN(this.controls[0].value,      1);
+                const dec = noNaN(this.controls[0].displayDec, 0);
                 
                 request.push(
                     NUMBER_VALUE, 
@@ -230,17 +230,17 @@ extends Parameter
             this.checkers.style.backgroundPosition = '0 0, 10px 10px';
 
             
-            this.control.style.display     = 'inline-block';
+            this.controls[0].style.display     = 'inline-block';
             
-            this.control. backStyleLight   = 
-            this.control. backStyleDark    = 
-            this.control.valueStyleLight   = 
-            this.control.valueStyleDark    = rgba2style(rgbaVal);
+            this.controls[0]. backStyleLight   = 
+            this.controls[0]. backStyleDark    = 
+            this.controls[0].valueStyleLight   = 
+            this.controls[0].valueStyleDark    = rgba2style(rgbaVal);
 
-            this.control.textStyleLight    = 
-            this.control.textStyleDark     = rgba2style(rgbaText);
+            this.controls[0].textStyleLight    = 
+            this.controls[0].textStyleDark     = rgba2style(rgbaText);
 
-            this.control.update();
+            this.controls[0].update();
             
 
             this.textControl.style.display = 'none';
@@ -263,7 +263,7 @@ extends Parameter
 
 
             this.checkers.style.display    = 'none';
-            this.control .style.display    = 'none';
+            this.controls[0].style.display = 'none';
             
             this.textControl.style.display = 'inline-block';
             this.textControl.style.color   = rgba2style(rgbaText);
@@ -309,8 +309,8 @@ extends Parameter
         enableElementText(this.textControl, enable);
         enableElementText(this.control.div, opEnable);
 
-        this.textControl.readOnly = !enable;
-        this.control    .readOnly = !opEnable;
+        this.controls[0].readOnly = !enable;
+        this.controls[1].readOnly = !opEnable;
     }
     
     

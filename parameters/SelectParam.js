@@ -18,7 +18,7 @@ extends NumberParamBase
     {
         super(NUMBER_VALUE, id, name);
 
-        this.control = new NumberControl(
+        this.controls[0] = new NumberControl(
             createDiv(),
             this,
             120, // width
@@ -33,10 +33,10 @@ extends NumberParamBase
             0.02);
 
 
-        this.control.div.zIndex = 0;
+        this.controls[0].div.zIndex = 0;
 
-        this.control.div.style.display = 'inline-block';
-        this.control.div.style.width   = '100%';
+        this.controls[0].div.style.display = 'inline-block';
+        this.controls[0].div.style.width   = '100%';
 
        
         this.defaultValue = new NumberValue(defaultValue);
@@ -44,19 +44,19 @@ extends NumberParamBase
 
         this.setOptions(options);
 
-        this.control.allowEditDecimals = false;
+        this.controls[0].allowEditDecimals = false;
 
-        this.control.successOnFocusOut = true;
-        this.control.barTop            = 0.8;
+        this.controls[0].successOnFocusOut = true;
+        this.controls[0].barTop            = 0.8;
 
-        this.div.appendChild(this.control.div);
+        this.div.appendChild(this.controls[0].div);
 
 
         if (hasInput)  this.initInput(NUMBER_TYPES, getParamInputValuesForUndo, this.input_getBackInitValue);
         if (hasOutput) this.initOutput([NUMBER_VALUE], this.output_genRequest, getParamOutputValuesForUndo, this.output_backInit);
 
             
-        this.control.addEventListener('confirm', () => { this.setValue(this.value, true, true); });
+        this.controls[0].addEventListener('confirm', () => { this.setValue(this.value, true, true); });
 
 
         // this.tooltip = createDiv('tooltip');
@@ -64,14 +64,14 @@ extends NumberParamBase
 
         //createTooltip(this.tooltip);
 
-        createTooltipSrc(this.control, this.control, () => 
+        createTooltipSrc(this.controls[0], this.controls[0], () => 
         {
             const tooltip = this.getTooltip();
 
             if (tooltip)
                 this.initTooltip(tooltip, this.options);
 
-            this.control.addEventListener('change', () => 
+            this.controls[0].addEventListener('change', () => 
             {
                 if (tooltip) hideTooltip(tooltip);
             });
@@ -104,7 +104,7 @@ extends NumberParamBase
     setOptions(options)
     {
         this        .options = [...options];
-        this.control.options = [...options];
+        this.controls[0].options = [...options];
     }
 
 
@@ -138,7 +138,7 @@ extends NumberParamBase
 
             : [ NUMBER_VALUE, 
                 this.value.toString(), 
-                this.control.displayDec.toString() ];
+                this.controls[0].displayDec.toString() ];
     }
 }
 
@@ -149,8 +149,8 @@ function initSelectParamMenu(param)
     menuSelectParam.clearItems();
 
 
-    const s = !param.reverseMenu ? 0 : param.control.displayMax;
-    const c = !param.reverseMenu ? i => i <= param.control.displayMax : i => i >= 0;
+    const s = !param.reverseMenu ? 0 : param.controls[0].displayMax;
+    const c = !param.reverseMenu ? i => i <= param.controls[0].displayMax : i => i >= 0;
     const d = !param.reverseMenu ? 1 : -1;
 
 
@@ -164,7 +164,7 @@ function initSelectParamMenu(param)
 
         const options = { callback: () => param.setValue(new NumberValue(i), true) };
 
-        if (param.control.readOnly)
+        if (param.controls[0].readOnly)
             options['enabled'] = false;
 
             

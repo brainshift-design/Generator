@@ -46,7 +46,7 @@ extends OpColorBase
         this.addParam(this.paramContrast = new NumberParam('contrast', '', false, false, true, 0));
         this.addParam(this.paramStandard = new SelectParam('standard', '', false, true,  true, ['WCAG 2', 'APCA'], 1));
       
-        this.paramContrast.control.thinMinus = true;
+        this.paramContrast.controls[0].thinMinus = true;
 
 
         createTooltip(ttWcag2);
@@ -140,31 +140,31 @@ extends OpColorBase
                 if (rating != '')
                     rating = '&nbsp;&nbsp;' + rating;
 
-                this.paramContrast.control.min        = 
-                this.paramContrast.control.displayMin = 0;
+                this.paramContrast.controls[0].min        = 
+                this.paramContrast.controls[0].displayMin = 0;
 
-                this.paramContrast.control.max        = 
-                this.paramContrast.control.displayMax = 21;
+                this.paramContrast.controls[0].max        = 
+                this.paramContrast.controls[0].displayMax = 21;
 
-                this.paramContrast.control.setDecimals(2);
-                this.paramContrast.control.setSuffix(rating);
+                this.paramContrast.controls[0].setDecimals(2);
+                this.paramContrast.controls[0].setSuffix(rating);
 
-                this.paramContrast.control.displayAbsolute = false;
+                this.paramContrast.controls[0].displayAbsolute = false;
             }
             else
             {
-                this.paramContrast.control.min        = -108;
-                this.paramContrast.control.max        =  106;
+                this.paramContrast.controls[0].min        = -108;
+                this.paramContrast.controls[0].max        =  106;
                 
-                this.paramContrast.control.displayMin = -105;
-                this.paramContrast.control.displayMax =  105;
+                this.paramContrast.controls[0].displayMin = -105;
+                this.paramContrast.controls[0].displayMax =  105;
 
-                this.paramContrast.control.displayAbsolute = true;
+                this.paramContrast.controls[0].displayAbsolute = true;
 
-                this.paramContrast.control.setDecimals(1);
-                this.paramContrast.control.setSuffix('<span style="font-size: 5; position: relative; top: -7px; left: 2px;">L</span><span style="font-size: 3; font-weight: bold; position: relative; top: -9px; left: 2px;">c</span>');
+                this.paramContrast.controls[0].setDecimals(1);
+                this.paramContrast.controls[0].setSuffix('<span style="font-size: 5; position: relative; top: -7px; left: 2px;">L</span><span style="font-size: 3; font-weight: bold; position: relative; top: -9px; left: 2px;">c</span>');
 
-                this.paramContrast.control.setValue(contrast.value, false, false);
+                this.paramContrast.controls[0].setValue(contrast.value, false, false);
             }
 
 
@@ -236,7 +236,7 @@ extends OpColorBase
            
             if (darkMode)
             {
-                this.paramContrast.control.ranges = [ 
+                this.paramContrast.controls[0].ranges = [ 
                     new NumberControlRange(0  /21,  3  /21, rgb2style_a(rgb2dark1, is1 ? 1 : 0.2 ), 0.8),
                     new NumberControlRange(3  /21,  4.5/21, rgb2style_a(rgb2dark2, is2 ? 1 : 0.27), 0.8),
                     new NumberControlRange(4.5/21,  7  /21, rgb2style_a(rgb2dark3, is3 ? 1 : 0.27), 0.8),
@@ -244,7 +244,7 @@ extends OpColorBase
             }
             else
             {
-                this.paramContrast.control.ranges = [ 
+                this.paramContrast.controls[0].ranges = [ 
                     new NumberControlRange(0  /21,  3  /21, rgb2style_a(rgb2light1, is1 ? 1 : 0.2 ), 0.8),
                     new NumberControlRange(3  /21,  4.5/21, rgb2style_a(rgb2light2, is2 ? 1 : 0.27), 0.8),
                     new NumberControlRange(4.5/21,  7  /21, rgb2style_a(rgb2light3, is3 ? 1 : 0.27), 0.8),
@@ -265,7 +265,7 @@ extends OpColorBase
 
             if (darkMode)
             {
-                this.paramContrast.control.ranges = [ 
+                this.paramContrast.controls[0].ranges = [ 
                     new NumberControlRange( 0/105,  15/105, rgb2style_a(rgb3dark1, is1 ? 1 : 0.2), 0.8),
                     new NumberControlRange(15/105,  30/105, rgb2style_a(rgb3dark2, is2 ? 1 : 0.2), 0.8),
                     new NumberControlRange(30/105,  45/105, rgb2style_a(rgb3dark3, is3 ? 1 : 0.2), 0.8),
@@ -276,7 +276,7 @@ extends OpColorBase
             }
             else
             {
-                this.paramContrast.control.ranges = [
+                this.paramContrast.controls[0].ranges = [
                     new NumberControlRange( 0/105,  15/105, rgb2style_a(rgb3light1, is1 ? 1 : 0.2), 0.8),
                     new NumberControlRange(15/105,  30/105, rgb2style_a(rgb3light2, is2 ? 1 : 0.2), 0.8),
                     new NumberControlRange(30/105,  45/105, rgb2style_a(rgb3light3, is3 ? 1 : 0.2), 0.8),

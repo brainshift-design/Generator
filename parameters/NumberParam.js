@@ -15,7 +15,7 @@ extends NumberParamBase
         super(NUMBER_VALUE, id, name);
 
         
-        this.control = new NumberControl(
+        this.controls[0] = new NumberControl(
             createDiv('numberControl'),
             this,
             120, // width
@@ -30,37 +30,37 @@ extends NumberParamBase
             dragScale); 
 
             
-        this.control.div.zIndex = 0;
+        this.controls[0].div.zIndex = 0;
 
-        this.control.div.style.display = 'inline-block';
-        this.control.div.style.width   = '100%';
+        this.controls[0].div.style.display = 'inline-block';
+        this.controls[0].div.style.width   = '100%';
 
    
         this.defaultValue = new NumberValue(defaultValue, decimals);
 
 
-        this.control.successOnFocusOut = true;
+        this.controls[0].successOnFocusOut = true;
 
-        this.div.appendChild(this.control.div);
+        this.div.appendChild(this.controls[0].div);
 
        
         if (hasInput)  this.initInput(NUMBER_TYPES, getParamInputValuesForUndo, this.input_getBackInitValue);
         if (hasOutput) this.initOutput([NUMBER_VALUE], this.output_genRequest, getParamOutputValuesForUndo, this.output_backInit);
 
 
-        this.control.addEventListener('change', () => 
+        this.controls[0].addEventListener('change', () => 
         { 
             this.setValue(this.value, true, false, true); 
         });
 
 
-        this.control.addEventListener('confirm', () => 
+        this.controls[0].addEventListener('confirm', () => 
         { 
             actionManager.do(new EmptyAction(this.node.graph), true);
         });
 
 
-        this.control.addEventListener('finishedit', e =>
+        this.controls[0].addEventListener('finishedit', e =>
         { 
             let   dec    = decCount(e.detail.value); 
             const oldDec = decCount(e.detail.oldValue);
@@ -76,10 +76,10 @@ extends NumberParamBase
                 this.setValue(new NumberValue(parseFloat(e.detail.value), dec), true);
                 e.preventSetValue = true;
             }
-            else if (this.control.allowEditDecimals)
+            else if (this.controls[0].allowEditDecimals)
             {
                 if (Math.abs(parseFloat(e.detail.value) - parseFloat(e.detail.oldValue)) <= Number.EPSILON)
-                    dec += Math.log10(this.control.valueScale);
+                    dec += Math.log10(this.controls[0].valueScale);
                 else
                     dec = oldDec;
 
@@ -90,9 +90,9 @@ extends NumberParamBase
 
 
 
-        createTooltipSrc(this.control, this.control, () => 
+        createTooltipSrc(this.controls[0], this.controls[0], () => 
         {
-            this.control.addEventListener('change', () => 
+            this.controls[0].addEventListener('change', () => 
             {
                 const tooltip = this.getTooltip();
                 if (tooltip) hideTooltip(tooltip);
@@ -111,7 +111,7 @@ extends NumberParamBase
     setName(name, dispatchEvents = true)
     {
         super.setName(name, dispatchEvents);
-        this.control.setName(name);
+        this.controls[0].setName(name);
     }
 
 

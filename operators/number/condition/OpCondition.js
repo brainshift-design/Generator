@@ -77,7 +77,7 @@ extends OperatorWithValue
 
 function updateParamConditionText(param, unknown)
 {
-    param.control.text.style.fontStyle = 
+    param.controls[0].text.style.fontStyle = 
            settings.showBoolValues 
         && param.value.isValid()
         ? 'normal' 
@@ -88,10 +88,10 @@ function updateParamConditionText(param, unknown)
 
          if (unknown)        param.controllueText = UNKNOWN_DISPLAY;
     else if (settings.showBoolValues
-            && !isNaN(v))    param.control.valueText = v != 0 ? TRUE_DISPLAY : FALSE_DISPLAY;
-    else                     param.control.valueText = '';
+            && !isNaN(v))    param.controls[0].valueText = v != 0 ? TRUE_DISPLAY : FALSE_DISPLAY;
+    else                     param.controls[0].valueText = '';
 
-    //param.control.text.style.letterSpacing = settings.showBoolValues ? '0.1em' : 0;
+    //param.controls[0].text.style.letterSpacing = settings.showBoolValues ? '0.1em' : 0;
 
-    param.control.showBar = unknown;
+    param.controls[0].showBar = unknown;
 }

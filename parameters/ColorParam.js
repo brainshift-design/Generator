@@ -14,19 +14,17 @@ extends Parameter
 
     checkers;
     
-    control;
-    
 
     
-    get valueText() { return this.control.valueText; }
+    get valueText() { return this.controls[0].valueText; }
     set valueText(text) 
     {
-        this.control.valueText = text;
-        this.control.update();
+        this.controls[0].valueText = text;
+        this.controls[0].update();
     }
 
     
-    get value() { return this.control.value; }
+    get value() { return this.controls[0].value; }
     
 
     
@@ -42,7 +40,7 @@ extends Parameter
 
         this.checkers       = createDiv();
 
-        this.control = new ColorControl(
+        this.controls[0] = new ColorControl(
             null,
             this,
             120, // width
@@ -53,8 +51,8 @@ extends Parameter
             defaultValue,   
             dragScale); 
 
-        this.control.successOnFocusOut = true;
-        this.control.div.zIndex = 0;
+        this.controls[0].successOnFocusOut = true;
+        this.controls[0].div.zIndex = 0;
 
         
         this.defaultValue = defaultValue;
@@ -73,25 +71,25 @@ extends Parameter
         this.checkers.style.pointerEvents = 'none';
 
 
-        this.control.div.style.display       = 'inline-block';
-        this.control.div.style.width         = '100%';
+        this.controls[0].div.style.display       = 'inline-block';
+        this.controls[0].div.style.width         = '100%';
 
 
         this.div.appendChild(this.checkers);
-        this.div.appendChild(this.control.div);
+        this.div.appendChild(this.controls[0].div);
 
        
         if (hasInput)  this.initInput(COLOR_TYPES, getParamInputValuesForUndo, this.input_getBackInitValue);
         if (hasOutput) this.initOutput([COLOR_VALUE], this.output_genRequest, getParamOutputValuesForUndo, this.output_backInit);
 
 
-        this.control.addEventListener('confirm', () => 
+        this.controls[0].addEventListener('confirm', () => 
         {
-            this.setValue(this.control.value, true, false); 
+            this.setValue(this.controls[0].value, true, false); 
         });
 
 
-        this.control.addEventListener('finishedit', e =>
+        this.controls[0].addEventListener('finishedit', e =>
         { 
             if (!e.detail.success)
                 return;
@@ -136,7 +134,7 @@ extends Parameter
     setName(name, dispatchEvents = true)
     {
         super.setName(name, dispatchEvents);
-        this.control.setName(name);
+        this.controls[0].setName(name);
     }
 
 
@@ -147,14 +145,14 @@ extends Parameter
 
     isVisible()
     {
-        return this.control.div.style.display != 'none';
+        return this.controls[0].div.style.display != 'none';
     }
 
 
 
     resetControls()
     {
-        this.control.valueText = '';
+        this.controls[0].valueText = '';
     }
 
 
@@ -168,10 +166,10 @@ extends Parameter
             
         this.preSetValue(value, createAction, dispatchEvents);
 
-        this.control.value = value.copy();
+        this.controls[0].value = value.copy();
 
         if (updateControl)
-            this.control.setValue(this.control.value, true, false); 
+            this.controls[0].setValue(this.controls[0].value, true, false); 
 
 
         super.setValue(value, createAction, updateControl, dispatchEvents);
@@ -267,7 +265,7 @@ extends Parameter
 
     textboxHasFocus()
     {
-        return hasFocus(this.control.textbox);
+        return hasFocus(this.controls[0].textbox);
     }
 
 
@@ -278,9 +276,9 @@ extends Parameter
                !this.input 
             || !this.input.connected;
 
-        enableElementText(this.control.div, enable);
+        enableElementText(this.controls[0].div, enable);
         
-        this.control.readOnly = !enable;
+        this.controls[0].readOnly = !enable;
     }
     
     

@@ -28,8 +28,8 @@
 
 //         this.paramColor.setValue(ColorValue.create(1, 0, 0, 0), false, true, false);
         
-//         this.paramOpacity    .control.setSuffix('%', true);
-//         this.paramStrokeMiter.control.setSuffix('°', true);
+//         this.paramOpacity    .controls[0].setSuffix('%', true);
+//         this.paramStrokeMiter.controls[0].setSuffix('°', true);
 //     }
     
     

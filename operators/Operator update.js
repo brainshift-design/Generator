@@ -183,10 +183,10 @@ Operator.prototype.updateMeasureData = function()
     };
 
     this.params
-        .filter(p => p.control)
-        .forEach(p => 
+        .forEach(p =>
         {
-            p.control.updateMeasureData();
+            for (const control of p.controls)
+                control.updateMeasureData();
 
             if (p. input) p. input.updateMeasureData();
             if (p.output) p.output.updateMeasureData();

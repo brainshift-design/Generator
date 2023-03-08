@@ -49,9 +49,9 @@ extends OpColorBase
         this.addParam(this.paramColor = new ColorParam ('color', '',      false, false, false, ColorValue.fromRgb(scaleRgb(dataColor2rgb(this._color)))));
 
 
-        this.param1.control.epsilon = ColorEpsilon;
-        this.param2.control.epsilon = ColorEpsilon;
-        this.param3.control.epsilon = ColorEpsilon;
+        this.param1.controls[0].epsilon = ColorEpsilon;
+        this.param2.controls[0].epsilon = ColorEpsilon;
+        this.param3.controls[0].epsilon = ColorEpsilon;
 
         
         this.paramSpace.input.outputMustBeCached = true;
@@ -71,21 +71,21 @@ extends OpColorBase
         });
 
 
-        this.param1.setValue(new NumberValue(roundTo(this._color[1] * rgbFactor[0], this.param1.control.dec)), false, true, false);
-        this.param2.setValue(new NumberValue(roundTo(this._color[2] * rgbFactor[1], this.param2.control.dec)), false, true, false);
-        this.param3.setValue(new NumberValue(roundTo(this._color[3] * rgbFactor[2], this.param3.control.dec)), false, true, false);
+        this.param1.setValue(new NumberValue(roundTo(this._color[1] * rgbFactor[0], this.param1.controls[0].dec)), false, true, false);
+        this.param2.setValue(new NumberValue(roundTo(this._color[2] * rgbFactor[1], this.param2.controls[0].dec)), false, true, false);
+        this.param3.setValue(new NumberValue(roundTo(this._color[3] * rgbFactor[2], this.param3.controls[0].dec)), false, true, false);
 
 
-        this.paramSpace.control.barTop = 0.8;
+        this.paramSpace.controls[0].barTop = 0.8;
 
-        this.paramSpace.control.addEventListener('pointerenter', () => { this.header.over = true;  this.updateHeader(); });
-        this.paramSpace.control.addEventListener('pointerleave', () => { this.header.over = false; this.updateHeader(); });
+        this.paramSpace.controls[0].addEventListener('pointerenter', () => { this.header.over = true;  this.updateHeader(); });
+        this.paramSpace.controls[0].addEventListener('pointerleave', () => { this.header.over = false; this.updateHeader(); });
 
 
-        this.paramSpace.control.wheelScale = 1;
-        this.param1    .control.wheelScale = 1;
-        this.param2    .control.wheelScale = 1;
-        this.param3    .control.wheelScale = 1;
+        this.paramSpace.controls[0].wheelScale = 1;
+        this.param1    .controls[0].wheelScale = 1;
+        this.param2    .controls[0].wheelScale = 1;
+        this.param3    .controls[0].wheelScale = 1;
 
 
         // hex is default, remove default sliders
@@ -94,7 +94,7 @@ extends OpColorBase
         this.inner.removeChild(this.param3.div);
 
         
-        this.paramColor.control.showColor = false;
+        this.paramColor.controls[0].showColor = false;
 
         this.paramColor.addEventListener('change', () => 
         {
@@ -333,7 +333,7 @@ extends OpColorBase
 
     updateNode()
     {
-        if (!hasFocus(this.paramColor.control))
+        if (!hasFocus(this.paramColor.controls[0]))
             this.paramColor.setValue(ColorValue.fromRgb(scaleRgb(dataColor2rgb(this._color))), false, true, false);// = 
         
 
@@ -346,24 +346,24 @@ extends OpColorBase
             : [0, 0, 0, 0.09]; 
 
 
-        this.paramSpace.control.setMax(colorSpaceCount()-1);
+        this.paramSpace.controls[0].setMax(colorSpaceCount()-1);
 
 
-        this.paramSpace.control.backStyleLight  =
-        this.paramSpace.control.backStyleDark   = 'transparent';
+        this.paramSpace.controls[0].backStyleLight  =
+        this.paramSpace.controls[0].backStyleDark   = 'transparent';
 
-        this.paramSpace.control.valueStyleLight =
-        this.paramSpace.control.valueStyleDark  = rgba2style(colSpaceBar);
+        this.paramSpace.controls[0].valueStyleLight =
+        this.paramSpace.controls[0].valueStyleDark  = rgba2style(colSpaceBar);
 
-        this.paramSpace.control.textStyleLight  =
-        this.paramSpace.control.textStyleDark   = rgba2style(colors.text);
+        this.paramSpace.controls[0].textStyleLight  =
+        this.paramSpace.controls[0].textStyleDark   = rgba2style(colors.text);
 
 
-        this.paramSpace. input.colorLight       =
-        this.paramSpace. input.colorDark        = colors.input;
+        this.paramSpace. input.colorLight           =
+        this.paramSpace. input.colorDark            = colors.input;
 
-        this.paramSpace.output.colorLight       =
-        this.paramSpace.output.colorDark        = colors.output;
+        this.paramSpace.output.colorLight           =
+        this.paramSpace.output.colorDark            = colors.output;
 
 
         super.updateNode();
@@ -446,7 +446,7 @@ extends OpColorBase
         this.param3    .enableControlText(enable);
 
 
-        enableElementText(this.paramColor.control.div, !this.isConnected());
+        enableElementText(this.paramColor.controls[0].div, !this.isConnected());
 
 
         this.updateParamControls();
@@ -456,9 +456,9 @@ extends OpColorBase
 
     resetAllControlRanges()
     {
-        this.param1.control.resetRanges();
-        this.param2.control.resetRanges();
-        this.param3.control.resetRanges();
+        this.param1.controls[0].resetRanges();
+        this.param2.controls[0].resetRanges();
+        this.param3.controls[0].resetRanges();
     }
 
 
@@ -485,17 +485,17 @@ extends OpColorBase
             const rangesR = [];
             if (this._color[1] < 0) rangesR.push(new NumberControlRange(0, Math.min(-this._color[1], 1), warnLineStyle, 0.8));
             if (this._color[1] > 1) rangesR.push(new NumberControlRange(2-Math.min(this._color[1], 2), 1, warnLineStyle, 0.8));
-            this.param1.control.ranges = rangesR;
+            this.param1.controls[0].ranges = rangesR;
 
             const rangesG = [];
             if (this._color[2] < 0) rangesG.push(new NumberControlRange(0, Math.min(-this._color[2], 1), warnLineStyle, 0.8));
             if (this._color[2] > 1) rangesG.push(new NumberControlRange(2-Math.min(this._color[2], 2), 1, warnLineStyle, 0.8));
-            this.param2.control.ranges = rangesG;
+            this.param2.controls[0].ranges = rangesG;
             
             const rangesB = [];
             if (this._color[3] < 0) rangesB.push(new NumberControlRange(0, Math.min(-this._color[3], 1), warnLineStyle, 0.8));
             if (this._color[3] > 1) rangesB.push(new NumberControlRange(2-Math.min(this._color[3], 2), 1, warnLineStyle, 0.8));
-            this.param3.control.ranges = rangesB;
+            this.param3.controls[0].ranges = rangesB;
         }
         else if ((   space == 2  // HSV
                   || space == 3) // HSL
@@ -505,36 +505,36 @@ extends OpColorBase
             const rangesS = [];
             if (this._color[2] < 0) rangesS.push(new NumberControlRange(0, Math.min(-this._color[2], 1), warnLineStyle, 0.8));
             if (this._color[2] > 1) rangesS.push(new NumberControlRange(2-Math.min(this._color[2], 2), 1, warnLineStyle, 0.8));
-            this.param2.control.ranges = rangesS;
+            this.param2.controls[0].ranges = rangesS;
             
             const rangesVL = [];
             if (this._color[3] < 0) rangesVL.push(new NumberControlRange(0, Math.min(-this._color[3], 1), warnLineStyle, 0.8));
             if (this._color[3] > 1) rangesVL.push(new NumberControlRange(2-Math.min(this._color[3], 2), 1, warnLineStyle, 0.8));
-            this.param3.control.ranges = rangesVL;
+            this.param3.controls[0].ranges = rangesVL;
         }
         else if ( space > 3 // HCL
               && !dataColorIsNaN(this._color))
         {
-            this.updateControlRanges(this.param1.control, f =>
+            this.updateControlRanges(this.param1.controls[0], f =>
                 dataColor2rgb([
                     this._color[0],
-                    (this.param1.control.displayMin + f * (this.param1.control.displayMax - this.param1.control.displayMin)) / colorSpaceFactor(this._color[0])[0],
+                    (this.param1.controls[0].displayMin + f * (this.param1.controls[0].displayMax - this.param1.controls[0].displayMin)) / colorSpaceFactor(this._color[0])[0],
                     this._color[2],
                     this._color[3]]));
 
-            this.updateControlRanges(this.param2.control, f =>
+            this.updateControlRanges(this.param2.controls[0], f =>
                 dataColor2rgb([
                     this._color[0],
                     this._color[1],
-                    (this.param2.control.displayMin + f * (this.param2.control.displayMax - this.param2.control.displayMin)) / colorSpaceFactor(this._color[0])[1],
+                    (this.param2.controls[0].displayMin + f * (this.param2.controls[0].displayMax - this.param2.controls[0].displayMin)) / colorSpaceFactor(this._color[0])[1],
                     this._color[3]]));
 
-            this.updateControlRanges(this.param3.control, f =>
+            this.updateControlRanges(this.param3.controls[0], f =>
                 dataColor2rgb([
                     this._color[0],
                     this._color[1],
                     this._color[2],
-                    (this.param3.control.displayMin + f * (this.param3.control.displayMax - this.param3.control.displayMin)) / colorSpaceFactor(this._color[0])[2]]));
+                    (this.param3.controls[0].displayMin + f * (this.param3.controls[0].displayMax - this.param3.controls[0].displayMin)) / colorSpaceFactor(this._color[0])[2]]));
         }
         else // no warning ranges
         {

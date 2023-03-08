@@ -18,10 +18,10 @@ extends OperatorWithValue
         this.addParam(this.paramAmount = new NumberParam('amount', '', true, true, true, 50, 0, 100, 0));
 
         
-        this.paramAmount.control.min = Number.MIN_SAFE_INTEGER; // allow
-        this.paramAmount.control.max = Number.MAX_SAFE_INTEGER; // extrapolation
+        this.paramAmount.controls[0].min = Number.MIN_SAFE_INTEGER; // allow
+        this.paramAmount.controls[0].max = Number.MAX_SAFE_INTEGER; // extrapolation
         
-        this.paramAmount.control.setSuffix('%', true);
+        this.paramAmount.controls[0].setSuffix('%', true);
     }
 
 
