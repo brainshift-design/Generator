@@ -152,11 +152,10 @@ function signedPosOnLine(p0, p1, p)
 
 function rectInside(rect1, rect2)
 {
-    return !(
-           rect1.l >= rect2.l
+    return rect1.l >= rect2.l
         && rect1.r <= rect2.r
         && rect1.t >= rect2.t
-        && rect1.b <= rect2.b); 
+        && rect1.b <= rect2.b; 
 }
 
 

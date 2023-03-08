@@ -522,7 +522,7 @@ function uiUpdateSavedConnectionsToNodeId(graph, nodeId)
 function makeSelectedNodesActive()
 {
     if (graphView.selectedNodes.find(n => !n.active))
-        actionManager.do(new MakeActiveNodesAction(graphView.graph, graphView.selectedNodes.map(n => n.id)));
+        actionManager.do(new MakeActiveNodesAction(mainGraph, graphView.selectedNodes.map(n => n.id)));
 }
 
 
@@ -605,7 +605,7 @@ function uiShowParamValue(graph, nodeId, paramName, value)
     const node = graph.nodeFromId(nodeId);
 
     if (!!node) // this is for deleted nodes which still exist
-    {           // in genGraph but no longer in graphView.graph
+    {           // in genGraph but no longer in mainGraph
         const param = node.params.find(p => p.name == paramName);
         param.control.setValue(value, false);
     }
@@ -795,7 +795,7 @@ function uiUpdateValuesAndObjects(requestId, actionId, updateNodeId, updateParam
         const nodeId = values[i++];
         const count  = values[i++];
 
-        const node   = graphView.graph.nodeFromId(nodeId);
+        const node   = mainGraph.nodeFromId(nodeId);
 
 
         if (node)
@@ -870,9 +870,9 @@ function uiUpdateValuesAndObjects(requestId, actionId, updateNodeId, updateParam
             styles:        [...styles]});
     }
 
-    
+
     if (!graphView.loadingNodes)
-        uiSaveNodes(graphView.graph, nodes.map(n => n.id));
+        uiSaveNodes(mainGraph, nodes.map(n => n.id));
 
 
     for (const node of nodes)
@@ -899,8 +899,15 @@ function uiUpdateValuesAndObjects(requestId, actionId, updateNodeId, updateParam
     if (isLastChunk)
     {
         if (graphView.loadingNodes)
-            uiSaveNodes(graphView.graph, graphView.graph.nodes.map(n => n.id));
+        {
+            mainGraph.nodes
+                .filter(n => n.type == NODE_GROUP)
+                .forEach(n => n.updateChildren());
 
+            uiSaveNodes(mainGraph, mainGraph.nodes.map(n => n.id));
+        }
+
+            
         graphView.creatingNodes      = false;
         graphView.pastingNodes       = false;
         graphView.loadingNodes       = false;

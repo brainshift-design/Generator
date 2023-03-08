@@ -40,6 +40,14 @@ extends OperatorBase
 
 
 
+        this.header.addEventListener('dblclick', e =>
+        {
+            console.log('dblclick');
+            this.children.forEach(n => n.selected = true);
+        });
+
+        
+
         this.div.addEventListener('pointerdown', e =>
         {
             if (e.button == 0)
@@ -164,17 +172,19 @@ extends OperatorBase
 
     updateChildren()
     {
-        for (const node of mainGraph.nodes.filter(n => !this.children.includes(n)))
+        this.childern = [];
+
+        for (const node of mainGraph.nodes)//.filter(n => !this.children.includes(n)))
         {
             if (rectInside(node.measureData.divOffset, this.measureData.divOffset))
                 pushUnique(this.children, node);
         }
 
-        for (const node of this.children)
-        {
-            if (!rectInside(node.measureData.divOffset, this.measureData.divOffset))
-                removeFrom(this.children, node);
-        }
+        // for (const node of this.children)
+        // {
+        //     if (!rectInside(node.measureData.divOffset, this.measureData.divOffset))
+        //         removeFrom(this.children, node);
+        // }
 
 
         this.removeAllParams();
@@ -227,7 +237,7 @@ extends OperatorBase
 
         this.div.style.zIndex = 0;
 
-        this.inner.style.height = this.div.offsetHeight;
+        this.inner.style.height          = this.div.offsetHeight;
         this.inner.style.backgroundColor = darkMode ? '#5558' : '#ddd8';// 'var(--figma-color-border-disabled)';
     }
 
@@ -247,17 +257,17 @@ extends OperatorBase
 
         if (resetResizing)
         {
-            this.resizingL   = false;
-            this.resizingR   = false;
-            this.resizingT   = false;
-            this.resizingB   = false;
+            this.resizingL  = false;
+            this.resizingR  = false;
+            this.resizingT  = false;
+            this.resizingB  = false;
         
-            this.resizingTL  = false;
-            this.resizingTR  = false;
-            this.resizingBL  = false;
-            this.resizingBR  = false;
+            this.resizingTL = false;
+            this.resizingTR = false;
+            this.resizingBL = false;
+            this.resizingBR = false;
 
-            this.resizing    = false;
+            this.resizing   = false;
         }
     }
 
@@ -350,7 +360,10 @@ extends OperatorBase
 
     setSize(w, h, updateTransform = true)
     {
-        super.setSize(w, Math.max(this.header.offsetHeight, h), updateTransform);
+        super.setSize(
+            Math.max(100, w), 
+            Math.max(this.header.offsetHeight + 20, h), 
+            updateTransform);
 
         this.inner.style.height = this.div.offsetHeight;
     }
@@ -359,7 +372,11 @@ extends OperatorBase
 
     setRect(x, y, w, h, updateTransform = true)
     {
-        super.setRect(x, y, w, Math.max(this.header.offsetHeight, h), updateTransform);
+        super.setRect(
+            x, 
+            y, 
+            Math.max(100, w), 
+            Math.max(this.header.offsetHeight + 20, h), updateTransform);
 
         this.inner.style.height = this.div.offsetHeight;
     }

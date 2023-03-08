@@ -4787,11 +4787,10 @@ function signedPosOnLine(p0, p1, p)
 
 function rectInside(rect1, rect2)
 {
-    return !(
-           rect1.l >= rect2.l
+    return rect1.l >= rect2.l
         && rect1.r <= rect2.r
         && rect1.t >= rect2.t
-        && rect1.b <= rect2.b); 
+        && rect1.b <= rect2.b; 
 }
 
 
@@ -21748,11 +21747,10 @@ function signedPosOnLine(p0, p1, p)
 
 function rectInside(rect1, rect2)
 {
-    return !(
-           rect1.l >= rect2.l
+    return rect1.l >= rect2.l
         && rect1.r <= rect2.r
         && rect1.t >= rect2.t
-        && rect1.b <= rect2.b); 
+        && rect1.b <= rect2.b; 
 }
 
 
@@ -41105,7 +41103,7 @@ extends EventTarget
         this.div.style.position = 'relative';
         this.div.style.padding  = 0;
         this.div.style.width    = '100%';
-        this.div.style.boxShadow = '0 0 0 1px red inset';
+        //this.div.style.boxShadow = '0 0 0 1px red inset';
 
         this.input              = null;
         this.output             = null;
@@ -52842,6 +52840,14 @@ extends OperatorBase
 
 
 
+        this.header.addEventListener('dblclick', e =>
+        {
+            console.log('dblclick');
+            this.children.forEach(n => n.selected = true);
+        });
+
+        
+
         this.div.addEventListener('pointerdown', e =>
         {
             if (e.button == 0)
@@ -52966,17 +52972,19 @@ extends OperatorBase
 
     updateChildren()
     {
-        for (const node of mainGraph.nodes.filter(n => !this.children.includes(n)))
+        this.childern = [];
+
+        for (const node of mainGraph.nodes)//.filter(n => !this.children.includes(n)))
         {
             if (rectInside(node.measureData.divOffset, this.measureData.divOffset))
                 pushUnique(this.children, node);
         }
 
-        for (const node of this.children)
-        {
-            if (!rectInside(node.measureData.divOffset, this.measureData.divOffset))
-                removeFrom(this.children, node);
-        }
+        // for (const node of this.children)
+        // {
+        //     if (!rectInside(node.measureData.divOffset, this.measureData.divOffset))
+        //         removeFrom(this.children, node);
+        // }
 
 
         this.removeAllParams();
@@ -53029,7 +53037,7 @@ extends OperatorBase
 
         this.div.style.zIndex = 0;
 
-        this.inner.style.height = this.div.offsetHeight;
+        this.inner.style.height          = this.div.offsetHeight;
         this.inner.style.backgroundColor = darkMode ? '#5558' : '#ddd8';// 'var(--figma-color-border-disabled)';
     }
 
@@ -53049,17 +53057,17 @@ extends OperatorBase
 
         if (resetResizing)
         {
-            this.resizingL   = false;
-            this.resizingR   = false;
-            this.resizingT   = false;
-            this.resizingB   = false;
+            this.resizingL  = false;
+            this.resizingR  = false;
+            this.resizingT  = false;
+            this.resizingB  = false;
         
-            this.resizingTL  = false;
-            this.resizingTR  = false;
-            this.resizingBL  = false;
-            this.resizingBR  = false;
+            this.resizingTL = false;
+            this.resizingTR = false;
+            this.resizingBL = false;
+            this.resizingBR = false;
 
-            this.resizing    = false;
+            this.resizing   = false;
         }
     }
 
@@ -53152,7 +53160,10 @@ extends OperatorBase
 
     setSize(w, h, updateTransform = true)
     {
-        super.setSize(w, Math.max(this.header.offsetHeight, h), updateTransform);
+        super.setSize(
+            Math.max(100, w), 
+            Math.max(this.header.offsetHeight + 20, h), 
+            updateTransform);
 
         this.inner.style.height = this.div.offsetHeight;
     }
@@ -53161,7 +53172,11 @@ extends OperatorBase
 
     setRect(x, y, w, h, updateTransform = true)
     {
-        super.setRect(x, y, w, Math.max(this.header.offsetHeight, h), updateTransform);
+        super.setRect(
+            x, 
+            y, 
+            Math.max(100, w), 
+            Math.max(this.header.offsetHeight + 20, h), updateTransform);
 
         this.inner.style.height = this.div.offsetHeight;
     }
@@ -58259,8 +58274,7 @@ document.addEventListener('keydown', e =>
 
             const tc = graphView.tempConn;
 
-            updateWire(
-                tc.wire, 
+            tc.wire.update(
                 tc.wire.clientX,
                 tc.wire.clientY);
         }
@@ -60410,7 +60424,7 @@ function uiUpdateSavedConnectionsToNodeId(graph, nodeId)
 function makeSelectedNodesActive()
 {
     if (graphView.selectedNodes.find(n => !n.active))
-        actionManager.do(new MakeActiveNodesAction(graphView.graph, graphView.selectedNodes.map(n => n.id)));
+        actionManager.do(new MakeActiveNodesAction(mainGraph, graphView.selectedNodes.map(n => n.id)));
 }
 
 
@@ -60493,7 +60507,7 @@ function uiShowParamValue(graph, nodeId, paramName, value)
     const node = graph.nodeFromId(nodeId);
 
     if (!!node) // this is for deleted nodes which still exist
-    {           // in genGraph but no longer in graphView.graph
+    {           // in genGraph but no longer in mainGraph
         const param = node.params.find(p => p.name == paramName);
         param.control.setValue(value, false);
     }
@@ -60683,7 +60697,7 @@ function uiUpdateValuesAndObjects(requestId, actionId, updateNodeId, updateParam
         const nodeId = values[i++];
         const count  = values[i++];
 
-        const node   = graphView.graph.nodeFromId(nodeId);
+        const node   = mainGraph.nodeFromId(nodeId);
 
 
         if (node)
@@ -60758,9 +60772,9 @@ function uiUpdateValuesAndObjects(requestId, actionId, updateNodeId, updateParam
             styles:        [...styles]});
     }
 
-    
+
     if (!graphView.loadingNodes)
-        uiSaveNodes(graphView.graph, nodes.map(n => n.id));
+        uiSaveNodes(mainGraph, nodes.map(n => n.id));
 
 
     for (const node of nodes)
@@ -60787,8 +60801,15 @@ function uiUpdateValuesAndObjects(requestId, actionId, updateNodeId, updateParam
     if (isLastChunk)
     {
         if (graphView.loadingNodes)
-            uiSaveNodes(graphView.graph, graphView.graph.nodes.map(n => n.id));
+        {
+            mainGraph.nodes
+                .filter(n => n.type == NODE_GROUP)
+                .forEach(n => n.updateChildren());
 
+            uiSaveNodes(mainGraph, mainGraph.nodes.map(n => n.id));
+        }
+
+            
         graphView.creatingNodes      = false;
         graphView.pastingNodes       = false;
         graphView.loadingNodes       = false;

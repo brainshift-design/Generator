@@ -47,7 +47,7 @@ extends EventTarget
         this.div.style.position = 'relative';
         this.div.style.padding  = 0;
         this.div.style.width    = '100%';
-        this.div.style.boxShadow = '0 0 0 1px red inset';
+        //this.div.style.boxShadow = '0 0 0 1px red inset';
 
         this.input              = null;
         this.output             = null;

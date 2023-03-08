@@ -183,8 +183,7 @@ document.addEventListener('keydown', e =>
 
             const tc = graphView.tempConn;
 
-            updateWire(
-                tc.wire, 
+            tc.wire.update(
                 tc.wire.clientX,
                 tc.wire.clientY);
         }
