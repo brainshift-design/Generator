@@ -20,9 +20,6 @@ extends Action
 
         this.nodeId  = nodeId;
 
-        console.log('oldRect =', oldRect);
-        console.log('newRect =', newRect);
-
         this.oldRect = Rect.fromTypical(oldRect);
         this.newRect = Rect.fromTypical(newRect);
     }
@@ -36,6 +33,8 @@ extends Action
         //     this.newRect.y,
         //     this.newRect.w,
         //     this.newRect.h);
+
+        this.node.updateChildren();
 
         uiSaveNodes(this.graph, [this.nodeId]);
     }
@@ -51,6 +50,7 @@ extends Action
             this.oldRect.h);
 
         this.node.updateNode();
+        this.node.updateChildren();
 
         uiSaveNodes(this.graph, [this.nodeId]);
     }
@@ -66,6 +66,7 @@ extends Action
             this.newRect.h);
 
         this.node.updateNode();
+        this.node.updateChildren();
         
         uiSaveNodes(this.graph, [this.nodeId]);
     }

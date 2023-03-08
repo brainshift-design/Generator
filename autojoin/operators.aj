@@ -7,6 +7,7 @@
 ../parameters/FillParam.js
 ../parameters/StrokeParam.js
 ../parameters/ViewParam.js
+../parameters/ProxyParam.js
 //../parameters/StyleParam.js
 
 

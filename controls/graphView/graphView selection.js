@@ -136,6 +136,11 @@ GraphView.prototype.selectFromClick = function(node, ctrl, shift, alt)
     node.div.moved = false;
 
 
+    const nodes = [node];
+
+    if (node.type == NODE_GROUP)
+        pushUnique(nodes, node.children);
+
     if (   ctrl
         && shift
         && alt)

@@ -19,6 +19,18 @@ class NumberControlRange
         this.top        = top;
         this.bottom     = bottom;
     }
+
+
+
+    copy()
+    {
+        return new NumberControlRange(
+            this.start,
+            this.end,
+            this.background,
+            this.top,
+            this.bottom);
+    }
 }
 
 

@@ -3575,7 +3575,12 @@ function getConnectionString(outputNodeId, outputId, outputOrder, inputNodeId, i
     const  sp   = logSpace ? ' ' : '  '; 
     const jsp   = logSpace ? ''  : ' '; 
 
-    const arrow = sp + subscriptNumber(parseInt(outputOrder)) + rightArrowChar(parseBool(list)) + sp;
+    const arrow = 
+          sp 
+        + subscriptNumber(typeof outputOrder == 'string' ? parseInt(outputOrder) : outputOrder) 
+        + rightArrowChar(typeof list == 'string' ? parseBool(list) : list) 
+        + sp;
+
     const join  = jsp + '.' + jsp;
 
     return outputNodeId + join + outputId
@@ -4776,6 +4781,17 @@ function signedPosOnLine(p0, p1, p)
     cp = transform(cp, xform);
 
     return (cp.X - p0.X) / nozero(p1.X - p0.X);
+}
+
+
+
+function rectInside(rect1, rect2)
+{
+    return !(
+           rect1.l >= rect2.l
+        && rect1.r <= rect2.r
+        && rect1.t >= rect2.t
+        && rect1.b <= rect2.b); 
 }
 
 
@@ -20520,7 +20536,12 @@ function getConnectionString(outputNodeId, outputId, outputOrder, inputNodeId, i
     const  sp   = logSpace ? ' ' : '  '; 
     const jsp   = logSpace ? ''  : ' '; 
 
-    const arrow = sp + subscriptNumber(parseInt(outputOrder)) + rightArrowChar(parseBool(list)) + sp;
+    const arrow = 
+          sp 
+        + subscriptNumber(typeof outputOrder == 'string' ? parseInt(outputOrder) : outputOrder) 
+        + rightArrowChar(typeof list == 'string' ? parseBool(list) : list) 
+        + sp;
+
     const join  = jsp + '.' + jsp;
 
     return outputNodeId + join + outputId
@@ -21721,6 +21742,17 @@ function signedPosOnLine(p0, p1, p)
     cp = transform(cp, xform);
 
     return (cp.X - p0.X) / nozero(p1.X - p0.X);
+}
+
+
+
+function rectInside(rect1, rect2)
+{
+    return !(
+           rect1.l >= rect2.l
+        && rect1.r <= rect2.r
+        && rect1.t >= rect2.t
+        && rect1.b <= rect2.b); 
 }
 
 
@@ -33854,7 +33886,7 @@ extends EventTarget
     id;
     
     name;
-    savedName              = '';
+    savedName             = '';
     
     width;
     height;
@@ -33867,83 +33899,85 @@ extends EventTarget
     displayMin;
     displayMax;
 
-    thinMinus              = false;
-    displayAbsolute        = false;
+    thinMinus             = false;
+    displayAbsolute       = false;
     
-    epsilon                = Epsilon;
+    epsilon               = Epsilon;
 
     acc;
      
     dec;
     displayDec;
          
-    valueScale             = 1;
+    valueScale            = 1;
                 
     suffix;
-    valueCanContainSuffix  = false;
+    valueCanContainSuffix = false;
      
-    dragReverse            = false;
+    dragReverse           = false;
     dragScale;
     wheelScale;
              
-    backStyleLight         = 'rgba(255, 255, 255, 0.95)';
-    valueStyleLight        = '#7772';
-    textStyleLight         = '#000';
+    backStyleLight        = 'rgba(255, 255, 255, 0.95)';
+    valueStyleLight       = '#7772';
+    textStyleLight        = '#000';
                 
-    backStyleDark          = 'rgba(56, 56, 56, 0.95)';
-    valueStyleDark         = '#ffffff20';
-    textStyleDark          = '#eee';
+    backStyleDark         = 'rgba(56, 56, 56, 0.95)';
+    valueStyleDark        = '#ffffff20';
+    textStyleDark         = '#eee';
                 
-    fontSize               = 11;
+    fontSize              = 11;
              
             
-    mouseOver              = false;
-    buttonDown0            = false;
-    buttonDown1            = false;
+    wrapValue             = false;
+    
+    showName              = true;
+    showHex               = false;
+
+    enableChangeEvent     = true;
+    
+    successOnFocusOut     = false;
+    keyBlur               = false;
+    
+    pointerEvents         = true;
+    readOnly              = false;
+     
+    allowEditDecimals     = true;
+    
+    valueText             = '';
+    overrideText          = '';
+
+    showNanValueName      = true; // show the name even if the value is NaN
+    showBar               = true;
+
+    barTop                = 0;
+    barBottom             = 1;
+     
+    ranges                = [];
+    rangeDivs             = [];
+     
+    options               = []; // if dec == 0, show named choices instead of a value
+
+
+    mouseOver             = false;
+    buttonDown0           = false;
+    buttonDown1           = false;
              
-    clickSize              = 4;
-    moved                  = false;
+    clickSize             = 4;
+    moved                 = false;
          
-    tabIndex               = 0;
-    inFocus                = false;
-    clicked                = false;
+    tabIndex              = 0;
+    inFocus               = false;
+    clicked               = false;
  
-    startValue             = 0;
+    startValue            = 0;
     oldValue; 
  
-    wrapValue              = false;
-    
-    showName               = true;
-    showHex                = false;
 
-    enableChangeEvent      = true;
-    
-    successOnFocusOut      = false;
-    keyBlur                = false;
-    
-    pointerEvents          = true;
-    readOnly               = false;
-     
-    allowEditDecimals      = true;
-    
-    valueText              = '';
-    overrideText           = '';
-
-    showNanValueName       = true; // show the name even if the value is NaN
-    showBar                = true;
-
-    barTop                 = 0;
-    barBottom              = 1;
-     
-    ranges                 = [];
-    rangeDivs              = [];
-     
-    options                = []; // if dec == 0, show named choices instead of a value
-
-    measureData            = { divBounds: new Rect(0, 0, 0, 0) };
+    measureData           = { divBounds: new Rect(0, 0, 0, 0) };
  
 
-    confirmTimer           = null;
+    confirmTimer          = null;
 
 
     
@@ -34020,6 +34054,84 @@ extends EventTarget
         this.onstartchange = new Event('startchange');
         this.onchange      = new Event('change');
         this.onconfirm     = new Event('confirm');
+    }
+
+
+    copy()
+    {
+        const copy = new NumberControl(
+            null,
+            null,
+            this.width,
+            this.height,
+            this.id,
+            this.name,
+            this.showName,
+            this.defaultValue);
+
+
+        copy.value                 = this.value;
+                
+        copy.min                   = this.min;
+        copy.max                   = this.max;
+           
+        copy.displayMin            = this.displayMin;
+        copy.displayMax            = this.displayMax;
+           
+        copy.thinMinus             = this.thinMinus;
+        copy.displayAbsolute       = this.displayAbsolute;
+      
+        copy.epsilon               = this.epsilon;
+      
+        copy.acc                   = this.acc;
+      
+        copy.dec                   = this.dec;
+        copy.displayDec            = this.displayDec;
+      
+        copy.valueScale            = this.valueScale;
+      
+        copy.suffix                = this.suffix;
+        copy.valueCanContainSuffix = this.valueCanCouffix;
+
+        copy.dragReverse           = this.dragReverse;
+        copy.dragScale             = this.dragScale;
+        copy.wheelScale            = this.wheelScale;
+
+        copy. backStyleLight       = this. backStyleLight;
+        copy.valueStyleLight       = this.valueStyleLight;
+        copy. textStyleLight       = this. textStyleLight;
+
+        copy.fontSize              = this.fontSize;
+
+
+        copy.wrapValue             = this.wrapValue;
+
+        copy.showHex               = this.showHex;
+
+        copy.enableChangeEvent     = this.enableChangeEvent;
+
+        copy.successOnFocusOut     = this.successOnFocusOut;
+        copy.keyBlur               = this.keyBlur;
+
+        copy.pointerEvents         = this.pointerEvents;
+        copy.readOnly              = this.readOnly;
+
+        copy.allowEditDecimals     = this.allowEditDecimals;
+
+        copy.valueText             = this.valueText;
+        copy.overrideText          = this.overrideText;
+
+        copy.showNanValueName      = this.showNanValueName;
+        copy.showBar               = this.showBar;
+
+        copy.barTop                = this.barTop;
+        copy.barBottom             = this.barBottom;
+
+        copy.ranges                = this.ranges.map(r => r.copy());
+
+        copy.options               = [...this.options];
+        
+        return copy;
     }
 
 
@@ -34763,6 +34875,18 @@ class NumberControlRange
 
         this.top        = top;
         this.bottom     = bottom;
+    }
+
+
+
+    copy()
+    {
+        return new NumberControlRange(
+            this.start,
+            this.end,
+            this.background,
+            this.top,
+            this.bottom);
     }
 }
 
@@ -40660,6 +40784,11 @@ GraphView.prototype.selectFromClick = function(node, ctrl, shift, alt)
     node.div.moved = false;
 
 
+    const nodes = [node];
+
+    if (node.type == NODE_GROUP)
+        pushUnique(nodes, node.children);
+
     if (   ctrl
         && shift
         && alt)
@@ -40976,6 +41105,7 @@ extends EventTarget
         this.div.style.position = 'relative';
         this.div.style.padding  = 0;
         this.div.style.width    = '100%';
+        this.div.style.boxShadow = '0 0 0 1px red inset';
 
         this.input              = null;
         this.output             = null;
@@ -42905,6 +43035,43 @@ extends Parameter
 }
 
 
+class   ProxyParam
+extends Parameter
+{
+    refParam;
+
+    controls = [];
+
+
+    constructor(param)
+    {
+        super(param.type, param.node.id + '_' + param.id);
+
+        this.refParam = param;
+
+        this.div.style.boxShadow = '0 0 0 1px green inset';
+
+        switch (param.type)
+        {
+            case NUMBER_VALUE: 
+            {
+                this.controls = [param.control.copy()];
+                this.div.appendChild(this.controls[0]);
+                break;
+            }
+        }
+
+    }
+
+
+
+    updateControls()
+    {
+
+    }
+}
+
+
 class   Input
 extends EventTarget
 {
@@ -43525,18 +43692,20 @@ class Connection
 
     id;
 
+    graph;
+    
     output;
     outputOrder; // in which connections FROM THIS OUTPUT were made
     
-    graph;
-
     input;
 
-    wire;
+    list     = false;
 
+    wire;
+    
     backInit = false; // if true, on connection the value is possibly copied from the input to the output
 
-
+    
 
     constructor(output, input)
     {
@@ -43580,7 +43749,8 @@ class Connection
             outputId:     this.output.id,
             outputOrder:  this.outputOrder,
             inputNodeId:  this.input.node.id,
-            inputId:      this.input.id
+            inputId:      this.input.id,
+            list:         this.list
         };
     }
 }
@@ -45383,7 +45553,7 @@ Operator.prototype.createHeader = function()
             || e.button == 2)
         {
             this.div.shiftOnPointerDown = 
-                   e.shiftKey
+                    e.shiftKey
                 && !getCtrlKey(e)
                 && !e.altKey;
         }
@@ -52633,10 +52803,7 @@ extends OpColorBase
 class   OpNodeGroup
 extends OperatorBase
 {
-    // graph;
-    // view;
-
-    //paramView;
+    children = [];
 
 
     canResizeL  = false;
@@ -52668,16 +52835,10 @@ extends OperatorBase
     {
         super(NODE_GROUP, 'group');
 
-        // mainGraph = mainGraph;
-        // this.view  = graphView;
-
-        //mainGraph.parentNodeGroup = this;
         this.alwaysLoadParams   = true;
         this.sharpBottomCorners = true;
         
-        this.div.style.height = '100px';
-
-        //this.addParam(this.paramValue = new ViewParam('view', this));
+        this.div.style.height   = '100px';
 
 
 
@@ -52719,70 +52880,14 @@ extends OperatorBase
             const dy = this.resizing ? (e.clientY - this.sy) / mainGraph.view.zoom : 0;
             
             
-            if (this.resizingTL)
-            {
-                this.setRect(
-                    this.startRect.x + dx, 
-                    this.startRect.y + dy,
-                    this.startRect.w - dx,
-                    this.startRect.h - dy);
-            }
-            else if (this.resizingTR)
-            {
-                this.setRect(
-                    this.startRect.x, 
-                    this.startRect.y + dy,
-                    this.startRect.w + dx,
-                    this.startRect.h - dy);
-            }
-            else if (this.resizingBL)
-            {
-                this.setRect(
-                    this.startRect.x + dx, 
-                    this.startRect.y,
-                    this.startRect.w - dx,
-                    this.startRect.h + dy);
-            }
-            else if (this.resizingBR)
-            {
-                this.setRect(
-                    this.startRect.x, 
-                    this.startRect.y,
-                    this.startRect.w + dx,
-                    this.startRect.h + dy);
-            }
-            else if (this.resizingL)
-            {
-                this.setRect(
-                    this.startRect.x + dx, 
-                    this.startRect.y,
-                    this.startRect.w - dx,
-                    this.startRect.h);
-            }
-            else if (this.resizingR)
-            {
-                this.setRect(
-                    this.startRect.x, 
-                    this.startRect.y,
-                    this.startRect.w + dx,
-                    this.startRect.h);
-            }
-            else if (this.resizingT)
-            {
-                this.setRect(
-                    this.startRect.x, 
-                    this.startRect.y + dy,
-                    this.startRect.w,
-                    this.startRect.h - dy);
-            }
-            else if (this.resizingB)
-            {
-                this.setRect(
-                    this.startRect.x, 
-                    this.startRect.y,
-                    this.startRect.w,
-                    this.startRect.h + dy);
-            }
+                 if (this.resizingTL) this.setRect(this.startRect.x + dx, this.startRect.y + dy, this.startRect.w - dx, this.startRect.h - dy);
+            else if (this.resizingTR) this.setRect(this.startRect.x,      this.startRect.y + dy, this.startRect.w + dx, this.startRect.h - dy);
+            else if (this.resizingBL) this.setRect(this.startRect.x + dx, this.startRect.y,      this.startRect.w - dx, this.startRect.h + dy);
+            else if (this.resizingBR) this.setRect(this.startRect.x,      this.startRect.y,      this.startRect.w + dx, this.startRect.h + dy);
+            else if (this.resizingL ) this.setRect(this.startRect.x + dx, this.startRect.y,      this.startRect.w - dx, this.startRect.h     );
+            else if (this.resizingR ) this.setRect(this.startRect.x,      this.startRect.y,      this.startRect.w + dx, this.startRect.h     );
+            else if (this.resizingT ) this.setRect(this.startRect.x,      this.startRect.y + dy, this.startRect.w,      this.startRect.h - dy);
+            else if (this.resizingB ) this.setRect(this.startRect.x,      this.startRect.y,      this.startRect.w,      this.startRect.h + dy);
             else
                 this.checkResizing(e);
 
@@ -52822,6 +52927,113 @@ extends OperatorBase
     }
     
     
+
+    genRequest(gen)
+    {
+        // 'this' is the output
+
+        gen.scope.push({
+            nodeId:  this.id, 
+            paramId: NULL });
+
+        const [request, ignore] = this.genRequestStart(gen);
+        if (ignore) return request;
+
+
+        // const input = this.inputs[0];
+
+
+        // request.push(input.connected ? 1 : 0);
+
+        // if (input.connected)
+        //     request.push(...pushInputOrParam(input, gen));
+
+        
+        gen.scope.pop();
+        pushUnique(gen.passedNodes, this);
+
+        return request;
+    }
+
+
+
+    // updateValues(requestId, actionId, updateParamId, paramIds, values) // virtual
+    // {
+    //     super.updateValues(requestId, actionId, updateParamId, paramIds, values);
+    // }
+
+
+
+    updateChildren()
+    {
+        for (const node of mainGraph.nodes.filter(n => !this.children.includes(n)))
+        {
+            if (rectInside(node.measureData.divOffset, this.measureData.divOffset))
+                pushUnique(this.children, node);
+        }
+
+        for (const node of this.children)
+        {
+            if (!rectInside(node.measureData.divOffset, this.measureData.divOffset))
+                removeFrom(this.children, node);
+        }
+
+
+        this.removeAllParams();
+
+
+        // for (const node of this.children)
+        // {
+        //     for (const param of node.params)
+        //     {
+        //         if (    param.output
+        //             &&  param.output.connected)
+        //         {
+        //             let includes = false;
+
+        //             for (const input of param.output.connectedInputs)
+        //             {
+        //                 if (this.children.includes(input.node))
+        //                 {
+        //                     includes = true;
+        //                     break;
+        //                 }
+        //             }
+                    
+        //             if (!includes)
+        //                 this.addParam(new ProxyParam(param));
+        //         }
+        //     }
+        // }
+        
+        for (const node of this.children)
+        {
+            for (const param of node.params)
+            {
+                if (    param.input
+                    &&  param.input.connected
+                    && !this.children.includes(param.input.connectedOutput.node))
+                {
+                    console.log('adding');
+                    this.addParam(new ProxyParam(param));
+                }
+            }
+        }
+    }
+
+
+
+    updateNode()
+    {
+        super.updateNode();
+
+        this.div.style.zIndex = 0;
+
+        this.inner.style.height = this.div.offsetHeight;
+        this.inner.style.backgroundColor = darkMode ? '#5558' : '#ddd8';// 'var(--figma-color-border-disabled)';
+    }
+
+
 
     resetResize(resetResizing = true)
     {
@@ -52938,18 +53150,6 @@ extends OperatorBase
 
 
 
-    updateNode()
-    {
-        super.updateNode();
-
-        this.div.style.zIndex = 0;
-
-        this.inner.style.height = this.div.offsetHeight;
-        this.inner.style.backgroundColor = 'var(--figma-color-border-disabled)';
-    }
-
-
-
     setSize(w, h, updateTransform = true)
     {
         super.setSize(w, Math.max(this.header.offsetHeight, h), updateTransform);
@@ -52965,42 +53165,6 @@ extends OperatorBase
 
         this.inner.style.height = this.div.offsetHeight;
     }
-
-
-
-    genRequest(gen)
-    {
-        // 'this' is the output
-
-        gen.scope.push({
-            nodeId:  this.id, 
-            paramId: NULL });
-
-        const [request, ignore] = this.genRequestStart(gen);
-        if (ignore) return request;
-
-
-        // const input = this.inputs[0];
-
-
-        // request.push(input.connected ? 1 : 0);
-
-        // if (input.connected)
-        //     request.push(...pushInputOrParam(input, gen));
-
-        
-        gen.scope.pop();
-        pushUnique(gen.passedNodes, this);
-
-        return request;
-    }
-
-
-
-    // updateValues(requestId, actionId, updateParamId, paramIds, values) // virtual
-    // {
-    //     super.updateValues(requestId, actionId, updateParamId, paramIds, values);
-    // }
 
 
 
@@ -56626,9 +56790,6 @@ extends Action
 
         this.nodeId  = nodeId;
 
-        console.log('oldRect =', oldRect);
-        console.log('newRect =', newRect);
-
         this.oldRect = Rect.fromTypical(oldRect);
         this.newRect = Rect.fromTypical(newRect);
     }
@@ -56642,6 +56803,8 @@ extends Action
         //     this.newRect.y,
         //     this.newRect.w,
         //     this.newRect.h);
+
+        this.node.updateChildren();
 
         uiSaveNodes(this.graph, [this.nodeId]);
     }
@@ -56657,6 +56820,7 @@ extends Action
             this.oldRect.h);
 
         this.node.updateNode();
+        this.node.updateChildren();
 
         uiSaveNodes(this.graph, [this.nodeId]);
     }
@@ -56672,6 +56836,7 @@ extends Action
             this.newRect.h);
 
         this.node.updateNode();
+        this.node.updateChildren();
         
         uiSaveNodes(this.graph, [this.nodeId]);
     }
@@ -57965,7 +58130,7 @@ document.addEventListener('keydown', e =>
     // select all
     else if (e.code == 'KeyA'
           && getCtrlKey(e))
-        selectAllNodes(e.shiftKey);
+        graphView.selectAllNodes(e.shiftKey);
 
     // undo/redo
     else if (e.code == 'KeyZ'
@@ -60594,7 +60759,8 @@ function uiUpdateValuesAndObjects(requestId, actionId, updateNodeId, updateParam
     }
 
     
-    uiSaveNodes(graphView.graph, nodes.map(n => n.id));
+    if (!graphView.loadingNodes)
+        uiSaveNodes(graphView.graph, nodes.map(n => n.id));
 
 
     for (const node of nodes)
@@ -60620,6 +60786,9 @@ function uiUpdateValuesAndObjects(requestId, actionId, updateNodeId, updateParam
 
     if (isLastChunk)
     {
+        if (graphView.loadingNodes)
+            uiSaveNodes(graphView.graph, graphView.graph.nodes.map(n => n.id));
+
         graphView.creatingNodes      = false;
         graphView.pastingNodes       = false;
         graphView.loadingNodes       = false;
@@ -60738,6 +60907,7 @@ function uiUpdateSavedConnections(curKeys, newKeys, conns)
 
 function uiDeleteSavedConn(conn)
 {
+    console.log('conn =', conn);
     if (settings.logRawSaving)
     {
         console.log(

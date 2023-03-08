@@ -224,7 +224,12 @@ function getConnectionString(outputNodeId, outputId, outputOrder, inputNodeId, i
     const  sp   = logSpace ? ' ' : '  '; 
     const jsp   = logSpace ? ''  : ' '; 
 
-    const arrow = sp + subscriptNumber(parseInt(outputOrder)) + rightArrowChar(parseBool(list)) + sp;
+    const arrow = 
+          sp 
+        + subscriptNumber(typeof outputOrder == 'string' ? parseInt(outputOrder) : outputOrder) 
+        + rightArrowChar(typeof list == 'string' ? parseBool(list) : list) 
+        + sp;
+
     const join  = jsp + '.' + jsp;
 
     return outputNodeId + join + outputId
@@ -1425,6 +1430,17 @@ function signedPosOnLine(p0, p1, p)
     cp = transform(cp, xform);
 
     return (cp.X - p0.X) / nozero(p1.X - p0.X);
+}
+
+
+
+function rectInside(rect1, rect2)
+{
+    return !(
+           rect1.l >= rect2.l
+        && rect1.r <= rect2.r
+        && rect1.t >= rect2.t
+        && rect1.b <= rect2.b); 
 }
 
 

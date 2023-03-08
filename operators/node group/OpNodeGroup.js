@@ -1,10 +1,7 @@
 class   OpNodeGroup
 extends OperatorBase
 {
-    // graph;
-    // view;
-
-    //paramView;
+    children = [];
 
 
     canResizeL  = false;
@@ -36,16 +33,10 @@ extends OperatorBase
     {
         super(NODE_GROUP, 'group');
 
-        // mainGraph = mainGraph;
-        // this.view  = graphView;
-
-        //mainGraph.parentNodeGroup = this;
         this.alwaysLoadParams   = true;
         this.sharpBottomCorners = true;
         
-        this.div.style.height = '100px';
-
-        //this.addParam(this.paramValue = new ViewParam('view', this));
+        this.div.style.height   = '100px';
 
 
 
@@ -87,70 +78,14 @@ extends OperatorBase
             const dy = this.resizing ? (e.clientY - this.sy) / mainGraph.view.zoom : 0;
             
             
-            if (this.resizingTL)
-            {
-                this.setRect(
-                    this.startRect.x + dx, 
-                    this.startRect.y + dy,
-                    this.startRect.w - dx,
-                    this.startRect.h - dy);
-            }
-            else if (this.resizingTR)
-            {
-                this.setRect(
-                    this.startRect.x, 
-                    this.startRect.y + dy,
-                    this.startRect.w + dx,
-                    this.startRect.h - dy);
-            }
-            else if (this.resizingBL)
-            {
-                this.setRect(
-                    this.startRect.x + dx, 
-                    this.startRect.y,
-                    this.startRect.w - dx,
-                    this.startRect.h + dy);
-            }
-            else if (this.resizingBR)
-            {
-                this.setRect(
-                    this.startRect.x, 
-                    this.startRect.y,
-                    this.startRect.w + dx,
-                    this.startRect.h + dy);
-            }
-            else if (this.resizingL)
-            {
-                this.setRect(
-                    this.startRect.x + dx, 
-                    this.startRect.y,
-                    this.startRect.w - dx,
-                    this.startRect.h);
-            }
-            else if (this.resizingR)
-            {
-                this.setRect(
-                    this.startRect.x, 
-                    this.startRect.y,
-                    this.startRect.w + dx,
-                    this.startRect.h);
-            }
-            else if (this.resizingT)
-            {
-                this.setRect(
-                    this.startRect.x, 
-                    this.startRect.y + dy,
-                    this.startRect.w,
-                    this.startRect.h - dy);
-            }
-            else if (this.resizingB)
-            {
-                this.setRect(
-                    this.startRect.x, 
-                    this.startRect.y,
-                    this.startRect.w,
-                    this.startRect.h + dy);
-            }
+                 if (this.resizingTL) this.setRect(this.startRect.x + dx, this.startRect.y + dy, this.startRect.w - dx, this.startRect.h - dy);
+            else if (this.resizingTR) this.setRect(this.startRect.x,      this.startRect.y + dy, this.startRect.w + dx, this.startRect.h - dy);
+            else if (this.resizingBL) this.setRect(this.startRect.x + dx, this.startRect.y,      this.startRect.w - dx, this.startRect.h + dy);
+            else if (this.resizingBR) this.setRect(this.startRect.x,      this.startRect.y,      this.startRect.w + dx, this.startRect.h + dy);
+            else if (this.resizingL ) this.setRect(this.startRect.x + dx, this.startRect.y,      this.startRect.w - dx, this.startRect.h     );
+            else if (this.resizingR ) this.setRect(this.startRect.x,      this.startRect.y,      this.startRect.w + dx, this.startRect.h     );
+            else if (this.resizingT ) this.setRect(this.startRect.x,      this.startRect.y + dy, this.startRect.w,      this.startRect.h - dy);
+            else if (this.resizingB ) this.setRect(this.startRect.x,      this.startRect.y,      this.startRect.w,      this.startRect.h + dy);
             else
                 this.checkResizing(e);
 
@@ -190,6 +125,113 @@ extends OperatorBase
     }
     
     
+
+    genRequest(gen)
+    {
+        // 'this' is the output
+
+        gen.scope.push({
+            nodeId:  this.id, 
+            paramId: NULL });
+
+        const [request, ignore] = this.genRequestStart(gen);
+        if (ignore) return request;
+
+
+        // const input = this.inputs[0];
+
+
+        // request.push(input.connected ? 1 : 0);
+
+        // if (input.connected)
+        //     request.push(...pushInputOrParam(input, gen));
+
+        
+        gen.scope.pop();
+        pushUnique(gen.passedNodes, this);
+
+        return request;
+    }
+
+
+
+    // updateValues(requestId, actionId, updateParamId, paramIds, values) // virtual
+    // {
+    //     super.updateValues(requestId, actionId, updateParamId, paramIds, values);
+    // }
+
+
+
+    updateChildren()
+    {
+        for (const node of mainGraph.nodes.filter(n => !this.children.includes(n)))
+        {
+            if (rectInside(node.measureData.divOffset, this.measureData.divOffset))
+                pushUnique(this.children, node);
+        }
+
+        for (const node of this.children)
+        {
+            if (!rectInside(node.measureData.divOffset, this.measureData.divOffset))
+                removeFrom(this.children, node);
+        }
+
+
+        this.removeAllParams();
+
+
+        // for (const node of this.children)
+        // {
+        //     for (const param of node.params)
+        //     {
+        //         if (    param.output
+        //             &&  param.output.connected)
+        //         {
+        //             let includes = false;
+
+        //             for (const input of param.output.connectedInputs)
+        //             {
+        //                 if (this.children.includes(input.node))
+        //                 {
+        //                     includes = true;
+        //                     break;
+        //                 }
+        //             }
+                    
+        //             if (!includes)
+        //                 this.addParam(new ProxyParam(param));
+        //         }
+        //     }
+        // }
+        
+        for (const node of this.children)
+        {
+            for (const param of node.params)
+            {
+                if (    param.input
+                    &&  param.input.connected
+                    && !this.children.includes(param.input.connectedOutput.node))
+                {
+                    console.log('adding');
+                    this.addParam(new ProxyParam(param));
+                }
+            }
+        }
+    }
+
+
+
+    updateNode()
+    {
+        super.updateNode();
+
+        this.div.style.zIndex = 0;
+
+        this.inner.style.height = this.div.offsetHeight;
+        this.inner.style.backgroundColor = darkMode ? '#5558' : '#ddd8';// 'var(--figma-color-border-disabled)';
+    }
+
+
 
     resetResize(resetResizing = true)
     {
@@ -306,18 +348,6 @@ extends OperatorBase
 
 
 
-    updateNode()
-    {
-        super.updateNode();
-
-        this.div.style.zIndex = 0;
-
-        this.inner.style.height = this.div.offsetHeight;
-        this.inner.style.backgroundColor = 'var(--figma-color-border-disabled)';
-    }
-
-
-
     setSize(w, h, updateTransform = true)
     {
         super.setSize(w, Math.max(this.header.offsetHeight, h), updateTransform);
@@ -333,42 +363,6 @@ extends OperatorBase
 
         this.inner.style.height = this.div.offsetHeight;
     }
-
-
-
-    genRequest(gen)
-    {
-        // 'this' is the output
-
-        gen.scope.push({
-            nodeId:  this.id, 
-            paramId: NULL });
-
-        const [request, ignore] = this.genRequestStart(gen);
-        if (ignore) return request;
-
-
-        // const input = this.inputs[0];
-
-
-        // request.push(input.connected ? 1 : 0);
-
-        // if (input.connected)
-        //     request.push(...pushInputOrParam(input, gen));
-
-        
-        gen.scope.pop();
-        pushUnique(gen.passedNodes, this);
-
-        return request;
-    }
-
-
-
-    // updateValues(requestId, actionId, updateParamId, paramIds, values) // virtual
-    // {
-    //     super.updateValues(requestId, actionId, updateParamId, paramIds, values);
-    // }
 
 
 

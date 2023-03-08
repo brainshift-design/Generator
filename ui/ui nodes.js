@@ -871,7 +871,8 @@ function uiUpdateValuesAndObjects(requestId, actionId, updateNodeId, updateParam
     }
 
     
-    uiSaveNodes(graphView.graph, nodes.map(n => n.id));
+    if (!graphView.loadingNodes)
+        uiSaveNodes(graphView.graph, nodes.map(n => n.id));
 
 
     for (const node of nodes)
@@ -897,6 +898,9 @@ function uiUpdateValuesAndObjects(requestId, actionId, updateNodeId, updateParam
 
     if (isLastChunk)
     {
+        if (graphView.loadingNodes)
+            uiSaveNodes(graphView.graph, graphView.graph.nodes.map(n => n.id));
+
         graphView.creatingNodes      = false;
         graphView.pastingNodes       = false;
         graphView.loadingNodes       = false;
@@ -1015,6 +1019,7 @@ function uiUpdateSavedConnections(curKeys, newKeys, conns)
 
 function uiDeleteSavedConn(conn)
 {
+    console.log('conn =', conn);
     if (settings.logRawSaving)
     {
         console.log(

@@ -134,7 +134,7 @@ Operator.prototype.createHeader = function()
             || e.button == 2)
         {
             this.div.shiftOnPointerDown = 
-                   e.shiftKey
+                    e.shiftKey
                 && !getCtrlKey(e)
                 && !e.altKey;
         }

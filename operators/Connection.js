@@ -4,18 +4,20 @@ class Connection
 
     id;
 
+    graph;
+    
     output;
     outputOrder; // in which connections FROM THIS OUTPUT were made
     
-    graph;
-
     input;
 
-    wire;
+    list     = false;
 
+    wire;
+    
     backInit = false; // if true, on connection the value is possibly copied from the input to the output
 
-
+    
 
     constructor(output, input)
     {
@@ -59,7 +61,8 @@ class Connection
             outputId:     this.output.id,
             outputOrder:  this.outputOrder,
             inputNodeId:  this.input.node.id,
-            inputId:      this.input.id
+            inputId:      this.input.id,
+            list:         this.list
         };
     }
 }

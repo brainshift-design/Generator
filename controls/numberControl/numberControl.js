@@ -8,7 +8,7 @@ extends EventTarget
     id;
     
     name;
-    savedName              = '';
+    savedName             = '';
     
     width;
     height;
@@ -21,83 +21,85 @@ extends EventTarget
     displayMin;
     displayMax;
 
-    thinMinus              = false;
-    displayAbsolute        = false;
+    thinMinus             = false;
+    displayAbsolute       = false;
     
-    epsilon                = Epsilon;
+    epsilon               = Epsilon;
 
     acc;
      
     dec;
     displayDec;
          
-    valueScale             = 1;
+    valueScale            = 1;
                 
     suffix;
-    valueCanContainSuffix  = false;
+    valueCanContainSuffix = false;
      
-    dragReverse            = false;
+    dragReverse           = false;
     dragScale;
     wheelScale;
              
-    backStyleLight         = 'rgba(255, 255, 255, 0.95)';
-    valueStyleLight        = '#7772';
-    textStyleLight         = '#000';
+    backStyleLight        = 'rgba(255, 255, 255, 0.95)';
+    valueStyleLight       = '#7772';
+    textStyleLight        = '#000';
                 
-    backStyleDark          = 'rgba(56, 56, 56, 0.95)';
-    valueStyleDark         = '#ffffff20';
-    textStyleDark          = '#eee';
+    backStyleDark         = 'rgba(56, 56, 56, 0.95)';
+    valueStyleDark        = '#ffffff20';
+    textStyleDark         = '#eee';
                 
-    fontSize               = 11;
+    fontSize              = 11;
              
             
-    mouseOver              = false;
-    buttonDown0            = false;
-    buttonDown1            = false;
+    wrapValue             = false;
+    
+    showName              = true;
+    showHex               = false;
+
+    enableChangeEvent     = true;
+    
+    successOnFocusOut     = false;
+    keyBlur               = false;
+    
+    pointerEvents         = true;
+    readOnly              = false;
+     
+    allowEditDecimals     = true;
+    
+    valueText             = '';
+    overrideText          = '';
+
+    showNanValueName      = true; // show the name even if the value is NaN
+    showBar               = true;
+
+    barTop                = 0;
+    barBottom             = 1;
+     
+    ranges                = [];
+    rangeDivs             = [];
+     
+    options               = []; // if dec == 0, show named choices instead of a value
+
+
+    mouseOver             = false;
+    buttonDown0           = false;
+    buttonDown1           = false;
              
-    clickSize              = 4;
-    moved                  = false;
+    clickSize             = 4;
+    moved                 = false;
          
-    tabIndex               = 0;
-    inFocus                = false;
-    clicked                = false;
+    tabIndex              = 0;
+    inFocus               = false;
+    clicked               = false;
  
-    startValue             = 0;
+    startValue            = 0;
     oldValue; 
  
-    wrapValue              = false;
-    
-    showName               = true;
-    showHex                = false;
 
-    enableChangeEvent      = true;
-    
-    successOnFocusOut      = false;
-    keyBlur                = false;
-    
-    pointerEvents          = true;
-    readOnly               = false;
-     
-    allowEditDecimals      = true;
-    
-    valueText              = '';
-    overrideText           = '';
-
-    showNanValueName       = true; // show the name even if the value is NaN
-    showBar                = true;
-
-    barTop                 = 0;
-    barBottom              = 1;
-     
-    ranges                 = [];
-    rangeDivs              = [];
-     
-    options                = []; // if dec == 0, show named choices instead of a value
-
-    measureData            = { divBounds: new Rect(0, 0, 0, 0) };
+    measureData           = { divBounds: new Rect(0, 0, 0, 0) };
  
 
-    confirmTimer           = null;
+    confirmTimer          = null;
 
 
     
@@ -174,6 +176,84 @@ extends EventTarget
         this.onstartchange = new Event('startchange');
         this.onchange      = new Event('change');
         this.onconfirm     = new Event('confirm');
+    }
+
+
+    copy()
+    {
+        const copy = new NumberControl(
+            null,
+            null,
+            this.width,
+            this.height,
+            this.id,
+            this.name,
+            this.showName,
+            this.defaultValue);
+
+
+        copy.value                 = this.value;
+                
+        copy.min                   = this.min;
+        copy.max                   = this.max;
+           
+        copy.displayMin            = this.displayMin;
+        copy.displayMax            = this.displayMax;
+           
+        copy.thinMinus             = this.thinMinus;
+        copy.displayAbsolute       = this.displayAbsolute;
+      
+        copy.epsilon               = this.epsilon;
+      
+        copy.acc                   = this.acc;
+      
+        copy.dec                   = this.dec;
+        copy.displayDec            = this.displayDec;
+      
+        copy.valueScale            = this.valueScale;
+      
+        copy.suffix                = this.suffix;
+        copy.valueCanContainSuffix = this.valueCanCouffix;
+
+        copy.dragReverse           = this.dragReverse;
+        copy.dragScale             = this.dragScale;
+        copy.wheelScale            = this.wheelScale;
+
+        copy. backStyleLight       = this. backStyleLight;
+        copy.valueStyleLight       = this.valueStyleLight;
+        copy. textStyleLight       = this. textStyleLight;
+
+        copy.fontSize              = this.fontSize;
+
+
+        copy.wrapValue             = this.wrapValue;
+
+        copy.showHex               = this.showHex;
+
+        copy.enableChangeEvent     = this.enableChangeEvent;
+
+        copy.successOnFocusOut     = this.successOnFocusOut;
+        copy.keyBlur               = this.keyBlur;
+
+        copy.pointerEvents         = this.pointerEvents;
+        copy.readOnly              = this.readOnly;
+
+        copy.allowEditDecimals     = this.allowEditDecimals;
+
+        copy.valueText             = this.valueText;
+        copy.overrideText          = this.overrideText;
+
+        copy.showNanValueName      = this.showNanValueName;
+        copy.showBar               = this.showBar;
+
+        copy.barTop                = this.barTop;
+        copy.barBottom             = this.barBottom;
+
+        copy.ranges                = this.ranges.map(r => r.copy());
+
+        copy.options               = [...this.options];
+        
+        return copy;
     }
 
 
