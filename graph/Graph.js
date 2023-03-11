@@ -168,7 +168,7 @@ class Graph
             && !input.param
             &&  inputId != '')
         {
-            input = lastOf(input.node.headerInputs);
+            input = input.node.headerInputs.at(-1);
             
             const inputIndex = 
                    inputId != ''
@@ -225,26 +225,14 @@ class Graph
         if (!output) return false;
 
 
-        //const outputOrder = input.connection.outputOrder;
-
-
         this.view.removeConnWires(input.connection);
 
         removeFromArray(this.connections, input.connection);
         removeFromArray(output.connectedInputs, input);
 
 
-        // const afterConns = output.connectedInputs
-        //     .map   (i => i.connection)
-        //     .filter(c => c.outputOrder > outputOrder);
-
-        // afterConns.forEach(c => c.outputOrder--);
-        // uiSaveConnections(afterConns);
-
-
-        input .connectedOutput = null;
-        input .connection      = null;
-        output.connection      = null;
+        input.connectedOutput = null;
+        input.connection      = null;
 
 
         if (input.param)

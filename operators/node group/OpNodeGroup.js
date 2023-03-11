@@ -42,8 +42,8 @@ extends OperatorBase
 
         this.header.addEventListener('dblclick', e =>
         {
-            console.log('dblclick');
-            this.children.forEach(n => n.selected = true);
+            if (e.button == 0)
+                this.children.forEach(n => n.selected = true);
         });
 
         
@@ -52,9 +52,10 @@ extends OperatorBase
         {
             if (e.button == 0)
             {
-                this.startRect = offsetRect(this.div);
+                this.children.forEach(n => n.selected = true);
 
-                this.resizing = false;
+                this.startRect = offsetRect(this.div);
+                this.resizing  = false;
 
                      if (this.canResizeTL) { this.resizingTL = this.resizing = true; }
                 else if (this.canResizeTR) { this.resizingTR = this.resizing = true; }
@@ -146,13 +147,13 @@ extends OperatorBase
         if (ignore) return request;
 
 
-        // const input = this.inputs[0];
+        const input = this.inputs[0];
 
 
-        // request.push(input.connected ? 1 : 0);
+        request.push(input.connected ? 1 : 0);
 
-        // if (input.connected)
-        //     request.push(...pushInputOrParam(input, gen));
+        if (input.connected)
+            request.push(...pushInputOrParam(input, gen));
 
         
         gen.scope.pop();
@@ -168,67 +169,96 @@ extends OperatorBase
     //     super.updateValues(requestId, actionId, updateParamId, paramIds, values);
     // }
 
+    
 
-
-    updateChildren()
+    updateProxyControls()
     {
         this.children = [];
 
-        for (const node of mainGraph.nodes)//.filter(n => !this.children.includes(n)))
+        for (const node of mainGraph.nodes)
         {
-            if (rectInside(node.measureData.divOffset, offsetRect(this.div)))//measureData.divOffset))
+            if (rectInside(node.measureData.divOffset, offsetRect(this.div)))
                 pushUnique(this.children, node);
         }
 
 
-        // for (const node of this.children)
-        // {
-        //     if (!rectInside(node.measureData.divOffset, this.measureData.divOffset))
-        //         removeFrom(this.children, node);
-        // }
-
-
+        this.removeProxyWires();
         this.removeAllParams();
 
 
-        // for (const node of this.children)
-        // {
-        //     for (const param of node.params)
-        //     {
-        //         if (    param.output
-        //             &&  param.output.connected)
-        //         {
-        //             let includes = false;
+        this.addProxyOutputParams();
+        this.addProxyInputParams();
+    }
 
-        //             for (const input of param.output.connectedInputs)
-        //             {
-        //                 if (this.children.includes(input.node))
-        //                 {
-        //                     includes = true;
-        //                     break;
-        //                 }
-        //             }
-                    
-        //             if (!includes)
-        //                 this.addParam(new ProxyParam(param));
-        //         }
-        //     }
-        // }
-        
-console.log('this.children =', this.children.map(n => n.id));        
+
+
+    addProxyOutputParams()
+    {
         for (const node of this.children)
         {
             for (const param of node.params)
             {
-                console.log('checking');
+                if (    param.output
+                    &&  param.output.connected)
+                {
+                    let includes = false;
+
+                    for (const input of param.output.connectedInputs)
+                    {
+                        if (this.children.includes(input.node))
+                        {
+                            includes = true;
+                            break;
+                        }
+                    }
+                    
+                    if (!includes)
+                        this.addParam(new ProxyParam(param));
+                }
+            }
+        }
+    }
+
+
+
+    addProxyInputParams()
+    {
+        for (const node of this.children)
+        {
+            for (const param of node.params)
+            {
                 if (    param.input
                     &&  param.input.connected
                     && !this.children.find(n => n.id == param.input.connectedOutput.node.id))
-                {
-                    console.log('adding');
                     this.addParam(new ProxyParam(param));
-                }
             }
+        }
+    }
+
+
+
+    updateProxyWires()
+    {
+        const wires = 
+            this.params
+                .filter(p => p.input)
+                .map   (p => p.input.connection.wire);
+
+        graphView.updateWires(wires);
+    }
+
+
+
+    removeProxyWires()
+    {
+        for (const param of this.params)
+        {
+            if (param.input)
+                graphView.wireContainer.removeChild(param.input.connection.wire.svg);
+            
+            if (param.output) 
+                param.output.connectedInputs.forEach(i => 
+                    graphView.wireContainer.removeChild(i.connection.wire.svg));
         }
     }
 
@@ -285,7 +315,7 @@ console.log('this.children =', this.children.map(n => n.id));
             && e.clientY >= this.measureData.divBounds.t
             && e.clientY <  this.measureData.divBounds.t + resizeEdgeWidth)
         {
-            this.canResizeTL = true;
+            this.canResizeTL      = true;
             this.div.style.cursor = 'nwse-resize';
             return true;
         }
@@ -294,25 +324,25 @@ console.log('this.children =', this.children.map(n => n.id));
               && e.clientY >= this.measureData.divBounds.t
               && e.clientY <  this.measureData.divBounds.t + resizeEdgeWidth)
         {
-            this.canResizeTR = true;
+            this.canResizeTR      = true;
             this.div.style.cursor = 'nesw-resize';
             return true;
         }
         else if (e.clientX >= this.measureData.divBounds.l
               && e.clientX <  this.measureData.divBounds.l + resizeEdgeWidth
               && e.clientY >= this.measureData.divBounds.b - resizeEdgeWidth
-              && e.clientY <  this.measureData.divBounds.b )
+              && e.clientY <  this.measureData.divBounds.b)
         {
-            this.canResizeBL = true;
+            this.canResizeBL      = true;
             this.div.style.cursor = 'nesw-resize';
             return true;
         }
         else if (e.clientX >= this.measureData.divBounds.r - resizeEdgeWidth
               && e.clientX <  this.measureData.divBounds.r 
               && e.clientY >= this.measureData.divBounds.b - resizeEdgeWidth
-              && e.clientY <  this.measureData.divBounds.b )
+              && e.clientY <  this.measureData.divBounds.b)
         {
-            this.canResizeBR = true;
+            this.canResizeBR      = true;
             this.div.style.cursor = 'nwse-resize';
             return true;
         }
@@ -321,7 +351,7 @@ console.log('this.children =', this.children.map(n => n.id));
               && e.clientY >= this.measureData.divBounds.t + resizeEdgeWidth
               && e.clientY <  this.measureData.divBounds.b - resizeEdgeWidth)
         {
-            this.canResizeL = true;
+            this.canResizeL       = true;
             this.div.style.cursor = 'ew-resize';
             return true;
         }
@@ -330,7 +360,7 @@ console.log('this.children =', this.children.map(n => n.id));
               && e.clientY >= this.measureData.divBounds.t + resizeEdgeWidth
               && e.clientY <  this.measureData.divBounds.b - resizeEdgeWidth)
         {
-            this.canResizeR = true;
+            this.canResizeR       = true;
             this.div.style.cursor = 'ew-resize';
             return true;
         }
@@ -339,7 +369,7 @@ console.log('this.children =', this.children.map(n => n.id));
               && e.clientY >= this.measureData.divBounds.t
               && e.clientY <  this.measureData.divBounds.t + resizeEdgeWidth)
         {
-            this.canResizeT = true;
+            this.canResizeT       = true;
             this.div.style.cursor = 'ns-resize';
             return true;
         }
@@ -348,7 +378,7 @@ console.log('this.children =', this.children.map(n => n.id));
               && e.clientY >= this.measureData.divBounds.b - resizeEdgeWidth
               && e.clientY <  this.measureData.divBounds.b)
         {
-            this.canResizeB = true;
+            this.canResizeB       = true;
             this.div.style.cursor = 'ns-resize';
             return true;
         }
@@ -361,12 +391,12 @@ console.log('this.children =', this.children.map(n => n.id));
 
 
 
-    setPosition(x, y, updateTransform = true)
-    {
-        super.setPosition(x, y, updateTransform);
+    // setPosition(x, y, updateTransform = true)
+    // {
+    //     super.setPosition(x, y, updateTransform);
 
-        this.updateChildren();
-    }
+    //     this.updateProxyControls();
+    // }
 
 
 
@@ -379,7 +409,7 @@ console.log('this.children =', this.children.map(n => n.id));
 
         this.inner.style.height = this.div.offsetHeight;
 
-        this.updateChildren();
+        this.updateProxyControls();
     }
 
 
@@ -394,7 +424,7 @@ console.log('this.children =', this.children.map(n => n.id));
 
         this.inner.style.height = this.div.offsetHeight;
 
-        this.updateChildren();
+        this.updateProxyControls();
     }
 
 

@@ -134,7 +134,7 @@ extends Action
     removePrevInputConnection(updateNodes)
     {
         uiDeleteSavedConn(this.prevInput.connection);
-        uiDisconnect(this.prevInput);
+        uiDisconnect(this.prevInput, false);
 
         pushUnique(updateNodes, this.prevInput.node);
     }

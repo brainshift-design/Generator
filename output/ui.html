@@ -3701,7 +3701,7 @@ function removeLast(array)
     if (isEmpty(array))
         return null;
 
-    let last = lastOf(array);
+    let last = array.at(-1);
     array.splice(array.length-1, 1)
 
     return last;
@@ -3709,25 +3709,9 @@ function removeLast(array)
 
 
 
-function beforeLastOf(array)
-{
-    return array.length > 1 
-         ? array[array.length-2]
-         : null;
-}
-
-
-
 function lastOf(array)
 {
     return array[array.length-1];
-}
-
-
-
-function firstOf(array)
-{
-    return array[0];
 }
 
 
@@ -5440,7 +5424,7 @@ function pluralString(count, pluralChar = 's')
 
 function countString(itemName, count)
 {
-    const lastChar   = lastOf(itemName);
+    const lastChar   = itemName.at(-1);
     const pluralChar = lastChar == lastChar.toUpperCase() ? 'S' : 's';
 
     return itemName + pluralString(count, pluralChar);
@@ -20661,7 +20645,7 @@ function removeLast(array)
     if (isEmpty(array))
         return null;
 
-    let last = lastOf(array);
+    let last = array.at(-1);
     array.splice(array.length-1, 1)
 
     return last;
@@ -20669,25 +20653,9 @@ function removeLast(array)
 
 
 
-function beforeLastOf(array)
-{
-    return array.length > 1 
-         ? array[array.length-2]
-         : null;
-}
-
-
-
 function lastOf(array)
 {
     return array[array.length-1];
-}
-
-
-
-function firstOf(array)
-{
-    return array[0];
 }
 
 
@@ -22400,7 +22368,7 @@ function pluralString(count, pluralChar = 's')
 
 function countString(itemName, count)
 {
-    const lastChar   = lastOf(itemName);
+    const lastChar   = itemName.at(-1);
     const pluralChar = lastChar == lastChar.toUpperCase() ? 'S' : 's';
 
     return itemName + pluralString(count, pluralChar);
@@ -25708,7 +25676,7 @@ function validateProductKey(license, key, rec = false)
     {
         let lowerKey = key;
 
-        const lastChar  = lastOf(lowerKey);
+        const lastChar  = lowerKey.at(-1);
         const lastIndex = base32chars.indexOf(lastChar);
 
         if (lastIndex > 0)
@@ -39198,9 +39166,6 @@ class GraphView
     btn1down       = false; // this is to help deal with mouse wheels that send X values as
                              // sometimes a MMB press is followed by wheelX as a "deeper" middle-click
 
-    // pan            = point(0, 0);
-    // zoom           = 1;
-    
     altDown        = false;
 
     panning        = false;
@@ -39300,6 +39265,7 @@ class GraphView
 
         
         this.wireContainer = createDiv('wireContainer');
+        
         this.scrollbarX    = createDiv('scrollbar', 'scrollbarX');
         this.scrollbarY    = createDiv('scrollbar', 'scrollbarY');
 
@@ -39868,14 +39834,18 @@ GraphView.prototype.endConnection = function(pointerId, backInit = false)
                 &&  input.node.variableInputs
                 && !input.param
                 && !isLastInArray(input.node.headerInputs, input))
-                actionManager.do(new ReorderInputsAction(this.graph, input.node.id, oldReorderIndex, newReorderIndex));
-
-            else if (savedConnInput
-                && savedConnInput.connectedOutput == this.tempConn.output
-                && savedConnInput.index != input.index
-                && (  !input.node.variableInputs && input.index < input.node.headerInputs.length
-                    || input.node.variableInputs && input.index < input.node.headerInputs.length-1))
             {
+                console.log('1 reorder');
+                actionManager.do(new ReorderInputsAction(this.graph, input.node.id, oldReorderIndex, newReorderIndex));
+            }
+            else if (savedConnInput
+                  && savedConnInput.connectedOutput == this.tempConn.output
+                  && savedConnInput.index != input.index
+                  && savedConnInput.node.headerInputs.includes(savedConnInput) == savedConnInput.node.headerInputs.includes(input)
+                  && (  !input.node.variableInputs &&  input.index < input.node.inputs.length
+                      || input.node.variableInputs && (input.index < input.node.headerInputs.length-1 || input.index >= input.node.headerInputs.length)))
+            {
+                console.log('2 reorder');
                 if (input.node.variableInputs)
                 {
                     moveInArray(
@@ -39890,29 +39860,32 @@ GraphView.prototype.endConnection = function(pointerId, backInit = false)
                     actionManager.do(new ReorderInputConnectionsAction(this.graph, savedConnInput.node.id, savedConnInput.id, input.id));
                 }
             }
-            else if (   input == savedConnInput
-                    && input.connection) // reconnect old
+            else if (input == savedConnInput
+                  && input.connection) // reconnect old
             {
+                console.log('3 reconnect');
                 this.savedConn = null; // done here to redraw the saved wire correctly
                 input.connection.wire.show(true);
             }
-
             else if (savedConnInput
-                && savedConnInput.connectedOutput == output
-                && (  !input.node.variableInputs
-                    || input.index >= input.node.headerInputs.length
-                    ||    input.node.headerInputs.length > 1 
-                        && input.index < input.node.headerInputs.length-1
-                    ||    input.node.headerInputs.length == 1 
-                        && input.index == 0))
+                  && savedConnInput.connectedOutput == output
+                  && (  !input.node.variableInputs
+                      || input.index >= input.node.headerInputs.length
+                      ||    input.node.headerInputs.length > 1 
+                         && input.index < input.node.headerInputs.length-1
+                      ||    input.node.headerInputs.length == 1 
+                         && input.index == 0))
             {
+                console.log('4 reconnect');
                 actionManager.do(new ReconnectAction(this.graph, output, savedConnInput, input));
             }
-
             else if (   !savedConnInput
                     && (  !input.connected
                         || input.connectedOutput != this.tempConn.output)) // connect new
+            {
+                console.log('5 createConnectAction');
                 createConnectAction(this.graph, output, input, backInit);
+            }
         }
         else if (savedConnInput) // disconnect old
             actionManager.do(new DisconnectAction(this.graph, savedConnInput));
@@ -39978,11 +39951,22 @@ GraphView.prototype.removeWire = function(wire)
 
 
 
-GraphView.prototype.updateWires = function(wires)
+GraphView.prototype.updateWires = function(_wires)
 {
     //logFunction('GraphView.updateWires()');
-
     
+    const wires = [..._wires];
+
+
+    const nWires = wires.length;
+
+    for (let i = 0; i < nWires; i++)
+    {
+        if (wires[i].connection.proxy)
+            pushUnique(wires, wires[i].connection.proxy.wire);
+    }
+
+
     const pOut    = [];
     const pIn     = [];
     
@@ -41243,7 +41227,7 @@ extends EventTarget
                     actionManager.do(
                         new SetParamValueAction(this.node.graph, this, value), 
                           !isEmpty(actionManager.actions)
-                        && lastOf(actionManager.actions).type == SET_VALUE_ACTION);
+                        && actionManager.actions.at(-1).type == SET_VALUE_ACTION);
 
                     this.dispatchEvent(this.onconfirm);
                 }
@@ -43041,7 +43025,7 @@ extends Parameter
 class   ProxyParam
 extends Parameter
 {
-    refParam;
+    param;
 
     controls    = [];
     connections = [];
@@ -43052,7 +43036,7 @@ extends Parameter
         super(param.type, param.node.id + '_' + param.id);
 
 
-        this.refParam = param;
+        this.param = param;
         param.proxy = this;
 
         this.div.style.height = 20;
@@ -43063,8 +43047,8 @@ extends Parameter
         {
             case NUMBER_VALUE: 
             {
-                this.controls = [param.controls[0].copy()];
-                this.controls[0].param = this;
+                this.controls                      = [param.controls[0].copy()];
+                this.controls[0].param             = this;
 
                 this.controls[0].div.style.display = 'inline-block';
                 this.controls[0].div.style.width   = '100%';
@@ -43076,9 +43060,17 @@ extends Parameter
         }
 
 
-        if (param.input )
+        if (param.input)
         {
-            this.initInput (param.input.types,  getParamInputValuesForUndo, null);
+            this.initInput(param.input.types, getParamInputValuesForUndo, null);
+
+            const conn = new Connection(param.input.connectedOutput, this.input);
+            this.connections.push(conn);
+
+            this.input.connection = conn;
+            param.input.connection.proxy = conn;
+
+            graphView.wireContainer.appendChild(conn.wire.svg);
         }
 
 
@@ -43094,7 +43086,8 @@ extends Parameter
     {
         for (let i = 0; i < this.controls.length; i++)
         {
-            this.controls[i].setValue(this.refParam.controls[i].value, false, true, false);
+            this.controls[i].setValue(this.param.controls[i].value, false, true, false);
+            this.controls[i].update();
         }
     }
 }
@@ -43225,7 +43218,7 @@ extends EventTarget
 
             if (graphView.headerInput)
             {
-                graphView.headerInput.updateControl();
+                graphView.headerInputs.updateControl();
                 graphView.headerInput = null;
             }
 
@@ -43732,6 +43725,8 @@ class Connection
     wire;
     
     backInit = false; // if true, on connection the value is possibly copied from the input to the output
+
+    proxy    = null;
 
     
 
@@ -44350,24 +44345,6 @@ class Wire
 }
 
 
-/*
-    Operators don't have data types, those are inferred from the outputs.
-
-    Outputs and have a toString() method, which creates a string that
-    is added to the complete recursive generation request. 
-    
-    The generator then does the calculation and sends back two kinds of messages:
-    node value updates and Figma page updates.
-
-    Value updates can trigger a visual node update. The update info is passed
-    in the update message.
-
-
-    Output.genRequest()
-    Parameter.genRequest()
-*/
-
-
 const connectionSize = 9;
 const connectionGap  = 2;
 
@@ -44400,21 +44377,21 @@ class Operator
     slow;  // takes a while to finish operation, shows a progress bar
 
     
-    inputs           = [];
-    outputs          = [];
+    inputs             = [];
+    outputs            = [];
   
-    params           = [];
-    hiddenParams     = [];
+    params             = [];
+    hiddenParams       = [];
   
       
-    variableInputs   = false;
+    variableInputs     = false;
 
-    alwaysLoadParams = false;
-    alwaysSaveParams = false;
+    alwaysLoadParams   = false;
+    alwaysSaveParams   = false;
 
-    scrollName       = true;
+    scrollName         = true;
 
-    showActiveArrow  = false;
+    showActiveArrow    = false;
 
     sharpBottomCorners = false;
     
@@ -44423,10 +44400,10 @@ class Operator
     labelOffsetFactor;
 
 
-    _creatingButton  = null; // this is used to place the node under its creating button
+    _creatingButton    = null; // this is used to place the node under its creating button
 
     
-    requestCache = []; // for nodes without an output
+    requestCache       = []; // for nodes without an output
 
 
     // node UI
@@ -44437,10 +44414,10 @@ class Operator
 
     divDisabled;
     
-    progressWrapper = null;
-    progressBar     = null;
-
-    hasProgressBar  = false;
+    progressWrapper    = null;
+    progressBar        = null;
+   
+    hasProgressBar     = false;
 
 
     labelWrapper;
@@ -44481,15 +44458,15 @@ class Operator
 
     _active = false;
     get active() { return this._active; }
-       
-    
-    get headerConnected() { return !isEmpty(this.headerInputs.filter(i => i.connected)); }
 
-    get headerInputs () { return this.inputs .filter(i => !i.param); }
-    get headerOutputs() { return this.outputs.filter(o => !o.param); }
 
-    get connectedHeaderInputs () { return this.inputs .filter(i => !i.param && i.connected); }
-    get connectedHeaderOutputs() { return this.outputs.filter(o => !o.param && o.connected); }
+    get headerConnected       () { return !isEmpty(this.headerInputs.filter(i => i.connected)); }
+
+    get headerInputs          () { return this.inputs .filter(i => !i.param);                   }
+    get headerOutputs         () { return this.outputs.filter(o => !o.param);                   }
+   
+    get connectedHeaderInputs () { return this.inputs .filter(i => !i.param && i.connected);    }
+    get connectedHeaderOutputs() { return this.outputs.filter(o => !o.param && o.connected);    }
 
 
 
@@ -44577,7 +44554,7 @@ class Operator
         else if (!view.tempConn.output.node.isOrFollows(this))
         {
             if (this.variableInputs)
-                return lastOf(inputs.filter(i => !i.param));
+                return inputs.filter(i => !i.param).at(-1);
 
             else if (!isEmpty(inputs))
             {
@@ -44846,7 +44823,7 @@ class Operator
 
     setPosition(x, y, updateTransform = true)
     {
-        console.log('Operator.setPosition()');
+        //console.log('Operator.setPosition()');
    
         this.div.style.left = x + 'px';
         this.div.style.top  = y + 'px';
@@ -44859,9 +44836,12 @@ class Operator
 
         this.updateMeasureData();
 
-        mainGraph.nodes
-            .filter(n => n.type == NODE_GROUP)
-            .forEach(n => n.updateChildren());
+
+        for (const node of mainGraph.nodes.filter(n => n.type == NODE_GROUP))
+        {
+            node.updateProxyControls();
+            node.updateProxyWires();
+        }
     }
 
 
@@ -45664,6 +45644,9 @@ Operator.prototype.createHeader = function()
             this.div.moved = true;
 
             view.updateScroll(x, w, h, bounds, yOffset);
+
+            if (this.type == NODE_GROUP)
+                this.updateProxyWires();
         }
         else if (   tempConn
                  && toTheRightOfInputs)
@@ -45786,10 +45769,11 @@ Operator.prototype.createHeader = function()
                     view.lastSelectedNodes.map(n => n.id)));
             }
 
-
             this.div.dragging = false;
             this.header.releasePointerCapture(e.pointerId);
         }
+
+        
         else if (view.tempConn)
         {
             if (    view.tempConn.output
@@ -45887,8 +45871,8 @@ Operator.prototype.createInfo = function()
 
     this.divDisabled.style.display       = 'none';
     this.divDisabled.style.position      = 'absolute';
-    this.divDisabled.style.width         = 5;
-    this.divDisabled.style.height        = 100;
+    this.divDisabled.style.width         =  5;
+    this.divDisabled.style.height        =  100;
     this.divDisabled.style.background    = '#e88b';
     this.divDisabled.style.pointerEvents = 'none';
 };
@@ -49679,14 +49663,14 @@ extends OpColorBase
             }
             else if (open && rgbIsValid(rgb)) 
             {
-                lastOf(ranges).end = f;
+                ranges.at(-1).end = f;
                 open = false;
             }
         }
 
         
         if (open)
-            lastOf(ranges).end = 1;
+            ranges.at(-1).end = 1;
         else if (!open
               && isEmpty(ranges))
             control.resetRanges();
@@ -52878,8 +52862,8 @@ extends OperatorBase
 
         this.header.addEventListener('dblclick', e =>
         {
-            console.log('dblclick');
-            this.children.forEach(n => n.selected = true);
+            if (e.button == 0)
+                this.children.forEach(n => n.selected = true);
         });
 
         
@@ -52888,9 +52872,10 @@ extends OperatorBase
         {
             if (e.button == 0)
             {
-                this.startRect = offsetRect(this.div);
+                this.children.forEach(n => n.selected = true);
 
-                this.resizing = false;
+                this.startRect = offsetRect(this.div);
+                this.resizing  = false;
 
                      if (this.canResizeTL) { this.resizingTL = this.resizing = true; }
                 else if (this.canResizeTR) { this.resizingTR = this.resizing = true; }
@@ -52982,13 +52967,13 @@ extends OperatorBase
         if (ignore) return request;
 
 
-        // const input = this.inputs[0];
+        const input = this.inputs[0];
 
 
-        // request.push(input.connected ? 1 : 0);
+        request.push(input.connected ? 1 : 0);
 
-        // if (input.connected)
-        //     request.push(...pushInputOrParam(input, gen));
+        if (input.connected)
+            request.push(...pushInputOrParam(input, gen));
 
         
         gen.scope.pop();
@@ -53004,67 +52989,96 @@ extends OperatorBase
     //     super.updateValues(requestId, actionId, updateParamId, paramIds, values);
     // }
 
+    
 
-
-    updateChildren()
+    updateProxyControls()
     {
         this.children = [];
 
-        for (const node of mainGraph.nodes)//.filter(n => !this.children.includes(n)))
+        for (const node of mainGraph.nodes)
         {
-            if (rectInside(node.measureData.divOffset, offsetRect(this.div)))//measureData.divOffset))
+            if (rectInside(node.measureData.divOffset, offsetRect(this.div)))
                 pushUnique(this.children, node);
         }
 
 
-        // for (const node of this.children)
-        // {
-        //     if (!rectInside(node.measureData.divOffset, this.measureData.divOffset))
-        //         removeFrom(this.children, node);
-        // }
-
-
+        this.removeProxyWires();
         this.removeAllParams();
 
 
-        // for (const node of this.children)
-        // {
-        //     for (const param of node.params)
-        //     {
-        //         if (    param.output
-        //             &&  param.output.connected)
-        //         {
-        //             let includes = false;
+        this.addProxyOutputParams();
+        this.addProxyInputParams();
+    }
 
-        //             for (const input of param.output.connectedInputs)
-        //             {
-        //                 if (this.children.includes(input.node))
-        //                 {
-        //                     includes = true;
-        //                     break;
-        //                 }
-        //             }
-                    
-        //             if (!includes)
-        //                 this.addParam(new ProxyParam(param));
-        //         }
-        //     }
-        // }
-        
-console.log('this.children =', this.children.map(n => n.id));        
+
+
+    addProxyOutputParams()
+    {
         for (const node of this.children)
         {
             for (const param of node.params)
             {
-                console.log('checking');
+                if (    param.output
+                    &&  param.output.connected)
+                {
+                    let includes = false;
+
+                    for (const input of param.output.connectedInputs)
+                    {
+                        if (this.children.includes(input.node))
+                        {
+                            includes = true;
+                            break;
+                        }
+                    }
+                    
+                    if (!includes)
+                        this.addParam(new ProxyParam(param));
+                }
+            }
+        }
+    }
+
+
+
+    addProxyInputParams()
+    {
+        for (const node of this.children)
+        {
+            for (const param of node.params)
+            {
                 if (    param.input
                     &&  param.input.connected
                     && !this.children.find(n => n.id == param.input.connectedOutput.node.id))
-                {
-                    console.log('adding');
                     this.addParam(new ProxyParam(param));
-                }
             }
+        }
+    }
+
+
+
+    updateProxyWires()
+    {
+        const wires = 
+            this.params
+                .filter(p => p.input)
+                .map   (p => p.input.connection.wire);
+
+        graphView.updateWires(wires);
+    }
+
+
+
+    removeProxyWires()
+    {
+        for (const param of this.params)
+        {
+            if (param.input)
+                graphView.wireContainer.removeChild(param.input.connection.wire.svg);
+            
+            if (param.output) 
+                param.output.connectedInputs.forEach(i => 
+                    graphView.wireContainer.removeChild(i.connection.wire.svg));
         }
     }
 
@@ -53121,7 +53135,7 @@ console.log('this.children =', this.children.map(n => n.id));
             && e.clientY >= this.measureData.divBounds.t
             && e.clientY <  this.measureData.divBounds.t + resizeEdgeWidth)
         {
-            this.canResizeTL = true;
+            this.canResizeTL      = true;
             this.div.style.cursor = 'nwse-resize';
             return true;
         }
@@ -53130,25 +53144,25 @@ console.log('this.children =', this.children.map(n => n.id));
               && e.clientY >= this.measureData.divBounds.t
               && e.clientY <  this.measureData.divBounds.t + resizeEdgeWidth)
         {
-            this.canResizeTR = true;
+            this.canResizeTR      = true;
             this.div.style.cursor = 'nesw-resize';
             return true;
         }
         else if (e.clientX >= this.measureData.divBounds.l
               && e.clientX <  this.measureData.divBounds.l + resizeEdgeWidth
               && e.clientY >= this.measureData.divBounds.b - resizeEdgeWidth
-              && e.clientY <  this.measureData.divBounds.b )
+              && e.clientY <  this.measureData.divBounds.b)
         {
-            this.canResizeBL = true;
+            this.canResizeBL      = true;
             this.div.style.cursor = 'nesw-resize';
             return true;
         }
         else if (e.clientX >= this.measureData.divBounds.r - resizeEdgeWidth
               && e.clientX <  this.measureData.divBounds.r 
               && e.clientY >= this.measureData.divBounds.b - resizeEdgeWidth
-              && e.clientY <  this.measureData.divBounds.b )
+              && e.clientY <  this.measureData.divBounds.b)
         {
-            this.canResizeBR = true;
+            this.canResizeBR      = true;
             this.div.style.cursor = 'nwse-resize';
             return true;
         }
@@ -53157,7 +53171,7 @@ console.log('this.children =', this.children.map(n => n.id));
               && e.clientY >= this.measureData.divBounds.t + resizeEdgeWidth
               && e.clientY <  this.measureData.divBounds.b - resizeEdgeWidth)
         {
-            this.canResizeL = true;
+            this.canResizeL       = true;
             this.div.style.cursor = 'ew-resize';
             return true;
         }
@@ -53166,7 +53180,7 @@ console.log('this.children =', this.children.map(n => n.id));
               && e.clientY >= this.measureData.divBounds.t + resizeEdgeWidth
               && e.clientY <  this.measureData.divBounds.b - resizeEdgeWidth)
         {
-            this.canResizeR = true;
+            this.canResizeR       = true;
             this.div.style.cursor = 'ew-resize';
             return true;
         }
@@ -53175,7 +53189,7 @@ console.log('this.children =', this.children.map(n => n.id));
               && e.clientY >= this.measureData.divBounds.t
               && e.clientY <  this.measureData.divBounds.t + resizeEdgeWidth)
         {
-            this.canResizeT = true;
+            this.canResizeT       = true;
             this.div.style.cursor = 'ns-resize';
             return true;
         }
@@ -53184,7 +53198,7 @@ console.log('this.children =', this.children.map(n => n.id));
               && e.clientY >= this.measureData.divBounds.b - resizeEdgeWidth
               && e.clientY <  this.measureData.divBounds.b)
         {
-            this.canResizeB = true;
+            this.canResizeB       = true;
             this.div.style.cursor = 'ns-resize';
             return true;
         }
@@ -53197,12 +53211,12 @@ console.log('this.children =', this.children.map(n => n.id));
 
 
 
-    setPosition(x, y, updateTransform = true)
-    {
-        super.setPosition(x, y, updateTransform);
+    // setPosition(x, y, updateTransform = true)
+    // {
+    //     super.setPosition(x, y, updateTransform);
 
-        this.updateChildren();
-    }
+    //     this.updateProxyControls();
+    // }
 
 
 
@@ -53215,7 +53229,7 @@ console.log('this.children =', this.children.map(n => n.id));
 
         this.inner.style.height = this.div.offsetHeight;
 
-        this.updateChildren();
+        this.updateProxyControls();
     }
 
 
@@ -53230,7 +53244,7 @@ console.log('this.children =', this.children.map(n => n.id));
 
         this.inner.style.height = this.div.offsetHeight;
 
-        this.updateChildren();
+        this.updateProxyControls();
     }
 
 
@@ -53724,7 +53738,7 @@ class Graph
             && !input.param
             &&  inputId != '')
         {
-            input = lastOf(input.node.headerInputs);
+            input = input.node.headerInputs.at(-1);
             
             const inputIndex = 
                    inputId != ''
@@ -53781,26 +53795,14 @@ class Graph
         if (!output) return false;
 
 
-        //const outputOrder = input.connection.outputOrder;
-
-
         this.view.removeConnWires(input.connection);
 
         removeFromArray(this.connections, input.connection);
         removeFromArray(output.connectedInputs, input);
 
 
-        // const afterConns = output.connectedInputs
-        //     .map   (i => i.connection)
-        //     .filter(c => c.outputOrder > outputOrder);
-
-        // afterConns.forEach(c => c.outputOrder--);
-        // uiSaveConnections(afterConns);
-
-
-        input .connectedOutput = null;
-        input .connection      = null;
-        output.connection      = null;
+        input.connectedOutput = null;
+        input.connection      = null;
 
 
         if (input.param)
@@ -54662,8 +54664,8 @@ class ActionManager
         
         if (this.actions.length > 1)
         {
-            const before = beforeLastOf(this.actions);
-            const last   = lastOf      (this.actions);
+            const before = this.actions.at(-2);
+            const last   = this.actions.at(-1);
 
             if (   linkWithPrevious
                 || before._linkWithNext)
@@ -54695,7 +54697,7 @@ class ActionManager
 
 
             if (   isEmpty(this.actions)
-                || last.prevAction != lastOf(this.actions))
+                || last.prevAction != this.actions.at(-1))
                 break;
         }
     }
@@ -54718,7 +54720,7 @@ class ActionManager
 
 
             if (   isEmpty(this.redoActions)
-                || last.nextAction != lastOf(this.redoActions))
+                || last.nextAction != this.redoActions.at(-1))
                 break;
         }
     }
@@ -55600,7 +55602,7 @@ function deleteNodesAction_restoreNodes(act)
 
     act.graph.addNodes(act.nodes);
 
-    act.graph.view.putNodeOnTop(lastOf(act.nodes));
+    act.graph.view.putNodeOnTop(act.nodes.at(-1));
     act.graph.view.selected = act.nodes;
 
 
@@ -56200,7 +56202,7 @@ extends Action
     removePrevInputConnection(updateNodes)
     {
         uiDeleteSavedConn(this.prevInput.connection);
-        uiDisconnect(this.prevInput);
+        uiDisconnect(this.prevInput, false);
 
         pushUnique(updateNodes, this.prevInput.node);
     }
@@ -56314,8 +56316,8 @@ extends Action
         
         for (const cluster of clusters)
         {
-            const first = firstOf(cluster);
-            const last  =  lastOf(cluster);
+            const first = cluster.at(0);
+            const last  = cluster.at(-1);
 
             if (   first.headerInputs .length == 1
                 &&  last.headerOutputs.length == 1
@@ -56339,8 +56341,8 @@ extends Action
 
         for (const cluster of clusters)
         {
-            this.clusterActiveLeft .push(getActiveBeforeNode(firstOf(cluster),        [firstOf(cluster)]));
-            this.clusterActiveRight.push(getActiveAfterNode (lastOf (cluster), false, [lastOf (cluster)]));
+            this.clusterActiveLeft .push(getActiveBeforeNode(cluster.at( 0),        [cluster.at( 0)]));
+            this.clusterActiveRight.push(getActiveAfterNode (cluster.at(-1), false, [cluster.at(-1)]));
         }
     }
 
@@ -57927,13 +57929,42 @@ var enteredDragging    = false;
 
 
 
-document.addEventListener('pointerenter', function(e)
-{
-    if (   e.buttons[0] 
-        || e.buttons[1] 
-        || e.buttons[2])
-        enteredDragging = true;
-});
+// document.addEventListener('dragenter', function(e)
+// {
+//     console.log('dragenter');
+//     e.preventDefault();
+//     // e.stopImmediatePropagation();
+//     return false;
+//     // return false;
+//     // if (   e.buttons[0] 
+//     //     || e.buttons[1] 
+//     //     || e.buttons[2])
+//     //     enteredDragging = true;
+// });
+
+
+
+// document.addEventListener('drag', function(e)
+// {
+//     e.preventDefault();
+//     // e.stopImmediatePropagation();
+//     return false;
+//     // return false;
+//     // if (   e.buttons[0] 
+//     //     || e.buttons[1] 
+//     //     || e.buttons[2])
+//     //     enteredDragging = true;
+// });
+
+
+
+// document.addEventListener('pointerenter', function(e)
+// {
+//     if (   e.buttons[0] 
+//         || e.buttons[1] 
+//         || e.buttons[2])
+//         enteredDragging = true;
+// });
 
 
 
@@ -57941,22 +57972,29 @@ document.addEventListener('pointerdown', function(e)
 {
     if (e.button == 0)
     {
-        if (   document.canResizeL
-            || document.canResizeR
+        if (   /*document.canResizeL
+            ||*/ document.canResizeR
             || document.canResizeB)
         {
             document.startRect = new Rect(
-                e.clientX,
-                e.clientY,
+                document.body.offsetLeft,
+                document.body.offsetTop,
                 window.innerWidth,
                 window.innerHeight);
 
+            document.sx = e.clientX;
+            document.sy = e.clientY;
+
+            document.startPan = graphView.pan;
+
             document.body.setPointerCapture(e.pointerId);
 
-            document.resizingL = document.canResizeL;
+          //document.resizingL = document.canResizeL;
             document.resizingR = document.canResizeR;
             document.resizingB = document.canResizeB;
-       }
+
+            uiUpdateViewportRect();
+        }
     }
 
 
@@ -57978,37 +58016,39 @@ document.addEventListener('pointermove', function(e)
         && document.resizingB)
     {
         uiResizeWindow(
-            document.startRect.w + e.clientX - document.startRect.x,
-            document.startRect.h + e.clientY - document.startRect.y);
+            document.startRect.w + e.clientX - document.sx,
+            document.startRect.h + e.clientY - document.sy);
     }
-    else if (document.resizingL
-          && document.resizingB)
-    {
-        uiSetWindowRect(
-            e.clientX,
-            e.clientY,
-            document.startRect.w - e.clientX + document.startRect.x,
-            document.startRect.h + e.clientY - document.startRect.y);
-    }
-    else if (document.resizingL)
-    {
-        uiSetWindowRect(
-            e.clientX,
-            Number.NaN,
-            document.startRect.w - e.clientX + document.startRect.x,
-            window.innerHeight);
-    }
+    // else if (document.resizingL
+    //       && document.resizingB)
+    // {
+    //     uiSetWindowRect(
+    //         e.clientX,
+    //         e.clientY,
+    //         document.startRect.w - e.clientX + document.startRect.x,
+    //         document.startRect.h + e.clientY - document.startRect.y);
+    // }
+    // else if (document.resizingL)
+    // {
+    //     uiSetWindowRect(
+    //         document.startRect.x + e.clientX - document.sx,
+    //         document.startRect.y,
+    //         document.startRect.width - e.clientX + document.sx,
+    //         document.startRect.height);
+
+    //     //graphView.pan = point(document.startPan.x - e.clientX, document.startPan.y);
+    // }
     else if (document.resizingR)
     {
         uiResizeWindow(
-            document.startRect.w + e.clientX - document.startRect.x,
+            document.startRect.w + e.clientX - document.sx,
             window.innerHeight);
     }
     else if (document.resizingB)
     {
         uiResizeWindow(
             window.innerWidth,
-            document.startRect.h + e.clientY - document.startRect.y);
+            document.startRect.h + e.clientY - document.sy);
     }
     else if (!graphView.selecting)
         checkResize(e.clientX, e.clientY);
@@ -58117,6 +58157,8 @@ function uiReturnFigStartGenerator(msg)
 
 
     graphView.updateMeasureData();
+
+    viewportRect = msg.viewportRect;
 
     
     uiGetLocalData('showWhatsNew');
@@ -58483,6 +58525,9 @@ onmessage = e =>
                            
         case 'uiReturnFigGetAllLocalColorStyles':       uiReturnFigGetAllLocalColorStyles      (msg);                       break;
 
+        case 'uiReturnUpdateViewportRect':              viewportRect = msg.viewportRect;                                    break;
+
+        
         // case 'uiReturnFigValidateLicense':              
         //     enableFeatures(msg.result, settings.enableBetaFeatures); 
         //     break;
@@ -58525,13 +58570,16 @@ function uiPostNextMessageToFigma()
     {
         let msg = uiFigMessages.shift();
 
-        if (msg.cmd == 'figResizeWindow')
+
+        if (   msg.cmd == 'figResizeWindow'
+            || msg.cmd == 'figSetWindowRect')
         {
             // move along the queue since only the last message is important
             while (!isEmpty(uiFigMessages)
                 &&  uiFigMessages[0].cmd == msg.cmd)
                 msg = uiFigMessages.shift();
         }
+
 
         uiPostMessageToFigma(msg);    
     }
@@ -59177,7 +59225,7 @@ function pushInputOrParam(input, gen)
 {
     if (    input.connectedOutput.param
         &&  gen.markParams
-        &&  lastOf(gen.scope).nodeId != input.connectedOutput.node.id)
+        &&  gen.scope.at(-1).nodeId != input.connectedOutput.node.id)
     {
         pushUnique(gen.paramNodes, input.connectedOutput.node);
 
@@ -60398,7 +60446,7 @@ function uiVariableConnectFromOutput(output, inputNode, inputId, outputOrder = -
     {
         const conn = uiConnect(
             output,
-            lastOf(inputNode.headerInputs),
+            inputNode.headerInputs.at(-1),
             inputId,
             outputOrder);
 
@@ -60406,7 +60454,7 @@ function uiVariableConnectFromOutput(output, inputNode, inputId, outputOrder = -
         if (outputOrder > -1)
             conn.outputOrder = outputOrder;
 
-        uiUpdateSavedConnectionsToNodeId(inputNode.graph, inputNode.id);
+        uiUpdateSavedConnectionsToNodeId(inputNode.graph, inputNode.id, true);
 
         return conn;
     }
@@ -60423,7 +60471,7 @@ function uiConnect(output, input, inputId = '', outputOrder = -1)
 
 
 
-function uiDisconnect(input)
+function uiDisconnect(input, saveOld = true)
 {
     //console.log('uiDisconnect()');
     
@@ -60432,7 +60480,7 @@ function uiDisconnect(input)
     node.graph.disconnect(input);
 
     if (node.variableInputs)
-        uiUpdateSavedConnectionsToNodeId(node.graph, node.id);
+        uiUpdateSavedConnectionsToNodeId(node.graph, node.id, saveOld);
 }
 
 
@@ -60448,22 +60496,25 @@ function uiDisconnectAny(input)
 
 
 
-function uiUpdateSavedConnectionsToNodeId(graph, nodeId)
+function uiUpdateSavedConnectionsToNodeId(graph, nodeId, saveOld)
 {
     const node = graph.nodeFromId(nodeId);
 
 
     uiDeleteSavedConnectionsToNodeId(node.id);
 
-    for (const _input of node.inputs.filter(i => i.connected))
+    if (saveOld)
     {
-        uiSaveConnection(
-            _input.connectedOutput.node.id,
-            _input.connectedOutput.id,
-            _input.connection.outputOrder,
-             node.id,
-            _input.id,
-            _input.connection.toJson());
+        for (const _input of node.inputs.filter(i => i.connected))
+        {
+            uiSaveConnection(
+                _input.connectedOutput.node.id,
+                _input.connectedOutput.id,
+                _input.connection.outputOrder,
+                 node .id,
+                _input.id,
+                _input.connection.toJson());
+        }
     }
 }
 
@@ -60688,13 +60739,13 @@ function findConnectedClusters(nodes)
         
         for (let i = clusters.length-1; i > first; i--)
         {
-            if (firstOf(clusters[i]).immediatelyFollows(lastOf(clusters[i-1]), true))
+            if (clusters[i].at(0).immediatelyFollows(clusters[i-1].at(-1), true))
             {
                 clusters[i-1].push(...clusters[i]);
                 removeAt(clusters, i);
                 moved = true;
             }
-            else if (lastOf(clusters[i-1]).immediatelyFollows(firstOf(clusters[i]), true))
+            else if (clusters[i-1].at(-1).immediatelyFollows(clusters[i].at(0)), true)
             {
                 clusters[first] = [...clusters[i], ...clusters[i-1]];
                 removeAt(clusters, i);
@@ -60850,9 +60901,11 @@ function uiUpdateValuesAndObjects(requestId, actionId, updateNodeId, updateParam
     {
         if (graphView.loadingNodes)
         {
-            mainGraph.nodes
-                .filter(n => n.type == NODE_GROUP)
-                .forEach(n => n.updateChildren());
+            for (const node of mainGraph.nodes.filter(n => n.type == NODE_GROUP))
+            {
+                node.updateProxyControls();
+                node.updateProxyWires();
+            }
 
             uiSaveNodes(mainGraph, mainGraph.nodes.map(n => n.id));
         }
@@ -60899,8 +60952,9 @@ function uiSaveNodes(graph, nodeIds)
 
 function uiSaveConn(conn)
 {
+    console.trace();
     if (settings.logRawSaving)
-        console.log('%cSAVING CONNECTION\n' + conn.toJson(), 'color: black; background: #ddeeff;');
+        console.log('%cSAVING CONN\n' + conn.toJson(), 'color: black; background: #ddeeff;');
 
     uiQueueMessageToFigma({
         cmd: 'figSaveConnection',
@@ -60913,6 +60967,7 @@ function uiSaveConn(conn)
 
 function uiSaveConnection(outputNodeId, outputId, outputOrder, inputNodeId, inputId, connJson)
 {
+    console.trace();
     if (settings.logRawSaving)
         console.log('%cSAVING CONNECTION\n' + connJson, 'color: black; background: #ddeeff;');
 
@@ -60976,11 +61031,10 @@ function uiUpdateSavedConnections(curKeys, newKeys, conns)
 
 function uiDeleteSavedConn(conn)
 {
-    console.log('conn =', conn);
     if (settings.logRawSaving)
     {
         console.log(
-             '%cDELETING SAVED CONNECTION ' 
+             '%cDELETING SAVED CONNECTION '
             + getConnString(conn, true),
             'color: black; background: #ddeeff;');
     }
@@ -61131,6 +61185,17 @@ function uiTriggerUndo()
         cmd: 'figTriggerUndo'
     });
 }
+
+
+
+function uiUpdateViewportRect()
+{
+    uiQueueMessageToFigma({
+        cmd: 'figUpdateViewportRect'
+    });
+}
+
+
 
 
 function uiLinkNodeToExistingColorStyle(node, styleId, styleName, paints)
@@ -61419,23 +61484,25 @@ var   graphView    = new GraphView(_graphView, mainGraph);
 var   currentGraph = mainGraph;
 var   currentView  = graphView;
 
+var   viewportRect = new Rect();
 
 
-function setCurrentGraph(graph)
-{
-    console.assert(currentView, 'there should be a valid currentView');
 
-    const elements = Array.prototype.slice.call(document.children);
-    const index    = elements.indexOf(currentView.div);
+// function setCurrentGraph(graph)
+// {
+//     console.assert(currentView, 'there should be a valid currentView');
 
-    document.body.removeChild(currentView.div);
-    document.body.insertBefore(graph.view.div, document.children[index]);
+//     const elements = Array.prototype.slice.call(document.children);
+//     const index    = elements.indexOf(currentView.div);
 
-    currentGraph = graph;
-    currentView  = graph.view;
+//     document.body.removeChild(currentView.div);
+//     document.body.insertBefore(graph.view.div, document.children[index]);
 
-    currentView.updateMeasureData();
-}
+//     currentGraph = graph;
+//     currentView  = graph.view;
+
+//     currentView.updateMeasureData();
+// }
 
 
 function initWhatsNewDialog()

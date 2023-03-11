@@ -1,21 +1,3 @@
-/*
-    Operators don't have data types, those are inferred from the outputs.
-
-    Outputs and have a toString() method, which creates a string that
-    is added to the complete recursive generation request. 
-    
-    The generator then does the calculation and sends back two kinds of messages:
-    node value updates and Figma page updates.
-
-    Value updates can trigger a visual node update. The update info is passed
-    in the update message.
-
-
-    Output.genRequest()
-    Parameter.genRequest()
-*/
-
-
 const connectionSize = 9;
 const connectionGap  = 2;
 
@@ -48,21 +30,21 @@ class Operator
     slow;  // takes a while to finish operation, shows a progress bar
 
     
-    inputs           = [];
-    outputs          = [];
+    inputs             = [];
+    outputs            = [];
   
-    params           = [];
-    hiddenParams     = [];
+    params             = [];
+    hiddenParams       = [];
   
       
-    variableInputs   = false;
+    variableInputs     = false;
 
-    alwaysLoadParams = false;
-    alwaysSaveParams = false;
+    alwaysLoadParams   = false;
+    alwaysSaveParams   = false;
 
-    scrollName       = true;
+    scrollName         = true;
 
-    showActiveArrow  = false;
+    showActiveArrow    = false;
 
     sharpBottomCorners = false;
     
@@ -71,10 +53,10 @@ class Operator
     labelOffsetFactor;
 
 
-    _creatingButton  = null; // this is used to place the node under its creating button
+    _creatingButton    = null; // this is used to place the node under its creating button
 
     
-    requestCache = []; // for nodes without an output
+    requestCache       = []; // for nodes without an output
 
 
     // node UI
@@ -85,10 +67,10 @@ class Operator
 
     divDisabled;
     
-    progressWrapper = null;
-    progressBar     = null;
-
-    hasProgressBar  = false;
+    progressWrapper    = null;
+    progressBar        = null;
+   
+    hasProgressBar     = false;
 
 
     labelWrapper;
@@ -129,15 +111,15 @@ class Operator
 
     _active = false;
     get active() { return this._active; }
-       
-    
-    get headerConnected() { return !isEmpty(this.headerInputs.filter(i => i.connected)); }
 
-    get headerInputs () { return this.inputs .filter(i => !i.param); }
-    get headerOutputs() { return this.outputs.filter(o => !o.param); }
 
-    get connectedHeaderInputs () { return this.inputs .filter(i => !i.param && i.connected); }
-    get connectedHeaderOutputs() { return this.outputs.filter(o => !o.param && o.connected); }
+    get headerConnected       () { return !isEmpty(this.headerInputs.filter(i => i.connected)); }
+
+    get headerInputs          () { return this.inputs .filter(i => !i.param);                   }
+    get headerOutputs         () { return this.outputs.filter(o => !o.param);                   }
+   
+    get connectedHeaderInputs () { return this.inputs .filter(i => !i.param && i.connected);    }
+    get connectedHeaderOutputs() { return this.outputs.filter(o => !o.param && o.connected);    }
 
 
 
@@ -225,7 +207,7 @@ class Operator
         else if (!view.tempConn.output.node.isOrFollows(this))
         {
             if (this.variableInputs)
-                return lastOf(inputs.filter(i => !i.param));
+                return inputs.filter(i => !i.param).at(-1);
 
             else if (!isEmpty(inputs))
             {
@@ -494,7 +476,7 @@ class Operator
 
     setPosition(x, y, updateTransform = true)
     {
-        console.log('Operator.setPosition()');
+        //console.log('Operator.setPosition()');
    
         this.div.style.left = x + 'px';
         this.div.style.top  = y + 'px';
@@ -507,9 +489,12 @@ class Operator
 
         this.updateMeasureData();
 
-        mainGraph.nodes
-            .filter(n => n.type == NODE_GROUP)
-            .forEach(n => n.updateChildren());
+
+        for (const node of mainGraph.nodes.filter(n => n.type == NODE_GROUP))
+        {
+            node.updateProxyControls();
+            node.updateProxyWires();
+        }
     }
 
 

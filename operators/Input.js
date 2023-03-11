@@ -123,7 +123,7 @@ extends EventTarget
 
             if (graphView.headerInput)
             {
-                graphView.headerInput.updateControl();
+                graphView.headerInputs.updateControl();
                 graphView.headerInput = null;
             }
 

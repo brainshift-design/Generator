@@ -211,6 +211,9 @@ Operator.prototype.createHeader = function()
             this.div.moved = true;
 
             view.updateScroll(x, w, h, bounds, yOffset);
+
+            if (this.type == NODE_GROUP)
+                this.updateProxyWires();
         }
         else if (   tempConn
                  && toTheRightOfInputs)
@@ -333,10 +336,11 @@ Operator.prototype.createHeader = function()
                     view.lastSelectedNodes.map(n => n.id)));
             }
 
-
             this.div.dragging = false;
             this.header.releasePointerCapture(e.pointerId);
         }
+
+        
         else if (view.tempConn)
         {
             if (    view.tempConn.output
@@ -434,8 +438,8 @@ Operator.prototype.createInfo = function()
 
     this.divDisabled.style.display       = 'none';
     this.divDisabled.style.position      = 'absolute';
-    this.divDisabled.style.width         = 5;
-    this.divDisabled.style.height        = 100;
+    this.divDisabled.style.width         =  5;
+    this.divDisabled.style.height        =  100;
     this.divDisabled.style.background    = '#e88b';
     this.divDisabled.style.pointerEvents = 'none';
 };

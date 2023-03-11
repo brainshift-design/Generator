@@ -192,20 +192,12 @@ function removeAt(array, index) {
 function removeLast(array) {
     if (isEmpty(array))
         return null;
-    let last = lastOf(array);
+    let last = array.at(-1);
     array.splice(array.length - 1, 1);
     return last;
 }
-function beforeLastOf(array) {
-    return array.length > 1
-        ? array[array.length - 2]
-        : null;
-}
 function lastOf(array) {
     return array[array.length - 1];
-}
-function firstOf(array) {
-    return array[0];
 }
 function moveInArray(array, from, to) {
     const item = array[from];
@@ -640,7 +632,8 @@ function figStartGenerator() {
             figPostMessageToUi({
                 cmd: 'uiReturnFigStartGenerator',
                 currentUser: figma.currentUser,
-                productKey: productKey
+                productKey: productKey,
+                viewportRect: figma.viewport.bounds
             });
         });
     })();
@@ -862,6 +855,9 @@ figma.ui.onmessage = function (msg) {
             break;
         case 'figLinkNodeToExistingColorStyle':
             figLinkNodeToExistingColorStyle(msg.nodeId, msg.styleId);
+            break;
+        case 'figUpdateViewportRect':
+            figPostMessageToUi({ cmd: 'uiReturnUpdateViewportRect', viewportRect: figma.viewport.bounds });
             break;
         case 'figUpdateObjectsAndStyles':
             figUpdateObjects(msg);
@@ -1615,7 +1611,11 @@ var windowDock = 'normal'; // '', 'maximize', 'top', 'left', 'right', 'bottom'
 function figSetWindowRect(x, y, width, height) {
     (function () {
         return __awaiter(this, void 0, void 0, function* () {
-            let position = true;
+            //console.log('figma.viewport.bounds =', figma.viewport.bounds);
+            console.log('_ x =', x);
+            //console.log('_ y =',      y);
+            //console.log('_ width =',  width);
+            //console.log('_ height =', height);
             const rect = {
                 x: x,
                 y: y,
@@ -1624,27 +1624,22 @@ function figSetWindowRect(x, y, width, height) {
             };
             // if (windowDock != 'normal')
             //     position = true;
-            if (isNaN(rect.x))
-                rect.x = yield figma.clientStorage.getAsync('windowX');
-            if (isNaN(rect.y))
-                rect.y = yield figma.clientStorage.getAsync('windowY');
-            dockWindow(windowDock, rect, figma.viewport.bounds);
+            // if (isNaN(rect.x)) rect.x = await figma.clientStorage.getAsync('windowX');
+            // if (isNaN(rect.y)) rect.y = await figma.clientStorage.getAsync('windowY');
+            // dockWindow(
+            //     windowDock,
+            //     rect, 
+            //     figma.viewport.bounds);
             rect.x = Math.round(rect.x);
             rect.y = Math.round(rect.y);
             rect.width = Math.round(rect.width);
             rect.height = Math.round(rect.height);
-            // console.log('_ x =',      rect.x);
-            // console.log('_ y =',      rect.y);
-            // console.log('_ width =',  rect.width);
-            // console.log('_ height =', rect.height);
+            figma.ui.reposition(rect.x, rect.y);
             figma.ui.resize(rect.width, rect.height);
+            figma.clientStorage.setAsync('windowX', rect.x);
+            figma.clientStorage.setAsync('windowY', rect.y);
             figma.clientStorage.setAsync('windowWidth', rect.width);
             figma.clientStorage.setAsync('windowHeight', rect.height);
-            if (position) {
-                //figma.ui.reposition(rect.x, rect.y);
-                figma.clientStorage.setAsync('windowX', rect.x);
-                figma.clientStorage.setAsync('windowY', rect.y);
-            }
             figPostMessageToUi({ cmd: 'uiReturnFigSetWindowRect' });
         });
     })();

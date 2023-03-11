@@ -81,8 +81,8 @@ extends Action
         
         for (const cluster of clusters)
         {
-            const first = firstOf(cluster);
-            const last  =  lastOf(cluster);
+            const first = cluster.at(0);
+            const last  = cluster.at(-1);
 
             if (   first.headerInputs .length == 1
                 &&  last.headerOutputs.length == 1
@@ -106,8 +106,8 @@ extends Action
 
         for (const cluster of clusters)
         {
-            this.clusterActiveLeft .push(getActiveBeforeNode(firstOf(cluster),        [firstOf(cluster)]));
-            this.clusterActiveRight.push(getActiveAfterNode (lastOf (cluster), false, [lastOf (cluster)]));
+            this.clusterActiveLeft .push(getActiveBeforeNode(cluster.at( 0),        [cluster.at( 0)]));
+            this.clusterActiveRight.push(getActiveAfterNode (cluster.at(-1), false, [cluster.at(-1)]));
         }
     }
 

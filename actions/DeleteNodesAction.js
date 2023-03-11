@@ -205,7 +205,7 @@ function deleteNodesAction_restoreNodes(act)
 
     act.graph.addNodes(act.nodes);
 
-    act.graph.view.putNodeOnTop(lastOf(act.nodes));
+    act.graph.view.putNodeOnTop(act.nodes.at(-1));
     act.graph.view.selected = act.nodes;
 
 

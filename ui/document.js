@@ -3,13 +3,42 @@ var enteredDragging    = false;
 
 
 
-document.addEventListener('pointerenter', function(e)
-{
-    if (   e.buttons[0] 
-        || e.buttons[1] 
-        || e.buttons[2])
-        enteredDragging = true;
-});
+// document.addEventListener('dragenter', function(e)
+// {
+//     console.log('dragenter');
+//     e.preventDefault();
+//     // e.stopImmediatePropagation();
+//     return false;
+//     // return false;
+//     // if (   e.buttons[0] 
+//     //     || e.buttons[1] 
+//     //     || e.buttons[2])
+//     //     enteredDragging = true;
+// });
+
+
+
+// document.addEventListener('drag', function(e)
+// {
+//     e.preventDefault();
+//     // e.stopImmediatePropagation();
+//     return false;
+//     // return false;
+//     // if (   e.buttons[0] 
+//     //     || e.buttons[1] 
+//     //     || e.buttons[2])
+//     //     enteredDragging = true;
+// });
+
+
+
+// document.addEventListener('pointerenter', function(e)
+// {
+//     if (   e.buttons[0] 
+//         || e.buttons[1] 
+//         || e.buttons[2])
+//         enteredDragging = true;
+// });
 
 
 
@@ -17,22 +46,29 @@ document.addEventListener('pointerdown', function(e)
 {
     if (e.button == 0)
     {
-        if (   document.canResizeL
-            || document.canResizeR
+        if (   /*document.canResizeL
+            ||*/ document.canResizeR
             || document.canResizeB)
         {
             document.startRect = new Rect(
-                e.clientX,
-                e.clientY,
+                document.body.offsetLeft,
+                document.body.offsetTop,
                 window.innerWidth,
                 window.innerHeight);
 
+            document.sx = e.clientX;
+            document.sy = e.clientY;
+
+            document.startPan = graphView.pan;
+
             document.body.setPointerCapture(e.pointerId);
 
-            document.resizingL = document.canResizeL;
+          //document.resizingL = document.canResizeL;
             document.resizingR = document.canResizeR;
             document.resizingB = document.canResizeB;
-       }
+
+            uiUpdateViewportRect();
+        }
     }
 
 
@@ -54,37 +90,39 @@ document.addEventListener('pointermove', function(e)
         && document.resizingB)
     {
         uiResizeWindow(
-            document.startRect.w + e.clientX - document.startRect.x,
-            document.startRect.h + e.clientY - document.startRect.y);
+            document.startRect.w + e.clientX - document.sx,
+            document.startRect.h + e.clientY - document.sy);
     }
-    else if (document.resizingL
-          && document.resizingB)
-    {
-        uiSetWindowRect(
-            e.clientX,
-            e.clientY,
-            document.startRect.w - e.clientX + document.startRect.x,
-            document.startRect.h + e.clientY - document.startRect.y);
-    }
-    else if (document.resizingL)
-    {
-        uiSetWindowRect(
-            e.clientX,
-            Number.NaN,
-            document.startRect.w - e.clientX + document.startRect.x,
-            window.innerHeight);
-    }
+    // else if (document.resizingL
+    //       && document.resizingB)
+    // {
+    //     uiSetWindowRect(
+    //         e.clientX,
+    //         e.clientY,
+    //         document.startRect.w - e.clientX + document.startRect.x,
+    //         document.startRect.h + e.clientY - document.startRect.y);
+    // }
+    // else if (document.resizingL)
+    // {
+    //     uiSetWindowRect(
+    //         document.startRect.x + e.clientX - document.sx,
+    //         document.startRect.y,
+    //         document.startRect.width - e.clientX + document.sx,
+    //         document.startRect.height);
+
+    //     //graphView.pan = point(document.startPan.x - e.clientX, document.startPan.y);
+    // }
     else if (document.resizingR)
     {
         uiResizeWindow(
-            document.startRect.w + e.clientX - document.startRect.x,
+            document.startRect.w + e.clientX - document.sx,
             window.innerHeight);
     }
     else if (document.resizingB)
     {
         uiResizeWindow(
             window.innerWidth,
-            document.startRect.h + e.clientY - document.startRect.y);
+            document.startRect.h + e.clientY - document.sy);
     }
     else if (!graphView.selecting)
         checkResize(e.clientX, e.clientY);

@@ -53,7 +53,7 @@ function validateProductKey(license, key, rec = false)
     {
         let lowerKey = key;
 
-        const lastChar  = lastOf(lowerKey);
+        const lastChar  = lowerKey.at(-1);
         const lastIndex = base32chars.indexOf(lastChar);
 
         if (lastIndex > 0)

@@ -75,6 +75,8 @@ function uiReturnFigStartGenerator(msg)
 
     graphView.updateMeasureData();
 
+    viewportRect = msg.viewportRect;
+
     
     uiGetLocalData('showWhatsNew');
 

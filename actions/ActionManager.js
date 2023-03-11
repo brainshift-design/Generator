@@ -37,8 +37,8 @@ class ActionManager
         
         if (this.actions.length > 1)
         {
-            const before = beforeLastOf(this.actions);
-            const last   = lastOf      (this.actions);
+            const before = this.actions.at(-2);
+            const last   = this.actions.at(-1);
 
             if (   linkWithPrevious
                 || before._linkWithNext)
@@ -70,7 +70,7 @@ class ActionManager
 
 
             if (   isEmpty(this.actions)
-                || last.prevAction != lastOf(this.actions))
+                || last.prevAction != this.actions.at(-1))
                 break;
         }
     }
@@ -93,7 +93,7 @@ class ActionManager
 
 
             if (   isEmpty(this.redoActions)
-                || last.nextAction != lastOf(this.redoActions))
+                || last.nextAction != this.redoActions.at(-1))
                 break;
         }
     }

@@ -448,7 +448,7 @@ function uiVariableConnectFromOutput(output, inputNode, inputId, outputOrder = -
     {
         const conn = uiConnect(
             output,
-            lastOf(inputNode.headerInputs),
+            inputNode.headerInputs.at(-1),
             inputId,
             outputOrder);
 
@@ -456,7 +456,7 @@ function uiVariableConnectFromOutput(output, inputNode, inputId, outputOrder = -
         if (outputOrder > -1)
             conn.outputOrder = outputOrder;
 
-        uiUpdateSavedConnectionsToNodeId(inputNode.graph, inputNode.id);
+        uiUpdateSavedConnectionsToNodeId(inputNode.graph, inputNode.id, true);
 
         return conn;
     }
@@ -473,7 +473,7 @@ function uiConnect(output, input, inputId = '', outputOrder = -1)
 
 
 
-function uiDisconnect(input)
+function uiDisconnect(input, saveOld = true)
 {
     //console.log('uiDisconnect()');
     
@@ -482,7 +482,7 @@ function uiDisconnect(input)
     node.graph.disconnect(input);
 
     if (node.variableInputs)
-        uiUpdateSavedConnectionsToNodeId(node.graph, node.id);
+        uiUpdateSavedConnectionsToNodeId(node.graph, node.id, saveOld);
 }
 
 
@@ -498,22 +498,25 @@ function uiDisconnectAny(input)
 
 
 
-function uiUpdateSavedConnectionsToNodeId(graph, nodeId)
+function uiUpdateSavedConnectionsToNodeId(graph, nodeId, saveOld)
 {
     const node = graph.nodeFromId(nodeId);
 
 
     uiDeleteSavedConnectionsToNodeId(node.id);
 
-    for (const _input of node.inputs.filter(i => i.connected))
+    if (saveOld)
     {
-        uiSaveConnection(
-            _input.connectedOutput.node.id,
-            _input.connectedOutput.id,
-            _input.connection.outputOrder,
-             node.id,
-            _input.id,
-            _input.connection.toJson());
+        for (const _input of node.inputs.filter(i => i.connected))
+        {
+            uiSaveConnection(
+                _input.connectedOutput.node.id,
+                _input.connectedOutput.id,
+                _input.connection.outputOrder,
+                 node .id,
+                _input.id,
+                _input.connection.toJson());
+        }
     }
 }
 
@@ -738,13 +741,13 @@ function findConnectedClusters(nodes)
         
         for (let i = clusters.length-1; i > first; i--)
         {
-            if (firstOf(clusters[i]).immediatelyFollows(lastOf(clusters[i-1]), true))
+            if (clusters[i].at(0).immediatelyFollows(clusters[i-1].at(-1), true))
             {
                 clusters[i-1].push(...clusters[i]);
                 removeAt(clusters, i);
                 moved = true;
             }
-            else if (lastOf(clusters[i-1]).immediatelyFollows(firstOf(clusters[i]), true))
+            else if (clusters[i-1].at(-1).immediatelyFollows(clusters[i].at(0)), true)
             {
                 clusters[first] = [...clusters[i], ...clusters[i-1]];
                 removeAt(clusters, i);
@@ -900,9 +903,11 @@ function uiUpdateValuesAndObjects(requestId, actionId, updateNodeId, updateParam
     {
         if (graphView.loadingNodes)
         {
-            mainGraph.nodes
-                .filter(n => n.type == NODE_GROUP)
-                .forEach(n => n.updateChildren());
+            for (const node of mainGraph.nodes.filter(n => n.type == NODE_GROUP))
+            {
+                node.updateProxyControls();
+                node.updateProxyWires();
+            }
 
             uiSaveNodes(mainGraph, mainGraph.nodes.map(n => n.id));
         }
@@ -949,8 +954,9 @@ function uiSaveNodes(graph, nodeIds)
 
 function uiSaveConn(conn)
 {
+    console.trace();
     if (settings.logRawSaving)
-        console.log('%cSAVING CONNECTION\n' + conn.toJson(), 'color: black; background: #ddeeff;');
+        console.log('%cSAVING CONN\n' + conn.toJson(), 'color: black; background: #ddeeff;');
 
     uiQueueMessageToFigma({
         cmd: 'figSaveConnection',
@@ -963,6 +969,7 @@ function uiSaveConn(conn)
 
 function uiSaveConnection(outputNodeId, outputId, outputOrder, inputNodeId, inputId, connJson)
 {
+    console.trace();
     if (settings.logRawSaving)
         console.log('%cSAVING CONNECTION\n' + connJson, 'color: black; background: #ddeeff;');
 
@@ -1026,11 +1033,10 @@ function uiUpdateSavedConnections(curKeys, newKeys, conns)
 
 function uiDeleteSavedConn(conn)
 {
-    console.log('conn =', conn);
     if (settings.logRawSaving)
     {
         console.log(
-             '%cDELETING SAVED CONNECTION ' 
+             '%cDELETING SAVED CONNECTION '
             + getConnString(conn, true),
             'color: black; background: #ddeeff;');
     }
@@ -1181,3 +1187,13 @@ function uiTriggerUndo()
         cmd: 'figTriggerUndo'
     });
 }
+
+
+
+function uiUpdateViewportRect()
+{
+    uiQueueMessageToFigma({
+        cmd: 'figUpdateViewportRect'
+    });
+}
+

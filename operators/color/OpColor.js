@@ -566,14 +566,14 @@ extends OpColorBase
             }
             else if (open && rgbIsValid(rgb)) 
             {
-                lastOf(ranges).end = f;
+                ranges.at(-1).end = f;
                 open = false;
             }
         }
 
         
         if (open)
-            lastOf(ranges).end = 1;
+            ranges.at(-1).end = 1;
         else if (!open
               && isEmpty(ranges))
             control.resetRanges();

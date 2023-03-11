@@ -47,9 +47,6 @@ class GraphView
     btn1down       = false; // this is to help deal with mouse wheels that send X values as
                              // sometimes a MMB press is followed by wheelX as a "deeper" middle-click
 
-    // pan            = point(0, 0);
-    // zoom           = 1;
-    
     altDown        = false;
 
     panning        = false;
@@ -149,6 +146,7 @@ class GraphView
 
         
         this.wireContainer = createDiv('wireContainer');
+        
         this.scrollbarX    = createDiv('scrollbar', 'scrollbarX');
         this.scrollbarY    = createDiv('scrollbar', 'scrollbarY');
 

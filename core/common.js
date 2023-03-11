@@ -344,7 +344,7 @@ function removeLast(array)
     if (isEmpty(array))
         return null;
 
-    let last = lastOf(array);
+    let last = array.at(-1);
     array.splice(array.length-1, 1)
 
     return last;
@@ -352,25 +352,9 @@ function removeLast(array)
 
 
 
-function beforeLastOf(array)
-{
-    return array.length > 1 
-         ? array[array.length-2]
-         : null;
-}
-
-
-
 function lastOf(array)
 {
     return array[array.length-1];
-}
-
-
-
-function firstOf(array)
-{
-    return array[0];
 }
 
 

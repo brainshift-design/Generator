@@ -17,6 +17,8 @@ class Connection
     
     backInit = false; // if true, on connection the value is possibly copied from the input to the output
 
+    proxy    = null;
+
     
 
     constructor(output, input)

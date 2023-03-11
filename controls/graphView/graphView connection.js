@@ -90,14 +90,18 @@ GraphView.prototype.endConnection = function(pointerId, backInit = false)
                 &&  input.node.variableInputs
                 && !input.param
                 && !isLastInArray(input.node.headerInputs, input))
-                actionManager.do(new ReorderInputsAction(this.graph, input.node.id, oldReorderIndex, newReorderIndex));
-
-            else if (savedConnInput
-                && savedConnInput.connectedOutput == this.tempConn.output
-                && savedConnInput.index != input.index
-                && (  !input.node.variableInputs && input.index < input.node.headerInputs.length
-                    || input.node.variableInputs && input.index < input.node.headerInputs.length-1))
             {
+                console.log('1 reorder');
+                actionManager.do(new ReorderInputsAction(this.graph, input.node.id, oldReorderIndex, newReorderIndex));
+            }
+            else if (savedConnInput
+                  && savedConnInput.connectedOutput == this.tempConn.output
+                  && savedConnInput.index != input.index
+                  && savedConnInput.node.headerInputs.includes(savedConnInput) == savedConnInput.node.headerInputs.includes(input)
+                  && (  !input.node.variableInputs &&  input.index < input.node.inputs.length
+                      || input.node.variableInputs && (input.index < input.node.headerInputs.length-1 || input.index >= input.node.headerInputs.length)))
+            {
+                console.log('2 reorder');
                 if (input.node.variableInputs)
                 {
                     moveInArray(
@@ -112,29 +116,32 @@ GraphView.prototype.endConnection = function(pointerId, backInit = false)
                     actionManager.do(new ReorderInputConnectionsAction(this.graph, savedConnInput.node.id, savedConnInput.id, input.id));
                 }
             }
-            else if (   input == savedConnInput
-                    && input.connection) // reconnect old
+            else if (input == savedConnInput
+                  && input.connection) // reconnect old
             {
+                console.log('3 reconnect');
                 this.savedConn = null; // done here to redraw the saved wire correctly
                 input.connection.wire.show(true);
             }
-
             else if (savedConnInput
-                && savedConnInput.connectedOutput == output
-                && (  !input.node.variableInputs
-                    || input.index >= input.node.headerInputs.length
-                    ||    input.node.headerInputs.length > 1 
-                        && input.index < input.node.headerInputs.length-1
-                    ||    input.node.headerInputs.length == 1 
-                        && input.index == 0))
+                  && savedConnInput.connectedOutput == output
+                  && (  !input.node.variableInputs
+                      || input.index >= input.node.headerInputs.length
+                      ||    input.node.headerInputs.length > 1 
+                         && input.index < input.node.headerInputs.length-1
+                      ||    input.node.headerInputs.length == 1 
+                         && input.index == 0))
             {
+                console.log('4 reconnect');
                 actionManager.do(new ReconnectAction(this.graph, output, savedConnInput, input));
             }
-
             else if (   !savedConnInput
                     && (  !input.connected
                         || input.connectedOutput != this.tempConn.output)) // connect new
+            {
+                console.log('5 createConnectAction');
                 createConnectAction(this.graph, output, input, backInit);
+            }
         }
         else if (savedConnInput) // disconnect old
             actionManager.do(new DisconnectAction(this.graph, savedConnInput));

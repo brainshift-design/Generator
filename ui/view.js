@@ -4,20 +4,22 @@ var   graphView    = new GraphView(_graphView, mainGraph);
 var   currentGraph = mainGraph;
 var   currentView  = graphView;
 
+var   viewportRect = new Rect();
 
 
-function setCurrentGraph(graph)
-{
-    console.assert(currentView, 'there should be a valid currentView');
 
-    const elements = Array.prototype.slice.call(document.children);
-    const index    = elements.indexOf(currentView.div);
+// function setCurrentGraph(graph)
+// {
+//     console.assert(currentView, 'there should be a valid currentView');
 
-    document.body.removeChild(currentView.div);
-    document.body.insertBefore(graph.view.div, document.children[index]);
+//     const elements = Array.prototype.slice.call(document.children);
+//     const index    = elements.indexOf(currentView.div);
 
-    currentGraph = graph;
-    currentView  = graph.view;
+//     document.body.removeChild(currentView.div);
+//     document.body.insertBefore(graph.view.div, document.children[index]);
 
-    currentView.updateMeasureData();
-}
+//     currentGraph = graph;
+//     currentView  = graph.view;
+
+//     currentView.updateMeasureData();
+// }

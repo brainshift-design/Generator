@@ -1,7 +1,7 @@
 class   ProxyParam
 extends Parameter
 {
-    refParam;
+    param;
 
     controls    = [];
     connections = [];
@@ -12,7 +12,7 @@ extends Parameter
         super(param.type, param.node.id + '_' + param.id);
 
 
-        this.refParam = param;
+        this.param = param;
         param.proxy = this;
 
         this.div.style.height = 20;
@@ -23,8 +23,8 @@ extends Parameter
         {
             case NUMBER_VALUE: 
             {
-                this.controls = [param.controls[0].copy()];
-                this.controls[0].param = this;
+                this.controls                      = [param.controls[0].copy()];
+                this.controls[0].param             = this;
 
                 this.controls[0].div.style.display = 'inline-block';
                 this.controls[0].div.style.width   = '100%';
@@ -36,9 +36,17 @@ extends Parameter
         }
 
 
-        if (param.input )
+        if (param.input)
         {
-            this.initInput (param.input.types,  getParamInputValuesForUndo, null);
+            this.initInput(param.input.types, getParamInputValuesForUndo, null);
+
+            const conn = new Connection(param.input.connectedOutput, this.input);
+            this.connections.push(conn);
+
+            this.input.connection = conn;
+            param.input.connection.proxy = conn;
+
+            graphView.wireContainer.appendChild(conn.wire.svg);
         }
 
 
@@ -54,7 +62,8 @@ extends Parameter
     {
         for (let i = 0; i < this.controls.length; i++)
         {
-            this.controls[i].setValue(this.refParam.controls[i].value, false, true, false);
+            this.controls[i].setValue(this.param.controls[i].value, false, true, false);
+            this.controls[i].update();
         }
     }
 }

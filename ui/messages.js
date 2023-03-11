@@ -39,6 +39,9 @@ onmessage = e =>
                            
         case 'uiReturnFigGetAllLocalColorStyles':       uiReturnFigGetAllLocalColorStyles      (msg);                       break;
 
+        case 'uiReturnUpdateViewportRect':              viewportRect = msg.viewportRect;                                    break;
+
+        
         // case 'uiReturnFigValidateLicense':              
         //     enableFeatures(msg.result, settings.enableBetaFeatures); 
         //     break;
@@ -81,13 +84,16 @@ function uiPostNextMessageToFigma()
     {
         let msg = uiFigMessages.shift();
 
-        if (msg.cmd == 'figResizeWindow')
+
+        if (   msg.cmd == 'figResizeWindow'
+            || msg.cmd == 'figSetWindowRect')
         {
             // move along the queue since only the last message is important
             while (!isEmpty(uiFigMessages)
                 &&  uiFigMessages[0].cmd == msg.cmd)
                 msg = uiFigMessages.shift();
         }
+
 
         uiPostMessageToFigma(msg);    
     }

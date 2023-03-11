@@ -47,8 +47,9 @@ function figStartGenerator()
 
         
         figPostMessageToUi({
-            cmd:        'uiReturnFigStartGenerator',
-            currentUser: figma.currentUser,
-            productKey:  productKey });
+            cmd:         'uiReturnFigStartGenerator',
+            currentUser:  figma.currentUser,
+            productKey:   productKey,
+            viewportRect: figma.viewport.bounds });
     })();
 }

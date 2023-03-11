@@ -31,11 +31,22 @@ GraphView.prototype.removeWire = function(wire)
 
 
 
-GraphView.prototype.updateWires = function(wires)
+GraphView.prototype.updateWires = function(_wires)
 {
     //logFunction('GraphView.updateWires()');
-
     
+    const wires = [..._wires];
+
+
+    const nWires = wires.length;
+
+    for (let i = 0; i < nWires; i++)
+    {
+        if (wires[i].connection.proxy)
+            pushUnique(wires, wires[i].connection.proxy.wire);
+    }
+
+
     const pOut    = [];
     const pIn     = [];
     
