@@ -504,8 +504,7 @@ extends EventTarget
         this.div.style.cursor = 
                this.readOnly 
             || containsChild(this.div, this.textbox)
-            ||    this.view 
-               && this.view.wheelTimer 
+            || graphView.wheelTimer 
             || overNumberControlCtrl == this
             ? 'default'
             : 'ew-resize';

@@ -954,7 +954,6 @@ function uiSaveNodes(graph, nodeIds)
 
 function uiSaveConn(conn)
 {
-    console.trace();
     if (settings.logRawSaving)
         console.log('%cSAVING CONN\n' + conn.toJson(), 'color: black; background: #ddeeff;');
 
@@ -969,7 +968,6 @@ function uiSaveConn(conn)
 
 function uiSaveConnection(outputNodeId, outputId, outputOrder, inputNodeId, inputId, connJson)
 {
-    console.trace();
     if (settings.logRawSaving)
         console.log('%cSAVING CONNECTION\n' + connJson, 'color: black; background: #ddeeff;');
 

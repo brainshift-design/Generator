@@ -172,8 +172,7 @@ extends OperatorBase
             const linkStyle = rgba2style(
                 rgb_a(
                        this.paramValue.value.isValid()
-                    && (  !this.existing
-                        || this.linkedStyleId != NULL)
+                    && this.linkedStyleId != NULL
                     ? (isDark(rgb) ? [1, 1, 1] : [0, 0, 0])
                     : colors.text, 
                     this.circle.over ? 1 : 0.5));

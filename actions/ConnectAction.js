@@ -189,7 +189,7 @@ function connectAction_updateOldOutput(act, updateNodes)
 function connectAction_updateInputActiveNodes(act, updateNodes)
 {
     const inputActiveNodeIds = [...act.inputActiveNodeIds].sort((x, y) => 
-        (nodeFromId(x) === act.graph.nodeFromId(y)) ? 0 : act.graph.nodeFromId(y).isOrFollows(nodeFromId(x)) ? -1 : 1);
+        (act.graph.nodeFromId(x) === act.graph.nodeFromId(y)) ? 0 : act.graph.nodeFromId(y).isOrFollows(act.graph.nodeFromId(x)) ? -1 : 1);
 
     for (const id of inputActiveNodeIds)
     {

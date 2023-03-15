@@ -86,6 +86,9 @@ class Operator
     subscribeCover;
     subscribeLabel;
 
+    reorderArrows;
+    showReorderArrows  = false;
+
 
     valid;
 

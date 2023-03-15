@@ -138,6 +138,6 @@ function removeNodesAction_makeNewConnections(act)
 
              if (act.clusterActiveLeft [i]) pushUpdate(act, [act.clusterActiveLeft [i]]);
         else if (act.clusterActiveRight[i]) pushUpdate(act, [act.clusterActiveRight[i]]);
-        else                                uiMakeNodeActive(nodeFromId(_conn.inputNodeId));
+        else                                uiMakeNodeActive(act.graph.nodeFromId(_conn.inputNodeId));
     }
 }

@@ -269,12 +269,12 @@
 
 .progressBar
 {
-    position:      absolute;
-    left:          0;
-    top:           0;
-    width:         0;
-    height:        5px;   
-    background:    var(--figma-color-bg-brand);
+    position:   absolute;
+    left:       0;
+    top:        0;
+    width:      0;
+    height:     5px;   
+    background: var(--figma-color-bg-brand);
 }
 
 
@@ -304,4 +304,14 @@
     width:          16px;
     height:         16px;
     pointer-events: none;
+}
+
+
+.reorderArrows
+{
+    width:    5px;
+    height:   8px;
+    position: absolute;
+    left:     0;
+    top:      0;
 }

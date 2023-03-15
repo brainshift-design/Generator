@@ -89,12 +89,15 @@ Operator.prototype.createHeader = function()
     this.initLabelTextbox();
 
     
-    this. inputControls = createDiv('inputControls');
+    this. inputControls = createDiv('inputControls' );
     this.outputControls = createDiv('outputControls');
+    this.reorderArrows  = createDiv('reorderArrows' );
 
     this.header.appendChild(this. inputControls);
     this.header.appendChild(this.outputControls);
+    this.header.appendChild(this. reorderArrows);
 
+    
     this.inner.appendChild(this.header);
 
 
@@ -147,7 +150,6 @@ Operator.prototype.createHeader = function()
             e.stopPropagation();
 
             view.selectFromClick(this, getCtrlKey(e), e.shiftKey, e.altKey);
-
                         
             this.sx = e.clientX;
             this.sy = e.clientY;
@@ -185,8 +187,6 @@ Operator.prototype.createHeader = function()
 
         const view = this.graph.view;
 
-
-        //console.log(node.id + '.header.pointermove');
 
         const toTheRightOfInputs = e.clientX - boundingRect(this.header).x > 12 * graphView.zoom;
 
@@ -425,7 +425,7 @@ Operator.prototype.createHeader = function()
         else if (!this.header.ignoreDoubleClick)
             actionManager.do(new MakeActiveNodesAction(this.graph, [this.id]));
 
-            this.header.ignoreDoubleClick = false;
+        this.header.ignoreDoubleClick = false;
     });
 };
 
@@ -461,9 +461,6 @@ Operator.prototype.createNodeProgressBar = function()
 
 Operator.prototype.initProgress = function()
 {
-    // const node = nodeFromId(nodeId);
-    // if (!isValid(node)) return;
-
     this.progressWrapper.style.display = 'block';
 
     this.progressBar    .style.left    = '0%';
@@ -474,9 +471,6 @@ Operator.prototype.initProgress = function()
 
 Operator.prototype.updateProgress = function(progress)
 {
-    // const node = nodeFromId(nodeId);
-    // if (!isValid(node)) return;
-
     this.progressBar.style.left  = (   progress  * 100) + '%';
     this.progressBar.style.width = ((1-progress) * 100) + '%';
 };

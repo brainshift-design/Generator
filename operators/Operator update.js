@@ -88,6 +88,7 @@ Operator.prototype.updateHeader = function()
     this.updateParamBack(height);
 
     this.updateHeaderLabel();
+    this.updateReorderArrows();
 }
 
 
@@ -235,6 +236,24 @@ Operator.prototype.updateHeaderLabelText = function()
           (settings.showNodeId ? 'ID: ' + this.id : this.name)
         + (this.active && this.showActiveArrow ? '  ‣' : '');
 }
+
+
+
+Operator.prototype.updateReorderArrows = function()
+{
+    if (this.showReorderArrows)
+    {
+        const colors     = this.getHeaderColors();
+        const arrowStyle = rgba2style(rgb_a(isDark(colors.back) ? [1, 1, 1] : [0, 0, 0], 0.5));
+
+        this.reorderArrows.style.display            = 'inline-block';
+        this.reorderArrows.style.background         = 'url(\'data:image/svg+xml;utf8,<svg width="5" height="8" viewBox="0 0 5 8" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M2.5 8L5 5H0L2.5 8Z" fill="'+arrowStyle+'"/><path d="M2.5 0L5 3H0L2.5 0Z" fill="'+arrowStyle+'"/></svg>\')';
+        this.reorderArrows.style.backgroundPosition = '50% 50%';
+        this.reorderArrows.style.backgroundRepeat   = 'no-repeat';
+    }
+    else
+        this.reorderArrows.style.display            = 'none';    
+};
 
 
 

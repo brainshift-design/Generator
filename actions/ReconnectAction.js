@@ -17,6 +17,8 @@ extends Action
     inputActiveNodeIds     = [];
     inputValues            = []; // in id,value pairs, to be restored on undo
     
+    inputIsNew             = false;
+
     newActiveNodeIds       = [];
         
     oldOutputNodeId        = NULL;
@@ -67,11 +69,12 @@ extends Action
         this.inputNodeId          = input.node.id;
         this.inputId              = input.id;
         
-
         this.oldOutputNodeId      = input.connected ? input.connectedOutput.node.id : NULL;
         this.oldOutputId          = input.connected ? input.connectedOutput.id      : NULL;
         this.oldOutputOrder       = input.connected ? input.connection.outputOrder  : -1;
 
+        this.inputIsNew           = input.isNew;
+        
 
         if (   options 
             && isValid(options.backInit))
@@ -134,7 +137,7 @@ extends Action
     removePrevInputConnection(updateNodes)
     {
         uiDeleteSavedConn(this.prevInput.connection);
-        uiDisconnect(this.prevInput, false);
+        uiDisconnect(this.prevInput);//, this.inputIsNew);
 
         pushUnique(updateNodes, this.prevInput.node);
     }

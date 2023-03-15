@@ -25,11 +25,11 @@ extends Action
     {
         super(
             graph,
-            DISCONNECT_ACTION, 
-             'DISCONNECT ' 
+            DISCONNECT_ACTION,
+             'DISCONNECT '
             + input.connectedOutput.node.id + '.' + input.connectedOutput.id
-            + ' ' + rightArrowChar(input.connectedOutput.supportsTypes(LIST_TYPES)) + ' '
-            + input.node.id + '.' + input.id);
+            + ' ' + rightArrowChar(input.connectedOutput.supportsTypes(LIST_TYPES)) 
+            + ' ' + input.node.id + '.' + input.id);
 
 
         this.outputNodeId = input.connectedOutput.node.id;
@@ -119,7 +119,7 @@ extends Action
     deactivateNewActiveNodes()
     {
         for (const id of this.newActiveNodeIds)
-            uiMakeNodePassive(nodeFromId(id));
+            uiMakeNodePassive(this.graph.nodeFromId(id));
 
         uiDeleteObjectsAndStyles(this.newActiveNodeIds, false);
     }

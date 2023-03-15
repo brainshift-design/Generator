@@ -83,65 +83,79 @@ GraphView.prototype.endConnection = function(pointerId, backInit = false)
         if (   input
             && input.canConnectFrom(output)) // TO INPUT
         {
-            if (   !isNaN(newReorderIndex)
-                && !isNaN(oldReorderIndex)
-                &&  newReorderIndex != oldReorderIndex
-                &&  newReorderIndex >= 0
-                &&  input.node.variableInputs
-                && !input.param
-                && !isLastInArray(input.node.headerInputs, input))
-            {
-                console.log('1 reorder');
-                actionManager.do(new ReorderInputsAction(this.graph, input.node.id, oldReorderIndex, newReorderIndex));
-            }
-            else if (savedConnInput
-                  && savedConnInput.connectedOutput == this.tempConn.output
-                  && savedConnInput.index != input.index
-                  && savedConnInput.node.headerInputs.includes(savedConnInput) == savedConnInput.node.headerInputs.includes(input)
-                  && (  !input.node.variableInputs &&  input.index < input.node.inputs.length
-                      || input.node.variableInputs && (input.index < input.node.headerInputs.length-1 || input.index >= input.node.headerInputs.length)))
-            {
-                console.log('2 reorder');
-                if (input.node.variableInputs)
-                {
-                    moveInArray(
-                        input.node.inputs,
-                        input.node.inputs.indexOf(savedConnInput),
-                        input.index);
+            if (input.node.variableInputs) this.endConnectionFromOutputToVariable(output, input, savedConnInput, backInit);
+            else                           this.endConnectionFromOutputToFixed   (output, input, savedConnInput, backInit);
 
-                    actionManager.do(new ReorderInputsAction(this.graph, savedConnInput.node.id, oldReorderIndex, savedConnInput.index));
-                }
-                else
-                {
-                    actionManager.do(new ReorderInputConnectionsAction(this.graph, savedConnInput.node.id, savedConnInput.id, input.id));
-                }
-            }
-            else if (input == savedConnInput
-                  && input.connection) // reconnect old
-            {
-                console.log('3 reconnect');
-                this.savedConn = null; // done here to redraw the saved wire correctly
-                input.connection.wire.show(true);
-            }
-            else if (savedConnInput
-                  && savedConnInput.connectedOutput == output
-                  && (  !input.node.variableInputs
-                      || input.index >= input.node.headerInputs.length
-                      ||    input.node.headerInputs.length > 1 
-                         && input.index < input.node.headerInputs.length-1
-                      ||    input.node.headerInputs.length == 1 
-                         && input.index == 0))
-            {
-                console.log('4 reconnect');
-                actionManager.do(new ReconnectAction(this.graph, output, savedConnInput, input));
-            }
-            else if (   !savedConnInput
-                    && (  !input.connected
-                        || input.connectedOutput != this.tempConn.output)) // connect new
-            {
-                console.log('5 createConnectAction');
-                createConnectAction(this.graph, output, input, backInit);
-            }
+            // if (   !isNaN(newReorderIndex)
+            //     && !isNaN(oldReorderIndex)
+            //     &&  newReorderIndex != oldReorderIndex
+            //     &&  newReorderIndex >= 0
+            //     &&  input.node.variableInputs
+            //     && !input.param
+            //     && !isLastInArray(input.node.headerInputs, input))
+            // {
+            //     console.log('1 reorder');
+            //     actionManager.do(new ReorderInputsAction(this.graph, input.node.id, oldReorderIndex, newReorderIndex));
+            // }
+            // else if (savedConnInput
+            //       && savedConnInput.connectedOutput == this.tempConn.output
+            //       && savedConnInput.index != input.index
+            //       && savedConnInput.node.headerInputs.includes(savedConnInput) == savedConnInput.node.headerInputs.includes(input)
+            //       && (  !input.node.variableInputs &&  input.index < input.node.inputs.length
+            //           || input.node.variableInputs && (input.index < input.node.headerInputs.length-1 || input.index >= input.node.headerInputs.length)))
+            // {
+            //     console.log('2 reorder');
+            //     // if (input.node.variableInputs)
+            //     // {
+            //     //     moveInArray(
+            //     //         input.node.inputs,
+            //     //         input.node.inputs.indexOf(savedConnInput),
+            //     //         input.index);
+
+            //     //     actionManager.do(new ReorderInputsAction(this.graph, savedConnInput.node.id, oldReorderIndex, savedConnInput.index));
+            //     // }
+            //     // else
+            //     // {
+            //         actionManager.do(new ReorderInputConnectionsAction(this.graph, savedConnInput.node.id, savedConnInput.id, input.id));
+            //     // }
+            // }
+            // else if (input == savedConnInput
+            //       && input.connection) // reconnect old
+            // {
+            //     console.log('3 reconnect');
+            //     this.savedConn = null; // done here to redraw the saved wire correctly
+            //     input.connection.wire.show(true);
+            // }
+            // else if (savedConnInput
+            //       && input.node.variableInputs
+            //       && savedConnInput.index >= input.node.headerInputs.length
+            //       && input.index == input.node.headerInputs.length-1
+            //       && input.isNew)
+            // {
+            //     // reconnect from below header to new variable new input
+            //     console.log('4 reconnect');
+            //     actionManager.do(new ReconnectAction(this.graph, output, savedConnInput, input));
+            // }
+            // else if (savedConnInput
+            //       && savedConnInput.connectedOutput == output
+            //       && (  !input.node.variableInputs
+            //           || input.index >= input.node.headerInputs.length
+            //           || (   input.node.variableInputs
+            //               && (      input.node.headerInputs.length > 1 
+            //                      && input.index < input.node.headerInputs.length-1
+            //                   ||    input.node.headerInputs.length == 1 
+            //                      && input.index == 0))))
+            // {
+            //     console.log('5 reconnect');
+            //     actionManager.do(new ReconnectAction(this.graph, output, savedConnInput, input));
+            // }
+            // else if (   !savedConnInput
+            //         && (  !input.connected
+            //             || input.connectedOutput != this.tempConn.output)) // connect new
+            // {
+            //     console.log('6 createConnectAction');
+            //     actionManager.do(new ConnectAction(this.graph, output, input, {backInit: backInit}));
+            // }
         }
         else if (savedConnInput) // disconnect old
             actionManager.do(new DisconnectAction(this.graph, savedConnInput));
@@ -160,7 +174,7 @@ GraphView.prototype.endConnection = function(pointerId, backInit = false)
 
         if (   output
             && input.canConnectFrom(output)) // TO OUTPUT
-            createConnectAction(this.graph, output, input, backInit);
+            actionManager.do(new ConnectAction(this.graph, output, input, {backInit: backInit}));
 
         this.cancelConnection(pointerId);
     }
@@ -168,7 +182,34 @@ GraphView.prototype.endConnection = function(pointerId, backInit = false)
 
 
 
-function createConnectAction(graph, output, input, backInit)
+GraphView.prototype.endConnectionFromOutputToFixed = function(output, input, savedConnInput, backInit = false)
 {
-    actionManager.do(new ConnectAction(graph, output, input, {backInit: backInit}));
-}
+    if (   !savedConnInput
+        && (  !input.connected
+            || input.connectedOutput != this.tempConn.output))
+    {
+        console.log('F1 connect new');
+        actionManager.do(new ConnectAction(this.graph, output, input, {backInit: backInit}));
+    }
+    else if (savedConnInput
+          && savedConnInput.connectedOutput == output)
+    {
+        console.log('F2 reconnect');
+        actionManager.do(new ReconnectAction(this.graph, output, savedConnInput, input));
+    }
+    // else if (savedConnInput
+    //       && savedConnInput.connectedOutput == this.tempConn.output
+    //       && savedConnInput.index != input.index
+    //       && savedConnInput.node.inputs.includes(savedConnInput) == savedConnInput.node.inputs.includes(input))
+    // {
+    //     console.log('2 reorder');
+    //     actionManager.do(new ReorderInputConnectionsAction(this.graph, savedConnInput.node.id, savedConnInput.id, input.id));
+    // }
+};
+
+
+
+GraphView.prototype.endConnectionFromOutputToVariable = function(output, input, savedConnInput, backInit = false)
+{
+
+};
