@@ -182,23 +182,32 @@ function uiLoadGraphView(json)
 function uiReturnFigLoadNodesAndConns(msg)
 {
     if (settings.logRawLoadNodes)
-        console.log(
-            '%cnodes JSON = %s', 
-            'background: #fed',
-            msg.nodeJson
-                .replaceAll('\\n', '\n')
-                .replaceAll('\\"', '"'));
+    {
+        for (const json of msg.nodeJson)
+        {
+            console.log(
+                '%cnodes JSON = %s', 
+                'background: #fed',
+                json.replaceAll('\\n', '\n')
+                    .replaceAll('\\"', '"'));
+        }
+    }
+
 
     if (settings.logRawLoadConnections)
-        console.log(
-            '%cconnections JSON = %s', 
-            'background: #fed',
-            msg.connJson
-                .replaceAll('\\n', '\n')
-                .replaceAll('\\"', '"'));
+    {
+        for (const json of msg.connJson)
+        {
+            console.log(
+                '%cconnections JSON = %s', 
+                'background: #fed',
+                json.replaceAll('\\n', '\n')
+                    .replaceAll('\\"', '"'));
+        }
+    }
 
     
-    const _graphView = msg.graphView;
+    const _graphView          = msg.graphView;
 
     const _showAllColorSpaces = msg.showAllColorSpaces;
 

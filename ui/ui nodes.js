@@ -452,11 +452,13 @@ function uiVariableConnectFromOutput(output, inputNode, inputId, outputOrder = -
             inputId,
             outputOrder);
 
-
         if (outputOrder > -1)
             conn.outputOrder = outputOrder;
 
-        uiUpdateSavedConnectionsToNodeId(inputNode.graph, inputNode.id, true);
+        if (   !graphView.loadingNodes
+            && !graphView.pastingNodes
+            && !graphView.restoringNodes)
+            uiUpdateSavedConnectionsToNodeId(inputNode.graph, inputNode.id, true);
 
         return conn;
     }
@@ -504,6 +506,7 @@ function uiUpdateSavedConnectionsToNodeId(graph, nodeId, saveOld)
 
 
     uiDeleteSavedConnectionsToNodeId(node.id);
+
 
     if (saveOld)
     {
@@ -968,6 +971,7 @@ function uiSaveConn(conn)
 
 function uiSaveConnection(outputNodeId, outputId, outputOrder, inputNodeId, inputId, connJson)
 {
+    console.trace();
     if (settings.logRawSaveConnections)
         console.log('%cSAVING CONNECTION\n' + connJson, 'color: black; background: #ddffee;');
 
@@ -1034,7 +1038,7 @@ function uiDeleteSavedConn(conn)
     if (settings.logRawSaveConnections)
     {
         console.log(
-             '%cDELETING SAVED CONNECTION '
+             '%cDELETING SAVED CONNE '
             + getConnString(conn, true),
             'color: black; background: #ddeeff;');
     }
@@ -1085,6 +1089,14 @@ function uiRemoveAllSavedConnections()
 
 function uiDeleteSavedConnectionsToNodeId(nodeId)
 {
+    if (settings.logRawSaveConnections)
+    {
+        console.log(
+            '%cDELETING SAVED CONNECTIONS TO ' + nodeId, 
+            'color: black; background: #ddeeff;');
+    }
+
+
     uiQueueMessageToFigma({
         cmd:   'figDeleteSavedConnectionsToNode',
         nodeId: nodeId
