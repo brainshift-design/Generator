@@ -211,5 +211,18 @@ GraphView.prototype.endConnectionFromOutputToFixed = function(output, input, sav
 
 GraphView.prototype.endConnectionFromOutputToVariable = function(output, input, savedConnInput, backInit = false)
 {
-
+    if (   !savedConnInput
+        && (  !input.connected
+            || input.connectedOutput != this.tempConn.output))
+    {
+        console.log('V1 connect new');
+        actionManager.do(new ConnectAction(this.graph, output, input, {backInit: backInit}));
+    }
+    // else if (savedConnInput
+    //       && savedConnInput.connectedOutput == output)
+    // {
+    //     if (input.index <)
+    //     console.log('V2 reconnect');
+    //     actionManager.do(new ReconnectAction(this.graph, output, savedConnInput, input));
+    // }
 };

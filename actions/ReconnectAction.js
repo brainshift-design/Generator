@@ -98,8 +98,8 @@ extends Action
         if (this.backInit)
             connectAction_backInitOutputValue(this);
 
-        connectAction_removeOldOutputConnection(this);
         this.removePrevInputConnection(updateNodes);
+        connectAction_removeOldOutputConnection(this);
 
         connectAction_makeNewConnection(this);
 

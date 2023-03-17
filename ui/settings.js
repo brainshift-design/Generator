@@ -25,8 +25,12 @@ const settings =
     logObjectUpdates:      false,
     logStyleUpdates:       false,
     
-    logRawLoading:         false, 
-    logRawSaving:          false, 
+    logRawLoadNodes:       false, 
+    logRawLoadConnections: false, 
+
+    logRawSaveNodes:       false, 
+    logRawSaveConnections: false, 
+
     logRawRequests:        false, 
     logRawValues:          false    
 };
@@ -61,8 +65,12 @@ function updateSetting(settingName, value)
         case 'logObjectUpdates':      settings.logObjectUpdates      = value;  break;
         case 'logStyleUpdates':       settings.logStyleUpdates       = value;  break;
    
-        case 'logRawLoading':         settings.logRawLoading         = value;  break;
-        case 'logRawSaving':          settings.logRawSaving          = value;  break;
+        case 'logRawLoadNodes':       settings.logRawLoadNodes       = value;  break;
+        case 'logRawLoadConnections': settings.logRawLoadConnections = value;  break;
+
+        case 'logRawSaveNodes':       settings.logRawSaveNodes       = value;  break;
+        case 'logRawSaveConnections': settings.logRawSaveConnections = value;  break;
+
         case 'logRawRequests':        settings.logRawRequests        = value;  break;
         case 'logRawValues':          settings.logRawValues          = value;  break;
     } 
@@ -97,8 +105,12 @@ function updateSettingAndMenu(settingName, valid, value, save = true)
         case 'logObjectUpdates':      updateSettingAndMenu_(valid, settingName, value, menuItemLogObjectUpdates     );  break;
         case 'logStyleUpdates':       updateSettingAndMenu_(valid, settingName, value, menuItemLogStyleUpdates      );  break;
   
-        case 'logRawLoading':         updateSettingAndMenu_(valid, settingName, value, menuItemLogRawLoading        );  break;
-        case 'logRawSaving':          updateSettingAndMenu_(valid, settingName, value, menuItemLogRawSaving         );  break;
+        case 'logRawLoadNodes':       updateSettingAndMenu_(valid, settingName, value, menuItemLogRawLoadNodes      );  break;
+        case 'logRawLoadConnections': updateSettingAndMenu_(valid, settingName, value, menuItemLogRawLoadConnections);  break;
+
+        case 'logRawSaveNodes':       updateSettingAndMenu_(valid, settingName, value, menuItemLogRawSaveNodes      );  break;
+        case 'logRawSaveConnections': updateSettingAndMenu_(valid, settingName, value, menuItemLogRawSaveConnections);  break;
+
         case 'logRawRequests':        updateSettingAndMenu_(valid, settingName, value, menuItemLogRawRequests       );  break;
         case 'logRawValues':          updateSettingAndMenu_(valid, settingName, value, menuItemLogRawValues         );  break;
     } 
@@ -147,8 +159,12 @@ function updateSettingsMenus()
     menuItemLogObjectUpdates     .setChecked(settings.logObjectUpdates     );
     menuItemLogStyleUpdates      .setChecked(settings.logStyleUpdates      );
   
-    menuItemLogRawLoading        .setChecked(settings.logRawLoading        );
-    menuItemLogRawSaving         .setChecked(settings.logRawSaving         );
+    menuItemLogRawLoadNodes      .setChecked(settings.logRawLoadNodes      );
+    menuItemLogRawLoadConnections.setChecked(settings.logRawLoadConnections);
+    
+    menuItemLogRawSaveNodes      .setChecked(settings.logRawSaveNodes      );
+    menuItemLogRawSaveConnections.setChecked(settings.logRawSaveConnections);
+
     menuItemLogRawRequests       .setChecked(settings.logRawRequests       );
     menuItemLogRawValues         .setChecked(settings.logRawValues         );
 }
@@ -262,8 +278,12 @@ function loadLocalSettings()
     uiGetLocalData('logObjectUpdates'     );
     uiGetLocalData('logStyleUpdates'      );
     
-    uiGetLocalData('logRawLoading'        );
-    uiGetLocalData('logRawSaving'         );
+    uiGetLocalData('logRawLoadNodes'      );
+    uiGetLocalData('logRawLoadConnections');
+
+    uiGetLocalData('logRawSaveNodes'      );
+    uiGetLocalData('logRawSaveConnections');
+
     uiGetLocalData('logRawRequests'       );
     uiGetLocalData('logRawValues'         );
 }

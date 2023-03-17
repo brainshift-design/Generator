@@ -61,8 +61,12 @@ function uiReturnFigGetLocalData(msg)
         case 'logObjectUpdates': 
         case 'logStyleUpdates': 
 
-        case 'logRawLoading':    
-        case 'logRawSaving':     
+        case 'logRawLoadNodes':    
+        case 'logRawLoadConnections':    
+
+        case 'logRawSaveNodes': 
+        case 'logRawSaveConnections': 
+
         case 'logRawRequests':   
         case 'logRawValues':     
             updateSettingAndMenu(
@@ -177,8 +181,7 @@ function uiLoadGraphView(json)
 
 function uiReturnFigLoadNodesAndConns(msg)
 {
-    if (settings.logRawLoading)
-    {
+    if (settings.logRawLoadNodes)
         console.log(
             '%cnodes JSON = %s', 
             'background: #fed',
@@ -186,13 +189,13 @@ function uiReturnFigLoadNodesAndConns(msg)
                 .replaceAll('\\n', '\n')
                 .replaceAll('\\"', '"'));
 
+    if (settings.logRawLoadConnections)
         console.log(
             '%cconnections JSON = %s', 
             'background: #fed',
             msg.connJson
                 .replaceAll('\\n', '\n')
                 .replaceAll('\\"', '"'));
-    }
 
     
     const _graphView = msg.graphView;

@@ -940,7 +940,7 @@ function uiSaveNodes(graph, nodeIds)
 
     if (!isEmpty(nodeJson))
     {
-        if (settings.logRawSaving)
+        if (settings.logRawSaveNodes)
             logSaveNodes(nodeJson.join('\n'));
 
         uiQueueMessageToFigma({
@@ -954,8 +954,8 @@ function uiSaveNodes(graph, nodeIds)
 
 function uiSaveConn(conn)
 {
-    if (settings.logRawSaving)
-        console.log('%cSAVING CONN\n' + conn.toJson(), 'color: black; background: #ddeeff;');
+    if (settings.logRawSaveConnections)
+        console.log('%cSAVING CONN\n' + conn.toJson(), 'color: black; background: #ddffee;');
 
     uiQueueMessageToFigma({
         cmd: 'figSaveConnection',
@@ -968,8 +968,8 @@ function uiSaveConn(conn)
 
 function uiSaveConnection(outputNodeId, outputId, outputOrder, inputNodeId, inputId, connJson)
 {
-    if (settings.logRawSaving)
-        console.log('%cSAVING CONNECTION\n' + connJson, 'color: black; background: #ddeeff;');
+    if (settings.logRawSaveConnections)
+        console.log('%cSAVING CONNECTION\n' + connJson, 'color: black; background: #ddffee;');
 
     uiQueueMessageToFigma({
         cmd: 'figSaveConnection',
@@ -984,7 +984,7 @@ function uiSaveConnection(outputNodeId, outputId, outputOrder, inputNodeId, inpu
 
 function uiSaveConnections(conns)
 {
-    if (settings.logRawSaving)
+    if (settings.logRawSaveConnections)
         logSaveConnections(conns);
 
 
@@ -1009,7 +1009,7 @@ function uiSaveConnections(conns)
 
 function uiUpdateSavedConnections(curKeys, newKeys, conns)
 {
-    if (settings.logRawSaving)
+    if (settings.logRawSaveConnections)
         logUpdateSavedConnections(conns);
 
 
@@ -1031,7 +1031,7 @@ function uiUpdateSavedConnections(curKeys, newKeys, conns)
 
 function uiDeleteSavedConn(conn)
 {
-    if (settings.logRawSaving)
+    if (settings.logRawSaveConnections)
     {
         console.log(
              '%cDELETING SAVED CONNECTION '
@@ -1050,7 +1050,7 @@ function uiDeleteSavedConn(conn)
 
 function uiDeleteSavedConnection(key, outputNodeId, outputId, outputOrder, inputNodeId, inputId, list)
 {
-    if (settings.logRawSaving)
+    if (settings.logRawSaveConnections)
     {
         console.log(
              '%cDELETING SAVED CONNECTION ' 

@@ -57,7 +57,6 @@ GraphView.prototype.createEvents = function()
                     this.tempConn.wire.update(sx, sy);
 
                     this.savedConn = this.overInput.connection;
-
                     this.savedConn.wire.show(false);
                 }
                 else
@@ -336,7 +335,7 @@ GraphView.prototype.updateWheelTimer = function()
 
 function graphView_onpointermove(e)
 {
-    const view = graphView;//e.target.view;
+    const view = graphView;
 
     
     view.p = point(e.clientX, e.clientY);
