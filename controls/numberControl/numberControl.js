@@ -3,6 +3,13 @@ extends EventTarget
 {
     div;
 
+    bar;
+    text;
+    focus;
+
+    extLeft;
+    extRight;
+
     param;
 
     id;
@@ -84,7 +91,8 @@ extends EventTarget
     mouseOver             = false;
     buttonDown0           = false;
     buttonDown1           = false;
-             
+    shiftDown             = false;
+    
     clickSize             = 4;
     moved                 = false;
          
@@ -112,61 +120,66 @@ extends EventTarget
         super();
 
 
-        this.div                    = div ? div : createDiv();
-        this.div.control            = this;
+        this.div                   = div ? div : createDiv();
+        this.div.control           = this;
         
-        this.param                  = param;
+        this.param                 = param;
         
-        this.id                     = id;
-        this.name                   = name;
-        this.showName               = showName;
+        this.id                    = id;
+        this.name                  = name;
+        this.showName              = showName;
         
         
-        this.width                  = width;
-        this.height                 = height;
+        this.width                 = width;
+        this.height                = height;
         
-        this.div.style.width        = width;
-        this.div.style.height       = height;
+        this.div.style.width       = width;
+        this.div.style.height      = height;
         
-        this.div.style.display      = 'inline';
+        this.div.style.display     = 'inline';
 
 
-        this.value                  = defaultValue;
+        this.value                 = defaultValue;
     
-        this.min                    = min;
-        this.max                    = max;
+        this.min                   = min;
+        this.max                   = max;
     
-        this.displayMin             = min;
-        this.displayMax             = max;
+        this.displayMin            = min;
+        this.displayMax            = max;
     
-        this.thinMinus              = false;
-        this.displayAbsolute        = false;
+        this.thinMinus             = false;
+        this.displayAbsolute       = false;
         
-        this.epsilon                = Epsilon;
+        this.epsilon               = Epsilon;
     
-        this.acc                    = acc;
+        this.acc                   = acc;
          
-        this.dec                    =
-        this.displayDec             = dec;
+        this.dec                   =
+        this.displayDec            = dec;
              
-        this.valueScale             = 1;
+        this.valueScale            = 1;
                     
-        this.suffix                 = suffix;
-        this.valueCanContainSuffix  = false;
+        this.suffix                = suffix;
+        this.valueCanContainSuffix = false;
          
 
-        this.dragReverse            = false;
-        this.dragScale              = dragScale;
-        this.wheelScale             = wheelScale;
+        this.dragReverse           = false;
+        this.dragScale             = dragScale;
+        this.wheelScale            = wheelScale;
     
 
-        this.bar   = createDiv('numberControlBar');
-        this.text  = createDiv('numberControlText');
-        this.focus = createDiv('numberControlFocus');
-    
+        this.bar                   = createDiv('numberControlBar');
+        this.text                  = createDiv('numberControlText');
+        this.focus                 = createDiv('numberControlFocus');
+        this.extLeft               = createDiv('numberControlExt numberControlExtLeft');
+        this.extRight              = createDiv('numberControlExt numberControlExtRight');
+
+
         this.div.appendChild(this.bar);
         this.div.appendChild(this.text);
         this.div.appendChild(this.focus);
+        this.div.appendChild(this.extLeft);
+        this.div.appendChild(this.extRight);
 
 
         this.initTextbox();
@@ -177,6 +190,7 @@ extends EventTarget
         this.onchange      = new Event('change');
         this.onconfirm     = new Event('confirm');
     }
+
 
 
     copy()
@@ -406,7 +420,7 @@ extends EventTarget
         this.updateColors();
         this.updateText();
         this.updateFocus(sw, sh);
-        
+        this.updateExt();
 
         this.updateRanges(sw, sh);
     }
@@ -495,6 +509,31 @@ extends EventTarget
         this.focus.style.top    = 0;
         this.focus.style.width  = sw;
         this.focus.style.height = sh;
+    }
+
+
+
+    updateExt()
+    {
+        if (this.shiftDown)
+        {
+            const style = 
+                darkMode
+                ? this.textStyleDark
+                : this.textStyleLight;
+                
+            this.extLeft .innerHTML =
+            this.extRight.innerHTML =
+                '<svg width="1" height="15" viewBox="0 0 1 15" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M0 12H1V15H0V12Z" fill="'+style+'"/><path d="M0 6H1V9H0V6Z" fill="'+style+'"/><path d="M0 0H1V3H0V0Z" fill="'+style+'"/></svg>';
+
+            this.extLeft .style.display = this.min < this.displayMin ? 'block' : 'none';
+            this.extRight.style.display = this.max > this.displayMax ? 'block' : 'none';
+        }
+        else
+        {
+            this.extLeft .style.display = 'none';
+            this.extRight.style.display = 'none';
+        }
     }
 
 

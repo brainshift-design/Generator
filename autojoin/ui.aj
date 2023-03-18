@@ -6,8 +6,8 @@
     ../controls/GraphView/*.css
     ../controls/menu/*.css
     ../controls/toggleButton/*.css
-    ../controls/numberControl/*.css
-    ../controls/colorControl/*.css
+    ../controls/NumberControl/*.css
+    ../controls/ColorControl/*.css
     ../controls/menuSelect/*.css
     ../controls/select/*.css
     ../controls/checkbox/*.css

@@ -7,20 +7,7 @@
     background-color: var(--figma-color-bg);
     text-align:       center;
     touch-action:     none;
-    /* box-shadow: 0 0 0 1px inset red;; */
 }    
-
-
-/* .figma-light .numberControlName
-{
-    color: #0006;
-}
-
-
-.figma-dark .numberControlName
-{
-    color: #fff6;
-} */
 
 
 .numberControlBar
@@ -68,6 +55,37 @@
 }
 
 
+.numberControlExt
+{
+    display:             block;
+    position:            absolute;
+    top:                 50%;
+    transform:           translateY(-50%);
+    width:               1px;
+    height:              15px;
+    /* box-shadow:          0 0 0 1px red inset; */
+    z-index:             1200;
+}
+
+.numberControlExtLeft  { left:  0px; }
+.numberControlExtRight { right: 0px; }
+
+
+/* .figma-light .numberControlExt
+{
+    background:          url('data:image/svg+xml;utf8,<svg width="1" height="15" viewBox="0 0 1 15" fill="none" xmlns="http://www.w3.org/2000/svg"><rect y="12" width="1" height="3" fill="#000"/><rect y="6" width="1" height="3" fill="#000"/><rect width="1" height="3" fill="#000"/></svg>');
+    background-position: 50% 50%;
+    background-repeat:   no-repeat;
+}
+
+.figma-dark .numberControlExt
+{
+    background:          url('data:image/svg+xml;utf8,');
+    background-position: 50% 50%;
+    background-repeat:   no-repeat;
+} */
+
+
 .numberControlFocus
 {
     position:       absolute;
@@ -75,6 +93,7 @@
     box-shadow:     0 0 0 1px var(--activeObjectColor) inset;
     visibility:     hidden;
     opacity:        0;
+    z-index:        1100;
 }
 
 

@@ -81,11 +81,14 @@ GraphView.prototype.endConnection = function(pointerId, backInit = false)
         
 
         if (   input
-            && input.canConnectFrom(output)) // TO INPUT
+            && input.canConnectFrom(output))
         {
-            if (input.node.variableInputs) this.endConnectionFromOutputToVariable(output, input, savedConnInput, backInit);
-            else                           this.endConnectionFromOutputToFixed   (output, input, savedConnInput, backInit);
-
+            if (  !savedConnInput
+                || savedConnInput != input) // TO INPUT
+            {
+                if (input.node.variableInputs) this.endConnectionFromOutputToVariable(output, input, savedConnInput, backInit);
+                else                           this.endConnectionFromOutputToFixed   (output, input, savedConnInput, backInit);
+            }
             // if (   !isNaN(newReorderIndex)
             //     && !isNaN(oldReorderIndex)
             //     &&  newReorderIndex != oldReorderIndex
@@ -157,7 +160,7 @@ GraphView.prototype.endConnection = function(pointerId, backInit = false)
             //     actionManager.do(new ConnectAction(this.graph, output, input, {backInit: backInit}));
             // }
         }
-        else if (savedConnInput) // disconnect old
+        else if (savedConnInput)
             actionManager.do(new DisconnectAction(this.graph, savedConnInput));
         
 
@@ -218,11 +221,11 @@ GraphView.prototype.endConnectionFromOutputToVariable = function(output, input, 
         console.log('V1 connect new');
         actionManager.do(new ConnectAction(this.graph, output, input, {backInit: backInit}));
     }
-    // else if (savedConnInput
-    //       && savedConnInput.connectedOutput == output)
-    // {
-    //     if (input.index <)
-    //     console.log('V2 reconnect');
-    //     actionManager.do(new ReconnectAction(this.graph, output, savedConnInput, input));
-    // }
+    else if (savedConnInput
+          && savedConnInput.connectedOutput == output)
+    {
+        // if (input.index <)
+        console.log('V2 reconnect');
+        actionManager.do(new ReconnectAction(this.graph, output, savedConnInput, input));
+    }
 };

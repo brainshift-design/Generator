@@ -161,6 +161,13 @@ document.addEventListener('keydown', e =>
     {
         if (graphView._soloNode)
             graphView.unsoloNode();
+        
+        if (    numberControlChanging
+            && !numberControlChanging.shiftDown)
+        {
+            numberControlChanging.shiftDown = true;
+            numberControlChanging.update();
+        }
     }
 
     else if (e.key == 'Control')
@@ -299,5 +306,14 @@ document.addEventListener('keyup', e =>
             overNumberControlCtrl = null;
         }
     }
+    else if (e.key == 'Shift')
+    {
+        if (numberControlChanging)
+        {
+            numberControlChanging.shiftDown = null;
+            numberControlChanging.update();
+        }
+    }
+
 },
 false);

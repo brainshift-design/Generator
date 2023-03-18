@@ -76,7 +76,7 @@ NumberControl.prototype.initEvents = function()
 
         
         window.focus();
-            
+
         hideAllMenus();
 
 
@@ -122,6 +122,10 @@ NumberControl.prototype.initEvents = function()
                 {
                     if (!document.menuHadFocus)
                     {
+                        numberControlChanging = this;
+                        this.shiftDown = e.shiftKey;
+                        this.update();
+
                         this.moved = true;
                         this.lockPointer(e.pointerId);
                     }
@@ -214,6 +218,8 @@ NumberControl.prototype.initEvents = function()
         {
             if (this.isPointerLocked())
             {
+                numberControlChanging = this;
+
                 this.movedX += e.movementX;
                 
                 if (!isNaN(this.value))
@@ -249,8 +255,11 @@ NumberControl.prototype.initEvents = function()
                     if (this.value != this.prevValue)
                         pushUpdateFromParam(null, [param.node], param);
 
-                        this.prevValue = this.value;
+                    this.prevValue = this.value;
                 }
+
+
+                this.shiftDown = e.shiftKey;
             }
             else
             {
@@ -388,6 +397,9 @@ NumberControl.prototype.initEvents = function()
         this.buttonDown1 = false;
         this.buttonDown2 = false;
         this.mouseOver   = false;
+        this.shiftDown   = false;
+
+        numberControlChanging = null;
         
         this.update();
     });
@@ -410,7 +422,7 @@ NumberControl.prototype.initEvents = function()
 
         clearTimeout(this.clickTimer);
 
-
+  
         if (this.isPointerLocked())
         {
             this.setValue(
@@ -447,6 +459,10 @@ NumberControl.prototype.initEvents = function()
             if (param)
                 param.noUpdate = false;  
 
+            this.shiftDown        = false;
+            numberControlChanging = null;
+ 
+            this.update();
             return;            
         }
 
@@ -457,8 +473,16 @@ NumberControl.prototype.initEvents = function()
         }
 
 
-             if (e.button == 0) this.buttonDown0 = false;
-        else if (e.button == 1) this.buttonDown1 = false;
+        if (e.button == 0) 
+        {
+            this.buttonDown0 = false;
+            this.shiftDown   = false;
+
+            numberControlChanging = null;
+            console.log('NC events numberControlChanging =', numberControlChanging);
+        }
+        else if (e.button == 1) 
+            this.buttonDown1 = false;
 
         else if (e.button == 2) 
         {
@@ -560,11 +584,31 @@ NumberControl.prototype.initEvents = function()
     
     this.div.addEventListener('keydown', e =>
     {
+        console.log('keydown');
         if (   e.code == 'Enter'
             || e.code == 'NumpadEnter')
             this.this.MathshowTextbox();
 
+        // else if (e.key == 'Shift')
+        // {
+        //     this.shiftDown = true;
+        //     this.update();
+        // }
+
     }, true);
+
+
+
+    // this.div.addEventListener('keyup', e =>
+    // {
+    //     console.log('keyup');
+    //     // if (e.key == 'Shift')
+    //     // {
+    //     //     this.shiftDown = true;
+    //     //     this.update();
+    //     // }
+
+    // }, true);
 
 
 

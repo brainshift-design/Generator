@@ -2169,20 +2169,7 @@ a
     background-color: var(--figma-color-bg);
     text-align:       center;
     touch-action:     none;
-    /* box-shadow: 0 0 0 1px inset red;; */
 }    
-
-
-/* .figma-light .numberControlName
-{
-    color: #0006;
-}
-
-
-.figma-dark .numberControlName
-{
-    color: #fff6;
-} */
 
 
 .numberControlBar
@@ -2230,6 +2217,37 @@ a
 }
 
 
+.numberControlExt
+{
+    display:             block;
+    position:            absolute;
+    top:                 50%;
+    transform:           translateY(-50%);
+    width:               1px;
+    height:              15px;
+    /* box-shadow:          0 0 0 1px red inset; */
+    z-index:             1200;
+}
+
+.numberControlExtLeft  { left:  0px; }
+.numberControlExtRight { right: 0px; }
+
+
+/* .figma-light .numberControlExt
+{
+    background:          url('data:image/svg+xml;utf8,<svg width="1" height="15" viewBox="0 0 1 15" fill="none" xmlns="http://www.w3.org/2000/svg"><rect y="12" width="1" height="3" fill="#000"/><rect y="6" width="1" height="3" fill="#000"/><rect width="1" height="3" fill="#000"/></svg>');
+    background-position: 50% 50%;
+    background-repeat:   no-repeat;
+}
+
+.figma-dark .numberControlExt
+{
+    background:          url('data:image/svg+xml;utf8,');
+    background-position: 50% 50%;
+    background-repeat:   no-repeat;
+} */
+
+
 .numberControlFocus
 {
     position:       absolute;
@@ -2237,6 +2255,7 @@ a
     box-shadow:     0 0 0 1px var(--activeObjectColor) inset;
     visibility:     hidden;
     opacity:        0;
+    z-index:        1100;
 }
 
 
@@ -2247,7 +2266,6 @@ a
     pointer-events: none;
     z-index:        1000;
 }
-
 
 
 .colorControl
@@ -3156,6 +3174,7 @@ a
                 <p>Added min. zoom indicator to zoom button.</p>
                 <p>Added copy/paste menu to all textboxes.</p>
                 <p>Consolidated value change undo into a single action.</p>
+                <p>Added out-of-range value scroll indicators.</p>
                 <p>Fixed UI issues.</p>
 
                 <p><br/><br/><div id='chkHideWhatsNew'></div></p>
@@ -33897,6 +33916,13 @@ extends EventTarget
 {
     div;
 
+    bar;
+    text;
+    focus;
+
+    extLeft;
+    extRight;
+
     param;
 
     id;
@@ -33978,7 +34004,8 @@ extends EventTarget
     mouseOver             = false;
     buttonDown0           = false;
     buttonDown1           = false;
-             
+    shiftDown             = false;
+    
     clickSize             = 4;
     moved                 = false;
          
@@ -34006,61 +34033,66 @@ extends EventTarget
         super();
 
 
-        this.div                    = div ? div : createDiv();
-        this.div.control            = this;
+        this.div                   = div ? div : createDiv();
+        this.div.control           = this;
         
-        this.param                  = param;
+        this.param                 = param;
         
-        this.id                     = id;
-        this.name                   = name;
-        this.showName               = showName;
+        this.id                    = id;
+        this.name                  = name;
+        this.showName              = showName;
         
         
-        this.width                  = width;
-        this.height                 = height;
+        this.width                 = width;
+        this.height                = height;
         
-        this.div.style.width        = width;
-        this.div.style.height       = height;
+        this.div.style.width       = width;
+        this.div.style.height      = height;
         
-        this.div.style.display      = 'inline';
+        this.div.style.display     = 'inline';
 
 
-        this.value                  = defaultValue;
+        this.value                 = defaultValue;
     
-        this.min                    = min;
-        this.max                    = max;
+        this.min                   = min;
+        this.max                   = max;
     
-        this.displayMin             = min;
-        this.displayMax             = max;
+        this.displayMin            = min;
+        this.displayMax            = max;
     
-        this.thinMinus              = false;
-        this.displayAbsolute        = false;
+        this.thinMinus             = false;
+        this.displayAbsolute       = false;
         
-        this.epsilon                = Epsilon;
+        this.epsilon               = Epsilon;
     
-        this.acc                    = acc;
+        this.acc                   = acc;
          
-        this.dec                    =
-        this.displayDec             = dec;
+        this.dec                   =
+        this.displayDec            = dec;
              
-        this.valueScale             = 1;
+        this.valueScale            = 1;
                     
-        this.suffix                 = suffix;
-        this.valueCanContainSuffix  = false;
+        this.suffix                = suffix;
+        this.valueCanContainSuffix = false;
          
 
-        this.dragReverse            = false;
-        this.dragScale              = dragScale;
-        this.wheelScale             = wheelScale;
+        this.dragReverse           = false;
+        this.dragScale             = dragScale;
+        this.wheelScale            = wheelScale;
     
 
-        this.bar   = createDiv('numberControlBar');
-        this.text  = createDiv('numberControlText');
-        this.focus = createDiv('numberControlFocus');
-    
+        this.bar                   = createDiv('numberControlBar');
+        this.text                  = createDiv('numberControlText');
+        this.focus                 = createDiv('numberControlFocus');
+        this.extLeft               = createDiv('numberControlExt numberControlExtLeft');
+        this.extRight              = createDiv('numberControlExt numberControlExtRight');
+
+
         this.div.appendChild(this.bar);
         this.div.appendChild(this.text);
         this.div.appendChild(this.focus);
+        this.div.appendChild(this.extLeft);
+        this.div.appendChild(this.extRight);
 
 
         this.initTextbox();
@@ -34071,6 +34103,7 @@ extends EventTarget
         this.onchange      = new Event('change');
         this.onconfirm     = new Event('confirm');
     }
+
 
 
     copy()
@@ -34300,7 +34333,7 @@ extends EventTarget
         this.updateColors();
         this.updateText();
         this.updateFocus(sw, sh);
-        
+        this.updateExt();
 
         this.updateRanges(sw, sh);
     }
@@ -34389,6 +34422,31 @@ extends EventTarget
         this.focus.style.top    = 0;
         this.focus.style.width  = sw;
         this.focus.style.height = sh;
+    }
+
+
+
+    updateExt()
+    {
+        if (this.shiftDown)
+        {
+            const style = 
+                darkMode
+                ? this.textStyleDark
+                : this.textStyleLight;
+                
+            this.extLeft .innerHTML =
+            this.extRight.innerHTML =
+                '<svg width="1" height="15" viewBox="0 0 1 15" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M0 12H1V15H0V12Z" fill="'+style+'"/><path d="M0 6H1V9H0V6Z" fill="'+style+'"/><path d="M0 0H1V3H0V0Z" fill="'+style+'"/></svg>';
+
+            this.extLeft .style.display = this.min < this.displayMin ? 'block' : 'none';
+            this.extRight.style.display = this.max > this.displayMax ? 'block' : 'none';
+        }
+        else
+        {
+            this.extLeft .style.display = 'none';
+            this.extRight.style.display = 'none';
+        }
     }
 
 
@@ -35057,7 +35115,7 @@ NumberControl.prototype.initEvents = function()
 
         
         window.focus();
-            
+
         hideAllMenus();
 
 
@@ -35103,6 +35161,10 @@ NumberControl.prototype.initEvents = function()
                 {
                     if (!document.menuHadFocus)
                     {
+                        numberControlChanging = this;
+                        this.shiftDown = e.shiftKey;
+                        this.update();
+
                         this.moved = true;
                         this.lockPointer(e.pointerId);
                     }
@@ -35195,6 +35257,8 @@ NumberControl.prototype.initEvents = function()
         {
             if (this.isPointerLocked())
             {
+                numberControlChanging = this;
+
                 this.movedX += e.movementX;
                 
                 if (!isNaN(this.value))
@@ -35230,8 +35294,11 @@ NumberControl.prototype.initEvents = function()
                     if (this.value != this.prevValue)
                         pushUpdateFromParam(null, [param.node], param);
 
-                        this.prevValue = this.value;
+                    this.prevValue = this.value;
                 }
+
+
+                this.shiftDown = e.shiftKey;
             }
             else
             {
@@ -35369,6 +35436,9 @@ NumberControl.prototype.initEvents = function()
         this.buttonDown1 = false;
         this.buttonDown2 = false;
         this.mouseOver   = false;
+        this.shiftDown   = false;
+
+        numberControlChanging = null;
         
         this.update();
     });
@@ -35391,7 +35461,7 @@ NumberControl.prototype.initEvents = function()
 
         clearTimeout(this.clickTimer);
 
-
+  
         if (this.isPointerLocked())
         {
             this.setValue(
@@ -35428,6 +35498,10 @@ NumberControl.prototype.initEvents = function()
             if (param)
                 param.noUpdate = false;  
 
+            this.shiftDown        = false;
+            numberControlChanging = null;
+ 
+            this.update();
             return;            
         }
 
@@ -35438,8 +35512,16 @@ NumberControl.prototype.initEvents = function()
         }
 
 
-             if (e.button == 0) this.buttonDown0 = false;
-        else if (e.button == 1) this.buttonDown1 = false;
+        if (e.button == 0) 
+        {
+            this.buttonDown0 = false;
+            this.shiftDown   = false;
+
+            numberControlChanging = null;
+            console.log('NC events numberControlChanging =', numberControlChanging);
+        }
+        else if (e.button == 1) 
+            this.buttonDown1 = false;
 
         else if (e.button == 2) 
         {
@@ -35541,11 +35623,31 @@ NumberControl.prototype.initEvents = function()
     
     this.div.addEventListener('keydown', e =>
     {
+        console.log('keydown');
         if (   e.code == 'Enter'
             || e.code == 'NumpadEnter')
             this.this.MathshowTextbox();
 
+        // else if (e.key == 'Shift')
+        // {
+        //     this.shiftDown = true;
+        //     this.update();
+        // }
+
     }, true);
+
+
+
+    // this.div.addEventListener('keyup', e =>
+    // {
+    //     console.log('keyup');
+    //     // if (e.key == 'Shift')
+    //     // {
+    //     //     this.shiftDown = true;
+    //     //     this.update();
+    //     // }
+
+    // }, true);
 
 
 
@@ -39879,11 +39981,14 @@ GraphView.prototype.endConnection = function(pointerId, backInit = false)
         
 
         if (   input
-            && input.canConnectFrom(output)) // TO INPUT
+            && input.canConnectFrom(output))
         {
-            if (input.node.variableInputs) this.endConnectionFromOutputToVariable(output, input, savedConnInput, backInit);
-            else                           this.endConnectionFromOutputToFixed   (output, input, savedConnInput, backInit);
-
+            if (  !savedConnInput
+                || savedConnInput != input) // TO INPUT
+            {
+                if (input.node.variableInputs) this.endConnectionFromOutputToVariable(output, input, savedConnInput, backInit);
+                else                           this.endConnectionFromOutputToFixed   (output, input, savedConnInput, backInit);
+            }
             // if (   !isNaN(newReorderIndex)
             //     && !isNaN(oldReorderIndex)
             //     &&  newReorderIndex != oldReorderIndex
@@ -39955,7 +40060,7 @@ GraphView.prototype.endConnection = function(pointerId, backInit = false)
             //     actionManager.do(new ConnectAction(this.graph, output, input, {backInit: backInit}));
             // }
         }
-        else if (savedConnInput) // disconnect old
+        else if (savedConnInput)
             actionManager.do(new DisconnectAction(this.graph, savedConnInput));
         
 
@@ -40016,13 +40121,13 @@ GraphView.prototype.endConnectionFromOutputToVariable = function(output, input, 
         console.log('V1 connect new');
         actionManager.do(new ConnectAction(this.graph, output, input, {backInit: backInit}));
     }
-    // else if (savedConnInput
-    //       && savedConnInput.connectedOutput == output)
-    // {
-    //     if (input.index <)
-    //     console.log('V2 reconnect');
-    //     actionManager.do(new ReconnectAction(this.graph, output, savedConnInput, input));
-    // }
+    else if (savedConnInput
+          && savedConnInput.connectedOutput == output)
+    {
+        // if (input.index <)
+        console.log('V2 reconnect');
+        actionManager.do(new ReconnectAction(this.graph, output, savedConnInput, input));
+    }
 };
 
 
@@ -58467,6 +58572,13 @@ document.addEventListener('keydown', e =>
     {
         if (graphView._soloNode)
             graphView.unsoloNode();
+        
+        if (    numberControlChanging
+            && !numberControlChanging.shiftDown)
+        {
+            numberControlChanging.shiftDown = true;
+            numberControlChanging.update();
+        }
     }
 
     else if (e.key == 'Control')
@@ -58605,6 +58717,15 @@ document.addEventListener('keyup', e =>
             overNumberControlCtrl = null;
         }
     }
+    else if (e.key == 'Shift')
+    {
+        if (numberControlChanging)
+        {
+            numberControlChanging.shiftDown = null;
+            numberControlChanging.update();
+        }
+    }
+
 },
 false);
 
@@ -61534,6 +61655,8 @@ const resizeEdgeWidth = 8;
 
 var overNumberControl     = null;
 var overColorControl      = null;
+
+var numberControlChanging = null;
 
 var overNumberControlCtrl = null;
 
