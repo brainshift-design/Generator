@@ -12,7 +12,7 @@ extends Action
     {
         super(
             graph,
-            TOGGLE_SYMBOL,
+            TOGGLE_SYMBOL_ACTION,
             'TOGGLE MATH SYMBOL ' + boolToString(showOnlySymbol));
         
         this.affectsConnections = false;

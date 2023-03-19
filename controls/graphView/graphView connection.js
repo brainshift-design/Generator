@@ -222,7 +222,12 @@ GraphView.prototype.endConnectionFromOutputToVariable = function(output, input, 
         actionManager.do(new ConnectAction(this.graph, output, input, {backInit: backInit}));
     }
     else if (savedConnInput
-          && savedConnInput.connectedOutput == output)
+          && savedConnInput.connectedOutput == output
+          && (   savedConnInput.node != input.node
+              ||    savedConnInput.index < input.node.headerInputs.length-1
+                 && input.index >= input.node.headerInputs.length
+              ||    savedConnInput.index >= input.node.headerInputs.length 
+                 && input.index < input.node.headerInputs.length-1))
     {
         // if (input.index <)
         console.log('V2 reconnect');

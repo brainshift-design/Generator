@@ -971,7 +971,6 @@ function uiSaveConn(conn)
 
 function uiSaveConnection(outputNodeId, outputId, outputOrder, inputNodeId, inputId, connJson)
 {
-    console.trace();
     if (settings.logRawSaveConnections)
         console.log('%cSAVING CONNECTION\n' + connJson, 'color: black; background: #ddffee;');
 

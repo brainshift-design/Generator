@@ -2224,7 +2224,7 @@ a
     top:                 50%;
     transform:           translateY(-50%);
     width:               1px;
-    height:              15px;
+    height:              10px;
     /* box-shadow:          0 0 0 1px red inset; */
     z-index:             1200;
 }
@@ -34437,7 +34437,7 @@ extends EventTarget
                 
             this.extLeft .innerHTML =
             this.extRight.innerHTML =
-                '<svg width="1" height="15" viewBox="0 0 1 15" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M0 12H1V15H0V12Z" fill="'+style+'"/><path d="M0 6H1V9H0V6Z" fill="'+style+'"/><path d="M0 0H1V3H0V0Z" fill="'+style+'"/></svg>';
+                '<svg width="1" height="10" viewBox="0 0 1 10" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M0 4H1V6H0V4Z"  fill="'+style+'"/><path d="M0 8H1V10H0V8Z" fill="'+style+'"/><path d="M0 0H1V2H0V0Z"  fill="'+style+'"/></svg>';
 
             this.extLeft .style.display = this.min < this.displayMin ? 'block' : 'none';
             this.extRight.style.display = this.max > this.displayMax ? 'block' : 'none';
@@ -40122,7 +40122,12 @@ GraphView.prototype.endConnectionFromOutputToVariable = function(output, input, 
         actionManager.do(new ConnectAction(this.graph, output, input, {backInit: backInit}));
     }
     else if (savedConnInput
-          && savedConnInput.connectedOutput == output)
+          && savedConnInput.connectedOutput == output
+          && (   savedConnInput.node != input.node
+              ||    savedConnInput.index < input.node.headerInputs.length-1
+                 && input.index >= input.node.headerInputs.length
+              ||    savedConnInput.index >= input.node.headerInputs.length 
+                 && input.index < input.node.headerInputs.length-1))
     {
         // if (input.index <)
         console.log('V2 reconnect');
@@ -57256,7 +57261,7 @@ extends Action
     {
         super(
             graph,
-            TOGGLE_SYMBOL,
+            TOGGLE_SYMBOL_ACTION,
             'TOGGLE MATH SYMBOL ' + boolToString(showOnlySymbol));
         
         this.affectsConnections = false;
@@ -61227,7 +61232,6 @@ function uiSaveConn(conn)
 
 function uiSaveConnection(outputNodeId, outputId, outputOrder, inputNodeId, inputId, connJson)
 {
-    console.trace();
     if (settings.logRawSaveConnections)
         console.log('%cSAVING CONNECTION\n' + connJson, 'color: black; background: #ddffee;');
 
