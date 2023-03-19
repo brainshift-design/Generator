@@ -479,7 +479,6 @@ NumberControl.prototype.initEvents = function()
             this.shiftDown   = false;
 
             numberControlChanging = null;
-            console.log('NC events numberControlChanging =', numberControlChanging);
         }
         else if (e.button == 1) 
             this.buttonDown1 = false;

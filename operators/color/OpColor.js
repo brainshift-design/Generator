@@ -463,58 +463,25 @@ extends OpColorBase
 
 
 
-    getWarnLineStyle()
-    {
-        return darkMode
-            ? 'rgba(255, 96, 96, 0.5)'
-            : 'rgba(255, 0, 0, 0.16)';
-    }
-
-
-
     updateAllControlRanges()
     {
-        const warnLineStyle = this.getWarnLineStyle();
+        //const warnLineStyle = getWarningRangeStyle();
 
         const space = this.paramSpace.value.value;
 
-        if (    space == 1
-            && !dataColorIsNaN  (this._color)
-            && !dataColorIsValid(this._color)) // RGB warning ranges
+        if (    (   space == 1  // RGB
+                 || space == 2  // HSV
+                 || space == 3) // HSL
+             && !dataColorIsNaN  (this._color)
+             && !dataColorIsValid(this._color))
         {
-            const rangesR = [];
-            if (this._color[1] < 0) rangesR.push(new NumberControlRange(0, Math.min(-this._color[1], 1), warnLineStyle, 0.8));
-            if (this._color[1] > 1) rangesR.push(new NumberControlRange(2-Math.min(this._color[1], 2), 1, warnLineStyle, 0.8));
-            this.param1.controls[0].ranges = rangesR;
-
-            const rangesG = [];
-            if (this._color[2] < 0) rangesG.push(new NumberControlRange(0, Math.min(-this._color[2], 1), warnLineStyle, 0.8));
-            if (this._color[2] > 1) rangesG.push(new NumberControlRange(2-Math.min(this._color[2], 2), 1, warnLineStyle, 0.8));
-            this.param2.controls[0].ranges = rangesG;
-            
-            const rangesB = [];
-            if (this._color[3] < 0) rangesB.push(new NumberControlRange(0, Math.min(-this._color[3], 1), warnLineStyle, 0.8));
-            if (this._color[3] > 1) rangesB.push(new NumberControlRange(2-Math.min(this._color[3], 2), 1, warnLineStyle, 0.8));
-            this.param3.controls[0].ranges = rangesB;
-        }
-        else if ((   space == 2  // HSV
-                  || space == 3) // HSL
-              && !dataColorIsNaN  (this._color)
-              && !dataColorIsValid(this._color))
-        {
-            const rangesS = [];
-            if (this._color[2] < 0) rangesS.push(new NumberControlRange(0, Math.min(-this._color[2], 1), warnLineStyle, 0.8));
-            if (this._color[2] > 1) rangesS.push(new NumberControlRange(2-Math.min(this._color[2], 2), 1, warnLineStyle, 0.8));
-            this.param2.controls[0].ranges = rangesS;
-            
-            const rangesVL = [];
-            if (this._color[3] < 0) rangesVL.push(new NumberControlRange(0, Math.min(-this._color[3], 1), warnLineStyle, 0.8));
-            if (this._color[3] > 1) rangesVL.push(new NumberControlRange(2-Math.min(this._color[3], 2), 1, warnLineStyle, 0.8));
-            this.param3.controls[0].ranges = rangesVL;
+            this.showExtRanges(true);
         }
         else if ( space > 3 // HCL
               && !dataColorIsNaN(this._color))
         {
+            this.showExtRanges(false);
+
             this.updateControlRanges(this.param1.controls[0], f =>
                 dataColor2rgb([
                     this._color[0],
@@ -539,14 +506,24 @@ extends OpColorBase
         else // no warning ranges
         {
             this.resetAllControlRanges();
+            this.showExtRanges(false);
         }
+    }
+
+
+
+    showExtRanges(show)
+    {
+        this.param1.controls[0].showExtRanges = show;
+        this.param2.controls[0].showExtRanges = show;
+        this.param3.controls[0].showExtRanges = show;
     }
 
 
 
     updateControlRanges(control, getRgb)
     {
-        const warnLineStyle = this.getWarnLineStyle();
+        const warnLineStyle = getWarningRangeStyle();
 
 
         const ranges    = [];

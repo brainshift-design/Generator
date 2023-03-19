@@ -84,7 +84,9 @@ extends EventTarget
      
     ranges                = [];
     rangeDivs             = [];
-     
+    
+    showExtRanges         = true;
+
     options               = []; // if dec == 0, show named choices instead of a value
 
 
@@ -524,7 +526,7 @@ extends EventTarget
                 
             this.extLeft .innerHTML =
             this.extRight.innerHTML =
-                '<svg width="1" height="15" viewBox="0 0 1 15" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M0 12H1V15H0V12Z" fill="'+style+'"/><path d="M0 6H1V9H0V6Z" fill="'+style+'"/><path d="M0 0H1V3H0V0Z" fill="'+style+'"/></svg>';
+                '<svg width="1" height="10" viewBox="0 0 1 10" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M0 4H1V6H0V4Z"  fill="'+style+'"/><path d="M0 8H1V10H0V8Z" fill="'+style+'"/><path d="M0 0H1V2H0V0Z"  fill="'+style+'"/></svg>';
 
             this.extLeft .style.display = this.min < this.displayMin ? 'block' : 'none';
             this.extRight.style.display = this.max > this.displayMax ? 'block' : 'none';

@@ -234,3 +234,20 @@ GraphView.prototype.endConnectionFromOutputToVariable = function(output, input, 
         actionManager.do(new ReconnectAction(this.graph, output, savedConnInput, input));
     }
 };
+
+
+
+GraphView.prototype.createTempConnSwap = function(oldInput, newInput)
+{
+    this.tempConnSwap = new Connection(oldInput.output, newInput);
+    this.addConnWires(this.tempConnSwap, false);
+    this.tempConnSwap.wire.update();
+};
+
+
+
+GraphView.prototype.deleteTempConnSwap = function(oldInput, newInput)
+{
+    this.removeConnWires(this.tempConnSwap);    
+    this.tempConnSwap = null;
+};

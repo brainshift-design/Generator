@@ -34,6 +34,7 @@ class GraphView
     headerOutput   = null; // same as overOutput, but when snapping from a header
         
     tempConn       = null;
+    tempConnSwap   = null;
     savedConn      = null;
     tempConnected  = false;
 

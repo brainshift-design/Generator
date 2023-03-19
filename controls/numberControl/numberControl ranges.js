@@ -40,31 +40,49 @@ NumberControl.prototype.updateRanges = function(controlWidth, controlHeight)
     if (this.overrideText != '') // assuming this is only used in emergencies where ranges are irrelevant
         this.resetRangeDivs();
 
-    else if (this.ranges.length == this.rangeDivs.length) // update
+    else
     {
-        for (let i = 0; i < this.ranges.length; i++)
+        if (   this.showExtRanges
+            && (   this.min < this.displayMin
+                || this.max > this.displayMax))
         {
-            updateControlRangeDiv(
-                this.ranges   [i],
-                this.rangeDivs[i],
-                controlWidth,
-                controlHeight);
+            this.resetRanges();
+
+            const warnLineStyle = getWarningRangeStyle();
+
+            const val = (this.value - this.displayMin) / (this.displayMax - this.displayMin);
+
+            if (this.value < this.displayMin) this.ranges.push(new NumberControlRange(0, Math.min(-val, 1), warnLineStyle, 0.8));
+            if (this.value > this.displayMax) this.ranges.push(new NumberControlRange(2-Math.min(val, 2), 1, warnLineStyle, 0.8));    
         }
-    }
-    else // recreate
-    {
-        this.resetRangeDivs();
 
-        for (const range of this.ranges)
+
+        if (this.ranges.length == this.rangeDivs.length) // update
         {
-            const div = createDiv('numberControlRange');
-            
-            div.style.zIndex = 0;
+            for (let i = 0; i < this.ranges.length; i++)
+            {
+                updateControlRangeDiv(
+                    this.ranges   [i],
+                    this.rangeDivs[i],
+                    controlWidth,
+                    controlHeight);
+            }
+        }
+        else // recreate
+        {
+            this.resetRangeDivs();
 
-            this.rangeDivs.push(div);
-            this.div.appendChild(div);
-        
-            updateControlRangeDiv(range, div, controlWidth, controlHeight);
+            for (const range of this.ranges)
+            {
+                const div = createDiv('numberControlRange');
+                
+                div.style.zIndex = 0;
+
+                this.rangeDivs.push(div);
+                this.div.appendChild(div);
+            
+                updateControlRangeDiv(range, div, controlWidth, controlHeight);
+            }
         }
     }
 };
@@ -87,6 +105,15 @@ NumberControl.prototype.resetRangeDivs = function()
 
     this.rangeDivs = [];
 };
+
+
+
+function getWarningRangeStyle()
+{
+    return darkMode
+        ? 'rgba(255, 96, 96, 0.5)'
+        : 'rgba(255, 0, 0, 0.16)';
+}
 
 
 
