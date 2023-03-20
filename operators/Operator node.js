@@ -324,7 +324,7 @@ Operator.prototype.createHeader = function()
                     this.graph,
                     view.lastSelectedNodes.map(n => n.id), 
                     view.selectedNodes.map(n => n.id), 
-                    point(this.div.slx,        this.div.sly      ),
+                    point(this.slx, this.sly),
                     point(this.div.offsetLeft, this.div.offsetTop),
                     this.div.shiftOnPointerDown ));
             }

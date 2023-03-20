@@ -45,8 +45,8 @@ extends Action
         {
             const node = this.graph.nodeFromId(id);
 
-            this.from.push([id, point(node.div.slx,      node.div.sly     )]);
-            this.to  .push([id, point(node.div.slx + dx, node.div.sly + dy)]);
+            this.from.push([id, point(node.slx,      node.sly     )]);
+            this.to  .push([id, point(node.slx + dx, node.sly + dy)]);
         }
     }
 

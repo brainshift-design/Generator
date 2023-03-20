@@ -46049,7 +46049,7 @@ Operator.prototype.createHeader = function()
                     this.graph,
                     view.lastSelectedNodes.map(n => n.id), 
                     view.selectedNodes.map(n => n.id), 
-                    point(this.div.slx,        this.div.sly      ),
+                    point(this.slx, this.sly),
                     point(this.div.offsetLeft, this.div.offsetTop),
                     this.div.shiftOnPointerDown ));
             }
@@ -56951,8 +56951,8 @@ extends Action
         {
             const node = this.graph.nodeFromId(id);
 
-            this.from.push([id, point(node.div.slx,      node.div.sly     )]);
-            this.to  .push([id, point(node.div.slx + dx, node.div.sly + dy)]);
+            this.from.push([id, point(node.slx,      node.sly     )]);
+            this.to  .push([id, point(node.slx + dx, node.sly + dy)]);
         }
     }
 
@@ -57023,6 +57023,7 @@ extends Action
         this.graph.view.selectByIds(this.getMovedIds());
     }
 }
+
 
 
 class SelectNodesAction
