@@ -1,3 +1,7 @@
+var numberControlConfirm = null;
+
+
+
 class NumberControl
 extends EventTarget
 {

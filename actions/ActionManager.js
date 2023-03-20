@@ -56,6 +56,10 @@ class ActionManager
 
     undo()
     {
+        if (numberControlConfirm) // waiting for confirmation
+            numberControl_confirm();
+
+        
         if (isEmpty(this.actions))
             return;
 

@@ -3175,6 +3175,7 @@ a
                 <p>Added copy/paste menu to all textboxes.</p>
                 <p>Consolidated value change undo into a single action.</p>
                 <p>Added out-of-range value and scroll indicators.</p>
+                <p>Auto-connect now works by holdind Cmd/Ctrl while creating nodes, removed from Preferences.</p>
                 <p>Fixed saving bug for nodes with zero values.</p>
                 <p>Fixed UI issues.</p>
 
@@ -33912,6 +33913,10 @@ extends EventTarget
 
 
 
+var numberControlConfirm = null;
+
+
+
 class NumberControl
 extends EventTarget
 {
@@ -35634,16 +35639,15 @@ NumberControl.prototype.initEvents = function()
                     : this.value + (dWheelY > 0 ? -1 : 1) * this.wheelScale * dec;
 
 
-                    this.setValue(val, true, false, false);
+                this.setValue(val, true, false, false);
 
+                
                 if (this.confirmTimer) 
                     clearTimeout(this.confirmTimer);
 
-                this.confirmTimer = setTimeout(() =>
-                {
-                    this.confirmTimer = null;
-                    this.setValue(this.value, false, true, false);
-                }, 400);
+                numberControlConfirm = this;
+ 
+                this.confirmTimer = setTimeout(() => numberControl_confirm, 400);
             }
         }
     });
@@ -35688,6 +35692,16 @@ NumberControl.prototype.initEvents = function()
             &&  this.pointerEvents)
             this.showTextbox();
     });
+}
+
+
+
+function numberControl_confirm()
+{
+    numberControlConfirm.confirmTimer = null;
+    numberControlConfirm.setValue(numberControlConfirm.value, false, true, false);
+
+    numberControlConfirm = null;
 }
 
 
@@ -37932,7 +37946,7 @@ function initGeneratorMenus()
     menuMainPreferences.addItems([
         menuItemShowAllColorSpaces    = new MenuItem('Show all color spaces',         {checkCallback: () => settings.showAllColorSpaces,    callback: () => { updateSettingAndMenu('showAllColorSpaces',    true, !settings.showAllColorSpaces);    updateMenuItemShowAllColorSpaces();   }}),
                                         new MenuItem('',                              {separator: true}),    
-        menuItemAutoConnectNewNodes   = new MenuItem('Auto-connect new nodes',        {checkCallback: () => settings.autoConnectNewNodes,   callback: () => { updateSettingAndMenu('autoConnectNewNodes',   true, !settings.autoConnectNewNodes);                                         }}),
+        // menuItemAutoConnectNewNodes   = new MenuItem('Auto-connect new nodes',        {checkCallback: () => settings.autoConnectNewNodes,   callback: () => { updateSettingAndMenu('autoConnectNewNodes',   true, !settings.autoConnectNewNodes);                                         }}),
         menuItemShowOperationResults  = new MenuItem('Show operation results',        {checkCallback: () => settings.showOperationResults,  callback: () => { updateSettingAndMenu('showOperationResults',  true, !settings.showOperationResults);  updateMenuItemShowOperationResults(); }}),
         menuItemShowBoolValues        = new MenuItem('Show boolean values as  ✓ ✗',  {checkCallback: () => settings.showBoolValues,        callback: () => { updateSettingAndMenu('showBoolValues',        true, !settings.showBoolValues);        updateMenuItemShowBoolValues();       }}),
         menuItemShowClearUndoWarning  = new MenuItem('Show clear undo warning',       {checkCallback: () => settings.showClearUndoWarning,  callback: () => { updateSettingAndMenu('showClearUndoWarning',  true, !settings.showClearUndoWarning);                                        }}),
@@ -54948,6 +54962,10 @@ class ActionManager
 
     undo()
     {
+        if (numberControlConfirm) // waiting for confirmation
+            numberControl_confirm();
+
+        
         if (isEmpty(this.actions))
             return;
 
