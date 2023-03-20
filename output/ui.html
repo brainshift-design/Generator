@@ -3063,7 +3063,7 @@ a
 <div id='minZoomDialog'>
 
     <div id='minZoomTitle'>
-        <div id='minZoomTitleText'>Smallest adjustment zoom</div>
+        <div id='minZoomTitleText'>Min. zoom to adjust values</div>
         <div class='panelButton dialogButtonClose' id='minZoomClose' onclick='minZoomClose.blur(); hideMinZoomDialog();'>
             <svg width="30" height="30" viewBox="0 0 30 30" fill="none" xmlns="http://www.w3.org/2000/svg">
                 <path fill-rule="evenodd" clip-rule="evenodd" d="M16 15.293L20.6465 10.6465L21.3536 11.3536L16.7071 16.0001L21.3536 20.6465L20.6465 21.3536L16 16.7072L11.3536 21.3536L10.6465 20.6465L15.2929 16.0001L10.6465 11.3537L11.3536 10.6466L16 15.293Z" fill="var(--figma-color-text)" fill-opacity="0.8"/>
@@ -3175,6 +3175,7 @@ a
                 <p>Added copy/paste menu to all textboxes.</p>
                 <p>Consolidated value change undo into a single action.</p>
                 <p>Added out-of-range value and scroll indicators.</p>
+                <p>Fixed saving bug for nodes with zero values.</p>
                 <p>Fixed UI issues.</p>
 
                 <p><br/><br/><div id='chkHideWhatsNew'></div></p>
@@ -37977,12 +37978,13 @@ function initGeneratorMenus()
         menuItemLogRawRequests        = new MenuItem('Log\u2008raw\u2008requests',         {checkCallback: () => settings.logRawRequests  ,      callback: () => updateSettingAndMenu('logRawRequests',                   true, !settings.logRawRequests  ), setting: true}),
         menuItemLogRawValues          = new MenuItem('Log\u2008raw\u2008values',           {checkCallback: () => settings.logRawValues    ,      callback: () => updateSettingAndMenu('logRawValues',                     true, !settings.logRawValues    ), setting: true}),
                                         new MenuItem('',                                   {separator: true}),                   
-        menuItemLogLoading            = new MenuItem('Log\u2008startup\u2008load',         {checkCallback: () => settings.logLoading      ,      callback: () => updateSettingAndMenu('logLoading',                       true, !settings.logLoading      ), setting: true}),
+        menuItemLogLoading            = new MenuItem('Log\u2008load\u2008startup',         {checkCallback: () => settings.logLoading      ,      callback: () => updateSettingAndMenu('logLoading',                       true, !settings.logLoading      ), setting: true}),
                                         new MenuItem('',                                   {separator: true}),                   
-        menuItemLogRawLoadNodes       = new MenuItem('Log\u2008raw\u2008load nodes',       {checkCallback: () => settings.logRawLoadNodes ,      callback: () => updateSettingAndMenu('logRawLoadNodes',                  true, !settings.logRawLoadNodes ), setting: true}),
-        menuItemLogRawLoadConnections = new MenuItem('Log\u2008raw\u2008load connections', {checkCallback: () => settings.logRawLoadConnections, callback: () => updateSettingAndMenu('logRawLoadConnections', true, !settings.logRawLoadConnections), setting: true}),
-        menuItemLogRawSaveNodes       = new MenuItem('Log\u2008raw\u2008save nodes',       {checkCallback: () => settings.logRawSaveNodes ,      callback: () => updateSettingAndMenu('logRawSaveNodes',                  true, !settings.logRawSaveNodes ), setting: true}),
-        menuItemLogRawSaveConnections = new MenuItem('Log\u2008raw\u2008save connections', {checkCallback: () => settings.logRawSaveConnections, callback: () => updateSettingAndMenu('logRawSaveConnections', true, !settings.logRawSaveConnections), setting: true}),
+        menuItemLogRawLoadNodes       = new MenuItem('Log\u2008load nodes',       {checkCallback: () => settings.logRawLoadNodes ,      callback: () => updateSettingAndMenu('logRawLoadNodes',                  true, !settings.logRawLoadNodes ), setting: true}),
+        menuItemLogRawLoadConnections = new MenuItem('Log\u2008load connections', {checkCallback: () => settings.logRawLoadConnections, callback: () => updateSettingAndMenu('logRawLoadConnections', true, !settings.logRawLoadConnections), setting: true}),
+                                        new MenuItem('',                                   {separator: true}),                   
+        menuItemLogRawSaveNodes       = new MenuItem('Log\u2008save nodes',       {checkCallback: () => settings.logRawSaveNodes ,      callback: () => updateSettingAndMenu('logRawSaveNodes',                  true, !settings.logRawSaveNodes ), setting: true}),
+        menuItemLogRawSaveConnections = new MenuItem('Log\u2008save connections', {checkCallback: () => settings.logRawSaveConnections, callback: () => updateSettingAndMenu('logRawSaveConnections', true, !settings.logRawSaveConnections), setting: true}),
                                         new MenuItem('',                                   {separator: true}),   
         menuItemLogMessages           = new MenuItem('Log\u2008messages',                  {checkCallback: () => settings.logMessages     ,      callback: () => updateSettingAndMenu('logMessages',                      true, !settings.logMessages     ), setting: true}),
                                         new MenuItem('',                                   {separator: true}),   
@@ -41580,6 +41582,7 @@ extends Parameter
 
 
     defaultValue;
+    alwaysSaveValue = false;
 
 
     get valueText() { return this.controls[0].valueText; }
@@ -41736,7 +41739,9 @@ extends Parameter
 
 
 
-    isDefault = () => this.value.equals(this.defaultValue);
+    isDefault = () => 
+          !this.alwaysSaveValue
+        && this.value.equals(this.defaultValue);
 
 
 
@@ -49424,6 +49429,11 @@ extends OpColorBase
         
         this.addParam(this.paramColor = new ColorParam ('color', '',      false, false, false, ColorValue.fromRgb(scaleRgb(dataColor2rgb(this._color)))));
 
+
+        this.paramSpace.alwaysSaveValue = true;
+        this.param1    .alwaysSaveValue = true;
+        this.param2    .alwaysSaveValue = true;
+        this.param3    .alwaysSaveValue = true;
 
         this.param1.controls[0].epsilon = ColorEpsilon;
         this.param2.controls[0].epsilon = ColorEpsilon;
@@ -57206,7 +57216,7 @@ extends Action
         this.oldValue = this.param.oldValue;
         pushUpdateFromParam(this, [this.param.node], this.param);
         
-        uiSaveNodes(this.graph, [this.nodeId]);
+        //uiSaveNodes(this.graph, [this.nodeId]);
     }
 
 
@@ -57216,7 +57226,7 @@ extends Action
         this.param.setValue(this.oldValue, false, true);
         pushUpdateFromParam(this, [this.param.node], this.param);
 
-        uiSaveNodes(this.graph, [this.nodeId]);
+        //uiSaveNodes(this.graph, [this.nodeId]);
     }
 
 
@@ -57226,7 +57236,7 @@ extends Action
         this.param.setValue(this.newValue);
         pushUpdateFromParam(this, [this.param.node], this.param);
 
-        uiSaveNodes(this.graph, [this.nodeId]);
+        //uiSaveNodes(this.graph, [this.nodeId]);
     }
 }
 

@@ -49,6 +49,11 @@ extends OpColorBase
         this.addParam(this.paramColor = new ColorParam ('color', '',      false, false, false, ColorValue.fromRgb(scaleRgb(dataColor2rgb(this._color)))));
 
 
+        this.paramSpace.alwaysSaveValue = true;
+        this.param1    .alwaysSaveValue = true;
+        this.param2    .alwaysSaveValue = true;
+        this.param3    .alwaysSaveValue = true;
+
         this.param1.controls[0].epsilon = ColorEpsilon;
         this.param2.controls[0].epsilon = ColorEpsilon;
         this.param3.controls[0].epsilon = ColorEpsilon;

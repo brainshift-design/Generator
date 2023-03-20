@@ -38,7 +38,7 @@ extends Action
         this.oldValue = this.param.oldValue;
         pushUpdateFromParam(this, [this.param.node], this.param);
         
-        uiSaveNodes(this.graph, [this.nodeId]);
+        //uiSaveNodes(this.graph, [this.nodeId]);
     }
 
 
@@ -48,7 +48,7 @@ extends Action
         this.param.setValue(this.oldValue, false, true);
         pushUpdateFromParam(this, [this.param.node], this.param);
 
-        uiSaveNodes(this.graph, [this.nodeId]);
+        //uiSaveNodes(this.graph, [this.nodeId]);
     }
 
 
@@ -58,6 +58,6 @@ extends Action
         this.param.setValue(this.newValue);
         pushUpdateFromParam(this, [this.param.node], this.param);
 
-        uiSaveNodes(this.graph, [this.nodeId]);
+        //uiSaveNodes(this.graph, [this.nodeId]);
     }
 }

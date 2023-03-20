@@ -16,6 +16,7 @@ extends Parameter
 
 
     defaultValue;
+    alwaysSaveValue = false;
 
 
     get valueText() { return this.controls[0].valueText; }
@@ -172,7 +173,9 @@ extends Parameter
 
 
 
-    isDefault = () => this.value.equals(this.defaultValue);
+    isDefault = () => 
+          !this.alwaysSaveValue
+        && this.value.equals(this.defaultValue);
 
 
 
