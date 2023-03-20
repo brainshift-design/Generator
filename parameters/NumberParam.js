@@ -50,13 +50,14 @@ extends NumberParamBase
 
         this.controls[0].addEventListener('change', () => 
         { 
-            this.setValue(this.value, true, false, true); 
+            this.setValue(this.value, true, false, true);
+            this.changing = true;
         });
 
 
         this.controls[0].addEventListener('confirm', () => 
         { 
-            actionManager.do(new EmptyAction(this.node.graph), true);
+            this.changing = false;
         });
 
 

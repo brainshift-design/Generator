@@ -565,14 +565,13 @@ NumberControl.prototype.initEvents = function()
                     : this.value + (dWheelY > 0 ? -1 : 1) * this.wheelScale * dec;
 
 
-                this.setValue(val, true, false, false);
+                this.setValue(val, true, true, false);
+                if (this.param) this.param.changing = true;
 
                 
-                if (this.confirmTimer) 
-                    clearTimeout(this.confirmTimer);
+                if (this.confirmTimer) clearTimeout(this.confirmTimer);
 
-                numberControlConfirm = this;
-                numberControlConfirm.confirmTimer = setTimeout(() => numberControl_confirm, 400);
+                this.confirmTimer = setTimeout(() => numberControl_confirm(this), 400);
             }
         }
     });
@@ -621,10 +620,8 @@ NumberControl.prototype.initEvents = function()
 
 
 
-function numberControl_confirm()
+function numberControl_confirm(control)
 {
-    numberControlConfirm.confirmTimer = null;
-    numberControlConfirm.setValue(numberControlConfirm.value, false, true, false);
-
-    numberControlConfirm = null;
+    if (control.param)
+        control.param.changing = false;
 }

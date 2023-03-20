@@ -26,6 +26,8 @@ extends EventTarget
     onchangelock   = new Event('changelock');
 
 
+    changing       = false;
+
     volatile       = false;
     noUpdate       = false;
  
@@ -187,7 +189,8 @@ extends EventTarget
                     actionManager.do(
                         new SetParamValueAction(this.node.graph, this, value), 
                           !isEmpty(actionManager.actions)
-                        && actionManager.actions.at(-1).type == SET_VALUE_ACTION);
+                        && actionManager.actions.at(-1).type == SET_VALUE_ACTION
+                        && this.changing);
 
                     this.dispatchEvent(this.onconfirm);
                 }

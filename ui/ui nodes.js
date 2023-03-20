@@ -773,6 +773,9 @@ function findConnectedClusters(nodes)
 
 function uiUpdateValuesAndObjects(requestId, actionId, updateNodeId, updateParamId, values, objects, styles, updatedNodes, totalNodes, isLastChunk)
 {
+    // console.log('requestId =',       requestId);
+    // console.log('lastRequestedId =', lastRequestedId);
+
     if (requestId < lastRequestedId) 
         return;
     

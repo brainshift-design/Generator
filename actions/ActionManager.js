@@ -56,10 +56,6 @@ class ActionManager
 
     undo()
     {
-        if (numberControlConfirm) // waiting for confirmation
-            numberControl_confirm();
-
-        
         if (isEmpty(this.actions))
             return;
 
@@ -139,7 +135,7 @@ class ActionManager
         if (act.affectsConnections)
             act.updateOldConnections();
 
-        
+
         if (!act.selfUpdate)
             pushUpdate(act, updateNodes);
     }

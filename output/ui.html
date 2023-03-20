@@ -33913,10 +33913,6 @@ extends EventTarget
 
 
 
-var numberControlConfirm = null;
-
-
-
 class NumberControl
 extends EventTarget
 {
@@ -35639,15 +35635,13 @@ NumberControl.prototype.initEvents = function()
                     : this.value + (dWheelY > 0 ? -1 : 1) * this.wheelScale * dec;
 
 
-                this.setValue(val, true, false, false);
+                this.setValue(val, true, true, false);
+                if (this.param) this.param.changing = true;
 
                 
-                if (this.confirmTimer) 
-                    clearTimeout(this.confirmTimer);
+                if (this.confirmTimer) clearTimeout(this.confirmTimer);
 
-                numberControlConfirm = this;
- 
-                this.confirmTimer = setTimeout(() => numberControl_confirm, 400);
+                this.confirmTimer = setTimeout(() => numberControl_confirm(this), 400);
             }
         }
     });
@@ -35696,12 +35690,10 @@ NumberControl.prototype.initEvents = function()
 
 
 
-function numberControl_confirm()
+function numberControl_confirm(control)
 {
-    numberControlConfirm.confirmTimer = null;
-    numberControlConfirm.setValue(numberControlConfirm.value, false, true, false);
-
-    numberControlConfirm = null;
+    if (control.param)
+        control.param.changing = false;
 }
 
 
@@ -41345,6 +41337,8 @@ extends EventTarget
     onchangelock   = new Event('changelock');
 
 
+    changing       = false;
+
     volatile       = false;
     noUpdate       = false;
  
@@ -41506,7 +41500,8 @@ extends EventTarget
                     actionManager.do(
                         new SetParamValueAction(this.node.graph, this, value), 
                           !isEmpty(actionManager.actions)
-                        && actionManager.actions.at(-1).type == SET_VALUE_ACTION);
+                        && actionManager.actions.at(-1).type == SET_VALUE_ACTION
+                        && this.changing);
 
                     this.dispatchEvent(this.onconfirm);
                 }
@@ -41754,8 +41749,8 @@ extends Parameter
 
 
     isDefault = () => 
-          !this.alwaysSaveValue
-        && this.value.equals(this.defaultValue);
+           !this.alwaysSaveValue
+         && this.value.equals(this.defaultValue);
 
 
 
@@ -41818,13 +41813,14 @@ extends NumberParamBase
 
         this.controls[0].addEventListener('change', () => 
         { 
-            this.setValue(this.value, true, false, true); 
+            this.setValue(this.value, true, false, true);
+            this.changing = true;
         });
 
 
         this.controls[0].addEventListener('confirm', () => 
         { 
-            actionManager.do(new EmptyAction(this.node.graph), true);
+            this.changing = false;
         });
 
 
@@ -41941,6 +41937,7 @@ extends NumberParamBase
 
         this.controls[0].div.zIndex = 0;
 
+
         this.controls[0].div.style.display = 'inline-block';
         this.controls[0].div.style.width   = '100%';
 
@@ -41961,8 +41958,18 @@ extends NumberParamBase
         if (hasInput)  this.initInput(NUMBER_TYPES, getParamInputValuesForUndo, this.input_getBackInitValue);
         if (hasOutput) this.initOutput([NUMBER_VALUE], this.output_genRequest, getParamOutputValuesForUndo, this.output_backInit);
 
+
+        this.controls[0].addEventListener('change', () => 
+        { 
+            this.setValue(this.value, true, false, true);
+            this.changing = true;
+        });
             
-        this.controls[0].addEventListener('confirm', () => { this.setValue(this.value, true, true); });
+        this.controls[0].addEventListener('confirm', () => 
+        { 
+            this.setValue(this.value, true, true); 
+            this.changing = false;
+        });
 
 
         // this.tooltip = createDiv('tooltip');
@@ -54962,10 +54969,6 @@ class ActionManager
 
     undo()
     {
-        if (numberControlConfirm) // waiting for confirmation
-            numberControl_confirm();
-
-        
         if (isEmpty(this.actions))
             return;
 
@@ -55045,7 +55048,7 @@ class ActionManager
         if (act.affectsConnections)
             act.updateOldConnections();
 
-        
+
         if (!act.selfUpdate)
             pushUpdate(act, updateNodes);
     }
@@ -61085,6 +61088,9 @@ function findConnectedClusters(nodes)
 
 function uiUpdateValuesAndObjects(requestId, actionId, updateNodeId, updateParamId, values, objects, styles, updatedNodes, totalNodes, isLastChunk)
 {
+    // console.log('requestId =',       requestId);
+    // console.log('lastRequestedId =', lastRequestedId);
+
     if (requestId < lastRequestedId) 
         return;
     

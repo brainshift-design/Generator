@@ -174,8 +174,8 @@ extends Parameter
 
 
     isDefault = () => 
-          !this.alwaysSaveValue
-        && this.value.equals(this.defaultValue);
+           !this.alwaysSaveValue
+         && this.value.equals(this.defaultValue);
 
 
 

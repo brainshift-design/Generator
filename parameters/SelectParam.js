@@ -35,6 +35,7 @@ extends NumberParamBase
 
         this.controls[0].div.zIndex = 0;
 
+
         this.controls[0].div.style.display = 'inline-block';
         this.controls[0].div.style.width   = '100%';
 
@@ -55,8 +56,18 @@ extends NumberParamBase
         if (hasInput)  this.initInput(NUMBER_TYPES, getParamInputValuesForUndo, this.input_getBackInitValue);
         if (hasOutput) this.initOutput([NUMBER_VALUE], this.output_genRequest, getParamOutputValuesForUndo, this.output_backInit);
 
+
+        this.controls[0].addEventListener('change', () => 
+        { 
+            this.setValue(this.value, true, false, true);
+            this.changing = true;
+        });
             
-        this.controls[0].addEventListener('confirm', () => { this.setValue(this.value, true, true); });
+        this.controls[0].addEventListener('confirm', () => 
+        { 
+            this.setValue(this.value, true, true); 
+            this.changing = false;
+        });
 
 
         // this.tooltip = createDiv('tooltip');
