@@ -44,8 +44,8 @@ function createTooltipSrc(source, ref, getTooltip, bottomArrow = false)
         }
 
 
-        if (tooltipOutTimer) 
-            clearTimeout(tooltipOutTimer);
+        // if (tooltipOutTimer) 
+        //     clearTimeout(tooltipOutTimer);
 
 
         currentTooltipSource = null;
@@ -133,7 +133,7 @@ function showTooltip(source, tooltip, bottomArrow)
 
         tooltip.style.top = top - tooltipArrow.offsetHeight - ttRect.height;
 
-        tooltipArrow.style.borderColor = '#040404 transparent transparent transparent';
+        tooltipArrow.style.borderColor = '#1e1e1e transparent transparent transparent';
         tooltipArrow.style.top         = srcRect.y - tooltipArrow.offsetHeight;
     }
     else
@@ -143,13 +143,13 @@ function showTooltip(source, tooltip, bottomArrow)
         if (srcRect.y + tooltip.offsetHeight > graphView.div.offsetHeight-8)
             top = menuBarHeight + Math.max(8, graphHeight - tooltip.offsetHeight);
 
-        tooltip.style.top = top + srcRect.height + tooltipArrow.offsetHeight;
+        tooltip.style.top = top + srcRect.height + tooltipArrow.offsetHeight - 3;
 
         
         const ttRect = tooltip.getBoundingClientRect();
 
-        tooltipArrow.style.borderColor = 'transparent transparent #040404 transparent';
-        tooltipArrow.style.top         = ttRect.y - tooltipArrow.offsetHeight;
+        tooltipArrow.style.borderColor = 'transparent transparent #1e1e1e transparent';
+        tooltipArrow.style.top         = ttRect.y - tooltipArrow.offsetHeight + 1;
     }
 
 
