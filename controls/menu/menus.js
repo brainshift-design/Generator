@@ -475,8 +475,6 @@ function initGeneratorMenus()
     }});
 
 
-    createTooltip(ttMinValueZoom);
-
     btnZoom = new MenuButton(
         '', 
         menuZoom, 
@@ -487,6 +485,7 @@ function initGeneratorMenus()
             tooltip:     ttMinValueZoom
         });
 
+        
     btnZoom.div.appendChild(createDiv('', 'zoomIconOverlay'));
 
     btnZoom.divIcon.style.textAlign          = 'center';

@@ -27,10 +27,12 @@ GraphView.prototype.setPanAndZoom = function(pan, zoom)
 GraphView.prototype.updatePanAndZoom = function(updateNodes)
 {
     this.update(this.graph.nodes, updateNodes);
-    
 
     setTimeout(() =>
     {
+        updateZoomTooltip();
+
+
         btnZoom.divIcon.innerHTML       =  Math.round(this.zoom * 100) + '%';
         btnZoom.divIcon.style.transform = 'translateX(2px) translateY(-16px)';
 

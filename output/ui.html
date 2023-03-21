@@ -1451,6 +1451,12 @@ div
 }
 
 
+.tooltip p
+{
+    margin: 0;
+}
+
+
 .figma-light .tooltip
 {
     box-shadow:       0px 2px  7px rgba(0, 0, 0, 0.15),
@@ -1498,9 +1504,15 @@ div
 #ttWcag2
 {
     width:  240px;
-    height: 146px;
+    height: 126px;
 }
 
+
+#ttMinValueZoom
+{
+    width:  176px;
+    height: 102px;
+}
 
 
 .wcag2description
@@ -1539,7 +1551,7 @@ div
 #ttWcag3
 {
     width:  240px;
-    height: 140px;
+    height: 120px;
 }
 
 
@@ -3284,7 +3296,7 @@ a
         Determines the interpolation path.
     </div>
     <div style="margin-left: 20px; margin-top: 14px;">
-        In RGB and linear spaces it's<br/>a straight line,<br/><br/>
+        In RGB and linear spaces<br/>it's a straight line,<br/><br/>
         in spaces with a Hue it's an arc.
     </div>
 
@@ -3309,14 +3321,7 @@ a
 </div>
 
 
-<div id='ttMinValueZoom' class='tooltip'>
-    <p>Zoom/view options</p>
-    <p>
-        A node outline around the zoom value means that<br/>
-        value controls are considered too small and cannot be adjusted.<br/>
-        Instead the whole node is grabbed.
-    </p>
-</div>
+<div id='ttMinValueZoom' class='tooltip'></div>
 
 
 <!-- <div id='ttInterpolationGamma' class='tooltip'>
@@ -3350,7 +3355,7 @@ a
     <div class='wcag2value' style='left:  90px;'> 7  </div>
     <div class='wcag2value' style='left: 239px;'>21  </div>
 
-    <div id='wcag2info'><a href='https://www.w3.org/TR/UNDERSTANDING-WCAG20/visual-audio-contrast7.html#visual-audio-contrast7-87-head' target='_blank'>More details</a></div>
+    <!-- <div id='wcag2info'><a href='https://www.w3.org/TR/UNDERSTANDING-WCAG20/visual-audio-contrast7.html#visual-audio-contrast7-87-head' target='_blank'>More details</a></div> -->
 </div>
 
 
@@ -3390,7 +3395,7 @@ a
     <div class='wcag3value' style='left: 210px;'> 90</div>
     <div class='wcag3value' style='left: 239px;'>105</div>
 
-    <div id='wcag3info'><a href='https://www.myndex.com/APCA/#font-size-and-weight' target='_blank'>More details</a></div>
+    <!-- <div id='wcag3info'><a href='https://www.myndex.com/APCA/#font-size-and-weight' target='_blank'>More details</a></div> -->
 </div>
 
 
@@ -37308,13 +37313,12 @@ class MenuButton
     divIcon;
     divArrow;
     
-    over      = false;
-    overArrow = false;
+    over          = false;
+    overArrow     = false;
     
 
-    tooltip;
-    tooltipIcon;
-    //tooltipArrow;
+    tooltip       = null;
+    customTooltip = false;
 
 
 
@@ -37330,7 +37334,7 @@ class MenuButton
         this.initOptions(options);
         
         this.createControls();
-        this.createTooltips();
+        this.createTooltip();
 
         this.update();
     }
@@ -37343,7 +37347,12 @@ class MenuButton
         this.highlight   ??= options.highlight;
         this.useMenuName ??= options.useMenuName;
         this.selectLast  ??= options.selectLast;
-        this.tooltip     ??= options.tooltip;
+
+        if (!!options.tooltip)
+        {
+            this.tooltip = options.tooltip;
+            this.customTooltip = true;
+        }
     }
 
 
@@ -37422,31 +37431,24 @@ class MenuButton
 
 
 
-    createTooltips()
+    createTooltip()
     {
-        const ttName = 
-            this.menu 
-            ? this.menu.name 
-            : this.name;
+        if (!this.tooltip)
+        {
+            const ttName = 
+                this.menu 
+                ? this.menu.name 
+                : this.name;
 
-        // this.tooltipIcon = 
-        //     this.tooltip 
-        //     ? this.tooltip 
-        //     : createDiv('tooltip', 'ttMenuButtonIcon'  + ttName);
-
-        this.tooltipIcon  = createDiv('tooltip', 'ttMenuButtonIcon'  + ttName);
-        //this.tooltipArrow = createDiv('tooltip', 'ttMenuButtonArrow' + ttName);
+            this.tooltip = createDiv('tooltip', 'ttMenuButtonIcon' + ttName);
+        }
 
         
-        document.body.appendChild(this.tooltipIcon);
-        //document.body.appendChild(this.tooltipArrow);
+        document.body.appendChild(this.tooltip);
         
 
-        createTooltip(this.tooltipIcon);
-        //createTooltip(this.tooltipArrow);
-
-        createTooltipSrc(this.div, this.div, () => document.getElementById('ttMenuButtonIcon'  + ttName));
-        //createTooltipSrc(this.divArrow, this.divArrow, () => document.getElementById('ttMenuButtonArrow' + ttName));
+        createTooltip(this.tooltip);
+        createTooltipSrc(this.div, this.div, () => this.tooltip);
     }
 
 
@@ -37538,21 +37540,20 @@ class MenuButton
         }
 
 
-        // if (this.menu)
-        //     this.tooltipArrow.innerHTML = this.menu.name;
-
-
-        if (this.useMenuName)
-            this.tooltipIcon.innerHTML = 
-                this.menu 
-                ? this.menu.name 
-                : this.name;
-        else
-            this.tooltipIcon.innerHTML = 
-                   this.menu
-                && this.menu.lastItem
-                ? this.menu.lastItem.name
-                : this.name;        
+        if (!this.customTooltip)
+        {
+            if (this.useMenuName)
+                this.tooltip.innerHTML = 
+                    this.menu 
+                    ? this.menu.name 
+                    : this.name;
+            else
+                this.tooltip.innerHTML = 
+                    this.menu
+                    && this.menu.lastItem
+                    ? this.menu.lastItem.name
+                    : this.name;        
+        }
     }
 }
 
@@ -38350,8 +38351,6 @@ function initGeneratorMenus()
     }});
 
 
-    createTooltip(ttMinValueZoom);
-
     btnZoom = new MenuButton(
         '', 
         menuZoom, 
@@ -38362,6 +38361,7 @@ function initGeneratorMenus()
             tooltip:     ttMinValueZoom
         });
 
+        
     btnZoom.div.appendChild(createDiv('', 'zoomIconOverlay'));
 
     btnZoom.divIcon.style.textAlign          = 'center';
@@ -40788,10 +40788,12 @@ GraphView.prototype.setPanAndZoom = function(pan, zoom)
 GraphView.prototype.updatePanAndZoom = function(updateNodes)
 {
     this.update(this.graph.nodes, updateNodes);
-    
 
     setTimeout(() =>
     {
+        updateZoomTooltip();
+
+
         btnZoom.divIcon.innerHTML       =  Math.round(this.zoom * 100) + '%';
         btnZoom.divIcon.style.transform = 'translateX(2px) translateY(-16px)';
 
@@ -60398,7 +60400,30 @@ function hideTooltip(tooltip)
 }
 
 
+function updateZoomTooltip()
+{
+    if (graphView.zoom < settings.minZoomForParams)
+    {
+        ttMinValueZoom.innerHTML =
+              '<p style="margin-top: 1px; width: 100%; text-align: center;">Zoom/view options</p>'
+            + '<p style="margin-top: 1.25em">'
+            + '    A node outline around the zoom<br/>'
+            + '    means that value controls are too<br/>'
+            + '    small and cannot be adjusted.'
+            + '</p>'
+            + '<p style="margin-top: 1.25em">Instead the whole node is moved.</p>'
 
+        ttMinValueZoom.style.width  = '176px';
+        ttMinValueZoom.style.height = '102px';
+    }
+    else
+    {
+        ttMinValueZoom.innerHTML = 'Zoom/view options';
+
+        ttMinValueZoom.style.width  = 'auto';
+        ttMinValueZoom.style.height = '15px';
+    }
+}
 
 
 // menuSelect.addEventListener('change', async function(e) 

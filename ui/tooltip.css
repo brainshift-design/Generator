@@ -18,6 +18,12 @@
 }
 
 
+.tooltip p
+{
+    margin: 0;
+}
+
+
 .figma-light .tooltip
 {
     box-shadow:       0px 2px  7px rgba(0, 0, 0, 0.15),

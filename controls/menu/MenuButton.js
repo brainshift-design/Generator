@@ -17,13 +17,12 @@ class MenuButton
     divIcon;
     divArrow;
     
-    over      = false;
-    overArrow = false;
+    over          = false;
+    overArrow     = false;
     
 
-    tooltip;
-    tooltipIcon;
-    //tooltipArrow;
+    tooltip       = null;
+    customTooltip = false;
 
 
 
@@ -39,7 +38,7 @@ class MenuButton
         this.initOptions(options);
         
         this.createControls();
-        this.createTooltips();
+        this.createTooltip();
 
         this.update();
     }
@@ -52,7 +51,12 @@ class MenuButton
         this.highlight   ??= options.highlight;
         this.useMenuName ??= options.useMenuName;
         this.selectLast  ??= options.selectLast;
-        this.tooltip     ??= options.tooltip;
+
+        if (!!options.tooltip)
+        {
+            this.tooltip = options.tooltip;
+            this.customTooltip = true;
+        }
     }
 
 
@@ -131,31 +135,24 @@ class MenuButton
 
 
 
-    createTooltips()
+    createTooltip()
     {
-        const ttName = 
-            this.menu 
-            ? this.menu.name 
-            : this.name;
+        if (!this.tooltip)
+        {
+            const ttName = 
+                this.menu 
+                ? this.menu.name 
+                : this.name;
 
-        // this.tooltipIcon = 
-        //     this.tooltip 
-        //     ? this.tooltip 
-        //     : createDiv('tooltip', 'ttMenuButtonIcon'  + ttName);
-
-        this.tooltipIcon  = createDiv('tooltip', 'ttMenuButtonIcon'  + ttName);
-        //this.tooltipArrow = createDiv('tooltip', 'ttMenuButtonArrow' + ttName);
+            this.tooltip = createDiv('tooltip', 'ttMenuButtonIcon' + ttName);
+        }
 
         
-        document.body.appendChild(this.tooltipIcon);
-        //document.body.appendChild(this.tooltipArrow);
+        document.body.appendChild(this.tooltip);
         
 
-        createTooltip(this.tooltipIcon);
-        //createTooltip(this.tooltipArrow);
-
-        createTooltipSrc(this.div, this.div, () => document.getElementById('ttMenuButtonIcon'  + ttName));
-        //createTooltipSrc(this.divArrow, this.divArrow, () => document.getElementById('ttMenuButtonArrow' + ttName));
+        createTooltip(this.tooltip);
+        createTooltipSrc(this.div, this.div, () => this.tooltip);
     }
 
 
@@ -247,20 +244,19 @@ class MenuButton
         }
 
 
-        // if (this.menu)
-        //     this.tooltipArrow.innerHTML = this.menu.name;
-
-
-        if (this.useMenuName)
-            this.tooltipIcon.innerHTML = 
-                this.menu 
-                ? this.menu.name 
-                : this.name;
-        else
-            this.tooltipIcon.innerHTML = 
-                   this.menu
-                && this.menu.lastItem
-                ? this.menu.lastItem.name
-                : this.name;        
+        if (!this.customTooltip)
+        {
+            if (this.useMenuName)
+                this.tooltip.innerHTML = 
+                    this.menu 
+                    ? this.menu.name 
+                    : this.name;
+            else
+                this.tooltip.innerHTML = 
+                    this.menu
+                    && this.menu.lastItem
+                    ? this.menu.lastItem.name
+                    : this.name;        
+        }
     }
 }
