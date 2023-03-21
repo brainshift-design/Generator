@@ -3177,7 +3177,7 @@ a
             <div id='whatsNewBody'>
                 <h1 style='margin-top: 20px;'>What's new in Generator</h1>
 
-                <p>Fixed zoom to fit.</p>
+                <p>Fixed zoom-to-fit.</p>
                 <p>Added min. zoom indicator to zoom button.</p>
                 <p>Added copy/paste menu to all textboxes.</p>
                 <p>Consolidated value change undo into a single action.</p>
@@ -3186,6 +3186,7 @@ a
                 <p>Fixed saving bug for nodes with zero values.</p>
                 <p>Fixed tooltips not showing reliably.</p>
                 <p>Improved license validation.</p>
+                <p>Fixed Undo/Redo issue when holding relevant shortcut.</p>
                 <p>Fixed other UI issues.</p>
 
                 <p><br/><br/><div id='chkHideWhatsNew'></div></p>
@@ -43889,7 +43890,7 @@ class Output
                 return false;
 
 
-            const view = this.node.graph.view;
+            const view = graphView;//this.node.graph.view;
 
 
             if (view.headerOutput)
@@ -43944,7 +43945,7 @@ class Output
 
     endConnection()
     {
-        const view = this.node.graph.view;
+        const view = graphView;//this.node.graph.view;
 
 
         view.overOutput = null; 
@@ -43981,8 +43982,10 @@ class Output
 
     canReact(e)
     {
+        const view = graphView;//this.node.graph.view
+        
         if (   settings.enableZoomedOutParams
-            || this.node.graph.view.zoom > settings.minZoomForParams)
+            || view.zoom > settings.minZoomForParams)
             return true;
 
         e.preventDefault();
@@ -44007,7 +44010,7 @@ class Output
     
     updateControl()
     {
-        const view = this.node.graph.view;
+        const view = graphView;//this.node.graph.view;
 
 
         const mouseOver =
