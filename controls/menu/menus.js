@@ -251,12 +251,12 @@ function initGeneratorMenus()
     
     menuMath = new Menu('Math', true, false);
     menuMath.addItems([
-        new MenuItem('Add',         {icon: iconAdd,      callback: e => actionManager.do(getCreateNodeAction(NUMBER_ADD,      btnNumber.div, {insert: e.ctrlKey}))}),
-        new MenuItem('Subtract',    {icon: iconSubtract, callback: e => actionManager.do(getCreateNodeAction(NUMBER_SUBTRACT, btnNumber.div, {insert: e.ctrlKey}))}),
+        new MenuItem('Power',       {icon: iconExponent, callback: e => actionManager.do(getCreateNodeAction(NUMBER_EXPONENT, btnNumber.div, {insert: e.ctrlKey}))}),
         new MenuItem('Multiply',    {icon: iconMultiply, callback: e => actionManager.do(getCreateNodeAction(NUMBER_MULTIPLY, btnNumber.div, {insert: e.ctrlKey}))}),
         new MenuItem('Divide',      {icon: iconDivide,   callback: e => actionManager.do(getCreateNodeAction(NUMBER_DIVIDE,   btnNumber.div, {insert: e.ctrlKey}))}),
-        new MenuItem('Power',       {icon: iconExponent, callback: e => actionManager.do(getCreateNodeAction(NUMBER_EXPONENT, btnNumber.div, {insert: e.ctrlKey}))}),
-        new MenuItem('Remainder',   {icon: iconModulo,   callback: e => actionManager.do(getCreateNodeAction(NUMBER_MODULO,   btnNumber.div, {insert: e.ctrlKey}))})]);
+        new MenuItem('Remainder',   {icon: iconModulo,   callback: e => actionManager.do(getCreateNodeAction(NUMBER_MODULO,   btnNumber.div, {insert: e.ctrlKey}))}),
+        new MenuItem('Add',         {icon: iconAdd,      callback: e => actionManager.do(getCreateNodeAction(NUMBER_ADD,      btnNumber.div, {insert: e.ctrlKey}))}),
+        new MenuItem('Subtract',    {icon: iconSubtract, callback: e => actionManager.do(getCreateNodeAction(NUMBER_SUBTRACT, btnNumber.div, {insert: e.ctrlKey}))})]);
         
 
     menuBoolean = new Menu('Boolean', true, false);
@@ -364,7 +364,7 @@ function initGeneratorMenus()
                         //  new MenuItem('',             {separator: true}),
                         //  new MenuItem('Window',       {childMenu: menuWindow})]);
 
-
+        
     menuGraph = new Menu('Graph menu', false, false);
     menuGraph.addItems([
         menuItemGraphPaste          = new MenuItem('Paste here',      {shortcut: osCtrl()             + 'V', callback: e => { hideAllMenus(); graphView.pasteCopiedNodes(false, e.clientX, e.clientY - menuBarHeight); }}),
@@ -475,7 +475,18 @@ function initGeneratorMenus()
     }});
 
 
-    btnZoom = new MenuButton('', menuZoom, { useMenuName: true, selectLast: false, highlight: () => currentMenus.includes(menuZoom) });
+    createTooltip(ttMinValueZoom);
+
+    btnZoom = new MenuButton(
+        '', 
+        menuZoom, 
+        { 
+            useMenuName: true, 
+            selectLast:  false, 
+            highlight:   () => currentMenus.includes(menuZoom),
+            tooltip:     ttMinValueZoom
+        });
+
     btnZoom.div.appendChild(createDiv('', 'zoomIconOverlay'));
 
     btnZoom.divIcon.style.textAlign          = 'center';

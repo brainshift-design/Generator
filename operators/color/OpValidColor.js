@@ -162,7 +162,7 @@ extends OpColorBase
         }
 
         if (!dataColorIsValid(this._color))
-            this.initNodeProgress();
+            this.initProgress();
 
         super.loadParams(_node, pasting);
     }

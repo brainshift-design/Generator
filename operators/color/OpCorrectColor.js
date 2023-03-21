@@ -282,7 +282,7 @@ extends OpColorBase
         }
 
         if (!dataColorIsValid(this._color))
-            this.uiInitNodeProgress();//this.id);
+            this.initProgress();
     }
 }
 

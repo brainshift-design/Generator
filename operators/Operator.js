@@ -145,7 +145,7 @@ class Operator
         this.createNode();
 
         if (progressBar)
-            createNodeProgressBar(this);
+            this.createProgressBar();
 
         this.setName(shortName);
     }    

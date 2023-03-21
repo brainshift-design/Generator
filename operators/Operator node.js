@@ -446,7 +446,7 @@ Operator.prototype.createInfo = function()
 
 
 
-Operator.prototype.createNodeProgressBar = function()
+Operator.prototype.createProgressBar = function()
 {
     this.hasProgressBar  = true;
 

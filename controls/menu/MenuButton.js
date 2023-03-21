@@ -11,17 +11,19 @@ class MenuButton
 
     selectLast;
 
-
+    
     div;
 
     divIcon;
     divArrow;
-
+    
     over      = false;
     overArrow = false;
+    
 
+    tooltip;
     tooltipIcon;
-    tooltipArrow;
+    //tooltipArrow;
 
 
 
@@ -49,7 +51,8 @@ class MenuButton
         this.callback    ??= options.callback;
         this.highlight   ??= options.highlight;
         this.useMenuName ??= options.useMenuName;
-        this.selectLast  ??= options.selectLast
+        this.selectLast  ??= options.selectLast;
+        this.tooltip     ??= options.tooltip;
     }
 
 
@@ -135,18 +138,24 @@ class MenuButton
             ? this.menu.name 
             : this.name;
 
-        this.tooltipIcon  = createDiv('tooltip', 'ttMenuButtonIcon'  + ttName);
-        this.tooltipArrow = createDiv('tooltip', 'ttMenuButtonArrow' + ttName);
+        // this.tooltipIcon = 
+        //     this.tooltip 
+        //     ? this.tooltip 
+        //     : createDiv('tooltip', 'ttMenuButtonIcon'  + ttName);
 
+        this.tooltipIcon  = createDiv('tooltip', 'ttMenuButtonIcon'  + ttName);
+        //this.tooltipArrow = createDiv('tooltip', 'ttMenuButtonArrow' + ttName);
+
+        
         document.body.appendChild(this.tooltipIcon);
-        document.body.appendChild(this.tooltipArrow);
+        //document.body.appendChild(this.tooltipArrow);
         
 
         createTooltip(this.tooltipIcon);
-        createTooltip(this.tooltipArrow);
+        //createTooltip(this.tooltipArrow);
 
-        createTooltipSrc(this.divIcon,  this.div,      () => document.getElementById('ttMenuButtonIcon'  + ttName));
-        createTooltipSrc(this.divArrow, this.divArrow, () => document.getElementById('ttMenuButtonArrow' + ttName));
+        createTooltipSrc(this.div, this.div, () => document.getElementById('ttMenuButtonIcon'  + ttName));
+        //createTooltipSrc(this.divArrow, this.divArrow, () => document.getElementById('ttMenuButtonArrow' + ttName));
     }
 
 
@@ -238,8 +247,8 @@ class MenuButton
         }
 
 
-        if (this.menu)
-            this.tooltipArrow.innerHTML = this.menu.name;
+        // if (this.menu)
+        //     this.tooltipArrow.innerHTML = this.menu.name;
 
 
         if (this.useMenuName)

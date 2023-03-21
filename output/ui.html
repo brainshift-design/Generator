@@ -3305,6 +3305,16 @@ a
 </div>
 
 
+<div id='ttMinValueZoom' class='tooltip'>
+    <p>Zoom/view options</p>
+    <p>
+        A node outline around the zoom value means that<br/>
+        value controls are considered too small and cannot be adjusted.<br/>
+        Instead the whole node is grabbed.
+    </p>
+</div>
+
+
 <!-- <div id='ttInterpolationGamma' class='tooltip'>
     <div style="text-align: center;">Gamma correction</div>              
     <div style="margin-top: 14px;">How linearly the lightness is interpolated.</div>
@@ -37218,17 +37228,19 @@ class MenuButton
 
     selectLast;
 
-
+    
     div;
 
     divIcon;
     divArrow;
-
+    
     over      = false;
     overArrow = false;
+    
 
+    tooltip;
     tooltipIcon;
-    tooltipArrow;
+    //tooltipArrow;
 
 
 
@@ -37256,7 +37268,8 @@ class MenuButton
         this.callback    ??= options.callback;
         this.highlight   ??= options.highlight;
         this.useMenuName ??= options.useMenuName;
-        this.selectLast  ??= options.selectLast
+        this.selectLast  ??= options.selectLast;
+        this.tooltip     ??= options.tooltip;
     }
 
 
@@ -37342,18 +37355,24 @@ class MenuButton
             ? this.menu.name 
             : this.name;
 
-        this.tooltipIcon  = createDiv('tooltip', 'ttMenuButtonIcon'  + ttName);
-        this.tooltipArrow = createDiv('tooltip', 'ttMenuButtonArrow' + ttName);
+        // this.tooltipIcon = 
+        //     this.tooltip 
+        //     ? this.tooltip 
+        //     : createDiv('tooltip', 'ttMenuButtonIcon'  + ttName);
 
+        this.tooltipIcon  = createDiv('tooltip', 'ttMenuButtonIcon'  + ttName);
+        //this.tooltipArrow = createDiv('tooltip', 'ttMenuButtonArrow' + ttName);
+
+        
         document.body.appendChild(this.tooltipIcon);
-        document.body.appendChild(this.tooltipArrow);
+        //document.body.appendChild(this.tooltipArrow);
         
 
         createTooltip(this.tooltipIcon);
-        createTooltip(this.tooltipArrow);
+        //createTooltip(this.tooltipArrow);
 
-        createTooltipSrc(this.divIcon,  this.div,      () => document.getElementById('ttMenuButtonIcon'  + ttName));
-        createTooltipSrc(this.divArrow, this.divArrow, () => document.getElementById('ttMenuButtonArrow' + ttName));
+        createTooltipSrc(this.div, this.div, () => document.getElementById('ttMenuButtonIcon'  + ttName));
+        //createTooltipSrc(this.divArrow, this.divArrow, () => document.getElementById('ttMenuButtonArrow' + ttName));
     }
 
 
@@ -37445,8 +37464,8 @@ class MenuButton
         }
 
 
-        if (this.menu)
-            this.tooltipArrow.innerHTML = this.menu.name;
+        // if (this.menu)
+        //     this.tooltipArrow.innerHTML = this.menu.name;
 
 
         if (this.useMenuName)
@@ -38033,12 +38052,12 @@ function initGeneratorMenus()
     
     menuMath = new Menu('Math', true, false);
     menuMath.addItems([
-        new MenuItem('Add',         {icon: iconAdd,      callback: e => actionManager.do(getCreateNodeAction(NUMBER_ADD,      btnNumber.div, {insert: e.ctrlKey}))}),
-        new MenuItem('Subtract',    {icon: iconSubtract, callback: e => actionManager.do(getCreateNodeAction(NUMBER_SUBTRACT, btnNumber.div, {insert: e.ctrlKey}))}),
+        new MenuItem('Power',       {icon: iconExponent, callback: e => actionManager.do(getCreateNodeAction(NUMBER_EXPONENT, btnNumber.div, {insert: e.ctrlKey}))}),
         new MenuItem('Multiply',    {icon: iconMultiply, callback: e => actionManager.do(getCreateNodeAction(NUMBER_MULTIPLY, btnNumber.div, {insert: e.ctrlKey}))}),
         new MenuItem('Divide',      {icon: iconDivide,   callback: e => actionManager.do(getCreateNodeAction(NUMBER_DIVIDE,   btnNumber.div, {insert: e.ctrlKey}))}),
-        new MenuItem('Power',       {icon: iconExponent, callback: e => actionManager.do(getCreateNodeAction(NUMBER_EXPONENT, btnNumber.div, {insert: e.ctrlKey}))}),
-        new MenuItem('Remainder',   {icon: iconModulo,   callback: e => actionManager.do(getCreateNodeAction(NUMBER_MODULO,   btnNumber.div, {insert: e.ctrlKey}))})]);
+        new MenuItem('Remainder',   {icon: iconModulo,   callback: e => actionManager.do(getCreateNodeAction(NUMBER_MODULO,   btnNumber.div, {insert: e.ctrlKey}))}),
+        new MenuItem('Add',         {icon: iconAdd,      callback: e => actionManager.do(getCreateNodeAction(NUMBER_ADD,      btnNumber.div, {insert: e.ctrlKey}))}),
+        new MenuItem('Subtract',    {icon: iconSubtract, callback: e => actionManager.do(getCreateNodeAction(NUMBER_SUBTRACT, btnNumber.div, {insert: e.ctrlKey}))})]);
         
 
     menuBoolean = new Menu('Boolean', true, false);
@@ -38146,7 +38165,7 @@ function initGeneratorMenus()
                         //  new MenuItem('',             {separator: true}),
                         //  new MenuItem('Window',       {childMenu: menuWindow})]);
 
-
+        
     menuGraph = new Menu('Graph menu', false, false);
     menuGraph.addItems([
         menuItemGraphPaste          = new MenuItem('Paste here',      {shortcut: osCtrl()             + 'V', callback: e => { hideAllMenus(); graphView.pasteCopiedNodes(false, e.clientX, e.clientY - menuBarHeight); }}),
@@ -38257,7 +38276,18 @@ function initGeneratorMenus()
     }});
 
 
-    btnZoom = new MenuButton('', menuZoom, { useMenuName: true, selectLast: false, highlight: () => currentMenus.includes(menuZoom) });
+    createTooltip(ttMinValueZoom);
+
+    btnZoom = new MenuButton(
+        '', 
+        menuZoom, 
+        { 
+            useMenuName: true, 
+            selectLast:  false, 
+            highlight:   () => currentMenus.includes(menuZoom),
+            tooltip:     ttMinValueZoom
+        });
+
     btnZoom.div.appendChild(createDiv('', 'zoomIconOverlay'));
 
     btnZoom.divIcon.style.textAlign          = 'center';
@@ -41980,7 +42010,7 @@ extends NumberParamBase
         createTooltipSrc(this.controls[0], this.controls[0], () => 
         {
             const tooltip = this.getTooltip();
-
+console.log('tooltip');
             if (tooltip)
                 this.initTooltip(tooltip, this.options);
 
@@ -44781,7 +44811,7 @@ class Operator
         this.createNode();
 
         if (progressBar)
-            createNodeProgressBar(this);
+            this.createProgressBar();
 
         this.setName(shortName);
     }    
@@ -46171,7 +46201,7 @@ Operator.prototype.createInfo = function()
 
 
 
-Operator.prototype.createNodeProgressBar = function()
+Operator.prototype.createProgressBar = function()
 {
     this.hasProgressBar  = true;
 
@@ -51192,7 +51222,7 @@ extends OpColorBase
         }
 
         if (!dataColorIsValid(this._color))
-            this.initNodeProgress();
+            this.initProgress();
 
         super.loadParams(_node, pasting);
     }
@@ -51483,7 +51513,7 @@ extends OpColorBase
         }
 
         if (!dataColorIsValid(this._color))
-            this.uiInitNodeProgress();//this.id);
+            this.initProgress();
     }
 }
 
@@ -60111,10 +60141,11 @@ function dataColorToJson(color, nTab)
 }
 
 
-var tooltipTimer, 
-    tooltipInTimer,
-    tooltipOutTimer, 
-    tooltipLeaveTimer;
+var tooltipTimer;
+var tooltipOutTimer;
+
+var inTooltip = null;
+
 
 var currentTooltipSource = null;
 var currentTooltip       = null;
@@ -60125,9 +60156,14 @@ function createTooltipSrc(source, ref, getTooltip, bottomArrow = false)
 {
     source.addEventListener('pointerenter', () =>
     {
-        clearTimeout(tooltipInTimer);
-        clearTimeout(tooltipLeaveTimer);
-    
+        console.log('enter');
+        if (tooltipOutTimer) 
+        {
+            clearTimeout(tooltipOutTimer);
+            tooltipOutTimer = null;
+        }
+
+
         if (!tooltipTimer)
         {
             tooltipTimer = setTimeout(() =>
@@ -60135,7 +60171,6 @@ function createTooltipSrc(source, ref, getTooltip, bottomArrow = false)
                 const tooltip = getTooltip();
                 if (tooltip) showTooltip(ref, tooltip, bottomArrow);
 
-                clearTimeout(tooltipTimer);
                 tooltipTimer = null;
             }, 
             currentTooltip ? 0 : 1000);
@@ -60145,13 +60180,28 @@ function createTooltipSrc(source, ref, getTooltip, bottomArrow = false)
     
     source.addEventListener('pointerleave', () =>
     {
-        clearTimeout(tooltipTimer);
+        if (tooltipTimer)
+        {
+            clearTimeout(tooltipTimer);
+            tooltipTimer = null;
+        }
+
+
+        if (tooltipOutTimer) 
+            clearTimeout(tooltipOutTimer);
+
+
         currentTooltipSource = null;
 
         tooltipOutTimer = setTimeout(() => 
         {
-            const tooltip = getTooltip();
-            if (tooltip) hideTooltip(tooltip);
+            if (!inTooltip)
+            {
+                const tooltip = getTooltip();
+                if (tooltip) hideTooltip(tooltip);
+            }
+
+            tooltipOutTimer = null;
         }, 
         400);
     });
@@ -60163,14 +60213,18 @@ function createTooltip(tooltip)
 {
     tooltip.addEventListener('pointerenter', () =>
     {
-        clearTimeout(tooltipOutTimer);
-        tooltipOutTimer = null;
+        // clearTimeout(tooltipOutTimer);
+        // tooltipOutTimer = null;
+        inTooltip = tooltip;
     });
     
     
     tooltip.addEventListener('pointerleave', () =>
     {
-        hideTooltip(tooltip);
+        if (!tooltipOutTimer)
+            hideTooltip(tooltip);
+
+        inTooltip = null;
     });
 
 
@@ -60288,6 +60342,7 @@ function hideTooltip(tooltip)
 // createTooltip(ttCreateColorblind);       createTooltipSrc(btnCreateColorblind,       btnCreateColorblind,       () => ttCreateColorblind);
 
 // createTooltip(ttToggleWires);            createTooltipSrc(btnToggleWires, btnToggleWires,           () => ttToggleWires);
+
 
 
 // menuSelect.addEventListener('change', async function(e) 

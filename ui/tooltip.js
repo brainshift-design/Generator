@@ -1,7 +1,8 @@
-var tooltipTimer, 
-    tooltipInTimer,
-    tooltipOutTimer, 
-    tooltipLeaveTimer;
+var tooltipTimer;
+var tooltipOutTimer;
+
+var inTooltip = null;
+
 
 var currentTooltipSource = null;
 var currentTooltip       = null;
@@ -12,9 +13,14 @@ function createTooltipSrc(source, ref, getTooltip, bottomArrow = false)
 {
     source.addEventListener('pointerenter', () =>
     {
-        clearTimeout(tooltipInTimer);
-        clearTimeout(tooltipLeaveTimer);
-    
+        console.log('enter');
+        if (tooltipOutTimer) 
+        {
+            clearTimeout(tooltipOutTimer);
+            tooltipOutTimer = null;
+        }
+
+
         if (!tooltipTimer)
         {
             tooltipTimer = setTimeout(() =>
@@ -22,7 +28,6 @@ function createTooltipSrc(source, ref, getTooltip, bottomArrow = false)
                 const tooltip = getTooltip();
                 if (tooltip) showTooltip(ref, tooltip, bottomArrow);
 
-                clearTimeout(tooltipTimer);
                 tooltipTimer = null;
             }, 
             currentTooltip ? 0 : 1000);
@@ -32,13 +37,28 @@ function createTooltipSrc(source, ref, getTooltip, bottomArrow = false)
     
     source.addEventListener('pointerleave', () =>
     {
-        clearTimeout(tooltipTimer);
+        if (tooltipTimer)
+        {
+            clearTimeout(tooltipTimer);
+            tooltipTimer = null;
+        }
+
+
+        if (tooltipOutTimer) 
+            clearTimeout(tooltipOutTimer);
+
+
         currentTooltipSource = null;
 
         tooltipOutTimer = setTimeout(() => 
         {
-            const tooltip = getTooltip();
-            if (tooltip) hideTooltip(tooltip);
+            if (!inTooltip)
+            {
+                const tooltip = getTooltip();
+                if (tooltip) hideTooltip(tooltip);
+            }
+
+            tooltipOutTimer = null;
         }, 
         400);
     });
@@ -50,14 +70,18 @@ function createTooltip(tooltip)
 {
     tooltip.addEventListener('pointerenter', () =>
     {
-        clearTimeout(tooltipOutTimer);
-        tooltipOutTimer = null;
+        // clearTimeout(tooltipOutTimer);
+        // tooltipOutTimer = null;
+        inTooltip = tooltip;
     });
     
     
     tooltip.addEventListener('pointerleave', () =>
     {
-        hideTooltip(tooltip);
+        if (!tooltipOutTimer)
+            hideTooltip(tooltip);
+
+        inTooltip = null;
     });
 
 
