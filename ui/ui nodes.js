@@ -924,6 +924,9 @@ function uiUpdateValuesAndObjects(requestId, actionId, updateNodeId, updateParam
         graphView.loadingNodes       = false;
         graphView.restoringNodes     = false;
 
+        actionManager.undoing        = false;
+        actionManager.redoing        = false;
+
         loadingOverlay.style.display = 'none'; // for loading
     }
 }

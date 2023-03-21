@@ -60,8 +60,8 @@ document.addEventListener('keydown', e =>
     else if (e.code == 'KeyZ'
           && getCtrlKey(e))
     {
-        if (e.shiftKey) actionManager.redo();
-        else            actionManager.undo();
+             if (e.shiftKey && !actionManager.redoing) actionManager.redo();
+        else if (              !actionManager.undoing) actionManager.undo();
 
         setLastKeyDown = false;
     }

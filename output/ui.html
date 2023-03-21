@@ -40225,13 +40225,13 @@ GraphView.prototype.endConnectionFromOutputToFixed = function(output, input, sav
         && (  !input.connected
             || input.connectedOutput != this.tempConn.output))
     {
-        console.log('F1 connect new');
+        //console.log('F1 connect new');
         actionManager.do(new ConnectAction(this.graph, output, input, {backInit: backInit}));
     }
     else if (savedConnInput
           && savedConnInput.connectedOutput == output)
     {
-        console.log('F2 reconnect');
+        //console.log('F2 reconnect');
         actionManager.do(new ReconnectAction(this.graph, output, savedConnInput, input));
     }
     // else if (savedConnInput
@@ -40252,7 +40252,7 @@ GraphView.prototype.endConnectionFromOutputToVariable = function(output, input, 
         && (  !input.connected
             || input.connectedOutput != this.tempConn.output))
     {
-        console.log('V1 connect new');
+        //console.log('V1 connect new');
         actionManager.do(new ConnectAction(this.graph, output, input, {backInit: backInit}));
     }
     else if (savedConnInput
@@ -40264,7 +40264,7 @@ GraphView.prototype.endConnectionFromOutputToVariable = function(output, input, 
                  && input.index < input.node.headerInputs.length-1))
     {
         // if (input.index <)
-        console.log('V2 reconnect');
+        //console.log('V2 reconnect');
         actionManager.do(new ReconnectAction(this.graph, output, savedConnInput, input));
     }
 };
@@ -47458,6 +47458,7 @@ extends OperatorBase
 
 
         this.addParam(this.paramCondition = new NumberParam('condition', 'condition', true, true, false, 1, 0, 1));
+        this.paramCondition.barTop = 0;
 
 
         this.inputs[0].addEventListener('connect',    () => OpIfElse_onConnectInput(this));
@@ -55031,6 +55032,11 @@ class ActionManager
     updateActions = [];
     
     nextActionId  = 0;
+
+
+
+    undoing       = false;
+    redoing       = false;
    
     
     
@@ -55074,6 +55080,9 @@ class ActionManager
             return;
 
             
+        this.undoing = true;
+
+
         for (;;)
         {
             let last = removeLast(this.actions);
@@ -55097,6 +55106,9 @@ class ActionManager
             return;
 
             
+        this.redoing = true;
+
+
         for (;;)
         {
             let last = removeLast(this.redoActions);
@@ -55142,8 +55154,16 @@ class ActionManager
         }
 
 
-        if (!redo) act.do  (updateNodes);
-        else       act.redo(updateNodes);
+        if (!redo) 
+            act.do  (updateNodes);
+
+        else
+        {
+            act.redo(updateNodes);
+
+            if (isEmpty(updateNodes))
+                this.redoing = false;
+        }
 
 
         if (act.affectsConnections)
@@ -55171,7 +55191,11 @@ class ActionManager
         act.undo(updateNodes); 
 
 
-        if (act.affectsConnections)
+        if (isEmpty(updateNodes))
+            this.undoing = false;
+
+
+         if (act.affectsConnections)
             act.restoreOldConnections();
 
 
@@ -58632,8 +58656,8 @@ document.addEventListener('keydown', e =>
     else if (e.code == 'KeyZ'
           && getCtrlKey(e))
     {
-        if (e.shiftKey) actionManager.redo();
-        else            actionManager.undo();
+             if (e.shiftKey && !actionManager.redoing) actionManager.redo();
+        else if (              !actionManager.undoing) actionManager.undo();
 
         setLastKeyDown = false;
     }
@@ -61368,6 +61392,9 @@ function uiUpdateValuesAndObjects(requestId, actionId, updateNodeId, updateParam
         graphView.pastingNodes       = false;
         graphView.loadingNodes       = false;
         graphView.restoringNodes     = false;
+
+        actionManager.undoing        = false;
+        actionManager.redoing        = false;
 
         loadingOverlay.style.display = 'none'; // for loading
     }

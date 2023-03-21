@@ -191,13 +191,13 @@ GraphView.prototype.endConnectionFromOutputToFixed = function(output, input, sav
         && (  !input.connected
             || input.connectedOutput != this.tempConn.output))
     {
-        console.log('F1 connect new');
+        //console.log('F1 connect new');
         actionManager.do(new ConnectAction(this.graph, output, input, {backInit: backInit}));
     }
     else if (savedConnInput
           && savedConnInput.connectedOutput == output)
     {
-        console.log('F2 reconnect');
+        //console.log('F2 reconnect');
         actionManager.do(new ReconnectAction(this.graph, output, savedConnInput, input));
     }
     // else if (savedConnInput
@@ -218,7 +218,7 @@ GraphView.prototype.endConnectionFromOutputToVariable = function(output, input, 
         && (  !input.connected
             || input.connectedOutput != this.tempConn.output))
     {
-        console.log('V1 connect new');
+        //console.log('V1 connect new');
         actionManager.do(new ConnectAction(this.graph, output, input, {backInit: backInit}));
     }
     else if (savedConnInput
@@ -230,7 +230,7 @@ GraphView.prototype.endConnectionFromOutputToVariable = function(output, input, 
                  && input.index < input.node.headerInputs.length-1))
     {
         // if (input.index <)
-        console.log('V2 reconnect');
+        //console.log('V2 reconnect');
         actionManager.do(new ReconnectAction(this.graph, output, savedConnInput, input));
     }
 };

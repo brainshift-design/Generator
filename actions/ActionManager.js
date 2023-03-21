@@ -17,6 +17,11 @@ class ActionManager
     updateActions = [];
     
     nextActionId  = 0;
+
+
+
+    undoing       = false;
+    redoing       = false;
    
     
     
@@ -60,6 +65,9 @@ class ActionManager
             return;
 
             
+        this.undoing = true;
+
+
         for (;;)
         {
             let last = removeLast(this.actions);
@@ -83,6 +91,9 @@ class ActionManager
             return;
 
             
+        this.redoing = true;
+
+
         for (;;)
         {
             let last = removeLast(this.redoActions);
@@ -128,8 +139,16 @@ class ActionManager
         }
 
 
-        if (!redo) act.do  (updateNodes);
-        else       act.redo(updateNodes);
+        if (!redo) 
+            act.do  (updateNodes);
+
+        else
+        {
+            act.redo(updateNodes);
+
+            if (isEmpty(updateNodes))
+                this.redoing = false;
+        }
 
 
         if (act.affectsConnections)
@@ -157,7 +176,11 @@ class ActionManager
         act.undo(updateNodes); 
 
 
-        if (act.affectsConnections)
+        if (isEmpty(updateNodes))
+            this.undoing = false;
+
+
+         if (act.affectsConnections)
             act.restoreOldConnections();
 
 

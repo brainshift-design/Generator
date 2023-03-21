@@ -16,6 +16,7 @@ extends OperatorBase
 
 
         this.addParam(this.paramCondition = new NumberParam('condition', 'condition', true, true, false, 1, 0, 1));
+        this.paramCondition.barTop = 0;
 
 
         this.inputs[0].addEventListener('connect',    () => OpIfElse_onConnectInput(this));
