@@ -91,7 +91,7 @@ extends NumberParamBase
 
 
 
-        createTooltipSrc(this.controls[0], this.controls[0], () => 
+        createTooltipSrc(this.controls[0].div, this.controls[0].div, () => 
         {
             this.controls[0].addEventListener('change', () => 
             {

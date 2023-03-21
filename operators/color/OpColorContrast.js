@@ -70,7 +70,6 @@ extends OpColorBase
             paramId: NULL });
 
 
-
         const [request, ignore] = this.genRequestStart(gen);
         if (ignore) return request;
 
