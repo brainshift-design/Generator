@@ -46,7 +46,8 @@ extends OpColorBase
         this.addParam(this.paramContrast = new NumberParam('contrast', '', false, false, true, 0));
         this.addParam(this.paramStandard = new SelectParam('standard', '', false, true,  true, ['WCAG 2', 'APCA'], 1));
       
-        this.paramContrast.controls[0].thinMinus = true;
+        this.paramContrast.controls[0].thinMinus     = true;
+        this.paramContrast.controls[0].showExtRanges = false;
 
 
         createTooltip(ttWcag2);
@@ -179,8 +180,8 @@ extends OpColorBase
                     this.warningStyle     = rgb2style_a(invalid2validRgb(rgb0), 0.3);
                     this.forceShowWarning = true;
                 }
-                else if ( rgbIsOk(rgb0)
-                    && !rgbIsOk(rgb1))
+                else if (rgbIsOk(rgb0)
+                     && !rgbIsOk(rgb1))
                 {
                     this.warningStyle     = getDefaultWarningStyle(rgb1);
                     this.forceShowWarning = true;
@@ -227,7 +228,7 @@ extends OpColorBase
     {
         if (standard.value == 0)
         {
-            const contrast = Math.abs(this.paramContrast.value.value / 21);
+            const contrast = Math.abs(this.paramContrast.value.value) / 21;
 
             const is1 = contrast > 0  /21 && contrast <=  3  /21;
             const is2 = contrast > 3  /21 && contrast <=  4.5/21;
@@ -252,7 +253,7 @@ extends OpColorBase
         }
         else
         {
-            const contrast = Math.abs(this.paramContrast.value.value / 100);
+            const contrast = Math.abs(this.paramContrast.value.value) / 100;
 
             const is1 = contrast >=  0/100 && contrast <=  15/100;
             const is2 = contrast >  15/100 && contrast <=  30/100;
@@ -272,6 +273,8 @@ extends OpColorBase
                     new NumberControlRange(60/105,  75/105, rgb2style_a(rgb3dark5, is5 ? 1 : 0.2), 0.8),
                     new NumberControlRange(75/105,  90/105, rgb2style_a(rgb3dark6, is6 ? 1 : 0.4), 0.8),
                     new NumberControlRange(90/105, 105/105, rgb2style_a(rgb3dark7, is7 ? 1 : 0  ), 0.8) ];
+
+                console.log('this.paramContrast.controls[0].ranges =', this.paramContrast.controls[0].ranges);
             }
             else
             {
