@@ -4,7 +4,7 @@
 
     <div id='productKeyTitle'>
         <div id='productKeyTitleText'>Subscription</div>
-        <div class='panelButton dialogButtonClose' id='productKeyClose' onclick='productKeyClose.blur(); hideProductKeyDialog();'>
+        <div class='panelButton dialogButtonClose' id='productKeyClose' onclick='hideAllMenus(); productKeyClose.blur(); hideProductKeyDialog();'>
             <svg width="30" height="30" viewBox="0 0 30 30" fill="none" xmlns="http://www.w3.org/2000/svg">
                 <path fill-rule="evenodd" clip-rule="evenodd" d="M16 15.293L20.6465 10.6465L21.3536 11.3536L16.7071 16.0001L21.3536 20.6465L20.6465 21.3536L16 16.7072L11.3536 21.3536L10.6465 20.6465L15.2929 16.0001L10.6465 11.3537L11.3536 10.6466L16 15.293Z" fill="var(--figma-color-text)" fill-opacity="0.8"/>
             </svg>
@@ -13,7 +13,7 @@
     
     <div id='productKeyBody'>
         <!-- <div id='productKeyUserName'></div> -->
-        <div id='productKeyUserId' ondblclick='copyProductKey()'></div>
+        <div id='productKeyUserId' ondblclick='copyUserId()'></div>
         <div id='productKeyTextBack'></div>
         <div id='productKeyInputBack'></div>
         <input type='text' spellcheck='false' id='productKeyInput' />
@@ -51,7 +51,7 @@
 
     <div id='minZoomTitle'>
         <div id='minZoomTitleText'>Min. zoom to adjust values</div>
-        <div class='panelButton dialogButtonClose' id='minZoomClose' onclick='minZoomClose.blur(); hideMinZoomDialog();'>
+        <div class='panelButton dialogButtonClose' id='minZoomClose' onclick='hideAllMenus(); minZoomClose.blur(); hideMinZoomDialog();'>
             <svg width="30" height="30" viewBox="0 0 30 30" fill="none" xmlns="http://www.w3.org/2000/svg">
                 <path fill-rule="evenodd" clip-rule="evenodd" d="M16 15.293L20.6465 10.6465L21.3536 11.3536L16.7071 16.0001L21.3536 20.6465L20.6465 21.3536L16 16.7072L11.3536 21.3536L10.6465 20.6465L15.2929 16.0001L10.6465 11.3537L11.3536 10.6466L16 15.293Z" fill="var(--figma-color-text)" fill-opacity="0.8"/>
             </svg>
@@ -143,7 +143,7 @@
     
     <div id='whatsNewTitle'>
         <div id='whatsNewTitleText'>Version _</div>
-        <div class='panelButton dialogButtonClose' id='whatsNewClose' onclick='whatsNewClose.blur(); hideWhatsNewDialog();'>
+        <div class='panelButton dialogButtonClose' id='whatsNewClose' onclick='hideAllMenus(); whatsNewClose.blur(); hideWhatsNewDialog();'>
             <svg width="30" height="30" viewBox="0 0 30 30" fill="none" xmlns="http://www.w3.org/2000/svg">
                 <path fill-rule="evenodd" clip-rule="evenodd" d="M16 15.293L20.6465 10.6465L21.3536 11.3536L16.7071 16.0001L21.3536 20.6465L20.6465 21.3536L16 16.7072L11.3536 21.3536L10.6465 20.6465L15.2929 16.0001L10.6465 11.3537L11.3536 10.6466L16 15.293Z" fill="var(--figma-color-text)" fill-opacity="0.8"/>
             </svg>
@@ -165,6 +165,7 @@
                 <p>Auto-connect now works by holdind Cmd/Ctrl while creating nodes, removed from Preferences.</p>
                 <p>Fixed saving bug for nodes with zero values.</p>
                 <p>Fixed tooltips not showing reliably.</p>
+                <p>Improved license validation.</p>
                 <p>Fixed other UI issues.</p>
 
                 <p><br/><br/><div id='chkHideWhatsNew'></div></p>

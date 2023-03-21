@@ -53,6 +53,7 @@ function showProductKeyDialog()
         ? validateLicense(currentUser.id, productKey)
         : null;
 
+    console.log('2 license =', license);
     
     productKeyInputBack.innerHTML = license ? '' : '•'.repeat(13);
     
@@ -201,7 +202,7 @@ function tryValidateLicense(key)
 
         validateProductKeyButton.innerHTML = 'Edit';
 
-        uiNotify('✨ Thank you for subscribing to Generator ! ✨', {delay: 6000});
+        uiNotify('✨   Thank you for subscribing to Generator !   ✨', {delay: 6000});
     }
     else
     {

@@ -66,8 +66,8 @@ function createCryptoPrimePair(e)
 
 function createCryptoKeys(e = 65537n) 
 {
-    const  p   = 4131437551n,
-           q   = 3567532051n;
+    const  p   = 4177474087n,
+           q   = 3438374081n; // for a 64-bit modulus
     
     const  n   = p * q;
     const _phi = (p-1n) * (q-1n);

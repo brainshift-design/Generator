@@ -33,27 +33,48 @@
         const id   = getQueryVariable('id');
         const date = getQueryVariable('date'); // DDMMYYYY
 
-        const lic  = createLicense(id, date);
-        const key  = createProductKey(lic);
+        const lic  = createLicenseFromDate(id, date);
+        const key  = createLicenseKey(lic);
+
+        // const [p, q] = createCryptoPrimePair(65537n);
+
+        // txt += 'p: ' + p + '<br/>';
+        // txt += 'q: ' + q + '<br/><br/>';
+
+        txt += 'User ID:&nbsp;&nbsp;&nbsp;&nbsp; ' + id       + '<br/>';
+        txt += 'Tier:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ' + lic.tier + '<br/>';
+        txt += 'Last date:&nbsp;&nbsp; ' + date     + '<br/><br/>';
+
+        const license = validateLicense(id, key);
 
         if (   id   != 'false'
             && date != 'false')
-            txt += key;
+            txt += 'License key:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ' + key + ' ' + getValidSign(license, key) + '<br/>';
 
-        // const lic = createLicense('673258279043070641', '27022023');
-        // const str = createLicenseString(lic);
+        if (license)
+        {
+            txt += 'License tier:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ' + license.tier + '<br/>';
+            txt += 'License last date: ' + license.lastDay.toString().padStart(2, '0') + '/' + license.lastMonth.toString().padStart(2, '0') + '/' + license.lastYear.toString() + '<br/><br/>';
+        }
 
-        // const userId  = '673258279043070642';
 
-        const goodKey = key; //createProductKey(str);
-        const badKey  = goodKey.substring(0, goodKey.length-1) + 'E';
+        // const goodKey = key;
+        // const badKey  = goodKey.substring(0, goodKey.length-1) + String.fromCharCode(Number(goodKey.charCodeAt(goodKey.length-1))+1);
 
-        txt += '<br/>';
-        txt += 'validating ' + goodKey + ' ' + (validateLicense(id, goodKey) ? '√' : 'X') + '<br/>';
-        txt += 'validating ' +  badKey + ' ' + (validateLicense(id, badKey ) ? '√' : 'X');
+        // txt += 'validating ' + goodKey + ' ' + (validateLicense(id, goodKey) ? '<font color="green">√</font>' : '<font color="red">X</font>') + '<br/>';
+        // txt += 'validating ' +  badKey + ' ' + (validateLicense(id, badKey ) ? '<font color="green">√</font>' : '<font color="red">X</font>');
+
 
 
         text.innerHTML = txt;
+
+
+        function getValidSign(license, key)
+        {
+            return !!license
+                ? '<font color="green">√</font>' 
+                : '<font color="red">X</font>';
+        }
 
     </script>
 
