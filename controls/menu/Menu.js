@@ -183,8 +183,8 @@ class Menu
 
         this.div.style.top =
             right
-            ? srcRect.y - 3
-            : srcRect.y + srcRect.height + this.divArrow.offsetHeight;
+            ? srcRect.y-4 - 3
+            : srcRect.y-4 + srcRect.height + this.divArrow.offsetHeight;
 
             
         this.divArrow.style.left = srcRect.x + srcRect.width/2;
@@ -192,7 +192,7 @@ class Menu
 
         const menuRect = this.div.getBoundingClientRect();
 
-        this.divArrow.style.top = menuRect.y - this.divArrow.offsetHeight;
+        this.divArrow.style.top = menuRect.y - this.divArrow.offsetHeight + 2;
 
 
         currentMenus.push(this);

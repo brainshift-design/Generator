@@ -63,13 +63,13 @@
     height:           auto;
     padding:          8px 0 8px 0;
     border-radius:    2px;
-    z-index:          10000;
     font-family:      Inter;
     font-size:        11px;
     overflow:         hidden;
     overflow-y:       hidden;
     color:            #eee;
     background-color: #1e1e1e;
+    z-index:          10000;
 }
 
 
@@ -120,14 +120,14 @@
 {
     content:      '';
     position:     absolute;
-    margin-left:  -5px;
-    border-width: 5px;
+    margin-left:  -7px;
+    border-width: 7px;
     border-style: solid;
     border-color: transparent transparent #1e1e1e transparent;
     display:      none;
     opacity:      0%;
-    z-index:      11000;
     box-shadow:   0 0px 2px 0px #fff3 inset;
+    z-index:      20000;
 }
 
 
