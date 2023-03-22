@@ -491,7 +491,6 @@ extends EventTarget
 
                 this.text.innerHTML += '<span style="color: ' + nameStyle + ';">' + this.name + "</span>&nbsp;&nbsp;";
             }
-
             
             const valueText = this.getValueText();
 
@@ -555,6 +554,8 @@ extends EventTarget
     
     getValueText()
     {
+        console.log('NumberControl.getValueText()');
+
         if (this.valueText != '')
         {
             return this.valueText;
@@ -577,22 +578,24 @@ extends EventTarget
             let str;
           
 
-            if (Math.abs(this.value * this.valueScale) > 999999)
-                str = (this.value * this.valueScale).toExponential(1);
+            const val = this.value * this.valueScale;
+
+            if (Math.abs(val) >= 100_000_000_000)
+                str = val.toExponential(1);
             else
             {
                 // if (   this.param
                 //     && this.param.showFullPrecision)
-                //     str = numToString(
-                //         this.value * this.valueScale, 
-                //         10, 
-                //         this.showHex);
+                //     str = numToString(val, 10, this.showHex);
                 // else
-                    str = numToString(
-                        this.value * this.valueScale, 
-                        this.displayDec, 
-                        this.showHex);
+                    str = numToString(val, this.displayDec, this.showHex);
 
+                if (Math.abs(val) >= 10_000) // add thousand separators
+                {
+                    for (let i = str.length-3; i > 0; i -= 3)
+                        str = str.substring(0, i) + ' ' + str.substring(i);
+                }
+                
                 str = str.toUpperCase();
             }
 

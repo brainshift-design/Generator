@@ -17,7 +17,7 @@ Ctrl                        0                           Zoom to 100%
 
 
 Ctrl                        A                           Select all nodes
-Ctrl     Shift              A                           Toggle all nodes
+Ctrl     Shift              A                           Toggle selected for all nodes
 
 
      Alt                    Hover over node             Solo node
