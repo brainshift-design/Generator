@@ -113,36 +113,54 @@ extends OpColorBase
         const valS = Math.round(this.paramS.value.value);
 
 
-        const lDisplay     = valL >= 1 ? 'block' : 'none';
-        const lBorderStyle = valL == 2 ? 'solid' : 'dotted';
+        if (   valL == 0
+            && valM == 0
+            && valS == 0)
+        {
+            this.ringL.style.display      = 'none';
+            this.ringS.style.display      = 'none';
 
-        this.ringL.style.width        = '16px';
-        this.ringL.style.height       = '16px';
-        this.ringL.style.borderRadius = '16px';
-        this.ringL.style.border       = '1.5px solid ' + ringStyle;
-        this.ringL.style.display      = lDisplay;
-        this.ringL.style.borderStyle  = lBorderStyle;
+            this.ringM.style.display      = 'block';
+            this.ringM.style.width        = '14px';
+            this.ringM.style.height       = '14px';
+            this.ringM.style.borderRadius = '14px';
+            this.ringM.style.background   = ringStyle;
+            this.ringM.style.border       = 'none';
+        }
+        else
+        {
+            const lDisplay     = valL >= 1 ? 'block' : 'none';
+            const lBorderStyle = valL == 2 ? 'solid' : 'dotted';
+
+            this.ringL.style.width        = '16px';
+            this.ringL.style.height       = '16px';
+            this.ringL.style.borderRadius = '16px';
+            this.ringL.style.border       = '1.5px solid ' + ringStyle;
+            this.ringL.style.display      = lDisplay;
+            this.ringL.style.borderStyle  = lBorderStyle;
 
 
-        const mDisplay     = valM >= 1 ? 'block' : 'none';
-        const mBorderStyle = valM == 2 ? 'solid' : 'dotted';
+            const mDisplay     = valM >= 1 ? 'block' : 'none';
+            const mBorderStyle = valM == 2 ? 'solid' : 'dotted';
 
-        this.ringM.style.width        = '8px';
-        this.ringM.style.height       = '8px';
-        this.ringM.style.borderRadius = '8px';
-        this.ringM.style.border       = '1.5px solid ' + ringStyle;
-        this.ringM.style.display      = mDisplay;
-        this.ringM.style.borderStyle  = mBorderStyle;
-        
+            this.ringM.style.width        = '8px';
+            this.ringM.style.height       = '8px';
+            this.ringM.style.borderRadius = '8px';
+            this.ringM.style.border       = '1.5px solid ' + ringStyle;
+            this.ringM.style.background   = 'none';
+            this.ringM.style.display      = mDisplay;
+            this.ringM.style.borderStyle  = mBorderStyle;
+            
 
-        const sDisplay      = valS >= 1 ? 'block' : 'none';
-        const sBorderRadius = valS == 2 ? 3 : 1;
+            const sDisplay      = valS >= 1 ? 'block' : 'none';
+            const sBorderRadius = valS == 2 ? 3 : 1;
 
-        this.ringS.style.width        = sBorderRadius + 'px';
-        this.ringS.style.height       = sBorderRadius + 'px';
-        this.ringS.style.background   = ringStyle;
-        this.ringS.style.display      = sDisplay;
-        this.ringS.style.borderRadius = sBorderRadius + 'px';
+            this.ringS.style.width        = sBorderRadius + 'px';
+            this.ringS.style.height       = sBorderRadius + 'px';
+            this.ringS.style.background   = ringStyle;
+            this.ringS.style.display      = sDisplay;
+            this.ringS.style.borderRadius = sBorderRadius + 'px';
+        }
     }
 
 

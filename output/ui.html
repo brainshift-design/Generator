@@ -3208,6 +3208,7 @@ a
                 <p>Updated keyboard shortcuts.</p>
                 <p>Added thousand separators to large numbers.</p>
                 <p>Added symbol rings to colorblind nodes.</p>
+                <p>Fixed XYZ ⟶ Lab conversion bug.</p>
 
                 <p><br/><br/><div id='chkHideWhatsNew'></div></p>
             </div>
@@ -18300,16 +18301,17 @@ function xyz2lab(xyz, W = sRGB.W)
           y = xyz[1], 
           z = xyz[2];
 
-    const e = cube(6/29);
-    const k = cube(29/3);
+    const e = 0.008856; //cube(6/29);
+    const k = 903.3;    //cube(29/3);
 
     let xw = x / W[0];
     let yw = y / W[1];
     let zw = z / W[2];
 
-    xw = xw > e ? Math.cbrt(xw) : (k * xw + 0.16) / 1.16;
-    yw = yw > e ? Math.cbrt(yw) : (k * yw + 0.16) / 1.16;
-    zw = zw > e ? Math.cbrt(zw) : (k * zw + 0.16) / 1.16;
+    xw = xw > e ? Math.cbrt(xw) : (k / 100 * xw + 0.16) / 1.16;
+    yw = yw > e ? Math.cbrt(yw) : (k / 100 * yw + 0.16) / 1.16;
+    zw = zw > e ? Math.cbrt(zw) : (k / 100 * zw + 0.16) / 1.16;
+
 
     const l = (1.16 * yw) - 0.16;
     const a = 5 * (xw - yw);
@@ -18326,8 +18328,8 @@ function lab2xyz(lab, W = sRGB.W)
           a = lab[1], 
           b = lab[2];
 
-    const e = cube(6/29) / 100;
-    const k = cube(29/3) / 100;
+    const e = 0.008856 / 100; //cube(6/29) / 100;
+    const k = 903.3    / 100; //cube(29/3) / 100;
 
     const yw = (l + 0.16)/1.16;
     const xw = a/5 + yw;
@@ -24250,16 +24252,17 @@ function xyz2lab(xyz, W = sRGB.W)
           y = xyz[1], 
           z = xyz[2];
 
-    const e = cube(6/29);
-    const k = cube(29/3);
+    const e = 0.008856; //cube(6/29);
+    const k = 903.3;    //cube(29/3);
 
     let xw = x / W[0];
     let yw = y / W[1];
     let zw = z / W[2];
 
-    xw = xw > e ? Math.cbrt(xw) : (k * xw + 0.16) / 1.16;
-    yw = yw > e ? Math.cbrt(yw) : (k * yw + 0.16) / 1.16;
-    zw = zw > e ? Math.cbrt(zw) : (k * zw + 0.16) / 1.16;
+    xw = xw > e ? Math.cbrt(xw) : (k / 100 * xw + 0.16) / 1.16;
+    yw = yw > e ? Math.cbrt(yw) : (k / 100 * yw + 0.16) / 1.16;
+    zw = zw > e ? Math.cbrt(zw) : (k / 100 * zw + 0.16) / 1.16;
+
 
     const l = (1.16 * yw) - 0.16;
     const a = 5 * (xw - yw);
@@ -24276,8 +24279,8 @@ function lab2xyz(lab, W = sRGB.W)
           a = lab[1], 
           b = lab[2];
 
-    const e = cube(6/29) / 100;
-    const k = cube(29/3) / 100;
+    const e = 0.008856 / 100; //cube(6/29) / 100;
+    const k = 903.3    / 100; //cube(29/3) / 100;
 
     const yw = (l + 0.16)/1.16;
     const xw = a/5 + yw;
@@ -52038,36 +52041,54 @@ extends OpColorBase
         const valS = Math.round(this.paramS.value.value);
 
 
-        const lDisplay     = valL >= 1 ? 'block' : 'none';
-        const lBorderStyle = valL == 2 ? 'solid' : 'dotted';
+        if (   valL == 0
+            && valM == 0
+            && valS == 0)
+        {
+            this.ringL.style.display      = 'none';
+            this.ringS.style.display      = 'none';
 
-        this.ringL.style.width        = '16px';
-        this.ringL.style.height       = '16px';
-        this.ringL.style.borderRadius = '16px';
-        this.ringL.style.border       = '1.5px solid ' + ringStyle;
-        this.ringL.style.display      = lDisplay;
-        this.ringL.style.borderStyle  = lBorderStyle;
+            this.ringM.style.display      = 'block';
+            this.ringM.style.width        = '14px';
+            this.ringM.style.height       = '14px';
+            this.ringM.style.borderRadius = '14px';
+            this.ringM.style.background   = ringStyle;
+            this.ringM.style.border       = 'none';
+        }
+        else
+        {
+            const lDisplay     = valL >= 1 ? 'block' : 'none';
+            const lBorderStyle = valL == 2 ? 'solid' : 'dotted';
+
+            this.ringL.style.width        = '16px';
+            this.ringL.style.height       = '16px';
+            this.ringL.style.borderRadius = '16px';
+            this.ringL.style.border       = '1.5px solid ' + ringStyle;
+            this.ringL.style.display      = lDisplay;
+            this.ringL.style.borderStyle  = lBorderStyle;
 
 
-        const mDisplay     = valM >= 1 ? 'block' : 'none';
-        const mBorderStyle = valM == 2 ? 'solid' : 'dotted';
+            const mDisplay     = valM >= 1 ? 'block' : 'none';
+            const mBorderStyle = valM == 2 ? 'solid' : 'dotted';
 
-        this.ringM.style.width        = '8px';
-        this.ringM.style.height       = '8px';
-        this.ringM.style.borderRadius = '8px';
-        this.ringM.style.border       = '1.5px solid ' + ringStyle;
-        this.ringM.style.display      = mDisplay;
-        this.ringM.style.borderStyle  = mBorderStyle;
-        
+            this.ringM.style.width        = '8px';
+            this.ringM.style.height       = '8px';
+            this.ringM.style.borderRadius = '8px';
+            this.ringM.style.border       = '1.5px solid ' + ringStyle;
+            this.ringM.style.background   = 'none';
+            this.ringM.style.display      = mDisplay;
+            this.ringM.style.borderStyle  = mBorderStyle;
+            
 
-        const sDisplay      = valS >= 1 ? 'block' : 'none';
-        const sBorderRadius = valS == 2 ? 3 : 1;
+            const sDisplay      = valS >= 1 ? 'block' : 'none';
+            const sBorderRadius = valS == 2 ? 3 : 1;
 
-        this.ringS.style.width        = sBorderRadius + 'px';
-        this.ringS.style.height       = sBorderRadius + 'px';
-        this.ringS.style.background   = ringStyle;
-        this.ringS.style.display      = sDisplay;
-        this.ringS.style.borderRadius = sBorderRadius + 'px';
+            this.ringS.style.width        = sBorderRadius + 'px';
+            this.ringS.style.height       = sBorderRadius + 'px';
+            this.ringS.style.background   = ringStyle;
+            this.ringS.style.display      = sDisplay;
+            this.ringS.style.borderRadius = sBorderRadius + 'px';
+        }
     }
 
 
