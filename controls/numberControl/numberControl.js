@@ -554,8 +554,6 @@ extends EventTarget
     
     getValueText()
     {
-        console.log('NumberControl.getValueText()');
-
         if (this.valueText != '')
         {
             return this.valueText;

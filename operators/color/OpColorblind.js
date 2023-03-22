@@ -6,6 +6,12 @@ extends OpColorBase
     paramS;
 
 
+    symbol;
+
+    ringL;
+    ringM;
+    ringS;
+
 
     constructor()
     {
@@ -26,6 +32,19 @@ extends OpColorBase
 
 
         this.header.connectionPadding = 18;
+
+
+        this.symbol = createDiv('colorblindSymbol');
+        
+        this.ringL = createDiv('colorblindRing');
+        this.ringM = createDiv('colorblindRing');
+        this.ringS = createDiv('colorblindRing');
+        
+        this.symbol.appendChild(this.ringS);
+        this.symbol.appendChild(this.ringM);
+        this.symbol.appendChild(this.ringL);
+
+        this.header.appendChild(this.symbol);
     }
 
 
@@ -75,6 +94,61 @@ extends OpColorBase
             : dataColor_NaN;
 
         super.updateValues(requestId, actionId, updateParamId, paramIds, values);
+    }
+
+
+
+    updateHeader()
+    {
+        super.updateHeader();
+
+        const colors    = this.getHeaderColors();
+        const ringStyle = rgba2style(colors.text);
+
+        const valL = Math.round(this.paramL.value.value);
+        const valM = Math.round(this.paramM.value.value);
+        const valS = Math.round(this.paramS.value.value);
+
+
+        const lDisplay     = valL >= 1 ? 'block' : 'none';
+        const lBorderStyle = valL == 2 ? 'solid' : 'dotted';
+
+        this.ringL.style.width        = '16px';
+        this.ringL.style.height       = '16px';
+        this.ringL.style.borderRadius = '16px';
+        this.ringL.style.border       = '1.5px solid ' + ringStyle;
+        this.ringL.style.display      = lDisplay;
+        this.ringL.style.borderStyle  = lBorderStyle;
+
+
+        const mDisplay     = valM >= 1 ? 'block' : 'none';
+        const mBorderStyle = valM == 2 ? 'solid' : 'dotted';
+
+        this.ringM.style.width        = '8px';
+        this.ringM.style.height       = '8px';
+        this.ringM.style.borderRadius = '8px';
+        this.ringM.style.border       = '1.5px solid ' + ringStyle;
+        this.ringM.style.display      = mDisplay;
+        this.ringM.style.borderStyle  = mBorderStyle;
+        
+
+        const sDisplay      = valS >= 1 ? 'block' : 'none';
+        const sBorderRadius = valS == 2 ? 3 : 1;
+
+        this.ringS.style.width        = sBorderRadius + 'px';
+        this.ringS.style.height       = sBorderRadius + 'px';
+        this.ringS.style.background   = ringStyle;
+        this.ringS.style.display      = sDisplay;
+        this.ringS.style.borderRadius = sBorderRadius + 'px';
+    }
+
+
+
+    updateHeaderLabel()
+    {
+        super.updateHeaderLabel();
+        
+        this.label.style.top = '59%';
     }
 
 
