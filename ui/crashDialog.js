@@ -1,14 +1,19 @@
 function initCrashDialog(event, error)
 {
-    let stack = error.stack;
+    if (error)
+    {
+        let stack = error.stack;
 
-    stack = stack.replaceAll('.<', '<');
-    stack = stack.replaceAll(/\(?data[a-zA-Z0-9/,;:=]*\)?/g, '');
-    stack = stack.replaceAll('at \n', '');
-    stack = stack.replaceAll('at ', '<br/>&nbsp;&nbsp;&nbsp;&nbsp;at ');
+        stack = stack.replaceAll('.<', '<');
+        stack = stack.replaceAll(/\(?data[a-zA-Z0-9/,;:=]*\)?/g, '');
+        stack = stack.replaceAll('at \n', '');
+        stack = stack.replaceAll('at ', '<br/>&nbsp;&nbsp;&nbsp;&nbsp;at ');
 
-    crashDetails.innerHTML = stack;
-
+        crashDetails.innerHTML = stack;
+    }
+    else
+        crashDetails.innerHTML = event;
+        
 
     crashBack.addEventListener('pointerdown', e => { e.preventDefault(); });
 
