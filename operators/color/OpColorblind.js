@@ -45,6 +45,9 @@ extends OpColorBase
         this.symbol.appendChild(this.ringL);
 
         this.header.appendChild(this.symbol);
+
+
+        createTooltipSrc(this.symbol, this.symbol, () => ttColorblind);
     }
 
 
