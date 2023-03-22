@@ -70,8 +70,8 @@ document.addEventListener('keydown', e =>
     else if (   e.key == 'Delete'
              || e.key == 'Backspace')
     {
-        if (e.shiftKey) graphView.removeSelectedNodes();
-        else            graphView.deleteSelectedNodes();
+        if (getCtrlKey(e)) graphView.removeSelectedNodes();
+        else               graphView.deleteSelectedNodes();
     }
 
     // select all

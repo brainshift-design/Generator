@@ -295,6 +295,7 @@ function isMultiplier(node)
 function getCreateNodeAction(type, creatingButton, options)
 {
     return !!options.insert
+        &&  !options.autoConnect
            ? new CreateInsertNodeAction(graphView.graph, type, creatingButton, options)
-           : new CreateNodeAction      (graphView.graph, type, creatingButton, options, settings.autoConnectNewNodes);
+           : new CreateNodeAction      (graphView.graph, type, creatingButton, options, !!options.autoConnect);
 }

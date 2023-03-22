@@ -41,9 +41,9 @@
         // txt += 'p: ' + p + '<br/>';
         // txt += 'q: ' + q + '<br/><br/>';
 
-        txt += 'User ID:&nbsp;&nbsp;&nbsp;&nbsp; ' + id       + '<br/>';
-        txt += 'Tier:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ' + lic.tier + '<br/>';
-        txt += 'Last date:&nbsp;&nbsp; ' + date     + '<br/><br/>';
+        txt += 'Request ID:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ' + id       + '<br/>';
+        txt += 'Request tier:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ' + lic.tier + '<br/>';
+        txt += 'Request last date: ' + date     + '<br/><br/>';
 
         const license = validateLicense(id, key);
 
@@ -58,12 +58,11 @@
         }
 
 
-        // const goodKey = key;
-        // const badKey  = goodKey.substring(0, goodKey.length-1) + String.fromCharCode(Number(goodKey.charCodeAt(goodKey.length-1))+1);
-
-        // txt += 'validating ' + goodKey + ' ' + (validateLicense(id, goodKey) ? '<font color="green">√</font>' : '<font color="red">X</font>') + '<br/>';
-        // txt += 'validating ' +  badKey + ' ' + (validateLicense(id, badKey ) ? '<font color="green">√</font>' : '<font color="red">X</font>');
-
+        // for (let i = -3; i <= 3; i++)
+        // {
+        //     const _key = key.substring(0, key.length-1) + String.fromCharCode(Number(key.charCodeAt(key.length-1))+i);
+        //     txt += '<br/>' + _key + ' ' + (validateLicense(id, _key ) ? '<font color="green">√</font>' : '<font color="red">X</font>');
+        // }
 
 
         text.innerHTML = txt;

@@ -7,11 +7,12 @@ function updateZoomTooltip()
             + '<p style="margin-top: 1.25em">'
             + '    An outline around the zoom means<br/>'
             + '    that value controls are too small<br/>'
-            + '    and cannot be adjusted.'
+            + '    to be adjusted and the whole node<br/>'
+            + '    is moved instead.'
             + '</p>'
-            + '<p style="margin-top: 1.25em">Instead the whole node is moved.</p>'
+            + '<p style="margin-top: 1.25em">The threshold can be set in the<br/>preferences menu.</p>';
 
-        ttMinValueZoom.style.height = '102px';
+        ttMinValueZoom.style.height = '130px';
     }
     else
     {

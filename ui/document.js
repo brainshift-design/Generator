@@ -46,27 +46,32 @@ document.addEventListener('pointerdown', function(e)
 {
     if (e.button == 0)
     {
-        if (   /*document.canResizeL
-            ||*/ document.canResizeR
+        if (   document.canResizeL
+            || document.canResizeR
             || document.canResizeB)
         {
-            document.startRect = new Rect(
-                document.body.offsetLeft,
-                document.body.offsetTop,
-                window.innerWidth,
-                window.innerHeight);
-
             document.sx = e.clientX;
             document.sy = e.clientY;
 
             document.startPan = graphView.pan;
 
+
+            uiPostMessageToFigma({
+                cmd:           'figGetMousePosition',
+                clientPosition: point(e.clientX, e.clientY)});
+
+
             document.body.setPointerCapture(e.pointerId);
 
-          //document.resizingL = document.canResizeL;
+            
+            document.resizingL = document.canResizeL;
             document.resizingR = document.canResizeR;
             document.resizingB = document.canResizeB;
 
+
+            document.startRectIsValid = false;
+            
+            
             uiUpdateViewportRect();
         }
     }
@@ -87,38 +92,43 @@ document.addEventListener('pointermove', function(e)
 
 
     if (   document.resizingR
-        && document.resizingB)
+        && document.resizingB
+        && document.startRectIsValid)
     {
         uiResizeWindow(
             document.startRect.w + e.clientX - document.sx,
             document.startRect.h + e.clientY - document.sy);
     }
-    // else if (document.resizingL
-    //       && document.resizingB)
-    // {
-    //     uiSetWindowRect(
-    //         e.clientX,
-    //         e.clientY,
-    //         document.startRect.w - e.clientX + document.startRect.x,
-    //         document.startRect.h + e.clientY - document.startRect.y);
-    // }
-    // else if (document.resizingL)
-    // {
-    //     uiSetWindowRect(
-    //         document.startRect.x + e.clientX - document.sx,
-    //         document.startRect.y,
-    //         document.startRect.width - e.clientX + document.sx,
-    //         document.startRect.height);
+    else if (document.resizingL
+          && document.resizingB
+          && document.startRectIsValid)
+    {
+        uiSetWindowRect(
+            e.clientX,
+            e.clientY,
+            document.startRect.w - e.clientX + document.startRect.x,
+            document.startRect.h + e.clientY - document.startRect.y);
+    }
+    else if (document.resizingL
+          && document.startRectIsValid)
+    {
+        uiSetWindowRect(
+            document.startRect.x + e.clientX - document.sx,
+            document.startRect.y,
+            document.startRect.width - e.clientX + document.sx,
+            document.startRect.height);
 
-    //     //graphView.pan = point(document.startPan.x - e.clientX, document.startPan.y);
-    // }
-    else if (document.resizingR)
+        //graphView.pan = point(document.startPan.x - e.clientX, document.startPan.y);
+    }
+    else if (document.resizingR
+          && document.startRectIsValid)
     {
         uiResizeWindow(
             document.startRect.w + e.clientX - document.sx,
             window.innerHeight);
     }
-    else if (document.resizingB)
+    else if (document.resizingB
+          && document.startRectIsValid)
     {
         uiResizeWindow(
             window.innerWidth,

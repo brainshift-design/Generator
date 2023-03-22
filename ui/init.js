@@ -15,15 +15,14 @@ var allUpdateNodes   = [];
 //uiClearAllLocalData();
 //uiQueueMessageToFigma({cmd: 'figLogAllLocalData'});
 
-//uiClearLocalData('windowWidth');
-//uiClearLocalData('windowHeight');
+uiClearLocalData('windowWidth');
+uiClearLocalData('windowHeight');
 //uiClearLocalData('productKey');
 
 //uiClearLocalData('showWhatsNew');
 
 //uiSetLocalData('enableBetaFeatures', 'true');
 //uiSetLocalData('logRawLoading', 'false');
-
 
 //uiRemoveConnsToNodes(['num3']);
 //uiRemoveSavedNodesAndConns(['color']);

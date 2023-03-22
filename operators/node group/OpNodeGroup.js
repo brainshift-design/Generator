@@ -6,22 +6,16 @@ extends OperatorBase
 
     canResizeL  = false;
     canResizeR  = false;
-    canResizeT  = false;
     canResizeB  = false;
 
-    canResizeTL = false;
-    canResizeTR = false;
     canResizeBL = false;
     canResizeBR = false;
     
 
     resizingL   = false;
     resizingR   = false;
-    resizingT   = false;
     resizingB   = false;
 
-    resizingTL  = false;
-    resizingTR  = false;
     resizingBL  = false;
     resizingBR  = false;
 
@@ -57,14 +51,12 @@ extends OperatorBase
                 this.startRect = offsetRect(this.div);
                 this.resizing  = false;
 
-                     if (this.canResizeTL) { this.resizingTL = this.resizing = true; }
-                else if (this.canResizeTR) { this.resizingTR = this.resizing = true; }
-                else if (this.canResizeBL) { this.resizingBL = this.resizing = true; }
+                     if (this.canResizeBL) { this.resizingBL = this.resizing = true; }
                 else if (this.canResizeBR) { this.resizingBR = this.resizing = true; }
                 else if (this.canResizeL ) { this.resizingL  = this.resizing = true; }
                 else if (this.canResizeR ) { this.resizingR  = this.resizing = true; }
-                else if (this.canResizeT ) { this.resizingT  = this.resizing = true; }
                 else if (this.canResizeB ) { this.resizingB  = this.resizing = true; }
+
 
                 if (this.resizing)
                 {
@@ -280,11 +272,8 @@ extends OperatorBase
     {
         this.canResizeL  = false;
         this.canResizeR  = false;
-        this.canResizeT  = false;
         this.canResizeB  = false;
     
-        this.canResizeTL = false;
-        this.canResizeTR = false;
         this.canResizeBL = false;
         this.canResizeBR = false;
 
@@ -292,11 +281,8 @@ extends OperatorBase
         {
             this.resizingL  = false;
             this.resizingR  = false;
-            this.resizingT  = false;
             this.resizingB  = false;
         
-            this.resizingTL = false;
-            this.resizingTR = false;
             this.resizingBL = false;
             this.resizingBR = false;
 
@@ -312,26 +298,8 @@ extends OperatorBase
 
         if (   e.clientX >= this.measureData.divBounds.l
             && e.clientX <  this.measureData.divBounds.l + resizeEdgeWidth
-            && e.clientY >= this.measureData.divBounds.t
-            && e.clientY <  this.measureData.divBounds.t + resizeEdgeWidth)
-        {
-            this.canResizeTL      = true;
-            this.div.style.cursor = 'nwse-resize';
-            return true;
-        }
-        else if (e.clientX >= this.measureData.divBounds.r - resizeEdgeWidth
-              && e.clientX <  this.measureData.divBounds.r 
-              && e.clientY >= this.measureData.divBounds.t
-              && e.clientY <  this.measureData.divBounds.t + resizeEdgeWidth)
-        {
-            this.canResizeTR      = true;
-            this.div.style.cursor = 'nesw-resize';
-            return true;
-        }
-        else if (e.clientX >= this.measureData.divBounds.l
-              && e.clientX <  this.measureData.divBounds.l + resizeEdgeWidth
-              && e.clientY >= this.measureData.divBounds.b - resizeEdgeWidth
-              && e.clientY <  this.measureData.divBounds.b)
+            && e.clientY >= this.measureData.divBounds.b - resizeEdgeWidth
+            && e.clientY <  this.measureData.divBounds.b)
         {
             this.canResizeBL      = true;
             this.div.style.cursor = 'nesw-resize';
@@ -362,15 +330,6 @@ extends OperatorBase
         {
             this.canResizeR       = true;
             this.div.style.cursor = 'ew-resize';
-            return true;
-        }
-        else if (e.clientX >= this.measureData.divBounds.l + resizeEdgeWidth
-              && e.clientX <  this.measureData.divBounds.r - resizeEdgeWidth
-              && e.clientY >= this.measureData.divBounds.t
-              && e.clientY <  this.measureData.divBounds.t + resizeEdgeWidth)
-        {
-            this.canResizeT       = true;
-            this.div.style.cursor = 'ns-resize';
             return true;
         }
         else if (e.clientX >= this.measureData.divBounds.l + resizeEdgeWidth

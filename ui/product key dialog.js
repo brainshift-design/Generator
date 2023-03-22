@@ -224,7 +224,7 @@ function updateLicenseInfo(license)
         const date    = new Date(Date.parse(strPrep));
         const strDate = date.toLocaleString('en-UK', {dateStyle: 'medium'});
 
-        licenseInfo.innerHTML = 'Expires on: <span style="font-weight: 600">' + strDate.replaceAll('/', '&hairsp;/&hairsp;') + '</span>';
+        licenseInfo.innerHTML = '<span style="user-select: none; color: var(--figma-color-bg-disabled-secondary);">Valid until:&nbsp;&thinsp;</span><span style="font-weight: 600">' + strDate.replaceAll('/', '&hairsp;/&hairsp;') + '</span>';
     }
     else
     {

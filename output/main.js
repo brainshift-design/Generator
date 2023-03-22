@@ -17,7 +17,7 @@ function isNodeKey(key) { return isTagKey(key, nodeTag); }
 function isConnKey(key) { return isTagKey(key, connTag); }
 function noNodeTag(key) { return noTag(key, nodeTag); }
 function noConnTag(key) { return noTag(key, connTag); }
-const generatorVersion = 120;
+const generatorVersion = 121;
 const MAX_INT32 = 2147483647;
 const NULL = '';
 const TAB = '  ';
@@ -770,6 +770,9 @@ figma.ui.onmessage = function (msg) {
             break;
         case 'figDockWindowBottom':
             figDockWindow('bottom');
+            break;
+        case 'figGetMousePosition':
+            figGetMousePosition(msg.clientPosition);
             break;
         //case 'figPositionWindow':                   figPositionWindow                    (msg.x, msg.y);                                break; 
         case 'figResizeWindow':
@@ -1608,6 +1611,13 @@ function figRemovePluginDataFromAllLocalStyles() {
 var notifyNotificationHandler = null;
 var notifyDequeueHandler = () => notifyNotificationHandler = null;
 var windowDock = 'normal'; // '', 'maximize', 'top', 'left', 'right', 'bottom'
+function figGetMousePosition(clientPosition) {
+    figPostMessageToUi({
+        cmd: 'uiReturnFigGetMousePosition',
+        position: figma.activeUsers.find(u => u.id == figma.currentUser.id).position,
+        clientPosition: clientPosition
+    });
+}
 function figSetWindowRect(x, y, width, height) {
     (function () {
         return __awaiter(this, void 0, void 0, function* () {

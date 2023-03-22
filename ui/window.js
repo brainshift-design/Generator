@@ -34,17 +34,17 @@ function checkResize(x, y)
     }
 
 
-    document.canResizeL = !dialogShown && false;//x <= resizeEdgeWidth;
-    document.canResizeR = !dialogShown && documentBodyClient.width  - x <= resizeEdgeWidth;
-    document.canResizeB = !dialogShown && documentBodyClient.height - y <= resizeEdgeWidth;
+    document.canResizeL = false;//!dialogShown && x <= resizeEdgeWidth;
+    document.canResizeR = !dialogShown && window.innerWidth  - x <= resizeEdgeWidth;
+    document.canResizeB = !dialogShown && window.innerHeight - y <= resizeEdgeWidth;
 
     
     if (       document.canResizeR
             && document.canResizeB) setCursor('nwse-resize', false); 
     else if (  document.canResizeL
             && document.canResizeB) setCursor('nesw-resize', false); 
-    else if (document.canResizeL
-          || document.canResizeR)   setCursor('ew-resize',   false);   
+    else if (/*document.canResizeL
+          || */document.canResizeR)   setCursor('ew-resize',   false);   
     else if (document.canResizeB)   setCursor('ns-resize',   false);   
     else                            setAutoCursor();
 }
@@ -86,6 +86,22 @@ function uiReturnFigResizeWindow()
     }
 
     graphView.updateMeasureData();
+}
+
+
+
+function uiUpdateWindowStartRect(position, clientPosition)
+{
+    document.startRect = new Rect(
+        position.x - clientPosition.x,
+        position.y - clientPosition.y,
+        window.innerWidth,
+        window.innerHeight);
+
+    console.log('position       =', position);
+    console.log('clientPosition =', clientPosition);
+
+    document.startRectIsValid = true;
 }
 
 

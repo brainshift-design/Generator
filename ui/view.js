@@ -1,10 +1,10 @@
-const mainGraph    = new Graph();
-var   graphView    = new GraphView(_graphView, mainGraph);
-
-var   currentGraph = mainGraph;
-var   currentView  = graphView;
-
-var   viewportRect = new Rect();
+const mainGraph       = new Graph();
+var   graphView       = new GraphView(_graphView, mainGraph);
+   
+var   currentGraph    = mainGraph;
+var   currentView     = graphView;
+   
+var   viewportRect    = new Rect();
 
 
 

@@ -1,0 +1,59 @@
+                            Wheel                       Scroll vertically
+         Shift              Wheel                       Scroll horizontally
+
+                            Wheel (pan mode)            Zoom
+Ctrl                        Wheel                       Zoom
+
+
+                Space       Drag                        Pan
+Ctrl            Space       Drag                        Zoom to rect
+Ctrl Alt        Space       Drag                        Zoom out from rect
+
+
+Ctrl                        +                           Zoom in x2
+Ctrl                        -                           Zoom out x2
+         Shift              1                           Zoom to fit
+Ctrl                        0                           Zoom to 100%
+
+
+Ctrl                        A                           Select all nodes
+Ctrl     Shift              A                           Toggle all nodes
+
+
+     Alt                    Hover over node             Solo node
+
+
+Ctrl                        Connect from output         Connect and back-initialize value
+
+                            Click node header           Select node
+         Shift              Click node header           Toggle selected
+Ctrl     Shift              Click node header           Select tree left
+     Alt Shift              Click node header           Select tree right
+Ctrl Alt                    Click node header           Select tree across
+Ctrl Alt Shift              Click node header           Select entire tree
+
+Ctrl     Shift              E                           Enable/disable selected nodes
+
+
+                            Click menu item             Create node
+Ctrl                        Click menu item             Connect node/insert into chain after selected node
+Ctrl Alt                    Click menu item             Auto-connect node as a new branch after selected node
+     Alt                    Click menu item (Color)     Create color node with random color
+     
+         Shift              Click menu item             Keep menu open
+
+
+                            Del                         Delete selected nodes
+Ctrl                        Del                         Remove selected nodes from chain
+
+
+         Shift              Adjust value                Allow values beyond visible limits
+
+
+Ctrl                        C                           Copy selected nodes
+                
+Ctrl                        V                           Paste copied nodes
+Ctrl     Shift              V                           Paste and connect copied nodes connected
+                
+Ctrl                        D                           Duplicate selected nodes
+Ctrl     Shift              D                           Duplicate and connect copied nodes connected

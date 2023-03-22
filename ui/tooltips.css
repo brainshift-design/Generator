@@ -1,4 +1,4 @@
-#ttCreateColorblind
+#ttColorblind
 {
     width:  200px; 
     height: 310px;
@@ -16,6 +16,11 @@
 {
     width:  240px;
     height: 126px;
+}
+
+#ttMinValueZoom
+{
+    width: max(184px, auto);
 }
 
 

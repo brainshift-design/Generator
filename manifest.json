@@ -5,5 +5,5 @@
   "main": "output/main.js",
   "ui":   "output/ui.html",
   "editorType":  ["figma"],
-  "permissions": [ "currentuser" ]
+  "permissions": [ "currentuser", "activeusers" ]
 }

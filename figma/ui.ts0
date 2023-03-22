@@ -5,6 +5,16 @@ var windowDock = 'normal'; // '', 'maximize', 'top', 'left', 'right', 'bottom'
 
 
 
+function figGetMousePosition(clientPosition)
+{
+    figPostMessageToUi({
+        cmd:           'uiReturnFigGetMousePosition',
+        position:       figma.activeUsers.find(u => u.id == figma.currentUser.id).position,
+        clientPosition: clientPosition });
+}
+
+
+
 function figSetWindowRect(x, y, width, height)
 {
     (async function()

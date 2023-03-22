@@ -40,6 +40,7 @@ onmessage = e =>
         case 'uiReturnFigGetAllLocalColorStyles':       uiReturnFigGetAllLocalColorStyles      (msg);                       break;
 
         case 'uiReturnUpdateViewportRect':              viewportRect = msg.viewportRect;                                    break;
+        case 'uiReturnFigGetMousePosition':             uiUpdateWindowStartRect                (msg.position, msg.clientPosition); break;
 
         
         // case 'uiReturnFigValidateLicense':              
