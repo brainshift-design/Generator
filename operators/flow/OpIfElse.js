@@ -19,8 +19,11 @@ extends OperatorBase
         this.paramCondition.barTop = 0;
 
 
-        this.inputs[0].addEventListener('connect',    () => OpIfElse_onConnectInput(this));
-        this.inputs[0].addEventListener('disconnect', () => OpIfElse_onDisconnectInput(this));
+        this.inputs[0].addEventListener('connect',    () => OpIfElse_onConnectInput(this, 0));
+        this.inputs[0].addEventListener('disconnect', () => OpIfElse_onDisconnectInput(this, 0));
+
+        this.inputs[1].addEventListener('connect',    () => OpIfElse_onConnectInput(this, 1));
+        this.inputs[1].addEventListener('disconnect', () => OpIfElse_onDisconnectInput(this, 1));
     }
     
     
@@ -82,16 +85,53 @@ extends OperatorBase
 
 
 
-function OpIfElse_onConnectInput(node)
+function OpIfElse_onConnectInput(node, inputIndex)
 {
-    const inOutput = node.inputs[0].connectedOutput;
+    const otherIndex = inputIndex == 0 ? 1 : 0;
 
-    node.outputs[0].types = [...inOutput.types];
+    const inputOut   = node.inputs[inputIndex].connectedOutput;
+    const inputTypes = inputOut.types;
+    
+    
+    node.inputs[inputIndex].types = [...inputTypes];
+
+    if (!node.inputs[otherIndex].connected)
+    {
+        node.inputs[otherIndex].types = [...inputTypes];
+        node.outputs[0]        .types = [...inputTypes];
+    }
+
+    
+    // if there is an outgoing connection from the node of a different type than
+    // the incoming connection, delete the outgoing connection
+
+    if (    node.outputs[0].connected
+        && !node.outputs[0].connectedInputs[0].canConnectFrom(inputOut))
+        node.outputs[0].connectedInputs.forEach(i => uiDisconnect(i));
 }
 
 
 
-function OpIfElse_onDisconnectInput(node)
+function OpIfElse_onDisconnectInput(node, inputIndex)
 {
-    node.outputs[0].types = [];
+    const otherIndex = inputIndex == 0 ? 1 : 0;
+
+    const otherInput = node.inputs[otherIndex];
+    const otherOut   = otherInput.connectedOutput;
+    const otherTypes = otherOut ? otherOut.types : [];
+
+
+    if (!node.inputs[otherIndex].connected)
+        node.inputs[inputIndex].types = [...ALL_TYPES];
+
+    node.inputs[otherIndex].types = 
+        otherInput.connected 
+        ? [...otherTypes]
+        : [...ALL_TYPES];
+
+
+    node.outputs[0].types = 
+        otherInput.connected
+        ? [...otherTypes]
+        : [];
 }
