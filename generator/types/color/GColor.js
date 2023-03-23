@@ -63,38 +63,43 @@ extends GColorType
             
             if (input.isValid())
             {
-                this.value = new ColorValue(
-                    input.space,
-                    input.c1, 
-                    input.c2, 
-                    input.c3);
-                    
-                const fromSpaceIndex = input.space.value;
-
-                const toSpaceIndex = Math.min(Math.max(
-                    0,
-                    Math.round(space.value)), // round because a value can come in with decimals (TODO fix this)
-                    colorSpaceCount(parse)-1);
-
-
-                this.convertColor(
-                    this.value,
-                    colorSpace(fromSpaceIndex), 
-                    colorSpace(  toSpaceIndex));
-
-                this.value.space.value = toSpaceIndex;
-
-
                 if (this.options.enabled)
                 {
-                    if (!this.c1) { this.c1 = this.value.c1.copy(); c1 = this.c1.toValue(); }
-                    if (!this.c2) { this.c2 = this.value.c2.copy(); c2 = this.c2.toValue(); }
-                    if (!this.c3) { this.c3 = this.value.c3.copy(); c3 = this.c3.toValue(); }
-                
-                    if (c1) this.value.c1 = c1;
-                    if (c2) this.value.c2 = c2;
-                    if (c3) this.value.c3 = c3;
+                    this.value = new ColorValue(
+                        input.space,
+                        input.c1, 
+                        input.c2, 
+                        input.c3);
+                        
+                    const fromSpaceIndex = input.space.value;
+
+                    const toSpaceIndex = Math.min(Math.max(
+                        0,
+                        Math.round(space.value)), // round because a value can come in with decimals (TODO fix this)
+                        colorSpaceCount(parse)-1);
+
+
+                    this.convertColor(
+                        this.value,
+                        colorSpace(fromSpaceIndex), 
+                        colorSpace(  toSpaceIndex));
+
+                    this.value.space.value = toSpaceIndex;
+
+
+                    if (this.options.enabled)
+                    {
+                        if (!this.c1) { this.c1 = this.value.c1.copy(); c1 = this.c1.toValue(); }
+                        if (!this.c2) { this.c2 = this.value.c2.copy(); c2 = this.c2.toValue(); }
+                        if (!this.c3) { this.c3 = this.value.c3.copy(); c3 = this.c3.toValue(); }
+                    
+                        if (c1) this.value.c1 = c1;
+                        if (c2) this.value.c2 = c2;
+                        if (c3) this.value.c3 = c3;
+                    }
                 }
+                else
+                    this.value = input;
             }
             else
                 this.value = ColorValue.NaN;

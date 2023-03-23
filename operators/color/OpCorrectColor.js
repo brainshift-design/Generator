@@ -16,6 +16,7 @@ extends OpColorBase
         super(CORRECT_COLOR, 'corrected', true);
 
         this.slow         = true;
+        this.canDisable   = true;
         this.subscription = true;
 
         

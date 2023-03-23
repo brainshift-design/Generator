@@ -11,7 +11,8 @@ extends OpColorBase
     {
         super(VALID_COLOR, 'valid', true);
 
-        this.slow = true;
+        this.canDisable = true;
+        this.slow       = true;
 
         
         this.addInput(new Input(COLOR_TYPES));

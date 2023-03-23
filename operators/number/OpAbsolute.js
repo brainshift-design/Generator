@@ -5,6 +5,9 @@ extends OperatorWithValue
     {
         super(NUMBER_ABSOLUTE, 'abs');
 
+        this.canDisable = true;
+        
+
         this.addInput (new Input (NUMBER_TYPES));
         this.addOutput(new Output([NUMBER_VALUE], this.output_genRequest));
 

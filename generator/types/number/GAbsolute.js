@@ -40,7 +40,8 @@ extends GNumberType
                 this.value.type == NUMBER_VALUE, 
                 'this.value.type must belong to NUMBER_VALUE');
 
-            this.value.value = Math.abs(this.value.value);
+            if (this.options.enabled)
+                this.value.value = Math.abs(this.value.value);
         }
         else
             this.value = NumberValue.NaN;

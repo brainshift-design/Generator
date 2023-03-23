@@ -10,6 +10,9 @@ extends OperatorWithValue
     {
         super(NUMBER_ROUND, 'round');
 
+        this.canDisable = true;
+        
+
         this.addInput (new Input (NUMBER_TYPES));
         this.addOutput(new Output([NUMBER_VALUE], this.output_genRequest));
 

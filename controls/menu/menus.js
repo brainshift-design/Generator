@@ -138,7 +138,9 @@ var menuItemNodeSelect;
 // var menuItemNodeBringToFront;
 // var menuItemNodeSendToBack;
 //var menuItemNodeActivate;
+var menuItemNodeSep3;
 var menuItemNodeEnableDisable;
+
 
 var menuItemLicenseSep1;
 var menuItemLicenseRemove;
@@ -398,26 +400,29 @@ function initGeneratorMenus()
                                          new MenuItem('',                    {separator: true}),
         // menuItemNodeActivate           = new MenuItem('Activate',            {callback: () => makeSelectedNodesActive()}),
         menuItemNodeEnableDisable      = new MenuItem('Enable/Disable',      {shortcut:  osCtrl() + osShift() + 'E',  callback: () => actionManager.do(new ToggleDisableNodesAction(graphView.graph, graphView.selectedNodes.map(n => n.id)))}),
-                                         new MenuItem('',                    {separator: true}),
+        menuItemNodeSep3               = new MenuItem('',                    {separator: true}),
         menuItemNodeRemove             = new MenuItem('Remove',              {shortcut:  osCtrl() + '⌫',             callback: e => { hideAllMenus(); graphView.removeSelectedNodes(true); }})]);
 
 
     menuNode.init = () => 
     {
         const single   = graphView.selectedNodes.length == 1;
-        const parallel = nodesAreParallel(graphView.selectedNodes);
+        //const parallel = nodesAreParallel(graphView.selectedNodes);
+
+        const canDisable = !graphView.selectedNodes.find(n => !n.canDisable);
 
         const group = 
                graphView.selectedNodes.length == 1 
-            && graphView.selectedNodes[0].type == NODE_GROUP;
+            && graphView.selectedNodes[0].type == NODE_GROUP;   
+    
 
-
-        updateMenuItemDisplay(menuItemNodeSep1    .div, single);
-      //updateMenuItemDisplay(menuItemNodeRename  .div, single);
-        updateMenuItemDisplay(menuItemNodeEdit    .div, single && group);
-        updateMenuItemDisplay(menuItemNodeSep2    .div, single && group);
-        updateMenuItemDisplay(menuItemNodeSelect  .div, single);
-        //updateMenuItemDisplay(menuItemNodeActivate.div, single || parallel);
+        updateMenuItemDisplay(menuItemNodeSep1         .div, single);
+      //updateMenuItemDisplay(menuItemNodeRename       .div, single);
+        updateMenuItemDisplay(menuItemNodeEdit         .div, single && group);
+        updateMenuItemDisplay(menuItemNodeSep2         .div, single && group);
+        updateMenuItemDisplay(menuItemNodeSelect       .div, single);
+        updateMenuItemDisplay(menuItemNodeSep3         .div, canDisable);
+        updateMenuItemDisplay(menuItemNodeEnableDisable.div, canDisable);
     };
 
 

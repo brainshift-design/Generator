@@ -17,6 +17,8 @@ extends OpColorBase
     {
         super(COLORBLIND, 'colorblind');
 
+        this.canDisable = true;
+        
 
         this.addInput(new Input(COLOR_TYPES));
         this.addOutput(new Output([COLOR], this.output_genRequest));

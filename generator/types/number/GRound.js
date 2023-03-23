@@ -53,14 +53,18 @@ extends GNumberType
                 this.value.type == NUMBER_VALUE, 
                 'this.value.type must belong to NUMBER_VALUE');
 
-            switch (type.value)
+            
+            if (this.options.enabled)
             {
-                case 0: this.value.value = floorTo(this.value.value, dec.value); break;
-                case 1: this.value.value = roundTo(this.value.value, dec.value); break;
-                case 2: this.value.value =  ceilTo(this.value.value, dec.value); break;
-            }
+                switch (type.value)
+                {
+                    case 0: this.value.value = floorTo(this.value.value, dec.value); break;
+                    case 1: this.value.value = roundTo(this.value.value, dec.value); break;
+                    case 2: this.value.value =  ceilTo(this.value.value, dec.value); break;
+                }
 
-            this.value.decimals = dec.value;
+                this.value.decimals = dec.value;
+            }
         }
         else
             this.value = NumberValue.NaN;

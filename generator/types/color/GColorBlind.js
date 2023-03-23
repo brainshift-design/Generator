@@ -72,7 +72,7 @@ extends GColorType
                     this.value = ColorValue.NaN;
             }
             else
-                this.value = input.copy();
+                this.value = input;
         }
         else
             this.value = ColorValue.NaN;

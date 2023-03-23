@@ -53,10 +53,14 @@ extends GNumberType
                 this.value.type == NUMBER_VALUE, 
                 'this.value.type must belong to NUMBER_VALUE');
 
-            this.value.value = Math.min(Math.max(
-                min.value,
-                this.value.value),
-                max.value);
+
+            if (this.options.enabled)
+            {
+                this.value.value = Math.min(Math.max(
+                    min.value,
+                    this.value.value),
+                    max.value);
+            }
         }
         else
             this.value = NumberValue.NaN;

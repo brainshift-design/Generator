@@ -22,6 +22,8 @@ extends OpColorBase
     {
         super(COLOR, 'color');
 
+        this.canDisable = true;
+
         
         const defColor = ['hex', 0.85, 0.85, 0.85];
 

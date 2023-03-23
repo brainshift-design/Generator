@@ -42,6 +42,9 @@ class Operator
     alwaysLoadParams   = false;
     alwaysSaveParams   = false;
 
+    canDisable         = false;
+
+
     scrollName         = true;
 
     showActiveArrow    = false;
