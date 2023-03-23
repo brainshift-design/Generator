@@ -406,7 +406,7 @@ ColorControl.prototype.initEvents = function()
                 // if (   document.activeElement
                 //     && document.activeElement.tagName.toLowerCase() == 'input'
                 //     && document.activeElement.control)
-                //     document.activeElement.controls[0].textbox.finish(true, false);
+                //     document.activeElement.control.textbox.finish(true, false);
 
                 // this.oldValue = this.value;
 

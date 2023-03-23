@@ -95,7 +95,6 @@ NumberControl.prototype.initTextbox = function()
                 else if (!e.shiftKey 
                       && index < params.length-1) 
                 {
-                    console.log('params =', params);
                     while (params[++index].controls[0].readOnly);
                     params[index].controls[0].showTextbox();
                 }
@@ -183,7 +182,20 @@ NumberControl.prototype.initTextbox = function()
 
                 this.textbox.selectionStart =
                 this.textbox.selectionEnd   = this.textbox.savedValue.length - revPos - this.suffix.length;
+
+
+                if (this.param) this.param.changing = true;
+                if (this.confirmTimer) clearTimeout(this.confirmTimer);
+                this.confirmTimer = setTimeout(() => numberControl_confirm(this), 400);
             }
+        }
+        else if (e.code == 'KeyZ'
+              && getCtrlKey(e))
+        {
+                 if (e.shiftKey && !actionManager.redoing) actionManager.redo();
+            else if (              !actionManager.undoing) actionManager.undo();
+            
+            this.updateTextbox();
         }
         else 
         {

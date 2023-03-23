@@ -97,8 +97,8 @@
 
 //             // if (this.input.connectedOutput.supportsTypes(ALL_TYPES))
 //             // {
-//             //     const val = noNaN(this.control.value,      1);
-//             //     const dec = noNaN(this.control.displayDec, 0);
+//             //     const val = noNaN(this.controls[0].value,      1);
+//             //     const dec = noNaN(this.controls[0].displayDec, 0);
                 
 //             //     request.push(
 //             //         NUMBER_VALUE, 

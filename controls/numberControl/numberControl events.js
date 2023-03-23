@@ -553,7 +553,7 @@ NumberControl.prototype.initEvents = function()
                 if (   document.activeElement
                     && document.activeElement.tagName.toLowerCase() == 'input'
                     && document.activeElement.control)
-                    document.activeElement.controls[0].textbox.finish(true, false);
+                    document.activeElement.control.textbox.finish(true, false);
 
                 this.oldValue = this.value;
 
@@ -566,11 +566,9 @@ NumberControl.prototype.initEvents = function()
 
 
                 this.setValue(val, true, true, false);
+
                 if (this.param) this.param.changing = true;
-
-                
                 if (this.confirmTimer) clearTimeout(this.confirmTimer);
-
                 this.confirmTimer = setTimeout(() => numberControl_confirm(this), 400);
             }
         }
@@ -580,7 +578,6 @@ NumberControl.prototype.initEvents = function()
     
     this.div.addEventListener('keydown', e =>
     {
-        console.log('keydown');
         if (   e.code == 'Enter'
             || e.code == 'NumpadEnter')
             this.showTextbox();
@@ -597,7 +594,6 @@ NumberControl.prototype.initEvents = function()
 
     // this.div.addEventListener('keyup', e =>
     // {
-    //     console.log('keyup');
     //     // if (e.key == 'Shift')
     //     // {
     //     //     this.shiftDown = true;

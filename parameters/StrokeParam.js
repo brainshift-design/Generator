@@ -307,7 +307,7 @@ extends Parameter
             ||  this.input.connectedOutput.support(COLOR_TYPES);
 
         enableElementText(this.textControl, enable);
-        enableElementText(this.control.div, opEnable);
+        enableElementText(this.controls[0].div, opEnable);
 
         this.controls[0].readOnly = !enable;
         this.controls[1].readOnly = !opEnable;
