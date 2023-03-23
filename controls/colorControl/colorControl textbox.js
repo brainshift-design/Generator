@@ -133,6 +133,19 @@ ColorControl.prototype.initTextbox = function()
 
             this.textbox.selectionStart = iStart * 2;
             this.textbox.selectionEnd   = iEnd   * 2;
+
+
+            if (this.param) this.param.changing = true;
+            if (this.confirmTimer) clearTimeout(this.confirmTimer);
+            this.confirmTimer = setTimeout(() => numberControl_confirm(this), 400);
+        }
+        else if (e.code == 'KeyZ'
+              && getCtrlKey(e))
+        {
+                 if (e.shiftKey && !actionManager.redoing) actionManager.redo();
+            else if (              !actionManager.undoing) actionManager.undo();
+            
+            this.updateTextbox();
         }
         else 
         {
