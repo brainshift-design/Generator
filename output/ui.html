@@ -3206,6 +3206,7 @@ a
                 <h1 style='margin-top: 20px;'>What's new in Generator</h1>
 
                 <p>Only nodes that modify a value can now be disabled.</p>
+                <p>Fixed color corrector bugs.</p>
                 <p>Fixed UI issues.</p>
 
                 <p><br/><br/><div id='chkHideWhatsNew'></div></p>
@@ -11767,10 +11768,13 @@ function correctColor(color, order, margin1, margin2, margin3)
 
     if (rgbIsOk(rgb))
         rgb = invalid2validRgb(rgb);
-
-    color = rgb2dataColor(rgb);
-
     
+        
+    color = convertDataColorToSpace(
+        rgb2dataColor(rgb),
+        color[0]);
+
+        
     return color;
 }
 
@@ -12505,7 +12509,9 @@ extends GColorType
         const margin2 = this.margin2 ? this.margin2.eval(parse).toValue()             : null;
         const margin3 = this.margin3 ? this.margin3.eval(parse).toValue()             : null;
 
-        order.value = Math.min(Math.max(0, order.value), 5);
+    
+        if (order)
+            order.value = Math.min(Math.max(0, order.value), 5);
 
 
         if (this.input)
@@ -31058,10 +31064,13 @@ function correctColor(color, order, margin1, margin2, margin3)
 
     if (rgbIsOk(rgb))
         rgb = invalid2validRgb(rgb);
-
-    color = rgb2dataColor(rgb);
-
     
+        
+    color = convertDataColorToSpace(
+        rgb2dataColor(rgb),
+        color[0]);
+
+        
     return color;
 }
 
@@ -31796,7 +31805,9 @@ extends GColorType
         const margin2 = this.margin2 ? this.margin2.eval(parse).toValue()             : null;
         const margin3 = this.margin3 ? this.margin3.eval(parse).toValue()             : null;
 
-        order.value = Math.min(Math.max(0, order.value), 5);
+    
+        if (order)
+            order.value = Math.min(Math.max(0, order.value), 5);
 
 
         if (this.input)

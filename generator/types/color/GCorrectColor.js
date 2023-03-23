@@ -50,7 +50,9 @@ extends GColorType
         const margin2 = this.margin2 ? this.margin2.eval(parse).toValue()             : null;
         const margin3 = this.margin3 ? this.margin3.eval(parse).toValue()             : null;
 
-        order.value = Math.min(Math.max(0, order.value), 5);
+    
+        if (order)
+            order.value = Math.min(Math.max(0, order.value), 5);
 
 
         if (this.input)

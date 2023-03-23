@@ -229,10 +229,13 @@ function correctColor(color, order, margin1, margin2, margin3)
 
     if (rgbIsOk(rgb))
         rgb = invalid2validRgb(rgb);
-
-    color = rgb2dataColor(rgb);
-
     
+        
+    color = convertDataColorToSpace(
+        rgb2dataColor(rgb),
+        color[0]);
+
+        
     return color;
 }
 
