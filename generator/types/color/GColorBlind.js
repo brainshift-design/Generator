@@ -49,25 +49,30 @@ extends GColorType
             const input = this.input.eval(parse).toValue();
             const rgb   = input.toRgb();
 
-            const rgbCb = rgb2colorblind(
-                rgb,
-                l.value / 2,
-                m.value / 2,
-                s.value / 2);
-
-            if (   !rgbIsNaN(rgb)
-                && !rgbIsNaN(rgbCb))
+            if (this.options.enabled)
             {
-                const validRgbCb = rgbCb;
-            
-                const validCol = convertDataColorToSpace(
-                    rgb2dataColor(validRgbCb), 
-                    colorSpace(input.space.value));
+                const rgbCb = rgb2colorblind(
+                    rgb,
+                    l.value / 2,
+                    m.value / 2,
+                    s.value / 2);
 
-                this.value = ColorValue.fromDataColor(validCol);
+                if (   !rgbIsNaN(rgb)
+                    && !rgbIsNaN(rgbCb))
+                {
+                    const validRgbCb = rgbCb;
+                
+                    const validCol = convertDataColorToSpace(
+                        rgb2dataColor(validRgbCb), 
+                        colorSpace(input.space.value));
+
+                    this.value = ColorValue.fromDataColor(validCol);
+                }
+                else
+                    this.value = ColorValue.NaN;
             }
             else
-                this.value = ColorValue.NaN;
+                this.value = input.copy();
         }
         else
             this.value = ColorValue.NaN;

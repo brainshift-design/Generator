@@ -3213,6 +3213,7 @@ a
                 <p>Limited input types on if/else to currently connected.</p>
                 <p>Fixed crash when tabbing between parameters.</p>
                 <p>Improved undo for adjusting values with arrow keys.</p>
+                <p>Fixed various small UI bugs.</p>
 
                 <p><br/><br/><div id='chkHideWhatsNew'></div></p>
             </div>
@@ -12774,25 +12775,30 @@ extends GColorType
             const input = this.input.eval(parse).toValue();
             const rgb   = input.toRgb();
 
-            const rgbCb = rgb2colorblind(
-                rgb,
-                l.value / 2,
-                m.value / 2,
-                s.value / 2);
-
-            if (   !rgbIsNaN(rgb)
-                && !rgbIsNaN(rgbCb))
+            if (this.options.enabled)
             {
-                const validRgbCb = rgbCb;
-            
-                const validCol = convertDataColorToSpace(
-                    rgb2dataColor(validRgbCb), 
-                    colorSpace(input.space.value));
+                const rgbCb = rgb2colorblind(
+                    rgb,
+                    l.value / 2,
+                    m.value / 2,
+                    s.value / 2);
 
-                this.value = ColorValue.fromDataColor(validCol);
+                if (   !rgbIsNaN(rgb)
+                    && !rgbIsNaN(rgbCb))
+                {
+                    const validRgbCb = rgbCb;
+                
+                    const validCol = convertDataColorToSpace(
+                        rgb2dataColor(validRgbCb), 
+                        colorSpace(input.space.value));
+
+                    this.value = ColorValue.fromDataColor(validCol);
+                }
+                else
+                    this.value = ColorValue.NaN;
             }
             else
-                this.value = ColorValue.NaN;
+                this.value = input.copy();
         }
         else
             this.value = ColorValue.NaN;
@@ -32025,25 +32031,30 @@ extends GColorType
             const input = this.input.eval(parse).toValue();
             const rgb   = input.toRgb();
 
-            const rgbCb = rgb2colorblind(
-                rgb,
-                l.value / 2,
-                m.value / 2,
-                s.value / 2);
-
-            if (   !rgbIsNaN(rgb)
-                && !rgbIsNaN(rgbCb))
+            if (this.options.enabled)
             {
-                const validRgbCb = rgbCb;
-            
-                const validCol = convertDataColorToSpace(
-                    rgb2dataColor(validRgbCb), 
-                    colorSpace(input.space.value));
+                const rgbCb = rgb2colorblind(
+                    rgb,
+                    l.value / 2,
+                    m.value / 2,
+                    s.value / 2);
 
-                this.value = ColorValue.fromDataColor(validCol);
+                if (   !rgbIsNaN(rgb)
+                    && !rgbIsNaN(rgbCb))
+                {
+                    const validRgbCb = rgbCb;
+                
+                    const validCol = convertDataColorToSpace(
+                        rgb2dataColor(validRgbCb), 
+                        colorSpace(input.space.value));
+
+                    this.value = ColorValue.fromDataColor(validCol);
+                }
+                else
+                    this.value = ColorValue.NaN;
             }
             else
-                this.value = ColorValue.NaN;
+                this.value = input.copy();
         }
         else
             this.value = ColorValue.NaN;
@@ -59213,10 +59224,10 @@ generator.onmessage = function(e)
                 
             break;
         
-        case 'uiInitNodeProgress':   graphView.graph.nodeFromId(msg.nodeId).initNodeProgress();                break;
-        case 'uiUpdateNodeProgress': graphView.graph.nodeFromId(msg.nodeId).updateNodeProgress(msg.progress);  break;
+        case 'uiInitNodeProgress':   graphView.graph.nodeFromId(msg.nodeId).initProgress();                break;
+        case 'uiUpdateNodeProgress': graphView.graph.nodeFromId(msg.nodeId).updateProgress(msg.progress);  break;
         
-        case 'uiForwardToFigma':     uiQueueMessageToFigma(msg.msg);                                           break;
+        case 'uiForwardToFigma':     uiQueueMessageToFigma(msg.msg);                                       break;
     }
 };
 

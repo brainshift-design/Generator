@@ -151,10 +151,10 @@ generator.onmessage = function(e)
                 
             break;
         
-        case 'uiInitNodeProgress':   graphView.graph.nodeFromId(msg.nodeId).initNodeProgress();                break;
-        case 'uiUpdateNodeProgress': graphView.graph.nodeFromId(msg.nodeId).updateNodeProgress(msg.progress);  break;
+        case 'uiInitNodeProgress':   graphView.graph.nodeFromId(msg.nodeId).initProgress();                break;
+        case 'uiUpdateNodeProgress': graphView.graph.nodeFromId(msg.nodeId).updateProgress(msg.progress);  break;
         
-        case 'uiForwardToFigma':     uiQueueMessageToFigma(msg.msg);                                           break;
+        case 'uiForwardToFigma':     uiQueueMessageToFigma(msg.msg);                                       break;
     }
 };
 
