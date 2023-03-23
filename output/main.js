@@ -859,9 +859,7 @@ figma.ui.onmessage = function (msg) {
         case 'figLinkNodeToExistingColorStyle':
             figLinkNodeToExistingColorStyle(msg.nodeId, msg.styleId);
             break;
-        case 'figUpdateViewportRect':
-            figPostMessageToUi({ cmd: 'uiReturnUpdateViewportRect', viewportRect: figma.viewport.bounds });
-            break;
+        // case 'figUpdateViewportRect':                 figPostMessageToUi({cmd: 'uiReturnUpdateViewportRect', viewportRect: figma.viewport.bounds }); break;
         case 'figUpdateObjectsAndStyles':
             figUpdateObjects(msg);
             figUpdateStyles(msg);
@@ -1615,20 +1613,22 @@ function figGetMousePosition(clientPosition) {
     figPostMessageToUi({
         cmd: 'uiReturnFigGetMousePosition',
         position: figma.activeUsers.find(u => u.id == figma.currentUser.id).position,
-        clientPosition: clientPosition
+        clientPosition: clientPosition,
+        viewportZoom: figma.viewport.zoom,
+        viewportRect: figma.viewport.bounds
     });
 }
 function figSetWindowRect(x, y, width, height) {
     (function () {
         return __awaiter(this, void 0, void 0, function* () {
             //console.log('figma.viewport.bounds =', figma.viewport.bounds);
-            console.log('_ x =', x);
-            //console.log('_ y =',      y);
-            //console.log('_ width =',  width);
-            //console.log('_ height =', height);
+            console.log('_x =', x);
+            //console.log('_y =',      y);
+            //console.log('_width =',  width);
+            //console.log('_height =', height);
             const rect = {
-                x: x,
-                y: y,
+                x: Math.round(x),
+                y: Math.round(y),
                 width: Math.floor(Math.max(0, width)),
                 height: Math.floor(Math.max(0, height))
             };
@@ -1640,10 +1640,6 @@ function figSetWindowRect(x, y, width, height) {
             //     windowDock,
             //     rect, 
             //     figma.viewport.bounds);
-            rect.x = Math.round(rect.x);
-            rect.y = Math.round(rect.y);
-            rect.width = Math.round(rect.width);
-            rect.height = Math.round(rect.height);
             figma.ui.reposition(rect.x, rect.y);
             figma.ui.resize(rect.width, rect.height);
             figma.clientStorage.setAsync('windowX', rect.x);

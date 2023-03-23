@@ -90,14 +90,14 @@ ColorControl.prototype.initTextbox = function()
                 if (   e.shiftKey 
                     && index > 0)
                 {
-                    while (params[--index].this.readOnly);
-                    params[index].this.showTextbox();
+                    while (params[--index].controls[0].readOnly);
+                    params[index].controls[0].showTextbox();
                 }
                 else if (!e.shiftKey 
                       && index < params.length-1) 
                 {
-                    while (params[++index].this.readOnly);
-                    params[index].this.showTextbox();
+                    while (params[++index].controls[0].readOnly);
+                    params[index].controls[0].showTextbox();
                 }
             }
         }

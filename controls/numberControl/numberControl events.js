@@ -553,7 +553,7 @@ NumberControl.prototype.initEvents = function()
                 if (   document.activeElement
                     && document.activeElement.tagName.toLowerCase() == 'input'
                     && document.activeElement.control)
-                    document.activeElement.this.textbox.finish(true, false);
+                    document.activeElement.controls[0].textbox.finish(true, false);
 
                 this.oldValue = this.value;
 
@@ -583,7 +583,7 @@ NumberControl.prototype.initEvents = function()
         console.log('keydown');
         if (   e.code == 'Enter'
             || e.code == 'NumpadEnter')
-            this.this.MathshowTextbox();
+            this.showTextbox();
 
         // else if (e.key == 'Shift')
         // {
@@ -610,7 +610,7 @@ NumberControl.prototype.initEvents = function()
 
     this.div.addEventListener('focus', () =>
     {
-        if (   !this.this.param.node.graph.view.spaceDown
+        if (   !this.param.node.graph.view.spaceDown
             && !panMode
             && !this.buttonDown1
             &&  this.pointerEvents)

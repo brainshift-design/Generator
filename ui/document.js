@@ -63,7 +63,6 @@ document.addEventListener('pointerdown', function(e)
 
             document.body.setPointerCapture(e.pointerId);
 
-            
             document.resizingL = document.canResizeL;
             document.resizingR = document.canResizeR;
             document.resizingB = document.canResizeB;
@@ -72,7 +71,7 @@ document.addEventListener('pointerdown', function(e)
             document.startRectIsValid = false;
             
             
-            uiUpdateViewportRect();
+            //uiUpdateViewportRect();
         }
     }
 
@@ -113,7 +112,7 @@ document.addEventListener('pointermove', function(e)
           && document.startRectIsValid)
     {
         uiSetWindowRect(
-            document.startRect.x + e.clientX - document.sx,
+            document.startRect.x + (e.clientX - document.sx) / viewportZoom,
             document.startRect.y,
             document.startRect.width - e.clientX + document.sx,
             document.startRect.height);

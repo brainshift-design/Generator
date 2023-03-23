@@ -39,13 +39,8 @@ onmessage = e =>
                            
         case 'uiReturnFigGetAllLocalColorStyles':       uiReturnFigGetAllLocalColorStyles      (msg);                       break;
 
-        case 'uiReturnUpdateViewportRect':              viewportRect = msg.viewportRect;                                    break;
-        case 'uiReturnFigGetMousePosition':             uiUpdateWindowStartRect                (msg.position, msg.clientPosition); break;
-
-        
-        // case 'uiReturnFigValidateLicense':              
-        //     enableFeatures(msg.result, settings.enableBetaFeatures); 
-        //     break;
+        //case 'uiReturnUpdateViewportRect':              viewportRect = msg.viewportRect;                                    break;
+        case 'uiReturnFigGetMousePosition':             uiUpdateWindowStartRect                (msg);                       break;
 
         case 'uiSetStyleId':                            uiSetStyleId                           (msg);                       break;
         case 'uiHideClearUndoWarning':                  uiHideClearUndoWarning                 ();                          break;

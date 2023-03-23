@@ -3,7 +3,6 @@ const settings =
     dataMode:              false,
     debugMode:             false,
 
-    autoConnectNewNodes:   true,
     enableZoomedOutParams: false,
     minZoomForParams:      0.35,
     showAllColorSpaces:    false,
@@ -44,7 +43,6 @@ function updateSetting(settingName, value)
         case 'dataMode':              settings.dataMode              = value;  break;
         case 'debugMode':             settings.debugMode             = value;  break;
 
-        case 'autoConnectNewNodes':   settings.autoConnectNewNodes   = value;  break;
         case 'enableZoomedOutParams': settings.enableZoomedOutParams = value;  break;
         case 'minZoomForParams':      settings.minZoomForParams      = value;  break;
         case 'showAllColorSpaces':    settings.showAllColorSpaces    = value;  break;
@@ -85,7 +83,6 @@ function updateSettingAndMenu(settingName, valid, value, save = true)
         case 'dataMode':              updateSettingAndMenu_(valid, settingName, value, menuItemDataMode);               break;
         case 'debugMode':             updateSettingAndMenu_(valid, settingName, value);                                 break;
 
-        case 'autoConnectNewNodes':   updateSettingAndMenu_(valid, settingName, value, menuItemAutoConnectNewNodes  );  break;
         case 'enableZoomedOutParams': updateSettingAndMenu_(valid, settingName, value, menuItemEnableZoomedOutParams);  break;
         case 'showAllColorSpaces':    updateSettingAndMenu_(valid, settingName, value, menuItemShowAllColorSpaces   );  break;
         case 'showBoolValues':        updateSettingAndMenu_(valid, settingName, value, menuItemShowBoolValues       );  break;
@@ -138,7 +135,6 @@ function updateSettingsMenus()
     menuItemDataMode             .setVisible(settings.dataMode             );
     menuItemDebug                .setVisible(settings.debugMode            );
 
-    menuItemAutoConnectNewNodes  .setChecked(settings.autoConnectNewNodes  );
     menuItemEnableZoomedOutParams.setChecked(settings.enableZoomedOutParams);
     menuItemShowAllColorSpaces   .setChecked(settings.showAllColorSpaces   );
     menuItemShowBoolValues       .setChecked(settings.showBoolValues       );
@@ -257,7 +253,6 @@ function loadLocalSettings()
     uiGetLocalData('dataMode'             );
     uiGetLocalData('debugMode'            );
 
-    uiGetLocalData('autoConnectNewNodes'  );
     uiGetLocalData('enableZoomedOutParams');
     uiGetLocalData('minZoomForParams'     );
     uiGetLocalData('showBoolValues'       );

@@ -54,7 +54,6 @@ var menuConnData;
 var menuConnDataConns;
 
 
-var menuItemAutoConnectNewNodes;
 var menuItemEnableZoomedOutParams;
 var menuItemMinZoomForParams;
 var menuItemShowAllColorSpaces;
@@ -138,7 +137,7 @@ var menuItemNodeSep2;
 var menuItemNodeSelect;
 // var menuItemNodeBringToFront;
 // var menuItemNodeSendToBack;
-var menuItemNodeActivate;
+//var menuItemNodeActivate;
 var menuItemNodeEnableDisable;
 
 var menuItemLicenseSep1;
@@ -156,7 +155,6 @@ function initGeneratorMenus()
     menuMainPreferences.addItems([
         menuItemShowAllColorSpaces    = new MenuItem('Show all color spaces',         {checkCallback: () => settings.showAllColorSpaces,    callback: () => { updateSettingAndMenu('showAllColorSpaces',    true, !settings.showAllColorSpaces);    updateMenuItemShowAllColorSpaces();   }}),
                                         new MenuItem('',                              {separator: true}),    
-        // menuItemAutoConnectNewNodes   = new MenuItem('Auto-connect new nodes',        {checkCallback: () => settings.autoConnectNewNodes,   callback: () => { updateSettingAndMenu('autoConnectNewNodes',   true, !settings.autoConnectNewNodes);                                         }}),
         menuItemShowOperationResults  = new MenuItem('Show operation results',        {checkCallback: () => settings.showOperationResults,  callback: () => { updateSettingAndMenu('showOperationResults',  true, !settings.showOperationResults);  updateMenuItemShowOperationResults(); }}),
         menuItemShowBoolValues        = new MenuItem('Show boolean values as  ✓ ✗',  {checkCallback: () => settings.showBoolValues,        callback: () => { updateSettingAndMenu('showBoolValues',        true, !settings.showBoolValues);        updateMenuItemShowBoolValues();       }}),
         menuItemShowClearUndoWarning  = new MenuItem('Show clear undo warning',       {checkCallback: () => settings.showClearUndoWarning,  callback: () => { updateSettingAndMenu('showClearUndoWarning',  true, !settings.showClearUndoWarning);                                        }}),
@@ -398,7 +396,7 @@ function initGeneratorMenus()
         // menuItemNodeRename             = new MenuItem('Rename',              {shortcut:  osCtrl() + 'R',              callback: e => { hideAllMenus(); graphView.renameSelectedNode(); }}),
         menuItemNodeEdit               = new MenuItem('Edit...',             {callback: e => { hideAllMenus(); graphView.editSelectedCustomNode(); }}),
                                          new MenuItem('',                    {separator: true}),
-        menuItemNodeActivate           = new MenuItem('Activate',            {callback: () => makeSelectedNodesActive()}),
+        // menuItemNodeActivate           = new MenuItem('Activate',            {callback: () => makeSelectedNodesActive()}),
         menuItemNodeEnableDisable      = new MenuItem('Enable/Disable',      {shortcut:  osCtrl() + osShift() + 'E',  callback: () => actionManager.do(new ToggleDisableNodesAction(graphView.graph, graphView.selectedNodes.map(n => n.id)))}),
                                          new MenuItem('',                    {separator: true}),
         menuItemNodeRemove             = new MenuItem('Remove',              {shortcut:  osCtrl() + '⌫',             callback: e => { hideAllMenus(); graphView.removeSelectedNodes(true); }})]);
@@ -419,7 +417,7 @@ function initGeneratorMenus()
         updateMenuItemDisplay(menuItemNodeEdit    .div, single && group);
         updateMenuItemDisplay(menuItemNodeSep2    .div, single && group);
         updateMenuItemDisplay(menuItemNodeSelect  .div, single);
-        updateMenuItemDisplay(menuItemNodeActivate.div, single || parallel);
+        //updateMenuItemDisplay(menuItemNodeActivate.div, single || parallel);
     };
 
 

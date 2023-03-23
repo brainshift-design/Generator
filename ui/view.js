@@ -3,7 +3,8 @@ var   graphView       = new GraphView(_graphView, mainGraph);
    
 var   currentGraph    = mainGraph;
 var   currentView     = graphView;
-   
+
+var   viewportZoom    = 1;
 var   viewportRect    = new Rect();
 
 

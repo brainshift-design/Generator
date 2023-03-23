@@ -39,14 +39,14 @@ function checkResize(x, y)
     document.canResizeB = !dialogShown && window.innerHeight - y <= resizeEdgeWidth;
 
     
-    if (       document.canResizeR
-            && document.canResizeB) setCursor('nwse-resize', false); 
-    else if (  document.canResizeL
-            && document.canResizeB) setCursor('nesw-resize', false); 
-    else if (/*document.canResizeL
-          || */document.canResizeR)   setCursor('ew-resize',   false);   
-    else if (document.canResizeB)   setCursor('ns-resize',   false);   
-    else                            setAutoCursor();
+    if (     document.canResizeR
+          && document.canResizeB) setCursor('nwse-resize', false); 
+    else if (document.canResizeL
+          && document.canResizeB) setCursor('nesw-resize', false); 
+    else if (document.canResizeL
+          || document.canResizeR) setCursor('ew-resize',   false);   
+    else if (document.canResizeB) setCursor('ns-resize',   false);   
+    else                          setAutoCursor();
 }
 
 
@@ -90,17 +90,20 @@ function uiReturnFigResizeWindow()
 
 
 
-function uiUpdateWindowStartRect(position, clientPosition)
+function uiUpdateWindowStartRect(msg)
 {
     document.startRect = new Rect(
-        position.x - clientPosition.x,
-        position.y - clientPosition.y,
+        msg.position.x - msg.clientPosition.x,
+        msg.position.y - msg.clientPosition.y,
         window.innerWidth,
         window.innerHeight);
 
-    console.log('position       =', position);
-    console.log('clientPosition =', clientPosition);
+    // console.log('position       =', position);
+    // console.log('clientPosition =', clientPosition);
 
+    viewportZoom = msg.viewportZoom;
+    viewportRect = msg.viewportRect;
+    
     document.startRectIsValid = true;
 }
 

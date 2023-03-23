@@ -41,7 +41,6 @@ function uiReturnFigGetLocalData(msg)
         case 'dataMode':
         case 'debugMode':
 
-        case 'autoConnectNewNodes':
         case 'enableZoomedOutParams':
         case 'showBoolValues':
         case 'showOperationResults':
