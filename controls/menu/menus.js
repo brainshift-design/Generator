@@ -450,7 +450,7 @@ function initGeneratorMenus()
         const create = new CreateNodeAction(graphView.graph, NODE_GROUP, btnCustom.div);
         actionManager.do(create);
 
-        graphView.update([create.node]);
+        graphView.updateNodes([create.node]);
         graphView.updateScrollWithBounds();
 
         updatePanMode(false);
@@ -466,7 +466,7 @@ function initGeneratorMenus()
         const create = new CreateNodeAction(graphView.graph, COMMENT, btnComment.div);
         actionManager.do(create);
 
-        graphView.update([create.node]);
+        graphView.updateNodes([create.node]);
         graphView.updateScrollWithBounds();
 
         updatePanMode(false);

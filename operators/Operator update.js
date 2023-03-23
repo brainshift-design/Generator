@@ -116,12 +116,14 @@ Operator.prototype.updateDisabled = function()
     if (!this.measureData)
         return;
 
+    const height = Math.min(this.measureData.divOffset.width, this.measureData.divOffset.height) + 70;
+
     this.divDisabled.style.display   = this.enabled ? 'none' : 'inline-block';
     this.divDisabled.style.zIndex    = 1000;
+    this.divDisabled.style.height    = height;
     this.divDisabled.style.transform = 'rotate(45deg)';
-    this.divDisabled.style.height    = Math.min(this.measureData.divOffset.width, this.measureData.divOffset.height) + 70;
     this.divDisabled.style.left      = (this.measureData.divOffset.width  - this.measureData.disabledOffset.width ) / 2;
-    this.divDisabled.style.top       = (this.measureData.divOffset.height - this.measureData.disabledOffset.height) / 2;
+    this.divDisabled.style.top       = (this.measureData.divOffset.height - height) / 2;
 }
 
 
@@ -137,10 +139,10 @@ Operator.prototype.updateSubscribe = function()
 
 
 
-Operator.prototype.updateSubscribeStatus = function(subbed)
+Operator.prototype.updateSubscribeStatus = function(subscribed)
 {
     const sub = 
-            subbed
+            subscribed
         || !this.subscription;
 
 

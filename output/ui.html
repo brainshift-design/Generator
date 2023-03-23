@@ -1505,7 +1505,7 @@ div
 #ttWcag2
 {
     width:  240px;
-    height: 126px;
+    height: 115px;
 }
 
 #ttMinValueZoom
@@ -1550,7 +1550,7 @@ div
 #ttWcag3
 {
     width:  240px;
-    height: 120px;
+    height: 115px;
 }
 
 
@@ -3205,15 +3205,7 @@ a
             <div id='whatsNewBody'>
                 <h1 style='margin-top: 20px;'>What's new in Generator</h1>
 
-                <p>Updated keyboard shortcuts.</p>
-                <p>Added thousand separators to large numbers.</p>
-                <p>Added symbol rings to colorblind nodes.</p>
-                <p>Fixed XYZ ⟶ Lab conversion bug.</p>
-                <p>Fixed crash dialog not blocking after certain types of bugs.</p>
-                <p>Limited input types on if/else to currently connected.</p>
-                <p>Fixed crash when tabbing between parameters.</p>
-                <p>Improved undo for adjusting values with arrow keys.</p>
-                <p>Fixed various small UI bugs.</p>
+                <p>-</p>
 
                 <p><br/><br/><div id='chkHideWhatsNew'></div></p>
             </div>
@@ -3415,7 +3407,7 @@ a
 
 
 
-const generatorVersion = 121;
+const generatorVersion = 122;
 
 
 const MAX_INT32        = 2147483647;
@@ -20381,7 +20373,7 @@ onerror = (event, source, line, pos, error) =>
 
 
 
-const generatorVersion = 121;
+const generatorVersion = 122;
 
 
 const MAX_INT32        = 2147483647;
@@ -38363,7 +38355,7 @@ function initGeneratorMenus()
         const create = new CreateNodeAction(graphView.graph, NODE_GROUP, btnCustom.div);
         actionManager.do(create);
 
-        graphView.update([create.node]);
+        graphView.updateNodes([create.node]);
         graphView.updateScrollWithBounds();
 
         updatePanMode(false);
@@ -38379,7 +38371,7 @@ function initGeneratorMenus()
         const create = new CreateNodeAction(graphView.graph, COMMENT, btnComment.div);
         actionManager.do(create);
 
-        graphView.update([create.node]);
+        graphView.updateNodes([create.node]);
         graphView.updateScrollWithBounds();
 
         updatePanMode(false);
@@ -39968,6 +39960,43 @@ class GraphView
 }
 
 
+GraphView.prototype.updateNodes = function(nodes = null, updateNodes = true)
+{
+    if (!nodes)
+        nodes = this.graph.nodes;
+        
+    
+    documentBodyClient = clientRect(document.body);
+
+
+    this.updateNodeTransforms(nodes, false);
+    this.updateNodeTransforms(nodes); // this has to be done twice //because getAllNodeBounds() forces a reflow
+
+    nodes.forEach(n => n.updateMeasureData());
+
+    if (updateNodes)
+    {
+        nodes.forEach(n =>
+        {
+            n.updateHeader(); 
+            n.updateHeaderLabel();
+            n.updateBorder();
+            n.updateDisabled();
+        });
+    }
+
+
+    const x = this.measureData.clientRect.left;
+    const w = this.measureData.clientRect.width;
+    const h = this.measureData.clientRect.height;
+    
+    const bounds = this.getAllNodeBounds();
+
+    this.updateScroll(x, w, h, bounds, menuBarHeight);
+};
+
+
+
 GraphView.prototype.setNodePositions = function(nodes, dx, dy, updateTransform = true)
 {
     //console.log('GraphView.setNodePositions()');
@@ -40576,7 +40605,7 @@ GraphView.prototype.createEvents = function()
                     this.pan.y += wndRect.m - selection.m;
 
 
-                    this.update();
+                    this.updateNodes();
                 }
                 else
                 this.endZoomSelection(e.pointerId, false);
@@ -40833,8 +40862,9 @@ GraphView.prototype.setPanAndZoom = function(pan, zoom)
 
 GraphView.prototype.updatePanAndZoom = function(updateNodes)
 {
-    this.update(this.graph.nodes, updateNodes);
+    this.updateNodes(this.graph.nodes, updateNodes);
 
+    
     setTimeout(() =>
     {
         updateZoomTooltip();
@@ -40871,43 +40901,6 @@ GraphView.prototype.updatePanAndZoom = function(updateNodes)
 
         menuItemZoomTo100.setChecked(equal(this.zoom, 1, 0.0001));
     });
-};
-
-
-
-GraphView.prototype.update = function(nodes = null, updateNodes = true)
-{
-    if (!nodes)
-        nodes = this.graph.nodes;
-        
-    
-    documentBodyClient = clientRect(document.body);
-
-
-    this.updateNodeTransforms(nodes, false);
-    this.updateNodeTransforms(nodes); // this has to be done twice //because getAllNodeBounds() forces a reflow
-
-    nodes.forEach(n => n.updateMeasureData());
-
-    if (updateNodes)
-    {
-        nodes.forEach(n =>
-        {
-            n.updateHeader(); 
-            n.updateHeaderLabel();
-            n.updateBorder();
-            n.updateDisabled();
-        });
-    }
-
-
-    const x = this.measureData.clientRect.left;
-    const w = this.measureData.clientRect.width;
-    const h = this.measureData.clientRect.height;
-    
-    const bounds = this.getAllNodeBounds();
-
-    this.updateScroll(x, w, h, bounds, menuBarHeight);
 };
 
 
@@ -46782,12 +46775,14 @@ Operator.prototype.updateDisabled = function()
     if (!this.measureData)
         return;
 
+    const height = Math.min(this.measureData.divOffset.width, this.measureData.divOffset.height) + 70;
+
     this.divDisabled.style.display   = this.enabled ? 'none' : 'inline-block';
     this.divDisabled.style.zIndex    = 1000;
+    this.divDisabled.style.height    = height;
     this.divDisabled.style.transform = 'rotate(45deg)';
-    this.divDisabled.style.height    = Math.min(this.measureData.divOffset.width, this.measureData.divOffset.height) + 70;
     this.divDisabled.style.left      = (this.measureData.divOffset.width  - this.measureData.disabledOffset.width ) / 2;
-    this.divDisabled.style.top       = (this.measureData.divOffset.height - this.measureData.disabledOffset.height) / 2;
+    this.divDisabled.style.top       = (this.measureData.divOffset.height - height) / 2;
 }
 
 
@@ -46803,10 +46798,10 @@ Operator.prototype.updateSubscribe = function()
 
 
 
-Operator.prototype.updateSubscribeStatus = function(subbed)
+Operator.prototype.updateSubscribeStatus = function(subscribed)
 {
     const sub = 
-            subbed
+            subscribed
         || !this.subscription;
 
 
@@ -61518,8 +61513,15 @@ function uiUpdateValuesAndObjects(requestId, actionId, updateNodeId, updateParam
     }
 
 
-    graphView.update(nodes);
+    graphView.updateNodes(nodes);
     graphView.updateScrollWithBounds();
+
+
+    // for (const node of nodes)
+    // {
+    //     node.updateMeasureData();
+    //     node.updateNode();
+    // }
 
 
     if (graphView.loadingNodes)

@@ -26,8 +26,9 @@ GraphView.prototype.setPanAndZoom = function(pan, zoom)
 
 GraphView.prototype.updatePanAndZoom = function(updateNodes)
 {
-    this.update(this.graph.nodes, updateNodes);
+    this.updateNodes(this.graph.nodes, updateNodes);
 
+    
     setTimeout(() =>
     {
         updateZoomTooltip();
@@ -64,43 +65,6 @@ GraphView.prototype.updatePanAndZoom = function(updateNodes)
 
         menuItemZoomTo100.setChecked(equal(this.zoom, 1, 0.0001));
     });
-};
-
-
-
-GraphView.prototype.update = function(nodes = null, updateNodes = true)
-{
-    if (!nodes)
-        nodes = this.graph.nodes;
-        
-    
-    documentBodyClient = clientRect(document.body);
-
-
-    this.updateNodeTransforms(nodes, false);
-    this.updateNodeTransforms(nodes); // this has to be done twice //because getAllNodeBounds() forces a reflow
-
-    nodes.forEach(n => n.updateMeasureData());
-
-    if (updateNodes)
-    {
-        nodes.forEach(n =>
-        {
-            n.updateHeader(); 
-            n.updateHeaderLabel();
-            n.updateBorder();
-            n.updateDisabled();
-        });
-    }
-
-
-    const x = this.measureData.clientRect.left;
-    const w = this.measureData.clientRect.width;
-    const h = this.measureData.clientRect.height;
-    
-    const bounds = this.getAllNodeBounds();
-
-    this.updateScroll(x, w, h, bounds, menuBarHeight);
 };
 
 

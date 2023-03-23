@@ -140,7 +140,7 @@ GraphView.prototype.createEvents = function()
                     this.pan.y += wndRect.m - selection.m;
 
 
-                    this.update();
+                    this.updateNodes();
                 }
                 else
                 this.endZoomSelection(e.pointerId, false);

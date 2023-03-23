@@ -1,3 +1,40 @@
+GraphView.prototype.updateNodes = function(nodes = null, updateNodes = true)
+{
+    if (!nodes)
+        nodes = this.graph.nodes;
+        
+    
+    documentBodyClient = clientRect(document.body);
+
+
+    this.updateNodeTransforms(nodes, false);
+    this.updateNodeTransforms(nodes); // this has to be done twice //because getAllNodeBounds() forces a reflow
+
+    nodes.forEach(n => n.updateMeasureData());
+
+    if (updateNodes)
+    {
+        nodes.forEach(n =>
+        {
+            n.updateHeader(); 
+            n.updateHeaderLabel();
+            n.updateBorder();
+            n.updateDisabled();
+        });
+    }
+
+
+    const x = this.measureData.clientRect.left;
+    const w = this.measureData.clientRect.width;
+    const h = this.measureData.clientRect.height;
+    
+    const bounds = this.getAllNodeBounds();
+
+    this.updateScroll(x, w, h, bounds, menuBarHeight);
+};
+
+
+
 GraphView.prototype.setNodePositions = function(nodes, dx, dy, updateTransform = true)
 {
     //console.log('GraphView.setNodePositions()');
