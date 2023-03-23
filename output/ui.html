@@ -38209,7 +38209,7 @@ function initGeneratorMenus()
         
     menuColor = new Menu('Colors', true, true);
     menuColor.addItems([
-        menuItemColor        = new MenuItem('Color',             {icon: iconColor,            callback: e => actionManager.do(getCreateNodeAction(COLOR,             btnColor.div, getCreateOptions(e,  {random: e.altKey, autoConnect: !e.altKey})))}),
+        menuItemColor        = new MenuItem('Color',             {icon: iconColor,            callback: e => actionManager.do(getCreateNodeAction(COLOR,             btnColor.div, getCreateOptions(e,  {random: e.altKey && !getCtrlKey(e)})))}),
                                new MenuItem('',                  {separator: true}),
                                new MenuItem('Valid sRGB',        {icon: iconValidColor,       callback: e => actionManager.do(getCreateNodeAction(VALID_COLOR,       btnColor.div, getCreateOptions(e)))}),
         menuItemCorrectColor = new MenuItem('Correct color',     {icon: iconCorrectColor,     callback: e => actionManager.do(getCreateNodeAction(CORRECT_COLOR,     btnColor.div, getCreateOptions(e)))}),
@@ -54969,8 +54969,8 @@ class Action
     graph;
     
 
-    prevAction; // these are used to link actions into sequences
-    nextAction; 
+    prevAction = null; // these are used to link actions into sequences
+    nextAction = null; 
   
     data;
   
@@ -55845,7 +55845,7 @@ extends Action
             graph,
             CREATE_ACTION, 
             'CREATE \'' + nodeType + '\'');
-     
+
         this.nodeType       = nodeType;
         this.creatingButton = creatingButton;
 
@@ -57500,8 +57500,6 @@ extends Action
     {
         this.oldValue = this.param.oldValue;
         pushUpdateFromParam(this, [this.param.node], this.param);
-        
-        //uiSaveNodes(this.graph, [this.nodeId]);
     }
 
 
@@ -57510,8 +57508,6 @@ extends Action
     {
         this.param.setValue(this.oldValue, false, true);
         pushUpdateFromParam(this, [this.param.node], this.param);
-
-        //uiSaveNodes(this.graph, [this.nodeId]);
     }
 
 
@@ -57520,8 +57516,6 @@ extends Action
     {
         this.param.setValue(this.newValue);
         pushUpdateFromParam(this, [this.param.node], this.param);
-
-        //uiSaveNodes(this.graph, [this.nodeId]);
     }
 }
 

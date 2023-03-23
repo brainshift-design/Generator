@@ -10,8 +10,8 @@ class Action
     graph;
     
 
-    prevAction; // these are used to link actions into sequences
-    nextAction; 
+    prevAction = null; // these are used to link actions into sequences
+    nextAction = null; 
   
     data;
   

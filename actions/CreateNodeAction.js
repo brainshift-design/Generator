@@ -28,7 +28,7 @@ extends Action
             graph,
             CREATE_ACTION, 
             'CREATE \'' + nodeType + '\'');
-     
+
         this.nodeType       = nodeType;
         this.creatingButton = creatingButton;
 
