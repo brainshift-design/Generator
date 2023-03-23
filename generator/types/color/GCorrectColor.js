@@ -50,6 +50,8 @@ extends GColorType
         const margin2 = this.margin2 ? this.margin2.eval(parse).toValue()             : null;
         const margin3 = this.margin3 ? this.margin3.eval(parse).toValue()             : null;
 
+        order.value = Math.min(Math.max(0, order.value), 5);
+
 
         if (this.input)
         {
@@ -64,11 +66,11 @@ extends GColorType
                     && isValid(this.margin3) && this.margin3.isValid()
                     && isValid(this.value  ) && this.value  .isValid())
                 {
-                    genPushUpdateValue(parse, this.nodeId, 'order'  , this.order     );
-                    genPushUpdateValue(parse, this.nodeId, 'margin1', this.margin1   );
-                    genPushUpdateValue(parse, this.nodeId, 'margin2', this.margin2   );
-                    genPushUpdateValue(parse, this.nodeId, 'margin3', this.margin3   );
-                    genPushUpdateValue(parse, this.nodeId, 'value'  , this.value);
+                    genPushUpdateValue(parse, this.nodeId, 'order'  , this.order  );
+                    genPushUpdateValue(parse, this.nodeId, 'margin1', this.margin1);
+                    genPushUpdateValue(parse, this.nodeId, 'margin2', this.margin2);
+                    genPushUpdateValue(parse, this.nodeId, 'margin3', this.margin3);
+                    genPushUpdateValue(parse, this.nodeId, 'value'  , this.value  );
                 }
                 else
                 {
@@ -86,7 +88,7 @@ extends GColorType
 
 
                     const
-                [ closestOrder,
+                  [ closestOrder,
                     closest1,
                     closest2,
                     closest3 ] = findCorrection(
