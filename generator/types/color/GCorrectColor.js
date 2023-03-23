@@ -115,7 +115,12 @@ extends GColorType
                                 closest2,
                                 closest3);
 
-                            this.value = ColorValue.fromDataColor(this._color);
+                                
+                            this.order   = new NumberValue(closestOrder);
+                            this.margin1 = new NumberValue(closest1);
+                            this.margin2 = new NumberValue(closest2);
+                            this.margin3 = new NumberValue(closest3);
+                            this.value   = ColorValue.fromDataColor(this._color);
 
                             genPushUpdateValue(parse, this.nodeId, 'order',   new NumberValue(closestOrder));
                             genPushUpdateValue(parse, this.nodeId, 'margin1', new NumberValue(closest1    ));
@@ -125,7 +130,11 @@ extends GColorType
                         }
                         else
                         {
-                            this.value = ColorValue.NaN;
+                            this.order   = NumberValue.NaN;
+                            this.margin1 = NumberValue.NaN;
+                            this.margin2 = NumberValue.NaN;
+                            this.margin3 = NumberValue.NaN;
+                            this.value   = ColorValue .NaN;
 
                             genPushUpdateValue(parse, this.nodeId, 'order',   NumberValue.NaN);
                             genPushUpdateValue(parse, this.nodeId, 'margin1', NumberValue.NaN);
@@ -138,7 +147,11 @@ extends GColorType
             }
             else
             {
-                this.value = input;
+                this.order   = NumberValue.NaN;
+                this.margin1 = NumberValue.NaN;
+                this.margin2 = NumberValue.NaN;
+                this.margin3 = NumberValue.NaN;
+                this.value   = input;
 
                 genPushUpdateValue(parse, this.nodeId, 'order'  , this.order  );
                 genPushUpdateValue(parse, this.nodeId, 'margin1', this.margin1);
@@ -149,7 +162,11 @@ extends GColorType
         }
         else
         {
-            this.value = ColorValue.NaN;
+            this.order   = NumberValue.NaN;
+            this.margin1 = NumberValue.NaN;
+            this.margin2 = NumberValue.NaN;
+            this.margin3 = NumberValue.NaN;
+            this.value   = ColorValue .NaN;
 
             genPushUpdateValue(parse, this.nodeId, 'order',   NumberValue.NaN);
             genPushUpdateValue(parse, this.nodeId, 'margin1', NumberValue.NaN);
