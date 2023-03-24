@@ -208,6 +208,14 @@ ColorControl.prototype.initTextbox = function()
     
 
 
+    this.textbox.addEventListener('wheel', e =>
+    {
+        e.stopPropagation();
+        forwardEvent(e, this.div);
+    });
+
+
+
     this.textbox.finish = (success, focusControl = true) =>
     {
         let   value      = this.textbox.value;

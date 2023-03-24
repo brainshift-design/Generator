@@ -339,7 +339,7 @@ extends EventTarget
 
             if (   fireChangeEvent
                 && this.enableChangeEvent
-                && value != this.prevValue)
+                && value != oldValue)//this.prevValue)
                 this.dispatchEvent(this.onchange);
         }
 

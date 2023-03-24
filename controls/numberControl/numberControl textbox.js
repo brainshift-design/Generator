@@ -261,6 +261,7 @@ NumberControl.prototype.initTextbox = function()
 
 
 
+    
     this.textbox.addEventListener('focusout', () =>
     {
         if (!this.textbox.keyBlur) this.textbox.finish(this.textbox.value.trim() != '');
@@ -276,6 +277,14 @@ NumberControl.prototype.initTextbox = function()
 
         this.div.parentNode.removeChild(this.textbox);
         this.clicked = false;
+    });
+    
+
+
+    this.textbox.addEventListener('wheel', e =>
+    {
+        e.stopPropagation();
+        forwardEvent(e, this.div);
     });
     
 

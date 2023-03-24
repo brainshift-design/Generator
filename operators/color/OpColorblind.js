@@ -132,7 +132,7 @@ extends OpColorBase
         else
         {
             const lDisplay     = valL >= 1 ? 'block' : 'none';
-            const lBorderStyle = valL == 2 ? 'solid' : 'dotted';
+            const lBorderStyle = valL == 2 ? 'solid' : 'dashed';
 
             this.ringL.style.width        = '16px';
             this.ringL.style.height       = '16px';
@@ -143,7 +143,7 @@ extends OpColorBase
 
 
             const mDisplay     = valM >= 1 ? 'block' : 'none';
-            const mBorderStyle = valM == 2 ? 'solid' : 'dotted';
+            const mBorderStyle = valM == 2 ? 'solid' : 'dashed';
 
             this.ringM.style.width        = '8px';
             this.ringM.style.height       = '8px';
