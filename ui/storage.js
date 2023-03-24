@@ -492,6 +492,8 @@ function parseConnectionsAndConnect(graph, data, pasteConnected, setProgress = n
     });
 
 
+    const connections = [];
+    
     for (let i = 0; i < data.connections.length; i++)
     {
         const _conn = data.connections[i];
@@ -499,11 +501,17 @@ function parseConnectionsAndConnect(graph, data, pasteConnected, setProgress = n
         if (      data.nodes.find(n => (n.newId ?? n.id) == _conn.outputNodeId)
                && data.nodes.find(n => (n.newId ?? n.id) == _conn. inputNodeId)
             || pasteConnected)
+        {
             parseConnectionJsonAndConnect(graph, _conn, pasteConnected);
+            connections.push(_conn);
+        }
 
         if (setProgress)
             setProgress(((data.nodes.length + i) / (data.nodes.length + data.connections.length)));
     }
+
+
+    return connections;
 }
 
 

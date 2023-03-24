@@ -3205,7 +3205,8 @@ a
             <div id='whatsNewBody'>
                 <h1 style='margin-top: 20px;'>What's new in Generator</h1>
 
-                <p>Fixed UI issues.</p>
+                <p>Fixed paste undo bug for nodes with variable inputs.</p>
+                <p>Fixed other UI issues.</p>
 
                 <p><br/><br/><div id='chkHideWhatsNew'></div></p>
             </div>
@@ -60504,6 +60505,8 @@ function parseConnectionsAndConnect(graph, data, pasteConnected, setProgress = n
     });
 
 
+    const connections = [];
+    
     for (let i = 0; i < data.connections.length; i++)
     {
         const _conn = data.connections[i];
@@ -60511,11 +60514,17 @@ function parseConnectionsAndConnect(graph, data, pasteConnected, setProgress = n
         if (      data.nodes.find(n => (n.newId ?? n.id) == _conn.outputNodeId)
                && data.nodes.find(n => (n.newId ?? n.id) == _conn. inputNodeId)
             || pasteConnected)
+        {
             parseConnectionJsonAndConnect(graph, _conn, pasteConnected);
+            connections.push(_conn);
+        }
 
         if (setProgress)
             setProgress(((data.nodes.length + i) / (data.nodes.length + data.connections.length)));
     }
+
+
+    return connections;
 }
 
 
@@ -61457,7 +61466,7 @@ function uiPasteNodes(graph, nodesJson, pasteConnected, x, y, updateNodes)
     if (data.connections)
     {
         correctNodeNamesInConnections(data);
-        parseConnectionsAndConnect(graph, data, pasteConnected);
+        data.connections = parseConnectionsAndConnect(graph, data, pasteConnected);
     }
     else
         data.connections = []; // return an empty array if no data was loaded

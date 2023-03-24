@@ -680,7 +680,7 @@ function uiPasteNodes(graph, nodesJson, pasteConnected, x, y, updateNodes)
     if (data.connections)
     {
         correctNodeNamesInConnections(data);
-        parseConnectionsAndConnect(graph, data, pasteConnected);
+        data.connections = parseConnectionsAndConnect(graph, data, pasteConnected);
     }
     else
         data.connections = []; // return an empty array if no data was loaded
