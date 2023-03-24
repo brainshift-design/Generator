@@ -137,12 +137,18 @@ document.addEventListener('keydown', e =>
         uiNotify('Zoom to 100%');
     }
 
-    else if ((   e.code == 'Digit1'   // will not insist on shift working here
-              || e.code == 'Numpad1') // by using e.getModifierState('NumLock')
-          && e.shiftKey)              // because Figma doesn't
+    else if (e.code == 'Digit1'
+          && e.shiftKey)
     {
         graphView.zoomToFit();
         uiNotify('Zoom to fit');
+    }
+
+    else if (e.code == 'Digit2'
+          && e.shiftKey)         
+    {
+        graphView.zoomToSelection();
+        uiNotify('Zoom to selection');
     }
 
     else if (e.code == 'Space'

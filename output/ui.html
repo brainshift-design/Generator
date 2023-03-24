@@ -3205,8 +3205,6 @@ a
             <div id='whatsNewBody'>
                 <h1 style='margin-top: 20px;'>What's new in Generator</h1>
 
-                <p>Only nodes that modify a value can now be disabled.</p>
-                <p>Fixed color corrector bugs.</p>
                 <p>Fixed UI issues.</p>
 
                 <p><br/><br/><div id='chkHideWhatsNew'></div></p>
@@ -3409,7 +3407,7 @@ a
 
 
 
-const generatorVersion = 122;
+const generatorVersion = 124;
 
 
 const MAX_INT32        = 2147483647;
@@ -11064,7 +11062,7 @@ extends GNumberType
         if (this.isCached())
             return this;
 
-            console.log('this.input =', this.input);
+
         if (this.input)
             this.value = this.input.eval(parse).toValue();
         else if (this.value)
@@ -12234,12 +12232,9 @@ extends GColorType
             }
 
 
-            if (this.options.enabled)
-            {
-                this.c1 = this.value.c1.copy();
-                this.c2 = this.value.c2.copy();
-                this.c3 = this.value.c3.copy();
-            }
+            this.c1 = this.value.c1.copy();
+            this.c2 = this.value.c2.copy();
+            this.c3 = this.value.c3.copy();
         }
 
 
@@ -12385,7 +12380,7 @@ extends GColorType
                         rgb[0] = Math.round(Math.min(Math.max(0, rgb[0]), 1) * 0xff);   
                         rgb[1] = Math.round(Math.min(Math.max(0, rgb[1]), 1) * 0xff);   
                         rgb[2] = Math.round(Math.min(Math.max(0, rgb[2]), 1) * 0xff); 
-                        
+
                         this.value = ColorValue.fromRgb(rgb);
                     }
                     else // find corrections
@@ -12404,7 +12399,7 @@ extends GColorType
 
 
                         const
-                    [ closestOrder,
+                      [ closestOrder,
                         closest1,
                         closest2,
                         closest3 ] = findCorrection(
@@ -12435,16 +12430,14 @@ extends GColorType
                         //}
                     }
                 }
-                else
-                {
-                    this.value = ColorValue.NaN;
-                }
             }
             else
                 this.value = input;
         }
+        else
+            this.value = ColorValue.NaN;
 
-
+            
         genPushUpdateValue(parse, this.nodeId, 'quality', quality);
         genPushUpdateValue(parse, this.nodeId, 'value',   this.value);
 
@@ -20432,7 +20425,7 @@ onerror = (event, source, line, pos, error) =>
 
 
 
-const generatorVersion = 122;
+const generatorVersion = 124;
 
 
 const MAX_INT32        = 2147483647;
@@ -30377,7 +30370,7 @@ extends GNumberType
         if (this.isCached())
             return this;
 
-            console.log('this.input =', this.input);
+
         if (this.input)
             this.value = this.input.eval(parse).toValue();
         else if (this.value)
@@ -31547,12 +31540,9 @@ extends GColorType
             }
 
 
-            if (this.options.enabled)
-            {
-                this.c1 = this.value.c1.copy();
-                this.c2 = this.value.c2.copy();
-                this.c3 = this.value.c3.copy();
-            }
+            this.c1 = this.value.c1.copy();
+            this.c2 = this.value.c2.copy();
+            this.c3 = this.value.c3.copy();
         }
 
 
@@ -31698,7 +31688,7 @@ extends GColorType
                         rgb[0] = Math.round(Math.min(Math.max(0, rgb[0]), 1) * 0xff);   
                         rgb[1] = Math.round(Math.min(Math.max(0, rgb[1]), 1) * 0xff);   
                         rgb[2] = Math.round(Math.min(Math.max(0, rgb[2]), 1) * 0xff); 
-                        
+
                         this.value = ColorValue.fromRgb(rgb);
                     }
                     else // find corrections
@@ -31717,7 +31707,7 @@ extends GColorType
 
 
                         const
-                    [ closestOrder,
+                      [ closestOrder,
                         closest1,
                         closest2,
                         closest3 ] = findCorrection(
@@ -31748,16 +31738,14 @@ extends GColorType
                         //}
                     }
                 }
-                else
-                {
-                    this.value = ColorValue.NaN;
-                }
             }
             else
                 this.value = input;
         }
+        else
+            this.value = ColorValue.NaN;
 
-
+            
         genPushUpdateValue(parse, this.nodeId, 'quality', quality);
         genPushUpdateValue(parse, this.nodeId, 'value',   this.value);
 
@@ -35033,6 +35021,7 @@ NumberControl.prototype.initTextbox = function()
 
 
 
+    
     this.textbox.addEventListener('focusout', () =>
     {
         if (!this.textbox.keyBlur) this.textbox.finish(this.textbox.value.trim() != '');
@@ -35048,6 +35037,14 @@ NumberControl.prototype.initTextbox = function()
 
         this.div.parentNode.removeChild(this.textbox);
         this.clicked = false;
+    });
+    
+
+
+    this.textbox.addEventListener('wheel', e =>
+    {
+        e.stopPropagation();
+        forwardEvent(e, this.div);
     });
     
 
@@ -36436,6 +36433,14 @@ ColorControl.prototype.initTextbox = function()
         this.clicked = false;
     });
     
+
+
+    this.textbox.addEventListener('wheel', e =>
+    {
+        e.stopPropagation();
+        forwardEvent(e, this.div);
+    });
+
 
 
     this.textbox.finish = (success, focusControl = true) =>
@@ -41129,21 +41134,32 @@ GraphView.prototype.endZoomSelection = function(pointerId, zoom)
 
 GraphView.prototype.zoomToFit = function()
 {
-    if (!isEmpty(this.graph.nodes))
+    if (!isEmpty(this.graph.nodes)) 
+        this.zoomToNodes(this.graph.nodes);
+    else
+        this.setPanAndZoom(point(0, 0), 1);
+};
+
+
+
+GraphView.prototype.zoomToSelection = function()
+{
+    if (!isEmpty(this.selectedNodes)) 
+        this.zoomToNodes(this.selectedNodes);
+};
+
+
+
+GraphView.prototype.zoomToNodes = function(nodes)
+{
+    if (!isEmpty(nodes))
     {
-        const nodes = 
-            !isEmpty(this.selectedNodes)
-            ? this.selectedNodes
-            : this.graph.nodes;
-        
         nodes.forEach(n => n.updateMeasureData());
         const offset = this.getAllNodeOffsets(nodes);
 
         for (let i = 0; i < 5; i++) // need to do it a few times
             this.zoomToRect(offset);
     }
-    else
-        this.setPanAndZoom(point(0, 0), 1);
 };
 
 
@@ -59023,12 +59039,18 @@ document.addEventListener('keydown', e =>
         uiNotify('Zoom to 100%');
     }
 
-    else if ((   e.code == 'Digit1'   // will not insist on shift working here
-              || e.code == 'Numpad1') // by using e.getModifierState('NumLock')
-          && e.shiftKey)              // because Figma doesn't
+    else if (e.code == 'Digit1'
+          && e.shiftKey)
     {
         graphView.zoomToFit();
         uiNotify('Zoom to fit');
+    }
+
+    else if (e.code == 'Digit2'
+          && e.shiftKey)         
+    {
+        graphView.zoomToSelection();
+        uiNotify('Zoom to selection');
     }
 
     else if (e.code == 'Space'

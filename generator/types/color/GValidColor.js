@@ -77,7 +77,7 @@ extends GColorType
                         rgb[0] = Math.round(Math.min(Math.max(0, rgb[0]), 1) * 0xff);   
                         rgb[1] = Math.round(Math.min(Math.max(0, rgb[1]), 1) * 0xff);   
                         rgb[2] = Math.round(Math.min(Math.max(0, rgb[2]), 1) * 0xff); 
-                        
+
                         this.value = ColorValue.fromRgb(rgb);
                     }
                     else // find corrections
@@ -96,7 +96,7 @@ extends GColorType
 
 
                         const
-                    [ closestOrder,
+                      [ closestOrder,
                         closest1,
                         closest2,
                         closest3 ] = findCorrection(
@@ -127,16 +127,14 @@ extends GColorType
                         //}
                     }
                 }
-                else
-                {
-                    this.value = ColorValue.NaN;
-                }
             }
             else
                 this.value = input;
         }
+        else
+            this.value = ColorValue.NaN;
 
-
+            
         genPushUpdateValue(parse, this.nodeId, 'quality', quality);
         genPushUpdateValue(parse, this.nodeId, 'value',   this.value);
 

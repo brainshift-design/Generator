@@ -135,12 +135,9 @@ extends GColorType
             }
 
 
-            if (this.options.enabled)
-            {
-                this.c1 = this.value.c1.copy();
-                this.c2 = this.value.c2.copy();
-                this.c3 = this.value.c3.copy();
-            }
+            this.c1 = this.value.c1.copy();
+            this.c2 = this.value.c2.copy();
+            this.c3 = this.value.c3.copy();
         }
 
 

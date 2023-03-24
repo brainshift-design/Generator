@@ -172,21 +172,32 @@ GraphView.prototype.endZoomSelection = function(pointerId, zoom)
 
 GraphView.prototype.zoomToFit = function()
 {
-    if (!isEmpty(this.graph.nodes))
+    if (!isEmpty(this.graph.nodes)) 
+        this.zoomToNodes(this.graph.nodes);
+    else
+        this.setPanAndZoom(point(0, 0), 1);
+};
+
+
+
+GraphView.prototype.zoomToSelection = function()
+{
+    if (!isEmpty(this.selectedNodes)) 
+        this.zoomToNodes(this.selectedNodes);
+};
+
+
+
+GraphView.prototype.zoomToNodes = function(nodes)
+{
+    if (!isEmpty(nodes))
     {
-        const nodes = 
-            !isEmpty(this.selectedNodes)
-            ? this.selectedNodes
-            : this.graph.nodes;
-        
         nodes.forEach(n => n.updateMeasureData());
         const offset = this.getAllNodeOffsets(nodes);
 
         for (let i = 0; i < 5; i++) // need to do it a few times
             this.zoomToRect(offset);
     }
-    else
-        this.setPanAndZoom(point(0, 0), 1);
 };
 
 

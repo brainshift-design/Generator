@@ -1,0 +1,3 @@
+Subscription features:
+
+    Node groups
