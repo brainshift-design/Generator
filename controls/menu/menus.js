@@ -16,6 +16,8 @@ var menuMainPreferences;
 var menuMainDebug;
 var menuMainHelp;
 
+var menuShowTooltips;
+
 var menuDebugLog;
 
 var menuFlow;
@@ -54,12 +56,18 @@ var menuConnData;
 var menuConnDataConns;
 
 
+var menuItemShowTooltipColorContrast;
+var menuItemShowTooltipColorInterpolation;
+var menuItemShowTooltipColorBlindness;
+
+
 var menuItemEnableZoomedOutParams;
 var menuItemMinZoomForParams;
 var menuItemShowAllColorSpaces;
 var menuItemShowBoolValues;
 var menuItemShowOperationResults;
 var menuItemShowClearUndoWarning;
+var menuItemShowTooltips;
 var menuItemShowDebugMenu;
 
 var menuItemShowNodeId;
@@ -153,6 +161,13 @@ var menuItemCustomOutputs;
 
 function initGeneratorMenus()
 {
+    menuShowTooltips = new Menu('Show tooltips', false);
+    menuShowTooltips.addItems([
+        menuItemShowTooltipColorContrast      = new MenuItem('Color contrast',      {checkCallback: () => settings.showTooltipColorContrast,      callback: () => { updateSettingAndMenu('showTooltipColorContrast',      true, !settings.showTooltipColorContrast);      }}),
+        menuItemShowTooltipColorInterpolation = new MenuItem('Color interpolation', {checkCallback: () => settings.showTooltipColorInterpolation, callback: () => { updateSettingAndMenu('showTooltipColorInterpolation', true, !settings.showTooltipColorInterpolation); }}),
+        menuItemShowTooltipColorBlindness     = new MenuItem('Color blindness',     {checkCallback: () => settings.showTooltipColorBlindness,     callback: () => { updateSettingAndMenu('showTooltipColorBlindness',     true, !settings.showTooltipColorBlindness);     }})]);
+
+
     menuMainPreferences = new Menu('Preferences', false);
     menuMainPreferences.addItems([
         menuItemShowAllColorSpaces    = new MenuItem('Show all color spaces',         {checkCallback: () => settings.showAllColorSpaces,    callback: () => { updateSettingAndMenu('showAllColorSpaces',    true, !settings.showAllColorSpaces);    updateMenuItemShowAllColorSpaces();   }}),
@@ -160,6 +175,7 @@ function initGeneratorMenus()
         menuItemShowOperationResults  = new MenuItem('Show operation results',        {checkCallback: () => settings.showOperationResults,  callback: () => { updateSettingAndMenu('showOperationResults',  true, !settings.showOperationResults);  updateMenuItemShowOperationResults(); }}),
         menuItemShowBoolValues        = new MenuItem('Show boolean values as  ✓ ✗',  {checkCallback: () => settings.showBoolValues,        callback: () => { updateSettingAndMenu('showBoolValues',        true, !settings.showBoolValues);        updateMenuItemShowBoolValues();       }}),
         menuItemShowClearUndoWarning  = new MenuItem('Show clear undo warning',       {checkCallback: () => settings.showClearUndoWarning,  callback: () => { updateSettingAndMenu('showClearUndoWarning',  true, !settings.showClearUndoWarning);                                        }}),
+        menuItemShowTooltips          = new MenuItem('Show tooltips',                 {childMenu: menuShowTooltips}),
                                         new MenuItem('',                              {separator: true}),    
         menuItemMinZoomForParams      = new MenuItem('Min. zoom to adjust values...', {callback: () => showMinZoomDialog()}),
                                         new MenuItem('',                              {separator: true}),    
@@ -217,7 +233,7 @@ function initGeneratorMenus()
 
     menuMainHelp = new Menu('Help and subscription', false);
     menuMainHelp.addItems([
-        new MenuItem('Help page',    {callback:  () => window.open('http://www.bourt.com/generator/help', '_blank')}),
+        // new MenuItem('Help page',    {callback:  () => window.open('http://www.bourt.com/generator/help', '_blank')}),
       //new MenuItem('',             {separator: true}),
         new MenuItem('Subscription', {callback:  () => showProductKeyDialog()}),
       //new MenuItem('',             {separator: true}),

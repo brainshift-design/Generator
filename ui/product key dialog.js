@@ -17,6 +17,9 @@ function onValidateClick(key)
 
         productKeyInput.focus();
         productKeyInput.select();
+
+        licenseWatermark.style.display = 'none';
+        licenseInfo.innerHTML = '';
     }
     else
     {
@@ -224,10 +227,15 @@ function updateLicenseInfo(license)
         const date    = new Date(Date.parse(strPrep));
         const strDate = date.toLocaleString('en-UK', {dateStyle: 'medium'});
 
-        licenseInfo.innerHTML = '<span style="user-select: none; color: var(--figma-color-bg-disabled-secondary);">Valid until:&nbsp;&thinsp;</span><span style="font-weight: 600">' + strDate.replaceAll('/', '&hairsp;/&hairsp;') + '</span>';
+        licenseWatermark    .style.display = 'block';
+        licenseWatermarkPath.style.fill    = darkMode ? '#ffffff19' : '#00000014';
+
+        licenseInfo.innerHTML = '<span style="user-select: none; color: ' + (darkMode ? '#fffa' : '#000c') + ';">Valid until:&nbsp;&thinsp;</span><span style="font-weight: 700">' + strDate.replaceAll('/', '&hairsp;/&hairsp;') + '</span>';
+
     }
     else
     {
+        licenseWatermark.style.display = 'none';
         licenseInfo.innerHTML = '';
     }
 }

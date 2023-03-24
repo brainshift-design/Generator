@@ -54,7 +54,11 @@ extends OpColorBase
         createTooltip(ttWcag3);
         
         this.paramStandard.getTooltip = () => null;
-        this.paramContrast.getTooltip = () => this.paramStandard.value.value == 1 ? ttWcag3 : ttWcag2;
+
+        this.paramContrast.getTooltip = () => 
+            settings.showTooltipColorContrast ? 
+            (this.paramStandard.value.value == 1 ? ttWcag3 : ttWcag2) 
+            : null;
 
 
         this.header.connectionPadding = 12.5;
@@ -273,8 +277,6 @@ extends OpColorBase
                     new NumberControlRange(60/105,  75/105, rgb2style_a(rgb3dark5, is5 ? 1 : 0.2), 0.8),
                     new NumberControlRange(75/105,  90/105, rgb2style_a(rgb3dark6, is6 ? 1 : 0.4), 0.8),
                     new NumberControlRange(90/105, 105/105, rgb2style_a(rgb3dark7, is7 ? 1 : 0  ), 0.8) ];
-
-                console.log('this.paramContrast.controls[0].ranges =', this.paramContrast.controls[0].ranges);
             }
             else
             {

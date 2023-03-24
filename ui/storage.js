@@ -49,6 +49,10 @@ function uiReturnFigGetLocalData(msg)
 
         case 'showNodeId':       
 
+        case 'showTooltipColorInterpolation':
+        case 'showTooltipColorBlindness':
+        case 'showTooltipColorContrast':
+
         case 'enableBetaFeatures':       
 
         case 'logMessages':      
@@ -105,7 +109,12 @@ function uiReturnFigGetLocalData(msg)
         onClassChange(document.childNodes[0], () =>
         { 
             initThemeColors();
-            
+
+            updateLicenseInfo(
+                productKey != NULL
+                ? validateLicense(currentUser.id, productKey)
+                : null);
+           
             if (!settings.dataMode)
                 graphView.graph.nodes.forEach(n => n.updateNode());
         });

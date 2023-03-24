@@ -1,23 +1,10 @@
 #ttColorblind
 {
     width:        208px; 
-    height:       300px;
+    height:       322px;
     padding-left: 20px;
 }
 
-
-#ttInterpolationSpace
-{
-    width:  219px;
-    height: 221px;
-}
-
-
-#ttWcag2
-{
-    width:  240px;
-    height: 115px;
-}
 
 #ttMinValueZoom
 {
@@ -25,11 +12,24 @@
 }
 
 
+#ttInterpolationSpace
+{
+    width:  219px;
+    height: 233px;
+}    
+
+
+#ttWcag2
+{
+    width:  240px;
+    height: 115px;
+}    
+
 .wcag2description
 {
     text-align:       left;
     position:         absolute;
-    top:              70px;
+    top:              56px;
     transform:        rotateZ(-45deg);
     transform-origin: bottom left;
 }
@@ -38,7 +38,7 @@
 .wcag2value
 {
     position:  absolute;
-    top:       109px;
+    top:       102px;
     transform: translateX(-50%);
 }
 
@@ -47,7 +47,7 @@
 {
     position:  absolute;
     left:      50%;
-    top:       130px;
+    top:       120px;
     transform: translateX(-50%);
 }
 
@@ -61,7 +61,7 @@
 #ttWcag3
 {
     width:  240px;
-    height: 115px;
+    height: 103px;
 }
 
 
@@ -69,7 +69,7 @@
 {
     text-align:       left;
     position:         absolute;
-    top:              62px;
+    top:              46px;
     transform:        rotateZ(-45deg);
     transform-origin: bottom left;
 }
@@ -78,7 +78,7 @@
 .wcag3value
 {
     position:  absolute;
-    top:       101px;
+    top:       90px;
     transform: translateX(-50%);
 }
 
@@ -87,7 +87,7 @@
 {
     position:  absolute;
     left:      50%;
-    top:       124px;
+    top:       100px;
     transform: translateX(-50%);
 }
 
