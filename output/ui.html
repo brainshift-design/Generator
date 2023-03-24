@@ -1501,11 +1501,11 @@ div
 }
 
 
-.dontShow
+.tooltipBottom
 {
     display:    block;
     width:      100%;
-    height:     24px;    
+    height:     25px;    
     position:   absolute;
     left:       0;
     bottom:     0;
@@ -1513,9 +1513,21 @@ div
 }
 
 
-#dontShowColorBlindness
+.ignoreButton
 {
+    border-left: 1px solid var(--figma-color-bg-hover);
+    position:    absolute;
+    right:       0px;
+    text-align:  center;
+    width:       60px;
+    height:      20px;
+    padding-top: 5px;
+}
 
+
+.ignoreButton:hover
+{
+    background: var(--figma-color-bg-hover);
 }
 
 
@@ -1536,14 +1548,14 @@ div
 #ttInterpolationSpace
 {
     width:  219px;
-    height: 233px;
+    height: 253px;
 }    
 
 
 #ttWcag2
 {
     width:  240px;
-    height: 115px;
+    height: 140px;
 }    
 
 .wcag2description
@@ -1582,7 +1594,7 @@ div
 #ttWcag3
 {
     width:  240px;
-    height: 103px;
+    height: 130px;
 }
 
 
@@ -3243,6 +3255,7 @@ a
                 <h1 style='margin-top: 20px;'>What's new in Generator</h1>
 
                 <p>Fixed paste undo bug for nodes with variable inputs.</p>
+                <p>Unwanted tooltips can now be ignored, which can be restored in Preferences/Show tooltips.</p>
                 <p>Fixed other UI issues.</p>
 
                 <p><br/><br/><div id='chkHideWhatsNew'></div></p>
@@ -3322,7 +3335,7 @@ a
         to simulate all types of color vision deficiency.
     </div>
 
-    <div class='dontShow' id='dontShowColorBlindness'></div>
+    <div class='tooltipBottom'><div class='ignoreButton' id='ignoreColorBlindness' onclick="updateSettingAndMenu('showTooltipColorBlindness', true, false); hideTooltip(ttColorblind);">Ignore</div></div>
 </div>
 
 
@@ -3359,6 +3372,7 @@ a
         <line x1="72.3693" y1="54.0053" x2="15.8716" y2="54.0053" stroke="white" stroke-dasharray="2 2"/>
     </svg>
 
+    <div class='tooltipBottom'><div class='ignoreButton' id='ignoreColorInterpolationlindness' onclick="updateSettingAndMenu('showTooltipColorInterpolation', true, false); hideTooltip(ttInterpolationSpace);">Ignore</div></div>
 </div>
 
 
@@ -3396,6 +3410,7 @@ a
     <div class='wcag2value' style='left:  90px;'> 7  </div>
     <div class='wcag2value' style='left: 239px;'>21  </div>
 
+    <div class='tooltipBottom'><div class='ignoreButton' id='ignoreColorContrast2' onclick="updateSettingAndMenu('showTooltipColorContrast', true, false); hideTooltip(ttWcag2);">Ignore</div></div>
     <!-- <div id='wcag2info'><a href='https://www.w3.org/TR/UNDERSTANDING-WCAG20/visual-audio-contrast7.html#visual-audio-contrast7-87-head' target='_blank'>More details</a></div> -->
 </div>
 
@@ -3436,6 +3451,7 @@ a
     <div class='wcag3value' style='left: 210px;'> 90</div>
     <div class='wcag3value' style='left: 239px;'>105</div>
 
+    <div class='tooltipBottom'><div class='ignoreButton' id='ignoreColorContrast3' onclick="updateSettingAndMenu('showTooltipColorContrast', true, false); hideTooltip(ttWcag3);">Ignore</div></div>
     <!-- <div id='wcag3info'><a href='https://www.myndex.com/APCA/#font-size-and-weight' target='_blank'>More details</a></div> -->
 </div>
 
