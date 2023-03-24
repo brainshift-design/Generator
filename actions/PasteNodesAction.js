@@ -80,7 +80,7 @@ extends Action
         this.pastedNodePos = nodes.map(n => point(n.div.offsetLeft, n.div.offsetTop));
 
 
-        this.notify(nodes, this.isDuplicate, this.pasteConnected);
+        this.notify(nodes, this.isDuplicate, this.pasteConnected && !isEmpty(_conns));
     }
 
 
