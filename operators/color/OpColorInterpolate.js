@@ -38,6 +38,7 @@ extends OpColorBase
 
         
         createTooltip(ttInterpolationSpace);
+        createTooltipPointerTrap(ttInterpolationSpace);
         
         this.paramSpace.getTooltip = () => 
             settings.showTooltipColorInterpolation 

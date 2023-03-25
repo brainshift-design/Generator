@@ -1509,13 +1509,13 @@ div
     position:   absolute;
     left:       0;
     bottom:     0;
-    box-shadow: 0 1px 0 0px inset var(--figma-color-bg-hover);
+    box-shadow: 0 1px 0 0px inset #ffffff1b;
 }
 
 
 .ignoreButton
 {
-    border-left: 1px solid var(--figma-color-bg-hover);
+    border-left: 1px solid #ffffff1b;
     position:    absolute;
     right:       0px;
     text-align:  center;
@@ -1527,7 +1527,7 @@ div
 
 .ignoreButton:hover
 {
-    background: var(--figma-color-bg-hover);
+    background: #ffffff1b;
 }
 
 
@@ -1547,8 +1547,8 @@ div
 
 #ttInterpolationSpace
 {
-    width:  219px;
-    height: 253px;
+    width:  193px;
+    height: 228px;
 }    
 
 
@@ -3344,24 +3344,24 @@ a
 
 <div id='ttInterpolationSpace' class='tooltip'>
 
-    <div style="margin-left: 20px;" id="ttInterpolationSpaces">
+    <div style="margin-left: 7px;" id="ttInterpolationSpaces">
     </div>
-    <div style="margin-left: 20px; margin-top: 14px;">
+    <div style="margin-left: 7px; margin-top: 7px;">
         Determines the interpolation path.
     </div>
-    <div style="margin-left: 20px; margin-top: 14px;">
+    <div style="margin-left: 7px; margin-top: 7px;">
         In RGB and linear spaces<br/>it's a straight line,<br/><br/>
         in spaces with a Hue it's an arc around the center.
     </div>
 
-    <div style="position: absolute; left:  57px; top: 146px;">Luv</div>
-    <div style="position: absolute; left:  57px; top: 166px;">Lab</div>
-    <div style="position: absolute; left:  55px; top: 196px;">RGB</div>
+    <div style="position: absolute; left:  44px; top: 126px;">Luv</div>
+    <div style="position: absolute; left:  44px; top: 146px;">Lab</div>
+    <div style="position: absolute; left:  42px; top: 176px;">RGB</div>
 
-    <div style="position: absolute; left: 160px; top: 153px;">HSV</div>
-    <div style="position: absolute; left: 160px; top: 173px;">HCL</div>
+    <div style="position: absolute; left: 147px; top: 133px;">HSV</div>
+    <div style="position: absolute; left: 147px; top: 153px;">HCL</div>
 
-    <svg width="192" height="88" viewBox="0 0 192 88" fill="none" xmlns="http://www.w3.org/2000/svg" style="margin-top: 18px; margin-left: 13px;">
+    <svg width="192" height="88" viewBox="0 0 192 88" fill="none" xmlns="http://www.w3.org/2000/svg" style="margin-top: 11px;">
         <circle cx="43.945" cy="43.6699" r="42.9129" transform="rotate(164.053 43.945 43.6699)" stroke="white"/>
         <circle cx="148.459" cy="43.6699" r="42.9129" transform="rotate(164.053 148.459 43.6699)" stroke="white"/>
         <path d="M177.161 53.8683C175.042 59.8328 171.117 64.9889 165.932 68.6199C160.747 72.2509 154.56 74.1764 148.23 74.1287C141.9 74.081 135.743 72.0626 130.613 68.3539C125.484 64.6453 121.637 59.4307 119.607 53.4349" stroke="white" stroke-width="0.8" stroke-dasharray="2 2"/>
@@ -38295,6 +38295,7 @@ function initGeneratorMenus()
                                         new MenuItem('',                              {separator: true}),    
         menuItemShowOperationResults  = new MenuItem('Show operation results',        {checkCallback: () => settings.showOperationResults,  callback: () => { updateSettingAndMenu('showOperationResults',  true, !settings.showOperationResults);  updateMenuItemShowOperationResults(); }}),
         menuItemShowBoolValues        = new MenuItem('Show boolean values as  ✓ ✗',  {checkCallback: () => settings.showBoolValues,        callback: () => { updateSettingAndMenu('showBoolValues',        true, !settings.showBoolValues);        updateMenuItemShowBoolValues();       }}),
+                                        new MenuItem('',                              {separator: true}),    
         menuItemShowClearUndoWarning  = new MenuItem('Show clear undo warning',       {checkCallback: () => settings.showClearUndoWarning,  callback: () => { updateSettingAndMenu('showClearUndoWarning',  true, !settings.showClearUndoWarning);                                        }}),
         menuItemShowTooltips          = new MenuItem('Show tooltips',                 {childMenu: menuShowTooltips}),
                                         new MenuItem('',                              {separator: true}),    
@@ -52011,6 +52012,9 @@ extends OpColorBase
         createTooltip(ttWcag2);
         createTooltip(ttWcag3);
         
+        createTooltipPointerTrap(ttWcag2);
+        createTooltipPointerTrap(ttWcag3);
+
         this.paramStandard.getTooltip = () => null;
 
         this.paramContrast.getTooltip = () => 
@@ -52309,6 +52313,8 @@ extends OpColorBase
             () => settings.showTooltipColorBlindness 
             ? ttColorblind 
             : null);
+
+        createTooltipPointerTrap(ttColorblind);
     }
 
 
@@ -52497,6 +52503,7 @@ extends OpColorBase
 
         
         createTooltip(ttInterpolationSpace);
+        createTooltipPointerTrap(ttInterpolationSpace);
         
         this.paramSpace.getTooltip = () => 
             settings.showTooltipColorInterpolation 
@@ -60713,12 +60720,18 @@ function createTooltipSrc(source, ref, getTooltip, bottomArrow = false)
         }
 
 
+        if (tooltipTimer) 
+            clearTimeout(tooltipTimer);
+
+
         if (!tooltipTimer)
         {
             tooltipTimer = setTimeout(() =>
             {
                 const tooltip = getTooltip();
-                if (tooltip) showTooltip(ref, tooltip, bottomArrow);
+
+                if (tooltip) 
+                    showTooltip(ref, tooltip, bottomArrow);
 
                 tooltipTimer = null;
             }, 
@@ -60729,31 +60742,32 @@ function createTooltipSrc(source, ref, getTooltip, bottomArrow = false)
     
     source.addEventListener('pointerleave', () =>
     {
-        if (tooltipTimer)
-        {
-            clearTimeout(tooltipTimer);
-            tooltipTimer = null;
-        }
+        tooltip_pointerLeave(getTooltip());
+    });
+}
 
 
-        // if (tooltipOutTimer) 
-        //     clearTimeout(tooltipOutTimer);
+
+function tooltip_pointerLeave(tooltip)
+{
+    if (tooltipTimer)
+    {
+        clearTimeout(tooltipTimer);
+        tooltipTimer = null;
+    }
 
 
+    tooltipOutTimer = setTimeout(() => 
+    {
+        if (tooltip) 
+            hideTooltip(tooltip);
+
+        currentTooltip       = null;
         currentTooltipSource = null;
 
-        tooltipOutTimer = setTimeout(() => 
-        {
-            if (!inTooltip)
-            {
-                const tooltip = getTooltip();
-                if (tooltip) hideTooltip(tooltip);
-            }
-
-            tooltipOutTimer = null;
-        }, 
-        400);
-    });
+        tooltipOutTimer      = null;
+    }, 
+    400);
 }
 
 
@@ -60770,8 +60784,8 @@ function createTooltip(tooltip)
     
     tooltip.addEventListener('pointerleave', () =>
     {
-        if (!tooltipOutTimer)
-            hideTooltip(tooltip);
+        // if (!tooltipOutTimer)
+        //     hideTooltip(tooltip);
 
         inTooltip = null;
     });
@@ -60871,6 +60885,25 @@ function hideTooltip(tooltip)
 
     tooltipTimer   = null;
     currentTooltip = null;
+}
+
+
+
+function createTooltipPointerTrap(tooltip)
+{
+    tooltip.addEventListener('pointerenter', e =>
+    {
+        if (tooltipOutTimer)
+        {
+            clearTimeout(tooltipOutTimer);
+            tooltipOutTimer = null;
+        }
+    });
+
+    tooltip.addEventListener('pointerleave', e =>
+    {
+        tooltip_pointerLeave(currentTooltip);
+    });
 }
 
 

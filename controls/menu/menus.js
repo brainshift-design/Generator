@@ -174,6 +174,7 @@ function initGeneratorMenus()
                                         new MenuItem('',                              {separator: true}),    
         menuItemShowOperationResults  = new MenuItem('Show operation results',        {checkCallback: () => settings.showOperationResults,  callback: () => { updateSettingAndMenu('showOperationResults',  true, !settings.showOperationResults);  updateMenuItemShowOperationResults(); }}),
         menuItemShowBoolValues        = new MenuItem('Show boolean values as  ✓ ✗',  {checkCallback: () => settings.showBoolValues,        callback: () => { updateSettingAndMenu('showBoolValues',        true, !settings.showBoolValues);        updateMenuItemShowBoolValues();       }}),
+                                        new MenuItem('',                              {separator: true}),    
         menuItemShowClearUndoWarning  = new MenuItem('Show clear undo warning',       {checkCallback: () => settings.showClearUndoWarning,  callback: () => { updateSettingAndMenu('showClearUndoWarning',  true, !settings.showClearUndoWarning);                                        }}),
         menuItemShowTooltips          = new MenuItem('Show tooltips',                 {childMenu: menuShowTooltips}),
                                         new MenuItem('',                              {separator: true}),    

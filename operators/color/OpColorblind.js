@@ -55,6 +55,8 @@ extends OpColorBase
             () => settings.showTooltipColorBlindness 
             ? ttColorblind 
             : null);
+
+        createTooltipPointerTrap(ttColorblind);
     }
 
 

@@ -62,13 +62,13 @@
     position:   absolute;
     left:       0;
     bottom:     0;
-    box-shadow: 0 1px 0 0px inset var(--figma-color-bg-hover);
+    box-shadow: 0 1px 0 0px inset #ffffff1b;
 }
 
 
 .ignoreButton
 {
-    border-left: 1px solid var(--figma-color-bg-hover);
+    border-left: 1px solid #ffffff1b;
     position:    absolute;
     right:       0px;
     text-align:  center;
@@ -80,5 +80,5 @@
 
 .ignoreButton:hover
 {
-    background: var(--figma-color-bg-hover);
+    background: #ffffff1b;
 }
