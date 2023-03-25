@@ -114,7 +114,7 @@ extends NumberParamBase
 
     setOptions(options)
     {
-        this        .options = [...options];
+        this            .options = [...options];
         this.controls[0].options = [...options];
     }
 

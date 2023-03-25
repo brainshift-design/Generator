@@ -3473,6 +3473,7 @@ a
                 <p>Fixed bug when undoing style delete would create a new style.</p>
                 <p>Unlinking a style will now leave the node name as is.</p>
                 <p>Added keyboard shortcuts panel.</p>
+                <p>Added context menus to colorblind parameters.</p>
                 <p>Fixed other UI issues.</p>
 
                 <p><br/><br/><div id='chkHideWhatsNew'></div></p>
@@ -42754,7 +42755,7 @@ extends NumberParamBase
 
     setOptions(options)
     {
-        this        .options = [...options];
+        this            .options = [...options];
         this.controls[0].options = [...options];
     }
 
@@ -52614,6 +52615,10 @@ extends OpColorBase
     ringM;
     ringS;
 
+    menuL;
+    menuM;
+    menuS;
+
 
     constructor()
     {
@@ -52659,6 +52664,45 @@ extends OpColorBase
             : null);
 
         createTooltipPointerTrap(ttColorblind);
+
+
+        this.menuL = new Menu('L', false, true);
+        this.menuL.addItems([
+            new MenuItem('L',       {callback: () => { hideAllMenus(); this.paramL.setValue(new NumberValue(2), true); }}),
+            new MenuItem('L weak',  {callback: () => { hideAllMenus(); this.paramL.setValue(new NumberValue(1), true); }}),
+            new MenuItem('L blind', {callback: () => { hideAllMenus(); this.paramL.setValue(new NumberValue(0), true); }})]);
+
+        this.menuM = new Menu('M', false, true);
+        this.menuM.addItems([
+            new MenuItem('M',       {callback: () => { hideAllMenus(); this.paramM.setValue(new NumberValue(2), true); }}),
+            new MenuItem('M weak',  {callback: () => { hideAllMenus(); this.paramM.setValue(new NumberValue(1), true); }}),
+            new MenuItem('M blind', {callback: () => { hideAllMenus(); this.paramM.setValue(new NumberValue(0), true); }})]);
+
+        this.menuS = new Menu('S', false, true);
+        this.menuS.addItems([
+            new MenuItem('S',       {callback: () => { hideAllMenus(); this.paramS.setValue(new NumberValue(2), true); }}),
+            new MenuItem('S weak',  {callback: () => { hideAllMenus(); this.paramS.setValue(new NumberValue(1), true); }}),
+            new MenuItem('S blind', {callback: () => { hideAllMenus(); this.paramS.setValue(new NumberValue(0), true); }})]);
+
+
+        this.paramL.controls[0].div.addEventListener('pointerdown', e => this.showParamMenu(e, this.paramL, this.menuL));
+        this.paramM.controls[0].div.addEventListener('pointerdown', e => this.showParamMenu(e, this.paramM, this.menuM));
+        this.paramS.controls[0].div.addEventListener('pointerdown', e => this.showParamMenu(e, this.paramS, this.menuS));
+    }
+
+
+
+    showParamMenu(e, param, menu)
+    {
+        if (e.button == 2)
+        {
+            e.preventDefault();
+            e.stopPropagation();
+
+            param.controls[0].buttonDown2 = true;
+
+            menu.showAt(e.clientX, e.clientY);
+        }
     }
 
 
