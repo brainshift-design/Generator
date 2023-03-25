@@ -16,7 +16,6 @@ extends OperatorBase
 
 
         this.addParam(this.paramCondition = new NumberParam('condition', 'condition', true, true, false, 1, 0, 1));
-        this.paramCondition.barTop = 0;
 
 
         this.inputs[0].addEventListener('connect',    () => OpIfElse_onConnectInput(this, 0));
@@ -24,6 +23,9 @@ extends OperatorBase
 
         this.inputs[1].addEventListener('connect',    () => OpIfElse_onConnectInput(this, 1));
         this.inputs[1].addEventListener('disconnect', () => OpIfElse_onDisconnectInput(this, 1));
+
+
+        this.paramCondition.controls[0].barTop = 0.8;        
     }
     
     

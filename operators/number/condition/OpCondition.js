@@ -93,5 +93,5 @@ function updateParamConditionText(param, unknown)
 
     //param.controls[0].text.style.letterSpacing = settings.showBoolValues ? '0.1em' : 0;
 
-    param.controls[0].showBar = unknown;
+    //param.controls[0].showBar = unknown;
 }

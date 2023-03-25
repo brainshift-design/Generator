@@ -436,7 +436,7 @@ extends EventTarget
 
             
         if (    isNaN(this.value)
-            ||  this.overrideText != '' // assuminng the display bar is irrelevant in override mode
+            //||  this.overrideText != '' // assuminng the display bar is irrelevant in override mode
             || !this.showBar)
             this.bar.style.display = 'none';
 
