@@ -3256,6 +3256,7 @@ a
 
                 <p>Fixed paste undo bug for nodes with variable inputs.</p>
                 <p>Unwanted tooltips can now be ignored, which can be restored in Preferences/Show tooltips.</p>
+                <p>Fixed bug when undoing style delete would create a new style.</p>
                 <p>Fixed other UI issues.</p>
 
                 <p><br/><br/><div id='chkHideWhatsNew'></div></p>
@@ -7042,17 +7043,13 @@ const SET_CURRENT_GRAPH_ACTION   = 'SET_URRENT_GRAPH';
 class FigmaObject
 {
     type;
-
-    nodeId   = '';
-    nodeName = '';
+    nodeId = '';
 
 
-    constructor(type, nodeId, nodeName)
+    constructor(type, nodeId)
     {
-        this.type     = type;
-
-        this.nodeId   = nodeId;
-        this.nodeName = nodeName;
+        this.type   = type;
+        this.nodeId = nodeId;
     }
 
 
@@ -7085,9 +7082,9 @@ extends FigmaObject
 
 
 
-    constructor(type, nodeId, nodeName, objectId)
+    constructor(type, nodeId, objectId)
     {
-        super(type, nodeId, nodeName);
+        super(type, nodeId);
 
         this.objectId = objectId;
     }
@@ -7119,9 +7116,9 @@ extends FigmaShape
 
 
 
-    constructor(nodeId, nodeName, objectId, x, y, width, height, angle, round)
+    constructor(nodeId, objectId, x, y, width, height, angle, round)
     {
-        super(RECTANGLE, nodeId, nodeName, objectId);
+        super(RECTANGLE, nodeId, objectId);
         
         this.x      = x;
         this.y      = y;
@@ -7137,7 +7134,6 @@ extends FigmaShape
     {
         const copy = new FigmaRectangle(
             this.nodeId,
-            this.nodeName,
             this.objectId,
             this.x,
             this.y,
@@ -7163,9 +7159,9 @@ extends FigmaShape
 
 
 
-    constructor(nodeId, nodeName, objectId, x, y, width, angle)
+    constructor(nodeId, objectId, x, y, width, angle)
     {
-        super(LINE, nodeId, nodeName, objectId);
+        super(LINE, nodeId, objectId);
         
         this.x     = x;
         this.y     = y;
@@ -7179,7 +7175,6 @@ extends FigmaShape
     {
         const copy = new FigmaLine(
             this.nodeId,
-            this.nodeName,
             this.objectId,
             this.x,
             this.y,
@@ -7204,9 +7199,9 @@ extends FigmaShape
 
 
 
-    constructor(nodeId, nodeName, objectId, x, y, width, height, angle)
+    constructor(nodeId, objectId, x, y, width, height, angle)
     {
-        super(ELLIPSE, nodeId, nodeName, objectId);
+        super(ELLIPSE, nodeId, objectId);
         
         this.x      = x;
         this.y      = y;
@@ -7221,7 +7216,6 @@ extends FigmaShape
     {
         const copy = new FigmaEllipse(
             this.nodeId,
-            this.nodeName,
             this.objectId,
             this.x,
             this.y,
@@ -7249,9 +7243,9 @@ extends FigmaShape
 
 
 
-    constructor(nodeId, nodeName, objectId, x, y, width, height, angle, round, corners)
+    constructor(nodeId, objectId, x, y, width, height, angle, round, corners)
     {
-        super(POLYGON, nodeId, nodeName, objectId);
+        super(POLYGON, nodeId, objectId);
         
         this.x       = x;
         this.y       = y;
@@ -7268,7 +7262,6 @@ extends FigmaShape
     {
         const copy = new FigmaPolygon(
             this.nodeId,
-            this.nodeName,
             this.objectId,
             this.x,
             this.y,
@@ -7299,9 +7292,9 @@ extends FigmaShape
 
 
 
-    constructor(nodeId, nodeName, objectId, x, y, width, height, angle, round, points, convex)
+    constructor(nodeId, objectId, x, y, width, height, angle, round, points, convex)
     {
-        super(STAR, nodeId, nodeName, objectId);
+        super(STAR, nodeId, objectId);
         
         this.x      = x;
         this.y      = y;
@@ -7319,7 +7312,6 @@ extends FigmaShape
     {
         const copy = new FigmaStar(
             this.nodeId,
-            this.nodeName,
             this.objectId,
             this.x,
             this.y,
@@ -7340,25 +7332,26 @@ extends FigmaShape
 class FigmaColorStyle
 extends FigmaObject
 {
-    styleName;
+    id;
+    name;
+
     existing;
 
 
 
-    constructor(nodeId, nodeName)
+    constructor(nodeId, styleId, styleName)
     {
-        super(COLOR_STYLE, nodeId, nodeName);
+        super(COLOR_STYLE, nodeId);
 
-        this.styleName = nodeName;
+        this.id   = styleId;
+        this.name = styleName;
     }
 
 
 
     copy()
     {
-        const copy = new FigmaColorStyle(
-            this.nodeId,
-            this.nodeName);
+        const copy = new FigmaColorStyle(this.nodeId, this.id, this.name);
 
         copy.copyBase(this);
 
@@ -13326,7 +13319,6 @@ extends GObjectBase
             [
                 new FigmaRectangle(
                                 this.nodeId,
-                                this.nodeName,
                                 0,
                                 this.x     .toValue().value,
                                 this.y     .toValue().value,
@@ -13460,7 +13452,6 @@ extends GObjectBase
             [
                 new FigmaLine(
                     this.nodeId,
-                    this.nodeName,
                     0,
                     this.x    .toValue().value,
                     this.y    .toValue().value,
@@ -13591,14 +13582,13 @@ extends GObjectBase
            this.objects = 
            [
                new FigmaEllipse(
-                               this.nodeId,
-                               this.nodeName,
-                               0,
-                               this.x     .toValue().value,
-                               this.y     .toValue().value,
-                               this.width .toValue().value,
-                               this.height.toValue().value,
-                               this.angle .toValue().value)
+                    this.nodeId,
+                    0,
+                    this.x     .toValue().value,
+                    this.y     .toValue().value,
+                    this.width .toValue().value,
+                    this.height.toValue().value,
+                    this.angle .toValue().value)
            ];
        }
 
@@ -13738,7 +13728,6 @@ extends GObjectBase
             [
                 new FigmaPolygon(
                                 this.nodeId,
-                                this.nodeName,
                                 0,
                                 this.x      .toValue().value,
                                 this.y      .toValue().value,
@@ -13895,7 +13884,6 @@ extends GObjectBase
            [
                new FigmaStar(
                                this.nodeId,
-                               this.nodeName,
                                0,
                                this.x     .toValue().value,
                                this.y     .toValue().value,
@@ -13947,6 +13935,7 @@ extends GObjectBase
 class GColorStyle
 extends GObjectBase
 {
+    id;
     style;
 
     existing;
@@ -13954,9 +13943,11 @@ extends GObjectBase
 
 
 
-    constructor(nodeId, options)
+    constructor(nodeId, options, styleId)
     {
         super(COLOR_STYLE, nodeId, options);
+
+        this.id == styleId;
     }
 
 
@@ -13965,6 +13956,7 @@ extends GObjectBase
     {
         const copy = new GColorStyle(this.nodeId, this.options);
 
+        copy.id       = this.id;
         copy.style    = this.style.copy();
         
         copy.existing = this.existing;
@@ -14011,7 +14003,7 @@ extends GObjectBase
             return;
 
             
-        const style = new FigmaColorStyle(this.nodeId, this.nodeName);
+        const style = new FigmaColorStyle(this.nodeId, this.id, this.name);
 
         style.existing = this.existing;
 
@@ -17246,7 +17238,6 @@ function genParseColorStyle(parse)
     const style = new GColorStyle(nodeId, options);
 
     style.existing = options.existing;
-    style.linked   = options.linked;
 
 
     if (parse.settings.logRequests) 
@@ -17264,10 +17255,15 @@ function genParseColorStyle(parse)
     parse.inParam = false;
 
 
+    style.id    = parse.move();
+    style.name  = options.nodeName;
     style.value = genParse(parse);
-   
-
+    
+    
     parse.nTab--;
+
+    
+    style.linked = style.id != NULL;
 
 
     genParseNodeEnd(parse, style);
@@ -17511,8 +17507,7 @@ function genParseNodeOptions(parse)
         enabled:      ((opt >>  2) & 1) != 0,
         cached:       ((opt >>  3) & 1) != 0,
         hasInputs:    ((opt >> 20) & 1) != 0,
-        existing:     ((opt >> 21) & 1) != 0,
-        linked:       ((opt >> 22) & 1) != 0
+        existing:     ((opt >> 21) & 1) != 0
     };
 
     return options;
@@ -26370,17 +26365,13 @@ const SET_CURRENT_GRAPH_ACTION   = 'SET_URRENT_GRAPH';
 class FigmaObject
 {
     type;
-
-    nodeId   = '';
-    nodeName = '';
+    nodeId = '';
 
 
-    constructor(type, nodeId, nodeName)
+    constructor(type, nodeId)
     {
-        this.type     = type;
-
-        this.nodeId   = nodeId;
-        this.nodeName = nodeName;
+        this.type   = type;
+        this.nodeId = nodeId;
     }
 
 
@@ -26413,9 +26404,9 @@ extends FigmaObject
 
 
 
-    constructor(type, nodeId, nodeName, objectId)
+    constructor(type, nodeId, objectId)
     {
-        super(type, nodeId, nodeName);
+        super(type, nodeId);
 
         this.objectId = objectId;
     }
@@ -26447,9 +26438,9 @@ extends FigmaShape
 
 
 
-    constructor(nodeId, nodeName, objectId, x, y, width, height, angle, round)
+    constructor(nodeId, objectId, x, y, width, height, angle, round)
     {
-        super(RECTANGLE, nodeId, nodeName, objectId);
+        super(RECTANGLE, nodeId, objectId);
         
         this.x      = x;
         this.y      = y;
@@ -26465,7 +26456,6 @@ extends FigmaShape
     {
         const copy = new FigmaRectangle(
             this.nodeId,
-            this.nodeName,
             this.objectId,
             this.x,
             this.y,
@@ -26491,9 +26481,9 @@ extends FigmaShape
 
 
 
-    constructor(nodeId, nodeName, objectId, x, y, width, angle)
+    constructor(nodeId, objectId, x, y, width, angle)
     {
-        super(LINE, nodeId, nodeName, objectId);
+        super(LINE, nodeId, objectId);
         
         this.x     = x;
         this.y     = y;
@@ -26507,7 +26497,6 @@ extends FigmaShape
     {
         const copy = new FigmaLine(
             this.nodeId,
-            this.nodeName,
             this.objectId,
             this.x,
             this.y,
@@ -26532,9 +26521,9 @@ extends FigmaShape
 
 
 
-    constructor(nodeId, nodeName, objectId, x, y, width, height, angle)
+    constructor(nodeId, objectId, x, y, width, height, angle)
     {
-        super(ELLIPSE, nodeId, nodeName, objectId);
+        super(ELLIPSE, nodeId, objectId);
         
         this.x      = x;
         this.y      = y;
@@ -26549,7 +26538,6 @@ extends FigmaShape
     {
         const copy = new FigmaEllipse(
             this.nodeId,
-            this.nodeName,
             this.objectId,
             this.x,
             this.y,
@@ -26577,9 +26565,9 @@ extends FigmaShape
 
 
 
-    constructor(nodeId, nodeName, objectId, x, y, width, height, angle, round, corners)
+    constructor(nodeId, objectId, x, y, width, height, angle, round, corners)
     {
-        super(POLYGON, nodeId, nodeName, objectId);
+        super(POLYGON, nodeId, objectId);
         
         this.x       = x;
         this.y       = y;
@@ -26596,7 +26584,6 @@ extends FigmaShape
     {
         const copy = new FigmaPolygon(
             this.nodeId,
-            this.nodeName,
             this.objectId,
             this.x,
             this.y,
@@ -26627,9 +26614,9 @@ extends FigmaShape
 
 
 
-    constructor(nodeId, nodeName, objectId, x, y, width, height, angle, round, points, convex)
+    constructor(nodeId, objectId, x, y, width, height, angle, round, points, convex)
     {
-        super(STAR, nodeId, nodeName, objectId);
+        super(STAR, nodeId, objectId);
         
         this.x      = x;
         this.y      = y;
@@ -26647,7 +26634,6 @@ extends FigmaShape
     {
         const copy = new FigmaStar(
             this.nodeId,
-            this.nodeName,
             this.objectId,
             this.x,
             this.y,
@@ -26668,25 +26654,26 @@ extends FigmaShape
 class FigmaColorStyle
 extends FigmaObject
 {
-    styleName;
+    id;
+    name;
+
     existing;
 
 
 
-    constructor(nodeId, nodeName)
+    constructor(nodeId, styleId, styleName)
     {
-        super(COLOR_STYLE, nodeId, nodeName);
+        super(COLOR_STYLE, nodeId);
 
-        this.styleName = nodeName;
+        this.id   = styleId;
+        this.name = styleName;
     }
 
 
 
     copy()
     {
-        const copy = new FigmaColorStyle(
-            this.nodeId,
-            this.nodeName);
+        const copy = new FigmaColorStyle(this.nodeId, this.id, this.name);
 
         copy.copyBase(this);
 
@@ -32654,7 +32641,6 @@ extends GObjectBase
             [
                 new FigmaRectangle(
                                 this.nodeId,
-                                this.nodeName,
                                 0,
                                 this.x     .toValue().value,
                                 this.y     .toValue().value,
@@ -32788,7 +32774,6 @@ extends GObjectBase
             [
                 new FigmaLine(
                     this.nodeId,
-                    this.nodeName,
                     0,
                     this.x    .toValue().value,
                     this.y    .toValue().value,
@@ -32919,14 +32904,13 @@ extends GObjectBase
            this.objects = 
            [
                new FigmaEllipse(
-                               this.nodeId,
-                               this.nodeName,
-                               0,
-                               this.x     .toValue().value,
-                               this.y     .toValue().value,
-                               this.width .toValue().value,
-                               this.height.toValue().value,
-                               this.angle .toValue().value)
+                    this.nodeId,
+                    0,
+                    this.x     .toValue().value,
+                    this.y     .toValue().value,
+                    this.width .toValue().value,
+                    this.height.toValue().value,
+                    this.angle .toValue().value)
            ];
        }
 
@@ -33066,7 +33050,6 @@ extends GObjectBase
             [
                 new FigmaPolygon(
                                 this.nodeId,
-                                this.nodeName,
                                 0,
                                 this.x      .toValue().value,
                                 this.y      .toValue().value,
@@ -33223,7 +33206,6 @@ extends GObjectBase
            [
                new FigmaStar(
                                this.nodeId,
-                               this.nodeName,
                                0,
                                this.x     .toValue().value,
                                this.y     .toValue().value,
@@ -33275,6 +33257,7 @@ extends GObjectBase
 class GColorStyle
 extends GObjectBase
 {
+    id;
     style;
 
     existing;
@@ -33282,9 +33265,11 @@ extends GObjectBase
 
 
 
-    constructor(nodeId, options)
+    constructor(nodeId, options, styleId)
     {
         super(COLOR_STYLE, nodeId, options);
+
+        this.id == styleId;
     }
 
 
@@ -33293,6 +33278,7 @@ extends GObjectBase
     {
         const copy = new GColorStyle(this.nodeId, this.options);
 
+        copy.id       = this.id;
         copy.style    = this.style.copy();
         
         copy.existing = this.existing;
@@ -33339,7 +33325,7 @@ extends GObjectBase
             return;
 
             
-        const style = new FigmaColorStyle(this.nodeId, this.nodeName);
+        const style = new FigmaColorStyle(this.nodeId, this.id, this.name);
 
         style.existing = this.existing;
 
@@ -53003,15 +52989,14 @@ extends OperatorBase
             paramId: NULL });
 
 
-        const options = 
-              (this.existing              ? 1 : 0) << 21
-            | (this.linkedStyleId != NULL ? 1 : 0) << 22;
+        const options = (this.existing ? 1 : 0) << 21;
 
 
         const [request, ignore] = this.genRequestStart(gen, options);
         if (ignore) return request;
 
                 
+        request.push(this.linkedStyleId);
         request.push(...this.paramValue.genRequest(gen));
 
 
@@ -58952,8 +58937,8 @@ var allUpdateNodes   = [];
 //uiClearAllLocalData();
 //uiQueueMessageToFigma({cmd: 'figLogAllLocalData'});
 
-uiClearLocalData('windowWidth');
-uiClearLocalData('windowHeight');
+// uiClearLocalData('windowWidth');
+// uiClearLocalData('windowHeight');
 //uiClearLocalData('productKey');
 
 //uiClearLocalData('showWhatsNew');
@@ -61828,7 +61813,7 @@ function uiUpdateValuesAndObjects(requestId, actionId, updateNodeId, updateParam
         || !isEmpty(styles))
     {
         if (settings.logObjectUpdates) logObjectUpdates([...objects]);
-        if (settings.logStyleUpdates)  logStyleUpdates([...styles]);
+        if (settings.logStyleUpdates)  logStyleUpdates ([...styles ]);
 
         uiQueueMessageToFigma({
             cmd:          'figUpdateObjectsAndStyles',
@@ -61836,7 +61821,7 @@ function uiUpdateValuesAndObjects(requestId, actionId, updateNodeId, updateParam
             updateParamId: updateParamId,
             nodeIds:       nodes.map(n => n.id),
             objects:       [...objects],
-            styles:        [...styles]});
+            styles:        [...styles ]});
     }
 
 

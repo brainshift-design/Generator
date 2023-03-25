@@ -262,7 +262,6 @@ function genParseColorStyle(parse)
     const style = new GColorStyle(nodeId, options);
 
     style.existing = options.existing;
-    style.linked   = options.linked;
 
 
     if (parse.settings.logRequests) 
@@ -280,10 +279,15 @@ function genParseColorStyle(parse)
     parse.inParam = false;
 
 
+    style.id    = parse.move();
+    style.name  = options.nodeName;
     style.value = genParse(parse);
-   
-
+    
+    
     parse.nTab--;
+
+    
+    style.linked = style.id != NULL;
 
 
     genParseNodeEnd(parse, style);

@@ -1,17 +1,13 @@
 class FigmaObject
 {
     type;
-
-    nodeId   = '';
-    nodeName = '';
+    nodeId = '';
 
 
-    constructor(type, nodeId, nodeName)
+    constructor(type, nodeId)
     {
-        this.type     = type;
-
-        this.nodeId   = nodeId;
-        this.nodeName = nodeName;
+        this.type   = type;
+        this.nodeId = nodeId;
     }
 
 

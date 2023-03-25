@@ -92,15 +92,14 @@ extends OperatorBase
             paramId: NULL });
 
 
-        const options = 
-              (this.existing              ? 1 : 0) << 21
-            | (this.linkedStyleId != NULL ? 1 : 0) << 22;
+        const options = (this.existing ? 1 : 0) << 21;
 
 
         const [request, ignore] = this.genRequestStart(gen, options);
         if (ignore) return request;
 
                 
+        request.push(this.linkedStyleId);
         request.push(...this.paramValue.genRequest(gen));
 
 

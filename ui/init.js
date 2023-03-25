@@ -15,8 +15,8 @@ var allUpdateNodes   = [];
 //uiClearAllLocalData();
 //uiQueueMessageToFigma({cmd: 'figLogAllLocalData'});
 
-uiClearLocalData('windowWidth');
-uiClearLocalData('windowHeight');
+// uiClearLocalData('windowWidth');
+// uiClearLocalData('windowHeight');
 //uiClearLocalData('productKey');
 
 //uiClearLocalData('showWhatsNew');

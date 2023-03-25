@@ -2117,24 +2117,26 @@ function figUpdateStyles(msg)
             if (!existing)
             {
                 styleChangingFromGenerator = true;
-                figCreateColorStyle(figStyles.styles, genStyle);
+                figLinkNodeToExistingColorStyle(genStyle.nodeId, genStyle.id);
+                //figCreateColorStyle(figStyles.styles, genStyle);
             }
         }
-        else if (isValid(figStyle) 
+        else 
+        if (isValid(figStyle) 
               && figStyle.getPluginData('type') == genStyle.type) // update existing style
         {
             styleChangingFromGenerator = true;
             figUpdateColorStyle(localStyle, genStyle);
         }
-        else // delete existing style, create new style
-        {
-            if (!existing)
-            {
-                localStyle.remove();
-                styleChangingFromGenerator = true;
-                figCreateColorStyle(figStyles.styles, genStyle);
-            }
-        }
+        // else // delete existing style, create new style
+        // {
+        //     if (!existing)
+        //     {
+        //         localStyle.remove();
+        //         styleChangingFromGenerator = true;
+        //         figCreateColorStyle(figStyles.styles, genStyle);
+        //     }
+        // }
     }
 }
 
@@ -2144,7 +2146,7 @@ function figUpdateColorStyle(figStyle, genStyle)
 {
     setStylePaints(figStyle, genStyle);
 
-    figStyle.name = genStyle.nodeName;
+    figStyle.name = genStyle.name;
 }
 
 

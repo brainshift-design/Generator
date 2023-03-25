@@ -92,14 +92,13 @@ extends GObjectBase
            this.objects = 
            [
                new FigmaEllipse(
-                               this.nodeId,
-                               this.nodeName,
-                               0,
-                               this.x     .toValue().value,
-                               this.y     .toValue().value,
-                               this.width .toValue().value,
-                               this.height.toValue().value,
-                               this.angle .toValue().value)
+                    this.nodeId,
+                    0,
+                    this.x     .toValue().value,
+                    this.y     .toValue().value,
+                    this.width .toValue().value,
+                    this.height.toValue().value,
+                    this.angle .toValue().value)
            ];
        }
 

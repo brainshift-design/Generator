@@ -99,7 +99,6 @@ extends GObjectBase
             [
                 new FigmaRectangle(
                                 this.nodeId,
-                                this.nodeName,
                                 0,
                                 this.x     .toValue().value,
                                 this.y     .toValue().value,

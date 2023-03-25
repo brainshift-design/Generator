@@ -89,7 +89,6 @@ extends GObjectBase
             [
                 new FigmaLine(
                     this.nodeId,
-                    this.nodeName,
                     0,
                     this.x    .toValue().value,
                     this.y    .toValue().value,

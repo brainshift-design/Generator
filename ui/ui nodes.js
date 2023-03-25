@@ -868,7 +868,7 @@ function uiUpdateValuesAndObjects(requestId, actionId, updateNodeId, updateParam
         || !isEmpty(styles))
     {
         if (settings.logObjectUpdates) logObjectUpdates([...objects]);
-        if (settings.logStyleUpdates)  logStyleUpdates([...styles]);
+        if (settings.logStyleUpdates)  logStyleUpdates ([...styles ]);
 
         uiQueueMessageToFigma({
             cmd:          'figUpdateObjectsAndStyles',
@@ -876,7 +876,7 @@ function uiUpdateValuesAndObjects(requestId, actionId, updateNodeId, updateParam
             updateParamId: updateParamId,
             nodeIds:       nodes.map(n => n.id),
             objects:       [...objects],
-            styles:        [...styles]});
+            styles:        [...styles ]});
     }
 
 

@@ -1,6 +1,7 @@
 class GColorStyle
 extends GObjectBase
 {
+    id;
     style;
 
     existing;
@@ -8,9 +9,11 @@ extends GObjectBase
 
 
 
-    constructor(nodeId, options)
+    constructor(nodeId, options, styleId)
     {
         super(COLOR_STYLE, nodeId, options);
+
+        this.id == styleId;
     }
 
 
@@ -19,6 +22,7 @@ extends GObjectBase
     {
         const copy = new GColorStyle(this.nodeId, this.options);
 
+        copy.id       = this.id;
         copy.style    = this.style.copy();
         
         copy.existing = this.existing;
@@ -65,7 +69,7 @@ extends GObjectBase
             return;
 
             
-        const style = new FigmaColorStyle(this.nodeId, this.nodeName);
+        const style = new FigmaColorStyle(this.nodeId, this.id, this.name);
 
         style.existing = this.existing;
 

@@ -11,9 +11,9 @@ extends FigmaShape
 
 
 
-    constructor(nodeId, nodeName, objectId, x, y, width, height, angle, round, corners)
+    constructor(nodeId, objectId, x, y, width, height, angle, round, corners)
     {
-        super(POLYGON, nodeId, nodeName, objectId);
+        super(POLYGON, nodeId, objectId);
         
         this.x       = x;
         this.y       = y;
@@ -30,7 +30,6 @@ extends FigmaShape
     {
         const copy = new FigmaPolygon(
             this.nodeId,
-            this.nodeName,
             this.objectId,
             this.x,
             this.y,

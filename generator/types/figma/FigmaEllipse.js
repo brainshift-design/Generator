@@ -9,9 +9,9 @@ extends FigmaShape
 
 
 
-    constructor(nodeId, nodeName, objectId, x, y, width, height, angle)
+    constructor(nodeId, objectId, x, y, width, height, angle)
     {
-        super(ELLIPSE, nodeId, nodeName, objectId);
+        super(ELLIPSE, nodeId, objectId);
         
         this.x      = x;
         this.y      = y;
@@ -26,7 +26,6 @@ extends FigmaShape
     {
         const copy = new FigmaEllipse(
             this.nodeId,
-            this.nodeName,
             this.objectId,
             this.x,
             this.y,
