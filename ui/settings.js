@@ -199,7 +199,8 @@ function updateMenuItemShowBoolValues()
     graphView.graph.nodes
         .filter(n => 
                  BOOLEAN_TYPES.includes(n.type)
-            || CONDITION_TYPES.includes(n.type))
+            || CONDITION_TYPES.includes(n.type)
+            || n.type == IF_ELSE)
         .forEach(n => n.updateNode());
 }
 

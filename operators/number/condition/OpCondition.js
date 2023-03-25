@@ -75,23 +75,14 @@ extends OperatorWithValue
 
 
 
-function updateParamConditionText(param, unknown)
+function updateParamConditionText(param, unknown, offsetY = 0)
 {
-    param.controls[0].text.style.fontStyle = 
-           settings.showBoolValues 
-        && param.value.isValid()
-        ? 'normal' 
-        : 'italic';
-
-
     const v = Math.round(param.value.value);
 
-         if (unknown)        param.controllueText = UNKNOWN_DISPLAY;
+         if (unknown)        param.controls[0].valueText = UNKNOWN_DISPLAY;
     else if (settings.showBoolValues
-            && !isNaN(v))    param.controls[0].valueText = v != 0 ? TRUE_DISPLAY : FALSE_DISPLAY;
+            && !isNaN(v))    param.controls[0].valueText = '<span style="position: relative; top: ' + offsetY + 'px">' + (v != 0 ? TRUE_DISPLAY : FALSE_DISPLAY) + '</span>';
     else                     param.controls[0].valueText = '';
-
-    //param.controls[0].text.style.letterSpacing = settings.showBoolValues ? '0.1em' : 0;
 
     //param.controls[0].showBar = unknown;
 }

@@ -2452,15 +2452,17 @@ a
 .numberControlText
 {
     font-family:          Inter;
-    font-size:            11;
+    font-size:            11px;
     font-variant-numeric: tabular-nums;
     letter-spacing:       -0.35px;
     pointer-events:       none;
     position:             absolute;
     left:                 50%;
-    transform:            translateX(-50%);
-    top:                  3px;
+    top:                  50%;
+    transform:            translateX(-50%)
+                          translateY(-50%);
     white-space:          nowrap;
+    /* box-shadow:           0 0 0 1px inset yellow; */
 }
 
 
@@ -7048,9 +7050,12 @@ const NAN_DISPLAY             = '?';
 const UNKNOWN_CHAR            = '?';
 const UNKNOWN_DISPLAY         = UNKNOWN_CHAR;//'🤷‍♂️';
     
-const TRUE_DISPLAY            = '✓';//'true';
-const FALSE_DISPLAY           = '❌';//'false';
-    
+// const TRUE_DISPLAY         = '✓';//'true';
+// const FALSE_DISPLAY        = '❌';//'false';
+
+const TRUE_DISPLAY            = '<svg width="11" height="11" viewBox="0 0 11 11" fill="none" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" clip-rule="evenodd" d="M11 0.998457L9.31674 0L4.10109 8.01592L1.40123 5.4381L0 6.77599L4.42397 11L11 0.998457Z" fill="#29CE00"/></svg>';
+const FALSE_DISPLAY           = '<svg width="9" height="9" viewBox="0 0 9 9" fill="none" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" clip-rule="evenodd" d="M9 1.27273L7.72727 0L4.5 3.22728L1.27273 5.21088e-06L0 1.27273L3.22727 4.5L6.50594e-06 7.72727L1.27273 9L4.5 5.77273L7.72727 9L8.99999 7.72727L5.77272 4.5L9 1.27273Z" fill="#F43D3D"/></svg>';    
+
 const LIST_VALUE              = 'LIST#';
 const LIST                    = 'LIST';
     
@@ -15065,7 +15070,8 @@ function updateMenuItemShowBoolValues()
     graphView.graph.nodes
         .filter(n => 
                  BOOLEAN_TYPES.includes(n.type)
-            || CONDITION_TYPES.includes(n.type))
+            || CONDITION_TYPES.includes(n.type)
+            || n.type == IF_ELSE)
         .forEach(n => n.updateNode());
 }
 
@@ -26370,9 +26376,12 @@ const NAN_DISPLAY             = '?';
 const UNKNOWN_CHAR            = '?';
 const UNKNOWN_DISPLAY         = UNKNOWN_CHAR;//'🤷‍♂️';
     
-const TRUE_DISPLAY            = '✓';//'true';
-const FALSE_DISPLAY           = '❌';//'false';
-    
+// const TRUE_DISPLAY         = '✓';//'true';
+// const FALSE_DISPLAY        = '❌';//'false';
+
+const TRUE_DISPLAY            = '<svg width="11" height="11" viewBox="0 0 11 11" fill="none" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" clip-rule="evenodd" d="M11 0.998457L9.31674 0L4.10109 8.01592L1.40123 5.4381L0 6.77599L4.42397 11L11 0.998457Z" fill="#29CE00"/></svg>';
+const FALSE_DISPLAY           = '<svg width="9" height="9" viewBox="0 0 9 9" fill="none" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" clip-rule="evenodd" d="M9 1.27273L7.72727 0L4.5 3.22728L1.27273 5.21088e-06L0 1.27273L3.22727 4.5L6.50594e-06 7.72727L1.27273 9L4.5 5.77273L7.72727 9L8.99999 7.72727L5.77272 4.5L9 1.27273Z" fill="#F43D3D"/></svg>';    
+
 const LIST_VALUE              = 'LIST#';
 const LIST                    = 'LIST';
     
@@ -34387,7 +34396,8 @@ function updateMenuItemShowBoolValues()
     graphView.graph.nodes
         .filter(n => 
                  BOOLEAN_TYPES.includes(n.type)
-            || CONDITION_TYPES.includes(n.type))
+            || CONDITION_TYPES.includes(n.type)
+            || n.type == IF_ELSE)
         .forEach(n => n.updateNode());
 }
 
@@ -34875,7 +34885,7 @@ extends EventTarget
 
             if (   fireChangeEvent
                 && this.enableChangeEvent
-                && value != oldValue)//this.prevValue)
+                && value != oldValue)
                 this.dispatchEvent(this.onchange);
         }
 
@@ -37544,6 +37554,8 @@ const iconWindowDockRight   = '<svg width="15" height="12" viewBox="0 0 15 12" f
 const iconWindowDockTop     = '<svg width="15" height="12" viewBox="0 0 15 12" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="0.5" y="0.5" width="14" height="11" stroke="white"/><rect width="15" height="5" fill="white"/></svg>';
 const iconWindowDockBottom  = '<svg width="15" height="12" viewBox="0 0 15 12" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="0.5" y="0.5" width="14" height="11" stroke="white"/><rect y="7" width="15" height="5" fill="white"/></svg>';
 
+// const iconGreenCheck        = '<svg width="13" height="13" viewBox="0 0 13 13" fill="none" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" clip-rule="evenodd" d="M13 1.17999L11.0107 0L4.84674 9.47336L1.656 6.42685L0 8.00799L5.22833 13L13 1.17999Z" fill="#29CE00"/></svg>';
+// const iconRedCross          = '<svg width="12" height="12" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" clip-rule="evenodd" d="M12 1.69697L10.303 0L6 4.30304L1.69697 6.94784e-06L0 1.69698L4.30303 6L8.67458e-06 10.303L1.69698 12L6 7.69697L10.303 12L12 10.303L7.69696 6L12 1.69697Z" fill="#F43D3D"/></svg>';
 
 
 var currentMenus      = [];
@@ -48169,7 +48181,7 @@ extends OperatorBase
     {
         this.paramCondition.enableControlText(true);
 
-        updateParamConditionText(this.paramCondition, this.isUnknown());
+        updateParamConditionText(this.paramCondition, this.isUnknown(), 1);
 
         this.updateParamControls();
     }
@@ -49738,23 +49750,14 @@ extends OperatorWithValue
 
 
 
-function updateParamConditionText(param, unknown)
+function updateParamConditionText(param, unknown, offsetY = 0)
 {
-    param.controls[0].text.style.fontStyle = 
-           settings.showBoolValues 
-        && param.value.isValid()
-        ? 'normal' 
-        : 'italic';
-
-
     const v = Math.round(param.value.value);
 
-         if (unknown)        param.controllueText = UNKNOWN_DISPLAY;
+         if (unknown)        param.controls[0].valueText = UNKNOWN_DISPLAY;
     else if (settings.showBoolValues
-            && !isNaN(v))    param.controls[0].valueText = v != 0 ? TRUE_DISPLAY : FALSE_DISPLAY;
+            && !isNaN(v))    param.controls[0].valueText = '<span style="position: relative; top: ' + offsetY + 'px">' + (v != 0 ? TRUE_DISPLAY : FALSE_DISPLAY) + '</span>';
     else                     param.controls[0].valueText = '';
-
-    //param.controls[0].text.style.letterSpacing = settings.showBoolValues ? '0.1em' : 0;
 
     //param.controls[0].showBar = unknown;
 }

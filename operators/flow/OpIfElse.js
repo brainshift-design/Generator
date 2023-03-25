@@ -79,7 +79,7 @@ extends OperatorBase
     {
         this.paramCondition.enableControlText(true);
 
-        updateParamConditionText(this.paramCondition, this.isUnknown());
+        updateParamConditionText(this.paramCondition, this.isUnknown(), 1);
 
         this.updateParamControls();
     }
