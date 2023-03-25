@@ -1,0 +1,122 @@
+<div id='keyboardPanel'>
+
+    <div id='keyboardPanelTabsHolder'>
+        <div id='keyboardPanelTabs'>
+            <div id='keyboardPanelTab' onclick="setCurrentKeyboardTab(0);">Menu</div>
+            <div id='keyboardPanelTab' onclick="setCurrentKeyboardTab(1);">Zoom</div>
+            <div id='keyboardPanelTab' onclick="setCurrentKeyboardTab(2);">Selection</div>
+            <div id='keyboardPanelTab' onclick="setCurrentKeyboardTab(3);">Nodes</div>
+            <div id='keyboardPanelTab' onclick="setCurrentKeyboardTab(4);">Connections</div>
+            <div id='keyboardPanelTab' onclick="setCurrentKeyboardTab(5);">Cursor</div>
+            <div id='keyboardPanelTab' onclick="setCurrentKeyboardTab(6);">Edit</div>
+        </div>
+        <div id='keyboardPanelClose' onclick="hideKeyboardPanel();"></div>
+    </div>
+    
+    <div id='keyboardPanelContent'>
+
+
+        <div class='keyboardPage' id='keyboardPageMenu'>
+            <div class='keyboardGroup'>
+                <div class='keyboardShortcut'><div class='shortcutAction'>Keep menu open</div><div class='shortcutKeys'><div class='shortcutKeys'><div class='shortcutKey'>Shift</div><div class='shortcutKey'>menu</div></div></div></div>
+            </div>
+            <div class='keyboardGroup nextGroup'>
+                <div class='keyboardShortcut'><div class='shortcutAction'>Create node</div><div class='shortcutKeys'><div class='shortcutKeys'><div class='shortcutKey'>Menu</div></div></div></div>
+                <div class='keyboardShortcut'><div class='shortcutAction'>Insert node into branch</div><div class='shortcutKeys'><div class='shortcutKeys'><div class='shortcutKey'>Ctrl</div><div class='shortcutKey'>menu</div></div></div></div>
+                <div class='keyboardShortcut'><div class='shortcutAction'>Connect node in new branch</div><div class='shortcutKeys'><div class='shortcutKeys'><div class='shortcutKey'>Ctrl</div><div class='shortcutKey'>Alt</div><div class='shortcutKey'>menu</div></div></div></div>
+                <div class='keyboardShortcut'><div class='shortcutAction'>Create random color</div><div class='shortcutKeys'><div class='shortcutKeys'><div class='shortcutKey'>Alt</div><div class='shortcutKey'>Color menu</div></div></div></div>
+            </div>
+        </div>
+
+
+        <div class='keyboardPage' id='keyboardPageZoom'>
+
+            <div class='keyboardGroup'>
+                <div class='keyboardShortcut'><div class='shortcutAction'>Pan</div><div class='shortcutKeys'><div class='shortcutKeys'><div class='shortcutKey'>Space</div><div class='shortcutKey'>drag</div></div></div></div>
+                <div class='keyboardLabel'>While not using the hand tool...</div>
+                <div class='keyboardShortcut'><div class='shortcutAction'>Zoom</div><div class='shortcutKeys'><div class='shortcutKeys'><div class='shortcutKey'>Ctrl</div><div class='shortcutKey'>wheel</div></div></div></div>
+                <div class='keyboardLabel'>While using the hand tool...</div>
+                <div class='keyboardShortcut'><div class='shortcutAction'>Zoom</div><div class='shortcutKeys'><div class='shortcutKeys'><div class='shortcutKey'>Wheel</div></div></div></div>
+            </div>
+
+            <div class='keyboardGroup nextGroup'>
+                <div class='keyboardShortcut'><div class='shortcutAction'>Zoom in</div><div class='shortcutKeys'><div class='shortcutKeys'><div class='shortcutKey'>Ctrl</div><div class='shortcutKey shortcutChar'>+</div></div></div></div>
+                <div class='keyboardShortcut'><div class='shortcutAction'>Zoom out</div><div class='shortcutKeys'><div class='shortcutKeys'><div class='shortcutKey'>Ctrl</div><div class='shortcutKey shortcutChar'>−</div></div></div></div>
+                <div class='keyboardShortcut'><div class='shortcutAction'>Zoom to 100%</div><div class='shortcutKeys'><div class='shortcutKeys'><div class='shortcutKey'>Ctrl</div><div class='shortcutKey shortcutChar'>0</div></div></div></div>
+                <div class='keyboardShortcut'><div class='shortcutAction'>Zoom to fit</div><div class='shortcutKeys'><div class='shortcutKeys'><div class='shortcutKey'>Shift</div><div class='shortcutKey shortcutCharNarrow'>1</div></div></div></div>
+                <div class='keyboardShortcut'><div class='shortcutAction'>Zoom to selection</div><div class='shortcutKeys'><div class='shortcutKeys'><div class='shortcutKey'>Shift</div><div class='shortcutKey shortcutChar'>2</div></div></div></div>
+            </div>
+
+        </div>
+
+
+        <div class='keyboardPage' id='keyboardPageSelection'>
+
+            <!-- <div class='keyboardGroup'>
+                <div class='keyboardLabel'>While selecting...</div>
+                <div class='keyboardShortcut'><div class='shortcutAction'>Zoom to selection</div><div class='shortcutKeys'><div class='shortcutKeys'><div class='shortcutKey'>Ctrl</div></div></div></div>
+                <div class='keyboardShortcut'><div class='shortcutAction'>Zoom out from selection</div><div class='shortcutKeys'><div class='shortcutKeys'><div class='shortcutKey'>Ctrl</div><div class='shortcutKey'>Alt</div></div></div></div>
+            </div> -->
+
+            <div class='keyboardGroup'>
+                <div class='keyboardShortcut'><div class='shortcutAction'>Select all</div><div class='shortcutKeys'><div class='shortcutKeys'><div class='shortcutKey'>Ctrl</div><div class='shortcutKey shortcutChar'>A</div></div></div></div>
+                <div class='keyboardShortcut'><div class='shortcutAction'>Select inverse</div><div class='shortcutKeys'><div class='shortcutKeys'><div class='shortcutKey'>Ctrl</div><div class='shortcutKey'>Shift</div><div class='shortcutKey shortcutChar'>A</div></div></div></div>
+                <div class='keyboardShortcut'><div class='shortcutAction'>Select none</div><div class='shortcutKeys'><div class='shortcutKeys'><div class='shortcutKey'>Esc</div></div></div></div>
+            </div>
+
+            <div class='keyboardGroup nextGroup'>
+                <!-- <div class='keyboardShortcut'><div class='shortcutAction'>Toggle selected</div><div class='shortcutKeys'><div class='shortcutKeys'><div class='shortcutKey'>Shift</div><div class='shortcutKey'>click</div></div></div></div> -->
+                <div class='keyboardShortcut'><div class='shortcutAction'>Select tree left</div><div class='shortcutKeys'><div class='shortcutKeys'><div class='shortcutKey'>Ctrl</div><div class='shortcutKey'>Shift</div><div class='shortcutKey'>click</div></div></div></div>
+                <div class='keyboardShortcut'><div class='shortcutAction'>Select tree right</div><div class='shortcutKeys'><div class='shortcutKeys'><div class='shortcutKey'>Alt</div><div class='shortcutKey'>Shift</div><div class='shortcutKey'>click</div></div></div></div>
+                <div class='keyboardShortcut'><div class='shortcutAction'>Select tree across</div><div class='shortcutKeys'><div class='shortcutKeys'><div class='shortcutKey'>Ctrl</div><div class='shortcutKey'>Alt</div><div class='shortcutKey'>click</div></div></div></div>
+                <div class='keyboardShortcut'><div class='shortcutAction'>Select entire tree</div><div class='shortcutKeys'><div class='shortcutKeys'><div class='shortcutKey'>Ctrl</div><div class='shortcutKey'>Alt</div><div class='shortcutKey'>Shift</div><div class='shortcutKey'>click</div></div></div></div>
+            </div>
+
+        </div>
+
+
+        <div class='keyboardPage' id='keyboardPageNodes'>
+            <div class='keyboardGroup'>
+                <div class='keyboardShortcut'><div class='shortcutAction'>Enable/disable</div><div class='shortcutKeys'><div class='shortcutKeys'><div class='shortcutKey'>Ctrl</div><div class='shortcutKey'>Shift</div><div class='shortcutKey shortcutChar'>E</div></div></div></div>
+            </div>
+        </div>
+ 
+
+        <div class='keyboardPage' id='keyboardPageConnections'>
+            <div class='keyboardGroup'>
+                <div class='keyboardLabel'>While connecting from an output...</div>
+                <div class='keyboardShortcut'><div class='shortcutAction'>Copy input value back to output</div><div class='shortcutKeys'><div class='shortcutKeys'><div class='shortcutKey'>Ctrl</div></div></div></div>
+            </div>
+        </div>
+
+        
+        <div class='keyboardPage' id='keyboardPageCursor'>
+            <div class='keyboardGroup'>
+                <div class='keyboardLabel'>While adjusting (some) values...</div>
+                <div class='keyboardShortcut'><div class='shortcutAction'>Allow values outside the visible limits</div><div class='shortcutKeys'><div class='shortcutKeys'><div class='shortcutKey'>Ctrl</div></div></div></div>
+            </div>
+            <div class='keyboardGroup nextGroup'>
+                <div class='keyboardLabel'>While hovering over a node...</div>
+                <div class='keyboardShortcut'><div class='shortcutAction'>Highlight the node and its connections</div><div class='shortcutKeys'><div class='shortcutKeys'><div class='shortcutKey'>Alt</div></div></div></div>
+            </div>
+        </div>
+
+        
+        <div class='keyboardPage' id='keyboardPageEdit'>
+            <div class='keyboardGroup'>
+                <div class='keyboardShortcut'><div class='shortcutAction'>Copy</div><div class='shortcutKeys'><div class='shortcutKeys'><div class='shortcutKey'>Ctrl</div><div class='shortcutKey shortcutChar'>C</div></div></div></div>
+                <div class='keyboardShortcut'><div class='shortcutAction'>Cut</div><div class='shortcutKeys'><div class='shortcutKeys'><div class='shortcutKey'>Ctrl</div><div class='shortcutKey shortcutChar'>X</div></div></div></div>
+                <div class='keyboardShortcut'><div class='shortcutAction'>Paste</div><div class='shortcutKeys'><div class='shortcutKeys'><div class='shortcutKey'>Ctrl</div><div class='shortcutKey shortcutChar'>V</div></div></div></div>
+                <div class='keyboardShortcut'><div class='shortcutAction'>Paste with input connections</div><div class='shortcutKeys'><div class='shortcutKeys'><div class='shortcutKey'>Ctrl</div><div class='shortcutKey'>Shift</div><div class='shortcutKey shortcutChar'>V</div></div></div></div>
+                <div class='keyboardShortcut'><div class='shortcutAction'>Remove from branch</div><div class='shortcutKeys'><div class='shortcutKeys'><div class='shortcutKey'>Ctrl</div><div class='shortcutKey shortcutCharWide'>⌫</div></div></div></div>
+            </div>
+            <div class='keyboardGroup nextGroup'>
+                <div class='keyboardShortcut'><div class='shortcutAction'>Duplicate</div><div class='shortcutKeys'><div class='shortcutKeys'><div class='shortcutKey'>Ctrl</div><div class='shortcutKey shortcutChar'>D</div></div></div></div>
+                <div class='keyboardShortcut'><div class='shortcutAction'>Duplicate with input connections</div><div class='shortcutKeys'><div class='shortcutKeys'><div class='shortcutKey'>Ctrl</div><div class='shortcutKey'>Shift</div><div class='shortcutKey shortcutChar'>D</div></div></div></div>
+            </div>
+        </div>
+    
+    
+    </div>
+
+</div>

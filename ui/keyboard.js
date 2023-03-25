@@ -114,6 +114,9 @@ document.addEventListener('keydown', e =>
         else if (isVisible(minZoomDialog   )) hideMinZoomDialog();
         else if (isVisible(productKeyDialog)) hideProductKeyDialog();
         else if (isVisible(aboutDialog     )) hideAboutDialog();
+
+        else if (!isEmpty(graphView.selectedNodes))
+            graphView.deselectAllNodes(e.shiftKey);
     }
 
     //

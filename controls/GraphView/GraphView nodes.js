@@ -68,6 +68,20 @@ GraphView.prototype.selectAllNodes = function(invert)
 
 
 
+GraphView.prototype.deselectAllNodes = function()
+{
+    const lastSelected = [...this.selectedNodes];
+
+    this.selectedNodes = [];
+        
+    actionManager.do(new SelectNodesAction(
+        this.graph,
+        this.selectedNodes.map(n => n.id), 
+        lastSelected      .map(n => n.id)));
+};
+
+
+
 GraphView.prototype.copySelectedNodes = function()
 {
     pasteOffset     = point(0, 0);

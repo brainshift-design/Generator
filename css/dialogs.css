@@ -75,7 +75,7 @@
 
 #productKeyTitle
 {
-    height:        40px;
+    height:         40px;
     border-bottom:  1px solid rgb(0, 0, 0, 0.15);
     border-top:     1px solid var(--figma-color-bg-tertiary);
     border-bottom:  1px solid var(--figma-color-bg-tertiary);

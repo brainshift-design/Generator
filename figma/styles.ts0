@@ -242,11 +242,10 @@ function getStylePaints(stylePaints)
             case 'SOLID':
                 paints.push(
                 {
-                    type: 'SOLID', 
-                    color: {
-                        r: Math.min(Math.max(0, parseFloat(fill[0]) / 0xff), 1), 
-                        g: Math.min(Math.max(0, parseFloat(fill[1]) / 0xff), 1), 
-                        b: Math.min(Math.max(0, parseFloat(fill[2]) / 0xff), 1) },
+                    type:  'SOLID', 
+                    color: { r: Math.min(Math.max(0, parseFloat(fill[0]) / 0xff), 1), 
+                             g: Math.min(Math.max(0, parseFloat(fill[1]) / 0xff), 1), 
+                             b: Math.min(Math.max(0, parseFloat(fill[2]) / 0xff), 1) },
                     opacity: Math.min(Math.max(0, parseFloat(fill[3]) / 100), 1)
                 });
 

@@ -298,7 +298,7 @@
 
 #productKeyTitle
 {
-    height:        40px;
+    height:         40px;
     border-bottom:  1px solid rgb(0, 0, 0, 0.15);
     border-top:     1px solid var(--figma-color-bg-tertiary);
     border-bottom:  1px solid var(--figma-color-bg-tertiary);
@@ -1443,6 +1443,219 @@ div
     margin:  0;
     padding: 0;
 }
+
+
+#keyboardPanel
+{
+    display:       none;
+    background:    #1E1E1E;
+    width:         calc(100% - 2px);
+    height:        240px;
+    position:      absolute;
+    bottom:        0;
+    border-top:    1px solid #ffffff25;
+    border-bottom: 1px solid #ffffff0d;
+    border-left:   1px solid #ffffff08;
+    border-right:  1px solid #ffffff08;
+}
+
+
+#keyboardPanelTabsHolder
+{
+    height:        36px;
+    overflow:      hidden;
+    position:      relative;
+    /* box-shadow:    0 0 0 1px inset red; */
+    z-index:       1;
+}
+
+
+#keyboardPanelTabs
+{
+    display:    flex;
+    width:      fit-content;
+    height:     36px;
+    position:   absolute;
+    left:       50%;
+    transform:  translateX(-50%);
+    /* box-shadow: 0 0 0 1px inset blue;    */
+}
+
+
+#keyboardPanelTab
+{
+    background:    #1E1E1E;
+    color:         #b6b6b6;
+    font-size:     12px;
+    font-weight:   500;
+    display:       inline;
+    padding-left:  16px;
+    padding-right: 16px;
+    padding-top:   10px;
+    margin:        0;
+    height:        26px;
+    /* box-shadow:    0 0 0 1px inset green;    */
+}
+
+
+#keyboardPanelTab:hover
+{
+    color:         #f6f6f6;
+}
+
+
+#keyboardPanelClose
+{
+    position:            absolute;
+    top:                 0;
+    right:               0;
+    width:               36px;
+    height:              36px;
+    background:          url('data:image/svg+xml;utf8,<svg width="30" height="30" viewBox="0 0 30 30" fill="none" xmlns="http://www.w3.org/2000/svg"><path id="keyboardCloseX" fill-rule="evenodd" clip-rule="evenodd" d="M16 15.293L20.6465 10.6465L21.3536 11.3536L16.7071 16.0001L21.3536 20.6465L20.6465 21.3536L16 16.7072L11.3536 21.3536L10.6465 20.6465L15.2929 16.0001L10.6465 11.3537L11.3536 10.6466L16 15.293Z" fill="%23777"/></svg>');
+    background-position: 50% calc(50% - 1px);
+    background-repeat:   no-repeat;
+}
+
+
+#keyboardPanelClose:hover
+{
+    background:          url('data:image/svg+xml;utf8,<svg width="30" height="30" viewBox="0 0 30 30" fill="none" xmlns="http://www.w3.org/2000/svg"><path id="keyboardCloseX" fill-rule="evenodd" clip-rule="evenodd" d="M16 15.293L20.6465 10.6465L21.3536 11.3536L16.7071 16.0001L21.3536 20.6465L20.6465 21.3536L16 16.7072L11.3536 21.3536L10.6465 20.6465L15.2929 16.0001L10.6465 11.3537L11.3536 10.6466L16 15.293Z" fill="%23f6f6f6"/></svg>');
+    background-position: 50% calc(50% - 1px);
+    background-repeat:   no-repeat;
+}
+
+
+#keyboardPanelContent
+{
+    position:   absolute;
+    top:        35px;
+    background: #1E1E1E;
+    border-top: 1px solid #ffffff1b;   
+    width:      100%;
+    height:     206px;
+    /* box-shadow: 0 0 0 1px inset orange; */
+    z-index:    0;
+}
+
+
+.keyboardPage
+{
+    display:        flex;
+    position:       absolute;
+    left:           50%;
+    top:            0;
+    transform:      translateX(-50%);
+    padding-top:    6px;
+    width:          max-content;
+    height:         calc(100% - 7px);
+    /* box-shadow:     0 0 0 1px inset red; */
+}
+
+
+.keyboardGroup
+{
+    display:        inline-block;
+    width:          300px;
+    height:         auto;
+    vertical-align: top;
+    /* box-shadow:     0 0 0 1px inset yellow; */
+}
+
+
+.nextGroup
+{
+    margin-left: 46px;
+}
+
+
+.keyboardLabel
+{
+    display:     inline-block;
+    font-size:   12px;
+    font-weight: 600;
+    color:       #757575;
+    width:       300px;
+    height:      26px;
+    padding-top: 11px;
+    /* box-shadow:  0 0 0 1px inset green; */
+}
+
+
+.keyboardShortcut
+{
+    display:    inline-block;
+    position:   relative;
+    width:      300px;
+    height:     37px;
+    /* box-shadow: 0 0 0 1px inset green; */
+}
+
+
+.shortcutAction
+{
+    position:    absolute;
+    left:        0;
+    top:         50%;
+    transform:   translateY(calc(-50% - 1px));
+    display:     inline-block;
+    font-size:   12px;
+    font-weight: 500;
+    color:       #bcbcbc;
+    width:       fit-content;
+    /* box-shadow:  0 0 0 1px inset blue; */
+}
+
+
+.shortcutKeys
+{
+    position:    absolute;
+    right:       0;
+    top:         50%;
+    transform:   translateY(-50%);
+    display:     flex;
+    width:       fit-content;
+    white-space: nowrap;
+    /* box-shadow:  0 0 0 1px inset magenta; */
+}
+
+
+.shortcutKey
+{
+    display:                 inline-block;
+    font-size:               11px;
+    font-variant-alternates: stylistic(), styleset();
+    font-feature-settings:   'salt' on, 'ss02' on;
+    color:                   #bcbcbc;
+    margin-left:             3px;
+    margin-right:            0px;
+    padding-left:            4px;
+    padding-right:           4px;
+    padding-top:             5px;
+    width:                   max(19px, fit-content);
+    height:                  18.5px;
+    border-radius:           2px;
+    box-shadow:              0 0 0 1px inset #bcbcbc;
+}
+
+
+.shortcutChar
+{
+    padding-left:  8px;
+    padding-right: 8px;
+}
+
+.shortcutCharWide
+{
+    padding-left:  5px;
+    padding-right: 5px;
+}
+
+.shortcutCharNarrow
+{
+    padding-left:  9px;
+    padding-right: 9px;
+}
+
 
 
 .tooltip
@@ -3045,7 +3258,8 @@ a
 
 
 <div id='menuBar'></div>
-    
+
+
 <div id='_graphView' class='graphView'></div>
 
 <div id='selectBox'></div>
@@ -3257,12 +3471,137 @@ a
                 <p>Fixed paste undo bug for nodes with variable inputs.</p>
                 <p>Unwanted tooltips can now be ignored, which can be restored in Preferences/Show tooltips.</p>
                 <p>Fixed bug when undoing style delete would create a new style.</p>
+                <p>Unlinking a style will now leave the node name as is.</p>
                 <p>Fixed other UI issues.</p>
 
                 <p><br/><br/><div id='chkHideWhatsNew'></div></p>
             </div>
         </div>
         <div class='dialogScrollbar' id='whatsNewScrollbarY'></div>
+    </div>
+
+</div>
+
+
+<div id='keyboardPanel'>
+
+    <div id='keyboardPanelTabsHolder'>
+        <div id='keyboardPanelTabs'>
+            <div id='keyboardPanelTab' onclick="setCurrentKeyboardTab(0);">Menu</div>
+            <div id='keyboardPanelTab' onclick="setCurrentKeyboardTab(1);">Zoom</div>
+            <div id='keyboardPanelTab' onclick="setCurrentKeyboardTab(2);">Selection</div>
+            <div id='keyboardPanelTab' onclick="setCurrentKeyboardTab(3);">Nodes</div>
+            <div id='keyboardPanelTab' onclick="setCurrentKeyboardTab(4);">Connections</div>
+            <div id='keyboardPanelTab' onclick="setCurrentKeyboardTab(5);">Cursor</div>
+            <div id='keyboardPanelTab' onclick="setCurrentKeyboardTab(6);">Edit</div>
+        </div>
+        <div id='keyboardPanelClose' onclick="hideKeyboardPanel();"></div>
+    </div>
+    
+    <div id='keyboardPanelContent'>
+
+
+        <div class='keyboardPage' id='keyboardPageMenu'>
+            <div class='keyboardGroup'>
+                <div class='keyboardShortcut'><div class='shortcutAction'>Keep menu open</div><div class='shortcutKeys'><div class='shortcutKeys'><div class='shortcutKey'>Shift</div><div class='shortcutKey'>menu</div></div></div></div>
+            </div>
+            <div class='keyboardGroup nextGroup'>
+                <div class='keyboardShortcut'><div class='shortcutAction'>Create node</div><div class='shortcutKeys'><div class='shortcutKeys'><div class='shortcutKey'>Menu</div></div></div></div>
+                <div class='keyboardShortcut'><div class='shortcutAction'>Insert node into branch</div><div class='shortcutKeys'><div class='shortcutKeys'><div class='shortcutKey'>Ctrl</div><div class='shortcutKey'>menu</div></div></div></div>
+                <div class='keyboardShortcut'><div class='shortcutAction'>Connect node in new branch</div><div class='shortcutKeys'><div class='shortcutKeys'><div class='shortcutKey'>Ctrl</div><div class='shortcutKey'>Alt</div><div class='shortcutKey'>menu</div></div></div></div>
+                <div class='keyboardShortcut'><div class='shortcutAction'>Create random color</div><div class='shortcutKeys'><div class='shortcutKeys'><div class='shortcutKey'>Alt</div><div class='shortcutKey'>Color menu</div></div></div></div>
+            </div>
+        </div>
+
+
+        <div class='keyboardPage' id='keyboardPageZoom'>
+
+            <div class='keyboardGroup'>
+                <div class='keyboardShortcut'><div class='shortcutAction'>Pan</div><div class='shortcutKeys'><div class='shortcutKeys'><div class='shortcutKey'>Space</div><div class='shortcutKey'>drag</div></div></div></div>
+                <div class='keyboardLabel'>While not using the hand tool...</div>
+                <div class='keyboardShortcut'><div class='shortcutAction'>Zoom</div><div class='shortcutKeys'><div class='shortcutKeys'><div class='shortcutKey'>Ctrl</div><div class='shortcutKey'>wheel</div></div></div></div>
+                <div class='keyboardLabel'>While using the hand tool...</div>
+                <div class='keyboardShortcut'><div class='shortcutAction'>Zoom</div><div class='shortcutKeys'><div class='shortcutKeys'><div class='shortcutKey'>Wheel</div></div></div></div>
+            </div>
+
+            <div class='keyboardGroup nextGroup'>
+                <div class='keyboardShortcut'><div class='shortcutAction'>Zoom in</div><div class='shortcutKeys'><div class='shortcutKeys'><div class='shortcutKey'>Ctrl</div><div class='shortcutKey shortcutChar'>+</div></div></div></div>
+                <div class='keyboardShortcut'><div class='shortcutAction'>Zoom out</div><div class='shortcutKeys'><div class='shortcutKeys'><div class='shortcutKey'>Ctrl</div><div class='shortcutKey shortcutChar'>−</div></div></div></div>
+                <div class='keyboardShortcut'><div class='shortcutAction'>Zoom to 100%</div><div class='shortcutKeys'><div class='shortcutKeys'><div class='shortcutKey'>Ctrl</div><div class='shortcutKey shortcutChar'>0</div></div></div></div>
+                <div class='keyboardShortcut'><div class='shortcutAction'>Zoom to fit</div><div class='shortcutKeys'><div class='shortcutKeys'><div class='shortcutKey'>Shift</div><div class='shortcutKey shortcutCharNarrow'>1</div></div></div></div>
+                <div class='keyboardShortcut'><div class='shortcutAction'>Zoom to selection</div><div class='shortcutKeys'><div class='shortcutKeys'><div class='shortcutKey'>Shift</div><div class='shortcutKey shortcutChar'>2</div></div></div></div>
+            </div>
+
+        </div>
+
+
+        <div class='keyboardPage' id='keyboardPageSelection'>
+
+            <!-- <div class='keyboardGroup'>
+                <div class='keyboardLabel'>While selecting...</div>
+                <div class='keyboardShortcut'><div class='shortcutAction'>Zoom to selection</div><div class='shortcutKeys'><div class='shortcutKeys'><div class='shortcutKey'>Ctrl</div></div></div></div>
+                <div class='keyboardShortcut'><div class='shortcutAction'>Zoom out from selection</div><div class='shortcutKeys'><div class='shortcutKeys'><div class='shortcutKey'>Ctrl</div><div class='shortcutKey'>Alt</div></div></div></div>
+            </div> -->
+
+            <div class='keyboardGroup'>
+                <div class='keyboardShortcut'><div class='shortcutAction'>Select all</div><div class='shortcutKeys'><div class='shortcutKeys'><div class='shortcutKey'>Ctrl</div><div class='shortcutKey shortcutChar'>A</div></div></div></div>
+                <div class='keyboardShortcut'><div class='shortcutAction'>Select inverse</div><div class='shortcutKeys'><div class='shortcutKeys'><div class='shortcutKey'>Ctrl</div><div class='shortcutKey'>Shift</div><div class='shortcutKey shortcutChar'>A</div></div></div></div>
+                <div class='keyboardShortcut'><div class='shortcutAction'>Select none</div><div class='shortcutKeys'><div class='shortcutKeys'><div class='shortcutKey'>Esc</div></div></div></div>
+            </div>
+
+            <div class='keyboardGroup nextGroup'>
+                <!-- <div class='keyboardShortcut'><div class='shortcutAction'>Toggle selected</div><div class='shortcutKeys'><div class='shortcutKeys'><div class='shortcutKey'>Shift</div><div class='shortcutKey'>click</div></div></div></div> -->
+                <div class='keyboardShortcut'><div class='shortcutAction'>Select tree left</div><div class='shortcutKeys'><div class='shortcutKeys'><div class='shortcutKey'>Ctrl</div><div class='shortcutKey'>Shift</div><div class='shortcutKey'>click</div></div></div></div>
+                <div class='keyboardShortcut'><div class='shortcutAction'>Select tree right</div><div class='shortcutKeys'><div class='shortcutKeys'><div class='shortcutKey'>Alt</div><div class='shortcutKey'>Shift</div><div class='shortcutKey'>click</div></div></div></div>
+                <div class='keyboardShortcut'><div class='shortcutAction'>Select tree across</div><div class='shortcutKeys'><div class='shortcutKeys'><div class='shortcutKey'>Ctrl</div><div class='shortcutKey'>Alt</div><div class='shortcutKey'>click</div></div></div></div>
+                <div class='keyboardShortcut'><div class='shortcutAction'>Select entire tree</div><div class='shortcutKeys'><div class='shortcutKeys'><div class='shortcutKey'>Ctrl</div><div class='shortcutKey'>Alt</div><div class='shortcutKey'>Shift</div><div class='shortcutKey'>click</div></div></div></div>
+            </div>
+
+        </div>
+
+
+        <div class='keyboardPage' id='keyboardPageNodes'>
+            <div class='keyboardGroup'>
+                <div class='keyboardShortcut'><div class='shortcutAction'>Enable/disable</div><div class='shortcutKeys'><div class='shortcutKeys'><div class='shortcutKey'>Ctrl</div><div class='shortcutKey'>Shift</div><div class='shortcutKey shortcutChar'>E</div></div></div></div>
+            </div>
+        </div>
+ 
+
+        <div class='keyboardPage' id='keyboardPageConnections'>
+            <div class='keyboardGroup'>
+                <div class='keyboardLabel'>While connecting from an output...</div>
+                <div class='keyboardShortcut'><div class='shortcutAction'>Copy input value back to output</div><div class='shortcutKeys'><div class='shortcutKeys'><div class='shortcutKey'>Ctrl</div></div></div></div>
+            </div>
+        </div>
+
+        
+        <div class='keyboardPage' id='keyboardPageCursor'>
+            <div class='keyboardGroup'>
+                <div class='keyboardLabel'>While adjusting (some) values...</div>
+                <div class='keyboardShortcut'><div class='shortcutAction'>Allow values outside the visible limits</div><div class='shortcutKeys'><div class='shortcutKeys'><div class='shortcutKey'>Ctrl</div></div></div></div>
+            </div>
+            <div class='keyboardGroup nextGroup'>
+                <div class='keyboardLabel'>While hovering over a node...</div>
+                <div class='keyboardShortcut'><div class='shortcutAction'>Highlight the node and its connections</div><div class='shortcutKeys'><div class='shortcutKeys'><div class='shortcutKey'>Alt</div></div></div></div>
+            </div>
+        </div>
+
+        
+        <div class='keyboardPage' id='keyboardPageEdit'>
+            <div class='keyboardGroup'>
+                <div class='keyboardShortcut'><div class='shortcutAction'>Copy</div><div class='shortcutKeys'><div class='shortcutKeys'><div class='shortcutKey'>Ctrl</div><div class='shortcutKey shortcutChar'>C</div></div></div></div>
+                <div class='keyboardShortcut'><div class='shortcutAction'>Cut</div><div class='shortcutKeys'><div class='shortcutKeys'><div class='shortcutKey'>Ctrl</div><div class='shortcutKey shortcutChar'>X</div></div></div></div>
+                <div class='keyboardShortcut'><div class='shortcutAction'>Paste</div><div class='shortcutKeys'><div class='shortcutKeys'><div class='shortcutKey'>Ctrl</div><div class='shortcutKey shortcutChar'>V</div></div></div></div>
+                <div class='keyboardShortcut'><div class='shortcutAction'>Paste with input connections</div><div class='shortcutKeys'><div class='shortcutKeys'><div class='shortcutKey'>Ctrl</div><div class='shortcutKey'>Shift</div><div class='shortcutKey shortcutChar'>V</div></div></div></div>
+                <div class='keyboardShortcut'><div class='shortcutAction'>Remove from branch</div><div class='shortcutKeys'><div class='shortcutKeys'><div class='shortcutKey'>Ctrl</div><div class='shortcutKey shortcutCharWide'>⌫</div></div></div></div>
+            </div>
+            <div class='keyboardGroup nextGroup'>
+                <div class='keyboardShortcut'><div class='shortcutAction'>Duplicate</div><div class='shortcutKeys'><div class='shortcutKeys'><div class='shortcutKey'>Ctrl</div><div class='shortcutKey shortcutChar'>D</div></div></div></div>
+                <div class='keyboardShortcut'><div class='shortcutAction'>Duplicate with input connections</div><div class='shortcutKeys'><div class='shortcutKeys'><div class='shortcutKey'>Ctrl</div><div class='shortcutKey'>Shift</div><div class='shortcutKey shortcutChar'>D</div></div></div></div>
+            </div>
+        </div>
+    
+    
     </div>
 
 </div>
@@ -38288,10 +38627,11 @@ function initGeneratorMenus()
         menuItemShowClearUndoWarning  = new MenuItem('Show clear undo warning',       {checkCallback: () => settings.showClearUndoWarning,  callback: () => { updateSettingAndMenu('showClearUndoWarning',  true, !settings.showClearUndoWarning);                                        }}),
         menuItemShowTooltips          = new MenuItem('Show tooltips',                 {childMenu: menuShowTooltips}),
                                         new MenuItem('',                              {separator: true}),    
-        menuItemMinZoomForParams      = new MenuItem('Min. zoom to adjust values...', {callback: () => showMinZoomDialog()}),
-                                        new MenuItem('',                              {separator: true}),    
         menuItemShowDebugMenu         = new MenuItem('Show debug menu',               {checkCallback: () => settings.showDebugMenu,         callback: () => { updateSettingAndMenu('showDebugMenu',         true, !settings.showDebugMenu);         updateMenuItemShowDebugMenu();        }}),
-        menuItemEnableBetaFeatures    = new MenuItem('Enable beta features',          {checkCallback: () => settings.enableBetaFeatures,    callback: () => { updateSettingAndMenu('enableBetaFeatures',    true, !settings.enableBetaFeatures);    enableFeatures(true, settings.enableBetaFeatures); }})]);
+        menuItemEnableBetaFeatures    = new MenuItem('Enable beta features',          {checkCallback: () => settings.enableBetaFeatures,    callback: () => { updateSettingAndMenu('enableBetaFeatures',    true, !settings.enableBetaFeatures);    enableFeatures(true, settings.enableBetaFeatures); }}),
+                                        new MenuItem('',                              {separator: true}),    
+                                        new MenuItem('Keyboard shortcuts...',         {callback: () => showKeyboardPanel()}),
+        menuItemMinZoomForParams      = new MenuItem('Min. zoom to adjust values...', {callback: () => showMinZoomDialog()})]);
         
 
     menuMainDebug = new Menu('Debug', false);
@@ -40248,6 +40588,20 @@ GraphView.prototype.selectAllNodes = function(invert)
         invert
         ? this.graph.nodes.filter(n => !lastSelected.includes(n))
         : this.graph.nodes;
+        
+    actionManager.do(new SelectNodesAction(
+        this.graph,
+        this.selectedNodes.map(n => n.id), 
+        lastSelected      .map(n => n.id)));
+};
+
+
+
+GraphView.prototype.deselectAllNodes = function()
+{
+    const lastSelected = [...this.selectedNodes];
+
+    this.selectedNodes = [];
         
     actionManager.do(new SelectNodesAction(
         this.graph,
@@ -59014,6 +59368,9 @@ function uiReturnFigStartGenerator(msg)
     uiQueueMessageToFigma({
         cmd:     'figLoadNodesAndConns',
         dataMode: settings.dataMode });
+
+
+    showKeyboardPanel(1);
 }
 
 
@@ -59133,6 +59490,9 @@ document.addEventListener('keydown', e =>
         else if (isVisible(minZoomDialog   )) hideMinZoomDialog();
         else if (isVisible(productKeyDialog)) hideProductKeyDialog();
         else if (isVisible(aboutDialog     )) hideAboutDialog();
+
+        else if (!isEmpty(graphView.selectedNodes))
+            graphView.deselectAllNodes(e.shiftKey);
     }
 
     //
@@ -59342,6 +59702,38 @@ document.addEventListener('keyup', e =>
 
 },
 false);
+
+
+var currentKeyboardTab = 0;
+
+
+function showKeyboardPanel()
+{
+    setCurrentKeyboardTab(0);
+    keyboardPanel.style.display = 'block';
+}
+
+
+
+function hideKeyboardPanel()
+{
+    keyboardPanel.style.display = 'none';
+}
+
+
+
+function setCurrentKeyboardTab(tab)
+{
+    currentKeyboardTab = tab;
+
+    for (let i = 0; i < keyboardPanelTabs.children.length; i++)
+    {
+        keyboardPanelTabs.children[i].style.background = i == currentKeyboardTab ? '#1E1E1E' : 'none';
+        keyboardPanelTabs.children[i].style.boxShadow  = i == currentKeyboardTab ? '0 0 0 0.5px #ffffff2b' : 'none';
+
+        keyboardPanelContent.children[i].style.display = i == currentKeyboardTab ? 'flex' : 'none';
+    }
+}
 
 
 var uiFigMessagePosted = false;

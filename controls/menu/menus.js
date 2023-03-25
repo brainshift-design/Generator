@@ -178,10 +178,11 @@ function initGeneratorMenus()
         menuItemShowClearUndoWarning  = new MenuItem('Show clear undo warning',       {checkCallback: () => settings.showClearUndoWarning,  callback: () => { updateSettingAndMenu('showClearUndoWarning',  true, !settings.showClearUndoWarning);                                        }}),
         menuItemShowTooltips          = new MenuItem('Show tooltips',                 {childMenu: menuShowTooltips}),
                                         new MenuItem('',                              {separator: true}),    
-        menuItemMinZoomForParams      = new MenuItem('Min. zoom to adjust values...', {callback: () => showMinZoomDialog()}),
-                                        new MenuItem('',                              {separator: true}),    
         menuItemShowDebugMenu         = new MenuItem('Show debug menu',               {checkCallback: () => settings.showDebugMenu,         callback: () => { updateSettingAndMenu('showDebugMenu',         true, !settings.showDebugMenu);         updateMenuItemShowDebugMenu();        }}),
-        menuItemEnableBetaFeatures    = new MenuItem('Enable beta features',          {checkCallback: () => settings.enableBetaFeatures,    callback: () => { updateSettingAndMenu('enableBetaFeatures',    true, !settings.enableBetaFeatures);    enableFeatures(true, settings.enableBetaFeatures); }})]);
+        menuItemEnableBetaFeatures    = new MenuItem('Enable beta features',          {checkCallback: () => settings.enableBetaFeatures,    callback: () => { updateSettingAndMenu('enableBetaFeatures',    true, !settings.enableBetaFeatures);    enableFeatures(true, settings.enableBetaFeatures); }}),
+                                        new MenuItem('',                              {separator: true}),    
+                                        new MenuItem('Keyboard shortcuts...',         {callback: () => showKeyboardPanel()}),
+        menuItemMinZoomForParams      = new MenuItem('Min. zoom to adjust values...', {callback: () => showMinZoomDialog()})]);
         
 
     menuMainDebug = new Menu('Debug', false);

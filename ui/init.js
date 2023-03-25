@@ -92,4 +92,7 @@ function uiReturnFigStartGenerator(msg)
     uiQueueMessageToFigma({
         cmd:     'figLoadNodesAndConns',
         dataMode: settings.dataMode });
+
+
+    showKeyboardPanel(1);
 }
