@@ -1509,8 +1509,8 @@ div
     position:            absolute;
     top:                 0;
     right:               0;
-    width:               36px;
-    height:              36px;
+    width:               35px;
+    height:              35px;
     background:          url('data:image/svg+xml;utf8,<svg width="30" height="30" viewBox="0 0 30 30" fill="none" xmlns="http://www.w3.org/2000/svg"><path id="keyboardCloseX" fill-rule="evenodd" clip-rule="evenodd" d="M16 15.293L20.6465 10.6465L21.3536 11.3536L16.7071 16.0001L21.3536 20.6465L20.6465 21.3536L16 16.7072L11.3536 21.3536L10.6465 20.6465L15.2929 16.0001L10.6465 11.3537L11.3536 10.6466L16 15.293Z" fill="%23777"/></svg>');
     background-position: 50% calc(50% - 1px);
     background-repeat:   no-repeat;
@@ -3472,6 +3472,7 @@ a
                 <p>Unwanted tooltips can now be ignored, which can be restored in Preferences/Show tooltips.</p>
                 <p>Fixed bug when undoing style delete would create a new style.</p>
                 <p>Unlinking a style will now leave the node name as is.</p>
+                <p>Added keyboard shortcuts panel.</p>
                 <p>Fixed other UI issues.</p>
 
                 <p><br/><br/><div id='chkHideWhatsNew'></div></p>
@@ -40648,13 +40649,13 @@ GraphView.prototype.duplicateSelectedNodes = function(pasteConnected)
 
 
 
-GraphView.prototype.deleteSelectedNodes = function()
+GraphView.prototype.deleteSelectedNodes = function(cut = false)
 {
     const nodeIds = this.selectedNodes.map(n => n.id);
 
     if (!isEmpty(nodeIds))
     {
-        actionManager.do(new DeleteNodesAction(this.graph, nodeIds));
+        actionManager.do(new DeleteNodesAction(this.graph, nodeIds, cut));
         this._selected = [];
     }
 };
@@ -56590,12 +56591,12 @@ extends Action
    
 
 
-    constructor(graph, nodeIds)
+    constructor(graph, nodeIds, cut = false)
     {
         super(
             graph,
             DELETE_ACTION, 
-            'DELETE ' + nodeIds.length + ' ' + countString('node', nodeIds.length));
+            (cut ? 'CUT ' : 'DELETE ') + nodeIds.length + ' ' + countString('node', nodeIds.length));
 
         this.graph           = graph;
 
@@ -59368,9 +59369,6 @@ function uiReturnFigStartGenerator(msg)
     uiQueueMessageToFigma({
         cmd:     'figLoadNodesAndConns',
         dataMode: settings.dataMode });
-
-
-    showKeyboardPanel(1);
 }
 
 
@@ -59391,8 +59389,15 @@ document.addEventListener('keydown', e =>
     let setLastKeyDown = true;
 
 
+    // cut
+    if (   e.code == 'KeyX'
+        && getCtrlKey(e))
+    {
+        graphView.copySelectedNodes();
+        graphView.deleteSelectedNodes(true);
+    }
     // copy
-    if (   e.code == 'KeyC'
+    else if (   e.code == 'KeyC'
         && getCtrlKey(e))
         graphView.copySelectedNodes();
         

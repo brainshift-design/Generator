@@ -15,8 +15,15 @@ document.addEventListener('keydown', e =>
     let setLastKeyDown = true;
 
 
+    // cut
+    if (   e.code == 'KeyX'
+        && getCtrlKey(e))
+    {
+        graphView.copySelectedNodes();
+        graphView.deleteSelectedNodes(true);
+    }
     // copy
-    if (   e.code == 'KeyC'
+    else if (   e.code == 'KeyC'
         && getCtrlKey(e))
         graphView.copySelectedNodes();
         

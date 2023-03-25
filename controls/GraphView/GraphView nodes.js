@@ -119,13 +119,13 @@ GraphView.prototype.duplicateSelectedNodes = function(pasteConnected)
 
 
 
-GraphView.prototype.deleteSelectedNodes = function()
+GraphView.prototype.deleteSelectedNodes = function(cut = false)
 {
     const nodeIds = this.selectedNodes.map(n => n.id);
 
     if (!isEmpty(nodeIds))
     {
-        actionManager.do(new DeleteNodesAction(this.graph, nodeIds));
+        actionManager.do(new DeleteNodesAction(this.graph, nodeIds, cut));
         this._selected = [];
     }
 };

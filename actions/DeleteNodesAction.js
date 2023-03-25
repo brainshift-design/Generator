@@ -12,12 +12,12 @@ extends Action
    
 
 
-    constructor(graph, nodeIds)
+    constructor(graph, nodeIds, cut = false)
     {
         super(
             graph,
             DELETE_ACTION, 
-            'DELETE ' + nodeIds.length + ' ' + countString('node', nodeIds.length));
+            (cut ? 'CUT ' : 'DELETE ') + nodeIds.length + ' ' + countString('node', nodeIds.length));
 
         this.graph           = graph;
 
