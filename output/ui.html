@@ -41574,7 +41574,7 @@ GraphView.prototype.endZoomSelection = function(pointerId, zoom)
         const rect = this.screen2rect(selection);
 
         for (let i = 0; i < 5; i++)
-            this.zoomToRect(rect);
+            this.zoomToRect(rect, 0);
     }
 
 
@@ -41591,7 +41591,7 @@ GraphView.prototype.endZoomSelection = function(pointerId, zoom)
 
 GraphView.prototype.zoomToFit = function()
 {
-    if (!isEmpty(this.graph.nodes)) 
+    if (!isEmpty(this.graph.nodes))
         this.zoomToNodes(this.graph.nodes);
     else
         this.setPanAndZoom(point(0, 0), 1);
@@ -41625,11 +41625,12 @@ GraphView.prototype.zoomToRect = function(rect, margin = 40)
 {
     const viewRect = this.measureData.clientRect;
 
-    margin /= this.zoom;
-
-    this.zoom = Math.min(
-          Math.min(viewRect.width, viewRect.height)
-        / Math.max(rect.width + margin*2, rect.height + margin*2));
+    this.zoom = 
+        viewRect.width >= viewRect.height
+        ? (rect.width >= rect.height
+           ? (viewRect.width  - margin*2) / rect.width
+           : (viewRect.height - margin*2) / rect.height)
+        : (viewRect.width - margin*2) / rect.width;
 
     this.pan = {
         x: viewRect.width /2 - (rect.x + rect.width /2) * this.zoom,
