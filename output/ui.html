@@ -3470,13 +3470,7 @@ a
             <div id='whatsNewBody'>
                 <h1 style='margin-top: 20px;'>What's new in Generator</h1>
 
-                <p>Fixed paste undo bug for nodes with variable inputs.</p>
-                <p>Unwanted large tooltips can now be ignored.</p>
-                <p>Fixed bug where undoing style delete would create a new style.</p>
-                <p>Unlinking a style will now leave the node name as is.</p>
-                <p>Added keyboard shortcuts panel.</p>
-                <p>Added context menus to colorblind parameters.</p>
-                <p>Fixed other UI issues.</p>
+                <p>-</p>
 
                 <p><br/><br/><div id='chkHideWhatsNew'></div></p>
             </div>
@@ -3806,7 +3800,7 @@ a
 
 
 
-const generatorVersion = 124;
+const generatorVersion = 125;
 
 
 const MAX_INT32        = 2147483647;
@@ -20842,7 +20836,7 @@ onerror = (event, source, line, pos, error) =>
 
 
 
-const generatorVersion = 124;
+const generatorVersion = 125;
 
 
 const MAX_INT32        = 2147483647;
@@ -40173,24 +40167,24 @@ class GraphView
 
     constructor(div, graph)
     {
-        this.div           = div;
-        this.div.view      = this;
-
-        this.graph         = graph;
-        this.graph.view    = this;
-
-        
-        this.wireContainer = createDiv('wireContainer');
-        
-        this.scrollbarX    = createDiv('scrollbar', 'scrollbarX');
-        this.scrollbarY    = createDiv('scrollbar', 'scrollbarY');
+        this.div                     = div;
+        this.div.view                = this;
+          
+        this.graph                   = graph;
+        this.graph.view              = this;
+          
+                  
+        this.wireContainer           = createDiv('wireContainer');
+                  
+        this.scrollbarX              = createDiv('scrollbar', 'scrollbarX');
+        this.scrollbarY              = createDiv('scrollbar', 'scrollbarY');
 
 
         this.scrollbarX.style.zIndex = MAX_INT32-1;
         this.scrollbarY.style.zIndex = MAX_INT32-2;
 
-        this.scrollbarX.moving = false;
-        this.scrollbarY.moving = false;
+        this.scrollbarX.moving       = false;
+        this.scrollbarY.moving       = false;
 
 
         this.div.appendChild(this.wireContainer);
@@ -41496,6 +41490,9 @@ GraphView.prototype.updatePanAndZoom = function(updateNodes)
 
         menuItemZoomTo100.setChecked(equal(this.zoom, 1, 0.0001));
     });
+
+
+    //console.log('pan = %s, zoom = %s', this.pan.x + ', ' + this.pan.y, this.zoom);
 };
 
 
@@ -43234,7 +43231,7 @@ extends Parameter
         this.controlWrapper = createDiv();
 
 
-        this.controls.push(ColorControl(
+        this.controls.push(new ColorControl(
             null,
             this,
             120, // width
@@ -43264,15 +43261,15 @@ extends Parameter
         this.controls[1].setSuffix('%', true);
 
 
-        this.controls[0].div.zIndex = 0;
-        this.controls[1].div.zIndex = 0;
-   
-        this.defaultValue           = defaultValue;
-        this.value                  = defaultValue;
+        this.controls[0].div.zIndex                 = 0;
+        this.controls[1].div.zIndex                 = 0;
+                   
+        this.defaultValue                           = defaultValue;
+        this.value                                  = defaultValue;
 
         
-        this._warningOverlay = createDiv('colorWarningOverlay');
-        this._warningOverlay.style.zIndex = 21;
+        this._warningOverlay                        = createDiv('colorWarningOverlay');
+        this._warningOverlay.style.zIndex           = 21;
 
         this.div.appendChild(this._warningOverlay);
 
@@ -43290,10 +43287,10 @@ extends Parameter
 
 
         this.controls[0].successOnFocusOut          = true;
-        this.controls[0].style.display              = 'inline';
-        this.controls[0].style.width                = '60%';
-        this.controls[0].style.position             = 'absolute';
-        this.controls[0].style.left                 = 0;
+        this.controls[0].div.style.display          = 'inline';
+        this.controls[0].div.style.width            = '60%';
+        this.controls[0].div.style.position         = 'absolute';
+        this.controls[0].div.style.left             = 0;
 
     
         this.controls[1].successOnFocusOut          = true;
@@ -43407,15 +43404,15 @@ extends Parameter
 
     isVisible()
     {
-        return this.controls[0]  .style.display != 'none'
-            || this.controls[1].style.display != 'none';
+        return this.controls[0].div.style.display != 'none'
+            || this.controls[1].div.style.display != 'none';
     }
 
 
 
     resetControls()
     {
-        this.controls[0]  .valueText = '';
+        this.controls[0].valueText = '';
         this.controls[1].valueText = '';
     }
 
@@ -46266,7 +46263,9 @@ class Operator
             + pos + tab + '"enabled": "' + boolToString(this.enabled)     + '",\n'
             + pos + tab + '"x": "'       + this.div.style.left            + '",\n'
             + pos + tab + '"y": "'       + this.div.style.top             + '",\n'
-            + pos + tab + '"z": "'       + this.graph.nodes.indexOf(this) + '"';
+            + pos + tab + '"z": "'       + this.graph.nodes.indexOf(this) + '",\n'
+            + pos + tab + '"width": "'   + this.div.offsetWidth           + '",\n'
+            + pos + tab + '"height": "'  + this.div.offsetHeight          + '"';
 
         if (this.active)
             json += ',\n' + pos + tab + '"active": "' + this.active + '"';
@@ -60215,7 +60214,6 @@ function showProductKeyDialog()
         ? validateLicense(currentUser.id, productKey)
         : null;
 
-    console.log('2 license =', license);
     
     productKeyInputBack.innerHTML = license ? '' : '•'.repeat(13);
     
@@ -62054,6 +62052,51 @@ function uiPasteNodes(graph, nodesJson, pasteConnected, x, y, updateNodes)
         {
             data.nodes[i].x = parseFloat(data.nodes[i].x) + pasteOffset.x;
             data.nodes[i].y = parseFloat(data.nodes[i].y) + pasteOffset.y;
+        }
+    }
+
+
+    // if new nodes are outside of viewport, move them to center of viewport
+
+    const viewRect = graphView.measureData.clientRect;
+
+    let l = Number.MAX_SAFE_INTEGER;
+    let t = Number.MAX_SAFE_INTEGER;
+    let r = Number.MIN_SAFE_INTEGER;
+    let b = Number.MIN_SAFE_INTEGER;
+    
+    for (let i = 0; i < data.nodes.length; i++)
+    {
+        console.log('data.nodes[i] =', data.nodes[i]);
+
+        l = Math.min(l, data.nodes[i].x);
+        t = Math.min(t, data.nodes[i].y);
+        r = Math.max(r, data.nodes[i].x + data.nodes[i].width);
+        b = Math.max(b, data.nodes[i].y + data.nodes[i].height);
+    }
+    
+    console.log('l =', l);
+    console.log('t =', t);
+    console.log('r =', r);
+    console.log('b =', b);
+
+    if (   l >  viewRect.r 
+        || t >  viewRect.b 
+        || r <= viewRect.l
+        || b <= viewRect.t)
+    {
+        const cx = (l + r) / 2;
+        const cy = (t + b) / 2;
+        
+        const vx = viewRect.c;
+        const vy = viewRect.m;
+        
+        for (let i = 0; i < data.nodes.length; i++)
+        {
+            data.nodes[i].x -= vx - cx;
+            data.nodes[i].y -= vy - cy;
+
+            console.log('data.nodes[i] =', data.nodes[i]);
         }
     }
 

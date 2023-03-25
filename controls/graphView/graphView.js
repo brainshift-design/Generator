@@ -139,24 +139,24 @@ class GraphView
 
     constructor(div, graph)
     {
-        this.div           = div;
-        this.div.view      = this;
-
-        this.graph         = graph;
-        this.graph.view    = this;
-
-        
-        this.wireContainer = createDiv('wireContainer');
-        
-        this.scrollbarX    = createDiv('scrollbar', 'scrollbarX');
-        this.scrollbarY    = createDiv('scrollbar', 'scrollbarY');
+        this.div                     = div;
+        this.div.view                = this;
+          
+        this.graph                   = graph;
+        this.graph.view              = this;
+          
+                  
+        this.wireContainer           = createDiv('wireContainer');
+                  
+        this.scrollbarX              = createDiv('scrollbar', 'scrollbarX');
+        this.scrollbarY              = createDiv('scrollbar', 'scrollbarY');
 
 
         this.scrollbarX.style.zIndex = MAX_INT32-1;
         this.scrollbarY.style.zIndex = MAX_INT32-2;
 
-        this.scrollbarX.moving = false;
-        this.scrollbarY.moving = false;
+        this.scrollbarX.moving       = false;
+        this.scrollbarY.moving       = false;
 
 
         this.div.appendChild(this.wireContainer);

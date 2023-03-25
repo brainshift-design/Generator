@@ -56,7 +56,6 @@ function showProductKeyDialog()
         ? validateLicense(currentUser.id, productKey)
         : null;
 
-    console.log('2 license =', license);
     
     productKeyInputBack.innerHTML = license ? '' : '•'.repeat(13);
     

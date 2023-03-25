@@ -876,7 +876,9 @@ class Operator
             + pos + tab + '"enabled": "' + boolToString(this.enabled)     + '",\n'
             + pos + tab + '"x": "'       + this.div.style.left            + '",\n'
             + pos + tab + '"y": "'       + this.div.style.top             + '",\n'
-            + pos + tab + '"z": "'       + this.graph.nodes.indexOf(this) + '"';
+            + pos + tab + '"z": "'       + this.graph.nodes.indexOf(this) + '",\n'
+            + pos + tab + '"width": "'   + this.div.offsetWidth           + '",\n'
+            + pos + tab + '"height": "'  + this.div.offsetHeight          + '"';
 
         if (this.active)
             json += ',\n' + pos + tab + '"active": "' + this.active + '"';

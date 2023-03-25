@@ -65,6 +65,9 @@ GraphView.prototype.updatePanAndZoom = function(updateNodes)
 
         menuItemZoomTo100.setChecked(equal(this.zoom, 1, 0.0001));
     });
+
+
+    //console.log('pan = %s, zoom = %s', this.pan.x + ', ' + this.pan.y, this.zoom);
 };
 
 

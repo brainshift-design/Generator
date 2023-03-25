@@ -43,7 +43,7 @@ extends Parameter
         this.controlWrapper = createDiv();
 
 
-        this.controls.push(ColorControl(
+        this.controls.push(new ColorControl(
             null,
             this,
             120, // width
@@ -73,15 +73,15 @@ extends Parameter
         this.controls[1].setSuffix('%', true);
 
 
-        this.controls[0].div.zIndex = 0;
-        this.controls[1].div.zIndex = 0;
-   
-        this.defaultValue           = defaultValue;
-        this.value                  = defaultValue;
+        this.controls[0].div.zIndex                 = 0;
+        this.controls[1].div.zIndex                 = 0;
+                   
+        this.defaultValue                           = defaultValue;
+        this.value                                  = defaultValue;
 
         
-        this._warningOverlay = createDiv('colorWarningOverlay');
-        this._warningOverlay.style.zIndex = 21;
+        this._warningOverlay                        = createDiv('colorWarningOverlay');
+        this._warningOverlay.style.zIndex           = 21;
 
         this.div.appendChild(this._warningOverlay);
 
@@ -99,10 +99,10 @@ extends Parameter
 
 
         this.controls[0].successOnFocusOut          = true;
-        this.controls[0].style.display              = 'inline';
-        this.controls[0].style.width                = '60%';
-        this.controls[0].style.position             = 'absolute';
-        this.controls[0].style.left                 = 0;
+        this.controls[0].div.style.display          = 'inline';
+        this.controls[0].div.style.width            = '60%';
+        this.controls[0].div.style.position         = 'absolute';
+        this.controls[0].div.style.left             = 0;
 
     
         this.controls[1].successOnFocusOut          = true;
@@ -216,15 +216,15 @@ extends Parameter
 
     isVisible()
     {
-        return this.controls[0]  .style.display != 'none'
-            || this.controls[1].style.display != 'none';
+        return this.controls[0].div.style.display != 'none'
+            || this.controls[1].div.style.display != 'none';
     }
 
 
 
     resetControls()
     {
-        this.controls[0]  .valueText = '';
+        this.controls[0].valueText = '';
         this.controls[1].valueText = '';
     }
 
