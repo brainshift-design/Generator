@@ -18,7 +18,6 @@ function uiLinkNodeToExistingColorStyle(node, styleId, styleName, paints)
         if (!isEmpty(paints))
         {
             const c = paints[0];
-            console.log('c =', c);
 
             node.paramValue.setValue(FillValue.create(
                 Math.round(c[0] * 0xff),
@@ -146,8 +145,8 @@ function initLocalStylesMenu(styles, nodeId)
 
         if (style.paints.length == 1)
         {
-            const rgb = style.paints[0];
-            options.icon = '<svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="8" cy="8" r="8" fill="' + rgb2style(rgb) + '"/></svg>';
+            const rgba = style.paints[0];
+            options.icon = createStyleIcon(rgba);//'<svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="8" cy="8" r="8" fill="' + rgb2style(rgb) + '"/></svg>';
         }
 
         if (   style.existing == undefined
@@ -183,3 +182,28 @@ function initLocalStylesMenu(styles, nodeId)
 
 
 
+function createStyleIcon(rgba)
+{
+    const rgba0 = hex2rgb('d9d9d9');
+    const rgba1 = hex2rgb('f6f6f6');
+
+    rgba0[3] = 1 - rgba[3];
+    rgba1[3] = 1 - rgba[3];
+
+    const icon = 
+        '<svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"> \
+            <g clip-path="url(#clip0_1300_182)"> \
+            <rect width="16" height="16" rx="8" fill="#'+rgba2hex(rgba1)+'"/> \
+            <path fill-rule="evenodd" clip-rule="evenodd" d="M3 0H0V3H3V6H0V9H3V12H0V15H3V18H6V15H9V18H12V15H15V18H18V15H15V12H18V9H15V6H18V3H15V0H12V3H9V0H6V3H3V0ZM6 6V3H9V6H6ZM6 9H3V6H6V9ZM9 9H6V12H3V15H6V12H9V15H12V12H15V9H12V6H15V3H12V6H9V9ZM9 9V12H12V9H9Z" fill="#'+rgba2hex(rgba0)+'"/> \
+            <path d="M0 16V0L16 16H0Z" fill="#2C2C2C"/> \
+            <rect width="16" height="16" fill="' + rgba2style(rgba) + '"/> \
+            </g> \
+            <defs> \
+            <clipPath id="clip0_1300_182"> \
+            <rect width="16" height="16" rx="8" fill="white"/> \
+            </clipPath> \
+            </defs> \
+        </svg>';
+
+    return icon.replaceAll('#', '%23');
+}
