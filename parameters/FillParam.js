@@ -112,7 +112,7 @@ extends Parameter
         this.controls[1].div.style.right            = 0;
 
 
-        this.controls[0].text.style.transform       = 'translateX(-45%)';
+        this.controls[0].text.style.transform       = 'translateX(-43%)';
 
         this.controls[1].text.style.transform       = 'translateX(-70%) \
                                                        translateY(-50%)';
@@ -169,8 +169,12 @@ extends Parameter
             if (!e.detail.success)
                 return;
 
-            if (e.detail.value != e.detail.oldValue)
+            if (   e.detail.value.trim() != ''
+                && e.detail.value != e.detail.oldValue)
             {
+                const webColor = webColors.find(wc => wc.name.toLowerCase() == e.detail.value.toLowerCase());
+                if (webColor) e.detail.value = webColor.color;
+
                 const  rgb = validHex2rgb(e.detail.value);
                 const _rgb = scaleRgb(rgb);
 
@@ -268,21 +272,27 @@ extends Parameter
         if (   this.input
             && this.input.connected)
         {
-            request.push(...pushInputOrParam(this.input, gen));
-
-            if (this.input.connectedOutput.supportsTypes(COLOR_TYPES))
-            {
-                request.push(
-                    NUMBER_VALUE, 
-                    new NumberValue(
-                        this.controls[1].value, 
-                        this.controls[1].displayDec).toString());
-            }
+            // if (this.input.connectedOutput.supportsTypes(COLOR_TYPES))
+            // {
+            //     request.push(
+            //         FILL_VALUE,
+            //         FillValue.fromRgb(
+            //             scaleRgb(dataColor2rgb(this.input.connectedOutput.node._color)), 0xff)
+            //             .toString());
+            // }
+            // else if (this.input.connectedOutput.supportsTypes(FILL_TYPES))
+                
+            if (   this.input.connectedOutput.supportsTypes(COLOR_TYPES)
+                || this.input.connectedOutput.supportsTypes(FILL_TYPES ))
+                request.push(...pushInputOrParam(this.input, gen));
+            else
+                console.assert(false, 'invalid input for FillParam');
         }
 
         else request.push( 
             FILL_VALUE, 
             this.value.toString());
+
 
         return request;
     }
@@ -302,10 +312,10 @@ extends Parameter
         checkControlVisible(this, this.controls[1]);
 
 
-        // const noColor = 
-        //     darkMode
-        //     ? rgbNoColorDark
-        //     : rgbNoColorLight;
+        const noColor = 
+            darkMode
+            ? rgbNoColorDark
+            : rgbNoColorLight;
 
         const rgbaVal  = this.value.toRgba();
         const rgbaText = getTextColorFromBackColor(rgbaVal, rgbaVal[3]);
@@ -418,8 +428,8 @@ extends Parameter
         const opEnable = 
                 enable 
             || !this.input 
-            || !this.input.connected 
-            ||  this.input.connectedOutput.supportsTypes(COLOR_TYPES);
+            || !this.input.connected;
+            //||  this.input.connectedOutput.supportsTypes(COLOR_TYPES);
 
         enableElementText(this.controls[0].div, enable);
         enableElementText(this.controls[1].div, opEnable);

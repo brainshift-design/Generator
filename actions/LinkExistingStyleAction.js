@@ -44,7 +44,7 @@ extends Action
     {
         this.prevStyleId   = this.node.linkedStyleId;
         this.prevStyleName = this.node.linkedStyleName;
-        this.prevPaints    = [this.node.paramValue.value.toRgb()];
+        this.prevPaints    = [this.node.paramValue.value.toRgba()];
         
         connectAction_saveOutputValues(this);
         connectAction_saveInputValues(this);

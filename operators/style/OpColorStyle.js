@@ -21,7 +21,7 @@ extends OperatorBase
         this.inert = true;
 
 
-        this.addParam(this.paramValue = new ColorParam('value', '', false, true, true, ColorValue.NaN));
+        this.addParam(this.paramValue = new FillParam('value', '', false, true, true, FillValue.NaN));
 
         this.paramValue.input.getValuesForUndo = getNodeInputValuesForUndo;
         this.paramValue.input.addEventListener('disconnect', e => OpColorStyle_value_onDisconnectInput(this, e.detail.input));
@@ -30,7 +30,7 @@ extends OperatorBase
         if (!!options.existing)
         {
             this.existing = true;
-            this.paramValue.setValue(ColorValue.NaN, false, false, false);
+            this.paramValue.setValue(FillValue.NaN, false, false, false);
         }
 
 
@@ -139,13 +139,13 @@ extends OperatorBase
             && (  !this.existing
                 || this.linkedStyleId != NULL))
         {
-            const rgb = this.paramValue.value.toRgb();
+            const rgba = this.paramValue.value.toRgba();
             
-            this.circle.style.background = rgb2style(rgb);
+            this.circle.style.background = rgb2style(rgba);
 
             this.circle.style.boxShadow = 
-                    darkMode &&  isDark(rgb, 0.4)
-                || !darkMode && !isDark(rgb, 0.9)
+                    darkMode &&  isDark(rgba, 0.4)
+                || !darkMode && !isDark(rgba, 0.9)
                 ? '0 0 0 1px var(--figma-color-bg-tertiary) inset'
                 : 'none';
         }
@@ -167,12 +167,12 @@ extends OperatorBase
         {
             const colors = this.getHeaderColors();
 
-            const rgb = this.paramValue.value.toRgb();
+            const rgba = this.paramValue.value.toRgba();
             const linkStyle = rgba2style(
                 rgb_a(
                        this.paramValue.value.isValid()
                     && this.linkedStyleId != NULL
-                    ? (isDark(rgb) ? [1, 1, 1] : [0, 0, 0])
+                    ? (isDark(rgba) ? [1, 1, 1] : [0, 0, 0])
                     : colors.text, 
                     this.circle.over ? 1 : 0.5));
 
@@ -241,5 +241,5 @@ function OpColorStyle_value_onDisconnectInput(node, input)
 {
     if (   node.existing
         && node.linkedStyleId == NULL)
-        node.paramValue.setValue(ColorValue.NaN, false, false, false);
+        node.paramValue.setValue(FillValue.NaN, false, false, false);
 }

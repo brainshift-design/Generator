@@ -100,8 +100,8 @@ extends Parameter
                 const webColor = webColors.find(wc => wc.name.toLowerCase() == e.detail.value.toLowerCase());
                 if (webColor) e.detail.value = webColor.color;
 
-                 const rgb = validHex2rgb(e.detail.value);
-                 const val = ColorValue.fromRgb(scaleRgb(rgb));
+                const rgb = validHex2rgb(e.detail.value);
+                const val = ColorValue.fromRgb(scaleRgb(rgb));
 
                 this.setValue(val, true);
                 e.preventSetValue = true;

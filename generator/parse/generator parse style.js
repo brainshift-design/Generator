@@ -68,7 +68,7 @@ function genParseFill(parse)
     }
 
     
-    //parse.inParam = false;
+    parse.inParam = false;
     parse.nTab--;
 
 
@@ -281,8 +281,9 @@ function genParseColorStyle(parse)
 
     style.id    = parse.move();
     style.name  = options.nodeName;
-    style.value = genParse(parse);
     
+    style.value = genParse(parse);
+
     
     parse.nTab--;
 

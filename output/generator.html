@@ -10518,17 +10518,20 @@ extends GObjectBase
 
             
         this.value = this.value.eval(parse).toValue();
-      
+
 
         if (   this.value.isValid()
             && (  !this.existing
                 || this.linked))
         {
-            const rgb = this.value.toRgb();
-            this.evalStyle({rgb: rgb});
+            if (this.value.type == COLOR_VALUE)
+                this.value = FillValue.fromRgb(scaleRgb(this.value.toRgb()), 0xff);
+
+            const rgba = this.value.toRgba();
+            this.evalStyle({rgba: rgba});
         }
         else
-            this.value = ColorValue.NaN;
+            this.value = FillValue.NaN;
 
 
         genPushUpdateValue(parse, this.nodeId, 'value', this.value);
@@ -10555,10 +10558,10 @@ extends GObjectBase
         style.paints = 
         [
             [ 'SOLID', 
-                      0xff * options.rgb[0]
-              + ' ' + 0xff * options.rgb[1]
-              + ' ' + 0xff * options.rgb[2]
-              + ' ' + 0xff ]
+                      Math.round(options.rgba[0] * 0xff)
+              + ' ' + Math.round(options.rgba[1] * 0xff)
+              + ' ' + Math.round(options.rgba[2] * 0xff)
+              + ' ' + Math.round(options.rgba[3] * 100 )]
         ];
 
 
@@ -13589,7 +13592,7 @@ function genParseFill(parse)
     }
 
     
-    //parse.inParam = false;
+    parse.inParam = false;
     parse.nTab--;
 
 
@@ -13802,8 +13805,9 @@ function genParseColorStyle(parse)
 
     style.id    = parse.move();
     style.name  = options.nodeName;
-    style.value = genParse(parse);
     
+    style.value = genParse(parse);
+
     
     parse.nTab--;
 

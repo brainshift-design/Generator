@@ -18,16 +18,18 @@ function uiLinkNodeToExistingColorStyle(node, styleId, styleName, paints)
         if (!isEmpty(paints))
         {
             const c = paints[0];
+            console.log('c =', c);
 
-            node.paramValue.setValue(ColorValue.fromRgb([
+            node.paramValue.setValue(FillValue.create(
                 Math.round(c[0] * 0xff),
                 Math.round(c[1] * 0xff),
-                Math.round(c[2] * 0xff)]));
+                Math.round(c[2] * 0xff),
+                Math.round(c[3] * 0xff)));
         }
     }
     else
     {
-        node.paramValue.setValue(ColorValue.NaN);
+        node.paramValue.setValue(FillValue.NaN);
 
         // if (node.paramValue.input.connected)
         //     actionManager.do(new DisconnectAction(node.graph, node.paramValue.input), true);
@@ -70,12 +72,11 @@ function uiStylePropertyChange(msg)
 
                     if (paint.type == 'SOLID')
                     {
-                        const c = paint.color;
-
-                        node.paramValue.setValue(ColorValue.fromRgb([
-                            Math.round(c.r * 0xff),
-                            Math.round(c.g * 0xff),
-                            Math.round(c.b * 0xff)]));
+                        node.paramValue.setValue(FillValue.create(
+                            Math.round(paint.color.r * 0xff),
+                            Math.round(paint.color.g * 0xff),
+                            Math.round(paint.color.b * 0xff),
+                            Math.round(paint.opacity * 100 )));
                     }
                 }
 

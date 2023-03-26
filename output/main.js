@@ -1249,7 +1249,8 @@ function figGetAllLocalColorStyles(nodeId, px, py) {
                 style.paints.push([
                     _paint.color.r,
                     _paint.color.g,
-                    _paint.color.b
+                    _paint.color.b,
+                    _paint.opacity
                 ]);
             }
             else {
