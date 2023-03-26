@@ -5,7 +5,7 @@ function genParseFillValue(parse)
     const fill = parse.move();
 
     if (parse.settings.logRequests) 
-        logReqFillValue(fill, parse, ignore);
+        logReqValue(FILL_VALUE, fill, parse);
 
     return parseFillValue(fill)[0];
 }
@@ -97,7 +97,7 @@ function genParseStrokeValue(parse)
     const stroke = parse.move();
 
     if (parse.settings.logRequests) 
-        logReqStrokeValue(stroke, parse, false);
+        logReqValue(STROKE_VALUE, stroke, parse);
 
     return parseStrokeValue(stroke)[0];
 }
@@ -193,7 +193,7 @@ function genParseColorStopValue(parse)
     const stop = parse.move();
 
     if (parse.settings.logRequests) 
-        logReqColorStopValue(stop, parse, false);
+        logReqValue(COLOR_STOP_VALUE, stop, parse);
 
     return parseColorStopValue(stop);
 }

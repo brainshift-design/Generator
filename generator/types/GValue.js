@@ -48,8 +48,8 @@ function displayValue(type, value)
         // case   ELLIPSE_VALUE: return parseEllipseValue  (value)[0].toDisplayString();
         // case   POLYGON_VALUE: return parsePolygonValue  (value)[0].toDisplayString();
         // case      STAR_VALUE: return parseStarValue     (value)[0].toDisplayString();
-        //case      FILL_VALUE: return parseFillValue     (value)[0].toDisplayString();
-        //case    STROKE_VALUE: return parseStrokeValue   (value)[0].toDisplayString();
+        case      FILL_VALUE: return parseFillValue     (value)[0].toDisplayString();
+        case    STROKE_VALUE: return parseStrokeValue   (value)[0].toDisplayString();
     }
 
 

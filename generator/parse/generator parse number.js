@@ -5,7 +5,7 @@ function genParseNumValue(parse)
     const val = parse.move();
 
     if (parse.settings.logRequests) 
-        logReqNumberValue(val, parse, false);
+        logReqValue(NUMBER_VALUE, val, parse);
 
     return val.indexOf(',') >= 0
          ? parseNumberValue      (val)[0]

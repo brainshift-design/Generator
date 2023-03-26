@@ -4018,8 +4018,8 @@ function displayValue(type, value)
         // case   ELLIPSE_VALUE: return parseEllipseValue  (value)[0].toDisplayString();
         // case   POLYGON_VALUE: return parsePolygonValue  (value)[0].toDisplayString();
         // case      STAR_VALUE: return parseStarValue     (value)[0].toDisplayString();
-        //case      FILL_VALUE: return parseFillValue     (value)[0].toDisplayString();
-        //case    STROKE_VALUE: return parseStrokeValue   (value)[0].toDisplayString();
+        case      FILL_VALUE: return parseFillValue     (value)[0].toDisplayString();
+        case    STROKE_VALUE: return parseStrokeValue   (value)[0].toDisplayString();
     }
 
 
@@ -11841,7 +11841,7 @@ function genParseColorValue(parse)
     const col = parse.move();
 
     if (parse.settings.logRequests) 
-        logReqColorValue(col, parse, false);
+        logReqValue(COLOR_VALUE, col, parse);
 
     return parseColorValue(col)[0];
 }
@@ -12702,7 +12702,7 @@ function genParseNumValue(parse)
     const val = parse.move();
 
     if (parse.settings.logRequests) 
-        logReqNumberValue(val, parse, false);
+        logReqValue(NUMBER_VALUE, val, parse);
 
     return val.indexOf(',') >= 0
          ? parseNumberValue      (val)[0]
@@ -13526,7 +13526,7 @@ function genParseFillValue(parse)
     const fill = parse.move();
 
     if (parse.settings.logRequests) 
-        logReqFillValue(fill, parse, ignore);
+        logReqValue(FILL_VALUE, fill, parse);
 
     return parseFillValue(fill)[0];
 }
@@ -13618,7 +13618,7 @@ function genParseStrokeValue(parse)
     const stroke = parse.move();
 
     if (parse.settings.logRequests) 
-        logReqStrokeValue(stroke, parse, false);
+        logReqValue(STROKE_VALUE, stroke, parse);
 
     return parseStrokeValue(stroke)[0];
 }
@@ -13714,7 +13714,7 @@ function genParseColorStopValue(parse)
     const stop = parse.move();
 
     if (parse.settings.logRequests) 
-        logReqColorStopValue(stop, parse, false);
+        logReqValue(COLOR_STOP_VALUE, stop, parse);
 
     return parseColorStopValue(stop);
 }
@@ -14410,20 +14410,6 @@ function logReqNode(node, parse)
 
 
 
-function logReqListValue(list, parse, ignore)
-{
-    parse.log += parse.tab + LIST_VALUE + ' ' + displayValue(LIST_VALUE, list);
-}
-
-
-
-function logReqColorValue(val, parse, ignore)
-{
-    parse.log += parse.tab + COLOR_VALUE + ' ' + displayValue(COLOR_VALUE, val);
-}
-
-
-
 function logReqColorContrast(lerp, nInputs, valueIndex, parse, ignore)
 {
     parse.log += parse.tab + COLOR_CONTRAST;
@@ -14440,31 +14426,52 @@ function logReqColorContrast(lerp, nInputs, valueIndex, parse, ignore)
 
 
 
-function logReqNumberValue(val, parse, ignore)
+function logReqValue(type, val, parse)
 {
-    parse.log += parse.tab + NUMBER_VALUE + ' ' + displayValue(NUMBER_VALUE, val);
+    parse.log += parse.tab + type + ' ' + displayValue(type, val);
 }
 
 
 
-function logReqFillValue(fill, parse, ignore)
-{
+// function logReqListValue(list, parse, ignore)
+// {
+//     parse.log += parse.tab + LIST_VALUE + ' ' + displayValue(LIST_VALUE, list);
+// }
+
+
+
+// function logReqColorValue(val, parse, ignore)
+// {
+//     parse.log += parse.tab + COLOR_VALUE + ' ' + displayValue(COLOR_VALUE, val);
+// }
+
+
+
+// function logReqNumberValue(val, parse, ignore)
+// {
+//     parse.log += parse.tab + NUMBER_VALUE + ' ' + displayValue(NUMBER_VALUE, val);
+// }
+
+
+
+// function logReqFillValue(fill, parse, ignore)
+// {
 //     parse.log += parse.tab + FILL_VALUE + ' ' + displayValue(FILL_VALUE, fill);
-}
+// }
 
 
 
-function logReqStrokeValue(stroke, parse, ignore)
-{
-    // parse.log += parse.tab + STROKE_VALUE + ' ' + displayValue(STROKE_VALUE, stroke);
-}
+// function logReqStrokeValue(stroke, parse, ignore)
+// {
+//     // parse.log += parse.tab + STROKE_VALUE + ' ' + displayValue(STROKE_VALUE, stroke);
+// }
 
 
 
-function logReqColorStopValue(stop, parse, ignore)
-{
-    // parse.log += parse.tab + COLOR_STOP_VALUE + ' ' + displayValue(COLOR_STOP_VALUE, stop);
-}
+// function logReqColorStopValue(stop, parse, ignore)
+// {
+//     // parse.log += parse.tab + COLOR_STOP_VALUE + ' ' + displayValue(COLOR_STOP_VALUE, stop);
+// }
 
 
 

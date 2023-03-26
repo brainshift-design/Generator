@@ -145,22 +145,21 @@ extends Parameter
 
 
 
-        this.controls[0].addEventListener('confirm', () =>
+        this.controls[0].addEventListener('change', () =>
         { 
             this.setValue(new FillValue(
                 this.controls[0].value, 
                 new NumberValue(this.controls[1].value, this.controls[1].dec)), 
                 true, false);
+
+            this.changing = true;
         });
 
 
 
-        this.controls[1].addEventListener('confirm', () =>
-        {
-            this.setValue(new FillValue(
-                this.controls[0].value, 
-                new NumberValue(this.controls[1].value, this.controls[1].dec)), 
-                true, false);
+        this.controls[0].addEventListener('confirm', () =>
+        { 
+            this.changing = false;
         });
 
 
@@ -179,6 +178,25 @@ extends Parameter
                 
                 e.preventSetValue = true;
             }
+        });
+
+
+
+        this.controls[1].addEventListener('change', () =>
+        {
+            this.setValue(new FillValue(
+                this.controls[0].value, 
+                new NumberValue(this.controls[1].value, this.controls[1].dec)), 
+                true, false);
+
+            this.changing = true;
+        });
+
+
+
+        this.controls[1].addEventListener('confirm', () =>
+        { 
+            this.changing = false;
         });
     }
 

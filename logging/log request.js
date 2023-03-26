@@ -80,20 +80,6 @@ function logReqNode(node, parse)
 
 
 
-function logReqListValue(list, parse, ignore)
-{
-    parse.log += parse.tab + LIST_VALUE + ' ' + displayValue(LIST_VALUE, list);
-}
-
-
-
-function logReqColorValue(val, parse, ignore)
-{
-    parse.log += parse.tab + COLOR_VALUE + ' ' + displayValue(COLOR_VALUE, val);
-}
-
-
-
 function logReqColorContrast(lerp, nInputs, valueIndex, parse, ignore)
 {
     parse.log += parse.tab + COLOR_CONTRAST;
@@ -110,28 +96,49 @@ function logReqColorContrast(lerp, nInputs, valueIndex, parse, ignore)
 
 
 
-function logReqNumberValue(val, parse, ignore)
+function logReqValue(type, val, parse)
 {
-    parse.log += parse.tab + NUMBER_VALUE + ' ' + displayValue(NUMBER_VALUE, val);
+    parse.log += parse.tab + type + ' ' + displayValue(type, val);
 }
 
 
 
-function logReqFillValue(fill, parse, ignore)
-{
+// function logReqListValue(list, parse, ignore)
+// {
+//     parse.log += parse.tab + LIST_VALUE + ' ' + displayValue(LIST_VALUE, list);
+// }
+
+
+
+// function logReqColorValue(val, parse, ignore)
+// {
+//     parse.log += parse.tab + COLOR_VALUE + ' ' + displayValue(COLOR_VALUE, val);
+// }
+
+
+
+// function logReqNumberValue(val, parse, ignore)
+// {
+//     parse.log += parse.tab + NUMBER_VALUE + ' ' + displayValue(NUMBER_VALUE, val);
+// }
+
+
+
+// function logReqFillValue(fill, parse, ignore)
+// {
 //     parse.log += parse.tab + FILL_VALUE + ' ' + displayValue(FILL_VALUE, fill);
-}
+// }
 
 
 
-function logReqStrokeValue(stroke, parse, ignore)
-{
-    // parse.log += parse.tab + STROKE_VALUE + ' ' + displayValue(STROKE_VALUE, stroke);
-}
+// function logReqStrokeValue(stroke, parse, ignore)
+// {
+//     // parse.log += parse.tab + STROKE_VALUE + ' ' + displayValue(STROKE_VALUE, stroke);
+// }
 
 
 
-function logReqColorStopValue(stop, parse, ignore)
-{
-    // parse.log += parse.tab + COLOR_STOP_VALUE + ' ' + displayValue(COLOR_STOP_VALUE, stop);
-}
+// function logReqColorStopValue(stop, parse, ignore)
+// {
+//     // parse.log += parse.tab + COLOR_STOP_VALUE + ' ' + displayValue(COLOR_STOP_VALUE, stop);
+// }

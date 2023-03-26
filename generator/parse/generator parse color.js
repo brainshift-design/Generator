@@ -5,7 +5,7 @@ function genParseColorValue(parse)
     const col = parse.move();
 
     if (parse.settings.logRequests) 
-        logReqColorValue(col, parse, false);
+        logReqValue(COLOR_VALUE, col, parse);
 
     return parseColorValue(col)[0];
 }
