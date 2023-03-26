@@ -3,6 +3,10 @@ extends OperatorBase
 {
     paramValue;
 
+    styleCircle;
+
+    circleBack;
+    circleCheckers;
     circle;
     link;
 
@@ -34,13 +38,17 @@ extends OperatorBase
         }
 
 
-        this.circle      = createDiv('styleCircle');
-        this.circle.over = false;
+        this.circleBack     = createDiv('styleCircleBack');
+        this.circleCheckers = createDiv('styleCircleCheckers');
+        this.circle         = createDiv('styleCircle');
 
-        this.circle.addEventListener('pointerenter', e => { this.circle.over = true;  this.updateLinkIcon(); });
-        this.circle.addEventListener('pointerleave', e => { this.circle.over = false; this.updateLinkIcon(); });
+        this.styleCircle    = createDiv('styleCircleWrapper');;
+        this.styleCircle.over = false;
 
-        this.circle.addEventListener('pointerdown',  e => 
+        this.styleCircle.addEventListener('pointerenter', e => { this.styleCircle.over = true;  this.updateLinkIcon(); });
+        this.styleCircle.addEventListener('pointerleave', e => { this.styleCircle.over = false; this.updateLinkIcon(); });
+
+        this.styleCircle.addEventListener('pointerdown',  e => 
         { 
             e.stopPropagation();
 
@@ -64,8 +72,12 @@ extends OperatorBase
         this.link = createDiv('styleLink');
 
 
-        this.circle.appendChild(this.link);
-        this.label.insertBefore(this.circle, this.labelText);
+        this.styleCircle.appendChild(this.circleBack);
+        this.styleCircle.appendChild(this.circleCheckers);
+        this.styleCircle.appendChild(this.circle);
+        this.styleCircle.appendChild(this.link);
+        
+        this.label.insertBefore(this.styleCircle, this.labelText);
 
 
         this.updateParams();
@@ -141,9 +153,11 @@ extends OperatorBase
         {
             const rgba = this.paramValue.value.toRgba();
             
-            this.circle.style.background = rgb2style(rgba);
+            this.circleBack    .style.visibility = 'visible';
+            this.circleCheckers.style.visibility = 'visible';
+            this.circle        .style.background = rgba2style(rgba);
 
-            this.circle.style.boxShadow = 
+            this.styleCircle.style.boxShadow = 
                     darkMode &&  isDark(rgba, 0.4)
                 || !darkMode && !isDark(rgba, 0.9)
                 ? '0 0 0 1px var(--figma-color-bg-tertiary) inset'
@@ -151,8 +165,10 @@ extends OperatorBase
         }
         else
         {
-            this.circle.style.background = 'transparent';
-            this.circle.style.boxShadow  = '0 0 0 1px var(--figma-color-bg-tertiary) inset';
+            this.circleBack    .style.visibility = 'hidden';
+            this.circleCheckers.style.visibility = 'hidden';
+            this.circle        .style.background = 'transparent';
+            this.styleCircle   .style.boxShadow  = '0 0 0 1px var(--figma-color-bg-tertiary) inset';
         }
 
 
@@ -174,15 +190,34 @@ extends OperatorBase
                     && this.linkedStyleId != NULL
                     ? (isDark(rgba) ? [1, 1, 1] : [0, 0, 0])
                     : colors.text, 
-                    this.circle.over ? 1 : 0.5));
+                    this.styleCircle.over ? 1 : 0.5));
 
-            this.link.style.display            = 'inline-block';
-            this.link.style.background         = 'url(\'data:image/svg+xml;utf8,<svg width="10" height="10" viewBox="0 0 10 10" fill="none" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" clip-rule="evenodd" d="M3.5962 8.54594C3.01041 9.13173 2.06066 9.13173 1.47488 8.54594C0.889091 7.96015 0.889091 7.01041 1.47488 6.42462L2.88909 5.01041L2.18198 4.3033L0.767771 5.71751C-0.20854 6.69382 -0.20854 8.27674 0.767771 9.25305C1.74408 10.2294 3.32699 10.2294 4.3033 9.25305L5.71752 7.83883L5.01041 7.13173L3.5962 8.54594ZM6.77818 3.94975L3.94975 6.77817L3.24264 6.07107L6.07107 3.24264L6.77818 3.94975ZM9.25305 4.3033L7.83884 5.71751L7.13173 5.01041L8.54595 3.59619C9.13173 3.01041 9.13173 2.06066 8.54595 1.47487C7.96016 0.889085 7.01041 0.889085 6.42462 1.47487L5.01041 2.88909L4.3033 2.18198L5.71752 0.767765C6.69383 -0.208546 8.27674 -0.208546 9.25305 0.767765C10.2294 1.74408 10.2294 3.32699 9.25305 4.3033Z" fill="' + linkStyle + '"/></svg>\')';
-            this.link.style.backgroundPosition = '50% 50%';
-            this.link.style.backgroundRepeat   = 'no-repeat';
+            this.circleBack    .style.background         = darkMode ? '#2c2c2c' : '#ffffff';
+
+            const rgb0 = hex2rgb('d9d9d9');
+            const rgb1 = hex2rgb('f6f6f6');
+
+            this.circleCheckers.style.display            = !rgbIsNaN(colors.back) ? 'inline-block' : 'none';
+            this.circleCheckers.style.background         =
+                  'linear-gradient(45deg, #'+rgb2hex(rgb0)+' 25%, transparent 25%, transparent 75%, #'+rgb2hex(rgb0)+' 75%), '
+                + 'linear-gradient(45deg, #'+rgb2hex(rgb0)+' 25%, transparent 25%, transparent 75%, #'+rgb2hex(rgb0)+' 75%)';
+
+            this.circleCheckers.style.backgroundColor    = '#'+rgb2hex(rgb1);
+            this.circleCheckers.style.opacity            = 1 - this.paramValue.value.opacity.value / 100;
+            this.circleCheckers.style.backgroundSize     = '6px 6px';
+            this.circleCheckers.style.backgroundPosition = '0 0, 3px 3px';
+
+            this.link.style.display                      = 'inline-block';
+            this.link.style.background                   = 'url(\'data:image/svg+xml;utf8,<svg width="10" height="10" viewBox="0 0 10 10" fill="none" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" clip-rule="evenodd" d="M3.5962 8.54594C3.01041 9.13173 2.06066 9.13173 1.47488 8.54594C0.889091 7.96015 0.889091 7.01041 1.47488 6.42462L2.88909 5.01041L2.18198 4.3033L0.767771 5.71751C-0.20854 6.69382 -0.20854 8.27674 0.767771 9.25305C1.74408 10.2294 3.32699 10.2294 4.3033 9.25305L5.71752 7.83883L5.01041 7.13173L3.5962 8.54594ZM6.77818 3.94975L3.94975 6.77817L3.24264 6.07107L6.07107 3.24264L6.77818 3.94975ZM9.25305 4.3033L7.83884 5.71751L7.13173 5.01041L8.54595 3.59619C9.13173 3.01041 9.13173 2.06066 8.54595 1.47487C7.96016 0.889085 7.01041 0.889085 6.42462 1.47487L5.01041 2.88909L4.3033 2.18198L5.71752 0.767765C6.69383 -0.208546 8.27674 -0.208546 9.25305 0.767765C10.2294 1.74408 10.2294 3.32699 9.25305 4.3033Z" fill="' + linkStyle + '"/></svg>\')';
+            this.link.style.backgroundPosition           = '50% 50%';
+            this.link.style.backgroundRepeat             = 'no-repeat';
+
         }
         else
-            this.link.style.display            = 'none';    
+        {
+            this.circleBack.style.display = 'none';    
+            this.link      .style.display = 'none';    
+        }
     }
 
 

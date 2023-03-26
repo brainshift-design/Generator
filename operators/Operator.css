@@ -286,7 +286,7 @@
 }
 
 
-.styleCircle
+.styleCircleWrapper
 {
     display:        inline-block;
     width:          16px;
@@ -296,6 +296,42 @@
     position:       relative;
     top:           -1px;
     pointer-events: all;
+    overflow:       hidden;
+}
+
+
+.styleCircleBack
+{
+    width:          16px;
+    height:         16px;
+    pointer-events: none;
+    position:       absolute;
+    left:           0;
+    top:            0;
+}
+
+
+.styleCircleCheckers
+{
+    width:          16px;
+    height:         8px;
+    pointer-events: none;
+    position:       absolute;
+    left:           0;
+    top:            0;
+    transform:      rotate(45deg);
+    transform-origin: 50% 100%;
+}
+
+
+.styleCircle
+{
+    display:        inline-block;
+    width:          16px;
+    height:         16px;
+    position:       absolute;
+    left:           0;
+    top:            0;
 }
 
 
@@ -304,7 +340,12 @@
     width:          16px;
     height:         16px;
     pointer-events: none;
-}
+    position:       absolute;
+    left:           50%;
+    top:            50%;
+    transform:      translateX(-50%)
+                    translateY(-50%);
+}    
 
 
 .reorderArrows

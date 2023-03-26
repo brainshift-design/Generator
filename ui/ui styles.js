@@ -24,7 +24,7 @@ function uiLinkNodeToExistingColorStyle(node, styleId, styleName, paints)
                 Math.round(c[0] * 0xff),
                 Math.round(c[1] * 0xff),
                 Math.round(c[2] * 0xff),
-                Math.round(c[3] * 0xff)));
+                Math.round(c[3] * 100 )));
         }
     }
     else
