@@ -154,7 +154,7 @@ function genParse(parse, inParam = true)
 
     else if (parse.next == COMMENT                ) result = genParseComment         (parse);
 
-    else console.assert(false, 'unknown parse token \'' + parse.next + '\'');
+    else crashAssert(false, 'unknown parse token \'' + parse.next + '\'');
 
 
     parse.inParam = false;
@@ -293,7 +293,7 @@ function genParseCustom(parse)
     // if (!ignore)
     // {
     //     nInputs = parseInt(parse.move());
-    //     console.assert(nInputs == 0 || nInputs == 1, 'nInputs must be [0, 1]');
+    //     crashAssert(nInputs == 0 || nInputs == 1, 'nInputs must be [0, 1]');
     // }
 
 

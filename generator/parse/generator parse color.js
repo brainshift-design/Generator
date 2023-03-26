@@ -27,7 +27,7 @@ function genParseColor(parse)
     if (!ignore)
     {
         nInputs = parseInt(parse.move());
-        console.assert(nInputs => 0 && nInputs <= 1, 'nInputs must be [0, 1]');
+        crashAssert(nInputs => 0 && nInputs <= 1, 'nInputs must be [0, 1]');
     }
 
 
@@ -93,7 +93,7 @@ function genParseValidColor(parse)
     if (!ignore)
     {
         nInputs = parseInt(parse.move());
-        console.assert(nInputs => 0 && nInputs <= 1, 'nInputs must be [0, 1]');
+        crashAssert(nInputs => 0 && nInputs <= 1, 'nInputs must be [0, 1]');
     }
 
 
@@ -143,7 +143,7 @@ function genParseCorrectColor(parse)
     if (!ignore)
     {
         nInputs = parseInt(parse.move());
-        console.assert(nInputs => 0 && nInputs <= 1, 'nInputs must be [0, 1]');
+        crashAssert(nInputs => 0 && nInputs <= 1, 'nInputs must be [0, 1]');
     }
 
 
@@ -206,7 +206,7 @@ function genParseColorContrast(parse)
     if (!ignore)
     {
         nInputs = parseInt(parse.move());
-        console.assert(nInputs => 0 && nInputs <= 2, 'nInputs must be [0, 2]');
+        crashAssert(nInputs => 0 && nInputs <= 2, 'nInputs must be [0, 2]');
     }
 
 
@@ -269,7 +269,7 @@ function genParseColorBlind(parse)
     if (!ignore)
     {
         nInputs = parseInt(parse.move());
-        console.assert(nInputs => 0 && nInputs <= 1, 'nInputs must be [0, 1]');
+        crashAssert(nInputs => 0 && nInputs <= 1, 'nInputs must be [0, 1]');
     }
 
 
@@ -317,7 +317,7 @@ function genParseColorInterpolate(parse)
     if (!ignore)
     {
         nInputs = parseInt(parse.move());
-        console.assert(nInputs => 0 && nInputs <= 2, 'nInputs must be [0, 2]');
+        crashAssert(nInputs => 0 && nInputs <= 2, 'nInputs must be [0, 2]');
     }
 
     
@@ -345,7 +345,7 @@ function genParseColorInterpolate(parse)
         lerp.input0 = genParse(parse); // doesn't matter if it's input0 or input1, the eval() result will be the same
 
     else if (nInputs != 0)
-        console.assert(false, 'nInputs must be [0, 2]');
+        crashAssert(false, 'nInputs must be [0, 2]');
 
 
     lerp.space  = genParse(parse);

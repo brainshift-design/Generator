@@ -8,7 +8,7 @@
 ../parameters/StrokeParam.js
 ../parameters/ViewParam.js
 ../parameters/ProxyParam.js
-//../parameters/StyleParam.js
+../parameters/ListParam.js
 
 
 // these have to be added in order because of dependencies

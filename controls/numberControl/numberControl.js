@@ -302,8 +302,10 @@ extends EventTarget
 
     setValue(value, fireChangeEvent = true, confirm = true, fullRange = true)
     {
+        //console.trace();
+        //console.log('value =', value);
         if (typeof value != 'number')
-            console.assert(false, 'numberControl.setValue(value) is ' + typeof value + ', must be a number');
+            crashAssert(false, 'NumberControl.setValue(value) is ' + typeof value + ', must be a number');
 
             
         const oldValue = this.value;
@@ -398,7 +400,7 @@ extends EventTarget
     update()
     {
         if (typeof this.value !== 'number')
-            console.assert(false, 'numberControl.update() value is ' + typeof this.value + ', must be a number');
+            crashAssert(false, 'numberControl.update() value is ' + typeof this.value + ', must be a number');
 
         if (!this.measureData.offsetRect)
             return;

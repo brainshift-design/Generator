@@ -668,47 +668,47 @@ function uiPasteNodes(graph, nodesJson, pasteConnected, x, y, updateNodes)
 
     // if new nodes are outside of viewport, move them to center of viewport
 
-    const viewRect = graphView.measureData.clientRect;
+    // const viewRect = graphView.measureData.clientRect;
 
-    let l = Number.MAX_SAFE_INTEGER;
-    let t = Number.MAX_SAFE_INTEGER;
-    let r = Number.MIN_SAFE_INTEGER;
-    let b = Number.MIN_SAFE_INTEGER;
+    // let l = Number.MAX_SAFE_INTEGER;
+    // let t = Number.MAX_SAFE_INTEGER;
+    // let r = Number.MIN_SAFE_INTEGER;
+    // let b = Number.MIN_SAFE_INTEGER;
     
-    for (let i = 0; i < data.nodes.length; i++)
-    {
-        console.log('data.nodes[i] =', data.nodes[i]);
+    // for (let i = 0; i < data.nodes.length; i++)
+    // {
+    //     console.log('data.nodes[i] =', data.nodes[i]);
 
-        l = Math.min(l, data.nodes[i].x);
-        t = Math.min(t, data.nodes[i].y);
-        r = Math.max(r, data.nodes[i].x + data.nodes[i].width);
-        b = Math.max(b, data.nodes[i].y + data.nodes[i].height);
-    }
+    //     l = Math.min(l, data.nodes[i].x);
+    //     t = Math.min(t, data.nodes[i].y);
+    //     r = Math.max(r, data.nodes[i].x + data.nodes[i].width);
+    //     b = Math.max(b, data.nodes[i].y + data.nodes[i].height);
+    // }
     
-    console.log('l =', l);
-    console.log('t =', t);
-    console.log('r =', r);
-    console.log('b =', b);
+    // console.log('l =', l);
+    // console.log('t =', t);
+    // console.log('r =', r);
+    // console.log('b =', b);
 
-    if (   l >  viewRect.r 
-        || t >  viewRect.b 
-        || r <= viewRect.l
-        || b <= viewRect.t)
-    {
-        const cx = (l + r) / 2;
-        const cy = (t + b) / 2;
+    // if (   l >  viewRect.r 
+    //     || t >  viewRect.b 
+    //     || r <= viewRect.l
+    //     || b <= viewRect.t)
+    // {
+    //     const cx = (l + r) / 2;
+    //     const cy = (t + b) / 2;
         
-        const vx = viewRect.c;
-        const vy = viewRect.m;
+    //     const vx = viewRect.c;
+    //     const vy = viewRect.m;
         
-        for (let i = 0; i < data.nodes.length; i++)
-        {
-            data.nodes[i].x -= vx - cx;
-            data.nodes[i].y -= vy - cy;
+    //     for (let i = 0; i < data.nodes.length; i++)
+    //     {
+    //         data.nodes[i].x -= vx - cx;
+    //         data.nodes[i].y -= vy - cy;
 
-            console.log('data.nodes[i] =', data.nodes[i]);
-        }
-    }
+    //         console.log('data.nodes[i] =', data.nodes[i]);
+    //     }
+    // }
 
 
     const nodes = loadNodes(data, true);
@@ -884,7 +884,7 @@ function uiUpdateValuesAndObjects(requestId, actionId, updateNodeId, updateParam
                     case   POLYGON_VALUE:  value = parsePolygonValue  (values[i++])[0];  break;
                     case      STAR_VALUE:  value = parseStarValue     (values[i++])[0];  break;
                     
-                    default: console.assert(false, 'unknown type \'' + type + '\'');
+                    default: crashAssert(false, 'unknown type \'' + type + '\'');
                 }
 
                 if (value.nodeId)

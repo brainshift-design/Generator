@@ -52,7 +52,7 @@ function evalMultiplyInputs(inputs, parse)
         {
             const val = inputs[i].eval(parse).toValue();
 
-            console.assert(
+            crashAssert(
                 val.type == NUMBER_VALUE, 
                 'val.type must be NUMBER_VALUE');
 

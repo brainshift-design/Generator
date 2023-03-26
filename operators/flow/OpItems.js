@@ -8,7 +8,8 @@ extends OperatorBase
         this.inert = true;
 
         
-        this.addInput(new Input(LIST_TYPES));
+        this.addInput (new Input(LIST_TYPES));
+        this.addOutput(new Output([LIST_VALUE], this.output_genRequest));
 
         this.alwaysLoadParams = true;
         this.alwaysSaveParams = true;
@@ -20,25 +21,25 @@ extends OperatorBase
     {
         // 'this' is the output        
 
-        return this.node.genRequest(gen);
-    }
+    //     return this.node.genRequest(gen);
+    // }
 
 
 
-    genRequest(gen)
-    {
-        // 'this' is the node
+    // genRequest(gen)
+    // {
+    //     // 'this' is the node
 
         gen.scope.push({
-            nodeId:  this.id, 
+            nodeId:  this.node.id, 
             paramId: NULL });
 
 
-        const [request, ignore] = this.genRequestStart(gen);
+        const [request, ignore] = this.node.genRequestStart(gen);
         if (ignore) return request;
 
 
-        const input = this.inputs[0];
+        const input = this.node.inputs[0];
 
 
         request.push(input.connected ? 1 : 0);
@@ -85,7 +86,9 @@ extends OperatorBase
                 const value = values[i];
                 const id    = 'item' + i;
 
-                const param = oldParams.find(p => p.id == id);
+                const param = oldParams.find(p => 
+                       p.id == id
+                    && p.type == value.type);
 
                 if (   param
                     && paramIds.includes(param.id)) 

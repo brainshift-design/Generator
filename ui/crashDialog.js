@@ -24,6 +24,8 @@ function initCrashDialog(event, error)
 
 function showCrashDialog()
 {
+    crashed = true;
+
     crashBack  .style.display = 'block';
     crashDialog.style.display = 'block';
 

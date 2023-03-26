@@ -3514,6 +3514,7 @@ a
                 <h1 style='margin-top: 20px;'>What's new in Generator</h1>
 
                 <p>Color styles now support opacity.</p>
+                <p>Improved crashing behavior.</p>
 
                 <p><br/><br/><div id='chkHideWhatsNew'></div></p>
             </div>
@@ -6182,6 +6183,18 @@ function getCreateNodeAction(type, creatingButton, options)
 }
 
 
+
+function crashAssert(condition, error)
+{
+    if (condition) return;
+
+    initCrashDialog(error, null);
+    showCrashDialog();
+
+    console.assert(false, error);
+}
+
+
 "use strict";
 
 // Base64 / binary data / UTF-8 strings utilities
@@ -7764,7 +7777,7 @@ class GNode
 
     copy()
     {
-        console.assert(false, 'abstract type GNode cannot be copied');
+        crashAssert(false, 'abstract type GNode cannot be copied');
         return null;
     }
 
@@ -7819,7 +7832,7 @@ extends GNode
 
     copy()
     {
-        console.assert(false, 'abstract class GValue cannot be copied');
+        crashAssert(false, 'abstract class GValue cannot be copied');
         return null;
     }
 
@@ -7849,7 +7862,6 @@ function displayValue(type, value)
 
     switch (type)
     {
-        //case      LIST_VALUE: return parseListValue     (value)[0].toDisplayString();
         case    NUMBER_VALUE: return parseNumberValue   (value)[0].toDisplayString();
         case     COLOR_VALUE: return parseColorValue    (value)[0].toDisplayString();
         // case RECTANGLE_VALUE: return parseRectangleValue(value)[0].toDisplayString();
@@ -7859,10 +7871,11 @@ function displayValue(type, value)
         // case      STAR_VALUE: return parseStarValue     (value)[0].toDisplayString();
         case      FILL_VALUE: return parseFillValue     (value)[0].toDisplayString();
         case    STROKE_VALUE: return parseStrokeValue   (value)[0].toDisplayString();
+        case      LIST_VALUE: return parseListValue     (value)[0].toDisplayString();
     }
 
 
-    console.assert(false, 'cannot display value of type \'' + type + '\'');
+    crashAssert(false, 'cannot display value of type \'' + type + '\'');
 }
 
 
@@ -7973,7 +7986,7 @@ extends GOperator
     eval(parse)
     {
         this.node = parse.parsedNodes.find(v => v.nodeId == this.nodeId);
-        console.assert(this.node, 'can\'t find parameter node \'' + this.nodeId + '\'');
+        crashAssert(this.node, 'can\'t find parameter node \'' + this.nodeId + '\'');
 
         this.node.eval(parse);
 
@@ -8164,7 +8177,7 @@ extends GValue
         super(NUMBER_VALUE);
 
         if (typeof val !== 'number')
-            console.assert(false, 'NumberValue(value) is ' + typeof val + ', must be a number');
+            crashAssert(false, 'NumberValue(value) is ' + typeof val + ', must be a number');
 
 
         this.value    = val;
@@ -8273,7 +8286,7 @@ const NullValue = Object.freeze(NumberValue.NaN);
 function parseNumberValue(str)
 {
     if (str.indexOf(',') < 0)
-        console.assert(false, 'number value missing \',\'');
+        crashAssert(false, 'number value missing \',\'');
     
     const parts = str.split(',');
 
@@ -8326,10 +8339,10 @@ extends GValue
 
     static create(space, c1, c2, c3)
     {
-        console.assert(typeof space == 'number', 'ColorValue.create() space must be a number');
-        console.assert(typeof c1    == 'number', 'ColorValue.create() c1 must be a number');
-        console.assert(typeof c2    == 'number', 'ColorValue.create() c2 must be a number');
-        console.assert(typeof c3    == 'number', 'ColorValue.create() c3 must be a number');
+        crashAssert(typeof space == 'number', 'ColorValue.create() space must be a number');
+        crashAssert(typeof c1    == 'number', 'ColorValue.create() c1 must be a number');
+        crashAssert(typeof c2    == 'number', 'ColorValue.create() c2 must be a number');
+        crashAssert(typeof c3    == 'number', 'ColorValue.create() c3 must be a number');
 
         return new ColorValue(
             new NumberValue(space),
@@ -8521,7 +8534,7 @@ extends GValue
     
     static create(r, g, b, opacity)
     {
-        console.assert(
+        crashAssert(
             typeof opacity == 'number',
             'opacity must be a number');
 
@@ -8534,7 +8547,7 @@ extends GValue
 
     static fromRgb(rgb, opacity)
     {
-        console.assert(
+        crashAssert(
             typeof opacity == 'number',
             'opacity must be a number');
 
@@ -8669,7 +8682,7 @@ function parseFillValue(str, i = -1)
 //          if ( FILL_TYPES.includes(fillValue.type)) return fill;
 //     else if (COLOR_TYPES.includes(fillValue.type)) return new FillValue(fill, fillValue.data.opacity);
 
-//     else console.assert(false, 'fill must have type');
+//     else crashAssert(false, 'fill must have type');
 // }
 
 
@@ -8691,7 +8704,7 @@ extends GValue
                 miter  = new NumberValue(28.96, 2))
     {
         if (fill.type != FILL_VALUE)
-            console.assert(false, 'fill.type must be FILL_VALUE');
+            crashAssert(false, 'fill.type must be FILL_VALUE');
 
 
         super(STROKE_VALUE);
@@ -8709,7 +8722,7 @@ extends GValue
     
     // static create(r, g, b, opacity)
     // {
-    //     console.assert(
+    //     crashAssert(
     //         typeof opacity == 'number',
     //         'opacity must be a number');
 
@@ -8722,7 +8735,7 @@ extends GValue
 
     // static fromRgb(rgb, opacity)
     // {
-    //     console.assert(
+    //     crashAssert(
     //         typeof opacity == 'number',
     //         'opacity must be a number');
 
@@ -8900,7 +8913,7 @@ function evalStrokeValue(value, parse)
     else if (  FILL_TYPES.includes(stroke.type)) return new StrokeValue(stroke, value.data.weight);
     else if ( COLOR_TYPES.includes(stroke.type)) return new StrokeValue(new FillValue(stroke), value.data.weight);
 
-    else console.assert(false, 'stroke must have type');
+    else crashAssert(false, 'stroke must have type');
 }
 
 
@@ -10378,7 +10391,7 @@ function evalAddInputs(inputs, parse)
     {
         const val = inputs[i].eval(parse).toValue();
 
-        console.assert(
+        crashAssert(
             val.type == NUMBER_VALUE, 
             'val.type must belong to NUMBER_VALUE');
 
@@ -10449,7 +10462,7 @@ function evalSubtractInputs(inputs, parse)
         {
             const val = inputs[i].eval(parse).toValue();
 
-            console.assert(
+            crashAssert(
                 val.type == NUMBER_VALUE, 
                 'val.type must be NUMBER_VALUE');
                 
@@ -10517,7 +10530,7 @@ function evalMultiplyInputs(inputs, parse)
         {
             const val = inputs[i].eval(parse).toValue();
 
-            console.assert(
+            crashAssert(
                 val.type == NUMBER_VALUE, 
                 'val.type must be NUMBER_VALUE');
 
@@ -10589,7 +10602,7 @@ function evalDivideInputs(inputs, parse)
         {
             const val = inputs[i].eval(parse).toValue();
 
-            console.assert(
+            crashAssert(
                 val.type == NUMBER_VALUE, 
                 'val.type must be NUMBER_VALUE');
 
@@ -10668,7 +10681,7 @@ function evalModuloInputs(inputs, parse)
         {
             const val = inputs[i].eval(parse).toValue();
 
-            console.assert(
+            crashAssert(
                 val.type == NUMBER_VALUE, 
                 'val.type must be NUMBER_VALUE');
 
@@ -10747,7 +10760,7 @@ function evalExponentInputs(inputs, parse)
         {
             const val = inputs[i].eval(parse).toValue();
 
-            console.assert(
+            crashAssert(
                 val.type == NUMBER_VALUE, 
                 'val.type must be NUMBER_VALUE');
                 
@@ -10879,7 +10892,7 @@ function evalNandInputs(inputs, parse)
             const val = inputs[i].eval(parse).toValue();
             if (!val.isValid()) return NumberValue.NaN;
 
-            console.assert(
+            crashAssert(
                 val.type == NUMBER_VALUE, 
                 'val.type must belong to NUMBER_VALUE');
 
@@ -10953,7 +10966,7 @@ function evalAndInputs(inputs, parse)
             const val = inputs[i].eval(parse).toValue();
             if (!val.isValid()) return NumberValue.NaN;
 
-            console.assert(
+            crashAssert(
                 val.type == NUMBER_VALUE, 
                 'val.type must be NUMBER_VALUE');
                 
@@ -11029,7 +11042,7 @@ function evalOrInputs(inputs, parse)
             const val = inputs[i].eval(parse).toValue();
             if (!val.isValid()) return NumberValue.NaN;
 
-            console.assert(
+            crashAssert(
                 val.type == NUMBER_VALUE, 
                 'val.type must be NUMBER_VALUE');
                 
@@ -11107,7 +11120,7 @@ function evalXorInputs(inputs, parse)
             const val = inputs[i].eval(parse).toValue();
             if (!val.isValid()) return NumberValue.NaN;
 
-            console.assert(
+            crashAssert(
                 val.type == NUMBER_VALUE, 
                 'val.type must be NUMBER_VALUE');
                 
@@ -11571,7 +11584,7 @@ extends GNumberType
         {
             this.value = this.input.eval(parse).toValue();
 
-            console.assert(
+            crashAssert(
                 this.value.type == NUMBER_VALUE, 
                 'this.value.type must belong to NUMBER_VALUE');
 
@@ -11643,7 +11656,7 @@ extends GNumberType
         {
             this.value = this.input.eval(parse).toValue();
 
-            console.assert(
+            crashAssert(
                 this.value.type == NUMBER_VALUE, 
                 'this.value.type must belong to NUMBER_VALUE');
 
@@ -11716,7 +11729,7 @@ extends GNumberType
         {
             this.value = this.input.eval(parse).toValue();
 
-            console.assert(
+            crashAssert(
                 this.value.type == NUMBER_VALUE, 
                 'this.value.type must belong to NUMBER_VALUE');
 
@@ -12306,7 +12319,7 @@ function getCorrectionsInOrder(order)
     }
 
     // should never get here
-    console.assert(false, 'invalid correction order ' + order);
+    crashAssert(false, 'invalid correction order ' + order);
     return [0, 0, 0];
 }
 
@@ -12336,7 +12349,7 @@ function getMinCorrections(space, order)
         
         default:
             // should never get here
-            console.assert(false, 'invalid validation order ' + order);
+            crashAssert(false, 'invalid validation order ' + order);
             return [0, 0, 0];
     }
 
@@ -12369,7 +12382,7 @@ function getMaxCorrections(space, order)
         
         default:
             // should never get here
-            console.assert(false, 'invalid validation order ' + order);
+            crashAssert(false, 'invalid validation order ' + order);
             return [0, 0, 0];
     }
 
@@ -12495,7 +12508,7 @@ function getColorCorrections(colorSpace)
     }
 
 
-    console.assert(false, 'invalid color space ' + colorSpace);
+    crashAssert(false, 'invalid color space ' + colorSpace);
     return [
         new ColorCorrection(),
         new ColorCorrection(),
@@ -13346,7 +13359,7 @@ extends GColorType
             const input0 = this.input0.eval(parse).toValue();
             const input1 = this.input1.eval(parse).toValue();
 
-            console.assert(
+            crashAssert(
                 amount.type == NUMBER_VALUE, 
                 'this.result.type must be NUMBER_VALUE');
 
@@ -13474,7 +13487,7 @@ extends GOperator
             {
                 this.result = this.input.eval(parse).copy();
 
-                console.assert(
+                crashAssert(
                     this.result.type == COLOR_STOP_VALUE, 
                     'this.result.type must be COLOR_STOP_VALUE');
 
@@ -15705,7 +15718,7 @@ function genParseColor(parse)
     if (!ignore)
     {
         nInputs = parseInt(parse.move());
-        console.assert(nInputs => 0 && nInputs <= 1, 'nInputs must be [0, 1]');
+        crashAssert(nInputs => 0 && nInputs <= 1, 'nInputs must be [0, 1]');
     }
 
 
@@ -15771,7 +15784,7 @@ function genParseValidColor(parse)
     if (!ignore)
     {
         nInputs = parseInt(parse.move());
-        console.assert(nInputs => 0 && nInputs <= 1, 'nInputs must be [0, 1]');
+        crashAssert(nInputs => 0 && nInputs <= 1, 'nInputs must be [0, 1]');
     }
 
 
@@ -15821,7 +15834,7 @@ function genParseCorrectColor(parse)
     if (!ignore)
     {
         nInputs = parseInt(parse.move());
-        console.assert(nInputs => 0 && nInputs <= 1, 'nInputs must be [0, 1]');
+        crashAssert(nInputs => 0 && nInputs <= 1, 'nInputs must be [0, 1]');
     }
 
 
@@ -15884,7 +15897,7 @@ function genParseColorContrast(parse)
     if (!ignore)
     {
         nInputs = parseInt(parse.move());
-        console.assert(nInputs => 0 && nInputs <= 2, 'nInputs must be [0, 2]');
+        crashAssert(nInputs => 0 && nInputs <= 2, 'nInputs must be [0, 2]');
     }
 
 
@@ -15947,7 +15960,7 @@ function genParseColorBlind(parse)
     if (!ignore)
     {
         nInputs = parseInt(parse.move());
-        console.assert(nInputs => 0 && nInputs <= 1, 'nInputs must be [0, 1]');
+        crashAssert(nInputs => 0 && nInputs <= 1, 'nInputs must be [0, 1]');
     }
 
 
@@ -15995,7 +16008,7 @@ function genParseColorInterpolate(parse)
     if (!ignore)
     {
         nInputs = parseInt(parse.move());
-        console.assert(nInputs => 0 && nInputs <= 2, 'nInputs must be [0, 2]');
+        crashAssert(nInputs => 0 && nInputs <= 2, 'nInputs must be [0, 2]');
     }
 
     
@@ -16023,7 +16036,7 @@ function genParseColorInterpolate(parse)
         lerp.input0 = genParse(parse); // doesn't matter if it's input0 or input1, the eval() result will be the same
 
     else if (nInputs != 0)
-        console.assert(false, 'nInputs must be [0, 2]');
+        crashAssert(false, 'nInputs must be [0, 2]');
 
 
     lerp.space  = genParse(parse);
@@ -16052,7 +16065,7 @@ function genParseCustom(parse)
     // if (!ignore)
     // {
     //     nInputs = parseInt(parse.move());
-    //     console.assert(nInputs == 0 || nInputs == 1, 'nInputs must be [0, 1]');
+    //     crashAssert(nInputs == 0 || nInputs == 1, 'nInputs must be [0, 1]');
     // }
 
 
@@ -16096,7 +16109,7 @@ function genParseCustomInputs(parse)
     // if (!ignore)
     // {
     //     nInputs = parseInt(parse.move());
-    //     console.assert(nInputs == 0 || nInputs == 1, 'nInputs must be [0, 1]');
+    //     crashAssert(nInputs == 0 || nInputs == 1, 'nInputs must be [0, 1]');
     // }
 
 
@@ -16220,7 +16233,7 @@ function genParseItems(parse)
     if (!ignore)
     {
         nInputs = parseInt(parse.move());
-        console.assert(nInputs == 0 || nInputs == 1, 'nInputs must be [0, 1]');
+        crashAssert(nInputs == 0 || nInputs == 1, 'nInputs must be [0, 1]');
     }
 
 
@@ -16264,7 +16277,7 @@ function genParseSelect(parse)
     if (!ignore)
     {
         nInputs = parseInt(parse.move());
-        console.assert(nInputs == 0 || nInputs == 1, 'nInputs must be [0, 1]');
+        crashAssert(nInputs == 0 || nInputs == 1, 'nInputs must be [0, 1]');
     }
 
 
@@ -16310,7 +16323,7 @@ function genParseIfElse(parse)
     if (!ignore)
     {
         nInputs = parseInt(parse.move());
-        console.assert(nInputs => 0 && nInputs <= 2, 'nInputs must be [0, 2]');
+        crashAssert(nInputs => 0 && nInputs <= 2, 'nInputs must be [0, 2]');
     }
 
 
@@ -16373,7 +16386,7 @@ function genParseStart(parse)
     if (!ignore)
     {
         nInputs = parseInt(parse.move());
-        console.assert(nInputs == 0 || nInputs == 1, 'nInputs must be [0, 1]');
+        crashAssert(nInputs == 0 || nInputs == 1, 'nInputs must be [0, 1]');
     }
 
 
@@ -16417,7 +16430,7 @@ function genParseRepeat(parse)
     if (!ignore)
     {
         nInputs = parseInt(parse.move());
-        console.assert(nInputs == 0 || nInputs == 1, 'nInputs must be [0, 1]');
+        crashAssert(nInputs == 0 || nInputs == 1, 'nInputs must be [0, 1]');
     }
 
 
@@ -16463,7 +16476,7 @@ function genParseCache(parse)
     if (!ignore)
     {
         nInputs = parseInt(parse.move());
-        console.assert(nInputs == 0 || nInputs == 1, 'nInputs must be [0, 1]');
+        crashAssert(nInputs == 0 || nInputs == 1, 'nInputs must be [0, 1]');
     }
 
 
@@ -16507,7 +16520,7 @@ function genParseCopy(parse)
     if (!ignore)
     {
         nInputs = parseInt(parse.move());
-        console.assert(nInputs == 0 || nInputs == 1, 'nInputs must be [0, 1]');
+        crashAssert(nInputs == 0 || nInputs == 1, 'nInputs must be [0, 1]');
     }
 
 
@@ -16602,7 +16615,7 @@ function genParseAbsolute(parse)
     if (!ignore)
     {
         nInputs = parseInt(parse.move());
-        console.assert(nInputs == 0 || nInputs == 1, 'nInputs must be [0, 1]');
+        crashAssert(nInputs == 0 || nInputs == 1, 'nInputs must be [0, 1]');
     }
 
     
@@ -16646,7 +16659,7 @@ function genParseRound(parse)
     if (!ignore)
     {
         nInputs = parseInt(parse.move());
-        console.assert(nInputs == 0 || nInputs == 1, 'nInputs must be [0, 1]');
+        crashAssert(nInputs == 0 || nInputs == 1, 'nInputs must be [0, 1]');
     }
 
     
@@ -16693,7 +16706,7 @@ function genParseLimits(parse)
     if (!ignore)
     {
         nInputs = parseInt(parse.move());
-        console.assert(nInputs == 0 || nInputs == 1, 'nInputs must be [0, 1]');
+        crashAssert(nInputs == 0 || nInputs == 1, 'nInputs must be [0, 1]');
     }
 
     
@@ -16893,7 +16906,7 @@ function genParseInterpolate(parse)
     if (!ignore)
     {
         nInputs = parseInt(parse.move());
-        console.assert(nInputs => 0 && nInputs <= 2, 'nInputs must be [0, 2]');
+        crashAssert(nInputs => 0 && nInputs <= 2, 'nInputs must be [0, 2]');
     }
 
     
@@ -16991,7 +17004,7 @@ function genParseCondition(parse)
     if (!ignore)
     {
         nInputs = parseInt(parse.move());
-        console.assert(nInputs => 0 && nInputs <= 2, 'nInputs must be [0, 2]');
+        crashAssert(nInputs => 0 && nInputs <= 2, 'nInputs must be [0, 2]');
     }
 
     
@@ -17046,7 +17059,7 @@ function genParseConditionBase(parse, newNode)
     if (!ignore)
     {
         nInputs = parseInt(parse.move());
-        console.assert(nInputs => 0 && nInputs <= 2, 'nInputs must be [0, 2]');
+        crashAssert(nInputs => 0 && nInputs <= 2, 'nInputs must be [0, 2]');
     }
 
     
@@ -17388,7 +17401,7 @@ function genParseFill(parse)
     if (!ignore)
     {
         nInputs = parseInt(parse.move());
-        console.assert(nInputs => 0 && nInputs <= 1, 'nInputs must be [0, 1]');
+        crashAssert(nInputs => 0 && nInputs <= 1, 'nInputs must be [0, 1]');
     }
 
 
@@ -17480,7 +17493,7 @@ function genParseStroke(parse)
     if (!ignore)
     {
         nInputs = parseInt(parse.move());
-        console.assert(nInputs => 0 && nInputs <= 1, 'nInputs must be [0, 1]');
+        crashAssert(nInputs => 0 && nInputs <= 1, 'nInputs must be [0, 1]');
     }
 
 
@@ -17828,7 +17841,7 @@ function genParse(parse, inParam = true)
 
     else if (parse.next == COMMENT                ) result = genParseComment         (parse);
 
-    else console.assert(false, 'unknown parse token \'' + parse.next + '\'');
+    else crashAssert(false, 'unknown parse token \'' + parse.next + '\'');
 
 
     parse.inParam = false;
@@ -17967,7 +17980,7 @@ function genParseCustom(parse)
     // if (!ignore)
     // {
     //     nInputs = parseInt(parse.move());
-    //     console.assert(nInputs == 0 || nInputs == 1, 'nInputs must be [0, 1]');
+    //     crashAssert(nInputs == 0 || nInputs == 1, 'nInputs must be [0, 1]');
     // }
 
 
@@ -20006,7 +20019,7 @@ function colorFactor(space)
         case 'lab':      
         case 'luv':   return oppFactor;   
         
-        default:      console.assert(false, 'invalid color factor from space \''+space+'\''); break;
+        default:      crashAssert(false, 'invalid color factor from space \''+space+'\''); break;
     }
 }
 
@@ -20880,14 +20893,9 @@ function convert2hcluv(fromColor)
 
 onerror = (event, source, line, pos, error) =>
 {
-    crashed = true;
-
     initCrashDialog(event, error);
     showCrashDialog();
 };
-
-
-
 
 
 const generatorVersion = 125;
@@ -23226,6 +23234,18 @@ function getCreateNodeAction(type, creatingButton, options)
         &&  !options.autoConnect
            ? new CreateInsertNodeAction(graphView.graph, type, creatingButton, options)
            : new CreateNodeAction      (graphView.graph, type, creatingButton, options, !!options.autoConnect);
+}
+
+
+
+function crashAssert(condition, error)
+{
+    if (condition) return;
+
+    initCrashDialog(error, null);
+    showCrashDialog();
+
+    console.assert(false, error);
 }
 
 
@@ -27108,7 +27128,7 @@ class GNode
 
     copy()
     {
-        console.assert(false, 'abstract type GNode cannot be copied');
+        crashAssert(false, 'abstract type GNode cannot be copied');
         return null;
     }
 
@@ -27163,7 +27183,7 @@ extends GNode
 
     copy()
     {
-        console.assert(false, 'abstract class GValue cannot be copied');
+        crashAssert(false, 'abstract class GValue cannot be copied');
         return null;
     }
 
@@ -27193,7 +27213,6 @@ function displayValue(type, value)
 
     switch (type)
     {
-        //case      LIST_VALUE: return parseListValue     (value)[0].toDisplayString();
         case    NUMBER_VALUE: return parseNumberValue   (value)[0].toDisplayString();
         case     COLOR_VALUE: return parseColorValue    (value)[0].toDisplayString();
         // case RECTANGLE_VALUE: return parseRectangleValue(value)[0].toDisplayString();
@@ -27203,10 +27222,11 @@ function displayValue(type, value)
         // case      STAR_VALUE: return parseStarValue     (value)[0].toDisplayString();
         case      FILL_VALUE: return parseFillValue     (value)[0].toDisplayString();
         case    STROKE_VALUE: return parseStrokeValue   (value)[0].toDisplayString();
+        case      LIST_VALUE: return parseListValue     (value)[0].toDisplayString();
     }
 
 
-    console.assert(false, 'cannot display value of type \'' + type + '\'');
+    crashAssert(false, 'cannot display value of type \'' + type + '\'');
 }
 
 
@@ -27317,7 +27337,7 @@ extends GOperator
     eval(parse)
     {
         this.node = parse.parsedNodes.find(v => v.nodeId == this.nodeId);
-        console.assert(this.node, 'can\'t find parameter node \'' + this.nodeId + '\'');
+        crashAssert(this.node, 'can\'t find parameter node \'' + this.nodeId + '\'');
 
         this.node.eval(parse);
 
@@ -27508,7 +27528,7 @@ extends GValue
         super(NUMBER_VALUE);
 
         if (typeof val !== 'number')
-            console.assert(false, 'NumberValue(value) is ' + typeof val + ', must be a number');
+            crashAssert(false, 'NumberValue(value) is ' + typeof val + ', must be a number');
 
 
         this.value    = val;
@@ -27617,7 +27637,7 @@ const NullValue = Object.freeze(NumberValue.NaN);
 function parseNumberValue(str)
 {
     if (str.indexOf(',') < 0)
-        console.assert(false, 'number value missing \',\'');
+        crashAssert(false, 'number value missing \',\'');
     
     const parts = str.split(',');
 
@@ -27670,10 +27690,10 @@ extends GValue
 
     static create(space, c1, c2, c3)
     {
-        console.assert(typeof space == 'number', 'ColorValue.create() space must be a number');
-        console.assert(typeof c1    == 'number', 'ColorValue.create() c1 must be a number');
-        console.assert(typeof c2    == 'number', 'ColorValue.create() c2 must be a number');
-        console.assert(typeof c3    == 'number', 'ColorValue.create() c3 must be a number');
+        crashAssert(typeof space == 'number', 'ColorValue.create() space must be a number');
+        crashAssert(typeof c1    == 'number', 'ColorValue.create() c1 must be a number');
+        crashAssert(typeof c2    == 'number', 'ColorValue.create() c2 must be a number');
+        crashAssert(typeof c3    == 'number', 'ColorValue.create() c3 must be a number');
 
         return new ColorValue(
             new NumberValue(space),
@@ -27865,7 +27885,7 @@ extends GValue
     
     static create(r, g, b, opacity)
     {
-        console.assert(
+        crashAssert(
             typeof opacity == 'number',
             'opacity must be a number');
 
@@ -27878,7 +27898,7 @@ extends GValue
 
     static fromRgb(rgb, opacity)
     {
-        console.assert(
+        crashAssert(
             typeof opacity == 'number',
             'opacity must be a number');
 
@@ -28013,7 +28033,7 @@ function parseFillValue(str, i = -1)
 //          if ( FILL_TYPES.includes(fillValue.type)) return fill;
 //     else if (COLOR_TYPES.includes(fillValue.type)) return new FillValue(fill, fillValue.data.opacity);
 
-//     else console.assert(false, 'fill must have type');
+//     else crashAssert(false, 'fill must have type');
 // }
 
 
@@ -28035,7 +28055,7 @@ extends GValue
                 miter  = new NumberValue(28.96, 2))
     {
         if (fill.type != FILL_VALUE)
-            console.assert(false, 'fill.type must be FILL_VALUE');
+            crashAssert(false, 'fill.type must be FILL_VALUE');
 
 
         super(STROKE_VALUE);
@@ -28053,7 +28073,7 @@ extends GValue
     
     // static create(r, g, b, opacity)
     // {
-    //     console.assert(
+    //     crashAssert(
     //         typeof opacity == 'number',
     //         'opacity must be a number');
 
@@ -28066,7 +28086,7 @@ extends GValue
 
     // static fromRgb(rgb, opacity)
     // {
-    //     console.assert(
+    //     crashAssert(
     //         typeof opacity == 'number',
     //         'opacity must be a number');
 
@@ -28244,7 +28264,7 @@ function evalStrokeValue(value, parse)
     else if (  FILL_TYPES.includes(stroke.type)) return new StrokeValue(stroke, value.data.weight);
     else if ( COLOR_TYPES.includes(stroke.type)) return new StrokeValue(new FillValue(stroke), value.data.weight);
 
-    else console.assert(false, 'stroke must have type');
+    else crashAssert(false, 'stroke must have type');
 }
 
 
@@ -29722,7 +29742,7 @@ function evalAddInputs(inputs, parse)
     {
         const val = inputs[i].eval(parse).toValue();
 
-        console.assert(
+        crashAssert(
             val.type == NUMBER_VALUE, 
             'val.type must belong to NUMBER_VALUE');
 
@@ -29793,7 +29813,7 @@ function evalSubtractInputs(inputs, parse)
         {
             const val = inputs[i].eval(parse).toValue();
 
-            console.assert(
+            crashAssert(
                 val.type == NUMBER_VALUE, 
                 'val.type must be NUMBER_VALUE');
                 
@@ -29861,7 +29881,7 @@ function evalMultiplyInputs(inputs, parse)
         {
             const val = inputs[i].eval(parse).toValue();
 
-            console.assert(
+            crashAssert(
                 val.type == NUMBER_VALUE, 
                 'val.type must be NUMBER_VALUE');
 
@@ -29933,7 +29953,7 @@ function evalDivideInputs(inputs, parse)
         {
             const val = inputs[i].eval(parse).toValue();
 
-            console.assert(
+            crashAssert(
                 val.type == NUMBER_VALUE, 
                 'val.type must be NUMBER_VALUE');
 
@@ -30012,7 +30032,7 @@ function evalModuloInputs(inputs, parse)
         {
             const val = inputs[i].eval(parse).toValue();
 
-            console.assert(
+            crashAssert(
                 val.type == NUMBER_VALUE, 
                 'val.type must be NUMBER_VALUE');
 
@@ -30091,7 +30111,7 @@ function evalExponentInputs(inputs, parse)
         {
             const val = inputs[i].eval(parse).toValue();
 
-            console.assert(
+            crashAssert(
                 val.type == NUMBER_VALUE, 
                 'val.type must be NUMBER_VALUE');
                 
@@ -30223,7 +30243,7 @@ function evalNandInputs(inputs, parse)
             const val = inputs[i].eval(parse).toValue();
             if (!val.isValid()) return NumberValue.NaN;
 
-            console.assert(
+            crashAssert(
                 val.type == NUMBER_VALUE, 
                 'val.type must belong to NUMBER_VALUE');
 
@@ -30297,7 +30317,7 @@ function evalAndInputs(inputs, parse)
             const val = inputs[i].eval(parse).toValue();
             if (!val.isValid()) return NumberValue.NaN;
 
-            console.assert(
+            crashAssert(
                 val.type == NUMBER_VALUE, 
                 'val.type must be NUMBER_VALUE');
                 
@@ -30373,7 +30393,7 @@ function evalOrInputs(inputs, parse)
             const val = inputs[i].eval(parse).toValue();
             if (!val.isValid()) return NumberValue.NaN;
 
-            console.assert(
+            crashAssert(
                 val.type == NUMBER_VALUE, 
                 'val.type must be NUMBER_VALUE');
                 
@@ -30451,7 +30471,7 @@ function evalXorInputs(inputs, parse)
             const val = inputs[i].eval(parse).toValue();
             if (!val.isValid()) return NumberValue.NaN;
 
-            console.assert(
+            crashAssert(
                 val.type == NUMBER_VALUE, 
                 'val.type must be NUMBER_VALUE');
                 
@@ -30915,7 +30935,7 @@ extends GNumberType
         {
             this.value = this.input.eval(parse).toValue();
 
-            console.assert(
+            crashAssert(
                 this.value.type == NUMBER_VALUE, 
                 'this.value.type must belong to NUMBER_VALUE');
 
@@ -30987,7 +31007,7 @@ extends GNumberType
         {
             this.value = this.input.eval(parse).toValue();
 
-            console.assert(
+            crashAssert(
                 this.value.type == NUMBER_VALUE, 
                 'this.value.type must belong to NUMBER_VALUE');
 
@@ -31060,7 +31080,7 @@ extends GNumberType
         {
             this.value = this.input.eval(parse).toValue();
 
-            console.assert(
+            crashAssert(
                 this.value.type == NUMBER_VALUE, 
                 'this.value.type must belong to NUMBER_VALUE');
 
@@ -31650,7 +31670,7 @@ function getCorrectionsInOrder(order)
     }
 
     // should never get here
-    console.assert(false, 'invalid correction order ' + order);
+    crashAssert(false, 'invalid correction order ' + order);
     return [0, 0, 0];
 }
 
@@ -31680,7 +31700,7 @@ function getMinCorrections(space, order)
         
         default:
             // should never get here
-            console.assert(false, 'invalid validation order ' + order);
+            crashAssert(false, 'invalid validation order ' + order);
             return [0, 0, 0];
     }
 
@@ -31713,7 +31733,7 @@ function getMaxCorrections(space, order)
         
         default:
             // should never get here
-            console.assert(false, 'invalid validation order ' + order);
+            crashAssert(false, 'invalid validation order ' + order);
             return [0, 0, 0];
     }
 
@@ -31839,7 +31859,7 @@ function getColorCorrections(colorSpace)
     }
 
 
-    console.assert(false, 'invalid color space ' + colorSpace);
+    crashAssert(false, 'invalid color space ' + colorSpace);
     return [
         new ColorCorrection(),
         new ColorCorrection(),
@@ -32690,7 +32710,7 @@ extends GColorType
             const input0 = this.input0.eval(parse).toValue();
             const input1 = this.input1.eval(parse).toValue();
 
-            console.assert(
+            crashAssert(
                 amount.type == NUMBER_VALUE, 
                 'this.result.type must be NUMBER_VALUE');
 
@@ -32818,7 +32838,7 @@ extends GOperator
             {
                 this.result = this.input.eval(parse).copy();
 
-                console.assert(
+                crashAssert(
                     this.result.type == COLOR_STOP_VALUE, 
                     'this.result.type must be COLOR_STOP_VALUE');
 
@@ -34906,8 +34926,10 @@ extends EventTarget
 
     setValue(value, fireChangeEvent = true, confirm = true, fullRange = true)
     {
+        //console.trace();
+        //console.log('value =', value);
         if (typeof value != 'number')
-            console.assert(false, 'numberControl.setValue(value) is ' + typeof value + ', must be a number');
+            crashAssert(false, 'NumberControl.setValue(value) is ' + typeof value + ', must be a number');
 
             
         const oldValue = this.value;
@@ -35002,7 +35024,7 @@ extends EventTarget
     update()
     {
         if (typeof this.value !== 'number')
-            console.assert(false, 'numberControl.update() value is ' + typeof this.value + ', must be a number');
+            crashAssert(false, 'numberControl.update() value is ' + typeof this.value + ', must be a number');
 
         if (!this.measureData.offsetRect)
             return;
@@ -36561,7 +36583,7 @@ extends EventTarget
     setValue(value, fireChangeEvent = true, confirm = true)
     {
         if (!(value instanceof ColorValue))
-            console.assert(false, 'colorControl.setValue(value) is ' + typeof value + ', must be a ColorValue');
+            crashAssert(false, 'ColorControl.setValue(value) is ' + typeof value + ', must be a ColorValue');
 
 
         const oldValue = this.value.copy();
@@ -42421,7 +42443,7 @@ extends Parameter
     {
         // console.log(this.id + '.setValue() value =', value);
 
-        console.assert(
+        crashAssert(
             value instanceof NumberValue,
             'value must be a NumberValue');
 
@@ -42429,6 +42451,7 @@ extends Parameter
         this.preSetValue(value, createAction, dispatchEvents);
 
         
+        //console.log('NumberParamBase.setValue value =', value);
         if (updateControl)
         {
             this.controls[0].setDecimals(value.decimals, value.decimals);
@@ -42707,7 +42730,7 @@ extends NumberParamBase
     {
         // 'this' is the output
 
-        console.assert(value.type == NUMBER_VALUE, 'expected NUMBER_VALUE in backInit()');
+        crashAssert(value.type == NUMBER_VALUE, 'expected NUMBER_VALUE in backInit()');
         
         this.param.setValue(value, false, true, false);
     }
@@ -42849,7 +42872,7 @@ extends NumberParamBase
     {
         // 'this' is the output
 
-        console.assert(value.type == NUMBER_VALUE, 'expected NUMBER_VALUE in backInit()');
+        crashAssert(value.type == NUMBER_VALUE, 'expected NUMBER_VALUE in backInit()');
         
         this.param.setValue(value, false, true, false);
     }
@@ -43034,7 +43057,7 @@ extends Parameter
     {
         // 'this' is the output
 
-        console.assert(value.type == COLOR_VALUE, 'expected COLOR_VALUE in backInit()');
+        crashAssert(value.type == COLOR_VALUE, 'expected COLOR_VALUE in backInit()');
         
         this.param.setValue(value, false, true, false);
     }
@@ -43069,7 +43092,7 @@ extends Parameter
 
     setValue(value, createAction, updateControl = true, dispatchEvents = true) 
     {
-        console.assert(
+        crashAssert(
                value.type 
             && value.type == COLOR_VALUE, 
             'value.type must be COLOR_VALUE');
@@ -43461,10 +43484,11 @@ extends Parameter
 
     setValue(value, createAction, updateControl = true, dispatchEvents = true) 
     {
+        //console.log('FillParam.setValue value =', value);
         if (!(value instanceof FillValue))
-            console.assert(false, 'FillParam.setValue(value) is ' + typeof value + ', must be a FillValue');
+            crashAssert(false, 'FillParam.setValue(value) is ' + typeof value + ', must be a FillValue');
 
-        console.assert(
+        crashAssert(
                value.type 
             && value.type == FILL_VALUE, 
             'FillParam value.type must be FILL_VALUE');
@@ -43539,7 +43563,7 @@ extends Parameter
                 || this.input.connectedOutput.supportsTypes(FILL_TYPES ))
                 request.push(...pushInputOrParam(this.input, gen));
             else
-                console.assert(false, 'invalid input for FillParam');
+                crashAssert(false, 'invalid input for FillParam');
         }
 
         else request.push( 
@@ -43561,7 +43585,7 @@ extends Parameter
 
     updateControls()
     {
-        checkControlVisible(this, this.controls[0]  );
+        checkControlVisible(this, this.controls[0]);
         checkControlVisible(this, this.controls[1]);
 
 
@@ -43678,17 +43702,17 @@ extends Parameter
     {
         enable &= !this.input || !this.input.connected;
 
-        const opEnable = 
-                enable 
-            || !this.input 
-            || !this.input.connected;
+        // const opEnable = 
+        //         enable 
+        //     || !this.input 
+        //     || !this.input.connected;
             //||  this.input.connectedOutput.supportsTypes(COLOR_TYPES);
 
         enableElementText(this.controls[0].div, enable);
-        enableElementText(this.controls[1].div, opEnable);
+        enableElementText(this.controls[1].div, enable);//opEnable);
         
         this.controls[0].readOnly = !enable;
-        this.controls[1].readOnly = !opEnable;
+        this.controls[1].readOnly = !enable;//opEnable;
     }
     
     
@@ -43866,10 +43890,10 @@ extends Parameter
         //console.log('value =', value);
         
         if (!(value instanceof StrokeValue))
-            console.assert(false, 'StrokeParam.setValue(value) is ' + typeof value + ', must be a StrokeValue');
+            crashAssert(false, 'StrokeParam.setValue(value) is ' + typeof value + ', must be a StrokeValue');
 
 
-        console.assert(
+        crashAssert(
                value.type 
             && value.type == STROKE_VALUE, 
             'StrokeParam value.type must be STROKE_VALUE');
@@ -44224,6 +44248,9 @@ extends Parameter
         }
     }
 }
+
+
+
 
 
 class   Input
@@ -45805,7 +45832,7 @@ class Operator
         else if (STROKE_TYPES.includes(type)) return this.addParam(new StrokeParam(id, id, showName, hasInput, hasOutput), volatile);
         //else if ( COLOR_STYLE_TYPES.includes(type)) return this.addParam(new  StyleParam(id, id, showName, hasInput, hasOutput), volatile);
 
-        else console.assert(false, 'cannot create parameter of type \'' + type + '\'');
+        else crashAssert(false, 'cannot create parameter of type \'' + type + '\'');
 
         return null;
     }
@@ -46305,7 +46332,7 @@ class Operator
 
     connectToSelected(selected)
     {
-        console.assert(!isEmpty(selected));
+        crashAssert(!isEmpty(selected));
 
         const node   = selected[0];
         const inputs = this.inputs.filter(i => i.types.includes(node.type));
@@ -47657,14 +47684,21 @@ Operator.prototype.updateHeaderInputsAndOutputs = function()
 
 Operator.prototype.updateValues = function(requestId, actionId, updateParamId, paramIds, values) // virtual
 {
+    //console.log('1 ' + this.id + '.updateValues()');
+    
     for (let i = 0; i < paramIds.length; i++)
     {
         const index = this.params.findIndex(p => p.id == paramIds[i]);
 
         if (   paramIds[index] != updateParamId
             && index > -1)
+        {
+            //console.log('this.params[index] =', this.params[index]);
             this.params[index].setValue(values[i], false, true, false);
+        }
     }
+
+    //console.log('2 ' + this.id + '.updateValues()');
 }
 
 
@@ -47956,7 +47990,8 @@ extends OperatorBase
         this.inert = true;
 
         
-        this.addInput(new Input(LIST_TYPES));
+        this.addInput (new Input(LIST_TYPES));
+        this.addOutput(new Output([LIST_VALUE], this.output_genRequest));
 
         this.alwaysLoadParams = true;
         this.alwaysSaveParams = true;
@@ -47968,25 +48003,25 @@ extends OperatorBase
     {
         // 'this' is the output        
 
-        return this.node.genRequest(gen);
-    }
+    //     return this.node.genRequest(gen);
+    // }
 
 
 
-    genRequest(gen)
-    {
-        // 'this' is the node
+    // genRequest(gen)
+    // {
+    //     // 'this' is the node
 
         gen.scope.push({
-            nodeId:  this.id, 
+            nodeId:  this.node.id, 
             paramId: NULL });
 
 
-        const [request, ignore] = this.genRequestStart(gen);
+        const [request, ignore] = this.node.genRequestStart(gen);
         if (ignore) return request;
 
 
-        const input = this.inputs[0];
+        const input = this.node.inputs[0];
 
 
         request.push(input.connected ? 1 : 0);
@@ -48033,7 +48068,9 @@ extends OperatorBase
                 const value = values[i];
                 const id    = 'item' + i;
 
-                const param = oldParams.find(p => p.id == id);
+                const param = oldParams.find(p => 
+                       p.id == id
+                    && p.type == value.type);
 
                 if (   param
                     && paramIds.includes(param.id)) 
@@ -48826,7 +48863,7 @@ extends OperatorBase
     {
         // 'this' is the output
 
-        console.assert(value.type == NUMBER_VALUE, 'expected NUMBER_VALUE in backInit()');
+        crashAssert(value.type == NUMBER_VALUE, 'expected NUMBER_VALUE in backInit()');
         
         this.node.paramValue.setValue(value, false, true, false);
     }
@@ -50426,7 +50463,7 @@ extends OpColorBase
     {
         // 'this' is the output
 
-        console.assert(value.type == COLOR_VALUE, 'expected COLOR_VALUE in backInit()');
+        crashAssert(value.type == COLOR_VALUE, 'expected COLOR_VALUE in backInit()');
 
         this.node.paramSpace.setValue(value.space, false, true, false);
         this.node.param1    .setValue(value.c1,    false, true, false);
@@ -51064,7 +51101,7 @@ function colorFactor(space)
         case 'lab':      
         case 'luv':   return oppFactor;   
         
-        default:      console.assert(false, 'invalid color factor from space \''+space+'\''); break;
+        default:      crashAssert(false, 'invalid color factor from space \''+space+'\''); break;
     }
 }
 
@@ -52514,7 +52551,7 @@ extends OpColorBase
 
     updateValues(requestId, actionId, updateParamId, paramIds, values)
     {
-        console.assert(
+        crashAssert(
             paramIds.length == values.length,
             'paramIds.length must equal values.length');
 
@@ -52526,11 +52563,11 @@ extends OpColorBase
         const standard = values[paramIds.findIndex(id => id == 'standard')];
         const contrast = values[paramIds.findIndex(id => id == 'contrast')];
 
-        console.assert(isValid(colText), 'colText is not valid');
-        console.assert(isValid(colBack), 'colBack is not valid');
+        crashAssert(isValid(colText), 'colText is not valid');
+        crashAssert(isValid(colBack), 'colBack is not valid');
 
-        console.assert(colText.type == COLOR_VALUE, 'colText.type = ' + colText.type);
-        console.assert(colBack.type == COLOR_VALUE, 'colBack.type = ' + colBack.type);
+        crashAssert(colText.type == COLOR_VALUE, 'colText.type = ' + colText.type);
+        crashAssert(colBack.type == COLOR_VALUE, 'colBack.type = ' + colBack.type);
 
 
         this.labelColor = 
@@ -54181,7 +54218,7 @@ extends OpColorBase
 
     // connectToSelected(selected)
     // {
-    //     console.assert(!isEmpty(selected));
+    //     crashAssert(!isEmpty(selected));
 
     //     const node   = selected[0];
     //     const inputs = this.inputs.filter(i => i.types.includes(node.type));
@@ -55295,7 +55332,7 @@ function createNode(nodeType, creatingButton = null, createdNodeId = -1, options
 
         case COMMENT:                 node = new OpComment();           break;
      
-        default:                      console.assert(false, 'Graph.js/createNode() cannot create type ' + nodeType);
+        default:                      crashAssert(false, 'Graph.js/createNode() cannot create type ' + nodeType);
     }
     
     node._creatingButton = creatingButton;
@@ -55811,7 +55848,7 @@ class Action
         this.type  = type;
         this.name  = name;
 
-        console.assert(
+        crashAssert(
                this.name != undefined
             && this.name != null
             && this.name != '',
@@ -55916,7 +55953,7 @@ class Action
                 output._node = node; 
             }
 
-            console.assert(isValid(output), 'output should be found at this point');
+            crashAssert(isValid(output), 'output should be found at this point');
 
 
             output.updateSavedConnectionOrder(_conn.outputOrder, +1);
@@ -56470,7 +56507,7 @@ function connectAction_activateOldActiveNodes(act, updateNodes)
     if (    act.oldOutputActiveNodeId != NULL
         && !act.inputActiveNodeIds.includes(act.oldOutputActiveNodeId))
     {
-        console.assert(act.oldOutputActiveNodeId != NULL, 'there should be an old output active node ID at this point')
+        crashAssert(act.oldOutputActiveNodeId != NULL, 'there should be an old output active node ID at this point')
 
         const oldOutputActiveNode = act.graph.nodeFromId(act.oldOutputActiveNodeId);
 
@@ -58551,6 +58588,8 @@ function initCrashDialog(event, error)
 
 function showCrashDialog()
 {
+    crashed = true;
+
     crashBack  .style.display = 'block';
     crashDialog.style.display = 'block';
 
@@ -62184,47 +62223,47 @@ function uiPasteNodes(graph, nodesJson, pasteConnected, x, y, updateNodes)
 
     // if new nodes are outside of viewport, move them to center of viewport
 
-    const viewRect = graphView.measureData.clientRect;
+    // const viewRect = graphView.measureData.clientRect;
 
-    let l = Number.MAX_SAFE_INTEGER;
-    let t = Number.MAX_SAFE_INTEGER;
-    let r = Number.MIN_SAFE_INTEGER;
-    let b = Number.MIN_SAFE_INTEGER;
+    // let l = Number.MAX_SAFE_INTEGER;
+    // let t = Number.MAX_SAFE_INTEGER;
+    // let r = Number.MIN_SAFE_INTEGER;
+    // let b = Number.MIN_SAFE_INTEGER;
     
-    for (let i = 0; i < data.nodes.length; i++)
-    {
-        console.log('data.nodes[i] =', data.nodes[i]);
+    // for (let i = 0; i < data.nodes.length; i++)
+    // {
+    //     console.log('data.nodes[i] =', data.nodes[i]);
 
-        l = Math.min(l, data.nodes[i].x);
-        t = Math.min(t, data.nodes[i].y);
-        r = Math.max(r, data.nodes[i].x + data.nodes[i].width);
-        b = Math.max(b, data.nodes[i].y + data.nodes[i].height);
-    }
+    //     l = Math.min(l, data.nodes[i].x);
+    //     t = Math.min(t, data.nodes[i].y);
+    //     r = Math.max(r, data.nodes[i].x + data.nodes[i].width);
+    //     b = Math.max(b, data.nodes[i].y + data.nodes[i].height);
+    // }
     
-    console.log('l =', l);
-    console.log('t =', t);
-    console.log('r =', r);
-    console.log('b =', b);
+    // console.log('l =', l);
+    // console.log('t =', t);
+    // console.log('r =', r);
+    // console.log('b =', b);
 
-    if (   l >  viewRect.r 
-        || t >  viewRect.b 
-        || r <= viewRect.l
-        || b <= viewRect.t)
-    {
-        const cx = (l + r) / 2;
-        const cy = (t + b) / 2;
+    // if (   l >  viewRect.r 
+    //     || t >  viewRect.b 
+    //     || r <= viewRect.l
+    //     || b <= viewRect.t)
+    // {
+    //     const cx = (l + r) / 2;
+    //     const cy = (t + b) / 2;
         
-        const vx = viewRect.c;
-        const vy = viewRect.m;
+    //     const vx = viewRect.c;
+    //     const vy = viewRect.m;
         
-        for (let i = 0; i < data.nodes.length; i++)
-        {
-            data.nodes[i].x -= vx - cx;
-            data.nodes[i].y -= vy - cy;
+    //     for (let i = 0; i < data.nodes.length; i++)
+    //     {
+    //         data.nodes[i].x -= vx - cx;
+    //         data.nodes[i].y -= vy - cy;
 
-            console.log('data.nodes[i] =', data.nodes[i]);
-        }
-    }
+    //         console.log('data.nodes[i] =', data.nodes[i]);
+    //     }
+    // }
 
 
     const nodes = loadNodes(data, true);
@@ -62400,7 +62439,7 @@ function uiUpdateValuesAndObjects(requestId, actionId, updateNodeId, updateParam
                     case   POLYGON_VALUE:  value = parsePolygonValue  (values[i++])[0];  break;
                     case      STAR_VALUE:  value = parseStarValue     (values[i++])[0];  break;
                     
-                    default: console.assert(false, 'unknown type \'' + type + '\'');
+                    default: crashAssert(false, 'unknown type \'' + type + '\'');
                 }
 
                 if (value.nodeId)
@@ -62919,7 +62958,7 @@ function uiSetStyleId(msg)
 function initLocalStylesMenu(styles, nodeId)
 {
     const node = graphView.graph.nodeFromId(nodeId);
-    console.assert(node.type == COLOR_STYLE, 'node must be COLOR_STYLE');
+    crashAssert(node.type == COLOR_STYLE, 'node must be COLOR_STYLE');
 
 
     menuLocalStyles.clearItems();
@@ -63105,7 +63144,7 @@ var   viewportRect    = new Rect();
 
 // function setCurrentGraph(graph)
 // {
-//     console.assert(currentView, 'there should be a valid currentView');
+//     crashAssert(currentView, 'there should be a valid currentView');
 
 //     const elements = Array.prototype.slice.call(document.children);
 //     const index    = elements.indexOf(currentView.div);

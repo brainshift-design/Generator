@@ -151,7 +151,7 @@ extends EventTarget
     setValue(value, fireChangeEvent = true, confirm = true)
     {
         if (!(value instanceof ColorValue))
-            console.assert(false, 'colorControl.setValue(value) is ' + typeof value + ', must be a ColorValue');
+            crashAssert(false, 'ColorControl.setValue(value) is ' + typeof value + ', must be a ColorValue');
 
 
         const oldValue = this.value.copy();

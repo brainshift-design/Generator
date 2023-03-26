@@ -208,10 +208,11 @@ extends Parameter
 
     setValue(value, createAction, updateControl = true, dispatchEvents = true) 
     {
+        //console.log('FillParam.setValue value =', value);
         if (!(value instanceof FillValue))
-            console.assert(false, 'FillParam.setValue(value) is ' + typeof value + ', must be a FillValue');
+            crashAssert(false, 'FillParam.setValue(value) is ' + typeof value + ', must be a FillValue');
 
-        console.assert(
+        crashAssert(
                value.type 
             && value.type == FILL_VALUE, 
             'FillParam value.type must be FILL_VALUE');
@@ -286,7 +287,7 @@ extends Parameter
                 || this.input.connectedOutput.supportsTypes(FILL_TYPES ))
                 request.push(...pushInputOrParam(this.input, gen));
             else
-                console.assert(false, 'invalid input for FillParam');
+                crashAssert(false, 'invalid input for FillParam');
         }
 
         else request.push( 
@@ -308,7 +309,7 @@ extends Parameter
 
     updateControls()
     {
-        checkControlVisible(this, this.controls[0]  );
+        checkControlVisible(this, this.controls[0]);
         checkControlVisible(this, this.controls[1]);
 
 
@@ -425,17 +426,17 @@ extends Parameter
     {
         enable &= !this.input || !this.input.connected;
 
-        const opEnable = 
-                enable 
-            || !this.input 
-            || !this.input.connected;
+        // const opEnable = 
+        //         enable 
+        //     || !this.input 
+        //     || !this.input.connected;
             //||  this.input.connectedOutput.supportsTypes(COLOR_TYPES);
 
         enableElementText(this.controls[0].div, enable);
-        enableElementText(this.controls[1].div, opEnable);
+        enableElementText(this.controls[1].div, enable);//opEnable);
         
         this.controls[0].readOnly = !enable;
-        this.controls[1].readOnly = !opEnable;
+        this.controls[1].readOnly = !enable;//opEnable;
     }
     
     

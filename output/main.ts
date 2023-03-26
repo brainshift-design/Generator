@@ -1381,11 +1381,10 @@ function figCreateObject(objects, genObj)
 
     console.assert(!!figObj, 'no Figma object created');
 
-
     figObj.setPluginData('id',       genObj.objectId.toString());
     figObj.setPluginData('type',     genObj.type);
     figObj.setPluginData('nodeId',   genObj.nodeId);
-    figObj.setPluginData('nodeName', genObj.nodeName);
+    //figObj.setPluginData('nodeName', genObj.nodeName);
     
 
     objects.push(figObj);

@@ -249,7 +249,7 @@ extends OpColorBase
 
     // connectToSelected(selected)
     // {
-    //     console.assert(!isEmpty(selected));
+    //     crashAssert(!isEmpty(selected));
 
     //     const node   = selected[0];
     //     const inputs = this.inputs.filter(i => i.types.includes(node.type));

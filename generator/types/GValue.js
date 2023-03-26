@@ -10,7 +10,7 @@ extends GNode
 
     copy()
     {
-        console.assert(false, 'abstract class GValue cannot be copied');
+        crashAssert(false, 'abstract class GValue cannot be copied');
         return null;
     }
 
@@ -40,7 +40,6 @@ function displayValue(type, value)
 
     switch (type)
     {
-        //case      LIST_VALUE: return parseListValue     (value)[0].toDisplayString();
         case    NUMBER_VALUE: return parseNumberValue   (value)[0].toDisplayString();
         case     COLOR_VALUE: return parseColorValue    (value)[0].toDisplayString();
         // case RECTANGLE_VALUE: return parseRectangleValue(value)[0].toDisplayString();
@@ -50,8 +49,9 @@ function displayValue(type, value)
         // case      STAR_VALUE: return parseStarValue     (value)[0].toDisplayString();
         case      FILL_VALUE: return parseFillValue     (value)[0].toDisplayString();
         case    STROKE_VALUE: return parseStrokeValue   (value)[0].toDisplayString();
+        case      LIST_VALUE: return parseListValue     (value)[0].toDisplayString();
     }
 
 
-    console.assert(false, 'cannot display value of type \'' + type + '\'');
+    crashAssert(false, 'cannot display value of type \'' + type + '\'');
 }

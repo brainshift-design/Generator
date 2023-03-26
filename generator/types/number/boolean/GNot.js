@@ -57,7 +57,7 @@ function evalNandInputs(inputs, parse)
             const val = inputs[i].eval(parse).toValue();
             if (!val.isValid()) return NumberValue.NaN;
 
-            console.assert(
+            crashAssert(
                 val.type == NUMBER_VALUE, 
                 'val.type must belong to NUMBER_VALUE');
 

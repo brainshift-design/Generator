@@ -25,7 +25,7 @@ function genParseFill(parse)
     if (!ignore)
     {
         nInputs = parseInt(parse.move());
-        console.assert(nInputs => 0 && nInputs <= 1, 'nInputs must be [0, 1]');
+        crashAssert(nInputs => 0 && nInputs <= 1, 'nInputs must be [0, 1]');
     }
 
 
@@ -117,7 +117,7 @@ function genParseStroke(parse)
     if (!ignore)
     {
         nInputs = parseInt(parse.move());
-        console.assert(nInputs => 0 && nInputs <= 1, 'nInputs must be [0, 1]');
+        crashAssert(nInputs => 0 && nInputs <= 1, 'nInputs must be [0, 1]');
     }
 
 

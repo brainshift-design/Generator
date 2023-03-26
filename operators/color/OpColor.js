@@ -128,7 +128,7 @@ extends OpColorBase
     {
         // 'this' is the output
 
-        console.assert(value.type == COLOR_VALUE, 'expected COLOR_VALUE in backInit()');
+        crashAssert(value.type == COLOR_VALUE, 'expected COLOR_VALUE in backInit()');
 
         this.node.paramSpace.setValue(value.space, false, true, false);
         this.node.param1    .setValue(value.c1,    false, true, false);

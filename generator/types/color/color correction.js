@@ -338,7 +338,7 @@ function getCorrectionsInOrder(order)
     }
 
     // should never get here
-    console.assert(false, 'invalid correction order ' + order);
+    crashAssert(false, 'invalid correction order ' + order);
     return [0, 0, 0];
 }
 
@@ -368,7 +368,7 @@ function getMinCorrections(space, order)
         
         default:
             // should never get here
-            console.assert(false, 'invalid validation order ' + order);
+            crashAssert(false, 'invalid validation order ' + order);
             return [0, 0, 0];
     }
 
@@ -401,7 +401,7 @@ function getMaxCorrections(space, order)
         
         default:
             // should never get here
-            console.assert(false, 'invalid validation order ' + order);
+            crashAssert(false, 'invalid validation order ' + order);
             return [0, 0, 0];
     }
 
@@ -527,7 +527,7 @@ function getColorCorrections(colorSpace)
     }
 
 
-    console.assert(false, 'invalid color space ' + colorSpace);
+    crashAssert(false, 'invalid color space ' + colorSpace);
     return [
         new ColorCorrection(),
         new ColorCorrection(),

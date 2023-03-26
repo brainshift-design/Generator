@@ -299,3 +299,15 @@ function getCreateNodeAction(type, creatingButton, options)
            ? new CreateInsertNodeAction(graphView.graph, type, creatingButton, options)
            : new CreateNodeAction      (graphView.graph, type, creatingButton, options, !!options.autoConnect);
 }
+
+
+
+function crashAssert(condition, error)
+{
+    if (condition) return;
+
+    initCrashDialog(error, null);
+    showCrashDialog();
+
+    console.assert(false, error);
+}

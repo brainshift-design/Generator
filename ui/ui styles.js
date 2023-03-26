@@ -134,7 +134,7 @@ function uiSetStyleId(msg)
 function initLocalStylesMenu(styles, nodeId)
 {
     const node = graphView.graph.nodeFromId(nodeId);
-    console.assert(node.type == COLOR_STYLE, 'node must be COLOR_STYLE');
+    crashAssert(node.type == COLOR_STYLE, 'node must be COLOR_STYLE');
 
 
     menuLocalStyles.clearItems();
