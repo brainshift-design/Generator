@@ -337,16 +337,16 @@ extends Parameter
 
         if (this.input)
         {
-            //this.input.wireColor   = !rgbaIsNaN(rgbaVal) ? rgbaVal : noColor;
             this.input.colorLight  = 
             this.input.colorDark   = rgb_a(rgbaText, 0.2);
+            this.input.wireColor   = !rgbaIsNaN(rgbaVal) ? rgbaVal : noColor;
         }
 
         if (this.output)
         {
-            //this.output.wireColor  = !rgbaIsNaN(rgbaVal) ? rgbaVal : noColor;
             this.output.colorLight =
             this.output.colorDark  = rgb_a(rgbaText, 0.2);
+            this.output.wireColor  = !rgbaIsNaN(rgbaVal) ? rgbaVal : noColor;
         }
 
 

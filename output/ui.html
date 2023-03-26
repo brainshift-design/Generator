@@ -43541,16 +43541,16 @@ extends Parameter
 
         if (this.input)
         {
-            //this.input.wireColor   = !rgbaIsNaN(rgbaVal) ? rgbaVal : noColor;
             this.input.colorLight  = 
             this.input.colorDark   = rgb_a(rgbaText, 0.2);
+            this.input.wireColor   = !rgbaIsNaN(rgbaVal) ? rgbaVal : noColor;
         }
 
         if (this.output)
         {
-            //this.output.wireColor  = !rgbaIsNaN(rgbaVal) ? rgbaVal : noColor;
             this.output.colorLight =
             this.output.colorDark  = rgb_a(rgbaText, 0.2);
+            this.output.wireColor  = !rgbaIsNaN(rgbaVal) ? rgbaVal : noColor;
         }
 
 
@@ -53724,9 +53724,6 @@ extends OpColorBase
         
         this.paramColor.output.colorLight           =
         this.paramColor.output.colorDark            = colors.output;
-        
-        //this.paramColor. input.wireColor          = rgb_a(colors.wire, 1);
-        //this.paramColor.output.wireColor          = rgb_a(colors.wire, 1);
     }
 
 
@@ -53782,11 +53779,11 @@ extends OpColorBase
 
         this.inputs[0] .colorLight = 
         this.inputs[0] .colorDark  = colors.input;
-        //this.inputs[0] .wireColor  = colors.wire;
+        this.inputs[0] .wireColor  = colors.wire;
 
         this.outputs[0].colorLight =
         this.outputs[0].colorDark  = colors.output;
-        //this.outputs[0].wireColor  = colors.wire;
+        this.outputs[0].wireColor  = colors.wire;
 
 
         this.updateWarningOverlay();
@@ -54025,11 +54022,11 @@ extends OpColorBase
 
         this.inputs[0] .colorLight = 
         this.inputs[0] .colorDark  = colors.input;
-        //this.inputs[0] .wireColor  = colors.wire;
+        this.inputs[0] .wireColor  = this.paramFill.input.wireColor;
 
         this.outputs[0].colorLight =
         this.outputs[0].colorDark  = colors.output;
-        //this.outputs[0].wireColor  = colors.wire;
+        this.outputs[0].wireColor  = this.paramFill.output.wireColor;
 
 
         this.updateWarningOverlay();

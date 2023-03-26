@@ -184,11 +184,11 @@ extends OpColorBase
 
         this.inputs[0] .colorLight = 
         this.inputs[0] .colorDark  = colors.input;
-        //this.inputs[0] .wireColor  = colors.wire;
+        this.inputs[0] .wireColor  = this.paramFill.input.wireColor;
 
         this.outputs[0].colorLight =
         this.outputs[0].colorDark  = colors.output;
-        //this.outputs[0].wireColor  = colors.wire;
+        this.outputs[0].wireColor  = this.paramFill.output.wireColor;
 
 
         this.updateWarningOverlay();
