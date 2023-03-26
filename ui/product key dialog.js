@@ -198,9 +198,9 @@ function tryValidateLicense(key)
         setDisabledProductKeyInput();
         updateLicenseInfo(license);
 
-        productKeyInput.disabled         = true;
-        productKeyTextBack.style.display = 'none';
-        productKeyInput   .style.display = 'none';
+        productKeyInput.disabled           = true;
+        productKeyTextBack.style.display   = 'none';
+        productKeyInput   .style.display   = 'none';
 
         validateProductKeyButton.innerHTML = 'Edit';
 
@@ -227,10 +227,9 @@ function updateLicenseInfo(license)
         const strDate = date.toLocaleString('en-UK', {dateStyle: 'medium'});
 
         licenseWatermark    .style.display = 'block';
-        licenseWatermarkPath.style.fill    = darkMode ? '#ffffff19' : '#00000014';
+        licenseWatermarkPath.style.fill    = darkMode ? '#ffffff11' : '#00000011';
 
-        licenseInfo.innerHTML = '<span style="user-select: none; color: ' + (darkMode ? '#fffa' : '#000c') + ';">Valid until:&nbsp;&thinsp;</span><span style="font-weight: 700">' + strDate.replaceAll('/', '&hairsp;/&hairsp;') + '</span>';
-
+        licenseInfo.innerHTML = '<span style="user-select: none; color: ' + (darkMode ? '#fffa' : '#000c') + ';">License valid until:&nbsp;&thinsp;</span><span style="font-weight: 700">' + strDate.replaceAll('/', '&hairsp;/&hairsp;') + '</span>';
     }
     else
     {
