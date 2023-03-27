@@ -1,0 +1,49 @@
+.textControl
+{
+    padding:          0;
+    width:            74px;
+    height:           20px;
+    overflow:         hidden;
+    background-color: var(--figma-color-bg);
+    text-align:       center;
+    touch-action:     none;
+}    
+
+
+.textControlTextarea
+{
+    color:                var(--figma-color-text);
+
+    font-family:          Inter;
+    font-size:            11;
+    position:             absolute;
+    left:                 50%;
+    transform:            translateX(-50%);
+    width:                100%;
+    background-color:     transparent;
+    z-index:              0;
+
+    border:               none;
+    overflow:             auto;
+    outline:              none;
+
+    -webkit-box-shadow:   none;
+    -moz-box-shadow:      none;
+    box-shadow:           none;
+
+    resize:               none;
+    pointer-events:       none;
+    
+    /* box-shadow:           0 0 0 1px inset red; */
+}
+
+
+.textControlFocus
+{
+    position:       absolute;
+    pointer-events: none;
+    box-shadow:     0 0 0 1px var(--activeObjectColor) inset;
+    visibility:     hidden;
+    opacity:        0;
+    z-index:        1100;
+}

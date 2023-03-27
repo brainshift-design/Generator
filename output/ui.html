@@ -945,21 +945,6 @@
 }
 
 
-#aboutDialogWatermark
-{
-    position:       absolute;
-    left:          -50px;
-    top:           -87px;
-    font-size:      250px;
-    font-weight:    600;
-    white-space:    nowrap;
-    color:          var(--figma-color-bg-secondary);
-    z-index:        -1;
-    user-select:    none;
-    pointer-events: none;
-}
-
-
 #aboutDialogContent
 {
     font-size: 12px;
@@ -1037,9 +1022,9 @@
 
 #aboutBrainshiftLogo
 {
-    position: absolute;
-    left:     184px;
-    top:      92px;
+    position:  absolute;
+    top:       82px;
+    left:      97px;
 }
 
 
@@ -1047,7 +1032,7 @@
 {
     position: absolute;
     left:     33px;
-    top:      32px;
+    top:      23px;
 }
 
 
@@ -1061,20 +1046,24 @@
 
 #aboutVersion
 {
-    display:  inline;
-    position: absolute;
-    left:     95px;
-    top:      37px;
+    font-weight: 300;
+    font-size:   11px;
+    display:     inline;
+    position:    absolute;
+    left:        100px;
+    top:         18px;
 }
 
 
 #aboutCopyright
 {
-    font-weight: 200;
-    display:  inline-block;
-    position: absolute;
-    left:     15px;
-    top:      92px;
+    font-weight: 300;
+    font-size:   11px;
+    display:     inline-block;
+    width:       max-content;
+    position:    absolute;
+    left:        99px;
+    top:         37px;
 }
 
 
@@ -2553,6 +2542,55 @@ a
 }
 
 
+.textControl
+{
+    padding:          0;
+    width:            74px;
+    height:           20px;
+    overflow:         hidden;
+    background-color: var(--figma-color-bg);
+    text-align:       center;
+    touch-action:     none;
+}    
+
+
+.textControlTextarea
+{
+    color:                var(--figma-color-text);
+
+    font-family:          Inter;
+    font-size:            11;
+    position:             absolute;
+    left:                 50%;
+    transform:            translateX(-50%);
+    width:                100%;
+    background-color:     transparent;
+    z-index:              0;
+
+    border:               none;
+    overflow:             auto;
+    outline:              none;
+
+    -webkit-box-shadow:   none;
+    -moz-box-shadow:      none;
+    box-shadow:           none;
+
+    resize:               none;
+    pointer-events:       none;
+    
+    /* box-shadow:           0 0 0 1px inset red; */
+}
+
+
+.textControlFocus
+{
+    position:       absolute;
+    pointer-events: none;
+    box-shadow:     0 0 0 1px var(--activeObjectColor) inset;
+    visibility:     hidden;
+    opacity:        0;
+    z-index:        1100;
+}
 
 
 
@@ -3483,7 +3521,7 @@ a
 
                 <div id='aboutVersion'>version  _</div>
 
-                <p id='aboutLine'><div id='aboutCopyright'>Copyright © 2023&nbsp;&hairsp;Alex Bourt</div></p>
+                <p id='aboutLine'><div id='aboutCopyright'>© 2023&nbsp;&hairsp;Alex Bourt</div></p>
                 
                 <!-- <p><div id='chkAboutHideWhatsNew'></div></p> -->
             </div>
@@ -6492,6 +6530,18 @@ function createTextbox(className = '')
         textbox.className = className;
     
     return textbox;
+}
+
+
+
+function createTextarea(className = '')
+{
+    const textarea = document.createElement('textarea');
+
+    if (className.trim() != '')
+        textarea.className = className;
+    
+    return textarea;
 }
 
 
@@ -23755,6 +23805,18 @@ function createTextbox(className = '')
 
 
 
+function createTextarea(className = '')
+{
+    const textarea = document.createElement('textarea');
+
+    if (className.trim() != '')
+        textarea.className = className;
+    
+    return textarea;
+}
+
+
+
 function enableElementText(elem, enable)
 {
     elem.style.fontStyle  = enable ? 'normal' : 'italic'; 
@@ -36872,7 +36934,7 @@ extends EventTarget
 {
     div;
     
-    textbox;
+    textarea;
     focus;
     
 
@@ -36933,15 +36995,14 @@ extends EventTarget
 
         this.value             = defaultValue;
         
-        this.text  = createDiv('colorControlText');
-        this.focus = createDiv('colorControlFocus');
-    
-        this.div.appendChild(this.text);
-        this.div.appendChild(this.focus);
-
         
-        this.initTextbox();
-        //this.initEvents ();
+        this.initTextarea();
+        this.initEvents ();
+
+        //this.focus = createDiv('textControlFocus');
+
+        this.div.appendChild(this.textarea);
+        //this.div.appendChild(this.focus);
 
         
         this.onstartchange = new Event('startchange');
@@ -37033,262 +37094,301 @@ extends EventTarget
 
         this.updateFocus(sw, sh);
     }
+
+
+
     updateFocus(sw, sh)
     {
-        this.focus.style.left   = 0;
-        this.focus.style.top    = 0;
-        this.focus.style.width  = sw;
-        this.focus.style.height = sh;
-    }
-}
+        // this.focus.style.left   = 0;
+        // this.focus.style.top    = 0;
+        // this.focus.style.width  = sw;
+        // this.focus.style.height = sh;
+    };
 
 
-TextControl.prototype.initTextbox = function()
+
+    lockPointer(pointerId)
+    {
+        clearTimeout(this.clickTimer);
+
+        this.requestPointerLock =    
+               this.div.      requestPointerLock 
+            || this.div.   mozRequestPointerLock
+            || this.div.webkitRequestPointerLock;
+
+        this.requestPointerLock();
+    };
+
+
+
+    unlockPointer(pointerId)
+    {
+        document.exitPointerLock =    
+               document.      exitPointerLock    
+            || document.   mozExitPointerLock
+            || document.webkitExitPointerLock;
+
+        document.exitPointerLock();
+    };
+
+
+
+    isPointerLocked()
+    {
+        return (document.      pointerLockElement === this.div 
+             || document.   mozPointerLockElement === this.div
+             || document.webkitPointerLockElement === this.div);
+    }}
+
+
+TextControl.prototype.initTextarea = function()
 {
-    this.textbox = createTextbox('numberControlTextbox');
-    this.textbox.control = this;
-    
+    this.textarea = createTextarea('textControlTextarea');
+    this.textarea.control = this;
+
+    this.textarea.style.height = 20;
 
 
-    this.textbox.addEventListener('pointerdown', e =>
+
+    this.textarea.addEventListener('pointerdown', e =>
     {
         e.stopPropagation();
     });
     
     
     
-    this.textbox.addEventListener('pointerup', e =>
+    this.textarea.addEventListener('pointerup', e =>
     {
         e.stopPropagation();
 
         if (e.button == 2)
         {
-            initTextMenu(this.textbox);
+            initTextMenu(this.textarea);
             menuText.showAt(e.clientX, e.clientY, false);
         }
     });
 
 
 
-    this.textbox.addEventListener('pointermove', e =>
+    this.textarea.addEventListener('pointermove', e =>
     {
         e.stopPropagation();
-        this.textbox.style.cursor = 'default';
+        this.textarea.style.cursor = 'default';
     });
 
 
 
-    this.textbox.addEventListener('keydown', e =>
+    this.textarea.addEventListener('keydown', e =>
     {
         e.stopPropagation();
 
 
-        if (   e.code == 'KeyX'
-            && getCtrlKey(e))
-        {
-            e.preventDefault();
-            document.execCommand('copy');
-            clearSelectedText(this.textbox);
-        }
+        // if (   e.code == 'KeyX'
+        //     && getCtrlKey(e))
+        // {
+        //     e.preventDefault();
+        //     document.execCommand('copy');
+        //     clearSelectedText(this.textarea);
+        // }
 
-        else if (   e.code == 'KeyC'
-            && getCtrlKey(e))
-        {
-            e.preventDefault();
-            document.execCommand('copy');
-        }
+        // else if (   e.code == 'KeyC'
+        //     && getCtrlKey(e))
+        // {
+        //     e.preventDefault();
+        //     document.execCommand('copy');
+        // }
 
-        else if (e.code == 'KeyV'
-              && getCtrlKey(e)
-              && !this.readOnly)
-        {
-            // let the OS do its thing here
-        }
+        // else if (e.code == 'KeyV'
+        //       && getCtrlKey(e)
+        //       && !this.readOnly)
+        // {
+        //     // let the OS do its thing here
+        // }
         
-        else if (   (   e.code == 'Enter'
-                     || e.code == 'NumpadEnter')
-                 && !this.readOnly)
-        {
-            this.textbox.keyBlur = true;
-            this.textbox.finish(true);
-        }
+        // else if (   (   e.code == 'Enter'
+        //              || e.code == 'NumpadEnter')
+        //          && !this.readOnly)
+        // {
+        //     this.textarea.keyBlur = true;
+        //     this.textarea.finish(true);
+        // }
 
-        else if (e.code == 'Escape')
-        {
-            this.textbox.keyBlur = true;
-            this.textbox.finish(false);
-        }
-        else if (e.code == 'Tab')
-        {
-            e.preventDefault();
-            e.stopPropagation();
+        // else if (e.code == 'Escape')
+        // {
+        //     this.textarea.keyBlur = true;
+        //     this.textarea.finish(false);
+        // }
+        // else if (e.code == 'Tab')
+        // {
+        //     e.preventDefault();
+        //     e.stopPropagation();
             
-            if (this.param)
-            {
-                const params = this.param.node.params;
-                let   index  = this.param.index;
+        //     if (this.param)
+        //     {
+        //         const params = this.param.node.params;
+        //         let   index  = this.param.index;
 
-                this.textbox.keyBlur = true;
-                this.textbox.finish(true, false);
+        //         this.textarea.keyBlur = true;
+        //         this.textarea.finish(true, false);
 
-                if (   e.shiftKey 
-                    && index > 0)
-                {
-                    while (params[--index].controls[0].readOnly);
-                    params[index].controls[0].showTextbox();
-                }
-                else if (!e.shiftKey 
-                      && index < params.length-1) 
-                {
-                    while (params[++index].controls[0].readOnly);
-                    params[index].controls[0].showTextbox();
-                }
-            }
+        //         if (   e.shiftKey 
+        //             && index > 0)
+        //         {
+        //             while (params[--index].controls[0].readOnly);
+        //             params[index].controls[0].showTextarea();
+        //         }
+        //         else if (!e.shiftKey 
+        //               && index < params.length-1) 
+        //         {
+        //             while (params[++index].controls[0].readOnly);
+        //             params[index].controls[0].showTextarea();
+        //         }
+        //     }
 
-            // let tabs  = document.querySelectorAll('.numberControl, .selectControl, .select, .menuSelect, button, .menuButton');
-            // let index = this.tabIndex;
+        //     // let tabs  = document.querySelectorAll('.numberControl, .selectControl, .select, .menuSelect, button, .menuButton');
+        //     // let index = this.tabIndex;
 
-            // for (let i = 0; i < tabs.length; i++) 
-            // {
-            //     if (   e.shiftKey && tabs[i].tabIndex == index - 1
-            //         ||               tabs[i].tabIndex == index + 1) 
-            //     {
-            //         if (tabs[i].className == 'slider')
-            //             tabs[i].showTextbox();
-            //         else 
-            //         {
-            //             document.activeElement.blur();
-            //             tabs[i].focus();
-            //         }
+        //     // for (let i = 0; i < tabs.length; i++) 
+        //     // {
+        //     //     if (   e.shiftKey && tabs[i].tabIndex == index - 1
+        //     //         ||               tabs[i].tabIndex == index + 1) 
+        //     //     {
+        //     //         if (tabs[i].className == 'slider')
+        //     //             tabs[i].showTextarea();
+        //     //         else 
+        //     //         {
+        //     //             document.activeElement.blur();
+        //     //             tabs[i].focus();
+        //     //         }
 
-            //         break;
-            //     }
-            // }
-        }
+        //     //         break;
+        //     //     }
+        //     // }
+        // }
 
-        else if ((   e.key == 'ArrowUp'
-                  || e.key == 'ArrowDown')
-              && !this.readOnly)
-        {
-            e.preventDefault();
+        // else if ((   e.key == 'ArrowUp'
+        //           || e.key == 'ArrowDown')
+        //       && !this.readOnly)
+        // {
+        //     e.preventDefault();
 
-            let text = this.textbox.value;
+        //     let text = this.textarea.value;
 
-            if (   this.valueCanContainSuffix   
-                && text.length >= this.suffix.length
-                && text.substring(text.length - this.suffix.length) == this.suffix)
-                text = text.substring(0, text.length - this.suffix.length);
+        //     if (   this.valueCanContainSuffix   
+        //         && text.length >= this.suffix.length
+        //         && text.substring(text.length - this.suffix.length) == this.suffix)
+        //         text = text.substring(0, text.length - this.suffix.length);
 
 
-            if (this.textbox.selectionStart != this.textbox.selectionEnd)
-                this.textbox.selectionStart =  this.textbox.selectionEnd;
+        //     if (this.textarea.selectionStart != this.textarea.selectionEnd)
+        //         this.textarea.selectionStart =  this.textarea.selectionEnd;
 
-            const pos = Math.min(
-                this.textbox.selectionStart,
-                text.length);
+        //     const pos = Math.min(
+        //         this.textarea.selectionStart,
+        //         text.length);
 
-            const revPos = text.length - pos;
+        //     const revPos = text.length - pos;
 
-            const val  = parseFloat(text);
-            const sign = e.key == 'ArrowUp' ? 1 : -1;
+        //     const val  = parseFloat(text);
+        //     const sign = e.key == 'ArrowUp' ? 1 : -1;
 
-            let decIndex = text.indexOf('.');
-            if (decIndex < 0) decIndex = text.indexOf(',');
+        //     let decIndex = text.indexOf('.');
+        //     if (decIndex < 0) decIndex = text.indexOf(',');
             
-            if (   text[0] != '-'
-                || pos > 0)
-            {
-                if (decIndex < 0) // integer
-                {
-                    let dec = Math.pow(10, revPos);
+        //     if (   text[0] != '-'
+        //         || pos > 0)
+        //     {
+        //         if (decIndex < 0) // integer
+        //         {
+        //             let dec = Math.pow(10, revPos);
 
-                    if (e.shiftKey) 
-                        dec *= 10;
+        //             if (e.shiftKey) 
+        //                 dec *= 10;
 
-                    this.setValue((val + sign * dec) / this.valueScale);
-                    this.updateTextbox();
-                }
-                else // floating point
-                {
-                    const _edit = pos - decIndex - 1;
+        //             this.setValue((val + sign * dec) / this.valueScale);
+        //             this.updateTextarea();
+        //         }
+        //         else // floating point
+        //         {
+        //             const _edit = pos - decIndex - 1;
 
-                    let  dec  = 
-                        _edit < 0
-                        ?     Math.pow(10, -_edit - 1)
-                        : 1 / Math.pow(10,  _edit    );
+        //             let  dec  = 
+        //                 _edit < 0
+        //                 ?     Math.pow(10, -_edit - 1)
+        //                 : 1 / Math.pow(10,  _edit    );
 
-                    if (e.shiftKey) 
-                        dec *= 10;
+        //             if (e.shiftKey) 
+        //                 dec *= 10;
 
-                    this.displayDec = text.length-1 - decIndex;
-                    this.setValue((val + sign * dec) / this.valueScale);
-                    this.updateTextbox();
-                }
+        //             this.displayDec = text.length-1 - decIndex;
+        //             this.setValue((val + sign * dec) / this.valueScale);
+        //             this.updateTextarea();
+        //         }
 
-                this.textbox.selectionStart =
-                this.textbox.selectionEnd   = this.textbox.savedValue.length - revPos - this.suffix.length;
+        //         this.textarea.selectionStart =
+        //         this.textarea.selectionEnd   = this.textarea.savedValue.length - revPos - this.suffix.length;
 
 
-                if (this.param) this.param.changing = true;
-                if (this.confirmTimer) clearTimeout(this.confirmTimer);
-                this.confirmTimer = setTimeout(() => numberControl_confirm(this), 400);
-            }
-        }
-        else if (e.code == 'KeyZ'
-              && getCtrlKey(e))
-        {
-                 if (e.shiftKey && !actionManager.redoing) actionManager.redo();
-            else if (              !actionManager.undoing) actionManager.undo();
+        //         if (this.param) this.param.changing = true;
+        //         if (this.confirmTimer) clearTimeout(this.confirmTimer);
+        //         this.confirmTimer = setTimeout(() => numberControl_confirm(this), 400);
+        //     }
+        // }
+        // else if (e.code == 'KeyZ'
+        //       && getCtrlKey(e))
+        // {
+        //          if (e.shiftKey && !actionManager.redoing) actionManager.redo();
+        //     else if (              !actionManager.undoing) actionManager.undo();
             
-            this.updateTextbox();
-        }
-        else 
-        {
-            let curVal = this.textbox.value;
+        //     this.updateTextarea();
+        // }
+        // else 
+        // {
+        //     let curVal = this.textarea.value;
 
-            if (      e.key.length == 1
-                   && !isDigit(e.key)
-                   && e.key != NAN_CHAR
-                   && (   !this.valueCanContainSuffix
-                       || !this.suffix.includes(e.key))
-                   && (   !this.showHex 
-                       || !isHexDigit(e.key))
-                   && (   this.showHex
-                       ||    e.key != '.'
-                          && e.key != ',')
-                   && !(   ((      e.code == 'Minus'
-                                || e.code == 'NumpadSubtract')
-                             && !curVal.includes('-'))
-                        && this.min < 0)
-                ||     this.readOnly
-                   && !isArrowKey(e.code))
-                e.preventDefault();
+        //     if (      e.key.length == 1
+        //            && !isDigit(e.key)
+        //            && e.key != NAN_CHAR
+        //            && (   !this.valueCanContainSuffix
+        //                || !this.suffix.includes(e.key))
+        //            && (   !this.showHex 
+        //                || !isHexDigit(e.key))
+        //            && (   this.showHex
+        //                ||    e.key != '.'
+        //                   && e.key != ',')
+        //            && !(   ((      e.code == 'Minus'
+        //                         || e.code == 'NumpadSubtract')
+        //                      && !curVal.includes('-'))
+        //                 && this.min < 0)
+        //         ||     this.readOnly
+        //            && !isArrowKey(e.code))
+        //         e.preventDefault();
 
-            if (    e.key == '.'
-                &&  this.dec == 0
-                && !this.allowEditDecimals)
-                e.preventDefault();
+        //     if (    e.key == '.'
+        //         &&  this.dec == 0
+        //         && !this.allowEditDecimals)
+        //         e.preventDefault();
                 
                     
-            curVal =
-                   curVal ==     NAN_DISPLAY
-                || curVal == UNKNOWN_DISPLAY
-                ? ''
-                :   curVal.substring(0, this.textbox.selectionStart) 
-                  + curVal.substring(this.textbox.selectionEnd, curVal.length);
+        //     curVal =
+        //            curVal ==     NAN_DISPLAY
+        //         || curVal == UNKNOWN_DISPLAY
+        //         ? ''
+        //         :   curVal.substring(0, this.textarea.selectionStart) 
+        //           + curVal.substring(this.textarea.selectionEnd, curVal.length);
 
                   
-            const nextVal = parseFloat(curVal + e.key);
+        //     const nextVal = parseFloat(curVal + e.key);
 
-            if (   nextVal < this.min - 0.001
-                || nextVal > this.max)
-                e.preventDefault();            
-        }
+        //     if (   nextVal < this.min - 0.001
+        //         || nextVal > this.max)
+        //         e.preventDefault();            
+        // }
     });
 
 
 
-    this.textbox.addEventListener('paste', e =>
+    this.textarea.addEventListener('paste', e =>
     {
         e.preventDefault();
 
@@ -37301,16 +37401,16 @@ TextControl.prototype.initTextbox = function()
 
         val = Math.min(Math.max(this.min, val), this.max);
 
-        this.textbox.value = isNaN(val) ? '' : val;
+        this.textarea.value = isNaN(val) ? '' : val;
     });
 
 
 
     
-    this.textbox.addEventListener('focusout', () =>
+    this.textarea.addEventListener('focusout', () =>
     {
-        if (!this.textbox.keyBlur) this.textbox.finish(this.textbox.value.trim() != '');
-        else                       this.textbox.keyBlur = false;
+        if (!this.textarea.keyBlur) this.textarea.finish(this.textarea.value.trim() != '');
+        else                        this.textarea.keyBlur = false;
 
 
         if (this.savedSuccessOnFocusOut != null)
@@ -37320,13 +37420,13 @@ TextControl.prototype.initTextbox = function()
         }
 
 
-        this.div.parentNode.removeChild(this.textbox);
+        //this.div.parentNode.removeChild(this.textarea);
         this.clicked = false;
     });
     
 
 
-    this.textbox.addEventListener('wheel', e =>
+    this.textarea.addEventListener('wheel', e =>
     {
         e.stopPropagation();
         forwardEvent(e, this.div);
@@ -37334,33 +37434,25 @@ TextControl.prototype.initTextbox = function()
     
 
 
-    this.textbox.finish = (success, focusControl = true) =>
+    this.textarea.finish = (success, focusControl = true) =>
     {
-        let   value      = this.textbox.value;
-        const savedValue = this.textbox.savedValue;
+        let   value      = this.textarea.value;
+        const savedValue = this.textarea.savedValue;
 
         value = value.replace(this.suffix, '');
         
         
         let val = 
             value.trim() == NAN_CHAR 
-            ? Number.NaN 
-            : (this.showHex 
-               ? parseInt(value, 16) 
-               : parseFloat(value));
+            ? NAN_CHAR
+            : value;
 
         let savedVal = 
             savedValue.trim() == NAN_CHAR  
-            ? Number.NaN 
-            : (this.showHex 
-               ? parseInt(savedValue, 16) 
-               : parseFloat(savedValue));
+            ? NAN_CHAR
+            : savedValue;
 
         
-        if (!isNaN(val))
-            val /= this.valueScale;
-
-       
         const e = new CustomEvent('finishedit', { 'detail': {
             'success':         success,
             'value':           value     .replace(this.suffix, ''),
@@ -37385,9 +37477,8 @@ TextControl.prototype.initTextbox = function()
         }
          
         
-        this.textbox.blur();
+        this.textarea.blur();
 
-        this.text.style.display = 'block';
 
         if (   this.inFocus
             && focusControl)
@@ -37397,49 +37488,540 @@ TextControl.prototype.initTextbox = function()
 
 
 
-TextControl.prototype.showTextbox = function()
+TextControl.prototype.showTextarea = function()
 {
-    this.text.style.display = 'none';
-
     this.inFocus = 
            hasFocus(this.div)
         && !this.clicked;
 
         
-    this.textbox.style.boxShadow = '0 0 0 1px var(--figma-color-bg-brand)';
-    this.textbox.style.outline   = 'none';
-    this.textbox.style.textAlign = 'center';
+    this.textarea.style.boxShadow = '0 0 0 1px var(--figma-color-bg-brand)';
+    this.textarea.style.outline   = 'none';
+    this.textarea.style.textAlign = 'center';
 
 
-    this.updateTextbox();
+    this.updateTextarea();
     
-    this.div.parentNode.appendChild(this.textbox);
+    //this.div.parentNode.appendChild(this.textarea);
     
-    this.textbox.focus();
-    this.textbox.select();
+    this.textarea.focus();
+    this.textarea.select();
 
-    this.textbox.style.cursor = 'default';
+    //this.textarea.style.cursor = 'default';
 };
 
 
 
-TextControl.prototype.updateTextbox = function()
+TextControl.prototype.updateTextarea = function()
 {
-    this.textbox.value =
-        (isNaN(this.value)
-         ? NAN_CHAR
-         : numToString(
-               this.value * this.valueScale, 
-               this.displayDec, 
-               this.showHex
-           ).toUpperCase())
-        + (this.valueCanContainSuffix ? this.suffix : '');
+    this.textarea.value = this.value;
+    // this.textarea.value =
+    //     this.value == NAN_CHAR
+    //     ? NAN_DISPLAY
+    //     : this.value;
         
-    this.textbox.savedValue = this.textbox.value;
+    this.textarea.savedValue = this.textarea.value;
 };
 
 
+TextControl.prototype.initEvents = function()
+{
+    this.div.addEventListener('pointerenter', e =>
+    {
+        overColorControl = this;
 
+
+        if (panMode)
+        {
+            setCursor(panCursor);
+            return;
+        }
+
+
+        if (   !this.view.spaceDown
+            &&  this.pointerEvents)
+        {
+            this.div.style.cursor = 
+                this.view.tempConn 
+                ? 'default' 
+                : 'text';
+
+            const colShadow = 
+                darkMode
+                ? 'rgba(255, 255, 255, 0.1)'
+                : 'rgba(0, 0, 0, 0.1)';
+
+            // if (this.param)
+            // {
+            //     this.focus.style.boxShadow = '0 1px 0 0 ' + colShadow + ' inset';
+
+            //     if (    this.param.node
+            //         &&  this.param.node.params.includes(this.param)
+            //         && !isLastInArray(this.param.node.params, this.param))
+            //         this.focus.style.boxShadow += ', 0 -1px 0 0 ' + colShadow + ' inset';
+            // }
+            // else
+            // {
+            //     this.focus.style.boxShadow  = '0 0 0 1px ' + colShadow + ' inset ';
+            // }
+
+
+            // this.focus.style.visibility = 'visible';
+            // this.focus.style.opacity    = '100%';
+    
+            this.update();
+        }
+    });
+
+
+
+    this.div.addEventListener('pointerdown', e =>
+    {
+        e.stopPropagation();
+    
+    
+        if (   this.view.spaceDown
+            || panMode)
+            return;
+
+
+        window.focus();
+        
+        hideAllMenus();
+
+
+        if (e.button == 0)
+        {
+            if (!this.pointerEvents)
+            {
+                e.stopPropagation();
+                return;
+            }
+    
+            let nodeDiv = 
+                   this.parentNode
+                && this.parentNode.parentNode
+                && this.parentNode.parentNode.parentNode
+                ? this.parentNode.parentNode.parentNode
+                : null;
+
+            if (nodeDiv && nodeDiv.className == 'node') 
+                this.view.putNodeOnTop(nodeDiv.node);
+
+
+            e.preventDefault(); // this is fine since I lock the pointer anyway
+                
+            this.buttonDown0  = true;
+            this.buttonDown0_ = true;
+            this.moved        = false;
+            this.clientX      = e.clientX;
+            this.movedX       = 0;
+
+
+            if (!this.readOnly)
+            {
+                this.oldValue   = this.value;
+                this.startValue = this.value;
+                this.prevValue  = this.value;
+                this.sx         = e.clientX;
+
+                this.clickTimer = setTimeout(() => 
+                {
+                    if (!document.menuHadFocus)
+                    {
+                        this.moved = true;
+                        //this.lockPointer(e.pointerId);
+                    }
+                }, 
+                500);
+            }
+
+
+            // if (   !this.param
+            //     || !this.param.node.selected)
+            //     this.focus.style.boxShadow = '0 0 0 1px var(--figma-color-bg-brand) inset';
+
+            // else
+            // {
+            //     this.focus.style.boxShadow = '0 1px 0 0 var(--figma-color-bg-brand) inset';
+                    
+            //     if (this.param.index < this.param.node.params.length-1)
+            //         this.focus.style.boxShadow += ', 0 -1px 0 0 var(--figma-color-bg-brand) inset';
+            // }
+
+
+            // I don't want to focus here, but I do want to take focus away from elsewhere
+            document.activeElement.blur();
+
+
+            if (this.param)
+                this.param.noUpdate = true;  
+        }
+        else if (e.button == 1)
+        {
+            e.preventDefault();
+            this.buttonDown1 = true;
+        }
+        else if (e.button == 2)
+        {
+            e.preventDefault();
+            this.buttonDown2 = true;
+        }
+    });
+
+
+
+    this.div.addEventListener('pointermove', e =>
+    {
+        if (panMode)
+        {
+            setCursor(panCursor);
+            return;
+        }
+
+        if (!this.pointerEvents)
+            return;
+        
+
+        let rect = boundingRect(this.div);
+        
+        this.mouseOver = 
+               e.clientX >= rect.left
+            && e.clientX <  rect.right
+            && e.clientY >= rect.top                                     
+            && e.clientY <  rect.bottom;
+
+
+        this.clientX = e.clientX;
+
+        
+        if (    this.buttonDown0
+            && !this.readOnly)
+        {
+            // ...
+        }
+        else if (this.view.tempConn
+              && this.param)
+        {
+            let savedInput = 
+                this.view.savedConn
+                ? this.view.savedConn.input
+                : null;
+
+            if (    this.view.tempConn.output
+                &&  this.param.input
+                &&  this.param.input.canConnectFrom(this.view.tempConn.output)
+                && !this.view.tempConn.output.node.isOrFollows(this.param.node)
+                && (  !this.param.input.connected // not already connected to this input
+                    || this.param.input.connectedOutput != this.view.tempConn.output
+                    || this.param.input == savedInput))
+            {
+                this.view.overInput = this.param.input;
+                    
+                this.param.input.mouseOver = true;
+                this.param.input.updateControl();
+
+                const rect = boundingRect(this.param.input.div);
+
+                this.view.tempConn.wire .inputPos = point(
+                    rect.x + rect.w/2,
+                    rect.y + rect.h/2 - menuBarHeight);
+            }
+            else if ( this.view.tempConn.input
+                  &&  this.param.output
+                  &&  this.view.tempConn.input.canConnectTo(this.param.output)
+                  && !this.param.node.isOrFollows(this.view.tempConn.input.node))
+            {
+                this.view.overOutput = this.param.output;
+                    
+                this.param.output.mouseOver = true;
+                this.param.output.updateControl();
+
+
+                const rect = boundingRect(this.param.output.div);
+
+                this.view.tempConn.wire .outputPos = point(
+                    rect.x + rect.w/2,
+                    rect.y + rect.h/2 - menuBarHeight);
+
+
+                this.view.tempConn.input.updateControl();
+            }
+        }
+        else if (this.readOnly)
+        {
+            this.moved = true;
+        }
+    });
+    
+    
+    
+    this.div.addEventListener('pointerleave', e =>
+    {
+        overColorControl = null;
+
+        
+        if (panMode)
+            return;
+
+
+        this.div.style.cursor       = 'default';
+        
+        // this.focus.style.visibility = 'hidden';
+        // this.focus.style.opacity    = 0;
+
+        this.update();
+
+
+        if (this.view.tempConn)
+        {
+            if (   this.view.tempConn.output
+                && this.view.tempConn.output.node != this.param.node)
+            {
+                const input = this.view.overInput;
+                
+                this.view.overInput   = null;
+                
+                if (input) // will be null if data types don't match or there's no auto input for someo other reason
+                {
+                    input.mouseOver = false;
+                    input.updateControl();
+                }
+                
+                this.view.tempConn.wire .inputPos = point_NaN;
+            }
+            else if (this.view.tempConn.input
+                  && this.view.tempConn.input.node != this.param.node)
+            {
+                const output = this.view.overOutput;
+                
+                this.view.overOutput = null;
+
+                if (output) // will be null if data types don't match or there's no auto output for someo other reason
+                {
+                    output.mouseOver = false;
+                    output.updateControl();
+                }
+
+                this.view.tempConn.wire .outputPos = point_NaN;
+
+                this.view.tempConn.input.updateControl();
+           }
+        }
+    });
+
+
+
+    this.div.addEventListener('losecapture', () =>
+    {
+        this.buttonDown0 = false;
+        this.buttonDown1 = false;
+        this.buttonDown2 = false;
+        this.mouseOver   = false;
+        this.update();
+    });
+
+
+
+    this.div.addEventListener('pointerup', e =>
+    {
+        clearTimeout(this.clickTimer);
+
+
+        if (this.view.tempConn)
+        {
+            if (    this.view.tempConn.output
+                && !this.view.tempConn.output.node.isOrFollows(this.param.node)
+                &&  this.view.overInput)
+            {
+                this.view.endConnection(e.pointerId, getCtrlKey(e));
+                this.view.overInput.endConnection();
+            }
+            else if (this.view.tempConn.input
+                && !this.param.node.isOrFollows(this.view.tempConn.input.node)
+                &&  this.view.overOutput)
+            {
+                this.view.endConnection(e.pointerId, getCtrlKey(e));
+                this.view.overOutput.endConnection();
+            }
+        }
+        
+        // else if (   this.moved
+        //     || document.menuHadFocus)
+        // {
+        //     this.unlockPointer(e.pointerId);
+
+        //     if (this.param)
+        //         this.param.noUpdate = false;  
+
+        //     return;            
+        // }
+
+        else if (this.buttonDown0_)
+        {
+            this.clicked = true;
+            this.showTextarea();
+        }
+
+             if (e.button == 0) this.buttonDown0 = false;
+        else if (e.button == 1) this.buttonDown1 = false;
+        else if (e.button == 2) this.buttonDown2 = false;
+
+        this.buttonDown0_ = false;
+    });    
+
+
+
+    document.addEventListener('pointerup', e =>
+    {
+        e.stopPropagation();
+
+
+        if (panMode)
+            return;
+
+            
+        if (   e.button == 0 
+            && this.buttonDown0)
+        {
+            this.buttonDown0 = false;
+            //this.unlockPointer(e.pointerId);
+
+            //this.focus.style.boxShadow = '0 0 0 1px rgba(0, 0, 0, 0.1) inset';
+
+            // if (    this.value != this.oldValue
+            //     && !this.readOnly)
+            //     this.dispatchEvent(this.onconfirm);
+        }
+        // else if (   e.button == 1
+        //     && this.buttonDown1)
+        // {
+        //     this.buttonDown1 = false;            
+        // }
+    });
+
+
+    
+    this.div.addEventListener('wheel', e =>
+    {
+        if (  !this.pointerEvents
+            || panMode
+            || this.view.wheelTimer)
+            return;
+
+
+        const touchpad = isTouchpad(e);
+
+        if (touchpad)
+        {
+            e.preventDefault();
+            return;
+        }
+
+
+        // const dWheelX = e.deltaX /  20 * (this.dragReverse ? -1 : 1);
+        // const dWheelY = e.deltaY / 100 * (this.dragReverse ? -1 : 1);
+
+
+        if (   !getCtrlKey(e)
+            && !this.buttonDown1)
+        {
+            e.stopPropagation();
+
+            if (!this.readOnly)
+            {
+                // if (   document.activeElement
+                //     && document.activeElement.tagName.toLowerCase() == 'input'
+                //     && document.activeElement.control)
+                //     document.activeElement.control.textarea.finish(true, false);
+
+                // this.oldValue = this.value;
+
+                // const dec = Math.pow(10, -this.dec);
+
+                // const val =
+                //     touchpad
+                //     ? this.value -  dWheelX               * this.wheelScale * dec
+                //     : this.value + (dWheelY > 0 ? -1 : 1) * this.wheelScale * dec;
+                
+                // this.setValue(val, true, true, false, false);
+            }
+        }
+    });
+
+
+
+    // this.view.div.addEventListener('touchstart', e =>
+    // {
+    //     this.view.touches.push(e);
+    //     e.preventDefault();
+    // });
+    
+    
+    
+    // this.view.div.addEventListener('touchmove', e =>
+    // {
+    //     for (let i = 0; i < this.view.touches.length; i++)
+    //         if (this.view.touches[i].pointerId == e.pointerId)
+    //         {
+    //             this.view.touches[i] = e;
+    //             break;
+    //         }
+    
+    //     e.preventDefault();
+    // });
+    
+    
+    
+    // this.view.div.addEventListener('touchend', e =>
+    // {
+    //     for (let i = 0; i < this.view.touches.length; i++)
+    //         if (this.view.touches[i].pointerId == e.pointerId)
+    //         {
+    //             this.view.touches.splice(i, 1);
+    //             break;
+    //         }
+    
+    //     e.preventDefault();
+    // });
+    
+    
+    
+    // this.view.div.addEventListener('touchcancel', e =>
+    // {
+    //     for (let i = 0; i < this.view.touches.length; i++)
+    //         if (this.view.touches[i].pointerId == e.pointerId)
+    //         {
+    //             this.view.touches.splice(i, 1);
+    //             break;
+    //         }
+    
+    //     e.preventDefault();
+    // });
+    
+    
+    
+    this.div.addEventListener('keydown', e =>
+    {
+        if (   e.code == 'Enter'
+            || e.code == 'NumpadEnter')
+            this.showTextarea();
+
+        // else if (e.code == 'Space')
+        //     setCursor(panCursor, true);
+    });
+
+
+
+    this.div.addEventListener('focus', () =>
+    {
+        if (   !this.view.spaceDown
+            && !panMode
+            && !this.buttonDown1
+            && this.pointerEvents)
+            this.showTextarea();
+    });
+};
 
 
 class ColorControl
@@ -43998,30 +44580,18 @@ extends Parameter
         if (hasOutput) this.initOutput([TEXT_VALUE], this.output_genRequest, getParamOutputValuesForUndo, this.output_backInit);
 
 
-        this.controls[0].addEventListener('confirm', () => 
-        {
-            this.setValue(this.controls[0].value, true, false); 
+        this.controls[0].addEventListener('finishedit', e =>
+        { 
+            if (!e.detail.success)
+                return;
+
+            if (   e.detail.value.trim() != ''
+                && e.detail.value != e.detail.oldValue)
+            {
+                this.setValue(new TextValue(e.detail.value), true);
+                e.preventSetValue = true;
+            }
         });
-
-
-        // this.controls[0].addEventListener('finishedit', e =>
-        // { 
-        //     if (!e.detail.success)
-        //         return;
-
-        //     if (   e.detail.value.trim() != ''
-        //         && e.detail.value != e.detail.oldValue)
-        //     {
-        //         const webColor = webColors.find(wc => wc.name.toLowerCase() == e.detail.value.toLowerCase());
-        //         if (webColor) e.detail.value = webColor.color;
-
-        //         const rgb = validHex2rgb(e.detail.value);
-        //         const val = ColorValue.fromRgb(scaleRgb(rgb));
-
-        //         this.setValue(val, true);
-        //         e.preventSetValue = true;
-        //     }
-        // });
     }
 
 
@@ -44075,10 +44645,13 @@ extends Parameter
     setValue(value, createAction, updateControl = true, dispatchEvents = true) 
     {
         console.trace();
+        console.log('TextParam.setValue value =', value);
+
         console.assert(
                value.type 
             && value.type == TEXT_VALUE, 
             'value.type must be TEXT_VALUE');
+           
             
         this.preSetValue(value, createAction, dispatchEvents);
 
@@ -49140,6 +49713,256 @@ extends OperatorWithValue
 }
 
 
+class   ResizableBase
+extends OperatorBase
+{
+    canResizeL  = false;
+    canResizeR  = false;
+    canResizeB  = false;
+
+    canResizeBL = false;
+    canResizeBR = false;
+    
+
+    resizingL   = false;
+    resizingR   = false;
+    resizingB   = false;
+
+    resizingBL  = false;
+    resizingBR  = false;
+
+    resizing    = false;
+    
+
+
+    constructor(type, shortName)
+    {
+        super(type, shortName);
+
+
+        this.div.addEventListener('pointerdown', e =>
+        {
+            if (e.button == 0)
+            {
+                this.startRect = offsetRect(this.div);
+                this.resizing  = false;
+
+                     if (this.canResizeBL) { this.resizingBL = this.resizing = true; }
+                else if (this.canResizeBR) { this.resizingBR = this.resizing = true; }
+                else if (this.canResizeL ) { this.resizingL  = this.resizing = true; }
+                else if (this.canResizeR ) { this.resizingR  = this.resizing = true; }
+                else if (this.canResizeB ) { this.resizingB  = this.resizing = true; }
+
+
+                if (this.resizing)
+                {
+                    e.preventDefault();
+                    e.stopImmediatePropagation();
+
+                    this.div.setPointerCapture(e.pointerId);
+
+                    this.sx = e.clientX;
+                    this.sy = e.clientY;
+                }
+            }        
+        });
+
+
+
+        this.div.addEventListener('pointermove', e =>
+        {
+            const dx = this.resizing ? (e.clientX - this.sx) / mainGraph.view.zoom : 0;
+            const dy = this.resizing ? (e.clientY - this.sy) / mainGraph.view.zoom : 0;
+            
+            
+                 if (this.resizingTL) this.setRect(this.startRect.x + dx, this.startRect.y + dy, this.startRect.w - dx, this.startRect.h - dy);
+            else if (this.resizingTR) this.setRect(this.startRect.x,      this.startRect.y + dy, this.startRect.w + dx, this.startRect.h - dy);
+            else if (this.resizingBL) this.setRect(this.startRect.x + dx, this.startRect.y,      this.startRect.w - dx, this.startRect.h + dy);
+            else if (this.resizingBR) this.setRect(this.startRect.x,      this.startRect.y,      this.startRect.w + dx, this.startRect.h + dy);
+            else if (this.resizingL ) this.setRect(this.startRect.x + dx, this.startRect.y,      this.startRect.w - dx, this.startRect.h     );
+            else if (this.resizingR ) this.setRect(this.startRect.x,      this.startRect.y,      this.startRect.w + dx, this.startRect.h     );
+            else if (this.resizingT ) this.setRect(this.startRect.x,      this.startRect.y + dy, this.startRect.w,      this.startRect.h - dy);
+            else if (this.resizingB ) this.setRect(this.startRect.x,      this.startRect.y,      this.startRect.w,      this.startRect.h + dy);
+            else
+                this.checkResizing(e);
+
+
+            if (this.resizing)
+            {
+                e.preventDefault();
+                e.stopImmediatePropagation();
+
+                this.updateMeasureData();
+            }
+        });
+        
+
+        
+        this.div.addEventListener('pointerup', e =>
+        {
+            if (e.button == 0)
+            {
+                if (this.resizing)
+                {
+                    actionManager.do(new SetNodeRectAction(
+                        this.graph, 
+                        this.id, 
+                        this.startRect, 
+                        offsetRect(this.div)));
+                }
+
+
+                this.resetResize();
+
+                
+                if (this.div.hasPointerCapture(e.pointerId))
+                    this.div.releasePointerCapture(e.pointerId);
+            }
+        });
+    }
+
+
+
+    resetResize(resetResizing = true)
+    {
+        this.canResizeL  = false;
+        this.canResizeR  = false;
+        this.canResizeB  = false;
+    
+        this.canResizeBL = false;
+        this.canResizeBR = false;
+
+        if (resetResizing)
+        {
+            this.resizingL  = false;
+            this.resizingR  = false;
+            this.resizingB  = false;
+        
+            this.resizingBL = false;
+            this.resizingBR = false;
+
+            this.resizing   = false;
+        }
+    }
+
+
+
+    checkResizing(e)
+    {
+        this.resetResize(false);
+
+        if (   e.clientX >= this.measureData.divBounds.l
+            && e.clientX <  this.measureData.divBounds.l + resizeEdgeWidth
+            && e.clientY >= this.measureData.divBounds.b - resizeEdgeWidth
+            && e.clientY <  this.measureData.divBounds.b)
+        {
+            this.canResizeBL      = true;
+            this.div.style.cursor = 'nesw-resize';
+            return true;
+        }
+        else if (e.clientX >= this.measureData.divBounds.r - resizeEdgeWidth
+              && e.clientX <  this.measureData.divBounds.r 
+              && e.clientY >= this.measureData.divBounds.b - resizeEdgeWidth
+              && e.clientY <  this.measureData.divBounds.b)
+        {
+            this.canResizeBR      = true;
+            this.div.style.cursor = 'nwse-resize';
+            return true;
+        }
+        else if (e.clientX >= this.measureData.divBounds.l
+              && e.clientX <  this.measureData.divBounds.l + resizeEdgeWidth
+              && e.clientY >= this.measureData.divBounds.t + resizeEdgeWidth
+              && e.clientY <  this.measureData.divBounds.b - resizeEdgeWidth)
+        {
+            this.canResizeL       = true;
+            this.div.style.cursor = 'ew-resize';
+            return true;
+        }
+        else if (e.clientX >= this.measureData.divBounds.r - resizeEdgeWidth
+              && e.clientX <  this.measureData.divBounds.r
+              && e.clientY >= this.measureData.divBounds.t + resizeEdgeWidth
+              && e.clientY <  this.measureData.divBounds.b - resizeEdgeWidth)
+        {
+            this.canResizeR       = true;
+            this.div.style.cursor = 'ew-resize';
+            return true;
+        }
+        else if (e.clientX >= this.measureData.divBounds.l + resizeEdgeWidth
+              && e.clientX <  this.measureData.divBounds.r - resizeEdgeWidth
+              && e.clientY >= this.measureData.divBounds.b - resizeEdgeWidth
+              && e.clientY <  this.measureData.divBounds.b)
+        {
+            this.canResizeB       = true;
+            this.div.style.cursor = 'ns-resize';
+            return true;
+        }
+        else
+        {
+            this.div.style.cursor = 'default';
+            return false;
+        }
+    }
+
+
+
+    setSize(w, h, updateTransform = true)
+    {
+        super.setSize(
+            Math.max(100, w), 
+            Math.max(this.header.offsetHeight + 20, h), 
+            updateTransform);
+
+        this.inner.style.height = this.div.offsetHeight;
+    }
+
+
+
+    setRect(x, y, w, h, updateTransform = true)
+    {
+        super.setRect(
+            x, 
+            y, 
+            Math.max(100, w), 
+            Math.max(this.header.offsetHeight + 20, h), updateTransform);
+
+        this.inner.style.height = this.div.offsetHeight;
+    }
+
+
+
+    toJsonBase(nTab = 0) 
+    {
+        let   pos = ' '.repeat(nTab);
+        const tab = TAB;
+
+        let json = super.toJsonBase(nTab);
+
+        json += ',\n' + pos + tab + '"width": "'  + this.div.offsetWidth  + 'px"';
+        json += ',\n' + pos + tab + '"height": "' + this.div.offsetHeight + 'px"';
+
+        return json;
+    }
+
+
+
+    loadParams(_node, pasting)
+    {
+        super.loadParams(_node, pasting);
+
+
+        if (   _node.width
+            && _node.height)
+        {
+            this.setSize(
+                parseFloat(_node.width), 
+                parseFloat(_node.height),
+                false);
+        }
+    }
+}
+
+
+
 class   OpList
 extends OperatorBase
 {
@@ -51268,7 +52091,7 @@ extends OpConditionBase
 
 
 class   OpText
-extends OperatorBase
+extends ResizableBase
 {
     paramValue;
 
@@ -51277,6 +52100,8 @@ extends OperatorBase
     constructor()
     {
         super(TEXT, 'text');
+
+        this.canResize = true;
 
         this.addInput (new Input (TEXT_TYPES, getNodeInputValuesForUndo, this.input_getBackInitValue));
         this.addOutput(new Output([TEXT_VALUE], this.output_genRequest, getNodeOutputValuesForUndo, this.output_backInit));
@@ -55551,28 +56376,10 @@ extends OpColorBase
 
 
 class   OpNodeGroup
-extends OperatorBase
+extends ResizableBase
 {
     children = [];
 
-
-    canResizeL  = false;
-    canResizeR  = false;
-    canResizeB  = false;
-
-    canResizeBL = false;
-    canResizeBR = false;
-    
-
-    resizingL   = false;
-    resizingR   = false;
-    resizingB   = false;
-
-    resizingBL  = false;
-    resizingBR  = false;
-
-    resizing    = false;
-    
 
 
     constructor()
@@ -55599,81 +56406,7 @@ extends OperatorBase
             if (e.button == 0)
             {
                 this.children.forEach(n => n.selected = true);
-
-                this.startRect = offsetRect(this.div);
-                this.resizing  = false;
-
-                     if (this.canResizeBL) { this.resizingBL = this.resizing = true; }
-                else if (this.canResizeBR) { this.resizingBR = this.resizing = true; }
-                else if (this.canResizeL ) { this.resizingL  = this.resizing = true; }
-                else if (this.canResizeR ) { this.resizingR  = this.resizing = true; }
-                else if (this.canResizeB ) { this.resizingB  = this.resizing = true; }
-
-
-                if (this.resizing)
-                {
-                    e.preventDefault();
-                    e.stopImmediatePropagation();
-
-                    this.div.setPointerCapture(e.pointerId);
-
-                    this.sx = e.clientX;
-                    this.sy = e.clientY;
-                }
             }        
-        });
-
-
-
-        this.div.addEventListener('pointermove', e =>
-        {
-            const dx = this.resizing ? (e.clientX - this.sx) / mainGraph.view.zoom : 0;
-            const dy = this.resizing ? (e.clientY - this.sy) / mainGraph.view.zoom : 0;
-            
-            
-                 if (this.resizingTL) this.setRect(this.startRect.x + dx, this.startRect.y + dy, this.startRect.w - dx, this.startRect.h - dy);
-            else if (this.resizingTR) this.setRect(this.startRect.x,      this.startRect.y + dy, this.startRect.w + dx, this.startRect.h - dy);
-            else if (this.resizingBL) this.setRect(this.startRect.x + dx, this.startRect.y,      this.startRect.w - dx, this.startRect.h + dy);
-            else if (this.resizingBR) this.setRect(this.startRect.x,      this.startRect.y,      this.startRect.w + dx, this.startRect.h + dy);
-            else if (this.resizingL ) this.setRect(this.startRect.x + dx, this.startRect.y,      this.startRect.w - dx, this.startRect.h     );
-            else if (this.resizingR ) this.setRect(this.startRect.x,      this.startRect.y,      this.startRect.w + dx, this.startRect.h     );
-            else if (this.resizingT ) this.setRect(this.startRect.x,      this.startRect.y + dy, this.startRect.w,      this.startRect.h - dy);
-            else if (this.resizingB ) this.setRect(this.startRect.x,      this.startRect.y,      this.startRect.w,      this.startRect.h + dy);
-            else
-                this.checkResizing(e);
-
-
-            if (this.resizing)
-            {
-                e.preventDefault();
-                e.stopImmediatePropagation();
-
-                this.updateMeasureData();
-            }
-        });
-        
-
-        
-        this.div.addEventListener('pointerup', e =>
-        {
-            if (e.button == 0)
-            {
-                if (this.resizing)
-                {
-                    actionManager.do(new SetNodeRectAction(
-                        this.graph, 
-                        this.id, 
-                        this.startRect, 
-                        offsetRect(this.div)));
-                }
-
-
-                this.resetResize();
-
-                
-                if (this.div.hasPointerCapture(e.pointerId))
-                    this.div.releasePointerCapture(e.pointerId);
-            }
         });
     }
     
@@ -55820,161 +56553,9 @@ extends OperatorBase
 
 
 
-    resetResize(resetResizing = true)
-    {
-        this.canResizeL  = false;
-        this.canResizeR  = false;
-        this.canResizeB  = false;
-    
-        this.canResizeBL = false;
-        this.canResizeBR = false;
-
-        if (resetResizing)
-        {
-            this.resizingL  = false;
-            this.resizingR  = false;
-            this.resizingB  = false;
-        
-            this.resizingBL = false;
-            this.resizingBR = false;
-
-            this.resizing   = false;
-        }
-    }
-
-
-
-    checkResizing(e)
-    {
-        this.resetResize(false);
-
-        if (   e.clientX >= this.measureData.divBounds.l
-            && e.clientX <  this.measureData.divBounds.l + resizeEdgeWidth
-            && e.clientY >= this.measureData.divBounds.b - resizeEdgeWidth
-            && e.clientY <  this.measureData.divBounds.b)
-        {
-            this.canResizeBL      = true;
-            this.div.style.cursor = 'nesw-resize';
-            return true;
-        }
-        else if (e.clientX >= this.measureData.divBounds.r - resizeEdgeWidth
-              && e.clientX <  this.measureData.divBounds.r 
-              && e.clientY >= this.measureData.divBounds.b - resizeEdgeWidth
-              && e.clientY <  this.measureData.divBounds.b)
-        {
-            this.canResizeBR      = true;
-            this.div.style.cursor = 'nwse-resize';
-            return true;
-        }
-        else if (e.clientX >= this.measureData.divBounds.l
-              && e.clientX <  this.measureData.divBounds.l + resizeEdgeWidth
-              && e.clientY >= this.measureData.divBounds.t + resizeEdgeWidth
-              && e.clientY <  this.measureData.divBounds.b - resizeEdgeWidth)
-        {
-            this.canResizeL       = true;
-            this.div.style.cursor = 'ew-resize';
-            return true;
-        }
-        else if (e.clientX >= this.measureData.divBounds.r - resizeEdgeWidth
-              && e.clientX <  this.measureData.divBounds.r
-              && e.clientY >= this.measureData.divBounds.t + resizeEdgeWidth
-              && e.clientY <  this.measureData.divBounds.b - resizeEdgeWidth)
-        {
-            this.canResizeR       = true;
-            this.div.style.cursor = 'ew-resize';
-            return true;
-        }
-        else if (e.clientX >= this.measureData.divBounds.l + resizeEdgeWidth
-              && e.clientX <  this.measureData.divBounds.r - resizeEdgeWidth
-              && e.clientY >= this.measureData.divBounds.b - resizeEdgeWidth
-              && e.clientY <  this.measureData.divBounds.b)
-        {
-            this.canResizeB       = true;
-            this.div.style.cursor = 'ns-resize';
-            return true;
-        }
-        else
-        {
-            this.div.style.cursor = 'default';
-            return false;
-        }
-    }
-
-
-
-    // setPosition(x, y, updateTransform = true)
-    // {
-    //     super.setPosition(x, y, updateTransform);
-
-    //     this.updateProxyControls();
-    // }
-
-
-
-    setSize(w, h, updateTransform = true)
-    {
-        super.setSize(
-            Math.max(100, w), 
-            Math.max(this.header.offsetHeight + 20, h), 
-            updateTransform);
-
-        this.inner.style.height = this.div.offsetHeight;
-
-        this.updateProxyControls();
-    }
-
-
-
-    setRect(x, y, w, h, updateTransform = true)
-    {
-        super.setRect(
-            x, 
-            y, 
-            Math.max(100, w), 
-            Math.max(this.header.offsetHeight + 20, h), updateTransform);
-
-        this.inner.style.height = this.div.offsetHeight;
-
-        this.updateProxyControls();
-    }
-
-
-
-    toJsonBase(nTab = 0) 
-    {
-        let   pos = ' '.repeat(nTab);
-        const tab = TAB;
-
-        let json = super.toJsonBase(nTab);
-
-        json += ',\n' + pos + tab + '"width": "'  + this.div.offsetWidth  + 'px"';
-        json += ',\n' + pos + tab + '"height": "' + this.div.offsetHeight + 'px"';
-
-        return json;
-    }
-
-
-
     paramsToJson(nTab = 0)
     {
         return '';
-    }
-
-
-
-    loadParams(_node, pasting)
-    {
-        super.loadParams(_node, pasting);
-
-
-        if (   _node.width
-            && _node.height)
-        {
-            this.setSize(
-                parseFloat(_node.width), 
-                parseFloat(_node.height),
-                false);
-        }
     }
 }
 

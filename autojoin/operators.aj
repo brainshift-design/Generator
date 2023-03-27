@@ -26,6 +26,7 @@
 ../operators/OperatorBase.js
 ../operators/OperatorWithValue.js
 ../operators/OperatorWithSymbol.js
+../operators/ResizableBase.js
 
 
 ../operators/flow/OpList.js

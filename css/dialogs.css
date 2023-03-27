@@ -722,21 +722,6 @@
 }
 
 
-#aboutDialogWatermark
-{
-    position:       absolute;
-    left:          -50px;
-    top:           -87px;
-    font-size:      250px;
-    font-weight:    600;
-    white-space:    nowrap;
-    color:          var(--figma-color-bg-secondary);
-    z-index:        -1;
-    user-select:    none;
-    pointer-events: none;
-}
-
-
 #aboutDialogContent
 {
     font-size: 12px;
@@ -814,9 +799,9 @@
 
 #aboutBrainshiftLogo
 {
-    position: absolute;
-    left:     184px;
-    top:      92px;
+    position:  absolute;
+    top:       82px;
+    left:      97px;
 }
 
 
@@ -824,7 +809,7 @@
 {
     position: absolute;
     left:     33px;
-    top:      32px;
+    top:      23px;
 }
 
 
@@ -838,20 +823,24 @@
 
 #aboutVersion
 {
-    display:  inline;
-    position: absolute;
-    left:     95px;
-    top:      37px;
+    font-weight: 300;
+    font-size:   11px;
+    display:     inline;
+    position:    absolute;
+    left:        100px;
+    top:         18px;
 }
 
 
 #aboutCopyright
 {
-    font-weight: 200;
-    display:  inline-block;
-    position: absolute;
-    left:     15px;
-    top:      92px;
+    font-weight: 300;
+    font-size:   11px;
+    display:     inline-block;
+    width:       max-content;
+    position:    absolute;
+    left:        99px;
+    top:         37px;
 }
 
 

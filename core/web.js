@@ -71,6 +71,18 @@ function createTextbox(className = '')
 
 
 
+function createTextarea(className = '')
+{
+    const textarea = document.createElement('textarea');
+
+    if (className.trim() != '')
+        textarea.className = className;
+    
+    return textarea;
+}
+
+
+
 function enableElementText(elem, enable)
 {
     elem.style.fontStyle  = enable ? 'normal' : 'italic'; 

@@ -53,30 +53,18 @@ extends Parameter
         if (hasOutput) this.initOutput([TEXT_VALUE], this.output_genRequest, getParamOutputValuesForUndo, this.output_backInit);
 
 
-        this.controls[0].addEventListener('confirm', () => 
-        {
-            this.setValue(this.controls[0].value, true, false); 
+        this.controls[0].addEventListener('finishedit', e =>
+        { 
+            if (!e.detail.success)
+                return;
+
+            if (   e.detail.value.trim() != ''
+                && e.detail.value != e.detail.oldValue)
+            {
+                this.setValue(new TextValue(e.detail.value), true);
+                e.preventSetValue = true;
+            }
         });
-
-
-        // this.controls[0].addEventListener('finishedit', e =>
-        // { 
-        //     if (!e.detail.success)
-        //         return;
-
-        //     if (   e.detail.value.trim() != ''
-        //         && e.detail.value != e.detail.oldValue)
-        //     {
-        //         const webColor = webColors.find(wc => wc.name.toLowerCase() == e.detail.value.toLowerCase());
-        //         if (webColor) e.detail.value = webColor.color;
-
-        //         const rgb = validHex2rgb(e.detail.value);
-        //         const val = ColorValue.fromRgb(scaleRgb(rgb));
-
-        //         this.setValue(val, true);
-        //         e.preventSetValue = true;
-        //     }
-        // });
     }
 
 
@@ -130,10 +118,13 @@ extends Parameter
     setValue(value, createAction, updateControl = true, dispatchEvents = true) 
     {
         console.trace();
+        console.log('TextParam.setValue value =', value);
+
         console.assert(
                value.type 
             && value.type == TEXT_VALUE, 
             'value.type must be TEXT_VALUE');
+           
             
         this.preSetValue(value, createAction, dispatchEvents);
 

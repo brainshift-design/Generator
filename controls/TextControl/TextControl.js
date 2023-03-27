@@ -3,7 +3,7 @@ extends EventTarget
 {
     div;
     
-    textbox;
+    textarea;
     focus;
     
 
@@ -64,15 +64,14 @@ extends EventTarget
 
         this.value             = defaultValue;
         
-        this.text  = createDiv('colorControlText');
-        this.focus = createDiv('colorControlFocus');
-    
-        this.div.appendChild(this.text);
-        this.div.appendChild(this.focus);
-
         
-        this.initTextbox();
-        //this.initEvents ();
+        this.initTextarea();
+        this.initEvents ();
+
+        //this.focus = createDiv('textControlFocus');
+
+        this.div.appendChild(this.textarea);
+        //this.div.appendChild(this.focus);
 
         
         this.onstartchange = new Event('startchange');
@@ -164,11 +163,48 @@ extends EventTarget
 
         this.updateFocus(sw, sh);
     }
+
+
+
     updateFocus(sw, sh)
     {
-        this.focus.style.left   = 0;
-        this.focus.style.top    = 0;
-        this.focus.style.width  = sw;
-        this.focus.style.height = sh;
-    }
-}
+        // this.focus.style.left   = 0;
+        // this.focus.style.top    = 0;
+        // this.focus.style.width  = sw;
+        // this.focus.style.height = sh;
+    };
+
+
+
+    lockPointer(pointerId)
+    {
+        clearTimeout(this.clickTimer);
+
+        this.requestPointerLock =    
+               this.div.      requestPointerLock 
+            || this.div.   mozRequestPointerLock
+            || this.div.webkitRequestPointerLock;
+
+        this.requestPointerLock();
+    };
+
+
+
+    unlockPointer(pointerId)
+    {
+        document.exitPointerLock =    
+               document.      exitPointerLock    
+            || document.   mozExitPointerLock
+            || document.webkitExitPointerLock;
+
+        document.exitPointerLock();
+    };
+
+
+
+    isPointerLocked()
+    {
+        return (document.      pointerLockElement === this.div 
+             || document.   mozPointerLockElement === this.div
+             || document.webkitPointerLockElement === this.div);
+    }}

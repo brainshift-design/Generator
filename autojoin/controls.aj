@@ -6,7 +6,7 @@
 ../controls/NumberControl/NumberControl events.js
 
 ../controls/TextControl/TextControl.js
-../controls/TextControl/TextControl textbox.js
+../controls/TextControl/TextControl textarea.js
 ../controls/TextControl/TextControl events.js
 
 ../controls/ColorControl/ColorControl.js
