@@ -431,7 +431,7 @@ function cleanStyleId(styleId)
 
 
 
-const NAN_CHAR                = '?';
+const NAN_CHAR                = '\uFFFD';
 const NAN_DISPLAY             = '?';
     
 const UNKNOWN_CHAR            = '?';
@@ -566,18 +566,18 @@ const NUMBER_TYPES =
 ];
 
 
-const STRING_VALUE   = 'STR#';  
-const STRING         = 'STR';   
-const STRING_ADD     = 'SADD';  
-const STRING_REPLACE = 'SREPL'; 
+const TEXT_VALUE   = 'TEXT#';  
+const TEXT         = 'TEXT';   
+const TEXT_ADD     = 'TADD';  
+const TEXT_REPLACE = 'TREPL'; 
 
 
-const STRING_TYPES =
+const TEXT_TYPES =
 [
-    STRING_VALUE,
-    STRING,
-    STRING_ADD,
-    STRING_REPLACE
+    TEXT_VALUE,
+    TEXT,
+    TEXT_ADD,
+    TEXT_REPLACE
 ];
 
 
@@ -671,7 +671,7 @@ const ALL_TYPES =
 [
     ...FLOW_TYPES,
     ...NUMBER_TYPES,
-    ...STRING_TYPES,
+    ...TEXT_TYPES,
     ...COLOR_TYPES,
     ...FILL_TYPES,
     ...STROKE_TYPES,

@@ -5,10 +5,12 @@ extends EventTarget
 
     bar;
     text;
+    textbox;
     focus;
 
     extLeft;
     extRight;
+
 
     param;
 
@@ -20,7 +22,9 @@ extends EventTarget
     width;
     height;
              
+
     value;
+    valueScale            = 1;
 
     min;
     max;
@@ -38,8 +42,7 @@ extends EventTarget
     dec;
     displayDec;
          
-    valueScale            = 1;
-                
+               
     suffix;
     valueCanContainSuffix = false;
      
@@ -55,7 +58,7 @@ extends EventTarget
     valueStyleDark        = '#ffffff20';
     textStyleDark         = '#eee';
                 
-    fontSize              = 11;
+    //fontSize              = 11;
              
             
     wrapValue             = false;
@@ -400,7 +403,7 @@ extends EventTarget
     update()
     {
         if (typeof this.value !== 'number')
-            console.assert(false, 'numberControl.update() value is ' + typeof this.value + ', must be a number');
+            console.assert(false, 'NumberControl.update() value is ' + typeof this.value + ', must be a number');
 
         if (!this.measureData.offsetRect)
             return;

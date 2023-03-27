@@ -38,7 +38,7 @@ extends Parameter
 
         this.textControl                  = createDiv('colorControlText');
 
-        this.controls[0] = new NumberControl(
+        this.controls.push(new NumberControl(
             createDiv(),
             this,
             100, // width
@@ -47,7 +47,7 @@ extends Parameter
             'stroke', 
             true,
             defaultValue.weight.value,
-            0);
+            0));
 
 
         this.defaultValue                 = defaultValue;
@@ -75,7 +75,7 @@ extends Parameter
         this.div.appendChild(this.checkers);
 
         this.div.appendChild(this.textControl);
-        this.div.appendChild(this.controls[0]);
+        this.div.appendChild(this.controls[0].div);
 
        
         if (hasInput)  this.initInput([...STROKE_TYPES, ...FILL_TYPES, ...COLOR_TYPES]);

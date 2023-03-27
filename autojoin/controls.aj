@@ -5,6 +5,10 @@
 ../controls/NumberControl/NumberControl ranges.js
 ../controls/NumberControl/NumberControl events.js
 
+../controls/TextControl/TextControl.js
+../controls/TextControl/TextControl textbox.js
+../controls/TextControl/TextControl events.js
+
 ../controls/ColorControl/ColorControl.js
 ../controls/ColorControl/ColorControl textbox.js
 ../controls/ColorControl/ColorControl events.js

@@ -2,28 +2,28 @@ function rgbHeaderFromType(type, active)
 {
     if (FLOW_TYPES.includes(type))
         return active 
-        ? (darkMode ? rgbActiveFlowDark : rgbActiveFlowLight)
-        : (darkMode ? rgbFlowDark       : rgbFlowLight      );
+        ? (darkMode ? rgbActiveFlowDark   : rgbActiveFlowLight)
+        : (darkMode ? rgbFlowDark         : rgbFlowLight      );
 
     if (NUMBER_TYPES.includes(type))
         return active 
         ? (darkMode ? rgbActiveNumberDark : rgbActiveNumberLight)
         : (darkMode ? rgbNumberDark       : rgbNumberLight      );
 
-    if (STRING_TYPES.includes(type))
+    if (TEXT_TYPES.includes(type))
         return active 
-        ? (darkMode ? rgbActiveStringDark : rgbActiveStringLight)
-        : (darkMode ? rgbStringDark       : rgbStringLight      );
+        ? (darkMode ? rgbActiveTextDark   : rgbActiveTextLight)
+        : (darkMode ? rgbTextDark         : rgbTextLight      );
+
+    if (type == COLOR_STYLE)
+        return active 
+        ? (darkMode ? rgbActiveFlowDark   : rgbActiveFlowLight)
+        : (darkMode ? rgbFlowDark         : rgbFlowLight      );
 
     if (SHAPE_TYPES.includes(type))
         return active 
-        ? (darkMode ? rgbActiveShapeDark : rgbActiveShapeLight)
-        : (darkMode ? rgbShapeDark       : rgbShapeLight      );
-
-    if (type == COLOR_STYLE)//COLOR_STYLE_TYPES.includes(type))
-        return active 
-        ? (darkMode ? rgbActiveFlowDark : rgbActiveFlowLight)
-        : (darkMode ? rgbFlowDark       : rgbFlowLight      );
+        ? (darkMode ? rgbActiveShapeDark  : rgbActiveShapeLight)
+        : (darkMode ? rgbShapeDark        : rgbShapeLight      );
 
         
     switch (type)
@@ -45,9 +45,6 @@ function rgbHeaderFromType(type, active)
             return active 
                  ? (darkMode ? rgbActiveFlowDark : rgbActiveFlowLight)
                  : (darkMode ? rgbFlowDark       : rgbFlowLight      );
-            // return active 
-            //      ? (darkMode ? rgbActiveCustomDark : rgbActiveCustomLight)
-            //      : (darkMode ? rgbCustomDark       : rgbCustomLight      );
     }
 
     return 'magenta';

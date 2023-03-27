@@ -44,105 +44,47 @@ extends GObjectBase
             return this;
 
 
+        const fill   = this.fill   ? this.fill  .eval(parse).toValue() : null;
+        const weight = this.weight ? this.weight.eval(parse).toValue() : null;
+        const fit    = this.fit    ? this.fit   .eval(parse).toValue() : null;
+        const join   = this.join   ? this.join  .eval(parse).toValue() : null;
+        const miter  = this.miter  ? this.miter .eval(parse).toValue() : null;
+
+
         if (this.input)
         {
-            this.input = this.input.eval(parse).copy();
-            this.copyObjects(this.input.objects);
+            const input = this.input.eval(parse).toValue();
+
+            this.value = new StrokeValue(
+                fill   ?? input.fill,
+                weight ?? input.weight,
+                fit    ?? input.fit,
+                join   ?? input.join,
+                miter  ?? input.miter);
         }
-
-
-        if (   this.fill
-            && COLOR_TYPES.includes(this.fill.type))
+        else
         {
-            this.fill = this.fill.eval(parse).copy();
-
-            this.fill = new FillValue(
-                this.fill.toValue(), 
-                new NumberValue(100));// this.fill.options.opacity.toValue());
+            this.value = new StrokeValue(fill, weight, fit, join, miter);
         }
 
 
-        const hasInput =     
-               this.input 
-            && STROKE_TYPES.includes(this.input.type);   
+        this.fill   = this.value.fill  .copy();
+        this.weight = this.value.weight.copy();
+        this.fit    = this.value.fit   .copy();
+        this.join   = this.value.join  .copy();
+        this.miter  = this.value.miter .copy();
 
 
-        // TODO: add .toInteger() to miter, join and fit evaluations
-        
-        if (this.fill  ) this.fill   = this.fill  .eval(parse).copy(); else if (hasInput) this.fill   = this.input.fill  .copy(); 
-        if (this.weight) this.weight = this.weight.eval(parse).copy(); else if (hasInput) this.weight = this.input.weight.copy();
-        if (this.fit   ) this.fit    = this.fit   .eval(parse).copy(); else if (hasInput) this.fit    = this.input.fit   .copy();
-        if (this.join  ) this.join   = this.join  .eval(parse).copy(); else if (hasInput) this.join   = this.input.join  .copy();
-        if (this.miter ) this.miter  = this.miter .eval(parse).copy(); else if (hasInput) this.miter  = this.input.miter .copy();            
-
-        if (this.fill  ) genPushUpdateValue(parse, this.nodeId, 'fill',   this.fill  .toValue());
-        if (this.weight) genPushUpdateValue(parse, this.nodeId, 'weight', this.weight.toValue());
-        if (this.fit   ) genPushUpdateValue(parse, this.nodeId, 'fit',    this.fit   .toValue());
-        if (this.join  ) genPushUpdateValue(parse, this.nodeId, 'join',   this.join  .toValue());
-        if (this.miter ) genPushUpdateValue(parse, this.nodeId, 'miter',  this.miter .toValue());
-
-
-        if (   this.options.active
-            || this.options.beforeActive)
-            this.evalObjects();
+        genPushUpdateValue(parse, this.nodeId, 'fill',   this.fill  );
+        genPushUpdateValue(parse, this.nodeId, 'weight', this.weight);
+        genPushUpdateValue(parse, this.nodeId, 'fit',    this.fit   );
+        genPushUpdateValue(parse, this.nodeId, 'join',   this.join  );
+        genPushUpdateValue(parse, this.nodeId, 'miter',  this.miter );
 
 
         this.validate();
 
         return this;
-    }
-
-
-
-    evalObjects(options = {})
-    {
-        if (!this.objects)
-            return;
-
-
-        if (this.options.enabled)
-        {
-            const rgb = scaleRgb(this.fill.color.toValue().toRgb());
-
-            for (const obj of this.objects)
-            {
-                if (!obj.strokes)
-                    obj.strokes = [];
-
-                obj.strokes.push([
-                    'SOLID', 
-                            rgb[0]
-                    + ' ' + rgb[1]
-                    + ' ' + rgb[2]
-                    + ' ' + this.fill.opacity.toValue().value]);
-
-
-                if (this.weight)
-                    obj.strokeWeight = this.weight.toValue().value;
-
-                if (this.fit)
-                    switch (this.fit.toValue().value)
-                    {
-                        case 0: obj.strokeAlign = 'INSIDE';  break;
-                        case 1: obj.strokeAlign = 'CENTER';  break;
-                        case 2: obj.strokeAlign = 'OUTSIDE'; break;
-                    }
-
-                if (this.join)
-                    switch (this.join.toValue().value)
-                    {
-                        case 0: obj.strokeJoin = 'MITER'; break;
-                        case 1: obj.strokeJoin = 'BEVEL'; break;
-                        case 2: obj.strokeJoin = 'ROUND'; break;
-                    }
-
-                if (this.miter)
-                    obj.strokeMiterLimit = this.miter.toValue().value;
-            }
-        }
-
-        
-        super.evalObjects();
     }
 
 

@@ -123,6 +123,9 @@ function genParse(parse, inParam = true)
     else if (parse.next == NUMBER_GREATER         ) result = genParseConditionBase   (parse, (nodeId, options) => new GGreater       (nodeId, options));
     else if (parse.next == NUMBER_GREATER_OR_EQUAL) result = genParseConditionBase   (parse, (nodeId, options) => new GGreaterOrEqual(nodeId, options));
 
+    else if (parse.next == TEXT_VALUE             ) result = genParseTextValue       (parse);
+    else if (parse.next == TEXT                   ) result = genParseText            (parse);
+
     else if (parse.next == COLOR_VALUE            ) result = genParseColorValue      (parse);
     else if (parse.next == COLOR                  ) result = genParseColor           (parse);
     else if (parse.next == VALID_COLOR            ) result = genParseValidColor      (parse);

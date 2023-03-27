@@ -21,6 +21,7 @@
 
 
 ../generator/types/values/NumberValue.js
+../generator/types/values/TextValue.js
 ../generator/types/values/ColorValue.js
 ../generator/types/values/FillValue.js
 ../generator/types/values/StrokeValue.js
@@ -47,6 +48,7 @@
 
 
 ../generator/types/number/GNumberType.js
+../generator/types/text/GTextType.js
 
 ../generator/types/number/arithmetic/GArithmetic.js
 ../generator/types/number/arithmetic/GMath.js
@@ -79,6 +81,9 @@
 ../generator/types/number/GSeries.js
 ../generator/types/number/GRandom.js
 ../generator/types/number/GInterpolate.js
+
+
+../generator/types/text/GText.js
 
 
 ../generator/types/color/color correction.js

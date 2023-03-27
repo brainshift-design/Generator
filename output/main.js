@@ -224,7 +224,7 @@ function removeFromArrayWhere(array, where) {
 function cleanStyleId(styleId) {
     return styleId.split(',')[0] + ',';
 }
-const NAN_CHAR = '?';
+const NAN_CHAR = '\uFFFD';
 const NAN_DISPLAY = '?';
 const UNKNOWN_CHAR = '?';
 const UNKNOWN_DISPLAY = UNKNOWN_CHAR; //'🤷‍♂️';
@@ -324,15 +324,15 @@ const NUMBER_TYPES = [
     ...BOOLEAN_TYPES,
     ...CONDITION_TYPES
 ];
-const STRING_VALUE = 'STR#';
-const STRING = 'STR';
-const STRING_ADD = 'SADD';
-const STRING_REPLACE = 'SREPL';
-const STRING_TYPES = [
-    STRING_VALUE,
-    STRING,
-    STRING_ADD,
-    STRING_REPLACE
+const TEXT_VALUE = 'TEXT#';
+const TEXT = 'TEXT';
+const TEXT_ADD = 'TADD';
+const TEXT_REPLACE = 'TREPL';
+const TEXT_TYPES = [
+    TEXT_VALUE,
+    TEXT,
+    TEXT_ADD,
+    TEXT_REPLACE
 ];
 const COLOR_VALUE = 'COL#';
 const COLOR = 'COL';
@@ -396,7 +396,7 @@ const SHAPE_TYPES = [
 const ALL_TYPES = [
     ...FLOW_TYPES,
     ...NUMBER_TYPES,
-    ...STRING_TYPES,
+    ...TEXT_TYPES,
     ...COLOR_TYPES,
     ...FILL_TYPES,
     ...STROKE_TYPES,

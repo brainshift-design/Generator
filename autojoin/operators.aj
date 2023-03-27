@@ -3,6 +3,7 @@
 ../parameters/NumberParamBase.js
 ../parameters/NumberParam.js
 ../parameters/SelectParam.js
+../parameters/TextParam.js
 ../parameters/ColorParam.js
 ../parameters/FillParam.js
 ../parameters/StrokeParam.js
@@ -68,6 +69,9 @@
 ../operators/number/condition/OpLessOrEqual.js
 ../operators/number/condition/OpGreater.js
 ../operators/number/condition/OpGreaterOrEqual.js
+
+
+../operators/text/OpText.js
 
 
 ../operators/color/OpColorBase.js

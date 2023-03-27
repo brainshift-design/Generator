@@ -418,28 +418,28 @@ function rgbHeaderFromType(type, active)
 {
     if (FLOW_TYPES.includes(type))
         return active 
-        ? (darkMode ? rgbActiveFlowDark : rgbActiveFlowLight)
-        : (darkMode ? rgbFlowDark       : rgbFlowLight      );
+        ? (darkMode ? rgbActiveFlowDark   : rgbActiveFlowLight)
+        : (darkMode ? rgbFlowDark         : rgbFlowLight      );
 
     if (NUMBER_TYPES.includes(type))
         return active 
         ? (darkMode ? rgbActiveNumberDark : rgbActiveNumberLight)
         : (darkMode ? rgbNumberDark       : rgbNumberLight      );
 
-    if (STRING_TYPES.includes(type))
+    if (TEXT_TYPES.includes(type))
         return active 
-        ? (darkMode ? rgbActiveStringDark : rgbActiveStringLight)
-        : (darkMode ? rgbStringDark       : rgbStringLight      );
+        ? (darkMode ? rgbActiveTextDark   : rgbActiveTextLight)
+        : (darkMode ? rgbTextDark         : rgbTextLight      );
+
+    if (type == COLOR_STYLE)
+        return active 
+        ? (darkMode ? rgbActiveFlowDark   : rgbActiveFlowLight)
+        : (darkMode ? rgbFlowDark         : rgbFlowLight      );
 
     if (SHAPE_TYPES.includes(type))
         return active 
-        ? (darkMode ? rgbActiveShapeDark : rgbActiveShapeLight)
-        : (darkMode ? rgbShapeDark       : rgbShapeLight      );
-
-    if (type == COLOR_STYLE)//COLOR_STYLE_TYPES.includes(type))
-        return active 
-        ? (darkMode ? rgbActiveFlowDark : rgbActiveFlowLight)
-        : (darkMode ? rgbFlowDark       : rgbFlowLight      );
+        ? (darkMode ? rgbActiveShapeDark  : rgbActiveShapeLight)
+        : (darkMode ? rgbShapeDark        : rgbShapeLight      );
 
         
     switch (type)
@@ -461,9 +461,6 @@ function rgbHeaderFromType(type, active)
             return active 
                  ? (darkMode ? rgbActiveFlowDark : rgbActiveFlowLight)
                  : (darkMode ? rgbFlowDark       : rgbFlowLight      );
-            // return active 
-            //      ? (darkMode ? rgbActiveCustomDark : rgbActiveCustomLight)
-            //      : (darkMode ? rgbCustomDark       : rgbCustomLight      );
     }
 
     return 'magenta';
@@ -3242,7 +3239,7 @@ function normalizeSeed(x)
 }
 
 
-const NAN_CHAR                = '?';
+const NAN_CHAR                = '\uFFFD';
 const NAN_DISPLAY             = '?';
     
 const UNKNOWN_CHAR            = '?';
@@ -3377,18 +3374,18 @@ const NUMBER_TYPES =
 ];
 
 
-const STRING_VALUE   = 'STR#';  
-const STRING         = 'STR';   
-const STRING_ADD     = 'SADD';  
-const STRING_REPLACE = 'SREPL'; 
+const TEXT_VALUE   = 'TEXT#';  
+const TEXT         = 'TEXT';   
+const TEXT_ADD     = 'TADD';  
+const TEXT_REPLACE = 'TREPL'; 
 
 
-const STRING_TYPES =
+const TEXT_TYPES =
 [
-    STRING_VALUE,
-    STRING,
-    STRING_ADD,
-    STRING_REPLACE
+    TEXT_VALUE,
+    TEXT,
+    TEXT_ADD,
+    TEXT_REPLACE
 ];
 
 
@@ -3482,7 +3479,7 @@ const ALL_TYPES =
 [
     ...FLOW_TYPES,
     ...NUMBER_TYPES,
-    ...STRING_TYPES,
+    ...TEXT_TYPES,
     ...COLOR_TYPES,
     ...FILL_TYPES,
     ...STROKE_TYPES,
@@ -4012,6 +4009,7 @@ function displayValue(type, value)
     {
         case    NUMBER_VALUE: return parseNumberValue   (value)[0].toDisplayString();
         case     COLOR_VALUE: return parseColorValue    (value)[0].toDisplayString();
+        case      TEXT_VALUE: const val = parseTextValue(value)[0]; return val == '' ? '\'\'' : val;
         // case RECTANGLE_VALUE: return parseRectangleValue(value)[0].toDisplayString();
         // case      LINE_VALUE: return parseLineValue     (value)[0].toDisplayString();
         // case   ELLIPSE_VALUE: return parseEllipseValue  (value)[0].toDisplayString();
@@ -4291,6 +4289,92 @@ function parseSimpleNumberValue(str)
         : NumberValue.fromString(str);
 
     return [num, 1];
+}
+
+
+class TextValue
+extends GValue
+{
+    value;
+
+
+
+    constructor(val = '')
+    {
+        super(TEXT_VALUE);
+
+        if (typeof val !== 'string')
+            console.assert(false, 'TextValue(value) is ' + typeof val + ', must be a string');
+
+        this.value = val;
+    }
+
+
+
+    copy()
+    {
+        const copy = new TextValue(this.value);
+
+        copy.copyBase(this);
+
+        return copy;
+    }
+
+
+
+    equals(text)
+    {
+        return text
+            && this.value == text.value;
+    }
+
+
+
+    eval(parse)
+    {
+        return this;
+    }
+
+
+
+    isValid()
+    {
+        return this.value != NAN_CHAR;
+    }
+
+
+
+    toString()
+    {
+        return this.value;
+    }
+
+
+
+    toSimpleString()
+    {
+        return this.value;
+    }
+
+
+
+    toDisplayString()
+    {
+        return this.value;
+    }
+
+
+
+    static NaN = Object.freeze(new TextValue(NAN_CHAR));
+}
+
+
+
+function parseTextValue(str)
+{
+    const text = new TextValue(str);
+
+    return [text, 1];
 }
 
 
@@ -6419,6 +6503,29 @@ extends GOperator
 }
 
 
+class GTextType
+extends GOperator
+{
+    value;
+    
+
+
+    copyBase(src)
+    {
+        super.copyBase(src);
+
+        if (src.value) this.value = src.value.copy();
+    }
+
+
+
+    toValue()
+    {
+        return this.value.copy();
+    }
+}
+
+
 class GArithmetic
 extends GNumberType
 {
@@ -8125,6 +8232,66 @@ extends GNumberType
     }
 }
 
+
+
+class GText
+extends GTextType
+{
+    input = null;
+    
+
+
+    constructor(nodeId, options)
+    {
+        super(TEXT, nodeId, options);
+    }
+
+
+
+    copy()
+    {
+        const copy = new GText(this.nodeId, this.options);
+        
+        copy.copyBase(this);
+
+        if (this.input) 
+            copy.input = this.input.copy();
+        
+        copy.value = this.value;
+
+        return copy;
+    }
+
+
+
+    eval(parse)
+    {
+        if (this.isCached())
+            return this;
+
+        if (this.input)
+            this.value = this.input.eval(parse).toValue();
+        else if (this.value)
+            this.value.eval(parse);
+        else
+            this.value = TextValue.NaN;
+
+
+        genPushUpdateValue(parse, this.nodeId, 'value', this.value);
+
+        
+        this.validate();
+
+        return this;
+    }
+
+
+
+    isValid()
+    {
+        return this.value != NAN_CHAR;
+    }
+}
 
 
 class ColorCorrection
@@ -13830,6 +13997,56 @@ function genParseColorStyle(parse)
 
 
 
+function genParseTextValue(parse)
+{
+    parse.pos++; // tag
+
+    const val = parse.move();
+
+    if (parse.settings.logRequests) 
+        logReqValue(TEXT_VALUE, val, parse);
+
+    return parseTextValue(val)[0];
+}
+
+
+
+function genParseText(parse)
+{
+    const [, nodeId, options, ignore] = genParseNodeStart(parse);
+
+
+    const text = new GText(nodeId, options);
+
+    
+    if (parse.settings.logRequests) 
+        logReq(text, parse, ignore);
+
+
+    if (ignore) 
+    {
+        genParseNodeEnd(parse, text);
+        return parse.parsedNodes.find(n => n.nodeId == nodeId);
+    }
+
+
+    parse.nTab++;
+    parse.inParam = false;
+
+
+    if (parse.next == TEXT_VALUE) text.value = genParse(parse);
+    else                          text.input = genParse(parse);
+
+
+    parse.nTab--;
+
+
+    genParseNodeEnd(parse, text);
+    return text;
+}
+
+
+
 class Parse
 {
     request;
@@ -13954,6 +14171,9 @@ function genParse(parse, inParam = true)
     else if (parse.next == NUMBER_LESS_OR_EQUAL   ) result = genParseConditionBase   (parse, (nodeId, options) => new GLessOrEqual   (nodeId, options));
     else if (parse.next == NUMBER_GREATER         ) result = genParseConditionBase   (parse, (nodeId, options) => new GGreater       (nodeId, options));
     else if (parse.next == NUMBER_GREATER_OR_EQUAL) result = genParseConditionBase   (parse, (nodeId, options) => new GGreaterOrEqual(nodeId, options));
+
+    else if (parse.next == TEXT_VALUE             ) result = genParseTextValue       (parse);
+    else if (parse.next == TEXT                   ) result = genParseText            (parse);
 
     else if (parse.next == COLOR_VALUE            ) result = genParseColorValue      (parse);
     else if (parse.next == COLOR                  ) result = genParseColor           (parse);

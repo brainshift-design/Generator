@@ -16,11 +16,11 @@ const rgbNumberDark        = hex2rgb('#426287');
 const rgbActiveNumberDark  = hex2rgb('#1785CE');
 
 
-const rgbStringLight       = hex2rgb('#ECE0B8');
-const rgbActiveStringLight = hex2rgb('#F6C953');
+const rgbTextLight       = hex2rgb('#ECE0B8');
+const rgbActiveTextLight = hex2rgb('#F6C953');
  
-const rgbStringDark        = hex2rgb('#5F5437');
-const rgbActiveStringDark  = hex2rgb('#F6C953');
+const rgbTextDark        = hex2rgb('#5F5437');
+const rgbActiveTextDark  = hex2rgb('#F6C953');
 
 
 const rgbColor             = hex2rgb('#c38fc5');   

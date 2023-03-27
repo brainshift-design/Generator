@@ -875,6 +875,7 @@ function uiUpdateValuesAndObjects(requestId, actionId, updateNodeId, updateParam
                 {
                     case      LIST_VALUE:  value = parseListValue     (values[i++])[0];  break;
                     case    NUMBER_VALUE:  value = parseNumberValue   (values[i++])[0];  break;
+                    case      TEXT_VALUE:  value = parseTextValue     (values[i++])[0];  break;
                     case     COLOR_VALUE:  value = parseColorValue    (values[i++])[0];  break;
                     case      FILL_VALUE:  value = parseFillValue     (values[i++])[0];  break;
                     case    STROKE_VALUE:  value = parseStrokeValue   (values[i++])[0];  break;

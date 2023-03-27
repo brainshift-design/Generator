@@ -2541,6 +2541,9 @@ a
 }
 
 
+
+
+
 .colorControl
 {
     padding:          0;
@@ -4257,28 +4260,28 @@ function rgbHeaderFromType(type, active)
 {
     if (FLOW_TYPES.includes(type))
         return active 
-        ? (darkMode ? rgbActiveFlowDark : rgbActiveFlowLight)
-        : (darkMode ? rgbFlowDark       : rgbFlowLight      );
+        ? (darkMode ? rgbActiveFlowDark   : rgbActiveFlowLight)
+        : (darkMode ? rgbFlowDark         : rgbFlowLight      );
 
     if (NUMBER_TYPES.includes(type))
         return active 
         ? (darkMode ? rgbActiveNumberDark : rgbActiveNumberLight)
         : (darkMode ? rgbNumberDark       : rgbNumberLight      );
 
-    if (STRING_TYPES.includes(type))
+    if (TEXT_TYPES.includes(type))
         return active 
-        ? (darkMode ? rgbActiveStringDark : rgbActiveStringLight)
-        : (darkMode ? rgbStringDark       : rgbStringLight      );
+        ? (darkMode ? rgbActiveTextDark   : rgbActiveTextLight)
+        : (darkMode ? rgbTextDark         : rgbTextLight      );
+
+    if (type == COLOR_STYLE)
+        return active 
+        ? (darkMode ? rgbActiveFlowDark   : rgbActiveFlowLight)
+        : (darkMode ? rgbFlowDark         : rgbFlowLight      );
 
     if (SHAPE_TYPES.includes(type))
         return active 
-        ? (darkMode ? rgbActiveShapeDark : rgbActiveShapeLight)
-        : (darkMode ? rgbShapeDark       : rgbShapeLight      );
-
-    if (type == COLOR_STYLE)//COLOR_STYLE_TYPES.includes(type))
-        return active 
-        ? (darkMode ? rgbActiveFlowDark : rgbActiveFlowLight)
-        : (darkMode ? rgbFlowDark       : rgbFlowLight      );
+        ? (darkMode ? rgbActiveShapeDark  : rgbActiveShapeLight)
+        : (darkMode ? rgbShapeDark        : rgbShapeLight      );
 
         
     switch (type)
@@ -4300,9 +4303,6 @@ function rgbHeaderFromType(type, active)
             return active 
                  ? (darkMode ? rgbActiveFlowDark : rgbActiveFlowLight)
                  : (darkMode ? rgbFlowDark       : rgbFlowLight      );
-            // return active 
-            //      ? (darkMode ? rgbActiveCustomDark : rgbActiveCustomLight)
-            //      : (darkMode ? rgbCustomDark       : rgbCustomLight      );
     }
 
     return 'magenta';
@@ -7081,7 +7081,7 @@ function normalizeSeed(x)
 }
 
 
-const NAN_CHAR                = '?';
+const NAN_CHAR                = '\uFFFD';
 const NAN_DISPLAY             = '?';
     
 const UNKNOWN_CHAR            = '?';
@@ -7216,18 +7216,18 @@ const NUMBER_TYPES =
 ];
 
 
-const STRING_VALUE   = 'STR#';  
-const STRING         = 'STR';   
-const STRING_ADD     = 'SADD';  
-const STRING_REPLACE = 'SREPL'; 
+const TEXT_VALUE   = 'TEXT#';  
+const TEXT         = 'TEXT';   
+const TEXT_ADD     = 'TADD';  
+const TEXT_REPLACE = 'TREPL'; 
 
 
-const STRING_TYPES =
+const TEXT_TYPES =
 [
-    STRING_VALUE,
-    STRING,
-    STRING_ADD,
-    STRING_REPLACE
+    TEXT_VALUE,
+    TEXT,
+    TEXT_ADD,
+    TEXT_REPLACE
 ];
 
 
@@ -7321,7 +7321,7 @@ const ALL_TYPES =
 [
     ...FLOW_TYPES,
     ...NUMBER_TYPES,
-    ...STRING_TYPES,
+    ...TEXT_TYPES,
     ...COLOR_TYPES,
     ...FILL_TYPES,
     ...STROKE_TYPES,
@@ -7851,6 +7851,7 @@ function displayValue(type, value)
     {
         case    NUMBER_VALUE: return parseNumberValue   (value)[0].toDisplayString();
         case     COLOR_VALUE: return parseColorValue    (value)[0].toDisplayString();
+        case      TEXT_VALUE: const val = parseTextValue(value)[0]; return val == '' ? '\'\'' : val;
         // case RECTANGLE_VALUE: return parseRectangleValue(value)[0].toDisplayString();
         // case      LINE_VALUE: return parseLineValue     (value)[0].toDisplayString();
         // case   ELLIPSE_VALUE: return parseEllipseValue  (value)[0].toDisplayString();
@@ -8130,6 +8131,92 @@ function parseSimpleNumberValue(str)
         : NumberValue.fromString(str);
 
     return [num, 1];
+}
+
+
+class TextValue
+extends GValue
+{
+    value;
+
+
+
+    constructor(val = '')
+    {
+        super(TEXT_VALUE);
+
+        if (typeof val !== 'string')
+            console.assert(false, 'TextValue(value) is ' + typeof val + ', must be a string');
+
+        this.value = val;
+    }
+
+
+
+    copy()
+    {
+        const copy = new TextValue(this.value);
+
+        copy.copyBase(this);
+
+        return copy;
+    }
+
+
+
+    equals(text)
+    {
+        return text
+            && this.value == text.value;
+    }
+
+
+
+    eval(parse)
+    {
+        return this;
+    }
+
+
+
+    isValid()
+    {
+        return this.value != NAN_CHAR;
+    }
+
+
+
+    toString()
+    {
+        return this.value;
+    }
+
+
+
+    toSimpleString()
+    {
+        return this.value;
+    }
+
+
+
+    toDisplayString()
+    {
+        return this.value;
+    }
+
+
+
+    static NaN = Object.freeze(new TextValue(NAN_CHAR));
+}
+
+
+
+function parseTextValue(str)
+{
+    const text = new TextValue(str);
+
+    return [text, 1];
 }
 
 
@@ -10258,6 +10345,29 @@ extends GOperator
 }
 
 
+class GTextType
+extends GOperator
+{
+    value;
+    
+
+
+    copyBase(src)
+    {
+        super.copyBase(src);
+
+        if (src.value) this.value = src.value.copy();
+    }
+
+
+
+    toValue()
+    {
+        return this.value.copy();
+    }
+}
+
+
 class GArithmetic
 extends GNumberType
 {
@@ -11964,6 +12074,66 @@ extends GNumberType
     }
 }
 
+
+
+class GText
+extends GTextType
+{
+    input = null;
+    
+
+
+    constructor(nodeId, options)
+    {
+        super(TEXT, nodeId, options);
+    }
+
+
+
+    copy()
+    {
+        const copy = new GText(this.nodeId, this.options);
+        
+        copy.copyBase(this);
+
+        if (this.input) 
+            copy.input = this.input.copy();
+        
+        copy.value = this.value;
+
+        return copy;
+    }
+
+
+
+    eval(parse)
+    {
+        if (this.isCached())
+            return this;
+
+        if (this.input)
+            this.value = this.input.eval(parse).toValue();
+        else if (this.value)
+            this.value.eval(parse);
+        else
+            this.value = TextValue.NaN;
+
+
+        genPushUpdateValue(parse, this.nodeId, 'value', this.value);
+
+        
+        this.validate();
+
+        return this;
+    }
+
+
+
+    isValid()
+    {
+        return this.value != NAN_CHAR;
+    }
+}
 
 
 class ColorCorrection
@@ -17669,6 +17839,56 @@ function genParseColorStyle(parse)
 
 
 
+function genParseTextValue(parse)
+{
+    parse.pos++; // tag
+
+    const val = parse.move();
+
+    if (parse.settings.logRequests) 
+        logReqValue(TEXT_VALUE, val, parse);
+
+    return parseTextValue(val)[0];
+}
+
+
+
+function genParseText(parse)
+{
+    const [, nodeId, options, ignore] = genParseNodeStart(parse);
+
+
+    const text = new GText(nodeId, options);
+
+    
+    if (parse.settings.logRequests) 
+        logReq(text, parse, ignore);
+
+
+    if (ignore) 
+    {
+        genParseNodeEnd(parse, text);
+        return parse.parsedNodes.find(n => n.nodeId == nodeId);
+    }
+
+
+    parse.nTab++;
+    parse.inParam = false;
+
+
+    if (parse.next == TEXT_VALUE) text.value = genParse(parse);
+    else                          text.input = genParse(parse);
+
+
+    parse.nTab--;
+
+
+    genParseNodeEnd(parse, text);
+    return text;
+}
+
+
+
 class Parse
 {
     request;
@@ -17793,6 +18013,9 @@ function genParse(parse, inParam = true)
     else if (parse.next == NUMBER_LESS_OR_EQUAL   ) result = genParseConditionBase   (parse, (nodeId, options) => new GLessOrEqual   (nodeId, options));
     else if (parse.next == NUMBER_GREATER         ) result = genParseConditionBase   (parse, (nodeId, options) => new GGreater       (nodeId, options));
     else if (parse.next == NUMBER_GREATER_OR_EQUAL) result = genParseConditionBase   (parse, (nodeId, options) => new GGreaterOrEqual(nodeId, options));
+
+    else if (parse.next == TEXT_VALUE             ) result = genParseTextValue       (parse);
+    else if (parse.next == TEXT                   ) result = genParseText            (parse);
 
     else if (parse.next == COLOR_VALUE            ) result = genParseColorValue      (parse);
     else if (parse.next == COLOR                  ) result = genParseColor           (parse);
@@ -21296,28 +21519,28 @@ function rgbHeaderFromType(type, active)
 {
     if (FLOW_TYPES.includes(type))
         return active 
-        ? (darkMode ? rgbActiveFlowDark : rgbActiveFlowLight)
-        : (darkMode ? rgbFlowDark       : rgbFlowLight      );
+        ? (darkMode ? rgbActiveFlowDark   : rgbActiveFlowLight)
+        : (darkMode ? rgbFlowDark         : rgbFlowLight      );
 
     if (NUMBER_TYPES.includes(type))
         return active 
         ? (darkMode ? rgbActiveNumberDark : rgbActiveNumberLight)
         : (darkMode ? rgbNumberDark       : rgbNumberLight      );
 
-    if (STRING_TYPES.includes(type))
+    if (TEXT_TYPES.includes(type))
         return active 
-        ? (darkMode ? rgbActiveStringDark : rgbActiveStringLight)
-        : (darkMode ? rgbStringDark       : rgbStringLight      );
+        ? (darkMode ? rgbActiveTextDark   : rgbActiveTextLight)
+        : (darkMode ? rgbTextDark         : rgbTextLight      );
+
+    if (type == COLOR_STYLE)
+        return active 
+        ? (darkMode ? rgbActiveFlowDark   : rgbActiveFlowLight)
+        : (darkMode ? rgbFlowDark         : rgbFlowLight      );
 
     if (SHAPE_TYPES.includes(type))
         return active 
-        ? (darkMode ? rgbActiveShapeDark : rgbActiveShapeLight)
-        : (darkMode ? rgbShapeDark       : rgbShapeLight      );
-
-    if (type == COLOR_STYLE)//COLOR_STYLE_TYPES.includes(type))
-        return active 
-        ? (darkMode ? rgbActiveFlowDark : rgbActiveFlowLight)
-        : (darkMode ? rgbFlowDark       : rgbFlowLight      );
+        ? (darkMode ? rgbActiveShapeDark  : rgbActiveShapeLight)
+        : (darkMode ? rgbShapeDark        : rgbShapeLight      );
 
         
     switch (type)
@@ -21339,9 +21562,6 @@ function rgbHeaderFromType(type, active)
             return active 
                  ? (darkMode ? rgbActiveFlowDark : rgbActiveFlowLight)
                  : (darkMode ? rgbFlowDark       : rgbFlowLight      );
-            // return active 
-            //      ? (darkMode ? rgbActiveCustomDark : rgbActiveCustomLight)
-            //      : (darkMode ? rgbCustomDark       : rgbCustomLight      );
     }
 
     return 'magenta';
@@ -26417,7 +26637,7 @@ function validateLicenseKey(license, key, rec = false)
 }
 
 
-const NAN_CHAR                = '?';
+const NAN_CHAR                = '\uFFFD';
 const NAN_DISPLAY             = '?';
     
 const UNKNOWN_CHAR            = '?';
@@ -26552,18 +26772,18 @@ const NUMBER_TYPES =
 ];
 
 
-const STRING_VALUE   = 'STR#';  
-const STRING         = 'STR';   
-const STRING_ADD     = 'SADD';  
-const STRING_REPLACE = 'SREPL'; 
+const TEXT_VALUE   = 'TEXT#';  
+const TEXT         = 'TEXT';   
+const TEXT_ADD     = 'TADD';  
+const TEXT_REPLACE = 'TREPL'; 
 
 
-const STRING_TYPES =
+const TEXT_TYPES =
 [
-    STRING_VALUE,
-    STRING,
-    STRING_ADD,
-    STRING_REPLACE
+    TEXT_VALUE,
+    TEXT,
+    TEXT_ADD,
+    TEXT_REPLACE
 ];
 
 
@@ -26657,7 +26877,7 @@ const ALL_TYPES =
 [
     ...FLOW_TYPES,
     ...NUMBER_TYPES,
-    ...STRING_TYPES,
+    ...TEXT_TYPES,
     ...COLOR_TYPES,
     ...FILL_TYPES,
     ...STROKE_TYPES,
@@ -27187,6 +27407,7 @@ function displayValue(type, value)
     {
         case    NUMBER_VALUE: return parseNumberValue   (value)[0].toDisplayString();
         case     COLOR_VALUE: return parseColorValue    (value)[0].toDisplayString();
+        case      TEXT_VALUE: const val = parseTextValue(value)[0]; return val == '' ? '\'\'' : val;
         // case RECTANGLE_VALUE: return parseRectangleValue(value)[0].toDisplayString();
         // case      LINE_VALUE: return parseLineValue     (value)[0].toDisplayString();
         // case   ELLIPSE_VALUE: return parseEllipseValue  (value)[0].toDisplayString();
@@ -27466,6 +27687,92 @@ function parseSimpleNumberValue(str)
         : NumberValue.fromString(str);
 
     return [num, 1];
+}
+
+
+class TextValue
+extends GValue
+{
+    value;
+
+
+
+    constructor(val = '')
+    {
+        super(TEXT_VALUE);
+
+        if (typeof val !== 'string')
+            console.assert(false, 'TextValue(value) is ' + typeof val + ', must be a string');
+
+        this.value = val;
+    }
+
+
+
+    copy()
+    {
+        const copy = new TextValue(this.value);
+
+        copy.copyBase(this);
+
+        return copy;
+    }
+
+
+
+    equals(text)
+    {
+        return text
+            && this.value == text.value;
+    }
+
+
+
+    eval(parse)
+    {
+        return this;
+    }
+
+
+
+    isValid()
+    {
+        return this.value != NAN_CHAR;
+    }
+
+
+
+    toString()
+    {
+        return this.value;
+    }
+
+
+
+    toSimpleString()
+    {
+        return this.value;
+    }
+
+
+
+    toDisplayString()
+    {
+        return this.value;
+    }
+
+
+
+    static NaN = Object.freeze(new TextValue(NAN_CHAR));
+}
+
+
+
+function parseTextValue(str)
+{
+    const text = new TextValue(str);
+
+    return [text, 1];
 }
 
 
@@ -29594,6 +29901,29 @@ extends GOperator
 }
 
 
+class GTextType
+extends GOperator
+{
+    value;
+    
+
+
+    copyBase(src)
+    {
+        super.copyBase(src);
+
+        if (src.value) this.value = src.value.copy();
+    }
+
+
+
+    toValue()
+    {
+        return this.value.copy();
+    }
+}
+
+
 class GArithmetic
 extends GNumberType
 {
@@ -31300,6 +31630,66 @@ extends GNumberType
     }
 }
 
+
+
+class GText
+extends GTextType
+{
+    input = null;
+    
+
+
+    constructor(nodeId, options)
+    {
+        super(TEXT, nodeId, options);
+    }
+
+
+
+    copy()
+    {
+        const copy = new GText(this.nodeId, this.options);
+        
+        copy.copyBase(this);
+
+        if (this.input) 
+            copy.input = this.input.copy();
+        
+        copy.value = this.value;
+
+        return copy;
+    }
+
+
+
+    eval(parse)
+    {
+        if (this.isCached())
+            return this;
+
+        if (this.input)
+            this.value = this.input.eval(parse).toValue();
+        else if (this.value)
+            this.value.eval(parse);
+        else
+            this.value = TextValue.NaN;
+
+
+        genPushUpdateValue(parse, this.nodeId, 'value', this.value);
+
+        
+        this.validate();
+
+        return this;
+    }
+
+
+
+    isValid()
+    {
+        return this.value != NAN_CHAR;
+    }
+}
 
 
 class ColorCorrection
@@ -34657,10 +35047,12 @@ extends EventTarget
 
     bar;
     text;
+    textbox;
     focus;
 
     extLeft;
     extRight;
+
 
     param;
 
@@ -34672,7 +35064,9 @@ extends EventTarget
     width;
     height;
              
+
     value;
+    valueScale            = 1;
 
     min;
     max;
@@ -34690,8 +35084,7 @@ extends EventTarget
     dec;
     displayDec;
          
-    valueScale            = 1;
-                
+               
     suffix;
     valueCanContainSuffix = false;
      
@@ -34707,7 +35100,7 @@ extends EventTarget
     valueStyleDark        = '#ffffff20';
     textStyleDark         = '#eee';
                 
-    fontSize              = 11;
+    //fontSize              = 11;
              
             
     wrapValue             = false;
@@ -35052,7 +35445,7 @@ extends EventTarget
     update()
     {
         if (typeof this.value !== 'number')
-            console.assert(false, 'numberControl.update() value is ' + typeof this.value + ', must be a number');
+            console.assert(false, 'NumberControl.update() value is ' + typeof this.value + ', must be a number');
 
         if (!this.measureData.offsetRect)
             return;
@@ -36458,6 +36851,581 @@ function numberControl_confirm(control)
 }
 
 
+class TextControl
+extends EventTarget
+{
+    div;
+    
+    textbox;
+    focus;
+    
+
+    param;
+     
+    id;
+
+    name;
+
+    width;
+    height;
+             
+    
+    value;
+
+
+    enableChangeEvent = true;
+    
+    successOnFocusOut = false;
+    keyBlur           = false;
+    
+    pointerEvents     = true;
+    readOnly          = false;
+     
+    
+    measureData       = {};
+
+
+
+    get view() { return this.param.node.graph.view; }
+
+
+
+    constructor(div, param, width, height, id, name, defaultValue = '')
+    {
+        super();
+
+
+        this.div               = div ? div : createDiv('textControl');
+        this.div.control       = this;
+
+        this.param             = param;
+
+
+        this.id                = id;
+
+        this.name              = name;
+
+    
+        this.width             = width;
+        this.height            = height;
+                 
+        this.div.style.width   = width;
+        this.div.style.height  = height;
+                 
+        this.div.style.display = 'inline';
+
+
+        this.value             = defaultValue;
+        
+        this.text  = createDiv('colorControlText');
+        this.focus = createDiv('colorControlFocus');
+    
+        this.div.appendChild(this.text);
+        this.div.appendChild(this.focus);
+
+        
+        this.initTextbox();
+        //this.initEvents ();
+
+        
+        this.onstartchange = new Event('startchange');
+        this.onchange      = new Event('change');
+        this.onconfirm     = new Event('confirm');
+    }    
+
+
+
+    canReact(e)
+    {
+        if (   settings.enableZoomedOutParams
+            || this.view.zoom > settings.minZoomForParams)
+            return true;
+
+        e.preventDefault();
+        e.stopPropagation();
+
+        forwardEvent(e, this.param.node.header);
+
+        return false;
+    }
+
+
+
+    setName(name)
+    {
+        this.name      = name;
+        this.savedName = name;
+        
+        this.update();
+    }
+
+
+
+    setValue(value, fireChangeEvent = true, confirm = true, fullRange = true)
+    {
+        if (typeof value != 'string')
+            console.assert(false, 'TextControl.setValue(value) is ' + typeof value + ', must be a string');
+
+            
+        const oldValue = this.value;
+
+        
+        if (   value == NAN_CHAR && oldValue != NAN_CHAR
+            || value != NAN_CHAR && oldValue == NAN_CHAR)
+        {
+            this.value = value;
+
+            this.update();
+
+            if (   fireChangeEvent
+                && this.enableChangeEvent
+                && value != oldValue)
+                this.dispatchEvent(this.onchange);
+        }
+
+
+        if (   confirm
+            && this.enableChangeEvent)
+            this.dispatchEvent(this.onconfirm);
+    }
+
+
+
+
+    updateMeasureData()
+    {
+        this.measureData = 
+        {
+            offsetRect: offsetRect(this.div),
+            clientRect: clientRect(this.div)
+        };
+    }
+
+
+    
+    update()
+    {
+        if (typeof this.value !== 'string')
+            console.assert(false, 'TextControl.update() value is ' + typeof this.value + ', must be a string');
+
+        if (!this.measureData.offsetRect)
+            return;
+
+
+        const sw =  this.measureData.clientRect.width;
+        const sh =  this.measureData.clientRect.height;
+
+        this.updateFocus(sw, sh);
+    }
+    updateFocus(sw, sh)
+    {
+        this.focus.style.left   = 0;
+        this.focus.style.top    = 0;
+        this.focus.style.width  = sw;
+        this.focus.style.height = sh;
+    }
+}
+
+
+TextControl.prototype.initTextbox = function()
+{
+    this.textbox = createTextbox('numberControlTextbox');
+    this.textbox.control = this;
+    
+
+
+    this.textbox.addEventListener('pointerdown', e =>
+    {
+        e.stopPropagation();
+    });
+    
+    
+    
+    this.textbox.addEventListener('pointerup', e =>
+    {
+        e.stopPropagation();
+
+        if (e.button == 2)
+        {
+            initTextMenu(this.textbox);
+            menuText.showAt(e.clientX, e.clientY, false);
+        }
+    });
+
+
+
+    this.textbox.addEventListener('pointermove', e =>
+    {
+        e.stopPropagation();
+        this.textbox.style.cursor = 'default';
+    });
+
+
+
+    this.textbox.addEventListener('keydown', e =>
+    {
+        e.stopPropagation();
+
+
+        if (   e.code == 'KeyX'
+            && getCtrlKey(e))
+        {
+            e.preventDefault();
+            document.execCommand('copy');
+            clearSelectedText(this.textbox);
+        }
+
+        else if (   e.code == 'KeyC'
+            && getCtrlKey(e))
+        {
+            e.preventDefault();
+            document.execCommand('copy');
+        }
+
+        else if (e.code == 'KeyV'
+              && getCtrlKey(e)
+              && !this.readOnly)
+        {
+            // let the OS do its thing here
+        }
+        
+        else if (   (   e.code == 'Enter'
+                     || e.code == 'NumpadEnter')
+                 && !this.readOnly)
+        {
+            this.textbox.keyBlur = true;
+            this.textbox.finish(true);
+        }
+
+        else if (e.code == 'Escape')
+        {
+            this.textbox.keyBlur = true;
+            this.textbox.finish(false);
+        }
+        else if (e.code == 'Tab')
+        {
+            e.preventDefault();
+            e.stopPropagation();
+            
+            if (this.param)
+            {
+                const params = this.param.node.params;
+                let   index  = this.param.index;
+
+                this.textbox.keyBlur = true;
+                this.textbox.finish(true, false);
+
+                if (   e.shiftKey 
+                    && index > 0)
+                {
+                    while (params[--index].controls[0].readOnly);
+                    params[index].controls[0].showTextbox();
+                }
+                else if (!e.shiftKey 
+                      && index < params.length-1) 
+                {
+                    while (params[++index].controls[0].readOnly);
+                    params[index].controls[0].showTextbox();
+                }
+            }
+
+            // let tabs  = document.querySelectorAll('.numberControl, .selectControl, .select, .menuSelect, button, .menuButton');
+            // let index = this.tabIndex;
+
+            // for (let i = 0; i < tabs.length; i++) 
+            // {
+            //     if (   e.shiftKey && tabs[i].tabIndex == index - 1
+            //         ||               tabs[i].tabIndex == index + 1) 
+            //     {
+            //         if (tabs[i].className == 'slider')
+            //             tabs[i].showTextbox();
+            //         else 
+            //         {
+            //             document.activeElement.blur();
+            //             tabs[i].focus();
+            //         }
+
+            //         break;
+            //     }
+            // }
+        }
+
+        else if ((   e.key == 'ArrowUp'
+                  || e.key == 'ArrowDown')
+              && !this.readOnly)
+        {
+            e.preventDefault();
+
+            let text = this.textbox.value;
+
+            if (   this.valueCanContainSuffix   
+                && text.length >= this.suffix.length
+                && text.substring(text.length - this.suffix.length) == this.suffix)
+                text = text.substring(0, text.length - this.suffix.length);
+
+
+            if (this.textbox.selectionStart != this.textbox.selectionEnd)
+                this.textbox.selectionStart =  this.textbox.selectionEnd;
+
+            const pos = Math.min(
+                this.textbox.selectionStart,
+                text.length);
+
+            const revPos = text.length - pos;
+
+            const val  = parseFloat(text);
+            const sign = e.key == 'ArrowUp' ? 1 : -1;
+
+            let decIndex = text.indexOf('.');
+            if (decIndex < 0) decIndex = text.indexOf(',');
+            
+            if (   text[0] != '-'
+                || pos > 0)
+            {
+                if (decIndex < 0) // integer
+                {
+                    let dec = Math.pow(10, revPos);
+
+                    if (e.shiftKey) 
+                        dec *= 10;
+
+                    this.setValue((val + sign * dec) / this.valueScale);
+                    this.updateTextbox();
+                }
+                else // floating point
+                {
+                    const _edit = pos - decIndex - 1;
+
+                    let  dec  = 
+                        _edit < 0
+                        ?     Math.pow(10, -_edit - 1)
+                        : 1 / Math.pow(10,  _edit    );
+
+                    if (e.shiftKey) 
+                        dec *= 10;
+
+                    this.displayDec = text.length-1 - decIndex;
+                    this.setValue((val + sign * dec) / this.valueScale);
+                    this.updateTextbox();
+                }
+
+                this.textbox.selectionStart =
+                this.textbox.selectionEnd   = this.textbox.savedValue.length - revPos - this.suffix.length;
+
+
+                if (this.param) this.param.changing = true;
+                if (this.confirmTimer) clearTimeout(this.confirmTimer);
+                this.confirmTimer = setTimeout(() => numberControl_confirm(this), 400);
+            }
+        }
+        else if (e.code == 'KeyZ'
+              && getCtrlKey(e))
+        {
+                 if (e.shiftKey && !actionManager.redoing) actionManager.redo();
+            else if (              !actionManager.undoing) actionManager.undo();
+            
+            this.updateTextbox();
+        }
+        else 
+        {
+            let curVal = this.textbox.value;
+
+            if (      e.key.length == 1
+                   && !isDigit(e.key)
+                   && e.key != NAN_CHAR
+                   && (   !this.valueCanContainSuffix
+                       || !this.suffix.includes(e.key))
+                   && (   !this.showHex 
+                       || !isHexDigit(e.key))
+                   && (   this.showHex
+                       ||    e.key != '.'
+                          && e.key != ',')
+                   && !(   ((      e.code == 'Minus'
+                                || e.code == 'NumpadSubtract')
+                             && !curVal.includes('-'))
+                        && this.min < 0)
+                ||     this.readOnly
+                   && !isArrowKey(e.code))
+                e.preventDefault();
+
+            if (    e.key == '.'
+                &&  this.dec == 0
+                && !this.allowEditDecimals)
+                e.preventDefault();
+                
+                    
+            curVal =
+                   curVal ==     NAN_DISPLAY
+                || curVal == UNKNOWN_DISPLAY
+                ? ''
+                :   curVal.substring(0, this.textbox.selectionStart) 
+                  + curVal.substring(this.textbox.selectionEnd, curVal.length);
+
+                  
+            const nextVal = parseFloat(curVal + e.key);
+
+            if (   nextVal < this.min - 0.001
+                || nextVal > this.max)
+                e.preventDefault();            
+        }
+    });
+
+
+
+    this.textbox.addEventListener('paste', e =>
+    {
+        e.preventDefault();
+
+        const str = e.clipboardData.getData('text/plain');
+
+        let val = 
+            this.showHex
+            ? parseInt(str, 16)
+            : parseFloat(str);
+
+        val = Math.min(Math.max(this.min, val), this.max);
+
+        this.textbox.value = isNaN(val) ? '' : val;
+    });
+
+
+
+    
+    this.textbox.addEventListener('focusout', () =>
+    {
+        if (!this.textbox.keyBlur) this.textbox.finish(this.textbox.value.trim() != '');
+        else                       this.textbox.keyBlur = false;
+
+
+        if (this.savedSuccessOnFocusOut != null)
+        {
+            this.successOnFocusOut      = this.savedSuccessOnFocusOut;
+            this.savedSuccessOnFocusOut = null;
+        }
+
+
+        this.div.parentNode.removeChild(this.textbox);
+        this.clicked = false;
+    });
+    
+
+
+    this.textbox.addEventListener('wheel', e =>
+    {
+        e.stopPropagation();
+        forwardEvent(e, this.div);
+    });
+    
+
+
+    this.textbox.finish = (success, focusControl = true) =>
+    {
+        let   value      = this.textbox.value;
+        const savedValue = this.textbox.savedValue;
+
+        value = value.replace(this.suffix, '');
+        
+        
+        let val = 
+            value.trim() == NAN_CHAR 
+            ? Number.NaN 
+            : (this.showHex 
+               ? parseInt(value, 16) 
+               : parseFloat(value));
+
+        let savedVal = 
+            savedValue.trim() == NAN_CHAR  
+            ? Number.NaN 
+            : (this.showHex 
+               ? parseInt(savedValue, 16) 
+               : parseFloat(savedValue));
+
+        
+        if (!isNaN(val))
+            val /= this.valueScale;
+
+       
+        const e = new CustomEvent('finishedit', { 'detail': {
+            'success':         success,
+            'value':           value     .replace(this.suffix, ''),
+            'oldValue':        savedValue.replace(this.suffix, ''),
+            'preventSetValue': false }});
+
+        this.dispatchEvent(e);
+
+
+        if (!e.preventSetValue)
+        {
+            if (success) 
+            {
+                this.setValue(
+                       value.trim() != '' 
+                    && value.trim() != NAN_CHAR
+                    ? val 
+                    : savedVal);
+            }
+            else
+                this.setValue(savedVal);
+        }
+         
+        
+        this.textbox.blur();
+
+        this.text.style.display = 'block';
+
+        if (   this.inFocus
+            && focusControl)
+            this.focus();
+    };    
+};
+
+
+
+TextControl.prototype.showTextbox = function()
+{
+    this.text.style.display = 'none';
+
+    this.inFocus = 
+           hasFocus(this.div)
+        && !this.clicked;
+
+        
+    this.textbox.style.boxShadow = '0 0 0 1px var(--figma-color-bg-brand)';
+    this.textbox.style.outline   = 'none';
+    this.textbox.style.textAlign = 'center';
+
+
+    this.updateTextbox();
+    
+    this.div.parentNode.appendChild(this.textbox);
+    
+    this.textbox.focus();
+    this.textbox.select();
+
+    this.textbox.style.cursor = 'default';
+};
+
+
+
+TextControl.prototype.updateTextbox = function()
+{
+    this.textbox.value =
+        (isNaN(this.value)
+         ? NAN_CHAR
+         : numToString(
+               this.value * this.valueScale, 
+               this.displayDec, 
+               this.showHex
+           ).toUpperCase())
+        + (this.valueCanContainSuffix ? this.suffix : '');
+        
+    this.textbox.savedValue = this.textbox.value;
+};
+
+
+
+
+
 class ColorControl
 extends EventTarget
 {
@@ -36490,7 +37458,7 @@ extends EventTarget
     valueStyleDark    = 'transparent';
     textStyleDark     = '#eee';
 
-    fontSize          = 11;
+    //fontSize          = 11;
              
     mouseOver         = false;
     buttonDown0       = false;
@@ -38573,7 +39541,7 @@ class MenuItem
 var btnMain;
 var btnFlow;
 var btnNumber;
-var btnString;
+var btnText;
 var btnColor;
 var btnStyle;
 var btnShape;
@@ -38885,12 +39853,12 @@ function initGeneratorMenus()
                          new MenuItem('Interpolate', {icon: iconInterpolate, callback: e => actionManager.do(getCreateNodeAction(NUMBER_INTERPOLATE, btnNumber.div, getCreateOptions(e)))})]);
         
     
-    // menuString = new Menu('String nodes', true, false);
-    // menuString.addItems([
-    //     new MenuItem('String',      {icon: iconString       , enabled: false}),
-    //     new MenuItem('Join',        {icon: iconStringJoin   , enabled: false}),
-    //     new MenuItem('Substring',   {icon: iconSubstring    , enabled: false}),
-    //     new MenuItem('Replace',     {icon: iconStringReplace, enabled: false})]);
+    menuString = new Menu('String nodes', true, false);
+    menuString.addItems([
+        new MenuItem('Text',      {icon: iconString, callback: e => actionManager.do(getCreateNodeAction(TEXT, btnNumber.div, getCreateOptions(e)))})]);
+        // new MenuItem('Join',      {icon: iconStringJoin   , enabled: false}),
+        // new MenuItem('Substring', {icon: iconSubstring    , enabled: false}),
+        // new MenuItem('Replace',   {icon: iconStringReplace, enabled: false})]);
     
     menuColorStyle = new Menu('Color style', true, false);
     menuColorStyle.addItems([
@@ -39035,7 +40003,7 @@ function initGeneratorMenus()
     btnMain     = new MenuButton('', menuMain,   {useMenuName: true, highlight: () => currentMenus.includes(menuMain  ), callback: () => updatePanMode(false)});
     btnFlow     = new MenuButton('', menuFlow,   {useMenuName: true, highlight: () => currentMenus.includes(menuFlow  ), callback: () => updatePanMode(false)});
     btnNumber   = new MenuButton('', menuNumber, {useMenuName: true, highlight: () => currentMenus.includes(menuNumber), callback: () => updatePanMode(false)});
-    //btnString = new MenuButton('', menuString, {useMenuName: true, highlight: () => currentMenus.includes(menuString), callback: () => updatePanMode(false)});
+    btnText   = new MenuButton('', menuString, {useMenuName: true, highlight: () => currentMenus.includes(menuString), callback: () => updatePanMode(false)});
     btnColor    = new MenuButton('', menuColor,  {useMenuName: true, highlight: () => currentMenus.includes(menuColor ), callback: () => updatePanMode(false)});
     btnStyle    = new MenuButton('', menuStyle,  {useMenuName: true, highlight: () => currentMenus.includes(menuStyle ), callback: () => updatePanMode(false)});
     btnShape    = new MenuButton('', menuShape,  {useMenuName: true, highlight: () => currentMenus.includes(menuShape ), callback: () => updatePanMode(false)});
@@ -42959,6 +43927,223 @@ function initSelectParamMenu(param)
 
 
 
+class   TextParam
+extends Parameter
+{
+    defaultValue;
+
+    oldValue = null;
+
+    
+    get valueText() { return this.controls[0].valueText; }
+    set valueText(text) 
+    {
+        this.controls[0].valueText = text;
+        this.controls[0].update();
+    }
+
+    
+    get value() { return this.controls[0].value; }
+    
+
+    
+    constructor(id,
+                name, 
+                hasInput,
+                hasOutput,
+                defaultValue = '')
+    {
+        super(TEXT_VALUE, id, name);
+
+        this.defaultValue = defaultValue;
+
+
+        this.controls[0] = new TextControl(
+            null,
+            this,
+            120, // width
+            20,  // height
+            this.id,
+            this.name,
+            defaultValue);
+
+
+        this.controls[0].successOnFocusOut = true;
+        this.controls[0].div.zIndex        = 0;
+
+        this.controls[0].div.style.display = 'inline-block';
+        this.controls[0].div.style.width   = '100%';
+
+
+        this.div.appendChild(this.controls[0].div);
+
+       
+        if (hasInput)  this.initInput(TEXT_TYPES, getParamInputValuesForUndo, this.input_getBackInitValue);
+        if (hasOutput) this.initOutput([TEXT_VALUE], this.output_genRequest, getParamOutputValuesForUndo, this.output_backInit);
+
+
+        this.controls[0].addEventListener('confirm', () => 
+        {
+            this.setValue(this.controls[0].value, true, false); 
+        });
+
+
+        // this.controls[0].addEventListener('finishedit', e =>
+        // { 
+        //     if (!e.detail.success)
+        //         return;
+
+        //     if (   e.detail.value.trim() != ''
+        //         && e.detail.value != e.detail.oldValue)
+        //     {
+        //         const webColor = webColors.find(wc => wc.name.toLowerCase() == e.detail.value.toLowerCase());
+        //         if (webColor) e.detail.value = webColor.color;
+
+        //         const rgb = validHex2rgb(e.detail.value);
+        //         const val = ColorValue.fromRgb(scaleRgb(rgb));
+
+        //         this.setValue(val, true);
+        //         e.preventSetValue = true;
+        //     }
+        // });
+    }
+
+
+
+    input_getBackInitValue()
+    {
+        // 'this' is the input
+
+        return this.param.value;
+    }
+
+
+
+    output_backInit(value)
+    {
+        // 'this' is the output
+
+        console.assert(value.type == TEXT_VALUE, 'expected COLOR_VALUE in backInit()');
+        
+        this.param.setValue(value, false, true, false);
+    }
+
+
+
+    setName(name, dispatchEvents = true)
+    {
+        super.setName(name, dispatchEvents);
+        this.controls[0].setName(name);
+    }
+
+
+
+    isDefault = () => this.value == this.defaultValue;
+
+
+
+    isVisible()
+    {
+        return this.controls[0].div.style.display != 'none';
+    }
+
+
+
+    resetControls()
+    {
+        //this.controls[0].valueText = '';
+    }
+
+
+
+    setValue(value, createAction, updateControl = true, dispatchEvents = true) 
+    {
+        console.trace();
+        console.assert(
+               value.type 
+            && value.type == TEXT_VALUE, 
+            'value.type must be TEXT_VALUE');
+            
+        this.preSetValue(value, createAction, dispatchEvents);
+
+        this.controls[0].value = value.value;
+
+        if (updateControl)
+            this.controls[0].setValue(this.controls[0].value, true, false); 
+
+
+        super.setValue(value, createAction, updateControl, dispatchEvents);
+
+
+        this.oldValue = this.value;
+    }    
+
+
+
+    genRequest(gen)
+    {
+        // this function exists because a parameter without an output
+        // should still be able to generate a request
+        
+        // 'this' is the param
+
+        if (    this.output
+            && !isEmpty(this.output.cache)
+            &&  gen.passedNodes.includes(this.node))
+            return this.output.cache;
+
+
+        const request = [];
+
+
+        if (   this.input
+            && this.input.connected)
+            request.push(...pushInputOrParam(this.input, gen));
+
+        else request.push( 
+            TEXT_VALUE, 
+            this.value.toString());
+
+
+        return request;
+    }
+
+
+
+    output_genRequest(gen)
+    {
+        return this.param.genRequest(gen);
+    }
+
+
+
+    // textboxHasFocus()
+    // {
+    //     return hasFocus(this.controls[0].textbox);
+    // }
+
+
+
+    enableControlText(enable)
+    {
+        enable &= 
+               !this.input 
+            || !this.input.connected;
+
+        enableElementText(this.controls[0].div, enable);
+        
+        this.controls[0].readOnly = !enable;
+    }
+    
+    
+    
+    loadParam(param)
+    {
+        this.setValue(parseColorValue(param)[0], true, false, false);
+    }
+}
+
+
 class   ColorParam
 extends Parameter
 {
@@ -42999,7 +44184,8 @@ extends Parameter
     {
         super(COLOR_VALUE, id, name);
 
-        this.checkers       = createDiv();
+        this.defaultValue = defaultValue;
+
 
         this.controls[0] = new ColorControl(
             null,
@@ -43013,27 +44199,25 @@ extends Parameter
             dragScale); 
 
         this.controls[0].successOnFocusOut = true;
-        this.controls[0].div.zIndex = 0;
+        this.controls[0].div.zIndex        = 0;
+
+        this.controls[0].div.style.display = 'inline-block';
+        this.controls[0].div.style.width   = '100%';
 
         
-        this.defaultValue = defaultValue;
-
-
         this._warningOverlay = createDiv('colorWarningOverlay');
-        this._warningOverlay.style.zIndex = 21;
+        this._warningOverlay.style.zIndex  = 21;
         
         this.div.appendChild(this._warningOverlay);
 
 
-        this.checkers.style.position      = 'absolute';
-        this.checkers.style.width         = '100%';
-        this.checkers.style.height        = '20px';
-        this.checkers.style.display       = 'none';
-        this.checkers.style.pointerEvents = 'none';
-
-
-        this.controls[0].div.style.display       = 'inline-block';
-        this.controls[0].div.style.width         = '100%';
+        this.checkers                      = createDiv();
+ 
+        this.checkers.style.position       = 'absolute';
+        this.checkers.style.width          = '100%';
+        this.checkers.style.height         = '20px';
+        this.checkers.style.display        = 'none';
+        this.checkers.style.pointerEvents  = 'none';
 
 
         this.div.appendChild(this.checkers);
@@ -43843,7 +45027,7 @@ extends Parameter
 
         this.textControl                  = createDiv('colorControlText');
 
-        this.controls[0] = new NumberControl(
+        this.controls.push(new NumberControl(
             createDiv(),
             this,
             100, // width
@@ -43852,7 +45036,7 @@ extends Parameter
             'stroke', 
             true,
             defaultValue.weight.value,
-            0);
+            0));
 
 
         this.defaultValue                 = defaultValue;
@@ -43880,7 +45064,7 @@ extends Parameter
         this.div.appendChild(this.checkers);
 
         this.div.appendChild(this.textControl);
-        this.div.appendChild(this.controls[0]);
+        this.div.appendChild(this.controls[0].div);
 
        
         if (hasInput)  this.initInput([...STROKE_TYPES, ...FILL_TYPES, ...COLOR_TYPES]);
@@ -47712,21 +48896,14 @@ Operator.prototype.updateHeaderInputsAndOutputs = function()
 
 Operator.prototype.updateValues = function(requestId, actionId, updateParamId, paramIds, values) // virtual
 {
-    //console.log('1 ' + this.id + '.updateValues()');
-    
     for (let i = 0; i < paramIds.length; i++)
     {
         const index = this.params.findIndex(p => p.id == paramIds[i]);
 
         if (   paramIds[index] != updateParamId
             && index > -1)
-        {
-            //console.log('this.params[index] =', this.params[index]);
             this.params[index].setValue(values[i], false, true, false);
-        }
     }
-
-    //console.log('2 ' + this.id + '.updateValues()');
 }
 
 
@@ -50070,6 +51247,96 @@ extends OpConditionBase
     constructor()
     {
         super(NUMBER_GREATER_OR_EQUAL, 'greaterOrEqual', '≥');
+    }
+}
+
+
+class   OpText
+extends OperatorBase
+{
+    paramValue;
+
+
+
+    constructor()
+    {
+        super(TEXT, 'text');
+
+        this.addInput (new Input (TEXT_TYPES, getNodeInputValuesForUndo, this.input_getBackInitValue));
+        this.addOutput(new Output([TEXT_VALUE], this.output_genRequest, getNodeOutputValuesForUndo, this.output_backInit));
+
+        this.addParam(this.paramValue = new TextParam('value', '', false, false));
+
+        this.alwaysLoadParams = true;
+    }
+
+
+
+    input_getBackInitValue()
+    {
+        // 'this' is the input
+
+        return this.node.paramValue.value;
+    }
+
+
+
+    output_backInit(value)
+    {
+        // 'this' is the output
+
+        console.assert(value.type == TEXT_VALUE, 'expected TEXT_VALUE in backInit()');
+        
+        this.node.paramValue.setValue(value, false, true, false);
+    }
+
+
+
+    output_genRequest(gen)
+    {
+        // 'this' is the output        
+
+        gen.scope.push({
+            nodeId:  this.node.id, 
+            paramId: NULL });
+        
+        const [request, ignore] = this.node.genRequestStart(gen);
+        if (ignore) return request;
+
+        
+        const input = this.node.inputs[0];
+
+        if (input.connected) request.push(...pushInputOrParam(input, gen));
+        else                 request.push(...this.node.paramValue.genRequest(gen));
+
+            
+        gen.scope.pop();
+        pushUnique(gen.passedNodes, this.node);
+
+        return request;
+    }
+
+
+
+    updateParams()
+    {
+        const input = this.inputs[0];
+        
+        this.paramValue.enableControlText(!input.connected);
+
+        this.paramValue.controls[0].valueText =  this.isUnknown() ? UNKNOWN_DISPLAY : '';
+        this.paramValue.controls[0].showBar   = !this.isUnknown();
+
+
+        this.updateParamControls();
+    }
+
+
+
+    paramIsConsideredDefault(param)
+    {
+        return  param.isDefault()
+            && !this.inputs[0].connected;
     }
 }
 
@@ -55341,6 +56608,8 @@ function createNode(nodeType, creatingButton = null, createdNodeId = -1, options
         case NUMBER_GREATER:          node = new OpGreater();           break;
         case NUMBER_GREATER_OR_EQUAL: node = new OpGreaterOrEqual();    break;
          
+        case TEXT:                    node = new OpText();              break;
+        
         case COLOR:                   node = new OpColor(options);      break;
         case VALID_COLOR:             node = new OpValidColor();        break;
         case CORRECT_COLOR:           node = new OpCorrectColor();      break;
@@ -58550,11 +59819,11 @@ const rgbNumberDark        = hex2rgb('#426287');
 const rgbActiveNumberDark  = hex2rgb('#1785CE');
 
 
-const rgbStringLight       = hex2rgb('#ECE0B8');
-const rgbActiveStringLight = hex2rgb('#F6C953');
+const rgbTextLight       = hex2rgb('#ECE0B8');
+const rgbActiveTextLight = hex2rgb('#F6C953');
  
-const rgbStringDark        = hex2rgb('#5F5437');
-const rgbActiveStringDark  = hex2rgb('#F6C953');
+const rgbTextDark        = hex2rgb('#5F5437');
+const rgbActiveTextDark  = hex2rgb('#F6C953');
 
 
 const rgbColor             = hex2rgb('#c38fc5');   
@@ -62478,6 +63747,7 @@ function uiUpdateValuesAndObjects(requestId, actionId, updateNodeId, updateParam
                 {
                     case      LIST_VALUE:  value = parseListValue     (values[i++])[0];  break;
                     case    NUMBER_VALUE:  value = parseNumberValue   (values[i++])[0];  break;
+                    case      TEXT_VALUE:  value = parseTextValue     (values[i++])[0];  break;
                     case     COLOR_VALUE:  value = parseColorValue    (values[i++])[0];  break;
                     case      FILL_VALUE:  value = parseFillValue     (values[i++])[0];  break;
                     case    STROKE_VALUE:  value = parseStrokeValue   (values[i++])[0];  break;

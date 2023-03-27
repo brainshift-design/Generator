@@ -30,7 +30,7 @@ extends EventTarget
     valueStyleDark    = 'transparent';
     textStyleDark     = '#eee';
 
-    fontSize          = 11;
+    //fontSize          = 11;
              
     mouseOver         = false;
     buttonDown0       = false;

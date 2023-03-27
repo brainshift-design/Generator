@@ -42,6 +42,7 @@ function displayValue(type, value)
     {
         case    NUMBER_VALUE: return parseNumberValue   (value)[0].toDisplayString();
         case     COLOR_VALUE: return parseColorValue    (value)[0].toDisplayString();
+        case      TEXT_VALUE: const val = parseTextValue(value)[0]; return val == '' ? '\'\'' : val;
         // case RECTANGLE_VALUE: return parseRectangleValue(value)[0].toDisplayString();
         // case      LINE_VALUE: return parseLineValue     (value)[0].toDisplayString();
         // case   ELLIPSE_VALUE: return parseEllipseValue  (value)[0].toDisplayString();

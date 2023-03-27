@@ -294,19 +294,12 @@ Operator.prototype.updateHeaderInputsAndOutputs = function()
 
 Operator.prototype.updateValues = function(requestId, actionId, updateParamId, paramIds, values) // virtual
 {
-    //console.log('1 ' + this.id + '.updateValues()');
-    
     for (let i = 0; i < paramIds.length; i++)
     {
         const index = this.params.findIndex(p => p.id == paramIds[i]);
 
         if (   paramIds[index] != updateParamId
             && index > -1)
-        {
-            //console.log('this.params[index] =', this.params[index]);
             this.params[index].setValue(values[i], false, true, false);
-        }
     }
-
-    //console.log('2 ' + this.id + '.updateValues()');
 }

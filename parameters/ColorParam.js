@@ -38,7 +38,8 @@ extends Parameter
     {
         super(COLOR_VALUE, id, name);
 
-        this.checkers       = createDiv();
+        this.defaultValue = defaultValue;
+
 
         this.controls[0] = new ColorControl(
             null,
@@ -52,27 +53,25 @@ extends Parameter
             dragScale); 
 
         this.controls[0].successOnFocusOut = true;
-        this.controls[0].div.zIndex = 0;
+        this.controls[0].div.zIndex        = 0;
+
+        this.controls[0].div.style.display = 'inline-block';
+        this.controls[0].div.style.width   = '100%';
 
         
-        this.defaultValue = defaultValue;
-
-
         this._warningOverlay = createDiv('colorWarningOverlay');
-        this._warningOverlay.style.zIndex = 21;
+        this._warningOverlay.style.zIndex  = 21;
         
         this.div.appendChild(this._warningOverlay);
 
 
-        this.checkers.style.position      = 'absolute';
-        this.checkers.style.width         = '100%';
-        this.checkers.style.height        = '20px';
-        this.checkers.style.display       = 'none';
-        this.checkers.style.pointerEvents = 'none';
-
-
-        this.controls[0].div.style.display       = 'inline-block';
-        this.controls[0].div.style.width         = '100%';
+        this.checkers                      = createDiv();
+ 
+        this.checkers.style.position       = 'absolute';
+        this.checkers.style.width          = '100%';
+        this.checkers.style.height         = '20px';
+        this.checkers.style.display        = 'none';
+        this.checkers.style.pointerEvents  = 'none';
 
 
         this.div.appendChild(this.checkers);

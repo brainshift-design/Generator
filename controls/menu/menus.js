@@ -1,7 +1,7 @@
 var btnMain;
 var btnFlow;
 var btnNumber;
-var btnString;
+var btnText;
 var btnColor;
 var btnStyle;
 var btnShape;
@@ -313,12 +313,12 @@ function initGeneratorMenus()
                          new MenuItem('Interpolate', {icon: iconInterpolate, callback: e => actionManager.do(getCreateNodeAction(NUMBER_INTERPOLATE, btnNumber.div, getCreateOptions(e)))})]);
         
     
-    // menuString = new Menu('String nodes', true, false);
-    // menuString.addItems([
-    //     new MenuItem('String',      {icon: iconString       , enabled: false}),
-    //     new MenuItem('Join',        {icon: iconStringJoin   , enabled: false}),
-    //     new MenuItem('Substring',   {icon: iconSubstring    , enabled: false}),
-    //     new MenuItem('Replace',     {icon: iconStringReplace, enabled: false})]);
+    menuString = new Menu('String nodes', true, false);
+    menuString.addItems([
+        new MenuItem('Text',      {icon: iconString, callback: e => actionManager.do(getCreateNodeAction(TEXT, btnNumber.div, getCreateOptions(e)))})]);
+        // new MenuItem('Join',      {icon: iconStringJoin   , enabled: false}),
+        // new MenuItem('Substring', {icon: iconSubstring    , enabled: false}),
+        // new MenuItem('Replace',   {icon: iconStringReplace, enabled: false})]);
     
     menuColorStyle = new Menu('Color style', true, false);
     menuColorStyle.addItems([
@@ -463,7 +463,7 @@ function initGeneratorMenus()
     btnMain     = new MenuButton('', menuMain,   {useMenuName: true, highlight: () => currentMenus.includes(menuMain  ), callback: () => updatePanMode(false)});
     btnFlow     = new MenuButton('', menuFlow,   {useMenuName: true, highlight: () => currentMenus.includes(menuFlow  ), callback: () => updatePanMode(false)});
     btnNumber   = new MenuButton('', menuNumber, {useMenuName: true, highlight: () => currentMenus.includes(menuNumber), callback: () => updatePanMode(false)});
-    //btnString = new MenuButton('', menuString, {useMenuName: true, highlight: () => currentMenus.includes(menuString), callback: () => updatePanMode(false)});
+    btnText   = new MenuButton('', menuString, {useMenuName: true, highlight: () => currentMenus.includes(menuString), callback: () => updatePanMode(false)});
     btnColor    = new MenuButton('', menuColor,  {useMenuName: true, highlight: () => currentMenus.includes(menuColor ), callback: () => updatePanMode(false)});
     btnStyle    = new MenuButton('', menuStyle,  {useMenuName: true, highlight: () => currentMenus.includes(menuStyle ), callback: () => updatePanMode(false)});
     btnShape    = new MenuButton('', menuShape,  {useMenuName: true, highlight: () => currentMenus.includes(menuShape ), callback: () => updatePanMode(false)});
