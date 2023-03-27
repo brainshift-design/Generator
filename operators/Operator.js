@@ -323,7 +323,7 @@ class Operator
         else if (STROKE_TYPES.includes(type)) return this.addParam(new StrokeParam(id, id, showName, hasInput, hasOutput), volatile);
         //else if ( COLOR_STYLE_TYPES.includes(type)) return this.addParam(new  StyleParam(id, id, showName, hasInput, hasOutput), volatile);
 
-        else crashAssert(false, 'cannot create parameter of type \'' + type + '\'');
+        else console.assert(false, 'cannot create parameter of type \'' + type + '\'');
 
         return null;
     }
@@ -823,7 +823,7 @@ class Operator
 
     connectToSelected(selected)
     {
-        crashAssert(!isEmpty(selected));
+        console.assert(!isEmpty(selected));
 
         const node   = selected[0];
         const inputs = this.inputs.filter(i => i.types.includes(node.type));

@@ -32,7 +32,7 @@ extends OperatorBase
     {
         // 'this' is the output
 
-        crashAssert(value.type == NUMBER_VALUE, 'expected NUMBER_VALUE in backInit()');
+        console.assert(value.type == NUMBER_VALUE, 'expected NUMBER_VALUE in backInit()');
         
         this.node.paramValue.setValue(value, false, true, false);
     }

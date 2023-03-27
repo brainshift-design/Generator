@@ -43,7 +43,7 @@ extends GOperator
             {
                 this.result = this.input.eval(parse).copy();
 
-                crashAssert(
+                console.assert(
                     this.result.type == COLOR_STOP_VALUE, 
                     'this.result.type must be COLOR_STOP_VALUE');
 

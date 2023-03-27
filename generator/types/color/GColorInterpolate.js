@@ -51,7 +51,7 @@ extends GColorType
             const input0 = this.input0.eval(parse).toValue();
             const input1 = this.input1.eval(parse).toValue();
 
-            crashAssert(
+            console.assert(
                 amount.type == NUMBER_VALUE, 
                 'this.result.type must be NUMBER_VALUE');
 

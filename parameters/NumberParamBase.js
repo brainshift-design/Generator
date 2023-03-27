@@ -32,7 +32,7 @@ extends Parameter
     {
         // console.log(this.id + '.setValue() value =', value);
 
-        crashAssert(
+        console.assert(
             value instanceof NumberValue,
             'value must be a NumberValue');
 

@@ -87,16 +87,13 @@ extends GColorType
                     this.value.space.value = toSpaceIndex;
 
 
-                    if (this.options.enabled)
-                    {
-                        if (!this.c1) { this.c1 = this.value.c1.copy(); c1 = this.c1.toValue(); }
-                        if (!this.c2) { this.c2 = this.value.c2.copy(); c2 = this.c2.toValue(); }
-                        if (!this.c3) { this.c3 = this.value.c3.copy(); c3 = this.c3.toValue(); }
-                    
-                        if (c1) this.value.c1 = c1;
-                        if (c2) this.value.c2 = c2;
-                        if (c3) this.value.c3 = c3;
-                    }
+                    if (!this.c1) { this.c1 = this.value.c1.copy(); c1 = this.c1.toValue(); }
+                    if (!this.c2) { this.c2 = this.value.c2.copy(); c2 = this.c2.toValue(); }
+                    if (!this.c3) { this.c3 = this.value.c3.copy(); c3 = this.c3.toValue(); }
+                
+                    if (c1) this.value.c1 = c1;
+                    if (c2) this.value.c2 = c2;
+                    if (c3) this.value.c3 = c3;
                 }
                 else
                     this.value = input;

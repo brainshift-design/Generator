@@ -35,6 +35,7 @@
     [../autojoin/types.aj]
 
     ../ui/settings.js
+    ../ui/crashDialog.js
 
     [../autojoin/controls.aj]
     [../autojoin/operators.aj]

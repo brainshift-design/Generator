@@ -36,7 +36,7 @@ extends GNumberType
         {
             this.value = this.input.eval(parse).toValue();
 
-            crashAssert(
+            console.assert(
                 this.value.type == NUMBER_VALUE, 
                 'this.value.type must belong to NUMBER_VALUE');
 

@@ -10,7 +10,7 @@ extends GNode
 
     copy()
     {
-        crashAssert(false, 'abstract class GValue cannot be copied');
+        console.assert(false, 'abstract class GValue cannot be copied');
         return null;
     }
 
@@ -53,5 +53,5 @@ function displayValue(type, value)
     }
 
 
-    crashAssert(false, 'cannot display value of type \'' + type + '\'');
+    console.assert(false, 'cannot display value of type \'' + type + '\'');
 }

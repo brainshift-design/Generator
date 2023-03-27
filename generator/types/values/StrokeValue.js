@@ -16,7 +16,7 @@ extends GValue
                 miter  = new NumberValue(28.96, 2))
     {
         if (fill.type != FILL_VALUE)
-            crashAssert(false, 'fill.type must be FILL_VALUE');
+            console.assert(false, 'fill.type must be FILL_VALUE');
 
 
         super(STROKE_VALUE);
@@ -34,7 +34,7 @@ extends GValue
     
     // static create(r, g, b, opacity)
     // {
-    //     crashAssert(
+    //     console.assert(
     //         typeof opacity == 'number',
     //         'opacity must be a number');
 
@@ -47,7 +47,7 @@ extends GValue
 
     // static fromRgb(rgb, opacity)
     // {
-    //     crashAssert(
+    //     console.assert(
     //         typeof opacity == 'number',
     //         'opacity must be a number');
 
@@ -225,5 +225,5 @@ function evalStrokeValue(value, parse)
     else if (  FILL_TYPES.includes(stroke.type)) return new StrokeValue(stroke, value.data.weight);
     else if ( COLOR_TYPES.includes(stroke.type)) return new StrokeValue(new FillValue(stroke), value.data.weight);
 
-    else crashAssert(false, 'stroke must have type');
+    else console.assert(false, 'stroke must have type');
 }

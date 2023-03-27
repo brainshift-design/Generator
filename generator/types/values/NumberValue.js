@@ -11,7 +11,7 @@ extends GValue
         super(NUMBER_VALUE);
 
         if (typeof val !== 'number')
-            crashAssert(false, 'NumberValue(value) is ' + typeof val + ', must be a number');
+            console.assert(false, 'NumberValue(value) is ' + typeof val + ', must be a number');
 
 
         this.value    = val;
@@ -120,7 +120,7 @@ const NullValue = Object.freeze(NumberValue.NaN);
 function parseNumberValue(str)
 {
     if (str.indexOf(',') < 0)
-        crashAssert(false, 'number value missing \',\'');
+        console.assert(false, 'number value missing \',\'');
     
     const parts = str.split(',');
 

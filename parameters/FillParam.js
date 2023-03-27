@@ -210,9 +210,9 @@ extends Parameter
     {
         //console.log('FillParam.setValue value =', value);
         if (!(value instanceof FillValue))
-            crashAssert(false, 'FillParam.setValue(value) is ' + typeof value + ', must be a FillValue');
+            console.assert(false, 'FillParam.setValue(value) is ' + typeof value + ', must be a FillValue');
 
-        crashAssert(
+        console.assert(
                value.type 
             && value.type == FILL_VALUE, 
             'FillParam value.type must be FILL_VALUE');
@@ -287,7 +287,7 @@ extends Parameter
                 || this.input.connectedOutput.supportsTypes(FILL_TYPES ))
                 request.push(...pushInputOrParam(this.input, gen));
             else
-                crashAssert(false, 'invalid input for FillParam');
+                console.assert(false, 'invalid input for FillParam');
         }
 
         else request.push( 

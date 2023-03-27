@@ -1,5 +1,5 @@
 class GFill
-extends GObjectBase
+extends GOperator
 {
     input   = null;
 
@@ -38,62 +38,35 @@ extends GObjectBase
             return this;
 ``
 
-        if (this.input)
-        {
-            this.input.eval(parse);
-            this.copyObjects(this.input.objects);
-        }
-
-        const hasInput =     
-               this.input 
-            && FILL_TYPES.includes(this.input.type);   
-
-
-        if (this.color  ) this.color   = this.color  .eval(parse).copy(); else if (hasInput) this.color   = this.input.color  .copy();
-        if (this.opacity) this.opacity = this.opacity.eval(parse).copy(); else if (hasInput) this.opacity = this.input.opacity.copy();
-
-        if (this.color  ) genPushUpdateValue(parse, this.nodeId, 'color',   this.color  .toValue());
-        if (this.opacity) genPushUpdateValue(parse, this.nodeId, 'opacity', this.opacity.toValue());
+        const color   = this.color   ? this.color  .eval(parse).toValue() : null;
+        const opacity = this.opacity ? this.opacity.eval(parse).toValue() : null;
 
         
-        if (   this.options.active
-            || this.options.beforeActive)
-            this.evalObjects();
+        if (this.input)
+        {
+            const input = this.input.eval(parse).toValue();
+
+            this.value = new FillValue(
+                color   ?? input.color,
+                opacity ?? input.opacity);
+        }
+        else
+        {
+            this.value = new FillValue(color, opacity);
+        }
+
+
+        this.color   = this.value.color  .copy();
+        this.opacity = this.value.opacity.copy();
+
+
+        genPushUpdateValue(parse, this.nodeId, 'color',   this.color  );
+        genPushUpdateValue(parse, this.nodeId, 'opacity', this.opacity);
 
 
         this.validate();
 
         return this;
-    }
-
-
-
-    evalObjects(options = {})
-    {
-        if (!this.objects)
-            return;
-        
-        
-        if (this.options.enabled)
-        {
-            const rgb = scaleRgb(this.color.toValue().toRgb());
-
-            for (const obj of this.objects)
-            {
-                if (!obj.fills) 
-                    obj.fills = [];
-
-                obj.fills.push([
-                    'SOLID', 
-                            rgb[0]
-                    + ' ' + rgb[1]
-                    + ' ' + rgb[2]
-                    + ' ' + this.opacity.toValue().toNumber()]);
-            }
-        }
-
-        
-        super.evalObjects();
     }
 
 

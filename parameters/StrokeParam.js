@@ -113,10 +113,10 @@ extends Parameter
         //console.log('value =', value);
         
         if (!(value instanceof StrokeValue))
-            crashAssert(false, 'StrokeParam.setValue(value) is ' + typeof value + ', must be a StrokeValue');
+            console.assert(false, 'StrokeParam.setValue(value) is ' + typeof value + ', must be a StrokeValue');
 
 
-        crashAssert(
+        console.assert(
                value.type 
             && value.type == STROKE_VALUE, 
             'StrokeParam value.type must be STROKE_VALUE');

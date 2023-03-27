@@ -63,7 +63,7 @@ function genParseAbsolute(parse)
     if (!ignore)
     {
         nInputs = parseInt(parse.move());
-        crashAssert(nInputs == 0 || nInputs == 1, 'nInputs must be [0, 1]');
+        console.assert(nInputs == 0 || nInputs == 1, 'nInputs must be [0, 1]');
     }
 
     
@@ -107,7 +107,7 @@ function genParseRound(parse)
     if (!ignore)
     {
         nInputs = parseInt(parse.move());
-        crashAssert(nInputs == 0 || nInputs == 1, 'nInputs must be [0, 1]');
+        console.assert(nInputs == 0 || nInputs == 1, 'nInputs must be [0, 1]');
     }
 
     
@@ -154,7 +154,7 @@ function genParseLimits(parse)
     if (!ignore)
     {
         nInputs = parseInt(parse.move());
-        crashAssert(nInputs == 0 || nInputs == 1, 'nInputs must be [0, 1]');
+        console.assert(nInputs == 0 || nInputs == 1, 'nInputs must be [0, 1]');
     }
 
     
@@ -354,7 +354,7 @@ function genParseInterpolate(parse)
     if (!ignore)
     {
         nInputs = parseInt(parse.move());
-        crashAssert(nInputs => 0 && nInputs <= 2, 'nInputs must be [0, 2]');
+        console.assert(nInputs => 0 && nInputs <= 2, 'nInputs must be [0, 2]');
     }
 
     
@@ -452,7 +452,7 @@ function genParseCondition(parse)
     if (!ignore)
     {
         nInputs = parseInt(parse.move());
-        crashAssert(nInputs => 0 && nInputs <= 2, 'nInputs must be [0, 2]');
+        console.assert(nInputs => 0 && nInputs <= 2, 'nInputs must be [0, 2]');
     }
 
     
@@ -507,7 +507,7 @@ function genParseConditionBase(parse, newNode)
     if (!ignore)
     {
         nInputs = parseInt(parse.move());
-        crashAssert(nInputs => 0 && nInputs <= 2, 'nInputs must be [0, 2]');
+        console.assert(nInputs => 0 && nInputs <= 2, 'nInputs must be [0, 2]');
     }
 
     

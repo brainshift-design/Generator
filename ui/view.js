@@ -11,7 +11,7 @@ var   viewportRect    = new Rect();
 
 // function setCurrentGraph(graph)
 // {
-//     crashAssert(currentView, 'there should be a valid currentView');
+//     console.assert(currentView, 'there should be a valid currentView');
 
 //     const elements = Array.prototype.slice.call(document.children);
 //     const index    = elements.indexOf(currentView.div);

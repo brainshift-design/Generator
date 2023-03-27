@@ -64,11 +64,19 @@ extends OpColorBase
             nodeId:  this.node.id, 
             paramId: NULL });
 
-        const [request, ignore] = this.node.genRequestStart(gen);
-        if (ignore) return request;
 
-        
-        const paramIds = [];
+        const hasInputs =
+               this.node.paramFill  .input.connected
+            || this.node.paramWeight.input.connected
+            || this.node.paramFit   .input.connected
+            || this.node.paramJoin  .input.connected
+            || this.node.paramMiter .input.connected;
+
+        const options = (hasInputs ? 1 : 0) << 20;
+
+
+        const [request, ignore] = this.node.genRequestStart(gen, options);
+        if (ignore) return request;
 
         
         const input = this.node.inputs[0];
@@ -81,27 +89,25 @@ extends OpColorBase
         {
             request.push(...pushInputOrParam(input, gen));
 
+
+            const paramIds = [];
+
             for (const param of this.node.params)
-                if (      (      param.input 
-                              && param.input.connected
-                              && param.canShow()
-                           || input.connectedOutput.supportsTypes(OBJECT_TYPES)
-                       && !input.connectedOutput.supportsTypes(STROKE_TYPES))
-                    || param.id == 'fill')
+                if (   param.input 
+                    && param.input.connected)
                     paramIds.push(param.id);
+
+            request.push(paramIds.join(','));
+
+
+            for (const param of this.node.params)
+                if (param.input.connected) request.push(...param.genRequest(gen));            
         }
         else
         {
             for (const param of this.node.params)
-                if (param.canShow())
-                    paramIds.push(param.id);
+                request.push(...param.genRequest(gen));            
         }
-
-
-        request.push(paramIds.length);
-
-        for (const paramId of paramIds)
-            request.push(paramId, ...this.node.params.find(p => p.id == paramId).genRequest(gen));            
 
 
         gen.scope.pop();
@@ -129,9 +135,6 @@ extends OpColorBase
             ? [...this.inputs[0].connectedOutput.types, STROKE]
             : [STROKE];
 
-        // if (!this.inputs[0].connected
-        //     && 
-        // input.addEventListener('disconnect', () => uiDeleteObjectsAndStyles([this.id]));
 
         super.updateValues(requestId, actionId, updateParamId, paramIds, values);
     }
@@ -249,7 +252,7 @@ extends OpColorBase
 
     // connectToSelected(selected)
     // {
-    //     crashAssert(!isEmpty(selected));
+    //     console.assert(!isEmpty(selected));
 
     //     const node   = selected[0];
     //     const inputs = this.inputs.filter(i => i.types.includes(node.type));

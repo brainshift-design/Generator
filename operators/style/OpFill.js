@@ -41,11 +41,16 @@ extends OpColorBase
             nodeId:  this.node.id, 
             paramId: NULL });
 
-        const [request, ignore] = this.node.genRequestStart(gen);
+
+        const hasInputs =
+               this.node.paramColor  .input.connected
+            || this.node.paramOpacity.input.connected;
+
+        const options = (hasInputs ? 1 : 0) << 20;
+    
+    
+        const [request, ignore] = this.node.genRequestStart(gen, options);
         if (ignore) return request;
-
-
-        const paramIds = [];
 
 
         const input = this.node.inputs[0];
@@ -58,27 +63,27 @@ extends OpColorBase
         {
             request.push(...pushInputOrParam(input, gen));
 
+
+            const paramIds = [];
+
             for (const param of this.node.params)
-                if (      param.input 
-                       && param.input.connected
-                       && param.canShow()
-                    || input.connectedOutput.supportsTypes(FILL_TYPES)) 
+                if (   param.input 
+                    && param.input.connected)
                     paramIds.push(param.id);
+
+            request.push(paramIds.join(','));
+
+
+            for (const param of this.node.params)
+                if (param.input.connected) request.push(...param.genRequest(gen));            
         }
         else
         {
             for (const param of this.node.params)
-                if (param.canShow())
-                    paramIds.push(param.id);
+                request.push(...param.genRequest(gen));            
         }
 
         
-        request.push(paramIds.length);
-
-        for (const paramId of paramIds)
-            request.push(paramId, ...this.node.params.find(p => p.id == paramId).genRequest(gen));            
-
-
         gen.scope.pop();
         pushUnique(gen.passedNodes, this.node);
 

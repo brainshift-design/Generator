@@ -19,18 +19,20 @@ function genParseFill(parse)
 
     const fill = new GFill(nodeId, options);
 
+    fill.hasInputs = options.hasInputs;
+
 
     let nInputs = -1;
 
     if (!ignore)
     {
         nInputs = parseInt(parse.move());
-        crashAssert(nInputs => 0 && nInputs <= 1, 'nInputs must be [0, 1]');
+        console.assert(nInputs => 0 && nInputs <= 1, 'nInputs must be [0, 1]');
     }
 
 
     if (parse.settings.logRequests) 
-        logReq(fill, parse, ignore);
+        logReq(fill, parse, ignore, nInputs);
 
 
     if (ignore)
@@ -43,32 +45,29 @@ function genParseFill(parse)
     parse.nTab++;
 
 
+    let paramIds;
+
     if (nInputs == 1)
-        fill.input = genParse(parse);
-
-
-    const nParamIds = genParseParamCount(parse);
-
-    for (let i = 0; i < nParamIds; i++)
     {
-        const paramId = genParseParamId(parse);
+        fill.input = genParse(parse);
+        paramIds = parse.move().split(',');
+    }
+    else
+        paramIds = ['color', 'opacity'];
 
-        parse.nTab++;
-        parse.inParam = true;
 
-        
-        switch (paramId)
+    parse.inParam = false;
+
+    for (const id of paramIds)
+    {
+        switch (id)
         {
-        case 'color'  : fill.color   = genParse(parse); break;
+        case 'color':   fill.color   = genParse(parse); break;
         case 'opacity': fill.opacity = genParse(parse); break;
         }
-
-
-        parse.nTab--;
     }
 
     
-    parse.inParam = false;
     parse.nTab--;
 
 
@@ -111,18 +110,20 @@ function genParseStroke(parse)
 
     const stroke = new GStroke(nodeId, options);
 
+    stroke.hasInputs = options.hasInputs;
+
 
     let nInputs = -1;
 
     if (!ignore)
     {
         nInputs = parseInt(parse.move());
-        crashAssert(nInputs => 0 && nInputs <= 1, 'nInputs must be [0, 1]');
+        console.assert(nInputs => 0 && nInputs <= 1, 'nInputs must be [0, 1]');
     }
 
 
     if (parse.settings.logRequests) 
-        logReq(stroke, parse, ignore);
+        logReq(stroke, parse, ignore, nInputs);
 
 
     if (ignore)
@@ -135,35 +136,32 @@ function genParseStroke(parse)
     parse.nTab++;
 
 
+    let paramIds;
+
     if (nInputs == 1)
-        stroke.input = genParse(parse);
-
-
-    const nParamIds = genParseParamCount(parse);
-       
-    for (let i = 0; i < nParamIds; i++)
     {
-        const paramId = genParseParamId(parse);
-
-        parse.nTab++;
-        parse.inParam = true;
-
-
-        switch (paramId)
-        {
-        case 'fill':   stroke.fill   = genParseFillParam(parse); break;
-        case 'weight': stroke.weight = genParse(parse);          break;
-        case 'fit':    stroke.fit    = genParse(parse);          break;
-        case 'join':   stroke.join   = genParse(parse);          break;
-        case 'miter':  stroke.miter  = genParse(parse);          break;
-        }
-
-
-        parse.nTab--;
+        stroke.input = genParse(parse);
+        paramIds = parse.move().split(',');
     }
+    else
+        paramIds = ['fill', 'weight', 'fit', 'join', 'miter'];
 
-    
+
     parse.inParam = false;
+
+    for (const id of paramIds)
+    {
+        switch (id)
+        {
+        case 'fill':   stroke.fill   = genParse(parse); break;
+        case 'weight': stroke.weight = genParse(parse); break;
+        case 'fit':    stroke.fit    = genParse(parse); break;
+        case 'join':   stroke.join   = genParse(parse); break;
+        case 'miter':  stroke.miter  = genParse(parse); break;
+        }
+    }
+    
+    
     parse.nTab--;
 
 

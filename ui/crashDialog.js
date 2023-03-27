@@ -1,3 +1,15 @@
+function crashAssert(condition, error)
+{
+    if (condition) return;
+
+    initCrashDialog(error, null);
+    showCrashDialog();
+
+    console.assert(false, error);
+}
+
+
+
 function initCrashDialog(event, error)
 {
     if (error)

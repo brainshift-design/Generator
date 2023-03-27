@@ -56,7 +56,7 @@ function evalSubtractInputs(inputs, parse)
         {
             const val = inputs[i].eval(parse).toValue();
 
-            crashAssert(
+            console.assert(
                 val.type == NUMBER_VALUE, 
                 'val.type must be NUMBER_VALUE');
                 

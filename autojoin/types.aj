@@ -20,11 +20,11 @@
 ../generator/types/GParam.js
 
 
-../generator/types/values/ListValue.js
 ../generator/types/values/NumberValue.js
 ../generator/types/values/ColorValue.js
 ../generator/types/values/FillValue.js
 ../generator/types/values/StrokeValue.js
+../generator/types/values/ListValue.js
 
 //../generator/types/values/ColorStopValue.js
 

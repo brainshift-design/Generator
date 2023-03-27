@@ -124,7 +124,7 @@ extends Parameter
     {
         // 'this' is the output
 
-        crashAssert(value.type == COLOR_VALUE, 'expected COLOR_VALUE in backInit()');
+        console.assert(value.type == COLOR_VALUE, 'expected COLOR_VALUE in backInit()');
         
         this.param.setValue(value, false, true, false);
     }
@@ -159,7 +159,7 @@ extends Parameter
 
     setValue(value, createAction, updateControl = true, dispatchEvents = true) 
     {
-        crashAssert(
+        console.assert(
                value.type 
             && value.type == COLOR_VALUE, 
             'value.type must be COLOR_VALUE');

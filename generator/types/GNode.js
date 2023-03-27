@@ -17,7 +17,7 @@ class GNode
 
     copy()
     {
-        crashAssert(false, 'abstract type GNode cannot be copied');
+        console.assert(false, 'abstract type GNode cannot be copied');
         return null;
     }
 

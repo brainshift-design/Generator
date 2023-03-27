@@ -11,7 +11,7 @@ function genParseCustom(parse)
     // if (!ignore)
     // {
     //     nInputs = parseInt(parse.move());
-    //     crashAssert(nInputs == 0 || nInputs == 1, 'nInputs must be [0, 1]');
+    //     console.assert(nInputs == 0 || nInputs == 1, 'nInputs must be [0, 1]');
     // }
 
 
@@ -55,7 +55,7 @@ function genParseCustomInputs(parse)
     // if (!ignore)
     // {
     //     nInputs = parseInt(parse.move());
-    //     crashAssert(nInputs == 0 || nInputs == 1, 'nInputs must be [0, 1]');
+    //     console.assert(nInputs == 0 || nInputs == 1, 'nInputs must be [0, 1]');
     // }
 
 

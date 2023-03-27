@@ -2343,18 +2343,6 @@ function getCreateNodeAction(type, creatingButton, options)
 }
 
 
-
-function crashAssert(condition, error)
-{
-    if (condition) return;
-
-    initCrashDialog(error, null);
-    showCrashDialog();
-
-    console.assert(false, error);
-}
-
-
 "use strict";
 
 // Base64 / binary data / UTF-8 strings utilities
@@ -3937,7 +3925,7 @@ class GNode
 
     copy()
     {
-        crashAssert(false, 'abstract type GNode cannot be copied');
+        console.assert(false, 'abstract type GNode cannot be copied');
         return null;
     }
 
@@ -3992,7 +3980,7 @@ extends GNode
 
     copy()
     {
-        crashAssert(false, 'abstract class GValue cannot be copied');
+        console.assert(false, 'abstract class GValue cannot be copied');
         return null;
     }
 
@@ -4035,7 +4023,7 @@ function displayValue(type, value)
     }
 
 
-    crashAssert(false, 'cannot display value of type \'' + type + '\'');
+    console.assert(false, 'cannot display value of type \'' + type + '\'');
 }
 
 
@@ -4146,7 +4134,7 @@ extends GOperator
     eval(parse)
     {
         this.node = parse.parsedNodes.find(v => v.nodeId == this.nodeId);
-        crashAssert(this.node, 'can\'t find parameter node \'' + this.nodeId + '\'');
+        console.assert(this.node, 'can\'t find parameter node \'' + this.nodeId + '\'');
 
         this.node.eval(parse);
 
@@ -4157,170 +4145,6 @@ extends GOperator
         else
             return NullValue;
     }
-}
-
-
-class ListValue
-extends GValue
-{
-    items;
-
-
-
-    constructor(items = [])
-    {
-        super(LIST_VALUE);
-
-        if (items)
-        {
-            this.items = [];
-            
-            for (const item of items)
-                this.items.push(item.copy());
-        }
-    }
-
-
-
-    copy()
-    {
-        const copy = new ListValue(this.items);
-
-        copy.copyBase(this);
-
-        return copy;
-    }
-
-
-
-    equals(list)
-    {
-        if (!list)                                  return false;
-        if (!(list instanceof ListValue))           return false;
-        if (this.items.length != list.items.length) return false;
-            
-        for (let i = 0; i < this.items.length; i++)
-            if (!this.items[i].equals(list.items[i]))
-                return false;
-
-        return true;
-    }
-
-
-
-    eval(parse)
-    {
-        return this;
-    }
-
-
-
-    isValid()
-    {
-        return this.items
-            && !this.items.find(i => !i.isValid());
-    }
-
-
-
-    toValue()
-    {
-        return this.copy();
-    }
-
-
-
-    toString()
-    {
-        if (!this.items)
-            return '';
-
-
-        let str = '';
-        
-        
-        str += this.items.length;
-
-        for (let i = 0; i < this.items.length; i++)
-        {
-            const item = this.items[i];
-
-            str += ' ' + item.type + ' ';
-            str += item.toString();
-        }
-
-
-        return str;
-    }
-
-
-
-    toDisplayString()
-    {
-        if (!this.items)
-            return '';
-
-
-        let str = '';
-        
-        
-        str += this.items.length;
-
-        for (let i = 0; i < this.items.length; i++)
-        {
-            const item = this.items[i];
-
-            str += ' ' + item.type + ' ';
-            str += item.toDisplayString();
-        }
-
-
-        return str;
-    }
-
-
-
-    static NaN = Object.freeze(new ListValue(null));
-}
-
-
-
-function parseListValue(str, i = -1)
-{
-    if (i < 0)
-    {
-        str = str.split(' ');
-        i   = 0;
-    }
-        
-
-    const iStart = i;
-
-    const list = new ListValue();
-    
-
-    const nInputs = parseInt(str[i++]);
-
-
-    for (let j = 0; j < nInputs; j++)
-    {
-        const type = str[i++];
-        
-        switch (type)
-        {
-            case NUMBER_VALUE:      { const num    = parseNumberValue(str[i]); i += num   [1]; list.items.push(num   [0]); break; }
-            case COLOR_VALUE:       { const col    = parseColorValue (str, i); i += col   [1]; list.items.push(col   [0]); break; }
-            case FILL_VALUE:        { const fill   = parseFillValue  (str, i); i += fill  [1]; list.items.push(fill  [0]); break; }
-            case STROKE_VALUE:      { const stroke = parseStrokeValue(str, i); i += stroke[1]; list.items.push(stroke[0]); break; }
-            //case COLOR_STYLE_VALUE: { const style  = parseStyleValue (str, i); i += style [1]; list.items.push(style [0]); break; }
-            case LIST_VALUE:        { const _list  = parseListValue  (str, i); i += _list [1]; list.items.push(_list [0]); break; }
-        }
-    }
- 
-
-    return [
-        list, 
-        i - iStart];
 }
 
 
@@ -4337,7 +4161,7 @@ extends GValue
         super(NUMBER_VALUE);
 
         if (typeof val !== 'number')
-            crashAssert(false, 'NumberValue(value) is ' + typeof val + ', must be a number');
+            console.assert(false, 'NumberValue(value) is ' + typeof val + ', must be a number');
 
 
         this.value    = val;
@@ -4446,7 +4270,7 @@ const NullValue = Object.freeze(NumberValue.NaN);
 function parseNumberValue(str)
 {
     if (str.indexOf(',') < 0)
-        crashAssert(false, 'number value missing \',\'');
+        console.assert(false, 'number value missing \',\'');
     
     const parts = str.split(',');
 
@@ -4499,10 +4323,10 @@ extends GValue
 
     static create(space, c1, c2, c3)
     {
-        crashAssert(typeof space == 'number', 'ColorValue.create() space must be a number');
-        crashAssert(typeof c1    == 'number', 'ColorValue.create() c1 must be a number');
-        crashAssert(typeof c2    == 'number', 'ColorValue.create() c2 must be a number');
-        crashAssert(typeof c3    == 'number', 'ColorValue.create() c3 must be a number');
+        console.assert(typeof space == 'number', 'ColorValue.create() space must be a number');
+        console.assert(typeof c1    == 'number', 'ColorValue.create() c1 must be a number');
+        console.assert(typeof c2    == 'number', 'ColorValue.create() c2 must be a number');
+        console.assert(typeof c3    == 'number', 'ColorValue.create() c3 must be a number');
 
         return new ColorValue(
             new NumberValue(space),
@@ -4694,7 +4518,7 @@ extends GValue
     
     static create(r, g, b, opacity)
     {
-        crashAssert(
+        console.assert(
             typeof opacity == 'number',
             'opacity must be a number');
 
@@ -4707,7 +4531,7 @@ extends GValue
 
     static fromRgb(rgb, opacity)
     {
-        crashAssert(
+        console.assert(
             typeof opacity == 'number',
             'opacity must be a number');
 
@@ -4842,7 +4666,7 @@ function parseFillValue(str, i = -1)
 //          if ( FILL_TYPES.includes(fillValue.type)) return fill;
 //     else if (COLOR_TYPES.includes(fillValue.type)) return new FillValue(fill, fillValue.data.opacity);
 
-//     else crashAssert(false, 'fill must have type');
+//     else console.assert(false, 'fill must have type');
 // }
 
 
@@ -4864,7 +4688,7 @@ extends GValue
                 miter  = new NumberValue(28.96, 2))
     {
         if (fill.type != FILL_VALUE)
-            crashAssert(false, 'fill.type must be FILL_VALUE');
+            console.assert(false, 'fill.type must be FILL_VALUE');
 
 
         super(STROKE_VALUE);
@@ -4882,7 +4706,7 @@ extends GValue
     
     // static create(r, g, b, opacity)
     // {
-    //     crashAssert(
+    //     console.assert(
     //         typeof opacity == 'number',
     //         'opacity must be a number');
 
@@ -4895,7 +4719,7 @@ extends GValue
 
     // static fromRgb(rgb, opacity)
     // {
-    //     crashAssert(
+    //     console.assert(
     //         typeof opacity == 'number',
     //         'opacity must be a number');
 
@@ -5073,7 +4897,171 @@ function evalStrokeValue(value, parse)
     else if (  FILL_TYPES.includes(stroke.type)) return new StrokeValue(stroke, value.data.weight);
     else if ( COLOR_TYPES.includes(stroke.type)) return new StrokeValue(new FillValue(stroke), value.data.weight);
 
-    else crashAssert(false, 'stroke must have type');
+    else console.assert(false, 'stroke must have type');
+}
+
+
+class ListValue
+extends GValue
+{
+    items;
+
+
+
+    constructor(items = [])
+    {
+        super(LIST_VALUE);
+
+        if (items)
+        {
+            this.items = [];
+            
+            for (const item of items)
+                this.items.push(item.copy());
+        }
+    }
+
+
+
+    copy()
+    {
+        const copy = new ListValue(this.items);
+
+        copy.copyBase(this);
+
+        return copy;
+    }
+
+
+
+    equals(list)
+    {
+        if (!list)                                  return false;
+        if (!(list instanceof ListValue))           return false;
+        if (this.items.length != list.items.length) return false;
+            
+        for (let i = 0; i < this.items.length; i++)
+            if (!this.items[i].equals(list.items[i]))
+                return false;
+
+        return true;
+    }
+
+
+
+    eval(parse)
+    {
+        return this;
+    }
+
+
+
+    isValid()
+    {
+        return this.items
+            && !this.items.find(i => !i.isValid());
+    }
+
+
+
+    toValue()
+    {
+        return this.copy();
+    }
+
+
+
+    toString()
+    {
+        if (!this.items)
+            return '';
+
+
+        let str = '';
+        
+        
+        str += this.items.length;
+
+        for (let i = 0; i < this.items.length; i++)
+        {
+            const item = this.items[i];
+
+            str += ' ' + item.type + ' ';
+            str += item.toString();
+        }
+
+
+        return str;
+    }
+
+
+
+    toDisplayString()
+    {
+        if (!this.items)
+            return '';
+
+
+        let str = '';
+        
+        
+        str += this.items.length;
+
+        for (let i = 0; i < this.items.length; i++)
+        {
+            const item = this.items[i];
+
+            str += ' ' + item.type + ' ';
+            str += item.toDisplayString();
+        }
+
+
+        return str;
+    }
+
+
+
+    static NaN = Object.freeze(new ListValue(null));
+}
+
+
+
+function parseListValue(str, i = -1)
+{
+    if (i < 0)
+    {
+        str = str.split(' ');
+        i   = 0;
+    }
+        
+
+    const iStart = i;
+
+    const list = new ListValue();
+    
+
+    const nInputs = parseInt(str[i++]);
+
+
+    for (let j = 0; j < nInputs; j++)
+    {
+        const type = str[i++];
+        
+        switch (type)
+        {
+            case NUMBER_VALUE:      { const num    = parseNumberValue(str[i]); i += num   [1]; list.items.push(num   [0]); break; }
+            case COLOR_VALUE:       { const col    = parseColorValue (str, i); i += col   [1]; list.items.push(col   [0]); break; }
+            case FILL_VALUE:        { const fill   = parseFillValue  (str, i); i += fill  [1]; list.items.push(fill  [0]); break; }
+            case STROKE_VALUE:      { const stroke = parseStrokeValue(str, i); i += stroke[1]; list.items.push(stroke[0]); break; }
+            //case COLOR_STYLE_VALUE: { const style  = parseStyleValue (str, i); i += style [1]; list.items.push(style [0]); break; }
+            case LIST_VALUE:        { const _list  = parseListValue  (str, i); i += _list [1]; list.items.push(_list [0]); break; }
+        }
+    }
+ 
+
+    return [
+        list, 
+        i - iStart];
 }
 
 
@@ -6551,7 +6539,7 @@ function evalAddInputs(inputs, parse)
     {
         const val = inputs[i].eval(parse).toValue();
 
-        crashAssert(
+        console.assert(
             val.type == NUMBER_VALUE, 
             'val.type must belong to NUMBER_VALUE');
 
@@ -6622,7 +6610,7 @@ function evalSubtractInputs(inputs, parse)
         {
             const val = inputs[i].eval(parse).toValue();
 
-            crashAssert(
+            console.assert(
                 val.type == NUMBER_VALUE, 
                 'val.type must be NUMBER_VALUE');
                 
@@ -6690,7 +6678,7 @@ function evalMultiplyInputs(inputs, parse)
         {
             const val = inputs[i].eval(parse).toValue();
 
-            crashAssert(
+            console.assert(
                 val.type == NUMBER_VALUE, 
                 'val.type must be NUMBER_VALUE');
 
@@ -6762,7 +6750,7 @@ function evalDivideInputs(inputs, parse)
         {
             const val = inputs[i].eval(parse).toValue();
 
-            crashAssert(
+            console.assert(
                 val.type == NUMBER_VALUE, 
                 'val.type must be NUMBER_VALUE');
 
@@ -6841,7 +6829,7 @@ function evalModuloInputs(inputs, parse)
         {
             const val = inputs[i].eval(parse).toValue();
 
-            crashAssert(
+            console.assert(
                 val.type == NUMBER_VALUE, 
                 'val.type must be NUMBER_VALUE');
 
@@ -6920,7 +6908,7 @@ function evalExponentInputs(inputs, parse)
         {
             const val = inputs[i].eval(parse).toValue();
 
-            crashAssert(
+            console.assert(
                 val.type == NUMBER_VALUE, 
                 'val.type must be NUMBER_VALUE');
                 
@@ -7052,7 +7040,7 @@ function evalNandInputs(inputs, parse)
             const val = inputs[i].eval(parse).toValue();
             if (!val.isValid()) return NumberValue.NaN;
 
-            crashAssert(
+            console.assert(
                 val.type == NUMBER_VALUE, 
                 'val.type must belong to NUMBER_VALUE');
 
@@ -7126,7 +7114,7 @@ function evalAndInputs(inputs, parse)
             const val = inputs[i].eval(parse).toValue();
             if (!val.isValid()) return NumberValue.NaN;
 
-            crashAssert(
+            console.assert(
                 val.type == NUMBER_VALUE, 
                 'val.type must be NUMBER_VALUE');
                 
@@ -7202,7 +7190,7 @@ function evalOrInputs(inputs, parse)
             const val = inputs[i].eval(parse).toValue();
             if (!val.isValid()) return NumberValue.NaN;
 
-            crashAssert(
+            console.assert(
                 val.type == NUMBER_VALUE, 
                 'val.type must be NUMBER_VALUE');
                 
@@ -7280,7 +7268,7 @@ function evalXorInputs(inputs, parse)
             const val = inputs[i].eval(parse).toValue();
             if (!val.isValid()) return NumberValue.NaN;
 
-            crashAssert(
+            console.assert(
                 val.type == NUMBER_VALUE, 
                 'val.type must be NUMBER_VALUE');
                 
@@ -7744,7 +7732,7 @@ extends GNumberType
         {
             this.value = this.input.eval(parse).toValue();
 
-            crashAssert(
+            console.assert(
                 this.value.type == NUMBER_VALUE, 
                 'this.value.type must belong to NUMBER_VALUE');
 
@@ -7816,7 +7804,7 @@ extends GNumberType
         {
             this.value = this.input.eval(parse).toValue();
 
-            crashAssert(
+            console.assert(
                 this.value.type == NUMBER_VALUE, 
                 'this.value.type must belong to NUMBER_VALUE');
 
@@ -7889,7 +7877,7 @@ extends GNumberType
         {
             this.value = this.input.eval(parse).toValue();
 
-            crashAssert(
+            console.assert(
                 this.value.type == NUMBER_VALUE, 
                 'this.value.type must belong to NUMBER_VALUE');
 
@@ -8479,7 +8467,7 @@ function getCorrectionsInOrder(order)
     }
 
     // should never get here
-    crashAssert(false, 'invalid correction order ' + order);
+    console.assert(false, 'invalid correction order ' + order);
     return [0, 0, 0];
 }
 
@@ -8509,7 +8497,7 @@ function getMinCorrections(space, order)
         
         default:
             // should never get here
-            crashAssert(false, 'invalid validation order ' + order);
+            console.assert(false, 'invalid validation order ' + order);
             return [0, 0, 0];
     }
 
@@ -8542,7 +8530,7 @@ function getMaxCorrections(space, order)
         
         default:
             // should never get here
-            crashAssert(false, 'invalid validation order ' + order);
+            console.assert(false, 'invalid validation order ' + order);
             return [0, 0, 0];
     }
 
@@ -8668,7 +8656,7 @@ function getColorCorrections(colorSpace)
     }
 
 
-    crashAssert(false, 'invalid color space ' + colorSpace);
+    console.assert(false, 'invalid color space ' + colorSpace);
     return [
         new ColorCorrection(),
         new ColorCorrection(),
@@ -8788,16 +8776,13 @@ extends GColorType
                     this.value.space.value = toSpaceIndex;
 
 
-                    if (this.options.enabled)
-                    {
-                        if (!this.c1) { this.c1 = this.value.c1.copy(); c1 = this.c1.toValue(); }
-                        if (!this.c2) { this.c2 = this.value.c2.copy(); c2 = this.c2.toValue(); }
-                        if (!this.c3) { this.c3 = this.value.c3.copy(); c3 = this.c3.toValue(); }
-                    
-                        if (c1) this.value.c1 = c1;
-                        if (c2) this.value.c2 = c2;
-                        if (c3) this.value.c3 = c3;
-                    }
+                    if (!this.c1) { this.c1 = this.value.c1.copy(); c1 = this.c1.toValue(); }
+                    if (!this.c2) { this.c2 = this.value.c2.copy(); c2 = this.c2.toValue(); }
+                    if (!this.c3) { this.c3 = this.value.c3.copy(); c3 = this.c3.toValue(); }
+                
+                    if (c1) this.value.c1 = c1;
+                    if (c2) this.value.c2 = c2;
+                    if (c3) this.value.c3 = c3;
                 }
                 else
                     this.value = input;
@@ -9519,7 +9504,7 @@ extends GColorType
             const input0 = this.input0.eval(parse).toValue();
             const input1 = this.input1.eval(parse).toValue();
 
-            crashAssert(
+            console.assert(
                 amount.type == NUMBER_VALUE, 
                 'this.result.type must be NUMBER_VALUE');
 
@@ -9647,7 +9632,7 @@ extends GOperator
             {
                 this.result = this.input.eval(parse).copy();
 
-                crashAssert(
+                console.assert(
                     this.result.type == COLOR_STOP_VALUE, 
                     'this.result.type must be COLOR_STOP_VALUE');
 
@@ -9772,6 +9757,93 @@ extends GOperator
         //     style.nodeId = this.nodeId;
     }
 }
+
+
+
+
+
+// evalObjects()
+// {
+//     if (!this.objects)
+//         return;
+    
+    
+//     if (this.options.enabled)
+//     {
+//         const rgb = scaleRgb(this.color.toValue().toRgb());
+
+//         for (const obj of this.objects)
+//         {
+//             if (!obj.fills) 
+//                 obj.fills = [];
+
+//             obj.fills.push([
+//                 'SOLID', 
+//                         rgb[0]
+//                 + ' ' + rgb[1]
+//                 + ' ' + rgb[2]
+//                 + ' ' + this.opacity.toValue().toNumber()]);
+//         }
+//     }
+
+    
+//     super.evalObjects();
+// }
+
+
+
+
+// evalObjects(options = {})
+// {
+//     if (!this.objects)
+//         return;
+
+
+//     if (this.options.enabled)
+//     {
+//         const rgb = scaleRgb(this.fill.color.toValue().toRgb());
+
+//         for (const obj of this.objects)
+//         {
+//             if (!obj.strokes)
+//                 obj.strokes = [];
+
+//             obj.strokes.push([
+//                 'SOLID', 
+//                         rgb[0]
+//                 + ' ' + rgb[1]
+//                 + ' ' + rgb[2]
+//                 + ' ' + this.fill.opacity.toValue().value]);
+
+
+//             if (this.weight)
+//                 obj.strokeWeight = this.weight.toValue().value;
+
+//             if (this.fit)
+//                 switch (this.fit.toValue().value)
+//                 {
+//                     case 0: obj.strokeAlign = 'INSIDE';  break;
+//                     case 1: obj.strokeAlign = 'CENTER';  break;
+//                     case 2: obj.strokeAlign = 'OUTSIDE'; break;
+//                 }
+
+//             if (this.join)
+//                 switch (this.join.toValue().value)
+//                 {
+//                     case 0: obj.strokeJoin = 'MITER'; break;
+//                     case 1: obj.strokeJoin = 'BEVEL'; break;
+//                     case 2: obj.strokeJoin = 'ROUND'; break;
+//                 }
+
+//             if (this.miter)
+//                 obj.strokeMiterLimit = this.miter.toValue().value;
+//         }
+//     }
+
+    
+//     super.evalObjects();
+// }
+
 
 
 class GRectangle
@@ -10583,7 +10655,7 @@ extends GObjectBase
 
 
 class GFill
-extends GObjectBase
+extends GOperator
 {
     input   = null;
 
@@ -10622,62 +10694,35 @@ extends GObjectBase
             return this;
 ``
 
-        if (this.input)
-        {
-            this.input.eval(parse);
-            this.copyObjects(this.input.objects);
-        }
-
-        const hasInput =     
-               this.input 
-            && FILL_TYPES.includes(this.input.type);   
-
-
-        if (this.color  ) this.color   = this.color  .eval(parse).copy(); else if (hasInput) this.color   = this.input.color  .copy();
-        if (this.opacity) this.opacity = this.opacity.eval(parse).copy(); else if (hasInput) this.opacity = this.input.opacity.copy();
-
-        if (this.color  ) genPushUpdateValue(parse, this.nodeId, 'color',   this.color  .toValue());
-        if (this.opacity) genPushUpdateValue(parse, this.nodeId, 'opacity', this.opacity.toValue());
+        const color   = this.color   ? this.color  .eval(parse).toValue() : null;
+        const opacity = this.opacity ? this.opacity.eval(parse).toValue() : null;
 
         
-        if (   this.options.active
-            || this.options.beforeActive)
-            this.evalObjects();
+        if (this.input)
+        {
+            const input = this.input.eval(parse).toValue();
+
+            this.value = new FillValue(
+                color   ?? input.color,
+                opacity ?? input.opacity);
+        }
+        else
+        {
+            this.value = new FillValue(color, opacity);
+        }
+
+
+        this.color   = this.value.color  .copy();
+        this.opacity = this.value.opacity.copy();
+
+
+        genPushUpdateValue(parse, this.nodeId, 'color',   this.color  );
+        genPushUpdateValue(parse, this.nodeId, 'opacity', this.opacity);
 
 
         this.validate();
 
         return this;
-    }
-
-
-
-    evalObjects(options = {})
-    {
-        if (!this.objects)
-            return;
-        
-        
-        if (this.options.enabled)
-        {
-            const rgb = scaleRgb(this.color.toValue().toRgb());
-
-            for (const obj of this.objects)
-            {
-                if (!obj.fills) 
-                    obj.fills = [];
-
-                obj.fills.push([
-                    'SOLID', 
-                            rgb[0]
-                    + ' ' + rgb[1]
-                    + ' ' + rgb[2]
-                    + ' ' + this.opacity.toValue().toNumber()]);
-            }
-        }
-
-        
-        super.evalObjects();
     }
 
 
@@ -10745,105 +10790,47 @@ extends GObjectBase
             return this;
 
 
+        const fill   = this.fill   ? this.fill  .eval(parse).toValue() : null;
+        const weight = this.weight ? this.weight.eval(parse).toValue() : null;
+        const fit    = this.fit    ? this.fit   .eval(parse).toValue() : null;
+        const join   = this.join   ? this.join  .eval(parse).toValue() : null;
+        const miter  = this.miter  ? this.miter .eval(parse).toValue() : null;
+
+
         if (this.input)
         {
-            this.input = this.input.eval(parse).copy();
-            this.copyObjects(this.input.objects);
+            const input = this.input.eval(parse).toValue();
+
+            this.value = new StrokeValue(
+                fill   ?? input.fill,
+                weight ?? input.weight,
+                fit    ?? input.fit,
+                join   ?? input.join,
+                miter  ?? input.miter);
         }
-
-
-        if (   this.fill
-            && COLOR_TYPES.includes(this.fill.type))
+        else
         {
-            this.fill = this.fill.eval(parse).copy();
-
-            this.fill = new FillValue(
-                this.fill.toValue(), 
-                new NumberValue(100));// this.fill.options.opacity.toValue());
+            this.value = new StrokeValue(fill, weight, fit, join, miter);
         }
 
 
-        const hasInput =     
-               this.input 
-            && STROKE_TYPES.includes(this.input.type);   
+        this.fill   = this.value.fill  .copy();
+        this.weight = this.value.weight.copy();
+        this.fit    = this.value.fit   .copy();
+        this.join   = this.value.join  .copy();
+        this.miter  = this.value.miter .copy();
 
 
-        // TODO: add .toInteger() to miter, join and fit evaluations
-        
-        if (this.fill  ) this.fill   = this.fill  .eval(parse).copy(); else if (hasInput) this.fill   = this.input.fill  .copy(); 
-        if (this.weight) this.weight = this.weight.eval(parse).copy(); else if (hasInput) this.weight = this.input.weight.copy();
-        if (this.fit   ) this.fit    = this.fit   .eval(parse).copy(); else if (hasInput) this.fit    = this.input.fit   .copy();
-        if (this.join  ) this.join   = this.join  .eval(parse).copy(); else if (hasInput) this.join   = this.input.join  .copy();
-        if (this.miter ) this.miter  = this.miter .eval(parse).copy(); else if (hasInput) this.miter  = this.input.miter .copy();            
-
-        if (this.fill  ) genPushUpdateValue(parse, this.nodeId, 'fill',   this.fill  .toValue());
-        if (this.weight) genPushUpdateValue(parse, this.nodeId, 'weight', this.weight.toValue());
-        if (this.fit   ) genPushUpdateValue(parse, this.nodeId, 'fit',    this.fit   .toValue());
-        if (this.join  ) genPushUpdateValue(parse, this.nodeId, 'join',   this.join  .toValue());
-        if (this.miter ) genPushUpdateValue(parse, this.nodeId, 'miter',  this.miter .toValue());
-
-
-        if (   this.options.active
-            || this.options.beforeActive)
-            this.evalObjects();
+        genPushUpdateValue(parse, this.nodeId, 'fill',   this.fill  );
+        genPushUpdateValue(parse, this.nodeId, 'weight', this.weight);
+        genPushUpdateValue(parse, this.nodeId, 'fit',    this.fit   );
+        genPushUpdateValue(parse, this.nodeId, 'join',   this.join  );
+        genPushUpdateValue(parse, this.nodeId, 'miter',  this.miter );
 
 
         this.validate();
 
         return this;
-    }
-
-
-
-    evalObjects(options = {})
-    {
-        if (!this.objects)
-            return;
-
-
-        if (this.options.enabled)
-        {
-            const rgb = scaleRgb(this.fill.color.toValue().toRgb());
-
-            for (const obj of this.objects)
-            {
-                if (!obj.strokes)
-                    obj.strokes = [];
-
-                obj.strokes.push([
-                    'SOLID', 
-                            rgb[0]
-                    + ' ' + rgb[1]
-                    + ' ' + rgb[2]
-                    + ' ' + this.fill.opacity.toValue().value]);
-
-
-                if (this.weight)
-                    obj.strokeWeight = this.weight.toValue().value;
-
-                if (this.fit)
-                    switch (this.fit.toValue().value)
-                    {
-                        case 0: obj.strokeAlign = 'INSIDE';  break;
-                        case 1: obj.strokeAlign = 'CENTER';  break;
-                        case 2: obj.strokeAlign = 'OUTSIDE'; break;
-                    }
-
-                if (this.join)
-                    switch (this.join.toValue().value)
-                    {
-                        case 0: obj.strokeJoin = 'MITER'; break;
-                        case 1: obj.strokeJoin = 'BEVEL'; break;
-                        case 2: obj.strokeJoin = 'ROUND'; break;
-                    }
-
-                if (this.miter)
-                    obj.strokeMiterLimit = this.miter.toValue().value;
-            }
-        }
-
-        
-        super.evalObjects();
     }
 
 
@@ -11878,7 +11865,7 @@ function genParseColor(parse)
     if (!ignore)
     {
         nInputs = parseInt(parse.move());
-        crashAssert(nInputs => 0 && nInputs <= 1, 'nInputs must be [0, 1]');
+        console.assert(nInputs => 0 && nInputs <= 1, 'nInputs must be [0, 1]');
     }
 
 
@@ -11944,7 +11931,7 @@ function genParseValidColor(parse)
     if (!ignore)
     {
         nInputs = parseInt(parse.move());
-        crashAssert(nInputs => 0 && nInputs <= 1, 'nInputs must be [0, 1]');
+        console.assert(nInputs => 0 && nInputs <= 1, 'nInputs must be [0, 1]');
     }
 
 
@@ -11994,7 +11981,7 @@ function genParseCorrectColor(parse)
     if (!ignore)
     {
         nInputs = parseInt(parse.move());
-        crashAssert(nInputs => 0 && nInputs <= 1, 'nInputs must be [0, 1]');
+        console.assert(nInputs => 0 && nInputs <= 1, 'nInputs must be [0, 1]');
     }
 
 
@@ -12057,7 +12044,7 @@ function genParseColorContrast(parse)
     if (!ignore)
     {
         nInputs = parseInt(parse.move());
-        crashAssert(nInputs => 0 && nInputs <= 2, 'nInputs must be [0, 2]');
+        console.assert(nInputs => 0 && nInputs <= 2, 'nInputs must be [0, 2]');
     }
 
 
@@ -12120,7 +12107,7 @@ function genParseColorBlind(parse)
     if (!ignore)
     {
         nInputs = parseInt(parse.move());
-        crashAssert(nInputs => 0 && nInputs <= 1, 'nInputs must be [0, 1]');
+        console.assert(nInputs => 0 && nInputs <= 1, 'nInputs must be [0, 1]');
     }
 
 
@@ -12168,7 +12155,7 @@ function genParseColorInterpolate(parse)
     if (!ignore)
     {
         nInputs = parseInt(parse.move());
-        crashAssert(nInputs => 0 && nInputs <= 2, 'nInputs must be [0, 2]');
+        console.assert(nInputs => 0 && nInputs <= 2, 'nInputs must be [0, 2]');
     }
 
     
@@ -12196,7 +12183,7 @@ function genParseColorInterpolate(parse)
         lerp.input0 = genParse(parse); // doesn't matter if it's input0 or input1, the eval() result will be the same
 
     else if (nInputs != 0)
-        crashAssert(false, 'nInputs must be [0, 2]');
+        console.assert(false, 'nInputs must be [0, 2]');
 
 
     lerp.space  = genParse(parse);
@@ -12225,7 +12212,7 @@ function genParseCustom(parse)
     // if (!ignore)
     // {
     //     nInputs = parseInt(parse.move());
-    //     crashAssert(nInputs == 0 || nInputs == 1, 'nInputs must be [0, 1]');
+    //     console.assert(nInputs == 0 || nInputs == 1, 'nInputs must be [0, 1]');
     // }
 
 
@@ -12269,7 +12256,7 @@ function genParseCustomInputs(parse)
     // if (!ignore)
     // {
     //     nInputs = parseInt(parse.move());
-    //     crashAssert(nInputs == 0 || nInputs == 1, 'nInputs must be [0, 1]');
+    //     console.assert(nInputs == 0 || nInputs == 1, 'nInputs must be [0, 1]');
     // }
 
 
@@ -12393,7 +12380,7 @@ function genParseItems(parse)
     if (!ignore)
     {
         nInputs = parseInt(parse.move());
-        crashAssert(nInputs == 0 || nInputs == 1, 'nInputs must be [0, 1]');
+        console.assert(nInputs == 0 || nInputs == 1, 'nInputs must be [0, 1]');
     }
 
 
@@ -12437,7 +12424,7 @@ function genParseSelect(parse)
     if (!ignore)
     {
         nInputs = parseInt(parse.move());
-        crashAssert(nInputs == 0 || nInputs == 1, 'nInputs must be [0, 1]');
+        console.assert(nInputs == 0 || nInputs == 1, 'nInputs must be [0, 1]');
     }
 
 
@@ -12483,7 +12470,7 @@ function genParseIfElse(parse)
     if (!ignore)
     {
         nInputs = parseInt(parse.move());
-        crashAssert(nInputs => 0 && nInputs <= 2, 'nInputs must be [0, 2]');
+        console.assert(nInputs => 0 && nInputs <= 2, 'nInputs must be [0, 2]');
     }
 
 
@@ -12546,7 +12533,7 @@ function genParseStart(parse)
     if (!ignore)
     {
         nInputs = parseInt(parse.move());
-        crashAssert(nInputs == 0 || nInputs == 1, 'nInputs must be [0, 1]');
+        console.assert(nInputs == 0 || nInputs == 1, 'nInputs must be [0, 1]');
     }
 
 
@@ -12590,7 +12577,7 @@ function genParseRepeat(parse)
     if (!ignore)
     {
         nInputs = parseInt(parse.move());
-        crashAssert(nInputs == 0 || nInputs == 1, 'nInputs must be [0, 1]');
+        console.assert(nInputs == 0 || nInputs == 1, 'nInputs must be [0, 1]');
     }
 
 
@@ -12636,7 +12623,7 @@ function genParseCache(parse)
     if (!ignore)
     {
         nInputs = parseInt(parse.move());
-        crashAssert(nInputs == 0 || nInputs == 1, 'nInputs must be [0, 1]');
+        console.assert(nInputs == 0 || nInputs == 1, 'nInputs must be [0, 1]');
     }
 
 
@@ -12680,7 +12667,7 @@ function genParseCopy(parse)
     if (!ignore)
     {
         nInputs = parseInt(parse.move());
-        crashAssert(nInputs == 0 || nInputs == 1, 'nInputs must be [0, 1]');
+        console.assert(nInputs == 0 || nInputs == 1, 'nInputs must be [0, 1]');
     }
 
 
@@ -12775,7 +12762,7 @@ function genParseAbsolute(parse)
     if (!ignore)
     {
         nInputs = parseInt(parse.move());
-        crashAssert(nInputs == 0 || nInputs == 1, 'nInputs must be [0, 1]');
+        console.assert(nInputs == 0 || nInputs == 1, 'nInputs must be [0, 1]');
     }
 
     
@@ -12819,7 +12806,7 @@ function genParseRound(parse)
     if (!ignore)
     {
         nInputs = parseInt(parse.move());
-        crashAssert(nInputs == 0 || nInputs == 1, 'nInputs must be [0, 1]');
+        console.assert(nInputs == 0 || nInputs == 1, 'nInputs must be [0, 1]');
     }
 
     
@@ -12866,7 +12853,7 @@ function genParseLimits(parse)
     if (!ignore)
     {
         nInputs = parseInt(parse.move());
-        crashAssert(nInputs == 0 || nInputs == 1, 'nInputs must be [0, 1]');
+        console.assert(nInputs == 0 || nInputs == 1, 'nInputs must be [0, 1]');
     }
 
     
@@ -13066,7 +13053,7 @@ function genParseInterpolate(parse)
     if (!ignore)
     {
         nInputs = parseInt(parse.move());
-        crashAssert(nInputs => 0 && nInputs <= 2, 'nInputs must be [0, 2]');
+        console.assert(nInputs => 0 && nInputs <= 2, 'nInputs must be [0, 2]');
     }
 
     
@@ -13164,7 +13151,7 @@ function genParseCondition(parse)
     if (!ignore)
     {
         nInputs = parseInt(parse.move());
-        crashAssert(nInputs => 0 && nInputs <= 2, 'nInputs must be [0, 2]');
+        console.assert(nInputs => 0 && nInputs <= 2, 'nInputs must be [0, 2]');
     }
 
     
@@ -13219,7 +13206,7 @@ function genParseConditionBase(parse, newNode)
     if (!ignore)
     {
         nInputs = parseInt(parse.move());
-        crashAssert(nInputs => 0 && nInputs <= 2, 'nInputs must be [0, 2]');
+        console.assert(nInputs => 0 && nInputs <= 2, 'nInputs must be [0, 2]');
     }
 
     
@@ -13555,18 +13542,20 @@ function genParseFill(parse)
 
     const fill = new GFill(nodeId, options);
 
+    fill.hasInputs = options.hasInputs;
+
 
     let nInputs = -1;
 
     if (!ignore)
     {
         nInputs = parseInt(parse.move());
-        crashAssert(nInputs => 0 && nInputs <= 1, 'nInputs must be [0, 1]');
+        console.assert(nInputs => 0 && nInputs <= 1, 'nInputs must be [0, 1]');
     }
 
 
     if (parse.settings.logRequests) 
-        logReq(fill, parse, ignore);
+        logReq(fill, parse, ignore, nInputs);
 
 
     if (ignore)
@@ -13579,32 +13568,29 @@ function genParseFill(parse)
     parse.nTab++;
 
 
+    let paramIds;
+
     if (nInputs == 1)
-        fill.input = genParse(parse);
-
-
-    const nParamIds = genParseParamCount(parse);
-
-    for (let i = 0; i < nParamIds; i++)
     {
-        const paramId = genParseParamId(parse);
+        fill.input = genParse(parse);
+        paramIds = parse.move().split(',');
+    }
+    else
+        paramIds = ['color', 'opacity'];
 
-        parse.nTab++;
-        parse.inParam = true;
 
-        
-        switch (paramId)
+    parse.inParam = false;
+
+    for (const id of paramIds)
+    {
+        switch (id)
         {
-        case 'color'  : fill.color   = genParse(parse); break;
+        case 'color':   fill.color   = genParse(parse); break;
         case 'opacity': fill.opacity = genParse(parse); break;
         }
-
-
-        parse.nTab--;
     }
 
     
-    parse.inParam = false;
     parse.nTab--;
 
 
@@ -13647,18 +13633,20 @@ function genParseStroke(parse)
 
     const stroke = new GStroke(nodeId, options);
 
+    stroke.hasInputs = options.hasInputs;
+
 
     let nInputs = -1;
 
     if (!ignore)
     {
         nInputs = parseInt(parse.move());
-        crashAssert(nInputs => 0 && nInputs <= 1, 'nInputs must be [0, 1]');
+        console.assert(nInputs => 0 && nInputs <= 1, 'nInputs must be [0, 1]');
     }
 
 
     if (parse.settings.logRequests) 
-        logReq(stroke, parse, ignore);
+        logReq(stroke, parse, ignore, nInputs);
 
 
     if (ignore)
@@ -13671,35 +13659,32 @@ function genParseStroke(parse)
     parse.nTab++;
 
 
+    let paramIds;
+
     if (nInputs == 1)
-        stroke.input = genParse(parse);
-
-
-    const nParamIds = genParseParamCount(parse);
-       
-    for (let i = 0; i < nParamIds; i++)
     {
-        const paramId = genParseParamId(parse);
-
-        parse.nTab++;
-        parse.inParam = true;
-
-
-        switch (paramId)
-        {
-        case 'fill':   stroke.fill   = genParseFillParam(parse); break;
-        case 'weight': stroke.weight = genParse(parse);          break;
-        case 'fit':    stroke.fit    = genParse(parse);          break;
-        case 'join':   stroke.join   = genParse(parse);          break;
-        case 'miter':  stroke.miter  = genParse(parse);          break;
-        }
-
-
-        parse.nTab--;
+        stroke.input = genParse(parse);
+        paramIds = parse.move().split(',');
     }
+    else
+        paramIds = ['fill', 'weight', 'fit', 'join', 'miter'];
 
-    
+
     parse.inParam = false;
+
+    for (const id of paramIds)
+    {
+        switch (id)
+        {
+        case 'fill':   stroke.fill   = genParse(parse); break;
+        case 'weight': stroke.weight = genParse(parse); break;
+        case 'fit':    stroke.fit    = genParse(parse); break;
+        case 'join':   stroke.join   = genParse(parse); break;
+        case 'miter':  stroke.miter  = genParse(parse); break;
+        }
+    }
+    
+    
     parse.nTab--;
 
 
@@ -14001,7 +13986,7 @@ function genParse(parse, inParam = true)
 
     else if (parse.next == COMMENT                ) result = genParseComment         (parse);
 
-    else crashAssert(false, 'unknown parse token \'' + parse.next + '\'');
+    else console.assert(false, 'unknown parse token \'' + parse.next + '\'');
 
 
     parse.inParam = false;
@@ -14140,7 +14125,7 @@ function genParseCustom(parse)
     // if (!ignore)
     // {
     //     nInputs = parseInt(parse.move());
-    //     crashAssert(nInputs == 0 || nInputs == 1, 'nInputs must be [0, 1]');
+    //     console.assert(nInputs == 0 || nInputs == 1, 'nInputs must be [0, 1]');
     // }
 
 
@@ -16179,7 +16164,7 @@ function colorFactor(space)
         case 'lab':      
         case 'luv':   return oppFactor;   
         
-        default:      crashAssert(false, 'invalid color factor from space \''+space+'\''); break;
+        default:      console.assert(false, 'invalid color factor from space \''+space+'\''); break;
     }
 }
 
