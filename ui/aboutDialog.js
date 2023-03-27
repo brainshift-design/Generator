@@ -5,7 +5,7 @@ function initAboutDialog()
 
     aboutBack.addEventListener('pointerdown', e => { e.preventDefault(); });
 
-    aboutVersion.innerHTML = '&hairsp;Version&nbsp;&thinsp;' + generatorVersion;
+    aboutVersion.innerHTML = 'Generator&nbsp;&hairsp;version&nbsp;&thinsp;' + generatorVersion;
 }
 
 

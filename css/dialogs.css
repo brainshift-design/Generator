@@ -228,13 +228,14 @@
 
 #licenseWatermark
 {
-    position:    absolute;
-    left:        -3px;
-    top:         56px;
-    width:       256px;
-    height:      50px;
-    padding-top: 4px;
-    overflow:    hidden;
+    position:         absolute;
+    left:             -3px;
+    top:              60px;
+    width:            256px;
+    height:           50px;
+    overflow:         hidden;
+    box-shadow:       0 0 0 1px inset var(--figma-color-bg-hover);
+    pointer-events:   none;
 }
 
 
@@ -699,7 +700,7 @@
     transform:     translateX(-50%)
                    translateY(-50%);
     width:         270px;
-    height:        204px;
+    height:        190px;
 
     overflow:      hidden;
     
@@ -714,7 +715,7 @@
 
 #aboutDialogContainer
 {
-    height:   calc(100% - 42px);
+    height:   calc(100% - 22px);
     overflow: hidden;
     padding:  0;
     z-index:  1;
@@ -800,7 +801,9 @@
 
 #aboutDialogBody
 {
-    margin:  0 30px 0 30px;
+    padding-left: 30px;
+    width:        250px;
+    /* box-shadow:   0 0 0 1px inset yellow; */
 }
 
 
@@ -812,35 +815,36 @@
 
 #aboutLogo
 {
-    margin-top: 30px;
-    position:   relative;
-    left:       2px;
+    margin-top: 20px;
+}
+
+
+#aboutInfo
+{
+    margin-top: 32px;
 }
 
 
 #aboutLine
 {
-    margin-top: 30px;
-    position:   relative;
-}
-
-
-#aboutCopyright
-{
-    display:     inline;
-    margin-left: auto;
-    position:   relative;
-    left:       4px;
+    margin-top: 16px;
 }
 
 
 #aboutVersion
 {
     display:  inline;
-    position: absolute;
-    right:    30;
+    position: relative;
+    left:     4px;
 }
 
+
+#aboutCopyright
+{
+    display:  inline-block;
+    position: relative;
+    left:     4px;
+}
 
 
 #crashBack
