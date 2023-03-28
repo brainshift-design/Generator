@@ -1,21 +1,9 @@
 class TextControl
-extends EventTarget
+extends Control
 {
-    div;
-    
     textarea;
     focus;
-    
-
-    param;
-     
-    id;
-
-    name;
-
-    width;
-    height;
-             
+            
     
     value;
 
@@ -29,55 +17,23 @@ extends EventTarget
     readOnly          = false;
      
     
-    measureData       = {};
 
-
-
-    get view() { return this.param.node.graph.view; }
-
-
-
-    constructor(div, param, width, height, id, name, defaultValue = '')
+    constructor(div, param, id, name, defaultValue = '')
     {
-        super();
+        super(div, param, id, name);
 
 
-        this.div               = div ? div : createDiv('textControl');
-        this.div.control       = this;
-
-        this.param             = param;
-
-
-        this.id                = id;
-
-        this.name              = name;
-
-    
-        this.width             = width;
-        this.height            = height;
-                 
-        this.div.style.width   = width;
-        this.div.style.height  = height;
-                 
-        this.div.style.display = 'inline';
-
-
-        this.value             = defaultValue;
+        this.value = defaultValue;
         
         
         this.initTextarea();
         this.initEvents ();
 
         this.focus = createDiv('textControlFocus');
-        
+
 
         this.div.appendChild(this.textarea);
         this.div.appendChild(this.focus);
-
-        
-        this.onstartchange = new Event('startchange');
-        this.onchange      = new Event('change');
-        this.onconfirm     = new Event('confirm');
     }    
 
 
@@ -139,17 +95,6 @@ extends EventTarget
 
 
 
-    updateMeasureData()
-    {
-        this.measureData = 
-        {
-            offsetRect: offsetRect(this.div),
-            clientRect: clientRect(this.div)
-        };
-    }
-
-
-    
     update()
     {
         if (typeof this.value !== 'string')
@@ -174,38 +119,4 @@ extends EventTarget
         this.focus.style.width  = sw;
         this.focus.style.height = sh;
     };
-
-
-
-    lockPointer(pointerId)
-    {
-        clearTimeout(this.clickTimer);
-
-        this.requestPointerLock =    
-               this.div.      requestPointerLock 
-            || this.div.   mozRequestPointerLock
-            || this.div.webkitRequestPointerLock;
-
-        this.requestPointerLock();
-    };
-
-
-
-    unlockPointer(pointerId)
-    {
-        document.exitPointerLock =    
-               document.      exitPointerLock    
-            || document.   mozExitPointerLock
-            || document.webkitExitPointerLock;
-
-        document.exitPointerLock();
-    };
-
-
-
-    isPointerLocked()
-    {
-        return (document.      pointerLockElement === this.div 
-             || document.   mozPointerLockElement === this.div
-             || document.webkitPointerLockElement === this.div);
-    }}
+}

@@ -1,3 +1,5 @@
+../controls/Control.js
+
 ../controls/EmptyControl/EmptyControl.js
 
 ../controls/NumberControl/NumberControl.js

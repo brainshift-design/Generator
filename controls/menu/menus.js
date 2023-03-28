@@ -322,7 +322,7 @@ function initGeneratorMenus()
         // new MenuItem('Substring', {icon: iconSubstring    , enabled: false}),
         // new MenuItem('Replace',   {icon: iconStringReplace, enabled: false})]);
     
-    menuColorStyle = new Menu('Color style', true, false);
+menuColorStyle = new Menu('Color style', true, false);
     menuColorStyle.addItems([
         new MenuItem('Link existing...', {icon: iconColorStyleReplace, callback: e => actionManager.do(getCreateNodeAction(COLOR_STYLE,  btnColor.div, getCreateOptions(e, {existing: true})))})]);
 

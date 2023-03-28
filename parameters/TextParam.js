@@ -32,8 +32,6 @@ extends Parameter
         this.controls[0] = new TextControl(
             null,
             this,
-            120, // width
-            20,  // height
             this.id,
             this.name,
             defaultValue);

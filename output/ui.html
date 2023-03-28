@@ -2640,11 +2640,13 @@ a
     font-variant-numeric: tabular-nums;
     pointer-events:       none;
     letter-spacing:       -0.35px;
+    text-align:           center;
     position:             relative;
     left:                 50%;
     transform:            translateX(-50%);
     top:                  3px;
     white-space:          nowrap;
+    /* box-shadow:           0 0 0 1px inset yellow; */
 }
 
 
@@ -35090,32 +35092,72 @@ function hideCrashDialog()
 }
 
 
-class EmptyControl
+class Control
 extends EventTarget
 {
-    div;
-
     param;
 
+    id;
     
+    name;
+    savedName   = '';
 
-    constructor(div, param)
+
+    div;
+
+    width;
+    height;
+
+
+    measureData = { divBounds: new Rect(0, 0, 0, 0) };
+ 
+
+    get view() { return this.param.node.graph.view; }
+
+
+
+    constructor(div, param, id, name, width = 120, height = 20)
     {
         super();
 
 
-        this.div         = div ? div : createDiv();
-        this.div.control = this;
-        this.div.style.boxShadow = '0 0 0 1px red inset';
+        this.div               = div ? div : createDiv();
+        this.div.control       = this;
         
-        this.param       = param;
+
+        this.param             = param;
+        
+        
+        this.id                = id;
+        this.name              = name;
+
+
+        this.setWidth (width);
+        this.setHeight(height);
+        
+        this.div.style.display = 'inline';
+
+
+        this.onstartchange     = new Event('startchange');
+        this.onchange          = new Event('change');
+        this.onconfirm         = new Event('confirm');
     }
 
 
 
-    canReact(e)
+    setWidth(width)
     {
-        return false;
+        this.width            = width;
+        this.div.style.width  = width;
+    }
+
+
+    
+    setHeight(height)
+    {
+        this.height           = height;
+        this.div.style.height = height;
+
     }
 
 
@@ -35128,15 +35170,65 @@ extends EventTarget
             clientRect: clientRect(this.div)
         };
     }
+
+
+    
+    lockPointer(pointerId)
+    {
+        clearTimeout(this.clickTimer);
+
+        this.div.requestPointerLock =    
+               this.div.      requestPointerLock 
+            || this.div.   mozRequestPointerLock
+            || this.div.webkitRequestPointerLock;
+
+        this.div.requestPointerLock();
+    }
+
+
+
+    unlockPointer(pointerId)
+    {
+        document.exitPointerLock =    
+               document.      exitPointerLock    
+            || document.   mozExitPointerLock
+            || document.webkitExitPointerLock;
+
+        document.exitPointerLock();
+    }
+
+
+
+    isPointerLocked()
+    {
+        return (document.      pointerLockElement === this.div 
+             || document.   mozPointerLockElement === this.div
+             || document.webkitPointerLockElement === this.div);
+    }
+}
+
+
+class EmptyControl
+extends Control
+{
+    constructor(div, param)
+    {
+        super(div, param, NULL, NULL);
+    }
+
+
+
+    canReact(e)
+    {
+        return false;
+    }
 }
 
 
 
 class NumberControl
-extends EventTarget
+extends Control
 {
-    div;
-
     bar;
     text;
     textbox;
@@ -35146,16 +35238,6 @@ extends EventTarget
     extRight;
 
 
-    param;
-
-    id;
-    
-    name;
-    savedName             = '';
-    
-    width;
-    height;
-             
 
     value;
     valueScale            = 1;
@@ -35175,7 +35257,14 @@ extends EventTarget
      
     dec;
     displayDec;
-         
+    
+    
+    wrapValue             = false;
+
+    
+    showName              = true;
+    showHex               = false;
+
                
     suffix;
     valueCanContainSuffix = false;
@@ -35192,14 +35281,7 @@ extends EventTarget
     valueStyleDark        = '#ffffff20';
     textStyleDark         = '#eee';
                 
-    //fontSize              = 11;
-             
             
-    wrapValue             = false;
-    
-    showName              = true;
-    showHex               = false;
-
     enableChangeEvent     = true;
     
     successOnFocusOut     = false;
@@ -35243,41 +35325,17 @@ extends EventTarget
     oldValue; 
  
 
-    measureData           = { divBounds: new Rect(0, 0, 0, 0) };
- 
-
     confirmTimer          = null;
-
-
     
-    get view() { return this.param.node.graph.view; }
-
-
-
-    constructor(div, param, width, height, id, name, showName, defaultValue, min = Number.MIN_SAFE_INTEGER, max = Number.MAX_SAFE_INTEGER, dec = 0, dragScale = 0.05, wheelScale = 1, acc = 0, suffix = '')
+    
+    
+    constructor(div, param, id, name, showName, defaultValue, min = Number.MIN_SAFE_INTEGER, max = Number.MAX_SAFE_INTEGER, dec = 0, dragScale = 0.05, wheelScale = 1, acc = 0, suffix = '')
     {
-        super();
+        super(div, param, id, name);
 
 
-        this.div                   = div ? div : createDiv();
-        this.div.control           = this;
-        
-        this.param                 = param;
-        
-        this.id                    = id;
-        this.name                  = name;
         this.showName              = showName;
         
-        
-        this.width                 = width;
-        this.height                = height;
-        
-        this.div.style.width       = width;
-        this.div.style.height      = height;
-        
-        this.div.style.display     = 'inline';
-
-
         this.value                 = defaultValue;
     
         this.min                   = min;
@@ -35323,91 +35381,87 @@ extends EventTarget
 
         this.initTextbox();
         this.initEvents ();
-
-
-        this.onstartchange = new Event('startchange');
-        this.onchange      = new Event('change');
-        this.onconfirm     = new Event('confirm');
     }
 
 
 
-    copy()
-    {
-        const copy = new NumberControl(
-            null,
-            null,
-            this.width,
-            this.height,
-            this.id,
-            this.name,
-            this.showName,
-            this.defaultValue);
+    // copy()
+    // {
+    //     const copy = new NumberControl(
+    //         null,
+    //         null,
+    //         this.id,
+    //         this.name,
+    //         this.showName,
+    //         this.defaultValue);
 
 
-        copy.value                 = this.value;
-                
-        copy.min                   = this.min;
-        copy.max                   = this.max;
-           
-        copy.displayMin            = this.displayMin;
-        copy.displayMax            = this.displayMax;
-           
-        copy.thinMinus             = this.thinMinus;
-        copy.displayAbsolute       = this.displayAbsolute;
-      
-        copy.epsilon               = this.epsilon;
-      
-        copy.acc                   = this.acc;
-      
-        copy.dec                   = this.dec;
-        copy.displayDec            = this.displayDec;
-      
-        copy.valueScale            = this.valueScale;
-      
-        copy.suffix                = this.suffix;
-        copy.valueCanContainSuffix = this.valueCanCouffix;
-
-        copy.dragReverse           = this.dragReverse;
-        copy.dragScale             = this.dragScale;
-        copy.wheelScale            = this.wheelScale;
-
-        copy. backStyleLight       = this. backStyleLight;
-        copy.valueStyleLight       = this.valueStyleLight;
-        copy. textStyleLight       = this. textStyleLight;
-
-        copy.fontSize              = this.fontSize;
-
-
-        copy.wrapValue             = this.wrapValue;
-
-        copy.showHex               = this.showHex;
-
-        copy.enableChangeEvent     = this.enableChangeEvent;
-
-        copy.successOnFocusOut     = this.successOnFocusOut;
-        copy.keyBlur               = this.keyBlur;
-
-        copy.pointerEvents         = this.pointerEvents;
-        copy.readOnly              = this.readOnly;
-
-        copy.allowEditDecimals     = this.allowEditDecimals;
-
-        copy.valueText             = this.valueText;
-        copy.overrideText          = this.overrideText;
-
-        copy.showNanValueName      = this.showNanValueName;
-        copy.showBar               = this.showBar;
-
-        copy.barTop                = this.barTop;
-        copy.barBottom             = this.barBottom;
-
-        copy.ranges                = this.ranges.map(r => r.copy());
-
-        copy.options               = [...this.options];
+    //     copy.width                 = this.width;
+    //     copy.height                = this.height;
         
-        return copy;
-    }
+    //     copy.value                 = this.value;
+                
+    //     copy.min                   = this.min;
+    //     copy.max                   = this.max;
+           
+    //     copy.displayMin            = this.displayMin;
+    //     copy.displayMax            = this.displayMax;
+           
+    //     copy.thinMinus             = this.thinMinus;
+    //     copy.displayAbsolute       = this.displayAbsolute;
+      
+    //     copy.epsilon               = this.epsilon;
+      
+    //     copy.acc                   = this.acc;
+      
+    //     copy.dec                   = this.dec;
+    //     copy.displayDec            = this.displayDec;
+      
+    //     copy.valueScale            = this.valueScale;
+      
+    //     copy.suffix                = this.suffix;
+    //     copy.valueCanContainSuffix = this.valueCanCouffix;
+
+    //     copy.dragReverse           = this.dragReverse;
+    //     copy.dragScale             = this.dragScale;
+    //     copy.wheelScale            = this.wheelScale;
+
+    //     copy. backStyleLight       = this. backStyleLight;
+    //     copy.valueStyleLight       = this.valueStyleLight;
+    //     copy. textStyleLight       = this. textStyleLight;
+
+    //     copy.fontSize              = this.fontSize;
+
+
+    //     copy.wrapValue             = this.wrapValue;
+
+    //     copy.showHex               = this.showHex;
+
+    //     copy.enableChangeEvent     = this.enableChangeEvent;
+
+    //     copy.successOnFocusOut     = this.successOnFocusOut;
+    //     copy.keyBlur               = this.keyBlur;
+
+    //     copy.pointerEvents         = this.pointerEvents;
+    //     copy.readOnly              = this.readOnly;
+
+    //     copy.allowEditDecimals     = this.allowEditDecimals;
+
+    //     copy.valueText             = this.valueText;
+    //     copy.overrideText          = this.overrideText;
+
+    //     copy.showNanValueName      = this.showNanValueName;
+    //     copy.showBar               = this.showBar;
+
+    //     copy.barTop                = this.barTop;
+    //     copy.barBottom             = this.barBottom;
+
+    //     copy.ranges                = this.ranges.map(r => r.copy());
+
+    //     copy.options               = [...this.options];
+        
+    //     return copy;
+    // }
 
 
 
@@ -35491,17 +35545,6 @@ extends EventTarget
 
 
 
-    updateMeasureData()
-    {
-        this.measureData = 
-        {
-            offsetRect: offsetRect(this.div),
-            clientRect: clientRect(this.div)
-        };
-    }
-
-
-    
     setSuffix(suffix, valueCanContainSuffix = false)
     {
         this.suffix                = suffix;
@@ -35743,41 +35786,6 @@ extends EventTarget
 
             return str;
         }
-    }
-
-
-
-    lockPointer(pointerId)
-    {
-        clearTimeout(this.clickTimer);
-
-        this.div.requestPointerLock =    
-               this.div.      requestPointerLock 
-            || this.div.   mozRequestPointerLock
-            || this.div.webkitRequestPointerLock;
-
-        this.div.requestPointerLock();
-    }
-
-
-
-    unlockPointer(pointerId)
-    {
-        document.exitPointerLock =    
-               document.      exitPointerLock    
-            || document.   mozExitPointerLock
-            || document.webkitExitPointerLock;
-
-        document.exitPointerLock();
-    }
-
-
-
-    isPointerLocked()
-    {
-        return (document.      pointerLockElement === this.div 
-             || document.   mozPointerLockElement === this.div
-             || document.webkitPointerLockElement === this.div);
     }
 }
 
@@ -36944,23 +36952,11 @@ function numberControl_confirm(control)
 
 
 class TextControl
-extends EventTarget
+extends Control
 {
-    div;
-    
     textarea;
     focus;
-    
-
-    param;
-     
-    id;
-
-    name;
-
-    width;
-    height;
-             
+            
     
     value;
 
@@ -36974,55 +36970,23 @@ extends EventTarget
     readOnly          = false;
      
     
-    measureData       = {};
 
-
-
-    get view() { return this.param.node.graph.view; }
-
-
-
-    constructor(div, param, width, height, id, name, defaultValue = '')
+    constructor(div, param, id, name, defaultValue = '')
     {
-        super();
+        super(div, param, id, name);
 
 
-        this.div               = div ? div : createDiv('textControl');
-        this.div.control       = this;
-
-        this.param             = param;
-
-
-        this.id                = id;
-
-        this.name              = name;
-
-    
-        this.width             = width;
-        this.height            = height;
-                 
-        this.div.style.width   = width;
-        this.div.style.height  = height;
-                 
-        this.div.style.display = 'inline';
-
-
-        this.value             = defaultValue;
+        this.value = defaultValue;
         
         
         this.initTextarea();
         this.initEvents ();
 
         this.focus = createDiv('textControlFocus');
-        
+
 
         this.div.appendChild(this.textarea);
         this.div.appendChild(this.focus);
-
-        
-        this.onstartchange = new Event('startchange');
-        this.onchange      = new Event('change');
-        this.onconfirm     = new Event('confirm');
     }    
 
 
@@ -37084,17 +37048,6 @@ extends EventTarget
 
 
 
-    updateMeasureData()
-    {
-        this.measureData = 
-        {
-            offsetRect: offsetRect(this.div),
-            clientRect: clientRect(this.div)
-        };
-    }
-
-
-    
     update()
     {
         if (typeof this.value !== 'string')
@@ -37119,41 +37072,7 @@ extends EventTarget
         this.focus.style.width  = sw;
         this.focus.style.height = sh;
     };
-
-
-
-    lockPointer(pointerId)
-    {
-        clearTimeout(this.clickTimer);
-
-        this.requestPointerLock =    
-               this.div.      requestPointerLock 
-            || this.div.   mozRequestPointerLock
-            || this.div.webkitRequestPointerLock;
-
-        this.requestPointerLock();
-    };
-
-
-
-    unlockPointer(pointerId)
-    {
-        document.exitPointerLock =    
-               document.      exitPointerLock    
-            || document.   mozExitPointerLock
-            || document.webkitExitPointerLock;
-
-        document.exitPointerLock();
-    };
-
-
-
-    isPointerLocked()
-    {
-        return (document.      pointerLockElement === this.div 
-             || document.   mozPointerLockElement === this.div
-             || document.webkitPointerLockElement === this.div);
-    }}
+}
 
 
 TextControl.prototype.initTextarea = function()
@@ -38041,19 +37960,9 @@ TextControl.prototype.initEvents = function()
 
 
 class ColorControl
-extends EventTarget
+extends Control
 {
-    div;
-    
-    param;
-     
-    id;
-
-    name;
-
-    width;
-    height;
-             
+    showName          = false;
     showColor         = true;
 
     value;
@@ -38085,14 +37994,8 @@ extends EventTarget
     inFocus           = false;
     clicked           = false;
  
-    startValue        = 0;
     oldValue; 
  
-    wrapValue         = false;
-     
-    showName;
-    showHex           = false;
-         
     enableChangeEvent = true;
     
     successOnFocusOut = false;
@@ -38102,41 +38005,15 @@ extends EventTarget
     readOnly          = false;
      
     valueText         = '';
-     
-    measureData       = {};
     
     
 
-    get view() { return this.param.node.graph.view; }
-
-
-
-    constructor(div, param, width, height, id, name, showName, defaultValue, dragScale = 0.05, wheelScale = 1, acc = 0)
+    constructor(div, param, id, name, showName, defaultValue, dragScale = 0.05, wheelScale = 1, acc = 0)
     {
-        super();
+        super(div, param, id, name);
 
 
-        this.div               = div ? div : createDiv('colorControl');
-        this.div.control       = this;
-
-        this.param             = param;
-
-
-        this.id                = id;
-
-        this.name              = name;
         this.showName          = showName;
-
-    
-        this.width             = width;
-        this.height            = height;
-                 
-        this.div.style.width   = width;
-        this.div.style.height  = height;
-                 
-        this.div.style.display = 'inline';
-
-
         this.showColor         = true;
     
         this.value             = defaultValue;
@@ -38157,11 +38034,6 @@ extends EventTarget
         
         this.initTextbox();
         this.initEvents ();
-
-        
-        this.onstartchange = new Event('startchange');
-        this.onchange      = new Event('change');
-        this.onconfirm     = new Event('confirm');
     }    
     
 
@@ -38241,17 +38113,6 @@ extends EventTarget
 
 
 
-    updateMeasureData()
-    {
-        this.measureData = 
-        {
-            offsetRect: offsetRect(this.div),
-            clientRect: clientRect(this.div)
-        };
-    };
-
-
-
     update()
     {
         if (!this.measureData.offsetRect)
@@ -38315,37 +38176,43 @@ extends EventTarget
 
 
 
-    lockPointer(pointerId)
+    updateFocusBorder()
     {
-        clearTimeout(this.clickTimer);
+        if (this.buttonDown0)
+        {
+            if (   !this.param
+                || !this.param.node.selected)
+                this.focus.style.boxShadow = '0 0 0 1px var(--figma-color-bg-brand) inset';
 
-        this.requestPointerLock =    
-               this.div.      requestPointerLock 
-            || this.div.   mozRequestPointerLock
-            || this.div.webkitRequestPointerLock;
+            else
+            {
+                this.focus.style.boxShadow = '0 1px 0 0 var(--figma-color-bg-brand) inset';
+                    
+                if (this.param.index < this.param.node.params.length-1)
+                    this.focus.style.boxShadow += ', 0 -1px 0 0 var(--figma-color-bg-brand) inset';
+            }
+        }
+        else
+        {
+            const colShadow = 
+                darkMode
+                ? 'rgba(255, 255, 255, 0.1)'
+                : 'rgba(0, 0, 0, 0.1)';
 
-        this.requestPointerLock();
-    };
+            if (this.param)
+            {
+                this.focus.style.boxShadow = '0 1px 0 0 ' + colShadow + ' inset';
 
-
-
-    unlockPointer(pointerId)
-    {
-        document.exitPointerLock =    
-               document.      exitPointerLock    
-            || document.   mozExitPointerLock
-            || document.webkitExitPointerLock;
-
-        document.exitPointerLock();
-    };
-
-
-
-    isPointerLocked()
-    {
-        return (document.      pointerLockElement === this.div 
-             || document.   mozPointerLockElement === this.div
-             || document.webkitPointerLockElement === this.div);
+                if (    this.param.node
+                    &&  this.param.node.params.includes(this.param)
+                    && !isLastInArray(this.param.node.params, this.param))
+                    this.focus.style.boxShadow += ', 0 -1px 0 0 ' + colShadow + ' inset';
+            }
+            else
+            {
+                this.focus.style.boxShadow  = '0 0 0 1px ' + colShadow + ' inset ';
+            }
+        }
     }
 }
 
@@ -38684,24 +38551,7 @@ ColorControl.prototype.initEvents = function()
                 this.div.style.cursor = 'default';
 
                 
-            const colShadow = 
-                darkMode
-                ? 'rgba(255, 255, 255, 0.1)'
-                : 'rgba(0, 0, 0, 0.1)';
-
-            if (this.param)
-            {
-                this.focus.style.boxShadow = '0 1px 0 0 ' + colShadow + ' inset';
-
-                if (    this.param.node
-                    &&  this.param.node.params.includes(this.param)
-                    && !isLastInArray(this.param.node.params, this.param))
-                    this.focus.style.boxShadow += ', 0 -1px 0 0 ' + colShadow + ' inset';
-            }
-            else
-            {
-                this.focus.style.boxShadow  = '0 0 0 1px ' + colShadow + ' inset ';
-            }
+            this.updateFocusBorder();
 
 
             this.focus.style.visibility = 'visible';
@@ -38763,29 +38613,19 @@ ColorControl.prototype.initEvents = function()
                 this.prevValue  = this.value;
                 this.sx         = e.clientX;
 
-                this.clickTimer = setTimeout(() => 
-                {
-                    if (!document.menuHadFocus)
-                    {
-                        this.moved = true;
-                        this.lockPointer(e.pointerId);
-                    }
-                }, 
-                500);
+                // this.clickTimer = setTimeout(() => 
+                // {
+                //     if (!document.menuHadFocus)
+                //     {
+                //         this.moved = true;
+                //         this.lockPointer(e.pointerId);
+                //     }
+                // }, 
+                // 500);
             }
 
 
-            if (   !this.param
-                || !this.param.node.selected)
-                this.focus.style.boxShadow = '0 0 0 1px var(--figma-color-bg-brand) inset';
-
-            else
-            {
-                this.focus.style.boxShadow = '0 1px 0 0 var(--figma-color-bg-brand) inset';
-                    
-                if (this.param.index < this.param.node.params.length-1)
-                    this.focus.style.boxShadow += ', 0 -1px 0 0 var(--figma-color-bg-brand) inset';
-            }
+            this.updateFocusBorder();
 
 
             // I don't want to focus here, but I do want to take focus away from elsewhere
@@ -39160,6 +39000,7 @@ ColorControl.prototype.initEvents = function()
             this.showTextbox();
     });
 };
+
 
 
 const iconGenerator         = '<svg width="20" height="10" viewBox="0 0 20 10" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M12.4662 3.05966C12.3952 2.82955 12.2972 2.62358 12.1722 2.44176C12.05 2.2571 11.9023 2.09943 11.729 1.96875C11.5585 1.83807 11.3625 1.74006 11.1409 1.67472C10.9193 1.60653 10.6779 1.57244 10.4165 1.57244C9.94775 1.57244 9.53014 1.69034 9.16366 1.92614C8.79718 2.16193 8.50883 2.50852 8.2986 2.96591C8.09122 3.42045 7.98752 3.97443 7.98752 4.62784C7.98752 5.28693 8.09122 5.84517 8.2986 6.30256C8.50599 6.75994 8.79434 7.10795 9.16366 7.34659C9.53298 7.58239 9.96196 7.70028 10.4506 7.70028C10.8938 7.70028 11.2773 7.61506 11.6012 7.4446C11.9279 7.27415 12.1793 7.03267 12.3554 6.72017C12.5316 6.40483 12.6196 6.03551 12.6196 5.61222L12.9776 5.66761H10.6083V4.43182H14.1495V5.48011C14.1495 6.22727 13.9904 6.87358 13.6722 7.41903C13.354 7.96449 12.9165 8.38494 12.3597 8.6804C11.8029 8.97301 11.1637 9.11932 10.4421 9.11932C9.63809 9.11932 8.93213 8.93892 8.32417 8.57812C7.71906 8.21449 7.24605 7.69886 6.90514 7.03125C6.56707 6.3608 6.39804 5.56534 6.39804 4.64489C6.39804 3.94034 6.49747 3.31108 6.69633 2.7571C6.89804 2.20312 7.17929 1.73295 7.54008 1.34659C7.90088 0.957386 8.32417 0.661932 8.80997 0.460227C9.29576 0.255682 9.82417 0.153409 10.3952 0.153409C10.8781 0.153409 11.3284 0.224432 11.746 0.366477C12.1637 0.505682 12.5344 0.704545 12.8583 0.963068C13.185 1.22159 13.4534 1.52841 13.6637 1.88352C13.8739 2.23864 14.0117 2.63068 14.077 3.05966H12.4662Z" fill="white"/><circle cx="2.5" cy="4.5" r="2" stroke="white"/><circle cx="18" cy="4.9" r="2" fill="white"/></svg>';
@@ -40476,7 +40317,7 @@ function initGeneratorMenus()
         // new MenuItem('Substring', {icon: iconSubstring    , enabled: false}),
         // new MenuItem('Replace',   {icon: iconStringReplace, enabled: false})]);
     
-    menuColorStyle = new Menu('Color style', true, false);
+menuColorStyle = new Menu('Color style', true, false);
     menuColorStyle.addItems([
         new MenuItem('Link existing...', {icon: iconColorStyleReplace, callback: e => actionManager.do(getCreateNodeAction(COLOR_STYLE,  btnColor.div, getCreateOptions(e, {existing: true})))})]);
 
@@ -44230,8 +44071,6 @@ extends NumberParamBase
         this.controls[0] = new NumberControl(
             createDiv('numberControl'),
             this,
-            120, // width
-            20,  // height
             this.id,
             this.name, 
             showName,
@@ -44372,8 +44211,6 @@ extends NumberParamBase
         this.controls[0] = new NumberControl(
             createDiv(),
             this,
-            120, // width
-            20,  // height
             this.id,
             this.name, 
             showName,
@@ -44577,8 +44414,6 @@ extends Parameter
         this.controls[0] = new TextControl(
             null,
             this,
-            120, // width
-            20,  // height
             this.id,
             this.name,
             defaultValue);
@@ -44796,8 +44631,6 @@ extends Parameter
         this.controls[0] = new ColorControl(
             null,
             this,
-            120, // width
-            20,  // height
             this.id,
             this.name, 
             showName,
@@ -45140,8 +44973,6 @@ extends Parameter
         this.controls.push(new ColorControl(
             null,
             this,
-            120, // width
-            20,  // height
             this.id,
             'color', 
             showName,
@@ -45154,8 +44985,6 @@ extends Parameter
         this.controls.push(new NumberControl(
             null,
             this,
-            120, // width
-            20,  // height
             this.id,
             'opacity', 
             false,
@@ -45636,8 +45465,6 @@ extends Parameter
         this.controls.push(new NumberControl(
             createDiv(),
             this,
-            100, // width
-            20,  // height
             this.id,
             'stroke', 
             true,
@@ -45645,6 +45472,9 @@ extends Parameter
             0));
 
 
+        this.controls[0].setWidth(100);
+
+        
         this.defaultValue                 = defaultValue;
         this.value                        = defaultValue;
 

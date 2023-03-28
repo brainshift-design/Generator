@@ -1,17 +1,7 @@
 class ColorControl
-extends EventTarget
+extends Control
 {
-    div;
-    
-    param;
-     
-    id;
-
-    name;
-
-    width;
-    height;
-             
+    showName          = false;
     showColor         = true;
 
     value;
@@ -43,14 +33,8 @@ extends EventTarget
     inFocus           = false;
     clicked           = false;
  
-    startValue        = 0;
     oldValue; 
  
-    wrapValue         = false;
-     
-    showName;
-    showHex           = false;
-         
     enableChangeEvent = true;
     
     successOnFocusOut = false;
@@ -60,41 +44,15 @@ extends EventTarget
     readOnly          = false;
      
     valueText         = '';
-     
-    measureData       = {};
     
     
 
-    get view() { return this.param.node.graph.view; }
-
-
-
-    constructor(div, param, width, height, id, name, showName, defaultValue, dragScale = 0.05, wheelScale = 1, acc = 0)
+    constructor(div, param, id, name, showName, defaultValue, dragScale = 0.05, wheelScale = 1, acc = 0)
     {
-        super();
+        super(div, param, id, name);
 
 
-        this.div               = div ? div : createDiv('colorControl');
-        this.div.control       = this;
-
-        this.param             = param;
-
-
-        this.id                = id;
-
-        this.name              = name;
         this.showName          = showName;
-
-    
-        this.width             = width;
-        this.height            = height;
-                 
-        this.div.style.width   = width;
-        this.div.style.height  = height;
-                 
-        this.div.style.display = 'inline';
-
-
         this.showColor         = true;
     
         this.value             = defaultValue;
@@ -115,11 +73,6 @@ extends EventTarget
         
         this.initTextbox();
         this.initEvents ();
-
-        
-        this.onstartchange = new Event('startchange');
-        this.onchange      = new Event('change');
-        this.onconfirm     = new Event('confirm');
     }    
     
 
@@ -199,17 +152,6 @@ extends EventTarget
 
 
 
-    updateMeasureData()
-    {
-        this.measureData = 
-        {
-            offsetRect: offsetRect(this.div),
-            clientRect: clientRect(this.div)
-        };
-    };
-
-
-
     update()
     {
         if (!this.measureData.offsetRect)
@@ -273,36 +215,42 @@ extends EventTarget
 
 
 
-    lockPointer(pointerId)
+    updateFocusBorder()
     {
-        clearTimeout(this.clickTimer);
+        if (this.buttonDown0)
+        {
+            if (   !this.param
+                || !this.param.node.selected)
+                this.focus.style.boxShadow = '0 0 0 1px var(--figma-color-bg-brand) inset';
 
-        this.requestPointerLock =    
-               this.div.      requestPointerLock 
-            || this.div.   mozRequestPointerLock
-            || this.div.webkitRequestPointerLock;
+            else
+            {
+                this.focus.style.boxShadow = '0 1px 0 0 var(--figma-color-bg-brand) inset';
+                    
+                if (this.param.index < this.param.node.params.length-1)
+                    this.focus.style.boxShadow += ', 0 -1px 0 0 var(--figma-color-bg-brand) inset';
+            }
+        }
+        else
+        {
+            const colShadow = 
+                darkMode
+                ? 'rgba(255, 255, 255, 0.1)'
+                : 'rgba(0, 0, 0, 0.1)';
 
-        this.requestPointerLock();
-    };
+            if (this.param)
+            {
+                this.focus.style.boxShadow = '0 1px 0 0 ' + colShadow + ' inset';
 
-
-
-    unlockPointer(pointerId)
-    {
-        document.exitPointerLock =    
-               document.      exitPointerLock    
-            || document.   mozExitPointerLock
-            || document.webkitExitPointerLock;
-
-        document.exitPointerLock();
-    };
-
-
-
-    isPointerLocked()
-    {
-        return (document.      pointerLockElement === this.div 
-             || document.   mozPointerLockElement === this.div
-             || document.webkitPointerLockElement === this.div);
+                if (    this.param.node
+                    &&  this.param.node.params.includes(this.param)
+                    && !isLastInArray(this.param.node.params, this.param))
+                    this.focus.style.boxShadow += ', 0 -1px 0 0 ' + colShadow + ' inset';
+            }
+            else
+            {
+                this.focus.style.boxShadow  = '0 0 0 1px ' + colShadow + ' inset ';
+            }
+        }
     }
 }

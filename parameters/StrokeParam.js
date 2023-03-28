@@ -41,8 +41,6 @@ extends Parameter
         this.controls.push(new NumberControl(
             createDiv(),
             this,
-            100, // width
-            20,  // height
             this.id,
             'stroke', 
             true,
@@ -50,6 +48,9 @@ extends Parameter
             0));
 
 
+        this.controls[0].setWidth(100);
+
+        
         this.defaultValue                 = defaultValue;
         this.value                        = defaultValue;
 

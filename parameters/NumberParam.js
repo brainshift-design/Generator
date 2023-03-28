@@ -18,8 +18,6 @@ extends NumberParamBase
         this.controls[0] = new NumberControl(
             createDiv('numberControl'),
             this,
-            120, // width
-            20,  // height
             this.id,
             this.name, 
             showName,

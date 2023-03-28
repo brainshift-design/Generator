@@ -44,8 +44,6 @@ extends Parameter
         this.controls[0] = new ColorControl(
             null,
             this,
-            120, // width
-            20,  // height
             this.id,
             this.name, 
             showName,

@@ -1,8 +1,6 @@
 class NumberControl
-extends EventTarget
+extends Control
 {
-    div;
-
     bar;
     text;
     textbox;
@@ -12,16 +10,6 @@ extends EventTarget
     extRight;
 
 
-    param;
-
-    id;
-    
-    name;
-    savedName             = '';
-    
-    width;
-    height;
-             
 
     value;
     valueScale            = 1;
@@ -41,7 +29,14 @@ extends EventTarget
      
     dec;
     displayDec;
-         
+    
+    
+    wrapValue             = false;
+
+    
+    showName              = true;
+    showHex               = false;
+
                
     suffix;
     valueCanContainSuffix = false;
@@ -58,14 +53,7 @@ extends EventTarget
     valueStyleDark        = '#ffffff20';
     textStyleDark         = '#eee';
                 
-    //fontSize              = 11;
-             
             
-    wrapValue             = false;
-    
-    showName              = true;
-    showHex               = false;
-
     enableChangeEvent     = true;
     
     successOnFocusOut     = false;
@@ -109,41 +97,17 @@ extends EventTarget
     oldValue; 
  
 
-    measureData           = { divBounds: new Rect(0, 0, 0, 0) };
- 
-
     confirmTimer          = null;
-
-
     
-    get view() { return this.param.node.graph.view; }
-
-
-
-    constructor(div, param, width, height, id, name, showName, defaultValue, min = Number.MIN_SAFE_INTEGER, max = Number.MAX_SAFE_INTEGER, dec = 0, dragScale = 0.05, wheelScale = 1, acc = 0, suffix = '')
+    
+    
+    constructor(div, param, id, name, showName, defaultValue, min = Number.MIN_SAFE_INTEGER, max = Number.MAX_SAFE_INTEGER, dec = 0, dragScale = 0.05, wheelScale = 1, acc = 0, suffix = '')
     {
-        super();
+        super(div, param, id, name);
 
 
-        this.div                   = div ? div : createDiv();
-        this.div.control           = this;
-        
-        this.param                 = param;
-        
-        this.id                    = id;
-        this.name                  = name;
         this.showName              = showName;
         
-        
-        this.width                 = width;
-        this.height                = height;
-        
-        this.div.style.width       = width;
-        this.div.style.height      = height;
-        
-        this.div.style.display     = 'inline';
-
-
         this.value                 = defaultValue;
     
         this.min                   = min;
@@ -189,91 +153,87 @@ extends EventTarget
 
         this.initTextbox();
         this.initEvents ();
-
-
-        this.onstartchange = new Event('startchange');
-        this.onchange      = new Event('change');
-        this.onconfirm     = new Event('confirm');
     }
 
 
 
-    copy()
-    {
-        const copy = new NumberControl(
-            null,
-            null,
-            this.width,
-            this.height,
-            this.id,
-            this.name,
-            this.showName,
-            this.defaultValue);
+    // copy()
+    // {
+    //     const copy = new NumberControl(
+    //         null,
+    //         null,
+    //         this.id,
+    //         this.name,
+    //         this.showName,
+    //         this.defaultValue);
 
 
-        copy.value                 = this.value;
-                
-        copy.min                   = this.min;
-        copy.max                   = this.max;
-           
-        copy.displayMin            = this.displayMin;
-        copy.displayMax            = this.displayMax;
-           
-        copy.thinMinus             = this.thinMinus;
-        copy.displayAbsolute       = this.displayAbsolute;
-      
-        copy.epsilon               = this.epsilon;
-      
-        copy.acc                   = this.acc;
-      
-        copy.dec                   = this.dec;
-        copy.displayDec            = this.displayDec;
-      
-        copy.valueScale            = this.valueScale;
-      
-        copy.suffix                = this.suffix;
-        copy.valueCanContainSuffix = this.valueCanCouffix;
-
-        copy.dragReverse           = this.dragReverse;
-        copy.dragScale             = this.dragScale;
-        copy.wheelScale            = this.wheelScale;
-
-        copy. backStyleLight       = this. backStyleLight;
-        copy.valueStyleLight       = this.valueStyleLight;
-        copy. textStyleLight       = this. textStyleLight;
-
-        copy.fontSize              = this.fontSize;
-
-
-        copy.wrapValue             = this.wrapValue;
-
-        copy.showHex               = this.showHex;
-
-        copy.enableChangeEvent     = this.enableChangeEvent;
-
-        copy.successOnFocusOut     = this.successOnFocusOut;
-        copy.keyBlur               = this.keyBlur;
-
-        copy.pointerEvents         = this.pointerEvents;
-        copy.readOnly              = this.readOnly;
-
-        copy.allowEditDecimals     = this.allowEditDecimals;
-
-        copy.valueText             = this.valueText;
-        copy.overrideText          = this.overrideText;
-
-        copy.showNanValueName      = this.showNanValueName;
-        copy.showBar               = this.showBar;
-
-        copy.barTop                = this.barTop;
-        copy.barBottom             = this.barBottom;
-
-        copy.ranges                = this.ranges.map(r => r.copy());
-
-        copy.options               = [...this.options];
+    //     copy.width                 = this.width;
+    //     copy.height                = this.height;
         
-        return copy;
-    }
+    //     copy.value                 = this.value;
+                
+    //     copy.min                   = this.min;
+    //     copy.max                   = this.max;
+           
+    //     copy.displayMin            = this.displayMin;
+    //     copy.displayMax            = this.displayMax;
+           
+    //     copy.thinMinus             = this.thinMinus;
+    //     copy.displayAbsolute       = this.displayAbsolute;
+      
+    //     copy.epsilon               = this.epsilon;
+      
+    //     copy.acc                   = this.acc;
+      
+    //     copy.dec                   = this.dec;
+    //     copy.displayDec            = this.displayDec;
+      
+    //     copy.valueScale            = this.valueScale;
+      
+    //     copy.suffix                = this.suffix;
+    //     copy.valueCanContainSuffix = this.valueCanCouffix;
+
+    //     copy.dragReverse           = this.dragReverse;
+    //     copy.dragScale             = this.dragScale;
+    //     copy.wheelScale            = this.wheelScale;
+
+    //     copy. backStyleLight       = this. backStyleLight;
+    //     copy.valueStyleLight       = this.valueStyleLight;
+    //     copy. textStyleLight       = this. textStyleLight;
+
+    //     copy.fontSize              = this.fontSize;
+
+
+    //     copy.wrapValue             = this.wrapValue;
+
+    //     copy.showHex               = this.showHex;
+
+    //     copy.enableChangeEvent     = this.enableChangeEvent;
+
+    //     copy.successOnFocusOut     = this.successOnFocusOut;
+    //     copy.keyBlur               = this.keyBlur;
+
+    //     copy.pointerEvents         = this.pointerEvents;
+    //     copy.readOnly              = this.readOnly;
+
+    //     copy.allowEditDecimals     = this.allowEditDecimals;
+
+    //     copy.valueText             = this.valueText;
+    //     copy.overrideText          = this.overrideText;
+
+    //     copy.showNanValueName      = this.showNanValueName;
+    //     copy.showBar               = this.showBar;
+
+    //     copy.barTop                = this.barTop;
+    //     copy.barBottom             = this.barBottom;
+
+    //     copy.ranges                = this.ranges.map(r => r.copy());
+
+    //     copy.options               = [...this.options];
+        
+    //     return copy;
+    // }
 
 
 
@@ -357,17 +317,6 @@ extends EventTarget
 
 
 
-    updateMeasureData()
-    {
-        this.measureData = 
-        {
-            offsetRect: offsetRect(this.div),
-            clientRect: clientRect(this.div)
-        };
-    }
-
-
-    
     setSuffix(suffix, valueCanContainSuffix = false)
     {
         this.suffix                = suffix;
@@ -609,40 +558,5 @@ extends EventTarget
 
             return str;
         }
-    }
-
-
-
-    lockPointer(pointerId)
-    {
-        clearTimeout(this.clickTimer);
-
-        this.div.requestPointerLock =    
-               this.div.      requestPointerLock 
-            || this.div.   mozRequestPointerLock
-            || this.div.webkitRequestPointerLock;
-
-        this.div.requestPointerLock();
-    }
-
-
-
-    unlockPointer(pointerId)
-    {
-        document.exitPointerLock =    
-               document.      exitPointerLock    
-            || document.   mozExitPointerLock
-            || document.webkitExitPointerLock;
-
-        document.exitPointerLock();
-    }
-
-
-
-    isPointerLocked()
-    {
-        return (document.      pointerLockElement === this.div 
-             || document.   mozPointerLockElement === this.div
-             || document.webkitPointerLockElement === this.div);
     }
 }
