@@ -25,7 +25,7 @@ function rgba2hex(rgba)
 
 function validHex2rgb(hex) // can process invalid '-'
 {
-    return hex.indexOf(NAN_CHAR) > -1 
+    return hex.indexOf(NAN_DISPLAY) > -1 
            ? rgb_NaN 
            : hex2rgb(hex);
 }
@@ -34,7 +34,7 @@ function validHex2rgb(hex) // can process invalid '-'
 
 function validHex2rgba(hex) // can process invalid '-'
 {
-    return hex.indexOf(NAN_CHAR) > -1 
+    return hex.indexOf(NAN_DISPLAY) > -1 
            ? rgba_NaN 
            : hex2rgba(hex);
 }

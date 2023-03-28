@@ -2579,6 +2579,8 @@ a
 
     resize:               none;
     pointer-events:       none;
+
+    border-radius:        0.5px;
     
     /* box-shadow:           0 0 0 1px inset red; */
 }
@@ -2597,7 +2599,7 @@ a
     box-shadow:     0 0 0 1px var(--activeObjectColor) inset;
     visibility:     hidden;
     opacity:        0;
-    z-index:        1100;
+    /* z-index:        1100; */
 }
 
 
@@ -6175,14 +6177,14 @@ function logTrace()
 
 function printNum(num)
 {
-    return !isNaN(num) ? num : NAN_CHAR;
+    return !isNaN(num) ? num : NAN_DISPLAY;
 }
 
 
 
 function parseNum(str)
 {
-    return str == NAN_CHAR
+    return str == NAN_DISPLAY
          ? Number.NaN 
          : parseFloat(str);
 }
@@ -8157,7 +8159,7 @@ extends GValue
     {
         return !isNaN(this.value)
               ? numToString(this.value, this.decimals)
-              : NAN_CHAR; // only NumberValue can do this, other _Values have to list all members
+              : NAN_DISPLAY; // only NumberValue can do this, other _Values have to list all members
     }
 
 
@@ -8202,7 +8204,7 @@ function parseNumberValue(str)
 function parseSimpleNumberValue(str)
 {
     const num = 
-        str == NAN_CHAR
+        str == NAN_DISPLAY
         ? NumberValue.NaN
         : NumberValue.fromString(str);
 
@@ -8219,6 +8221,7 @@ extends GValue
 
     constructor(val = '')
     {
+        //console.trace();
         super(TEXT_VALUE);
 
         if (typeof val !== 'string')
@@ -8290,6 +8293,7 @@ extends GValue
 
 function parseTextValue(str)
 {
+    //console.log('str =', str);
     const text = new TextValue(str);
 
     return [text, 1];
@@ -8863,8 +8867,8 @@ extends GValue
 
 function parseStrokeValue(str, i = -1)
 {
-    if (   i <  0 && str    == NAN_CHAR
-        || i >= 0 && str[i] == NAN_CHAR)
+    if (   i <  0 && str    == NAN_DISPLAY
+        || i >= 0 && str[i] == NAN_DISPLAY)
         return [StrokeValue.NaN, 1];
 
 
@@ -9255,8 +9259,8 @@ extends ShapeBaseValue
 
 function parseRectangleValue(str, i = -1)
 {
-    if (   i <  0 && str    == NAN_CHAR
-        || i >= 0 && str[i] == NAN_CHAR)
+    if (   i <  0 && str    == NAN_DISPLAY
+        || i >= 0 && str[i] == NAN_DISPLAY)
         return [RectangleValue.NaN, 1];
 
 
@@ -9504,7 +9508,7 @@ extends ShapeBaseValue
 
 function parseEllipseValue(str)
 {
-    if (str == NAN_CHAR)
+    if (str == NAN_DISPLAY)
         return EllipseValue.NaN;
 
     const rect = str.split(' ');
@@ -9640,7 +9644,7 @@ extends ShapeBaseValue
 
 function parsePolygonValue(str)
 {
-    if (str == NAN_CHAR)
+    if (str == NAN_DISPLAY)
         return PolygonValue.NaN;
 
     const poly = str.split(' ');
@@ -9787,7 +9791,7 @@ extends ShapeBaseValue
 
 function parseStarValue(str)
 {
-    if (str == NAN_CHAR)
+    if (str == NAN_DISPLAY)
         return StarValue.NaN;
 
     const star = str.split(' ');
@@ -15675,7 +15679,7 @@ function genPushUpdateValue(parse, nodeId, paramId, value, forceUpdate = false)
         {
             nodeId:  nodeId,
             paramId: paramId,
-            type:    value.type, // needed to correctly parse NAN_CHAR
+            type:    value.type, // needed to correctly parse NAN_DISPLAY
             value:   value
         });
     }
@@ -15882,7 +15886,7 @@ function genQueueChunk(requestId, actionId, updateNodeId, updateParamId, nodeVal
         updateNodeId:  updateNodeId,
         updateParamId: updateParamId,
         chunkId:       nodeValChunkId,
-        values:        [...nodeValChunk].map(v => v ? v.toString() : NAN_CHAR),
+        values:        [...nodeValChunk].map(v => v ? v.toString() : NAN_DISPLAY),
         objects:       [...objChunk],
         styles:        [...styleChunk],
         updatedNodes:  updatedNodes,
@@ -17923,6 +17927,8 @@ function genParseTextValue(parse)
     parse.pos++; // tag
 
     const val = parse.move();
+    console.log('parse.request =', parse.request);
+    console.log('val =', val);
 
     if (parse.settings.logRequests) 
         logReqValue(TEXT_VALUE, val, parse);
@@ -19965,7 +19971,7 @@ function rgba2hex(rgba)
 
 function validHex2rgb(hex) // can process invalid '-'
 {
-    return hex.indexOf(NAN_CHAR) > -1 
+    return hex.indexOf(NAN_DISPLAY) > -1 
            ? rgb_NaN 
            : hex2rgb(hex);
 }
@@ -19974,7 +19980,7 @@ function validHex2rgb(hex) // can process invalid '-'
 
 function validHex2rgba(hex) // can process invalid '-'
 {
-    return hex.indexOf(NAN_CHAR) > -1 
+    return hex.indexOf(NAN_DISPLAY) > -1 
            ? rgba_NaN 
            : hex2rgba(hex);
 }
@@ -23449,14 +23455,14 @@ function logTrace()
 
 function printNum(num)
 {
-    return !isNaN(num) ? num : NAN_CHAR;
+    return !isNaN(num) ? num : NAN_DISPLAY;
 }
 
 
 
 function parseNum(str)
 {
-    return str == NAN_CHAR
+    return str == NAN_DISPLAY
          ? Number.NaN 
          : parseFloat(str);
 }
@@ -25927,7 +25933,7 @@ function rgba2hex(rgba)
 
 function validHex2rgb(hex) // can process invalid '-'
 {
-    return hex.indexOf(NAN_CHAR) > -1 
+    return hex.indexOf(NAN_DISPLAY) > -1 
            ? rgb_NaN 
            : hex2rgb(hex);
 }
@@ -25936,7 +25942,7 @@ function validHex2rgb(hex) // can process invalid '-'
 
 function validHex2rgba(hex) // can process invalid '-'
 {
-    return hex.indexOf(NAN_CHAR) > -1 
+    return hex.indexOf(NAN_DISPLAY) > -1 
            ? rgba_NaN 
            : hex2rgba(hex);
 }
@@ -27728,7 +27734,7 @@ extends GValue
     {
         return !isNaN(this.value)
               ? numToString(this.value, this.decimals)
-              : NAN_CHAR; // only NumberValue can do this, other _Values have to list all members
+              : NAN_DISPLAY; // only NumberValue can do this, other _Values have to list all members
     }
 
 
@@ -27773,7 +27779,7 @@ function parseNumberValue(str)
 function parseSimpleNumberValue(str)
 {
     const num = 
-        str == NAN_CHAR
+        str == NAN_DISPLAY
         ? NumberValue.NaN
         : NumberValue.fromString(str);
 
@@ -27790,6 +27796,7 @@ extends GValue
 
     constructor(val = '')
     {
+        //console.trace();
         super(TEXT_VALUE);
 
         if (typeof val !== 'string')
@@ -27861,6 +27868,7 @@ extends GValue
 
 function parseTextValue(str)
 {
+    //console.log('str =', str);
     const text = new TextValue(str);
 
     return [text, 1];
@@ -28434,8 +28442,8 @@ extends GValue
 
 function parseStrokeValue(str, i = -1)
 {
-    if (   i <  0 && str    == NAN_CHAR
-        || i >= 0 && str[i] == NAN_CHAR)
+    if (   i <  0 && str    == NAN_DISPLAY
+        || i >= 0 && str[i] == NAN_DISPLAY)
         return [StrokeValue.NaN, 1];
 
 
@@ -28826,8 +28834,8 @@ extends ShapeBaseValue
 
 function parseRectangleValue(str, i = -1)
 {
-    if (   i <  0 && str    == NAN_CHAR
-        || i >= 0 && str[i] == NAN_CHAR)
+    if (   i <  0 && str    == NAN_DISPLAY
+        || i >= 0 && str[i] == NAN_DISPLAY)
         return [RectangleValue.NaN, 1];
 
 
@@ -29075,7 +29083,7 @@ extends ShapeBaseValue
 
 function parseEllipseValue(str)
 {
-    if (str == NAN_CHAR)
+    if (str == NAN_DISPLAY)
         return EllipseValue.NaN;
 
     const rect = str.split(' ');
@@ -29211,7 +29219,7 @@ extends ShapeBaseValue
 
 function parsePolygonValue(str)
 {
-    if (str == NAN_CHAR)
+    if (str == NAN_DISPLAY)
         return PolygonValue.NaN;
 
     const poly = str.split(' ');
@@ -29358,7 +29366,7 @@ extends ShapeBaseValue
 
 function parseStarValue(str)
 {
-    if (str == NAN_CHAR)
+    if (str == NAN_DISPLAY)
         return StarValue.NaN;
 
     const star = str.split(' ');
@@ -35882,13 +35890,13 @@ NumberControl.prototype.initTextbox = function()
                 if (   e.shiftKey 
                     && index > 0)
                 {
-                    while (params[--index].controls[0].readOnly);
+                    while (params[--index].controls[0].readOnly); // ; on purpose
                     params[index].controls[0].showTextbox();
                 }
                 else if (!e.shiftKey 
                       && index < params.length-1) 
                 {
-                    while (params[++index].controls[0].readOnly);
+                    while (params[++index].controls[0].readOnly); // ; on purpose
                     params[index].controls[0].showTextbox();
                 }
             }
@@ -35996,7 +36004,7 @@ NumberControl.prototype.initTextbox = function()
 
             if (      e.key.length == 1
                    && !isDigit(e.key)
-                   && e.key != NAN_CHAR
+                   && e.key != NAN_DISPLAY
                    && (   !this.valueCanContainSuffix
                        || !this.suffix.includes(e.key))
                    && (   !this.showHex 
@@ -36091,14 +36099,14 @@ NumberControl.prototype.initTextbox = function()
         
         
         let val = 
-            value.trim() == NAN_CHAR 
+            value.trim() == NAN_DISPLAY 
             ? Number.NaN 
             : (this.showHex 
                ? parseInt(value, 16) 
                : parseFloat(value));
 
         let savedVal = 
-            savedValue.trim() == NAN_CHAR  
+            savedValue.trim() == NAN_DISPLAY  
             ? Number.NaN 
             : (this.showHex 
                ? parseInt(savedValue, 16) 
@@ -36124,7 +36132,7 @@ NumberControl.prototype.initTextbox = function()
             {
                 this.setValue(
                        value.trim() != '' 
-                    && value.trim() != NAN_CHAR
+                    && value.trim() != NAN_DISPLAY
                     ? val 
                     : savedVal);
             }
@@ -36139,7 +36147,7 @@ NumberControl.prototype.initTextbox = function()
 
         if (   this.inFocus
             && focusControl)
-            this.focus();
+            this.div.focus();
     };    
 };
 
@@ -36174,14 +36182,17 @@ NumberControl.prototype.showTextbox = function()
 NumberControl.prototype.updateTextbox = function()
 {
     this.textbox.value =
-        (isNaN(this.value)
-         ? NAN_CHAR
-         : numToString(
-               this.value * this.valueScale, 
-               this.displayDec, 
-               this.showHex
-           ).toUpperCase())
-        + (this.valueCanContainSuffix ? this.suffix : '');
+        (   isNaN(this.value)
+            ? NAN_DISPLAY
+            : numToString(
+                  this.value * this.valueScale, 
+                  this.displayDec, 
+                  this.showHex
+              ).toUpperCase())
+         + (  !isNaN(this.value)
+            && this.valueCanContainSuffix 
+            ? this.suffix 
+            : '');
         
     this.textbox.savedValue = this.textbox.value;
 };
@@ -37024,7 +37035,6 @@ extends Control
 
             
         const oldValue = this.value;
-
         
         if (   value == NAN_CHAR && oldValue != NAN_CHAR
             || value != NAN_CHAR && oldValue == NAN_CHAR)
@@ -37072,13 +37082,56 @@ extends Control
         this.focus.style.width  = sw;
         this.focus.style.height = sh;
     };
+
+
+
+    updateFocusBorder()
+    {
+        if (this.buttonDown0)
+        {
+            if (   !this.param
+                || !this.param.node.selected)
+                this.focus.style.boxShadow = '0 0 0 1px var(--figma-color-bg-brand) inset';
+
+            else
+            {
+                this.focus.style.boxShadow = '0 1px 0 0 var(--figma-color-bg-brand) inset';
+                    
+                if (this.param.index < this.param.node.params.length-1)
+                    this.focus.style.boxShadow += ', 0 -1px 0 0 var(--figma-color-bg-brand) inset';
+            }
+        }
+        else
+        {
+            const colShadow = 
+                darkMode
+                ? 'rgba(255, 255, 255, 0.1)'
+                : 'rgba(0, 0, 0, 0.1)';
+
+            if (this.param)
+            {
+                this.focus.style.boxShadow = '0 1px 0 0 ' + colShadow + ' inset';
+
+                if (    this.param.node
+                    &&  this.param.node.params.includes(this.param)
+                    && !isLastInArray(this.param.node.params, this.param))
+                    this.focus.style.boxShadow += ', 0 -1px 0 0 ' + colShadow + ' inset';
+            }
+            else
+            {
+                this.focus.style.boxShadow  = '0 0 0 1px ' + colShadow + ' inset ';
+            }
+        }
+    }
 }
 
 
 TextControl.prototype.initTextarea = function()
 {
     this.textarea = createTextarea('textControlTextarea');
-    this.textarea.control = this;
+
+    this.textarea.control     = this;
+    this.textarea.placeholder = '. . .';
 
     this.textarea.style.height = 20;
 
@@ -37402,8 +37455,7 @@ TextControl.prototype.initTextarea = function()
             if (success) 
             {
                 this.setValue(
-                       value.trim() != '' 
-                    && value.trim() != NAN_CHAR
+                    value.trim() != NAN_CHAR
                     ? val 
                     : savedVal);
             }
@@ -37415,9 +37467,16 @@ TextControl.prototype.initTextarea = function()
         this.textarea.blur();
 
 
+        // this.focus.style.visibility = 'hidden';
+        // this.focus.style.opacity    = 0;
+
+
+        this.textarea.style.boxShadow = 'none';
+
+
         if (   this.inFocus
             && focusControl)
-            this.focus();
+            this.div.focus();
     };    
 };
 
@@ -37430,19 +37489,19 @@ TextControl.prototype.showTextarea = function()
         && !this.clicked;
 
         
+    this.focus.style.visibility = 'hidden';
+    this.focus.style.opacity    = 0;
+
+
     this.textarea.style.boxShadow = '0 0 0 1px var(--figma-color-bg-brand)';
     this.textarea.style.outline   = 'none';
-    this.textarea.style.textAlign = 'center';
-
+    //this.textarea.style.textAlign = 'center';
 
     this.updateTextarea();
-    
-    //this.div.parentNode.appendChild(this.textarea);
+
     
     this.textarea.focus();
     this.textarea.select();
-
-    //this.textarea.style.cursor = 'default';
 };
 
 
@@ -37476,29 +37535,10 @@ TextControl.prototype.initEvents = function()
         if (   !this.view.spaceDown
             &&  this.pointerEvents)
         {
-            this.div.style.cursor = 
-                this.view.tempConn 
-                ? 'default' 
-                : 'text';
+            this.div.style.cursor = this.view.tempConn ? 'default' : 'text';
 
-            const colShadow = 
-                darkMode
-                ? 'rgba(255, 255, 255, 0.1)'
-                : 'rgba(0, 0, 0, 0.1)';
 
-            if (this.param)
-            {
-                this.focus.style.boxShadow = '0 1px 0 0 ' + colShadow + ' inset';
-
-                if (    this.param.node
-                    &&  this.param.node.params.includes(this.param)
-                    && !isLastInArray(this.param.node.params, this.param))
-                    this.focus.style.boxShadow += ', 0 -1px 0 0 ' + colShadow + ' inset';
-            }
-            else
-            {
-                this.focus.style.boxShadow  = '0 0 0 1px ' + colShadow + ' inset ';
-            }
+            this.updateFocusBorder();
 
 
             this.focus.style.visibility = 'visible';
@@ -37548,41 +37588,19 @@ TextControl.prototype.initEvents = function()
                 
             this.buttonDown0  = true;
             this.buttonDown0_ = true;
-            this.moved        = false;
             this.clientX      = e.clientX;
-            this.movedX       = 0;
 
 
             if (!this.readOnly)
             {
                 this.oldValue   = this.value;
-                // this.startValue = this.value;
-                // this.prevValue  = this.value;
-                // this.sx         = e.clientX;
-
-                // this.clickTimer = setTimeout(() => 
-                // {
-                //     if (!document.menuHadFocus)
-                //     {
-                //         this.moved = true;
-                //         //this.lockPointer(e.pointerId);
-                //     }
-                // }, 
-                // 500);
+                this.startValue = this.value;
+                this.prevValue  = this.value;
+                this.sx         = e.clientX;
             }
 
 
-            if (   !this.param
-                || !this.param.node.selected)
-                this.focus.style.boxShadow = '0 0 0 1px var(--figma-color-bg-brand) inset';
-
-            else
-            {
-                this.focus.style.boxShadow = '0 1px 0 0 var(--figma-color-bg-brand) inset';
-                    
-                if (this.param.index < this.param.node.params.length-1)
-                    this.focus.style.boxShadow += ', 0 -1px 0 0 var(--figma-color-bg-brand) inset';
-            }
+            this.updateFocusBorder();
 
 
             // I don't want to focus here, but I do want to take focus away from elsewhere
@@ -37683,10 +37701,6 @@ TextControl.prototype.initEvents = function()
                 this.view.tempConn.input.updateControl();
             }
         }
-        else if (this.readOnly)
-        {
-            this.moved = true;
-        }
     });
     
     
@@ -37753,6 +37767,7 @@ TextControl.prototype.initEvents = function()
         this.buttonDown1 = false;
         this.buttonDown2 = false;
         this.mouseOver   = false;
+        
         this.update();
     });
 
@@ -37781,17 +37796,6 @@ TextControl.prototype.initEvents = function()
             }
         }
         
-        // else if (   this.moved
-        //     || document.menuHadFocus)
-        // {
-        //     this.unlockPointer(e.pointerId);
-
-        //     if (this.param)
-        //         this.param.noUpdate = false;  
-
-        //     return;            
-        // }
-
         else if (this.buttonDown0_)
         {
             this.clicked = true;
@@ -38256,7 +38260,7 @@ ColorControl.prototype.initTextbox = function()
     {
         if (   this.textbox.value ==     NAN_DISPLAY
             || this.textbox.value == UNKNOWN_DISPLAY)
-            this.textbox.value = NAN_CHAR;
+            this.textbox.value = NAN_DISPLAY;
     });
 
 
@@ -38371,7 +38375,7 @@ ColorControl.prototype.initTextbox = function()
             let curVal = this.textbox.value;
 
             if (      e.key.length == 1
-                   && e.key != NAN_CHAR
+                   && e.key != NAN_DISPLAY
                    && !isDigit(e.key)
                    && !isSimpleLatinLetter(e.key)
                 ||     this.readOnly
@@ -38455,7 +38459,7 @@ ColorControl.prototype.initTextbox = function()
         // const rgb = validHex2rgb(webColor ? webColor.color : e.detail.value);
         // const val = ColorValue.fromRgb(scaleRgb(rgb));
 
-        
+
         let rgb      = validHex2rgb(value);
         let savedRgb = validHex2rgb(savedValue);
         
@@ -38482,7 +38486,7 @@ ColorControl.prototype.initTextbox = function()
 
         if (   this.inFocus
             && focusControl)
-            this.focus();
+            this.div.focus();
     };    
 };
 
@@ -38523,7 +38527,6 @@ ColorControl.prototype.updateTextbox = function()
         : rgbIsValid(rgb)
           ? rgb2hex(rgb).toUpperCase()
           : UNKNOWN_CHAR;
-                       
     
     this.textbox.savedValue = this.textbox.value;
 };
@@ -38612,16 +38615,6 @@ ColorControl.prototype.initEvents = function()
                 this.startValue = this.value;
                 this.prevValue  = this.value;
                 this.sx         = e.clientX;
-
-                // this.clickTimer = setTimeout(() => 
-                // {
-                //     if (!document.menuHadFocus)
-                //     {
-                //         this.moved = true;
-                //         this.lockPointer(e.pointerId);
-                //     }
-                // }, 
-                // 500);
             }
 
 
@@ -38796,6 +38789,7 @@ ColorControl.prototype.initEvents = function()
         this.buttonDown1 = false;
         this.buttonDown2 = false;
         this.mouseOver   = false;
+        
         this.update();
     });
 
@@ -44462,7 +44456,7 @@ extends Parameter
     {
         // 'this' is the output
 
-        console.assert(value.type == TEXT_VALUE, 'expected COLOR_VALUE in backInit()');
+        console.assert(value.type == TEXT_VALUE, 'expected TEXT_VALUE in backInit()');
         
         this.param.setValue(value, false, true, false);
     }
@@ -44535,6 +44529,7 @@ extends Parameter
 
 
         const request = [];
+        console.log('this.controls[0].value =', this.controls[0].value);
 
 
         if (   this.input
@@ -44543,7 +44538,7 @@ extends Parameter
 
         else request.push( 
             TEXT_VALUE, 
-            this.value.toString());
+            this.controls[0].value.toString());
 
 
         return request;
@@ -44580,7 +44575,7 @@ extends Parameter
     
     loadParam(param)
     {
-        this.setValue(parseColorValue(param)[0], true, false, false);
+        this.setValue(parseTextValue(param)[0], true, false, false);
     }
 }
 
@@ -48027,15 +48022,13 @@ class Operator
         const tab = TAB;
 
         let json =
-              pos + tab + '"type": "'    + this.type                      + '",\n'
-            + pos + tab + '"id": "'      + this.id                        + '",\n'
-            + pos + tab + '"name": "'    + this.name.replace('"', '\\\"') + '",\n'
-            + pos + tab + '"enabled": "' + boolToString(this.enabled)     + '",\n'
-            + pos + tab + '"x": "'       + this.div.style.left            + '",\n'
-            + pos + tab + '"y": "'       + this.div.style.top             + '",\n'
-            + pos + tab + '"z": "'       + this.graph.nodes.indexOf(this) + '",\n'
-            + pos + tab + '"width": "'   + this.div.offsetWidth           + '",\n'
-            + pos + tab + '"height": "'  + this.div.offsetHeight          + '"';
+              pos + tab + '"type": "'    + this.type                       + '",\n'
+            + pos + tab + '"id": "'      + this.id                         + '",\n'
+            + pos + tab + '"name": "'    + this.name.replace('"', '\\\"')  + '",\n'
+            + pos + tab + '"enabled": "' + boolToString(this.enabled)      + '",\n'
+            + pos + tab + '"x": "'       + parseFloat(this.div.style.left) + '",\n'
+            + pos + tab + '"y": "'       + parseFloat(this.div.style.top ) + '",\n'
+            + pos + tab + '"z": "'       + this.graph.nodes.indexOf(this)  + '"';
 
         if (this.active)
             json += ',\n' + pos + tab + '"active": "' + this.active + '"';
@@ -48996,7 +48989,7 @@ Operator.prototype.initLabelTextbox = function()
             this.updateHeaderLabel();
             
             if (this.inFocus)
-                this.focus();
+                this.div.focus();
         });
     };    
 }
@@ -49784,8 +49777,9 @@ extends OperatorBase
 
         let json = super.toJsonBase(nTab);
 
-        json += ',\n' + pos + tab + '"width": "'  + this.div.offsetWidth  + 'px"';
-        json += ',\n' + pos + tab + '"height": "' + this.div.offsetHeight + 'px"';
+        json += 
+              ',\n' + pos + tab + '"width": "'  + this.div.offsetWidth  + '"'
+            + ',\n' + pos + tab + '"height": "' + this.div.offsetHeight + '"';
 
         return json;
     }
@@ -51948,14 +51942,13 @@ extends ResizableBase
     {
         super(TEXT, 'text');
 
-        this.canResize = true;
 
         this.addInput (new Input (TEXT_TYPES, getNodeInputValuesForUndo, this.input_getBackInitValue));
         this.addOutput(new Output([TEXT_VALUE], this.output_genRequest, getNodeOutputValuesForUndo, this.output_backInit));
 
         this.addParam(this.paramValue = new TextParam('value', '', false, false));
 
-        //this.alwaysLoadParams = true;
+        this.alwaysLoadParams = true;
     }
 
 
@@ -52556,7 +52549,7 @@ extends OpColorBase
             {
                 request.push(
                     ...this.node.paramSpace.genRequest(gen),
-                    NUMBER_VALUE, this.node.prevSpace.isValid() ? numToString(colorSpaceIndex(this.node.prevSpace)) : NAN_CHAR,
+                    NUMBER_VALUE, this.node.prevSpace.isValid() ? numToString(colorSpaceIndex(this.node.prevSpace)) : NAN_DISPLAY,
                     NUMBER_VALUE, numToString(this.node._color[1] * rgbScale[0]),
                     NUMBER_VALUE, numToString(this.node._color[2] * rgbScale[1]),
                     NUMBER_VALUE, numToString(this.node._color[3] * rgbScale[2]));
@@ -52565,7 +52558,7 @@ extends OpColorBase
             {
                 request.push(
                     ...this.node.paramSpace.genRequest(gen),
-                    NUMBER_VALUE, this.node.prevSpace != NAN_CHAR ? numToString(colorSpaceIndex(this.node.prevSpace)) : NAN_CHAR,
+                    NUMBER_VALUE, this.node.prevSpace != NAN_DISPLAY ? numToString(colorSpaceIndex(this.node.prevSpace)) : NAN_DISPLAY,
                     ...this.node.param1.genRequest(gen),
                     ...this.node.param2.genRequest(gen),
                     ...this.node.param3.genRequest(gen));
@@ -52639,7 +52632,7 @@ extends OpColorBase
                 this.paramColor.setValue(ColorValue.NaN, false, true, false);
 
                 this._color    = dataColor_NaN;
-                this.prevSpace = NAN_CHAR;
+                this.prevSpace = NAN_DISPLAY;
 
                 this.outputs[0].wireColor = rgb_NaN;
             }
@@ -52650,7 +52643,7 @@ extends OpColorBase
             removeParamDivs(this);
 
             this._color    = dataColor_NaN;
-            this.prevSpace = NAN_CHAR;
+            this.prevSpace = NAN_DISPLAY;
         }
     }
 
@@ -61272,7 +61265,8 @@ var allUpdateNodes   = [];
 // uiClearLocalData('windowHeight');
 //uiClearLocalData('productKey');
 
-//uiClearLocalData('showWhatsNew');
+// uiClearLocalData('showRequests');
+// uiClearLocalData('showValueUpdates');
 
 //uiSetLocalData('enableBetaFeatures', 'true');
 //uiSetLocalData('logRawLoading', 'false');
@@ -61283,7 +61277,6 @@ var allUpdateNodes   = [];
 
 
 //uiRemoveAllSavedNodesAndConns();
-
 
 
 var currentUser = null;
@@ -64139,7 +64132,9 @@ function uiUpdateValuesAndObjects(requestId, actionId, updateNodeId, updateParam
 {
     // console.log('requestId =',       requestId);
     // console.log('lastRequestedId =', lastRequestedId);
+    console.log('values =', values);
 
+    
     if (requestId < lastRequestedId) 
         return;
     

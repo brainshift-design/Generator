@@ -155,7 +155,7 @@ Operator.prototype.initLabelTextbox = function()
             this.updateHeaderLabel();
             
             if (this.inFocus)
-                this.focus();
+                this.div.focus();
         });
     };    
 }

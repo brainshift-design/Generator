@@ -222,8 +222,9 @@ extends OperatorBase
 
         let json = super.toJsonBase(nTab);
 
-        json += ',\n' + pos + tab + '"width": "'  + this.div.offsetWidth  + 'px"';
-        json += ',\n' + pos + tab + '"height": "' + this.div.offsetHeight + 'px"';
+        json += 
+              ',\n' + pos + tab + '"width": "'  + this.div.offsetWidth  + '"'
+            + ',\n' + pos + tab + '"height": "' + this.div.offsetHeight + '"';
 
         return json;
     }

@@ -7,6 +7,7 @@ extends GValue
 
     constructor(val = '')
     {
+        //console.trace();
         super(TEXT_VALUE);
 
         if (typeof val !== 'string')
@@ -78,6 +79,7 @@ extends GValue
 
 function parseTextValue(str)
 {
+    //console.log('str =', str);
     const text = new TextValue(str);
 
     return [text, 1];

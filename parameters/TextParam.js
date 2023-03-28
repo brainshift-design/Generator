@@ -80,7 +80,7 @@ extends Parameter
     {
         // 'this' is the output
 
-        console.assert(value.type == TEXT_VALUE, 'expected COLOR_VALUE in backInit()');
+        console.assert(value.type == TEXT_VALUE, 'expected TEXT_VALUE in backInit()');
         
         this.param.setValue(value, false, true, false);
     }
@@ -153,6 +153,7 @@ extends Parameter
 
 
         const request = [];
+        console.log('this.controls[0].value =', this.controls[0].value);
 
 
         if (   this.input
@@ -161,7 +162,7 @@ extends Parameter
 
         else request.push( 
             TEXT_VALUE, 
-            this.value.toString());
+            this.controls[0].value.toString());
 
 
         return request;
@@ -198,6 +199,6 @@ extends Parameter
     
     loadParam(param)
     {
-        this.setValue(parseColorValue(param)[0], true, false, false);
+        this.setValue(parseTextValue(param)[0], true, false, false);
     }
 }

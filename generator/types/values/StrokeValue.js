@@ -189,8 +189,8 @@ extends GValue
 
 function parseStrokeValue(str, i = -1)
 {
-    if (   i <  0 && str    == NAN_CHAR
-        || i >= 0 && str[i] == NAN_CHAR)
+    if (   i <  0 && str    == NAN_DISPLAY
+        || i >= 0 && str[i] == NAN_DISPLAY)
         return [StrokeValue.NaN, 1];
 
 

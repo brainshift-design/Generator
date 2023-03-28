@@ -19,7 +19,8 @@ var allUpdateNodes   = [];
 // uiClearLocalData('windowHeight');
 //uiClearLocalData('productKey');
 
-//uiClearLocalData('showWhatsNew');
+// uiClearLocalData('showRequests');
+// uiClearLocalData('showValueUpdates');
 
 //uiSetLocalData('enableBetaFeatures', 'true');
 //uiSetLocalData('logRawLoading', 'false');
@@ -30,7 +31,6 @@ var allUpdateNodes   = [];
 
 
 //uiRemoveAllSavedNodesAndConns();
-
 
 
 var currentUser = null;

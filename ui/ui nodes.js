@@ -820,7 +820,9 @@ function uiUpdateValuesAndObjects(requestId, actionId, updateNodeId, updateParam
 {
     // console.log('requestId =',       requestId);
     // console.log('lastRequestedId =', lastRequestedId);
+    console.log('values =', values);
 
+    
     if (requestId < lastRequestedId) 
         return;
     

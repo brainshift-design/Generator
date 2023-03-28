@@ -89,13 +89,13 @@ NumberControl.prototype.initTextbox = function()
                 if (   e.shiftKey 
                     && index > 0)
                 {
-                    while (params[--index].controls[0].readOnly);
+                    while (params[--index].controls[0].readOnly); // ; on purpose
                     params[index].controls[0].showTextbox();
                 }
                 else if (!e.shiftKey 
                       && index < params.length-1) 
                 {
-                    while (params[++index].controls[0].readOnly);
+                    while (params[++index].controls[0].readOnly); // ; on purpose
                     params[index].controls[0].showTextbox();
                 }
             }
@@ -203,7 +203,7 @@ NumberControl.prototype.initTextbox = function()
 
             if (      e.key.length == 1
                    && !isDigit(e.key)
-                   && e.key != NAN_CHAR
+                   && e.key != NAN_DISPLAY
                    && (   !this.valueCanContainSuffix
                        || !this.suffix.includes(e.key))
                    && (   !this.showHex 
@@ -298,14 +298,14 @@ NumberControl.prototype.initTextbox = function()
         
         
         let val = 
-            value.trim() == NAN_CHAR 
+            value.trim() == NAN_DISPLAY 
             ? Number.NaN 
             : (this.showHex 
                ? parseInt(value, 16) 
                : parseFloat(value));
 
         let savedVal = 
-            savedValue.trim() == NAN_CHAR  
+            savedValue.trim() == NAN_DISPLAY  
             ? Number.NaN 
             : (this.showHex 
                ? parseInt(savedValue, 16) 
@@ -331,7 +331,7 @@ NumberControl.prototype.initTextbox = function()
             {
                 this.setValue(
                        value.trim() != '' 
-                    && value.trim() != NAN_CHAR
+                    && value.trim() != NAN_DISPLAY
                     ? val 
                     : savedVal);
             }
@@ -346,7 +346,7 @@ NumberControl.prototype.initTextbox = function()
 
         if (   this.inFocus
             && focusControl)
-            this.focus();
+            this.div.focus();
     };    
 };
 
@@ -381,14 +381,17 @@ NumberControl.prototype.showTextbox = function()
 NumberControl.prototype.updateTextbox = function()
 {
     this.textbox.value =
-        (isNaN(this.value)
-         ? NAN_CHAR
-         : numToString(
-               this.value * this.valueScale, 
-               this.displayDec, 
-               this.showHex
-           ).toUpperCase())
-        + (this.valueCanContainSuffix ? this.suffix : '');
+        (   isNaN(this.value)
+            ? NAN_DISPLAY
+            : numToString(
+                  this.value * this.valueScale, 
+                  this.displayDec, 
+                  this.showHex
+              ).toUpperCase())
+         + (  !isNaN(this.value)
+            && this.valueCanContainSuffix 
+            ? this.suffix 
+            : '');
         
     this.textbox.savedValue = this.textbox.value;
 };

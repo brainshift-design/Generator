@@ -35,6 +35,8 @@
 
     resize:               none;
     pointer-events:       none;
+
+    border-radius:        0.5px;
     
     /* box-shadow:           0 0 0 1px inset red; */
 }
@@ -53,5 +55,5 @@
     box-shadow:     0 0 0 1px var(--activeObjectColor) inset;
     visibility:     hidden;
     opacity:        0;
-    z-index:        1100;
+    /* z-index:        1100; */
 }

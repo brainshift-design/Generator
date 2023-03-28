@@ -15,29 +15,10 @@ TextControl.prototype.initEvents = function()
         if (   !this.view.spaceDown
             &&  this.pointerEvents)
         {
-            this.div.style.cursor = 
-                this.view.tempConn 
-                ? 'default' 
-                : 'text';
+            this.div.style.cursor = this.view.tempConn ? 'default' : 'text';
 
-            const colShadow = 
-                darkMode
-                ? 'rgba(255, 255, 255, 0.1)'
-                : 'rgba(0, 0, 0, 0.1)';
 
-            if (this.param)
-            {
-                this.focus.style.boxShadow = '0 1px 0 0 ' + colShadow + ' inset';
-
-                if (    this.param.node
-                    &&  this.param.node.params.includes(this.param)
-                    && !isLastInArray(this.param.node.params, this.param))
-                    this.focus.style.boxShadow += ', 0 -1px 0 0 ' + colShadow + ' inset';
-            }
-            else
-            {
-                this.focus.style.boxShadow  = '0 0 0 1px ' + colShadow + ' inset ';
-            }
+            this.updateFocusBorder();
 
 
             this.focus.style.visibility = 'visible';
@@ -87,41 +68,19 @@ TextControl.prototype.initEvents = function()
                 
             this.buttonDown0  = true;
             this.buttonDown0_ = true;
-            this.moved        = false;
             this.clientX      = e.clientX;
-            this.movedX       = 0;
 
 
             if (!this.readOnly)
             {
                 this.oldValue   = this.value;
-                // this.startValue = this.value;
-                // this.prevValue  = this.value;
-                // this.sx         = e.clientX;
-
-                // this.clickTimer = setTimeout(() => 
-                // {
-                //     if (!document.menuHadFocus)
-                //     {
-                //         this.moved = true;
-                //         //this.lockPointer(e.pointerId);
-                //     }
-                // }, 
-                // 500);
+                this.startValue = this.value;
+                this.prevValue  = this.value;
+                this.sx         = e.clientX;
             }
 
 
-            if (   !this.param
-                || !this.param.node.selected)
-                this.focus.style.boxShadow = '0 0 0 1px var(--figma-color-bg-brand) inset';
-
-            else
-            {
-                this.focus.style.boxShadow = '0 1px 0 0 var(--figma-color-bg-brand) inset';
-                    
-                if (this.param.index < this.param.node.params.length-1)
-                    this.focus.style.boxShadow += ', 0 -1px 0 0 var(--figma-color-bg-brand) inset';
-            }
+            this.updateFocusBorder();
 
 
             // I don't want to focus here, but I do want to take focus away from elsewhere
@@ -222,10 +181,6 @@ TextControl.prototype.initEvents = function()
                 this.view.tempConn.input.updateControl();
             }
         }
-        else if (this.readOnly)
-        {
-            this.moved = true;
-        }
     });
     
     
@@ -292,6 +247,7 @@ TextControl.prototype.initEvents = function()
         this.buttonDown1 = false;
         this.buttonDown2 = false;
         this.mouseOver   = false;
+        
         this.update();
     });
 
@@ -320,17 +276,6 @@ TextControl.prototype.initEvents = function()
             }
         }
         
-        // else if (   this.moved
-        //     || document.menuHadFocus)
-        // {
-        //     this.unlockPointer(e.pointerId);
-
-        //     if (this.param)
-        //         this.param.noUpdate = false;  
-
-        //     return;            
-        // }
-
         else if (this.buttonDown0_)
         {
             this.clicked = true;

@@ -2269,14 +2269,14 @@ function logTrace()
 
 function printNum(num)
 {
-    return !isNaN(num) ? num : NAN_CHAR;
+    return !isNaN(num) ? num : NAN_DISPLAY;
 }
 
 
 
 function parseNum(str)
 {
-    return str == NAN_CHAR
+    return str == NAN_DISPLAY
          ? Number.NaN 
          : parseFloat(str);
 }
@@ -4251,7 +4251,7 @@ extends GValue
     {
         return !isNaN(this.value)
               ? numToString(this.value, this.decimals)
-              : NAN_CHAR; // only NumberValue can do this, other _Values have to list all members
+              : NAN_DISPLAY; // only NumberValue can do this, other _Values have to list all members
     }
 
 
@@ -4296,7 +4296,7 @@ function parseNumberValue(str)
 function parseSimpleNumberValue(str)
 {
     const num = 
-        str == NAN_CHAR
+        str == NAN_DISPLAY
         ? NumberValue.NaN
         : NumberValue.fromString(str);
 
@@ -4313,6 +4313,7 @@ extends GValue
 
     constructor(val = '')
     {
+        //console.trace();
         super(TEXT_VALUE);
 
         if (typeof val !== 'string')
@@ -4384,6 +4385,7 @@ extends GValue
 
 function parseTextValue(str)
 {
+    //console.log('str =', str);
     const text = new TextValue(str);
 
     return [text, 1];
@@ -4957,8 +4959,8 @@ extends GValue
 
 function parseStrokeValue(str, i = -1)
 {
-    if (   i <  0 && str    == NAN_CHAR
-        || i >= 0 && str[i] == NAN_CHAR)
+    if (   i <  0 && str    == NAN_DISPLAY
+        || i >= 0 && str[i] == NAN_DISPLAY)
         return [StrokeValue.NaN, 1];
 
 
@@ -5349,8 +5351,8 @@ extends ShapeBaseValue
 
 function parseRectangleValue(str, i = -1)
 {
-    if (   i <  0 && str    == NAN_CHAR
-        || i >= 0 && str[i] == NAN_CHAR)
+    if (   i <  0 && str    == NAN_DISPLAY
+        || i >= 0 && str[i] == NAN_DISPLAY)
         return [RectangleValue.NaN, 1];
 
 
@@ -5598,7 +5600,7 @@ extends ShapeBaseValue
 
 function parseEllipseValue(str)
 {
-    if (str == NAN_CHAR)
+    if (str == NAN_DISPLAY)
         return EllipseValue.NaN;
 
     const rect = str.split(' ');
@@ -5734,7 +5736,7 @@ extends ShapeBaseValue
 
 function parsePolygonValue(str)
 {
-    if (str == NAN_CHAR)
+    if (str == NAN_DISPLAY)
         return PolygonValue.NaN;
 
     const poly = str.split(' ');
@@ -5881,7 +5883,7 @@ extends ShapeBaseValue
 
 function parseStarValue(str)
 {
-    if (str == NAN_CHAR)
+    if (str == NAN_DISPLAY)
         return StarValue.NaN;
 
     const star = str.split(' ');
@@ -11769,7 +11771,7 @@ function genPushUpdateValue(parse, nodeId, paramId, value, forceUpdate = false)
         {
             nodeId:  nodeId,
             paramId: paramId,
-            type:    value.type, // needed to correctly parse NAN_CHAR
+            type:    value.type, // needed to correctly parse NAN_DISPLAY
             value:   value
         });
     }
@@ -11976,7 +11978,7 @@ function genQueueChunk(requestId, actionId, updateNodeId, updateParamId, nodeVal
         updateNodeId:  updateNodeId,
         updateParamId: updateParamId,
         chunkId:       nodeValChunkId,
-        values:        [...nodeValChunk].map(v => v ? v.toString() : NAN_CHAR),
+        values:        [...nodeValChunk].map(v => v ? v.toString() : NAN_DISPLAY),
         objects:       [...objChunk],
         styles:        [...styleChunk],
         updatedNodes:  updatedNodes,
@@ -14017,6 +14019,8 @@ function genParseTextValue(parse)
     parse.pos++; // tag
 
     const val = parse.move();
+    console.log('parse.request =', parse.request);
+    console.log('val =', val);
 
     if (parse.settings.logRequests) 
         logReqValue(TEXT_VALUE, val, parse);
@@ -16059,7 +16063,7 @@ function rgba2hex(rgba)
 
 function validHex2rgb(hex) // can process invalid '-'
 {
-    return hex.indexOf(NAN_CHAR) > -1 
+    return hex.indexOf(NAN_DISPLAY) > -1 
            ? rgb_NaN 
            : hex2rgb(hex);
 }
@@ -16068,7 +16072,7 @@ function validHex2rgb(hex) // can process invalid '-'
 
 function validHex2rgba(hex) // can process invalid '-'
 {
-    return hex.indexOf(NAN_CHAR) > -1 
+    return hex.indexOf(NAN_DISPLAY) > -1 
            ? rgba_NaN 
            : hex2rgba(hex);
 }

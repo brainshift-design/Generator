@@ -37,7 +37,7 @@ ColorControl.prototype.initTextbox = function()
     {
         if (   this.textbox.value ==     NAN_DISPLAY
             || this.textbox.value == UNKNOWN_DISPLAY)
-            this.textbox.value = NAN_CHAR;
+            this.textbox.value = NAN_DISPLAY;
     });
 
 
@@ -152,7 +152,7 @@ ColorControl.prototype.initTextbox = function()
             let curVal = this.textbox.value;
 
             if (      e.key.length == 1
-                   && e.key != NAN_CHAR
+                   && e.key != NAN_DISPLAY
                    && !isDigit(e.key)
                    && !isSimpleLatinLetter(e.key)
                 ||     this.readOnly
@@ -236,7 +236,7 @@ ColorControl.prototype.initTextbox = function()
         // const rgb = validHex2rgb(webColor ? webColor.color : e.detail.value);
         // const val = ColorValue.fromRgb(scaleRgb(rgb));
 
-        
+
         let rgb      = validHex2rgb(value);
         let savedRgb = validHex2rgb(savedValue);
         
@@ -263,7 +263,7 @@ ColorControl.prototype.initTextbox = function()
 
         if (   this.inFocus
             && focusControl)
-            this.focus();
+            this.div.focus();
     };    
 };
 
@@ -304,7 +304,6 @@ ColorControl.prototype.updateTextbox = function()
         : rgbIsValid(rgb)
           ? rgb2hex(rgb).toUpperCase()
           : UNKNOWN_CHAR;
-                       
     
     this.textbox.savedValue = this.textbox.value;
 };

@@ -1,7 +1,9 @@
 TextControl.prototype.initTextarea = function()
 {
     this.textarea = createTextarea('textControlTextarea');
-    this.textarea.control = this;
+
+    this.textarea.control     = this;
+    this.textarea.placeholder = '. . .';
 
     this.textarea.style.height = 20;
 
@@ -325,8 +327,7 @@ TextControl.prototype.initTextarea = function()
             if (success) 
             {
                 this.setValue(
-                       value.trim() != '' 
-                    && value.trim() != NAN_CHAR
+                    value.trim() != NAN_CHAR
                     ? val 
                     : savedVal);
             }
@@ -338,9 +339,16 @@ TextControl.prototype.initTextarea = function()
         this.textarea.blur();
 
 
+        // this.focus.style.visibility = 'hidden';
+        // this.focus.style.opacity    = 0;
+
+
+        this.textarea.style.boxShadow = 'none';
+
+
         if (   this.inFocus
             && focusControl)
-            this.focus();
+            this.div.focus();
     };    
 };
 
@@ -353,19 +361,19 @@ TextControl.prototype.showTextarea = function()
         && !this.clicked;
 
         
+    this.focus.style.visibility = 'hidden';
+    this.focus.style.opacity    = 0;
+
+
     this.textarea.style.boxShadow = '0 0 0 1px var(--figma-color-bg-brand)';
     this.textarea.style.outline   = 'none';
-    this.textarea.style.textAlign = 'center';
-
+    //this.textarea.style.textAlign = 'center';
 
     this.updateTextarea();
-    
-    //this.div.parentNode.appendChild(this.textarea);
+
     
     this.textarea.focus();
     this.textarea.select();
-
-    //this.textarea.style.cursor = 'default';
 };
 
 

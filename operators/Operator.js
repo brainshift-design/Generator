@@ -870,15 +870,13 @@ class Operator
         const tab = TAB;
 
         let json =
-              pos + tab + '"type": "'    + this.type                      + '",\n'
-            + pos + tab + '"id": "'      + this.id                        + '",\n'
-            + pos + tab + '"name": "'    + this.name.replace('"', '\\\"') + '",\n'
-            + pos + tab + '"enabled": "' + boolToString(this.enabled)     + '",\n'
-            + pos + tab + '"x": "'       + this.div.style.left            + '",\n'
-            + pos + tab + '"y": "'       + this.div.style.top             + '",\n'
-            + pos + tab + '"z": "'       + this.graph.nodes.indexOf(this) + '",\n'
-            + pos + tab + '"width": "'   + this.div.offsetWidth           + '",\n'
-            + pos + tab + '"height": "'  + this.div.offsetHeight          + '"';
+              pos + tab + '"type": "'    + this.type                       + '",\n'
+            + pos + tab + '"id": "'      + this.id                         + '",\n'
+            + pos + tab + '"name": "'    + this.name.replace('"', '\\\"')  + '",\n'
+            + pos + tab + '"enabled": "' + boolToString(this.enabled)      + '",\n'
+            + pos + tab + '"x": "'       + parseFloat(this.div.style.left) + '",\n'
+            + pos + tab + '"y": "'       + parseFloat(this.div.style.top ) + '",\n'
+            + pos + tab + '"z": "'       + this.graph.nodes.indexOf(this)  + '"';
 
         if (this.active)
             json += ',\n' + pos + tab + '"active": "' + this.active + '"';

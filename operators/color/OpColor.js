@@ -238,7 +238,7 @@ extends OpColorBase
             {
                 request.push(
                     ...this.node.paramSpace.genRequest(gen),
-                    NUMBER_VALUE, this.node.prevSpace.isValid() ? numToString(colorSpaceIndex(this.node.prevSpace)) : NAN_CHAR,
+                    NUMBER_VALUE, this.node.prevSpace.isValid() ? numToString(colorSpaceIndex(this.node.prevSpace)) : NAN_DISPLAY,
                     NUMBER_VALUE, numToString(this.node._color[1] * rgbScale[0]),
                     NUMBER_VALUE, numToString(this.node._color[2] * rgbScale[1]),
                     NUMBER_VALUE, numToString(this.node._color[3] * rgbScale[2]));
@@ -247,7 +247,7 @@ extends OpColorBase
             {
                 request.push(
                     ...this.node.paramSpace.genRequest(gen),
-                    NUMBER_VALUE, this.node.prevSpace != NAN_CHAR ? numToString(colorSpaceIndex(this.node.prevSpace)) : NAN_CHAR,
+                    NUMBER_VALUE, this.node.prevSpace != NAN_DISPLAY ? numToString(colorSpaceIndex(this.node.prevSpace)) : NAN_DISPLAY,
                     ...this.node.param1.genRequest(gen),
                     ...this.node.param2.genRequest(gen),
                     ...this.node.param3.genRequest(gen));
@@ -321,7 +321,7 @@ extends OpColorBase
                 this.paramColor.setValue(ColorValue.NaN, false, true, false);
 
                 this._color    = dataColor_NaN;
-                this.prevSpace = NAN_CHAR;
+                this.prevSpace = NAN_DISPLAY;
 
                 this.outputs[0].wireColor = rgb_NaN;
             }
@@ -332,7 +332,7 @@ extends OpColorBase
             removeParamDivs(this);
 
             this._color    = dataColor_NaN;
-            this.prevSpace = NAN_CHAR;
+            this.prevSpace = NAN_DISPLAY;
         }
     }
 

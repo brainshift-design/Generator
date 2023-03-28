@@ -97,7 +97,7 @@ function genPushUpdateValue(parse, nodeId, paramId, value, forceUpdate = false)
         {
             nodeId:  nodeId,
             paramId: paramId,
-            type:    value.type, // needed to correctly parse NAN_CHAR
+            type:    value.type, // needed to correctly parse NAN_DISPLAY
             value:   value
         });
     }
@@ -304,7 +304,7 @@ function genQueueChunk(requestId, actionId, updateNodeId, updateParamId, nodeVal
         updateNodeId:  updateNodeId,
         updateParamId: updateParamId,
         chunkId:       nodeValChunkId,
-        values:        [...nodeValChunk].map(v => v ? v.toString() : NAN_CHAR),
+        values:        [...nodeValChunk].map(v => v ? v.toString() : NAN_DISPLAY),
         objects:       [...objChunk],
         styles:        [...styleChunk],
         updatedNodes:  updatedNodes,

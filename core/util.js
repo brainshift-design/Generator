@@ -230,14 +230,14 @@ function logTrace()
 
 function printNum(num)
 {
-    return !isNaN(num) ? num : NAN_CHAR;
+    return !isNaN(num) ? num : NAN_DISPLAY;
 }
 
 
 
 function parseNum(str)
 {
-    return str == NAN_CHAR
+    return str == NAN_DISPLAY
          ? Number.NaN 
          : parseFloat(str);
 }

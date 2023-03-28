@@ -91,7 +91,7 @@ extends GValue
     {
         return !isNaN(this.value)
               ? numToString(this.value, this.decimals)
-              : NAN_CHAR; // only NumberValue can do this, other _Values have to list all members
+              : NAN_DISPLAY; // only NumberValue can do this, other _Values have to list all members
     }
 
 
@@ -136,7 +136,7 @@ function parseNumberValue(str)
 function parseSimpleNumberValue(str)
 {
     const num = 
-        str == NAN_CHAR
+        str == NAN_DISPLAY
         ? NumberValue.NaN
         : NumberValue.fromString(str);
 

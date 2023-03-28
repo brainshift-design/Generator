@@ -96,7 +96,7 @@ extends ShapeBaseValue
 
 function parseEllipseValue(str)
 {
-    if (str == NAN_CHAR)
+    if (str == NAN_DISPLAY)
         return EllipseValue.NaN;
 
     const rect = str.split(' ');

@@ -71,7 +71,6 @@ extends Control
 
             
         const oldValue = this.value;
-
         
         if (   value == NAN_CHAR && oldValue != NAN_CHAR
             || value != NAN_CHAR && oldValue == NAN_CHAR)
@@ -119,4 +118,45 @@ extends Control
         this.focus.style.width  = sw;
         this.focus.style.height = sh;
     };
+
+
+
+    updateFocusBorder()
+    {
+        if (this.buttonDown0)
+        {
+            if (   !this.param
+                || !this.param.node.selected)
+                this.focus.style.boxShadow = '0 0 0 1px var(--figma-color-bg-brand) inset';
+
+            else
+            {
+                this.focus.style.boxShadow = '0 1px 0 0 var(--figma-color-bg-brand) inset';
+                    
+                if (this.param.index < this.param.node.params.length-1)
+                    this.focus.style.boxShadow += ', 0 -1px 0 0 var(--figma-color-bg-brand) inset';
+            }
+        }
+        else
+        {
+            const colShadow = 
+                darkMode
+                ? 'rgba(255, 255, 255, 0.1)'
+                : 'rgba(0, 0, 0, 0.1)';
+
+            if (this.param)
+            {
+                this.focus.style.boxShadow = '0 1px 0 0 ' + colShadow + ' inset';
+
+                if (    this.param.node
+                    &&  this.param.node.params.includes(this.param)
+                    && !isLastInArray(this.param.node.params, this.param))
+                    this.focus.style.boxShadow += ', 0 -1px 0 0 ' + colShadow + ' inset';
+            }
+            else
+            {
+                this.focus.style.boxShadow  = '0 0 0 1px ' + colShadow + ' inset ';
+            }
+        }
+    }
 }

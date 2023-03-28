@@ -80,16 +80,6 @@ ColorControl.prototype.initEvents = function()
                 this.startValue = this.value;
                 this.prevValue  = this.value;
                 this.sx         = e.clientX;
-
-                // this.clickTimer = setTimeout(() => 
-                // {
-                //     if (!document.menuHadFocus)
-                //     {
-                //         this.moved = true;
-                //         this.lockPointer(e.pointerId);
-                //     }
-                // }, 
-                // 500);
             }
 
 
@@ -264,6 +254,7 @@ ColorControl.prototype.initEvents = function()
         this.buttonDown1 = false;
         this.buttonDown2 = false;
         this.mouseOver   = false;
+        
         this.update();
     });
 
