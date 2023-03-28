@@ -7,7 +7,6 @@ extends GValue
 
     constructor(val = '')
     {
-        //console.trace();
         super(TEXT_VALUE);
 
         if (typeof val !== 'string')

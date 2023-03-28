@@ -4,7 +4,7 @@
 
 
 
-const generatorVersion = 125;
+const generatorVersion = 126;
 
 
 const MAX_INT32        = 2147483647;
@@ -4313,7 +4313,6 @@ extends GValue
 
     constructor(val = '')
     {
-        //console.trace();
         super(TEXT_VALUE);
 
         if (typeof val !== 'string')
@@ -11494,9 +11493,9 @@ function enableFeatures(subscription, beta)
     updateMenuItemDisplay(menuItemColorSep1       .div, subscription);
     updateMenuItemDisplay(menuItemColorblind      .div, subscription);
 
-    updateMenuItemDisplay(menuItemStyleFill       .div, subscription && beta);
+    //updateMenuItemDisplay(menuItemStyleFill       .div, subscription && beta);
     updateMenuItemDisplay(menuItemStyleStroke     .div, subscription && beta);
-    updateMenuItemDisplay(menuItemStyleSep1       .div, subscription && beta);
+    //updateMenuItemDisplay(menuItemStyleSep1       .div, subscription && beta);
 
     updateMenuItemDisplay(menuItemSeries.div,           subscription && beta);    
 
@@ -14019,8 +14018,6 @@ function genParseTextValue(parse)
     parse.pos++; // tag
 
     const val = parse.move();
-    console.log('parse.request =', parse.request);
-    console.log('val =', val);
 
     if (parse.settings.logRequests) 
         logReqValue(TEXT_VALUE, val, parse);

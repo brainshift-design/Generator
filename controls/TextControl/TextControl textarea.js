@@ -3,7 +3,7 @@ TextControl.prototype.initTextarea = function()
     this.textarea = createTextarea('textControlTextarea');
 
     this.textarea.control     = this;
-    this.textarea.placeholder = '. . .';
+    this.textarea.placeholder = ' . . .';
 
     this.textarea.style.height = 20;
 

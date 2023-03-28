@@ -1,3 +1,13 @@
+:root 
+{
+    --sizeBorderWidth: 4px;
+    /* --cornerBack:      #0f08;
+    --edgeBack:        #08f8; */
+    --cornerBack:      none;
+    --edgeBack:        none;
+}
+
+
 .node
 {
     display:       none;
@@ -377,4 +387,95 @@
     top:       50%;
     transform: translateX(-50%)
                translateY(-50%);
+}
+
+
+.sizerBox
+{
+    position:       absolute;
+    left:           0;
+    top:            0;
+    width:          100%;
+    height:         100%;    
+    box-shadow:     0 0 0 1px red inset;
+    z-index:        10000;
+    pointer-events: none;
+}
+
+
+.sizerEdge
+{
+    position:   absolute;
+    background: var(--edgeBack);
+    z-index:    10000;
+}
+
+
+.sizerH
+{
+    top:    25;
+    /* top:    var(--sizeBorderWidth); */
+    /* height: calc(100% - calc(2 * var(--sizeBorderWidth))); */
+    width:  var(--sizeBorderWidth);
+    height: calc(100% - calc(25px + var(--sizeBorderWidth)));
+    cursor: ew-resize;
+}
+
+
+.sizerL { left:  0; }
+.sizerR { right: 0; }
+
+
+.sizerV
+{
+    left:   var(--sizeBorderWidth);
+    width:  calc(100% - calc(2 * var(--sizeBorderWidth)));
+    height: var(--sizeBorderWidth);
+    cursor: ns-resize;
+}
+
+
+.sizerT { top:    0; }
+.sizerB { bottom: 0; }
+
+
+.sizerCorner
+{
+    position:   absolute;
+    width:      var(--sizeBorderWidth);
+    height:     var(--sizeBorderWidth);
+    background: var(--cornerBack);
+    z-index:    10000;
+}
+
+
+.sizerTL
+{
+    left:   0;
+    top:    0;
+    cursor: nwse-resize;
+}
+
+
+.sizerTR
+{
+    right:  0;
+    top:    0;
+    cursor: nesw-resize;
+}
+
+
+.sizerBL
+{
+    left:   0;
+    bottom: 0;
+    cursor: nesw-resize;
+}
+
+
+.sizerBR
+{
+    right:  0;
+    bottom: 0;
+    cursor: nwse-resize;
 }

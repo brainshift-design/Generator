@@ -233,7 +233,6 @@ TextControl.prototype.initEvents = function()
                 }
 
                 this.view.tempConn.wire .outputPos = point_NaN;
-
                 this.view.tempConn.input.updateControl();
            }
         }

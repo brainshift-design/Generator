@@ -2931,6 +2931,16 @@ a
 }
 
 
+:root 
+{
+    --sizeBorderWidth: 4px;
+    /* --cornerBack:      #0f08;
+    --edgeBack:        #08f8; */
+    --cornerBack:      none;
+    --edgeBack:        none;
+}
+
+
 .node
 {
     display:       none;
@@ -3313,6 +3323,97 @@ a
 }
 
 
+.sizerBox
+{
+    position:       absolute;
+    left:           0;
+    top:            0;
+    width:          100%;
+    height:         100%;    
+    box-shadow:     0 0 0 1px red inset;
+    z-index:        10000;
+    pointer-events: none;
+}
+
+
+.sizerEdge
+{
+    position:   absolute;
+    background: var(--edgeBack);
+    z-index:    10000;
+}
+
+
+.sizerH
+{
+    top:    25;
+    /* top:    var(--sizeBorderWidth); */
+    /* height: calc(100% - calc(2 * var(--sizeBorderWidth))); */
+    width:  var(--sizeBorderWidth);
+    height: calc(100% - calc(25px + var(--sizeBorderWidth)));
+    cursor: ew-resize;
+}
+
+
+.sizerL { left:  0; }
+.sizerR { right: 0; }
+
+
+.sizerV
+{
+    left:   var(--sizeBorderWidth);
+    width:  calc(100% - calc(2 * var(--sizeBorderWidth)));
+    height: var(--sizeBorderWidth);
+    cursor: ns-resize;
+}
+
+
+.sizerT { top:    0; }
+.sizerB { bottom: 0; }
+
+
+.sizerCorner
+{
+    position:   absolute;
+    width:      var(--sizeBorderWidth);
+    height:     var(--sizeBorderWidth);
+    background: var(--cornerBack);
+    z-index:    10000;
+}
+
+
+.sizerTL
+{
+    left:   0;
+    top:    0;
+    cursor: nwse-resize;
+}
+
+
+.sizerTR
+{
+    right:  0;
+    top:    0;
+    cursor: nesw-resize;
+}
+
+
+.sizerBL
+{
+    left:   0;
+    bottom: 0;
+    cursor: nesw-resize;
+}
+
+
+.sizerBR
+{
+    right:  0;
+    bottom: 0;
+    cursor: nwse-resize;
+}
+
+
 .outputControls
 {
     width:          12px;
@@ -3582,7 +3683,7 @@ a
             <div id='whatsNewBody'>
                 <h1 style='margin-top: 20px;'>What's new in Generator</h1>
 
-                <p>Color styles now support opacity.</p>
+                <p>-</p>
                 
                 <p><br/><br/><div id='chkHideWhatsNew'></div></p>
             </div>
@@ -3912,7 +4013,7 @@ a
 
 
 
-const generatorVersion = 125;
+const generatorVersion = 126;
 
 
 const MAX_INT32        = 2147483647;
@@ -8221,7 +8322,6 @@ extends GValue
 
     constructor(val = '')
     {
-        //console.trace();
         super(TEXT_VALUE);
 
         if (typeof val !== 'string')
@@ -15402,9 +15502,9 @@ function enableFeatures(subscription, beta)
     updateMenuItemDisplay(menuItemColorSep1       .div, subscription);
     updateMenuItemDisplay(menuItemColorblind      .div, subscription);
 
-    updateMenuItemDisplay(menuItemStyleFill       .div, subscription && beta);
+    //updateMenuItemDisplay(menuItemStyleFill       .div, subscription && beta);
     updateMenuItemDisplay(menuItemStyleStroke     .div, subscription && beta);
-    updateMenuItemDisplay(menuItemStyleSep1       .div, subscription && beta);
+    //updateMenuItemDisplay(menuItemStyleSep1       .div, subscription && beta);
 
     updateMenuItemDisplay(menuItemSeries.div,           subscription && beta);    
 
@@ -17927,8 +18027,6 @@ function genParseTextValue(parse)
     parse.pos++; // tag
 
     const val = parse.move();
-    console.log('parse.request =', parse.request);
-    console.log('val =', val);
 
     if (parse.settings.logRequests) 
         logReqValue(TEXT_VALUE, val, parse);
@@ -21190,7 +21288,7 @@ onerror = (event, source, line, pos, error) =>
 };
 
 
-const generatorVersion = 125;
+const generatorVersion = 126;
 
 
 const MAX_INT32        = 2147483647;
@@ -27796,7 +27894,6 @@ extends GValue
 
     constructor(val = '')
     {
-        //console.trace();
         super(TEXT_VALUE);
 
         if (typeof val !== 'string')
@@ -34977,9 +35074,9 @@ function enableFeatures(subscription, beta)
     updateMenuItemDisplay(menuItemColorSep1       .div, subscription);
     updateMenuItemDisplay(menuItemColorblind      .div, subscription);
 
-    updateMenuItemDisplay(menuItemStyleFill       .div, subscription && beta);
+    //updateMenuItemDisplay(menuItemStyleFill       .div, subscription && beta);
     updateMenuItemDisplay(menuItemStyleStroke     .div, subscription && beta);
-    updateMenuItemDisplay(menuItemStyleSep1       .div, subscription && beta);
+    //updateMenuItemDisplay(menuItemStyleSep1       .div, subscription && beta);
 
     updateMenuItemDisplay(menuItemSeries.div,           subscription && beta);    
 
@@ -37131,7 +37228,7 @@ TextControl.prototype.initTextarea = function()
     this.textarea = createTextarea('textControlTextarea');
 
     this.textarea.control     = this;
-    this.textarea.placeholder = '. . .';
+    this.textarea.placeholder = ' . . .';
 
     this.textarea.style.height = 20;
 
@@ -37753,7 +37850,6 @@ TextControl.prototype.initEvents = function()
                 }
 
                 this.view.tempConn.wire .outputPos = point_NaN;
-
                 this.view.tempConn.input.updateControl();
            }
         }
@@ -40311,7 +40407,7 @@ function initGeneratorMenus()
         // new MenuItem('Substring', {icon: iconSubstring    , enabled: false}),
         // new MenuItem('Replace',   {icon: iconStringReplace, enabled: false})]);
     
-menuColorStyle = new Menu('Color style', true, false);
+    menuColorStyle = new Menu('Color style', true, false);
     menuColorStyle.addItems([
         new MenuItem('Link existing...', {icon: iconColorStyleReplace, callback: e => actionManager.do(getCreateNodeAction(COLOR_STYLE,  btnColor.div, getCreateOptions(e, {existing: true})))})]);
 
@@ -49568,191 +49664,216 @@ extends OperatorWithValue
 class   ResizableBase
 extends OperatorBase
 {
-    canResizeL  = false;
-    canResizeR  = false;
-    canResizeB  = false;
+    sizerL;
+    sizerR;
+    sizerT;
+    sizerB;
 
-    canResizeBL = false;
-    canResizeBR = false;
-    
+    sizerTL;
+    sizerTR;
+    sizerBL;
+    sizerBR;
 
-    resizingL   = false;
-    resizingR   = false;
-    resizingB   = false;
-
-    resizingBL  = false;
-    resizingBR  = false;
-
-    resizing    = false;
-    
 
 
     constructor(type, shortName)
     {
         super(type, shortName);
 
+        this.initSizer();
+    }
 
-        this.div.addEventListener('pointerdown', e =>
+
+
+    initSizer()
+    {
+        this.sizerL   = createDiv('sizerEdge sizerH sizerL');
+        this.sizerR   = createDiv('sizerEdge sizerH sizerR');
+        this.sizerT   = createDiv('sizerEdge sizerV sizerT');
+        this.sizerB   = createDiv('sizerEdge sizerV sizerB');
+
+        this.sizerTL  = createDiv('sizerCorner sizerTL');
+        this.sizerTR  = createDiv('sizerCorner sizerTR');
+        this.sizerBL  = createDiv('sizerCorner sizerBL');
+        this.sizerBR  = createDiv('sizerCorner sizerBR');
+
+
+        this.div.appendChild(this.sizerL);
+        this.div.appendChild(this.sizerR);
+        //this.div.appendChild(this.sizerT);
+        this.div.appendChild(this.sizerB);
+
+        //this.div.appendChild(this.sizerTL);
+        //this.div.appendChild(this.sizerTR);
+        this.div.appendChild(this.sizerBL);
+        this.div.appendChild(this.sizerBR);
+
+
+        this.initSizerEvents(this.sizerL,  this.setRectL );
+        this.initSizerEvents(this.sizerR,  this.setRectR );
+        //this.initSizerEvents(this.sizerT,  this.setRectT );
+        this.initSizerEvents(this.sizerB,  this.setRectB );
+
+        //this.initSizerEvents(this.sizerTL, this.setRectTL);
+        //this.initSizerEvents(this.sizerTR, this.setRectTR);
+        this.initSizerEvents(this.sizerBL, this.setRectBL);
+        this.initSizerEvents(this.sizerBR, this.setRectBR);
+   }
+
+
+
+    initSizerEvents(sizer, setRect)
+    {
+        sizer.resizing = false;
+
+
+        sizer.addEventListener('pointerdown', e =>
         {
             if (e.button == 0)
             {
-                this.startRect = offsetRect(this.div);
-                this.resizing  = false;
+                sizer.startRect = offsetRect(this.div);
+                sizer.resizing  = true;
 
-                     if (this.canResizeBL) { this.resizingBL = this.resizing = true; }
-                else if (this.canResizeBR) { this.resizingBR = this.resizing = true; }
-                else if (this.canResizeL ) { this.resizingL  = this.resizing = true; }
-                else if (this.canResizeR ) { this.resizingR  = this.resizing = true; }
-                else if (this.canResizeB ) { this.resizingB  = this.resizing = true; }
+                e.preventDefault();
+                e.stopImmediatePropagation();
 
+                sizer.setPointerCapture(e.pointerId);
 
-                if (this.resizing)
-                {
-                    e.preventDefault();
-                    e.stopImmediatePropagation();
-
-                    this.div.setPointerCapture(e.pointerId);
-
-                    this.sx = e.clientX;
-                    this.sy = e.clientY;
-                }
+                sizer.sx = e.clientX;
+                sizer.sy = e.clientY;
             }        
         });
 
 
 
-        this.div.addEventListener('pointermove', e =>
+        sizer.addEventListener('pointermove', e =>
         {
-            const dx = this.resizing ? (e.clientX - this.sx) / mainGraph.view.zoom : 0;
-            const dy = this.resizing ? (e.clientY - this.sy) / mainGraph.view.zoom : 0;
-            
-            
-                 if (this.resizingTL) this.setRect(this.startRect.x + dx, this.startRect.y + dy, this.startRect.w - dx, this.startRect.h - dy);
-            else if (this.resizingTR) this.setRect(this.startRect.x,      this.startRect.y + dy, this.startRect.w + dx, this.startRect.h - dy);
-            else if (this.resizingBL) this.setRect(this.startRect.x + dx, this.startRect.y,      this.startRect.w - dx, this.startRect.h + dy);
-            else if (this.resizingBR) this.setRect(this.startRect.x,      this.startRect.y,      this.startRect.w + dx, this.startRect.h + dy);
-            else if (this.resizingL ) this.setRect(this.startRect.x + dx, this.startRect.y,      this.startRect.w - dx, this.startRect.h     );
-            else if (this.resizingR ) this.setRect(this.startRect.x,      this.startRect.y,      this.startRect.w + dx, this.startRect.h     );
-            else if (this.resizingT ) this.setRect(this.startRect.x,      this.startRect.y + dy, this.startRect.w,      this.startRect.h - dy);
-            else if (this.resizingB ) this.setRect(this.startRect.x,      this.startRect.y,      this.startRect.w,      this.startRect.h + dy);
-            else
-                this.checkResizing(e);
+            if (!sizer.resizing)
+                return;
 
 
-            if (this.resizing)
-            {
-                e.preventDefault();
-                e.stopImmediatePropagation();
+            const dx = (e.clientX - sizer.sx) / mainGraph.view.zoom;
+            const dy = (e.clientY - sizer.sy) / mainGraph.view.zoom;
+        
+            setRect(sizer, dx, dy);
+                
 
-                this.updateMeasureData();
-            }
+            e.preventDefault();
+            e.stopImmediatePropagation();
+
+            this.updateMeasureData();
         });
         
 
         
-        this.div.addEventListener('pointerup', e =>
+        sizer.addEventListener('pointerup', e =>
         {
             if (e.button == 0)
             {
-                if (this.resizing)
+                if (sizer.resizing)
                 {
                     actionManager.do(new SetNodeRectAction(
                         this.graph, 
                         this.id, 
-                        this.startRect, 
+                        sizer.startRect, 
                         offsetRect(this.div)));
+
+                    sizer.resizing = false;
                 }
 
 
-                this.resetResize();
-
-                
-                if (this.div.hasPointerCapture(e.pointerId))
-                    this.div.releasePointerCapture(e.pointerId);
+                if (sizer.hasPointerCapture(e.pointerId))
+                    sizer.releasePointerCapture(e.pointerId);
             }
         });
     }
 
 
 
-    resetResize(resetResizing = true)
+    setRectL = (sizer, dx, dy) => // these have to be lambdas for 'this'
     {
-        this.canResizeL  = false;
-        this.canResizeR  = false;
-        this.canResizeB  = false;
-    
-        this.canResizeBL = false;
-        this.canResizeBR = false;
+        this.setRect(
+            sizer.startRect.x + dx,
+            sizer.startRect.y, 
+            sizer.startRect.w - dx, 
+            sizer.startRect.h);
+    };
 
-        if (resetResizing)
-        {
-            this.resizingL  = false;
-            this.resizingR  = false;
-            this.resizingB  = false;
-        
-            this.resizingBL = false;
-            this.resizingBR = false;
 
-            this.resizing   = false;
-        }
+
+    setRectR = (sizer, dx, dy) =>
+    {
+        this.setRect(
+            sizer.startRect.x, 
+            sizer.startRect.y, 
+            sizer.startRect.w + dx, 
+            sizer.startRect.h);
     }
 
 
 
-    checkResizing(e)
+    setRectT = (sizer, dx, dy) =>
     {
-        this.resetResize(false);
+        this.setRect(
+            sizer.startRect.x, 
+            sizer.startRect.y + dy, 
+            sizer.startRect.w, 
+            sizer.startRect.h - dy);
+    };
 
-        if (   e.clientX >= this.measureData.divBounds.l
-            && e.clientX <  this.measureData.divBounds.l + resizeEdgeWidth
-            && e.clientY >= this.measureData.divBounds.b - resizeEdgeWidth
-            && e.clientY <  this.measureData.divBounds.b)
-        {
-            this.canResizeBL      = true;
-            this.div.style.cursor = 'nesw-resize';
-            return true;
-        }
-        else if (e.clientX >= this.measureData.divBounds.r - resizeEdgeWidth
-              && e.clientX <  this.measureData.divBounds.r 
-              && e.clientY >= this.measureData.divBounds.b - resizeEdgeWidth
-              && e.clientY <  this.measureData.divBounds.b)
-        {
-            this.canResizeBR      = true;
-            this.div.style.cursor = 'nwse-resize';
-            return true;
-        }
-        else if (e.clientX >= this.measureData.divBounds.l
-              && e.clientX <  this.measureData.divBounds.l + resizeEdgeWidth
-              && e.clientY >= this.measureData.divBounds.t + resizeEdgeWidth
-              && e.clientY <  this.measureData.divBounds.b - resizeEdgeWidth)
-        {
-            this.canResizeL       = true;
-            this.div.style.cursor = 'ew-resize';
-            return true;
-        }
-        else if (e.clientX >= this.measureData.divBounds.r - resizeEdgeWidth
-              && e.clientX <  this.measureData.divBounds.r
-              && e.clientY >= this.measureData.divBounds.t + resizeEdgeWidth
-              && e.clientY <  this.measureData.divBounds.b - resizeEdgeWidth)
-        {
-            this.canResizeR       = true;
-            this.div.style.cursor = 'ew-resize';
-            return true;
-        }
-        else if (e.clientX >= this.measureData.divBounds.l + resizeEdgeWidth
-              && e.clientX <  this.measureData.divBounds.r - resizeEdgeWidth
-              && e.clientY >= this.measureData.divBounds.b - resizeEdgeWidth
-              && e.clientY <  this.measureData.divBounds.b)
-        {
-            this.canResizeB       = true;
-            this.div.style.cursor = 'ns-resize';
-            return true;
-        }
-        else
-        {
-            this.div.style.cursor = 'default';
-            return false;
-        }
+
+
+    setRectB = (sizer, dx, dy) =>
+    {
+        this.setRect(
+            sizer.startRect.x, 
+            sizer.startRect.y, 
+            sizer.startRect.w, 
+            sizer.startRect.h + dy);
+    }
+
+
+
+    setRectTL = (sizer, dx, dy) => // these have to be lambdas for 'this'
+    {
+        this.setRect(
+            sizer.startRect.x + dx,
+            sizer.startRect.y + dy, 
+            sizer.startRect.w - dx, 
+            sizer.startRect.h - dy);
+    };
+
+
+
+    setRectTR = (sizer, dx, dy) =>
+    {
+        this.setRect(
+            sizer.startRect.x, 
+            sizer.startRect.y + dy, 
+            sizer.startRect.w + dx, 
+            sizer.startRect.h - dy);
+    }
+
+
+
+    setRectBL = (sizer, dx, dy) =>
+    {
+        this.setRect(
+            sizer.startRect.x + dx, 
+            sizer.startRect.y, 
+            sizer.startRect.w - dx, 
+            sizer.startRect.h + dy);
+    };
+
+
+
+    setRectBR = (sizer, dx, dy) =>
+    {
+        this.setRect(
+            sizer.startRect.x, 
+            sizer.startRect.y, 
+            sizer.startRect.w + dx, 
+            sizer.startRect.h + dy);
     }
 
 
@@ -49760,7 +49881,7 @@ extends OperatorBase
     setSize(w, h, updateTransform = true)
     {
         super.setSize(
-            Math.max(100, w), 
+            Math.max(60, w), 
             Math.max(this.header.offsetHeight + 20, h), 
             updateTransform);
 
@@ -64144,9 +64265,8 @@ function uiUpdateValuesAndObjects(requestId, actionId, updateNodeId, updateParam
 {
     // console.log('requestId =',       requestId);
     // console.log('lastRequestedId =', lastRequestedId);
-    console.log('values =', values);
 
-    
+
     if (requestId < lastRequestedId) 
         return;
     
@@ -64292,6 +64412,7 @@ function uiUpdateValuesAndObjects(requestId, actionId, updateNodeId, updateParam
             {
                 node.updateProxyControls();
                 node.updateProxyWires();
+                node.updateMeasureData();
             }
 
             uiSaveNodes(mainGraph, mainGraph.nodes.map(n => n.id));

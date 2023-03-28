@@ -820,9 +820,8 @@ function uiUpdateValuesAndObjects(requestId, actionId, updateNodeId, updateParam
 {
     // console.log('requestId =',       requestId);
     // console.log('lastRequestedId =', lastRequestedId);
-    console.log('values =', values);
 
-    
+
     if (requestId < lastRequestedId) 
         return;
     
@@ -968,6 +967,7 @@ function uiUpdateValuesAndObjects(requestId, actionId, updateNodeId, updateParam
             {
                 node.updateProxyControls();
                 node.updateProxyWires();
+                node.updateMeasureData();
             }
 
             uiSaveNodes(mainGraph, mainGraph.nodes.map(n => n.id));

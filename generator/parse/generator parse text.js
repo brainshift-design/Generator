@@ -3,8 +3,6 @@ function genParseTextValue(parse)
     parse.pos++; // tag
 
     const val = parse.move();
-    console.log('parse.request =', parse.request);
-    console.log('val =', val);
 
     if (parse.settings.logRequests) 
         logReqValue(TEXT_VALUE, val, parse);
