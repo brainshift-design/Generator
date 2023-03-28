@@ -98,6 +98,8 @@ var menuItemSeries;
 
 var menuItemColor;
 var menuItemCorrectColor;
+var menuItemColorSep1;
+var menuItemColorblind;
 
 
 var menuItemStyleFill;
@@ -331,12 +333,12 @@ function initGeneratorMenus()
                                new MenuItem('',                  {separator: true}),
                                new MenuItem('Valid sRGB',        {icon: iconValidColor,       callback: e => actionManager.do(getCreateNodeAction(VALID_COLOR,       btnColor.div, getCreateOptions(e)))}),
         menuItemCorrectColor = new MenuItem('Correct color',     {icon: iconCorrectColor,     callback: e => actionManager.do(getCreateNodeAction(CORRECT_COLOR,     btnColor.div, getCreateOptions(e)))}),
-                               new MenuItem('',                  {separator: true}),
+        menuItemColorSep1    = new MenuItem('',                  {separator: true}),
                                new MenuItem('Web contrast',      {icon: iconWebContrast,      callback: e => actionManager.do(getCreateNodeAction(COLOR_CONTRAST,    btnColor.div, getCreateOptions(e)))}),
-                               new MenuItem('Colorblind',        {icon: iconColorblind,       callback: e => actionManager.do(getCreateNodeAction(COLORBLIND,        btnColor.div, getCreateOptions(e)))}),
+        menuItemColorblind   = new MenuItem('Colorblind',        {icon: iconColorblind,       callback: e => actionManager.do(getCreateNodeAction(COLORBLIND,        btnColor.div, getCreateOptions(e)))}),
                                new MenuItem('',                  {separator: true}),
                                new MenuItem('Interpolate color', {icon: iconColorInterpolate, callback: e => actionManager.do(getCreateNodeAction(COLOR_INTERPOLATE, btnColor.div, getCreateOptions(e)))})]);
-        
+
     menuColor.init = () => 
     {
         menuItemColor.setIcon(iconColor);

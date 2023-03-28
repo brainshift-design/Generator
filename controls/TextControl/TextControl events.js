@@ -25,23 +25,23 @@ TextControl.prototype.initEvents = function()
                 ? 'rgba(255, 255, 255, 0.1)'
                 : 'rgba(0, 0, 0, 0.1)';
 
-            // if (this.param)
-            // {
-            //     this.focus.style.boxShadow = '0 1px 0 0 ' + colShadow + ' inset';
+            if (this.param)
+            {
+                this.focus.style.boxShadow = '0 1px 0 0 ' + colShadow + ' inset';
 
-            //     if (    this.param.node
-            //         &&  this.param.node.params.includes(this.param)
-            //         && !isLastInArray(this.param.node.params, this.param))
-            //         this.focus.style.boxShadow += ', 0 -1px 0 0 ' + colShadow + ' inset';
-            // }
-            // else
-            // {
-            //     this.focus.style.boxShadow  = '0 0 0 1px ' + colShadow + ' inset ';
-            // }
+                if (    this.param.node
+                    &&  this.param.node.params.includes(this.param)
+                    && !isLastInArray(this.param.node.params, this.param))
+                    this.focus.style.boxShadow += ', 0 -1px 0 0 ' + colShadow + ' inset';
+            }
+            else
+            {
+                this.focus.style.boxShadow  = '0 0 0 1px ' + colShadow + ' inset ';
+            }
 
 
-            // this.focus.style.visibility = 'visible';
-            // this.focus.style.opacity    = '100%';
+            this.focus.style.visibility = 'visible';
+            this.focus.style.opacity    = '100%';
     
             this.update();
         }
@@ -95,33 +95,33 @@ TextControl.prototype.initEvents = function()
             if (!this.readOnly)
             {
                 this.oldValue   = this.value;
-                this.startValue = this.value;
-                this.prevValue  = this.value;
-                this.sx         = e.clientX;
+                // this.startValue = this.value;
+                // this.prevValue  = this.value;
+                // this.sx         = e.clientX;
 
-                this.clickTimer = setTimeout(() => 
-                {
-                    if (!document.menuHadFocus)
-                    {
-                        this.moved = true;
-                        //this.lockPointer(e.pointerId);
-                    }
-                }, 
-                500);
+                // this.clickTimer = setTimeout(() => 
+                // {
+                //     if (!document.menuHadFocus)
+                //     {
+                //         this.moved = true;
+                //         //this.lockPointer(e.pointerId);
+                //     }
+                // }, 
+                // 500);
             }
 
 
-            // if (   !this.param
-            //     || !this.param.node.selected)
-            //     this.focus.style.boxShadow = '0 0 0 1px var(--figma-color-bg-brand) inset';
+            if (   !this.param
+                || !this.param.node.selected)
+                this.focus.style.boxShadow = '0 0 0 1px var(--figma-color-bg-brand) inset';
 
-            // else
-            // {
-            //     this.focus.style.boxShadow = '0 1px 0 0 var(--figma-color-bg-brand) inset';
+            else
+            {
+                this.focus.style.boxShadow = '0 1px 0 0 var(--figma-color-bg-brand) inset';
                     
-            //     if (this.param.index < this.param.node.params.length-1)
-            //         this.focus.style.boxShadow += ', 0 -1px 0 0 var(--figma-color-bg-brand) inset';
-            // }
+                if (this.param.index < this.param.node.params.length-1)
+                    this.focus.style.boxShadow += ', 0 -1px 0 0 var(--figma-color-bg-brand) inset';
+            }
 
 
             // I don't want to focus here, but I do want to take focus away from elsewhere
@@ -241,8 +241,8 @@ TextControl.prototype.initEvents = function()
 
         this.div.style.cursor       = 'default';
         
-        // this.focus.style.visibility = 'hidden';
-        // this.focus.style.opacity    = 0;
+        this.focus.style.visibility = 'hidden';
+        this.focus.style.opacity    = 0;
 
         this.update();
 
@@ -361,17 +361,17 @@ TextControl.prototype.initEvents = function()
             this.buttonDown0 = false;
             //this.unlockPointer(e.pointerId);
 
-            //this.focus.style.boxShadow = '0 0 0 1px rgba(0, 0, 0, 0.1) inset';
+            this.focus.style.boxShadow = '0 0 0 1px rgba(0, 0, 0, 0.1) inset';
 
-            // if (    this.value != this.oldValue
-            //     && !this.readOnly)
-            //     this.dispatchEvent(this.onconfirm);
+            if (    this.value != this.oldValue
+                && !this.readOnly)
+                this.dispatchEvent(this.onconfirm);
         }
-        // else if (   e.button == 1
-        //     && this.buttonDown1)
-        // {
-        //     this.buttonDown1 = false;            
-        // }
+        else if (   e.button == 1
+            && this.buttonDown1)
+        {
+            this.buttonDown1 = false;            
+        }
     });
 
 

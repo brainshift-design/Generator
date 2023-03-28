@@ -2547,7 +2547,7 @@ a
     padding:          0;
     width:            74px;
     height:           20px;
-    overflow:         hidden;
+    overflow:         visible;
     background-color: var(--figma-color-bg);
     text-align:       center;
     touch-action:     none;
@@ -2561,8 +2561,10 @@ a
     font-family:          Inter;
     font-size:            11;
     position:             absolute;
-    left:                 50%;
-    transform:            translateX(-50%);
+    left:                 0px;
+    top:                  0px;
+    /* left:                 50%; */
+    /* transform:            translateX(-50%); */
     width:                100%;
     background-color:     transparent;
     z-index:              0;
@@ -2579,6 +2581,12 @@ a
     pointer-events:       none;
     
     /* box-shadow:           0 0 0 1px inset red; */
+}
+
+
+.textControlTextarea
+{
+    outline: 2px solid var(--figma-color-brand);
 }
 
 
@@ -2926,7 +2934,7 @@ a
     height:        auto;
     border-radius: 4px 4px 0 0;
     padding:       0;
- /* overflow:      visible; */
+    overflow:      visible;
  /* box-shadow:    0 0 0 1px orange inset; */
 }
 
@@ -15366,6 +15374,7 @@ function enableFeatures(subscription, beta)
     updateMenuItemDisplay(menuItemEnableBetaFeatures.div, subscription);
 
     updateMenuItemDisplay(btnFlow  .div,                subscription);
+    updateMenuItemDisplay(btnText  .div,                subscription && beta);
     updateMenuItemDisplay(btnShape .div,                subscription && beta);
     updateMenuItemDisplay(btnCustom.div,                subscription && beta);
 
@@ -15384,6 +15393,8 @@ function enableFeatures(subscription, beta)
     updateMenuItemDisplay(menuItemCustomOutputs.div,    subscription && beta);
     
     updateMenuItemDisplay(menuItemCorrectColor    .div, subscription);
+    updateMenuItemDisplay(menuItemColorSep1       .div, subscription);
+    updateMenuItemDisplay(menuItemColorblind      .div, subscription);
 
     updateMenuItemDisplay(menuItemStyleFill       .div, subscription && beta);
     updateMenuItemDisplay(menuItemStyleStroke     .div, subscription && beta);
@@ -34934,6 +34945,7 @@ function enableFeatures(subscription, beta)
     updateMenuItemDisplay(menuItemEnableBetaFeatures.div, subscription);
 
     updateMenuItemDisplay(btnFlow  .div,                subscription);
+    updateMenuItemDisplay(btnText  .div,                subscription && beta);
     updateMenuItemDisplay(btnShape .div,                subscription && beta);
     updateMenuItemDisplay(btnCustom.div,                subscription && beta);
 
@@ -34952,6 +34964,8 @@ function enableFeatures(subscription, beta)
     updateMenuItemDisplay(menuItemCustomOutputs.div,    subscription && beta);
     
     updateMenuItemDisplay(menuItemCorrectColor    .div, subscription);
+    updateMenuItemDisplay(menuItemColorSep1       .div, subscription);
+    updateMenuItemDisplay(menuItemColorblind      .div, subscription);
 
     updateMenuItemDisplay(menuItemStyleFill       .div, subscription && beta);
     updateMenuItemDisplay(menuItemStyleStroke     .div, subscription && beta);
@@ -36999,10 +37013,11 @@ extends EventTarget
         this.initTextarea();
         this.initEvents ();
 
-        //this.focus = createDiv('textControlFocus');
+        this.focus = createDiv('textControlFocus');
+        
 
         this.div.appendChild(this.textarea);
-        //this.div.appendChild(this.focus);
+        this.div.appendChild(this.focus);
 
         
         this.onstartchange = new Event('startchange');
@@ -37099,10 +37114,10 @@ extends EventTarget
 
     updateFocus(sw, sh)
     {
-        // this.focus.style.left   = 0;
-        // this.focus.style.top    = 0;
-        // this.focus.style.width  = sw;
-        // this.focus.style.height = sh;
+        this.focus.style.left   = 0;
+        this.focus.style.top    = 0;
+        this.focus.style.width  = sw;
+        this.focus.style.height = sh;
     };
 
 
@@ -37421,6 +37436,7 @@ TextControl.prototype.initTextarea = function()
 
 
         //this.div.parentNode.removeChild(this.textarea);
+        this.textarea.blur();
         this.clicked = false;
     });
     
@@ -37551,23 +37567,23 @@ TextControl.prototype.initEvents = function()
                 ? 'rgba(255, 255, 255, 0.1)'
                 : 'rgba(0, 0, 0, 0.1)';
 
-            // if (this.param)
-            // {
-            //     this.focus.style.boxShadow = '0 1px 0 0 ' + colShadow + ' inset';
+            if (this.param)
+            {
+                this.focus.style.boxShadow = '0 1px 0 0 ' + colShadow + ' inset';
 
-            //     if (    this.param.node
-            //         &&  this.param.node.params.includes(this.param)
-            //         && !isLastInArray(this.param.node.params, this.param))
-            //         this.focus.style.boxShadow += ', 0 -1px 0 0 ' + colShadow + ' inset';
-            // }
-            // else
-            // {
-            //     this.focus.style.boxShadow  = '0 0 0 1px ' + colShadow + ' inset ';
-            // }
+                if (    this.param.node
+                    &&  this.param.node.params.includes(this.param)
+                    && !isLastInArray(this.param.node.params, this.param))
+                    this.focus.style.boxShadow += ', 0 -1px 0 0 ' + colShadow + ' inset';
+            }
+            else
+            {
+                this.focus.style.boxShadow  = '0 0 0 1px ' + colShadow + ' inset ';
+            }
 
 
-            // this.focus.style.visibility = 'visible';
-            // this.focus.style.opacity    = '100%';
+            this.focus.style.visibility = 'visible';
+            this.focus.style.opacity    = '100%';
     
             this.update();
         }
@@ -37621,33 +37637,33 @@ TextControl.prototype.initEvents = function()
             if (!this.readOnly)
             {
                 this.oldValue   = this.value;
-                this.startValue = this.value;
-                this.prevValue  = this.value;
-                this.sx         = e.clientX;
+                // this.startValue = this.value;
+                // this.prevValue  = this.value;
+                // this.sx         = e.clientX;
 
-                this.clickTimer = setTimeout(() => 
-                {
-                    if (!document.menuHadFocus)
-                    {
-                        this.moved = true;
-                        //this.lockPointer(e.pointerId);
-                    }
-                }, 
-                500);
+                // this.clickTimer = setTimeout(() => 
+                // {
+                //     if (!document.menuHadFocus)
+                //     {
+                //         this.moved = true;
+                //         //this.lockPointer(e.pointerId);
+                //     }
+                // }, 
+                // 500);
             }
 
 
-            // if (   !this.param
-            //     || !this.param.node.selected)
-            //     this.focus.style.boxShadow = '0 0 0 1px var(--figma-color-bg-brand) inset';
+            if (   !this.param
+                || !this.param.node.selected)
+                this.focus.style.boxShadow = '0 0 0 1px var(--figma-color-bg-brand) inset';
 
-            // else
-            // {
-            //     this.focus.style.boxShadow = '0 1px 0 0 var(--figma-color-bg-brand) inset';
+            else
+            {
+                this.focus.style.boxShadow = '0 1px 0 0 var(--figma-color-bg-brand) inset';
                     
-            //     if (this.param.index < this.param.node.params.length-1)
-            //         this.focus.style.boxShadow += ', 0 -1px 0 0 var(--figma-color-bg-brand) inset';
-            // }
+                if (this.param.index < this.param.node.params.length-1)
+                    this.focus.style.boxShadow += ', 0 -1px 0 0 var(--figma-color-bg-brand) inset';
+            }
 
 
             // I don't want to focus here, but I do want to take focus away from elsewhere
@@ -37767,8 +37783,8 @@ TextControl.prototype.initEvents = function()
 
         this.div.style.cursor       = 'default';
         
-        // this.focus.style.visibility = 'hidden';
-        // this.focus.style.opacity    = 0;
+        this.focus.style.visibility = 'hidden';
+        this.focus.style.opacity    = 0;
 
         this.update();
 
@@ -37887,17 +37903,17 @@ TextControl.prototype.initEvents = function()
             this.buttonDown0 = false;
             //this.unlockPointer(e.pointerId);
 
-            //this.focus.style.boxShadow = '0 0 0 1px rgba(0, 0, 0, 0.1) inset';
+            this.focus.style.boxShadow = '0 0 0 1px rgba(0, 0, 0, 0.1) inset';
 
-            // if (    this.value != this.oldValue
-            //     && !this.readOnly)
-            //     this.dispatchEvent(this.onconfirm);
+            if (    this.value != this.oldValue
+                && !this.readOnly)
+                this.dispatchEvent(this.onconfirm);
         }
-        // else if (   e.button == 1
-        //     && this.buttonDown1)
-        // {
-        //     this.buttonDown1 = false;            
-        // }
+        else if (   e.button == 1
+            && this.buttonDown1)
+        {
+            this.buttonDown1 = false;            
+        }
     });
 
 
@@ -40236,6 +40252,8 @@ var menuItemSeries;
 
 var menuItemColor;
 var menuItemCorrectColor;
+var menuItemColorSep1;
+var menuItemColorblind;
 
 
 var menuItemStyleFill;
@@ -40469,12 +40487,12 @@ function initGeneratorMenus()
                                new MenuItem('',                  {separator: true}),
                                new MenuItem('Valid sRGB',        {icon: iconValidColor,       callback: e => actionManager.do(getCreateNodeAction(VALID_COLOR,       btnColor.div, getCreateOptions(e)))}),
         menuItemCorrectColor = new MenuItem('Correct color',     {icon: iconCorrectColor,     callback: e => actionManager.do(getCreateNodeAction(CORRECT_COLOR,     btnColor.div, getCreateOptions(e)))}),
-                               new MenuItem('',                  {separator: true}),
+        menuItemColorSep1    = new MenuItem('',                  {separator: true}),
                                new MenuItem('Web contrast',      {icon: iconWebContrast,      callback: e => actionManager.do(getCreateNodeAction(COLOR_CONTRAST,    btnColor.div, getCreateOptions(e)))}),
-                               new MenuItem('Colorblind',        {icon: iconColorblind,       callback: e => actionManager.do(getCreateNodeAction(COLORBLIND,        btnColor.div, getCreateOptions(e)))}),
+        menuItemColorblind   = new MenuItem('Colorblind',        {icon: iconColorblind,       callback: e => actionManager.do(getCreateNodeAction(COLORBLIND,        btnColor.div, getCreateOptions(e)))}),
                                new MenuItem('',                  {separator: true}),
                                new MenuItem('Interpolate color', {icon: iconColorInterpolate, callback: e => actionManager.do(getCreateNodeAction(COLOR_INTERPOLATE, btnColor.div, getCreateOptions(e)))})]);
-        
+
     menuColor.init = () => 
     {
         menuItemColor.setIcon(iconColor);
@@ -44644,8 +44662,7 @@ extends Parameter
 
     setValue(value, createAction, updateControl = true, dispatchEvents = true) 
     {
-        console.trace();
-        console.log('TextParam.setValue value =', value);
+        // console.log('TextParam.setValue value =', value);
 
         console.assert(
                value.type 
@@ -52108,7 +52125,7 @@ extends ResizableBase
 
         this.addParam(this.paramValue = new TextParam('value', '', false, false));
 
-        this.alwaysLoadParams = true;
+        //this.alwaysLoadParams = true;
     }
 
 

@@ -1,3 +1,5 @@
 Subscription features:
 
     Node groups
+    Correct color
+    Colorblind

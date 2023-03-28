@@ -220,6 +220,7 @@ function enableFeatures(subscription, beta)
     updateMenuItemDisplay(menuItemEnableBetaFeatures.div, subscription);
 
     updateMenuItemDisplay(btnFlow  .div,                subscription);
+    updateMenuItemDisplay(btnText  .div,                subscription && beta);
     updateMenuItemDisplay(btnShape .div,                subscription && beta);
     updateMenuItemDisplay(btnCustom.div,                subscription && beta);
 
@@ -238,6 +239,8 @@ function enableFeatures(subscription, beta)
     updateMenuItemDisplay(menuItemCustomOutputs.div,    subscription && beta);
     
     updateMenuItemDisplay(menuItemCorrectColor    .div, subscription);
+    updateMenuItemDisplay(menuItemColorSep1       .div, subscription);
+    updateMenuItemDisplay(menuItemColorblind      .div, subscription);
 
     updateMenuItemDisplay(menuItemStyleFill       .div, subscription && beta);
     updateMenuItemDisplay(menuItemStyleStroke     .div, subscription && beta);

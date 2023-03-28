@@ -16,7 +16,7 @@ extends ResizableBase
 
         this.addParam(this.paramValue = new TextParam('value', '', false, false));
 
-        this.alwaysLoadParams = true;
+        //this.alwaysLoadParams = true;
     }
 
 

@@ -68,10 +68,11 @@ extends EventTarget
         this.initTextarea();
         this.initEvents ();
 
-        //this.focus = createDiv('textControlFocus');
+        this.focus = createDiv('textControlFocus');
+        
 
         this.div.appendChild(this.textarea);
-        //this.div.appendChild(this.focus);
+        this.div.appendChild(this.focus);
 
         
         this.onstartchange = new Event('startchange');
@@ -168,10 +169,10 @@ extends EventTarget
 
     updateFocus(sw, sh)
     {
-        // this.focus.style.left   = 0;
-        // this.focus.style.top    = 0;
-        // this.focus.style.width  = sw;
-        // this.focus.style.height = sh;
+        this.focus.style.left   = 0;
+        this.focus.style.top    = 0;
+        this.focus.style.width  = sw;
+        this.focus.style.height = sh;
     };
 
 

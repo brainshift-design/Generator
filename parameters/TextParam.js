@@ -117,8 +117,7 @@ extends Parameter
 
     setValue(value, createAction, updateControl = true, dispatchEvents = true) 
     {
-        console.trace();
-        console.log('TextParam.setValue value =', value);
+        // console.log('TextParam.setValue value =', value);
 
         console.assert(
                value.type 

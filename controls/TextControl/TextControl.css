@@ -3,7 +3,7 @@
     padding:          0;
     width:            74px;
     height:           20px;
-    overflow:         hidden;
+    overflow:         visible;
     background-color: var(--figma-color-bg);
     text-align:       center;
     touch-action:     none;
@@ -17,8 +17,10 @@
     font-family:          Inter;
     font-size:            11;
     position:             absolute;
-    left:                 50%;
-    transform:            translateX(-50%);
+    left:                 0px;
+    top:                  0px;
+    /* left:                 50%; */
+    /* transform:            translateX(-50%); */
     width:                100%;
     background-color:     transparent;
     z-index:              0;
@@ -35,6 +37,12 @@
     pointer-events:       none;
     
     /* box-shadow:           0 0 0 1px inset red; */
+}
+
+
+.textControlTextarea
+{
+    outline: 2px solid var(--figma-color-brand);
 }
 
 

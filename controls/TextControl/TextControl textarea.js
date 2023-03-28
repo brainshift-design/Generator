@@ -278,6 +278,7 @@ TextControl.prototype.initTextarea = function()
 
 
         //this.div.parentNode.removeChild(this.textarea);
+        this.textarea.blur();
         this.clicked = false;
     });
     
