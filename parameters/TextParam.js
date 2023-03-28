@@ -197,6 +197,18 @@ extends Parameter
     
     
     
+    toJson(nTab = 0, id = '')
+    {
+        let pos = ' '.repeat(nTab);
+        
+        if (id == '')
+            id = this.id;
+
+        return pos + '["' + this.type  + '", "' + id  + '", "' + this.value.toString().replaceAll('\\', '\\\\') + '"]';
+    }
+
+
+
     loadParam(param)
     {
         this.setValue(parseTextValue(param)[0], true, false, false);

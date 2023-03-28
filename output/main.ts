@@ -2276,7 +2276,7 @@ function figLoadNodesAndConns(dataMode)
     const nodes = nodeKeys.map(k => figma.currentPage.getPluginData(k));
     const conns = connKeys.map(k => figma.currentPage.getPluginData(k));
 
-
+console.log('nodes[0] =', nodes[0]);
     initPageStyles(nodes);
 
 

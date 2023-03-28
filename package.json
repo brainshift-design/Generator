@@ -9,7 +9,7 @@
     "lint": "eslint ./"
   },
   "author": "Alex Bourt",
-  "license": "",
+  "license": "Proprietary",
   "devDependencies": {
     "@figma/plugin-typings": "^1.62.0",
     "eslint": "^8.14.0"
