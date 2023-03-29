@@ -2601,7 +2601,6 @@ a
 .textControlTextarea:focus
 {
     outline: 2px solid var(--figma-color-bg-brand);
-    outline-offset
 }
 
 
@@ -37433,6 +37432,9 @@ TextControl.prototype.initTextarea = function()
 
     this.textarea.addEventListener('wheel', e =>
     {
+        if (this.view.wheelTimer)
+            e.preventDefault();
+            
         e.stopPropagation();
         forwardEvent(e, this.div);
     });

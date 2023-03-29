@@ -145,6 +145,9 @@ TextControl.prototype.initTextarea = function()
 
     this.textarea.addEventListener('wheel', e =>
     {
+        if (this.view.wheelTimer)
+            e.preventDefault();
+            
         e.stopPropagation();
         forwardEvent(e, this.div);
     });
