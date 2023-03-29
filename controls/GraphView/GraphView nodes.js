@@ -167,3 +167,15 @@ GraphView.prototype.editSelectedCustomNode = function()
 {
     actionManager.do(new SetCurrentGraphAction(this.selectedNodes[0].graph));
 };
+
+
+
+GraphView.prototype.getTopNodeIndex = function()
+{
+    let max = 0;
+    
+    for (const node of this.graph.nodes)
+        max = Math.max(max, node.div.style.zIndex);
+
+    return max;
+};

@@ -13,6 +13,10 @@ TextControl.prototype.initTextarea = function()
 
     this.textarea.addEventListener('pointerdown', e =>
     {
+        if (this.param.node.div.style.zIndex < graphView.getTopNodeIndex())
+            graphView.putNodeOnTop(this.param.node);
+
+            
         if (e.button == 1)
         {
             e.preventDefault();

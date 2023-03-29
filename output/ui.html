@@ -37301,6 +37301,10 @@ TextControl.prototype.initTextarea = function()
 
     this.textarea.addEventListener('pointerdown', e =>
     {
+        if (this.param.node.div.style.zIndex < graphView.getTopNodeIndex())
+            graphView.putNodeOnTop(this.param.node);
+
+            
         if (e.button == 1)
         {
             e.preventDefault();
@@ -42274,6 +42278,18 @@ GraphView.prototype.renameSelectedNode = function()
 GraphView.prototype.editSelectedCustomNode = function()
 {
     actionManager.do(new SetCurrentGraphAction(this.selectedNodes[0].graph));
+};
+
+
+
+GraphView.prototype.getTopNodeIndex = function()
+{
+    let max = 0;
+    
+    for (const node of this.graph.nodes)
+        max = Math.max(max, node.div.style.zIndex);
+
+    return max;
 };
 
 
