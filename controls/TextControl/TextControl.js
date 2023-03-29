@@ -26,9 +26,12 @@ extends Control
         this.value = defaultValue;
         
         
+        this.div.className = 'textControl';
+
+
         this.initTextarea();
         this.initEvents ();
-
+        
         this.focus = createDiv('textControlFocus');
 
 
@@ -60,6 +63,16 @@ extends Control
         this.savedName = name;
         
         this.update();
+    }
+
+
+
+    setSize(w, h)
+    {
+        super.setSize(w, h);
+
+        if (this.textarea)
+            this.textarea.style.height = h;
     }
 
 

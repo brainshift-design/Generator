@@ -15,7 +15,7 @@ extends Parameter
         this.param = param;
         param.proxy = this;
 
-        this.div.style.height = 20;
+        this.div.style.height    = defParamHeight;
         this.div.style.boxShadow = '0 0 0 1px yellow inset';
 
 

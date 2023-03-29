@@ -2,12 +2,12 @@ TextControl.prototype.initTextarea = function()
 {
     this.textarea = createTextarea('textControlTextarea');
 
-    this.textarea.control     = this;
-    this.textarea.placeholder = ' . . .';
+    this.textarea.control      = this;
+    this.textarea.placeholder  = ' . . .';
 
-    this.textarea.style.height = 20;
+    this.textarea.style.height = defParamHeight;
 
-    this.textarea.savedValue = this.textarea.value;
+    this.textarea.savedValue   = this.textarea.value;
 
 
 
@@ -67,9 +67,9 @@ TextControl.prototype.initTextarea = function()
             // let the OS do its thing here
         }
         
-        else if (   (   e.code == 'Enter'
+        else if (   (      e.code == 'Enter'
+                        && getCtrlKey(e)
                      || e.code == 'NumpadEnter')
-                 && getCtrlKey(e)
                  && !this.readOnly)
         {
             this.textarea.keyBlur = true;
@@ -146,7 +146,7 @@ TextControl.prototype.initTextarea = function()
     this.textarea.addEventListener('wheel', e =>
     {
         e.stopPropagation();
-        //forwardEvent(e, this.div);
+        forwardEvent(e, this.div);
     });
     
 

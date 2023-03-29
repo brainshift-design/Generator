@@ -1,3 +1,7 @@
+const defParamHeight = 20;
+
+
+
 class Parameter
 extends EventTarget
 {

@@ -2544,14 +2544,26 @@ a
 
 .textControl
 {
-    padding:          0;
-    width:            74px;
-    height:           20px;
-    overflow:         visible;
-    background-color: var(--figma-color-bg);
-    text-align:       center;
-    touch-action:     none;
+    padding:       0;
+    /* width:      74px; */
+    /* height:     20px; */
+    overflow:      visible;
+    text-align:    center;
+    touch-action:  none;
+    /* box-shadow:    0 0 0 1px orange inset; */
 }    
+
+
+.figma-dark .textControl
+{
+    background-color: rgba(56, 56, 56, 0.95);
+}
+
+
+.figma-light .textControl
+{
+    background-color: rgba(255, 255, 255, 0.95);
+}
 
 
 .textControlTextarea
@@ -2567,7 +2579,7 @@ a
     /* transform:            translateX(-50%); */
     width:                100%;
     background-color:     transparent;
-    z-index:              0;
+    z-index:              20000;
 
     border:               none;
     overflow:             auto;
@@ -2582,15 +2594,46 @@ a
 
     border-radius:        0.5px;
     
-    box-shadow:           0 0 0 1px inset red;
+    /* box-shadow:           0 0 0 1px inset red; */
 }
 
 
-.textControlTextarea
+.textControlTextarea:focus
 {
-    outline: 2px solid var(--figma-color-brand);
-    /* cursor:  text; */
+    outline: 2px solid var(--figma-color-bg-brand);
+    outline-offset
 }
+
+
+.textControlTextarea::-webkit-scrollbar
+{
+    background:   transparent;
+    width:        6px;
+    /* box-shadow:   0 0 0 1px red inset; */
+}
+
+
+.textControlTextarea::-webkit-scrollbar-track
+{
+    border: 4px solid transparent;
+    margin: 2px 0px 2px 0;
+}
+
+
+.textControlTextarea::-webkit-scrollbar-thumb
+{
+    background:    #fff4;
+    border:        4px solid transparent;
+    border-radius: 3px;
+    cursor:        default;
+    pointer-events: none;
+}
+
+
+/* .textControlTextarea:focus
+{
+    outline: 1px solid var(--figma-color-brand);
+} */
 
 
 .textControlFocus
@@ -2935,6 +2978,7 @@ a
 :root 
 {
     --sizeBorderWidth: 4px;
+    --defHeaderHeight: 25px;
     /* --cornerBack:      #0f08;
     --edgeBack:        #08f8; */
     --cornerBack:      none;
@@ -2950,7 +2994,7 @@ a
     border-radius: 4px 4px 0 0;
     padding:       0;
     overflow:      visible;
- /* box-shadow:    0 0 0 1px orange inset; */
+ /* box-shadow:    0 0 0 1px yellow inset; */
 }
 
 
@@ -2965,6 +3009,7 @@ a
     padding:       0;
     box-shadow:    0 0 0 1px var(--figma-color-bg-tertiary);
     overflow:      visible;
+    /* box-shadow:    0 0 0 1px orange inset; */
 }    
 
 
@@ -3347,7 +3392,7 @@ a
 
 .sizerH
 {
-    top:    25;
+    top:    var(--defHeaderHeight);
     /* top:    var(--sizeBorderWidth); */
     /* height: calc(100% - calc(2 * var(--sizeBorderWidth))); */
     width:  var(--sizeBorderWidth);
@@ -35228,7 +35273,7 @@ extends EventTarget
 
 
 
-    constructor(div, param, id, name, width = 120, height = 20)
+    constructor(div, param, id, name, width = 120, height = defParamHeight)
     {
         super();
 
@@ -35244,10 +35289,10 @@ extends EventTarget
         this.name              = name;
 
 
-        this.setWidth (width);
-        this.setHeight(height);
-        
-        this.div.style.display = 'inline';
+        //this.div.style.display = 'inline';
+
+
+        this.setSize(width, height);
 
 
         this.onstartchange     = new Event('startchange');
@@ -35257,19 +35302,13 @@ extends EventTarget
 
 
 
-    setWidth(width)
+    setSize(w, h)
     {
-        this.width            = width;
-        this.div.style.width  = width;
-    }
-
-
-    
-    setHeight(height)
-    {
-        this.height           = height;
-        this.div.style.height = height;
-
+        this.width            = w;
+        this.height           = h;
+        
+        this.div.style.width  = w;
+        this.div.style.height = h;
     }
 
 
@@ -37093,9 +37132,12 @@ extends Control
         this.value = defaultValue;
         
         
+        this.div.className = 'textControl';
+
+
         this.initTextarea();
         this.initEvents ();
-
+        
         this.focus = createDiv('textControlFocus');
 
 
@@ -37127,6 +37169,16 @@ extends Control
         this.savedName = name;
         
         this.update();
+    }
+
+
+
+    setSize(w, h)
+    {
+        super.setSize(w, h);
+
+        if (this.textarea)
+            this.textarea.style.height = h;
     }
 
 
@@ -37238,12 +37290,12 @@ TextControl.prototype.initTextarea = function()
 {
     this.textarea = createTextarea('textControlTextarea');
 
-    this.textarea.control     = this;
-    this.textarea.placeholder = ' . . .';
+    this.textarea.control      = this;
+    this.textarea.placeholder  = ' . . .';
 
-    this.textarea.style.height = 20;
+    this.textarea.style.height = defParamHeight;
 
-    this.textarea.savedValue = this.textarea.value;
+    this.textarea.savedValue   = this.textarea.value;
 
 
 
@@ -37303,9 +37355,9 @@ TextControl.prototype.initTextarea = function()
             // let the OS do its thing here
         }
         
-        else if (   (   e.code == 'Enter'
+        else if (   (      e.code == 'Enter'
+                        && getCtrlKey(e)
                      || e.code == 'NumpadEnter')
-                 && getCtrlKey(e)
                  && !this.readOnly)
         {
             this.textarea.keyBlur = true;
@@ -37382,7 +37434,7 @@ TextControl.prototype.initTextarea = function()
     this.textarea.addEventListener('wheel', e =>
     {
         e.stopPropagation();
-        //forwardEvent(e, this.div);
+        forwardEvent(e, this.div);
     });
     
 
@@ -37805,31 +37857,31 @@ TextControl.prototype.initEvents = function()
 
 
     
-    // this.div.addEventListener('wheel', e =>
-    // {
-    //     if (  !this.pointerEvents
-    //         || panMode
-    //         || this.view.wheelTimer)
-    //         return;
+    this.div.addEventListener('wheel', e =>
+    {
+        if (  !this.pointerEvents
+            || panMode
+            || this.view.wheelTimer)
+            return;
 
 
-    //     const touchpad = isTouchpad(e);
+        const touchpad = isTouchpad(e);
 
-    //     if (touchpad)
-    //     {
-    //         e.preventDefault();
-    //         return;
-    //     }
+        if (touchpad)
+        {
+            e.preventDefault();
+            return;
+        }
 
 
     //     // const dWheelX = e.deltaX /  20 * (this.dragReverse ? -1 : 1);
     //     // const dWheelY = e.deltaY / 100 * (this.dragReverse ? -1 : 1);
 
 
-    //     if (   !getCtrlKey(e)
-    //         && !this.buttonDown1)
-    //     {
-    //         e.stopPropagation();
+        if (   !getCtrlKey(e)
+            && !this.buttonDown1)
+        {
+            e.stopPropagation();
 
     //         if (!this.readOnly)
     //         {
@@ -37849,8 +37901,8 @@ TextControl.prototype.initEvents = function()
                 
     //             // this.setValue(val, true, true, false, false);
     //         }
-    //     }
-    // });
+        }
+    });
 
 
 
@@ -39093,9 +39145,9 @@ class Menu
         this.showIcons  = showIcons;
         this.showChecks = showChecks;
 
-        this.divArrow     = createDiv('menuArrow');
-        this.div          = createDiv('menu');
-        this.divItems     = createDiv('menuItems');
+        this.divArrow   = createDiv('menuArrow');
+        this.div        = createDiv('menu');
+        this.divItems   = createDiv('menuItems');
 
         this.div.appendChild(this.divItems);
 
@@ -43556,6 +43608,10 @@ GraphView.prototype.createScrollbarMethods = function()
 }
 
 
+const defParamHeight = 20;
+
+
+
 class Parameter
 extends EventTarget
 {
@@ -44453,6 +44509,15 @@ extends Parameter
     {
         return this.controls[0].div.style.display != 'none';
     }
+
+
+
+    // updateControls()
+    // {
+    //     super.updateControls();
+
+    //     this.controls[0].setSize(this.div.offsetWidth, this.div.offsetHeight - defHeaderHeight);
+    // }
 
 
 
@@ -45828,7 +45893,7 @@ extends Parameter
         this.param = param;
         param.proxy = this;
 
-        this.div.style.height = 20;
+        this.div.style.height    = defParamHeight;
         this.div.style.boxShadow = '0 0 0 1px yellow inset';
 
 
@@ -47141,6 +47206,8 @@ class Wire
 
 const connectionSize = 9;
 const connectionGap  = 2;
+
+const defHeaderHeight = 25;
 
 
 
@@ -49102,7 +49169,7 @@ Operator.prototype.updateHeader = function()
 {
     //console.log(this.id + '.Operator.updateHeader()');
     
-    const height = Math.max(25, this.updateHeaderInputsAndOutputs());
+    const height = Math.max(defHeaderHeight, this.updateHeaderInputsAndOutputs());
 
     this.header.style.height = height;
     this.updateParamBack(height);
@@ -49761,25 +49828,24 @@ extends OperatorBase
 
     setSize(w, h, updateTransform = true)
     {
-        super.setSize(
-            Math.max(60, w), 
-            Math.max(this.header.offsetHeight + 20, h), 
-            updateTransform);
+        const _w = Math.max(60, w);
+        const _h = Math.max(defHeaderHeight + defParamHeight, h);
 
-        this.inner.style.height = this.div.offsetHeight;
+        super.setSize(_w, _h, updateTransform);
+
+        this.inner.style.height = _h;
     }
 
 
 
     setRect(x, y, w, h, updateTransform = true)
     {
-        super.setRect(
-            x, 
-            y, 
-            Math.max(60, w), 
-            Math.max(this.header.offsetHeight + 20, h), updateTransform);
+        const _w = Math.max(60, w);
+        const _h = Math.max(defHeaderHeight + defParamHeight, h);
 
-        this.inner.style.height = this.div.offsetHeight;
+        super.setRect(x, y, _w, _h, updateTransform);
+
+        this.inner.style.height = _h;
     }
 
 
@@ -51987,11 +52053,22 @@ extends ResizableBase
 
 
 
+    setSize(w, h, updateTransform = true)
+    {
+        // console.log('OpText.setSize()');
+        super.setSize(w, h, updateTransform);
+
+        this.paramValue.controls[0].setSize(w, h - defHeaderHeight);
+    }
+
+
+
     setRect(x, y, w, h, updateTransform = true)
     {
+        // console.log('OpText.setRect()');
         super.setRect(x, y, w, h, updateTransform);
 
-        this.paramValue.controls[0].textarea.style.height = (h - this.header.offsetHeight) + 'px';
+        this.paramValue.controls[0].setSize(w, h - defHeaderHeight);
     }
 
 
@@ -64818,6 +64895,7 @@ var overColorControl      = null;
 var numberControlChanging = null;
 
 var overNumberControlCtrl = null;
+
 
 
 // function checkAddMenuItemProductKey(menuSelectItems)

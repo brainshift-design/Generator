@@ -217,25 +217,24 @@ extends OperatorBase
 
     setSize(w, h, updateTransform = true)
     {
-        super.setSize(
-            Math.max(60, w), 
-            Math.max(this.header.offsetHeight + 20, h), 
-            updateTransform);
+        const _w = Math.max(60, w);
+        const _h = Math.max(defHeaderHeight + defParamHeight, h);
 
-        this.inner.style.height = this.div.offsetHeight;
+        super.setSize(_w, _h, updateTransform);
+
+        this.inner.style.height = _h;
     }
 
 
 
     setRect(x, y, w, h, updateTransform = true)
     {
-        super.setRect(
-            x, 
-            y, 
-            Math.max(100, w), 
-            Math.max(this.header.offsetHeight + 20, h), updateTransform);
+        const _w = Math.max(60, w);
+        const _h = Math.max(defHeaderHeight + defParamHeight, h);
 
-        this.inner.style.height = this.div.offsetHeight;
+        super.setRect(x, y, _w, _h, updateTransform);
+
+        this.inner.style.height = _h;
     }
 
 

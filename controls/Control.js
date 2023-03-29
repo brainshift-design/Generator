@@ -22,7 +22,7 @@ extends EventTarget
 
 
 
-    constructor(div, param, id, name, width = 120, height = 20)
+    constructor(div, param, id, name, width = 120, height = defParamHeight)
     {
         super();
 
@@ -38,10 +38,10 @@ extends EventTarget
         this.name              = name;
 
 
-        this.setWidth (width);
-        this.setHeight(height);
-        
-        this.div.style.display = 'inline';
+        //this.div.style.display = 'inline';
+
+
+        this.setSize(width, height);
 
 
         this.onstartchange     = new Event('startchange');
@@ -51,19 +51,13 @@ extends EventTarget
 
 
 
-    setWidth(width)
+    setSize(w, h)
     {
-        this.width            = width;
-        this.div.style.width  = width;
-    }
-
-
-    
-    setHeight(height)
-    {
-        this.height           = height;
-        this.div.style.height = height;
-
+        this.width            = w;
+        this.height           = h;
+        
+        this.div.style.width  = w;
+        this.div.style.height = h;
     }
 
 

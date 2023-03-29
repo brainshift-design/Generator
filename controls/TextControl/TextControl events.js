@@ -320,31 +320,31 @@ TextControl.prototype.initEvents = function()
 
 
     
-    // this.div.addEventListener('wheel', e =>
-    // {
-    //     if (  !this.pointerEvents
-    //         || panMode
-    //         || this.view.wheelTimer)
-    //         return;
+    this.div.addEventListener('wheel', e =>
+    {
+        if (  !this.pointerEvents
+            || panMode
+            || this.view.wheelTimer)
+            return;
 
 
-    //     const touchpad = isTouchpad(e);
+        const touchpad = isTouchpad(e);
 
-    //     if (touchpad)
-    //     {
-    //         e.preventDefault();
-    //         return;
-    //     }
+        if (touchpad)
+        {
+            e.preventDefault();
+            return;
+        }
 
 
     //     // const dWheelX = e.deltaX /  20 * (this.dragReverse ? -1 : 1);
     //     // const dWheelY = e.deltaY / 100 * (this.dragReverse ? -1 : 1);
 
 
-    //     if (   !getCtrlKey(e)
-    //         && !this.buttonDown1)
-    //     {
-    //         e.stopPropagation();
+        if (   !getCtrlKey(e)
+            && !this.buttonDown1)
+        {
+            e.stopPropagation();
 
     //         if (!this.readOnly)
     //         {
@@ -364,8 +364,8 @@ TextControl.prototype.initEvents = function()
                 
     //             // this.setValue(val, true, true, false, false);
     //         }
-    //     }
-    // });
+        }
+    });
 
 
 

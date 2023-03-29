@@ -43,9 +43,9 @@ class Menu
         this.showIcons  = showIcons;
         this.showChecks = showChecks;
 
-        this.divArrow     = createDiv('menuArrow');
-        this.div          = createDiv('menu');
-        this.divItems     = createDiv('menuItems');
+        this.divArrow   = createDiv('menuArrow');
+        this.div        = createDiv('menu');
+        this.divItems   = createDiv('menuItems');
 
         this.div.appendChild(this.divItems);
 

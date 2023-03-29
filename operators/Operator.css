@@ -1,6 +1,7 @@
 :root 
 {
     --sizeBorderWidth: 4px;
+    --defHeaderHeight: 25px;
     /* --cornerBack:      #0f08;
     --edgeBack:        #08f8; */
     --cornerBack:      none;
@@ -16,7 +17,7 @@
     border-radius: 4px 4px 0 0;
     padding:       0;
     overflow:      visible;
- /* box-shadow:    0 0 0 1px orange inset; */
+ /* box-shadow:    0 0 0 1px yellow inset; */
 }
 
 
@@ -31,6 +32,7 @@
     padding:       0;
     box-shadow:    0 0 0 1px var(--figma-color-bg-tertiary);
     overflow:      visible;
+    /* box-shadow:    0 0 0 1px orange inset; */
 }    
 
 
@@ -413,7 +415,7 @@
 
 .sizerH
 {
-    top:    25;
+    top:    var(--defHeaderHeight);
     /* top:    var(--sizeBorderWidth); */
     /* height: calc(100% - calc(2 * var(--sizeBorderWidth))); */
     width:  var(--sizeBorderWidth);

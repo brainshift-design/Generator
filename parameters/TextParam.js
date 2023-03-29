@@ -116,6 +116,15 @@ extends Parameter
 
 
 
+    // updateControls()
+    // {
+    //     super.updateControls();
+
+    //     this.controls[0].setSize(this.div.offsetWidth, this.div.offsetHeight - defHeaderHeight);
+    // }
+
+
+
     resetControls()
     {
         //this.controls[0].valueText = '';

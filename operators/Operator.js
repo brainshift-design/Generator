@@ -1,6 +1,8 @@
 const connectionSize = 9;
 const connectionGap  = 2;
 
+const defHeaderHeight = 25;
+
 
 
 class Operator

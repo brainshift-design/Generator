@@ -82,7 +82,7 @@ Operator.prototype.updateHeader = function()
 {
     //console.log(this.id + '.Operator.updateHeader()');
     
-    const height = Math.max(25, this.updateHeaderInputsAndOutputs());
+    const height = Math.max(defHeaderHeight, this.updateHeaderInputsAndOutputs());
 
     this.header.style.height = height;
     this.updateParamBack(height);

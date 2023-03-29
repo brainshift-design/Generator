@@ -40,11 +40,22 @@ extends ResizableBase
 
 
 
+    setSize(w, h, updateTransform = true)
+    {
+        // console.log('OpText.setSize()');
+        super.setSize(w, h, updateTransform);
+
+        this.paramValue.controls[0].setSize(w, h - defHeaderHeight);
+    }
+
+
+
     setRect(x, y, w, h, updateTransform = true)
     {
+        // console.log('OpText.setRect()');
         super.setRect(x, y, w, h, updateTransform);
 
-        this.paramValue.controls[0].textarea.style.height = (h - this.header.offsetHeight) + 'px';
+        this.paramValue.controls[0].setSize(w, h - defHeaderHeight);
     }
 
 
