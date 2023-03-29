@@ -16,7 +16,7 @@ TextControl.prototype.initTextarea = function()
         if (this.param.node.div.style.zIndex < graphView.getTopNodeIndex())
             graphView.putNodeOnTop(this.param.node);
 
-            
+
         if (e.button == 1)
         {
             e.preventDefault();
@@ -123,7 +123,10 @@ TextControl.prototype.initTextarea = function()
 
         const value = e.clipboardData.getData('text/plain');
 
-        this.textarea.value = value;
+        this.textarea.value = 
+              this.textarea.value.substring(0, this.textarea.selectionStart)
+            + value
+            + this.textarea.value.substring(this.textarea.selectionEnd);
     });
 
 

@@ -76,25 +76,30 @@ ColorControl.prototype.initEvents = function()
                 
             this.buttonDown0  = true;
             this.buttonDown0_ = true;
-            this.moved        = false;
+            //this.moved        = false;
             this.clientX      = e.clientX;
-            this.movedX       = 0;
+            //this.movedX       = 0;
 
 
             if (!this.readOnly)
             {
                 this.oldValue   = this.value;
-                this.startValue = this.value;
-                this.prevValue  = this.value;
-                this.sx         = e.clientX;
+                //this.startValue = this.value;
+                //this.prevValue  = this.value;
+                //this.sx         = e.clientX;
             }
 
 
             this.updateFocusBorder();
 
 
-            // I don't want to focus here, but I do want to take focus away from elsewhere
-            document.activeElement.blur();
+
+            this.textbox.selectionStart = 0;
+            this.textbox.selectionEnd   = 0;
+
+            this.showTextbox();
+
+            //forwardEvent(e, this.textbox);
 
 
             if (this.param)
@@ -141,6 +146,7 @@ ColorControl.prototype.initEvents = function()
         if (    this.buttonDown0
             && !this.readOnly)
         {
+            //forwardEvent(e, this.textbox);
             // ...
         }
         else if (this.view.tempConn
@@ -191,10 +197,10 @@ ColorControl.prototype.initEvents = function()
                 this.view.tempConn.input.updateControl();
             }
         }
-        else if (this.readOnly)
-        {
-            this.moved = true;
-        }
+        // else if (this.readOnly)
+        // {
+        //     this.moved = true;
+        // }
     });
     
     
@@ -290,8 +296,8 @@ ColorControl.prototype.initEvents = function()
             }
         }
         
-        else if (   this.moved
-            || document.menuHadFocus)
+        else if (/*this.moved
+              ||*/ document.menuHadFocus)
         {
             this.unlockPointer(e.pointerId);
 
@@ -304,7 +310,7 @@ ColorControl.prototype.initEvents = function()
         else if (this.buttonDown0_)
         {
             this.clicked = true;
-            this.showTextbox();
+            // this.showTextbox();
         }
 
              if (e.button == 0) this.buttonDown0 = false;

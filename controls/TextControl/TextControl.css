@@ -61,7 +61,13 @@
 }
 
 
-.textControlTextarea::-webkit-scrollbar
+.textControlTextarea:focus::placeholder 
+{
+    color: transparent;
+}
+
+
+  .textControlTextarea::-webkit-scrollbar
 {
     background:   transparent;
     width:        6px;

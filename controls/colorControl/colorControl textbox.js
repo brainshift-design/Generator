@@ -2,12 +2,13 @@ ColorControl.prototype.initTextbox = function()
 {
     this.textbox = createTextbox('colorControlTextbox');
     this.textbox.control = this;
+    this.textbox.shown   = false;
     
 
 
     this.textbox.addEventListener('pointerdown', e =>
     {
-        e.stopPropagation();
+        e.stopImmediatePropagation();
     });
 
 
@@ -16,7 +17,14 @@ ColorControl.prototype.initTextbox = function()
     {
         e.stopPropagation();
 
-        if (e.button == 2)
+        if (e.button == 0)
+        {
+            if (!this.textbox.shown)
+                this.textbox.select();
+    
+            this.textbox.shown = true;
+        }
+        else if (e.button == 2)
         {
             initTextMenu(this.textbox);
             menuText.showAt(e.clientX, e.clientY, false);
@@ -202,7 +210,12 @@ ColorControl.prototype.initTextbox = function()
             this.savedSuccessOnFocusOut = null;
         }
 
-        this.div.parentNode.removeChild(this.textbox);
+        if (this.div.parentNode.contains(this.textbox))
+            this.div.parentNode.removeChild(this.textbox);
+
+        this.textbox.shown = false;
+
+        
         this.clicked = false;
     });
     
@@ -284,8 +297,8 @@ ColorControl.prototype.showTextbox = function()
            hasFocus(this.div)
         && !this.clicked;
 
-    this.textbox.style.boxShadow = '0 0 0 1px var(--figma-color-bg-brand)';
-    this.textbox.style.outline   = 'none';
+    // this.textbox.style.boxShadow = '0 0 0 1px var(--figma-color-bg-brand)';
+    // this.textbox.style.outline   = 'none';
     this.textbox.style.textAlign = 'center';
 
     this.updateTextbox();
@@ -294,7 +307,7 @@ ColorControl.prototype.showTextbox = function()
     this.div.parentNode.appendChild(this.textbox);
     
     this.textbox.focus();
-    this.textbox.select();
+    // this.textbox.select();
 
     this.textbox.style.cursor = 'default';
 };

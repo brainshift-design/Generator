@@ -217,22 +217,22 @@ extends Control
 
     updateFocusBorder()
     {
-        if (this.buttonDown0)
-        {
-            if (   !this.param
-                || !this.param.node.selected)
-                this.focus.style.boxShadow = '0 0 0 1px var(--figma-color-bg-brand) inset';
+        // if (this.buttonDown0)
+        // {
+        //     if (   !this.param
+        //         || !this.param.node.selected)
+        //         this.focus.style.boxShadow = '0 0 0 1px var(--figma-color-bg-brand) inset';
 
-            else
-            {
-                this.focus.style.boxShadow = '0 1px 0 0 var(--figma-color-bg-brand) inset';
+        //     else
+        //     {
+        //         this.focus.style.boxShadow = '0 1px 0 0 var(--figma-color-bg-brand) inset';
                     
-                if (this.param.index < this.param.node.params.length-1)
-                    this.focus.style.boxShadow += ', 0 -1px 0 0 var(--figma-color-bg-brand) inset';
-            }
-        }
-        else
-        {
+        //         if (this.param.index < this.param.node.params.length-1)
+        //             this.focus.style.boxShadow += ', 0 -1px 0 0 var(--figma-color-bg-brand) inset';
+        //     }
+        // }
+        // else
+        // {
             const colShadow = 
                 darkMode
                 ? 'rgba(255, 255, 255, 0.1)'
@@ -251,6 +251,6 @@ extends Control
             {
                 this.focus.style.boxShadow  = '0 0 0 1px ' + colShadow + ' inset ';
             }
-        }
+        // }
     }
 }

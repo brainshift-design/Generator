@@ -114,6 +114,10 @@ Operator.prototype.createHeader = function()
         e.preventDefault();
 
 
+        // I don't want to focus here, but I do want to take focus away from elsewhere
+        document.activeElement.blur();
+
+
         const view = this.graph.view;
 
 

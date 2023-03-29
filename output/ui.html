@@ -2488,6 +2488,13 @@ a
     white-space:          nowrap;
     background-color:     transparent;
     z-index:              10;
+    border-radius:        0.5px;
+}
+
+
+.textControlTextarea:focus
+{
+    outline: 2px solid var(--figma-color-bg-brand);
 }
 
 
@@ -2605,7 +2612,13 @@ a
 }
 
 
-.textControlTextarea::-webkit-scrollbar
+.textControlTextarea:focus::placeholder 
+{
+    color: transparent;
+}
+
+
+  .textControlTextarea::-webkit-scrollbar
 {
     background:   transparent;
     width:        6px;
@@ -2654,7 +2667,7 @@ a
     width:            74px;
     height:           26px;
     overflow:         hidden;
-    background-color: var(--figma-color-bg);/*white;*/
+    background-color: var(--figma-color-bg);
     text-align:       center;
     touch-action:     none;
 }    
@@ -2715,6 +2728,13 @@ a
     width:                100%;
     white-space:          nowrap;
     letter-spacing:       -0.35px;
+    border-radius:        0.5px;
+}
+
+
+.colorControlTextbox:focus
+{
+    outline: 2px solid var(--figma-color-bg-brand);
 }
 
 
@@ -2722,7 +2742,7 @@ a
 {
     position:       absolute;
     pointer-events: none;
-    box-shadow:     0 0 0 1px var(--activeObjectColor) inset;
+    box-shadow:     0 0 0 1px var(--figma-color-bg-brand) inset;
     visibility:     hidden;
     opacity:        0;
 }
@@ -36304,8 +36324,8 @@ NumberControl.prototype.showTextbox = function()
         && !this.clicked;
 
         
-    this.textbox.style.boxShadow = '0 0 0 1px var(--figma-color-bg-brand)';
-    this.textbox.style.outline   = 'none';
+    // this.textbox.style.boxShadow = '0 0 0 1px var(--figma-color-bg-brand)';
+    // this.textbox.style.outline   = 'none';
     this.textbox.style.textAlign = 'center';
 
 
@@ -37304,7 +37324,7 @@ TextControl.prototype.initTextarea = function()
         if (this.param.node.div.style.zIndex < graphView.getTopNodeIndex())
             graphView.putNodeOnTop(this.param.node);
 
-            
+
         if (e.button == 1)
         {
             e.preventDefault();
@@ -37411,7 +37431,10 @@ TextControl.prototype.initTextarea = function()
 
         const value = e.clipboardData.getData('text/plain');
 
-        this.textarea.value = value;
+        this.textarea.value = 
+              this.textarea.value.substring(0, this.textarea.selectionStart)
+            + value
+            + this.textarea.value.substring(this.textarea.selectionEnd);
     });
 
 
@@ -38209,22 +38232,22 @@ extends Control
 
     updateFocusBorder()
     {
-        if (this.buttonDown0)
-        {
-            if (   !this.param
-                || !this.param.node.selected)
-                this.focus.style.boxShadow = '0 0 0 1px var(--figma-color-bg-brand) inset';
+        // if (this.buttonDown0)
+        // {
+        //     if (   !this.param
+        //         || !this.param.node.selected)
+        //         this.focus.style.boxShadow = '0 0 0 1px var(--figma-color-bg-brand) inset';
 
-            else
-            {
-                this.focus.style.boxShadow = '0 1px 0 0 var(--figma-color-bg-brand) inset';
+        //     else
+        //     {
+        //         this.focus.style.boxShadow = '0 1px 0 0 var(--figma-color-bg-brand) inset';
                     
-                if (this.param.index < this.param.node.params.length-1)
-                    this.focus.style.boxShadow += ', 0 -1px 0 0 var(--figma-color-bg-brand) inset';
-            }
-        }
-        else
-        {
+        //         if (this.param.index < this.param.node.params.length-1)
+        //             this.focus.style.boxShadow += ', 0 -1px 0 0 var(--figma-color-bg-brand) inset';
+        //     }
+        // }
+        // else
+        // {
             const colShadow = 
                 darkMode
                 ? 'rgba(255, 255, 255, 0.1)'
@@ -38243,7 +38266,7 @@ extends Control
             {
                 this.focus.style.boxShadow  = '0 0 0 1px ' + colShadow + ' inset ';
             }
-        }
+        // }
     }
 }
 
@@ -38252,12 +38275,13 @@ ColorControl.prototype.initTextbox = function()
 {
     this.textbox = createTextbox('colorControlTextbox');
     this.textbox.control = this;
+    this.textbox.shown   = false;
     
 
 
     this.textbox.addEventListener('pointerdown', e =>
     {
-        e.stopPropagation();
+        e.stopImmediatePropagation();
     });
 
 
@@ -38266,7 +38290,14 @@ ColorControl.prototype.initTextbox = function()
     {
         e.stopPropagation();
 
-        if (e.button == 2)
+        if (e.button == 0)
+        {
+            if (!this.textbox.shown)
+                this.textbox.select();
+    
+            this.textbox.shown = true;
+        }
+        else if (e.button == 2)
         {
             initTextMenu(this.textbox);
             menuText.showAt(e.clientX, e.clientY, false);
@@ -38452,7 +38483,12 @@ ColorControl.prototype.initTextbox = function()
             this.savedSuccessOnFocusOut = null;
         }
 
-        this.div.parentNode.removeChild(this.textbox);
+        if (this.div.parentNode.contains(this.textbox))
+            this.div.parentNode.removeChild(this.textbox);
+
+        this.textbox.shown = false;
+
+        
         this.clicked = false;
     });
     
@@ -38534,8 +38570,8 @@ ColorControl.prototype.showTextbox = function()
            hasFocus(this.div)
         && !this.clicked;
 
-    this.textbox.style.boxShadow = '0 0 0 1px var(--figma-color-bg-brand)';
-    this.textbox.style.outline   = 'none';
+    // this.textbox.style.boxShadow = '0 0 0 1px var(--figma-color-bg-brand)';
+    // this.textbox.style.outline   = 'none';
     this.textbox.style.textAlign = 'center';
 
     this.updateTextbox();
@@ -38544,7 +38580,7 @@ ColorControl.prototype.showTextbox = function()
     this.div.parentNode.appendChild(this.textbox);
     
     this.textbox.focus();
-    this.textbox.select();
+    // this.textbox.select();
 
     this.textbox.style.cursor = 'default';
 };
@@ -38645,25 +38681,30 @@ ColorControl.prototype.initEvents = function()
                 
             this.buttonDown0  = true;
             this.buttonDown0_ = true;
-            this.moved        = false;
+            //this.moved        = false;
             this.clientX      = e.clientX;
-            this.movedX       = 0;
+            //this.movedX       = 0;
 
 
             if (!this.readOnly)
             {
                 this.oldValue   = this.value;
-                this.startValue = this.value;
-                this.prevValue  = this.value;
-                this.sx         = e.clientX;
+                //this.startValue = this.value;
+                //this.prevValue  = this.value;
+                //this.sx         = e.clientX;
             }
 
 
             this.updateFocusBorder();
 
 
-            // I don't want to focus here, but I do want to take focus away from elsewhere
-            document.activeElement.blur();
+
+            this.textbox.selectionStart = 0;
+            this.textbox.selectionEnd   = 0;
+
+            this.showTextbox();
+
+            //forwardEvent(e, this.textbox);
 
 
             if (this.param)
@@ -38710,6 +38751,7 @@ ColorControl.prototype.initEvents = function()
         if (    this.buttonDown0
             && !this.readOnly)
         {
+            //forwardEvent(e, this.textbox);
             // ...
         }
         else if (this.view.tempConn
@@ -38760,10 +38802,10 @@ ColorControl.prototype.initEvents = function()
                 this.view.tempConn.input.updateControl();
             }
         }
-        else if (this.readOnly)
-        {
-            this.moved = true;
-        }
+        // else if (this.readOnly)
+        // {
+        //     this.moved = true;
+        // }
     });
     
     
@@ -38859,8 +38901,8 @@ ColorControl.prototype.initEvents = function()
             }
         }
         
-        else if (   this.moved
-            || document.menuHadFocus)
+        else if (/*this.moved
+              ||*/ document.menuHadFocus)
         {
             this.unlockPointer(e.pointerId);
 
@@ -38873,7 +38915,7 @@ ColorControl.prototype.initEvents = function()
         else if (this.buttonDown0_)
         {
             this.clicked = true;
-            this.showTextbox();
+            // this.showTextbox();
         }
 
              if (e.button == 0) this.buttonDown0 = false;
@@ -48452,6 +48494,10 @@ Operator.prototype.createHeader = function()
 
 
         e.preventDefault();
+
+
+        // I don't want to focus here, but I do want to take focus away from elsewhere
+        document.activeElement.blur();
 
 
         const view = this.graph.view;

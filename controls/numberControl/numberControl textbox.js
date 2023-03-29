@@ -360,8 +360,8 @@ NumberControl.prototype.showTextbox = function()
         && !this.clicked;
 
         
-    this.textbox.style.boxShadow = '0 0 0 1px var(--figma-color-bg-brand)';
-    this.textbox.style.outline   = 'none';
+    // this.textbox.style.boxShadow = '0 0 0 1px var(--figma-color-bg-brand)';
+    // this.textbox.style.outline   = 'none';
     this.textbox.style.textAlign = 'center';
 
 
