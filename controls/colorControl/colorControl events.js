@@ -33,6 +33,13 @@ ColorControl.prototype.initEvents = function()
 
     this.div.addEventListener('pointerdown', e =>
     {
+        if (e.button == 1)
+        {
+            e.preventDefault();
+            return;
+        }
+
+
         e.stopPropagation();
     
     

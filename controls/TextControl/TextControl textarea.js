@@ -13,6 +13,12 @@ TextControl.prototype.initTextarea = function()
 
     this.textarea.addEventListener('pointerdown', e =>
     {
+        if (e.button == 1)
+        {
+            e.preventDefault();
+            return;
+        }
+
         e.stopPropagation();
     });
     
@@ -34,8 +40,6 @@ TextControl.prototype.initTextarea = function()
     this.textarea.addEventListener('pointermove', e =>
     {
         e.stopPropagation();
-        
-        //this.textarea.style.cursor = 'default';
     });
 
 
@@ -147,7 +151,7 @@ TextControl.prototype.initTextarea = function()
     {
         if (this.view.wheelTimer)
             e.preventDefault();
-            
+
         e.stopPropagation();
         forwardEvent(e, this.div);
     });

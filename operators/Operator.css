@@ -2,10 +2,10 @@
 {
     --sizeBorderWidth: 4px;
     --defHeaderHeight: 25px;
-    --cornerBack:      #0f08;
-    --edgeBack:        #08f8;
-    /* --cornerBack:      none;
-    --edgeBack:        none; */
+    /* --cornerBack:      #0f08;
+    --edgeBack:        #08f8; */
+    --cornerBack:      none;
+    --edgeBack:        none;
 }
 
 

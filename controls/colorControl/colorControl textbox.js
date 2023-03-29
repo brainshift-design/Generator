@@ -208,10 +208,17 @@ ColorControl.prototype.initTextbox = function()
     
 
 
-    this.textbox.addEventListener('wheel', e =>
+    this.textbox.addEventListener('pointerdown', e =>
     {
-        e.stopPropagation();
         forwardEvent(e, this.div);
+
+        if (e.button == 1)
+        {
+            e.preventDefault();
+            return;
+        }
+
+        e.stopPropagation();
     });
 
 
