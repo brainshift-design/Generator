@@ -89,8 +89,8 @@ ColorControl.prototype.initTextbox = function()
             
             if (this.param)
             {
-                const params = this.param.node.params;
-                let   index  = this.param.index;
+                const params = this.param.node.getTabParams();
+                let   index  = params.indexOf(this.param);
 
                 this.textbox.keyBlur = true;
                 this.textbox.finish(true, false);

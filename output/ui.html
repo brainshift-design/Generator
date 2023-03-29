@@ -36043,8 +36043,8 @@ NumberControl.prototype.initTextbox = function()
             
             if (this.param)
             {
-                const params = this.param.node.params;
-                let   index  = this.param.index;
+                const params = this.param.node.getTabParams();
+                let   index  = params.indexOf(this.param);
 
                 this.textbox.keyBlur = true;
                 this.textbox.finish(true, false);
@@ -38362,8 +38362,8 @@ ColorControl.prototype.initTextbox = function()
             
             if (this.param)
             {
-                const params = this.param.node.params;
-                let   index  = this.param.index;
+                const params = this.param.node.getTabParams();
+                let   index  = params.indexOf(this.param);
 
                 this.textbox.keyBlur = true;
                 this.textbox.finish(true, false);
@@ -44625,10 +44625,7 @@ extends Parameter
         this.controls[0].value = value.value;
 
         if (updateControl)
-        {
-            console.log('value.value =', value.value);
             this.controls[0].setValue(value.value, true);//, false); 
-        }
 
 
         super.setValue(value, createAction, updateControl, dispatchEvents);
@@ -47714,6 +47711,13 @@ class Operator
     {
         for (const param of this.params)
             param.div.style.display = param.canShow() ? 'inline-block' : 'none';
+    }
+
+
+
+    getTabParams()
+    {
+        return this.params.filter(p => p.canShow());
     }
 
 
@@ -52689,6 +52693,15 @@ extends OpColorBase
         this.param1.setValue(new NumberValue(col[1]), fireChangeEvent);
         this.param2.setValue(new NumberValue(col[2]), fireChangeEvent);
         this.param3.setValue(new NumberValue(col[3]), fireChangeEvent);
+    }
+
+
+
+    getTabParams()
+    {
+        return this.paramSpace.value.value == 0
+            ? [this.paramSpace, this.paramColor]
+            : this.params;
     }
 
 

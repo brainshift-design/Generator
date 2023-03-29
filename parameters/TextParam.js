@@ -147,10 +147,7 @@ extends Parameter
         this.controls[0].value = value.value;
 
         if (updateControl)
-        {
-            console.log('value.value =', value.value);
             this.controls[0].setValue(value.value, true);//, false); 
-        }
 
 
         super.setValue(value, createAction, updateControl, dispatchEvents);

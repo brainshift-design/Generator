@@ -166,6 +166,15 @@ extends OpColorBase
 
 
 
+    getTabParams()
+    {
+        return this.paramSpace.value.value == 0
+            ? [this.paramSpace, this.paramColor]
+            : this.params;
+    }
+
+
+
     isConnected()
     {
         return this.inputs[0].connected

@@ -430,6 +430,13 @@ class Operator
 
 
 
+    getTabParams()
+    {
+        return this.params.filter(p => p.canShow());
+    }
+
+
+
     setSelected(sel)
     {
         this._selected = sel;
