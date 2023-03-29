@@ -78,6 +78,8 @@ function createTextarea(className = '')
     if (className.trim() != '')
         textarea.className = className;
     
+    textarea.spellcheck = false;
+    
     return textarea;
 }
 

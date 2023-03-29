@@ -1,371 +1,371 @@
 TextControl.prototype.initEvents = function()
 {
-    this.div.addEventListener('pointerenter', e =>
-    {
-        overColorControl = this;
+    // this.div.addEventListener('pointerenter', e =>
+    // {
+    //     overColorControl = this;
 
 
-        if (panMode)
-        {
-            setCursor(panCursor);
-            return;
-        }
+    //     if (panMode)
+    //     {
+    //         setCursor(panCursor);
+    //         return;
+    //     }
 
 
-        if (   !this.view.spaceDown
-            &&  this.pointerEvents)
-        {
-            this.div.style.cursor = this.view.tempConn ? 'default' : 'text';
+    //     if (   !this.view.spaceDown
+    //         &&  this.pointerEvents)
+    //     {
+    //         this.div.style.cursor = this.view.tempConn ? 'default' : 'text';
 
 
-            this.updateFocusBorder();
+    //         this.updateFocusBorder();
 
 
-            this.focus.style.visibility = 'visible';
-            this.focus.style.opacity    = '100%';
+    //         this.focus.style.visibility = 'visible';
+    //         this.focus.style.opacity    = '100%';
     
-            this.update();
-        }
-    });
+    //         this.update();
+    //     }
+    // });
 
 
 
-    this.div.addEventListener('pointerdown', e =>
-    {
-        e.stopPropagation();
+    // this.div.addEventListener('pointerdown', e =>
+    // {
+    //     e.stopPropagation();
     
     
-        if (   this.view.spaceDown
-            || panMode)
-            return;
+    //     if (   this.view.spaceDown
+    //         || panMode)
+    //         return;
 
 
-        window.focus();
+    //     window.focus();
         
-        hideAllMenus();
+    //     hideAllMenus();
 
 
-        if (e.button == 0)
-        {
-            if (!this.pointerEvents)
-            {
-                e.stopPropagation();
-                return;
-            }
+    //     if (e.button == 0)
+    //     {
+    //         if (!this.pointerEvents)
+    //         {
+    //             e.stopPropagation();
+    //             return;
+    //         }
     
-            let nodeDiv = 
-                   this.parentNode
-                && this.parentNode.parentNode
-                && this.parentNode.parentNode.parentNode
-                ? this.parentNode.parentNode.parentNode
-                : null;
+    //         let nodeDiv = 
+    //                this.parentNode
+    //             && this.parentNode.parentNode
+    //             && this.parentNode.parentNode.parentNode
+    //             ? this.parentNode.parentNode.parentNode
+    //             : null;
 
-            if (nodeDiv && nodeDiv.className == 'node') 
-                this.view.putNodeOnTop(nodeDiv.node);
+    //         if (nodeDiv && nodeDiv.className == 'node') 
+    //             this.view.putNodeOnTop(nodeDiv.node);
 
 
-            e.preventDefault(); // this is fine since I lock the pointer anyway
+    //         e.preventDefault(); // this is fine since I lock the pointer anyway
                 
-            this.buttonDown0  = true;
-            this.buttonDown0_ = true;
-            this.clientX      = e.clientX;
+    //         this.buttonDown0  = true;
+    //         this.buttonDown0_ = true;
+    //         this.clientX      = e.clientX;
 
 
-            if (!this.readOnly)
-            {
-                this.oldValue   = this.value;
-                this.startValue = this.value;
-                this.prevValue  = this.value;
-                this.sx         = e.clientX;
-            }
+    //         if (!this.readOnly)
+    //         {
+    //             this.oldValue   = this.value;
+    //             this.startValue = this.value;
+    //             this.prevValue  = this.value;
+    //             this.sx         = e.clientX;
+    //         }
 
 
-            this.updateFocusBorder();
+    //         this.updateFocusBorder();
 
 
-            // I don't want to focus here, but I do want to take focus away from elsewhere
-            document.activeElement.blur();
+    //         // I don't want to focus here, but I do want to take focus away from elsewhere
+    //         document.activeElement.blur();
 
 
-            if (this.param)
-                this.param.noUpdate = true;  
-        }
-        else if (e.button == 1)
-        {
-            e.preventDefault();
-            this.buttonDown1 = true;
-        }
-        else if (e.button == 2)
-        {
-            e.preventDefault();
-            this.buttonDown2 = true;
-        }
-    });
+    //         if (this.param)
+    //             this.param.noUpdate = true;  
+    //     }
+    //     else if (e.button == 1)
+    //     {
+    //         e.preventDefault();
+    //         this.buttonDown1 = true;
+    //     }
+    //     else if (e.button == 2)
+    //     {
+    //         e.preventDefault();
+    //         this.buttonDown2 = true;
+    //     }
+    // });
 
 
 
-    this.div.addEventListener('pointermove', e =>
-    {
-        if (panMode)
-        {
-            setCursor(panCursor);
-            return;
-        }
+    // this.div.addEventListener('pointermove', e =>
+    // {
+    //     if (panMode)
+    //     {
+    //         setCursor(panCursor);
+    //         return;
+    //     }
 
-        if (!this.pointerEvents)
-            return;
+    //     if (!this.pointerEvents)
+    //         return;
         
 
-        let rect = boundingRect(this.div);
+    //     let rect = boundingRect(this.div);
         
-        this.mouseOver = 
-               e.clientX >= rect.left
-            && e.clientX <  rect.right
-            && e.clientY >= rect.top                                     
-            && e.clientY <  rect.bottom;
+    //     this.mouseOver = 
+    //            e.clientX >= rect.left
+    //         && e.clientX <  rect.right
+    //         && e.clientY >= rect.top                                     
+    //         && e.clientY <  rect.bottom;
 
 
-        this.clientX = e.clientX;
+    //     this.clientX = e.clientX;
 
         
-        if (    this.buttonDown0
-            && !this.readOnly)
-        {
-            // ...
-        }
-        else if (this.view.tempConn
-              && this.param)
-        {
-            let savedInput = 
-                this.view.savedConn
-                ? this.view.savedConn.input
-                : null;
+    //     if (    this.buttonDown0
+    //         && !this.readOnly)
+    //     {
+    //         // ...
+    //     }
+    //     else if (this.view.tempConn
+    //           && this.param)
+    //     {
+    //         let savedInput = 
+    //             this.view.savedConn
+    //             ? this.view.savedConn.input
+    //             : null;
 
-            if (    this.view.tempConn.output
-                &&  this.param.input
-                &&  this.param.input.canConnectFrom(this.view.tempConn.output)
-                && !this.view.tempConn.output.node.isOrFollows(this.param.node)
-                && (  !this.param.input.connected // not already connected to this input
-                    || this.param.input.connectedOutput != this.view.tempConn.output
-                    || this.param.input == savedInput))
-            {
-                this.view.overInput = this.param.input;
+    //         if (    this.view.tempConn.output
+    //             &&  this.param.input
+    //             &&  this.param.input.canConnectFrom(this.view.tempConn.output)
+    //             && !this.view.tempConn.output.node.isOrFollows(this.param.node)
+    //             && (  !this.param.input.connected // not already connected to this input
+    //                 || this.param.input.connectedOutput != this.view.tempConn.output
+    //                 || this.param.input == savedInput))
+    //         {
+    //             this.view.overInput = this.param.input;
                     
-                this.param.input.mouseOver = true;
-                this.param.input.updateControl();
+    //             this.param.input.mouseOver = true;
+    //             this.param.input.updateControl();
 
-                const rect = boundingRect(this.param.input.div);
+    //             const rect = boundingRect(this.param.input.div);
 
-                this.view.tempConn.wire .inputPos = point(
-                    rect.x + rect.w/2,
-                    rect.y + rect.h/2 - menuBarHeight);
-            }
-            else if ( this.view.tempConn.input
-                  &&  this.param.output
-                  &&  this.view.tempConn.input.canConnectTo(this.param.output)
-                  && !this.param.node.isOrFollows(this.view.tempConn.input.node))
-            {
-                this.view.overOutput = this.param.output;
+    //             this.view.tempConn.wire .inputPos = point(
+    //                 rect.x + rect.w/2,
+    //                 rect.y + rect.h/2 - menuBarHeight);
+    //         }
+    //         else if ( this.view.tempConn.input
+    //               &&  this.param.output
+    //               &&  this.view.tempConn.input.canConnectTo(this.param.output)
+    //               && !this.param.node.isOrFollows(this.view.tempConn.input.node))
+    //         {
+    //             this.view.overOutput = this.param.output;
                     
-                this.param.output.mouseOver = true;
-                this.param.output.updateControl();
+    //             this.param.output.mouseOver = true;
+    //             this.param.output.updateControl();
 
 
-                const rect = boundingRect(this.param.output.div);
+    //             const rect = boundingRect(this.param.output.div);
 
-                this.view.tempConn.wire .outputPos = point(
-                    rect.x + rect.w/2,
-                    rect.y + rect.h/2 - menuBarHeight);
+    //             this.view.tempConn.wire .outputPos = point(
+    //                 rect.x + rect.w/2,
+    //                 rect.y + rect.h/2 - menuBarHeight);
 
 
-                this.view.tempConn.input.updateControl();
-            }
-        }
-    });
+    //             this.view.tempConn.input.updateControl();
+    //         }
+    //     }
+    // });
     
     
     
-    this.div.addEventListener('pointerleave', e =>
-    {
-        overColorControl = null;
+    // this.div.addEventListener('pointerleave', e =>
+    // {
+    //     overColorControl = null;
 
         
-        if (panMode)
-            return;
+    //     if (panMode)
+    //         return;
 
 
-        this.div.style.cursor       = 'default';
+    //     this.div.style.cursor       = 'default';
         
-        this.focus.style.visibility = 'hidden';
-        this.focus.style.opacity    = 0;
+    //     this.focus.style.visibility = 'hidden';
+    //     this.focus.style.opacity    = 0;
 
-        this.update();
+    //     this.update();
 
 
-        if (this.view.tempConn)
-        {
-            if (   this.view.tempConn.output
-                && this.view.tempConn.output.node != this.param.node)
-            {
-                const input = this.view.overInput;
+    //     if (this.view.tempConn)
+    //     {
+    //         if (   this.view.tempConn.output
+    //             && this.view.tempConn.output.node != this.param.node)
+    //         {
+    //             const input = this.view.overInput;
                 
-                this.view.overInput   = null;
+    //             this.view.overInput   = null;
                 
-                if (input) // will be null if data types don't match or there's no auto input for someo other reason
-                {
-                    input.mouseOver = false;
-                    input.updateControl();
-                }
+    //             if (input) // will be null if data types don't match or there's no auto input for someo other reason
+    //             {
+    //                 input.mouseOver = false;
+    //                 input.updateControl();
+    //             }
                 
-                this.view.tempConn.wire .inputPos = point_NaN;
-            }
-            else if (this.view.tempConn.input
-                  && this.view.tempConn.input.node != this.param.node)
-            {
-                const output = this.view.overOutput;
+    //             this.view.tempConn.wire .inputPos = point_NaN;
+    //         }
+    //         else if (this.view.tempConn.input
+    //               && this.view.tempConn.input.node != this.param.node)
+    //         {
+    //             const output = this.view.overOutput;
                 
-                this.view.overOutput = null;
+    //             this.view.overOutput = null;
 
-                if (output) // will be null if data types don't match or there's no auto output for someo other reason
-                {
-                    output.mouseOver = false;
-                    output.updateControl();
-                }
+    //             if (output) // will be null if data types don't match or there's no auto output for someo other reason
+    //             {
+    //                 output.mouseOver = false;
+    //                 output.updateControl();
+    //             }
 
-                this.view.tempConn.wire .outputPos = point_NaN;
-                this.view.tempConn.input.updateControl();
-           }
-        }
-    });
+    //             this.view.tempConn.wire .outputPos = point_NaN;
+    //             this.view.tempConn.input.updateControl();
+    //        }
+    //     }
+    // });
 
 
 
-    this.div.addEventListener('losecapture', () =>
-    {
-        this.buttonDown0 = false;
-        this.buttonDown1 = false;
-        this.buttonDown2 = false;
-        this.mouseOver   = false;
+    // this.div.addEventListener('losecapture', () =>
+    // {
+    //     this.buttonDown0 = false;
+    //     this.buttonDown1 = false;
+    //     this.buttonDown2 = false;
+    //     this.mouseOver   = false;
         
-        this.update();
-    });
+    //     this.update();
+    // });
 
 
 
-    this.div.addEventListener('pointerup', e =>
-    {
-        clearTimeout(this.clickTimer);
+    // this.div.addEventListener('pointerup', e =>
+    // {
+    //     clearTimeout(this.clickTimer);
 
 
-        if (this.view.tempConn)
-        {
-            if (    this.view.tempConn.output
-                && !this.view.tempConn.output.node.isOrFollows(this.param.node)
-                &&  this.view.overInput)
-            {
-                this.view.endConnection(e.pointerId, getCtrlKey(e));
-                this.view.overInput.endConnection();
-            }
-            else if (this.view.tempConn.input
-                && !this.param.node.isOrFollows(this.view.tempConn.input.node)
-                &&  this.view.overOutput)
-            {
-                this.view.endConnection(e.pointerId, getCtrlKey(e));
-                this.view.overOutput.endConnection();
-            }
-        }
+    //     if (this.view.tempConn)
+    //     {
+    //         if (    this.view.tempConn.output
+    //             && !this.view.tempConn.output.node.isOrFollows(this.param.node)
+    //             &&  this.view.overInput)
+    //         {
+    //             this.view.endConnection(e.pointerId, getCtrlKey(e));
+    //             this.view.overInput.endConnection();
+    //         }
+    //         else if (this.view.tempConn.input
+    //             && !this.param.node.isOrFollows(this.view.tempConn.input.node)
+    //             &&  this.view.overOutput)
+    //         {
+    //             this.view.endConnection(e.pointerId, getCtrlKey(e));
+    //             this.view.overOutput.endConnection();
+    //         }
+    //     }
         
-        else if (this.buttonDown0_)
-        {
-            this.clicked = true;
-            this.showTextarea();
-        }
+    //     else if (this.buttonDown0_)
+    //     {
+    //         this.clicked = true;
+    //         this.showTextarea();
+    //     }
 
-             if (e.button == 0) this.buttonDown0 = false;
-        else if (e.button == 1) this.buttonDown1 = false;
-        else if (e.button == 2) this.buttonDown2 = false;
+    //          if (e.button == 0) this.buttonDown0 = false;
+    //     else if (e.button == 1) this.buttonDown1 = false;
+    //     else if (e.button == 2) this.buttonDown2 = false;
 
-        this.buttonDown0_ = false;
-    });    
-
-
-
-    document.addEventListener('pointerup', e =>
-    {
-        e.stopPropagation();
+    //     this.buttonDown0_ = false;
+    // });    
 
 
-        if (panMode)
-            return;
+
+    // document.addEventListener('pointerup', e =>
+    // {
+    //     e.stopPropagation();
+
+
+    //     if (panMode)
+    //         return;
 
             
-        if (   e.button == 0 
-            && this.buttonDown0)
-        {
-            this.buttonDown0 = false;
-            //this.unlockPointer(e.pointerId);
+    //     if (   e.button == 0 
+    //         && this.buttonDown0)
+    //     {
+    //         this.buttonDown0 = false;
+    //         //this.unlockPointer(e.pointerId);
 
-            this.focus.style.boxShadow = '0 0 0 1px rgba(0, 0, 0, 0.1) inset';
+    //         this.focus.style.boxShadow = '0 0 0 1px rgba(0, 0, 0, 0.1) inset';
 
-            if (    this.value != this.oldValue
-                && !this.readOnly)
-                this.dispatchEvent(this.onconfirm);
-        }
-        else if (   e.button == 1
-            && this.buttonDown1)
-        {
-            this.buttonDown1 = false;            
-        }
-    });
+    //         if (    this.value != this.oldValue
+    //             && !this.readOnly)
+    //             this.dispatchEvent(this.onconfirm);
+    //     }
+    //     else if (   e.button == 1
+    //         && this.buttonDown1)
+    //     {
+    //         this.buttonDown1 = false;            
+    //     }
+    // });
 
 
     
-    this.div.addEventListener('wheel', e =>
-    {
-        if (  !this.pointerEvents
-            || panMode
-            || this.view.wheelTimer)
-            return;
+    // this.div.addEventListener('wheel', e =>
+    // {
+    //     if (  !this.pointerEvents
+    //         || panMode
+    //         || this.view.wheelTimer)
+    //         return;
 
 
-        const touchpad = isTouchpad(e);
+    //     const touchpad = isTouchpad(e);
 
-        if (touchpad)
-        {
-            e.preventDefault();
-            return;
-        }
-
-
-        // const dWheelX = e.deltaX /  20 * (this.dragReverse ? -1 : 1);
-        // const dWheelY = e.deltaY / 100 * (this.dragReverse ? -1 : 1);
+    //     if (touchpad)
+    //     {
+    //         e.preventDefault();
+    //         return;
+    //     }
 
 
-        if (   !getCtrlKey(e)
-            && !this.buttonDown1)
-        {
-            e.stopPropagation();
+    //     // const dWheelX = e.deltaX /  20 * (this.dragReverse ? -1 : 1);
+    //     // const dWheelY = e.deltaY / 100 * (this.dragReverse ? -1 : 1);
 
-            if (!this.readOnly)
-            {
-                // if (   document.activeElement
-                //     && document.activeElement.tagName.toLowerCase() == 'input'
-                //     && document.activeElement.control)
-                //     document.activeElement.control.textarea.finish(true, false);
 
-                // this.oldValue = this.value;
+    //     if (   !getCtrlKey(e)
+    //         && !this.buttonDown1)
+    //     {
+    //         e.stopPropagation();
 
-                // const dec = Math.pow(10, -this.dec);
+    //         if (!this.readOnly)
+    //         {
+    //             // if (   document.activeElement
+    //             //     && document.activeElement.tagName.toLowerCase() == 'input'
+    //             //     && document.activeElement.control)
+    //             //     document.activeElement.control.textarea.finish(true, false);
 
-                // const val =
-                //     touchpad
-                //     ? this.value -  dWheelX               * this.wheelScale * dec
-                //     : this.value + (dWheelY > 0 ? -1 : 1) * this.wheelScale * dec;
+    //             // this.oldValue = this.value;
+
+    //             // const dec = Math.pow(10, -this.dec);
+
+    //             // const val =
+    //             //     touchpad
+    //             //     ? this.value -  dWheelX               * this.wheelScale * dec
+    //             //     : this.value + (dWheelY > 0 ? -1 : 1) * this.wheelScale * dec;
                 
-                // this.setValue(val, true, true, false, false);
-            }
-        }
-    });
+    //             // this.setValue(val, true, true, false, false);
+    //         }
+    //     }
+    // });
 
 
 
@@ -419,24 +419,24 @@ TextControl.prototype.initEvents = function()
     
     
     
-    this.div.addEventListener('keydown', e =>
-    {
-        if (   e.code == 'Enter'
-            || e.code == 'NumpadEnter')
-            this.showTextarea();
+    // this.div.addEventListener('keydown', e =>
+    // {
+    //     if (   e.code == 'Enter'
+    //         || e.code == 'NumpadEnter')
+    //         this.showTextarea();
 
-        // else if (e.code == 'Space')
-        //     setCursor(panCursor, true);
-    });
+    //     // else if (e.code == 'Space')
+    //     //     setCursor(panCursor, true);
+    // });
 
 
 
-    this.div.addEventListener('focus', () =>
-    {
-        if (   !this.view.spaceDown
-            && !panMode
-            && !this.buttonDown1
-            && this.pointerEvents)
-            this.showTextarea();
-    });
+    // this.div.addEventListener('focus', () =>
+    // {
+    //     if (   !this.view.spaceDown
+    //         && !panMode
+    //         && !this.buttonDown1
+    //         && this.pointerEvents)
+    //         this.showTextarea();
+    // });
 };

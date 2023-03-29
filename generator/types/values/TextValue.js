@@ -66,7 +66,8 @@ extends GValue
 
     toDisplayString()
     {
-        return this.value;
+        return this.value
+            .replaceAll('\n', '↵');
     }
 
 

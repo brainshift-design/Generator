@@ -7,6 +7,8 @@ TextControl.prototype.initTextarea = function()
 
     this.textarea.style.height = 20;
 
+    this.textarea.savedValue = this.textarea.value;
+
 
 
     this.textarea.addEventListener('pointerdown', e =>
@@ -32,7 +34,8 @@ TextControl.prototype.initTextarea = function()
     this.textarea.addEventListener('pointermove', e =>
     {
         e.stopPropagation();
-        this.textarea.style.cursor = 'default';
+        
+        //this.textarea.style.cursor = 'default';
     });
 
 
@@ -42,207 +45,66 @@ TextControl.prototype.initTextarea = function()
         e.stopPropagation();
 
 
-        // if (   e.code == 'KeyX'
-        //     && getCtrlKey(e))
-        // {
-        //     e.preventDefault();
-        //     document.execCommand('copy');
-        //     clearSelectedText(this.textarea);
-        // }
+        if (   e.code == 'KeyX'
+            && getCtrlKey(e))
+        {
+            e.preventDefault();
+            document.execCommand('copy');
+            clearSelectedText(this.textarea);
+        }
 
-        // else if (   e.code == 'KeyC'
-        //     && getCtrlKey(e))
-        // {
-        //     e.preventDefault();
-        //     document.execCommand('copy');
-        // }
+        else if (   e.code == 'KeyC'
+            && getCtrlKey(e))
+        {
+            e.preventDefault();
+            document.execCommand('copy');
+        }
 
-        // else if (e.code == 'KeyV'
-        //       && getCtrlKey(e)
-        //       && !this.readOnly)
-        // {
-        //     // let the OS do its thing here
-        // }
+        else if (e.code == 'KeyV'
+              && getCtrlKey(e)
+              && !this.readOnly)
+        {
+            // let the OS do its thing here
+        }
         
-        // else if (   (   e.code == 'Enter'
-        //              || e.code == 'NumpadEnter')
-        //          && !this.readOnly)
-        // {
-        //     this.textarea.keyBlur = true;
-        //     this.textarea.finish(true);
-        // }
+        else if (   (   e.code == 'Enter'
+                     || e.code == 'NumpadEnter')
+                 && getCtrlKey(e)
+                 && !this.readOnly)
+        {
+            this.textarea.keyBlur = true;
+            this.textarea.finish(true);
+        }
 
-        // else if (e.code == 'Escape')
-        // {
-        //     this.textarea.keyBlur = true;
-        //     this.textarea.finish(false);
-        // }
-        // else if (e.code == 'Tab')
-        // {
-        //     e.preventDefault();
-        //     e.stopPropagation();
+        else if (e.code == 'Escape')
+        {
+            this.textarea.keyBlur = true;
+            this.textarea.finish(true);
+        }
+
+        else if (e.code == 'Tab')
+        {
+            e.preventDefault();
+        }
+
+        else if (e.code == 'KeyZ'
+              && getCtrlKey(e))
+        {
+                 if (e.shiftKey && !actionManager.redoing) actionManager.redo();
+            else if (              !actionManager.undoing) actionManager.undo();
             
-        //     if (this.param)
-        //     {
-        //         const params = this.param.node.params;
-        //         let   index  = this.param.index;
-
-        //         this.textarea.keyBlur = true;
-        //         this.textarea.finish(true, false);
-
-        //         if (   e.shiftKey 
-        //             && index > 0)
-        //         {
-        //             while (params[--index].controls[0].readOnly);
-        //             params[index].controls[0].showTextarea();
-        //         }
-        //         else if (!e.shiftKey 
-        //               && index < params.length-1) 
-        //         {
-        //             while (params[++index].controls[0].readOnly);
-        //             params[index].controls[0].showTextarea();
-        //         }
-        //     }
-
-        //     // let tabs  = document.querySelectorAll('.numberControl, .selectControl, .select, .menuSelect, button, .menuButton');
-        //     // let index = this.tabIndex;
-
-        //     // for (let i = 0; i < tabs.length; i++) 
-        //     // {
-        //     //     if (   e.shiftKey && tabs[i].tabIndex == index - 1
-        //     //         ||               tabs[i].tabIndex == index + 1) 
-        //     //     {
-        //     //         if (tabs[i].className == 'slider')
-        //     //             tabs[i].showTextarea();
-        //     //         else 
-        //     //         {
-        //     //             document.activeElement.blur();
-        //     //             tabs[i].focus();
-        //     //         }
-
-        //     //         break;
-        //     //     }
-        //     // }
-        // }
-
-        // else if ((   e.key == 'ArrowUp'
-        //           || e.key == 'ArrowDown')
-        //       && !this.readOnly)
-        // {
-        //     e.preventDefault();
-
-        //     let text = this.textarea.value;
-
-        //     if (   this.valueCanContainSuffix   
-        //         && text.length >= this.suffix.length
-        //         && text.substring(text.length - this.suffix.length) == this.suffix)
-        //         text = text.substring(0, text.length - this.suffix.length);
+            this.updateTextarea();
+        }
+    });
 
 
-        //     if (this.textarea.selectionStart != this.textarea.selectionEnd)
-        //         this.textarea.selectionStart =  this.textarea.selectionEnd;
 
-        //     const pos = Math.min(
-        //         this.textarea.selectionStart,
-        //         text.length);
+    this.textarea.addEventListener('input', e =>
+    {
+        this.setValue(this.textarea.value, true, true);
 
-        //     const revPos = text.length - pos;
-
-        //     const val  = parseFloat(text);
-        //     const sign = e.key == 'ArrowUp' ? 1 : -1;
-
-        //     let decIndex = text.indexOf('.');
-        //     if (decIndex < 0) decIndex = text.indexOf(',');
-            
-        //     if (   text[0] != '-'
-        //         || pos > 0)
-        //     {
-        //         if (decIndex < 0) // integer
-        //         {
-        //             let dec = Math.pow(10, revPos);
-
-        //             if (e.shiftKey) 
-        //                 dec *= 10;
-
-        //             this.setValue((val + sign * dec) / this.valueScale);
-        //             this.updateTextarea();
-        //         }
-        //         else // floating point
-        //         {
-        //             const _edit = pos - decIndex - 1;
-
-        //             let  dec  = 
-        //                 _edit < 0
-        //                 ?     Math.pow(10, -_edit - 1)
-        //                 : 1 / Math.pow(10,  _edit    );
-
-        //             if (e.shiftKey) 
-        //                 dec *= 10;
-
-        //             this.displayDec = text.length-1 - decIndex;
-        //             this.setValue((val + sign * dec) / this.valueScale);
-        //             this.updateTextarea();
-        //         }
-
-        //         this.textarea.selectionStart =
-        //         this.textarea.selectionEnd   = this.textarea.savedValue.length - revPos - this.suffix.length;
-
-
-        //         if (this.param) this.param.changing = true;
-        //         if (this.confirmTimer) clearTimeout(this.confirmTimer);
-        //         this.confirmTimer = setTimeout(() => numberControl_confirm(this), 400);
-        //     }
-        // }
-        // else if (e.code == 'KeyZ'
-        //       && getCtrlKey(e))
-        // {
-        //          if (e.shiftKey && !actionManager.redoing) actionManager.redo();
-        //     else if (              !actionManager.undoing) actionManager.undo();
-            
-        //     this.updateTextarea();
-        // }
-        // else 
-        // {
-        //     let curVal = this.textarea.value;
-
-        //     if (      e.key.length == 1
-        //            && !isDigit(e.key)
-        //            && e.key != NAN_CHAR
-        //            && (   !this.valueCanContainSuffix
-        //                || !this.suffix.includes(e.key))
-        //            && (   !this.showHex 
-        //                || !isHexDigit(e.key))
-        //            && (   this.showHex
-        //                ||    e.key != '.'
-        //                   && e.key != ',')
-        //            && !(   ((      e.code == 'Minus'
-        //                         || e.code == 'NumpadSubtract')
-        //                      && !curVal.includes('-'))
-        //                 && this.min < 0)
-        //         ||     this.readOnly
-        //            && !isArrowKey(e.code))
-        //         e.preventDefault();
-
-        //     if (    e.key == '.'
-        //         &&  this.dec == 0
-        //         && !this.allowEditDecimals)
-        //         e.preventDefault();
-                
-                    
-        //     curVal =
-        //            curVal ==     NAN_DISPLAY
-        //         || curVal == UNKNOWN_DISPLAY
-        //         ? ''
-        //         :   curVal.substring(0, this.textarea.selectionStart) 
-        //           + curVal.substring(this.textarea.selectionEnd, curVal.length);
-
-                  
-        //     const nextVal = parseFloat(curVal + e.key);
-
-        //     if (   nextVal < this.min - 0.001
-        //         || nextVal > this.max)
-        //         e.preventDefault();            
-        // }
+        if (this.textarea.value != this.textarea.prevValue)
+            pushUpdateFromParam(null, [this.param.node], this.param);
     });
 
 
@@ -251,16 +113,9 @@ TextControl.prototype.initTextarea = function()
     {
         e.preventDefault();
 
-        const str = e.clipboardData.getData('text/plain');
+        const value = e.clipboardData.getData('text/plain');
 
-        let val = 
-            this.showHex
-            ? parseInt(str, 16)
-            : parseFloat(str);
-
-        val = Math.min(Math.max(this.min, val), this.max);
-
-        this.textarea.value = isNaN(val) ? '' : val;
+        this.textarea.value = value;
     });
 
 
@@ -268,8 +123,10 @@ TextControl.prototype.initTextarea = function()
     
     this.textarea.addEventListener('focusout', () =>
     {
-        if (!this.textarea.keyBlur) this.textarea.finish(this.textarea.value.trim() != '');
-        else                        this.textarea.keyBlur = false;
+        // if (!this.textarea.keyBlur) this.textarea.finish(this.textarea.value.trim() != '');
+        // else                        this.textarea.keyBlur = false;
+        if (this.textarea.keyBlur)
+            this.textarea.keyBlur = false;
 
 
         if (this.savedSuccessOnFocusOut != null)
@@ -289,7 +146,7 @@ TextControl.prototype.initTextarea = function()
     this.textarea.addEventListener('wheel', e =>
     {
         e.stopPropagation();
-        forwardEvent(e, this.div);
+        //forwardEvent(e, this.div);
     });
     
 
@@ -300,7 +157,7 @@ TextControl.prototype.initTextarea = function()
         const savedValue = this.textarea.savedValue;
 
         value = value.replace(this.suffix, '');
-        
+
         
         let val = 
             value.trim() == NAN_CHAR 
@@ -343,7 +200,7 @@ TextControl.prototype.initTextarea = function()
         // this.focus.style.opacity    = 0;
 
 
-        this.textarea.style.boxShadow = 'none';
+        //this.textarea.style.boxShadow = 'none';
 
 
         if (   this.inFocus

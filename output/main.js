@@ -1453,7 +1453,6 @@ function figLoadNodesAndConns(dataMode) {
         figMarkForLoading(nodeKeys, connKeys);
     const nodes = nodeKeys.map(k => figma.currentPage.getPluginData(k));
     const conns = connKeys.map(k => figma.currentPage.getPluginData(k));
-    console.log('nodes[0] =', nodes[0]);
     initPageStyles(nodes);
     const graphView = figma.currentPage.getPluginData(figma.currentUser.id + ',graphView');
     const showAllColorSpaces = figma.currentPage.getPluginData('showAllColorSpaces');

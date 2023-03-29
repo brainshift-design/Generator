@@ -40,6 +40,15 @@ extends ResizableBase
 
 
 
+    setRect(x, y, w, h, updateTransform = true)
+    {
+        super.setRect(x, y, w, h, updateTransform);
+
+        this.paramValue.controls[0].textarea.style.height = (h - this.header.offsetHeight) + 'px';
+    }
+
+
+
     output_genRequest(gen)
     {
         // 'this' is the output        
@@ -68,14 +77,7 @@ extends ResizableBase
 
     updateParams()
     {
-        const input = this.inputs[0];
-        
-        this.paramValue.enableControlText(!input.connected);
-
-        this.paramValue.controls[0].valueText =  this.isUnknown() ? UNKNOWN_DISPLAY : '';
-        this.paramValue.controls[0].showBar   = !this.isUnknown();
-
-
+        this.paramValue.enableControlText(!this.inputs[0].connected);
         this.updateParamControls();
     }
 

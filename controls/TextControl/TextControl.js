@@ -64,31 +64,36 @@ extends Control
 
 
 
-    setValue(value, fireChangeEvent = true, confirm = true, fullRange = true)
+    setValue(value, fireChangeEvent = true)//, confirm = true)
     {
         if (typeof value != 'string')
             console.assert(false, 'TextControl.setValue(value) is ' + typeof value + ', must be a string');
 
             
-        const oldValue = this.value;
+        // const oldValue = this.value;
         
-        if (   value == NAN_CHAR && oldValue != NAN_CHAR
-            || value != NAN_CHAR && oldValue == NAN_CHAR)
-        {
-            this.value = value;
+        // console.log('value =', value);
+        // console.log('oldValue =', oldValue);
+        // if (   value == NAN_CHAR && oldValue != NAN_CHAR
+        //     || value != NAN_CHAR && oldValue == NAN_CHAR)
+        // {
+        //     console.log('value =', value);
+            this.value          = value;
+            this.textarea.value = value;
 
             this.update();
 
+
             if (   fireChangeEvent
-                && this.enableChangeEvent
-                && value != oldValue)
+                && this.enableChangeEvent)
+                //&& value != oldValue)
                 this.dispatchEvent(this.onchange);
-        }
+        // }
 
 
-        if (   confirm
-            && this.enableChangeEvent)
-            this.dispatchEvent(this.onconfirm);
+        // if (   confirm
+        //     && this.enableChangeEvent)
+        //     this.dispatchEvent(this.onconfirm);
     }
 
 

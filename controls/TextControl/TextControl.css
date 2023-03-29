@@ -34,17 +34,18 @@
     box-shadow:           none;
 
     resize:               none;
-    pointer-events:       none;
+    /* pointer-events:       none; */
 
     border-radius:        0.5px;
     
-    /* box-shadow:           0 0 0 1px inset red; */
+    box-shadow:           0 0 0 1px inset red;
 }
 
 
 .textControlTextarea
 {
     outline: 2px solid var(--figma-color-brand);
+    /* cursor:  text; */
 }
 
 

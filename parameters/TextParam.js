@@ -51,18 +51,28 @@ extends Parameter
         if (hasOutput) this.initOutput([TEXT_VALUE], this.output_genRequest, getParamOutputValuesForUndo, this.output_backInit);
 
 
-        this.controls[0].addEventListener('finishedit', e =>
-        { 
-            if (!e.detail.success)
-                return;
+        // this.controls[0].addEventListener('change', e =>
+        // { 
+        //     if (e.detail.value != e.detail.oldValue)
+        //     {
+        //         this.setValue(new TextValue(e.detail.value), true);
+        //         e.preventSetValue = true;
+        //     }
+        // });
 
-            if (   e.detail.value.trim() != ''
-                && e.detail.value != e.detail.oldValue)
-            {
-                this.setValue(new TextValue(e.detail.value), true);
-                e.preventSetValue = true;
-            }
-        });
+
+        // this.controls[0].addEventListener('finishedit', e =>
+        // { 
+        //     if (!e.detail.success)
+        //         return;
+
+        //     if (   e.detail.value.trim() != ''
+        //         && e.detail.value != e.detail.oldValue)
+        //     {
+        //         this.setValue(new TextValue(e.detail.value), true);
+        //         e.preventSetValue = true;
+        //     }
+        // });
     }
 
 
@@ -128,7 +138,10 @@ extends Parameter
         this.controls[0].value = value.value;
 
         if (updateControl)
-            this.controls[0].setValue(this.controls[0].value, true, false); 
+        {
+            console.log('value.value =', value.value);
+            this.controls[0].setValue(value.value, true);//, false); 
+        }
 
 
         super.setValue(value, createAction, updateControl, dispatchEvents);

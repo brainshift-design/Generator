@@ -76,7 +76,6 @@ NumberControl.prototype.initTextbox = function()
         else if (e.code == 'Tab')
         {
             e.preventDefault();
-            e.stopPropagation();
             
             if (this.param)
             {
