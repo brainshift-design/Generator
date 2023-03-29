@@ -134,6 +134,10 @@ extends EventTarget
                 : null;
 
                 
+            this.mouseOver = true;
+            this.updateControl();
+
+
             const tc = graphView.tempConn;
 
             if (   tc
@@ -143,6 +147,7 @@ extends EventTarget
                     || this.connectedOutput != tc.output
                     || this == savedInput))
             {
+                console.log('enter input');
                 const rect = boundingRect(this.div);
                 const loop = tc.output.node.isOrFollows(this.node);
 
@@ -152,9 +157,6 @@ extends EventTarget
                         rect.x + rect.w/2,
                         rect.y + rect.h/2 - menuBarHeight);
                 }
-
-                this.mouseOver = true;
-                this.updateControl();
 
                 graphView.overInput = !loop ? this : null;
                 this.node.inputs.forEach(i => i.updateControl());
