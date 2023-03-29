@@ -48,6 +48,10 @@ ColorControl.prototype.initEvents = function()
             return;
 
 
+        if (this.param.node.div.style.zIndex < graphView.getTopNodeIndex())
+            graphView.putNodeOnTop(this.param.node);
+
+
         window.focus();
         
         hideAllMenus();

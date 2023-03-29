@@ -83,6 +83,10 @@ NumberControl.prototype.initEvents = function()
         hideAllMenus();
 
 
+        if (this.param.node.div.style.zIndex < graphView.getTopNodeIndex())
+            graphView.putNodeOnTop(this.param.node);
+
+
         if (e.button == 0)
         {
             if (!this.pointerEvents)

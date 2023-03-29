@@ -19,8 +19,8 @@ const rgbActiveNumberDark  = hex2rgb('#1785CE');
 const rgbTextLight       = hex2rgb('#ECE0B8');
 const rgbActiveTextLight = hex2rgb('#F6C953');
  
-const rgbTextDark        = hex2rgb('#5F5437');
-const rgbActiveTextDark  = hex2rgb('#F6C953');
+const rgbTextDark        = hex2rgb('#796A43');
+const rgbActiveTextDark  = hex2rgb('#F0C75B');
 
 
 const rgbColor             = hex2rgb('#c38fc5');   
