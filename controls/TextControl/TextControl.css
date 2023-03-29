@@ -35,7 +35,7 @@
     /* transform:            translateX(-50%); */
     width:                100%;
     background-color:     transparent;
-    z-index:              20000;
+    z-index:              5000;
 
     border:               none;
     overflow:             auto;
@@ -46,6 +46,7 @@
     box-shadow:           none;
 
     resize:               none;
+    cursor:               auto;
     /* pointer-events:       none; */
 
     border-radius:        0.5px;

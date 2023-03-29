@@ -20,6 +20,9 @@ GraphView.prototype.updateNodes = function(nodes = null, updateNodes = true)
             n.updateHeaderLabel();
             n.updateBorder();
             n.updateDisabled();
+
+            if (n.updateSizers)
+                n.updateSizers();
         });
     }
 

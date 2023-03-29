@@ -1,3 +1,7 @@
+const sizeBorderWidth = 4;
+
+
+
 class   ResizableBase
 extends OperatorBase
 {
@@ -222,6 +226,8 @@ extends OperatorBase
 
         super.setSize(_w, _h, updateTransform);
 
+        this.updateSizers();
+
         this.inner.style.height = _h;
     }
 
@@ -233,8 +239,36 @@ extends OperatorBase
         const _h = Math.max(defHeaderHeight + defParamHeight, h);
 
         super.setRect(x, y, _w, _h, updateTransform);
-
+        
+        this.updateSizers();
+    
         this.inner.style.height = _h;
+    }
+
+
+
+    updateSizers()
+    {
+        const edge   = Math.ceil(sizeBorderWidth / mainGraph.view.zoom);
+        const corner = Math.max(4, edge);
+
+        this.sizerL .style.width  = edge; 
+        this.sizerR .style.width  = edge; 
+
+        this.sizerT .style.height = edge; 
+        this.sizerB .style.height = edge; 
+
+        this.sizerTL.style.width  = corner; 
+        this.sizerTL.style.height = corner; 
+
+        this.sizerTR.style.width  = corner; 
+        this.sizerTR.style.height = corner; 
+
+        this.sizerBL.style.width  = corner; 
+        this.sizerBL.style.height = corner; 
+
+        this.sizerBR.style.width  = corner; 
+        this.sizerBR.style.height = corner; 
     }
 
 
