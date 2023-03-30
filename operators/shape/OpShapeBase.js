@@ -4,7 +4,7 @@ extends OperatorBase
     paramStyle;
 
 
-    constructor(type, shortType, defWidth = 100)
+    constructor(type, shortType, defWidth = defNodeWidth)
     {
         super(type, shortType, defWidth);
     }

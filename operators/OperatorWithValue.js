@@ -5,7 +5,7 @@ extends OperatorBase
     
 
 
-    constructor(type, shortName, defWidth = 100, progressBar = false)
+    constructor(type, shortName, defWidth = defNodeWidth, progressBar = false)
     {
         super(type, shortName, defWidth, progressBar);
 

@@ -124,8 +124,10 @@ class ActionManager
     {
         if (settings.logActions)
         {
-            if (redo) console.log("%cREDO %s", 'background: #ffd;    color: #b80;', act.name);
-            else      console.log("%c%s",      'background: #e8ffe8; color: #282;', act.name);
+            const links = act.getLinkString();
+
+            if (redo) console.log("%cREDO %s%s", 'background: #ffd;    color: #b80;', act.name, links);
+            else      console.log("%c%s%s",      'background: #e8ffe8; color: #282;', act.name, links);
         }
 
 
@@ -164,7 +166,10 @@ class ActionManager
     undoAction(act)
     {
         if (settings.logActions)
-            console.log("%cUNDO %s", 'background: #fff4e8; color: #c64;', act.name);
+        {
+            const links = act.getLinkString();
+            console.log("%cUNDO %s%s", 'background: #fff4e8; color: #c64;', act.name, links);
+        }
 
             
         if (act.affectsConnections)

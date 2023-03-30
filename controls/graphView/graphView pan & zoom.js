@@ -211,10 +211,8 @@ GraphView.prototype.zoomToRect = function(rect, margin = 40)
 
     this.zoom = 
         viewRect.width >= viewRect.height
-        ? (rect.width >= rect.height
-           ? (viewRect.width  - margin*2) / rect.width
-           : (viewRect.height - margin*2) / rect.height)
-        : (viewRect.width - margin*2) / rect.width;
+        ? (viewRect.height - margin*2) / rect.height
+        : (viewRect.width  - margin*2) / rect.width;
 
     this.pan = {
         x: viewRect.width /2 - (rect.x + rect.width /2) * this.zoom,

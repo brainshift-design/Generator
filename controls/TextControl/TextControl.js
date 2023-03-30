@@ -15,7 +15,10 @@ extends Control
     
     pointerEvents     = true;
     readOnly          = false;
-     
+    
+
+    confirmTimer      = null;
+    
     
 
     constructor(div, param, id, name, defaultValue = '')
@@ -72,7 +75,7 @@ extends Control
         super.setSize(w, h);
 
         if (this.textarea)
-            this.textarea.style.height = h;
+            this.textarea.style.height = Math.max(20, h);
     }
 
 

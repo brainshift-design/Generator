@@ -49,30 +49,6 @@ extends Parameter
        
         if (hasInput)  this.initInput(TEXT_TYPES, getParamInputValuesForUndo, this.input_getBackInitValue);
         if (hasOutput) this.initOutput([TEXT_VALUE], this.output_genRequest, getParamOutputValuesForUndo, this.output_backInit);
-
-
-        // this.controls[0].addEventListener('change', e =>
-        // { 
-        //     if (e.detail.value != e.detail.oldValue)
-        //     {
-        //         this.setValue(new TextValue(e.detail.value), true);
-        //         e.preventSetValue = true;
-        //     }
-        // });
-
-
-        // this.controls[0].addEventListener('finishedit', e =>
-        // { 
-        //     if (!e.detail.success)
-        //         return;
-
-        //     if (   e.detail.value.trim() != ''
-        //         && e.detail.value != e.detail.oldValue)
-        //     {
-        //         this.setValue(new TextValue(e.detail.value), true);
-        //         e.preventSetValue = true;
-        //     }
-        // });
     }
 
 
@@ -112,22 +88,6 @@ extends Parameter
     isVisible()
     {
         return this.controls[0].div.style.display != 'none';
-    }
-
-
-
-    // updateControls()
-    // {
-    //     super.updateControls();
-
-    //     this.controls[0].setSize(this.div.offsetWidth, this.div.offsetHeight - defHeaderHeight);
-    // }
-
-
-
-    resetControls()
-    {
-        //this.controls[0].valueText = '';
     }
 
 
@@ -172,7 +132,6 @@ extends Parameter
 
 
         const request = [];
-        console.log('this.controls[0].value =', this.controls[0].value);
 
 
         if (   this.input
@@ -196,20 +155,14 @@ extends Parameter
 
 
 
-    // textboxHasFocus()
-    // {
-    //     return hasFocus(this.controls[0].textbox);
-    // }
-
-
-
     enableControlText(enable)
     {
         enable &= 
                !this.input 
             || !this.input.connected;
 
-        enableElementText(this.controls[0].div, enable);
+        enableElementText(this.controls[0].textarea, enable);
+        this.controls[0].textarea.disabled = !enable;
         
         this.controls[0].readOnly = !enable;
     }

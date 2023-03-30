@@ -35293,7 +35293,7 @@ extends EventTarget
 
 
 
-    constructor(div, param, id, name, width = 120, height = defParamHeight)
+    constructor(div, param, id, name, width = defNodeWidth, height = defParamHeight)
     {
         super();
 
@@ -35328,7 +35328,7 @@ extends EventTarget
         this.height           = h;
         
         this.div.style.width  = w;
-        this.div.style.height = h;
+        this.div.style.height = Math.max(20, h);
     }
 
 
@@ -35376,6 +35376,14 @@ extends EventTarget
              || document.   mozPointerLockElement === this.div
              || document.webkitPointerLockElement === this.div);
     }
+}
+
+
+
+function controlTimer_confirm(control)
+{
+    if (control.param)
+        control.param.changing = false;
 }
 
 
@@ -35556,86 +35564,6 @@ extends Control
 
 
 
-    // copy()
-    // {
-    //     const copy = new NumberControl(
-    //         null,
-    //         null,
-    //         this.id,
-    //         this.name,
-    //         this.showName,
-    //         this.defaultValue);
-
-
-    //     copy.width                 = this.width;
-    //     copy.height                = this.height;
-        
-    //     copy.value                 = this.value;
-                
-    //     copy.min                   = this.min;
-    //     copy.max                   = this.max;
-           
-    //     copy.displayMin            = this.displayMin;
-    //     copy.displayMax            = this.displayMax;
-           
-    //     copy.thinMinus             = this.thinMinus;
-    //     copy.displayAbsolute       = this.displayAbsolute;
-      
-    //     copy.epsilon               = this.epsilon;
-      
-    //     copy.acc                   = this.acc;
-      
-    //     copy.dec                   = this.dec;
-    //     copy.displayDec            = this.displayDec;
-      
-    //     copy.valueScale            = this.valueScale;
-      
-    //     copy.suffix                = this.suffix;
-    //     copy.valueCanContainSuffix = this.valueCanCouffix;
-
-    //     copy.dragReverse           = this.dragReverse;
-    //     copy.dragScale             = this.dragScale;
-    //     copy.wheelScale            = this.wheelScale;
-
-    //     copy. backStyleLight       = this. backStyleLight;
-    //     copy.valueStyleLight       = this.valueStyleLight;
-    //     copy. textStyleLight       = this. textStyleLight;
-
-    //     copy.fontSize              = this.fontSize;
-
-
-    //     copy.wrapValue             = this.wrapValue;
-
-    //     copy.showHex               = this.showHex;
-
-    //     copy.enableChangeEvent     = this.enableChangeEvent;
-
-    //     copy.successOnFocusOut     = this.successOnFocusOut;
-    //     copy.keyBlur               = this.keyBlur;
-
-    //     copy.pointerEvents         = this.pointerEvents;
-    //     copy.readOnly              = this.readOnly;
-
-    //     copy.allowEditDecimals     = this.allowEditDecimals;
-
-    //     copy.valueText             = this.valueText;
-    //     copy.overrideText          = this.overrideText;
-
-    //     copy.showNanValueName      = this.showNanValueName;
-    //     copy.showBar               = this.showBar;
-
-    //     copy.barTop                = this.barTop;
-    //     copy.barBottom             = this.barBottom;
-
-    //     copy.ranges                = this.ranges.map(r => r.copy());
-
-    //     copy.options               = [...this.options];
-        
-    //     return copy;
-    // }
-
-
-
     canReact(e)
     {
         if (   settings.enableZoomedOutParams
@@ -35664,8 +35592,6 @@ extends Control
 
     setValue(value, fireChangeEvent = true, confirm = true, fullRange = true)
     {
-        //console.trace();
-        //console.log('value =', value);
         if (typeof value != 'number')
             console.assert(false, 'NumberControl.setValue(value) is ' + typeof value + ', must be a number');
 
@@ -35789,7 +35715,6 @@ extends Control
 
             
         if (    isNaN(this.value)
-            //||  this.overrideText != '' // assuminng the display bar is irrelevant in override mode
             || !this.showBar)
             this.bar.style.display = 'none';
 
@@ -35935,11 +35860,7 @@ extends Control
                 str = val.toExponential(1);
             else
             {
-                // if (   this.param
-                //     && this.param.showFullPrecision)
-                //     str = numToString(val, 10, this.showHex);
-                // else
-                    str = numToString(val, this.displayDec, this.showHex);
+                str = numToString(val, this.displayDec, this.showHex);
 
                 if (Math.abs(val) >= 10_000) // add thousand separators
                 {
@@ -36149,7 +36070,7 @@ NumberControl.prototype.initTextbox = function()
 
                 if (this.param) this.param.changing = true;
                 if (this.confirmTimer) clearTimeout(this.confirmTimer);
-                this.confirmTimer = setTimeout(() => numberControl_confirm(this), 400);
+                this.confirmTimer = setTimeout(() => controlTimer_confirm(this), 400);
             }
         }
         else if (e.code == 'KeyZ'
@@ -37074,7 +36995,7 @@ NumberControl.prototype.initEvents = function()
 
                 if (this.param) this.param.changing = true;
                 if (this.confirmTimer) clearTimeout(this.confirmTimer);
-                this.confirmTimer = setTimeout(() => numberControl_confirm(this), 400);
+                this.confirmTimer = setTimeout(() => controlTimer_confirm(this), 400);
             }
         }
     });
@@ -37120,14 +37041,6 @@ NumberControl.prototype.initEvents = function()
 }
 
 
-
-function numberControl_confirm(control)
-{
-    if (control.param)
-        control.param.changing = false;
-}
-
-
 class TextControl
 extends Control
 {
@@ -37145,7 +37058,10 @@ extends Control
     
     pointerEvents     = true;
     readOnly          = false;
-     
+    
+
+    confirmTimer      = null;
+    
     
 
     constructor(div, param, id, name, defaultValue = '')
@@ -37202,7 +37118,7 @@ extends Control
         super.setSize(w, h);
 
         if (this.textarea)
-            this.textarea.style.height = h;
+            this.textarea.style.height = Math.max(20, h);
     }
 
 
@@ -37425,6 +37341,11 @@ TextControl.prototype.initTextarea = function()
 
         if (this.textarea.value != this.textarea.prevValue)
             pushUpdateFromParam(null, [this.param.node], this.param);
+
+
+        if (this.param) this.param.changing = true;
+        if (this.confirmTimer) clearTimeout(this.confirmTimer);
+        this.confirmTimer = setTimeout(() => controlTimer_confirm(this), 400);
     });
 
 
@@ -37446,8 +37367,6 @@ TextControl.prototype.initTextarea = function()
     
     this.textarea.addEventListener('focusout', () =>
     {
-        // if (!this.textarea.keyBlur) this.textarea.finish(this.textarea.value.trim() != '');
-        // else                        this.textarea.keyBlur = false;
         if (this.textarea.keyBlur)
             this.textarea.keyBlur = false;
 
@@ -37459,7 +37378,6 @@ TextControl.prototype.initTextarea = function()
         }
 
 
-        //this.div.parentNode.removeChild(this.textarea);
         this.textarea.blur();
         this.clicked = false;
     });
@@ -37522,13 +37440,6 @@ TextControl.prototype.initTextarea = function()
         this.textarea.blur();
 
 
-        // this.focus.style.visibility = 'hidden';
-        // this.focus.style.opacity    = 0;
-
-
-        //this.textarea.style.boxShadow = 'none';
-
-
         if (   this.inFocus
             && focusControl)
             this.div.focus();
@@ -37550,7 +37461,7 @@ TextControl.prototype.showTextarea = function()
 
     this.textarea.style.boxShadow = '0 0 0 1px var(--figma-color-bg-brand)';
     this.textarea.style.outline   = 'none';
-    //this.textarea.style.textAlign = 'center';
+
 
     this.updateTextarea();
 
@@ -37563,13 +37474,8 @@ TextControl.prototype.showTextarea = function()
 
 TextControl.prototype.updateTextarea = function()
 {
-    this.textarea.value = this.value;
-    // this.textarea.value =
-    //     this.value == NAN_CHAR
-    //     ? NAN_DISPLAY
-    //     : this.value;
-        
-    this.textarea.savedValue = this.textarea.value;
+    this.textarea.value      = this.value;
+    this.textarea.savedValue = this.value;
 };
 
 
@@ -38422,7 +38328,7 @@ ColorControl.prototype.initTextbox = function()
 
             if (this.param) this.param.changing = true;
             if (this.confirmTimer) clearTimeout(this.confirmTimer);
-            this.confirmTimer = setTimeout(() => numberControl_confirm(this), 400);
+            this.confirmTimer = setTimeout(() => controlTimer_confirm(this), 400);
         }
         else if (e.code == 'KeyZ'
               && getCtrlKey(e))
@@ -43276,10 +43182,8 @@ GraphView.prototype.zoomToRect = function(rect, margin = 40)
 
     this.zoom = 
         viewRect.width >= viewRect.height
-        ? (rect.width >= rect.height
-           ? (viewRect.width  - margin*2) / rect.width
-           : (viewRect.height - margin*2) / rect.height)
-        : (viewRect.width - margin*2) / rect.width;
+        ? (viewRect.height - margin*2) / rect.height
+        : (viewRect.width  - margin*2) / rect.width;
 
     this.pan = {
         x: viewRect.width /2 - (rect.x + rect.width /2) * this.zoom,
@@ -44535,30 +44439,6 @@ extends Parameter
        
         if (hasInput)  this.initInput(TEXT_TYPES, getParamInputValuesForUndo, this.input_getBackInitValue);
         if (hasOutput) this.initOutput([TEXT_VALUE], this.output_genRequest, getParamOutputValuesForUndo, this.output_backInit);
-
-
-        // this.controls[0].addEventListener('change', e =>
-        // { 
-        //     if (e.detail.value != e.detail.oldValue)
-        //     {
-        //         this.setValue(new TextValue(e.detail.value), true);
-        //         e.preventSetValue = true;
-        //     }
-        // });
-
-
-        // this.controls[0].addEventListener('finishedit', e =>
-        // { 
-        //     if (!e.detail.success)
-        //         return;
-
-        //     if (   e.detail.value.trim() != ''
-        //         && e.detail.value != e.detail.oldValue)
-        //     {
-        //         this.setValue(new TextValue(e.detail.value), true);
-        //         e.preventSetValue = true;
-        //     }
-        // });
     }
 
 
@@ -44598,22 +44478,6 @@ extends Parameter
     isVisible()
     {
         return this.controls[0].div.style.display != 'none';
-    }
-
-
-
-    // updateControls()
-    // {
-    //     super.updateControls();
-
-    //     this.controls[0].setSize(this.div.offsetWidth, this.div.offsetHeight - defHeaderHeight);
-    // }
-
-
-
-    resetControls()
-    {
-        //this.controls[0].valueText = '';
     }
 
 
@@ -44658,7 +44522,6 @@ extends Parameter
 
 
         const request = [];
-        console.log('this.controls[0].value =', this.controls[0].value);
 
 
         if (   this.input
@@ -44682,20 +44545,14 @@ extends Parameter
 
 
 
-    // textboxHasFocus()
-    // {
-    //     return hasFocus(this.controls[0].textbox);
-    // }
-
-
-
     enableControlText(enable)
     {
         enable &= 
                !this.input 
             || !this.input.connected;
 
-        enableElementText(this.controls[0].div, enable);
+        enableElementText(this.controls[0].textarea, enable);
+        this.controls[0].textarea.disabled = !enable;
         
         this.controls[0].readOnly = !enable;
     }
@@ -47426,7 +47283,7 @@ class Operator
 
 
 
-    constructor(type, shortName, defWidth = 100, progressBar = false)
+    constructor(type, shortName, defWidth = defNodeWidth, progressBar = false)
     {
         this.#type             = type;
         this.id                = shortName;
@@ -49541,7 +49398,7 @@ extends OperatorBase
     
 
 
-    constructor(type, shortName, defWidth = 100, progressBar = false)
+    constructor(type, shortName, defWidth = defNodeWidth, progressBar = false)
     {
         super(type, shortName, defWidth, progressBar);
 
@@ -52239,6 +52096,7 @@ extends ResizableBase
     updateParams()
     {
         this.paramValue.enableControlText(!this.inputs[0].connected);
+
         this.updateParamControls();
     }
 
@@ -52264,7 +52122,7 @@ extends Operator
     
 
 
-    constructor(nodeType, shortType, progressBar = false, defWidth = 100)
+    constructor(nodeType, shortType, progressBar = false, defWidth = defNodeWidth)
     {
         super(nodeType, shortType, defWidth, progressBar);
 
@@ -55339,7 +55197,7 @@ extends OperatorBase
     paramStyle;
 
 
-    constructor(type, shortType, defWidth = 100)
+    constructor(type, shortType, defWidth = defNodeWidth)
     {
         super(type, shortType, defWidth);
     }
@@ -57967,6 +57825,22 @@ class Action
     
         uiDeleteObjectsAndStyles(this.newActiveNodeIds, false); 
     }
+
+
+
+    getLinkString()
+    {
+        const linkPrev = this.linkWithPrevious ? '⇤' : '';
+        const linkNext = this.linkWithNext     ? '⇥' : '';
+
+        const linkSpace = 
+               this.linkWithPrevious 
+            || this.linkWithNext 
+            ? ' ' 
+            : '';
+
+        return linkPrev + linkSpace + linkNext;
+    }
 }
 
 
@@ -58104,8 +57978,10 @@ class ActionManager
     {
         if (settings.logActions)
         {
-            if (redo) console.log("%cREDO %s", 'background: #ffd;    color: #b80;', act.name);
-            else      console.log("%c%s",      'background: #e8ffe8; color: #282;', act.name);
+            const links = act.getLinkString();
+
+            if (redo) console.log("%cREDO %s%s", 'background: #ffd;    color: #b80;', act.name, links);
+            else      console.log("%c%s%s",      'background: #e8ffe8; color: #282;', act.name, links);
         }
 
 
@@ -58144,7 +58020,10 @@ class ActionManager
     undoAction(act)
     {
         if (settings.logActions)
-            console.log("%cUNDO %s", 'background: #fff4e8; color: #c64;', act.name);
+        {
+            const links = act.getLinkString();
+            console.log("%cUNDO %s%s", 'background: #fff4e8; color: #c64;', act.name, links);
+        }
 
             
         if (act.affectsConnections)
@@ -65032,6 +64911,7 @@ function createStyleIcon(rgba)
 }
 
 
+const defNodeWidth    = 100;
 const resizeEdgeWidth = 8;
 
 
@@ -65041,34 +64921,6 @@ var overColorControl      = null;
 var numberControlChanging = null;
 
 var overNumberControlCtrl = null;
-
-
-
-// function checkAddMenuItemProductKey(menuSelectItems)
-// {
-//     if (!validateProductKey(currentUser.id, productKey))
-//         menuSelectItems.push({value: 'productKey', text: 'Enter product key'});
-// }
-
-
-
-// function removeMenuItemProductKey()
-// {
-//     let index = menuSelect.items.findIndex(item => item.value == 'productKey');
-//     removeAt(menuSelect.items, index);
-//     menuSelect.updateItems();
-// }
-
-
-
-// function dockWindowTop()
-// {
-//     uiQueueMessageToFigma({ 
-//         cmd: 'figPositionWindow',
-//         x:    0,
-//         y:    0
-//     });        
-// }
 
 
 

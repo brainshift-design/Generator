@@ -131,7 +131,7 @@ class Operator
 
 
 
-    constructor(type, shortName, defWidth = 100, progressBar = false)
+    constructor(type, shortName, defWidth = defNodeWidth, progressBar = false)
     {
         this.#type             = type;
         this.id                = shortName;

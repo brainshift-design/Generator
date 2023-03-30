@@ -185,7 +185,7 @@ NumberControl.prototype.initTextbox = function()
 
                 if (this.param) this.param.changing = true;
                 if (this.confirmTimer) clearTimeout(this.confirmTimer);
-                this.confirmTimer = setTimeout(() => numberControl_confirm(this), 400);
+                this.confirmTimer = setTimeout(() => controlTimer_confirm(this), 400);
             }
         }
         else if (e.code == 'KeyZ'

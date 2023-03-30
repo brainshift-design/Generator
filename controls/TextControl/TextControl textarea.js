@@ -113,6 +113,11 @@ TextControl.prototype.initTextarea = function()
 
         if (this.textarea.value != this.textarea.prevValue)
             pushUpdateFromParam(null, [this.param.node], this.param);
+
+
+        if (this.param) this.param.changing = true;
+        if (this.confirmTimer) clearTimeout(this.confirmTimer);
+        this.confirmTimer = setTimeout(() => controlTimer_confirm(this), 400);
     });
 
 
@@ -134,8 +139,6 @@ TextControl.prototype.initTextarea = function()
     
     this.textarea.addEventListener('focusout', () =>
     {
-        // if (!this.textarea.keyBlur) this.textarea.finish(this.textarea.value.trim() != '');
-        // else                        this.textarea.keyBlur = false;
         if (this.textarea.keyBlur)
             this.textarea.keyBlur = false;
 
@@ -147,7 +150,6 @@ TextControl.prototype.initTextarea = function()
         }
 
 
-        //this.div.parentNode.removeChild(this.textarea);
         this.textarea.blur();
         this.clicked = false;
     });
@@ -210,13 +212,6 @@ TextControl.prototype.initTextarea = function()
         this.textarea.blur();
 
 
-        // this.focus.style.visibility = 'hidden';
-        // this.focus.style.opacity    = 0;
-
-
-        //this.textarea.style.boxShadow = 'none';
-
-
         if (   this.inFocus
             && focusControl)
             this.div.focus();
@@ -238,7 +233,7 @@ TextControl.prototype.showTextarea = function()
 
     this.textarea.style.boxShadow = '0 0 0 1px var(--figma-color-bg-brand)';
     this.textarea.style.outline   = 'none';
-    //this.textarea.style.textAlign = 'center';
+
 
     this.updateTextarea();
 
@@ -251,11 +246,6 @@ TextControl.prototype.showTextarea = function()
 
 TextControl.prototype.updateTextarea = function()
 {
-    this.textarea.value = this.value;
-    // this.textarea.value =
-    //     this.value == NAN_CHAR
-    //     ? NAN_DISPLAY
-    //     : this.value;
-        
-    this.textarea.savedValue = this.textarea.value;
+    this.textarea.value      = this.value;
+    this.textarea.savedValue = this.value;
 };

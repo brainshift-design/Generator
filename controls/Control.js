@@ -22,7 +22,7 @@ extends EventTarget
 
 
 
-    constructor(div, param, id, name, width = 120, height = defParamHeight)
+    constructor(div, param, id, name, width = defNodeWidth, height = defParamHeight)
     {
         super();
 
@@ -57,7 +57,7 @@ extends EventTarget
         this.height           = h;
         
         this.div.style.width  = w;
-        this.div.style.height = h;
+        this.div.style.height = Math.max(20, h);
     }
 
 
@@ -105,4 +105,12 @@ extends EventTarget
              || document.   mozPointerLockElement === this.div
              || document.webkitPointerLockElement === this.div);
     }
+}
+
+
+
+function controlTimer_confirm(control)
+{
+    if (control.param)
+        control.param.changing = false;
 }

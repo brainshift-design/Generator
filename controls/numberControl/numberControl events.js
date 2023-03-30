@@ -576,7 +576,7 @@ NumberControl.prototype.initEvents = function()
 
                 if (this.param) this.param.changing = true;
                 if (this.confirmTimer) clearTimeout(this.confirmTimer);
-                this.confirmTimer = setTimeout(() => numberControl_confirm(this), 400);
+                this.confirmTimer = setTimeout(() => controlTimer_confirm(this), 400);
             }
         }
     });
@@ -619,12 +619,4 @@ NumberControl.prototype.initEvents = function()
             &&  this.pointerEvents)
             this.showTextbox();
     });
-}
-
-
-
-function numberControl_confirm(control)
-{
-    if (control.param)
-        control.param.changing = false;
 }

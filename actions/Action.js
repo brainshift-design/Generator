@@ -181,6 +181,22 @@ class Action
     
         uiDeleteObjectsAndStyles(this.newActiveNodeIds, false); 
     }
+
+
+
+    getLinkString()
+    {
+        const linkPrev = this.linkWithPrevious ? '⇤' : '';
+        const linkNext = this.linkWithNext     ? '⇥' : '';
+
+        const linkSpace = 
+               this.linkWithPrevious 
+            || this.linkWithNext 
+            ? ' ' 
+            : '';
+
+        return linkPrev + linkSpace + linkNext;
+    }
 }
 
 

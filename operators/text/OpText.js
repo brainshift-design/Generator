@@ -92,6 +92,7 @@ extends ResizableBase
     updateParams()
     {
         this.paramValue.enableControlText(!this.inputs[0].connected);
+
         this.updateParamControls();
     }
 

@@ -157,86 +157,6 @@ extends Control
 
 
 
-    // copy()
-    // {
-    //     const copy = new NumberControl(
-    //         null,
-    //         null,
-    //         this.id,
-    //         this.name,
-    //         this.showName,
-    //         this.defaultValue);
-
-
-    //     copy.width                 = this.width;
-    //     copy.height                = this.height;
-        
-    //     copy.value                 = this.value;
-                
-    //     copy.min                   = this.min;
-    //     copy.max                   = this.max;
-           
-    //     copy.displayMin            = this.displayMin;
-    //     copy.displayMax            = this.displayMax;
-           
-    //     copy.thinMinus             = this.thinMinus;
-    //     copy.displayAbsolute       = this.displayAbsolute;
-      
-    //     copy.epsilon               = this.epsilon;
-      
-    //     copy.acc                   = this.acc;
-      
-    //     copy.dec                   = this.dec;
-    //     copy.displayDec            = this.displayDec;
-      
-    //     copy.valueScale            = this.valueScale;
-      
-    //     copy.suffix                = this.suffix;
-    //     copy.valueCanContainSuffix = this.valueCanCouffix;
-
-    //     copy.dragReverse           = this.dragReverse;
-    //     copy.dragScale             = this.dragScale;
-    //     copy.wheelScale            = this.wheelScale;
-
-    //     copy. backStyleLight       = this. backStyleLight;
-    //     copy.valueStyleLight       = this.valueStyleLight;
-    //     copy. textStyleLight       = this. textStyleLight;
-
-    //     copy.fontSize              = this.fontSize;
-
-
-    //     copy.wrapValue             = this.wrapValue;
-
-    //     copy.showHex               = this.showHex;
-
-    //     copy.enableChangeEvent     = this.enableChangeEvent;
-
-    //     copy.successOnFocusOut     = this.successOnFocusOut;
-    //     copy.keyBlur               = this.keyBlur;
-
-    //     copy.pointerEvents         = this.pointerEvents;
-    //     copy.readOnly              = this.readOnly;
-
-    //     copy.allowEditDecimals     = this.allowEditDecimals;
-
-    //     copy.valueText             = this.valueText;
-    //     copy.overrideText          = this.overrideText;
-
-    //     copy.showNanValueName      = this.showNanValueName;
-    //     copy.showBar               = this.showBar;
-
-    //     copy.barTop                = this.barTop;
-    //     copy.barBottom             = this.barBottom;
-
-    //     copy.ranges                = this.ranges.map(r => r.copy());
-
-    //     copy.options               = [...this.options];
-        
-    //     return copy;
-    // }
-
-
-
     canReact(e)
     {
         if (   settings.enableZoomedOutParams
@@ -265,8 +185,6 @@ extends Control
 
     setValue(value, fireChangeEvent = true, confirm = true, fullRange = true)
     {
-        //console.trace();
-        //console.log('value =', value);
         if (typeof value != 'number')
             console.assert(false, 'NumberControl.setValue(value) is ' + typeof value + ', must be a number');
 
@@ -390,7 +308,6 @@ extends Control
 
             
         if (    isNaN(this.value)
-            //||  this.overrideText != '' // assuminng the display bar is irrelevant in override mode
             || !this.showBar)
             this.bar.style.display = 'none';
 
@@ -536,11 +453,7 @@ extends Control
                 str = val.toExponential(1);
             else
             {
-                // if (   this.param
-                //     && this.param.showFullPrecision)
-                //     str = numToString(val, 10, this.showHex);
-                // else
-                    str = numToString(val, this.displayDec, this.showHex);
+                str = numToString(val, this.displayDec, this.showHex);
 
                 if (Math.abs(val) >= 10_000) // add thousand separators
                 {
