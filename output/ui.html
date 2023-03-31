@@ -12465,6 +12465,62 @@ extends GTextType
 
 
 
+class GTextCharacter
+extends GTextType
+{
+    input = null;
+
+    code;
+
+
+    
+    constructor(nodeId, options)
+    {
+        super(TEXT_CHAR, nodeId, options);
+    }
+
+
+    
+    copy()
+    {
+        const copy = new GTextCharacter(this.nodeId, this.options);
+
+        copy.copyBase(this);
+
+        if (this.input) 
+            copy.input = this.input.copy();
+
+        copy.code = this.code.copy();
+
+        return copy;
+    }
+
+
+
+    eval(parse)
+    {
+        if (this.isCached())
+            return this;
+
+
+        const code = this.code.eval(parse).toValue();
+
+
+        this.value = new TextValue(String.fromCharCode(code.value));
+
+
+        genPushUpdateValue(parse, this.nodeId, 'value', this.value);
+        genPushUpdateValue(parse, this.nodeId, 'code',  code);
+
+
+        this.validate();
+
+        return this;
+    }
+}
+
+
+
 class GTextReplace
 extends GTextType
 {
@@ -12606,32 +12662,30 @@ function evalJoinInputs(inputs, parse)
 }
 
 
-class GTextCharacter
-extends GTextType
+class GTextCSV
+extends GOperator
 {
-    input = null;
+    inputs = [];
 
-    code;
+    value;
 
 
-    
+
     constructor(nodeId, options)
     {
-        super(TEXT_CHAR, nodeId, options);
+        super(LIST, nodeId, options);
     }
 
 
     
     copy()
     {
-        const copy = new GTextCharacter(this.nodeId, this.options);
+        const copy = new GList(this.nodeId, this.options);
 
         copy.copyBase(this);
 
-        if (this.input) 
-            copy.input = this.input.copy();
-
-        copy.code = this.code.copy();
+        copy.inputs = this.inputs.map(i => i.copy());
+        copy.value  = this.value.copy();
 
         return copy;
     }
@@ -12644,19 +12698,35 @@ extends GTextType
             return this;
 
 
-        const code = this.code.eval(parse).toValue();
+        this.value = new ListValue();
 
+        for (let i = 0; i < this.inputs.length; i++)
+        {
+            const input = this.inputs[i].eval(parse).toValue();
 
-        this.value = new TextValue(String.fromCharCode(code.value));
-
+            if (input.type == LIST_VALUE)
+            {
+                for (const item of input.items)
+                    this.value.items.push(item);   
+            }
+            else
+                this.value.items.push(input);
+        }
+    
 
         genPushUpdateValue(parse, this.nodeId, 'value', this.value);
-        genPushUpdateValue(parse, this.nodeId, 'code',  code);
 
 
         this.validate();
 
         return this;
+    }
+
+
+
+    toValue()
+    {
+        return this.value.copy();
     }
 }
 
@@ -32548,6 +32618,62 @@ extends GTextType
 
 
 
+class GTextCharacter
+extends GTextType
+{
+    input = null;
+
+    code;
+
+
+    
+    constructor(nodeId, options)
+    {
+        super(TEXT_CHAR, nodeId, options);
+    }
+
+
+    
+    copy()
+    {
+        const copy = new GTextCharacter(this.nodeId, this.options);
+
+        copy.copyBase(this);
+
+        if (this.input) 
+            copy.input = this.input.copy();
+
+        copy.code = this.code.copy();
+
+        return copy;
+    }
+
+
+
+    eval(parse)
+    {
+        if (this.isCached())
+            return this;
+
+
+        const code = this.code.eval(parse).toValue();
+
+
+        this.value = new TextValue(String.fromCharCode(code.value));
+
+
+        genPushUpdateValue(parse, this.nodeId, 'value', this.value);
+        genPushUpdateValue(parse, this.nodeId, 'code',  code);
+
+
+        this.validate();
+
+        return this;
+    }
+}
+
+
+
 class GTextReplace
 extends GTextType
 {
@@ -32689,32 +32815,30 @@ function evalJoinInputs(inputs, parse)
 }
 
 
-class GTextCharacter
-extends GTextType
+class GTextCSV
+extends GOperator
 {
-    input = null;
+    inputs = [];
 
-    code;
+    value;
 
 
-    
+
     constructor(nodeId, options)
     {
-        super(TEXT_CHAR, nodeId, options);
+        super(LIST, nodeId, options);
     }
 
 
     
     copy()
     {
-        const copy = new GTextCharacter(this.nodeId, this.options);
+        const copy = new GList(this.nodeId, this.options);
 
         copy.copyBase(this);
 
-        if (this.input) 
-            copy.input = this.input.copy();
-
-        copy.code = this.code.copy();
+        copy.inputs = this.inputs.map(i => i.copy());
+        copy.value  = this.value.copy();
 
         return copy;
     }
@@ -32727,19 +32851,35 @@ extends GTextType
             return this;
 
 
-        const code = this.code.eval(parse).toValue();
+        this.value = new ListValue();
 
+        for (let i = 0; i < this.inputs.length; i++)
+        {
+            const input = this.inputs[i].eval(parse).toValue();
 
-        this.value = new TextValue(String.fromCharCode(code.value));
-
+            if (input.type == LIST_VALUE)
+            {
+                for (const item of input.items)
+                    this.value.items.push(item);   
+            }
+            else
+                this.value.items.push(input);
+        }
+    
 
         genPushUpdateValue(parse, this.nodeId, 'value', this.value);
-        genPushUpdateValue(parse, this.nodeId, 'code',  code);
 
 
         this.validate();
 
         return this;
+    }
+
+
+
+    toValue()
+    {
+        return this.value.copy();
     }
 }
 
@@ -46392,7 +46532,6 @@ extends EventTarget
                     || this.connectedOutput != tc.output
                     || this == savedInput))
             {
-                console.log('enter input');
                 const rect = boundingRect(this.div);
                 const loop = tc.output.node.isOrFollows(this.node);
 
@@ -49770,13 +49909,13 @@ extends OperatorBase
 
     updateValueParam()
     {
-        const colors = this.getHeaderColors();
+        // const colors = this.getHeaderColors();
 
-        const colSpaceBar = 
-              !rgbIsNaN(colors.back)
-            && isDark(colors.back)
-            ? [1, 1, 1, 0.12]
-            : [0, 0, 0, 0.09]; 
+        // const colSpaceBar = 
+        //       !rgbIsNaN(colors.back)
+        //     && isDark(colors.back)
+        //     ? [1, 1, 1, 0.12]
+        //     : [0, 0, 0, 0.09]; 
 
 
         // this.paramValue.controls[0].backStyleLight  =
@@ -50222,6 +50361,66 @@ extends OperatorBase
     }
 }
 
+
+
+class   ResizableOperatorWithValue
+extends ResizableBase
+{
+    paramValue;
+    
+
+
+    constructor(type, shortName, defWidth = defNodeWidth, progressBar = false)
+    {
+        super(type, shortName, defWidth, progressBar);
+
+        this.paramValue = createValueParamFromType(type);
+        this.paramValue.isResult = true;
+    }
+
+
+
+    updateValues(requestId, actionId, updateParamId, paramIds, values)
+    {
+        const value = values[paramIds.findIndex(id => id == 'value')];
+
+        this.paramValue.setValue(value, false, true, false);
+
+        super.updateValues(requestId, actionId, updateParamId, paramIds, values);
+    }
+
+
+
+    updateValueParam()
+    {
+        // const colors = this.getHeaderColors();
+
+        // const colSpaceBar = 
+        //       !rgbIsNaN(colors.back)
+        //     && isDark(colors.back)
+        //     ? [1, 1, 1, 0.12]
+        //     : [0, 0, 0, 0.09]; 
+
+
+        // this.paramValue.controls[0].backStyleLight  =
+        // this.paramValue.controls[0].backStyleDark   = rgb2style_a(rgbHeaderFromType(this.type, this.active), 0.95);
+
+        // this.paramValue.controls[0].valueStyleLight =
+        // this.paramValue.controls[0].valueStyleDark  = rgba2style(colSpaceBar);
+
+        // this.paramValue.controls[0].textStyleLight  =
+        // this.paramValue.controls[0].textStyleDark   = rgba2style(colors.text);
+    }
+
+
+
+    updateNode()
+    {
+        this.updateValueParam();
+
+        super.updateNode();
+    }
+}
 
 
 class   OpList
@@ -52373,12 +52572,26 @@ extends ResizableBase
 
 
         this.header.addEventListener('pointerdown', e => this.paramValue.controls[0].textarea.blur());
-
-        
     }
 
 
 
+    setSize(w, h, updateTransform = true)
+    {
+        super.setSize(w, h, updateTransform);
+        this.updateValueParam();
+    }
+
+
+
+    setRect(x, y, w, h, updateTransform = true)
+    {
+        super.setRect(x, y, w, h, updateTransform);
+        this.updateValueParam();
+    }
+
+    
+    
     input_getBackInitValue()
     {
         // 'this' is the input
@@ -52395,26 +52608,6 @@ extends ResizableBase
         console.assert(value.type == TEXT_VALUE, 'expected TEXT_VALUE in backInit()');
         
         this.node.paramValue.setValue(value, false, true, false);
-    }
-
-
-
-    setSize(w, h, updateTransform = true)
-    {
-        // console.log('OpText.setSize()');
-        super.setSize(w, h, updateTransform);
-
-        this.paramValue.controls[0].setSize(w, h - defHeaderHeight);
-    }
-
-
-
-    setRect(x, y, w, h, updateTransform = true)
-    {
-        // console.log('OpText.setRect()');
-        super.setRect(x, y, w, h, updateTransform);
-
-        this.paramValue.controls[0].setSize(w, h - defHeaderHeight);
     }
 
 
@@ -52448,8 +52641,18 @@ extends ResizableBase
     updateParams()
     {
         this.paramValue.enableControlText(!this.inputs[0].connected);
+        this.updateValueParam();
 
         this.updateParamControls();
+    }
+
+
+
+    updateValueParam()
+    {
+        this.paramValue.controls[0].setSize(
+            this.div.offsetWidth,
+            this.div.offsetHeight - Math.max(defHeaderHeight, this.header.offsetHeight));
     }
 
 
@@ -52530,6 +52733,72 @@ extends OperatorWithValue
 }
 
 
+class   OpTextCharacter
+extends OperatorWithValue
+{
+    paramCode;
+
+
+
+    constructor()
+    {
+        super(TEXT_CHAR, 'char');
+
+
+        this.addOutput(new Output([TEXT_VALUE], this.output_genRequest));
+
+        this.addParam(this.paramValue);
+        this.addParam(this.paramCode = new NumberParam('code', 'unicode', true,  true,  true, 32, 0, 0xFFFF));
+
+
+        this.paramValue.controls[0].textarea.style.textAlign = 'center';
+
+        this.paramCode.controls[0].showHex = true;
+    }
+
+
+
+    output_genRequest(gen)
+    {
+        // 'this' is the output
+
+        gen.scope.push({
+            nodeId:  this.node.id, 
+            paramId: NULL });
+
+        const [request, ignore] = this.node.genRequestStart(gen);
+        if (ignore) return request;
+
+        
+        const input = this.node.inputs[0];
+
+
+        request.push(input.connected ? 1 : 0);
+        
+        if (input.connected)
+            request.push(...pushInputOrParam(input, gen));
+
+        request.push(...this.node.paramCode.genRequest(gen));
+
+        
+        gen.scope.pop();
+        pushUnique(gen.passedNodes, this.node);
+
+        return request;
+    }
+
+
+
+    updateParams()
+    {
+        this.paramValue.enableControlText(false);
+        this.paramCode .enableControlText(true);
+
+        this.updateParamControls();
+    }
+}
+
+
 class   OpTextReplace
 extends OperatorBase
 {
@@ -52597,7 +52866,7 @@ extends OperatorBase
 
 
 class   OpTextJoin
-extends OperatorWithValue
+extends ResizableOperatorWithValue
 {
     constructor()
     {
@@ -52629,6 +52898,22 @@ extends OperatorWithValue
 
 
 
+    setSize(w, h, updateTransform = true)
+    {
+        super.setSize(w, h, updateTransform);
+        this.updateValueParam();
+    }
+
+
+
+    setRect(x, y, w, h, updateTransform = true)
+    {
+        super.setRect(x, y, w, h, updateTransform);
+        this.updateValueParam();
+    }
+
+    
+    
     output_genRequest(gen)
     {
         // 'this' is the output
@@ -52661,34 +52946,39 @@ extends OperatorWithValue
     updateParams()
     {
         this.paramValue.enableControlText(false);
+        this.updateValueParam();
 
         this.updateParamControls();
+    }
+
+
+
+    updateValueParam()
+    {
+        this.paramValue.controls[0].setSize(
+            this.div.offsetWidth,
+            this.div.offsetHeight - Math.max(defHeaderHeight, this.header.offsetHeight));
     }
 }
 
 
 
-class   OpTextCharacter
-extends OperatorWithValue
+class   OpTextCSV
+extends OperatorBase
 {
-    paramCode;
+    paramSeparator;
 
 
 
     constructor()
     {
-        super(TEXT_CHAR, 'char');
+        super(TEXT_CSV, 'csv');
 
 
-        this.addOutput(new Output([TEXT_VALUE], this.output_genRequest));
+        this.addInput (new Input (TEXT_TYPES));
+        this.addOutput(new Output([LIST_VALUE], this.output_genRequest));
 
-        this.addParam(this.paramValue);
-        this.addParam(this.paramCode = new NumberParam('code', 'unicode', true,  true,  true, 32, 0, 0xFFFF));
-
-
-        this.paramValue.controls[0].textarea.style.textAlign = 'center';
-
-        this.paramCode.controls[0].showHex = true;
+        this.addParam(this.paramSeparator = new TextParam('separator', 'separator', true,  true));
     }
 
 
@@ -52713,7 +53003,7 @@ extends OperatorWithValue
         if (input.connected)
             request.push(...pushInputOrParam(input, gen));
 
-        request.push(...this.node.paramCode.genRequest(gen));
+        request.push(...this.node.paramSeparator.genRequest(gen));
 
         
         gen.scope.pop();
@@ -52726,8 +53016,7 @@ extends OperatorWithValue
 
     updateParams()
     {
-        this.paramValue.enableControlText(false);
-        this.paramCode .enableControlText(true);
+        this.paramSeparator.enableControlText(true);
 
         this.updateParamControls();
     }

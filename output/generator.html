@@ -8390,6 +8390,62 @@ extends GTextType
 
 
 
+class GTextCharacter
+extends GTextType
+{
+    input = null;
+
+    code;
+
+
+    
+    constructor(nodeId, options)
+    {
+        super(TEXT_CHAR, nodeId, options);
+    }
+
+
+    
+    copy()
+    {
+        const copy = new GTextCharacter(this.nodeId, this.options);
+
+        copy.copyBase(this);
+
+        if (this.input) 
+            copy.input = this.input.copy();
+
+        copy.code = this.code.copy();
+
+        return copy;
+    }
+
+
+
+    eval(parse)
+    {
+        if (this.isCached())
+            return this;
+
+
+        const code = this.code.eval(parse).toValue();
+
+
+        this.value = new TextValue(String.fromCharCode(code.value));
+
+
+        genPushUpdateValue(parse, this.nodeId, 'value', this.value);
+        genPushUpdateValue(parse, this.nodeId, 'code',  code);
+
+
+        this.validate();
+
+        return this;
+    }
+}
+
+
+
 class GTextReplace
 extends GTextType
 {
@@ -8531,32 +8587,30 @@ function evalJoinInputs(inputs, parse)
 }
 
 
-class GTextCharacter
-extends GTextType
+class GTextCSV
+extends GOperator
 {
-    input = null;
+    inputs = [];
 
-    code;
+    value;
 
 
-    
+
     constructor(nodeId, options)
     {
-        super(TEXT_CHAR, nodeId, options);
+        super(LIST, nodeId, options);
     }
 
 
     
     copy()
     {
-        const copy = new GTextCharacter(this.nodeId, this.options);
+        const copy = new GList(this.nodeId, this.options);
 
         copy.copyBase(this);
 
-        if (this.input) 
-            copy.input = this.input.copy();
-
-        copy.code = this.code.copy();
+        copy.inputs = this.inputs.map(i => i.copy());
+        copy.value  = this.value.copy();
 
         return copy;
     }
@@ -8569,19 +8623,35 @@ extends GTextType
             return this;
 
 
-        const code = this.code.eval(parse).toValue();
+        this.value = new ListValue();
 
+        for (let i = 0; i < this.inputs.length; i++)
+        {
+            const input = this.inputs[i].eval(parse).toValue();
 
-        this.value = new TextValue(String.fromCharCode(code.value));
-
+            if (input.type == LIST_VALUE)
+            {
+                for (const item of input.items)
+                    this.value.items.push(item);   
+            }
+            else
+                this.value.items.push(input);
+        }
+    
 
         genPushUpdateValue(parse, this.nodeId, 'value', this.value);
-        genPushUpdateValue(parse, this.nodeId, 'code',  code);
 
 
         this.validate();
 
         return this;
+    }
+
+
+
+    toValue()
+    {
+        return this.value.copy();
     }
 }
 

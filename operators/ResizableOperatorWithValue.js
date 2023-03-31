@@ -1,5 +1,5 @@
-class   OperatorWithValue
-extends OperatorBase
+class   ResizableOperatorWithValue
+extends ResizableBase
 {
     paramValue;
     

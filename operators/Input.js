@@ -147,7 +147,6 @@ extends EventTarget
                     || this.connectedOutput != tc.output
                     || this == savedInput))
             {
-                console.log('enter input');
                 const rect = boundingRect(this.div);
                 const loop = tc.output.node.isOrFollows(this.node);
 

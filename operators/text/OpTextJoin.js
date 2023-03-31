@@ -1,5 +1,5 @@
 class   OpTextJoin
-extends OperatorWithValue
+extends ResizableOperatorWithValue
 {
     constructor()
     {
@@ -31,6 +31,22 @@ extends OperatorWithValue
 
 
 
+    setSize(w, h, updateTransform = true)
+    {
+        super.setSize(w, h, updateTransform);
+        this.updateValueParam();
+    }
+
+
+
+    setRect(x, y, w, h, updateTransform = true)
+    {
+        super.setRect(x, y, w, h, updateTransform);
+        this.updateValueParam();
+    }
+
+    
+    
     output_genRequest(gen)
     {
         // 'this' is the output
@@ -63,7 +79,17 @@ extends OperatorWithValue
     updateParams()
     {
         this.paramValue.enableControlText(false);
+        this.updateValueParam();
 
         this.updateParamControls();
+    }
+
+
+
+    updateValueParam()
+    {
+        this.paramValue.controls[0].setSize(
+            this.div.offsetWidth,
+            this.div.offsetHeight - Math.max(defHeaderHeight, this.header.offsetHeight));
     }
 }

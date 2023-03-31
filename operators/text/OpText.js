@@ -20,12 +20,26 @@ extends ResizableBase
 
 
         this.header.addEventListener('pointerdown', e => this.paramValue.controls[0].textarea.blur());
-
-        
     }
 
 
 
+    setSize(w, h, updateTransform = true)
+    {
+        super.setSize(w, h, updateTransform);
+        this.updateValueParam();
+    }
+
+
+
+    setRect(x, y, w, h, updateTransform = true)
+    {
+        super.setRect(x, y, w, h, updateTransform);
+        this.updateValueParam();
+    }
+
+    
+    
     input_getBackInitValue()
     {
         // 'this' is the input
@@ -42,26 +56,6 @@ extends ResizableBase
         console.assert(value.type == TEXT_VALUE, 'expected TEXT_VALUE in backInit()');
         
         this.node.paramValue.setValue(value, false, true, false);
-    }
-
-
-
-    setSize(w, h, updateTransform = true)
-    {
-        // console.log('OpText.setSize()');
-        super.setSize(w, h, updateTransform);
-
-        this.paramValue.controls[0].setSize(w, h - defHeaderHeight);
-    }
-
-
-
-    setRect(x, y, w, h, updateTransform = true)
-    {
-        // console.log('OpText.setRect()');
-        super.setRect(x, y, w, h, updateTransform);
-
-        this.paramValue.controls[0].setSize(w, h - defHeaderHeight);
     }
 
 
@@ -95,8 +89,18 @@ extends ResizableBase
     updateParams()
     {
         this.paramValue.enableControlText(!this.inputs[0].connected);
+        this.updateValueParam();
 
         this.updateParamControls();
+    }
+
+
+
+    updateValueParam()
+    {
+        this.paramValue.controls[0].setSize(
+            this.div.offsetWidth,
+            this.div.offsetHeight - Math.max(defHeaderHeight, this.header.offsetHeight));
     }
 
 
