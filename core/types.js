@@ -139,6 +139,7 @@ const TEXT_SUBSTRING = 'TSUB';
 const TEXT_REPLACE   = 'TREPL'; 
 const TEXT_JOIN      = 'TJOIN';  
 const TEXT_CHAR      = 'TCHAR';
+const TEXT_CSV       = 'TCSV';
 
 
 const TEXT_TYPES =
@@ -148,7 +149,8 @@ const TEXT_TYPES =
     TEXT_SUBSTRING,
     TEXT_JOIN,
     TEXT_REPLACE,
-    TEXT_CHAR
+    TEXT_CHAR,
+    TEXT_CSV
 ];
 
 

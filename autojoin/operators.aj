@@ -74,9 +74,10 @@
 
 ../operators/text/OpText.js
 ../operators/text/OpTextSubstring.js
+../operators/text/OpTextCharacter.js
 ../operators/text/OpTextReplace.js
 ../operators/text/OpTextJoin.js
-../operators/text/OpTextCharacter.js
+../operators/text/OpTextCSV.js
 
 
 ../operators/color/OpColorBase.js

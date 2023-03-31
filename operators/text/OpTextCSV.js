@@ -1,23 +1,19 @@
-class   OpTextReplace
+class   OpTextCSV
 extends OperatorBase
 {
-    paramWhat;
-    paramWith;
+    paramSeparator;
 
 
 
     constructor()
     {
-        super(TEXT_REPLACE, 'replace');
+        super(TEXT_CSV, 'csv');
 
-        this.canDisable = true;
-        
 
         this.addInput (new Input (TEXT_TYPES));
-        this.addOutput(new Output([TEXT_VALUE], this.output_genRequest));
+        this.addOutput(new Output([LIST_VALUE], this.output_genRequest));
 
-        this.addParam(this.paramWhat = new TextParam('what', 'what', true,  true));
-        this.addParam(this.paramWith = new TextParam('with', 'with', true,  true));
+        this.addParam(this.paramSeparator = new TextParam('separator', 'separator', true,  true));
     }
 
 
@@ -42,8 +38,7 @@ extends OperatorBase
         if (input.connected)
             request.push(...pushInputOrParam(input, gen));
 
-        request.push(...this.node.paramWhat.genRequest(gen));
-        request.push(...this.node.paramWith.genRequest(gen));
+        request.push(...this.node.paramSeparator.genRequest(gen));
 
         
         gen.scope.pop();
@@ -56,8 +51,7 @@ extends OperatorBase
 
     updateParams()
     {
-        this.paramWhat.enableControlText(true);
-        this.paramWith.enableControlText(true);
+        this.paramSeparator.enableControlText(true);
 
         this.updateParamControls();
     }

@@ -325,7 +325,9 @@ function initGeneratorMenus()
         new MenuItem('Character', {icon: iconTextCharacter, callback: e => actionManager.do(getCreateNodeAction(TEXT_CHAR,      btnText.div, getCreateOptions(e)))}),
         new MenuItem('',          {separator: true}),
         new MenuItem('Join',      {icon: iconTextJoin,      callback: e => actionManager.do(getCreateNodeAction(TEXT_JOIN,      btnText.div, getCreateOptions(e)))}),
-        new MenuItem('Replace',   {icon: iconTextReplace,   callback: e => actionManager.do(getCreateNodeAction(TEXT_REPLACE,   btnText.div, getCreateOptions(e)))})]);
+        new MenuItem('Replace',   {icon: iconTextReplace,   callback: e => actionManager.do(getCreateNodeAction(TEXT_REPLACE,   btnText.div, getCreateOptions(e)))}),
+        new MenuItem('',          {separator: true}),
+        new MenuItem('CSV',       {icon: iconTextCSV,       callback: e => actionManager.do(getCreateNodeAction(TEXT_CSV,       btnText.div, getCreateOptions(e)))})]);
     
 
     menuColorStyle = new Menu('Color style', true, false);
