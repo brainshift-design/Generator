@@ -148,11 +148,11 @@ extends GColorType
 
         // if (this.options.enabled)
         // {
-            genPushUpdateValue(parse, this.nodeId, 'convert', this.convert          );
-            genPushUpdateValue(parse, this.nodeId, 'space',   this.value.space, true);
-            genPushUpdateValue(parse, this.nodeId, 'c1',      this.value.c1         );
-            genPushUpdateValue(parse, this.nodeId, 'c2',      this.value.c2         );
-            genPushUpdateValue(parse, this.nodeId, 'c3',      this.value.c3         );
+            genPushUpdateValue(parse, this.nodeId, 'convert', this.convert    );
+            genPushUpdateValue(parse, this.nodeId, 'space',   this.value.space);
+            genPushUpdateValue(parse, this.nodeId, 'c1',      this.value.c1   );
+            genPushUpdateValue(parse, this.nodeId, 'c2',      this.value.c2   );
+            genPushUpdateValue(parse, this.nodeId, 'c3',      this.value.c3   );
         // }
 
 

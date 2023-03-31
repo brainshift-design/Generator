@@ -21,8 +21,6 @@ extends GTextType
         if (this.input) 
             copy.input = this.input.copy();
         
-        copy.value = this.value;
-
         return copy;
     }
 
@@ -32,6 +30,7 @@ extends GTextType
     {
         if (this.isCached())
             return this;
+
 
         if (this.input)
             this.value = this.input.eval(parse).toValue();

@@ -1,7 +1,7 @@
 class GTextType
 extends GOperator
 {
-    value;
+    value = null;
     
 
 

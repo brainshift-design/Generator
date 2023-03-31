@@ -14,11 +14,14 @@ extends ResizableBase
         this.addOutput(new Output([TEXT_VALUE], this.output_genRequest, getNodeOutputValuesForUndo, this.output_backInit));
 
         this.addParam(this.paramValue = new TextParam('value', '', false, false));
+        this.paramValue.controls[0].textarea.placeholder  = ' . . .';
 
         this.alwaysLoadParams = true;
 
 
         this.header.addEventListener('pointerdown', e => this.paramValue.controls[0].textarea.blur());
+
+        
     }
 
 

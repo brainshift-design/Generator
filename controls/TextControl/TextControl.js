@@ -1,11 +1,10 @@
 class TextControl
 extends Control
 {
-    textarea;
-    focus;
-            
-    
     value;
+
+
+    textarea;
 
 
     enableChangeEvent = true;
@@ -35,11 +34,8 @@ extends Control
         this.initTextarea();
         this.initEvents ();
         
-        this.focus = createDiv('textControlFocus');
-
 
         this.div.appendChild(this.textarea);
-        this.div.appendChild(this.focus);
     }    
 
 
@@ -117,60 +113,15 @@ extends Control
             return;
 
 
-        const sw =  this.measureData.clientRect.width;
-        const sh =  this.measureData.clientRect.height;
+        const  input = this.param && this.param. input;
+        const output = this.param && this.param.output;
 
-        this.updateFocus(sw, sh);
-    }
+        const left  = input ? 12 : 0;
+        const dw = 
+              ( input ? 12 : 0) 
+            + (output ? 12 : 0);
 
-
-
-    updateFocus(sw, sh)
-    {
-        this.focus.style.left   = 0;
-        this.focus.style.top    = 0;
-        this.focus.style.width  = sw;
-        this.focus.style.height = sh;
-    };
-
-
-
-    updateFocusBorder()
-    {
-        if (this.buttonDown0)
-        {
-            if (   !this.param
-                || !this.param.node.selected)
-                this.focus.style.boxShadow = '0 0 0 1px var(--figma-color-bg-brand) inset';
-
-            else
-            {
-                this.focus.style.boxShadow = '0 1px 0 0 var(--figma-color-bg-brand) inset';
-                    
-                if (this.param.index < this.param.node.params.length-1)
-                    this.focus.style.boxShadow += ', 0 -1px 0 0 var(--figma-color-bg-brand) inset';
-            }
-        }
-        else
-        {
-            const colShadow = 
-                darkMode
-                ? 'rgba(255, 255, 255, 0.1)'
-                : 'rgba(0, 0, 0, 0.1)';
-
-            if (this.param)
-            {
-                this.focus.style.boxShadow = '0 1px 0 0 ' + colShadow + ' inset';
-
-                if (    this.param.node
-                    &&  this.param.node.params.includes(this.param)
-                    && !isLastInArray(this.param.node.params, this.param))
-                    this.focus.style.boxShadow += ', 0 -1px 0 0 ' + colShadow + ' inset';
-            }
-            else
-            {
-                this.focus.style.boxShadow  = '0 0 0 1px ' + colShadow + ' inset ';
-            }
-        }
+        this.textarea.style.left  = left + 'px';
+        this.textarea.style.width = 'calc(100% - ' + dw + 'px)';
     }
 }

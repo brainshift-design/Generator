@@ -16,8 +16,8 @@ extends OperatorBase
         this.addInput (new Input (TEXT_TYPES));
         this.addOutput(new Output([TEXT_VALUE], this.output_genRequest));
 
-        this.addParam(this.paramWhat = new TextParam('what', '', true,  true));
-        this.addParam(this.paramWith = new TextParam('with', '', true,  true));
+        this.addParam(this.paramWhat = new TextParam('what', 'what', true,  true));
+        this.addParam(this.paramWith = new TextParam('with', 'with', true,  true));
     }
 
 
