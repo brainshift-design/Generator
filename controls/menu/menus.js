@@ -5,7 +5,7 @@ var btnText;
 var btnColor;
 var btnStyle;
 var btnShape;
-var btnCustom;
+var btnGroup;
 var btnHand;
 var btnComment;
 var btnZoom;
@@ -319,11 +319,11 @@ function initGeneratorMenus()
     
     menuString = new Menu('String nodes', true, false);
     menuString.addItems([
-        new MenuItem('Text',      {icon: iconText,        callback: e => actionManager.do(getCreateNodeAction(TEXT, btnText.div, getCreateOptions(e)))}),
+        new MenuItem('Text',      {icon: iconText,          callback: e => actionManager.do(getCreateNodeAction(TEXT,           btnText.div, getCreateOptions(e)))}),
         new MenuItem('',          {separator: true}),
-        new MenuItem('Replace',   {icon: iconTextReplace, callback: e => actionManager.do(getCreateNodeAction(TEXT_REPLACE, btnText.div, getCreateOptions(e)))})]);
-        // new MenuItem('Join',      {icon: iconStringJoin   , enabled: false}),
-        // new MenuItem('Substring', {icon: iconSubstring    , enabled: false}),
+        new MenuItem('Substring', {icon: iconTextSubstring, callback: e => actionManager.do(getCreateNodeAction(TEXT_SUBSTRING, btnText.div, getCreateOptions(e)))}),
+        new MenuItem('Replace',   {icon: iconTextReplace,   callback: e => actionManager.do(getCreateNodeAction(TEXT_REPLACE,   btnText.div, getCreateOptions(e)))}),
+        new MenuItem('Join',      {icon: iconTextJoin,      callback: e => actionManager.do(getCreateNodeAction(TEXT_JOIN,      btnText.div, getCreateOptions(e)))})]);
     
     menuColorStyle = new Menu('Color style', true, false);
     menuColorStyle.addItems([
@@ -473,9 +473,9 @@ function initGeneratorMenus()
     btnStyle    = new MenuButton('', menuStyle,  {useMenuName: true, highlight: () => currentMenus.includes(menuStyle ), callback: () => updatePanMode(false)});
     btnShape    = new MenuButton('', menuShape,  {useMenuName: true, highlight: () => currentMenus.includes(menuShape ), callback: () => updatePanMode(false)});
 
-    btnCustom   = new MenuButton('Node groups', null, {callback: () => 
+    btnGroup   = new MenuButton('Node groups', null, {callback: () => 
     {
-        const create = new CreateNodeAction(graphView.graph, NODE_GROUP, btnCustom.div);
+        const create = new CreateNodeAction(graphView.graph, NODE_GROUP, btnGroup.div);
         actionManager.do(create);
 
         graphView.updateNodes([create.node]);
@@ -532,7 +532,7 @@ function initGeneratorMenus()
 
     btnMain   .setIcon(iconGenerator);
     btnShape  .setIcon(iconShapes);
-    btnCustom .setIcon(iconNodeGroup);
+    btnGroup .setIcon(iconNodeGroup);
     btnHand   .setIcon(iconHand);
     btnComment.setIcon(iconComment);
 }

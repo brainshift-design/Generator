@@ -219,10 +219,10 @@ function enableFeatures(subscription, beta)
 {
     updateMenuItemDisplay(menuItemEnableBetaFeatures.div, subscription);
 
-    updateMenuItemDisplay(btnFlow  .div,                subscription);
-    updateMenuItemDisplay(btnText  .div,                subscription && beta);
-    updateMenuItemDisplay(btnShape .div,                subscription && beta);
-    updateMenuItemDisplay(btnCustom.div,                subscription && beta);
+    updateMenuItemDisplay(btnFlow .div,                 subscription);
+    updateMenuItemDisplay(btnText .div,                 subscription && beta);
+    updateMenuItemDisplay(btnShape.div,                 subscription && beta);
+    updateMenuItemDisplay(btnGroup.div,                 false);//subscription && beta);
 
     updateMenuItemDisplay(menuItemLogObjectUpdates.div, subscription && beta);
     

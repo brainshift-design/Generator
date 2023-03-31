@@ -59,7 +59,7 @@ function evalNandInputs(inputs, parse)
 
             console.assert(
                 val.type == NUMBER_VALUE, 
-                'val.type must belong to NUMBER_VALUE');
+                'val.type must be NUMBER_VALUE');
 
             if (val.toNumber() == 0)
                 value.value = 1;

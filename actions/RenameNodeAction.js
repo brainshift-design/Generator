@@ -14,7 +14,7 @@ extends Action
         super(
             graph,
             RENAME_ACTION,
-            'RENAME ' + nodeId + ' to \'' + newName + '\'');
+            'RENAME \'' + nodeId + '\' to \'' + newName + '\'');
 
         this.affectsConnections = false;
 

@@ -48,7 +48,7 @@ extends GNumberType
 
             console.assert(
                 this.value.type == NUMBER_VALUE, 
-                'this.value.type must belong to NUMBER_VALUE');
+                'this.value.type must be NUMBER_VALUE');
 
 
             if (this.options.enabled)

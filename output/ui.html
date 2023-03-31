@@ -7463,17 +7463,19 @@ const NUMBER_TYPES =
 ];
 
 
-const TEXT_VALUE   = 'TEXT#';  
-const TEXT         = 'TEXT';   
-const TEXT_ADD     = 'TADD';  
-const TEXT_REPLACE = 'TREPL'; 
+const TEXT_VALUE     = 'TEXT#';  
+const TEXT           = 'TEXT';   
+const TEXT_SUBSTRING = 'TSUB'; 
+const TEXT_REPLACE   = 'TREPL'; 
+const TEXT_JOIN      = 'TJOIN';  
 
 
 const TEXT_TYPES =
 [
     TEXT_VALUE,
     TEXT,
-    TEXT_ADD,
+    TEXT_SUBSTRING,
+    TEXT_JOIN,
     TEXT_REPLACE
 ];
 
@@ -10721,7 +10723,7 @@ function evalAddInputs(inputs, parse)
 
         console.assert(
             val.type == NUMBER_VALUE, 
-            'val.type must belong to NUMBER_VALUE');
+            'val.type must be NUMBER_VALUE');
 
         value.value   += val.value;
         value.decimals = Math.max(value.decimals, val.decimals);
@@ -11222,7 +11224,7 @@ function evalNandInputs(inputs, parse)
 
             console.assert(
                 val.type == NUMBER_VALUE, 
-                'val.type must belong to NUMBER_VALUE');
+                'val.type must be NUMBER_VALUE');
 
             if (val.toNumber() == 0)
                 value.value = 1;
@@ -11914,7 +11916,7 @@ extends GNumberType
 
             console.assert(
                 this.value.type == NUMBER_VALUE, 
-                'this.value.type must belong to NUMBER_VALUE');
+                'this.value.type must be NUMBER_VALUE');
 
             
             if (this.options.enabled)
@@ -11986,7 +11988,7 @@ extends GNumberType
 
             console.assert(
                 this.value.type == NUMBER_VALUE, 
-                'this.value.type must belong to NUMBER_VALUE');
+                'this.value.type must be NUMBER_VALUE');
 
             if (this.options.enabled)
                 this.value.value = Math.abs(this.value.value);
@@ -12056,7 +12058,7 @@ extends GNumberType
 
             console.assert(
                 this.value.type == NUMBER_VALUE, 
-                'this.value.type must belong to NUMBER_VALUE');
+                'this.value.type must be NUMBER_VALUE');
 
 
             if (this.options.enabled)
@@ -12386,6 +12388,79 @@ extends GTextType
 }
 
 
+class GTextSubstring
+extends GTextType
+{
+    input = null;
+
+    start;
+    end;
+
+
+    
+    constructor(nodeId, options)
+    {
+        super(TEXT_SUBSTRING, nodeId, options);
+    }
+
+
+    
+    copy()
+    {
+        const copy = new GTextSubstring(this.nodeId, this.options);
+
+        copy.copyBase(this);
+
+        if (this.input) 
+            copy.input = this.input.copy();
+
+        copy.start = this.start.copy();
+        copy.end   = this.end  .copy();
+
+        return copy;
+    }
+
+
+
+    eval(parse)
+    {
+        if (this.isCached())
+            return this;
+
+
+        const start = this.start.eval(parse).toValue();
+        const end   = this.end  .eval(parse).toValue();
+
+
+        if (this.input)
+        {
+            this.value = this.input.eval(parse).toValue();
+
+            console.assert(
+                this.value.type == TEXT_VALUE, 
+                'this.value.type must be TEXT_VALUE');
+
+
+            if (this.options.enabled)
+                this.value.value = this.value.value.substring(start.value, end.value+1);
+        }
+        else
+            this.value = TextValue.NaN;
+
+
+        genPushUpdateValue(parse, this.nodeId, 'start', start);
+        genPushUpdateValue(parse, this.nodeId, 'end',   end);
+        genPushUpdateValue(parse, this.nodeId, 'value', this.value);
+
+
+        this.validate();
+
+        return this;
+    }
+}
+
+
+
 class GTextReplace
 extends GTextType
 {
@@ -12457,6 +12532,74 @@ extends GTextType
     }
 }
 
+
+
+class GTextJoin
+extends GTextType
+{
+    inputs = [];
+
+
+    
+    constructor(nodeId, options)
+    {
+        super(TEXT_JOIN, nodeId, options);
+    }
+
+
+    
+    copy()
+    {
+        const copy = new GTextJoin(this.nodeId, this.options);
+        copy.copyBase(this);
+        copy.inputs = this.inputs.map(i => i.copy());
+        return copy;
+    }
+
+
+
+    eval(parse)
+    {
+        if (this.isCached())
+            return this;
+
+
+        this.value = evalJoinInputs(this.inputs, parse);
+        
+        genPushUpdateValue(parse, this.nodeId, 'value', this.value);
+
+
+        this.validate();
+
+        return this;
+    }
+}
+
+
+
+function evalJoinInputs(inputs, parse)
+{
+    if (isEmpty(inputs))
+        return TextValue.NaN;
+
+
+    const value = new TextValue();
+
+
+    for (let i = 0; i < inputs.length; i++)
+    {
+        const val = inputs[i].eval(parse).toValue();
+
+        console.assert(
+            val.type == TEXT_VALUE, 
+            'val.type must be TEXT_VALUE');
+
+        value.value += val.value;
+    }
+
+
+    return value;
+}
 
 
 class ColorCorrection
@@ -15622,10 +15765,10 @@ function enableFeatures(subscription, beta)
 {
     updateMenuItemDisplay(menuItemEnableBetaFeatures.div, subscription);
 
-    updateMenuItemDisplay(btnFlow  .div,                subscription);
-    updateMenuItemDisplay(btnText  .div,                subscription && beta);
-    updateMenuItemDisplay(btnShape .div,                subscription && beta);
-    updateMenuItemDisplay(btnCustom.div,                subscription && beta);
+    updateMenuItemDisplay(btnFlow .div,                 subscription);
+    updateMenuItemDisplay(btnText .div,                 subscription && beta);
+    updateMenuItemDisplay(btnShape.div,                 subscription && beta);
+    updateMenuItemDisplay(btnGroup.div,                 false);//subscription && beta);
 
     updateMenuItemDisplay(menuItemLogObjectUpdates.div, subscription && beta);
     
@@ -18215,6 +18358,53 @@ function genParseText(parse)
 
 
 
+function genParseTextSubstring(parse)
+{
+    const [, nodeId, options, ignore] = genParseNodeStart(parse);
+
+
+    const sub = new GTextSubstring(nodeId, options);
+   
+
+    let nInputs = -1;
+    
+    if (!ignore)
+    {
+        nInputs = parseInt(parse.move());
+        console.assert(nInputs == 0 || nInputs == 1, 'nInputs must be [0, 1]');
+    }
+
+    
+    if (parse.settings.logRequests) 
+        logReq(sub, parse, ignore, nInputs);
+
+
+    if (ignore) 
+    {
+        genParseNodeEnd(parse, sub);
+        return parse.parsedNodes.find(n => n.nodeId == nodeId);
+    }
+
+
+    parse.nTab++;
+
+
+    if (nInputs == 1)
+        sub.input = genParse(parse);
+
+    sub.start = genParse(parse);
+    sub.end   = genParse(parse);
+
+    
+    parse.nTab--;
+
+
+    genParseNodeEnd(parse, sub);
+    return sub;
+}
+
+
+
 function genParseTextReplace(parse)
 {
     const [, nodeId, options, ignore] = genParseNodeStart(parse);
@@ -18263,6 +18453,42 @@ function genParseTextReplace(parse)
 
 
 
+function genParseTextJoin(parse, newNode)
+{
+    const [type, nodeId, options, ignore] = genParseNodeStart(parse);
+
+
+    const join = new GTextJoin(nodeId, options);
+
+
+    let nInputs = 0;
+    
+    if (!ignore)
+        nInputs = parseInt(parse.move());
+
+
+    if (parse.settings.logRequests) 
+        logReq(join, parse, ignore, nInputs);
+
+
+    if (ignore) 
+    {
+        genParseNodeEnd(parse, join);
+        return parse.parsedNodes.find(n => n.nodeId == nodeId);
+    }
+
+
+    parse.nTab++;
+
+    for (let i = 0; i < nInputs; i++)
+        join.inputs.push(genParse(parse));
+
+    parse.nTab--;
+
+        
+    genParseNodeEnd(parse, join);
+    return join;
+}
 
 
 class Parse
@@ -18392,7 +18618,9 @@ function genParse(parse, inParam = true)
 
     else if (parse.next == TEXT_VALUE             ) result = genParseTextValue       (parse);
     else if (parse.next == TEXT                   ) result = genParseText            (parse);
+    else if (parse.next == TEXT_SUBSTRING         ) result = genParseTextSubstring   (parse);
     else if (parse.next == TEXT_REPLACE           ) result = genParseTextReplace     (parse);
+    else if (parse.next == TEXT_JOIN              ) result = genParseTextJoin        (parse);
 
     else if (parse.next == COLOR_VALUE            ) result = genParseColorValue      (parse);
     else if (parse.next == COLOR                  ) result = genParseColor           (parse);
@@ -27209,17 +27437,19 @@ const NUMBER_TYPES =
 ];
 
 
-const TEXT_VALUE   = 'TEXT#';  
-const TEXT         = 'TEXT';   
-const TEXT_ADD     = 'TADD';  
-const TEXT_REPLACE = 'TREPL'; 
+const TEXT_VALUE     = 'TEXT#';  
+const TEXT           = 'TEXT';   
+const TEXT_SUBSTRING = 'TSUB'; 
+const TEXT_REPLACE   = 'TREPL'; 
+const TEXT_JOIN      = 'TJOIN';  
 
 
 const TEXT_TYPES =
 [
     TEXT_VALUE,
     TEXT,
-    TEXT_ADD,
+    TEXT_SUBSTRING,
+    TEXT_JOIN,
     TEXT_REPLACE
 ];
 
@@ -30467,7 +30697,7 @@ function evalAddInputs(inputs, parse)
 
         console.assert(
             val.type == NUMBER_VALUE, 
-            'val.type must belong to NUMBER_VALUE');
+            'val.type must be NUMBER_VALUE');
 
         value.value   += val.value;
         value.decimals = Math.max(value.decimals, val.decimals);
@@ -30968,7 +31198,7 @@ function evalNandInputs(inputs, parse)
 
             console.assert(
                 val.type == NUMBER_VALUE, 
-                'val.type must belong to NUMBER_VALUE');
+                'val.type must be NUMBER_VALUE');
 
             if (val.toNumber() == 0)
                 value.value = 1;
@@ -31660,7 +31890,7 @@ extends GNumberType
 
             console.assert(
                 this.value.type == NUMBER_VALUE, 
-                'this.value.type must belong to NUMBER_VALUE');
+                'this.value.type must be NUMBER_VALUE');
 
             
             if (this.options.enabled)
@@ -31732,7 +31962,7 @@ extends GNumberType
 
             console.assert(
                 this.value.type == NUMBER_VALUE, 
-                'this.value.type must belong to NUMBER_VALUE');
+                'this.value.type must be NUMBER_VALUE');
 
             if (this.options.enabled)
                 this.value.value = Math.abs(this.value.value);
@@ -31802,7 +32032,7 @@ extends GNumberType
 
             console.assert(
                 this.value.type == NUMBER_VALUE, 
-                'this.value.type must belong to NUMBER_VALUE');
+                'this.value.type must be NUMBER_VALUE');
 
 
             if (this.options.enabled)
@@ -32132,6 +32362,79 @@ extends GTextType
 }
 
 
+class GTextSubstring
+extends GTextType
+{
+    input = null;
+
+    start;
+    end;
+
+
+    
+    constructor(nodeId, options)
+    {
+        super(TEXT_SUBSTRING, nodeId, options);
+    }
+
+
+    
+    copy()
+    {
+        const copy = new GTextSubstring(this.nodeId, this.options);
+
+        copy.copyBase(this);
+
+        if (this.input) 
+            copy.input = this.input.copy();
+
+        copy.start = this.start.copy();
+        copy.end   = this.end  .copy();
+
+        return copy;
+    }
+
+
+
+    eval(parse)
+    {
+        if (this.isCached())
+            return this;
+
+
+        const start = this.start.eval(parse).toValue();
+        const end   = this.end  .eval(parse).toValue();
+
+
+        if (this.input)
+        {
+            this.value = this.input.eval(parse).toValue();
+
+            console.assert(
+                this.value.type == TEXT_VALUE, 
+                'this.value.type must be TEXT_VALUE');
+
+
+            if (this.options.enabled)
+                this.value.value = this.value.value.substring(start.value, end.value+1);
+        }
+        else
+            this.value = TextValue.NaN;
+
+
+        genPushUpdateValue(parse, this.nodeId, 'start', start);
+        genPushUpdateValue(parse, this.nodeId, 'end',   end);
+        genPushUpdateValue(parse, this.nodeId, 'value', this.value);
+
+
+        this.validate();
+
+        return this;
+    }
+}
+
+
+
 class GTextReplace
 extends GTextType
 {
@@ -32203,6 +32506,74 @@ extends GTextType
     }
 }
 
+
+
+class GTextJoin
+extends GTextType
+{
+    inputs = [];
+
+
+    
+    constructor(nodeId, options)
+    {
+        super(TEXT_JOIN, nodeId, options);
+    }
+
+
+    
+    copy()
+    {
+        const copy = new GTextJoin(this.nodeId, this.options);
+        copy.copyBase(this);
+        copy.inputs = this.inputs.map(i => i.copy());
+        return copy;
+    }
+
+
+
+    eval(parse)
+    {
+        if (this.isCached())
+            return this;
+
+
+        this.value = evalJoinInputs(this.inputs, parse);
+        
+        genPushUpdateValue(parse, this.nodeId, 'value', this.value);
+
+
+        this.validate();
+
+        return this;
+    }
+}
+
+
+
+function evalJoinInputs(inputs, parse)
+{
+    if (isEmpty(inputs))
+        return TextValue.NaN;
+
+
+    const value = new TextValue();
+
+
+    for (let i = 0; i < inputs.length; i++)
+    {
+        const val = inputs[i].eval(parse).toValue();
+
+        console.assert(
+            val.type == TEXT_VALUE, 
+            'val.type must be TEXT_VALUE');
+
+        value.value += val.value;
+    }
+
+
+    return value;
+}
 
 
 class ColorCorrection
@@ -35368,10 +35739,10 @@ function enableFeatures(subscription, beta)
 {
     updateMenuItemDisplay(menuItemEnableBetaFeatures.div, subscription);
 
-    updateMenuItemDisplay(btnFlow  .div,                subscription);
-    updateMenuItemDisplay(btnText  .div,                subscription && beta);
-    updateMenuItemDisplay(btnShape .div,                subscription && beta);
-    updateMenuItemDisplay(btnCustom.div,                subscription && beta);
+    updateMenuItemDisplay(btnFlow .div,                 subscription);
+    updateMenuItemDisplay(btnText .div,                 subscription && beta);
+    updateMenuItemDisplay(btnShape.div,                 subscription && beta);
+    updateMenuItemDisplay(btnGroup.div,                 false);//subscription && beta);
 
     updateMenuItemDisplay(menuItemLogObjectUpdates.div, subscription && beta);
     
@@ -38809,10 +39180,10 @@ const iconLessOrEqual       = '<svg width="10" height="12" viewBox="0 0 10 12" f
 const iconGreater           = '<svg width="10" height="11" viewBox="0 0 10 11" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M9.16477 5.88636L0.0170455 10.5455V8.72727L7.03409 5.34659L6.97727 5.46023V5.17614L7.03409 5.28977L0.0170455 1.90909V0.0909088L9.16477 4.75V5.88636Z" fill="white"/></svg>';
 const iconGreaterOrEqual    = '<svg width="10" height="12" viewBox="0 0 10 12" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M0.0170455 11.3182V9.72727H9.16477V11.3182H0.0170455ZM9.16477 5.29545L0.0170455 8.59091V6.85795L6.40909 4.75568L6.35227 4.86932V4.58523L6.40909 4.69886L0.0170455 2.59659V0.863636L9.16477 4.15909V5.29545Z" fill="white"/></svg>';
  
-const iconText              = '<svg width="20" height="7" viewBox="0 0 20 7" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M0.888729 6.90684H0L2.57048 0.0931559H3.44553L6.01601 6.90684H5.12728L3.03535 1.1711H2.98066L0.888729 6.90684ZM1.21687 4.24525H4.79914V4.97719H1.21687V4.24525Z" fill="white"/><path d="M7.10641 6.90684V0.0931559H9.55384C10.0415 0.0931559 10.4437 0.175222 10.7605 0.339354C11.0772 0.501267 11.3131 0.71974 11.468 0.994772C11.623 1.26759 11.7005 1.57034 11.7005 1.90304C11.7005 2.19582 11.6469 2.43758 11.5398 2.62833C11.435 2.81907 11.296 2.9699 11.1228 3.0808C10.9519 3.1917 10.7662 3.27376 10.5656 3.327V3.39354C10.7798 3.40684 10.9952 3.48004 11.2117 3.61312C11.4281 3.7462 11.6093 3.93695 11.7551 4.18536C11.901 4.43378 11.9739 4.73764 11.9739 5.09696C11.9739 5.43853 11.8942 5.74572 11.7346 6.01854C11.5751 6.29135 11.3233 6.5076 10.9792 6.6673C10.6351 6.827 10.1873 6.90684 9.63587 6.90684H7.10641ZM7.95412 6.1749H9.63587C10.1896 6.1749 10.5827 6.07066 10.8151 5.86217C11.0499 5.65146 11.1672 5.39639 11.1672 5.09696C11.1672 4.86629 11.1068 4.65336 10.9861 4.45818C10.8653 4.26077 10.6932 4.1033 10.4699 3.98574C10.2466 3.86597 9.98225 3.80608 9.67689 3.80608H7.95412V6.1749ZM7.95412 3.08745H9.52649C9.78172 3.08745 10.0119 3.03866 10.217 2.94106C10.4243 2.84347 10.5884 2.70596 10.7092 2.52852C10.8322 2.35108 10.8938 2.14259 10.8938 1.90304C10.8938 1.60361 10.7867 1.34965 10.5725 1.14116C10.3582 0.93045 10.0187 0.825095 9.55384 0.825095H7.95412V3.08745Z" fill="white"/><path d="M19.2496 2.22243H18.366C18.3138 1.98511 18.2224 1.77662 18.0917 1.59696C17.9635 1.4173 17.8067 1.26648 17.6215 1.14449C17.4386 1.02028 17.2355 0.927123 17.0123 0.865019C16.789 0.802915 16.5562 0.771863 16.314 0.771863C15.8722 0.771863 15.472 0.876109 15.1134 1.0846C14.7571 1.29309 14.4733 1.60029 14.2619 2.00618C14.0529 2.41207 13.9484 2.91001 13.9484 3.5C13.9484 4.08999 14.0529 4.58793 14.2619 4.99382C14.4733 5.39971 14.7571 5.70691 15.1134 5.9154C15.472 6.12389 15.8722 6.22814 16.314 6.22814C16.5562 6.22814 16.789 6.19709 17.0123 6.13498C17.2355 6.07288 17.4386 5.98083 17.6215 5.85884C17.8067 5.73463 17.9635 5.5827 18.0917 5.40304C18.2224 5.22117 18.3138 5.01267 18.366 4.77757H19.2496C19.1831 5.12579 19.0619 5.43742 18.8862 5.71245C18.7104 5.98748 18.4919 6.22148 18.2307 6.41445C17.9694 6.6052 17.6761 6.75048 17.3507 6.85029C17.0277 6.95009 16.6821 7 16.314 7C15.6917 7 15.1383 6.85805 14.6538 6.57414C14.1693 6.29024 13.7881 5.88657 13.5102 5.36312C13.2323 4.83967 13.0934 4.21863 13.0934 3.5C13.0934 2.78137 13.2323 2.16033 13.5102 1.63688C13.7881 1.11343 14.1693 0.709759 14.6538 0.425856C15.1383 0.141952 15.6917 0 16.314 0C16.6821 0 17.0277 0.049905 17.3507 0.149715C17.6761 0.249525 17.9694 0.395913 18.2307 0.588878C18.4919 0.779626 18.7104 1.01252 18.8862 1.28755C19.0619 1.56036 19.1831 1.87199 19.2496 2.22243Z" fill="white"/></svg>';
-const iconSubstring         = '<svg width="20" height="16" viewBox="0 0 20 16" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M0.884233 5.99355H0.191761L2.1946 0.539H2.87642L4.87926 5.99355H4.18679L2.55682 1.40193H2.5142L0.884233 5.99355ZM1.13991 3.86286H3.93111V4.4488H1.13991V3.86286ZM19.2367 2.24355H18.5762C18.5372 2.05356 18.4688 1.88666 18.3711 1.74284C18.2753 1.59901 18.1581 1.47828 18.0196 1.38062C17.8829 1.28119 17.731 1.20661 17.5641 1.1569C17.3972 1.10718 17.2232 1.08232 17.0421 1.08232C16.7119 1.08232 16.4127 1.16578 16.1446 1.33268C15.8782 1.49958 15.6661 1.7455 15.508 2.07043C15.3518 2.39536 15.2737 2.79397 15.2737 3.26627C15.2737 3.73857 15.3518 4.13719 15.508 4.46212C15.6661 4.78705 15.8782 5.03296 16.1446 5.19987C16.4127 5.36677 16.7119 5.45022 17.0421 5.45022C17.2232 5.45022 17.3972 5.42536 17.5641 5.37565C17.731 5.32593 17.8829 5.25225 18.0196 5.15459C18.1581 5.05516 18.2753 4.93353 18.3711 4.78971C18.4688 4.64411 18.5372 4.47721 18.5762 4.289H19.2367C19.187 4.56776 19.0965 4.81723 18.9651 5.0374C18.8337 5.25757 18.6703 5.44489 18.475 5.59937C18.2797 5.75207 18.0604 5.86837 17.8172 5.94827C17.5757 6.02817 17.3173 6.06812 17.0421 6.06812C16.5769 6.06812 16.1632 5.95448 15.801 5.72721C15.4388 5.49994 15.1538 5.17678 14.9461 4.75775C14.7383 4.33872 14.6345 3.84156 14.6345 3.26627C14.6345 2.69099 14.7383 2.19383 14.9461 1.7748C15.1538 1.35576 15.4388 1.03261 15.801 0.805335C16.1632 0.578062 16.5769 0.464426 17.0421 0.464426C17.3173 0.464426 17.5757 0.504376 17.8172 0.584277C18.0604 0.664178 18.2797 0.781365 18.475 0.935839C18.6703 1.08854 18.8337 1.27497 18.9651 1.49514C19.0965 1.71354 19.187 1.96301 19.2367 2.24355Z" fill="white"/><path d="M4.21673 10.3V9.69915C4.21673 9.51667 4.249 9.32306 4.31353 9.11832C4.3803 8.91136 4.47599 8.71219 4.60061 8.52081C4.72745 8.3272 4.87989 8.15919 5.05792 8.01676L5.4852 8.36392C5.345 8.5642 5.2226 8.77339 5.11801 8.99148C5.01564 9.20734 4.96446 9.43878 4.96446 9.6858V10.3H4.21673ZM5.92582 10.3V9.69915C5.92582 9.51667 5.95809 9.32306 6.02262 9.11832C6.08939 8.91136 6.18508 8.71219 6.3097 8.52081C6.43655 8.3272 6.58898 8.15919 6.76701 8.01676L7.19429 8.36392C7.05409 8.5642 6.93169 8.77339 6.8271 8.99148C6.72473 9.20734 6.67355 9.43878 6.67355 9.6858V10.3H5.92582ZM8.17067 15V8.16364H10.5607C11.037 8.16364 11.4297 8.24598 11.7391 8.41065C12.0484 8.57311 12.2787 8.79231 12.43 9.06825C12.5814 9.34197 12.657 9.64574 12.657 9.97955C12.657 10.2733 12.6047 10.5159 12.5001 10.7072C12.3978 10.8986 12.262 11.05 12.0929 11.1612C11.926 11.2725 11.7446 11.3548 11.5488 11.4082V11.475C11.758 11.4884 11.9683 11.5618 12.1797 11.6953C12.3911 11.8288 12.568 12.0202 12.7104 12.2695C12.8529 12.5187 12.9241 12.8236 12.9241 13.1841C12.9241 13.5268 12.8462 13.835 12.6904 14.1087C12.5346 14.3825 12.2887 14.5994 11.9527 14.7597C11.6167 14.9199 11.1794 15 10.6408 15H8.17067ZM8.99851 14.2656H10.6408C11.1816 14.2656 11.5655 14.161 11.7925 13.9518C12.0217 13.7404 12.1363 13.4845 12.1363 13.1841C12.1363 12.9527 12.0773 12.739 11.9594 12.5432C11.8414 12.3451 11.6734 12.1871 11.4553 12.0692C11.2372 11.949 10.9791 11.8889 10.6809 11.8889H8.99851V14.2656ZM8.99851 11.1679H10.534C10.7833 11.1679 11.008 11.1189 11.2083 11.021C11.4108 10.9231 11.5711 10.7851 11.689 10.6071C11.8092 10.4291 11.8693 10.2199 11.8693 9.97955C11.8693 9.67912 11.7647 9.42431 11.5555 9.21513C11.3463 9.00372 11.0147 8.89801 10.5607 8.89801H8.99851V11.1679ZM14.8718 8.16364V8.76449C14.8718 8.94697 14.8385 9.14169 14.7717 9.34865C14.7072 9.55339 14.6115 9.75256 14.4846 9.94616C14.36 10.1375 14.2087 10.3045 14.0306 10.4469L13.6034 10.0997C13.7436 9.89943 13.8649 9.69136 13.9672 9.4755C14.0718 9.25741 14.1241 9.02486 14.1241 8.77784V8.16364H14.8718ZM16.5809 8.16364V8.76449C16.5809 8.94697 16.5476 9.14169 16.4808 9.34865C16.4163 9.55339 16.3206 9.75256 16.1937 9.94616C16.0691 10.1375 15.9178 10.3045 15.7397 10.4469L15.3125 10.0997C15.4527 9.89943 15.5739 9.69136 15.6763 9.4755C15.7809 9.25741 15.8332 9.02486 15.8332 8.77784V8.16364H16.5809Z" fill="white"/></svg>';
-const iconTextReplace       = '<svg width="19" height="18" viewBox="0 0 19 18" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M0.962018 16H0.09412L2.60435 9.16364H3.45889L5.96912 16H5.10122L3.05832 10.2452H3.00492L0.962018 16ZM1.28247 13.3296H4.78077V14.0639H1.28247V13.3296Z" fill="white"/><path d="M18.6763 11.3H17.8485C17.7995 11.0619 17.7138 10.8527 17.5914 10.6724C17.4713 10.4922 17.3244 10.3409 17.1508 10.2185C16.9795 10.0938 16.7892 10.0004 16.58 9.93807C16.3708 9.87576 16.1527 9.84461 15.9257 9.84461C15.5118 9.84461 15.1368 9.9492 14.8008 10.1584C14.467 10.3676 14.2011 10.6758 14.003 11.083C13.8072 11.4903 13.7093 11.9899 13.7093 12.5818C13.7093 13.1738 13.8072 13.6734 14.003 14.0806C14.2011 14.4879 14.467 14.7961 14.8008 15.0053C15.1368 15.2144 15.5118 15.319 15.9257 15.319C16.1527 15.319 16.3708 15.2879 16.58 15.2256C16.7892 15.1633 16.9795 15.0709 17.1508 14.9485C17.3244 14.8239 17.4713 14.6715 17.5914 14.4912C17.7138 14.3087 17.7995 14.0995 17.8485 13.8636H18.6763C18.614 14.213 18.5005 14.5257 18.3358 14.8016C18.1711 15.0776 17.9664 15.3124 17.7216 15.506C17.4768 15.6974 17.202 15.8431 16.8971 15.9433C16.5945 16.0434 16.2707 16.0935 15.9257 16.0935C15.3427 16.0935 14.8242 15.951 14.3702 15.6662C13.9162 15.3813 13.5591 14.9763 13.2987 14.4511C13.0383 13.926 12.9081 13.3028 12.9081 12.5818C12.9081 11.8608 13.0383 11.2377 13.2987 10.7125C13.5591 10.1873 13.9162 9.7823 14.3702 9.49745C14.8242 9.2126 15.3427 9.07018 15.9257 9.07018C16.2707 9.07018 16.5945 9.12025 16.8971 9.22039C17.202 9.32053 17.4768 9.46741 17.7216 9.66101C17.9664 9.8524 18.1711 10.0861 18.3358 10.362C18.5005 10.6357 18.614 10.9484 18.6763 11.3Z" fill="white"/><path d="M7.93402 18V12.9091H9.71385C10.0685 12.9091 10.361 12.9704 10.5913 13.093C10.8217 13.214 10.9932 13.3772 11.1059 13.5827C11.2186 13.7866 11.2749 14.0128 11.2749 14.2614C11.2749 14.4801 11.236 14.6607 11.1581 14.8033C11.0819 14.9458 10.9808 15.0585 10.8548 15.1413C10.7305 15.2242 10.5955 15.2855 10.4496 15.3253V15.375C10.6054 15.3849 10.762 15.4396 10.9195 15.5391C11.0769 15.6385 11.2086 15.781 11.3147 15.9666C11.4208 16.1522 11.4738 16.3793 11.4738 16.6477C11.4738 16.9029 11.4158 17.1325 11.2998 17.3363C11.1838 17.5401 11.0007 17.7017 10.7504 17.821C10.5002 17.9403 10.1746 18 9.77351 18H7.93402ZM8.5505 17.4531H9.77351C10.1762 17.4531 10.4621 17.3752 10.6311 17.2195C10.8018 17.062 10.8871 16.8714 10.8871 16.6477C10.8871 16.4754 10.8432 16.3163 10.7554 16.1705C10.6676 16.023 10.5424 15.9053 10.38 15.8175C10.2176 15.728 10.0254 15.6832 9.80334 15.6832H8.5505V17.4531ZM8.5505 15.1463H9.69396C9.87957 15.1463 10.0469 15.1098 10.1961 15.0369C10.3469 14.964 10.4662 14.8613 10.554 14.7287C10.6435 14.5961 10.6883 14.4403 10.6883 14.2614C10.6883 14.0376 10.6104 13.8479 10.4546 13.6921C10.2988 13.5347 10.0519 13.456 9.71385 13.456H8.5505V15.1463Z" fill="white"/><path fill-rule="evenodd" clip-rule="evenodd" d="M8.54688 6.77456C9.14714 8.00154 9.28635 9.37987 9.22607 10.4593L8.22762 10.4036C8.2816 9.43688 8.15164 8.24223 7.64862 7.21401C7.15452 6.20405 6.29887 5.34526 4.84938 4.99665L5.08322 4.02437C6.85594 4.45072 7.93769 5.52933 8.54688 6.77456Z" fill="white"/><path fill-rule="evenodd" clip-rule="evenodd" d="M8.10433 11.1144L10.6635 8.66828L11.3139 9.42781L8.85072 11.8991L8.10433 11.1144Z" fill="white"/><path fill-rule="evenodd" clip-rule="evenodd" d="M8.84941 11.8988L6.00145 9.78093L6.65923 8.85448L9.56409 10.9559L8.84941 11.8988Z" fill="white"/><path fill-rule="evenodd" clip-rule="evenodd" d="M0.275673 0.909088V6H0.89215V4.01136H2.00568L3 5.99999L3.20891 6H3.92482L4 6L3.00603 3.79983C3.24533 3.66864 3.42398 3.4914 3.54201 3.26811C3.66464 3.0361 3.72596 2.77012 3.72596 2.47017C3.72596 2.17022 3.66464 1.90258 3.54201 1.66726C3.41938 1.43193 3.23046 1.24716 2.97525 1.11292C2.72004 0.977033 2.39357 0.909088 1.99584 0.909088H0.275673ZM0.89215 3.45454H1.9859C2.25768 3.45454 2.47643 3.41477 2.64215 3.33522C2.80953 3.25568 2.9305 3.14299 3.00508 2.99716C3.08131 2.84967 3.11942 2.674 3.11942 2.47017C3.11942 2.26633 3.08131 2.08818 3.00508 1.93572C2.92885 1.78326 2.80704 1.6656 2.63966 1.58274C2.47229 1.49822 2.25105 1.45596 1.97596 1.45596H0.89215V3.45454Z" fill="white"/></svg>';
-const iconTextJoin          = '<svg width="20" height="7" viewBox="0 0 20 7" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M0.962017 7H0.0941198L2.60435 0.163636H3.45889L5.96912 7H5.10122L3.05832 1.24517H3.00492L0.962017 7ZM1.28247 4.32955H4.78077V5.06392H1.28247V4.32955ZM8.92999 5.7983V1.39205H9.67771V5.7983H8.92999ZM7.10072 3.96903V3.22131H11.507V3.96903H7.10072ZM13.2303 7V0.163636H15.6203C16.0965 0.163636 16.4893 0.245976 16.7986 0.410654C17.108 0.573106 17.3383 0.792306 17.4896 1.06825C17.641 1.34197 17.7166 1.64574 17.7166 1.97955C17.7166 2.2733 17.6643 2.51586 17.5597 2.70724C17.4574 2.89863 17.3216 3.04995 17.1525 3.16122C16.9856 3.27249 16.8042 3.35483 16.6084 3.40824V3.475C16.8176 3.48835 17.0279 3.56179 17.2393 3.69531C17.4507 3.82884 17.6276 4.02022 17.77 4.26946C17.9124 4.5187 17.9837 4.82358 17.9837 5.18409C17.9837 5.5268 17.9058 5.83501 17.75 6.10874C17.5942 6.38246 17.3483 6.59943 17.0123 6.75966C16.6763 6.91989 16.239 7 15.7004 7H13.2303ZM14.0581 6.26563H15.7004C16.2412 6.26563 16.6251 6.16103 16.8521 5.95185C17.0813 5.74044 17.1959 5.48452 17.1959 5.18409C17.1959 4.95265 17.1369 4.73902 17.019 4.54318C16.901 4.34512 16.733 4.18712 16.5149 4.06918C16.2968 3.94901 16.0387 3.88892 15.7405 3.88892H14.0581V6.26563ZM14.0581 3.1679H15.5936C15.8428 3.1679 16.0676 3.11894 16.2679 3.02102C16.4704 2.92311 16.6306 2.78513 16.7486 2.6071C16.8687 2.42907 16.9288 2.21989 16.9288 1.97955C16.9288 1.67912 16.8242 1.42431 16.6151 1.21513C16.4059 1.00372 16.0743 0.898011 15.6203 0.898011H14.0581V3.1679Z" fill="white"/></svg>';
+const iconText              = '<svg width="19" height="7" viewBox="0 0 19 7" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M19 2.22243H18.1389C18.088 1.98511 17.9988 1.77662 17.8715 1.59696C17.7465 1.4173 17.5937 1.26648 17.4132 1.14449C17.235 1.02028 17.037 0.927123 16.8194 0.865019C16.6019 0.802915 16.375 0.771863 16.1389 0.771863C15.7083 0.771863 15.3183 0.876109 14.9687 1.0846C14.6215 1.29309 14.3449 1.60029 14.1389 2.00618C13.9352 2.41207 13.8333 2.91001 13.8333 3.5C13.8333 4.08999 13.9352 4.58793 14.1389 4.99382C14.3449 5.39971 14.6215 5.70691 14.9687 5.9154C15.3183 6.12389 15.7083 6.22814 16.1389 6.22814C16.375 6.22814 16.6019 6.19709 16.8194 6.13498C17.037 6.07288 17.235 5.98083 17.4132 5.85884C17.5937 5.73463 17.7465 5.5827 17.8715 5.40304C17.9988 5.22117 18.088 5.01267 18.1389 4.77757H19C18.9352 5.12579 18.8171 5.43742 18.6458 5.71245C18.4745 5.98748 18.2616 6.22148 18.0069 6.41445C17.7523 6.6052 17.4664 6.75048 17.1493 6.85029C16.8345 6.95009 16.4977 7 16.1389 7C15.5324 7 14.9931 6.85805 14.5208 6.57414C14.0486 6.29024 13.6771 5.88657 13.4062 5.36312C13.1354 4.83967 13 4.21863 13 3.5C13 2.78137 13.1354 2.16033 13.4062 1.63688C13.6771 1.11343 14.0486 0.709759 14.5208 0.425856C14.9931 0.141952 15.5324 0 16.1389 0C16.4977 0 16.8345 0.049905 17.1493 0.149715C17.4664 0.249525 17.7523 0.395913 18.0069 0.588878C18.2616 0.779626 18.4745 1.01252 18.6458 1.28755C18.8171 1.56036 18.9352 1.87199 19 2.22243Z" fill="white"/><path d="M7 7V0H9.51405C10.015 0 10.4281 0.08431 10.7535 0.25293C11.0789 0.419271 11.3212 0.643717 11.4803 0.92627C11.6395 1.20654 11.7191 1.51758 11.7191 1.85937C11.7191 2.16016 11.6641 2.40853 11.5541 2.60449C11.4464 2.80046 11.3036 2.9554 11.1257 3.06934C10.9501 3.18327 10.7594 3.26758 10.5534 3.32227V3.39063C10.7734 3.4043 10.9946 3.47949 11.217 3.61621C11.4394 3.75293 11.6255 3.94889 11.7753 4.2041C11.9251 4.45931 12 4.77148 12 5.14063C12 5.49154 11.9181 5.80713 11.7542 6.0874C11.5904 6.36768 11.3317 6.58984 10.9782 6.75391C10.6248 6.91797 10.1648 7 9.59832 7H7ZM7.87079 6.24805H9.59832C10.1671 6.24805 10.5709 6.14095 10.8097 5.92676C11.0508 5.71029 11.1713 5.44824 11.1713 5.14063C11.1713 4.90365 11.1093 4.6849 10.9853 4.48438C10.8612 4.28158 10.6845 4.11979 10.4551 3.99902C10.2257 3.87598 9.95412 3.81445 9.64045 3.81445H7.87079V6.24805ZM7.87079 3.07617H9.48596C9.74813 3.07617 9.98455 3.02604 10.1952 2.92578C10.4082 2.82552 10.5768 2.68424 10.7008 2.50195C10.8272 2.31966 10.8904 2.10547 10.8904 1.85937C10.8904 1.55176 10.7804 1.29085 10.5604 1.07666C10.3404 0.860189 9.99157 0.751953 9.51405 0.751953H7.87079V3.07617Z" fill="white"/><path d="M1 7H0L2.56364 0H3.43636L6 7H5L3.02727 1.10742H2.97273L1 7ZM1.21364 4.26563H4.78636V5.01758H1.21364V4.26563Z" fill="white"/></svg>';
+const iconTextSubstring     = '<svg width="17" height="10" viewBox="0 -2 17 10" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M6 7V0H8.56544C9.04974 0 9.45223 0.0797524 9.77291 0.239258C10.0958 0.396484 10.3368 0.611816 10.4961 0.885254C10.6575 1.15869 10.7382 1.46859 10.7382 1.81494C10.7382 2.09977 10.6859 2.34359 10.5812 2.54639C10.4764 2.74691 10.3357 2.90983 10.159 3.03516C9.98233 3.16048 9.7849 3.25049 9.56675 3.30518V3.37354C9.80454 3.38721 10.0325 3.46354 10.2507 3.60254C10.471 3.73926 10.651 3.93294 10.7906 4.18359C10.9302 4.43424 11 4.7373 11 5.09277C11 5.45508 10.916 5.78092 10.748 6.07031C10.5801 6.35742 10.327 6.58415 9.98887 6.75049C9.65074 6.91683 9.22535 7 8.7127 7H6ZM7.21401 5.94043H8.51963C8.9603 5.94043 9.2777 5.8527 9.47186 5.67725C9.66819 5.49951 9.76636 5.27165 9.76636 4.99365C9.76636 4.7863 9.71728 4.59945 9.61911 4.43311C9.52094 4.26449 9.38133 4.13232 9.20026 4.03662C9.0192 3.93864 8.80323 3.88965 8.55236 3.88965H7.21401V5.94043ZM7.21401 2.97705H8.41492C8.62435 2.97705 8.81305 2.93717 8.98102 2.85742C9.149 2.77539 9.28098 2.66032 9.37696 2.51221C9.47513 2.36182 9.52421 2.18408 9.52421 1.979C9.52421 1.70784 9.43259 1.48454 9.24935 1.30908C9.06828 1.13363 8.79887 1.0459 8.4411 1.0459H7.21401V2.97705Z" fill="white"/><path d="M1.4991 7.23161C1.29659 7.23161 1.12301 7.16039 0.978358 7.01797C0.833709 6.87554 0.762497 6.70197 0.764722 6.49723C0.762497 6.29695 0.833709 6.12559 0.978358 5.98317C1.12301 5.84074 1.29659 5.76953 1.4991 5.76953C1.69493 5.76953 1.86517 5.84074 2.00982 5.98317C2.1567 6.12559 2.23125 6.29695 2.23347 6.49723C2.23125 6.63298 2.19564 6.75649 2.12665 6.86776C2.05989 6.97902 1.97088 7.06804 1.85961 7.1348C1.75056 7.19934 1.63039 7.23161 1.4991 7.23161Z" fill="white"/><path d="M13.5054 7.23161C13.3029 7.23161 13.1293 7.16039 12.9847 7.01797C12.84 6.87554 12.7688 6.70197 12.7711 6.49723C12.7688 6.29695 12.84 6.12559 12.9847 5.98317C13.1293 5.84074 13.3029 5.76953 13.5054 5.76953C13.7013 5.76953 13.8715 5.84074 14.0162 5.98317C14.163 6.12559 14.2376 6.29695 14.2398 6.49723C14.2376 6.63298 14.202 6.75649 14.133 6.86776C14.0662 6.97902 13.9772 7.06804 13.8659 7.1348C13.7569 7.19934 13.6367 7.23161 13.5054 7.23161Z" fill="white"/><path d="M3.49441 7.23161C3.2919 7.23161 3.11832 7.16039 2.97367 7.01797C2.82902 6.87554 2.75781 6.70197 2.76004 6.49723C2.75781 6.29695 2.82902 6.12559 2.97367 5.98317C3.11832 5.84074 3.2919 5.76953 3.49441 5.76953C3.69025 5.76953 3.86049 5.84074 4.00514 5.98317C4.15201 6.12559 4.22656 6.29695 4.22879 6.49723C4.22656 6.63298 4.19096 6.75649 4.12197 6.86776C4.05521 6.97902 3.96619 7.06804 3.85492 7.1348C3.74588 7.19934 3.62571 7.23161 3.49441 7.23161Z" fill="white"/><path d="M15.5007 7.23161C15.2982 7.23161 15.1247 7.16039 14.98 7.01797C14.8354 6.87554 14.7641 6.70197 14.7664 6.49723C14.7641 6.29695 14.8354 6.12559 14.98 5.98317C15.1247 5.84074 15.2982 5.76953 15.5007 5.76953C15.6966 5.76953 15.8668 5.84074 16.0115 5.98317C16.1583 6.12559 16.2329 6.29695 16.2351 6.49723C16.2329 6.63298 16.1973 6.75649 16.1283 6.86776C16.0615 6.97902 15.9725 7.06804 15.8613 7.1348C15.7522 7.19934 15.632 7.23161 15.5007 7.23161Z" fill="white"/></svg>';
+const iconTextReplace       = '<svg width="19" height="16" viewBox="0 0 19 16" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M19 9.39211H17.7568C17.7213 9.18805 17.656 9.00729 17.5607 8.84981C17.4654 8.69011 17.3468 8.55482 17.205 8.44392C17.0632 8.33302 16.9014 8.24984 16.7197 8.19439C16.5402 8.13672 16.3463 8.10789 16.138 8.10789C15.7679 8.10789 15.4399 8.20105 15.154 8.38736C14.8681 8.57145 14.6443 8.84205 14.4825 9.19914C14.3208 9.55402 14.2399 9.98764 14.2399 10.5C14.2399 11.0212 14.3208 11.4604 14.4825 11.8175C14.6465 12.1724 14.8704 12.4407 15.154 12.6226C15.4399 12.8023 15.7668 12.8921 16.1346 12.8921C16.3385 12.8921 16.5291 12.8655 16.7064 12.8123C16.8859 12.7568 17.0465 12.6759 17.1884 12.5694C17.3324 12.4629 17.4532 12.3321 17.5507 12.1768C17.6504 12.0215 17.7191 11.8441 17.7568 11.6445L19 11.6511C18.9535 11.975 18.8526 12.2788 18.6975 12.5627C18.5446 12.8466 18.344 13.0973 18.0958 13.3146C17.8476 13.5298 17.5573 13.6984 17.2249 13.8203C16.8925 13.9401 16.5235 14 16.118 14C15.5197 14 14.9856 13.8614 14.5158 13.5841C14.046 13.3069 13.6759 12.9065 13.4055 12.3831C13.1352 11.8596 13 11.2319 13 10.5C13 9.76584 13.1363 9.13815 13.4089 8.61692C13.6814 8.09347 14.0526 7.69312 14.5224 7.41587C14.9922 7.13862 15.5241 7 16.118 7C16.497 7 16.8493 7.05323 17.1751 7.1597C17.5008 7.26616 17.7911 7.42253 18.046 7.6288C18.3008 7.83286 18.5103 8.08349 18.6742 8.3807C18.8404 8.6757 18.949 9.01283 19 9.39211Z" fill="white"/><path d="M1.24987 14H0L2.27564 7H3.7212L6 14H4.75013L3.02367 8.43555H2.97317L1.24987 14ZM1.2909 11.2554H4.69963V12.2739H1.2909V11.2554Z" fill="white"/><path d="M8 16V11H10.0759C10.4574 11 10.7755 11.0545 11.0304 11.1636C11.2852 11.2726 11.4768 11.424 11.6051 11.6177C11.7333 11.8097 11.7975 12.0311 11.7975 12.2817C11.7975 12.4771 11.757 12.6488 11.6759 12.7969C11.5949 12.9434 11.4835 13.0638 11.3418 13.1582C11.2017 13.251 11.0414 13.3169 10.8608 13.356V13.4048C11.0582 13.4129 11.243 13.4666 11.4152 13.5659C11.589 13.6652 11.73 13.8044 11.838 13.9834C11.946 14.1608 12 14.3724 12 14.6182C12 14.8835 11.9316 15.1203 11.7949 15.3286C11.6599 15.5353 11.4599 15.6989 11.1949 15.8193C10.93 15.9398 10.6034 16 10.2152 16H8ZM9.0962 15.1357H9.98987C10.2954 15.1357 10.5181 15.0796 10.6582 14.9673C10.7983 14.8534 10.8684 14.702 10.8684 14.5132C10.8684 14.3748 10.8338 14.2528 10.7646 14.147C10.6954 14.0412 10.5966 13.9582 10.4684 13.8979C10.3418 13.8377 10.1907 13.8076 10.0152 13.8076H9.0962V15.1357ZM9.0962 13.0923H9.90886C10.0591 13.0923 10.1924 13.0671 10.3089 13.0166C10.427 12.9645 10.5198 12.8913 10.5873 12.7969C10.6565 12.7025 10.6911 12.5894 10.6911 12.4575C10.6911 12.2769 10.6245 12.1312 10.4911 12.0205C10.3595 11.9098 10.1722 11.8545 9.92911 11.8545H9.0962V13.0923Z" fill="white"/><path fill-rule="evenodd" clip-rule="evenodd" d="M9.05758 8.64355L9.23002 8.76764L9.73959 8.05948L11.0933 6.90017L10.4428 6.14064L9.48886 6.95761C9.48453 5.97188 9.30757 4.81845 8.79688 3.77457C8.18769 2.52934 7.10594 1.45073 5.33322 1.02438L5.09938 1.99666C6.54887 2.34526 7.40452 3.20406 7.89862 4.21402C8.33403 5.10405 8.48993 6.11878 8.48896 7.00242L7.35652 6.18756L6.77245 6.99926L8.22215 8.04242L8.00316 8.22997L8.65362 8.9895L9.05758 8.64355Z" fill="white"/></svg>';
+const iconTextJoin          = '<svg width="19" height="7" viewBox="0 0 19 7" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M8.9328 6V1H10.0672V6H8.9328ZM7 4.0672V2.9328H12V4.0672H7Z" fill="white"/><path d="M14 7V0H16.5654C17.0497 0 17.4522 0.0797524 17.7729 0.239258C18.0958 0.396484 18.3368 0.611816 18.4961 0.885254C18.6575 1.15869 18.7382 1.46859 18.7382 1.81494C18.7382 2.09977 18.6859 2.34359 18.5812 2.54639C18.4764 2.74691 18.3357 2.90983 18.159 3.03516C17.9823 3.16048 17.7849 3.25049 17.5668 3.30518V3.37354C17.8045 3.38721 18.0325 3.46354 18.2507 3.60254C18.471 3.73926 18.651 3.93294 18.7906 4.18359C18.9302 4.43424 19 4.7373 19 5.09277C19 5.45508 18.916 5.78092 18.748 6.07031C18.5801 6.35742 18.327 6.58415 17.9889 6.75049C17.6507 6.91683 17.2253 7 16.7127 7H14ZM15.214 5.94043H16.5196C16.9603 5.94043 17.2777 5.8527 17.4719 5.67725C17.6682 5.49951 17.7664 5.27165 17.7664 4.99365C17.7664 4.7863 17.7173 4.59945 17.6191 4.43311C17.5209 4.26449 17.3813 4.13232 17.2003 4.03662C17.0192 3.93864 16.8032 3.88965 16.5524 3.88965H15.214V5.94043ZM15.214 2.97705H16.4149C16.6243 2.97705 16.813 2.93717 16.981 2.85742C17.149 2.77539 17.281 2.66032 17.377 2.51221C17.4751 2.36182 17.5242 2.18408 17.5242 1.979C17.5242 1.70784 17.4326 1.48454 17.2493 1.30908C17.0683 1.13363 16.7989 1.0459 16.4411 1.0459H15.214V2.97705Z" fill="white"/><path d="M1.24987 7H0L2.27564 0H3.7212L6 7H4.75013L3.02367 1.43555H2.97317L1.24987 7ZM1.2909 4.25537H4.69963V5.27393H1.2909V4.25537Z" fill="white"/></svg>';
  
 const iconColor             = '<svg width="13" height="15" viewBox="0 0 13 15" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M11.8409 3.43385C10.7465 2.2502 9.18038 1.50909 7.44118 1.50909C4.13249 1.50909 1.45027 4.19132 1.45027 7.5C1.45027 10.8087 4.13249 13.4909 7.44118 13.4909C9.18038 13.4909 10.7465 12.7498 11.8409 11.5662" stroke="white" stroke-width="1.2"/><path d="M7.5 8.57512C8.09377 8.57512 8.57511 8.09378 8.57511 7.50001C8.57511 6.90624 8.09377 6.4249 7.5 6.4249C6.90623 6.4249 6.42489 6.90624 6.42489 7.50001C6.42489 8.09378 6.90623 8.57512 7.5 8.57512Z" fill="white"/></svg>';
 const iconValidColor        = '<svg width="17" height="15" viewBox="-1 0 17 15" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M11.8409 11.5662C10.7465 12.7498 9.18038 13.4909 7.44118 13.4909C4.13249 13.4909 1.45027 10.8087 1.45027 7.5C1.45027 4.19131 4.13249 1.50909 7.44118 1.50909C8.66322 1.50909 9.80806 2.02212 10.7556 2.65033" stroke="white" stroke-width="1.2"/><path fill-rule="evenodd" clip-rule="evenodd" d="M15.6832 3.62548L9.18921 10.1195L5.38744 6.31769L6.52965 5.17548L9.18921 7.83504L14.5411 2.48326L15.6832 3.62548Z" fill="white"/></svg>';
@@ -39764,7 +40135,7 @@ var btnText;
 var btnColor;
 var btnStyle;
 var btnShape;
-var btnCustom;
+var btnGroup;
 var btnHand;
 var btnComment;
 var btnZoom;
@@ -40078,11 +40449,11 @@ function initGeneratorMenus()
     
     menuString = new Menu('String nodes', true, false);
     menuString.addItems([
-        new MenuItem('Text',      {icon: iconText,        callback: e => actionManager.do(getCreateNodeAction(TEXT, btnText.div, getCreateOptions(e)))}),
+        new MenuItem('Text',      {icon: iconText,          callback: e => actionManager.do(getCreateNodeAction(TEXT,           btnText.div, getCreateOptions(e)))}),
         new MenuItem('',          {separator: true}),
-        new MenuItem('Replace',   {icon: iconTextReplace, callback: e => actionManager.do(getCreateNodeAction(TEXT_REPLACE, btnText.div, getCreateOptions(e)))})]);
-        // new MenuItem('Join',      {icon: iconStringJoin   , enabled: false}),
-        // new MenuItem('Substring', {icon: iconSubstring    , enabled: false}),
+        new MenuItem('Substring', {icon: iconTextSubstring, callback: e => actionManager.do(getCreateNodeAction(TEXT_SUBSTRING, btnText.div, getCreateOptions(e)))}),
+        new MenuItem('Replace',   {icon: iconTextReplace,   callback: e => actionManager.do(getCreateNodeAction(TEXT_REPLACE,   btnText.div, getCreateOptions(e)))}),
+        new MenuItem('Join',      {icon: iconTextJoin,      callback: e => actionManager.do(getCreateNodeAction(TEXT_JOIN,      btnText.div, getCreateOptions(e)))})]);
     
     menuColorStyle = new Menu('Color style', true, false);
     menuColorStyle.addItems([
@@ -40232,9 +40603,9 @@ function initGeneratorMenus()
     btnStyle    = new MenuButton('', menuStyle,  {useMenuName: true, highlight: () => currentMenus.includes(menuStyle ), callback: () => updatePanMode(false)});
     btnShape    = new MenuButton('', menuShape,  {useMenuName: true, highlight: () => currentMenus.includes(menuShape ), callback: () => updatePanMode(false)});
 
-    btnCustom   = new MenuButton('Node groups', null, {callback: () => 
+    btnGroup   = new MenuButton('Node groups', null, {callback: () => 
     {
-        const create = new CreateNodeAction(graphView.graph, NODE_GROUP, btnCustom.div);
+        const create = new CreateNodeAction(graphView.graph, NODE_GROUP, btnGroup.div);
         actionManager.do(create);
 
         graphView.updateNodes([create.node]);
@@ -40291,7 +40662,7 @@ function initGeneratorMenus()
 
     btnMain   .setIcon(iconGenerator);
     btnShape  .setIcon(iconShapes);
-    btnCustom .setIcon(iconNodeGroup);
+    btnGroup .setIcon(iconNodeGroup);
     btnHand   .setIcon(iconHand);
     btnComment.setIcon(iconComment);
 }
@@ -51906,6 +52277,72 @@ extends ResizableBase
 }
 
 
+class   OpTextSubstring
+extends OperatorBase
+{
+    paramStart;
+    paramEnd;
+
+
+
+    constructor()
+    {
+        super(TEXT_SUBSTRING, 'substring');
+
+        this.canDisable = true;
+        
+
+        this.addInput (new Input (TEXT_TYPES));
+        this.addOutput(new Output([TEXT_VALUE], this.output_genRequest));
+
+        this.addParam(this.paramStart = new NumberParam('start', 'start', true,  true,  true));
+        this.addParam(this.paramEnd   = new NumberParam('end',   'end',   true,  true,  true));
+    }
+
+
+
+    output_genRequest(gen)
+    {
+        // 'this' is the output
+
+        gen.scope.push({
+            nodeId:  this.node.id, 
+            paramId: NULL });
+
+        const [request, ignore] = this.node.genRequestStart(gen);
+        if (ignore) return request;
+
+        
+        const input = this.node.inputs[0];
+
+
+        request.push(input.connected ? 1 : 0);
+        
+        if (input.connected)
+            request.push(...pushInputOrParam(input, gen));
+
+        request.push(...this.node.paramStart.genRequest(gen));
+        request.push(...this.node.paramEnd  .genRequest(gen));
+
+        
+        gen.scope.pop();
+        pushUnique(gen.passedNodes, this.node);
+
+        return request;
+    }
+
+
+
+    updateParams()
+    {
+        this.paramStart.enableControlText(true);
+        this.paramEnd  .enableControlText(true);
+
+        this.updateParamControls();
+    }
+}
+
+
 class   OpTextReplace
 extends OperatorBase
 {
@@ -51979,6 +52416,67 @@ extends OperatorBase
         this.updateParamControls();
     }
 }
+
+
+class   OpTextJoin
+extends OperatorBase
+{
+    constructor()
+    {
+        super(TEXT_JOIN, 'join');
+
+        this.variableInputs   = true;
+        this.alwaysLoadParams = true;
+
+        this.addNewInput();
+        this.addOutput(new Output([TEXT_VALUE], this.output_genRequest));
+    }
+    
+    
+    
+    addNewInput()
+    {
+        const newInput = new Input(TEXT_TYPES);
+        newInput.isNew = true;
+
+        newInput.addEventListener('connect',    e => { onVariableConnectInput(this); e.detail.input.isNew = false; });
+        newInput.addEventListener('disconnect', e => onVariableDisconnectInput(this, e.detail.input));
+
+        this.addInput(newInput);
+
+        return newInput;
+    }
+
+
+
+    output_genRequest(gen)
+    {
+        // 'this' is the output
+
+        gen.scope.push({
+            nodeId:  this.node.id, 
+            paramId: NULL });
+
+        const [request, ignore] = this.node.genRequestStart(gen);
+        if (ignore) return request;
+
+
+        const connectedInputs = this.node.inputs.filter(i => i.connected && !i.param);
+
+
+        request.push(connectedInputs.length); // utility values like param count are stored as numbers
+        
+        for (const input of connectedInputs)
+            request.push(...pushInputOrParam(input, gen));
+
+        
+        gen.scope.pop();
+        pushUnique(gen.passedNodes, this.node);
+
+        return request;
+    }
+}
+
 
 
 class OpColorBase
@@ -57014,7 +57512,9 @@ function createNode(nodeType, creatingButton = null, createdNodeId = -1, options
         case NUMBER_GREATER_OR_EQUAL: node = new OpGreaterOrEqual();    break;
          
         case TEXT:                    node = new OpText();              break;
+        case TEXT_SUBSTRING:          node = new OpTextSubstring();     break;
         case TEXT_REPLACE:            node = new OpTextReplace();       break;
+        case TEXT_JOIN:               node = new OpTextJoin();          break;
         
         case COLOR:                   node = new OpColor(options);      break;
         case VALID_COLOR:             node = new OpValidColor();        break;
@@ -59518,7 +60018,7 @@ extends Action
         super(
             graph,
             RENAME_ACTION,
-            'RENAME ' + nodeId + ' to \'' + newName + '\'');
+            'RENAME \'' + nodeId + '\' to \'' + newName + '\'');
 
         this.affectsConnections = false;
 

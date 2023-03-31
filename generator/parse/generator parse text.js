@@ -48,6 +48,53 @@ function genParseText(parse)
 
 
 
+function genParseTextSubstring(parse)
+{
+    const [, nodeId, options, ignore] = genParseNodeStart(parse);
+
+
+    const sub = new GTextSubstring(nodeId, options);
+   
+
+    let nInputs = -1;
+    
+    if (!ignore)
+    {
+        nInputs = parseInt(parse.move());
+        console.assert(nInputs == 0 || nInputs == 1, 'nInputs must be [0, 1]');
+    }
+
+    
+    if (parse.settings.logRequests) 
+        logReq(sub, parse, ignore, nInputs);
+
+
+    if (ignore) 
+    {
+        genParseNodeEnd(parse, sub);
+        return parse.parsedNodes.find(n => n.nodeId == nodeId);
+    }
+
+
+    parse.nTab++;
+
+
+    if (nInputs == 1)
+        sub.input = genParse(parse);
+
+    sub.start = genParse(parse);
+    sub.end   = genParse(parse);
+
+    
+    parse.nTab--;
+
+
+    genParseNodeEnd(parse, sub);
+    return sub;
+}
+
+
+
 function genParseTextReplace(parse)
 {
     const [, nodeId, options, ignore] = genParseNodeStart(parse);
@@ -95,3 +142,40 @@ function genParseTextReplace(parse)
 
 
 
+
+function genParseTextJoin(parse, newNode)
+{
+    const [type, nodeId, options, ignore] = genParseNodeStart(parse);
+
+
+    const join = new GTextJoin(nodeId, options);
+
+
+    let nInputs = 0;
+    
+    if (!ignore)
+        nInputs = parseInt(parse.move());
+
+
+    if (parse.settings.logRequests) 
+        logReq(join, parse, ignore, nInputs);
+
+
+    if (ignore) 
+    {
+        genParseNodeEnd(parse, join);
+        return parse.parsedNodes.find(n => n.nodeId == nodeId);
+    }
+
+
+    parse.nTab++;
+
+    for (let i = 0; i < nInputs; i++)
+        join.inputs.push(genParse(parse));
+
+    parse.nTab--;
+
+        
+    genParseNodeEnd(parse, join);
+    return join;
+}

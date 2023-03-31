@@ -73,7 +73,9 @@
 
 
 ../operators/text/OpText.js
+../operators/text/OpTextSubstring.js
 ../operators/text/OpTextReplace.js
+../operators/text/OpTextJoin.js
 
 
 ../operators/color/OpColorBase.js

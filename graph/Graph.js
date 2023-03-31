@@ -364,7 +364,9 @@ function createNode(nodeType, creatingButton = null, createdNodeId = -1, options
         case NUMBER_GREATER_OR_EQUAL: node = new OpGreaterOrEqual();    break;
          
         case TEXT:                    node = new OpText();              break;
+        case TEXT_SUBSTRING:          node = new OpTextSubstring();     break;
         case TEXT_REPLACE:            node = new OpTextReplace();       break;
+        case TEXT_JOIN:               node = new OpTextJoin();          break;
         
         case COLOR:                   node = new OpColor(options);      break;
         case VALID_COLOR:             node = new OpValidColor();        break;

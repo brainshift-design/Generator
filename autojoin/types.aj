@@ -85,7 +85,9 @@
 ../generator/types/text/GTextType.js
 
 ../generator/types/text/GText.js
+../generator/types/text/GTextSubstring.js
 ../generator/types/text/GTextReplace.js
+../generator/types/text/GTextJoin.js
 
 
 ../generator/types/color/color correction.js

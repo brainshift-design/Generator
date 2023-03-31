@@ -3388,17 +3388,19 @@ const NUMBER_TYPES =
 ];
 
 
-const TEXT_VALUE   = 'TEXT#';  
-const TEXT         = 'TEXT';   
-const TEXT_ADD     = 'TADD';  
-const TEXT_REPLACE = 'TREPL'; 
+const TEXT_VALUE     = 'TEXT#';  
+const TEXT           = 'TEXT';   
+const TEXT_SUBSTRING = 'TSUB'; 
+const TEXT_REPLACE   = 'TREPL'; 
+const TEXT_JOIN      = 'TJOIN';  
 
 
 const TEXT_TYPES =
 [
     TEXT_VALUE,
     TEXT,
-    TEXT_ADD,
+    TEXT_SUBSTRING,
+    TEXT_JOIN,
     TEXT_REPLACE
 ];
 
@@ -6646,7 +6648,7 @@ function evalAddInputs(inputs, parse)
 
         console.assert(
             val.type == NUMBER_VALUE, 
-            'val.type must belong to NUMBER_VALUE');
+            'val.type must be NUMBER_VALUE');
 
         value.value   += val.value;
         value.decimals = Math.max(value.decimals, val.decimals);
@@ -7147,7 +7149,7 @@ function evalNandInputs(inputs, parse)
 
             console.assert(
                 val.type == NUMBER_VALUE, 
-                'val.type must belong to NUMBER_VALUE');
+                'val.type must be NUMBER_VALUE');
 
             if (val.toNumber() == 0)
                 value.value = 1;
@@ -7839,7 +7841,7 @@ extends GNumberType
 
             console.assert(
                 this.value.type == NUMBER_VALUE, 
-                'this.value.type must belong to NUMBER_VALUE');
+                'this.value.type must be NUMBER_VALUE');
 
             
             if (this.options.enabled)
@@ -7911,7 +7913,7 @@ extends GNumberType
 
             console.assert(
                 this.value.type == NUMBER_VALUE, 
-                'this.value.type must belong to NUMBER_VALUE');
+                'this.value.type must be NUMBER_VALUE');
 
             if (this.options.enabled)
                 this.value.value = Math.abs(this.value.value);
@@ -7981,7 +7983,7 @@ extends GNumberType
 
             console.assert(
                 this.value.type == NUMBER_VALUE, 
-                'this.value.type must belong to NUMBER_VALUE');
+                'this.value.type must be NUMBER_VALUE');
 
 
             if (this.options.enabled)
@@ -8311,6 +8313,79 @@ extends GTextType
 }
 
 
+class GTextSubstring
+extends GTextType
+{
+    input = null;
+
+    start;
+    end;
+
+
+    
+    constructor(nodeId, options)
+    {
+        super(TEXT_SUBSTRING, nodeId, options);
+    }
+
+
+    
+    copy()
+    {
+        const copy = new GTextSubstring(this.nodeId, this.options);
+
+        copy.copyBase(this);
+
+        if (this.input) 
+            copy.input = this.input.copy();
+
+        copy.start = this.start.copy();
+        copy.end   = this.end  .copy();
+
+        return copy;
+    }
+
+
+
+    eval(parse)
+    {
+        if (this.isCached())
+            return this;
+
+
+        const start = this.start.eval(parse).toValue();
+        const end   = this.end  .eval(parse).toValue();
+
+
+        if (this.input)
+        {
+            this.value = this.input.eval(parse).toValue();
+
+            console.assert(
+                this.value.type == TEXT_VALUE, 
+                'this.value.type must be TEXT_VALUE');
+
+
+            if (this.options.enabled)
+                this.value.value = this.value.value.substring(start.value, end.value+1);
+        }
+        else
+            this.value = TextValue.NaN;
+
+
+        genPushUpdateValue(parse, this.nodeId, 'start', start);
+        genPushUpdateValue(parse, this.nodeId, 'end',   end);
+        genPushUpdateValue(parse, this.nodeId, 'value', this.value);
+
+
+        this.validate();
+
+        return this;
+    }
+}
+
+
+
 class GTextReplace
 extends GTextType
 {
@@ -8382,6 +8457,74 @@ extends GTextType
     }
 }
 
+
+
+class GTextJoin
+extends GTextType
+{
+    inputs = [];
+
+
+    
+    constructor(nodeId, options)
+    {
+        super(TEXT_JOIN, nodeId, options);
+    }
+
+
+    
+    copy()
+    {
+        const copy = new GTextJoin(this.nodeId, this.options);
+        copy.copyBase(this);
+        copy.inputs = this.inputs.map(i => i.copy());
+        return copy;
+    }
+
+
+
+    eval(parse)
+    {
+        if (this.isCached())
+            return this;
+
+
+        this.value = evalJoinInputs(this.inputs, parse);
+        
+        genPushUpdateValue(parse, this.nodeId, 'value', this.value);
+
+
+        this.validate();
+
+        return this;
+    }
+}
+
+
+
+function evalJoinInputs(inputs, parse)
+{
+    if (isEmpty(inputs))
+        return TextValue.NaN;
+
+
+    const value = new TextValue();
+
+
+    for (let i = 0; i < inputs.length; i++)
+    {
+        const val = inputs[i].eval(parse).toValue();
+
+        console.assert(
+            val.type == TEXT_VALUE, 
+            'val.type must be TEXT_VALUE');
+
+        value.value += val.value;
+    }
+
+
+    return value;
+}
 
 
 class ColorCorrection
@@ -11547,10 +11690,10 @@ function enableFeatures(subscription, beta)
 {
     updateMenuItemDisplay(menuItemEnableBetaFeatures.div, subscription);
 
-    updateMenuItemDisplay(btnFlow  .div,                subscription);
-    updateMenuItemDisplay(btnText  .div,                subscription && beta);
-    updateMenuItemDisplay(btnShape .div,                subscription && beta);
-    updateMenuItemDisplay(btnCustom.div,                subscription && beta);
+    updateMenuItemDisplay(btnFlow .div,                 subscription);
+    updateMenuItemDisplay(btnText .div,                 subscription && beta);
+    updateMenuItemDisplay(btnShape.div,                 subscription && beta);
+    updateMenuItemDisplay(btnGroup.div,                 false);//subscription && beta);
 
     updateMenuItemDisplay(menuItemLogObjectUpdates.div, subscription && beta);
     
@@ -14140,6 +14283,53 @@ function genParseText(parse)
 
 
 
+function genParseTextSubstring(parse)
+{
+    const [, nodeId, options, ignore] = genParseNodeStart(parse);
+
+
+    const sub = new GTextSubstring(nodeId, options);
+   
+
+    let nInputs = -1;
+    
+    if (!ignore)
+    {
+        nInputs = parseInt(parse.move());
+        console.assert(nInputs == 0 || nInputs == 1, 'nInputs must be [0, 1]');
+    }
+
+    
+    if (parse.settings.logRequests) 
+        logReq(sub, parse, ignore, nInputs);
+
+
+    if (ignore) 
+    {
+        genParseNodeEnd(parse, sub);
+        return parse.parsedNodes.find(n => n.nodeId == nodeId);
+    }
+
+
+    parse.nTab++;
+
+
+    if (nInputs == 1)
+        sub.input = genParse(parse);
+
+    sub.start = genParse(parse);
+    sub.end   = genParse(parse);
+
+    
+    parse.nTab--;
+
+
+    genParseNodeEnd(parse, sub);
+    return sub;
+}
+
+
+
 function genParseTextReplace(parse)
 {
     const [, nodeId, options, ignore] = genParseNodeStart(parse);
@@ -14188,6 +14378,42 @@ function genParseTextReplace(parse)
 
 
 
+function genParseTextJoin(parse, newNode)
+{
+    const [type, nodeId, options, ignore] = genParseNodeStart(parse);
+
+
+    const join = new GTextJoin(nodeId, options);
+
+
+    let nInputs = 0;
+    
+    if (!ignore)
+        nInputs = parseInt(parse.move());
+
+
+    if (parse.settings.logRequests) 
+        logReq(join, parse, ignore, nInputs);
+
+
+    if (ignore) 
+    {
+        genParseNodeEnd(parse, join);
+        return parse.parsedNodes.find(n => n.nodeId == nodeId);
+    }
+
+
+    parse.nTab++;
+
+    for (let i = 0; i < nInputs; i++)
+        join.inputs.push(genParse(parse));
+
+    parse.nTab--;
+
+        
+    genParseNodeEnd(parse, join);
+    return join;
+}
 
 
 class Parse
@@ -14317,7 +14543,9 @@ function genParse(parse, inParam = true)
 
     else if (parse.next == TEXT_VALUE             ) result = genParseTextValue       (parse);
     else if (parse.next == TEXT                   ) result = genParseText            (parse);
+    else if (parse.next == TEXT_SUBSTRING         ) result = genParseTextSubstring   (parse);
     else if (parse.next == TEXT_REPLACE           ) result = genParseTextReplace     (parse);
+    else if (parse.next == TEXT_JOIN              ) result = genParseTextJoin        (parse);
 
     else if (parse.next == COLOR_VALUE            ) result = genParseColorValue      (parse);
     else if (parse.next == COLOR                  ) result = genParseColor           (parse);

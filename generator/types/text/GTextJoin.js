@@ -1,16 +1,20 @@
-class GAdd
-extends GArithmetic
+class GTextJoin
+extends GTextType
 {
+    inputs = [];
+
+
+    
     constructor(nodeId, options)
     {
-        super(NUMBER_ADD, nodeId, options);
+        super(TEXT_JOIN, nodeId, options);
     }
 
 
     
     copy()
     {
-        const copy = new GAdd(this.nodeId, this.options);
+        const copy = new GTextJoin(this.nodeId, this.options);
         copy.copyBase(this);
         copy.inputs = this.inputs.map(i => i.copy());
         return copy;
@@ -23,9 +27,11 @@ extends GArithmetic
         if (this.isCached())
             return this;
 
-        this.value = evalAddInputs(this.inputs, parse);
+
+        this.value = evalJoinInputs(this.inputs, parse);
         
         genPushUpdateValue(parse, this.nodeId, 'value', this.value);
+
 
         this.validate();
 
@@ -35,13 +41,13 @@ extends GArithmetic
 
 
 
-function evalAddInputs(inputs, parse)
+function evalJoinInputs(inputs, parse)
 {
     if (isEmpty(inputs))
-        return NumberValue.NaN;
+        return TextValue.NaN;
 
 
-    const value = new NumberValue(0);
+    const value = new TextValue();
 
 
     for (let i = 0; i < inputs.length; i++)
@@ -49,11 +55,10 @@ function evalAddInputs(inputs, parse)
         const val = inputs[i].eval(parse).toValue();
 
         console.assert(
-            val.type == NUMBER_VALUE, 
-            'val.type must be NUMBER_VALUE');
+            val.type == TEXT_VALUE, 
+            'val.type must be TEXT_VALUE');
 
-        value.value   += val.value;
-        value.decimals = Math.max(value.decimals, val.decimals);
+        value.value += val.value;
     }
 
 
