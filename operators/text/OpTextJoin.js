@@ -1,5 +1,5 @@
 class   OpTextJoin
-extends OperatorBase
+extends OperatorWithValue
 {
     constructor()
     {
@@ -10,6 +10,8 @@ extends OperatorBase
 
         this.addNewInput();
         this.addOutput(new Output([TEXT_VALUE], this.output_genRequest));
+
+        this.addParam(this.paramValue);
     }
     
     
@@ -54,5 +56,14 @@ extends OperatorBase
         pushUnique(gen.passedNodes, this.node);
 
         return request;
+    }
+
+
+
+    updateParams()
+    {
+        this.paramValue.enableControlText(false);
+
+        this.updateParamControls();
     }
 }

@@ -171,8 +171,6 @@ extends EventTarget
 
     preSetValue(value, createAction, dispatchEvents = true) 
     {
-        //console.trace();
-        //console.log('value =', value);
         if (dispatchEvents)
         {
             if (!value.equals(this.oldValue))
@@ -267,4 +265,16 @@ function checkControlVisible(param, control)
         || settings.showOperationResults
         ? 'inline-block'
         : 'none';
+}
+
+
+
+function createValueParamFromType(type)
+{
+    if (NUMBER_TYPES.includes(type))
+        return new NumberParam('value', '',  false, false, false);
+    else if (COLOR_TYPES.includes(type))
+        return new ColorParam('value', '',  false, false, false);
+    else if (TEXT_TYPES.includes(type))
+        return new TextParam('value', '',  false, false, false);
 }

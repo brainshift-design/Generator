@@ -9,7 +9,7 @@ extends OperatorBase
     {
         super(type, shortName, defWidth, progressBar);
 
-        this.paramValue = new NumberParam('value', '',  false, false, false);
+        this.paramValue = createValueParamFromType(type);
         this.paramValue.isResult = true;
     }
 

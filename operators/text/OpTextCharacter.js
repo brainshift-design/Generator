@@ -1,24 +1,24 @@
-class   OpTextSubstring
+class   OpTextCharacter
 extends OperatorWithValue
 {
-    paramStart;
-    paramEnd;
+    paramCode;
 
 
 
     constructor()
     {
-        super(TEXT_SUBSTRING, 'substring');
+        super(TEXT_CHAR, 'char');
 
-        this.canDisable = true;
-        
 
-        this.addInput (new Input (TEXT_TYPES));
         this.addOutput(new Output([TEXT_VALUE], this.output_genRequest));
 
         this.addParam(this.paramValue);
-        this.addParam(this.paramStart = new NumberParam('start', 'start', true,  true,  true));
-        this.addParam(this.paramEnd   = new NumberParam('end',   'end',   true,  true,  true));
+        this.addParam(this.paramCode = new NumberParam('code', 'unicode', true,  true,  true, 32, 0, 0xFFFF));
+
+
+        this.paramValue.controls[0].textarea.style.textAlign = 'center';
+
+        this.paramCode.controls[0].showHex = true;
     }
 
 
@@ -43,8 +43,7 @@ extends OperatorWithValue
         if (input.connected)
             request.push(...pushInputOrParam(input, gen));
 
-        request.push(...this.node.paramStart.genRequest(gen));
-        request.push(...this.node.paramEnd  .genRequest(gen));
+        request.push(...this.node.paramCode.genRequest(gen));
 
         
         gen.scope.pop();
@@ -58,8 +57,7 @@ extends OperatorWithValue
     updateParams()
     {
         this.paramValue.enableControlText(false);
-        this.paramStart.enableControlText(true);
-        this.paramEnd  .enableControlText(true);
+        this.paramCode .enableControlText(true);
 
         this.updateParamControls();
     }

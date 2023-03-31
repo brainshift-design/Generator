@@ -329,12 +329,14 @@ const TEXT = 'TEXT';
 const TEXT_SUBSTRING = 'TSUB';
 const TEXT_REPLACE = 'TREPL';
 const TEXT_JOIN = 'TJOIN';
+const TEXT_CHAR = 'TCHAR';
 const TEXT_TYPES = [
     TEXT_VALUE,
     TEXT,
     TEXT_SUBSTRING,
     TEXT_JOIN,
-    TEXT_REPLACE
+    TEXT_REPLACE,
+    TEXT_CHAR
 ];
 const COLOR_VALUE = 'COL#';
 const COLOR = 'COL';

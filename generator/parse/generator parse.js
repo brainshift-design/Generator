@@ -128,6 +128,7 @@ function genParse(parse, inParam = true)
     else if (parse.next == TEXT_SUBSTRING         ) result = genParseTextSubstring   (parse);
     else if (parse.next == TEXT_REPLACE           ) result = genParseTextReplace     (parse);
     else if (parse.next == TEXT_JOIN              ) result = genParseTextJoin        (parse);
+    else if (parse.next == TEXT_CHAR              ) result = genParseTextCharacter   (parse);
 
     else if (parse.next == COLOR_VALUE            ) result = genParseColorValue      (parse);
     else if (parse.next == COLOR                  ) result = genParseColor           (parse);

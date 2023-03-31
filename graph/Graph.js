@@ -367,6 +367,7 @@ function createNode(nodeType, creatingButton = null, createdNodeId = -1, options
         case TEXT_SUBSTRING:          node = new OpTextSubstring();     break;
         case TEXT_REPLACE:            node = new OpTextReplace();       break;
         case TEXT_JOIN:               node = new OpTextJoin();          break;
+        case TEXT_CHAR:               node = new OpTextCharacter();     break;
         
         case COLOR:                   node = new OpColor(options);      break;
         case VALID_COLOR:             node = new OpValidColor();        break;

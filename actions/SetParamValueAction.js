@@ -18,8 +18,6 @@ extends Action
 
     constructor(graph, param, value)
     {
-        console.trace();
-
         super(
             graph,
             SET_VALUE_ACTION,

@@ -179,3 +179,49 @@ function genParseTextJoin(parse, newNode)
     genParseNodeEnd(parse, join);
     return join;
 }
+
+
+
+function genParseTextCharacter(parse)
+{
+    const [, nodeId, options, ignore] = genParseNodeStart(parse);
+
+
+    const char = new GTextCharacter(nodeId, options);
+   
+
+    let nInputs = -1;
+    
+    if (!ignore)
+    {
+        nInputs = parseInt(parse.move());
+        console.assert(nInputs == 0 || nInputs == 1, 'nInputs must be [0, 1]');
+    }
+
+    
+    if (parse.settings.logRequests) 
+        logReq(char, parse, ignore, nInputs);
+
+
+    if (ignore) 
+    {
+        genParseNodeEnd(parse, char);
+        return parse.parsedNodes.find(n => n.nodeId == nodeId);
+    }
+
+
+    parse.nTab++;
+
+
+    if (nInputs == 1)
+        char.input = genParse(parse);
+
+    char.code = genParse(parse);
+
+    
+    parse.nTab--;
+
+
+    genParseNodeEnd(parse, char);
+    return char;
+}

@@ -58,9 +58,9 @@ extends GTextType
             this.value = TextValue.NaN;
 
 
+        genPushUpdateValue(parse, this.nodeId, 'value', this.value);
         genPushUpdateValue(parse, this.nodeId, 'start', start);
         genPushUpdateValue(parse, this.nodeId, 'end',   end);
-        genPushUpdateValue(parse, this.nodeId, 'value', this.value);
 
 
         this.validate();
