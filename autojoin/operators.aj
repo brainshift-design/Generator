@@ -73,6 +73,7 @@
 
 
 ../operators/text/OpText.js
+../operators/text/OpTextReplace.js
 
 
 ../operators/color/OpColorBase.js

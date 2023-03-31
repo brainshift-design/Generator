@@ -146,7 +146,7 @@ function genParseLimits(parse)
     const [, nodeId, options, ignore] = genParseNodeStart(parse);
 
 
-    const lim = new GLimits(nodeId, options);
+    const limits = new GLimits(nodeId, options);
    
 
     let nInputs = -1;
@@ -159,12 +159,12 @@ function genParseLimits(parse)
 
     
     if (parse.settings.logRequests) 
-        logReq(lim, parse, ignore, nInputs);
+        logReq(limits, parse, ignore, nInputs);
 
 
     if (ignore) 
     {
-        genParseNodeEnd(parse, lim);
+        genParseNodeEnd(parse, limits);
         return parse.parsedNodes.find(n => n.nodeId == nodeId);
     }
 
@@ -173,17 +173,17 @@ function genParseLimits(parse)
 
 
     if (nInputs == 1)
-        lim.input = genParse(parse);
+        limits.input = genParse(parse);
 
-    lim.min = genParse(parse);
-    lim.max = genParse(parse);
+    limits.min = genParse(parse);
+    limits.max = genParse(parse);
 
     
     parse.nTab--;
 
 
-    genParseNodeEnd(parse, lim);
-    return lim;
+    genParseNodeEnd(parse, limits);
+    return limits;
 }
 
 

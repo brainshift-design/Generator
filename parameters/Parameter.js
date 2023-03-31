@@ -38,6 +38,7 @@ extends EventTarget
     affectsHeader  = true; // indicates whether the parameter contributes to the header's result data
 
     isResult       = false;
+    //managing       = false; // undoing or redoing
 
 
     canShow = () => true;
@@ -170,6 +171,8 @@ extends EventTarget
 
     preSetValue(value, createAction, dispatchEvents = true) 
     {
+        //console.trace();
+        //console.log('value =', value);
         if (dispatchEvents)
         {
             if (!value.equals(this.oldValue))
@@ -201,8 +204,9 @@ extends EventTarget
             }
         }
 
-        if (this.proxy) 
-            this.proxy.updateControls();
+
+        // if (this.proxy) 
+        //     this.proxy.updateControls();
     }
 
 

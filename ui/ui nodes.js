@@ -973,7 +973,7 @@ function uiUpdateValuesAndObjects(requestId, actionId, updateNodeId, updateParam
             uiSaveNodes(mainGraph, mainGraph.nodes.map(n => n.id));
         }
 
-            
+
         graphView.creatingNodes      = false;
         graphView.pastingNodes       = false;
         graphView.loadingNodes       = false;

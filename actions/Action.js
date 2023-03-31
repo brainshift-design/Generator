@@ -186,16 +186,10 @@ class Action
 
     getLinkString()
     {
-        const linkPrev = this.linkWithPrevious ? '⇤' : '';
-        const linkNext = this.linkWithNext     ? '⇥' : '';
+        const linkPrev = this.prevAction ? ' ←' : '';
+        const linkNext = this.nextAction ? ' →' : '';
 
-        const linkSpace = 
-               this.linkWithPrevious 
-            || this.linkWithNext 
-            ? ' ' 
-            : '';
-
-        return linkPrev + linkSpace + linkNext;
+        return linkPrev + linkNext;
     }
 }
 

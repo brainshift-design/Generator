@@ -75,41 +75,34 @@ extends Control
         super.setSize(w, h);
 
         if (this.textarea)
+        {
+            this.textarea.style.left   = (this.param && this.param.input ? 8 : 0) + 'px';
+            
+            this.textarea.style.width  = this.param && this.param.input ? 'calc(100% - 8px)' : '100%';
             this.textarea.style.height = Math.max(20, h);
+        }
     }
 
 
 
-    setValue(value, fireChangeEvent = true)//, confirm = true)
+    setValue(value, fireChangeEvent = true, updateControl = true)
     {
         if (typeof value != 'string')
             console.assert(false, 'TextControl.setValue(value) is ' + typeof value + ', must be a string');
 
             
-        // const oldValue = this.value;
-        
-        // console.log('value =', value);
-        // console.log('oldValue =', oldValue);
-        // if (   value == NAN_CHAR && oldValue != NAN_CHAR
-        //     || value != NAN_CHAR && oldValue == NAN_CHAR)
-        // {
-        //     console.log('value =', value);
-            this.value          = value;
+        this.value = value;
+
+        if (updateControl)
             this.textarea.value = value;
 
-            this.update();
+
+        this.update();
 
 
-            if (   fireChangeEvent
-                && this.enableChangeEvent)
-                //&& value != oldValue)
-                this.dispatchEvent(this.onchange);
-        // }
-
-
-        // if (   confirm
-        //     && this.enableChangeEvent)
-        //     this.dispatchEvent(this.onconfirm);
+        if (   fireChangeEvent
+            && this.enableChangeEvent)
+            this.dispatchEvent(this.onchange);
     }
 
 

@@ -6,9 +6,8 @@ extends GNumberType
     min;
     max;
 
-    //minMaxPriority = -1; 
 
-
+    
     constructor(nodeId, options)
     {
         super(NUMBER_LIMITS, nodeId, options);
@@ -27,8 +26,6 @@ extends GNumberType
 
         copy.min = this.min.copy();
         copy.max = this.max.copy();
-
-        //lim.minMaxPriority = this.minMaxPriority;
 
         return copy;
     }

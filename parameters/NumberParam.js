@@ -28,7 +28,7 @@ extends NumberParamBase
             dragScale); 
 
             
-        this.controls[0].div.zIndex = 0;
+        this.controls[0].div.zIndex        = 0;
 
         this.controls[0].div.style.display = 'inline-block';
         this.controls[0].div.style.width   = '100%';

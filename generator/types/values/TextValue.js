@@ -10,7 +10,10 @@ extends GValue
         super(TEXT_VALUE);
 
         if (typeof val !== 'string')
+        {
+            console.trace();
             console.assert(false, 'TextValue(value) is ' + typeof val + ', must be a string');
+        }
 
         this.value = val;
     }
@@ -66,8 +69,10 @@ extends GValue
 
     toDisplayString()
     {
-        return this.value
-            .replaceAll('\n', '↵');
+        return '\'' 
+             + this.value 
+                   .replaceAll('\n', '↵')
+             + '\'';
     }
 
 

@@ -9,6 +9,8 @@ TextControl.prototype.initTextarea = function()
 
     this.textarea.savedValue   = this.textarea.value;
 
+    //this.textarea.managing     = false; // undoing or redoing
+
 
 
     this.textarea.addEventListener('pointerdown', e =>
@@ -100,8 +102,6 @@ TextControl.prototype.initTextarea = function()
         {
                  if (e.shiftKey && !actionManager.redoing) actionManager.redo();
             else if (              !actionManager.undoing) actionManager.undo();
-            
-            this.updateTextarea();
         }
     });
 
@@ -109,15 +109,17 @@ TextControl.prototype.initTextarea = function()
 
     this.textarea.addEventListener('input', e =>
     {
-        this.setValue(this.textarea.value, true, true);
+        //console.log('this.textarea.managing =', this.textarea.managing);
+        this.setValue(
+            this.textarea.value, 
+            true, //!this.textarea.managing, 
+            true);
 
-        if (this.textarea.value != this.textarea.prevValue)
-            pushUpdateFromParam(null, [this.param.node], this.param);
+        //this.textarea.managing = false;
 
-
-        if (this.param) this.param.changing = true;
-        if (this.confirmTimer) clearTimeout(this.confirmTimer);
-        this.confirmTimer = setTimeout(() => controlTimer_confirm(this), 400);
+        // if (this.param) this.param.changing = true;
+        // if (this.confirmTimer) clearTimeout(this.confirmTimer);
+        // this.confirmTimer = setTimeout(() => controlTimer_confirm(this), 400);
     });
 
 

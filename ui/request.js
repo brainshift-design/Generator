@@ -36,7 +36,7 @@ function pushUpdateFromParam(action, nodes, param)
     
     const set =
           ((settings.showAllColorSpaces ? 1 : 0) << 0)
-        | ((settings.logRequests           ? 1 : 0) << 1);
+        | ((settings.logRequests        ? 1 : 0) << 1);
 
 
     if (action)

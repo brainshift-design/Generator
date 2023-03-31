@@ -168,3 +168,27 @@ function logUpdateSavedConnections(conns)
         '%c' + log, 
         'color: black; background: #ddeeff;');
 }
+
+
+
+function logUndoStack()
+{
+    let log = 'UNDO STACK:\n';
+
+    for (const act of actionManager.actions)
+        log += act.name + '\n';
+
+        console.log('%c%s', 'background: #ffd; color: #b80;', log);
+    }
+
+
+
+function logRedoStack()
+{
+    let log = 'REDO STACK:\n';
+
+    for (const act of actionManager.redoActions)
+        log += act.name + '\n';
+
+    console.log('%c%s', 'background: #fff4e8; color: #c64;', log);
+}

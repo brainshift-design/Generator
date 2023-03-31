@@ -45,3 +45,53 @@ function genParseText(parse)
     genParseNodeEnd(parse, text);
     return text;
 }
+
+
+
+function genParseTextReplace(parse)
+{
+    const [, nodeId, options, ignore] = genParseNodeStart(parse);
+
+
+    const replace = new GTextReplace(nodeId, options);
+   
+
+    let nInputs = -1;
+    
+    if (!ignore)
+    {
+        nInputs = parseInt(parse.move());
+        console.assert(nInputs == 0 || nInputs == 1, 'nInputs must be [0, 1]');
+    }
+
+    
+    if (parse.settings.logRequests) 
+        logReq(replace, parse, ignore, nInputs);
+
+
+    if (ignore) 
+    {
+        genParseNodeEnd(parse, replace);
+        return parse.parsedNodes.find(n => n.nodeId == nodeId);
+    }
+
+
+    parse.nTab++;
+
+
+    if (nInputs == 1)
+        replace.input = genParse(parse);
+
+    replace.what = genParse(parse);
+    replace.with = genParse(parse);
+
+    
+    parse.nTab--;
+
+
+    genParseNodeEnd(parse, replace);
+    return replace;
+}
+
+
+

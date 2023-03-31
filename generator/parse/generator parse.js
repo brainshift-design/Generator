@@ -125,6 +125,7 @@ function genParse(parse, inParam = true)
 
     else if (parse.next == TEXT_VALUE             ) result = genParseTextValue       (parse);
     else if (parse.next == TEXT                   ) result = genParseText            (parse);
+    else if (parse.next == TEXT_REPLACE           ) result = genParseTextReplace     (parse);
 
     else if (parse.next == COLOR_VALUE            ) result = genParseColorValue      (parse);
     else if (parse.next == COLOR                  ) result = genParseColor           (parse);

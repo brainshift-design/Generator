@@ -31,6 +31,7 @@ extends Parameter
     setValue(value, createAction, updateControl = true, dispatchEvents = true) 
     {
         // console.log(this.id + '.setValue() value =', value);
+        console.trace();
 
         console.assert(
             value instanceof NumberValue,

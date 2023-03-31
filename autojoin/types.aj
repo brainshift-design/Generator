@@ -48,7 +48,6 @@
 
 
 ../generator/types/number/GNumberType.js
-../generator/types/text/GTextType.js
 
 ../generator/types/number/arithmetic/GArithmetic.js
 ../generator/types/number/arithmetic/GMath.js
@@ -83,7 +82,10 @@
 ../generator/types/number/GInterpolate.js
 
 
+../generator/types/text/GTextType.js
+
 ../generator/types/text/GText.js
+../generator/types/text/GTextReplace.js
 
 
 ../generator/types/color/color correction.js

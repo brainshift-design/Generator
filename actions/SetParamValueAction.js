@@ -18,6 +18,8 @@ extends Action
 
     constructor(graph, param, value)
     {
+        console.trace();
+
         super(
             graph,
             SET_VALUE_ACTION,
@@ -36,6 +38,14 @@ extends Action
     do(updateNodes)
     {
         this.oldValue = this.param.oldValue;
+
+        this.name = 
+              'SET VALUE ' 
+            + this.param.node.id 
+            + '.' + this.param.id 
+            + ' = ' + this.newValue.toDisplayString() 
+            + ' (old value = ' + this.oldValue.toDisplayString() + ')';
+
         pushUpdateFromParam(this, [this.param.node], this.param);
     }
 
@@ -43,6 +53,12 @@ extends Action
 
     undo(updateNodes)
     {
+        // if (this.oldValue.type == TEXT_VALUE)
+        // {
+        //     console.log('this.param.controls[0] =', this.param.controls[0]);
+        //     this.param.controls[0].textarea.managing = true;
+        // }
+
         this.param.setValue(this.oldValue, false, true);
         pushUpdateFromParam(this, [this.param.node], this.param);
     }

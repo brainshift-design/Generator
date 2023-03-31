@@ -5,7 +5,7 @@
         maybe the actions themselves should store deleted params along with
         deleted connections
     this will also come into play with copy/paste/duplicating
-    when performing an actionn, clear that bin
+    when performing an action, clear that bin
 */
 
 
@@ -126,8 +126,8 @@ class ActionManager
         {
             const links = act.getLinkString();
 
-            if (redo) console.log("%cREDO %s%s", 'background: #ffd;    color: #b80;', act.name, links);
-            else      console.log("%c%s%s",      'background: #e8ffe8; color: #282;', act.name, links);
+            if (redo) console.log("%cREDO %s", 'background: #ffd;    color: #b80;', act.name + links);
+            else      console.log("%c%s",      'background: #e8ffe8; color: #282;', act.name + links);
         }
 
 
@@ -168,7 +168,7 @@ class ActionManager
         if (settings.logActions)
         {
             const links = act.getLinkString();
-            console.log("%cUNDO %s%s", 'background: #fff4e8; color: #c64;', act.name, links);
+            console.log("%cUNDO %s", 'background: #fff4e8; color: #c64;', act.name + links);
         }
 
             

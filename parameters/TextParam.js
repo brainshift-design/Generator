@@ -14,7 +14,7 @@ extends Parameter
     }
 
     
-    get value() { return this.controls[0].value; }
+    get value() { return new TextValue(this.controls[0].value); }
     
 
     
@@ -49,6 +49,13 @@ extends Parameter
        
         if (hasInput)  this.initInput(TEXT_TYPES, getParamInputValuesForUndo, this.input_getBackInitValue);
         if (hasOutput) this.initOutput([TEXT_VALUE], this.output_genRequest, getParamOutputValuesForUndo, this.output_backInit);
+
+
+        this.controls[0].addEventListener('change', () => 
+        { 
+            this.setValue(this.value, true, false);
+            //this.changing = true;
+        });
     }
 
 
@@ -96,18 +103,21 @@ extends Parameter
     {
         // console.log('TextParam.setValue value =', value);
 
-        console.assert(
-               value.type 
-            && value.type == TEXT_VALUE, 
-            'value.type must be TEXT_VALUE');
-           
-            
+        if (   !value.type 
+            || !value.type == TEXT_VALUE)
+        { 
+            console.assert(false, 'value.type must be TEXT_VALUE');
+            console.trace();
+        }
+
+
         this.preSetValue(value, createAction, dispatchEvents);
+
 
         this.controls[0].value = value.value;
 
         if (updateControl)
-            this.controls[0].setValue(value.value, true);//, false); 
+            this.controls[0].setValue(value.value, false);
 
 
         super.setValue(value, createAction, updateControl, dispatchEvents);
@@ -162,8 +172,8 @@ extends Parameter
             || !this.input.connected;
 
         enableElementText(this.controls[0].textarea, enable);
-        this.controls[0].textarea.disabled = !enable;
         
+        this.controls[0].textarea.disabled = !enable;
         this.controls[0].readOnly = !enable;
     }
     

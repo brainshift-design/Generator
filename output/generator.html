@@ -4318,7 +4318,10 @@ extends GValue
         super(TEXT_VALUE);
 
         if (typeof val !== 'string')
+        {
+            console.trace();
             console.assert(false, 'TextValue(value) is ' + typeof val + ', must be a string');
+        }
 
         this.value = val;
     }
@@ -4374,8 +4377,10 @@ extends GValue
 
     toDisplayString()
     {
-        return this.value
-            .replaceAll('\n', '↵');
+        return '\'' 
+             + this.value 
+                   .replaceAll('\n', '↵')
+             + '\'';
     }
 
 
@@ -6519,29 +6524,6 @@ extends GOperator
 }
 
 
-class GTextType
-extends GOperator
-{
-    value;
-    
-
-
-    copyBase(src)
-    {
-        super.copyBase(src);
-
-        if (src.value) this.value = src.value.copy();
-    }
-
-
-
-    toValue()
-    {
-        return this.value.copy();
-    }
-}
-
-
 class GArithmetic
 extends GNumberType
 {
@@ -7957,9 +7939,8 @@ extends GNumberType
     min;
     max;
 
-    //minMaxPriority = -1; 
 
-
+    
     constructor(nodeId, options)
     {
         super(NUMBER_LIMITS, nodeId, options);
@@ -7978,8 +7959,6 @@ extends GNumberType
 
         copy.min = this.min.copy();
         copy.max = this.max.copy();
-
-        //lim.minMaxPriority = this.minMaxPriority;
 
         return copy;
     }
@@ -8250,6 +8229,29 @@ extends GNumberType
 
 
 
+class GTextType
+extends GOperator
+{
+    value = null;
+    
+
+
+    copyBase(src)
+    {
+        super.copyBase(src);
+
+        if (src.value) this.value = src.value.copy();
+    }
+
+
+
+    toValue()
+    {
+        return this.value.copy();
+    }
+}
+
+
 class GText
 extends GTextType
 {
@@ -8273,8 +8275,6 @@ extends GTextType
         if (this.input) 
             copy.input = this.input.copy();
         
-        copy.value = this.value;
-
         return copy;
     }
 
@@ -8284,6 +8284,7 @@ extends GTextType
     {
         if (this.isCached())
             return this;
+
 
         if (this.input)
             this.value = this.input.eval(parse).toValue();
@@ -8308,6 +8309,79 @@ extends GTextType
         return this.value != NAN_CHAR;
     }
 }
+
+
+class GTextReplace
+extends GTextType
+{
+    input = null;
+
+    what;
+    with;
+
+
+
+    constructor(nodeId, options)
+    {
+        super(TEXT_REPLACE, nodeId, options);
+    }
+
+
+    
+    copy()
+    {
+        const copy = new GTextReplace(this.nodeId, this.options);
+
+        copy.copyBase(this);
+
+        if (this.input) 
+            copy.input = this.input.copy();
+
+        copy.what  = this.what.copy();
+        copy.with  = this.with.copy();
+
+        return copy;
+    }
+
+
+
+    eval(parse)
+    {
+        if (this.isCached())
+            return this;
+
+
+        const _what = this.what.eval(parse).toValue();
+        const _with = this.with.eval(parse).toValue();
+
+
+        if (this.input)
+        {
+            this.value = this.input.eval(parse).toValue();
+
+            console.assert(
+                this.value.type == TEXT_VALUE, 
+                'this.value.type must be TEXT_VALUE');
+
+            this.value.value = this.value.value.replaceAll(
+                _what.value,
+                _with.value);
+        }
+        else
+            this.value = TextValue.NaN;
+
+            
+        genPushUpdateValue(parse, this.nodeId, 'what',  _what);
+        genPushUpdateValue(parse, this.nodeId, 'with',  _with);
+        genPushUpdateValue(parse, this.nodeId, 'value', this.value);
+
+
+        this.validate();
+
+        return this;
+    }
+}
+
 
 
 class ColorCorrection
@@ -9020,11 +9094,11 @@ extends GColorType
 
         // if (this.options.enabled)
         // {
-            genPushUpdateValue(parse, this.nodeId, 'convert', this.convert          );
-            genPushUpdateValue(parse, this.nodeId, 'space',   this.value.space, true);
-            genPushUpdateValue(parse, this.nodeId, 'c1',      this.value.c1         );
-            genPushUpdateValue(parse, this.nodeId, 'c2',      this.value.c2         );
-            genPushUpdateValue(parse, this.nodeId, 'c3',      this.value.c3         );
+            genPushUpdateValue(parse, this.nodeId, 'convert', this.convert    );
+            genPushUpdateValue(parse, this.nodeId, 'space',   this.value.space);
+            genPushUpdateValue(parse, this.nodeId, 'c1',      this.value.c1   );
+            genPushUpdateValue(parse, this.nodeId, 'c2',      this.value.c2   );
+            genPushUpdateValue(parse, this.nodeId, 'c3',      this.value.c3   );
         // }
 
 
@@ -11760,7 +11834,7 @@ function genRequest(request)
 
 
 
-function genPushUpdateValue(parse, nodeId, paramId, value, forceUpdate = false)
+function genPushUpdateValue(parse, nodeId, paramId, value)
 {
     const found = parse.updateValues.find(v =>
            v.nodeId     == nodeId
@@ -13031,7 +13105,7 @@ function genParseLimits(parse)
     const [, nodeId, options, ignore] = genParseNodeStart(parse);
 
 
-    const lim = new GLimits(nodeId, options);
+    const limits = new GLimits(nodeId, options);
    
 
     let nInputs = -1;
@@ -13044,12 +13118,12 @@ function genParseLimits(parse)
 
     
     if (parse.settings.logRequests) 
-        logReq(lim, parse, ignore, nInputs);
+        logReq(limits, parse, ignore, nInputs);
 
 
     if (ignore) 
     {
-        genParseNodeEnd(parse, lim);
+        genParseNodeEnd(parse, limits);
         return parse.parsedNodes.find(n => n.nodeId == nodeId);
     }
 
@@ -13058,17 +13132,17 @@ function genParseLimits(parse)
 
 
     if (nInputs == 1)
-        lim.input = genParse(parse);
+        limits.input = genParse(parse);
 
-    lim.min = genParse(parse);
-    lim.max = genParse(parse);
+    limits.min = genParse(parse);
+    limits.max = genParse(parse);
 
     
     parse.nTab--;
 
 
-    genParseNodeEnd(parse, lim);
-    return lim;
+    genParseNodeEnd(parse, limits);
+    return limits;
 }
 
 
@@ -14066,6 +14140,56 @@ function genParseText(parse)
 
 
 
+function genParseTextReplace(parse)
+{
+    const [, nodeId, options, ignore] = genParseNodeStart(parse);
+
+
+    const replace = new GTextReplace(nodeId, options);
+   
+
+    let nInputs = -1;
+    
+    if (!ignore)
+    {
+        nInputs = parseInt(parse.move());
+        console.assert(nInputs == 0 || nInputs == 1, 'nInputs must be [0, 1]');
+    }
+
+    
+    if (parse.settings.logRequests) 
+        logReq(replace, parse, ignore, nInputs);
+
+
+    if (ignore) 
+    {
+        genParseNodeEnd(parse, replace);
+        return parse.parsedNodes.find(n => n.nodeId == nodeId);
+    }
+
+
+    parse.nTab++;
+
+
+    if (nInputs == 1)
+        replace.input = genParse(parse);
+
+    replace.what = genParse(parse);
+    replace.with = genParse(parse);
+
+    
+    parse.nTab--;
+
+
+    genParseNodeEnd(parse, replace);
+    return replace;
+}
+
+
+
+
+
+
 class Parse
 {
     request;
@@ -14193,6 +14317,7 @@ function genParse(parse, inParam = true)
 
     else if (parse.next == TEXT_VALUE             ) result = genParseTextValue       (parse);
     else if (parse.next == TEXT                   ) result = genParseText            (parse);
+    else if (parse.next == TEXT_REPLACE           ) result = genParseTextReplace     (parse);
 
     else if (parse.next == COLOR_VALUE            ) result = genParseColorValue      (parse);
     else if (parse.next == COLOR                  ) result = genParseColor           (parse);
@@ -14566,6 +14691,29 @@ function logUpdateSavedConnections(conns)
         'color: black; background: #ddeeff;');
 }
 
+
+
+function logUndoStack()
+{
+    let log = 'UNDO STACK:\n';
+
+    for (const act of actionManager.actions)
+        log += act.name + '\n';
+
+        console.log('%c%s', 'background: #ffd; color: #b80;', log);
+    }
+
+
+
+function logRedoStack()
+{
+    let log = 'REDO STACK:\n';
+
+    for (const act of actionManager.redoActions)
+        log += act.name + '\n';
+
+    console.log('%c%s', 'background: #fff4e8; color: #c64;', log);
+}
 
 
 function logRequest(parse)

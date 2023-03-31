@@ -8,7 +8,7 @@ extends OperatorWithValue
 
     constructor()
     {
-        super(NUMBER_LIMITS, 'lim');
+        super(NUMBER_LIMITS, 'limits');
 
         this.canDisable = true;
         
