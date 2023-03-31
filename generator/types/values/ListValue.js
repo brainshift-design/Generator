@@ -146,12 +146,12 @@ function parseListValue(str, i = -1)
         
         switch (type)
         {
-            case NUMBER_VALUE:      { const num    = parseNumberValue(str[i]); i += num   [1]; list.items.push(num   [0]); break; }
-            case COLOR_VALUE:       { const col    = parseColorValue (str, i); i += col   [1]; list.items.push(col   [0]); break; }
-            case FILL_VALUE:        { const fill   = parseFillValue  (str, i); i += fill  [1]; list.items.push(fill  [0]); break; }
-            case STROKE_VALUE:      { const stroke = parseStrokeValue(str, i); i += stroke[1]; list.items.push(stroke[0]); break; }
-            //case COLOR_STYLE_VALUE: { const style  = parseStyleValue (str, i); i += style [1]; list.items.push(style [0]); break; }
-            case LIST_VALUE:        { const _list  = parseListValue  (str, i); i += _list [1]; list.items.push(_list [0]); break; }
+            case NUMBER_VALUE: { const num    = parseNumberValue(str[i]); i += num   [1]; list.items.push(num   [0]); break; }
+            case TEXT_VALUE:   { const text   = parseTextValue  (str[i]); i += text  [1]; list.items.push(text  [0]); break; }
+            case COLOR_VALUE:  { const col    = parseColorValue (str, i); i += col   [1]; list.items.push(col   [0]); break; }
+            case FILL_VALUE:   { const fill   = parseFillValue  (str, i); i += fill  [1]; list.items.push(fill  [0]); break; }
+            case STROKE_VALUE: { const stroke = parseStrokeValue(str, i); i += stroke[1]; list.items.push(stroke[0]); break; }
+            case LIST_VALUE:   { const _list  = parseListValue  (str, i); i += _list [1]; list.items.push(_list [0]); break; }
         }
     }
  

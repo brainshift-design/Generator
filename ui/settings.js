@@ -235,8 +235,8 @@ function enableFeatures(subscription, beta)
     updateMenuItemDisplay(menuFlowSep3.div,             subscription && beta);
     updateMenuItemDisplay(menuItemCache.div,            subscription && beta);
     updateMenuItemDisplay(menuItemCopy.div,             subscription && beta);
-    updateMenuItemDisplay(menuItemCustomInputs.div,     subscription && beta);
-    updateMenuItemDisplay(menuItemCustomOutputs.div,    subscription && beta);
+    updateMenuItemDisplay(menuItemCustomInputs.div,     false);//subscription && beta);
+    updateMenuItemDisplay(menuItemCustomOutputs.div,    false);//subscription && beta);
     
     updateMenuItemDisplay(menuItemCorrectColor    .div, subscription);
     updateMenuItemDisplay(menuItemColorSep1       .div, subscription);

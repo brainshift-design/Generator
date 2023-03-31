@@ -223,9 +223,11 @@ class Output
 
 
         const color = 
-            darkMode
-            ? this.colorDark
-            : this.colorLight;
+            this.param
+            ? rgb_a(rgbHeaderFromType(this.param.type, true), 0.5)
+            : (darkMode
+               ? this.colorDark
+               : this.colorLight);
 
         const colorStyle = 
             rgba2style(rgb_a(
@@ -234,6 +236,7 @@ class Output
                 ? Math.min(color[3] * this.overFactor, 1) 
                 : color[3]));
 
+                
         this.div.style.pointerEvents   = 'auto';
         this.div.style.backgroundColor = colorStyle;
 

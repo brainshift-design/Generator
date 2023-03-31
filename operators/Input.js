@@ -237,11 +237,13 @@ extends EventTarget
                  && (  !this.canConnectFrom(tc.output)
                      || tc.output.node.isOrFollows(this.node)));
 
-        const color =
-            darkMode
-            ? this.colorDark
-            : this.colorLight;
-                     
+        const color = 
+            this.param
+            ? rgb_a(rgbHeaderFromType(this.param.type, true), 0.5)
+            : (darkMode
+               ? this.colorDark
+               : this.colorLight);
+
         const colorStyle = 
             rgba2style(rgb_a(
                 color,
