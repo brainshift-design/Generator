@@ -1,6 +1,7 @@
 class   OpTextCSV
 extends OperatorBase
 {
+    paramValue;
     paramSeparator;
 
 
@@ -13,7 +14,8 @@ extends OperatorBase
         this.addInput (new Input (TEXT_TYPES));
         this.addOutput(new Output([LIST_VALUE], this.output_genRequest));
 
-        this.addParam(this.paramSeparator = new TextParam('separator', 'separator', true,  true));
+        this.addParam(this.paramValue     = new ListParam('value',     '',          true, true));
+        this.addParam(this.paramSeparator = new TextParam('separator', 'separator', true, true));
     }
 
 
@@ -51,6 +53,7 @@ extends OperatorBase
 
     updateParams()
     {
+        this.paramValue    .enableControlText(false);
         this.paramSeparator.enableControlText(true);
 
         this.updateParamControls();

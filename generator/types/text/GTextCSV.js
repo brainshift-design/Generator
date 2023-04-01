@@ -4,24 +4,27 @@ extends GOperator
     inputs = [];
 
     value;
+    separator;
 
 
 
     constructor(nodeId, options)
     {
-        super(LIST, nodeId, options);
+        super(TEXT_CSV, nodeId, options);
     }
 
 
     
     copy()
     {
-        const copy = new GList(this.nodeId, this.options);
+        const copy = new GTextCSV(this.nodeId, this.options);
 
         copy.copyBase(this);
 
-        copy.inputs = this.inputs.map(i => i.copy());
-        copy.value  = this.value.copy();
+        copy.inputs    = this.inputs.map(i => i.copy());
+
+        copy.value     = this.value    .copy();
+        copy.separator = this.separator.copy();
 
         return copy;
     }
@@ -36,21 +39,22 @@ extends GOperator
 
         this.value = new ListValue();
 
-        for (let i = 0; i < this.inputs.length; i++)
-        {
-            const input = this.inputs[i].eval(parse).toValue();
+        // for (let i = 0; i < this.inputs.length; i++)
+        // {
+        //     const input = this.inputs[i].eval(parse).toValue();
 
-            if (input.type == LIST_VALUE)
-            {
-                for (const item of input.items)
-                    this.value.items.push(item);   
-            }
-            else
-                this.value.items.push(input);
-        }
+        //     if (input.type == LIST_VALUE)
+        //     {
+        //         for (const item of input.items)
+        //             this.value.items.push(item);   
+        //     }
+        //     else
+        //         this.value.items.push(input);
+        // }
     
 
-        genPushUpdateValue(parse, this.nodeId, 'value', this.value);
+        genPushUpdateValue(parse, this.nodeId, 'value',     this.value    );
+        genPushUpdateValue(parse, this.nodeId, 'separator', this.separator);
 
 
         this.validate();

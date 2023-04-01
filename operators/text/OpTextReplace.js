@@ -1,5 +1,5 @@
 class   OpTextReplace
-extends OperatorBase
+extends OperatorWithValue
 {
     paramWhat;
     paramWith;
@@ -16,6 +16,7 @@ extends OperatorBase
         this.addInput (new Input (TEXT_TYPES));
         this.addOutput(new Output([TEXT_VALUE], this.output_genRequest));
 
+        this.addParam(this.paramValue);
         this.addParam(this.paramWhat = new TextParam('what', 'what', true,  true));
         this.addParam(this.paramWith = new TextParam('with', 'with', true,  true));
     }
@@ -56,8 +57,9 @@ extends OperatorBase
 
     updateParams()
     {
-        this.paramWhat.enableControlText(true);
-        this.paramWith.enableControlText(true);
+        this.paramValue.enableControlText(false);
+        this.paramWhat .enableControlText(true);
+        this.paramWith .enableControlText(true);
 
         this.updateParamControls();
     }

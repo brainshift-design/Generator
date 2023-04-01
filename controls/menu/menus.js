@@ -317,7 +317,7 @@ function initGeneratorMenus()
                          new MenuItem('Interpolate', {icon: iconInterpolate, callback: e => actionManager.do(getCreateNodeAction(NUMBER_INTERPOLATE, btnNumber.div, getCreateOptions(e)))})]);
         
     
-    menuString = new Menu('String nodes', true, false);
+    menuString = new Menu('Text nodes', true, false);
     menuString.addItems([
         new MenuItem('Text',      {icon: iconText,          callback: e => actionManager.do(getCreateNodeAction(TEXT,           btnText.div, getCreateOptions(e)))}),
         new MenuItem('',          {separator: true}),
@@ -327,7 +327,9 @@ function initGeneratorMenus()
         new MenuItem('Join',      {icon: iconTextJoin,      callback: e => actionManager.do(getCreateNodeAction(TEXT_JOIN,      btnText.div, getCreateOptions(e)))}),
         new MenuItem('Replace',   {icon: iconTextReplace,   callback: e => actionManager.do(getCreateNodeAction(TEXT_REPLACE,   btnText.div, getCreateOptions(e)))}),
         new MenuItem('',          {separator: true}),
-        new MenuItem('CSV',       {icon: iconTextCSV,       callback: e => actionManager.do(getCreateNodeAction(TEXT_CSV,       btnText.div, getCreateOptions(e)))})]);
+        new MenuItem('CSV',       {icon: iconTextCSV,       callback: e => actionManager.do(getCreateNodeAction(TEXT_CSV,       btnText.div, getCreateOptions(e)))}),
+        new MenuItem('',          {separator: true}),
+        new MenuItem('Fetch',     {icon: iconTextFetch,     callback: e => actionManager.do(getCreateNodeAction(TEXT_FETCH,     btnText.div, getCreateOptions(e)))})]);
     
 
     menuColorStyle = new Menu('Color style', true, false);

@@ -98,7 +98,7 @@ function fromUtf8(str)
 
 
 
-function arrayToString(bytes) 
+function charCodeArrayToString(bytes) 
 {
     let str = '';
 
@@ -110,7 +110,7 @@ function arrayToString(bytes)
 
 
 
-function stringToArray(str)
+function stringToCharCodeArray(str)
 {
     return Array.from(fromUtf8(str), c => c.charCodeAt(0));
 }
@@ -573,6 +573,7 @@ const TEXT_REPLACE   = 'TREPL';
 const TEXT_JOIN      = 'TJOIN';  
 const TEXT_CHAR      = 'TCHAR';
 const TEXT_CSV       = 'TCSV';
+const TEXT_FETCH     = 'FETCH';
 
 
 const TEXT_TYPES =
@@ -583,7 +584,8 @@ const TEXT_TYPES =
     TEXT_JOIN,
     TEXT_REPLACE,
     TEXT_CHAR,
-    TEXT_CSV
+    TEXT_CSV,
+    TEXT_FETCH
 ];
 
 

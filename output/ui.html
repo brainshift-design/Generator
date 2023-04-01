@@ -2643,23 +2643,6 @@ a
 }
 
 
-/* .textControlTextarea:focus
-{
-    outline: 1px solid var(--figma-color-brand);
-} */
-
-
-.textControlFocus
-{
-    position:       absolute;
-    pointer-events: none;
-    box-shadow:     0 0 0 1px var(--activeObjectColor) inset;
-    visibility:     hidden;
-    opacity:        0;
-    /* z-index:        1100; */
-}
-
-
 
 .colorControl
 {
@@ -4156,7 +4139,7 @@ function fromUtf8(str)
 
 
 
-function arrayToString(bytes) 
+function charCodeArrayToString(bytes) 
 {
     let str = '';
 
@@ -4168,7 +4151,7 @@ function arrayToString(bytes)
 
 
 
-function stringToArray(str)
+function stringToCharCodeArray(str)
 {
     return Array.from(fromUtf8(str), c => c.charCodeAt(0));
 }
@@ -7470,6 +7453,7 @@ const TEXT_REPLACE   = 'TREPL';
 const TEXT_JOIN      = 'TJOIN';  
 const TEXT_CHAR      = 'TCHAR';
 const TEXT_CSV       = 'TCSV';
+const TEXT_FETCH     = 'FETCH';
 
 
 const TEXT_TYPES =
@@ -7480,7 +7464,8 @@ const TEXT_TYPES =
     TEXT_JOIN,
     TEXT_REPLACE,
     TEXT_CHAR,
-    TEXT_CSV
+    TEXT_CSV,
+    TEXT_FETCH
 ];
 
 
@@ -12452,9 +12437,10 @@ extends GTextType
             this.value = TextValue.NaN;
 
 
-        genPushUpdateValue(parse, this.nodeId, 'value', this.value);
         genPushUpdateValue(parse, this.nodeId, 'start', start);
         genPushUpdateValue(parse, this.nodeId, 'end',   end);
+        
+        genPushUpdateValue(parse, this.nodeId, 'value', this.value);
 
 
         this.validate();
@@ -12583,9 +12569,10 @@ extends GTextType
             
         genPushUpdateValue(parse, this.nodeId, 'what',  _what);
         genPushUpdateValue(parse, this.nodeId, 'with',  _with);
+        
         genPushUpdateValue(parse, this.nodeId, 'value', this.value);
 
-
+        
         this.validate();
 
         return this;
@@ -12668,24 +12655,27 @@ extends GOperator
     inputs = [];
 
     value;
+    separator;
 
 
 
     constructor(nodeId, options)
     {
-        super(LIST, nodeId, options);
+        super(TEXT_CSV, nodeId, options);
     }
 
 
     
     copy()
     {
-        const copy = new GList(this.nodeId, this.options);
+        const copy = new GTextCSV(this.nodeId, this.options);
 
         copy.copyBase(this);
 
-        copy.inputs = this.inputs.map(i => i.copy());
-        copy.value  = this.value.copy();
+        copy.inputs    = this.inputs.map(i => i.copy());
+
+        copy.value     = this.value    .copy();
+        copy.separator = this.separator.copy();
 
         return copy;
     }
@@ -12700,21 +12690,22 @@ extends GOperator
 
         this.value = new ListValue();
 
-        for (let i = 0; i < this.inputs.length; i++)
-        {
-            const input = this.inputs[i].eval(parse).toValue();
+        // for (let i = 0; i < this.inputs.length; i++)
+        // {
+        //     const input = this.inputs[i].eval(parse).toValue();
 
-            if (input.type == LIST_VALUE)
-            {
-                for (const item of input.items)
-                    this.value.items.push(item);   
-            }
-            else
-                this.value.items.push(input);
-        }
+        //     if (input.type == LIST_VALUE)
+        //     {
+        //         for (const item of input.items)
+        //             this.value.items.push(item);   
+        //     }
+        //     else
+        //         this.value.items.push(input);
+        // }
     
 
-        genPushUpdateValue(parse, this.nodeId, 'value', this.value);
+        genPushUpdateValue(parse, this.nodeId, 'value',     this.value    );
+        genPushUpdateValue(parse, this.nodeId, 'separator', this.separator);
 
 
         this.validate();
@@ -12729,6 +12720,9 @@ extends GOperator
         return this.value.copy();
     }
 }
+
+
+
 
 
 
@@ -18668,6 +18662,51 @@ function genParseTextCharacter(parse)
 
 
 
+function genParseTextCSV(parse)
+{
+    const [, nodeId, options, ignore] = genParseNodeStart(parse);
+
+
+    const csv = new GTextCSV(nodeId, options);
+   
+
+    let nInputs = -1;
+    
+    if (!ignore)
+    {
+        nInputs = parseInt(parse.move());
+        console.assert(nInputs == 0 || nInputs == 1, 'nInputs must be [0, 1]');
+    }
+
+    
+    if (parse.settings.logRequests) 
+        logReq(csv, parse, ignore, nInputs);
+
+
+    if (ignore) 
+    {
+        genParseNodeEnd(parse, csv);
+        return parse.parsedNodes.find(n => n.nodeId == nodeId);
+    }
+
+
+    parse.nTab++;
+
+
+    if (nInputs == 1)
+        csv.input = genParse(parse);
+
+    csv.separator = genParse(parse);
+
+    
+    parse.nTab--;
+
+
+    genParseNodeEnd(parse, csv);
+    return csv;
+}
+
+
 class Parse
 {
     request;
@@ -18800,6 +18839,7 @@ function genParse(parse, inParam = true)
     else if (parse.next == TEXT_REPLACE           ) result = genParseTextReplace     (parse);
     else if (parse.next == TEXT_JOIN              ) result = genParseTextJoin        (parse);
     else if (parse.next == TEXT_CSV               ) result = genParseTextCSV         (parse);
+    else if (parse.next == TEXT_FETCH             ) result = genParseTextFetch       (parse);
 
     else if (parse.next == COLOR_VALUE            ) result = genParseColorValue      (parse);
     else if (parse.next == COLOR                  ) result = genParseColor           (parse);
@@ -21989,7 +22029,7 @@ function fromUtf8(str)
 
 
 
-function arrayToString(bytes) 
+function charCodeArrayToString(bytes) 
 {
     let str = '';
 
@@ -22001,7 +22041,7 @@ function arrayToString(bytes)
 
 
 
-function stringToArray(str)
+function stringToCharCodeArray(str)
 {
     return Array.from(fromUtf8(str), c => c.charCodeAt(0));
 }
@@ -27284,7 +27324,7 @@ const licenseHashSize = 4;
 
 function createLicenseKey(license)
 {
-    const str  = createLicenseString(license);
+    const str  = createLicenseDataString(license);
     const hash = hashLicenseString(str, licenseHashSize);
     const enc  = sign(hash, licenseKeys.private);
     const key  = arrayToBase32(enc);
@@ -27294,10 +27334,10 @@ function createLicenseKey(license)
 
 
 
-function createLicenseFromDate(id, strDate) // DDMMYYYY
+function createLicenseFromDate(userId, strDate) // DDMMYYYY
 {
     return createLicense(
-        id,
+        userId,
         parseInt(strDate.substring(0, 2)),
         parseInt(strDate.substring(2, 4)),
         parseInt(strDate.substring(4)));
@@ -27306,14 +27346,14 @@ function createLicenseFromDate(id, strDate) // DDMMYYYY
 
 
 
-function createLicense(id, lastDay, lastMonth, lastYear, tier = 1)
+function createLicense(userId, lastDay, lastMonth, lastYear, tier = 1)
 {
     return {
-        id:        id,
+        userId:    userId,
+        tier:      tier, // 0 = free, 1+ = subscription
         lastDay:   lastDay,
         lastMonth: lastMonth,
         lastYear:  lastYear,
-        tier:      tier // 0 = free, 1+ = subscription
     };
 }
 
@@ -27321,12 +27361,25 @@ function createLicense(id, lastDay, lastMonth, lastYear, tier = 1)
 
 function createLicenseString(license)
 {
-    const str =
-          license.tier     .toString()
-        + license.lastDay  .toString().padStart(2, '0') 
-        + license.lastMonth.toString().padStart(2, '0')
-        + license.lastYear .toString(); 
+    return license.userId
+         + createLicenseInfoString(license);
+}
 
+
+
+function createLicenseInfoString(license)
+{
+    return license.tier     .toString()
+         + license.lastDay  .toString().padStart(2, '0') 
+         + license.lastMonth.toString().padStart(2, '0')
+         + license.lastYear .toString(); 
+}
+
+
+
+function createLicenseDataString(license)
+{
+    const str = createLicenseInfoString(license);
 
     let comp1 = str;
     let comp2 = '';
@@ -27341,21 +27394,16 @@ function createLicenseString(license)
     }
 
 
-    const compData = (comp1 + comp2 + comp3).substring(0, license.id.length)
+    const compData = (comp1 + comp2 + comp3).substring(0, license.userId.length)
 
-    return compactLicenseString(license.id, compData);
+    return compactLicenseDataString(license.userId, compData);
 }
 
 
 
 function getLicenseCompData(license)
 {
-    const str =
-          license.tier     .toString()
-        + license.lastDay  .toString().padStart(2, '0') 
-        + license.lastMonth.toString().padStart(2, '0')
-        + license.lastYear .toString(); 
-
+    const str = createLicenseInfoString(license);
 
     let comp1 = str;
     let comp2 = '';
@@ -27363,24 +27411,24 @@ function getLicenseCompData(license)
     
     for (let i = 0; i < comp1.length; i++)
     {
-        const code2 = ((parseInt(comp1[i]) + i) % 10);
+        const code2 = (parseInt(comp1[i]) + i) % 10;
 
         comp2 += code2.toString();
         comp3 += ((parseInt(comp1[i]) ^ code2) % 10).toString()
     }
 
 
-    return (comp1 + comp2 + comp3).substring(0, license.id.length)
+    return (comp1 + comp2 + comp3).substring(0, license.userId.length)
 }
 
 
 
-function compactLicenseString(id, str)
+function compactLicenseDataString(userId, str)
 {
-    let comp = new Uint8Array(id.length);
+    let comp = new Uint8Array(userId.length);
 
     for (let i = 0; i < comp.length; i++)
-        comp[i] = (id.charCodeAt(i) ^ str.charCodeAt(i)) % 0x100;
+        comp[i] = (userId.charCodeAt(i) ^ str.charCodeAt(i)) % 0x100;
 
     return arrayToBase32(comp);
 }
@@ -27391,7 +27439,7 @@ function hashLicenseString(str, nBytes)
 {
     // XOR wrap name around a given number of bytes
 
-    const bytes = stringToArray(str);
+    const bytes = stringToCharCodeArray(str);
 
 
     if (bytes.length > nBytes)
@@ -27415,12 +27463,12 @@ function hashLicenseString(str, nBytes)
 
 
 
-function validateLicense(id, key)
+function validateLicense(userId, licenseKey)
 {
     const now = new Date(Date.now());
 
     const license = createLicense(
-        id,
+        userId,
         now.getDate(),
         now.getMonth()+1, // months start at 0
         now.getFullYear());
@@ -27432,7 +27480,7 @@ function validateLicense(id, key)
 
     while (curCheck++ < maxCheck)
     {
-        if (validateLicenseKey(license, key))
+        if (validateLicenseKey(license, licenseKey))
             return license;
 
         license.lastDay++; // err on the side of client, include current day if it's last
@@ -27449,7 +27497,7 @@ function validateLicense(id, key)
 
 function validateLicenseKey(license, key, rec = false)
 {
-    const str   = createLicenseString(license);
+    const str   = createLicenseDataString(license);
     
     const hash  = hashLicenseString(str, licenseHashSize);
     
@@ -27623,6 +27671,7 @@ const TEXT_REPLACE   = 'TREPL';
 const TEXT_JOIN      = 'TJOIN';  
 const TEXT_CHAR      = 'TCHAR';
 const TEXT_CSV       = 'TCSV';
+const TEXT_FETCH     = 'FETCH';
 
 
 const TEXT_TYPES =
@@ -27633,7 +27682,8 @@ const TEXT_TYPES =
     TEXT_JOIN,
     TEXT_REPLACE,
     TEXT_CHAR,
-    TEXT_CSV
+    TEXT_CSV,
+    TEXT_FETCH
 ];
 
 
@@ -32605,9 +32655,10 @@ extends GTextType
             this.value = TextValue.NaN;
 
 
-        genPushUpdateValue(parse, this.nodeId, 'value', this.value);
         genPushUpdateValue(parse, this.nodeId, 'start', start);
         genPushUpdateValue(parse, this.nodeId, 'end',   end);
+        
+        genPushUpdateValue(parse, this.nodeId, 'value', this.value);
 
 
         this.validate();
@@ -32736,9 +32787,10 @@ extends GTextType
             
         genPushUpdateValue(parse, this.nodeId, 'what',  _what);
         genPushUpdateValue(parse, this.nodeId, 'with',  _with);
+        
         genPushUpdateValue(parse, this.nodeId, 'value', this.value);
 
-
+        
         this.validate();
 
         return this;
@@ -32821,24 +32873,27 @@ extends GOperator
     inputs = [];
 
     value;
+    separator;
 
 
 
     constructor(nodeId, options)
     {
-        super(LIST, nodeId, options);
+        super(TEXT_CSV, nodeId, options);
     }
 
 
     
     copy()
     {
-        const copy = new GList(this.nodeId, this.options);
+        const copy = new GTextCSV(this.nodeId, this.options);
 
         copy.copyBase(this);
 
-        copy.inputs = this.inputs.map(i => i.copy());
-        copy.value  = this.value.copy();
+        copy.inputs    = this.inputs.map(i => i.copy());
+
+        copy.value     = this.value    .copy();
+        copy.separator = this.separator.copy();
 
         return copy;
     }
@@ -32853,21 +32908,22 @@ extends GOperator
 
         this.value = new ListValue();
 
-        for (let i = 0; i < this.inputs.length; i++)
-        {
-            const input = this.inputs[i].eval(parse).toValue();
+        // for (let i = 0; i < this.inputs.length; i++)
+        // {
+        //     const input = this.inputs[i].eval(parse).toValue();
 
-            if (input.type == LIST_VALUE)
-            {
-                for (const item of input.items)
-                    this.value.items.push(item);   
-            }
-            else
-                this.value.items.push(input);
-        }
+        //     if (input.type == LIST_VALUE)
+        //     {
+        //         for (const item of input.items)
+        //             this.value.items.push(item);   
+        //     }
+        //     else
+        //         this.value.items.push(input);
+        // }
     
 
-        genPushUpdateValue(parse, this.nodeId, 'value', this.value);
+        genPushUpdateValue(parse, this.nodeId, 'value',     this.value    );
+        genPushUpdateValue(parse, this.nodeId, 'separator', this.separator);
 
 
         this.validate();
@@ -32882,6 +32938,9 @@ extends GOperator
         return this.value.copy();
     }
 }
+
+
+
 
 
 
@@ -37973,6 +38032,7 @@ extends Control
 
 
     textarea;
+    placeholder;
 
 
     enableChangeEvent = true;
@@ -38080,6 +38140,15 @@ extends Control
         if (!this.measureData.offsetRect)
             return;
 
+            
+        this.textarea.placeholder = 
+            this.value == NAN_CHAR
+            ? UNKNOWN_DISPLAY
+            : this.textarea.defPlaceholder;
+
+        if (this.value == NAN_CHAR)
+            this.textarea.value = '';
+
 
         const  input = this.param && this.param. input;
         const output = this.param && this.param.output;
@@ -38097,14 +38166,15 @@ extends Control
 
 TextControl.prototype.initTextarea = function()
 {
-    this.textarea = createTextarea('textControlTextarea');
+    this.textarea                = createTextarea('textControlTextarea');
 
-    this.textarea.control      = this;
-    this.textarea.placeholder  = ' . . .';
+    this.textarea.control        = this;
+    this.textarea.defPlaceholder = ' . . .';
+    this.textarea.placeholder    = this.textarea.defPlaceholder;
 
-    this.textarea.style.height = defParamHeight;
+    this.textarea.style.height   = defParamHeight;
 
-    this.textarea.savedValue   = this.textarea.value;
+    this.textarea.savedValue     = this.textarea.value;
 
     //this.textarea.managing     = false; // undoing or redoing
 
@@ -38273,18 +38343,7 @@ TextControl.prototype.initTextarea = function()
 
         value = value.replace(this.suffix, '');
 
-        
-        let val = 
-            value.trim() == NAN_CHAR 
-            ? NAN_CHAR
-            : value;
 
-        let savedVal = 
-            savedValue.trim() == NAN_CHAR  
-            ? NAN_CHAR
-            : savedValue;
-
-        
         const e = new CustomEvent('finishedit', { 'detail': {
             'success':         success,
             'value':           value     .replace(this.suffix, ''),
@@ -38299,9 +38358,9 @@ TextControl.prototype.initTextarea = function()
             if (success) 
             {
                 this.setValue(
-                    value.trim() != NAN_CHAR
-                    ? val 
-                    : savedVal);
+                    value != NAN_CHAR
+                    ? value 
+                    : savedValue);
             }
             else
                 this.setValue(savedVal);
@@ -39495,7 +39554,8 @@ const iconTextReplace       = '<svg width="19" height="16" viewBox="0 0 19 16" f
 const iconTextJoin          = '<svg width="19" height="7" viewBox="0 0 19 7" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M8.9328 6V1H10.0672V6H8.9328ZM7 4.0672V2.9328H12V4.0672H7Z" fill="white"/><path d="M14 7V0H16.5654C17.0497 0 17.4522 0.0797524 17.7729 0.239258C18.0958 0.396484 18.3368 0.611816 18.4961 0.885254C18.6575 1.15869 18.7382 1.46859 18.7382 1.81494C18.7382 2.09977 18.6859 2.34359 18.5812 2.54639C18.4764 2.74691 18.3357 2.90983 18.159 3.03516C17.9823 3.16048 17.7849 3.25049 17.5668 3.30518V3.37354C17.8045 3.38721 18.0325 3.46354 18.2507 3.60254C18.471 3.73926 18.651 3.93294 18.7906 4.18359C18.9302 4.43424 19 4.7373 19 5.09277C19 5.45508 18.916 5.78092 18.748 6.07031C18.5801 6.35742 18.327 6.58415 17.9889 6.75049C17.6507 6.91683 17.2253 7 16.7127 7H14ZM15.214 5.94043H16.5196C16.9603 5.94043 17.2777 5.8527 17.4719 5.67725C17.6682 5.49951 17.7664 5.27165 17.7664 4.99365C17.7664 4.7863 17.7173 4.59945 17.6191 4.43311C17.5209 4.26449 17.3813 4.13232 17.2003 4.03662C17.0192 3.93864 16.8032 3.88965 16.5524 3.88965H15.214V5.94043ZM15.214 2.97705H16.4149C16.6243 2.97705 16.813 2.93717 16.981 2.85742C17.149 2.77539 17.281 2.66032 17.377 2.51221C17.4751 2.36182 17.5242 2.18408 17.5242 1.979C17.5242 1.70784 17.4326 1.48454 17.2493 1.30908C17.0683 1.13363 16.7989 1.0459 16.4411 1.0459H15.214V2.97705Z" fill="white"/><path d="M1.24987 7H0L2.27564 0H3.7212L6 7H4.75013L3.02367 1.43555H2.97317L1.24987 7ZM1.2909 4.25537H4.69963V5.27393H1.2909V4.25537Z" fill="white"/></svg>';
 const iconTextCharacter     = '<svg width="13" height="11" viewBox="0 0 13 11" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M0 11V0H3V1H0.966639V10H3V11H0Z" fill="white"/><path d="M8.07942 6.51406V2.6125H9.09784V9.2125H8.07942V8.09531H8.01037C7.85502 8.43047 7.61336 8.71549 7.28539 8.95039C6.95743 9.18242 6.54315 9.29844 6.04257 9.29844C5.6283 9.29844 5.26006 9.2082 4.93784 9.02773C4.61563 8.8444 4.36246 8.5694 4.17834 8.20273C3.99422 7.8332 3.90216 7.36771 3.90216 6.80625V2.6125H4.92058V6.7375C4.92058 7.21875 5.0558 7.6026 5.32622 7.88906C5.59953 8.17552 5.94763 8.31875 6.37054 8.31875C6.62371 8.31875 6.88119 8.2543 7.14299 8.12539C7.40766 7.99648 7.62918 7.79883 7.80755 7.53242C7.9888 7.26602 8.07942 6.92656 8.07942 6.51406Z" fill="white"/><path d="M13 0V11H10V10H12.0334L12 1H9.96664L10 0H13Z" fill="white"/></svg>';
 const iconTextCSV           = '<svg width="19" height="10" viewBox="0 0 19 10" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M13 3H19V4H13V3Z" fill="white"/><path d="M13 0H19V1H13V0Z" fill="white"/><path d="M13 6H19V7H13V6Z" fill="white"/><path d="M13 9H19V10H13V9Z" fill="white"/><path d="M2.39205 3L2.33665 3.46875C2.29688 3.8267 2.22585 4.19034 2.12358 4.55966C2.02415 4.93182 1.91903 5.27415 1.80824 5.58665C1.69744 5.89915 1.60795 6.14489 1.53977 6.32386H0.5C0.539773 6.15057 0.59375 5.91477 0.661932 5.61648C0.732955 5.31818 0.801136 4.98296 0.866477 4.6108C0.931818 4.23864 0.975852 3.8608 0.99858 3.47727L1.02841 3H2.39205Z" fill="white"/><path d="M6.39205 3L6.33665 3.46875C6.29688 3.8267 6.22585 4.19034 6.12358 4.55966C6.02415 4.93182 5.91903 5.27415 5.80824 5.58665C5.69744 5.89915 5.60795 6.14489 5.53977 6.32386H4.5C4.53977 6.15057 4.59375 5.91477 4.66193 5.61648C4.73295 5.31818 4.80114 4.98296 4.86648 4.6108C4.93182 4.23864 4.97585 3.8608 4.99858 3.47727L5.02841 3H6.39205Z" fill="white"/><path d="M10.392 3L10.3366 3.46875C10.2969 3.8267 10.2259 4.19034 10.1236 4.55966C10.0241 4.93182 9.91903 5.27415 9.80824 5.58665C9.69744 5.89915 9.60795 6.14489 9.53977 6.32386H8.5C8.53977 6.15057 8.59375 5.91477 8.66193 5.61648C8.73295 5.31818 8.80114 4.98296 8.86648 4.6108C8.93182 4.23864 8.97585 3.8608 8.99858 3.47727L9.02841 3H10.392Z" fill="white"/></svg>';
- 
+const iconTextFetch         = '<svg width="17" height="11" viewBox="0 0 17 11" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M0.5 5.51719V4.98437C1.05152 4.98437 1.93627 4.88411 2.15423 4.68359C2.3755 4.48307 2.48614 4.14792 2.48614 3.67813V2.30313C2.48614 1.90781 2.52907 1.56549 2.61494 1.27617C2.70411 0.986849 2.84777 0.747657 3.04592 0.558594C3.24407 0.369532 3.50827 0.229167 3.83853 0.137501C4.16878 0.0458335 5.51453 0 6 0V0.842188C5.61691 0.842188 4.37684 0.89375 4.15557 0.996875C3.9376 1.1 3.78238 1.26042 3.68991 1.47813C3.60074 1.69297 3.55616 1.96797 3.55616 2.30313V4.02188C3.55616 4.24531 3.52148 4.4487 3.45213 4.63203C3.38608 4.81536 3.26223 4.97292 3.08059 5.10469C2.89896 5.23646 2.63971 5.33815 2.30285 5.40977C1.96929 5.48138 1.03501 5.51719 0.5 5.51719ZM6 11C5.51453 11 4.16878 10.9542 3.83853 10.8625C3.50827 10.7708 3.24407 10.6305 3.04592 10.4414C2.84777 10.2523 2.70411 10.0132 2.61494 9.72383C2.52907 9.4345 2.48614 9.09219 2.48614 8.69687V7.32188C2.48614 6.85208 2.3755 6.51693 2.15423 6.31641C1.93627 6.11589 1.05152 6.01562 0.5 6.01562V5.48281C1.03501 5.48281 1.96929 5.51862 2.30285 5.59023C2.63971 5.66185 2.89896 5.76354 3.08059 5.89531C3.26223 6.02708 3.38608 6.18464 3.45213 6.36797C3.52148 6.5513 3.55616 6.75469 3.55616 6.97813V8.69687C3.55616 9.03203 3.60074 9.30703 3.68991 9.52188C3.78238 9.73672 3.9376 9.8957 4.15557 9.99883C4.37684 10.1048 5.61691 10.1578 6 10.1578V11ZM0.5 6.01562V4.98437H2.1691V6.01562H0.5Z" fill="white"/><path d="M16.5 5.48281V6.01562C15.9485 6.01562 15.0621 6.11589 14.8408 6.31641C14.6228 6.51693 14.5139 6.85208 14.5139 7.32188V8.69687C14.5139 9.09219 14.4693 9.4345 14.3801 9.72383C14.2942 10.0132 14.1522 10.2523 13.9541 10.4414C13.7559 10.6305 13.4917 10.7708 13.1615 10.8625C12.8312 10.9542 11.4855 11 11 11V10.1578C11.3831 10.1578 12.6215 10.1048 12.8395 9.99883C13.0607 9.8957 13.216 9.73672 13.3051 9.52188C13.3976 9.30703 13.4438 9.03203 13.4438 8.69687V6.97813C13.4438 6.75469 13.4769 6.5513 13.5429 6.36797C13.6123 6.18464 13.7378 6.02708 13.9194 5.89531C14.101 5.76354 14.3586 5.66185 14.6922 5.59023C15.0291 5.51862 15.965 5.48281 16.5 5.48281ZM11 0C11.4855 0 12.8312 0.0458335 13.1615 0.137501C13.4917 0.229167 13.7559 0.369532 13.9541 0.558594C14.1522 0.747657 14.2942 0.986849 14.3801 1.27617C14.4693 1.56549 14.5139 1.90781 14.5139 2.30313V3.67813C14.5139 4.14792 14.6228 4.48307 14.8408 4.68359C15.0621 4.88411 15.9485 4.98437 16.5 4.98437V5.51719C15.965 5.51719 15.0291 5.48138 14.6922 5.40977C14.3586 5.33815 14.101 5.23646 13.9194 5.10469C13.7378 4.97292 13.6123 4.81536 13.5429 4.63203C13.4769 4.4487 13.4438 4.24531 13.4438 4.02188V2.30313C13.4438 1.96797 13.3976 1.69297 13.3051 1.47813C13.216 1.26042 13.0607 1.1 12.8395 0.996875C12.6215 0.89375 11.3831 0.842188 11 0.842188V0ZM16.5 4.98437V6.01562H14.8309V4.98437H16.5Z" fill="white"/></svg>';
+
 const iconColor             = '<svg width="13" height="15" viewBox="0 0 13 15" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M11.8409 3.43385C10.7465 2.2502 9.18038 1.50909 7.44118 1.50909C4.13249 1.50909 1.45027 4.19132 1.45027 7.5C1.45027 10.8087 4.13249 13.4909 7.44118 13.4909C9.18038 13.4909 10.7465 12.7498 11.8409 11.5662" stroke="white" stroke-width="1.2"/><path d="M7.5 8.57512C8.09377 8.57512 8.57511 8.09378 8.57511 7.50001C8.57511 6.90624 8.09377 6.4249 7.5 6.4249C6.90623 6.4249 6.42489 6.90624 6.42489 7.50001C6.42489 8.09378 6.90623 8.57512 7.5 8.57512Z" fill="white"/></svg>';
 const iconValidColor        = '<svg width="17" height="15" viewBox="-1 0 17 15" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M11.8409 11.5662C10.7465 12.7498 9.18038 13.4909 7.44118 13.4909C4.13249 13.4909 1.45027 10.8087 1.45027 7.5C1.45027 4.19131 4.13249 1.50909 7.44118 1.50909C8.66322 1.50909 9.80806 2.02212 10.7556 2.65033" stroke="white" stroke-width="1.2"/><path fill-rule="evenodd" clip-rule="evenodd" d="M15.6832 3.62548L9.18921 10.1195L5.38744 6.31769L6.52965 5.17548L9.18921 7.83504L14.5411 2.48326L15.6832 3.62548Z" fill="white"/></svg>';
 const iconCorrectColor      = '<svg width="14" height="15" viewBox="0 0 14 15" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M11.9123 3.43385C10.8179 2.2502 9.25181 1.50909 7.51261 1.50909C4.20392 1.50909 1.5217 4.19132 1.5217 7.5C1.5217 10.8087 4.20392 13.4909 7.51261 13.4909C9.25181 13.4909 10.8179 12.7498 11.9123 11.5662" stroke="white" stroke-width="1.2"/><path d="M6.97348 10.659L7.06123 8.24587L5.02106 9.54017L4.49457 8.61881L6.64443 7.5L4.49457 6.3812L5.02106 5.45983L7.06123 6.75414L6.97348 4.34103H8.02648L7.93873 6.75414L9.9789 5.45983L10.5054 6.3812L8.35554 7.5L10.5054 8.61881L9.9789 9.54017L7.93873 8.24587L8.02648 10.659H6.97348Z" fill="white"/></svg>';
@@ -40758,7 +40818,7 @@ function initGeneratorMenus()
                          new MenuItem('Interpolate', {icon: iconInterpolate, callback: e => actionManager.do(getCreateNodeAction(NUMBER_INTERPOLATE, btnNumber.div, getCreateOptions(e)))})]);
         
     
-    menuString = new Menu('String nodes', true, false);
+    menuString = new Menu('Text nodes', true, false);
     menuString.addItems([
         new MenuItem('Text',      {icon: iconText,          callback: e => actionManager.do(getCreateNodeAction(TEXT,           btnText.div, getCreateOptions(e)))}),
         new MenuItem('',          {separator: true}),
@@ -40768,7 +40828,9 @@ function initGeneratorMenus()
         new MenuItem('Join',      {icon: iconTextJoin,      callback: e => actionManager.do(getCreateNodeAction(TEXT_JOIN,      btnText.div, getCreateOptions(e)))}),
         new MenuItem('Replace',   {icon: iconTextReplace,   callback: e => actionManager.do(getCreateNodeAction(TEXT_REPLACE,   btnText.div, getCreateOptions(e)))}),
         new MenuItem('',          {separator: true}),
-        new MenuItem('CSV',       {icon: iconTextCSV,       callback: e => actionManager.do(getCreateNodeAction(TEXT_CSV,       btnText.div, getCreateOptions(e)))})]);
+        new MenuItem('CSV',       {icon: iconTextCSV,       callback: e => actionManager.do(getCreateNodeAction(TEXT_CSV,       btnText.div, getCreateOptions(e)))}),
+        new MenuItem('',          {separator: true}),
+        new MenuItem('Fetch',     {icon: iconTextFetch,     callback: e => actionManager.do(getCreateNodeAction(TEXT_FETCH,     btnText.div, getCreateOptions(e)))})]);
     
 
     menuColorStyle = new Menu('Color style', true, false);
@@ -46383,20 +46445,22 @@ extends Parameter
 class   ListParam
 extends Parameter
 {
-    // get value() 
-    // { 
-    //     return new NumberValue(
-    //         this.controls[0].value, 
-    //         this.controls[0].displayDec); 
-    // }
+    value;
+    //defaultValue;
 
-    // oldValue = null;
+    oldValue = null;
 
-
-    // defaultValue;
-    // alwaysSaveValue = false;
+    
+    // _warningOverlay;
+    
+    // forceShowWarning = false;
+    // warningStyle;
 
 
+    // checkers;
+    
+
+    
     // get valueText() { return this.controls[0].valueText; }
     // set valueText(text) 
     // {
@@ -46404,118 +46468,87 @@ extends Parameter
     //     this.controls[0].update();
     // }
 
-
-    //  constructor(id,
-    //             name, 
-    //             showName,
-    //             hasInput,
-    //             hasOutput,
-    //             defaultValue = 0, 
-    //             min          = Number.MIN_SAFE_INTEGER, 
-    //             max          = Number.MAX_SAFE_INTEGER,
-    //             decimals     = 0,
-    //             dragScale    = 0.05)
-    // {
-    //     super(NUMBER_VALUE, id, name);
-
-        
-    //     this.controls[0] = new NumberControl(
-    //         createDiv('numberControl'),
-    //         this,
-    //         this.id,
-    //         this.name, 
-    //         showName,
-    //         defaultValue,
-    //         min,
-    //         max,
-    //         decimals,   
-    //         dragScale); 
-
-            
-    //     this.controls[0].div.zIndex        = 0;
-
-    //     this.controls[0].div.style.display = 'inline-block';
-    //     this.controls[0].div.style.width   = '100%';
-
-   
-    //     this.defaultValue = new NumberValue(defaultValue, decimals);
-
-
-    //     this.controls[0].successOnFocusOut = true;
-
-    //     this.div.appendChild(this.controls[0].div);
-
-       
-    //     if (hasInput)  this.initInput(NUMBER_TYPES, getParamInputValuesForUndo, this.input_getBackInitValue);
-    //     if (hasOutput) this.initOutput([NUMBER_VALUE], this.output_genRequest, getParamOutputValuesForUndo, this.output_backInit);
-
-
-    //     this.controls[0].addEventListener('change', () => 
-    //     { 
-    //         this.setValue(this.value, true, false);
-    //         this.changing = true;
-    //     });
-
-
-    //     this.controls[0].addEventListener('confirm', () => 
-    //     { 
-    //         this.changing = false;
-    //     });
-
-
-    //     this.controls[0].addEventListener('finishedit', e =>
-    //     { 
-    //         let   dec    = decCount(e.detail.value); 
-    //         const oldDec = decCount(e.detail.oldValue);
-
-            
-    //         if (!e.detail.success)
-    //             return;
-
-
-    //         if (   Math.abs(e.detail.value - e.detail.oldValue) > Number.EPSILON
-    //             && dec >= oldDec)
-    //         {
-    //             this.setValue(new NumberValue(parseFloat(e.detail.value), dec), true);
-    //             e.preventSetValue = true;
-    //         }
-    //         else if (this.controls[0].allowEditDecimals)
-    //         {
-    //             if (Math.abs(parseFloat(e.detail.value) - parseFloat(e.detail.oldValue)) <= Number.EPSILON)
-    //                 dec += Math.log10(this.controls[0].valueScale);
-    //             else
-    //                 dec = oldDec;
-
-    //             this.setValue(new NumberValue(parseFloat(e.detail.value), dec), true);
-    //             e.preventSetValue = true;
-    //         }
-    //     });
-
-
-
-    //     createTooltipSrc(this.controls[0].div, this.controls[0].div, () => 
-    //     {
-    //         this.controls[0].addEventListener('change', () => 
-    //         {
-    //             const tooltip = this.getTooltip();
-    //             if (tooltip) hideTooltip(tooltip);
-    //         });
-            
-    //         return this.getTooltip();
-    //     });
-    // }
-
-
-
-    // getTooltip = () => null;
-
+    
+    // get value() { return this.controls[0].value; }
+    
 
     
-    // setName(name, dispatchEvents = true)
-    // {
-    //     super.setName(name, dispatchEvents);
-    //     this.controls[0].setName(name);
-    // }
+    constructor(id,
+                name, 
+                hasInput,
+                hasOutput,
+                defaultValue = ColorValue.fromRgb([0x80, 0x80, 0x80]),
+                dragScale    = 0.05)
+    {
+        super(LIST_VALUE, id, name);
+
+        //this.defaultValue = defaultValue;
+
+
+        // this.controls[0] = new ColorControl(
+        //     null,
+        //     this,
+        //     this.id,
+        //     this.name, 
+        //     showName,
+        //     defaultValue,   
+        //     dragScale); 
+
+        // this.controls[0].successOnFocusOut = true;
+        // this.controls[0].div.zIndex        = 0;
+
+        // this.controls[0].div.style.display = 'inline-block';
+        // this.controls[0].div.style.width   = '100%';
+
+        
+        // this._warningOverlay = createDiv('colorWarningOverlay');
+        // this._warningOverlay.style.zIndex  = 21;
+        
+        // this.div.appendChild(this._warningOverlay);
+
+
+        // this.checkers                      = createDiv();
+ 
+        // this.checkers.style.position       = 'absolute';
+        // this.checkers.style.width          = '100%';
+        // this.checkers.style.height         = '20px';
+        // this.checkers.style.display        = 'none';
+        // this.checkers.style.pointerEvents  = 'none';
+
+
+        // this.div.appendChild(this.checkers);
+        // this.div.appendChild(this.controls[0].div);
+
+       
+        // if (hasInput)  this.initInput(COLOR_TYPES, getParamInputValuesForUndo, this.input_getBackInitValue);
+        // if (hasOutput) this.initOutput([COLOR_VALUE], this.output_genRequest, getParamOutputValuesForUndo, this.output_backInit);
+
+
+        // this.controls[0].addEventListener('confirm', () => 
+        // {
+        //     this.setValue(this.controls[0].value, true, false); 
+        // });
+
+
+        // this.controls[0].addEventListener('finishedit', e =>
+        // { 
+        //     if (!e.detail.success)
+        //         return;
+
+        //     if (   e.detail.value.trim() != ''
+        //         && e.detail.value != e.detail.oldValue)
+        //     {
+        //         const webColor = webColors.find(wc => wc.name.toLowerCase() == e.detail.value.toLowerCase());
+        //         if (webColor) e.detail.value = webColor.color;
+
+        //         const rgb = validHex2rgb(e.detail.value);
+        //         const val = ColorValue.fromRgb(scaleRgb(rgb));
+
+        //         this.setValue(val, true);
+        //         e.preventSetValue = true;
+        //     }
+        // });
+    }
 
 
 
@@ -46532,46 +46565,22 @@ extends Parameter
     // {
     //     // 'this' is the output
 
-    //     console.assert(value.type == NUMBER_VALUE, 'expected NUMBER_VALUE in backInit()');
+    //     console.assert(value.type == COLOR_VALUE, 'expected COLOR_VALUE in backInit()');
         
     //     this.param.setValue(value, false, true, false);
-    // } 
-    
-    
-
-    // setValue(value, createAction, updateControl = true, dispatchEvents = true) 
-    // {
-    //     // console.log(this.id + '.setValue() value =', value);
-
-    //     console.assert(
-    //         value instanceof NumberValue,
-    //         'value must be a NumberValue');
-
-
-    //     this.preSetValue(value, createAction, dispatchEvents);
-
-        
-    //     //console.log('NumberParamBase.setValue value =', value);
-    //     if (updateControl)
-    //     {
-    //         this.controls[0].setDecimals(value.decimals, value.decimals);
-    //         this.controls[0].setValue(value.value, false, false); 
-    //     }
-
-
-    //     super.setValue(value, createAction, updateControl, dispatchEvents);
-
-        
-    //     this.oldValue = this.value.copy();
-    // }    
-
-
-
-    // showValue(show)
-    // {
-    //     this.controls[0].showValue = show;
-    //     this.controls[0].update();
     // }
+
+
+
+    // setName(name, dispatchEvents = true)
+    // {
+    //     super.setName(name, dispatchEvents);
+    //     this.controls[0].setName(name);
+    // }
+
+
+
+    // isDefault = () => this.value.equals(this.defaultValue);
 
 
 
@@ -46589,16 +46598,71 @@ extends Parameter
 
 
 
-    // getValueForUndo()
+    // setValue(value, createAction, updateControl = true, dispatchEvents = true) 
     // {
-    //     return {
-    //         paramId:    this.id, 
-    //         value:      this.value,
-    //         min:        this.controls[0].min,
-    //         max:        this.controls[0].max,
-    //         displayMin: this.controls[0].displayMin,
-    //         displayMax: this.controls[0].displayMax
-    //     };
+    //     console.assert(
+    //            value.type 
+    //         && value.type == COLOR_VALUE, 
+    //         'value.type must be COLOR_VALUE');
+            
+    //     this.preSetValue(value, createAction, dispatchEvents);
+
+    //     this.controls[0].value = value.copy();
+
+    //     if (updateControl)
+    //         this.controls[0].setValue(this.controls[0].value, true, false); 
+
+
+    //     super.setValue(value, createAction, updateControl, dispatchEvents);
+
+
+    //     this.oldValue = this.value.copy();
+    // }    
+
+
+
+    // updateControls()
+    // {
+    //     this.updateWarningOverlay();
+
+
+    //     const noColor = 
+    //         darkMode
+    //         ? rgbNoColorDark
+    //         : rgbNoColorLight;
+
+    //     const rgbVal   = this.value.toRgb();
+    //     const rgbaText = getTextColorFromBackColor(rgbVal, 1);
+
+    //     if (this.input)
+    //     {
+    //         this.input.colorLight  = 
+    //         this.input.colorDark   = rgb_a(rgbaText, 0.2);
+    //         this.input.wireColor   = !rgbIsNaN(rgbVal) ? rgbVal : noColor;
+    //     }
+
+    //     if (this.output)
+    //     {
+    //         this.output.colorLight =
+    //         this.output.colorDark  = rgb_a(rgbaText, 0.2);
+    //         this.output.wireColor  = !rgbIsNaN(rgbVal) ? rgbVal : noColor;
+    //     }
+
+
+    //     this.checkers.style.background = 
+    //         darkMode
+    //         ?   'linear-gradient(45deg, #222 25%, transparent 25%, transparent 75%, #222 75%), '
+    //           + 'linear-gradient(45deg, #222 25%, transparent 25%, transparent 75%, #222 75%)'
+    //         :   'linear-gradient(45deg, #ddd 25%, transparent 25%, transparent 75%, #ddd 75%), '
+    //           + 'linear-gradient(45deg, #ddd 25%, transparent 25%, transparent 75%, #ddd 75%)';
+
+    //     this.checkers.style.backgroundColor    = darkMode ? '#444' : '#fff';
+
+    //     this.checkers.style.backgroundSize     = '20px 20px';
+    //     this.checkers.style.backgroundPosition = '0 0, 10px 10px';
+
+
+    //     super.updateControls();
     // }
 
 
@@ -46615,7 +46679,7 @@ extends Parameter
     //         &&  gen.passedNodes.includes(this.node))
     //         return this.output.cache;
 
-            
+
     //     const request = [];
 
 
@@ -46624,10 +46688,8 @@ extends Parameter
     //         request.push(...pushInputOrParam(this.input, gen));
 
     //     else request.push( 
-    //         NUMBER_VALUE, 
-    //         new NumberValue(
-    //             this.controls[0].value, 
-    //             this.controls[0].displayDec).toString());
+    //         COLOR_VALUE, 
+    //         this.value.toString());
 
 
     //     return request;
@@ -46654,46 +46716,68 @@ extends Parameter
     //     enable &= 
     //            !this.input 
     //         || !this.input.connected;
-            
+
     //     enableElementText(this.controls[0].div, enable);
-
+        
     //     this.controls[0].readOnly = !enable;
-
-    //     this.updateValueText();
     // }
     
     
     
-    // updateValueText()
+    // updateWarningOverlay() 
     // {
-    //     let unknown = false;
+    //     //console.log(this.id + '.updateWarningOverlay()');
 
-    //     // if (   this.input
-    //     //     && this.input.connected)
-    //     // {
-    //     //     if (   this.input.isConnectedUncached()
-    //     //         && this.node.hasMultipliedOutputs())
-    //     //         unknown = true;
-    //     // }
+    //     const rgb = this.value.toRgb();
 
+    //     if (!rgbIsNaN(rgb))
+    //     {
+    //         if (  !rgbIsValid(rgb)
+    //             || this.forceShowWarning)
+    //         {
+    //             if (!this.forceShowWarning)
+    //                 this.warningStyle = getDefaultWarningStyle(rgb);
 
-    //     if (unknown)
-    //         this.controls[0].valueText = UNKNOWN_DISPLAY;
-
-    //     this.controls[0].showBar = !unknown;
+    //             this.updateWarningOverlayStyle(rgb);
+    //         }
+    //         else
+    //             this._warningOverlay.style.display = 'none';
+    //     }
+    //     else
+    //     {
+    //         this.warningStyle = getDefaultWarningStyle(rgb);
+    //         this.updateWarningOverlayStyle(rgb);
+    //     }
     // }
 
 
 
-    // isDefault = () => 
-    //        !this.alwaysSaveValue
-    //      && this.value.equals(this.defaultValue);
+    // updateWarningOverlayStyle(colBack, height = -1)
+    // {
+    //     //console.log('colBack =', colBack);
+        
+    //     this._warningOverlay.style.height = 
+    //         height < 0
+    //         ? this.div.offsetHeight
+    //         : height;
 
+    //     this._warningOverlay.style.background =
+    //            rgbIsOk(colBack)
+    //         && !this.forceShowWarning
+    //         ? 'transparent'
+    //         : 'repeating-linear-gradient('
+    //            + '-45deg, '
+    //            + 'transparent 0 7px,'
+    //            +  this.warningStyle + ' 7px 14px)';
 
-
+    //     this._warningOverlay.style.display = 'block';
+    // }
+    
+    
+    
     // loadParam(param)
     // {
-    //     this.setValue(parseNumberValue(param)[0], true, true, false);
+    //     this.setValue(parseColorValue(param)[0], true, false, false);
     // }
 }
 
@@ -47244,7 +47328,7 @@ class Output
 
         const color = 
             this.param
-            ? rgb_a(rgbHeaderFromType(this.param.type, true), 0.5)
+            ? rgb_a(rgbHeaderFromType(this.param.type, true), 0.38)
             : (darkMode
                ? this.colorDark
                : this.colorLight);
@@ -47256,7 +47340,7 @@ class Output
                 ? Math.min(color[3] * this.overFactor, 1) 
                 : color[3]));
 
-                
+
         this.div.style.pointerEvents   = 'auto';
         this.div.style.backgroundColor = colorStyle;
 
@@ -53121,7 +53205,7 @@ extends OperatorWithValue
 
 
 class   OpTextReplace
-extends OperatorBase
+extends OperatorWithValue
 {
     paramWhat;
     paramWith;
@@ -53138,6 +53222,7 @@ extends OperatorBase
         this.addInput (new Input (TEXT_TYPES));
         this.addOutput(new Output([TEXT_VALUE], this.output_genRequest));
 
+        this.addParam(this.paramValue);
         this.addParam(this.paramWhat = new TextParam('what', 'what', true,  true));
         this.addParam(this.paramWith = new TextParam('with', 'with', true,  true));
     }
@@ -53178,8 +53263,9 @@ extends OperatorBase
 
     updateParams()
     {
-        this.paramWhat.enableControlText(true);
-        this.paramWith.enableControlText(true);
+        this.paramValue.enableControlText(false);
+        this.paramWhat .enableControlText(true);
+        this.paramWith .enableControlText(true);
 
         this.updateParamControls();
     }
@@ -53287,6 +53373,7 @@ extends ResizableOperatorWithValue
 class   OpTextCSV
 extends OperatorBase
 {
+    paramValue;
     paramSeparator;
 
 
@@ -53299,7 +53386,8 @@ extends OperatorBase
         this.addInput (new Input (TEXT_TYPES));
         this.addOutput(new Output([LIST_VALUE], this.output_genRequest));
 
-        this.addParam(this.paramSeparator = new TextParam('separator', 'separator', true,  true));
+        this.addParam(this.paramValue     = new ListParam('value',     '',          true, true));
+        this.addParam(this.paramSeparator = new TextParam('separator', 'separator', true, true));
     }
 
 
@@ -53337,11 +53425,15 @@ extends OperatorBase
 
     updateParams()
     {
+        this.paramValue    .enableControlText(false);
         this.paramSeparator.enableControlText(true);
 
         this.updateParamControls();
     }
 }
+
+
+
 
 
 class OpColorBase
@@ -58382,6 +58474,7 @@ function createNode(nodeType, creatingButton = null, createdNodeId = -1, options
         case TEXT_REPLACE:            node = new OpTextReplace();       break;
         case TEXT_JOIN:               node = new OpTextJoin();          break;
         case TEXT_CSV:                node = new OpTextCSV();           break;
+        case TEXT_FETCH:              node = new OpTextFetch();         break;
         
         case COLOR:                   node = new OpColor(options);      break;
         case VALID_COLOR:             node = new OpValidColor();        break;

@@ -81,7 +81,7 @@ function fromUtf8(str)
 
 
 
-function arrayToString(bytes) 
+function charCodeArrayToString(bytes) 
 {
     let str = '';
 
@@ -93,7 +93,7 @@ function arrayToString(bytes)
 
 
 
-function stringToArray(str)
+function stringToCharCodeArray(str)
 {
     return Array.from(fromUtf8(str), c => c.charCodeAt(0));
 }
@@ -3395,6 +3395,7 @@ const TEXT_REPLACE   = 'TREPL';
 const TEXT_JOIN      = 'TJOIN';  
 const TEXT_CHAR      = 'TCHAR';
 const TEXT_CSV       = 'TCSV';
+const TEXT_FETCH     = 'FETCH';
 
 
 const TEXT_TYPES =
@@ -3405,7 +3406,8 @@ const TEXT_TYPES =
     TEXT_JOIN,
     TEXT_REPLACE,
     TEXT_CHAR,
-    TEXT_CSV
+    TEXT_CSV,
+    TEXT_FETCH
 ];
 
 
@@ -8377,9 +8379,10 @@ extends GTextType
             this.value = TextValue.NaN;
 
 
-        genPushUpdateValue(parse, this.nodeId, 'value', this.value);
         genPushUpdateValue(parse, this.nodeId, 'start', start);
         genPushUpdateValue(parse, this.nodeId, 'end',   end);
+        
+        genPushUpdateValue(parse, this.nodeId, 'value', this.value);
 
 
         this.validate();
@@ -8508,9 +8511,10 @@ extends GTextType
             
         genPushUpdateValue(parse, this.nodeId, 'what',  _what);
         genPushUpdateValue(parse, this.nodeId, 'with',  _with);
+        
         genPushUpdateValue(parse, this.nodeId, 'value', this.value);
 
-
+        
         this.validate();
 
         return this;
@@ -8593,24 +8597,27 @@ extends GOperator
     inputs = [];
 
     value;
+    separator;
 
 
 
     constructor(nodeId, options)
     {
-        super(LIST, nodeId, options);
+        super(TEXT_CSV, nodeId, options);
     }
 
 
     
     copy()
     {
-        const copy = new GList(this.nodeId, this.options);
+        const copy = new GTextCSV(this.nodeId, this.options);
 
         copy.copyBase(this);
 
-        copy.inputs = this.inputs.map(i => i.copy());
-        copy.value  = this.value.copy();
+        copy.inputs    = this.inputs.map(i => i.copy());
+
+        copy.value     = this.value    .copy();
+        copy.separator = this.separator.copy();
 
         return copy;
     }
@@ -8625,21 +8632,22 @@ extends GOperator
 
         this.value = new ListValue();
 
-        for (let i = 0; i < this.inputs.length; i++)
-        {
-            const input = this.inputs[i].eval(parse).toValue();
+        // for (let i = 0; i < this.inputs.length; i++)
+        // {
+        //     const input = this.inputs[i].eval(parse).toValue();
 
-            if (input.type == LIST_VALUE)
-            {
-                for (const item of input.items)
-                    this.value.items.push(item);   
-            }
-            else
-                this.value.items.push(input);
-        }
+        //     if (input.type == LIST_VALUE)
+        //     {
+        //         for (const item of input.items)
+        //             this.value.items.push(item);   
+        //     }
+        //     else
+        //         this.value.items.push(input);
+        // }
     
 
-        genPushUpdateValue(parse, this.nodeId, 'value', this.value);
+        genPushUpdateValue(parse, this.nodeId, 'value',     this.value    );
+        genPushUpdateValue(parse, this.nodeId, 'separator', this.separator);
 
 
         this.validate();
@@ -8654,6 +8662,9 @@ extends GOperator
         return this.value.copy();
     }
 }
+
+
+
 
 
 
@@ -14593,6 +14604,51 @@ function genParseTextCharacter(parse)
 
 
 
+function genParseTextCSV(parse)
+{
+    const [, nodeId, options, ignore] = genParseNodeStart(parse);
+
+
+    const csv = new GTextCSV(nodeId, options);
+   
+
+    let nInputs = -1;
+    
+    if (!ignore)
+    {
+        nInputs = parseInt(parse.move());
+        console.assert(nInputs == 0 || nInputs == 1, 'nInputs must be [0, 1]');
+    }
+
+    
+    if (parse.settings.logRequests) 
+        logReq(csv, parse, ignore, nInputs);
+
+
+    if (ignore) 
+    {
+        genParseNodeEnd(parse, csv);
+        return parse.parsedNodes.find(n => n.nodeId == nodeId);
+    }
+
+
+    parse.nTab++;
+
+
+    if (nInputs == 1)
+        csv.input = genParse(parse);
+
+    csv.separator = genParse(parse);
+
+    
+    parse.nTab--;
+
+
+    genParseNodeEnd(parse, csv);
+    return csv;
+}
+
+
 class Parse
 {
     request;
@@ -14725,6 +14781,7 @@ function genParse(parse, inParam = true)
     else if (parse.next == TEXT_REPLACE           ) result = genParseTextReplace     (parse);
     else if (parse.next == TEXT_JOIN              ) result = genParseTextJoin        (parse);
     else if (parse.next == TEXT_CSV               ) result = genParseTextCSV         (parse);
+    else if (parse.next == TEXT_FETCH             ) result = genParseTextFetch       (parse);
 
     else if (parse.next == COLOR_VALUE            ) result = genParseColorValue      (parse);
     else if (parse.next == COLOR                  ) result = genParseColor           (parse);

@@ -57,13 +57,13 @@ function toUtf8(str) {
 function fromUtf8(str) {
     return decodeURIComponent(encodeURI(str));
 }
-function arrayToString(bytes) {
+function charCodeArrayToString(bytes) {
     let str = '';
     for (let i = 0; i < bytes.length; i++)
         str += String.fromCharCode(bytes[i]);
     return str;
 }
-function stringToArray(str) {
+function stringToCharCodeArray(str) {
     return Array.from(fromUtf8(str), c => c.charCodeAt(0));
 }
 function newSizeArrayFrom(array, size) {
@@ -331,6 +331,7 @@ const TEXT_REPLACE = 'TREPL';
 const TEXT_JOIN = 'TJOIN';
 const TEXT_CHAR = 'TCHAR';
 const TEXT_CSV = 'TCSV';
+const TEXT_FETCH = 'FETCH';
 const TEXT_TYPES = [
     TEXT_VALUE,
     TEXT,
@@ -338,7 +339,8 @@ const TEXT_TYPES = [
     TEXT_JOIN,
     TEXT_REPLACE,
     TEXT_CHAR,
-    TEXT_CSV
+    TEXT_CSV,
+    TEXT_FETCH
 ];
 const COLOR_VALUE = 'COL#';
 const COLOR = 'COL';

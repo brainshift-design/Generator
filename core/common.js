@@ -75,7 +75,7 @@ function fromUtf8(str)
 
 
 
-function arrayToString(bytes) 
+function charCodeArrayToString(bytes) 
 {
     let str = '';
 
@@ -87,7 +87,7 @@ function arrayToString(bytes)
 
 
 
-function stringToArray(str)
+function stringToCharCodeArray(str)
 {
     return Array.from(fromUtf8(str), c => c.charCodeAt(0));
 }

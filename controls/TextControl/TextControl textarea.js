@@ -1,13 +1,14 @@
 TextControl.prototype.initTextarea = function()
 {
-    this.textarea = createTextarea('textControlTextarea');
+    this.textarea                = createTextarea('textControlTextarea');
 
-    this.textarea.control      = this;
-    this.textarea.placeholder  = ' . . .';
+    this.textarea.control        = this;
+    this.textarea.defPlaceholder = ' . . .';
+    this.textarea.placeholder    = this.textarea.defPlaceholder;
 
-    this.textarea.style.height = defParamHeight;
+    this.textarea.style.height   = defParamHeight;
 
-    this.textarea.savedValue   = this.textarea.value;
+    this.textarea.savedValue     = this.textarea.value;
 
     //this.textarea.managing     = false; // undoing or redoing
 
@@ -176,18 +177,7 @@ TextControl.prototype.initTextarea = function()
 
         value = value.replace(this.suffix, '');
 
-        
-        let val = 
-            value.trim() == NAN_CHAR 
-            ? NAN_CHAR
-            : value;
 
-        let savedVal = 
-            savedValue.trim() == NAN_CHAR  
-            ? NAN_CHAR
-            : savedValue;
-
-        
         const e = new CustomEvent('finishedit', { 'detail': {
             'success':         success,
             'value':           value     .replace(this.suffix, ''),
@@ -202,9 +192,9 @@ TextControl.prototype.initTextarea = function()
             if (success) 
             {
                 this.setValue(
-                    value.trim() != NAN_CHAR
-                    ? val 
-                    : savedVal);
+                    value != NAN_CHAR
+                    ? value 
+                    : savedValue);
             }
             else
                 this.setValue(savedVal);

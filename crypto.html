@@ -30,26 +30,29 @@
         let txt = '';
 
 
-        const id   = getQueryVariable('id');
-        const date = getQueryVariable('date'); // DDMMYYYY
+        const userId  = getQueryVariable('userId');
+        const date    = getQueryVariable('date'); // DDMMYYYY
 
-        const lic  = createLicenseFromDate(id, date);
-        const key  = createLicenseKey(lic);
+        let   license = createLicenseFromDate(userId, date);
+        const key     = createLicenseKey(license);
 
         // const [p, q] = createCryptoPrimePair(65537n);
 
         // txt += 'p: ' + p + '<br/>';
         // txt += 'q: ' + q + '<br/><br/>';
 
-        txt += 'Request ID:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ' + id       + '<br/>';
-        txt += 'Request tier:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ' + lic.tier + '<br/>';
+        txt += 'Request ID:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ' + userId + '<br/>';
+        txt += 'Request tier:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ' + license.tier + '<br/>';
         txt += 'Request last date: ' + date     + '<br/><br/>';
 
-        const license = validateLicense(id, key);
+        txt += 'Request string:&nbsp;&nbsp;&nbsp;&nbsp;' + createLicenseString(license) + '<br/><br/>';
 
-        if (   id   != 'false'
+        if (   userId   != 'false'
             && date != 'false')
             txt += 'License key:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ' + key + ' ' + getValidSign(license, key) + '<br/>';
+
+
+        license = validateLicense(userId, key);
 
         if (license)
         {

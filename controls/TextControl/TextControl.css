@@ -90,20 +90,3 @@
     cursor:        default;
     pointer-events: none;
 }
-
-
-/* .textControlTextarea:focus
-{
-    outline: 1px solid var(--figma-color-brand);
-} */
-
-
-.textControlFocus
-{
-    position:       absolute;
-    pointer-events: none;
-    box-shadow:     0 0 0 1px var(--activeObjectColor) inset;
-    visibility:     hidden;
-    opacity:        0;
-    /* z-index:        1100; */
-}

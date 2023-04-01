@@ -369,6 +369,7 @@ function createNode(nodeType, creatingButton = null, createdNodeId = -1, options
         case TEXT_REPLACE:            node = new OpTextReplace();       break;
         case TEXT_JOIN:               node = new OpTextJoin();          break;
         case TEXT_CSV:                node = new OpTextCSV();           break;
+        case TEXT_FETCH:              node = new OpTextFetch();         break;
         
         case COLOR:                   node = new OpColor(options);      break;
         case VALID_COLOR:             node = new OpValidColor();        break;

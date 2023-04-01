@@ -60,9 +60,10 @@ extends GTextType
             
         genPushUpdateValue(parse, this.nodeId, 'what',  _what);
         genPushUpdateValue(parse, this.nodeId, 'with',  _with);
+        
         genPushUpdateValue(parse, this.nodeId, 'value', this.value);
 
-
+        
         this.validate();
 
         return this;

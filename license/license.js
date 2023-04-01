@@ -5,7 +5,7 @@ const licenseHashSize = 4;
 
 function createLicenseKey(license)
 {
-    const str  = createLicenseString(license);
+    const str  = createLicenseDataString(license);
     const hash = hashLicenseString(str, licenseHashSize);
     const enc  = sign(hash, licenseKeys.private);
     const key  = arrayToBase32(enc);
@@ -15,10 +15,10 @@ function createLicenseKey(license)
 
 
 
-function createLicenseFromDate(id, strDate) // DDMMYYYY
+function createLicenseFromDate(userId, strDate) // DDMMYYYY
 {
     return createLicense(
-        id,
+        userId,
         parseInt(strDate.substring(0, 2)),
         parseInt(strDate.substring(2, 4)),
         parseInt(strDate.substring(4)));
@@ -27,14 +27,14 @@ function createLicenseFromDate(id, strDate) // DDMMYYYY
 
 
 
-function createLicense(id, lastDay, lastMonth, lastYear, tier = 1)
+function createLicense(userId, lastDay, lastMonth, lastYear, tier = 1)
 {
     return {
-        id:        id,
+        userId:    userId,
+        tier:      tier, // 0 = free, 1+ = subscription
         lastDay:   lastDay,
         lastMonth: lastMonth,
         lastYear:  lastYear,
-        tier:      tier // 0 = free, 1+ = subscription
     };
 }
 
@@ -42,12 +42,25 @@ function createLicense(id, lastDay, lastMonth, lastYear, tier = 1)
 
 function createLicenseString(license)
 {
-    const str =
-          license.tier     .toString()
-        + license.lastDay  .toString().padStart(2, '0') 
-        + license.lastMonth.toString().padStart(2, '0')
-        + license.lastYear .toString(); 
+    return license.userId
+         + createLicenseInfoString(license);
+}
 
+
+
+function createLicenseInfoString(license)
+{
+    return license.tier     .toString()
+         + license.lastDay  .toString().padStart(2, '0') 
+         + license.lastMonth.toString().padStart(2, '0')
+         + license.lastYear .toString(); 
+}
+
+
+
+function createLicenseDataString(license)
+{
+    const str = createLicenseInfoString(license);
 
     let comp1 = str;
     let comp2 = '';
@@ -62,21 +75,16 @@ function createLicenseString(license)
     }
 
 
-    const compData = (comp1 + comp2 + comp3).substring(0, license.id.length)
+    const compData = (comp1 + comp2 + comp3).substring(0, license.userId.length)
 
-    return compactLicenseString(license.id, compData);
+    return compactLicenseDataString(license.userId, compData);
 }
 
 
 
 function getLicenseCompData(license)
 {
-    const str =
-          license.tier     .toString()
-        + license.lastDay  .toString().padStart(2, '0') 
-        + license.lastMonth.toString().padStart(2, '0')
-        + license.lastYear .toString(); 
-
+    const str = createLicenseInfoString(license);
 
     let comp1 = str;
     let comp2 = '';
@@ -84,24 +92,24 @@ function getLicenseCompData(license)
     
     for (let i = 0; i < comp1.length; i++)
     {
-        const code2 = ((parseInt(comp1[i]) + i) % 10);
+        const code2 = (parseInt(comp1[i]) + i) % 10;
 
         comp2 += code2.toString();
         comp3 += ((parseInt(comp1[i]) ^ code2) % 10).toString()
     }
 
 
-    return (comp1 + comp2 + comp3).substring(0, license.id.length)
+    return (comp1 + comp2 + comp3).substring(0, license.userId.length)
 }
 
 
 
-function compactLicenseString(id, str)
+function compactLicenseDataString(userId, str)
 {
-    let comp = new Uint8Array(id.length);
+    let comp = new Uint8Array(userId.length);
 
     for (let i = 0; i < comp.length; i++)
-        comp[i] = (id.charCodeAt(i) ^ str.charCodeAt(i)) % 0x100;
+        comp[i] = (userId.charCodeAt(i) ^ str.charCodeAt(i)) % 0x100;
 
     return arrayToBase32(comp);
 }
@@ -112,7 +120,7 @@ function hashLicenseString(str, nBytes)
 {
     // XOR wrap name around a given number of bytes
 
-    const bytes = stringToArray(str);
+    const bytes = stringToCharCodeArray(str);
 
 
     if (bytes.length > nBytes)
@@ -136,12 +144,12 @@ function hashLicenseString(str, nBytes)
 
 
 
-function validateLicense(id, key)
+function validateLicense(userId, licenseKey)
 {
     const now = new Date(Date.now());
 
     const license = createLicense(
-        id,
+        userId,
         now.getDate(),
         now.getMonth()+1, // months start at 0
         now.getFullYear());
@@ -153,7 +161,7 @@ function validateLicense(id, key)
 
     while (curCheck++ < maxCheck)
     {
-        if (validateLicenseKey(license, key))
+        if (validateLicenseKey(license, licenseKey))
             return license;
 
         license.lastDay++; // err on the side of client, include current day if it's last
@@ -170,7 +178,7 @@ function validateLicense(id, key)
 
 function validateLicenseKey(license, key, rec = false)
 {
-    const str   = createLicenseString(license);
+    const str   = createLicenseDataString(license);
     
     const hash  = hashLicenseString(str, licenseHashSize);
     

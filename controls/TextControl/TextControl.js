@@ -5,6 +5,7 @@ extends Control
 
 
     textarea;
+    placeholder;
 
 
     enableChangeEvent = true;
@@ -111,6 +112,15 @@ extends Control
 
         if (!this.measureData.offsetRect)
             return;
+
+            
+        this.textarea.placeholder = 
+            this.value == NAN_CHAR
+            ? UNKNOWN_DISPLAY
+            : this.textarea.defPlaceholder;
+
+        if (this.value == NAN_CHAR)
+            this.textarea.value = '';
 
 
         const  input = this.param && this.param. input;

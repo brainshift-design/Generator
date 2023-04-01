@@ -1,20 +1,22 @@
 class   ListParam
 extends Parameter
 {
-    // get value() 
-    // { 
-    //     return new NumberValue(
-    //         this.controls[0].value, 
-    //         this.controls[0].displayDec); 
-    // }
+    value;
+    //defaultValue;
 
-    // oldValue = null;
+    oldValue = null;
 
-
-    // defaultValue;
-    // alwaysSaveValue = false;
+    
+    // _warningOverlay;
+    
+    // forceShowWarning = false;
+    // warningStyle;
 
 
+    // checkers;
+    
+
+    
     // get valueText() { return this.controls[0].valueText; }
     // set valueText(text) 
     // {
@@ -22,118 +24,87 @@ extends Parameter
     //     this.controls[0].update();
     // }
 
-
-    //  constructor(id,
-    //             name, 
-    //             showName,
-    //             hasInput,
-    //             hasOutput,
-    //             defaultValue = 0, 
-    //             min          = Number.MIN_SAFE_INTEGER, 
-    //             max          = Number.MAX_SAFE_INTEGER,
-    //             decimals     = 0,
-    //             dragScale    = 0.05)
-    // {
-    //     super(NUMBER_VALUE, id, name);
-
-        
-    //     this.controls[0] = new NumberControl(
-    //         createDiv('numberControl'),
-    //         this,
-    //         this.id,
-    //         this.name, 
-    //         showName,
-    //         defaultValue,
-    //         min,
-    //         max,
-    //         decimals,   
-    //         dragScale); 
-
-            
-    //     this.controls[0].div.zIndex        = 0;
-
-    //     this.controls[0].div.style.display = 'inline-block';
-    //     this.controls[0].div.style.width   = '100%';
-
-   
-    //     this.defaultValue = new NumberValue(defaultValue, decimals);
-
-
-    //     this.controls[0].successOnFocusOut = true;
-
-    //     this.div.appendChild(this.controls[0].div);
-
-       
-    //     if (hasInput)  this.initInput(NUMBER_TYPES, getParamInputValuesForUndo, this.input_getBackInitValue);
-    //     if (hasOutput) this.initOutput([NUMBER_VALUE], this.output_genRequest, getParamOutputValuesForUndo, this.output_backInit);
-
-
-    //     this.controls[0].addEventListener('change', () => 
-    //     { 
-    //         this.setValue(this.value, true, false);
-    //         this.changing = true;
-    //     });
-
-
-    //     this.controls[0].addEventListener('confirm', () => 
-    //     { 
-    //         this.changing = false;
-    //     });
-
-
-    //     this.controls[0].addEventListener('finishedit', e =>
-    //     { 
-    //         let   dec    = decCount(e.detail.value); 
-    //         const oldDec = decCount(e.detail.oldValue);
-
-            
-    //         if (!e.detail.success)
-    //             return;
-
-
-    //         if (   Math.abs(e.detail.value - e.detail.oldValue) > Number.EPSILON
-    //             && dec >= oldDec)
-    //         {
-    //             this.setValue(new NumberValue(parseFloat(e.detail.value), dec), true);
-    //             e.preventSetValue = true;
-    //         }
-    //         else if (this.controls[0].allowEditDecimals)
-    //         {
-    //             if (Math.abs(parseFloat(e.detail.value) - parseFloat(e.detail.oldValue)) <= Number.EPSILON)
-    //                 dec += Math.log10(this.controls[0].valueScale);
-    //             else
-    //                 dec = oldDec;
-
-    //             this.setValue(new NumberValue(parseFloat(e.detail.value), dec), true);
-    //             e.preventSetValue = true;
-    //         }
-    //     });
-
-
-
-    //     createTooltipSrc(this.controls[0].div, this.controls[0].div, () => 
-    //     {
-    //         this.controls[0].addEventListener('change', () => 
-    //         {
-    //             const tooltip = this.getTooltip();
-    //             if (tooltip) hideTooltip(tooltip);
-    //         });
-            
-    //         return this.getTooltip();
-    //     });
-    // }
-
-
-
-    // getTooltip = () => null;
-
+    
+    // get value() { return this.controls[0].value; }
+    
 
     
-    // setName(name, dispatchEvents = true)
-    // {
-    //     super.setName(name, dispatchEvents);
-    //     this.controls[0].setName(name);
-    // }
+    constructor(id,
+                name, 
+                hasInput,
+                hasOutput,
+                defaultValue = ColorValue.fromRgb([0x80, 0x80, 0x80]),
+                dragScale    = 0.05)
+    {
+        super(LIST_VALUE, id, name);
+
+        //this.defaultValue = defaultValue;
+
+
+        // this.controls[0] = new ColorControl(
+        //     null,
+        //     this,
+        //     this.id,
+        //     this.name, 
+        //     showName,
+        //     defaultValue,   
+        //     dragScale); 
+
+        // this.controls[0].successOnFocusOut = true;
+        // this.controls[0].div.zIndex        = 0;
+
+        // this.controls[0].div.style.display = 'inline-block';
+        // this.controls[0].div.style.width   = '100%';
+
+        
+        // this._warningOverlay = createDiv('colorWarningOverlay');
+        // this._warningOverlay.style.zIndex  = 21;
+        
+        // this.div.appendChild(this._warningOverlay);
+
+
+        // this.checkers                      = createDiv();
+ 
+        // this.checkers.style.position       = 'absolute';
+        // this.checkers.style.width          = '100%';
+        // this.checkers.style.height         = '20px';
+        // this.checkers.style.display        = 'none';
+        // this.checkers.style.pointerEvents  = 'none';
+
+
+        // this.div.appendChild(this.checkers);
+        // this.div.appendChild(this.controls[0].div);
+
+       
+        // if (hasInput)  this.initInput(COLOR_TYPES, getParamInputValuesForUndo, this.input_getBackInitValue);
+        // if (hasOutput) this.initOutput([COLOR_VALUE], this.output_genRequest, getParamOutputValuesForUndo, this.output_backInit);
+
+
+        // this.controls[0].addEventListener('confirm', () => 
+        // {
+        //     this.setValue(this.controls[0].value, true, false); 
+        // });
+
+
+        // this.controls[0].addEventListener('finishedit', e =>
+        // { 
+        //     if (!e.detail.success)
+        //         return;
+
+        //     if (   e.detail.value.trim() != ''
+        //         && e.detail.value != e.detail.oldValue)
+        //     {
+        //         const webColor = webColors.find(wc => wc.name.toLowerCase() == e.detail.value.toLowerCase());
+        //         if (webColor) e.detail.value = webColor.color;
+
+        //         const rgb = validHex2rgb(e.detail.value);
+        //         const val = ColorValue.fromRgb(scaleRgb(rgb));
+
+        //         this.setValue(val, true);
+        //         e.preventSetValue = true;
+        //     }
+        // });
+    }
 
 
 
@@ -150,46 +121,22 @@ extends Parameter
     // {
     //     // 'this' is the output
 
-    //     console.assert(value.type == NUMBER_VALUE, 'expected NUMBER_VALUE in backInit()');
+    //     console.assert(value.type == COLOR_VALUE, 'expected COLOR_VALUE in backInit()');
         
     //     this.param.setValue(value, false, true, false);
-    // } 
-    
-    
-
-    // setValue(value, createAction, updateControl = true, dispatchEvents = true) 
-    // {
-    //     // console.log(this.id + '.setValue() value =', value);
-
-    //     console.assert(
-    //         value instanceof NumberValue,
-    //         'value must be a NumberValue');
-
-
-    //     this.preSetValue(value, createAction, dispatchEvents);
-
-        
-    //     //console.log('NumberParamBase.setValue value =', value);
-    //     if (updateControl)
-    //     {
-    //         this.controls[0].setDecimals(value.decimals, value.decimals);
-    //         this.controls[0].setValue(value.value, false, false); 
-    //     }
-
-
-    //     super.setValue(value, createAction, updateControl, dispatchEvents);
-
-        
-    //     this.oldValue = this.value.copy();
-    // }    
-
-
-
-    // showValue(show)
-    // {
-    //     this.controls[0].showValue = show;
-    //     this.controls[0].update();
     // }
+
+
+
+    // setName(name, dispatchEvents = true)
+    // {
+    //     super.setName(name, dispatchEvents);
+    //     this.controls[0].setName(name);
+    // }
+
+
+
+    // isDefault = () => this.value.equals(this.defaultValue);
 
 
 
@@ -207,16 +154,71 @@ extends Parameter
 
 
 
-    // getValueForUndo()
+    // setValue(value, createAction, updateControl = true, dispatchEvents = true) 
     // {
-    //     return {
-    //         paramId:    this.id, 
-    //         value:      this.value,
-    //         min:        this.controls[0].min,
-    //         max:        this.controls[0].max,
-    //         displayMin: this.controls[0].displayMin,
-    //         displayMax: this.controls[0].displayMax
-    //     };
+    //     console.assert(
+    //            value.type 
+    //         && value.type == COLOR_VALUE, 
+    //         'value.type must be COLOR_VALUE');
+            
+    //     this.preSetValue(value, createAction, dispatchEvents);
+
+    //     this.controls[0].value = value.copy();
+
+    //     if (updateControl)
+    //         this.controls[0].setValue(this.controls[0].value, true, false); 
+
+
+    //     super.setValue(value, createAction, updateControl, dispatchEvents);
+
+
+    //     this.oldValue = this.value.copy();
+    // }    
+
+
+
+    // updateControls()
+    // {
+    //     this.updateWarningOverlay();
+
+
+    //     const noColor = 
+    //         darkMode
+    //         ? rgbNoColorDark
+    //         : rgbNoColorLight;
+
+    //     const rgbVal   = this.value.toRgb();
+    //     const rgbaText = getTextColorFromBackColor(rgbVal, 1);
+
+    //     if (this.input)
+    //     {
+    //         this.input.colorLight  = 
+    //         this.input.colorDark   = rgb_a(rgbaText, 0.2);
+    //         this.input.wireColor   = !rgbIsNaN(rgbVal) ? rgbVal : noColor;
+    //     }
+
+    //     if (this.output)
+    //     {
+    //         this.output.colorLight =
+    //         this.output.colorDark  = rgb_a(rgbaText, 0.2);
+    //         this.output.wireColor  = !rgbIsNaN(rgbVal) ? rgbVal : noColor;
+    //     }
+
+
+    //     this.checkers.style.background = 
+    //         darkMode
+    //         ?   'linear-gradient(45deg, #222 25%, transparent 25%, transparent 75%, #222 75%), '
+    //           + 'linear-gradient(45deg, #222 25%, transparent 25%, transparent 75%, #222 75%)'
+    //         :   'linear-gradient(45deg, #ddd 25%, transparent 25%, transparent 75%, #ddd 75%), '
+    //           + 'linear-gradient(45deg, #ddd 25%, transparent 25%, transparent 75%, #ddd 75%)';
+
+    //     this.checkers.style.backgroundColor    = darkMode ? '#444' : '#fff';
+
+    //     this.checkers.style.backgroundSize     = '20px 20px';
+    //     this.checkers.style.backgroundPosition = '0 0, 10px 10px';
+
+
+    //     super.updateControls();
     // }
 
 
@@ -233,7 +235,7 @@ extends Parameter
     //         &&  gen.passedNodes.includes(this.node))
     //         return this.output.cache;
 
-            
+
     //     const request = [];
 
 
@@ -242,10 +244,8 @@ extends Parameter
     //         request.push(...pushInputOrParam(this.input, gen));
 
     //     else request.push( 
-    //         NUMBER_VALUE, 
-    //         new NumberValue(
-    //             this.controls[0].value, 
-    //             this.controls[0].displayDec).toString());
+    //         COLOR_VALUE, 
+    //         this.value.toString());
 
 
     //     return request;
@@ -272,45 +272,67 @@ extends Parameter
     //     enable &= 
     //            !this.input 
     //         || !this.input.connected;
-            
+
     //     enableElementText(this.controls[0].div, enable);
-
+        
     //     this.controls[0].readOnly = !enable;
-
-    //     this.updateValueText();
     // }
     
     
     
-    // updateValueText()
+    // updateWarningOverlay() 
     // {
-    //     let unknown = false;
+    //     //console.log(this.id + '.updateWarningOverlay()');
 
-    //     // if (   this.input
-    //     //     && this.input.connected)
-    //     // {
-    //     //     if (   this.input.isConnectedUncached()
-    //     //         && this.node.hasMultipliedOutputs())
-    //     //         unknown = true;
-    //     // }
+    //     const rgb = this.value.toRgb();
 
+    //     if (!rgbIsNaN(rgb))
+    //     {
+    //         if (  !rgbIsValid(rgb)
+    //             || this.forceShowWarning)
+    //         {
+    //             if (!this.forceShowWarning)
+    //                 this.warningStyle = getDefaultWarningStyle(rgb);
 
-    //     if (unknown)
-    //         this.controls[0].valueText = UNKNOWN_DISPLAY;
-
-    //     this.controls[0].showBar = !unknown;
+    //             this.updateWarningOverlayStyle(rgb);
+    //         }
+    //         else
+    //             this._warningOverlay.style.display = 'none';
+    //     }
+    //     else
+    //     {
+    //         this.warningStyle = getDefaultWarningStyle(rgb);
+    //         this.updateWarningOverlayStyle(rgb);
+    //     }
     // }
 
 
 
-    // isDefault = () => 
-    //        !this.alwaysSaveValue
-    //      && this.value.equals(this.defaultValue);
+    // updateWarningOverlayStyle(colBack, height = -1)
+    // {
+    //     //console.log('colBack =', colBack);
+        
+    //     this._warningOverlay.style.height = 
+    //         height < 0
+    //         ? this.div.offsetHeight
+    //         : height;
 
+    //     this._warningOverlay.style.background =
+    //            rgbIsOk(colBack)
+    //         && !this.forceShowWarning
+    //         ? 'transparent'
+    //         : 'repeating-linear-gradient('
+    //            + '-45deg, '
+    //            + 'transparent 0 7px,'
+    //            +  this.warningStyle + ' 7px 14px)';
 
-
+    //     this._warningOverlay.style.display = 'block';
+    // }
+    
+    
+    
     // loadParam(param)
     // {
-    //     this.setValue(parseNumberValue(param)[0], true, true, false);
+    //     this.setValue(parseColorValue(param)[0], true, false, false);
     // }
 }
