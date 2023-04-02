@@ -44,9 +44,13 @@ extends GTextType
         const request = (await this.request.eval(parse)).toValue();
 
 
+        this.value = TextValue.NaN;
+
         try 
         {
-            this.value = new TextValue((await fetch(request.value)).text());
+            await fetch(request.value)
+                .then(response => response.text())
+                .then(text => this.value = new TextValue(text));
         }
         catch (e)
         {
