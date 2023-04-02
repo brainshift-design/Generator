@@ -54,7 +54,7 @@ function uiShowClearUndoWarning(deleting)
             {
                 buttonText:   'Ignore',
                 buttonAction: 'hideClearUndoWarning',
-                delay:        8000 
+                delay:         8000 
             });
     }
 }
@@ -68,3 +68,30 @@ function uiHideClearUndoWarning()
          true, 
         !settings.showClearUndoWarning);
 }
+
+
+
+// function uiFetch(request)
+// {
+//     console.log('uiFetch(\'%s\')', request);
+
+//     uiPostMessageToFigma(
+//     {
+//         cmd:    'figFetch',
+//         request: request
+//     });
+// }
+
+
+
+// function uiFetchResponse(success, response)
+// {
+//     console.log('uiFetchResponse(\'%s\', \'%s\')', success, response);
+
+//     uiPostMessageToGenerator(
+//     {
+//         cmd:     'genFetchResponse',
+//         success:  success,
+//         response: response
+//     });
+// }

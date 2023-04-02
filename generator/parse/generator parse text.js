@@ -271,3 +271,49 @@ function genParseTextCSV(parse)
     genParseNodeEnd(parse, csv);
     return csv;
 }
+
+
+
+function genParseTextFetch(parse)
+{
+    const [, nodeId, options, ignore] = genParseNodeStart(parse);
+
+
+    const fetch = new GTextFetch(nodeId, options);
+   
+
+    let nInputs = -1;
+    
+    if (!ignore)
+    {
+        nInputs = parseInt(parse.move());
+        console.assert(nInputs == 0 || nInputs == 1, 'nInputs must be [0, 1]');
+    }
+
+    
+    if (parse.settings.logRequests) 
+        logReq(fetch, parse, ignore, nInputs);
+
+
+    if (ignore) 
+    {
+        genParseNodeEnd(parse, fetch);
+        return parse.parsedNodes.find(n => n.nodeId == nodeId);
+    }
+
+
+    parse.nTab++;
+
+
+    if (nInputs == 1)
+        fetch.input = genParse(parse);
+
+    fetch.request = genParse(parse);
+
+    
+    parse.nTab--;
+
+
+    genParseNodeEnd(parse, fetch);
+    return fetch;
+}

@@ -287,7 +287,7 @@ function genUpdateValuesAndObjects(requestId, actionId, updateNodeId, updatePara
     }
 
 
-    genQueueMessageToUI({
+    genQueueMessageToUi({
         cmd: 'uiForwardToFigma',
         msg: {cmd: 'figCommitUndo'}
     })
@@ -297,7 +297,7 @@ function genUpdateValuesAndObjects(requestId, actionId, updateNodeId, updatePara
 
 function genQueueChunk(requestId, actionId, updateNodeId, updateParamId, nodeValChunkId, nodeValChunk, objChunk, styleChunk, updatedNodes, totalNodes, isLastChunk)
 {
-    genQueueMessageToUI({
+    genQueueMessageToUi({
         cmd:          'uiUpdateValuesAndObjects',
         requestId:     requestId,
         actionId:      actionId,

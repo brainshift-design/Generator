@@ -81,6 +81,10 @@ figma.ui.onmessage = function(msg)
         // case 'figValidateLicense':
         //     figValidateLicense(msg.license);
         //     break;
+
+        case 'figFetch': 
+            figFetch(msg.request); 
+            break;
     }
 
 

@@ -8665,7 +8665,90 @@ extends GOperator
 
 
 
+//var fetchResolve = null;
+//fetchResponse = null;
 
+
+
+class GTextFetch
+extends GTextType
+{
+    input = null;
+
+    request;
+
+
+
+    constructor(nodeId, options)
+    {
+        super(TEXT_FETCH, nodeId, options);
+    }
+
+
+    
+    copy()
+    {
+        const copy = new GTextFetch(this.nodeId, this.options);
+
+        copy.copyBase(this);
+
+        if (this.input) 
+            copy.input = this.input.copy();
+
+        copy.request = this.request.copy();
+
+        return copy;
+    }
+
+
+
+    eval(parse)
+    {
+        if (this.isCached())
+            return this;
+
+
+        const request = this.request.eval(parse).toValue();
+
+
+        this.value = TextValue.NaN;
+
+        console.log('1');
+        (async () =>
+        {
+            try 
+            {
+                this.value = new TextValue((await fetch(request.value)).text());
+                console.log('2');
+            }
+            catch (e)
+            {
+                console.log('e.message =', e.message);
+                this.value = new TextValue(e.message);
+                console.log('3');
+            }
+        })();
+        console.log('4');
+
+
+        genPushUpdateValue(parse, this.nodeId, 'request', request   );
+        genPushUpdateValue(parse, this.nodeId, 'value',   this.value);
+
+        
+        this.validate();
+
+        return this;
+    }
+}
+
+
+
+// function genFetchResponse(result, response)
+// {
+//     console.assert(fetchResolve, 'fetchResolve cannot be null');
+//     fetchResolve(response);
+//     console.log('resolve');
+// }
 
 
 class ColorCorrection
@@ -11936,21 +12019,31 @@ onmessage = function(e)
     const msg = JSON.parse(e.data);
 
 
+    // processMessage(msg).next();
     switch (msg.cmd)
     {
-        case 'genRequest':       genRequest      (msg.request);   break;
-        //case 'genStopGenerate':  genStopGenerate (msg);         break;
+        case 'genRequest':       genRequest(msg.request); break;
 
-        case 'genEndUiMessage':  genEndUiMessage (msg.msgCmd);    break;
-        case 'genEndFigMessage': genEndFigMessage();              break;
+        //case 'genFetchResponse': genFetchResponse(msg.result, msg.response); break;
+
+        //case 'genStopGenerate': genStopGenerate (msg); break;
+        
+        case 'genEndUiMessage':  genEndUiMessage (msg.msgCmd); break;
+        case 'genEndFigMessage': genEndFigMessage();           break;
     }
 
 
-    genPostMessageToUI({
+    genPostMessageToUi({
         cmd:   'uiEndGenMessage',
         msgCmd: msg.cmd
     });
 };
+
+
+
+// function* processMessage(msg)
+// {
+// }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -11959,14 +12052,14 @@ onmessage = function(e)
 // <-- to UI
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 
-function genPostMessageToUI(msg)
+function genPostMessageToUi(msg)
 {
     postMessage(JSON.stringify(msg));
 }
 
 
 
-function genQueueMessageToUI(msg)
+function genQueueMessageToUi(msg)
 {
     uiMessages.push(msg);
     genPostNextMessageToUI();
@@ -12003,7 +12096,7 @@ function genPostNextMessageToUI(msg)
         //     }
         // }
 
-        genPostMessageToUI(msg);
+        genPostMessageToUi(msg);
     }
 }
 
@@ -12321,7 +12414,7 @@ function genUpdateValuesAndObjects(requestId, actionId, updateNodeId, updatePara
     }
 
 
-    genQueueMessageToUI({
+    genQueueMessageToUi({
         cmd: 'uiForwardToFigma',
         msg: {cmd: 'figCommitUndo'}
     })
@@ -12331,7 +12424,7 @@ function genUpdateValuesAndObjects(requestId, actionId, updateNodeId, updatePara
 
 function genQueueChunk(requestId, actionId, updateNodeId, updateParamId, nodeValChunkId, nodeValChunk, objChunk, styleChunk, updatedNodes, totalNodes, isLastChunk)
 {
-    genQueueMessageToUI({
+    genQueueMessageToUi({
         cmd:          'uiUpdateValuesAndObjects',
         requestId:     requestId,
         actionId:      actionId,
@@ -14646,6 +14739,52 @@ function genParseTextCSV(parse)
 
     genParseNodeEnd(parse, csv);
     return csv;
+}
+
+
+
+function genParseTextFetch(parse)
+{
+    const [, nodeId, options, ignore] = genParseNodeStart(parse);
+
+
+    const fetch = new GTextFetch(nodeId, options);
+   
+
+    let nInputs = -1;
+    
+    if (!ignore)
+    {
+        nInputs = parseInt(parse.move());
+        console.assert(nInputs == 0 || nInputs == 1, 'nInputs must be [0, 1]');
+    }
+
+    
+    if (parse.settings.logRequests) 
+        logReq(fetch, parse, ignore, nInputs);
+
+
+    if (ignore) 
+    {
+        genParseNodeEnd(parse, fetch);
+        return parse.parsedNodes.find(n => n.nodeId == nodeId);
+    }
+
+
+    parse.nTab++;
+
+
+    if (nInputs == 1)
+        fetch.input = genParse(parse);
+
+    fetch.request = genParse(parse);
+
+    
+    parse.nTab--;
+
+
+    genParseNodeEnd(parse, fetch);
+    return fetch;
 }
 
 

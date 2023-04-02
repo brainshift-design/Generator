@@ -23,27 +23,31 @@ onmessage = e =>
 
     switch (msg.cmd)
     {
-        case 'uiStylePropertyChange':                   uiStylePropertyChange                  (msg);                       break;
-        case 'uiStyleDelete':                           uiStyleDelete                          (msg);                       break;
+        case 'uiForwardToGenerator':              uiPostMessageToGenerator         (msg.msg);      break;
+
+        //case 'uiFetchResponse':                   uiFetchResponse                  (msg.success, msg.response); break;
+
+        case 'uiStylePropertyChange':             uiStylePropertyChange            (msg);          break;
+        case 'uiStyleDelete':                     uiStyleDelete                    (msg);          break;
             
-        case 'uiEndFigMessage':                         uiEndFigMessage                        (msg.msgCmd);                break;
+        case 'uiEndFigMessage':                   uiEndFigMessage                  (msg.msgCmd);   break;
                                     
-        case 'uiReturnFigStartGenerator':               uiReturnFigStartGenerator              (msg);                       break;
+        case 'uiReturnFigStartGenerator':         uiReturnFigStartGenerator        (msg);          break;
                                              
-        case 'uiReturnFigLoadNodesAndConns':            uiReturnFigLoadNodesAndConns           (msg);                       break;
+        case 'uiReturnFigLoadNodesAndConns':      uiReturnFigLoadNodesAndConns     (msg);          break;
                                              
-        case 'uiReturnFigGetLocalData':                 uiReturnFigGetLocalData                (msg);                       break;
-        case 'uiReturnFigGetPageData':                  uiReturnFigGetPageData                 (msg);                       break;
+        case 'uiReturnFigGetLocalData':           uiReturnFigGetLocalData          (msg);          break;
+        case 'uiReturnFigGetPageData':            uiReturnFigGetPageData           (msg);          break;
                                                    
-        case 'uiReturnFigResizeWindow':                 uiReturnFigResizeWindow                ();                          break;
+        case 'uiReturnFigResizeWindow':           uiReturnFigResizeWindow          ();             break;
                            
-        case 'uiReturnFigGetAllLocalColorStyles':       uiReturnFigGetAllLocalColorStyles      (msg);                       break;
+        case 'uiReturnFigGetAllLocalColorStyles': uiReturnFigGetAllLocalColorStyles(msg);          break;
 
-        //case 'uiReturnUpdateViewportRect':              viewportRect = msg.viewportRect;                                    break;
-        case 'uiReturnFigGetMousePosition':             uiUpdateWindowStartRect                (msg);                       break;
+        //case 'uiReturnUpdateViewportRect':      viewportRect = msg.viewportRect;                                    break;
+        case 'uiReturnFigGetMousePosition':       uiUpdateWindowStartRect          (msg);          break;
 
-        case 'uiSetStyleId':                            uiSetStyleId                           (msg);                       break;
-        case 'uiHideClearUndoWarning':                  uiHideClearUndoWarning                 ();                          break;
+        case 'uiSetStyleId':                      uiSetStyleId                     (msg);          break;
+        case 'uiHideClearUndoWarning':            uiHideClearUndoWarning           ();             break;
     }
 }    
 
@@ -154,7 +158,9 @@ generator.onmessage = function(e)
         case 'uiInitNodeProgress':   graphView.graph.nodeFromId(msg.nodeId).initProgress();                break;
         case 'uiUpdateNodeProgress': graphView.graph.nodeFromId(msg.nodeId).updateProgress(msg.progress);  break;
         
-        case 'uiForwardToFigma':     uiQueueMessageToFigma(msg.msg);                                       break;
+        //case 'uiFetch':              uiFetch(msg.request);                                                 break;
+
+        case 'uiForwardToFigma':     uiPostMessageToFigma(msg.msg);                                        break;
     }
 };
 

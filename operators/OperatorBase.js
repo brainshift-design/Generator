@@ -33,8 +33,6 @@ extends Operator
         {
             output.colorLight =
             output.colorDark  = colors.output;
-
-            //output.wireColor  = colors.wire;
         }
     }
 }

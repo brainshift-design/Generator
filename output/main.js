@@ -887,6 +887,9 @@ figma.ui.onmessage = function (msg) {
         // case 'figValidateLicense':
         //     figValidateLicense(msg.license);
         //     break;
+        case 'figFetch':
+            figFetch(msg.request);
+            break;
     }
     figPostMessageToUi({
         cmd: 'uiEndFigMessage',
@@ -1825,4 +1828,31 @@ function figNotify(text, prefix = 'Generator ', delay = 400, error = false, butt
 //         // case 'BOOLEAN_OPERATION':
 //     }
 //     return 'ERROR_TYPE';
+// }
+// function figFetch(request)
+// {
+//     (async() => 
+//     {
+//         console.log('figFetch(\'%s\')', request);
+//         fetch(request)
+//             .then(response =>
+//             {
+//                 //console.log('response =', response);
+//                 figPostMessageToUi({
+//                     cmd:     'uiFetchResponse',
+//                     success:  true,
+//                     response: response.text() 
+//                 });
+//             })
+//             .catch(error =>
+//             {
+//                 //console.log('error =', error);
+//                 figPostMessageToUi({
+//                     cmd:     'uiFetchResponse',
+//                     success:  false,
+//                     response: error.message
+//                 });
+//             });
+//     })
+//     ();
 // }

@@ -36,7 +36,8 @@ extends Parameter
             this.name,
             defaultValue);
 
-        this.controls[0].textarea.placeholder = name;
+        this.controls[0].textarea.defPlaceholder =
+        this.controls[0].textarea.placeholder    = name;
         
 
         this.controls[0].successOnFocusOut = true;

@@ -14,21 +14,31 @@ onmessage = function(e)
     const msg = JSON.parse(e.data);
 
 
+    // processMessage(msg).next();
     switch (msg.cmd)
     {
-        case 'genRequest':       genRequest      (msg.request);   break;
-        //case 'genStopGenerate':  genStopGenerate (msg);         break;
+        case 'genRequest':       genRequest(msg.request); break;
 
-        case 'genEndUiMessage':  genEndUiMessage (msg.msgCmd);    break;
-        case 'genEndFigMessage': genEndFigMessage();              break;
+        //case 'genFetchResponse': genFetchResponse(msg.result, msg.response); break;
+
+        //case 'genStopGenerate': genStopGenerate (msg); break;
+        
+        case 'genEndUiMessage':  genEndUiMessage (msg.msgCmd); break;
+        case 'genEndFigMessage': genEndFigMessage();           break;
     }
 
 
-    genPostMessageToUI({
+    genPostMessageToUi({
         cmd:   'uiEndGenMessage',
         msgCmd: msg.cmd
     });
 };
+
+
+
+// function* processMessage(msg)
+// {
+// }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -37,14 +47,14 @@ onmessage = function(e)
 // <-- to UI
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 
-function genPostMessageToUI(msg)
+function genPostMessageToUi(msg)
 {
     postMessage(JSON.stringify(msg));
 }
 
 
 
-function genQueueMessageToUI(msg)
+function genQueueMessageToUi(msg)
 {
     uiMessages.push(msg);
     genPostNextMessageToUI();
@@ -81,7 +91,7 @@ function genPostNextMessageToUI(msg)
         //     }
         // }
 
-        genPostMessageToUI(msg);
+        genPostMessageToUi(msg);
     }
 }
 

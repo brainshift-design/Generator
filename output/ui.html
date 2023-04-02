@@ -12723,7 +12723,90 @@ extends GOperator
 
 
 
+//var fetchResolve = null;
+//fetchResponse = null;
 
+
+
+class GTextFetch
+extends GTextType
+{
+    input = null;
+
+    request;
+
+
+
+    constructor(nodeId, options)
+    {
+        super(TEXT_FETCH, nodeId, options);
+    }
+
+
+    
+    copy()
+    {
+        const copy = new GTextFetch(this.nodeId, this.options);
+
+        copy.copyBase(this);
+
+        if (this.input) 
+            copy.input = this.input.copy();
+
+        copy.request = this.request.copy();
+
+        return copy;
+    }
+
+
+
+    eval(parse)
+    {
+        if (this.isCached())
+            return this;
+
+
+        const request = this.request.eval(parse).toValue();
+
+
+        this.value = TextValue.NaN;
+
+        console.log('1');
+        (async () =>
+        {
+            try 
+            {
+                this.value = new TextValue((await fetch(request.value)).text());
+                console.log('2');
+            }
+            catch (e)
+            {
+                console.log('e.message =', e.message);
+                this.value = new TextValue(e.message);
+                console.log('3');
+            }
+        })();
+        console.log('4');
+
+
+        genPushUpdateValue(parse, this.nodeId, 'request', request   );
+        genPushUpdateValue(parse, this.nodeId, 'value',   this.value);
+
+        
+        this.validate();
+
+        return this;
+    }
+}
+
+
+
+// function genFetchResponse(result, response)
+// {
+//     console.assert(fetchResolve, 'fetchResolve cannot be null');
+//     fetchResolve(response);
+//     console.log('resolve');
+// }
 
 
 class ColorCorrection
@@ -15994,21 +16077,31 @@ onmessage = function(e)
     const msg = JSON.parse(e.data);
 
 
+    // processMessage(msg).next();
     switch (msg.cmd)
     {
-        case 'genRequest':       genRequest      (msg.request);   break;
-        //case 'genStopGenerate':  genStopGenerate (msg);         break;
+        case 'genRequest':       genRequest(msg.request); break;
 
-        case 'genEndUiMessage':  genEndUiMessage (msg.msgCmd);    break;
-        case 'genEndFigMessage': genEndFigMessage();              break;
+        //case 'genFetchResponse': genFetchResponse(msg.result, msg.response); break;
+
+        //case 'genStopGenerate': genStopGenerate (msg); break;
+        
+        case 'genEndUiMessage':  genEndUiMessage (msg.msgCmd); break;
+        case 'genEndFigMessage': genEndFigMessage();           break;
     }
 
 
-    genPostMessageToUI({
+    genPostMessageToUi({
         cmd:   'uiEndGenMessage',
         msgCmd: msg.cmd
     });
 };
+
+
+
+// function* processMessage(msg)
+// {
+// }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -16017,14 +16110,14 @@ onmessage = function(e)
 // <-- to UI
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 
-function genPostMessageToUI(msg)
+function genPostMessageToUi(msg)
 {
     postMessage(JSON.stringify(msg));
 }
 
 
 
-function genQueueMessageToUI(msg)
+function genQueueMessageToUi(msg)
 {
     uiMessages.push(msg);
     genPostNextMessageToUI();
@@ -16061,7 +16154,7 @@ function genPostNextMessageToUI(msg)
         //     }
         // }
 
-        genPostMessageToUI(msg);
+        genPostMessageToUi(msg);
     }
 }
 
@@ -16379,7 +16472,7 @@ function genUpdateValuesAndObjects(requestId, actionId, updateNodeId, updatePara
     }
 
 
-    genQueueMessageToUI({
+    genQueueMessageToUi({
         cmd: 'uiForwardToFigma',
         msg: {cmd: 'figCommitUndo'}
     })
@@ -16389,7 +16482,7 @@ function genUpdateValuesAndObjects(requestId, actionId, updateNodeId, updatePara
 
 function genQueueChunk(requestId, actionId, updateNodeId, updateParamId, nodeValChunkId, nodeValChunk, objChunk, styleChunk, updatedNodes, totalNodes, isLastChunk)
 {
-    genQueueMessageToUI({
+    genQueueMessageToUi({
         cmd:          'uiUpdateValuesAndObjects',
         requestId:     requestId,
         actionId:      actionId,
@@ -18704,6 +18797,52 @@ function genParseTextCSV(parse)
 
     genParseNodeEnd(parse, csv);
     return csv;
+}
+
+
+
+function genParseTextFetch(parse)
+{
+    const [, nodeId, options, ignore] = genParseNodeStart(parse);
+
+
+    const fetch = new GTextFetch(nodeId, options);
+   
+
+    let nInputs = -1;
+    
+    if (!ignore)
+    {
+        nInputs = parseInt(parse.move());
+        console.assert(nInputs == 0 || nInputs == 1, 'nInputs must be [0, 1]');
+    }
+
+    
+    if (parse.settings.logRequests) 
+        logReq(fetch, parse, ignore, nInputs);
+
+
+    if (ignore) 
+    {
+        genParseNodeEnd(parse, fetch);
+        return parse.parsedNodes.find(n => n.nodeId == nodeId);
+    }
+
+
+    parse.nTab++;
+
+
+    if (nInputs == 1)
+        fetch.input = genParse(parse);
+
+    fetch.request = genParse(parse);
+
+    
+    parse.nTab--;
+
+
+    genParseNodeEnd(parse, fetch);
+    return fetch;
 }
 
 
@@ -32941,7 +33080,90 @@ extends GOperator
 
 
 
+//var fetchResolve = null;
+//fetchResponse = null;
 
+
+
+class GTextFetch
+extends GTextType
+{
+    input = null;
+
+    request;
+
+
+
+    constructor(nodeId, options)
+    {
+        super(TEXT_FETCH, nodeId, options);
+    }
+
+
+    
+    copy()
+    {
+        const copy = new GTextFetch(this.nodeId, this.options);
+
+        copy.copyBase(this);
+
+        if (this.input) 
+            copy.input = this.input.copy();
+
+        copy.request = this.request.copy();
+
+        return copy;
+    }
+
+
+
+    eval(parse)
+    {
+        if (this.isCached())
+            return this;
+
+
+        const request = this.request.eval(parse).toValue();
+
+
+        this.value = TextValue.NaN;
+
+        console.log('1');
+        (async () =>
+        {
+            try 
+            {
+                this.value = new TextValue((await fetch(request.value)).text());
+                console.log('2');
+            }
+            catch (e)
+            {
+                console.log('e.message =', e.message);
+                this.value = new TextValue(e.message);
+                console.log('3');
+            }
+        })();
+        console.log('4');
+
+
+        genPushUpdateValue(parse, this.nodeId, 'request', request   );
+        genPushUpdateValue(parse, this.nodeId, 'value',   this.value);
+
+        
+        this.validate();
+
+        return this;
+    }
+}
+
+
+
+// function genFetchResponse(result, response)
+// {
+//     console.assert(fetchResolve, 'fetchResolve cannot be null');
+//     fetchResolve(response);
+//     console.log('resolve');
+// }
 
 
 class ColorCorrection
@@ -44965,7 +45187,8 @@ extends Parameter
             this.name,
             defaultValue);
 
-        this.controls[0].textarea.placeholder = name;
+        this.controls[0].textarea.defPlaceholder =
+        this.controls[0].textarea.placeholder    = name;
         
 
         this.controls[0].successOnFocusOut = true;
@@ -50277,8 +50500,6 @@ extends Operator
         {
             output.colorLight =
             output.colorDark  = colors.output;
-
-            //output.wireColor  = colors.wire;
         }
     }
 }
@@ -50312,35 +50533,35 @@ extends OperatorBase
 
 
 
-    updateValueParam()
-    {
-        // const colors = this.getHeaderColors();
+    // updateValueParam()
+    // {
+    //     // const colors = this.getHeaderColors();
 
-        // const colSpaceBar = 
-        //       !rgbIsNaN(colors.back)
-        //     && isDark(colors.back)
-        //     ? [1, 1, 1, 0.12]
-        //     : [0, 0, 0, 0.09]; 
-
-
-        // this.paramValue.controls[0].backStyleLight  =
-        // this.paramValue.controls[0].backStyleDark   = rgb2style_a(rgbHeaderFromType(this.type, this.active), 0.95);
-
-        // this.paramValue.controls[0].valueStyleLight =
-        // this.paramValue.controls[0].valueStyleDark  = rgba2style(colSpaceBar);
-
-        // this.paramValue.controls[0].textStyleLight  =
-        // this.paramValue.controls[0].textStyleDark   = rgba2style(colors.text);
-    }
+    //     // const colSpaceBar = 
+    //     //       !rgbIsNaN(colors.back)
+    //     //     && isDark(colors.back)
+    //     //     ? [1, 1, 1, 0.12]
+    //     //     : [0, 0, 0, 0.09]; 
 
 
+    //     // this.paramValue.controls[0].backStyleLight  =
+    //     // this.paramValue.controls[0].backStyleDark   = rgb2style_a(rgbHeaderFromType(this.type, this.active), 0.95);
 
-    updateNode()
-    {
-        this.updateValueParam();
+    //     // this.paramValue.controls[0].valueStyleLight =
+    //     // this.paramValue.controls[0].valueStyleDark  = rgba2style(colSpaceBar);
 
-        super.updateNode();
-    }
+    //     // this.paramValue.controls[0].textStyleLight  =
+    //     // this.paramValue.controls[0].textStyleDark   = rgba2style(colors.text);
+    // }
+
+
+
+    // updateNode()
+    // {
+    //     this.updateValueParam();
+
+    //     super.updateNode();
+    // }
 }
 
 
@@ -53433,7 +53654,67 @@ extends OperatorBase
 }
 
 
+class   OpTextFetch
+extends OperatorWithValue
+{
+    paramRequest;
 
+
+
+    constructor()
+    {
+        super(TEXT_FETCH, 'fetch');
+
+        this.canDisable = true;
+        
+
+        this.addOutput(new Output([TEXT_VALUE], this.output_genRequest));
+
+        this.addParam(this.paramValue);
+        this.addParam(this.paramRequest = new TextParam('request', 'request', true,  true));
+    }
+
+
+
+    output_genRequest(gen)
+    {
+        // 'this' is the output
+
+        gen.scope.push({
+            nodeId:  this.node.id, 
+            paramId: NULL });
+
+        const [request, ignore] = this.node.genRequestStart(gen);
+        if (ignore) return request;
+
+        
+        const input = this.node.inputs[0];
+
+
+        request.push(input.connected ? 1 : 0);
+        
+        if (input.connected)
+            request.push(...pushInputOrParam(input, gen));
+
+        request.push(...this.node.paramRequest.genRequest(gen));
+
+        
+        gen.scope.pop();
+        pushUnique(gen.passedNodes, this.node);
+
+        return request;
+    }
+
+
+
+    updateParams()
+    {
+        this.paramValue  .enableControlText(false);
+        this.paramRequest.enableControlText(true);
+
+        this.updateParamControls();
+    }
+}
 
 
 class OpColorBase
@@ -63193,27 +63474,31 @@ onmessage = e =>
 
     switch (msg.cmd)
     {
-        case 'uiStylePropertyChange':                   uiStylePropertyChange                  (msg);                       break;
-        case 'uiStyleDelete':                           uiStyleDelete                          (msg);                       break;
+        case 'uiForwardToGenerator':              uiPostMessageToGenerator         (msg.msg);      break;
+
+        //case 'uiFetchResponse':                   uiFetchResponse                  (msg.success, msg.response); break;
+
+        case 'uiStylePropertyChange':             uiStylePropertyChange            (msg);          break;
+        case 'uiStyleDelete':                     uiStyleDelete                    (msg);          break;
             
-        case 'uiEndFigMessage':                         uiEndFigMessage                        (msg.msgCmd);                break;
+        case 'uiEndFigMessage':                   uiEndFigMessage                  (msg.msgCmd);   break;
                                     
-        case 'uiReturnFigStartGenerator':               uiReturnFigStartGenerator              (msg);                       break;
+        case 'uiReturnFigStartGenerator':         uiReturnFigStartGenerator        (msg);          break;
                                              
-        case 'uiReturnFigLoadNodesAndConns':            uiReturnFigLoadNodesAndConns           (msg);                       break;
+        case 'uiReturnFigLoadNodesAndConns':      uiReturnFigLoadNodesAndConns     (msg);          break;
                                              
-        case 'uiReturnFigGetLocalData':                 uiReturnFigGetLocalData                (msg);                       break;
-        case 'uiReturnFigGetPageData':                  uiReturnFigGetPageData                 (msg);                       break;
+        case 'uiReturnFigGetLocalData':           uiReturnFigGetLocalData          (msg);          break;
+        case 'uiReturnFigGetPageData':            uiReturnFigGetPageData           (msg);          break;
                                                    
-        case 'uiReturnFigResizeWindow':                 uiReturnFigResizeWindow                ();                          break;
+        case 'uiReturnFigResizeWindow':           uiReturnFigResizeWindow          ();             break;
                            
-        case 'uiReturnFigGetAllLocalColorStyles':       uiReturnFigGetAllLocalColorStyles      (msg);                       break;
+        case 'uiReturnFigGetAllLocalColorStyles': uiReturnFigGetAllLocalColorStyles(msg);          break;
 
-        //case 'uiReturnUpdateViewportRect':              viewportRect = msg.viewportRect;                                    break;
-        case 'uiReturnFigGetMousePosition':             uiUpdateWindowStartRect                (msg);                       break;
+        //case 'uiReturnUpdateViewportRect':      viewportRect = msg.viewportRect;                                    break;
+        case 'uiReturnFigGetMousePosition':       uiUpdateWindowStartRect          (msg);          break;
 
-        case 'uiSetStyleId':                            uiSetStyleId                           (msg);                       break;
-        case 'uiHideClearUndoWarning':                  uiHideClearUndoWarning                 ();                          break;
+        case 'uiSetStyleId':                      uiSetStyleId                     (msg);          break;
+        case 'uiHideClearUndoWarning':            uiHideClearUndoWarning           ();             break;
     }
 }    
 
@@ -63324,7 +63609,9 @@ generator.onmessage = function(e)
         case 'uiInitNodeProgress':   graphView.graph.nodeFromId(msg.nodeId).initProgress();                break;
         case 'uiUpdateNodeProgress': graphView.graph.nodeFromId(msg.nodeId).updateProgress(msg.progress);  break;
         
-        case 'uiForwardToFigma':     uiQueueMessageToFigma(msg.msg);                                       break;
+        //case 'uiFetch':              uiFetch(msg.request);                                                 break;
+
+        case 'uiForwardToFigma':     uiPostMessageToFigma(msg.msg);                                        break;
     }
 };
 
@@ -66307,7 +66594,7 @@ function uiShowClearUndoWarning(deleting)
             {
                 buttonText:   'Ignore',
                 buttonAction: 'hideClearUndoWarning',
-                delay:        8000 
+                delay:         8000 
             });
     }
 }
@@ -66321,6 +66608,33 @@ function uiHideClearUndoWarning()
          true, 
         !settings.showClearUndoWarning);
 }
+
+
+
+// function uiFetch(request)
+// {
+//     console.log('uiFetch(\'%s\')', request);
+
+//     uiPostMessageToFigma(
+//     {
+//         cmd:    'figFetch',
+//         request: request
+//     });
+// }
+
+
+
+// function uiFetchResponse(success, response)
+// {
+//     console.log('uiFetchResponse(\'%s\', \'%s\')', success, response);
+
+//     uiPostMessageToGenerator(
+//     {
+//         cmd:     'genFetchResponse',
+//         success:  success,
+//         response: response
+//     });
+// }
 
 
 const mainGraph       = new Graph();
