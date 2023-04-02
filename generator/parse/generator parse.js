@@ -100,6 +100,7 @@ function genParse(parse, inParam = true)
     else if (parse.next == NUMBER_RANDOM          ) result = genParseRandom          (parse);
     else if (parse.next == NUMBER_SERIES          ) result = genParseSeries          (parse);
     else if (parse.next == NUMBER_INTERPOLATE     ) result = genParseInterpolate     (parse);
+    else if (parse.next == NUMBER_TO_TEXT         ) result = genParseNumberToText    (parse);
     
     else if (parse.next == NUMBER_MATH            ) result = genParseMath            (parse, (nodeId, options) => new GMath          (nodeId, options));
     else if (parse.next == NUMBER_ADD             ) result = genParseArithmetic      (parse, (nodeId, options) => new GAdd           (nodeId, options));

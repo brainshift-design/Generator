@@ -49,6 +49,15 @@
 
 ../generator/types/number/GNumberType.js
 
+../generator/types/number/GNumber.js
+../generator/types/number/GRound.js
+../generator/types/number/GAbsolute.js
+../generator/types/number/GLimits.js
+../generator/types/number/GSeries.js
+../generator/types/number/GRandom.js
+../generator/types/number/GInterpolate.js
+../generator/types/number/GNumberToText.js
+
 ../generator/types/number/arithmetic/GArithmetic.js
 ../generator/types/number/arithmetic/GMath.js
 ../generator/types/number/arithmetic/GAdd.js
@@ -72,14 +81,6 @@
 ../generator/types/number/condition/GLessOrEqual.js
 ../generator/types/number/condition/GGreater.js
 ../generator/types/number/condition/GGreaterOrEqual.js
-
-../generator/types/number/GNumber.js
-../generator/types/number/GRound.js
-../generator/types/number/GAbsolute.js
-../generator/types/number/GLimits.js
-../generator/types/number/GSeries.js
-../generator/types/number/GRandom.js
-../generator/types/number/GInterpolate.js
 
 
 ../generator/types/text/GTextType.js

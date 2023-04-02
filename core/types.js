@@ -57,7 +57,8 @@ const NUMBER_ROUND            = 'ROUND';
 const NUMBER_LIMITS           = 'LIM';   
 const NUMBER_SERIES           = 'SER';  
 const NUMBER_RANDOM           = 'RAND';  
-const NUMBER_INTERPOLATE      = 'LERP';  
+const NUMBER_INTERPOLATE      = 'LERP'; 
+const NUMBER_TO_TEXT          = 'N2T';
 
 const NUMBER_MATH             = 'MATH';  
 const NUMBER_ADD              = 'ADD';   
@@ -126,6 +127,7 @@ const NUMBER_TYPES =
     NUMBER_SERIES,
     NUMBER_RANDOM,
     NUMBER_INTERPOLATE,
+    NUMBER_TO_TEXT,
 
     ...MATH_TYPES,
     ...BOOLEAN_TYPES,

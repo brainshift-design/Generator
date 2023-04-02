@@ -46,6 +46,7 @@
 ../operators/number/OpRandom.js
 ../operators/number/OpSeries.js
 ../operators/number/OpInterpolate.js
+../operators/number/OpNumberToText.js
 
 ../operators/number/arithmetic/OpMath.js
 ../operators/number/arithmetic/OpArithmetic.js

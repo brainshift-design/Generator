@@ -269,12 +269,12 @@ function checkControlVisible(param, control)
 
 
 
-function createValueParamFromType(type)
+function createParamFromType(type, hasOutput = false)
 {
-    if (NUMBER_TYPES.includes(type))
-        return new NumberParam('value', '',  false, false, false);
-    else if (COLOR_TYPES.includes(type))
-        return new ColorParam('value', '',  false, false, false);
-    else if (TEXT_TYPES.includes(type))
-        return new TextParam('value', '',  false, false, false);
+         if (NUMBER_TYPES.includes(type)) return new NumberParam('value', '', false, false, hasOutput);
+    else if (  TEXT_TYPES.includes(type)) return new   TextParam('value', '',        false, hasOutput);
+    else if ( COLOR_TYPES.includes(type)) return new  ColorParam('value', '', false, false, hasOutput);
+    else if (  FILL_TYPES.includes(type)) return new   FillParam('value', '', false, false, hasOutput);
+    else if (STROKE_TYPES.includes(type)) return new StrokeParam('value', '', false, false, hasOutput);
+    else if (  LIST_TYPES.includes(type)) return new   ListParam('value', '', false, false, hasOutput);
 }
