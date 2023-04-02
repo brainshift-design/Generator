@@ -86,7 +86,7 @@ class Operator
     outputControls;
 
     paramBack;
-    hiddenParamBack;
+    //hiddenParamBack;
 
     subscribeCover;
     subscribeLabel;
@@ -303,10 +303,16 @@ class Operator
 
     addParam(param, volatile = false)
     {
-        return this.insertParam(
-            this.params.length, 
-            param, 
-            volatile);
+        param._node    = this;
+        param.volatile = volatile;
+
+        this.params.push(param);
+        this.paramBack.appendChild(param.div);
+
+        if (param. input) this. inputs.push(param. input);
+        if (param.output) this.outputs.push(param.output);
+
+        return param;
     }
  
     
@@ -317,7 +323,7 @@ class Operator
         param.volatile = volatile;
 
         this.params.splice(index, 0, param);
-        this.inner.insertBefore(param.div, this.inner.children[index]);
+        this.paramBack.insertBefore(param.div, this.paramBack.children[index]);
 
         if (param. input) this. inputs.splice(index, 0, param. input);
         if (param.output) this.outputs.splice(index, 0, param.output);
@@ -327,21 +333,23 @@ class Operator
  
     
 
-    addParamByType(type, id, showName, hasInput, hasOutput, volatile = false)
+    createAndAddParamByType(type, id, showName, hasInput, hasOutput, volatile = false)
     {
-        return this.insertParamByType(
-            this.params.length,
-            type,
-            id,
-            showName,
-            hasInput,
-            hasOutput,
-            volatile);
+             if (NUMBER_TYPES.includes(type)) return this.addParam(new NumberParam(id, id, showName, hasInput, hasOutput), volatile);
+        else if (  TEXT_TYPES.includes(type)) return this.addParam(new   TextParam(id, id,           hasInput, hasOutput), volatile);
+        else if ( COLOR_TYPES.includes(type)) return this.addParam(new  ColorParam(id, id, showName, hasInput, hasOutput), volatile);
+        else if (  FILL_TYPES.includes(type)) return this.addParam(new   FillParam(id, id, showName, hasInput, hasOutput), volatile);
+        else if (STROKE_TYPES.includes(type)) return this.addParam(new StrokeParam(id, id, showName, hasInput, hasOutput), volatile);
+        else if (  LIST_TYPES.includes(type)) return this.addParam(new   ListParam(id, id,           hasInput, hasOutput), volatile);
+
+        else console.assert(false, 'cannot add parameter of type \'' + type + '\'');
+
+        return null;
     }
 
 
 
-    insertParamByType(index, type, id, showName, hasInput, hasOutput, volatile = false)
+    createAndInsertParamByType(index, type, id, showName, hasInput, hasOutput, volatile = false)
     {
              if (NUMBER_TYPES.includes(type)) return this.insertParam(index, new NumberParam(id, id, showName, hasInput, hasOutput), volatile);
         else if (  TEXT_TYPES.includes(type)) return this.insertParam(index, new   TextParam(id, id,           hasInput, hasOutput), volatile);
@@ -350,7 +358,7 @@ class Operator
         else if (STROKE_TYPES.includes(type)) return this.insertParam(index, new StrokeParam(id, id, showName, hasInput, hasOutput), volatile);
         else if (  LIST_TYPES.includes(type)) return this.insertParam(index, new   ListParam(id, id,           hasInput, hasOutput), volatile);
 
-        else console.assert(false, 'cannot create parameter of type \'' + type + '\'');
+        else console.assert(false, 'cannot insert parameter of type \'' + type + '\'');
 
         return null;
     }
@@ -378,8 +386,8 @@ class Operator
         }
 
 
-        if (this.inner.contains(param.div))
-            this.inner.removeChild(param.div);
+        if (this.paramBack.contains(param.div))
+            this.paramBack.removeChild(param.div);
     
         removeFromArray(this.params, param);
 
@@ -984,7 +992,7 @@ class Operator
 
             if (index < 0)
             {
-                this.addParamByType(_param[0], _param[1], false, false, true);
+                this.createAndAddParamByType(_param[0], _param[1], false, false, true);
                 index = this.params.length-1;
             }
 

@@ -3046,11 +3046,8 @@ a
 .nodeParamBack
 {
     display:     block;
-    position:    absolute;
-    width:       100%;
-    background:  #fffe;
-    z-index:    -1;
- /* box-shadow:  0 0 0 1px green inset; */
+    position:    relative;
+    box-shadow:  0 0 0 1px green inset;
 }
 
 
@@ -3733,6 +3730,7 @@ a
                 <h1 style='margin-top: 20px;'>What's new in Generator</h1>
 
                 <p>Parameter inputs and outputs are now colored according to the parameter's data type.</p>
+                <p>Added remove button to invalid connection error.</p>
                 
                 <p><br/><br/><div id='chkHideWhatsNew'></div></p>
             </div>
@@ -4302,9 +4300,11 @@ function getConnectionString(outputNodeId, outputId, outputOrder, inputNodeId, i
 
     const join  = jsp + '.' + jsp;
 
-    return outputNodeId + join + outputId
+    return '( '
+         + outputNodeId + join + outputId
          + arrow
-         + inputNodeId  + join + inputId;
+         + inputNodeId  + join + inputId
+         + ' )';
 }
 
 
@@ -22479,9 +22479,11 @@ function getConnectionString(outputNodeId, outputId, outputOrder, inputNodeId, i
 
     const join  = jsp + '.' + jsp;
 
-    return outputNodeId + join + outputId
+    return '( '
+         + outputNodeId + join + outputId
          + arrow
-         + inputNodeId  + join + inputId;
+         + inputNodeId  + join + inputId
+         + ' )';
 }
 
 
@@ -48616,7 +48618,7 @@ class Operator
     outputControls;
 
     paramBack;
-    hiddenParamBack;
+    //hiddenParamBack;
 
     subscribeCover;
     subscribeLabel;
@@ -48833,10 +48835,16 @@ class Operator
 
     addParam(param, volatile = false)
     {
-        return this.insertParam(
-            this.params.length, 
-            param, 
-            volatile);
+        param._node    = this;
+        param.volatile = volatile;
+
+        this.params.push(param);
+        this.paramBack.appendChild(param.div);
+
+        if (param. input) this. inputs.push(param. input);
+        if (param.output) this.outputs.push(param.output);
+
+        return param;
     }
  
     
@@ -48847,7 +48855,7 @@ class Operator
         param.volatile = volatile;
 
         this.params.splice(index, 0, param);
-        this.inner.insertBefore(param.div, this.inner.children[index]);
+        this.paramBack.insertBefore(param.div, this.paramBack.children[index]);
 
         if (param. input) this. inputs.splice(index, 0, param. input);
         if (param.output) this.outputs.splice(index, 0, param.output);
@@ -48857,21 +48865,23 @@ class Operator
  
     
 
-    addParamByType(type, id, showName, hasInput, hasOutput, volatile = false)
+    createAndAddParamByType(type, id, showName, hasInput, hasOutput, volatile = false)
     {
-        return this.insertParamByType(
-            this.params.length,
-            type,
-            id,
-            showName,
-            hasInput,
-            hasOutput,
-            volatile);
+             if (NUMBER_TYPES.includes(type)) return this.addParam(new NumberParam(id, id, showName, hasInput, hasOutput), volatile);
+        else if (  TEXT_TYPES.includes(type)) return this.addParam(new   TextParam(id, id,           hasInput, hasOutput), volatile);
+        else if ( COLOR_TYPES.includes(type)) return this.addParam(new  ColorParam(id, id, showName, hasInput, hasOutput), volatile);
+        else if (  FILL_TYPES.includes(type)) return this.addParam(new   FillParam(id, id, showName, hasInput, hasOutput), volatile);
+        else if (STROKE_TYPES.includes(type)) return this.addParam(new StrokeParam(id, id, showName, hasInput, hasOutput), volatile);
+        else if (  LIST_TYPES.includes(type)) return this.addParam(new   ListParam(id, id,           hasInput, hasOutput), volatile);
+
+        else console.assert(false, 'cannot add parameter of type \'' + type + '\'');
+
+        return null;
     }
 
 
 
-    insertParamByType(index, type, id, showName, hasInput, hasOutput, volatile = false)
+    createAndInsertParamByType(index, type, id, showName, hasInput, hasOutput, volatile = false)
     {
              if (NUMBER_TYPES.includes(type)) return this.insertParam(index, new NumberParam(id, id, showName, hasInput, hasOutput), volatile);
         else if (  TEXT_TYPES.includes(type)) return this.insertParam(index, new   TextParam(id, id,           hasInput, hasOutput), volatile);
@@ -48880,7 +48890,7 @@ class Operator
         else if (STROKE_TYPES.includes(type)) return this.insertParam(index, new StrokeParam(id, id, showName, hasInput, hasOutput), volatile);
         else if (  LIST_TYPES.includes(type)) return this.insertParam(index, new   ListParam(id, id,           hasInput, hasOutput), volatile);
 
-        else console.assert(false, 'cannot create parameter of type \'' + type + '\'');
+        else console.assert(false, 'cannot insert parameter of type \'' + type + '\'');
 
         return null;
     }
@@ -48908,8 +48918,8 @@ class Operator
         }
 
 
-        if (this.inner.contains(param.div))
-            this.inner.removeChild(param.div);
+        if (this.paramBack.contains(param.div))
+            this.paramBack.removeChild(param.div);
     
         removeFromArray(this.params, param);
 
@@ -49514,7 +49524,7 @@ class Operator
 
             if (index < 0)
             {
-                this.addParamByType(_param[0], _param[1], false, false, true);
+                this.createAndAddParamByType(_param[0], _param[1], false, false, true);
                 index = this.params.length-1;
             }
 
@@ -49714,11 +49724,14 @@ Operator.prototype.createNode = function()
 
     
     this.paramBack       = createDiv('nodeParamBack');
-    this.hiddenParamBack = createDiv('nodeHiddenParamBack');
+    //this.hiddenParamBack = createDiv('nodeHiddenParamBack');
 
 
     this.createHeader();
     this.createInfo();
+
+
+    this.inner.appendChild(this.paramBack);
 
 
     this.subscribeCover = createDiv('subscribeCover');
@@ -50481,8 +50494,8 @@ Operator.prototype.updateWireTransform = function()
 
 Operator.prototype.updateNode = function() 
 {
-    this.      paramBack.style.backgroundColor = darkMode ? '#363636' : 'white';
-    this.hiddenParamBack.style.backgroundColor = darkMode ? '#363636' : 'white';
+    // this.      paramBack.style.backgroundColor = darkMode ? '#363636' : 'white';
+    // this.hiddenParamBack.style.backgroundColor = darkMode ? '#363636' : 'white';
 
     this.updateHeader();
     this.updateHeaderLabel();
@@ -50535,7 +50548,7 @@ Operator.prototype.updateHeader = function()
     const height = Math.max(defHeaderHeight, this.updateHeaderInputsAndOutputs());
 
     this.header.style.height = height;
-    this.updateParamBack(height);
+    //this.updateParamBack(height);
 
     this.updateHeaderLabel();
     this.updateReorderArrows();
@@ -50608,14 +50621,14 @@ Operator.prototype.updateSubscribeStatus = function(subscribed)
 
 
 
-Operator.prototype.updateParamBack = function(headerHeight)
-{
-    this.      paramBack.style.height =
-    this.hiddenParamBack.style.height = this.measureData.innerOffset.height - headerHeight;
+// Operator.prototype.updateParamBack = function(headerHeight)
+// {
+//     this.      paramBack.style.height =
+//     this.hiddenParamBack.style.height = this.measureData.innerOffset.height - headerHeight;
 
-    this.      paramBack.style.top    =
-    this.hiddenParamBack.style.top    = headerHeight;
-}
+//     this.      paramBack.style.top    =
+//     this.hiddenParamBack.style.top    = headerHeight;
+// }
 
 
 
@@ -51407,7 +51420,7 @@ extends OperatorBase
     {
         super(ITEMS, 'items');
 
-        this.inert = true;
+        //this.inert = true;
 
         
         this.addInput (new Input(LIST_TYPES));
@@ -51508,7 +51521,7 @@ extends OperatorBase
                     }
                 }
                 else       
-                    this.addParamByType(value.type, id, false, false, true);
+                    this.createAndAddParamByType(value.type, id, false, false, true);
             }
         }
 
@@ -51542,7 +51555,7 @@ extends OperatorBase
     {
         super(SELECT, 'select');
 
-        //this.inert = true;
+        this.alwaysSaveParams = true;
 
 
         this.addInput(new Input(LIST_TYPES, getNodeInputValuesForUndo));
@@ -51610,7 +51623,7 @@ extends OperatorBase
 
         if (  !paramValue 
             && val) 
-            paramValue = this.addParamByType(val.type, 'value', false, false, true);
+            paramValue = this.createAndInsertParamByType(0, val.type, 'value', false, false, true);
 
         
         this.paramIndex.controls[0].setMax(
@@ -51640,6 +51653,22 @@ extends OperatorBase
 
 
         this.updateParamControls();
+    }
+
+
+
+    loadParams(_node, pasting)
+    {
+        if (!_node.params)
+            return;
+
+        const _paramValue = _node.params.find(p => p[1] == 'value');
+        const _paramIndex = _node.params.find(p => p[1] == 'index');
+
+        this.createAndInsertParamByType(0, _paramValue[0], _paramValue[1], false, false, true);
+        this.params[0].loadParam(_paramValue[2]);
+ 
+        this.paramIndex.loadParam(_paramIndex[2]);
     }
 }
 
@@ -65039,13 +65068,25 @@ function resolveConnections(graph, nodes, _connections, first, last)
 
                 if (!outputNode)
                 { 
-                    uiError('Cannot connect  ' + strConn + ',  \'' + _conn.outputNodeId + '\' not found'); 
+                    uiError(
+                        'Cannot connect  ' + strConn + ',  \'' + _conn.outputNodeId + '\' not found', 
+                        {
+                            buttonText:   'Remove connection',
+                            buttonAction: 'removeConnection,' + getStorageConnKey(_conn)
+                        });
+
                     continue; 
                 }
 
                 if (!inputNode) 
                 { 
-                    uiError('Cannot connect  ' + strConn + ',  \'' + _conn.inputNodeId + '\' not found'); 
+                    uiError(
+                        'Cannot connect  ' + strConn + ',  \'' + _conn.inputNodeId + '\' not found',
+                        {
+                            buttonText:   'Remove connection',
+                            buttonAction: 'removeConnection,' + getStorageConnKey(_conn)
+                        });
+ 
                     continue; 
                 }
 

@@ -9,7 +9,7 @@ extends OperatorBase
     {
         super(SELECT, 'select');
 
-        //this.inert = true;
+        this.alwaysSaveParams = true;
 
 
         this.addInput(new Input(LIST_TYPES, getNodeInputValuesForUndo));
@@ -77,7 +77,7 @@ extends OperatorBase
 
         if (  !paramValue 
             && val) 
-            paramValue = this.addParamByType(val.type, 'value', false, false, true);
+            paramValue = this.createAndInsertParamByType(0, val.type, 'value', false, false, true);
 
         
         this.paramIndex.controls[0].setMax(
@@ -107,5 +107,21 @@ extends OperatorBase
 
 
         this.updateParamControls();
+    }
+
+
+
+    loadParams(_node, pasting)
+    {
+        if (!_node.params)
+            return;
+
+        const _paramValue = _node.params.find(p => p[1] == 'value');
+        const _paramIndex = _node.params.find(p => p[1] == 'index');
+
+        this.createAndInsertParamByType(0, _paramValue[0], _paramValue[1], false, false, true);
+        this.params[0].loadParam(_paramValue[2]);
+ 
+        this.paramIndex.loadParam(_paramIndex[2]);
     }
 }

@@ -31,8 +31,8 @@ Operator.prototype.updateWireTransform = function()
 
 Operator.prototype.updateNode = function() 
 {
-    this.      paramBack.style.backgroundColor = darkMode ? '#363636' : 'white';
-    this.hiddenParamBack.style.backgroundColor = darkMode ? '#363636' : 'white';
+    // this.      paramBack.style.backgroundColor = darkMode ? '#363636' : 'white';
+    // this.hiddenParamBack.style.backgroundColor = darkMode ? '#363636' : 'white';
 
     this.updateHeader();
     this.updateHeaderLabel();
@@ -85,7 +85,7 @@ Operator.prototype.updateHeader = function()
     const height = Math.max(defHeaderHeight, this.updateHeaderInputsAndOutputs());
 
     this.header.style.height = height;
-    this.updateParamBack(height);
+    //this.updateParamBack(height);
 
     this.updateHeaderLabel();
     this.updateReorderArrows();
@@ -158,14 +158,14 @@ Operator.prototype.updateSubscribeStatus = function(subscribed)
 
 
 
-Operator.prototype.updateParamBack = function(headerHeight)
-{
-    this.      paramBack.style.height =
-    this.hiddenParamBack.style.height = this.measureData.innerOffset.height - headerHeight;
+// Operator.prototype.updateParamBack = function(headerHeight)
+// {
+//     this.      paramBack.style.height =
+//     this.hiddenParamBack.style.height = this.measureData.innerOffset.height - headerHeight;
 
-    this.      paramBack.style.top    =
-    this.hiddenParamBack.style.top    = headerHeight;
-}
+//     this.      paramBack.style.top    =
+//     this.hiddenParamBack.style.top    = headerHeight;
+// }
 
 
 

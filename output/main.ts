@@ -261,9 +261,11 @@ function getConnectionString(outputNodeId, outputId, outputOrder, inputNodeId, i
 
     const join  = jsp + '.' + jsp;
 
-    return outputNodeId + join + outputId
+    return '( '
+         + outputNodeId + join + outputId
          + arrow
-         + inputNodeId  + join + inputId;
+         + inputNodeId  + join + inputId
+         + ' )';
 }
 
 

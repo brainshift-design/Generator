@@ -55,11 +55,14 @@ Operator.prototype.createNode = function()
 
     
     this.paramBack       = createDiv('nodeParamBack');
-    this.hiddenParamBack = createDiv('nodeHiddenParamBack');
+    //this.hiddenParamBack = createDiv('nodeHiddenParamBack');
 
 
     this.createHeader();
     this.createInfo();
+
+
+    this.inner.appendChild(this.paramBack);
 
 
     this.subscribeCover = createDiv('subscribeCover');

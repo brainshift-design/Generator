@@ -5,7 +5,7 @@ extends OperatorBase
     {
         super(ITEMS, 'items');
 
-        this.inert = true;
+        //this.inert = true;
 
         
         this.addInput (new Input(LIST_TYPES));
@@ -106,7 +106,7 @@ extends OperatorBase
                     }
                 }
                 else       
-                    this.addParamByType(value.type, id, false, false, true);
+                    this.createAndAddParamByType(value.type, id, false, false, true);
             }
         }
 

@@ -66,11 +66,8 @@
 .nodeParamBack
 {
     display:     block;
-    position:    absolute;
-    width:       100%;
-    background:  #fffe;
-    z-index:    -1;
- /* box-shadow:  0 0 0 1px green inset; */
+    position:    relative;
+    box-shadow:  0 0 0 1px green inset;
 }
 
 

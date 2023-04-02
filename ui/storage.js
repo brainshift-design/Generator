@@ -439,13 +439,25 @@ function resolveConnections(graph, nodes, _connections, first, last)
 
                 if (!outputNode)
                 { 
-                    uiError('Cannot connect  ' + strConn + ',  \'' + _conn.outputNodeId + '\' not found'); 
+                    uiError(
+                        'Cannot connect  ' + strConn + ',  \'' + _conn.outputNodeId + '\' not found', 
+                        {
+                            buttonText:   'Remove connection',
+                            buttonAction: 'removeConnection,' + getStorageConnKey(_conn)
+                        });
+
                     continue; 
                 }
 
                 if (!inputNode) 
                 { 
-                    uiError('Cannot connect  ' + strConn + ',  \'' + _conn.inputNodeId + '\' not found'); 
+                    uiError(
+                        'Cannot connect  ' + strConn + ',  \'' + _conn.inputNodeId + '\' not found',
+                        {
+                            buttonText:   'Remove connection',
+                            buttonAction: 'removeConnection,' + getStorageConnKey(_conn)
+                        });
+ 
                     continue; 
                 }
 
