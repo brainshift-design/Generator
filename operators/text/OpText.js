@@ -9,15 +9,15 @@ extends ResizableBase
     {
         super(TEXT, 'text');
 
+        this.alwaysLoadParams = true;
+
 
         this.addInput (new Input (TEXT_TYPES, getNodeInputValuesForUndo, this.input_getBackInitValue));
         this.addOutput(new Output([TEXT_VALUE], this.output_genRequest, getNodeOutputValuesForUndo, this.output_backInit));
 
         this.addParam(this.paramValue = new TextParam('value', '', false, false));
 
-        this.paramValue.controls[0].textarea.defPlaceholder  = ' . . .';
-
-        this.alwaysLoadParams = true;
+        this.paramValue.controls[0].textarea.defPlaceholder = ' . . .';
 
 
         this.header.addEventListener('pointerdown', e => this.paramValue.controls[0].textarea.blur());

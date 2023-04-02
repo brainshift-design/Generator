@@ -68,30 +68,3 @@ function uiHideClearUndoWarning()
          true, 
         !settings.showClearUndoWarning);
 }
-
-
-
-// function uiFetch(request)
-// {
-//     console.log('uiFetch(\'%s\')', request);
-
-//     uiPostMessageToFigma(
-//     {
-//         cmd:    'figFetch',
-//         request: request
-//     });
-// }
-
-
-
-// function uiFetchResponse(success, response)
-// {
-//     console.log('uiFetchResponse(\'%s\', \'%s\')', success, response);
-
-//     uiPostMessageToGenerator(
-//     {
-//         cmd:     'genFetchResponse',
-//         success:  success,
-//         response: response
-//     });
-// }

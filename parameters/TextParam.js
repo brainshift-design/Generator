@@ -190,13 +190,17 @@ extends Parameter
         if (id == '')
             id = this.id;
 
-        return pos + '["' + this.type  + '", "' + id  + '", "' + this.value.toString().replaceAll('\\', '\\\\') + '"]';
+        const value = encodeURIComponent(this.value.toString());
+
+        return pos + '["' + this.type  + '", "' + id  + '", "' + value + '"]';
     }
 
 
 
     loadParam(param)
     {
-        this.setValue(parseTextValue(param)[0], true, false, false);
+        const value = decodeURIComponent(param);
+
+        this.setValue(parseTextValue(value)[0], true, false, false);
     }
 }

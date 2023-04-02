@@ -25,8 +25,6 @@ onmessage = e =>
     {
         case 'uiForwardToGenerator':              uiPostMessageToGenerator         (msg.msg);      break;
 
-        //case 'uiFetchResponse':                   uiFetchResponse                  (msg.success, msg.response); break;
-
         case 'uiStylePropertyChange':             uiStylePropertyChange            (msg);          break;
         case 'uiStyleDelete':                     uiStyleDelete                    (msg);          break;
             
@@ -43,7 +41,6 @@ onmessage = e =>
                            
         case 'uiReturnFigGetAllLocalColorStyles': uiReturnFigGetAllLocalColorStyles(msg);          break;
 
-        //case 'uiReturnUpdateViewportRect':      viewportRect = msg.viewportRect;                                    break;
         case 'uiReturnFigGetMousePosition':       uiUpdateWindowStartRect          (msg);          break;
 
         case 'uiSetStyleId':                      uiSetStyleId                     (msg);          break;
@@ -158,8 +155,6 @@ generator.onmessage = function(e)
         case 'uiInitNodeProgress':   graphView.graph.nodeFromId(msg.nodeId).initProgress();                break;
         case 'uiUpdateNodeProgress': graphView.graph.nodeFromId(msg.nodeId).updateProgress(msg.progress);  break;
         
-        //case 'uiFetch':              uiFetch(msg.request);                                                 break;
-
         case 'uiForwardToFigma':     uiPostMessageToFigma(msg.msg);                                        break;
     }
 };

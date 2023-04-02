@@ -9,8 +9,9 @@ extends OperatorWithValue
     {
         super(TEXT_FETCH, 'fetch');
 
-        this.canDisable = true;
-        
+        this.canDisable       = true;
+        this.alwaysLoadParams = true;
+
 
         this.addOutput(new Output([TEXT_VALUE], this.output_genRequest));
 

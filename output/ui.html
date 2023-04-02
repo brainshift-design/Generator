@@ -45336,14 +45336,18 @@ extends Parameter
         if (id == '')
             id = this.id;
 
-        return pos + '["' + this.type  + '", "' + id  + '", "' + this.value.toString().replaceAll('\\', '\\\\') + '"]';
+        const value = encodeURIComponent(this.value.toString());
+
+        return pos + '["' + this.type  + '", "' + id  + '", "' + value + '"]';
     }
 
 
 
     loadParam(param)
     {
-        this.setValue(parseTextValue(param)[0], true, false, false);
+        const value = decodeURIComponent(param);
+
+        this.setValue(parseTextValue(value)[0], true, false, false);
     }
 }
 
@@ -53184,15 +53188,15 @@ extends ResizableBase
     {
         super(TEXT, 'text');
 
+        this.alwaysLoadParams = true;
+
 
         this.addInput (new Input (TEXT_TYPES, getNodeInputValuesForUndo, this.input_getBackInitValue));
         this.addOutput(new Output([TEXT_VALUE], this.output_genRequest, getNodeOutputValuesForUndo, this.output_backInit));
 
         this.addParam(this.paramValue = new TextParam('value', '', false, false));
 
-        this.paramValue.controls[0].textarea.defPlaceholder  = ' . . .';
-
-        this.alwaysLoadParams = true;
+        this.paramValue.controls[0].textarea.defPlaceholder = ' . . .';
 
 
         this.header.addEventListener('pointerdown', e => this.paramValue.controls[0].textarea.blur());
@@ -53663,8 +53667,9 @@ extends OperatorWithValue
     {
         super(TEXT_FETCH, 'fetch');
 
-        this.canDisable = true;
-        
+        this.canDisable       = true;
+        this.alwaysLoadParams = true;
+
 
         this.addOutput(new Output([TEXT_VALUE], this.output_genRequest));
 
@@ -63474,8 +63479,6 @@ onmessage = e =>
     {
         case 'uiForwardToGenerator':              uiPostMessageToGenerator         (msg.msg);      break;
 
-        //case 'uiFetchResponse':                   uiFetchResponse                  (msg.success, msg.response); break;
-
         case 'uiStylePropertyChange':             uiStylePropertyChange            (msg);          break;
         case 'uiStyleDelete':                     uiStyleDelete                    (msg);          break;
             
@@ -63492,7 +63495,6 @@ onmessage = e =>
                            
         case 'uiReturnFigGetAllLocalColorStyles': uiReturnFigGetAllLocalColorStyles(msg);          break;
 
-        //case 'uiReturnUpdateViewportRect':      viewportRect = msg.viewportRect;                                    break;
         case 'uiReturnFigGetMousePosition':       uiUpdateWindowStartRect          (msg);          break;
 
         case 'uiSetStyleId':                      uiSetStyleId                     (msg);          break;
@@ -63607,8 +63609,6 @@ generator.onmessage = function(e)
         case 'uiInitNodeProgress':   graphView.graph.nodeFromId(msg.nodeId).initProgress();                break;
         case 'uiUpdateNodeProgress': graphView.graph.nodeFromId(msg.nodeId).updateProgress(msg.progress);  break;
         
-        //case 'uiFetch':              uiFetch(msg.request);                                                 break;
-
         case 'uiForwardToFigma':     uiPostMessageToFigma(msg.msg);                                        break;
     }
 };
@@ -66606,33 +66606,6 @@ function uiHideClearUndoWarning()
          true, 
         !settings.showClearUndoWarning);
 }
-
-
-
-// function uiFetch(request)
-// {
-//     console.log('uiFetch(\'%s\')', request);
-
-//     uiPostMessageToFigma(
-//     {
-//         cmd:    'figFetch',
-//         request: request
-//     });
-// }
-
-
-
-// function uiFetchResponse(success, response)
-// {
-//     console.log('uiFetchResponse(\'%s\', \'%s\')', success, response);
-
-//     uiPostMessageToGenerator(
-//     {
-//         cmd:     'genFetchResponse',
-//         success:  success,
-//         response: response
-//     });
-// }
 
 
 const mainGraph       = new Graph();
