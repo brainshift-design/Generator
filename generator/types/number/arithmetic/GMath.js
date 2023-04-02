@@ -26,24 +26,24 @@ extends GArithmetic
 
 
 
-    eval(parse)
+    async eval(parse)
     {
         if (this.isCached())
             return this;
 
 
-        const op = this.operation.eval(parse).toValue().toInteger();
+        const op = (await this.operation.eval(parse)).toValue().toInteger();
 
         op.value = Math.min(Math.max(0, op.value), MATH_OPS.length-1);
 
         switch (op.value)
         {
-            case 0: this.value = evalSubtractInputs(this.inputs, parse); break;
-            case 1: this.value = evalAddInputs     (this.inputs, parse); break;
-            case 2: this.value = evalModuloInputs  (this.inputs, parse); break;
-            case 3: this.value = evalDivideInputs  (this.inputs, parse); break;
-            case 4: this.value = evalMultiplyInputs(this.inputs, parse); break;
-            case 5: this.value = evalExponentInputs(this.inputs, parse); break;
+            case 0: this.value = await evalSubtractInputs(this.inputs, parse); break;
+            case 1: this.value = await evalAddInputs     (this.inputs, parse); break;
+            case 2: this.value = await evalModuloInputs  (this.inputs, parse); break;
+            case 3: this.value = await evalDivideInputs  (this.inputs, parse); break;
+            case 4: this.value = await evalMultiplyInputs(this.inputs, parse); break;
+            case 5: this.value = await evalExponentInputs(this.inputs, parse); break;
         }
 
         

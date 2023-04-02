@@ -67,7 +67,7 @@ extends GValue
 
 
 
-    eval(parse)
+    async eval(parse)
     {
         return this;
     }
@@ -162,9 +162,9 @@ function parseFillValue(str, i = -1)
 
 
 
-// function evalFillValue(fillValue, parse)
+// async function evalFillValue(fillValue, parse)
 // {
-//     fillValue.eval(parse);
+//     await fillValue.eval(parse);
 
 //          if ( FILL_TYPES.includes(fillValue.type)) return fill;
 //     else if (COLOR_TYPES.includes(fillValue.type)) return new FillValue(fill, fillValue.data.opacity);

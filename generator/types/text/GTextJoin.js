@@ -22,13 +22,13 @@ extends GTextType
 
 
 
-    eval(parse)
+    async eval(parse)
     {
         if (this.isCached())
             return this;
 
 
-        this.value = evalJoinInputs(this.inputs, parse);
+        this.value = await evalJoinInputs(this.inputs, parse);
         
         genPushUpdateValue(parse, this.nodeId, 'value', this.value);
 
@@ -41,7 +41,7 @@ extends GTextType
 
 
 
-function evalJoinInputs(inputs, parse)
+async function evalJoinInputs(inputs, parse)
 {
     if (isEmpty(inputs))
         return TextValue.NaN;
@@ -52,7 +52,7 @@ function evalJoinInputs(inputs, parse)
 
     for (let i = 0; i < inputs.length; i++)
     {
-        const val = inputs[i].eval(parse).toValue();
+        const val = (await inputs[i].eval(parse)).toValue();
 
         console.assert(
             val.type == TEXT_VALUE, 

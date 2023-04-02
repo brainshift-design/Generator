@@ -32,19 +32,19 @@ extends GNumberType
 
 
 
-    eval(parse)
+    async eval(parse)
     {
         if (this.isCached())
             return this;
 
 
-        const min = this.min.eval(parse).toValue();
-        const max = this.max.eval(parse).toValue();
+        const min = (await this.min.eval(parse)).toValue();
+        const max = (await this.max.eval(parse)).toValue();
 
 
         if (this.input)
         {
-            this.value = this.input.eval(parse).toValue();
+            this.value = (await this.input.eval(parse)).toValue();
 
             console.assert(
                 this.value.type == NUMBER_VALUE, 

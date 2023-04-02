@@ -8161,7 +8161,7 @@ extends GNode
 
 
 
-    eval(parse)
+    async eval(parse)
     {
         // calculate and add value update here
 
@@ -8209,17 +8209,17 @@ extends GOperator
 
 
 
-    eval(parse)
+    async eval(parse)
     {
         this.node = parse.parsedNodes.find(v => v.nodeId == this.nodeId);
         console.assert(this.node, 'can\'t find parameter node \'' + this.nodeId + '\'');
 
-        this.node.eval(parse);
+        await this.node.eval(parse);
 
         this.param = this.node.getParamFromId(this.paramId);
 
         if (isValid(this.param)) // could have been deleted from OpRepeat for example
-            return this.param.eval(parse).toValue();
+            return (await this.param.eval(parse)).toValue();
         else
             return NullValue;
     }
@@ -8279,7 +8279,7 @@ extends GValue
 
 
 
-    eval(parse)
+    async eval(parse)
     {
         return this;
     }
@@ -8413,7 +8413,7 @@ extends GValue
 
 
 
-    eval(parse)
+    async eval(parse)
     {
         return this;
     }
@@ -8568,7 +8568,7 @@ extends GValue
 
 
 
-    eval(parse)
+    async eval(parse)
     {
         return this;
     }
@@ -8735,7 +8735,7 @@ extends GValue
 
 
 
-    eval(parse)
+    async eval(parse)
     {
         return this;
     }
@@ -8830,9 +8830,9 @@ function parseFillValue(str, i = -1)
 
 
 
-// function evalFillValue(fillValue, parse)
+// async function evalFillValue(fillValue, parse)
 // {
-//     fillValue.eval(parse);
+//     await fillValue.eval(parse);
 
 //          if ( FILL_TYPES.includes(fillValue.type)) return fill;
 //     else if (COLOR_TYPES.includes(fillValue.type)) return new FillValue(fill, fillValue.data.opacity);
@@ -8940,7 +8940,7 @@ extends GValue
 
 
 
-    eval(parse)
+    async eval(parse)
     {
         return this;
     }
@@ -9060,16 +9060,16 @@ function parseStrokeValue(str, i = -1)
 
 
 
-function evalStrokeValue(value, parse)
-{
-    const stroke = value.eval(parse).copy();
+// async function evalStrokeValue(value, parse)
+// {
+//     const stroke = (await value.eval(parse)).copy();
 
-         if (STROKE_TYPES.includes(stroke.type)) return stroke;
-    else if (  FILL_TYPES.includes(stroke.type)) return new StrokeValue(stroke, value.data.weight);
-    else if ( COLOR_TYPES.includes(stroke.type)) return new StrokeValue(new FillValue(stroke), value.data.weight);
+//          if (STROKE_TYPES.includes(stroke.type)) return stroke;
+//     else if (  FILL_TYPES.includes(stroke.type)) return new StrokeValue(stroke, value.data.weight);
+//     else if ( COLOR_TYPES.includes(stroke.type)) return new StrokeValue(new FillValue(stroke), value.data.weight);
 
-    else console.assert(false, 'stroke must have type');
-}
+//     else console.assert(false, 'stroke must have type');
+// }
 
 
 class ListValue
@@ -9120,7 +9120,7 @@ extends GValue
 
 
 
-    eval(parse)
+    async eval(parse)
     {
         return this;
     }
@@ -9361,7 +9361,7 @@ extends ShapeBaseValue
 
 
 
-    eval(parse)
+    async eval(parse)
     {
         return this;
     }
@@ -9505,7 +9505,7 @@ extends ShapeBaseValue
 
 
 
-    eval(parse)
+    async eval(parse)
     {
         return this;
     }
@@ -9631,7 +9631,7 @@ extends ShapeBaseValue
 
 
 
-    eval(parse)
+    async eval(parse)
     {
         return this;
     }
@@ -9741,7 +9741,7 @@ extends ShapeBaseValue
 
 
 
-    eval(parse)
+    async eval(parse)
     {
         return this;
     }
@@ -9884,7 +9884,7 @@ extends ShapeBaseValue
 
 
 
-    eval(parse)
+    async eval(parse)
     {
         return this;
     }
@@ -10004,7 +10004,7 @@ extends GOperator
 
 
 
-    eval(parse)
+    async eval(parse)
     {
         if (this.isCached())
             return this;
@@ -10014,7 +10014,7 @@ extends GOperator
 
         for (let i = 0; i < this.inputs.length; i++)
         {
-            const input = this.inputs[i].eval(parse).toValue();
+            const input = (await this.inputs[i].eval(parse)).toValue();
 
             if (input.type == LIST_VALUE)
             {
@@ -10084,7 +10084,7 @@ extends GOperator
 
 
 
-    eval(parse)
+    async eval(parse)
     {
         if (this.isCached())
             return this;
@@ -10093,7 +10093,7 @@ extends GOperator
         if (this.input)
         {
             if (!this.input.value)
-                this.input.eval(parse);
+                await this.input.eval(parse);
 
             this.value = this.input.toValue();
         }
@@ -10174,13 +10174,13 @@ extends GOperator
 
 
 
-    eval(parse)
+    async eval(parse)
     {
         if (this.isCached())
             return this;
 
 
-        let index = this.index.eval(parse).toValue();
+        let index = (await this.index.eval(parse)).toValue();
         index = new NumberValue(Math.round(index.value));
 
 
@@ -10190,7 +10190,7 @@ extends GOperator
         if (this.input)
         {
             if (!this.input.value)
-                this.input.eval(parse);
+                await this.input.eval(parse);
 
             const input = this.input.toValue();
             length = input.items.length;
@@ -10259,30 +10259,30 @@ extends GOperator
 
 
 
-    eval(parse)
+    async eval(parse)
     {
         if (this.isCached())
             return this;
 
         
-        const cond = this.condition.eval(parse).toValue();
+        const cond = (await this.condition.eval(parse)).toValue();
 
 
         if (   this.input0 
             && this.input1)
         {
-            const val0 = this.input0.eval(parse).toValue();
-            const val1 = this.input1.eval(parse).toValue();
+            const val0 = (await this.input0.eval(parse)).toValue();
+            const val1 = (await this.input1.eval(parse)).toValue();
 
             this.value = cond.value != 0 ? val0 : val1;
         }
         else if (this.input0
               && cond.value != 0)
-            this.value = this.input0.eval(parse).toValue();
+            this.value = (await this.input0.eval(parse)).toValue();
 
         else if (this.input1
               && cond.value == 0) 
-            this.value = this.input1.eval(parse).toValue();
+            this.value = (await this.input1.eval(parse)).toValue();
 
         else                  
             this.value = NumberValue.NaN;
@@ -10337,11 +10337,11 @@ extends GOperator
 
 
 
-    eval(parse)
+    async eval(parse)
     {
         if (this.input)
         {
-            this.input = this.input.eval(parse).copy();
+            this.input = (await this.input.eval(parse)).copy();
             this.value = this.input.toValue();
         }
         else
@@ -10395,13 +10395,13 @@ extends GOperator
 
 
 
-    eval(parse)
+    async eval(parse)
     {
         if (this.isCached())
             return this;
 
 
-        let count = this.count.eval(parse).toValue();
+        let count = (await this.count.eval(parse)).toValue();
         count = new NumberValue(Math.round(count.value));
 
        
@@ -10411,7 +10411,7 @@ extends GOperator
         {
             for (let i = 0; i < count.value; i++)
             {
-                const input = this.input.eval(parse).toValue();
+                const input = (await this.input.eval(parse)).toValue();
 
                 if (input)
                 {
@@ -10474,7 +10474,7 @@ extends GOperator
 
 
 
-    eval(parse)
+    async eval(parse)
     {
         if (this.valid)//isCached())
             return this;
@@ -10482,7 +10482,7 @@ extends GOperator
 
         this.value = 
             this.input
-            ? this.input.eval(parse).toValue()
+            ? (await this.input.eval(parse)).toValue()
             : NullValue;
 
 
@@ -10536,14 +10536,14 @@ extends GOperator
 
 
 
-    eval(parse)
+    async eval(parse)
     {
         if (this.isCached())
             return this;
 
 
-        this.value = this.input ? this.input.eval(parse).toValue() : NullValue;
-        this.copy  = this.value ? this.value.copy()                : NullValue;
+        this.value = this.input ? (await this.input.eval(parse)).toValue() : NullValue;
+        this.copy  = this.value ? this.value.copy()                        : NullValue;
 
 
         genPushUpdateValue(parse, this.nodeId, 'value', this.value);
@@ -10626,24 +10626,24 @@ extends GArithmetic
 
 
 
-    eval(parse)
+    async eval(parse)
     {
         if (this.isCached())
             return this;
 
 
-        const op = this.operation.eval(parse).toValue().toInteger();
+        const op = (await this.operation.eval(parse)).toValue().toInteger();
 
         op.value = Math.min(Math.max(0, op.value), MATH_OPS.length-1);
 
         switch (op.value)
         {
-            case 0: this.value = evalSubtractInputs(this.inputs, parse); break;
-            case 1: this.value = evalAddInputs     (this.inputs, parse); break;
-            case 2: this.value = evalModuloInputs  (this.inputs, parse); break;
-            case 3: this.value = evalDivideInputs  (this.inputs, parse); break;
-            case 4: this.value = evalMultiplyInputs(this.inputs, parse); break;
-            case 5: this.value = evalExponentInputs(this.inputs, parse); break;
+            case 0: this.value = await evalSubtractInputs(this.inputs, parse); break;
+            case 1: this.value = await evalAddInputs     (this.inputs, parse); break;
+            case 2: this.value = await evalModuloInputs  (this.inputs, parse); break;
+            case 3: this.value = await evalDivideInputs  (this.inputs, parse); break;
+            case 4: this.value = await evalMultiplyInputs(this.inputs, parse); break;
+            case 5: this.value = await evalExponentInputs(this.inputs, parse); break;
         }
 
         
@@ -10680,12 +10680,12 @@ extends GArithmetic
 
 
 
-    eval(parse)
+    async eval(parse)
     {
         if (this.isCached())
             return this;
 
-        this.value = evalAddInputs(this.inputs, parse);
+        this.value = await evalAddInputs(this.inputs, parse);
         
         genPushUpdateValue(parse, this.nodeId, 'value', this.value);
 
@@ -10697,7 +10697,7 @@ extends GArithmetic
 
 
 
-function evalAddInputs(inputs, parse)
+async function evalAddInputs(inputs, parse)
 {
     if (isEmpty(inputs))
         return NumberValue.NaN;
@@ -10708,7 +10708,7 @@ function evalAddInputs(inputs, parse)
 
     for (let i = 0; i < inputs.length; i++)
     {
-        const val = inputs[i].eval(parse).toValue();
+        const val = (await inputs[i].eval(parse)).toValue();
 
         console.assert(
             val.type == NUMBER_VALUE, 
@@ -10743,12 +10743,12 @@ extends GArithmetic
 
 
 
-    eval(parse)
+    async eval(parse)
     {
         if (this.isCached())
             return this;
 
-        this.value = evalSubtractInputs(this.inputs, parse);
+        this.value = await evalSubtractInputs(this.inputs, parse);
 
         genPushUpdateValue(parse, this.nodeId, 'value', this.value);
 
@@ -10760,7 +10760,7 @@ extends GArithmetic
 
 
 
-function evalSubtractInputs(inputs, parse)
+async function evalSubtractInputs(inputs, parse)
 {
     if (isEmpty(inputs))
         return NumberValue.NaN;
@@ -10771,7 +10771,7 @@ function evalSubtractInputs(inputs, parse)
 
     if (!isEmpty(inputs))
     {
-        const val0 = inputs[0].eval(parse).toValue();
+        const val0 = (await inputs[0].eval(parse)).toValue();
 
         value.value    = val0.value;
         value.decimals = val0.decimals;
@@ -10779,7 +10779,7 @@ function evalSubtractInputs(inputs, parse)
 
         for (let i = 1; i < inputs.length; i++)
         {
-            const val = inputs[i].eval(parse).toValue();
+            const val = (await inputs[i].eval(parse)).toValue();
 
             console.assert(
                 val.type == NUMBER_VALUE, 
@@ -10815,12 +10815,12 @@ extends GArithmetic
 
     
 
-    eval(parse)
+    async eval(parse)
     {
         if (this.isCached())
             return this;
 
-        this.value = evalMultiplyInputs(this.inputs, parse);
+        this.value = await evalMultiplyInputs(this.inputs, parse);
 
         genPushUpdateValue(parse, this.nodeId, 'value', this.value);
 
@@ -10832,7 +10832,7 @@ extends GArithmetic
 
 
 
-function evalMultiplyInputs(inputs, parse)
+async function evalMultiplyInputs(inputs, parse)
 {
     if (isEmpty(inputs))
         return NumberValue.NaN;
@@ -10847,7 +10847,7 @@ function evalMultiplyInputs(inputs, parse)
 
         for (let i = 0; i < inputs.length; i++)
         {
-            const val = inputs[i].eval(parse).toValue();
+            const val = (await inputs[i].eval(parse)).toValue();
 
             console.assert(
                 val.type == NUMBER_VALUE, 
@@ -10883,12 +10883,12 @@ extends GArithmetic
 
 
 
-    eval(parse)
+    async eval(parse)
     {
         if (this.isCached())
             return this;
 
-        this.value = evalDivideInputs(this.inputs, parse);
+        this.value = await evalDivideInputs(this.inputs, parse);
         
         genPushUpdateValue(parse, this.nodeId, 'value', this.value);
 
@@ -10900,7 +10900,7 @@ extends GArithmetic
 
 
 
-function evalDivideInputs(inputs, parse)
+async function evalDivideInputs(inputs, parse)
 {
     if (isEmpty(inputs))
         return NumberValue.NaN;
@@ -10911,7 +10911,7 @@ function evalDivideInputs(inputs, parse)
         
     if (!isEmpty(inputs))
     {
-        const val0 = inputs[0].eval(parse).toValue();
+        const val0 = (await inputs[0].eval(parse)).toValue();
 
         value.value    = val0.value;
         value.decimals = val0.decimals;
@@ -10919,7 +10919,7 @@ function evalDivideInputs(inputs, parse)
 
         for (let i = 1; i < inputs.length; i++)
         {
-            const val = inputs[i].eval(parse).toValue();
+            const val = (await inputs[i].eval(parse)).toValue();
 
             console.assert(
                 val.type == NUMBER_VALUE, 
@@ -10962,12 +10962,12 @@ extends GArithmetic
 
 
 
-    eval(parse)
+    async eval(parse)
     {
         if (this.isCached())
             return this;
 
-        this.value = evalModuloInputs(this.inputs, parse);
+        this.value = await evalModuloInputs(this.inputs, parse);
 
         genPushUpdateValue(parse, this.nodeId, 'value', this.value);
 
@@ -10979,7 +10979,7 @@ extends GArithmetic
 
 
 
-function evalModuloInputs(inputs, parse)
+async function evalModuloInputs(inputs, parse)
 {
     if (isEmpty(inputs))
         return NumberValue.NaN;
@@ -10990,7 +10990,7 @@ function evalModuloInputs(inputs, parse)
         
     if (!isEmpty(inputs))
     {
-        const val0 = inputs[0].eval(parse).toValue();
+        const val0 = (await inputs[0].eval(parse)).toValue();
 
         value.value    = val0.value;
         value.decimals = val0.decimals;
@@ -10998,7 +10998,7 @@ function evalModuloInputs(inputs, parse)
 
         for (let i = 1; i < inputs.length; i++)
         {
-            const val = inputs[i].eval(parse).toValue();
+            const val = (await inputs[i].eval(parse)).toValue();
 
             console.assert(
                 val.type == NUMBER_VALUE, 
@@ -11041,12 +11041,12 @@ extends GArithmetic
 
 
 
-    eval(parse)
+    async eval(parse)
     {
         if (this.isCached())
             return this;
 
-        this.value = evalExponentInputs(this.inputs, parse);
+        this.value = await evalExponentInputs(this.inputs, parse);
 
         genPushUpdateValue(parse, this.nodeId, 'value', this.value);
 
@@ -11058,7 +11058,7 @@ extends GArithmetic
 
 
 
-function evalExponentInputs(inputs, parse)
+async function evalExponentInputs(inputs, parse)
 {
     if (isEmpty(inputs))
         return NumberValue.NaN;
@@ -11069,7 +11069,7 @@ function evalExponentInputs(inputs, parse)
 
     if (!isEmpty(inputs))
     {
-        const val0 = inputs[0].eval(parse).toValue();
+        const val0 = (await inputs[0].eval(parse)).toValue();
 
         value.value    = val0.value;
         value.decimals = val0.decimals;
@@ -11077,7 +11077,7 @@ function evalExponentInputs(inputs, parse)
 
         for (let i = 1; i < inputs.length; i++)
         {
-            const val = inputs[i].eval(parse).toValue();
+            const val = (await inputs[i].eval(parse)).toValue();
 
             console.assert(
                 val.type == NUMBER_VALUE, 
@@ -11121,23 +11121,23 @@ extends GArithmetic
 
 
 
-    eval(parse)
+    async eval(parse)
     {
         if (this.isCached())
             return this;
 
 
-        const op = this.operation.eval(parse).toValue().toInteger();
+        const op = (await this.operation.eval(parse)).toValue().toInteger();
 
         op.value = Math.min(Math.max(0, op.value), BOOLEAN_OPS.length-1);
 
         
         switch (op.value)
         {
-            case BOOLEAN_NOT: this.value = evalNandInputs(this.inputs, parse); break;
-            case BOOLEAN_AND: this.value = evalAndInputs (this.inputs, parse); break;
-            case BOOLEAN_OR:  this.value = evalOrInputs  (this.inputs, parse); break;
-            case BOOLEAN_XOR: this.value = evalXorInputs (this.inputs, parse); break;
+            case BOOLEAN_NOT: this.value = await evalNandInputs(this.inputs, parse); break;
+            case BOOLEAN_AND: this.value = await evalAndInputs (this.inputs, parse); break;
+            case BOOLEAN_OR:  this.value = await evalOrInputs  (this.inputs, parse); break;
+            case BOOLEAN_XOR: this.value = await evalXorInputs (this.inputs, parse); break;
         }
 
         
@@ -11172,12 +11172,12 @@ extends GArithmetic
 
 
 
-    eval(parse)
+    async eval(parse)
     {
         if (this.isCached())
             return this;
 
-        this.value = evalNandInputs(this.inputs, parse);
+        this.value = await evalNandInputs(this.inputs, parse);
         
         genPushUpdateValue(parse, this.nodeId, 'value', this.value);
 
@@ -11189,7 +11189,7 @@ extends GArithmetic
 
 
 
-function evalNandInputs(inputs, parse)
+async function evalNandInputs(inputs, parse)
 {
     if (isEmpty(inputs))
         return NumberValue.NaN;
@@ -11200,7 +11200,7 @@ function evalNandInputs(inputs, parse)
 
     if (!isEmpty(inputs))
     {
-        const val0 = inputs[0].eval(parse).toValue();
+        const val0 = (await inputs[0].eval(parse)).toValue();
         if (!val0.isValid()) return NumberValue.NaN;
 
         value.value = val0.toNumber() != 0 ? 0 : 1;
@@ -11208,7 +11208,7 @@ function evalNandInputs(inputs, parse)
 
         for (let i = 1; i < inputs.length; i++)
         {
-            const val = inputs[i].eval(parse).toValue();
+            const val = (await inputs[i].eval(parse)).toValue();
             if (!val.isValid()) return NumberValue.NaN;
 
             console.assert(
@@ -11246,12 +11246,12 @@ extends GArithmetic
 
 
 
-    eval(parse)
+    async eval(parse)
     {
         if (this.isCached())
             return this;
 
-        this.value = evalAndInputs(this.inputs, parse);
+        this.value = await evalAndInputs(this.inputs, parse);
         
         genPushUpdateValue(parse, this.nodeId, 'value', this.value);
 
@@ -11263,7 +11263,7 @@ extends GArithmetic
 
 
 
-function evalAndInputs(inputs, parse)
+async function evalAndInputs(inputs, parse)
 {
     if (isEmpty(inputs))
         return NumberValue.NaN;
@@ -11274,7 +11274,7 @@ function evalAndInputs(inputs, parse)
 
     if (!isEmpty(inputs))
     {
-        const val0 = inputs[0].eval(parse).toValue();
+        const val0 = (await inputs[0].eval(parse)).toValue();
         if (!val0.isValid()) return NumberValue.NaN;
 
         value.value = val0.toNumber();
@@ -11282,7 +11282,7 @@ function evalAndInputs(inputs, parse)
 
         for (let i = 1; i < inputs.length; i++)
         {
-            const val = inputs[i].eval(parse).toValue();
+            const val = (await inputs[i].eval(parse)).toValue();
             if (!val.isValid()) return NumberValue.NaN;
 
             console.assert(
@@ -11322,12 +11322,12 @@ extends GArithmetic
 
 
 
-    eval(parse)
+    async eval(parse)
     {
         if (this.isCached())
             return this;
 
-        this.value = evalOrInputs(this.inputs, parse);
+        this.value = await evalOrInputs(this.inputs, parse);
         
         genPushUpdateValue(parse, this.nodeId, 'value', this.value);
 
@@ -11339,7 +11339,7 @@ extends GArithmetic
 
 
 
-function evalOrInputs(inputs, parse)
+async function evalOrInputs(inputs, parse)
 {
     if (isEmpty(inputs))
         return NumberValue.NaN;
@@ -11350,7 +11350,7 @@ function evalOrInputs(inputs, parse)
 
     if (!isEmpty(inputs))
     {
-        const val0 = inputs[0].eval(parse).toValue();
+        const val0 = (await inputs[0].eval(parse)).toValue();
         if (!val0.isValid()) return NumberValue.NaN;
 
         value.value = val0.toNumber();
@@ -11358,7 +11358,7 @@ function evalOrInputs(inputs, parse)
 
         for (let i = 1; i < inputs.length; i++)
         {
-            const val = inputs[i].eval(parse).toValue();
+            const val = (await inputs[i].eval(parse)).toValue();
             if (!val.isValid()) return NumberValue.NaN;
 
             console.assert(
@@ -11398,12 +11398,12 @@ extends GArithmetic
 
 
 
-    eval(parse)
+    async eval(parse)
     {
         if (this.isCached())
             return this;
 
-        this.value = evalXorInputs(this.inputs, parse);
+        this.value = await evalXorInputs(this.inputs, parse);
         
         genPushUpdateValue(parse, this.nodeId, 'value', this.value);
 
@@ -11415,7 +11415,7 @@ extends GArithmetic
 
 
 
-function evalXorInputs(inputs, parse)
+async function evalXorInputs(inputs, parse)
 {
     if (isEmpty(inputs))
         return NumberValue.NaN;
@@ -11428,7 +11428,7 @@ function evalXorInputs(inputs, parse)
 
     if (!isEmpty(inputs))
     {
-        const val0 = inputs[0].eval(parse).toValue();
+        const val0 = (await inputs[0].eval(parse)).toValue();
         if (!val0.isValid()) return NumberValue.NaN;
 
         flipped = val0.toNumber() != 0;
@@ -11436,7 +11436,7 @@ function evalXorInputs(inputs, parse)
 
         for (let i = 1; i < inputs.length; i++)
         {
-            const val = inputs[i].eval(parse).toValue();
+            const val = (await inputs[i].eval(parse)).toValue();
             if (!val.isValid()) return NumberValue.NaN;
 
             console.assert(
@@ -11465,10 +11465,10 @@ extends GNumberType
 
 
 
-function evalConditionInputs(input0, input1, op, parse) 
+async function evalConditionInputs(input0, input1, op, parse) 
 {
-    const val0 = input0 ? input0.eval(parse).toValue() : NumberValue.NaN;
-    const val1 = input1 ? input1.eval(parse).toValue() : NumberValue.NaN;
+    const val0 = input0 ? (await input0.eval(parse)).toValue() : NumberValue.NaN;
+    const val1 = input1 ? (await input1.eval(parse)).toValue() : NumberValue.NaN;
 
     if (   input0 
         && input1)
@@ -11511,25 +11511,25 @@ extends GNumberType
 
 
 
-    eval(parse)
+    async eval(parse)
     {
         if (this.isCached())
             return this;
 
 
-        const op = this.operation.eval(parse).toValue().toInteger();
+        const op = (await this.operation.eval(parse)).toValue().toInteger();
 
         op.value = Math.min(Math.max(0, op.value), CONDITION_OPS.length-1);
 
         
         switch (op.value)
         {
-            case CONDITION_LESS:              this.value = evalConditionInputs(this.input0, this.input1, ((a, b) => a <  b), parse);  break;
-            case CONDITION_LESS_OR_EQUAL:     this.value = evalConditionInputs(this.input0, this.input1, ((a, b) => a <= b), parse);  break;
-            case CONDITION_NOT_EQUAL:         this.value = evalConditionInputs(this.input0, this.input1, ((a, b) => a != b), parse);  break;
-            case CONDITION_EQUAL:             this.value = evalConditionInputs(this.input0, this.input1, ((a, b) => a == b), parse);  break;
-            case CONDITION_GREATER_OR_EQUAL:  this.value = evalConditionInputs(this.input0, this.input1, ((a, b) => a >= b), parse);  break;
-            case CONDITION_GREATER:           this.value = evalConditionInputs(this.input0, this.input1, ((a, b) => a >  b), parse);  break;
+            case CONDITION_LESS:              this.value = await evalConditionInputs(this.input0, this.input1, ((a, b) => a <  b), parse);  break;
+            case CONDITION_LESS_OR_EQUAL:     this.value = await evalConditionInputs(this.input0, this.input1, ((a, b) => a <= b), parse);  break;
+            case CONDITION_NOT_EQUAL:         this.value = await evalConditionInputs(this.input0, this.input1, ((a, b) => a != b), parse);  break;
+            case CONDITION_EQUAL:             this.value = await evalConditionInputs(this.input0, this.input1, ((a, b) => a == b), parse);  break;
+            case CONDITION_GREATER_OR_EQUAL:  this.value = await evalConditionInputs(this.input0, this.input1, ((a, b) => a >= b), parse);  break;
+            case CONDITION_GREATER:           this.value = await evalConditionInputs(this.input0, this.input1, ((a, b) => a >  b), parse);  break;
         }
 
 
@@ -11564,7 +11564,7 @@ extends GConditionBase
 
 
 
-    eval(parse)
+    async eval(parse)
     {
         if (this.isCached())
             return this;
@@ -11605,7 +11605,7 @@ extends GConditionBase
 
 
 
-    eval(parse)
+    async eval(parse)
     {
         if (this.isCached())
             return this;
@@ -11645,7 +11645,7 @@ extends GConditionBase
 
 
 
-    eval(parse)
+    async eval(parse)
     {
         if (this.isCached())
             return this;
@@ -11685,7 +11685,7 @@ extends GConditionBase
 
 
 
-    eval(parse)
+    async eval(parse)
     {
         if (this.isCached())
             return this;
@@ -11726,7 +11726,7 @@ extends GConditionBase
 
 
 
-    eval(parse)
+    async eval(parse)
     {
         if (this.isCached())
             return this;
@@ -11769,7 +11769,7 @@ extends GConditionBase
 
 
 
-    eval(parse)
+    async eval(parse)
     {
         if (this.isCached())
             return this;
@@ -11820,16 +11820,16 @@ extends GNumberType
 
 
 
-    eval(parse)
+    async eval(parse)
     {
         if (this.isCached())
             return this;
 
 
         if (this.input)
-            this.value = this.input.eval(parse).toValue();
+            this.value = (await this.input.eval(parse)).toValue();
         else if (this.value)
-            this.value.eval(parse);
+            await this.value.eval(parse);
         else
             this.value = NumberValue.NaN;
 
@@ -11886,7 +11886,7 @@ extends GNumberType
 
 
 
-    eval(parse)
+    async eval(parse)
     {
         if (this.isCached())
             return this;
@@ -11895,13 +11895,13 @@ extends GNumberType
         this.value = new NumberValue(0);
 
         
-        const type = this.type    .eval(parse).toValue();
-        const dec  = this.decimals.eval(parse).toValue();
+        const type = (await this.type    .eval(parse)).toValue();
+        const dec  = (await this.decimals.eval(parse)).toValue();
 
 
         if (this.input)
         {
-            this.value = this.input.eval(parse).toValue();
+            this.value = (await this.input.eval(parse)).toValue();
 
             console.assert(
                 this.value.type == NUMBER_VALUE, 
@@ -11965,7 +11965,7 @@ extends GNumberType
 
 
 
-    eval(parse)
+    async eval(parse)
     {
         if (this.isCached())
             return this;
@@ -11973,7 +11973,7 @@ extends GNumberType
 
         if (this.input)
         {
-            this.value = this.input.eval(parse).toValue();
+            this.value = (await this.input.eval(parse)).toValue();
 
             console.assert(
                 this.value.type == NUMBER_VALUE, 
@@ -12031,19 +12031,19 @@ extends GNumberType
 
 
 
-    eval(parse)
+    async eval(parse)
     {
         if (this.isCached())
             return this;
 
 
-        const min = this.min.eval(parse).toValue();
-        const max = this.max.eval(parse).toValue();
+        const min = (await this.min.eval(parse)).toValue();
+        const max = (await this.max.eval(parse)).toValue();
 
 
         if (this.input)
         {
-            this.value = this.input.eval(parse).toValue();
+            this.value = (await this.input.eval(parse)).toValue();
 
             console.assert(
                 this.value.type == NUMBER_VALUE, 
@@ -12108,14 +12108,14 @@ extends GNumberType
 
 
 
-    eval(parse)
+    async eval(parse)
     {
         //logString('GSeries.eval()');
 
         if (!this.valid)
         {
-            this.start.eval(parse);
-            this.step .eval(parse);
+            await this.start.eval(parse);
+            await this.step .eval(parse);
         }
 
 
@@ -12184,15 +12184,15 @@ extends GNumberType
 
 
 
-    eval(parse)
+    async eval(parse)
     {
         if (this.isCached())
             return this;
 
             
-        const seed = this.seed.eval(parse).toValue();
-        const min  = this.min .eval(parse).toValue();
-        const max  = this.max .eval(parse).toValue();
+        const seed = (await this.seed.eval(parse)).toValue();
+        const min  = (await this.min .eval(parse)).toValue();
+        const max  = (await this.max .eval(parse)).toValue();
     
 
         if (!this.valid)
@@ -12252,20 +12252,20 @@ extends GNumberType
 
 
 
-    eval(parse)
+    async eval(parse)
     {
         if (this.isCached())
             return this;
 
 
-        const amount = this.amount.eval(parse).toValue();
+        const amount = (await this.amount.eval(parse)).toValue();
 
 
         if (   this.input0 
             && this.input1)
         {
-            const val0 = this.input0.eval(parse).toValue();
-            const val1 = this.input1.eval(parse).toValue();
+            const val0 = (await this.input0.eval(parse)).toValue();
+            const val1 = (await this.input1.eval(parse)).toValue();
 
             const maxDec = Math.max(val0.decimals, val1.decimals);
 
@@ -12274,10 +12274,10 @@ extends GNumberType
                 maxDec);
         }
         else if (this.input0)
-            this.value = this.input0.eval(parse).toValue();
+            this.value = (await this.input0.eval(parse)).toValue();
 
         else if (this.input1) 
-            this.value = this.input1.eval(parse).toValue();
+            this.value = (await this.input1.eval(parse)).toValue();
 
         else                  
             this.value = NumberValue.NaN;
@@ -12346,16 +12346,16 @@ extends GTextType
 
 
 
-    eval(parse)
+    async eval(parse)
     {
         if (this.isCached())
             return this;
 
 
         if (this.input)
-            this.value = this.input.eval(parse).toValue();
+            this.value = (await this.input.eval(parse)).toValue();
         else if (this.value)
-            this.value.eval(parse);
+            await this.value.eval(parse);
         else
             this.value = TextValue.NaN;
 
@@ -12411,19 +12411,19 @@ extends GTextType
 
 
 
-    eval(parse)
+    async eval(parse)
     {
         if (this.isCached())
             return this;
 
 
-        const start = this.start.eval(parse).toValue();
-        const end   = this.end  .eval(parse).toValue();
+        const start = (await this.start.eval(parse)).toValue();
+        const end   = (await this.end  .eval(parse)).toValue();
 
 
         if (this.input)
         {
-            this.value = this.input.eval(parse).toValue();
+            this.value = (await this.input.eval(parse)).toValue();
 
             console.assert(
                 this.value.type == TEXT_VALUE, 
@@ -12483,13 +12483,13 @@ extends GTextType
 
 
 
-    eval(parse)
+    async eval(parse)
     {
         if (this.isCached())
             return this;
 
 
-        const code = this.code.eval(parse).toValue();
+        const code = (await this.code.eval(parse)).toValue();
 
 
         this.value = new TextValue(String.fromCharCode(code.value));
@@ -12533,27 +12533,29 @@ extends GTextType
         if (this.input) 
             copy.input = this.input.copy();
 
-        copy.what  = this.what.copy();
-        copy.with  = this.with.copy();
+        copy.what  = this.what .copy();
+        copy.with  = this.with .copy();
+
+        copy.value = this.value.copy();
 
         return copy;
     }
 
 
 
-    eval(parse)
+    async eval(parse)
     {
         if (this.isCached())
             return this;
 
 
-        const _what = this.what.eval(parse).toValue();
-        const _with = this.with.eval(parse).toValue();
+        const _what = (await this.what.eval(parse)).toValue();
+        const _with = (await this.with.eval(parse)).toValue();
 
 
         if (this.input)
         {
-            this.value = this.input.eval(parse).toValue();
+            this.value = (await this.input.eval(parse)).toValue();
 
             console.assert(
                 this.value.type == TEXT_VALUE, 
@@ -12605,13 +12607,13 @@ extends GTextType
 
 
 
-    eval(parse)
+    async eval(parse)
     {
         if (this.isCached())
             return this;
 
 
-        this.value = evalJoinInputs(this.inputs, parse);
+        this.value = await evalJoinInputs(this.inputs, parse);
         
         genPushUpdateValue(parse, this.nodeId, 'value', this.value);
 
@@ -12624,7 +12626,7 @@ extends GTextType
 
 
 
-function evalJoinInputs(inputs, parse)
+async function evalJoinInputs(inputs, parse)
 {
     if (isEmpty(inputs))
         return TextValue.NaN;
@@ -12635,7 +12637,7 @@ function evalJoinInputs(inputs, parse)
 
     for (let i = 0; i < inputs.length; i++)
     {
-        const val = inputs[i].eval(parse).toValue();
+        const val = (await inputs[i].eval(parse)).toValue();
 
         console.assert(
             val.type == TEXT_VALUE, 
@@ -12682,7 +12684,7 @@ extends GOperator
 
 
 
-    eval(parse)
+    async eval(parse)
     {
         if (this.isCached())
             return this;
@@ -12692,7 +12694,7 @@ extends GOperator
 
         // for (let i = 0; i < this.inputs.length; i++)
         // {
-        //     const input = this.inputs[i].eval(parse).toValue();
+        //     const input = (await this.inputs[i].eval(parse)).toValue();
 
         //     if (input.type == LIST_VALUE)
         //     {
@@ -12760,33 +12762,23 @@ extends GTextType
 
 
 
-    eval(parse)
+    async eval(parse)
     {
         if (this.isCached())
             return this;
 
 
-        const request = this.request.eval(parse).toValue();
+        const request = (await this.request.eval(parse)).toValue();
 
 
-        this.value = TextValue.NaN;
-
-        console.log('1');
-        (async () =>
+        try 
         {
-            try 
-            {
-                this.value = new TextValue((await fetch(request.value)).text());
-                console.log('2');
-            }
-            catch (e)
-            {
-                console.log('e.message =', e.message);
-                this.value = new TextValue(e.message);
-                console.log('3');
-            }
-        })();
-        console.log('4');
+            this.value = new TextValue((await fetch(request.value)).text());
+        }
+        catch (e)
+        {
+            this.value = new TextValue(e.message);
+        }
 
 
         genPushUpdateValue(parse, this.nodeId, 'request', request   );
@@ -13415,21 +13407,21 @@ extends GColorType
 
 
 
-    eval(parse)
+    async eval(parse)
     {
         if (this.valid)//this.isCached())
             return this;
 
             
-        const space = this.space ? this.space.eval(parse).toValue().toInteger() : null; 
-        let   c1    = this.c1    ? this.c1   .eval(parse).toValue()             : null;
-        let   c2    = this.c2    ? this.c2   .eval(parse).toValue()             : null;
-        let   c3    = this.c3    ? this.c3   .eval(parse).toValue()             : null;
+        const space = this.space ? (await this.space.eval(parse)).toValue().toInteger() : null; 
+        let   c1    = this.c1    ? (await this.c1   .eval(parse)).toValue()             : null;
+        let   c2    = this.c2    ? (await this.c2   .eval(parse)).toValue()             : null;
+        let   c3    = this.c3    ? (await this.c3   .eval(parse)).toValue()             : null;
 
 
         if (this.input)
         {
-            const input = this.input.eval(parse).toValue();
+            const input = (await this.input.eval(parse)).toValue();
 
             
             if (input.isValid())
@@ -13494,7 +13486,7 @@ extends GColorType
                 &&  this.value.isValid()
                 && !this.hasInputs)
             {
-                this.convert.eval(parse);
+                await this.convert.eval(parse);
 
                 this.convertColor(
                     this.value,
@@ -13606,18 +13598,18 @@ extends GColorType
 
 
 
-    eval(parse)
+    async eval(parse)
     {
         if (this.isCached())
             return this;
 
 
-        const quality = this.quality ? this.quality.eval(parse).toValue().toInteger() : null;
+        const quality = this.quality ? (await this.quality.eval(parse)).toValue().toInteger() : null;
 
 
         if (this.input)
         {
-            const input = this.input.eval(parse).toValue();
+            const input = (await this.input.eval(parse)).toValue();
 
 
             if (this.options.enabled)
@@ -13762,16 +13754,16 @@ extends GColorType
 
 
 
-    eval(parse)
+    async eval(parse)
     {
         if (this.isCached())
             return this;
 
 
-        const order   = this.order   ? this.order  .eval(parse).toValue().toInteger() : null;
-        const margin1 = this.margin1 ? this.margin1.eval(parse).toValue()             : null;
-        const margin2 = this.margin2 ? this.margin2.eval(parse).toValue()             : null;
-        const margin3 = this.margin3 ? this.margin3.eval(parse).toValue()             : null;
+        const order   = this.order   ? (await this.order  .eval(parse)).toValue().toInteger() : null;
+        const margin1 = this.margin1 ? (await this.margin1.eval(parse)).toValue()             : null;
+        const margin2 = this.margin2 ? (await this.margin2.eval(parse)).toValue()             : null;
+        const margin3 = this.margin3 ? (await this.margin3.eval(parse)).toValue()             : null;
 
     
         if (order)
@@ -13780,7 +13772,7 @@ extends GColorType
 
         if (this.input)
         {
-            const input = this.input.eval(parse).toValue();
+            const input = (await this.input.eval(parse)).toValue();
 
 
             if (this.options.enabled)
@@ -13941,13 +13933,13 @@ extends GColorType
 
 
 
-    eval(parse)
+    async eval(parse)
     {
         if (this.isCached())
             return this;
 
 
-        const standard = this.standard.eval(parse).toValue().toInteger();
+        const standard = (await this.standard.eval(parse)).toValue().toInteger();
 
         
         if (standard.isValid())
@@ -13957,8 +13949,8 @@ extends GColorType
         if (   this.input0 
             && this.input1)
         {
-            const input0 = this.input0.eval(parse).toValue();
-            const input1 = this.input1.eval(parse).toValue();
+            const input0 = (await this.input0.eval(parse)).toValue();
+            const input1 = (await this.input1.eval(parse)).toValue();
 
 
             if (   input0.isValid()
@@ -13996,7 +13988,7 @@ extends GColorType
 
         else if (this.input0) 
         {
-            const input0 = this.input0.eval(parse).toValue();
+            const input0 = (await this.input0.eval(parse)).toValue();
 
             genPushUpdateValue(parse, this.nodeId, 'text', input0.isValid() ? input0 : ColorValue.NaN);
             genPushUpdateValue(parse, this.nodeId, 'back', ColorValue.NaN);
@@ -14007,7 +13999,7 @@ extends GColorType
 
         else if (this.input1) 
         {
-            const input1 = this.input1.eval(parse).toValue();
+            const input1 = (await this.input1.eval(parse)).toValue();
 
             genPushUpdateValue(parse, this.nodeId, 'text', ColorValue.NaN);
             genPushUpdateValue(parse, this.nodeId, 'back', input1.isValid() ? input1 : ColorValue.NaN);
@@ -14074,20 +14066,20 @@ extends GColorType
 
 
 
-    eval(parse)
+    async eval(parse)
     {
         if (this.isCached())
             return this;
 
 
-        const l = this.l.eval(parse).toValue();        
-        const m = this.m.eval(parse).toValue();
-        const s = this.s.eval(parse).toValue();
+        const l = (await this.l.eval(parse)).toValue();        
+        const m = (await this.m.eval(parse)).toValue();
+        const s = (await this.s.eval(parse)).toValue();
 
 
         if (this.input)
         {
-            const input = this.input.eval(parse).toValue();
+            const input = (await this.input.eval(parse)).toValue();
             const rgb   = input.toRgb();
 
             if (this.options.enabled)
@@ -14169,22 +14161,22 @@ extends GColorType
 
 
 
-    eval(parse)
+    async eval(parse)
     {
         if (this.isCached())
             return this;
 
 
-        const space  = this.space .eval(parse).toValue().toInteger();
-        const amount = this.amount.eval(parse).toValue();
-        const gamma  = this.gamma .eval(parse).toValue();
+        const space  = (await this.space .eval(parse)).toValue().toInteger();
+        const amount = (await this.amount.eval(parse)).toValue();
+        const gamma  = (await this.gamma .eval(parse)).toValue();
 
 
         if (   this.input0 
             && this.input1)
         {
-            const input0 = this.input0.eval(parse).toValue();
-            const input1 = this.input1.eval(parse).toValue();
+            const input0 = (await this.input0.eval(parse)).toValue();
+            const input1 = (await this.input1.eval(parse)).toValue();
 
             console.assert(
                 amount.type == NUMBER_VALUE, 
@@ -14213,10 +14205,10 @@ extends GColorType
         }
 
         else if (this.input0) 
-            this.value = this.input0.eval(parse).toValue();
+            this.value = (await this.input0.eval(parse)).toValue();
 
         else if (this.input1) 
-            this.value = this.input1.eval(parse).toValue();
+            this.value = (await this.input1.eval(parse)).toValue();
             
         else 
             this.value = ColorValue.NaN;
@@ -14303,7 +14295,7 @@ extends GOperator
 
 
 
-    eval(parse)
+    async eval(parse)
     {
         if (!this.valid)
         {
@@ -14312,7 +14304,7 @@ extends GOperator
 
             if (this.input)
             {
-                this.result = this.input.eval(parse).copy();
+                this.result = (await this.input.eval(parse)).copy();
 
                 console.assert(
                     this.result.type == COLOR_STOP_VALUE, 
@@ -14320,14 +14312,14 @@ extends GOperator
 
                 if (this.result.isValid())
                 {
-                    if (this.fill    ) this.result.fill     = this.fill    .eval(parse).copy();
-                    if (this.position) this.result.position = this.position.eval(parse).copy();
+                    if (this.fill    ) this.result.fill     = (await this.fill    .eval(parse)).copy();
+                    if (this.position) this.result.position = (await this.position.eval(parse)).copy();
                 }
             }
             else
             {
-                this.result.fill     = this.fill    .eval(parse).copy();
-                this.result.position = this.position.eval(parse).copy();
+                this.result.fill     = (await this.fill    .eval(parse)).copy();
+                this.result.position = (await this.position.eval(parse)).copy();
             }
 
 
@@ -14570,26 +14562,26 @@ extends GObjectBase
 
 
 
-    eval(parse)
+    async eval(parse)
     {
         if (this.isCached())
             return this;
 
             
         if (this.input)
-            this.input = this.input.eval(parse).copy();
+            this.input = (await this.input.eval(parse)).copy();
 
         const hasInput =     
                this.input 
             && RECTANGLE_TYPES.includes(this.input.type);   
 
             
-        if (this.x     ) this.x      = this.x     .eval(parse).copy(); else if (hasInput) this.x      = this.input.x     .copy();
-        if (this.y     ) this.y      = this.y     .eval(parse).copy(); else if (hasInput) this.y      = this.input.y     .copy();
-        if (this.width ) this.width  = this.width .eval(parse).copy(); else if (hasInput) this.width  = this.input.width .copy();
-        if (this.height) this.height = this.height.eval(parse).copy(); else if (hasInput) this.height = this.input.height.copy();
-        if (this.angle ) this.angle  = this.angle .eval(parse).copy(); else if (hasInput) this.angle  = this.input.angle .copy();
-        if (this.round ) this.round  = this.round .eval(parse).copy(); else if (hasInput) this.round  = this.input.round .copy();
+        if (this.x     ) this.x      = (await this.x     .eval(parse)).copy(); else if (hasInput) this.x      = this.input.x     .copy();
+        if (this.y     ) this.y      = (await this.y     .eval(parse)).copy(); else if (hasInput) this.y      = this.input.y     .copy();
+        if (this.width ) this.width  = (await this.width .eval(parse)).copy(); else if (hasInput) this.width  = this.input.width .copy();
+        if (this.height) this.height = (await this.height.eval(parse)).copy(); else if (hasInput) this.height = this.input.height.copy();
+        if (this.angle ) this.angle  = (await this.angle .eval(parse)).copy(); else if (hasInput) this.angle  = this.input.angle .copy();
+        if (this.round ) this.round  = (await this.round .eval(parse)).copy(); else if (hasInput) this.round  = this.input.round .copy();
 
         
         if (this.x     ) genPushUpdateValue(parse, this.nodeId, 'x',      this.x     .toValue());
@@ -14709,24 +14701,24 @@ extends GObjectBase
 
 
 
-    eval(parse)
+    async eval(parse)
     {
         if (this.isCached())
             return this;
 
 
         if (this.input)
-            this.input.eval(parse);
+            await this.input.eval(parse);
 
         const hasInput =     
                this.input 
             && LINE_TYPES.includes(this.input.type);   
 
             
-        if (this.x     ) this.x     .eval(parse); else if (hasInput) this.x     = this.input.x    ;
-        if (this.y     ) this.y     .eval(parse); else if (hasInput) this.y     = this.input.y    ;
-        if (this.width ) this.width .eval(parse); else if (hasInput) this.width = this.input.width;
-        if (this.angle ) this.angle .eval(parse); else if (hasInput) this.angle = this.input.angle;
+        if (this.x     ) await this.x     .eval(parse); else if (hasInput) this.x     = this.input.x    ;
+        if (this.y     ) await this.y     .eval(parse); else if (hasInput) this.y     = this.input.y    ;
+        if (this.width ) await this.width .eval(parse); else if (hasInput) this.width = this.input.width;
+        if (this.angle ) await this.angle .eval(parse); else if (hasInput) this.angle = this.input.angle;
 
         
         if (this.x     ) genPushUpdateValue(parse, this.nodeId, 'x',      this.x     .toValue());
@@ -14837,25 +14829,25 @@ extends GObjectBase
     }
 
 
-    eval(parse)
+    async eval(parse)
     {
         if (this.isCached())
             return this;
 
             
         if (this.input)
-            this.input.eval(parse);
+            await this.input.eval(parse);
 
         const hasInput =     
                this.input 
             && ELLIPSE_TYPES.includes(this.input.type);   
 
             
-        if (this.x     ) this.x     .eval(parse); else if (hasInput) this.x      = this.input.x     ;
-        if (this.y     ) this.y     .eval(parse); else if (hasInput) this.y      = this.input.y     ;
-        if (this.width ) this.width .eval(parse); else if (hasInput) this.width  = this.input.width ;
-        if (this.height) this.height.eval(parse); else if (hasInput) this.height = this.input.height;
-        if (this.angle ) this.angle .eval(parse); else if (hasInput) this.angle  = this.input.angle ;
+        if (this.x     ) await this.x     .eval(parse); else if (hasInput) this.x      = this.input.x     ;
+        if (this.y     ) await this.y     .eval(parse); else if (hasInput) this.y      = this.input.y     ;
+        if (this.width ) await this.width .eval(parse); else if (hasInput) this.width  = this.input.width ;
+        if (this.height) await this.height.eval(parse); else if (hasInput) this.height = this.input.height;
+        if (this.angle ) await this.angle .eval(parse); else if (hasInput) this.angle  = this.input.angle ;
 
         
         if (this.x     ) genPushUpdateValue(parse, this.nodeId, 'x',      this.x     .toValue());
@@ -14976,27 +14968,27 @@ extends GObjectBase
 
 
 
-    eval(parse)
+    async eval(parse)
     {
         if (this.isCached())
             return this;
 
             
         if (this.input)
-            this.input.eval(parse);
+            await this.input.eval(parse);
 
         const hasInput =     
                this.input 
             && POLYGON_TYPES.includes(this.input.type);   
 
              
-        if (this.x      ) this.x      .eval(parse); else if (hasInput) this.x       = this.input.x      ;
-        if (this.y      ) this.y      .eval(parse); else if (hasInput) this.y       = this.input.y      ;
-        if (this.width  ) this.width  .eval(parse); else if (hasInput) this.width   = this.input.width  ;
-        if (this.height ) this.height .eval(parse); else if (hasInput) this.height  = this.input.height ;
-        if (this.angle  ) this.angle  .eval(parse); else if (hasInput) this.angle   = this.input.angle  ;
-        if (this.round  ) this.round  .eval(parse); else if (hasInput) this.round   = this.input.round  ;
-        if (this.corners) this.corners.eval(parse); else if (hasInput) this.corners = this.input.corners;
+        if (this.x      ) await this.x      .eval(parse); else if (hasInput) this.x       = this.input.x      ;
+        if (this.y      ) await this.y      .eval(parse); else if (hasInput) this.y       = this.input.y      ;
+        if (this.width  ) await this.width  .eval(parse); else if (hasInput) this.width   = this.input.width  ;
+        if (this.height ) await this.height .eval(parse); else if (hasInput) this.height  = this.input.height ;
+        if (this.angle  ) await this.angle  .eval(parse); else if (hasInput) this.angle   = this.input.angle  ;
+        if (this.round  ) await this.round  .eval(parse); else if (hasInput) this.round   = this.input.round  ;
+        if (this.corners) await this.corners.eval(parse); else if (hasInput) this.corners = this.input.corners;
 
         
         if (this.x      ) genPushUpdateValue(parse, this.nodeId, 'x',       this.x      .toValue());
@@ -15129,28 +15121,28 @@ extends GObjectBase
 
 
 
-    eval(parse)
+    async eval(parse)
     {
         if (this.isCached())
             return this;
 
             
         if (this.input)
-            this.input = this.input.eval(parse).copy();
+            this.input = (await this.input.eval(parse)).copy();
 
         const hasInput =     
                this.input 
             && STAR_TYPES.includes(this.input.type);   
 
              
-        if (this.x     ) this.x      = this.x     .eval(parse).copy(); else if (hasInput) this.x      = this.input.x     .copy();
-        if (this.y     ) this.y      = this.y     .eval(parse).copy(); else if (hasInput) this.y      = this.input.y     .copy();
-        if (this.width ) this.width  = this.width .eval(parse).copy(); else if (hasInput) this.width  = this.input.width .copy();
-        if (this.height) this.height = this.height.eval(parse).copy(); else if (hasInput) this.height = this.input.height.copy();
-        if (this.angle ) this.angle  = this.angle .eval(parse).copy(); else if (hasInput) this.angle  = this.input.angle .copy();
-        if (this.round ) this.round  = this.round .eval(parse).copy(); else if (hasInput) this.round  = this.input.round .copy();
-        if (this.points) this.points = this.points.eval(parse).copy(); else if (hasInput) this.points = this.input.points.copy();
-        if (this.convex) this.convex = this.convex.eval(parse).copy(); else if (hasInput) this.convex = this.input.convex.copy();
+        if (this.x     ) this.x      = (await this.x     .eval(parse)).copy(); else if (hasInput) this.x      = this.input.x     .copy();
+        if (this.y     ) this.y      = (await this.y     .eval(parse)).copy(); else if (hasInput) this.y      = this.input.y     .copy();
+        if (this.width ) this.width  = (await this.width .eval(parse)).copy(); else if (hasInput) this.width  = this.input.width .copy();
+        if (this.height) this.height = (await this.height.eval(parse)).copy(); else if (hasInput) this.height = this.input.height.copy();
+        if (this.angle ) this.angle  = (await this.angle .eval(parse)).copy(); else if (hasInput) this.angle  = this.input.angle .copy();
+        if (this.round ) this.round  = (await this.round .eval(parse)).copy(); else if (hasInput) this.round  = this.input.round .copy();
+        if (this.points) this.points = (await this.points.eval(parse)).copy(); else if (hasInput) this.points = this.input.points.copy();
+        if (this.convex) this.convex = (await this.convex.eval(parse)).copy(); else if (hasInput) this.convex = this.input.convex.copy();
 
         
         if (this.x     ) genPushUpdateValue(parse, this.nodeId, 'x',      this.x     .toValue());
@@ -15277,13 +15269,13 @@ extends GObjectBase
 
 
 
-    eval(parse)
+    async eval(parse)
     {
         if (this.isCached())
             return this;
 
             
-        this.value = this.value.eval(parse).toValue();
+        this.value = (await this.value.eval(parse)).toValue();
 
 
         if (   this.value.isValid()
@@ -15370,19 +15362,19 @@ extends GOperator
 
 
 
-    eval(parse)
+    async eval(parse)
     {
         if (this.isCached())
             return this;
 ``
 
-        const color   = this.color   ? this.color  .eval(parse).toValue() : null;
-        const opacity = this.opacity ? this.opacity.eval(parse).toValue() : null;
+        const color   = this.color   ? (await this.color  .eval(parse)).toValue() : null;
+        const opacity = this.opacity ? (await this.opacity.eval(parse)).toValue() : null;
 
         
         if (this.input)
         {
-            const input = this.input.eval(parse).toValue();
+            const input = (await this.input.eval(parse)).toValue();
 
             this.value = new FillValue(
                 color   ?? input.color,
@@ -15466,22 +15458,22 @@ extends GObjectBase
 
 
 
-    eval(parse)
+    async eval(parse)
     {
         if (this.isCached())
             return this;
 
 
-        const fill   = this.fill   ? this.fill  .eval(parse).toValue() : null;
-        const weight = this.weight ? this.weight.eval(parse).toValue() : null;
-        const fit    = this.fit    ? this.fit   .eval(parse).toValue() : null;
-        const join   = this.join   ? this.join  .eval(parse).toValue() : null;
-        const miter  = this.miter  ? this.miter .eval(parse).toValue() : null;
+        const fill   = this.fill   ? (await this.fill  .eval(parse)).toValue() : null;
+        const weight = this.weight ? (await this.weight.eval(parse)).toValue() : null;
+        const fit    = this.fit    ? (await this.fit   .eval(parse)).toValue() : null;
+        const join   = this.join   ? (await this.join  .eval(parse)).toValue() : null;
+        const miter  = this.miter  ? (await this.miter .eval(parse)).toValue() : null;
 
 
         if (this.input)
         {
-            const input = this.input.eval(parse).toValue();
+            const input = (await this.input.eval(parse)).toValue();
 
             this.value = new StrokeValue(
                 fill   ?? input.fill,
@@ -15568,7 +15560,7 @@ extends GOperator
 
 
 
-    eval(parse)
+    async eval(parse)
     {
         if (this.valid)//isCached())
             return this;
@@ -15576,7 +15568,7 @@ extends GOperator
 
         this.value = NullValue;
         //     this.input
-        //     ? this.input.eval(parse).toValue()
+        //     ? (await this.input.eval(parse)).toValue()
         //     : NullValue;
 
 
@@ -15640,7 +15632,7 @@ extends GOperator
 
 
 
-    eval(parse)
+    async eval(parse)
     {
         if (this.isCached())
             return this;
@@ -15649,7 +15641,7 @@ extends GOperator
         if (this.input)
         {
             if (!this.input.value)
-                this.input.eval(parse);
+                await this.input.eval(parse);
 
             this.value = this.input.toValue();
         }
@@ -15722,7 +15714,7 @@ extends GOperator
 
 
 
-    eval(parse)
+    async eval(parse)
     {
         if (this.isCached())
             return this;
@@ -16231,30 +16223,33 @@ function genRequest(request)
     const    paramNodes = parse.paramNodeIds.map(id => parse.parsedNodes.find(n => n.nodeId == id));
     const topLevelNodes = parse.parsedNodes.filter(n => n.topLevel);
 
-    for (const node of    paramNodes) node.eval(parse);
-    for (const node of topLevelNodes) node.eval(parse);
-
-
-    for (const node of parse.parsedNodes)
+    (async () =>
     {
-        if (   node instanceof GObjectBase
-            && node.options.active)
+        for (const node of    paramNodes) await node.eval(parse);
+        for (const node of topLevelNodes) await node.eval(parse);
+
+
+        for (const node of parse.parsedNodes)
         {
-            node.objects.forEach(o => genPushUpdateObject(parse, o));
-            if (!!node.style) genPushUpdateStyle(parse, node.style);
+            if (   node instanceof GObjectBase
+                && node.options.active)
+            {
+                node.objects.forEach(o => genPushUpdateObject(parse, o));
+                if (!!node.style) genPushUpdateStyle(parse, node.style);
+            }
         }
-    }
 
 
-    genUpdateValuesAndObjects(
-        requestId,
-        actionId,
-        parse.updateNodeId,
-        parse.updateParamId,
-        parse.updateValues,
-        parse.updateObjects,
-        parse.updateStyles);
-
+        genUpdateValuesAndObjects(
+            requestId,
+            actionId,
+            parse.updateNodeId,
+            parse.updateParamId,
+            parse.updateValues,
+            parse.updateObjects,
+            parse.updateStyles);
+    })
+    ();
 
     //stopGenerate = false;
 }
@@ -28518,7 +28513,7 @@ extends GNode
 
 
 
-    eval(parse)
+    async eval(parse)
     {
         // calculate and add value update here
 
@@ -28566,17 +28561,17 @@ extends GOperator
 
 
 
-    eval(parse)
+    async eval(parse)
     {
         this.node = parse.parsedNodes.find(v => v.nodeId == this.nodeId);
         console.assert(this.node, 'can\'t find parameter node \'' + this.nodeId + '\'');
 
-        this.node.eval(parse);
+        await this.node.eval(parse);
 
         this.param = this.node.getParamFromId(this.paramId);
 
         if (isValid(this.param)) // could have been deleted from OpRepeat for example
-            return this.param.eval(parse).toValue();
+            return (await this.param.eval(parse)).toValue();
         else
             return NullValue;
     }
@@ -28636,7 +28631,7 @@ extends GValue
 
 
 
-    eval(parse)
+    async eval(parse)
     {
         return this;
     }
@@ -28770,7 +28765,7 @@ extends GValue
 
 
 
-    eval(parse)
+    async eval(parse)
     {
         return this;
     }
@@ -28925,7 +28920,7 @@ extends GValue
 
 
 
-    eval(parse)
+    async eval(parse)
     {
         return this;
     }
@@ -29092,7 +29087,7 @@ extends GValue
 
 
 
-    eval(parse)
+    async eval(parse)
     {
         return this;
     }
@@ -29187,9 +29182,9 @@ function parseFillValue(str, i = -1)
 
 
 
-// function evalFillValue(fillValue, parse)
+// async function evalFillValue(fillValue, parse)
 // {
-//     fillValue.eval(parse);
+//     await fillValue.eval(parse);
 
 //          if ( FILL_TYPES.includes(fillValue.type)) return fill;
 //     else if (COLOR_TYPES.includes(fillValue.type)) return new FillValue(fill, fillValue.data.opacity);
@@ -29297,7 +29292,7 @@ extends GValue
 
 
 
-    eval(parse)
+    async eval(parse)
     {
         return this;
     }
@@ -29417,16 +29412,16 @@ function parseStrokeValue(str, i = -1)
 
 
 
-function evalStrokeValue(value, parse)
-{
-    const stroke = value.eval(parse).copy();
+// async function evalStrokeValue(value, parse)
+// {
+//     const stroke = (await value.eval(parse)).copy();
 
-         if (STROKE_TYPES.includes(stroke.type)) return stroke;
-    else if (  FILL_TYPES.includes(stroke.type)) return new StrokeValue(stroke, value.data.weight);
-    else if ( COLOR_TYPES.includes(stroke.type)) return new StrokeValue(new FillValue(stroke), value.data.weight);
+//          if (STROKE_TYPES.includes(stroke.type)) return stroke;
+//     else if (  FILL_TYPES.includes(stroke.type)) return new StrokeValue(stroke, value.data.weight);
+//     else if ( COLOR_TYPES.includes(stroke.type)) return new StrokeValue(new FillValue(stroke), value.data.weight);
 
-    else console.assert(false, 'stroke must have type');
-}
+//     else console.assert(false, 'stroke must have type');
+// }
 
 
 class ListValue
@@ -29477,7 +29472,7 @@ extends GValue
 
 
 
-    eval(parse)
+    async eval(parse)
     {
         return this;
     }
@@ -29718,7 +29713,7 @@ extends ShapeBaseValue
 
 
 
-    eval(parse)
+    async eval(parse)
     {
         return this;
     }
@@ -29862,7 +29857,7 @@ extends ShapeBaseValue
 
 
 
-    eval(parse)
+    async eval(parse)
     {
         return this;
     }
@@ -29988,7 +29983,7 @@ extends ShapeBaseValue
 
 
 
-    eval(parse)
+    async eval(parse)
     {
         return this;
     }
@@ -30098,7 +30093,7 @@ extends ShapeBaseValue
 
 
 
-    eval(parse)
+    async eval(parse)
     {
         return this;
     }
@@ -30241,7 +30236,7 @@ extends ShapeBaseValue
 
 
 
-    eval(parse)
+    async eval(parse)
     {
         return this;
     }
@@ -30361,7 +30356,7 @@ extends GOperator
 
 
 
-    eval(parse)
+    async eval(parse)
     {
         if (this.isCached())
             return this;
@@ -30371,7 +30366,7 @@ extends GOperator
 
         for (let i = 0; i < this.inputs.length; i++)
         {
-            const input = this.inputs[i].eval(parse).toValue();
+            const input = (await this.inputs[i].eval(parse)).toValue();
 
             if (input.type == LIST_VALUE)
             {
@@ -30441,7 +30436,7 @@ extends GOperator
 
 
 
-    eval(parse)
+    async eval(parse)
     {
         if (this.isCached())
             return this;
@@ -30450,7 +30445,7 @@ extends GOperator
         if (this.input)
         {
             if (!this.input.value)
-                this.input.eval(parse);
+                await this.input.eval(parse);
 
             this.value = this.input.toValue();
         }
@@ -30531,13 +30526,13 @@ extends GOperator
 
 
 
-    eval(parse)
+    async eval(parse)
     {
         if (this.isCached())
             return this;
 
 
-        let index = this.index.eval(parse).toValue();
+        let index = (await this.index.eval(parse)).toValue();
         index = new NumberValue(Math.round(index.value));
 
 
@@ -30547,7 +30542,7 @@ extends GOperator
         if (this.input)
         {
             if (!this.input.value)
-                this.input.eval(parse);
+                await this.input.eval(parse);
 
             const input = this.input.toValue();
             length = input.items.length;
@@ -30616,30 +30611,30 @@ extends GOperator
 
 
 
-    eval(parse)
+    async eval(parse)
     {
         if (this.isCached())
             return this;
 
         
-        const cond = this.condition.eval(parse).toValue();
+        const cond = (await this.condition.eval(parse)).toValue();
 
 
         if (   this.input0 
             && this.input1)
         {
-            const val0 = this.input0.eval(parse).toValue();
-            const val1 = this.input1.eval(parse).toValue();
+            const val0 = (await this.input0.eval(parse)).toValue();
+            const val1 = (await this.input1.eval(parse)).toValue();
 
             this.value = cond.value != 0 ? val0 : val1;
         }
         else if (this.input0
               && cond.value != 0)
-            this.value = this.input0.eval(parse).toValue();
+            this.value = (await this.input0.eval(parse)).toValue();
 
         else if (this.input1
               && cond.value == 0) 
-            this.value = this.input1.eval(parse).toValue();
+            this.value = (await this.input1.eval(parse)).toValue();
 
         else                  
             this.value = NumberValue.NaN;
@@ -30694,11 +30689,11 @@ extends GOperator
 
 
 
-    eval(parse)
+    async eval(parse)
     {
         if (this.input)
         {
-            this.input = this.input.eval(parse).copy();
+            this.input = (await this.input.eval(parse)).copy();
             this.value = this.input.toValue();
         }
         else
@@ -30752,13 +30747,13 @@ extends GOperator
 
 
 
-    eval(parse)
+    async eval(parse)
     {
         if (this.isCached())
             return this;
 
 
-        let count = this.count.eval(parse).toValue();
+        let count = (await this.count.eval(parse)).toValue();
         count = new NumberValue(Math.round(count.value));
 
        
@@ -30768,7 +30763,7 @@ extends GOperator
         {
             for (let i = 0; i < count.value; i++)
             {
-                const input = this.input.eval(parse).toValue();
+                const input = (await this.input.eval(parse)).toValue();
 
                 if (input)
                 {
@@ -30831,7 +30826,7 @@ extends GOperator
 
 
 
-    eval(parse)
+    async eval(parse)
     {
         if (this.valid)//isCached())
             return this;
@@ -30839,7 +30834,7 @@ extends GOperator
 
         this.value = 
             this.input
-            ? this.input.eval(parse).toValue()
+            ? (await this.input.eval(parse)).toValue()
             : NullValue;
 
 
@@ -30893,14 +30888,14 @@ extends GOperator
 
 
 
-    eval(parse)
+    async eval(parse)
     {
         if (this.isCached())
             return this;
 
 
-        this.value = this.input ? this.input.eval(parse).toValue() : NullValue;
-        this.copy  = this.value ? this.value.copy()                : NullValue;
+        this.value = this.input ? (await this.input.eval(parse)).toValue() : NullValue;
+        this.copy  = this.value ? this.value.copy()                        : NullValue;
 
 
         genPushUpdateValue(parse, this.nodeId, 'value', this.value);
@@ -30983,24 +30978,24 @@ extends GArithmetic
 
 
 
-    eval(parse)
+    async eval(parse)
     {
         if (this.isCached())
             return this;
 
 
-        const op = this.operation.eval(parse).toValue().toInteger();
+        const op = (await this.operation.eval(parse)).toValue().toInteger();
 
         op.value = Math.min(Math.max(0, op.value), MATH_OPS.length-1);
 
         switch (op.value)
         {
-            case 0: this.value = evalSubtractInputs(this.inputs, parse); break;
-            case 1: this.value = evalAddInputs     (this.inputs, parse); break;
-            case 2: this.value = evalModuloInputs  (this.inputs, parse); break;
-            case 3: this.value = evalDivideInputs  (this.inputs, parse); break;
-            case 4: this.value = evalMultiplyInputs(this.inputs, parse); break;
-            case 5: this.value = evalExponentInputs(this.inputs, parse); break;
+            case 0: this.value = await evalSubtractInputs(this.inputs, parse); break;
+            case 1: this.value = await evalAddInputs     (this.inputs, parse); break;
+            case 2: this.value = await evalModuloInputs  (this.inputs, parse); break;
+            case 3: this.value = await evalDivideInputs  (this.inputs, parse); break;
+            case 4: this.value = await evalMultiplyInputs(this.inputs, parse); break;
+            case 5: this.value = await evalExponentInputs(this.inputs, parse); break;
         }
 
         
@@ -31037,12 +31032,12 @@ extends GArithmetic
 
 
 
-    eval(parse)
+    async eval(parse)
     {
         if (this.isCached())
             return this;
 
-        this.value = evalAddInputs(this.inputs, parse);
+        this.value = await evalAddInputs(this.inputs, parse);
         
         genPushUpdateValue(parse, this.nodeId, 'value', this.value);
 
@@ -31054,7 +31049,7 @@ extends GArithmetic
 
 
 
-function evalAddInputs(inputs, parse)
+async function evalAddInputs(inputs, parse)
 {
     if (isEmpty(inputs))
         return NumberValue.NaN;
@@ -31065,7 +31060,7 @@ function evalAddInputs(inputs, parse)
 
     for (let i = 0; i < inputs.length; i++)
     {
-        const val = inputs[i].eval(parse).toValue();
+        const val = (await inputs[i].eval(parse)).toValue();
 
         console.assert(
             val.type == NUMBER_VALUE, 
@@ -31100,12 +31095,12 @@ extends GArithmetic
 
 
 
-    eval(parse)
+    async eval(parse)
     {
         if (this.isCached())
             return this;
 
-        this.value = evalSubtractInputs(this.inputs, parse);
+        this.value = await evalSubtractInputs(this.inputs, parse);
 
         genPushUpdateValue(parse, this.nodeId, 'value', this.value);
 
@@ -31117,7 +31112,7 @@ extends GArithmetic
 
 
 
-function evalSubtractInputs(inputs, parse)
+async function evalSubtractInputs(inputs, parse)
 {
     if (isEmpty(inputs))
         return NumberValue.NaN;
@@ -31128,7 +31123,7 @@ function evalSubtractInputs(inputs, parse)
 
     if (!isEmpty(inputs))
     {
-        const val0 = inputs[0].eval(parse).toValue();
+        const val0 = (await inputs[0].eval(parse)).toValue();
 
         value.value    = val0.value;
         value.decimals = val0.decimals;
@@ -31136,7 +31131,7 @@ function evalSubtractInputs(inputs, parse)
 
         for (let i = 1; i < inputs.length; i++)
         {
-            const val = inputs[i].eval(parse).toValue();
+            const val = (await inputs[i].eval(parse)).toValue();
 
             console.assert(
                 val.type == NUMBER_VALUE, 
@@ -31172,12 +31167,12 @@ extends GArithmetic
 
     
 
-    eval(parse)
+    async eval(parse)
     {
         if (this.isCached())
             return this;
 
-        this.value = evalMultiplyInputs(this.inputs, parse);
+        this.value = await evalMultiplyInputs(this.inputs, parse);
 
         genPushUpdateValue(parse, this.nodeId, 'value', this.value);
 
@@ -31189,7 +31184,7 @@ extends GArithmetic
 
 
 
-function evalMultiplyInputs(inputs, parse)
+async function evalMultiplyInputs(inputs, parse)
 {
     if (isEmpty(inputs))
         return NumberValue.NaN;
@@ -31204,7 +31199,7 @@ function evalMultiplyInputs(inputs, parse)
 
         for (let i = 0; i < inputs.length; i++)
         {
-            const val = inputs[i].eval(parse).toValue();
+            const val = (await inputs[i].eval(parse)).toValue();
 
             console.assert(
                 val.type == NUMBER_VALUE, 
@@ -31240,12 +31235,12 @@ extends GArithmetic
 
 
 
-    eval(parse)
+    async eval(parse)
     {
         if (this.isCached())
             return this;
 
-        this.value = evalDivideInputs(this.inputs, parse);
+        this.value = await evalDivideInputs(this.inputs, parse);
         
         genPushUpdateValue(parse, this.nodeId, 'value', this.value);
 
@@ -31257,7 +31252,7 @@ extends GArithmetic
 
 
 
-function evalDivideInputs(inputs, parse)
+async function evalDivideInputs(inputs, parse)
 {
     if (isEmpty(inputs))
         return NumberValue.NaN;
@@ -31268,7 +31263,7 @@ function evalDivideInputs(inputs, parse)
         
     if (!isEmpty(inputs))
     {
-        const val0 = inputs[0].eval(parse).toValue();
+        const val0 = (await inputs[0].eval(parse)).toValue();
 
         value.value    = val0.value;
         value.decimals = val0.decimals;
@@ -31276,7 +31271,7 @@ function evalDivideInputs(inputs, parse)
 
         for (let i = 1; i < inputs.length; i++)
         {
-            const val = inputs[i].eval(parse).toValue();
+            const val = (await inputs[i].eval(parse)).toValue();
 
             console.assert(
                 val.type == NUMBER_VALUE, 
@@ -31319,12 +31314,12 @@ extends GArithmetic
 
 
 
-    eval(parse)
+    async eval(parse)
     {
         if (this.isCached())
             return this;
 
-        this.value = evalModuloInputs(this.inputs, parse);
+        this.value = await evalModuloInputs(this.inputs, parse);
 
         genPushUpdateValue(parse, this.nodeId, 'value', this.value);
 
@@ -31336,7 +31331,7 @@ extends GArithmetic
 
 
 
-function evalModuloInputs(inputs, parse)
+async function evalModuloInputs(inputs, parse)
 {
     if (isEmpty(inputs))
         return NumberValue.NaN;
@@ -31347,7 +31342,7 @@ function evalModuloInputs(inputs, parse)
         
     if (!isEmpty(inputs))
     {
-        const val0 = inputs[0].eval(parse).toValue();
+        const val0 = (await inputs[0].eval(parse)).toValue();
 
         value.value    = val0.value;
         value.decimals = val0.decimals;
@@ -31355,7 +31350,7 @@ function evalModuloInputs(inputs, parse)
 
         for (let i = 1; i < inputs.length; i++)
         {
-            const val = inputs[i].eval(parse).toValue();
+            const val = (await inputs[i].eval(parse)).toValue();
 
             console.assert(
                 val.type == NUMBER_VALUE, 
@@ -31398,12 +31393,12 @@ extends GArithmetic
 
 
 
-    eval(parse)
+    async eval(parse)
     {
         if (this.isCached())
             return this;
 
-        this.value = evalExponentInputs(this.inputs, parse);
+        this.value = await evalExponentInputs(this.inputs, parse);
 
         genPushUpdateValue(parse, this.nodeId, 'value', this.value);
 
@@ -31415,7 +31410,7 @@ extends GArithmetic
 
 
 
-function evalExponentInputs(inputs, parse)
+async function evalExponentInputs(inputs, parse)
 {
     if (isEmpty(inputs))
         return NumberValue.NaN;
@@ -31426,7 +31421,7 @@ function evalExponentInputs(inputs, parse)
 
     if (!isEmpty(inputs))
     {
-        const val0 = inputs[0].eval(parse).toValue();
+        const val0 = (await inputs[0].eval(parse)).toValue();
 
         value.value    = val0.value;
         value.decimals = val0.decimals;
@@ -31434,7 +31429,7 @@ function evalExponentInputs(inputs, parse)
 
         for (let i = 1; i < inputs.length; i++)
         {
-            const val = inputs[i].eval(parse).toValue();
+            const val = (await inputs[i].eval(parse)).toValue();
 
             console.assert(
                 val.type == NUMBER_VALUE, 
@@ -31478,23 +31473,23 @@ extends GArithmetic
 
 
 
-    eval(parse)
+    async eval(parse)
     {
         if (this.isCached())
             return this;
 
 
-        const op = this.operation.eval(parse).toValue().toInteger();
+        const op = (await this.operation.eval(parse)).toValue().toInteger();
 
         op.value = Math.min(Math.max(0, op.value), BOOLEAN_OPS.length-1);
 
         
         switch (op.value)
         {
-            case BOOLEAN_NOT: this.value = evalNandInputs(this.inputs, parse); break;
-            case BOOLEAN_AND: this.value = evalAndInputs (this.inputs, parse); break;
-            case BOOLEAN_OR:  this.value = evalOrInputs  (this.inputs, parse); break;
-            case BOOLEAN_XOR: this.value = evalXorInputs (this.inputs, parse); break;
+            case BOOLEAN_NOT: this.value = await evalNandInputs(this.inputs, parse); break;
+            case BOOLEAN_AND: this.value = await evalAndInputs (this.inputs, parse); break;
+            case BOOLEAN_OR:  this.value = await evalOrInputs  (this.inputs, parse); break;
+            case BOOLEAN_XOR: this.value = await evalXorInputs (this.inputs, parse); break;
         }
 
         
@@ -31529,12 +31524,12 @@ extends GArithmetic
 
 
 
-    eval(parse)
+    async eval(parse)
     {
         if (this.isCached())
             return this;
 
-        this.value = evalNandInputs(this.inputs, parse);
+        this.value = await evalNandInputs(this.inputs, parse);
         
         genPushUpdateValue(parse, this.nodeId, 'value', this.value);
 
@@ -31546,7 +31541,7 @@ extends GArithmetic
 
 
 
-function evalNandInputs(inputs, parse)
+async function evalNandInputs(inputs, parse)
 {
     if (isEmpty(inputs))
         return NumberValue.NaN;
@@ -31557,7 +31552,7 @@ function evalNandInputs(inputs, parse)
 
     if (!isEmpty(inputs))
     {
-        const val0 = inputs[0].eval(parse).toValue();
+        const val0 = (await inputs[0].eval(parse)).toValue();
         if (!val0.isValid()) return NumberValue.NaN;
 
         value.value = val0.toNumber() != 0 ? 0 : 1;
@@ -31565,7 +31560,7 @@ function evalNandInputs(inputs, parse)
 
         for (let i = 1; i < inputs.length; i++)
         {
-            const val = inputs[i].eval(parse).toValue();
+            const val = (await inputs[i].eval(parse)).toValue();
             if (!val.isValid()) return NumberValue.NaN;
 
             console.assert(
@@ -31603,12 +31598,12 @@ extends GArithmetic
 
 
 
-    eval(parse)
+    async eval(parse)
     {
         if (this.isCached())
             return this;
 
-        this.value = evalAndInputs(this.inputs, parse);
+        this.value = await evalAndInputs(this.inputs, parse);
         
         genPushUpdateValue(parse, this.nodeId, 'value', this.value);
 
@@ -31620,7 +31615,7 @@ extends GArithmetic
 
 
 
-function evalAndInputs(inputs, parse)
+async function evalAndInputs(inputs, parse)
 {
     if (isEmpty(inputs))
         return NumberValue.NaN;
@@ -31631,7 +31626,7 @@ function evalAndInputs(inputs, parse)
 
     if (!isEmpty(inputs))
     {
-        const val0 = inputs[0].eval(parse).toValue();
+        const val0 = (await inputs[0].eval(parse)).toValue();
         if (!val0.isValid()) return NumberValue.NaN;
 
         value.value = val0.toNumber();
@@ -31639,7 +31634,7 @@ function evalAndInputs(inputs, parse)
 
         for (let i = 1; i < inputs.length; i++)
         {
-            const val = inputs[i].eval(parse).toValue();
+            const val = (await inputs[i].eval(parse)).toValue();
             if (!val.isValid()) return NumberValue.NaN;
 
             console.assert(
@@ -31679,12 +31674,12 @@ extends GArithmetic
 
 
 
-    eval(parse)
+    async eval(parse)
     {
         if (this.isCached())
             return this;
 
-        this.value = evalOrInputs(this.inputs, parse);
+        this.value = await evalOrInputs(this.inputs, parse);
         
         genPushUpdateValue(parse, this.nodeId, 'value', this.value);
 
@@ -31696,7 +31691,7 @@ extends GArithmetic
 
 
 
-function evalOrInputs(inputs, parse)
+async function evalOrInputs(inputs, parse)
 {
     if (isEmpty(inputs))
         return NumberValue.NaN;
@@ -31707,7 +31702,7 @@ function evalOrInputs(inputs, parse)
 
     if (!isEmpty(inputs))
     {
-        const val0 = inputs[0].eval(parse).toValue();
+        const val0 = (await inputs[0].eval(parse)).toValue();
         if (!val0.isValid()) return NumberValue.NaN;
 
         value.value = val0.toNumber();
@@ -31715,7 +31710,7 @@ function evalOrInputs(inputs, parse)
 
         for (let i = 1; i < inputs.length; i++)
         {
-            const val = inputs[i].eval(parse).toValue();
+            const val = (await inputs[i].eval(parse)).toValue();
             if (!val.isValid()) return NumberValue.NaN;
 
             console.assert(
@@ -31755,12 +31750,12 @@ extends GArithmetic
 
 
 
-    eval(parse)
+    async eval(parse)
     {
         if (this.isCached())
             return this;
 
-        this.value = evalXorInputs(this.inputs, parse);
+        this.value = await evalXorInputs(this.inputs, parse);
         
         genPushUpdateValue(parse, this.nodeId, 'value', this.value);
 
@@ -31772,7 +31767,7 @@ extends GArithmetic
 
 
 
-function evalXorInputs(inputs, parse)
+async function evalXorInputs(inputs, parse)
 {
     if (isEmpty(inputs))
         return NumberValue.NaN;
@@ -31785,7 +31780,7 @@ function evalXorInputs(inputs, parse)
 
     if (!isEmpty(inputs))
     {
-        const val0 = inputs[0].eval(parse).toValue();
+        const val0 = (await inputs[0].eval(parse)).toValue();
         if (!val0.isValid()) return NumberValue.NaN;
 
         flipped = val0.toNumber() != 0;
@@ -31793,7 +31788,7 @@ function evalXorInputs(inputs, parse)
 
         for (let i = 1; i < inputs.length; i++)
         {
-            const val = inputs[i].eval(parse).toValue();
+            const val = (await inputs[i].eval(parse)).toValue();
             if (!val.isValid()) return NumberValue.NaN;
 
             console.assert(
@@ -31822,10 +31817,10 @@ extends GNumberType
 
 
 
-function evalConditionInputs(input0, input1, op, parse) 
+async function evalConditionInputs(input0, input1, op, parse) 
 {
-    const val0 = input0 ? input0.eval(parse).toValue() : NumberValue.NaN;
-    const val1 = input1 ? input1.eval(parse).toValue() : NumberValue.NaN;
+    const val0 = input0 ? (await input0.eval(parse)).toValue() : NumberValue.NaN;
+    const val1 = input1 ? (await input1.eval(parse)).toValue() : NumberValue.NaN;
 
     if (   input0 
         && input1)
@@ -31868,25 +31863,25 @@ extends GNumberType
 
 
 
-    eval(parse)
+    async eval(parse)
     {
         if (this.isCached())
             return this;
 
 
-        const op = this.operation.eval(parse).toValue().toInteger();
+        const op = (await this.operation.eval(parse)).toValue().toInteger();
 
         op.value = Math.min(Math.max(0, op.value), CONDITION_OPS.length-1);
 
         
         switch (op.value)
         {
-            case CONDITION_LESS:              this.value = evalConditionInputs(this.input0, this.input1, ((a, b) => a <  b), parse);  break;
-            case CONDITION_LESS_OR_EQUAL:     this.value = evalConditionInputs(this.input0, this.input1, ((a, b) => a <= b), parse);  break;
-            case CONDITION_NOT_EQUAL:         this.value = evalConditionInputs(this.input0, this.input1, ((a, b) => a != b), parse);  break;
-            case CONDITION_EQUAL:             this.value = evalConditionInputs(this.input0, this.input1, ((a, b) => a == b), parse);  break;
-            case CONDITION_GREATER_OR_EQUAL:  this.value = evalConditionInputs(this.input0, this.input1, ((a, b) => a >= b), parse);  break;
-            case CONDITION_GREATER:           this.value = evalConditionInputs(this.input0, this.input1, ((a, b) => a >  b), parse);  break;
+            case CONDITION_LESS:              this.value = await evalConditionInputs(this.input0, this.input1, ((a, b) => a <  b), parse);  break;
+            case CONDITION_LESS_OR_EQUAL:     this.value = await evalConditionInputs(this.input0, this.input1, ((a, b) => a <= b), parse);  break;
+            case CONDITION_NOT_EQUAL:         this.value = await evalConditionInputs(this.input0, this.input1, ((a, b) => a != b), parse);  break;
+            case CONDITION_EQUAL:             this.value = await evalConditionInputs(this.input0, this.input1, ((a, b) => a == b), parse);  break;
+            case CONDITION_GREATER_OR_EQUAL:  this.value = await evalConditionInputs(this.input0, this.input1, ((a, b) => a >= b), parse);  break;
+            case CONDITION_GREATER:           this.value = await evalConditionInputs(this.input0, this.input1, ((a, b) => a >  b), parse);  break;
         }
 
 
@@ -31921,7 +31916,7 @@ extends GConditionBase
 
 
 
-    eval(parse)
+    async eval(parse)
     {
         if (this.isCached())
             return this;
@@ -31962,7 +31957,7 @@ extends GConditionBase
 
 
 
-    eval(parse)
+    async eval(parse)
     {
         if (this.isCached())
             return this;
@@ -32002,7 +31997,7 @@ extends GConditionBase
 
 
 
-    eval(parse)
+    async eval(parse)
     {
         if (this.isCached())
             return this;
@@ -32042,7 +32037,7 @@ extends GConditionBase
 
 
 
-    eval(parse)
+    async eval(parse)
     {
         if (this.isCached())
             return this;
@@ -32083,7 +32078,7 @@ extends GConditionBase
 
 
 
-    eval(parse)
+    async eval(parse)
     {
         if (this.isCached())
             return this;
@@ -32126,7 +32121,7 @@ extends GConditionBase
 
 
 
-    eval(parse)
+    async eval(parse)
     {
         if (this.isCached())
             return this;
@@ -32177,16 +32172,16 @@ extends GNumberType
 
 
 
-    eval(parse)
+    async eval(parse)
     {
         if (this.isCached())
             return this;
 
 
         if (this.input)
-            this.value = this.input.eval(parse).toValue();
+            this.value = (await this.input.eval(parse)).toValue();
         else if (this.value)
-            this.value.eval(parse);
+            await this.value.eval(parse);
         else
             this.value = NumberValue.NaN;
 
@@ -32243,7 +32238,7 @@ extends GNumberType
 
 
 
-    eval(parse)
+    async eval(parse)
     {
         if (this.isCached())
             return this;
@@ -32252,13 +32247,13 @@ extends GNumberType
         this.value = new NumberValue(0);
 
         
-        const type = this.type    .eval(parse).toValue();
-        const dec  = this.decimals.eval(parse).toValue();
+        const type = (await this.type    .eval(parse)).toValue();
+        const dec  = (await this.decimals.eval(parse)).toValue();
 
 
         if (this.input)
         {
-            this.value = this.input.eval(parse).toValue();
+            this.value = (await this.input.eval(parse)).toValue();
 
             console.assert(
                 this.value.type == NUMBER_VALUE, 
@@ -32322,7 +32317,7 @@ extends GNumberType
 
 
 
-    eval(parse)
+    async eval(parse)
     {
         if (this.isCached())
             return this;
@@ -32330,7 +32325,7 @@ extends GNumberType
 
         if (this.input)
         {
-            this.value = this.input.eval(parse).toValue();
+            this.value = (await this.input.eval(parse)).toValue();
 
             console.assert(
                 this.value.type == NUMBER_VALUE, 
@@ -32388,19 +32383,19 @@ extends GNumberType
 
 
 
-    eval(parse)
+    async eval(parse)
     {
         if (this.isCached())
             return this;
 
 
-        const min = this.min.eval(parse).toValue();
-        const max = this.max.eval(parse).toValue();
+        const min = (await this.min.eval(parse)).toValue();
+        const max = (await this.max.eval(parse)).toValue();
 
 
         if (this.input)
         {
-            this.value = this.input.eval(parse).toValue();
+            this.value = (await this.input.eval(parse)).toValue();
 
             console.assert(
                 this.value.type == NUMBER_VALUE, 
@@ -32465,14 +32460,14 @@ extends GNumberType
 
 
 
-    eval(parse)
+    async eval(parse)
     {
         //logString('GSeries.eval()');
 
         if (!this.valid)
         {
-            this.start.eval(parse);
-            this.step .eval(parse);
+            await this.start.eval(parse);
+            await this.step .eval(parse);
         }
 
 
@@ -32541,15 +32536,15 @@ extends GNumberType
 
 
 
-    eval(parse)
+    async eval(parse)
     {
         if (this.isCached())
             return this;
 
             
-        const seed = this.seed.eval(parse).toValue();
-        const min  = this.min .eval(parse).toValue();
-        const max  = this.max .eval(parse).toValue();
+        const seed = (await this.seed.eval(parse)).toValue();
+        const min  = (await this.min .eval(parse)).toValue();
+        const max  = (await this.max .eval(parse)).toValue();
     
 
         if (!this.valid)
@@ -32609,20 +32604,20 @@ extends GNumberType
 
 
 
-    eval(parse)
+    async eval(parse)
     {
         if (this.isCached())
             return this;
 
 
-        const amount = this.amount.eval(parse).toValue();
+        const amount = (await this.amount.eval(parse)).toValue();
 
 
         if (   this.input0 
             && this.input1)
         {
-            const val0 = this.input0.eval(parse).toValue();
-            const val1 = this.input1.eval(parse).toValue();
+            const val0 = (await this.input0.eval(parse)).toValue();
+            const val1 = (await this.input1.eval(parse)).toValue();
 
             const maxDec = Math.max(val0.decimals, val1.decimals);
 
@@ -32631,10 +32626,10 @@ extends GNumberType
                 maxDec);
         }
         else if (this.input0)
-            this.value = this.input0.eval(parse).toValue();
+            this.value = (await this.input0.eval(parse)).toValue();
 
         else if (this.input1) 
-            this.value = this.input1.eval(parse).toValue();
+            this.value = (await this.input1.eval(parse)).toValue();
 
         else                  
             this.value = NumberValue.NaN;
@@ -32703,16 +32698,16 @@ extends GTextType
 
 
 
-    eval(parse)
+    async eval(parse)
     {
         if (this.isCached())
             return this;
 
 
         if (this.input)
-            this.value = this.input.eval(parse).toValue();
+            this.value = (await this.input.eval(parse)).toValue();
         else if (this.value)
-            this.value.eval(parse);
+            await this.value.eval(parse);
         else
             this.value = TextValue.NaN;
 
@@ -32768,19 +32763,19 @@ extends GTextType
 
 
 
-    eval(parse)
+    async eval(parse)
     {
         if (this.isCached())
             return this;
 
 
-        const start = this.start.eval(parse).toValue();
-        const end   = this.end  .eval(parse).toValue();
+        const start = (await this.start.eval(parse)).toValue();
+        const end   = (await this.end  .eval(parse)).toValue();
 
 
         if (this.input)
         {
-            this.value = this.input.eval(parse).toValue();
+            this.value = (await this.input.eval(parse)).toValue();
 
             console.assert(
                 this.value.type == TEXT_VALUE, 
@@ -32840,13 +32835,13 @@ extends GTextType
 
 
 
-    eval(parse)
+    async eval(parse)
     {
         if (this.isCached())
             return this;
 
 
-        const code = this.code.eval(parse).toValue();
+        const code = (await this.code.eval(parse)).toValue();
 
 
         this.value = new TextValue(String.fromCharCode(code.value));
@@ -32890,27 +32885,29 @@ extends GTextType
         if (this.input) 
             copy.input = this.input.copy();
 
-        copy.what  = this.what.copy();
-        copy.with  = this.with.copy();
+        copy.what  = this.what .copy();
+        copy.with  = this.with .copy();
+
+        copy.value = this.value.copy();
 
         return copy;
     }
 
 
 
-    eval(parse)
+    async eval(parse)
     {
         if (this.isCached())
             return this;
 
 
-        const _what = this.what.eval(parse).toValue();
-        const _with = this.with.eval(parse).toValue();
+        const _what = (await this.what.eval(parse)).toValue();
+        const _with = (await this.with.eval(parse)).toValue();
 
 
         if (this.input)
         {
-            this.value = this.input.eval(parse).toValue();
+            this.value = (await this.input.eval(parse)).toValue();
 
             console.assert(
                 this.value.type == TEXT_VALUE, 
@@ -32962,13 +32959,13 @@ extends GTextType
 
 
 
-    eval(parse)
+    async eval(parse)
     {
         if (this.isCached())
             return this;
 
 
-        this.value = evalJoinInputs(this.inputs, parse);
+        this.value = await evalJoinInputs(this.inputs, parse);
         
         genPushUpdateValue(parse, this.nodeId, 'value', this.value);
 
@@ -32981,7 +32978,7 @@ extends GTextType
 
 
 
-function evalJoinInputs(inputs, parse)
+async function evalJoinInputs(inputs, parse)
 {
     if (isEmpty(inputs))
         return TextValue.NaN;
@@ -32992,7 +32989,7 @@ function evalJoinInputs(inputs, parse)
 
     for (let i = 0; i < inputs.length; i++)
     {
-        const val = inputs[i].eval(parse).toValue();
+        const val = (await inputs[i].eval(parse)).toValue();
 
         console.assert(
             val.type == TEXT_VALUE, 
@@ -33039,7 +33036,7 @@ extends GOperator
 
 
 
-    eval(parse)
+    async eval(parse)
     {
         if (this.isCached())
             return this;
@@ -33049,7 +33046,7 @@ extends GOperator
 
         // for (let i = 0; i < this.inputs.length; i++)
         // {
-        //     const input = this.inputs[i].eval(parse).toValue();
+        //     const input = (await this.inputs[i].eval(parse)).toValue();
 
         //     if (input.type == LIST_VALUE)
         //     {
@@ -33117,33 +33114,23 @@ extends GTextType
 
 
 
-    eval(parse)
+    async eval(parse)
     {
         if (this.isCached())
             return this;
 
 
-        const request = this.request.eval(parse).toValue();
+        const request = (await this.request.eval(parse)).toValue();
 
 
-        this.value = TextValue.NaN;
-
-        console.log('1');
-        (async () =>
+        try 
         {
-            try 
-            {
-                this.value = new TextValue((await fetch(request.value)).text());
-                console.log('2');
-            }
-            catch (e)
-            {
-                console.log('e.message =', e.message);
-                this.value = new TextValue(e.message);
-                console.log('3');
-            }
-        })();
-        console.log('4');
+            this.value = new TextValue((await fetch(request.value)).text());
+        }
+        catch (e)
+        {
+            this.value = new TextValue(e.message);
+        }
 
 
         genPushUpdateValue(parse, this.nodeId, 'request', request   );
@@ -33772,21 +33759,21 @@ extends GColorType
 
 
 
-    eval(parse)
+    async eval(parse)
     {
         if (this.valid)//this.isCached())
             return this;
 
             
-        const space = this.space ? this.space.eval(parse).toValue().toInteger() : null; 
-        let   c1    = this.c1    ? this.c1   .eval(parse).toValue()             : null;
-        let   c2    = this.c2    ? this.c2   .eval(parse).toValue()             : null;
-        let   c3    = this.c3    ? this.c3   .eval(parse).toValue()             : null;
+        const space = this.space ? (await this.space.eval(parse)).toValue().toInteger() : null; 
+        let   c1    = this.c1    ? (await this.c1   .eval(parse)).toValue()             : null;
+        let   c2    = this.c2    ? (await this.c2   .eval(parse)).toValue()             : null;
+        let   c3    = this.c3    ? (await this.c3   .eval(parse)).toValue()             : null;
 
 
         if (this.input)
         {
-            const input = this.input.eval(parse).toValue();
+            const input = (await this.input.eval(parse)).toValue();
 
             
             if (input.isValid())
@@ -33851,7 +33838,7 @@ extends GColorType
                 &&  this.value.isValid()
                 && !this.hasInputs)
             {
-                this.convert.eval(parse);
+                await this.convert.eval(parse);
 
                 this.convertColor(
                     this.value,
@@ -33963,18 +33950,18 @@ extends GColorType
 
 
 
-    eval(parse)
+    async eval(parse)
     {
         if (this.isCached())
             return this;
 
 
-        const quality = this.quality ? this.quality.eval(parse).toValue().toInteger() : null;
+        const quality = this.quality ? (await this.quality.eval(parse)).toValue().toInteger() : null;
 
 
         if (this.input)
         {
-            const input = this.input.eval(parse).toValue();
+            const input = (await this.input.eval(parse)).toValue();
 
 
             if (this.options.enabled)
@@ -34119,16 +34106,16 @@ extends GColorType
 
 
 
-    eval(parse)
+    async eval(parse)
     {
         if (this.isCached())
             return this;
 
 
-        const order   = this.order   ? this.order  .eval(parse).toValue().toInteger() : null;
-        const margin1 = this.margin1 ? this.margin1.eval(parse).toValue()             : null;
-        const margin2 = this.margin2 ? this.margin2.eval(parse).toValue()             : null;
-        const margin3 = this.margin3 ? this.margin3.eval(parse).toValue()             : null;
+        const order   = this.order   ? (await this.order  .eval(parse)).toValue().toInteger() : null;
+        const margin1 = this.margin1 ? (await this.margin1.eval(parse)).toValue()             : null;
+        const margin2 = this.margin2 ? (await this.margin2.eval(parse)).toValue()             : null;
+        const margin3 = this.margin3 ? (await this.margin3.eval(parse)).toValue()             : null;
 
     
         if (order)
@@ -34137,7 +34124,7 @@ extends GColorType
 
         if (this.input)
         {
-            const input = this.input.eval(parse).toValue();
+            const input = (await this.input.eval(parse)).toValue();
 
 
             if (this.options.enabled)
@@ -34298,13 +34285,13 @@ extends GColorType
 
 
 
-    eval(parse)
+    async eval(parse)
     {
         if (this.isCached())
             return this;
 
 
-        const standard = this.standard.eval(parse).toValue().toInteger();
+        const standard = (await this.standard.eval(parse)).toValue().toInteger();
 
         
         if (standard.isValid())
@@ -34314,8 +34301,8 @@ extends GColorType
         if (   this.input0 
             && this.input1)
         {
-            const input0 = this.input0.eval(parse).toValue();
-            const input1 = this.input1.eval(parse).toValue();
+            const input0 = (await this.input0.eval(parse)).toValue();
+            const input1 = (await this.input1.eval(parse)).toValue();
 
 
             if (   input0.isValid()
@@ -34353,7 +34340,7 @@ extends GColorType
 
         else if (this.input0) 
         {
-            const input0 = this.input0.eval(parse).toValue();
+            const input0 = (await this.input0.eval(parse)).toValue();
 
             genPushUpdateValue(parse, this.nodeId, 'text', input0.isValid() ? input0 : ColorValue.NaN);
             genPushUpdateValue(parse, this.nodeId, 'back', ColorValue.NaN);
@@ -34364,7 +34351,7 @@ extends GColorType
 
         else if (this.input1) 
         {
-            const input1 = this.input1.eval(parse).toValue();
+            const input1 = (await this.input1.eval(parse)).toValue();
 
             genPushUpdateValue(parse, this.nodeId, 'text', ColorValue.NaN);
             genPushUpdateValue(parse, this.nodeId, 'back', input1.isValid() ? input1 : ColorValue.NaN);
@@ -34431,20 +34418,20 @@ extends GColorType
 
 
 
-    eval(parse)
+    async eval(parse)
     {
         if (this.isCached())
             return this;
 
 
-        const l = this.l.eval(parse).toValue();        
-        const m = this.m.eval(parse).toValue();
-        const s = this.s.eval(parse).toValue();
+        const l = (await this.l.eval(parse)).toValue();        
+        const m = (await this.m.eval(parse)).toValue();
+        const s = (await this.s.eval(parse)).toValue();
 
 
         if (this.input)
         {
-            const input = this.input.eval(parse).toValue();
+            const input = (await this.input.eval(parse)).toValue();
             const rgb   = input.toRgb();
 
             if (this.options.enabled)
@@ -34526,22 +34513,22 @@ extends GColorType
 
 
 
-    eval(parse)
+    async eval(parse)
     {
         if (this.isCached())
             return this;
 
 
-        const space  = this.space .eval(parse).toValue().toInteger();
-        const amount = this.amount.eval(parse).toValue();
-        const gamma  = this.gamma .eval(parse).toValue();
+        const space  = (await this.space .eval(parse)).toValue().toInteger();
+        const amount = (await this.amount.eval(parse)).toValue();
+        const gamma  = (await this.gamma .eval(parse)).toValue();
 
 
         if (   this.input0 
             && this.input1)
         {
-            const input0 = this.input0.eval(parse).toValue();
-            const input1 = this.input1.eval(parse).toValue();
+            const input0 = (await this.input0.eval(parse)).toValue();
+            const input1 = (await this.input1.eval(parse)).toValue();
 
             console.assert(
                 amount.type == NUMBER_VALUE, 
@@ -34570,10 +34557,10 @@ extends GColorType
         }
 
         else if (this.input0) 
-            this.value = this.input0.eval(parse).toValue();
+            this.value = (await this.input0.eval(parse)).toValue();
 
         else if (this.input1) 
-            this.value = this.input1.eval(parse).toValue();
+            this.value = (await this.input1.eval(parse)).toValue();
             
         else 
             this.value = ColorValue.NaN;
@@ -34660,7 +34647,7 @@ extends GOperator
 
 
 
-    eval(parse)
+    async eval(parse)
     {
         if (!this.valid)
         {
@@ -34669,7 +34656,7 @@ extends GOperator
 
             if (this.input)
             {
-                this.result = this.input.eval(parse).copy();
+                this.result = (await this.input.eval(parse)).copy();
 
                 console.assert(
                     this.result.type == COLOR_STOP_VALUE, 
@@ -34677,14 +34664,14 @@ extends GOperator
 
                 if (this.result.isValid())
                 {
-                    if (this.fill    ) this.result.fill     = this.fill    .eval(parse).copy();
-                    if (this.position) this.result.position = this.position.eval(parse).copy();
+                    if (this.fill    ) this.result.fill     = (await this.fill    .eval(parse)).copy();
+                    if (this.position) this.result.position = (await this.position.eval(parse)).copy();
                 }
             }
             else
             {
-                this.result.fill     = this.fill    .eval(parse).copy();
-                this.result.position = this.position.eval(parse).copy();
+                this.result.fill     = (await this.fill    .eval(parse)).copy();
+                this.result.position = (await this.position.eval(parse)).copy();
             }
 
 
@@ -34927,26 +34914,26 @@ extends GObjectBase
 
 
 
-    eval(parse)
+    async eval(parse)
     {
         if (this.isCached())
             return this;
 
             
         if (this.input)
-            this.input = this.input.eval(parse).copy();
+            this.input = (await this.input.eval(parse)).copy();
 
         const hasInput =     
                this.input 
             && RECTANGLE_TYPES.includes(this.input.type);   
 
             
-        if (this.x     ) this.x      = this.x     .eval(parse).copy(); else if (hasInput) this.x      = this.input.x     .copy();
-        if (this.y     ) this.y      = this.y     .eval(parse).copy(); else if (hasInput) this.y      = this.input.y     .copy();
-        if (this.width ) this.width  = this.width .eval(parse).copy(); else if (hasInput) this.width  = this.input.width .copy();
-        if (this.height) this.height = this.height.eval(parse).copy(); else if (hasInput) this.height = this.input.height.copy();
-        if (this.angle ) this.angle  = this.angle .eval(parse).copy(); else if (hasInput) this.angle  = this.input.angle .copy();
-        if (this.round ) this.round  = this.round .eval(parse).copy(); else if (hasInput) this.round  = this.input.round .copy();
+        if (this.x     ) this.x      = (await this.x     .eval(parse)).copy(); else if (hasInput) this.x      = this.input.x     .copy();
+        if (this.y     ) this.y      = (await this.y     .eval(parse)).copy(); else if (hasInput) this.y      = this.input.y     .copy();
+        if (this.width ) this.width  = (await this.width .eval(parse)).copy(); else if (hasInput) this.width  = this.input.width .copy();
+        if (this.height) this.height = (await this.height.eval(parse)).copy(); else if (hasInput) this.height = this.input.height.copy();
+        if (this.angle ) this.angle  = (await this.angle .eval(parse)).copy(); else if (hasInput) this.angle  = this.input.angle .copy();
+        if (this.round ) this.round  = (await this.round .eval(parse)).copy(); else if (hasInput) this.round  = this.input.round .copy();
 
         
         if (this.x     ) genPushUpdateValue(parse, this.nodeId, 'x',      this.x     .toValue());
@@ -35066,24 +35053,24 @@ extends GObjectBase
 
 
 
-    eval(parse)
+    async eval(parse)
     {
         if (this.isCached())
             return this;
 
 
         if (this.input)
-            this.input.eval(parse);
+            await this.input.eval(parse);
 
         const hasInput =     
                this.input 
             && LINE_TYPES.includes(this.input.type);   
 
             
-        if (this.x     ) this.x     .eval(parse); else if (hasInput) this.x     = this.input.x    ;
-        if (this.y     ) this.y     .eval(parse); else if (hasInput) this.y     = this.input.y    ;
-        if (this.width ) this.width .eval(parse); else if (hasInput) this.width = this.input.width;
-        if (this.angle ) this.angle .eval(parse); else if (hasInput) this.angle = this.input.angle;
+        if (this.x     ) await this.x     .eval(parse); else if (hasInput) this.x     = this.input.x    ;
+        if (this.y     ) await this.y     .eval(parse); else if (hasInput) this.y     = this.input.y    ;
+        if (this.width ) await this.width .eval(parse); else if (hasInput) this.width = this.input.width;
+        if (this.angle ) await this.angle .eval(parse); else if (hasInput) this.angle = this.input.angle;
 
         
         if (this.x     ) genPushUpdateValue(parse, this.nodeId, 'x',      this.x     .toValue());
@@ -35194,25 +35181,25 @@ extends GObjectBase
     }
 
 
-    eval(parse)
+    async eval(parse)
     {
         if (this.isCached())
             return this;
 
             
         if (this.input)
-            this.input.eval(parse);
+            await this.input.eval(parse);
 
         const hasInput =     
                this.input 
             && ELLIPSE_TYPES.includes(this.input.type);   
 
             
-        if (this.x     ) this.x     .eval(parse); else if (hasInput) this.x      = this.input.x     ;
-        if (this.y     ) this.y     .eval(parse); else if (hasInput) this.y      = this.input.y     ;
-        if (this.width ) this.width .eval(parse); else if (hasInput) this.width  = this.input.width ;
-        if (this.height) this.height.eval(parse); else if (hasInput) this.height = this.input.height;
-        if (this.angle ) this.angle .eval(parse); else if (hasInput) this.angle  = this.input.angle ;
+        if (this.x     ) await this.x     .eval(parse); else if (hasInput) this.x      = this.input.x     ;
+        if (this.y     ) await this.y     .eval(parse); else if (hasInput) this.y      = this.input.y     ;
+        if (this.width ) await this.width .eval(parse); else if (hasInput) this.width  = this.input.width ;
+        if (this.height) await this.height.eval(parse); else if (hasInput) this.height = this.input.height;
+        if (this.angle ) await this.angle .eval(parse); else if (hasInput) this.angle  = this.input.angle ;
 
         
         if (this.x     ) genPushUpdateValue(parse, this.nodeId, 'x',      this.x     .toValue());
@@ -35333,27 +35320,27 @@ extends GObjectBase
 
 
 
-    eval(parse)
+    async eval(parse)
     {
         if (this.isCached())
             return this;
 
             
         if (this.input)
-            this.input.eval(parse);
+            await this.input.eval(parse);
 
         const hasInput =     
                this.input 
             && POLYGON_TYPES.includes(this.input.type);   
 
              
-        if (this.x      ) this.x      .eval(parse); else if (hasInput) this.x       = this.input.x      ;
-        if (this.y      ) this.y      .eval(parse); else if (hasInput) this.y       = this.input.y      ;
-        if (this.width  ) this.width  .eval(parse); else if (hasInput) this.width   = this.input.width  ;
-        if (this.height ) this.height .eval(parse); else if (hasInput) this.height  = this.input.height ;
-        if (this.angle  ) this.angle  .eval(parse); else if (hasInput) this.angle   = this.input.angle  ;
-        if (this.round  ) this.round  .eval(parse); else if (hasInput) this.round   = this.input.round  ;
-        if (this.corners) this.corners.eval(parse); else if (hasInput) this.corners = this.input.corners;
+        if (this.x      ) await this.x      .eval(parse); else if (hasInput) this.x       = this.input.x      ;
+        if (this.y      ) await this.y      .eval(parse); else if (hasInput) this.y       = this.input.y      ;
+        if (this.width  ) await this.width  .eval(parse); else if (hasInput) this.width   = this.input.width  ;
+        if (this.height ) await this.height .eval(parse); else if (hasInput) this.height  = this.input.height ;
+        if (this.angle  ) await this.angle  .eval(parse); else if (hasInput) this.angle   = this.input.angle  ;
+        if (this.round  ) await this.round  .eval(parse); else if (hasInput) this.round   = this.input.round  ;
+        if (this.corners) await this.corners.eval(parse); else if (hasInput) this.corners = this.input.corners;
 
         
         if (this.x      ) genPushUpdateValue(parse, this.nodeId, 'x',       this.x      .toValue());
@@ -35486,28 +35473,28 @@ extends GObjectBase
 
 
 
-    eval(parse)
+    async eval(parse)
     {
         if (this.isCached())
             return this;
 
             
         if (this.input)
-            this.input = this.input.eval(parse).copy();
+            this.input = (await this.input.eval(parse)).copy();
 
         const hasInput =     
                this.input 
             && STAR_TYPES.includes(this.input.type);   
 
              
-        if (this.x     ) this.x      = this.x     .eval(parse).copy(); else if (hasInput) this.x      = this.input.x     .copy();
-        if (this.y     ) this.y      = this.y     .eval(parse).copy(); else if (hasInput) this.y      = this.input.y     .copy();
-        if (this.width ) this.width  = this.width .eval(parse).copy(); else if (hasInput) this.width  = this.input.width .copy();
-        if (this.height) this.height = this.height.eval(parse).copy(); else if (hasInput) this.height = this.input.height.copy();
-        if (this.angle ) this.angle  = this.angle .eval(parse).copy(); else if (hasInput) this.angle  = this.input.angle .copy();
-        if (this.round ) this.round  = this.round .eval(parse).copy(); else if (hasInput) this.round  = this.input.round .copy();
-        if (this.points) this.points = this.points.eval(parse).copy(); else if (hasInput) this.points = this.input.points.copy();
-        if (this.convex) this.convex = this.convex.eval(parse).copy(); else if (hasInput) this.convex = this.input.convex.copy();
+        if (this.x     ) this.x      = (await this.x     .eval(parse)).copy(); else if (hasInput) this.x      = this.input.x     .copy();
+        if (this.y     ) this.y      = (await this.y     .eval(parse)).copy(); else if (hasInput) this.y      = this.input.y     .copy();
+        if (this.width ) this.width  = (await this.width .eval(parse)).copy(); else if (hasInput) this.width  = this.input.width .copy();
+        if (this.height) this.height = (await this.height.eval(parse)).copy(); else if (hasInput) this.height = this.input.height.copy();
+        if (this.angle ) this.angle  = (await this.angle .eval(parse)).copy(); else if (hasInput) this.angle  = this.input.angle .copy();
+        if (this.round ) this.round  = (await this.round .eval(parse)).copy(); else if (hasInput) this.round  = this.input.round .copy();
+        if (this.points) this.points = (await this.points.eval(parse)).copy(); else if (hasInput) this.points = this.input.points.copy();
+        if (this.convex) this.convex = (await this.convex.eval(parse)).copy(); else if (hasInput) this.convex = this.input.convex.copy();
 
         
         if (this.x     ) genPushUpdateValue(parse, this.nodeId, 'x',      this.x     .toValue());
@@ -35634,13 +35621,13 @@ extends GObjectBase
 
 
 
-    eval(parse)
+    async eval(parse)
     {
         if (this.isCached())
             return this;
 
             
-        this.value = this.value.eval(parse).toValue();
+        this.value = (await this.value.eval(parse)).toValue();
 
 
         if (   this.value.isValid()
@@ -35727,19 +35714,19 @@ extends GOperator
 
 
 
-    eval(parse)
+    async eval(parse)
     {
         if (this.isCached())
             return this;
 ``
 
-        const color   = this.color   ? this.color  .eval(parse).toValue() : null;
-        const opacity = this.opacity ? this.opacity.eval(parse).toValue() : null;
+        const color   = this.color   ? (await this.color  .eval(parse)).toValue() : null;
+        const opacity = this.opacity ? (await this.opacity.eval(parse)).toValue() : null;
 
         
         if (this.input)
         {
-            const input = this.input.eval(parse).toValue();
+            const input = (await this.input.eval(parse)).toValue();
 
             this.value = new FillValue(
                 color   ?? input.color,
@@ -35823,22 +35810,22 @@ extends GObjectBase
 
 
 
-    eval(parse)
+    async eval(parse)
     {
         if (this.isCached())
             return this;
 
 
-        const fill   = this.fill   ? this.fill  .eval(parse).toValue() : null;
-        const weight = this.weight ? this.weight.eval(parse).toValue() : null;
-        const fit    = this.fit    ? this.fit   .eval(parse).toValue() : null;
-        const join   = this.join   ? this.join  .eval(parse).toValue() : null;
-        const miter  = this.miter  ? this.miter .eval(parse).toValue() : null;
+        const fill   = this.fill   ? (await this.fill  .eval(parse)).toValue() : null;
+        const weight = this.weight ? (await this.weight.eval(parse)).toValue() : null;
+        const fit    = this.fit    ? (await this.fit   .eval(parse)).toValue() : null;
+        const join   = this.join   ? (await this.join  .eval(parse)).toValue() : null;
+        const miter  = this.miter  ? (await this.miter .eval(parse)).toValue() : null;
 
 
         if (this.input)
         {
-            const input = this.input.eval(parse).toValue();
+            const input = (await this.input.eval(parse)).toValue();
 
             this.value = new StrokeValue(
                 fill   ?? input.fill,
@@ -35925,7 +35912,7 @@ extends GOperator
 
 
 
-    eval(parse)
+    async eval(parse)
     {
         if (this.valid)//isCached())
             return this;
@@ -35933,7 +35920,7 @@ extends GOperator
 
         this.value = NullValue;
         //     this.input
-        //     ? this.input.eval(parse).toValue()
+        //     ? (await this.input.eval(parse)).toValue()
         //     : NullValue;
 
 
@@ -35997,7 +35984,7 @@ extends GOperator
 
 
 
-    eval(parse)
+    async eval(parse)
     {
         if (this.isCached())
             return this;
@@ -36006,7 +35993,7 @@ extends GOperator
         if (this.input)
         {
             if (!this.input.value)
-                this.input.eval(parse);
+                await this.input.eval(parse);
 
             this.value = this.input.toValue();
         }
@@ -36079,7 +36066,7 @@ extends GOperator
 
 
 
-    eval(parse)
+    async eval(parse)
     {
         if (this.isCached())
             return this;
@@ -45187,8 +45174,9 @@ extends Parameter
             this.name,
             defaultValue);
 
-        this.controls[0].textarea.defPlaceholder =
-        this.controls[0].textarea.placeholder    = name;
+        if (name != NULL)
+            this.controls[0].textarea.defPlaceholder =
+            this.controls[0].textarea.placeholder    = name;
         
 
         this.controls[0].successOnFocusOut = true;
@@ -48587,6 +48575,7 @@ class Operator
     addParamByType(type, id, showName, hasInput, hasOutput, volatile = false)
     {
              if (NUMBER_TYPES.includes(type)) return this.addParam(new NumberParam(id, id, showName, hasInput, hasOutput), volatile);
+        else if (  TEXT_TYPES.includes(type)) return this.addParam(new   TextParam(id, id,           hasInput, hasOutput), volatile);
         else if ( COLOR_TYPES.includes(type)) return this.addParam(new  ColorParam(id, id, showName, hasInput, hasOutput), volatile);
         else if (  FILL_TYPES.includes(type)) return this.addParam(new   FillParam(id, id, showName, hasInput, hasOutput), volatile);
         else if (STROKE_TYPES.includes(type)) return this.addParam(new StrokeParam(id, id, showName, hasInput, hasOutput), volatile);
@@ -53192,7 +53181,8 @@ extends ResizableBase
         this.addOutput(new Output([TEXT_VALUE], this.output_genRequest, getNodeOutputValuesForUndo, this.output_backInit));
 
         this.addParam(this.paramValue = new TextParam('value', '', false, false));
-        this.paramValue.controls[0].textarea.placeholder  = ' . . .';
+
+        this.paramValue.controls[0].textarea.defPlaceholder  = ' . . .';
 
         this.alwaysLoadParams = true;
 

@@ -21,7 +21,7 @@ extends GConditionBase
 
 
 
-    eval(parse)
+    async eval(parse)
     {
         if (this.isCached())
             return this;

@@ -32,19 +32,19 @@ extends GOperator
 
 
 
-    eval(parse)
+    async eval(parse)
     {
         if (this.isCached())
             return this;
 ``
 
-        const color   = this.color   ? this.color  .eval(parse).toValue() : null;
-        const opacity = this.opacity ? this.opacity.eval(parse).toValue() : null;
+        const color   = this.color   ? (await this.color  .eval(parse)).toValue() : null;
+        const opacity = this.opacity ? (await this.opacity.eval(parse)).toValue() : null;
 
         
         if (this.input)
         {
-            const input = this.input.eval(parse).toValue();
+            const input = (await this.input.eval(parse)).toValue();
 
             this.value = new FillValue(
                 color   ?? input.color,

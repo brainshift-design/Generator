@@ -30,30 +30,30 @@ extends GOperator
 
 
 
-    eval(parse)
+    async eval(parse)
     {
         if (this.isCached())
             return this;
 
         
-        const cond = this.condition.eval(parse).toValue();
+        const cond = (await this.condition.eval(parse)).toValue();
 
 
         if (   this.input0 
             && this.input1)
         {
-            const val0 = this.input0.eval(parse).toValue();
-            const val1 = this.input1.eval(parse).toValue();
+            const val0 = (await this.input0.eval(parse)).toValue();
+            const val1 = (await this.input1.eval(parse)).toValue();
 
             this.value = cond.value != 0 ? val0 : val1;
         }
         else if (this.input0
               && cond.value != 0)
-            this.value = this.input0.eval(parse).toValue();
+            this.value = (await this.input0.eval(parse)).toValue();
 
         else if (this.input1
               && cond.value == 0) 
-            this.value = this.input1.eval(parse).toValue();
+            this.value = (await this.input1.eval(parse)).toValue();
 
         else                  
             this.value = NumberValue.NaN;

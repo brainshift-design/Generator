@@ -42,27 +42,27 @@ extends GObjectBase
 
 
 
-    eval(parse)
+    async eval(parse)
     {
         if (this.isCached())
             return this;
 
             
         if (this.input)
-            this.input.eval(parse);
+            await this.input.eval(parse);
 
         const hasInput =     
                this.input 
             && POLYGON_TYPES.includes(this.input.type);   
 
              
-        if (this.x      ) this.x      .eval(parse); else if (hasInput) this.x       = this.input.x      ;
-        if (this.y      ) this.y      .eval(parse); else if (hasInput) this.y       = this.input.y      ;
-        if (this.width  ) this.width  .eval(parse); else if (hasInput) this.width   = this.input.width  ;
-        if (this.height ) this.height .eval(parse); else if (hasInput) this.height  = this.input.height ;
-        if (this.angle  ) this.angle  .eval(parse); else if (hasInput) this.angle   = this.input.angle  ;
-        if (this.round  ) this.round  .eval(parse); else if (hasInput) this.round   = this.input.round  ;
-        if (this.corners) this.corners.eval(parse); else if (hasInput) this.corners = this.input.corners;
+        if (this.x      ) await this.x      .eval(parse); else if (hasInput) this.x       = this.input.x      ;
+        if (this.y      ) await this.y      .eval(parse); else if (hasInput) this.y       = this.input.y      ;
+        if (this.width  ) await this.width  .eval(parse); else if (hasInput) this.width   = this.input.width  ;
+        if (this.height ) await this.height .eval(parse); else if (hasInput) this.height  = this.input.height ;
+        if (this.angle  ) await this.angle  .eval(parse); else if (hasInput) this.angle   = this.input.angle  ;
+        if (this.round  ) await this.round  .eval(parse); else if (hasInput) this.round   = this.input.round  ;
+        if (this.corners) await this.corners.eval(parse); else if (hasInput) this.corners = this.input.corners;
 
         
         if (this.x      ) genPushUpdateValue(parse, this.nodeId, 'x',       this.x      .toValue());

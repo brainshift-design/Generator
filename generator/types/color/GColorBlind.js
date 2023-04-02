@@ -33,20 +33,20 @@ extends GColorType
 
 
 
-    eval(parse)
+    async eval(parse)
     {
         if (this.isCached())
             return this;
 
 
-        const l = this.l.eval(parse).toValue();        
-        const m = this.m.eval(parse).toValue();
-        const s = this.s.eval(parse).toValue();
+        const l = (await this.l.eval(parse)).toValue();        
+        const m = (await this.m.eval(parse)).toValue();
+        const s = (await this.s.eval(parse)).toValue();
 
 
         if (this.input)
         {
-            const input = this.input.eval(parse).toValue();
+            const input = (await this.input.eval(parse)).toValue();
             const rgb   = input.toRgb();
 
             if (this.options.enabled)

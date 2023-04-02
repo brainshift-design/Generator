@@ -97,7 +97,7 @@ extends GValue
 
 
 
-    eval(parse)
+    async eval(parse)
     {
         return this;
     }
@@ -217,13 +217,13 @@ function parseStrokeValue(str, i = -1)
 
 
 
-function evalStrokeValue(value, parse)
-{
-    const stroke = value.eval(parse).copy();
+// async function evalStrokeValue(value, parse)
+// {
+//     const stroke = (await value.eval(parse)).copy();
 
-         if (STROKE_TYPES.includes(stroke.type)) return stroke;
-    else if (  FILL_TYPES.includes(stroke.type)) return new StrokeValue(stroke, value.data.weight);
-    else if ( COLOR_TYPES.includes(stroke.type)) return new StrokeValue(new FillValue(stroke), value.data.weight);
+//          if (STROKE_TYPES.includes(stroke.type)) return stroke;
+//     else if (  FILL_TYPES.includes(stroke.type)) return new StrokeValue(stroke, value.data.weight);
+//     else if ( COLOR_TYPES.includes(stroke.type)) return new StrokeValue(new FillValue(stroke), value.data.weight);
 
-    else console.assert(false, 'stroke must have type');
-}
+//     else console.assert(false, 'stroke must have type');
+// }

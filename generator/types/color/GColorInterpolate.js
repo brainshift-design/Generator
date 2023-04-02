@@ -34,22 +34,22 @@ extends GColorType
 
 
 
-    eval(parse)
+    async eval(parse)
     {
         if (this.isCached())
             return this;
 
 
-        const space  = this.space .eval(parse).toValue().toInteger();
-        const amount = this.amount.eval(parse).toValue();
-        const gamma  = this.gamma .eval(parse).toValue();
+        const space  = (await this.space .eval(parse)).toValue().toInteger();
+        const amount = (await this.amount.eval(parse)).toValue();
+        const gamma  = (await this.gamma .eval(parse)).toValue();
 
 
         if (   this.input0 
             && this.input1)
         {
-            const input0 = this.input0.eval(parse).toValue();
-            const input1 = this.input1.eval(parse).toValue();
+            const input0 = (await this.input0.eval(parse)).toValue();
+            const input1 = (await this.input1.eval(parse)).toValue();
 
             console.assert(
                 amount.type == NUMBER_VALUE, 
@@ -78,10 +78,10 @@ extends GColorType
         }
 
         else if (this.input0) 
-            this.value = this.input0.eval(parse).toValue();
+            this.value = (await this.input0.eval(parse)).toValue();
 
         else if (this.input1) 
-            this.value = this.input1.eval(parse).toValue();
+            this.value = (await this.input1.eval(parse)).toValue();
             
         else 
             this.value = ColorValue.NaN;

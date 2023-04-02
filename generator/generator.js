@@ -46,30 +46,33 @@ function genRequest(request)
     const    paramNodes = parse.paramNodeIds.map(id => parse.parsedNodes.find(n => n.nodeId == id));
     const topLevelNodes = parse.parsedNodes.filter(n => n.topLevel);
 
-    for (const node of    paramNodes) node.eval(parse);
-    for (const node of topLevelNodes) node.eval(parse);
-
-
-    for (const node of parse.parsedNodes)
+    (async () =>
     {
-        if (   node instanceof GObjectBase
-            && node.options.active)
+        for (const node of    paramNodes) await node.eval(parse);
+        for (const node of topLevelNodes) await node.eval(parse);
+
+
+        for (const node of parse.parsedNodes)
         {
-            node.objects.forEach(o => genPushUpdateObject(parse, o));
-            if (!!node.style) genPushUpdateStyle(parse, node.style);
+            if (   node instanceof GObjectBase
+                && node.options.active)
+            {
+                node.objects.forEach(o => genPushUpdateObject(parse, o));
+                if (!!node.style) genPushUpdateStyle(parse, node.style);
+            }
         }
-    }
 
 
-    genUpdateValuesAndObjects(
-        requestId,
-        actionId,
-        parse.updateNodeId,
-        parse.updateParamId,
-        parse.updateValues,
-        parse.updateObjects,
-        parse.updateStyles);
-
+        genUpdateValuesAndObjects(
+            requestId,
+            actionId,
+            parse.updateNodeId,
+            parse.updateParamId,
+            parse.updateValues,
+            parse.updateObjects,
+            parse.updateStyles);
+    })
+    ();
 
     //stopGenerate = false;
 }

@@ -28,16 +28,16 @@ extends GNumberType
 
 
 
-    eval(parse)
+    async eval(parse)
     {
         if (this.isCached())
             return this;
 
 
         if (this.input)
-            this.value = this.input.eval(parse).toValue();
+            this.value = (await this.input.eval(parse)).toValue();
         else if (this.value)
-            this.value.eval(parse);
+            await this.value.eval(parse);
         else
             this.value = NumberValue.NaN;
 

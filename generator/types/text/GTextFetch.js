@@ -35,33 +35,23 @@ extends GTextType
 
 
 
-    eval(parse)
+    async eval(parse)
     {
         if (this.isCached())
             return this;
 
 
-        const request = this.request.eval(parse).toValue();
+        const request = (await this.request.eval(parse)).toValue();
 
 
-        this.value = TextValue.NaN;
-
-        console.log('1');
-        (async () =>
+        try 
         {
-            try 
-            {
-                this.value = new TextValue((await fetch(request.value)).text());
-                console.log('2');
-            }
-            catch (e)
-            {
-                console.log('e.message =', e.message);
-                this.value = new TextValue(e.message);
-                console.log('3');
-            }
-        })();
-        console.log('4');
+            this.value = new TextValue((await fetch(request.value)).text());
+        }
+        catch (e)
+        {
+            this.value = new TextValue(e.message);
+        }
 
 
         genPushUpdateValue(parse, this.nodeId, 'request', request   );

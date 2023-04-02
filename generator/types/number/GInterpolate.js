@@ -30,20 +30,20 @@ extends GNumberType
 
 
 
-    eval(parse)
+    async eval(parse)
     {
         if (this.isCached())
             return this;
 
 
-        const amount = this.amount.eval(parse).toValue();
+        const amount = (await this.amount.eval(parse)).toValue();
 
 
         if (   this.input0 
             && this.input1)
         {
-            const val0 = this.input0.eval(parse).toValue();
-            const val1 = this.input1.eval(parse).toValue();
+            const val0 = (await this.input0.eval(parse)).toValue();
+            const val1 = (await this.input1.eval(parse)).toValue();
 
             const maxDec = Math.max(val0.decimals, val1.decimals);
 
@@ -52,10 +52,10 @@ extends GNumberType
                 maxDec);
         }
         else if (this.input0)
-            this.value = this.input0.eval(parse).toValue();
+            this.value = (await this.input0.eval(parse)).toValue();
 
         else if (this.input1) 
-            this.value = this.input1.eval(parse).toValue();
+            this.value = (await this.input1.eval(parse)).toValue();
 
         else                  
             this.value = NumberValue.NaN;

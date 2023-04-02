@@ -32,13 +32,13 @@ extends GColorType
 
 
 
-    eval(parse)
+    async eval(parse)
     {
         if (this.isCached())
             return this;
 
 
-        const standard = this.standard.eval(parse).toValue().toInteger();
+        const standard = (await this.standard.eval(parse)).toValue().toInteger();
 
         
         if (standard.isValid())
@@ -48,8 +48,8 @@ extends GColorType
         if (   this.input0 
             && this.input1)
         {
-            const input0 = this.input0.eval(parse).toValue();
-            const input1 = this.input1.eval(parse).toValue();
+            const input0 = (await this.input0.eval(parse)).toValue();
+            const input1 = (await this.input1.eval(parse)).toValue();
 
 
             if (   input0.isValid()
@@ -87,7 +87,7 @@ extends GColorType
 
         else if (this.input0) 
         {
-            const input0 = this.input0.eval(parse).toValue();
+            const input0 = (await this.input0.eval(parse)).toValue();
 
             genPushUpdateValue(parse, this.nodeId, 'text', input0.isValid() ? input0 : ColorValue.NaN);
             genPushUpdateValue(parse, this.nodeId, 'back', ColorValue.NaN);
@@ -98,7 +98,7 @@ extends GColorType
 
         else if (this.input1) 
         {
-            const input1 = this.input1.eval(parse).toValue();
+            const input1 = (await this.input1.eval(parse)).toValue();
 
             genPushUpdateValue(parse, this.nodeId, 'text', ColorValue.NaN);
             genPushUpdateValue(parse, this.nodeId, 'back', input1.isValid() ? input1 : ColorValue.NaN);

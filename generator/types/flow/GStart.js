@@ -26,11 +26,11 @@ extends GOperator
 
 
 
-    eval(parse)
+    async eval(parse)
     {
         if (this.input)
         {
-            this.input = this.input.eval(parse).copy();
+            this.input = (await this.input.eval(parse)).copy();
             this.value = this.input.toValue();
         }
         else

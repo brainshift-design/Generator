@@ -38,22 +38,22 @@ extends GObjectBase
 
 
 
-    eval(parse)
+    async eval(parse)
     {
         if (this.isCached())
             return this;
 
 
-        const fill   = this.fill   ? this.fill  .eval(parse).toValue() : null;
-        const weight = this.weight ? this.weight.eval(parse).toValue() : null;
-        const fit    = this.fit    ? this.fit   .eval(parse).toValue() : null;
-        const join   = this.join   ? this.join  .eval(parse).toValue() : null;
-        const miter  = this.miter  ? this.miter .eval(parse).toValue() : null;
+        const fill   = this.fill   ? (await this.fill  .eval(parse)).toValue() : null;
+        const weight = this.weight ? (await this.weight.eval(parse)).toValue() : null;
+        const fit    = this.fit    ? (await this.fit   .eval(parse)).toValue() : null;
+        const join   = this.join   ? (await this.join  .eval(parse)).toValue() : null;
+        const miter  = this.miter  ? (await this.miter .eval(parse)).toValue() : null;
 
 
         if (this.input)
         {
-            const input = this.input.eval(parse).toValue();
+            const input = (await this.input.eval(parse)).toValue();
 
             this.value = new StrokeValue(
                 fill   ?? input.fill,

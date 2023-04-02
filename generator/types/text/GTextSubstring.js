@@ -32,19 +32,19 @@ extends GTextType
 
 
 
-    eval(parse)
+    async eval(parse)
     {
         if (this.isCached())
             return this;
 
 
-        const start = this.start.eval(parse).toValue();
-        const end   = this.end  .eval(parse).toValue();
+        const start = (await this.start.eval(parse)).toValue();
+        const end   = (await this.end  .eval(parse)).toValue();
 
 
         if (this.input)
         {
-            this.value = this.input.eval(parse).toValue();
+            this.value = (await this.input.eval(parse)).toValue();
 
             console.assert(
                 this.value.type == TEXT_VALUE, 

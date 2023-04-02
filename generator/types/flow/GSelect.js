@@ -30,13 +30,13 @@ extends GOperator
 
 
 
-    eval(parse)
+    async eval(parse)
     {
         if (this.isCached())
             return this;
 
 
-        let index = this.index.eval(parse).toValue();
+        let index = (await this.index.eval(parse)).toValue();
         index = new NumberValue(Math.round(index.value));
 
 
@@ -46,7 +46,7 @@ extends GOperator
         if (this.input)
         {
             if (!this.input.value)
-                this.input.eval(parse);
+                await this.input.eval(parse);
 
             const input = this.input.toValue();
             length = input.items.length;

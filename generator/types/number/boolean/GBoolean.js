@@ -26,23 +26,23 @@ extends GArithmetic
 
 
 
-    eval(parse)
+    async eval(parse)
     {
         if (this.isCached())
             return this;
 
 
-        const op = this.operation.eval(parse).toValue().toInteger();
+        const op = (await this.operation.eval(parse)).toValue().toInteger();
 
         op.value = Math.min(Math.max(0, op.value), BOOLEAN_OPS.length-1);
 
         
         switch (op.value)
         {
-            case BOOLEAN_NOT: this.value = evalNandInputs(this.inputs, parse); break;
-            case BOOLEAN_AND: this.value = evalAndInputs (this.inputs, parse); break;
-            case BOOLEAN_OR:  this.value = evalOrInputs  (this.inputs, parse); break;
-            case BOOLEAN_XOR: this.value = evalXorInputs (this.inputs, parse); break;
+            case BOOLEAN_NOT: this.value = await evalNandInputs(this.inputs, parse); break;
+            case BOOLEAN_AND: this.value = await evalAndInputs (this.inputs, parse); break;
+            case BOOLEAN_OR:  this.value = await evalOrInputs  (this.inputs, parse); break;
+            case BOOLEAN_XOR: this.value = await evalXorInputs (this.inputs, parse); break;
         }
 
         

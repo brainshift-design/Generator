@@ -38,7 +38,7 @@ extends GOperator
 
 
 
-    eval(parse)
+    async eval(parse)
     {
         if (this.isCached())
             return this;
@@ -47,7 +47,7 @@ extends GOperator
         if (this.input)
         {
             if (!this.input.value)
-                this.input.eval(parse);
+                await this.input.eval(parse);
 
             this.value = this.input.toValue();
         }

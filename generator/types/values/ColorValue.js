@@ -101,7 +101,7 @@ extends GValue
 
 
 
-    eval(parse)
+    async eval(parse)
     {
         return this;
     }

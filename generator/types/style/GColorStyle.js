@@ -33,13 +33,13 @@ extends GObjectBase
 
 
 
-    eval(parse)
+    async eval(parse)
     {
         if (this.isCached())
             return this;
 
             
-        this.value = this.value.eval(parse).toValue();
+        this.value = (await this.value.eval(parse)).toValue();
 
 
         if (   this.value.isValid()

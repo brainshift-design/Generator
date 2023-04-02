@@ -39,16 +39,16 @@ extends GColorType
 
 
 
-    eval(parse)
+    async eval(parse)
     {
         if (this.isCached())
             return this;
 
 
-        const order   = this.order   ? this.order  .eval(parse).toValue().toInteger() : null;
-        const margin1 = this.margin1 ? this.margin1.eval(parse).toValue()             : null;
-        const margin2 = this.margin2 ? this.margin2.eval(parse).toValue()             : null;
-        const margin3 = this.margin3 ? this.margin3.eval(parse).toValue()             : null;
+        const order   = this.order   ? (await this.order  .eval(parse)).toValue().toInteger() : null;
+        const margin1 = this.margin1 ? (await this.margin1.eval(parse)).toValue()             : null;
+        const margin2 = this.margin2 ? (await this.margin2.eval(parse)).toValue()             : null;
+        const margin3 = this.margin3 ? (await this.margin3.eval(parse)).toValue()             : null;
 
     
         if (order)
@@ -57,7 +57,7 @@ extends GColorType
 
         if (this.input)
         {
-            const input = this.input.eval(parse).toValue();
+            const input = (await this.input.eval(parse)).toValue();
 
 
             if (this.options.enabled)

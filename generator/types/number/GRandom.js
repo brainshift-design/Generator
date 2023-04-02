@@ -33,15 +33,15 @@ extends GNumberType
 
 
 
-    eval(parse)
+    async eval(parse)
     {
         if (this.isCached())
             return this;
 
             
-        const seed = this.seed.eval(parse).toValue();
-        const min  = this.min .eval(parse).toValue();
-        const max  = this.max .eval(parse).toValue();
+        const seed = (await this.seed.eval(parse)).toValue();
+        const min  = (await this.min .eval(parse)).toValue();
+        const max  = (await this.max .eval(parse)).toValue();
     
 
         if (!this.valid)

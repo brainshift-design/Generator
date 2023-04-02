@@ -54,7 +54,7 @@ extends GNode
 
 
 
-    eval(parse)
+    async eval(parse)
     {
         // calculate and add value update here
 

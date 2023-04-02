@@ -39,7 +39,7 @@ extends ShapeBaseValue
 
 
 
-    eval(parse)
+    async eval(parse)
     {
         return this;
     }

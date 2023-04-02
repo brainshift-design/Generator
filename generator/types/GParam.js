@@ -30,17 +30,17 @@ extends GOperator
 
 
 
-    eval(parse)
+    async eval(parse)
     {
         this.node = parse.parsedNodes.find(v => v.nodeId == this.nodeId);
         console.assert(this.node, 'can\'t find parameter node \'' + this.nodeId + '\'');
 
-        this.node.eval(parse);
+        await this.node.eval(parse);
 
         this.param = this.node.getParamFromId(this.paramId);
 
         if (isValid(this.param)) // could have been deleted from OpRepeat for example
-            return this.param.eval(parse).toValue();
+            return (await this.param.eval(parse)).toValue();
         else
             return NullValue;
     }

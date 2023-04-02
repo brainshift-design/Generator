@@ -40,26 +40,26 @@ extends GObjectBase
 
 
 
-    eval(parse)
+    async eval(parse)
     {
         if (this.isCached())
             return this;
 
             
         if (this.input)
-            this.input = this.input.eval(parse).copy();
+            this.input = (await this.input.eval(parse)).copy();
 
         const hasInput =     
                this.input 
             && RECTANGLE_TYPES.includes(this.input.type);   
 
             
-        if (this.x     ) this.x      = this.x     .eval(parse).copy(); else if (hasInput) this.x      = this.input.x     .copy();
-        if (this.y     ) this.y      = this.y     .eval(parse).copy(); else if (hasInput) this.y      = this.input.y     .copy();
-        if (this.width ) this.width  = this.width .eval(parse).copy(); else if (hasInput) this.width  = this.input.width .copy();
-        if (this.height) this.height = this.height.eval(parse).copy(); else if (hasInput) this.height = this.input.height.copy();
-        if (this.angle ) this.angle  = this.angle .eval(parse).copy(); else if (hasInput) this.angle  = this.input.angle .copy();
-        if (this.round ) this.round  = this.round .eval(parse).copy(); else if (hasInput) this.round  = this.input.round .copy();
+        if (this.x     ) this.x      = (await this.x     .eval(parse)).copy(); else if (hasInput) this.x      = this.input.x     .copy();
+        if (this.y     ) this.y      = (await this.y     .eval(parse)).copy(); else if (hasInput) this.y      = this.input.y     .copy();
+        if (this.width ) this.width  = (await this.width .eval(parse)).copy(); else if (hasInput) this.width  = this.input.width .copy();
+        if (this.height) this.height = (await this.height.eval(parse)).copy(); else if (hasInput) this.height = this.input.height.copy();
+        if (this.angle ) this.angle  = (await this.angle .eval(parse)).copy(); else if (hasInput) this.angle  = this.input.angle .copy();
+        if (this.round ) this.round  = (await this.round .eval(parse)).copy(); else if (hasInput) this.round  = this.input.round .copy();
 
         
         if (this.x     ) genPushUpdateValue(parse, this.nodeId, 'x',      this.x     .toValue());

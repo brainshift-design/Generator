@@ -18,12 +18,12 @@ extends GArithmetic
 
 
 
-    eval(parse)
+    async eval(parse)
     {
         if (this.isCached())
             return this;
 
-        this.value = evalAddInputs(this.inputs, parse);
+        this.value = await evalAddInputs(this.inputs, parse);
         
         genPushUpdateValue(parse, this.nodeId, 'value', this.value);
 
@@ -35,7 +35,7 @@ extends GArithmetic
 
 
 
-function evalAddInputs(inputs, parse)
+async function evalAddInputs(inputs, parse)
 {
     if (isEmpty(inputs))
         return NumberValue.NaN;
@@ -46,7 +46,7 @@ function evalAddInputs(inputs, parse)
 
     for (let i = 0; i < inputs.length; i++)
     {
-        const val = inputs[i].eval(parse).toValue();
+        const val = (await inputs[i].eval(parse)).toValue();
 
         console.assert(
             val.type == NUMBER_VALUE, 

@@ -28,14 +28,14 @@ extends GOperator
 
 
 
-    eval(parse)
+    async eval(parse)
     {
         if (this.isCached())
             return this;
 
 
-        this.value = this.input ? this.input.eval(parse).toValue() : NullValue;
-        this.copy  = this.value ? this.value.copy()                : NullValue;
+        this.value = this.input ? (await this.input.eval(parse)).toValue() : NullValue;
+        this.copy  = this.value ? this.value.copy()                        : NullValue;
 
 
         genPushUpdateValue(parse, this.nodeId, 'value', this.value);

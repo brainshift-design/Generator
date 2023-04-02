@@ -26,7 +26,7 @@ extends GNumberType
 
 
 
-    eval(parse)
+    async eval(parse)
     {
         if (this.isCached())
             return this;
@@ -34,7 +34,7 @@ extends GNumberType
 
         if (this.input)
         {
-            this.value = this.input.eval(parse).toValue();
+            this.value = (await this.input.eval(parse)).toValue();
 
             console.assert(
                 this.value.type == NUMBER_VALUE, 

@@ -18,12 +18,12 @@ extends GArithmetic
 
 
 
-    eval(parse)
+    async eval(parse)
     {
         if (this.isCached())
             return this;
 
-        this.value = evalXorInputs(this.inputs, parse);
+        this.value = await evalXorInputs(this.inputs, parse);
         
         genPushUpdateValue(parse, this.nodeId, 'value', this.value);
 
@@ -35,7 +35,7 @@ extends GArithmetic
 
 
 
-function evalXorInputs(inputs, parse)
+async function evalXorInputs(inputs, parse)
 {
     if (isEmpty(inputs))
         return NumberValue.NaN;
@@ -48,7 +48,7 @@ function evalXorInputs(inputs, parse)
 
     if (!isEmpty(inputs))
     {
-        const val0 = inputs[0].eval(parse).toValue();
+        const val0 = (await inputs[0].eval(parse)).toValue();
         if (!val0.isValid()) return NumberValue.NaN;
 
         flipped = val0.toNumber() != 0;
@@ -56,7 +56,7 @@ function evalXorInputs(inputs, parse)
 
         for (let i = 1; i < inputs.length; i++)
         {
-            const val = inputs[i].eval(parse).toValue();
+            const val = (await inputs[i].eval(parse)).toValue();
             if (!val.isValid()) return NumberValue.NaN;
 
             console.assert(

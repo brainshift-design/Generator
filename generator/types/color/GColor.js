@@ -44,21 +44,21 @@ extends GColorType
 
 
 
-    eval(parse)
+    async eval(parse)
     {
         if (this.valid)//this.isCached())
             return this;
 
             
-        const space = this.space ? this.space.eval(parse).toValue().toInteger() : null; 
-        let   c1    = this.c1    ? this.c1   .eval(parse).toValue()             : null;
-        let   c2    = this.c2    ? this.c2   .eval(parse).toValue()             : null;
-        let   c3    = this.c3    ? this.c3   .eval(parse).toValue()             : null;
+        const space = this.space ? (await this.space.eval(parse)).toValue().toInteger() : null; 
+        let   c1    = this.c1    ? (await this.c1   .eval(parse)).toValue()             : null;
+        let   c2    = this.c2    ? (await this.c2   .eval(parse)).toValue()             : null;
+        let   c3    = this.c3    ? (await this.c3   .eval(parse)).toValue()             : null;
 
 
         if (this.input)
         {
-            const input = this.input.eval(parse).toValue();
+            const input = (await this.input.eval(parse)).toValue();
 
             
             if (input.isValid())
@@ -123,7 +123,7 @@ extends GColorType
                 &&  this.value.isValid()
                 && !this.hasInputs)
             {
-                this.convert.eval(parse);
+                await this.convert.eval(parse);
 
                 this.convertColor(
                     this.value,

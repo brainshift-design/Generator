@@ -32,7 +32,7 @@ extends GNumberType
 
 
 
-    eval(parse)
+    async eval(parse)
     {
         if (this.isCached())
             return this;
@@ -41,13 +41,13 @@ extends GNumberType
         this.value = new NumberValue(0);
 
         
-        const type = this.type    .eval(parse).toValue();
-        const dec  = this.decimals.eval(parse).toValue();
+        const type = (await this.type    .eval(parse)).toValue();
+        const dec  = (await this.decimals.eval(parse)).toValue();
 
 
         if (this.input)
         {
-            this.value = this.input.eval(parse).toValue();
+            this.value = (await this.input.eval(parse)).toValue();
 
             console.assert(
                 this.value.type == NUMBER_VALUE, 

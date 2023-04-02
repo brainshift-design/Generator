@@ -28,7 +28,7 @@ extends GOperator
 
 
 
-    eval(parse)
+    async eval(parse)
     {
         if (this.isCached())
             return this;
@@ -38,7 +38,7 @@ extends GOperator
 
         for (let i = 0; i < this.inputs.length; i++)
         {
-            const input = this.inputs[i].eval(parse).toValue();
+            const input = (await this.inputs[i].eval(parse)).toValue();
 
             if (input.type == LIST_VALUE)
             {

@@ -24,27 +24,29 @@ extends GTextType
         if (this.input) 
             copy.input = this.input.copy();
 
-        copy.what  = this.what.copy();
-        copy.with  = this.with.copy();
+        copy.what  = this.what .copy();
+        copy.with  = this.with .copy();
+
+        copy.value = this.value.copy();
 
         return copy;
     }
 
 
 
-    eval(parse)
+    async eval(parse)
     {
         if (this.isCached())
             return this;
 
 
-        const _what = this.what.eval(parse).toValue();
-        const _with = this.with.eval(parse).toValue();
+        const _what = (await this.what.eval(parse)).toValue();
+        const _with = (await this.with.eval(parse)).toValue();
 
 
         if (this.input)
         {
-            this.value = this.input.eval(parse).toValue();
+            this.value = (await this.input.eval(parse)).toValue();
 
             console.assert(
                 this.value.type == TEXT_VALUE, 

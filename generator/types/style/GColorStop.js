@@ -32,7 +32,7 @@ extends GOperator
 
 
 
-    eval(parse)
+    async eval(parse)
     {
         if (!this.valid)
         {
@@ -41,7 +41,7 @@ extends GOperator
 
             if (this.input)
             {
-                this.result = this.input.eval(parse).copy();
+                this.result = (await this.input.eval(parse)).copy();
 
                 console.assert(
                     this.result.type == COLOR_STOP_VALUE, 
@@ -49,14 +49,14 @@ extends GOperator
 
                 if (this.result.isValid())
                 {
-                    if (this.fill    ) this.result.fill     = this.fill    .eval(parse).copy();
-                    if (this.position) this.result.position = this.position.eval(parse).copy();
+                    if (this.fill    ) this.result.fill     = (await this.fill    .eval(parse)).copy();
+                    if (this.position) this.result.position = (await this.position.eval(parse)).copy();
                 }
             }
             else
             {
-                this.result.fill     = this.fill    .eval(parse).copy();
-                this.result.position = this.position.eval(parse).copy();
+                this.result.fill     = (await this.fill    .eval(parse)).copy();
+                this.result.position = (await this.position.eval(parse)).copy();
             }
 
 

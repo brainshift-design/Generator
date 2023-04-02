@@ -7,10 +7,10 @@ extends GNumberType
 
 
 
-function evalConditionInputs(input0, input1, op, parse) 
+async function evalConditionInputs(input0, input1, op, parse) 
 {
-    const val0 = input0 ? input0.eval(parse).toValue() : NumberValue.NaN;
-    const val1 = input1 ? input1.eval(parse).toValue() : NumberValue.NaN;
+    const val0 = input0 ? (await input0.eval(parse)).toValue() : NumberValue.NaN;
+    const val1 = input1 ? (await input1.eval(parse)).toValue() : NumberValue.NaN;
 
     if (   input0 
         && input1)

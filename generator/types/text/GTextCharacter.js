@@ -30,13 +30,13 @@ extends GTextType
 
 
 
-    eval(parse)
+    async eval(parse)
     {
         if (this.isCached())
             return this;
 
 
-        const code = this.code.eval(parse).toValue();
+        const code = (await this.code.eval(parse)).toValue();
 
 
         this.value = new TextValue(String.fromCharCode(code.value));

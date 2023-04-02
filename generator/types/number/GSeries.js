@@ -31,14 +31,14 @@ extends GNumberType
 
 
 
-    eval(parse)
+    async eval(parse)
     {
         //logString('GSeries.eval()');
 
         if (!this.valid)
         {
-            this.start.eval(parse);
-            this.step .eval(parse);
+            await this.start.eval(parse);
+            await this.step .eval(parse);
         }
 
 
