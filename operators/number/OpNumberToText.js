@@ -18,6 +18,8 @@ extends OperatorBase
         this.addParam(this.paramValue  = new   TextParam('value',  '',              false, true));
         this.addParam(this.paramFormat = new SelectParam('format', 'format', false, true,  true, ['decimal', 'hex', 'float']));
         this.addParam(this.paramDigits = new NumberParam('digits', 'digits', true,  true,  true, 0, 0, 10));
+
+        this.paramValue.controls[0].textarea.style.textAlign = 'center';
     }
 
 

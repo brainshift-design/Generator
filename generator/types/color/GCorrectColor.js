@@ -79,7 +79,7 @@ extends GColorType
                     const rgb = input.toRgb();
                     
                     if (!rgbIsOk(rgb))
-                        genQueueMessageToUI(
+                        genQueueMessageToUi(
                         {
                             cmd:   'uiInitNodeProgress',
                             nodeId: this.nodeId

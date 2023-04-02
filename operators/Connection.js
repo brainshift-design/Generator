@@ -88,7 +88,13 @@ function parseConnectionJsonAndConnect(graph, _conn, pasteConnected)
         ||  isDigit(inputId[0]) && parseInt(inputId) >= inputNode.inputs.length
         || !isDigit(inputId[0]) && !inputNode.params.find(p => p.id == inputId && p.input))
     {
-        uiError('Cannot connect ' + connToString(_conn));
+        uiError(
+            'Cannot connect ' + connToString(_conn),
+            {
+                buttonText:   'Remove connection',
+                buttonAction: 'removeConnection,' + getStorageConnKey(_conn)
+            });
+
         return null;
     }
     else

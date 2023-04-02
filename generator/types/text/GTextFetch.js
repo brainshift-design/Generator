@@ -44,7 +44,14 @@ extends GTextType
         const request = (await this.request.eval(parse)).toValue();
 
 
-        this.value = TextValue.NaN;
+        // genQueueMessageToUi(
+        // {
+        //     cmd:   'uiInitNodeProgress',
+        //     nodeId: this.nodeId
+        // });
+
+
+        //this.value = TextValue.NaN;
 
         try 
         {
@@ -58,8 +65,8 @@ extends GTextType
         }
 
 
-        genPushUpdateValue(parse, this.nodeId, 'request', request   );
         genPushUpdateValue(parse, this.nodeId, 'value',   this.value);
+        genPushUpdateValue(parse, this.nodeId, 'request', request   );
 
         
         this.validate();

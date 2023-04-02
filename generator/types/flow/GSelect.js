@@ -20,10 +20,9 @@ extends GOperator
         
         copy.copyBase(this);
 
-        if (this.input) 
-            copy.input = this.input.copy();
-        
-        copy.index = this.index.copy();
+        if (this.input) copy.input = this.input.copy();
+        if (this.index) copy.index = this.index.copy();
+        if (this.value) copy.value = this.value.copy();
 
         return copy;
     }
@@ -45,10 +44,9 @@ extends GOperator
 
         if (this.input)
         {
-            if (!this.input.value)
-                await this.input.eval(parse);
+            const input = (await this.input.eval(parse)).toValue();
 
-            const input = this.input.toValue();
+
             length = input.items.length;
 
             index.value = Math.min(index.value, input.items.length-1);
@@ -57,16 +55,13 @@ extends GOperator
         }
         else
         {
-            this.value = null;
+            this.value = NullValue;
         }
 
 
-        if (this.value)
-            genPushUpdateValue(parse, this.nodeId, 'value', this.value);
-            
-
-        genPushUpdateValue(parse, this.nodeId, 'index',  index);
+        genPushUpdateValue(parse, this.nodeId, 'value',  this.value);
         genPushUpdateValue(parse, this.nodeId, 'length', new NumberValue(length));
+        genPushUpdateValue(parse, this.nodeId, 'index',  index);
 
 
         this.validate();

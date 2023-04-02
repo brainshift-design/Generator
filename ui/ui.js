@@ -11,13 +11,14 @@ var overNumberControlCtrl = null;
 
 
 
-function uiError(text, delay = 6000)
+function uiError(text, options = {}, delay = 6000)
 {
     uiNotify(
         text, 
         {
             delay: delay, 
-            error: true
+            error: true,
+            ...options
         });
 }
 

@@ -1,9 +1,6 @@
 class   OpSelect
 extends OperatorBase
 {
-    paramNumber;
-    paramColor;
-
     paramIndex;
 
 
@@ -12,18 +9,13 @@ extends OperatorBase
     {
         super(SELECT, 'select');
 
-        this.inert = true;
+        //this.inert = true;
 
 
         this.addInput(new Input(LIST_TYPES, getNodeInputValuesForUndo));
 
         this.addParam(this.paramIndex = new NumberParam('index', 'index', true, true, false, 0, 0));
-
         this.paramIndex.controls[0].allowEditDecimals = false;
-
-
-        this.paramNumber = new NumberParam('value', '', false, false, false);
-        this.paramColor  = new  ColorParam('value', '', false, false, false);
     }
 
 
@@ -87,6 +79,7 @@ extends OperatorBase
             && val) 
             paramValue = this.addParamByType(val.type, 'value', false, false, true);
 
+        
         this.paramIndex.controls[0].setMax(
                length
             && length.value > 0

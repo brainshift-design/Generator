@@ -178,7 +178,7 @@ function findCorrectionInOrder(nodeId,
         }
 
         //if (!stopGenerate)
-            genQueueMessageToUI(
+            genQueueMessageToUi(
             {
                 cmd:     'uiUpdateNodeProgress',
                 nodeId:   nodeId,

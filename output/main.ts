@@ -210,6 +210,18 @@ function getConnectionKey(outputNodeId, outputId, outputOrder, inputNodeId, inpu
 
 
 
+function getStorageConnKey(conn)
+{
+    return getConnectionKey(
+        conn.outputNodeId,
+        conn.outputId,
+        conn.outputOrder,
+        conn.inputNodeId,
+        conn.inputId);
+}
+
+
+
 function getConnKey(conn)
 {
     return getConnectionKey(
@@ -2836,11 +2848,18 @@ function figNotify(text, prefix = 'Generator ', delay = 400, error = false, butt
     {
         options['button'] = {text: buttonText};
 
-        switch (buttonAction)
+        if (buttonAction.substring(0, 'removeConnection'.length) == 'removeConnection')
         {
-            case 'hideClearUndoWarning':
-                options['button']['action'] = () => figPostMessageToUi({ cmd: 'uiHideClearUndoWarning' });
-                break;
+            options['button']['action'] = () => figDeleteSavedConnection(buttonAction.split(',')[1]);
+        }
+        else
+        {
+            switch (buttonAction)
+            {
+                case 'hideClearUndoWarning':
+                    options['button']['action'] = () => figPostMessageToUi({ cmd: 'uiHideClearUndoWarning' });
+                    break;
+            }
         }
     }
 

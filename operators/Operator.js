@@ -303,14 +303,24 @@ class Operator
 
     addParam(param, volatile = false)
     {
+        return this.insertParam(
+            this.params.length, 
+            param, 
+            volatile);
+    }
+ 
+    
+
+    insertParam(index, param, volatile = false)
+    {
         param._node    = this;
         param.volatile = volatile;
 
-        this.params.push(param);
-        this.inner.appendChild(param.div);
+        this.params.splice(index, 0, param);
+        this.inner.insertBefore(param.div, this.inner.children[index]);
 
-        if (param. input) this. inputs.push(param. input);
-        if (param.output) this.outputs.push(param.output);
+        if (param. input) this. inputs.splice(index, 0, param. input);
+        if (param.output) this.outputs.splice(index, 0, param.output);
 
         return param;
     }
@@ -319,12 +329,26 @@ class Operator
 
     addParamByType(type, id, showName, hasInput, hasOutput, volatile = false)
     {
-             if (NUMBER_TYPES.includes(type)) return this.addParam(new NumberParam(id, id, showName, hasInput, hasOutput), volatile);
-        else if (  TEXT_TYPES.includes(type)) return this.addParam(new   TextParam(id, id,           hasInput, hasOutput), volatile);
-        else if ( COLOR_TYPES.includes(type)) return this.addParam(new  ColorParam(id, id, showName, hasInput, hasOutput), volatile);
-        else if (  FILL_TYPES.includes(type)) return this.addParam(new   FillParam(id, id, showName, hasInput, hasOutput), volatile);
-        else if (STROKE_TYPES.includes(type)) return this.addParam(new StrokeParam(id, id, showName, hasInput, hasOutput), volatile);
-        //else if ( COLOR_STYLE_TYPES.includes(type)) return this.addParam(new  StyleParam(id, id, showName, hasInput, hasOutput), volatile);
+        return this.insertParamByType(
+            this.params.length,
+            type,
+            id,
+            showName,
+            hasInput,
+            hasOutput,
+            volatile);
+    }
+
+
+
+    insertParamByType(index, type, id, showName, hasInput, hasOutput, volatile = false)
+    {
+             if (NUMBER_TYPES.includes(type)) return this.insertParam(index, new NumberParam(id, id, showName, hasInput, hasOutput), volatile);
+        else if (  TEXT_TYPES.includes(type)) return this.insertParam(index, new   TextParam(id, id,           hasInput, hasOutput), volatile);
+        else if ( COLOR_TYPES.includes(type)) return this.insertParam(index, new  ColorParam(id, id, showName, hasInput, hasOutput), volatile);
+        else if (  FILL_TYPES.includes(type)) return this.insertParam(index, new   FillParam(id, id, showName, hasInput, hasOutput), volatile);
+        else if (STROKE_TYPES.includes(type)) return this.insertParam(index, new StrokeParam(id, id, showName, hasInput, hasOutput), volatile);
+        else if (  LIST_TYPES.includes(type)) return this.insertParam(index, new   ListParam(id, id,           hasInput, hasOutput), volatile);
 
         else console.assert(false, 'cannot create parameter of type \'' + type + '\'');
 
@@ -354,7 +378,9 @@ class Operator
         }
 
 
-        this.inner.removeChild(param.div);
+        if (this.inner.contains(param.div))
+            this.inner.removeChild(param.div);
+    
         removeFromArray(this.params, param);
 
         param._node = null;

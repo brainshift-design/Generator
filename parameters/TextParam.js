@@ -154,7 +154,7 @@ extends Parameter
 
         else request.push( 
             TEXT_VALUE, 
-            this.controls[0].value.toString());
+            encodeURIComponent(this.controls[0].value.toString()));
 
 
         return request;

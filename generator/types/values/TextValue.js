@@ -85,7 +85,7 @@ extends GValue
 function parseTextValue(str)
 {
     //console.log('str =', str);
-    const text = new TextValue(str);
+    const text = new TextValue(decodeURIComponent(str));
 
     return [text, 1];
 }

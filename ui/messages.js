@@ -121,6 +121,7 @@ function uiEndFigMessage(msgCmd)
 
 generator.onmessage = function(e)
 {
+    //console.log('e =', e);
     const msg = JSON.parse(e.data);
 
     if (settings.logMessages)

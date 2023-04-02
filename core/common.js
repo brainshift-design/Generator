@@ -187,6 +187,18 @@ function getConnectionKey(outputNodeId, outputId, outputOrder, inputNodeId, inpu
 
 
 
+function getStorageConnKey(conn)
+{
+    return getConnectionKey(
+        conn.outputNodeId,
+        conn.outputId,
+        conn.outputOrder,
+        conn.inputNodeId,
+        conn.inputId);
+}
+
+
+
 function getConnKey(conn)
 {
     return getConnectionKey(

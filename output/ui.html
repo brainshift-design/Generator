@@ -4251,6 +4251,18 @@ function getConnectionKey(outputNodeId, outputId, outputOrder, inputNodeId, inpu
 
 
 
+function getStorageConnKey(conn)
+{
+    return getConnectionKey(
+        conn.outputNodeId,
+        conn.outputId,
+        conn.outputOrder,
+        conn.inputNodeId,
+        conn.inputId);
+}
+
+
+
 function getConnKey(conn)
 {
     return getConnectionKey(
@@ -8461,7 +8473,7 @@ extends GValue
 function parseTextValue(str)
 {
     //console.log('str =', str);
-    const text = new TextValue(str);
+    const text = new TextValue(decodeURIComponent(str));
 
     return [text, 1];
 }
@@ -10166,10 +10178,9 @@ extends GOperator
         
         copy.copyBase(this);
 
-        if (this.input) 
-            copy.input = this.input.copy();
-        
-        copy.index = this.index.copy();
+        if (this.input) copy.input = this.input.copy();
+        if (this.index) copy.index = this.index.copy();
+        if (this.value) copy.value = this.value.copy();
 
         return copy;
     }
@@ -10191,10 +10202,9 @@ extends GOperator
 
         if (this.input)
         {
-            if (!this.input.value)
-                await this.input.eval(parse);
+            const input = (await this.input.eval(parse)).toValue();
 
-            const input = this.input.toValue();
+
             length = input.items.length;
 
             index.value = Math.min(index.value, input.items.length-1);
@@ -10203,16 +10213,13 @@ extends GOperator
         }
         else
         {
-            this.value = null;
+            this.value = NullValue;
         }
 
 
-        if (this.value)
-            genPushUpdateValue(parse, this.nodeId, 'value', this.value);
-            
-
-        genPushUpdateValue(parse, this.nodeId, 'index',  index);
+        genPushUpdateValue(parse, this.nodeId, 'value',  this.value);
         genPushUpdateValue(parse, this.nodeId, 'length', new NumberValue(length));
+        genPushUpdateValue(parse, this.nodeId, 'index',  index);
 
 
         this.validate();
@@ -12862,7 +12869,14 @@ extends GTextType
         const request = (await this.request.eval(parse)).toValue();
 
 
-        this.value = TextValue.NaN;
+        // genQueueMessageToUi(
+        // {
+        //     cmd:   'uiInitNodeProgress',
+        //     nodeId: this.nodeId
+        // });
+
+
+        //this.value = TextValue.NaN;
 
         try 
         {
@@ -12876,8 +12890,8 @@ extends GTextType
         }
 
 
-        genPushUpdateValue(parse, this.nodeId, 'request', request   );
         genPushUpdateValue(parse, this.nodeId, 'value',   this.value);
+        genPushUpdateValue(parse, this.nodeId, 'request', request   );
 
         
         this.validate();
@@ -13076,7 +13090,7 @@ function findCorrectionInOrder(nodeId,
         }
 
         //if (!stopGenerate)
-            genQueueMessageToUI(
+            genQueueMessageToUi(
             {
                 cmd:     'uiUpdateNodeProgress',
                 nodeId:   nodeId,
@@ -13745,7 +13759,7 @@ extends GColorType
                     {
                         if (!rgbIsOk(rgb))
                         {
-                            genQueueMessageToUI(
+                            genQueueMessageToUi(
                             {
                                 cmd:   'uiInitNodeProgress',
                                 nodeId: this.nodeId
@@ -13889,7 +13903,7 @@ extends GColorType
                     const rgb = input.toRgb();
                     
                     if (!rgbIsOk(rgb))
-                        genQueueMessageToUI(
+                        genQueueMessageToUi(
                         {
                             cmd:   'uiInitNodeProgress',
                             nodeId: this.nodeId
@@ -16184,12 +16198,6 @@ onmessage = function(e)
     });
 };
 
-
-
-// function* processMessage(msg)
-// {
-// }
-
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 
 
@@ -16199,6 +16207,9 @@ onmessage = function(e)
 
 function genPostMessageToUi(msg)
 {
+    if (msg == undefined)
+        console.trace();
+
     postMessage(JSON.stringify(msg));
 }
 
@@ -16207,12 +16218,12 @@ function genPostMessageToUi(msg)
 function genQueueMessageToUi(msg)
 {
     uiMessages.push(msg);
-    genPostNextMessageToUI();
+    genPostNextMessageToUi();
 }
 
 
 
-function genPostNextMessageToUI(msg)
+function genPostNextMessageToUi(msg)
 {
     if (!isEmpty(uiMessages))
     //    && !genFigMessagePosted)
@@ -16250,7 +16261,7 @@ function genPostNextMessageToUI(msg)
 function genEndUiMessage(msgCmd)
 {
     //console.log('next UI message');
-    genPostNextMessageToUI();
+    genPostNextMessageToUi();
 }
 
 
@@ -16264,7 +16275,7 @@ function genEndFigMessage()
         || !isEmpty(lastUpdateStyles ))
         genUpdateValuesAndObjects(lastRequestId, -1, lastUpdateNodeId, lastUpdateParamId, [], [], []);
 
-    genPostNextMessageToUI();
+    genPostNextMessageToUi();
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
@@ -22413,6 +22424,18 @@ function getConnectionKey(outputNodeId, outputId, outputOrder, inputNodeId, inpu
         + outputOrder  + ' '
         + inputNodeId  + ' '
         + inputId);
+}
+
+
+
+function getStorageConnKey(conn)
+{
+    return getConnectionKey(
+        conn.outputNodeId,
+        conn.outputId,
+        conn.outputOrder,
+        conn.inputNodeId,
+        conn.inputId);
 }
 
 
@@ -28955,7 +28978,7 @@ extends GValue
 function parseTextValue(str)
 {
     //console.log('str =', str);
-    const text = new TextValue(str);
+    const text = new TextValue(decodeURIComponent(str));
 
     return [text, 1];
 }
@@ -30660,10 +30683,9 @@ extends GOperator
         
         copy.copyBase(this);
 
-        if (this.input) 
-            copy.input = this.input.copy();
-        
-        copy.index = this.index.copy();
+        if (this.input) copy.input = this.input.copy();
+        if (this.index) copy.index = this.index.copy();
+        if (this.value) copy.value = this.value.copy();
 
         return copy;
     }
@@ -30685,10 +30707,9 @@ extends GOperator
 
         if (this.input)
         {
-            if (!this.input.value)
-                await this.input.eval(parse);
+            const input = (await this.input.eval(parse)).toValue();
 
-            const input = this.input.toValue();
+
             length = input.items.length;
 
             index.value = Math.min(index.value, input.items.length-1);
@@ -30697,16 +30718,13 @@ extends GOperator
         }
         else
         {
-            this.value = null;
+            this.value = NullValue;
         }
 
 
-        if (this.value)
-            genPushUpdateValue(parse, this.nodeId, 'value', this.value);
-            
-
-        genPushUpdateValue(parse, this.nodeId, 'index',  index);
+        genPushUpdateValue(parse, this.nodeId, 'value',  this.value);
         genPushUpdateValue(parse, this.nodeId, 'length', new NumberValue(length));
+        genPushUpdateValue(parse, this.nodeId, 'index',  index);
 
 
         this.validate();
@@ -33356,7 +33374,14 @@ extends GTextType
         const request = (await this.request.eval(parse)).toValue();
 
 
-        this.value = TextValue.NaN;
+        // genQueueMessageToUi(
+        // {
+        //     cmd:   'uiInitNodeProgress',
+        //     nodeId: this.nodeId
+        // });
+
+
+        //this.value = TextValue.NaN;
 
         try 
         {
@@ -33370,8 +33395,8 @@ extends GTextType
         }
 
 
-        genPushUpdateValue(parse, this.nodeId, 'request', request   );
         genPushUpdateValue(parse, this.nodeId, 'value',   this.value);
+        genPushUpdateValue(parse, this.nodeId, 'request', request   );
 
         
         this.validate();
@@ -33570,7 +33595,7 @@ function findCorrectionInOrder(nodeId,
         }
 
         //if (!stopGenerate)
-            genQueueMessageToUI(
+            genQueueMessageToUi(
             {
                 cmd:     'uiUpdateNodeProgress',
                 nodeId:   nodeId,
@@ -34239,7 +34264,7 @@ extends GColorType
                     {
                         if (!rgbIsOk(rgb))
                         {
-                            genQueueMessageToUI(
+                            genQueueMessageToUi(
                             {
                                 cmd:   'uiInitNodeProgress',
                                 nodeId: this.nodeId
@@ -34383,7 +34408,7 @@ extends GColorType
                     const rgb = input.toRgb();
                     
                     if (!rgbIsOk(rgb))
-                        genQueueMessageToUI(
+                        genQueueMessageToUi(
                         {
                             cmd:   'uiInitNodeProgress',
                             nodeId: this.nodeId
@@ -45532,7 +45557,7 @@ extends Parameter
 
         else request.push( 
             TEXT_VALUE, 
-            this.controls[0].value.toString());
+            encodeURIComponent(this.controls[0].value.toString()));
 
 
         return request;
@@ -47949,7 +47974,13 @@ function parseConnectionJsonAndConnect(graph, _conn, pasteConnected)
         ||  isDigit(inputId[0]) && parseInt(inputId) >= inputNode.inputs.length
         || !isDigit(inputId[0]) && !inputNode.params.find(p => p.id == inputId && p.input))
     {
-        uiError('Cannot connect ' + connToString(_conn));
+        uiError(
+            'Cannot connect ' + connToString(_conn),
+            {
+                buttonText:   'Remove connection',
+                buttonAction: 'removeConnection,' + getStorageConnKey(_conn)
+            });
+
         return null;
     }
     else
@@ -48802,14 +48833,24 @@ class Operator
 
     addParam(param, volatile = false)
     {
+        return this.insertParam(
+            this.params.length, 
+            param, 
+            volatile);
+    }
+ 
+    
+
+    insertParam(index, param, volatile = false)
+    {
         param._node    = this;
         param.volatile = volatile;
 
-        this.params.push(param);
-        this.inner.appendChild(param.div);
+        this.params.splice(index, 0, param);
+        this.inner.insertBefore(param.div, this.inner.children[index]);
 
-        if (param. input) this. inputs.push(param. input);
-        if (param.output) this.outputs.push(param.output);
+        if (param. input) this. inputs.splice(index, 0, param. input);
+        if (param.output) this.outputs.splice(index, 0, param.output);
 
         return param;
     }
@@ -48818,12 +48859,26 @@ class Operator
 
     addParamByType(type, id, showName, hasInput, hasOutput, volatile = false)
     {
-             if (NUMBER_TYPES.includes(type)) return this.addParam(new NumberParam(id, id, showName, hasInput, hasOutput), volatile);
-        else if (  TEXT_TYPES.includes(type)) return this.addParam(new   TextParam(id, id,           hasInput, hasOutput), volatile);
-        else if ( COLOR_TYPES.includes(type)) return this.addParam(new  ColorParam(id, id, showName, hasInput, hasOutput), volatile);
-        else if (  FILL_TYPES.includes(type)) return this.addParam(new   FillParam(id, id, showName, hasInput, hasOutput), volatile);
-        else if (STROKE_TYPES.includes(type)) return this.addParam(new StrokeParam(id, id, showName, hasInput, hasOutput), volatile);
-        //else if ( COLOR_STYLE_TYPES.includes(type)) return this.addParam(new  StyleParam(id, id, showName, hasInput, hasOutput), volatile);
+        return this.insertParamByType(
+            this.params.length,
+            type,
+            id,
+            showName,
+            hasInput,
+            hasOutput,
+            volatile);
+    }
+
+
+
+    insertParamByType(index, type, id, showName, hasInput, hasOutput, volatile = false)
+    {
+             if (NUMBER_TYPES.includes(type)) return this.insertParam(index, new NumberParam(id, id, showName, hasInput, hasOutput), volatile);
+        else if (  TEXT_TYPES.includes(type)) return this.insertParam(index, new   TextParam(id, id,           hasInput, hasOutput), volatile);
+        else if ( COLOR_TYPES.includes(type)) return this.insertParam(index, new  ColorParam(id, id, showName, hasInput, hasOutput), volatile);
+        else if (  FILL_TYPES.includes(type)) return this.insertParam(index, new   FillParam(id, id, showName, hasInput, hasOutput), volatile);
+        else if (STROKE_TYPES.includes(type)) return this.insertParam(index, new StrokeParam(id, id, showName, hasInput, hasOutput), volatile);
+        else if (  LIST_TYPES.includes(type)) return this.insertParam(index, new   ListParam(id, id,           hasInput, hasOutput), volatile);
 
         else console.assert(false, 'cannot create parameter of type \'' + type + '\'');
 
@@ -48853,7 +48908,9 @@ class Operator
         }
 
 
-        this.inner.removeChild(param.div);
+        if (this.inner.contains(param.div))
+            this.inner.removeChild(param.div);
+    
         removeFromArray(this.params, param);
 
         param._node = null;
@@ -51477,9 +51534,6 @@ extends OperatorBase
 class   OpSelect
 extends OperatorBase
 {
-    paramNumber;
-    paramColor;
-
     paramIndex;
 
 
@@ -51488,18 +51542,13 @@ extends OperatorBase
     {
         super(SELECT, 'select');
 
-        this.inert = true;
+        //this.inert = true;
 
 
         this.addInput(new Input(LIST_TYPES, getNodeInputValuesForUndo));
 
         this.addParam(this.paramIndex = new NumberParam('index', 'index', true, true, false, 0, 0));
-
         this.paramIndex.controls[0].allowEditDecimals = false;
-
-
-        this.paramNumber = new NumberParam('value', '', false, false, false);
-        this.paramColor  = new  ColorParam('value', '', false, false, false);
     }
 
 
@@ -51563,6 +51612,7 @@ extends OperatorBase
             && val) 
             paramValue = this.addParamByType(val.type, 'value', false, false, true);
 
+        
         this.paramIndex.controls[0].setMax(
                length
             && length.value > 0
@@ -52667,6 +52717,8 @@ extends OperatorBase
         this.addParam(this.paramValue  = new   TextParam('value',  '',              false, true));
         this.addParam(this.paramFormat = new SelectParam('format', 'format', false, true,  true, ['decimal', 'hex', 'float']));
         this.addParam(this.paramDigits = new NumberParam('digits', 'digits', true,  true,  true, 0, 0, 10));
+
+        this.paramValue.controls[0].textarea.style.textAlign = 'center';
     }
 
 
@@ -63875,6 +63927,7 @@ function uiEndFigMessage(msgCmd)
 
 generator.onmessage = function(e)
 {
+    //console.log('e =', e);
     const msg = JSON.parse(e.data);
 
     if (settings.logMessages)
@@ -66849,13 +66902,14 @@ var overNumberControlCtrl = null;
 
 
 
-function uiError(text, delay = 6000)
+function uiError(text, options = {}, delay = 6000)
 {
     uiNotify(
         text, 
         {
             delay: delay, 
-            error: true
+            error: true,
+            ...options
         });
 }
 

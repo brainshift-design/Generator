@@ -34,12 +34,6 @@ onmessage = function(e)
     });
 };
 
-
-
-// function* processMessage(msg)
-// {
-// }
-
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 
 
@@ -49,6 +43,9 @@ onmessage = function(e)
 
 function genPostMessageToUi(msg)
 {
+    if (msg == undefined)
+        console.trace();
+
     postMessage(JSON.stringify(msg));
 }
 
@@ -57,12 +54,12 @@ function genPostMessageToUi(msg)
 function genQueueMessageToUi(msg)
 {
     uiMessages.push(msg);
-    genPostNextMessageToUI();
+    genPostNextMessageToUi();
 }
 
 
 
-function genPostNextMessageToUI(msg)
+function genPostNextMessageToUi(msg)
 {
     if (!isEmpty(uiMessages))
     //    && !genFigMessagePosted)
@@ -100,7 +97,7 @@ function genPostNextMessageToUI(msg)
 function genEndUiMessage(msgCmd)
 {
     //console.log('next UI message');
-    genPostNextMessageToUI();
+    genPostNextMessageToUi();
 }
 
 
@@ -114,7 +111,7 @@ function genEndFigMessage()
         || !isEmpty(lastUpdateStyles ))
         genUpdateValuesAndObjects(lastRequestId, -1, lastUpdateNodeId, lastUpdateParamId, [], [], []);
 
-    genPostNextMessageToUI();
+    genPostNextMessageToUi();
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
