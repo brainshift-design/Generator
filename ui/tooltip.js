@@ -13,9 +13,6 @@ function createTooltipSrc(source, ref, getTooltip, bottomArrow = false)
 {
     source.addEventListener('pointerenter', () =>
     {
-        //tooltip_pointerLeave(currentTooltip);
-
-
         if (tooltipOutTimer) 
         {
             clearTimeout(tooltipOutTimer);
@@ -40,8 +37,6 @@ function createTooltipSrc(source, ref, getTooltip, bottomArrow = false)
             }, 
             currentTooltip ? 0 : 1000);
         }
-        else
-            tooltipTimer = null;
     });
       
     
