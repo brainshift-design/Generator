@@ -44,14 +44,12 @@ extends GTextType
         const request = (await this.request.eval(parse)).toValue();
 
 
-        // genQueueMessageToUi(
-        // {
-        //     cmd:   'uiInitNodeProgress',
-        //     nodeId: this.nodeId
-        // });
+        genQueueMessageToUi(
+        {
+            cmd:   'uiInitNodeProgress',
+            nodeId: this.nodeId
+        });
 
-
-        //this.value = TextValue.NaN;
 
         try 
         {
@@ -61,7 +59,10 @@ extends GTextType
         }
         catch (e)
         {
-            this.value = new TextValue(e.message);
+            this.value = 
+                this.request.value.trim() == NULL
+                ? TextValue.NaN
+                : this.value = new TextValue(e.message);
         }
 
 

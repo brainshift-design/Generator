@@ -7,7 +7,7 @@ extends OperatorWithValue
 
     constructor()
     {
-        super(TEXT_FETCH, 'fetch');
+        super(TEXT_FETCH, 'fetch', defNodeWidth, true);
 
         this.canDisable       = true;
         this.alwaysLoadParams = true;
@@ -48,6 +48,15 @@ extends OperatorWithValue
         pushUnique(gen.passedNodes, this.node);
 
         return request;
+    }
+
+
+
+    updateValues(requestId, actionId, updateParamId, paramIds, values)
+    {
+        super.updateValues(requestId, actionId, updateParamId, paramIds, values);
+        
+        this.endNodeProgress();
     }
 
 

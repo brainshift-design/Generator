@@ -97,17 +97,17 @@ extends OpColorBase
 
 
 
-    updateHeader()
-    {
-        super.updateHeader();
+    // updateHeader()
+    // {
+    //     super.updateHeader();
 
-        const colors = this.getHeaderColors();
+    //     const colors = this.getHeaderColors();
 
-        this.progressBar.style.background = 
-            !rgbIsNaN(colors.back) 
-            ? rgb2style_a(colors.text, 0.5) 
-            : 'var(--figma-color-bg-brand)';
-    }
+    //     // this.progressBar.style.background = 
+    //     //     !rgbIsNaN(colors.back) 
+    //     //     ? rgb2style_a(colors.text, 0.5) 
+    //     //     : 'var(--figma-color-bg-brand)';
+    // }
 
 
 

@@ -89,6 +89,17 @@ Operator.prototype.updateHeader = function()
 
     this.updateHeaderLabel();
     this.updateReorderArrows();
+
+
+    if (this.progressBar)
+    {
+        const colors = this.getHeaderColors();
+
+        this.progressBar.style.background = 
+            !rgbIsNaN(colors.back) 
+            ? rgb2style_a(colors.text, 0.5) 
+            : 'var(--figma-color-bg-brand)';
+    }
 }
 
 
