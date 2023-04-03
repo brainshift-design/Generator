@@ -475,15 +475,15 @@ function initGeneratorMenus()
     menuSelectParam = new Menu('Select options', false, true);
 
     
-    btnMain     = new MenuButton('', menuMain,   {useMenuName: true, highlight: () => currentMenus.includes(menuMain  ), callback: () => updatePanMode(false)});
-    btnFlow     = new MenuButton('', menuFlow,   {useMenuName: true, highlight: () => currentMenus.includes(menuFlow  ), callback: () => updatePanMode(false)});
-    btnNumber   = new MenuButton('', menuNumber, {useMenuName: true, highlight: () => currentMenus.includes(menuNumber), callback: () => updatePanMode(false)});
+    btnMain   = new MenuButton('', menuMain,   {useMenuName: true, highlight: () => currentMenus.includes(menuMain  ), callback: () => updatePanMode(false)});
+    btnFlow   = new MenuButton('', menuFlow,   {useMenuName: true, highlight: () => currentMenus.includes(menuFlow  ), callback: () => updatePanMode(false)});
+    btnNumber = new MenuButton('', menuNumber, {useMenuName: true, highlight: () => currentMenus.includes(menuNumber), callback: () => updatePanMode(false)});
     btnText   = new MenuButton('', menuString, {useMenuName: true, highlight: () => currentMenus.includes(menuString), callback: () => updatePanMode(false)});
-    btnColor    = new MenuButton('', menuColor,  {useMenuName: true, highlight: () => currentMenus.includes(menuColor ), callback: () => updatePanMode(false)});
-    btnStyle    = new MenuButton('', menuStyle,  {useMenuName: true, highlight: () => currentMenus.includes(menuStyle ), callback: () => updatePanMode(false)});
-    btnShape    = new MenuButton('', menuShape,  {useMenuName: true, highlight: () => currentMenus.includes(menuShape ), callback: () => updatePanMode(false)});
+    btnColor  = new MenuButton('', menuColor,  {useMenuName: true, highlight: () => currentMenus.includes(menuColor ), callback: () => updatePanMode(false)});
+    btnStyle  = new MenuButton('', menuStyle,  {useMenuName: true, highlight: () => currentMenus.includes(menuStyle ), callback: () => updatePanMode(false)});
+    btnShape  = new MenuButton('', menuShape,  {useMenuName: true, highlight: () => currentMenus.includes(menuShape ), callback: () => updatePanMode(false)});
 
-    btnGroup   = new MenuButton('Node groups', null, {callback: () => 
+    btnGroup  = new MenuButton('Node groups', null, {callback: () => 
     {
         const create = new CreateNodeAction(graphView.graph, NODE_GROUP, btnGroup.div);
         actionManager.do(create);
@@ -590,9 +590,9 @@ function initTextMenu(textbox)
     menuText.clearItems();
 
     menuText.addItems([
-        new MenuItem('Cut',   {callback: () => { hideAllMenus(); document.execCommand('copy'); clearSelectedText(textbox); }}),
+        new MenuItem('Cut',   {enabled: !textbox.control.readOnly, callback: () => { hideAllMenus(); document.execCommand('copy'); clearSelectedText(textbox); }}),
         new MenuItem('Copy',  {callback: () => { hideAllMenus(); document.execCommand('copy'); }}),
-        new MenuItem('Paste', {callback: () => { hideAllMenus(); document.execCommand('paste'); }})]);
+        new MenuItem('Paste', {enabled: !textbox.control.readOnly, callback: () => { hideAllMenus(); document.execCommand('paste'); }})]);
 }
 
 

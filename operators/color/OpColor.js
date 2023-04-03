@@ -465,6 +465,12 @@ extends OpColorBase
         enableElementText(this.paramColor.controls[0].div, !this.isConnected());
 
 
+        const colors = this.getHeaderColors();
+
+        this.paramSpace.controls[0].textbox.style.color      = rgba2style(colors.text);
+        this.paramSpace.controls[0].textbox.style.background = 'transparent';
+
+
         this.updateParamControls();
     }
 

@@ -66,6 +66,7 @@
     white-space:          nowrap;
     letter-spacing:       -0.35px;
     border-radius:        0.5px;
+    z-index:              10;
 }
 
 
