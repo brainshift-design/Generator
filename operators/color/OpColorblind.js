@@ -60,8 +60,6 @@ extends OpColorBase
             ? ttColorblind 
             : null);
 
-        createTooltipPointerTrap(ttColorblind);
-
 
         this.menuL = new Menu('L', false, true);
         this.menuL.addItems([

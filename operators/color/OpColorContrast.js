@@ -50,12 +50,6 @@ extends OpColorBase
         this.paramContrast.controls[0].showExtRanges = false;
 
 
-        createTooltip(ttWcag2);
-        createTooltip(ttWcag3);
-        
-        createTooltipPointerTrap(ttWcag2);
-        createTooltipPointerTrap(ttWcag3);
-
         this.paramStandard.getTooltip = () => null;
 
         this.paramContrast.getTooltip = () => 

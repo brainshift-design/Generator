@@ -22,8 +22,54 @@ function updateZoomTooltip()
 }
 
 
+// function initPermanentTooltip(tooltip)
+// {
+//     tooltip.addEventListener('pointerenter', e =>
+//     {
+//         e.preventDefault();
+//         e.stopImmediatePropagation();
+
+//         clearTimeout(tooltipOutTimer);
+//         tooltipOutTimer = null;
+//     });
+    
+    
+    
+//     tooltip.addEventListener('pointerleave', e =>
+//     {
+//         e.preventDefault();
+//         e.stopImmediatePropagation();
+
+//         if (!tooltipOutTimer)
+//             hideTooltip(tooltip);
+//     });
+// }
+
+
 
 function initTextTooltip(str)
 {
     ttTextString.innerHTML = str;
 }
+
+
+
+createTooltip(ttText);
+createTooltip(ttWcag2);
+createTooltip(ttWcag3);
+createTooltip(ttInterpolationSpace);
+createTooltip(ttColorblind);
+
+createTooltipPointerTrap(ttText);
+createTooltipPointerTrap(ttWcag2);
+createTooltipPointerTrap(ttWcag3);
+createTooltipPointerTrap(ttInterpolationSpace);
+createTooltipPointerTrap(ttColorblind);
+
+
+
+// initPermanentTooltip(ttText);
+// initPermanentTooltip(ttColorblind);
+// initPermanentTooltip(ttInterpolationSpace);
+// initPermanentTooltip(ttWcag2);
+// initPermanentTooltip(ttWcag3);

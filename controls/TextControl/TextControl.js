@@ -40,8 +40,9 @@ extends Control
 
 
         createTooltipSrc(this.div, this.div, () => 
-               settings.showTooltipLongText
-            && scrollbarVisible(this.textbox)
+                settings.showTooltipLongText
+            &&  scrollbarVisible(this.textbox)
+            && !hasFocus(this.textbox)
             ? ttText
             : null);
     }    

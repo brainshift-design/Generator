@@ -38651,8 +38651,9 @@ extends Control
 
 
         createTooltipSrc(this.div, this.div, () => 
-               settings.showTooltipLongText
-            && scrollbarVisible(this.textbox)
+                settings.showTooltipLongText
+            &&  scrollbarVisible(this.textbox)
+            && !hasFocus(this.textbox)
             ? ttText
             : null);
     }    
@@ -38910,6 +38911,14 @@ TextControl.prototype.initTextarea = function()
 
 
     
+    this.textbox.addEventListener('focus', () =>
+    {
+        const tooltip = this.param && this.param.getTooltip();
+        if (tooltip) hideTooltip(tooltip);
+    });
+    
+
+
     this.textbox.addEventListener('focusout', () =>
     {
         if (this.textbox.keyBlur)
@@ -56792,12 +56801,6 @@ extends OpColorBase
         this.paramContrast.controls[0].showExtRanges = false;
 
 
-        createTooltip(ttWcag2);
-        createTooltip(ttWcag3);
-        
-        createTooltipPointerTrap(ttWcag2);
-        createTooltipPointerTrap(ttWcag3);
-
         this.paramStandard.getTooltip = () => null;
 
         this.paramContrast.getTooltip = () => 
@@ -57101,8 +57104,6 @@ extends OpColorBase
             ? ttColorblind 
             : null);
 
-        createTooltipPointerTrap(ttColorblind);
-
 
         this.menuL = new Menu('L', false, true);
         this.menuL.addItems([
@@ -57327,9 +57328,6 @@ extends OpColorBase
 
         this.header.connectionPadding = 12.5;
 
-        
-        createTooltip(ttInterpolationSpace);
-        createTooltipPointerTrap(ttInterpolationSpace);
         
         this.paramSpace.getTooltip = () => 
             settings.showTooltipColorInterpolation 
@@ -65477,6 +65475,8 @@ function createTooltipSrc(source, ref, getTooltip, bottomArrow = false)
             }, 
             currentTooltip ? 0 : 1000);
         }
+        else
+            tooltipTimer = null;
     });
       
     
@@ -65516,16 +65516,17 @@ function createTooltip(tooltip)
 {
     tooltip.addEventListener('pointerenter', () =>
     {
-        // clearTimeout(tooltipOutTimer);
-        // tooltipOutTimer = null;
+        clearTimeout(tooltipOutTimer);
+        tooltipOutTimer = null;
+
         inTooltip = tooltip;
     });
     
     
     tooltip.addEventListener('pointerleave', () =>
     {
-        // if (!tooltipOutTimer)
-        //     hideTooltip(tooltip);
+        if (!tooltipOutTimer)
+            hideTooltip(tooltip);
 
         inTooltip = null;
     });
@@ -65638,6 +65639,12 @@ function createTooltipPointerTrap(tooltip)
             clearTimeout(tooltipOutTimer);
             tooltipOutTimer = null;
         }
+
+        if (tooltipTimer)
+        {
+            clearTimeout(tooltipTimer);
+            tooltipTimer = null;
+        }
     });
 
     tooltip.addEventListener('pointerleave', e =>
@@ -65671,11 +65678,58 @@ function updateZoomTooltip()
 }
 
 
+// function initPermanentTooltip(tooltip)
+// {
+//     tooltip.addEventListener('pointerenter', e =>
+//     {
+//         e.preventDefault();
+//         e.stopImmediatePropagation();
+
+//         clearTimeout(tooltipOutTimer);
+//         tooltipOutTimer = null;
+//     });
+    
+    
+    
+//     tooltip.addEventListener('pointerleave', e =>
+//     {
+//         e.preventDefault();
+//         e.stopImmediatePropagation();
+
+//         if (!tooltipOutTimer)
+//             hideTooltip(tooltip);
+//     });
+// }
+
+
 
 function initTextTooltip(str)
 {
     ttTextString.innerHTML = str;
 }
+
+
+
+createTooltip(ttText);
+createTooltip(ttWcag2);
+createTooltip(ttWcag3);
+createTooltip(ttInterpolationSpace);
+createTooltip(ttColorblind);
+
+createTooltipPointerTrap(ttText);
+createTooltipPointerTrap(ttWcag2);
+createTooltipPointerTrap(ttWcag3);
+createTooltipPointerTrap(ttInterpolationSpace);
+createTooltipPointerTrap(ttColorblind);
+
+
+
+// initPermanentTooltip(ttText);
+// initPermanentTooltip(ttColorblind);
+// initPermanentTooltip(ttInterpolationSpace);
+// initPermanentTooltip(ttWcag2);
+// initPermanentTooltip(ttWcag3);
+
 
 
 // menuSelect.addEventListener('change', async function(e) 

@@ -37,9 +37,6 @@ extends OpColorBase
         this.header.connectionPadding = 12.5;
 
         
-        createTooltip(ttInterpolationSpace);
-        createTooltipPointerTrap(ttInterpolationSpace);
-        
         this.paramSpace.getTooltip = () => 
             settings.showTooltipColorInterpolation 
             ? ttInterpolationSpace 

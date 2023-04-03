@@ -37,6 +37,8 @@ function createTooltipSrc(source, ref, getTooltip, bottomArrow = false)
             }, 
             currentTooltip ? 0 : 1000);
         }
+        else
+            tooltipTimer = null;
     });
       
     
@@ -76,16 +78,17 @@ function createTooltip(tooltip)
 {
     tooltip.addEventListener('pointerenter', () =>
     {
-        // clearTimeout(tooltipOutTimer);
-        // tooltipOutTimer = null;
+        clearTimeout(tooltipOutTimer);
+        tooltipOutTimer = null;
+
         inTooltip = tooltip;
     });
     
     
     tooltip.addEventListener('pointerleave', () =>
     {
-        // if (!tooltipOutTimer)
-        //     hideTooltip(tooltip);
+        if (!tooltipOutTimer)
+            hideTooltip(tooltip);
 
         inTooltip = null;
     });
@@ -197,6 +200,12 @@ function createTooltipPointerTrap(tooltip)
         {
             clearTimeout(tooltipOutTimer);
             tooltipOutTimer = null;
+        }
+
+        if (tooltipTimer)
+        {
+            clearTimeout(tooltipTimer);
+            tooltipTimer = null;
         }
     });
 
