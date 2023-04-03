@@ -303,6 +303,7 @@ NumberControl.prototype.initTextbox = function()
                ? parseInt(value, 16) 
                : parseFloat(value));
 
+
         let savedVal = 
             savedValue.trim() == NAN_DISPLAY  
             ? Number.NaN 
@@ -314,20 +315,36 @@ NumberControl.prototype.initTextbox = function()
         if (!isNaN(val))
             val /= this.valueScale;
 
+        console.log('success =', success);
+        console.log('this.showHex =', this.showHex);
+        console.log('value =', value);
+        console.log('savedValue =', savedValue);
+        console.log('val =', val);
+        console.log('savedVal =', savedVal);
        
         const e = new CustomEvent('finishedit', { 'detail': {
             'success':         success,
-            'value':           value     .replace(this.suffix, ''),
-            'oldValue':        savedValue.replace(this.suffix, ''),
+
+            'value':           val,
+            'valueString':     value     .replace(this.suffix, ''),
+            
+            'oldValue':        savedVal,
+            'oldValueString':  savedValue.replace(this.suffix, ''),
+            
             'preventSetValue': false }});
 
+            
         this.dispatchEvent(e);
+
+
+        console.log('e.preventSetValue =', e.preventSetValue);
 
 
         if (!e.preventSetValue)
         {
             if (success) 
             {
+                console.log('1');
                 this.setValue(
                        value.trim() != '' 
                     && value.trim() != NAN_DISPLAY
@@ -335,7 +352,10 @@ NumberControl.prototype.initTextbox = function()
                     : savedVal);
             }
             else
+            {
+                console.log('2');
                 this.setValue(savedVal);
+            }
         }
          
         

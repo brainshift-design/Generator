@@ -61,28 +61,30 @@ extends NumberParamBase
 
         this.controls[0].addEventListener('finishedit', e =>
         { 
-            let   dec    = decCount(e.detail.value); 
-            const oldDec = decCount(e.detail.oldValue);
+            let   dec    = decCount(e.detail.valueString); 
+            const oldDec = decCount(e.detail.oldValueString);
 
             
             if (!e.detail.success)
                 return;
 
+            console.log('e.detail.value =',    e.detail.value);
+            console.log('e.detail.oldValue =', e.detail.oldValue);
 
             if (   Math.abs(e.detail.value - e.detail.oldValue) > Number.EPSILON
                 && dec >= oldDec)
             {
-                this.setValue(new NumberValue(parseFloat(e.detail.value), dec), true);
+                this.setValue(new NumberValue(e.detail.value, dec), true);
                 e.preventSetValue = true;
             }
             else if (this.controls[0].allowEditDecimals)
             {
-                if (Math.abs(parseFloat(e.detail.value) - parseFloat(e.detail.oldValue)) <= Number.EPSILON)
+                if (Math.abs(e.detail.value - e.detail.oldValue) <= Number.EPSILON)
                     dec += Math.log10(this.controls[0].valueScale);
                 else
                     dec = oldDec;
 
-                this.setValue(new NumberValue(parseFloat(e.detail.value), dec), true);
+                this.setValue(new NumberValue(e.detail.value, dec), true);
                 e.preventSetValue = true;
             }
         });

@@ -55,7 +55,7 @@ extends GValue
 
     toString()
     {
-        return this.value;
+        return encodeURIComponent(this.value);
     }
 
 

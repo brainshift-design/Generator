@@ -18,7 +18,8 @@ extends OperatorWithValue
 
         this.paramValue.controls[0].textbox.style.textAlign = 'center';
 
-        this.paramCode.controls[0].showHex = true;
+        this.paramCode.controls[0].showHex           = true;
+        this.paramCode.controls[0].allowEditDecimals = false;
     }
 
 
