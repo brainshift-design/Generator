@@ -19,7 +19,9 @@ extends OperatorBase
         this.addParam(this.paramFormat = new SelectParam('format', 'format', false, true,  true, ['decimal', 'hex', 'float']));
         this.addParam(this.paramDigits = new NumberParam('digits', 'digits', true,  true,  true, 0, 0, 10));
 
-        this.paramValue.controls[0].textbox.style.textAlign = 'center';
+        this.paramValue .controls[0].textbox.style.textAlign = 'center';
+        
+        this.paramDigits.controls[0].allowEditDecimals = false;
     }
 
 

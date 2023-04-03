@@ -199,8 +199,6 @@ extends Parameter
 
     loadParam(param)
     {
-        const value = decodeURIComponent(param);
-
-        this.setValue(parseTextValue(value)[0], true, false, false);
+        this.setValue(parseTextValue(param)[0], true, false, false);
     }
 }

@@ -70,8 +70,7 @@ extends GValue
     toDisplayString()
     {
         return '\'' 
-             + this.value 
-                   .replaceAll('\n', '↵')
+             + this.value.replaceAll('\n', '↵')
              + '\'';
     }
 
@@ -84,7 +83,7 @@ extends GValue
 
 function parseTextValue(str)
 {
-    //console.log('str =', str);
+    console.log('str =', str);
     const text = new TextValue(decodeURIComponent(str));
 
     return [text, 1];
