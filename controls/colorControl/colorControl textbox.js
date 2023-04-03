@@ -189,10 +189,27 @@ ColorControl.prototype.initTextbox = function()
     {
         e.preventDefault();
 
-        const str = e.clipboardData.getData('text/plain');
-        const rgb = hex2rgb(str);
+
+        const oldValue = this.value.copy();
+
+
+        let str = e.clipboardData.getData('text/plain');
+
+        const rgb = hex2rgb(
+              this.textbox.value.substring(0, this.textbox.selectionStart)
+            + str
+            + this.textbox.value.substring(this.textbox.selectionEnd));
+
+        const value = ColorValue.fromRgb(scaleRgb(rgb));
+
 
         this.textbox.value = rgb2hex(rgb);
+
+
+        this.setValue(
+            value, 
+            true, //!this.textbox.managing, 
+            true);
     });
 
 

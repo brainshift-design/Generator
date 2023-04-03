@@ -37414,6 +37414,7 @@ NumberControl.prototype.initTextbox = function()
     this.textbox.addEventListener('pointermove', e =>
     {
         e.stopPropagation();
+
         this.textbox.style.cursor = 'default';
     });
 
@@ -37640,8 +37641,18 @@ NumberControl.prototype.initTextbox = function()
             : parseFloat(str);
 
         val = Math.min(Math.max(this.min, val), this.max);
+        
+        const strVal = isNaN(val) ? '' : val;
 
-        this.textbox.value = isNaN(val) ? '' : val;
+        this.textbox.value = 
+              this.textbox.value.substring(0, this.textbox.selectionStart)
+            + strVal
+            + this.textbox.value.substring(this.textbox.selectionEnd);
+
+        this.setValue(
+            this.textbox.value, 
+            true, //!this.textbox.managing, 
+            true);
     });
 
 
@@ -38707,6 +38718,9 @@ TextControl.prototype.initTextarea = function()
             graphView.putNodeOnTop(this.param.node);
 
 
+        //this.textbox.setPointerCapture(e.pointerId);
+
+
         if (e.button == 1)
         {
             e.preventDefault();
@@ -38722,11 +38736,16 @@ TextControl.prototype.initTextarea = function()
     {
         e.stopPropagation();
 
+
         if (e.button == 2)
         {
             initTextMenu(this.textbox);
             menuText.showAt(e.clientX, e.clientY, false);
         }
+
+
+        //if (this.textbox.hasPointerCapture(e.pointerId))
+        //    this.textbox.releasePointerCapture(e.pointerId);
     });
 
 
@@ -38822,6 +38841,11 @@ TextControl.prototype.initTextarea = function()
               this.textbox.value.substring(0, this.textbox.selectionStart)
             + value
             + this.textbox.value.substring(this.textbox.selectionEnd);
+
+        this.setValue(
+            this.textbox.value, 
+            true, //!this.textbox.managing, 
+            true);
     });
 
 
@@ -39095,7 +39119,15 @@ extends Control
 
         this.update();
 
+        
+        this.dispatchSetEvents(fireChangeEvent, value, oldValue, confirm);
+    };
 
+
+
+
+    dispatchSetEvents(fireChangeEvent, value, oldValue, confirm)
+    {
         if (   fireChangeEvent
             && this.enableChangeEvent
             && !value.equals(this.prevValue))
@@ -39105,8 +39137,7 @@ extends Control
             && this.enableChangeEvent
             && !value.equals(oldValue))
             this.dispatchEvent(this.onconfirm);
-    };
-
+    }
 
 
 
@@ -39405,10 +39436,27 @@ ColorControl.prototype.initTextbox = function()
     {
         e.preventDefault();
 
-        const str = e.clipboardData.getData('text/plain');
-        const rgb = hex2rgb(str);
+
+        const oldValue = this.value.copy();
+
+
+        let str = e.clipboardData.getData('text/plain');
+
+        const rgb = hex2rgb(
+              this.textbox.value.substring(0, this.textbox.selectionStart)
+            + str
+            + this.textbox.value.substring(this.textbox.selectionEnd));
+
+        const value = ColorValue.fromRgb(scaleRgb(rgb));
+
 
         this.textbox.value = rgb2hex(rgb);
+
+
+        this.setValue(
+            value, 
+            true, //!this.textbox.managing, 
+            true);
     });
 
 

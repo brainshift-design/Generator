@@ -28,6 +28,7 @@ NumberControl.prototype.initTextbox = function()
     this.textbox.addEventListener('pointermove', e =>
     {
         e.stopPropagation();
+
         this.textbox.style.cursor = 'default';
     });
 
@@ -254,8 +255,18 @@ NumberControl.prototype.initTextbox = function()
             : parseFloat(str);
 
         val = Math.min(Math.max(this.min, val), this.max);
+        
+        const strVal = isNaN(val) ? '' : val;
 
-        this.textbox.value = isNaN(val) ? '' : val;
+        this.textbox.value = 
+              this.textbox.value.substring(0, this.textbox.selectionStart)
+            + strVal
+            + this.textbox.value.substring(this.textbox.selectionEnd);
+
+        this.setValue(
+            this.textbox.value, 
+            true, //!this.textbox.managing, 
+            true);
     });
 
 

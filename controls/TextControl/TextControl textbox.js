@@ -20,6 +20,9 @@ TextControl.prototype.initTextarea = function()
             graphView.putNodeOnTop(this.param.node);
 
 
+        //this.textbox.setPointerCapture(e.pointerId);
+
+
         if (e.button == 1)
         {
             e.preventDefault();
@@ -35,11 +38,16 @@ TextControl.prototype.initTextarea = function()
     {
         e.stopPropagation();
 
+
         if (e.button == 2)
         {
             initTextMenu(this.textbox);
             menuText.showAt(e.clientX, e.clientY, false);
         }
+
+
+        //if (this.textbox.hasPointerCapture(e.pointerId))
+        //    this.textbox.releasePointerCapture(e.pointerId);
     });
 
 
@@ -135,6 +143,11 @@ TextControl.prototype.initTextarea = function()
               this.textbox.value.substring(0, this.textbox.selectionStart)
             + value
             + this.textbox.value.substring(this.textbox.selectionEnd);
+
+        this.setValue(
+            this.textbox.value, 
+            true, //!this.textbox.managing, 
+            true);
     });
 
 

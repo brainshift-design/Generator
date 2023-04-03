@@ -137,7 +137,15 @@ extends Control
 
         this.update();
 
+        
+        this.dispatchSetEvents(fireChangeEvent, value, oldValue, confirm);
+    };
 
+
+
+
+    dispatchSetEvents(fireChangeEvent, value, oldValue, confirm)
+    {
         if (   fireChangeEvent
             && this.enableChangeEvent
             && !value.equals(this.prevValue))
@@ -147,8 +155,7 @@ extends Control
             && this.enableChangeEvent
             && !value.equals(oldValue))
             this.dispatchEvent(this.onconfirm);
-    };
-
+    }
 
 
 
