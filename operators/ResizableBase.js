@@ -72,6 +72,9 @@ extends OperatorBase
         {
             if (e.button == 0)
             {
+                if (document.activeElement)
+                    document.activeElement.blur();
+
                 sizer.startRect = offsetRect(this.div);
                 sizer.resizing  = true;
 
