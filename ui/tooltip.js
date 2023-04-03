@@ -9,7 +9,7 @@ var currentTooltip       = null;
 
     
 
-function createTooltipSrc(source, ref, getTooltip, bottomArrow = false)
+function createTooltipSrc(source, ref, getTooltip)
 {
     source.addEventListener('pointerenter', () =>
     {
@@ -31,7 +31,7 @@ function createTooltipSrc(source, ref, getTooltip, bottomArrow = false)
                 const tooltip = getTooltip();
 
                 if (tooltip) 
-                    showTooltip(ref, tooltip, bottomArrow);
+                    showTooltip(ref, tooltip);
 
                 tooltipTimer = null;
             }, 
@@ -114,7 +114,7 @@ function tooltip_pointerLeave(tooltip)
 
 
 
-function showTooltip(source, tooltip, bottomArrow)
+function showTooltip(source, tooltip)
 {
     if (!isEmpty(currentMenus))
         return;
@@ -146,32 +146,27 @@ function showTooltip(source, tooltip, bottomArrow)
     
     const graphHeight = graphView.div.offsetHeight - menuBarHeight;
 
-    if (bottomArrow)
+
+    let top = srcRect.y;
+
+    if (srcRect.y + tooltip.offsetHeight > graphView.div.offsetHeight-8)
+        top = menuBarHeight + Math.max(8, graphHeight - tooltip.offsetHeight);
+        
+    tooltip.style.top = top + srcRect.height + tooltipArrow.offsetHeight - 3;
+    
+    
+    const ttRect = tooltip.getBoundingClientRect();
+
+    
+    if (ttRect.bottom > graphView.div.offsetHeight + menuBarHeight - 8)
     {
-        const ttRect = tooltip.getBoundingClientRect();
-
-        let top = srcRect.y;
-
-        if (srcRect.y + tooltip.offsetHeight > graphView.div.offsetHeight-8)
-            top = menuBarHeight + Math.max(8, graphHeight - tooltip.offsetHeight);
-
-        tooltip.style.top = top - tooltipArrow.offsetHeight - ttRect.height;
-
         tooltipArrow.style.borderColor = '#1e1e1e transparent transparent transparent';
-        tooltipArrow.style.top         = srcRect.y - tooltipArrow.offsetHeight;
+        tooltipArrow.style.top         = srcRect.y;
+
+        tooltip.style.top = srcRect.y - ttRect.height + 1;
     }
     else
     {
-        let top = srcRect.y;
-
-        if (srcRect.y + tooltip.offsetHeight > graphView.div.offsetHeight-8)
-            top = menuBarHeight + Math.max(8, graphHeight - tooltip.offsetHeight);
-
-        tooltip.style.top = top + srcRect.height + tooltipArrow.offsetHeight - 3;
-
-        
-        const ttRect = tooltip.getBoundingClientRect();
-
         tooltipArrow.style.borderColor = 'transparent transparent #1e1e1e transparent';
         tooltipArrow.style.top         = ttRect.y - tooltipArrow.offsetHeight + 1;
     }
