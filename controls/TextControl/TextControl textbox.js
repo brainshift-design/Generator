@@ -1,20 +1,20 @@
 TextControl.prototype.initTextarea = function()
 {
-    this.textarea                = createTextarea('textControlTextarea');
+    this.textbox                = createTextarea('textControlTextarea');
 
-    this.textarea.control        = this;
-    this.textarea.defPlaceholder = ' . . .';
-    this.textarea.placeholder    = this.textarea.defPlaceholder;
+    this.textbox.control        = this;
+    this.textbox.defPlaceholder = ' . . .';
+    this.textbox.placeholder    = this.textbox.defPlaceholder;
 
-    this.textarea.style.height   = defParamHeight;
+    this.textbox.style.height   = defParamHeight;
 
-    this.textarea.savedValue     = this.textarea.value;
+    this.textbox.savedValue     = this.textbox.value;
 
-    //this.textarea.managing     = false; // undoing or redoing
+    //this.textbox.managing     = false; // undoing or redoing
 
 
 
-    this.textarea.addEventListener('pointerdown', e =>
+    this.textbox.addEventListener('pointerdown', e =>
     {
         if (this.param.node.div.style.zIndex < graphView.getTopNodeIndex())
             graphView.putNodeOnTop(this.param.node);
@@ -31,27 +31,27 @@ TextControl.prototype.initTextarea = function()
     
     
     
-    this.textarea.addEventListener('pointerup', e =>
+    this.textbox.addEventListener('pointerup', e =>
     {
         e.stopPropagation();
 
         if (e.button == 2)
         {
-            initTextMenu(this.textarea);
+            initTextMenu(this.textbox);
             menuText.showAt(e.clientX, e.clientY, false);
         }
     });
 
 
 
-    this.textarea.addEventListener('pointermove', e =>
+    this.textbox.addEventListener('pointermove', e =>
     {
         e.stopPropagation();
     });
 
 
 
-    this.textarea.addEventListener('keydown', e =>
+    this.textbox.addEventListener('keydown', e =>
     {
         e.stopPropagation();
 
@@ -61,7 +61,7 @@ TextControl.prototype.initTextarea = function()
         {
             e.preventDefault();
             document.execCommand('copy');
-            clearSelectedText(this.textarea);
+            clearSelectedText(this.textbox);
         }
 
         else if (   e.code == 'KeyC'
@@ -83,14 +83,14 @@ TextControl.prototype.initTextarea = function()
                      || e.code == 'NumpadEnter')
                  && !this.readOnly)
         {
-            this.textarea.keyBlur = true;
-            this.textarea.finish(true);
+            this.textbox.keyBlur = true;
+            this.textbox.finish(true);
         }
 
         else if (e.code == 'Escape')
         {
-            this.textarea.keyBlur = true;
-            this.textarea.finish(true);
+            this.textbox.keyBlur = true;
+            this.textbox.finish(true);
         }
 
         else if (e.code == 'Tab')
@@ -108,15 +108,15 @@ TextControl.prototype.initTextarea = function()
 
 
 
-    this.textarea.addEventListener('input', e =>
+    this.textbox.addEventListener('input', e =>
     {
-        //console.log('this.textarea.managing =', this.textarea.managing);
+        //console.log('this.textbox.managing =', this.textbox.managing);
         this.setValue(
-            this.textarea.value, 
-            true, //!this.textarea.managing, 
+            this.textbox.value, 
+            true, //!this.textbox.managing, 
             true);
 
-        //this.textarea.managing = false;
+        //this.textbox.managing = false;
 
         // if (this.param) this.param.changing = true;
         // if (this.confirmTimer) clearTimeout(this.confirmTimer);
@@ -125,25 +125,25 @@ TextControl.prototype.initTextarea = function()
 
 
 
-    this.textarea.addEventListener('paste', e =>
+    this.textbox.addEventListener('paste', e =>
     {
         e.preventDefault();
 
         const value = e.clipboardData.getData('text/plain');
 
-        this.textarea.value = 
-              this.textarea.value.substring(0, this.textarea.selectionStart)
+        this.textbox.value = 
+              this.textbox.value.substring(0, this.textbox.selectionStart)
             + value
-            + this.textarea.value.substring(this.textarea.selectionEnd);
+            + this.textbox.value.substring(this.textbox.selectionEnd);
     });
 
 
 
     
-    this.textarea.addEventListener('focusout', () =>
+    this.textbox.addEventListener('focusout', () =>
     {
-        if (this.textarea.keyBlur)
-            this.textarea.keyBlur = false;
+        if (this.textbox.keyBlur)
+            this.textbox.keyBlur = false;
 
 
         if (this.savedSuccessOnFocusOut != null)
@@ -153,13 +153,13 @@ TextControl.prototype.initTextarea = function()
         }
 
 
-        this.textarea.blur();
+        this.textbox.blur();
         this.clicked = false;
     });
     
 
 
-    this.textarea.addEventListener('wheel', e =>
+    this.textbox.addEventListener('wheel', e =>
     {
         if (this.view.wheelTimer)
             e.preventDefault();
@@ -170,10 +170,10 @@ TextControl.prototype.initTextarea = function()
     
 
 
-    this.textarea.finish = (success, focusControl = true) =>
+    this.textbox.finish = (success, focusControl = true) =>
     {
-        let   value      = this.textarea.value;
-        const savedValue = this.textarea.savedValue;
+        let   value      = this.textbox.value;
+        const savedValue = this.textbox.savedValue;
 
         value = value.replace(this.suffix, '');
 
@@ -201,7 +201,7 @@ TextControl.prototype.initTextarea = function()
         }
          
         
-        this.textarea.blur();
+        this.textbox.blur();
 
 
         if (   this.inFocus
@@ -223,21 +223,21 @@ TextControl.prototype.showTextarea = function()
     this.focus.style.opacity    = 0;
 
 
-    this.textarea.style.boxShadow = '0 0 0 1px var(--figma-color-bg-brand)';
-    this.textarea.style.outline   = 'none';
+    this.textbox.style.boxShadow = '0 0 0 1px var(--figma-color-bg-brand)';
+    this.textbox.style.outline   = 'none';
 
 
     this.updateTextarea();
 
     
-    this.textarea.focus();
-    this.textarea.select();
+    this.textbox.focus();
+    this.textbox.select();
 };
 
 
 
 TextControl.prototype.updateTextarea = function()
 {
-    this.textarea.value      = this.value;
-    this.textarea.savedValue = this.value;
+    this.textbox.value      = this.value;
+    this.textbox.savedValue = this.value;
 };

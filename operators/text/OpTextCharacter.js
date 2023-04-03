@@ -16,7 +16,7 @@ extends OperatorWithValue
         this.addParam(this.paramCode = new NumberParam('code', 'unicode', true,  true,  true, 32, 0, 0xFFFF));
 
 
-        this.paramValue.controls[0].textarea.style.textAlign = 'center';
+        this.paramValue.controls[0].textbox.style.textAlign = 'center';
 
         this.paramCode.controls[0].showHex = true;
     }

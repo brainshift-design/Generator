@@ -558,7 +558,8 @@ NumberControl.prototype.initEvents = function()
             if (!this.readOnly)
             {
                 if (   document.activeElement
-                    && document.activeElement.tagName.toLowerCase() == 'input'
+                    && (   document.activeElement.tagName.toLowerCase() == 'input'
+                        || document.activeElement.tagName.toLowerCase() == 'textarea')
                     && document.activeElement.control)
                     document.activeElement.control.textbox.finish(true, false);
 

@@ -37,8 +37,8 @@ extends Parameter
             defaultValue);
 
         if (name != NULL)
-            this.controls[0].textarea.defPlaceholder =
-            this.controls[0].textarea.placeholder    = name;
+            this.controls[0].textbox.defPlaceholder =
+            this.controls[0].textbox.placeholder    = name;
         
 
         this.controls[0].successOnFocusOut = true;
@@ -175,9 +175,9 @@ extends Parameter
                !this.input 
             || !this.input.connected;
 
-        enableElementText(this.controls[0].textarea, enable);
+        enableElementText(this.controls[0].textbox, enable);
         
-        this.controls[0].textarea.disabled = !enable;
+        this.controls[0].textbox.disabled = !enable;
         this.controls[0].readOnly = !enable;
     }
     

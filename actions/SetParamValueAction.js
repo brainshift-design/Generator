@@ -54,7 +54,7 @@ extends Action
         // if (this.oldValue.type == TEXT_VALUE)
         // {
         //     console.log('this.param.controls[0] =', this.param.controls[0]);
-        //     this.param.controls[0].textarea.managing = true;
+        //     this.param.controls[0].textbox.managing = true;
         // }
 
         this.param.setValue(this.oldValue, false, true);

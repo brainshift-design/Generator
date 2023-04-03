@@ -4,7 +4,7 @@ extends Control
     value;
 
 
-    textarea;
+    textbox;
     placeholder;
 
 
@@ -36,7 +36,7 @@ extends Control
         this.initEvents ();
         
 
-        this.div.appendChild(this.textarea);
+        this.div.appendChild(this.textbox);
     }    
 
 
@@ -71,12 +71,12 @@ extends Control
     {
         super.setSize(w, h);
 
-        if (this.textarea)
+        if (this.textbox)
         {
-            this.textarea.style.left   = (this.param && this.param.input ? 8 : 0) + 'px';
+            this.textbox.style.left   = (this.param && this.param.input ? 8 : 0) + 'px';
             
-            this.textarea.style.width  = this.param && this.param.input ? 'calc(100% - 8px)' : '100%';
-            this.textarea.style.height = Math.max(20, h);
+            this.textbox.style.width  = this.param && this.param.input ? 'calc(100% - 8px)' : '100%';
+            this.textbox.style.height = Math.max(20, h);
         }
     }
 
@@ -91,7 +91,7 @@ extends Control
         this.value = value;
 
         if (updateControl)
-            this.textarea.value = value;
+            this.textbox.value = value;
 
 
         this.update();
@@ -114,13 +114,13 @@ extends Control
             return;
 
             
-        this.textarea.placeholder = 
+        this.textbox.placeholder = 
             this.value == NAN_CHAR
             ? UNKNOWN_DISPLAY
-            : this.textarea.defPlaceholder;
+            : this.textbox.defPlaceholder;
 
         if (this.value == NAN_CHAR)
-            this.textarea.value = '';
+            this.textbox.value = '';
 
 
         const  input = this.param && this.param. input;
@@ -131,7 +131,7 @@ extends Control
               ( input ? 12 : 0) 
             + (output ? 12 : 0);
 
-        this.textarea.style.left  = left + 'px';
-        this.textarea.style.width = 'calc(100% - ' + dw + 'px)';
+        this.textbox.style.left  = left + 'px';
+        this.textbox.style.width = 'calc(100% - ' + dw + 'px)';
     }
 }

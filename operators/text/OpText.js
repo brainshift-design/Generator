@@ -17,10 +17,10 @@ extends ResizableBase
 
         this.addParam(this.paramValue = new TextParam('value', '', false, false));
 
-        this.paramValue.controls[0].textarea.defPlaceholder = ' . . .';
+        this.paramValue.controls[0].textbox.defPlaceholder = ' . . .';
 
 
-        this.header.addEventListener('pointerdown', e => this.paramValue.controls[0].textarea.blur());
+        this.header.addEventListener('pointerdown', e => this.paramValue.controls[0].textbox.blur());
     }
 
 
