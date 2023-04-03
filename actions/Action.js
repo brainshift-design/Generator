@@ -184,12 +184,16 @@ class Action
 
 
 
-    getLinkString()
+    getPrevLinkString()
     {
-        const linkPrev = this.prevAction ? ' ←' : '';
-        const linkNext = this.nextAction ? ' →' : '';
+        return this.prevAction ? '← ' : '';
+    }
 
-        return linkPrev + linkNext;
+    
+
+    getNextLinkString()
+    {
+        return this.nextAction ? ' →' : '';
     }
 }
 

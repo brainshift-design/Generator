@@ -124,10 +124,11 @@ class ActionManager
     {
         if (settings.logActions)
         {
-            const links = act.getLinkString();
+            const prevLink = act.getPrevLinkString();
+            const nextLink = act.getNextLinkString();
 
-            if (redo) console.log("%cREDO %s", 'background: #ffd;    color: #b80;', act.name + links);
-            else      console.log("%c%s",      'background: #e8ffe8; color: #282;', act.name + links);
+            if (redo) console.log("%cREDO %s", 'background: #ffd;    color: #b80;', prevLink + act.name + nextLink);
+            else      console.log("%c%s",      'background: #e8ffe8; color: #282;', prevLink + act.name + nextLink);
         }
 
 
@@ -167,8 +168,10 @@ class ActionManager
     {
         if (settings.logActions)
         {
-            const links = act.getLinkString();
-            console.log("%cUNDO %s", 'background: #fff4e8; color: #c64;', act.name + links);
+            const prevLink = act.getPrevLinkString();
+            const nextLink = act.getNextLinkString();
+
+            console.log("%cUNDO %s", 'background: #fff4e8; color: #c64;', prevLink + act.name + nextLink);
         }
 
             
