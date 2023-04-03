@@ -8444,7 +8444,7 @@ extends GValue
 
     toString()
     {
-        return encodeURIComponent(this.value);
+        return this.value;
     }
 
 
@@ -8472,7 +8472,7 @@ extends GValue
 
 function parseTextValue(str)
 {
-    const text = new TextValue(decodeURIComponent(str));
+    const text = new TextValue(str);
 
     return [text, 1];
 }
@@ -12517,25 +12517,37 @@ extends GTextType
         const start = (await this.start.eval(parse)).toValue();
         const end   = (await this.end  .eval(parse)).toValue();
 
+        let   length = 0;
+
 
         if (this.input)
         {
-            this.value = (await this.input.eval(parse)).toValue();
-
+            const input = (await this.input.eval(parse)).toValue();
+            
+            length = input.value.length;
+            
+            this.value = input.copy();
+            
             console.assert(
                 this.value.type == TEXT_VALUE, 
                 'this.value.type must be TEXT_VALUE');
-
-
-            if (this.options.enabled)
-                this.value.value = this.value.value.substring(start.value, end.value+1);
+                
+                
+            if(start.value <= end.value)
+            {
+                if (this.options.enabled)
+                    this.value.value = this.value.value.substring(start.value, end.value);
+            }
+            else
+                this.value = TextValue.NaN;
         }
         else
             this.value = TextValue.NaN;
 
 
-        genPushUpdateValue(parse, this.nodeId, 'start', start);
-        genPushUpdateValue(parse, this.nodeId, 'end',   end);
+        genPushUpdateValue(parse, this.nodeId, 'length', new NumberValue(length)); // used to set start and end maxima
+        genPushUpdateValue(parse, this.nodeId, 'start',  start);
+        genPushUpdateValue(parse, this.nodeId, 'end',    end);
         
         genPushUpdateValue(parse, this.nodeId, 'value', this.value);
 
@@ -18683,7 +18695,7 @@ function genParseTextValue(parse)
     if (parse.settings.logRequests) 
         logReqValue(TEXT_VALUE, val, parse);
 
-    return parseTextValue(val)[0];
+    return parseTextValue(decodeURIComponent(val))[0];
 }
 
 
@@ -28952,7 +28964,7 @@ extends GValue
 
     toString()
     {
-        return encodeURIComponent(this.value);
+        return this.value;
     }
 
 
@@ -28980,7 +28992,7 @@ extends GValue
 
 function parseTextValue(str)
 {
-    const text = new TextValue(decodeURIComponent(str));
+    const text = new TextValue(str);
 
     return [text, 1];
 }
@@ -33025,25 +33037,37 @@ extends GTextType
         const start = (await this.start.eval(parse)).toValue();
         const end   = (await this.end  .eval(parse)).toValue();
 
+        let   length = 0;
+
 
         if (this.input)
         {
-            this.value = (await this.input.eval(parse)).toValue();
-
+            const input = (await this.input.eval(parse)).toValue();
+            
+            length = input.value.length;
+            
+            this.value = input.copy();
+            
             console.assert(
                 this.value.type == TEXT_VALUE, 
                 'this.value.type must be TEXT_VALUE');
-
-
-            if (this.options.enabled)
-                this.value.value = this.value.value.substring(start.value, end.value+1);
+                
+                
+            if(start.value <= end.value)
+            {
+                if (this.options.enabled)
+                    this.value.value = this.value.value.substring(start.value, end.value);
+            }
+            else
+                this.value = TextValue.NaN;
         }
         else
             this.value = TextValue.NaN;
 
 
-        genPushUpdateValue(parse, this.nodeId, 'start', start);
-        genPushUpdateValue(parse, this.nodeId, 'end',   end);
+        genPushUpdateValue(parse, this.nodeId, 'length', new NumberValue(length)); // used to set start and end maxima
+        genPushUpdateValue(parse, this.nodeId, 'start',  start);
+        genPushUpdateValue(parse, this.nodeId, 'end',    end);
         
         genPushUpdateValue(parse, this.nodeId, 'value', this.value);
 
@@ -37126,6 +37150,22 @@ extends Control
 
 
 
+    resetMin()
+    {
+        this.min        = Number.MIN_SAFE_INTEGER;
+        this.displayMin = Number.MIN_SAFE_INTEGER;
+    }
+
+
+
+    resetMax()
+    {
+        this.max        = Number.MAX_SAFE_INTEGER;
+        this.displayMax = Number.MAX_SAFE_INTEGER;
+    }
+
+
+
     setDecimals(dec, dspDec = dec)
     {
         this.dec        = dec;
@@ -37660,36 +37700,22 @@ NumberControl.prototype.initTextbox = function()
         if (!isNaN(val))
             val /= this.valueScale;
 
-        console.log('success =', success);
-        console.log('this.showHex =', this.showHex);
-        console.log('value =', value);
-        console.log('savedValue =', savedValue);
-        console.log('val =', val);
-        console.log('savedVal =', savedVal);
        
         const e = new CustomEvent('finishedit', { 'detail': {
             'success':         success,
-
             'value':           val,
-            'valueString':     value     .replace(this.suffix, ''),
-            
             'oldValue':        savedVal,
+            'valueString':     value     .replace(this.suffix, ''),
             'oldValueString':  savedValue.replace(this.suffix, ''),
-            
             'preventSetValue': false }});
 
-            
         this.dispatchEvent(e);
-
-
-        console.log('e.preventSetValue =', e.preventSetValue);
 
 
         if (!e.preventSetValue)
         {
             if (success) 
             {
-                console.log('1');
                 this.setValue(
                        value.trim() != '' 
                     && value.trim() != NAN_DISPLAY
@@ -37697,10 +37723,7 @@ NumberControl.prototype.initTextbox = function()
                     : savedVal);
             }
             else
-            {
-                console.log('2');
                 this.setValue(savedVal);
-            }
         }
          
         
@@ -45586,7 +45609,7 @@ extends Parameter
 
         else request.push( 
             TEXT_VALUE, 
-            encodeURIComponent(this.controls[0].value.toString().replaceAll('%', '%25')));
+            encodeURIComponent(this.controls[0].value.toString()));
 
 
         return request;
@@ -45631,7 +45654,7 @@ extends Parameter
 
     loadParam(param)
     {
-        this.setValue(parseTextValue(param)[0], true, false, false);
+        this.setValue(parseTextValue(decodeURIComponent(param))[0], true, false, false);
     }
 }
 
@@ -53733,8 +53756,15 @@ extends OperatorWithValue
         this.addOutput(new Output([TEXT_VALUE], this.output_genRequest));
 
         this.addParam(this.paramValue);
-        this.addParam(this.paramStart = new NumberParam('start', 'start', true,  true,  true));
-        this.addParam(this.paramEnd   = new NumberParam('end',   'end',   true,  true,  true));
+        this.addParam(this.paramStart = new NumberParam('start', 'start', true, true, true, 0, 0));
+        this.addParam(this.paramEnd   = new NumberParam('end',   'end',   true, true, true, 0, 0));
+
+
+        this.paramValue.controls[0].textbox.style.textAlign = 'center';
+        this.paramValue.controls[0].textbox.defPlaceholder  = '';
+
+        this.paramStart.controls[0].allowEditDecimals = false;
+        this.paramEnd  .controls[0].allowEditDecimals = false;
     }
 
 
@@ -53767,6 +53797,27 @@ extends OperatorWithValue
         pushUnique(gen.passedNodes, this.node);
 
         return request;
+    }
+
+
+
+    updateValues(requestId, actionId, updateParamId, paramIds, values)
+    {
+        super.updateValues(requestId, actionId, updateParamId, paramIds, values);
+
+
+        const length = values[paramIds.findIndex(id => id == 'length')];
+
+        if (length.value > 0)
+        {
+            this.paramStart.controls[0].setMax(length.value-1);
+            this.paramEnd  .controls[0].setMax(length.value-1);
+        }
+        else
+        {
+            this.paramStart.controls[0].resetMax();
+            this.paramEnd  .controls[0].resetMax();
+        }
     }
 
 
@@ -53931,6 +53982,9 @@ extends ResizableOperatorWithValue
         this.addOutput(new Output([TEXT_VALUE], this.output_genRequest));
 
         this.addParam(this.paramValue);
+
+
+        this.paramValue.controls[0].textbox.style.textAlign = 'center';
     }
     
     

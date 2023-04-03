@@ -41,25 +41,37 @@ extends GTextType
         const start = (await this.start.eval(parse)).toValue();
         const end   = (await this.end  .eval(parse)).toValue();
 
+        let   length = 0;
+
 
         if (this.input)
         {
-            this.value = (await this.input.eval(parse)).toValue();
-
+            const input = (await this.input.eval(parse)).toValue();
+            
+            length = input.value.length;
+            
+            this.value = input.copy();
+            
             console.assert(
                 this.value.type == TEXT_VALUE, 
                 'this.value.type must be TEXT_VALUE');
-
-
-            if (this.options.enabled)
-                this.value.value = this.value.value.substring(start.value, end.value+1);
+                
+                
+            if(start.value <= end.value)
+            {
+                if (this.options.enabled)
+                    this.value.value = this.value.value.substring(start.value, end.value);
+            }
+            else
+                this.value = TextValue.NaN;
         }
         else
             this.value = TextValue.NaN;
 
 
-        genPushUpdateValue(parse, this.nodeId, 'start', start);
-        genPushUpdateValue(parse, this.nodeId, 'end',   end);
+        genPushUpdateValue(parse, this.nodeId, 'length', new NumberValue(length)); // used to set start and end maxima
+        genPushUpdateValue(parse, this.nodeId, 'start',  start);
+        genPushUpdateValue(parse, this.nodeId, 'end',    end);
         
         genPushUpdateValue(parse, this.nodeId, 'value', this.value);
 

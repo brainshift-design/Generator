@@ -17,8 +17,15 @@ extends OperatorWithValue
         this.addOutput(new Output([TEXT_VALUE], this.output_genRequest));
 
         this.addParam(this.paramValue);
-        this.addParam(this.paramStart = new NumberParam('start', 'start', true,  true,  true));
-        this.addParam(this.paramEnd   = new NumberParam('end',   'end',   true,  true,  true));
+        this.addParam(this.paramStart = new NumberParam('start', 'start', true, true, true, 0, 0));
+        this.addParam(this.paramEnd   = new NumberParam('end',   'end',   true, true, true, 0, 0));
+
+
+        this.paramValue.controls[0].textbox.style.textAlign = 'center';
+        this.paramValue.controls[0].textbox.defPlaceholder  = '';
+
+        this.paramStart.controls[0].allowEditDecimals = false;
+        this.paramEnd  .controls[0].allowEditDecimals = false;
     }
 
 
@@ -51,6 +58,27 @@ extends OperatorWithValue
         pushUnique(gen.passedNodes, this.node);
 
         return request;
+    }
+
+
+
+    updateValues(requestId, actionId, updateParamId, paramIds, values)
+    {
+        super.updateValues(requestId, actionId, updateParamId, paramIds, values);
+
+
+        const length = values[paramIds.findIndex(id => id == 'length')];
+
+        if (length.value > 0)
+        {
+            this.paramStart.controls[0].setMax(length.value-1);
+            this.paramEnd  .controls[0].setMax(length.value-1);
+        }
+        else
+        {
+            this.paramStart.controls[0].resetMax();
+            this.paramEnd  .controls[0].resetMax();
+        }
     }
 
 

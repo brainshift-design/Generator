@@ -55,7 +55,7 @@ extends GValue
 
     toString()
     {
-        return encodeURIComponent(this.value);
+        return this.value;
     }
 
 
@@ -83,7 +83,7 @@ extends GValue
 
 function parseTextValue(str)
 {
-    const text = new TextValue(decodeURIComponent(str));
+    const text = new TextValue(str);
 
     return [text, 1];
 }

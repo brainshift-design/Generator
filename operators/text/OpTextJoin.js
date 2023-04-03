@@ -12,6 +12,9 @@ extends ResizableOperatorWithValue
         this.addOutput(new Output([TEXT_VALUE], this.output_genRequest));
 
         this.addParam(this.paramValue);
+
+
+        this.paramValue.controls[0].textbox.style.textAlign = 'center';
     }
     
     

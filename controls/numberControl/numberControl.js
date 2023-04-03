@@ -259,6 +259,22 @@ extends Control
 
 
 
+    resetMin()
+    {
+        this.min        = Number.MIN_SAFE_INTEGER;
+        this.displayMin = Number.MIN_SAFE_INTEGER;
+    }
+
+
+
+    resetMax()
+    {
+        this.max        = Number.MAX_SAFE_INTEGER;
+        this.displayMax = Number.MAX_SAFE_INTEGER;
+    }
+
+
+
     setDecimals(dec, dspDec = dec)
     {
         this.dec        = dec;

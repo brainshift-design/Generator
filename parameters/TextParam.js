@@ -154,7 +154,7 @@ extends Parameter
 
         else request.push( 
             TEXT_VALUE, 
-            encodeURIComponent(this.controls[0].value.toString().replaceAll('%', '%25')));
+            encodeURIComponent(this.controls[0].value.toString()));
 
 
         return request;
@@ -199,6 +199,6 @@ extends Parameter
 
     loadParam(param)
     {
-        this.setValue(parseTextValue(param)[0], true, false, false);
+        this.setValue(parseTextValue(decodeURIComponent(param))[0], true, false, false);
     }
 }
