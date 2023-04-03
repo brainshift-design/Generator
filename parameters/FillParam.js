@@ -96,21 +96,21 @@ extends Parameter
 
         this.controls[0].successOnFocusOut          = true;
         this.controls[0].div.style.display          = 'inline';
-        this.controls[0].div.style.width            = '60%';
+        this.controls[0].div.style.width            = '56.5%';
         this.controls[0].div.style.position         = 'absolute';
         this.controls[0].div.style.left             = 0;
 
     
         this.controls[1].successOnFocusOut          = true;
         this.controls[1].div.style.display          = 'inline';
-        this.controls[1].div.style.width            = '40%';
+        this.controls[1].div.style.width            = '43.5%';
         this.controls[1].div.style.position         = 'absolute';
         this.controls[1].div.style.right            = 0;
 
 
-        this.controls[0].text.style.transform       = 'translateX(-43%)';
+        this.controls[0].text.style.transform       = 'translateX(-41%)';
 
-        this.controls[1].text.style.transform       = 'translateX(-70%) \
+        this.controls[1].text.style.transform       = 'translateX(-69%) \
                                                        translateY(-50%)';
 
 
@@ -323,7 +323,7 @@ extends Parameter
         this.controlWrapper.style.background = 
               !rgbaIsNaN(rgbaVal) 
             && this.value.opacity.isValid()
-            ? fillStyle 
+            ?  fillStyle 
             : 'transparent'; 
 
 
