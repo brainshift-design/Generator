@@ -154,7 +154,7 @@ extends Parameter
 
         else request.push( 
             TEXT_VALUE, 
-            encodeURIComponent(this.controls[0].value.toString()));
+            encodeURIComponent(this.controls[0].value.toString().replaceAll('%', '%25')));
 
 
         return request;
