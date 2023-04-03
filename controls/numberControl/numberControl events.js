@@ -10,7 +10,7 @@ NumberControl.prototype.initEvents = function()
             return;
 
 
-        tooltip_pointerLeave(currentTooltip);
+        //tooltip_pointerLeave(currentTooltip);
 
 
         overNumberControl = this;

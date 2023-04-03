@@ -272,6 +272,14 @@ NumberControl.prototype.initTextbox = function()
 
 
     
+    this.textbox.addEventListener('focus', () =>
+    {
+        if (currentTooltip) 
+            hideTooltip(currentTooltip);
+    });
+    
+
+
     this.textbox.addEventListener('focusout', () =>
     {
         if (!this.textbox.keyBlur) this.textbox.finish(this.textbox.value.trim() != '');

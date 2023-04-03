@@ -155,8 +155,8 @@ TextControl.prototype.initTextarea = function()
     
     this.textbox.addEventListener('focus', () =>
     {
-        const tooltip = this.param && this.param.getTooltip();
-        if (tooltip) hideTooltip(tooltip);
+        if (currentTooltip) 
+            hideTooltip(currentTooltip);
     });
     
 

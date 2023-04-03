@@ -214,6 +214,14 @@ ColorControl.prototype.initTextbox = function()
 
 
 
+    this.textbox.addEventListener('focus', () =>
+    {
+        if (currentTooltip) 
+            hideTooltip(currentTooltip);
+    });
+    
+
+
     this.textbox.addEventListener('focusout', () =>
     {
         //console.log('this.successOnFocusOut', this.successOnFocusOut);
