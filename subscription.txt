@@ -3,3 +3,4 @@ Subscription features:
     Correct color
     Colorblind
     Node groups
+    Fetch

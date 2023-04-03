@@ -223,7 +223,8 @@ class Output
 
 
         const color = 
-            this.param
+                this.param
+            && !this.param.type == COLOR_VALUE
             ? rgb_a(rgbHeaderFromType(this.param.type, true), 0.38)
             : (darkMode
                ? this.colorDark

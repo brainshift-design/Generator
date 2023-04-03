@@ -238,7 +238,8 @@ extends EventTarget
                      || tc.output.node.isOrFollows(this.node)));
 
         const color = 
-            this.param
+                this.param
+            && !this.param.type == COLOR_VALUE
             ? rgb_a(rgbHeaderFromType(this.param.type, true), 0.5)
             : (darkMode
                ? this.colorDark

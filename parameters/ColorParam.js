@@ -189,7 +189,8 @@ extends Parameter
 
         const rgbVal   = this.value.toRgb();
         const rgbaText = getTextColorFromBackColor(rgbVal, 1);
-
+        
+        
         if (this.input)
         {
             this.input.colorLight  = 
