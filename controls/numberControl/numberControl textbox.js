@@ -197,48 +197,48 @@ NumberControl.prototype.initTextbox = function()
             
             this.updateTextbox();
         }
-        else 
-        {
-            let curVal = this.textbox.value;
+        // else 
+        // {
+        //     let curVal = this.textbox.value;
 
-            if (      e.key.length == 1
-                   && !isDigit(e.key)
-                   && e.key != NAN_DISPLAY
-                   && (   !this.valueCanContainSuffix
-                       || !this.suffix.includes(e.key))
-                   && (   !this.showHex 
-                       || !isHexDigit(e.key))
-                   && (   this.showHex
-                       ||    e.key != '.'
-                          && e.key != ',')
-                   && !(   ((      e.code == 'Minus'
-                                || e.code == 'NumpadSubtract')
-                             && !curVal.includes('-'))
-                        && this.min < 0)
-                ||     this.readOnly
-                   && !isArrowKey(e.code))
-                e.preventDefault();
+        //     if (      e.key.length == 1
+        //            && !isDigit(e.key)
+        //            && e.key != NAN_DISPLAY
+        //            && (   !this.valueCanContainSuffix
+        //                || !this.suffix.includes(e.key))
+        //            && (   !this.showHex 
+        //                || !isHexDigit(e.key))
+        //            && (   this.showHex
+        //                ||    e.key != '.'
+        //                   && e.key != ',')
+        //            && !(   ((      e.code == 'Minus'
+        //                         || e.code == 'NumpadSubtract')
+        //                      && !curVal.includes('-'))
+        //                 && this.min < 0)
+        //         ||     this.readOnly
+        //            && !isArrowKey(e.code))
+        //         e.preventDefault();
 
-            if (    e.key == '.'
-                &&  this.dec == 0
-                && !this.allowEditDecimals)
-                e.preventDefault();
+        //     if (    e.key == '.'
+        //         &&  this.dec == 0
+        //         && !this.allowEditDecimals)
+        //         e.preventDefault();
                 
                     
-            curVal =
-                   curVal ==     NAN_DISPLAY
-                || curVal == UNKNOWN_DISPLAY
-                ? ''
-                :   curVal.substring(0, this.textbox.selectionStart) 
-                  + curVal.substring(this.textbox.selectionEnd, curVal.length);
+        //     curVal =
+        //            curVal ==     NAN_DISPLAY
+        //         || curVal == UNKNOWN_DISPLAY
+        //         ? ''
+        //         :   curVal.substring(0, this.textbox.selectionStart) 
+        //           + curVal.substring(this.textbox.selectionEnd, curVal.length);
 
                   
-            const nextVal = parseFloat(curVal + e.key);
+        //     const nextVal = parseFloat(curVal + e.key);
 
-            if (   nextVal < this.min - 0.001
-                || nextVal > this.max)
-                e.preventDefault();            
-        }
+        //     if (   nextVal < this.min - 0.001
+        //         || nextVal > this.max)
+        //         e.preventDefault();            
+        // }
     });
 
 
@@ -307,10 +307,20 @@ NumberControl.prototype.initTextbox = function()
         value = value.replace(this.suffix, '');
         
         
+        let isHex = this.showHex;
+
+        if (   value.length >= 2
+            && value.substring(0, 2) == '0x')
+        {
+            isHex = true;
+            value = value.substring(2);   
+        }
+
+        
         let val = 
             value.trim() == NAN_DISPLAY 
             ? Number.NaN 
-            : (this.showHex 
+            : (isHex
                ? parseInt(value, 16) 
                : parseFloat(value));
 
@@ -318,7 +328,7 @@ NumberControl.prototype.initTextbox = function()
         let savedVal = 
             savedValue.trim() == NAN_DISPLAY  
             ? Number.NaN 
-            : (this.showHex 
+            : (isHex
                ? parseInt(savedValue, 16) 
                : parseFloat(savedValue));
 

@@ -3732,6 +3732,7 @@ a
 
                 <p>Parameter inputs and outputs are now colored according to the parameter's data type.</p>
                 <p>Added remove button to invalid connection error.</p>
+                <p>Hex number values can now be entered by prefixing them with 0x.</p>
                 <p>Fixed UI bugs.</p>
                 
                 <p><br/><br/><div id='chkHideWhatsNew'></div></p>
@@ -37583,48 +37584,48 @@ NumberControl.prototype.initTextbox = function()
             
             this.updateTextbox();
         }
-        else 
-        {
-            let curVal = this.textbox.value;
+        // else 
+        // {
+        //     let curVal = this.textbox.value;
 
-            if (      e.key.length == 1
-                   && !isDigit(e.key)
-                   && e.key != NAN_DISPLAY
-                   && (   !this.valueCanContainSuffix
-                       || !this.suffix.includes(e.key))
-                   && (   !this.showHex 
-                       || !isHexDigit(e.key))
-                   && (   this.showHex
-                       ||    e.key != '.'
-                          && e.key != ',')
-                   && !(   ((      e.code == 'Minus'
-                                || e.code == 'NumpadSubtract')
-                             && !curVal.includes('-'))
-                        && this.min < 0)
-                ||     this.readOnly
-                   && !isArrowKey(e.code))
-                e.preventDefault();
+        //     if (      e.key.length == 1
+        //            && !isDigit(e.key)
+        //            && e.key != NAN_DISPLAY
+        //            && (   !this.valueCanContainSuffix
+        //                || !this.suffix.includes(e.key))
+        //            && (   !this.showHex 
+        //                || !isHexDigit(e.key))
+        //            && (   this.showHex
+        //                ||    e.key != '.'
+        //                   && e.key != ',')
+        //            && !(   ((      e.code == 'Minus'
+        //                         || e.code == 'NumpadSubtract')
+        //                      && !curVal.includes('-'))
+        //                 && this.min < 0)
+        //         ||     this.readOnly
+        //            && !isArrowKey(e.code))
+        //         e.preventDefault();
 
-            if (    e.key == '.'
-                &&  this.dec == 0
-                && !this.allowEditDecimals)
-                e.preventDefault();
+        //     if (    e.key == '.'
+        //         &&  this.dec == 0
+        //         && !this.allowEditDecimals)
+        //         e.preventDefault();
                 
                     
-            curVal =
-                   curVal ==     NAN_DISPLAY
-                || curVal == UNKNOWN_DISPLAY
-                ? ''
-                :   curVal.substring(0, this.textbox.selectionStart) 
-                  + curVal.substring(this.textbox.selectionEnd, curVal.length);
+        //     curVal =
+        //            curVal ==     NAN_DISPLAY
+        //         || curVal == UNKNOWN_DISPLAY
+        //         ? ''
+        //         :   curVal.substring(0, this.textbox.selectionStart) 
+        //           + curVal.substring(this.textbox.selectionEnd, curVal.length);
 
                   
-            const nextVal = parseFloat(curVal + e.key);
+        //     const nextVal = parseFloat(curVal + e.key);
 
-            if (   nextVal < this.min - 0.001
-                || nextVal > this.max)
-                e.preventDefault();            
-        }
+        //     if (   nextVal < this.min - 0.001
+        //         || nextVal > this.max)
+        //         e.preventDefault();            
+        // }
     });
 
 
@@ -37693,10 +37694,20 @@ NumberControl.prototype.initTextbox = function()
         value = value.replace(this.suffix, '');
         
         
+        let isHex = this.showHex;
+
+        if (   value.length >= 2
+            && value.substring(0, 2) == '0x')
+        {
+            isHex = true;
+            value = value.substring(2);   
+        }
+
+        
         let val = 
             value.trim() == NAN_DISPLAY 
             ? Number.NaN 
-            : (this.showHex 
+            : (isHex
                ? parseInt(value, 16) 
                : parseFloat(value));
 
@@ -37704,7 +37715,7 @@ NumberControl.prototype.initTextbox = function()
         let savedVal = 
             savedValue.trim() == NAN_DISPLAY  
             ? Number.NaN 
-            : (this.showHex 
+            : (isHex
                ? parseInt(savedValue, 16) 
                : parseFloat(savedValue));
 
@@ -39402,32 +39413,32 @@ ColorControl.prototype.initTextbox = function()
             
             this.updateTextbox();
         }
-        else 
-        {
-            let curVal = this.textbox.value;
+        // else 
+        // {
+        //     let curVal = this.textbox.value;
 
-            if (      e.key.length == 1
-                   && e.key != NAN_DISPLAY
-                   && !isDigit(e.key)
-                   && !isSimpleLatinLetter(e.key)
-                ||     this.readOnly
-                   && !isArrowKey(e.code))
-                e.preventDefault();
+        //     if (      e.key.length == 1
+        //            && e.key != NAN_DISPLAY
+        //            && !isDigit(e.key)
+        //            && !isSimpleLatinLetter(e.key)
+        //         ||     this.readOnly
+        //            && !isArrowKey(e.code))
+        //         e.preventDefault();
 
-            curVal =
-                   curVal ==     NAN_DISPLAY
-                || curVal == UNKNOWN_DISPLAY
-                ? ''
-                :   curVal.substring(0, this.textbox.selectionStart) 
-                  + curVal.substring(this.textbox.selectionEnd, curVal.length);
+        //     curVal =
+        //            curVal ==     NAN_DISPLAY
+        //         || curVal == UNKNOWN_DISPLAY
+        //         ? ''
+        //         :   curVal.substring(0, this.textbox.selectionStart) 
+        //           + curVal.substring(this.textbox.selectionEnd, curVal.length);
 
                   
-            const nextVal = parseFloat(curVal + e.key);
+        //     const nextVal = parseFloat(curVal + e.key);
 
-            if (   nextVal < this.min - 0.001
-                || nextVal > this.max)
-                e.preventDefault();            
-        }
+        //     if (   nextVal < this.min - 0.001
+        //         || nextVal > this.max)
+        //         e.preventDefault();            
+        // }
     });
 
 
@@ -62561,8 +62572,8 @@ const rgbActiveNumberDark  = hex2rgb('#1785CE');
 const rgbTextLight       = hex2rgb('#ECE0B8');
 const rgbActiveTextLight = hex2rgb('#F6C953');
  
-const rgbTextDark        = hex2rgb('#796A43');
-const rgbActiveTextDark  = hex2rgb('#F0C75B');
+const rgbTextDark        = hex2rgb('#766539');
+const rgbActiveTextDark  = hex2rgb('#F4C956');
 
 
 const rgbColor             = hex2rgb('#c38fc5');   
@@ -62572,7 +62583,7 @@ const rgbActiveColor       = hex2rgb('#df2ae2');
 const rgbShapeLight        = hex2rgb('#EBD1C3');
 const rgbActiveShapeLight  = hex2rgb('#E1765F');
  
-const rgbShapeDark         = hex2rgb('#5E4436');
+const rgbShapeDark         = hex2rgb('#775040');
 const rgbActiveShapeDark   = hex2rgb('#E1765F');
 
 

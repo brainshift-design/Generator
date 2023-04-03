@@ -19,8 +19,8 @@ const rgbActiveNumberDark  = hex2rgb('#1785CE');
 const rgbTextLight       = hex2rgb('#ECE0B8');
 const rgbActiveTextLight = hex2rgb('#F6C953');
  
-const rgbTextDark        = hex2rgb('#796A43');
-const rgbActiveTextDark  = hex2rgb('#F0C75B');
+const rgbTextDark        = hex2rgb('#766539');
+const rgbActiveTextDark  = hex2rgb('#F4C956');
 
 
 const rgbColor             = hex2rgb('#c38fc5');   
@@ -30,7 +30,7 @@ const rgbActiveColor       = hex2rgb('#df2ae2');
 const rgbShapeLight        = hex2rgb('#EBD1C3');
 const rgbActiveShapeLight  = hex2rgb('#E1765F');
  
-const rgbShapeDark         = hex2rgb('#5E4436');
+const rgbShapeDark         = hex2rgb('#775040');
 const rgbActiveShapeDark   = hex2rgb('#E1765F');
 
 

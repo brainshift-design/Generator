@@ -155,32 +155,32 @@ ColorControl.prototype.initTextbox = function()
             
             this.updateTextbox();
         }
-        else 
-        {
-            let curVal = this.textbox.value;
+        // else 
+        // {
+        //     let curVal = this.textbox.value;
 
-            if (      e.key.length == 1
-                   && e.key != NAN_DISPLAY
-                   && !isDigit(e.key)
-                   && !isSimpleLatinLetter(e.key)
-                ||     this.readOnly
-                   && !isArrowKey(e.code))
-                e.preventDefault();
+        //     if (      e.key.length == 1
+        //            && e.key != NAN_DISPLAY
+        //            && !isDigit(e.key)
+        //            && !isSimpleLatinLetter(e.key)
+        //         ||     this.readOnly
+        //            && !isArrowKey(e.code))
+        //         e.preventDefault();
 
-            curVal =
-                   curVal ==     NAN_DISPLAY
-                || curVal == UNKNOWN_DISPLAY
-                ? ''
-                :   curVal.substring(0, this.textbox.selectionStart) 
-                  + curVal.substring(this.textbox.selectionEnd, curVal.length);
+        //     curVal =
+        //            curVal ==     NAN_DISPLAY
+        //         || curVal == UNKNOWN_DISPLAY
+        //         ? ''
+        //         :   curVal.substring(0, this.textbox.selectionStart) 
+        //           + curVal.substring(this.textbox.selectionEnd, curVal.length);
 
                   
-            const nextVal = parseFloat(curVal + e.key);
+        //     const nextVal = parseFloat(curVal + e.key);
 
-            if (   nextVal < this.min - 0.001
-                || nextVal > this.max)
-                e.preventDefault();            
-        }
+        //     if (   nextVal < this.min - 0.001
+        //         || nextVal > this.max)
+        //         e.preventDefault();            
+        // }
     });
 
 
