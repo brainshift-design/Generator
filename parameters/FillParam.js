@@ -96,21 +96,21 @@ extends Parameter
 
         this.controls[0].successOnFocusOut          = true;
         this.controls[0].div.style.display          = 'inline';
-        this.controls[0].div.style.width            = '56.5%';
+        this.controls[0].div.style.width            = '60%';
         this.controls[0].div.style.position         = 'absolute';
         this.controls[0].div.style.left             = 0;
 
     
         this.controls[1].successOnFocusOut          = true;
         this.controls[1].div.style.display          = 'inline';
-        this.controls[1].div.style.width            = '43.5%';
+        this.controls[1].div.style.width            = '40%';
         this.controls[1].div.style.position         = 'absolute';
         this.controls[1].div.style.right            = 0;
 
 
         this.controls[0].text.style.transform       = 'translateX(-41%)';
 
-        this.controls[1].text.style.transform       = 'translateX(-69%) \
+        this.controls[1].text.style.transform       = 'translateX(-68%) \
                                                        translateY(-50%)';
 
 
@@ -315,7 +315,7 @@ extends Parameter
             : rgbNoColorLight;
 
         const rgbaVal  = this.value.toRgba();
-        const rgbaText = getTextColorFromBackColor(rgbaVal, rgbaVal[3]);
+        const rgbaText = getTextColorFromBackColor(rgbaVal, 1);//rgbaVal[3]);
 
 
         const fillStyle = rgba2style(rgb_a(rgbaVal, this.controls[1].value/100));
@@ -384,6 +384,10 @@ extends Parameter
         this.controls[1]. backStyleDark  = 
         this.controls[1].valueStyleLight = 
         this.controls[1].valueStyleDark  = 'transparent';
+
+        this.controls[1].textbox.style.color      = rgba2style(rgbaText);
+        this.controls[1].textbox.style.background = 'transparent';
+
 
         this.controls[1].textStyleLight  = 
         this.controls[1].textStyleDark   = rgba2style(rgbaText);

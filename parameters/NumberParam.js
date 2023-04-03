@@ -68,8 +68,6 @@ extends NumberParamBase
             if (!e.detail.success)
                 return;
 
-            console.log('e.detail.value =',    e.detail.value);
-            console.log('e.detail.oldValue =', e.detail.oldValue);
 
             if (   Math.abs(e.detail.value - e.detail.oldValue) > Number.EPSILON
                 && dec >= oldDec)

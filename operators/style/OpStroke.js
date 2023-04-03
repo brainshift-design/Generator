@@ -145,6 +145,8 @@ extends OpColorBase
     {
         //console.log(this.id + '.OpStroke.updateHeader()');
 
+        Operator.prototype.updateHeader.call(this);
+
 
         const colors =
               this.inputIsShape
@@ -187,18 +189,15 @@ extends OpColorBase
 
         this.inputs[0] .colorLight = 
         this.inputs[0] .colorDark  = colors.input;
-        this.inputs[0] .wireColor  = this.paramFill.input.wireColor;
+        this.inputs[0] .wireColor  = colors.wire;
 
         this.outputs[0].colorLight =
         this.outputs[0].colorDark  = colors.output;
-        this.outputs[0].wireColor  = this.paramFill.output.wireColor;
+        this.outputs[0].wireColor  = colors.wire;
 
 
         this.updateWarningOverlay();
         this.updateWarningOverlayStyle(colors.back, this.inputIsShape ? -1 : 45);
-
-
-        Operator.prototype.updateHeader.call(this);
     }
 
 
@@ -242,8 +241,11 @@ extends OpColorBase
 
         const colors = super.getHeaderColors();
 
-        colors.back = rgb_a(colors.back, this.paramFill.value.opacity.value/100);
-        colors.text = getTextColorFromBackColor(colors.back, this.paramFill.value.opacity.value/100);
+        colors.back   = rgb_a(colors.back, this.paramFill.value.opacity.value/100);
+        colors.text   = getTextColorFromBackColor(colors.back, this.paramFill.value.opacity.value/100);
+        colors.input  = rgb_a(colors.text, 0.2);
+        colors.output = rgb_a(colors.text, 0.2);
+        colors.wire   = colors.back;
 
         return colors;
     }

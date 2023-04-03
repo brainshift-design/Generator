@@ -1,4 +1,4 @@
-const defNodeWidth    = 105;
+const defNodeWidth    = 104;
 const resizeEdgeWidth = 8;
 
 
