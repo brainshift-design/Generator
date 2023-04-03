@@ -3047,7 +3047,7 @@ a
 {
     display:     block;
     position:    relative;
-    box-shadow:  0 0 0 1px green inset;
+    /* box-shadow:  0 0 0 1px green inset; */
 }
 
 
@@ -3731,6 +3731,7 @@ a
 
                 <p>Parameter inputs and outputs are now colored according to the parameter's data type.</p>
                 <p>Added remove button to invalid connection error.</p>
+                <p>Fixed UI bugs.</p>
                 
                 <p><br/><br/><div id='chkHideWhatsNew'></div></p>
             </div>
@@ -16073,34 +16074,36 @@ function enableFeatures(subscription, beta)
 {
     updateMenuItemDisplay(menuItemEnableBetaFeatures.div, subscription);
 
-    updateMenuItemDisplay(btnFlow .div,                 subscription);
-    updateMenuItemDisplay(btnText .div,                 subscription && beta);
-    updateMenuItemDisplay(btnShape.div,                 subscription && beta);
-    updateMenuItemDisplay(btnGroup.div,                 false);//subscription && beta);
+    updateMenuItemDisplay(btnFlow                    .div, subscription);
+    updateMenuItemDisplay(btnText                    .div, subscription && beta);
+    updateMenuItemDisplay(btnShape                   .div, subscription && beta);
+    updateMenuItemDisplay(btnGroup                   .div, false);//subscription && beta);
 
-    updateMenuItemDisplay(menuItemLogObjectUpdates.div, subscription && beta);
+    updateMenuItemDisplay(menuItemLogObjectUpdates   .div, subscription && beta);
     
-    updateMenuItemDisplay(menuItemList.div,             subscription && beta);
-    updateMenuItemDisplay(menuFlowSep1.div,             subscription && beta);
-    updateMenuItemDisplay(menuItemItems.div,            subscription && beta);
-    updateMenuItemDisplay(menuItemSelect.div,           subscription && beta);
-    updateMenuItemDisplay(menuFlowSep2.div,             subscription && beta);
-    updateMenuItemDisplay(menuItemRepeat.div,           subscription && beta);
-    updateMenuItemDisplay(menuFlowSep3.div,             subscription && beta);
-    updateMenuItemDisplay(menuItemCache.div,            subscription && beta);
-    updateMenuItemDisplay(menuItemCopy.div,             subscription && beta);
-    updateMenuItemDisplay(menuItemCustomInputs.div,     false);//subscription && beta);
-    updateMenuItemDisplay(menuItemCustomOutputs.div,    false);//subscription && beta);
+    updateMenuItemDisplay(menuItemList               .div, subscription && beta);
+    updateMenuItemDisplay(menuFlowSep1               .div, subscription && beta);
+    updateMenuItemDisplay(menuItemItems              .div, subscription && beta);
+    updateMenuItemDisplay(menuItemSelect             .div, subscription && beta);
+    updateMenuItemDisplay(menuFlowSep2               .div, subscription && beta);
+    updateMenuItemDisplay(menuItemRepeat             .div, subscription && beta);
+    updateMenuItemDisplay(menuFlowSep3               .div, subscription && beta);
+    updateMenuItemDisplay(menuItemCache              .div, subscription && beta);
+    updateMenuItemDisplay(menuItemCopy               .div, subscription && beta);
+    updateMenuItemDisplay(menuItemCustomInputs       .div, false);//subscription && beta);
+    updateMenuItemDisplay(menuItemCustomOutputs      .div, false);//subscription && beta);
     
-    updateMenuItemDisplay(menuItemCorrectColor    .div, subscription);
-    updateMenuItemDisplay(menuItemColorSep1       .div, subscription);
-    updateMenuItemDisplay(menuItemColorblind      .div, subscription);
+    updateMenuItemDisplay(menuItemSeries             .div, subscription && beta);    
+    updateMenuItemDisplay(menuItemNumberSep1         .div, subscription && beta);
+    updateMenuItemDisplay(menuItemNumberConvertToText.div, subscription && beta);
+    
+    updateMenuItemDisplay(menuItemCorrectColor       .div, subscription);
+    updateMenuItemDisplay(menuItemColorSep1          .div, subscription);
+    updateMenuItemDisplay(menuItemColorblind         .div, subscription);
 
-    //updateMenuItemDisplay(menuItemStyleFill       .div, subscription && beta);
-    updateMenuItemDisplay(menuItemStyleStroke     .div, subscription && beta);
-    //updateMenuItemDisplay(menuItemStyleSep1       .div, subscription && beta);
-
-    updateMenuItemDisplay(menuItemSeries.div,           subscription && beta);    
+    //updateMenuItemDisplay(menuItemStyleFill        .div, subscription && beta);
+    updateMenuItemDisplay(menuItemStyleStroke        .div, subscription && beta);
+    //updateMenuItemDisplay(menuItemStyleSep1        .div, subscription && beta);
 
 
     graphView.graph.nodes.forEach(n => n.updateSubscribeStatus(subscription));
@@ -21561,11 +21564,11 @@ function switchToTextbox(node)
 {
     removeOpColorParamWires(node);
 
-    removeDivFrom(node.param1.div, node.inner);
-    removeDivFrom(node.param2.div, node.inner);
-    removeDivFrom(node.param3.div, node.inner);
+    removeDivFrom(node.param1.div, node.paramHolder);
+    removeDivFrom(node.param2.div, node.paramHolder);
+    removeDivFrom(node.param3.div, node.paramHolder);
         
-    appendDivTo(node.paramColor.div, node.inner);
+    appendDivTo(node.paramColor.div, node.paramHolder);
 }
 
 
@@ -21574,11 +21577,11 @@ function removeParamDivs(node)
 {
     removeOpColorParamWires(node);
 
-    removeDivFrom(node.param1.div,     node.inner);
-    removeDivFrom(node.param2.div,     node.inner);
-    removeDivFrom(node.param3.div,     node.inner);
+    removeDivFrom(node.param1.div,     node.paramHolder);
+    removeDivFrom(node.param2.div,     node.paramHolder);
+    removeDivFrom(node.param3.div,     node.paramHolder);
     
-    removeDivFrom(node.paramColor.div, node.inner);
+    removeDivFrom(node.paramColor.div, node.paramHolder);
 }
 
 
@@ -21598,11 +21601,11 @@ function removeOpColorParamWires(node)
 
 function switchToSliders(node)
 {
-    removeDivFrom(node.paramColor.div, node.inner);
+    removeDivFrom(node.paramColor.div, node.paramHolder);
 
-    appendDivTo(node.param1.div, node.inner);
-    appendDivTo(node.param2.div, node.inner);
-    appendDivTo(node.param3.div, node.inner);
+    appendDivTo(node.param1.div, node.paramHolder);
+    appendDivTo(node.param2.div, node.paramHolder);
+    appendDivTo(node.param3.div, node.paramHolder);
 }
 
 
@@ -36580,34 +36583,36 @@ function enableFeatures(subscription, beta)
 {
     updateMenuItemDisplay(menuItemEnableBetaFeatures.div, subscription);
 
-    updateMenuItemDisplay(btnFlow .div,                 subscription);
-    updateMenuItemDisplay(btnText .div,                 subscription && beta);
-    updateMenuItemDisplay(btnShape.div,                 subscription && beta);
-    updateMenuItemDisplay(btnGroup.div,                 false);//subscription && beta);
+    updateMenuItemDisplay(btnFlow                    .div, subscription);
+    updateMenuItemDisplay(btnText                    .div, subscription && beta);
+    updateMenuItemDisplay(btnShape                   .div, subscription && beta);
+    updateMenuItemDisplay(btnGroup                   .div, false);//subscription && beta);
 
-    updateMenuItemDisplay(menuItemLogObjectUpdates.div, subscription && beta);
+    updateMenuItemDisplay(menuItemLogObjectUpdates   .div, subscription && beta);
     
-    updateMenuItemDisplay(menuItemList.div,             subscription && beta);
-    updateMenuItemDisplay(menuFlowSep1.div,             subscription && beta);
-    updateMenuItemDisplay(menuItemItems.div,            subscription && beta);
-    updateMenuItemDisplay(menuItemSelect.div,           subscription && beta);
-    updateMenuItemDisplay(menuFlowSep2.div,             subscription && beta);
-    updateMenuItemDisplay(menuItemRepeat.div,           subscription && beta);
-    updateMenuItemDisplay(menuFlowSep3.div,             subscription && beta);
-    updateMenuItemDisplay(menuItemCache.div,            subscription && beta);
-    updateMenuItemDisplay(menuItemCopy.div,             subscription && beta);
-    updateMenuItemDisplay(menuItemCustomInputs.div,     false);//subscription && beta);
-    updateMenuItemDisplay(menuItemCustomOutputs.div,    false);//subscription && beta);
+    updateMenuItemDisplay(menuItemList               .div, subscription && beta);
+    updateMenuItemDisplay(menuFlowSep1               .div, subscription && beta);
+    updateMenuItemDisplay(menuItemItems              .div, subscription && beta);
+    updateMenuItemDisplay(menuItemSelect             .div, subscription && beta);
+    updateMenuItemDisplay(menuFlowSep2               .div, subscription && beta);
+    updateMenuItemDisplay(menuItemRepeat             .div, subscription && beta);
+    updateMenuItemDisplay(menuFlowSep3               .div, subscription && beta);
+    updateMenuItemDisplay(menuItemCache              .div, subscription && beta);
+    updateMenuItemDisplay(menuItemCopy               .div, subscription && beta);
+    updateMenuItemDisplay(menuItemCustomInputs       .div, false);//subscription && beta);
+    updateMenuItemDisplay(menuItemCustomOutputs      .div, false);//subscription && beta);
     
-    updateMenuItemDisplay(menuItemCorrectColor    .div, subscription);
-    updateMenuItemDisplay(menuItemColorSep1       .div, subscription);
-    updateMenuItemDisplay(menuItemColorblind      .div, subscription);
+    updateMenuItemDisplay(menuItemSeries             .div, subscription && beta);    
+    updateMenuItemDisplay(menuItemNumberSep1         .div, subscription && beta);
+    updateMenuItemDisplay(menuItemNumberConvertToText.div, subscription && beta);
+    
+    updateMenuItemDisplay(menuItemCorrectColor       .div, subscription);
+    updateMenuItemDisplay(menuItemColorSep1          .div, subscription);
+    updateMenuItemDisplay(menuItemColorblind         .div, subscription);
 
-    //updateMenuItemDisplay(menuItemStyleFill       .div, subscription && beta);
-    updateMenuItemDisplay(menuItemStyleStroke     .div, subscription && beta);
-    //updateMenuItemDisplay(menuItemStyleSep1       .div, subscription && beta);
-
-    updateMenuItemDisplay(menuItemSeries.div,           subscription && beta);    
+    //updateMenuItemDisplay(menuItemStyleFill        .div, subscription && beta);
+    updateMenuItemDisplay(menuItemStyleStroke        .div, subscription && beta);
+    //updateMenuItemDisplay(menuItemStyleSep1        .div, subscription && beta);
 
 
     graphView.graph.nodes.forEach(n => n.updateSubscribeStatus(subscription));
@@ -41069,7 +41074,8 @@ var menuItemCache;
 var menuItemCopy;
 
 var menuItemSeries;
-
+var menuItemNumberSep1;
+var menuItemNumberConvertToText;
 
 var menuItemColor;
 var menuItemCorrectColor;
@@ -41276,22 +41282,22 @@ function initGeneratorMenus()
     
     menuNumber = new Menu('Numbers', true, false);
     menuNumber.addItems([
-                         new MenuItem('Number',      {icon: iconNumber,       callback: e => actionManager.do(getCreateNodeAction(NUMBER,             btnNumber.div, getCreateOptions(e)))}),
-                         new MenuItem('',            {separator: true}),
-                         new MenuItem('Absolute',    {icon: iconAbsolute,     callback: e => actionManager.do(getCreateNodeAction(NUMBER_ABSOLUTE,    btnNumber.div, getCreateOptions(e)))}),
-                         new MenuItem('Round',       {icon: iconRound,        callback: e => actionManager.do(getCreateNodeAction(NUMBER_ROUND,       btnNumber.div, getCreateOptions(e)))}),
-                         new MenuItem('Limits',      {icon: iconLimits,       callback: e => actionManager.do(getCreateNodeAction(NUMBER_LIMITS,      btnNumber.div, getCreateOptions(e)))}),
-                         new MenuItem('',            {separator: true}),
-                         new MenuItem('Math',        {icon: iconMath,         childMenu: menuMath,      callback: e => actionManager.do(getCreateNodeAction(NUMBER_MATH,        btnNumber.div, getCreateOptions(e)))}),
-                         new MenuItem('Boolean',     {icon: iconBoolean,      childMenu: menuBoolean,   callback: e => actionManager.do(getCreateNodeAction(NUMBER_BOOLEAN,     btnNumber.div, getCreateOptions(e)))}),
-                         new MenuItem('Condition',   {icon: iconCondition,    childMenu: menuCondition, callback: e => actionManager.do(getCreateNodeAction(NUMBER_CONDITION,   btnNumber.div, getCreateOptions(e)))}),
-                         new MenuItem('',            {separator: true}),
-        menuItemSeries = new MenuItem('Series',      {icon: iconSeries,       callback: e => actionManager.do(getCreateNodeAction(NUMBER_SERIES,      btnNumber.div, getCreateOptions(e)))}),
-                         new MenuItem('Random',      {icon: iconRandom,       callback: e => actionManager.do(getCreateNodeAction(NUMBER_RANDOM,      btnNumber.div, getCreateOptions(e)))}),
-                         new MenuItem('',            {separator: true}),
-                         new MenuItem('Interpolate', {icon: iconInterpolate,  callback: e => actionManager.do(getCreateNodeAction(NUMBER_INTERPOLATE, btnNumber.div, getCreateOptions(e)))}),
-                         new MenuItem('',            {separator: true}),
-                         new MenuItem('To text',     {icon: iconNumberToText, callback: e => actionManager.do(getCreateNodeAction(NUMBER_TO_TEXT,     btnNumber.div, getCreateOptions(e)))})]);
+                                      new MenuItem('Number',          {icon: iconNumber,       callback: e => actionManager.do(getCreateNodeAction(NUMBER,             btnNumber.div, getCreateOptions(e)))}),
+                                      new MenuItem('',                {separator: true}),
+                                      new MenuItem('Absolute',        {icon: iconAbsolute,     callback: e => actionManager.do(getCreateNodeAction(NUMBER_ABSOLUTE,    btnNumber.div, getCreateOptions(e)))}),
+                                      new MenuItem('Round',           {icon: iconRound,        callback: e => actionManager.do(getCreateNodeAction(NUMBER_ROUND,       btnNumber.div, getCreateOptions(e)))}),
+                                      new MenuItem('Limits',          {icon: iconLimits,       callback: e => actionManager.do(getCreateNodeAction(NUMBER_LIMITS,      btnNumber.div, getCreateOptions(e)))}),
+                                      new MenuItem('',                {separator: true}),
+                                      new MenuItem('Math',            {icon: iconMath,         childMenu: menuMath,      callback: e => actionManager.do(getCreateNodeAction(NUMBER_MATH,        btnNumber.div, getCreateOptions(e)))}),
+                                      new MenuItem('Boolean',         {icon: iconBoolean,      childMenu: menuBoolean,   callback: e => actionManager.do(getCreateNodeAction(NUMBER_BOOLEAN,     btnNumber.div, getCreateOptions(e)))}),
+                                      new MenuItem('Condition',       {icon: iconCondition,    childMenu: menuCondition, callback: e => actionManager.do(getCreateNodeAction(NUMBER_CONDITION,   btnNumber.div, getCreateOptions(e)))}),
+                                      new MenuItem('',                {separator: true}),
+        menuItemSeries              = new MenuItem('Series',          {icon: iconSeries,       callback: e => actionManager.do(getCreateNodeAction(NUMBER_SERIES,      btnNumber.div, getCreateOptions(e)))}),
+                                      new MenuItem('Random',          {icon: iconRandom,       callback: e => actionManager.do(getCreateNodeAction(NUMBER_RANDOM,      btnNumber.div, getCreateOptions(e)))}),
+                                      new MenuItem('',                {separator: true}),
+                                      new MenuItem('Interpolate',     {icon: iconInterpolate,  callback: e => actionManager.do(getCreateNodeAction(NUMBER_INTERPOLATE, btnNumber.div, getCreateOptions(e)))}),
+        menuItemNumberSep1          = new MenuItem('',                {separator: true}),
+        menuItemNumberConvertToText = new MenuItem('Convert to text', {icon: iconNumberToText, callback: e => actionManager.do(getCreateNodeAction(NUMBER_TO_TEXT,     btnNumber.div, getCreateOptions(e)))})]);
         
     
     menuString = new Menu('Text nodes', true, false);
@@ -48617,7 +48623,7 @@ class Operator
     inputControls;
     outputControls;
 
-    paramBack;
+    paramHolder;
     //hiddenParamBack;
 
     subscribeCover;
@@ -48839,7 +48845,7 @@ class Operator
         param.volatile = volatile;
 
         this.params.push(param);
-        this.paramBack.appendChild(param.div);
+        this.paramHolder.appendChild(param.div);
 
         if (param. input) this. inputs.push(param. input);
         if (param.output) this.outputs.push(param.output);
@@ -48855,7 +48861,7 @@ class Operator
         param.volatile = volatile;
 
         this.params.splice(index, 0, param);
-        this.paramBack.insertBefore(param.div, this.paramBack.children[index]);
+        this.paramHolder.insertBefore(param.div, this.paramHolder.children[index]);
 
         if (param. input) this. inputs.splice(index, 0, param. input);
         if (param.output) this.outputs.splice(index, 0, param.output);
@@ -48918,8 +48924,8 @@ class Operator
         }
 
 
-        if (this.paramBack.contains(param.div))
-            this.paramBack.removeChild(param.div);
+        if (this.paramHolder.contains(param.div))
+            this.paramHolder.removeChild(param.div);
     
         removeFromArray(this.params, param);
 
@@ -49723,7 +49729,7 @@ Operator.prototype.createNode = function()
     });
 
     
-    this.paramBack       = createDiv('nodeParamBack');
+    this.paramHolder       = createDiv('nodeParamBack');
     //this.hiddenParamBack = createDiv('nodeHiddenParamBack');
 
 
@@ -49731,7 +49737,7 @@ Operator.prototype.createNode = function()
     this.createInfo();
 
 
-    this.inner.appendChild(this.paramBack);
+    this.inner.appendChild(this.paramHolder);
 
 
     this.subscribeCover = createDiv('subscribeCover');
@@ -50494,7 +50500,7 @@ Operator.prototype.updateWireTransform = function()
 
 Operator.prototype.updateNode = function() 
 {
-    // this.      paramBack.style.backgroundColor = darkMode ? '#363636' : 'white';
+    // this.      paramHolder.style.backgroundColor = darkMode ? '#363636' : 'white';
     // this.hiddenParamBack.style.backgroundColor = darkMode ? '#363636' : 'white';
 
     this.updateHeader();
@@ -50623,10 +50629,10 @@ Operator.prototype.updateSubscribeStatus = function(subscribed)
 
 // Operator.prototype.updateParamBack = function(headerHeight)
 // {
-//     this.      paramBack.style.height =
+//     this.      paramHolder.style.height =
 //     this.hiddenParamBack.style.height = this.measureData.innerOffset.height - headerHeight;
 
-//     this.      paramBack.style.top    =
+//     this.      paramHolder.style.top    =
 //     this.hiddenParamBack.style.top    = headerHeight;
 // }
 
@@ -54425,7 +54431,7 @@ extends OpColorBase
 
 
         this.colorBack = createDiv('colorBack');
-        this.inner.appendChild(this.colorBack);
+        this.inner.insertBefore(this.colorBack, this.paramHolder);
 
 
         this.addInput(new Input(COLOR_TYPES, getColorInputValuesForUndo, this.input_getBackInitValue));
@@ -54485,9 +54491,9 @@ extends OpColorBase
 
 
         // hex is default, remove default sliders
-        this.inner.removeChild(this.param1.div);
-        this.inner.removeChild(this.param2.div);
-        this.inner.removeChild(this.param3.div);
+        this.paramHolder.removeChild(this.param1.div);
+        this.paramHolder.removeChild(this.param2.div);
+        this.paramHolder.removeChild(this.param3.div);
 
         
         this.paramColor.controls[0].showColor = false;
@@ -55365,11 +55371,11 @@ function switchToTextbox(node)
 {
     removeOpColorParamWires(node);
 
-    removeDivFrom(node.param1.div, node.inner);
-    removeDivFrom(node.param2.div, node.inner);
-    removeDivFrom(node.param3.div, node.inner);
+    removeDivFrom(node.param1.div, node.paramHolder);
+    removeDivFrom(node.param2.div, node.paramHolder);
+    removeDivFrom(node.param3.div, node.paramHolder);
         
-    appendDivTo(node.paramColor.div, node.inner);
+    appendDivTo(node.paramColor.div, node.paramHolder);
 }
 
 
@@ -55378,11 +55384,11 @@ function removeParamDivs(node)
 {
     removeOpColorParamWires(node);
 
-    removeDivFrom(node.param1.div,     node.inner);
-    removeDivFrom(node.param2.div,     node.inner);
-    removeDivFrom(node.param3.div,     node.inner);
+    removeDivFrom(node.param1.div,     node.paramHolder);
+    removeDivFrom(node.param2.div,     node.paramHolder);
+    removeDivFrom(node.param3.div,     node.paramHolder);
     
-    removeDivFrom(node.paramColor.div, node.inner);
+    removeDivFrom(node.paramColor.div, node.paramHolder);
 }
 
 
@@ -55402,11 +55408,11 @@ function removeOpColorParamWires(node)
 
 function switchToSliders(node)
 {
-    removeDivFrom(node.paramColor.div, node.inner);
+    removeDivFrom(node.paramColor.div, node.paramHolder);
 
-    appendDivTo(node.param1.div, node.inner);
-    appendDivTo(node.param2.div, node.inner);
-    appendDivTo(node.param3.div, node.inner);
+    appendDivTo(node.param1.div, node.paramHolder);
+    appendDivTo(node.param2.div, node.paramHolder);
+    appendDivTo(node.param3.div, node.paramHolder);
 }
 
 
@@ -57172,11 +57178,11 @@ function showOpColorInterpolateGammaControl(node, show)
 {
     if (    show
         && !node.inner.contains(node.paramGamma.div))
-        node.inner.appendChild(node.paramGamma.div);
+        node.paramHolder.appendChild(node.paramGamma.div);
 
     else if (!show
            && node.inner.contains(node.paramGamma.div))
-        node.inner.removeChild(node.paramGamma.div);
+        node.paramHolder.removeChild(node.paramGamma.div);
 }
 
 

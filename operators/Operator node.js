@@ -54,7 +54,7 @@ Operator.prototype.createNode = function()
     });
 
     
-    this.paramBack       = createDiv('nodeParamBack');
+    this.paramHolder       = createDiv('nodeParamBack');
     //this.hiddenParamBack = createDiv('nodeHiddenParamBack');
 
 
@@ -62,7 +62,7 @@ Operator.prototype.createNode = function()
     this.createInfo();
 
 
-    this.inner.appendChild(this.paramBack);
+    this.inner.appendChild(this.paramHolder);
 
 
     this.subscribeCover = createDiv('subscribeCover');

@@ -85,7 +85,7 @@ class Operator
     inputControls;
     outputControls;
 
-    paramBack;
+    paramHolder;
     //hiddenParamBack;
 
     subscribeCover;
@@ -307,7 +307,7 @@ class Operator
         param.volatile = volatile;
 
         this.params.push(param);
-        this.paramBack.appendChild(param.div);
+        this.paramHolder.appendChild(param.div);
 
         if (param. input) this. inputs.push(param. input);
         if (param.output) this.outputs.push(param.output);
@@ -323,7 +323,7 @@ class Operator
         param.volatile = volatile;
 
         this.params.splice(index, 0, param);
-        this.paramBack.insertBefore(param.div, this.paramBack.children[index]);
+        this.paramHolder.insertBefore(param.div, this.paramHolder.children[index]);
 
         if (param. input) this. inputs.splice(index, 0, param. input);
         if (param.output) this.outputs.splice(index, 0, param.output);
@@ -386,8 +386,8 @@ class Operator
         }
 
 
-        if (this.paramBack.contains(param.div))
-            this.paramBack.removeChild(param.div);
+        if (this.paramHolder.contains(param.div))
+            this.paramHolder.removeChild(param.div);
     
         removeFromArray(this.params, param);
 

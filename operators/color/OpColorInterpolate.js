@@ -119,9 +119,9 @@ function showOpColorInterpolateGammaControl(node, show)
 {
     if (    show
         && !node.inner.contains(node.paramGamma.div))
-        node.inner.appendChild(node.paramGamma.div);
+        node.paramHolder.appendChild(node.paramGamma.div);
 
     else if (!show
            && node.inner.contains(node.paramGamma.div))
-        node.inner.removeChild(node.paramGamma.div);
+        node.paramHolder.removeChild(node.paramGamma.div);
 }

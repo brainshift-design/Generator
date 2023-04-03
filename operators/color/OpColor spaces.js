@@ -268,11 +268,11 @@ function switchToTextbox(node)
 {
     removeOpColorParamWires(node);
 
-    removeDivFrom(node.param1.div, node.inner);
-    removeDivFrom(node.param2.div, node.inner);
-    removeDivFrom(node.param3.div, node.inner);
+    removeDivFrom(node.param1.div, node.paramHolder);
+    removeDivFrom(node.param2.div, node.paramHolder);
+    removeDivFrom(node.param3.div, node.paramHolder);
         
-    appendDivTo(node.paramColor.div, node.inner);
+    appendDivTo(node.paramColor.div, node.paramHolder);
 }
 
 
@@ -281,11 +281,11 @@ function removeParamDivs(node)
 {
     removeOpColorParamWires(node);
 
-    removeDivFrom(node.param1.div,     node.inner);
-    removeDivFrom(node.param2.div,     node.inner);
-    removeDivFrom(node.param3.div,     node.inner);
+    removeDivFrom(node.param1.div,     node.paramHolder);
+    removeDivFrom(node.param2.div,     node.paramHolder);
+    removeDivFrom(node.param3.div,     node.paramHolder);
     
-    removeDivFrom(node.paramColor.div, node.inner);
+    removeDivFrom(node.paramColor.div, node.paramHolder);
 }
 
 
@@ -305,11 +305,11 @@ function removeOpColorParamWires(node)
 
 function switchToSliders(node)
 {
-    removeDivFrom(node.paramColor.div, node.inner);
+    removeDivFrom(node.paramColor.div, node.paramHolder);
 
-    appendDivTo(node.param1.div, node.inner);
-    appendDivTo(node.param2.div, node.inner);
-    appendDivTo(node.param3.div, node.inner);
+    appendDivTo(node.param1.div, node.paramHolder);
+    appendDivTo(node.param2.div, node.paramHolder);
+    appendDivTo(node.param3.div, node.paramHolder);
 }
 
 

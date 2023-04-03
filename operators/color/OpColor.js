@@ -36,7 +36,7 @@ extends OpColorBase
 
 
         this.colorBack = createDiv('colorBack');
-        this.inner.appendChild(this.colorBack);
+        this.inner.insertBefore(this.colorBack, this.paramHolder);
 
 
         this.addInput(new Input(COLOR_TYPES, getColorInputValuesForUndo, this.input_getBackInitValue));
@@ -96,9 +96,9 @@ extends OpColorBase
 
 
         // hex is default, remove default sliders
-        this.inner.removeChild(this.param1.div);
-        this.inner.removeChild(this.param2.div);
-        this.inner.removeChild(this.param3.div);
+        this.paramHolder.removeChild(this.param1.div);
+        this.paramHolder.removeChild(this.param2.div);
+        this.paramHolder.removeChild(this.param3.div);
 
         
         this.paramColor.controls[0].showColor = false;

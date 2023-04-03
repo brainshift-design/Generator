@@ -31,7 +31,7 @@ Operator.prototype.updateWireTransform = function()
 
 Operator.prototype.updateNode = function() 
 {
-    // this.      paramBack.style.backgroundColor = darkMode ? '#363636' : 'white';
+    // this.      paramHolder.style.backgroundColor = darkMode ? '#363636' : 'white';
     // this.hiddenParamBack.style.backgroundColor = darkMode ? '#363636' : 'white';
 
     this.updateHeader();
@@ -160,10 +160,10 @@ Operator.prototype.updateSubscribeStatus = function(subscribed)
 
 // Operator.prototype.updateParamBack = function(headerHeight)
 // {
-//     this.      paramBack.style.height =
+//     this.      paramHolder.style.height =
 //     this.hiddenParamBack.style.height = this.measureData.innerOffset.height - headerHeight;
 
-//     this.      paramBack.style.top    =
+//     this.      paramHolder.style.top    =
 //     this.hiddenParamBack.style.top    = headerHeight;
 // }
 

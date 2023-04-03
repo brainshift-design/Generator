@@ -219,34 +219,36 @@ function enableFeatures(subscription, beta)
 {
     updateMenuItemDisplay(menuItemEnableBetaFeatures.div, subscription);
 
-    updateMenuItemDisplay(btnFlow .div,                 subscription);
-    updateMenuItemDisplay(btnText .div,                 subscription && beta);
-    updateMenuItemDisplay(btnShape.div,                 subscription && beta);
-    updateMenuItemDisplay(btnGroup.div,                 false);//subscription && beta);
+    updateMenuItemDisplay(btnFlow                    .div, subscription);
+    updateMenuItemDisplay(btnText                    .div, subscription && beta);
+    updateMenuItemDisplay(btnShape                   .div, subscription && beta);
+    updateMenuItemDisplay(btnGroup                   .div, false);//subscription && beta);
 
-    updateMenuItemDisplay(menuItemLogObjectUpdates.div, subscription && beta);
+    updateMenuItemDisplay(menuItemLogObjectUpdates   .div, subscription && beta);
     
-    updateMenuItemDisplay(menuItemList.div,             subscription && beta);
-    updateMenuItemDisplay(menuFlowSep1.div,             subscription && beta);
-    updateMenuItemDisplay(menuItemItems.div,            subscription && beta);
-    updateMenuItemDisplay(menuItemSelect.div,           subscription && beta);
-    updateMenuItemDisplay(menuFlowSep2.div,             subscription && beta);
-    updateMenuItemDisplay(menuItemRepeat.div,           subscription && beta);
-    updateMenuItemDisplay(menuFlowSep3.div,             subscription && beta);
-    updateMenuItemDisplay(menuItemCache.div,            subscription && beta);
-    updateMenuItemDisplay(menuItemCopy.div,             subscription && beta);
-    updateMenuItemDisplay(menuItemCustomInputs.div,     false);//subscription && beta);
-    updateMenuItemDisplay(menuItemCustomOutputs.div,    false);//subscription && beta);
+    updateMenuItemDisplay(menuItemList               .div, subscription && beta);
+    updateMenuItemDisplay(menuFlowSep1               .div, subscription && beta);
+    updateMenuItemDisplay(menuItemItems              .div, subscription && beta);
+    updateMenuItemDisplay(menuItemSelect             .div, subscription && beta);
+    updateMenuItemDisplay(menuFlowSep2               .div, subscription && beta);
+    updateMenuItemDisplay(menuItemRepeat             .div, subscription && beta);
+    updateMenuItemDisplay(menuFlowSep3               .div, subscription && beta);
+    updateMenuItemDisplay(menuItemCache              .div, subscription && beta);
+    updateMenuItemDisplay(menuItemCopy               .div, subscription && beta);
+    updateMenuItemDisplay(menuItemCustomInputs       .div, false);//subscription && beta);
+    updateMenuItemDisplay(menuItemCustomOutputs      .div, false);//subscription && beta);
     
-    updateMenuItemDisplay(menuItemCorrectColor    .div, subscription);
-    updateMenuItemDisplay(menuItemColorSep1       .div, subscription);
-    updateMenuItemDisplay(menuItemColorblind      .div, subscription);
+    updateMenuItemDisplay(menuItemSeries             .div, subscription && beta);    
+    updateMenuItemDisplay(menuItemNumberSep1         .div, subscription && beta);
+    updateMenuItemDisplay(menuItemNumberConvertToText.div, subscription && beta);
+    
+    updateMenuItemDisplay(menuItemCorrectColor       .div, subscription);
+    updateMenuItemDisplay(menuItemColorSep1          .div, subscription);
+    updateMenuItemDisplay(menuItemColorblind         .div, subscription);
 
-    //updateMenuItemDisplay(menuItemStyleFill       .div, subscription && beta);
-    updateMenuItemDisplay(menuItemStyleStroke     .div, subscription && beta);
-    //updateMenuItemDisplay(menuItemStyleSep1       .div, subscription && beta);
-
-    updateMenuItemDisplay(menuItemSeries.div,           subscription && beta);    
+    //updateMenuItemDisplay(menuItemStyleFill        .div, subscription && beta);
+    updateMenuItemDisplay(menuItemStyleStroke        .div, subscription && beta);
+    //updateMenuItemDisplay(menuItemStyleSep1        .div, subscription && beta);
 
 
     graphView.graph.nodes.forEach(n => n.updateSubscribeStatus(subscription));
