@@ -41,8 +41,8 @@ TextControl.prototype.initTextarea = function()
 
         if (e.button == 2)
         {
-            initTextMenu(this.textbox);
-            menuText.showAt(e.clientX, e.clientY, false);
+            initTextboxMenu(this.textbox);
+            menuTextbox.showAt(e.clientX, e.clientY, false);
         }
 
 
@@ -155,6 +155,8 @@ TextControl.prototype.initTextarea = function()
     
     this.textbox.addEventListener('focus', () =>
     {
+        hideAllMenus();
+        
         if (currentTooltip) 
             hideTooltip(currentTooltip);
     });

@@ -48,6 +48,7 @@ var menuSelectParam;
 var menuRemoveLicense;
 
 var menuText;
+var menuTextbox;
 
 
 var menuNodeData;
@@ -218,26 +219,26 @@ function initGeneratorMenus()
                             // new MenuItem('Delete all saved connections',       {callback:      () => { hideAllMenus(); uiQueueMessageToFigma({cmd: 'figRemoveAllSavedConnections'}); }}),
                             // new MenuItem('',                                   {separator: true }),
                             // new MenuItem('Delete all style links',             {callback:      () => { hideAllMenus(); uiRemovePluginDataFromAllLocalStyles(); }}),
-                                        new MenuItem('',                                   {separator: true }),
-        menuItemLogRequests           = new MenuItem('Log\u2008requests',                  {checkCallback: () => settings.logRequests     ,      callback: () => updateSettingAndMenu('logRequests',                      true, !settings.logRequests     ), setting: true}),
-        menuItemLogValueUpdates       = new MenuItem('Log\u2008values',                    {checkCallback: () => settings.logValueUpdates ,      callback: () => updateSettingAndMenu('logValueUpdates',                  true, !settings.logValueUpdates ), setting: true}),
-        menuItemLogObjectUpdates      = new MenuItem('Log\u2008objects',                   {checkCallback: () => settings.logObjectUpdates,      callback: () => updateSettingAndMenu('logObjectUpdates',                 true, !settings.logObjectUpdates), setting: true}),
-        menuItemLogStyleUpdates       = new MenuItem('Log\u2008styles',                    {checkCallback: () => settings.logStyleUpdates ,      callback: () => updateSettingAndMenu('logStyleUpdates',                  true, !settings.logStyleUpdates ), setting: true}),
-                                        new MenuItem('',                                   {separator: true}),                   
-        menuItemLogRawRequests        = new MenuItem('Log\u2008raw\u2008requests',         {checkCallback: () => settings.logRawRequests  ,      callback: () => updateSettingAndMenu('logRawRequests',                   true, !settings.logRawRequests  ), setting: true}),
-        menuItemLogRawValues          = new MenuItem('Log\u2008raw\u2008values',           {checkCallback: () => settings.logRawValues    ,      callback: () => updateSettingAndMenu('logRawValues',                     true, !settings.logRawValues    ), setting: true}),
-                                        new MenuItem('',                                   {separator: true}),                   
-        menuItemLogLoading            = new MenuItem('Log\u2008load\u2008startup',         {checkCallback: () => settings.logLoading      ,      callback: () => updateSettingAndMenu('logLoading',                       true, !settings.logLoading      ), setting: true}),
-                                        new MenuItem('',                                   {separator: true}),                   
-        menuItemLogRawLoadNodes       = new MenuItem('Log\u2008load nodes',       {checkCallback: () => settings.logRawLoadNodes ,      callback: () => updateSettingAndMenu('logRawLoadNodes',                  true, !settings.logRawLoadNodes ), setting: true}),
-        menuItemLogRawLoadConnections = new MenuItem('Log\u2008load connections', {checkCallback: () => settings.logRawLoadConnections, callback: () => updateSettingAndMenu('logRawLoadConnections', true, !settings.logRawLoadConnections), setting: true}),
-                                        new MenuItem('',                                   {separator: true}),                   
-        menuItemLogRawSaveNodes       = new MenuItem('Log\u2008save nodes',       {checkCallback: () => settings.logRawSaveNodes ,      callback: () => updateSettingAndMenu('logRawSaveNodes',                  true, !settings.logRawSaveNodes ), setting: true}),
-        menuItemLogRawSaveConnections = new MenuItem('Log\u2008save connections', {checkCallback: () => settings.logRawSaveConnections, callback: () => updateSettingAndMenu('logRawSaveConnections', true, !settings.logRawSaveConnections), setting: true}),
-                                        new MenuItem('',                                   {separator: true}),   
-        menuItemLogMessages           = new MenuItem('Log\u2008messages',                  {checkCallback: () => settings.logMessages     ,      callback: () => updateSettingAndMenu('logMessages',                      true, !settings.logMessages     ), setting: true}),
-                                        new MenuItem('',                                   {separator: true}),   
-        menuItemLogActions            = new MenuItem('Log\u2008actions',                   {checkCallback: () => settings.logActions      ,      callback: () => updateSettingAndMenu('logActions',                       true, !settings.logActions      ), setting: true})]);
+                                        new MenuItem('',                           {separator: true }),
+        menuItemLogRequests           = new MenuItem('Log\u2008requests',          {checkCallback: () => settings.logRequests     ,      callback: () => updateSettingAndMenu('logRequests',           true, !settings.logRequests          ), setting: true}),
+        menuItemLogValueUpdates       = new MenuItem('Log\u2008values',            {checkCallback: () => settings.logValueUpdates ,      callback: () => updateSettingAndMenu('logValueUpdates',       true, !settings.logValueUpdates      ), setting: true}),
+        menuItemLogObjectUpdates      = new MenuItem('Log\u2008objects',           {checkCallback: () => settings.logObjectUpdates,      callback: () => updateSettingAndMenu('logObjectUpdates',      true, !settings.logObjectUpdates     ), setting: true}),
+        menuItemLogStyleUpdates       = new MenuItem('Log\u2008styles',            {checkCallback: () => settings.logStyleUpdates ,      callback: () => updateSettingAndMenu('logStyleUpdates',       true, !settings.logStyleUpdates      ), setting: true}),
+                                        new MenuItem('',                           {separator: true}),                   
+        menuItemLogRawRequests        = new MenuItem('Log\u2008raw\u2008requests', {checkCallback: () => settings.logRawRequests  ,      callback: () => updateSettingAndMenu('logRawRequests',        true, !settings.logRawRequests       ), setting: true}),
+        menuItemLogRawValues          = new MenuItem('Log\u2008raw\u2008values',   {checkCallback: () => settings.logRawValues    ,      callback: () => updateSettingAndMenu('logRawValues',          true, !settings.logRawValues         ), setting: true}),
+                                        new MenuItem('',                           {separator: true}),                   
+        menuItemLogLoading            = new MenuItem('Log\u2008load\u2008startup', {checkCallback: () => settings.logLoading      ,      callback: () => updateSettingAndMenu('logLoading',            true, !settings.logLoading           ), setting: true}),
+                                        new MenuItem('',                           {separator: true}),                   
+        menuItemLogRawLoadNodes       = new MenuItem('Log\u2008load nodes',        {checkCallback: () => settings.logRawLoadNodes ,      callback: () => updateSettingAndMenu('logRawLoadNodes',       true, !settings.logRawLoadNodes      ), setting: true}),
+        menuItemLogRawLoadConnections = new MenuItem('Log\u2008load connections',  {checkCallback: () => settings.logRawLoadConnections, callback: () => updateSettingAndMenu('logRawLoadConnections', true, !settings.logRawLoadConnections), setting: true}),
+                                        new MenuItem('',                           {separator: true}),                   
+        menuItemLogRawSaveNodes       = new MenuItem('Log\u2008save nodes',        {checkCallback: () => settings.logRawSaveNodes ,      callback: () => updateSettingAndMenu('logRawSaveNodes',       true, !settings.logRawSaveNodes      ), setting: true}),
+        menuItemLogRawSaveConnections = new MenuItem('Log\u2008save connections',  {checkCallback: () => settings.logRawSaveConnections, callback: () => updateSettingAndMenu('logRawSaveConnections', true, !settings.logRawSaveConnections), setting: true}),
+                                        new MenuItem('',                           {separator: true}),   
+        menuItemLogMessages           = new MenuItem('Log\u2008messages',          {checkCallback: () => settings.logMessages     ,      callback: () => updateSettingAndMenu('logMessages',           true, !settings.logMessages          ), setting: true}),
+                                        new MenuItem('',                           {separator: true}),   
+        menuItemLogActions            = new MenuItem('Log\u2008actions',           {checkCallback: () => settings.logActions      ,      callback: () => updateSettingAndMenu('logActions',            true, !settings.logActions           ), setting: true})]);
                      
 
     menuMainHelp = new Menu('Help and subscription', false);
@@ -470,7 +471,8 @@ function initGeneratorMenus()
         menuItemLicenseRemove = new MenuItem('Remove from this computer', {callback: () => { hideAllMenus(); removeLicense(); }})]);
 
 
-    menuText = new Menu('Text menu', false, false);
+    menuText    = new Menu('Text menu', false, false);
+    menuTextbox = new Menu('Textbox menu', false, true);
 
 
     menuLocalStyles = new Menu('Local styles',   true,  true);
@@ -595,6 +597,38 @@ function initTextMenu(textbox)
         new MenuItem('Cut',   {enabled: !textbox.control.readOnly, callback: () => { hideAllMenus(); document.execCommand('copy'); clearSelectedText(textbox); }}),
         new MenuItem('Copy',  {callback: () => { hideAllMenus(); document.execCommand('copy'); }}),
         new MenuItem('Paste', {enabled: !textbox.control.readOnly, callback: () => { hideAllMenus(); document.execCommand('paste'); }})]);
+}
+
+
+
+function initTextboxMenu(textbox)
+{
+    menuTextbox.clearItems();
+
+
+    const style = getComputedStyle(textbox);
+
+    let menuItemLeft,
+        menuItemCenter,
+        menuItemRight,
+        menuItemJustify;
+
+    menuTextbox.addItems([
+                          new MenuItem('Cut',          {enabled: !textbox.control.readOnly, callback: () => { hideAllMenus(); document.execCommand('copy'); clearSelectedText(textbox); }}),
+                          new MenuItem('Copy',         {callback: () => { hideAllMenus(); document.execCommand('copy'); }}),
+                          new MenuItem('Paste',        {enabled: !textbox.control.readOnly, callback: () => { hideAllMenus(); document.execCommand('paste'); }}),
+                          new MenuItem('',             { separator: true }),
+        menuItemLeft    = new MenuItem('Align left',   {checkCallback: () => style.textAlign == 'left' || style.textAlign == '', callback: () => { hideAllMenus(); textbox.style.textAlign = 'left';   }}),
+        menuItemCenter  = new MenuItem('Align center', {checkCallback: () => style.textAlign == 'center',                        callback: () => { hideAllMenus(); textbox.style.textAlign = 'center'; }}),
+        menuItemRight   = new MenuItem('Align right',  {checkCallback: () => style.textAlign == 'right',                         callback: () => { hideAllMenus(); textbox.style.textAlign = 'right';  }}),
+        menuItemJustify = new MenuItem('Justify',      {checkCallback: () => style.textAlign == 'justify',                       callback: () => { hideAllMenus(); textbox.style.textAlign = 'justify';}})]);
+
+
+    menuItemLeft   .setChecked(style.textAlign === 'start' 
+                            || style.textAlign === 'left'   );
+    menuItemCenter .setChecked(style.textAlign === 'center' );
+    menuItemRight  .setChecked(style.textAlign === 'right'  );
+    menuItemJustify.setChecked(style.textAlign === 'justify');
 }
 
 

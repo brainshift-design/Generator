@@ -75,6 +75,8 @@ extends OperatorBase
                 if (document.activeElement)
                     document.activeElement.blur();
 
+                hideAllMenus();
+                
                 sizer.startRect = offsetRect(this.div);
                 sizer.resizing  = true;
 
