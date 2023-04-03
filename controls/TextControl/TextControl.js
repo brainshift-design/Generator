@@ -37,6 +37,13 @@ extends Control
         
 
         this.div.appendChild(this.textbox);
+
+
+        createTooltipSrc(this.div, this.div, () => 
+               settings.showTooltipLongText
+            && scrollbarVisible(this.textbox)
+            ? ttText
+            : null);
     }    
 
 

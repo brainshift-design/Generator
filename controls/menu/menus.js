@@ -56,8 +56,9 @@ var menuConnData;
 var menuConnDataConns;
 
 
-var menuItemShowTooltipColorContrast;
+var menuItemShowTooltipLongText;
 var menuItemShowTooltipColorInterpolation;
+var menuItemShowTooltipColorContrast;
 var menuItemShowTooltipColorBlindness;
 
 
@@ -166,9 +167,10 @@ function initGeneratorMenus()
 {
     menuShowTooltips = new Menu('Show tooltips', false);
     menuShowTooltips.addItems([
-        menuItemShowTooltipColorContrast      = new MenuItem('Color contrast',      {checkCallback: () => settings.showTooltipColorContrast,      callback: () => { updateSettingAndMenu('showTooltipColorContrast',      true, !settings.showTooltipColorContrast);      }}),
+        menuItemShowTooltipLongText           = new MenuItem('Long text',           {checkCallback: () => settings.showTooltipLongText,           callback: () => { updateSettingAndMenu('showTooltipLongText',           true, !settings.showTooltipLongText          ); }}),
+        menuItemShowTooltipColorContrast      = new MenuItem('Color contrast',      {checkCallback: () => settings.showTooltipColorContrast,      callback: () => { updateSettingAndMenu('showTooltipColorContrast',      true, !settings.showTooltipColorContrast     ); }}),
         menuItemShowTooltipColorInterpolation = new MenuItem('Color interpolation', {checkCallback: () => settings.showTooltipColorInterpolation, callback: () => { updateSettingAndMenu('showTooltipColorInterpolation', true, !settings.showTooltipColorInterpolation); }}),
-        menuItemShowTooltipColorBlindness     = new MenuItem('Color blindness',     {checkCallback: () => settings.showTooltipColorBlindness,     callback: () => { updateSettingAndMenu('showTooltipColorBlindness',     true, !settings.showTooltipColorBlindness);     }})]);
+        menuItemShowTooltipColorBlindness     = new MenuItem('Color blindness',     {checkCallback: () => settings.showTooltipColorBlindness,     callback: () => { updateSettingAndMenu('showTooltipColorBlindness',     true, !settings.showTooltipColorBlindness    ); }})]);
 
 
     menuMainPreferences = new Menu('Preferences', false);

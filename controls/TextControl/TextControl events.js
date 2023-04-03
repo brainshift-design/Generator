@@ -1,5 +1,12 @@
 TextControl.prototype.initEvents = function()
 {
+    this.div.addEventListener('pointerenter', e =>
+    {
+        initTextTooltip(this.value);
+    });
+
+
+
     this.div.addEventListener('wheel', e =>
     {
         if (  !this.pointerEvents

@@ -13,6 +13,7 @@ const settings =
         
     showNodeId:                    false, // instead of name
 
+    showTooltipLongText:           true,
     showTooltipColorInterpolation: true,
     showTooltipColorBlindness:     true,
     showTooltipColorContrast:      true,
@@ -57,6 +58,7 @@ function updateSetting(settingName, value)
                         
         case 'showNodeId':                    settings.showNodeId                    = value;  break;
 
+        case 'showTooltipLongText':           settings.showTooltipLongText           = value; break;
         case 'showTooltipColorInterpolation': settings.showTooltipColorInterpolation = value; break;
         case 'showTooltipColorBlindness':     settings.showTooltipColorBlindness     = value; break;
         case 'showTooltipColorContrast':      settings.showTooltipColorContrast      = value; break;
@@ -100,9 +102,10 @@ function updateSettingAndMenu(settingName, valid, value, save = true)
                       
         case 'showNodeId':                    updateSettingAndMenu_(valid, settingName, value, menuItemShowNodeId                   ); break;
         
+        case 'showTooltipLongText':           updateSettingAndMenu_(valid, settingName, value, menuItemShowTooltipLongText          ); break;
+        case 'showTooltipColorContrast':      updateSettingAndMenu_(valid, settingName, value, menuItemShowTooltipColorContrast     ); break;
         case 'showTooltipColorInterpolation': updateSettingAndMenu_(valid, settingName, value, menuItemShowTooltipColorInterpolation); break;
         case 'showTooltipColorBlindness':     updateSettingAndMenu_(valid, settingName, value, menuItemShowTooltipColorBlindness    ); break;
-        case 'showTooltipColorContrast':      updateSettingAndMenu_(valid, settingName, value, menuItemShowTooltipColorContrast     ); break;
 
         case 'enableBetaFeatures':            updateSettingAndMenu_(valid, settingName, value, menuItemEnableBetaFeatures           ); break;
                       
@@ -156,6 +159,7 @@ function updateSettingsMenus()
                 
     menuItemShowNodeId                   .setChecked(settings.showNodeId                   );
 
+    menuItemShowTooltipLongText          .setChecked(settings.showTooltipLongText          );
     menuItemShowTooltipColorInterpolation.setChecked(settings.showTooltipColorInterpolation);
     menuItemShowTooltipColorBlindness    .setChecked(settings.showTooltipColorBlindness    );
     menuItemShowTooltipColorContrast     .setChecked(settings.showTooltipColorContrast     );
@@ -217,7 +221,7 @@ function updateMenuItemShowOperationResults()
 
 function enableFeatures(subscription, beta)
 {
-    updateMenuItemDisplay(menuItemEnableBetaFeatures.div, subscription);
+    updateMenuItemDisplay(menuItemEnableBetaFeatures .div, subscription);
 
     updateMenuItemDisplay(btnFlow                    .div, subscription);
     updateMenuItemDisplay(btnText                    .div, subscription && beta);
@@ -284,6 +288,7 @@ function loadLocalSettings()
         
     uiGetLocalData('showNodeId'                   );
 
+    uiGetLocalData('showTooltipLongText'          );
     uiGetLocalData('showTooltipColorInterpolation');
     uiGetLocalData('showTooltipColorBlindness'    );
     uiGetLocalData('showTooltipColorContrast'     );

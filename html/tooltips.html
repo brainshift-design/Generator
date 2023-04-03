@@ -1,21 +1,6 @@
 <span id='tooltipArrow'></span>
 
 
-<div id='ttCreateNumber'      class='tooltip'>Number</div>
-<div id='ttCreateLimits'      class='tooltip'>Limits</div>
-<div id='ttCreateAdd'         class='tooltip'>Add</div>
-<div id='ttCreateSubtract'    class='tooltip'>Subtract</div>
-<div id='ttCreateMultiply'    class='tooltip'>Multiply</div>
-<div id='ttCreateDivide'      class='tooltip'>Divide</div>
-<div id='ttCreateModulo'      class='tooltip'>Remainder</div>
-<div id='ttCreateExponent'    class='tooltip'>Power</div>
-<div id='ttCreateInterpolate' class='tooltip'>Interpolate</div>
-
-
-<div id='ttCreateColor'            class='tooltip'>Color</div>
-<div id='ttCreateColorInterpolate' class='tooltip'>Interpolate color</div>
-<div id='ttCreateCorrectColor'     class='tooltip'>Correct color</div>
-<div id='ttCreateColorContrast'    class='tooltip'>Web contrast</div>
 
 <div id='ttColorblind' class='tooltip'>
 
@@ -66,7 +51,7 @@
         to simulate all types of color vision deficiency.
     </div>
 
-    <div class='tooltipBottom'><div class='ignoreButton' id='ignoreColorBlindness' onclick="updateSettingAndMenu('showTooltipColorBlindness', true, false); hideTooltip(ttColorblind);">Ignore</div></div>
+    <div class='tooltipBottom'><div class='ignoreButton' id='ignoreColorBlindness' onclick="updateSettingAndMenu('showTooltipColorBlindness', true, false); hideTooltip(ttColorblind);">Don't show</div></div>
 </div>
 
 
@@ -103,7 +88,7 @@
         <line x1="72.3693" y1="54.0053" x2="15.8716" y2="54.0053" stroke="white" stroke-dasharray="2 2"/>
     </svg>
 
-    <div class='tooltipBottom'><div class='ignoreButton' id='ignoreColorInterpolationlindness' onclick="updateSettingAndMenu('showTooltipColorInterpolation', true, false); hideTooltip(ttInterpolationSpace);">Ignore</div></div>
+    <div class='tooltipBottom'><div class='ignoreButton' id='ignoreColorInterpolationlindness' onclick="updateSettingAndMenu('showTooltipColorInterpolation', true, false); hideTooltip(ttInterpolationSpace);">Don't show</div></div>
 </div>
 
 
@@ -141,7 +126,7 @@
     <div class='wcag2value' style='left:  90px;'> 7  </div>
     <div class='wcag2value' style='left: 239px;'>21  </div>
 
-    <div class='tooltipBottom'><div class='ignoreButton' id='ignoreColorContrast2' onclick="updateSettingAndMenu('showTooltipColorContrast', true, false); hideTooltip(ttWcag2);">Ignore</div></div>
+    <div class='tooltipBottom'><div class='ignoreButton' id='ignoreColorContrast2' onclick="updateSettingAndMenu('showTooltipColorContrast', true, false); hideTooltip(ttWcag2);">Don't show</div></div>
     <!-- <div id='wcag2info'><a href='https://www.w3.org/TR/UNDERSTANDING-WCAG20/visual-audio-contrast7.html#visual-audio-contrast7-87-head' target='_blank'>More details</a></div> -->
 </div>
 
@@ -182,6 +167,13 @@
     <div class='wcag3value' style='left: 210px;'> 90</div>
     <div class='wcag3value' style='left: 239px;'>105</div>
 
-    <div class='tooltipBottom'><div class='ignoreButton' id='ignoreColorContrast3' onclick="updateSettingAndMenu('showTooltipColorContrast', true, false); hideTooltip(ttWcag3);">Ignore</div></div>
+    <div class='tooltipBottom'><div class='ignoreButton' id='ignoreColorContrast3' onclick="updateSettingAndMenu('showTooltipColorContrast', true, false); hideTooltip(ttWcag3);">Don't show</div></div>
     <!-- <div id='wcag3info'><a href='https://www.myndex.com/APCA/#font-size-and-weight' target='_blank'>More details</a></div> -->
+</div>
+
+
+
+<div id='ttText' class='tooltip'>
+    <div id='ttTextString'>This is a text string.</div>
+    <div class='tooltipBottom' id='tooltipTextBottom'><div class='ignoreButton' id='ignoreText' onclick="updateSettingAndMenu('showTooltipLongText', true, false); hideTooltip(ttText);">Don't show</div></div>
 </div>

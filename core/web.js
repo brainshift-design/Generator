@@ -248,3 +248,10 @@ function clearSelectedText(element)
             + str.slice(element.selectionEnd)
     }
 }
+
+
+
+function scrollbarVisible(element) 
+{
+    return element.scrollHeight > element.clientHeight;
+}

@@ -49,6 +49,7 @@ function uiReturnFigGetLocalData(msg)
 
         case 'showNodeId':       
 
+        case 'showTooltipLongText':
         case 'showTooltipColorInterpolation':
         case 'showTooltipColorBlindness':
         case 'showTooltipColorContrast':

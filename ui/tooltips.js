@@ -20,3 +20,10 @@ function updateZoomTooltip()
         ttMinValueZoom.style.height = '15px';
     }
 }
+
+
+
+function initTextTooltip(str)
+{
+    ttTextString.innerHTML = str;
+}
