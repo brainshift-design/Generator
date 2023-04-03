@@ -54675,10 +54675,16 @@ extends OpColorBase
 
         console.assert(value.type == COLOR_VALUE, 'expected COLOR_VALUE in backInit()');
 
-        this.node.paramSpace.setValue(value.space, false, true, false);
-        this.node.param1    .setValue(value.c1,    false, true, false);
-        this.node.param2    .setValue(value.c2,    false, true, false);
-        this.node.param3    .setValue(value.c3,    false, true, false);
+        const _color = convertDataColorToSpace(
+            value.toDataColor(), 
+            colorSpace(this.node.paramSpace.value.value));
+
+        const _value = ColorValue.fromDataColor(_color);
+
+        //this.node.paramSpace.setValue(value.space, false, true, false);
+        this.node.param1.setValue(_value.c1, false, true, false);
+        this.node.param2.setValue(_value.c2, false, true, false);
+        this.node.param3.setValue(_value.c3, false, true, false);
     }
 
 
