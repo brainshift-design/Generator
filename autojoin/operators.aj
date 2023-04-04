@@ -92,6 +92,7 @@
 ../operators/color/OpColorContrast.js
 ../operators/color/OpColorblind.js
 ../operators/color/OpColorInterpolate.js
+../operators/color/OpColorBlend.js
 
 
 ../operators/shape/OpShapeBase.js

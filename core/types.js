@@ -153,15 +153,17 @@ const CORRECT_COLOR     = 'CCOR';
 const COLOR_CONTRAST    = 'CCNT';  
 const COLORBLIND        = 'BLND';  
 const COLOR_INTERPOLATE = 'CLERP'; 
+const COLOR_BLEND       = 'CBLND';
 
 
 const COLOR_TYPES =
 [
     COLOR_VALUE,
     COLOR,
-    COLOR_INTERPOLATE,
     CORRECT_COLOR,
-    COLORBLIND
+    COLORBLIND,
+    COLOR_INTERPOLATE,
+    COLOR_BLEND
 ];
 
 
@@ -310,4 +312,68 @@ const CONDITION_OPS =
     [CONDITION_EQUAL,            '='],
     [CONDITION_GREATER_OR_EQUAL, '≥'],
     [CONDITION_GREATER,          '>']
+];
+
+
+
+const EMPTY_ACTION               = 'EMPTY';
+const CONNECT_ACTION             = 'CONNECT';
+const CREATE_ACTION              = 'CREATE';
+const CREATE_INSERT_ACTION       = 'CREATE_INSERT';
+const DELETE_ACTION              = 'DELETE';
+const DISCONNECT_ACTION          = 'DISCONNECT';
+const LINK_STYLE_ACTION          = 'LINK_STYLE';
+const MAKE_ACTIVE_ACTION         = 'MAKE_ACTIVE';
+const PASTE_ACTION               = 'PASTE';
+const RECONNECT_ACTION           = 'RECONNECT';
+const REMOVE_ACTION              = 'REMOVE';
+const RENAME_ACTION              = 'RENAME';
+const REORDER_INPUTS_ACTION      = 'REORDER_INPUTS';
+const REORDER_CONNECTIONS_ACTION = 'REORDER_CONNECTIONS';
+const SELECT_ACTION              = 'SELECT';
+const SELECT_MOVE_ACTION         = 'SELECT_MOVE';
+const SET_PARAM_VALUE_ACTION     = 'SET_PARAM_VALUE';
+const SET_PARAM_SETTING_ACTION   = 'SET_PARAM_SETTING';
+const SET_NODE_RECT_ACTION       = 'SET_NODE_RECT';
+const TOGGLE_DISABLE_ACTION      = 'TOGGLE_DISABLE';
+const TOGGLE_SYMBOL_ACTION       = 'TOGGLE_SYMBOL';
+const SET_CURRENT_GRAPH_ACTION   = 'SET_CURRENT_GRAPH';
+
+
+
+const BLEND_NORMAL      = 'BNORM';
+const BLEND_DARKEN      = 'BDARK';
+const BLEND_MULTIPLY    = 'BMULT';
+const BLEND_COLOR_BURN  = 'BBURN';
+const BLEND_LIGNTEN     = 'BLITE';
+const BLEND_SCREEN      = 'BSCRN';
+const BLEND_COLOR_DODGE = 'BDODG';
+const BLEND_OVERLAY     = 'BOVER';
+const BLEND_SOFT_LIGHT  = 'BSOFT';
+const BLEND_HARD_LIGHT  = 'BHARD';
+const BLEND_DIFFERENCE  = 'BDIFF';
+const BLEND_EXCLUSION   = 'BEXCL';
+const BLEND_HUE         = 'BHUE';
+const BLEND_SATURATION  = 'BSAT';
+const BLEND_COLOR       = 'BCOL';
+const BLEND_LUMINOSITY  = 'BLUM';
+
+const BlendModes =
+[
+    [BLEND_NORMAL,      'normal'     ],
+    [BLEND_DARKEN,      'darken'     ],
+    [BLEND_MULTIPLY,    'multiply'   ],
+    [BLEND_COLOR_BURN,  'color burn' ],
+    [BLEND_LIGNTEN,     'lighten'    ],
+    [BLEND_SCREEN,      'screen'     ],
+    [BLEND_COLOR_DODGE, 'color dodge'],
+    [BLEND_OVERLAY,     'overlay'    ],
+    [BLEND_SOFT_LIGHT,  'soft light' ],
+    [BLEND_HARD_LIGHT,  'hard light' ],
+    [BLEND_DIFFERENCE,  'difference' ],
+    [BLEND_EXCLUSION,   'exclusion'  ],
+    [BLEND_HUE,         'hue'        ],
+    [BLEND_SATURATION,  'saturation' ],
+    [BLEND_COLOR,       'color'      ],
+    [BLEND_LUMINOSITY,  'luminosity' ]
 ];

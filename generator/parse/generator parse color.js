@@ -359,3 +359,61 @@ function genParseColorInterpolate(parse)
     genParseNodeEnd(parse, lerp);
     return lerp;
 }
+
+
+
+function genParseColorBlend(parse)
+{
+    const [, nodeId, options, ignore] = genParseNodeStart(parse);
+
+
+    const blend = new GColorBlend(nodeId, options);
+
+
+    let nInputs = -1;
+
+    if (!ignore)
+    {
+        nInputs = parseInt(parse.move());
+        console.assert(nInputs => 0 && nInputs <= 2, 'nInputs must be [0, 2]');
+    }
+
+    
+    if (parse.settings.logRequests) 
+        logReq(blend, parse, ignore, nInputs);
+
+
+    if (ignore) 
+    {
+        genParseNodeEnd(parse, blend);
+        return parse.parsedNodes.find(n => n.nodeId == nodeId);
+    }
+
+
+    parse.nTab++;
+
+
+    if (nInputs == 2)
+    {
+        blend.input0 = genParse(parse);
+        blend.input1 = genParse(parse);
+    }
+
+    else if (nInputs == 1)
+        blend.input0 = genParse(parse); // doesn't matter if it's input0 or input1, the eval() result will be the same
+
+    else if (nInputs != 0)
+        console.assert(false, 'nInputs must be [0, 2]');
+
+
+    blend.mode    = genParse(parse);
+    blend.opacity = genParse(parse);
+    blend.gamma   = genParse(parse);
+
+
+    parse.nTab--;
+
+
+    genParseNodeEnd(parse, blend);
+    return blend;
+}

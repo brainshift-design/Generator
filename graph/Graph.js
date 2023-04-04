@@ -378,6 +378,7 @@ function createNode(nodeType, creatingButton = null, createdNodeId = -1, options
         case COLOR_CONTRAST:          node = new OpColorContrast();     break;
         case COLORBLIND:              node = new OpColorBlind();        break;
         case COLOR_INTERPOLATE:       node = new OpColorInterpolate();  break;
+        case COLOR_BLEND:             node = new OpColorBlend();        break;
              
         case COLOR_STOP:              node = new OpColorStop();         break;
         case GRADIENT:                node = new OpGradient();          break;

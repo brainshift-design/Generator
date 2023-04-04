@@ -3443,15 +3443,17 @@ const CORRECT_COLOR     = 'CCOR';
 const COLOR_CONTRAST    = 'CCNT';  
 const COLORBLIND        = 'BLND';  
 const COLOR_INTERPOLATE = 'CLERP'; 
+const COLOR_BLEND       = 'CBLND';
 
 
 const COLOR_TYPES =
 [
     COLOR_VALUE,
     COLOR,
-    COLOR_INTERPOLATE,
     CORRECT_COLOR,
-    COLORBLIND
+    COLORBLIND,
+    COLOR_INTERPOLATE,
+    COLOR_BLEND
 ];
 
 
@@ -3600,6 +3602,70 @@ const CONDITION_OPS =
     [CONDITION_EQUAL,            '='],
     [CONDITION_GREATER_OR_EQUAL, '≥'],
     [CONDITION_GREATER,          '>']
+];
+
+
+
+const EMPTY_ACTION               = 'EMPTY';
+const CONNECT_ACTION             = 'CONNECT';
+const CREATE_ACTION              = 'CREATE';
+const CREATE_INSERT_ACTION       = 'CREATE_INSERT';
+const DELETE_ACTION              = 'DELETE';
+const DISCONNECT_ACTION          = 'DISCONNECT';
+const LINK_STYLE_ACTION          = 'LINK_STYLE';
+const MAKE_ACTIVE_ACTION         = 'MAKE_ACTIVE';
+const PASTE_ACTION               = 'PASTE';
+const RECONNECT_ACTION           = 'RECONNECT';
+const REMOVE_ACTION              = 'REMOVE';
+const RENAME_ACTION              = 'RENAME';
+const REORDER_INPUTS_ACTION      = 'REORDER_INPUTS';
+const REORDER_CONNECTIONS_ACTION = 'REORDER_CONNECTIONS';
+const SELECT_ACTION              = 'SELECT';
+const SELECT_MOVE_ACTION         = 'SELECT_MOVE';
+const SET_PARAM_VALUE_ACTION     = 'SET_PARAM_VALUE';
+const SET_PARAM_SETTING_ACTION   = 'SET_PARAM_SETTING';
+const SET_NODE_RECT_ACTION       = 'SET_NODE_RECT';
+const TOGGLE_DISABLE_ACTION      = 'TOGGLE_DISABLE';
+const TOGGLE_SYMBOL_ACTION       = 'TOGGLE_SYMBOL';
+const SET_CURRENT_GRAPH_ACTION   = 'SET_CURRENT_GRAPH';
+
+
+
+const BLEND_NORMAL      = 'BNORM';
+const BLEND_DARKEN      = 'BDARK';
+const BLEND_MULTIPLY    = 'BMULT';
+const BLEND_COLOR_BURN  = 'BBURN';
+const BLEND_LIGNTEN     = 'BLITE';
+const BLEND_SCREEN      = 'BSCRN';
+const BLEND_COLOR_DODGE = 'BDODG';
+const BLEND_OVERLAY     = 'BOVER';
+const BLEND_SOFT_LIGHT  = 'BSOFT';
+const BLEND_HARD_LIGHT  = 'BHARD';
+const BLEND_DIFFERENCE  = 'BDIFF';
+const BLEND_EXCLUSION   = 'BEXCL';
+const BLEND_HUE         = 'BHUE';
+const BLEND_SATURATION  = 'BSAT';
+const BLEND_COLOR       = 'BCOL';
+const BLEND_LUMINOSITY  = 'BLUM';
+
+const BlendModes =
+[
+    [BLEND_NORMAL,      'normal'     ],
+    [BLEND_DARKEN,      'darken'     ],
+    [BLEND_MULTIPLY,    'multiply'   ],
+    [BLEND_COLOR_BURN,  'color burn' ],
+    [BLEND_LIGNTEN,     'lighten'    ],
+    [BLEND_SCREEN,      'screen'     ],
+    [BLEND_COLOR_DODGE, 'color dodge'],
+    [BLEND_OVERLAY,     'overlay'    ],
+    [BLEND_SOFT_LIGHT,  'soft light' ],
+    [BLEND_HARD_LIGHT,  'hard light' ],
+    [BLEND_DIFFERENCE,  'difference' ],
+    [BLEND_EXCLUSION,   'exclusion'  ],
+    [BLEND_HUE,         'hue'        ],
+    [BLEND_SATURATION,  'saturation' ],
+    [BLEND_COLOR,       'color'      ],
+    [BLEND_LUMINOSITY,  'luminosity' ]
 ];
 
 
@@ -10238,7 +10304,7 @@ extends GColorType
 
             const _space = colorSpace(spaceIndex);
 
-            const col = this.interpolate(
+            const _color = this.interpolate(
                 spaceIndex,
                 convertDataColorToSpace(input0.toDataColor(), _space),
                 convertDataColorToSpace(input1.toDataColor(), _space),
@@ -10249,7 +10315,7 @@ extends GColorType
             // allow interpolating invalid colors,
             // so no valid color check here
 
-            this.value = ColorValue.fromDataColor(col, spaceIndex);
+            this.value = ColorValue.fromDataColor(_color, spaceIndex);
         }
 
         else if (this.input0) 
@@ -10303,6 +10369,144 @@ extends GColorType
                 normalAngle(h0 + angleDiff(h0, h1) * f) / Tau,
                 lerp(c0, c1, f),
                 lerp(l0, l1, f) ];
+        }
+    }
+}
+
+
+
+class GColorBlend
+extends GColorType
+{
+    input0 = null;
+    input1 = null;
+
+    mode;
+    opacity;
+    gamma;
+
+
+    constructor(nodeId, options)
+    {
+        super(COLOR_BLEND, nodeId, options);
+    }
+
+
+    
+    copy()
+    {
+        const copy = new GColorBlend(this.nodeId, this.options);
+
+        copy.copyBase(this);
+
+        if (this.input0) copy.input0 = this.input0.copy();
+        if (this.input1) copy.input1 = this.input1.copy();
+
+        copy.mode    = this.mode   .copy();
+        copy.opacity = this.opacity.copy();
+        copy.gamma   = this.gamma  .copy();
+
+        return copy;
+    }
+
+
+
+    async eval(parse)
+    {
+        if (this.isCached())
+            return this;
+
+
+        const mode    = (await this.mode   .eval(parse)).toValue().toInteger();
+        const opacity = (await this.opacity.eval(parse)).toValue();
+        const gamma   = (await this.gamma  .eval(parse)).toValue();
+
+
+        if (   this.input0 
+            && this.input1)
+        {
+            const input0 = (await this.input0.eval(parse)).toValue();
+            const input1 = (await this.input1.eval(parse)).toValue();
+
+            console.assert(
+                opacity.type == NUMBER_VALUE, 
+                'this.result.type must be NUMBER_VALUE');
+
+            const opacity = opacity.value / 100;
+
+
+            const modeIndex  = Math.min(Math.max(0, mode.value), BlendModes.length-1);
+            const gammaValue = Math.max(0.0001, gamma.value);
+
+            const _space = colorSpace(modeIndex);
+
+            const _color = this.blend(
+                modeIndex,
+                convertDataColorToSpace(input0.toDataColor(), _space),
+                convertDataColorToSpace(input1.toDataColor(), _space),
+                opacity,
+                gammaValue);
+
+
+            // allow interpolating invalid colors,
+            // so no valid color check here
+
+            this.value = ColorValue.fromDataColor(_color, modeIndex);
+        }
+
+        else if (this.input0) 
+            this.value = (await this.input0.eval(parse)).toValue();
+
+        else if (this.input1) 
+            this.value = (await this.input1.eval(parse)).toValue();
+            
+        else 
+            this.value = ColorValue.NaN;
+
+
+        genPushUpdateValue(parse, this.nodeId, 'value',   this.value);
+        genPushUpdateValue(parse, this.nodeId, 'mode',    mode );
+        genPushUpdateValue(parse, this.nodeId, 'opacity', opacity);
+        genPushUpdateValue(parse, this.nodeId, 'gamma',   gamma );
+
+
+        this.validate();
+        
+        return this;
+    }
+
+
+
+    blend(mode, col0, col1, opacity, gamma)
+    {
+        mode = 1;
+        
+        if (   mode <= 1
+            || mode >  6) // hex, rgb, okLab, lab, luv
+        {
+            const r0 = Math.pow(col0[1], gamma);  const r1 = Math.pow(col1[1], gamma);
+            const g0 = Math.pow(col0[2], gamma);  const g1 = Math.pow(col1[2], gamma);
+            const b0 = Math.pow(col0[3], gamma);  const b1 = Math.pow(col1[3], gamma);
+
+            gamma = Math.max(0.01, gamma);
+
+            return [
+                colorSpace(mode),
+                Math.pow(lerp(r0, r1, opacity), 1/gamma),
+                Math.pow(lerp(g0, g1, opacity), 1/gamma),
+                Math.pow(lerp(b0, b1, opacity), 1/gamma) ];
+        }
+        else // hsv/hsl/hcl
+        {
+            const h0 = col0[1] * Tau;  const h1 = col1[1] * Tau;
+            const c0 = col0[2];        const c1 = col1[2];
+            const l0 = col0[3];        const l1 = col1[3];
+
+            return [
+                colorSpace(mode),
+                normalAngle(h0 + angleDiff(h0, h1) * opacity) / Tau,
+                lerp(c0, c1, opacity),
+                lerp(l0, l1, opacity) ];
         }
     }
 }
@@ -12047,6 +12251,7 @@ function enableFeatures(subscription, beta)
     updateMenuItemDisplay(menuItemCorrectColor       .div, subscription);
     updateMenuItemDisplay(menuItemColorSep1          .div, subscription);
     updateMenuItemDisplay(menuItemColorblind         .div, subscription);
+    updateMenuItemDisplay(menuItemColorBlend         .div, beta);
 
     //updateMenuItemDisplay(menuItemStyleFill        .div, subscription && beta);
     updateMenuItemDisplay(menuItemStyleStroke        .div, subscription && beta);
@@ -12943,6 +13148,64 @@ function genParseColorInterpolate(parse)
 
     genParseNodeEnd(parse, lerp);
     return lerp;
+}
+
+
+
+function genParseColorBlend(parse)
+{
+    const [, nodeId, options, ignore] = genParseNodeStart(parse);
+
+
+    const blend = new GColorBlend(nodeId, options);
+
+
+    let nInputs = -1;
+
+    if (!ignore)
+    {
+        nInputs = parseInt(parse.move());
+        console.assert(nInputs => 0 && nInputs <= 2, 'nInputs must be [0, 2]');
+    }
+
+    
+    if (parse.settings.logRequests) 
+        logReq(blend, parse, ignore, nInputs);
+
+
+    if (ignore) 
+    {
+        genParseNodeEnd(parse, blend);
+        return parse.parsedNodes.find(n => n.nodeId == nodeId);
+    }
+
+
+    parse.nTab++;
+
+
+    if (nInputs == 2)
+    {
+        blend.input0 = genParse(parse);
+        blend.input1 = genParse(parse);
+    }
+
+    else if (nInputs == 1)
+        blend.input0 = genParse(parse); // doesn't matter if it's input0 or input1, the eval() result will be the same
+
+    else if (nInputs != 0)
+        console.assert(false, 'nInputs must be [0, 2]');
+
+
+    blend.mode    = genParse(parse);
+    blend.opacity = genParse(parse);
+    blend.gamma   = genParse(parse);
+
+
+    parse.nTab--;
+
+
+    genParseNodeEnd(parse, blend);
+    return blend;
 }
 
 
@@ -15086,6 +15349,7 @@ function genParse(parse, inParam = true)
     else if (parse.next == COLOR_CONTRAST         ) result = genParseColorContrast   (parse);
     else if (parse.next == COLORBLIND             ) result = genParseColorBlind      (parse);
     else if (parse.next == COLOR_INTERPOLATE      ) result = genParseColorInterpolate(parse);
+    else if (parse.next == COLOR_BLEND            ) result = genParseColorBlend      (parse);
      
     else if (parse.next == FILL_VALUE             ) result = genParseFillValue       (parse);
     else if (parse.next == FILL                   ) result = genParseFill            (parse);

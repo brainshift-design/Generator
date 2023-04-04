@@ -3646,7 +3646,7 @@ a
 <div id='minZoomDialog'>
 
     <div id='minZoomTitle'>
-        <div id='minZoomTitleText'>Min. zoom to adjust values</div>
+        <div id='minZoomTitleText'>Zoom level for values</div>
         <div class='panelButton dialogButtonClose' id='minZoomClose' onclick='hideAllMenus(); minZoomClose.blur(); hideMinZoomDialog();'>
             <svg width="30" height="30" viewBox="0 0 30 30" fill="none" xmlns="http://www.w3.org/2000/svg">
                 <path fill-rule="evenodd" clip-rule="evenodd" d="M16 15.293L20.6465 10.6465L21.3536 11.3536L16.7071 16.0001L21.3536 20.6465L20.6465 21.3536L16 16.7072L11.3536 21.3536L10.6465 20.6465L15.2929 16.0001L10.6465 11.3537L11.3536 10.6466L16 15.293Z" fill="var(--figma-color-text)" fill-opacity="0.8"/>
@@ -7522,15 +7522,17 @@ const CORRECT_COLOR     = 'CCOR';
 const COLOR_CONTRAST    = 'CCNT';  
 const COLORBLIND        = 'BLND';  
 const COLOR_INTERPOLATE = 'CLERP'; 
+const COLOR_BLEND       = 'CBLND';
 
 
 const COLOR_TYPES =
 [
     COLOR_VALUE,
     COLOR,
-    COLOR_INTERPOLATE,
     CORRECT_COLOR,
-    COLORBLIND
+    COLORBLIND,
+    COLOR_INTERPOLATE,
+    COLOR_BLEND
 ];
 
 
@@ -7679,6 +7681,70 @@ const CONDITION_OPS =
     [CONDITION_EQUAL,            '='],
     [CONDITION_GREATER_OR_EQUAL, '≥'],
     [CONDITION_GREATER,          '>']
+];
+
+
+
+const EMPTY_ACTION               = 'EMPTY';
+const CONNECT_ACTION             = 'CONNECT';
+const CREATE_ACTION              = 'CREATE';
+const CREATE_INSERT_ACTION       = 'CREATE_INSERT';
+const DELETE_ACTION              = 'DELETE';
+const DISCONNECT_ACTION          = 'DISCONNECT';
+const LINK_STYLE_ACTION          = 'LINK_STYLE';
+const MAKE_ACTIVE_ACTION         = 'MAKE_ACTIVE';
+const PASTE_ACTION               = 'PASTE';
+const RECONNECT_ACTION           = 'RECONNECT';
+const REMOVE_ACTION              = 'REMOVE';
+const RENAME_ACTION              = 'RENAME';
+const REORDER_INPUTS_ACTION      = 'REORDER_INPUTS';
+const REORDER_CONNECTIONS_ACTION = 'REORDER_CONNECTIONS';
+const SELECT_ACTION              = 'SELECT';
+const SELECT_MOVE_ACTION         = 'SELECT_MOVE';
+const SET_PARAM_VALUE_ACTION     = 'SET_PARAM_VALUE';
+const SET_PARAM_SETTING_ACTION   = 'SET_PARAM_SETTING';
+const SET_NODE_RECT_ACTION       = 'SET_NODE_RECT';
+const TOGGLE_DISABLE_ACTION      = 'TOGGLE_DISABLE';
+const TOGGLE_SYMBOL_ACTION       = 'TOGGLE_SYMBOL';
+const SET_CURRENT_GRAPH_ACTION   = 'SET_CURRENT_GRAPH';
+
+
+
+const BLEND_NORMAL      = 'BNORM';
+const BLEND_DARKEN      = 'BDARK';
+const BLEND_MULTIPLY    = 'BMULT';
+const BLEND_COLOR_BURN  = 'BBURN';
+const BLEND_LIGNTEN     = 'BLITE';
+const BLEND_SCREEN      = 'BSCRN';
+const BLEND_COLOR_DODGE = 'BDODG';
+const BLEND_OVERLAY     = 'BOVER';
+const BLEND_SOFT_LIGHT  = 'BSOFT';
+const BLEND_HARD_LIGHT  = 'BHARD';
+const BLEND_DIFFERENCE  = 'BDIFF';
+const BLEND_EXCLUSION   = 'BEXCL';
+const BLEND_HUE         = 'BHUE';
+const BLEND_SATURATION  = 'BSAT';
+const BLEND_COLOR       = 'BCOL';
+const BLEND_LUMINOSITY  = 'BLUM';
+
+const BlendModes =
+[
+    [BLEND_NORMAL,      'normal'     ],
+    [BLEND_DARKEN,      'darken'     ],
+    [BLEND_MULTIPLY,    'multiply'   ],
+    [BLEND_COLOR_BURN,  'color burn' ],
+    [BLEND_LIGNTEN,     'lighten'    ],
+    [BLEND_SCREEN,      'screen'     ],
+    [BLEND_COLOR_DODGE, 'color dodge'],
+    [BLEND_OVERLAY,     'overlay'    ],
+    [BLEND_SOFT_LIGHT,  'soft light' ],
+    [BLEND_HARD_LIGHT,  'hard light' ],
+    [BLEND_DIFFERENCE,  'difference' ],
+    [BLEND_EXCLUSION,   'exclusion'  ],
+    [BLEND_HUE,         'hue'        ],
+    [BLEND_SATURATION,  'saturation' ],
+    [BLEND_COLOR,       'color'      ],
+    [BLEND_LUMINOSITY,  'luminosity' ]
 ];
 
 
@@ -14317,7 +14383,7 @@ extends GColorType
 
             const _space = colorSpace(spaceIndex);
 
-            const col = this.interpolate(
+            const _color = this.interpolate(
                 spaceIndex,
                 convertDataColorToSpace(input0.toDataColor(), _space),
                 convertDataColorToSpace(input1.toDataColor(), _space),
@@ -14328,7 +14394,7 @@ extends GColorType
             // allow interpolating invalid colors,
             // so no valid color check here
 
-            this.value = ColorValue.fromDataColor(col, spaceIndex);
+            this.value = ColorValue.fromDataColor(_color, spaceIndex);
         }
 
         else if (this.input0) 
@@ -14382,6 +14448,144 @@ extends GColorType
                 normalAngle(h0 + angleDiff(h0, h1) * f) / Tau,
                 lerp(c0, c1, f),
                 lerp(l0, l1, f) ];
+        }
+    }
+}
+
+
+
+class GColorBlend
+extends GColorType
+{
+    input0 = null;
+    input1 = null;
+
+    mode;
+    opacity;
+    gamma;
+
+
+    constructor(nodeId, options)
+    {
+        super(COLOR_BLEND, nodeId, options);
+    }
+
+
+    
+    copy()
+    {
+        const copy = new GColorBlend(this.nodeId, this.options);
+
+        copy.copyBase(this);
+
+        if (this.input0) copy.input0 = this.input0.copy();
+        if (this.input1) copy.input1 = this.input1.copy();
+
+        copy.mode    = this.mode   .copy();
+        copy.opacity = this.opacity.copy();
+        copy.gamma   = this.gamma  .copy();
+
+        return copy;
+    }
+
+
+
+    async eval(parse)
+    {
+        if (this.isCached())
+            return this;
+
+
+        const mode    = (await this.mode   .eval(parse)).toValue().toInteger();
+        const opacity = (await this.opacity.eval(parse)).toValue();
+        const gamma   = (await this.gamma  .eval(parse)).toValue();
+
+
+        if (   this.input0 
+            && this.input1)
+        {
+            const input0 = (await this.input0.eval(parse)).toValue();
+            const input1 = (await this.input1.eval(parse)).toValue();
+
+            console.assert(
+                opacity.type == NUMBER_VALUE, 
+                'this.result.type must be NUMBER_VALUE');
+
+            const opacity = opacity.value / 100;
+
+
+            const modeIndex  = Math.min(Math.max(0, mode.value), BlendModes.length-1);
+            const gammaValue = Math.max(0.0001, gamma.value);
+
+            const _space = colorSpace(modeIndex);
+
+            const _color = this.blend(
+                modeIndex,
+                convertDataColorToSpace(input0.toDataColor(), _space),
+                convertDataColorToSpace(input1.toDataColor(), _space),
+                opacity,
+                gammaValue);
+
+
+            // allow interpolating invalid colors,
+            // so no valid color check here
+
+            this.value = ColorValue.fromDataColor(_color, modeIndex);
+        }
+
+        else if (this.input0) 
+            this.value = (await this.input0.eval(parse)).toValue();
+
+        else if (this.input1) 
+            this.value = (await this.input1.eval(parse)).toValue();
+            
+        else 
+            this.value = ColorValue.NaN;
+
+
+        genPushUpdateValue(parse, this.nodeId, 'value',   this.value);
+        genPushUpdateValue(parse, this.nodeId, 'mode',    mode );
+        genPushUpdateValue(parse, this.nodeId, 'opacity', opacity);
+        genPushUpdateValue(parse, this.nodeId, 'gamma',   gamma );
+
+
+        this.validate();
+        
+        return this;
+    }
+
+
+
+    blend(mode, col0, col1, opacity, gamma)
+    {
+        mode = 1;
+        
+        if (   mode <= 1
+            || mode >  6) // hex, rgb, okLab, lab, luv
+        {
+            const r0 = Math.pow(col0[1], gamma);  const r1 = Math.pow(col1[1], gamma);
+            const g0 = Math.pow(col0[2], gamma);  const g1 = Math.pow(col1[2], gamma);
+            const b0 = Math.pow(col0[3], gamma);  const b1 = Math.pow(col1[3], gamma);
+
+            gamma = Math.max(0.01, gamma);
+
+            return [
+                colorSpace(mode),
+                Math.pow(lerp(r0, r1, opacity), 1/gamma),
+                Math.pow(lerp(g0, g1, opacity), 1/gamma),
+                Math.pow(lerp(b0, b1, opacity), 1/gamma) ];
+        }
+        else // hsv/hsl/hcl
+        {
+            const h0 = col0[1] * Tau;  const h1 = col1[1] * Tau;
+            const c0 = col0[2];        const c1 = col1[2];
+            const l0 = col0[3];        const l1 = col1[3];
+
+            return [
+                colorSpace(mode),
+                normalAngle(h0 + angleDiff(h0, h1) * opacity) / Tau,
+                lerp(c0, c1, opacity),
+                lerp(l0, l1, opacity) ];
         }
     }
 }
@@ -16126,6 +16330,7 @@ function enableFeatures(subscription, beta)
     updateMenuItemDisplay(menuItemCorrectColor       .div, subscription);
     updateMenuItemDisplay(menuItemColorSep1          .div, subscription);
     updateMenuItemDisplay(menuItemColorblind         .div, subscription);
+    updateMenuItemDisplay(menuItemColorBlend         .div, beta);
 
     //updateMenuItemDisplay(menuItemStyleFill        .div, subscription && beta);
     updateMenuItemDisplay(menuItemStyleStroke        .div, subscription && beta);
@@ -17022,6 +17227,64 @@ function genParseColorInterpolate(parse)
 
     genParseNodeEnd(parse, lerp);
     return lerp;
+}
+
+
+
+function genParseColorBlend(parse)
+{
+    const [, nodeId, options, ignore] = genParseNodeStart(parse);
+
+
+    const blend = new GColorBlend(nodeId, options);
+
+
+    let nInputs = -1;
+
+    if (!ignore)
+    {
+        nInputs = parseInt(parse.move());
+        console.assert(nInputs => 0 && nInputs <= 2, 'nInputs must be [0, 2]');
+    }
+
+    
+    if (parse.settings.logRequests) 
+        logReq(blend, parse, ignore, nInputs);
+
+
+    if (ignore) 
+    {
+        genParseNodeEnd(parse, blend);
+        return parse.parsedNodes.find(n => n.nodeId == nodeId);
+    }
+
+
+    parse.nTab++;
+
+
+    if (nInputs == 2)
+    {
+        blend.input0 = genParse(parse);
+        blend.input1 = genParse(parse);
+    }
+
+    else if (nInputs == 1)
+        blend.input0 = genParse(parse); // doesn't matter if it's input0 or input1, the eval() result will be the same
+
+    else if (nInputs != 0)
+        console.assert(false, 'nInputs must be [0, 2]');
+
+
+    blend.mode    = genParse(parse);
+    blend.opacity = genParse(parse);
+    blend.gamma   = genParse(parse);
+
+
+    parse.nTab--;
+
+
+    genParseNodeEnd(parse, blend);
+    return blend;
 }
 
 
@@ -19165,6 +19428,7 @@ function genParse(parse, inParam = true)
     else if (parse.next == COLOR_CONTRAST         ) result = genParseColorContrast   (parse);
     else if (parse.next == COLORBLIND             ) result = genParseColorBlind      (parse);
     else if (parse.next == COLOR_INTERPOLATE      ) result = genParseColorInterpolate(parse);
+    else if (parse.next == COLOR_BLEND            ) result = genParseColorBlend      (parse);
      
     else if (parse.next == FILL_VALUE             ) result = genParseFillValue       (parse);
     else if (parse.next == FILL                   ) result = genParseFill            (parse);
@@ -28036,15 +28300,17 @@ const CORRECT_COLOR     = 'CCOR';
 const COLOR_CONTRAST    = 'CCNT';  
 const COLORBLIND        = 'BLND';  
 const COLOR_INTERPOLATE = 'CLERP'; 
+const COLOR_BLEND       = 'CBLND';
 
 
 const COLOR_TYPES =
 [
     COLOR_VALUE,
     COLOR,
-    COLOR_INTERPOLATE,
     CORRECT_COLOR,
-    COLORBLIND
+    COLORBLIND,
+    COLOR_INTERPOLATE,
+    COLOR_BLEND
 ];
 
 
@@ -28193,6 +28459,70 @@ const CONDITION_OPS =
     [CONDITION_EQUAL,            '='],
     [CONDITION_GREATER_OR_EQUAL, '≥'],
     [CONDITION_GREATER,          '>']
+];
+
+
+
+const EMPTY_ACTION               = 'EMPTY';
+const CONNECT_ACTION             = 'CONNECT';
+const CREATE_ACTION              = 'CREATE';
+const CREATE_INSERT_ACTION       = 'CREATE_INSERT';
+const DELETE_ACTION              = 'DELETE';
+const DISCONNECT_ACTION          = 'DISCONNECT';
+const LINK_STYLE_ACTION          = 'LINK_STYLE';
+const MAKE_ACTIVE_ACTION         = 'MAKE_ACTIVE';
+const PASTE_ACTION               = 'PASTE';
+const RECONNECT_ACTION           = 'RECONNECT';
+const REMOVE_ACTION              = 'REMOVE';
+const RENAME_ACTION              = 'RENAME';
+const REORDER_INPUTS_ACTION      = 'REORDER_INPUTS';
+const REORDER_CONNECTIONS_ACTION = 'REORDER_CONNECTIONS';
+const SELECT_ACTION              = 'SELECT';
+const SELECT_MOVE_ACTION         = 'SELECT_MOVE';
+const SET_PARAM_VALUE_ACTION     = 'SET_PARAM_VALUE';
+const SET_PARAM_SETTING_ACTION   = 'SET_PARAM_SETTING';
+const SET_NODE_RECT_ACTION       = 'SET_NODE_RECT';
+const TOGGLE_DISABLE_ACTION      = 'TOGGLE_DISABLE';
+const TOGGLE_SYMBOL_ACTION       = 'TOGGLE_SYMBOL';
+const SET_CURRENT_GRAPH_ACTION   = 'SET_CURRENT_GRAPH';
+
+
+
+const BLEND_NORMAL      = 'BNORM';
+const BLEND_DARKEN      = 'BDARK';
+const BLEND_MULTIPLY    = 'BMULT';
+const BLEND_COLOR_BURN  = 'BBURN';
+const BLEND_LIGNTEN     = 'BLITE';
+const BLEND_SCREEN      = 'BSCRN';
+const BLEND_COLOR_DODGE = 'BDODG';
+const BLEND_OVERLAY     = 'BOVER';
+const BLEND_SOFT_LIGHT  = 'BSOFT';
+const BLEND_HARD_LIGHT  = 'BHARD';
+const BLEND_DIFFERENCE  = 'BDIFF';
+const BLEND_EXCLUSION   = 'BEXCL';
+const BLEND_HUE         = 'BHUE';
+const BLEND_SATURATION  = 'BSAT';
+const BLEND_COLOR       = 'BCOL';
+const BLEND_LUMINOSITY  = 'BLUM';
+
+const BlendModes =
+[
+    [BLEND_NORMAL,      'normal'     ],
+    [BLEND_DARKEN,      'darken'     ],
+    [BLEND_MULTIPLY,    'multiply'   ],
+    [BLEND_COLOR_BURN,  'color burn' ],
+    [BLEND_LIGNTEN,     'lighten'    ],
+    [BLEND_SCREEN,      'screen'     ],
+    [BLEND_COLOR_DODGE, 'color dodge'],
+    [BLEND_OVERLAY,     'overlay'    ],
+    [BLEND_SOFT_LIGHT,  'soft light' ],
+    [BLEND_HARD_LIGHT,  'hard light' ],
+    [BLEND_DIFFERENCE,  'difference' ],
+    [BLEND_EXCLUSION,   'exclusion'  ],
+    [BLEND_HUE,         'hue'        ],
+    [BLEND_SATURATION,  'saturation' ],
+    [BLEND_COLOR,       'color'      ],
+    [BLEND_LUMINOSITY,  'luminosity' ]
 ];
 
 
@@ -34831,7 +35161,7 @@ extends GColorType
 
             const _space = colorSpace(spaceIndex);
 
-            const col = this.interpolate(
+            const _color = this.interpolate(
                 spaceIndex,
                 convertDataColorToSpace(input0.toDataColor(), _space),
                 convertDataColorToSpace(input1.toDataColor(), _space),
@@ -34842,7 +35172,7 @@ extends GColorType
             // allow interpolating invalid colors,
             // so no valid color check here
 
-            this.value = ColorValue.fromDataColor(col, spaceIndex);
+            this.value = ColorValue.fromDataColor(_color, spaceIndex);
         }
 
         else if (this.input0) 
@@ -34896,6 +35226,144 @@ extends GColorType
                 normalAngle(h0 + angleDiff(h0, h1) * f) / Tau,
                 lerp(c0, c1, f),
                 lerp(l0, l1, f) ];
+        }
+    }
+}
+
+
+
+class GColorBlend
+extends GColorType
+{
+    input0 = null;
+    input1 = null;
+
+    mode;
+    opacity;
+    gamma;
+
+
+    constructor(nodeId, options)
+    {
+        super(COLOR_BLEND, nodeId, options);
+    }
+
+
+    
+    copy()
+    {
+        const copy = new GColorBlend(this.nodeId, this.options);
+
+        copy.copyBase(this);
+
+        if (this.input0) copy.input0 = this.input0.copy();
+        if (this.input1) copy.input1 = this.input1.copy();
+
+        copy.mode    = this.mode   .copy();
+        copy.opacity = this.opacity.copy();
+        copy.gamma   = this.gamma  .copy();
+
+        return copy;
+    }
+
+
+
+    async eval(parse)
+    {
+        if (this.isCached())
+            return this;
+
+
+        const mode    = (await this.mode   .eval(parse)).toValue().toInteger();
+        const opacity = (await this.opacity.eval(parse)).toValue();
+        const gamma   = (await this.gamma  .eval(parse)).toValue();
+
+
+        if (   this.input0 
+            && this.input1)
+        {
+            const input0 = (await this.input0.eval(parse)).toValue();
+            const input1 = (await this.input1.eval(parse)).toValue();
+
+            console.assert(
+                opacity.type == NUMBER_VALUE, 
+                'this.result.type must be NUMBER_VALUE');
+
+            const opacity = opacity.value / 100;
+
+
+            const modeIndex  = Math.min(Math.max(0, mode.value), BlendModes.length-1);
+            const gammaValue = Math.max(0.0001, gamma.value);
+
+            const _space = colorSpace(modeIndex);
+
+            const _color = this.blend(
+                modeIndex,
+                convertDataColorToSpace(input0.toDataColor(), _space),
+                convertDataColorToSpace(input1.toDataColor(), _space),
+                opacity,
+                gammaValue);
+
+
+            // allow interpolating invalid colors,
+            // so no valid color check here
+
+            this.value = ColorValue.fromDataColor(_color, modeIndex);
+        }
+
+        else if (this.input0) 
+            this.value = (await this.input0.eval(parse)).toValue();
+
+        else if (this.input1) 
+            this.value = (await this.input1.eval(parse)).toValue();
+            
+        else 
+            this.value = ColorValue.NaN;
+
+
+        genPushUpdateValue(parse, this.nodeId, 'value',   this.value);
+        genPushUpdateValue(parse, this.nodeId, 'mode',    mode );
+        genPushUpdateValue(parse, this.nodeId, 'opacity', opacity);
+        genPushUpdateValue(parse, this.nodeId, 'gamma',   gamma );
+
+
+        this.validate();
+        
+        return this;
+    }
+
+
+
+    blend(mode, col0, col1, opacity, gamma)
+    {
+        mode = 1;
+        
+        if (   mode <= 1
+            || mode >  6) // hex, rgb, okLab, lab, luv
+        {
+            const r0 = Math.pow(col0[1], gamma);  const r1 = Math.pow(col1[1], gamma);
+            const g0 = Math.pow(col0[2], gamma);  const g1 = Math.pow(col1[2], gamma);
+            const b0 = Math.pow(col0[3], gamma);  const b1 = Math.pow(col1[3], gamma);
+
+            gamma = Math.max(0.01, gamma);
+
+            return [
+                colorSpace(mode),
+                Math.pow(lerp(r0, r1, opacity), 1/gamma),
+                Math.pow(lerp(g0, g1, opacity), 1/gamma),
+                Math.pow(lerp(b0, b1, opacity), 1/gamma) ];
+        }
+        else // hsv/hsl/hcl
+        {
+            const h0 = col0[1] * Tau;  const h1 = col1[1] * Tau;
+            const c0 = col0[2];        const c1 = col1[2];
+            const l0 = col0[3];        const l1 = col1[3];
+
+            return [
+                colorSpace(mode),
+                normalAngle(h0 + angleDiff(h0, h1) * opacity) / Tau,
+                lerp(c0, c1, opacity),
+                lerp(l0, l1, opacity) ];
         }
     }
 }
@@ -36640,6 +37108,7 @@ function enableFeatures(subscription, beta)
     updateMenuItemDisplay(menuItemCorrectColor       .div, subscription);
     updateMenuItemDisplay(menuItemColorSep1          .div, subscription);
     updateMenuItemDisplay(menuItemColorblind         .div, subscription);
+    updateMenuItemDisplay(menuItemColorBlend         .div, beta);
 
     //updateMenuItemDisplay(menuItemStyleFill        .div, subscription && beta);
     updateMenuItemDisplay(menuItemStyleStroke        .div, subscription && beta);
@@ -40226,12 +40695,13 @@ const iconTextCSV           = '<svg width="19" height="10" viewBox="0 0 19 10" f
 const iconTextFetch         = '<svg width="17" height="11" viewBox="0 0 17 11" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M0.5 5.51719V4.98437C1.05152 4.98437 1.93627 4.88411 2.15423 4.68359C2.3755 4.48307 2.48614 4.14792 2.48614 3.67813V2.30313C2.48614 1.90781 2.52907 1.56549 2.61494 1.27617C2.70411 0.986849 2.84777 0.747657 3.04592 0.558594C3.24407 0.369532 3.50827 0.229167 3.83853 0.137501C4.16878 0.0458335 5.51453 0 6 0V0.842188C5.61691 0.842188 4.37684 0.89375 4.15557 0.996875C3.9376 1.1 3.78238 1.26042 3.68991 1.47813C3.60074 1.69297 3.55616 1.96797 3.55616 2.30313V4.02188C3.55616 4.24531 3.52148 4.4487 3.45213 4.63203C3.38608 4.81536 3.26223 4.97292 3.08059 5.10469C2.89896 5.23646 2.63971 5.33815 2.30285 5.40977C1.96929 5.48138 1.03501 5.51719 0.5 5.51719ZM6 11C5.51453 11 4.16878 10.9542 3.83853 10.8625C3.50827 10.7708 3.24407 10.6305 3.04592 10.4414C2.84777 10.2523 2.70411 10.0132 2.61494 9.72383C2.52907 9.4345 2.48614 9.09219 2.48614 8.69687V7.32188C2.48614 6.85208 2.3755 6.51693 2.15423 6.31641C1.93627 6.11589 1.05152 6.01562 0.5 6.01562V5.48281C1.03501 5.48281 1.96929 5.51862 2.30285 5.59023C2.63971 5.66185 2.89896 5.76354 3.08059 5.89531C3.26223 6.02708 3.38608 6.18464 3.45213 6.36797C3.52148 6.5513 3.55616 6.75469 3.55616 6.97813V8.69687C3.55616 9.03203 3.60074 9.30703 3.68991 9.52188C3.78238 9.73672 3.9376 9.8957 4.15557 9.99883C4.37684 10.1048 5.61691 10.1578 6 10.1578V11ZM0.5 6.01562V4.98437H2.1691V6.01562H0.5Z" fill="white"/><path d="M16.5 5.48281V6.01562C15.9485 6.01562 15.0621 6.11589 14.8408 6.31641C14.6228 6.51693 14.5139 6.85208 14.5139 7.32188V8.69687C14.5139 9.09219 14.4693 9.4345 14.3801 9.72383C14.2942 10.0132 14.1522 10.2523 13.9541 10.4414C13.7559 10.6305 13.4917 10.7708 13.1615 10.8625C12.8312 10.9542 11.4855 11 11 11V10.1578C11.3831 10.1578 12.6215 10.1048 12.8395 9.99883C13.0607 9.8957 13.216 9.73672 13.3051 9.52188C13.3976 9.30703 13.4438 9.03203 13.4438 8.69687V6.97813C13.4438 6.75469 13.4769 6.5513 13.5429 6.36797C13.6123 6.18464 13.7378 6.02708 13.9194 5.89531C14.101 5.76354 14.3586 5.66185 14.6922 5.59023C15.0291 5.51862 15.965 5.48281 16.5 5.48281ZM11 0C11.4855 0 12.8312 0.0458335 13.1615 0.137501C13.4917 0.229167 13.7559 0.369532 13.9541 0.558594C14.1522 0.747657 14.2942 0.986849 14.3801 1.27617C14.4693 1.56549 14.5139 1.90781 14.5139 2.30313V3.67813C14.5139 4.14792 14.6228 4.48307 14.8408 4.68359C15.0621 4.88411 15.9485 4.98437 16.5 4.98437V5.51719C15.965 5.51719 15.0291 5.48138 14.6922 5.40977C14.3586 5.33815 14.101 5.23646 13.9194 5.10469C13.7378 4.97292 13.6123 4.81536 13.5429 4.63203C13.4769 4.4487 13.4438 4.24531 13.4438 4.02188V2.30313C13.4438 1.96797 13.3976 1.69297 13.3051 1.47813C13.216 1.26042 13.0607 1.1 12.8395 0.996875C12.6215 0.89375 11.3831 0.842188 11 0.842188V0ZM16.5 4.98437V6.01562H14.8309V4.98437H16.5Z" fill="white"/></svg>';
 
 const iconColor             = '<svg width="13" height="15" viewBox="0 0 13 15" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M11.8409 3.43385C10.7465 2.2502 9.18038 1.50909 7.44118 1.50909C4.13249 1.50909 1.45027 4.19132 1.45027 7.5C1.45027 10.8087 4.13249 13.4909 7.44118 13.4909C9.18038 13.4909 10.7465 12.7498 11.8409 11.5662" stroke="white" stroke-width="1.2"/><path d="M7.5 8.57512C8.09377 8.57512 8.57511 8.09378 8.57511 7.50001C8.57511 6.90624 8.09377 6.4249 7.5 6.4249C6.90623 6.4249 6.42489 6.90624 6.42489 7.50001C6.42489 8.09378 6.90623 8.57512 7.5 8.57512Z" fill="white"/></svg>';
+const iconRandomColor       = '<svg width="13" height="15" viewBox="0 0 13 15" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M11.9099 3.43385C10.8155 2.2502 9.24936 1.50909 7.51016 1.50909C4.20148 1.50909 1.51926 4.19132 1.51926 7.5C1.51926 10.8087 4.20148 13.4909 7.51016 13.4909C9.24936 13.4909 10.8155 12.7498 11.9099 11.5662" stroke="white" stroke-width="1.2"/><path d="M6.77317 8.80159V8.71763C6.77533 8.32795 6.81193 8.01793 6.88297 7.78757C6.95617 7.55721 7.05951 7.37206 7.19299 7.23212C7.32647 7.09003 7.48902 6.95978 7.68063 6.84137C7.81195 6.75956 7.92929 6.67021 8.03263 6.57333C8.13812 6.4743 8.22101 6.3645 8.28129 6.24393C8.34157 6.12122 8.37171 5.98451 8.37171 5.8338C8.37171 5.66372 8.33188 5.51625 8.25222 5.39138C8.17257 5.26651 8.06492 5.16963 7.92929 5.10074C7.79581 5.03184 7.64618 4.9974 7.4804 4.9974C7.32755 4.9974 7.18223 5.03077 7.04444 5.09751C6.90881 5.16209 6.79578 5.26113 6.70536 5.39461C6.61709 5.52594 6.56757 5.69279 6.55681 5.89516H5.40715C5.41791 5.48611 5.51695 5.14379 5.70425 4.86822C5.89371 4.59265 6.14345 4.38597 6.45347 4.24818C6.76564 4.1104 7.1101 4.0415 7.48686 4.0415C7.89807 4.0415 8.25976 4.11363 8.57193 4.25787C8.88626 4.40212 9.13061 4.60772 9.305 4.87468C9.48154 5.13949 9.56981 5.45381 9.56981 5.81766C9.56981 6.06309 9.52998 6.28269 9.45032 6.47645C9.37281 6.67021 9.26194 6.84244 9.11769 6.99315C8.97345 7.14385 8.80229 7.27841 8.60423 7.39682C8.42984 7.50446 8.28667 7.61642 8.17472 7.73267C8.06492 7.84893 7.98311 7.98564 7.92929 8.1428C7.87762 8.29781 7.85071 8.48942 7.84855 8.71763V8.80159H6.77317Z" fill="white"/><path d="M6.7784 10.8136C6.94344 10.9761 7.14021 11.0574 7.36872 11.0574C7.52106 11.0574 7.65943 11.0205 7.78384 10.9469C7.91079 10.8707 8.01235 10.7692 8.08852 10.6422C8.16723 10.5153 8.20658 10.3744 8.20658 10.2195C8.20658 9.99099 8.1228 9.79549 7.95522 9.63299C7.79019 9.4705 7.59469 9.38925 7.36872 9.38925C7.14021 9.38925 6.94344 9.4705 6.7784 9.63299C6.61337 9.79549 6.53085 9.99099 6.53085 10.2195C6.53085 10.4531 6.61337 10.6511 6.7784 10.8136Z" fill="white"/></svg>';
 const iconValidColor        = '<svg width="17" height="15" viewBox="-1 0 17 15" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M11.8409 11.5662C10.7465 12.7498 9.18038 13.4909 7.44118 13.4909C4.13249 13.4909 1.45027 10.8087 1.45027 7.5C1.45027 4.19131 4.13249 1.50909 7.44118 1.50909C8.66322 1.50909 9.80806 2.02212 10.7556 2.65033" stroke="white" stroke-width="1.2"/><path fill-rule="evenodd" clip-rule="evenodd" d="M15.6832 3.62548L9.18921 10.1195L5.38744 6.31769L6.52965 5.17548L9.18921 7.83504L14.5411 2.48326L15.6832 3.62548Z" fill="white"/></svg>';
 const iconCorrectColor      = '<svg width="14" height="15" viewBox="0 0 14 15" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M11.9123 3.43385C10.8179 2.2502 9.25181 1.50909 7.51261 1.50909C4.20392 1.50909 1.5217 4.19132 1.5217 7.5C1.5217 10.8087 4.20392 13.4909 7.51261 13.4909C9.25181 13.4909 10.8179 12.7498 11.9123 11.5662" stroke="white" stroke-width="1.2"/><path d="M6.97348 10.659L7.06123 8.24587L5.02106 9.54017L4.49457 8.61881L6.64443 7.5L4.49457 6.3812L5.02106 5.45983L7.06123 6.75414L6.97348 4.34103H8.02648L7.93873 6.75414L9.9789 5.45983L10.5054 6.3812L8.35554 7.5L10.5054 8.61881L9.9789 9.54017L7.93873 8.24587L8.02648 10.659H6.97348Z" fill="white"/></svg>';
 const iconWebContrast       = '<svg width="16" height="15" viewBox="0 0 16 15" fill="none" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" clip-rule="evenodd" d="M12 3H8V4V11V12H10V11H9V4H11V5H12V4V3Z" fill="white"/><path fill-rule="evenodd" clip-rule="evenodd" d="M12 3H8V4V11V12H10V11H9V4H11V5H12V4V3Z" fill="white"/><path fill-rule="evenodd" clip-rule="evenodd" d="M12 3H8V4V11V12H10V11H9V4H11V5H12V4V3Z" fill="white"/><path fill-rule="evenodd" clip-rule="evenodd" d="M8 1H14.5C14.7761 1 15 1.22386 15 1.5V13.5C15 13.7761 14.7761 14 14.5 14H8V12H5.67075V11H7V4H5.09626V5.23481H3.90374V3H8V1ZM0 1.5C0 0.671573 0.671573 0 1.5 0H14.5C15.3284 0 16 0.671573 16 1.5V13.5C16 14.3284 15.3284 15 14.5 15H1.5C0.671573 15 0 14.3284 0 13.5V1.5Z" fill="white"/></svg>';
 const iconColorblind        = '<svg width="21" height="21" viewBox="0 0 21 21" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M10.5 19.5371C15.491 19.5371 19.5371 15.491 19.5371 10.5C19.5371 5.50898 15.491 1.46295 10.5 1.46295C5.50898 1.46295 1.46295 5.50898 1.46295 10.5C1.46295 15.491 5.50898 19.5371 10.5 19.5371Z" stroke="white"/><path fill-rule="evenodd" clip-rule="evenodd" d="M9.37288 4.83079C9.73798 4.75856 10.1149 4.7208 10.5 4.7208C10.8851 4.7208 11.262 4.75856 11.6271 4.83079L11.3554 6.20417C11.0793 6.14955 10.7934 6.1208 10.5 6.1208C10.2066 6.1208 9.92068 6.14955 9.64458 6.20417L9.37288 4.83079ZM5.69463 7.2885C6.11636 6.65857 6.65856 6.11636 7.28849 5.69464L8.06734 6.85799C7.58948 7.17791 7.17791 7.58948 6.85799 8.06734L5.69463 7.2885ZM13.7115 5.69464C14.3414 6.11636 14.8836 6.65857 15.3054 7.2885L14.142 8.06734C13.8221 7.58948 13.4105 7.17791 12.9327 6.85799L13.7115 5.69464ZM16.1692 9.37289C16.2414 9.73799 16.2792 10.1149 16.2792 10.5C16.2792 10.8851 16.2414 11.262 16.1692 11.6271L14.7958 11.3554C14.8504 11.0793 14.8792 10.7934 14.8792 10.5C14.8792 10.2066 14.8504 9.92068 14.7958 9.64458L16.1692 9.37289ZM4.7208 10.5C4.7208 10.1149 4.75856 9.73799 4.83078 9.37289L6.20417 9.64458C6.14955 9.92068 6.1208 10.2066 6.1208 10.5C6.1208 10.7934 6.14955 11.0793 6.20417 11.3554L4.83078 11.6271C4.75856 11.262 4.7208 10.8851 4.7208 10.5ZM7.28849 15.3054C6.65856 14.8836 6.11636 14.3414 5.69463 13.7115L6.85799 12.9327C7.17791 13.4105 7.58948 13.8221 8.06734 14.142L7.28849 15.3054ZM15.3054 13.7115C14.8836 14.3414 14.3414 14.8836 13.7115 15.3054L12.9327 14.142C13.4105 13.8221 13.8221 13.4105 14.142 12.9327L15.3054 13.7115ZM10.5 16.2792C10.1149 16.2792 9.73798 16.2414 9.37288 16.1692L9.64458 14.7958C9.92068 14.8505 10.2066 14.8792 10.5 14.8792C10.7934 14.8792 11.0793 14.8505 11.3554 14.7958L11.6271 16.1692C11.262 16.2414 10.8851 16.2792 10.5 16.2792Z" fill="white"/><path d="M10.5 11.9909C11.3234 11.9909 11.9909 11.3234 11.9909 10.5C11.9909 9.6766 11.3234 9.0091 10.5 9.0091C9.6766 9.0091 9.0091 9.6766 9.0091 10.5C9.0091 11.3234 9.6766 11.9909 10.5 11.9909Z" fill="white"/></svg>';
-const iconColorInterpolate  = '<svg width="17" height="19" viewBox="0 0 17 19" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="9.5" cy="2.5" r="2.5" fill="white" fill-opacity="0.1"/><circle cx="9.5" cy="2.5" r="2" stroke="white" stroke-opacity="0.4"/><circle cx="2.5" cy="9.5" r="2.5" fill="white" fill-opacity="0.4"/><circle cx="2.5" cy="9.5" r="2" stroke="white" stroke-opacity="0.61"/><circle cx="9.5" cy="16.5" r="2.5" fill="white" fill-opacity="0.8"/><circle cx="9.5" cy="16.5" r="2" stroke="white" stroke-opacity="0.9"/><circle cx="14.5" cy="14.5" r="2" fill="white" stroke="white"/><circle cx="14.5" cy="4.5" r="2" stroke="white" stroke-opacity="0.4"/><circle cx="4.5" cy="14.5" r="2.5" fill="white" fill-opacity="0.6"/><circle cx="4.5" cy="14.5" r="2" stroke="white" stroke-opacity="0.8"/><circle cx="4.5" cy="4.5" r="2.5" fill="white" fill-opacity="0.2"/><circle cx="4.5" cy="4.5" r="2" stroke="white" stroke-opacity="0.55"/></svg>';
-const iconRandomColor       = '<svg width="13" height="15" viewBox="0 0 13 15" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M11.9099 3.43385C10.8155 2.2502 9.24936 1.50909 7.51016 1.50909C4.20148 1.50909 1.51926 4.19132 1.51926 7.5C1.51926 10.8087 4.20148 13.4909 7.51016 13.4909C9.24936 13.4909 10.8155 12.7498 11.9099 11.5662" stroke="white" stroke-width="1.2"/><path d="M6.77317 8.80159V8.71763C6.77533 8.32795 6.81193 8.01793 6.88297 7.78757C6.95617 7.55721 7.05951 7.37206 7.19299 7.23212C7.32647 7.09003 7.48902 6.95978 7.68063 6.84137C7.81195 6.75956 7.92929 6.67021 8.03263 6.57333C8.13812 6.4743 8.22101 6.3645 8.28129 6.24393C8.34157 6.12122 8.37171 5.98451 8.37171 5.8338C8.37171 5.66372 8.33188 5.51625 8.25222 5.39138C8.17257 5.26651 8.06492 5.16963 7.92929 5.10074C7.79581 5.03184 7.64618 4.9974 7.4804 4.9974C7.32755 4.9974 7.18223 5.03077 7.04444 5.09751C6.90881 5.16209 6.79578 5.26113 6.70536 5.39461C6.61709 5.52594 6.56757 5.69279 6.55681 5.89516H5.40715C5.41791 5.48611 5.51695 5.14379 5.70425 4.86822C5.89371 4.59265 6.14345 4.38597 6.45347 4.24818C6.76564 4.1104 7.1101 4.0415 7.48686 4.0415C7.89807 4.0415 8.25976 4.11363 8.57193 4.25787C8.88626 4.40212 9.13061 4.60772 9.305 4.87468C9.48154 5.13949 9.56981 5.45381 9.56981 5.81766C9.56981 6.06309 9.52998 6.28269 9.45032 6.47645C9.37281 6.67021 9.26194 6.84244 9.11769 6.99315C8.97345 7.14385 8.80229 7.27841 8.60423 7.39682C8.42984 7.50446 8.28667 7.61642 8.17472 7.73267C8.06492 7.84893 7.98311 7.98564 7.92929 8.1428C7.87762 8.29781 7.85071 8.48942 7.84855 8.71763V8.80159H6.77317Z" fill="white"/><path d="M6.7784 10.8136C6.94344 10.9761 7.14021 11.0574 7.36872 11.0574C7.52106 11.0574 7.65943 11.0205 7.78384 10.9469C7.91079 10.8707 8.01235 10.7692 8.08852 10.6422C8.16723 10.5153 8.20658 10.3744 8.20658 10.2195C8.20658 9.99099 8.1228 9.79549 7.95522 9.63299C7.79019 9.4705 7.59469 9.38925 7.36872 9.38925C7.14021 9.38925 6.94344 9.4705 6.7784 9.63299C6.61337 9.79549 6.53085 9.99099 6.53085 10.2195C6.53085 10.4531 6.61337 10.6511 6.7784 10.8136Z" fill="white"/></svg>';
+const iconColorInterpolate  = '<svg width="18" height="19" viewBox="0 0 18 19" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="9.5" cy="2.5" r="2.5" fill="white" fill-opacity="0.1"/><circle cx="9.5" cy="2.5" r="2" stroke="white" stroke-opacity="0.4"/><circle cx="2.5" cy="9.5" r="2.5" fill="white" fill-opacity="0.4"/><circle cx="2.5" cy="9.5" r="2" stroke="white" stroke-opacity="0.61"/><circle cx="9.5" cy="16.5" r="2.5" fill="white" fill-opacity="0.8"/><circle cx="9.5" cy="16.5" r="2" stroke="white" stroke-opacity="0.9"/><circle cx="14.5" cy="14.5" r="2" fill="white" stroke="white"/><circle cx="14.5" cy="4.5" r="2" stroke="white" stroke-opacity="0.4"/><circle cx="4.5" cy="14.5" r="2.5" fill="white" fill-opacity="0.6"/><circle cx="4.5" cy="14.5" r="2" stroke="white" stroke-opacity="0.8"/><circle cx="4.5" cy="4.5" r="2.5" fill="white" fill-opacity="0.2"/><circle cx="4.5" cy="4.5" r="2" stroke="white" stroke-opacity="0.55"/></svg>';
+const iconColorBlend        = '<svg width="14" height="15" viewBox="-1 0 15 15" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M-4.02642e-07 9C-5.48785e-07 10.5913 0.63214 12.1174 1.75736 13.2426C2.88258 14.3679 4.4087 15 6 15C7.5913 15 9.11742 14.3679 10.2426 13.2426C11.3679 12.1174 12 10.5913 12 9L6 9L-4.02642e-07 9Z" fill="white"/><path d="M0.499999 9.2647C0.499999 7.80555 0.917848 6.69229 1.85417 5.39097C2.66503 4.26403 3.84136 3.02592 5.4562 1.32626C5.64008 1.13273 5.82964 0.933209 6.02499 0.727189C6.22035 0.933214 6.40992 1.13274 6.5938 1.32628C8.20864 3.02593 9.38496 4.26403 10.1958 5.39097C11.1321 6.69229 11.55 7.80555 11.55 9.26471C11.55 12.1331 9.09987 14.5 6.02499 14.5C2.95012 14.5 0.499998 12.1331 0.499999 9.2647Z" stroke="white"/></svg>';
  
 const iconFill              = '<svg width="12" height="12" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="6" cy="6" r="6" fill="white"/></svg>';
 const iconStroke            = '<svg width="12" height="12" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="6" cy="6" r="5.4" stroke="white" stroke-width="1.2"/></svg>';
@@ -41273,6 +41743,7 @@ var menuItemColor;
 var menuItemCorrectColor;
 var menuItemColorSep1;
 var menuItemColorblind;
+var menuItemColorBlend;
 
 
 var menuItemStyleFill;
@@ -41346,19 +41817,20 @@ function initGeneratorMenus()
 
     menuMainPreferences = new Menu('Preferences', false);
     menuMainPreferences.addItems([
-        menuItemShowAllColorSpaces    = new MenuItem('Show all color spaces',         {checkCallback: () => settings.showAllColorSpaces,    callback: () => { updateSettingAndMenu('showAllColorSpaces',    true, !settings.showAllColorSpaces);    updateMenuItemShowAllColorSpaces();   }}),
-                                        new MenuItem('',                              {separator: true}),    
-        menuItemShowOperationResults  = new MenuItem('Show operation results',        {checkCallback: () => settings.showOperationResults,  callback: () => { updateSettingAndMenu('showOperationResults',  true, !settings.showOperationResults);  updateMenuItemShowOperationResults(); }}),
-        menuItemShowBoolValues        = new MenuItem('Show boolean values as  ✓ ✗',  {checkCallback: () => settings.showBoolValues,        callback: () => { updateSettingAndMenu('showBoolValues',        true, !settings.showBoolValues);        updateMenuItemShowBoolValues();       }}),
-                                        new MenuItem('',                              {separator: true}),    
-        menuItemShowClearUndoWarning  = new MenuItem('Show clear undo warning',       {checkCallback: () => settings.showClearUndoWarning,  callback: () => { updateSettingAndMenu('showClearUndoWarning',  true, !settings.showClearUndoWarning);                                        }}),
-        menuItemShowTooltips          = new MenuItem('Show tooltips',                 {childMenu: menuShowTooltips}),
-                                        new MenuItem('',                              {separator: true}),    
-        menuItemShowDebugMenu         = new MenuItem('Show debug menu',               {checkCallback: () => settings.showDebugMenu,         callback: () => { updateSettingAndMenu('showDebugMenu',         true, !settings.showDebugMenu);         updateMenuItemShowDebugMenu();        }}),
-        menuItemEnableBetaFeatures    = new MenuItem('Enable beta features',          {checkCallback: () => settings.enableBetaFeatures,    callback: () => { updateSettingAndMenu('enableBetaFeatures',    true, !settings.enableBetaFeatures);    enableFeatures(true, settings.enableBetaFeatures); }}),
-                                        new MenuItem('',                              {separator: true}),    
-                                        new MenuItem('Keyboard shortcuts...',         {callback: () => showKeyboardPanel()}),
-        menuItemMinZoomForParams      = new MenuItem('Min. zoom to adjust values...', {callback: () => showMinZoomDialog()})]);
+        menuItemShowAllColorSpaces    = new MenuItem('Show all color spaces',        {checkCallback: () => settings.showAllColorSpaces,    callback: () => { updateSettingAndMenu('showAllColorSpaces',    true, !settings.showAllColorSpaces);    updateMenuItemShowAllColorSpaces();   }}),
+                                        new MenuItem('',                             {separator: true}),    
+        menuItemShowOperationResults  = new MenuItem('Show operation results',       {checkCallback: () => settings.showOperationResults,  callback: () => { updateSettingAndMenu('showOperationResults',  true, !settings.showOperationResults);  updateMenuItemShowOperationResults(); }}),
+        menuItemShowBoolValues        = new MenuItem('Show boolean values as  ✓ ✗', {checkCallback: () => settings.showBoolValues,        callback: () => { updateSettingAndMenu('showBoolValues',        true, !settings.showBoolValues);        updateMenuItemShowBoolValues();       }}),
+                                        new MenuItem('',                             {separator: true}),    
+        menuItemShowClearUndoWarning  = new MenuItem('Show clear undo warning',      {checkCallback: () => settings.showClearUndoWarning,  callback: () => { updateSettingAndMenu('showClearUndoWarning',  true, !settings.showClearUndoWarning);                                        }}),
+        menuItemShowTooltips          = new MenuItem('Show tooltips',                {childMenu: menuShowTooltips}),
+                                        new MenuItem('',                             {separator: true}),    
+        menuItemShowDebugMenu         = new MenuItem('Show debug menu',              {checkCallback: () => settings.showDebugMenu,         callback: () => { updateSettingAndMenu('showDebugMenu',         true, !settings.showDebugMenu);         updateMenuItemShowDebugMenu();        }}),
+        menuItemEnableBetaFeatures    = new MenuItem('Enable beta features',         {checkCallback: () => settings.enableBetaFeatures,    callback: () => { updateSettingAndMenu('enableBetaFeatures',    true, !settings.enableBetaFeatures);    enableFeatures(true, settings.enableBetaFeatures); }}),
+                                        new MenuItem('',                             {separator: true}),    
+                                        new MenuItem('Keyboard layout...',           {callback: () => showKeyboardPanel()}),
+                                        new MenuItem('',                             {separator: true}),    
+        menuItemMinZoomForParams      = new MenuItem('Zoom level for values...',     {callback: () => showMinZoomDialog()})]);
         
 
     menuMainDebug = new Menu('Debug', false);
@@ -41515,15 +41987,16 @@ function initGeneratorMenus()
         
     menuColor = new Menu('Colors', true, true);
     menuColor.addItems([
-        menuItemColor        = new MenuItem('Color',             {icon: iconColor,            callback: e => actionManager.do(getCreateNodeAction(COLOR,             btnColor.div, getCreateOptions(e,  {random: e.altKey && !getCtrlKey(e)})))}),
-                               new MenuItem('',                  {separator: true}),
-                               new MenuItem('Valid sRGB',        {icon: iconValidColor,       callback: e => actionManager.do(getCreateNodeAction(VALID_COLOR,       btnColor.div, getCreateOptions(e)))}),
-        menuItemCorrectColor = new MenuItem('Correct color',     {icon: iconCorrectColor,     callback: e => actionManager.do(getCreateNodeAction(CORRECT_COLOR,     btnColor.div, getCreateOptions(e)))}),
-        menuItemColorSep1    = new MenuItem('',                  {separator: true}),
-                               new MenuItem('Web contrast',      {icon: iconWebContrast,      callback: e => actionManager.do(getCreateNodeAction(COLOR_CONTRAST,    btnColor.div, getCreateOptions(e)))}),
-        menuItemColorblind   = new MenuItem('Colorblind',        {icon: iconColorblind,       callback: e => actionManager.do(getCreateNodeAction(COLORBLIND,        btnColor.div, getCreateOptions(e)))}),
-                               new MenuItem('',                  {separator: true}),
-                               new MenuItem('Interpolate color', {icon: iconColorInterpolate, callback: e => actionManager.do(getCreateNodeAction(COLOR_INTERPOLATE, btnColor.div, getCreateOptions(e)))})]);
+        menuItemColor        = new MenuItem('Color',         {icon: iconColor,            callback: e => actionManager.do(getCreateNodeAction(COLOR,             btnColor.div, getCreateOptions(e,  {random: e.altKey && !getCtrlKey(e)})))}),
+                               new MenuItem('',              {separator: true}),
+                               new MenuItem('Valid sRGB',    {icon: iconValidColor,       callback: e => actionManager.do(getCreateNodeAction(VALID_COLOR,       btnColor.div, getCreateOptions(e)))}),
+        menuItemCorrectColor = new MenuItem('Correct color', {icon: iconCorrectColor,     callback: e => actionManager.do(getCreateNodeAction(CORRECT_COLOR,     btnColor.div, getCreateOptions(e)))}),
+        menuItemColorSep1    = new MenuItem('',              {separator: true}),
+                               new MenuItem('Web contrast',  {icon: iconWebContrast,      callback: e => actionManager.do(getCreateNodeAction(COLOR_CONTRAST,    btnColor.div, getCreateOptions(e)))}),
+        menuItemColorblind   = new MenuItem('Colorblind',    {icon: iconColorblind,       callback: e => actionManager.do(getCreateNodeAction(COLORBLIND,        btnColor.div, getCreateOptions(e)))}),
+                               new MenuItem('',              {separator: true}),
+                               new MenuItem('Interpolate',   {icon: iconColorInterpolate, callback: e => actionManager.do(getCreateNodeAction(COLOR_INTERPOLATE, btnColor.div, getCreateOptions(e)))}),
+        menuItemColorBlend   = new MenuItem('Blend',         {icon: iconColorBlend,       callback: e => actionManager.do(getCreateNodeAction(COLOR_BLEND,       btnColor.div, getCreateOptions(e)))})]);
 
     menuColor.init = () => 
     {
@@ -45463,8 +45936,10 @@ extends NumberParamBase
 class   SelectParam
 extends NumberParamBase
 {
-    options         = [];
-    excludeFromMenu = []; // indices
+    options          = [];
+    excludeFromMenu  = []; // indices
+    separatorsBefore = [];
+    
     
     reverseMenu     = false;
 
@@ -45633,10 +46108,14 @@ function initSelectParamMenu(param)
             continue;
 
 
+        if (param.separatorsBefore.includes(i))
+            menuSelectParam.addItems([new MenuItem(option, {separator: true})]);
+        
+
         const options = { callback: () => param.setValue(new NumberValue(i), true) };
 
         if (param.controls[0].readOnly)
-            options['enabled'] = false;
+            options.enabled = false;
 
             
         const item = new MenuItem(option, options);
@@ -57462,29 +57941,99 @@ extends OpColorBase
 }
 
 
-
-function removeOpColorInterpolateParamWires(node)
+class   OpColorBlend
+extends OpColorBase
 {
-    if (node.paramGamma.input.connected)
-        uiDisconnect(node.paramGamma.input);
+    paramMode;
+    paramOpacity;
+    paramGamma;
 
-    for (const input of node.paramGamma.output.connectedInputs)
-        uiDisconnect(input);
+
+
+    constructor()
+    {
+        super(COLOR_BLEND, 'blend');
+
+        
+        this.addInput(new Input(COLOR_TYPES));
+        this.addInput(new Input(COLOR_TYPES));
+
+        this.addOutput(new Output([COLOR_VALUE], this.output_genRequest));
+
+
+        this.addParam(this.paramMode    = new SelectParam('mode',    '',  false, true, true, BlendModes.map(bm => bm[1]), 0));
+        this.addParam(this.paramOpacity = new NumberParam('opacity', '',  true,  true, true, 100, 0,  100, 0));
+        this.addParam(this.paramGamma   = new NumberParam('gamma',   'γ', true,  true, true, 1,   0.01, 4, 2));
+      
+        
+        this.paramMode.separatorsBefore.push(1, 4, 7, 10, 12);
+        this.paramMode.input.outputMustBeCached = true;
+
+        
+        this.paramOpacity.controls[0].min = Number.MIN_SAFE_INTEGER; // allow
+        this.paramOpacity.controls[0].max = Number.MAX_SAFE_INTEGER; // extrapolation
+
+        this.paramOpacity.controls[0].setSuffix('%', true);
+        
+
+        this.header.connectionPadding = 12.5;
+    }
+
+
+
+    output_genRequest(gen)
+    {
+        // 'this' is the output
+
+        gen.scope.push({
+            nodeId:  this.node.id, 
+            paramId: NULL });
+
+
+        const [request, ignore] = this.node.genRequestStart(gen);
+        if (ignore) return request;
+
+
+        const input0 = this.node.inputs[0];
+        const input1 = this.node.inputs[1];
+
+        
+        if (   input0.connected
+            && input1.connected)   request.push(2,
+                                       ...pushInputOrParam(input0, gen),
+                                       ...pushInputOrParam(input1, gen));
+
+        else if (input0.connected) request.push(1, ...pushInputOrParam(input0, gen));
+        else if (input1.connected) request.push(1, ...pushInputOrParam(input1, gen));
+            
+        else                       request.push(0);
+
+
+        request.push(...this.node.paramMode   .genRequest(gen));
+        request.push(...this.node.paramOpacity.genRequest(gen));
+        request.push(...this.node.paramGamma  .genRequest(gen));
+
+
+        gen.scope.pop();
+        pushUnique(gen.passedNodes, this.node);
+
+        return request;
+    }
+
+
+
+    updateValues(requestId, actionId, updateParamId, paramIds, values)
+    {
+        const col = values[paramIds.findIndex(id => id == 'value')];
+
+        this._color = 
+            col
+            ? col.toDataColor()
+            : dataColor_NaN;
+
+        super.updateValues(requestId, actionId, updateParamId, paramIds, values);
+    }
 }
-
-
-
-function showOpColorInterpolateGammaControl(node, show)
-{
-    if (    show
-        && !node.inner.contains(node.paramGamma.div))
-        node.paramHolder.appendChild(node.paramGamma.div);
-
-    else if (!show
-           && node.inner.contains(node.paramGamma.div))
-        node.paramHolder.removeChild(node.paramGamma.div);
-}
-
 
 
 class   OpShapeBase
@@ -59478,6 +60027,7 @@ function createNode(nodeType, creatingButton = null, createdNodeId = -1, options
         case COLOR_CONTRAST:          node = new OpColorContrast();     break;
         case COLORBLIND:              node = new OpColorBlind();        break;
         case COLOR_INTERPOLATE:       node = new OpColorInterpolate();  break;
+        case COLOR_BLEND:             node = new OpColorBlend();        break;
              
         case COLOR_STOP:              node = new OpColorStop();         break;
         case GRADIENT:                node = new OpGradient();          break;
@@ -59968,31 +60518,6 @@ function getActiveNodesFromNode(node, alreadyChecked = [])
 
     return activeNodes;
 }
-
-
-const EMPTY_ACTION               = 'EMPTY';
-const CONNECT_ACTION             = 'CONNECT';
-const CREATE_ACTION              = 'CREATE';
-const CREATE_INSERT_ACTION       = 'CREATE_INSERT';
-const DELETE_ACTION              = 'DELETE';
-const DISCONNECT_ACTION          = 'DISCONNECT';
-const LINK_STYLE_ACTION          = 'LINK_STYLE';
-const MAKE_ACTIVE_ACTION         = 'MAKE_ACTIVE';
-const PASTE_ACTION               = 'PASTE';
-const RECONNECT_ACTION           = 'RECONNECT';
-const REMOVE_ACTION              = 'REMOVE';
-const RENAME_ACTION              = 'RENAME';
-const REORDER_INPUTS_ACTION      = 'REORDER_INPUTS';
-const REORDER_CONNECTIONS_ACTION = 'REORDER_CONNECTIONS';
-const SELECT_ACTION              = 'SELECT';
-const SELECT_MOVE_ACTION         = 'SELECT_MOVE';
-const SET_PARAM_VALUE_ACTION     = 'SET_PARAM_VALUE';
-const SET_PARAM_SETTING_ACTION   = 'SET_PARAM_SETTING';
-const SET_NODE_RECT_ACTION       = 'SET_NODE_RECT';
-const TOGGLE_DISABLE_ACTION      = 'TOGGLE_DISABLE';
-const TOGGLE_SYMBOL_ACTION       = 'TOGGLE_SYMBOL';
-const SET_CURRENT_GRAPH_ACTION   = 'SET_CURRENT_GRAPH';
-
 
 
 class Action

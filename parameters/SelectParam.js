@@ -1,8 +1,10 @@
 class   SelectParam
 extends NumberParamBase
 {
-    options         = [];
-    excludeFromMenu = []; // indices
+    options          = [];
+    excludeFromMenu  = []; // indices
+    separatorsBefore = [];
+    
     
     reverseMenu     = false;
 
@@ -171,10 +173,14 @@ function initSelectParamMenu(param)
             continue;
 
 
+        if (param.separatorsBefore.includes(i))
+            menuSelectParam.addItems([new MenuItem(option, {separator: true})]);
+        
+
         const options = { callback: () => param.setValue(new NumberValue(i), true) };
 
         if (param.controls[0].readOnly)
-            options['enabled'] = false;
+            options.enabled = false;
 
             
         const item = new MenuItem(option, options);

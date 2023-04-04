@@ -103,6 +103,7 @@ var menuItemColor;
 var menuItemCorrectColor;
 var menuItemColorSep1;
 var menuItemColorblind;
+var menuItemColorBlend;
 
 
 var menuItemStyleFill;
@@ -176,19 +177,20 @@ function initGeneratorMenus()
 
     menuMainPreferences = new Menu('Preferences', false);
     menuMainPreferences.addItems([
-        menuItemShowAllColorSpaces    = new MenuItem('Show all color spaces',         {checkCallback: () => settings.showAllColorSpaces,    callback: () => { updateSettingAndMenu('showAllColorSpaces',    true, !settings.showAllColorSpaces);    updateMenuItemShowAllColorSpaces();   }}),
-                                        new MenuItem('',                              {separator: true}),    
-        menuItemShowOperationResults  = new MenuItem('Show operation results',        {checkCallback: () => settings.showOperationResults,  callback: () => { updateSettingAndMenu('showOperationResults',  true, !settings.showOperationResults);  updateMenuItemShowOperationResults(); }}),
-        menuItemShowBoolValues        = new MenuItem('Show boolean values as  ✓ ✗',  {checkCallback: () => settings.showBoolValues,        callback: () => { updateSettingAndMenu('showBoolValues',        true, !settings.showBoolValues);        updateMenuItemShowBoolValues();       }}),
-                                        new MenuItem('',                              {separator: true}),    
-        menuItemShowClearUndoWarning  = new MenuItem('Show clear undo warning',       {checkCallback: () => settings.showClearUndoWarning,  callback: () => { updateSettingAndMenu('showClearUndoWarning',  true, !settings.showClearUndoWarning);                                        }}),
-        menuItemShowTooltips          = new MenuItem('Show tooltips',                 {childMenu: menuShowTooltips}),
-                                        new MenuItem('',                              {separator: true}),    
-        menuItemShowDebugMenu         = new MenuItem('Show debug menu',               {checkCallback: () => settings.showDebugMenu,         callback: () => { updateSettingAndMenu('showDebugMenu',         true, !settings.showDebugMenu);         updateMenuItemShowDebugMenu();        }}),
-        menuItemEnableBetaFeatures    = new MenuItem('Enable beta features',          {checkCallback: () => settings.enableBetaFeatures,    callback: () => { updateSettingAndMenu('enableBetaFeatures',    true, !settings.enableBetaFeatures);    enableFeatures(true, settings.enableBetaFeatures); }}),
-                                        new MenuItem('',                              {separator: true}),    
-                                        new MenuItem('Keyboard shortcuts...',         {callback: () => showKeyboardPanel()}),
-        menuItemMinZoomForParams      = new MenuItem('Min. zoom to adjust values...', {callback: () => showMinZoomDialog()})]);
+        menuItemShowAllColorSpaces    = new MenuItem('Show all color spaces',        {checkCallback: () => settings.showAllColorSpaces,    callback: () => { updateSettingAndMenu('showAllColorSpaces',    true, !settings.showAllColorSpaces);    updateMenuItemShowAllColorSpaces();   }}),
+                                        new MenuItem('',                             {separator: true}),    
+        menuItemShowOperationResults  = new MenuItem('Show operation results',       {checkCallback: () => settings.showOperationResults,  callback: () => { updateSettingAndMenu('showOperationResults',  true, !settings.showOperationResults);  updateMenuItemShowOperationResults(); }}),
+        menuItemShowBoolValues        = new MenuItem('Show boolean values as  ✓ ✗', {checkCallback: () => settings.showBoolValues,        callback: () => { updateSettingAndMenu('showBoolValues',        true, !settings.showBoolValues);        updateMenuItemShowBoolValues();       }}),
+                                        new MenuItem('',                             {separator: true}),    
+        menuItemShowClearUndoWarning  = new MenuItem('Show clear undo warning',      {checkCallback: () => settings.showClearUndoWarning,  callback: () => { updateSettingAndMenu('showClearUndoWarning',  true, !settings.showClearUndoWarning);                                        }}),
+        menuItemShowTooltips          = new MenuItem('Show tooltips',                {childMenu: menuShowTooltips}),
+                                        new MenuItem('',                             {separator: true}),    
+        menuItemShowDebugMenu         = new MenuItem('Show debug menu',              {checkCallback: () => settings.showDebugMenu,         callback: () => { updateSettingAndMenu('showDebugMenu',         true, !settings.showDebugMenu);         updateMenuItemShowDebugMenu();        }}),
+        menuItemEnableBetaFeatures    = new MenuItem('Enable beta features',         {checkCallback: () => settings.enableBetaFeatures,    callback: () => { updateSettingAndMenu('enableBetaFeatures',    true, !settings.enableBetaFeatures);    enableFeatures(true, settings.enableBetaFeatures); }}),
+                                        new MenuItem('',                             {separator: true}),    
+                                        new MenuItem('Keyboard layout...',           {callback: () => showKeyboardPanel()}),
+                                        new MenuItem('',                             {separator: true}),    
+        menuItemMinZoomForParams      = new MenuItem('Zoom level for values...',     {callback: () => showMinZoomDialog()})]);
         
 
     menuMainDebug = new Menu('Debug', false);
@@ -345,15 +347,16 @@ function initGeneratorMenus()
         
     menuColor = new Menu('Colors', true, true);
     menuColor.addItems([
-        menuItemColor        = new MenuItem('Color',             {icon: iconColor,            callback: e => actionManager.do(getCreateNodeAction(COLOR,             btnColor.div, getCreateOptions(e,  {random: e.altKey && !getCtrlKey(e)})))}),
-                               new MenuItem('',                  {separator: true}),
-                               new MenuItem('Valid sRGB',        {icon: iconValidColor,       callback: e => actionManager.do(getCreateNodeAction(VALID_COLOR,       btnColor.div, getCreateOptions(e)))}),
-        menuItemCorrectColor = new MenuItem('Correct color',     {icon: iconCorrectColor,     callback: e => actionManager.do(getCreateNodeAction(CORRECT_COLOR,     btnColor.div, getCreateOptions(e)))}),
-        menuItemColorSep1    = new MenuItem('',                  {separator: true}),
-                               new MenuItem('Web contrast',      {icon: iconWebContrast,      callback: e => actionManager.do(getCreateNodeAction(COLOR_CONTRAST,    btnColor.div, getCreateOptions(e)))}),
-        menuItemColorblind   = new MenuItem('Colorblind',        {icon: iconColorblind,       callback: e => actionManager.do(getCreateNodeAction(COLORBLIND,        btnColor.div, getCreateOptions(e)))}),
-                               new MenuItem('',                  {separator: true}),
-                               new MenuItem('Interpolate color', {icon: iconColorInterpolate, callback: e => actionManager.do(getCreateNodeAction(COLOR_INTERPOLATE, btnColor.div, getCreateOptions(e)))})]);
+        menuItemColor        = new MenuItem('Color',         {icon: iconColor,            callback: e => actionManager.do(getCreateNodeAction(COLOR,             btnColor.div, getCreateOptions(e,  {random: e.altKey && !getCtrlKey(e)})))}),
+                               new MenuItem('',              {separator: true}),
+                               new MenuItem('Valid sRGB',    {icon: iconValidColor,       callback: e => actionManager.do(getCreateNodeAction(VALID_COLOR,       btnColor.div, getCreateOptions(e)))}),
+        menuItemCorrectColor = new MenuItem('Correct color', {icon: iconCorrectColor,     callback: e => actionManager.do(getCreateNodeAction(CORRECT_COLOR,     btnColor.div, getCreateOptions(e)))}),
+        menuItemColorSep1    = new MenuItem('',              {separator: true}),
+                               new MenuItem('Web contrast',  {icon: iconWebContrast,      callback: e => actionManager.do(getCreateNodeAction(COLOR_CONTRAST,    btnColor.div, getCreateOptions(e)))}),
+        menuItemColorblind   = new MenuItem('Colorblind',    {icon: iconColorblind,       callback: e => actionManager.do(getCreateNodeAction(COLORBLIND,        btnColor.div, getCreateOptions(e)))}),
+                               new MenuItem('',              {separator: true}),
+                               new MenuItem('Interpolate',   {icon: iconColorInterpolate, callback: e => actionManager.do(getCreateNodeAction(COLOR_INTERPOLATE, btnColor.div, getCreateOptions(e)))}),
+        menuItemColorBlend   = new MenuItem('Blend',         {icon: iconColorBlend,       callback: e => actionManager.do(getCreateNodeAction(COLOR_BLEND,       btnColor.div, getCreateOptions(e)))})]);
 
     menuColor.init = () => 
     {

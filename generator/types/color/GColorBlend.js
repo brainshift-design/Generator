@@ -1,33 +1,33 @@
-class GColorInterpolate
+class GColorBlend
 extends GColorType
 {
     input0 = null;
     input1 = null;
 
-    space;
-    amount;
+    mode;
+    opacity;
     gamma;
 
 
     constructor(nodeId, options)
     {
-        super(COLOR_INTERPOLATE, nodeId, options);
+        super(COLOR_BLEND, nodeId, options);
     }
 
 
     
     copy()
     {
-        const copy = new GColorInterpolate(this.nodeId, this.options);
+        const copy = new GColorBlend(this.nodeId, this.options);
 
         copy.copyBase(this);
 
         if (this.input0) copy.input0 = this.input0.copy();
         if (this.input1) copy.input1 = this.input1.copy();
 
-        copy.space  = this.space .copy();
-        copy.amount = this.amount.copy();
-        copy.gamma  = this.gamma .copy();
+        copy.mode    = this.mode   .copy();
+        copy.opacity = this.opacity.copy();
+        copy.gamma   = this.gamma  .copy();
 
         return copy;
     }
@@ -40,9 +40,9 @@ extends GColorType
             return this;
 
 
-        const space  = (await this.space .eval(parse)).toValue().toInteger();
-        const amount = (await this.amount.eval(parse)).toValue();
-        const gamma  = (await this.gamma .eval(parse)).toValue();
+        const mode    = (await this.mode   .eval(parse)).toValue().toInteger();
+        const opacity = (await this.opacity.eval(parse)).toValue();
+        const gamma   = (await this.gamma  .eval(parse)).toValue();
 
 
         if (   this.input0 
@@ -52,29 +52,29 @@ extends GColorType
             const input1 = (await this.input1.eval(parse)).toValue();
 
             console.assert(
-                amount.type == NUMBER_VALUE, 
+                opacity.type == NUMBER_VALUE, 
                 'this.result.type must be NUMBER_VALUE');
 
-            const f = amount.value / 100;
+            const opacity = opacity.value / 100;
 
 
-            const spaceIndex = Math.min(Math.max(0, space.value), colorSpaceCount()-1);
+            const modeIndex  = Math.min(Math.max(0, mode.value), BlendModes.length-1);
             const gammaValue = Math.max(0.0001, gamma.value);
 
-            const _space = colorSpace(spaceIndex);
+            const _space = colorSpace(modeIndex);
 
-            const _color = this.interpolate(
-                spaceIndex,
+            const _color = this.blend(
+                modeIndex,
                 convertDataColorToSpace(input0.toDataColor(), _space),
                 convertDataColorToSpace(input1.toDataColor(), _space),
-                f,
+                opacity,
                 gammaValue);
 
 
             // allow interpolating invalid colors,
             // so no valid color check here
 
-            this.value = ColorValue.fromDataColor(_color, spaceIndex);
+            this.value = ColorValue.fromDataColor(_color, modeIndex);
         }
 
         else if (this.input0) 
@@ -87,10 +87,10 @@ extends GColorType
             this.value = ColorValue.NaN;
 
 
-        genPushUpdateValue(parse, this.nodeId, 'space',  space );
-        genPushUpdateValue(parse, this.nodeId, 'amount', amount);
-        genPushUpdateValue(parse, this.nodeId, 'gamma',  gamma );
-        genPushUpdateValue(parse, this.nodeId, 'value',  this.value);
+        genPushUpdateValue(parse, this.nodeId, 'value',   this.value);
+        genPushUpdateValue(parse, this.nodeId, 'mode',    mode );
+        genPushUpdateValue(parse, this.nodeId, 'opacity', opacity);
+        genPushUpdateValue(parse, this.nodeId, 'gamma',   gamma );
 
 
         this.validate();
@@ -100,10 +100,12 @@ extends GColorType
 
 
 
-    interpolate(space, col0, col1, f, gamma)
+    blend(mode, col0, col1, opacity, gamma)
     {
-        if (   space <= 1
-            || space >  6) // hex, rgb, okLab, lab, luv
+        mode = 1;
+        
+        if (   mode <= 1
+            || mode >  6) // hex, rgb, okLab, lab, luv
         {
             const r0 = Math.pow(col0[1], gamma);  const r1 = Math.pow(col1[1], gamma);
             const g0 = Math.pow(col0[2], gamma);  const g1 = Math.pow(col1[2], gamma);
@@ -112,10 +114,10 @@ extends GColorType
             gamma = Math.max(0.01, gamma);
 
             return [
-                colorSpace(space),
-                Math.pow(lerp(r0, r1, f), 1/gamma),
-                Math.pow(lerp(g0, g1, f), 1/gamma),
-                Math.pow(lerp(b0, b1, f), 1/gamma) ];
+                colorSpace(mode),
+                Math.pow(lerp(r0, r1, opacity), 1/gamma),
+                Math.pow(lerp(g0, g1, opacity), 1/gamma),
+                Math.pow(lerp(b0, b1, opacity), 1/gamma) ];
         }
         else // hsv/hsl/hcl
         {
@@ -124,10 +126,10 @@ extends GColorType
             const l0 = col0[3];        const l1 = col1[3];
 
             return [
-                colorSpace(space),
-                normalAngle(h0 + angleDiff(h0, h1) * f) / Tau,
-                lerp(c0, c1, f),
-                lerp(l0, l1, f) ];
+                colorSpace(mode),
+                normalAngle(h0 + angleDiff(h0, h1) * opacity) / Tau,
+                lerp(c0, c1, opacity),
+                lerp(l0, l1, opacity) ];
         }
     }
 }
