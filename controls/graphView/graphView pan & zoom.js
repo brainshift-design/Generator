@@ -32,35 +32,7 @@ GraphView.prototype.updatePanAndZoom = function(updateNodes)
     setTimeout(() =>
     {
         updateZoomTooltip();
-
-
-        btnZoom.divIcon.innerHTML       =  Math.round(this.zoom * 100) + '%';
-        btnZoom.divIcon.style.transform = 'translateX(2px) translateY(-16px)';
-
-
-        if (   this.zoom < settings.minZoomForParams
-            && this.zoom < 1)
-        {
-            zoomIconOverlay.style.left       = '14px';
-            zoomIconOverlay.style.top        = '10px';
-            zoomIconOverlay.style.width      = '28';
-            zoomIconOverlay.style.background = 'url(\'data:image/svg+xml;utf8,<svg width="28" height="20" viewBox="0 0 28 20" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M4 0.5H24C25.933 0.5 27.5 2.067 27.5 4V19.5H0.5V4C0.5 2.067 2.067 0.5 4 0.5Z" stroke="white"/></svg>\')';
-        }
-        else if (this.zoom < settings.minZoomForParams
-              && this.zoom < 10)
-        {
-            zoomIconOverlay.style.left       = '12px';
-            zoomIconOverlay.style.top        = '10px';
-            zoomIconOverlay.style.width      = '33';
-            zoomIconOverlay.style.background = 'url(\'data:image/svg+xml;utf8,<svg width="33" height="20" viewBox="0 0 33 20" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M4 0.5H29C30.933 0.5 32.5 2.067 32.5 4V19.5H0.5V4C0.5 2.067 2.067 0.5 4 0.5Z" stroke="white"/></svg>\')';
-        }
-        else
-            zoomIconOverlay.style.background = 'none';
-
-
-        zoomIconOverlay.style.backgroundPosition = '50% 50%';
-        zoomIconOverlay.style.backgroundRepeat   = 'no-repeat';
-        zoomIconOverlay.style.backgroundColor    = 'transparent';
+        updateZoomIcon();
 
 
         menuItemZoomTo100.setChecked(equal(this.zoom, 1, 0.0001));
@@ -219,3 +191,36 @@ GraphView.prototype.zoomToRect = function(rect, margin = 40)
         y: viewRect.height/2 - (rect.y + rect.height/2) * this.zoom
     };
 };
+
+
+
+function updateZoomIcon()
+{
+    btnZoom.divIcon.innerHTML       =  Math.round(graphView.zoom * 100) + '%';
+    btnZoom.divIcon.style.transform = 'translateX(2px) translateY(-16px)';
+
+
+    if (   graphView.zoom < settings.minZoomForParams
+        && graphView.zoom < 1)
+    {
+        zoomIconOverlay.style.left       = '14px';
+        zoomIconOverlay.style.top        = '10px';
+        zoomIconOverlay.style.width      = '28';
+        zoomIconOverlay.style.background = 'url(\'data:image/svg+xml;utf8,<svg width="28" height="20" viewBox="0 0 28 20" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M4 0.5H24C25.933 0.5 27.5 2.067 27.5 4V19.5H0.5V4C0.5 2.067 2.067 0.5 4 0.5Z" stroke="white"/></svg>\')';
+    }
+    else if (graphView.zoom < settings.minZoomForParams
+          && graphView.zoom < 10)
+    {
+        zoomIconOverlay.style.left       = '12px';
+        zoomIconOverlay.style.top        = '10px';
+        zoomIconOverlay.style.width      = '33';
+        zoomIconOverlay.style.background = 'url(\'data:image/svg+xml;utf8,<svg width="33" height="20" viewBox="0 0 33 20" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M4 0.5H29C30.933 0.5 32.5 2.067 32.5 4V19.5H0.5V4C0.5 2.067 2.067 0.5 4 0.5Z" stroke="white"/></svg>\')';
+    }
+    else
+        zoomIconOverlay.style.background = 'none';
+
+
+    zoomIconOverlay.style.backgroundPosition = '50% 50%';
+    zoomIconOverlay.style.backgroundRepeat   = 'no-repeat';
+    zoomIconOverlay.style.backgroundColor    = 'transparent';
+}

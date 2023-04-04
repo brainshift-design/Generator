@@ -91,6 +91,8 @@ minZoomInput.addEventListener('keydown', e =>
             {
                 updateSetting('minZoomForParams', minZoom / 100);
                 uiSetLocalData('minZoomForParams', settings.minZoomForParams);
+                
+                updateZoomIcon();
             }
 
             hideMinZoomDialog();

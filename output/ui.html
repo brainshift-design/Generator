@@ -3760,6 +3760,7 @@ a
                 <p>Parameter inputs and outputs are now colored according to the parameter's data type.</p>
                 <p>Added remove button to invalid connection error.</p>
                 <p>Hex number values can now be entered by prefixing them with 0x.</p>
+                <p>Fixed a value transfer issue between colors and fills.</p>
                 <p>Fixed UI bugs.</p>
                 
                 <p><br/><br/><div id='chkHideWhatsNew'></div></p>
@@ -44240,35 +44241,7 @@ GraphView.prototype.updatePanAndZoom = function(updateNodes)
     setTimeout(() =>
     {
         updateZoomTooltip();
-
-
-        btnZoom.divIcon.innerHTML       =  Math.round(this.zoom * 100) + '%';
-        btnZoom.divIcon.style.transform = 'translateX(2px) translateY(-16px)';
-
-
-        if (   this.zoom < settings.minZoomForParams
-            && this.zoom < 1)
-        {
-            zoomIconOverlay.style.left       = '14px';
-            zoomIconOverlay.style.top        = '10px';
-            zoomIconOverlay.style.width      = '28';
-            zoomIconOverlay.style.background = 'url(\'data:image/svg+xml;utf8,<svg width="28" height="20" viewBox="0 0 28 20" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M4 0.5H24C25.933 0.5 27.5 2.067 27.5 4V19.5H0.5V4C0.5 2.067 2.067 0.5 4 0.5Z" stroke="white"/></svg>\')';
-        }
-        else if (this.zoom < settings.minZoomForParams
-              && this.zoom < 10)
-        {
-            zoomIconOverlay.style.left       = '12px';
-            zoomIconOverlay.style.top        = '10px';
-            zoomIconOverlay.style.width      = '33';
-            zoomIconOverlay.style.background = 'url(\'data:image/svg+xml;utf8,<svg width="33" height="20" viewBox="0 0 33 20" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M4 0.5H29C30.933 0.5 32.5 2.067 32.5 4V19.5H0.5V4C0.5 2.067 2.067 0.5 4 0.5Z" stroke="white"/></svg>\')';
-        }
-        else
-            zoomIconOverlay.style.background = 'none';
-
-
-        zoomIconOverlay.style.backgroundPosition = '50% 50%';
-        zoomIconOverlay.style.backgroundRepeat   = 'no-repeat';
-        zoomIconOverlay.style.backgroundColor    = 'transparent';
+        updateZoomIcon();
 
 
         menuItemZoomTo100.setChecked(equal(this.zoom, 1, 0.0001));
@@ -44427,6 +44400,39 @@ GraphView.prototype.zoomToRect = function(rect, margin = 40)
         y: viewRect.height/2 - (rect.y + rect.height/2) * this.zoom
     };
 };
+
+
+
+function updateZoomIcon()
+{
+    btnZoom.divIcon.innerHTML       =  Math.round(graphView.zoom * 100) + '%';
+    btnZoom.divIcon.style.transform = 'translateX(2px) translateY(-16px)';
+
+
+    if (   graphView.zoom < settings.minZoomForParams
+        && graphView.zoom < 1)
+    {
+        zoomIconOverlay.style.left       = '14px';
+        zoomIconOverlay.style.top        = '10px';
+        zoomIconOverlay.style.width      = '28';
+        zoomIconOverlay.style.background = 'url(\'data:image/svg+xml;utf8,<svg width="28" height="20" viewBox="0 0 28 20" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M4 0.5H24C25.933 0.5 27.5 2.067 27.5 4V19.5H0.5V4C0.5 2.067 2.067 0.5 4 0.5Z" stroke="white"/></svg>\')';
+    }
+    else if (graphView.zoom < settings.minZoomForParams
+          && graphView.zoom < 10)
+    {
+        zoomIconOverlay.style.left       = '12px';
+        zoomIconOverlay.style.top        = '10px';
+        zoomIconOverlay.style.width      = '33';
+        zoomIconOverlay.style.background = 'url(\'data:image/svg+xml;utf8,<svg width="33" height="20" viewBox="0 0 33 20" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M4 0.5H29C30.933 0.5 32.5 2.067 32.5 4V19.5H0.5V4C0.5 2.067 2.067 0.5 4 0.5Z" stroke="white"/></svg>\')';
+    }
+    else
+        zoomIconOverlay.style.background = 'none';
+
+
+    zoomIconOverlay.style.backgroundPosition = '50% 50%';
+    zoomIconOverlay.style.backgroundRepeat   = 'no-repeat';
+    zoomIconOverlay.style.backgroundColor    = 'transparent';
+}
 
 
 GraphView.prototype.deselectAll = function()
@@ -54728,9 +54734,9 @@ extends OpColorBase
 
         
         this.addParam(this.paramSpace = new SelectParam('space', 'space', false, true,  true,  OpColorSpaces.map(s => s[1]), 0));
-        this.addParam(this.param1     = new NumberParam('c1',    '',      true,  true,  true));//Math.round(defColor[1] * rgbFactor[0])));
-        this.addParam(this.param2     = new NumberParam('c2',    '',      true,  true,  true));//Math.round(defColor[2] * rgbFactor[1])));
-        this.addParam(this.param3     = new NumberParam('c3',    '',      true,  true,  true));//Math.round(defColor[3] * rgbFactor[2])));
+        this.addParam(this.param1     = new NumberParam('c1',    '',      true,  true,  true));
+        this.addParam(this.param2     = new NumberParam('c2',    '',      true,  true,  true));
+        this.addParam(this.param3     = new NumberParam('c3',    '',      true,  true,  true));
         
         this.addParam(this.paramColor = new ColorParam ('color', '',      false, false, false, ColorValue.fromRgb(scaleRgb(dataColor2rgb(this._color)))));
 
@@ -54815,7 +54821,7 @@ extends OpColorBase
         if (value.type == FILL_VALUE)
             value = value.color;
 
-            
+
         console.assert(value.type == COLOR_VALUE, 'expected COLOR_VALUE in backInit()');
 
         const _color = convertDataColorToSpace(
@@ -62813,43 +62819,41 @@ const colFigmaBlue         = '#0c8ce9';
 
 
 
-const rgbFlowLight         = hex2rgb('#dcdcdc');
 const rgbActiveFlowLight   = hex2rgb('#969696');
+const rgbFlowLight         = hex2rgb('#D1D1D1');
   
-const rgbFlowDark          = hex2rgb('#616161');
-const rgbActiveFlowDark    = hex2rgb('#8b8b8b');
+const rgbActiveNumberLight = hex2rgb('#369FE5');
+const rgbNumberLight       = hex2rgb('#B8D4F2');
 
+const rgbActiveCustomLight = hex2rgb('#3AAB5A');
+const rgbCustomLight       = hex2rgb('#B9D9BF');
 
-const rgbNumberLight       = hex2rgb('#BDDDF3');
-const rgbActiveNumberLight = hex2rgb('#37A1E8');
+const rgbActiveShapeLight  = hex2rgb('#E1765F');
+const rgbShapeLight        = hex2rgb('#F0C7C0');
 
-const rgbNumberDark        = hex2rgb('#426287');
-const rgbActiveNumberDark  = hex2rgb('#1785CE');
-
-
-const rgbTextLight         = hex2rgb('#ECE0B8');
 const rgbActiveTextLight   = hex2rgb('#F6C953');
- 
-const rgbTextDark          = hex2rgb('#A0894C');
-const rgbActiveTextDark    = hex2rgb('#F4C956');
+const rgbTextLight         = hex2rgb('#FBE6BE');
+
+
+const rgbActiveFlowDark    = hex2rgb('#8B8B8B');
+const rgbFlowDark          = hex2rgb('#4D4D4D');
+
+const rgbActiveNumberDark  = hex2rgb('#1785CE');
+const rgbNumberDark        = hex2rgb('#304E6A');
+
+const rgbActiveCustomDark  = hex2rgb('#33AD55');
+const rgbCustomDark        = hex2rgb('#365E3F');
+
+const rgbActiveShapeDark   = hex2rgb('#E1765F');
+const rgbShapeDark         = hex2rgb('#734B43');
+
+const rgbActiveTextDark    = hex2rgb('#F4C855');
+const rgbTextDark          = hex2rgb('#7E6E48');
 
 
 const rgbColor             = hex2rgb('#c38fc5');   
 const rgbActiveColor       = hex2rgb('#df2ae2');
 
-
-const rgbShapeLight        = hex2rgb('#EBD1C3');
-const rgbActiveShapeLight  = hex2rgb('#E1765F');
- 
-const rgbShapeDark         = hex2rgb('#966651');
-const rgbActiveShapeDark   = hex2rgb('#E1765F');
-
-
-const rgbCustomLight       = hex2rgb('#C3EBD3');
-const rgbActiveCustomLight = hex2rgb('#42C266');
-
-const rgbCustomDark        = hex2rgb('#4C835B');
-const rgbActiveCustomDark  = hex2rgb('#33AD55');
 
 
 const rgbNoColorLight      = [0.95, 0.95, 0.95];
@@ -64603,6 +64607,8 @@ minZoomInput.addEventListener('keydown', e =>
             {
                 updateSetting('minZoomForParams', minZoom / 100);
                 uiSetLocalData('minZoomForParams', settings.minZoomForParams);
+                
+                updateZoomIcon();
             }
 
             hideMinZoomDialog();

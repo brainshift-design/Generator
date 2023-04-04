@@ -44,9 +44,9 @@ extends OpColorBase
 
         
         this.addParam(this.paramSpace = new SelectParam('space', 'space', false, true,  true,  OpColorSpaces.map(s => s[1]), 0));
-        this.addParam(this.param1     = new NumberParam('c1',    '',      true,  true,  true));//Math.round(defColor[1] * rgbFactor[0])));
-        this.addParam(this.param2     = new NumberParam('c2',    '',      true,  true,  true));//Math.round(defColor[2] * rgbFactor[1])));
-        this.addParam(this.param3     = new NumberParam('c3',    '',      true,  true,  true));//Math.round(defColor[3] * rgbFactor[2])));
+        this.addParam(this.param1     = new NumberParam('c1',    '',      true,  true,  true));
+        this.addParam(this.param2     = new NumberParam('c2',    '',      true,  true,  true));
+        this.addParam(this.param3     = new NumberParam('c3',    '',      true,  true,  true));
         
         this.addParam(this.paramColor = new ColorParam ('color', '',      false, false, false, ColorValue.fromRgb(scaleRgb(dataColor2rgb(this._color)))));
 
@@ -131,7 +131,7 @@ extends OpColorBase
         if (value.type == FILL_VALUE)
             value = value.color;
 
-            
+
         console.assert(value.type == COLOR_VALUE, 'expected COLOR_VALUE in backInit()');
 
         const _color = convertDataColorToSpace(
