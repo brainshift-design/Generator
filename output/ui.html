@@ -15590,7 +15590,12 @@ extends GObjectBase
             return this;
 
 
-        const fill   = this.fill   ? (await this.fill  .eval(parse)).toValue() : null;
+        let fill = this.fill ? (await this.fill.eval(parse)).toValue() : null;
+
+        if (fill.type == COLOR_VALUE)
+           fill = FillValue.fromRgb(scaleRgb(fill.toRgb()), 0xff);
+        
+
         const weight = this.weight ? (await this.weight.eval(parse)).toValue() : null;
         const fit    = this.fit    ? (await this.fit   .eval(parse)).toValue() : null;
         const join   = this.join   ? (await this.join  .eval(parse)).toValue() : null;
@@ -36099,7 +36104,12 @@ extends GObjectBase
             return this;
 
 
-        const fill   = this.fill   ? (await this.fill  .eval(parse)).toValue() : null;
+        let fill = this.fill ? (await this.fill.eval(parse)).toValue() : null;
+
+        if (fill.type == COLOR_VALUE)
+           fill = FillValue.fromRgb(scaleRgb(fill.toRgb()), 0xff);
+        
+
         const weight = this.weight ? (await this.weight.eval(parse)).toValue() : null;
         const fit    = this.fit    ? (await this.fit   .eval(parse)).toValue() : null;
         const join   = this.join   ? (await this.join  .eval(parse)).toValue() : null;
@@ -41376,8 +41386,8 @@ function initGeneratorMenus()
                             new MenuItem('Log redo stack',                 {callback:      () => { hideAllMenus(); logRedoStack(); }}),
                             // new MenuItem('Clear all local data',               {callback:      () => { hideAllMenus(); uiQueueMessageToFigma({cmd: 'figClearAllLocalData'}); }}),
                             // new MenuItem('Delete all saved connections',       {callback:      () => { hideAllMenus(); uiQueueMessageToFigma({cmd: 'figRemoveAllSavedConnections'}); }}),
-                            // new MenuItem('',                                   {separator: true }),
-                            // new MenuItem('Delete all style links',             {callback:      () => { hideAllMenus(); uiRemovePluginDataFromAllLocalStyles(); }}),
+                            new MenuItem('',                                   {separator: true }),
+                            new MenuItem('Delete all style links',             {callback:      () => { hideAllMenus(); uiRemovePluginDataFromAllLocalStyles(); }}),
                                         new MenuItem('',                           {separator: true }),
         menuItemLogRequests           = new MenuItem('Log\u2008requests',          {checkCallback: () => settings.logRequests     ,      callback: () => updateSettingAndMenu('logRequests',           true, !settings.logRequests          ), setting: true}),
         menuItemLogValueUpdates       = new MenuItem('Log\u2008values',            {checkCallback: () => settings.logValueUpdates ,      callback: () => updateSettingAndMenu('logValueUpdates',       true, !settings.logValueUpdates      ), setting: true}),
@@ -45991,8 +46001,9 @@ extends Parameter
     {
         // 'this' is the output
 
-        console.assert(value.type == COLOR_VALUE, 'expected COLOR_VALUE in backInit()');
-        
+        if (value.type == FILL_VALUE)
+            value = value.color;
+
         this.param.setValue(value, false, true, false);
     }
 
@@ -46347,8 +46358,8 @@ extends Parameter
         this.div.appendChild(this.controlWrapper);
 
        
-        if (hasInput)  this.initInput([...FILL_TYPES, ...COLOR_TYPES]);
-        if (hasOutput) this.initOutput([FILL_VALUE], this.output_genRequest);
+        if (hasInput)  this.initInput([...FILL_TYPES, ...COLOR_TYPES], getParamInputValuesForUndo, this.input_getBackInitValue);
+        if (hasOutput) this.initOutput([FILL_VALUE], this.output_genRequest, getParamOutputValuesForUndo, this.output_backInit);
 
 
 
@@ -46409,6 +46420,26 @@ extends Parameter
         { 
             this.changing = false;
         });
+    }
+
+
+
+    input_getBackInitValue()
+    {
+        // 'this' is the input
+
+        return this.param.value;
+    }
+
+
+
+    output_backInit(value)
+    {
+        // 'this' is the output
+
+        console.assert(value.type == FILL_VALUE, 'expected FILL_VALUE in backInit()');
+        
+        this.param.setValue(value, false, true, false);
     }
 
 
@@ -54781,6 +54812,10 @@ extends OpColorBase
     {
         // 'this' is the output
 
+        if (value.type == FILL_VALUE)
+            value = value.color;
+
+            
         console.assert(value.type == COLOR_VALUE, 'expected COLOR_VALUE in backInit()');
 
         const _color = convertDataColorToSpace(
@@ -58064,8 +58099,8 @@ extends OpColorBase
         this.inner.insertBefore(this.checkers, this.header);
 
 
-        this.addInput (new Input(FILL_TYPES, getNodeInputValuesForUndo));
-        this.addOutput(new Output([FILL], this.output_genRequest, getNodeOutputValuesForUndo));
+        this.addInput (new Input(FILL_TYPES, getNodeInputValuesForUndo, this.input_getBackInitValue));
+        this.addOutput(new Output([FILL], this.output_genRequest, getNodeOutputValuesForUndo, this.output_backInit));
 
 
         this.addParam(this.paramColor   = new ColorParam ('color',   '',        false, true, true, ColorValue.fromRgb(rgbDefaultFill)));
@@ -58076,6 +58111,29 @@ extends OpColorBase
     
     
     
+    input_getBackInitValue()
+    {
+        // 'this' is the input
+
+        return new FillValue(
+            node.paramColor  .value,
+            node.paramOpacity.value);
+    }
+
+
+
+    output_backInit(value)
+    {
+        // 'this' is the output
+
+        console.assert(value.type == FILL_VALUE, 'expected FILL_VALUE in backInit()');
+
+        this.node.paramColor  .setValue(value.color,   false, true, false);
+        this.node.paramOpacity.setValue(value.opacity, false, true, false);
+    }
+
+
+
     output_genRequest(gen)
     {
         // 'this' is the output
@@ -58331,7 +58389,7 @@ extends OpColorBase
         this.inner.appendChild(this.colorBack);
 
         this.addInput (new Input(STROKE_TYPES, getNodeInputValuesForUndo));
-        this.addOutput(new Output([STROKE], this.output_genRequest));
+        this.addOutput(new Output([STROKE], this.output_genRequest, getNodeOutputValuesForUndo));
 
 
         this.addParam(this.paramFill   = new FillParam  ('fill',   'fill',   false, true, true, FillValue.create(0, 0, 0, 100)));

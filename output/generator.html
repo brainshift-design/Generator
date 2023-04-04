@@ -11512,7 +11512,12 @@ extends GObjectBase
             return this;
 
 
-        const fill   = this.fill   ? (await this.fill  .eval(parse)).toValue() : null;
+        let fill = this.fill ? (await this.fill.eval(parse)).toValue() : null;
+
+        if (fill.type == COLOR_VALUE)
+           fill = FillValue.fromRgb(scaleRgb(fill.toRgb()), 0xff);
+        
+
         const weight = this.weight ? (await this.weight.eval(parse)).toValue() : null;
         const fit    = this.fit    ? (await this.fit   .eval(parse)).toValue() : null;
         const join   = this.join   ? (await this.join  .eval(parse)).toValue() : null;

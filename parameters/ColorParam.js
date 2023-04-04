@@ -121,8 +121,9 @@ extends Parameter
     {
         // 'this' is the output
 
-        console.assert(value.type == COLOR_VALUE, 'expected COLOR_VALUE in backInit()');
-        
+        if (value.type == FILL_VALUE)
+            value = value.color;
+
         this.param.setValue(value, false, true, false);
     }
 

@@ -21,8 +21,8 @@ extends OpColorBase
         this.inner.insertBefore(this.checkers, this.header);
 
 
-        this.addInput (new Input(FILL_TYPES, getNodeInputValuesForUndo));
-        this.addOutput(new Output([FILL], this.output_genRequest, getNodeOutputValuesForUndo));
+        this.addInput (new Input(FILL_TYPES, getNodeInputValuesForUndo, this.input_getBackInitValue));
+        this.addOutput(new Output([FILL], this.output_genRequest, getNodeOutputValuesForUndo, this.output_backInit));
 
 
         this.addParam(this.paramColor   = new ColorParam ('color',   '',        false, true, true, ColorValue.fromRgb(rgbDefaultFill)));
@@ -33,6 +33,29 @@ extends OpColorBase
     
     
     
+    input_getBackInitValue()
+    {
+        // 'this' is the input
+
+        return new FillValue(
+            node.paramColor  .value,
+            node.paramOpacity.value);
+    }
+
+
+
+    output_backInit(value)
+    {
+        // 'this' is the output
+
+        console.assert(value.type == FILL_VALUE, 'expected FILL_VALUE in backInit()');
+
+        this.node.paramColor  .setValue(value.color,   false, true, false);
+        this.node.paramOpacity.setValue(value.opacity, false, true, false);
+    }
+
+
+
     output_genRequest(gen)
     {
         // 'this' is the output

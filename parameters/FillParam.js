@@ -136,8 +136,8 @@ extends Parameter
         this.div.appendChild(this.controlWrapper);
 
        
-        if (hasInput)  this.initInput([...FILL_TYPES, ...COLOR_TYPES]);
-        if (hasOutput) this.initOutput([FILL_VALUE], this.output_genRequest);
+        if (hasInput)  this.initInput([...FILL_TYPES, ...COLOR_TYPES], getParamInputValuesForUndo, this.input_getBackInitValue);
+        if (hasOutput) this.initOutput([FILL_VALUE], this.output_genRequest, getParamOutputValuesForUndo, this.output_backInit);
 
 
 
@@ -198,6 +198,26 @@ extends Parameter
         { 
             this.changing = false;
         });
+    }
+
+
+
+    input_getBackInitValue()
+    {
+        // 'this' is the input
+
+        return this.param.value;
+    }
+
+
+
+    output_backInit(value)
+    {
+        // 'this' is the output
+
+        console.assert(value.type == FILL_VALUE, 'expected FILL_VALUE in backInit()');
+        
+        this.param.setValue(value, false, true, false);
     }
 
 

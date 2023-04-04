@@ -29,7 +29,7 @@ extends OpColorBase
         this.inner.appendChild(this.colorBack);
 
         this.addInput (new Input(STROKE_TYPES, getNodeInputValuesForUndo));
-        this.addOutput(new Output([STROKE], this.output_genRequest));
+        this.addOutput(new Output([STROKE], this.output_genRequest, getNodeOutputValuesForUndo));
 
 
         this.addParam(this.paramFill   = new FillParam  ('fill',   'fill',   false, true, true, FillValue.create(0, 0, 0, 100)));
