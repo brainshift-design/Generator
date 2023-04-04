@@ -613,22 +613,27 @@ function initTextboxMenu(textbox)
         menuItemRight,
         menuItemJustify;
 
+
+    const param = textbox.control.param;
+console.log('param =', param);
+
     menuTextbox.addItems([
-                          new MenuItem('Cut',          {enabled: !textbox.control.readOnly, callback: () => { hideAllMenus(); document.execCommand('copy'); clearSelectedText(textbox); }}),
-                          new MenuItem('Copy',         {callback: () => { hideAllMenus(); document.execCommand('copy'); }}),
-                          new MenuItem('Paste',        {enabled: !textbox.control.readOnly, callback: () => { hideAllMenus(); document.execCommand('paste'); }}),
+                          new MenuItem('Cut',          { enabled: !textbox.control.readOnly, callback: () => { hideAllMenus(); document.execCommand('copy'); clearSelectedText(textbox); }}),
+                          new MenuItem('Copy',         { callback: () => { hideAllMenus(); document.execCommand('copy'); }}),
+                          new MenuItem('Paste',        { enabled: !textbox.control.readOnly, callback: () => { hideAllMenus(); document.execCommand('paste'); }}),
                           new MenuItem('',             { separator: true }),
-        menuItemLeft    = new MenuItem('Align left',   {checkCallback: () => style.textAlign == 'left' || style.textAlign == '', callback: () => { hideAllMenus(); textbox.style.textAlign = 'left';   }}),
-        menuItemCenter  = new MenuItem('Align center', {checkCallback: () => style.textAlign == 'center',                        callback: () => { hideAllMenus(); textbox.style.textAlign = 'center'; }}),
-        menuItemRight   = new MenuItem('Align right',  {checkCallback: () => style.textAlign == 'right',                         callback: () => { hideAllMenus(); textbox.style.textAlign = 'right';  }}),
-        menuItemJustify = new MenuItem('Justify',      {checkCallback: () => style.textAlign == 'justify',                       callback: () => { hideAllMenus(); textbox.style.textAlign = 'justify';}})]);
+        menuItemLeft    = new MenuItem('Align left',   { callback: () => { hideAllMenus(); actionManager.do(new SetParamSettingAction(mainGraph, param, 'align', 'left'   )); }}),
+        menuItemCenter  = new MenuItem('Align center', { callback: () => { hideAllMenus(); actionManager.do(new SetParamSettingAction(mainGraph, param, 'align', 'center' )); }}),
+        menuItemRight   = new MenuItem('Align right',  { callback: () => { hideAllMenus(); actionManager.do(new SetParamSettingAction(mainGraph, param, 'align', 'right'  )); }}),
+        menuItemJustify = new MenuItem('Justify',      { callback: () => { hideAllMenus(); actionManager.do(new SetParamSettingAction(mainGraph, param, 'align', 'justify')); }})]);
 
 
-    menuItemLeft   .setChecked(style.textAlign === 'start' 
-                            || style.textAlign === 'left'   );
-    menuItemCenter .setChecked(style.textAlign === 'center' );
-    menuItemRight  .setChecked(style.textAlign === 'right'  );
-    menuItemJustify.setChecked(style.textAlign === 'justify');
+    const align = textbox.control.getTextAlignment();
+
+    menuItemLeft   .setChecked(align == 'left'   );
+    menuItemCenter .setChecked(align == 'center' );
+    menuItemRight  .setChecked(align == 'right'  );
+    menuItemJustify.setChecked(align == 'justify');
 }
 
 

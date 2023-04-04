@@ -132,6 +132,14 @@ extends Parameter
 
 
 
+    updateSetting(setting, value)
+    {
+        if (setting == 'align')
+            this.controls[0].textbox.style.textAlign = value;
+    }
+
+
+
     genRequest(gen)
     {
         // this function exists because a parameter without an output
@@ -192,13 +200,31 @@ extends Parameter
 
         const value = encodeURIComponent(this.value.toString());
 
-        return pos + '["' + this.type  + '", "' + id  + '", "' + value + '"]';
+
+        return pos 
+            + '["' 
+                + this.type  + '", "' 
+                + id         + '", "' 
+                + value      + '", "' 
+                + this.controls[0].getTextAlignment()
+            + '"]';
     }
 
 
 
-    loadParam(param)
+    loadParam(_param)
     {
-        this.setValue(parseTextValue(decodeURIComponent(param))[0], true, false, false);
+        this.setValue(parseTextValue(decodeURIComponent(_param[2]))[0], true, false, false);
+
+        if (_param.length >= 4) // legacy
+        {
+            switch (_param[3])
+            {
+            case 'left':    this.controls[0].textbox.style.textAlign = 'left';    break;
+            case 'center':  this.controls[0].textbox.style.textAlign = 'center';  break;
+            case 'right':   this.controls[0].textbox.style.textAlign = 'right';   break; 
+            case 'justify': this.controls[0].textbox.style.textAlign = 'justify'; break;
+            }
+        }
     }
 }

@@ -367,8 +367,8 @@ extends Parameter
     
     
 
-    loadParam(param)
+    loadParam(_param)
     {
-        this.setValue(parseStrokeValue(param)[0], true, true, false);
+        this.setValue(parseStrokeValue(_param[2])[0], true, true, false);
     }
 }

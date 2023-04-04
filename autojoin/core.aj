@@ -14,4 +14,5 @@
 ../core/web colors.js
 ../core/clipboard.js
 ../core/tags.js
+../core/def.js
 ../core/debug.js

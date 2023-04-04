@@ -120,8 +120,8 @@ extends OperatorBase
         const _paramIndex = _node.params.find(p => p[1] == 'index');
 
         this.createAndInsertParamByType(0, _paramValue[0], _paramValue[1], false, false, true);
-        this.params[0].loadParam(_paramValue[2]);
+        this.params[0].loadParam(_paramValue);
  
-        this.paramIndex.loadParam(_paramIndex[2]);
+        this.paramIndex.loadParam(_paramIndex);
     }
 }

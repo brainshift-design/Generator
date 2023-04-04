@@ -996,7 +996,7 @@ class Operator
                 index = this.params.length-1;
             }
 
-            this.params[index].loadParam(_param[2]);
+            this.params[index].loadParam(_param);
         }
     }
 

@@ -4,6 +4,7 @@ extends Action
     nodeId;
     paramId;
 
+
     get param() 
     { 
         return this.graph.nodeFromId(this.nodeId).params
@@ -20,8 +21,8 @@ extends Action
     {
         super(
             graph,
-            SET_VALUE_ACTION,
-            'SET VALUE ' + param.node.id + '.' + param.id + ' = ' + value.toDisplayString());
+            SET_PARAM_VALUE_ACTION,
+            'SET PARAM VALUE ' + param.node.id + '.' + param.id + ' = ' + value.toDisplayString());
 
         this.nodeId     = param.node.id;
         this.paramId    = param.id;
@@ -38,7 +39,7 @@ extends Action
         this.oldValue = this.param.oldValue;
 
         this.name = 
-              'SET VALUE ' 
+              'SET PARAM VALUE ' 
             + this.param.node.id 
             + '.' + this.param.id 
             + ' = ' + this.newValue.toDisplayString() 

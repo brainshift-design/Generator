@@ -156,7 +156,7 @@ TextControl.prototype.initTextarea = function()
     this.textbox.addEventListener('focus', () =>
     {
         hideAllMenus();
-        
+
         if (currentTooltip) 
             hideTooltip(currentTooltip);
     });
@@ -263,4 +263,21 @@ TextControl.prototype.updateTextarea = function()
 {
     this.textbox.value      = this.value;
     this.textbox.savedValue = this.value;
+};
+
+
+
+TextControl.prototype.getTextAlignment = function()
+{
+    const style = getComputedStyle(this.textbox);
+
+    switch (style.textAlign)
+    {
+    case '': 
+    case 'start': 
+    case 'left':    return 'left';
+    case 'center':  return 'center';
+    case 'right':   return 'right';
+    case 'justify': return 'justify';
+    }
 };

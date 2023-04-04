@@ -180,8 +180,8 @@ extends Parameter
 
 
 
-    loadParam(param)
+    loadParam(_param)
     {
-        this.setValue(parseNumberValue(param)[0], true, true, false);
+        this.setValue(parseNumberValue(_param[2])[0], true, true, false);
     }
 }

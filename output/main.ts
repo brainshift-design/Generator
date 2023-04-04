@@ -445,18 +445,6 @@ function cleanStyleId(styleId)
 
 
 
-const NAN_CHAR                = '\uFFFD';
-const NAN_DISPLAY             = '?';
-    
-const UNKNOWN_CHAR            = '?';
-const UNKNOWN_DISPLAY         = UNKNOWN_CHAR;//'🤷‍♂️';
-    
-// const TRUE_DISPLAY         = '✓';//'true';
-// const FALSE_DISPLAY        = '❌';//'false';
-
-const TRUE_DISPLAY            = '<svg width="11" height="11" viewBox="0 0 11 11" fill="none" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" clip-rule="evenodd" d="M11 0.998457L9.31674 0L4.10109 8.01592L1.40123 5.4381L0 6.77599L4.42397 11L11 0.998457Z" fill="#29CE00"/></svg>';
-const FALSE_DISPLAY           = '<svg width="9" height="9" viewBox="0 0 9 9" fill="none" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" clip-rule="evenodd" d="M9 1.27273L7.72727 0L4.5 3.22728L1.27273 5.21088e-06L0 1.27273L3.22727 4.5L6.50594e-06 7.72727L1.27273 9L4.5 5.77273L7.72727 9L8.99999 7.72727L5.77272 4.5L9 1.27273Z" fill="#F43D3D"/></svg>';    
-
 const LIST_VALUE              = 'LIST#';
 const LIST                    = 'LIST';
     
@@ -770,31 +758,6 @@ const CONDITION_OPS =
     [CONDITION_GREATER_OR_EQUAL, '≥'],
     [CONDITION_GREATER,          '>']
 ];
-
-
-
-const EMPTY_ACTION               = 'EMPTY';
-const CONNECT_ACTION             = 'CONNECT';
-const CREATE_ACTION              = 'CREATE';
-const CREATE_INSERT_ACTION       = 'CREATE_INSERT';
-const DELETE_ACTION              = 'DELETE';
-const DISCONNECT_ACTION          = 'DISCONNECT';
-const LINK_STYLE_ACTION          = 'LINK_STYLE';
-const MAKE_ACTIVE_ACTION         = 'MAKE_ACTIVE';
-const PASTE_ACTION               = 'PASTE';
-const RECONNECT_ACTION           = 'RECONNECT';
-const REMOVE_ACTION              = 'REMOVE';
-const RENAME_ACTION              = 'RENAME';
-const REORDER_INPUTS_ACTION      = 'REORDER_INPUTS';
-const REORDER_CONNECTIONS_ACTION = 'REORDER_CONNECTIONS';
-const SELECT_ACTION              = 'SELECT';
-const SELECT_MOVE_ACTION         = 'SELECT_MOVE';
-const SET_VALUE_ACTION           = 'SET_VALUE';
-const SET_NODE_RECT_ACTION       = 'SET_NODE_RECT';
-const TOGGLE_DISABLE_ACTION      = 'TOGGLE_DISABLE';
-const TOGGLE_SYMBOL_ACTION       = 'TOGGLE_SYMBOL';
-const SET_CURRENT_GRAPH_ACTION   = 'SET_URRENT_GRAPH';
-
 
 
 const base32chars = '12345679ABCDEFGHJKLMNPQRSTUVWXYZ';
