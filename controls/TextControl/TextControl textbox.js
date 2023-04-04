@@ -34,6 +34,13 @@ TextControl.prototype.initTextarea = function()
     
     
     
+    this.textbox.addEventListener('pointermove', e =>
+    {
+        e.stopPropagation();
+    });
+
+
+
     this.textbox.addEventListener('pointerup', e =>
     {
         e.stopPropagation();
@@ -52,13 +59,6 @@ TextControl.prototype.initTextarea = function()
 
 
 
-    this.textbox.addEventListener('pointermove', e =>
-    {
-        e.stopPropagation();
-    });
-
-
-
     this.textbox.addEventListener('keydown', e =>
     {
         e.stopPropagation();
@@ -70,6 +70,8 @@ TextControl.prototype.initTextarea = function()
             e.preventDefault();
             document.execCommand('copy');
             clearSelectedText(this.textbox);
+
+            this.setValue(this.textbox.value, true);
         }
 
         else if (   e.code == 'KeyC'

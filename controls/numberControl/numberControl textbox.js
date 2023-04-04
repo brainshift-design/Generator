@@ -45,6 +45,8 @@ NumberControl.prototype.initTextbox = function()
             e.preventDefault();
             document.execCommand('copy');
             clearSelectedText(this.textbox);
+
+            this.setValue(parseFloat(this.textbox.value), true);
         }
 
         else if (   e.code == 'KeyC'
@@ -264,7 +266,7 @@ NumberControl.prototype.initTextbox = function()
             + this.textbox.value.substring(this.textbox.selectionEnd);
 
         this.setValue(
-            this.textbox.value, 
+            parseFloat(this.textbox.value), 
             true, //!this.textbox.managing, 
             true);
     });

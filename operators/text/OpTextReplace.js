@@ -19,6 +19,9 @@ extends OperatorWithValue
         this.addParam(this.paramValue);
         this.addParam(this.paramWhat = new TextParam('what', 'what', true,  true));
         this.addParam(this.paramWith = new TextParam('with', 'with', true,  true));
+
+
+        this.paramValue.controls[0].textbox.style.textAlign = 'center';
     }
 
 

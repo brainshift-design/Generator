@@ -1703,15 +1703,16 @@ div
 
 #tooltipArrow
 {
-    content:      '';
-    position:     absolute;
-    margin-left: -7px;
-    border-width: 7px;
-    border-style: solid;
-    border-color: transparent transparent #1e1e1e transparent;
-    display:      none;
-    opacity:      0%;
-    z-index:      20000;
+    content:        '';
+    position:       absolute;
+    margin-left: -  7px;
+    border-width:   7px;
+    border-style:   solid;
+    border-color:   transparent transparent #1e1e1e transparent;
+    display:        none;
+    opacity:        0%;
+    z-index:        20000;
+    pointer-events: none;
 }
 
 
@@ -2644,7 +2645,7 @@ a
 }
 
 
-  .textControlTextarea::-webkit-scrollbar
+.textControlTextarea::-webkit-scrollbar
 {
     background:   transparent;
     width:        6px;
@@ -2661,10 +2662,10 @@ a
 
 .textControlTextarea::-webkit-scrollbar-thumb
 {
-    background:    #fff4;
-    border:        4px solid transparent;
-    border-radius: 3px;
-    cursor:        default;
+    background:     #fff4;
+    border:         4px solid transparent;
+    border-radius:  3px;
+    cursor:         default;
     pointer-events: none;
 }
 
@@ -37428,6 +37429,8 @@ NumberControl.prototype.initTextbox = function()
             e.preventDefault();
             document.execCommand('copy');
             clearSelectedText(this.textbox);
+
+            this.setValue(parseFloat(this.textbox.value), true);
         }
 
         else if (   e.code == 'KeyC'
@@ -37647,7 +37650,7 @@ NumberControl.prototype.initTextbox = function()
             + this.textbox.value.substring(this.textbox.selectionEnd);
 
         this.setValue(
-            this.textbox.value, 
+            parseFloat(this.textbox.value), 
             true, //!this.textbox.managing, 
             true);
     });
@@ -38755,6 +38758,13 @@ TextControl.prototype.initTextarea = function()
     
     
     
+    this.textbox.addEventListener('pointermove', e =>
+    {
+        e.stopPropagation();
+    });
+
+
+
     this.textbox.addEventListener('pointerup', e =>
     {
         e.stopPropagation();
@@ -38773,13 +38783,6 @@ TextControl.prototype.initTextarea = function()
 
 
 
-    this.textbox.addEventListener('pointermove', e =>
-    {
-        e.stopPropagation();
-    });
-
-
-
     this.textbox.addEventListener('keydown', e =>
     {
         e.stopPropagation();
@@ -38791,6 +38794,8 @@ TextControl.prototype.initTextarea = function()
             e.preventDefault();
             document.execCommand('copy');
             clearSelectedText(this.textbox);
+
+            this.setValue(this.textbox.value, true);
         }
 
         else if (   e.code == 'KeyC'
@@ -39008,7 +39013,8 @@ TextControl.prototype.initEvents = function()
 {
     this.div.addEventListener('pointerenter', e =>
     {
-        initTextTooltip(this.value);
+        if (!currentTooltip)//this.getTooltip())
+            initTextTooltip(this.value);
     });
 
 
@@ -54054,6 +54060,9 @@ extends OperatorWithValue
         this.addParam(this.paramValue);
         this.addParam(this.paramWhat = new TextParam('what', 'what', true,  true));
         this.addParam(this.paramWith = new TextParam('with', 'with', true,  true));
+
+
+        this.paramValue.controls[0].textbox.style.textAlign = 'center';
     }
 
 
@@ -62743,11 +62752,11 @@ const rgbNumberDark        = hex2rgb('#426287');
 const rgbActiveNumberDark  = hex2rgb('#1785CE');
 
 
-const rgbTextLight       = hex2rgb('#ECE0B8');
-const rgbActiveTextLight = hex2rgb('#F6C953');
+const rgbTextLight         = hex2rgb('#ECE0B8');
+const rgbActiveTextLight   = hex2rgb('#F6C953');
  
-const rgbTextDark        = hex2rgb('#766539');
-const rgbActiveTextDark  = hex2rgb('#F4C956');
+const rgbTextDark          = hex2rgb('#A0894C');
+const rgbActiveTextDark    = hex2rgb('#F4C956');
 
 
 const rgbColor             = hex2rgb('#c38fc5');   
@@ -62757,14 +62766,14 @@ const rgbActiveColor       = hex2rgb('#df2ae2');
 const rgbShapeLight        = hex2rgb('#EBD1C3');
 const rgbActiveShapeLight  = hex2rgb('#E1765F');
  
-const rgbShapeDark         = hex2rgb('#775040');
+const rgbShapeDark         = hex2rgb('#966651');
 const rgbActiveShapeDark   = hex2rgb('#E1765F');
 
 
 const rgbCustomLight       = hex2rgb('#C3EBD3');
 const rgbActiveCustomLight = hex2rgb('#42C266');
 
-const rgbCustomDark        = hex2rgb('#365E41');
+const rgbCustomDark        = hex2rgb('#4C835B');
 const rgbActiveCustomDark  = hex2rgb('#33AD55');
 
 
@@ -65570,7 +65579,8 @@ function createTooltipSrc(source, ref, getTooltip)
 {
     source.addEventListener('pointerenter', () =>
     {
-        if (tooltipOutTimer) 
+        if (   tooltipOutTimer
+            && getTooltip()) 
         {
             clearTimeout(tooltipOutTimer);
             tooltipOutTimer = null;
