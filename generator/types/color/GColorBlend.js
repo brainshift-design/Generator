@@ -6,8 +6,7 @@ extends GColorType
 
     mode;
     opacity;
-    gamma;
-
+    
 
     constructor(nodeId, options)
     {
@@ -27,7 +26,6 @@ extends GColorType
 
         copy.mode    = this.mode   .copy();
         copy.opacity = this.opacity.copy();
-        copy.gamma   = this.gamma  .copy();
 
         return copy;
     }
@@ -42,7 +40,6 @@ extends GColorType
 
         const mode    = (await this.mode   .eval(parse)).toValue().toInteger();
         const opacity = (await this.opacity.eval(parse)).toValue();
-        const gamma   = (await this.gamma  .eval(parse)).toValue();
 
 
         if (   this.input0 
@@ -55,26 +52,18 @@ extends GColorType
                 opacity.type == NUMBER_VALUE, 
                 'this.result.type must be NUMBER_VALUE');
 
-            const opacity = opacity.value / 100;
+            const _opacity = opacity.value / 100;
+
+            const modeIndex = Math.min(Math.max(0, mode.value), BlendModes.length-1);
 
 
-            const modeIndex  = Math.min(Math.max(0, mode.value), BlendModes.length-1);
-            const gammaValue = Math.max(0.0001, gamma.value);
-
-            const _space = colorSpace(modeIndex);
-
-            const _color = this.blend(
+            const col = this.blend(
                 modeIndex,
-                convertDataColorToSpace(input0.toDataColor(), _space),
-                convertDataColorToSpace(input1.toDataColor(), _space),
-                opacity,
-                gammaValue);
+                input0.toRgb(),
+                input1.toRgb(),
+                _opacity);
 
-
-            // allow interpolating invalid colors,
-            // so no valid color check here
-
-            this.value = ColorValue.fromDataColor(_color, modeIndex);
+            this.value = ColorValue.fromRgb(scaleRgb(col));
         }
 
         else if (this.input0) 
@@ -90,7 +79,6 @@ extends GColorType
         genPushUpdateValue(parse, this.nodeId, 'value',   this.value);
         genPushUpdateValue(parse, this.nodeId, 'mode',    mode );
         genPushUpdateValue(parse, this.nodeId, 'opacity', opacity);
-        genPushUpdateValue(parse, this.nodeId, 'gamma',   gamma );
 
 
         this.validate();
@@ -100,36 +88,31 @@ extends GColorType
 
 
 
-    blend(mode, col0, col1, opacity, gamma)
+    blend(mode, col0, col1, opacity)
     {
-        mode = 1;
-        
-        if (   mode <= 1
-            || mode >  6) // hex, rgb, okLab, lab, luv
+        switch (mode)
         {
-            const r0 = Math.pow(col0[1], gamma);  const r1 = Math.pow(col1[1], gamma);
-            const g0 = Math.pow(col0[2], gamma);  const g1 = Math.pow(col1[2], gamma);
-            const b0 = Math.pow(col0[3], gamma);  const b1 = Math.pow(col1[3], gamma);
+            case  0: return blendNormal    (col0, col1, opacity);
 
-            gamma = Math.max(0.01, gamma);
+            case  1: return blendDarken    (col0, col1, opacity);
+            case  2: return blendMultiply  (col0, col1, opacity);
+            case  3: return blendColorBurn (col0, col1, opacity);
 
-            return [
-                colorSpace(mode),
-                Math.pow(lerp(r0, r1, opacity), 1/gamma),
-                Math.pow(lerp(g0, g1, opacity), 1/gamma),
-                Math.pow(lerp(b0, b1, opacity), 1/gamma) ];
-        }
-        else // hsv/hsl/hcl
-        {
-            const h0 = col0[1] * Tau;  const h1 = col1[1] * Tau;
-            const c0 = col0[2];        const c1 = col1[2];
-            const l0 = col0[3];        const l1 = col1[3];
+            case  4: return blendLighten   (col0, col1, opacity);
+            case  5: return blendScreen    (col0, col1, opacity);
+            case  6: return blendColorDodge(col0, col1, opacity);
 
-            return [
-                colorSpace(mode),
-                normalAngle(h0 + angleDiff(h0, h1) * opacity) / Tau,
-                lerp(c0, c1, opacity),
-                lerp(l0, l1, opacity) ];
+            case  7: return blendOverlay   (col0, col1, opacity);
+            case  8: return blendSoftLight (col0, col1, opacity);
+            case  9: return blendHardLight (col0, col1, opacity);
+
+            case 10: return blendDifference(col0, col1, opacity);
+            case 11: return blendExclusion (col0, col1, opacity);
+
+            case 12: return blendHue       (col0, col1, opacity);
+            case 13: return blendSaturation(col0, col1, opacity);
+            case 14: return blendColor     (col0, col1, opacity);
+            case 15: return blendLuminosity(col0, col1, opacity);
         }
     }
 }

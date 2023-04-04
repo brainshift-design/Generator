@@ -7656,6 +7656,7 @@ const BOOLEAN_AND = 1;
 const BOOLEAN_OR  = 2;
 const BOOLEAN_XOR = 3;
 
+
 const BOOLEAN_OPS = 
 [   
     [BOOLEAN_NOT, 'not'],
@@ -7672,6 +7673,7 @@ const CONDITION_NOT_EQUAL        = 2;
 const CONDITION_EQUAL            = 3;
 const CONDITION_GREATER_OR_EQUAL = 4;
 const CONDITION_GREATER          = 5;
+
 
 const CONDITION_OPS = 
 [   
@@ -7726,6 +7728,7 @@ const BLEND_HUE         = 'BHUE';
 const BLEND_SATURATION  = 'BSAT';
 const BLEND_COLOR       = 'BCOL';
 const BLEND_LUMINOSITY  = 'BLUM';
+
 
 const BlendModes =
 [
@@ -14462,8 +14465,7 @@ extends GColorType
 
     mode;
     opacity;
-    gamma;
-
+    
 
     constructor(nodeId, options)
     {
@@ -14483,7 +14485,6 @@ extends GColorType
 
         copy.mode    = this.mode   .copy();
         copy.opacity = this.opacity.copy();
-        copy.gamma   = this.gamma  .copy();
 
         return copy;
     }
@@ -14498,7 +14499,6 @@ extends GColorType
 
         const mode    = (await this.mode   .eval(parse)).toValue().toInteger();
         const opacity = (await this.opacity.eval(parse)).toValue();
-        const gamma   = (await this.gamma  .eval(parse)).toValue();
 
 
         if (   this.input0 
@@ -14511,26 +14511,18 @@ extends GColorType
                 opacity.type == NUMBER_VALUE, 
                 'this.result.type must be NUMBER_VALUE');
 
-            const opacity = opacity.value / 100;
+            const _opacity = opacity.value / 100;
+
+            const modeIndex = Math.min(Math.max(0, mode.value), BlendModes.length-1);
 
 
-            const modeIndex  = Math.min(Math.max(0, mode.value), BlendModes.length-1);
-            const gammaValue = Math.max(0.0001, gamma.value);
-
-            const _space = colorSpace(modeIndex);
-
-            const _color = this.blend(
+            const col = this.blend(
                 modeIndex,
-                convertDataColorToSpace(input0.toDataColor(), _space),
-                convertDataColorToSpace(input1.toDataColor(), _space),
-                opacity,
-                gammaValue);
+                input0.toRgb(),
+                input1.toRgb(),
+                _opacity);
 
-
-            // allow interpolating invalid colors,
-            // so no valid color check here
-
-            this.value = ColorValue.fromDataColor(_color, modeIndex);
+            this.value = ColorValue.fromRgb(scaleRgb(col));
         }
 
         else if (this.input0) 
@@ -14546,7 +14538,6 @@ extends GColorType
         genPushUpdateValue(parse, this.nodeId, 'value',   this.value);
         genPushUpdateValue(parse, this.nodeId, 'mode',    mode );
         genPushUpdateValue(parse, this.nodeId, 'opacity', opacity);
-        genPushUpdateValue(parse, this.nodeId, 'gamma',   gamma );
 
 
         this.validate();
@@ -14556,40 +14547,298 @@ extends GColorType
 
 
 
-    blend(mode, col0, col1, opacity, gamma)
+    blend(mode, col0, col1, opacity)
     {
-        mode = 1;
-        
-        if (   mode <= 1
-            || mode >  6) // hex, rgb, okLab, lab, luv
+        switch (mode)
         {
-            const r0 = Math.pow(col0[1], gamma);  const r1 = Math.pow(col1[1], gamma);
-            const g0 = Math.pow(col0[2], gamma);  const g1 = Math.pow(col1[2], gamma);
-            const b0 = Math.pow(col0[3], gamma);  const b1 = Math.pow(col1[3], gamma);
+            case  0: return blendNormal    (col0, col1, opacity);
 
-            gamma = Math.max(0.01, gamma);
+            case  1: return blendDarken    (col0, col1, opacity);
+            case  2: return blendMultiply  (col0, col1, opacity);
+            case  3: return blendColorBurn (col0, col1, opacity);
 
-            return [
-                colorSpace(mode),
-                Math.pow(lerp(r0, r1, opacity), 1/gamma),
-                Math.pow(lerp(g0, g1, opacity), 1/gamma),
-                Math.pow(lerp(b0, b1, opacity), 1/gamma) ];
-        }
-        else // hsv/hsl/hcl
-        {
-            const h0 = col0[1] * Tau;  const h1 = col1[1] * Tau;
-            const c0 = col0[2];        const c1 = col1[2];
-            const l0 = col0[3];        const l1 = col1[3];
+            case  4: return blendLighten   (col0, col1, opacity);
+            case  5: return blendScreen    (col0, col1, opacity);
+            case  6: return blendColorDodge(col0, col1, opacity);
 
-            return [
-                colorSpace(mode),
-                normalAngle(h0 + angleDiff(h0, h1) * opacity) / Tau,
-                lerp(c0, c1, opacity),
-                lerp(l0, l1, opacity) ];
+            case  7: return blendOverlay   (col0, col1, opacity);
+            case  8: return blendSoftLight (col0, col1, opacity);
+            case  9: return blendHardLight (col0, col1, opacity);
+
+            case 10: return blendDifference(col0, col1, opacity);
+            case 11: return blendExclusion (col0, col1, opacity);
+
+            case 12: return blendHue       (col0, col1, opacity);
+            case 13: return blendSaturation(col0, col1, opacity);
+            case 14: return blendColor     (col0, col1, opacity);
+            case 15: return blendLuminosity(col0, col1, opacity);
         }
     }
 }
 
+
+
+function blendNormal(col, back, opacity)
+{
+    // = col over back
+
+    return [ col[0] * opacity + back[0] * (1 - opacity),
+             col[1] * opacity + back[1] * (1 - opacity),
+             col[2] * opacity + back[2] * (1 - opacity) ];
+}
+
+
+
+function blendDarken(col, back, opacity)
+{
+    // = min(back, col)
+
+    return blendNormal(
+        [ Math.min(back[0], col[0]),
+          Math.min(back[1], col[1]),
+          Math.min(back[2], col[2]) ],
+        back,
+        opacity);
+}
+
+
+
+function blendMultiply(col, back, opacity)
+{
+    // = back * col
+
+    return blendNormal(
+        [ back[0] * col[0],
+          back[1] * col[1],
+          back[2] * col[2] ],
+        back,
+        opacity);
+}
+
+
+
+function blendColorBurn(col, back, opacity)
+{
+    // = 1 - (1 - back) / col,   col > 0
+    // = 0,                      col = 0
+
+    return [ col[0] > 0 ? 1 - (1 - back[0]) / col[0] : 0,
+             col[1] > 0 ? 1 - (1 - back[1]) / col[1] : 0,
+             col[2] > 0 ? 1 - (1 - back[2]) / col[2] : 0 ];
+}
+
+
+
+function blendLighten(col, back, opacity)
+{
+    // = max(back, col)
+
+    return blendNormal(
+        [ Math.max(back[0], col[0]),
+          Math.max(back[1], col[1]),
+          Math.max(back[2], col[2]) ],
+        back,
+        opacity);
+}
+
+
+
+function blendScreen(col, back, opacity)
+{
+    // = back + col - (back * col)
+
+    return [ back[0] + col[0] - back[0] * col[0],
+             back[1] + col[1] - back[1] * col[1],
+             back[2] + col[2] - back[2] * col[2] ];
+}
+
+
+
+function blendColorDodge(col, back, opacity)
+{
+    // = back / (1 - col),   col < 1
+    // = back / (1 - col),   col < 1
+    // = 1,                  col = 1
+
+    return [ col[0] < 1 ? back[0] / (1 - col[0]) : 1,
+             col[1] < 1 ? back[1] / (1 - col[1]) : 1,
+             col[2] < 1 ? back[2] / (1 - col[2]) : 1 ];
+}
+
+
+
+function blendOverlay(col, back, opacity)
+{
+    // = 2 * col * back,                   back < 0.5 
+    // = 1 - 2 * (1 - col) * (1 - back),   else
+
+    return [ back[0] < 0.5 ? 2 * col[0] * back[0] : 1 - 2 * (1 - col[0]) * (1 - back[0]),
+             back[1] < 0.5 ? 2 * col[1] * back[1] : 1 - 2 * (1 - col[1]) * (1 - back[1]),
+             back[2] < 0.5 ? 2 * col[2] * back[2] : 1 - 2 * (1 - col[2]) * (1 - back[2]) ];
+}
+
+
+
+function bSL_D(x)
+{
+    return x <= 0.25
+         ? ((16 * x - 12) * x + 4) * x
+         : Math.sqrt(x);
+}
+
+
+
+function blendSoftLight(col, back, opacity)
+{
+    // = (2 * col - 1) * (back - back²) + back,     col < 0.5 
+    // = (2 * col - 1) * (D(back) - col) + back,   else
+
+    //   D(x) = ((16 * x - 12) * x + 4) * x,   x ≤ 0.25
+    //          √(x),                          x > 0.25
+
+    return [ col[0] < 0.5 ? (2 * col[0] - 1) * (back[0] - sqr(back[0])) + back : (2 * col[0] - 1) * (bSL_D(back[0]) - col[0]) + back[0],
+             col[1] < 0.5 ? (2 * col[1] - 1) * (back[1] - sqr(back[1])) + back : (2 * col[1] - 1) * (bSL_D(back[1]) - col[1]) + back[1],
+             col[2] < 0.5 ? (2 * col[2] - 1) * (back[2] - sqr(back[2])) + back : (2 * col[2] - 1) * (bSL_D(back[2]) - col[2]) + back[2] ];
+}
+
+
+
+function blendHardLight(col, back, opacity)
+{
+    // = 2 * col * back,                   col < 0.5
+    // = 1 - 2 * (1 - col) * (1 - back),   else
+
+    return [ col[0] < 0.5 ? 2 * col[0] * back : 1 - 2 * (1 - col[0]) * (1 - back[0]),
+             col[1] < 0.5 ? 2 * col[1] * back : 1 - 2 * (1 - col[1]) * (1 - back[1]),
+             col[2] < 0.5 ? 2 * col[2] * back : 1 - 2 * (1 - col[2]) * (1 - back[2]) ];
+}
+
+
+
+function blendDifference(col, back, opacity)
+{
+    // = |back - col|
+
+    return [ Math.abs(back[0] - col[0]),
+             Math.abs(back[1] - col[1]),
+             Math.abs(back[2] - col[2]) ];
+}
+
+
+
+function blendExclusion(col, back, opacity)
+{
+    // = col * (1 - back) + (1 - col) * back
+    
+    return [ col[0] * (1 - back[0]) + (1 - col[0]) * back[0],
+             col[1] * (1 - back[1]) + (1 - col[1]) * back[1],
+             col[2] * (1 - back[2]) + (1 - col[2]) * back[2] ];
+}
+
+
+
+/*	NOTE: see the PDF spec for the explanation of how the next four blending modes work
+    (they don't actually convert RGB to HSL, but use a faster method of calculation, and
+    the result is the same.  */
+
+function blendHue(col, back, opacity)
+{
+    // replace the destination hue with the source hue
+
+    return hsl2rgb(
+        setChan(rgb2hsl(back), 0, rgb2hsl(col)[0]));
+}
+
+
+
+function blendSaturation(col, back, opacity)
+{
+    // replace the destination saturation with the source saturation
+
+    return hsl2rgb(
+        setChan(rgb2hsl(back), 1, rgb2hsl(col)[1]));
+}
+
+
+
+function blendColor(col, back, opacity)
+{
+    // replace the destination hue & saturation with the source hue & saturation
+
+    const hslCol  = rgb2hsl(col);
+    const hslBack = rgb2hsl(back);
+
+    return hsl2rgb(
+        setChan(
+            setChan(
+                hslBack,
+                0, 
+                hslCol[0]),
+            1,
+            hslCol[1]));
+}
+
+
+
+function bl_lum(col)
+{
+    return col[0] * 0.30
+         + col[1] * 0.59
+         + col[2] * 0.11;
+}
+
+
+
+function bl_clamp(col)
+{
+    let r = col[0];
+    let g = col[1];
+    let b = col[2];
+
+
+    const lum = bl_lum(r, g, b);
+    const min = Math.min(Math.min(r, g), b);
+    const max = Math.max(Math.max(r, g), b);
+
+
+    if (min < 0)
+    {
+        r = lum + ((r - lum) * lum) / (lum - min);
+        g = lum + ((g - lum) * lum) / (lum - min);
+        b = lum + ((b - lum) * lum) / (lum - min);
+    }
+    
+    if (max > 1)
+    {
+        r = lum + ((r - lum) * (1 - lum)) / (max - lum);
+        g = lum + ((g - lum) * (1 - lum)) / (max - lum);
+        b = lum + ((b - lum) * (1 - lum)) / (max - lum);
+    }
+
+    
+    return [r, g, b];
+}
+
+
+
+function bl_setLum(col, lum)
+{
+    const d = lum - bl_lum(col);
+    
+    return clamp(
+        col[0] + d,
+        col[1] + d,
+        col[2] + d);
+}
+
+
+
+function blendLuminosity(col, back, opacity)
+{
+    // replace the destination luminostiy with the source luminosity
+
+    return bl_setLum(back, bl_lum(col));
+}
 
 
 class GColorStop
@@ -17277,7 +17526,6 @@ function genParseColorBlend(parse)
 
     blend.mode    = genParse(parse);
     blend.opacity = genParse(parse);
-    blend.gamma   = genParse(parse);
 
 
     parse.nTab--;
@@ -21206,6 +21454,22 @@ function clipRgb(_rgb)
     rgb[2] = Math.min(Math.max(0, rgb[2]), 1); 
 
     return rgb;
+}
+
+
+
+function clampChan(val)
+{
+    return Math.min(Math.max(0, val), 1);
+}
+
+
+
+function setChan(_col, chan, val)
+{
+    const col = [..._col];
+    col[chan] = val;
+    return col;
 }
 
 
@@ -27231,6 +27495,22 @@ function clipRgb(_rgb)
 }
 
 
+
+function clampChan(val)
+{
+    return Math.min(Math.max(0, val), 1);
+}
+
+
+
+function setChan(_col, chan, val)
+{
+    const col = [..._col];
+    col[chan] = val;
+    return col;
+}
+
+
 const lmsW = xyz2lms(lrgb2xyz([1, 1, 1]));
 const lmsB = xyz2lms(lrgb2xyz([0, 0, 1]));
 const lmsR = xyz2lms(lrgb2xyz([1, 0, 0]));
@@ -28434,6 +28714,7 @@ const BOOLEAN_AND = 1;
 const BOOLEAN_OR  = 2;
 const BOOLEAN_XOR = 3;
 
+
 const BOOLEAN_OPS = 
 [   
     [BOOLEAN_NOT, 'not'],
@@ -28450,6 +28731,7 @@ const CONDITION_NOT_EQUAL        = 2;
 const CONDITION_EQUAL            = 3;
 const CONDITION_GREATER_OR_EQUAL = 4;
 const CONDITION_GREATER          = 5;
+
 
 const CONDITION_OPS = 
 [   
@@ -28504,6 +28786,7 @@ const BLEND_HUE         = 'BHUE';
 const BLEND_SATURATION  = 'BSAT';
 const BLEND_COLOR       = 'BCOL';
 const BLEND_LUMINOSITY  = 'BLUM';
+
 
 const BlendModes =
 [
@@ -35240,8 +35523,7 @@ extends GColorType
 
     mode;
     opacity;
-    gamma;
-
+    
 
     constructor(nodeId, options)
     {
@@ -35261,7 +35543,6 @@ extends GColorType
 
         copy.mode    = this.mode   .copy();
         copy.opacity = this.opacity.copy();
-        copy.gamma   = this.gamma  .copy();
 
         return copy;
     }
@@ -35276,7 +35557,6 @@ extends GColorType
 
         const mode    = (await this.mode   .eval(parse)).toValue().toInteger();
         const opacity = (await this.opacity.eval(parse)).toValue();
-        const gamma   = (await this.gamma  .eval(parse)).toValue();
 
 
         if (   this.input0 
@@ -35289,26 +35569,18 @@ extends GColorType
                 opacity.type == NUMBER_VALUE, 
                 'this.result.type must be NUMBER_VALUE');
 
-            const opacity = opacity.value / 100;
+            const _opacity = opacity.value / 100;
+
+            const modeIndex = Math.min(Math.max(0, mode.value), BlendModes.length-1);
 
 
-            const modeIndex  = Math.min(Math.max(0, mode.value), BlendModes.length-1);
-            const gammaValue = Math.max(0.0001, gamma.value);
-
-            const _space = colorSpace(modeIndex);
-
-            const _color = this.blend(
+            const col = this.blend(
                 modeIndex,
-                convertDataColorToSpace(input0.toDataColor(), _space),
-                convertDataColorToSpace(input1.toDataColor(), _space),
-                opacity,
-                gammaValue);
+                input0.toRgb(),
+                input1.toRgb(),
+                _opacity);
 
-
-            // allow interpolating invalid colors,
-            // so no valid color check here
-
-            this.value = ColorValue.fromDataColor(_color, modeIndex);
+            this.value = ColorValue.fromRgb(scaleRgb(col));
         }
 
         else if (this.input0) 
@@ -35324,7 +35596,6 @@ extends GColorType
         genPushUpdateValue(parse, this.nodeId, 'value',   this.value);
         genPushUpdateValue(parse, this.nodeId, 'mode',    mode );
         genPushUpdateValue(parse, this.nodeId, 'opacity', opacity);
-        genPushUpdateValue(parse, this.nodeId, 'gamma',   gamma );
 
 
         this.validate();
@@ -35334,40 +35605,298 @@ extends GColorType
 
 
 
-    blend(mode, col0, col1, opacity, gamma)
+    blend(mode, col0, col1, opacity)
     {
-        mode = 1;
-        
-        if (   mode <= 1
-            || mode >  6) // hex, rgb, okLab, lab, luv
+        switch (mode)
         {
-            const r0 = Math.pow(col0[1], gamma);  const r1 = Math.pow(col1[1], gamma);
-            const g0 = Math.pow(col0[2], gamma);  const g1 = Math.pow(col1[2], gamma);
-            const b0 = Math.pow(col0[3], gamma);  const b1 = Math.pow(col1[3], gamma);
+            case  0: return blendNormal    (col0, col1, opacity);
 
-            gamma = Math.max(0.01, gamma);
+            case  1: return blendDarken    (col0, col1, opacity);
+            case  2: return blendMultiply  (col0, col1, opacity);
+            case  3: return blendColorBurn (col0, col1, opacity);
 
-            return [
-                colorSpace(mode),
-                Math.pow(lerp(r0, r1, opacity), 1/gamma),
-                Math.pow(lerp(g0, g1, opacity), 1/gamma),
-                Math.pow(lerp(b0, b1, opacity), 1/gamma) ];
-        }
-        else // hsv/hsl/hcl
-        {
-            const h0 = col0[1] * Tau;  const h1 = col1[1] * Tau;
-            const c0 = col0[2];        const c1 = col1[2];
-            const l0 = col0[3];        const l1 = col1[3];
+            case  4: return blendLighten   (col0, col1, opacity);
+            case  5: return blendScreen    (col0, col1, opacity);
+            case  6: return blendColorDodge(col0, col1, opacity);
 
-            return [
-                colorSpace(mode),
-                normalAngle(h0 + angleDiff(h0, h1) * opacity) / Tau,
-                lerp(c0, c1, opacity),
-                lerp(l0, l1, opacity) ];
+            case  7: return blendOverlay   (col0, col1, opacity);
+            case  8: return blendSoftLight (col0, col1, opacity);
+            case  9: return blendHardLight (col0, col1, opacity);
+
+            case 10: return blendDifference(col0, col1, opacity);
+            case 11: return blendExclusion (col0, col1, opacity);
+
+            case 12: return blendHue       (col0, col1, opacity);
+            case 13: return blendSaturation(col0, col1, opacity);
+            case 14: return blendColor     (col0, col1, opacity);
+            case 15: return blendLuminosity(col0, col1, opacity);
         }
     }
 }
 
+
+
+function blendNormal(col, back, opacity)
+{
+    // = col over back
+
+    return [ col[0] * opacity + back[0] * (1 - opacity),
+             col[1] * opacity + back[1] * (1 - opacity),
+             col[2] * opacity + back[2] * (1 - opacity) ];
+}
+
+
+
+function blendDarken(col, back, opacity)
+{
+    // = min(back, col)
+
+    return blendNormal(
+        [ Math.min(back[0], col[0]),
+          Math.min(back[1], col[1]),
+          Math.min(back[2], col[2]) ],
+        back,
+        opacity);
+}
+
+
+
+function blendMultiply(col, back, opacity)
+{
+    // = back * col
+
+    return blendNormal(
+        [ back[0] * col[0],
+          back[1] * col[1],
+          back[2] * col[2] ],
+        back,
+        opacity);
+}
+
+
+
+function blendColorBurn(col, back, opacity)
+{
+    // = 1 - (1 - back) / col,   col > 0
+    // = 0,                      col = 0
+
+    return [ col[0] > 0 ? 1 - (1 - back[0]) / col[0] : 0,
+             col[1] > 0 ? 1 - (1 - back[1]) / col[1] : 0,
+             col[2] > 0 ? 1 - (1 - back[2]) / col[2] : 0 ];
+}
+
+
+
+function blendLighten(col, back, opacity)
+{
+    // = max(back, col)
+
+    return blendNormal(
+        [ Math.max(back[0], col[0]),
+          Math.max(back[1], col[1]),
+          Math.max(back[2], col[2]) ],
+        back,
+        opacity);
+}
+
+
+
+function blendScreen(col, back, opacity)
+{
+    // = back + col - (back * col)
+
+    return [ back[0] + col[0] - back[0] * col[0],
+             back[1] + col[1] - back[1] * col[1],
+             back[2] + col[2] - back[2] * col[2] ];
+}
+
+
+
+function blendColorDodge(col, back, opacity)
+{
+    // = back / (1 - col),   col < 1
+    // = back / (1 - col),   col < 1
+    // = 1,                  col = 1
+
+    return [ col[0] < 1 ? back[0] / (1 - col[0]) : 1,
+             col[1] < 1 ? back[1] / (1 - col[1]) : 1,
+             col[2] < 1 ? back[2] / (1 - col[2]) : 1 ];
+}
+
+
+
+function blendOverlay(col, back, opacity)
+{
+    // = 2 * col * back,                   back < 0.5 
+    // = 1 - 2 * (1 - col) * (1 - back),   else
+
+    return [ back[0] < 0.5 ? 2 * col[0] * back[0] : 1 - 2 * (1 - col[0]) * (1 - back[0]),
+             back[1] < 0.5 ? 2 * col[1] * back[1] : 1 - 2 * (1 - col[1]) * (1 - back[1]),
+             back[2] < 0.5 ? 2 * col[2] * back[2] : 1 - 2 * (1 - col[2]) * (1 - back[2]) ];
+}
+
+
+
+function bSL_D(x)
+{
+    return x <= 0.25
+         ? ((16 * x - 12) * x + 4) * x
+         : Math.sqrt(x);
+}
+
+
+
+function blendSoftLight(col, back, opacity)
+{
+    // = (2 * col - 1) * (back - back²) + back,     col < 0.5 
+    // = (2 * col - 1) * (D(back) - col) + back,   else
+
+    //   D(x) = ((16 * x - 12) * x + 4) * x,   x ≤ 0.25
+    //          √(x),                          x > 0.25
+
+    return [ col[0] < 0.5 ? (2 * col[0] - 1) * (back[0] - sqr(back[0])) + back : (2 * col[0] - 1) * (bSL_D(back[0]) - col[0]) + back[0],
+             col[1] < 0.5 ? (2 * col[1] - 1) * (back[1] - sqr(back[1])) + back : (2 * col[1] - 1) * (bSL_D(back[1]) - col[1]) + back[1],
+             col[2] < 0.5 ? (2 * col[2] - 1) * (back[2] - sqr(back[2])) + back : (2 * col[2] - 1) * (bSL_D(back[2]) - col[2]) + back[2] ];
+}
+
+
+
+function blendHardLight(col, back, opacity)
+{
+    // = 2 * col * back,                   col < 0.5
+    // = 1 - 2 * (1 - col) * (1 - back),   else
+
+    return [ col[0] < 0.5 ? 2 * col[0] * back : 1 - 2 * (1 - col[0]) * (1 - back[0]),
+             col[1] < 0.5 ? 2 * col[1] * back : 1 - 2 * (1 - col[1]) * (1 - back[1]),
+             col[2] < 0.5 ? 2 * col[2] * back : 1 - 2 * (1 - col[2]) * (1 - back[2]) ];
+}
+
+
+
+function blendDifference(col, back, opacity)
+{
+    // = |back - col|
+
+    return [ Math.abs(back[0] - col[0]),
+             Math.abs(back[1] - col[1]),
+             Math.abs(back[2] - col[2]) ];
+}
+
+
+
+function blendExclusion(col, back, opacity)
+{
+    // = col * (1 - back) + (1 - col) * back
+    
+    return [ col[0] * (1 - back[0]) + (1 - col[0]) * back[0],
+             col[1] * (1 - back[1]) + (1 - col[1]) * back[1],
+             col[2] * (1 - back[2]) + (1 - col[2]) * back[2] ];
+}
+
+
+
+/*	NOTE: see the PDF spec for the explanation of how the next four blending modes work
+    (they don't actually convert RGB to HSL, but use a faster method of calculation, and
+    the result is the same.  */
+
+function blendHue(col, back, opacity)
+{
+    // replace the destination hue with the source hue
+
+    return hsl2rgb(
+        setChan(rgb2hsl(back), 0, rgb2hsl(col)[0]));
+}
+
+
+
+function blendSaturation(col, back, opacity)
+{
+    // replace the destination saturation with the source saturation
+
+    return hsl2rgb(
+        setChan(rgb2hsl(back), 1, rgb2hsl(col)[1]));
+}
+
+
+
+function blendColor(col, back, opacity)
+{
+    // replace the destination hue & saturation with the source hue & saturation
+
+    const hslCol  = rgb2hsl(col);
+    const hslBack = rgb2hsl(back);
+
+    return hsl2rgb(
+        setChan(
+            setChan(
+                hslBack,
+                0, 
+                hslCol[0]),
+            1,
+            hslCol[1]));
+}
+
+
+
+function bl_lum(col)
+{
+    return col[0] * 0.30
+         + col[1] * 0.59
+         + col[2] * 0.11;
+}
+
+
+
+function bl_clamp(col)
+{
+    let r = col[0];
+    let g = col[1];
+    let b = col[2];
+
+
+    const lum = bl_lum(r, g, b);
+    const min = Math.min(Math.min(r, g), b);
+    const max = Math.max(Math.max(r, g), b);
+
+
+    if (min < 0)
+    {
+        r = lum + ((r - lum) * lum) / (lum - min);
+        g = lum + ((g - lum) * lum) / (lum - min);
+        b = lum + ((b - lum) * lum) / (lum - min);
+    }
+    
+    if (max > 1)
+    {
+        r = lum + ((r - lum) * (1 - lum)) / (max - lum);
+        g = lum + ((g - lum) * (1 - lum)) / (max - lum);
+        b = lum + ((b - lum) * (1 - lum)) / (max - lum);
+    }
+
+    
+    return [r, g, b];
+}
+
+
+
+function bl_setLum(col, lum)
+{
+    const d = lum - bl_lum(col);
+    
+    return clamp(
+        col[0] + d,
+        col[1] + d,
+        col[2] + d);
+}
+
+
+
+function blendLuminosity(col, back, opacity)
+{
+    // replace the destination luminostiy with the source luminosity
+
+    return bl_setLum(back, bl_lum(col));
+}
 
 
 class GColorStop
@@ -57946,7 +58475,6 @@ extends OpColorBase
 {
     paramMode;
     paramOpacity;
-    paramGamma;
 
 
 
@@ -57963,7 +58491,6 @@ extends OpColorBase
 
         this.addParam(this.paramMode    = new SelectParam('mode',    '',  false, true, true, BlendModes.map(bm => bm[1]), 0));
         this.addParam(this.paramOpacity = new NumberParam('opacity', '',  true,  true, true, 100, 0,  100, 0));
-        this.addParam(this.paramGamma   = new NumberParam('gamma',   'γ', true,  true, true, 1,   0.01, 4, 2));
       
         
         this.paramMode.separatorsBefore.push(1, 4, 7, 10, 12);
@@ -58011,7 +58538,6 @@ extends OpColorBase
 
         request.push(...this.node.paramMode   .genRequest(gen));
         request.push(...this.node.paramOpacity.genRequest(gen));
-        request.push(...this.node.paramGamma  .genRequest(gen));
 
 
         gen.scope.pop();

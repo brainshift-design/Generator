@@ -408,7 +408,6 @@ function genParseColorBlend(parse)
 
     blend.mode    = genParse(parse);
     blend.opacity = genParse(parse);
-    blend.gamma   = genParse(parse);
 
 
     parse.nTab--;

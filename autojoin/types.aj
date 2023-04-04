@@ -103,6 +103,7 @@
 ../generator/types/color/GColorBlind.js
 ../generator/types/color/GColorInterpolate.js
 ../generator/types/color/GColorBlend.js
+../generator/types/color/GColorBlend modes.js
 
 
 ../generator/types/style/GColorStop.js

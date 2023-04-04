@@ -287,6 +287,7 @@ const BOOLEAN_AND = 1;
 const BOOLEAN_OR  = 2;
 const BOOLEAN_XOR = 3;
 
+
 const BOOLEAN_OPS = 
 [   
     [BOOLEAN_NOT, 'not'],
@@ -303,6 +304,7 @@ const CONDITION_NOT_EQUAL        = 2;
 const CONDITION_EQUAL            = 3;
 const CONDITION_GREATER_OR_EQUAL = 4;
 const CONDITION_GREATER          = 5;
+
 
 const CONDITION_OPS = 
 [   
@@ -357,6 +359,7 @@ const BLEND_HUE         = 'BHUE';
 const BLEND_SATURATION  = 'BSAT';
 const BLEND_COLOR       = 'BCOL';
 const BLEND_LUMINOSITY  = 'BLUM';
+
 
 const BlendModes =
 [

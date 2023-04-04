@@ -229,3 +229,19 @@ function clipRgb(_rgb)
 
     return rgb;
 }
+
+
+
+function clampChan(val)
+{
+    return Math.min(Math.max(0, val), 1);
+}
+
+
+
+function setChan(_col, chan, val)
+{
+    const col = [..._col];
+    col[chan] = val;
+    return col;
+}

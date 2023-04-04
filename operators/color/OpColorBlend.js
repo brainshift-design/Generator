@@ -3,7 +3,6 @@ extends OpColorBase
 {
     paramMode;
     paramOpacity;
-    paramGamma;
 
 
 
@@ -20,7 +19,6 @@ extends OpColorBase
 
         this.addParam(this.paramMode    = new SelectParam('mode',    '',  false, true, true, BlendModes.map(bm => bm[1]), 0));
         this.addParam(this.paramOpacity = new NumberParam('opacity', '',  true,  true, true, 100, 0,  100, 0));
-        this.addParam(this.paramGamma   = new NumberParam('gamma',   'γ', true,  true, true, 1,   0.01, 4, 2));
       
         
         this.paramMode.separatorsBefore.push(1, 4, 7, 10, 12);
@@ -68,7 +66,6 @@ extends OpColorBase
 
         request.push(...this.node.paramMode   .genRequest(gen));
         request.push(...this.node.paramOpacity.genRequest(gen));
-        request.push(...this.node.paramGamma  .genRequest(gen));
 
 
         gen.scope.pop();
