@@ -39,33 +39,33 @@ NumberControl.prototype.initTextbox = function()
         e.stopPropagation();
 
 
-        if (   e.code == 'KeyX'
-            && getCtrlKey(e))
-        {
-            e.preventDefault();
-            document.execCommand('copy');
-            clearSelectedText(this.textbox);
+        // if (   e.code == 'KeyX'
+        //     && getCtrlKey(e))
+        // {
+        //     // let the OS do its thing here
+        //     // // e.preventDefault();
+        //     // document.execCommand('copy');
+        //     // clearSelectedText(this.textbox);
+        // }
 
-            this.setValue(parseFloat(this.textbox.value), true);
-        }
+        // else if (   e.code == 'KeyC'
+        //     && getCtrlKey(e))
+        // {
+        //     // e.preventDefault();
+        //     // document.execCommand('copy');
+        // }
 
-        else if (   e.code == 'KeyC'
-            && getCtrlKey(e))
-        {
-            e.preventDefault();
-            document.execCommand('copy');
-        }
-
-        else if (e.code == 'KeyV'
-              && getCtrlKey(e)
-              && !this.readOnly)
-        {
-            // let the OS do its thing here
-        }
+        // else if (e.code == 'KeyV'
+        //       && getCtrlKey(e)
+        //       && !this.readOnly)
+        // {
+        //     // let the OS do its thing here
+        // }
         
-        else if (   (   e.code == 'Enter'
-                     || e.code == 'NumpadEnter')
-                 && !this.readOnly)
+        //else 
+        if (   (   e.code == 'Enter'
+                || e.code == 'NumpadEnter')
+            && !this.readOnly)
         {
             this.textbox.keyBlur = true;
             this.textbox.finish(true);
@@ -194,10 +194,13 @@ NumberControl.prototype.initTextbox = function()
         else if (e.code == 'KeyZ'
               && getCtrlKey(e))
         {
-                 if (e.shiftKey && !actionManager.redoing) actionManager.redo();
-            else if (              !actionManager.undoing) actionManager.undo();
+            // e.preventDefault();
+            //e.stopImmediatePropagation();
+
+            //      if (e.shiftKey && !actionManager.redoing) actionManager.redo();
+            // else if (              !actionManager.undoing) actionManager.undo();
             
-            this.updateTextbox();
+            // this.updateTextbox();
         }
         // else 
         // {
@@ -245,31 +248,33 @@ NumberControl.prototype.initTextbox = function()
 
 
 
-    this.textbox.addEventListener('paste', e =>
-    {
-        e.preventDefault();
-
-        const str = e.clipboardData.getData('text/plain');
-
-        let val = 
-            this.showHex
-            ? parseInt(str, 16)
-            : parseFloat(str);
-
-        val = Math.min(Math.max(this.min, val), this.max);
+    // this.textbox.addEventListener('paste', e =>
+    // {
+    //     //e.preventDefault();
+    //     //e.stopPropagation();
         
-        const strVal = isNaN(val) ? '' : val;
 
-        this.textbox.value = 
-              this.textbox.value.substring(0, this.textbox.selectionStart)
-            + strVal
-            + this.textbox.value.substring(this.textbox.selectionEnd);
+    //     // const str = e.clipboardData.getData('text/plain');
 
-        this.setValue(
-            parseFloat(this.textbox.value), 
-            true, //!this.textbox.managing, 
-            true);
-    });
+    //     // let val = 
+    //     //     this.showHex
+    //     //     ? parseInt(str, 16)
+    //     //     : parseFloat(str);
+
+    //     // val = Math.min(Math.max(this.min, val), this.max);
+        
+    //     // const strVal = isNaN(val) ? '' : val;
+
+    //     // this.textbox.value = 
+    //     //       this.textbox.value.substring(0, this.textbox.selectionStart)
+    //     //     + strVal
+    //     //     + this.textbox.value.substring(this.textbox.selectionEnd);
+
+    //     // this.setValue(
+    //     //     parseFloat(this.textbox.value), 
+    //     //     true, //!this.textbox.managing, 
+    //     //     true);
+    // });
 
 
 

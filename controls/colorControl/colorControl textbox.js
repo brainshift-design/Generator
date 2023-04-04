@@ -55,23 +55,24 @@ ColorControl.prototype.initTextbox = function()
         e.stopPropagation();
 
 
-        if (   e.code == 'KeyC'
-            && getCtrlKey(e))
-        {
-            e.preventDefault();
-            document.execCommand('copy');
-        }
+        // if (   e.code == 'KeyC'
+        //     && getCtrlKey(e))
+        // {
+        //     e.preventDefault();
+        //     document.execCommand('copy');
+        // }
 
-        else if (e.code == 'KeyV'
-              && getCtrlKey(e)
-              && !this.readOnly)
-        {
-            // let the OS do its thing here
-        }
+        // else if (e.code == 'KeyV'
+        //       && getCtrlKey(e)
+        //       && !this.readOnly)
+        // {
+        //     // let the OS do its thing here
+        // }
         
-        else if (   (   e.code == 'Enter'
-                     || e.code == 'NumpadEnter')
-                 && !this.readOnly)
+        ///else 
+        if (   (   e.code == 'Enter'
+                || e.code == 'NumpadEnter')
+            && !this.readOnly)
         {
             this.textbox.keyBlur = true;
             this.textbox.finish(true);
@@ -85,7 +86,7 @@ ColorControl.prototype.initTextbox = function()
         else if (e.code == 'Tab')
         {
             e.preventDefault();
-            e.stopPropagation();
+            //e.stopPropagation();
             
             if (this.param)
             {
@@ -150,10 +151,13 @@ ColorControl.prototype.initTextbox = function()
         else if (e.code == 'KeyZ'
               && getCtrlKey(e))
         {
-                 if (e.shiftKey && !actionManager.redoing) actionManager.redo();
-            else if (              !actionManager.undoing) actionManager.undo();
+            e.preventDefault();
+            e.stopImmediatePropagation();
+
+            //      if (e.shiftKey && !actionManager.redoing) actionManager.redo();
+            // else if (              !actionManager.undoing) actionManager.undo();
             
-            this.updateTextbox();
+            // this.updateTextbox();
         }
         // else 
         // {
@@ -185,32 +189,32 @@ ColorControl.prototype.initTextbox = function()
 
 
 
-    this.textbox.addEventListener('paste', e =>
-    {
-        e.preventDefault();
+    // this.textbox.addEventListener('paste', e =>
+    // {
+    //     e.preventDefault();
 
 
-        const oldValue = this.value.copy();
+    //     const oldValue = this.value.copy();
 
 
-        let str = e.clipboardData.getData('text/plain');
+    //     let str = e.clipboardData.getData('text/plain');
 
-        const rgb = hex2rgb(
-              this.textbox.value.substring(0, this.textbox.selectionStart)
-            + str
-            + this.textbox.value.substring(this.textbox.selectionEnd));
+    //     const rgb = hex2rgb(
+    //           this.textbox.value.substring(0, this.textbox.selectionStart)
+    //         + str
+    //         + this.textbox.value.substring(this.textbox.selectionEnd));
 
-        const value = ColorValue.fromRgb(scaleRgb(rgb));
-
-
-        this.textbox.value = rgb2hex(rgb);
+    //     const value = ColorValue.fromRgb(scaleRgb(rgb));
 
 
-        this.setValue(
-            value, 
-            true, //!this.textbox.managing, 
-            true);
-    });
+    //     this.textbox.value = rgb2hex(rgb);
+
+
+    //     this.setValue(
+    //         value, 
+    //         true, //!this.textbox.managing, 
+    //         true);
+    // });
 
 
 
@@ -257,6 +261,14 @@ ColorControl.prototype.initTextbox = function()
         }
 
         e.stopPropagation();
+    });
+
+
+
+    this.textbox.addEventListener('wheel', e =>
+    {
+        e.stopPropagation();
+        forwardEvent(e, this.div);
     });
 
 

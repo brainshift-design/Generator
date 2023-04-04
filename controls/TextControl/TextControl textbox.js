@@ -111,8 +111,8 @@ TextControl.prototype.initTextarea = function()
         else if (e.code == 'KeyZ'
               && getCtrlKey(e))
         {
-                 if (e.shiftKey && !actionManager.redoing) actionManager.redo();
-            else if (              !actionManager.undoing) actionManager.undo();
+            //      if (e.shiftKey && !actionManager.redoing) actionManager.redo();
+            // else if (              !actionManager.undoing) actionManager.undo();
         }
     });
 
