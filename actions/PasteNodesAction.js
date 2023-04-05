@@ -63,7 +63,7 @@ extends Action
                     conn.inputNodeId,  conn.inputId,
                     formatConnJson(
                         '', 
-                        TAB,
+                        HTAB,
                         conn.outputNodeId,
                         conn.outputId,
                         conn.outputOrder,

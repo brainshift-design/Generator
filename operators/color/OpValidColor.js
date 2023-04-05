@@ -146,7 +146,7 @@ extends OpColorBase
     toJsonBase(nTab = 0) 
     {
         let   pos = ' '.repeat(nTab);
-        const tab = TAB;
+        const tab = HTAB;
 
         return super.toJsonBase(nTab)
              + ',\n' + pos + tab + '"_color": "' + ColorValue.fromDataColor(this._color).toString() + '"';

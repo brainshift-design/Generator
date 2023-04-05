@@ -434,8 +434,8 @@ function initGeneratorMenus()
 
     menuNodeCopyAs = new Menu('Copy nodes menu', false, false);
     menuNodeCopyAs.addItems([
-        menuItemNodeCopyAsJsCode       = new MenuItem('Copy as JS code',     {shortcut:  osCtrl() + osShift() + 'C',            callback: () => graphView.copySelectedNodesAsJsCode()     }),
-        menuItemNodeCopyAsJsFunction   = new MenuItem('Copy as JS function', {shortcut:  osCtrl() + osShift() + osAlt() + 'C',  callback: () => graphView.copySelectedNodesAsJsFunction() })]);
+        //menuItemNodeCopyAsJsCode       = new MenuItem('Copy as JS code',     {shortcut:  osCtrl() + osShift() + 'C',            callback: () => graphView.copySelectedNodesAsJsCode()     }),
+        menuItemNodeCopyAsJsFunction   = new MenuItem('Copy as Javascript', {shortcut:  osCtrl() + osShift() /*+ osAlt()*/ + 'C',  callback: () => graphView.copySelectedNodesAsJsFunction() })]);
 
 
     menuNode = new Menu('Node menu', false, false);

@@ -78,7 +78,7 @@ extends OperatorWithValue
             js += ' ';
 
             js += 'switch (' + this.paramType.toJsCode() + ')';
-            js += ' { ';
+            js += ' {';
             js += ' case 0: return Math.floor(input);';
             js += ' case 1: return Math.round(input);';
             js += ' case 2: return Math.ceil(input);';
@@ -91,6 +91,38 @@ extends OperatorWithValue
             js += 'Number.NaN';
 
       
+        return js;
+    }
+
+
+
+    toJsFunction(nTab = 0)
+    {
+        let pos = TAB.repeat(nTab);
+
+
+        let js = 'function ' + this.name + '()';
+
+        js += '\n' + pos + '{';
+
+        
+        if (this.inputs[0].connected)
+        {
+            js += '\n' + pos + TAB + 'const input = ' + this.inputs[0].connectedOutput.toJsCode() + ';';
+            js += '\n';
+            js += '\n' + pos + TAB + 'switch (' + this.paramType.toJsCode() + ')';
+            js += '\n' + pos + TAB + '{ ';
+            js += '\n' + pos + TAB + TAB + 'case 0: return Math.floor(input);';
+            js += '\n' + pos + TAB + TAB + 'case 1: return Math.round(input);';
+            js += '\n' + pos + TAB + TAB + 'case 2: return Math.ceil (input);';
+            js += '\n' + pos + TAB + '}';
+        }
+        else
+            js += '\n' + pos + TAB + 'return Number.NaN;';
+
+
+        js += '\n' + pos + '}';
+
         return js;
     }
 }

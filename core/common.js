@@ -5,7 +5,8 @@ const MAX_INT32        = 2147483647;
   
 const NULL             = '';
   
-const TAB              = '  ';
+const HTAB             = '  '; // half-tab
+const TAB              = '    ';
 const NL               = '\n';
   
 const GENERATOR_LOGO   = '◦ G •';

@@ -496,7 +496,7 @@ class GraphView
     
     toJson()
     {
-        const tab = '\n' + TAB;
+        const tab = '\n' + HTAB;
 
         return '{'
             + tab + '"zoom": "' + this.zoom  + '",'

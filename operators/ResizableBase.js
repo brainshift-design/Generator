@@ -281,7 +281,7 @@ extends OperatorBase
     toJsonBase(nTab = 0) 
     {
         let   pos = ' '.repeat(nTab);
-        const tab = TAB;
+        const tab = HTAB;
 
         let json = super.toJsonBase(nTab);
 

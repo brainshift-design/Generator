@@ -60,4 +60,31 @@ extends OperatorWithValue
              ? 'Math.abs(' + this.inputs[0].connectedOutput.toJsCode() + ')'
              : 'Number.NaN';
     }
+
+
+
+    toJsFunction(nTab = 0)
+    {
+        let pos = TAB.repeat(nTab);
+
+
+        let js = 'function ' + this.name + '()';
+
+        js += '\n' + pos + '{';
+
+        
+        js += '\n' + pos + TAB + 'return ';
+        
+        js += 
+            this.inputs[0].connected
+            ? 'Math.abs(' + this.inputs[0].connectedOutput.toJsCode() + ')'
+            : 'Number.NaN';
+
+        js += ';'
+
+
+        js += '\n' + pos + '}';
+
+        return js;
+    }
 }

@@ -548,7 +548,7 @@ function uiSaveGraphView()
 function dataColorToJson(color, nTab)
 {
     let   pos = ' '.repeat(nTab);
-    const tab = TAB;
+    const tab = HTAB;
 
     let json =
           pos + tab + '[\n'

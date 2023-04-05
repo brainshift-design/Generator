@@ -191,6 +191,6 @@ extends Parameter
     {
         return this.input.connected
              ? '(' + this.input.connectedOutput.toJsCode() + ')'
-             : this.value.toJsCode;
+             : this.value.toJsCode();
     }
 }

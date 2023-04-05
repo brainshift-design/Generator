@@ -92,20 +92,48 @@ extends OperatorBase
     {
         return this.inputs[0].connected
              ? '(' + this.inputs[0].connectedOutput.toJsCode() + ')'
-             : this.paramValue.value.toJsCode;
+             : this.paramValue.value.toJsCode();
     }
 
 
 
-    toJsFunction()
+    toJsFunction(nTab = 0)
     {
-        let str = 'function ' + this.name + '()';
-        str += '\n{'
-        
-        return this.inputs[0].connected
-             ? '(' + this.inputs[0].connectedOutput.toJsCode() + ')'
-             : this.paramValue.value.toJsCode;
+        let pos = TAB.repeat(nTab);
 
-        str += '}';
+
+        const connected = this.inputs[0].connected;
+
+        const connectedOutside = this.inputs.find(i => 
+               i.connected 
+            && i.connectedOutput.node );
+
+
+        let js = 'function ' + this.name + '(';
+        
+        // js += 
+        //     this.inputs[0].connected
+        //     ? this.inputs[0].connectedOutput.toJsCode()
+        //     : this.paramValue.value.toJsCode();
+        
+        js += ')';
+
+
+        js += '\n' + pos + '{';
+
+        
+        js += '\n' + pos + TAB + 'return ';
+        
+        js += 
+            this.inputs[0].connected
+            ? this.inputs[0].connectedOutput.toJsCode()
+            : this.paramValue.value.toJsCode();
+
+        js += ';'
+
+
+        js += '\n' + pos + '}';
+
+        return js;
     }
 }

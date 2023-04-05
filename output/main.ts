@@ -28,7 +28,8 @@ const MAX_INT32        = 2147483647;
   
 const NULL             = '';
   
-const TAB              = '  ';
+const HTAB             = '  '; // half-tab
+const TAB              = '    ';
 const NL               = '\n';
   
 const GENERATOR_LOGO   = '◦ G •';
@@ -1018,16 +1019,16 @@ function formatSavedNodeJson(json)
         .replace('{\n', '')
         .replace('\n}', '')
 
-        .replace('[\n' + TAB, '')
-        .replace('\n' + TAB + ']', '')
+        .replace('[\n' + HTAB, '')
+        .replace('\n' + HTAB + ']', '')
 
-        .split(TAB + '"params":\n').join('') // have to do .split().join() because there's no .replace() in TS
+        .split(HTAB + '"params":\n').join('') // have to do .split().join() because there's no .replace() in TS
 
         .split('": "').join(': ')
         .split('", "').join(': ')
 
-        .split(TAB + '"').join(TAB)
-        .split(TAB + TAB + '["').join(TAB + TAB)
+        .split(HTAB + '"').join(HTAB)
+        .split(HTAB + HTAB + '["').join(HTAB + HTAB)
         
         .split('",\n').join('\n')
         .split('"\n').join('\n')
@@ -1051,8 +1052,8 @@ function formatSavedDataJson(json)
     let formJson = json
         .replace('{\n', '')
         .replace('\n}', '')
-        .replace('[\n' + TAB, '')
-        .replace('\n' + TAB + ']', '');
+        .replace('[\n' + HTAB, '')
+        .replace('\n' + HTAB + ']', '');
 
     return formJson;
 }
@@ -2389,7 +2390,7 @@ function figMarkForLoading(nodeKeys, connKeys)
 {
     const loadingFlag = '"loading": "true"';
     const not         = '{\n';
-    const set         = '{\n' + TAB + loadingFlag + ',\n';
+    const set         = '{\n' + HTAB + loadingFlag + ',\n';
 
     nodeKeys.forEach(k => figma.currentPage.setPluginData(k, 
         figma.currentPage.getPluginData(k)

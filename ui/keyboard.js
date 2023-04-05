@@ -27,11 +27,14 @@ document.addEventListener('keydown', e =>
         && getCtrlKey(e))
     {
         e.preventDefault();
-        
-             if (e.shiftKey
-              && e.altKey)   graphView.copySelectedNodesAsJsFunction();
-        else if (e.shiftKey) graphView.copySelectedNodesAsJsCode();
-        else                 graphView.copySelectedNodes();
+
+        //      if (e.shiftKey
+        //       && e.altKey)   graphView.copySelectedNodesAsJsFunction();
+        // else if (e.shiftKey) graphView.copySelectedNodesAsJsCode();
+        // else                 graphView.copySelectedNodes();
+
+        if (e.shiftKey) graphView.copySelectedNodesAsJsFunction();
+        else            graphView.copySelectedNodes();
     }
 
     // paste

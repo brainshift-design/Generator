@@ -27,7 +27,7 @@ class RequestSettings
             return '';
         }
         else 
-            return NL + TAB.repeat(Math.max(0, this.nTab)); 
+            return NL + HTAB.repeat(Math.max(0, this.nTab)); 
     }
 }
 
@@ -86,7 +86,7 @@ function logValueUpdates(updateNodeId, updateParamId, values)
         const nInputs = parseInt(values[i++]);
 
         log += 
-              (newLine ? NL : '') + TAB.repeat(Math.max(0, nTab))
+              (newLine ? NL : '') + HTAB.repeat(Math.max(0, nTab))
             + nodeId;// + ' ' + nInputs;
 
         newLine = true;
@@ -100,7 +100,7 @@ function logValueUpdates(updateNodeId, updateParamId, values)
             const value = values[i++];
 
             log += 
-                  NL + TAB.repeat(Math.max(0, nTab))
+                  NL + HTAB.repeat(Math.max(0, nTab))
                 + index + ' ' + displayValue(type, value);
         }
 

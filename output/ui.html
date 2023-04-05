@@ -3881,6 +3881,7 @@ a
                 <div class='keyboardShortcut'><div class='shortcutAction'>Remove from branch</div><div class='shortcutKeys'><div class='shortcutKeys'><div class='shortcutKey'>Ctrl</div><div class='shortcutKey shortcutCharWide'>⌫</div></div></div></div>
             </div>
             <div class='keyboardGroup nextGroup'>
+                <div class='keyboardShortcut'><div class='shortcutAction'>Copy as Javascript</div><div class='shortcutKeys'><div class='shortcutKeys'><div class='shortcutKey'>Ctrl</div><div class='shortcutKey'>Shift</div><div class='shortcutKey shortcutChar'>C</div></div></div></div>
                 <div class='keyboardShortcut'><div class='shortcutAction'>Duplicate</div><div class='shortcutKeys'><div class='shortcutKeys'><div class='shortcutKey'>Ctrl</div><div class='shortcutKey shortcutChar'>D</div></div></div></div>
                 <div class='keyboardShortcut'><div class='shortcutAction'>Duplicate with input connections</div><div class='shortcutKeys'><div class='shortcutKeys'><div class='shortcutKey'>Ctrl</div><div class='shortcutKey'>Shift</div><div class='shortcutKey shortcutChar'>D</div></div></div></div>
             </div>
@@ -4086,7 +4087,8 @@ const MAX_INT32        = 2147483647;
   
 const NULL             = '';
   
-const TAB              = '  ';
+const HTAB             = '  '; // half-tab
+const TAB              = '    ';
 const NL               = '\n';
   
 const GENERATOR_LOGO   = '◦ G •';
@@ -16714,7 +16716,7 @@ function enableFeatures(subscription, beta)
     updateMenuItemDisplay(menuItemStyleStroke         .div, subscription && beta);
     //updateMenuItemDisplay(menuItemStyleSep1         .div, subscription && beta);
     
-    updateMenuItemDisplay(menuItemNodeCopyAsJsCode    .div, subscription && beta);
+    //updateMenuItemDisplay(menuItemNodeCopyAsJsCode    .div, subscription && beta);
     updateMenuItemDisplay(menuItemNodeCopyAsJsFunction.div, subscription && beta);
 
 
@@ -19680,7 +19682,7 @@ class Parse
     
     nTab = 0;
 
-    get tab() { return this.inParam ? ' ' : (NL + TAB.repeat(Math.max(0, this.nTab))); }
+    get tab() { return this.inParam ? ' ' : (NL + HTAB.repeat(Math.max(0, this.nTab))); }
 
     
     inParam = false;
@@ -20032,7 +20034,7 @@ class RequestSettings
             return '';
         }
         else 
-            return NL + TAB.repeat(Math.max(0, this.nTab)); 
+            return NL + HTAB.repeat(Math.max(0, this.nTab)); 
     }
 }
 
@@ -20091,7 +20093,7 @@ function logValueUpdates(updateNodeId, updateParamId, values)
         const nInputs = parseInt(values[i++]);
 
         log += 
-              (newLine ? NL : '') + TAB.repeat(Math.max(0, nTab))
+              (newLine ? NL : '') + HTAB.repeat(Math.max(0, nTab))
             + nodeId;// + ' ' + nInputs;
 
         newLine = true;
@@ -20105,7 +20107,7 @@ function logValueUpdates(updateNodeId, updateParamId, values)
             const value = values[i++];
 
             log += 
-                  NL + TAB.repeat(Math.max(0, nTab))
+                  NL + HTAB.repeat(Math.max(0, nTab))
                 + index + ' ' + displayValue(type, value);
         }
 
@@ -20366,16 +20368,16 @@ function formatSavedNodeJson(json)
         .replace('{\n', '')
         .replace('\n}', '')
 
-        .replace('[\n' + TAB, '')
-        .replace('\n' + TAB + ']', '')
+        .replace('[\n' + HTAB, '')
+        .replace('\n' + HTAB + ']', '')
 
-        .split(TAB + '"params":\n').join('') // have to do .split().join() because there's no .replace() in TS
+        .split(HTAB + '"params":\n').join('') // have to do .split().join() because there's no .replace() in TS
 
         .split('": "').join(': ')
         .split('", "').join(': ')
 
-        .split(TAB + '"').join(TAB)
-        .split(TAB + TAB + '["').join(TAB + TAB)
+        .split(HTAB + '"').join(HTAB)
+        .split(HTAB + HTAB + '["').join(HTAB + HTAB)
         
         .split('",\n').join('\n')
         .split('"\n').join('\n')
@@ -20399,8 +20401,8 @@ function formatSavedDataJson(json)
     let formJson = json
         .replace('{\n', '')
         .replace('\n}', '')
-        .replace('[\n' + TAB, '')
-        .replace('\n' + TAB + ']', '');
+        .replace('[\n' + HTAB, '')
+        .replace('\n' + HTAB + ']', '');
 
     return formJson;
 }
@@ -22936,7 +22938,8 @@ const MAX_INT32        = 2147483647;
   
 const NULL             = '';
   
-const TAB              = '  ';
+const HTAB             = '  '; // half-tab
+const TAB              = '    ';
 const NL               = '\n';
   
 const GENERATOR_LOGO   = '◦ G •';
@@ -26079,7 +26082,7 @@ class RequestSettings
             return '';
         }
         else 
-            return NL + TAB.repeat(Math.max(0, this.nTab)); 
+            return NL + HTAB.repeat(Math.max(0, this.nTab)); 
     }
 }
 
@@ -26138,7 +26141,7 @@ function logValueUpdates(updateNodeId, updateParamId, values)
         const nInputs = parseInt(values[i++]);
 
         log += 
-              (newLine ? NL : '') + TAB.repeat(Math.max(0, nTab))
+              (newLine ? NL : '') + HTAB.repeat(Math.max(0, nTab))
             + nodeId;// + ' ' + nInputs;
 
         newLine = true;
@@ -26152,7 +26155,7 @@ function logValueUpdates(updateNodeId, updateParamId, values)
             const value = values[i++];
 
             log += 
-                  NL + TAB.repeat(Math.max(0, nTab))
+                  NL + HTAB.repeat(Math.max(0, nTab))
                 + index + ' ' + displayValue(type, value);
         }
 
@@ -26413,16 +26416,16 @@ function formatSavedNodeJson(json)
         .replace('{\n', '')
         .replace('\n}', '')
 
-        .replace('[\n' + TAB, '')
-        .replace('\n' + TAB + ']', '')
+        .replace('[\n' + HTAB, '')
+        .replace('\n' + HTAB + ']', '')
 
-        .split(TAB + '"params":\n').join('') // have to do .split().join() because there's no .replace() in TS
+        .split(HTAB + '"params":\n').join('') // have to do .split().join() because there's no .replace() in TS
 
         .split('": "').join(': ')
         .split('", "').join(': ')
 
-        .split(TAB + '"').join(TAB)
-        .split(TAB + TAB + '["').join(TAB + TAB)
+        .split(HTAB + '"').join(HTAB)
+        .split(HTAB + HTAB + '["').join(HTAB + HTAB)
         
         .split('",\n').join('\n')
         .split('"\n').join('\n')
@@ -26446,8 +26449,8 @@ function formatSavedDataJson(json)
     let formJson = json
         .replace('{\n', '')
         .replace('\n}', '')
-        .replace('[\n' + TAB, '')
-        .replace('\n' + TAB + ']', '');
+        .replace('[\n' + HTAB, '')
+        .replace('\n' + HTAB + ']', '');
 
     return formJson;
 }
@@ -37908,7 +37911,7 @@ function enableFeatures(subscription, beta)
     updateMenuItemDisplay(menuItemStyleStroke         .div, subscription && beta);
     //updateMenuItemDisplay(menuItemStyleSep1         .div, subscription && beta);
     
-    updateMenuItemDisplay(menuItemNodeCopyAsJsCode    .div, subscription && beta);
+    //updateMenuItemDisplay(menuItemNodeCopyAsJsCode    .div, subscription && beta);
     updateMenuItemDisplay(menuItemNodeCopyAsJsFunction.div, subscription && beta);
 
 
@@ -42924,8 +42927,8 @@ function initGeneratorMenus()
 
     menuNodeCopyAs = new Menu('Copy nodes menu', false, false);
     menuNodeCopyAs.addItems([
-        menuItemNodeCopyAsJsCode       = new MenuItem('Copy as JS code',     {shortcut:  osCtrl() + osShift() + 'C',            callback: () => graphView.copySelectedNodesAsJsCode()     }),
-        menuItemNodeCopyAsJsFunction   = new MenuItem('Copy as JS function', {shortcut:  osCtrl() + osShift() + osAlt() + 'C',  callback: () => graphView.copySelectedNodesAsJsFunction() })]);
+        //menuItemNodeCopyAsJsCode       = new MenuItem('Copy as JS code',     {shortcut:  osCtrl() + osShift() + 'C',            callback: () => graphView.copySelectedNodesAsJsCode()     }),
+        menuItemNodeCopyAsJsFunction   = new MenuItem('Copy as Javascript', {shortcut:  osCtrl() + osShift() /*+ osAlt()*/ + 'C',  callback: () => graphView.copySelectedNodesAsJsFunction() })]);
 
 
     menuNode = new Menu('Node menu', false, false);
@@ -44631,7 +44634,7 @@ class GraphView
     
     toJson()
     {
-        const tab = '\n' + TAB;
+        const tab = '\n' + HTAB;
 
         return '{'
             + tab + '"zoom": "' + this.zoom  + '",'
@@ -44746,11 +44749,6 @@ GraphView.prototype.copySelectedNodesAsJsCode = function()
 
     const js = terminals.map(t => t.toJsCode()).join();
     
-    //let js = '';
-
-    // for (const terminal of terminals)
-    //     js += terminal.toJavascript();
-
 
     console.log(js);
     writeTextToClipboard(js);
@@ -44763,12 +44761,13 @@ GraphView.prototype.copySelectedNodesAsJsFunction = function()
     const terminals = getTerminalsInNodes(this.selectedNodes);
 
 
-    const js = terminals.map(t => t.toJsFunction()).join();
-    
-    //let js = '';
+    let js = '';
 
-    // for (const terminal of terminals)
-    //     js += terminal.toJavascript();
+    for (const terminal of terminals)
+    {
+        js += '\n';
+        js += terminal.toJsFunction();
+    }
 
 
     console.log(js);
@@ -46710,7 +46709,7 @@ extends Parameter
     {
         return this.input.connected
              ? '(' + this.input.connectedOutput.toJsCode() + ')'
-             : this.value.toJsCode;
+             : this.value.toJsCode();
     }
 }
 
@@ -49637,7 +49636,7 @@ class Connection
     toJson(nTab = 0) 
     {
         let   pos = ' '.repeat(nTab);
-        const tab = TAB;
+        const tab = HTAB;
 
         return formatConnJson(
             pos, 
@@ -51129,7 +51128,7 @@ class Operator
     toJson(nTab = 0) 
     {
         let   pos = ' '.repeat(nTab);
-       //const tab = TAB;
+       //const tab = HTAB;
         
 
         let json = 
@@ -51153,7 +51152,7 @@ class Operator
     toJsonBase(nTab)
     {
         let   pos = ' '.repeat(nTab);
-        const tab = TAB;
+        const tab = HTAB;
 
         let json =
               pos + tab + '"type": "'    + this.type                       + '",\n'
@@ -51175,7 +51174,7 @@ class Operator
     paramsToJson(nTab = 0)
     {
         let   pos = ' '.repeat(nTab);
-        const tab = TAB;
+        const tab = HTAB;
 
 
         let json =
@@ -51259,7 +51258,7 @@ class Operator
 
 
 
-    toJsFunction()
+    toJsFunction(nTab = 0)
     {
         return '';
     }
@@ -52667,7 +52666,7 @@ extends OperatorWithValue
     toJsonBase(nTab = 0) 
     {
         let   pos = ' '.repeat(nTab);
-        const tab = TAB;
+        const tab = HTAB;
 
         return super.toJsonBase(nTab)
              + ',\n' + pos + tab + '"onlySymbol": "' + boolToString(this._showOnlySymbol) + '"';
@@ -52968,7 +52967,7 @@ extends OperatorBase
     toJsonBase(nTab = 0) 
     {
         let   pos = ' '.repeat(nTab);
-        const tab = TAB;
+        const tab = HTAB;
 
         let json = super.toJsonBase(nTab);
 
@@ -54040,21 +54039,49 @@ extends OperatorBase
     {
         return this.inputs[0].connected
              ? '(' + this.inputs[0].connectedOutput.toJsCode() + ')'
-             : this.paramValue.value.toJsCode;
+             : this.paramValue.value.toJsCode();
     }
 
 
 
-    toJsFunction()
+    toJsFunction(nTab = 0)
     {
-        let str = 'function ' + this.name + '()';
-        str += '\n{'
-        
-        return this.inputs[0].connected
-             ? '(' + this.inputs[0].connectedOutput.toJsCode() + ')'
-             : this.paramValue.value.toJsCode;
+        let pos = TAB.repeat(nTab);
 
-        str += '}';
+
+        const connected = this.inputs[0].connected;
+
+        const connectedOutside = this.inputs.find(i => 
+               i.connected 
+            && i.connectedOutput.node );
+
+
+        let js = 'function ' + this.name + '(';
+        
+        // js += 
+        //     this.inputs[0].connected
+        //     ? this.inputs[0].connectedOutput.toJsCode()
+        //     : this.paramValue.value.toJsCode();
+        
+        js += ')';
+
+
+        js += '\n' + pos + '{';
+
+        
+        js += '\n' + pos + TAB + 'return ';
+        
+        js += 
+            this.inputs[0].connected
+            ? this.inputs[0].connectedOutput.toJsCode()
+            : this.paramValue.value.toJsCode();
+
+        js += ';'
+
+
+        js += '\n' + pos + '}';
+
+        return js;
     }
 }
 
@@ -54120,6 +54147,33 @@ extends OperatorWithValue
         return this.inputs[0].connected
              ? 'Math.abs(' + this.inputs[0].connectedOutput.toJsCode() + ')'
              : 'Number.NaN';
+    }
+
+
+
+    toJsFunction(nTab = 0)
+    {
+        let pos = TAB.repeat(nTab);
+
+
+        let js = 'function ' + this.name + '()';
+
+        js += '\n' + pos + '{';
+
+        
+        js += '\n' + pos + TAB + 'return ';
+        
+        js += 
+            this.inputs[0].connected
+            ? 'Math.abs(' + this.inputs[0].connectedOutput.toJsCode() + ')'
+            : 'Number.NaN';
+
+        js += ';'
+
+
+        js += '\n' + pos + '}';
+
+        return js;
     }
 }
 
@@ -54204,7 +54258,7 @@ extends OperatorWithValue
             js += ' ';
 
             js += 'switch (' + this.paramType.toJsCode() + ')';
-            js += ' { ';
+            js += ' {';
             js += ' case 0: return Math.floor(input);';
             js += ' case 1: return Math.round(input);';
             js += ' case 2: return Math.ceil(input);';
@@ -54217,6 +54271,38 @@ extends OperatorWithValue
             js += 'Number.NaN';
 
       
+        return js;
+    }
+
+
+
+    toJsFunction(nTab = 0)
+    {
+        let pos = TAB.repeat(nTab);
+
+
+        let js = 'function ' + this.name + '()';
+
+        js += '\n' + pos + '{';
+
+        
+        if (this.inputs[0].connected)
+        {
+            js += '\n' + pos + TAB + 'const input = ' + this.inputs[0].connectedOutput.toJsCode() + ';';
+            js += '\n';
+            js += '\n' + pos + TAB + 'switch (' + this.paramType.toJsCode() + ')';
+            js += '\n' + pos + TAB + '{ ';
+            js += '\n' + pos + TAB + TAB + 'case 0: return Math.floor(input);';
+            js += '\n' + pos + TAB + TAB + 'case 1: return Math.round(input);';
+            js += '\n' + pos + TAB + TAB + 'case 2: return Math.ceil (input);';
+            js += '\n' + pos + TAB + '}';
+        }
+        else
+            js += '\n' + pos + TAB + 'return Number.NaN;';
+
+
+        js += '\n' + pos + '}';
+
         return js;
     }
 }
@@ -54914,7 +55000,7 @@ extends OpArithmetic
             .forEach(i => 
             {
                 js += 'Math.pow(';
-                js += i.connectedOutput.toJsCode;
+                js += i.connectedOutput.toJsCode();
                 js += ', ';
             });
 
@@ -56894,7 +56980,7 @@ extends OpColorBase
     toJsonBase(nTab = 0) 
     {
         let   pos = ' '.repeat(nTab);
-        const tab = TAB;
+        const tab = HTAB;
 
         let json = super.toJsonBase(nTab);
 
@@ -56911,7 +56997,7 @@ extends OpColorBase
     paramsToJson(nTab = 0) 
     {
         let   pos = ' '.repeat(nTab);
-        const tab = TAB;
+        const tab = HTAB;
 
 
         let json =
@@ -58089,7 +58175,7 @@ extends OpColorBase
     toJsonBase(nTab = 0) 
     {
         let   pos = ' '.repeat(nTab);
-        const tab = TAB;
+        const tab = HTAB;
 
         return super.toJsonBase(nTab)
              + ',\n' + pos + tab + '"_color": "' + ColorValue.fromDataColor(this._color).toString() + '"';
@@ -58379,7 +58465,7 @@ extends OpColorBase
     toJsonBase(nTab = 0) 
     {
         let   pos = ' '.repeat(nTab);
-        const tab = TAB;
+        const tab = HTAB;
 
         return super.toJsonBase(nTab)
              + ',\n' + pos + tab + '"_color": "' + ColorValue.fromDataColor(this._color).toString() + '"';
@@ -59707,7 +59793,7 @@ extends OperatorBase
     toJsonBase(nTab = 0) 
     {
         let   pos = ' '.repeat(nTab);
-        const tab = TAB;
+        const tab = HTAB;
 
         return super.toJsonBase(nTab)
              + ',\n' + pos + tab + '"existing": "'      + boolToString(this.existing) + '"'
@@ -61012,7 +61098,7 @@ class Graph
 
 function nodesToJson(nodes, encloseBraces = true, connOutputMustBeInNodes = true)
 {
-    const tab = TAB;
+    const tab = HTAB;
     
     let json = 
           (encloseBraces ? '{\n' : '')
@@ -61063,7 +61149,7 @@ function connectionsToJson(nodes, connOutputMustBeInNodes)
         return '';
 
 
-    const tab = TAB;
+    const tab = HTAB;
 
     let json = 
           ',\n'
@@ -63272,7 +63358,7 @@ extends Action
                     conn.inputNodeId,  conn.inputId,
                     formatConnJson(
                         '', 
-                        TAB,
+                        HTAB,
                         conn.outputNodeId,
                         conn.outputId,
                         conn.outputOrder,
@@ -65597,11 +65683,14 @@ document.addEventListener('keydown', e =>
         && getCtrlKey(e))
     {
         e.preventDefault();
-        
-             if (e.shiftKey
-              && e.altKey)   graphView.copySelectedNodesAsJsFunction();
-        else if (e.shiftKey) graphView.copySelectedNodesAsJsCode();
-        else                 graphView.copySelectedNodes();
+
+        //      if (e.shiftKey
+        //       && e.altKey)   graphView.copySelectedNodesAsJsFunction();
+        // else if (e.shiftKey) graphView.copySelectedNodesAsJsCode();
+        // else                 graphView.copySelectedNodes();
+
+        if (e.shiftKey) graphView.copySelectedNodesAsJsFunction();
+        else            graphView.copySelectedNodes();
     }
 
     // paste
@@ -67291,7 +67380,7 @@ function uiSaveGraphView()
 function dataColorToJson(color, nTab)
 {
     let   pos = ' '.repeat(nTab);
-    const tab = TAB;
+    const tab = HTAB;
 
     let json =
           pos + tab + '[\n'

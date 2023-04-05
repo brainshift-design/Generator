@@ -888,7 +888,7 @@ class Operator
     toJson(nTab = 0) 
     {
         let   pos = ' '.repeat(nTab);
-       //const tab = TAB;
+       //const tab = HTAB;
         
 
         let json = 
@@ -912,7 +912,7 @@ class Operator
     toJsonBase(nTab)
     {
         let   pos = ' '.repeat(nTab);
-        const tab = TAB;
+        const tab = HTAB;
 
         let json =
               pos + tab + '"type": "'    + this.type                       + '",\n'
@@ -934,7 +934,7 @@ class Operator
     paramsToJson(nTab = 0)
     {
         let   pos = ' '.repeat(nTab);
-        const tab = TAB;
+        const tab = HTAB;
 
 
         let json =
@@ -1018,7 +1018,7 @@ class Operator
 
 
 
-    toJsFunction()
+    toJsFunction(nTab = 0)
     {
         return '';
     }

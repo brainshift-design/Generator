@@ -102,11 +102,6 @@ GraphView.prototype.copySelectedNodesAsJsCode = function()
 
     const js = terminals.map(t => t.toJsCode()).join();
     
-    //let js = '';
-
-    // for (const terminal of terminals)
-    //     js += terminal.toJavascript();
-
 
     console.log(js);
     writeTextToClipboard(js);
@@ -119,12 +114,13 @@ GraphView.prototype.copySelectedNodesAsJsFunction = function()
     const terminals = getTerminalsInNodes(this.selectedNodes);
 
 
-    const js = terminals.map(t => t.toJsFunction()).join();
-    
-    //let js = '';
+    let js = '';
 
-    // for (const terminal of terminals)
-    //     js += terminal.toJavascript();
+    for (const terminal of terminals)
+    {
+        js += '\n';
+        js += terminal.toJsFunction();
+    }
 
 
     console.log(js);

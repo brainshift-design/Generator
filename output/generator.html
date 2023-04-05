@@ -11,7 +11,8 @@ const MAX_INT32        = 2147483647;
   
 const NULL             = '';
   
-const TAB              = '  ';
+const HTAB             = '  '; // half-tab
+const TAB              = '    ';
 const NL               = '\n';
   
 const GENERATOR_LOGO   = '◦ G •';
@@ -12639,7 +12640,7 @@ function enableFeatures(subscription, beta)
     updateMenuItemDisplay(menuItemStyleStroke         .div, subscription && beta);
     //updateMenuItemDisplay(menuItemStyleSep1         .div, subscription && beta);
     
-    updateMenuItemDisplay(menuItemNodeCopyAsJsCode    .div, subscription && beta);
+    //updateMenuItemDisplay(menuItemNodeCopyAsJsCode    .div, subscription && beta);
     updateMenuItemDisplay(menuItemNodeCopyAsJsFunction.div, subscription && beta);
 
 
@@ -15605,7 +15606,7 @@ class Parse
     
     nTab = 0;
 
-    get tab() { return this.inParam ? ' ' : (NL + TAB.repeat(Math.max(0, this.nTab))); }
+    get tab() { return this.inParam ? ' ' : (NL + HTAB.repeat(Math.max(0, this.nTab))); }
 
     
     inParam = false;
@@ -15957,7 +15958,7 @@ class RequestSettings
             return '';
         }
         else 
-            return NL + TAB.repeat(Math.max(0, this.nTab)); 
+            return NL + HTAB.repeat(Math.max(0, this.nTab)); 
     }
 }
 
@@ -16016,7 +16017,7 @@ function logValueUpdates(updateNodeId, updateParamId, values)
         const nInputs = parseInt(values[i++]);
 
         log += 
-              (newLine ? NL : '') + TAB.repeat(Math.max(0, nTab))
+              (newLine ? NL : '') + HTAB.repeat(Math.max(0, nTab))
             + nodeId;// + ' ' + nInputs;
 
         newLine = true;
@@ -16030,7 +16031,7 @@ function logValueUpdates(updateNodeId, updateParamId, values)
             const value = values[i++];
 
             log += 
-                  NL + TAB.repeat(Math.max(0, nTab))
+                  NL + HTAB.repeat(Math.max(0, nTab))
                 + index + ' ' + displayValue(type, value);
         }
 
@@ -16291,16 +16292,16 @@ function formatSavedNodeJson(json)
         .replace('{\n', '')
         .replace('\n}', '')
 
-        .replace('[\n' + TAB, '')
-        .replace('\n' + TAB + ']', '')
+        .replace('[\n' + HTAB, '')
+        .replace('\n' + HTAB + ']', '')
 
-        .split(TAB + '"params":\n').join('') // have to do .split().join() because there's no .replace() in TS
+        .split(HTAB + '"params":\n').join('') // have to do .split().join() because there's no .replace() in TS
 
         .split('": "').join(': ')
         .split('", "').join(': ')
 
-        .split(TAB + '"').join(TAB)
-        .split(TAB + TAB + '["').join(TAB + TAB)
+        .split(HTAB + '"').join(HTAB)
+        .split(HTAB + HTAB + '["').join(HTAB + HTAB)
         
         .split('",\n').join('\n')
         .split('"\n').join('\n')
@@ -16324,8 +16325,8 @@ function formatSavedDataJson(json)
     let formJson = json
         .replace('{\n', '')
         .replace('\n}', '')
-        .replace('[\n' + TAB, '')
-        .replace('\n' + TAB + ']', '');
+        .replace('[\n' + HTAB, '')
+        .replace('\n' + HTAB + ']', '');
 
     return formJson;
 }

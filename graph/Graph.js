@@ -247,7 +247,7 @@ class Graph
 
 function nodesToJson(nodes, encloseBraces = true, connOutputMustBeInNodes = true)
 {
-    const tab = TAB;
+    const tab = HTAB;
     
     let json = 
           (encloseBraces ? '{\n' : '')
@@ -298,7 +298,7 @@ function connectionsToJson(nodes, connOutputMustBeInNodes)
         return '';
 
 
-    const tab = TAB;
+    const tab = HTAB;
 
     let json = 
           ',\n'

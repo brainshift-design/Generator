@@ -20,7 +20,8 @@ function noConnTag(key) { return noTag(key, connTag); }
 const generatorVersion = 129;
 const MAX_INT32 = 2147483647;
 const NULL = '';
-const TAB = '  ';
+const HTAB = '  '; // half-tab
+const TAB = '    ';
 const NL = '\n';
 const GENERATOR_LOGO = '◦ G •';
 const OBJECT_PREFIX = 'G.';
@@ -612,13 +613,13 @@ function formatSavedNodeJson(json) {
     let formJson = json
         .replace('{\n', '')
         .replace('\n}', '')
-        .replace('[\n' + TAB, '')
-        .replace('\n' + TAB + ']', '')
-        .split(TAB + '"params":\n').join('') // have to do .split().join() because there's no .replace() in TS
+        .replace('[\n' + HTAB, '')
+        .replace('\n' + HTAB + ']', '')
+        .split(HTAB + '"params":\n').join('') // have to do .split().join() because there's no .replace() in TS
         .split('": "').join(': ')
         .split('", "').join(': ')
-        .split(TAB + '"').join(TAB)
-        .split(TAB + TAB + '["').join(TAB + TAB)
+        .split(HTAB + '"').join(HTAB)
+        .split(HTAB + HTAB + '["').join(HTAB + HTAB)
         .split('",\n').join('\n')
         .split('"\n').join('\n')
         .split('"],\n').join('\n');
@@ -632,8 +633,8 @@ function formatSavedDataJson(json) {
     let formJson = json
         .replace('{\n', '')
         .replace('\n}', '')
-        .replace('[\n' + TAB, '')
-        .replace('\n' + TAB + ']', '');
+        .replace('[\n' + HTAB, '')
+        .replace('\n' + HTAB + ']', '');
     return formJson;
 }
 function logSavedConn(conn) {
@@ -1533,7 +1534,7 @@ function initPageStyles(nodes) {
 function figMarkForLoading(nodeKeys, connKeys) {
     const loadingFlag = '"loading": "true"';
     const not = '{\n';
-    const set = '{\n' + TAB + loadingFlag + ',\n';
+    const set = '{\n' + HTAB + loadingFlag + ',\n';
     nodeKeys.forEach(k => figma.currentPage.setPluginData(k, figma.currentPage.getPluginData(k)
         .replace(set, not)
         .replace(not, set)));

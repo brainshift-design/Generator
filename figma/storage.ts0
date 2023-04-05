@@ -137,7 +137,7 @@ function figMarkForLoading(nodeKeys, connKeys)
 {
     const loadingFlag = '"loading": "true"';
     const not         = '{\n';
-    const set         = '{\n' + TAB + loadingFlag + ',\n';
+    const set         = '{\n' + HTAB + loadingFlag + ',\n';
 
     nodeKeys.forEach(k => figma.currentPage.setPluginData(k, 
         figma.currentPage.getPluginData(k)

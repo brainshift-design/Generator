@@ -21,7 +21,7 @@ extends OpArithmetic
             .forEach(i => 
             {
                 js += 'Math.pow(';
-                js += i.connectedOutput.toJsCode;
+                js += i.connectedOutput.toJsCode();
                 js += ', ';
             });
 
