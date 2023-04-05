@@ -317,4 +317,26 @@ extends EventTarget
         return  this.connected 
             && !this.connectedOutput.node.isCached();
     }
+
+
+
+    toJsDef(gen)
+    {
+        let js = '';
+
+
+        js += gen.NL + 'const ' + this.name + ' = ';
+
+        js += 
+            this.connected
+            ? this.connectedOutput.toJsCode(gen)
+            : this.param
+                ? this.param.toJsCode(gen)
+                : 'Number.NaN';
+                
+        js += ';';
+
+
+        return js;
+    }
 }

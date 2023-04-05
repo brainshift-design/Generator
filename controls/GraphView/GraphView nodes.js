@@ -95,23 +95,39 @@ GraphView.prototype.copySelectedNodes = function()
 
 
 
-// GraphView.prototype.copySelectedNodesAsJsCode = function()
-// {
-//     const terminals = getTerminalsInNodes(this.selectedNodes);
+class GenJS
+{
+    nodes;
+    terminals;
 
-
-//     const js = terminals.map(t => t.toJsCode()).join();
+    nTab = 0;
     
-
-//     console.log(js);
-//     writeTextToClipboard(js);
-// };
+    get tab() { return TAB.repeat(this.nTab); }
+    get NL () { return '\n' + this.tab; }
 
 
+    constructor(nodes, terminals)
+    {
+        this.nodes     = nodes;
+        this.terminals = terminals;
+    }
 
-GraphView.prototype.copySelectedNodesAsJsFunction = function()
+
+    connectedOut(node)
+    {
+        return node.inputs.find(i => 
+                      i.connected 
+                   && !this.nodes.includes(i.connectedOutput.node));
+    }
+};
+
+
+
+GraphView.prototype.copySelectedNodesAsJavascript = function()
 {
     const terminals = getTerminalsInNodes(this.selectedNodes);
+
+    const gen = new GenJS(this.selectedNodes, terminals);
 
 
     let js = '';
@@ -119,7 +135,7 @@ GraphView.prototype.copySelectedNodesAsJsFunction = function()
     for (const terminal of terminals)
     {
         js += '\n';
-        js += terminal.toJsFunction();
+        js += terminal.toJavascript(gen);
     }
 
 
@@ -131,15 +147,15 @@ GraphView.prototype.copySelectedNodesAsJsFunction = function()
 
 GraphView.prototype.pasteCopiedNodes = function(pasteConnected, clientX = Number.NaN, clientY = Number.NaN)
 {
-    readTextFromClipboard().then(clipboardText =>
+    readTextFromClipboard().then(text =>
     {
-        if (clipboardText == '')//if (copiedNodesJson == '')
+        if (text == '')
             return;
 
         const x = (clientX - this.pan.x) / this.zoom;
         const y = (clientY - this.pan.y) / this.zoom;
             
-        actionManager.do(new PasteNodesAction(this.graph, clipboardText, pasteConnected, false, x, y));
+        actionManager.do(new PasteNodesAction(this.graph, text, pasteConnected, false, x, y));
     });
 };
 

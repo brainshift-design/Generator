@@ -54,37 +54,70 @@ extends OperatorWithValue
 
 
 
-    toJsCode()
+    toJavascript(gen)
     {
-        return this.inputs[0].connected
-             ? 'Math.abs(' + this.inputs[0].connectedOutput.toJsCode() + ')'
-             : 'Number.NaN';
+        const conn = this.inputs[0].connected;
+
+
+        gen.nTab++;
+        const defs = this.toJsDefs(gen);
+        gen.nTab--;
+
+
+        let js = gen.NL + 'function ' + this.name + '(';
+
+        if (   conn 
+            && defs == NULL)
+            js += 'input';
+
+        js += ')';
+
+
+        js += gen.NL + '{';
+        gen.nTab++;
+
+
+        js += defs;
+        
+        
+        js += gen.NL + 'return ';
+        js += conn ? 'Math.abs(input)' : this.toJsCode();
+        js += ';'
+
+
+        gen.nTab--;
+        js += gen.NL + '}';
+
+
+        return js;
     }
 
 
 
-    toJsFunction(nTab = 0)
+    toJsDefs(gen)
     {
-        let pos = TAB.repeat(nTab);
-
-
-        let js = 'function ' + this.name + '()';
-
-        js += '\n' + pos + '{';
+        if (  !this.inputs[0].connected
+            || gen.connectedOut(this))
+            return '';
 
         
-        js += '\n' + pos + TAB + 'return ';
-        
-        js += 
-            this.inputs[0].connected
-            ? 'Math.abs(' + this.inputs[0].connectedOutput.toJsCode() + ')'
-            : 'Number.NaN';
-
-        js += ';'
+        let js = '';
 
 
-        js += '\n' + pos + '}';
+        js += gen.NL + 'const input = ';
+        js += this.inputs[0].connectedOutput.toJsCode(gen);
+        js += ';';
+
 
         return js;
+    }
+
+
+
+    toJsCode(gen)
+    {
+        return this.inputs[0].connected
+            ? 'Math.abs(' + this.inputs[0].connectedOutput.toJsCode(gen) + ')'
+            : 'Number.NaN';
     }
 }

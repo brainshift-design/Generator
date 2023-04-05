@@ -1011,14 +1011,21 @@ class Operator
 
 
 
-    toJsCode()
+    toJavascript(gen)
     {
         return '';
     }
 
 
 
-    toJsFunction(nTab = 0)
+    toJsDefs(gen)
+    {
+        return '';
+    }
+
+
+
+    toJsCode(gen)
     {
         return '';
     }

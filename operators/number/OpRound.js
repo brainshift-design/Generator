@@ -2,7 +2,7 @@ class   OpRound
 extends OperatorWithValue
 {
     paramType;
-    paramDec;
+    paramDecimals;
 
 
 
@@ -18,7 +18,7 @@ extends OperatorWithValue
 
         this.addParam(this.paramValue);
         this.addParam(this.paramType  = new SelectParam('type',     'type',     false, true,  true, ['floor', 'round', 'ceiling'], 1));
-        this.addParam(this.paramDec   = new NumberParam('decimals', 'decimals', true,  true,  true, 0, 0, 10));
+        this.addParam(this.paramDecimals   = new NumberParam('decimals', 'decimals', true,  true,  true, 0, 0, 10));
     }
 
 
@@ -58,14 +58,87 @@ extends OperatorWithValue
     updateParams()
     {
         this.paramType.enableControlText(true);
-        this.paramDec .enableControlText(true);
+        this.paramDecimals .enableControlText(true);
 
         this.updateParamControls();
     }
 
 
 
-    toJsCode()
+    toJavascript(gen)
+    {
+        const conn = this.inputs[0].connected;
+
+
+        gen.nTab++;
+        const defs = this.toJsDefs(gen);
+        gen.nTab--;
+
+
+        let js = gen.NL + 'function ' + this.name + '(';
+
+        if (   conn 
+            && defs == NULL)
+            js += 'input';
+
+        js += ')';
+
+
+        js += gen.NL + '{';
+        gen.nTab++;
+
+
+        js += defs;
+        
+        
+        if (this.inputs[0].connected)
+        {
+            js += gen.NL + 'const input = ' + this.inputs[0].connectedOutput.toJsCode(gen) + ';';
+            js += '\n';
+            js += gen.NL + 'switch (' + this.paramType.toJsCode(gen) + ')';
+            js += gen.NL + '{ ';
+            js += gen.NL + TAB + 'case 0: return Math.floor(input);';
+            js += gen.NL + TAB + 'case 1: return Math.round(input);';
+            js += gen.NL + TAB + 'case 2: return Math.ceil (input);';
+            js += gen.NL + '}';
+        }
+        else
+            js += gen.NL + 'return Number.NaN;';
+
+
+        gen.nTab--;
+        js += gen.NL + '}';
+
+        
+        return js;
+    }
+
+
+
+    toJsDefs(gen)
+    {
+        if (  !this.inputs[0].connected
+            || gen.connectedOut(this))
+            return '';
+
+        
+        let js = '';
+
+
+        js += gen.NL + 'const input    = ';
+        js += this.inputs[0].connectedOutput.toJsCode(gen);
+        js += ';';
+
+        js += this.paramType    .input.toJsDef(gen);
+        js += this.paramDecimals.input.toJsDef(gen);
+
+
+        return js;
+    }
+
+
+
+    toJsCode(gen)
     {
         let js = '';
 
@@ -74,10 +147,10 @@ extends OperatorWithValue
         {
             js += '() => { ';
 
-            js += 'const input = ' + this.inputs[0].connectedOutput.toJsCode() + ';';
+            js += 'const input = ' + this.inputs[0].connectedOutput.toJsCode(gen) + ';';
             js += ' ';
 
-            js += 'switch (' + this.paramType.toJsCode() + ')';
+            js += 'switch (' + this.paramType.toJsCode(gen) + ')';
             js += ' {';
             js += ' case 0: return Math.floor(input);';
             js += ' case 1: return Math.round(input);';
@@ -91,38 +164,6 @@ extends OperatorWithValue
             js += 'Number.NaN';
 
       
-        return js;
-    }
-
-
-
-    toJsFunction(nTab = 0)
-    {
-        let pos = TAB.repeat(nTab);
-
-
-        let js = 'function ' + this.name + '()';
-
-        js += '\n' + pos + '{';
-
-        
-        if (this.inputs[0].connected)
-        {
-            js += '\n' + pos + TAB + 'const input = ' + this.inputs[0].connectedOutput.toJsCode() + ';';
-            js += '\n';
-            js += '\n' + pos + TAB + 'switch (' + this.paramType.toJsCode() + ')';
-            js += '\n' + pos + TAB + '{ ';
-            js += '\n' + pos + TAB + TAB + 'case 0: return Math.floor(input);';
-            js += '\n' + pos + TAB + TAB + 'case 1: return Math.round(input);';
-            js += '\n' + pos + TAB + TAB + 'case 2: return Math.ceil (input);';
-            js += '\n' + pos + TAB + '}';
-        }
-        else
-            js += '\n' + pos + TAB + 'return Number.NaN;';
-
-
-        js += '\n' + pos + '}';
-
         return js;
     }
 }

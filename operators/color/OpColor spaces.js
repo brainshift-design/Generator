@@ -1,29 +1,13 @@
-const OpColorSpaces = 
-[
-    ['hex',   'Hex'   ],
-    ['rgb',   'RGB'   ], 
-    ['hsv',   'HSV'   ], 
-    ['hsl',   'HSL'   ], 
-    ['hclok', 'HCL/ok'],
-    ['hclab', 'HCL/ab'],
-    ['hcluv', 'HCL/uv'],
-    ['oklab', 'okLab' ],
-    ['lab',   'Lab'   ],
-    ['luv',   'Luv'   ]
-];
-
-
-
-function colorSpace     (index) { return OpColorSpaces[index][0]; }
-function colorSpaceIndex(space) { return OpColorSpaces.findIndex(s => s[0] == space); }
+function colorSpace     (index) { return ColorSpaces[index][0]; }
+function colorSpaceIndex(space) { return ColorSpaces.findIndex(s => s[0] == space); }
 
 function colorSpaceCount(parse = null)
 { 
     const set = parse ? parse.settings : settings;
 
     return set.showAllColorSpaces 
-           ? OpColorSpaces.length
-        : OpColorSpaces.length - 5; 
+           ? ColorSpaces.length
+        : ColorSpaces.length - 5; 
 }
 
 

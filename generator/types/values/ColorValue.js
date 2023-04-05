@@ -115,7 +115,7 @@ extends GValue
 
         const space = this.space.copy();
 
-        space.value = Math.round(Math.min(Math.max(0, space.value), OpColorSpaces.length-1));
+        space.value = Math.round(Math.min(Math.max(0, space.value), ColorSpaces.length-1));
 
         return makeDataColor(
             space,

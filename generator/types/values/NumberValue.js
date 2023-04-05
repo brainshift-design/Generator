@@ -106,7 +106,7 @@ extends GValue
 
 
 
-    toJsCode()
+    toJsCode(gen)
     {
         return this.toSimpleString();
     }

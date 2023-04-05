@@ -28,12 +28,7 @@ document.addEventListener('keydown', e =>
     {
         e.preventDefault();
 
-        //      if (e.shiftKey
-        //       && e.altKey)   graphView.copySelectedNodesAsJsFunction();
-        // else if (e.shiftKey) graphView.copySelectedNodesAsJsCode();
-        // else                 graphView.copySelectedNodes();
-
-        if (e.shiftKey) graphView.copySelectedNodesAsJsFunction();
+        if (e.shiftKey) graphView.copySelectedNodesAsJavascript();
         else            graphView.copySelectedNodes();
     }
 

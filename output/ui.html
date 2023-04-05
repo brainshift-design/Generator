@@ -3757,7 +3757,7 @@ a
             <div id='whatsNewBody'>
                 <h1 style='margin-top: 20px;'>What's new in Generator</h1>
 
-                <p>Fixed async bug in conditionals.</p>
+                <p>Fixed UI issues.</p>
                 
                 <p><br/><br/><div id='chkHideWhatsNew'></div></p>
             </div>
@@ -8174,7 +8174,7 @@ extends GNode
 
 
 
-    toJsCode()
+    toJsCode(gen)
     {
         console.assert(false, 'invalid abstract method');
         return '';
@@ -8439,7 +8439,7 @@ extends GValue
 
 
 
-    toJsCode()
+    toJsCode(gen)
     {
         return this.toSimpleString();
     }
@@ -8692,7 +8692,7 @@ extends GValue
 
         const space = this.space.copy();
 
-        space.value = Math.round(Math.min(Math.max(0, space.value), OpColorSpaces.length-1));
+        space.value = Math.round(Math.min(Math.max(0, space.value), ColorSpaces.length-1));
 
         return makeDataColor(
             space,
@@ -21143,6 +21143,154 @@ function rgb2hcluv(rgb, cs = sRGB)
 }
 
 
+const ColorSpaces = 
+[
+    ['hex',   'Hex'   ],
+    ['rgb',   'RGB'   ], 
+    ['hsv',   'HSV'   ], 
+    ['hsl',   'HSL'   ], 
+    ['hclok', 'HCL/ok'],
+    ['hclab', 'HCL/ab'],
+    ['hcluv', 'HCL/uv'],
+    ['oklab', 'okLab' ],
+    ['lab',   'Lab'   ],
+    ['luv',   'Luv'   ]
+];
+
+
+
+class ColorSpace
+{
+    hex   = Object.freeze(0);
+    rgb   = Object.freeze(1);
+    hsv   = Object.freeze(2);
+    hsl   = Object.freeze(3);
+    hclok = Object.freeze(4);
+    hclab = Object.freeze(5);
+    hcluv = Object.freeze(6);
+    oklab = Object.freeze(7);
+    lab   = Object.freeze(8);
+    luv   = Object.freeze(9);
+}
+
+
+
+class Color
+extends Float32Array
+{
+    get r() { return this[0]; }
+    get g() { return this[1]; }
+    get b() { return this[2]; }
+    get a() { return this[3]; }
+    get s() { return this[4]; }
+
+    set r(r) { this[0] = r; }
+    set g(g) { this[1] = g; }
+    set b(b) { this[2] = b; }
+    set a(a) { this[3] = a; }
+    set s(s) { this[4] = s; }
+
+
+
+    constructor(c = null)
+    {
+        super(5); // c1, c2, c3, a, s (space)
+
+        if (c)
+        {
+            this.r = c.r;
+            this.g = c.g;
+            this.b = c.b;
+            this.a = c.a;
+            this.s = c.s;
+        }
+        else
+        {
+            this.r = 0;
+            this.g = 0;
+            this.b = 0;
+            this.a = 0;
+            this.s = ColorSpace.rgb;
+        }
+    }
+}
+
+
+const ColorEpsilon = 0.001;
+
+
+
+function rgb2dataColor(rgb)
+{
+    const _space = 'rgb';
+
+    return [
+        _space, 
+        getNormalColorValue(rgb[0], _space, 0), 
+        getNormalColorValue(rgb[1], _space, 1), 
+        getNormalColorValue(rgb[2], _space, 2) ]; 
+}
+
+
+
+function makeDataColor(space, c1, c2, c3)
+{
+    const _space = colorSpace(space.value);
+
+    return [
+        _space, 
+        getNormalColorValue(c1.value, _space, 0), 
+        getNormalColorValue(c2.value, _space, 1), 
+        getNormalColorValue(c3.value, _space, 2) ]; 
+}
+
+
+
+function dataColorIsNaN(c)
+{
+    return isNaN(c[1])
+        || isNaN(c[2])
+        || isNaN(c[3]);
+}
+
+
+
+function dataColorIsValid(col, lim = ColorEpsilon)
+{
+    return rgbIsValid(dataColor2rgb(col), lim);
+}
+
+
+
+function dataColorIsOk(col, lim = ColorEpsilon)
+{
+    return rgbIsOk(dataColor2rgb(col), lim);
+}
+
+
+const rgb_NaN = [
+    Number.NaN,
+    Number.NaN,
+    Number.NaN ];
+
+const rgba_NaN = [
+    Number.NaN,
+    Number.NaN,
+    Number.NaN,
+    Number.NaN ];
+
+
+const rgbInvalid  = [0xff, 0, 0xff];
+const rgbaInvalid = [0xff, 0, 0xff, 0xff];
+
+
+const dataColor_NaN = Object.freeze([
+    'rgb',
+    Number.NaN,
+    Number.NaN,
+    Number.NaN ]);
+
+
 // Hunt-Pointer-Estevez
 // const HPE = [[ 0.4002, 0.7076, -0.0808],
 //              [-0.2263, 1.1653,  0.0457],
@@ -21164,15 +21312,6 @@ const M1 = [[ 0.8189330101, 0.3618667424, -0.1288597137 ],
             [ 0.0482003018, 0.2643662691,  0.6338517070 ]];
 
 const invM1 = inverse(M1);
-
-
-
-// function colorIsNaN(c)
-// {
-//     return isNaN(c[0])
-//         || isNaN(c[1])
-//         || isNaN(c[2]);
-// }
 
 
 
@@ -21304,81 +21443,6 @@ function rgbPow(col, p)
         Math.pow(col[2], p) ]
 }
 
-
-
-const ColorEpsilon = 0.001;
-
-
-
-function rgb2dataColor(rgb)
-{
-    const _space = 'rgb';
-
-    return [
-        _space, 
-        getNormalColorValue(rgb[0], _space, 0), 
-        getNormalColorValue(rgb[1], _space, 1), 
-        getNormalColorValue(rgb[2], _space, 2) ]; 
-}
-
-
-
-function makeDataColor(space, c1, c2, c3)
-{
-    const _space = colorSpace(space.value);
-
-    return [
-        _space, 
-        getNormalColorValue(c1.value, _space, 0), 
-        getNormalColorValue(c2.value, _space, 1), 
-        getNormalColorValue(c3.value, _space, 2) ]; 
-}
-
-
-
-function dataColorIsNaN(c)
-{
-    return isNaN(c[1])
-        || isNaN(c[2])
-        || isNaN(c[3]);
-}
-
-
-
-function dataColorIsValid(col, lim = ColorEpsilon)
-{
-    return rgbIsValid(dataColor2rgb(col), lim);
-}
-
-
-
-function dataColorIsOk(col, lim = ColorEpsilon)
-{
-    return rgbIsOk(dataColor2rgb(col), lim);
-}
-
-
-const rgb_NaN = [
-    Number.NaN,
-    Number.NaN,
-    Number.NaN ];
-
-const rgba_NaN = [
-    Number.NaN,
-    Number.NaN,
-    Number.NaN,
-    Number.NaN ];
-
-
-const rgbInvalid  = [0xff, 0, 0xff];
-const rgbaInvalid = [0xff, 0, 0xff, 0xff];
-
-
-const dataColor_NaN = Object.freeze([
-    'rgb',
-    Number.NaN,
-    Number.NaN,
-    Number.NaN ]);
 
 
 function allConesWork(cones)
@@ -21983,32 +22047,16 @@ function APCAcontrast(txtY, bgY)
 }
 
 
-const OpColorSpaces = 
-[
-    ['hex',   'Hex'   ],
-    ['rgb',   'RGB'   ], 
-    ['hsv',   'HSV'   ], 
-    ['hsl',   'HSL'   ], 
-    ['hclok', 'HCL/ok'],
-    ['hclab', 'HCL/ab'],
-    ['hcluv', 'HCL/uv'],
-    ['oklab', 'okLab' ],
-    ['lab',   'Lab'   ],
-    ['luv',   'Luv'   ]
-];
-
-
-
-function colorSpace     (index) { return OpColorSpaces[index][0]; }
-function colorSpaceIndex(space) { return OpColorSpaces.findIndex(s => s[0] == space); }
+function colorSpace     (index) { return ColorSpaces[index][0]; }
+function colorSpaceIndex(space) { return ColorSpaces.findIndex(s => s[0] == space); }
 
 function colorSpaceCount(parse = null)
 { 
     const set = parse ? parse.settings : settings;
 
     return set.showAllColorSpaces 
-           ? OpColorSpaces.length
-        : OpColorSpaces.length - 5; 
+           ? ColorSpaces.length
+        : ColorSpaces.length - 5; 
 }
 
 
@@ -27191,6 +27239,154 @@ function rgb2hcluv(rgb, cs = sRGB)
 }
 
 
+const ColorSpaces = 
+[
+    ['hex',   'Hex'   ],
+    ['rgb',   'RGB'   ], 
+    ['hsv',   'HSV'   ], 
+    ['hsl',   'HSL'   ], 
+    ['hclok', 'HCL/ok'],
+    ['hclab', 'HCL/ab'],
+    ['hcluv', 'HCL/uv'],
+    ['oklab', 'okLab' ],
+    ['lab',   'Lab'   ],
+    ['luv',   'Luv'   ]
+];
+
+
+
+class ColorSpace
+{
+    hex   = Object.freeze(0);
+    rgb   = Object.freeze(1);
+    hsv   = Object.freeze(2);
+    hsl   = Object.freeze(3);
+    hclok = Object.freeze(4);
+    hclab = Object.freeze(5);
+    hcluv = Object.freeze(6);
+    oklab = Object.freeze(7);
+    lab   = Object.freeze(8);
+    luv   = Object.freeze(9);
+}
+
+
+
+class Color
+extends Float32Array
+{
+    get r() { return this[0]; }
+    get g() { return this[1]; }
+    get b() { return this[2]; }
+    get a() { return this[3]; }
+    get s() { return this[4]; }
+
+    set r(r) { this[0] = r; }
+    set g(g) { this[1] = g; }
+    set b(b) { this[2] = b; }
+    set a(a) { this[3] = a; }
+    set s(s) { this[4] = s; }
+
+
+
+    constructor(c = null)
+    {
+        super(5); // c1, c2, c3, a, s (space)
+
+        if (c)
+        {
+            this.r = c.r;
+            this.g = c.g;
+            this.b = c.b;
+            this.a = c.a;
+            this.s = c.s;
+        }
+        else
+        {
+            this.r = 0;
+            this.g = 0;
+            this.b = 0;
+            this.a = 0;
+            this.s = ColorSpace.rgb;
+        }
+    }
+}
+
+
+const ColorEpsilon = 0.001;
+
+
+
+function rgb2dataColor(rgb)
+{
+    const _space = 'rgb';
+
+    return [
+        _space, 
+        getNormalColorValue(rgb[0], _space, 0), 
+        getNormalColorValue(rgb[1], _space, 1), 
+        getNormalColorValue(rgb[2], _space, 2) ]; 
+}
+
+
+
+function makeDataColor(space, c1, c2, c3)
+{
+    const _space = colorSpace(space.value);
+
+    return [
+        _space, 
+        getNormalColorValue(c1.value, _space, 0), 
+        getNormalColorValue(c2.value, _space, 1), 
+        getNormalColorValue(c3.value, _space, 2) ]; 
+}
+
+
+
+function dataColorIsNaN(c)
+{
+    return isNaN(c[1])
+        || isNaN(c[2])
+        || isNaN(c[3]);
+}
+
+
+
+function dataColorIsValid(col, lim = ColorEpsilon)
+{
+    return rgbIsValid(dataColor2rgb(col), lim);
+}
+
+
+
+function dataColorIsOk(col, lim = ColorEpsilon)
+{
+    return rgbIsOk(dataColor2rgb(col), lim);
+}
+
+
+const rgb_NaN = [
+    Number.NaN,
+    Number.NaN,
+    Number.NaN ];
+
+const rgba_NaN = [
+    Number.NaN,
+    Number.NaN,
+    Number.NaN,
+    Number.NaN ];
+
+
+const rgbInvalid  = [0xff, 0, 0xff];
+const rgbaInvalid = [0xff, 0, 0xff, 0xff];
+
+
+const dataColor_NaN = Object.freeze([
+    'rgb',
+    Number.NaN,
+    Number.NaN,
+    Number.NaN ]);
+
+
 // Hunt-Pointer-Estevez
 // const HPE = [[ 0.4002, 0.7076, -0.0808],
 //              [-0.2263, 1.1653,  0.0457],
@@ -27212,15 +27408,6 @@ const M1 = [[ 0.8189330101, 0.3618667424, -0.1288597137 ],
             [ 0.0482003018, 0.2643662691,  0.6338517070 ]];
 
 const invM1 = inverse(M1);
-
-
-
-// function colorIsNaN(c)
-// {
-//     return isNaN(c[0])
-//         || isNaN(c[1])
-//         || isNaN(c[2]);
-// }
 
 
 
@@ -27352,81 +27539,6 @@ function rgbPow(col, p)
         Math.pow(col[2], p) ]
 }
 
-
-
-const ColorEpsilon = 0.001;
-
-
-
-function rgb2dataColor(rgb)
-{
-    const _space = 'rgb';
-
-    return [
-        _space, 
-        getNormalColorValue(rgb[0], _space, 0), 
-        getNormalColorValue(rgb[1], _space, 1), 
-        getNormalColorValue(rgb[2], _space, 2) ]; 
-}
-
-
-
-function makeDataColor(space, c1, c2, c3)
-{
-    const _space = colorSpace(space.value);
-
-    return [
-        _space, 
-        getNormalColorValue(c1.value, _space, 0), 
-        getNormalColorValue(c2.value, _space, 1), 
-        getNormalColorValue(c3.value, _space, 2) ]; 
-}
-
-
-
-function dataColorIsNaN(c)
-{
-    return isNaN(c[1])
-        || isNaN(c[2])
-        || isNaN(c[3]);
-}
-
-
-
-function dataColorIsValid(col, lim = ColorEpsilon)
-{
-    return rgbIsValid(dataColor2rgb(col), lim);
-}
-
-
-
-function dataColorIsOk(col, lim = ColorEpsilon)
-{
-    return rgbIsOk(dataColor2rgb(col), lim);
-}
-
-
-const rgb_NaN = [
-    Number.NaN,
-    Number.NaN,
-    Number.NaN ];
-
-const rgba_NaN = [
-    Number.NaN,
-    Number.NaN,
-    Number.NaN,
-    Number.NaN ];
-
-
-const rgbInvalid  = [0xff, 0, 0xff];
-const rgbaInvalid = [0xff, 0, 0xff, 0xff];
-
-
-const dataColor_NaN = Object.freeze([
-    'rgb',
-    Number.NaN,
-    Number.NaN,
-    Number.NaN ]);
 
 
 function allConesWork(cones)
@@ -29369,7 +29481,7 @@ extends GNode
 
 
 
-    toJsCode()
+    toJsCode(gen)
     {
         console.assert(false, 'invalid abstract method');
         return '';
@@ -29634,7 +29746,7 @@ extends GValue
 
 
 
-    toJsCode()
+    toJsCode(gen)
     {
         return this.toSimpleString();
     }
@@ -29887,7 +29999,7 @@ extends GValue
 
         const space = this.space.copy();
 
-        space.value = Math.round(Math.min(Math.max(0, space.value), OpColorSpaces.length-1));
+        space.value = Math.round(Math.min(Math.max(0, space.value), ColorSpaces.length-1));
 
         return makeDataColor(
             space,
@@ -42934,7 +43046,7 @@ function initGeneratorMenus()
     menuNodeCopyAs = new Menu('Copy nodes menu', false, false);
     menuNodeCopyAs.addItems([
         //menuItemNodeCopyAsJsCode       = new MenuItem('Copy as JS code',     {shortcut:  osCtrl() + osShift() + 'C',            callback: () => graphView.copySelectedNodesAsJsCode()     }),
-        menuItemNodeCopyAsJsFunction   = new MenuItem('Copy as Javascript', {shortcut:  osCtrl() + osShift() /*+ osAlt()*/ + 'C',  callback: () => graphView.copySelectedNodesAsJsFunction() })]);
+        menuItemNodeCopyAsJsFunction   = new MenuItem('Copy as Javascript', {shortcut:  osCtrl() + osShift() /*+ osAlt()*/ + 'C',  callback: () => graphView.copySelectedNodesAsJavascript() })]);
 
 
     menuNode = new Menu('Node menu', false, false);
@@ -43111,9 +43223,9 @@ function initTextMenu(textbox)
     menuText.clearItems();
 
     menuText.addItems([
-        new MenuItem('Cut',   {enabled: !textbox.control.readOnly, callback: () => { hideAllMenus(); document.execCommand('copy'); clearSelectedText(textbox); }}),
-        new MenuItem('Copy',  {callback: () => { hideAllMenus(); document.execCommand('copy'); }}),
-        new MenuItem('Paste', {enabled: !textbox.control.readOnly, callback: () => { hideAllMenus(); document.execCommand('paste'); }})]);
+        new MenuItem('Cut',   {enabled: !textbox.control || !textbox.control.readOnly, callback: () => { hideAllMenus(); document.execCommand('cut'); }}),
+        new MenuItem('Copy',  {                                                        callback: () => { hideAllMenus(); document.execCommand('copy'); }}),
+        new MenuItem('Paste', {enabled: !textbox.control || !textbox.control.readOnly, callback: () => { hideAllMenus(); document.execCommand('paste'); }})]);
 }
 
 
@@ -43123,8 +43235,6 @@ function initTextboxMenu(textbox)
     menuTextbox.clearItems();
 
 
-    const style = getComputedStyle(textbox);
-
     let menuItemLeft,
         menuItemCenter,
         menuItemRight,
@@ -43132,11 +43242,10 @@ function initTextboxMenu(textbox)
 
 
     const param = textbox.control.param;
-console.log('param =', param);
 
     menuTextbox.addItems([
-                          new MenuItem('Cut',          { enabled: !textbox.control.readOnly, callback: () => { hideAllMenus(); document.execCommand('copy'); clearSelectedText(textbox); }}),
-                          new MenuItem('Copy',         { callback: () => { hideAllMenus(); document.execCommand('copy'); }}),
+                          new MenuItem('Cut',          { enabled: !textbox.control.readOnly, callback: () => { hideAllMenus(); document.execCommand('cut'); }}),
+                          new MenuItem('Copy',         {                                     callback: () => { hideAllMenus(); document.execCommand('copy'); }}),
                           new MenuItem('Paste',        { enabled: !textbox.control.readOnly, callback: () => { hideAllMenus(); document.execCommand('paste'); }}),
                           new MenuItem('',             { separator: true }),
         menuItemLeft    = new MenuItem('Align left',   { callback: () => { hideAllMenus(); actionManager.do(new SetParamSettingAction(mainGraph, param, 'align', 'left'   )); }}),
@@ -44748,23 +44857,39 @@ GraphView.prototype.copySelectedNodes = function()
 
 
 
-// GraphView.prototype.copySelectedNodesAsJsCode = function()
-// {
-//     const terminals = getTerminalsInNodes(this.selectedNodes);
+class GenJS
+{
+    nodes;
+    terminals;
 
-
-//     const js = terminals.map(t => t.toJsCode()).join();
+    nTab = 0;
     
-
-//     console.log(js);
-//     writeTextToClipboard(js);
-// };
+    get tab() { return TAB.repeat(this.nTab); }
+    get NL () { return '\n' + this.tab; }
 
 
+    constructor(nodes, terminals)
+    {
+        this.nodes     = nodes;
+        this.terminals = terminals;
+    }
 
-GraphView.prototype.copySelectedNodesAsJsFunction = function()
+
+    connectedOut(node)
+    {
+        return node.inputs.find(i => 
+                      i.connected 
+                   && !this.nodes.includes(i.connectedOutput.node));
+    }
+};
+
+
+
+GraphView.prototype.copySelectedNodesAsJavascript = function()
 {
     const terminals = getTerminalsInNodes(this.selectedNodes);
+
+    const gen = new GenJS(this.selectedNodes, terminals);
 
 
     let js = '';
@@ -44772,7 +44897,7 @@ GraphView.prototype.copySelectedNodesAsJsFunction = function()
     for (const terminal of terminals)
     {
         js += '\n';
-        js += terminal.toJsFunction();
+        js += terminal.toJavascript(gen);
     }
 
 
@@ -44784,15 +44909,15 @@ GraphView.prototype.copySelectedNodesAsJsFunction = function()
 
 GraphView.prototype.pasteCopiedNodes = function(pasteConnected, clientX = Number.NaN, clientY = Number.NaN)
 {
-    readTextFromClipboard().then(clipboardText =>
+    readTextFromClipboard().then(text =>
     {
-        if (clipboardText == '')//if (copiedNodesJson == '')
+        if (text == '')
             return;
 
         const x = (clientX - this.pan.x) / this.zoom;
         const y = (clientY - this.pan.y) / this.zoom;
             
-        actionManager.do(new PasteNodesAction(this.graph, clipboardText, pasteConnected, false, x, y));
+        actionManager.do(new PasteNodesAction(this.graph, text, pasteConnected, false, x, y));
     });
 };
 
@@ -46484,7 +46609,7 @@ extends EventTarget
 
 
 
-    toJsCode()
+    toJsCode(gen)
     {
         return '';
     }
@@ -46711,11 +46836,11 @@ extends Parameter
 
 
 
-    toJsCode()
+    toJsCode(gen)
     {
         return this.input.connected
-             ? '(' + this.input.connectedOutput.toJsCode() + ')'
-             : this.value.toJsCode();
+             ? '(' + this.input.connectedOutput.toJsCode(gen) + ')'
+             : this.value.toJsCode(gen);
     }
 }
 
@@ -49285,6 +49410,28 @@ extends EventTarget
         return  this.connected 
             && !this.connectedOutput.node.isCached();
     }
+
+
+
+    toJsDef(gen)
+    {
+        let js = '';
+
+
+        js += gen.NL + 'const ' + this.name + ' = ';
+
+        js += 
+            this.connected
+            ? this.connectedOutput.toJsCode(gen)
+            : this.param
+                ? this.param.toJsCode(gen)
+                : 'Number.NaN';
+                
+        js += ';';
+
+
+        return js;
+    }
 }
 
 
@@ -49591,11 +49738,11 @@ class Output
 
 
 
-    toJsCode()
+    toJsCode(gen)
     {
         return this.param
-             ? this.param.toJsCode()
-             : this.node .toJsCode();
+             ? this.param.toJsCode(gen)
+             : this.node .toJsCode(gen);
     }
 }
 
@@ -51257,14 +51404,21 @@ class Operator
 
 
 
-    toJsCode()
+    toJavascript(gen)
     {
         return '';
     }
 
 
 
-    toJsFunction(nTab = 0)
+    toJsDefs(gen)
+    {
+        return '';
+    }
+
+
+
+    toJsCode(gen)
     {
         return '';
     }
@@ -52089,11 +52243,11 @@ Operator.prototype.initLabelTextbox = function()
 
 
 
-    this.textbox.addEventListener('paste', e =>
-    {
-        e.preventDefault();
-        this.textbox.value = e.clipboardData.getData('text/plain');
-    });
+    // this.textbox.addEventListener('paste', e =>
+    // {
+    //     e.preventDefault();
+    //     this.textbox.value = e.clipboardData.getData('text/plain');
+    // });
 
     
     
@@ -54041,51 +54195,71 @@ extends OperatorBase
 
 
 
-    toJsCode()
+    toJavascript(gen)
     {
-        return this.inputs[0].connected
-             ? '(' + this.inputs[0].connectedOutput.toJsCode() + ')'
-             : this.paramValue.value.toJsCode();
+        const conn = this.inputs[0].connected;
+
+
+        gen.nTab++;
+        const defs = this.toJsDefs(gen);
+        gen.nTab--;
+
+
+        let js = gen.NL + 'function ' + this.name + '(';
+        
+        if (   conn 
+            && defs == NULL)
+            js += 'input';
+
+        js += ')';
+
+
+        js += gen.NL + '{';
+        gen.nTab++;
+
+
+        js += defs;
+
+
+        js += gen.NL + 'return ';
+        js += conn ? 'input' : this.toJsCode(gen);
+        js += ';'
+
+
+        gen.nTab--;
+        js += gen.NL + '}';
+
+
+        return js;
     }
 
 
 
-    toJsFunction(nTab = 0)
+    toJsDefs(gen)
     {
-        let pos = TAB.repeat(nTab);
-
-
-        const connectedOutside = this.inputs.find(i => 
-               i.connected 
-            && i.connectedOutput.node );
-
-
-        let js = 'function ' + this.name + '(';
-        
-        // js += 
-        //     this.inputs[0].connected
-        //     ? this.inputs[0].connectedOutput.toJsCode()
-        //     : this.paramValue.value.toJsCode();
-        
-        js += ')';
-
-
-        js += '\n' + pos + '{';
+        if (  !this.inputs[0].connected
+            || gen.connectedOut(this))
+            return '';
 
         
-        js += '\n' + pos + TAB + 'return ';
-        
-        js += 
-            this.inputs[0].connected
-            ? this.inputs[0].connectedOutput.toJsCode()
-            : this.paramValue.value.toJsCode();
-
-        js += ';'
+        let js = '';
 
 
-        js += '\n' + pos + '}';
+        js += gen.NL + 'const input = ';
+        js += this.inputs[0].connectedOutput.toJsCode(gen);
+        js += ';';
+
 
         return js;
+    }
+
+
+
+    toJsCode(gen)
+    {
+        return this.inputs[0].connected
+             ? this.inputs[0].connectedOutput.toJsCode(gen)
+             : this.paramValue.value.toJsCode(gen);
     }
 }
 
@@ -54146,38 +54320,71 @@ extends OperatorWithValue
 
 
 
-    toJsCode()
+    toJavascript(gen)
     {
-        return this.inputs[0].connected
-             ? 'Math.abs(' + this.inputs[0].connectedOutput.toJsCode() + ')'
-             : 'Number.NaN';
+        const conn = this.inputs[0].connected;
+
+
+        gen.nTab++;
+        const defs = this.toJsDefs(gen);
+        gen.nTab--;
+
+
+        let js = gen.NL + 'function ' + this.name + '(';
+
+        if (   conn 
+            && defs == NULL)
+            js += 'input';
+
+        js += ')';
+
+
+        js += gen.NL + '{';
+        gen.nTab++;
+
+
+        js += defs;
+        
+        
+        js += gen.NL + 'return ';
+        js += conn ? 'Math.abs(input)' : this.toJsCode();
+        js += ';'
+
+
+        gen.nTab--;
+        js += gen.NL + '}';
+
+
+        return js;
     }
 
 
 
-    toJsFunction(nTab = 0)
+    toJsDefs(gen)
     {
-        let pos = TAB.repeat(nTab);
-
-
-        let js = 'function ' + this.name + '()';
-
-        js += '\n' + pos + '{';
+        if (  !this.inputs[0].connected
+            || gen.connectedOut(this))
+            return '';
 
         
-        js += '\n' + pos + TAB + 'return ';
-        
-        js += 
-            this.inputs[0].connected
-            ? 'Math.abs(' + this.inputs[0].connectedOutput.toJsCode() + ')'
-            : 'Number.NaN';
-
-        js += ';'
+        let js = '';
 
 
-        js += '\n' + pos + '}';
+        js += gen.NL + 'const input = ';
+        js += this.inputs[0].connectedOutput.toJsCode(gen);
+        js += ';';
+
 
         return js;
+    }
+
+
+
+    toJsCode(gen)
+    {
+        return this.inputs[0].connected
+            ? 'Math.abs(' + this.inputs[0].connectedOutput.toJsCode(gen) + ')'
+            : 'Number.NaN';
     }
 }
 
@@ -54186,7 +54393,7 @@ class   OpRound
 extends OperatorWithValue
 {
     paramType;
-    paramDec;
+    paramDecimals;
 
 
 
@@ -54202,7 +54409,7 @@ extends OperatorWithValue
 
         this.addParam(this.paramValue);
         this.addParam(this.paramType  = new SelectParam('type',     'type',     false, true,  true, ['floor', 'round', 'ceiling'], 1));
-        this.addParam(this.paramDec   = new NumberParam('decimals', 'decimals', true,  true,  true, 0, 0, 10));
+        this.addParam(this.paramDecimals   = new NumberParam('decimals', 'decimals', true,  true,  true, 0, 0, 10));
     }
 
 
@@ -54242,14 +54449,87 @@ extends OperatorWithValue
     updateParams()
     {
         this.paramType.enableControlText(true);
-        this.paramDec .enableControlText(true);
+        this.paramDecimals .enableControlText(true);
 
         this.updateParamControls();
     }
 
 
 
-    toJsCode()
+    toJavascript(gen)
+    {
+        const conn = this.inputs[0].connected;
+
+
+        gen.nTab++;
+        const defs = this.toJsDefs(gen);
+        gen.nTab--;
+
+
+        let js = gen.NL + 'function ' + this.name + '(';
+
+        if (   conn 
+            && defs == NULL)
+            js += 'input';
+
+        js += ')';
+
+
+        js += gen.NL + '{';
+        gen.nTab++;
+
+
+        js += defs;
+        
+        
+        if (this.inputs[0].connected)
+        {
+            js += gen.NL + 'const input = ' + this.inputs[0].connectedOutput.toJsCode(gen) + ';';
+            js += '\n';
+            js += gen.NL + 'switch (' + this.paramType.toJsCode(gen) + ')';
+            js += gen.NL + '{ ';
+            js += gen.NL + TAB + 'case 0: return Math.floor(input);';
+            js += gen.NL + TAB + 'case 1: return Math.round(input);';
+            js += gen.NL + TAB + 'case 2: return Math.ceil (input);';
+            js += gen.NL + '}';
+        }
+        else
+            js += gen.NL + 'return Number.NaN;';
+
+
+        gen.nTab--;
+        js += gen.NL + '}';
+
+        
+        return js;
+    }
+
+
+
+    toJsDefs(gen)
+    {
+        if (  !this.inputs[0].connected
+            || gen.connectedOut(this))
+            return '';
+
+        
+        let js = '';
+
+
+        js += gen.NL + 'const input    = ';
+        js += this.inputs[0].connectedOutput.toJsCode(gen);
+        js += ';';
+
+        js += this.paramType    .input.toJsDef(gen);
+        js += this.paramDecimals.input.toJsDef(gen);
+
+
+        return js;
+    }
+
+
+
+    toJsCode(gen)
     {
         let js = '';
 
@@ -54258,10 +54538,10 @@ extends OperatorWithValue
         {
             js += '() => { ';
 
-            js += 'const input = ' + this.inputs[0].connectedOutput.toJsCode() + ';';
+            js += 'const input = ' + this.inputs[0].connectedOutput.toJsCode(gen) + ';';
             js += ' ';
 
-            js += 'switch (' + this.paramType.toJsCode() + ')';
+            js += 'switch (' + this.paramType.toJsCode(gen) + ')';
             js += ' {';
             js += ' case 0: return Math.floor(input);';
             js += ' case 1: return Math.round(input);';
@@ -54275,38 +54555,6 @@ extends OperatorWithValue
             js += 'Number.NaN';
 
       
-        return js;
-    }
-
-
-
-    toJsFunction(nTab = 0)
-    {
-        let pos = TAB.repeat(nTab);
-
-
-        let js = 'function ' + this.name + '()';
-
-        js += '\n' + pos + '{';
-
-        
-        if (this.inputs[0].connected)
-        {
-            js += '\n' + pos + TAB + 'const input = ' + this.inputs[0].connectedOutput.toJsCode() + ';';
-            js += '\n';
-            js += '\n' + pos + TAB + 'switch (' + this.paramType.toJsCode() + ')';
-            js += '\n' + pos + TAB + '{ ';
-            js += '\n' + pos + TAB + TAB + 'case 0: return Math.floor(input);';
-            js += '\n' + pos + TAB + TAB + 'case 1: return Math.round(input);';
-            js += '\n' + pos + TAB + TAB + 'case 2: return Math.ceil (input);';
-            js += '\n' + pos + TAB + '}';
-        }
-        else
-            js += '\n' + pos + TAB + 'return Number.NaN;';
-
-
-        js += '\n' + pos + '}';
-
         return js;
     }
 }
@@ -54380,12 +54628,12 @@ extends OperatorWithValue
 
 
 
-    toJsCode()
+    toJsCode(gen)
     {
         return this.inputs[0].connected
              ? 'Math.min(Math.max(' 
-                    + this.paramMin.toJsCode() + ', ' + this.inputs[0].connectedOutput.toJsCode() + '), ' 
-                    + this.paramMax.toJsCode() + ')'
+                    + this.paramMin.toJsCode(gen) + ', ' + this.inputs[0].connectedOutput.toJsCode(gen) + '), ' 
+                    + this.paramMax.toJsCode(gen) + ')'
              : 'Number.NaN';
     }
 }
@@ -54814,7 +55062,7 @@ extends OpArithmetic
 
 
 
-    toJsCode()
+    toJsCode(gen)
     {
         if (isEmpty(this.connectedHeaderInputs))
             return 'Number.NaN';
@@ -54846,7 +55094,7 @@ extends OpArithmetic
 
 
 
-    toJsCode()
+    toJsCode(gen)
     {
         if (isEmpty(this.connectedHeaderInputs))
             return 'Number.NaN';
@@ -54878,7 +55126,7 @@ extends OpArithmetic
 
 
 
-    toJsCode()
+    toJsCode(gen)
     {
         if (isEmpty(this.connectedHeaderInputs))
             return 'Number.NaN';
@@ -54910,7 +55158,7 @@ extends OpArithmetic
 
 
 
-    toJsCode()
+    toJsCode(gen)
     {
         if (isEmpty(this.connectedHeaderInputs))
             return 'Number.NaN';
@@ -54959,7 +55207,7 @@ extends OpArithmetic
 
 
 
-    toJsCode()
+    toJsCode(gen)
     {
         if (isEmpty(this.connectedHeaderInputs))
             return 'Number.NaN';
@@ -54991,7 +55239,7 @@ extends OpArithmetic
 
 
 
-    toJsCode()
+    toJsCode(gen)
     {
         if (isEmpty(this.connectedHeaderInputs))
             return 'Number.NaN';
@@ -55004,7 +55252,7 @@ extends OpArithmetic
             .forEach(i => 
             {
                 js += 'Math.pow(';
-                js += i.connectedOutput.toJsCode();
+                js += i.connectedOutput.toJsCode(gen);
                 js += ', ';
             });
 
@@ -56421,7 +56669,7 @@ extends OpColorBase
         this.addOutput(new Output([COLOR], this.output_genRequest, getColorOutputValuesForUndo, this.output_backInit));
 
         
-        this.addParam(this.paramSpace = new SelectParam('space', 'space', false, true,  true,  OpColorSpaces.map(s => s[1]), 0));
+        this.addParam(this.paramSpace = new SelectParam('space', 'space', false, true,  true,  ColorSpaces.map(s => s[1]), 0));
         this.addParam(this.param1     = new NumberParam('c1',    '',      true,  true,  true));
         this.addParam(this.param2     = new NumberParam('c2',    '',      true,  true,  true));
         this.addParam(this.param3     = new NumberParam('c3',    '',      true,  true,  true));
@@ -57100,32 +57348,16 @@ function getColorOutputValuesForUndo(output)
 }
 
 
-const OpColorSpaces = 
-[
-    ['hex',   'Hex'   ],
-    ['rgb',   'RGB'   ], 
-    ['hsv',   'HSV'   ], 
-    ['hsl',   'HSL'   ], 
-    ['hclok', 'HCL/ok'],
-    ['hclab', 'HCL/ab'],
-    ['hcluv', 'HCL/uv'],
-    ['oklab', 'okLab' ],
-    ['lab',   'Lab'   ],
-    ['luv',   'Luv'   ]
-];
-
-
-
-function colorSpace     (index) { return OpColorSpaces[index][0]; }
-function colorSpaceIndex(space) { return OpColorSpaces.findIndex(s => s[0] == space); }
+function colorSpace     (index) { return ColorSpaces[index][0]; }
+function colorSpaceIndex(space) { return ColorSpaces.findIndex(s => s[0] == space); }
 
 function colorSpaceCount(parse = null)
 { 
     const set = parse ? parse.settings : settings;
 
     return set.showAllColorSpaces 
-           ? OpColorSpaces.length
-        : OpColorSpaces.length - 5; 
+           ? ColorSpaces.length
+        : ColorSpaces.length - 5; 
 }
 
 
@@ -59068,7 +59300,7 @@ extends OpColorBase
         this.addOutput(new Output([COLOR_VALUE], this.output_genRequest));
 
 
-        this.addParam(this.paramSpace  = new SelectParam('space',  '',  false, true, true, OpColorSpaces.map(s => s[1]), 1));
+        this.addParam(this.paramSpace  = new SelectParam('space',  '',  false, true, true, ColorSpaces.map(s => s[1]), 1));
         this.addParam(this.paramAmount = new NumberParam('amount', '',  true,  true, true, 50, 0,  100, 0));
         this.addParam(this.paramGamma  = new NumberParam('gamma',  'γ', true,  true, true, 1,  0.01, 4, 2));
       
@@ -65688,12 +65920,7 @@ document.addEventListener('keydown', e =>
     {
         e.preventDefault();
 
-        //      if (e.shiftKey
-        //       && e.altKey)   graphView.copySelectedNodesAsJsFunction();
-        // else if (e.shiftKey) graphView.copySelectedNodesAsJsCode();
-        // else                 graphView.copySelectedNodes();
-
-        if (e.shiftKey) graphView.copySelectedNodesAsJsFunction();
+        if (e.shiftKey) graphView.copySelectedNodesAsJavascript();
         else            graphView.copySelectedNodes();
     }
 

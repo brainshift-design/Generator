@@ -435,7 +435,7 @@ function initGeneratorMenus()
     menuNodeCopyAs = new Menu('Copy nodes menu', false, false);
     menuNodeCopyAs.addItems([
         //menuItemNodeCopyAsJsCode       = new MenuItem('Copy as JS code',     {shortcut:  osCtrl() + osShift() + 'C',            callback: () => graphView.copySelectedNodesAsJsCode()     }),
-        menuItemNodeCopyAsJsFunction   = new MenuItem('Copy as Javascript', {shortcut:  osCtrl() + osShift() /*+ osAlt()*/ + 'C',  callback: () => graphView.copySelectedNodesAsJsFunction() })]);
+        menuItemNodeCopyAsJsFunction   = new MenuItem('Copy as Javascript', {shortcut:  osCtrl() + osShift() /*+ osAlt()*/ + 'C',  callback: () => graphView.copySelectedNodesAsJavascript() })]);
 
 
     menuNode = new Menu('Node menu', false, false);
@@ -612,9 +612,9 @@ function initTextMenu(textbox)
     menuText.clearItems();
 
     menuText.addItems([
-        new MenuItem('Cut',   {enabled: !textbox.control.readOnly, callback: () => { hideAllMenus(); document.execCommand('copy'); clearSelectedText(textbox); }}),
-        new MenuItem('Copy',  {callback: () => { hideAllMenus(); document.execCommand('copy'); }}),
-        new MenuItem('Paste', {enabled: !textbox.control.readOnly, callback: () => { hideAllMenus(); document.execCommand('paste'); }})]);
+        new MenuItem('Cut',   {enabled: !textbox.control || !textbox.control.readOnly, callback: () => { hideAllMenus(); document.execCommand('cut'); }}),
+        new MenuItem('Copy',  {                                                        callback: () => { hideAllMenus(); document.execCommand('copy'); }}),
+        new MenuItem('Paste', {enabled: !textbox.control || !textbox.control.readOnly, callback: () => { hideAllMenus(); document.execCommand('paste'); }})]);
 }
 
 
@@ -624,8 +624,6 @@ function initTextboxMenu(textbox)
     menuTextbox.clearItems();
 
 
-    const style = getComputedStyle(textbox);
-
     let menuItemLeft,
         menuItemCenter,
         menuItemRight,
@@ -633,11 +631,10 @@ function initTextboxMenu(textbox)
 
 
     const param = textbox.control.param;
-console.log('param =', param);
 
     menuTextbox.addItems([
-                          new MenuItem('Cut',          { enabled: !textbox.control.readOnly, callback: () => { hideAllMenus(); document.execCommand('copy'); clearSelectedText(textbox); }}),
-                          new MenuItem('Copy',         { callback: () => { hideAllMenus(); document.execCommand('copy'); }}),
+                          new MenuItem('Cut',          { enabled: !textbox.control.readOnly, callback: () => { hideAllMenus(); document.execCommand('cut'); }}),
+                          new MenuItem('Copy',         {                                     callback: () => { hideAllMenus(); document.execCommand('copy'); }}),
                           new MenuItem('Paste',        { enabled: !textbox.control.readOnly, callback: () => { hideAllMenus(); document.execCommand('paste'); }}),
                           new MenuItem('',             { separator: true }),
         menuItemLeft    = new MenuItem('Align left',   { callback: () => { hideAllMenus(); actionManager.do(new SetParamSettingAction(mainGraph, param, 'align', 'left'   )); }}),

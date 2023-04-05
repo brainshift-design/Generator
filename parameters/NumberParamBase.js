@@ -187,10 +187,10 @@ extends Parameter
 
 
 
-    toJsCode()
+    toJsCode(gen)
     {
         return this.input.connected
-             ? '(' + this.input.connectedOutput.toJsCode() + ')'
-             : this.value.toJsCode();
+             ? '(' + this.input.connectedOutput.toJsCode(gen) + ')'
+             : this.value.toJsCode(gen);
     }
 }

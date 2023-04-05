@@ -43,7 +43,7 @@ extends OpColorBase
         this.addOutput(new Output([COLOR], this.output_genRequest, getColorOutputValuesForUndo, this.output_backInit));
 
         
-        this.addParam(this.paramSpace = new SelectParam('space', 'space', false, true,  true,  OpColorSpaces.map(s => s[1]), 0));
+        this.addParam(this.paramSpace = new SelectParam('space', 'space', false, true,  true,  ColorSpaces.map(s => s[1]), 0));
         this.addParam(this.param1     = new NumberParam('c1',    '',      true,  true,  true));
         this.addParam(this.param2     = new NumberParam('c2',    '',      true,  true,  true));
         this.addParam(this.param3     = new NumberParam('c3',    '',      true,  true,  true));

@@ -11,7 +11,8 @@
 ../color/spaces/polar.js
 ../color/spaces/hcl.js
 
-../color/color.js
+../color/Color.js
+
 ../color/dataColor.js
 ../color/color util.js
 ../color/colorblind.js

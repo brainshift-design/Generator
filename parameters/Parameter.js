@@ -256,7 +256,7 @@ extends EventTarget
 
 
 
-    toJsCode()
+    toJsCode(gen)
     {
         return '';
     }

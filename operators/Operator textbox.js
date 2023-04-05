@@ -95,11 +95,11 @@ Operator.prototype.initLabelTextbox = function()
 
 
 
-    this.textbox.addEventListener('paste', e =>
-    {
-        e.preventDefault();
-        this.textbox.value = e.clipboardData.getData('text/plain');
-    });
+    // this.textbox.addEventListener('paste', e =>
+    // {
+    //     e.preventDefault();
+    //     this.textbox.value = e.clipboardData.getData('text/plain');
+    // });
 
     
     

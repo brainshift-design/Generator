@@ -88,50 +88,70 @@ extends OperatorBase
 
 
 
-    toJsCode()
+    toJavascript(gen)
     {
-        return this.inputs[0].connected
-             ? '(' + this.inputs[0].connectedOutput.toJsCode() + ')'
-             : this.paramValue.value.toJsCode();
+        const conn = this.inputs[0].connected;
+
+
+        gen.nTab++;
+        const defs = this.toJsDefs(gen);
+        gen.nTab--;
+
+
+        let js = gen.NL + 'function ' + this.name + '(';
+        
+        if (   conn 
+            && defs == NULL)
+            js += 'input';
+
+        js += ')';
+
+
+        js += gen.NL + '{';
+        gen.nTab++;
+
+
+        js += defs;
+
+
+        js += gen.NL + 'return ';
+        js += conn ? 'input' : this.toJsCode(gen);
+        js += ';'
+
+
+        gen.nTab--;
+        js += gen.NL + '}';
+
+
+        return js;
     }
 
 
 
-    toJsFunction(nTab = 0)
+    toJsDefs(gen)
     {
-        let pos = TAB.repeat(nTab);
-
-
-        const connectedOutside = this.inputs.find(i => 
-               i.connected 
-            && i.connectedOutput.node );
-
-
-        let js = 'function ' + this.name + '(';
-        
-        // js += 
-        //     this.inputs[0].connected
-        //     ? this.inputs[0].connectedOutput.toJsCode()
-        //     : this.paramValue.value.toJsCode();
-        
-        js += ')';
-
-
-        js += '\n' + pos + '{';
+        if (  !this.inputs[0].connected
+            || gen.connectedOut(this))
+            return '';
 
         
-        js += '\n' + pos + TAB + 'return ';
-        
-        js += 
-            this.inputs[0].connected
-            ? this.inputs[0].connectedOutput.toJsCode()
-            : this.paramValue.value.toJsCode();
-
-        js += ';'
+        let js = '';
 
 
-        js += '\n' + pos + '}';
+        js += gen.NL + 'const input = ';
+        js += this.inputs[0].connectedOutput.toJsCode(gen);
+        js += ';';
+
 
         return js;
+    }
+
+
+
+    toJsCode(gen)
+    {
+        return this.inputs[0].connected
+             ? this.inputs[0].connectedOutput.toJsCode(gen)
+             : this.paramValue.value.toJsCode(gen);
     }
 }

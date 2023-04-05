@@ -8,7 +8,7 @@ extends OpArithmetic
 
 
 
-    toJsCode()
+    toJsCode(gen)
     {
         if (isEmpty(this.connectedHeaderInputs))
             return 'Number.NaN';

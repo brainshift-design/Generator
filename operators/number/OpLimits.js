@@ -66,12 +66,12 @@ extends OperatorWithValue
 
 
 
-    toJsCode()
+    toJsCode(gen)
     {
         return this.inputs[0].connected
              ? 'Math.min(Math.max(' 
-                    + this.paramMin.toJsCode() + ', ' + this.inputs[0].connectedOutput.toJsCode() + '), ' 
-                    + this.paramMax.toJsCode() + ')'
+                    + this.paramMin.toJsCode(gen) + ', ' + this.inputs[0].connectedOutput.toJsCode(gen) + '), ' 
+                    + this.paramMax.toJsCode(gen) + ')'
              : 'Number.NaN';
     }
 }
