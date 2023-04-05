@@ -3760,6 +3760,7 @@ a
             <div id='whatsNewBody'>
                 <h1 style='margin-top: 20px;'>What's new in Generator</h1>
 
+                <p>Fixed color connection issue.</p>
                 <p>Fixed various UI issues.</p>
                 
                 <p><br/><br/><div id='chkHideWhatsNew'></div></p>
@@ -3870,7 +3871,7 @@ a
             </div>
             <div class='keyboardGroup nextGroup'>
                 <div class='keyboardLabel'>While hovering over a node...</div>
-                <div class='keyboardShortcut'><div class='shortcutAction'>Highlight the node and its connections</div><div class='shortcutKeys'><div class='shortcutKeys'><div class='shortcutKey'>Alt</div></div></div></div>
+                <div class='keyboardShortcut'><div class='shortcutAction'>Isolate the node and its connections</div><div class='shortcutKeys'><div class='shortcutKeys'><div class='shortcutKey'>Alt</div></div></div></div>
             </div>
         </div>
 
@@ -56736,7 +56737,7 @@ extends OpColorBase
 
 
         this.addInput(new Input(COLOR_TYPES, getColorInputValuesForUndo, this.input_getBackInitValue));
-        this.addOutput(new Output([COLOR], this.output_genRequest, getColorOutputValuesForUndo, this.output_backInit));
+        this.addOutput(new Output([COLOR_VALUE], this.output_genRequest, getColorOutputValuesForUndo, this.output_backInit));
 
         
         this.addParam(this.paramSpace = new SelectParam('space', 'space', false, true,  true,  ColorSpaces.map(s => s[1]), 0));
@@ -59129,7 +59130,7 @@ extends OpColorBase
         
 
         this.addInput(new Input(COLOR_TYPES));
-        this.addOutput(new Output([COLOR], this.output_genRequest));
+        this.addOutput(new Output([COLOR_VALUE], this.output_genRequest));
 
 
         this.addParam(this.paramL = new NumberParam('l', 'L', false, true, true, 2, 0, 2, 0, 0.02));
