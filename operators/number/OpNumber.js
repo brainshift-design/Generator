@@ -88,10 +88,24 @@ extends OperatorBase
 
 
 
-    toJS()
+    toJsCode()
     {
         return this.inputs[0].connected
-             ? '(' + this.inputs[0].connectedOutput.toJS() + ')'
-             : this.paramValue.value.toJS();
+             ? '(' + this.inputs[0].connectedOutput.toJsCode() + ')'
+             : this.paramValue.value.toJsCode;
+    }
+
+
+
+    toJsFunction()
+    {
+        let str = 'function ' + this.name + '()';
+        str += '\n{'
+        
+        return this.inputs[0].connected
+             ? '(' + this.inputs[0].connectedOutput.toJsCode() + ')'
+             : this.paramValue.value.toJsCode;
+
+        str += '}';
     }
 }

@@ -95,12 +95,31 @@ GraphView.prototype.copySelectedNodes = function()
 
 
 
-GraphView.prototype.copySelectedNodesAsJavascript = function()
+GraphView.prototype.copySelectedNodesAsJsCode = function()
 {
     const terminals = getTerminalsInNodes(this.selectedNodes);
 
 
-    const js = terminals.map(t => t.toJS()).join();
+    const js = terminals.map(t => t.toJsCode()).join();
+    
+    //let js = '';
+
+    // for (const terminal of terminals)
+    //     js += terminal.toJavascript();
+
+
+    console.log(js);
+    writeTextToClipboard(js);
+};
+
+
+
+GraphView.prototype.copySelectedNodesAsJsFunction = function()
+{
+    const terminals = getTerminalsInNodes(this.selectedNodes);
+
+
+    const js = terminals.map(t => t.toJsFunction()).join();
     
     //let js = '';
 

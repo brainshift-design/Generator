@@ -30,7 +30,7 @@ extends GNode
 
 
 
-    toJS()
+    toJsCode()
     {
         console.assert(false, 'invalid abstract method');
         return '';

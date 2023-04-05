@@ -8,7 +8,7 @@ extends OpArithmetic
 
 
 
-    toJS()
+    toJsCode()
     {
         if (isEmpty(this.connectedHeaderInputs))
             return 'Number.NaN';
@@ -19,12 +19,12 @@ extends OpArithmetic
         js += '(';
 
         js += this.connectedHeaderInputs
-            .map(i => i.connectedOutput.toJS())
+            .map(i => i.connectedOutput.toJsCode)
             .join(' + ');
         
         js += ')';
 
-        
+
         return js;
     }
 }

@@ -1,6 +1,6 @@
 {
   "name": "Generator",
-  "version": "128",
+  "version": "129",
   "description": "Generative design for Figma",
   "main": "output/main.js",
   "scripts": {

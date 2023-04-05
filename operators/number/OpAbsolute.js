@@ -54,10 +54,10 @@ extends OperatorWithValue
 
 
 
-    toJS()
+    toJsCode()
     {
         return this.inputs[0].connected
-             ? 'Math.abs(' + this.inputs[0].connectedOutput.toJS() + ')'
+             ? 'Math.abs(' + this.inputs[0].connectedOutput.toJsCode() + ')'
              : 'Number.NaN';
     }
 }

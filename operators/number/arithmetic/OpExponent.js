@@ -8,7 +8,7 @@ extends OpArithmetic
 
 
 
-    toJS()
+    toJsCode()
     {
         if (isEmpty(this.connectedHeaderInputs))
             return 'Number.NaN';
@@ -21,7 +21,7 @@ extends OpArithmetic
             .forEach(i => 
             {
                 js += 'Math.pow(';
-                js += i.connectedOutput.toJS();
+                js += i.connectedOutput.toJsCode;
                 js += ', ';
             });
 

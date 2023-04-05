@@ -4,7 +4,7 @@
 
 
 
-const generatorVersion = 128;
+const generatorVersion = 129;
 
 
 const MAX_INT32        = 2147483647;
@@ -4097,7 +4097,7 @@ extends GNode
 
 
 
-    toJS()
+    toJsCode()
     {
         console.assert(false, 'invalid abstract method');
         return '';
@@ -4362,7 +4362,7 @@ extends GValue
 
 
 
-    toJS()
+    toJsCode()
     {
         return this.toSimpleString();
     }
@@ -12639,7 +12639,8 @@ function enableFeatures(subscription, beta)
     updateMenuItemDisplay(menuItemStyleStroke         .div, subscription && beta);
     //updateMenuItemDisplay(menuItemStyleSep1         .div, subscription && beta);
     
-    updateMenuItemDisplay(menuItemNodeCopyAsJavascript.div, subscription && beta);
+    updateMenuItemDisplay(menuItemNodeCopyAsJsCode    .div, subscription && beta);
+    updateMenuItemDisplay(menuItemNodeCopyAsJsFunction.div, subscription && beta);
 
 
     graphView.graph.nodes.forEach(n => n.updateSubscribeStatus(subscription));

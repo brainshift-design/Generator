@@ -65,13 +65,32 @@ extends OperatorWithValue
 
 
 
-
-
-
-    toJS()
+    toJsCode()
     {
-        return this.inputs[0].connected
-             ? 'Math.round(' + this.inputs[0].connectedOutput.toJS() + ')'
-             : 'Number.NaN';
+        let js = '';
+
+
+        if (this.inputs[0].connected)
+        {
+            js += '() => { ';
+
+            js += 'const input = ' + this.inputs[0].connectedOutput.toJsCode() + ';';
+            js += ' ';
+
+            js += 'switch (' + this.paramType.toJsCode() + ')';
+            js += ' { ';
+            js += ' case 0: return Math.floor(input);';
+            js += ' case 1: return Math.round(input);';
+            js += ' case 2: return Math.ceil(input);';
+            js += ' }';
+
+
+            js += ' }';
+        }
+        else
+            js += 'Number.NaN';
+
+      
+        return js;
     }
 }

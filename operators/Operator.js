@@ -1011,7 +1011,14 @@ class Operator
 
 
 
-    toJS()
+    toJsCode()
+    {
+        return '';
+    }
+
+
+
+    toJsFunction()
     {
         return '';
     }

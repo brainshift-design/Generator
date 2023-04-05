@@ -301,10 +301,10 @@ class Output
 
 
 
-    toJS()
+    toJsCode()
     {
         return this.param
-             ? this.param.toJS()
-             : this.node.toJS();
+             ? this.param.toJsCode()
+             : this.node .toJsCode();
     }
 }
