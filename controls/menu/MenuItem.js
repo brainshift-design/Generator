@@ -40,8 +40,8 @@ class MenuItem
     divSeparator;
 
 
-    button0   = false;
-    dragStart = null;
+    //button0   = false;
+    //dragStart = null;
 
 
 
@@ -162,6 +162,7 @@ class MenuItem
                 else if (this.callback)
                     this.select(e.shiftKey, getCtrlKey(e), e.altKey, rect.x, rect.y);
 
+                    
                 this.button0 = false;
             }
         });

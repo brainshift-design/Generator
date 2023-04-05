@@ -47,9 +47,16 @@ document.button0 = false;
 document.addEventListener('pointerdown', function(e)
 {
     if (e.button == 0)
-    {
         document.button0 = true;
+}, 
+true);
 
+
+
+document.addEventListener('pointerdown', function(e)
+{
+    if (e.button == 0)
+    {
         if (   document.canResizeL
             || document.canResizeR
             || document.canResizeB)
@@ -81,7 +88,7 @@ document.addEventListener('pointerdown', function(e)
 
 
     hideAllMenus();
-}, true);
+});
 
 
 
@@ -145,6 +152,15 @@ document.addEventListener('pointermove', function(e)
 
 document.addEventListener('pointerup', function(e)
 {
+    if (e.button == 0)
+        document.button0 = false;
+},
+true);
+
+
+
+document.addEventListener('pointerup', function(e)
+{
     enteredDragging = false;
 
      if (   document.resizingL
@@ -161,8 +177,6 @@ document.addEventListener('pointerup', function(e)
 
     graphView.scrollbarX.moving  = false;
     graphView.scrollbarY.moving  = false;
-
-    document.button0 = false;
 });
 
 
