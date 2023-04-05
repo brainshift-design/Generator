@@ -53,6 +53,13 @@ extends Action
         pushUnique(this.newConnectionData, _conns);
 
 
+        const terminals = getTerminalsInNodes(nodes);
+
+        for (const terminal of terminals)
+            if (!getActiveFromNode(terminal))
+                uiMakeNodeActive(terminal);
+
+
         for (const conn of _conns)
         {
             if (   this.pasteConnected

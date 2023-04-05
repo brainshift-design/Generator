@@ -230,11 +230,12 @@
 {
     position:         absolute;
     left:             -3px;
-    top:              63px;
+    top:              62px;
     width:            256px;
     height:           50px;
     overflow:         hidden;
     pointer-events:   none;
+    z-index:          100;
 }
 
 
@@ -244,7 +245,7 @@
     font-size:      11px;
     font-weight:    300;
 
-    width:          170px;
+    width:          max-content;
     height:         24px;
     padding-top:    4px;
     padding-bottom: 0;
@@ -255,9 +256,9 @@
 
     position:       absolute;
     left:           calc(50%);
+    transform:      translateX(-50%);
     top:            86px;
 
-    transform:      translateX(-50%);
 
     pointer-events: none;
 
