@@ -177,7 +177,7 @@ Operator.prototype.createHeader = function()
 
             view.selectFromClick(this, getCtrlKey(e), e.shiftKey, e.altKey);
 
-            menuNode.showAt(e.clientX, e.clientY);
+            menuNode.showAt(e.clientX, e.clientY, false);
         }
 
         

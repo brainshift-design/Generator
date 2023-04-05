@@ -110,6 +110,6 @@ minZoomInput.addEventListener('pointerup', e =>
     if (e.button == 2)
     {
         initTextMenu(minZoomInput);
-        menuText.showAt(e.clientX, e.clientY, false);
+        menuText.showAt(e.clientX, e.clientY, false, false);
     }
 });

@@ -93,7 +93,7 @@ GraphView.prototype.createEvents = function()
         {
             e.stopPropagation();
 
-            if (isEmpty(currentMenus)) menuGraph.showAt(e.clientX, e.clientY, false);
+            if (isEmpty(currentMenus)) menuGraph.showAt(e.clientX, e.clientY, false, false);
             else                       hideAllMenus();
         }
     });

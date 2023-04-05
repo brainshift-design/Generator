@@ -119,7 +119,7 @@ function uiReturnFigGetAllLocalColorStyles(msg)
 
     initLocalStylesMenu(styles, msg.nodeId);
 
-    menuLocalStyles.showAt(msg.px, msg.py);
+    menuLocalStyles.showAt(msg.px, msg.py, false);
 }
 
 

@@ -177,7 +177,7 @@ NumberControl.prototype.initEvents = function()
                 && !isEmpty(this.options))
             {
                 initSelectParamMenu(param);
-                menuSelectParam.showAt(e.clientX, e.clientY);
+                menuSelectParam.showAt(e.clientX, e.clientY, false);
             }
         }
     });

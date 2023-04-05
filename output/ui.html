@@ -38683,7 +38683,7 @@ NumberControl.prototype.initTextbox = function()
         if (e.button == 2)
         {
             initTextMenu(this.textbox);
-            menuText.showAt(e.clientX, e.clientY, false);
+            menuText.showAt(e.clientX, e.clientY, false, false);
         }
     });
 
@@ -39414,7 +39414,7 @@ NumberControl.prototype.initEvents = function()
                 && !isEmpty(this.options))
             {
                 initSelectParamMenu(param);
-                menuSelectParam.showAt(e.clientX, e.clientY);
+                menuSelectParam.showAt(e.clientX, e.clientY, false);
             }
         }
     });
@@ -40058,7 +40058,7 @@ TextControl.prototype.initTextarea = function()
         if (e.button == 2)
         {
             initTextboxMenu(this.textbox);
-            menuTextbox.showAt(e.clientX, e.clientY, false);
+            menuTextbox.showAt(e.clientX, e.clientY, false, false);
         }
 
 
@@ -40622,7 +40622,7 @@ ColorControl.prototype.initTextbox = function()
         else if (e.button == 2)
         {
             initTextMenu(this.textbox);
-            menuText.showAt(e.clientX, e.clientY, false);
+            menuText.showAt(e.clientX, e.clientY, false, false);
         }
     });
 
@@ -41680,7 +41680,7 @@ class Menu
 
 
 
-    show(srcDiv, right = false)
+    show(srcDiv, subMenu, right = false)
     {
         if (currentView._soloNode);
             currentView.unsoloNode();
@@ -41718,10 +41718,13 @@ class Menu
             : srcRect.x + srcRect.width/2 - this.div.offsetWidth/2),
             currentView.div.offsetWidth - this.div.offsetWidth - margin);
 
+
+        const dy = subMenu ? 0 : 4;
+
         this.div.style.top =
             right
-            ? srcRect.y-4 - 3
-            : srcRect.y-4 + srcRect.height + this.divArrow.offsetHeight;
+            ? srcRect.y - dy - 3
+            : srcRect.y - dy + srcRect.height + this.divArrow.offsetHeight;
 
             
         this.divArrow.style.left = srcRect.x + srcRect.width/2;
@@ -41741,7 +41744,7 @@ class Menu
 
 
 
-    showAt(x, y, hidePrev = true)
+    showAt(x, y, subMenu, hidePrev = true)
     {
         if (currentView._soloNode);
             currentView.unsoloNode();
@@ -41762,8 +41765,11 @@ class Menu
 
         const margin = 8;
 
+        const dy     = subMenu ? 0 : 4;
+        const _dy    = subMenu ? 4 : 0;
+
         let   left   = Math.min(Math.max(margin, x), currentView.div.offsetWidth - this.div.offsetWidth - margin) - 6;
-        let   top    = y - 4;
+        let   top    = y - dy;
 
 
         let height = 0;
@@ -41790,7 +41796,7 @@ class Menu
 
         
         this.div.style.left   = left;
-        this.div.style.top    = top + 4;
+        this.div.style.top    = top + _dy;
         this.div.style.height = height + 'px';
 
 
@@ -42066,7 +42072,7 @@ class MenuButton
         hideAllMenus()
         
         if (!curMenus.includes(this.menu))
-            this.menu.show(this.div);
+            this.menu.show(this.div, false);
 
             // else
             // this.div.style.background = '#111';
@@ -42418,7 +42424,7 @@ class MenuItem
             if (!currentMenus.includes(this.childMenu))
             {
                 hideAllMenusAfter(this.parentMenu);
-                this.childMenu.show(this.div, true);
+                this.childMenu.show(this.div, true, true);
             }
         }
         else
@@ -44742,17 +44748,17 @@ GraphView.prototype.copySelectedNodes = function()
 
 
 
-GraphView.prototype.copySelectedNodesAsJsCode = function()
-{
-    const terminals = getTerminalsInNodes(this.selectedNodes);
+// GraphView.prototype.copySelectedNodesAsJsCode = function()
+// {
+//     const terminals = getTerminalsInNodes(this.selectedNodes);
 
 
-    const js = terminals.map(t => t.toJsCode()).join();
+//     const js = terminals.map(t => t.toJsCode()).join();
     
 
-    console.log(js);
-    writeTextToClipboard(js);
-};
+//     console.log(js);
+//     writeTextToClipboard(js);
+// };
 
 
 
@@ -45306,7 +45312,7 @@ GraphView.prototype.createEvents = function()
         {
             e.stopPropagation();
 
-            if (isEmpty(currentMenus)) menuGraph.showAt(e.clientX, e.clientY, false);
+            if (isEmpty(currentMenus)) menuGraph.showAt(e.clientX, e.clientY, false, false);
             else                       hideAllMenus();
         }
     });
@@ -51568,7 +51574,7 @@ Operator.prototype.createHeader = function()
 
             view.selectFromClick(this, getCtrlKey(e), e.shiftKey, e.altKey);
 
-            menuNode.showAt(e.clientX, e.clientY);
+            menuNode.showAt(e.clientX, e.clientY, false);
         }
 
         
@@ -52077,7 +52083,7 @@ Operator.prototype.initLabelTextbox = function()
         if (e.button == 2)
         {
             initTextMenu(this.textbox);
-            menuText.showAt(e.clientX, e.clientY, false);
+            menuText.showAt(e.clientX, e.clientY, false, false);
         }
     });
 
@@ -54048,8 +54054,6 @@ extends OperatorBase
     {
         let pos = TAB.repeat(nTab);
 
-
-        const connected = this.inputs[0].connected;
 
         const connectedOutside = this.inputs.find(i => 
                i.connected 
@@ -58894,7 +58898,7 @@ extends OpColorBase
 
             param.controls[0].buttonDown2 = true;
 
-            menu.showAt(e.clientX, e.clientY);
+            menu.showAt(e.clientX, e.clientY, false);
         }
     }
 
@@ -64802,7 +64806,7 @@ dataModeNodesWrapper.addEventListener('pointerdown', e =>
     if (e.button == 2)
     {
         e.stopPropagation();
-        menuNodeDataNodes.showAt(e.clientX, e.clientY);
+        menuNodeDataNodes.showAt(e.clientX, e.clientY, false);
     }
 });
 
@@ -64815,7 +64819,7 @@ dataModeConnsWrapper.addEventListener('pointerdown', e =>
     if (e.button == 2)
     {
         e.stopPropagation();
-        menuConnDataConns.showAt(e.clientX, e.clientY);
+        menuConnDataConns.showAt(e.clientX, e.clientY, false);
     }
 });
 
@@ -64901,7 +64905,7 @@ function createNodeDataDiv(_node)
                 div,
                 'var(--data-mode-node)'); 
 
-            menuNodeData.showAt(e.clientX, e.clientY);
+            menuNodeData.showAt(e.clientX, e.clientY, false);
         }
     });
 
@@ -64952,7 +64956,7 @@ function createConnDataDiv(_conn)
                 div,
                 'var(--data-mode-conn)');
 
-            menuConnData.showAt(e.clientX, e.clientY);
+            menuConnData.showAt(e.clientX, e.clientY, false);
         }
     });
 
@@ -66375,7 +66379,7 @@ minZoomInput.addEventListener('pointerup', e =>
     if (e.button == 2)
     {
         initTextMenu(minZoomInput);
-        menuText.showAt(e.clientX, e.clientY, false);
+        menuText.showAt(e.clientX, e.clientY, false, false);
     }
 });
 
@@ -66528,7 +66532,7 @@ productKeyInput.addEventListener('pointerdown', e =>
             updateMenuItemDisplay(menuItemLicenseSep1  .div, subscribed);
             updateMenuItemDisplay(menuItemLicenseRemove.div, subscribed);
 
-            menuRemoveLicense.showAt(e.clientX, e.clientY, false);
+            menuRemoveLicense.showAt(e.clientX, e.clientY, false, false);
         }
     }
 });
@@ -69098,7 +69102,7 @@ function uiReturnFigGetAllLocalColorStyles(msg)
 
     initLocalStylesMenu(styles, msg.nodeId);
 
-    menuLocalStyles.showAt(msg.px, msg.py);
+    menuLocalStyles.showAt(msg.px, msg.py, false);
 }
 
 

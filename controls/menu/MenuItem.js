@@ -294,7 +294,7 @@ class MenuItem
             if (!currentMenus.includes(this.childMenu))
             {
                 hideAllMenusAfter(this.parentMenu);
-                this.childMenu.show(this.div, true);
+                this.childMenu.show(this.div, true, true);
             }
         }
         else

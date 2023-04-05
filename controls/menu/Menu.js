@@ -143,7 +143,7 @@ class Menu
 
 
 
-    show(srcDiv, right = false)
+    show(srcDiv, subMenu, right = false)
     {
         if (currentView._soloNode);
             currentView.unsoloNode();
@@ -181,10 +181,13 @@ class Menu
             : srcRect.x + srcRect.width/2 - this.div.offsetWidth/2),
             currentView.div.offsetWidth - this.div.offsetWidth - margin);
 
+
+        const dy = subMenu ? 0 : 4;
+
         this.div.style.top =
             right
-            ? srcRect.y-4 - 3
-            : srcRect.y-4 + srcRect.height + this.divArrow.offsetHeight;
+            ? srcRect.y - dy - 3
+            : srcRect.y - dy + srcRect.height + this.divArrow.offsetHeight;
 
             
         this.divArrow.style.left = srcRect.x + srcRect.width/2;
@@ -204,7 +207,7 @@ class Menu
 
 
 
-    showAt(x, y, hidePrev = true)
+    showAt(x, y, subMenu, hidePrev = true)
     {
         if (currentView._soloNode);
             currentView.unsoloNode();
@@ -225,8 +228,11 @@ class Menu
 
         const margin = 8;
 
+        const dy     = subMenu ? 0 : 4;
+        const _dy    = subMenu ? 4 : 0;
+
         let   left   = Math.min(Math.max(margin, x), currentView.div.offsetWidth - this.div.offsetWidth - margin) - 6;
-        let   top    = y - 4;
+        let   top    = y - dy;
 
 
         let height = 0;
@@ -253,7 +259,7 @@ class Menu
 
         
         this.div.style.left   = left;
-        this.div.style.top    = top + 4;
+        this.div.style.top    = top + _dy;
         this.div.style.height = height + 'px';
 
 

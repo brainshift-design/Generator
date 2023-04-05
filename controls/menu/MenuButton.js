@@ -206,7 +206,7 @@ class MenuButton
         hideAllMenus()
         
         if (!curMenus.includes(this.menu))
-            this.menu.show(this.div);
+            this.menu.show(this.div, false);
 
             // else
             // this.div.style.background = '#111';

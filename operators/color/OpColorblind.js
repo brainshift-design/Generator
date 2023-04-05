@@ -96,7 +96,7 @@ extends OpColorBase
 
             param.controls[0].buttonDown2 = true;
 
-            menu.showAt(e.clientX, e.clientY);
+            menu.showAt(e.clientX, e.clientY, false);
         }
     }
 

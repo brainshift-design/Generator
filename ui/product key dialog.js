@@ -122,7 +122,7 @@ productKeyInput.addEventListener('pointerdown', e =>
             updateMenuItemDisplay(menuItemLicenseSep1  .div, subscribed);
             updateMenuItemDisplay(menuItemLicenseRemove.div, subscribed);
 
-            menuRemoveLicense.showAt(e.clientX, e.clientY, false);
+            menuRemoveLicense.showAt(e.clientX, e.clientY, false, false);
         }
     }
 });

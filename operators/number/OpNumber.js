@@ -102,8 +102,6 @@ extends OperatorBase
         let pos = TAB.repeat(nTab);
 
 
-        const connected = this.inputs[0].connected;
-
         const connectedOutside = this.inputs.find(i => 
                i.connected 
             && i.connectedOutput.node );

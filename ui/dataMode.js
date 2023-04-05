@@ -25,7 +25,7 @@ dataModeNodesWrapper.addEventListener('pointerdown', e =>
     if (e.button == 2)
     {
         e.stopPropagation();
-        menuNodeDataNodes.showAt(e.clientX, e.clientY);
+        menuNodeDataNodes.showAt(e.clientX, e.clientY, false);
     }
 });
 
@@ -38,7 +38,7 @@ dataModeConnsWrapper.addEventListener('pointerdown', e =>
     if (e.button == 2)
     {
         e.stopPropagation();
-        menuConnDataConns.showAt(e.clientX, e.clientY);
+        menuConnDataConns.showAt(e.clientX, e.clientY, false);
     }
 });
 
@@ -124,7 +124,7 @@ function createNodeDataDiv(_node)
                 div,
                 'var(--data-mode-node)'); 
 
-            menuNodeData.showAt(e.clientX, e.clientY);
+            menuNodeData.showAt(e.clientX, e.clientY, false);
         }
     });
 
@@ -175,7 +175,7 @@ function createConnDataDiv(_conn)
                 div,
                 'var(--data-mode-conn)');
 
-            menuConnData.showAt(e.clientX, e.clientY);
+            menuConnData.showAt(e.clientX, e.clientY, false);
         }
     });
 

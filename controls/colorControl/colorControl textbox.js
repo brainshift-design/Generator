@@ -27,7 +27,7 @@ ColorControl.prototype.initTextbox = function()
         else if (e.button == 2)
         {
             initTextMenu(this.textbox);
-            menuText.showAt(e.clientX, e.clientY, false);
+            menuText.showAt(e.clientX, e.clientY, false, false);
         }
     });
 

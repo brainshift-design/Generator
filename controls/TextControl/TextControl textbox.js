@@ -49,7 +49,7 @@ TextControl.prototype.initTextarea = function()
         if (e.button == 2)
         {
             initTextboxMenu(this.textbox);
-            menuTextbox.showAt(e.clientX, e.clientY, false);
+            menuTextbox.showAt(e.clientX, e.clientY, false, false);
         }
 
 
