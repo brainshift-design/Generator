@@ -70,7 +70,9 @@ document.addEventListener('keydown', e =>
 
     // undo/redo
     else if (e.code == 'KeyZ'
-          && getCtrlKey(e))
+          && getCtrlKey(e)
+          && !document.button0
+          && isEmpty(currentMenus))
     {
              if (e.shiftKey && !actionManager.redoing) actionManager.redo();
         else if (              !actionManager.undoing) actionManager.undo();

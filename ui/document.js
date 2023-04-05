@@ -2,6 +2,8 @@ var documentBodyClient = null;
 var enteredDragging    = false;
 
 
+document.button0 = false;
+
 
 // document.addEventListener('dragenter', function(e)
 // {
@@ -46,6 +48,8 @@ document.addEventListener('pointerdown', function(e)
 {
     if (e.button == 0)
     {
+        document.button0 = true;
+
         if (   document.canResizeL
             || document.canResizeR
             || document.canResizeB)
@@ -77,7 +81,7 @@ document.addEventListener('pointerdown', function(e)
 
 
     hideAllMenus();
-});
+}, true);
 
 
 
@@ -157,6 +161,8 @@ document.addEventListener('pointerup', function(e)
 
     graphView.scrollbarX.moving  = false;
     graphView.scrollbarY.moving  = false;
+
+    document.button0 = false;
 });
 
 
