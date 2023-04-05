@@ -17,8 +17,8 @@ extends OpColorBase
         this.addOutput(new Output([COLOR_VALUE], this.output_genRequest));
 
 
-        this.addParam(this.paramMode    = new SelectParam('mode',    '',  false, true, true, BlendModes.map(bm => bm[1]), 0));
-        this.addParam(this.paramOpacity = new NumberParam('opacity', '',  true,  true, true, 100, 0,  100, 0));
+        this.addParam(this.paramMode    = new SelectParam('mode',    '',        false, true, true, BlendModes.map(bm => bm[1]), 0));
+        this.addParam(this.paramOpacity = new NumberParam('opacity', 'opacity', true,  true, true, 100, 0,  100, 0));
       
         
         this.paramMode.separatorsBefore.push(1, 4, 7, 10, 12);

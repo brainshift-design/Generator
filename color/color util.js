@@ -219,7 +219,7 @@ function getDefaultWarningStyle(rgb)
 
 
 
-function clipRgb(_rgb)
+function clampRgb(_rgb)
 {
     const rgb = [..._rgb];
 

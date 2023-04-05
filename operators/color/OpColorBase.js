@@ -136,7 +136,7 @@ extends Operator
 
         if (factor > 0)
         {
-            const hcl = rgb2hsv(clipRgb(rgbBack));
+            const hcl = rgb2hsv(clampRgb(rgbBack));
             hcl[1] /= 3;
 
             rgbStripeBack = rgbLerp(rgbBack, hsv2rgb(hcl), factor);
@@ -221,8 +221,8 @@ extends Operator
             hclBack2[0] -= 1/12;  if (hclBack2[0] < 0) hclBack2[0] += 1;
 
 
-            const altBack1 = rgb_a(clipRgb(hclok2rgb(hclBack1)), 0.35);
-            const altBack2 = rgb_a(clipRgb(hclok2rgb(hclBack2)), 0.35);
+            const altBack1 = rgb_a(clampRgb(hclok2rgb(hclBack1)), 0.35);
+            const altBack2 = rgb_a(clampRgb(hclok2rgb(hclBack2)), 0.35);
 
             const factor   = this.getWarningFactor(colBack);
 
