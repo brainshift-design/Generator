@@ -3760,7 +3760,7 @@ a
             <div id='whatsNewBody'>
                 <h1 style='margin-top: 20px;'>What's new in Generator</h1>
 
-                <p>Fixed UI issues.</p>
+                <p>Fixed various UI issues.</p>
                 
                 <p><br/><br/><div id='chkHideWhatsNew'></div></p>
             </div>
@@ -16676,9 +16676,11 @@ function updateMenuItemShowBoolValues()
 
 function updateMenuItemShowOperationResults()
 {
-    graphView.graph.nodes
-        .filter(n => n.params.find(p => p.isResult))
-        .forEach(n => n.updateNode());
+    const nodes = graphView.graph.nodes
+        .filter(n => n.params.find(p => p.isResult));
+
+    nodes.forEach(n => n.updateNode());
+    graphView.updateNodeTransforms(nodes);
 }
 
 
@@ -37983,9 +37985,11 @@ function updateMenuItemShowBoolValues()
 
 function updateMenuItemShowOperationResults()
 {
-    graphView.graph.nodes
-        .filter(n => n.params.find(p => p.isResult))
-        .forEach(n => n.updateNode());
+    const nodes = graphView.graph.nodes
+        .filter(n => n.params.find(p => p.isResult));
+
+    nodes.forEach(n => n.updateNode());
+    graphView.updateNodeTransforms(nodes);
 }
 
 
@@ -40322,7 +40326,7 @@ TextControl.prototype.initTextarea = function()
 
         this.updateCursor();
 
-        
+
         window.getSelection().removeAllRanges();
     });
     
@@ -44628,115 +44632,7 @@ class GraphView
 
 
 
-    updateNodeTransforms(nodes, _updateWires = true)
-    {
-        const nodeLeft = nodes.map(n => n.div.offsetLeft);
-        const nodeTop  = nodes.map(n => n.div.offsetTop);
-        const nodeRect = nodes.map(n => n.getOffsetRect());
 
-        for (let i = 0; i < nodes.length; i++)
-            nodes[i].setTransform(nodeLeft[i], nodeTop[i], nodeRect[i]);
-
-        if (_updateWires)
-            this.updateNodeWireTransforms(nodes);
-    }
-
-
-
-    updateNodeWireTransforms(nodes)
-    {
-        const wires = [];
-
-        for (const node of nodes)
-        {
-            for (const input of node.inputs)
-                if (   input.connected
-                    && input.connection
-                    && !wires.includes(input.connection.wire))
-                    wires.push(input.connection.wire);        
-
-            for (const output of node.outputs)
-                for (const connInput of output.connectedInputs)
-                    if (    connInput.connection
-                        && !wires.includes(connInput.connection.wire))
-                        wires.push(connInput.connection.wire);
-        }
-
-
-        this.updateWires(wires);
-    }
-
-
-
-    soloNode(node)
-    {
-        this._soloNode = node;
-
-        this.graph.nodes.forEach(n => 
-            n.div.style.opacity = 
-                   n == this._soloNode
-                || n.isConnectedTo(this._soloNode)
-                ? 1 
-                : 0.12);
-
-        this.graph.connections.forEach(c =>
-        { 
-            c.wire.svg.style.opacity = 
-                   c.input  && this._soloNode == c.input .node
-                || c.output && this._soloNode == c.output.node
-                ? 1 
-                : 0.09;
-        });
-
-
-        this.updateWires(this.graph.connections.map(c => c.wire));
-    };
-
-
-
-    unsoloNode()
-    {
-        this._soloNode = null;
-
-        this.graph.nodes      .forEach(n => n.div     .style.opacity = 1);
-        this.graph.nodes      .forEach(n => n.div     .style.opacity = 1);
-        this.graph.connections.forEach(c => c.wire.svg.style.opacity = 1);
-
-        this.updateWires(this.graph.connections.map(c => c.wire));
-    };
-
-
-
-    updateShowWires(updateNodes = true)
-    {
-        this.graph.connections.forEach(c => showElement(c.wire.svg, true));
-
-        if (updateNodes) 
-            this.graph.nodes.forEach(n => n.updateNode());
-    }
-
-
-
-    isPanning(e)
-    {
-        if (panMode)
-        {
-            e.preventDefault();
-            setCursor(panCursor);
-            return true;
-        }
-    
-        if (this.spaceDown)
-        {
-            e.preventDefault();
-            return true;
-        }
-    
-        return false;
-    }
-    
-    
-    
     // point2screen(p)
     // {
     //     return point(
@@ -44826,6 +44722,95 @@ GraphView.prototype.updateNodes = function(nodes = null, updateNodes = true)
     const bounds = this.getAllNodeBounds();
 
     this.updateScroll(x, w, h, bounds, menuBarHeight);
+};
+
+
+
+GraphView.prototype.updateNodeTransforms = function(nodes, _updateWires = true)
+{
+    const nodeLeft = nodes.map(n => n.div.offsetLeft);
+    const nodeTop  = nodes.map(n => n.div.offsetTop);
+    const nodeRect = nodes.map(n => n.getOffsetRect());
+
+    for (let i = 0; i < nodes.length; i++)
+        nodes[i].setTransform(nodeLeft[i], nodeTop[i], nodeRect[i]);
+
+    if (_updateWires)
+        this.updateNodeWireTransforms(nodes);
+};
+
+
+
+GraphView.prototype.updateNodeWireTransforms = function(nodes)
+{
+    const wires = [];
+
+    for (const node of nodes)
+    {
+        for (const input of node.inputs)
+            if (   input.connected
+                && input.connection
+                && !wires.includes(input.connection.wire))
+                wires.push(input.connection.wire);        
+
+        for (const output of node.outputs)
+            for (const connInput of output.connectedInputs)
+                if (    connInput.connection
+                    && !wires.includes(connInput.connection.wire))
+                    wires.push(connInput.connection.wire);
+    }
+
+
+    this.updateWires(wires);
+};
+
+
+
+GraphView.prototype.soloNode = function(node)
+{
+    this._soloNode = node;
+
+    this.graph.nodes.forEach(n => 
+        n.div.style.opacity = 
+                n == this._soloNode
+            || n.isConnectedTo(this._soloNode)
+            ? 1 
+            : 0.12);
+
+    this.graph.connections.forEach(c =>
+    { 
+        c.wire.svg.style.opacity = 
+                c.input  && this._soloNode == c.input .node
+            || c.output && this._soloNode == c.output.node
+            ? 1 
+            : 0.09;
+    });
+
+
+    this.updateWires(this.graph.connections.map(c => c.wire));
+};
+
+
+
+GraphView.prototype.unsoloNode = function()
+{
+    this._soloNode = null;
+
+    this.graph.nodes      .forEach(n => n.div     .style.opacity = 1);
+    this.graph.nodes      .forEach(n => n.div     .style.opacity = 1);
+    this.graph.connections.forEach(c => c.wire.svg.style.opacity = 1);
+
+    this.updateWires(this.graph.connections.map(c => c.wire));
+};
+
+
+
+GraphView.prototype.updateShowWires = function(updateNodes = true)
+{
+    this.graph.connections.forEach(c => showElement(c.wire.svg, true));
+
+    if (updateNodes) 
+        this.graph.nodes.forEach(n => n.updateNode());
 };
 
 
@@ -45779,7 +45764,6 @@ GraphView.prototype.updatePanAndZoom = function(updateNodes)
         updateZoomTooltip();
         updateZoomIcon();
 
-
         menuItemZoomTo100.setChecked(equal(this.zoom, 1, 0.0001));
     });
 
@@ -45811,6 +45795,25 @@ GraphView.prototype.endPan = function(pointerId, changeCursor)
         setAutoCursor();
 };
 
+
+
+GraphView.prototype.isPanning = function(e)
+{
+    if (panMode)
+    {
+        e.preventDefault();
+        setCursor(panCursor);
+        return true;
+    }
+
+    if (this.spaceDown)
+    {
+        e.preventDefault();
+        return true;
+    }
+
+    return false;
+};
 
 
 GraphView.prototype.startZoomSelection = function(pointerId, x, y)
@@ -53114,10 +53117,11 @@ extends OperatorBase
 
     setSize(w, h, updateTransform = true)
     {
-        const headerHeight = getStyleValue(this.header, 'offset-height');
+        const headerHeight = getStyleValue(this.header, 'height');
+        const paramHeight  = settings.showOperationResults ? defParamHeight : 0;
 
         const _w = Math.max(60, w);
-        const _h = Math.max(headerHeight + defParamHeight, h);
+        const _h = Math.max(parseFloat(headerHeight) + paramHeight, h);
 
         super.setSize(_w, _h, updateTransform);
 
@@ -53130,10 +53134,11 @@ extends OperatorBase
 
     setRect(x, y, w, h, updateTransform = true)
     {
-        const headerHeight = getStyleValue(this.header, 'offset-height');
+        const headerHeight = getStyleValue(this.header, 'height');
+        const paramHeight  = settings.showOperationResults ? defParamHeight : 0;
 
         const _w = Math.max(60, w);
-        const _h = Math.max(headerHeight + defParamHeight, h);
+        const _h = Math.max(parseFloat(headerHeight) + paramHeight, h);
 
         super.setRect(x, y, _w, _h, updateTransform);
         

@@ -187,7 +187,7 @@ TextControl.prototype.initTextarea = function()
 
         this.updateCursor();
 
-        
+
         window.getSelection().removeAllRanges();
     });
     

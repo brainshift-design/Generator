@@ -34,7 +34,6 @@ GraphView.prototype.updatePanAndZoom = function(updateNodes)
         updateZoomTooltip();
         updateZoomIcon();
 
-
         menuItemZoomTo100.setChecked(equal(this.zoom, 1, 0.0001));
     });
 
@@ -66,6 +65,25 @@ GraphView.prototype.endPan = function(pointerId, changeCursor)
         setAutoCursor();
 };
 
+
+
+GraphView.prototype.isPanning = function(e)
+{
+    if (panMode)
+    {
+        e.preventDefault();
+        setCursor(panCursor);
+        return true;
+    }
+
+    if (this.spaceDown)
+    {
+        e.preventDefault();
+        return true;
+    }
+
+    return false;
+};
 
 
 GraphView.prototype.startZoomSelection = function(pointerId, x, y)

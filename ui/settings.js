@@ -212,9 +212,11 @@ function updateMenuItemShowBoolValues()
 
 function updateMenuItemShowOperationResults()
 {
-    graphView.graph.nodes
-        .filter(n => n.params.find(p => p.isResult))
-        .forEach(n => n.updateNode());
+    const nodes = graphView.graph.nodes
+        .filter(n => n.params.find(p => p.isResult));
+
+    nodes.forEach(n => n.updateNode());
+    graphView.updateNodeTransforms(nodes);
 }
 
 

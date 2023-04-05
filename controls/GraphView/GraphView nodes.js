@@ -38,6 +38,95 @@ GraphView.prototype.updateNodes = function(nodes = null, updateNodes = true)
 
 
 
+GraphView.prototype.updateNodeTransforms = function(nodes, _updateWires = true)
+{
+    const nodeLeft = nodes.map(n => n.div.offsetLeft);
+    const nodeTop  = nodes.map(n => n.div.offsetTop);
+    const nodeRect = nodes.map(n => n.getOffsetRect());
+
+    for (let i = 0; i < nodes.length; i++)
+        nodes[i].setTransform(nodeLeft[i], nodeTop[i], nodeRect[i]);
+
+    if (_updateWires)
+        this.updateNodeWireTransforms(nodes);
+};
+
+
+
+GraphView.prototype.updateNodeWireTransforms = function(nodes)
+{
+    const wires = [];
+
+    for (const node of nodes)
+    {
+        for (const input of node.inputs)
+            if (   input.connected
+                && input.connection
+                && !wires.includes(input.connection.wire))
+                wires.push(input.connection.wire);        
+
+        for (const output of node.outputs)
+            for (const connInput of output.connectedInputs)
+                if (    connInput.connection
+                    && !wires.includes(connInput.connection.wire))
+                    wires.push(connInput.connection.wire);
+    }
+
+
+    this.updateWires(wires);
+};
+
+
+
+GraphView.prototype.soloNode = function(node)
+{
+    this._soloNode = node;
+
+    this.graph.nodes.forEach(n => 
+        n.div.style.opacity = 
+                n == this._soloNode
+            || n.isConnectedTo(this._soloNode)
+            ? 1 
+            : 0.12);
+
+    this.graph.connections.forEach(c =>
+    { 
+        c.wire.svg.style.opacity = 
+                c.input  && this._soloNode == c.input .node
+            || c.output && this._soloNode == c.output.node
+            ? 1 
+            : 0.09;
+    });
+
+
+    this.updateWires(this.graph.connections.map(c => c.wire));
+};
+
+
+
+GraphView.prototype.unsoloNode = function()
+{
+    this._soloNode = null;
+
+    this.graph.nodes      .forEach(n => n.div     .style.opacity = 1);
+    this.graph.nodes      .forEach(n => n.div     .style.opacity = 1);
+    this.graph.connections.forEach(c => c.wire.svg.style.opacity = 1);
+
+    this.updateWires(this.graph.connections.map(c => c.wire));
+};
+
+
+
+GraphView.prototype.updateShowWires = function(updateNodes = true)
+{
+    this.graph.connections.forEach(c => showElement(c.wire.svg, true));
+
+    if (updateNodes) 
+        this.graph.nodes.forEach(n => n.updateNode());
+};
+
+
+
 GraphView.prototype.setNodePositions = function(nodes, dx, dy, updateTransform = true)
 {
     //console.log('GraphView.setNodePositions()');
