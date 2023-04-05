@@ -24,16 +24,17 @@ TextControl.prototype.initTextarea = function()
             return;
 
 
-        //this.textbox.setPointerCapture(e.pointerId);
-
-
         if (e.button == 1)
         {
             e.preventDefault();
-            return;
         }
-
-        e.stopPropagation();
+        else if (e.button == 2)
+        {
+            e.preventDefault();
+            e.stopPropagation();
+        }
+        else    
+            e.stopPropagation();
     });
     
     
@@ -55,10 +56,6 @@ TextControl.prototype.initTextarea = function()
             initTextboxMenu(this.textbox);
             menuTextbox.showAt(e.clientX, e.clientY, false, false);
         }
-
-
-        //if (this.textbox.hasPointerCapture(e.pointerId))
-        //    this.textbox.releasePointerCapture(e.pointerId);
     });
 
 
@@ -166,6 +163,8 @@ TextControl.prototype.initTextarea = function()
 
         if (currentTooltip) 
             hideTooltip(currentTooltip);
+
+        this.updateCursor();
     });
     
 
@@ -185,6 +184,11 @@ TextControl.prototype.initTextarea = function()
 
         this.textbox.blur();
         this.clicked = false;
+
+        this.updateCursor();
+
+        
+        window.getSelection().removeAllRanges();
     });
     
 

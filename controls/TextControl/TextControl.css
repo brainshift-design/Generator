@@ -46,8 +46,10 @@
     box-shadow:           none;
 
     resize:               none;
-    cursor:               auto;
-    /* pointer-events:       none; */
+    cursor:               default;
+
+    padding-left:         0.4em;
+    padding-right:        0.4em;
 
     border-radius:        0.5px;
     

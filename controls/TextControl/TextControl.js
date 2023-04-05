@@ -148,7 +148,8 @@ extends Control
     updateCursor()
     {
         this.textbox.style.cursor = 
-            graphView.zoom >= settings.minZoomForParams
+               hasFocus(this.textbox)
+            && graphView.zoom >= settings.minZoomForParams
             ? 'text'
             : 'default';
     }

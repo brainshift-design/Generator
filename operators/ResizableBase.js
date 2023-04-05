@@ -238,8 +238,10 @@ extends OperatorBase
 
     setSize(w, h, updateTransform = true)
     {
+        const headerHeight = getStyleValue(this.header, 'offset-height');
+
         const _w = Math.max(60, w);
-        const _h = Math.max(defHeaderHeight + defParamHeight, h);
+        const _h = Math.max(headerHeight + defParamHeight, h);
 
         super.setSize(_w, _h, updateTransform);
 
@@ -252,8 +254,10 @@ extends OperatorBase
 
     setRect(x, y, w, h, updateTransform = true)
     {
+        const headerHeight = getStyleValue(this.header, 'offset-height');
+
         const _w = Math.max(60, w);
-        const _h = Math.max(defHeaderHeight + defParamHeight, h);
+        const _h = Math.max(headerHeight + defParamHeight, h);
 
         super.setRect(x, y, _w, _h, updateTransform);
         

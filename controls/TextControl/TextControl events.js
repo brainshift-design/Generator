@@ -2,7 +2,7 @@ TextControl.prototype.initEvents = function()
 {
     this.div.addEventListener('pointerenter', e =>
     {
-        if (!currentTooltip)//this.getTooltip())
+        if (!currentTooltip)
             initTextTooltip(this.value);
     });
 

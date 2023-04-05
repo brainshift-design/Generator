@@ -2625,8 +2625,10 @@ a
     box-shadow:           none;
 
     resize:               none;
-    cursor:               auto;
-    /* pointer-events:       none; */
+    cursor:               default;
+
+    padding-left:         0.4em;
+    padding-right:        0.4em;
 
     border-radius:        0.5px;
     
@@ -40123,7 +40125,8 @@ extends Control
     updateCursor()
     {
         this.textbox.style.cursor = 
-            graphView.zoom >= settings.minZoomForParams
+               hasFocus(this.textbox)
+            && graphView.zoom >= settings.minZoomForParams
             ? 'text'
             : 'default';
     }
@@ -40156,16 +40159,17 @@ TextControl.prototype.initTextarea = function()
             return;
 
 
-        //this.textbox.setPointerCapture(e.pointerId);
-
-
         if (e.button == 1)
         {
             e.preventDefault();
-            return;
         }
-
-        e.stopPropagation();
+        else if (e.button == 2)
+        {
+            e.preventDefault();
+            e.stopPropagation();
+        }
+        else    
+            e.stopPropagation();
     });
     
     
@@ -40187,10 +40191,6 @@ TextControl.prototype.initTextarea = function()
             initTextboxMenu(this.textbox);
             menuTextbox.showAt(e.clientX, e.clientY, false, false);
         }
-
-
-        //if (this.textbox.hasPointerCapture(e.pointerId))
-        //    this.textbox.releasePointerCapture(e.pointerId);
     });
 
 
@@ -40298,6 +40298,8 @@ TextControl.prototype.initTextarea = function()
 
         if (currentTooltip) 
             hideTooltip(currentTooltip);
+
+        this.updateCursor();
     });
     
 
@@ -40317,6 +40319,11 @@ TextControl.prototype.initTextarea = function()
 
         this.textbox.blur();
         this.clicked = false;
+
+        this.updateCursor();
+
+        
+        window.getSelection().removeAllRanges();
     });
     
 
@@ -40428,7 +40435,7 @@ TextControl.prototype.initEvents = function()
 {
     this.div.addEventListener('pointerenter', e =>
     {
-        if (!currentTooltip)//this.getTooltip())
+        if (!currentTooltip)
             initTextTooltip(this.value);
     });
 
@@ -53107,8 +53114,10 @@ extends OperatorBase
 
     setSize(w, h, updateTransform = true)
     {
+        const headerHeight = getStyleValue(this.header, 'offset-height');
+
         const _w = Math.max(60, w);
-        const _h = Math.max(defHeaderHeight + defParamHeight, h);
+        const _h = Math.max(headerHeight + defParamHeight, h);
 
         super.setSize(_w, _h, updateTransform);
 
@@ -53121,8 +53130,10 @@ extends OperatorBase
 
     setRect(x, y, w, h, updateTransform = true)
     {
+        const headerHeight = getStyleValue(this.header, 'offset-height');
+
         const _w = Math.max(60, w);
-        const _h = Math.max(defHeaderHeight + defParamHeight, h);
+        const _h = Math.max(headerHeight + defParamHeight, h);
 
         super.setRect(x, y, _w, _h, updateTransform);
         
