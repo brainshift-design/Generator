@@ -20,6 +20,10 @@ TextControl.prototype.initTextarea = function()
             graphView.putNodeOnTop(this.param.node);
 
 
+        if (!this.canReact(e))
+            return;
+
+
         //this.textbox.setPointerCapture(e.pointerId);
 
 
@@ -191,6 +195,8 @@ TextControl.prototype.initTextarea = function()
 
         e.stopPropagation();
         forwardEvent(e, this.div);
+
+        this.updateCursor();
     });
     
 

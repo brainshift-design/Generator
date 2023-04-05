@@ -40,7 +40,8 @@ ColorControl.prototype.initEvents = function()
         }
 
 
-        e.stopPropagation();
+        if (!this.canReact(e))
+            return;
     
     
         if (   this.view.spaceDown
@@ -48,13 +49,13 @@ ColorControl.prototype.initEvents = function()
             return;
 
 
-        if (this.param.node.div.style.zIndex < graphView.getTopNodeIndex())
-            graphView.putNodeOnTop(this.param.node);
-
-
         window.focus();
         
         hideAllMenus();
+
+
+        if (this.param.node.div.style.zIndex < graphView.getTopNodeIndex())
+            graphView.putNodeOnTop(this.param.node);
 
 
         if (e.button == 0)
@@ -77,7 +78,9 @@ ColorControl.prototype.initEvents = function()
 
 
             e.preventDefault(); // this is fine since I lock the pointer anyway
-                
+            e.stopPropagation();
+
+            
             this.buttonDown0  = true;
             this.buttonDown0_ = true;
             //this.moved        = false;
@@ -117,6 +120,7 @@ ColorControl.prototype.initEvents = function()
         else if (e.button == 2)
         {
             e.preventDefault();
+            e.stopPropagation();
             this.buttonDown2 = true;
         }
     });

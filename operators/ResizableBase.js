@@ -77,12 +77,24 @@ extends OperatorBase
 
                 hideAllMenus();
                 
+                    
+                e.stopImmediatePropagation();
+
+
+                if (graphView.zoom < settings.minZoomForParams)
+                {
+                    forwardEvent(e, this.header);
+                    return;
+                }
+
+                   
+                e.preventDefault();
+
+
                 sizer.startRect = offsetRect(this.div);
                 sizer.resizing  = true;
 
-                e.preventDefault();
-                e.stopImmediatePropagation();
-
+                
                 sizer.setPointerCapture(e.pointerId);
 
                 sizer.sx = e.clientX;
@@ -274,6 +286,19 @@ extends OperatorBase
 
         this.sizerBR.style.width  = corner; 
         this.sizerBR.style.height = corner; 
+
+
+        const canReact = graphView.zoom >= settings.minZoomForParams;
+
+        this.sizerL.style.cursor  = canReact ? 'ew-resize'   : 'default';
+        this.sizerR.style.cursor  = canReact ? 'ew-resize'   : 'default';
+        this.sizerT.style.cursor  = canReact ? 'ns-resize'   : 'default';
+        this.sizerB.style.cursor  = canReact ? 'ns-resize'   : 'default';
+        
+        this.sizerTL.style.cursor = canReact ? 'nwse-resize' : 'default';
+        this.sizerTR.style.cursor = canReact ? 'nesw-resize' : 'default';
+        this.sizerBL.style.cursor = canReact ? 'nesw-resize' : 'default';
+        this.sizerBR.style.cursor = canReact ? 'nwse-resize' : 'default';
     }
 
 

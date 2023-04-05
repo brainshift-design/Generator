@@ -142,4 +142,14 @@ extends Control
         this.textbox.style.left  = left + 'px';
         this.textbox.style.width = 'calc(100% - ' + dw + 'px)';
     }
+
+
+
+    updateCursor()
+    {
+        this.textbox.style.cursor = 
+            graphView.zoom >= settings.minZoomForParams
+            ? 'text'
+            : 'default';
+    }
 }

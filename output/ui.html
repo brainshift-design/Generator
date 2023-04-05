@@ -40117,6 +40117,16 @@ extends Control
         this.textbox.style.left  = left + 'px';
         this.textbox.style.width = 'calc(100% - ' + dw + 'px)';
     }
+
+
+
+    updateCursor()
+    {
+        this.textbox.style.cursor = 
+            graphView.zoom >= settings.minZoomForParams
+            ? 'text'
+            : 'default';
+    }
 }
 
 
@@ -40140,6 +40150,10 @@ TextControl.prototype.initTextarea = function()
     {
         if (this.param.node.div.style.zIndex < graphView.getTopNodeIndex())
             graphView.putNodeOnTop(this.param.node);
+
+
+        if (!this.canReact(e))
+            return;
 
 
         //this.textbox.setPointerCapture(e.pointerId);
@@ -40313,6 +40327,8 @@ TextControl.prototype.initTextarea = function()
 
         e.stopPropagation();
         forwardEvent(e, this.div);
+
+        this.updateCursor();
     });
     
 
@@ -41117,7 +41133,8 @@ ColorControl.prototype.initEvents = function()
         }
 
 
-        e.stopPropagation();
+        if (!this.canReact(e))
+            return;
     
     
         if (   this.view.spaceDown
@@ -41125,13 +41142,13 @@ ColorControl.prototype.initEvents = function()
             return;
 
 
-        if (this.param.node.div.style.zIndex < graphView.getTopNodeIndex())
-            graphView.putNodeOnTop(this.param.node);
-
-
         window.focus();
         
         hideAllMenus();
+
+
+        if (this.param.node.div.style.zIndex < graphView.getTopNodeIndex())
+            graphView.putNodeOnTop(this.param.node);
 
 
         if (e.button == 0)
@@ -41154,7 +41171,9 @@ ColorControl.prototype.initEvents = function()
 
 
             e.preventDefault(); // this is fine since I lock the pointer anyway
-                
+            e.stopPropagation();
+
+            
             this.buttonDown0  = true;
             this.buttonDown0_ = true;
             //this.moved        = false;
@@ -41194,6 +41213,7 @@ ColorControl.prototype.initEvents = function()
         else if (e.button == 2)
         {
             e.preventDefault();
+            e.stopPropagation();
             this.buttonDown2 = true;
         }
     });
@@ -52924,12 +52944,24 @@ extends OperatorBase
 
                 hideAllMenus();
                 
+                    
+                e.stopImmediatePropagation();
+
+
+                if (graphView.zoom < settings.minZoomForParams)
+                {
+                    forwardEvent(e, this.header);
+                    return;
+                }
+
+                   
+                e.preventDefault();
+
+
                 sizer.startRect = offsetRect(this.div);
                 sizer.resizing  = true;
 
-                e.preventDefault();
-                e.stopImmediatePropagation();
-
+                
                 sizer.setPointerCapture(e.pointerId);
 
                 sizer.sx = e.clientX;
@@ -53121,6 +53153,19 @@ extends OperatorBase
 
         this.sizerBR.style.width  = corner; 
         this.sizerBR.style.height = corner; 
+
+
+        const canReact = graphView.zoom >= settings.minZoomForParams;
+
+        this.sizerL.style.cursor  = canReact ? 'ew-resize'   : 'default';
+        this.sizerR.style.cursor  = canReact ? 'ew-resize'   : 'default';
+        this.sizerT.style.cursor  = canReact ? 'ns-resize'   : 'default';
+        this.sizerB.style.cursor  = canReact ? 'ns-resize'   : 'default';
+        
+        this.sizerTL.style.cursor = canReact ? 'nwse-resize' : 'default';
+        this.sizerTR.style.cursor = canReact ? 'nesw-resize' : 'default';
+        this.sizerBL.style.cursor = canReact ? 'nesw-resize' : 'default';
+        this.sizerBR.style.cursor = canReact ? 'nwse-resize' : 'default';
     }
 
 
