@@ -1140,6 +1140,11 @@ function uiDeleteSavedConnection(key, outputNodeId, outputId, outputOrder, input
 
 function uiRemoveAllSavedConnections()
 {
+    for (const node of mainGraph.nodes)
+        for (const input of node.inputs)
+            if (input.connected)
+                uiDisconnectAny(input);
+
     uiQueueMessageToFigma({
         cmd: 'figRemoveAllSavedConnections'
     });

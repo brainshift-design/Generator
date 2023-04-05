@@ -4,7 +4,7 @@
 
 
 
-const generatorVersion = 126;
+const generatorVersion = 127;
 
 
 const MAX_INT32        = 2147483647;
@@ -3106,11 +3106,13 @@ function nodeArrayToString(nodes)
 {
     let str = '';
 
-    for (let i = 0; i < nodes.length; i++)
-    {
-        if (i > 0) str += ', ';
-        str += nodes[i] ? nodes[i].id : 'undefined';
-    }
+    nodes.map(n => n ? n.id : 'undefined').join(', ');
+
+    // for (let i = 0; i < nodes.length; i++)
+    // {
+    //     if (i > 0) str += ', ';
+    //     str += nodes[i] ? nodes[i].id : 'undefined';
+    // }
 
     return str;
 }
@@ -12606,11 +12608,13 @@ function enableFeatures(subscription, beta)
     updateMenuItemDisplay(menuItemCorrectColor       .div, subscription);
     updateMenuItemDisplay(menuItemColorSep1          .div, subscription);
     updateMenuItemDisplay(menuItemColorblind         .div, subscription);
-    updateMenuItemDisplay(menuItemColorBlend         .div, beta);
+    //updateMenuItemDisplay(menuItemColorBlend         .div, beta);
 
     //updateMenuItemDisplay(menuItemStyleFill        .div, subscription && beta);
     updateMenuItemDisplay(menuItemStyleStroke        .div, subscription && beta);
     //updateMenuItemDisplay(menuItemStyleSep1        .div, subscription && beta);
+    
+    updateMenuItemDisplay(menuItemNodeCopyAsJS       .div, subscription && beta);
 
 
     graphView.graph.nodes.forEach(n => n.updateSubscribeStatus(subscription));

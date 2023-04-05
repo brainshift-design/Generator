@@ -303,7 +303,7 @@
 }
 
 
-/* #deleteConnectionsDialog
+#deleteConnectionsDialog
 {
     display:       none;
 
@@ -427,7 +427,7 @@
     transform:      translateY(-2px);
 
     margin-top:     12px;
-}*/
+}
 
 
 #minZoomDialog

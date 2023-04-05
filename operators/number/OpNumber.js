@@ -85,4 +85,13 @@ extends OperatorBase
         return  param.isDefault()
             && !this.inputs[0].connected;
     }
+
+
+
+    toJS()
+    {
+        return this.inputs[0].connected
+             ? '(' + this.inputs[0].node.toJS() + ')'
+             : this.paramValue.value.toJS();
+    }
 }

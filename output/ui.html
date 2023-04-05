@@ -526,7 +526,7 @@
 }
 
 
-/* #deleteConnectionsDialog
+#deleteConnectionsDialog
 {
     display:       none;
 
@@ -650,7 +650,7 @@
     transform:      translateY(-2px);
 
     margin-top:     12px;
-}*/
+}
 
 
 #minZoomDialog
@@ -3622,7 +3622,7 @@ a
 
 
 
-<!-- <div id='deleteConnectionsDialog'>
+<div id='deleteConnectionsDialog'>
 
     <div id='deleteConnectionsTitle'>
         <div id='deleteConnectionsTitleText'>Delete connections to</div>
@@ -3639,7 +3639,7 @@ a
         <div class='button' id='deleteConnectionsButton' onclick='deleteConnectionsToNodes(deleteConnectionsInput.value);'>Delete</div>
     </div>
 
-</div> -->
+</div>
 
 
 
@@ -3757,11 +3757,7 @@ a
             <div id='whatsNewBody'>
                 <h1 style='margin-top: 20px;'>What's new in Generator</h1>
 
-                <p>Parameter inputs and outputs are now colored according to the parameter's data type.</p>
-                <p>Added remove button to invalid connection error.</p>
-                <p>Hex number values can now be entered by prefixing them with 0x.</p>
-                <p>Fixed a value transfer issue between colors and fills.</p>
-                <p>Fixed UI bugs.</p>
+                <p>-</p>
                 
                 <p><br/><br/><div id='chkHideWhatsNew'></div></p>
             </div>
@@ -4083,7 +4079,7 @@ a
 
 
 
-const generatorVersion = 126;
+const generatorVersion = 127;
 
 
 const MAX_INT32        = 2147483647;
@@ -7185,11 +7181,13 @@ function nodeArrayToString(nodes)
 {
     let str = '';
 
-    for (let i = 0; i < nodes.length; i++)
-    {
-        if (i > 0) str += ', ';
-        str += nodes[i] ? nodes[i].id : 'undefined';
-    }
+    nodes.map(n => n ? n.id : 'undefined').join(', ');
+
+    // for (let i = 0; i < nodes.length; i++)
+    // {
+    //     if (i > 0) str += ', ';
+    //     str += nodes[i] ? nodes[i].id : 'undefined';
+    // }
 
     return str;
 }
@@ -16685,11 +16683,13 @@ function enableFeatures(subscription, beta)
     updateMenuItemDisplay(menuItemCorrectColor       .div, subscription);
     updateMenuItemDisplay(menuItemColorSep1          .div, subscription);
     updateMenuItemDisplay(menuItemColorblind         .div, subscription);
-    updateMenuItemDisplay(menuItemColorBlend         .div, beta);
+    //updateMenuItemDisplay(menuItemColorBlend         .div, beta);
 
     //updateMenuItemDisplay(menuItemStyleFill        .div, subscription && beta);
     updateMenuItemDisplay(menuItemStyleStroke        .div, subscription && beta);
     //updateMenuItemDisplay(menuItemStyleSep1        .div, subscription && beta);
+    
+    updateMenuItemDisplay(menuItemNodeCopyAsJS       .div, subscription && beta);
 
 
     graphView.graph.nodes.forEach(n => n.updateSubscribeStatus(subscription));
@@ -22903,7 +22903,7 @@ onerror = (event, source, line, pos, error) =>
 };
 
 
-const generatorVersion = 126;
+const generatorVersion = 127;
 
 
 const MAX_INT32        = 2147483647;
@@ -26005,11 +26005,13 @@ function nodeArrayToString(nodes)
 {
     let str = '';
 
-    for (let i = 0; i < nodes.length; i++)
-    {
-        if (i > 0) str += ', ';
-        str += nodes[i] ? nodes[i].id : 'undefined';
-    }
+    nodes.map(n => n ? n.id : 'undefined').join(', ');
+
+    // for (let i = 0; i < nodes.length; i++)
+    // {
+    //     if (i > 0) str += ', ';
+    //     str += nodes[i] ? nodes[i].id : 'undefined';
+    // }
 
     return str;
 }
@@ -37849,11 +37851,13 @@ function enableFeatures(subscription, beta)
     updateMenuItemDisplay(menuItemCorrectColor       .div, subscription);
     updateMenuItemDisplay(menuItemColorSep1          .div, subscription);
     updateMenuItemDisplay(menuItemColorblind         .div, subscription);
-    updateMenuItemDisplay(menuItemColorBlend         .div, beta);
+    //updateMenuItemDisplay(menuItemColorBlend         .div, beta);
 
     //updateMenuItemDisplay(menuItemStyleFill        .div, subscription && beta);
     updateMenuItemDisplay(menuItemStyleStroke        .div, subscription && beta);
     //updateMenuItemDisplay(menuItemStyleSep1        .div, subscription && beta);
+    
+    updateMenuItemDisplay(menuItemNodeCopyAsJS       .div, subscription && beta);
 
 
     graphView.graph.nodes.forEach(n => n.updateSubscribeStatus(subscription));
@@ -42521,6 +42525,7 @@ var menuItemGraphPaste;
 var menuItemGraphPasteConnected;
 
 var menuItemNodeCopy;
+var menuItemNodeCopyAsJS;
 var menuItemNodeDuplicate;
 var menuItemNodeDuplicateConnected;
 var menuItemNodeRemove;
@@ -42574,6 +42579,35 @@ function initGeneratorMenus()
         menuItemMinZoomForParams      = new MenuItem('Zoom level for values...',     {callback: () => showMinZoomDialog()})]);
         
 
+    menuDebugLog = new Menu('Debug log', false);
+    menuDebugLog.addItems([
+        menuItemLogRequests           = new MenuItem('Log\u2008requests',          {checkCallback: () => settings.logRequests     ,      callback: () => updateSettingAndMenu('logRequests',           true, !settings.logRequests          ), setting: true}),
+        menuItemLogValueUpdates       = new MenuItem('Log\u2008values',            {checkCallback: () => settings.logValueUpdates ,      callback: () => updateSettingAndMenu('logValueUpdates',       true, !settings.logValueUpdates      ), setting: true}),
+        menuItemLogObjectUpdates      = new MenuItem('Log\u2008objects',           {checkCallback: () => settings.logObjectUpdates,      callback: () => updateSettingAndMenu('logObjectUpdates',      true, !settings.logObjectUpdates     ), setting: true}),
+        menuItemLogStyleUpdates       = new MenuItem('Log\u2008styles',            {checkCallback: () => settings.logStyleUpdates ,      callback: () => updateSettingAndMenu('logStyleUpdates',       true, !settings.logStyleUpdates      ), setting: true}),
+                                        new MenuItem('',                           {separator: true}),                   
+        menuItemLogRawRequests        = new MenuItem('Log\u2008raw\u2008requests', {checkCallback: () => settings.logRawRequests  ,      callback: () => updateSettingAndMenu('logRawRequests',        true, !settings.logRawRequests       ), setting: true}),
+        menuItemLogRawValues          = new MenuItem('Log\u2008raw\u2008values',   {checkCallback: () => settings.logRawValues    ,      callback: () => updateSettingAndMenu('logRawValues',          true, !settings.logRawValues         ), setting: true}),
+                                        new MenuItem('',                           {separator: true}),                   
+        menuItemLogLoading            = new MenuItem('Log\u2008load\u2008at start', {checkCallback: () => settings.logLoading      ,      callback: () => updateSettingAndMenu('logLoading',            true, !settings.logLoading           ), setting: true}),
+                                        new MenuItem('',                           {separator: true}),                   
+        menuItemLogRawLoadNodes       = new MenuItem('Log\u2008load nodes',        {checkCallback: () => settings.logRawLoadNodes ,      callback: () => updateSettingAndMenu('logRawLoadNodes',       true, !settings.logRawLoadNodes      ), setting: true}),
+        menuItemLogRawSaveNodes       = new MenuItem('Log\u2008save nodes',        {checkCallback: () => settings.logRawSaveNodes ,      callback: () => updateSettingAndMenu('logRawSaveNodes',       true, !settings.logRawSaveNodes      ), setting: true}),
+                                        new MenuItem('',                           {separator: true}),                   
+        menuItemLogRawLoadConnections = new MenuItem('Log\u2008load connections',  {checkCallback: () => settings.logRawLoadConnections, callback: () => updateSettingAndMenu('logRawLoadConnections', true, !settings.logRawLoadConnections), setting: true}),
+        menuItemLogRawSaveConnections = new MenuItem('Log\u2008save connections',  {checkCallback: () => settings.logRawSaveConnections, callback: () => updateSettingAndMenu('logRawSaveConnections', true, !settings.logRawSaveConnections), setting: true}),
+                                        new MenuItem('Log all connection keys',    {callback:      () => { hideAllMenus(); uiQueueMessageToFigma({cmd: 'figLogAllSavedConnKeys'}); }}),
+                                        new MenuItem('',                           {separator: true}),   
+        menuItemLogMessages           = new MenuItem('Log\u2008messages',          {checkCallback: () => settings.logMessages     ,      callback: () => updateSettingAndMenu('logMessages',           true, !settings.logMessages          ), setting: true}),
+                                        new MenuItem('',                           {separator: true}),   
+        menuItemLogActions            = new MenuItem('Log\u2008actions',           {checkCallback: () => settings.logActions      ,      callback: () => updateSettingAndMenu('logActions',            true, !settings.logActions           ), setting: true}),
+                                        new MenuItem('',                           {separator: true}),
+                                        new MenuItem('Log undo stack',             {callback:      () => { hideAllMenus(); logUndoStack(); }}),
+                                        new MenuItem('Log redo stack',             {callback:      () => { hideAllMenus(); logRedoStack(); }}),
+                                        new MenuItem('',                           {separator: true}),
+                                        new MenuItem('Log all local data',         {callback:      () => { hideAllMenus(); uiQueueMessageToFigma({cmd: 'figLogAllLocalData'}); }})]);
+                     
+
     menuMainDebug = new Menu('Debug', false);
     menuMainDebug.addItems([
         menuItemDataMode              = new MenuItem('Restart in debug mode',              {checkCallback: () => settings.dataMode           , callback: () => updateSettingAndMenu('dataMode',         true, !settings.dataMode        ), setting: true}),
@@ -42590,38 +42624,14 @@ function initGeneratorMenus()
                                                 graphView.graph.nodes.forEach(n => n.updateHeaderLabelOffsetX());
                                             }
                                         }),
-                            new MenuItem('',                                   {separator: true}),
-                            // new MenuItem('Re-save all connections',            {callback:      () => uiSaveConnections(graphView.graph.connections)}),                                   
-                            // new MenuItem('Delete connections to...',           {callback:      () => showDeleteConnectionsDialog()}),                        
-                            // new MenuItem('',                                   {separator: true}),   
-                            // new MenuItem('Log all connection keys',            {callback:      () => { hideAllMenus(); uiQueueMessageToFigma({cmd: 'figLogAllSavedConnKeys'}); }}),
-                            // new MenuItem('Log all local data',                 {callback:      () => { hideAllMenus(); uiQueueMessageToFigma({cmd: 'figLogAllLocalData'}); }}),
-                            new MenuItem('Log undo stack',                 {callback:      () => { hideAllMenus(); logUndoStack(); }}),
-                            new MenuItem('Log redo stack',                 {callback:      () => { hideAllMenus(); logRedoStack(); }}),
-                            // new MenuItem('Clear all local data',               {callback:      () => { hideAllMenus(); uiQueueMessageToFigma({cmd: 'figClearAllLocalData'}); }}),
-                            // new MenuItem('Delete all saved connections',       {callback:      () => { hideAllMenus(); uiQueueMessageToFigma({cmd: 'figRemoveAllSavedConnections'}); }}),
-                            new MenuItem('',                                   {separator: true }),
-                            new MenuItem('Delete all style links',             {callback:      () => { hideAllMenus(); uiRemovePluginDataFromAllLocalStyles(); }}),
-                                        new MenuItem('',                           {separator: true }),
-        menuItemLogRequests           = new MenuItem('Log\u2008requests',          {checkCallback: () => settings.logRequests     ,      callback: () => updateSettingAndMenu('logRequests',           true, !settings.logRequests          ), setting: true}),
-        menuItemLogValueUpdates       = new MenuItem('Log\u2008values',            {checkCallback: () => settings.logValueUpdates ,      callback: () => updateSettingAndMenu('logValueUpdates',       true, !settings.logValueUpdates      ), setting: true}),
-        menuItemLogObjectUpdates      = new MenuItem('Log\u2008objects',           {checkCallback: () => settings.logObjectUpdates,      callback: () => updateSettingAndMenu('logObjectUpdates',      true, !settings.logObjectUpdates     ), setting: true}),
-        menuItemLogStyleUpdates       = new MenuItem('Log\u2008styles',            {checkCallback: () => settings.logStyleUpdates ,      callback: () => updateSettingAndMenu('logStyleUpdates',       true, !settings.logStyleUpdates      ), setting: true}),
-                                        new MenuItem('',                           {separator: true}),                   
-        menuItemLogRawRequests        = new MenuItem('Log\u2008raw\u2008requests', {checkCallback: () => settings.logRawRequests  ,      callback: () => updateSettingAndMenu('logRawRequests',        true, !settings.logRawRequests       ), setting: true}),
-        menuItemLogRawValues          = new MenuItem('Log\u2008raw\u2008values',   {checkCallback: () => settings.logRawValues    ,      callback: () => updateSettingAndMenu('logRawValues',          true, !settings.logRawValues         ), setting: true}),
-                                        new MenuItem('',                           {separator: true}),                   
-        menuItemLogLoading            = new MenuItem('Log\u2008load\u2008startup', {checkCallback: () => settings.logLoading      ,      callback: () => updateSettingAndMenu('logLoading',            true, !settings.logLoading           ), setting: true}),
-                                        new MenuItem('',                           {separator: true}),                   
-        menuItemLogRawLoadNodes       = new MenuItem('Log\u2008load nodes',        {checkCallback: () => settings.logRawLoadNodes ,      callback: () => updateSettingAndMenu('logRawLoadNodes',       true, !settings.logRawLoadNodes      ), setting: true}),
-        menuItemLogRawLoadConnections = new MenuItem('Log\u2008load connections',  {checkCallback: () => settings.logRawLoadConnections, callback: () => updateSettingAndMenu('logRawLoadConnections', true, !settings.logRawLoadConnections), setting: true}),
-                                        new MenuItem('',                           {separator: true}),                   
-        menuItemLogRawSaveNodes       = new MenuItem('Log\u2008save nodes',        {checkCallback: () => settings.logRawSaveNodes ,      callback: () => updateSettingAndMenu('logRawSaveNodes',       true, !settings.logRawSaveNodes      ), setting: true}),
-        menuItemLogRawSaveConnections = new MenuItem('Log\u2008save connections',  {checkCallback: () => settings.logRawSaveConnections, callback: () => updateSettingAndMenu('logRawSaveConnections', true, !settings.logRawSaveConnections), setting: true}),
-                                        new MenuItem('',                           {separator: true}),   
-        menuItemLogMessages           = new MenuItem('Log\u2008messages',          {checkCallback: () => settings.logMessages     ,      callback: () => updateSettingAndMenu('logMessages',           true, !settings.logMessages          ), setting: true}),
-                                        new MenuItem('',                           {separator: true}),   
-        menuItemLogActions            = new MenuItem('Log\u2008actions',           {checkCallback: () => settings.logActions      ,      callback: () => updateSettingAndMenu('logActions',            true, !settings.logActions           ), setting: true})]);
+                                        new MenuItem('',                                   {separator: true}),
+                                        new MenuItem('Log',                        {childMenu: menuDebugLog}),
+                                        new MenuItem('',                                   {separator: true}),
+                                        new MenuItem('Delete connections to...',           {callback:      () => showDeleteConnectionsDialog()}),                        
+                                        new MenuItem('Delete all saved connections',       {callback:      () => { hideAllMenus(); uiRemoveAllSavedConnections(); }}),
+                                        new MenuItem('Delete all style links',             {callback:      () => { hideAllMenus(); uiRemovePluginDataFromAllLocalStyles(); }}),
+                                        new MenuItem('',                                   {separator: true}),
+                                        new MenuItem('Clear all local data',               {callback:      () => { hideAllMenus(); uiQueueMessageToFigma({cmd: 'figClearAllLocalData'}); }})]);
                      
 
     menuMainHelp = new Menu('Help and subscription', false);
@@ -42808,6 +42818,7 @@ function initGeneratorMenus()
     menuNode = new Menu('Node menu', false, false);
     menuNode.addItems([
         menuItemNodeCopy               = new MenuItem('Copy',                {shortcut:  osCtrl() + 'C',              callback: () => graphView.copySelectedNodes() }),
+        menuItemNodeCopyAsJS           = new MenuItem('Copy as Javascript',  {shortcut:  osCtrl() + osShift() + 'C',  callback: () => graphView.copySelectedNodesAsJS() }),
         menuItemNodeDuplicate          = new MenuItem('Duplicate',           {shortcut:  osCtrl() + 'D',              callback: e => { hideAllMenus(); graphView.duplicateSelectedNodes(false); }}),
         menuItemNodeDuplicateConnected = new MenuItem('Duplicate connected', {shortcut:  osCtrl() + osShift() + 'D',  callback: e => { hideAllMenus(); graphView.duplicateSelectedNodes(true ); }}),
                                        //new MenuItem('',                    {separator: true}),
@@ -53833,6 +53844,15 @@ extends OperatorBase
         return  param.isDefault()
             && !this.inputs[0].connected;
     }
+
+
+
+    toJS()
+    {
+        return this.inputs[0].connected
+             ? '(' + this.inputs[0].node.toJS() + ')'
+             : this.paramValue.value.toJS();
+    }
 }
 
 
@@ -64811,109 +64831,109 @@ function dataModeDeleteConnection(conn)
 
 
 
-// var deleteConnectionsDialogVisible = false;
+var deleteConnectionsDialogVisible = false;
 
 
 
-// function showDeleteConnectionsDialog()
-// {
-//     deleteConnectionsDialog.style.left      = '50%';
-//     deleteConnectionsDialog.style.top       = '50%';
-//     deleteConnectionsDialog.style.transform = 'translateX(-50%) translateY(-50%)';
+function showDeleteConnectionsDialog()
+{
+    deleteConnectionsDialog.style.left      = '50%';
+    deleteConnectionsDialog.style.top       = '50%';
+    deleteConnectionsDialog.style.transform = 'translateX(-50%) translateY(-50%)';
 
-//     deleteConnectionsDialog.style.display   = 'block';
-//     deleteConnectionsDialogVisible          = true;
+    deleteConnectionsDialog.style.display   = 'block';
+    deleteConnectionsDialogVisible          = true;
   
-//     deleteConnectionsTitle.buttonDown0      = false;
+    deleteConnectionsTitle.buttonDown0      = false;
        
-//     deleteConnectionsTitle.moveStart        = point_NaN;
-//     deleteConnectionsTitle.pStart           = point_NaN;
+    deleteConnectionsTitle.moveStart        = point_NaN;
+    deleteConnectionsTitle.pStart           = point_NaN;
     
-//     deleteConnectionsInput.value            = '';
+    deleteConnectionsInput.value            = graphView.selectedNodes.map(n => n.id).join(', ');
 
-//     updateDeleteConnectionsInputBack();
-
-
-//     window.setTimeout(() => document.getElementById('deleteConnectionsInput').focus(), 0);
-// }
+    updateDeleteConnectionsInputBack();
 
 
-
-// function hideDeleteConnectionsDialog()
-// {
-//     deleteConnectionsDialog.style.display = 'none';
-//     deleteConnectionsDialogVisible        = false;
-// }
+    window.setTimeout(() => document.getElementById('deleteConnectionsInput').focus(), 0);
+}
 
 
 
-// deleteConnectionsClose.addEventListener('pointerdown', e => e.stopPropagation());
+function hideDeleteConnectionsDialog()
+{
+    deleteConnectionsDialog.style.display = 'none';
+    deleteConnectionsDialogVisible        = false;
+}
 
 
 
-// deleteConnectionsTitle.addEventListener('pointerdown', e => 
-// {
-//     deleteConnectionsTitle.setPointerCapture(e.pointerId);
-//     deleteConnectionsTitle.buttonDown0 = true;
-
-//     deleteConnectionsTitle.moveStart = point(deleteConnectionsDialog.offsetLeft, deleteConnectionsDialog.offsetTop);
-//     deleteConnectionsTitle.pStart    = point(e.clientX, e.clientY);
-// });
+deleteConnectionsClose.addEventListener('pointerdown', e => e.stopPropagation());
 
 
 
-// deleteConnectionsTitle.addEventListener('pointermove', e =>
-// {
-//     if (deleteConnectionsTitle.buttonDown0)
-//     {
-//         deleteConnectionsDialog.style.left = (deleteConnectionsTitle.moveStart.x + (e.clientX - deleteConnectionsTitle.pStart.x)) + 'px';
-//         deleteConnectionsDialog.style.top  = (deleteConnectionsTitle.moveStart.y + (e.clientY - deleteConnectionsTitle.pStart.y)) + 'px';
-//     }
-// });
+deleteConnectionsTitle.addEventListener('pointerdown', e => 
+{
+    deleteConnectionsTitle.setPointerCapture(e.pointerId);
+    deleteConnectionsTitle.buttonDown0 = true;
+
+    deleteConnectionsTitle.moveStart = point(deleteConnectionsDialog.offsetLeft, deleteConnectionsDialog.offsetTop);
+    deleteConnectionsTitle.pStart    = point(e.clientX, e.clientY);
+});
 
 
 
-// deleteConnectionsTitle.addEventListener('pointerup', e =>
-// {
-//     deleteConnectionsTitle.buttonDown0 = false;
-//     deleteConnectionsTitle.releasePointerCapture(e.pointerId);
-// });
+deleteConnectionsTitle.addEventListener('pointermove', e =>
+{
+    if (deleteConnectionsTitle.buttonDown0)
+    {
+        deleteConnectionsDialog.style.left = (deleteConnectionsTitle.moveStart.x + (e.clientX - deleteConnectionsTitle.pStart.x)) + 'px';
+        deleteConnectionsDialog.style.top  = (deleteConnectionsTitle.moveStart.y + (e.clientY - deleteConnectionsTitle.pStart.y)) + 'px';
+    }
+});
 
 
 
-// deleteConnectionsInput.addEventListener('input', () =>
-// {
-//     updateDeleteConnectionsInputBack();
-// });
+deleteConnectionsTitle.addEventListener('pointerup', e =>
+{
+    deleteConnectionsTitle.buttonDown0 = false;
+    deleteConnectionsTitle.releasePointerCapture(e.pointerId);
+});
 
 
 
-// function updateDeleteConnectionsInputBack()
-// {
-//     deleteConnectionsInputBack.innerHTML          = deleteConnectionsInput.value == '' ? 'Node IDs' : '';
-//     deleteConnectionsInputBack.style.borderBottom = deleteConnectionsInput.value == '' ? '1px solid var(--figma-color-bg-tertiary)' : 'none';
-// }
+deleteConnectionsInput.addEventListener('input', () =>
+{
+    updateDeleteConnectionsInputBack();
+});
 
 
 
-// deleteConnectionsInput.addEventListener('pointerup', () =>
-// {
-//     deleteConnectionsInput.select();
-// });
+function updateDeleteConnectionsInputBack()
+{
+    deleteConnectionsInputBack.innerHTML          = deleteConnectionsInput.value == '' ? 'Node IDs' : '';
+    deleteConnectionsInputBack.style.borderBottom = deleteConnectionsInput.value == '' ? '1px solid var(--figma-color-bg-tertiary)' : 'none';
+}
 
 
 
-// function deleteConnectionsToNodes(str)
-// {
-//     str = str.replace(',', ' ');
+deleteConnectionsInput.addEventListener('pointerup', () =>
+{
+    deleteConnectionsInput.select();
+});
+
+
+
+function deleteConnectionsToNodes(str)
+{
+    str = str.replace(',', ' ');
     
-//     const nodeIds = str.split(' ').filter(i => i);
+    const nodeIds = str.split(' ').filter(i => i);
 
-//     uiRemoveConnsToNodes(nodeIds);
+    uiRemoveConnsToNodes(mainGraph, nodeIds);
 
-//     if (!isEmpty(nodeIds))
-//         hideDeleteConnectionsDialog();
-// }
+    if (!isEmpty(nodeIds))
+        hideDeleteConnectionsDialog();
+}
 
 
 var documentBodyClient = null;
@@ -65298,10 +65318,11 @@ document.addEventListener('keydown', e =>
         }
 
 
-        else if (isVisible(whatsNewDialog  )) hideWhatsNewDialog();
-        else if (isVisible(minZoomDialog   )) hideMinZoomDialog();
-        else if (isVisible(productKeyDialog)) hideProductKeyDialog();
-        else if (isVisible(aboutDialog     )) hideAboutDialog();
+        else if (isVisible(whatsNewDialog         )) hideWhatsNewDialog();
+        else if (isVisible(minZoomDialog          )) hideMinZoomDialog();
+        else if (isVisible(productKeyDialog       )) hideProductKeyDialog();
+        else if (isVisible(aboutDialog            )) hideAboutDialog();
+        else if (isVisible(deleteConnectionsDialog)) hideDeleteConnectionsDialog();
 
         else if (!isEmpty(graphView.selectedNodes))
             graphView.deselectAllNodes(e.shiftKey);
@@ -68356,6 +68377,11 @@ function uiDeleteSavedConnection(key, outputNodeId, outputId, outputOrder, input
 
 function uiRemoveAllSavedConnections()
 {
+    for (const node of mainGraph.nodes)
+        for (const input of node.inputs)
+            if (input.connected)
+                uiDisconnectAny(input);
+
     uiQueueMessageToFigma({
         cmd: 'figRemoveAllSavedConnections'
     });
