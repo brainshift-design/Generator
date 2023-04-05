@@ -22,4 +22,26 @@ extends OpArithmetic
         this._symbol.style.left       = 'calc(50% + ' + (this._showOnlySymbol ? 1.5 : 1) + 'px)';
         this._symbol.style.top        = parseFloat(this._symbol.style.top) + (this._showOnlySymbol ? 4 : 4.5);
     }
+
+
+
+    toJS()
+    {
+        if (isEmpty(this.connectedHeaderInputs))
+            return 'Number.NaN';
+
+
+        let js = '';
+
+        js += '(';
+
+        js += this.connectedHeaderInputs
+            .map(i => i.connectedOutput.toJS())
+            .join(' % ');
+        
+        js += ')';
+
+        
+        return js;
+    }
 }

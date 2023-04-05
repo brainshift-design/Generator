@@ -95,6 +95,25 @@ GraphView.prototype.copySelectedNodes = function()
 
 
 
+GraphView.prototype.copySelectedNodesAsJavascript = function()
+{
+    const terminals = getTerminalsInNodes(this.selectedNodes);
+
+
+    const js = terminals.map(t => t.toJS()).join();
+    
+    //let js = '';
+
+    // for (const terminal of terminals)
+    //     js += terminal.toJavascript();
+
+
+    console.log(js);
+    writeTextToClipboard(js);
+};
+
+
+
 GraphView.prototype.pasteCopiedNodes = function(pasteConnected, clientX = Number.NaN, clientY = Number.NaN)
 {
     readTextFromClipboard().then(clipboardText =>

@@ -17,6 +17,8 @@ class MenuItem
 
     separator     = false;
 
+    selectOnDrag  = false;
+
     isSetting     = false;
     disambiguate  = false;
 
@@ -36,6 +38,10 @@ class MenuItem
     divShortcut;
 
     divSeparator;
+
+
+    button0   = false;
+    dragStart = null;
 
 
 
@@ -64,6 +70,7 @@ class MenuItem
                 this.childMenu.parentMenu = this.parentMenu; 
         }
         if (options.separator     != undefined) this.separator     = options.separator;
+        if (options.selectOnDrag  != undefined) this.selectOnDrag  = options.selectOnDrag;
         if (options.shortcut      != undefined) this.shortcut      = options.shortcut;
         if (options.enabled       != undefined) this.enabled       = options.enabled;
         if (options.setting       != undefined) this.isSetting     = options.setting;
@@ -125,6 +132,13 @@ class MenuItem
         {
             e.stopPropagation();
             e.preventDefault();
+
+
+            if (e.button == 0)
+            {
+                this.button0   = true;
+                this.dragStart = point(e.clientX, e.clientY);
+            }
         });
 
 
@@ -147,6 +161,8 @@ class MenuItem
                 }
                 else if (this.callback)
                     this.select(e.shiftKey, getCtrlKey(e), e.altKey, rect.x, rect.y);
+
+                this.button0 = false;
             }
         });
 
@@ -158,43 +174,80 @@ class MenuItem
             {
                 this.divHighlight.style.background = 'var(--figma-color-bg-brand)';
 
-                if (   this.callback
-                    && this.childMenu)
+
+                if (   this.button0
+                    && distance(this.dragStart, clientPos(e)) > 5)
                 {
                     const rect = boundingRect(this.div);
 
-                    if (    e.clientX - rect.x < rect.width - this.arrowWidth
-                        && !this.enteredDiv)
+                    if (   this.callback
+                        && this.childMenu)
+                    {
+                        if (e.clientX - rect.x < rect.width - this.arrowWidth)
+                            this.select(e.shiftKey, getCtrlKey(e), e.altKey, rect.x, rect.y);
+                    }
+                    else if (this.callback)
+                        this.select(e.shiftKey, getCtrlKey(e), e.altKey, rect.x, rect.y);
+
+                    
+                    this.button0 = false;
+
+                    hideAllMenus();
+
+
+                    const node = mainGraph.nodes.at(-1);
+
+                    node.div.shiftOnPointerDown = false;
+
+                    node.sx  = node.div.offsetLeft;
+                    node.sy  = node.div.offsetTop ;
+
+                    node.slx = node.div.offsetLeft - (defNodeWidth    / 2) - (              + graphView.pan.x) / graphView.zoom;
+                    node.sly = node.div.offsetTop  - (defHeaderHeight / 2) - (menuBarHeight + graphView.pan.y) / graphView.zoom;
+
+                    node.div.dragging = true;
+                    node.header.setPointerCapture(e.pointerId);
+                }
+                else
+                {
+                    if (   this.callback
+                        && this.childMenu)
+                    {
+                        const rect = boundingRect(this.div);
+
+                        if (    e.clientX - rect.x < rect.width - this.arrowWidth
+                            && !this.enteredDiv)
+                        {
+                            this.divHighlight.style.left  = 0;
+                            this.divHighlight.style.width = 'calc(100% - ' + (this.childMenu && this.callback ? this.arrowWidth : 0) + 'px)';
+
+                            hideAllMenusAfter(this.parentMenu);
+
+                            this.enteredDiv    = true;
+                            this.enteredExpand = false;
+                        }
+                        else if ( e.clientX - rect.x >= rect.width - this.arrowWidth
+                            && !this.enteredExpand)
+                        {
+                            this.divHighlight.style.left  = 'calc(100% - ' + (this.childMenu && this.callback ? this.arrowWidth : 0) + 'px)';
+                            this.divHighlight.style.width = this.arrowWidth + 'px';
+
+                            this.showChildMenu();
+
+                            this.enteredDiv    = false;
+                            this.enteredExpand = true;
+                        }
+                    }
+                    else if (!this.enteredDiv)
                     {
                         this.divHighlight.style.left  = 0;
-                        this.divHighlight.style.width = 'calc(100% - ' + (this.childMenu && this.callback ? this.arrowWidth : 0) + 'px)';
+                        this.divHighlight.style.width = '100%';
 
-                        hideAllMenusAfter(this.parentMenu);
+                        this.showChildMenu();
 
                         this.enteredDiv    = true;
                         this.enteredExpand = false;
                     }
-                    else if ( e.clientX - rect.x >= rect.width - this.arrowWidth
-                          && !this.enteredExpand)
-                    {
-                        this.divHighlight.style.left  = 'calc(100% - ' + (this.childMenu && this.callback ? this.arrowWidth : 0) + 'px)';
-                        this.divHighlight.style.width = this.arrowWidth + 'px';
-
-                        this.showChildMenu();
-
-                        this.enteredDiv    = false;
-                        this.enteredExpand = true;
-                    }
-                }
-                else if (!this.enteredDiv)
-                {
-                    this.divHighlight.style.left  = 0;
-                    this.divHighlight.style.width = '100%';
-
-                    this.showChildMenu();
-
-                    this.enteredDiv    = true;
-                    this.enteredExpand = false;
                 }
             }
         });

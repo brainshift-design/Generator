@@ -255,3 +255,10 @@ function scrollbarVisible(element)
 {
     return element.scrollHeight > element.clientHeight;
 }
+
+
+
+function clientPos(e)
+{
+    return point(e.clientX, e.clientY);
+}

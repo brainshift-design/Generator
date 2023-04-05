@@ -63,4 +63,15 @@ extends OperatorWithValue
 
         this.updateParamControls();
     }
+
+
+
+    toJS()
+    {
+        return this.inputs[0].connected
+             ? 'Math.min(Math.max(' 
+                    + this.paramMin.toJS() + ', ' + this.inputs[0].connectedOutput.toJS() + '), ' 
+                    + this.paramMax.toJS() + ')'
+             : 'Number.NaN';
+    }
 }

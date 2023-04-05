@@ -11,8 +11,11 @@ extends GArithmetic
     copy()
     {
         const copy = new GOr(this.nodeId, this.options);
+
         copy.copyBase(this);
+
         copy.inputs = this.inputs.map(i => i.copy());
+
         return copy;
     }
 

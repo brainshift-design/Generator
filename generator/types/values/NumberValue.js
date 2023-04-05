@@ -106,6 +106,13 @@ extends GValue
 
 
 
+    toJS()
+    {
+        return this.toSimpleString();
+    }
+
+
+
     static NaN = Object.freeze(new NumberValue(
         Number.NaN, 
         Number.NaN));

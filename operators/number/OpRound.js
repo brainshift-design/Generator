@@ -62,4 +62,16 @@ extends OperatorWithValue
 
         this.updateParamControls();
     }
+
+
+
+
+
+
+    toJS()
+    {
+        return this.inputs[0].connected
+             ? 'Math.round(' + this.inputs[0].connectedOutput.toJS() + ')'
+             : 'Number.NaN';
+    }
 }

@@ -91,7 +91,7 @@ extends OperatorBase
     toJS()
     {
         return this.inputs[0].connected
-             ? '(' + this.inputs[0].node.toJS() + ')'
+             ? '(' + this.inputs[0].connectedOutput.toJS() + ')'
              : this.paramValue.value.toJS();
     }
 }

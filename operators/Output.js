@@ -36,6 +36,7 @@ class Output
     connectedInputs = [];
 
     get connectedHeaderInputs() { return this.connectedInputs.filter(i => !i.param); }
+    get connected() { return !isEmpty(this.connectedInputs); }
 
 
     mouseOver  = false;
@@ -52,8 +53,6 @@ class Output
 
     backInit   = null;
 
-
-    get connected() { return !isEmpty(this.connectedInputs); }
 
 
 
@@ -298,5 +297,14 @@ class Output
         }
 
         return false
+    }
+
+
+
+    toJS()
+    {
+        return this.param
+             ? this.param.toJS()
+             : this.node.toJS();
     }
 }

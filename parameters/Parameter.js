@@ -253,6 +253,13 @@ extends EventTarget
     {
         
     }
+
+
+
+    toJS()
+    {
+        return '';
+    }
 }
 
 

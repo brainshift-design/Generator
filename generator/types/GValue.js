@@ -27,6 +27,14 @@ extends GNode
     { 
         return this.type; 
     }
+
+
+
+    toJS()
+    {
+        console.assert(false, 'invalid abstract method');
+        return '';
+    }
 }
 
 

@@ -3757,7 +3757,7 @@ a
             <div id='whatsNewBody'>
                 <h1 style='margin-top: 20px;'>What's new in Generator</h1>
 
-                <p>-</p>
+                <p>Fixed async bug.</p>
                 
                 <p><br/><br/><div id='chkHideWhatsNew'></div></p>
             </div>
@@ -4079,7 +4079,7 @@ a
 
 
 
-const generatorVersion = 127;
+const generatorVersion = 128;
 
 
 const MAX_INT32        = 2147483647;
@@ -6913,6 +6913,13 @@ function scrollbarVisible(element)
 }
 
 
+
+function clientPos(e)
+{
+    return point(e.clientX, e.clientY);
+}
+
+
 const webColors = [
     {name: 'AliceBlue',            color: 'f0f8ff'},
     {name: 'AntiqueWhite',         color: 'faebd7'},
@@ -8162,6 +8169,14 @@ extends GNode
     { 
         return this.type; 
     }
+
+
+
+    toJS()
+    {
+        console.assert(false, 'invalid abstract method');
+        return '';
+    }
 }
 
 
@@ -8418,6 +8433,13 @@ extends GValue
              + (!isNaN(this.decimals)
                 ? subscriptNumber(this.decimals)
                 : '');
+    }
+
+
+
+    toJS()
+    {
+        return this.toSimpleString();
     }
 
 
@@ -11990,8 +12012,11 @@ extends GArithmetic
     copy()
     {
         const copy = new GOr(this.nodeId, this.options);
+
         copy.copyBase(this);
+
         copy.inputs = this.inputs.map(i => i.copy());
+
         return copy;
     }
 
@@ -12244,7 +12269,7 @@ extends GConditionBase
         if (this.isCached())
             return this;
 
-        this.value = evalConditionInputs(
+        this.value = await evalConditionInputs(
             this.input0, 
             this.input1, 
             (a, b) => a == b, 
@@ -12285,7 +12310,7 @@ extends GConditionBase
         if (this.isCached())
             return this;
 
-        this.value = evalConditionInputs(
+        this.value = await evalConditionInputs(
             this.input0, 
             this.input1, 
             (a, b) => a != b, 
@@ -12325,7 +12350,7 @@ extends GConditionBase
         if (this.isCached())
             return this;
 
-            this.value = evalConditionInputs(
+            this.value = await evalConditionInputs(
                 this.input0, 
                 this.input1, 
                 (a, b) => a < b, 
@@ -12365,7 +12390,7 @@ extends GConditionBase
         if (this.isCached())
             return this;
 
-            this.value = evalConditionInputs(
+            this.value = await evalConditionInputs(
                 this.input0, 
                 this.input1, 
                 (a, b) => a <= b, 
@@ -12406,7 +12431,7 @@ extends GConditionBase
         if (this.isCached())
             return this;
 
-        this.value = evalConditionInputs(
+        this.value = await evalConditionInputs(
             this.input0, 
             this.input1, 
             (a, b) => a > b, 
@@ -12449,7 +12474,7 @@ extends GConditionBase
         if (this.isCached())
             return this;
 
-        this.value = evalConditionInputs(
+        this.value = await evalConditionInputs(
             this.input0, 
             this.input1, 
             (a, b) => a >= b, 
@@ -16655,41 +16680,41 @@ function updateMenuItemShowOperationResults()
 
 function enableFeatures(subscription, beta)
 {
-    updateMenuItemDisplay(menuItemEnableBetaFeatures .div, subscription);
+    updateMenuItemDisplay(menuItemEnableBetaFeatures  .div, subscription);
 
-    updateMenuItemDisplay(btnFlow                    .div, subscription);
-    updateMenuItemDisplay(btnText                    .div, subscription && beta);
-    updateMenuItemDisplay(btnShape                   .div, subscription && beta);
-    updateMenuItemDisplay(btnGroup                   .div, false);//subscription && beta);
+    updateMenuItemDisplay(btnFlow                     .div, subscription);
+    updateMenuItemDisplay(btnText                     .div, subscription && beta);
+    updateMenuItemDisplay(btnShape                    .div, subscription && beta);
+    updateMenuItemDisplay(btnGroup                    .div, false);//subscription && beta);
 
-    updateMenuItemDisplay(menuItemLogObjectUpdates   .div, subscription && beta);
+    updateMenuItemDisplay(menuItemLogObjectUpdates    .div, subscription && beta);
     
-    updateMenuItemDisplay(menuItemList               .div, subscription && beta);
-    updateMenuItemDisplay(menuFlowSep1               .div, subscription && beta);
-    updateMenuItemDisplay(menuItemItems              .div, subscription && beta);
-    updateMenuItemDisplay(menuItemSelect             .div, subscription && beta);
-    updateMenuItemDisplay(menuFlowSep2               .div, subscription && beta);
-    updateMenuItemDisplay(menuItemRepeat             .div, subscription && beta);
-    updateMenuItemDisplay(menuFlowSep3               .div, subscription && beta);
-    updateMenuItemDisplay(menuItemCache              .div, subscription && beta);
-    updateMenuItemDisplay(menuItemCopy               .div, subscription && beta);
-    updateMenuItemDisplay(menuItemCustomInputs       .div, false);//subscription && beta);
-    updateMenuItemDisplay(menuItemCustomOutputs      .div, false);//subscription && beta);
+    updateMenuItemDisplay(menuItemList                .div, subscription && beta);
+    updateMenuItemDisplay(menuFlowSep1                .div, subscription && beta);
+    updateMenuItemDisplay(menuItemItems               .div, subscription && beta);
+    updateMenuItemDisplay(menuItemSelect              .div, subscription && beta);
+    updateMenuItemDisplay(menuFlowSep2                .div, subscription && beta);
+    updateMenuItemDisplay(menuItemRepeat              .div, subscription && beta);
+    updateMenuItemDisplay(menuFlowSep3                .div, subscription && beta);
+    updateMenuItemDisplay(menuItemCache               .div, subscription && beta);
+    updateMenuItemDisplay(menuItemCopy                .div, subscription && beta);
+    updateMenuItemDisplay(menuItemCustomInputs        .div, false);//subscription && beta);
+    updateMenuItemDisplay(menuItemCustomOutputs       .div, false);//subscription && beta);
     
-    updateMenuItemDisplay(menuItemSeries             .div, subscription && beta);    
-    updateMenuItemDisplay(menuItemNumberSep1         .div, subscription && beta);
-    updateMenuItemDisplay(menuItemNumberConvertToText.div, subscription && beta);
+    updateMenuItemDisplay(menuItemSeries              .div, subscription && beta);    
+    updateMenuItemDisplay(menuItemNumberSep1          .div, subscription && beta);
+    updateMenuItemDisplay(menuItemNumberConvertToText .div, subscription && beta);
     
-    updateMenuItemDisplay(menuItemCorrectColor       .div, subscription);
-    updateMenuItemDisplay(menuItemColorSep1          .div, subscription);
-    updateMenuItemDisplay(menuItemColorblind         .div, subscription);
-    //updateMenuItemDisplay(menuItemColorBlend         .div, beta);
+    updateMenuItemDisplay(menuItemCorrectColor        .div, subscription);
+    updateMenuItemDisplay(menuItemColorSep1           .div, subscription);
+    updateMenuItemDisplay(menuItemColorblind          .div, subscription);
+    //updateMenuItemDisplay(menuItemColorBlend        .div, beta);
 
-    //updateMenuItemDisplay(menuItemStyleFill        .div, subscription && beta);
-    updateMenuItemDisplay(menuItemStyleStroke        .div, subscription && beta);
-    //updateMenuItemDisplay(menuItemStyleSep1        .div, subscription && beta);
+    //updateMenuItemDisplay(menuItemStyleFill         .div, subscription && beta);
+    updateMenuItemDisplay(menuItemStyleStroke         .div, subscription && beta);
+    //updateMenuItemDisplay(menuItemStyleSep1         .div, subscription && beta);
     
-    updateMenuItemDisplay(menuItemNodeCopyAsJS       .div, subscription && beta);
+    updateMenuItemDisplay(menuItemNodeCopyAsJavascript.div, subscription && beta);
 
 
     graphView.graph.nodes.forEach(n => n.updateSubscribeStatus(subscription));
@@ -22903,7 +22928,7 @@ onerror = (event, source, line, pos, error) =>
 };
 
 
-const generatorVersion = 127;
+const generatorVersion = 128;
 
 
 const MAX_INT32        = 2147483647;
@@ -25734,6 +25759,13 @@ function clearSelectedText(element)
 function scrollbarVisible(element) 
 {
     return element.scrollHeight > element.clientHeight;
+}
+
+
+
+function clientPos(e)
+{
+    return point(e.clientX, e.clientY);
 }
 
 
@@ -29330,6 +29362,14 @@ extends GNode
     { 
         return this.type; 
     }
+
+
+
+    toJS()
+    {
+        console.assert(false, 'invalid abstract method');
+        return '';
+    }
 }
 
 
@@ -29586,6 +29626,13 @@ extends GValue
              + (!isNaN(this.decimals)
                 ? subscriptNumber(this.decimals)
                 : '');
+    }
+
+
+
+    toJS()
+    {
+        return this.toSimpleString();
     }
 
 
@@ -33158,8 +33205,11 @@ extends GArithmetic
     copy()
     {
         const copy = new GOr(this.nodeId, this.options);
+
         copy.copyBase(this);
+
         copy.inputs = this.inputs.map(i => i.copy());
+
         return copy;
     }
 
@@ -33412,7 +33462,7 @@ extends GConditionBase
         if (this.isCached())
             return this;
 
-        this.value = evalConditionInputs(
+        this.value = await evalConditionInputs(
             this.input0, 
             this.input1, 
             (a, b) => a == b, 
@@ -33453,7 +33503,7 @@ extends GConditionBase
         if (this.isCached())
             return this;
 
-        this.value = evalConditionInputs(
+        this.value = await evalConditionInputs(
             this.input0, 
             this.input1, 
             (a, b) => a != b, 
@@ -33493,7 +33543,7 @@ extends GConditionBase
         if (this.isCached())
             return this;
 
-            this.value = evalConditionInputs(
+            this.value = await evalConditionInputs(
                 this.input0, 
                 this.input1, 
                 (a, b) => a < b, 
@@ -33533,7 +33583,7 @@ extends GConditionBase
         if (this.isCached())
             return this;
 
-            this.value = evalConditionInputs(
+            this.value = await evalConditionInputs(
                 this.input0, 
                 this.input1, 
                 (a, b) => a <= b, 
@@ -33574,7 +33624,7 @@ extends GConditionBase
         if (this.isCached())
             return this;
 
-        this.value = evalConditionInputs(
+        this.value = await evalConditionInputs(
             this.input0, 
             this.input1, 
             (a, b) => a > b, 
@@ -33617,7 +33667,7 @@ extends GConditionBase
         if (this.isCached())
             return this;
 
-        this.value = evalConditionInputs(
+        this.value = await evalConditionInputs(
             this.input0, 
             this.input1, 
             (a, b) => a >= b, 
@@ -37823,41 +37873,41 @@ function updateMenuItemShowOperationResults()
 
 function enableFeatures(subscription, beta)
 {
-    updateMenuItemDisplay(menuItemEnableBetaFeatures .div, subscription);
+    updateMenuItemDisplay(menuItemEnableBetaFeatures  .div, subscription);
 
-    updateMenuItemDisplay(btnFlow                    .div, subscription);
-    updateMenuItemDisplay(btnText                    .div, subscription && beta);
-    updateMenuItemDisplay(btnShape                   .div, subscription && beta);
-    updateMenuItemDisplay(btnGroup                   .div, false);//subscription && beta);
+    updateMenuItemDisplay(btnFlow                     .div, subscription);
+    updateMenuItemDisplay(btnText                     .div, subscription && beta);
+    updateMenuItemDisplay(btnShape                    .div, subscription && beta);
+    updateMenuItemDisplay(btnGroup                    .div, false);//subscription && beta);
 
-    updateMenuItemDisplay(menuItemLogObjectUpdates   .div, subscription && beta);
+    updateMenuItemDisplay(menuItemLogObjectUpdates    .div, subscription && beta);
     
-    updateMenuItemDisplay(menuItemList               .div, subscription && beta);
-    updateMenuItemDisplay(menuFlowSep1               .div, subscription && beta);
-    updateMenuItemDisplay(menuItemItems              .div, subscription && beta);
-    updateMenuItemDisplay(menuItemSelect             .div, subscription && beta);
-    updateMenuItemDisplay(menuFlowSep2               .div, subscription && beta);
-    updateMenuItemDisplay(menuItemRepeat             .div, subscription && beta);
-    updateMenuItemDisplay(menuFlowSep3               .div, subscription && beta);
-    updateMenuItemDisplay(menuItemCache              .div, subscription && beta);
-    updateMenuItemDisplay(menuItemCopy               .div, subscription && beta);
-    updateMenuItemDisplay(menuItemCustomInputs       .div, false);//subscription && beta);
-    updateMenuItemDisplay(menuItemCustomOutputs      .div, false);//subscription && beta);
+    updateMenuItemDisplay(menuItemList                .div, subscription && beta);
+    updateMenuItemDisplay(menuFlowSep1                .div, subscription && beta);
+    updateMenuItemDisplay(menuItemItems               .div, subscription && beta);
+    updateMenuItemDisplay(menuItemSelect              .div, subscription && beta);
+    updateMenuItemDisplay(menuFlowSep2                .div, subscription && beta);
+    updateMenuItemDisplay(menuItemRepeat              .div, subscription && beta);
+    updateMenuItemDisplay(menuFlowSep3                .div, subscription && beta);
+    updateMenuItemDisplay(menuItemCache               .div, subscription && beta);
+    updateMenuItemDisplay(menuItemCopy                .div, subscription && beta);
+    updateMenuItemDisplay(menuItemCustomInputs        .div, false);//subscription && beta);
+    updateMenuItemDisplay(menuItemCustomOutputs       .div, false);//subscription && beta);
     
-    updateMenuItemDisplay(menuItemSeries             .div, subscription && beta);    
-    updateMenuItemDisplay(menuItemNumberSep1         .div, subscription && beta);
-    updateMenuItemDisplay(menuItemNumberConvertToText.div, subscription && beta);
+    updateMenuItemDisplay(menuItemSeries              .div, subscription && beta);    
+    updateMenuItemDisplay(menuItemNumberSep1          .div, subscription && beta);
+    updateMenuItemDisplay(menuItemNumberConvertToText .div, subscription && beta);
     
-    updateMenuItemDisplay(menuItemCorrectColor       .div, subscription);
-    updateMenuItemDisplay(menuItemColorSep1          .div, subscription);
-    updateMenuItemDisplay(menuItemColorblind         .div, subscription);
-    //updateMenuItemDisplay(menuItemColorBlend         .div, beta);
+    updateMenuItemDisplay(menuItemCorrectColor        .div, subscription);
+    updateMenuItemDisplay(menuItemColorSep1           .div, subscription);
+    updateMenuItemDisplay(menuItemColorblind          .div, subscription);
+    //updateMenuItemDisplay(menuItemColorBlend        .div, beta);
 
-    //updateMenuItemDisplay(menuItemStyleFill        .div, subscription && beta);
-    updateMenuItemDisplay(menuItemStyleStroke        .div, subscription && beta);
-    //updateMenuItemDisplay(menuItemStyleSep1        .div, subscription && beta);
+    //updateMenuItemDisplay(menuItemStyleFill         .div, subscription && beta);
+    updateMenuItemDisplay(menuItemStyleStroke         .div, subscription && beta);
+    //updateMenuItemDisplay(menuItemStyleSep1         .div, subscription && beta);
     
-    updateMenuItemDisplay(menuItemNodeCopyAsJS       .div, subscription && beta);
+    updateMenuItemDisplay(menuItemNodeCopyAsJavascript.div, subscription && beta);
 
 
     graphView.graph.nodes.forEach(n => n.updateSubscribeStatus(subscription));
@@ -42086,6 +42136,8 @@ class MenuItem
 
     separator     = false;
 
+    selectOnDrag  = false;
+
     isSetting     = false;
     disambiguate  = false;
 
@@ -42105,6 +42157,10 @@ class MenuItem
     divShortcut;
 
     divSeparator;
+
+
+    button0   = false;
+    dragStart = null;
 
 
 
@@ -42133,6 +42189,7 @@ class MenuItem
                 this.childMenu.parentMenu = this.parentMenu; 
         }
         if (options.separator     != undefined) this.separator     = options.separator;
+        if (options.selectOnDrag  != undefined) this.selectOnDrag  = options.selectOnDrag;
         if (options.shortcut      != undefined) this.shortcut      = options.shortcut;
         if (options.enabled       != undefined) this.enabled       = options.enabled;
         if (options.setting       != undefined) this.isSetting     = options.setting;
@@ -42194,6 +42251,13 @@ class MenuItem
         {
             e.stopPropagation();
             e.preventDefault();
+
+
+            if (e.button == 0)
+            {
+                this.button0   = true;
+                this.dragStart = point(e.clientX, e.clientY);
+            }
         });
 
 
@@ -42216,6 +42280,8 @@ class MenuItem
                 }
                 else if (this.callback)
                     this.select(e.shiftKey, getCtrlKey(e), e.altKey, rect.x, rect.y);
+
+                this.button0 = false;
             }
         });
 
@@ -42227,43 +42293,80 @@ class MenuItem
             {
                 this.divHighlight.style.background = 'var(--figma-color-bg-brand)';
 
-                if (   this.callback
-                    && this.childMenu)
+
+                if (   this.button0
+                    && distance(this.dragStart, clientPos(e)) > 5)
                 {
                     const rect = boundingRect(this.div);
 
-                    if (    e.clientX - rect.x < rect.width - this.arrowWidth
-                        && !this.enteredDiv)
+                    if (   this.callback
+                        && this.childMenu)
+                    {
+                        if (e.clientX - rect.x < rect.width - this.arrowWidth)
+                            this.select(e.shiftKey, getCtrlKey(e), e.altKey, rect.x, rect.y);
+                    }
+                    else if (this.callback)
+                        this.select(e.shiftKey, getCtrlKey(e), e.altKey, rect.x, rect.y);
+
+                    
+                    this.button0 = false;
+
+                    hideAllMenus();
+
+
+                    const node = mainGraph.nodes.at(-1);
+
+                    node.div.shiftOnPointerDown = false;
+
+                    node.sx  = node.div.offsetLeft;
+                    node.sy  = node.div.offsetTop ;
+
+                    node.slx = node.div.offsetLeft - (defNodeWidth    / 2) - (              + graphView.pan.x) / graphView.zoom;
+                    node.sly = node.div.offsetTop  - (defHeaderHeight / 2) - (menuBarHeight + graphView.pan.y) / graphView.zoom;
+
+                    node.div.dragging = true;
+                    node.header.setPointerCapture(e.pointerId);
+                }
+                else
+                {
+                    if (   this.callback
+                        && this.childMenu)
+                    {
+                        const rect = boundingRect(this.div);
+
+                        if (    e.clientX - rect.x < rect.width - this.arrowWidth
+                            && !this.enteredDiv)
+                        {
+                            this.divHighlight.style.left  = 0;
+                            this.divHighlight.style.width = 'calc(100% - ' + (this.childMenu && this.callback ? this.arrowWidth : 0) + 'px)';
+
+                            hideAllMenusAfter(this.parentMenu);
+
+                            this.enteredDiv    = true;
+                            this.enteredExpand = false;
+                        }
+                        else if ( e.clientX - rect.x >= rect.width - this.arrowWidth
+                            && !this.enteredExpand)
+                        {
+                            this.divHighlight.style.left  = 'calc(100% - ' + (this.childMenu && this.callback ? this.arrowWidth : 0) + 'px)';
+                            this.divHighlight.style.width = this.arrowWidth + 'px';
+
+                            this.showChildMenu();
+
+                            this.enteredDiv    = false;
+                            this.enteredExpand = true;
+                        }
+                    }
+                    else if (!this.enteredDiv)
                     {
                         this.divHighlight.style.left  = 0;
-                        this.divHighlight.style.width = 'calc(100% - ' + (this.childMenu && this.callback ? this.arrowWidth : 0) + 'px)';
+                        this.divHighlight.style.width = '100%';
 
-                        hideAllMenusAfter(this.parentMenu);
+                        this.showChildMenu();
 
                         this.enteredDiv    = true;
                         this.enteredExpand = false;
                     }
-                    else if ( e.clientX - rect.x >= rect.width - this.arrowWidth
-                          && !this.enteredExpand)
-                    {
-                        this.divHighlight.style.left  = 'calc(100% - ' + (this.childMenu && this.callback ? this.arrowWidth : 0) + 'px)';
-                        this.divHighlight.style.width = this.arrowWidth + 'px';
-
-                        this.showChildMenu();
-
-                        this.enteredDiv    = false;
-                        this.enteredExpand = true;
-                    }
-                }
-                else if (!this.enteredDiv)
-                {
-                    this.divHighlight.style.left  = 0;
-                    this.divHighlight.style.width = '100%';
-
-                    this.showChildMenu();
-
-                    this.enteredDiv    = true;
-                    this.enteredExpand = false;
                 }
             }
         });
@@ -42525,7 +42628,7 @@ var menuItemGraphPaste;
 var menuItemGraphPasteConnected;
 
 var menuItemNodeCopy;
-var menuItemNodeCopyAsJS;
+var menuItemNodeCopyAsJavascript;
 var menuItemNodeDuplicate;
 var menuItemNodeDuplicateConnected;
 var menuItemNodeRemove;
@@ -42818,7 +42921,7 @@ function initGeneratorMenus()
     menuNode = new Menu('Node menu', false, false);
     menuNode.addItems([
         menuItemNodeCopy               = new MenuItem('Copy',                {shortcut:  osCtrl() + 'C',              callback: () => graphView.copySelectedNodes() }),
-        menuItemNodeCopyAsJS           = new MenuItem('Copy as Javascript',  {shortcut:  osCtrl() + osShift() + 'C',  callback: () => graphView.copySelectedNodesAsJS() }),
+        menuItemNodeCopyAsJavascript   = new MenuItem('Copy as Javascript',  {shortcut:  osCtrl() + osShift() + 'C',  callback: () => graphView.copySelectedNodesAsJavascript() }),
         menuItemNodeDuplicate          = new MenuItem('Duplicate',           {shortcut:  osCtrl() + 'D',              callback: e => { hideAllMenus(); graphView.duplicateSelectedNodes(false); }}),
         menuItemNodeDuplicateConnected = new MenuItem('Duplicate connected', {shortcut:  osCtrl() + osShift() + 'D',  callback: e => { hideAllMenus(); graphView.duplicateSelectedNodes(true ); }}),
                                        //new MenuItem('',                    {separator: true}),
@@ -44626,6 +44729,25 @@ GraphView.prototype.copySelectedNodes = function()
 
 
 
+GraphView.prototype.copySelectedNodesAsJavascript = function()
+{
+    const terminals = getTerminalsInNodes(this.selectedNodes);
+
+
+    const js = terminals.map(t => t.toJS()).join();
+    
+    //let js = '';
+
+    // for (const terminal of terminals)
+    //     js += terminal.toJavascript();
+
+
+    console.log(js);
+    writeTextToClipboard(js);
+};
+
+
+
 GraphView.prototype.pasteCopiedNodes = function(pasteConnected, clientX = Number.NaN, clientY = Number.NaN)
 {
     readTextFromClipboard().then(clipboardText =>
@@ -46325,6 +46447,13 @@ extends EventTarget
     {
         
     }
+
+
+
+    toJS()
+    {
+        return '';
+    }
 }
 
 
@@ -46544,6 +46673,15 @@ extends Parameter
     loadParam(_param)
     {
         this.setValue(parseNumberValue(_param[2])[0], true, true, false);
+    }
+
+
+
+    toJS()
+    {
+        return this.input.connected
+             ? '(' + this.input.connectedOutput.toJS() + ')'
+             : this.value.toJS();
     }
 }
 
@@ -49154,6 +49292,7 @@ class Output
     connectedInputs = [];
 
     get connectedHeaderInputs() { return this.connectedInputs.filter(i => !i.param); }
+    get connected() { return !isEmpty(this.connectedInputs); }
 
 
     mouseOver  = false;
@@ -49170,8 +49309,6 @@ class Output
 
     backInit   = null;
 
-
-    get connected() { return !isEmpty(this.connectedInputs); }
 
 
 
@@ -49416,6 +49553,15 @@ class Output
         }
 
         return false
+    }
+
+
+
+    toJS()
+    {
+        return this.param
+             ? this.param.toJS()
+             : this.node.toJS();
     }
 }
 
@@ -51072,6 +51218,13 @@ class Operator
     { 
         // create the generator string here
 
+        return '';
+    }
+
+
+
+    toJS()
+    {
         return '';
     }
 }
@@ -53850,7 +54003,7 @@ extends OperatorBase
     toJS()
     {
         return this.inputs[0].connected
-             ? '(' + this.inputs[0].node.toJS() + ')'
+             ? '(' + this.inputs[0].connectedOutput.toJS() + ')'
              : this.paramValue.value.toJS();
     }
 }
@@ -53908,6 +54061,15 @@ extends OperatorWithValue
         this.paramValue.enableControlText(false);
 
         this.updateParamControls();
+    }
+
+
+
+    toJS()
+    {
+        return this.inputs[0].connected
+             ? 'Math.abs(' + this.inputs[0].connectedOutput.toJS() + ')'
+             : 'Number.NaN';
     }
 }
 
@@ -53976,6 +54138,18 @@ extends OperatorWithValue
 
         this.updateParamControls();
     }
+
+
+
+
+
+
+    toJS()
+    {
+        return this.inputs[0].connected
+             ? 'Math.round(' + this.inputs[0].connectedOutput.toJS() + ')'
+             : 'Number.NaN';
+    }
 }
 
 
@@ -54043,6 +54217,17 @@ extends OperatorWithValue
         this.paramValue.enableControlText(false);
 
         this.updateParamControls();
+    }
+
+
+
+    toJS()
+    {
+        return this.inputs[0].connected
+             ? 'Math.min(Math.max(' 
+                    + this.paramMin.toJS() + ', ' + this.inputs[0].connectedOutput.toJS() + '), ' 
+                    + this.paramMax.toJS() + ')'
+             : 'Number.NaN';
     }
 }
 
@@ -54467,6 +54652,28 @@ extends OpArithmetic
     {
         super(NUMBER_ADD, 'add', '+');
     }
+
+
+
+    toJS()
+    {
+        if (isEmpty(this.connectedHeaderInputs))
+            return 'Number.NaN';
+
+
+        let js = '';
+
+        js += '(';
+
+        js += this.connectedHeaderInputs
+            .map(i => i.connectedOutput.toJS())
+            .join(' + ');
+        
+        js += ')';
+
+        
+        return js;
+    }
 }
 
 
@@ -54477,6 +54684,28 @@ extends OpArithmetic
     {
         super(NUMBER_SUBTRACT, 'sub', '−');
     }
+
+
+
+    toJS()
+    {
+        if (isEmpty(this.connectedHeaderInputs))
+            return 'Number.NaN';
+
+
+        let js = '';
+
+        js += '(';
+
+        js += this.connectedHeaderInputs
+            .map(i => i.connectedOutput.toJS())
+            .join(' - ');
+        
+        js += ')';
+
+        
+        return js;
+    }
 }
 
 
@@ -54486,6 +54715,28 @@ extends OpArithmetic
     constructor()
     {
         super(NUMBER_MULTIPLY, 'mul', '×');
+    }
+
+
+
+    toJS()
+    {
+        if (isEmpty(this.connectedHeaderInputs))
+            return 'Number.NaN';
+
+
+        let js = '';
+
+        js += '(';
+
+        js += this.connectedHeaderInputs
+            .map(i => i.connectedOutput.toJS())
+            .join(' * ');
+        
+        js += ')';
+
+        
+        return js;
     }
 }
 
@@ -54500,20 +54751,25 @@ extends OpArithmetic
 
 
 
-    // updateNode()
-    // {
-    //     super.updateNode();
+    toJS()
+    {
+        if (isEmpty(this.connectedHeaderInputs))
+            return 'Number.NaN';
 
-    //     const colors = this.getHeaderColors();
 
-    //     this._symbol.innerHTML =
-    //         this._showOnlySymbol
-    //         ? '<svg width="11" height="13" viewBox="0 0 11 13" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M10.5 2L2.44458 12.5468L0.698218 11.3084L8.75363 0.761576L10.5 2Z" fill="' + rgba2style(colors.text) + '"/></svg>'
-    //         : '<svg width="11" height="13" viewBox="0 0 11 13" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M10.5 2L2.44458 12.5468L0.698218 11.3084L8.75363 0.761576L10.5 2Z" fill="' + rgba2style(colors.text) + '"/></svg>';
+        let js = '';
 
-    //     this._symbol.style.left = 'calc(50% + ' + (this._showOnlySymbol ? 1.5 : 1) + 'px)';
-    //     this._symbol.style.top  = parseFloat(this._symbol.style.top) + (this._showOnlySymbol ? 1.5 : 6);
-    // }
+        js += '(';
+
+        js += this.connectedHeaderInputs
+            .map(i => i.connectedOutput.toJS())
+            .join(' / ');
+        
+        js += ')';
+
+        
+        return js;
+    }
 }
 
 
@@ -54541,6 +54797,28 @@ extends OpArithmetic
         this._symbol.style.left       = 'calc(50% + ' + (this._showOnlySymbol ? 1.5 : 1) + 'px)';
         this._symbol.style.top        = parseFloat(this._symbol.style.top) + (this._showOnlySymbol ? 4 : 4.5);
     }
+
+
+
+    toJS()
+    {
+        if (isEmpty(this.connectedHeaderInputs))
+            return 'Number.NaN';
+
+
+        let js = '';
+
+        js += '(';
+
+        js += this.connectedHeaderInputs
+            .map(i => i.connectedOutput.toJS())
+            .join(' % ');
+        
+        js += ')';
+
+        
+        return js;
+    }
 }
 
 
@@ -54554,18 +54832,29 @@ extends OpArithmetic
 
 
 
-    // updateNode()
-    // {
-    //     super.updateNode();
+    toJS()
+    {
+        if (isEmpty(this.connectedHeaderInputs))
+            return 'Number.NaN';
 
-    //     this._symbol.innerHTML =
-    //         this._showOnlySymbol
-    //         ? '<span style="font-size: 14px;">x</span><span style="position: relative; left: -1px; top: -7px; font-size: 7px; font-weight: bold;">y</span>'
-    //         : '<span style="position: relative; top: -2.5px; font-size: 9px;">x</span><span style="position: relative; left: -0.5px; top: -7.5px; font-size: 3.75px; font-weight: bold;">y</span>';
 
-    //     this._symbol.style.left = 'calc(50% + ' + (this._showOnlySymbol ? 1.5 : 1) + 'px)';
-    //     this._symbol.style.top  = parseFloat(this._symbol.style.top) + (this._showOnlySymbol ? 1.5 : 6);
-    // }
+        let js = '';
+
+
+        this.connectedHeaderInputs
+            .forEach(i => 
+            {
+                js += 'Math.pow(';
+                js += i.connectedOutput.toJS();
+                js += ', ';
+            });
+
+        this.connectedHeaderInputs
+            .forEach(i => ')');
+
+        
+        return js;
+    }
 }
 
 
@@ -61033,6 +61322,17 @@ function getProgressNodesAfterNode(node)
 
 
 
+function getTerminalsInNodes(nodes)
+{
+    return nodes.filter(n => 
+           !n.outputs.find(o => o.connected)
+        || !n.outputs.find(o => arraysIntersect(
+               o.connectedInputs.map(i => i.node),
+               nodes)));
+}
+
+
+
 function getTerminalsAfterNode(node)
 {
     let after = [];
@@ -65226,8 +65526,11 @@ document.addEventListener('keydown', e =>
     // copy
     else if (   e.code == 'KeyC'
         && getCtrlKey(e))
-        graphView.copySelectedNodes();
-        
+    {
+        if (e.shiftKey) graphView.copySelectedNodesAsJavascript();
+        else            graphView.copySelectedNodes();
+    }
+
     // paste
     else if (e.code == 'KeyV'
           && getCtrlKey(e)

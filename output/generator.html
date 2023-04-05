@@ -4,7 +4,7 @@
 
 
 
-const generatorVersion = 127;
+const generatorVersion = 128;
 
 
 const MAX_INT32        = 2147483647;
@@ -2838,6 +2838,13 @@ function scrollbarVisible(element)
 }
 
 
+
+function clientPos(e)
+{
+    return point(e.clientX, e.clientY);
+}
+
+
 const webColors = [
     {name: 'AliceBlue',            color: 'f0f8ff'},
     {name: 'AntiqueWhite',         color: 'faebd7'},
@@ -4087,6 +4094,14 @@ extends GNode
     { 
         return this.type; 
     }
+
+
+
+    toJS()
+    {
+        console.assert(false, 'invalid abstract method');
+        return '';
+    }
 }
 
 
@@ -4343,6 +4358,13 @@ extends GValue
              + (!isNaN(this.decimals)
                 ? subscriptNumber(this.decimals)
                 : '');
+    }
+
+
+
+    toJS()
+    {
+        return this.toSimpleString();
     }
 
 
@@ -7915,8 +7937,11 @@ extends GArithmetic
     copy()
     {
         const copy = new GOr(this.nodeId, this.options);
+
         copy.copyBase(this);
+
         copy.inputs = this.inputs.map(i => i.copy());
+
         return copy;
     }
 
@@ -8169,7 +8194,7 @@ extends GConditionBase
         if (this.isCached())
             return this;
 
-        this.value = evalConditionInputs(
+        this.value = await evalConditionInputs(
             this.input0, 
             this.input1, 
             (a, b) => a == b, 
@@ -8210,7 +8235,7 @@ extends GConditionBase
         if (this.isCached())
             return this;
 
-        this.value = evalConditionInputs(
+        this.value = await evalConditionInputs(
             this.input0, 
             this.input1, 
             (a, b) => a != b, 
@@ -8250,7 +8275,7 @@ extends GConditionBase
         if (this.isCached())
             return this;
 
-            this.value = evalConditionInputs(
+            this.value = await evalConditionInputs(
                 this.input0, 
                 this.input1, 
                 (a, b) => a < b, 
@@ -8290,7 +8315,7 @@ extends GConditionBase
         if (this.isCached())
             return this;
 
-            this.value = evalConditionInputs(
+            this.value = await evalConditionInputs(
                 this.input0, 
                 this.input1, 
                 (a, b) => a <= b, 
@@ -8331,7 +8356,7 @@ extends GConditionBase
         if (this.isCached())
             return this;
 
-        this.value = evalConditionInputs(
+        this.value = await evalConditionInputs(
             this.input0, 
             this.input1, 
             (a, b) => a > b, 
@@ -8374,7 +8399,7 @@ extends GConditionBase
         if (this.isCached())
             return this;
 
-        this.value = evalConditionInputs(
+        this.value = await evalConditionInputs(
             this.input0, 
             this.input1, 
             (a, b) => a >= b, 
@@ -12580,41 +12605,41 @@ function updateMenuItemShowOperationResults()
 
 function enableFeatures(subscription, beta)
 {
-    updateMenuItemDisplay(menuItemEnableBetaFeatures .div, subscription);
+    updateMenuItemDisplay(menuItemEnableBetaFeatures  .div, subscription);
 
-    updateMenuItemDisplay(btnFlow                    .div, subscription);
-    updateMenuItemDisplay(btnText                    .div, subscription && beta);
-    updateMenuItemDisplay(btnShape                   .div, subscription && beta);
-    updateMenuItemDisplay(btnGroup                   .div, false);//subscription && beta);
+    updateMenuItemDisplay(btnFlow                     .div, subscription);
+    updateMenuItemDisplay(btnText                     .div, subscription && beta);
+    updateMenuItemDisplay(btnShape                    .div, subscription && beta);
+    updateMenuItemDisplay(btnGroup                    .div, false);//subscription && beta);
 
-    updateMenuItemDisplay(menuItemLogObjectUpdates   .div, subscription && beta);
+    updateMenuItemDisplay(menuItemLogObjectUpdates    .div, subscription && beta);
     
-    updateMenuItemDisplay(menuItemList               .div, subscription && beta);
-    updateMenuItemDisplay(menuFlowSep1               .div, subscription && beta);
-    updateMenuItemDisplay(menuItemItems              .div, subscription && beta);
-    updateMenuItemDisplay(menuItemSelect             .div, subscription && beta);
-    updateMenuItemDisplay(menuFlowSep2               .div, subscription && beta);
-    updateMenuItemDisplay(menuItemRepeat             .div, subscription && beta);
-    updateMenuItemDisplay(menuFlowSep3               .div, subscription && beta);
-    updateMenuItemDisplay(menuItemCache              .div, subscription && beta);
-    updateMenuItemDisplay(menuItemCopy               .div, subscription && beta);
-    updateMenuItemDisplay(menuItemCustomInputs       .div, false);//subscription && beta);
-    updateMenuItemDisplay(menuItemCustomOutputs      .div, false);//subscription && beta);
+    updateMenuItemDisplay(menuItemList                .div, subscription && beta);
+    updateMenuItemDisplay(menuFlowSep1                .div, subscription && beta);
+    updateMenuItemDisplay(menuItemItems               .div, subscription && beta);
+    updateMenuItemDisplay(menuItemSelect              .div, subscription && beta);
+    updateMenuItemDisplay(menuFlowSep2                .div, subscription && beta);
+    updateMenuItemDisplay(menuItemRepeat              .div, subscription && beta);
+    updateMenuItemDisplay(menuFlowSep3                .div, subscription && beta);
+    updateMenuItemDisplay(menuItemCache               .div, subscription && beta);
+    updateMenuItemDisplay(menuItemCopy                .div, subscription && beta);
+    updateMenuItemDisplay(menuItemCustomInputs        .div, false);//subscription && beta);
+    updateMenuItemDisplay(menuItemCustomOutputs       .div, false);//subscription && beta);
     
-    updateMenuItemDisplay(menuItemSeries             .div, subscription && beta);    
-    updateMenuItemDisplay(menuItemNumberSep1         .div, subscription && beta);
-    updateMenuItemDisplay(menuItemNumberConvertToText.div, subscription && beta);
+    updateMenuItemDisplay(menuItemSeries              .div, subscription && beta);    
+    updateMenuItemDisplay(menuItemNumberSep1          .div, subscription && beta);
+    updateMenuItemDisplay(menuItemNumberConvertToText .div, subscription && beta);
     
-    updateMenuItemDisplay(menuItemCorrectColor       .div, subscription);
-    updateMenuItemDisplay(menuItemColorSep1          .div, subscription);
-    updateMenuItemDisplay(menuItemColorblind         .div, subscription);
-    //updateMenuItemDisplay(menuItemColorBlend         .div, beta);
+    updateMenuItemDisplay(menuItemCorrectColor        .div, subscription);
+    updateMenuItemDisplay(menuItemColorSep1           .div, subscription);
+    updateMenuItemDisplay(menuItemColorblind          .div, subscription);
+    //updateMenuItemDisplay(menuItemColorBlend        .div, beta);
 
-    //updateMenuItemDisplay(menuItemStyleFill        .div, subscription && beta);
-    updateMenuItemDisplay(menuItemStyleStroke        .div, subscription && beta);
-    //updateMenuItemDisplay(menuItemStyleSep1        .div, subscription && beta);
+    //updateMenuItemDisplay(menuItemStyleFill         .div, subscription && beta);
+    updateMenuItemDisplay(menuItemStyleStroke         .div, subscription && beta);
+    //updateMenuItemDisplay(menuItemStyleSep1         .div, subscription && beta);
     
-    updateMenuItemDisplay(menuItemNodeCopyAsJS       .div, subscription && beta);
+    updateMenuItemDisplay(menuItemNodeCopyAsJavascript.div, subscription && beta);
 
 
     graphView.graph.nodes.forEach(n => n.updateSubscribeStatus(subscription));

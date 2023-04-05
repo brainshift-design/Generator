@@ -143,6 +143,17 @@ function getProgressNodesAfterNode(node)
 
 
 
+function getTerminalsInNodes(nodes)
+{
+    return nodes.filter(n => 
+           !n.outputs.find(o => o.connected)
+        || !n.outputs.find(o => arraysIntersect(
+               o.connectedInputs.map(i => i.node),
+               nodes)));
+}
+
+
+
 function getTerminalsAfterNode(node)
 {
     let after = [];

@@ -26,7 +26,7 @@ extends GConditionBase
         if (this.isCached())
             return this;
 
-        this.value = evalConditionInputs(
+        this.value = await evalConditionInputs(
             this.input0, 
             this.input1, 
             (a, b) => a >= b, 

@@ -1008,6 +1008,13 @@ class Operator
 
         return '';
     }
+
+
+
+    toJS()
+    {
+        return '';
+    }
 }
 
 

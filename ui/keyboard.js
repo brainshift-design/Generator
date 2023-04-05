@@ -25,8 +25,11 @@ document.addEventListener('keydown', e =>
     // copy
     else if (   e.code == 'KeyC'
         && getCtrlKey(e))
-        graphView.copySelectedNodes();
-        
+    {
+        if (e.shiftKey) graphView.copySelectedNodesAsJavascript();
+        else            graphView.copySelectedNodes();
+    }
+
     // paste
     else if (e.code == 'KeyV'
           && getCtrlKey(e)

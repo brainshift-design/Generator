@@ -51,4 +51,13 @@ extends OperatorWithValue
 
         this.updateParamControls();
     }
+
+
+
+    toJS()
+    {
+        return this.inputs[0].connected
+             ? 'Math.abs(' + this.inputs[0].connectedOutput.toJS() + ')'
+             : 'Number.NaN';
+    }
 }

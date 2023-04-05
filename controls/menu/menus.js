@@ -140,7 +140,7 @@ var menuItemGraphPaste;
 var menuItemGraphPasteConnected;
 
 var menuItemNodeCopy;
-var menuItemNodeCopyAsJS;
+var menuItemNodeCopyAsJavascript;
 var menuItemNodeDuplicate;
 var menuItemNodeDuplicateConnected;
 var menuItemNodeRemove;
@@ -433,7 +433,7 @@ function initGeneratorMenus()
     menuNode = new Menu('Node menu', false, false);
     menuNode.addItems([
         menuItemNodeCopy               = new MenuItem('Copy',                {shortcut:  osCtrl() + 'C',              callback: () => graphView.copySelectedNodes() }),
-        menuItemNodeCopyAsJS           = new MenuItem('Copy as Javascript',  {shortcut:  osCtrl() + osShift() + 'C',  callback: () => graphView.copySelectedNodesAsJS() }),
+        menuItemNodeCopyAsJavascript   = new MenuItem('Copy as Javascript',  {shortcut:  osCtrl() + osShift() + 'C',  callback: () => graphView.copySelectedNodesAsJavascript() }),
         menuItemNodeDuplicate          = new MenuItem('Duplicate',           {shortcut:  osCtrl() + 'D',              callback: e => { hideAllMenus(); graphView.duplicateSelectedNodes(false); }}),
         menuItemNodeDuplicateConnected = new MenuItem('Duplicate connected', {shortcut:  osCtrl() + osShift() + 'D',  callback: e => { hideAllMenus(); graphView.duplicateSelectedNodes(true ); }}),
                                        //new MenuItem('',                    {separator: true}),

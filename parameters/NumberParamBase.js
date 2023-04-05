@@ -184,4 +184,13 @@ extends Parameter
     {
         this.setValue(parseNumberValue(_param[2])[0], true, true, false);
     }
+
+
+
+    toJS()
+    {
+        return this.input.connected
+             ? '(' + this.input.connectedOutput.toJS() + ')'
+             : this.value.toJS();
+    }
 }
