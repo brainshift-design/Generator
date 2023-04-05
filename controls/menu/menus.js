@@ -470,13 +470,13 @@ function initGeneratorMenus()
             && graphView.selectedNodes[0].type == NODE_GROUP;   
     
 
-        updateMenuItemDisplay(menuItemNodeSep1         .div, single);
+        updateElementDisplay(menuItemNodeSep1         .div, single);
       //updateMenuItemDisplay(menuItemNodeRename       .div, single);
-        updateMenuItemDisplay(menuItemNodeEdit         .div, single && group);
-        updateMenuItemDisplay(menuItemNodeSep2         .div, single && group);
-        updateMenuItemDisplay(menuItemNodeSelect       .div, single);
-        updateMenuItemDisplay(menuItemNodeSep3         .div, canDisable);
-        updateMenuItemDisplay(menuItemNodeEnableDisable.div, canDisable);
+        updateElementDisplay(menuItemNodeEdit         .div, single && group);
+        updateElementDisplay(menuItemNodeSep2         .div, single && group);
+        updateElementDisplay(menuItemNodeSelect       .div, single);
+        updateElementDisplay(menuItemNodeSep3         .div, canDisable);
+        updateElementDisplay(menuItemNodeEnableDisable.div, canDisable);
     };
 
 

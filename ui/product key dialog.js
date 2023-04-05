@@ -119,8 +119,8 @@ productKeyInput.addEventListener('pointerdown', e =>
             e.preventDefault();
             e.stopPropagation();
 
-            updateMenuItemDisplay(menuItemLicenseSep1  .div, subscribed);
-            updateMenuItemDisplay(menuItemLicenseRemove.div, subscribed);
+            updateElementDisplay(menuItemLicenseSep1  .div, subscribed);
+            updateElementDisplay(menuItemLicenseRemove.div, subscribed);
 
             menuRemoveLicense.showAt(e.clientX, e.clientY, false, false);
         }

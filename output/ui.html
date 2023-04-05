@@ -3884,7 +3884,7 @@ a
                 <div class='keyboardShortcut'><div class='shortcutAction'>Remove from branch</div><div class='shortcutKeys'><div class='shortcutKeys'><div class='shortcutKey'>Ctrl</div><div class='shortcutKey shortcutCharWide'>⌫</div></div></div></div>
             </div>
             <div class='keyboardGroup nextGroup'>
-                <div class='keyboardShortcut'><div class='shortcutAction'>Copy as Javascript</div><div class='shortcutKeys'><div class='shortcutKeys'><div class='shortcutKey'>Ctrl</div><div class='shortcutKey'>Shift</div><div class='shortcutKey shortcutChar'>C</div></div></div></div>
+                <div id='shortcutCopyAsJavascript' class='keyboardShortcut'><div class='shortcutAction'>Copy as Javascript</div><div class='shortcutKeys'><div class='shortcutKeys'><div class='shortcutKey'>Ctrl</div><div class='shortcutKey'>Shift</div><div class='shortcutKey shortcutChar'>C</div></div></div></div>
                 <div class='keyboardShortcut'><div class='shortcutAction'>Duplicate</div><div class='shortcutKeys'><div class='shortcutKeys'><div class='shortcutKey'>Ctrl</div><div class='shortcutKey shortcutChar'>D</div></div></div></div>
                 <div class='keyboardShortcut'><div class='shortcutAction'>Duplicate with input connections</div><div class='shortcutKeys'><div class='shortcutKeys'><div class='shortcutKey'>Ctrl</div><div class='shortcutKey'>Shift</div><div class='shortcutKey shortcutChar'>D</div></div></div></div>
             </div>
@@ -16687,42 +16687,45 @@ function updateMenuItemShowOperationResults()
 
 function enableFeatures(subscription, beta)
 {
-    updateMenuItemDisplay(menuItemEnableBetaFeatures  .div, subscription);
+    updateElementDisplay(menuItemEnableBetaFeatures  .div, subscription);
 
-    updateMenuItemDisplay(btnFlow                     .div, subscription);
-    updateMenuItemDisplay(btnText                     .div, subscription && beta);
-    updateMenuItemDisplay(btnShape                    .div, subscription && beta);
-    updateMenuItemDisplay(btnGroup                    .div, false);//subscription && beta);
+    updateElementDisplay(btnFlow                     .div, subscription);
+    updateElementDisplay(btnText                     .div, subscription && beta);
+    updateElementDisplay(btnShape                    .div, subscription && beta);
+    updateElementDisplay(btnGroup                    .div, false);//subscription && beta);
 
-    updateMenuItemDisplay(menuItemLogObjectUpdates    .div, subscription && beta);
+    updateElementDisplay(menuItemLogObjectUpdates    .div, subscription && beta);
     
-    updateMenuItemDisplay(menuItemList                .div, subscription && beta);
-    updateMenuItemDisplay(menuFlowSep1                .div, subscription && beta);
-    updateMenuItemDisplay(menuItemItems               .div, subscription && beta);
-    updateMenuItemDisplay(menuItemSelect              .div, subscription && beta);
-    updateMenuItemDisplay(menuFlowSep2                .div, subscription && beta);
-    updateMenuItemDisplay(menuItemRepeat              .div, subscription && beta);
-    updateMenuItemDisplay(menuFlowSep3                .div, subscription && beta);
-    updateMenuItemDisplay(menuItemCache               .div, subscription && beta);
-    updateMenuItemDisplay(menuItemCopy                .div, subscription && beta);
-    updateMenuItemDisplay(menuItemCustomInputs        .div, false);//subscription && beta);
-    updateMenuItemDisplay(menuItemCustomOutputs       .div, false);//subscription && beta);
+    updateElementDisplay(menuItemList                .div, subscription && beta);
+    updateElementDisplay(menuFlowSep1                .div, subscription && beta);
+    updateElementDisplay(menuItemItems               .div, subscription && beta);
+    updateElementDisplay(menuItemSelect              .div, subscription && beta);
+    updateElementDisplay(menuFlowSep2                .div, subscription && beta);
+    updateElementDisplay(menuItemRepeat              .div, subscription && beta);
+    updateElementDisplay(menuFlowSep3                .div, subscription && beta);
+    updateElementDisplay(menuItemCache               .div, subscription && beta);
+    updateElementDisplay(menuItemCopy                .div, subscription && beta);
+    updateElementDisplay(menuItemCustomInputs        .div, false);//subscription && beta);
+    updateElementDisplay(menuItemCustomOutputs       .div, false);//subscription && beta);
     
-    updateMenuItemDisplay(menuItemSeries              .div, subscription && beta);    
-    updateMenuItemDisplay(menuItemNumberSep1          .div, subscription && beta);
-    updateMenuItemDisplay(menuItemNumberConvertToText .div, subscription && beta);
+    updateElementDisplay(menuItemSeries              .div, subscription && beta);    
+    updateElementDisplay(menuItemNumberSep1          .div, subscription && beta);
+    updateElementDisplay(menuItemNumberConvertToText .div, subscription && beta);
     
-    updateMenuItemDisplay(menuItemCorrectColor        .div, subscription);
-    updateMenuItemDisplay(menuItemColorSep1           .div, subscription);
-    updateMenuItemDisplay(menuItemColorblind          .div, subscription);
+    updateElementDisplay(menuItemCorrectColor        .div, subscription);
+    updateElementDisplay(menuItemColorSep1           .div, subscription);
+    updateElementDisplay(menuItemColorblind          .div, subscription);
     //updateMenuItemDisplay(menuItemColorBlend        .div, beta);
 
     //updateMenuItemDisplay(menuItemStyleFill         .div, subscription && beta);
-    updateMenuItemDisplay(menuItemStyleStroke         .div, subscription && beta);
+    updateElementDisplay(menuItemStyleStroke         .div, subscription && beta);
     //updateMenuItemDisplay(menuItemStyleSep1         .div, subscription && beta);
     
     //updateMenuItemDisplay(menuItemNodeCopyAsJsCode    .div, subscription && beta);
-    updateMenuItemDisplay(menuItemNodeCopyAsJsFunction.div, subscription && beta);
+    updateElementDisplay(menuItemNodeCopyAsJsFunction.div, subscription && beta);
+
+
+    updateElementDisplay(shortcutCopyAsJavascript        , subscription && beta);
 
 
     graphView.graph.nodes.forEach(n => n.updateSubscribeStatus(subscription));
@@ -16732,12 +16735,12 @@ function enableFeatures(subscription, beta)
 
 function updateMenuItemShowDebugMenu()
 {
-    updateMenuItemDisplay(menuItemDebug.div, settings.showDebugMenu);
+    updateElementDisplay(menuItemDebug.div, settings.showDebugMenu);
 }
 
  
 
-function updateMenuItemDisplay(menuItem, enable)
+function updateElementDisplay(menuItem, enable)
 {
     menuItem.style.display = enable ? 'block' : 'none';
 }
@@ -37996,42 +37999,45 @@ function updateMenuItemShowOperationResults()
 
 function enableFeatures(subscription, beta)
 {
-    updateMenuItemDisplay(menuItemEnableBetaFeatures  .div, subscription);
+    updateElementDisplay(menuItemEnableBetaFeatures  .div, subscription);
 
-    updateMenuItemDisplay(btnFlow                     .div, subscription);
-    updateMenuItemDisplay(btnText                     .div, subscription && beta);
-    updateMenuItemDisplay(btnShape                    .div, subscription && beta);
-    updateMenuItemDisplay(btnGroup                    .div, false);//subscription && beta);
+    updateElementDisplay(btnFlow                     .div, subscription);
+    updateElementDisplay(btnText                     .div, subscription && beta);
+    updateElementDisplay(btnShape                    .div, subscription && beta);
+    updateElementDisplay(btnGroup                    .div, false);//subscription && beta);
 
-    updateMenuItemDisplay(menuItemLogObjectUpdates    .div, subscription && beta);
+    updateElementDisplay(menuItemLogObjectUpdates    .div, subscription && beta);
     
-    updateMenuItemDisplay(menuItemList                .div, subscription && beta);
-    updateMenuItemDisplay(menuFlowSep1                .div, subscription && beta);
-    updateMenuItemDisplay(menuItemItems               .div, subscription && beta);
-    updateMenuItemDisplay(menuItemSelect              .div, subscription && beta);
-    updateMenuItemDisplay(menuFlowSep2                .div, subscription && beta);
-    updateMenuItemDisplay(menuItemRepeat              .div, subscription && beta);
-    updateMenuItemDisplay(menuFlowSep3                .div, subscription && beta);
-    updateMenuItemDisplay(menuItemCache               .div, subscription && beta);
-    updateMenuItemDisplay(menuItemCopy                .div, subscription && beta);
-    updateMenuItemDisplay(menuItemCustomInputs        .div, false);//subscription && beta);
-    updateMenuItemDisplay(menuItemCustomOutputs       .div, false);//subscription && beta);
+    updateElementDisplay(menuItemList                .div, subscription && beta);
+    updateElementDisplay(menuFlowSep1                .div, subscription && beta);
+    updateElementDisplay(menuItemItems               .div, subscription && beta);
+    updateElementDisplay(menuItemSelect              .div, subscription && beta);
+    updateElementDisplay(menuFlowSep2                .div, subscription && beta);
+    updateElementDisplay(menuItemRepeat              .div, subscription && beta);
+    updateElementDisplay(menuFlowSep3                .div, subscription && beta);
+    updateElementDisplay(menuItemCache               .div, subscription && beta);
+    updateElementDisplay(menuItemCopy                .div, subscription && beta);
+    updateElementDisplay(menuItemCustomInputs        .div, false);//subscription && beta);
+    updateElementDisplay(menuItemCustomOutputs       .div, false);//subscription && beta);
     
-    updateMenuItemDisplay(menuItemSeries              .div, subscription && beta);    
-    updateMenuItemDisplay(menuItemNumberSep1          .div, subscription && beta);
-    updateMenuItemDisplay(menuItemNumberConvertToText .div, subscription && beta);
+    updateElementDisplay(menuItemSeries              .div, subscription && beta);    
+    updateElementDisplay(menuItemNumberSep1          .div, subscription && beta);
+    updateElementDisplay(menuItemNumberConvertToText .div, subscription && beta);
     
-    updateMenuItemDisplay(menuItemCorrectColor        .div, subscription);
-    updateMenuItemDisplay(menuItemColorSep1           .div, subscription);
-    updateMenuItemDisplay(menuItemColorblind          .div, subscription);
+    updateElementDisplay(menuItemCorrectColor        .div, subscription);
+    updateElementDisplay(menuItemColorSep1           .div, subscription);
+    updateElementDisplay(menuItemColorblind          .div, subscription);
     //updateMenuItemDisplay(menuItemColorBlend        .div, beta);
 
     //updateMenuItemDisplay(menuItemStyleFill         .div, subscription && beta);
-    updateMenuItemDisplay(menuItemStyleStroke         .div, subscription && beta);
+    updateElementDisplay(menuItemStyleStroke         .div, subscription && beta);
     //updateMenuItemDisplay(menuItemStyleSep1         .div, subscription && beta);
     
     //updateMenuItemDisplay(menuItemNodeCopyAsJsCode    .div, subscription && beta);
-    updateMenuItemDisplay(menuItemNodeCopyAsJsFunction.div, subscription && beta);
+    updateElementDisplay(menuItemNodeCopyAsJsFunction.div, subscription && beta);
+
+
+    updateElementDisplay(shortcutCopyAsJavascript        , subscription && beta);
 
 
     graphView.graph.nodes.forEach(n => n.updateSubscribeStatus(subscription));
@@ -38041,12 +38047,12 @@ function enableFeatures(subscription, beta)
 
 function updateMenuItemShowDebugMenu()
 {
-    updateMenuItemDisplay(menuItemDebug.div, settings.showDebugMenu);
+    updateElementDisplay(menuItemDebug.div, settings.showDebugMenu);
 }
 
  
 
-function updateMenuItemDisplay(menuItem, enable)
+function updateElementDisplay(menuItem, enable)
 {
     menuItem.style.display = enable ? 'block' : 'none';
 }
@@ -43115,13 +43121,13 @@ function initGeneratorMenus()
             && graphView.selectedNodes[0].type == NODE_GROUP;   
     
 
-        updateMenuItemDisplay(menuItemNodeSep1         .div, single);
+        updateElementDisplay(menuItemNodeSep1         .div, single);
       //updateMenuItemDisplay(menuItemNodeRename       .div, single);
-        updateMenuItemDisplay(menuItemNodeEdit         .div, single && group);
-        updateMenuItemDisplay(menuItemNodeSep2         .div, single && group);
-        updateMenuItemDisplay(menuItemNodeSelect       .div, single);
-        updateMenuItemDisplay(menuItemNodeSep3         .div, canDisable);
-        updateMenuItemDisplay(menuItemNodeEnableDisable.div, canDisable);
+        updateElementDisplay(menuItemNodeEdit         .div, single && group);
+        updateElementDisplay(menuItemNodeSep2         .div, single && group);
+        updateElementDisplay(menuItemNodeSelect       .div, single);
+        updateElementDisplay(menuItemNodeSep3         .div, canDisable);
+        updateElementDisplay(menuItemNodeEnableDisable.div, canDisable);
     };
 
 
@@ -66849,8 +66855,8 @@ productKeyInput.addEventListener('pointerdown', e =>
             e.preventDefault();
             e.stopPropagation();
 
-            updateMenuItemDisplay(menuItemLicenseSep1  .div, subscribed);
-            updateMenuItemDisplay(menuItemLicenseRemove.div, subscribed);
+            updateElementDisplay(menuItemLicenseSep1  .div, subscribed);
+            updateElementDisplay(menuItemLicenseRemove.div, subscribed);
 
             menuRemoveLicense.showAt(e.clientX, e.clientY, false, false);
         }
