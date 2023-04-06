@@ -4,3 +4,5 @@ Subscription features:
     Colorblind
     Node groups
     Fetch
+
+    Find value

@@ -261,6 +261,7 @@ const FLOW_TYPES = [
 ];
 const NUMBER_VALUE = 'NUM#';
 const NUMBER = 'NUM';
+const NUMBER_SIGN = 'NSIGN';
 const NUMBER_ABSOLUTE = 'ABS';
 const NUMBER_ROUND = 'ROUND';
 const NUMBER_LIMITS = 'LIM';
@@ -315,6 +316,7 @@ const CONDITION_TYPES = [
 const NUMBER_TYPES = [
     NUMBER_VALUE,
     NUMBER,
+    NUMBER_SIGN,
     NUMBER_ABSOLUTE,
     NUMBER_ROUND,
     NUMBER_LIMITS,

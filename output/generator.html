@@ -3383,6 +3383,7 @@ const FLOW_TYPES =
 
 const NUMBER_VALUE            = 'NUM#';  
 const NUMBER                  = 'NUM';   
+const NUMBER_SIGN             = 'NSIGN';   
 const NUMBER_ABSOLUTE         = 'ABS';   
 const NUMBER_ROUND            = 'ROUND';   
 const NUMBER_LIMITS           = 'LIM';   
@@ -3452,6 +3453,7 @@ const NUMBER_TYPES =
 [
     NUMBER_VALUE,
     NUMBER,
+    NUMBER_SIGN,
     NUMBER_ABSOLUTE,
     NUMBER_ROUND,
     NUMBER_LIMITS,
@@ -6784,6 +6786,126 @@ extends GNumberType
 }
 
 
+class GSign
+extends GNumberType
+{
+    input = null;
+
+
+
+    constructor(nodeId, options)
+    {
+        super(NUMBER_SIGN, nodeId, options);
+    }
+
+
+    
+    copy()
+    {
+        const copy = new GSign(this.nodeId, this.options);
+
+        copy.copyBase(this);
+
+        if (this.input) 
+            copy.input = this.input.copy();
+
+        return copy;
+    }
+
+
+
+    async eval(parse)
+    {
+        if (this.isCached())
+            return this;
+
+
+        if (this.input)
+        {
+            this.value = (await this.input.eval(parse)).toValue();
+
+            console.assert(
+                this.value.type == NUMBER_VALUE, 
+                'this.value.type must be NUMBER_VALUE');
+
+            if (this.options.enabled)
+                this.value.value = Math.sign(this.value.value);
+        }
+        else
+            this.value = NumberValue.NaN;
+
+
+        genPushUpdateValue(parse, this.nodeId, 'value', this.value);
+
+
+        this.validate();
+
+        return this;
+    }
+}
+
+
+
+class GAbsolute
+extends GNumberType
+{
+    input = null;
+
+
+
+    constructor(nodeId, options)
+    {
+        super(NUMBER_ABSOLUTE, nodeId, options);
+    }
+
+
+    
+    copy()
+    {
+        const copy = new GAbsolute(this.nodeId, this.options);
+
+        copy.copyBase(this);
+
+        if (this.input) 
+            copy.input = this.input.copy();
+
+        return copy;
+    }
+
+
+
+    async eval(parse)
+    {
+        if (this.isCached())
+            return this;
+
+
+        if (this.input)
+        {
+            this.value = (await this.input.eval(parse)).toValue();
+
+            console.assert(
+                this.value.type == NUMBER_VALUE, 
+                'this.value.type must be NUMBER_VALUE');
+
+            if (this.options.enabled)
+                this.value.value = Math.abs(this.value.value);
+        }
+        else
+            this.value = NumberValue.NaN;
+
+
+        genPushUpdateValue(parse, this.nodeId, 'value', this.value);
+
+
+        this.validate();
+
+        return this;
+    }
+}
+
+
+
 class GRound
 extends GNumberType
 {
@@ -6859,66 +6981,6 @@ extends GNumberType
         genPushUpdateValue(parse, this.nodeId, 'type',     type);
         genPushUpdateValue(parse, this.nodeId, 'decimals', dec );
         genPushUpdateValue(parse, this.nodeId, 'value',    this.value);
-
-
-        this.validate();
-
-        return this;
-    }
-}
-
-
-
-class GAbsolute
-extends GNumberType
-{
-    input = null;
-
-
-
-    constructor(nodeId, options)
-    {
-        super(NUMBER_ABSOLUTE, nodeId, options);
-    }
-
-
-    
-    copy()
-    {
-        const copy = new GAbsolute(this.nodeId, this.options);
-
-        copy.copyBase(this);
-
-        if (this.input) 
-            copy.input = this.input.copy();
-
-        return copy;
-    }
-
-
-
-    async eval(parse)
-    {
-        if (this.isCached())
-            return this;
-
-
-        if (this.input)
-        {
-            this.value = (await this.input.eval(parse)).toValue();
-
-            console.assert(
-                this.value.type == NUMBER_VALUE, 
-                'this.value.type must be NUMBER_VALUE');
-
-            if (this.options.enabled)
-                this.value.value = Math.abs(this.value.value);
-        }
-        else
-            this.value = NumberValue.NaN;
-
-
-        genPushUpdateValue(parse, this.nodeId, 'value', this.value);
 
 
         this.validate();
@@ -14252,12 +14314,12 @@ function genParseNumber(parse)
 
 
 
-function genParseAbsolute(parse)
+function genParseSign(parse)
 {
     const [, nodeId, options, ignore] = genParseNodeStart(parse);
 
 
-    const round = new GAbsolute(nodeId, options);
+    const sign = new GSign(nodeId, options);
    
 
     let nInputs = -1;
@@ -14270,12 +14332,12 @@ function genParseAbsolute(parse)
 
     
     if (parse.settings.logRequests) 
-        logReq(round, parse, ignore);
+        logReq(sign, parse, ignore);
 
 
     if (ignore) 
     {
-        genParseNodeEnd(parse, round);
+        genParseNodeEnd(parse, sign);
         return parse.parsedNodes.find(n => n.nodeId == nodeId);
     }
 
@@ -14284,14 +14346,58 @@ function genParseAbsolute(parse)
 
 
     if (nInputs == 1)
-        round.input = genParse(parse);
+        sign.input = genParse(parse);
 
     
     parse.nTab--;
 
 
-    genParseNodeEnd(parse, round);
-    return round;
+    genParseNodeEnd(parse, sign);
+    return sign;
+}
+
+
+
+function genParseAbsolute(parse)
+{
+    const [, nodeId, options, ignore] = genParseNodeStart(parse);
+
+
+    const abs = new GAbsolute(nodeId, options);
+   
+
+    let nInputs = -1;
+    
+    if (!ignore)
+    {
+        nInputs = parseInt(parse.move());
+        console.assert(nInputs == 0 || nInputs == 1, 'nInputs must be [0, 1]');
+    }
+
+    
+    if (parse.settings.logRequests) 
+        logReq(abs, parse, ignore);
+
+
+    if (ignore) 
+    {
+        genParseNodeEnd(parse, abs);
+        return parse.parsedNodes.find(n => n.nodeId == nodeId);
+    }
+
+
+    parse.nTab++;
+
+
+    if (nInputs == 1)
+        abs.input = genParse(parse);
+
+    
+    parse.nTab--;
+
+
+    genParseNodeEnd(parse, abs);
+    return abs;
 }
 
 
@@ -15796,6 +15902,7 @@ function genParse(parse, inParam = true)
     else if (parse.next == NUMBER_VALUE           ) result = genParseNumValue        (parse);
     else if (parse.next == NUMBER                 ) result = genParseNumber          (parse);
     
+    else if (parse.next == NUMBER_SIGN            ) result = genParseSign            (parse);
     else if (parse.next == NUMBER_ABSOLUTE        ) result = genParseAbsolute        (parse);
     else if (parse.next == NUMBER_ROUND           ) result = genParseRound           (parse);
     else if (parse.next == NUMBER_LIMITS          ) result = genParseLimits          (parse);

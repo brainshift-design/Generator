@@ -50,12 +50,12 @@ function genParseNumber(parse)
 
 
 
-function genParseAbsolute(parse)
+function genParseSign(parse)
 {
     const [, nodeId, options, ignore] = genParseNodeStart(parse);
 
 
-    const round = new GAbsolute(nodeId, options);
+    const sign = new GSign(nodeId, options);
    
 
     let nInputs = -1;
@@ -68,12 +68,12 @@ function genParseAbsolute(parse)
 
     
     if (parse.settings.logRequests) 
-        logReq(round, parse, ignore);
+        logReq(sign, parse, ignore);
 
 
     if (ignore) 
     {
-        genParseNodeEnd(parse, round);
+        genParseNodeEnd(parse, sign);
         return parse.parsedNodes.find(n => n.nodeId == nodeId);
     }
 
@@ -82,14 +82,58 @@ function genParseAbsolute(parse)
 
 
     if (nInputs == 1)
-        round.input = genParse(parse);
+        sign.input = genParse(parse);
 
     
     parse.nTab--;
 
 
-    genParseNodeEnd(parse, round);
-    return round;
+    genParseNodeEnd(parse, sign);
+    return sign;
+}
+
+
+
+function genParseAbsolute(parse)
+{
+    const [, nodeId, options, ignore] = genParseNodeStart(parse);
+
+
+    const abs = new GAbsolute(nodeId, options);
+   
+
+    let nInputs = -1;
+    
+    if (!ignore)
+    {
+        nInputs = parseInt(parse.move());
+        console.assert(nInputs == 0 || nInputs == 1, 'nInputs must be [0, 1]');
+    }
+
+    
+    if (parse.settings.logRequests) 
+        logReq(abs, parse, ignore);
+
+
+    if (ignore) 
+    {
+        genParseNodeEnd(parse, abs);
+        return parse.parsedNodes.find(n => n.nodeId == nodeId);
+    }
+
+
+    parse.nTab++;
+
+
+    if (nInputs == 1)
+        abs.input = genParse(parse);
+
+    
+    parse.nTab--;
+
+
+    genParseNodeEnd(parse, abs);
+    return abs;
 }
 
 

@@ -263,11 +263,6 @@ extends EventTarget
                ? this.colorDark
                : this.colorLight);
 
-        if (this.node.id == 'if/else6')
-        {
-            console.log('color =', color);
-        }
-
         const colorStyle = 
             rgba2style(rgb_a(
                 color,

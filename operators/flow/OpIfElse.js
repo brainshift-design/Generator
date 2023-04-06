@@ -124,7 +124,12 @@ extends OperatorBase
         }
         else if (COLOR_TYPES.includes(type))
         {
-            // leave default color
+            colors.output =
+                this.inputs[0].connected
+                ? this.inputs[0].connectedOutput.wireColor
+                : this.inputs[1].connected
+                  ? this.inputs[1].connectedOutput.wireColor
+                  : rgbFromType(IF_ELSE, true);
         }
 
         return colors;

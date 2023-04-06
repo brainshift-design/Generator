@@ -50,8 +50,9 @@
 ../generator/types/number/GNumberType.js
 
 ../generator/types/number/GNumber.js
-../generator/types/number/GRound.js
+../generator/types/number/GSign.js
 ../generator/types/number/GAbsolute.js
+../generator/types/number/GRound.js
 ../generator/types/number/GLimits.js
 ../generator/types/number/GSeries.js
 ../generator/types/number/GRandom.js

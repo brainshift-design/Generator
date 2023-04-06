@@ -94,6 +94,7 @@ function genParse(parse, inParam = true)
     else if (parse.next == NUMBER_VALUE           ) result = genParseNumValue        (parse);
     else if (parse.next == NUMBER                 ) result = genParseNumber          (parse);
     
+    else if (parse.next == NUMBER_SIGN            ) result = genParseSign            (parse);
     else if (parse.next == NUMBER_ABSOLUTE        ) result = genParseAbsolute        (parse);
     else if (parse.next == NUMBER_ROUND           ) result = genParseRound           (parse);
     else if (parse.next == NUMBER_LIMITS          ) result = genParseLimits          (parse);
