@@ -54,7 +54,7 @@ extends GOperator
             this.value = 
                 cond.value != 0
                 ? input0
-                : NullValue
+                : input0.getNaN()
         }
         else if (this.input1)
         {
@@ -63,7 +63,7 @@ extends GOperator
             this.value = 
                 cond.value != 1
                 ? input1
-                : NullValue
+                : input1.getNaN();
         }
         else                  
             this.value = NullValue;

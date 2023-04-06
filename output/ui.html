@@ -3763,6 +3763,7 @@ a
                 <h1 style='margin-top: 20px;'>What's new in Generator</h1>
 
                 <p>•  fixed crash when inserting a node witnout ouputs in the header</p>
+                <p>•  fixed horizontal scrollbar not working</p>
                 <p>•  fixed UI issues</p>
                 
                 <p><br/><br/><div id='chkHideWhatsNew'></div></p>
@@ -8217,6 +8218,14 @@ extends GNode
         console.assert(false, 'invalid abstract method');
         return '';
     }
+
+
+
+    getNaN()
+    {
+        console.assert(false, 'invalid abstract method');
+        return null;
+    }
 }
 
 
@@ -8484,6 +8493,13 @@ extends GValue
 
 
 
+    getNaN()
+    {
+        return NumberValue.NaN;
+    }
+
+
+
     static NaN = Object.freeze(new NumberValue(
         Number.NaN, 
         Number.NaN));
@@ -8596,6 +8612,13 @@ extends GValue
         return '\'' 
              + this.value.replaceAll('\n', '↵')
              + '\'';
+    }
+
+
+
+    getNaN()
+    {
+        return TextValue.NaN;
     }
 
 
@@ -8782,6 +8805,13 @@ extends GValue
 
 
 
+    getNaN()
+    {
+        return ColorValue.NaN;
+    }
+
+
+
     static NaN = Object.freeze(new ColorValue(
         NumberValue.NaN,
         NumberValue.NaN,
@@ -8934,6 +8964,13 @@ extends GValue
     {
         return this.color  .isValid()
             && this.opacity.isValid();
+    }
+
+
+
+    getNaN()
+    {
+        return FillValue.NaN;
     }
 
 
@@ -9159,6 +9196,13 @@ extends GValue
 
 
 
+    getNaN()
+    {
+        return StrokeValue.NaN;
+    }
+
+
+
     static NaN = Object.freeze(new StrokeValue(
         FillValue  .NaN,
         NumberValue.NaN,
@@ -9336,6 +9380,13 @@ extends GValue
 
 
         return str;
+    }
+
+
+
+    getNaN()
+    {
+        return ListValue.NaN;
     }
 
 
@@ -10426,7 +10477,7 @@ extends GOperator
             this.value = 
                 cond.value != 0
                 ? input0
-                : NullValue
+                : input0.getNaN()
         }
         else if (this.input1)
         {
@@ -10435,7 +10486,7 @@ extends GOperator
             this.value = 
                 cond.value != 1
                 ? input1
-                : NullValue
+                : input1.getNaN();
         }
         else                  
             this.value = NullValue;
@@ -29615,6 +29666,14 @@ extends GNode
         console.assert(false, 'invalid abstract method');
         return '';
     }
+
+
+
+    getNaN()
+    {
+        console.assert(false, 'invalid abstract method');
+        return null;
+    }
 }
 
 
@@ -29882,6 +29941,13 @@ extends GValue
 
 
 
+    getNaN()
+    {
+        return NumberValue.NaN;
+    }
+
+
+
     static NaN = Object.freeze(new NumberValue(
         Number.NaN, 
         Number.NaN));
@@ -29994,6 +30060,13 @@ extends GValue
         return '\'' 
              + this.value.replaceAll('\n', '↵')
              + '\'';
+    }
+
+
+
+    getNaN()
+    {
+        return TextValue.NaN;
     }
 
 
@@ -30180,6 +30253,13 @@ extends GValue
 
 
 
+    getNaN()
+    {
+        return ColorValue.NaN;
+    }
+
+
+
     static NaN = Object.freeze(new ColorValue(
         NumberValue.NaN,
         NumberValue.NaN,
@@ -30332,6 +30412,13 @@ extends GValue
     {
         return this.color  .isValid()
             && this.opacity.isValid();
+    }
+
+
+
+    getNaN()
+    {
+        return FillValue.NaN;
     }
 
 
@@ -30557,6 +30644,13 @@ extends GValue
 
 
 
+    getNaN()
+    {
+        return StrokeValue.NaN;
+    }
+
+
+
     static NaN = Object.freeze(new StrokeValue(
         FillValue  .NaN,
         NumberValue.NaN,
@@ -30734,6 +30828,13 @@ extends GValue
 
 
         return str;
+    }
+
+
+
+    getNaN()
+    {
+        return ListValue.NaN;
     }
 
 
@@ -31824,7 +31925,7 @@ extends GOperator
             this.value = 
                 cond.value != 0
                 ? input0
-                : NullValue
+                : input0.getNaN()
         }
         else if (this.input1)
         {
@@ -31833,7 +31934,7 @@ extends GOperator
             this.value = 
                 cond.value != 1
                 ? input1
-                : NullValue
+                : input1.getNaN();
         }
         else                  
             this.value = NullValue;
@@ -53873,6 +53974,10 @@ extends OperatorBase
         this.paramCondition.enableControlText(true);
 
         updateParamConditionText(this.paramCondition, this.isUnknown(), 1);
+
+        if (   this.paramCondition.value.value == 0
+            && this.outputs[0].supportsTypes([COLOR_VALUE]))
+            this.outputs[0].wireColor = this.inputs[this.paramCondition.value.value > 0 ? 1 : 0].wireColor;
 
         this.updateParamControls();
     }

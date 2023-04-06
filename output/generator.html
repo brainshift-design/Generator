@@ -4135,6 +4135,14 @@ extends GNode
         console.assert(false, 'invalid abstract method');
         return '';
     }
+
+
+
+    getNaN()
+    {
+        console.assert(false, 'invalid abstract method');
+        return null;
+    }
 }
 
 
@@ -4402,6 +4410,13 @@ extends GValue
 
 
 
+    getNaN()
+    {
+        return NumberValue.NaN;
+    }
+
+
+
     static NaN = Object.freeze(new NumberValue(
         Number.NaN, 
         Number.NaN));
@@ -4514,6 +4529,13 @@ extends GValue
         return '\'' 
              + this.value.replaceAll('\n', '↵')
              + '\'';
+    }
+
+
+
+    getNaN()
+    {
+        return TextValue.NaN;
     }
 
 
@@ -4700,6 +4722,13 @@ extends GValue
 
 
 
+    getNaN()
+    {
+        return ColorValue.NaN;
+    }
+
+
+
     static NaN = Object.freeze(new ColorValue(
         NumberValue.NaN,
         NumberValue.NaN,
@@ -4852,6 +4881,13 @@ extends GValue
     {
         return this.color  .isValid()
             && this.opacity.isValid();
+    }
+
+
+
+    getNaN()
+    {
+        return FillValue.NaN;
     }
 
 
@@ -5077,6 +5113,13 @@ extends GValue
 
 
 
+    getNaN()
+    {
+        return StrokeValue.NaN;
+    }
+
+
+
     static NaN = Object.freeze(new StrokeValue(
         FillValue  .NaN,
         NumberValue.NaN,
@@ -5254,6 +5297,13 @@ extends GValue
 
 
         return str;
+    }
+
+
+
+    getNaN()
+    {
+        return ListValue.NaN;
     }
 
 
@@ -6344,7 +6394,7 @@ extends GOperator
             this.value = 
                 cond.value != 0
                 ? input0
-                : NullValue
+                : input0.getNaN()
         }
         else if (this.input1)
         {
@@ -6353,7 +6403,7 @@ extends GOperator
             this.value = 
                 cond.value != 1
                 ? input1
-                : NullValue
+                : input1.getNaN();
         }
         else                  
             this.value = NullValue;

@@ -35,6 +35,14 @@ extends GNode
         console.assert(false, 'invalid abstract method');
         return '';
     }
+
+
+
+    getNaN()
+    {
+        console.assert(false, 'invalid abstract method');
+        return null;
+    }
 }
 
 

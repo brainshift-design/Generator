@@ -82,6 +82,10 @@ extends OperatorBase
 
         updateParamConditionText(this.paramCondition, this.isUnknown(), 1);
 
+        if (   this.paramCondition.value.value == 0
+            && this.outputs[0].supportsTypes([COLOR_VALUE]))
+            this.outputs[0].wireColor = this.inputs[this.paramCondition.value.value > 0 ? 1 : 0].wireColor;
+
         this.updateParamControls();
     }
 }

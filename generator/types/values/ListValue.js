@@ -118,6 +118,13 @@ extends GValue
 
 
 
+    getNaN()
+    {
+        return ListValue.NaN;
+    }
+
+
+
     static NaN = Object.freeze(new ListValue(null));
 }
 

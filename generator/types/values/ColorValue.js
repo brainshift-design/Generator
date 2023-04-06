@@ -167,6 +167,13 @@ extends GValue
 
 
 
+    getNaN()
+    {
+        return ColorValue.NaN;
+    }
+
+
+
     static NaN = Object.freeze(new ColorValue(
         NumberValue.NaN,
         NumberValue.NaN,

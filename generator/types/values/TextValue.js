@@ -76,6 +76,13 @@ extends GValue
 
 
 
+    getNaN()
+    {
+        return TextValue.NaN;
+    }
+
+
+
     static NaN = Object.freeze(new TextValue(NAN_CHAR));
 }
 

@@ -113,6 +113,13 @@ extends GValue
 
 
 
+    getNaN()
+    {
+        return NumberValue.NaN;
+    }
+
+
+
     static NaN = Object.freeze(new NumberValue(
         Number.NaN, 
         Number.NaN));

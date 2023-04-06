@@ -168,6 +168,13 @@ extends GValue
 
 
 
+    getNaN()
+    {
+        return StrokeValue.NaN;
+    }
+
+
+
     static NaN = Object.freeze(new StrokeValue(
         FillValue  .NaN,
         NumberValue.NaN,
