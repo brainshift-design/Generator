@@ -9,6 +9,7 @@ extends ResizableBase
     {
         super(TEXT, 'text', 'text');
 
+        this.alwaysSaveParams = true;
         this.alwaysLoadParams = true;
 
 
@@ -17,7 +18,8 @@ extends ResizableBase
 
         this.addParam(this.paramValue = new TextParam('value', '', false, false));
 
-        this.paramValue.controls[0].textbox.defPlaceholder = ' . . .';
+        this.paramValue.controls[0].textbox.defPlaceholder  = ' . . .';
+        this.paramValue.controls[0].textbox.style.textAlign = 'center';
 
 
         this.header.addEventListener('pointerdown', e => this.paramValue.controls[0].textbox.blur());

@@ -220,6 +220,8 @@ extends Parameter
         {
             switch (_param[3])
             {
+            case '':
+            case 'start':
             case 'left':    this.controls[0].textbox.style.textAlign = 'left';    break;
             case 'center':  this.controls[0].textbox.style.textAlign = 'center';  break;
             case 'right':   this.controls[0].textbox.style.textAlign = 'right';   break; 
