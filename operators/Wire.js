@@ -102,15 +102,19 @@ class Wire
         }
 
 
-        return  output
-            && !rgbIsNaN(output.wireColor)
-               ? output.wireColor
-               :     input
-                 && !rgbIsNaN(input.wireColor)
-                    ?  input.wireColor
-                    : !isEmpty(types)
-                      ? rgb_a(rgbFromType(types[0], true), 1)
-                      : rgbaInvalid;
+        if (    output
+            && !rgbIsNaN(output.wireColor))
+            return output.wireColor;
+
+        else if (input
+             && !rgbIsNaN(input.wireColor))
+            return input.wireColor;
+
+        else if (!isEmpty(types))
+            return rgb_a(rgbFromType(types[0], true), 1);
+
+        else 
+            return rgbaInvalid;
     }
 
 

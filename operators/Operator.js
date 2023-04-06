@@ -852,6 +852,7 @@ class Operator
         
         const colWire    = rgbFromType(this.type, true);
 
+        
         return {
             back:   rgbaBack, 
             border: rgbaBorder,

@@ -91,6 +91,36 @@ extends OperatorBase
 
 
 
+    updateHeader()
+    {
+        super.updateHeader();
+
+
+        const colors = super.getHeaderColors();
+
+        const type =
+            this.inputs[0].connected
+            ? this.inputs[0].types[0]
+            : this.inputs[1].connected
+              ? this.inputs[1].types[0]
+              : ANY_TYPE;
+
+
+        if (COLOR_TYPES.includes(type))
+        {
+            colors.output =
+                this.inputs[0].connected
+                ? this.inputs[0].connectedOutput.wireColor
+                : this.inputs[1].connected
+                  ? this.inputs[1].connectedOutput.wireColor
+                  : rgbFromType(IF_ELSE, true);
+
+            colors.wire = colors.output;
+        }
+    }
+
+
+
     getHeaderColors()
     {
         const colors = super.getHeaderColors();
@@ -109,29 +139,50 @@ extends OperatorBase
 
         if (NUMBER_TYPES.includes(type))
         {
-            colors.input  = this.active ? rgb_a(colorPassive, 0.55) : rgb_a(colorActive, darkMode ? 0.75 : 0.5);
-            colors.output = this.active ? rgb_a(colorPassive, 0.5 ) : rgb_a(colorActive, darkMode ? 0.65 : 0.4);
+            colors.input  = this.active ? rgb_a(colorPassive, 0.55) : rgb_a(colorActive, darkMode ? 0.65 : 0.5);
+            colors.output = this.active ? rgb_a(colorPassive, 0.5 ) : rgb_a(colorActive, darkMode ? 0.6  : 0.4);
+            colors.wire   = colorActive;
         }
         else if (TEXT_TYPES.includes(type))
         {
             colors.input  = this.active ? rgb_a(colorActive, 0.55) : rgb_a(darkMode ? colorActive : colorPassive, darkMode ? 0.55 : 1);
             colors.output = this.active ? rgb_a(colorActive, 0.45) : rgb_a(darkMode ? colorActive : colorPassive, darkMode ? 0.45 : 0.9);
+            colors.wire   = colorActive;
         }
         else if (SHAPE_TYPES.includes(type))
         {
-            colors.input  = this.active ? rgb_a(colorPassive, 0.65) : rgb_a(colorActive, darkMode ? 0.7 : 0.5 );
-            colors.output = this.active ? rgb_a(colorPassive, 0.65) : rgb_a(colorActive, darkMode ? 0.6 : 0.45);
+            colors.input  = this.active ? rgb_a(colorPassive, 0.65) : rgb_a(colorActive, darkMode ? 0.6 : 0.5 );
+            colors.output = this.active ? rgb_a(colorPassive, 0.65) : rgb_a(colorActive, darkMode ? 0.5 : 0.45);
+            colors.wire   = colorActive;
         }
         else if (COLOR_TYPES.includes(type))
         {
-            colors.output =
-                this.inputs[0].connected
-                ? this.inputs[0].connectedOutput.wireColor
-                : this.inputs[1].connected
-                  ? this.inputs[1].connectedOutput.wireColor
-                  : rgbFromType(IF_ELSE, true);
+            //const typeColor = rgbFromType(this.type, true);
+
+
+            if (   this.inputs[0].connected
+                && this.inputs[1].connected)
+            {
+                colors.output = 
+                    this.paramCondition.value.value > 0
+                    ? this.inputs[0].connectedOutput.wireColor
+                    : this.inputs[1].connectedOutput.wireColor;
+            }
+
+            else if (this.inputs[0].connected
+                  && this.paramCondition.value.value > 0)
+                colors.output = this.inputs[0].connectedOutput.wireColor;
+
+            else if (this.inputs[1].connected
+                  && this.paramCondition.value.value == 0)
+                colors.output = this.inputs[1].connectedOutput.wireColor;
+
+
+            colors.wire = colors.output;
         }
 
+        
+        
         return colors;
     }
 }
@@ -142,17 +193,22 @@ function OpIfElse_onConnectInput(node, inputIndex)
 {
     const otherIndex = inputIndex == 0 ? 1 : 0;
 
-    const inputOut   = node.inputs[inputIndex].connectedOutput;
-    const inputTypes = inputOut.types;
+    const firstInput = node.inputs[inputIndex];
+    const otherInput = node.inputs[otherIndex];
+
+    const firstOut   = firstInput.connectedOutput;
+    const firstTypes = firstOut.types;
     
+    firstInput.types     = [...firstTypes];
+    firstInput.wireColor = firstOut.wireColor;
+
     
-    node.inputs[inputIndex].types = [...inputTypes];
-  
     if (!node.inputs[otherIndex].connected)
     {
-        node.inputs[otherIndex].types = [...inputTypes];
-        node.inputs
-        node.outputs[0]        .types = [...inputTypes];
+        otherInput.types      = [...firstTypes];
+        otherInput.wireColor  = firstOut.wireColor;
+
+        node.outputs[0].types = [...firstTypes];
     }
 
     
@@ -160,7 +216,7 @@ function OpIfElse_onConnectInput(node, inputIndex)
     // the incoming connection, delete the outgoing connection
 
     if (    node.outputs[0].connected
-        && !node.outputs[0].connectedInputs[0].canConnectFrom(inputOut))
+        && !node.outputs[0].connectedInputs[0].canConnectFrom(firstOut))
         node.outputs[0].connectedInputs.forEach(i => uiDisconnect(i));
 }
 

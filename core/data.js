@@ -42,6 +42,7 @@ function rgbFromTypeMode(type, active, mode)
         case CORRECT_COLOR:
         case COLOR_CONTRAST:
         case COLORBLIND:
+        case COLOR_BLEND:
             return active 
                  ? rgbActiveColor  
                  : rgbColor;

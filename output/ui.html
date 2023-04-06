@@ -452,9 +452,10 @@
 #licenseWatermark
 {
     position:         absolute;
-    left:             -3px;
+    left:             50%;
     top:              62px;
-    width:            256px;
+    transform:        translateX(-50%);
+    width:            190px;
     height:           50px;
     overflow:         hidden;
     pointer-events:   none;
@@ -4557,6 +4558,7 @@ function rgbFromTypeMode(type, active, mode)
         case CORRECT_COLOR:
         case COLOR_CONTRAST:
         case COLORBLIND:
+        case COLOR_BLEND:
             return active 
                  ? rgbActiveColor  
                  : rgbColor;
@@ -23693,6 +23695,7 @@ function rgbFromTypeMode(type, active, mode)
         case CORRECT_COLOR:
         case COLOR_CONTRAST:
         case COLORBLIND:
+        case COLOR_BLEND:
             return active 
                  ? rgbActiveColor  
                  : rgbColor;
@@ -50561,15 +50564,19 @@ class Wire
         }
 
 
-        return  output
-            && !rgbIsNaN(output.wireColor)
-               ? output.wireColor
-               :     input
-                 && !rgbIsNaN(input.wireColor)
-                    ?  input.wireColor
-                    : !isEmpty(types)
-                      ? rgb_a(rgbFromType(types[0], true), 1)
-                      : rgbaInvalid;
+        if (    output
+            && !rgbIsNaN(output.wireColor))
+            return output.wireColor;
+
+        else if (input
+             && !rgbIsNaN(input.wireColor))
+            return input.wireColor;
+
+        else if (!isEmpty(types))
+            return rgb_a(rgbFromType(types[0], true), 1);
+
+        else 
+            return rgbaInvalid;
     }
 
 
@@ -51812,6 +51819,7 @@ class Operator
         
         const colWire    = rgbFromType(this.type, true);
 
+        
         return {
             back:   rgbaBack, 
             border: rgbaBorder,
@@ -53001,16 +53009,17 @@ Operator.prototype.updateHeader = function()
     const height = Math.max(defHeaderHeight, this.updateHeaderInputsAndOutputs());
 
     this.header.style.height = height;
-    //this.updateParamBack(height);
 
+    
     this.updateHeaderLabel();
     this.updateReorderArrows();
 
 
+    const colors = this.getHeaderColors();
+
+
     if (this.progressBar)
     {
-        const colors = this.getHeaderColors();
-
         this.progressBar.style.background = 
             !rgbIsNaN(colors.back) 
             ? rgb2style_a(colors.text, 0.5) 
@@ -53260,6 +53269,7 @@ extends Operator
         {
             input.colorLight = 
             input.colorDark  = colors.input;
+            input.wireColor  = colors.wire;
         }
 
         
@@ -53267,6 +53277,7 @@ extends Operator
         {
             output.colorLight =
             output.colorDark  = colors.output;
+            output.wireColor  = colors.wire;
         }
     }
 }
@@ -54202,6 +54213,36 @@ extends OperatorBase
 
 
 
+    updateHeader()
+    {
+        super.updateHeader();
+
+
+        const colors = super.getHeaderColors();
+
+        const type =
+            this.inputs[0].connected
+            ? this.inputs[0].types[0]
+            : this.inputs[1].connected
+              ? this.inputs[1].types[0]
+              : ANY_TYPE;
+
+
+        if (COLOR_TYPES.includes(type))
+        {
+            colors.output =
+                this.inputs[0].connected
+                ? this.inputs[0].connectedOutput.wireColor
+                : this.inputs[1].connected
+                  ? this.inputs[1].connectedOutput.wireColor
+                  : rgbFromType(IF_ELSE, true);
+
+            colors.wire = colors.output;
+        }
+    }
+
+
+
     getHeaderColors()
     {
         const colors = super.getHeaderColors();
@@ -54220,29 +54261,50 @@ extends OperatorBase
 
         if (NUMBER_TYPES.includes(type))
         {
-            colors.input  = this.active ? rgb_a(colorPassive, 0.55) : rgb_a(colorActive, darkMode ? 0.75 : 0.5);
-            colors.output = this.active ? rgb_a(colorPassive, 0.5 ) : rgb_a(colorActive, darkMode ? 0.65 : 0.4);
+            colors.input  = this.active ? rgb_a(colorPassive, 0.55) : rgb_a(colorActive, darkMode ? 0.65 : 0.5);
+            colors.output = this.active ? rgb_a(colorPassive, 0.5 ) : rgb_a(colorActive, darkMode ? 0.6  : 0.4);
+            colors.wire   = colorActive;
         }
         else if (TEXT_TYPES.includes(type))
         {
             colors.input  = this.active ? rgb_a(colorActive, 0.55) : rgb_a(darkMode ? colorActive : colorPassive, darkMode ? 0.55 : 1);
             colors.output = this.active ? rgb_a(colorActive, 0.45) : rgb_a(darkMode ? colorActive : colorPassive, darkMode ? 0.45 : 0.9);
+            colors.wire   = colorActive;
         }
         else if (SHAPE_TYPES.includes(type))
         {
-            colors.input  = this.active ? rgb_a(colorPassive, 0.65) : rgb_a(colorActive, darkMode ? 0.7 : 0.5 );
-            colors.output = this.active ? rgb_a(colorPassive, 0.65) : rgb_a(colorActive, darkMode ? 0.6 : 0.45);
+            colors.input  = this.active ? rgb_a(colorPassive, 0.65) : rgb_a(colorActive, darkMode ? 0.6 : 0.5 );
+            colors.output = this.active ? rgb_a(colorPassive, 0.65) : rgb_a(colorActive, darkMode ? 0.5 : 0.45);
+            colors.wire   = colorActive;
         }
         else if (COLOR_TYPES.includes(type))
         {
-            colors.output =
-                this.inputs[0].connected
-                ? this.inputs[0].connectedOutput.wireColor
-                : this.inputs[1].connected
-                  ? this.inputs[1].connectedOutput.wireColor
-                  : rgbFromType(IF_ELSE, true);
+            //const typeColor = rgbFromType(this.type, true);
+
+
+            if (   this.inputs[0].connected
+                && this.inputs[1].connected)
+            {
+                colors.output = 
+                    this.paramCondition.value.value > 0
+                    ? this.inputs[0].connectedOutput.wireColor
+                    : this.inputs[1].connectedOutput.wireColor;
+            }
+
+            else if (this.inputs[0].connected
+                  && this.paramCondition.value.value > 0)
+                colors.output = this.inputs[0].connectedOutput.wireColor;
+
+            else if (this.inputs[1].connected
+                  && this.paramCondition.value.value == 0)
+                colors.output = this.inputs[1].connectedOutput.wireColor;
+
+
+            colors.wire = colors.output;
         }
 
+        
+        
         return colors;
     }
 }
@@ -54253,17 +54315,22 @@ function OpIfElse_onConnectInput(node, inputIndex)
 {
     const otherIndex = inputIndex == 0 ? 1 : 0;
 
-    const inputOut   = node.inputs[inputIndex].connectedOutput;
-    const inputTypes = inputOut.types;
+    const firstInput = node.inputs[inputIndex];
+    const otherInput = node.inputs[otherIndex];
+
+    const firstOut   = firstInput.connectedOutput;
+    const firstTypes = firstOut.types;
     
+    firstInput.types     = [...firstTypes];
+    firstInput.wireColor = firstOut.wireColor;
+
     
-    node.inputs[inputIndex].types = [...inputTypes];
-  
     if (!node.inputs[otherIndex].connected)
     {
-        node.inputs[otherIndex].types = [...inputTypes];
-        node.inputs
-        node.outputs[0]        .types = [...inputTypes];
+        otherInput.types      = [...firstTypes];
+        otherInput.wireColor  = firstOut.wireColor;
+
+        node.outputs[0].types = [...firstTypes];
     }
 
     
@@ -54271,7 +54338,7 @@ function OpIfElse_onConnectInput(node, inputIndex)
     // the incoming connection, delete the outgoing connection
 
     if (    node.outputs[0].connected
-        && !node.outputs[0].connectedInputs[0].canConnectFrom(inputOut))
+        && !node.outputs[0].connectedInputs[0].canConnectFrom(firstOut))
         node.outputs[0].connectedInputs.forEach(i => uiDisconnect(i));
 }
 
@@ -67507,11 +67574,11 @@ function updateLicenseInfo(license)
 
         licenseWatermark    .style.display    = 'block';
         //licenseWatermark    .style.boxShadow  = '0 0 0 1px inset ' + (darkMode ? '#ffffff08' : '#00000008');
-        licenseWatermark    .style.outline    = '2px dashed var(--figma-color-bg-hover)';
+        licenseWatermark    .style.outline    = '2px dashed var(--figma-color-text-disabled)';
         licenseWatermark    .style.background = 'transparent';//darkMode ? '#ffffff0f' : '#0000000a';
         licenseWatermarkPath.style.fill       = 'transparent';//darkMode ? '#2e2e2e50' : '#ffffff80';
 
-        licenseInfo.innerHTML = '<span style="user-select: none; color: ' + (darkMode ? '#fffa' : '#000c') + ';">License valid until:&nbsp;&thinsp;</span><span style="font-weight: 700">' + strDate.replaceAll('/', '&hairsp;/&hairsp;') + '</span>';
+        licenseInfo.innerHTML = '<span style="user-select: none; color: ' + (darkMode ? '#fffa' : '#000c') + ';">Valid until:&nbsp;&thinsp;</span><span style="font-weight: 700">' + strDate.replaceAll('/', '&hairsp;/&hairsp;') + '</span>';
     }
     else
     {

@@ -230,11 +230,11 @@ function updateLicenseInfo(license)
 
         licenseWatermark    .style.display    = 'block';
         //licenseWatermark    .style.boxShadow  = '0 0 0 1px inset ' + (darkMode ? '#ffffff08' : '#00000008');
-        licenseWatermark    .style.outline    = '2px dashed var(--figma-color-bg-hover)';
+        licenseWatermark    .style.outline    = '2px dashed var(--figma-color-text-disabled)';
         licenseWatermark    .style.background = 'transparent';//darkMode ? '#ffffff0f' : '#0000000a';
         licenseWatermarkPath.style.fill       = 'transparent';//darkMode ? '#2e2e2e50' : '#ffffff80';
 
-        licenseInfo.innerHTML = '<span style="user-select: none; color: ' + (darkMode ? '#fffa' : '#000c') + ';">License valid until:&nbsp;&thinsp;</span><span style="font-weight: 700">' + strDate.replaceAll('/', '&hairsp;/&hairsp;') + '</span>';
+        licenseInfo.innerHTML = '<span style="user-select: none; color: ' + (darkMode ? '#fffa' : '#000c') + ';">Valid until:&nbsp;&thinsp;</span><span style="font-weight: 700">' + strDate.replaceAll('/', '&hairsp;/&hairsp;') + '</span>';
     }
     else
     {

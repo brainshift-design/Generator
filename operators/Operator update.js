@@ -85,16 +85,17 @@ Operator.prototype.updateHeader = function()
     const height = Math.max(defHeaderHeight, this.updateHeaderInputsAndOutputs());
 
     this.header.style.height = height;
-    //this.updateParamBack(height);
 
+    
     this.updateHeaderLabel();
     this.updateReorderArrows();
 
 
+    const colors = this.getHeaderColors();
+
+
     if (this.progressBar)
     {
-        const colors = this.getHeaderColors();
-
         this.progressBar.style.background = 
             !rgbIsNaN(colors.back) 
             ? rgb2style_a(colors.text, 0.5) 
