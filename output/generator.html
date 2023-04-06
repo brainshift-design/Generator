@@ -4,7 +4,7 @@
 
 
 
-const generatorVersion = 130;
+const generatorVersion = 131;
 
 
 const MAX_INT32        = 2147483647;
@@ -3392,6 +3392,7 @@ const NUMBER_SERIES           = 'SER';
 const NUMBER_RANDOM           = 'RAND';  
 const NUMBER_INTERPOLATE      = 'LERP'; 
 const NUMBER_TO_TEXT          = 'N2T';
+const NUMBER_SOLVE            = 'SOLVE';
 
 const NUMBER_MATH             = 'MATH';  
 const NUMBER_ADD              = 'ADD';   
@@ -3462,6 +3463,7 @@ const NUMBER_TYPES =
     NUMBER_RANDOM,
     NUMBER_INTERPOLATE,
     NUMBER_TO_TEXT,
+    NUMBER_SOLVE,
 
     ...MATH_TYPES,
     ...BOOLEAN_TYPES,
@@ -7369,6 +7371,84 @@ extends GNumberType
         genPushUpdateValue(parse, this.nodeId, 'value',  this.value);
         genPushUpdateValue(parse, this.nodeId, 'format', format    );
         genPushUpdateValue(parse, this.nodeId, 'digits', digits    );
+
+
+        this.validate();
+
+        return this;
+    }
+}
+
+
+
+class GSolve
+extends GNumberType
+{
+    input = null;
+
+    current;
+    target;
+
+
+    
+    constructor(nodeId, options)
+    {
+        super(NUMBER_LIMITS, nodeId, options);
+    }
+
+
+    
+    copy()
+    {
+        const copy = new GSolve(this.nodeId, this.options);
+
+        copy.copyBase(this);
+
+        if (this.input) 
+            copy.input = this.input.copy();
+
+        copy.current = this.current.copy();
+        copy.target  = this.target .copy();
+
+        return copy;
+    }
+
+
+
+    async eval(parse)
+    {
+        if (this.isCached())
+            return this;
+
+
+        const current = (await this.current.eval(parse)).toValue();
+        const target  = (await this.target .eval(parse)).toValue();
+
+
+        if (this.input)
+        {
+            this.value = (await this.input.eval(parse)).toValue();
+
+            console.assert(
+                this.value.type == NUMBER_VALUE, 
+                'this.value.type must be NUMBER_VALUE');
+
+
+            if (this.options.enabled)
+            {
+                // this.value.value = Math.min(Math.max(
+                //     current.value,
+                //     this.value.value),
+                //     target.value);
+            }
+        }
+        else
+            this.value = NumberValue.NaN;
+
+
+        genPushUpdateValue(parse, this.nodeId, 'current', current);
+        genPushUpdateValue(parse, this.nodeId, 'target',  target);
+        genPushUpdateValue(parse, this.nodeId, 'value',   this.value);
 
 
         this.validate();
@@ -12796,6 +12876,7 @@ function enableFeatures(subscription, beta)
     updateElementDisplay(menuItemCustomOutputs       .div, false);//subscription && beta);
     
     updateElementDisplay(menuItemSeries              .div, subscription && beta);    
+    updateElementDisplay(menuItemSolve               .div, subscription && beta);    
     updateElementDisplay(menuItemNumberSep1          .div, subscription && beta);
     updateElementDisplay(menuItemNumberConvertToText .div, subscription && beta);
     
@@ -14898,6 +14979,53 @@ function genParseNumberToText(parse)
 }
 
 
+
+function genParseSolve(parse)
+{
+    const [, nodeId, options, ignore] = genParseNodeStart(parse);
+
+
+    const solve = new GSolve(nodeId, options);
+   
+
+    let nInputs = -1;
+    
+    if (!ignore)
+    {
+        nInputs = parseInt(parse.move());
+        console.assert(nInputs == 0 || nInputs == 1, 'nInputs must be [0, 1]');
+    }
+
+    
+    if (parse.settings.logRequests) 
+        logReq(solve, parse, ignore, nInputs);
+
+
+    if (ignore) 
+    {
+        genParseNodeEnd(parse, solve);
+        return parse.parsedNodes.find(n => n.nodeId == nodeId);
+    }
+
+
+    parse.nTab++;
+
+
+    if (nInputs == 1)
+        solve.input = genParse(parse);
+
+    solve.current = genParse(parse);
+    solve.target  = genParse(parse);
+
+    
+    parse.nTab--;
+
+
+    genParseNodeEnd(parse, solve);
+    return solve;
+}
+
+
 function genParseRectangle(parse)
 {
     const [, nodeId, options, ignore] = genParseNodeStart(parse);
@@ -15911,6 +16039,7 @@ function genParse(parse, inParam = true)
     else if (parse.next == NUMBER_SERIES          ) result = genParseSeries          (parse);
     else if (parse.next == NUMBER_INTERPOLATE     ) result = genParseInterpolate     (parse);
     else if (parse.next == NUMBER_TO_TEXT         ) result = genParseNumberToText    (parse);
+    else if (parse.next == NUMBER_SOLVE           ) result = genParseSolve           (parse);
     
     else if (parse.next == NUMBER_MATH            ) result = genParseMath            (parse, (nodeId, options) => new GMath          (nodeId, options));
     else if (parse.next == NUMBER_ADD             ) result = genParseArithmetic      (parse, (nodeId, options) => new GAdd           (nodeId, options));

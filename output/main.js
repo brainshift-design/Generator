@@ -17,7 +17,7 @@ function isNodeKey(key) { return isTagKey(key, nodeTag); }
 function isConnKey(key) { return isTagKey(key, connTag); }
 function noNodeTag(key) { return noTag(key, nodeTag); }
 function noConnTag(key) { return noTag(key, connTag); }
-const generatorVersion = 130;
+const generatorVersion = 131;
 const MAX_INT32 = 2147483647;
 const NULL = '';
 const HTAB = '  '; // half-tab
@@ -269,6 +269,7 @@ const NUMBER_SERIES = 'SER';
 const NUMBER_RANDOM = 'RAND';
 const NUMBER_INTERPOLATE = 'LERP';
 const NUMBER_TO_TEXT = 'N2T';
+const NUMBER_SOLVE = 'SOLVE';
 const NUMBER_MATH = 'MATH';
 const NUMBER_ADD = 'ADD';
 const NUMBER_SUBTRACT = 'SUB';
@@ -324,6 +325,7 @@ const NUMBER_TYPES = [
     NUMBER_RANDOM,
     NUMBER_INTERPOLATE,
     NUMBER_TO_TEXT,
+    NUMBER_SOLVE,
     ...MATH_TYPES,
     ...BOOLEAN_TYPES,
     ...CONDITION_TYPES

@@ -97,6 +97,7 @@ var menuItemCache;
 var menuItemCopy;
 
 var menuItemSeries;
+var menuItemSolve;  
 var menuItemNumberSep1;
 var menuItemNumberConvertToText;
 
@@ -330,6 +331,7 @@ function initGeneratorMenus()
                                       new MenuItem('Random',          {icon: iconRandom,       callback: e => actionManager.do(getCreateNodeAction(NUMBER_RANDOM,      btnNumber.div, getCreateOptions(e)))}),
                                       new MenuItem('',                {separator: true}),
                                       new MenuItem('Interpolate',     {icon: iconInterpolate,  callback: e => actionManager.do(getCreateNodeAction(NUMBER_INTERPOLATE, btnNumber.div, getCreateOptions(e)))}),
+        menuItemSolve               = new MenuItem('Solve',           {icon: iconSolve,        callback: e => actionManager.do(getCreateNodeAction(NUMBER_SOLVE,       btnNumber.div, getCreateOptions(e)))}),
         menuItemNumberSep1          = new MenuItem('',                {separator: true}),
         menuItemNumberConvertToText = new MenuItem('Convert to text', {icon: iconNumberToText, callback: e => actionManager.do(getCreateNodeAction(NUMBER_TO_TEXT,     btnNumber.div, getCreateOptions(e)))})]);
         

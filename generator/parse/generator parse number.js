@@ -631,3 +631,50 @@ function genParseNumberToText(parse)
     genParseNodeEnd(parse, num2text);
     return num2text;
 }
+
+
+
+function genParseSolve(parse)
+{
+    const [, nodeId, options, ignore] = genParseNodeStart(parse);
+
+
+    const solve = new GSolve(nodeId, options);
+   
+
+    let nInputs = -1;
+    
+    if (!ignore)
+    {
+        nInputs = parseInt(parse.move());
+        console.assert(nInputs == 0 || nInputs == 1, 'nInputs must be [0, 1]');
+    }
+
+    
+    if (parse.settings.logRequests) 
+        logReq(solve, parse, ignore, nInputs);
+
+
+    if (ignore) 
+    {
+        genParseNodeEnd(parse, solve);
+        return parse.parsedNodes.find(n => n.nodeId == nodeId);
+    }
+
+
+    parse.nTab++;
+
+
+    if (nInputs == 1)
+        solve.input = genParse(parse);
+
+    solve.current = genParse(parse);
+    solve.target  = genParse(parse);
+
+    
+    parse.nTab--;
+
+
+    genParseNodeEnd(parse, solve);
+    return solve;
+}

@@ -245,6 +245,7 @@ function enableFeatures(subscription, beta)
     updateElementDisplay(menuItemCustomOutputs       .div, false);//subscription && beta);
     
     updateElementDisplay(menuItemSeries              .div, subscription && beta);    
+    updateElementDisplay(menuItemSolve               .div, subscription && beta);    
     updateElementDisplay(menuItemNumberSep1          .div, subscription && beta);
     updateElementDisplay(menuItemNumberConvertToText .div, subscription && beta);
     

@@ -52,6 +52,7 @@ const NUMBER_SERIES           = 'SER';
 const NUMBER_RANDOM           = 'RAND';  
 const NUMBER_INTERPOLATE      = 'LERP'; 
 const NUMBER_TO_TEXT          = 'N2T';
+const NUMBER_SOLVE            = 'SOLVE';
 
 const NUMBER_MATH             = 'MATH';  
 const NUMBER_ADD              = 'ADD';   
@@ -122,6 +123,7 @@ const NUMBER_TYPES =
     NUMBER_RANDOM,
     NUMBER_INTERPOLATE,
     NUMBER_TO_TEXT,
+    NUMBER_SOLVE,
 
     ...MATH_TYPES,
     ...BOOLEAN_TYPES,
