@@ -179,6 +179,21 @@ extends Control
 
 
 
+    startDelayUseTimer()
+    {
+        if (this.delayUseTimer)
+            clearTimeout(this.delayTimer);
+
+        this.delayUseTimer = setTimeout(() => 
+        {
+            this.delayUseTimer = false;
+            this.updateCursor();    
+        }, 
+        this.delayUse);
+    }
+
+
+
     setName(name)
     {
         this.name      = name;
@@ -438,6 +453,7 @@ extends Control
                this.readOnly 
             || containsChild(this.div, this.textbox)
             || graphView.wheelTimer 
+            || this.delayUseTimer
             || overNumberControlCtrl == this
             ? 'default'
             : 'ew-resize';

@@ -7,7 +7,10 @@ NumberControl.prototype.initEvents = function()
         
 
         if (this.delayUse > 0)
-            delayUseTimer = setTimeout(() => delayUseTimer = false, this.delayUse);
+        {
+            this.div.style.cursor = 'default';
+            this.startDelayUseTimer();
+        }
 
 
         if (!this.canReact(e))
@@ -73,6 +76,13 @@ NumberControl.prototype.initEvents = function()
         const view  = param.node.graph.view;
 
 
+        if (e.button == 0)
+        {
+            this.buttonDown0  = true;
+            this.buttonDown0_ = true;
+        }
+
+        
         if (!this.canReact(e))
             return;
 
@@ -115,8 +125,6 @@ NumberControl.prototype.initEvents = function()
             e.stopPropagation();
                 
 
-            this.buttonDown0  = true;
-            this.buttonDown0_ = true;
             this.moved        = false;
             this.clientX      = e.clientX;
             this.movedX       = 0;
@@ -490,7 +498,13 @@ NumberControl.prototype.initEvents = function()
             this.shiftDown   = false;
 
             numberControlChanging = null;
+
+
+            overNumberControl = null;
+            this.updateCursor();
+            this.startDelayUseTimer();
         }
+
         else if (e.button == 1) 
             this.buttonDown1 = false;
 
@@ -499,6 +513,7 @@ NumberControl.prototype.initEvents = function()
             e.stopPropagation();
             this.buttonDown2 = false;
         }
+
 
 
         this.buttonDown0_ = false;
