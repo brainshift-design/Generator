@@ -22,7 +22,7 @@ const rgbActiveFlowDark    = hex2rgb('#8B8B8B');
 const rgbFlowDark          = hex2rgb('#4D4D4D');
 
 const rgbActiveNumberDark  = hex2rgb('#1785CE');
-const rgbNumberDark        = hex2rgb('#304E6A');
+const rgbNumberDark        = hex2rgb('#2B4E6E');
 
 const rgbActiveCustomDark  = hex2rgb('#33AD55');
 const rgbCustomDark        = hex2rgb('#365E3F');

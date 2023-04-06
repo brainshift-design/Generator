@@ -1,29 +1,36 @@
-function rgbHeaderFromType(type, active)
+function rgbFromType(type, active)
+{
+    return rgbFromTypeMode(type, active, darkMode);
+}
+
+
+
+function rgbFromTypeMode(type, active, mode)
 {
     if (FLOW_TYPES.includes(type))
         return active 
-        ? (darkMode ? rgbActiveFlowDark   : rgbActiveFlowLight)
-        : (darkMode ? rgbFlowDark         : rgbFlowLight      );
+        ? (mode ? rgbActiveFlowDark   : rgbActiveFlowLight)
+        : (mode ? rgbFlowDark         : rgbFlowLight      );
 
     if (NUMBER_TYPES.includes(type))
         return active 
-        ? (darkMode ? rgbActiveNumberDark : rgbActiveNumberLight)
-        : (darkMode ? rgbNumberDark       : rgbNumberLight      );
+        ? (mode ? rgbActiveNumberDark : rgbActiveNumberLight)
+        : (mode ? rgbNumberDark       : rgbNumberLight      );
 
     if (TEXT_TYPES.includes(type))
         return active 
-        ? (darkMode ? rgbActiveTextDark   : rgbActiveTextLight)
-        : (darkMode ? rgbTextDark         : rgbTextLight      );
+        ? (mode ? rgbActiveTextDark   : rgbActiveTextLight)
+        : (mode ? rgbTextDark         : rgbTextLight      );
 
     if (type == COLOR_STYLE)
         return active 
-        ? (darkMode ? rgbActiveFlowDark   : rgbActiveFlowLight)
-        : (darkMode ? rgbFlowDark         : rgbFlowLight      );
+        ? (mode ? rgbActiveFlowDark   : rgbActiveFlowLight)
+        : (mode ? rgbFlowDark         : rgbFlowLight      );
 
     if (SHAPE_TYPES.includes(type))
         return active 
-        ? (darkMode ? rgbActiveShapeDark  : rgbActiveShapeLight)
-        : (darkMode ? rgbShapeDark        : rgbShapeLight      );
+        ? (mode ? rgbActiveShapeDark  : rgbActiveShapeLight)
+        : (mode ? rgbShapeDark        : rgbShapeLight      );
 
         
     switch (type)
@@ -43,8 +50,8 @@ function rgbHeaderFromType(type, active)
         case NODE_INPUTS:
         case NODE_OUTPUTS:
             return active 
-                 ? (darkMode ? rgbActiveFlowDark : rgbActiveFlowLight)
-                 : (darkMode ? rgbFlowDark       : rgbFlowLight      );
+                 ? (mode ? rgbActiveFlowDark : rgbActiveFlowLight)
+                 : (mode ? rgbFlowDark       : rgbFlowLight      );
     }
 
     return 'magenta';

@@ -12,6 +12,9 @@ const CACHE                   = 'CACHE';
 const COPY                    = 'COPY';
 
 
+const ANY_TYPE                = 'ANY';
+
+
 const LIST_TYPES =
 [
     LIST_VALUE,
@@ -26,6 +29,7 @@ const FOREACH                 = 'FOR';
 
 const FLOW_TYPES =
 [
+    ANY_TYPE,
     ...LIST_TYPES,
     ITEMS,
     SELECT,

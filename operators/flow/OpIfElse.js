@@ -88,6 +88,47 @@ extends OperatorBase
 
         this.updateParamControls();
     }
+
+
+
+    getHeaderColors()
+    {
+        const colors = super.getHeaderColors();
+
+        const type =
+            this.inputs[0].connected
+            ? this.inputs[0].types[0]
+            : this.inputs[1].connected
+              ? this.inputs[1].types[0]
+              : ANY_TYPE;
+
+
+        let colorActive  = rgbFromType(type, true);
+        let colorPassive = rgbFromType(type, false);
+
+
+        if (NUMBER_TYPES.includes(type))
+        {
+            colors.input  = this.active ? rgb_a(colorPassive, 0.6) : rgb_a(colorActive, 0.75);
+            colors.output = this.active ? rgb_a(colorPassive, 0.55) : rgb_a(colorActive, 0.65);
+        }
+        else if (TEXT_TYPES.includes(type))
+        {
+            colors.input  = this.active ? rgb_a(colorActive, 0.55) : rgb_a(colorActive, 0.55);
+            colors.output = this.active ? rgb_a(colorActive, 0.45) : rgb_a(colorActive, 0.45);
+        }
+        else if (SHAPE_TYPES.includes(type))
+        {
+            colors.input  = this.active ? rgb_a(colorPassive, 0.65) : rgb_a(colorActive, 0.7);
+            colors.output = this.active ? rgb_a(colorPassive, 0.65) : rgb_a(colorActive, 0.6);
+        }
+        else if (COLOR_TYPES.includes(type))
+        {
+            // leave default color
+        }
+
+        return colors;
+    }
 }
 
 
@@ -101,10 +142,11 @@ function OpIfElse_onConnectInput(node, inputIndex)
     
     
     node.inputs[inputIndex].types = [...inputTypes];
-
+  
     if (!node.inputs[otherIndex].connected)
     {
         node.inputs[otherIndex].types = [...inputTypes];
+        node.inputs
         node.outputs[0]        .types = [...inputTypes];
     }
 

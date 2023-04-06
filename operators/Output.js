@@ -225,7 +225,7 @@ class Output
                this.param
             && this.param.type != COLOR_VALUE
             && this.param.type !=  FILL_VALUE
-            ? rgb_a(rgbHeaderFromType(this.param.type, true), 0.38)
+            ? rgb_a(rgbFromType(this.param.type, true), 0.38)
             : (darkMode
                ? this.colorDark
                : this.colorLight);

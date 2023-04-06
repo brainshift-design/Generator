@@ -4512,32 +4512,39 @@ function cleanStyleId(styleId)
 
 
 
-function rgbHeaderFromType(type, active)
+function rgbFromType(type, active)
+{
+    return rgbFromTypeMode(type, active, darkMode);
+}
+
+
+
+function rgbFromTypeMode(type, active, mode)
 {
     if (FLOW_TYPES.includes(type))
         return active 
-        ? (darkMode ? rgbActiveFlowDark   : rgbActiveFlowLight)
-        : (darkMode ? rgbFlowDark         : rgbFlowLight      );
+        ? (mode ? rgbActiveFlowDark   : rgbActiveFlowLight)
+        : (mode ? rgbFlowDark         : rgbFlowLight      );
 
     if (NUMBER_TYPES.includes(type))
         return active 
-        ? (darkMode ? rgbActiveNumberDark : rgbActiveNumberLight)
-        : (darkMode ? rgbNumberDark       : rgbNumberLight      );
+        ? (mode ? rgbActiveNumberDark : rgbActiveNumberLight)
+        : (mode ? rgbNumberDark       : rgbNumberLight      );
 
     if (TEXT_TYPES.includes(type))
         return active 
-        ? (darkMode ? rgbActiveTextDark   : rgbActiveTextLight)
-        : (darkMode ? rgbTextDark         : rgbTextLight      );
+        ? (mode ? rgbActiveTextDark   : rgbActiveTextLight)
+        : (mode ? rgbTextDark         : rgbTextLight      );
 
     if (type == COLOR_STYLE)
         return active 
-        ? (darkMode ? rgbActiveFlowDark   : rgbActiveFlowLight)
-        : (darkMode ? rgbFlowDark         : rgbFlowLight      );
+        ? (mode ? rgbActiveFlowDark   : rgbActiveFlowLight)
+        : (mode ? rgbFlowDark         : rgbFlowLight      );
 
     if (SHAPE_TYPES.includes(type))
         return active 
-        ? (darkMode ? rgbActiveShapeDark  : rgbActiveShapeLight)
-        : (darkMode ? rgbShapeDark        : rgbShapeLight      );
+        ? (mode ? rgbActiveShapeDark  : rgbActiveShapeLight)
+        : (mode ? rgbShapeDark        : rgbShapeLight      );
 
         
     switch (type)
@@ -4557,8 +4564,8 @@ function rgbHeaderFromType(type, active)
         case NODE_INPUTS:
         case NODE_OUTPUTS:
             return active 
-                 ? (darkMode ? rgbActiveFlowDark : rgbActiveFlowLight)
-                 : (darkMode ? rgbFlowDark       : rgbFlowLight      );
+                 ? (mode ? rgbActiveFlowDark : rgbActiveFlowLight)
+                 : (mode ? rgbFlowDark       : rgbFlowLight      );
     }
 
     return 'magenta';
@@ -7427,6 +7434,9 @@ const CACHE                   = 'CACHE';
 const COPY                    = 'COPY';
 
 
+const ANY_TYPE                = 'ANY';
+
+
 const LIST_TYPES =
 [
     LIST_VALUE,
@@ -7441,6 +7451,7 @@ const FOREACH                 = 'FOR';
 
 const FLOW_TYPES =
 [
+    ANY_TYPE,
     ...LIST_TYPES,
     ITEMS,
     SELECT,
@@ -23530,32 +23541,39 @@ function cleanStyleId(styleId)
 
 
 
-function rgbHeaderFromType(type, active)
+function rgbFromType(type, active)
+{
+    return rgbFromTypeMode(type, active, darkMode);
+}
+
+
+
+function rgbFromTypeMode(type, active, mode)
 {
     if (FLOW_TYPES.includes(type))
         return active 
-        ? (darkMode ? rgbActiveFlowDark   : rgbActiveFlowLight)
-        : (darkMode ? rgbFlowDark         : rgbFlowLight      );
+        ? (mode ? rgbActiveFlowDark   : rgbActiveFlowLight)
+        : (mode ? rgbFlowDark         : rgbFlowLight      );
 
     if (NUMBER_TYPES.includes(type))
         return active 
-        ? (darkMode ? rgbActiveNumberDark : rgbActiveNumberLight)
-        : (darkMode ? rgbNumberDark       : rgbNumberLight      );
+        ? (mode ? rgbActiveNumberDark : rgbActiveNumberLight)
+        : (mode ? rgbNumberDark       : rgbNumberLight      );
 
     if (TEXT_TYPES.includes(type))
         return active 
-        ? (darkMode ? rgbActiveTextDark   : rgbActiveTextLight)
-        : (darkMode ? rgbTextDark         : rgbTextLight      );
+        ? (mode ? rgbActiveTextDark   : rgbActiveTextLight)
+        : (mode ? rgbTextDark         : rgbTextLight      );
 
     if (type == COLOR_STYLE)
         return active 
-        ? (darkMode ? rgbActiveFlowDark   : rgbActiveFlowLight)
-        : (darkMode ? rgbFlowDark         : rgbFlowLight      );
+        ? (mode ? rgbActiveFlowDark   : rgbActiveFlowLight)
+        : (mode ? rgbFlowDark         : rgbFlowLight      );
 
     if (SHAPE_TYPES.includes(type))
         return active 
-        ? (darkMode ? rgbActiveShapeDark  : rgbActiveShapeLight)
-        : (darkMode ? rgbShapeDark        : rgbShapeLight      );
+        ? (mode ? rgbActiveShapeDark  : rgbActiveShapeLight)
+        : (mode ? rgbShapeDark        : rgbShapeLight      );
 
         
     switch (type)
@@ -23575,8 +23593,8 @@ function rgbHeaderFromType(type, active)
         case NODE_INPUTS:
         case NODE_OUTPUTS:
             return active 
-                 ? (darkMode ? rgbActiveFlowDark : rgbActiveFlowLight)
-                 : (darkMode ? rgbFlowDark       : rgbFlowLight      );
+                 ? (mode ? rgbActiveFlowDark : rgbActiveFlowLight)
+                 : (mode ? rgbFlowDark       : rgbFlowLight      );
     }
 
     return 'magenta';
@@ -28875,6 +28893,9 @@ const CACHE                   = 'CACHE';
 const COPY                    = 'COPY';
 
 
+const ANY_TYPE                = 'ANY';
+
+
 const LIST_TYPES =
 [
     LIST_VALUE,
@@ -28889,6 +28910,7 @@ const FOREACH                 = 'FOR';
 
 const FLOW_TYPES =
 [
+    ANY_TYPE,
     ...LIST_TYPES,
     ITEMS,
     SELECT,
@@ -49554,7 +49576,7 @@ extends EventTarget
         this.colorLight       = [0, 0, 0, 1];
         this.colorDark        = [1, 1, 1, 1];
 
-        this.wireColor        = rgbHeaderFromType(this.types[0], true);
+        this.wireColor        = rgbFromType(this.types[0], true);
 
         
         this.div.appendChild(this.hitbox);
@@ -49670,6 +49692,23 @@ extends EventTarget
 
 
     
+    // updateColor()
+    // {
+    //     this.colorDark = rgbFromTypeMode(
+    //         !isEmpty(this.types) 
+    //         ? this.types[0] 
+    //         : NUMBER_VALUE, 
+    //         true);
+
+    //     this.colorLight = rgbFromTypeMode(
+    //         !isEmpty(this.types) 
+    //         ? this.types[0] 
+    //         : NUMBER_VALUE, 
+    //         false);
+    // }
+
+
+
     updateControl()
     {
         const tc = graphView.tempConn;
@@ -49687,10 +49726,15 @@ extends EventTarget
                this.param
             && this.param.type != COLOR_VALUE
             && this.param.type !=  FILL_VALUE
-            ? rgb_a(rgbHeaderFromType(this.param.type, true), 0.5)
+            ? rgb_a(rgbFromType(this.param.type, true), 0.5)
             : (darkMode
                ? this.colorDark
                : this.colorLight);
+
+        if (this.node.id == 'if/else6')
+        {
+            console.log('color =', color);
+        }
 
         const colorStyle = 
             rgba2style(rgb_a(
@@ -50015,7 +50059,7 @@ class Output
                this.param
             && this.param.type != COLOR_VALUE
             && this.param.type !=  FILL_VALUE
-            ? rgb_a(rgbHeaderFromType(this.param.type, true), 0.38)
+            ? rgb_a(rgbFromType(this.param.type, true), 0.38)
             : (darkMode
                ? this.colorDark
                : this.colorLight);
@@ -50355,7 +50399,7 @@ class Wire
                  && !rgbIsNaN(input.wireColor)
                     ?  input.wireColor
                     : !isEmpty(types)
-                      ? rgb_a(rgbHeaderFromType(types[0], true), 1)
+                      ? rgb_a(rgbFromType(types[0], true), 1)
                       : rgbaInvalid;
     }
 
@@ -51583,16 +51627,16 @@ class Operator
         const rgbaBack = 
             this.inert
             ? rgb_a(rgbDocumentBody, 0.95)
-            : rgb_a(rgbHeaderFromType(this.type, this.active), 0.95);
+            : rgb_a(rgbFromType(this.type, this.active), 0.95);
 
-        const rgbaBorder = rgb_a(rgbHeaderFromType(this.type, this.active), 0.95);
+        const rgbaBorder = rgb_a(rgbFromType(this.type, this.active), 0.95);
 
         const rgbaText   = isDark(rgbaBack) ? [1, 1, 1, 1] : [0, 0, 0, 1]; 
 
-        const colInput   = this.active ? rgb_a(rgbaText, 0.4 ) : rgb_a(rgbSaturateHsv(rgbHeaderFromType(this.type, true), 0.5), 0.8);
-        const colOutput  = this.active ? rgb_a(rgbaText, 0.35) : rgb_a(rgbSaturateHsv(rgbHeaderFromType(this.type, true), 0.5), 0.7);
+        const colInput   = this.active ? rgb_a(rgbaText, 0.4 ) : rgb_a(rgbSaturateHsv(rgbFromType(this.type, true), 0.5), 0.8);
+        const colOutput  = this.active ? rgb_a(rgbaText, 0.35) : rgb_a(rgbSaturateHsv(rgbFromType(this.type, true), 0.5), 0.7);
         
-        const colWire    = rgbHeaderFromType(this.type, true);
+        const colWire    = rgbFromType(this.type, true);
 
         return {
             back:   rgbaBack, 
@@ -53145,7 +53189,7 @@ extends OperatorWithValue
         super.updateHeaderLabel();
 
 
-        const colBack = rgbHeaderFromType(this.type, this.active);
+        const colBack = rgbFromType(this.type, this.active);
         const colText = isDark(colBack) ? [1, 1, 1] : [0, 0, 0];
 
         this._symbol.style.fontSize   = this._showOnlySymbol ? 17 : 12;
@@ -53981,6 +54025,47 @@ extends OperatorBase
 
         this.updateParamControls();
     }
+
+
+
+    getHeaderColors()
+    {
+        const colors = super.getHeaderColors();
+
+        const type =
+            this.inputs[0].connected
+            ? this.inputs[0].types[0]
+            : this.inputs[1].connected
+              ? this.inputs[1].types[0]
+              : ANY_TYPE;
+
+
+        let colorActive  = rgbFromType(type, true);
+        let colorPassive = rgbFromType(type, false);
+
+
+        if (NUMBER_TYPES.includes(type))
+        {
+            colors.input  = this.active ? rgb_a(colorPassive, 0.6) : rgb_a(colorActive, 0.75);
+            colors.output = this.active ? rgb_a(colorPassive, 0.55) : rgb_a(colorActive, 0.65);
+        }
+        else if (TEXT_TYPES.includes(type))
+        {
+            colors.input  = this.active ? rgb_a(colorActive, 0.55) : rgb_a(colorActive, 0.55);
+            colors.output = this.active ? rgb_a(colorActive, 0.45) : rgb_a(colorActive, 0.45);
+        }
+        else if (SHAPE_TYPES.includes(type))
+        {
+            colors.input  = this.active ? rgb_a(colorPassive, 0.65) : rgb_a(colorActive, 0.7);
+            colors.output = this.active ? rgb_a(colorPassive, 0.65) : rgb_a(colorActive, 0.6);
+        }
+        else if (COLOR_TYPES.includes(type))
+        {
+            // leave default color
+        }
+
+        return colors;
+    }
 }
 
 
@@ -53994,10 +54079,11 @@ function OpIfElse_onConnectInput(node, inputIndex)
     
     
     node.inputs[inputIndex].types = [...inputTypes];
-
+  
     if (!node.inputs[otherIndex].connected)
     {
         node.inputs[otherIndex].types = [...inputTypes];
+        node.inputs
         node.outputs[0]        .types = [...inputTypes];
     }
 
@@ -54282,15 +54368,15 @@ extends OperatorBase
     //     //     ? this.headerColor
     //     //     : this.inert
     //     //     ? rgb_a(rgbDocumentBody, 0.95)
-    //     //     : rgb_a(rgbHeaderFromType(type, this.active), 0.95);
+    //     //     : rgb_a(rgbFromType(type, this.active), 0.95);
 
-    //     // colors.border = rgb_a(rgbHeaderFromType(this.type, this.active), 0.95);
+    //     // colors.border = rgb_a(rgbFromType(this.type, this.active), 0.95);
 
     //     colors.text    = isDark(colors.back) ? [1, 1, 1, 1] : [0, 0, 0, 1]; 
 
-    //     colors.input   = this.active ? rgb_a(colors.text, 0.4)  : rgb_a(rgbSaturateHsv(rgbHeaderFromType(type, true), 0.5), 0.8);
-    //     colors.output  = this.active ? rgb_a(colors.text, 0.35) : rgb_a(rgbSaturateHsv(rgbHeaderFromType(type, true), 0.5), 0.7);
-    //     colors.wire    = rgbHeaderFromType(type, true);
+    //     colors.input   = this.active ? rgb_a(colors.text, 0.4)  : rgb_a(rgbSaturateHsv(rgbFromType(type, true), 0.5), 0.8);
+    //     colors.output  = this.active ? rgb_a(colors.text, 0.35) : rgb_a(rgbSaturateHsv(rgbFromType(type, true), 0.5), 0.7);
+    //     colors.wire    = rgbFromType(type, true);
 
     //     return colors;
     // }
@@ -54451,15 +54537,15 @@ extends OperatorBase
             ? this.headerColor
             : this.inert
             ? rgb_a(rgbDocumentBody, 0.95)
-            : rgb_a(rgbHeaderFromType(type, this.active), 0.95);
+            : rgb_a(rgbFromType(type, this.active), 0.95);
 
-        // colors.border = rgb_a(rgbHeaderFromType(this.type, this.active), 0.95);
+        // colors.border = rgb_a(rgbFromType(this.type, this.active), 0.95);
 
         colors.text    = isDark(colors.back) ? [1, 1, 1, 1] : [0, 0, 0, 1]; 
 
-        colors.input   = this.active ? rgb_a(colors.text, 0.4)  : rgb_a(rgbSaturateHsv(rgbHeaderFromType(type, true), 0.5), 0.8);
-        colors.output  = this.active ? rgb_a(colors.text, 0.35) : rgb_a(rgbSaturateHsv(rgbHeaderFromType(type, true), 0.5), 0.7);
-        colors.wire    = rgbHeaderFromType(type, true);
+        colors.input   = this.active ? rgb_a(colors.text, 0.4)  : rgb_a(rgbSaturateHsv(rgbFromType(type, true), 0.5), 0.8);
+        colors.output  = this.active ? rgb_a(colors.text, 0.35) : rgb_a(rgbSaturateHsv(rgbFromType(type, true), 0.5), 0.7);
+        colors.wire    = rgbFromType(type, true);
 
         return colors;
     }
@@ -56872,7 +56958,7 @@ extends Operator
         }
 
 
-        const rgbaBorder = rgb_a(rgbHeaderFromType(this.type, this.active), 0.95);
+        const rgbaBorder = rgb_a(rgbFromType(this.type, this.active), 0.95);
 
         const rgbText  = getTextColorFromBackColor(rgbStripeBack);
         //const rgbLabel = getTextColorFromBackColor(clipRgb(rgbBack));
@@ -57346,7 +57432,7 @@ extends OpColorBase
 
                 this.outputs[0].wireColor = 
                     this.isUnknown()
-                    ? rgbHeaderFromType(CACHE, true)
+                    ? rgbFromType(CACHE, true)
                     : dataColor2rgb(this._color);
 
                 this.prevSpace = colorSpace(_space.value);
@@ -65039,7 +65125,7 @@ const rgbActiveFlowDark    = hex2rgb('#8B8B8B');
 const rgbFlowDark          = hex2rgb('#4D4D4D');
 
 const rgbActiveNumberDark  = hex2rgb('#1785CE');
-const rgbNumberDark        = hex2rgb('#304E6A');
+const rgbNumberDark        = hex2rgb('#2B4E6E');
 
 const rgbActiveCustomDark  = hex2rgb('#33AD55');
 const rgbCustomDark        = hex2rgb('#365E3F');

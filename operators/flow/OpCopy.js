@@ -124,15 +124,15 @@ extends OperatorBase
             ? this.headerColor
             : this.inert
             ? rgb_a(rgbDocumentBody, 0.95)
-            : rgb_a(rgbHeaderFromType(type, this.active), 0.95);
+            : rgb_a(rgbFromType(type, this.active), 0.95);
 
-        // colors.border = rgb_a(rgbHeaderFromType(this.type, this.active), 0.95);
+        // colors.border = rgb_a(rgbFromType(this.type, this.active), 0.95);
 
         colors.text    = isDark(colors.back) ? [1, 1, 1, 1] : [0, 0, 0, 1]; 
 
-        colors.input   = this.active ? rgb_a(colors.text, 0.4)  : rgb_a(rgbSaturateHsv(rgbHeaderFromType(type, true), 0.5), 0.8);
-        colors.output  = this.active ? rgb_a(colors.text, 0.35) : rgb_a(rgbSaturateHsv(rgbHeaderFromType(type, true), 0.5), 0.7);
-        colors.wire    = rgbHeaderFromType(type, true);
+        colors.input   = this.active ? rgb_a(colors.text, 0.4)  : rgb_a(rgbSaturateHsv(rgbFromType(type, true), 0.5), 0.8);
+        colors.output  = this.active ? rgb_a(colors.text, 0.35) : rgb_a(rgbSaturateHsv(rgbFromType(type, true), 0.5), 0.7);
+        colors.wire    = rgbFromType(type, true);
 
         return colors;
     }

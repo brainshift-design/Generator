@@ -330,7 +330,7 @@ extends OpColorBase
 
                 this.outputs[0].wireColor = 
                     this.isUnknown()
-                    ? rgbHeaderFromType(CACHE, true)
+                    ? rgbFromType(CACHE, true)
                     : dataColor2rgb(this._color);
 
                 this.prevSpace = colorSpace(_space.value);

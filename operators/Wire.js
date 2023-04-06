@@ -109,7 +109,7 @@ class Wire
                  && !rgbIsNaN(input.wireColor)
                     ?  input.wireColor
                     : !isEmpty(types)
-                      ? rgb_a(rgbHeaderFromType(types[0], true), 1)
+                      ? rgb_a(rgbFromType(types[0], true), 1)
                       : rgbaInvalid;
     }
 

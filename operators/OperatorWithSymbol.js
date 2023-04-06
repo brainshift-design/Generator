@@ -61,7 +61,7 @@ extends OperatorWithValue
         super.updateHeaderLabel();
 
 
-        const colBack = rgbHeaderFromType(this.type, this.active);
+        const colBack = rgbFromType(this.type, this.active);
         const colText = isDark(colBack) ? [1, 1, 1] : [0, 0, 0];
 
         this._symbol.style.fontSize   = this._showOnlySymbol ? 17 : 12;

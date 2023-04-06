@@ -143,7 +143,7 @@ extends Operator
         }
 
 
-        const rgbaBorder = rgb_a(rgbHeaderFromType(this.type, this.active), 0.95);
+        const rgbaBorder = rgb_a(rgbFromType(this.type, this.active), 0.95);
 
         const rgbText  = getTextColorFromBackColor(rgbStripeBack);
         //const rgbLabel = getTextColorFromBackColor(clipRgb(rgbBack));

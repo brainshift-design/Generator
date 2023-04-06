@@ -239,6 +239,7 @@ const START = 'START';
 const REPEAT = 'REPT';
 const CACHE = 'CACHE';
 const COPY = 'COPY';
+const ANY_TYPE = 'ANY';
 const LIST_TYPES = [
     LIST_VALUE,
     LIST,
@@ -247,6 +248,7 @@ const LIST_TYPES = [
 ];
 const FOREACH = 'FOR';
 const FLOW_TYPES = [
+    ANY_TYPE,
     ...LIST_TYPES,
     ITEMS,
     SELECT,

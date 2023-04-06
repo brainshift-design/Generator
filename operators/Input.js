@@ -108,7 +108,7 @@ extends EventTarget
         this.colorLight       = [0, 0, 0, 1];
         this.colorDark        = [1, 1, 1, 1];
 
-        this.wireColor        = rgbHeaderFromType(this.types[0], true);
+        this.wireColor        = rgbFromType(this.types[0], true);
 
         
         this.div.appendChild(this.hitbox);
@@ -224,6 +224,23 @@ extends EventTarget
 
 
     
+    // updateColor()
+    // {
+    //     this.colorDark = rgbFromTypeMode(
+    //         !isEmpty(this.types) 
+    //         ? this.types[0] 
+    //         : NUMBER_VALUE, 
+    //         true);
+
+    //     this.colorLight = rgbFromTypeMode(
+    //         !isEmpty(this.types) 
+    //         ? this.types[0] 
+    //         : NUMBER_VALUE, 
+    //         false);
+    // }
+
+
+
     updateControl()
     {
         const tc = graphView.tempConn;
@@ -241,10 +258,15 @@ extends EventTarget
                this.param
             && this.param.type != COLOR_VALUE
             && this.param.type !=  FILL_VALUE
-            ? rgb_a(rgbHeaderFromType(this.param.type, true), 0.5)
+            ? rgb_a(rgbFromType(this.param.type, true), 0.5)
             : (darkMode
                ? this.colorDark
                : this.colorLight);
+
+        if (this.node.id == 'if/else6')
+        {
+            console.log('color =', color);
+        }
 
         const colorStyle = 
             rgba2style(rgb_a(
