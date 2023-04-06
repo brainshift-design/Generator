@@ -85,7 +85,7 @@ extends OperatorWithValue
 
              if (this.isUnknown())        this.paramValue.controls[0].valueText = UNKNOWN_DISPLAY;
         else if (settings.showBoolValues
-              && !isNaN(v))               this.paramValue.controls[0].valueText = v != 0 ? TRUE_DISPLAY : FALSE_DISPLAY;
+              && !isNaN(v))               this.paramValue.controls[0].valueText = v != 0 ? getTrueDisplay() : getFalseDisplay();
         else                              this.paramValue.controls[0].valueText = '';
 
         this.paramValue.controls[0].text.style.letterSpacing = settings.showBoolValues ? '0.1em' : 0;

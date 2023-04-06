@@ -81,7 +81,7 @@ function updateParamConditionText(param, unknown, offsetY = 0)
 
          if (unknown)        param.controls[0].valueText = UNKNOWN_DISPLAY;
     else if (settings.showBoolValues
-            && !isNaN(v))    param.controls[0].valueText = '<span style="position: relative; top: ' + offsetY + 'px">' + (v != 0 ? TRUE_DISPLAY : FALSE_DISPLAY) + '</span>';
+          && !isNaN(v))      param.controls[0].valueText = '<span style="position: relative; top: ' + offsetY + 'px">' + (v != 0 ? getTrueDisplay() : getFalseDisplay()) + '</span>';
     else                     param.controls[0].valueText = '';
 
     //param.controls[0].showBar = unknown;

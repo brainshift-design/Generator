@@ -62,7 +62,7 @@ extends OperatorWithSymbol
 
              if (this.isUnknown())       this.paramValue.controls[0].valueText = UNKNOWN_DISPLAY;
         else if (settings.showBoolValues
-              && !isNaN(v))              this.paramValue.controls[0].valueText = v != 0 ? TRUE_DISPLAY : FALSE_DISPLAY;
+              && !isNaN(v))              this.paramValue.controls[0].valueText = v != 0 ? getTrueDisplay() : getFalseDisplay();
         else                             this.paramValue.controls[0].valueText = '';
 
 
