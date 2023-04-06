@@ -9,7 +9,7 @@ extends OperatorBase
 
     constructor()
     {
-        super(NUMBER_TO_TEXT, 'to text');
+        super(NUMBER_TO_TEXT, 'toText', 'to text');
 
 
         this.addInput (new Input (NUMBER_TYPES));

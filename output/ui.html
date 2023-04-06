@@ -50974,14 +50974,16 @@ class Operator
     #type; // used in the code, not for generation
     get type() { return this.#type; }
     
-    defShortName;
-    
 
     id;
 
     _name;
     get name()     { return this._name; }
     set name(name) { this.setName(name); }
+
+
+    defId;
+    defName;
 
 
     enabled;
@@ -51089,17 +51091,19 @@ class Operator
 
 
 
-    constructor(type, shortName, defWidth = defNodeWidth, progressBar = false)
+    constructor(type, id, name, defWidth = defNodeWidth, progressBar = false)
     {
         this.#type             = type;
-        this.id                = shortName;
+        this.id                = id;
         
         this.enabled           = true;
         this.cached            = true;
         this.inert             = false;
         this.slow              = false;
 
-        this.defShortName      = shortName;
+        this.defId             = id;
+        this.defName           = name;
+
         this.defaultWidth      = defWidth;
         this.labelOffsetFactor = 0;
         
@@ -51110,7 +51114,7 @@ class Operator
         if (progressBar)
             this.createProgressBar();
 
-        this.setName(shortName);
+        this.setName(name);
     }    
 
 
@@ -53273,9 +53277,9 @@ extends OperatorBase
     
 
 
-    constructor(type, shortName, defWidth = defNodeWidth, progressBar = false)
+    constructor(type, id, name, defWidth = defNodeWidth, progressBar = false)
     {
-        super(type, shortName, defWidth, progressBar);
+        super(type, id, name, defWidth, progressBar);
 
         this.paramValue          = createParamFromType(type);
         this.paramValue.isResult = true;
@@ -53302,9 +53306,9 @@ extends OperatorWithValue
 
     
 
-    constructor(type, shortName, symbol)
+    constructor(type, id, name, symbol)
     {
-        super(type, shortName);
+        super(type, id, name);
 
         
         this._showOnlySymbol  = true;
@@ -53428,9 +53432,9 @@ extends OperatorBase
 
 
 
-    constructor(type, shortName)
+    constructor(type, id, name)
     {
-        super(type, shortName);
+        super(type, id, name);
 
         this.initSizer();
     }
@@ -53761,9 +53765,9 @@ extends ResizableBase
     
 
 
-    constructor(type, shortName, defWidth = defNodeWidth, progressBar = false)
+    constructor(type, id, name, defWidth = defNodeWidth, progressBar = false)
     {
-        super(type, shortName, defWidth, progressBar);
+        super(type, id, name, defWidth, progressBar);
 
         this.paramValue = createParamFromType(type);
         this.paramValue.isResult = true;
@@ -53787,7 +53791,7 @@ extends OperatorBase
 {
     constructor()
     {
-        super(LIST, 'list');
+        super(LIST, 'list', 'list');
 
         this.variableInputs = true;
 
@@ -53848,7 +53852,7 @@ extends OperatorBase
 {
     constructor()
     {
-        super(ITEMS, 'items');
+        super(ITEMS, 'items', 'items');
 
         //this.inert = true;
 
@@ -53983,7 +53987,7 @@ extends OperatorBase
 
     constructor()
     {
-        super(SELECT, 'select');
+        super(SELECT, 'select', 'select');
 
         this.alwaysSaveParams = true;
 
@@ -54112,7 +54116,7 @@ extends OperatorBase
 
     constructor()
     {
-        super(IF_ELSE, 'if/else');
+        super(IF_ELSE, 'ifElse', 'if/else');
 
 
         this.addInput (new Input(ALL_TYPES));
@@ -54301,7 +54305,7 @@ extends OperatorBase
 {
     constructor()
     {
-        super(START, 'start');
+        super(START, 'start', 'start');
 
         this.addInput (new Input (ALL_TYPES));
         this.addOutput(new Output([], this.output_genRequest));
@@ -54371,7 +54375,7 @@ extends OperatorBase
 
     constructor()
     {
-        super(REPEAT, 'repeat');
+        super(REPEAT, 'repeat', 'repeat');
 
         this.addInput (new Input(ALL_TYPES));
         this.addOutput(new Output([LIST_VALUE], this.output_genRequest));
@@ -54444,7 +54448,7 @@ extends OperatorBase
 
     constructor()
     {
-        super(CACHE, 'cache');
+        super(CACHE, 'cache', 'cache');
 
         this.cached = true;
         
@@ -54595,7 +54599,7 @@ extends OperatorBase
 
     constructor()
     {
-        super(COPY, 'copy');
+        super(COPY, 'copy', 'copy');
 
         //this.cached = true;
         
@@ -54762,7 +54766,7 @@ extends OperatorBase
 
     constructor()
     {
-        super(NUMBER, 'num');
+        super(NUMBER, 'num', 'num');
 
         this.addInput (new Input (NUMBER_TYPES, getNodeInputValuesForUndo, this.input_getBackInitValue));
         this.addOutput(new Output([NUMBER_VALUE], this.output_genRequest, getNodeOutputValuesForUndo, this.output_backInit));
@@ -54917,7 +54921,7 @@ extends OperatorWithValue
 {
     constructor()
     {
-        super(NUMBER_SIGN, 'sign');
+        super(NUMBER_SIGN, 'sign', 'sign');
 
         this.canDisable = true;
         
@@ -55042,7 +55046,7 @@ extends OperatorWithValue
 {
     constructor()
     {
-        super(NUMBER_ABSOLUTE, 'abs');
+        super(NUMBER_ABSOLUTE, 'abs', 'abs');
 
         this.canDisable = true;
         
@@ -55172,7 +55176,7 @@ extends OperatorWithValue
 
     constructor()
     {
-        super(NUMBER_ROUND, 'round');
+        super(NUMBER_ROUND, 'round', 'round');
 
         this.canDisable = true;
         
@@ -55344,7 +55348,7 @@ extends OperatorWithValue
 
     constructor()
     {
-        super(NUMBER_LIMITS, 'limits');
+        super(NUMBER_LIMITS, 'limits', 'limits');
 
         this.canDisable = true;
         
@@ -55424,7 +55428,7 @@ extends OperatorBase
 
     constructor()
     {
-        super(NUMBER_RANDOM, 'random');
+        super(NUMBER_RANDOM, 'random', 'random');
 
         this.cached = false;
         
@@ -55475,7 +55479,7 @@ extends OperatorBase
 
     constructor()
     {
-        super(NUMBER_SERIES, 'series');
+        super(NUMBER_SERIES, 'series', 'series');
 
         this.cached = false;
         
@@ -55520,7 +55524,7 @@ extends OperatorWithValue
 
     constructor()
     {
-        super(NUMBER_INTERPOLATE, 'inter');
+        super(NUMBER_INTERPOLATE, 'inter', 'inter');
 
         this.addInput(new Input(NUMBER_TYPES));
         this.addInput(new Input(NUMBER_TYPES));
@@ -55598,7 +55602,7 @@ extends OperatorBase
 
     constructor()
     {
-        super(NUMBER_TO_TEXT, 'to text');
+        super(NUMBER_TO_TEXT, 'toText', 'to text');
 
 
         this.addInput (new Input (NUMBER_TYPES));
@@ -55667,7 +55671,7 @@ extends OperatorWithValue
 
     constructor()
     {
-        super(NUMBER_MATH, 'math');
+        super(NUMBER_MATH, 'math', 'math');
 
         this.variableInputs   = true;
         this.alwaysLoadParams = true;
@@ -55745,9 +55749,9 @@ extends OperatorWithValue
 class   OpArithmetic
 extends OperatorWithSymbol
 {
-    constructor(type, shortName, symbol)
+    constructor(type, id, name, symbol)
     {
-        super(type, shortName, symbol);
+        super(type, id, name, symbol);
         
         this.variableInputs   = true;
         this.alwaysLoadParams = true;
@@ -55831,7 +55835,7 @@ extends OpArithmetic
 {
     constructor()
     {
-        super(NUMBER_ADD, 'add', '+');
+        super(NUMBER_ADD, 'add', 'add', '+');
     }
 
 
@@ -55863,7 +55867,7 @@ extends OpArithmetic
 {
     constructor()
     {
-        super(NUMBER_SUBTRACT, 'sub', '−');
+        super(NUMBER_SUBTRACT, 'sub', 'sub', '−');
     }
 
 
@@ -55895,7 +55899,7 @@ extends OpArithmetic
 {
     constructor()
     {
-        super(NUMBER_MULTIPLY, 'mul', '×');
+        super(NUMBER_MULTIPLY, 'mul', 'mul', '×');
     }
 
 
@@ -55927,7 +55931,7 @@ extends OpArithmetic
 {
     constructor()
     {
-        super(NUMBER_DIVIDE, 'div', '/');//'÷');
+        super(NUMBER_DIVIDE, 'div', 'div', '/');//'÷');
     }
 
 
@@ -55959,7 +55963,7 @@ extends OpArithmetic
 {
     constructor()
     {
-        super(NUMBER_MODULO, 'rem', '%');
+        super(NUMBER_MODULO, 'rem', 'rem', '%');
     }
     
     
@@ -56008,7 +56012,7 @@ extends OpArithmetic
 {
     constructor()
     {
-        super(NUMBER_EXPONENT, 'pow', 'eˣ'); // placeholder symbol, actual symbol set in updateNode()
+        super(NUMBER_EXPONENT, 'pow', 'pow', 'eˣ'); // placeholder symbol, actual symbol set in updateNode()
     }
 
 
@@ -56048,7 +56052,7 @@ extends OperatorWithValue
 
     constructor()
     {
-        super(NUMBER_BOOLEAN, 'bool');
+        super(NUMBER_BOOLEAN, 'bool', 'bool');
 
         this.variableInputs   = true;
         this.alwaysLoadParams = true;
@@ -56142,9 +56146,9 @@ extends OperatorWithValue
 class   OpBooleanBase
 extends OperatorWithValue
 {
-    constructor(type, shortName)
+    constructor(type, id, name)
     {
-        super(type, shortName);
+        super(type, id, name);
 
         
         this.variableInputs   = true;
@@ -56247,7 +56251,7 @@ extends OpBooleanBase
 {
     constructor()
     {
-        super(NUMBER_NOT, 'not');
+        super(NUMBER_NOT, 'not', 'not');
     }
 }
 
@@ -56257,7 +56261,7 @@ extends OpBooleanBase
 {
     constructor()
     {
-        super(NUMBER_AND, 'and');
+        super(NUMBER_AND, 'and', 'and');
     }
 }
 
@@ -56267,7 +56271,7 @@ extends OpBooleanBase
 {
     constructor()
     {
-        super(NUMBER_OR, 'or');
+        super(NUMBER_OR, 'or', 'or');
     }
 }
 
@@ -56277,7 +56281,7 @@ extends OpBooleanBase
 {
     constructor()
     {
-        super(NUMBER_XOR, 'xor');
+        super(NUMBER_XOR, 'xor', 'xor');
     }
 }
 
@@ -56291,7 +56295,7 @@ extends OperatorWithValue
 
     constructor()
     {
-        super(NUMBER_CONDITION, 'cond');
+        super(NUMBER_CONDITION, 'cond', 'cond');
 
         this.addInput(new Input(NUMBER_TYPES));
         this.addInput(new Input(NUMBER_TYPES));
@@ -56375,9 +56379,9 @@ function updateParamConditionText(param, unknown, offsetY = 0)
 class   OpConditionBase
 extends OperatorWithSymbol
 {
-    constructor(type, shortName, symbol)
+    constructor(type, id, name, symbol)
     {
-        super(type, shortName, symbol);
+        super(type, id, name, symbol);
 
         this.alwaysLoadParams = true;
 
@@ -56469,7 +56473,7 @@ extends OpConditionBase
 {
     constructor()
     {
-        super(NUMBER_EQUAL, 'equal', '=');
+        super(NUMBER_EQUAL, 'equal', 'equal', '=');
     }
 }
 
@@ -56479,7 +56483,7 @@ extends OpConditionBase
 {
     constructor()
     {
-        super(NUMBER_NOT_EQUAL, 'notEqual', '≠');
+        super(NUMBER_NOT_EQUAL, 'notEqual', 'notEqual', '≠');
     }
 }
 
@@ -56489,7 +56493,7 @@ extends OpConditionBase
 {
     constructor()
     {
-        super(NUMBER_LESS, 'less', '<');
+        super(NUMBER_LESS, 'less', 'less', '<');
     }
 }
 
@@ -56499,7 +56503,7 @@ extends OpConditionBase
 {
     constructor()
     {
-        super(NUMBER_LESS_OR_EQUAL, 'lessOrEqual', '≤');
+        super(NUMBER_LESS_OR_EQUAL, 'lessOrEqual', 'lessOrEqual', '≤');
     }
 }
 
@@ -56509,7 +56513,7 @@ extends OpConditionBase
 {
     constructor()
     {
-        super(NUMBER_GREATER, 'greater', '>');
+        super(NUMBER_GREATER, 'greater', 'greater', '>');
     }
 }
 
@@ -56519,7 +56523,7 @@ extends OpConditionBase
 {
     constructor()
     {
-        super(NUMBER_GREATER_OR_EQUAL, 'greaterOrEqual', '≥');
+        super(NUMBER_GREATER_OR_EQUAL, 'greaterOrEqual', 'greaterOrEqual', '≥');
     }
 }
 
@@ -56533,7 +56537,7 @@ extends ResizableBase
 
     constructor()
     {
-        super(TEXT, 'text');
+        super(TEXT, 'text', 'text');
 
         this.alwaysLoadParams = true;
 
@@ -56650,7 +56654,7 @@ extends OperatorWithValue
 
     constructor()
     {
-        super(TEXT_SUBSTRING, 'substring');
+        super(TEXT_SUBSTRING, 'substring', 'substring');
 
         this.canDisable = true;
         
@@ -56745,7 +56749,7 @@ extends OperatorWithValue
 
     constructor()
     {
-        super(TEXT_CHAR, 'char');
+        super(TEXT_CHAR, 'char', 'char');
 
 
         this.addOutput(new Output([TEXT_VALUE], this.output_genRequest));
@@ -56813,7 +56817,7 @@ extends OperatorWithValue
 
     constructor()
     {
-        super(TEXT_REPLACE, 'replace');
+        super(TEXT_REPLACE, 'replace', 'replace');
 
         this.canDisable = true;
         
@@ -56879,7 +56883,7 @@ extends ResizableOperatorWithValue
 {
     constructor()
     {
-        super(TEXT_JOIN, 'join');
+        super(TEXT_JOIN, 'join', 'join');
 
         this.variableInputs   = true;
         this.alwaysLoadParams = true;
@@ -56985,7 +56989,7 @@ extends OperatorBase
 
     constructor()
     {
-        super(TEXT_CSV, 'csv');
+        super(TEXT_CSV, 'csv', 'csv');
 
 
         this.addInput (new Input (TEXT_TYPES));
@@ -57047,7 +57051,7 @@ extends OperatorWithValue
 
     constructor()
     {
-        super(TEXT_FETCH, 'fetch', defNodeWidth, true);
+        super(TEXT_FETCH, 'fetch', 'fetch', defNodeWidth, true);
 
         this.canDisable       = true;
         this.alwaysLoadParams = true;
@@ -57123,9 +57127,9 @@ extends Operator
     
 
 
-    constructor(nodeType, shortType, progressBar = false, defWidth = defNodeWidth)
+    constructor(type, id, name, progressBar = false, defWidth = defNodeWidth)
     {
-        super(nodeType, shortType, defWidth, progressBar);
+        super(type, id, name, defWidth, progressBar);
 
         this.showActiveArrow = true;
         
@@ -57420,7 +57424,7 @@ extends OpColorBase
 
     constructor(options = {})
     {
-        super(COLOR, 'color');
+        super(COLOR, 'color', 'color');
 
         this.canDisable = true;
 
@@ -59048,7 +59052,7 @@ extends OpColorBase
 
     constructor()
     {
-        super(VALID_COLOR, 'valid', true);
+        super(VALID_COLOR, 'valid', 'valid', true);
 
         this.canDisable = true;
         this.slow       = true;
@@ -59224,7 +59228,7 @@ extends OpColorBase
 
     constructor()
     {
-        super(CORRECT_COLOR, 'corrected', true);
+        super(CORRECT_COLOR, 'corrected', 'corrected', true);
 
         this.slow         = true;
         this.canDisable   = true;
@@ -59551,7 +59555,7 @@ extends OpColorBase
 
     constructor()
     {
-        super(COLOR_CONTRAST, 'contrast');
+        super(COLOR_CONTRAST, 'contrast', 'contrast');
 
 
         this.addInput(new Input(COLOR_TYPES));
@@ -59827,7 +59831,7 @@ extends OpColorBase
 
     constructor()
     {
-        super(COLORBLIND, 'colorblind');
+        super(COLORBLIND, 'colorblind', 'colorblind');
 
         this.canDisable = true;
         
@@ -60065,7 +60069,7 @@ extends OpColorBase
 
     constructor()
     {
-        super(COLOR_INTERPOLATE, 'inter');
+        super(COLOR_INTERPOLATE, 'inter', 'inter');
 
         
         this.addInput(new Input(COLOR_TYPES));
@@ -60166,7 +60170,7 @@ extends OpColorBase
 
     constructor()
     {
-        super(COLOR_BLEND, 'blend');
+        super(COLOR_BLEND, 'blend', 'blend');
 
         
         this.addInput(new Input(COLOR_TYPES));
@@ -60254,9 +60258,9 @@ extends OperatorBase
     paramStyle;
 
 
-    constructor(type, shortType, defWidth = defNodeWidth)
+    constructor(type, id, name, defWidth = defNodeWidth)
     {
-        super(type, shortType, defWidth);
+        super(type, id, name, defWidth);
     }
 
 
@@ -60344,7 +60348,7 @@ extends OpShapeBase
     
     constructor()
     {
-        super(RECTANGLE, 'rect');
+        super(RECTANGLE, 'rect', 'rect');
 
 
         this.addInput (this.createInputForObjects([RECTANGLE, RECTANGLE_VALUE], getNodeInputValuesForUndo));
@@ -60396,7 +60400,7 @@ extends OpShapeBase
     
     constructor()
     {
-        super(LINE, 'line');
+        super(LINE, 'line', 'line');
 
         this.addInput (this.createInputForObjects([LINE, LINE_VALUE], getNodeInputValuesForUndo));
         this.addOutput(new Output([LINE], this.output_genRequest));
@@ -60430,7 +60434,7 @@ extends OpShapeBase
     
     constructor()
     {
-        super(ELLIPSE, 'ellipse');
+        super(ELLIPSE, 'ellipse', 'ellipse');
 
         this.addInput (this.createInputForObjects([ELLIPSE, ELLIPSE_VALUE], getNodeInputValuesForUndo));
         this.addOutput(new Output([ELLIPSE], this.output_genRequest));
@@ -60468,7 +60472,7 @@ extends OpShapeBase
     
     constructor()
     {
-        super(POLYGON, 'poly');
+        super(POLYGON, 'poly', 'poly');
 
         this.addInput (this.createInputForObjects([POLYGON, POLYGON_VALUE], getNodeInputValuesForUndo));
         this.addOutput(new Output([POLYGON], this.output_genRequest));
@@ -60521,7 +60525,7 @@ extends OpShapeBase
     
     constructor()
     {
-        super(STAR, 'star');
+        super(STAR, 'star', 'star');
 
         this.addInput (this.createInputForObjects([STAR, STAR_VALUE], getNodeInputValuesForUndo));
         this.addOutput(new Output([STAR], this.output_genRequest));
@@ -60583,7 +60587,7 @@ extends OperatorBase
 
     constructor(options = {})
     {
-        super(COLOR_STYLE, 'style');
+        super(COLOR_STYLE, 'style', 'style');
 
         this.inert = true;
 
@@ -60825,7 +60829,7 @@ extends OperatorBase
         }
         else
         {
-            this.name            = this.defShortName;
+            this.name            = this.defName;
             this.existing        = true;
             this.linkedStyleId   = NULL;
             this.linkedStyleName = '';
@@ -60856,7 +60860,7 @@ extends OpColorBase
 
     constructor()
     {
-        super(FILL, 'fill');
+        super(FILL, 'fill', 'fill');
 
 
         this.colorBack = createDiv('colorBack');
@@ -61149,7 +61153,7 @@ extends OpColorBase
 
     constructor()
     {
-        super(STROKE, 'stroke');
+        super(STROKE, 'stroke', 'stroke');
 
 
         this.colorBack = createDiv('colorBack');
@@ -61403,7 +61407,7 @@ extends ResizableBase
 
     constructor()
     {
-        super(NODE_GROUP, 'group');
+        super(NODE_GROUP, 'group', 'group');
 
         this.alwaysLoadParams   = true;
         this.sharpBottomCorners = true;
@@ -61589,7 +61593,7 @@ extends OperatorBase
 
     constructor()
     {
-        super(NODE_INPUTS, 'inputs');
+        super(NODE_INPUTS, 'inputs', 'inputs');
 
         //this.inert = true;
 
@@ -61726,7 +61730,7 @@ extends OperatorBase
 {
     constructor()
     {
-        super(COMMENT, 'comment', 0);
+        super(COMMENT, 'comment', 'comment', 0);
 
         this.scrollName = false;
 
@@ -69649,7 +69653,7 @@ function uiLinkNodeToExistingColorStyle(node, styleId, styleName, paints)
     // node.name =
     //     styleName != NULL
     //     ? styleName
-    //     : node.defShortName;
+    //     : node.defName;
 
         
     if (styleId != NULL)

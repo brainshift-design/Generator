@@ -7,7 +7,7 @@ extends OpColorBase
     
     constructor()
     {
-        super(COLOR_STOP, 'stop');
+        super(COLOR_STOP, 'stop', 'stop');
 
 
         this.addInput(new Input([COLOR_STOP, COLOR_STOP_VALUE]));

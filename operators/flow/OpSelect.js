@@ -7,7 +7,7 @@ extends OperatorBase
 
     constructor()
     {
-        super(SELECT, 'select');
+        super(SELECT, 'select', 'select');
 
         this.alwaysSaveParams = true;
 

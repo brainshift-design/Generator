@@ -12,7 +12,7 @@
     
 //     constructor()
 //     {
-//         super(COLOR_STROKE, 'stroke');
+//         super(COLOR_STROKE, 'stroke', 'stroke');
 
 
 //         this.addInput(new Input(SHAPE_TYPES));

@@ -8,7 +8,7 @@ extends OperatorWithValue
 
     constructor()
     {
-        super(TEXT_SUBSTRING, 'substring');
+        super(TEXT_SUBSTRING, 'substring', 'substring');
 
         this.canDisable = true;
         

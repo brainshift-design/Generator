@@ -7,7 +7,7 @@ extends OperatorBase
 
     constructor()
     {
-        super(NODE_INPUTS, 'inputs');
+        super(NODE_INPUTS, 'inputs', 'inputs');
 
         //this.inert = true;
 

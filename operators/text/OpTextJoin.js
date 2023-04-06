@@ -3,7 +3,7 @@ extends ResizableOperatorWithValue
 {
     constructor()
     {
-        super(TEXT_JOIN, 'join');
+        super(TEXT_JOIN, 'join', 'join');
 
         this.variableInputs   = true;
         this.alwaysLoadParams = true;

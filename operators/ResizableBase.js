@@ -17,9 +17,9 @@ extends OperatorBase
 
 
 
-    constructor(type, shortName)
+    constructor(type, id, name)
     {
-        super(type, shortName);
+        super(type, id, name);
 
         this.initSizer();
     }

@@ -3,6 +3,6 @@ extends OpBooleanBase
 {
     constructor()
     {
-        super(NUMBER_OR, 'or');
+        super(NUMBER_OR, 'or', 'or');
     }
 }

@@ -3,6 +3,6 @@ extends OpConditionBase
 {
     constructor()
     {
-        super(NUMBER_EQUAL, 'equal', '=');
+        super(NUMBER_EQUAL, 'equal', 'equal', '=');
     }
 }

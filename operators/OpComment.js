@@ -3,7 +3,7 @@ extends OperatorBase
 {
     constructor()
     {
-        super(COMMENT, 'comment', 0);
+        super(COMMENT, 'comment', 'comment', 0);
 
         this.scrollName = false;
 

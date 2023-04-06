@@ -5,9 +5,9 @@ extends OperatorBase
     
 
 
-    constructor(type, shortName, defWidth = defNodeWidth, progressBar = false)
+    constructor(type, id, name, defWidth = defNodeWidth, progressBar = false)
     {
-        super(type, shortName, defWidth, progressBar);
+        super(type, id, name, defWidth, progressBar);
 
         this.paramValue          = createParamFromType(type);
         this.paramValue.isResult = true;

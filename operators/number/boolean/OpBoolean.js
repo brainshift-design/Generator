@@ -7,7 +7,7 @@ extends OperatorWithValue
 
     constructor()
     {
-        super(NUMBER_BOOLEAN, 'bool');
+        super(NUMBER_BOOLEAN, 'bool', 'bool');
 
         this.variableInputs   = true;
         this.alwaysLoadParams = true;

@@ -1,9 +1,9 @@
 class   OpConditionBase
 extends OperatorWithSymbol
 {
-    constructor(type, shortName, symbol)
+    constructor(type, id, name, symbol)
     {
-        super(type, shortName, symbol);
+        super(type, id, name, symbol);
 
         this.alwaysLoadParams = true;
 

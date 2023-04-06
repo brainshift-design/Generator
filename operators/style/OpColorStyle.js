@@ -20,7 +20,7 @@ extends OperatorBase
 
     constructor(options = {})
     {
-        super(COLOR_STYLE, 'style');
+        super(COLOR_STYLE, 'style', 'style');
 
         this.inert = true;
 
@@ -262,7 +262,7 @@ extends OperatorBase
         }
         else
         {
-            this.name            = this.defShortName;
+            this.name            = this.defName;
             this.existing        = true;
             this.linkedStyleId   = NULL;
             this.linkedStyleName = '';

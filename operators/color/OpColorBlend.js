@@ -8,7 +8,7 @@ extends OpColorBase
 
     constructor()
     {
-        super(COLOR_BLEND, 'blend');
+        super(COLOR_BLEND, 'blend', 'blend');
 
         
         this.addInput(new Input(COLOR_TYPES));

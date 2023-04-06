@@ -3,6 +3,6 @@ extends OpConditionBase
 {
     constructor()
     {
-        super(NUMBER_NOT_EQUAL, 'notEqual', '≠');
+        super(NUMBER_NOT_EQUAL, 'notEqual', 'notEqual', '≠');
     }
 }

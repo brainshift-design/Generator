@@ -11,7 +11,7 @@ extends OpColorBase
 
     constructor()
     {
-        super(FILL, 'fill');
+        super(FILL, 'fill', 'fill');
 
 
         this.colorBack = createDiv('colorBack');

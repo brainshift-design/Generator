@@ -7,7 +7,7 @@ extends OperatorWithValue
 
     constructor()
     {
-        super(NUMBER_CONDITION, 'cond');
+        super(NUMBER_CONDITION, 'cond', 'cond');
 
         this.addInput(new Input(NUMBER_TYPES));
         this.addInput(new Input(NUMBER_TYPES));

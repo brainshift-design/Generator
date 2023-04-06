@@ -7,7 +7,7 @@ extends OperatorWithValue
 
     constructor()
     {
-        super(TEXT_CHAR, 'char');
+        super(TEXT_CHAR, 'char', 'char');
 
 
         this.addOutput(new Output([TEXT_VALUE], this.output_genRequest));

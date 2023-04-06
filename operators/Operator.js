@@ -16,14 +16,16 @@ class Operator
     #type; // used in the code, not for generation
     get type() { return this.#type; }
     
-    defShortName;
-    
 
     id;
 
     _name;
     get name()     { return this._name; }
     set name(name) { this.setName(name); }
+
+
+    defId;
+    defName;
 
 
     enabled;
@@ -131,17 +133,19 @@ class Operator
 
 
 
-    constructor(type, shortName, defWidth = defNodeWidth, progressBar = false)
+    constructor(type, id, name, defWidth = defNodeWidth, progressBar = false)
     {
         this.#type             = type;
-        this.id                = shortName;
+        this.id                = id;
         
         this.enabled           = true;
         this.cached            = true;
         this.inert             = false;
         this.slow              = false;
 
-        this.defShortName      = shortName;
+        this.defId             = id;
+        this.defName           = name;
+
         this.defaultWidth      = defWidth;
         this.labelOffsetFactor = 0;
         
@@ -152,7 +156,7 @@ class Operator
         if (progressBar)
             this.createProgressBar();
 
-        this.setName(shortName);
+        this.setName(name);
     }    
 
 

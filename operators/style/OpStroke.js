@@ -22,7 +22,7 @@ extends OpColorBase
 
     constructor()
     {
-        super(STROKE, 'stroke');
+        super(STROKE, 'stroke', 'stroke');
 
 
         this.colorBack = createDiv('colorBack');

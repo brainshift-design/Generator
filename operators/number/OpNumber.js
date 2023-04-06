@@ -7,7 +7,7 @@ extends OperatorBase
 
     constructor()
     {
-        super(NUMBER, 'num');
+        super(NUMBER, 'num', 'num');
 
         this.addInput (new Input (NUMBER_TYPES, getNodeInputValuesForUndo, this.input_getBackInitValue));
         this.addOutput(new Output([NUMBER_VALUE], this.output_genRequest, getNodeOutputValuesForUndo, this.output_backInit));

@@ -20,7 +20,7 @@ extends OpColorBase
 
     constructor(options = {})
     {
-        super(COLOR, 'color');
+        super(COLOR, 'color', 'color');
 
         this.canDisable = true;
 

@@ -1,9 +1,9 @@
 class   OpBooleanBase
 extends OperatorWithValue
 {
-    constructor(type, shortName)
+    constructor(type, id, name)
     {
-        super(type, shortName);
+        super(type, id, name);
 
         
         this.variableInputs   = true;

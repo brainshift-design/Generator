@@ -8,7 +8,7 @@ extends OperatorWithValue
 
     constructor()
     {
-        super(TEXT_REPLACE, 'replace');
+        super(TEXT_REPLACE, 'replace', 'replace');
 
         this.canDisable = true;
         

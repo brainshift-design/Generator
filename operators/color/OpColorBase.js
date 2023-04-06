@@ -10,9 +10,9 @@ extends Operator
     
 
 
-    constructor(nodeType, shortType, progressBar = false, defWidth = defNodeWidth)
+    constructor(type, id, name, progressBar = false, defWidth = defNodeWidth)
     {
-        super(nodeType, shortType, defWidth, progressBar);
+        super(type, id, name, defWidth, progressBar);
 
         this.showActiveArrow = true;
         
