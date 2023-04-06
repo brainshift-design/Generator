@@ -109,18 +109,18 @@ extends OperatorBase
 
         if (NUMBER_TYPES.includes(type))
         {
-            colors.input  = this.active ? rgb_a(colorPassive, 0.6) : rgb_a(colorActive, 0.75);
-            colors.output = this.active ? rgb_a(colorPassive, 0.55) : rgb_a(colorActive, 0.65);
+            colors.input  = this.active ? rgb_a(colorPassive, 0.55) : rgb_a(colorActive, darkMode ? 0.75 : 0.5);
+            colors.output = this.active ? rgb_a(colorPassive, 0.5 ) : rgb_a(colorActive, darkMode ? 0.65 : 0.4);
         }
         else if (TEXT_TYPES.includes(type))
         {
-            colors.input  = this.active ? rgb_a(colorActive, 0.55) : rgb_a(colorActive, 0.55);
-            colors.output = this.active ? rgb_a(colorActive, 0.45) : rgb_a(colorActive, 0.45);
+            colors.input  = this.active ? rgb_a(colorActive, 0.55) : rgb_a(darkMode ? colorActive : colorPassive, darkMode ? 0.55 : 1);
+            colors.output = this.active ? rgb_a(colorActive, 0.45) : rgb_a(darkMode ? colorActive : colorPassive, darkMode ? 0.45 : 0.9);
         }
         else if (SHAPE_TYPES.includes(type))
         {
-            colors.input  = this.active ? rgb_a(colorPassive, 0.65) : rgb_a(colorActive, 0.7);
-            colors.output = this.active ? rgb_a(colorPassive, 0.65) : rgb_a(colorActive, 0.6);
+            colors.input  = this.active ? rgb_a(colorPassive, 0.65) : rgb_a(colorActive, darkMode ? 0.7 : 0.5 );
+            colors.output = this.active ? rgb_a(colorPassive, 0.65) : rgb_a(colorActive, darkMode ? 0.6 : 0.45);
         }
         else if (COLOR_TYPES.includes(type))
         {

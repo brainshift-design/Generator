@@ -350,6 +350,7 @@ class Wire
         let bright = Math.min(Math.max(0, (l-0.6) / 0.4), 1);
         if (darkMode) bright = 1-bright;
     
+        
         // const innerOpacity = Math.round(bright * (darkMode ? 88 : 66) * Math.min(view.zoom, 5)).toString(16).padStart(2, '0');
         //'+(Math.min(Math.max(1, 1/view.zoom), 5))+'
         
