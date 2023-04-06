@@ -43,8 +43,9 @@ extends OperatorWithValue
         if (input.connected)
             request.push(...pushInputOrParam(input, gen));
 
-        request.push(...this.node.paramType.genRequest(gen));
-        request.push(...this.node.paramDec .genRequest(gen));
+        
+        request.push(...this.node.paramType    .genRequest(gen));
+        request.push(...this.node.paramDecimals.genRequest(gen));
 
         
         gen.scope.pop();
@@ -57,8 +58,8 @@ extends OperatorWithValue
 
     updateParams()
     {
-        this.paramType.enableControlText(true);
-        this.paramDecimals .enableControlText(true);
+        this.paramType    .enableControlText(true);
+        this.paramDecimals.enableControlText(true);
 
         this.updateParamControls();
     }

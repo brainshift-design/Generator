@@ -1,13 +1,25 @@
-function logSavedNode(nodeKey)
+function logSavedNode(nodeKey, darkMode)
 {
-    let log = formatSavedNodeJson(figGetPageData(nodeKey, false));
+    const log  = formatSavedNodeJson(figGetPageData(nodeKey, false));
 
-    console.log(
-        '%c%s\n%c%s', 
-        'background: #fdb', 
-         noNodeTag(nodeKey), 
-        'background: #fed;',    
-         log);
+    if (darkMode)
+    {
+        console.log(
+            '%c%s\n%c%s', 
+            'background: #fa24; color: white;', 
+            noNodeTag(nodeKey), 
+            'background: #fa44; color: white;',
+            log);
+    }
+    else
+    {
+        console.log(
+            '%c%s\n%c%s', 
+            'background: #fdb; color: black;', 
+            noNodeTag(nodeKey), 
+            'background: #fed; color: black;',
+            log);
+    }
 }
 
 
@@ -59,12 +71,22 @@ function formatSavedDataJson(json)
 
 
 
-function logSavedConn(conn)
+function logSavedConn(conn, darkMode)
 {
     const strConn = connToString(conn, true);
 
-    console.log(
-        '%c%s', 
-        'background: #cfc', 
-        strConn); 
+    if (darkMode)
+    {
+        console.log(
+            '%c%s', 
+            'background: #4f44; color: white', 
+            strConn); 
+    }
+    else
+    {
+        console.log(
+            '%c%s', 
+            'background: #cfc; color: black;', 
+            strConn); 
+    }
 }

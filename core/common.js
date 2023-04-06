@@ -1,4 +1,4 @@
-const generatorVersion = 129;
+const generatorVersion = 130;
 
 
 const MAX_INT32        = 2147483647;
@@ -33,10 +33,10 @@ function nextPow2(x)
 
     x--;
 
-    x |= x >> 1;
-    x |= x >> 2;
-    x |= x >> 4;
-    x |= x >> 8;
+    x |= x >>  1;
+    x |= x >>  2;
+    x |= x >>  4;
+    x |= x >>  8;
     x |= x >> 16;
     x |= x >> 32;
 

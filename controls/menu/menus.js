@@ -213,7 +213,7 @@ function initGeneratorMenus()
                                         new MenuItem('',                           {separator: true}),                   
         menuItemLogRawLoadConnections = new MenuItem('Log\u2008load connections',  {checkCallback: () => settings.logRawLoadConnections, callback: () => updateSettingAndMenu('logRawLoadConnections', true, !settings.logRawLoadConnections), setting: true}),
         menuItemLogRawSaveConnections = new MenuItem('Log\u2008save connections',  {checkCallback: () => settings.logRawSaveConnections, callback: () => updateSettingAndMenu('logRawSaveConnections', true, !settings.logRawSaveConnections), setting: true}),
-                                        new MenuItem('Log all connection keys',    {callback:      () => { hideAllMenus(); uiQueueMessageToFigma({cmd: 'figLogAllSavedConnKeys'}); }}),
+                                        new MenuItem('Log all connection keys',    {callback:      () => { hideAllMenus(); uiQueueMessageToFigma({cmd: 'figLogAllSavedConnKeys', darkMode: darkMode}); }}),
                                         new MenuItem('',                           {separator: true}),   
         menuItemLogMessages           = new MenuItem('Log\u2008messages',          {checkCallback: () => settings.logMessages     ,      callback: () => updateSettingAndMenu('logMessages',           true, !settings.logMessages          ), setting: true}),
                                         new MenuItem('',                           {separator: true}),   
@@ -222,7 +222,7 @@ function initGeneratorMenus()
                                         new MenuItem('Log undo stack',             {callback:      () => { hideAllMenus(); logUndoStack(); }}),
                                         new MenuItem('Log redo stack',             {callback:      () => { hideAllMenus(); logRedoStack(); }}),
                                         new MenuItem('',                           {separator: true}),
-                                        new MenuItem('Log all local data',         {callback:      () => { hideAllMenus(); uiQueueMessageToFigma({cmd: 'figLogAllLocalData'}); }})]);
+                                        new MenuItem('Log all local data',         {callback:      () => { hideAllMenus(); uiQueueMessageToFigma({cmd: 'figLogAllLocalData', darkMode: darkMode}); }})]);
                      
 
     menuMainDebug = new Menu('Debug', false);
@@ -600,7 +600,7 @@ function initDataModeMenus()
         new MenuItem('Expand all',               { callback: () => { hideAllMenus(); expandAllConnData();   }}),
         new MenuItem('Collapse all',             { callback: () => { hideAllMenus(); collapseAllConnData(); }}),
         new MenuItem('',                         { separator: true }),
-        // new MenuItem('List all connection keys', { callback: () => { hideAllMenus(); uiQueueMessageToFigma({cmd: 'figLogAllSavedConnKeys'}); }}),
+        // new MenuItem('List all connection keys', { callback: () => { hideAllMenus(); uiQueueMessageToFigma({cmd: 'figLogAllSavedConnKeys', darkMode: darkMode}); }}),
         // new MenuItem('',                         { separator: true }),
         new MenuItem('Delete all connections',   { callback: e => { hideAllMenus(); dataModeDeleteAllConnections(); }})]);
 }

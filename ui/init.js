@@ -13,7 +13,7 @@ var allUpdateNodes   = [];
 
 
 //uiClearAllLocalData();
-//uiQueueMessageToFigma({cmd: 'figLogAllLocalData'});
+//uiQueueMessageToFigma({cmd: 'figLogAllLocalData', darkMode: darkMode});
 
 // uiClearLocalData('windowWidth');
 // uiClearLocalData('windowHeight');
@@ -23,7 +23,7 @@ var allUpdateNodes   = [];
 // uiClearLocalData('showValueUpdates');
 
 //uiSetLocalData('enableBetaFeatures', 'true');
-//uiSetLocalData('logRawLoading', 'false');
+uiSetLocalData('logLoading', 'true');
 
 //uiRemoveConnsToNodes(['num3']);
 //uiRemoveSavedNodesAndConns(['color']);

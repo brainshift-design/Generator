@@ -1230,6 +1230,7 @@ function uiLogAllSavedNodesAndConns()
 {
     uiQueueMessageToFigma({
         cmd:     'figLogAllSavedNodesAndConns',
+        darkMode: darkMode,
         settings: settings
     });
 }
@@ -1240,6 +1241,7 @@ function uiLogAllSavedNodes()
 {
     uiQueueMessageToFigma({
         cmd:     'figLogAllSavedNodes',
+        darkMode: darkMode,
         settings: settings
     });
 }

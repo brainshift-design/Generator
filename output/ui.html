@@ -3760,8 +3760,7 @@ a
             <div id='whatsNewBody'>
                 <h1 style='margin-top: 20px;'>What's new in Generator</h1>
 
-                <p>Fixed color connection issue.</p>
-                <p>Fixed various UI issues.</p>
+                <p>-</p>
                 
                 <p><br/><br/><div id='chkHideWhatsNew'></div></p>
             </div>
@@ -4084,7 +4083,7 @@ a
 
 
 
-const generatorVersion = 129;
+const generatorVersion = 130;
 
 
 const MAX_INT32        = 2147483647;
@@ -4119,10 +4118,10 @@ function nextPow2(x)
 
     x--;
 
-    x |= x >> 1;
-    x |= x >> 2;
-    x |= x >> 4;
-    x |= x >> 8;
+    x |= x >>  1;
+    x |= x >>  2;
+    x |= x >>  4;
+    x |= x >>  8;
     x |= x >> 16;
     x |= x >> 32;
 
@@ -20357,16 +20356,28 @@ function logReqValue(type, val, parse)
 
 
 
-function logSavedNode(nodeKey)
+function logSavedNode(nodeKey, darkMode)
 {
-    let log = formatSavedNodeJson(figGetPageData(nodeKey, false));
+    const log  = formatSavedNodeJson(figGetPageData(nodeKey, false));
 
-    console.log(
-        '%c%s\n%c%s', 
-        'background: #fdb', 
-         noNodeTag(nodeKey), 
-        'background: #fed;',    
-         log);
+    if (darkMode)
+    {
+        console.log(
+            '%c%s\n%c%s', 
+            'background: #fa24; color: white;', 
+            noNodeTag(nodeKey), 
+            'background: #fa44; color: white;',
+            log);
+    }
+    else
+    {
+        console.log(
+            '%c%s\n%c%s', 
+            'background: #fdb; color: black;', 
+            noNodeTag(nodeKey), 
+            'background: #fed; color: black;',
+            log);
+    }
 }
 
 
@@ -20418,14 +20429,24 @@ function formatSavedDataJson(json)
 
 
 
-function logSavedConn(conn)
+function logSavedConn(conn, darkMode)
 {
     const strConn = connToString(conn, true);
 
-    console.log(
-        '%c%s', 
-        'background: #cfc', 
-        strConn); 
+    if (darkMode)
+    {
+        console.log(
+            '%c%s', 
+            'background: #4f44; color: white', 
+            strConn); 
+    }
+    else
+    {
+        console.log(
+            '%c%s', 
+            'background: #cfc; color: black;', 
+            strConn); 
+    }
 }
 
 
@@ -22988,7 +23009,7 @@ onerror = (event, source, line, pos, error) =>
 };
 
 
-const generatorVersion = 129;
+const generatorVersion = 130;
 
 
 const MAX_INT32        = 2147483647;
@@ -23023,10 +23044,10 @@ function nextPow2(x)
 
     x--;
 
-    x |= x >> 1;
-    x |= x >> 2;
-    x |= x >> 4;
-    x |= x >> 8;
+    x |= x >>  1;
+    x |= x >>  2;
+    x |= x >>  4;
+    x |= x >>  8;
     x |= x >> 16;
     x |= x >> 32;
 
@@ -26453,16 +26474,28 @@ function logReqValue(type, val, parse)
 
 
 
-function logSavedNode(nodeKey)
+function logSavedNode(nodeKey, darkMode)
 {
-    let log = formatSavedNodeJson(figGetPageData(nodeKey, false));
+    const log  = formatSavedNodeJson(figGetPageData(nodeKey, false));
 
-    console.log(
-        '%c%s\n%c%s', 
-        'background: #fdb', 
-         noNodeTag(nodeKey), 
-        'background: #fed;',    
-         log);
+    if (darkMode)
+    {
+        console.log(
+            '%c%s\n%c%s', 
+            'background: #fa24; color: white;', 
+            noNodeTag(nodeKey), 
+            'background: #fa44; color: white;',
+            log);
+    }
+    else
+    {
+        console.log(
+            '%c%s\n%c%s', 
+            'background: #fdb; color: black;', 
+            noNodeTag(nodeKey), 
+            'background: #fed; color: black;',
+            log);
+    }
 }
 
 
@@ -26514,14 +26547,24 @@ function formatSavedDataJson(json)
 
 
 
-function logSavedConn(conn)
+function logSavedConn(conn, darkMode)
 {
     const strConn = connToString(conn, true);
 
-    console.log(
-        '%c%s', 
-        'background: #cfc', 
-        strConn); 
+    if (darkMode)
+    {
+        console.log(
+            '%c%s', 
+            'background: #4f44; color: white', 
+            strConn); 
+    }
+    else
+    {
+        console.log(
+            '%c%s', 
+            'background: #cfc; color: black;', 
+            strConn); 
+    }
 }
 
 
@@ -42865,7 +42908,7 @@ function initGeneratorMenus()
                                         new MenuItem('',                           {separator: true}),                   
         menuItemLogRawLoadConnections = new MenuItem('Log\u2008load connections',  {checkCallback: () => settings.logRawLoadConnections, callback: () => updateSettingAndMenu('logRawLoadConnections', true, !settings.logRawLoadConnections), setting: true}),
         menuItemLogRawSaveConnections = new MenuItem('Log\u2008save connections',  {checkCallback: () => settings.logRawSaveConnections, callback: () => updateSettingAndMenu('logRawSaveConnections', true, !settings.logRawSaveConnections), setting: true}),
-                                        new MenuItem('Log all connection keys',    {callback:      () => { hideAllMenus(); uiQueueMessageToFigma({cmd: 'figLogAllSavedConnKeys'}); }}),
+                                        new MenuItem('Log all connection keys',    {callback:      () => { hideAllMenus(); uiQueueMessageToFigma({cmd: 'figLogAllSavedConnKeys', darkMode: darkMode}); }}),
                                         new MenuItem('',                           {separator: true}),   
         menuItemLogMessages           = new MenuItem('Log\u2008messages',          {checkCallback: () => settings.logMessages     ,      callback: () => updateSettingAndMenu('logMessages',           true, !settings.logMessages          ), setting: true}),
                                         new MenuItem('',                           {separator: true}),   
@@ -42874,7 +42917,7 @@ function initGeneratorMenus()
                                         new MenuItem('Log undo stack',             {callback:      () => { hideAllMenus(); logUndoStack(); }}),
                                         new MenuItem('Log redo stack',             {callback:      () => { hideAllMenus(); logRedoStack(); }}),
                                         new MenuItem('',                           {separator: true}),
-                                        new MenuItem('Log all local data',         {callback:      () => { hideAllMenus(); uiQueueMessageToFigma({cmd: 'figLogAllLocalData'}); }})]);
+                                        new MenuItem('Log all local data',         {callback:      () => { hideAllMenus(); uiQueueMessageToFigma({cmd: 'figLogAllLocalData', darkMode: darkMode}); }})]);
                      
 
     menuMainDebug = new Menu('Debug', false);
@@ -43252,7 +43295,7 @@ function initDataModeMenus()
         new MenuItem('Expand all',               { callback: () => { hideAllMenus(); expandAllConnData();   }}),
         new MenuItem('Collapse all',             { callback: () => { hideAllMenus(); collapseAllConnData(); }}),
         new MenuItem('',                         { separator: true }),
-        // new MenuItem('List all connection keys', { callback: () => { hideAllMenus(); uiQueueMessageToFigma({cmd: 'figLogAllSavedConnKeys'}); }}),
+        // new MenuItem('List all connection keys', { callback: () => { hideAllMenus(); uiQueueMessageToFigma({cmd: 'figLogAllSavedConnKeys', darkMode: darkMode}); }}),
         // new MenuItem('',                         { separator: true }),
         new MenuItem('Delete all connections',   { callback: e => { hideAllMenus(); dataModeDeleteAllConnections(); }})]);
 }
@@ -45936,10 +45979,22 @@ GraphView.prototype.zoomToRect = function(rect, margin = 40)
 {
     const viewRect = this.measureData.clientRect;
 
+    const viewAspect = viewRect.width / viewRect.height;
+    const rectAspect = rect.width     / rect.height;
+
     this.zoom = 
         viewRect.width >= viewRect.height
-        ? (rect.width >= rect.height ? (viewRect.width  - margin*2) / rect.width  : (viewRect.height - margin*2) / rect.height)
-        : (rect.width <  rect.height ? (viewRect.height - margin*2) / rect.height : (viewRect.width  - margin*2) / rect.width );
+    
+        ? (   rect.width >= rect.height
+           && rectAspect > viewAspect
+           ? (viewRect.width  - margin*2) / rect.width  
+           : (viewRect.height - margin*2) / rect.height)
+    
+        : (   rect.width <  rect.height
+           && rectAspect <= viewAspect
+           ? (viewRect.height - margin*2) / rect.height 
+           : (viewRect.width  - margin*2) / rect.width );
+
 
     this.pan = {
         x: viewRect.width /2 - (rect.x + rect.width /2) * this.zoom,
@@ -54505,8 +54560,9 @@ extends OperatorWithValue
         if (input.connected)
             request.push(...pushInputOrParam(input, gen));
 
-        request.push(...this.node.paramType.genRequest(gen));
-        request.push(...this.node.paramDec .genRequest(gen));
+        
+        request.push(...this.node.paramType    .genRequest(gen));
+        request.push(...this.node.paramDecimals.genRequest(gen));
 
         
         gen.scope.pop();
@@ -54519,8 +54575,8 @@ extends OperatorWithValue
 
     updateParams()
     {
-        this.paramType.enableControlText(true);
-        this.paramDecimals .enableControlText(true);
+        this.paramType    .enableControlText(true);
+        this.paramDecimals.enableControlText(true);
 
         this.updateParamControls();
     }
@@ -65906,7 +65962,7 @@ var allUpdateNodes   = [];
 
 
 //uiClearAllLocalData();
-//uiQueueMessageToFigma({cmd: 'figLogAllLocalData'});
+//uiQueueMessageToFigma({cmd: 'figLogAllLocalData', darkMode: darkMode});
 
 // uiClearLocalData('windowWidth');
 // uiClearLocalData('windowHeight');
@@ -65916,7 +65972,7 @@ var allUpdateNodes   = [];
 // uiClearLocalData('showValueUpdates');
 
 //uiSetLocalData('enableBetaFeatures', 'true');
-//uiSetLocalData('logRawLoading', 'false');
+uiSetLocalData('logLoading', 'true');
 
 //uiRemoveConnsToNodes(['num3']);
 //uiRemoveSavedNodesAndConns(['color']);
@@ -67149,7 +67205,9 @@ function getNodeRequest(node, gen)
             });
     }
     else
+    {
         request.push(...node.genRequest(gen));
+    }
 
 
     return request;
@@ -69265,6 +69323,7 @@ function uiLogAllSavedNodesAndConns()
 {
     uiQueueMessageToFigma({
         cmd:     'figLogAllSavedNodesAndConns',
+        darkMode: darkMode,
         settings: settings
     });
 }
@@ -69275,6 +69334,7 @@ function uiLogAllSavedNodes()
 {
     uiQueueMessageToFigma({
         cmd:     'figLogAllSavedNodes',
+        darkMode: darkMode,
         settings: settings
     });
 }

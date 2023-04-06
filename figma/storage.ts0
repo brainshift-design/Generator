@@ -204,24 +204,24 @@ function figRemoveAllSavedNodesAndConns()
 
 
 
-function figLogAllSavedNodesAndConns()
+function figLogAllSavedNodesAndConns(darkMode)
 {
-    figLogAllSavedNodes();
-    figLogAllSavedConns();
+    figLogAllSavedNodes(darkMode);
+    figLogAllSavedConns(darkMode);
 }
 
 
 
-function figLogAllSavedNodes()
+function figLogAllSavedNodes(darkMode)
 {
     figma.currentPage.getPluginDataKeys()
         .filter (k => isNodeKey(k))
-        .forEach(k => logSavedNode(k));
+        .forEach(k => logSavedNode(k, darkMode));
 }
 
 
 
-function figLogAllSavedConns()
+function figLogAllSavedConns(darkMode)
 {
     const connKeys = figma.currentPage.getPluginDataKeys()
         .filter(k => isConnKey(k));
@@ -240,22 +240,25 @@ function figLogAllSavedConns()
         return 0;
     });
 
-    connKeys.forEach(k => logSavedConn(JSON.parse(figma.currentPage.getPluginData(k))));
+    connKeys.forEach(k => logSavedConn(JSON.parse(figma.currentPage.getPluginData(k)), darkMode));
 }
 
 
 
-function figLogAllSavedConnKeys()
+function figLogAllSavedConnKeys(darkMode)
 {
     const connKeys = figma.currentPage.getPluginDataKeys()
         .filter(k => isConnKey(k));
         
-    connKeys.forEach(k => console.log('%c'+k, 'background: #dff'));
+    connKeys.forEach(k => 
+        console.log(
+            '%c'+k, 
+            'background: #dff; color: ' + (darkMode ? 'black' : 'white')));
 }
 
 
 
-function figLogAllLocalData()
+function figLogAllLocalData(darkMode)
 {
     figma.clientStorage.keysAsync().then(keys =>
         keys.forEach(k => 

@@ -154,7 +154,9 @@ function getNodeRequest(node, gen)
             });
     }
     else
+    {
         request.push(...node.genRequest(gen));
+    }
 
 
     return request;

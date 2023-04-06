@@ -17,7 +17,7 @@ function isNodeKey(key) { return isTagKey(key, nodeTag); }
 function isConnKey(key) { return isTagKey(key, connTag); }
 function noNodeTag(key) { return noTag(key, nodeTag); }
 function noConnTag(key) { return noTag(key, connTag); }
-const generatorVersion = 129;
+const generatorVersion = 130;
 const MAX_INT32 = 2147483647;
 const NULL = '';
 const HTAB = '  '; // half-tab
@@ -605,9 +605,14 @@ function base32toArray(base32, chars = base32chars) {
     }
     return array;
 }
-function logSavedNode(nodeKey) {
-    let log = formatSavedNodeJson(figGetPageData(nodeKey, false));
-    console.log('%c%s\n%c%s', 'background: #fdb', noNodeTag(nodeKey), 'background: #fed;', log);
+function logSavedNode(nodeKey, darkMode) {
+    const log = formatSavedNodeJson(figGetPageData(nodeKey, false));
+    if (darkMode) {
+        console.log('%c%s\n%c%s', 'background: #fa24; color: white;', noNodeTag(nodeKey), 'background: #fa44; color: white;', log);
+    }
+    else {
+        console.log('%c%s\n%c%s', 'background: #fdb; color: black;', noNodeTag(nodeKey), 'background: #fed; color: black;', log);
+    }
 }
 function formatSavedNodeJson(json) {
     let formJson = json
@@ -637,9 +642,14 @@ function formatSavedDataJson(json) {
         .replace('\n' + HTAB + ']', '');
     return formJson;
 }
-function logSavedConn(conn) {
+function logSavedConn(conn, darkMode) {
     const strConn = connToString(conn, true);
-    console.log('%c%s', 'background: #cfc', strConn);
+    if (darkMode) {
+        console.log('%c%s', 'background: #4f44; color: white', strConn);
+    }
+    else {
+        console.log('%c%s', 'background: #cfc; color: black;', strConn);
+    }
 }
 //const MAX_NODES   = 0x10000;
 //const objNodes    = new Array(MAX_NODES).fill(null);
@@ -862,19 +872,19 @@ figma.ui.onmessage = function (msg) {
             figRemoveAllSavedNodesAndConns();
             break;
         case 'figLogAllSavedNodesAndConns':
-            figLogAllSavedNodesAndConns();
+            figLogAllSavedNodesAndConns(msg.darkMode);
             break;
         case 'figLogAllSavedNodes':
-            figLogAllSavedNodes();
+            figLogAllSavedNodes(msg.darkMode);
             break;
         case 'figLogAllSavedConns':
-            figLogAllSavedConns();
+            figLogAllSavedConns(msg.darkMode);
             break;
         case 'figLogAllSavedConnKeys':
-            figLogAllSavedConnKeys();
+            figLogAllSavedConnKeys(msg.darkMode);
             break;
         case 'figLogAllLocalData':
-            figLogAllLocalData();
+            figLogAllLocalData(msg.darkMode);
             break;
         case 'figSaveConnection':
             figSaveConnection(msg.key, msg.json);
@@ -1570,16 +1580,16 @@ function figRemoveAllSavedNodesAndConns() {
     for (const key of connKeys)
         figClearPageData(key);
 }
-function figLogAllSavedNodesAndConns() {
-    figLogAllSavedNodes();
-    figLogAllSavedConns();
+function figLogAllSavedNodesAndConns(darkMode) {
+    figLogAllSavedNodes(darkMode);
+    figLogAllSavedConns(darkMode);
 }
-function figLogAllSavedNodes() {
+function figLogAllSavedNodes(darkMode) {
     figma.currentPage.getPluginDataKeys()
         .filter(k => isNodeKey(k))
-        .forEach(k => logSavedNode(k));
+        .forEach(k => logSavedNode(k, darkMode));
 }
-function figLogAllSavedConns() {
+function figLogAllSavedConns(darkMode) {
     const connKeys = figma.currentPage.getPluginDataKeys()
         .filter(k => isConnKey(k));
     connKeys.sort((key1, key2) => {
@@ -1595,14 +1605,14 @@ function figLogAllSavedConns() {
             return 1;
         return 0;
     });
-    connKeys.forEach(k => logSavedConn(JSON.parse(figma.currentPage.getPluginData(k))));
+    connKeys.forEach(k => logSavedConn(JSON.parse(figma.currentPage.getPluginData(k)), darkMode));
 }
-function figLogAllSavedConnKeys() {
+function figLogAllSavedConnKeys(darkMode) {
     const connKeys = figma.currentPage.getPluginDataKeys()
         .filter(k => isConnKey(k));
-    connKeys.forEach(k => console.log('%c' + k, 'background: #dff'));
+    connKeys.forEach(k => console.log('%c' + k, 'background: #dff; color: ' + (darkMode ? 'black' : 'white')));
 }
-function figLogAllLocalData() {
+function figLogAllLocalData(darkMode) {
     figma.clientStorage.keysAsync().then(keys => keys.forEach(k => figma.clientStorage.getAsync(k).then(val => console.log(k + ': ' + val))));
 }
 function figSaveConnection(key, json) {
