@@ -2355,6 +2355,13 @@ function getCreateNodeAction(type, creatingButton, options)
 }
 
 
+
+function simpleIntHash(x)
+{
+    return (x * 2654435761 % Math.pow(2, 32)) / Math.pow(2, 32);
+}
+
+
 "use strict";
 
 // Base64 / binary data / UTF-8 strings utilities

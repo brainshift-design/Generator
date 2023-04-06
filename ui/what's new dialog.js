@@ -12,10 +12,15 @@ function initWhatsNewDialog()
 
     whatsNewDialog.mouseOver = false;
 
-
     whatsNewDialog.addEventListener('pointerenter', e => { whatsNewDialog.mouseOver = true;  updateWhatsNewScroll(); });
     whatsNewDialog.addEventListener('pointerleave', e => { whatsNewDialog.mouseOver = false; updateWhatsNewScroll(); });
     
+
+    let r = simpleIntHash(generatorVersion);
+    r = 3*r*r - 2*r*r*r;
+
+    whatsNewWatermark.style.left = Math.round(r * 100) + '%';
+
 
     whatsNewDialogContainer.addEventListener('wheel', e =>
     {    

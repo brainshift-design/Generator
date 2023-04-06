@@ -64,6 +64,11 @@ extends Control
      
     allowEditDecimals     = true;
     
+
+    delayUse              = 0;
+    delayUseTimer         = null;
+
+
     valueText             = '';
     overrideText          = '';
 
@@ -159,8 +164,9 @@ extends Control
 
     canReact(e)
     {
-        if (   settings.enableZoomedOutParams
-            || this.view.zoom > settings.minZoomForParams)
+        if (   (   settings.enableZoomedOutParams
+                || this.view.zoom > settings.minZoomForParams)
+            && !this.delayUseTimer)
             return true;
 
         e.preventDefault();

@@ -6,6 +6,10 @@ NumberControl.prototype.initEvents = function()
         const view  = param.node.graph.view;
         
 
+        if (this.delayUse > 0)
+            delayUseTimer = setTimeout(() => delayUseTimer = false, this.delayUse);
+
+
         if (!this.canReact(e))
             return;
 

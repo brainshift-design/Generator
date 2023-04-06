@@ -20,10 +20,10 @@ var allUpdateNodes   = [];
 //uiClearLocalData('productKey');
 
 // uiClearLocalData('showRequests');
-// uiClearLocalData('showValueUpdates');
+// uiClearLocalData('showWhatsNew');
 
 //uiSetLocalData('enableBetaFeatures', 'true');
-uiSetLocalData('logLoading', 'true');
+//uiSetLocalData('logLoading', 'true');
 
 //uiRemoveConnsToNodes(['num3']);
 //uiRemoveSavedNodesAndConns(['color']);

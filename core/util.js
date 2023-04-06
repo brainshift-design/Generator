@@ -299,3 +299,10 @@ function getCreateNodeAction(type, creatingButton, options)
            ? new CreateInsertNodeAction(graphView.graph, type, creatingButton, options)
            : new CreateNodeAction      (graphView.graph, type, creatingButton, options, !!options.autoConnect);
 }
+
+
+
+function simpleIntHash(x)
+{
+    return (x * 2654435761 % Math.pow(2, 32)) / Math.pow(2, 32);
+}

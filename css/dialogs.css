@@ -569,13 +569,13 @@
 
 #whatsNewDialogContent
 {
-    font-size: 12px;
-    margin:    0;
-    padding:   1px 0 5px 0;
-    position:  absolute;
+    font-size:      12px;
+    margin:         0;
+    padding:        1px 0 5px 0;
+    position:       absolute;
     pointer-events: all;
-    user-select: text;
-    /* box-shadow: 0 0 0 1px blue inset; */
+    user-select:    text;
+    /* box-shadow:  0 0 0 1px blue inset; */
 }
 
 
@@ -597,9 +597,11 @@
 #whatsNewWatermark
 {
     position:       absolute;
-    left:           40px;
-    top:           -40px;
-    font-size:      500px;
+    left:           50%;
+    top:            50%;
+    transform:      translateX(-41%)
+                    translateY(-34%);
+    font-size:      800px;
     font-weight:    600;
     white-space:    nowrap;
     color:          var(--figma-color-bg-secondary);
