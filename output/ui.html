@@ -10393,16 +10393,26 @@ extends GOperator
 
             this.value = cond.value != 0 ? val0 : val1;
         }
-        else if (this.input0
-              && cond.value != 0)
-            this.value = (await this.input0.eval(parse)).toValue();
+        else if (this.input0)
+        {
+            const input0 = (await this.input0.eval(parse)).toValue();
 
-        else if (this.input1
-              && cond.value == 0) 
-            this.value = (await this.input1.eval(parse)).toValue();
+            this.value = 
+                cond.value != 0
+                ? input0
+                : NullValue
+        }
+        else if (this.input1)
+        {
+            const input1 = (await this.input1.eval(parse)).toValue();
 
+            this.value = 
+                cond.value != 1
+                ? input1
+                : NullValue
+        }
         else                  
-            this.value = NumberValue.NaN;
+            this.value = NullValue;
 
 
         genPushUpdateValue(parse, this.nodeId, 'condition', cond);
@@ -20375,7 +20385,7 @@ function logSavedNode(nodeKey, darkMode)
             '%c%s\n%c%s', 
             'background: #fa24; color: white;', 
             noNodeTag(nodeKey), 
-            'background: #fa44; color: white;',
+            'background: #fa44; color: #edc;',
             log);
     }
     else
@@ -20446,7 +20456,7 @@ function logSavedConn(conn, darkMode)
     {
         console.log(
             '%c%s', 
-            'background: #4f44; color: white', 
+            'background: #4f44; color: #ded', 
             strConn); 
     }
     else
@@ -26500,7 +26510,7 @@ function logSavedNode(nodeKey, darkMode)
             '%c%s\n%c%s', 
             'background: #fa24; color: white;', 
             noNodeTag(nodeKey), 
-            'background: #fa44; color: white;',
+            'background: #fa44; color: #edc;',
             log);
     }
     else
@@ -26571,7 +26581,7 @@ function logSavedConn(conn, darkMode)
     {
         console.log(
             '%c%s', 
-            'background: #4f44; color: white', 
+            'background: #4f44; color: #ded', 
             strConn); 
     }
     else
@@ -31756,16 +31766,26 @@ extends GOperator
 
             this.value = cond.value != 0 ? val0 : val1;
         }
-        else if (this.input0
-              && cond.value != 0)
-            this.value = (await this.input0.eval(parse)).toValue();
+        else if (this.input0)
+        {
+            const input0 = (await this.input0.eval(parse)).toValue();
 
-        else if (this.input1
-              && cond.value == 0) 
-            this.value = (await this.input1.eval(parse)).toValue();
+            this.value = 
+                cond.value != 0
+                ? input0
+                : NullValue
+        }
+        else if (this.input1)
+        {
+            const input1 = (await this.input1.eval(parse)).toValue();
 
+            this.value = 
+                cond.value != 1
+                ? input1
+                : NullValue
+        }
         else                  
-            this.value = NumberValue.NaN;
+            this.value = NullValue;
 
 
         genPushUpdateValue(parse, this.nodeId, 'condition', cond);
@@ -56870,7 +56890,7 @@ extends OpColorBase
         this.param2.controls[0].epsilon = ColorEpsilon;
         this.param3.controls[0].epsilon = ColorEpsilon;
 
-        this.paramSpace.controls[0].delayUse = 400;        
+        this.paramSpace.controls[0].delayUse = 300;        
         this.paramSpace.input.outputMustBeCached = true;
 
         this.paramSpace.addEventListener('change', () => 

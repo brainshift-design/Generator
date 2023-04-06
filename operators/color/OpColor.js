@@ -60,7 +60,7 @@ extends OpColorBase
         this.param2.controls[0].epsilon = ColorEpsilon;
         this.param3.controls[0].epsilon = ColorEpsilon;
 
-        this.paramSpace.controls[0].delayUse = 400;        
+        this.paramSpace.controls[0].delayUse = 300;        
         this.paramSpace.input.outputMustBeCached = true;
 
         this.paramSpace.addEventListener('change', () => 

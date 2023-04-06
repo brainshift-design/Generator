@@ -1009,7 +1009,7 @@ function logSavedNode(nodeKey, darkMode)
             '%c%s\n%c%s', 
             'background: #fa24; color: white;', 
             noNodeTag(nodeKey), 
-            'background: #fa44; color: white;',
+            'background: #fa44; color: #edc;',
             log);
     }
     else
@@ -1080,7 +1080,7 @@ function logSavedConn(conn, darkMode)
     {
         console.log(
             '%c%s', 
-            'background: #4f44; color: white', 
+            'background: #4f44; color: #ded', 
             strConn); 
     }
     else

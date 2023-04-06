@@ -47,16 +47,26 @@ extends GOperator
 
             this.value = cond.value != 0 ? val0 : val1;
         }
-        else if (this.input0
-              && cond.value != 0)
-            this.value = (await this.input0.eval(parse)).toValue();
+        else if (this.input0)
+        {
+            const input0 = (await this.input0.eval(parse)).toValue();
 
-        else if (this.input1
-              && cond.value == 0) 
-            this.value = (await this.input1.eval(parse)).toValue();
+            this.value = 
+                cond.value != 0
+                ? input0
+                : NullValue
+        }
+        else if (this.input1)
+        {
+            const input1 = (await this.input1.eval(parse)).toValue();
 
+            this.value = 
+                cond.value != 1
+                ? input1
+                : NullValue
+        }
         else                  
-            this.value = NumberValue.NaN;
+            this.value = NullValue;
 
 
         genPushUpdateValue(parse, this.nodeId, 'condition', cond);

@@ -608,7 +608,7 @@ function base32toArray(base32, chars = base32chars) {
 function logSavedNode(nodeKey, darkMode) {
     const log = formatSavedNodeJson(figGetPageData(nodeKey, false));
     if (darkMode) {
-        console.log('%c%s\n%c%s', 'background: #fa24; color: white;', noNodeTag(nodeKey), 'background: #fa44; color: white;', log);
+        console.log('%c%s\n%c%s', 'background: #fa24; color: white;', noNodeTag(nodeKey), 'background: #fa44; color: #edc;', log);
     }
     else {
         console.log('%c%s\n%c%s', 'background: #fdb; color: black;', noNodeTag(nodeKey), 'background: #fed; color: black;', log);
@@ -645,7 +645,7 @@ function formatSavedDataJson(json) {
 function logSavedConn(conn, darkMode) {
     const strConn = connToString(conn, true);
     if (darkMode) {
-        console.log('%c%s', 'background: #4f44; color: white', strConn);
+        console.log('%c%s', 'background: #4f44; color: #ded', strConn);
     }
     else {
         console.log('%c%s', 'background: #cfc; color: black;', strConn);
