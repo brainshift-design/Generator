@@ -119,6 +119,20 @@ GraphView.prototype.createEvents = function()
 
 
 
+    // this.div.addEventListener('pointermove', e =>
+    // {
+    //     if (   document.canResizeL
+    //         || document.canResizeR
+    //         || document.canResizeB)
+    //     {
+    //         //checkResize(e.clientX, e.clientY);
+    //         e.stopImmediatePropagation();
+    //     }
+    // },
+    // true);
+
+
+
     this.div.addEventListener('pointerup', e => 
     {
         if (   e.button == 0

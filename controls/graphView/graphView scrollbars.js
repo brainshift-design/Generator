@@ -142,20 +142,20 @@ GraphView.prototype.createScrollbarMethods = function()
         {
             const x = this.scrollbarX.xStart + e.clientX - this.scrollbarX.pStart;
 
-            let   l = x;
-            let   r = l + this.scrollbarX.wStart;
-
+            let l = x;
+            let r = l + this.scrollbarX.wStart;
+ 
             l = Math.max(smallScrollGap, l);
-            r = Math.min(r, this.clientWidth - largeScrollGap);
-
+            r = Math.min(r, this.div.clientWidth - largeScrollGap);
+ 
             l = Math.max(smallScrollGap, Math.min(l, r - smallScrollGap));
             r = Math.max(l + smallScrollGap, r);
-
+ 
             this.scrollbarX.style.left  = l;
             this.scrollbarX.style.width = r-l;
 
             this.pan = point(
-                this.panStart.x - (e.clientX - this.scrollbarX.pStart) / this.scrollbarX.wStart * this.clientWidth,
+                this.panStart.x - (e.clientX - this.scrollbarX.pStart) / this.scrollbarX.wStart * this.div.clientWidth,
                 this.panStart.y);
         }
     });

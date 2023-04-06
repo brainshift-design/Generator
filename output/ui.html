@@ -39597,7 +39597,7 @@ NumberControl.prototype.initEvents = function()
             this.buttonDown0_ = true;
         }
 
-        
+
         if (!this.canReact(e))
             return;
 
@@ -39732,7 +39732,10 @@ NumberControl.prototype.initEvents = function()
         
 
 
-        this.updateCursor();
+        // if (   !document.canResizeL
+        //     && !document.canResizeR
+        //     && !document.canResizeB)
+            this.updateCursor();
 
 
         let rect = boundingRect(this.div);
@@ -45653,6 +45656,20 @@ GraphView.prototype.createEvents = function()
 
 
 
+    // this.div.addEventListener('pointermove', e =>
+    // {
+    //     if (   document.canResizeL
+    //         || document.canResizeR
+    //         || document.canResizeB)
+    //     {
+    //         //checkResize(e.clientX, e.clientY);
+    //         e.stopImmediatePropagation();
+    //     }
+    // },
+    // true);
+
+
+
     this.div.addEventListener('pointerup', e => 
     {
         if (   e.button == 0
@@ -46497,20 +46514,20 @@ GraphView.prototype.createScrollbarMethods = function()
         {
             const x = this.scrollbarX.xStart + e.clientX - this.scrollbarX.pStart;
 
-            let   l = x;
-            let   r = l + this.scrollbarX.wStart;
-
+            let l = x;
+            let r = l + this.scrollbarX.wStart;
+ 
             l = Math.max(smallScrollGap, l);
-            r = Math.min(r, this.clientWidth - largeScrollGap);
-
+            r = Math.min(r, this.div.clientWidth - largeScrollGap);
+ 
             l = Math.max(smallScrollGap, Math.min(l, r - smallScrollGap));
             r = Math.max(l + smallScrollGap, r);
-
+ 
             this.scrollbarX.style.left  = l;
             this.scrollbarX.style.width = r-l;
 
             this.pan = point(
-                this.panStart.x - (e.clientX - this.scrollbarX.pStart) / this.scrollbarX.wStart * this.clientWidth,
+                this.panStart.x - (e.clientX - this.scrollbarX.pStart) / this.scrollbarX.wStart * this.div.clientWidth,
                 this.panStart.y);
         }
     });
@@ -65875,7 +65892,10 @@ document.addEventListener('pointermove', function(e)
             document.startRect.h + e.clientY - document.sy);
     }
     else if (!graphView.selecting)
+    {
         checkResize(e.clientX, e.clientY);
+        //e.stopPropagation();
+    }
 });
 
 

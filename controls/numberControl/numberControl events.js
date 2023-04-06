@@ -82,7 +82,7 @@ NumberControl.prototype.initEvents = function()
             this.buttonDown0_ = true;
         }
 
-        
+
         if (!this.canReact(e))
             return;
 
@@ -217,7 +217,10 @@ NumberControl.prototype.initEvents = function()
         
 
 
-        this.updateCursor();
+        // if (   !document.canResizeL
+        //     && !document.canResizeR
+        //     && !document.canResizeB)
+            this.updateCursor();
 
 
         let rect = boundingRect(this.div);

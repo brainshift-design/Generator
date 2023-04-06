@@ -142,7 +142,10 @@ document.addEventListener('pointermove', function(e)
             document.startRect.h + e.clientY - document.sy);
     }
     else if (!graphView.selecting)
+    {
         checkResize(e.clientX, e.clientY);
+        //e.stopPropagation();
+    }
 });
 
 
