@@ -80,9 +80,6 @@ document.addEventListener('pointerdown', function(e)
 
 
             document.startRectIsValid = false;
-            
-            
-            //uiUpdateViewportRect();
         }
     }
 

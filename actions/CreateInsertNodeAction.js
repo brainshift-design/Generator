@@ -47,7 +47,7 @@ extends Action
 
 
         const insert = 
-               !isEmpty(this.prevSelectedIds)
+               this.prevSelectedIds.length == 1
             && canAutoConnectNode(this.graph, node);
    
             

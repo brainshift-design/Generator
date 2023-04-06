@@ -294,6 +294,14 @@ function isMultiplier(node)
 
 function getCreateNodeAction(type, creatingButton, options)
 {
+    let node = createNode(type);
+
+    if (isEmpty(node.headerOutputs))
+        options.autoConnect = true;
+
+    node = null;
+
+
     return !!options.insert
         &&  !options.autoConnect
            ? new CreateInsertNodeAction(graphView.graph, type, creatingButton, options)

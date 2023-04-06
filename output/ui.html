@@ -6429,6 +6429,14 @@ function isMultiplier(node)
 
 function getCreateNodeAction(type, creatingButton, options)
 {
+    let node = createNode(type);
+
+    if (isEmpty(node.headerOutputs))
+        options.autoConnect = true;
+
+    node = null;
+
+
     return !!options.insert
         &&  !options.autoConnect
            ? new CreateInsertNodeAction(graphView.graph, type, creatingButton, options)
@@ -7169,17 +7177,15 @@ function noNodeTag(key) { return noTag(key, nodeTag); }
 function noConnTag(key) { return noTag(key, connTag); }
 
 
-const NAN_CHAR                = '\uFFFD';
-const NAN_DISPLAY             = '?';
+const NAN_CHAR           = '\uFFFD';
+const NAN_DISPLAY        = '?';
     
-const UNKNOWN_CHAR            = '?';
-const UNKNOWN_DISPLAY         = UNKNOWN_CHAR;//'🤷‍♂️';
+const UNKNOWN_CHAR       = '?';
+const UNKNOWN_DISPLAY    = UNKNOWN_CHAR;//'🤷‍♂️';
     
-// const TRUE_DISPLAY         = '✓';//'true';
-// const FALSE_DISPLAY        = '❌';//'false';
-
-const TRUE_DISPLAY            = '<svg width="11" height="11" viewBox="0 0 11 11" fill="none" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" clip-rule="evenodd" d="M11 0.998457L9.31674 0L4.10109 8.01592L1.40123 5.4381L0 6.77599L4.42397 11L11 0.998457Z" fill="#29CE00"/></svg>';
-const FALSE_DISPLAY           = '<svg width="9" height="9" viewBox="0 0 9 9" fill="none" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" clip-rule="evenodd" d="M9 1.27273L7.72727 0L4.5 3.22728L1.27273 5.21088e-06L0 1.27273L3.22727 4.5L6.50594e-06 7.72727L1.27273 9L4.5 5.77273L7.72727 9L8.99999 7.72727L5.77272 4.5L9 1.27273Z" fill="#F43D3D"/></svg>';    
+const TRUE_DISPLAY_LIGHT = '<svg width="11" height="11" viewBox="0 0 11 11" fill="none" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" clip-rule="evenodd" d="M11 0.998457L9.31674 0L4.10109 8.01592L1.40123 5.4381L0 6.77599L4.42397 11L11 0.998457Z" fill="#29CE00"/></svg>';
+const TRUE_DISPLAY_DARK  = '<svg width="11" height="11" viewBox="0 0 11 11" fill="none" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" clip-rule="evenodd" d="M11 0.998457L9.31674 0L4.10109 8.01592L1.40123 5.4381L0 6.77599L4.42397 11L11 0.998457Z" fill="#29CE00"/></svg>';
+const FALSE_DISPLAY      = '<svg width="9" height="9" viewBox="0 0 9 9" fill="none" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" clip-rule="evenodd" d="M9 1.27273L7.72727 0L4.5 3.22728L1.27273 5.21088e-06L0 1.27273L3.22727 4.5L6.50594e-06 7.72727L1.27273 9L4.5 5.77273L7.72727 9L8.99999 7.72727L5.77272 4.5L9 1.27273Z" fill="#F43D3D"/></svg>';    
 
 
 
@@ -25372,6 +25378,14 @@ function isMultiplier(node)
 
 function getCreateNodeAction(type, creatingButton, options)
 {
+    let node = createNode(type);
+
+    if (isEmpty(node.headerOutputs))
+        options.autoConnect = true;
+
+    node = null;
+
+
     return !!options.insert
         &&  !options.autoConnect
            ? new CreateInsertNodeAction(graphView.graph, type, creatingButton, options)
@@ -26112,17 +26126,15 @@ function noNodeTag(key) { return noTag(key, nodeTag); }
 function noConnTag(key) { return noTag(key, connTag); }
 
 
-const NAN_CHAR                = '\uFFFD';
-const NAN_DISPLAY             = '?';
+const NAN_CHAR           = '\uFFFD';
+const NAN_DISPLAY        = '?';
     
-const UNKNOWN_CHAR            = '?';
-const UNKNOWN_DISPLAY         = UNKNOWN_CHAR;//'🤷‍♂️';
+const UNKNOWN_CHAR       = '?';
+const UNKNOWN_DISPLAY    = UNKNOWN_CHAR;//'🤷‍♂️';
     
-// const TRUE_DISPLAY         = '✓';//'true';
-// const FALSE_DISPLAY        = '❌';//'false';
-
-const TRUE_DISPLAY            = '<svg width="11" height="11" viewBox="0 0 11 11" fill="none" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" clip-rule="evenodd" d="M11 0.998457L9.31674 0L4.10109 8.01592L1.40123 5.4381L0 6.77599L4.42397 11L11 0.998457Z" fill="#29CE00"/></svg>';
-const FALSE_DISPLAY           = '<svg width="9" height="9" viewBox="0 0 9 9" fill="none" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" clip-rule="evenodd" d="M9 1.27273L7.72727 0L4.5 3.22728L1.27273 5.21088e-06L0 1.27273L3.22727 4.5L6.50594e-06 7.72727L1.27273 9L4.5 5.77273L7.72727 9L8.99999 7.72727L5.77272 4.5L9 1.27273Z" fill="#F43D3D"/></svg>';    
+const TRUE_DISPLAY_LIGHT = '<svg width="11" height="11" viewBox="0 0 11 11" fill="none" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" clip-rule="evenodd" d="M11 0.998457L9.31674 0L4.10109 8.01592L1.40123 5.4381L0 6.77599L4.42397 11L11 0.998457Z" fill="#29CE00"/></svg>';
+const TRUE_DISPLAY_DARK  = '<svg width="11" height="11" viewBox="0 0 11 11" fill="none" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" clip-rule="evenodd" d="M11 0.998457L9.31674 0L4.10109 8.01592L1.40123 5.4381L0 6.77599L4.42397 11L11 0.998457Z" fill="#29CE00"/></svg>';
+const FALSE_DISPLAY      = '<svg width="9" height="9" viewBox="0 0 9 9" fill="none" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" clip-rule="evenodd" d="M9 1.27273L7.72727 0L4.5 3.22728L1.27273 5.21088e-06L0 1.27273L3.22727 4.5L6.50594e-06 7.72727L1.27273 9L4.5 5.77273L7.72727 9L8.99999 7.72727L5.77272 4.5L9 1.27273Z" fill="#F43D3D"/></svg>';    
 
 
 
@@ -41803,9 +41815,6 @@ const iconWindowDockRight   = '<svg width="15" height="12" viewBox="0 0 15 12" f
 const iconWindowDockTop     = '<svg width="15" height="12" viewBox="0 0 15 12" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="0.5" y="0.5" width="14" height="11" stroke="white"/><rect width="15" height="5" fill="white"/></svg>';
 const iconWindowDockBottom  = '<svg width="15" height="12" viewBox="0 0 15 12" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="0.5" y="0.5" width="14" height="11" stroke="white"/><rect y="7" width="15" height="5" fill="white"/></svg>';
 
-// const iconGreenCheck        = '<svg width="13" height="13" viewBox="0 0 13 13" fill="none" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" clip-rule="evenodd" d="M13 1.17999L11.0107 0L4.84674 9.47336L1.656 6.42685L0 8.00799L5.22833 13L13 1.17999Z" fill="#29CE00"/></svg>';
-// const iconRedCross          = '<svg width="12" height="12" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" clip-rule="evenodd" d="M12 1.69697L10.303 0L6 4.30304L1.69697 6.94784e-06L0 1.69698L4.30303 6L8.67458e-06 10.303L1.69698 12L6 7.69697L10.303 12L12 10.303L7.69696 6L12 1.69697Z" fill="#F43D3D"/></svg>';
-
 
 var currentMenus      = [];
 var currentMenuButton = null;
@@ -45500,6 +45509,21 @@ GraphView.prototype.createEvents = function()
         if (this.tempConn)
             this.div.setPointerCapture(e.pointerId);
     });
+
+
+
+    this.div.addEventListener('pointerdown', e =>
+    {
+        if (   e.button == 0
+            && (   document.canResizeL
+                || document.canResizeR
+                || document.canResizeB))
+        {
+            e.stopPropagation();
+            forwardEvent(e, document);
+        }
+    }, 
+    true);
 
 
 
@@ -53737,7 +53761,8 @@ extends OperatorBase
         this.inputs[1].addEventListener('disconnect', () => OpIfElse_onDisconnectInput(this, 1));
 
 
-        this.paramCondition.controls[0].barTop = 0.8;        
+        this.paramCondition.controls[0].showBar = false;
+        //this.paramCondition.controls[0].barTop  = 0.8;        
     }
     
     
@@ -55643,7 +55668,7 @@ extends OperatorWithValue
 
              if (this.isUnknown())        this.paramValue.controls[0].valueText = UNKNOWN_DISPLAY;
         else if (settings.showBoolValues
-              && !isNaN(v))               this.paramValue.controls[0].valueText = v != 0 ? TRUE_DISPLAY : FALSE_DISPLAY;
+              && !isNaN(v))               this.paramValue.controls[0].valueText = v != 0 ? (darkMode ? TRUE_DISPLAY_DARK : TRUE_DISPLAY_LIGHT) : FALSE_DISPLAY;
         else                              this.paramValue.controls[0].valueText = '';
 
 
@@ -61536,177 +61561,6 @@ class Graph
 
 
 
-function nodesToJson(nodes, encloseBraces = true, connOutputMustBeInNodes = true)
-{
-    const tab = HTAB;
-    
-    let json = 
-          (encloseBraces ? '{\n' : '')
-          + tab + '"nodes":\n'
-          + tab + '[';
-
-    let first = true;
-    for (let i = 0; i < nodes.length; i++)
-    {
-        if (!first) json += ','; first = false;
-        json += NL + nodes[i].toJson(4);
-    }
-
-    json += NL + tab + ']';
-    json += connectionsToJson(nodes, connOutputMustBeInNodes);
-    json += (encloseBraces ? '\n}' :'');
-
-    return json;
-}
-
-
-
-function connectionsToJson(nodes, connOutputMustBeInNodes)
-{
-    const connections = [];
-
-
-    for (let i = 0; i < nodes.length; i++)
-    {
-        let node = nodes[i];
-
-        // if (node.variableInputs)
-        //     continue;
-
-        for (let j = 0; j < node.inputs.length; j++)
-        {
-            if (   !node.inputs[j].connected
-                ||     connOutputMustBeInNodes
-                   && !nodes.includes(node.inputs[j].connectedOutput.node))
-                continue;
-
-            connections.push(node.inputs[j].connection);
-        }
-    }
-    
-
-    if (isEmpty(connections))
-        return '';
-
-
-    const tab = HTAB;
-
-    let json = 
-          ',\n'
-        + tab + '"connections":\n'
-        + tab + '[';
-    
-    for (let i = 0; i < connections.length; i++)
-    {
-        if (i > 0) json += ',';
-        json += NL + connections[i].toJson(4);
-    }
-
-    json += NL + tab + ']';
-
-    return json;
-}
-
-
-
-function createNode(nodeType, creatingButton = null, createdNodeId = -1, options = {})
-{
-    let node;
- 
-    switch (nodeType)
-    {
-        case LIST:                    node = new OpList();              break;
-        case ITEMS:                   node = new OpItems();             break;
-        case SELECT:                  node = new OpSelect();            break;
-        case IF_ELSE:                 node = new OpIfElse();            break;
-        case START:                   node = new OpStart();             break;
-        case REPEAT:                  node = new OpRepeat();            break;
-        case CACHE:                   node = new OpCache();             break;
-        case COPY:                    node = new OpCopy();              break;
-      
-        case NUMBER:                  node = new OpNumber();            break;
-        case NUMBER_ABSOLUTE:         node = new OpAbsolute();          break;
-        case NUMBER_ROUND:            node = new OpRound();             break;
-        case NUMBER_LIMITS:           node = new OpLimits();            break;
-        case NUMBER_RANDOM:           node = new OpRandom();            break;
-        case NUMBER_SERIES:           node = new OpSeries();            break;
-        case NUMBER_INTERPOLATE:      node = new OpInterpolate();       break;
-        case NUMBER_TO_TEXT:          node = new OpNumberToText();      break;
-             
-        case NUMBER_MATH:             node = new OpMath();              break;
-        case NUMBER_ADD:              node = new OpAdd();               break;
-        case NUMBER_SUBTRACT:         node = new OpSubtract();          break;
-        case NUMBER_MULTIPLY:         node = new OpMultiply();          break;
-        case NUMBER_DIVIDE:           node = new OpDivide();            break;
-        case NUMBER_MODULO:           node = new OpModulo();            break;
-        case NUMBER_EXPONENT:         node = new OpExponent();          break;
-             
-        case NUMBER_BOOLEAN:          node = new OpBoolean();           break;
-        case NUMBER_NOT:              node = new OpNot();               break;
-        case NUMBER_AND:              node = new OpAnd();               break;
-        case NUMBER_OR:               node = new OpOr();                break;
-        case NUMBER_XOR:              node = new OpXor();               break;
-         
-        case NUMBER_CONDITION:        node = new OpCondition();         break;
-        case NUMBER_EQUAL:            node = new OpEqual();             break;
-        case NUMBER_NOT_EQUAL:        node = new OpNotEqual();          break;
-        case NUMBER_LESS:             node = new OpLess();              break;
-        case NUMBER_LESS_OR_EQUAL:    node = new OpLessOrEqual();       break;
-        case NUMBER_GREATER:          node = new OpGreater();           break;
-        case NUMBER_GREATER_OR_EQUAL: node = new OpGreaterOrEqual();    break;
-         
-        case TEXT:                    node = new OpText();              break;
-        case TEXT_SUBSTRING:          node = new OpTextSubstring();     break;
-        case TEXT_CHAR:               node = new OpTextCharacter();     break;
-        case TEXT_REPLACE:            node = new OpTextReplace();       break;
-        case TEXT_JOIN:               node = new OpTextJoin();          break;
-        case TEXT_CSV:                node = new OpTextCSV();           break;
-        case TEXT_FETCH:              node = new OpTextFetch();         break;
-        
-        case COLOR:                   node = new OpColor(options);      break;
-        case VALID_COLOR:             node = new OpValidColor();        break;
-        case CORRECT_COLOR:           node = new OpCorrectColor();      break;
-        case COLOR_CONTRAST:          node = new OpColorContrast();     break;
-        case COLORBLIND:              node = new OpColorBlind();        break;
-        case COLOR_INTERPOLATE:       node = new OpColorInterpolate();  break;
-        case COLOR_BLEND:             node = new OpColorBlend();        break;
-             
-        case COLOR_STOP:              node = new OpColorStop();         break;
-        case GRADIENT:                node = new OpGradient();          break;
-      
-        case FILL:                    node = new OpFill();              break;
-        case STROKE:                  node = new OpStroke();            break;
-
-        case COLOR_STYLE:             node = new OpColorStyle(options); break;
-     
-        case RECTANGLE:               node = new OpRectangle();         break;
-        case LINE:                    node = new OpLine();              break;
-        case ELLIPSE:                 node = new OpEllipse();           break;
-        case POLYGON:                 node = new OpPolygon();           break;
-        case STAR:                    node = new OpStar();              break;
-      
-        case NODE_GROUP:              node = new OpNodeGroup();         break;
-        case NODE_INPUTS:             node = new OpNodeInputs();        break;
-        case NODE_OUTPUTS:            node = new OpNodeOutputs();       break;
-
-        case COMMENT:                 node = new OpComment();           break;
-     
-        default:                      console.assert(false, 'Graph.js/createNode() cannot create type ' + nodeType);
-    }
-    
-    node._creatingButton = creatingButton;
-
-    return node;
-}
-
-
-
-function idFromNode(node)
-{
-    return node ? node.id : '';
-}
-
-
 Graph.prototype.nodeFromId = function(id)
 {
     return this.nodes.find(n => n.id == id);
@@ -62966,7 +62820,7 @@ extends Action
 
 
         const insert = 
-               !isEmpty(this.prevSelectedIds)
+               this.prevSelectedIds.length == 1
             && canAutoConnectNode(this.graph, node);
    
             
@@ -65920,9 +65774,6 @@ document.addEventListener('pointerdown', function(e)
 
 
             document.startRectIsValid = false;
-            
-            
-            //uiUpdateViewportRect();
         }
     }
 
@@ -68547,6 +68398,181 @@ productKeyClose.addEventListener('click', e =>
 
     ∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙
 */
+
+
+
+
+
+
+function createNode(nodeType, creatingButton = null, createdNodeId = -1, options = {})
+{
+    let node;
+ 
+    switch (nodeType)
+    {
+        case LIST:                    node = new OpList();              break;
+        case ITEMS:                   node = new OpItems();             break;
+        case SELECT:                  node = new OpSelect();            break;
+        case IF_ELSE:                 node = new OpIfElse();            break;
+        case START:                   node = new OpStart();             break;
+        case REPEAT:                  node = new OpRepeat();            break;
+        case CACHE:                   node = new OpCache();             break;
+        case COPY:                    node = new OpCopy();              break;
+      
+        case NUMBER:                  node = new OpNumber();            break;
+        case NUMBER_ABSOLUTE:         node = new OpAbsolute();          break;
+        case NUMBER_ROUND:            node = new OpRound();             break;
+        case NUMBER_LIMITS:           node = new OpLimits();            break;
+        case NUMBER_RANDOM:           node = new OpRandom();            break;
+        case NUMBER_SERIES:           node = new OpSeries();            break;
+        case NUMBER_INTERPOLATE:      node = new OpInterpolate();       break;
+        case NUMBER_TO_TEXT:          node = new OpNumberToText();      break;
+             
+        case NUMBER_MATH:             node = new OpMath();              break;
+        case NUMBER_ADD:              node = new OpAdd();               break;
+        case NUMBER_SUBTRACT:         node = new OpSubtract();          break;
+        case NUMBER_MULTIPLY:         node = new OpMultiply();          break;
+        case NUMBER_DIVIDE:           node = new OpDivide();            break;
+        case NUMBER_MODULO:           node = new OpModulo();            break;
+        case NUMBER_EXPONENT:         node = new OpExponent();          break;
+             
+        case NUMBER_BOOLEAN:          node = new OpBoolean();           break;
+        case NUMBER_NOT:              node = new OpNot();               break;
+        case NUMBER_AND:              node = new OpAnd();               break;
+        case NUMBER_OR:               node = new OpOr();                break;
+        case NUMBER_XOR:              node = new OpXor();               break;
+         
+        case NUMBER_CONDITION:        node = new OpCondition();         break;
+        case NUMBER_EQUAL:            node = new OpEqual();             break;
+        case NUMBER_NOT_EQUAL:        node = new OpNotEqual();          break;
+        case NUMBER_LESS:             node = new OpLess();              break;
+        case NUMBER_LESS_OR_EQUAL:    node = new OpLessOrEqual();       break;
+        case NUMBER_GREATER:          node = new OpGreater();           break;
+        case NUMBER_GREATER_OR_EQUAL: node = new OpGreaterOrEqual();    break;
+         
+        case TEXT:                    node = new OpText();              break;
+        case TEXT_SUBSTRING:          node = new OpTextSubstring();     break;
+        case TEXT_CHAR:               node = new OpTextCharacter();     break;
+        case TEXT_REPLACE:            node = new OpTextReplace();       break;
+        case TEXT_JOIN:               node = new OpTextJoin();          break;
+        case TEXT_CSV:                node = new OpTextCSV();           break;
+        case TEXT_FETCH:              node = new OpTextFetch();         break;
+        
+        case COLOR:                   node = new OpColor(options);      break;
+        case VALID_COLOR:             node = new OpValidColor();        break;
+        case CORRECT_COLOR:           node = new OpCorrectColor();      break;
+        case COLOR_CONTRAST:          node = new OpColorContrast();     break;
+        case COLORBLIND:              node = new OpColorBlind();        break;
+        case COLOR_INTERPOLATE:       node = new OpColorInterpolate();  break;
+        case COLOR_BLEND:             node = new OpColorBlend();        break;
+             
+        case COLOR_STOP:              node = new OpColorStop();         break;
+        case GRADIENT:                node = new OpGradient();          break;
+      
+        case FILL:                    node = new OpFill();              break;
+        case STROKE:                  node = new OpStroke();            break;
+
+        case COLOR_STYLE:             node = new OpColorStyle(options); break;
+     
+        case RECTANGLE:               node = new OpRectangle();         break;
+        case LINE:                    node = new OpLine();              break;
+        case ELLIPSE:                 node = new OpEllipse();           break;
+        case POLYGON:                 node = new OpPolygon();           break;
+        case STAR:                    node = new OpStar();              break;
+      
+        case NODE_GROUP:              node = new OpNodeGroup();         break;
+        case NODE_INPUTS:             node = new OpNodeInputs();        break;
+        case NODE_OUTPUTS:            node = new OpNodeOutputs();       break;
+
+        case COMMENT:                 node = new OpComment();           break;
+     
+        default:                      console.assert(false, 'Graph.js/createNode() cannot create type ' + nodeType);
+    }
+    
+    node._creatingButton = creatingButton;
+
+    return node;
+}
+
+
+
+function idFromNode(node)
+{
+    return node ? node.id : '';
+}
+
+
+
+function nodesToJson(nodes, encloseBraces = true, connOutputMustBeInNodes = true)
+{
+    const tab = HTAB;
+    
+    let json = 
+          (encloseBraces ? '{\n' : '')
+          + tab + '"nodes":\n'
+          + tab + '[';
+
+    let first = true;
+    for (let i = 0; i < nodes.length; i++)
+    {
+        if (!first) json += ','; first = false;
+        json += NL + nodes[i].toJson(4);
+    }
+
+    json += NL + tab + ']';
+    json += connectionsToJson(nodes, connOutputMustBeInNodes);
+    json += (encloseBraces ? '\n}' :'');
+
+    return json;
+}
+
+
+
+function connectionsToJson(nodes, connOutputMustBeInNodes)
+{
+    const connections = [];
+
+
+    for (let i = 0; i < nodes.length; i++)
+    {
+        let node = nodes[i];
+
+        // if (node.variableInputs)
+        //     continue;
+
+        for (let j = 0; j < node.inputs.length; j++)
+        {
+            if (   !node.inputs[j].connected
+                ||     connOutputMustBeInNodes
+                   && !nodes.includes(node.inputs[j].connectedOutput.node))
+                continue;
+
+            connections.push(node.inputs[j].connection);
+        }
+    }
+    
+
+    if (isEmpty(connections))
+        return '';
+
+
+    const tab = HTAB;
+
+    let json = 
+          ',\n'
+        + tab + '"connections":\n'
+        + tab + '[';
+    
+    for (let i = 0; i < connections.length; i++)
+    {
+        if (i > 0) json += ',';
+        json += NL + connections[i].toJson(4);
+    }
+
+    json += NL + tab + ']';
+
+    return json;
+}
 
 
 

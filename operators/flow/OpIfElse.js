@@ -25,7 +25,8 @@ extends OperatorBase
         this.inputs[1].addEventListener('disconnect', () => OpIfElse_onDisconnectInput(this, 1));
 
 
-        this.paramCondition.controls[0].barTop = 0.8;        
+        this.paramCondition.controls[0].showBar = false;
+        //this.paramCondition.controls[0].barTop  = 0.8;        
     }
     
     
