@@ -94,15 +94,10 @@ document.addEventListener('keydown', e =>
         layoutSelectedNodes();
 
 
-    // rename
-    else if (e.code == 'KeyR'
-          && getCtrlKey(e))
-        renameSelectedNode();
-
-
     // toggled operation results
     else if (e.code == 'KeyR'
-          && e.altKey)
+          && getCtrlKey(e)
+          && e.shiftKey)
     {
         updateSettingAndMenu('showOperationResults',  true, !settings.showOperationResults);  
         updateMenuItemShowOperationResults();          

@@ -35,13 +35,39 @@ extends GOperator
         this.node = parse.parsedNodes.find(v => v.nodeId == this.nodeId);
         console.assert(this.node, 'can\'t find parameter node \'' + this.nodeId + '\'');
 
+
+        //this.param.feedbackValue = this.feedbackValue;
+
+        //this.node.feedbackValue = this.feedbackValue;
         await this.node.eval(parse);
+        //this.node.feedbackValue = null;
 
         this.param = this.node.getParamFromId(this.paramId);
 
+
         if (isValid(this.param)) // could have been deleted from OpRepeat for example
-            return (await this.param.eval(parse)).toValue();
+        {
+            // if (   this.feedbackValue)
+            //     //&& this.param.type == NUMBER_VALUE)
+            //     this.param = this.feedbackValue();
+
+            const result = (await this.param.eval(parse)).toValue();
+            
+            //this.param.feedbackValue = null;
+            return result;
+        }
         else
+        {
+            //this.param.feedbackValue = null;
             return NullValue;
+        }
+    }
+
+
+    
+    isCached()
+    {
+        return super.isCached();
+//            && this.node.isCached();
     }
 }

@@ -10,7 +10,7 @@ extends GNode
     value;
 
    
-    altValue = null; // () => {}
+    feedbackValue = null; // () => {}
 
     
     constructor(type, nodeId, options)

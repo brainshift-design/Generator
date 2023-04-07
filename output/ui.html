@@ -3854,7 +3854,7 @@ a
         <div class='keyboardPage' id='keyboardPageNodes'>
             <div class='keyboardGroup'>
                 <div class='keyboardShortcut'><div class='shortcutAction'>Enable/disable</div><div class='shortcutKeys'><div class='shortcutKeys'><div class='shortcutKey'>Ctrl</div><div class='shortcutKey'>Shift</div><div class='shortcutKey shortcutChar'>E</div></div></div></div>
-                <div class='keyboardShortcut'><div class='shortcutAction'>Show/hide operation results</div><div class='shortcutKeys'><div class='shortcutKeys'><div class='shortcutKey'>Alt</div><div class='shortcutKey shortcutChar'>R</div></div></div></div>
+                <div class='keyboardShortcut'><div class='shortcutAction'>Show/hide operation results</div><div class='shortcutKeys'><div class='shortcutKeys'><div class='shortcutKey'>Ctrl</div><div class='shortcutKey'>Shift</div><div class='shortcutKey shortcutChar'>R</div></div></div></div>
             </div>
         </div>
  
@@ -8292,7 +8292,7 @@ extends GNode
     value;
 
    
-    altValue = null; // () => {}
+    feedbackValue = null; // () => {}
 
     
     constructor(type, nodeId, options)
@@ -8398,14 +8398,40 @@ extends GOperator
         this.node = parse.parsedNodes.find(v => v.nodeId == this.nodeId);
         console.assert(this.node, 'can\'t find parameter node \'' + this.nodeId + '\'');
 
+
+        //this.param.feedbackValue = this.feedbackValue;
+
+        //this.node.feedbackValue = this.feedbackValue;
         await this.node.eval(parse);
+        //this.node.feedbackValue = null;
 
         this.param = this.node.getParamFromId(this.paramId);
 
+
         if (isValid(this.param)) // could have been deleted from OpRepeat for example
-            return (await this.param.eval(parse)).toValue();
+        {
+            // if (   this.feedbackValue)
+            //     //&& this.param.type == NUMBER_VALUE)
+            //     this.param = this.feedbackValue();
+
+            const result = (await this.param.eval(parse)).toValue();
+            
+            //this.param.feedbackValue = null;
+            return result;
+        }
         else
+        {
+            //this.param.feedbackValue = null;
             return NullValue;
+        }
+    }
+
+
+    
+    isCached()
+    {
+        return super.isCached();
+//            && this.node.isCached();
     }
 }
 
@@ -10861,9 +10887,6 @@ extends GNumberType
         if (this.isCached())
             return this;
 
-        // if (this.nodeId == 'num')
-        //     console.log('num');
-        
         
         if (this.input)
             this.value = (await this.input.eval(parse)).toValue();
@@ -10873,8 +10896,8 @@ extends GNumberType
             this.value = NumberValue.NaN;
 
 
-        if (this.altValue)
-            this.value = this.altValue();
+        if (this.feedbackValue)
+            this.value = this.feedbackValue();
 
 
         genPushUpdateValue(parse, this.nodeId, 'value', this.value);    
@@ -10891,6 +10914,14 @@ extends GNumberType
     {
         return !isNaN(this.value)
             && !isNaN(this.decimals);
+    }
+
+
+
+    isCached()
+    {
+        return super.isCached()
+            && (!this.input || this.input.isCached());
     }
 }
 
@@ -11139,7 +11170,7 @@ extends GNumberType
         if (this.isCached())
             return this;
 
-
+            
         const min = (await this.min.eval(parse)).toValue();
         const max = (await this.max.eval(parse)).toValue();
 
@@ -11147,6 +11178,7 @@ extends GNumberType
         if (this.input)
         {
             this.value = (await this.input.eval(parse)).toValue();
+            //console.log('this.value =', this.value);
 
             console.assert(
                 this.value.type == NUMBER_VALUE, 
@@ -11165,14 +11197,28 @@ extends GNumberType
             this.value = NumberValue.NaN;
 
 
+        if (this.feedbackValue)
+            this.value = this.feedbackValue();
+
+
+        genPushUpdateValue(parse, this.nodeId, 'value', this.value);
         genPushUpdateValue(parse, this.nodeId, 'min',   min);
         genPushUpdateValue(parse, this.nodeId, 'max',   max);
-        genPushUpdateValue(parse, this.nodeId, 'value', this.value);
 
 
         this.validate();
 
         return this;
+    }
+
+
+
+    isCached()
+    {
+        return super.isCached()
+            && (!this.input || this.input.isCached())
+            && (!this.min   || this.min  .isCached())
+            && (!this.max   || this.max  .isCached());
     }
 }
 
@@ -11533,6 +11579,7 @@ extends GNumberType
         const target  = (await this.target .eval(parse)).toValue();
 
 
+        //console.log('this.input =', this.input);
         if (this.input)
         {
             let input = (await this.input.eval(parse)).toValue();
@@ -11548,44 +11595,47 @@ extends GNumberType
                 let   diff      = diffStart;
                 let   prevDiff  = diffStart;
 
-                let   start     = input.copy();
-
+                let   start     = input.copy();//new NumberValue(Number.MIN_SAFE_INTEGER);//input.copy();
+                let   step      = Number.MAX_SAFE_INTEGER;//start.value / 2;
+//console.log('start =', start);
 
                 const maxIter = 1000;
                 let   iter    = 0;
 
                 
-                let   step    = Math.random() * Number.MAX_SAFE_INTEGER/(maxIter+2);//start.value / 2;
                 
 
-                this.temp = start.copy();
+                this.temp = input.copy();//start.copy();
 
 
                 genInitNodeProgress(this.nodeId);
 
 
-                while (Math.abs(diff) > 0.0000001
-                    && iter++ < maxIter)
+                //let signFlip = 5;
+
+                while (iter++ < maxIter)
                 {
-                    console.log('diff =', diff);
-                    console.log('step =', step);
-
                     this.temp.value += step;
+                    console.log('this.temp.value =', this.temp.value);
 
 
-                    this.input.altValue = this.altInputValue;
-                    this.input.valid    = false;
+                    this.input.feedbackValue = this.getFeedbackValue;
+                    this.input.valid = false;
 
                     current = (await this.current.eval(parse)).toValue();
 
-                    this.input.altValue = null;
+                    this.input.feedbackValue = null;
 
 
                     diff = target.value - current.value;
 
-                    if (   Math.abs(diff) > Math.abs(prevDiff))
-                        //|| Math.sign(diff) != Math.sign(prevDiff))
-                        step /= -2;//-(2 + step/1000000);
+                    if (Math.abs(step) < 0.0000001)
+                        break;
+                        
+
+                    if (   Math.abs (diff) >  Math.abs (prevDiff)
+                        || Math.sign(diff) != Math.sign(prevDiff))
+                        step /= -2;
 
                     prevDiff = diff;
 
@@ -11602,6 +11652,7 @@ extends GNumberType
                 else
                 {
                     this.value = NumberValue.NaN;
+                    genPushUpdateValue(parse, this.input.nodeId, 'value', start);
                     console.log('max solve iterations');
                 }
             }
@@ -11611,6 +11662,8 @@ extends GNumberType
         else
             this.value = NumberValue.NaN;
 
+        
+        // TODO push good result value to input 
 
         genPushUpdateValue(parse, this.nodeId, 'value',   this.value);
         genPushUpdateValue(parse, this.nodeId, 'current', current   );
@@ -11624,10 +11677,7 @@ extends GNumberType
 
 
 
-    altInputValue = () =>
-    {
-        return this.temp.copy();
-    }
+    getFeedbackValue = () => this.temp.copy();
 
 
 
@@ -30100,7 +30150,7 @@ extends GNode
     value;
 
    
-    altValue = null; // () => {}
+    feedbackValue = null; // () => {}
 
     
     constructor(type, nodeId, options)
@@ -30206,14 +30256,40 @@ extends GOperator
         this.node = parse.parsedNodes.find(v => v.nodeId == this.nodeId);
         console.assert(this.node, 'can\'t find parameter node \'' + this.nodeId + '\'');
 
+
+        //this.param.feedbackValue = this.feedbackValue;
+
+        //this.node.feedbackValue = this.feedbackValue;
         await this.node.eval(parse);
+        //this.node.feedbackValue = null;
 
         this.param = this.node.getParamFromId(this.paramId);
 
+
         if (isValid(this.param)) // could have been deleted from OpRepeat for example
-            return (await this.param.eval(parse)).toValue();
+        {
+            // if (   this.feedbackValue)
+            //     //&& this.param.type == NUMBER_VALUE)
+            //     this.param = this.feedbackValue();
+
+            const result = (await this.param.eval(parse)).toValue();
+            
+            //this.param.feedbackValue = null;
+            return result;
+        }
         else
+        {
+            //this.param.feedbackValue = null;
             return NullValue;
+        }
+    }
+
+
+    
+    isCached()
+    {
+        return super.isCached();
+//            && this.node.isCached();
     }
 }
 
@@ -32669,9 +32745,6 @@ extends GNumberType
         if (this.isCached())
             return this;
 
-        // if (this.nodeId == 'num')
-        //     console.log('num');
-        
         
         if (this.input)
             this.value = (await this.input.eval(parse)).toValue();
@@ -32681,8 +32754,8 @@ extends GNumberType
             this.value = NumberValue.NaN;
 
 
-        if (this.altValue)
-            this.value = this.altValue();
+        if (this.feedbackValue)
+            this.value = this.feedbackValue();
 
 
         genPushUpdateValue(parse, this.nodeId, 'value', this.value);    
@@ -32699,6 +32772,14 @@ extends GNumberType
     {
         return !isNaN(this.value)
             && !isNaN(this.decimals);
+    }
+
+
+
+    isCached()
+    {
+        return super.isCached()
+            && (!this.input || this.input.isCached());
     }
 }
 
@@ -32947,7 +33028,7 @@ extends GNumberType
         if (this.isCached())
             return this;
 
-
+            
         const min = (await this.min.eval(parse)).toValue();
         const max = (await this.max.eval(parse)).toValue();
 
@@ -32955,6 +33036,7 @@ extends GNumberType
         if (this.input)
         {
             this.value = (await this.input.eval(parse)).toValue();
+            //console.log('this.value =', this.value);
 
             console.assert(
                 this.value.type == NUMBER_VALUE, 
@@ -32973,14 +33055,28 @@ extends GNumberType
             this.value = NumberValue.NaN;
 
 
+        if (this.feedbackValue)
+            this.value = this.feedbackValue();
+
+
+        genPushUpdateValue(parse, this.nodeId, 'value', this.value);
         genPushUpdateValue(parse, this.nodeId, 'min',   min);
         genPushUpdateValue(parse, this.nodeId, 'max',   max);
-        genPushUpdateValue(parse, this.nodeId, 'value', this.value);
 
 
         this.validate();
 
         return this;
+    }
+
+
+
+    isCached()
+    {
+        return super.isCached()
+            && (!this.input || this.input.isCached())
+            && (!this.min   || this.min  .isCached())
+            && (!this.max   || this.max  .isCached());
     }
 }
 
@@ -33341,6 +33437,7 @@ extends GNumberType
         const target  = (await this.target .eval(parse)).toValue();
 
 
+        //console.log('this.input =', this.input);
         if (this.input)
         {
             let input = (await this.input.eval(parse)).toValue();
@@ -33356,44 +33453,47 @@ extends GNumberType
                 let   diff      = diffStart;
                 let   prevDiff  = diffStart;
 
-                let   start     = input.copy();
-
+                let   start     = input.copy();//new NumberValue(Number.MIN_SAFE_INTEGER);//input.copy();
+                let   step      = Number.MAX_SAFE_INTEGER;//start.value / 2;
+//console.log('start =', start);
 
                 const maxIter = 1000;
                 let   iter    = 0;
 
                 
-                let   step    = Math.random() * Number.MAX_SAFE_INTEGER/(maxIter+2);//start.value / 2;
                 
 
-                this.temp = start.copy();
+                this.temp = input.copy();//start.copy();
 
 
                 genInitNodeProgress(this.nodeId);
 
 
-                while (Math.abs(diff) > 0.0000001
-                    && iter++ < maxIter)
+                //let signFlip = 5;
+
+                while (iter++ < maxIter)
                 {
-                    console.log('diff =', diff);
-                    console.log('step =', step);
-
                     this.temp.value += step;
+                    console.log('this.temp.value =', this.temp.value);
 
 
-                    this.input.altValue = this.altInputValue;
-                    this.input.valid    = false;
+                    this.input.feedbackValue = this.getFeedbackValue;
+                    this.input.valid = false;
 
                     current = (await this.current.eval(parse)).toValue();
 
-                    this.input.altValue = null;
+                    this.input.feedbackValue = null;
 
 
                     diff = target.value - current.value;
 
-                    if (   Math.abs(diff) > Math.abs(prevDiff))
-                        //|| Math.sign(diff) != Math.sign(prevDiff))
-                        step /= -2;//-(2 + step/1000000);
+                    if (Math.abs(step) < 0.0000001)
+                        break;
+                        
+
+                    if (   Math.abs (diff) >  Math.abs (prevDiff)
+                        || Math.sign(diff) != Math.sign(prevDiff))
+                        step /= -2;
 
                     prevDiff = diff;
 
@@ -33410,6 +33510,7 @@ extends GNumberType
                 else
                 {
                     this.value = NumberValue.NaN;
+                    genPushUpdateValue(parse, this.input.nodeId, 'value', start);
                     console.log('max solve iterations');
                 }
             }
@@ -33419,6 +33520,8 @@ extends GNumberType
         else
             this.value = NumberValue.NaN;
 
+        
+        // TODO push good result value to input 
 
         genPushUpdateValue(parse, this.nodeId, 'value',   this.value);
         genPushUpdateValue(parse, this.nodeId, 'current', current   );
@@ -33432,10 +33535,7 @@ extends GNumberType
 
 
 
-    altInputValue = () =>
-    {
-        return this.temp.copy();
-    }
+    getFeedbackValue = () => this.temp.copy();
 
 
 
@@ -67238,15 +67338,10 @@ document.addEventListener('keydown', e =>
         layoutSelectedNodes();
 
 
-    // rename
-    else if (e.code == 'KeyR'
-          && getCtrlKey(e))
-        renameSelectedNode();
-
-
     // toggled operation results
     else if (e.code == 'KeyR'
-          && e.altKey)
+          && getCtrlKey(e)
+          && e.shiftKey)
     {
         updateSettingAndMenu('showOperationResults',  true, !settings.showOperationResults);  
         updateMenuItemShowOperationResults();          

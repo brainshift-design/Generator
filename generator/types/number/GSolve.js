@@ -44,6 +44,7 @@ extends GNumberType
         const target  = (await this.target .eval(parse)).toValue();
 
 
+        //console.log('this.input =', this.input);
         if (this.input)
         {
             let input = (await this.input.eval(parse)).toValue();
@@ -59,44 +60,47 @@ extends GNumberType
                 let   diff      = diffStart;
                 let   prevDiff  = diffStart;
 
-                let   start     = input.copy();
-
+                let   start     = input.copy();//new NumberValue(Number.MIN_SAFE_INTEGER);//input.copy();
+                let   step      = Number.MAX_SAFE_INTEGER;//start.value / 2;
+//console.log('start =', start);
 
                 const maxIter = 1000;
                 let   iter    = 0;
 
                 
-                let   step    = Math.random() * Number.MAX_SAFE_INTEGER/(maxIter+2);//start.value / 2;
                 
 
-                this.temp = start.copy();
+                this.temp = input.copy();//start.copy();
 
 
                 genInitNodeProgress(this.nodeId);
 
 
-                while (Math.abs(diff) > 0.0000001
-                    && iter++ < maxIter)
+                //let signFlip = 5;
+
+                while (iter++ < maxIter)
                 {
-                    console.log('diff =', diff);
-                    console.log('step =', step);
-
                     this.temp.value += step;
+                    console.log('this.temp.value =', this.temp.value);
 
 
-                    this.input.altValue = this.altInputValue;
-                    this.input.valid    = false;
+                    this.input.feedbackValue = this.getFeedbackValue;
+                    this.input.valid = false;
 
                     current = (await this.current.eval(parse)).toValue();
 
-                    this.input.altValue = null;
+                    this.input.feedbackValue = null;
 
 
                     diff = target.value - current.value;
 
-                    if (   Math.abs(diff) > Math.abs(prevDiff))
-                        //|| Math.sign(diff) != Math.sign(prevDiff))
-                        step /= -2;//-(2 + step/1000000);
+                    if (Math.abs(step) < 0.0000001)
+                        break;
+                        
+
+                    if (   Math.abs (diff) >  Math.abs (prevDiff)
+                        || Math.sign(diff) != Math.sign(prevDiff))
+                        step /= -2;
 
                     prevDiff = diff;
 
@@ -113,6 +117,7 @@ extends GNumberType
                 else
                 {
                     this.value = NumberValue.NaN;
+                    genPushUpdateValue(parse, this.input.nodeId, 'value', start);
                     console.log('max solve iterations');
                 }
             }
@@ -122,6 +127,8 @@ extends GNumberType
         else
             this.value = NumberValue.NaN;
 
+        
+        // TODO push good result value to input 
 
         genPushUpdateValue(parse, this.nodeId, 'value',   this.value);
         genPushUpdateValue(parse, this.nodeId, 'current', current   );
@@ -135,10 +142,7 @@ extends GNumberType
 
 
 
-    altInputValue = () =>
-    {
-        return this.temp.copy();
-    }
+    getFeedbackValue = () => this.temp.copy();
 
 
 

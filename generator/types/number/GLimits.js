@@ -37,7 +37,7 @@ extends GNumberType
         if (this.isCached())
             return this;
 
-
+            
         const min = (await this.min.eval(parse)).toValue();
         const max = (await this.max.eval(parse)).toValue();
 
@@ -45,6 +45,7 @@ extends GNumberType
         if (this.input)
         {
             this.value = (await this.input.eval(parse)).toValue();
+            //console.log('this.value =', this.value);
 
             console.assert(
                 this.value.type == NUMBER_VALUE, 
@@ -63,13 +64,27 @@ extends GNumberType
             this.value = NumberValue.NaN;
 
 
+        if (this.feedbackValue)
+            this.value = this.feedbackValue();
+
+
+        genPushUpdateValue(parse, this.nodeId, 'value', this.value);
         genPushUpdateValue(parse, this.nodeId, 'min',   min);
         genPushUpdateValue(parse, this.nodeId, 'max',   max);
-        genPushUpdateValue(parse, this.nodeId, 'value', this.value);
 
 
         this.validate();
 
         return this;
+    }
+
+
+
+    isCached()
+    {
+        return super.isCached()
+            && (!this.input || this.input.isCached())
+            && (!this.min   || this.min  .isCached())
+            && (!this.max   || this.max  .isCached());
     }
 }

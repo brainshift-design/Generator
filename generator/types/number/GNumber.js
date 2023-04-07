@@ -33,9 +33,6 @@ extends GNumberType
         if (this.isCached())
             return this;
 
-        // if (this.nodeId == 'num')
-        //     console.log('num');
-        
         
         if (this.input)
             this.value = (await this.input.eval(parse)).toValue();
@@ -45,8 +42,8 @@ extends GNumberType
             this.value = NumberValue.NaN;
 
 
-        if (this.altValue)
-            this.value = this.altValue();
+        if (this.feedbackValue)
+            this.value = this.feedbackValue();
 
 
         genPushUpdateValue(parse, this.nodeId, 'value', this.value);    
@@ -63,5 +60,13 @@ extends GNumberType
     {
         return !isNaN(this.value)
             && !isNaN(this.decimals);
+    }
+
+
+
+    isCached()
+    {
+        return super.isCached()
+            && (!this.input || this.input.isCached());
     }
 }
