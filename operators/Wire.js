@@ -258,8 +258,10 @@ class Wire
                this.connection.input
             && this.connection.input.feedback;
 
+        const back = _x3 < _x0;
+
         this.arrow1.setAttribute('display', fb || this.connection.backInit ? 'inline' : 'none');
-        this.arrow2.setAttribute('display', fb                             ? 'inline' : 'none');
+        this.arrow2.setAttribute('display', fb || back                     ? 'inline' : 'none');
     }
     
     
@@ -305,13 +307,13 @@ class Wire
                this.connection.input
             && this.connection.input.feedback;
 
-        this.updateArrow(p0, p1, p2, p3, this.arrow1, fb ? -25 : 25, 9);
-        this.updateArrow(p0, p1, p2, p3, this.arrow2,      -35     , 9);
+        this.updateArrow(p0, p1, p2, p3, this.arrow1, fb ? -25 : 25, 9, 0);
+        this.updateArrow(p0, p1, p2, p3, this.arrow2,      -35     , 9, 1);
     }
     
     
 
-    updateArrow(p0, p1, p2, p3, arrow, dist, size)
+    updateArrow(p0, p1, p2, p3, arrow, dist, size, index)
     {
         const view = this.connection.graph.view;
 
@@ -336,6 +338,18 @@ class Wire
             return;
         }
         
+
+        const back = p3.x < p0.x;
+
+
+        if (!back)
+        {
+            if (dist >= 0) t = Math.min(0.5, t);
+            else           t = Math.min(t, 0.5 - (index == 0 ? 0.15 : 0));
+        }
+        else
+            t = 0.5;
+           
     
         const pt = lerpv3(p0, p1, p2, p3, t);
     
@@ -358,7 +372,7 @@ class Wire
     
         arrow.style.transformBox    = 'fill-box';
         arrow.style.transformOrigin = 'center';
-        arrow.style.transform       = 'rotate(' + (angle(ct) - Tau/4) + 'rad)';
+        arrow.style.transform       = 'rotate(' + (angle(ct) - Tau/4 + (back ? Tau/2 : 0)) + 'rad)';
     }
 
 
