@@ -30,7 +30,7 @@ class Connection
                  
         this.input       = input;
 
-        this.graph = output ? output.node.graph : input.node.graph;
+        this.graph       = output ? output.node.graph : input.node.graph;
         
         this.wire        = new Wire(this);
     }

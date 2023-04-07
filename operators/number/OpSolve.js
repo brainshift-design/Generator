@@ -16,6 +16,9 @@ extends OperatorWithValue
         this.addInput (new Input (NUMBER_TYPES));
         this.addOutput(new Output([NUMBER_VALUE], this.output_genRequest));
 
+        this.inputs[0].feedback = true;
+
+
         this.addParam(this.paramValue);
         this.addParam(this.paramCurrent = new NumberParam('current', 'current', true,  true,  true));
         this.addParam(this.paramTarget  = new NumberParam('target',  'target',  true,  true,  true));

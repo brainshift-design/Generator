@@ -29,7 +29,7 @@ extends EventTarget
     div;
     hitbox;
     wireBall;
-  
+
 
     measureData = { divBounds: new Rect(0, 0, 0, 0) };
 
@@ -86,6 +86,8 @@ extends EventTarget
     getValuesForUndo; // function pointer, return array of [index,value] tuples
 
     getBackInitValue   = null;
+    
+    feedback           = false; // sends data back to the output
 
 
 

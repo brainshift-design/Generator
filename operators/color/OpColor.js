@@ -60,7 +60,8 @@ extends OpColorBase
         this.param2.controls[0].epsilon = ColorEpsilon;
         this.param3.controls[0].epsilon = ColorEpsilon;
 
-        this.paramSpace.controls[0].delayUse = 250;        
+        this.paramSpace.controls[0].delayUse = 100; // so that you carelessly drag it by grabbing the space param
+                                                    // while already moving the mouse with an aim to drag
         this.paramSpace.input.outputMustBeCached = true;
 
         this.paramSpace.addEventListener('change', () => 

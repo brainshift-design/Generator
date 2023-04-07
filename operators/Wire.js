@@ -21,7 +21,8 @@ class Wire
     outBall;
     inBall;
 
-    arrow;
+    arrow1;
+    arrow2;
    
 
 
@@ -58,15 +59,19 @@ class Wire
         this.inBall                 = createSvg('circle');
         this.inBall.style.position  = 'absolute';
     
-        this.arrow                  = createSvg('polygon');
-        this.arrow.style.position   = 'absolute';
+        this.arrow1                  = createSvg('polygon');
+        this.arrow1.style.position   = 'absolute';
+
+        this.arrow2                  = createSvg('polygon');
+        this.arrow2.style.position   = 'absolute';
 
 
         this.svg.appendChild(this.curve  );
         this.svg.appendChild(this.curve2 );
         this.svg.appendChild(this.xp1    );
         this.svg.appendChild(this.xp2    );
-        this.svg.appendChild(this.arrow  );
+        this.svg.appendChild(this.arrow1 );
+        this.svg.appendChild(this.arrow2 );
         this.svg.appendChild(this.outBall);
         this.svg.appendChild(this.inBall );
     }
@@ -246,10 +251,15 @@ class Wire
         this.curve2.setAttribute('d', points);
     
     
-        if (this.connection.backInit)
-            this.updateArrow(_x0, _y0, _x1, _y1, _x2, _y2, _x3, _y3);
-        else    
-            this.arrow.setAttribute('display', this.connection.backInit ? 'inline' : 'none');
+        this.updateArrows(_x0, _y0, _x1, _y1, _x2, _y2, _x3, _y3);
+
+        
+        const fb = 
+               this.connection.input
+            && this.connection.input.feedback;
+
+        this.arrow1.setAttribute('display', fb || this.connection.backInit ? 'inline' : 'none');
+        this.arrow2.setAttribute('display', fb                             ? 'inline' : 'none');
     }
     
     
@@ -270,11 +280,8 @@ class Wire
     
     
     
-    updateArrow(x0, y0, x1, y1, x2, y2, x3, y3)
+    updateArrows(x0, y0, x1, y1, x2, y2, x3, y3)
     {
-        const view = this.connection.graph.view;
-
-
         if (!pointIsNaN(this.outputPos))
         {
             x0 = this.outputPos.x;
@@ -294,14 +301,29 @@ class Wire
         const p3 = point(x3, y3); 
     
     
-        const arrowDistance = 25;
-        const arrowSize     = 9;
+        const fb = 
+               this.connection.input
+            && this.connection.input.feedback;
+
+        this.updateArrow(p0, p1, p2, p3, this.arrow1, fb ? -25 : 25, 9);
+        this.updateArrow(p0, p1, p2, p3, this.arrow2,      -35     , 9);
+    }
     
-        let al = arcLength(p0, p1, p2, p3) - arrowDistance * view.zoom;
+    
+
+    updateArrow(p0, p1, p2, p3, arrow, dist, size)
+    {
+        const view = this.connection.graph.view;
+
+
+        let al = 
+            dist >= 0
+            ? arcLength(p0, p1, p2, p3) - dist * view.zoom
+            : -dist * view.zoom;
     
         if (al <= 0)
         {
-            this.arrow.setAttribute('display', 'none');
+            arrow.setAttribute('display', 'none');
             return;
         }
         
@@ -310,7 +332,7 @@ class Wire
         
         if (isNaN(t))
         {
-            this.arrow.setAttribute('display', 'none');
+            arrow.setAttribute('display', 'none');
             return;
         }
         
@@ -320,27 +342,27 @@ class Wire
         const tx = pt.x;
         const ty = pt.y;
     
-        const tw = arrowSize * view.zoom;
-        const th = arrowSize * view.zoom;
+        const tw = size * view.zoom;
+        const th = size * view.zoom;
     
         const points =
                      (tx - tw/2) + ',' + (ty + th/2)
             + ' '  + (tx + tw/2) + ',' + (ty + th/2)
             + ' '  + (tx       ) + ',' + (ty - th/2);
     
-        this.arrow.setAttribute('points', points);
-        this.arrow.setAttribute('display', 'inline');
+        arrow.setAttribute('points', points);
+        arrow.setAttribute('display', 'inline');
     
     
-        const ct = bezierTangent(x0, y0, x1, y1, x2, y2, x3, y3, t);
+        const ct = bezierTangent(p0.x, p0.y, p1.x, p1.y, p2.x, p2.y, p3.x, p3.y, t);
     
-        this.arrow.style.transformBox    = 'fill-box';
-        this.arrow.style.transformOrigin = 'center';
-        this.arrow.style.transform       = 'rotate(' + (angle(ct) - Tau/4) + 'rad)';
+        arrow.style.transformBox    = 'fill-box';
+        arrow.style.transformOrigin = 'center';
+        arrow.style.transform       = 'rotate(' + (angle(ct) - Tau/4) + 'rad)';
     }
-    
-    
-    
+
+
+
     updateStyle()
     {
         const conn  = this.connection;
@@ -370,7 +392,7 @@ class Wire
         //     : 'none';
     
          
-        let showCurve = true;
+        //let showCurve = true;
     
         if (   conn.output && color[3] < 1
             || conn. input && color[3] < 1)
@@ -446,7 +468,8 @@ class Wire
     
         this. inBall.style.fill          = wireStyle;
         this.outBall.style.fill          = wireStyle;
-        this.arrow  .style.fill          = wireStyle;
+        this.arrow1 .style.fill          = wireStyle;
+        this.arrow2 .style.fill          = wireStyle;
     
     
         if (conn.output) conn.output.wireBall.style.background = wireStyle;
