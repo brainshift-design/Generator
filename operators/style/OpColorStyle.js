@@ -144,9 +144,6 @@ extends OperatorBase
         super.updateHeader();
 
 
-        this.header.style.height = '25px';
-
-
         if (this.paramValue.value.isValid()
             && (  !this.existing
                 || this.linkedStyleId != NULL))

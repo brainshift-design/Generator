@@ -40,7 +40,7 @@
     position:             relative;
     left:                 50%;
     transform:            translateX(-50%);
-    top:                  3px;
+    top:                  5px;
     white-space:          nowrap;
     /* box-shadow:           0 0 0 1px inset yellow; */
 }

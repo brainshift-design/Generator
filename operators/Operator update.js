@@ -278,8 +278,8 @@ Operator.prototype.updateHeaderInputsAndOutputs = function()
 
     const padding = this.header.connectionPadding;
         
-    const [ inputY,  inputHeight] = getHeaderConnY(inputs,  padding, 5);
-    const [outputY, outputHeight] = getHeaderConnY(outputs, padding, 2);
+    const [ inputY,  inputHeight] = getHeaderConnY(inputs,  padding, 0);//-4);
+    const [outputY, outputHeight] = getHeaderConnY(outputs, padding, 0);//-7);
 
          if ( inputHeight > outputHeight) for (let i = 0; i < outputs.length; i++) outputY[i] += (inputHeight - outputHeight)/2;
     else if (outputHeight >  inputHeight) for (let i = 0; i < inputs .length; i++)  inputY[i] += (outputHeight - inputHeight)/2;
@@ -287,13 +287,13 @@ Operator.prototype.updateHeaderInputsAndOutputs = function()
 
     for (let i = 0; i < inputs.length; i++)
     {
-        inputs[i].div.style.top = inputY[i];
+        inputs[i].div.style.top = inputY[i] + (this.measureData.headerOffset.height - inputHeight)/2;
         inputs[i].updateControl();
     }
 
     for (let i = 0; i < outputs.length; i++) 
     {
-        outputs[i].div.style.top = outputY[i];
+        outputs[i].div.style.top = outputY[i] + (this.measureData.headerOffset.height - outputHeight)/2;
         outputs[i].updateControl();
     }
 

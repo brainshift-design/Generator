@@ -50,6 +50,13 @@ extends GNode
         console.assert(false, 'invalid abstract method');
         return null;
     }
+
+
+
+    isCached()
+    {
+        return true;
+    }
 }
 
 

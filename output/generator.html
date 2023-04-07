@@ -4166,6 +4166,13 @@ extends GNode
         console.assert(false, 'invalid abstract method');
         return null;
     }
+
+
+
+    isCached()
+    {
+        return true;
+    }
 }
 
 
@@ -4318,9 +4325,9 @@ extends GOperator
 
         //this.param.feedbackValue = this.feedbackValue;
 
-        //this.node.feedbackValue = this.feedbackValue;
+        this.node.feedbackValue = this.feedbackValue;
         await this.node.eval(parse);
-        //this.node.feedbackValue = null;
+        this.node.feedbackValue = null;
 
         this.param = this.node.getParamFromId(this.paramId);
 
@@ -7497,7 +7504,9 @@ extends GNumberType
 
 
         //console.log('this.input =', this.input);
-        if (this.input)
+        if (   this.input
+            && current.isValid()
+            && target .isValid())
         {
             let input = (await this.input.eval(parse)).toValue();
 
@@ -7512,33 +7521,37 @@ extends GNumberType
                 let   diff      = diffStart;
                 let   prevDiff  = diffStart;
 
-                let   start     = input.copy();//new NumberValue(Number.MIN_SAFE_INTEGER);//input.copy();
-                let   step      = Number.MAX_SAFE_INTEGER;//start.value / 2;
-//console.log('start =', start);
+                // console.log('diffStart =', diffStart);
+                // console.log('diff =', diff);
+                // console.log('prevDiff =', prevDiff);
+
+                let   start     = input.copy();
+                let   step      = Number.MAX_SAFE_INTEGER;
+
 
                 const maxIter = 1000;
                 let   iter    = 0;
-
                 
-                
-
-                this.temp = input.copy();//start.copy();
-
 
                 genInitNodeProgress(this.nodeId);
 
 
-                //let signFlip = 5;
+                this.temp = new NumberValue(Number.MIN_SAFE_INTEGER);
+
 
                 while (iter++ < maxIter)
                 {
                     this.temp.value += step;
-                    console.log('this.temp.value =', this.temp.value);
-
+                    // console.log('this.temp.value =', this.temp.value);
+                    //console.log('diff =', step);
+                    console.log('step =', step);
 
                     this.input.feedbackValue = this.getFeedbackValue;
                     this.input.valid = false;
 
+                    // if (this.input.type == PARAM)
+                    //     this.input.node.valid = false;
+                        
                     current = (await this.current.eval(parse)).toValue();
 
                     this.input.feedbackValue = null;
@@ -7546,7 +7559,8 @@ extends GNumberType
 
                     diff = target.value - current.value;
 
-                    if (Math.abs(step) < 0.0000001)
+                    if (   /*Math.abs(diff) < 0.0000001
+                        && */Math.abs(step) < 0.0000001)
                         break;
                         
 
@@ -7577,7 +7591,12 @@ extends GNumberType
                 this.value = input;
         }
         else
+        {
+            if (this.input) 
+                await this.input.eval(parse);
+
             this.value = NumberValue.NaN;
+        }
 
         
         // TODO push good result value to input 

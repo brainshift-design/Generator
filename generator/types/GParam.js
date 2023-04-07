@@ -38,9 +38,9 @@ extends GOperator
 
         //this.param.feedbackValue = this.feedbackValue;
 
-        //this.node.feedbackValue = this.feedbackValue;
+        this.node.feedbackValue = this.feedbackValue;
         await this.node.eval(parse);
-        //this.node.feedbackValue = null;
+        this.node.feedbackValue = null;
 
         this.param = this.node.getParamFromId(this.paramId);
 

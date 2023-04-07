@@ -84,13 +84,13 @@ extends Parameter
 
         this.checkers.style.position                = 'absolute';
         this.checkers.style.width                   = '100%';
-        this.checkers.style.height                  = '20px';
+        this.checkers.style.height                  = defParamHeight;
 
 
         this.controlWrapper.style.position          = 'relative';
         this.controlWrapper.style.display           = 'inline-block';
         this.controlWrapper.style.width             = '100%';
-        this.controlWrapper.style.height            = '20px';
+        this.controlWrapper.style.height            = defParamHeight;
         this.controlWrapper.style.zIndex            = 1;
 
 
@@ -387,8 +387,8 @@ extends Parameter
         this.checkers.style.display            = this.value.isValid() ? 'inline-block' : 'none';
         this.checkers.style.backgroundColor    = darkMode ? '#444' : '#fff';
 
-        this.checkers.style.backgroundSize     = '20px 20px';
-        this.checkers.style.backgroundPosition = '0 0, 10px 10px';
+        this.checkers.style.backgroundSize     = '24px 24px';
+        this.checkers.style.backgroundPosition = '0 0, 12px 12px';
 
         
         this.controls[0]. backStyleLight   = 

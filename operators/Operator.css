@@ -219,7 +219,7 @@
 .colorBack
 {
     width:            100%;
-    height:           var(--colorBackSize);
+    /* height:           var(--colorBackSize); */
     z-index:          0;
     position:         absolute;
     top:              0;

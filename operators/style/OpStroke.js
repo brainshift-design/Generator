@@ -164,7 +164,10 @@ extends OpColorBase
             ? rgb2style(colors.back)
             : rgba2style(rgb_a(rgbDocumentBody, 0.95));
 
-              
+
+        this.colorBack.style.height = defHeaderHeight + defParamHeight;
+
+            
         this.checkers.style.height = this.header.offsetHeight;
 
         this.checkers.style.background =
@@ -177,8 +180,8 @@ extends OpColorBase
         this.checkers.style.display            = !rgbIsNaN(colors.back) ? 'inline-block' : 'none';
         this.checkers.style.backgroundColor    = darkMode ? '#444' : '#fff';
 
-        this.checkers.style.backgroundSize     = '26px 26px';
-        this.checkers.style.backgroundPosition = '0 0, 13px 13px';
+        this.checkers.style.backgroundSize     = '22px 22px';
+        this.checkers.style.backgroundPosition = '0 0, 11px 11px';
                         
 
         this.header.style.background = 
