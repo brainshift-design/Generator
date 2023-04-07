@@ -8,7 +8,7 @@ extends OperatorWithValue
 
     constructor()
     {
-        super(NUMBER_SOLVE, 'solve', 'solve');
+        super(NUMBER_SOLVE, 'solve', 'solve', defNodeWidth, true);
 
         this.canDisable = true;
         
@@ -20,7 +20,7 @@ extends OperatorWithValue
 
 
         this.addParam(this.paramValue);
-        this.addParam(this.paramCurrent = new NumberParam('current', 'current', true,  true,  true));
+        this.addParam(this.paramCurrent = new NumberParam('current', 'current', true,  true,  true, Number.NaN));
         this.addParam(this.paramTarget  = new NumberParam('target',  'target',  true,  true,  true));
     }
 
@@ -58,10 +58,19 @@ extends OperatorWithValue
 
 
 
+    updateValues(requestId, actionId, updateParamId, paramIds, values)
+    {
+        super.updateValues(requestId, actionId, updateParamId, paramIds, values);
+        
+        this.endNodeProgress();
+    }
+
+
+
     updateParams()
     {
         this.paramValue  .enableControlText(false);
-        this.paramCurrent.enableControlText(true);
+        this.paramCurrent.enableControlText(false);
         this.paramTarget .enableControlText(true);
 
         this.updateParamControls();

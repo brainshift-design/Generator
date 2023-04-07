@@ -3854,6 +3854,7 @@ a
         <div class='keyboardPage' id='keyboardPageNodes'>
             <div class='keyboardGroup'>
                 <div class='keyboardShortcut'><div class='shortcutAction'>Enable/disable</div><div class='shortcutKeys'><div class='shortcutKeys'><div class='shortcutKey'>Ctrl</div><div class='shortcutKey'>Shift</div><div class='shortcutKey shortcutChar'>E</div></div></div></div>
+                <div class='keyboardShortcut'><div class='shortcutAction'>Show/hide operation results</div><div class='shortcutKeys'><div class='shortcutKeys'><div class='shortcutKey'>Alt</div><div class='shortcutKey shortcutChar'>R</div></div></div></div>
             </div>
         </div>
  
@@ -8214,6 +8215,13 @@ extends GNode
 
 
 
+    // eval()
+    // {
+    //     return this;
+    // }
+
+
+
     toValue()
     {
         return this.copy();
@@ -8284,6 +8292,8 @@ extends GNode
     value;
 
    
+    altValue = null; // () => {}
+
     
     constructor(type, nodeId, options)
     {
@@ -8341,6 +8351,13 @@ extends GNode
     {
         return null;
     }
+
+
+
+    // isValid()
+    // {
+    //     return this.valid;
+    // }
 }
 
 
@@ -10844,7 +10861,10 @@ extends GNumberType
         if (this.isCached())
             return this;
 
-
+        // if (this.nodeId == 'num')
+        //     console.log('num');
+        
+        
         if (this.input)
             this.value = (await this.input.eval(parse)).toValue();
         else if (this.value)
@@ -10853,9 +10873,13 @@ extends GNumberType
             this.value = NumberValue.NaN;
 
 
-        genPushUpdateValue(parse, this.nodeId, 'value', this.value);
+        if (this.altValue)
+            this.value = this.altValue();
 
-        
+
+        genPushUpdateValue(parse, this.nodeId, 'value', this.value);    
+
+
         this.validate();
 
         return this;
@@ -11471,6 +11495,8 @@ extends GNumberType
     current;
     target;
 
+    temp;
+
 
     
     constructor(nodeId, options)
@@ -11503,39 +11529,113 @@ extends GNumberType
             return this;
 
 
-        const current = (await this.current.eval(parse)).toValue();
+        let   current = (await this.current.eval(parse)).toValue();
         const target  = (await this.target .eval(parse)).toValue();
 
 
         if (this.input)
         {
-            this.value = (await this.input.eval(parse)).toValue();
+            let input = (await this.input.eval(parse)).toValue();
 
             console.assert(
-                this.value.type == NUMBER_VALUE, 
-                'this.value.type must be NUMBER_VALUE');
+                input.type == NUMBER_VALUE, 
+                'input.type must be NUMBER_VALUE');
 
 
             if (this.options.enabled)
             {
-                // this.value.value = Math.min(Math.max(
-                //     current.value,
-                //     this.value.value),
-                //     target.value);
+                const diffStart = target.value - current.value;
+                let   diff      = diffStart;
+                let   prevDiff  = diffStart;
+
+                let   start     = input.copy();
+
+
+                const maxIter = 1000;
+                let   iter    = 0;
+
+                
+                let   step    = Math.random() * Number.MAX_SAFE_INTEGER/(maxIter+2);//start.value / 2;
+                
+
+                this.temp = start.copy();
+
+
+                genInitNodeProgress(this.nodeId);
+
+
+                while (Math.abs(diff) > 0.0000001
+                    && iter++ < maxIter)
+                {
+                    console.log('diff =', diff);
+                    console.log('step =', step);
+
+                    this.temp.value += step;
+
+
+                    this.input.altValue = this.altInputValue;
+                    this.input.valid    = false;
+
+                    current = (await this.current.eval(parse)).toValue();
+
+                    this.input.altValue = null;
+
+
+                    diff = target.value - current.value;
+
+                    if (   Math.abs(diff) > Math.abs(prevDiff))
+                        //|| Math.sign(diff) != Math.sign(prevDiff))
+                        step /= -2;//-(2 + step/1000000);
+
+                    prevDiff = diff;
+
+
+                    genUpdateNodeProgress(this.nodeId, iter / maxIter);
+                }
+
+
+                if (iter < maxIter)
+                {
+                    input = (await this.input.eval(parse)).toValue();
+                    this.value = input;
+                }
+                else
+                {
+                    this.value = NumberValue.NaN;
+                    console.log('max solve iterations');
+                }
             }
+            else
+                this.value = input;
         }
         else
             this.value = NumberValue.NaN;
 
 
-        genPushUpdateValue(parse, this.nodeId, 'current', current);
-        genPushUpdateValue(parse, this.nodeId, 'target',  target);
         genPushUpdateValue(parse, this.nodeId, 'value',   this.value);
+        genPushUpdateValue(parse, this.nodeId, 'current', current   );
+        genPushUpdateValue(parse, this.nodeId, 'target',  target    );
 
 
         this.validate();
 
         return this;
+    }
+
+
+
+    altInputValue = () =>
+    {
+        return this.temp.copy();
+    }
+
+
+
+    isCached()
+    {
+        return super.isCached()
+            && this.current.isCached()
+            && this.target .isCached();
     }
 }
 
@@ -11545,6 +11645,17 @@ class GArithmetic
 extends GNumberType
 {
     inputs = [];
+
+
+
+    isCached()
+    {
+        for (const input of this.inputs)
+            if (!input.isCached())
+                return false;
+
+        return super.isCached();
+    }
 }
 
 
@@ -13232,11 +13343,7 @@ extends GTextType
         const request = (await this.request.eval(parse)).toValue();
 
 
-        genQueueMessageToUi(
-        {
-            cmd:   'uiInitNodeProgress',
-            nodeId: this.nodeId
-        });
+        genInitNodeProgress(this.nodeId);
 
 
         try 
@@ -13453,13 +13560,9 @@ function findCorrectionInOrder(nodeId,
             }
         }
 
+        
         //if (!stopGenerate)
-            genQueueMessageToUi(
-            {
-                cmd:     'uiUpdateNodeProgress',
-                nodeId:   nodeId,
-                progress: progress / total
-            });
+            genUpdateNodeProgress(nodeId, progress / total);
     }
 
     
@@ -14122,13 +14225,7 @@ extends GColorType
                     else // find corrections
                     {
                         if (!rgbIsOk(rgb))
-                        {
-                            genQueueMessageToUi(
-                            {
-                                cmd:   'uiInitNodeProgress',
-                                nodeId: this.nodeId
-                            });
-                        }
+                            genInitNodeProgress(this.nodeId);
                         
 
                         const inputColor = input.toDataColor();
@@ -14267,11 +14364,7 @@ extends GColorType
                     const rgb = input.toRgb();
                     
                     if (!rgbIsOk(rgb))
-                        genQueueMessageToUi(
-                        {
-                            cmd:   'uiInitNodeProgress',
-                            nodeId: this.nodeId
-                        });
+                        genInitNodeProgress(this.nodeId);
 
 
                     const inputColor = input.toDataColor();
@@ -17248,21 +17341,18 @@ function genRequest(request)
 
 function genPushUpdateValue(parse, nodeId, paramId, value)
 {
-    const found = parse.updateValues.find(v =>
+    removeFromArrayWhere(parse.updateValues, v =>
            v.nodeId     == nodeId
         && v.paramId    == paramId
         && v.value.type == value.type);
 
-    if (!found)
+    parse.updateValues.push(
     {
-        parse.updateValues.push(
-        {
-            nodeId:  nodeId,
-            paramId: paramId,
-            type:    value.type, // needed to correctly parse NAN_DISPLAY
-            value:   value
-        });
-    }
+        nodeId:  nodeId,
+        paramId: paramId,
+        type:    value.type, // needed to correctly parse NAN_DISPLAY
+        value:   value
+    });
 }
 
 
@@ -17477,6 +17567,29 @@ function genQueueChunk(requestId, actionId, updateNodeId, updateParamId, nodeVal
     if (   !isEmpty(objChunk  )
         || !isEmpty(styleChunk))
         genFigMessagePosted = true;
+}
+
+
+
+function genInitNodeProgress(nodeId)
+{
+    genQueueMessageToUi(
+    {
+        cmd:   'uiInitNodeProgress',
+        nodeId: nodeId
+    });
+}
+
+
+
+function genUpdateNodeProgress(nodeId, progress)
+{
+    genQueueMessageToUi(
+    {
+        cmd:     'uiUpdateNodeProgress',
+        nodeId:   nodeId,
+        progress: progress
+    });
 }
 
 
@@ -29910,6 +30023,13 @@ extends GNode
 
 
 
+    // eval()
+    // {
+    //     return this;
+    // }
+
+
+
     toValue()
     {
         return this.copy();
@@ -29980,6 +30100,8 @@ extends GNode
     value;
 
    
+    altValue = null; // () => {}
+
     
     constructor(type, nodeId, options)
     {
@@ -30037,6 +30159,13 @@ extends GNode
     {
         return null;
     }
+
+
+
+    // isValid()
+    // {
+    //     return this.valid;
+    // }
 }
 
 
@@ -32540,7 +32669,10 @@ extends GNumberType
         if (this.isCached())
             return this;
 
-
+        // if (this.nodeId == 'num')
+        //     console.log('num');
+        
+        
         if (this.input)
             this.value = (await this.input.eval(parse)).toValue();
         else if (this.value)
@@ -32549,9 +32681,13 @@ extends GNumberType
             this.value = NumberValue.NaN;
 
 
-        genPushUpdateValue(parse, this.nodeId, 'value', this.value);
+        if (this.altValue)
+            this.value = this.altValue();
 
-        
+
+        genPushUpdateValue(parse, this.nodeId, 'value', this.value);    
+
+
         this.validate();
 
         return this;
@@ -33167,6 +33303,8 @@ extends GNumberType
     current;
     target;
 
+    temp;
+
 
     
     constructor(nodeId, options)
@@ -33199,39 +33337,113 @@ extends GNumberType
             return this;
 
 
-        const current = (await this.current.eval(parse)).toValue();
+        let   current = (await this.current.eval(parse)).toValue();
         const target  = (await this.target .eval(parse)).toValue();
 
 
         if (this.input)
         {
-            this.value = (await this.input.eval(parse)).toValue();
+            let input = (await this.input.eval(parse)).toValue();
 
             console.assert(
-                this.value.type == NUMBER_VALUE, 
-                'this.value.type must be NUMBER_VALUE');
+                input.type == NUMBER_VALUE, 
+                'input.type must be NUMBER_VALUE');
 
 
             if (this.options.enabled)
             {
-                // this.value.value = Math.min(Math.max(
-                //     current.value,
-                //     this.value.value),
-                //     target.value);
+                const diffStart = target.value - current.value;
+                let   diff      = diffStart;
+                let   prevDiff  = diffStart;
+
+                let   start     = input.copy();
+
+
+                const maxIter = 1000;
+                let   iter    = 0;
+
+                
+                let   step    = Math.random() * Number.MAX_SAFE_INTEGER/(maxIter+2);//start.value / 2;
+                
+
+                this.temp = start.copy();
+
+
+                genInitNodeProgress(this.nodeId);
+
+
+                while (Math.abs(diff) > 0.0000001
+                    && iter++ < maxIter)
+                {
+                    console.log('diff =', diff);
+                    console.log('step =', step);
+
+                    this.temp.value += step;
+
+
+                    this.input.altValue = this.altInputValue;
+                    this.input.valid    = false;
+
+                    current = (await this.current.eval(parse)).toValue();
+
+                    this.input.altValue = null;
+
+
+                    diff = target.value - current.value;
+
+                    if (   Math.abs(diff) > Math.abs(prevDiff))
+                        //|| Math.sign(diff) != Math.sign(prevDiff))
+                        step /= -2;//-(2 + step/1000000);
+
+                    prevDiff = diff;
+
+
+                    genUpdateNodeProgress(this.nodeId, iter / maxIter);
+                }
+
+
+                if (iter < maxIter)
+                {
+                    input = (await this.input.eval(parse)).toValue();
+                    this.value = input;
+                }
+                else
+                {
+                    this.value = NumberValue.NaN;
+                    console.log('max solve iterations');
+                }
             }
+            else
+                this.value = input;
         }
         else
             this.value = NumberValue.NaN;
 
 
-        genPushUpdateValue(parse, this.nodeId, 'current', current);
-        genPushUpdateValue(parse, this.nodeId, 'target',  target);
         genPushUpdateValue(parse, this.nodeId, 'value',   this.value);
+        genPushUpdateValue(parse, this.nodeId, 'current', current   );
+        genPushUpdateValue(parse, this.nodeId, 'target',  target    );
 
 
         this.validate();
 
         return this;
+    }
+
+
+
+    altInputValue = () =>
+    {
+        return this.temp.copy();
+    }
+
+
+
+    isCached()
+    {
+        return super.isCached()
+            && this.current.isCached()
+            && this.target .isCached();
     }
 }
 
@@ -33241,6 +33453,17 @@ class GArithmetic
 extends GNumberType
 {
     inputs = [];
+
+
+
+    isCached()
+    {
+        for (const input of this.inputs)
+            if (!input.isCached())
+                return false;
+
+        return super.isCached();
+    }
 }
 
 
@@ -34928,11 +35151,7 @@ extends GTextType
         const request = (await this.request.eval(parse)).toValue();
 
 
-        genQueueMessageToUi(
-        {
-            cmd:   'uiInitNodeProgress',
-            nodeId: this.nodeId
-        });
+        genInitNodeProgress(this.nodeId);
 
 
         try 
@@ -35149,13 +35368,9 @@ function findCorrectionInOrder(nodeId,
             }
         }
 
+        
         //if (!stopGenerate)
-            genQueueMessageToUi(
-            {
-                cmd:     'uiUpdateNodeProgress',
-                nodeId:   nodeId,
-                progress: progress / total
-            });
+            genUpdateNodeProgress(nodeId, progress / total);
     }
 
     
@@ -35818,13 +36033,7 @@ extends GColorType
                     else // find corrections
                     {
                         if (!rgbIsOk(rgb))
-                        {
-                            genQueueMessageToUi(
-                            {
-                                cmd:   'uiInitNodeProgress',
-                                nodeId: this.nodeId
-                            });
-                        }
+                            genInitNodeProgress(this.nodeId);
                         
 
                         const inputColor = input.toDataColor();
@@ -35963,11 +36172,7 @@ extends GColorType
                     const rgb = input.toRgb();
                     
                     if (!rgbIsOk(rgb))
-                        genQueueMessageToUi(
-                        {
-                            cmd:   'uiInitNodeProgress',
-                            nodeId: this.nodeId
-                        });
+                        genInitNodeProgress(this.nodeId);
 
 
                     const inputColor = input.toDataColor();
@@ -50984,13 +51189,13 @@ class Wire
         const back = x0 - x3 > defNodeWidth * 1.5;
 
 
-        this.updateArrow(p0, p1, p2, p3, this.arrow1, fb ? -25 : 25, 9, 0, back);
-        this.updateArrow(p0, p1, p2, p3, this.arrow2,      -35     , 9, 1, back);
+        this.updateArrow(p0, p1, p2, p3, this.arrow1, fb ? -25 : 25, 9, 0, fb, back);
+        this.updateArrow(p0, p1, p2, p3, this.arrow2,      -35     , 9, 1, fb, back);
     }
     
     
 
-    updateArrow(p0, p1, p2, p3, arrow, dist, size, index, back)
+    updateArrow(p0, p1, p2, p3, arrow, dist, size, index, fb, back)
     {
         const view = this.connection.graph.view;
 
@@ -51016,7 +51221,8 @@ class Wire
         }
         
 
-        if (!back)
+        if (  !back
+            || fb)
         {
             if (dist >= 0) t = Math.max(this.connection.backInit ? 0 : 0.5, t);
             else           t = Math.min(t, 0.5 - (index == 0 ? 0.15 : 0));
@@ -51046,7 +51252,7 @@ class Wire
     
         arrow.style.transformBox    = 'fill-box';
         arrow.style.transformOrigin = 'center';
-        arrow.style.transform       = 'rotate(' + (angle(ct) - Tau/4 + (back ? Tau/2 : 0)) + 'rad)';
+        arrow.style.transform       = 'rotate(' + (angle(ct) - Tau/4 + (!back || fb ? 0 : Tau/2)) + 'rad)';
     }
 
 
@@ -55990,7 +56196,7 @@ extends OperatorWithValue
 
     constructor()
     {
-        super(NUMBER_SOLVE, 'solve', 'solve');
+        super(NUMBER_SOLVE, 'solve', 'solve', defNodeWidth, true);
 
         this.canDisable = true;
         
@@ -56002,7 +56208,7 @@ extends OperatorWithValue
 
 
         this.addParam(this.paramValue);
-        this.addParam(this.paramCurrent = new NumberParam('current', 'current', true,  true,  true));
+        this.addParam(this.paramCurrent = new NumberParam('current', 'current', true,  true,  true, Number.NaN));
         this.addParam(this.paramTarget  = new NumberParam('target',  'target',  true,  true,  true));
     }
 
@@ -56040,10 +56246,19 @@ extends OperatorWithValue
 
 
 
+    updateValues(requestId, actionId, updateParamId, paramIds, values)
+    {
+        super.updateValues(requestId, actionId, updateParamId, paramIds, values);
+        
+        this.endNodeProgress();
+    }
+
+
+
     updateParams()
     {
         this.paramValue  .enableControlText(false);
-        this.paramCurrent.enableControlText(true);
+        this.paramCurrent.enableControlText(false);
         this.paramTarget .enableControlText(true);
 
         this.updateParamControls();
@@ -67027,6 +67242,15 @@ document.addEventListener('keydown', e =>
     else if (e.code == 'KeyR'
           && getCtrlKey(e))
         renameSelectedNode();
+
+
+    // toggled operation results
+    else if (e.code == 'KeyR'
+          && e.altKey)
+    {
+        updateSettingAndMenu('showOperationResults',  true, !settings.showOperationResults);  
+        updateMenuItemShowOperationResults();          
+    }
 
 
     // escape

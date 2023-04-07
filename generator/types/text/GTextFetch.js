@@ -44,11 +44,7 @@ extends GTextType
         const request = (await this.request.eval(parse)).toValue();
 
 
-        genQueueMessageToUi(
-        {
-            cmd:   'uiInitNodeProgress',
-            nodeId: this.nodeId
-        });
+        genInitNodeProgress(this.nodeId);
 
 
         try 

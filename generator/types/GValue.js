@@ -16,6 +16,13 @@ extends GNode
 
 
 
+    // eval()
+    // {
+    //     return this;
+    // }
+
+
+
     toValue()
     {
         return this.copy();

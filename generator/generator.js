@@ -89,21 +89,18 @@ function genRequest(request)
 
 function genPushUpdateValue(parse, nodeId, paramId, value)
 {
-    const found = parse.updateValues.find(v =>
+    removeFromArrayWhere(parse.updateValues, v =>
            v.nodeId     == nodeId
         && v.paramId    == paramId
         && v.value.type == value.type);
 
-    if (!found)
+    parse.updateValues.push(
     {
-        parse.updateValues.push(
-        {
-            nodeId:  nodeId,
-            paramId: paramId,
-            type:    value.type, // needed to correctly parse NAN_DISPLAY
-            value:   value
-        });
-    }
+        nodeId:  nodeId,
+        paramId: paramId,
+        type:    value.type, // needed to correctly parse NAN_DISPLAY
+        value:   value
+    });
 }
 
 
@@ -318,4 +315,27 @@ function genQueueChunk(requestId, actionId, updateNodeId, updateParamId, nodeVal
     if (   !isEmpty(objChunk  )
         || !isEmpty(styleChunk))
         genFigMessagePosted = true;
+}
+
+
+
+function genInitNodeProgress(nodeId)
+{
+    genQueueMessageToUi(
+    {
+        cmd:   'uiInitNodeProgress',
+        nodeId: nodeId
+    });
+}
+
+
+
+function genUpdateNodeProgress(nodeId, progress)
+{
+    genQueueMessageToUi(
+    {
+        cmd:     'uiUpdateNodeProgress',
+        nodeId:   nodeId,
+        progress: progress
+    });
 }

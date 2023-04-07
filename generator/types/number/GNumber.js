@@ -33,7 +33,10 @@ extends GNumberType
         if (this.isCached())
             return this;
 
-
+        // if (this.nodeId == 'num')
+        //     console.log('num');
+        
+        
         if (this.input)
             this.value = (await this.input.eval(parse)).toValue();
         else if (this.value)
@@ -42,9 +45,13 @@ extends GNumberType
             this.value = NumberValue.NaN;
 
 
-        genPushUpdateValue(parse, this.nodeId, 'value', this.value);
+        if (this.altValue)
+            this.value = this.altValue();
 
-        
+
+        genPushUpdateValue(parse, this.nodeId, 'value', this.value);    
+
+
         this.validate();
 
         return this;

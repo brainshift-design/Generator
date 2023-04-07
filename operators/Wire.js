@@ -310,13 +310,13 @@ class Wire
         const back = x0 - x3 > defNodeWidth * 1.5;
 
 
-        this.updateArrow(p0, p1, p2, p3, this.arrow1, fb ? -25 : 25, 9, 0, back);
-        this.updateArrow(p0, p1, p2, p3, this.arrow2,      -35     , 9, 1, back);
+        this.updateArrow(p0, p1, p2, p3, this.arrow1, fb ? -25 : 25, 9, 0, fb, back);
+        this.updateArrow(p0, p1, p2, p3, this.arrow2,      -35     , 9, 1, fb, back);
     }
     
     
 
-    updateArrow(p0, p1, p2, p3, arrow, dist, size, index, back)
+    updateArrow(p0, p1, p2, p3, arrow, dist, size, index, fb, back)
     {
         const view = this.connection.graph.view;
 
@@ -342,7 +342,8 @@ class Wire
         }
         
 
-        if (!back)
+        if (  !back
+            || fb)
         {
             if (dist >= 0) t = Math.max(this.connection.backInit ? 0 : 0.5, t);
             else           t = Math.min(t, 0.5 - (index == 0 ? 0.15 : 0));
@@ -372,7 +373,7 @@ class Wire
     
         arrow.style.transformBox    = 'fill-box';
         arrow.style.transformOrigin = 'center';
-        arrow.style.transform       = 'rotate(' + (angle(ct) - Tau/4 + (back ? Tau/2 : 0)) + 'rad)';
+        arrow.style.transform       = 'rotate(' + (angle(ct) - Tau/4 + (!back || fb ? 0 : Tau/2)) + 'rad)';
     }
 
 

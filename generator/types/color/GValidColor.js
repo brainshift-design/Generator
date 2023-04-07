@@ -83,13 +83,7 @@ extends GColorType
                     else // find corrections
                     {
                         if (!rgbIsOk(rgb))
-                        {
-                            genQueueMessageToUi(
-                            {
-                                cmd:   'uiInitNodeProgress',
-                                nodeId: this.nodeId
-                            });
-                        }
+                            genInitNodeProgress(this.nodeId);
                         
 
                         const inputColor = input.toDataColor();

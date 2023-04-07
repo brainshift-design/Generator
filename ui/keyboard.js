@@ -100,6 +100,15 @@ document.addEventListener('keydown', e =>
         renameSelectedNode();
 
 
+    // toggled operation results
+    else if (e.code == 'KeyR'
+          && e.altKey)
+    {
+        updateSettingAndMenu('showOperationResults',  true, !settings.showOperationResults);  
+        updateMenuItemShowOperationResults();          
+    }
+
+
     // escape
     else if (e.key == 'Escape')
     {

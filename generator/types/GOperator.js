@@ -10,6 +10,8 @@ extends GNode
     value;
 
    
+    altValue = null; // () => {}
+
     
     constructor(type, nodeId, options)
     {
@@ -67,4 +69,11 @@ extends GNode
     {
         return null;
     }
+
+
+
+    // isValid()
+    // {
+    //     return this.valid;
+    // }
 }

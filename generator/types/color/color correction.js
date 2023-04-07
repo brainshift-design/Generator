@@ -177,13 +177,9 @@ function findCorrectionInOrder(nodeId,
             }
         }
 
+        
         //if (!stopGenerate)
-            genQueueMessageToUi(
-            {
-                cmd:     'uiUpdateNodeProgress',
-                nodeId:   nodeId,
-                progress: progress / total
-            });
+            genUpdateNodeProgress(nodeId, progress / total);
     }
 
     
