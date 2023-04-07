@@ -258,7 +258,7 @@ class Wire
                this.connection.input
             && this.connection.input.feedback;
 
-        const back = _x3 < _x0;
+        const back = _x0 - _x3 > defNodeWidth * 1.5;
 
         this.arrow1.setAttribute('display', fb || this.connection.backInit ? 'inline' : 'none');
         this.arrow2.setAttribute('display', fb || back                     ? 'inline' : 'none');
@@ -307,13 +307,16 @@ class Wire
                this.connection.input
             && this.connection.input.feedback;
 
-        this.updateArrow(p0, p1, p2, p3, this.arrow1, fb ? -25 : 25, 9, 0);
-        this.updateArrow(p0, p1, p2, p3, this.arrow2,      -35     , 9, 1);
+        const back = x0 - x3 > defNodeWidth * 1.5;
+
+
+        this.updateArrow(p0, p1, p2, p3, this.arrow1, fb ? -25 : 25, 9, 0, back);
+        this.updateArrow(p0, p1, p2, p3, this.arrow2,      -35     , 9, 1, back);
     }
     
     
 
-    updateArrow(p0, p1, p2, p3, arrow, dist, size, index)
+    updateArrow(p0, p1, p2, p3, arrow, dist, size, index, back)
     {
         const view = this.connection.graph.view;
 
@@ -339,12 +342,9 @@ class Wire
         }
         
 
-        const back = p3.x < p0.x;
-
-
         if (!back)
         {
-            if (dist >= 0) t = Math.min(0.5, t);
+            if (dist >= 0) t = Math.max(this.connection.backInit ? 0 : 0.5, t);
             else           t = Math.min(t, 0.5 - (index == 0 ? 0.15 : 0));
         }
         else
