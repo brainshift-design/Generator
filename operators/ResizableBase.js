@@ -238,8 +238,11 @@ extends OperatorBase
 
     setSize(w, h, updateTransform = true)
     {
-        const headerHeight = getStyleValue(this.header, 'height');
+        let headerHeight = getStyleValue(this.header, 'offset-height');
+        if (typeof headerHeight == 'string') headerHeight = defHeaderHeight;
+
         const paramHeight  = settings.showOperationResults ? defParamHeight : 0;
+
 
         const _w = Math.max(60, w);
         const _h = Math.max(parseFloat(headerHeight) + paramHeight, h);
