@@ -335,7 +335,7 @@ extends Parameter
             : rgbNoColorLight;
 
         const rgbaVal  = this.value.toRgba();
-        const rgbaText = getTextColorFromBackColor(rgbaVal, 1);//rgbaVal[3]);
+        const rgbaText = getTextColorFromBackColor(rgbaVal, rgbaVal[3]);
 
 
         const fillStyle = rgba2style(rgb_a(rgbaVal, this.controls[1].value/100));
