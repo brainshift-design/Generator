@@ -78,7 +78,7 @@ extends OperatorWithValue
 
         if (this._showOnlySymbol)
         {
-            this._symbol.style.top = inputY[0]/2 + inputHeight/2 - 9;
+            this._symbol.style.top = inputY[0]/2 + inputHeight/2 - 3;
         }
         else
         {

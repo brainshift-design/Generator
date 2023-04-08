@@ -1,4 +1,4 @@
-const defParamHeight = 24;
+const defParamHeight = 22;
 
 
 

@@ -44084,7 +44084,7 @@ function initGeneratorMenus()
                             new MenuItem('Zoom in',      {shortcut: osCtrl () + '+', callback: () => graphView.zoom *= Math.pow(2, 1/2)}),
                             new MenuItem('Zoom out',     {shortcut: osCtrl () + '-', callback: () => graphView.zoom /= Math.pow(2, 1/2)}),
                             new MenuItem('Zoom to fit',  {shortcut: osShift() + '1', callback: () => graphView.zoomToFit()}),
-        menuItemZoomTo100 = new MenuItem('Zoom to 100%', {shortcut: osCtrl () + '0', callback: () => graphView.setPanAndZoom(isEmpty(graphView.graph.nodes) ? point(0, 0) : graphView.pan, 1)})]);//,
+        menuItemZoomTo100 = new MenuItem('Zoom to 100%', {shortcut: osCtrl () + '0', callback: () => graphView.zoom = 1})]);//,
                         //  new MenuItem('',             {separator: true}),
                         //  new MenuItem('Window',       {childMenu: menuWindow})]);
 
@@ -47457,7 +47457,7 @@ GraphView.prototype.createScrollbarMethods = function()
 }
 
 
-const defParamHeight = 24;
+const defParamHeight = 22;
 
 
 
@@ -54012,7 +54012,7 @@ extends OperatorWithValue
 
         if (this._showOnlySymbol)
         {
-            this._symbol.style.top = inputY[0]/2 + inputHeight/2 - 9;
+            this._symbol.style.top = inputY[0]/2 + inputHeight/2 - 3;
         }
         else
         {
@@ -70643,7 +70643,7 @@ function createStyleIcon(rgba)
 }
 
 
-const defNodeWidth    = 120;
+const defNodeWidth    = 114;
 const resizeEdgeWidth = 8;
 
 
