@@ -1,8 +1,8 @@
-const rgb2dark1  = [255/255, 112/255,  0/255];
+const rgb2dark1  = [255/255,  64/255,  96/255];
 const rgb2dark2  = [255/255, 255/255,  0/255];
 const rgb2dark3  = [ 64/255, 220/255, 64/255];
 
-const rgb2light1 = [230/255, 160/255, 20/255];
+const rgb2light1 = [255/255,  50/255, 50/255];
 const rgb2light2 = [200/255, 195/255,  0/255];
 const rgb2light3 = [ 64/255, 220/255, 64/255];
 
@@ -17,7 +17,7 @@ const rgb3dark7  = [230/255, 230/255, 230/255];
 
 const rgb3light1 = [255/255,   0/255,  64/255];
 const rgb3light2 = [255/255, 112/255,   0/255];
-const rgb3light3 = [220/255, 170/255,   0/255];
+const rgb3light3 = [220/255, 150/255,   0/255];
 const rgb3light4 = [210/255, 205/255,   0/255];
 const rgb3light5 = [ 30/255, 220/255,  30/255];
 const rgb3light6 = [128/255, 128/255, 255/255];
