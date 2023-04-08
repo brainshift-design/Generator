@@ -1589,6 +1589,19 @@ div
 }
 
 
+.keyboardInfo
+{
+    display:     inline-block;
+    font-size:   12px;
+    color:       #b6b6b6;
+    font-weight: 500;
+    width:       300px;
+    height:      26px;
+    padding-top: 11px;
+    /* box-shadow:  0 0 0 1px inset green; */
+}
+
+
 .keyboardShortcut
 {
     display:    inline-block;
@@ -3779,9 +3792,7 @@ a
             <div id='whatsNewBody'>
                 <h1 style='margin-top: 20px;'>What's new in Generator</h1>
 
-                <p>•  fixed crash when connecting from a transparent fill</p>
-                <p>•  added arrow to connections to show if they are visibly backward</p>
-                <p>•  fixed various UI issues</p>
+                <p>•  fixed Mac shortcuts</p>
                 
                 <p><br/><br/><div id='chkHideWhatsNew'></div></p>
             </div>
@@ -3812,7 +3823,9 @@ a
 
         <div class='keyboardPage' id='keyboardPageMenu'>
             <div class='keyboardGroup'>
-                <div class='keyboardShortcut'><div class='shortcutAction'>Keep menu open</div><div class='shortcutKeys'><div class='shortcutKeys'><div class='shortcutKey'>Shift</div><div class='shortcutKey'>menu</div></div></div></div>
+                <div class='keyboardShortcut'><div class='shortcutAction'>Keep menu open</div><div class='shortcutKeys'><div class='shortcutKeys'><div class='shortcutKey'>Shift</div><div class='shortcutKey'>click</div></div></div></div>
+                <div class='keyboardShortcut'></div>
+                <div class='keyboardInfo'>Clicking a node menu creates a node under<br/>the menu button. Drag the menu to directly<br/>move the new node.</div>
             </div>
             <div class='keyboardGroup nextGroup'>
                 <div class='keyboardShortcut'><div class='shortcutAction'>Create node</div><div class='shortcutKeys'><div class='shortcutKeys'><div class='shortcutKey'>Menu</div></div></div></div>

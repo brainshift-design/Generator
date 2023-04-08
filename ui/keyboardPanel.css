@@ -134,6 +134,19 @@
 }
 
 
+.keyboardInfo
+{
+    display:     inline-block;
+    font-size:   12px;
+    color:       #b6b6b6;
+    font-weight: 500;
+    width:       300px;
+    height:      26px;
+    padding-top: 11px;
+    /* box-shadow:  0 0 0 1px inset green; */
+}
+
+
 .keyboardShortcut
 {
     display:    inline-block;
