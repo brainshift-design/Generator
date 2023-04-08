@@ -122,7 +122,6 @@ extends Parameter
         this.controls[1].text.style.transform       = 'translateX(-68%) \
                                                        translateY(-50%)';
 
-
         this.controls[0].textbox.style.position     = 'absolute';
         this.controls[0].textbox.style.left         =  0;
         this.controls[0].textbox.style.width        = '60%';
@@ -143,7 +142,7 @@ extends Parameter
         
         this.checkersHolder.appendChild(this.checkers);
         this.div.appendChild(this.checkersHolder);
-        
+
         this.div.appendChild(this.controlWrapper);
 
        

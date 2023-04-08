@@ -336,6 +336,7 @@ ColorControl.prototype.showTextbox = function()
 
     // this.textbox.style.boxShadow = '0 0 0 1px var(--figma-color-bg-brand)';
     // this.textbox.style.outline   = 'none';
+    this.textbox.style.height    = defParamHeight;
     this.textbox.style.textAlign = 'center';
 
     this.updateTextbox();
