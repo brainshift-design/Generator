@@ -1038,7 +1038,7 @@ class Operator
 
 
 
-function getHeaderConnY(conns, padding, offset)
+function getHeaderConnY(conns)//, padding, offset)
 {
     const y      = [];
     let   height = 0;
@@ -1046,7 +1046,7 @@ function getHeaderConnY(conns, padding, offset)
     for (let i = 0; i < conns.length; i++)
     {
         if (i > 0) height += connectionGap;
-        y.push(offset + padding + height);
+        y.push(/*offset + padding*/ + height);
         height += connectionSize;
     }
 

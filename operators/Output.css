@@ -1,7 +1,7 @@
 .outputControls
 {
     width:          12px;
-    height:         auto;
+    /* height:         auto; */
     float:          right;
     margin-left:    auto;
     padding-top:    10px;
@@ -12,6 +12,7 @@
 
 .output
 {
+    /* display:        inline; */
     width:          6px;
     height:         6px;
     border-radius:  3px;

@@ -12,6 +12,7 @@
 
 .input
 {
+    /* display:        inline; */
     width:          6px;
     height:         6px;
     background:     transparent;

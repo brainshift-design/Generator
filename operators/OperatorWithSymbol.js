@@ -70,11 +70,11 @@ extends OperatorWithValue
         this._symbol.style.left       = 'calc(50% + 1px)';
         
 
-        const padding = this.header.connectionPadding;
+        //const padding = this.header.connectionPadding;
         const inputs  = this.headerInputs;
 
 
-        const [inputY, inputHeight] = getHeaderConnY(inputs, padding, 5);
+        const [inputY, inputHeight] = getHeaderConnY(inputs);//, padding, 5);
 
         if (this._showOnlySymbol)
         {

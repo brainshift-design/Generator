@@ -238,6 +238,19 @@ class Output
                 : color[3]));
 
 
+        const isConnected =
+               !isEmpty(this.connectedInputs)
+            ||     view.tempConn
+               && (   view.tempConn.output == this
+                   ||     view.overOutput == this
+                      && !view.tempConn.output)
+               && !(    view.tempConn.input
+                    && !view.tempConn.input.types.includes(this.type));
+
+        this.div.style.transform = 
+              'translateX(' + (isConnected ? -1 : 0) + 'px)'
+            + 'translateY(-50%)';
+
         this.div.style.pointerEvents   = 'auto';
         this.div.style.backgroundColor = colorStyle;
 
@@ -251,16 +264,6 @@ class Output
 
 
         this.wireBall.style.zIndex = MAX_INT32;
-
-
-        const isConnected =
-               !isEmpty(this.connectedInputs)
-            ||     view.tempConn
-               && (   view.tempConn.output == this
-                   ||     view.overOutput == this
-                      && !view.tempConn.output)
-               && !(    view.tempConn.input
-                    && !view.tempConn.input.types.includes(this.type));
 
 
         showElement(this.wireBall, isConnected);
