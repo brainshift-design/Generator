@@ -234,12 +234,16 @@ function updateLicenseInfo(license)
         licenseWatermark    .style.background = 'transparent';//darkMode ? '#ffffff0f' : '#0000000a';
         licenseWatermarkPath.style.fill       = 'transparent';//darkMode ? '#2e2e2e50' : '#ffffff80';
 
-        licenseInfo.innerHTML = '<span style="user-select: none; color: ' + (darkMode ? '#fffa' : '#000c') + ';">Valid until:&nbsp;&thinsp;</span><span style="font-weight: 700">' + strDate.replaceAll('/', '&hairsp;/&hairsp;') + '</span>';
+        licenseInfo.innerHTML = '<span style="user-select: one; color: ' + (darkMode ? '#fffa' : '#000c') + ';">Valid until:&nbsp;&thinsp;</span><span style="font-weight: 700">' + strDate.replaceAll('/', '&hairsp;/&hairsp;') + '</span>';
+
+        subscribeWebsite.style.display = 'none';
     }
     else
     {
         licenseWatermark.style.display = 'none';
         licenseInfo.innerHTML = '';
+
+        subscribeWebsite.style.display = 'inline-block';
     }
 }
 

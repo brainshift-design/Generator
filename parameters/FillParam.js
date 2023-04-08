@@ -105,14 +105,14 @@ extends Parameter
 
         this.controls[0].successOnFocusOut          = true;
         this.controls[0].div.style.display          = 'inline';
-        this.controls[0].div.style.width            = '60%';
+        this.controls[0].div.style.width            = '55%';
         this.controls[0].div.style.position         = 'absolute';
         this.controls[0].div.style.left             = 0;
 
     
         this.controls[1].successOnFocusOut          = true;
         this.controls[1].div.style.display          = 'inline';
-        this.controls[1].div.style.width            = '40%';
+        this.controls[1].div.style.width            = '45%';
         this.controls[1].div.style.position         = 'absolute';
         this.controls[1].div.style.right            = 0;
 
@@ -124,14 +124,14 @@ extends Parameter
 
         this.controls[0].textbox.style.position     = 'absolute';
         this.controls[0].textbox.style.left         =  0;
-        this.controls[0].textbox.style.width        = '60%';
+        //this.controls[0].textbox.style.width        = '55%';
         this.controls[0].textbox.style.transform    = 'translateX(0)';
         this.controls[0].textbox.style.textAlign    = 'right';
         this.controls[0].textbox.style.paddingLeft  =  14;
         
         this.controls[1].textbox.style.position     = 'absolute';
         this.controls[1].textbox.style.right        =  0;
-        this.controls[1].textbox.style.width        = '40%';
+        //this.controls[1].textbox.style.width        = '45%';
         this.controls[1].textbox.style.transform    = 'translateX(25%)';
         this.controls[1].textbox.style.textAlign    = 'left';
         this.controls[1].textbox.style.paddingRight =  10;

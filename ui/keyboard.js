@@ -88,10 +88,10 @@ document.addEventListener('keydown', e =>
         else               graphView.deleteSelectedNodes();
     }
 
-    // select all
-    else if (e.code == 'KeyL'
-          && getCtrlKey(e))
-        layoutSelectedNodes();
+    // // select all
+    // else if (e.code == 'KeyL'
+    //       && getCtrlKey(e))
+    //     layoutSelectedNodes();
 
 
     // toggled operation results

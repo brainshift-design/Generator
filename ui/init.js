@@ -71,7 +71,9 @@ function uiReturnFigStartGenerator(msg)
     initThemeColors();
     loadLocalSettings();
 
+    initKeyboardPanel();
 
+    
     graphView.updateMeasureData();
 
     viewportRect = msg.viewportRect;

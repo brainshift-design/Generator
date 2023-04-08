@@ -1,4 +1,4 @@
-const isMac = navigator.platform.toLowerCase().indexOf('mac') >= 0;
+var isMac = navigator.platform.toLowerCase().indexOf('mac') >= 0;
 
 
 
@@ -279,9 +279,10 @@ function readonly(target, name, descriptor)
 
 
 
-function osCtrl()  { return isMac ? '⌘' : 'Ctrl+';  }
-function osAlt()   { return isMac ? '⌥' : 'Alt+';   }
-function osShift() { return isMac ? '⇧'  : 'Shift+'; }
+function osCtrl     (plus = true) { return isMac ? ('⌘' + (plus ? ' ' : '')) : ('Ctrl'  + (plus ? '+' : '')); }
+function osAlt      (plus = true) { return isMac ? ('⌥' + (plus ? ' ' : '')) : ('Alt'   + (plus ? '+' : '')); }
+function osShift    (plus = true) { return isMac ? ('⇧' + (plus ? ' ' : '')) : ('Shift' + (plus ? '+' : '')); }
+function osCtrlShift(plus = true) { return isMac ? osShift(plus) + osCtrl(plus) : osCtrl(plus) + osShift(plus); }
 
 
 

@@ -1,3 +1,6 @@
+<!-- <link rel="preconnect" href="https://rsms.me/">
+<link rel="stylesheet" href="https://rsms.me/inter/inter.css"> -->
+
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 
@@ -511,7 +514,7 @@
 
 
 
-#productKeyWebsite
+#subscribeWebsite
 {
     font-size:      11px;
     text-align:     center;
@@ -1626,27 +1629,28 @@ div
 
 .shortcutKey
 {
+    font-family:             Inter;
     display:                 inline-block;
     font-size:               11px;
-    font-variant-alternates: stylistic(), styleset();
-    font-feature-settings:   'salt' on, 'ss02' on;
     color:                   #bcbcbc;
     margin-left:             3px;
     margin-right:            0px;
-    padding-left:            4px;
-    padding-right:           4px;
+    padding-left:            5px;
+    padding-right:           5px;
     padding-top:             5px;
-    width:                   max(19px, fit-content);
-    height:                  18.5px;
+    width:                   max(20px, fit-content);
+    height:                  19px;
     border-radius:           2px;
     box-shadow:              0 0 0 1px inset #bcbcbc;
+    font-variant-alternates: stylistic(), styleset();
+    font-feature-settings:   'salt' on, 'ss02' on;
 }
 
 
 .shortcutChar
 {
-    padding-left:  8px;
-    padding-right: 8px;
+    padding-left:  9px;
+    padding-right: 9px;
 }
 
 .shortcutCharWide
@@ -2030,13 +2034,6 @@ a
     /* background: black; */
     color:      white;
 }
-
-
-/* .menuButton:focus
-{
-    background: var(--activeObjectColor);
-    color:      white;
-} */
 
 
 .menuButtonIcon
@@ -3640,7 +3637,7 @@ a
         </div>
         <div id='licenseInfo'></div>
         <div class='button' id='validateProductKeyButton' onclick='onValidateClick(productKeyInput.value);'>Validate</div>
-        <div id='productKeyWebsite'><!--<a href='http://www.bourt.com/generator/subscribe' target='_blank'>-->Buy subscription<!--</a>--></div>
+        <div id='subscribeWebsite'><!--<a href='http://www.bourt.com/generator/subscribe' target='_blank'>-->Buy subscription<!--</a>--></div>
     </div>
 
 </div>
@@ -3782,6 +3779,7 @@ a
             <div id='whatsNewBody'>
                 <h1 style='margin-top: 20px;'>What's new in Generator</h1>
 
+                <p>•  fixed crash when connecting from a transparent fill</p>
                 <p>•  added arrow to connections to show if they are visibly backward</p>
                 <p>•  fixed various UI issues</p>
                 
@@ -3819,7 +3817,7 @@ a
             <div class='keyboardGroup nextGroup'>
                 <div class='keyboardShortcut'><div class='shortcutAction'>Create node</div><div class='shortcutKeys'><div class='shortcutKeys'><div class='shortcutKey'>Menu</div></div></div></div>
                 <div class='keyboardShortcut'><div class='shortcutAction'>Insert node into branch</div><div class='shortcutKeys'><div class='shortcutKeys'><div class='shortcutKey'>Ctrl</div><div class='shortcutKey'>menu</div></div></div></div>
-                <div class='keyboardShortcut'><div class='shortcutAction'>Connect node in new branch</div><div class='shortcutKeys'><div class='shortcutKeys'><div class='shortcutKey'>Ctrl</div><div class='shortcutKey'>Alt</div><div class='shortcutKey'>menu</div></div></div></div>
+                <div class='keyboardShortcut'><div class='shortcutAction'>Connect node in new branch</div><div class='shortcutKeys'><div class='shortcutKeys'><div class='shortcutKey newBranch1'>Ctrl</div><div class='shortcutKey newBranch2'>Alt</div><div class='shortcutKey'>menu</div></div></div></div>
                 <div class='keyboardShortcut'><div class='shortcutAction'>Create random color</div><div class='shortcutKeys'><div class='shortcutKeys'><div class='shortcutKey'>Alt</div><div class='shortcutKey'>Color menu</div></div></div></div>
             </div>
         </div>
@@ -3856,16 +3854,16 @@ a
 
             <div class='keyboardGroup'>
                 <div class='keyboardShortcut'><div class='shortcutAction'>Select all</div><div class='shortcutKeys'><div class='shortcutKeys'><div class='shortcutKey'>Ctrl</div><div class='shortcutKey shortcutChar'>A</div></div></div></div>
-                <div class='keyboardShortcut'><div class='shortcutAction'>Select inverse</div><div class='shortcutKeys'><div class='shortcutKeys'><div class='shortcutKey'>Ctrl</div><div class='shortcutKey'>Shift</div><div class='shortcutKey shortcutChar'>A</div></div></div></div>
+                <div class='keyboardShortcut'><div class='shortcutAction'>Select inverse</div><div class='shortcutKeys'><div class='shortcutKeys'><div class='shortcutKey ctrlShift'>Ctrl</div><div class='shortcutKey ctrlShift'>Shift</div><div class='shortcutKey shortcutChar'>A</div></div></div></div>
                 <div class='keyboardShortcut'><div class='shortcutAction'>Select none</div><div class='shortcutKeys'><div class='shortcutKeys'><div class='shortcutKey'>Esc</div></div></div></div>
             </div>
 
             <div class='keyboardGroup nextGroup'>
                 <!-- <div class='keyboardShortcut'><div class='shortcutAction'>Toggle selected</div><div class='shortcutKeys'><div class='shortcutKeys'><div class='shortcutKey'>Shift</div><div class='shortcutKey'>click</div></div></div></div> -->
-                <div class='keyboardShortcut'><div class='shortcutAction'>Select tree left</div><div class='shortcutKeys'><div class='shortcutKeys'><div class='shortcutKey'>Ctrl</div><div class='shortcutKey'>Shift</div><div class='shortcutKey'>click</div></div></div></div>
-                <div class='keyboardShortcut'><div class='shortcutAction'>Select tree right</div><div class='shortcutKeys'><div class='shortcutKeys'><div class='shortcutKey'>Alt</div><div class='shortcutKey'>Shift</div><div class='shortcutKey'>click</div></div></div></div>
-                <div class='keyboardShortcut'><div class='shortcutAction'>Select tree across</div><div class='shortcutKeys'><div class='shortcutKeys'><div class='shortcutKey'>Ctrl</div><div class='shortcutKey'>Alt</div><div class='shortcutKey'>click</div></div></div></div>
-                <div class='keyboardShortcut'><div class='shortcutAction'>Select entire tree</div><div class='shortcutKeys'><div class='shortcutKeys'><div class='shortcutKey'>Ctrl</div><div class='shortcutKey'>Alt</div><div class='shortcutKey'>Shift</div><div class='shortcutKey'>click</div></div></div></div>
+                <div class='keyboardShortcut'><div class='shortcutAction'>Select tree left</div><div class='shortcutKeys'><div class='shortcutKeys'><div class='shortcutKey ctrlShift'>Ctrl</div><div class='shortcutKey ctrlShift treeLeftCtrl'>Shift</div><div class='shortcutKey'>click</div></div></div></div>
+                <div class='keyboardShortcut'><div class='shortcutAction'>Select tree right</div><div class='shortcutKeys'><div class='shortcutKeys'><div class='shortcutKey treeRightCtrl1'>Alt</div><div class='shortcutKey treeRightCtrl2'>Shift</div><div class='shortcutKey'>click</div></div></div></div>
+                <div class='keyboardShortcut'><div class='shortcutAction'>Select tree across</div><div class='shortcutKeys'><div class='shortcutKeys'><div class='shortcutKey treeAcross1'>Ctrl</div><div class='shortcutKey treeAcross2'>Alt</div><div class='shortcutKey'>click</div></div></div></div>
+                <div class='keyboardShortcut'><div class='shortcutAction'>Select entire tree</div><div class='shortcutKeys'><div class='shortcutKeys'><div class='shortcutKey ctrlShift'>Ctrl</div><div class='shortcutKey'>Alt</div><div class='shortcutKey ctrlShift'>Shift</div><div class='shortcutKey'>click</div></div></div></div>
             </div>
 
         </div>
@@ -3873,8 +3871,8 @@ a
 
         <div class='keyboardPage' id='keyboardPageNodes'>
             <div class='keyboardGroup'>
-                <div class='keyboardShortcut'><div class='shortcutAction'>Enable/disable</div><div class='shortcutKeys'><div class='shortcutKeys'><div class='shortcutKey'>Ctrl</div><div class='shortcutKey'>Shift</div><div class='shortcutKey shortcutChar'>E</div></div></div></div>
-                <div class='keyboardShortcut'><div class='shortcutAction'>Show/hide operation results</div><div class='shortcutKeys'><div class='shortcutKeys'><div class='shortcutKey'>Ctrl</div><div class='shortcutKey'>Shift</div><div class='shortcutKey shortcutChar'>R</div></div></div></div>
+                <div class='keyboardShortcut'><div class='shortcutAction'>Enable/disable</div><div class='shortcutKeys'><div class='shortcutKeys'><div class='shortcutKey ctrlShift'>Ctrl</div><div class='shortcutKey ctrlShift'>Shift</div><div class='shortcutKey shortcutChar'>E</div></div></div></div>
+                <div class='keyboardShortcut'><div class='shortcutAction'>Show/hide operation results</div><div class='shortcutKeys'><div class='shortcutKeys'><div class='shortcutKey ctrlShift'>Ctrl</div><div class='shortcutKey ctrlShift'>Shift</div><div class='shortcutKey shortcutChar'>R</div></div></div></div>
             </div>
         </div>
  
@@ -3904,13 +3902,13 @@ a
                 <div class='keyboardShortcut'><div class='shortcutAction'>Copy</div><div class='shortcutKeys'><div class='shortcutKeys'><div class='shortcutKey'>Ctrl</div><div class='shortcutKey shortcutChar'>C</div></div></div></div>
                 <div class='keyboardShortcut'><div class='shortcutAction'>Cut</div><div class='shortcutKeys'><div class='shortcutKeys'><div class='shortcutKey'>Ctrl</div><div class='shortcutKey shortcutChar'>X</div></div></div></div>
                 <div class='keyboardShortcut'><div class='shortcutAction'>Paste</div><div class='shortcutKeys'><div class='shortcutKeys'><div class='shortcutKey'>Ctrl</div><div class='shortcutKey shortcutChar'>V</div></div></div></div>
-                <div class='keyboardShortcut'><div class='shortcutAction'>Paste with input connections</div><div class='shortcutKeys'><div class='shortcutKeys'><div class='shortcutKey'>Ctrl</div><div class='shortcutKey'>Shift</div><div class='shortcutKey shortcutChar'>V</div></div></div></div>
+                <div class='keyboardShortcut'><div class='shortcutAction'>Paste with input connections</div><div class='shortcutKeys'><div class='shortcutKeys'><div class='shortcutKey ctrlShift'>Ctrl</div><div class='shortcutKey ctrlShift'>Shift</div><div class='shortcutKey shortcutChar'>V</div></div></div></div>
                 <div class='keyboardShortcut'><div class='shortcutAction'>Remove from branch</div><div class='shortcutKeys'><div class='shortcutKeys'><div class='shortcutKey'>Ctrl</div><div class='shortcutKey shortcutCharWide'>⌫</div></div></div></div>
             </div>
             <div class='keyboardGroup nextGroup'>
-                <div id='shortcutCopyAsJavascript' class='keyboardShortcut'><div class='shortcutAction'>Copy as Javascript</div><div class='shortcutKeys'><div class='shortcutKeys'><div class='shortcutKey'>Ctrl</div><div class='shortcutKey'>Shift</div><div class='shortcutKey shortcutChar'>C</div></div></div></div>
+                <div id='shortcutCopyAsJavascript' class='keyboardShortcut'><div class='shortcutAction'>Copy as Javascript</div><div class='shortcutKeys'><div class='shortcutKeys'><div class='shortcutKey ctrlShift'>Ctrl</div><div class='shortcutKey ctrlShift'>Shift</div><div class='shortcutKey shortcutChar'>C</div></div></div></div>
                 <div class='keyboardShortcut'><div class='shortcutAction'>Duplicate</div><div class='shortcutKeys'><div class='shortcutKeys'><div class='shortcutKey'>Ctrl</div><div class='shortcutKey shortcutChar'>D</div></div></div></div>
-                <div class='keyboardShortcut'><div class='shortcutAction'>Duplicate with input connections</div><div class='shortcutKeys'><div class='shortcutKeys'><div class='shortcutKey'>Ctrl</div><div class='shortcutKey'>Shift</div><div class='shortcutKey shortcutChar'>D</div></div></div></div>
+                <div class='keyboardShortcut'><div class='shortcutAction'>Duplicate with input connections</div><div class='shortcutKeys'><div class='shortcutKeys'><div class='shortcutKey ctrlShift'>Ctrl</div><div class='shortcutKey ctrlShift'>Shift</div><div class='shortcutKey shortcutChar'>D</div></div></div></div>
             </div>
         </div>
     
@@ -4107,7 +4105,7 @@ a
 
 
 
-const generatorVersion = 131;
+const generatorVersion = 132;
 
 
 const MAX_INT32        = 2147483647;
@@ -6163,7 +6161,7 @@ class Random
 }
 
 
-const isMac = navigator.platform.toLowerCase().indexOf('mac') >= 0;
+var isMac = navigator.platform.toLowerCase().indexOf('mac') >= 0;
 
 
 
@@ -6444,9 +6442,10 @@ function readonly(target, name, descriptor)
 
 
 
-function osCtrl()  { return isMac ? '⌘' : 'Ctrl+';  }
-function osAlt()   { return isMac ? '⌥' : 'Alt+';   }
-function osShift() { return isMac ? '⇧'  : 'Shift+'; }
+function osCtrl     (plus = true) { return isMac ? ('⌘' + (plus ? ' ' : '')) : ('Ctrl'  + (plus ? '+' : '')); }
+function osAlt      (plus = true) { return isMac ? ('⌥' + (plus ? ' ' : '')) : ('Alt'   + (plus ? '+' : '')); }
+function osShift    (plus = true) { return isMac ? ('⇧' + (plus ? ' ' : '')) : ('Shift' + (plus ? '+' : '')); }
+function osCtrlShift(plus = true) { return isMac ? osShift(plus) + osCtrl(plus) : osCtrl(plus) + osShift(plus); }
 
 
 
@@ -23554,7 +23553,7 @@ onerror = (event, source, line, pos, error) =>
 };
 
 
-const generatorVersion = 131;
+const generatorVersion = 132;
 
 
 const MAX_INT32        = 2147483647;
@@ -25610,7 +25609,7 @@ class Random
 }
 
 
-const isMac = navigator.platform.toLowerCase().indexOf('mac') >= 0;
+var isMac = navigator.platform.toLowerCase().indexOf('mac') >= 0;
 
 
 
@@ -25891,9 +25890,10 @@ function readonly(target, name, descriptor)
 
 
 
-function osCtrl()  { return isMac ? '⌘' : 'Ctrl+';  }
-function osAlt()   { return isMac ? '⌥' : 'Alt+';   }
-function osShift() { return isMac ? '⇧'  : 'Shift+'; }
+function osCtrl     (plus = true) { return isMac ? ('⌘' + (plus ? ' ' : '')) : ('Ctrl'  + (plus ? '+' : '')); }
+function osAlt      (plus = true) { return isMac ? ('⌥' + (plus ? ' ' : '')) : ('Alt'   + (plus ? '+' : '')); }
+function osShift    (plus = true) { return isMac ? ('⇧' + (plus ? ' ' : '')) : ('Shift' + (plus ? '+' : '')); }
+function osCtrlShift(plus = true) { return isMac ? osShift(plus) + osCtrl(plus) : osCtrl(plus) + osShift(plus); }
 
 
 
@@ -43889,7 +43889,6 @@ function initGeneratorMenus()
         menuItemEnableBetaFeatures    = new MenuItem('Enable beta features',         {checkCallback: () => settings.enableBetaFeatures,    callback: () => { updateSettingAndMenu('enableBetaFeatures',    true, !settings.enableBetaFeatures);    enableFeatures(true, settings.enableBetaFeatures); }}),
                                         new MenuItem('',                             {separator: true}),    
                                         new MenuItem('Keyboard layout...',           {callback: () => showKeyboardPanel()}),
-                                        new MenuItem('',                             {separator: true}),    
         menuItemMinZoomForParams      = new MenuItem('Zoom level for values...',     {callback: () => showMinZoomDialog()})]);
         
 
@@ -44113,8 +44112,8 @@ function initGeneratorMenus()
         
     menuGraph = new Menu('Graph menu', false, false);
     menuGraph.addItems([
-        menuItemGraphPaste          = new MenuItem('Paste here',      {shortcut: osCtrl()             + 'V', callback: e => { hideAllMenus(); graphView.pasteCopiedNodes(false, e.clientX, e.clientY - menuBarHeight); }}),
-        menuItemGraphPasteConnected = new MenuItem('Paste connected', {shortcut: osCtrl() + osShift() + 'V', callback: e => { hideAllMenus(); graphView.pasteCopiedNodes(true,  e.clientX, e.clientY - menuBarHeight); }})]);
+        menuItemGraphPaste          = new MenuItem('Paste here',      {shortcut: osCtrl()      + 'V', callback: e => { hideAllMenus(); graphView.pasteCopiedNodes(false, e.clientX, e.clientY - menuBarHeight); }}),
+        menuItemGraphPasteConnected = new MenuItem('Paste connected', {shortcut: osCtrlShift() + 'V', callback: e => { hideAllMenus(); graphView.pasteCopiedNodes(true,  e.clientX, e.clientY - menuBarHeight); }})]);
 
     menuGraph.init = () => 
     {
@@ -44125,23 +44124,23 @@ function initGeneratorMenus()
 
     menuNodeSelect = new Menu('Select nodes menu', false, false);
     menuNodeSelect.addItems([
-        new MenuItem('Select tree',   {shortcut:  isMac ? osShift() + osCtrl () + osAlt() + 'Click' : osShift() + osCtrl() + osAlt() + 'Click', callback: () => graphView.selectedNodes =                                 getAllNodesFromNode(graphView.selectedNodes[0]) }),
-        new MenuItem('Select left',   {shortcut:  isMac ? osShift() + osAlt  ()           + 'Click' : osShift() + osCtrl()           + 'Click', callback: () => graphView.selectedNodes = [graphView.selectedNodes[0], ...getNodesBeforeNode(graphView.selectedNodes[0])] }),
-        new MenuItem('Select right',  {shortcut:  isMac ? osCtrl () + osShift()           + 'Click' : osShift() + osAlt()            + 'Click', callback: () => graphView.selectedNodes = [graphView.selectedNodes[0], ...getNodesAfterNode (graphView.selectedNodes[0])] }),
-        new MenuItem('Select across', {shortcut:  isMac ? osAlt  () + osCtrl ()           + 'Click' : osCtrl() + osAlt()             + 'Click', callback: () => graphView.selectedNodes = [graphView.selectedNodes[0], ...getNodesAcrossNode(graphView.selectedNodes[0])] })]);
+        new MenuItem('Select left',   {shortcut:  isMac ? osShift() + osAlt ()            : osShift() + osCtrl(false)          , callback: () => graphView.selectedNodes = [graphView.selectedNodes[0], ...getNodesBeforeNode(graphView.selectedNodes[0])] }),
+        new MenuItem('Select right',  {shortcut:  isMac ? osShift() + osCtrl()            : osShift() + osAlt (false)          , callback: () => graphView.selectedNodes = [graphView.selectedNodes[0], ...getNodesAfterNode (graphView.selectedNodes[0])] }),
+        new MenuItem('Select across', {shortcut:  isMac ? osAlt  () + osCtrl()            : osCtrl () + osAlt (false)          , callback: () => graphView.selectedNodes = [graphView.selectedNodes[0], ...getNodesAcrossNode(graphView.selectedNodes[0])] }),
+        new MenuItem('Select tree',   {shortcut:  isMac ? osShift() + osAlt () + osCtrl() : osShift() + osCtrl() + osAlt(false), callback: () => graphView.selectedNodes =                                 getAllNodesFromNode(graphView.selectedNodes[0]) })]);
 
 
     menuNodeCopyAs = new Menu('Copy nodes menu', false, false);
     menuNodeCopyAs.addItems([
-        //menuItemNodeCopyAsJsCode       = new MenuItem('Copy as JS code',     {shortcut:  osCtrl() + osShift() + 'C',            callback: () => graphView.copySelectedNodesAsJsCode()     }),
-        menuItemNodeCopyAsJsFunction   = new MenuItem('Copy as Javascript', {shortcut:  osCtrl() + osShift() /*+ osAlt()*/ + 'C',  callback: () => graphView.copySelectedNodesAsJavascript() })]);
+        //menuItemNodeCopyAsJsCode       = new MenuItem('Copy as JS code',     {shortcut:  osCtrlShift() + 'C',            callback: () => graphView.copySelectedNodesAsJsCode()     }),
+        menuItemNodeCopyAsJsFunction   = new MenuItem('Copy as Javascript', {shortcut:  osCtrlShift() /*+ osAlt()*/ + 'C',  callback: () => graphView.copySelectedNodesAsJavascript() })]);
 
 
     menuNode = new Menu('Node menu', false, false);
     menuNode.addItems([
         menuItemNodeCopy           = new MenuItem('Copy',            {shortcut:  osCtrl() + 'C',              callback: () => graphView.copySelectedNodes() }),
         menuItemNodePaste          = new MenuItem('Paste here',      {shortcut:  osCtrl() + 'V',              callback: e => { hideAllMenus(); graphView.pasteCopiedNodes(false); }}),
-        menuItemNodePasteConnected = new MenuItem('Paste connected', {shortcut:  osCtrl() + osShift() + 'D',  callback: e => { hideAllMenus(); graphView.pasteCopiedNodes(true ); }}),
+        menuItemNodePasteConnected = new MenuItem('Paste connected', {shortcut:  osCtrlShift() + 'D',  callback: e => { hideAllMenus(); graphView.pasteCopiedNodes(true ); }}),
                                      new MenuItem('Copy/Paste as',   {childMenu: menuNodeCopyAs}),
                                    //new MenuItem('',                {separator: true}),
       //menuItemNodeLayout         = new MenuItem('Layout',          {enabled:   false, shortcut: osCtrl() + 'L', callback: e => { hideAllMenus(); layoutSelectedNodes(); }}),
@@ -44152,7 +44151,7 @@ function initGeneratorMenus()
         menuItemNodeEdit           = new MenuItem('Edit...',         {callback: e => { hideAllMenus(); graphView.editSelectedCustomNode(); }}),
                                      new MenuItem('',                {separator: true}),
         // menuItemNodeActivate    = new MenuItem('Activate',        {callback: () => makeSelectedNodesActive()}),
-        menuItemNodeEnableDisable  = new MenuItem('Enable/Disable',  {shortcut:  osCtrl() + osShift() + 'E',  callback: () => actionManager.do(new ToggleDisableNodesAction(graphView.graph, graphView.selectedNodes.map(n => n.id)))}),
+        menuItemNodeEnableDisable  = new MenuItem('Enable/Disable',  {shortcut:  osCtrlShift() + 'E',  callback: () => actionManager.do(new ToggleDisableNodesAction(graphView.graph, graphView.selectedNodes.map(n => n.id)))}),
         menuItemNodeSep3           = new MenuItem('',                {separator: true}),
         menuItemNodeRemove         = new MenuItem('Remove',          {shortcut:  osCtrl() + '⌫',             callback: e => { hideAllMenus(); graphView.removeSelectedNodes(true); }})]);
 
@@ -48994,14 +48993,14 @@ extends Parameter
 
         this.controls[0].successOnFocusOut          = true;
         this.controls[0].div.style.display          = 'inline';
-        this.controls[0].div.style.width            = '60%';
+        this.controls[0].div.style.width            = '55%';
         this.controls[0].div.style.position         = 'absolute';
         this.controls[0].div.style.left             = 0;
 
     
         this.controls[1].successOnFocusOut          = true;
         this.controls[1].div.style.display          = 'inline';
-        this.controls[1].div.style.width            = '40%';
+        this.controls[1].div.style.width            = '45%';
         this.controls[1].div.style.position         = 'absolute';
         this.controls[1].div.style.right            = 0;
 
@@ -49013,14 +49012,14 @@ extends Parameter
 
         this.controls[0].textbox.style.position     = 'absolute';
         this.controls[0].textbox.style.left         =  0;
-        this.controls[0].textbox.style.width        = '60%';
+        //this.controls[0].textbox.style.width        = '55%';
         this.controls[0].textbox.style.transform    = 'translateX(0)';
         this.controls[0].textbox.style.textAlign    = 'right';
         this.controls[0].textbox.style.paddingLeft  =  14;
         
         this.controls[1].textbox.style.position     = 'absolute';
         this.controls[1].textbox.style.right        =  0;
-        this.controls[1].textbox.style.width        = '40%';
+        //this.controls[1].textbox.style.width        = '45%';
         this.controls[1].textbox.style.transform    = 'translateX(25%)';
         this.controls[1].textbox.style.textAlign    = 'left';
         this.controls[1].textbox.style.paddingRight =  10;
@@ -67347,7 +67346,9 @@ function uiReturnFigStartGenerator(msg)
     initThemeColors();
     loadLocalSettings();
 
+    initKeyboardPanel();
 
+    
     graphView.updateMeasureData();
 
     viewportRect = msg.viewportRect;
@@ -67461,10 +67462,10 @@ document.addEventListener('keydown', e =>
         else               graphView.deleteSelectedNodes();
     }
 
-    // select all
-    else if (e.code == 'KeyL'
-          && getCtrlKey(e))
-        layoutSelectedNodes();
+    // // select all
+    // else if (e.code == 'KeyL'
+    //       && getCtrlKey(e))
+    //     layoutSelectedNodes();
 
 
     // toggled operation results
@@ -67721,6 +67722,45 @@ false);
 
 
 var currentKeyboardTab = 0;
+
+
+function initKeyboardPanel()
+{
+    if (isMac)
+    {
+        const _ctrlShift = document.getElementsByClassName('ctrlShift');
+        const  ctrlShift = Array.prototype.slice.call(_ctrlShift);
+    
+        const ctrlKeys  = ctrlShift.filter(k => k.innerHTML == 'Ctrl' );
+        const shiftKeys = ctrlShift.filter(k => k.innerHTML == 'Shift');
+
+        ctrlKeys .forEach(k => k.innerHTML = 'Shift');
+        shiftKeys.forEach(k => k.innerHTML = 'Ctrl' );
+
+
+        document.getElementsByClassName('treeLeftCtrl'  )[0].innerHTML = 'Alt';
+
+        document.getElementsByClassName('newBranch1'    )[0].innerHTML = 'Alt';
+        document.getElementsByClassName('newBranch2'    )[0].innerHTML = 'Ctrl';
+        
+        document.getElementsByClassName('treeRightCtrl1')[0].innerHTML = 'Shift';
+        document.getElementsByClassName('treeRightCtrl2')[0].innerHTML = 'Ctrl';
+        
+        document.getElementsByClassName('treeAcross1'   )[0].innerHTML = 'Alt';
+        document.getElementsByClassName('treeAcross2'   )[0].innerHTML = 'Ctrl';
+    }
+
+
+    const keys = document.getElementsByClassName('shortcutKey');
+
+    for (const key of keys)
+    {
+             if (key.innerHTML == 'Ctrl' ) key.innerHTML = osCtrl (false);
+        else if (key.innerHTML == 'Shift') key.innerHTML = osShift(false);
+        else if (key.innerHTML == 'Alt'  ) key.innerHTML = osAlt  (false);
+    }
+}
+
 
 
 function showKeyboardPanel()
@@ -68358,12 +68398,16 @@ function updateLicenseInfo(license)
         licenseWatermark    .style.background = 'transparent';//darkMode ? '#ffffff0f' : '#0000000a';
         licenseWatermarkPath.style.fill       = 'transparent';//darkMode ? '#2e2e2e50' : '#ffffff80';
 
-        licenseInfo.innerHTML = '<span style="user-select: none; color: ' + (darkMode ? '#fffa' : '#000c') + ';">Valid until:&nbsp;&thinsp;</span><span style="font-weight: 700">' + strDate.replaceAll('/', '&hairsp;/&hairsp;') + '</span>';
+        licenseInfo.innerHTML = '<span style="user-select: one; color: ' + (darkMode ? '#fffa' : '#000c') + ';">Valid until:&nbsp;&thinsp;</span><span style="font-weight: 700">' + strDate.replaceAll('/', '&hairsp;/&hairsp;') + '</span>';
+
+        subscribeWebsite.style.display = 'none';
     }
     else
     {
         licenseWatermark.style.display = 'none';
         licenseInfo.innerHTML = '';
+
+        subscribeWebsite.style.display = 'inline-block';
     }
 }
 

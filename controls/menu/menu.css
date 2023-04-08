@@ -26,13 +26,6 @@
 }
 
 
-/* .menuButton:focus
-{
-    background: var(--activeObjectColor);
-    color:      white;
-} */
-
-
 .menuButtonIcon
 {
     display:             inline-block;

@@ -193,7 +193,6 @@ function initGeneratorMenus()
         menuItemEnableBetaFeatures    = new MenuItem('Enable beta features',         {checkCallback: () => settings.enableBetaFeatures,    callback: () => { updateSettingAndMenu('enableBetaFeatures',    true, !settings.enableBetaFeatures);    enableFeatures(true, settings.enableBetaFeatures); }}),
                                         new MenuItem('',                             {separator: true}),    
                                         new MenuItem('Keyboard layout...',           {callback: () => showKeyboardPanel()}),
-                                        new MenuItem('',                             {separator: true}),    
         menuItemMinZoomForParams      = new MenuItem('Zoom level for values...',     {callback: () => showMinZoomDialog()})]);
         
 
@@ -417,8 +416,8 @@ function initGeneratorMenus()
         
     menuGraph = new Menu('Graph menu', false, false);
     menuGraph.addItems([
-        menuItemGraphPaste          = new MenuItem('Paste here',      {shortcut: osCtrl()             + 'V', callback: e => { hideAllMenus(); graphView.pasteCopiedNodes(false, e.clientX, e.clientY - menuBarHeight); }}),
-        menuItemGraphPasteConnected = new MenuItem('Paste connected', {shortcut: osCtrl() + osShift() + 'V', callback: e => { hideAllMenus(); graphView.pasteCopiedNodes(true,  e.clientX, e.clientY - menuBarHeight); }})]);
+        menuItemGraphPaste          = new MenuItem('Paste here',      {shortcut: osCtrl()      + 'V', callback: e => { hideAllMenus(); graphView.pasteCopiedNodes(false, e.clientX, e.clientY - menuBarHeight); }}),
+        menuItemGraphPasteConnected = new MenuItem('Paste connected', {shortcut: osCtrlShift() + 'V', callback: e => { hideAllMenus(); graphView.pasteCopiedNodes(true,  e.clientX, e.clientY - menuBarHeight); }})]);
 
     menuGraph.init = () => 
     {
@@ -429,23 +428,23 @@ function initGeneratorMenus()
 
     menuNodeSelect = new Menu('Select nodes menu', false, false);
     menuNodeSelect.addItems([
-        new MenuItem('Select tree',   {shortcut:  isMac ? osShift() + osCtrl () + osAlt() + 'Click' : osShift() + osCtrl() + osAlt() + 'Click', callback: () => graphView.selectedNodes =                                 getAllNodesFromNode(graphView.selectedNodes[0]) }),
-        new MenuItem('Select left',   {shortcut:  isMac ? osShift() + osAlt  ()           + 'Click' : osShift() + osCtrl()           + 'Click', callback: () => graphView.selectedNodes = [graphView.selectedNodes[0], ...getNodesBeforeNode(graphView.selectedNodes[0])] }),
-        new MenuItem('Select right',  {shortcut:  isMac ? osCtrl () + osShift()           + 'Click' : osShift() + osAlt()            + 'Click', callback: () => graphView.selectedNodes = [graphView.selectedNodes[0], ...getNodesAfterNode (graphView.selectedNodes[0])] }),
-        new MenuItem('Select across', {shortcut:  isMac ? osAlt  () + osCtrl ()           + 'Click' : osCtrl() + osAlt()             + 'Click', callback: () => graphView.selectedNodes = [graphView.selectedNodes[0], ...getNodesAcrossNode(graphView.selectedNodes[0])] })]);
+        new MenuItem('Select left',   {shortcut:  isMac ? osShift() + osAlt ()            : osShift() + osCtrl(false)          , callback: () => graphView.selectedNodes = [graphView.selectedNodes[0], ...getNodesBeforeNode(graphView.selectedNodes[0])] }),
+        new MenuItem('Select right',  {shortcut:  isMac ? osShift() + osCtrl()            : osShift() + osAlt (false)          , callback: () => graphView.selectedNodes = [graphView.selectedNodes[0], ...getNodesAfterNode (graphView.selectedNodes[0])] }),
+        new MenuItem('Select across', {shortcut:  isMac ? osAlt  () + osCtrl()            : osCtrl () + osAlt (false)          , callback: () => graphView.selectedNodes = [graphView.selectedNodes[0], ...getNodesAcrossNode(graphView.selectedNodes[0])] }),
+        new MenuItem('Select tree',   {shortcut:  isMac ? osShift() + osAlt () + osCtrl() : osShift() + osCtrl() + osAlt(false), callback: () => graphView.selectedNodes =                                 getAllNodesFromNode(graphView.selectedNodes[0]) })]);
 
 
     menuNodeCopyAs = new Menu('Copy nodes menu', false, false);
     menuNodeCopyAs.addItems([
-        //menuItemNodeCopyAsJsCode       = new MenuItem('Copy as JS code',     {shortcut:  osCtrl() + osShift() + 'C',            callback: () => graphView.copySelectedNodesAsJsCode()     }),
-        menuItemNodeCopyAsJsFunction   = new MenuItem('Copy as Javascript', {shortcut:  osCtrl() + osShift() /*+ osAlt()*/ + 'C',  callback: () => graphView.copySelectedNodesAsJavascript() })]);
+        //menuItemNodeCopyAsJsCode       = new MenuItem('Copy as JS code',     {shortcut:  osCtrlShift() + 'C',            callback: () => graphView.copySelectedNodesAsJsCode()     }),
+        menuItemNodeCopyAsJsFunction   = new MenuItem('Copy as Javascript', {shortcut:  osCtrlShift() /*+ osAlt()*/ + 'C',  callback: () => graphView.copySelectedNodesAsJavascript() })]);
 
 
     menuNode = new Menu('Node menu', false, false);
     menuNode.addItems([
         menuItemNodeCopy           = new MenuItem('Copy',            {shortcut:  osCtrl() + 'C',              callback: () => graphView.copySelectedNodes() }),
         menuItemNodePaste          = new MenuItem('Paste here',      {shortcut:  osCtrl() + 'V',              callback: e => { hideAllMenus(); graphView.pasteCopiedNodes(false); }}),
-        menuItemNodePasteConnected = new MenuItem('Paste connected', {shortcut:  osCtrl() + osShift() + 'D',  callback: e => { hideAllMenus(); graphView.pasteCopiedNodes(true ); }}),
+        menuItemNodePasteConnected = new MenuItem('Paste connected', {shortcut:  osCtrlShift() + 'D',  callback: e => { hideAllMenus(); graphView.pasteCopiedNodes(true ); }}),
                                      new MenuItem('Copy/Paste as',   {childMenu: menuNodeCopyAs}),
                                    //new MenuItem('',                {separator: true}),
       //menuItemNodeLayout         = new MenuItem('Layout',          {enabled:   false, shortcut: osCtrl() + 'L', callback: e => { hideAllMenus(); layoutSelectedNodes(); }}),
@@ -456,7 +455,7 @@ function initGeneratorMenus()
         menuItemNodeEdit           = new MenuItem('Edit...',         {callback: e => { hideAllMenus(); graphView.editSelectedCustomNode(); }}),
                                      new MenuItem('',                {separator: true}),
         // menuItemNodeActivate    = new MenuItem('Activate',        {callback: () => makeSelectedNodesActive()}),
-        menuItemNodeEnableDisable  = new MenuItem('Enable/Disable',  {shortcut:  osCtrl() + osShift() + 'E',  callback: () => actionManager.do(new ToggleDisableNodesAction(graphView.graph, graphView.selectedNodes.map(n => n.id)))}),
+        menuItemNodeEnableDisable  = new MenuItem('Enable/Disable',  {shortcut:  osCtrlShift() + 'E',  callback: () => actionManager.do(new ToggleDisableNodesAction(graphView.graph, graphView.selectedNodes.map(n => n.id)))}),
         menuItemNodeSep3           = new MenuItem('',                {separator: true}),
         menuItemNodeRemove         = new MenuItem('Remove',          {shortcut:  osCtrl() + '⌫',             callback: e => { hideAllMenus(); graphView.removeSelectedNodes(true); }})]);
 

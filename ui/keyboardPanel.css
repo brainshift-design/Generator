@@ -174,27 +174,28 @@
 
 .shortcutKey
 {
+    font-family:             Inter;
     display:                 inline-block;
     font-size:               11px;
-    font-variant-alternates: stylistic(), styleset();
-    font-feature-settings:   'salt' on, 'ss02' on;
     color:                   #bcbcbc;
     margin-left:             3px;
     margin-right:            0px;
-    padding-left:            4px;
-    padding-right:           4px;
+    padding-left:            5px;
+    padding-right:           5px;
     padding-top:             5px;
-    width:                   max(19px, fit-content);
-    height:                  18.5px;
+    width:                   max(20px, fit-content);
+    height:                  19px;
     border-radius:           2px;
     box-shadow:              0 0 0 1px inset #bcbcbc;
+    font-variant-alternates: stylistic(), styleset();
+    font-feature-settings:   'salt' on, 'ss02' on;
 }
 
 
 .shortcutChar
 {
-    padding-left:  8px;
-    padding-right: 8px;
+    padding-left:  9px;
+    padding-right: 9px;
 }
 
 .shortcutCharWide

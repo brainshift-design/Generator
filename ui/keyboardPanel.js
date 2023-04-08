@@ -1,6 +1,45 @@
 var currentKeyboardTab = 0;
 
 
+function initKeyboardPanel()
+{
+    if (isMac)
+    {
+        const _ctrlShift = document.getElementsByClassName('ctrlShift');
+        const  ctrlShift = Array.prototype.slice.call(_ctrlShift);
+    
+        const ctrlKeys  = ctrlShift.filter(k => k.innerHTML == 'Ctrl' );
+        const shiftKeys = ctrlShift.filter(k => k.innerHTML == 'Shift');
+
+        ctrlKeys .forEach(k => k.innerHTML = 'Shift');
+        shiftKeys.forEach(k => k.innerHTML = 'Ctrl' );
+
+
+        document.getElementsByClassName('treeLeftCtrl'  )[0].innerHTML = 'Alt';
+
+        document.getElementsByClassName('newBranch1'    )[0].innerHTML = 'Alt';
+        document.getElementsByClassName('newBranch2'    )[0].innerHTML = 'Ctrl';
+        
+        document.getElementsByClassName('treeRightCtrl1')[0].innerHTML = 'Shift';
+        document.getElementsByClassName('treeRightCtrl2')[0].innerHTML = 'Ctrl';
+        
+        document.getElementsByClassName('treeAcross1'   )[0].innerHTML = 'Alt';
+        document.getElementsByClassName('treeAcross2'   )[0].innerHTML = 'Ctrl';
+    }
+
+
+    const keys = document.getElementsByClassName('shortcutKey');
+
+    for (const key of keys)
+    {
+             if (key.innerHTML == 'Ctrl' ) key.innerHTML = osCtrl (false);
+        else if (key.innerHTML == 'Shift') key.innerHTML = osShift(false);
+        else if (key.innerHTML == 'Alt'  ) key.innerHTML = osAlt  (false);
+    }
+}
+
+
+
 function showKeyboardPanel()
 {
     setCurrentKeyboardTab(0);
