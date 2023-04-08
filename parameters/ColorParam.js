@@ -216,8 +216,11 @@ extends Parameter
 
         this.checkers.style.backgroundColor    = darkMode ? '#444' : '#fff';
 
-        this.checkers.style.backgroundSize     = '20px 20px';
-        this.checkers.style.backgroundPosition = '0 0, 10px 10px';
+        this.checkers.style.backgroundSize     = '22px 22px';
+        this.checkers.style.backgroundPosition = '0 0, 11px 11px';
+
+        this.checkers.style.left               = '-3.5px';
+        this.checkers.style.width              = 'calc(100% + 3.5px)';
 
 
         super.updateControls();

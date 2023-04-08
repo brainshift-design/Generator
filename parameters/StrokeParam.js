@@ -57,7 +57,7 @@ extends Parameter
         
         this.checkers.style.position      = 'absolute';
         this.checkers.style.width         = '100%';
-        this.checkers.style.height        = '20px';
+        this.checkers.style.height        = defParamHeight;
 
         this.textControl.style.width      = '100%';
         this.textControl.style.textAlign  = 'center';
@@ -70,7 +70,7 @@ extends Parameter
         this.controls[0].style.position       = 'absolute';
         this.controls[0].style.display        = 'block';
         this.controls[0].style.width          = '100%';
-        this.controls[0].style.height         = '20px';
+        this.controls[0].style.height         = defParamHeight;
 
 
         this.div.appendChild(this.checkers);
@@ -227,9 +227,12 @@ extends Parameter
             this.checkers.style.display            = 'inline-block';
             this.checkers.style.backgroundColor    = darkMode ? '#444' : '#fff';
 
-            this.checkers.style.backgroundSize     = '20px 20px';
-            this.checkers.style.backgroundPosition = '0 0, 10px 10px';
-
+            this.checkers.style.backgroundSize     = '22px 22px';
+            this.checkers.style.backgroundPosition = '0 0, 11px 11px';
+    
+            this.checkers.style.left               = '-3.5px';
+            this.checkers.style.width              = 'calc(100% + 3.5px)';
+    
             
             this.controls[0].style.display     = 'inline-block';
             
@@ -278,7 +281,7 @@ extends Parameter
         }
 
 
-        this.div.style.height = '20px';
+        this.div.style.height = defParamHeight;
 
 
         if (this.input ) this.input .updateControl();

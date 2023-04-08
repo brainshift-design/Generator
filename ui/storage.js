@@ -196,7 +196,7 @@ function uiReturnFigLoadNodesAndConns(msg)
         {
             console.log(
                 '%cnodes JSON = %s', 
-                'background: #fed',
+                'background: #fed; color: black;',
                 json.replaceAll('\\n', '\n')
                     .replaceAll('\\"', '"'));
         }

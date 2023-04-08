@@ -15,7 +15,7 @@
 
 //         this.controls[0].div.style.width  = '100%';
 //         this.controls[0].div.style.height = 'calc(90% - ' + node.header.offsetHeight + 'px)';
-//         //this.controls[0].div.style.minHeight = '20px';
+//         //this.controls[0].div.style.minHeight = defParamHeight;
 //     }
 
 

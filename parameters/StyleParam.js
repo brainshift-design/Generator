@@ -174,7 +174,7 @@
 //         }
 
 
-//         this.div.style.height = '20px';
+//         this.div.style.height = defParamHeight;
 
 
 //         if (this.input ) this.input .updateControl();
