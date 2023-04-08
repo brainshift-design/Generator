@@ -42,8 +42,11 @@ extends OpColorBase
         this.paramMiter.canShow = () => this.paramJoin.value == 0;
 
 
-        this.checkers = createDiv('nodeHeaderCheckers');
-        this.inner.insertBefore(this.checkers, this.header);
+        this.checkersHolder = createDiv('nodeHeaderCheckersHolder');
+        this.checkers       = createDiv('nodeHeaderCheckers');
+
+        this.inner.insertBefore(this.checkersHolder, this.header);
+        this.checkersHolder.appendChild(this.checkers);
     }
     
     
@@ -183,6 +186,9 @@ extends OpColorBase
         this.checkers.style.backgroundSize     = '22px 22px';
         this.checkers.style.backgroundPosition = '0 0, 11px 11px';
                         
+        this.checkers.style.left               = '-3px';
+        this.checkers.style.width              = 'calc(100% + 3px)';
+
 
         this.header.style.background = 
             !rgbIsNaN(colors.back)

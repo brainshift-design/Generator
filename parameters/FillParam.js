@@ -12,7 +12,9 @@ extends Parameter
     warningStyle;
 
 
+    checkersHolder;
     checkers;
+
     controlWrapper;
 
    
@@ -39,7 +41,9 @@ extends Parameter
     {
         super(FILL_VALUE, id, name);
 
+        this.checkersHolder = createDiv();
         this.checkers       = createDiv();
+
         this.controlWrapper = createDiv();
 
 
@@ -81,6 +85,11 @@ extends Parameter
 
         this.div.appendChild(this._warningOverlay);
 
+
+        this.checkersHolder.style.position          = 'absolute';
+        this.checkersHolder.style.width             = '100%';
+        this.checkersHolder.style.height            = defParamHeight;
+        this.checkersHolder.style.overflow          = 'hidden';
 
         this.checkers.style.position                = 'absolute';
         this.checkers.style.width                   = '100%';
@@ -132,7 +141,9 @@ extends Parameter
         this.controlWrapper.appendChild(this.controls[0].div);
         this.controlWrapper.appendChild(this.controls[1].div);
         
-        this.div.appendChild(this.checkers);
+        this.checkersHolder.appendChild(this.checkers);
+        this.div.appendChild(this.checkersHolder);
+        
         this.div.appendChild(this.controlWrapper);
 
        
@@ -387,9 +398,12 @@ extends Parameter
         this.checkers.style.display            = this.value.isValid() ? 'inline-block' : 'none';
         this.checkers.style.backgroundColor    = darkMode ? '#444' : '#fff';
 
-        this.checkers.style.backgroundSize     = '24px 24px';
-        this.checkers.style.backgroundPosition = '0 0, 12px 12px';
+        this.checkers.style.backgroundSize     = '22px 22px';
+        this.checkers.style.backgroundPosition = '0 0, 11px 11px';
 
+        this.checkers.style.left  = '-3.5px';
+        this.checkers.style.width = 'calc(100% + 3.5px)';
+        
         
         this.controls[0]. backStyleLight   = 
         this.controls[0]. backStyleDark    = 

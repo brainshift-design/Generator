@@ -4,6 +4,7 @@ extends OpColorBase
     paramColor;
     paramOpacity;
 
+    checkersHolder;
     checkers;
     colorBack;
 
@@ -14,11 +15,13 @@ extends OpColorBase
         super(FILL, 'fill', 'fill');
 
 
-        this.colorBack = createDiv('colorBack');
-        this.checkers  = createDiv('nodeHeaderCheckers');
+        this.colorBack      = createDiv('colorBack');
+        this.checkersHolder = createDiv('nodeHeaderCheckersHolder');
+        this.checkers       = createDiv('nodeHeaderCheckers');
 
         //this.inner.appendChild(this.colorBack);
-        this.inner.insertBefore(this.checkers, this.header);
+        this.inner.insertBefore(this.checkersHolder, this.header);
+        this.checkersHolder.appendChild(this.checkers);
 
 
         this.addInput (new Input(FILL_TYPES, getNodeInputValuesForUndo, this.input_getBackInitValue));
@@ -219,7 +222,10 @@ extends OpColorBase
 
         this.checkers.style.backgroundSize     = '22px 22px';
         this.checkers.style.backgroundPosition = '0 0, 11px 11px';
-                        
+
+        this.checkers.style.left               = '-3px';
+        this.checkers.style.width              = 'calc(100% + 3px)';
+                       
 
         this.inputs[0] .colorLight = 
         this.inputs[0] .colorDark  = colors.input;

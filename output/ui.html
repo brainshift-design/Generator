@@ -2630,6 +2630,7 @@ a
     resize:               none;
     cursor:               default;
 
+    padding-top:          0.4em;
     padding-left:         0.4em;
     padding-right:        0.4em;
 
@@ -3064,17 +3065,33 @@ a
 }
 
 
+.nodeHeaderCheckersHolder
+{
+    display:       inline-block;
+    width:         100%;
+    height: 100%;
+    position:      absolute;
+    left:          0;
+    top:           0; 
+    z-index:       1;
+    overflow:      hidden;
+    border-radius: 4px 4px 0 0;
+    pointer-events: none;
+    /* box-shadow:    0 0 0 1px red inset; */
+}
+
+
 .nodeHeaderCheckers
 {
     display:       inline-block;
     width:         100%;
+    height: 100%;
     position:      absolute;
     left:          0;
     top:           0; 
     border-radius: 4px 4px 0 0;
-    z-index:       1;
- /* overflow:      visible; */
- /* box-shadow:    0 0 0 1px red inset; */
+    pointer-events: none;
+    /* box-shadow:    0 0 0 1px blue inset; */
 }
 
 
@@ -41095,7 +41112,7 @@ extends Control
             this.textbox.style.left   = (this.param && this.param.input ? 8 : 0) + 'px';
             
             this.textbox.style.width  = this.param && this.param.input ? 'calc(100% - 8px)' : '100%';
-            this.textbox.style.height = Math.max(20, h);
+            this.textbox.style.height = Math.max(defParamHeight, h);
         }
     }
 
@@ -48876,7 +48893,9 @@ extends Parameter
     warningStyle;
 
 
+    checkersHolder;
     checkers;
+
     controlWrapper;
 
    
@@ -48903,7 +48922,9 @@ extends Parameter
     {
         super(FILL_VALUE, id, name);
 
+        this.checkersHolder = createDiv();
         this.checkers       = createDiv();
+
         this.controlWrapper = createDiv();
 
 
@@ -48945,6 +48966,11 @@ extends Parameter
 
         this.div.appendChild(this._warningOverlay);
 
+
+        this.checkersHolder.style.position          = 'absolute';
+        this.checkersHolder.style.width             = '100%';
+        this.checkersHolder.style.height            = defParamHeight;
+        this.checkersHolder.style.overflow          = 'hidden';
 
         this.checkers.style.position                = 'absolute';
         this.checkers.style.width                   = '100%';
@@ -48996,7 +49022,9 @@ extends Parameter
         this.controlWrapper.appendChild(this.controls[0].div);
         this.controlWrapper.appendChild(this.controls[1].div);
         
-        this.div.appendChild(this.checkers);
+        this.checkersHolder.appendChild(this.checkers);
+        this.div.appendChild(this.checkersHolder);
+        
         this.div.appendChild(this.controlWrapper);
 
        
@@ -49251,9 +49279,12 @@ extends Parameter
         this.checkers.style.display            = this.value.isValid() ? 'inline-block' : 'none';
         this.checkers.style.backgroundColor    = darkMode ? '#444' : '#fff';
 
-        this.checkers.style.backgroundSize     = '24px 24px';
-        this.checkers.style.backgroundPosition = '0 0, 12px 12px';
+        this.checkers.style.backgroundSize     = '22px 22px';
+        this.checkers.style.backgroundPosition = '0 0, 11px 11px';
 
+        this.checkers.style.left  = '-3.5px';
+        this.checkers.style.width = 'calc(100% + 3.5px)';
+        
         
         this.controls[0]. backStyleLight   = 
         this.controls[0]. backStyleDark    = 
@@ -61636,6 +61667,7 @@ extends OpColorBase
     paramColor;
     paramOpacity;
 
+    checkersHolder;
     checkers;
     colorBack;
 
@@ -61646,11 +61678,13 @@ extends OpColorBase
         super(FILL, 'fill', 'fill');
 
 
-        this.colorBack = createDiv('colorBack');
-        this.checkers  = createDiv('nodeHeaderCheckers');
+        this.colorBack      = createDiv('colorBack');
+        this.checkersHolder = createDiv('nodeHeaderCheckersHolder');
+        this.checkers       = createDiv('nodeHeaderCheckers');
 
         //this.inner.appendChild(this.colorBack);
-        this.inner.insertBefore(this.checkers, this.header);
+        this.inner.insertBefore(this.checkersHolder, this.header);
+        this.checkersHolder.appendChild(this.checkers);
 
 
         this.addInput (new Input(FILL_TYPES, getNodeInputValuesForUndo, this.input_getBackInitValue));
@@ -61851,7 +61885,10 @@ extends OpColorBase
 
         this.checkers.style.backgroundSize     = '22px 22px';
         this.checkers.style.backgroundPosition = '0 0, 11px 11px';
-                        
+
+        this.checkers.style.left               = '-3px';
+        this.checkers.style.width              = 'calc(100% + 3px)';
+                       
 
         this.inputs[0] .colorLight = 
         this.inputs[0] .colorDark  = colors.input;
@@ -61956,8 +61993,11 @@ extends OpColorBase
         this.paramMiter.canShow = () => this.paramJoin.value == 0;
 
 
-        this.checkers = createDiv('nodeHeaderCheckers');
-        this.inner.insertBefore(this.checkers, this.header);
+        this.checkersHolder = createDiv('nodeHeaderCheckersHolder');
+        this.checkers       = createDiv('nodeHeaderCheckers');
+
+        this.inner.insertBefore(this.checkersHolder, this.header);
+        this.checkersHolder.appendChild(this.checkers);
     }
     
     
@@ -62097,6 +62137,9 @@ extends OpColorBase
         this.checkers.style.backgroundSize     = '22px 22px';
         this.checkers.style.backgroundPosition = '0 0, 11px 11px';
                         
+        this.checkers.style.left               = '-3px';
+        this.checkers.style.width              = 'calc(100% + 3px)';
+
 
         this.header.style.background = 
             !rgbIsNaN(colors.back)

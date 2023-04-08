@@ -84,7 +84,7 @@ extends Control
             this.textbox.style.left   = (this.param && this.param.input ? 8 : 0) + 'px';
             
             this.textbox.style.width  = this.param && this.param.input ? 'calc(100% - 8px)' : '100%';
-            this.textbox.style.height = Math.max(20, h);
+            this.textbox.style.height = Math.max(defParamHeight, h);
         }
     }
 
