@@ -165,6 +165,9 @@ ColorControl.prototype.initEvents = function()
                 ? this.view.savedConn.input
                 : null;
 
+
+            //console.log('this.view.tempConn =', this.view.tempConn);
+            
             if (    this.view.tempConn.output
                 &&  this.param.input
                 &&  this.param.input.canConnectFrom(this.view.tempConn.output)

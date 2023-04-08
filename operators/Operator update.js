@@ -217,7 +217,7 @@ Operator.prototype.updateHeaderLabel = function()
     
     this.label.style.top = 
           (  Math.floor(this.measureData.labelWrapperOffset.height/2 - this.measureData.labelOffset.height/2)
-           + Math.min(Math.max(1, 1/graphView.zoom) - 1, 2))
+           + Math.min(Math.max(1, 1/graphView.zoom), 2))
         + 'px';
 
 

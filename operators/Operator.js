@@ -569,6 +569,8 @@ class Operator
 
     setRect(x, y, w, h, updateTransform = true)
     {
+        console.log('Operator.setRect()');
+
         this.div.style.left   = x + 'px';
         this.div.style.top    = y + 'px';
         this.div.style.width  = w + 'px';

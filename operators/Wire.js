@@ -412,7 +412,7 @@ class Wire
         if (   conn.output && color[3] < 1
             || conn. input && color[3] < 1)
         {
-            showCurve = 
+            const showCurve = 
                    conn.output && color[3] > 0
                 || conn. input && color[3] > 0;
     
@@ -420,7 +420,7 @@ class Wire
             this.xp1.style.stroke           = rgba2style(rgb_a(darkMode ? [0.067, 0.067, 0.067] : [0.784, 0.784, 0.784], 1 - color[3]));
             this.xp1.style.strokeDasharray  = 9 * view.zoom;
     
-            this.xp2.style.display          = 'inline';
+            this.xp2.style.display          = showCurve ? 'none' : 'inline';
             this.xp2.style.stroke           = rgba2style(rgb_a(darkMode ? [0.302, 0.302, 0.302] : [1, 1, 1], 1 - color[3]));//darkMode ? '#4d4d4d' : '#fff';
             this.xp2.style.strokeDasharray  = 9 * view.zoom;
             this.xp2.style.strokeDashoffset = 9 * view.zoom;

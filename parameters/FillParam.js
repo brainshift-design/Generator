@@ -127,7 +127,7 @@ extends Parameter
         this.controls[0].textbox.style.width        = '60%';
         this.controls[0].textbox.style.transform    = 'translateX(0)';
         this.controls[0].textbox.style.textAlign    = 'right';
-        this.controls[0].textbox.style.paddingLeft  =  11;
+        this.controls[0].textbox.style.paddingLeft  =  14;
         
         this.controls[1].textbox.style.position     = 'absolute';
         this.controls[1].textbox.style.right        =  0;
