@@ -283,4 +283,11 @@ extends OpColorBase
 
         this.updateParamControls();
     }
+
+
+
+    // updateWarningOverlayStyle(colBack, height = -1)
+    // {
+    //     super.updateWarningOverlayStyle(colBack, defHeaderHeight + defParamHeight);
+    // }
 }

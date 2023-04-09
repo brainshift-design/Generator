@@ -51,13 +51,14 @@ extends Parameter
             dragScale); 
 
         this.controls[0].successOnFocusOut = true;
-        this.controls[0].div.zIndex        = 0;
+        //this.controls[0].div.style.position        = '100';
+        //this.controls[0].div.style.zIndex        = 100;
 
         this.controls[0].div.style.display = 'inline-block';
         this.controls[0].div.style.width   = '100%';
 
         
-        this._warningOverlay = createDiv('colorWarningOverlay');
+        this._warningOverlay = createDiv('colorValueWarningOverlay');
         this._warningOverlay.style.zIndex  = 21;
         
         this.div.appendChild(this._warningOverlay);
@@ -319,19 +320,26 @@ extends Parameter
         
         this._warningOverlay.style.height = 
             height < 0
-            ? this.div.offsetHeight
+            ? defParamHeight //this.div.offsetHeight
             : height;
 
+
+        const [warnStyle1, warnStyle2] = getWarningStyles(colBack);
+
         this._warningOverlay.style.background =
-               rgbIsOk(colBack)
+                rgbIsOk(colBack)
             && !this.forceShowWarning
             ? 'transparent'
             : 'repeating-linear-gradient('
                + '-45deg, '
                + 'transparent 0 7px,'
-               +  this.warningStyle + ' 7px 14px)';
+               +  warnStyle2 + ' 7px 14px,'
+               + 'transparent 14px 21px,'
+               +  warnStyle1 + ' 21px 28px)';
+
 
         this._warningOverlay.style.backgroundPosition = '-9px 0';
+        this._warningOverlay.style.backgroundSize     = 'calc(100% + 20px) 100%';
         this._warningOverlay.style.display            = 'block';
     }
     

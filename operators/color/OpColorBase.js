@@ -18,7 +18,7 @@ extends Operator
         
 
         this._warningOverlay = createDiv('colorWarningOverlay');
-        this._warningOverlay.style.zIndex = 1;
+        //this._warningOverlay.style.zIndex = 1;
         
         this.inner.appendChild(this._warningOverlay);
 
@@ -132,7 +132,7 @@ extends Operator
 
         let rgbStripeBack = [...rgbBack];
         
-        const factor = this.getWarningFactor(rgbBack);
+        const factor = getWarningFactor(rgbBack);
 
         if (factor > 0)
         {
@@ -201,43 +201,11 @@ extends Operator
     {
         this._warningOverlay.style.height = 
             height < 0
-            ? this.measureData.headerOffset.height
+            ? defHeaderHeight //this.measureData.headerOffset.height
             : height;
 
-
-        const colWarning = getDefaultWarningRgba(colBack);
-
-        let warnStyle1, warnStyle2;
-           
             
-        if (!rgbIsNaN(colBack))
-        {
-            const hclBack = rgb2hclok(colBack);
-
-            const hclBack1 = [...hclBack];
-            const hclBack2 = [...hclBack];
-
-            hclBack1[0] += 1/12;  if (hclBack1[0] > 1) hclBack1[0] -= 1;
-            hclBack2[0] -= 1/12;  if (hclBack2[0] < 0) hclBack2[0] += 1;
-
-
-            const altBack1 = rgb_a(clampRgb(hclok2rgb(hclBack1)), 0.35);
-            const altBack2 = rgb_a(clampRgb(hclok2rgb(hclBack2)), 0.35);
-
-            const factor   = this.getWarningFactor(colBack);
-
-            const colWarn1 = rgbaLerp(colWarning, altBack1, factor);
-            const colWarn2 = rgbaLerp(colWarning, altBack2, factor);
-            
-            warnStyle1     = rgba2style(colWarn1);
-            warnStyle2     = rgba2style(colWarn2);
-        }
-        else
-        {
-            warnStyle1 = rgba2style(colWarning);
-            warnStyle2 = rgba2style(colWarning);
-        }
-
+        const [warnStyle1, warnStyle2] = getWarningStyles(colBack);
 
         this._warningOverlay.style.background =
                 rgbIsOk(colBack)
@@ -251,35 +219,5 @@ extends Operator
                +  warnStyle2 + ' 21px 28px)';
 
         this._warningOverlay.style.display = 'block';
-    }
-
-
-
-    getWarningFactor(colBack)
-    {
-        let dr, dg, db;
-
-        if (colBack[0] < 0) dr = -colBack[0]; else if (colBack[0] > 1) dr = colBack[0] - 1; else dr = 0;
-        if (colBack[1] < 0) dg = -colBack[1]; else if (colBack[1] > 1) dg = colBack[1] - 1; else dg = 0;
-        if (colBack[2] < 0) db = -colBack[2]; else if (colBack[2] > 1) db = colBack[2] - 1; else db = 0;
-        
-        const d   = [dr, dg, db].sort()[1];
-        const avg = (dr + dg + db) / 3;
-
-        const factor = Math.min((d + avg) / 2, 1);
-
-        // if (this.id == 'color')
-        // {
-        //     console.log('colBack =', colBack);
-        //     console.log('dr     =', dr);
-        //     console.log('dg     =', dg);
-        //     console.log('db     =', db);
-        //     console.log('d      =', d);
-        //     console.log('avg    =', avg);
-        //     console.log('factor =', factor);
-        //     console.log('');
-        // }
-
-        return factor;
     }
 }
