@@ -185,7 +185,8 @@ extends OperatorBase
             colors.output = this.active ? rgb_a(colorPassive, 0.65) : rgb_a(colorActive, darkMode ? 0.5 : 0.45);
             colors.wire   = colorActive;
         }
-        else if (COLOR_TYPES.includes(type))
+        else if (  COLOR_TYPES.includes(type)
+                 || FILL_TYPES.includes(type))
         {
             if (   this.inputs[0].connected
                 && this.inputs[1].connected)
