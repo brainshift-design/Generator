@@ -456,6 +456,14 @@ class Wire
     
     
         const wireStyle = rgba2style(color);
+
+        const arrowStyle = rgba2style(
+            rgbaLerp(
+                darkMode 
+                ? [0.5, 0.5, 0.5, 0.65] 
+                : [0.5, 0.5, 0.5, 0.5 ], 
+                color, 
+                color[3]));
     
         // const isNotCached = 
         //            conn.output
@@ -484,8 +492,9 @@ class Wire
     
         this. inBall.style.fill          = wireStyle;
         this.outBall.style.fill          = wireStyle;
-        this.arrow1 .style.fill          = wireStyle;
-        this.arrow2 .style.fill          = wireStyle;
+
+        this.arrow1 .style.fill          = arrowStyle;
+        this.arrow2 .style.fill          = arrowStyle;
     
     
         if (conn.output) conn.output.wireBall.style.background = wireStyle;

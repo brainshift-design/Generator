@@ -22330,7 +22330,7 @@ function getStripeBackColor(rgbBack)
     if (factor > 0)
     {
         const hcl = rgb2hsv(clampRgb(rgbBack));
-        hcl[1] /= 3;
+        hcl[1] /= 2;
 
         rgbStripeBack = rgbLerp(rgbBack, hsv2rgb(hcl), factor);
     }
@@ -28594,7 +28594,7 @@ function getStripeBackColor(rgbBack)
     if (factor > 0)
     {
         const hcl = rgb2hsv(clampRgb(rgbBack));
-        hcl[1] /= 3;
+        hcl[1] /= 2;
 
         rgbStripeBack = rgbLerp(rgbBack, hsv2rgb(hcl), factor);
     }
@@ -51787,6 +51787,14 @@ class Wire
     
     
         const wireStyle = rgba2style(color);
+
+        const arrowStyle = rgba2style(
+            rgbaLerp(
+                darkMode 
+                ? [0.5, 0.5, 0.5, 0.65] 
+                : [0.5, 0.5, 0.5, 0.5 ], 
+                color, 
+                color[3]));
     
         // const isNotCached = 
         //            conn.output
@@ -51815,8 +51823,9 @@ class Wire
     
         this. inBall.style.fill          = wireStyle;
         this.outBall.style.fill          = wireStyle;
-        this.arrow1 .style.fill          = wireStyle;
-        this.arrow2 .style.fill          = wireStyle;
+
+        this.arrow1 .style.fill          = arrowStyle;
+        this.arrow2 .style.fill          = arrowStyle;
     
     
         if (conn.output) conn.output.wireBall.style.background = wireStyle;
@@ -58987,13 +58996,13 @@ extends OpColorBase
 
         const colors = this.getHeaderColors();
 
-        this.paramSpace.controls[0].textbox.style.color           = rgba2style(colors.text);
-        this.paramSpace.controls[0].textbox.style.background      = 'transparent';
+        this.paramSpace.controls[0].textbox.style.color      = rgba2style(colors.text);
+        this.paramSpace.controls[0].textbox.style.background = 'transparent';
 
 
         this.updateParamControls();
 
-        
+
         this.paramColor._warningOverlay.style.display = 'none';
     }
 
@@ -61916,7 +61925,9 @@ extends OperatorBase
                     && this.linkedStyleId != NULL
                     ? (isDark(rgbaStripe) ? [1, 1, 1] : [0, 0, 0])
                     : colors.text, 
-                    this.styleCircle.over ? 1 : 0.5));
+                    this.linkedStyleId != NULL
+                    ? (this.styleCircle.over ? 0.5 : 0)
+                    : (this.styleCircle.over ? 1 : 0.5)));
 
             this.circleBack.style.background             = darkMode ? '#2c2c2c' : '#ffffff';
 
@@ -69053,7 +69064,10 @@ function uiReturnFigGetLocalData(msg)
                 : null);
            
             if (!settings.dataMode)
+            {
                 graphView.graph.nodes.forEach(n => n.updateNode());
+                graphView.updateNodeWireTransforms(graphView.graph.nodes);
+            }
         });
     }
 

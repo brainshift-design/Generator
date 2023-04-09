@@ -480,13 +480,13 @@ extends OpColorBase
 
         const colors = this.getHeaderColors();
 
-        this.paramSpace.controls[0].textbox.style.color           = rgba2style(colors.text);
-        this.paramSpace.controls[0].textbox.style.background      = 'transparent';
+        this.paramSpace.controls[0].textbox.style.color      = rgba2style(colors.text);
+        this.paramSpace.controls[0].textbox.style.background = 'transparent';
 
 
         this.updateParamControls();
 
-        
+
         this.paramColor._warningOverlay.style.display = 'none';
     }
 

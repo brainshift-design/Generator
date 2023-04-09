@@ -459,7 +459,7 @@ function getStripeBackColor(rgbBack)
     if (factor > 0)
     {
         const hcl = rgb2hsv(clampRgb(rgbBack));
-        hcl[1] /= 3;
+        hcl[1] /= 2;
 
         rgbStripeBack = rgbLerp(rgbBack, hsv2rgb(hcl), factor);
     }

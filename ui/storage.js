@@ -117,7 +117,10 @@ function uiReturnFigGetLocalData(msg)
                 : null);
            
             if (!settings.dataMode)
+            {
                 graphView.graph.nodes.forEach(n => n.updateNode());
+                graphView.updateNodeWireTransforms(graphView.graph.nodes);
+            }
         });
     }
 

@@ -200,7 +200,9 @@ extends OperatorBase
                     && this.linkedStyleId != NULL
                     ? (isDark(rgbaStripe) ? [1, 1, 1] : [0, 0, 0])
                     : colors.text, 
-                    this.styleCircle.over ? 1 : 0.5));
+                    this.linkedStyleId != NULL
+                    ? (this.styleCircle.over ? 0.5 : 0)
+                    : (this.styleCircle.over ? 1 : 0.5)));
 
             this.circleBack.style.background             = darkMode ? '#2c2c2c' : '#ffffff';
 
