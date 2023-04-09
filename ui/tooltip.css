@@ -1,6 +1,15 @@
+.tooltipPre /* to avoid FOUC (flash of unstyled content) */
+{
+    font-family: Inter;
+    font-size:   12px;
+}
+
+
 .tooltip
 {
     display:          none;
+    font-family:      Inter;
+    font-size:        11px;
     opacity:          0;
     width:            auto;
     height:           15px;
@@ -13,8 +22,6 @@
     bottom:           125%;
     left:             13px;
     top:              44px;
-    font-family:      Inter;
-    font-size:        11px;
 }
 
 

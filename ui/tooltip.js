@@ -13,15 +13,6 @@ function createTooltipSrc(source, ref, getTooltip)
 {
     source.addEventListener('pointerenter', () =>
     {
-        console.log('getTooltip() =', getTooltip());
-        if (   tooltipOutTimer >= 0
-            && getTooltip()) 
-        {
-            clearTimeout(tooltipOutTimer);
-            tooltipOutTimer = -1;
-        }
-
-
         if (tooltipTimer >= 0) 
             clearTimeout(tooltipTimer);
 
@@ -37,14 +28,37 @@ function createTooltipSrc(source, ref, getTooltip)
 
                 tooltipTimer = -1;
             }, 
-            currentTooltip ? 0 : 1000);
+               currentTooltip 
+            && currentTooltip != getTooltip() 
+            ? 0 
+            : 1000);
         }
     });
       
     
     source.addEventListener('pointerleave', () =>
     {
-        tooltip_pointerLeave(getTooltip());
+        if (tooltipTimer >= 0)
+        {
+            clearTimeout(tooltipTimer);
+            tooltipTimer = -1;
+        }
+    
+        
+        if (tooltipOutTimer >= 0)
+            clearTimeout(tooltipOutTimer);
+        
+    
+        tooltipOutTimer = setTimeout(() => 
+        {
+            if (currentTooltip) 
+                hideTooltip(currentTooltip);
+    
+            currentTooltipSource = null;
+    
+            tooltipOutTimer      = -1;
+        }, 
+        400);
     });
 }
 
@@ -52,8 +66,12 @@ function createTooltipSrc(source, ref, getTooltip)
 
 function createTooltip(tooltip)
 {
+    tooltip.trap = false;
+    
+
     tooltip.addEventListener('pointerenter', () =>
     {
+        console.log('tooltip enter 1');
         inTooltip = tooltip;
     });
     
@@ -73,11 +91,12 @@ function createTooltipPointerTrap(tooltip)
 {
     tooltip.addEventListener('pointerenter', e =>
     {
-        if (tooltipOutTimer >= 0)
-        {
+        console.log('tooltip enter 2');
+        //if (tooltipOutTimer >= 0)
+        //{
             clearTimeout(tooltipOutTimer);
-            //tooltipOutTimer = -1;
-        }
+            tooltipOutTimer = -1;
+        //}
     });
 
     
@@ -86,32 +105,25 @@ function createTooltipPointerTrap(tooltip)
         // if (tooltipOutTimer < 0)
         //     hideTooltip(tooltip);
 
-        tooltip_pointerLeave(currentTooltip);
+        if (tooltipTimer >= 0)
+        {
+            clearTimeout(tooltipTimer);
+            tooltipTimer = -1;
+        }
+
+
+        tooltipOutTimer = setTimeout(() => 
+        {
+            console.log('timeout');
+            if (currentTooltip) 
+                hideTooltip(currentTooltip);
+
+            currentTooltipSource = null;
+
+            tooltipOutTimer      = -1;
+        }, 
+        400);
     });
-}
-
-
-
-function tooltip_pointerLeave(tooltip)
-{
-    if (tooltipTimer >= 0)
-    {
-        clearTimeout(tooltipTimer);
-        tooltipTimer = -1;
-    }
-
-
-    tooltipOutTimer = setTimeout(() => 
-    {
-        if (tooltip) 
-            hideTooltip(tooltip);
-
-        currentTooltip       = null;
-        currentTooltipSource = null;
-
-        tooltipOutTimer      = -1;
-    }, 
-    400);
 }
 
 
@@ -121,7 +133,9 @@ function showTooltip(source, tooltip)
     if (!isEmpty(currentMenus))
         return;
 
-    if (currentTooltip)
+        
+    if (   currentTooltip
+        && currentTooltip != tooltip)
         hideTooltip(currentTooltip);
 
 
