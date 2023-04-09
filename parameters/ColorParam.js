@@ -331,7 +331,8 @@ extends Parameter
                + 'transparent 0 7px,'
                +  this.warningStyle + ' 7px 14px)';
 
-        this._warningOverlay.style.display = 'block';
+        this._warningOverlay.style.backgroundPosition = '-9px 0';
+        this._warningOverlay.style.display            = 'block';
     }
     
     

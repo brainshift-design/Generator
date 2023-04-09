@@ -83,6 +83,7 @@
 {
     display:     block;
     position:    relative;
+    z-index:     2000;
     /* box-shadow:  0 0 0 1px green inset; */
 }
 
@@ -227,7 +228,8 @@
     width:            100%;
     z-index:          1000;
     position:         absolute;
-    top:              var(--colorBackSize);
+    top:              0;
+    height:           var(--colorBackSize);
     pointer-events:   none;
 }
 

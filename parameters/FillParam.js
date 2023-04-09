@@ -80,7 +80,7 @@ extends Parameter
         this.value                                  = defaultValue;
 
         
-        this._warningOverlay                        = createDiv('colorWarningOverlay');
+        this._warningOverlay                        = createDiv('colorValueWarningOverlay');
         this._warningOverlay.style.zIndex           = 21;
 
         this.div.appendChild(this._warningOverlay);
@@ -520,7 +520,8 @@ extends Parameter
                + 'transparent 0 7px,'
                +  this.warningStyle + ' 7px 14px)';
 
-        this._warningOverlay.style.display = 'block';
+        this._warningOverlay.style.backgroundPosition = '-9px 0';
+        this._warningOverlay.style.display            = 'block';
     }
     
     

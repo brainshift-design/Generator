@@ -409,6 +409,7 @@ class Wire
          
         //let showCurve = true;
     
+        console.log('color =', color);
         if (   conn.output && color[3] < 1
             || conn. input && color[3] < 1)
         {
@@ -510,6 +511,9 @@ class Wire
     
         this.curve .setAttribute('stroke-width', width * (listType ? (unknown ? 3.6 : 3.2) : (unknown ? 1.3 : 1)));
         this.curve2.setAttribute('stroke-width', width * 1.4);
+
+        this.xp1.setAttribute('stroke-width', width * (listType ? (unknown ? 3.6 : 3.2) : (unknown ? 1.3 : 1)));
+        this.xp2.setAttribute('stroke-width', width * 1.4);
     
         this.curve2.setAttribute('display', listType ? 'inline' : 'none');
     

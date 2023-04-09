@@ -54,8 +54,8 @@ extends OperatorBase
         const input1 = this.node.inputs[1];
 
         
-        if (   input0.connected
-            && input1.connected)   request.push(2,
+          if (   input0.connected
+              && input1.connected) request.push(2,
                                        ...pushInputOrParam(input0, gen),
                                        ...pushInputOrParam(input1, gen));
 
@@ -91,33 +91,33 @@ extends OperatorBase
 
 
 
-    updateHeader()
-    {
-        super.updateHeader();
+    // updateHeader()
+    // {
+    //     super.updateHeader();
 
 
-        const colors = super.getHeaderColors();
+    //     const colors = super.getHeaderColors();
 
-        const type =
-            this.inputs[0].connected
-            ? this.inputs[0].types[0]
-            : this.inputs[1].connected
-              ? this.inputs[1].types[0]
-              : ANY_TYPE;
+    //     const type =
+    //         this.inputs[0].connected
+    //         ? this.inputs[0].types[0]
+    //         : this.inputs[1].connected
+    //           ? this.inputs[1].types[0]
+    //           : ANY_TYPE;
 
 
-        if (COLOR_TYPES.includes(type))
-        {
-            colors.output =
-                this.inputs[0].connected
-                ? this.inputs[0].connectedOutput.wireColor
-                : this.inputs[1].connected
-                  ? this.inputs[1].connectedOutput.wireColor
-                  : rgbFromType(IF_ELSE, true);
+    //     if (COLOR_TYPES.includes(type))
+    //     {
+    //         colors.output =
+    //             this.inputs[0].connected
+    //             ? this.inputs[0].connectedOutput.wireColor
+    //             : this.inputs[1].connected
+    //               ? this.inputs[1].connectedOutput.wireColor
+    //               : rgbFromType(IF_ELSE, true);
 
-            colors.wire = colors.output;
-        }
-    }
+    //         colors.wire = colors.output;
+    //     }
+    // }
 
 
 

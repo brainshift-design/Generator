@@ -6468,7 +6468,7 @@ extends GOperator
             const input1 = (await this.input1.eval(parse)).toValue();
 
             this.value = 
-                cond.value != 1
+                cond.value == 0
                 ? input1
                 : input1.getNaN();
         }
