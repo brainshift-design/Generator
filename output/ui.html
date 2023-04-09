@@ -3800,6 +3800,7 @@ a
             <div id='whatsNewBody'>
                 <h1 style='margin-top: 20px;'>What's new in Generator</h1>
 
+                <p>•  fixed wrong invalid colors assigned to styles</p>
                 <p>•  fixed Mac shortcuts</p>
                 <p>•  fixed various other UI issues</p>
                 
@@ -58986,11 +58987,14 @@ extends OpColorBase
 
         const colors = this.getHeaderColors();
 
-        this.paramSpace.controls[0].textbox.style.color      = rgba2style(colors.text);
-        this.paramSpace.controls[0].textbox.style.background = 'transparent';
+        this.paramSpace.controls[0].textbox.style.color           = rgba2style(colors.text);
+        this.paramSpace.controls[0].textbox.style.background      = 'transparent';
 
 
         this.updateParamControls();
+
+        
+        this.paramColor._warningOverlay.style.display = 'none';
     }
 
 
