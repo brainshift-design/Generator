@@ -230,8 +230,9 @@ ColorControl.prototype.initTextbox = function()
     {
         //console.log('this.successOnFocusOut', this.successOnFocusOut);
 
-        if (!this.textbox.keyBlur) this.textbox.finish(true);
-        else                       this.textbox.keyBlur = false;
+        if (   !this.textbox.keyBlur
+            && !this.readOnly) this.textbox.finish(true);
+        else                   this.textbox.keyBlur = false;
 
         if (this.savedSuccessOnFocusOut != null)
         {
@@ -244,6 +245,7 @@ ColorControl.prototype.initTextbox = function()
 
         this.textbox.shown = false;
 
+        this.text.style.display = 'block';
         
         this.clicked = false;
     });
