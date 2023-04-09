@@ -47,7 +47,7 @@ extends OpColorBase
         this.addInput(new Input(COLOR_TYPES));
 
         this.addOutput(new Output([COLOR_VALUE], this.output_genRequest));
-        this.addOutput(new Output([COLOR_VALUE], this.output_genRequest));
+        //this.addOutput(new Output([COLOR_VALUE], this.output_genRequest));
 
 
         this.addParam(this.paramContrast = new NumberParam('contrast', '', false, false, true, 0));
@@ -72,6 +72,7 @@ extends OpColorBase
 
     output_genRequest(gen)
     {
+        // console.trace();
         if (gen.passedNodes.includes(this.node))
         {
             return [
@@ -90,7 +91,7 @@ extends OpColorBase
 
         const [request, ignore] = this.node.genRequestStart(gen);
         if (ignore) return request;
-
+console.log('1 request =', [...request]);
 
         const input0 = this.node.inputs[0];
         const input1 = this.node.inputs[1];
@@ -106,9 +107,11 @@ extends OpColorBase
             
         else                       request.push(0);
 
+        console.log('2 request =', [...request]);
 
         request.push(...this.node.paramStandard.genRequest(gen));
 
+        console.log('3 request =', [...request]);
 
         gen.scope.pop();
         pushUnique(gen.passedNodes, this.node);

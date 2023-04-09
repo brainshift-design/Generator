@@ -53,7 +53,7 @@ Operator.prototype.updateHeaderLabelOffsetX = function(f = this.labelOffsetFacto
     const wrect      = this.measureData.labelWrapperBounds;
     const rect       = this.measureData.labelBounds;
 
-    const rw         = wrect.width  - viewMargin*2;
+    const rw         = wrect.width - viewMargin*2;
     const sf         = rw / nozero(rect.width);
     const df         = viewMargin / rect.width / 2;
         
@@ -69,7 +69,7 @@ Operator.prototype.updateHeaderLabelOffsetX = function(f = this.labelOffsetFacto
     if (rect.width > rw)
     {
         this.label.style.left = 
-            margin 
+            11 
             - this.labelOffsetFactor * (rect.width - rw - 1) / graphView.zoom
             + (this.active ? activeOffset : 0);
             

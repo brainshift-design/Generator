@@ -44,7 +44,8 @@ extends GColorType
         if (standard.isValid())
             standard.value = Math.min(Math.max(0, standard.value), 1);
 
-
+console.log('this.input0 =', this.input0);
+console.log('this.input1 =', this.input1);
         if (   this.input0 
             && this.input1)
         {

@@ -57,6 +57,7 @@ GraphView.prototype.updateNodeWireTransforms = function(nodes)
 {
     const wires = [];
 
+    
     for (const node of nodes)
     {
         for (const input of node.inputs)

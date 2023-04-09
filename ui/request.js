@@ -57,15 +57,12 @@ function pushUpdateFromParam(action, nodes, param)
     else       request.push(NULL, NULL);
 
 
-    const gen = createGenObject(param ? param.node : null);
-
-
     if (   !graphView.loadingNodes
         && !graphView.pastingNodes
         && !graphView.restoringNodes)
         nodes.forEach(n => n.invalidate());
 
-        
+
     const terminals = [];
     nodes.forEach(n => pushUnique(terminals, getTerminalsAfterNode(n)));
 
@@ -84,6 +81,11 @@ function pushUpdateFromParam(action, nodes, param)
     // }
 
 
+    const gen = createGenObject(
+        param ? param.node : null,
+        terminals);
+
+
     for (const node of terminals)
     {
         if (gen.passedNodes.includes(node))
@@ -94,7 +96,7 @@ function pushUpdateFromParam(action, nodes, param)
         pushUnique(gen.passedNodes, node);
     }
 
-
+    
     for (const node of gen.paramNodes)
     {
         if (   !terminals.includes(node)
@@ -161,6 +163,3 @@ function getNodeRequest(node, gen)
 
     return request;
 }
-
-
-

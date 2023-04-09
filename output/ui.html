@@ -3833,7 +3833,7 @@ a
             <div class='keyboardGroup'>
                 <div class='keyboardShortcut'><div class='shortcutAction'>Keep menu open</div><div class='shortcutKeys'><div class='shortcutKeys'><div class='shortcutKey'>Shift</div><div class='shortcutKey'>click</div></div></div></div>
                 <div class='keyboardShortcut'></div>
-                <div class='keyboardInfo'>Clicking a node menu creates a node under<br/>the menu button. Drag the menu to directly<br/>move the new node.</div>
+                <div class='keyboardInfo'>Click a node menu to create a node under<br/>the menu button. Drag the menu to directly<br/>move the new node.</div>
             </div>
             <div class='keyboardGroup nextGroup'>
                 <div class='keyboardShortcut'><div class='shortcutAction'>Create node</div><div class='shortcutKeys'><div class='shortcutKeys'><div class='shortcutKey'>Menu</div></div></div></div>
@@ -8336,11 +8336,12 @@ extends GNode
     valid; // has been evaluated
     topLevel;
 
-    values = [];
+    value;
 
    
     feedbackValue = null; // () => {}
 
+    
     
     constructor(type, nodeId, options)
     {
@@ -8351,6 +8352,8 @@ extends GNode
 
         this.valid        = false;
         this.topLevel     = false;
+
+        this.value        = null;
     }
 
 
@@ -14102,7 +14105,6 @@ extends GColorType
         let   c3    = this.c3    ? (await this.c3   .eval(parse)).toValue()             : null;
 
 
-        console.log('this.input =', this.input);
         if (this.input)
         {
             const input = (await this.input.eval(parse)).toValue();
@@ -14619,7 +14621,8 @@ extends GColorType
         if (standard.isValid())
             standard.value = Math.min(Math.max(0, standard.value), 1);
 
-
+console.log('this.input0 =', this.input0);
+console.log('this.input1 =', this.input1);
         if (   this.input0 
             && this.input1)
         {
@@ -30213,11 +30216,12 @@ extends GNode
     valid; // has been evaluated
     topLevel;
 
-    values = [];
+    value;
 
    
     feedbackValue = null; // () => {}
 
+    
     
     constructor(type, nodeId, options)
     {
@@ -30228,6 +30232,8 @@ extends GNode
 
         this.valid        = false;
         this.topLevel     = false;
+
+        this.value        = null;
     }
 
 
@@ -35979,7 +35985,6 @@ extends GColorType
         let   c3    = this.c3    ? (await this.c3   .eval(parse)).toValue()             : null;
 
 
-        console.log('this.input =', this.input);
         if (this.input)
         {
             const input = (await this.input.eval(parse)).toValue();
@@ -36496,7 +36501,8 @@ extends GColorType
         if (standard.isValid())
             standard.value = Math.min(Math.max(0, standard.value), 1);
 
-
+console.log('this.input0 =', this.input0);
+console.log('this.input1 =', this.input1);
         if (   this.input0 
             && this.input1)
         {
@@ -45817,6 +45823,7 @@ GraphView.prototype.updateNodeWireTransforms = function(nodes)
 {
     const wires = [];
 
+    
     for (const node of nodes)
     {
         for (const input of node.inputs)
@@ -52685,9 +52692,10 @@ function getHeaderConnY(conns)//, padding, offset)
 
 
 
-function createGenObject(paramNode)
+function createGenObject(paramNode, terminals)
 {
     return {
+        terminals:   terminals,
         scope:       paramNode ? [{nodeId: paramNode.id, paramId: NULL}] : [],
         passedNodes: [],
         paramNodes:  [],
@@ -53338,7 +53346,7 @@ Operator.prototype.updateHeaderLabelOffsetX = function(f = this.labelOffsetFacto
     const wrect      = this.measureData.labelWrapperBounds;
     const rect       = this.measureData.labelBounds;
 
-    const rw         = wrect.width  - viewMargin*2;
+    const rw         = wrect.width - viewMargin*2;
     const sf         = rw / nozero(rect.width);
     const df         = viewMargin / rect.width / 2;
         
@@ -53354,7 +53362,7 @@ Operator.prototype.updateHeaderLabelOffsetX = function(f = this.labelOffsetFacto
     if (rect.width > rw)
     {
         this.label.style.left = 
-            margin 
+            11 
             - this.labelOffsetFactor * (rect.width - rw - 1) / graphView.zoom
             + (this.active ? activeOffset : 0);
             
@@ -56670,6 +56678,44 @@ extends OperatorWithSymbol
 
 
 
+    updateHeaderLabel()
+    {
+        //console.log('OperatorWithSymbol.updateHeaderLabel()');
+        
+        OperatorWithValue.prototype.updateHeaderLabel.call(this);
+
+
+        const colBack = rgbFromType(this.type, this.active);
+        const colText = isDark(colBack) ? [1, 1, 1] : [0, 0, 0];
+
+        this._symbol.style.fontSize   = this._showOnlySymbol ? 17 : 12;
+        this._symbol.style.fontWeight = this.active ? 'bold' : 'normal';
+        this._symbol.style.color      = rgb2style(colText);
+        this._symbol.style.left       = 'calc(50%)';
+        
+
+        //const padding = this.header.connectionPadding;
+        const inputs  = this.headerInputs;
+
+
+        const [inputY, inputHeight] = getHeaderConnY(inputs);//, padding, 5);
+
+        if (this._showOnlySymbol)
+        {
+            this._symbol.style.top = inputY[0]/2 + inputHeight/2;
+        }
+        else
+        {
+            this._symbol.style.top = inputY[0]/2 + inputHeight/2 - 4;
+            this.label  .style.top = 'calc(50% - 1px)';
+        }
+        
+
+        this.label.style.visibility = this._showOnlySymbol ? 'hidden'  : 'visible';
+    }
+
+
+
     paramsToJson(nTab = 0)
     {
         return '';
@@ -57305,6 +57351,44 @@ extends OperatorWithSymbol
 
 
         this.updateParamControls();
+    }
+
+
+
+    updateHeaderLabel()
+    {
+        //console.log('OperatorWithSymbol.updateHeaderLabel()');
+        
+        OperatorWithValue.prototype.updateHeaderLabel.call(this);
+
+
+        const colBack = rgbFromType(this.type, this.active);
+        const colText = isDark(colBack) ? [1, 1, 1] : [0, 0, 0];
+
+        this._symbol.style.fontSize   = this._showOnlySymbol ? 17 : 12;
+        this._symbol.style.fontWeight = this.active ? 'bold' : 'normal';
+        this._symbol.style.color      = rgb2style(colText);
+        this._symbol.style.left       = 'calc(50%)';
+        
+
+        //const padding = this.header.connectionPadding;
+        const inputs  = this.headerInputs;
+
+
+        const [inputY, inputHeight] = getHeaderConnY(inputs);//, padding, 5);
+
+        if (this._showOnlySymbol)
+        {
+            this._symbol.style.top = inputY[0]/2 + inputHeight/2 - 3;
+        }
+        else
+        {
+            this._symbol.style.top = inputY[0]/2 + inputHeight/2 - 9;
+            this.label  .style.top = 'calc(50% - 2px)';
+        }
+        
+
+        this.label.style.visibility = this._showOnlySymbol ? 'hidden'  : 'visible';
     }
 
 
@@ -60419,7 +60503,7 @@ extends OpColorBase
         this.addInput(new Input(COLOR_TYPES));
 
         this.addOutput(new Output([COLOR_VALUE], this.output_genRequest));
-        this.addOutput(new Output([COLOR_VALUE], this.output_genRequest));
+        //this.addOutput(new Output([COLOR_VALUE], this.output_genRequest));
 
 
         this.addParam(this.paramContrast = new NumberParam('contrast', '', false, false, true, 0));
@@ -60444,6 +60528,7 @@ extends OpColorBase
 
     output_genRequest(gen)
     {
+        // console.trace();
         if (gen.passedNodes.includes(this.node))
         {
             return [
@@ -60462,7 +60547,7 @@ extends OpColorBase
 
         const [request, ignore] = this.node.genRequestStart(gen);
         if (ignore) return request;
-
+console.log('1 request =', [...request]);
 
         const input0 = this.node.inputs[0];
         const input1 = this.node.inputs[1];
@@ -60478,9 +60563,11 @@ extends OpColorBase
             
         else                       request.push(0);
 
+        console.log('2 request =', [...request]);
 
         request.push(...this.node.paramStandard.genRequest(gen));
 
+        console.log('3 request =', [...request]);
 
         gen.scope.pop();
         pushUnique(gen.passedNodes, this.node);
@@ -68539,15 +68626,12 @@ function pushUpdateFromParam(action, nodes, param)
     else       request.push(NULL, NULL);
 
 
-    const gen = createGenObject(param ? param.node : null);
-
-
     if (   !graphView.loadingNodes
         && !graphView.pastingNodes
         && !graphView.restoringNodes)
         nodes.forEach(n => n.invalidate());
 
-        
+
     const terminals = [];
     nodes.forEach(n => pushUnique(terminals, getTerminalsAfterNode(n)));
 
@@ -68566,6 +68650,11 @@ function pushUpdateFromParam(action, nodes, param)
     // }
 
 
+    const gen = createGenObject(
+        param ? param.node : null,
+        terminals);
+
+
     for (const node of terminals)
     {
         if (gen.passedNodes.includes(node))
@@ -68576,7 +68665,7 @@ function pushUpdateFromParam(action, nodes, param)
         pushUnique(gen.passedNodes, node);
     }
 
-
+    
     for (const node of gen.paramNodes)
     {
         if (   !terminals.includes(node)
@@ -68643,10 +68732,6 @@ function getNodeRequest(node, gen)
 
     return request;
 }
-
-
-
-
 
 
 

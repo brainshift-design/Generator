@@ -1057,9 +1057,10 @@ function getHeaderConnY(conns)//, padding, offset)
 
 
 
-function createGenObject(paramNode)
+function createGenObject(paramNode, terminals)
 {
     return {
+        terminals:   terminals,
         scope:       paramNode ? [{nodeId: paramNode.id, paramId: NULL}] : [],
         passedNodes: [],
         paramNodes:  [],
