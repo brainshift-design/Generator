@@ -304,7 +304,8 @@ extends Parameter
             }
             else
                 this._warningOverlay.style.display = 'none';
-        }
+
+            }
         else
         {
             this.warningStyle = getDefaultWarningStyle(rgb);
@@ -330,16 +331,11 @@ extends Parameter
                 rgbIsOk(colBack)
             && !this.forceShowWarning
             ? 'transparent'
-            : 'repeating-linear-gradient('
-               + '-45deg, '
-               + 'transparent 0 7px,'
-               +  warnStyle2 + ' 7px 14px,'
-               + 'transparent 14px 21px,'
-               +  warnStyle1 + ' 21px 28px)';
+            : getWarningGradient(7.8, warnStyle2, warnStyle1);
 
 
-        this._warningOverlay.style.backgroundPosition = '-9px 0';
-        this._warningOverlay.style.backgroundSize     = 'calc(100% + 20px) 100%';
+        this._warningOverlay.style.backgroundPosition = '-3px 0';
+        this._warningOverlay.style.backgroundSize     = 'calc(100% + 8px) 100%';
         this._warningOverlay.style.display            = 'block';
     }
     

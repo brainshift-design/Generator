@@ -408,6 +408,18 @@ function getWarningStyles(colBack)
 
 
 
+function getWarningGradient(i, style1, style2)
+{
+    return 'repeating-linear-gradient('
+            + '-45deg, '
+            + 'transparent 0 ' + i   + 'px,' 
+            +  style1 + ' '    + i   + 'px ' + i*2 +'px,'
+            + 'transparent '   + i*2 + 'px ' + i*3 +'px,'
+            +  style2 + ' '    + i*3 + 'px ' + i*4 +'px)';
+}
+
+
+
 function getWarningFactor(colBack)
 {
     let dr, dg, db;
@@ -434,6 +446,25 @@ function getWarningFactor(colBack)
     // }
 
     return factor;
+}
+
+
+
+function getStripeBackColor(rgbBack)
+{
+    let rgbStripeBack = [...rgbBack];
+        
+    const factor = getWarningFactor(rgbBack);
+
+    if (factor > 0)
+    {
+        const hcl = rgb2hsv(clampRgb(rgbBack));
+        hcl[1] /= 3;
+
+        rgbStripeBack = rgbLerp(rgbBack, hsv2rgb(hcl), factor);
+    }
+
+    return rgbStripeBack;
 }
 
 

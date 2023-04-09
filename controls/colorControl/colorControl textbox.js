@@ -231,7 +231,7 @@ ColorControl.prototype.initTextbox = function()
         //console.log('this.successOnFocusOut', this.successOnFocusOut);
 
         if (!this.textbox.keyBlur) this.textbox.finish(true);
-        else                          this.textbox.keyBlur = false;
+        else                       this.textbox.keyBlur = false;
 
         if (this.savedSuccessOnFocusOut != null)
         {
@@ -310,8 +310,6 @@ ColorControl.prototype.initTextbox = function()
             else
                 this.setValue(ColorValue.fromRgb(scaleRgb(savedRgb)));
         }
-        // else
-        //     this.setValue(ColorValue.fromRgb(scaleRgb(savedRgb)));
 
         
         this.textbox.blur();
@@ -336,6 +334,8 @@ ColorControl.prototype.showTextbox = function()
 
     // this.textbox.style.boxShadow = '0 0 0 1px var(--figma-color-bg-brand)';
     // this.textbox.style.outline   = 'none';
+
+    this.textbox.style.width     = this.div.offsetWidth;
     this.textbox.style.height    = defParamHeight;
     this.textbox.style.textAlign = 'center';
 

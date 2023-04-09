@@ -116,10 +116,12 @@ extends Parameter
         this.controls[1].div.style.position         = 'absolute';
         this.controls[1].div.style.right            = 0;
 
+        this.controls[1].showBar = false;//barTop                     = 0.8;
 
-        this.controls[0].text.style.transform       = 'translateX(-41%)';
 
-        this.controls[1].text.style.transform       = 'translateX(-68%) \
+        this.controls[0].text.style.transform       = 'translateX(-25px)';
+
+        this.controls[1].text.style.transform       = 'translateX(-18px) \
                                                        translateY(-50%)';
 
         this.controls[0].textbox.style.position     = 'absolute';
@@ -132,7 +134,7 @@ extends Parameter
         this.controls[1].textbox.style.position     = 'absolute';
         this.controls[1].textbox.style.right        =  0;
         //this.controls[1].textbox.style.width        = '45%';
-        this.controls[1].textbox.style.transform    = 'translateX(25%)';
+        this.controls[1].textbox.style.transform    = 'translateX(6px)';
         this.controls[1].textbox.style.textAlign    = 'left';
         this.controls[1].textbox.style.paddingRight =  10;
 
@@ -339,21 +341,27 @@ extends Parameter
         checkControlVisible(this, this.controls[1]);
 
 
+        const colors = this.node.getHeaderColors();
+
+
         const noColor = 
             darkMode
             ? rgbNoColorDark
             : rgbNoColorLight;
 
-        const rgbaVal  = this.value.toRgba();
+
+        const rgbaVal  = colors.stripeBack;
+
+        const rgbaBack = rgb_a(colors.stripeBack, rgbaVal[3]);
         const rgbaText = getTextColorFromBackColor(rgbaVal, rgbaVal[3]);
 
 
-        const fillStyle = rgba2style(rgb_a(rgbaVal, this.controls[1].value/100));
+        // const fillStyle = rgba2style(rgb_a(rgbaVal, this.controls[1].value/100));
 
-        this.controlWrapper.style.background = 
-              !rgbaIsNaN(rgbaVal) 
+        this.controlWrapper.style.background = //'transparent';
+              !rgbaIsNaN(rgbaBack) 
             && this.value.opacity.isValid()
-            ?  fillStyle 
+            ?  rgba2style(rgbaBack)//fillStyle 
             : 'transparent'; 
 
 
@@ -394,36 +402,29 @@ extends Parameter
             :   'linear-gradient(45deg, #ddd 25%, transparent 25%, transparent 75%, #ddd 75%), '
               + 'linear-gradient(45deg, #ddd 25%, transparent 25%, transparent 75%, #ddd 75%)';
 
-        this.checkers.style.display               = this.value.isValid() ? 'inline-block' : 'none';
-        this.checkers.style.backgroundColor       = darkMode ? '#444' : '#fff';
+        this.checkers.style.display            = this.value.isValid() ? 'inline-block' : 'none';
+        this.checkers.style.backgroundColor    = darkMode ? '#444' : '#fff';
    
-        this.checkers.style.backgroundSize        = '22px 22px';
-        this.checkers.style.backgroundPosition    = '0 0, 11px 11px';
+        this.checkers.style.backgroundSize     = '22px 22px';
+        this.checkers.style.backgroundPosition = '0 0, 11px 11px';
    
-        this.checkers.style.left                  = '-3.5px';
-        this.checkers.style.width                 = 'calc(100% + 3.5px)';
+        this.checkers.style.left               = '-3.5px';
+        this.checkers.style.width              = 'calc(100% + 3.5px)';
         
         
-        this.controls[0]. backStyleLight          = 
-        this.controls[0]. backStyleDark           = 
-        this.controls[0].valueStyleLight          = 
-        this.controls[0].valueStyleDark           = 'transparent';
+        this.controls[0].backStyleLight        = 
+        this.controls[0].backStyleDark         = 'transparent';//rgba2style(rgbaBack);
          
-        this.controls[0].textStyleLight           = 
-        this.controls[0].textStyleDark            = rgba2style(rgbaText);
+        this.controls[0].textStyleLight        = 
+        this.controls[0].textStyleDark         = rgba2style(rgbaText);
 
 
-        this.controls[1]. backStyleLight          = 
-        this.controls[1]. backStyleDark           = 
-        this.controls[1].valueStyleLight          = 
-        this.controls[1].valueStyleDark           = 'transparent';
-
-        this.controls[1].textbox.style.color      = rgba2style(rgbaText);
-        this.controls[1].textbox.style.background = 'transparent';
+        this.controls[1].backStyleLight        = 
+        this.controls[1].backStyleDark         = 'transparent';//rgba2style(rgbaBack);
 
 
-        this.controls[1].textStyleLight  = 
-        this.controls[1].textStyleDark   = rgba2style(rgbaText);
+        this.controls[1].textStyleLight        = 
+        this.controls[1].textStyleDark         = rgba2style(rgbaText);
 
         this.controls[0].update();
         this.controls[1].update();
@@ -518,16 +519,11 @@ extends Parameter
                 rgbIsOk(colBack)
             && !this.forceShowWarning
             ? 'transparent'
-            : 'repeating-linear-gradient('
-               + '-45deg, '
-               + 'transparent 0 7px,'
-               +  warnStyle2 + ' 7px 14px,'
-               + 'transparent 14px 21px,'
-               +  warnStyle1 + ' 21px 28px)';
+            : getWarningGradient(7.8, warnStyle2, warnStyle1);
 
                
-        this._warningOverlay.style.backgroundPosition = '-11px 0';
-        this._warningOverlay.style.backgroundSize     = 'calc(100% + 22px) 100%';
+        this._warningOverlay.style.backgroundPosition = '0 0';
+        this._warningOverlay.style.backgroundSize     = 'calc(100% + 27.6px) 100%';
         this._warningOverlay.style.display            = 'block';
     }
     

@@ -2532,7 +2532,7 @@ a
     position:             absolute;
     left:                 50%;
     transform:            translateX(-50%);
-    width:                100%;
+    /* width:                100%; */
     white-space:          nowrap;
     background-color:     transparent;
     z-index:              10;
@@ -2701,7 +2701,7 @@ a
     width:            74px;
     height:           26px;
     overflow:         hidden;
-    background-color: var(--figma-color-bg);
+    /* background-color: var(--figma-color-bg); */
     text-align:       center;
     touch-action:     none;
 }    
@@ -2759,7 +2759,7 @@ a
     position:             absolute;
     left:                 50%;
     transform:            translateX(-50%);
-    width:                100%;
+    /* width:                100%; */
     white-space:          nowrap;
     letter-spacing:       -0.35px;
     border-radius:        0.5px;
@@ -3258,7 +3258,7 @@ a
 .colorValueWarningOverlay
 {
     width:            100%;
-    z-index:          5;
+    z-index:          50;
     position:         absolute;
     top:              0;
     height:           var(--colorBackSize);
@@ -22276,6 +22276,18 @@ function getWarningStyles(colBack)
 
 
 
+function getWarningGradient(i, style1, style2)
+{
+    return 'repeating-linear-gradient('
+            + '-45deg, '
+            + 'transparent 0 ' + i   + 'px,' 
+            +  style1 + ' '    + i   + 'px ' + i*2 +'px,'
+            + 'transparent '   + i*2 + 'px ' + i*3 +'px,'
+            +  style2 + ' '    + i*3 + 'px ' + i*4 +'px)';
+}
+
+
+
 function getWarningFactor(colBack)
 {
     let dr, dg, db;
@@ -22302,6 +22314,25 @@ function getWarningFactor(colBack)
     // }
 
     return factor;
+}
+
+
+
+function getStripeBackColor(rgbBack)
+{
+    let rgbStripeBack = [...rgbBack];
+        
+    const factor = getWarningFactor(rgbBack);
+
+    if (factor > 0)
+    {
+        const hcl = rgb2hsv(clampRgb(rgbBack));
+        hcl[1] /= 3;
+
+        rgbStripeBack = rgbLerp(rgbBack, hsv2rgb(hcl), factor);
+    }
+
+    return rgbStripeBack;
 }
 
 
@@ -28509,6 +28540,18 @@ function getWarningStyles(colBack)
 
 
 
+function getWarningGradient(i, style1, style2)
+{
+    return 'repeating-linear-gradient('
+            + '-45deg, '
+            + 'transparent 0 ' + i   + 'px,' 
+            +  style1 + ' '    + i   + 'px ' + i*2 +'px,'
+            + 'transparent '   + i*2 + 'px ' + i*3 +'px,'
+            +  style2 + ' '    + i*3 + 'px ' + i*4 +'px)';
+}
+
+
+
 function getWarningFactor(colBack)
 {
     let dr, dg, db;
@@ -28535,6 +28578,25 @@ function getWarningFactor(colBack)
     // }
 
     return factor;
+}
+
+
+
+function getStripeBackColor(rgbBack)
+{
+    let rgbStripeBack = [...rgbBack];
+        
+    const factor = getWarningFactor(rgbBack);
+
+    if (factor > 0)
+    {
+        const hcl = rgb2hsv(clampRgb(rgbBack));
+        hcl[1] /= 3;
+
+        rgbStripeBack = rgbLerp(rgbBack, hsv2rgb(hcl), factor);
+    }
+
+    return rgbStripeBack;
 }
 
 
@@ -40383,6 +40445,9 @@ NumberControl.prototype.showTextbox = function()
         
     // this.textbox.style.boxShadow = '0 0 0 1px var(--figma-color-bg-brand)';
     // this.textbox.style.outline   = 'none';
+
+    //this.textbox.style.left      = this.div.offsetLeft;
+    this.textbox.style.width     = this.div.offsetWidth;
     this.textbox.style.height    = defParamHeight;
     this.textbox.style.textAlign = 'center';
 
@@ -41807,24 +41872,26 @@ extends Control
 
         if (this.showColor)
         {
-            const rgb = this.value.toRgb();
+            // const rgbBack = this.value.toRgb();
 
-            if (!rgbIsNaN(rgb))
-            {
-                this.valueStyleLight =
-                this.valueStyleDark  = rgb2style(rgb);
+            // if (!rgbIsNaN(rgbBack))
+            // {
+            //     const rgbStripeBack = getStripeBackColor(rgbBack);
 
-                this.textStyleLight  = 
-                this.textStyleDark   = rgba2style(getTextColorFromBackColor(rgb));
-            }
-            else
-            {
-                this.valueStyleLight =
-                this.valueStyleDark  = 'var(--figma-color-bg)';
+            //     this.valueStyleLight =
+            //     this.valueStyleDark  = rgb2style(rgbStripeBack);
+
+            //     this.textStyleLight  = 
+            //     this.textStyleDark   = rgba2style(getTextColorFromBackColor(rgbStripeBack));
+            // }
+            // else
+            // {
+            //     this.valueStyleLight =
+            //     this.valueStyleDark  = 'var(--figma-color-bg)';
                 
-                this.textStyleLight  = 'black';
-                this.textStyleDark   = 'white';
-            }
+            //     this.textStyleLight  = 'black';
+            //     this.textStyleDark   = 'white';
+            // }
         }
 
 
@@ -41869,21 +41936,28 @@ extends Control
 
     updateColors()
     {
-        this.div    .style.background = 
-        this.textbox.style.background = 
-            this.showColor
-            ? (darkMode 
-               ? this.valueStyleDark 
-               : this.valueStyleLight)
-            : (darkMode
-               ? this.backStyleDark 
-               : this.backStyleLight);
+        const rgbBack = this.value.toRgb();
+
+        // const rgbBack =
+        //     this.showColor
+        //     ? (darkMode 
+        //        ? this.valueStyleDark 
+        //        : this.valueStyleLight)
+        //     : (darkMode
+        //        ? this.backStyleDark 
+        //        : this.backStyleLight);
+
+        const rgbStripeBack = getStripeBackColor(rgbBack);
+
+        this.div    .style.background = darkMode ? this.backStyleDark : this.backStyleLight;
+        this.textbox.style.background = 'transparent';//rgb2style(rgbStripeBack);
+            
 
         this.text   .style.color = 
-        this.textbox.style.color = 
-            darkMode 
-            ? this.textStyleDark 
-            : this.textStyleLight;
+        this.textbox.style.color = darkMode ? this.textStyleDark : this.textStyleLight;//rgba2style(rgb_a(getTextColorFromBackColor(rgbStripeBack), 0.7));//rgb2style(rgbStripeBack);
+            // darkMode 
+            // ? this.textStyleDark 
+            // : this.textStyleLight;
     };
 
 
@@ -42189,7 +42263,7 @@ ColorControl.prototype.initTextbox = function()
         //console.log('this.successOnFocusOut', this.successOnFocusOut);
 
         if (!this.textbox.keyBlur) this.textbox.finish(true);
-        else                          this.textbox.keyBlur = false;
+        else                       this.textbox.keyBlur = false;
 
         if (this.savedSuccessOnFocusOut != null)
         {
@@ -42268,8 +42342,6 @@ ColorControl.prototype.initTextbox = function()
             else
                 this.setValue(ColorValue.fromRgb(scaleRgb(savedRgb)));
         }
-        // else
-        //     this.setValue(ColorValue.fromRgb(scaleRgb(savedRgb)));
 
         
         this.textbox.blur();
@@ -42294,6 +42366,8 @@ ColorControl.prototype.showTextbox = function()
 
     // this.textbox.style.boxShadow = '0 0 0 1px var(--figma-color-bg-brand)';
     // this.textbox.style.outline   = 'none';
+
+    this.textbox.style.width     = this.div.offsetWidth;
     this.textbox.style.height    = defParamHeight;
     this.textbox.style.textAlign = 'center';
 
@@ -49022,7 +49096,8 @@ extends Parameter
             }
             else
                 this._warningOverlay.style.display = 'none';
-        }
+
+            }
         else
         {
             this.warningStyle = getDefaultWarningStyle(rgb);
@@ -49048,16 +49123,11 @@ extends Parameter
                 rgbIsOk(colBack)
             && !this.forceShowWarning
             ? 'transparent'
-            : 'repeating-linear-gradient('
-               + '-45deg, '
-               + 'transparent 0 7px,'
-               +  warnStyle2 + ' 7px 14px,'
-               + 'transparent 14px 21px,'
-               +  warnStyle1 + ' 21px 28px)';
+            : getWarningGradient(7.8, warnStyle2, warnStyle1);
 
 
-        this._warningOverlay.style.backgroundPosition = '-9px 0';
-        this._warningOverlay.style.backgroundSize     = 'calc(100% + 20px) 100%';
+        this._warningOverlay.style.backgroundPosition = '-3px 0';
+        this._warningOverlay.style.backgroundSize     = 'calc(100% + 8px) 100%';
         this._warningOverlay.style.display            = 'block';
     }
     
@@ -49188,10 +49258,12 @@ extends Parameter
         this.controls[1].div.style.position         = 'absolute';
         this.controls[1].div.style.right            = 0;
 
+        this.controls[1].showBar = false;//barTop                     = 0.8;
 
-        this.controls[0].text.style.transform       = 'translateX(-41%)';
 
-        this.controls[1].text.style.transform       = 'translateX(-68%) \
+        this.controls[0].text.style.transform       = 'translateX(-25px)';
+
+        this.controls[1].text.style.transform       = 'translateX(-18px) \
                                                        translateY(-50%)';
 
         this.controls[0].textbox.style.position     = 'absolute';
@@ -49204,7 +49276,7 @@ extends Parameter
         this.controls[1].textbox.style.position     = 'absolute';
         this.controls[1].textbox.style.right        =  0;
         //this.controls[1].textbox.style.width        = '45%';
-        this.controls[1].textbox.style.transform    = 'translateX(25%)';
+        this.controls[1].textbox.style.transform    = 'translateX(6px)';
         this.controls[1].textbox.style.textAlign    = 'left';
         this.controls[1].textbox.style.paddingRight =  10;
 
@@ -49411,21 +49483,27 @@ extends Parameter
         checkControlVisible(this, this.controls[1]);
 
 
+        const colors = this.node.getHeaderColors();
+
+
         const noColor = 
             darkMode
             ? rgbNoColorDark
             : rgbNoColorLight;
 
-        const rgbaVal  = this.value.toRgba();
+
+        const rgbaVal  = colors.stripeBack;
+
+        const rgbaBack = rgb_a(colors.stripeBack, rgbaVal[3]);
         const rgbaText = getTextColorFromBackColor(rgbaVal, rgbaVal[3]);
 
 
-        const fillStyle = rgba2style(rgb_a(rgbaVal, this.controls[1].value/100));
+        // const fillStyle = rgba2style(rgb_a(rgbaVal, this.controls[1].value/100));
 
-        this.controlWrapper.style.background = 
-              !rgbaIsNaN(rgbaVal) 
+        this.controlWrapper.style.background = //'transparent';
+              !rgbaIsNaN(rgbaBack) 
             && this.value.opacity.isValid()
-            ?  fillStyle 
+            ?  rgba2style(rgbaBack)//fillStyle 
             : 'transparent'; 
 
 
@@ -49466,36 +49544,29 @@ extends Parameter
             :   'linear-gradient(45deg, #ddd 25%, transparent 25%, transparent 75%, #ddd 75%), '
               + 'linear-gradient(45deg, #ddd 25%, transparent 25%, transparent 75%, #ddd 75%)';
 
-        this.checkers.style.display               = this.value.isValid() ? 'inline-block' : 'none';
-        this.checkers.style.backgroundColor       = darkMode ? '#444' : '#fff';
+        this.checkers.style.display            = this.value.isValid() ? 'inline-block' : 'none';
+        this.checkers.style.backgroundColor    = darkMode ? '#444' : '#fff';
    
-        this.checkers.style.backgroundSize        = '22px 22px';
-        this.checkers.style.backgroundPosition    = '0 0, 11px 11px';
+        this.checkers.style.backgroundSize     = '22px 22px';
+        this.checkers.style.backgroundPosition = '0 0, 11px 11px';
    
-        this.checkers.style.left                  = '-3.5px';
-        this.checkers.style.width                 = 'calc(100% + 3.5px)';
+        this.checkers.style.left               = '-3.5px';
+        this.checkers.style.width              = 'calc(100% + 3.5px)';
         
         
-        this.controls[0]. backStyleLight          = 
-        this.controls[0]. backStyleDark           = 
-        this.controls[0].valueStyleLight          = 
-        this.controls[0].valueStyleDark           = 'transparent';
+        this.controls[0].backStyleLight        = 
+        this.controls[0].backStyleDark         = 'transparent';//rgba2style(rgbaBack);
          
-        this.controls[0].textStyleLight           = 
-        this.controls[0].textStyleDark            = rgba2style(rgbaText);
+        this.controls[0].textStyleLight        = 
+        this.controls[0].textStyleDark         = rgba2style(rgbaText);
 
 
-        this.controls[1]. backStyleLight          = 
-        this.controls[1]. backStyleDark           = 
-        this.controls[1].valueStyleLight          = 
-        this.controls[1].valueStyleDark           = 'transparent';
-
-        this.controls[1].textbox.style.color      = rgba2style(rgbaText);
-        this.controls[1].textbox.style.background = 'transparent';
+        this.controls[1].backStyleLight        = 
+        this.controls[1].backStyleDark         = 'transparent';//rgba2style(rgbaBack);
 
 
-        this.controls[1].textStyleLight  = 
-        this.controls[1].textStyleDark   = rgba2style(rgbaText);
+        this.controls[1].textStyleLight        = 
+        this.controls[1].textStyleDark         = rgba2style(rgbaText);
 
         this.controls[0].update();
         this.controls[1].update();
@@ -49590,16 +49661,11 @@ extends Parameter
                 rgbIsOk(colBack)
             && !this.forceShowWarning
             ? 'transparent'
-            : 'repeating-linear-gradient('
-               + '-45deg, '
-               + 'transparent 0 7px,'
-               +  warnStyle2 + ' 7px 14px,'
-               + 'transparent 14px 21px,'
-               +  warnStyle1 + ' 21px 28px)';
+            : getWarningGradient(7.8, warnStyle2, warnStyle1);
 
                
-        this._warningOverlay.style.backgroundPosition = '-11px 0';
-        this._warningOverlay.style.backgroundSize     = 'calc(100% + 22px) 100%';
+        this._warningOverlay.style.backgroundPosition = '0 0';
+        this._warningOverlay.style.backgroundSize     = 'calc(100% + 27.6px) 100%';
         this._warningOverlay.style.display            = 'block';
     }
     
@@ -51667,13 +51733,13 @@ class Wire
          
         //let showCurve = true;
     
-        console.log('color =', color);
+
         if (   conn.output && color[3] < 1
             || conn. input && color[3] < 1)
         {
-            const showCurve = 
-                   conn.output && color[3] > 0
-                || conn. input && color[3] > 0;
+            // const showCurve = 
+            //        conn.output && color[3] > 0
+            //     || conn. input && color[3] > 0;
     
             this.xp1.style.display          = 'inline';
             this.xp1.style.stroke           = rgba2style(rgb_a(darkMode ? [0.067, 0.067, 0.067] : [0.784, 0.784, 0.784], 1 - color[3]));
@@ -55109,9 +55175,9 @@ extends OperatorBase
 
 
 
-    getHeaderColors()
+    getHeaderColors(options = {})
     {
-        const colors = super.getHeaderColors();
+        const colors = super.getHeaderColors(options);
 
         const type =
             this.inputs[0].connected
@@ -55636,9 +55702,9 @@ extends OperatorBase
 
 
 
-    getHeaderColors()
+    getHeaderColors(options = {})
     {
-        const colors = super.getHeaderColors();
+        const colors = super.getHeaderColors(options);
 
         const type = 
             this.inputs[0].connected 
@@ -58352,18 +58418,8 @@ extends Operator
             : dataColor2rgb(this._color);
             
 
-        let rgbStripeBack = [...rgbBack];
+        let rgbStripeBack = getStripeBackColor(rgbBack);
         
-        const factor = getWarningFactor(rgbBack);
-
-        if (factor > 0)
-        {
-            const hcl = rgb2hsv(clampRgb(rgbBack));
-            hcl[1] /= 3;
-
-            rgbStripeBack = rgbLerp(rgbBack, hsv2rgb(hcl), factor);
-        }
-
 
         const rgbaBorder = rgb_a(rgbFromType(this.type, this.active), 0.95);
 
@@ -58433,14 +58489,11 @@ extends Operator
                 rgbIsOk(colBack)
             && !this.forceShowWarning
             ? 'transparent'
-            : 'repeating-linear-gradient('
-               + '-45deg, '
-               + 'transparent 0 7px,'
-               +  warnStyle1 + ' 7px 14px,'
-               + 'transparent 14px 21px,'
-               +  warnStyle2 + ' 21px 28px)';
+            : getWarningGradient(7.8, warnStyle1, warnStyle2);
 
-        this._warningOverlay.style.display = 'block';
+            this._warningOverlay.style.backgroundPosition = '-6px 0';
+            this._warningOverlay.style.backgroundSize     = 'calc(100% + 11px) 100%';
+            this._warningOverlay.style.display            = 'block';
     }
 }
 
@@ -58862,8 +58915,8 @@ extends OpColorBase
             this.isUnknown()
             ? unknownBackStyle
             : !rgbIsNaN(colors.stripeBack)
-            ? rgba2style(colors.stripeBack)
-            : rgba2style(rgb_a(rgbDocumentBody, 0.95));
+              ? rgba2style(colors.stripeBack)
+              : rgba2style(rgb_a(rgbDocumentBody, 0.95));
 
         this.colorBack.style.backgroundImage = 
             this.isUnknown()
@@ -61785,7 +61838,7 @@ extends OperatorBase
         this.paramValue.enableControlText(enabled);
 
         this.paramValue.controls[0].valueText =  this.isUnknown() ? UNKNOWN_DISPLAY : '';
-        this.paramValue.controls[0].showBar   = !this.isUnknown();
+        this.paramValue.controls[0].showBar   = false;//!this.isUnknown();
 
         this.updateParamControls();
     }
@@ -61875,6 +61928,17 @@ extends OperatorBase
     getActiveOffset()
     {
         return -2;
+    }
+
+
+
+    getHeaderColors(options = {})
+    {
+        const colors = super.getHeaderColors();
+
+        colors.stripeBack = getStripeBackColor(colors.back);
+
+        return colors;
     }
 
 
@@ -62091,9 +62155,10 @@ extends OpColorBase
 
 
         this.paramColor.controls[0]. backStyleLight = 
-        this.paramColor.controls[0]. backStyleDark  = 
+        this.paramColor.controls[0]. backStyleDark  = rgba2style(rgb_a(colors.stripeBack, 1));
+
         this.paramColor.controls[0].valueStyleLight = 
-        this.paramColor.controls[0].valueStyleDark  = rgba2style(rgb_a(colors.back, 1));
+        this.paramColor.controls[0].valueStyleDark  = 'transparent';//rgba2style(rgb_a(colors.back, 1));
 
         this.paramColor.controls[0].textStyleLight  = 
         this.paramColor.controls[0].textStyleDark   = rgba2style(colors.text);
@@ -62123,20 +62188,17 @@ extends OpColorBase
         Operator.prototype.updateHeader.call(this);
 
 
-        const colors =
-              this.inputIsShape
-            ? OperatorBase.prototype.getHeaderColors.call(this)
-            : this.getHeaderColors();
+        const colors = this.getHeaderColors();
 
 
         this.header.style.background = 
-            !rgbIsNaN(colors.back)
-            ? rgba2style(colors.back) 
+            !rgbaIsNaN(colors.stripeBack)
+            ? rgba2style(colors.stripeBack) 
             : 'transparent';
 
         this.colorBack.style.background = 
-            !rgbIsNaN(colors.back)
-            ? rgb2style(colors.back)
+             !rgbaIsNaN(colors.stripeBack)
+            ? rgba2style(colors.stripeBack)
             : rgba2style(rgb_a(rgbDocumentBody, 0.95));
 
 
@@ -62169,7 +62231,7 @@ extends OpColorBase
 
 
         this.updateWarningOverlay();
-        this.updateWarningOverlayStyle(colors.back, this.inputIsShape ? -1 : 45);
+        this.updateWarningOverlayStyle(colors.back);
     }
 
 
@@ -62193,11 +62255,12 @@ extends OpColorBase
             
         const colors  = super.getHeaderColors();
 
-        colors.back   = rgb_a(colors.back, this.paramOpacity.value.value/100);
-        colors.text   = getTextColorFromBackColor(colors.back, colors.back[3]);
-        colors.input  = rgb_a(colors.text, 0.2);
-        colors.output = rgb_a(colors.text, 0.2);
-        colors.wire   = colors.back;
+        colors.back       = rgb_a(colors.back, this.paramOpacity.value.value/100);
+        colors.stripeBack = rgb_a(colors.stripeBack, this.paramOpacity.value.value/100);
+        colors.text       = getTextColorFromBackColor(colors.stripeBack, colors.back[3]);
+        colors.input      = rgb_a(colors.text, 0.2);
+        colors.output     = rgb_a(colors.text, 0.2);
+        colors.wire       = colors.back;
         
         return colors;
     }
@@ -62378,10 +62441,7 @@ extends OpColorBase
         Operator.prototype.updateHeader.call(this);
 
 
-        const colors =
-              this.inputIsShape
-            ? OperatorBase.prototype.getHeaderColors.call(this)
-            : this.getHeaderColors();
+        const colors = this.getHeaderColors();
 
 
         this.header.style.background = 
@@ -62418,8 +62478,8 @@ extends OpColorBase
 
 
         this.header.style.background = 
-            !rgbIsNaN(colors.back)
-            ? rgba2style(colors.back) 
+            !rgbIsNaN(colors.stripeBack)
+            ? rgba2style(colors.stripeBack) 
             : 'transparent';
 
 
@@ -62470,36 +62530,33 @@ extends OpColorBase
 
     getHeaderColors(options = {})
     {
-        if (    this.inputIsShape
-            && !options.color)
-            return Operator.prototype.getHeaderColors.call(this);
+        // if (    this.inputIsShape
+        //     && !options.color)
+        //     return Operator.prototype.getHeaderColors.call(this);
  
 
         const colors = super.getHeaderColors();
 
-        colors.back   = rgb_a(colors.back, this.paramFill.value.opacity.value/100);
-        colors.text   = getTextColorFromBackColor(colors.back, this.paramFill.value.opacity.value/100);
-        colors.input  = rgb_a(colors.text, 0.2);
-        colors.output = rgb_a(colors.text, 0.2);
-        colors.wire   = colors.back;
+        colors.back       = rgb_a(colors.back, this.paramFill.value.opacity.value/100);
+        colors.stripeBack = rgb_a(colors.stripeBack, this.paramFill.value.opacity.value/100);
+        colors.text       = getTextColorFromBackColor(colors.stripeBack, this.paramFill.value.opacity.value/100);
+        colors.input      = rgb_a(colors.text, 0.2);
+        colors.output     = rgb_a(colors.text, 0.2);
+        colors.wire       = colors.back;
 
         return colors;
     }
 
 
 
-    // connectToSelected(selected)
-    // {
-    //     console.assert(!isEmpty(selected));
-
-    //     const node   = selected[0];
-    //     const inputs = this.inputs.filter(i => i.types.includes(node.type));
-    
-    //     if (    node
-    //         && !isEmpty(node.outputs)
-    //         && !isEmpty(inputs))
-    //         actionManager.do(new ConnectAction(node.graph, node.outputs[0], inputs[0]), true);
-    // }
+    updateWarningOverlayStyle(colBack, height = -1)
+    {
+        super.updateWarningOverlayStyle(colBack, height);
+        
+        this._warningOverlay.style.backgroundPosition = '-1.5px 0';
+        this._warningOverlay.style.backgroundSize     = 'calc(100% + 16px) 100%';
+        this._warningOverlay.style.display            = 'block';
+    }
 }
 
 

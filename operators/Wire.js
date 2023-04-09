@@ -409,13 +409,13 @@ class Wire
          
         //let showCurve = true;
     
-        console.log('color =', color);
+
         if (   conn.output && color[3] < 1
             || conn. input && color[3] < 1)
         {
-            const showCurve = 
-                   conn.output && color[3] > 0
-                || conn. input && color[3] > 0;
+            // const showCurve = 
+            //        conn.output && color[3] > 0
+            //     || conn. input && color[3] > 0;
     
             this.xp1.style.display          = 'inline';
             this.xp1.style.stroke           = rgba2style(rgb_a(darkMode ? [0.067, 0.067, 0.067] : [0.784, 0.784, 0.784], 1 - color[3]));

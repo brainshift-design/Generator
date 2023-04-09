@@ -151,10 +151,7 @@ extends OpColorBase
         Operator.prototype.updateHeader.call(this);
 
 
-        const colors =
-              this.inputIsShape
-            ? OperatorBase.prototype.getHeaderColors.call(this)
-            : this.getHeaderColors();
+        const colors = this.getHeaderColors();
 
 
         this.header.style.background = 
@@ -191,8 +188,8 @@ extends OpColorBase
 
 
         this.header.style.background = 
-            !rgbIsNaN(colors.back)
-            ? rgba2style(colors.back) 
+            !rgbIsNaN(colors.stripeBack)
+            ? rgba2style(colors.stripeBack) 
             : 'transparent';
 
 
@@ -243,34 +240,31 @@ extends OpColorBase
 
     getHeaderColors(options = {})
     {
-        if (    this.inputIsShape
-            && !options.color)
-            return Operator.prototype.getHeaderColors.call(this);
+        // if (    this.inputIsShape
+        //     && !options.color)
+        //     return Operator.prototype.getHeaderColors.call(this);
  
 
         const colors = super.getHeaderColors();
 
-        colors.back   = rgb_a(colors.back, this.paramFill.value.opacity.value/100);
-        colors.text   = getTextColorFromBackColor(colors.back, this.paramFill.value.opacity.value/100);
-        colors.input  = rgb_a(colors.text, 0.2);
-        colors.output = rgb_a(colors.text, 0.2);
-        colors.wire   = colors.back;
+        colors.back       = rgb_a(colors.back, this.paramFill.value.opacity.value/100);
+        colors.stripeBack = rgb_a(colors.stripeBack, this.paramFill.value.opacity.value/100);
+        colors.text       = getTextColorFromBackColor(colors.stripeBack, this.paramFill.value.opacity.value/100);
+        colors.input      = rgb_a(colors.text, 0.2);
+        colors.output     = rgb_a(colors.text, 0.2);
+        colors.wire       = colors.back;
 
         return colors;
     }
 
 
 
-    // connectToSelected(selected)
-    // {
-    //     console.assert(!isEmpty(selected));
-
-    //     const node   = selected[0];
-    //     const inputs = this.inputs.filter(i => i.types.includes(node.type));
-    
-    //     if (    node
-    //         && !isEmpty(node.outputs)
-    //         && !isEmpty(inputs))
-    //         actionManager.do(new ConnectAction(node.graph, node.outputs[0], inputs[0]), true);
-    // }
+    updateWarningOverlayStyle(colBack, height = -1)
+    {
+        super.updateWarningOverlayStyle(colBack, height);
+        
+        this._warningOverlay.style.backgroundPosition = '-1.5px 0';
+        this._warningOverlay.style.backgroundSize     = 'calc(100% + 16px) 100%';
+        this._warningOverlay.style.display            = 'block';
+    }
 }

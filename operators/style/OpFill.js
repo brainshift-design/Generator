@@ -159,9 +159,10 @@ extends OpColorBase
 
 
         this.paramColor.controls[0]. backStyleLight = 
-        this.paramColor.controls[0]. backStyleDark  = 
+        this.paramColor.controls[0]. backStyleDark  = rgba2style(rgb_a(colors.stripeBack, 1));
+
         this.paramColor.controls[0].valueStyleLight = 
-        this.paramColor.controls[0].valueStyleDark  = rgba2style(rgb_a(colors.back, 1));
+        this.paramColor.controls[0].valueStyleDark  = 'transparent';//rgba2style(rgb_a(colors.back, 1));
 
         this.paramColor.controls[0].textStyleLight  = 
         this.paramColor.controls[0].textStyleDark   = rgba2style(colors.text);
@@ -191,20 +192,17 @@ extends OpColorBase
         Operator.prototype.updateHeader.call(this);
 
 
-        const colors =
-              this.inputIsShape
-            ? OperatorBase.prototype.getHeaderColors.call(this)
-            : this.getHeaderColors();
+        const colors = this.getHeaderColors();
 
 
         this.header.style.background = 
-            !rgbIsNaN(colors.back)
-            ? rgba2style(colors.back) 
+            !rgbaIsNaN(colors.stripeBack)
+            ? rgba2style(colors.stripeBack) 
             : 'transparent';
 
         this.colorBack.style.background = 
-            !rgbIsNaN(colors.back)
-            ? rgb2style(colors.back)
+             !rgbaIsNaN(colors.stripeBack)
+            ? rgba2style(colors.stripeBack)
             : rgba2style(rgb_a(rgbDocumentBody, 0.95));
 
 
@@ -237,7 +235,7 @@ extends OpColorBase
 
 
         this.updateWarningOverlay();
-        this.updateWarningOverlayStyle(colors.back, this.inputIsShape ? -1 : 45);
+        this.updateWarningOverlayStyle(colors.back);
     }
 
 
@@ -261,11 +259,12 @@ extends OpColorBase
             
         const colors  = super.getHeaderColors();
 
-        colors.back   = rgb_a(colors.back, this.paramOpacity.value.value/100);
-        colors.text   = getTextColorFromBackColor(colors.back, colors.back[3]);
-        colors.input  = rgb_a(colors.text, 0.2);
-        colors.output = rgb_a(colors.text, 0.2);
-        colors.wire   = colors.back;
+        colors.back       = rgb_a(colors.back, this.paramOpacity.value.value/100);
+        colors.stripeBack = rgb_a(colors.stripeBack, this.paramOpacity.value.value/100);
+        colors.text       = getTextColorFromBackColor(colors.stripeBack, colors.back[3]);
+        colors.input      = rgb_a(colors.text, 0.2);
+        colors.output     = rgb_a(colors.text, 0.2);
+        colors.wire       = colors.back;
         
         return colors;
     }

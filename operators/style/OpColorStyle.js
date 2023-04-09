@@ -132,7 +132,7 @@ extends OperatorBase
         this.paramValue.enableControlText(enabled);
 
         this.paramValue.controls[0].valueText =  this.isUnknown() ? UNKNOWN_DISPLAY : '';
-        this.paramValue.controls[0].showBar   = !this.isUnknown();
+        this.paramValue.controls[0].showBar   = false;//!this.isUnknown();
 
         this.updateParamControls();
     }
@@ -222,6 +222,17 @@ extends OperatorBase
     getActiveOffset()
     {
         return -2;
+    }
+
+
+
+    getHeaderColors(options = {})
+    {
+        const colors = super.getHeaderColors();
+
+        colors.stripeBack = getStripeBackColor(colors.back);
+
+        return colors;
     }
 
 

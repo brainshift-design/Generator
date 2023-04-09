@@ -110,9 +110,9 @@ extends OperatorBase
 
 
 
-    getHeaderColors()
+    getHeaderColors(options = {})
     {
-        const colors = super.getHeaderColors();
+        const colors = super.getHeaderColors(options);
 
         const type = 
             this.inputs[0].connected 

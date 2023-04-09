@@ -130,18 +130,8 @@ extends Operator
             : dataColor2rgb(this._color);
             
 
-        let rgbStripeBack = [...rgbBack];
+        let rgbStripeBack = getStripeBackColor(rgbBack);
         
-        const factor = getWarningFactor(rgbBack);
-
-        if (factor > 0)
-        {
-            const hcl = rgb2hsv(clampRgb(rgbBack));
-            hcl[1] /= 3;
-
-            rgbStripeBack = rgbLerp(rgbBack, hsv2rgb(hcl), factor);
-        }
-
 
         const rgbaBorder = rgb_a(rgbFromType(this.type, this.active), 0.95);
 
@@ -211,13 +201,10 @@ extends Operator
                 rgbIsOk(colBack)
             && !this.forceShowWarning
             ? 'transparent'
-            : 'repeating-linear-gradient('
-               + '-45deg, '
-               + 'transparent 0 7px,'
-               +  warnStyle1 + ' 7px 14px,'
-               + 'transparent 14px 21px,'
-               +  warnStyle2 + ' 21px 28px)';
+            : getWarningGradient(7.8, warnStyle1, warnStyle2);
 
-        this._warningOverlay.style.display = 'block';
+            this._warningOverlay.style.backgroundPosition = '-6px 0';
+            this._warningOverlay.style.backgroundSize     = 'calc(100% + 11px) 100%';
+            this._warningOverlay.style.display            = 'block';
     }
 }

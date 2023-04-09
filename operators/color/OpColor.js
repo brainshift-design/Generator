@@ -415,8 +415,8 @@ extends OpColorBase
             this.isUnknown()
             ? unknownBackStyle
             : !rgbIsNaN(colors.stripeBack)
-            ? rgba2style(colors.stripeBack)
-            : rgba2style(rgb_a(rgbDocumentBody, 0.95));
+              ? rgba2style(colors.stripeBack)
+              : rgba2style(rgb_a(rgbDocumentBody, 0.95));
 
         this.colorBack.style.backgroundImage = 
             this.isUnknown()

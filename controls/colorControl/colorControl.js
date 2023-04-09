@@ -114,24 +114,26 @@ extends Control
 
         if (this.showColor)
         {
-            const rgb = this.value.toRgb();
+            // const rgbBack = this.value.toRgb();
 
-            if (!rgbIsNaN(rgb))
-            {
-                this.valueStyleLight =
-                this.valueStyleDark  = rgb2style(rgb);
+            // if (!rgbIsNaN(rgbBack))
+            // {
+            //     const rgbStripeBack = getStripeBackColor(rgbBack);
 
-                this.textStyleLight  = 
-                this.textStyleDark   = rgba2style(getTextColorFromBackColor(rgb));
-            }
-            else
-            {
-                this.valueStyleLight =
-                this.valueStyleDark  = 'var(--figma-color-bg)';
+            //     this.valueStyleLight =
+            //     this.valueStyleDark  = rgb2style(rgbStripeBack);
+
+            //     this.textStyleLight  = 
+            //     this.textStyleDark   = rgba2style(getTextColorFromBackColor(rgbStripeBack));
+            // }
+            // else
+            // {
+            //     this.valueStyleLight =
+            //     this.valueStyleDark  = 'var(--figma-color-bg)';
                 
-                this.textStyleLight  = 'black';
-                this.textStyleDark   = 'white';
-            }
+            //     this.textStyleLight  = 'black';
+            //     this.textStyleDark   = 'white';
+            // }
         }
 
 
@@ -176,21 +178,28 @@ extends Control
 
     updateColors()
     {
-        this.div    .style.background = 
-        this.textbox.style.background = 
-            this.showColor
-            ? (darkMode 
-               ? this.valueStyleDark 
-               : this.valueStyleLight)
-            : (darkMode
-               ? this.backStyleDark 
-               : this.backStyleLight);
+        const rgbBack = this.value.toRgb();
+
+        // const rgbBack =
+        //     this.showColor
+        //     ? (darkMode 
+        //        ? this.valueStyleDark 
+        //        : this.valueStyleLight)
+        //     : (darkMode
+        //        ? this.backStyleDark 
+        //        : this.backStyleLight);
+
+        const rgbStripeBack = getStripeBackColor(rgbBack);
+
+        this.div    .style.background = darkMode ? this.backStyleDark : this.backStyleLight;
+        this.textbox.style.background = 'transparent';//rgb2style(rgbStripeBack);
+            
 
         this.text   .style.color = 
-        this.textbox.style.color = 
-            darkMode 
-            ? this.textStyleDark 
-            : this.textStyleLight;
+        this.textbox.style.color = darkMode ? this.textStyleDark : this.textStyleLight;//rgba2style(rgb_a(getTextColorFromBackColor(rgbStripeBack), 0.7));//rgb2style(rgbStripeBack);
+            // darkMode 
+            // ? this.textStyleDark 
+            // : this.textStyleLight;
     };
 
 
