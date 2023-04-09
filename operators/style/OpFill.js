@@ -25,7 +25,7 @@ extends OpColorBase
 
 
         this.addInput (new Input(FILL_TYPES, getNodeInputValuesForUndo, this.input_getBackInitValue));
-        this.addOutput(new Output([FILL], this.output_genRequest, getNodeOutputValuesForUndo, this.output_backInit));
+        this.addOutput(new Output([FILL_VALUE], this.output_genRequest, getNodeOutputValuesForUndo, this.output_backInit));
 
 
         this.addParam(this.paramColor   = new ColorParam ('color',   '',        false, true, true, ColorValue.fromRgb(rgbDefaultFill)));
@@ -131,8 +131,8 @@ extends OpColorBase
         this.outputs[0].types =
                this.inputs[0].connected
             && this.inputs[0].connectedOutput.supportsTypes(SHAPE_TYPES)
-            ? [...this.inputs[0].connectedOutput.types, FILL]
-            : [FILL];
+            ? [...this.inputs[0].connectedOutput.types, FILL_VALUE]
+            : [FILL_VALUE];
 
 
         super.updateValues(requestId, actionId, updateParamId, paramIds, values);
