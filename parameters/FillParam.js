@@ -137,6 +137,7 @@ extends Parameter
         this.controls[1].textbox.style.transform    = 'translateX(6px)';
         this.controls[1].textbox.style.textAlign    = 'left';
         this.controls[1].textbox.style.paddingRight =  10;
+        this.controls[1].textbox.style.background   = 'transparent';
 
 
         this.controlWrapper.appendChild(this.controls[0].div);
