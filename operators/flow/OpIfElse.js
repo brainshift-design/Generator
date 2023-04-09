@@ -12,10 +12,10 @@ extends OperatorBase
 
         this.addInput (new Input(ALL_TYPES));
         this.addInput (new Input(ALL_TYPES));
-        this.addOutput(new Output([], this.output_genRequest));
+        this.addOutput(new Output([ANY_TYPE], this.output_genRequest));
 
 
-        this.addParam(this.paramCondition = new NumberParam('condition', 'condition', true, true, false, 1, 0, 1));
+        this.addParam(this.paramCondition = new NumberParam('condition', 'condition', true, true, true, 1, 0, 1));
 
 
         this.inputs[0].addEventListener('connect',    () => OpIfElse_onConnectInput(this, 0));
@@ -199,6 +199,7 @@ function OpIfElse_onConnectInput(node, inputIndex)
     const firstOut   = firstInput.connectedOutput;
     const firstTypes = firstOut.types;
     
+
     firstInput.types     = [...firstTypes];
     firstInput.wireColor = firstOut.wireColor;
 
