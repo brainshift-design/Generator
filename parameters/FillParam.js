@@ -341,8 +341,8 @@ extends Parameter
         checkControlVisible(this, this.controls[1]);
 
 
-        const colors = this.node.getHeaderColors();
-
+        //const colors = this.node.getHeaderColors();
+        //console.log('colors =', colors);
 
         const noColor = 
             darkMode
@@ -350,15 +350,16 @@ extends Parameter
             : rgbNoColorLight;
 
 
-        const rgbaVal  = colors.stripeBack;
+        const rgba       = this.value.toRgba();//colors.stripeBack;
 
-        const rgbaBack = rgb_a(colors.stripeBack, rgbaVal[3]);
-        const rgbaText = getTextColorFromBackColor(rgbaVal, rgbaVal[3]);
+        const rgbaStripe = rgb_a(getStripeBackColor(rgba), rgba[3]);
+        const rgbaBack   = rgbaStripe;//rgb_a(colors.stripeBack, rgbaVal[3]);
+        const rgbaText   = getTextColorFromBackColor(rgbaStripe, rgba[3]);
 
 
         // const fillStyle = rgba2style(rgb_a(rgbaVal, this.controls[1].value/100));
 
-        this.controlWrapper.style.background = //'transparent';
+        this.controlWrapper.style.background =
               !rgbaIsNaN(rgbaBack) 
             && this.value.opacity.isValid()
             ?  rgba2style(rgbaBack)//fillStyle 
@@ -368,7 +369,7 @@ extends Parameter
         this.updateWarningOverlay();
 
 
-        if (!rgbaIsNaN(rgbaVal))
+        if (!rgbaIsNaN(rgba))
             this.div.style.background = 'transparent';
         else
         {
@@ -384,23 +385,23 @@ extends Parameter
         {
             this.input.colorLight  = 
             this.input.colorDark   = rgb_a(rgbaText, 0.2);
-            this.input.wireColor   = !rgbaIsNaN(rgbaVal) ? rgbaVal : noColor;
+            this.input.wireColor   = !rgbaIsNaN(rgbaBack) ? rgbaBack : noColor;
         }
 
         if (this.output)
         {
             this.output.colorLight =
             this.output.colorDark  = rgb_a(rgbaText, 0.2);
-            this.output.wireColor  = !rgbaIsNaN(rgbaVal) ? rgbaVal : noColor;
+            this.output.wireColor  = !rgbaIsNaN(rgbaBack) ? rgbaBack : noColor;
         }
 
 
         this.checkers.style.background = 
             darkMode
-            ?   'linear-gradient(45deg, #222 25%, transparent 25%, transparent 75%, #222 75%), '
-              + 'linear-gradient(45deg, #222 25%, transparent 25%, transparent 75%, #222 75%)'
-            :   'linear-gradient(45deg, #ddd 25%, transparent 25%, transparent 75%, #ddd 75%), '
-              + 'linear-gradient(45deg, #ddd 25%, transparent 25%, transparent 75%, #ddd 75%)';
+            ?   'linear-gradient(-45deg, #222 25%, transparent 25%, transparent 75%, #222 75%), '
+              + 'linear-gradient(-45deg, #222 25%, transparent 25%, transparent 75%, #222 75%)'
+            :   'linear-gradient(-45deg, #ddd 25%, transparent 25%, transparent 75%, #ddd 75%), '
+              + 'linear-gradient(-45deg, #ddd 25%, transparent 25%, transparent 75%, #ddd 75%)';
 
         this.checkers.style.display            = this.value.isValid() ? 'inline-block' : 'none';
         this.checkers.style.backgroundColor    = darkMode ? '#444' : '#fff';
@@ -413,14 +414,14 @@ extends Parameter
         
         
         this.controls[0].backStyleLight        = 
-        this.controls[0].backStyleDark         = 'transparent';//rgba2style(rgbaBack);
+        this.controls[0].backStyleDark         = 'transparent';
          
         this.controls[0].textStyleLight        = 
         this.controls[0].textStyleDark         = rgba2style(rgbaText);
 
 
         this.controls[1].backStyleLight        = 
-        this.controls[1].backStyleDark         = 'transparent';//rgba2style(rgbaBack);
+        this.controls[1].backStyleDark         = 'transparent';
 
 
         this.controls[1].textStyleLight        = 

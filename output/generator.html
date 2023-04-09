@@ -12330,8 +12330,10 @@ extends GObjectBase
             if (this.value.type == COLOR_VALUE)
                 this.value = FillValue.fromRgb(scaleRgb(this.value.toRgb()), 0xff);
 
-            const rgba = this.value.toRgba();
-            this.evalStyle({rgba: rgba});
+            const rgba       = this.value.toRgba();
+            const rgbaStripe = rgb_a(getStripeBackColor(rgba), rgba[3]);
+
+            this.evalStyle({rgba: rgbaStripe});
         }
         else
             this.value = FillValue.NaN;

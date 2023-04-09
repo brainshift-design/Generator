@@ -189,22 +189,23 @@ extends Parameter
             ? rgbNoColorDark
             : rgbNoColorLight;
 
-        const rgbVal   = this.value.toRgb();
-        const rgbaText = getTextColorFromBackColor(rgbVal, 1);
+        const rgbVal    = this.value.toRgb();
+        const rgbStripe = getStripeBackColor(rgbVal);
+        const rgbaText  = getTextColorFromBackColor(rgbStripe, 1);
         
         
         if (this.input)
         {
             this.input.colorLight  = 
             this.input.colorDark   = rgb_a(rgbaText, 0.2);
-            this.input.wireColor   = !rgbIsNaN(rgbVal) ? rgbVal : noColor;
+            this.input.wireColor   = !rgbIsNaN(rgbStripe) ? rgbStripe : noColor;
         }
 
         if (this.output)
         {
             this.output.colorLight =
             this.output.colorDark  = rgb_a(rgbaText, 0.2);
-            this.output.wireColor  = !rgbIsNaN(rgbVal) ? rgbVal : noColor;
+            this.output.wireColor  = !rgbIsNaN(rgbStripe) ? rgbStripe : noColor;
         }
 
 

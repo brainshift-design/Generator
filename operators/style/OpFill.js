@@ -172,6 +172,8 @@ extends OpColorBase
         
         this.paramColor.output.colorLight           =
         this.paramColor.output.colorDark            = colors.output;
+
+        this.paramColor.output.wireColor            = colors.stripeBack;
     }
 
 
@@ -252,9 +254,9 @@ extends OpColorBase
 
     getHeaderColors(options = {})
     {
-        if (    this.inputIsShape
-            && !options.color)
-            return Operator.prototype.getHeaderColors.call(this);
+        // if (    this.inputIsShape
+        //     && !options.color)
+        //     return Operator.prototype.getHeaderColors.call(this);
 
             
         const colors  = super.getHeaderColors();
@@ -264,7 +266,7 @@ extends OpColorBase
         colors.text       = getTextColorFromBackColor(colors.stripeBack, colors.back[3]);
         colors.input      = rgb_a(colors.text, 0.2);
         colors.output     = rgb_a(colors.text, 0.2);
-        colors.wire       = colors.back;
+        colors.wire       = colors.stripeBack;
         
         return colors;
     }
