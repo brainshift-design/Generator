@@ -8336,7 +8336,7 @@ extends GNode
     valid; // has been evaluated
     topLevel;
 
-    value;
+    values = [];
 
    
     feedbackValue = null; // () => {}
@@ -8351,8 +8351,6 @@ extends GNode
 
         this.valid        = false;
         this.topLevel     = false;
-
-        this.value        = null;
     }
 
 
@@ -14104,6 +14102,7 @@ extends GColorType
         let   c3    = this.c3    ? (await this.c3   .eval(parse)).toValue()             : null;
 
 
+        console.log('this.input =', this.input);
         if (this.input)
         {
             const input = (await this.input.eval(parse)).toValue();
@@ -30214,7 +30213,7 @@ extends GNode
     valid; // has been evaluated
     topLevel;
 
-    value;
+    values = [];
 
    
     feedbackValue = null; // () => {}
@@ -30229,8 +30228,6 @@ extends GNode
 
         this.valid        = false;
         this.topLevel     = false;
-
-        this.value        = null;
     }
 
 
@@ -35982,6 +35979,7 @@ extends GColorType
         let   c3    = this.c3    ? (await this.c3   .eval(parse)).toValue()             : null;
 
 
+        console.log('this.input =', this.input);
         if (this.input)
         {
             const input = (await this.input.eval(parse)).toValue();
@@ -43915,13 +43913,13 @@ function initGeneratorMenus()
 
     menuDebugLog = new Menu('Debug log', false);
     menuDebugLog.addItems([
+        menuItemLogRawRequests        = new MenuItem('Log\u2008raw\u2008requests', {checkCallback: () => settings.logRawRequests  ,      callback: () => updateSettingAndMenu('logRawRequests',        true, !settings.logRawRequests       ), setting: true}),
+        menuItemLogRawValues          = new MenuItem('Log\u2008raw\u2008values',   {checkCallback: () => settings.logRawValues    ,      callback: () => updateSettingAndMenu('logRawValues',          true, !settings.logRawValues         ), setting: true}),
+                                        new MenuItem('',                           {separator: true}),                   
         menuItemLogRequests           = new MenuItem('Log\u2008requests',          {checkCallback: () => settings.logRequests     ,      callback: () => updateSettingAndMenu('logRequests',           true, !settings.logRequests          ), setting: true}),
         menuItemLogValueUpdates       = new MenuItem('Log\u2008values',            {checkCallback: () => settings.logValueUpdates ,      callback: () => updateSettingAndMenu('logValueUpdates',       true, !settings.logValueUpdates      ), setting: true}),
         menuItemLogObjectUpdates      = new MenuItem('Log\u2008objects',           {checkCallback: () => settings.logObjectUpdates,      callback: () => updateSettingAndMenu('logObjectUpdates',      true, !settings.logObjectUpdates     ), setting: true}),
         menuItemLogStyleUpdates       = new MenuItem('Log\u2008styles',            {checkCallback: () => settings.logStyleUpdates ,      callback: () => updateSettingAndMenu('logStyleUpdates',       true, !settings.logStyleUpdates      ), setting: true}),
-                                        new MenuItem('',                           {separator: true}),                   
-        menuItemLogRawRequests        = new MenuItem('Log\u2008raw\u2008requests', {checkCallback: () => settings.logRawRequests  ,      callback: () => updateSettingAndMenu('logRawRequests',        true, !settings.logRawRequests       ), setting: true}),
-        menuItemLogRawValues          = new MenuItem('Log\u2008raw\u2008values',   {checkCallback: () => settings.logRawValues    ,      callback: () => updateSettingAndMenu('logRawValues',          true, !settings.logRawValues         ), setting: true}),
                                         new MenuItem('',                           {separator: true}),                   
         menuItemLogLoading            = new MenuItem('Log\u2008load\u2008at start', {checkCallback: () => settings.logLoading      ,      callback: () => updateSettingAndMenu('logLoading',            true, !settings.logLoading           ), setting: true}),
                                         new MenuItem('',                           {separator: true}),                   
@@ -44201,8 +44199,8 @@ function initGeneratorMenus()
 
     menuRemoveLicense = new Menu('Remove license', false, false);
     menuRemoveLicense.addItems([
-                                new MenuItem('Cut',   {callback: () => { hideAllMenus(); document.execCommand('copy'); clearSelectedText(productKeyInput); updateProductKeyDots(); }}),
-                                new MenuItem('Copy',  {callback: () => { hideAllMenus(); document.execCommand('copy'); }}),
+                                new MenuItem('Cut',   {callback: () => { hideAllMenus(); document.execCommand('copy' ); clearSelectedText(productKeyInput); updateProductKeyDots(); }}),
+                                new MenuItem('Copy',  {callback: () => { hideAllMenus(); document.execCommand('copy' ); }}),
                                 new MenuItem('Paste', {callback: () => { hideAllMenus(); document.execCommand('paste'); }}),
         menuItemLicenseSep1   = new MenuItem('', {separator: true}),
         menuItemLicenseRemove = new MenuItem('Remove from this computer', {callback: () => { hideAllMenus(); removeLicense(); }})]);
@@ -60408,6 +60406,10 @@ extends OpColorBase
     labelColor = [0, 0, 0];
 
 
+    _rgbText   = [0, 0, 0];
+    _rgbBack   = [0, 0, 0];
+
+
     constructor()
     {
         super(COLOR_CONTRAST, 'contrast', 'contrast');
@@ -60415,6 +60417,9 @@ extends OpColorBase
 
         this.addInput(new Input(COLOR_TYPES));
         this.addInput(new Input(COLOR_TYPES));
+
+        this.addOutput(new Output([COLOR_VALUE], this.output_genRequest));
+        this.addOutput(new Output([COLOR_VALUE], this.output_genRequest));
 
 
         this.addParam(this.paramContrast = new NumberParam('contrast', '', false, false, true, 0));
@@ -60437,21 +60442,30 @@ extends OpColorBase
 
 
 
-    genRequest(gen)
+    output_genRequest(gen)
     {
-        // 'this' is the node
+        if (gen.passedNodes.includes(this.node))
+        {
+            return [
+                this.node.type, 
+                this.node.id, 
+                this.node.name];
+        }
+
+
+        // 'this' is the output
 
         gen.scope.push({
-            nodeId:  this.id, 
+            nodeId:  this.node.id, 
             paramId: NULL });
 
 
-        const [request, ignore] = this.genRequestStart(gen);
+        const [request, ignore] = this.node.genRequestStart(gen);
         if (ignore) return request;
 
 
-        const input0 = this.inputs[0];
-        const input1 = this.inputs[1];
+        const input0 = this.node.inputs[0];
+        const input1 = this.node.inputs[1];
 
         
         if (   input0.connected
@@ -60465,11 +60479,12 @@ extends OpColorBase
         else                       request.push(0);
 
 
-        request.push(...this.paramStandard.genRequest(gen));
+        request.push(...this.node.paramStandard.genRequest(gen));
 
 
         gen.scope.pop();
-        pushUnique(gen.passedNodes, this);
+        pushUnique(gen.passedNodes, this.node);
+
 
         return request;
     }
@@ -60503,6 +60518,10 @@ extends OpColorBase
             : getTextColorFromBackColor(colBack);
 
         this._color = colBack.toDataColor();
+
+
+        this._rgbText = colText.toRgb();
+        this._rgbBack = colBack.toRgb();
 
 
         if (   standard
@@ -60581,6 +60600,22 @@ extends OpColorBase
         this.setRanges(this.paramStandard.value);
 
         this.updateParamControls();
+    }
+
+
+
+    updateHeader()
+    {
+        super.updateHeader();
+
+
+        this.outputs[0].lightColor =
+        this.outputs[0]. darkColor =
+        this.outputs[0]. wireColor = this._rgbText;
+
+        this.outputs[1].lightColor =
+        this.outputs[1]. darkColor =
+        this.outputs[1]. wireColor = this._rgbBack;
     }
 
 

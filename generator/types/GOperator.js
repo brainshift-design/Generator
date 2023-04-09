@@ -7,7 +7,7 @@ extends GNode
     valid; // has been evaluated
     topLevel;
 
-    value;
+    values = [];
 
    
     feedbackValue = null; // () => {}
@@ -22,8 +22,6 @@ extends GNode
 
         this.valid        = false;
         this.topLevel     = false;
-
-        this.value        = null;
     }
 
 

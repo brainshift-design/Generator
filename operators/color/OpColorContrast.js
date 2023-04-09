@@ -34,6 +34,10 @@ extends OpColorBase
     labelColor = [0, 0, 0];
 
 
+    _rgbText   = [0, 0, 0];
+    _rgbBack   = [0, 0, 0];
+
+
     constructor()
     {
         super(COLOR_CONTRAST, 'contrast', 'contrast');
@@ -41,6 +45,9 @@ extends OpColorBase
 
         this.addInput(new Input(COLOR_TYPES));
         this.addInput(new Input(COLOR_TYPES));
+
+        this.addOutput(new Output([COLOR_VALUE], this.output_genRequest));
+        this.addOutput(new Output([COLOR_VALUE], this.output_genRequest));
 
 
         this.addParam(this.paramContrast = new NumberParam('contrast', '', false, false, true, 0));
@@ -63,21 +70,30 @@ extends OpColorBase
 
 
 
-    genRequest(gen)
+    output_genRequest(gen)
     {
-        // 'this' is the node
+        if (gen.passedNodes.includes(this.node))
+        {
+            return [
+                this.node.type, 
+                this.node.id, 
+                this.node.name];
+        }
+
+
+        // 'this' is the output
 
         gen.scope.push({
-            nodeId:  this.id, 
+            nodeId:  this.node.id, 
             paramId: NULL });
 
 
-        const [request, ignore] = this.genRequestStart(gen);
+        const [request, ignore] = this.node.genRequestStart(gen);
         if (ignore) return request;
 
 
-        const input0 = this.inputs[0];
-        const input1 = this.inputs[1];
+        const input0 = this.node.inputs[0];
+        const input1 = this.node.inputs[1];
 
         
         if (   input0.connected
@@ -91,11 +107,12 @@ extends OpColorBase
         else                       request.push(0);
 
 
-        request.push(...this.paramStandard.genRequest(gen));
+        request.push(...this.node.paramStandard.genRequest(gen));
 
 
         gen.scope.pop();
-        pushUnique(gen.passedNodes, this);
+        pushUnique(gen.passedNodes, this.node);
+
 
         return request;
     }
@@ -129,6 +146,10 @@ extends OpColorBase
             : getTextColorFromBackColor(colBack);
 
         this._color = colBack.toDataColor();
+
+
+        this._rgbText = colText.toRgb();
+        this._rgbBack = colBack.toRgb();
 
 
         if (   standard
@@ -207,6 +228,22 @@ extends OpColorBase
         this.setRanges(this.paramStandard.value);
 
         this.updateParamControls();
+    }
+
+
+
+    updateHeader()
+    {
+        super.updateHeader();
+
+
+        this.outputs[0].lightColor =
+        this.outputs[0]. darkColor =
+        this.outputs[0]. wireColor = this._rgbText;
+
+        this.outputs[1].lightColor =
+        this.outputs[1]. darkColor =
+        this.outputs[1]. wireColor = this._rgbBack;
     }
 
 
