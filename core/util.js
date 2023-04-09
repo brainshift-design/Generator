@@ -1,4 +1,4 @@
-var isMac = navigator.platform.toLowerCase().indexOf('mac') >= 0;
+const isMac = navigator.platform.toLowerCase().indexOf('mac') >= 0;
 
 
 
@@ -41,8 +41,8 @@ function countString(itemName, count)
 
 function decCount(strValue)
 {
-    const dotIndex   = strValue.indexOf('.');//getUserDecimalSeparator());
-    const commaIndex = strValue.indexOf(',');//getUserDecimalSeparator());
+    const dotIndex   = strValue.indexOf('.');
+    const commaIndex = strValue.indexOf(',');
 
     return dotIndex >= 0
          ? strValue.length-1 - dotIndex

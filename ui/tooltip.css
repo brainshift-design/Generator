@@ -44,7 +44,7 @@
 {
     content:        '';
     position:       absolute;
-    margin-left: -  7px;
+    margin-left:   -7px;
     border-width:   7px;
     border-style:   solid;
     border-color:   transparent transparent #1e1e1e transparent;
@@ -73,9 +73,9 @@
     position:    absolute;
     right:       0px;
     text-align:  center;
-    width:       72px;
+    width:       74px;
     height:      20px;
-    padding-top: 5px;
+    padding-top: 6px;
 }
 
 

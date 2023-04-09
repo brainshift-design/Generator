@@ -65,11 +65,3 @@ createTooltipPointerTrap(ttWcag2);
 createTooltipPointerTrap(ttWcag3);
 createTooltipPointerTrap(ttInterpolationSpace);
 createTooltipPointerTrap(ttColorblind);
-
-
-
-// initPermanentTooltip(ttText);
-// initPermanentTooltip(ttColorblind);
-// initPermanentTooltip(ttInterpolationSpace);
-// initPermanentTooltip(ttWcag2);
-// initPermanentTooltip(ttWcag3);

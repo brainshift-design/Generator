@@ -1,5 +1,5 @@
-var tooltipTimer;
-var tooltipOutTimer;
+var tooltipTimer    = -1;
+var tooltipOutTimer = -1;
 
 var inTooltip = null;
 
@@ -13,19 +13,20 @@ function createTooltipSrc(source, ref, getTooltip)
 {
     source.addEventListener('pointerenter', () =>
     {
-        if (   tooltipOutTimer
+        console.log('getTooltip() =', getTooltip());
+        if (   tooltipOutTimer >= 0
             && getTooltip()) 
         {
             clearTimeout(tooltipOutTimer);
-            tooltipOutTimer = null;
+            tooltipOutTimer = -1;
         }
 
 
-        if (tooltipTimer) 
+        if (tooltipTimer >= 0) 
             clearTimeout(tooltipTimer);
 
 
-        if (!tooltipTimer)
+        if (tooltipTimer < 0)
         {
             tooltipTimer = setTimeout(() =>
             {
@@ -34,7 +35,7 @@ function createTooltipSrc(source, ref, getTooltip)
                 if (tooltip) 
                     showTooltip(ref, tooltip);
 
-                tooltipTimer = null;
+                tooltipTimer = -1;
             }, 
             currentTooltip ? 0 : 1000);
         }
@@ -72,18 +73,18 @@ function createTooltipPointerTrap(tooltip)
 {
     tooltip.addEventListener('pointerenter', e =>
     {
-        if (tooltipOutTimer)
+        if (tooltipOutTimer >= 0)
         {
             clearTimeout(tooltipOutTimer);
-            tooltipOutTimer = null;
+            //tooltipOutTimer = -1;
         }
     });
 
     
     tooltip.addEventListener('pointerleave', e =>
     {
-        if (!tooltipOutTimer)
-            hideTooltip(tooltip);
+        // if (tooltipOutTimer < 0)
+        //     hideTooltip(tooltip);
 
         tooltip_pointerLeave(currentTooltip);
     });
@@ -93,10 +94,10 @@ function createTooltipPointerTrap(tooltip)
 
 function tooltip_pointerLeave(tooltip)
 {
-    if (tooltipTimer)
+    if (tooltipTimer >= 0)
     {
         clearTimeout(tooltipTimer);
-        tooltipTimer = null;
+        tooltipTimer = -1;
     }
 
 
@@ -108,7 +109,7 @@ function tooltip_pointerLeave(tooltip)
         currentTooltip       = null;
         currentTooltipSource = null;
 
-        tooltipOutTimer      = null;
+        tooltipOutTimer      = -1;
     }, 
     400);
 }
@@ -197,6 +198,6 @@ function hideTooltip(tooltip)
     clearTimeout(tooltipTimer);
     clearTimeout(tooltipOutTimer);
 
-    tooltipTimer   = null;
+    tooltipTimer   = -1;
     currentTooltip = null;
 }
