@@ -127,8 +127,8 @@ extends OpColorBase
         this.outputs[0].types =
                this.inputs[0].connected
             && this.inputs[0].connectedOutput.supportsTypes(SHAPE_TYPES)
-            ? [...this.inputs[0].connectedOutput.types, STROKE]
-            : [STROKE];
+            ? [...this.inputs[0].connectedOutput.types, STROKE_VALUE]
+            : [STROKE_VALUE];
 
 
         super.updateValues(requestId, actionId, updateParamId, paramIds, values);
@@ -157,7 +157,7 @@ extends OpColorBase
             : rgba2style(rgb_a(rgbDocumentBody, 0.95));
 
 
-        this.colorBack.style.height = defHeaderHeight + defParamHeight;
+        this.colorBack.style.height = this.measureData.headerOffset.height;
 
             
         this.checkers.style.height = this.header.offsetHeight;

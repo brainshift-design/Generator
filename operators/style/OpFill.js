@@ -210,12 +210,12 @@ extends OpColorBase
         this.header.style.background = 
             !rgbaIsNaN(colors.stripeBack)
             ? rgba2style(colors.stripeBack) 
-            : 'transparent';
+            : rgba2style(rgb_a(rgbDocumentBody, 0.95));
 
         this.colorBack.style.background = 
-             rgbIsOk(colors.stripeBack)
+            rgbIsOk(colors.stripeBack)
             ? rgb2style(colors.stripeBack)
-            : rgba2style(rgb_a(rgbDocumentBody, 0.95));
+            : 'transparent';
 
 
         this.checkers.style.height = this.header.offsetHeight;
