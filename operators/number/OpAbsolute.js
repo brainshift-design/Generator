@@ -3,7 +3,7 @@ extends OperatorWithValue
 {
     constructor()
     {
-        super(NUMBER_ABSOLUTE, 'abs', 'abs');
+        super(NUMBER_ABSOLUTE, 'abs', 'absolute');
 
         this.canDisable = true;
         

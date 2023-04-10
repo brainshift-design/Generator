@@ -458,10 +458,11 @@ function getStripeBackColor(rgbBack)
 
     if (factor > 0)
     {
-        const hcl = rgb2hsv(clampRgb(rgbBack));
+        const hcl = rgb2hclok(clampRgb(rgbBack));
         hcl[1] /= 2;
+        
 
-        rgbStripeBack = rgbLerp(rgbBack, hsv2rgb(hcl), factor);
+        rgbStripeBack = rgbLerp(rgbBack, clipChroma(hclok2rgb(hcl)), factor);
     }
 
     return rgbStripeBack;
@@ -503,4 +504,26 @@ function setChan(_col, chan, val)
     const col = [..._col];
     col[chan] = val;
     return col;
+}
+
+
+
+function clipChroma(rgb)
+{
+    let hcl = rgb2hclok(rgb);
+
+    let loopProtect = 10000;
+
+    while (!rgbIsValid(hclok2rgb(hcl))
+         && hcl[1] > 0.001
+         && loopProtect-- > 0)
+        hcl[1] -= 0.001;
+
+    rgb = hclok2rgb(hcl);
+
+    rgb[0] = Math.min(Math.max(0, rgb[0]), 1);   
+    rgb[1] = Math.min(Math.max(0, rgb[1]), 1);   
+    rgb[2] = Math.min(Math.max(0, rgb[2]), 1); 
+
+    return rgb;
 }

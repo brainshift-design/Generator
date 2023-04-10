@@ -3992,7 +3992,7 @@ a
        
     <div style='margin-top: 16;'>
         Set the condition of each cone type<br/>
-        to simulate all types of color vision deficiency.
+        to simulate types of color vision deficiency.
     </div>
 
     <div class='tooltipBottom'><div class='ignoreButton' id='ignoreColorBlindness' onclick="updateSettingAndMenu('showTooltipColorBlindness', true, false); hideTooltip(ttColorblind);">Don't show</div></div>
@@ -14322,20 +14322,11 @@ extends GColorType
                     }
                     else if (quality.value == 1) // clip chroma
                     {
-                        let hcl = rgb2hclok(rgb);
+                        rgb = clipChroma(rgb);
 
-                        let loopProtect = 10000;
-
-                        while (  !rgbIsValid(hclok2rgb(hcl))
-                            && hcl[1] > 0.001
-                            && loopProtect-- > 0)
-                            hcl[1] -= 0.001;
-
-                        rgb = hclok2rgb(hcl);
-
-                        rgb[0] = Math.round(Math.min(Math.max(0, rgb[0]), 1) * 0xff);   
-                        rgb[1] = Math.round(Math.min(Math.max(0, rgb[1]), 1) * 0xff);   
-                        rgb[2] = Math.round(Math.min(Math.max(0, rgb[2]), 1) * 0xff); 
+                        rgb[0] = Math.round(rgb[0] * 0xff);   
+                        rgb[1] = Math.round(rgb[1] * 0xff);   
+                        rgb[2] = Math.round(rgb[2] * 0xff); 
 
                         this.value = ColorValue.fromRgb(rgb);
                     }
@@ -22334,10 +22325,11 @@ function getStripeBackColor(rgbBack)
 
     if (factor > 0)
     {
-        const hcl = rgb2hsv(clampRgb(rgbBack));
+        const hcl = rgb2hclok(clampRgb(rgbBack));
         hcl[1] /= 2;
+        
 
-        rgbStripeBack = rgbLerp(rgbBack, hsv2rgb(hcl), factor);
+        rgbStripeBack = rgbLerp(rgbBack, clipChroma(hclok2rgb(hcl)), factor);
     }
 
     return rgbStripeBack;
@@ -22379,6 +22371,28 @@ function setChan(_col, chan, val)
     const col = [..._col];
     col[chan] = val;
     return col;
+}
+
+
+
+function clipChroma(rgb)
+{
+    let hcl = rgb2hclok(rgb);
+
+    let loopProtect = 10000;
+
+    while (!rgbIsValid(hclok2rgb(hcl))
+         && hcl[1] > 0.001
+         && loopProtect-- > 0)
+        hcl[1] -= 0.001;
+
+    rgb = hclok2rgb(hcl);
+
+    rgb[0] = Math.min(Math.max(0, rgb[0]), 1);   
+    rgb[1] = Math.min(Math.max(0, rgb[1]), 1);   
+    rgb[2] = Math.min(Math.max(0, rgb[2]), 1); 
+
+    return rgb;
 }
 
 
@@ -28602,10 +28616,11 @@ function getStripeBackColor(rgbBack)
 
     if (factor > 0)
     {
-        const hcl = rgb2hsv(clampRgb(rgbBack));
+        const hcl = rgb2hclok(clampRgb(rgbBack));
         hcl[1] /= 2;
+        
 
-        rgbStripeBack = rgbLerp(rgbBack, hsv2rgb(hcl), factor);
+        rgbStripeBack = rgbLerp(rgbBack, clipChroma(hclok2rgb(hcl)), factor);
     }
 
     return rgbStripeBack;
@@ -28647,6 +28662,28 @@ function setChan(_col, chan, val)
     const col = [..._col];
     col[chan] = val;
     return col;
+}
+
+
+
+function clipChroma(rgb)
+{
+    let hcl = rgb2hclok(rgb);
+
+    let loopProtect = 10000;
+
+    while (!rgbIsValid(hclok2rgb(hcl))
+         && hcl[1] > 0.001
+         && loopProtect-- > 0)
+        hcl[1] -= 0.001;
+
+    rgb = hclok2rgb(hcl);
+
+    rgb[0] = Math.min(Math.max(0, rgb[0]), 1);   
+    rgb[1] = Math.min(Math.max(0, rgb[1]), 1);   
+    rgb[2] = Math.min(Math.max(0, rgb[2]), 1); 
+
+    return rgb;
 }
 
 
@@ -36418,20 +36455,11 @@ extends GColorType
                     }
                     else if (quality.value == 1) // clip chroma
                     {
-                        let hcl = rgb2hclok(rgb);
+                        rgb = clipChroma(rgb);
 
-                        let loopProtect = 10000;
-
-                        while (  !rgbIsValid(hclok2rgb(hcl))
-                            && hcl[1] > 0.001
-                            && loopProtect-- > 0)
-                            hcl[1] -= 0.001;
-
-                        rgb = hclok2rgb(hcl);
-
-                        rgb[0] = Math.round(Math.min(Math.max(0, rgb[0]), 1) * 0xff);   
-                        rgb[1] = Math.round(Math.min(Math.max(0, rgb[1]), 1) * 0xff);   
-                        rgb[2] = Math.round(Math.min(Math.max(0, rgb[2]), 1) * 0xff); 
+                        rgb[0] = Math.round(rgb[0] * 0xff);   
+                        rgb[1] = Math.round(rgb[1] * 0xff);   
+                        rgb[2] = Math.round(rgb[2] * 0xff); 
 
                         this.value = ColorValue.fromRgb(rgb);
                     }
@@ -48998,23 +49026,24 @@ extends Parameter
             ? rgbNoColorDark
             : rgbNoColorLight;
 
-        const rgbVal    = this.value.toRgb();
-        const rgbStripe = getStripeBackColor(rgbVal);
-        const rgbaText  = getTextColorFromBackColor(rgbStripe, 1);
+
+        const rgb        = this.value.toRgb();
+        const rgbaStripe = rgb_a(getStripeBackColor(rgb), 1);
+        const rgbaText   = getTextColorFromBackColor(rgbaStripe, 1);
         
         
         if (this.input)
         {
             this.input.colorLight  = 
             this.input.colorDark   = rgb_a(rgbaText, 0.2);
-            this.input.wireColor   = !rgbIsNaN(rgbStripe) ? rgbStripe : noColor;
+            this.input.wireColor   = !rgbIsNaN(rgbaStripe) ? rgbaStripe : noColor;
         }
 
         if (this.output)
         {
             this.output.colorLight =
             this.output.colorDark  = rgb_a(rgbaText, 0.2);
-            this.output.wireColor  = !rgbIsNaN(rgbStripe) ? rgbStripe : noColor;
+            this.output.wireColor  = !rgbIsNaN(rgbaStripe) ? rgbaStripe : noColor;
         }
 
 
@@ -49502,28 +49531,23 @@ extends Parameter
         checkControlVisible(this, this.controls[1]);
 
 
-        //const colors = this.node.getHeaderColors();
-        //console.log('colors =', colors);
-
         const noColor = 
             darkMode
             ? rgbNoColorDark
             : rgbNoColorLight;
 
 
-        const rgba       = this.value.toRgba();//colors.stripeBack;
+        const rgba       = this.value.toRgba();
 
         const rgbaStripe = rgb_a(getStripeBackColor(rgba), rgba[3]);
-        const rgbaBack   = rgbaStripe;//rgb_a(colors.stripeBack, rgbaVal[3]);
+        const rgbaBack   = rgbaStripe;
         const rgbaText   = getTextColorFromBackColor(rgbaStripe, rgba[3]);
 
-
-        // const fillStyle = rgba2style(rgb_a(rgbaVal, this.controls[1].value/100));
 
         this.controlWrapper.style.background =
               !rgbaIsNaN(rgbaBack) 
             && this.value.opacity.isValid()
-            ?  rgba2style(rgbaBack)//fillStyle 
+            ?  rgba2style(rgbaBack)
             : 'transparent'; 
 
 
@@ -56176,7 +56200,7 @@ extends OperatorWithValue
 {
     constructor()
     {
-        super(NUMBER_ABSOLUTE, 'abs', 'abs');
+        super(NUMBER_ABSOLUTE, 'abs', 'absolute');
 
         this.canDisable = true;
         
@@ -56654,7 +56678,7 @@ extends OperatorWithValue
 
     constructor()
     {
-        super(NUMBER_INTERPOLATE, 'inter', 'inter');
+        super(NUMBER_INTERPOLATE, 'inter', 'interpolate');
 
         this.addInput(new Input(NUMBER_TYPES));
         this.addInput(new Input(NUMBER_TYPES));
@@ -57126,7 +57150,7 @@ extends OpArithmetic
 {
     constructor()
     {
-        super(NUMBER_SUBTRACT, 'sub', 'sub', '−');
+        super(NUMBER_SUBTRACT, 'sub', 'subtract', '−');
     }
 
 
@@ -57158,7 +57182,7 @@ extends OpArithmetic
 {
     constructor()
     {
-        super(NUMBER_MULTIPLY, 'mul', 'mul', '×');
+        super(NUMBER_MULTIPLY, 'mul', 'multiply', '×');
     }
 
 
@@ -57190,7 +57214,7 @@ extends OpArithmetic
 {
     constructor()
     {
-        super(NUMBER_DIVIDE, 'div', 'div', '/');//'÷');
+        super(NUMBER_DIVIDE, 'div', 'divide', '/');//'÷');
     }
 
 
@@ -57222,7 +57246,7 @@ extends OpArithmetic
 {
     constructor()
     {
-        super(NUMBER_MODULO, 'rem', 'rem', '%');
+        super(NUMBER_MODULO, 'rem', 'remainder', '%');
     }
     
     
@@ -57271,7 +57295,7 @@ extends OpArithmetic
 {
     constructor()
     {
-        super(NUMBER_EXPONENT, 'pow', 'pow', 'eˣ'); // placeholder symbol, actual symbol set in updateNode()
+        super(NUMBER_EXPONENT, 'pow', 'power', 'eˣ'); // placeholder symbol, actual symbol set in updateNode()
     }
 
 
@@ -57311,7 +57335,7 @@ extends OperatorWithValue
 
     constructor()
     {
-        super(NUMBER_BOOLEAN, 'bool', 'bool');
+        super(NUMBER_BOOLEAN, 'bool', 'boolean');
 
         this.variableInputs   = true;
         this.alwaysLoadParams = true;
@@ -57554,7 +57578,7 @@ extends OperatorWithValue
 
     constructor()
     {
-        super(NUMBER_CONDITION, 'cond', 'cond');
+        super(NUMBER_CONDITION, 'cond', 'condition');
 
         this.addInput(new Input(NUMBER_TYPES));
         this.addInput(new Input(NUMBER_TYPES));
@@ -57780,7 +57804,7 @@ extends OpConditionBase
 {
     constructor()
     {
-        super(NUMBER_NOT_EQUAL, 'notEqual', 'notEqual', '≠');
+        super(NUMBER_NOT_EQUAL, 'notEqual', 'not equal', '≠');
     }
 }
 
@@ -57800,7 +57824,7 @@ extends OpConditionBase
 {
     constructor()
     {
-        super(NUMBER_LESS_OR_EQUAL, 'lessOrEqual', 'lessOrEqual', '≤');
+        super(NUMBER_LESS_OR_EQUAL, 'lessOrEqual', 'less or equal', '≤');
     }
 }
 
@@ -57820,7 +57844,7 @@ extends OpConditionBase
 {
     constructor()
     {
-        super(NUMBER_GREATER_OR_EQUAL, 'greaterOrEqual', 'greaterOrEqual', '≥');
+        super(NUMBER_GREATER_OR_EQUAL, 'greaterOrEqual', 'greater or equal', '≥');
     }
 }
 
@@ -58552,7 +58576,6 @@ extends Operator
         const rgbaBorder = rgb_a(rgbFromType(this.type, this.active), 0.95);
 
         const rgbText  = getTextColorFromBackColor(rgbStripeBack);
-        //const rgbLabel = getTextColorFromBackColor(clipRgb(rgbBack));
 
         const rgbaWire = 
             !rgbIsNaN(rgbStripeBack)   
@@ -58564,7 +58587,6 @@ extends Operator
             stripeBack: rgb_a(rgbStripeBack, 1),
             border:     rgbaBorder,
             text:       rgb_a(rgbText, 0.9),
-            //label:    rgb_a(rgbLabel, 0.9),
             input:      rgb_a(rgbText, 0.2),
             output:     rgb_a(rgbText, 0.2),
             wire:       rgbaWire };
@@ -58594,8 +58616,6 @@ extends Operator
         }
         else
         {
-            //rgb = rgbDocumentBody;//this.getDefaultBackColor();
-
             this.warningStyle = getDefaultWarningStyle(colors.back);
             this.updateWarningOverlayStyle(colors.back);
         }
@@ -58607,7 +58627,7 @@ extends Operator
     {
         this._warningOverlay.style.height = 
             height < 0
-            ? defHeaderHeight //this.measureData.headerOffset.height
+            ? this.measureData.headerOffset.height
             : height;
 
             
@@ -61162,6 +61182,11 @@ extends OpColorBase
             new MenuItem('S blind', {callback: () => { hideAllMenus(); this.paramS.setValue(new NumberValue(0), true); }})]);
 
 
+        this.menuL.minWidth = 120;
+        this.menuM.minWidth = 120;
+        this.menuS.minWidth = 120;
+
+
         this.paramL.controls[0].div.addEventListener('pointerdown', e => this.showParamMenu(e, this.paramL, this.menuL));
         this.paramM.controls[0].div.addEventListener('pointerdown', e => this.showParamMenu(e, this.paramM, this.menuM));
         this.paramS.controls[0].div.addEventListener('pointerdown', e => this.showParamMenu(e, this.paramS, this.menuS));
@@ -61339,7 +61364,7 @@ extends OpColorBase
 
     constructor()
     {
-        super(COLOR_INTERPOLATE, 'inter', 'inter');
+        super(COLOR_INTERPOLATE, 'inter', 'interpolate');
 
         
         this.addInput(new Input(COLOR_TYPES));
@@ -62160,8 +62185,9 @@ extends OpColorBase
         this.checkersHolder = createDiv('nodeHeaderCheckersHolder');
         this.checkers       = createDiv('nodeHeaderCheckers');
 
-        //this.inner.appendChild(this.colorBack);
+        this.inner.appendChild(this.colorBack);
         this.inner.insertBefore(this.checkersHolder, this.header);
+
         this.checkersHolder.appendChild(this.checkers);
 
 
@@ -62285,7 +62311,12 @@ extends OpColorBase
     {
         const colors = this.getHeaderColors({color: true});
 
-        colors.text   = getTextColorFromBackColor(colors.back, this.inputIsShape ? colors.back[3] : 1);
+        colors.text = getTextColorFromBackColor(
+            colors.stripeBack, 
+            this.inputIsShape 
+            ? colors.stripeBack[3] 
+            : 1);
+
         colors.input  = rgb_a(colors.text, 0.2);
         colors.output = rgb_a(colors.text, 0.2);
 
@@ -62344,8 +62375,8 @@ extends OpColorBase
             : 'transparent';
 
         this.colorBack.style.background = 
-             !rgbaIsNaN(colors.stripeBack)
-            ? rgba2style(colors.stripeBack)
+             rgbIsOk(colors.stripeBack)
+            ? rgb2style(colors.stripeBack)
             : rgba2style(rgb_a(rgbDocumentBody, 0.95));
 
 
@@ -62388,21 +62419,16 @@ extends OpColorBase
         super.updateHeaderLabel();
         
         const colors = this.getHeaderColors();
-        this.label.style.color = rgba2style(colors.text);
+        this.label.style.color = rgb2style(colors.text);
     }
 
 
 
     getHeaderColors(options = {})
     {
-        // if (    this.inputIsShape
-        //     && !options.color)
-        //     return Operator.prototype.getHeaderColors.call(this);
-
-            
         const colors  = super.getHeaderColors();
 
-        colors.back       = rgb_a(colors.back, this.paramOpacity.value.value/100);
+        colors.back       = rgb_a(colors.back,       this.paramOpacity.value.value/100);
         colors.stripeBack = rgb_a(colors.stripeBack, this.paramOpacity.value.value/100);
         colors.text       = getTextColorFromBackColor(colors.stripeBack, colors.back[3]);
         colors.input      = rgb_a(colors.text, 0.2);
@@ -62429,13 +62455,6 @@ extends OpColorBase
 
         this.updateParamControls();
     }
-
-
-
-    // updateWarningOverlayStyle(colBack, height = -1)
-    // {
-    //     super.updateWarningOverlayStyle(colBack, defHeaderHeight + defParamHeight);
-    // }
 }
 
 
@@ -62453,21 +62472,20 @@ extends OpColorBase
 
 
     
-    get inputIsShape() 
-    {
-        return this.inputs[0].connected
-            && this.inputs[0].connectedOutput.supportsTypes(SHAPE_TYPES);
-    }
-
-
-
     constructor()
     {
         super(STROKE, 'stroke', 'stroke');
 
 
-        this.colorBack = createDiv('colorBack');
+        this.colorBack      = createDiv('colorBack');
+        this.checkersHolder = createDiv('nodeHeaderCheckersHolder');
+        this.checkers       = createDiv('nodeHeaderCheckers');
+        
         this.inner.appendChild(this.colorBack);
+        this.inner.insertBefore(this.checkersHolder, this.header);
+
+        this.checkersHolder.appendChild(this.checkers);
+
 
         this.addInput (new Input(STROKE_TYPES, getNodeInputValuesForUndo));
         this.addOutput(new Output([STROKE_VALUE], this.output_genRequest, getNodeOutputValuesForUndo));
@@ -62481,13 +62499,6 @@ extends OpColorBase
 
         this.paramMiter.controls[0].setSuffix('°', true);
         this.paramMiter.canShow = () => this.paramJoin.value == 0;
-
-
-        this.checkersHolder = createDiv('nodeHeaderCheckersHolder');
-        this.checkers       = createDiv('nodeHeaderCheckers');
-
-        this.inner.insertBefore(this.checkersHolder, this.header);
-        this.checkersHolder.appendChild(this.checkers);
     }
     
     
@@ -62596,13 +62607,13 @@ extends OpColorBase
 
 
         this.header.style.background = 
-            !rgbIsNaN(colors.back)
-            ? rgba2style(colors.back) 
+            !rgbaIsNaN(colors.stripeBack)
+            ? rgba2style(colors.stripeBack) 
             : 'transparent';
 
         this.colorBack.style.background = 
-            rgbIsOk(colors.back) //!rgbIsNaN(colors.back)
-            ? rgb2style(colors.back)
+            rgbIsOk(colors.stripeBack) //!rgbIsNaN(colors.back)
+            ? rgb2style(colors.stripeBack)
             : rgba2style(rgb_a(rgbDocumentBody, 0.95));
 
 
@@ -62665,7 +62676,6 @@ extends OpColorBase
  
         const enable = 
                !this.inputs[0].connected
-            //|| !this.inputs[0].connectedOutput.supportsTypes(SHAPE_TYPES)
             || !this.inputs[0].connectedOutput.supportsTypes(STROKE_TYPES);
 
         this.paramFill  .enableControlText(enableFill);
@@ -62681,13 +62691,7 @@ extends OpColorBase
 
     getHeaderColors(options = {})
     {
-        // if (    this.inputIsShape
-        //     && !options.color)
-        //     return Operator.prototype.getHeaderColors.call(this);
- 
-
         const colors = super.getHeaderColors();
-        console.log('colors =', colors);
 
         colors.back       = rgb_a(colors.back, this.paramFill.value.opacity.value/100);
         colors.stripeBack = rgb_a(colors.stripeBack, this.paramFill.value.opacity.value/100);

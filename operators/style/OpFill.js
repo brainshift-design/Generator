@@ -19,8 +19,9 @@ extends OpColorBase
         this.checkersHolder = createDiv('nodeHeaderCheckersHolder');
         this.checkers       = createDiv('nodeHeaderCheckers');
 
-        //this.inner.appendChild(this.colorBack);
+        this.inner.appendChild(this.colorBack);
         this.inner.insertBefore(this.checkersHolder, this.header);
+
         this.checkersHolder.appendChild(this.checkers);
 
 
@@ -144,7 +145,12 @@ extends OpColorBase
     {
         const colors = this.getHeaderColors({color: true});
 
-        colors.text   = getTextColorFromBackColor(colors.back, this.inputIsShape ? colors.back[3] : 1);
+        colors.text = getTextColorFromBackColor(
+            colors.stripeBack, 
+            this.inputIsShape 
+            ? colors.stripeBack[3] 
+            : 1);
+
         colors.input  = rgb_a(colors.text, 0.2);
         colors.output = rgb_a(colors.text, 0.2);
 
@@ -203,8 +209,8 @@ extends OpColorBase
             : 'transparent';
 
         this.colorBack.style.background = 
-             !rgbaIsNaN(colors.stripeBack)
-            ? rgba2style(colors.stripeBack)
+             rgbIsOk(colors.stripeBack)
+            ? rgb2style(colors.stripeBack)
             : rgba2style(rgb_a(rgbDocumentBody, 0.95));
 
 
@@ -247,21 +253,16 @@ extends OpColorBase
         super.updateHeaderLabel();
         
         const colors = this.getHeaderColors();
-        this.label.style.color = rgba2style(colors.text);
+        this.label.style.color = rgb2style(colors.text);
     }
 
 
 
     getHeaderColors(options = {})
     {
-        // if (    this.inputIsShape
-        //     && !options.color)
-        //     return Operator.prototype.getHeaderColors.call(this);
-
-            
         const colors  = super.getHeaderColors();
 
-        colors.back       = rgb_a(colors.back, this.paramOpacity.value.value/100);
+        colors.back       = rgb_a(colors.back,       this.paramOpacity.value.value/100);
         colors.stripeBack = rgb_a(colors.stripeBack, this.paramOpacity.value.value/100);
         colors.text       = getTextColorFromBackColor(colors.stripeBack, colors.back[3]);
         colors.input      = rgb_a(colors.text, 0.2);
@@ -288,11 +289,4 @@ extends OpColorBase
 
         this.updateParamControls();
     }
-
-
-
-    // updateWarningOverlayStyle(colBack, height = -1)
-    // {
-    //     super.updateWarningOverlayStyle(colBack, defHeaderHeight + defParamHeight);
-    // }
 }

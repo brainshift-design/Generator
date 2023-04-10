@@ -342,28 +342,23 @@ extends Parameter
         checkControlVisible(this, this.controls[1]);
 
 
-        //const colors = this.node.getHeaderColors();
-        //console.log('colors =', colors);
-
         const noColor = 
             darkMode
             ? rgbNoColorDark
             : rgbNoColorLight;
 
 
-        const rgba       = this.value.toRgba();//colors.stripeBack;
+        const rgba       = this.value.toRgba();
 
         const rgbaStripe = rgb_a(getStripeBackColor(rgba), rgba[3]);
-        const rgbaBack   = rgbaStripe;//rgb_a(colors.stripeBack, rgbaVal[3]);
+        const rgbaBack   = rgbaStripe;
         const rgbaText   = getTextColorFromBackColor(rgbaStripe, rgba[3]);
 
-
-        // const fillStyle = rgba2style(rgb_a(rgbaVal, this.controls[1].value/100));
 
         this.controlWrapper.style.background =
               !rgbaIsNaN(rgbaBack) 
             && this.value.opacity.isValid()
-            ?  rgba2style(rgbaBack)//fillStyle 
+            ?  rgba2style(rgbaBack)
             : 'transparent'; 
 
 

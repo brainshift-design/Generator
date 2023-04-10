@@ -9,7 +9,7 @@ extends OpColorBase
 
     constructor()
     {
-        super(COLOR_INTERPOLATE, 'inter', 'inter');
+        super(COLOR_INTERPOLATE, 'inter', 'interpolate');
 
         
         this.addInput(new Input(COLOR_TYPES));

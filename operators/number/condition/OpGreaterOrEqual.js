@@ -3,6 +3,6 @@ extends OpConditionBase
 {
     constructor()
     {
-        super(NUMBER_GREATER_OR_EQUAL, 'greaterOrEqual', 'greaterOrEqual', '≥');
+        super(NUMBER_GREATER_OR_EQUAL, 'greaterOrEqual', 'greater or equal', '≥');
     }
 }

@@ -3,7 +3,7 @@ extends OpArithmetic
 {
     constructor()
     {
-        super(NUMBER_MODULO, 'rem', 'rem', '%');
+        super(NUMBER_MODULO, 'rem', 'remainder', '%');
     }
     
     

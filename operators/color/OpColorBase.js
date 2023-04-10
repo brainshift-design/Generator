@@ -136,7 +136,6 @@ extends Operator
         const rgbaBorder = rgb_a(rgbFromType(this.type, this.active), 0.95);
 
         const rgbText  = getTextColorFromBackColor(rgbStripeBack);
-        //const rgbLabel = getTextColorFromBackColor(clipRgb(rgbBack));
 
         const rgbaWire = 
             !rgbIsNaN(rgbStripeBack)   
@@ -148,7 +147,6 @@ extends Operator
             stripeBack: rgb_a(rgbStripeBack, 1),
             border:     rgbaBorder,
             text:       rgb_a(rgbText, 0.9),
-            //label:    rgb_a(rgbLabel, 0.9),
             input:      rgb_a(rgbText, 0.2),
             output:     rgb_a(rgbText, 0.2),
             wire:       rgbaWire };
@@ -178,8 +176,6 @@ extends Operator
         }
         else
         {
-            //rgb = rgbDocumentBody;//this.getDefaultBackColor();
-
             this.warningStyle = getDefaultWarningStyle(colors.back);
             this.updateWarningOverlayStyle(colors.back);
         }
@@ -191,7 +187,7 @@ extends Operator
     {
         this._warningOverlay.style.height = 
             height < 0
-            ? defHeaderHeight //this.measureData.headerOffset.height
+            ? this.measureData.headerOffset.height
             : height;
 
             

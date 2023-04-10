@@ -80,6 +80,11 @@ extends OpColorBase
             new MenuItem('S blind', {callback: () => { hideAllMenus(); this.paramS.setValue(new NumberValue(0), true); }})]);
 
 
+        this.menuL.minWidth = 120;
+        this.menuM.minWidth = 120;
+        this.menuS.minWidth = 120;
+
+
         this.paramL.controls[0].div.addEventListener('pointerdown', e => this.showParamMenu(e, this.paramL, this.menuL));
         this.paramM.controls[0].div.addEventListener('pointerdown', e => this.showParamMenu(e, this.paramM, this.menuM));
         this.paramS.controls[0].div.addEventListener('pointerdown', e => this.showParamMenu(e, this.paramS, this.menuS));

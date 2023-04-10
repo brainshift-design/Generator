@@ -12,21 +12,20 @@ extends OpColorBase
 
 
     
-    get inputIsShape() 
-    {
-        return this.inputs[0].connected
-            && this.inputs[0].connectedOutput.supportsTypes(SHAPE_TYPES);
-    }
-
-
-
     constructor()
     {
         super(STROKE, 'stroke', 'stroke');
 
 
-        this.colorBack = createDiv('colorBack');
+        this.colorBack      = createDiv('colorBack');
+        this.checkersHolder = createDiv('nodeHeaderCheckersHolder');
+        this.checkers       = createDiv('nodeHeaderCheckers');
+        
         this.inner.appendChild(this.colorBack);
+        this.inner.insertBefore(this.checkersHolder, this.header);
+
+        this.checkersHolder.appendChild(this.checkers);
+
 
         this.addInput (new Input(STROKE_TYPES, getNodeInputValuesForUndo));
         this.addOutput(new Output([STROKE_VALUE], this.output_genRequest, getNodeOutputValuesForUndo));
@@ -40,13 +39,6 @@ extends OpColorBase
 
         this.paramMiter.controls[0].setSuffix('°', true);
         this.paramMiter.canShow = () => this.paramJoin.value == 0;
-
-
-        this.checkersHolder = createDiv('nodeHeaderCheckersHolder');
-        this.checkers       = createDiv('nodeHeaderCheckers');
-
-        this.inner.insertBefore(this.checkersHolder, this.header);
-        this.checkersHolder.appendChild(this.checkers);
     }
     
     
@@ -155,13 +147,13 @@ extends OpColorBase
 
 
         this.header.style.background = 
-            !rgbIsNaN(colors.back)
-            ? rgba2style(colors.back) 
+            !rgbaIsNaN(colors.stripeBack)
+            ? rgba2style(colors.stripeBack) 
             : 'transparent';
 
         this.colorBack.style.background = 
-            rgbIsOk(colors.back) //!rgbIsNaN(colors.back)
-            ? rgb2style(colors.back)
+            rgbIsOk(colors.stripeBack) //!rgbIsNaN(colors.back)
+            ? rgb2style(colors.stripeBack)
             : rgba2style(rgb_a(rgbDocumentBody, 0.95));
 
 
@@ -224,7 +216,6 @@ extends OpColorBase
  
         const enable = 
                !this.inputs[0].connected
-            //|| !this.inputs[0].connectedOutput.supportsTypes(SHAPE_TYPES)
             || !this.inputs[0].connectedOutput.supportsTypes(STROKE_TYPES);
 
         this.paramFill  .enableControlText(enableFill);
@@ -240,13 +231,7 @@ extends OpColorBase
 
     getHeaderColors(options = {})
     {
-        // if (    this.inputIsShape
-        //     && !options.color)
-        //     return Operator.prototype.getHeaderColors.call(this);
- 
-
         const colors = super.getHeaderColors();
-        console.log('colors =', colors);
 
         colors.back       = rgb_a(colors.back, this.paramFill.value.opacity.value/100);
         colors.stripeBack = rgb_a(colors.stripeBack, this.paramFill.value.opacity.value/100);

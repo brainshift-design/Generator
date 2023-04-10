@@ -63,20 +63,11 @@ extends GColorType
                     }
                     else if (quality.value == 1) // clip chroma
                     {
-                        let hcl = rgb2hclok(rgb);
+                        rgb = clipChroma(rgb);
 
-                        let loopProtect = 10000;
-
-                        while (  !rgbIsValid(hclok2rgb(hcl))
-                            && hcl[1] > 0.001
-                            && loopProtect-- > 0)
-                            hcl[1] -= 0.001;
-
-                        rgb = hclok2rgb(hcl);
-
-                        rgb[0] = Math.round(Math.min(Math.max(0, rgb[0]), 1) * 0xff);   
-                        rgb[1] = Math.round(Math.min(Math.max(0, rgb[1]), 1) * 0xff);   
-                        rgb[2] = Math.round(Math.min(Math.max(0, rgb[2]), 1) * 0xff); 
+                        rgb[0] = Math.round(rgb[0] * 0xff);   
+                        rgb[1] = Math.round(rgb[1] * 0xff);   
+                        rgb[2] = Math.round(rgb[2] * 0xff); 
 
                         this.value = ColorValue.fromRgb(rgb);
                     }
