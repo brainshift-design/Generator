@@ -4,6 +4,9 @@ extends OperatorBase
     paramCondition;
 
 
+    menuBool;
+
+
 
     constructor()
     {
@@ -25,11 +28,34 @@ extends OperatorBase
         this.inputs[1].addEventListener('disconnect', () => OpIfElse_onDisconnectInput(this, 1));
 
 
-        //this.paramCondition.controls[0].showBar = false;
-        //this.paramCondition.controls[0].barTop  = 0.8;        
+        let menuItemTrue;
+        let menuItemFalse;
+
+        this.menuBool = new Menu('L', true, false);
+        this.menuBool.minWidth = 130;
+        this.menuBool.addItems([
+            menuItemTrue  = new MenuItem('true',  {icon:  TRUE_DISPLAY_MENU, callback: () => { hideAllMenus(); this.paramCondition.setValue(new NumberValue(1), true); }}),
+            menuItemFalse = new MenuItem('false', {icon: FALSE_DISPLAY_MENU, callback: () => { hideAllMenus(); this.paramCondition.setValue(new NumberValue(0), true); }})]);
+
+        this.paramCondition.controls[0].div.addEventListener('pointerdown', e => this.showParamMenu(e, this.paramCondition, this.menuBool));
     }
     
     
+
+    showParamMenu(e, param, menu)
+    {
+        if (e.button == 2)
+        {
+            e.preventDefault();
+            e.stopPropagation();
+
+            param.controls[0].buttonDown2 = true;
+
+            menu.showAt(e.clientX, e.clientY, false);
+        }
+    }
+
+
 
     canAutoConnectFrom(output)
     {
@@ -82,6 +108,7 @@ extends OperatorBase
 
         updateParamConditionText(this.paramCondition, this.isUnknown(), 1);
 
+
         if (this.outputs[0].supportsTypes([COLOR_VALUE]))
         {
             if (   this.inputs[0].connected
@@ -99,12 +126,14 @@ extends OperatorBase
 
         else if (this.outputs[0].supportsTypes([FILL_VALUE]))
         {
+            const colors = this.getHeaderColors();
+
             if (   this.inputs[0].connected
                 && this.paramCondition.value.value > 0)
-                this.outputs[0].wireColor = this.inputs[0].wireColor;
+                this.outputs[0].wireColor = colors.outputWire;
             else if (this.inputs[1].connected
                   && this.paramCondition.value.value == 0)
-                this.outputs[0].wireColor = this.inputs[1].wireColor;
+                this.outputs[0].wireColor = colors.outputWire;
             else
                 this.outputs[0].wireColor = rgbFromType(ANY_TYPE, true);
 
@@ -212,10 +241,16 @@ extends OperatorBase
             if (   this.inputs[0].connected
                 && this.inputs[1].connected)
             {
-                colors.output = 
+                const wireColor =
                     this.paramCondition.value.value > 0
                     ? this.inputs[0].connectedOutput.wireColor
                     : this.inputs[1].connectedOutput.wireColor;
+
+                colors.outputWire = wireColor;
+                colors.output = rgbaLerp(
+                    rgb_a(getTextColorFromBackColor(rgbFromType(ANY_TYPE, true)), 0.3),
+                    wireColor,
+                    wireColor[3]);
             }
 
             else if (this.inputs[0].connected
@@ -223,6 +258,7 @@ extends OperatorBase
             {
                 const wireColor = this.inputs[0].connectedOutput.wireColor;
 
+                colors.outputWire = wireColor;
                 colors.output = rgbaLerp(
                     rgb_a(getTextColorFromBackColor(rgbFromType(ANY_TYPE, true)), 0.3),
                     wireColor,
@@ -233,6 +269,7 @@ extends OperatorBase
             {
                 const wireColor = this.inputs[1].connectedOutput.wireColor;
 
+                colors.outputWire = wireColor;
                 colors.output = rgbaLerp(
                     rgb_a(getTextColorFromBackColor(rgbFromType(ANY_TYPE, true)), 0.3),
                     wireColor,

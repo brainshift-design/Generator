@@ -191,5 +191,5 @@ function initSelectParamMenu(param)
     }
 
 
-    menuSelectParam.minWidth = 80;
+    menuSelectParam.minWidth = 120;
 }

@@ -196,6 +196,9 @@ function initGeneratorMenus()
         menuItemMinZoomForParams      = new MenuItem('Zoom level for values...',     {callback: () => showMinZoomDialog()})]);
         
 
+    menuItemShowBoolValues.divName.innerHTML = 'Show boolean values as  <span style="position: relative; top: 1px;">' + TRUE_DISPLAY_MENU + '</span>  <span>' + FALSE_DISPLAY_MENU + '</span>'
+
+
     menuDebugLog = new Menu('Debug log', false);
     menuDebugLog.addItems([
         menuItemLogRawRequests        = new MenuItem('Log\u2008raw\u2008requests', {checkCallback: () => settings.logRawRequests  ,      callback: () => updateSettingAndMenu('logRawRequests',        true, !settings.logRawRequests       ), setting: true}),
