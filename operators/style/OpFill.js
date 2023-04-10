@@ -167,8 +167,8 @@ extends OpColorBase
         this.paramColor.controls[0]. backStyleLight = 
         this.paramColor.controls[0]. backStyleDark  = 
             !rgbIsNaN(colors.stripeBack)
-              ? rgba2style(rgb_a(colors.stripeBack, 1))
-              : noColorStyle(colors.stripeBack);
+            ? rgb2style(colors.stripeBack, 1)
+            : noColorStyle(colors.stripeBack);
 
               
         this.paramColor.controls[0].valueStyleLight = 
@@ -212,9 +212,10 @@ extends OpColorBase
             ? rgba2style(colors.stripeBack) 
             : rgba2style(rgb_a(rgbDocumentBody, 0.95));
 
-        this.colorBack.style.background = 
-            rgbIsOk(colors.stripeBack)
-            ? rgb2style(colors.stripeBack)
+        this.colorBack.backStyleLight =
+        this.colorBack.backStyleDark  =
+            rgbaIsOk(colors.stripeBack)
+            ? rgba2style(colors.stripeBack)
             : 'transparent';
 
 
@@ -266,8 +267,14 @@ extends OpColorBase
     {
         const colors  = super.getHeaderColors();
 
-        colors.back       = rgb_a(colors.back,       this.paramOpacity.value.value/100);
-        colors.stripeBack = rgb_a(colors.stripeBack, this.paramOpacity.value.value/100);
+        const opacity = 
+            this.paramOpacity.value.isValid() 
+            ? this.paramOpacity.value.value/100 
+            : Number.NaN;
+
+
+        colors.back       = rgb_a(colors.back,       opacity);
+        colors.stripeBack = rgb_a(colors.stripeBack, opacity);
         colors.text       = getTextColorFromBackColor(colors.stripeBack, colors.back[3]);
         colors.input      = rgb_a(colors.text, 0.2);
         colors.output     = rgb_a(colors.text, 0.2);
@@ -276,6 +283,7 @@ extends OpColorBase
             !rgbaIsNaN(colors.stripeBack)
             ? colors.stripeBack
             : rgbFromType(ANY_TYPE, false);
+
 
         return colors;
     }

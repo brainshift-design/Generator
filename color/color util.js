@@ -91,6 +91,14 @@ function rgbIsOk(rgb, lim = ColorEpsilon)
 
 
 
+function rgbaIsOk(rgba, lim = ColorEpsilon)
+{
+    return !rgbaIsNaN  (rgba)
+        &&  rgbaIsValid(rgba, lim);
+}
+
+
+
 function invalid2validRgb(rgb)
 {
     return [

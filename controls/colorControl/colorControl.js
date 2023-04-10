@@ -178,7 +178,7 @@ extends Control
 
     updateColors()
     {
-        const rgbBack = this.value.toRgb();
+        //const rgbBack = this.value.toRgb();
 
         // const rgbBack =
         //     this.showColor
@@ -189,7 +189,7 @@ extends Control
         //        ? this.backStyleDark 
         //        : this.backStyleLight);
 
-        const rgbStripeBack = getStripeBackColor(rgbBack);
+        //const rgbStripeBack = getStripeBackColor(rgbBack);
 
         this.div    .style.background = darkMode ? this.backStyleDark : this.backStyleLight;
         this.textbox.style.background = 'transparent';//rgb2style(rgbStripeBack);

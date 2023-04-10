@@ -21958,6 +21958,14 @@ function rgbIsOk(rgb, lim = ColorEpsilon)
 
 
 
+function rgbaIsOk(rgba, lim = ColorEpsilon)
+{
+    return !rgbaIsNaN  (rgba)
+        &&  rgbaIsValid(rgba, lim);
+}
+
+
+
 function invalid2validRgb(rgb)
 {
     return [
@@ -28259,6 +28267,14 @@ function rgbIsOk(rgb, lim = ColorEpsilon)
 {
     return !rgbIsNaN  (rgb)
         &&  rgbIsValid(rgb, lim);
+}
+
+
+
+function rgbaIsOk(rgba, lim = ColorEpsilon)
+{
+    return !rgbaIsNaN  (rgba)
+        &&  rgbaIsValid(rgba, lim);
 }
 
 
@@ -42002,7 +42018,7 @@ extends Control
 
     updateColors()
     {
-        const rgbBack = this.value.toRgb();
+        //const rgbBack = this.value.toRgb();
 
         // const rgbBack =
         //     this.showColor
@@ -42013,7 +42029,7 @@ extends Control
         //        ? this.backStyleDark 
         //        : this.backStyleLight);
 
-        const rgbStripeBack = getStripeBackColor(rgbBack);
+        //const rgbStripeBack = getStripeBackColor(rgbBack);
 
         this.div    .style.background = darkMode ? this.backStyleDark : this.backStyleLight;
         this.textbox.style.background = 'transparent';//rgb2style(rgbStripeBack);
@@ -44259,13 +44275,13 @@ function initGeneratorMenus()
                                             }
                                         }),
                                         new MenuItem('',                                   {separator: true}),
-                                        new MenuItem('Log',                        {childMenu: menuDebugLog}),
-                                        new MenuItem('',                                   {separator: true}),
                                         new MenuItem('Delete connections to...',           {callback:      () => showDeleteConnectionsDialog()}),                        
                                         new MenuItem('Delete all saved connections',       {callback:      () => { hideAllMenus(); uiRemoveAllSavedConnections(); }}),
                                         new MenuItem('Delete all style links',             {callback:      () => { hideAllMenus(); uiRemovePluginDataFromAllLocalStyles(); }}),
                                         new MenuItem('',                                   {separator: true}),
-                                        new MenuItem('Clear all local data',               {callback:      () => { hideAllMenus(); uiQueueMessageToFigma({cmd: 'figClearAllLocalData'}); }})]);
+                                        new MenuItem('Clear all local data',               {callback:      () => { hideAllMenus(); uiQueueMessageToFigma({cmd: 'figClearAllLocalData'}); }}),
+                                        new MenuItem('',                                   {separator: true}),
+                                        new MenuItem('Log',                                {childMenu: menuDebugLog})]);
                      
 
     menuMainHelp = new Menu('Help and subscription', false);
@@ -58620,7 +58636,7 @@ extends Operator
         const colors = this.getHeaderColors();
         
 
-        if (!rgbIsNaN(colors.back))
+        if (!rgbaIsNaN(colors.back))
         {
             if (  !rgbIsValid(colors.back)
                 || this.forceShowWarning)
@@ -58653,7 +58669,7 @@ extends Operator
         const [warnStyle1, warnStyle2] = getWarningStyles(colBack);
 
         this._warningOverlay.style.background =
-                rgbIsOk(colBack)
+                rgbaIsOk(colBack)
             && !this.forceShowWarning
             ? 'transparent'
             : getWarningGradient(7.8, warnStyle1, warnStyle2);
@@ -62354,8 +62370,8 @@ extends OpColorBase
         this.paramColor.controls[0]. backStyleLight = 
         this.paramColor.controls[0]. backStyleDark  = 
             !rgbIsNaN(colors.stripeBack)
-              ? rgba2style(rgb_a(colors.stripeBack, 1))
-              : noColorStyle(colors.stripeBack);
+            ? rgb2style(colors.stripeBack, 1)
+            : noColorStyle(colors.stripeBack);
 
               
         this.paramColor.controls[0].valueStyleLight = 
@@ -62399,9 +62415,10 @@ extends OpColorBase
             ? rgba2style(colors.stripeBack) 
             : rgba2style(rgb_a(rgbDocumentBody, 0.95));
 
-        this.colorBack.style.background = 
-            rgbIsOk(colors.stripeBack)
-            ? rgb2style(colors.stripeBack)
+        this.colorBack.backStyleLight =
+        this.colorBack.backStyleDark  =
+            rgbaIsOk(colors.stripeBack)
+            ? rgba2style(colors.stripeBack)
             : 'transparent';
 
 
@@ -62453,8 +62470,14 @@ extends OpColorBase
     {
         const colors  = super.getHeaderColors();
 
-        colors.back       = rgb_a(colors.back,       this.paramOpacity.value.value/100);
-        colors.stripeBack = rgb_a(colors.stripeBack, this.paramOpacity.value.value/100);
+        const opacity = 
+            this.paramOpacity.value.isValid() 
+            ? this.paramOpacity.value.value/100 
+            : Number.NaN;
+
+
+        colors.back       = rgb_a(colors.back,       opacity);
+        colors.stripeBack = rgb_a(colors.stripeBack, opacity);
         colors.text       = getTextColorFromBackColor(colors.stripeBack, colors.back[3]);
         colors.input      = rgb_a(colors.text, 0.2);
         colors.output     = rgb_a(colors.text, 0.2);
@@ -62463,6 +62486,7 @@ extends OpColorBase
             !rgbaIsNaN(colors.stripeBack)
             ? colors.stripeBack
             : rgbFromType(ANY_TYPE, false);
+
 
         return colors;
     }
@@ -63604,8 +63628,8 @@ function getAllNodesFromNode(node, ignore = [])
 
 function getNodesAcrossNode(node)
 {
-    return [ ...getNodesBeforeNode(node),
-             ...getNodesAfterNode (node) ];
+    return [...getNodesBeforeNode(node),
+            ...getNodesAfterNode (node)];
 }
 
 

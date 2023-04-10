@@ -161,7 +161,7 @@ extends Operator
         const colors = this.getHeaderColors();
         
 
-        if (!rgbIsNaN(colors.back))
+        if (!rgbaIsNaN(colors.back))
         {
             if (  !rgbIsValid(colors.back)
                 || this.forceShowWarning)
@@ -194,7 +194,7 @@ extends Operator
         const [warnStyle1, warnStyle2] = getWarningStyles(colBack);
 
         this._warningOverlay.style.background =
-                rgbIsOk(colBack)
+                rgbaIsOk(colBack)
             && !this.forceShowWarning
             ? 'transparent'
             : getWarningGradient(7.8, warnStyle1, warnStyle2);

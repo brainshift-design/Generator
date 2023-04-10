@@ -80,8 +80,8 @@ function getAllNodesFromNode(node, ignore = [])
 
 function getNodesAcrossNode(node)
 {
-    return [ ...getNodesBeforeNode(node),
-             ...getNodesAfterNode (node) ];
+    return [...getNodesBeforeNode(node),
+            ...getNodesAfterNode (node)];
 }
 
 
