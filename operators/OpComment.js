@@ -18,7 +18,7 @@ extends OperatorBase
         this.textbox.addEventListener('change', e =>
         {
             if (this.textbox.value.trim() == '')
-                actionManager.do(new DeleteNodesAction(graphView.graph, [this.id]), true);
+                actionManager.do(new DeleteNodesAction(graph, [this.id]), true);
         });
     }
 

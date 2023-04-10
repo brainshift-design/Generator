@@ -24,7 +24,7 @@ Operator.prototype.updateWireTransform = function()
             if (connInput.connection)
                 wires.push(connInput.connection.wire);
 
-    this.graph.view.updateWires(wires);
+    graphView.updateWires(wires);
 }
 
 

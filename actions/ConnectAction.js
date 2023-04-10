@@ -21,22 +21,21 @@ extends Action
     backInit              = false;
    
 
-    get outputNode()    { return this.graph.nodeFromId(this.outputNodeId); }
+    get outputNode()    { return graph.nodeFromId(this.outputNodeId); }
     get output()        { return this.outputNode.outputFromId(this.outputId); }
     
-    get inputNode()     { return this.graph.nodeFromId(this.inputNodeId); }
+    get inputNode()     { return graph.nodeFromId(this.inputNodeId); }
     get input()         { return this.inputNode.inputFromId(this.inputId); }
     
 
-    get oldOutputNode() { return this.graph.nodeFromId(this.oldOutputNodeId); }
+    get oldOutputNode() { return graph.nodeFromId(this.oldOutputNodeId); }
     get oldOutput()     { return this.oldOutputNode.outputFromId(this.oldOutputId); }
 
 
 
-    constructor(graph, output, input, options = {})
+    constructor(output, input, options = {})
     {
         super(
-            graph,
             CONNECT_ACTION,
              'CONNECT ' 
             + output.node.id + '.' + output.id

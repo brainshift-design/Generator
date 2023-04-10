@@ -1,26 +1,20 @@
-const mainGraph       = new Graph();
-var   graphView       = new GraphView(_graphView, mainGraph);
+const graph        = new Graph();
+var   graphView    = new GraphView(_graphView, graph);
    
-var   currentGraph    = mainGraph;
-var   currentView     = graphView;
-
-var   viewportZoom    = 1;
-var   viewportRect    = new Rect();
+var   viewportZoom = 1;
+var   viewportRect = new Rect();
 
 
 
 // function setCurrentGraph(graph)
 // {
-//     console.assert(currentView, 'there should be a valid currentView');
+//     console.assert(graphView, 'there should be a valid graphView');
 
 //     const elements = Array.prototype.slice.call(document.children);
-//     const index    = elements.indexOf(currentView.div);
+//     const index    = elements.indexOf(graphView.div);
 
-//     document.body.removeChild(currentView.div);
-//     document.body.insertBefore(graph.view.div, document.children[index]);
+//     document.body.removeChild(graphView.div);
+//     document.body.insertBefore(graphView.div, document.children[index]);
 
-//     currentGraph = graph;
-//     currentView  = graph.view;
-
-//     currentView.updateMeasureData();
+//     graphView.updateMeasureData();
 // }

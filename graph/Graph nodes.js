@@ -32,7 +32,7 @@ Graph.prototype.getActiveNodesAfterNodeId = function(nodeId, alreadyChecked = []
     const rightActive = [];
     
    
-    const node = graphView.graph.nodeFromId(nodeId);
+    const node = graph.nodeFromId(nodeId);
     
     if (node.active) 
         rightActive.push(node);

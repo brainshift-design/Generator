@@ -110,8 +110,8 @@ extends OperatorBase
                 return;
 
 
-            const dx = (e.clientX - sizer.sx) / mainGraph.view.zoom;
-            const dy = (e.clientY - sizer.sy) / mainGraph.view.zoom;
+            const dx = (e.clientX - sizer.sx) / graphView.zoom;
+            const dy = (e.clientY - sizer.sy) / graphView.zoom;
         
             setRect(sizer, dx, dy);
                 
@@ -131,7 +131,7 @@ extends OperatorBase
                 if (sizer.resizing)
                 {
                     actionManager.do(new SetNodeRectAction(
-                        this.graph, 
+                        graph, 
                         this.id, 
                         sizer.startRect, 
                         offsetRect(this.div)));
@@ -275,7 +275,7 @@ extends OperatorBase
 
     updateSizers()
     {
-        const edge   = Math.ceil(sizeBorderWidth / mainGraph.view.zoom);
+        const edge   = Math.ceil(sizeBorderWidth / graphView.zoom);
         const corner = Math.max(4, edge);
 
         this.sizerL .style.width  = edge; 

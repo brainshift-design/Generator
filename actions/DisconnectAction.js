@@ -9,10 +9,10 @@ extends Action
     inputId;
 
     
-    get outputNode() { return this.graph.nodeFromId(this.outputNodeId); }
+    get outputNode() { return graph.nodeFromId(this.outputNodeId); }
     get output()     { return this.outputNode.outputFromId(this.outputId); }
     
-    get inputNode()  { return this.graph.nodeFromId(this.inputNodeId); }
+    get inputNode()  { return graph.nodeFromId(this.inputNodeId); }
     get input()      { return this.inputNode.inputFromId(this.inputId); }
     
     
@@ -21,10 +21,9 @@ extends Action
 
 
 
-    constructor(graph, input)
+    constructor(input)
     {
         super(
-            graph,
             DISCONNECT_ACTION,
              'DISCONNECT '
             + input.connectedOutput.node.id + '.' + input.connectedOutput.id
@@ -71,7 +70,7 @@ extends Action
 
     saveOldActiveNodes()
     {
-        this.oldActiveNodeIds = [...this.graph.getActiveNodesFromNodeId(this.inputNodeId).map(n => n.id)];
+        this.oldActiveNodeIds = [...graph.getActiveNodesFromNodeId(this.inputNodeId).map(n => n.id)];
 
         if (!getActiveFromNode(this.outputNode, [this.inputNode]))
             this.newActiveNodeIds.push(this.outputNodeId);
@@ -119,7 +118,7 @@ extends Action
     deactivateNewActiveNodes()
     {
         for (const id of this.newActiveNodeIds)
-            uiMakeNodePassive(this.graph.nodeFromId(id));
+            uiMakeNodePassive(graph.nodeFromId(id));
 
         uiDeleteObjectsAndStyles(this.newActiveNodeIds, false);
     }
@@ -129,12 +128,12 @@ extends Action
     activateOldActiveNodes(updateNodes)
     {
         const oldActiveNodeIds = [...this.oldActiveNodeIds].sort((x, y) => 
-            (this.graph.nodeFromId(x) === this.graph.nodeFromId(y)) ? 0 : this.graph.nodeFromId(y).isOrFollows(this.graph.nodeFromId(x)) ? -1 : 1);
+            (graph.nodeFromId(x) === graph.nodeFromId(y)) ? 0 : graph.nodeFromId(y).isOrFollows(graph.nodeFromId(x)) ? -1 : 1);
 
-        pushUnique(updateNodes, oldActiveNodeIds.map(id => this.graph.nodeFromId(id)));
+        pushUnique(updateNodes, oldActiveNodeIds.map(id => graph.nodeFromId(id)));
 
         for (const id of oldActiveNodeIds)
-            uiMakeNodeActive(this.graph.nodeFromId(id));
+            uiMakeNodeActive(graph.nodeFromId(id));
     }
 }
 

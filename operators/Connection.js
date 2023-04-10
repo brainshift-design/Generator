@@ -4,8 +4,6 @@ class Connection
 
     id;
 
-    graph;
-    
     output;
     outputOrder; // in which connections FROM THIS OUTPUT were made
     
@@ -30,8 +28,6 @@ class Connection
                  
         this.input       = input;
 
-        this.graph       = output ? output.node.graph : input.node.graph;
-        
         this.wire        = new Wire(this);
     }
 

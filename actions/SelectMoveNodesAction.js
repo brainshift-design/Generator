@@ -14,10 +14,9 @@ extends Action
 
 
 
-    constructor(graph, prevSelectedIds, newSelectedIds, fromPos, toPos, shiftPressed)
+    constructor(prevSelectedIds, newSelectedIds, fromPos, toPos, shiftPressed)
     {
         super(
-            graph,
             SELECT_MOVE_ACTION,
               'SELECT MOVE ' + newSelectedIds.length 
             + ' ' + countString('node', newSelectedIds.length));
@@ -43,7 +42,7 @@ extends Action
 
         for (const id of this.getMovedIds())
         {
-            const node = this.graph.nodeFromId(id);
+            const node = graph.nodeFromId(id);
 
             this.from.push([id, point(node.slx,      node.sly     )]);
             this.to  .push([id, point(node.slx + dx, node.sly + dy)]);
@@ -69,7 +68,7 @@ extends Action
     do(updateNodes)
     {
         const movedIds   = [...this.getMovedIds()];
-        const movedNodes = this.graph.nodes.filter(n => movedIds.includes(n.id));
+        const movedNodes = graph.nodes.filter(n => movedIds.includes(n.id));
 
         for (let i = 0; i < movedNodes.length; i++)
         {
@@ -84,7 +83,7 @@ extends Action
         }
 
 
-        uiSaveNodes(this.graph, movedIds);
+        uiSaveNodes(graph, movedIds);
     }
 
 
@@ -92,7 +91,7 @@ extends Action
     undo(updateNodes)
     {
         const movedIds   = [...this.getMovedIds()];
-        const movedNodes = this.graph.nodes.filter(n => movedIds.includes(n.id));
+        const movedNodes = graph.nodes.filter(n => movedIds.includes(n.id));
 
         for (let i = 0; i < movedNodes.length; i++)
         {
@@ -103,9 +102,9 @@ extends Action
         for (const node of movedNodes)
             node.updateNode();
             
-        this.graph.view.selectByIds(this.prevSelectedIds);
+        graphView.selectByIds(this.prevSelectedIds);
 
-        uiSaveNodes(this.graph, movedIds);
+        uiSaveNodes(graph, movedIds);
     }
 
 
@@ -114,6 +113,6 @@ extends Action
     {
         this.do(updateNodes);
 
-        this.graph.view.selectByIds(this.getMovedIds());
+        graphView.selectByIds(this.getMovedIds());
     }
 }

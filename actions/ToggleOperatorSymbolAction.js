@@ -2,16 +2,15 @@ class ToggleOperatorSymbolAction
 extends Action
 {
     nodeId;
-    get node() { return this.graph.nodeFromId(this.nodeId) } 
+    get node() { return graph.nodeFromId(this.nodeId) } 
 
     showOnlySymbol;
 
 
 
-    constructor(graph, nodeId, showOnlySymbol)
+    constructor(nodeId, showOnlySymbol)
     {
         super(
-            graph,
             TOGGLE_SYMBOL_ACTION,
             'TOGGLE MATH SYMBOL ' + boolToString(showOnlySymbol));
         
@@ -29,7 +28,7 @@ extends Action
 
         this.node.updateNode();
 
-        uiSaveNodes(this.graph, [this.nodeId]);
+        uiSaveNodes(graph, [this.nodeId]);
     }
 
 
@@ -40,6 +39,6 @@ extends Action
 
         this.node.updateNode();
 
-        uiSaveNodes(this.graph, [this.nodeId]);
+        uiSaveNodes(graph, [this.nodeId]);
     }    
 }

@@ -7,7 +7,7 @@ extends Action
 
     get param() 
     { 
-        return this.graph.nodeFromId(this.nodeId).params
+        return graph.nodeFromId(this.nodeId).params
                .find(p => p.id == this.paramId); 
     } 
 
@@ -17,10 +17,9 @@ extends Action
 
 
 
-    constructor(graph, param, value)
+    constructor(param, value)
     {
         super(
-            graph,
             SET_PARAM_VALUE_ACTION,
             'SET PARAM VALUE ' + param.node.id + '.' + param.id + ' = ' + value.toDisplayString());
 

@@ -48,7 +48,7 @@ function uiLinkNodeToExistingColorStyle(node, styleId, styleName, paints)
 
 function uiStylePropertyChange(msg)
 {
-    const node = graphView.graph.nodes.find(n => 
+    const node = graph.nodes.find(n => 
            n.type == COLOR_STYLE 
         && n.linkedStyleId == cleanStyleId(msg.styleId));
 
@@ -97,7 +97,7 @@ function uiStylePropertyChange(msg)
 
 function uiStyleDelete(msg)
 {
-    const node = graphView.graph.nodes.find(n => 
+    const node = graph.nodes.find(n => 
            n.type == COLOR_STYLE 
         && n.linkedStyleId == cleanStyleId(msg.styleId));
 
@@ -126,14 +126,14 @@ function uiReturnFigGetAllLocalColorStyles(msg)
 
 function uiSetStyleId(msg)
 {
-    graphView.graph.nodeFromId(msg.nodeId).linkedStyleId = msg.styleId;
+    graph.nodeFromId(msg.nodeId).linkedStyleId = msg.styleId;
 }
 
 
 
 function initLocalStylesMenu(styles, nodeId)
 {
-    const node = graphView.graph.nodeFromId(nodeId);
+    const node = graph.nodeFromId(nodeId);
     console.assert(node.type == COLOR_STYLE, 'node must be COLOR_STYLE');
 
 
@@ -155,7 +155,7 @@ function initLocalStylesMenu(styles, nodeId)
 
         options.callback = () => actionManager.do(
             new LinkExistingStyleAction(
-                graphView.graph,
+                graph,
                 nodeId,
                 style.id, 
                 style.name,

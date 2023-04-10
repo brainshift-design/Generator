@@ -118,8 +118,8 @@ function uiReturnFigGetLocalData(msg)
            
             if (!settings.dataMode)
             {
-                graphView.graph.nodes.forEach(n => n.updateNode());
-                graphView.updateNodeWireTransforms(graphView.graph.nodes);
+                graph.nodes.forEach(n => n.updateNode());
+                graphView.updateNodeWireTransforms(graph.nodes);
             }
         });
     }
@@ -259,7 +259,7 @@ function uiReturnFigLoadNodesAndConns(msg)
         _nodes = _nodes.map(n => JSON.parse(n));
         _conns = _conns.map(c => JSON.parse(c));
             
-        graphView.graph.clear();
+        graph.clear();
 
         loadNodesAndConnsAsync(_nodes, _conns, setLoadingProgress);
     }
@@ -309,7 +309,7 @@ function loadNodesAndConnsAsync(_nodes, _conns, setProgress)
 
     promise.then(nodes => 
     {
-        graphView.graph.addNodes(nodes, false, false);
+        graph.addNodes(nodes, false, false);
         loadConnectionsAsync(_nodes, _conns, nodes, setProgress);    
     });
 }
@@ -347,7 +347,7 @@ function loadConnectionsAsync(_nodes, _conns, loadedNodes, setProgress)
             promise = promise.then(() => 
             {
                 const res = resolveConnections(
-                    graphView.graph,
+                    graph,
                     _nodes,
                     _conns, 
                     i, 
@@ -402,7 +402,7 @@ function finishLoadingNodes(_nodes, loadedNodes, updateNodes, duplicates = false
 {
     _nodes
         .filter(_n => _n.active)
-        .map(_n => graphView.graph.nodeFromId(duplicates ? _n.newId : _n.id))
+        .map(_n => graph.nodeFromId(duplicates ? _n.newId : _n.id))
         .forEach(n => n.makeActive());
 
     //graphView.updateNodeTransforms(loadedNodes);

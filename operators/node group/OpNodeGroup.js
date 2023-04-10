@@ -75,7 +75,7 @@ extends ResizableBase
     {
         this.children = [];
 
-        for (const node of mainGraph.nodes)
+        for (const node of graph.nodes)
         {
             if (rectInside(node.measureData.divOffset, offsetRect(this.div)))
                 pushUnique(this.children, node);

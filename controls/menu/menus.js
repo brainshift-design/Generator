@@ -51,6 +51,7 @@ var menuRemoveLicense;
 var menuText;
 var menuTextbox;
 
+var menuCopy;
 
 var menuNodeData;
 var menuNodeDataNodes;
@@ -238,9 +239,9 @@ function initGeneratorMenus()
                                             {
                                                 updateSettingAndMenu('showNodeId', true, !settings.showNodeId);
                                                 
-                                                graphView.graph.nodes.forEach(n => n.updateNode());
-                                                graphView.graph.nodes.forEach(n => n.updateMeasureData());
-                                                graphView.graph.nodes.forEach(n => n.updateHeaderLabelOffsetX());
+                                                graph.nodes.forEach(n => n.updateNode());
+                                                graph.nodes.forEach(n => n.updateMeasureData());
+                                                graph.nodes.forEach(n => n.updateHeaderLabelOffsetX());
                                             }
                                         }),
                                         new MenuItem('',                                   {separator: true}),
@@ -457,7 +458,7 @@ function initGeneratorMenus()
         menuItemNodeEdit           = new MenuItem('Edit...',         {callback: e => { hideAllMenus(); graphView.editSelectedCustomNode(); }}),
                                      new MenuItem('',                {separator: true}),
         // menuItemNodeActivate    = new MenuItem('Activate',        {callback: () => makeSelectedNodesActive()}),
-        menuItemNodeEnableDisable  = new MenuItem('Enable/Disable',  {shortcut:  osCtrlShift() + 'E',  callback: () => actionManager.do(new ToggleDisableNodesAction(graphView.graph, graphView.selectedNodes.map(n => n.id)))}),
+        menuItemNodeEnableDisable  = new MenuItem('Enable/Disable',  {shortcut:  osCtrlShift() + 'E',  callback: () => actionManager.do(new ToggleDisableNodesAction(graph, graphView.selectedNodes.map(n => n.id)))}),
         menuItemNodeSep3           = new MenuItem('',                {separator: true}),
         menuItemNodeRemove         = new MenuItem('Remove',          {shortcut:  osCtrl() + '⌫',             callback: e => { hideAllMenus(); graphView.removeSelectedNodes(true); }})]);
 
@@ -493,8 +494,10 @@ function initGeneratorMenus()
         menuItemLicenseRemove = new MenuItem('Remove from this computer', {callback: () => { hideAllMenus(); removeLicense(); }})]);
 
 
-    menuText    = new Menu('Text menu', false, false);
+    menuText    = new Menu('Text menu',    false, false);
     menuTextbox = new Menu('Textbox menu', false, true);
+
+    menuCopy    = new Menu('Copy menu',    false, false);
 
 
     menuLocalStyles = new Menu('Local styles',   true,  true);
@@ -511,7 +514,7 @@ function initGeneratorMenus()
 
     btnGroup  = new MenuButton('Node groups', null, {callback: () => 
     {
-        const create = new CreateNodeAction(graphView.graph, NODE_GROUP, btnGroup.div);
+        const create = new CreateNodeAction(graph, NODE_GROUP, btnGroup.div);
         actionManager.do(create);
 
         graphView.updateNodes([create.node]);
@@ -527,7 +530,7 @@ function initGeneratorMenus()
 
     btnComment = new MenuButton('Add comment', null, {callback: () => 
     {
-        const create = new CreateNodeAction(graphView.graph, COMMENT, btnComment.div);
+        const create = new CreateNodeAction(graph, COMMENT, btnComment.div);
         actionManager.do(create);
 
         graphView.updateNodes([create.node]);
@@ -623,6 +626,16 @@ function initTextMenu(textbox)
 
 
 
+function initCopyMenu()
+{
+    menuCopy.clearItems();
+
+    menuCopy.addItems([
+        new MenuItem('Copy', {enabled: elementHasSelectedText(crashDetails), callback: () => { hideAllMenus(); document.execCommand('copy'); }})]);
+}
+
+
+
 function initTextboxMenu(textbox)
 {
     menuTextbox.clearItems();
@@ -641,10 +654,10 @@ function initTextboxMenu(textbox)
                           new MenuItem('Copy',         {                                     callback: () => { hideAllMenus(); document.execCommand('copy'); }}),
                           new MenuItem('Paste',        { enabled: !textbox.control.readOnly, callback: () => { hideAllMenus(); document.execCommand('paste'); }}),
                           new MenuItem('',             { separator: true }),
-        menuItemLeft    = new MenuItem('Align left',   { callback: () => { hideAllMenus(); actionManager.do(new SetParamSettingAction(mainGraph, param, 'align', 'left'   )); }}),
-        menuItemCenter  = new MenuItem('Align center', { callback: () => { hideAllMenus(); actionManager.do(new SetParamSettingAction(mainGraph, param, 'align', 'center' )); }}),
-        menuItemRight   = new MenuItem('Align right',  { callback: () => { hideAllMenus(); actionManager.do(new SetParamSettingAction(mainGraph, param, 'align', 'right'  )); }}),
-        menuItemJustify = new MenuItem('Justify',      { callback: () => { hideAllMenus(); actionManager.do(new SetParamSettingAction(mainGraph, param, 'align', 'justify')); }})]);
+        menuItemLeft    = new MenuItem('Align left',   { callback: () => { hideAllMenus(); actionManager.do(new SetParamSettingAction(param, 'align', 'left'   )); }}),
+        menuItemCenter  = new MenuItem('Align center', { callback: () => { hideAllMenus(); actionManager.do(new SetParamSettingAction(param, 'align', 'center' )); }}),
+        menuItemRight   = new MenuItem('Align right',  { callback: () => { hideAllMenus(); actionManager.do(new SetParamSettingAction(param, 'align', 'right'  )); }}),
+        menuItemJustify = new MenuItem('Justify',      { callback: () => { hideAllMenus(); actionManager.do(new SetParamSettingAction(param, 'align', 'justify')); }})]);
 
 
     const align = textbox.control.getTextAlignment();

@@ -19,10 +19,9 @@ extends Action
     
 
 
-    constructor(graph, nodeType, creatingButton, options)
+    constructor(nodeType, creatingButton, options)
     {
         super(
-            graph,
             CREATE_INSERT_ACTION, 
             'CREATE / INSERT \'' + nodeType + '\'');
         
@@ -36,29 +35,29 @@ extends Action
 
     do(updateNodes)
     {
-        this.prevSelectedIds = this.graph.view.selectedNodes.map(n => n.id);
+        this.prevSelectedIds = graphView.selectedNodes.map(n => n.id);
 
         createInsertNodeAction_savePrevConnections(this);
 
 
-        this.graph.view.creatingNodes = true;
+        graphView.creatingNodes = true;
 
         const node = createNode(this.nodeType, this.creatingButton, this.createdId, this.options);
 
 
         const insert = 
                this.prevSelectedIds.length == 1
-            && canAutoConnectNode(this.graph, node);
+            && canAutoConnectNode(graph, node);
    
             
-        this.graph.addNode(node, !insert);
+        graph.addNode(node, !insert);
         
         this.createdNodeId = node.id;
 
 
         if (insert)
         {
-            const selNode   = this.graph.nodeFromId(this.prevSelectedIds[0]);
+            const selNode   = graph.nodeFromId(this.prevSelectedIds[0]);
             const selOutput = selNode.headerOutputs[0];
 
 
@@ -76,13 +75,13 @@ extends Action
             if (!isEmpty(inputs))
             {
                 const newConn = createNodeAction_connect(this, selNode.outputs[0], node, inputs[0].id);
-                this.graph.view.autoPlaceNewNode(newConn.output, newConn.input);
+                graphView.autoPlaceNewNode(newConn.output, newConn.input);
 
 
                 for (const _conn of this.prevConnections)
                 {
                     const _output    = node.headerOutputs[0];
-                    const _inputNode = this.graph.nodeFromId(_conn.inputNodeId);
+                    const _inputNode = graph.nodeFromId(_conn.inputNodeId);
                     const _input     = _inputNode.inputFromId(_conn.inputId);
 
                     if (_input.canConnectFrom(_output))
@@ -92,8 +91,8 @@ extends Action
         }
 
             
-        this.graph.view.lastSelectedNodes = this.graph.view.selectedNodes;
-        this.graph.view.selectedNodes     = [node];
+        graphView.lastSelectedNodes = graphView.selectedNodes;
+        graphView.selectedNodes     = [node];
 
 
         if (!getActiveAfterNode(node))
@@ -107,13 +106,13 @@ extends Action
 
     undo(updateNodes)
     {
-        uiDeleteNodes(this.graph, [this.createdNodeId]);
+        uiDeleteNodes(graph, [this.createdNodeId]);
 
         createNodeAction_activateOldInput(this, updateNodes);
 
         this.prevConnections = [];
             
-        this.graph.view.selectByIds(this.prevSelectedIds);
+        graphView.selectByIds(this.prevSelectedIds);
     }
 }
 

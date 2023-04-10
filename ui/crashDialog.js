@@ -14,22 +14,37 @@ function initCrashDialog(event, error)
 {
     if (error)
     {
-        let stack = error.stack;
+        let stack = error.stack
+            .replaceAll('<anonymous>', '')
+            .replaceAll('.<', '<')
+            .replaceAll(/\(?data[a-zA-Z0-9/,;:=]*\)?/g, '')
+            .replaceAll('at \n', '')
+            .replaceAll('at ', '<br/>&nbsp;&nbsp;&nbsp;&nbsp;at ')
+            .replaceAll(/\(:[^\)]*\)/g, '');
 
-        stack = stack.replaceAll('.<', '<');
-        stack = stack.replaceAll(/\(?data[a-zA-Z0-9/,;:=]*\)?/g, '');
-        stack = stack.replaceAll('at \n', '');
-        stack = stack.replaceAll('at ', '<br/>&nbsp;&nbsp;&nbsp;&nbsp;at ');
-
-        crashDetails.innerHTML = stack;
+        crashDetails.innerHTML += stack + '<br/>';
     }
     else
-        crashDetails.innerHTML = event;
+        crashDetails.innerHTML += event + '<br/>';
         
 
-    crashBack.addEventListener('pointerdown', e => { e.preventDefault(); });
+    if (!crashed)
+    {
+        crashBack.addEventListener('pointerdown', e => { e.preventDefault(); });
+        chkCrashRestart.addEventListener('change', () => uiSetLocalData('dataMode', boolToString(chkCrashRestart.checked)));
 
-    chkCrashRestart.addEventListener('change', () => uiSetLocalData('dataMode', boolToString(chkCrashRestart.checked)));
+        crashDetails.addEventListener('pointerup', e =>
+        {
+            if (e.button == 2)
+            {
+                e.preventDefault();
+                e.stopImmediatePropagation();
+
+                initCopyMenu();
+                menuCopy.showAt(e.clientX, e.clientY, false, false);
+            }
+        });
+    }
 }
 
 

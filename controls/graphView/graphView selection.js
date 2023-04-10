@@ -10,7 +10,7 @@ GraphView.prototype.deselectAll = function()
 
 GraphView.prototype.selectByIds = function(nodeIds)
 {
-    this.selectedNodes = nodeIds.map(id => this.graph.nodeFromId(id));
+    this.selectedNodes = nodeIds.map(id => graph.nodeFromId(id));
 };
 
 
@@ -71,7 +71,7 @@ GraphView.prototype.updateSelectBox = function(shiftKey, ctrlKey)
 
     const selected = [];
 
-    for (const node of this.graph.nodes)
+    for (const node of graph.nodes)
     {
         if (rectsIntersect(
                 node.measureData.divBounds,
@@ -97,7 +97,7 @@ GraphView.prototype.updateSelectBox = function(shiftKey, ctrlKey)
         ...this.lastSelectedNodes];
 
     nodes.forEach(n => n.updateBorder());
-    updateComments(this.graph, nodes.map(n => n.id));
+    updateComments(graph, nodes.map(n => n.id));
 
     this._prevSelectedNodes = selected;
 };
@@ -110,7 +110,6 @@ GraphView.prototype.endSelection = function(pointerId)
         || !isEmpty(this.lastSelectedNodes))
     {
         actionManager.do(new SelectNodesAction(
-            this.graph,
             this.selectedNodes    .map(n => n.id), 
             this.lastSelectedNodes.map(n => n.id)));
     }

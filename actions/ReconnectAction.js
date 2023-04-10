@@ -31,25 +31,24 @@ extends Action
     
 
     
-    get outputNode()    { return this.graph.nodeFromId(this.outputNodeId); }
+    get outputNode()    { return graph.nodeFromId(this.outputNodeId); }
     get output()        { return this.outputNode.outputs.find(o => o.id == this.outputId); }
 
-    get prevInputNode() { return this.graph.nodeFromId(this.prevInputNodeId); }
+    get prevInputNode() { return graph.nodeFromId(this.prevInputNodeId); }
     get prevInput()     { return this.prevInputNode.inputFromId(this.prevInputId); }
     
-    get inputNode()     { return this.graph.nodeFromId(this.inputNodeId); }
+    get inputNode()     { return graph.nodeFromId(this.inputNodeId); }
     get input()         { return this.inputNode.inputFromId(this.inputId); }
 
 
-    get oldOutputNode() { return this.graph.nodeFromId(this.oldOutputNodeId); }
+    get oldOutputNode() { return graph.nodeFromId(this.oldOutputNodeId); }
     get oldOutput()     { return this.oldOutputNode.outputFromId(this.oldOutputId); }
     
 
 
-    constructor(graph, output, prevInput, input, options = {})
+    constructor(output, prevInput, input, options = {})
     {
         super(
-            graph,
             RECONNECT_ACTION,
              'RECONNECT '
             + output.node.id + '.' + output.id
@@ -129,7 +128,7 @@ extends Action
 
     savePrevInputActiveNodes()
     {
-        this.prevInputActiveNodeIds = this.graph.getActiveNodesAfterNodeId(this.prevInputNodeId).map(n => n.id);
+        this.prevInputActiveNodeIds = graph.getActiveNodesAfterNodeId(this.prevInputNodeId).map(n => n.id);
     }
     
     

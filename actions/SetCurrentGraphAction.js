@@ -6,7 +6,7 @@ extends Action
 
 
 
-    constructor(graph)
+    constructor()
     {
         const graphName =
             graph.parentNodeGroup
@@ -14,7 +14,6 @@ extends Action
             : '';
 
         super(
-            graph,
             SET_CURRENT_GRAPH_ACTION,
             'SET CURRENT GRAPH TO \'' + graphName + '\'');
 

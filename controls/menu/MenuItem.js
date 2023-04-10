@@ -196,7 +196,7 @@ class MenuItem
                     hideAllMenus();
 
 
-                    const node = mainGraph.nodes.at(-1);
+                    const node = graph.nodes.at(-1);
 
                     node.div.shiftOnPointerDown = false;
 

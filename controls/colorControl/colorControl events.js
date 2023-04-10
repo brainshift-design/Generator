@@ -12,10 +12,10 @@ ColorControl.prototype.initEvents = function()
         }
 
 
-        if (   !this.view.spaceDown
+        if (   !graphView.spaceDown
             &&  this.pointerEvents)
         {
-            if (this.view.tempConn)
+            if (graphView.tempConn)
                 this.div.style.cursor = 'default';
 
                 
@@ -44,7 +44,7 @@ ColorControl.prototype.initEvents = function()
             return;
     
     
-        if (   this.view.spaceDown
+        if (   graphView.spaceDown
             || panMode)
             return;
 
@@ -74,7 +74,7 @@ ColorControl.prototype.initEvents = function()
                 : null;
 
             if (nodeDiv && nodeDiv.className == 'node') 
-                this.view.putNodeOnTop(nodeDiv.node);
+                graphView.putNodeOnTop(nodeDiv.node);
 
 
             e.preventDefault(); // this is fine since I lock the pointer anyway
@@ -157,42 +157,42 @@ ColorControl.prototype.initEvents = function()
             //forwardEvent(e, this.textbox);
             // ...
         }
-        else if (this.view.tempConn
+        else if (graphView.tempConn
               && this.param)
         {
             let savedInput = 
-                this.view.savedConn
-                ? this.view.savedConn.input
+                graphView.savedConn
+                ? graphView.savedConn.input
                 : null;
 
 
-            //console.log('this.view.tempConn =', this.view.tempConn);
+            //console.log('graphView.tempConn =', graphView.tempConn);
             
-            if (    this.view.tempConn.output
+            if (    graphView.tempConn.output
                 &&  this.param.input
-                &&  this.param.input.canConnectFrom(this.view.tempConn.output)
-                && !this.view.tempConn.output.node.isOrFollows(this.param.node)
+                &&  this.param.input.canConnectFrom(graphView.tempConn.output)
+                && !graphView.tempConn.output.node.isOrFollows(this.param.node)
                 && (  !this.param.input.connected // not already connected to this input
-                    || this.param.input.connectedOutput != this.view.tempConn.output
+                    || this.param.input.connectedOutput != graphView.tempConn.output
                     || this.param.input == savedInput))
             {
-                this.view.overInput = this.param.input;
+                graphView.overInput = this.param.input;
                     
                 this.param.input.mouseOver = true;
                 this.param.input.updateControl();
 
                 const rect = boundingRect(this.param.input.div);
 
-                this.view.tempConn.wire .inputPos = point(
+                graphView.tempConn.wire .inputPos = point(
                     rect.x + rect.w/2,
                     rect.y + rect.h/2 - menuBarHeight);
             }
-            else if ( this.view.tempConn.input
+            else if ( graphView.tempConn.input
                   &&  this.param.output
-                  &&  this.view.tempConn.input.canConnectTo(this.param.output)
-                  && !this.param.node.isOrFollows(this.view.tempConn.input.node))
+                  &&  graphView.tempConn.input.canConnectTo(this.param.output)
+                  && !this.param.node.isOrFollows(graphView.tempConn.input.node))
             {
-                this.view.overOutput = this.param.output;
+                graphView.overOutput = this.param.output;
                     
                 this.param.output.mouseOver = true;
                 this.param.output.updateControl();
@@ -200,12 +200,12 @@ ColorControl.prototype.initEvents = function()
 
                 const rect = boundingRect(this.param.output.div);
 
-                this.view.tempConn.wire .outputPos = point(
+                graphView.tempConn.wire .outputPos = point(
                     rect.x + rect.w/2,
                     rect.y + rect.h/2 - menuBarHeight);
 
 
-                this.view.tempConn.input.updateControl();
+                graphView.tempConn.input.updateControl();
             }
         }
         // else if (this.readOnly)
@@ -233,14 +233,14 @@ ColorControl.prototype.initEvents = function()
         this.update();
 
 
-        if (this.view.tempConn)
+        if (graphView.tempConn)
         {
-            if (   this.view.tempConn.output
-                && this.view.tempConn.output.node != this.param.node)
+            if (   graphView.tempConn.output
+                && graphView.tempConn.output.node != this.param.node)
             {
-                const input = this.view.overInput;
+                const input = graphView.overInput;
                 
-                this.view.overInput   = null;
+                graphView.overInput   = null;
                 
                 if (input) // will be null if data types don't match or there's no auto input for someo other reason
                 {
@@ -248,14 +248,14 @@ ColorControl.prototype.initEvents = function()
                     input.updateControl();
                 }
                 
-                this.view.tempConn.wire .inputPos = point_NaN;
+                graphView.tempConn.wire .inputPos = point_NaN;
             }
-            else if (this.view.tempConn.input
-                  && this.view.tempConn.input.node != this.param.node)
+            else if (graphView.tempConn.input
+                  && graphView.tempConn.input.node != this.param.node)
             {
-                const output = this.view.overOutput;
+                const output = graphView.overOutput;
                 
-                this.view.overOutput = null;
+                graphView.overOutput = null;
 
                 if (output) // will be null if data types don't match or there's no auto output for someo other reason
                 {
@@ -263,9 +263,9 @@ ColorControl.prototype.initEvents = function()
                     output.updateControl();
                 }
 
-                this.view.tempConn.wire .outputPos = point_NaN;
+                graphView.tempConn.wire .outputPos = point_NaN;
 
-                this.view.tempConn.input.updateControl();
+                graphView.tempConn.input.updateControl();
            }
         }
     });
@@ -289,21 +289,21 @@ ColorControl.prototype.initEvents = function()
         clearTimeout(this.clickTimer);
 
 
-        if (this.view.tempConn)
+        if (graphView.tempConn)
         {
-            if (    this.view.tempConn.output
-                && !this.view.tempConn.output.node.isOrFollows(this.param.node)
-                &&  this.view.overInput)
+            if (    graphView.tempConn.output
+                && !graphView.tempConn.output.node.isOrFollows(this.param.node)
+                &&  graphView.overInput)
             {
-                this.view.endConnection(e.pointerId, getCtrlKey(e));
-                this.view.overInput.endConnection();
+                graphView.endConnection(e.pointerId, getCtrlKey(e));
+                graphView.overInput.endConnection();
             }
-            else if (this.view.tempConn.input
-                && !this.param.node.isOrFollows(this.view.tempConn.input.node)
-                &&  this.view.overOutput)
+            else if (graphView.tempConn.input
+                && !this.param.node.isOrFollows(graphView.tempConn.input.node)
+                &&  graphView.overOutput)
             {
-                this.view.endConnection(e.pointerId, getCtrlKey(e));
-                this.view.overOutput.endConnection();
+                graphView.endConnection(e.pointerId, getCtrlKey(e));
+                graphView.overOutput.endConnection();
             }
         }
         
@@ -367,7 +367,7 @@ ColorControl.prototype.initEvents = function()
     {
         if (  !this.pointerEvents
             || panMode
-            || this.view.wheelTimer)
+            || graphView.wheelTimer)
             return;
 
 
@@ -412,20 +412,20 @@ ColorControl.prototype.initEvents = function()
 
 
 
-    // this.view.div.addEventListener('touchstart', e =>
+    // graphView.div.addEventListener('touchstart', e =>
     // {
-    //     this.view.touches.push(e);
+    //     graphView.touches.push(e);
     //     e.preventDefault();
     // });
     
     
     
-    // this.view.div.addEventListener('touchmove', e =>
+    // graphView.div.addEventListener('touchmove', e =>
     // {
-    //     for (let i = 0; i < this.view.touches.length; i++)
-    //         if (this.view.touches[i].pointerId == e.pointerId)
+    //     for (let i = 0; i < graphView.touches.length; i++)
+    //         if (graphView.touches[i].pointerId == e.pointerId)
     //         {
-    //             this.view.touches[i] = e;
+    //             graphView.touches[i] = e;
     //             break;
     //         }
     
@@ -434,12 +434,12 @@ ColorControl.prototype.initEvents = function()
     
     
     
-    // this.view.div.addEventListener('touchend', e =>
+    // graphView.div.addEventListener('touchend', e =>
     // {
-    //     for (let i = 0; i < this.view.touches.length; i++)
-    //         if (this.view.touches[i].pointerId == e.pointerId)
+    //     for (let i = 0; i < graphView.touches.length; i++)
+    //         if (graphView.touches[i].pointerId == e.pointerId)
     //         {
-    //             this.view.touches.splice(i, 1);
+    //             graphView.touches.splice(i, 1);
     //             break;
     //         }
     
@@ -448,12 +448,12 @@ ColorControl.prototype.initEvents = function()
     
     
     
-    // this.view.div.addEventListener('touchcancel', e =>
+    // graphView.div.addEventListener('touchcancel', e =>
     // {
-    //     for (let i = 0; i < this.view.touches.length; i++)
-    //         if (this.view.touches[i].pointerId == e.pointerId)
+    //     for (let i = 0; i < graphView.touches.length; i++)
+    //         if (graphView.touches[i].pointerId == e.pointerId)
     //         {
-    //             this.view.touches.splice(i, 1);
+    //             graphView.touches.splice(i, 1);
     //             break;
     //         }
     
@@ -476,7 +476,7 @@ ColorControl.prototype.initEvents = function()
 
     this.div.addEventListener('focus', () =>
     {
-        if (   !this.view.spaceDown
+        if (   !graphView.spaceDown
             && !panMode
             && !this.buttonDown1
             && this.pointerEvents)

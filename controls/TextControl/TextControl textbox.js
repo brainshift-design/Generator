@@ -195,7 +195,7 @@ TextControl.prototype.initTextarea = function()
 
     this.textbox.addEventListener('wheel', e =>
     {
-        if (this.view.wheelTimer)
+        if (graphView.wheelTimer)
             e.preventDefault();
 
         e.stopPropagation();

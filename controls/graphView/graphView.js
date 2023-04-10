@@ -140,12 +140,7 @@ class GraphView
     constructor(div, graph)
     {
         this.div                     = div;
-        this.div.view                = this;
           
-        this.graph                   = graph;
-        this.graph.view              = this;
-          
-                  
         this.wireContainer           = createDiv('wireContainer');
                   
         this.scrollbarX              = createDiv('scrollbar', 'scrollbarX');
@@ -185,7 +180,7 @@ class GraphView
                 onlySelected
             && !isEmpty(this.selectedNodes)
             ? this.selectedNodes
-            : this.graph.nodes;
+            : graph.nodes;
 
         for (const node of nodes)
             bounds = expandRect(bounds, boundingRect(node.div));
@@ -200,7 +195,7 @@ class GraphView
         let bounds = Rect.NaN;
 
         if (!nodes)
-            nodes = this.graph.nodes;
+            nodes = graph.nodes;
 
         for (const node of nodes)
             bounds = expandRect(bounds, offsetRect(node.div));
@@ -214,7 +209,7 @@ class GraphView
     {
         let bounds = Rect.NaN;
 
-        for (const node of this.graph.nodes)
+        for (const node of graph.nodes)
             bounds = expandRect(bounds, boundingRect(node.div));
 
         return bounds;
@@ -255,7 +250,7 @@ class GraphView
 
         const intersecting = [];
         
-        for (const n of this.graph.nodes)
+        for (const n of graph.nodes)
         {
             const nBounds = this.getZoomedNodeBounds(n);
             
@@ -310,7 +305,7 @@ class GraphView
             +  node.inputs.filter(i => i.connected).length 
             + (node.outputs.find(o => o.connected) ? 1 : 0);
             
-        for (const n of this.graph.nodes)
+        for (const n of graph.nodes)
             n.div.style.zIndex = Math.max(0, Number(n.div.style.zIndex) - topIndices);
             
         node.div.style.zIndex = MAX_INT32-3; // -3 is for scrollbars;

@@ -12,18 +12,15 @@ extends Action
    
 
 
-    constructor(graph, nodeIds, cut = false)
+    constructor(nodeIds, cut = false)
     {
         super(
-            graph,
             DELETE_ACTION, 
             (cut ? 'CUT ' : 'DELETE ') + nodeIds.length + ' ' + countString('node', nodeIds.length));
 
-        this.graph           = graph;
-
         this.nodeIds         = [...nodeIds];
-        this.nodes           = nodeIds.map(id => this.graph.nodeFromId(id));
-        this.prevSelectedIds = graph.view.selectedNodes.map(n => n.id);
+        this.nodes           = nodeIds.map(id => graph.nodeFromId(id));
+        this.prevSelectedIds = graphView.selectedNodes.map(n => n.id);
     }
 
 
@@ -41,7 +38,7 @@ extends Action
 
         DisconnectAction_activateNewNodes(this);
 
-        uiSaveNodes(this.graph, this.newActiveNodeIds);
+        uiSaveNodes(graph, this.newActiveNodeIds);
     }
 
 
@@ -54,7 +51,7 @@ extends Action
         deleteNodesAction_activateOldActiveNodes(this, updateNodes);
 
         uiSaveNodes(
-            this.graph,
+            graph,
             [...this.nodeIds,
              ...this.newActiveNodeIds]);
     }
@@ -201,12 +198,12 @@ function deleteNodesAction_restoreNodes(act)
 {
     // console.log('act.nodes', act.nodes);
 
-    act.graph.view.restoringNodes = true;
+    act.graphView.restoringNodes = true;
 
     act.graph.addNodes(act.nodes);
 
-    act.graph.view.putNodeOnTop(act.nodes.at(-1));
-    act.graph.view.selected = act.nodes;
+    act.graphView.putNodeOnTop(act.nodes.at(-1));
+    act.graphView.selected = act.nodes;
 
 
     for (let i = 0; i < act.nodes.length; i++)
@@ -236,7 +233,7 @@ function deleteNodesAction_activateOldActiveNodes(act, updateNodes)
     
     const oldActiveNodes = oldActiveNodeIds.map(id => act.graph.nodeFromId(id));
     
-    act.graph.view.selectByIds(act.prevSelectedIds);
+    act.graphView.selectByIds(act.prevSelectedIds);
     uiMakeNodesActive(oldActiveNodes);
 
     pushUnique(updateNodes, oldActiveNodes);

@@ -25,8 +25,8 @@ Operator.prototype.createNode = function()
 
     this.div.addEventListener('pointerenter', e =>
     {
-        this.div.over            = true;
-        this.graph.view.overNode = this;
+        this.div.over      = true;
+        graphView.overNode = this;
         
         if (    e.altKey
             && !getCtrlKey(e)
@@ -41,8 +41,8 @@ Operator.prototype.createNode = function()
     
     this.div.addEventListener('pointerleave', e =>
     {
-        this.div.over            = false;
-        this.graph.view.overNode = null;
+        this.div.over      = false;
+        graphView.overNode = null;
         
         if (   (  !e.altKey
                 || getCtrlKey(e)
@@ -107,7 +107,7 @@ Operator.prototype.createHeader = function()
 
     this.header.addEventListener('pointerdown', e =>
     {
-        if (this.graph.view.isPanning(e))
+        if (graphView.isPanning(e))
             return;
 
 
@@ -121,12 +121,9 @@ Operator.prototype.createHeader = function()
         document.activeElement.blur();
 
 
-        const view = this.graph.view;
-
-
-        view.lastSelectedNodes = [...view.selectedNodes];
+        graphView.lastSelectedNodes = [...graphView.selectedNodes];
         
-        view.putNodeOnTop(this);
+        graphView.putNodeOnTop(this);
 
 
         for (const param of this.params)
@@ -151,17 +148,17 @@ Operator.prototype.createHeader = function()
 
 
         if (    e.button == 0
-            && !view.overOutput
-            && !view.overInput)
+            && !graphView.overOutput
+            && !graphView.overInput)
         {
             e.stopPropagation();
 
-            view.selectFromClick(this, getCtrlKey(e), e.shiftKey, e.altKey);
+            graphView.selectFromClick(this, getCtrlKey(e), e.shiftKey, e.altKey);
                         
             this.sx = e.clientX;
             this.sy = e.clientY;
 
-            for (const n of view.selectedNodes)
+            for (const n of graphView.selectedNodes)
             {
                 n.slx = n.div.offsetLeft;
                 n.sly = n.div.offsetTop;
@@ -175,7 +172,7 @@ Operator.prototype.createHeader = function()
         {
             e.stopPropagation();
 
-            view.selectFromClick(this, getCtrlKey(e), e.shiftKey, e.altKey);
+            graphView.selectFromClick(this, getCtrlKey(e), e.shiftKey, e.altKey);
 
             menuNode.showAt(e.clientX, e.clientY, false);
         }
@@ -188,36 +185,33 @@ Operator.prototype.createHeader = function()
 
     this.header.addEventListener('pointermove', e =>
     {
-        if (this.graph.view.isPanning(e))
+        if (graphView.isPanning(e))
             return;
-
-
-        const view = this.graph.view;
 
 
         const toTheRightOfInputs = e.clientX - boundingRect(this.header).x > 12 * graphView.zoom;
 
-        const tempConn  = view. tempConn;
-        let   savedConn = view.savedConn;
+        const tempConn  = graphView. tempConn;
+        let   savedConn = graphView.savedConn;
 
 
         if (this.div.dragging)
         {
-            const x       = view.div.clientLeft;
-            const w       = view.div.clientWidth;
-            const h       = view.div.clientHeight;
-            const bounds  = view.getAllNodeBounds();
+            const x       = graphView.div.clientLeft;
+            const w       = graphView.div.clientWidth;
+            const h       = graphView.div.clientHeight;
+            const bounds  = graphView.getAllNodeBounds();
 
             const yOffset = menuBarHeight;
 
-            view.setNodePositions(
-                view.selectedNodes,
-                (e.clientX - this.sx) / view.zoom,
-                (e.clientY - this.sy) / view.zoom);
+            graphView.setNodePositions(
+                graphView.selectedNodes,
+                (e.clientX - this.sx) / graphView.zoom,
+                (e.clientY - this.sy) / graphView.zoom);
             
             this.div.moved = true;
 
-            view.updateScroll(x, w, h, bounds, yOffset);
+            graphView.updateScroll(x, w, h, bounds, yOffset);
 
             if (this.type == NODE_GROUP)
                 this.updateProxyWires();
@@ -237,7 +231,7 @@ Operator.prototype.createHeader = function()
 
 
                     const index = Math.min(Math.max(0, Math.round(
-                          ((e.clientY - rect.y) / view.zoom - padding - (connectionSize + connectionGap)/2) 
+                          ((e.clientY - rect.y) / graphView.zoom - padding - (connectionSize + connectionGap)/2) 
                         / (connectionSize + connectionGap))),
                         this.headerInputs.length-(this.headerInputs.length > 1 ? 2 : 1));
 
@@ -256,10 +250,10 @@ Operator.prototype.createHeader = function()
                     }
 
                     
-                    view.overInput   = savedConn.input;
-                    view.headerInput = savedConn.input;
+                    graphView.overInput   = savedConn.input;
+                    graphView.headerInput = savedConn.input;
 
-                    view.overInput.updateControl();
+                    graphView.overInput.updateControl();
 
                     
                     const inputRect = boundingRect(savedConn.input.div);
@@ -273,8 +267,8 @@ Operator.prototype.createHeader = function()
                     const input = this.getAutoInput(tempConn.output);
                     if (!input) return;
 
-                    view.overInput   = input;
-                    view.headerInput = input;
+                    graphView.overInput   = input;
+                    graphView.headerInput = input;
                         
                     input.mouseOver = true;
                     input.updateControl();
@@ -292,8 +286,8 @@ Operator.prototype.createHeader = function()
                 const output = this.getAutoOutput(tempConn.input.types);
                 if (!output) return;
 
-                view.overOutput   = output;
-                view.headerOutput = output;
+                graphView.overOutput   = output;
+                graphView.headerOutput = output;
                     
                 output.mouseOver = true;
                 output.updateControl();
@@ -315,11 +309,8 @@ Operator.prototype.createHeader = function()
 
     this.header.addEventListener('pointerup', e =>
     {
-        if (this.graph.view.isPanning(e))
+        if (graphView.isPanning(e))
             return;
-
-
-        const view = this.graph.view;
 
 
         if (   e.button == 0
@@ -328,19 +319,17 @@ Operator.prototype.createHeader = function()
             if (this.div.moved)
             {
                 actionManager.do(new SelectMoveNodesAction(
-                    this.graph,
-                    view.lastSelectedNodes.map(n => n.id), 
-                    view.selectedNodes.map(n => n.id), 
+                    graphView.lastSelectedNodes.map(n => n.id), 
+                    graphView.selectedNodes.map(n => n.id), 
                     point(this.slx, this.sly),
                     point(this.div.offsetLeft, this.div.offsetTop),
                     this.div.shiftOnPointerDown ));
             }
-            else if (!arraysAreEqual(view.selectedNodes, view.lastSelectedNodes))
+            else if (!arraysAreEqual(graphView.selectedNodes, graphView.lastSelectedNodes))
             {
                 actionManager.do(new SelectNodesAction(
-                    this.graph,
-                    view.selectedNodes    .map(n => n.id), 
-                    view.lastSelectedNodes.map(n => n.id)));
+                    graphView.selectedNodes    .map(n => n.id), 
+                    graphView.lastSelectedNodes.map(n => n.id)));
             }
 
             this.div.dragging = false;
@@ -348,21 +337,21 @@ Operator.prototype.createHeader = function()
         }
 
         
-        else if (view.tempConn)
+        else if (graphView.tempConn)
         {
-            if (    view.tempConn.output
-                && !view.tempConn.output.node.isOrFollows(this)
-                &&  view.overInput)
+            if (    graphView.tempConn.output
+                && !graphView.tempConn.output.node.isOrFollows(this)
+                &&  graphView.overInput)
             {
-                view          .endConnection(e.pointerId, getCtrlKey(e));
-                view.overInput.endConnection();
+                graphView          .endConnection(e.pointerId, getCtrlKey(e));
+                graphView.overInput.endConnection();
             }
-            else if ( view.tempConn.input
-                  && !this.isOrFollows(view.tempConn.input.node)
-                  &&  view.overOutput)
+            else if ( graphView.tempConn.input
+                  && !this.isOrFollows(graphView.tempConn.input.node)
+                  &&  graphView.overOutput)
             {
-                view           .endConnection(e.pointerId, getCtrlKey(e));
-                view.overOutput.endConnection();
+                graphView           .endConnection(e.pointerId, getCtrlKey(e));
+                graphView.overOutput.endConnection();
             }
         }
 
@@ -374,18 +363,15 @@ Operator.prototype.createHeader = function()
 
     this.header.addEventListener('pointerleave', e => 
     { 
-        const view = this.graph.view;
-
-
-        if (view.tempConn)
+        if (graphView.tempConn)
         {
-            if (   view.tempConn.output
-                && view.tempConn.output.node != this)
+            if (   graphView.tempConn.output
+                && graphView.tempConn.output.node != this)
             {
-                const input = view.headerInput;
+                const input = graphView.headerInput;
                 
-                view.overInput   = null;
-                view.headerInput = null;
+                graphView.overInput   = null;
+                graphView.headerInput = null;
                 
                 if (input) // will be null if data types don't match or there's no auto input for someo other reason
                 {
@@ -393,15 +379,15 @@ Operator.prototype.createHeader = function()
                     input.updateControl();
                 }
                 
-                view.tempConn.wire.inputPos = point_NaN;
+                graphView.tempConn.wire.inputPos = point_NaN;
             }
-            else if (view.tempConn.input
-                  && view.tempConn.input.node !=  this)
+            else if (graphView.tempConn.input
+                  && graphView.tempConn.input.node !=  this)
             {
-                const output = view.headerOutput;
+                const output = graphView.headerOutput;
                 
-                view.overOutput   = null;
-                view.headerOutput = null;
+                graphView.overOutput   = null;
+                graphView.headerOutput = null;
 
                 if (output) // will be null if data types don't match or there's no auto output for someo other reason
                 {
@@ -409,9 +395,9 @@ Operator.prototype.createHeader = function()
                     output.updateControl();
                 }
 
-                view.tempConn.wire.outputPos = point_NaN;
+                graphView.tempConn.wire.outputPos = point_NaN;
                 
-                view.tempConn.input.updateControl();
+                graphView.tempConn.input.updateControl();
            }
         }
     });
@@ -430,7 +416,7 @@ Operator.prototype.createHeader = function()
             && e.clientY >= bounds.top  && e.clientY < bounds.bottom)
             this.showLabelTextbox();
         else if (!this.header.ignoreDoubleClick)
-            actionManager.do(new MakeActiveNodesAction(this.graph, [this.id]));
+            actionManager.do(new MakeActiveNodesAction(graph, [this.id]));
 
         this.header.ignoreDoubleClick = false;
     });

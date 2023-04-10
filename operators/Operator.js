@@ -10,9 +10,6 @@ class Operator
     subscription = false;
 
 
-    graph  = null;
-    
-    
     #type; // used in the code, not for generation
     get type() { return this.#type; }
     
@@ -109,12 +106,12 @@ class Operator
     set selected(sel) 
     {
         if (this._selected)
-            removeFromArray(this.graph.view.selectedNodes, this);
+            removeFromArray(graphView.selectedNodes, this);
 
         this.setSelected(sel);     
 
         if (this._selected)
-            this.graph.view.selectedNodes.push(this);
+            graphView.selectedNodes.push(this);
     }        
 
 
@@ -203,20 +200,17 @@ class Operator
             && i.canConnectFrom(output));
 
         
-        const view = this.graph.view;
+        if (   graphView.overInput
+            && inputs.includes(graphView.overInput))
+            return graphView.overInput;
 
 
-        if (   view.overInput
-            && inputs.includes(view.overInput))
-            return view.overInput;
-
-
-        if (   view.savedConn
-            && view.savedConn.input
-            && view.savedConn.input.node == this)
-            return view.savedConn.input;
+        if (   graphView.savedConn
+            && graphView.savedConn.input
+            && graphView.savedConn.input.node == this)
+            return graphView.savedConn.input;
         
-        else if (!view.tempConn.output.node.isOrFollows(this))
+        else if (!graphView.tempConn.output.node.isOrFollows(this))
         {
             if (this.variableInputs)
                 return inputs.filter(i => !i.param).at(-1);
@@ -291,7 +285,7 @@ class Operator
         const outputs = this.headerOutputs.filter(o => arraysIntersect(o.types, inputTypes));
 
         return  outputs.length == 1
-            && !this.isOrFollows(this.graph.view.tempConn.input.node)
+            && !this.isOrFollows(graphView.tempConn.input.node)
             ? outputs[0]
             : null;
     }
@@ -493,12 +487,10 @@ class Operator
     {
         this._active = true;
 
-        const view = this.graph.view;
-
-        if (    view
-            &&  view.activeNodes
-            && !view.activeNodes.includes(this))
-            view.activeNodes.push(this);
+        if (    graphView
+            &&  graphView.activeNodes
+            && !graphView.activeNodes.includes(this))
+            graphView.activeNodes.push(this);
     }
 
 
@@ -508,8 +500,8 @@ class Operator
         if (!this._active) 
             return;
             
-        if (this.graph.view.activeNodes.includes(this))
-            removeFromArray(this.graph.view.activeNodes, this);
+        if (graphView.activeNodes.includes(this))
+            removeFromArray(graphView.activeNodes, this);
 
         this._active = false;
     }
@@ -544,7 +536,7 @@ class Operator
         this.updateMeasureData();
 
 
-        for (const node of mainGraph.nodes.filter(n => n.type == NODE_GROUP))
+        for (const node of graph.nodes.filter(n => n.type == NODE_GROUP))
         {
             node.updateProxyControls();
             node.updateProxyWires();
@@ -805,35 +797,31 @@ class Operator
 
     setTransform(nodeLeft, nodeTop, nodeRect)
     {
-        const view = this.graph.view;
-
         this.div.style.transform =
               'translate(' 
-            + (view.pan.x * view.zoom) + 'px, '
-            + (view.pan.y * view.zoom) + 'px) '
-            + 'scale(' + view.zoom + ')';
+            + (graphView.pan.x * graphView.zoom) + 'px, '
+            + (graphView.pan.y * graphView.zoom) + 'px) '
+            + 'scale(' + graphView.zoom + ')';
 
         this.div.style.transformOrigin = 
-              ((view.pan.x - nodeLeft) / nodeRect.width  * 100) + '% ' 
-            + ((view.pan.y - nodeTop ) / nodeRect.height * 100) + '%';  
+              ((graphView.pan.x - nodeLeft) / nodeRect.width  * 100) + '% ' 
+            + ((graphView.pan.y - nodeTop ) / nodeRect.height * 100) + '%';  
     }
 
 
 
     getOffsetRect()
     {
-        const view = this.graph.view;
-
-        const ox   = -view.pan.x / view.zoom;
-        const oy   = -view.pan.y / view.zoom;
+        const ox   = -graphView.pan.x / graphView.zoom;
+        const oy   = -graphView.pan.y / graphView.zoom;
 
         const rect = boundingRect(this.div);
 
         return new DOMRect(
-            ox + (rect.left / view.zoom),
-            oy + (rect.top  / view.zoom), 
-            rect.width      / view.zoom, 
-            rect.height     / view.zoom);
+            ox + (rect.left / graphView.zoom),
+            oy + (rect.top  / graphView.zoom), 
+            rect.width      / graphView.zoom, 
+            rect.height     / graphView.zoom);
     }
 
 
@@ -883,7 +871,7 @@ class Operator
         if (   node
             && !isEmpty(node.outputs)
             && !isEmpty(inputs))
-            actionManager.do(new ConnectAction(this.graph, node.outputs[0], inputs[0]), true);
+            actionManager.do(new ConnectAction(node.outputs[0], inputs[0]), true);
     }
 
 
@@ -928,7 +916,7 @@ class Operator
             + pos + tab + '"enabled": "' + boolToString(this.enabled)      + '",\n'
             + pos + tab + '"x": "'       + parseFloat(this.div.style.left) + '",\n'
             + pos + tab + '"y": "'       + parseFloat(this.div.style.top ) + '",\n'
-            + pos + tab + '"z": "'       + this.graph.nodes.indexOf(this)  + '"';
+            + pos + tab + '"z": "'       + graph.nodes.indexOf(this)  + '"';
 
         if (this.active)
             json += ',\n' + pos + tab + '"active": "' + this.active + '"';

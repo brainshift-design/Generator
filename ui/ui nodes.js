@@ -320,7 +320,7 @@ function uiUpdateSavedConnectionsToNodeId(graph, nodeId, saveOld)
 function makeSelectedNodesActive()
 {
     if (graphView.selectedNodes.find(n => !n.active))
-        actionManager.do(new MakeActiveNodesAction(mainGraph, graphView.selectedNodes.map(n => n.id)));
+        actionManager.do(new MakeActiveNodesAction(graph, graphView.selectedNodes.map(n => n.id)));
 }
 
 
@@ -350,7 +350,7 @@ function uiMakeNodesActive(nodes)
     {
         if (node.active) continue;
         
-        pushUnique(node.graph.view.activeNodes, node);
+        pushUnique(node.graphView.activeNodes, node);
         node._active = true;
     }
 }
@@ -403,7 +403,7 @@ function uiShowParamValue(graph, nodeId, paramName, value)
     const node = graph.nodeFromId(nodeId);
 
     if (!!node) // this is for deleted nodes which still exist
-    {           // in genGraph but no longer in mainGraph
+    {           // in genGraph but no longer in graph
         const param = node.params.find(p => p.name == paramName);
         param.controls[0].setValue(value, false);
     }
@@ -427,7 +427,7 @@ function uiPasteNodes(graph, nodesJson, pasteConnected, x, y, updateNodes)
 {
     //console.log(nodesJson);
 
-    graph.view.pastingNodes = true;
+    graphView.pastingNodes = true;
 
 
     pasteOffset.x += pasteOffsetDelta.x;
@@ -444,7 +444,7 @@ function uiPasteNodes(graph, nodesJson, pasteConnected, x, y, updateNodes)
 
         for (let i = 0; i < data.nodes.length; i++)
         {
-            data.nodes[i].x = x + positions[i].x - positions[0].x + 5 / graph.view.zoom;
+            data.nodes[i].x = x + positions[i].x - positions[0].x + 5 / graphView.zoom;
             data.nodes[i].y = y + positions[i].y - positions[0].y;
         }
     }
@@ -523,7 +523,7 @@ function uiPasteNodes(graph, nodesJson, pasteConnected, x, y, updateNodes)
         data.connections = []; // return an empty array if no data was loaded
 
 
-    graph.view.selectedNodes = nodes;
+    graphView.selectedNodes = nodes;
 
 
     finishLoadingNodes(data.nodes, nodes, updateNodes, true);
@@ -642,7 +642,7 @@ function uiUpdateValuesAndObjects(requestId, actionId, updateNodeId, updateParam
         const nodeId = values[i++];
         const count  = values[i++];
 
-        const node   = mainGraph.nodeFromId(nodeId);
+        const node   = graph.nodeFromId(nodeId);
 
 
         if (node)
@@ -720,7 +720,7 @@ function uiUpdateValuesAndObjects(requestId, actionId, updateNodeId, updateParam
 
 
     if (!graphView.loadingNodes)
-        uiSaveNodes(mainGraph, nodes.map(n => n.id));
+        uiSaveNodes(graph, nodes.map(n => n.id));
 
 
     for (const node of nodes)
@@ -755,14 +755,14 @@ function uiUpdateValuesAndObjects(requestId, actionId, updateNodeId, updateParam
     {
         if (graphView.loadingNodes)
         {
-            for (const node of mainGraph.nodes.filter(n => n.type == NODE_GROUP))
+            for (const node of graph.nodes.filter(n => n.type == NODE_GROUP))
             {
                 node.updateProxyControls();
                 node.updateProxyWires();
                 node.updateMeasureData();
             }
 
-            uiSaveNodes(mainGraph, mainGraph.nodes.map(n => n.id));
+            uiSaveNodes(graph, graph.nodes.map(n => n.id));
         }
 
 
@@ -932,7 +932,7 @@ function uiDeleteSavedConnection(key, outputNodeId, outputId, outputOrder, input
 
 function uiRemoveAllSavedConnections()
 {
-    for (const node of mainGraph.nodes)
+    for (const node of graph.nodes)
         for (const input of node.inputs)
             if (input.connected)
                 uiDisconnectAny(input);

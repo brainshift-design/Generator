@@ -1,7 +1,5 @@
 class Graph
 {
-    view             = null;
-
     parentNodeGroup = null;
 
 
@@ -90,16 +88,16 @@ class Graph
         node.id = this.getNewNodeId(node.id, node.id);
         
         this.nodes.push(node);
-        this.view.div.appendChild(node.div);
+        graphView.div.appendChild(node.div);
         
         if (placeNode)
-            this.view.placeNewNode(node);
+            graphView.placeNewNode(node);
 
-        node.div.style.zIndex = this.view.graph.nodes.length-1;
-        this.view.putNodeOnTop(node);
+        node.div.style.zIndex = graph.nodes.length-1;
+        graphView.putNodeOnTop(node);
 
 
-        this.view.updateScrollWithBounds();
+        graphView.updateScrollWithBounds();
     }
     
 
@@ -139,18 +137,18 @@ class Graph
             node.div.style.display = 'none';
 
             removeFromArray(this.nodes, node);  
-            this.view.div.removeChild(node.div);
+            graphView.div.removeChild(node.div);
         }
 
 
-        this.view.updateScrollWithBounds();
+        graphView.updateScrollWithBounds();
     }
 
 
 
     connect(output, input, inputId = '', outputOrder = -1)
     {
-        //console.log('this.view.graph.connect()');
+        //console.log('graph.connect()');
 
         if (input.connectedOutput == output)
             return null;
@@ -206,7 +204,7 @@ class Graph
         input.connectedOutput = output;
 
         
-        this.view.addConnWires(conn);
+        graphView.addConnWires(conn);
 
         this.connections.push(conn);
 
@@ -225,7 +223,7 @@ class Graph
         if (!output) return false;
 
 
-        this.view.removeConnWires(input.connection);
+        graphView.removeConnWires(input.connection);
 
         removeFromArray(this.connections, input.connection);
         removeFromArray(output.connectedInputs, input);

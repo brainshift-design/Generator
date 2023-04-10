@@ -22,10 +22,9 @@ extends Action
     
 
 
-    constructor(graph, nodeType, creatingButton, options, autoConnect)
+    constructor(nodeType, creatingButton, options, autoConnect)
     {
         super(
-            graph,
             CREATE_ACTION, 
             'CREATE \'' + nodeType + '\'');
 
@@ -41,10 +40,10 @@ extends Action
 
     do(updateNodes)
     {
-        this.prevSelectedIds = this.graph.view.selectedNodes.map(n => n.id);
+        this.prevSelectedIds = graphView.selectedNodes.map(n => n.id);
 
 
-        this.graph.view.creatingNodes = true;
+        graphView.creatingNodes = true;
 
         this.node = createNode(this.nodeType, this.creatingButton, this.createdId, this.options);
         
@@ -52,32 +51,32 @@ extends Action
         const autoConnect = 
                 this.autoConnect
             && !isEmpty(this.prevSelectedIds)
-            &&  canAutoConnectNode(this.graph, this.node)
+            &&  canAutoConnectNode(graph, this.node)
             && !!this.options.autoConnect;
 
             
-        this.graph.addNode(this.node, !autoConnect);
+        graph.addNode(this.node, !autoConnect);
 
         this.createdNodeId = this.node.id;
         
 
         if (autoConnect)
         {
-            this.oldInputActiveNodeId = idFromNode(this.graph.getActiveFromNodeId(this.prevSelectedIds[0]));
+            this.oldInputActiveNodeId = idFromNode(graph.getActiveFromNodeId(this.prevSelectedIds[0]));
 
-            const selNode = this.graph.nodeFromId(this.prevSelectedIds[0]);
+            const selNode = graph.nodeFromId(this.prevSelectedIds[0]);
             const inputs  = this.node.headerInputs.filter(i => i.canConnectFrom(selNode.headerOutputs[0]));
             
             if (!isEmpty(inputs))
             {
                 const conn = createNodeAction_connect(this, selNode.outputs[0], this.node, inputs[0].id);
-                this.graph.view.autoPlaceNewNode(conn.output, conn.input);
+                graphView.autoPlaceNewNode(conn.output, conn.input);
             }
         }
 
 
-        this.graph.view.lastSelectedNodes = this.graph.view.selectedNodes;
-        this.graph.view.selectedNodes     = [this.node];
+        graphView.lastSelectedNodes = graphView.selectedNodes;
+        graphView.selectedNodes     = [this.node];
 
         uiMakeNodeActive(this.node);
         pushUnique(updateNodes, this.node);
@@ -87,11 +86,11 @@ extends Action
 
     undo(updateNodes)
     {
-        uiDeleteNodes(this.graph, [this.createdNodeId]);
+        uiDeleteNodes(graph, [this.createdNodeId]);
 
         createNodeAction_activateOldInput(this, updateNodes);
         
-        this.graph.view.selectByIds(this.prevSelectedIds);
+        graphView.selectByIds(this.prevSelectedIds);
     }
 }
 

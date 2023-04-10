@@ -80,7 +80,7 @@ extends Control
     canReact(e)
     {
         if (   settings.enableZoomedOutParams
-            || this.view.zoom > settings.minZoomForParams)
+            || graphView.zoom > settings.minZoomForParams)
             return true;
 
         e.preventDefault();

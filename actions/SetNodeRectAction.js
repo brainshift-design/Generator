@@ -2,17 +2,16 @@ class SetNodeRectAction
 extends Action
 {
     nodeId;
-    get node() { return this.graph.nodeFromId(this.nodeId) } 
+    get node() { return graph.nodeFromId(this.nodeId) } 
 
     oldRect;
     newRect;
 
 
 
-    constructor(graph, nodeId, oldRect, newRect)
+    constructor(nodeId, oldRect, newRect)
     {
         super(
-            graph,
             SET_NODE_RECT_ACTION,
            'SET NODE ' + nodeId + ' RECT to \'' + newRect.toString() + '\'');
 
@@ -34,7 +33,7 @@ extends Action
         //     this.newRect.w,
         //     this.newRect.h);
 
-        uiSaveNodes(this.graph, [this.nodeId]);
+        uiSaveNodes(graph, [this.nodeId]);
     }
 
 
@@ -49,7 +48,7 @@ extends Action
 
         this.node.updateNode();
 
-        uiSaveNodes(this.graph, [this.nodeId]);
+        uiSaveNodes(graph, [this.nodeId]);
     }
 
 
@@ -64,6 +63,6 @@ extends Action
 
         this.node.updateNode();
         
-        uiSaveNodes(this.graph, [this.nodeId]);
+        uiSaveNodes(graph, [this.nodeId]);
     }
 }

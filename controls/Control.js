@@ -18,10 +18,6 @@ extends EventTarget
     measureData = { divBounds: new Rect(0, 0, 0, 0) };
  
 
-    get view() { return this.param.node.graph.view; }
-
-
-
     constructor(div, param, id, name, width = defNodeWidth, height = defParamHeight)
     {
         super();

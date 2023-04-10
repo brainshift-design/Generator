@@ -1,7 +1,7 @@
 GraphView.prototype.updateNodes = function(nodes = null, updateNodes = true)
 {
     if (!nodes)
-        nodes = this.graph.nodes;
+        nodes = graph.nodes;
         
     
     documentBodyClient = clientRect(document.body);
@@ -83,14 +83,14 @@ GraphView.prototype.soloNode = function(node)
 {
     this._soloNode = node;
 
-    this.graph.nodes.forEach(n => 
+    graph.nodes.forEach(n => 
         n.div.style.opacity = 
                 n == this._soloNode
             || n.isConnectedTo(this._soloNode)
             ? 1 
             : 0.12);
 
-    this.graph.connections.forEach(c =>
+    graph.connections.forEach(c =>
     { 
         c.wire.svg.style.opacity = 
                 c.input  && this._soloNode == c.input .node
@@ -100,7 +100,7 @@ GraphView.prototype.soloNode = function(node)
     });
 
 
-    this.updateWires(this.graph.connections.map(c => c.wire));
+    this.updateWires(graph.connections.map(c => c.wire));
 };
 
 
@@ -109,21 +109,21 @@ GraphView.prototype.unsoloNode = function()
 {
     this._soloNode = null;
 
-    this.graph.nodes      .forEach(n => n.div     .style.opacity = 1);
-    this.graph.nodes      .forEach(n => n.div     .style.opacity = 1);
-    this.graph.connections.forEach(c => c.wire.svg.style.opacity = 1);
+    graph.nodes      .forEach(n => n.div     .style.opacity = 1);
+    graph.nodes      .forEach(n => n.div     .style.opacity = 1);
+    graph.connections.forEach(c => c.wire.svg.style.opacity = 1);
 
-    this.updateWires(this.graph.connections.map(c => c.wire));
+    this.updateWires(graph.connections.map(c => c.wire));
 };
 
 
 
 GraphView.prototype.updateShowWires = function(updateNodes = true)
 {
-    this.graph.connections.forEach(c => showElement(c.wire.svg, true));
+    graph.connections.forEach(c => showElement(c.wire.svg, true));
 
     if (updateNodes) 
-        this.graph.nodes.forEach(n => n.updateNode());
+        graph.nodes.forEach(n => n.updateNode());
 };
 
 
@@ -150,11 +150,11 @@ GraphView.prototype.selectAllNodes = function(invert)
 
     this.selectedNodes = 
         invert
-        ? this.graph.nodes.filter(n => !lastSelected.includes(n))
-        : this.graph.nodes;
+        ? graph.nodes.filter(n => !lastSelected.includes(n))
+        : graph.nodes;
         
     actionManager.do(new SelectNodesAction(
-        this.graph,
+        graph,
         this.selectedNodes.map(n => n.id), 
         lastSelected      .map(n => n.id)));
 };
@@ -168,7 +168,7 @@ GraphView.prototype.deselectAllNodes = function()
     this.selectedNodes = [];
         
     actionManager.do(new SelectNodesAction(
-        this.graph,
+        graph,
         this.selectedNodes.map(n => n.id), 
         lastSelected      .map(n => n.id)));
 };
@@ -178,7 +178,7 @@ GraphView.prototype.deselectAllNodes = function()
 GraphView.prototype.copySelectedNodes = function()
 {
     pasteOffset     = point(0, 0);
-    copiedNodesJson = uiCopyNodes(this.graph, this.selectedNodes.map(n => n.id));
+    copiedNodesJson = uiCopyNodes(graph, this.selectedNodes.map(n => n.id));
 
     writeTextToClipboard(copiedNodesJson);
 };
@@ -245,7 +245,7 @@ GraphView.prototype.pasteCopiedNodes = function(pasteConnected, clientX = Number
         const x = (clientX - this.pan.x) / this.zoom;
         const y = (clientY - this.pan.y) / this.zoom;
             
-        actionManager.do(new PasteNodesAction(this.graph, text, pasteConnected, false, x, y));
+        actionManager.do(new PasteNodesAction(graph, text, pasteConnected, false, x, y));
     });
 };
 
@@ -256,7 +256,7 @@ GraphView.prototype.duplicateSelectedNodes = function(pasteConnected)
     if (!isEmpty(this.selectedNodes))
     {
         pasteOffset = point(0, 0);
-        actionManager.do(new PasteNodesAction(this.graph, uiCopyNodes(this.graph, this.selectedNodes.map(n => n.id)), pasteConnected, true));
+        actionManager.do(new PasteNodesAction(graph, uiCopyNodes(graph, this.selectedNodes.map(n => n.id)), pasteConnected, true));
     }
 };
 
@@ -268,7 +268,7 @@ GraphView.prototype.deleteSelectedNodes = function(cut = false)
 
     if (!isEmpty(nodeIds))
     {
-        actionManager.do(new DeleteNodesAction(this.graph, nodeIds, cut));
+        actionManager.do(new DeleteNodesAction(graph, nodeIds, cut));
         this._selected = [];
     }
 };
@@ -281,7 +281,7 @@ GraphView.prototype.removeSelectedNodes = function()
 
     if (!isEmpty(nodeIds))
     {
-        actionManager.do(new RemoveNodesAction(this.graph, nodeIds));
+        actionManager.do(new RemoveNodesAction(graph, nodeIds));
         this._selected = [];
     }
 };
@@ -314,7 +314,7 @@ GraphView.prototype.getTopNodeIndex = function()
 {
     let max = 0;
     
-    for (const node of this.graph.nodes)
+    for (const node of graph.nodes)
         max = Math.max(max, node.div.style.zIndex);
 
     return max;

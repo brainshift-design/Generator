@@ -145,8 +145,8 @@ class Menu
 
     show(srcDiv, subMenu, right = false)
     {
-        if (currentView._soloNode);
-            currentView.unsoloNode();
+        if (graphView._soloNode);
+            graphView.unsoloNode();
 
 
         this.initMenu();
@@ -179,7 +179,7 @@ class Menu
             right
             ? (this.showOnLeft ? srcRect.x - this.div.offsetWidth : srcRect.x + srcRect.width)
             : srcRect.x + srcRect.width/2 - this.div.offsetWidth/2),
-            currentView.div.offsetWidth - this.div.offsetWidth - margin);
+            graphView.div.offsetWidth - this.div.offsetWidth - margin);
 
 
         const dy = subMenu ? 0 : 4;
@@ -209,8 +209,8 @@ class Menu
 
     showAt(x, y, subMenu, hidePrev = true)
     {
-        if (currentView._soloNode);
-            currentView.unsoloNode();
+        if (graphView._soloNode);
+            graphView.unsoloNode();
 
 
         if (hidePrev)
@@ -231,7 +231,7 @@ class Menu
         const dy     = subMenu ? 0 : 4;
         const _dy    = subMenu ? 4 : 0;
 
-        let   left   = Math.min(Math.max(margin, x), currentView.div.offsetWidth - this.div.offsetWidth - margin) - 6;
+        let   left   = Math.min(Math.max(margin, x), graphView.div.offsetWidth - this.div.offsetWidth - margin) - 6;
         let   top    = y - dy;
 
 
@@ -242,9 +242,9 @@ class Menu
                 height += item.separator ? 17 : 25;
 
 
-        const graphHeight = currentView.div.offsetHeight - menuBarHeight;
+        const graphHeight = graphView.div.offsetHeight - menuBarHeight;
 
-        if (top + height > currentView.div.offsetHeight-8)
+        if (top + height > graphView.div.offsetHeight-8)
         {
             height = Math.min(height, graphHeight - 16);
             top    = menuBarHeight + Math.max(8, graphHeight - height);

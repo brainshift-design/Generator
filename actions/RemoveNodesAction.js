@@ -15,16 +15,15 @@ extends Action
     
 
 
-    constructor(graph, nodeIds)
+    constructor(nodeIds)
     {
         super(
-            graph,
             REMOVE_ACTION,
             'REMOVE ' + nodeIds.length + ' ' + countString('node', nodeIds.length));
 
         this.nodeIds         = [...nodeIds];
-        this.nodes           = nodeIds.map(id => this.graph.nodeFromId(id));
-        this.prevSelectedIds = this.graph.view.selectedNodes.map(n => n.id);
+        this.nodes           = nodeIds.map(id => graph.nodeFromId(id));
+        this.prevSelectedIds = graphView.selectedNodes.map(n => n.id);
     }
 
 
@@ -44,7 +43,7 @@ extends Action
 
         removeNodesAction_makeNewConnections(this);
 
-        uiSaveNodes(this.graph, this.newActiveNodeIds);
+        uiSaveNodes(graph, this.newActiveNodeIds);
     }
 
 
@@ -56,7 +55,7 @@ extends Action
         this.deactivateNewActiveNodes();
         deleteNodesAction_activateOldActiveNodes(this, updateNodes);
 
-        uiSaveNodes(this.graph, [...this.nodeIds, ...this.newActiveNodeIds]);
+        uiSaveNodes(graph, [...this.nodeIds, ...this.newActiveNodeIds]);
     }
 
 
@@ -76,7 +75,7 @@ extends Action
 
     prepareNewReconnections()
     {
-        const clusters = findConnectedClusters(this.nodeIds.map(n => this.graph.nodeFromId(n)));
+        const clusters = findConnectedClusters(this.nodeIds.map(n => graph.nodeFromId(n)));
 
         
         for (const cluster of clusters)

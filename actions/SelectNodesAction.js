@@ -6,10 +6,9 @@ extends Action
 
 
 
-    constructor(graph, selectedIds, prevSelectedIds)
+    constructor(selectedIds, prevSelectedIds)
     {
         super(
-            graph,
             SELECT_ACTION,
               'SELECT ' + selectedIds.length 
             + ' ' + countString('node', selectedIds.length));
@@ -25,25 +24,25 @@ extends Action
     do(updateNodes)
     {
         // this happens in the UI
-        updateComments(this.graph, this.prevSelectedIds);
+        updateComments(graph, this.prevSelectedIds);
     }
 
 
 
     undo(updateNodes)
     {
-        this.graph.view.selectByIds(this.prevSelectedIds);
-        updateComments(this.graph, this.selectedIds);
+        graphView.selectByIds(this.prevSelectedIds);
+        updateComments(graph, this.selectedIds);
     }
 
 
 
     redo(updateNodes)
     {
-        this.graph.view.selectByIds(this.selectedIds);
+        graphView.selectByIds(this.selectedIds);
 
-        updateComments(this.graph, this.selectedIds);
-        updateComments(this.graph, this.prevSelectedIds);
+        updateComments(graph, this.selectedIds);
+        updateComments(graph, this.prevSelectedIds);
     }
 }
 

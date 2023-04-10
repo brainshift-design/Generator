@@ -1,9 +1,9 @@
 class EmptyAction
 extends Action
 {
-    constructor(graph)
+    constructor()
     {
-        super(graph, EMPTY_ACTION, 'DO NOTHING');
+        super(EMPTY_ACTION, 'DO NOTHING');
 
         this.affectsConnections = false;
     }

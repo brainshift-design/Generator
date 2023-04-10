@@ -262,3 +262,26 @@ function clientPos(e)
 {
     return point(e.clientX, e.clientY);
 }
+
+
+
+function elementHasSelectedText(element)
+{
+    const selection = window.getSelection();
+
+    if (selection.rangeCount > 0) 
+    {
+        const range = selection.getRangeAt(0);
+        
+        if (   range.commonAncestorContainer === element
+            || element.contains(range.commonAncestorContainer))
+        {
+            const selectedText = range.toString().trim();
+
+            if (selectedText.length > 0)
+                return true;
+        }
+    }
+
+    return false; 
+}

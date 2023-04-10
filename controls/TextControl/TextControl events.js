@@ -12,7 +12,7 @@ TextControl.prototype.initEvents = function()
     {
         if (  !this.pointerEvents
             || panMode
-            || this.view.wheelTimer)
+            || graphView.wheelTimer)
             return;
 
 

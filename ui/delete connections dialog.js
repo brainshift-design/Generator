@@ -96,7 +96,7 @@ function deleteConnectionsToNodes(str)
     
     const nodeIds = str.split(' ').filter(i => i);
 
-    uiRemoveConnsToNodes(mainGraph, nodeIds);
+    uiRemoveConnsToNodes(graph, nodeIds);
 
     if (!isEmpty(nodeIds))
         hideDeleteConnectionsDialog();
