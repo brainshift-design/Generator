@@ -269,8 +269,8 @@ extends OpColorBase
         colors.output     = rgb_a(colors.text, 0.2);
 
         colors.wire = 
-            !rgbaIsNaN(colors.back)
-            ? colors.back
+            !rgbaIsNaN(colors.stripeBack)
+            ? colors.stripeBack
             : rgbFromType(ANY_TYPE, false);
 
         return colors;
