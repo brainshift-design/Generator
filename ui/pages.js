@@ -89,6 +89,11 @@ function updatePage(page)
 
 function updatePages()
 {
+    pagesBar.style.display = 
+        settings.showPages
+        ? 'flex'
+        : 'none';
+        
     for (const page of graphPages)
         updatePage(page);
 }

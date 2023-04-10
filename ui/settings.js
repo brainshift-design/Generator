@@ -5,6 +5,7 @@ const settings =
         
     enableZoomedOutParams:         false,
     minZoomForParams:              0.35,
+    showPages:                     false,
     showAllColorSpaces:            false,
     showBoolValues:                true,
     showOperationResults:          true,
@@ -50,6 +51,7 @@ function updateSetting(settingName, value)
                 
         case 'enableZoomedOutParams':         settings.enableZoomedOutParams         = value;  break;
         case 'minZoomForParams':              settings.minZoomForParams              = value;  break;
+        case 'showPages':                     settings.showPages                     = value;  break;
         case 'showAllColorSpaces':            settings.showAllColorSpaces            = value;  break;
         case 'showBoolValues':                settings.showBoolValues                = value;  break;
         case 'showOperationResults':          settings.showOperationResults          = value;  break;
@@ -94,6 +96,7 @@ function updateSettingAndMenu(settingName, valid, value, save = true)
         case 'debugMode':                     updateSettingAndMenu_(valid, settingName, value                                       ); break;
               
         case 'enableZoomedOutParams':         updateSettingAndMenu_(valid, settingName, value, menuItemEnableZoomedOutParams        ); break;
+        case 'showPages':                     updateSettingAndMenu_(valid, settingName, value, menuItemShowPages                    ); break;
         case 'showAllColorSpaces':            updateSettingAndMenu_(valid, settingName, value, menuItemShowAllColorSpaces           ); break;
         case 'showBoolValues':                updateSettingAndMenu_(valid, settingName, value, menuItemShowBoolValues               ); break;
         case 'showOperationResults':          updateSettingAndMenu_(valid, settingName, value, menuItemShowOperationResults         ); break;
@@ -151,6 +154,7 @@ function updateSettingsMenus()
     menuItemDebug                        .setVisible(settings.debugMode                    );
                 
     menuItemEnableZoomedOutParams        .setChecked(settings.enableZoomedOutParams        );
+    menuItemShowPages                    .setChecked(settings.showPages                    );
     menuItemShowAllColorSpaces           .setChecked(settings.showAllColorSpaces           );
     menuItemShowBoolValues               .setChecked(settings.showBoolValues               );
     menuItemShowOperationResults         .setChecked(settings.showOperationResults         );
@@ -183,6 +187,14 @@ function updateSettingsMenus()
                 
     menuItemLogRawRequests               .setChecked(settings.logRawRequests               );
     menuItemLogRawValues                 .setChecked(settings.logRawValues                 );
+}
+
+
+
+function updateMenuItemShowPages()
+{
+    uiSetPageData('showPages', boolToString(settings.showPages));
+    updatePages();
 }
 
 
@@ -290,6 +302,7 @@ function loadLocalSettings()
     uiGetLocalData('enableZoomedOutParams'        );
     uiGetLocalData('minZoomForParams'             );
     uiGetLocalData('showBoolValues'               );
+    uiGetLocalData('showPages'                    );
     uiGetLocalData('showOperationResults'         );
     uiGetLocalData('showClearUndoWarning'         );
     uiGetLocalData('showDebugMenu'                );

@@ -42,6 +42,7 @@ function uiReturnFigGetLocalData(msg)
         case 'debugMode':
 
         case 'enableZoomedOutParams':
+        case 'showPages':
         case 'showBoolValues':
         case 'showOperationResults':
         case 'showClearUndoWarning':

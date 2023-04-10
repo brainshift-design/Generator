@@ -17017,6 +17017,7 @@ const settings =
         
     enableZoomedOutParams:         false,
     minZoomForParams:              0.35,
+    showPages:                     false,
     showAllColorSpaces:            false,
     showBoolValues:                true,
     showOperationResults:          true,
@@ -17062,6 +17063,7 @@ function updateSetting(settingName, value)
                 
         case 'enableZoomedOutParams':         settings.enableZoomedOutParams         = value;  break;
         case 'minZoomForParams':              settings.minZoomForParams              = value;  break;
+        case 'showPages':                     settings.showPages                     = value;  break;
         case 'showAllColorSpaces':            settings.showAllColorSpaces            = value;  break;
         case 'showBoolValues':                settings.showBoolValues                = value;  break;
         case 'showOperationResults':          settings.showOperationResults          = value;  break;
@@ -17106,6 +17108,7 @@ function updateSettingAndMenu(settingName, valid, value, save = true)
         case 'debugMode':                     updateSettingAndMenu_(valid, settingName, value                                       ); break;
               
         case 'enableZoomedOutParams':         updateSettingAndMenu_(valid, settingName, value, menuItemEnableZoomedOutParams        ); break;
+        case 'showPages':                     updateSettingAndMenu_(valid, settingName, value, menuItemShowPages                    ); break;
         case 'showAllColorSpaces':            updateSettingAndMenu_(valid, settingName, value, menuItemShowAllColorSpaces           ); break;
         case 'showBoolValues':                updateSettingAndMenu_(valid, settingName, value, menuItemShowBoolValues               ); break;
         case 'showOperationResults':          updateSettingAndMenu_(valid, settingName, value, menuItemShowOperationResults         ); break;
@@ -17163,6 +17166,7 @@ function updateSettingsMenus()
     menuItemDebug                        .setVisible(settings.debugMode                    );
                 
     menuItemEnableZoomedOutParams        .setChecked(settings.enableZoomedOutParams        );
+    menuItemShowPages                    .setChecked(settings.showPages                    );
     menuItemShowAllColorSpaces           .setChecked(settings.showAllColorSpaces           );
     menuItemShowBoolValues               .setChecked(settings.showBoolValues               );
     menuItemShowOperationResults         .setChecked(settings.showOperationResults         );
@@ -17195,6 +17199,14 @@ function updateSettingsMenus()
                 
     menuItemLogRawRequests               .setChecked(settings.logRawRequests               );
     menuItemLogRawValues                 .setChecked(settings.logRawValues                 );
+}
+
+
+
+function updateMenuItemShowPages()
+{
+    uiSetPageData('showPages', boolToString(settings.showPages));
+    updatePages();
 }
 
 
@@ -17302,6 +17314,7 @@ function loadLocalSettings()
     uiGetLocalData('enableZoomedOutParams'        );
     uiGetLocalData('minZoomForParams'             );
     uiGetLocalData('showBoolValues'               );
+    uiGetLocalData('showPages'                    );
     uiGetLocalData('showOperationResults'         );
     uiGetLocalData('showClearUndoWarning'         );
     uiGetLocalData('showDebugMenu'                );
@@ -39215,6 +39228,7 @@ const settings =
         
     enableZoomedOutParams:         false,
     minZoomForParams:              0.35,
+    showPages:                     false,
     showAllColorSpaces:            false,
     showBoolValues:                true,
     showOperationResults:          true,
@@ -39260,6 +39274,7 @@ function updateSetting(settingName, value)
                 
         case 'enableZoomedOutParams':         settings.enableZoomedOutParams         = value;  break;
         case 'minZoomForParams':              settings.minZoomForParams              = value;  break;
+        case 'showPages':                     settings.showPages                     = value;  break;
         case 'showAllColorSpaces':            settings.showAllColorSpaces            = value;  break;
         case 'showBoolValues':                settings.showBoolValues                = value;  break;
         case 'showOperationResults':          settings.showOperationResults          = value;  break;
@@ -39304,6 +39319,7 @@ function updateSettingAndMenu(settingName, valid, value, save = true)
         case 'debugMode':                     updateSettingAndMenu_(valid, settingName, value                                       ); break;
               
         case 'enableZoomedOutParams':         updateSettingAndMenu_(valid, settingName, value, menuItemEnableZoomedOutParams        ); break;
+        case 'showPages':                     updateSettingAndMenu_(valid, settingName, value, menuItemShowPages                    ); break;
         case 'showAllColorSpaces':            updateSettingAndMenu_(valid, settingName, value, menuItemShowAllColorSpaces           ); break;
         case 'showBoolValues':                updateSettingAndMenu_(valid, settingName, value, menuItemShowBoolValues               ); break;
         case 'showOperationResults':          updateSettingAndMenu_(valid, settingName, value, menuItemShowOperationResults         ); break;
@@ -39361,6 +39377,7 @@ function updateSettingsMenus()
     menuItemDebug                        .setVisible(settings.debugMode                    );
                 
     menuItemEnableZoomedOutParams        .setChecked(settings.enableZoomedOutParams        );
+    menuItemShowPages                    .setChecked(settings.showPages                    );
     menuItemShowAllColorSpaces           .setChecked(settings.showAllColorSpaces           );
     menuItemShowBoolValues               .setChecked(settings.showBoolValues               );
     menuItemShowOperationResults         .setChecked(settings.showOperationResults         );
@@ -39393,6 +39410,14 @@ function updateSettingsMenus()
                 
     menuItemLogRawRequests               .setChecked(settings.logRawRequests               );
     menuItemLogRawValues                 .setChecked(settings.logRawValues                 );
+}
+
+
+
+function updateMenuItemShowPages()
+{
+    uiSetPageData('showPages', boolToString(settings.showPages));
+    updatePages();
 }
 
 
@@ -39500,6 +39525,7 @@ function loadLocalSettings()
     uiGetLocalData('enableZoomedOutParams'        );
     uiGetLocalData('minZoomForParams'             );
     uiGetLocalData('showBoolValues'               );
+    uiGetLocalData('showPages'                    );
     uiGetLocalData('showOperationResults'         );
     uiGetLocalData('showClearUndoWarning'         );
     uiGetLocalData('showDebugMenu'                );
@@ -43098,6 +43124,7 @@ const iconGenerator         = '<svg width="20" height="10" viewBox="0 0 20 10" f
 
 const iconPage              = '<svg width="14" height="14" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg"><rect width="14" height="14" rx="2.5" fill="#0C8CE9"/><path d="M7.4745 3.79841C7.83778 3.52553 8.2647 3.34457 8.78006 3.32152C8.92706 2.6837 9.49845 2.20813 10.1809 2.20813C10.9749 2.20813 11.6185 2.85175 11.6185 3.64569C11.6185 4.43963 10.9749 5.08325 10.1809 5.08325C9.61362 5.08325 9.12307 4.75465 8.88923 4.2774C8.54486 4.27815 8.28313 4.38963 8.0501 4.56468C7.73976 4.79779 7.47714 5.14458 7.16592 5.57207L7.10258 5.65929C6.7792 6.1051 6.39914 6.62905 5.86696 6.99999C6.39914 7.37093 6.7792 7.89489 7.10258 8.3407L7.16592 8.42792C7.47714 8.85541 7.73976 9.2022 8.0501 9.43531C8.28313 9.61036 8.54486 9.72184 8.88923 9.7226C9.12307 9.24535 9.61362 8.91674 10.1809 8.91674C10.9749 8.91674 11.6185 9.56035 11.6185 10.3543C11.6185 11.1482 10.9749 11.7919 10.1809 11.7919C9.49845 11.7919 8.92706 11.3163 8.78006 10.6785C8.2647 10.6554 7.83778 10.4745 7.4745 10.2016C7.03044 9.86801 6.68787 9.39958 6.39113 8.99198C5.871 8.27753 5.4567 7.71987 4.80484 7.54038C4.59126 8.06653 4.07511 8.43755 3.47231 8.43755C2.67837 8.43755 2.03475 7.79393 2.03475 6.99999C2.03475 6.20605 2.67837 5.56243 3.47231 5.56243C4.07512 5.56243 4.59127 5.93346 4.80485 6.45961C5.4567 6.28012 5.871 5.72245 6.39113 5.00801C6.68787 4.6004 7.03044 4.13197 7.4745 3.79841Z" fill="white"/></svg>';
 const iconPageClose         = '<svg width="9" height="10" viewBox="0 0 9 10" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="1.23505" y="9.01202" width="1.6925" height="9.641" transform="rotate(-135 1.23505 9.01202)" fill="white"/><rect x="8.05226" y="7.81525" width="1.6925" height="9.641" transform="rotate(135 8.05226 7.81525)" fill="white"/></svg>';
+const iconAddPage           = '<svg width="10" height="10" viewBox="0 0 10 10" fill="none" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" clip-rule="evenodd" d="M6 0.5H4V4L0.5 4V6H4V9.5H6V6H9.5V4L6 4V0.5Z" fill="white"/></svg>';
 
 const iconList              = '<svg width="12" height="9" viewBox="0 0 12 9" fill="none" xmlns="http://www.w3.org/2000/svg"><rect width="9" height="1" fill="white"/><rect y="4" width="9" height="1" fill="white"/><rect y="8" width="9" height="1" fill="white"/></svg>';
 const iconItems             = '<svg width="17" height="11" viewBox="-1 0 17 11" fill="none" xmlns="http://www.w3.org/2000/svg"><rect width="9" height="1" transform="matrix(-1 0 0 1 9 1)" fill="white"/><rect width="9" height="1" transform="matrix(-1 0 0 1 9 5)" fill="white"/><rect width="9" height="1" transform="matrix(-1 0 0 1 9 9)" fill="white"/><circle r="1.5" transform="matrix(-1 0 0 1 13.5 9.5)" fill="white"/><circle r="1.5" transform="matrix(-1 0 0 1 13.5 5.5)" fill="white"/><circle r="1.5" transform="matrix(-1 0 0 1 13.5 1.5)" fill="white"/></svg>';
@@ -44224,6 +44251,7 @@ var menuItemShowTooltipColorBlindness;
 
 var menuItemEnableZoomedOutParams;
 var menuItemMinZoomForParams;
+var menuItemShowPages;
 var menuItemShowAllColorSpaces;
 var menuItemShowBoolValues;
 var menuItemShowOperationResults;
@@ -44335,10 +44363,11 @@ function initGeneratorMenus()
 
     menuMainPreferences = new Menu('Preferences', false);
     menuMainPreferences.addItems([
-        menuItemShowAllColorSpaces    = new MenuItem('Show all color spaces',        {checkCallback: () => settings.showAllColorSpaces,    callback: () => { updateSettingAndMenu('showAllColorSpaces',    true, !settings.showAllColorSpaces);    updateMenuItemShowAllColorSpaces();   }}),
+        menuItemShowPages             = new MenuItem('Show pages',                  {checkCallback: () => settings.showAllColorSpaces,      callback: () => { updateSettingAndMenu('showPages',            true, !settings.showPages);             updateMenuItemShowPages();            }}),
                                         new MenuItem('',                             {separator: true}),    
-        menuItemShowOperationResults  = new MenuItem('Show operation results',       {checkCallback: () => settings.showOperationResults,  callback: () => { updateSettingAndMenu('showOperationResults',  true, !settings.showOperationResults);  updateMenuItemShowOperationResults(); }}),
-        menuItemShowBoolValues        = new MenuItem('Show boolean values as   ✓ ✗', {checkCallback: () => settings.showBoolValues,        callback: () => { updateSettingAndMenu('showBoolValues',        true, !settings.showBoolValues);        updateMenuItemShowBoolValues();       }}),
+        menuItemShowAllColorSpaces    = new MenuItem('Show all color spaces',        {checkCallback: () => settings.showAllColorSpaces,     callback: () => { updateSettingAndMenu('showAllColorSpaces',   true, !settings.showAllColorSpaces);    updateMenuItemShowAllColorSpaces();   }}),
+        menuItemShowOperationResults  = new MenuItem('Show operation results',       {checkCallback: () => settings.showOperationResults,   callback: () => { updateSettingAndMenu('showOperationResults', true, !settings.showOperationResults);  updateMenuItemShowOperationResults(); }}),
+        menuItemShowBoolValues        = new MenuItem('Show boolean values as   ✓ ✗', {checkCallback: () => settings.showBoolValues,        callback: () => { updateSettingAndMenu('showBoolValues',       true, !settings.showBoolValues);        updateMenuItemShowBoolValues();       }}),
                                         new MenuItem('',                             {separator: true}),    
         menuItemShowTooltips          = new MenuItem('Show tooltips',                {childMenu: menuShowTooltips}),
         menuItemShowClearUndoWarning  = new MenuItem('Show clear undo warning',      {checkCallback: () => settings.showClearUndoWarning,  callback: () => { updateSettingAndMenu('showClearUndoWarning',  true, !settings.showClearUndoWarning);                                        }}),
@@ -68838,6 +68867,11 @@ function updatePage(page)
 
 function updatePages()
 {
+    pagesBar.style.display = 
+        settings.showPages
+        ? 'flex'
+        : 'none';
+        
     for (const page of graphPages)
         updatePage(page);
 }
@@ -69319,6 +69353,7 @@ function uiReturnFigGetLocalData(msg)
         case 'debugMode':
 
         case 'enableZoomedOutParams':
+        case 'showPages':
         case 'showBoolValues':
         case 'showOperationResults':
         case 'showClearUndoWarning':
