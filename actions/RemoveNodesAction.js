@@ -128,8 +128,8 @@ function removeNodesAction_makeNewConnections(act)
         const _conn = act.newConnectionData[i];
         
         const conn = uiVariableConnect(
-             act.graph.nodeFromId(_conn.outputNodeId), _conn.outputId, 
-             act.graph.nodeFromId(_conn. inputNodeId), _conn. inputId,
+             graph.nodeFromId(_conn.outputNodeId), _conn.outputId, 
+             graph.nodeFromId(_conn. inputNodeId), _conn. inputId,
             _conn.outputOrder);
 
         uiSaveConn(conn);
@@ -137,6 +137,6 @@ function removeNodesAction_makeNewConnections(act)
 
              if (act.clusterActiveLeft [i]) pushUpdate(act, [act.clusterActiveLeft [i]]);
         else if (act.clusterActiveRight[i]) pushUpdate(act, [act.clusterActiveRight[i]]);
-        else                                uiMakeNodeActive(act.graph.nodeFromId(_conn.inputNodeId));
+        else                                uiMakeNodeActive(graph.nodeFromId(_conn.inputNodeId));
     }
 }

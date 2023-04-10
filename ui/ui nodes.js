@@ -349,7 +349,7 @@ function uiMakeNodesActive(nodes)
     {
         if (node.active) continue;
         
-        pushUnique(node.graphView.activeNodes, node);
+        pushUnique(graphView.activeNodes, node);
         node._active = true;
     }
 }
@@ -754,12 +754,12 @@ function uiUpdateValuesAndObjects(requestId, actionId, updateNodeId, updateParam
     {
         if (graphView.loadingNodes)
         {
-            for (const node of graph.nodes.filter(n => n.type == NODE_GROUP))
-            {
-                node.updateProxyControls();
-                node.updateProxyWires();
-                node.updateMeasureData();
-            }
+            // for (const node of graph.nodes.filter(n => n.type == GROUP_NODE))
+            // {
+            //     node.updateProxyControls();
+            //     node.updateProxyWires();
+            //     node.updateMeasureData();
+            // }
 
             uiSaveNodes(graph.nodes.map(n => n.id));
         }

@@ -471,15 +471,11 @@ function initGeneratorMenus()
 
         const canDisable = !graphView.selectedNodes.find(n => !n.canDisable);
 
-        const group = 
-               graphView.selectedNodes.length == 1 
-            && graphView.selectedNodes[0].type == NODE_GROUP;   
-    
 
         updateElementDisplay(menuItemNodeSep1         .div, single);
       //updateMenuItemDisplay(menuItemNodeRename       .div, single);
-        updateElementDisplay(menuItemNodeEdit         .div, single && group);
-        updateElementDisplay(menuItemNodeSep2         .div, single && group);
+        updateElementDisplay(menuItemNodeEdit         .div, single);
+        updateElementDisplay(menuItemNodeSep2         .div, single);
         updateElementDisplay(menuItemNodeSelect       .div, single);
         updateElementDisplay(menuItemNodeSep3         .div, canDisable);
         updateElementDisplay(menuItemNodeEnableDisable.div, canDisable);

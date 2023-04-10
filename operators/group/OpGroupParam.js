@@ -12,14 +12,16 @@ extends OperatorBase
         //this.inert = true;
 
         
-        //this.addInput(new Input(LIST_TYPES));
-        this.addParam(this.paramCount = new NumberParam('paramCount', 'parameters', true, true, false, 1, 0, 100, 0));
+        this.addInput (new Input(ALL_TYPES));
+        this.addOutput(new Output([ANY_TYPE]));
+
+        //this.addParam(this.paramCount = new NumberParam('paramCount', 'parameters', true, true, false, 1, 0, 100, 0));
 
 
         // this.alwaysLoadParams = true;
         // this.alwaysSaveParams = true;
 
-        this.paramCount.affectsHeader = false;
+        //this.paramCount.affectsHeader = false;
     }
 
 

@@ -123,9 +123,9 @@ function createInsertNodeAction_savePrevConnections(act)
     if (act.prevSelectedIds.length == 0)
         return;
         
-    act.oldInputActiveNodeId = idFromNode(act.graph.getActiveFromNodeId(act.prevSelectedIds[0]));
+    act.oldInputActiveNodeId = idFromNode(graph.getActiveFromNodeId(act.prevSelectedIds[0]));
 
-    const selNode = act.graph.nodeFromId(act.prevSelectedIds[0]);
+    const selNode = graph.nodeFromId(act.prevSelectedIds[0]);
     const output  = selNode.outputs[0];
 
     for (const input of output.connectedInputs)

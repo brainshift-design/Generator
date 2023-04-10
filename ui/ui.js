@@ -1,13 +1,21 @@
-const defNodeWidth    = 114;
-const resizeEdgeWidth = 8;
+const defNodeWidth          = 114;
+const resizeEdgeWidth       = 8;
 
 
-var overNumberControl     = null;
-var overColorControl      = null;
+var   overNumberControl     = null;
+var   overColorControl      = null;
+  
+var   numberControlChanging = null;
+  
+var   overNumberControlCtrl = null;
 
-var numberControlChanging = null;
 
-var overNumberControlCtrl = null;
+
+const graph                 = new Graph();
+var   graphView             = new GraphView(_graphView, graph);
+         
+var   viewportZoom          = 1;
+var   viewportRect          = new Rect();
 
 
 

@@ -213,7 +213,7 @@ Operator.prototype.createHeader = function()
 
             graphView.updateScroll(x, w, h, bounds, yOffset);
 
-            if (this.type == NODE_GROUP)
+            if (this.type == GROUP_NODE)
                 this.updateProxyWires();
         }
         else if (   tempConn

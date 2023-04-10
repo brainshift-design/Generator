@@ -3,7 +3,6 @@ NumberControl.prototype.initEvents = function()
     this.div.addEventListener('pointerenter', e =>
     {
         const param = this.param;
-        const view  = param.node.graphView;
         
 
         if (this.delayUse > 0)
@@ -73,7 +72,6 @@ NumberControl.prototype.initEvents = function()
     this.div.addEventListener('pointerdown', e =>
     {
         const param = this.param;
-        const view  = param.node.graphView;
 
 
         if (e.button == 0)
@@ -199,7 +197,6 @@ NumberControl.prototype.initEvents = function()
     this.div.addEventListener('pointermove', e =>
     {
         const param = this.param;
-        const view  = param.node.graphView;
 
 
         if (!this.canReact(e))
@@ -353,7 +350,6 @@ NumberControl.prototype.initEvents = function()
     this.div.addEventListener('pointerleave', e =>
     {
         const param = this.param;
-        const view  = param.node.graphView;
 
 
         if (!this.canReact(e))
@@ -431,7 +427,6 @@ NumberControl.prototype.initEvents = function()
     this.div.addEventListener('pointerup', e =>
     {
         const param = this.param;
-        const view  = param.node.graphView;
 
 
         if (!this.canReact(e))
@@ -546,7 +541,6 @@ NumberControl.prototype.initEvents = function()
     this.div.addEventListener('wheel', e =>
     {
         const param = this.param;
-        const view  = param.node.graphView;
 
 
         if (!this.canReact(e))
@@ -636,7 +630,7 @@ NumberControl.prototype.initEvents = function()
 
     this.div.addEventListener('focus', () =>
     {
-        if (   !this.param.node.graphView.spaceDown
+        if (   !graphView.spaceDown
             && !panMode
             && !this.buttonDown1
             &&  this.pointerEvents)

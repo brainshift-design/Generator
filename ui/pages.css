@@ -1,0 +1,53 @@
+#pagesBar
+{
+    display:          flex;
+    height:           36px;
+    background-color: #222;
+    padding:          0;
+    cursor:           default;
+}
+
+
+.page
+{
+    font-family:  Inter;
+    font-weight:  600;
+    font-size:    11px;
+    display:      flex;
+    width:        178px;
+    height:       calc(100% - 11px);
+    outline:      1px solid var(--figma-color-bg-hover);
+    padding-top:  11px;
+}
+
+
+.page:hover
+{
+    background: #2c2c2c;
+}
+
+
+.pageIcon
+{
+    width:        14px;
+    height:       14px;
+    margin-left:  13px;
+    margin-right: 9px;
+    /* box-shadow:   0 0 0 1px red inset; */
+}
+
+
+.pageName
+{
+    height:     fit-content;
+    /* box-shadow: 0 0 0 1px orange inset; */
+
+}
+
+
+.pageClose
+{
+    width:      8px;
+    height:     8px;
+    /* box-shadow: 0 0 0 1px green inset; */
+}

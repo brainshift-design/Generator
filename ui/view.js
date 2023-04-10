@@ -1,8 +1,3 @@
-const graph        = new Graph();
-var   graphView    = new GraphView(_graphView, graph);
-   
-var   viewportZoom = 1;
-var   viewportRect = new Rect();
 
 
 

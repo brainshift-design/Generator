@@ -142,5 +142,5 @@ extends Action
 function DisconnectAction_activateNewNodes(act)
 {
     for (const id of act.newActiveNodeIds)
-        uiMakeNodeActive(act.graph.nodeFromId(id));
+        uiMakeNodeActive(graph.nodeFromId(id));
 }

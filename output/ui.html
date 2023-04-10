@@ -1680,6 +1680,61 @@ div
 
 
 
+#pagesBar
+{
+    display:          flex;
+    height:           36px;
+    background-color: #222;
+    padding:          0;
+    cursor:           default;
+}
+
+
+.page
+{
+    font-family:  Inter;
+    font-weight:  600;
+    font-size:    11px;
+    display:      flex;
+    width:        178px;
+    height:       calc(100% - 11px);
+    outline:      1px solid var(--figma-color-bg-hover);
+    padding-top:  11px;
+}
+
+
+.page:hover
+{
+    background: #2c2c2c;
+}
+
+
+.pageIcon
+{
+    width:        14px;
+    height:       14px;
+    margin-left:  13px;
+    margin-right: 9px;
+    /* box-shadow:   0 0 0 1px red inset; */
+}
+
+
+.pageName
+{
+    height:     fit-content;
+    /* box-shadow: 0 0 0 1px orange inset; */
+
+}
+
+
+.pageClose
+{
+    width:      8px;
+    height:     8px;
+    /* box-shadow: 0 0 0 1px green inset; */
+}
+
+
 .tooltipPre /* to avoid FOUC (flash of unstyled content) */
 {
     font-family: Inter;
@@ -3584,6 +3639,7 @@ a
 </style>
 
 
+<div id='pagesBar'></div>
 <div id='menuBar'></div>
 
 
@@ -16741,7 +16797,7 @@ extends GOperator
 
     constructor(nodeId, options)
     {
-        super(NODE_GROUP, nodeId, options);
+        super(GROUP_NODE, nodeId, options);
     }
 
 
@@ -38939,7 +38995,7 @@ extends GOperator
 
     constructor(nodeId, options)
     {
-        super(NODE_GROUP, nodeId, options);
+        super(GROUP_NODE, nodeId, options);
     }
 
 
@@ -40761,7 +40817,6 @@ NumberControl.prototype.initEvents = function()
     this.div.addEventListener('pointerenter', e =>
     {
         const param = this.param;
-        const view  = param.node.graphView;
         
 
         if (this.delayUse > 0)
@@ -40831,7 +40886,6 @@ NumberControl.prototype.initEvents = function()
     this.div.addEventListener('pointerdown', e =>
     {
         const param = this.param;
-        const view  = param.node.graphView;
 
 
         if (e.button == 0)
@@ -40957,7 +41011,6 @@ NumberControl.prototype.initEvents = function()
     this.div.addEventListener('pointermove', e =>
     {
         const param = this.param;
-        const view  = param.node.graphView;
 
 
         if (!this.canReact(e))
@@ -41111,7 +41164,6 @@ NumberControl.prototype.initEvents = function()
     this.div.addEventListener('pointerleave', e =>
     {
         const param = this.param;
-        const view  = param.node.graphView;
 
 
         if (!this.canReact(e))
@@ -41189,7 +41241,6 @@ NumberControl.prototype.initEvents = function()
     this.div.addEventListener('pointerup', e =>
     {
         const param = this.param;
-        const view  = param.node.graphView;
 
 
         if (!this.canReact(e))
@@ -41304,7 +41355,6 @@ NumberControl.prototype.initEvents = function()
     this.div.addEventListener('wheel', e =>
     {
         const param = this.param;
-        const view  = param.node.graphView;
 
 
         if (!this.canReact(e))
@@ -41394,7 +41444,7 @@ NumberControl.prototype.initEvents = function()
 
     this.div.addEventListener('focus', () =>
     {
-        if (   !this.param.node.graphView.spaceDown
+        if (   !graphView.spaceDown
             && !panMode
             && !this.buttonDown1
             &&  this.pointerEvents)
@@ -43031,7 +43081,9 @@ ColorControl.prototype.initEvents = function()
 
 
 const iconGenerator         = '<svg width="20" height="10" viewBox="0 0 20 10" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M12.4662 3.05966C12.3952 2.82955 12.2972 2.62358 12.1722 2.44176C12.05 2.2571 11.9023 2.09943 11.729 1.96875C11.5585 1.83807 11.3625 1.74006 11.1409 1.67472C10.9193 1.60653 10.6779 1.57244 10.4165 1.57244C9.94775 1.57244 9.53014 1.69034 9.16366 1.92614C8.79718 2.16193 8.50883 2.50852 8.2986 2.96591C8.09122 3.42045 7.98752 3.97443 7.98752 4.62784C7.98752 5.28693 8.09122 5.84517 8.2986 6.30256C8.50599 6.75994 8.79434 7.10795 9.16366 7.34659C9.53298 7.58239 9.96196 7.70028 10.4506 7.70028C10.8938 7.70028 11.2773 7.61506 11.6012 7.4446C11.9279 7.27415 12.1793 7.03267 12.3554 6.72017C12.5316 6.40483 12.6196 6.03551 12.6196 5.61222L12.9776 5.66761H10.6083V4.43182H14.1495V5.48011C14.1495 6.22727 13.9904 6.87358 13.6722 7.41903C13.354 7.96449 12.9165 8.38494 12.3597 8.6804C11.8029 8.97301 11.1637 9.11932 10.4421 9.11932C9.63809 9.11932 8.93213 8.93892 8.32417 8.57812C7.71906 8.21449 7.24605 7.69886 6.90514 7.03125C6.56707 6.3608 6.39804 5.56534 6.39804 4.64489C6.39804 3.94034 6.49747 3.31108 6.69633 2.7571C6.89804 2.20312 7.17929 1.73295 7.54008 1.34659C7.90088 0.957386 8.32417 0.661932 8.80997 0.460227C9.29576 0.255682 9.82417 0.153409 10.3952 0.153409C10.8781 0.153409 11.3284 0.224432 11.746 0.366477C12.1637 0.505682 12.5344 0.704545 12.8583 0.963068C13.185 1.22159 13.4534 1.52841 13.6637 1.88352C13.8739 2.23864 14.0117 2.63068 14.077 3.05966H12.4662Z" fill="white"/><circle cx="2.5" cy="4.5" r="2" stroke="white"/><circle cx="18" cy="4.9" r="2" fill="white"/></svg>';
- 
+
+const iconPage              = '<svg width="14" height="14" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg"><rect width="14" height="14" rx="2.5" fill="#0C8CE9"/><path d="M7.4745 3.79841C7.83778 3.52553 8.2647 3.34457 8.78006 3.32152C8.92706 2.6837 9.49845 2.20813 10.1809 2.20813C10.9749 2.20813 11.6185 2.85175 11.6185 3.64569C11.6185 4.43963 10.9749 5.08325 10.1809 5.08325C9.61362 5.08325 9.12307 4.75465 8.88923 4.2774C8.54486 4.27815 8.28313 4.38963 8.0501 4.56468C7.73976 4.79779 7.47714 5.14458 7.16592 5.57207L7.10258 5.65929C6.7792 6.1051 6.39914 6.62905 5.86696 6.99999C6.39914 7.37093 6.7792 7.89489 7.10258 8.3407L7.16592 8.42792C7.47714 8.85541 7.73976 9.2022 8.0501 9.43531C8.28313 9.61036 8.54486 9.72184 8.88923 9.7226C9.12307 9.24535 9.61362 8.91674 10.1809 8.91674C10.9749 8.91674 11.6185 9.56035 11.6185 10.3543C11.6185 11.1482 10.9749 11.7919 10.1809 11.7919C9.49845 11.7919 8.92706 11.3163 8.78006 10.6785C8.2647 10.6554 7.83778 10.4745 7.4745 10.2016C7.03044 9.86801 6.68787 9.39958 6.39113 8.99198C5.871 8.27753 5.4567 7.71987 4.80484 7.54038C4.59126 8.06653 4.07511 8.43755 3.47231 8.43755C2.67837 8.43755 2.03475 7.79393 2.03475 6.99999C2.03475 6.20605 2.67837 5.56243 3.47231 5.56243C4.07512 5.56243 4.59127 5.93346 4.80485 6.45961C5.4567 6.28012 5.871 5.72245 6.39113 5.00801C6.68787 4.6004 7.03044 4.13197 7.4745 3.79841Z" fill="white"/></svg>';
+
 const iconList              = '<svg width="12" height="9" viewBox="0 0 12 9" fill="none" xmlns="http://www.w3.org/2000/svg"><rect width="9" height="1" fill="white"/><rect y="4" width="9" height="1" fill="white"/><rect y="8" width="9" height="1" fill="white"/></svg>';
 const iconItems             = '<svg width="17" height="11" viewBox="-1 0 17 11" fill="none" xmlns="http://www.w3.org/2000/svg"><rect width="9" height="1" transform="matrix(-1 0 0 1 9 1)" fill="white"/><rect width="9" height="1" transform="matrix(-1 0 0 1 9 5)" fill="white"/><rect width="9" height="1" transform="matrix(-1 0 0 1 9 9)" fill="white"/><circle r="1.5" transform="matrix(-1 0 0 1 13.5 9.5)" fill="white"/><circle r="1.5" transform="matrix(-1 0 0 1 13.5 5.5)" fill="white"/><circle r="1.5" transform="matrix(-1 0 0 1 13.5 1.5)" fill="white"/></svg>';
 const iconSelect            = '<svg width="15" height="9" viewBox="0 0 15 9" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M0 0H9V1H0V0Z" fill="white"/><path d="M0 4H9V5H0V4Z" fill="white"/><path d="M0 8H9V9H0V8Z" fill="white"/><path d="M13.5 6C12.6716 6 12 5.32843 12 4.5C12 3.67157 12.6716 3 13.5 3C14.3284 3 15 3.67157 15 4.5C15 5.32843 14.3284 6 13.5 6Z" fill="white"/></svg>';
@@ -44560,15 +44612,11 @@ function initGeneratorMenus()
 
         const canDisable = !graphView.selectedNodes.find(n => !n.canDisable);
 
-        const group = 
-               graphView.selectedNodes.length == 1 
-            && graphView.selectedNodes[0].type == NODE_GROUP;   
-    
 
         updateElementDisplay(menuItemNodeSep1         .div, single);
       //updateMenuItemDisplay(menuItemNodeRename       .div, single);
-        updateElementDisplay(menuItemNodeEdit         .div, single && group);
-        updateElementDisplay(menuItemNodeSep2         .div, single && group);
+        updateElementDisplay(menuItemNodeEdit         .div, single);
+        updateElementDisplay(menuItemNodeSep2         .div, single);
         updateElementDisplay(menuItemNodeSelect       .div, single);
         updateElementDisplay(menuItemNodeSep3         .div, canDisable);
         updateElementDisplay(menuItemNodeEnableDisable.div, canDisable);
@@ -47608,8 +47656,8 @@ GraphView.prototype.selectFromClick = function(node, ctrl, shift, alt)
 
     const nodes = [node];
 
-    if (node.type == NODE_GROUP)
-        pushUnique(nodes, node.children);
+    // if (node.type == GROUP_NODE)
+    //     pushUnique(nodes, node.children);
 
     if (   ctrl
         && shift
@@ -51536,8 +51584,6 @@ class Wire
         const output = this.connection.output;
         const input  = this.connection.input;
         
-        const view   = this.connection.graphView;
-
 
         if (output)
         {
@@ -51824,8 +51870,6 @@ class Wire
     {
         const conn  = this.connection;
         let   color = this.getColor();
-    
-        const view  = conn.graphView;
     
 
         const l = rgb2hclok(color)[2];
@@ -52534,7 +52578,7 @@ class Operator
         this.updateMeasureData();
 
 
-        for (const node of graph.nodes.filter(n => n.type == NODE_GROUP))
+        for (const node of graph.nodes.filter(n => n.type == GROUP_NODE))
         {
             node.updateProxyControls();
             node.updateProxyWires();
@@ -53365,7 +53409,7 @@ Operator.prototype.createHeader = function()
 
             graphView.updateScroll(x, w, h, bounds, yOffset);
 
-            if (this.type == NODE_GROUP)
+            if (this.type == GROUP_NODE)
                 this.updateProxyWires();
         }
         else if (   tempConn
@@ -62789,7 +62833,7 @@ extends ResizableBase
 
     constructor()
     {
-        super(NODE_GROUP, 'group', 'group');
+        super(GROUP_NODE, 'group', 'group');
 
         this.alwaysLoadParams   = true;
         this.sharpBottomCorners = true;
@@ -62980,14 +63024,16 @@ extends OperatorBase
         //this.inert = true;
 
         
-        //this.addInput(new Input(LIST_TYPES));
-        this.addParam(this.paramCount = new NumberParam('paramCount', 'parameters', true, true, false, 1, 0, 100, 0));
+        this.addInput (new Input(ALL_TYPES));
+        this.addOutput(new Output([ANY_TYPE]));
+
+        //this.addParam(this.paramCount = new NumberParam('paramCount', 'parameters', true, true, false, 1, 0, 100, 0));
 
 
         // this.alwaysLoadParams = true;
         // this.alwaysSaveParams = true;
 
-        this.paramCount.affectsHeader = false;
+        //this.paramCount.affectsHeader = false;
     }
 
 
@@ -64489,14 +64535,14 @@ function connectAction_backInitOutputValue(act)
 
 function connectAction_saveOutputActiveNodes(act)
 {
-    act.oldOutputActiveNodeId = idFromNode(act.graph.getActiveFromNodeId(act.outputNodeId));
+    act.oldOutputActiveNodeId = idFromNode(graph.getActiveFromNodeId(act.outputNodeId));
 }
 
 
 
 function connectAction_saveInputActiveNodes(act)
 {
-    act.inputActiveNodeIds = act.graph.getActiveNodesAfterNodeId(act.inputNodeId).map(n => n.id);
+    act.inputActiveNodeIds = graph.getActiveNodesAfterNodeId(act.inputNodeId).map(n => n.id);
 }
 
 
@@ -64553,7 +64599,7 @@ function connectAction_updateOldOutput(act, updateNodes)
         act.newActiveNodeIds.push(act.oldOutputNodeId);
 
         if (act.oldOutputActiveNodeId != NULL)
-            pushUnique(updateNodes, act.graph.nodeFromId(act.oldOutputActiveNodeId));
+            pushUnique(updateNodes, graph.nodeFromId(act.oldOutputActiveNodeId));
     }
 }
 
@@ -64562,13 +64608,13 @@ function connectAction_updateOldOutput(act, updateNodes)
 function connectAction_updateInputActiveNodes(act, updateNodes)
 {
     const inputActiveNodeIds = [...act.inputActiveNodeIds].sort((x, y) => 
-        (act.graph.nodeFromId(x) === act.graph.nodeFromId(y)) ? 0 : act.graph.nodeFromId(y).isOrFollows(act.graph.nodeFromId(x)) ? -1 : 1);
+        (graph.nodeFromId(x) === graph.nodeFromId(y)) ? 0 : graph.nodeFromId(y).isOrFollows(graph.nodeFromId(x)) ? -1 : 1);
 
     for (const id of inputActiveNodeIds)
     {
         act.newActiveNodeIds.push(id);
 
-        const node = act.graph.nodeFromId(id);
+        const node = graph.nodeFromId(id);
 
         uiMakeNodeActive(node);
         pushUnique(updateNodes, node);
@@ -64663,7 +64709,7 @@ function connectAction_activateOldActiveNodes(act, updateNodes)
 
     for (const id of act.inputActiveNodeIds)
     {
-        const oldInputActiveNode = act.graph.nodeFromId(id);
+        const oldInputActiveNode = graph.nodeFromId(id);
         
         uiMakeNodeActive(oldInputActiveNode);
         pushUnique(updateNodes, oldInputActiveNode);
@@ -64675,7 +64721,7 @@ function connectAction_activateOldActiveNodes(act, updateNodes)
     {
         console.assert(act.oldOutputActiveNodeId != NULL, 'there should be an old output active node ID at this point')
 
-        const oldOutputActiveNode = act.graph.nodeFromId(act.oldOutputActiveNodeId);
+        const oldOutputActiveNode = graph.nodeFromId(act.oldOutputActiveNodeId);
 
         uiMakeNodeActive(oldOutputActiveNode);
         pushUnique(updateNodes, oldOutputActiveNode);
@@ -64816,9 +64862,9 @@ function createInsertNodeAction_savePrevConnections(act)
     if (act.prevSelectedIds.length == 0)
         return;
         
-    act.oldInputActiveNodeId = idFromNode(act.graph.getActiveFromNodeId(act.prevSelectedIds[0]));
+    act.oldInputActiveNodeId = idFromNode(graph.getActiveFromNodeId(act.prevSelectedIds[0]));
 
-    const selNode = act.graph.nodeFromId(act.prevSelectedIds[0]);
+    const selNode = graph.nodeFromId(act.prevSelectedIds[0]);
     const output  = selNode.outputs[0];
 
     for (const input of output.connectedInputs)
@@ -64945,7 +64991,7 @@ function createNodeAction_activateOldInput(act, updateNodes)
     if (act.oldInputActiveNodeId == NULL)
         return;
 
-    const oldInputActiveNode = act.graph.nodeFromId(act.oldInputActiveNodeId);
+    const oldInputActiveNode = graph.nodeFromId(act.oldInputActiveNodeId);
     
     uiMakeNodeActive(oldInputActiveNode);
     pushUnique(updateNodes, oldInputActiveNode);
@@ -65018,7 +65064,7 @@ extends Action
 function deleteNodesAction_saveOldActiveNodes(act)
 {
     for (const nodeId of act.nodeIds)
-        pushUnique(act.oldActiveNodeIds, act.graph.getActiveNodesFromNodeId(nodeId).map(n => n.id));
+        pushUnique(act.oldActiveNodeIds, graph.getActiveNodesFromNodeId(nodeId).map(n => n.id));
 }
 
 
@@ -65029,7 +65075,7 @@ function deleteNodesAction_saveNodePositions(act)
 
     for (const nodeId of act.nodeIds)
     {
-        const node = act.graph.nodeFromId(nodeId);
+        const node = graph.nodeFromId(nodeId);
 
         act.nodePos.push(point(
             node.div.offsetLeft, 
@@ -65144,7 +65190,7 @@ function deleteNodesAction_disconnect(act, input, ignoreNodeIds = [])
 
 function deleteNodesAction_deleteNodes(act)
 {
-    uiDeleteNodes(act.graph, act.nodeIds);
+    uiDeleteNodes(act.nodeIds);
     uiDeleteObjectsAndStyles(act.oldActiveNodeIds); // clean up now irrelevant objects
 }
 
@@ -65154,12 +65200,12 @@ function deleteNodesAction_restoreNodes(act)
 {
     // console.log('act.nodes', act.nodes);
 
-    act.graphView.restoringNodes = true;
+    graphView.restoringNodes = true;
 
-    act.graph.addNodes(act.nodes);
+    graph.addNodes(act.nodes);
 
-    act.graphView.putNodeOnTop(act.nodes.at(-1));
-    act.graphView.selected = act.nodes;
+    graphView.putNodeOnTop(act.nodes.at(-1));
+    graphView.selected = act.nodes;
 
 
     for (let i = 0; i < act.nodes.length; i++)
@@ -65180,16 +65226,16 @@ function deleteNodesAction_restoreNodes(act)
 function deleteNodesAction_activateOldActiveNodes(act, updateNodes)
 {
     let oldActiveNodeIds = [...act.oldActiveNodeIds].sort((x, y) => 
-        (act.graph.nodeFromId(x) === act.graph.nodeFromId(y)) 
+        (graph.nodeFromId(x) === graph.nodeFromId(y)) 
         ? 0 
-        : act.graph.nodeFromId(y).isOrFollows(act.graph.nodeFromId(x)) 
+        : graph.nodeFromId(y).isOrFollows(graph.nodeFromId(x)) 
           ? -1 
           :  1);
     
     
-    const oldActiveNodes = oldActiveNodeIds.map(id => act.graph.nodeFromId(id));
+    const oldActiveNodes = oldActiveNodeIds.map(id => graph.nodeFromId(id));
     
-    act.graphView.selectByIds(act.prevSelectedIds);
+    graphView.selectByIds(act.prevSelectedIds);
     uiMakeNodesActive(oldActiveNodes);
 
     pushUnique(updateNodes, oldActiveNodes);
@@ -65340,7 +65386,7 @@ extends Action
 function DisconnectAction_activateNewNodes(act)
 {
     for (const id of act.newActiveNodeIds)
-        uiMakeNodeActive(act.graph.nodeFromId(id));
+        uiMakeNodeActive(graph.nodeFromId(id));
 }
 
 
@@ -65924,8 +65970,8 @@ function removeNodesAction_makeNewConnections(act)
         const _conn = act.newConnectionData[i];
         
         const conn = uiVariableConnect(
-             act.graph.nodeFromId(_conn.outputNodeId), _conn.outputId, 
-             act.graph.nodeFromId(_conn. inputNodeId), _conn. inputId,
+             graph.nodeFromId(_conn.outputNodeId), _conn.outputId, 
+             graph.nodeFromId(_conn. inputNodeId), _conn. inputId,
             _conn.outputOrder);
 
         uiSaveConn(conn);
@@ -65933,7 +65979,7 @@ function removeNodesAction_makeNewConnections(act)
 
              if (act.clusterActiveLeft [i]) pushUpdate(act, [act.clusterActiveLeft [i]]);
         else if (act.clusterActiveRight[i]) pushUpdate(act, [act.clusterActiveRight[i]]);
-        else                                uiMakeNodeActive(act.graph.nodeFromId(_conn.inputNodeId));
+        else                                uiMakeNodeActive(graph.nodeFromId(_conn.inputNodeId));
     }
 }
 
@@ -68680,6 +68726,76 @@ function setAutoCursor()
 };
 
 
+var graphPages   = [];
+var curPageIndex = 0;
+
+addPage('page1', 'Page 1');
+addPage('page2', 'Page 2');
+addPage('page3', 'Page 3');
+addPage('page4', 'Page 4');
+
+
+
+function curPage()
+{
+    return graphPages[curPageIndex];
+}
+
+
+
+function addPage(id, name)
+{
+    const btn      = createDiv('page');
+    
+    const btnIcon  = createDiv('pageIcon');
+    const btnName  = createDiv('pageName');
+    const btnClose = createDiv('pageClose');
+
+    btn.appendChild(btnIcon);
+    btn.appendChild(btnName);
+    btn.appendChild(btnClose);
+
+
+    const page =
+    {
+        id:       id, 
+        name:     name,
+        button:   btn,
+        btnIcon:  btnIcon,
+        btnName:  btnName,
+        btnClose: btnClose
+    };
+
+    graphPages.push(page);
+    pagesBar.appendChild(page.button);
+
+
+    updatePages();
+}
+
+
+
+function updatePage(page)
+{
+    const isCurrent = curPageIndex == Array.prototype.indexOf.call(pagesBar.childNodes, page.button);
+
+    page.btnIcon.innerHTML = iconPage;
+    page.btnName.innerHTML = page.name;
+
+    page.btnIcon.style.opacity    = isCurrent ? 1 : 0.35;
+    page.btnName.style.color      = isCurrent ? '#fff'    : '666';
+    page.button .style.background = isCurrent ? '#2c2c2c' : '#222';
+}
+
+
+
+function updatePages()
+{
+    for (const page of graphPages)
+        updatePage(page);
+}
+
+
 var productKey = NULL;
 
 
@@ -70342,7 +70458,7 @@ function uiMakeNodesActive(nodes)
     {
         if (node.active) continue;
         
-        pushUnique(node.graphView.activeNodes, node);
+        pushUnique(graphView.activeNodes, node);
         node._active = true;
     }
 }
@@ -70747,12 +70863,12 @@ function uiUpdateValuesAndObjects(requestId, actionId, updateNodeId, updateParam
     {
         if (graphView.loadingNodes)
         {
-            for (const node of graph.nodes.filter(n => n.type == NODE_GROUP))
-            {
-                node.updateProxyControls();
-                node.updateProxyWires();
-                node.updateMeasureData();
-            }
+            // for (const node of graph.nodes.filter(n => n.type == GROUP_NODE))
+            // {
+            //     node.updateProxyControls();
+            //     node.updateProxyWires();
+            //     node.updateMeasureData();
+            // }
 
             uiSaveNodes(graph.nodes.map(n => n.id));
         }
@@ -71272,16 +71388,24 @@ function createStyleIcon(rgba)
 }
 
 
-const defNodeWidth    = 114;
-const resizeEdgeWidth = 8;
+const defNodeWidth          = 114;
+const resizeEdgeWidth       = 8;
 
 
-var overNumberControl     = null;
-var overColorControl      = null;
+var   overNumberControl     = null;
+var   overColorControl      = null;
+  
+var   numberControlChanging = null;
+  
+var   overNumberControlCtrl = null;
 
-var numberControlChanging = null;
 
-var overNumberControlCtrl = null;
+
+const graph                 = new Graph();
+var   graphView             = new GraphView(_graphView, graph);
+         
+var   viewportZoom          = 1;
+var   viewportRect          = new Rect();
 
 
 
@@ -71345,11 +71469,6 @@ function uiHideClearUndoWarning()
 }
 
 
-const graph        = new Graph();
-var   graphView    = new GraphView(_graphView, graph);
-   
-var   viewportZoom = 1;
-var   viewportRect = new Rect();
 
 
 

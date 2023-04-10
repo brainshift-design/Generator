@@ -7,7 +7,7 @@ extends ResizableBase
 
     constructor()
     {
-        super(NODE_GROUP, 'group', 'group');
+        super(GROUP_NODE, 'group', 'group');
 
         this.alwaysLoadParams   = true;
         this.sharpBottomCorners = true;

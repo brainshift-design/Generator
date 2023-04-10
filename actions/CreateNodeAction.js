@@ -117,7 +117,7 @@ function createNodeAction_activateOldInput(act, updateNodes)
     if (act.oldInputActiveNodeId == NULL)
         return;
 
-    const oldInputActiveNode = act.graph.nodeFromId(act.oldInputActiveNodeId);
+    const oldInputActiveNode = graph.nodeFromId(act.oldInputActiveNodeId);
     
     uiMakeNodeActive(oldInputActiveNode);
     pushUnique(updateNodes, oldInputActiveNode);

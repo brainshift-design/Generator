@@ -86,8 +86,6 @@ class Wire
         const output = this.connection.output;
         const input  = this.connection.input;
         
-        const view   = this.connection.graphView;
-
 
         if (output)
         {
@@ -374,8 +372,6 @@ class Wire
     {
         const conn  = this.connection;
         let   color = this.getColor();
-    
-        const view  = conn.graphView;
     
 
         const l = rgb2hclok(color)[2];

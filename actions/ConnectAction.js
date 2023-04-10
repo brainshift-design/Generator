@@ -115,14 +115,14 @@ function connectAction_backInitOutputValue(act)
 
 function connectAction_saveOutputActiveNodes(act)
 {
-    act.oldOutputActiveNodeId = idFromNode(act.graph.getActiveFromNodeId(act.outputNodeId));
+    act.oldOutputActiveNodeId = idFromNode(graph.getActiveFromNodeId(act.outputNodeId));
 }
 
 
 
 function connectAction_saveInputActiveNodes(act)
 {
-    act.inputActiveNodeIds = act.graph.getActiveNodesAfterNodeId(act.inputNodeId).map(n => n.id);
+    act.inputActiveNodeIds = graph.getActiveNodesAfterNodeId(act.inputNodeId).map(n => n.id);
 }
 
 
@@ -179,7 +179,7 @@ function connectAction_updateOldOutput(act, updateNodes)
         act.newActiveNodeIds.push(act.oldOutputNodeId);
 
         if (act.oldOutputActiveNodeId != NULL)
-            pushUnique(updateNodes, act.graph.nodeFromId(act.oldOutputActiveNodeId));
+            pushUnique(updateNodes, graph.nodeFromId(act.oldOutputActiveNodeId));
     }
 }
 
@@ -188,13 +188,13 @@ function connectAction_updateOldOutput(act, updateNodes)
 function connectAction_updateInputActiveNodes(act, updateNodes)
 {
     const inputActiveNodeIds = [...act.inputActiveNodeIds].sort((x, y) => 
-        (act.graph.nodeFromId(x) === act.graph.nodeFromId(y)) ? 0 : act.graph.nodeFromId(y).isOrFollows(act.graph.nodeFromId(x)) ? -1 : 1);
+        (graph.nodeFromId(x) === graph.nodeFromId(y)) ? 0 : graph.nodeFromId(y).isOrFollows(graph.nodeFromId(x)) ? -1 : 1);
 
     for (const id of inputActiveNodeIds)
     {
         act.newActiveNodeIds.push(id);
 
-        const node = act.graph.nodeFromId(id);
+        const node = graph.nodeFromId(id);
 
         uiMakeNodeActive(node);
         pushUnique(updateNodes, node);
@@ -289,7 +289,7 @@ function connectAction_activateOldActiveNodes(act, updateNodes)
 
     for (const id of act.inputActiveNodeIds)
     {
-        const oldInputActiveNode = act.graph.nodeFromId(id);
+        const oldInputActiveNode = graph.nodeFromId(id);
         
         uiMakeNodeActive(oldInputActiveNode);
         pushUnique(updateNodes, oldInputActiveNode);
@@ -301,7 +301,7 @@ function connectAction_activateOldActiveNodes(act, updateNodes)
     {
         console.assert(act.oldOutputActiveNodeId != NULL, 'there should be an old output active node ID at this point')
 
-        const oldOutputActiveNode = act.graph.nodeFromId(act.oldOutputActiveNodeId);
+        const oldOutputActiveNode = graph.nodeFromId(act.oldOutputActiveNodeId);
 
         uiMakeNodeActive(oldOutputActiveNode);
         pushUnique(updateNodes, oldOutputActiveNode);

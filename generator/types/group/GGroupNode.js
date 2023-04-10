@@ -7,7 +7,7 @@ extends GOperator
 
     constructor(nodeId, options)
     {
-        super(NODE_GROUP, nodeId, options);
+        super(GROUP_NODE, nodeId, options);
     }
 
 
