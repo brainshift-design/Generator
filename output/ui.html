@@ -3802,6 +3802,7 @@ a
 
                 <p>•  fixed wrong invalid colors assigned to styles</p>
                 <p>•  fixed Mac shortcuts</p>
+                <p>•  adjusting color controls with arrow keys now supports undo</p>
                 <p>•  fixed many UI issues</p>
                 
                 <p><br/><br/><div id='chkHideWhatsNew'></div></p>
@@ -44168,7 +44169,6 @@ function initGeneratorMenus()
         menuItemLogStyleUpdates       = new MenuItem('Log\u2008styles',            {checkCallback: () => settings.logStyleUpdates ,      callback: () => updateSettingAndMenu('logStyleUpdates',       true, !settings.logStyleUpdates      ), setting: true}),
                                         new MenuItem('',                           {separator: true}),                   
         menuItemLogMessages           = new MenuItem('Log\u2008messages',          {checkCallback: () => settings.logMessages     ,      callback: () => updateSettingAndMenu('logMessages',           true, !settings.logMessages          ), setting: true}),
-                                        new MenuItem('',                           {separator: true}),   
         menuItemLogActions            = new MenuItem('Log\u2008actions',           {checkCallback: () => settings.logActions      ,      callback: () => updateSettingAndMenu('logActions',            true, !settings.logActions           ), setting: true}),
                                         new MenuItem('',                           {separator: true}),
         menuItemLogLoading            = new MenuItem('Log\u2008load\u2008at start', {checkCallback: () => settings.logLoading      ,      callback: () => updateSettingAndMenu('logLoading',            true, !settings.logLoading           ), setting: true}),
@@ -62407,8 +62407,12 @@ extends OpColorBase
         colors.text       = getTextColorFromBackColor(colors.stripeBack, colors.back[3]);
         colors.input      = rgb_a(colors.text, 0.2);
         colors.output     = rgb_a(colors.text, 0.2);
-        colors.wire       = colors.stripeBack;
-        
+
+        colors.wire = 
+            !rgbaIsNaN(colors.back)
+            ? colors.back
+            : rgbFromType(ANY_TYPE, false);
+
         return colors;
     }
 
@@ -62683,13 +62687,18 @@ extends OpColorBase
  
 
         const colors = super.getHeaderColors();
+        console.log('colors =', colors);
 
         colors.back       = rgb_a(colors.back, this.paramFill.value.opacity.value/100);
         colors.stripeBack = rgb_a(colors.stripeBack, this.paramFill.value.opacity.value/100);
         colors.text       = getTextColorFromBackColor(colors.stripeBack, this.paramFill.value.opacity.value/100);
         colors.input      = rgb_a(colors.text, 0.2);
         colors.output     = rgb_a(colors.text, 0.2);
-        colors.wire       = colors.back;
+
+        colors.wire = 
+            !rgbaIsNaN(colors.back)
+            ? colors.back
+            : rgbFromType(ANY_TYPE, false);
 
         return colors;
     }

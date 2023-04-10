@@ -266,8 +266,12 @@ extends OpColorBase
         colors.text       = getTextColorFromBackColor(colors.stripeBack, colors.back[3]);
         colors.input      = rgb_a(colors.text, 0.2);
         colors.output     = rgb_a(colors.text, 0.2);
-        colors.wire       = colors.stripeBack;
-        
+
+        colors.wire = 
+            !rgbaIsNaN(colors.back)
+            ? colors.back
+            : rgbFromType(ANY_TYPE, false);
+
         return colors;
     }
 

@@ -210,7 +210,6 @@ function initGeneratorMenus()
         menuItemLogStyleUpdates       = new MenuItem('Log\u2008styles',            {checkCallback: () => settings.logStyleUpdates ,      callback: () => updateSettingAndMenu('logStyleUpdates',       true, !settings.logStyleUpdates      ), setting: true}),
                                         new MenuItem('',                           {separator: true}),                   
         menuItemLogMessages           = new MenuItem('Log\u2008messages',          {checkCallback: () => settings.logMessages     ,      callback: () => updateSettingAndMenu('logMessages',           true, !settings.logMessages          ), setting: true}),
-                                        new MenuItem('',                           {separator: true}),   
         menuItemLogActions            = new MenuItem('Log\u2008actions',           {checkCallback: () => settings.logActions      ,      callback: () => updateSettingAndMenu('logActions',            true, !settings.logActions           ), setting: true}),
                                         new MenuItem('',                           {separator: true}),
         menuItemLogLoading            = new MenuItem('Log\u2008load\u2008at start', {checkCallback: () => settings.logLoading      ,      callback: () => updateSettingAndMenu('logLoading',            true, !settings.logLoading           ), setting: true}),

@@ -246,13 +246,18 @@ extends OpColorBase
  
 
         const colors = super.getHeaderColors();
+        console.log('colors =', colors);
 
         colors.back       = rgb_a(colors.back, this.paramFill.value.opacity.value/100);
         colors.stripeBack = rgb_a(colors.stripeBack, this.paramFill.value.opacity.value/100);
         colors.text       = getTextColorFromBackColor(colors.stripeBack, this.paramFill.value.opacity.value/100);
         colors.input      = rgb_a(colors.text, 0.2);
         colors.output     = rgb_a(colors.text, 0.2);
-        colors.wire       = colors.back;
+
+        colors.wire = 
+            !rgbaIsNaN(colors.back)
+            ? colors.back
+            : rgbFromType(ANY_TYPE, false);
 
         return colors;
     }
