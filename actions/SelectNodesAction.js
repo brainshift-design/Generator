@@ -24,7 +24,7 @@ extends Action
     do(updateNodes)
     {
         // this happens in the UI
-        updateComments(graph, this.prevSelectedIds);
+        updateComments(this.prevSelectedIds);
     }
 
 
@@ -32,7 +32,7 @@ extends Action
     undo(updateNodes)
     {
         graphView.selectByIds(this.prevSelectedIds);
-        updateComments(graph, this.selectedIds);
+        updateComments(this.selectedIds);
     }
 
 
@@ -41,14 +41,14 @@ extends Action
     {
         graphView.selectByIds(this.selectedIds);
 
-        updateComments(graph, this.selectedIds);
-        updateComments(graph, this.prevSelectedIds);
+        updateComments(this.selectedIds);
+        updateComments(this.prevSelectedIds);
     }
 }
 
 
 
-function updateComments(graph, nodeIds)
+function updateComments(nodeIds)
 {
     nodeIds
         .map(id => graph.nodeFromId(id))

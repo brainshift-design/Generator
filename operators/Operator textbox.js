@@ -133,7 +133,7 @@ Operator.prototype.initLabelTextbox = function()
             {
                 const newName = this.textbox.value;
                 setTimeout(() => this.setName(newName));
-                actionManager.do(new RenameNodeAction(graph, this.id, newName));
+                actionManager.do(new RenameNodeAction(this.id, newName));
             }
         }
         else

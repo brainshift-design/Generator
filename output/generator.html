@@ -463,6 +463,11 @@ function rgbFromTypeMode(type, active, mode)
         ? (mode ? rgbActiveShapeDark  : rgbActiveShapeLight)
         : (mode ? rgbShapeDark        : rgbShapeLight      );
 
+    if (GROUP_TYPES.includes(type))
+        return active 
+        ? (mode ? rgbActiveGroupDark  : rgbActiveGroupLight)
+        : (mode ? rgbGroupDark        : rgbGroupLight      );
+
         
     switch (type)
     {
@@ -477,13 +482,6 @@ function rgbFromTypeMode(type, active, mode)
             return active 
                  ? rgbActiveColor  
                  : rgbColor;
-
-        case NODE_GROUP:
-        case NODE_INPUTS:
-        case NODE_OUTPUTS:
-            return active 
-                 ? (mode ? rgbActiveFlowDark : rgbActiveFlowLight)
-                 : (mode ? rgbFlowDark       : rgbFlowLight      );
     }
 
     return 'magenta';
@@ -2367,8 +2365,8 @@ function getCreateNodeAction(type, creatingButton, options)
 
     return !!options.insert
         &&  !options.autoConnect
-           ? new CreateInsertNodeAction(graph, type, creatingButton, options)
-           : new CreateNodeAction      (graph, type, creatingButton, options, !!options.autoConnect);
+           ? new CreateInsertNodeAction(type, creatingButton, options)
+           : new CreateNodeAction      (type, creatingButton, options, !!options.autoConnect);
 }
 
 
@@ -3624,9 +3622,15 @@ const ALL_TYPES =
 ];
 
 
-const NODE_GROUP     = 'NGRP';
-const NODE_INPUTS    = 'NGIN';
-const NODE_OUTPUTS   = 'NGOUT';
+const GROUP_NODE     = 'GNODE';
+const GROUP_PARAM    = 'GPARAM';
+
+
+const GROUP_TYPES =
+[
+    GROUP_NODE,
+    GROUP_PARAM
+];
 
 
 const COMMENT        = 'CMNT';
@@ -12602,7 +12606,7 @@ extends GObjectBase
 }
 
 
-class GNodeGroup
+class GGroupNode
 extends GOperator
 {
     // input = null;
@@ -12618,7 +12622,7 @@ extends GOperator
     
     copy()
     {
-        const copy = new GNodeGroup(this.nodeId, this.options);
+        const copy = new GGroupNode(this.nodeId, this.options);
 
         copy.copyBase(this);
 
@@ -12662,7 +12666,7 @@ extends GOperator
 
 
 
-class GNodeInputs
+class GGroupParam
 extends GOperator
 {
     input = null;
@@ -12683,7 +12687,7 @@ extends GOperator
 
     copy()
     {
-        const copy = new GNodeInputs(this.nodeId, this.options);
+        const copy = new GGroupParam(this.nodeId, this.options);
         
         copy.copyBase(this);
 
@@ -12758,9 +12762,6 @@ extends GOperator
         return this.value.copy();
     }
 }
-
-
-
 
 
 class GComment
@@ -13056,8 +13057,6 @@ function enableFeatures(subscription, beta)
     updateElementDisplay(menuFlowSep3                .div, subscription && beta);
     updateElementDisplay(menuItemCache               .div, subscription && beta);
     updateElementDisplay(menuItemCopy                .div, subscription && beta);
-    updateElementDisplay(menuItemCustomInputs        .div, false);//subscription && beta);
-    updateElementDisplay(menuItemCustomOutputs       .div, false);//subscription && beta);
     
     updateElementDisplay(menuItemSeries              .div, subscription && beta);    
     updateElementDisplay(menuItemSolve               .div, subscription && beta);    
@@ -14050,94 +14049,6 @@ function genParseColorBlend(parse)
 }
 
 
-function genParseCustom(parse)
-{
-    const [, nodeId, options, ignore] = genParseNodeStart(parse);
-
-
-    const group = new GNodeGroup(nodeId, options);
-
-
-    // let nInputs = -1;
-    
-    // if (!ignore)
-    // {
-    //     nInputs = parseInt(parse.move());
-    //     console.assert(nInputs == 0 || nInputs == 1, 'nInputs must be [0, 1]');
-    // }
-
-
-    if (parse.settings.logRequests) 
-        logReq(group, parse, ignore);//, nInputs);
-
-
-    if (ignore) 
-    {
-        genParseNodeEnd(parse, group);
-        return parse.parsedNodes.find(n => n.nodeId == nodeId);
-    }
-
-
-    parse.nTab++;
-
-
-    // if (nInputs == 1)
-    //     cache.input = genParse(parse);
-
-
-    parse.nTab--;
-
-
-    genParseNodeEnd(parse, group);
-    return group;
-}
-
-
-
-function genParseCustomInputs(parse)
-{
-    const [, nodeId, options, ignore] = genParseNodeStart(parse);
-
-
-    const custIn = new GCustomInputs(nodeId, options);
-
-
-    // let nInputs = -1;
-    
-    // if (!ignore)
-    // {
-    //     nInputs = parseInt(parse.move());
-    //     console.assert(nInputs == 0 || nInputs == 1, 'nInputs must be [0, 1]');
-    // }
-
-
-    if (parse.settings.logRequests) 
-        logReq(custIn, parse, ignore);//, nInputs);
-
-
-    if (ignore) 
-    {
-        genParseNodeEnd(parse, custIn);
-        return parse.parsedNodes.find(n => n.nodeId == nodeId);
-    }
-
-
-    parse.nTab++;
-
-
-    // if (nInputs == 1)
-    //     cache.input = genParse(parse);
-
-
-    parse.nTab--;
-
-
-    genParseNodeEnd(parse, custIn);
-    return custIn;
-}
-
-
-
 function genParseComment(parse)
 {
     const [, nodeId, options, ignore] = genParseNodeStart(parse);
@@ -14546,6 +14457,94 @@ function genParseCopy(parse)
     genParseNodeEnd(parse, copy);
     return copy;
 }
+
+
+function genParseGroupNode(parse)
+{
+    const [, nodeId, options, ignore] = genParseNodeStart(parse);
+
+
+    const group = new GGroupNode(nodeId, options);
+
+
+    // let nInputs = -1;
+    
+    // if (!ignore)
+    // {
+    //     nInputs = parseInt(parse.move());
+    //     console.assert(nInputs == 0 || nInputs == 1, 'nInputs must be [0, 1]');
+    // }
+
+
+    if (parse.settings.logRequests) 
+        logReq(group, parse, ignore);//, nInputs);
+
+
+    if (ignore) 
+    {
+        genParseNodeEnd(parse, group);
+        return parse.parsedNodes.find(n => n.nodeId == nodeId);
+    }
+
+
+    parse.nTab++;
+
+
+    // if (nInputs == 1)
+    //     cache.input = genParse(parse);
+
+
+    parse.nTab--;
+
+
+    genParseNodeEnd(parse, group);
+    return group;
+}
+
+
+
+function genParseGroupParam(parse)
+{
+    const [, nodeId, options, ignore] = genParseNodeStart(parse);
+
+
+    const param = new GGroupParam(nodeId, options);
+
+
+    // let nInputs = -1;
+    
+    // if (!ignore)
+    // {
+    //     nInputs = parseInt(parse.move());
+    //     console.assert(nInputs == 0 || nInputs == 1, 'nInputs must be [0, 1]');
+    // }
+
+
+    if (parse.settings.logRequests) 
+        logReq(param, parse, ignore);//, nInputs);
+
+
+    if (ignore) 
+    {
+        genParseNodeEnd(parse, param);
+        return parse.parsedNodes.find(n => n.nodeId == nodeId);
+    }
+
+
+    parse.nTab++;
+
+
+    // if (nInputs == 1)
+    //     cache.input = genParse(parse);
+
+
+    parse.nTab--;
+
+
+    genParseNodeEnd(parse, param);
+    return param;
+}
+
 
 
 function genParseNumValue(parse)
@@ -16302,9 +16301,8 @@ function genParse(parse, inParam = true)
     else if (parse.next == POLYGON                ) result = genParsePolygon         (parse);
     else if (parse.next == STAR                   ) result = genParseStar            (parse);
 
-    else if (parse.next == NODE_GROUP             ) result = genParseCustom          (parse);
-    else if (parse.next == NODE_INPUTS            ) result = genParseCustomInputs    (parse);
-    else if (parse.next == NODE_OUTPUTS           ) result = genParseCustomOutputs   (parse);
+    else if (parse.next == GROUP_NODE             ) result = genParseGroupNode          (parse);
+    else if (parse.next == GROUP_PARAM            ) result = genParseGroupParam    (parse);
 
     else if (parse.next == COMMENT                ) result = genParseComment         (parse);
 
@@ -16434,12 +16432,12 @@ function genParseParamId(parse)
 
 
 
-function genParseCustom(parse)
+function genParseGroupNode(parse)
 {
     const [, nodeId, options, ignore] = genParseNodeStart(parse);
 
 
-    const cache = new GNodeGroup(nodeId, options);
+    const cache = new GGroupNode(nodeId, options);
 
 
     // let nInputs = -1;

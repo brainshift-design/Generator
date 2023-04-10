@@ -4589,6 +4589,11 @@ function rgbFromTypeMode(type, active, mode)
         ? (mode ? rgbActiveShapeDark  : rgbActiveShapeLight)
         : (mode ? rgbShapeDark        : rgbShapeLight      );
 
+    if (GROUP_TYPES.includes(type))
+        return active 
+        ? (mode ? rgbActiveGroupDark  : rgbActiveGroupLight)
+        : (mode ? rgbGroupDark        : rgbGroupLight      );
+
         
     switch (type)
     {
@@ -4603,13 +4608,6 @@ function rgbFromTypeMode(type, active, mode)
             return active 
                  ? rgbActiveColor  
                  : rgbColor;
-
-        case NODE_GROUP:
-        case NODE_INPUTS:
-        case NODE_OUTPUTS:
-            return active 
-                 ? (mode ? rgbActiveFlowDark : rgbActiveFlowLight)
-                 : (mode ? rgbFlowDark       : rgbFlowLight      );
     }
 
     return 'magenta';
@@ -6493,8 +6491,8 @@ function getCreateNodeAction(type, creatingButton, options)
 
     return !!options.insert
         &&  !options.autoConnect
-           ? new CreateInsertNodeAction(graph, type, creatingButton, options)
-           : new CreateNodeAction      (graph, type, creatingButton, options, !!options.autoConnect);
+           ? new CreateInsertNodeAction(type, creatingButton, options)
+           : new CreateNodeAction      (type, creatingButton, options, !!options.autoConnect);
 }
 
 
@@ -7750,9 +7748,15 @@ const ALL_TYPES =
 ];
 
 
-const NODE_GROUP     = 'NGRP';
-const NODE_INPUTS    = 'NGIN';
-const NODE_OUTPUTS   = 'NGOUT';
+const GROUP_NODE     = 'GNODE';
+const GROUP_PARAM    = 'GPARAM';
+
+
+const GROUP_TYPES =
+[
+    GROUP_NODE,
+    GROUP_PARAM
+];
 
 
 const COMMENT        = 'CMNT';
@@ -16728,7 +16732,7 @@ extends GObjectBase
 }
 
 
-class GNodeGroup
+class GGroupNode
 extends GOperator
 {
     // input = null;
@@ -16744,7 +16748,7 @@ extends GOperator
     
     copy()
     {
-        const copy = new GNodeGroup(this.nodeId, this.options);
+        const copy = new GGroupNode(this.nodeId, this.options);
 
         copy.copyBase(this);
 
@@ -16788,7 +16792,7 @@ extends GOperator
 
 
 
-class GNodeInputs
+class GGroupParam
 extends GOperator
 {
     input = null;
@@ -16809,7 +16813,7 @@ extends GOperator
 
     copy()
     {
-        const copy = new GNodeInputs(this.nodeId, this.options);
+        const copy = new GGroupParam(this.nodeId, this.options);
         
         copy.copyBase(this);
 
@@ -16884,9 +16888,6 @@ extends GOperator
         return this.value.copy();
     }
 }
-
-
-
 
 
 class GComment
@@ -17182,8 +17183,6 @@ function enableFeatures(subscription, beta)
     updateElementDisplay(menuFlowSep3                .div, subscription && beta);
     updateElementDisplay(menuItemCache               .div, subscription && beta);
     updateElementDisplay(menuItemCopy                .div, subscription && beta);
-    updateElementDisplay(menuItemCustomInputs        .div, false);//subscription && beta);
-    updateElementDisplay(menuItemCustomOutputs       .div, false);//subscription && beta);
     
     updateElementDisplay(menuItemSeries              .div, subscription && beta);    
     updateElementDisplay(menuItemSolve               .div, subscription && beta);    
@@ -18176,94 +18175,6 @@ function genParseColorBlend(parse)
 }
 
 
-function genParseCustom(parse)
-{
-    const [, nodeId, options, ignore] = genParseNodeStart(parse);
-
-
-    const group = new GNodeGroup(nodeId, options);
-
-
-    // let nInputs = -1;
-    
-    // if (!ignore)
-    // {
-    //     nInputs = parseInt(parse.move());
-    //     console.assert(nInputs == 0 || nInputs == 1, 'nInputs must be [0, 1]');
-    // }
-
-
-    if (parse.settings.logRequests) 
-        logReq(group, parse, ignore);//, nInputs);
-
-
-    if (ignore) 
-    {
-        genParseNodeEnd(parse, group);
-        return parse.parsedNodes.find(n => n.nodeId == nodeId);
-    }
-
-
-    parse.nTab++;
-
-
-    // if (nInputs == 1)
-    //     cache.input = genParse(parse);
-
-
-    parse.nTab--;
-
-
-    genParseNodeEnd(parse, group);
-    return group;
-}
-
-
-
-function genParseCustomInputs(parse)
-{
-    const [, nodeId, options, ignore] = genParseNodeStart(parse);
-
-
-    const custIn = new GCustomInputs(nodeId, options);
-
-
-    // let nInputs = -1;
-    
-    // if (!ignore)
-    // {
-    //     nInputs = parseInt(parse.move());
-    //     console.assert(nInputs == 0 || nInputs == 1, 'nInputs must be [0, 1]');
-    // }
-
-
-    if (parse.settings.logRequests) 
-        logReq(custIn, parse, ignore);//, nInputs);
-
-
-    if (ignore) 
-    {
-        genParseNodeEnd(parse, custIn);
-        return parse.parsedNodes.find(n => n.nodeId == nodeId);
-    }
-
-
-    parse.nTab++;
-
-
-    // if (nInputs == 1)
-    //     cache.input = genParse(parse);
-
-
-    parse.nTab--;
-
-
-    genParseNodeEnd(parse, custIn);
-    return custIn;
-}
-
-
-
 function genParseComment(parse)
 {
     const [, nodeId, options, ignore] = genParseNodeStart(parse);
@@ -18672,6 +18583,94 @@ function genParseCopy(parse)
     genParseNodeEnd(parse, copy);
     return copy;
 }
+
+
+function genParseGroupNode(parse)
+{
+    const [, nodeId, options, ignore] = genParseNodeStart(parse);
+
+
+    const group = new GGroupNode(nodeId, options);
+
+
+    // let nInputs = -1;
+    
+    // if (!ignore)
+    // {
+    //     nInputs = parseInt(parse.move());
+    //     console.assert(nInputs == 0 || nInputs == 1, 'nInputs must be [0, 1]');
+    // }
+
+
+    if (parse.settings.logRequests) 
+        logReq(group, parse, ignore);//, nInputs);
+
+
+    if (ignore) 
+    {
+        genParseNodeEnd(parse, group);
+        return parse.parsedNodes.find(n => n.nodeId == nodeId);
+    }
+
+
+    parse.nTab++;
+
+
+    // if (nInputs == 1)
+    //     cache.input = genParse(parse);
+
+
+    parse.nTab--;
+
+
+    genParseNodeEnd(parse, group);
+    return group;
+}
+
+
+
+function genParseGroupParam(parse)
+{
+    const [, nodeId, options, ignore] = genParseNodeStart(parse);
+
+
+    const param = new GGroupParam(nodeId, options);
+
+
+    // let nInputs = -1;
+    
+    // if (!ignore)
+    // {
+    //     nInputs = parseInt(parse.move());
+    //     console.assert(nInputs == 0 || nInputs == 1, 'nInputs must be [0, 1]');
+    // }
+
+
+    if (parse.settings.logRequests) 
+        logReq(param, parse, ignore);//, nInputs);
+
+
+    if (ignore) 
+    {
+        genParseNodeEnd(parse, param);
+        return parse.parsedNodes.find(n => n.nodeId == nodeId);
+    }
+
+
+    parse.nTab++;
+
+
+    // if (nInputs == 1)
+    //     cache.input = genParse(parse);
+
+
+    parse.nTab--;
+
+
+    genParseNodeEnd(parse, param);
+    return param;
+}
+
 
 
 function genParseNumValue(parse)
@@ -20428,9 +20427,8 @@ function genParse(parse, inParam = true)
     else if (parse.next == POLYGON                ) result = genParsePolygon         (parse);
     else if (parse.next == STAR                   ) result = genParseStar            (parse);
 
-    else if (parse.next == NODE_GROUP             ) result = genParseCustom          (parse);
-    else if (parse.next == NODE_INPUTS            ) result = genParseCustomInputs    (parse);
-    else if (parse.next == NODE_OUTPUTS           ) result = genParseCustomOutputs   (parse);
+    else if (parse.next == GROUP_NODE             ) result = genParseGroupNode          (parse);
+    else if (parse.next == GROUP_PARAM            ) result = genParseGroupParam    (parse);
 
     else if (parse.next == COMMENT                ) result = genParseComment         (parse);
 
@@ -20560,12 +20558,12 @@ function genParseParamId(parse)
 
 
 
-function genParseCustom(parse)
+function genParseGroupNode(parse)
 {
     const [, nodeId, options, ignore] = genParseNodeStart(parse);
 
 
-    const cache = new GNodeGroup(nodeId, options);
+    const cache = new GGroupNode(nodeId, options);
 
 
     // let nInputs = -1;
@@ -24209,6 +24207,11 @@ function rgbFromTypeMode(type, active, mode)
         ? (mode ? rgbActiveShapeDark  : rgbActiveShapeLight)
         : (mode ? rgbShapeDark        : rgbShapeLight      );
 
+    if (GROUP_TYPES.includes(type))
+        return active 
+        ? (mode ? rgbActiveGroupDark  : rgbActiveGroupLight)
+        : (mode ? rgbGroupDark        : rgbGroupLight      );
+
         
     switch (type)
     {
@@ -24223,13 +24226,6 @@ function rgbFromTypeMode(type, active, mode)
             return active 
                  ? rgbActiveColor  
                  : rgbColor;
-
-        case NODE_GROUP:
-        case NODE_INPUTS:
-        case NODE_OUTPUTS:
-            return active 
-                 ? (mode ? rgbActiveFlowDark : rgbActiveFlowLight)
-                 : (mode ? rgbFlowDark       : rgbFlowLight      );
     }
 
     return 'magenta';
@@ -26113,8 +26109,8 @@ function getCreateNodeAction(type, creatingButton, options)
 
     return !!options.insert
         &&  !options.autoConnect
-           ? new CreateInsertNodeAction(graph, type, creatingButton, options)
-           : new CreateNodeAction      (graph, type, creatingButton, options, !!options.autoConnect);
+           ? new CreateInsertNodeAction(type, creatingButton, options)
+           : new CreateNodeAction      (type, creatingButton, options, !!options.autoConnect);
 }
 
 
@@ -29950,9 +29946,15 @@ const ALL_TYPES =
 ];
 
 
-const NODE_GROUP     = 'NGRP';
-const NODE_INPUTS    = 'NGIN';
-const NODE_OUTPUTS   = 'NGOUT';
+const GROUP_NODE     = 'GNODE';
+const GROUP_PARAM    = 'GPARAM';
+
+
+const GROUP_TYPES =
+[
+    GROUP_NODE,
+    GROUP_PARAM
+];
 
 
 const COMMENT        = 'CMNT';
@@ -38928,7 +38930,7 @@ extends GObjectBase
 }
 
 
-class GNodeGroup
+class GGroupNode
 extends GOperator
 {
     // input = null;
@@ -38944,7 +38946,7 @@ extends GOperator
     
     copy()
     {
-        const copy = new GNodeGroup(this.nodeId, this.options);
+        const copy = new GGroupNode(this.nodeId, this.options);
 
         copy.copyBase(this);
 
@@ -38988,7 +38990,7 @@ extends GOperator
 
 
 
-class GNodeInputs
+class GGroupParam
 extends GOperator
 {
     input = null;
@@ -39009,7 +39011,7 @@ extends GOperator
 
     copy()
     {
-        const copy = new GNodeInputs(this.nodeId, this.options);
+        const copy = new GGroupParam(this.nodeId, this.options);
         
         copy.copyBase(this);
 
@@ -39084,9 +39086,6 @@ extends GOperator
         return this.value.copy();
     }
 }
-
-
-
 
 
 class GComment
@@ -39382,8 +39381,6 @@ function enableFeatures(subscription, beta)
     updateElementDisplay(menuFlowSep3                .div, subscription && beta);
     updateElementDisplay(menuItemCache               .div, subscription && beta);
     updateElementDisplay(menuItemCopy                .div, subscription && beta);
-    updateElementDisplay(menuItemCustomInputs        .div, false);//subscription && beta);
-    updateElementDisplay(menuItemCustomOutputs       .div, false);//subscription && beta);
     
     updateElementDisplay(menuItemSeries              .div, subscription && beta);    
     updateElementDisplay(menuItemSolve               .div, subscription && beta);    
@@ -43110,7 +43107,10 @@ const iconEllipse           = '<svg width="16" height="16" viewBox="0 0 16 16" f
 const iconPolygon           = '<svg width="20" height="16" viewBox="0 0 20 16" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M1.82238 15.4885L10.0496 1.23853L18.2769 15.4885H1.82238Z" stroke="white"/></svg>';
 const iconStar              = '<svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M8.8156 2.24924L10.4021 7.13198L10.5144 7.47747H10.8776H16.0116L11.8581 10.4952L11.5642 10.7087L11.6765 11.0542L13.263 15.9369L9.10949 12.9192L8.8156 12.7057L8.5217 12.9192L4.3682 15.9369L5.9547 11.0542L6.06695 10.7087L5.77306 10.4952L1.61955 7.47747H6.75357H7.11684L7.2291 7.13198L8.8156 2.24924Z" stroke="white"/></svg>';
  
-const iconNodeGroup         = '<svg width="17" height="15" viewBox="0 0 17 15" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M3 0.5H14C15.3807 0.5 16.5 1.61929 16.5 3V14.5H0.5V3C0.5 1.61929 1.61929 0.5 3 0.5Z" stroke="white"/><rect width="4" height="1" transform="matrix(-1 0 0 1 14 4)" fill="white"/><rect width="4" height="1" transform="matrix(-1 0 0 1 9 6)" fill="white"/><rect width="4" height="1" transform="matrix(-1 0 0 1 12 9)" fill="white"/><rect width="4" height="1" transform="matrix(-1 0 0 1 7 11)" fill="white"/></svg>';
+const iconNodeGroup         = '<svg width="18" height="15" viewBox="0 0 18 15" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M3 0.5H14C15.3807 0.5 16.5 1.61929 16.5 3V14.5H0.5V3C0.5 1.61929 1.61929 0.5 3 0.5Z" stroke="white"/><rect width="4" height="1" transform="matrix(-1 0 0 1 14 4)" fill="white"/><rect width="4" height="1" transform="matrix(-1 0 0 1 9 6)" fill="white"/><rect width="4" height="1" transform="matrix(-1 0 0 1 12 9)" fill="white"/><rect width="4" height="1" transform="matrix(-1 0 0 1 7 11)" fill="white"/></svg>';
+const iconGroupNode         = '<svg width="15" height="15" viewBox="0 0 15 15" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M3 0.5H12C13.3807 0.5 14.5 1.61929 14.5 3V14.5H0.5V3C0.5 1.61929 1.61929 0.5 3 0.5Z" stroke="white"/><rect width="9" height="1" transform="matrix(-1 0 0 1 12 5)" fill="white"/><rect width="9" height="1" transform="matrix(-1 0 0 1 12 8)" fill="white"/><rect width="9" height="1" transform="matrix(-1 0 0 1 12 11)" fill="white"/></svg>';
+const iconGroupParam        = '<svg width="11" height="9" viewBox="0 0 11 9" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="0.5" y="0.5" width="10" height="8" rx="2.5" stroke="white"/><circle cx="5.5" cy="4.5" r="1.5" fill="white"/></svg>';
+
 
 const iconHand              = '<svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" clip-rule="evenodd" d="M1.85653 12.2494L1.8554 12.2484C1.32015 11.771 1.2929 10.8911 1.7976 10.3815C2.3023 9.87193 3.1824 9.89065 3.665 10.4213L3.67129 10.4282L3.67773 10.435L4.27294 11.0653L5.99999 12.8943V10.3788V4C5.99999 3.46423 6.46423 3 6.99999 3C7.16906 3 7.33572 3.04789 7.48718 3.13836L7.99999 3.44469V9H8.99999V4.04203V3V2.27986V2C8.99999 1.46423 9.46423 1 9.99999 1C10.4142 1 10.807 1.27942 10.9437 1.66905L11.0597 2H11V9H12V2.4661L12.4437 2.16905C12.6058 2.06052 12.804 2 13 2C13.5358 2 14 2.46423 14 3V4V4.27549V6.02711V9H15V5.43676L15.5084 5.13662C15.6583 5.04814 15.8261 5 16 5C16.5358 5 17 5.46423 17 6V13.5C17 15.6001 15.7227 17.6052 13.812 18.4904C11.8955 19.3783 9.56768 19.0654 7.95351 17.7039L1.85653 12.2494ZM15 4.27549V4V3.17508V3C15 1.91195 14.088 1 13 1C12.9434 1 12.8868 1.00246 12.8304 1.00733C12.4943 1.03638 12.1668 1.15099 11.8873 1.3381C11.7759 1.02046 11.5846 0.741833 11.341 0.522228C10.9792 0.195965 10.5019 0 9.99999 0C9.18005 0 8.46014 0.517876 8.15511 1.23874C8.05538 1.47446 7.99999 1.73188 7.99999 2V2.27986C7.70403 2.10307 7.36184 2.00018 7.00094 2H6.99999C5.91195 2 4.99999 2.91195 4.99999 4V8.92652V9.18641V9.20713V10.3788L4.40481 9.74846C4.2821 9.61355 4.14593 9.49706 3.99999 9.39906C3.11355 8.80379 1.86654 8.89082 1.08709 9.67785C0.179345 10.5944 0.227074 12.136 1.18978 12.9947L7.2972 18.4585C9.20886 20.0788 11.9586 20.4512 14.2324 19.3978C16.4971 18.3486 18 15.989 18 13.5V6C18 4.91195 17.088 4 16 4C15.6382 4 15.2958 4.10085 15 4.27549Z" fill="white"/></svg>';
 
@@ -44116,6 +44116,7 @@ var menuColor;
 var menuColorStyle;
 var menuStyle;
 var menuShape;
+var menuGroup;
 
 var menuMath;
 var menuBoolean;
@@ -44254,10 +44255,6 @@ var menuItemLicenseSep1;
 var menuItemLicenseRemove;
 
 
-var menuItemCustomInputs;
-var menuItemCustomOutputs;
-
-
 
 function initGeneratorMenus()
 {
@@ -44372,9 +44369,7 @@ function initGeneratorMenus()
         menuItemRepeat        = new MenuItem('Repeat',            {icon: iconRepeat, callback: e => actionManager.do(getCreateNodeAction(REPEAT,       btnNumber.div, getCreateOptions(e)))}),
         menuFlowSep3          = new MenuItem('',                  {separator: true}),
         menuItemCache         = new MenuItem('Cache',             {icon: iconCache,  callback: e => actionManager.do(getCreateNodeAction(CACHE,        btnNumber.div, getCreateOptions(e)))}),
-        menuItemCopy          = new MenuItem('Copy',              {icon: iconCopy,   callback: e => actionManager.do(getCreateNodeAction(COPY,         btnNumber.div, getCreateOptions(e)))}),
-        menuItemCustomInputs  = new MenuItem('Custom inputs',     {                  callback: e => actionManager.do(getCreateNodeAction(NODE_INPUTS,  btnNumber.div, getCreateOptions(e)))}),
-        menuItemCustomOutputs = new MenuItem('Custom outputs',    {                  callback: e => actionManager.do(getCreateNodeAction(NODE_OUTPUTS, btnNumber.div, getCreateOptions(e)))})]);
+        menuItemCopy          = new MenuItem('Copy',              {icon: iconCopy,   callback: e => actionManager.do(getCreateNodeAction(COPY,         btnNumber.div, getCreateOptions(e)))})]);
     
     
     menuMath = new Menu('Math', true, false);
@@ -44484,6 +44479,12 @@ function initGeneratorMenus()
         new MenuItem('Star',      {icon: iconStar,      callback: e => actionManager.do(getCreateNodeAction(STAR,      btnShape.div, getCreateOptions(e)))})]);
 
 
+    menuGroup = new Menu('Group nodes', true, false);
+    menuGroup.addItems([
+        new MenuItem('Group',     {icon: iconGroupNode,  callback: e => actionManager.do(getCreateNodeAction(GROUP_NODE,  btnGroup.div, getCreateOptions(e)))}),
+        new MenuItem('Parameter', {icon: iconGroupParam, callback: e => actionManager.do(getCreateNodeAction(GROUP_PARAM, btnGroup.div, getCreateOptions(e)))})]);
+    
+
     menuWindow = new Menu('Window options', true, false);
     menuWindow.showOnLeft = true;
     menuWindow.addItems([
@@ -44547,7 +44548,7 @@ function initGeneratorMenus()
         menuItemNodeEdit           = new MenuItem('Edit...',         {callback: e => { hideAllMenus(); graphView.editSelectedCustomNode(); }}),
                                      new MenuItem('',                {separator: true}),
         // menuItemNodeActivate    = new MenuItem('Activate',        {callback: () => makeSelectedNodesActive()}),
-        menuItemNodeEnableDisable  = new MenuItem('Enable/Disable',  {shortcut:  osCtrlShift() + 'E',  callback: () => actionManager.do(new ToggleDisableNodesAction(graph, graphView.selectedNodes.map(n => n.id)))}),
+        menuItemNodeEnableDisable  = new MenuItem('Enable/Disable',  {shortcut:  osCtrlShift() + 'E',  callback: () => actionManager.do(new ToggleDisableNodesAction(ctedNodes.map(n => n.id)))}),
         menuItemNodeSep3           = new MenuItem('',                {separator: true}),
         menuItemNodeRemove         = new MenuItem('Remove',          {shortcut:  osCtrl() + '⌫',             callback: e => { hideAllMenus(); graphView.removeSelectedNodes(true); }})]);
 
@@ -44600,17 +44601,18 @@ function initGeneratorMenus()
     btnColor  = new MenuButton('', menuColor,  {useMenuName: true, highlight: () => currentMenus.includes(menuColor ), callback: () => updatePanMode(false)});
     btnStyle  = new MenuButton('', menuStyle,  {useMenuName: true, highlight: () => currentMenus.includes(menuStyle ), callback: () => updatePanMode(false)});
     btnShape  = new MenuButton('', menuShape,  {useMenuName: true, highlight: () => currentMenus.includes(menuShape ), callback: () => updatePanMode(false)});
+    btnGroup  = new MenuButton('', menuGroup,  {useMenuName: true, highlight: () => currentMenus.includes(menuShape ), callback: () => updatePanMode(false)});
 
-    btnGroup  = new MenuButton('Node groups', null, {callback: () => 
-    {
-        const create = new CreateNodeAction(graph, NODE_GROUP, btnGroup.div);
-        actionManager.do(create);
+    // btnGroup  = new MenuButton('Node groups', null, {callback: () => 
+    // {
+    //     const create = new CreateNodeAction(OUP, btnGroup.div);
+    //     actionManager.do(create);
 
-        graphView.updateNodes([create.node]);
-        graphView.updateScrollWithBounds();
+    //     graphView.updateNodes([create.node]);
+    //     graphView.updateScrollWithBounds();
 
-        updatePanMode(false);
-    }});
+    //     updatePanMode(false);
+    // }});
     
     btnHand = new MenuButton('Hand tool', null, {callback: () => 
     { 
@@ -44619,7 +44621,7 @@ function initGeneratorMenus()
 
     btnComment = new MenuButton('Add comment', null, {callback: () => 
     {
-        const create = new CreateNodeAction(graph, COMMENT, btnComment.div);
+        const create = new CreateNodeAction(COMMENT, btnComment.div);
         actionManager.do(create);
 
         graphView.updateNodes([create.node]);
@@ -46298,7 +46300,6 @@ GraphView.prototype.selectAllNodes = function(invert)
         : graph.nodes;
         
     actionManager.do(new SelectNodesAction(
-        graph,
         this.selectedNodes.map(n => n.id), 
         lastSelected      .map(n => n.id)));
 };
@@ -46312,7 +46313,6 @@ GraphView.prototype.deselectAllNodes = function()
     this.selectedNodes = [];
         
     actionManager.do(new SelectNodesAction(
-        graph,
         this.selectedNodes.map(n => n.id), 
         lastSelected      .map(n => n.id)));
 };
@@ -46322,7 +46322,7 @@ GraphView.prototype.deselectAllNodes = function()
 GraphView.prototype.copySelectedNodes = function()
 {
     pasteOffset     = point(0, 0);
-    copiedNodesJson = uiCopyNodes(graph, this.selectedNodes.map(n => n.id));
+    copiedNodesJson = uiCopyNodes(this.selectedNodes.map(n => n.id));
 
     writeTextToClipboard(copiedNodesJson);
 };
@@ -46389,7 +46389,7 @@ GraphView.prototype.pasteCopiedNodes = function(pasteConnected, clientX = Number
         const x = (clientX - this.pan.x) / this.zoom;
         const y = (clientY - this.pan.y) / this.zoom;
             
-        actionManager.do(new PasteNodesAction(graph, text, pasteConnected, false, x, y));
+        actionManager.do(new PasteNodesAction(text, pasteConnected, false, x, y));
     });
 };
 
@@ -46400,7 +46400,7 @@ GraphView.prototype.duplicateSelectedNodes = function(pasteConnected)
     if (!isEmpty(this.selectedNodes))
     {
         pasteOffset = point(0, 0);
-        actionManager.do(new PasteNodesAction(graph, uiCopyNodes(graph, this.selectedNodes.map(n => n.id)), pasteConnected, true));
+        actionManager.do(new PasteNodesAction(uiCopyNodes(this.selectedNodes.map(n => n.id)), pasteConnected, true));
     }
 };
 
@@ -46412,7 +46412,7 @@ GraphView.prototype.deleteSelectedNodes = function(cut = false)
 
     if (!isEmpty(nodeIds))
     {
-        actionManager.do(new DeleteNodesAction(graph, nodeIds, cut));
+        actionManager.do(new DeleteNodesAction(nodeIds, cut));
         this._selected = [];
     }
 };
@@ -46425,7 +46425,7 @@ GraphView.prototype.removeSelectedNodes = function()
 
     if (!isEmpty(nodeIds))
     {
-        actionManager.do(new RemoveNodesAction(graph, nodeIds));
+        actionManager.do(new RemoveNodesAction(nodeIds));
         this._selected = [];
     }
 };
@@ -46565,7 +46565,7 @@ GraphView.prototype.endConnection = function(pointerId, backInit = false)
             //     && !isLastInArray(input.node.headerInputs, input))
             // {
             //     console.log('1 reorder');
-            //     actionManager.do(new ReorderInputsAction(graph, input.node.id, oldReorderIndex, newReorderIndex));
+            //     actionManager.do(new ReorderInputsAction(input.node.id, oldReorderIndex, newReorderIndex));
             // }
             // else if (savedConnInput
             //       && savedConnInput.connectedOutput == this.tempConn.output
@@ -46582,11 +46582,11 @@ GraphView.prototype.endConnection = function(pointerId, backInit = false)
             //     //         input.node.inputs.indexOf(savedConnInput),
             //     //         input.index);
 
-            //     //     actionManager.do(new ReorderInputsAction(graph, savedConnInput.node.id, oldReorderIndex, savedConnInput.index));
+            //     //     actionManager.do(new ReorderInputsAction(savedConnInput.node.id, oldReorderIndex, savedConnInput.index));
             //     // }
             //     // else
             //     // {
-            //         actionManager.do(new ReorderInputConnectionsAction(graph, savedConnInput.node.id, savedConnInput.id, input.id));
+            //         actionManager.do(new ReorderInputConnectionsAction(savedConnInput.node.id, savedConnInput.id, input.id));
             //     // }
             // }
             // else if (input == savedConnInput
@@ -46604,7 +46604,7 @@ GraphView.prototype.endConnection = function(pointerId, backInit = false)
             // {
             //     // reconnect from below header to new variable new input
             //     console.log('4 reconnect');
-            //     actionManager.do(new ReconnectAction(graph, output, savedConnInput, input));
+            //     actionManager.do(new ReconnectAction(output, savedConnInput, input));
             // }
             // else if (savedConnInput
             //       && savedConnInput.connectedOutput == output
@@ -46617,18 +46617,18 @@ GraphView.prototype.endConnection = function(pointerId, backInit = false)
             //                      && input.index == 0))))
             // {
             //     console.log('5 reconnect');
-            //     actionManager.do(new ReconnectAction(graph, output, savedConnInput, input));
+            //     actionManager.do(new ReconnectAction(output, savedConnInput, input));
             // }
             // else if (   !savedConnInput
             //         && (  !input.connected
             //             || input.connectedOutput != this.tempConn.output)) // connect new
             // {
             //     console.log('6 createConnectAction');
-            //     actionManager.do(new ConnectAction(graph, output, input, {backInit: backInit}));
+            //     actionManager.do(new ConnectAction(output, input, {backInit: backInit}));
             // }
         }
         else if (savedConnInput)
-            actionManager.do(new DisconnectAction(graph, savedConnInput));
+            actionManager.do(new DisconnectAction(savedConnInput));
         
 
         if (this.savedConn) this.savedConn.wire.show(true);
@@ -46644,7 +46644,7 @@ GraphView.prototype.endConnection = function(pointerId, backInit = false)
 
         if (   output
             && input.canConnectFrom(output)) // TO OUTPUT
-            actionManager.do(new ConnectAction(graph, output, input, {backInit: backInit}));
+            actionManager.do(new ConnectAction(output, input, {backInit: backInit}));
 
         this.cancelConnection(pointerId);
     }
@@ -46659,13 +46659,13 @@ GraphView.prototype.endConnectionFromOutputToFixed = function(output, input, sav
             || input.connectedOutput != this.tempConn.output))
     {
         //console.log('F1 connect new');
-        actionManager.do(new ConnectAction(graph, output, input, {backInit: backInit}));
+        actionManager.do(new ConnectAction(output, input, {backInit: backInit}));
     }
     else if (savedConnInput
           && savedConnInput.connectedOutput == output)
     {
         //console.log('F2 reconnect');
-        actionManager.do(new ReconnectAction(graph, output, savedConnInput, input));
+        actionManager.do(new ReconnectAction(output, savedConnInput, input));
     }
     // else if (savedConnInput
     //       && savedConnInput.connectedOutput == this.tempConn.output
@@ -46673,7 +46673,7 @@ GraphView.prototype.endConnectionFromOutputToFixed = function(output, input, sav
     //       && savedConnInput.node.inputs.includes(savedConnInput) == savedConnInput.node.inputs.includes(input))
     // {
     //     console.log('2 reorder');
-    //     actionManager.do(new ReorderInputConnectionsAction(graph, savedConnInput.node.id, savedConnInput.id, input.id));
+    //     actionManager.do(new ReorderInputConnectionsAction(savedConnInput.node.id, savedConnInput.id, input.id));
     // }
 };
 
@@ -46686,7 +46686,7 @@ GraphView.prototype.endConnectionFromOutputToVariable = function(output, input, 
             || input.connectedOutput != this.tempConn.output))
     {
         //console.log('V1 connect new');
-        actionManager.do(new ConnectAction(graph, output, input, {backInit: backInit}));
+        actionManager.do(new ConnectAction(output, input, {backInit: backInit}));
     }
     else if (savedConnInput
           && savedConnInput.connectedOutput == output
@@ -46698,7 +46698,7 @@ GraphView.prototype.endConnectionFromOutputToVariable = function(output, input, 
     {
         // if (input.index <)
         //console.log('V2 reconnect');
-        actionManager.do(new ReconnectAction(graph, output, savedConnInput, input));
+        actionManager.do(new ReconnectAction(output, savedConnInput, input));
     }
 };
 
@@ -47568,7 +47568,7 @@ GraphView.prototype.updateSelectBox = function(shiftKey, ctrlKey)
         ...this.lastSelectedNodes];
 
     nodes.forEach(n => n.updateBorder());
-    updateComments(graph, nodes.map(n => n.id));
+    updateComments(nodes.map(n => n.id));
 
     this._prevSelectedNodes = selected;
 };
@@ -51377,7 +51377,7 @@ class Connection
 
 
 
-function parseConnectionJsonAndConnect(graph, _conn, pasteConnected)
+function parseConnectionJsonAndConnect(_conn, pasteConnected)
 {
     const outputNode  = graph.nodeFromId(_conn.outputNodeId);
     const outputId    = _conn.outputId;
@@ -53568,7 +53568,7 @@ Operator.prototype.createHeader = function()
             && e.clientY >= bounds.top  && e.clientY < bounds.bottom)
             this.showLabelTextbox();
         else if (!this.header.ignoreDoubleClick)
-            actionManager.do(new MakeActiveNodesAction(graph, [this.id]));
+            actionManager.do(new MakeActiveNodesAction([this.id]));
 
         this.header.ignoreDoubleClick = false;
     });
@@ -53868,7 +53868,7 @@ Operator.prototype.initLabelTextbox = function()
             {
                 const newName = this.textbox.value;
                 setTimeout(() => this.setName(newName));
-                actionManager.do(new RenameNodeAction(graph, this.id, newName));
+                actionManager.do(new RenameNodeAction(this.id, newName));
             }
         }
         else
@@ -54373,7 +54373,7 @@ extends OperatorWithValue
                     this._symbol.clicked0      = false;
                     this._symbol.style.opacity = 1;
 
-                    actionManager.do(new ToggleOperatorSymbolAction(graph, this.id, true));
+                    actionManager.do(new ToggleOperatorSymbolAction(this.id, true));
 
                     this.header.ignoreDoubleClick = true;
                 }
@@ -54391,7 +54391,7 @@ extends OperatorWithValue
         this.textbox.addEventListener('finishedit', e => 
         {
             if (this._showOnlySymbol)
-                actionManager.do(new ToggleOperatorSymbolAction(graph, this.id, false), e.detail.value != e.detail.oldValue);
+                actionManager.do(new ToggleOperatorSymbolAction(this.id, false), e.detail.value != e.detail.oldValue);
         });
     }
     
@@ -61691,7 +61691,7 @@ extends OpShapeBase
     
     constructor()
     {
-        super(RECTANGLE, 'rect', 'rect');
+        super(RECTANGLE, 'rect', 'rectangle');
 
 
         this.addInput (this.createInputForObjects([RECTANGLE, RECTANGLE_VALUE], getNodeInputValuesForUndo));
@@ -61815,7 +61815,7 @@ extends OpShapeBase
     
     constructor()
     {
-        super(POLYGON, 'poly', 'poly');
+        super(POLYGON, 'poly', 'polygon');
 
         this.addInput (this.createInputForObjects([POLYGON, POLYGON_VALUE], getNodeInputValuesForUndo));
         this.addOutput(new Output([POLYGON], this.output_genRequest));
@@ -62780,7 +62780,7 @@ extends OpColorBase
 }
 
 
-class   OpNodeGroup
+class   OpGroupNode
 extends ResizableBase
 {
     children = [];
@@ -62966,7 +62966,7 @@ extends ResizableBase
 
 
 
-class   OpNodeInputs
+class   OpGroupParam
 extends OperatorBase
 {
     paramCount;
@@ -62975,7 +62975,7 @@ extends OperatorBase
 
     constructor()
     {
-        super(NODE_INPUTS, 'inputs', 'inputs');
+        super(GROUP_PARAM, 'param', 'parameter');
 
         //this.inert = true;
 
@@ -63104,9 +63104,6 @@ extends OperatorBase
 }
 
 
-
-
-
 class   OpComment
 extends OperatorBase
 {
@@ -63127,7 +63124,7 @@ extends OperatorBase
         this.textbox.addEventListener('change', e =>
         {
             if (this.textbox.value.trim() == '')
-                actionManager.do(new DeleteNodesAction(graph, [this.id]), true);
+                actionManager.do(new DeleteNodesAction([this.id]), true);
         });
     }
 
@@ -64743,7 +64740,7 @@ extends Action
 
         const insert = 
                this.prevSelectedIds.length == 1
-            && canAutoConnectNode(graph, node);
+            && canAutoConnectNode(node);
    
             
         graph.addNode(node, !insert);
@@ -64802,7 +64799,7 @@ extends Action
 
     undo(updateNodes)
     {
-        uiDeleteNodes(graph, [this.createdNodeId]);
+        uiDeleteNodes([this.createdNodeId]);
 
         createNodeAction_activateOldInput(this, updateNodes);
 
@@ -64882,7 +64879,7 @@ extends Action
         const autoConnect = 
                 this.autoConnect
             && !isEmpty(this.prevSelectedIds)
-            &&  canAutoConnectNode(graph, this.node)
+            &&  canAutoConnectNode(this.node)
             && !!this.options.autoConnect;
 
             
@@ -64917,7 +64914,7 @@ extends Action
 
     undo(updateNodes)
     {
-        uiDeleteNodes(graph, [this.createdNodeId]);
+        uiDeleteNodes([this.createdNodeId]);
 
         createNodeAction_activateOldInput(this, updateNodes);
         
@@ -64997,7 +64994,7 @@ extends Action
 
         DisconnectAction_activateNewNodes(this);
 
-        uiSaveNodes(graph, this.newActiveNodeIds);
+        uiSaveNodes(this.newActiveNodeIds);
     }
 
 
@@ -65418,7 +65415,7 @@ extends Action
 
         pushUnique(updateNodes, this.node);
 
-        uiSaveNodes(graph, [this.nodeId]);
+        uiSaveNodes([this.nodeId]);
     }
 
 
@@ -65436,7 +65433,7 @@ extends Action
 
         this.node.updateNode();
 
-        uiSaveNodes(graph, [this.nodeId]);
+        uiSaveNodes([this.nodeId]);
 
         if (this.node.paramValue.input.connected)
             uiTriggerUndo();
@@ -65481,7 +65478,7 @@ extends Action
         uiMakeNodesActive(newActiveNodes);
         pushUnique(updateNodes, newActiveNodes);
 
-        uiSaveNodes(graph, filterUnique([...this.newActiveNodeIds, ...this.oldActiveNodeIds]));
+        uiSaveNodes(filterUnique([...this.newActiveNodeIds, ...this.oldActiveNodeIds]));
     }
 
 
@@ -65497,7 +65494,7 @@ extends Action
 
         pushUnique(updateNodes, this.oldActiveNodeIds.map(id => graph.nodeFromId(id)));
 
-        uiSaveNodes(graph, filterUnique([...this.newActiveNodeIds, ...this.oldActiveNodeIds]));
+        uiSaveNodes(filterUnique([...this.newActiveNodeIds, ...this.oldActiveNodeIds]));
     }
 }
 
@@ -65551,7 +65548,7 @@ extends Action
             pushUnique(this.oldActiveNodeIds, graph.getActiveNodesFromNodeId(nodeId).map(n => n.id));
 
 
-        const [nodes, _conns] = uiPasteNodes(graph, this.copiedNodesJson, this.pasteConnected, this.x, this.y, updateNodes);
+        const [nodes, _conns] = uiPasteNodes(this.copiedNodesJson, this.pasteConnected, this.x, this.y, updateNodes);
 
         pushUnique(this.newConnectionData, _conns);
 
@@ -65597,7 +65594,7 @@ extends Action
 
     undo(updateNodes)
     {
-        uiDeleteNodes(graph, this.pastedNodeIds);
+        uiDeleteNodes(this.pastedNodeIds);
         
         pasteOffset.x -= pasteOffsetDelta.x;
         pasteOffset.y -= pasteOffsetDelta.y;
@@ -65842,7 +65839,7 @@ extends Action
 
         removeNodesAction_makeNewConnections(this);
 
-        uiSaveNodes(graph, this.newActiveNodeIds);
+        uiSaveNodes(this.newActiveNodeIds);
     }
 
 
@@ -65854,7 +65851,7 @@ extends Action
         this.deactivateNewActiveNodes();
         deleteNodesAction_activateOldActiveNodes(this, updateNodes);
 
-        uiSaveNodes(graph, [...this.nodeIds, ...this.newActiveNodeIds]);
+        uiSaveNodes([...this.nodeIds, ...this.newActiveNodeIds]);
     }
 
 
@@ -65971,7 +65968,7 @@ extends Action
         this.oldName = this.node.name;
         this.node.setName(this.newName, {updateNodes: updateNodes});
 
-        uiSaveNodes(graph, [this.nodeId]);
+        uiSaveNodes([this.nodeId]);
     }
 
 
@@ -65981,7 +65978,7 @@ extends Action
         this.node.setName(this.oldName, {updateNodes: updateNodes});
         this.node.updateNode();
 
-        uiSaveNodes(graph, [this.nodeId]);
+        uiSaveNodes([this.nodeId]);
     }
 
 
@@ -65991,7 +65988,7 @@ extends Action
         this.node.setName(this.newName, {updateNodes: updateNodes});
         this.node.updateNode();
         
-        uiSaveNodes(graph, [this.nodeId]);
+        uiSaveNodes([this.nodeId]);
     }
 }
 
@@ -66028,7 +66025,7 @@ extends Action
 
         this.swapConnections();
         
-        uiSaveNodes(graph, [this.nodeId]);
+        uiSaveNodes([this.nodeId]);
 
         this.saveInputConnections();
 
@@ -66043,7 +66040,7 @@ extends Action
 
         this.swapConnections();
 
-        uiSaveNodes(graph, [this.nodeId]);
+        uiSaveNodes([this.nodeId]);
         
         this.saveInputConnections();
 
@@ -66140,7 +66137,7 @@ extends Action
         const node = graph.nodeFromId(this.nodeId);
 
         moveInArray(node.inputs, this.newIndex, this.oldIndex);
-        uiSaveNodes(graph, [this.nodeId]);
+        uiSaveNodes([this.nodeId]);
         
         this.saveInputConnections();
 
@@ -66154,7 +66151,7 @@ extends Action
         const node = graph.nodeFromId(this.nodeId);
 
         moveInArray(node.inputs, this.oldIndex, this.newIndex);
-        uiSaveNodes(graph, [this.nodeId]);
+        uiSaveNodes([this.nodeId]);
 
         this.saveInputConnections();
 
@@ -66260,7 +66257,7 @@ extends Action
         }
 
 
-        uiSaveNodes(graph, movedIds);
+        uiSaveNodes(movedIds);
     }
 
 
@@ -66281,7 +66278,7 @@ extends Action
             
         graphView.selectByIds(this.prevSelectedIds);
 
-        uiSaveNodes(graph, movedIds);
+        uiSaveNodes(movedIds);
     }
 
 
@@ -66322,7 +66319,7 @@ extends Action
     do(updateNodes)
     {
         // this happens in the UI
-        updateComments(graph, this.prevSelectedIds);
+        updateComments(this.prevSelectedIds);
     }
 
 
@@ -66330,7 +66327,7 @@ extends Action
     undo(updateNodes)
     {
         graphView.selectByIds(this.prevSelectedIds);
-        updateComments(graph, this.selectedIds);
+        updateComments(this.selectedIds);
     }
 
 
@@ -66339,14 +66336,14 @@ extends Action
     {
         graphView.selectByIds(this.selectedIds);
 
-        updateComments(graph, this.selectedIds);
-        updateComments(graph, this.prevSelectedIds);
+        updateComments(this.selectedIds);
+        updateComments(this.prevSelectedIds);
     }
 }
 
 
 
-function updateComments(graph, nodeIds)
+function updateComments(nodeIds)
 {
     nodeIds
         .map(id => graph.nodeFromId(id))
@@ -66430,7 +66427,7 @@ extends Action
         //     this.newRect.w,
         //     this.newRect.h);
 
-        uiSaveNodes(graph, [this.nodeId]);
+        uiSaveNodes([this.nodeId]);
     }
 
 
@@ -66445,7 +66442,7 @@ extends Action
 
         this.node.updateNode();
 
-        uiSaveNodes(graph, [this.nodeId]);
+        uiSaveNodes([this.nodeId]);
     }
 
 
@@ -66460,7 +66457,7 @@ extends Action
 
         this.node.updateNode();
         
-        uiSaveNodes(graph, [this.nodeId]);
+        uiSaveNodes([this.nodeId]);
     }
 }
 
@@ -66527,7 +66524,7 @@ extends Action
         this.param.updateSetting(this.setting, this.newValue);
         this.node.updateNode();
         
-        uiSaveNodes(graph, [this.nodeId]);
+        uiSaveNodes([this.nodeId]);
 
         //pushUpdateFromParam(this, [this.param.node], this.param);
     }
@@ -66539,7 +66536,7 @@ extends Action
         this.param.updateSetting(this.setting, this.oldValue);
         this.node.updateNode();
 
-        uiSaveNodes(graph, [this.nodeId]);
+        uiSaveNodes([this.nodeId]);
     }
 
 
@@ -66549,7 +66546,7 @@ extends Action
         this.param.updateSetting(this.setting, this.newValue);
         this.node.updateNode();
 
-        uiSaveNodes(graph, [this.nodeId]);
+        uiSaveNodes([this.nodeId]);
    }
 }
 
@@ -66651,7 +66648,7 @@ extends Action
         const nodes = this.selectedIds.map(id => graph.nodeFromId(id));
 
         uiToggleDisableNodes(nodes);
-        uiSaveNodes(graph, nodes.map(n => n.id));
+        uiSaveNodes(nodes.map(n => n.id));
 
         pushUnique(updateNodes, nodes);
     }
@@ -66695,7 +66692,7 @@ extends Action
 
         this.node.updateNode();
 
-        uiSaveNodes(graph, [this.nodeId]);
+        uiSaveNodes([this.nodeId]);
     }
 
 
@@ -66706,7 +66703,7 @@ extends Action
 
         this.node.updateNode();
 
-        uiSaveNodes(graph, [this.nodeId]);
+        uiSaveNodes([this.nodeId]);
     }    
 }
 
@@ -66765,8 +66762,8 @@ const rgbFlowLight         = hex2rgb('#D1D1D1');
 const rgbActiveNumberLight = hex2rgb('#369FE5');
 const rgbNumberLight       = hex2rgb('#B8D4F2');
 
-const rgbActiveCustomLight = hex2rgb('#3AAB5A');
-const rgbCustomLight       = hex2rgb('#B9D9BF');
+const rgbActiveGroupLight  = hex2rgb('#3AAB5A');
+const rgbGroupLight        = hex2rgb('#B9D9BF');
 
 const rgbActiveShapeLight  = hex2rgb('#E1765F');
 const rgbShapeLight        = hex2rgb('#F0C7C0');
@@ -66781,8 +66778,8 @@ const rgbFlowDark          = hex2rgb('#4D4D4D');
 const rgbActiveNumberDark  = hex2rgb('#1785CE');
 const rgbNumberDark        = hex2rgb('#2B4E6E');
 
-const rgbActiveCustomDark  = hex2rgb('#33AD55');
-const rgbCustomDark        = hex2rgb('#365E3F');
+const rgbActiveGroupDark   = hex2rgb('#33AD55');
+const rgbGroupDark         = hex2rgb('#365E3F');
 
 const rgbActiveShapeDark   = hex2rgb('#E1765F');
 const rgbShapeDark         = hex2rgb('#734B43');
@@ -67601,7 +67598,7 @@ function deleteConnectionsToNodes(str)
     
     const nodeIds = str.split(' ').filter(i => i);
 
-    uiRemoveConnsToNodes(graph, nodeIds);
+    uiRemoveConnsToNodes(nodeIds);
 
     if (!isEmpty(nodeIds))
         hideDeleteConnectionsDialog();
@@ -67954,7 +67951,7 @@ document.addEventListener('keydown', e =>
           && e.shiftKey)
     {
         e.preventDefault();
-        actionManager.do(new ToggleDisableNodesAction(graph, graphView.selectedNodes.map(n => n.id)));
+        actionManager.do(new ToggleDisableNodesAction(graphView.selectedNodes.map(n => n.id)));
         return false;
     }
 
@@ -69464,7 +69461,6 @@ function loadConnectionsAsync(_nodes, _conns, loadedNodes, setProgress)
             promise = promise.then(() => 
             {
                 const res = resolveConnections(
-                    graph,
                     _nodes,
                     _conns, 
                     i, 
@@ -69543,7 +69539,7 @@ function resolveNodes(_nodes, first, last, nodes, pasting)
 
 
 
-function resolveConnections(graph, nodes, _connections, first, last)
+function resolveConnections(_connections, first, last)
 {
     return new Promise(resolve => 
         requestAnimationFrame(() => 
@@ -69583,7 +69579,7 @@ function resolveConnections(graph, nodes, _connections, first, last)
                 }
 
 
-                parseConnectionJsonAndConnect(graph, _conn, false);
+                parseConnectionJsonAndConnect(_conn, false);
             }
 
             resolve();
@@ -69623,7 +69619,7 @@ function loadNode(_node, pasting)
 
 
 
-function parseConnectionsAndConnect(graph, data, pasteConnected, setProgress = null)
+function parseConnectionsAndConnect(data, pasteConnected, setProgress = null)
 {
     data.connections.sort((c1, c2) =>
     {
@@ -69644,7 +69640,7 @@ function parseConnectionsAndConnect(graph, data, pasteConnected, setProgress = n
                && data.nodes.find(n => (n.newId ?? n.id) == _conn. inputNodeId)
             || pasteConnected)
         {
-            parseConnectionJsonAndConnect(graph, _conn, pasteConnected);
+            parseConnectionJsonAndConnect(_conn, pasteConnected);
             connections.push(_conn);
         }
 
@@ -70073,9 +70069,8 @@ function createNode(nodeType, creatingButton = null, createdNodeId = -1, options
         case POLYGON:                 node = new OpPolygon();           break;
         case STAR:                    node = new OpStar();              break;
       
-        case NODE_GROUP:              node = new OpNodeGroup();         break;
-        case NODE_INPUTS:             node = new OpNodeInputs();        break;
-        case NODE_OUTPUTS:            node = new OpNodeOutputs();       break;
+        case GROUP_NODE:              node = new OpGroupNode();         break;
+        case GROUP_PARAM:             node = new OpGroupParam();        break;
 
         case COMMENT:                 node = new OpComment();           break;
      
@@ -70169,7 +70164,7 @@ function connectionsToJson(nodes, connOutputMustBeInNodes)
 
 
 
-function canAutoConnectNode(graph, node)
+function canAutoConnectNode(node)
 {
     const selNode = graph.nodes.find(n => n.selected);
 
@@ -70185,7 +70180,7 @@ function canAutoConnectNode(graph, node)
 
 
 
-function uiDeleteNodes(graph, nodeIds)
+function uiDeleteNodes(nodeIds)
 {
     nodeIds.forEach(id => graph.nodeFromId(id).makePassive());
 
@@ -70247,7 +70242,7 @@ function uiVariableConnectFromOutput(output, inputNode, inputId, outputOrder = -
         if (   !graphView.loadingNodes
             && !graphView.pastingNodes
             && !graphView.restoringNodes)
-            uiUpdateSavedConnectionsToNodeId(inputNode.graph, inputNode.id, true);
+            uiUpdateSavedConnectionsToNodeId(inputNode.id, true);
 
         return conn;
     }
@@ -70273,7 +70268,7 @@ function uiDisconnect(input, saveOld = true)
     node.graph.disconnect(input);
 
     if (node.variableInputs)
-        uiUpdateSavedConnectionsToNodeId(node.graph, node.id, saveOld);
+        uiUpdateSavedConnectionsToNodeId(node.id, saveOld);
 }
 
 
@@ -70289,7 +70284,7 @@ function uiDisconnectAny(input)
 
 
 
-function uiUpdateSavedConnectionsToNodeId(graph, nodeId, saveOld)
+function uiUpdateSavedConnectionsToNodeId(nodeId, saveOld)
 {
     const node = graph.nodeFromId(nodeId);
 
@@ -70317,7 +70312,7 @@ function uiUpdateSavedConnectionsToNodeId(graph, nodeId, saveOld)
 function makeSelectedNodesActive()
 {
     if (graphView.selectedNodes.find(n => !n.active))
-        actionManager.do(new MakeActiveNodesAction(graph, graphView.selectedNodes.map(n => n.id)));
+        actionManager.do(new MakeActiveNodesAction(graphView.selectedNodes.map(n => n.id)));
 }
 
 
@@ -70395,7 +70390,7 @@ function uiMakeNodeRightPassive(node, fromNode = null)
 
 
 
-function uiShowParamValue(graph, nodeId, paramName, value)
+function uiShowParamValue(nodeId, paramName, value)
 {
     const node = graph.nodeFromId(nodeId);
 
@@ -70408,7 +70403,7 @@ function uiShowParamValue(graph, nodeId, paramName, value)
 
 
 
-function uiCopyNodes(graph, nodeIds)
+function uiCopyNodes(nodeIds)
 {
     const nodes      = graph.nodes.filter(n => nodeIds.includes(n.id));
     const copiedJson = nodesToJson(nodes, true, false);
@@ -70420,7 +70415,7 @@ function uiCopyNodes(graph, nodeIds)
 
 
 
-function uiPasteNodes(graph, nodesJson, pasteConnected, x, y, updateNodes)
+function uiPasteNodes(nodesJson, pasteConnected, x, y, updateNodes)
 {
     //console.log(nodesJson);
 
@@ -70514,7 +70509,7 @@ function uiPasteNodes(graph, nodesJson, pasteConnected, x, y, updateNodes)
     if (data.connections)
     {
         correctNodeNamesInConnections(data);
-        data.connections = parseConnectionsAndConnect(graph, data, pasteConnected);
+        data.connections = parseConnectionsAndConnect(data, pasteConnected);
     }
     else
         data.connections = []; // return an empty array if no data was loaded
@@ -70717,7 +70712,7 @@ function uiUpdateValuesAndObjects(requestId, actionId, updateNodeId, updateParam
 
 
     if (!graphView.loadingNodes)
-        uiSaveNodes(graph, nodes.map(n => n.id));
+        uiSaveNodes(nodes.map(n => n.id));
 
 
     for (const node of nodes)
@@ -70759,7 +70754,7 @@ function uiUpdateValuesAndObjects(requestId, actionId, updateNodeId, updateParam
                 node.updateMeasureData();
             }
 
-            uiSaveNodes(graph, graph.nodes.map(n => n.id));
+            uiSaveNodes(graph.nodes.map(n => n.id));
         }
 
 
@@ -70784,7 +70779,7 @@ function uiToggleDisableNodes(nodes)
 
 
 
-function uiSaveNodes(graph, nodeIds)
+function uiSaveNodes(nodeIds)
 {
     const nodeJson = [];
 
@@ -70979,7 +70974,7 @@ function uiRemoveSavedNodesAndConns(nodeIds)
 
 
 
-function uiRemoveConnsToNodes(graph, nodeIds)
+function uiRemoveConnsToNodes(nodeIds)
 {
     const nodes = nodeIds.map(id => graph.nodeFromId(id));
 

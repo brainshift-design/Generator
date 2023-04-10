@@ -28,7 +28,7 @@ extends Action
         this.oldName = this.node.name;
         this.node.setName(this.newName, {updateNodes: updateNodes});
 
-        uiSaveNodes(graph, [this.nodeId]);
+        uiSaveNodes([this.nodeId]);
     }
 
 
@@ -38,7 +38,7 @@ extends Action
         this.node.setName(this.oldName, {updateNodes: updateNodes});
         this.node.updateNode();
 
-        uiSaveNodes(graph, [this.nodeId]);
+        uiSaveNodes([this.nodeId]);
     }
 
 
@@ -48,6 +48,6 @@ extends Action
         this.node.setName(this.newName, {updateNodes: updateNodes});
         this.node.updateNode();
         
-        uiSaveNodes(graph, [this.nodeId]);
+        uiSaveNodes([this.nodeId]);
     }
 }

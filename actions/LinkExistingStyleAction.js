@@ -56,7 +56,7 @@ extends Action
 
         pushUnique(updateNodes, this.node);
 
-        uiSaveNodes(graph, [this.nodeId]);
+        uiSaveNodes([this.nodeId]);
     }
 
 
@@ -74,7 +74,7 @@ extends Action
 
         this.node.updateNode();
 
-        uiSaveNodes(graph, [this.nodeId]);
+        uiSaveNodes([this.nodeId]);
 
         if (this.node.paramValue.input.connected)
             uiTriggerUndo();

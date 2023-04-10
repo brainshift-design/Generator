@@ -51,7 +51,7 @@ extends Action
         const autoConnect = 
                 this.autoConnect
             && !isEmpty(this.prevSelectedIds)
-            &&  canAutoConnectNode(graph, this.node)
+            &&  canAutoConnectNode(this.node)
             && !!this.options.autoConnect;
 
             
@@ -86,7 +86,7 @@ extends Action
 
     undo(updateNodes)
     {
-        uiDeleteNodes(graph, [this.createdNodeId]);
+        uiDeleteNodes([this.createdNodeId]);
 
         createNodeAction_activateOldInput(this, updateNodes);
         

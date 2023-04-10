@@ -305,8 +305,8 @@ function getCreateNodeAction(type, creatingButton, options)
 
     return !!options.insert
         &&  !options.autoConnect
-           ? new CreateInsertNodeAction(graph, type, creatingButton, options)
-           : new CreateNodeAction      (graph, type, creatingButton, options, !!options.autoConnect);
+           ? new CreateInsertNodeAction(type, creatingButton, options)
+           : new CreateNodeAction      (type, creatingButton, options, !!options.autoConnect);
 }
 
 

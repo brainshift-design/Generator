@@ -154,7 +154,6 @@ GraphView.prototype.selectAllNodes = function(invert)
         : graph.nodes;
         
     actionManager.do(new SelectNodesAction(
-        graph,
         this.selectedNodes.map(n => n.id), 
         lastSelected      .map(n => n.id)));
 };
@@ -168,7 +167,6 @@ GraphView.prototype.deselectAllNodes = function()
     this.selectedNodes = [];
         
     actionManager.do(new SelectNodesAction(
-        graph,
         this.selectedNodes.map(n => n.id), 
         lastSelected      .map(n => n.id)));
 };
@@ -178,7 +176,7 @@ GraphView.prototype.deselectAllNodes = function()
 GraphView.prototype.copySelectedNodes = function()
 {
     pasteOffset     = point(0, 0);
-    copiedNodesJson = uiCopyNodes(graph, this.selectedNodes.map(n => n.id));
+    copiedNodesJson = uiCopyNodes(this.selectedNodes.map(n => n.id));
 
     writeTextToClipboard(copiedNodesJson);
 };
@@ -245,7 +243,7 @@ GraphView.prototype.pasteCopiedNodes = function(pasteConnected, clientX = Number
         const x = (clientX - this.pan.x) / this.zoom;
         const y = (clientY - this.pan.y) / this.zoom;
             
-        actionManager.do(new PasteNodesAction(graph, text, pasteConnected, false, x, y));
+        actionManager.do(new PasteNodesAction(text, pasteConnected, false, x, y));
     });
 };
 
@@ -256,7 +254,7 @@ GraphView.prototype.duplicateSelectedNodes = function(pasteConnected)
     if (!isEmpty(this.selectedNodes))
     {
         pasteOffset = point(0, 0);
-        actionManager.do(new PasteNodesAction(graph, uiCopyNodes(graph, this.selectedNodes.map(n => n.id)), pasteConnected, true));
+        actionManager.do(new PasteNodesAction(uiCopyNodes(this.selectedNodes.map(n => n.id)), pasteConnected, true));
     }
 };
 
@@ -268,7 +266,7 @@ GraphView.prototype.deleteSelectedNodes = function(cut = false)
 
     if (!isEmpty(nodeIds))
     {
-        actionManager.do(new DeleteNodesAction(graph, nodeIds, cut));
+        actionManager.do(new DeleteNodesAction(nodeIds, cut));
         this._selected = [];
     }
 };
@@ -281,7 +279,7 @@ GraphView.prototype.removeSelectedNodes = function()
 
     if (!isEmpty(nodeIds))
     {
-        actionManager.do(new RemoveNodesAction(graph, nodeIds));
+        actionManager.do(new RemoveNodesAction(nodeIds));
         this._selected = [];
     }
 };

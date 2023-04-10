@@ -47,7 +47,7 @@ extends Action
             pushUnique(this.oldActiveNodeIds, graph.getActiveNodesFromNodeId(nodeId).map(n => n.id));
 
 
-        const [nodes, _conns] = uiPasteNodes(graph, this.copiedNodesJson, this.pasteConnected, this.x, this.y, updateNodes);
+        const [nodes, _conns] = uiPasteNodes(this.copiedNodesJson, this.pasteConnected, this.x, this.y, updateNodes);
 
         pushUnique(this.newConnectionData, _conns);
 
@@ -93,7 +93,7 @@ extends Action
 
     undo(updateNodes)
     {
-        uiDeleteNodes(graph, this.pastedNodeIds);
+        uiDeleteNodes(this.pastedNodeIds);
         
         pasteOffset.x -= pasteOffsetDelta.x;
         pasteOffset.y -= pasteOffsetDelta.y;

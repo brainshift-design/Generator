@@ -347,7 +347,6 @@ function loadConnectionsAsync(_nodes, _conns, loadedNodes, setProgress)
             promise = promise.then(() => 
             {
                 const res = resolveConnections(
-                    graph,
                     _nodes,
                     _conns, 
                     i, 
@@ -426,7 +425,7 @@ function resolveNodes(_nodes, first, last, nodes, pasting)
 
 
 
-function resolveConnections(graph, nodes, _connections, first, last)
+function resolveConnections(_connections, first, last)
 {
     return new Promise(resolve => 
         requestAnimationFrame(() => 
@@ -466,7 +465,7 @@ function resolveConnections(graph, nodes, _connections, first, last)
                 }
 
 
-                parseConnectionJsonAndConnect(graph, _conn, false);
+                parseConnectionJsonAndConnect(_conn, false);
             }
 
             resolve();
@@ -506,7 +505,7 @@ function loadNode(_node, pasting)
 
 
 
-function parseConnectionsAndConnect(graph, data, pasteConnected, setProgress = null)
+function parseConnectionsAndConnect(data, pasteConnected, setProgress = null)
 {
     data.connections.sort((c1, c2) =>
     {
@@ -527,7 +526,7 @@ function parseConnectionsAndConnect(graph, data, pasteConnected, setProgress = n
                && data.nodes.find(n => (n.newId ?? n.id) == _conn. inputNodeId)
             || pasteConnected)
         {
-            parseConnectionJsonAndConnect(graph, _conn, pasteConnected);
+            parseConnectionJsonAndConnect(_conn, pasteConnected);
             connections.push(_conn);
         }
 

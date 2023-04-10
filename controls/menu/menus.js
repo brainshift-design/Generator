@@ -27,6 +27,7 @@ var menuColor;
 var menuColorStyle;
 var menuStyle;
 var menuShape;
+var menuGroup;
 
 var menuMath;
 var menuBoolean;
@@ -165,10 +166,6 @@ var menuItemLicenseSep1;
 var menuItemLicenseRemove;
 
 
-var menuItemCustomInputs;
-var menuItemCustomOutputs;
-
-
 
 function initGeneratorMenus()
 {
@@ -283,9 +280,7 @@ function initGeneratorMenus()
         menuItemRepeat        = new MenuItem('Repeat',            {icon: iconRepeat, callback: e => actionManager.do(getCreateNodeAction(REPEAT,       btnNumber.div, getCreateOptions(e)))}),
         menuFlowSep3          = new MenuItem('',                  {separator: true}),
         menuItemCache         = new MenuItem('Cache',             {icon: iconCache,  callback: e => actionManager.do(getCreateNodeAction(CACHE,        btnNumber.div, getCreateOptions(e)))}),
-        menuItemCopy          = new MenuItem('Copy',              {icon: iconCopy,   callback: e => actionManager.do(getCreateNodeAction(COPY,         btnNumber.div, getCreateOptions(e)))}),
-        menuItemCustomInputs  = new MenuItem('Custom inputs',     {                  callback: e => actionManager.do(getCreateNodeAction(NODE_INPUTS,  btnNumber.div, getCreateOptions(e)))}),
-        menuItemCustomOutputs = new MenuItem('Custom outputs',    {                  callback: e => actionManager.do(getCreateNodeAction(NODE_OUTPUTS, btnNumber.div, getCreateOptions(e)))})]);
+        menuItemCopy          = new MenuItem('Copy',              {icon: iconCopy,   callback: e => actionManager.do(getCreateNodeAction(COPY,         btnNumber.div, getCreateOptions(e)))})]);
     
     
     menuMath = new Menu('Math', true, false);
@@ -395,6 +390,12 @@ function initGeneratorMenus()
         new MenuItem('Star',      {icon: iconStar,      callback: e => actionManager.do(getCreateNodeAction(STAR,      btnShape.div, getCreateOptions(e)))})]);
 
 
+    menuGroup = new Menu('Group nodes', true, false);
+    menuGroup.addItems([
+        new MenuItem('Group',     {icon: iconGroupNode,  callback: e => actionManager.do(getCreateNodeAction(GROUP_NODE,  btnGroup.div, getCreateOptions(e)))}),
+        new MenuItem('Parameter', {icon: iconGroupParam, callback: e => actionManager.do(getCreateNodeAction(GROUP_PARAM, btnGroup.div, getCreateOptions(e)))})]);
+    
+
     menuWindow = new Menu('Window options', true, false);
     menuWindow.showOnLeft = true;
     menuWindow.addItems([
@@ -458,7 +459,7 @@ function initGeneratorMenus()
         menuItemNodeEdit           = new MenuItem('Edit...',         {callback: e => { hideAllMenus(); graphView.editSelectedCustomNode(); }}),
                                      new MenuItem('',                {separator: true}),
         // menuItemNodeActivate    = new MenuItem('Activate',        {callback: () => makeSelectedNodesActive()}),
-        menuItemNodeEnableDisable  = new MenuItem('Enable/Disable',  {shortcut:  osCtrlShift() + 'E',  callback: () => actionManager.do(new ToggleDisableNodesAction(graph, graphView.selectedNodes.map(n => n.id)))}),
+        menuItemNodeEnableDisable  = new MenuItem('Enable/Disable',  {shortcut:  osCtrlShift() + 'E',  callback: () => actionManager.do(new ToggleDisableNodesAction(ctedNodes.map(n => n.id)))}),
         menuItemNodeSep3           = new MenuItem('',                {separator: true}),
         menuItemNodeRemove         = new MenuItem('Remove',          {shortcut:  osCtrl() + '⌫',             callback: e => { hideAllMenus(); graphView.removeSelectedNodes(true); }})]);
 
@@ -511,17 +512,18 @@ function initGeneratorMenus()
     btnColor  = new MenuButton('', menuColor,  {useMenuName: true, highlight: () => currentMenus.includes(menuColor ), callback: () => updatePanMode(false)});
     btnStyle  = new MenuButton('', menuStyle,  {useMenuName: true, highlight: () => currentMenus.includes(menuStyle ), callback: () => updatePanMode(false)});
     btnShape  = new MenuButton('', menuShape,  {useMenuName: true, highlight: () => currentMenus.includes(menuShape ), callback: () => updatePanMode(false)});
+    btnGroup  = new MenuButton('', menuGroup,  {useMenuName: true, highlight: () => currentMenus.includes(menuShape ), callback: () => updatePanMode(false)});
 
-    btnGroup  = new MenuButton('Node groups', null, {callback: () => 
-    {
-        const create = new CreateNodeAction(graph, NODE_GROUP, btnGroup.div);
-        actionManager.do(create);
+    // btnGroup  = new MenuButton('Node groups', null, {callback: () => 
+    // {
+    //     const create = new CreateNodeAction(OUP, btnGroup.div);
+    //     actionManager.do(create);
 
-        graphView.updateNodes([create.node]);
-        graphView.updateScrollWithBounds();
+    //     graphView.updateNodes([create.node]);
+    //     graphView.updateScrollWithBounds();
 
-        updatePanMode(false);
-    }});
+    //     updatePanMode(false);
+    // }});
     
     btnHand = new MenuButton('Hand tool', null, {callback: () => 
     { 
@@ -530,7 +532,7 @@ function initGeneratorMenus()
 
     btnComment = new MenuButton('Add comment', null, {callback: () => 
     {
-        const create = new CreateNodeAction(graph, COMMENT, btnComment.div);
+        const create = new CreateNodeAction(COMMENT, btnComment.div);
         actionManager.do(create);
 
         graphView.updateNodes([create.node]);

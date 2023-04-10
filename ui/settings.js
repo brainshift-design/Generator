@@ -241,8 +241,6 @@ function enableFeatures(subscription, beta)
     updateElementDisplay(menuFlowSep3                .div, subscription && beta);
     updateElementDisplay(menuItemCache               .div, subscription && beta);
     updateElementDisplay(menuItemCopy                .div, subscription && beta);
-    updateElementDisplay(menuItemCustomInputs        .div, false);//subscription && beta);
-    updateElementDisplay(menuItemCustomOutputs       .div, false);//subscription && beta);
     
     updateElementDisplay(menuItemSeries              .div, subscription && beta);    
     updateElementDisplay(menuItemSolve               .div, subscription && beta);    

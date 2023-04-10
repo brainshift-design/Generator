@@ -38,7 +38,7 @@ extends Action
 
         DisconnectAction_activateNewNodes(this);
 
-        uiSaveNodes(graph, this.newActiveNodeIds);
+        uiSaveNodes(this.newActiveNodeIds);
     }
 
 

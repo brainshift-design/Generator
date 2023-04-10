@@ -1,4 +1,4 @@
-class   OpNodeInputs
+class   OpGroupParam
 extends OperatorBase
 {
     paramCount;
@@ -7,7 +7,7 @@ extends OperatorBase
 
     constructor()
     {
-        super(NODE_INPUTS, 'inputs', 'inputs');
+        super(GROUP_PARAM, 'param', 'parameter');
 
         //this.inert = true;
 

@@ -43,7 +43,7 @@ extends Action
 
         removeNodesAction_makeNewConnections(this);
 
-        uiSaveNodes(graph, this.newActiveNodeIds);
+        uiSaveNodes(this.newActiveNodeIds);
     }
 
 
@@ -55,7 +55,7 @@ extends Action
         this.deactivateNewActiveNodes();
         deleteNodesAction_activateOldActiveNodes(this, updateNodes);
 
-        uiSaveNodes(graph, [...this.nodeIds, ...this.newActiveNodeIds]);
+        uiSaveNodes([...this.nodeIds, ...this.newActiveNodeIds]);
     }
 
 

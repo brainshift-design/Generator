@@ -125,9 +125,8 @@
 ../generator/types/style/GStroke.js
 
 
-../generator/types/node group/GNodeGroup.js
-../generator/types/node group/GNodeInputs.js
-../generator/types/node group/GNodeOutputs.js
+../generator/types/group/GGroupNode.js
+../generator/types/group/GGroupParam.js
 
 
 ../generator/types/GComment.js

@@ -1,4 +1,4 @@
-class GNodeGroup
+class GGroupNode
 extends GOperator
 {
     // input = null;
@@ -14,7 +14,7 @@ extends GOperator
     
     copy()
     {
-        const copy = new GNodeGroup(this.nodeId, this.options);
+        const copy = new GGroupNode(this.nodeId, this.options);
 
         copy.copyBase(this);
 

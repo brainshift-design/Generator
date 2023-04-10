@@ -35,7 +35,7 @@ extends Action
         uiMakeNodesActive(newActiveNodes);
         pushUnique(updateNodes, newActiveNodes);
 
-        uiSaveNodes(graph, filterUnique([...this.newActiveNodeIds, ...this.oldActiveNodeIds]));
+        uiSaveNodes(filterUnique([...this.newActiveNodeIds, ...this.oldActiveNodeIds]));
     }
 
 
@@ -51,6 +51,6 @@ extends Action
 
         pushUnique(updateNodes, this.oldActiveNodeIds.map(id => graph.nodeFromId(id)));
 
-        uiSaveNodes(graph, filterUnique([...this.newActiveNodeIds, ...this.oldActiveNodeIds]));
+        uiSaveNodes(filterUnique([...this.newActiveNodeIds, ...this.oldActiveNodeIds]));
     }
 }

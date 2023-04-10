@@ -67,7 +67,7 @@ class Connection
 
 
 
-function parseConnectionJsonAndConnect(graph, _conn, pasteConnected)
+function parseConnectionJsonAndConnect(_conn, pasteConnected)
 {
     const outputNode  = graph.nodeFromId(_conn.outputNodeId);
     const outputId    = _conn.outputId;

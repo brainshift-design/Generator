@@ -39,7 +39,7 @@ extends Action
         const node = graph.nodeFromId(this.nodeId);
 
         moveInArray(node.inputs, this.newIndex, this.oldIndex);
-        uiSaveNodes(graph, [this.nodeId]);
+        uiSaveNodes([this.nodeId]);
         
         this.saveInputConnections();
 
@@ -53,7 +53,7 @@ extends Action
         const node = graph.nodeFromId(this.nodeId);
 
         moveInArray(node.inputs, this.oldIndex, this.newIndex);
-        uiSaveNodes(graph, [this.nodeId]);
+        uiSaveNodes([this.nodeId]);
 
         this.saveInputConnections();
 

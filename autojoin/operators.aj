@@ -115,9 +115,8 @@
 
 
 
-../operators/node group/OpNodeGroup.js
-../operators/node group/OpNodeInputs.js
-../operators/node group/OpNodeOutputs.js
+../operators/group/OpGroupNode.js
+../operators/group/OpGroupParam.js
 
 
 ../operators/OpComment.js

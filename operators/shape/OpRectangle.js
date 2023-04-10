@@ -12,7 +12,7 @@ extends OpShapeBase
     
     constructor()
     {
-        super(RECTANGLE, 'rect', 'rect');
+        super(RECTANGLE, 'rect', 'rectangle');
 
 
         this.addInput (this.createInputForObjects([RECTANGLE, RECTANGLE_VALUE], getNodeInputValuesForUndo));

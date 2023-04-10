@@ -47,7 +47,7 @@ extends Action
 
         const insert = 
                this.prevSelectedIds.length == 1
-            && canAutoConnectNode(graph, node);
+            && canAutoConnectNode(node);
    
             
         graph.addNode(node, !insert);
@@ -106,7 +106,7 @@ extends Action
 
     undo(updateNodes)
     {
-        uiDeleteNodes(graph, [this.createdNodeId]);
+        uiDeleteNodes([this.createdNodeId]);
 
         createNodeAction_activateOldInput(this, updateNodes);
 

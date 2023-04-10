@@ -1,4 +1,4 @@
-class   OpNodeGroup
+class   OpGroupNode
 extends ResizableBase
 {
     children = [];

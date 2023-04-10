@@ -60,7 +60,7 @@ extends Action
         this.param.updateSetting(this.setting, this.newValue);
         this.node.updateNode();
         
-        uiSaveNodes(graph, [this.nodeId]);
+        uiSaveNodes([this.nodeId]);
 
         //pushUpdateFromParam(this, [this.param.node], this.param);
     }
@@ -72,7 +72,7 @@ extends Action
         this.param.updateSetting(this.setting, this.oldValue);
         this.node.updateNode();
 
-        uiSaveNodes(graph, [this.nodeId]);
+        uiSaveNodes([this.nodeId]);
     }
 
 
@@ -82,6 +82,6 @@ extends Action
         this.param.updateSetting(this.setting, this.newValue);
         this.node.updateNode();
 
-        uiSaveNodes(graph, [this.nodeId]);
+        uiSaveNodes([this.nodeId]);
    }
 }

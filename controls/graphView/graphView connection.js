@@ -98,7 +98,7 @@ GraphView.prototype.endConnection = function(pointerId, backInit = false)
             //     && !isLastInArray(input.node.headerInputs, input))
             // {
             //     console.log('1 reorder');
-            //     actionManager.do(new ReorderInputsAction(graph, input.node.id, oldReorderIndex, newReorderIndex));
+            //     actionManager.do(new ReorderInputsAction(input.node.id, oldReorderIndex, newReorderIndex));
             // }
             // else if (savedConnInput
             //       && savedConnInput.connectedOutput == this.tempConn.output
@@ -115,11 +115,11 @@ GraphView.prototype.endConnection = function(pointerId, backInit = false)
             //     //         input.node.inputs.indexOf(savedConnInput),
             //     //         input.index);
 
-            //     //     actionManager.do(new ReorderInputsAction(graph, savedConnInput.node.id, oldReorderIndex, savedConnInput.index));
+            //     //     actionManager.do(new ReorderInputsAction(savedConnInput.node.id, oldReorderIndex, savedConnInput.index));
             //     // }
             //     // else
             //     // {
-            //         actionManager.do(new ReorderInputConnectionsAction(graph, savedConnInput.node.id, savedConnInput.id, input.id));
+            //         actionManager.do(new ReorderInputConnectionsAction(savedConnInput.node.id, savedConnInput.id, input.id));
             //     // }
             // }
             // else if (input == savedConnInput
@@ -137,7 +137,7 @@ GraphView.prototype.endConnection = function(pointerId, backInit = false)
             // {
             //     // reconnect from below header to new variable new input
             //     console.log('4 reconnect');
-            //     actionManager.do(new ReconnectAction(graph, output, savedConnInput, input));
+            //     actionManager.do(new ReconnectAction(output, savedConnInput, input));
             // }
             // else if (savedConnInput
             //       && savedConnInput.connectedOutput == output
@@ -150,18 +150,18 @@ GraphView.prototype.endConnection = function(pointerId, backInit = false)
             //                      && input.index == 0))))
             // {
             //     console.log('5 reconnect');
-            //     actionManager.do(new ReconnectAction(graph, output, savedConnInput, input));
+            //     actionManager.do(new ReconnectAction(output, savedConnInput, input));
             // }
             // else if (   !savedConnInput
             //         && (  !input.connected
             //             || input.connectedOutput != this.tempConn.output)) // connect new
             // {
             //     console.log('6 createConnectAction');
-            //     actionManager.do(new ConnectAction(graph, output, input, {backInit: backInit}));
+            //     actionManager.do(new ConnectAction(output, input, {backInit: backInit}));
             // }
         }
         else if (savedConnInput)
-            actionManager.do(new DisconnectAction(graph, savedConnInput));
+            actionManager.do(new DisconnectAction(savedConnInput));
         
 
         if (this.savedConn) this.savedConn.wire.show(true);
@@ -177,7 +177,7 @@ GraphView.prototype.endConnection = function(pointerId, backInit = false)
 
         if (   output
             && input.canConnectFrom(output)) // TO OUTPUT
-            actionManager.do(new ConnectAction(graph, output, input, {backInit: backInit}));
+            actionManager.do(new ConnectAction(output, input, {backInit: backInit}));
 
         this.cancelConnection(pointerId);
     }
@@ -192,13 +192,13 @@ GraphView.prototype.endConnectionFromOutputToFixed = function(output, input, sav
             || input.connectedOutput != this.tempConn.output))
     {
         //console.log('F1 connect new');
-        actionManager.do(new ConnectAction(graph, output, input, {backInit: backInit}));
+        actionManager.do(new ConnectAction(output, input, {backInit: backInit}));
     }
     else if (savedConnInput
           && savedConnInput.connectedOutput == output)
     {
         //console.log('F2 reconnect');
-        actionManager.do(new ReconnectAction(graph, output, savedConnInput, input));
+        actionManager.do(new ReconnectAction(output, savedConnInput, input));
     }
     // else if (savedConnInput
     //       && savedConnInput.connectedOutput == this.tempConn.output
@@ -206,7 +206,7 @@ GraphView.prototype.endConnectionFromOutputToFixed = function(output, input, sav
     //       && savedConnInput.node.inputs.includes(savedConnInput) == savedConnInput.node.inputs.includes(input))
     // {
     //     console.log('2 reorder');
-    //     actionManager.do(new ReorderInputConnectionsAction(graph, savedConnInput.node.id, savedConnInput.id, input.id));
+    //     actionManager.do(new ReorderInputConnectionsAction(savedConnInput.node.id, savedConnInput.id, input.id));
     // }
 };
 
@@ -219,7 +219,7 @@ GraphView.prototype.endConnectionFromOutputToVariable = function(output, input, 
             || input.connectedOutput != this.tempConn.output))
     {
         //console.log('V1 connect new');
-        actionManager.do(new ConnectAction(graph, output, input, {backInit: backInit}));
+        actionManager.do(new ConnectAction(output, input, {backInit: backInit}));
     }
     else if (savedConnInput
           && savedConnInput.connectedOutput == output
@@ -231,7 +231,7 @@ GraphView.prototype.endConnectionFromOutputToVariable = function(output, input, 
     {
         // if (input.index <)
         //console.log('V2 reconnect');
-        actionManager.do(new ReconnectAction(graph, output, savedConnInput, input));
+        actionManager.do(new ReconnectAction(output, savedConnInput, input));
     }
 };
 

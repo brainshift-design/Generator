@@ -32,6 +32,11 @@ function rgbFromTypeMode(type, active, mode)
         ? (mode ? rgbActiveShapeDark  : rgbActiveShapeLight)
         : (mode ? rgbShapeDark        : rgbShapeLight      );
 
+    if (GROUP_TYPES.includes(type))
+        return active 
+        ? (mode ? rgbActiveGroupDark  : rgbActiveGroupLight)
+        : (mode ? rgbGroupDark        : rgbGroupLight      );
+
         
     switch (type)
     {
@@ -46,13 +51,6 @@ function rgbFromTypeMode(type, active, mode)
             return active 
                  ? rgbActiveColor  
                  : rgbColor;
-
-        case NODE_GROUP:
-        case NODE_INPUTS:
-        case NODE_OUTPUTS:
-            return active 
-                 ? (mode ? rgbActiveFlowDark : rgbActiveFlowLight)
-                 : (mode ? rgbFlowDark       : rgbFlowLight      );
     }
 
     return 'magenta';

@@ -28,7 +28,7 @@ extends Action
 
         this.node.updateNode();
 
-        uiSaveNodes(graph, [this.nodeId]);
+        uiSaveNodes([this.nodeId]);
     }
 
 
@@ -39,6 +39,6 @@ extends Action
 
         this.node.updateNode();
 
-        uiSaveNodes(graph, [this.nodeId]);
+        uiSaveNodes([this.nodeId]);
     }    
 }

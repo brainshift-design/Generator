@@ -76,9 +76,8 @@ function createNode(nodeType, creatingButton = null, createdNodeId = -1, options
         case POLYGON:                 node = new OpPolygon();           break;
         case STAR:                    node = new OpStar();              break;
       
-        case NODE_GROUP:              node = new OpNodeGroup();         break;
-        case NODE_INPUTS:             node = new OpNodeInputs();        break;
-        case NODE_OUTPUTS:            node = new OpNodeOutputs();       break;
+        case GROUP_NODE:              node = new OpGroupNode();         break;
+        case GROUP_PARAM:             node = new OpGroupParam();        break;
 
         case COMMENT:                 node = new OpComment();           break;
      
@@ -172,7 +171,7 @@ function connectionsToJson(nodes, connOutputMustBeInNodes)
 
 
 
-function canAutoConnectNode(graph, node)
+function canAutoConnectNode(node)
 {
     const selNode = graph.nodes.find(n => n.selected);
 
@@ -188,7 +187,7 @@ function canAutoConnectNode(graph, node)
 
 
 
-function uiDeleteNodes(graph, nodeIds)
+function uiDeleteNodes(nodeIds)
 {
     nodeIds.forEach(id => graph.nodeFromId(id).makePassive());
 
@@ -250,7 +249,7 @@ function uiVariableConnectFromOutput(output, inputNode, inputId, outputOrder = -
         if (   !graphView.loadingNodes
             && !graphView.pastingNodes
             && !graphView.restoringNodes)
-            uiUpdateSavedConnectionsToNodeId(inputNode.graph, inputNode.id, true);
+            uiUpdateSavedConnectionsToNodeId(inputNode.id, true);
 
         return conn;
     }
@@ -276,7 +275,7 @@ function uiDisconnect(input, saveOld = true)
     node.graph.disconnect(input);
 
     if (node.variableInputs)
-        uiUpdateSavedConnectionsToNodeId(node.graph, node.id, saveOld);
+        uiUpdateSavedConnectionsToNodeId(node.id, saveOld);
 }
 
 
@@ -292,7 +291,7 @@ function uiDisconnectAny(input)
 
 
 
-function uiUpdateSavedConnectionsToNodeId(graph, nodeId, saveOld)
+function uiUpdateSavedConnectionsToNodeId(nodeId, saveOld)
 {
     const node = graph.nodeFromId(nodeId);
 
@@ -320,7 +319,7 @@ function uiUpdateSavedConnectionsToNodeId(graph, nodeId, saveOld)
 function makeSelectedNodesActive()
 {
     if (graphView.selectedNodes.find(n => !n.active))
-        actionManager.do(new MakeActiveNodesAction(graph, graphView.selectedNodes.map(n => n.id)));
+        actionManager.do(new MakeActiveNodesAction(graphView.selectedNodes.map(n => n.id)));
 }
 
 
@@ -398,7 +397,7 @@ function uiMakeNodeRightPassive(node, fromNode = null)
 
 
 
-function uiShowParamValue(graph, nodeId, paramName, value)
+function uiShowParamValue(nodeId, paramName, value)
 {
     const node = graph.nodeFromId(nodeId);
 
@@ -411,7 +410,7 @@ function uiShowParamValue(graph, nodeId, paramName, value)
 
 
 
-function uiCopyNodes(graph, nodeIds)
+function uiCopyNodes(nodeIds)
 {
     const nodes      = graph.nodes.filter(n => nodeIds.includes(n.id));
     const copiedJson = nodesToJson(nodes, true, false);
@@ -423,7 +422,7 @@ function uiCopyNodes(graph, nodeIds)
 
 
 
-function uiPasteNodes(graph, nodesJson, pasteConnected, x, y, updateNodes)
+function uiPasteNodes(nodesJson, pasteConnected, x, y, updateNodes)
 {
     //console.log(nodesJson);
 
@@ -517,7 +516,7 @@ function uiPasteNodes(graph, nodesJson, pasteConnected, x, y, updateNodes)
     if (data.connections)
     {
         correctNodeNamesInConnections(data);
-        data.connections = parseConnectionsAndConnect(graph, data, pasteConnected);
+        data.connections = parseConnectionsAndConnect(data, pasteConnected);
     }
     else
         data.connections = []; // return an empty array if no data was loaded
@@ -720,7 +719,7 @@ function uiUpdateValuesAndObjects(requestId, actionId, updateNodeId, updateParam
 
 
     if (!graphView.loadingNodes)
-        uiSaveNodes(graph, nodes.map(n => n.id));
+        uiSaveNodes(nodes.map(n => n.id));
 
 
     for (const node of nodes)
@@ -762,7 +761,7 @@ function uiUpdateValuesAndObjects(requestId, actionId, updateNodeId, updateParam
                 node.updateMeasureData();
             }
 
-            uiSaveNodes(graph, graph.nodes.map(n => n.id));
+            uiSaveNodes(graph.nodes.map(n => n.id));
         }
 
 
@@ -787,7 +786,7 @@ function uiToggleDisableNodes(nodes)
 
 
 
-function uiSaveNodes(graph, nodeIds)
+function uiSaveNodes(nodeIds)
 {
     const nodeJson = [];
 
@@ -982,7 +981,7 @@ function uiRemoveSavedNodesAndConns(nodeIds)
 
 
 
-function uiRemoveConnsToNodes(graph, nodeIds)
+function uiRemoveConnsToNodes(nodeIds)
 {
     const nodes = nodeIds.map(id => graph.nodeFromId(id));
 

@@ -83,7 +83,7 @@ extends Action
         }
 
 
-        uiSaveNodes(graph, movedIds);
+        uiSaveNodes(movedIds);
     }
 
 
@@ -104,7 +104,7 @@ extends Action
             
         graphView.selectByIds(this.prevSelectedIds);
 
-        uiSaveNodes(graph, movedIds);
+        uiSaveNodes(movedIds);
     }
 
 

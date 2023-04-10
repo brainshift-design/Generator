@@ -13,7 +13,7 @@ extends OpShapeBase
     
     constructor()
     {
-        super(POLYGON, 'poly', 'poly');
+        super(POLYGON, 'poly', 'polygon');
 
         this.addInput (this.createInputForObjects([POLYGON, POLYGON_VALUE], getNodeInputValuesForUndo));
         this.addOutput(new Output([POLYGON], this.output_genRequest));

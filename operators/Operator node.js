@@ -416,7 +416,7 @@ Operator.prototype.createHeader = function()
             && e.clientY >= bounds.top  && e.clientY < bounds.bottom)
             this.showLabelTextbox();
         else if (!this.header.ignoreDoubleClick)
-            actionManager.do(new MakeActiveNodesAction(graph, [this.id]));
+            actionManager.do(new MakeActiveNodesAction([this.id]));
 
         this.header.ignoreDoubleClick = false;
     });

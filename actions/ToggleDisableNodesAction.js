@@ -22,7 +22,7 @@ extends Action
         const nodes = this.selectedIds.map(id => graph.nodeFromId(id));
 
         uiToggleDisableNodes(nodes);
-        uiSaveNodes(graph, nodes.map(n => n.id));
+        uiSaveNodes(nodes.map(n => n.id));
 
         pushUnique(updateNodes, nodes);
     }

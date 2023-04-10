@@ -8,8 +8,8 @@ const rgbFlowLight         = hex2rgb('#D1D1D1');
 const rgbActiveNumberLight = hex2rgb('#369FE5');
 const rgbNumberLight       = hex2rgb('#B8D4F2');
 
-const rgbActiveCustomLight = hex2rgb('#3AAB5A');
-const rgbCustomLight       = hex2rgb('#B9D9BF');
+const rgbActiveGroupLight  = hex2rgb('#3AAB5A');
+const rgbGroupLight        = hex2rgb('#B9D9BF');
 
 const rgbActiveShapeLight  = hex2rgb('#E1765F');
 const rgbShapeLight        = hex2rgb('#F0C7C0');
@@ -24,8 +24,8 @@ const rgbFlowDark          = hex2rgb('#4D4D4D');
 const rgbActiveNumberDark  = hex2rgb('#1785CE');
 const rgbNumberDark        = hex2rgb('#2B4E6E');
 
-const rgbActiveCustomDark  = hex2rgb('#33AD55');
-const rgbCustomDark        = hex2rgb('#365E3F');
+const rgbActiveGroupDark   = hex2rgb('#33AD55');
+const rgbGroupDark         = hex2rgb('#365E3F');
 
 const rgbActiveShapeDark   = hex2rgb('#E1765F');
 const rgbShapeDark         = hex2rgb('#734B43');

@@ -1,4 +1,4 @@
-class GNodeInputs
+class GGroupParam
 extends GOperator
 {
     input = null;
@@ -19,7 +19,7 @@ extends GOperator
 
     copy()
     {
-        const copy = new GNodeInputs(this.nodeId, this.options);
+        const copy = new GGroupParam(this.nodeId, this.options);
         
         copy.copyBase(this);
 

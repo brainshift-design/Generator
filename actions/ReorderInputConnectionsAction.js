@@ -30,7 +30,7 @@ extends Action
 
         this.swapConnections();
         
-        uiSaveNodes(graph, [this.nodeId]);
+        uiSaveNodes([this.nodeId]);
 
         this.saveInputConnections();
 
@@ -45,7 +45,7 @@ extends Action
 
         this.swapConnections();
 
-        uiSaveNodes(graph, [this.nodeId]);
+        uiSaveNodes([this.nodeId]);
         
         this.saveInputConnections();
 

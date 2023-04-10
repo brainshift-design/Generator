@@ -420,9 +420,12 @@ const ALL_TYPES = [
     COLOR_STYLE,
     ...SHAPE_TYPES
 ];
-const NODE_GROUP = 'NGRP';
-const NODE_INPUTS = 'NGIN';
-const NODE_OUTPUTS = 'NGOUT';
+const GROUP_NODE = 'GNODE';
+const GROUP_PARAM = 'GPARAM';
+const GROUP_TYPES = [
+    GROUP_NODE,
+    GROUP_PARAM
+];
 const COMMENT = 'CMNT';
 const ACTIVE = 'ACT';
 const BEFORE_ACTIVE = 'BEF';

@@ -97,7 +97,7 @@ GraphView.prototype.updateSelectBox = function(shiftKey, ctrlKey)
         ...this.lastSelectedNodes];
 
     nodes.forEach(n => n.updateBorder());
-    updateComments(graph, nodes.map(n => n.id));
+    updateComments(nodes.map(n => n.id));
 
     this._prevSelectedNodes = selected;
 };
