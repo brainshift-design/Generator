@@ -1,5 +1,7 @@
 var graphPages   = [];
-var curPageIndex = 0;
+
+var curPageIndex  = 0;
+var overPageIndex = -1;
 
 addPage('page1', 'Page 1');
 addPage('page2', 'Page 2');
@@ -38,6 +40,16 @@ function addPage(id, name)
         btnClose: btnClose
     };
 
+
+    btn.addEventListener('pointerenter', e => { overPageIndex = graphPages.indexOf(page); updatePages(); });
+    btn.addEventListener('pointerleave', e => { overPageIndex = -1;                       updatePages(); });
+    btn.addEventListener('pointerdown' , e => { curPageIndex  = graphPages.indexOf(page); updatePages(); });
+
+    btnClose.addEventListener('pointerenter', e => { btnClose.style.opacity = 1;    });
+    btnClose.addEventListener('pointerleave', e => { btnClose.style.opacity = 0.7; });
+    btnClose.addEventListener('pointerup'   , e => { /*nothing for now, TODO*/ updatePages(); });
+
+
     graphPages.push(page);
     pagesBar.appendChild(page.button);
 
@@ -49,14 +61,28 @@ function addPage(id, name)
 
 function updatePage(page)
 {
-    const isCurrent = curPageIndex == Array.prototype.indexOf.call(pagesBar.childNodes, page.button);
+    const index     = Array.prototype.indexOf.call(pagesBar.childNodes, page.button);
 
-    page.btnIcon.innerHTML = iconPage;
-    page.btnName.innerHTML = page.name;
+    const isCurrent = 
+           index ==  curPageIndex
+        || index == overPageIndex;
 
-    page.btnIcon.style.opacity    = isCurrent ? 1 : 0.35;
-    page.btnName.style.color      = isCurrent ? '#fff'    : '666';
-    page.button .style.background = isCurrent ? '#2c2c2c' : '#222';
+    pagesBar.style.background        = document.hasFocus() ? '#202020' : '#3b3b3b';
+
+    
+    page.btnIcon .innerHTML          = iconPage;
+    page.btnName .innerHTML          = page.name;
+    page.btnClose.innerHTML          = iconPageClose;
+    
+    page.button  .style.background   = isCurrent ? '#2c2c2c' : (document.hasFocus() ? '#202020' : '#3b3b3b');
+    
+    page.button  .style.outline      = '1px solid ' + (document.hasFocus() ? (isCurrent ? '#ffffff20' : '#ffffff19') : (isCurrent ? '#ffffff28' : '#ffffff19'));
+
+    page.btnIcon .style.opacity      = isCurrent ? 1 : 0.35;
+    page.btnName .style.color        = isCurrent ? '#fffffff0' : '#fff6';
+    page.btnName .style.fontWeight   = isCurrent ? 600 : 500;
+    page.btnClose.style.display      = isCurrent ? 'inline-block' : 'none';
+    page.btnClose.style.opacity      = 0.7;
 }
 
 

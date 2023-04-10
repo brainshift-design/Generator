@@ -6,6 +6,8 @@
     border-bottom:    1px solid var(--figma-color-bg-tertiary);
     padding:          0;
     cursor:           default;
+    position:         relative;
+    z-index:          1;
     /* vertical-align:   middle; */
 }
 
@@ -165,4 +167,10 @@
     display:             block;
     position:            absolute;
     height:              20;
+}
+
+
+#groupName
+{
+    box-shadow: 0 0 0 1px red inset;
 }

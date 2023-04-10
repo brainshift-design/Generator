@@ -181,4 +181,7 @@ document.addEventListener('pointerup', function(e)
 
 
 
+window.addEventListener('focus', () => updatePages());
+window.addEventListener('blur',  () => updatePages());
+
 document.addEventListener('contextmenu', e => e.preventDefault());

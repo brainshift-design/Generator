@@ -538,6 +538,9 @@ function initGeneratorMenus()
     }});
 
 
+    menuBar.appendChild(createDiv('', 'groupName'));
+
+
     btnZoom = new MenuButton(
         '', 
         menuZoom, 
@@ -569,7 +572,7 @@ function initGeneratorMenus()
 
     btnMain   .setIcon(iconGenerator);
     btnShape  .setIcon(iconShapes);
-    btnGroup .setIcon(iconNodeGroup);
+    btnGroup  .setIcon(iconGroup);
     btnHand   .setIcon(iconHand);
     btnComment.setIcon(iconComment);
 }
