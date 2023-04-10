@@ -217,6 +217,8 @@ extends Control
             && rgbIsValid(this.value.toRgb())
             ? rgb2hex(this.value.toRgb())
             : UNKNOWN_DISPLAY;
+
+        this.textbox.value = this.text.innerHTML;
     };
 
 

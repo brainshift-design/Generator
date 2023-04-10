@@ -1,9 +1,9 @@
 ColorControl.prototype.initTextbox = function()
 {
     this.textbox = createTextbox('colorControlTextbox');
-    this.textbox.control = this;
-    this.textbox.shown   = false;
-    
+    this.textbox.control        = this;
+    this.textbox.shown          = false;
+
 
 
     this.textbox.addEventListener('pointerdown', e =>
@@ -148,43 +148,41 @@ ColorControl.prototype.initTextbox = function()
             if (this.confirmTimer) clearTimeout(this.confirmTimer);
             this.confirmTimer = setTimeout(() => controlTimer_confirm(this), 400);
         }
+
         else if (e.code == 'KeyZ'
               && getCtrlKey(e))
         {
-            e.preventDefault();
-            e.stopImmediatePropagation();
-
-            //      if (e.shiftKey && !actionManager.redoing) actionManager.redo();
-            // else if (              !actionManager.undoing) actionManager.undo();
-            
-            // this.updateTextbox();
+            if (e.shiftKey)
+            {
+                if (  !isEmpty(actionManager.redoActions)
+                    && actionManager.redoActions.at(-1).type == SET_PARAM_VALUE_ACTION
+                    && actionManager.redoActions.at(-1).param == this.param)
+                    actionManager.redo();
+                else
+                {
+                    e.preventDefault();
+                    e.stopImmediatePropagation();
+                }
+            }
+            else
+            {
+                if (  !isEmpty(actionManager.actions)
+                    && actionManager.actions.at(-1).type == SET_PARAM_VALUE_ACTION
+                    && actionManager.actions.at(-1).param == this.param)
+                    actionManager.undo();
+                else
+                {
+                    e.preventDefault();
+                    e.stopImmediatePropagation();
+                }
+            }
         }
-        // else 
-        // {
-        //     let curVal = this.textbox.value;
 
-        //     if (      e.key.length == 1
-        //            && e.key != NAN_DISPLAY
-        //            && !isDigit(e.key)
-        //            && !isSimpleLatinLetter(e.key)
-        //         ||     this.readOnly
-        //            && !isArrowKey(e.code))
-        //         e.preventDefault();
+        else if (e.key != 'Control'
+              && e.key != 'Shift'
+              && e.key != 'Alt')           
+            actionManager.redoActions = [];
 
-        //     curVal =
-        //            curVal ==     NAN_DISPLAY
-        //         || curVal == UNKNOWN_DISPLAY
-        //         ? ''
-        //         :   curVal.substring(0, this.textbox.selectionStart) 
-        //           + curVal.substring(this.textbox.selectionEnd, curVal.length);
-
-                  
-        //     const nextVal = parseFloat(curVal + e.key);
-
-        //     if (   nextVal < this.min - 0.001
-        //         || nextVal > this.max)
-        //         e.preventDefault();            
-        // }
     });
 
 
@@ -321,6 +319,9 @@ ColorControl.prototype.initTextbox = function()
         if (   this.inFocus
             && focusControl)
             this.div.focus();
+
+
+        actionManager.redoActions = [];
     };    
 };
 
