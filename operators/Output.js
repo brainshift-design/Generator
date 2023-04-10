@@ -88,13 +88,10 @@ class Output
                 return false;
 
 
-            const view = graphView;//this.node.graphView;
-
-
-            if (view.headerOutput)
+            if (graphView.headerOutput)
             {
-                view.headerOutput.updateControl();
-                view.headerOutput = null;
+                graphView.headerOutput.updateControl();
+                graphView.headerOutput = null;
             }
 
 
@@ -102,25 +99,25 @@ class Output
             this.updateControl();
 
 
-            if (   view.tempConn
-                && view.tempConn.input
-                && view.tempConn.input.types.includes(this.type))
+            if (   graphView.tempConn
+                && graphView.tempConn.input
+                && graphView.tempConn.input.types.includes(this.type))
             {
                 const rect = boundingRect(this.div);
-                const loop = this.node.isOrFollows(view.tempConn.input.node);
+                const loop = this.node.isOrFollows(graphView.tempConn.input.node);
 
                 if (!loop)
                 {
-                    view.tempConn.wire.outputPos = point(
+                    graphView.tempConn.wire.outputPos = point(
                         rect.x + rect.w/2,
                         rect.y + rect.h/2 - menuBarHeight);
                 }
 
-                view.overOutput = !loop ? this : null;
+                graphView.overOutput = !loop ? this : null;
                 this.node.outputs.forEach(o => o.updateControl());
             }
             else
-            view.overOutput = this; 
+            graphView.overOutput = this; 
         });
 
 
@@ -143,17 +140,14 @@ class Output
 
     endConnection()
     {
-        const view = graphView;//this.node.graphView;
-
-
-        view.overOutput = null; 
+        graphView.overOutput = null; 
 
         this.mouseOver = false;
         this.updateControl();
 
-        if (   view.tempConn
-            && view.tempConn.input)
-            view.tempConn.wire.outputPos = point_NaN;
+        if (   graphView.tempConn
+            && graphView.tempConn.input)
+            graphView.tempConn.wire.outputPos = point_NaN;
     }
 
 
@@ -180,10 +174,8 @@ class Output
 
     canReact(e)
     {
-        const view = graphView;//this.node.graphView
-        
         if (   settings.enableZoomedOutParams
-            || view.zoom > settings.minZoomForParams)
+            || graphView.zoom > settings.minZoomForParams)
             return true;
 
         e.preventDefault();
@@ -208,17 +200,14 @@ class Output
     
     updateControl()
     {
-        const view = graphView;//this.node.graphView;
-
-
         const mouseOver =
                this.mouseOver
-            && !(   view.tempConn
-                 && view.tempConn.output)
-            && !(   view.tempConn
-                 && view.tempConn.input
-                 && (  !view.tempConn.input.types.includes(this.type)
-                     || this.node.isOrFollows(view.tempConn.input.node)));
+            && !(   graphView.tempConn
+                 && graphView.tempConn.output)
+            && !(   graphView.tempConn
+                 && graphView.tempConn.input
+                 && (  !graphView.tempConn.input.types.includes(this.type)
+                     || this.node.isOrFollows(graphView.tempConn.input.node)));
 
 
         const color = 
@@ -240,12 +229,12 @@ class Output
 
         const isConnected =
                !isEmpty(this.connectedInputs)
-            ||     view.tempConn
-               && (   view.tempConn.output == this
-                   ||     view.overOutput == this
-                      && !view.tempConn.output)
-               && !(    view.tempConn.input
-                    && !view.tempConn.input.types.includes(this.type));
+            ||     graphView.tempConn
+               && (   graphView.tempConn.output == this
+                   ||     graphView.overOutput == this
+                      && !graphView.tempConn.output)
+               && !(    graphView.tempConn.input
+                    && !graphView.tempConn.input.types.includes(this.type));
 
         this.div.style.transform = 
             //  'translateX(' + (isConnected ? -1 : 0) + 'px)'
@@ -257,9 +246,9 @@ class Output
 
         this.div.style.boxShadow = 
                !isEmpty(this.connectedInputs)
-            ||    view.tempConn
-               && (   view.tempConn.output == this
-                   || view.overOutput == this)
+            ||    graphView.tempConn
+               && (   graphView.tempConn.output == this
+                   || graphView.overOutput == this)
             ? '0 0 0 1px ' + colorStyle
             : 'none';
 

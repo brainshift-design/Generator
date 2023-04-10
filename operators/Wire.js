@@ -96,9 +96,9 @@ class Wire
         }
         else if (input)
         {
-            if (   view.overOutput
-                && input.canConnectFrom(view.overOutput)) 
-                types.push(...view.overOutput.types);
+            if (   graphView.overOutput
+                && input.canConnectFrom(graphView.overOutput)) 
+                types.push(...graphView.overOutput.types);
             else
             {
                 if (!isEmpty(input.types)) types.push(...input.types);
@@ -168,10 +168,8 @@ class Wire
         this.updateInBall (        x2, y2);
         this.updateStyle  ();
 
-        const view = this.connection.graphView;
-
-        this.svg.setAttribute('width',  view.div.clientWidth);
-        this.svg.setAttribute('height', view.div.clientHeight);
+        this.svg.setAttribute('width',  graphView.div.clientWidth);
+        this.svg.setAttribute('height', graphView.div.clientHeight);
 
         this.svg.style.zIndex = 1;
     }
@@ -180,9 +178,6 @@ class Wire
 
     updateCurve(x1, y1, x2, y2)
     {
-        const view = this.connection.graphView;
-
-
         if (!pointIsNaN(this.outputPos))
         {
             x1 = this.outputPos.x;
@@ -203,9 +198,9 @@ class Wire
         const _y3 = y2;
     
     
-        const tx  = 600 * view.zoom;
-        const ty  = 300 * view.zoom;
-        const ecc = 100 * view.zoom;
+        const tx  = 600 * graphView.zoom;
+        const ty  = 300 * graphView.zoom;
+        const ecc = 100 * graphView.zoom;
     
         const yf  = (0.3 + Math.min(Math.abs(y2 - y1) / ty, 0.8));
     
@@ -318,13 +313,10 @@ class Wire
 
     updateArrow(p0, p1, p2, p3, arrow, dist, size, index, fb, back)
     {
-        const view = this.connection.graphView;
-
-
         let al = 
             dist >= 0
-            ? arcLength(p0, p1, p2, p3) - dist * view.zoom
-            : -dist * view.zoom;
+            ? arcLength(p0, p1, p2, p3) - dist * graphView.zoom
+            : -dist * graphView.zoom;
     
         if (al <= 0)
         {
@@ -357,8 +349,8 @@ class Wire
         const tx = pt.x;
         const ty = pt.y;
     
-        const tw = size * view.zoom;
-        const th = size * view.zoom;
+        const tw = size * graphView.zoom;
+        const th = size * graphView.zoom;
     
         const points =
                      (tx - tw/2) + ',' + (ty + th/2)
@@ -392,8 +384,8 @@ class Wire
         if (darkMode) bright = 1-bright;
     
         
-        // const innerOpacity = Math.round(bright * (darkMode ? 88 : 66) * Math.min(view.zoom, 5)).toString(16).padStart(2, '0');
-        //'+(Math.min(Math.max(1, 1/view.zoom), 5))+'
+        // const innerOpacity = Math.round(bright * (darkMode ? 88 : 66) * Math.min(graphView.zoom, 5)).toString(16).padStart(2, '0');
+        //'+(Math.min(Math.max(1, 1/graphView.zoom), 5))+'
         
         // this.curve.style.filter = 
         //     this.needsFilter
@@ -419,12 +411,12 @@ class Wire
     
             this.xp1.style.display          = 'inline';
             this.xp1.style.stroke           = rgba2style(rgb_a(darkMode ? [0.067, 0.067, 0.067] : [0.784, 0.784, 0.784], 1 - color[3]));
-            this.xp1.style.strokeDasharray  = 9 * view.zoom;
+            this.xp1.style.strokeDasharray  = 9 * graphView.zoom;
     
             this.xp2.style.display          = 'inline';
             this.xp2.style.stroke           = rgba2style(rgb_a(darkMode ? [0.302, 0.302, 0.302] : [1, 1, 1], 1 - color[3]));//darkMode ? '#4d4d4d' : '#fff';
-            this.xp2.style.strokeDasharray  = 9 * view.zoom;
-            this.xp2.style.strokeDashoffset = 9 * view.zoom;
+            this.xp2.style.strokeDasharray  = 9 * graphView.zoom;
+            this.xp2.style.strokeDashoffset = 9 * graphView.zoom;
         }
         else
         {
@@ -439,7 +431,7 @@ class Wire
     
             let dl = 0.05;
     
-            dl /= Math.min(1 - (1 - view.zoom) / 1.75, 1);
+            dl /= Math.min(1 - (1 - graphView.zoom) / 1.75, 1);
     
             if (hcl[2] > 0.27 - dl && hcl[2] <= 0.27)
                 color = invalid2validRgb(hclok2rgb([hcl[0], hcl[1], 0.27 - dl]));
@@ -488,7 +480,7 @@ class Wire
         this.curve .style.stroke         = wireStyle;
         this.curve2.style.stroke         = rgb2style(rgbDocumentBody);
     
-        this.curve.style.strokeDasharray = unknown ? 1.7 * view.zoom : 0;
+        this.curve.style.strokeDasharray = unknown ? 1.7 * graphView.zoom : 0;
     
         this. inBall.style.fill          = wireStyle;
         this.outBall.style.fill          = wireStyle;
@@ -507,15 +499,15 @@ class Wire
     
     
         let width = 
-            view.zoom < 1
-            ? view.zoom + (Math.pow(2, view.zoom - 1) - view.zoom) * 0.333
-            : view.zoom;
+            graphView.zoom < 1
+            ? graphView.zoom + (Math.pow(2, graphView.zoom - 1) - graphView.zoom) * 0.333
+            : graphView.zoom;
     
         width *= 1.6;
     
     
-        //      if (view.zoom < 1/7) width += 1 * (1 - view.zoom) * (7 * view.zoom);
-        // else if (view.zoom < 1  ) width += 1 * (1 - view.zoom);
+        //      if (graphView.zoom < 1/7) width += 1 * (1 - graphView.zoom) * (7 * graphView.zoom);
+        // else if (graphView.zoom < 1  ) width += 1 * (1 - graphView.zoom);
     
     
         this.curve .setAttribute('stroke-width', width * (listType ? (unknown ? 3.6 : 3.2) : (unknown ? 1.3 : 1)));
@@ -527,8 +519,8 @@ class Wire
         this.curve2.setAttribute('display', listType ? 'inline' : 'none');
     
     
-        this. inBall.style.r = 3 * view.zoom;
-        this.outBall.style.r = 3 * view.zoom;
+        this. inBall.style.r = 3 * graphView.zoom;
+        this.outBall.style.r = 3 * graphView.zoom;
     }
     
     

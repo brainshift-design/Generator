@@ -364,33 +364,30 @@ GraphView.prototype.updateWheelTimer = function()
 
 function graphView_onpointermove(e)
 {
-    const view = graphView;
-
-    
-    view.p = point(e.clientX, e.clientY);
+    graphView.p = point(e.clientX, e.clientY);
 
 
-    if (   (   view.panning
+    if (   (   graphView.panning
             || panMode)
-        && view.div.hasPointerCapture(e.pointerId))
+        && graphView.div.hasPointerCapture(e.pointerId))
     {
         setCursor(panCursor);
 
-        const dp = subv(view.p, view.pStart);
+        const dp = subv(graphView.p, graphView.pStart);
 
-        view.setPanAndZoom(
-            addv(view.panStart, dp), 
-            view.zoom);
+        graphView.setPanAndZoom(
+            addv(graphView.panStart, dp), 
+            graphView.zoom);
     }
 
-    else if (view.selecting)
-        view.updateSelection(e.clientX, e.clientY, e.shiftKey, getCtrlKey(e));
+    else if (graphView.selecting)
+        graphView.updateSelection(e.clientX, e.clientY, e.shiftKey, getCtrlKey(e));
 
-    else if (view.zoomSelecting)
-        view.updateZoomSelection(e.clientX, e.clientY);
+    else if (graphView.zoomSelecting)
+        graphView.updateZoomSelection(e.clientX, e.clientY);
 
-    else if (view.tempConn)
-        view.tempConn.wire.update(e.clientX, e.clientY);
+    else if (graphView.tempConn)
+        graphView.tempConn.wire.update(e.clientX, e.clientY);
 }
 
 

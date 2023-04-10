@@ -30,12 +30,12 @@ NumberControl.prototype.initEvents = function()
         }
 
 
-        if (   !view.spaceDown
+        if (   !graphView.spaceDown
             &&  this.pointerEvents)
         {
-            if (   view.tempConn
+            if (   graphView.tempConn
                 ||   !settings.enableZoomedOutParams
-                   && view.zoom <= settings.minZoomForParams)
+                   && graphView.zoom <= settings.minZoomForParams)
                 this.div.style.cursor = 'default';
             else
                 this.updateCursor();
@@ -87,7 +87,7 @@ NumberControl.prototype.initEvents = function()
             return;
 
 
-        if (   view.spaceDown
+        if (   graphView.spaceDown
             || panMode)
             return;
 
@@ -118,7 +118,7 @@ NumberControl.prototype.initEvents = function()
 
             if (   nodeDiv 
                 && nodeDiv.className == 'node') 
-                view.putNodeOnTop(nodeDiv.node);
+                graphView.putNodeOnTop(nodeDiv.node);
 
 
             e.preventDefault(); // this is fine since I lock the pointer anyway
@@ -294,39 +294,39 @@ NumberControl.prototype.initEvents = function()
                 }
             }
         }
-        else if (view.tempConn
+        else if (graphView.tempConn
               && param)
         {
             let savedInput = 
-                view.savedConn
-                ? view.savedConn.input
+                graphView.savedConn
+                ? graphView.savedConn.input
                 : null;
 
-            if (    view.tempConn.output
+            if (    graphView.tempConn.output
                 &&  param.input
-                &&  param.input.canConnectFrom(view.tempConn.output)
-                && !view.tempConn.output.node.isOrFollows(param.node)
+                &&  param.input.canConnectFrom(graphView.tempConn.output)
+                && !graphView.tempConn.output.node.isOrFollows(param.node)
                 && (  !param.input.connected // not already connected to this input
-                    || param.input.connectedOutput != view.tempConn.output
+                    || param.input.connectedOutput != graphView.tempConn.output
                     || param.input == savedInput))
             {
-                view.overInput = param.input;
+                graphView.overInput = param.input;
                     
                 param.input.mouseOver = true;
                 param.input.updateControl();
 
                 const rect = boundingRect(param.input.div);
 
-                view.tempConn.wire.inputPos = point(
+                graphView.tempConn.wire.inputPos = point(
                     rect.x + rect.w/2,
                     rect.y + rect.h/2 - menuBarHeight);
             }
-            else if ( view.tempConn.input
+            else if ( graphView.tempConn.input
                   &&  param.output
-                  &&  view.tempConn.input.canConnectFrom(param.output)
-                  && !param.node.isOrFollows(view.tempConn.input.node))
+                  &&  graphView.tempConn.input.canConnectFrom(param.output)
+                  && !param.node.isOrFollows(graphView.tempConn.input.node))
             {
-                view.overOutput = param.output;
+                graphView.overOutput = param.output;
                     
                 param.output.mouseOver = true;
                 param.output.updateControl();
@@ -334,12 +334,12 @@ NumberControl.prototype.initEvents = function()
 
                 const rect = boundingRect(param.output.div);
 
-                view.tempConn.wire .outputPos = point(
+                graphView.tempConn.wire .outputPos = point(
                     rect.x + rect.w/2,
                     rect.y + rect.h/2 - menuBarHeight);
 
 
-                view.tempConn.input.updateControl();
+                graphView.tempConn.input.updateControl();
             }
         }
         else if (this.readOnly)
@@ -375,14 +375,14 @@ NumberControl.prototype.initEvents = function()
         this.update();
 
 
-        if (view.tempConn)
+        if (graphView.tempConn)
         {
-            if (   view.tempConn.output
-                && view.tempConn.output.node != param.node)
+            if (   graphView.tempConn.output
+                && graphView.tempConn.output.node != param.node)
             {
-                const input = view.overInput;
+                const input = graphView.overInput;
                 
-                view.overInput   = null;
+                graphView.overInput   = null;
                 
                 if (input) // will be null if data types don't match or there's no auto input for someo other reason
                 {
@@ -390,14 +390,14 @@ NumberControl.prototype.initEvents = function()
                     input.updateControl();
                 }
                 
-                view.tempConn.wire.inputPos = point_NaN;
+                graphView.tempConn.wire.inputPos = point_NaN;
             }
-            else if (view.tempConn.input
-                  && view.tempConn.input.node != param.node)
+            else if (graphView.tempConn.input
+                  && graphView.tempConn.input.node != param.node)
             {
-                const output = view.overOutput;
+                const output = graphView.overOutput;
                 
-                view.overOutput = null;
+                graphView.overOutput = null;
 
                 if (output) // will be null if data types don't match or there's no auto output for someo other reason
                 {
@@ -405,8 +405,8 @@ NumberControl.prototype.initEvents = function()
                     output.updateControl();
                 }
 
-                view.tempConn.wire.outputPos = point_NaN;
-                view.tempConn.input.updateControl();
+                graphView.tempConn.wire.outputPos = point_NaN;
+                graphView.tempConn.input.updateControl();
            }
         }
     });
@@ -455,21 +455,21 @@ NumberControl.prototype.initEvents = function()
         }
 
 
-        if (view.tempConn)
+        if (graphView.tempConn)
         {
-            if (    view.tempConn.output
-                && !view.tempConn.output.node.isOrFollows(param.node)
-                &&  view.overInput)
+            if (    graphView.tempConn.output
+                && !graphView.tempConn.output.node.isOrFollows(param.node)
+                &&  graphView.overInput)
             {
-                view.endConnection(e.pointerId, getCtrlKey(e));
-                view.overInput.endConnection();
+                graphView.endConnection(e.pointerId, getCtrlKey(e));
+                graphView.overInput.endConnection();
             }
-            else if (view.tempConn.input
-                && !param.node.isOrFollows(view.tempConn.input.node)
-                &&  view.overOutput)
+            else if (graphView.tempConn.input
+                && !param.node.isOrFollows(graphView.tempConn.input.node)
+                &&  graphView.overOutput)
             {
-                view.endConnection(e.pointerId, getCtrlKey(e));
-                view.overOutput.endConnection();
+                graphView.endConnection(e.pointerId, getCtrlKey(e));
+                graphView.overOutput.endConnection();
             }
         }
         
@@ -555,7 +555,7 @@ NumberControl.prototype.initEvents = function()
 
         if (  !this.pointerEvents
             || panMode
-            || view.wheelTimer)
+            || graphView.wheelTimer)
             return;
 
 

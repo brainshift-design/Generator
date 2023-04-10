@@ -296,12 +296,10 @@ extends OpColorBase
             this.paramSpace.setValue(space, false, true, false);
 
 
-            const view = graphView;
-
             if (   convert.value != space.value
-                || view.pastingNodes
-                || view.loadingNodes
-                || view.restoringNodes)
+                || graphView.pastingNodes
+                || graphView.loadingNodes
+                || graphView.restoringNodes)
                 switchToSpace(this, colorSpace(space.value));
             
 
