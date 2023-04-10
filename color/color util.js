@@ -527,3 +527,17 @@ function clipChroma(rgb)
 
     return rgb;
 }
+
+
+
+function noColorStyle(rgba)
+{
+    if (!rgbaIsNaN(rgba))
+        return 'transparent';
+    else
+    {
+        return darkMode
+            ? 'rgba(56, 56, 56, 0.95)'
+            : 'rgba(255, 255, 255, 0.95)';
+    }
+}

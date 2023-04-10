@@ -18271,6 +18271,20 @@ function clipChroma(rgb)
 }
 
 
+
+function noColorStyle(rgba)
+{
+    if (!rgbaIsNaN(rgba))
+        return 'transparent';
+    else
+    {
+        return darkMode
+            ? 'rgba(56, 56, 56, 0.95)'
+            : 'rgba(255, 255, 255, 0.95)';
+    }
+}
+
+
 const lmsW = xyz2lms(lrgb2xyz([1, 1, 1]));
 const lmsB = xyz2lms(lrgb2xyz([0, 0, 1]));
 const lmsR = xyz2lms(lrgb2xyz([1, 0, 0]));

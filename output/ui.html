@@ -22396,6 +22396,20 @@ function clipChroma(rgb)
 }
 
 
+
+function noColorStyle(rgba)
+{
+    if (!rgbaIsNaN(rgba))
+        return 'transparent';
+    else
+    {
+        return darkMode
+            ? 'rgba(56, 56, 56, 0.95)'
+            : 'rgba(255, 255, 255, 0.95)';
+    }
+}
+
+
 const lmsW = xyz2lms(lrgb2xyz([1, 1, 1]));
 const lmsB = xyz2lms(lrgb2xyz([0, 0, 1]));
 const lmsR = xyz2lms(lrgb2xyz([1, 0, 0]));
@@ -28684,6 +28698,20 @@ function clipChroma(rgb)
     rgb[2] = Math.min(Math.max(0, rgb[2]), 1); 
 
     return rgb;
+}
+
+
+
+function noColorStyle(rgba)
+{
+    if (!rgbaIsNaN(rgba))
+        return 'transparent';
+    else
+    {
+        return darkMode
+            ? 'rgba(56, 56, 56, 0.95)'
+            : 'rgba(255, 255, 255, 0.95)';
+    }
 }
 
 
@@ -49547,23 +49575,14 @@ extends Parameter
         this.controlWrapper.style.background =
               !rgbaIsNaN(rgbaBack) 
             && this.value.opacity.isValid()
-            ?  rgba2style(rgbaBack)
-            : 'transparent'; 
+            ? rgba2style(rgbaBack)
+            : noColorStyle(rgbaBack);//'transparent'; 
 
 
         this.updateWarningOverlay();
 
 
-        if (!rgbaIsNaN(rgba))
-            this.div.style.background = 'transparent';
-        else
-        {
-            this.div.style.background =
-                darkMode
-                ? 'rgba(56, 56, 56, 0.95)'
-                : 'rgba(255, 255, 255, 0.95)';
-
-        }
+        this.div.style.background = 'transparent';//noColorStyle(rgba);
 
 
         if (this.input)
@@ -62333,8 +62352,12 @@ extends OpColorBase
 
 
         this.paramColor.controls[0]. backStyleLight = 
-        this.paramColor.controls[0]. backStyleDark  = rgba2style(rgb_a(colors.stripeBack, 1));
+        this.paramColor.controls[0]. backStyleDark  = 
+            !rgbIsNaN(colors.stripeBack)
+              ? rgba2style(rgb_a(colors.stripeBack, 1))
+              : noColorStyle(colors.stripeBack);
 
+              
         this.paramColor.controls[0].valueStyleLight = 
         this.paramColor.controls[0].valueStyleDark  = 'transparent';//rgba2style(rgb_a(colors.back, 1));
 

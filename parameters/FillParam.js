@@ -358,23 +358,14 @@ extends Parameter
         this.controlWrapper.style.background =
               !rgbaIsNaN(rgbaBack) 
             && this.value.opacity.isValid()
-            ?  rgba2style(rgbaBack)
-            : 'transparent'; 
+            ? rgba2style(rgbaBack)
+            : noColorStyle(rgbaBack);//'transparent'; 
 
 
         this.updateWarningOverlay();
 
 
-        if (!rgbaIsNaN(rgba))
-            this.div.style.background = 'transparent';
-        else
-        {
-            this.div.style.background =
-                darkMode
-                ? 'rgba(56, 56, 56, 0.95)'
-                : 'rgba(255, 255, 255, 0.95)';
-
-        }
+        this.div.style.background = 'transparent';//noColorStyle(rgba);
 
 
         if (this.input)

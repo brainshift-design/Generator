@@ -165,8 +165,12 @@ extends OpColorBase
 
 
         this.paramColor.controls[0]. backStyleLight = 
-        this.paramColor.controls[0]. backStyleDark  = rgba2style(rgb_a(colors.stripeBack, 1));
+        this.paramColor.controls[0]. backStyleDark  = 
+            !rgbIsNaN(colors.stripeBack)
+              ? rgba2style(rgb_a(colors.stripeBack, 1))
+              : noColorStyle(colors.stripeBack);
 
+              
         this.paramColor.controls[0].valueStyleLight = 
         this.paramColor.controls[0].valueStyleDark  = 'transparent';//rgba2style(rgb_a(colors.back, 1));
 
