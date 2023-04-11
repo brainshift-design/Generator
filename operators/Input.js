@@ -75,7 +75,7 @@ extends EventTarget
 
     overFactor         = 1.7;
            
-       
+    
     initialSeed        = 0;
     currentSeed        = 0;
        
@@ -116,6 +116,7 @@ extends EventTarget
         this.div.appendChild(this.hitbox);
         this.div.appendChild(this.wireBall);
 
+
                 
         this.hitbox.addEventListener('pointerenter', e => 
         {
@@ -127,6 +128,7 @@ extends EventTarget
             {
                 graphView.headerInput.updateControl();
                 graphView.headerInput = null;
+                console.log('headerInput = ', graphView.headerInput);
             }
 
             

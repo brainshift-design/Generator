@@ -14737,8 +14737,7 @@ extends GColorType
         if (standard.isValid())
             standard.value = Math.min(Math.max(0, standard.value), 1);
 
-console.log('this.input0 =', this.input0);
-console.log('this.input1 =', this.input1);
+
         if (   this.input0 
             && this.input1)
         {
@@ -36947,8 +36946,7 @@ extends GColorType
         if (standard.isValid())
             standard.value = Math.min(Math.max(0, standard.value), 1);
 
-console.log('this.input0 =', this.input0);
-console.log('this.input1 =', this.input1);
+
         if (   this.input0 
             && this.input1)
         {
@@ -46228,7 +46226,58 @@ class GraphView
 
 
 
-
+    showCompatibleInputs(output = null)
+    {
+        for (const node of graph.nodes)
+        {
+            for (const input of node.inputs)
+            {
+                input.div.style.visibility = 
+                      !output 
+                    || input.canConnectFrom(output)
+                    ? 'visible'
+                    : 'hidden';
+            }
+        }
+    }
+    
+    
+    
+    hideAllInputs()
+    {
+        for (const node of graph.nodes)
+            for (const input of node.inputs)
+                input.div.style.visibility = 'hidden';
+    }
+    
+    
+   
+    showCompatibleOutputs(input = null)
+    {
+        for (const node of graph.nodes)
+        {
+            for (const output of node.outputs)
+            {
+                output.div.style.visibility = 
+                       !input
+                    ||  input.canConnectFrom(output)
+                    ? 'visible'
+                    : 'hidden';
+            }
+        }
+    }
+    
+    
+    
+    hideAllOutputs()
+    {
+        for (const node of graph.nodes)
+            for (const output of node.outputs)
+                output.div.style.visibility = 'hidden';
+    }
+    
+    
+   
     // point2screen(p)
     // {
     //     return point(
@@ -46616,6 +46665,9 @@ GraphView.prototype.startConnectionFromOutput = function(pointerId, output, upda
     if (updateTempWire)
         this.tempConn.wire.update(this.pStart.x, this.pStart.y);
 
+    this.showCompatibleInputs(output);
+    this.hideAllOutputs();
+
     output.updateControl();
 };
 
@@ -46631,6 +46683,9 @@ GraphView.prototype.startConnectionFromInput = function(pointerId, input, backIn
     this.addConnWires(this.tempConn, false);
 
     this.tempConn.wire.update(this.pStart.x, this.pStart.y);
+
+    this.showCompatibleOutputs(input);
+    this.hideAllInputs();
 
     input.updateControl();
 };
@@ -46661,6 +46716,10 @@ GraphView.prototype.cancelConnection = function(pointerId)
         this.div.releasePointerCapture(pointerId);
 
     this.connPointerId = -1;
+
+
+    this.showCompatibleInputs();
+    this.showCompatibleOutputs();
 
 
     newReorderIndex  = Number.NaN;
@@ -50866,7 +50925,7 @@ extends EventTarget
 
     overFactor         = 1.7;
            
-       
+    
     initialSeed        = 0;
     currentSeed        = 0;
        
@@ -50907,6 +50966,7 @@ extends EventTarget
         this.div.appendChild(this.hitbox);
         this.div.appendChild(this.wireBall);
 
+
                 
         this.hitbox.addEventListener('pointerenter', e => 
         {
@@ -50918,6 +50978,7 @@ extends EventTarget
             {
                 graphView.headerInput.updateControl();
                 graphView.headerInput = null;
+                console.log('headerInput = ', graphView.headerInput);
             }
 
             
@@ -51250,6 +51311,7 @@ class Output
             {
                 graphView.headerOutput.updateControl();
                 graphView.headerOutput = null;
+                //console.log('headerOutput = ', graphView.headerOutput);
             }
 
 
@@ -51275,7 +51337,7 @@ class Output
                 this.node.outputs.forEach(o => o.updateControl());
             }
             else
-            graphView.overOutput = this; 
+                graphView.overOutput = this; 
         });
 
 
@@ -51847,7 +51909,11 @@ class Wire
         this.curve2.setAttribute('d', points);
     
     
-        this.updateArrows(_x0, _y0, _x1, _y1, _x2, _y2, _x3, _y3);
+        this.updateArrows(
+            _x0, _y0, 
+            _x1, _y1, 
+            _x2, _y2, 
+            _x3, _y3);
 
         
         const fb = 
@@ -53029,8 +53095,7 @@ class Operator
 
     toJson(nTab = 0) 
     {
-        let   pos = ' '.repeat(nTab);
-       //const tab = HTAB;
+        let pos = ' '.repeat(nTab);
         
 
         let json = 
@@ -53490,7 +53555,10 @@ Operator.prototype.createHeader = function()
             return;
 
 
-        const toTheRightOfInputs = e.clientX - boundingRect(this.header).x > 12 * graphView.zoom;
+        const headerRect = boundingRect(this.header);
+
+        const rightOfInputs = e.clientX - headerRect.x > 12 * graphView.zoom;
+        const leftOfOutputs = e.clientX - headerRect.x < headerRect.width - 12 * graphView.zoom;
 
         const tempConn  = graphView. tempConn;
         let   savedConn = graphView.savedConn;
@@ -53518,7 +53586,8 @@ Operator.prototype.createHeader = function()
                 this.updateProxyWires();
         }
         else if (   tempConn
-                 && toTheRightOfInputs)
+                 && rightOfInputs
+                 && leftOfOutputs)
         {
             if (    tempConn.output
                 && !tempConn.output.node.isOrFollows(this))
@@ -53570,6 +53639,7 @@ Operator.prototype.createHeader = function()
 
                     graphView.overInput   = input;
                     graphView.headerInput = input;
+                    //console.log('headerInput = ', graphView.headerInput);
                         
                     input.mouseOver = true;
                     input.updateControl();
@@ -53589,6 +53659,7 @@ Operator.prototype.createHeader = function()
 
                 graphView.overOutput   = output;
                 graphView.headerOutput = output;
+                //console.log('headerOutput = ', graphView.headerOutput);
                     
                 output.mouseOver = true;
                 output.updateControl();
@@ -53649,7 +53720,8 @@ Operator.prototype.createHeader = function()
                 graphView          .endConnection(e.pointerId, getCtrlKey(e));
                 graphView.overInput.endConnection();
 
-                graphView.overInput = overInput; // to be able to use the input again immediately
+                if (!graphView.headerInput)
+                    graphView.overInput = overInput; // to be able to use the input again immediately
             }
             else if ( graphView.tempConn.input
                   && !this.isOrFollows(graphView.tempConn.input.node)
@@ -53660,7 +53732,8 @@ Operator.prototype.createHeader = function()
                 graphView           .endConnection(e.pointerId, getCtrlKey(e));
                 graphView.overOutput.endConnection();
 
-                graphView.overOutput = overOutput; // to be able to use the output again immediately
+                if (!graphView.headerOutput)
+                    graphView.overOutput = overOutput; // to be able to use the output again immediately
             }
         }
 
@@ -53680,7 +53753,6 @@ Operator.prototype.createHeader = function()
                 const input = graphView.headerInput;
                 
                 graphView.overInput   = null;
-                graphView.headerInput = null;
                 
                 if (input) // will be null if data types don't match or there's no auto input for someo other reason
                 {
@@ -53689,6 +53761,7 @@ Operator.prototype.createHeader = function()
                 }
                 
                 graphView.tempConn.wire.inputPos = point_NaN;
+                graphView.tempConn.output.updateControl();
             }
             else if (graphView.tempConn.input
                   && graphView.tempConn.input.node !=  this)
@@ -53696,7 +53769,6 @@ Operator.prototype.createHeader = function()
                 const output = graphView.headerOutput;
                 
                 graphView.overOutput   = null;
-                graphView.headerOutput = null;
 
                 if (output) // will be null if data types don't match or there's no auto output for someo other reason
                 {
@@ -53705,9 +53777,11 @@ Operator.prototype.createHeader = function()
                 }
 
                 graphView.tempConn.wire.outputPos = point_NaN;
-                
                 graphView.tempConn.input.updateControl();
            }
+
+           graphView.headerInput  = null;
+           graphView.headerOutput = null;
         }
     });
 
@@ -71010,8 +71084,8 @@ function uiUpdateValuesAndObjects(requestId, actionId, updateNodeId, updateParam
     }
 
 
-    // if (!graphView.loadingNodes)
-    //     uiSaveNodes(nodes.map(n => n.id));
+    if (!graphView.loadingNodes)
+        uiSaveNodes(nodes.map(n => n.id));
 
 
     for (const node of nodes)
@@ -71037,8 +71111,8 @@ function uiUpdateValuesAndObjects(requestId, actionId, updateNodeId, updateParam
 
     if (isLastChunk)
     {
-        //if (graphView.loadingNodes)
-        //   uiSaveNodes(graph.nodes.map(n => n.id));
+        if (graphView.loadingNodes)
+          uiSaveNodes(graph.nodes.map(n => n.id));
 
         graphView.creatingNodes      = false;
         graphView.pastingNodes       = false;

@@ -189,7 +189,10 @@ Operator.prototype.createHeader = function()
             return;
 
 
-        const toTheRightOfInputs = e.clientX - boundingRect(this.header).x > 12 * graphView.zoom;
+        const headerRect = boundingRect(this.header);
+
+        const rightOfInputs = e.clientX - headerRect.x > 12 * graphView.zoom;
+        const leftOfOutputs = e.clientX - headerRect.x < headerRect.width - 12 * graphView.zoom;
 
         const tempConn  = graphView. tempConn;
         let   savedConn = graphView.savedConn;
@@ -217,7 +220,8 @@ Operator.prototype.createHeader = function()
                 this.updateProxyWires();
         }
         else if (   tempConn
-                 && toTheRightOfInputs)
+                 && rightOfInputs
+                 && leftOfOutputs)
         {
             if (    tempConn.output
                 && !tempConn.output.node.isOrFollows(this))
@@ -269,6 +273,7 @@ Operator.prototype.createHeader = function()
 
                     graphView.overInput   = input;
                     graphView.headerInput = input;
+                    //console.log('headerInput = ', graphView.headerInput);
                         
                     input.mouseOver = true;
                     input.updateControl();
@@ -288,6 +293,7 @@ Operator.prototype.createHeader = function()
 
                 graphView.overOutput   = output;
                 graphView.headerOutput = output;
+                //console.log('headerOutput = ', graphView.headerOutput);
                     
                 output.mouseOver = true;
                 output.updateControl();
@@ -348,7 +354,8 @@ Operator.prototype.createHeader = function()
                 graphView          .endConnection(e.pointerId, getCtrlKey(e));
                 graphView.overInput.endConnection();
 
-                graphView.overInput = overInput; // to be able to use the input again immediately
+                if (!graphView.headerInput)
+                    graphView.overInput = overInput; // to be able to use the input again immediately
             }
             else if ( graphView.tempConn.input
                   && !this.isOrFollows(graphView.tempConn.input.node)
@@ -359,7 +366,8 @@ Operator.prototype.createHeader = function()
                 graphView           .endConnection(e.pointerId, getCtrlKey(e));
                 graphView.overOutput.endConnection();
 
-                graphView.overOutput = overOutput; // to be able to use the output again immediately
+                if (!graphView.headerOutput)
+                    graphView.overOutput = overOutput; // to be able to use the output again immediately
             }
         }
 
@@ -379,7 +387,6 @@ Operator.prototype.createHeader = function()
                 const input = graphView.headerInput;
                 
                 graphView.overInput   = null;
-                graphView.headerInput = null;
                 
                 if (input) // will be null if data types don't match or there's no auto input for someo other reason
                 {
@@ -388,6 +395,7 @@ Operator.prototype.createHeader = function()
                 }
                 
                 graphView.tempConn.wire.inputPos = point_NaN;
+                graphView.tempConn.output.updateControl();
             }
             else if (graphView.tempConn.input
                   && graphView.tempConn.input.node !=  this)
@@ -395,7 +403,6 @@ Operator.prototype.createHeader = function()
                 const output = graphView.headerOutput;
                 
                 graphView.overOutput   = null;
-                graphView.headerOutput = null;
 
                 if (output) // will be null if data types don't match or there's no auto output for someo other reason
                 {
@@ -404,9 +411,11 @@ Operator.prototype.createHeader = function()
                 }
 
                 graphView.tempConn.wire.outputPos = point_NaN;
-                
                 graphView.tempConn.input.updateControl();
            }
+
+           graphView.headerInput  = null;
+           graphView.headerOutput = null;
         }
     });
 

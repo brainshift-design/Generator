@@ -350,7 +350,58 @@ class GraphView
 
 
 
-
+    showCompatibleInputs(output = null)
+    {
+        for (const node of graph.nodes)
+        {
+            for (const input of node.inputs)
+            {
+                input.div.style.visibility = 
+                      !output 
+                    || input.canConnectFrom(output)
+                    ? 'visible'
+                    : 'hidden';
+            }
+        }
+    }
+    
+    
+    
+    hideAllInputs()
+    {
+        for (const node of graph.nodes)
+            for (const input of node.inputs)
+                input.div.style.visibility = 'hidden';
+    }
+    
+    
+   
+    showCompatibleOutputs(input = null)
+    {
+        for (const node of graph.nodes)
+        {
+            for (const output of node.outputs)
+            {
+                output.div.style.visibility = 
+                       !input
+                    ||  input.canConnectFrom(output)
+                    ? 'visible'
+                    : 'hidden';
+            }
+        }
+    }
+    
+    
+    
+    hideAllOutputs()
+    {
+        for (const node of graph.nodes)
+            for (const output of node.outputs)
+                output.div.style.visibility = 'hidden';
+    }
+    
+    
+   
     // point2screen(p)
     // {
     //     return point(

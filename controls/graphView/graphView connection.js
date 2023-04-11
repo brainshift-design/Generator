@@ -11,6 +11,9 @@ GraphView.prototype.startConnectionFromOutput = function(pointerId, output, upda
     if (updateTempWire)
         this.tempConn.wire.update(this.pStart.x, this.pStart.y);
 
+    this.showCompatibleInputs(output);
+    this.hideAllOutputs();
+
     output.updateControl();
 };
 
@@ -26,6 +29,9 @@ GraphView.prototype.startConnectionFromInput = function(pointerId, input, backIn
     this.addConnWires(this.tempConn, false);
 
     this.tempConn.wire.update(this.pStart.x, this.pStart.y);
+
+    this.showCompatibleOutputs(input);
+    this.hideAllInputs();
 
     input.updateControl();
 };
@@ -56,6 +62,10 @@ GraphView.prototype.cancelConnection = function(pointerId)
         this.div.releasePointerCapture(pointerId);
 
     this.connPointerId = -1;
+
+
+    this.showCompatibleInputs();
+    this.showCompatibleOutputs();
 
 
     newReorderIndex  = Number.NaN;

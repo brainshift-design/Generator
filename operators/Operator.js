@@ -882,8 +882,7 @@ class Operator
 
     toJson(nTab = 0) 
     {
-        let   pos = ' '.repeat(nTab);
-       //const tab = HTAB;
+        let pos = ' '.repeat(nTab);
         
 
         let json = 

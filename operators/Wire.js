@@ -244,7 +244,11 @@ class Wire
         this.curve2.setAttribute('d', points);
     
     
-        this.updateArrows(_x0, _y0, _x1, _y1, _x2, _y2, _x3, _y3);
+        this.updateArrows(
+            _x0, _y0, 
+            _x1, _y1, 
+            _x2, _y2, 
+            _x3, _y3);
 
         
         const fb = 

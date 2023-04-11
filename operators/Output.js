@@ -92,6 +92,7 @@ class Output
             {
                 graphView.headerOutput.updateControl();
                 graphView.headerOutput = null;
+                //console.log('headerOutput = ', graphView.headerOutput);
             }
 
 
@@ -117,7 +118,7 @@ class Output
                 this.node.outputs.forEach(o => o.updateControl());
             }
             else
-            graphView.overOutput = this; 
+                graphView.overOutput = this; 
         });
 
 
