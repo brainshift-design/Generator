@@ -7,7 +7,7 @@ GraphView.prototype.updateScrollWithBounds = function()
         this.div.clientWidth,
         this.div.clientHeight,
         bounds,
-        menuBarHeight);
+        getTopHeight());
 };
 
 

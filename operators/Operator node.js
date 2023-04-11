@@ -202,7 +202,7 @@ Operator.prototype.createHeader = function()
             const h       = graphView.div.clientHeight;
             const bounds  = graphView.getAllNodeBounds();
 
-            const yOffset = menuBarHeight;
+            const yOffset = getTopHeight();
 
             graphView.setNodePositions(
                 graphView.selectedNodes,
@@ -260,7 +260,7 @@ Operator.prototype.createHeader = function()
 
                     tempConn.wire.inputPos = point(
                         inputRect.x + inputRect.w/2,
-                        inputRect.y + inputRect.h/2 - menuBarHeight);
+                        inputRect.y + inputRect.h/2 - getTopHeight());
                 }
                 else
                 {
@@ -277,7 +277,7 @@ Operator.prototype.createHeader = function()
                     
                     tempConn.wire.inputPos = point(
                         inputRect.x + inputRect.w/2,
-                        inputRect.y + inputRect.h/2 - menuBarHeight);
+                        inputRect.y + inputRect.h/2 - getTopHeight());
                 }
             }
             else if ( tempConn.input
@@ -297,7 +297,7 @@ Operator.prototype.createHeader = function()
 
                 tempConn.wire.outputPos = point(
                     rect.x + rect.w/2,
-                    rect.y + rect.h/2 - menuBarHeight);
+                    rect.y + rect.h/2 - getTopHeight());
 
 
                 tempConn.input.updateControl();

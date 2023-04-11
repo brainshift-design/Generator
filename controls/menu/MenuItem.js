@@ -204,7 +204,7 @@ class MenuItem
                     node.sy  = node.div.offsetTop ;
 
                     node.slx = node.div.offsetLeft - (defNodeWidth    / 2) - (              + graphView.pan.x) / graphView.zoom;
-                    node.sly = node.div.offsetTop  - (defHeaderHeight / 2) - (menuBarHeight + graphView.pan.y) / graphView.zoom;
+                    node.sly = node.div.offsetTop  - (defHeaderHeight / 2) - (getTopHeight() + graphView.pan.y) / graphView.zoom;
 
                     node.div.dragging = true;
                     node.header.setPointerCapture(e.pointerId);

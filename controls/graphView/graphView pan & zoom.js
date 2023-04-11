@@ -135,14 +135,14 @@ GraphView.prototype.endZoomSelection = function(pointerId, zoom)
 
         const wndRect = new Rect(
             1,
-            menuBarHeight + 1,
+            getTopHeight() + 1,
             this.measureData.clientRect.width  - 2,
             this.measureData.clientRect.height - 5);
     
         let selection = validateRect(this.selectionRect);
         selection = clipRect(selection, wndRect);
     
-        selection.y -= menuBarHeight;
+        selection.y -= getTopHeight();
 
         
         const rect = this.screen2rect(selection);

@@ -4243,7 +4243,16 @@ const connTag          = 'G_CONN';
 const smallScrollGap   =  6;
 const largeScrollGap   = 14;
   
-const menuBarHeight    = 40;
+var   menuBarHeight    = 40;
+var   pagesBarHeight   = 36;
+
+
+
+function getTopHeight() 
+{ 
+    return menuBarHeight 
+         + (settings.showPages ? pagesBarHeight : 0);
+}
 
 
 
@@ -23874,7 +23883,16 @@ const connTag          = 'G_CONN';
 const smallScrollGap   =  6;
 const largeScrollGap   = 14;
   
-const menuBarHeight    = 40;
+var   menuBarHeight    = 40;
+var   pagesBarHeight   = 36;
+
+
+
+function getTopHeight() 
+{ 
+    return menuBarHeight 
+         + (settings.showPages ? pagesBarHeight : 0);
+}
 
 
 
@@ -41193,7 +41211,7 @@ NumberControl.prototype.initEvents = function()
 
                 graphView.tempConn.wire.inputPos = point(
                     rect.x + rect.w/2,
-                    rect.y + rect.h/2 - menuBarHeight);
+                    rect.y + rect.h/2 - getTopHeight());
             }
             else if ( graphView.tempConn.input
                   &&  param.output
@@ -41210,7 +41228,7 @@ NumberControl.prototype.initEvents = function()
 
                 graphView.tempConn.wire .outputPos = point(
                     rect.x + rect.w/2,
-                    rect.y + rect.h/2 - menuBarHeight);
+                    rect.y + rect.h/2 - getTopHeight());
 
 
                 graphView.tempConn.input.updateControl();
@@ -42842,7 +42860,7 @@ ColorControl.prototype.initEvents = function()
 
                 graphView.tempConn.wire .inputPos = point(
                     rect.x + rect.w/2,
-                    rect.y + rect.h/2 - menuBarHeight);
+                    rect.y + rect.h/2 - getTopHeight());
             }
             else if ( graphView.tempConn.input
                   &&  this.param.output
@@ -42859,7 +42877,7 @@ ColorControl.prototype.initEvents = function()
 
                 graphView.tempConn.wire .outputPos = point(
                     rect.x + rect.w/2,
-                    rect.y + rect.h/2 - menuBarHeight);
+                    rect.y + rect.h/2 - getTopHeight());
 
 
                 graphView.tempConn.input.updateControl();
@@ -43483,12 +43501,12 @@ class Menu
                 height += item.separator ? 17 : 25;
 
 
-        const graphHeight = graphView.div.offsetHeight - menuBarHeight;
+        const graphHeight = graphView.div.offsetHeight - getTopHeight();
 
         if (top + height > graphView.div.offsetHeight-8)
         {
             height = Math.min(height, graphHeight - 16);
-            top    = menuBarHeight + Math.max(8, graphHeight - height);
+            top    = getTopHeight() + Math.max(8, graphHeight - height);
             
             if (!subMenu)
                 left  += 10; // so it doesn't hit a menu item by accident once the menu appears
@@ -44040,7 +44058,7 @@ class MenuItem
                     node.sy  = node.div.offsetTop ;
 
                     node.slx = node.div.offsetLeft - (defNodeWidth    / 2) - (              + graphView.pan.x) / graphView.zoom;
-                    node.sly = node.div.offsetTop  - (defHeaderHeight / 2) - (menuBarHeight + graphView.pan.y) / graphView.zoom;
+                    node.sly = node.div.offsetTop  - (defHeaderHeight / 2) - (getTopHeight() + graphView.pan.y) / graphView.zoom;
 
                     node.div.dragging = true;
                     node.header.setPointerCapture(e.pointerId);
@@ -44386,20 +44404,20 @@ function initGeneratorMenus()
 
     menuMainPreferences = new Menu('Preferences', false);
     menuMainPreferences.addItems([
-        menuItemShowPages             = new MenuItem('Show pages',                  {checkCallback: () => settings.showAllColorSpaces,      callback: () => { updateSettingAndMenu('showPages',            true, !settings.showPages);             updateMenuItemShowPages();            }}),
-                                        new MenuItem('',                             {separator: true}),    
-        menuItemShowAllColorSpaces    = new MenuItem('Show all color spaces',        {checkCallback: () => settings.showAllColorSpaces,     callback: () => { updateSettingAndMenu('showAllColorSpaces',   true, !settings.showAllColorSpaces);    updateMenuItemShowAllColorSpaces();   }}),
-        menuItemShowOperationResults  = new MenuItem('Show operation results',       {checkCallback: () => settings.showOperationResults,   callback: () => { updateSettingAndMenu('showOperationResults', true, !settings.showOperationResults);  updateMenuItemShowOperationResults(); }}),
+        menuItemShowPages             = new MenuItem('Show pages',                    {checkCallback: () => settings.showAllColorSpaces,      callback: () => { updateSettingAndMenu('showPages',            true, !settings.showPages);             updateMenuItemShowPages();            }}),
+                                        new MenuItem('',                              {separator: true}),    
+        menuItemShowAllColorSpaces    = new MenuItem('Show all color spaces',         {checkCallback: () => settings.showAllColorSpaces,     callback: () => { updateSettingAndMenu('showAllColorSpaces',   true, !settings.showAllColorSpaces);    updateMenuItemShowAllColorSpaces();   }}),
+        menuItemShowOperationResults  = new MenuItem('Show operation results',        {checkCallback: () => settings.showOperationResults,   callback: () => { updateSettingAndMenu('showOperationResults', true, !settings.showOperationResults);  updateMenuItemShowOperationResults(); }}),
         menuItemShowBoolValues        = new MenuItem('Show boolean values as   ✓ ✗', {checkCallback: () => settings.showBoolValues,        callback: () => { updateSettingAndMenu('showBoolValues',       true, !settings.showBoolValues);        updateMenuItemShowBoolValues();       }}),
-                                        new MenuItem('',                             {separator: true}),    
-        menuItemShowTooltips          = new MenuItem('Show tooltips',                {childMenu: menuShowTooltips}),
-        menuItemShowClearUndoWarning  = new MenuItem('Show clear undo warning',      {checkCallback: () => settings.showClearUndoWarning,  callback: () => { updateSettingAndMenu('showClearUndoWarning',  true, !settings.showClearUndoWarning);                                        }}),
-                                        new MenuItem('',                             {separator: true}),    
-        menuItemShowDebugMenu         = new MenuItem('Show debug menu',              {checkCallback: () => settings.showDebugMenu,         callback: () => { updateSettingAndMenu('showDebugMenu',         true, !settings.showDebugMenu);         updateMenuItemShowDebugMenu();        }}),
-        menuItemEnableBetaFeatures    = new MenuItem('Enable beta features',         {checkCallback: () => settings.enableBetaFeatures,    callback: () => { updateSettingAndMenu('enableBetaFeatures',    true, !settings.enableBetaFeatures);    enableFeatures(true, settings.enableBetaFeatures); }}),
-                                        new MenuItem('',                             {separator: true}),    
-                                        new MenuItem('Keyboard layout...',           {callback: () => showKeyboardPanel()}),
-        menuItemMinZoomForParams      = new MenuItem('Zoom level for values...',     {callback: () => showMinZoomDialog()})]);
+                                        new MenuItem('',                              {separator: true}),    
+        menuItemShowTooltips          = new MenuItem('Show tooltips',                 {childMenu: menuShowTooltips}),
+        menuItemShowClearUndoWarning  = new MenuItem('Show clear undo warning',       {checkCallback: () => settings.showClearUndoWarning,  callback: () => { updateSettingAndMenu('showClearUndoWarning',  true, !settings.showClearUndoWarning);                                        }}),
+                                        new MenuItem('',                              {separator: true}),    
+        menuItemShowDebugMenu         = new MenuItem('Show debug menu',               {checkCallback: () => settings.showDebugMenu,         callback: () => { updateSettingAndMenu('showDebugMenu',         true, !settings.showDebugMenu);         updateMenuItemShowDebugMenu();        }}),
+        menuItemEnableBetaFeatures    = new MenuItem('Enable beta features',          {checkCallback: () => settings.enableBetaFeatures,    callback: () => { updateSettingAndMenu('enableBetaFeatures',    true, !settings.enableBetaFeatures);    enableFeatures(true, settings.enableBetaFeatures); }}),
+                                        new MenuItem('',                              {separator: true}),    
+                                        new MenuItem('Keyboard layout...',            {callback: () => showKeyboardPanel()}),
+        menuItemMinZoomForParams      = new MenuItem('Zoom level for values...',      {callback: () => showMinZoomDialog()})]);
         
 
     menuItemShowBoolValues.divName.innerHTML = 'Show boolean values as   <span style="position: relative; top: 1px;">' + TRUE_DISPLAY_MENU + '</span>  <span>' + FALSE_DISPLAY_MENU + '</span>'
@@ -44407,30 +44425,30 @@ function initGeneratorMenus()
 
     menuDebugLog = new Menu('Debug log', false);
     menuDebugLog.addItems([
-        menuItemLogRawRequests        = new MenuItem('Log\u2008raw\u2008requests', {checkCallback: () => settings.logRawRequests  ,      callback: () => updateSettingAndMenu('logRawRequests',        true, !settings.logRawRequests       ), setting: true}),
-        menuItemLogRawValues          = new MenuItem('Log\u2008raw\u2008values',   {checkCallback: () => settings.logRawValues    ,      callback: () => updateSettingAndMenu('logRawValues',          true, !settings.logRawValues         ), setting: true}),
-                                        new MenuItem('',                           {separator: true}),                   
-        menuItemLogRequests           = new MenuItem('Log\u2008requests',          {checkCallback: () => settings.logRequests     ,      callback: () => updateSettingAndMenu('logRequests',           true, !settings.logRequests          ), setting: true}),
-        menuItemLogValueUpdates       = new MenuItem('Log\u2008values',            {checkCallback: () => settings.logValueUpdates ,      callback: () => updateSettingAndMenu('logValueUpdates',       true, !settings.logValueUpdates      ), setting: true}),
-        menuItemLogObjectUpdates      = new MenuItem('Log\u2008objects',           {checkCallback: () => settings.logObjectUpdates,      callback: () => updateSettingAndMenu('logObjectUpdates',      true, !settings.logObjectUpdates     ), setting: true}),
-        menuItemLogStyleUpdates       = new MenuItem('Log\u2008styles',            {checkCallback: () => settings.logStyleUpdates ,      callback: () => updateSettingAndMenu('logStyleUpdates',       true, !settings.logStyleUpdates      ), setting: true}),
-                                        new MenuItem('',                           {separator: true}),                   
-        menuItemLogMessages           = new MenuItem('Log\u2008messages',          {checkCallback: () => settings.logMessages     ,      callback: () => updateSettingAndMenu('logMessages',           true, !settings.logMessages          ), setting: true}),
-        menuItemLogActions            = new MenuItem('Log\u2008actions',           {checkCallback: () => settings.logActions      ,      callback: () => updateSettingAndMenu('logActions',            true, !settings.logActions           ), setting: true}),
-                                        new MenuItem('',                           {separator: true}),
+        menuItemLogRawRequests        = new MenuItem('Log\u2008raw\u2008requests',  {checkCallback: () => settings.logRawRequests  ,      callback: () => updateSettingAndMenu('logRawRequests',        true, !settings.logRawRequests       ), setting: true}),
+        menuItemLogRawValues          = new MenuItem('Log\u2008raw\u2008values',    {checkCallback: () => settings.logRawValues    ,      callback: () => updateSettingAndMenu('logRawValues',          true, !settings.logRawValues         ), setting: true}),
+                                        new MenuItem('',                            {separator: true}),                   
+        menuItemLogRequests           = new MenuItem('Log\u2008requests',           {checkCallback: () => settings.logRequests     ,      callback: () => updateSettingAndMenu('logRequests',           true, !settings.logRequests          ), setting: true}),
+        menuItemLogValueUpdates       = new MenuItem('Log\u2008values',             {checkCallback: () => settings.logValueUpdates ,      callback: () => updateSettingAndMenu('logValueUpdates',       true, !settings.logValueUpdates      ), setting: true}),
+        menuItemLogObjectUpdates      = new MenuItem('Log\u2008objects',            {checkCallback: () => settings.logObjectUpdates,      callback: () => updateSettingAndMenu('logObjectUpdates',      true, !settings.logObjectUpdates     ), setting: true}),
+        menuItemLogStyleUpdates       = new MenuItem('Log\u2008styles',             {checkCallback: () => settings.logStyleUpdates ,      callback: () => updateSettingAndMenu('logStyleUpdates',       true, !settings.logStyleUpdates      ), setting: true}),
+                                        new MenuItem('',                            {separator: true}),                   
+        menuItemLogMessages           = new MenuItem('Log\u2008messages',           {checkCallback: () => settings.logMessages     ,      callback: () => updateSettingAndMenu('logMessages',           true, !settings.logMessages          ), setting: true}),
+        menuItemLogActions            = new MenuItem('Log\u2008actions',            {checkCallback: () => settings.logActions      ,      callback: () => updateSettingAndMenu('logActions',            true, !settings.logActions           ), setting: true}),
+                                        new MenuItem('',                            {separator: true}),
         menuItemLogLoading            = new MenuItem('Log\u2008load\u2008at start', {checkCallback: () => settings.logLoading      ,      callback: () => updateSettingAndMenu('logLoading',            true, !settings.logLoading           ), setting: true}),
-                                        new MenuItem('',                           {separator: true}),                   
-        menuItemLogRawLoadNodes       = new MenuItem('Log\u2008load nodes',        {checkCallback: () => settings.logRawLoadNodes ,      callback: () => updateSettingAndMenu('logRawLoadNodes',       true, !settings.logRawLoadNodes      ), setting: true}),
-        menuItemLogRawSaveNodes       = new MenuItem('Log\u2008save nodes',        {checkCallback: () => settings.logRawSaveNodes ,      callback: () => updateSettingAndMenu('logRawSaveNodes',       true, !settings.logRawSaveNodes      ), setting: true}),
-                                        new MenuItem('',                           {separator: true}),                   
-        menuItemLogRawLoadConnections = new MenuItem('Log\u2008load connections',  {checkCallback: () => settings.logRawLoadConnections, callback: () => updateSettingAndMenu('logRawLoadConnections', true, !settings.logRawLoadConnections), setting: true}),
-        menuItemLogRawSaveConnections = new MenuItem('Log\u2008save connections',  {checkCallback: () => settings.logRawSaveConnections, callback: () => updateSettingAndMenu('logRawSaveConnections', true, !settings.logRawSaveConnections), setting: true}),
-                                        new MenuItem('Log all connection keys',    {callback:      () => { hideAllMenus(); uiQueueMessageToFigma({cmd: 'figLogAllSavedConnKeys', darkMode: darkMode}); }}),
-                                        new MenuItem('',                           {separator: true}),   
-                                        new MenuItem('Log undo stack',             {callback:      () => { hideAllMenus(); logUndoStack(); }}),
-                                        new MenuItem('Log redo stack',             {callback:      () => { hideAllMenus(); logRedoStack(); }}),
-                                        new MenuItem('',                           {separator: true}),
-                                        new MenuItem('Log all local data',         {callback:      () => { hideAllMenus(); uiQueueMessageToFigma({cmd: 'figLogAllLocalData', darkMode: darkMode}); }})]);
+                                        new MenuItem('',                            {separator: true}),                   
+        menuItemLogRawLoadNodes       = new MenuItem('Log\u2008load nodes',         {checkCallback: () => settings.logRawLoadNodes ,      callback: () => updateSettingAndMenu('logRawLoadNodes',       true, !settings.logRawLoadNodes      ), setting: true}),
+        menuItemLogRawSaveNodes       = new MenuItem('Log\u2008save nodes',         {checkCallback: () => settings.logRawSaveNodes ,      callback: () => updateSettingAndMenu('logRawSaveNodes',       true, !settings.logRawSaveNodes      ), setting: true}),
+                                        new MenuItem('',                            {separator: true}),                   
+        menuItemLogRawLoadConnections = new MenuItem('Log\u2008load connections',   {checkCallback: () => settings.logRawLoadConnections, callback: () => updateSettingAndMenu('logRawLoadConnections', true, !settings.logRawLoadConnections), setting: true}),
+        menuItemLogRawSaveConnections = new MenuItem('Log\u2008save connections',   {checkCallback: () => settings.logRawSaveConnections, callback: () => updateSettingAndMenu('logRawSaveConnections', true, !settings.logRawSaveConnections), setting: true}),
+                                        new MenuItem('Log all connection keys',     {callback:      () => { hideAllMenus(); uiQueueMessageToFigma({cmd: 'figLogAllSavedConnKeys', darkMode: darkMode}); }}),
+                                        new MenuItem('',                            {separator: true}),   
+                                        new MenuItem('Log undo stack',              {callback:      () => { hideAllMenus(); logUndoStack(); }}),
+                                        new MenuItem('Log redo stack',              {callback:      () => { hideAllMenus(); logRedoStack(); }}),
+                                        new MenuItem('',                            {separator: true}),
+                                        new MenuItem('Log all local data',          {callback:      () => { hideAllMenus(); uiQueueMessageToFigma({cmd: 'figLogAllLocalData', darkMode: darkMode}); }})]);
                      
 
     menuMainDebug = new Menu('Debug', false);
@@ -44447,15 +44465,15 @@ function initGeneratorMenus()
                                                 graph.nodes.forEach(n => n.updateHeaderLabelOffsetX());
                                             }
                                         }),
-                                        new MenuItem('',                                   {separator: true}),
-                                        new MenuItem('Delete connections to...',           {callback:      () => showDeleteConnectionsDialog()}),                        
-                                        new MenuItem('Delete all saved connections',       {callback:      () => { hideAllMenus(); uiRemoveAllSavedConnections(); }}),
-                                        new MenuItem('Delete all style links',             {callback:      () => { hideAllMenus(); uiRemovePluginDataFromAllLocalStyles(); }}),
-                                        new MenuItem('Clear all local data',               {callback:      () => { hideAllMenus(); uiQueueMessageToFigma({cmd: 'figClearAllLocalData'}); }}),
-                                        new MenuItem('',                                   {separator: true}),
-                                        new MenuItem('Log',                                {childMenu: menuDebugLog}),
-                                        new MenuItem('',                                   {separator: true}),   
-        menuItemDataMode              = new MenuItem('Restart in debug mode',              {checkCallback: () => settings.dataMode, callback: () => uiRestartGenerator(true)})]);
+                                        new MenuItem('',                             {separator: true}),
+                                        new MenuItem('Delete connections to...',     {callback:      () => showDeleteConnectionsDialog()}),                        
+                                        new MenuItem('Delete all saved connections', {callback:      () => { hideAllMenus(); uiRemoveAllSavedConnections(); }}),
+                                        new MenuItem('Delete all style links',       {callback:      () => { hideAllMenus(); uiRemovePluginDataFromAllLocalStyles(); }}),
+                                        new MenuItem('Clear all local data',         {callback:      () => { hideAllMenus(); uiQueueMessageToFigma({cmd: 'figClearAllLocalData'}); }}),
+                                        new MenuItem('',                             {separator: true}),
+                                        new MenuItem('Log',                          {childMenu: menuDebugLog}),
+                                        new MenuItem('',                             {separator: true}),   
+        menuItemDataMode              = new MenuItem('Restart in debug mode',        {checkCallback: () => settings.dataMode, callback: () => uiRestartGenerator(true)})]);
                      
 
     menuMainHelp = new Menu('Help and subscription', false);
@@ -44627,8 +44645,8 @@ function initGeneratorMenus()
         
     menuGraph = new Menu('Graph menu', false, false);
     menuGraph.addItems([
-        menuItemGraphPaste          = new MenuItem('Paste here',      {shortcut: osCtrl()      + 'V', callback: e => { hideAllMenus(); graphView.pasteCopiedNodes(false, e.clientX, e.clientY - menuBarHeight); }}),
-        menuItemGraphPasteConnected = new MenuItem('Paste connected', {shortcut: osCtrlShift() + 'V', callback: e => { hideAllMenus(); graphView.pasteCopiedNodes(true,  e.clientX, e.clientY - menuBarHeight); }})]);
+        menuItemGraphPaste          = new MenuItem('Paste here',      {shortcut: osCtrl()      + 'V', callback: e => { hideAllMenus(); graphView.pasteCopiedNodes(false, e.clientX, e.clientY - getTopHeight()); }}),
+        menuItemGraphPasteConnected = new MenuItem('Paste connected', {shortcut: osCtrlShift() + 'V', callback: e => { hideAllMenus(); graphView.pasteCopiedNodes(true,  e.clientX, e.clientY - getTopHeight()); }})]);
 
     menuGraph.init = () => 
     {
@@ -45967,7 +45985,7 @@ class GraphView
             window.innerWidth /2,
             window.innerHeight/2);
 
-        pos.y -= menuBarHeight;
+        pos.y -= getTopHeight();
 
         const _pan = subv(this.pan, mulvs(subv(pos, this.pan), zoom / this.zoom - 1));
 
@@ -46147,7 +46165,7 @@ class GraphView
         else
         {
             node.div.style.left = (this.div.offsetWidth /2 - this.pan.x                ) / this.zoom - nodeRect.width /2;
-            node.div.style.top  = (this.div.offsetHeight/2 - this.pan.y - menuBarHeight) / this.zoom - nodeRect.height/2;
+            node.div.style.top  = (this.div.offsetHeight/2 - this.pan.y - getTopHeight()) / this.zoom - nodeRect.height/2;
         }
     }
 
@@ -46296,7 +46314,7 @@ GraphView.prototype.updateNodes = function(nodes = null, updateNodes = true)
     
     const bounds = this.getAllNodeBounds();
 
-    this.updateScroll(x, w, h, bounds, menuBarHeight);
+    this.updateScroll(x, w, h, bounds, getTopHeight());
 };
 
 
@@ -46892,7 +46910,7 @@ GraphView.prototype.updateWires = function(_wires)
     const cw      = this.measureData.clientRect.width;
     const ch      = this.measureData.clientRect.height;
     
-    const yOffset = menuBarHeight + 1;
+    const yOffset = getTopHeight() + 1;
 
 
     wires.forEach(w => 
@@ -47085,7 +47103,7 @@ GraphView.prototype.createEvents = function()
                 {
                     const wndRect = new Rect(
                         1,
-                        menuBarHeight + 1,
+                        getTopHeight() + 1,
                         this.measureData.clientRect.width  - 2,
                         this.measureData.clientRect.height - 5);
 
@@ -47163,7 +47181,7 @@ GraphView.prototype.createEvents = function()
         {
             let pos = point(
                 e.clientX, 
-                e.clientY - menuBarHeight);
+                e.clientY - getTopHeight());
 
             const zoom = Math.max(0.0001, Math.pow(2, dZoom - dWheelY / (touchpad ? 4 : 10)));
             const pan  = subv(this.pan, mulvs(subv(pos, this.pan), zoom / this.zoom - 1));
@@ -47215,7 +47233,7 @@ GraphView.prototype.createEvents = function()
     {
         const p = point(
             this.p.x,
-            this.p.y - menuBarHeight);
+            this.p.y - getTopHeight());
 
         const zoom = this.zoomStart * e.scale;
         const pan  = subv(this.pan, mulvs(subv(p, this.pan), zoom / this.zoom - 1));
@@ -47465,14 +47483,14 @@ GraphView.prototype.endZoomSelection = function(pointerId, zoom)
 
         const wndRect = new Rect(
             1,
-            menuBarHeight + 1,
+            getTopHeight() + 1,
             this.measureData.clientRect.width  - 2,
             this.measureData.clientRect.height - 5);
     
         let selection = validateRect(this.selectionRect);
         selection = clipRect(selection, wndRect);
     
-        selection.y -= menuBarHeight;
+        selection.y -= getTopHeight();
 
         
         const rect = this.screen2rect(selection);
@@ -47640,7 +47658,7 @@ GraphView.prototype.updateSelectBox = function(shiftKey, ctrlKey)
 
     const wndRect = new Rect(
         1,
-        menuBarHeight + 1,
+        getTopHeight() + 1,
         this.measureData.clientRect.width  - 2,
         this.measureData.clientRect.height - 5);
 
@@ -47771,7 +47789,7 @@ GraphView.prototype.updateScrollWithBounds = function()
         this.div.clientWidth,
         this.div.clientHeight,
         bounds,
-        menuBarHeight);
+        getTopHeight());
 };
 
 
@@ -50915,7 +50933,7 @@ extends EventTarget
                 {
                     tc.wire.inputPos = point(
                         rect.x + rect.w/2,
-                        rect.y + rect.h/2 - menuBarHeight);
+                        rect.y + rect.h/2 - getTopHeight());
                 }
 
                 graphView.overInput = !loop ? this : null;
@@ -51232,7 +51250,7 @@ class Output
                 {
                     graphView.tempConn.wire.outputPos = point(
                         rect.x + rect.w/2,
-                        rect.y + rect.h/2 - menuBarHeight);
+                        rect.y + rect.h/2 - getTopHeight());
                 }
 
                 graphView.overOutput = !loop ? this : null;
@@ -51697,7 +51715,7 @@ class Wire
         this.clientY = y;
     
     
-        const yOffset = menuBarHeight + 1;
+        const yOffset = getTopHeight() + 1;
     
         let pOut = point(0, 0),
             pIn  = point(0, 0);
@@ -53467,7 +53485,7 @@ Operator.prototype.createHeader = function()
             const h       = graphView.div.clientHeight;
             const bounds  = graphView.getAllNodeBounds();
 
-            const yOffset = menuBarHeight;
+            const yOffset = getTopHeight();
 
             graphView.setNodePositions(
                 graphView.selectedNodes,
@@ -53525,7 +53543,7 @@ Operator.prototype.createHeader = function()
 
                     tempConn.wire.inputPos = point(
                         inputRect.x + inputRect.w/2,
-                        inputRect.y + inputRect.h/2 - menuBarHeight);
+                        inputRect.y + inputRect.h/2 - getTopHeight());
                 }
                 else
                 {
@@ -53542,7 +53560,7 @@ Operator.prototype.createHeader = function()
                     
                     tempConn.wire.inputPos = point(
                         inputRect.x + inputRect.w/2,
-                        inputRect.y + inputRect.h/2 - menuBarHeight);
+                        inputRect.y + inputRect.h/2 - getTopHeight());
                 }
             }
             else if ( tempConn.input
@@ -53562,7 +53580,7 @@ Operator.prototype.createHeader = function()
 
                 tempConn.wire.outputPos = point(
                     rect.x + rect.w/2,
-                    rect.y + rect.h/2 - menuBarHeight);
+                    rect.y + rect.h/2 - getTopHeight());
 
 
                 tempConn.input.updateControl();
@@ -70072,13 +70090,13 @@ function showTooltip(source, tooltip)
     tooltipArrow.style.left = srcRect.x + srcRect.width/2;// - tooltipArrow.offsetWidth/2;
 
     
-    const graphHeight = graphView.div.offsetHeight - menuBarHeight;
+    const graphHeight = graphView.div.offsetHeight - getTopHeight();
 
 
     let top = srcRect.y;
 
     if (srcRect.y + tooltip.offsetHeight > graphView.div.offsetHeight-8)
-        top = menuBarHeight + Math.max(8, graphHeight - tooltip.offsetHeight);
+        top = getTopHeight() + Math.max(8, graphHeight - tooltip.offsetHeight);
         
     tooltip.style.top = top + srcRect.height + tooltipArrow.offsetHeight - 3;
     
@@ -70086,7 +70104,7 @@ function showTooltip(source, tooltip)
     const ttRect = tooltip.getBoundingClientRect();
 
     
-    if (ttRect.bottom > graphView.div.offsetHeight + menuBarHeight - 8)
+    if (ttRect.bottom > graphView.div.offsetHeight + getTopHeight() - 8)
     {
         tooltipArrow.style.borderColor = '#1e1e1e transparent transparent transparent';
         tooltipArrow.style.top         = srcRect.y;
@@ -70100,10 +70118,10 @@ function showTooltip(source, tooltip)
     }
 
 
-    // const graphHeight = graphView.div.offsetHeight - menuBarHeight;
+    // const graphHeight = graphView.div.offsetHeight - getTopHeight();
 
     // if (top + tooltip.offsetHeight > graphView.div.offsetHeight-8)
-    //     top = menuBarHeight + Math.max(8, graphHeight - tooltip.offsetHeight);
+    //     top = getTopHeight() + Math.max(8, graphHeight - tooltip.offsetHeight);
 
     // tooltip.style.top = top;
 
@@ -71629,7 +71647,7 @@ function initWhatsNewDialog()
         let oy = whatsNewDialogContent.style.top = whatsNewDialogContent.offsetTop - e.deltaY / 3;
 
         oy = Math.max(oy, whatsNewDialogContainer.clientHeight - whatsNewDialogContent.clientHeight + whatsNewTitle.clientHeight);
-        whatsNewDialogContent.style.top = Math.min(oy, menuBarHeight);
+        whatsNewDialogContent.style.top = Math.min(oy, getTopHeight());
 
         updateWhatsNewScroll();
     });
@@ -71745,7 +71763,7 @@ function updateWhatsNewScrollbar(clientY)
 
     whatsNewDialogContent.style.top = Math.min(
         oy,
-        menuBarHeight);
+        getTopHeight());
 
 
     updateWhatsNewScroll();
@@ -71758,7 +71776,7 @@ function updateWhatsNewScroll()
     const x       = whatsNewDialog.clientLeft;
     const w       = whatsNewDialog.clientWidth;
     const h       = whatsNewDialogContainer.clientHeight;
-    const yOffset = menuBarHeight;
+    const yOffset = getTopHeight();
     
     const bounds = whatsNewDialogContent.getBoundingClientRect();
     
@@ -71820,7 +71838,7 @@ function checkResize(x, y)
     }
 
 
-    document.canResizeL = false;//!dialogShown && x <= resizeEdgeWidth;
+    document.canResizeL = !dialogShown &&                      x <= resizeEdgeWidth;
     document.canResizeR = !dialogShown && window.innerWidth  - x <= resizeEdgeWidth;
     document.canResizeB = !dialogShown && window.innerHeight - y <= resizeEdgeWidth;
 

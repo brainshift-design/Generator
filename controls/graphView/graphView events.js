@@ -152,7 +152,7 @@ GraphView.prototype.createEvents = function()
                 {
                     const wndRect = new Rect(
                         1,
-                        menuBarHeight + 1,
+                        getTopHeight() + 1,
                         this.measureData.clientRect.width  - 2,
                         this.measureData.clientRect.height - 5);
 
@@ -230,7 +230,7 @@ GraphView.prototype.createEvents = function()
         {
             let pos = point(
                 e.clientX, 
-                e.clientY - menuBarHeight);
+                e.clientY - getTopHeight());
 
             const zoom = Math.max(0.0001, Math.pow(2, dZoom - dWheelY / (touchpad ? 4 : 10)));
             const pan  = subv(this.pan, mulvs(subv(pos, this.pan), zoom / this.zoom - 1));
@@ -282,7 +282,7 @@ GraphView.prototype.createEvents = function()
     {
         const p = point(
             this.p.x,
-            this.p.y - menuBarHeight);
+            this.p.y - getTopHeight());
 
         const zoom = this.zoomStart * e.scale;
         const pan  = subv(this.pan, mulvs(subv(p, this.pan), zoom / this.zoom - 1));

@@ -100,7 +100,7 @@ class GraphView
             window.innerWidth /2,
             window.innerHeight/2);
 
-        pos.y -= menuBarHeight;
+        pos.y -= getTopHeight();
 
         const _pan = subv(this.pan, mulvs(subv(pos, this.pan), zoom / this.zoom - 1));
 
@@ -280,7 +280,7 @@ class GraphView
         else
         {
             node.div.style.left = (this.div.offsetWidth /2 - this.pan.x                ) / this.zoom - nodeRect.width /2;
-            node.div.style.top  = (this.div.offsetHeight/2 - this.pan.y - menuBarHeight) / this.zoom - nodeRect.height/2;
+            node.div.style.top  = (this.div.offsetHeight/2 - this.pan.y - getTopHeight()) / this.zoom - nodeRect.height/2;
         }
     }
 

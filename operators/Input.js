@@ -156,7 +156,7 @@ extends EventTarget
                 {
                     tc.wire.inputPos = point(
                         rect.x + rect.w/2,
-                        rect.y + rect.h/2 - menuBarHeight);
+                        rect.y + rect.h/2 - getTopHeight());
                 }
 
                 graphView.overInput = !loop ? this : null;

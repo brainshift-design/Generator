@@ -52,7 +52,7 @@ GraphView.prototype.updateSelectBox = function(shiftKey, ctrlKey)
 
     const wndRect = new Rect(
         1,
-        menuBarHeight + 1,
+        getTopHeight() + 1,
         this.measureData.clientRect.width  - 2,
         this.measureData.clientRect.height - 5);
 

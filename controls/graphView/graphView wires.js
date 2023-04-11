@@ -53,7 +53,7 @@ GraphView.prototype.updateWires = function(_wires)
     const cw      = this.measureData.clientRect.width;
     const ch      = this.measureData.clientRect.height;
     
-    const yOffset = menuBarHeight + 1;
+    const yOffset = getTopHeight() + 1;
 
 
     wires.forEach(w => 

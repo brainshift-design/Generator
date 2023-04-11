@@ -29,7 +29,12 @@ const nodeTag = 'G_NODE';
 const connTag = 'G_CONN';
 const smallScrollGap = 6;
 const largeScrollGap = 14;
-const menuBarHeight = 40;
+var menuBarHeight = 40;
+var pagesBarHeight = 36;
+function getTopHeight() {
+    return menuBarHeight
+        + (settings.showPages ? pagesBarHeight : 0);
+}
 function toInt(f) { return Math.floor(f) | 0; }
 function nextPow2(x) {
     x = toInt(x);
@@ -1686,15 +1691,24 @@ var notifyNotificationHandler = null;
 var notifyDequeueHandler = () => notifyNotificationHandler = null;
 var windowDock = 'normal'; // '', 'maximize', 'top', 'left', 'right', 'bottom'
 function figGetMousePosition(clientPosition) {
+    console.log('figma.root =', figma.root.getRelaunchData());
+    // (async () => 
+    // {
+    //     const relaunchData = await figma.ui.getRelaunchData();
+    //     const x = relaunchData.x - window.pageXOffset;
+    //     const y = relaunchData.y - window.pageYOffset;
     figPostMessageToUi({
         cmd: 'uiReturnFigGetMousePosition',
-        position: figma.activeUsers.find(u => u.id == figma.currentUser.id).position,
+        position: { x: 0, y: 0 },
         clientPosition: clientPosition,
         viewportZoom: figma.viewport.zoom,
         viewportRect: figma.viewport.bounds
     });
+    // })
+    // ();
 }
 function figSetWindowRect(x, y, width, height) {
+    return;
     (function () {
         return __awaiter(this, void 0, void 0, function* () {
             //console.log('figma.viewport.bounds =', figma.viewport.bounds);

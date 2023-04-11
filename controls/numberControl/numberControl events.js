@@ -316,7 +316,7 @@ NumberControl.prototype.initEvents = function()
 
                 graphView.tempConn.wire.inputPos = point(
                     rect.x + rect.w/2,
-                    rect.y + rect.h/2 - menuBarHeight);
+                    rect.y + rect.h/2 - getTopHeight());
             }
             else if ( graphView.tempConn.input
                   &&  param.output
@@ -333,7 +333,7 @@ NumberControl.prototype.initEvents = function()
 
                 graphView.tempConn.wire .outputPos = point(
                     rect.x + rect.w/2,
-                    rect.y + rect.h/2 - menuBarHeight);
+                    rect.y + rect.h/2 - getTopHeight());
 
 
                 graphView.tempConn.input.updateControl();

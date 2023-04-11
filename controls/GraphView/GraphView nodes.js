@@ -33,7 +33,7 @@ GraphView.prototype.updateNodes = function(nodes = null, updateNodes = true)
     
     const bounds = this.getAllNodeBounds();
 
-    this.updateScroll(x, w, h, bounds, menuBarHeight);
+    this.updateScroll(x, w, h, bounds, getTopHeight());
 };
 
 

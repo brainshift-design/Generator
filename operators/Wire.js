@@ -130,7 +130,7 @@ class Wire
         this.clientY = y;
     
     
-        const yOffset = menuBarHeight + 1;
+        const yOffset = getTopHeight() + 1;
     
         let pOut = point(0, 0),
             pIn  = point(0, 0);
