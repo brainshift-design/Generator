@@ -59,7 +59,7 @@ extends OperatorBase
 
     canAutoConnectFrom(output)
     {
-        return true;
+        return true; //!getTerminalsAfterNode(this.node).find(n => n.inputs.canConnectFrom(output));
     }
 
     
@@ -312,6 +312,12 @@ function OpIfElse_onConnectInput(node, inputIndex)
     }
 
     
+    for (const output of node.outputs)
+        for (const input of output.connectedInputs)
+            if (input.node.type == IF_ELSE)
+                OpIfElse_onConnectInput(input.node, input.index);
+
+
     // if there is an outgoing connection from the node of a different type than
     // the incoming connection, delete the outgoing connection
 
@@ -339,9 +345,14 @@ function OpIfElse_onDisconnectInput(node, inputIndex)
         ? [...otherTypes]
         : [...ALL_TYPES];
 
-
     node.outputs[0].types = 
         otherInput.connected
         ? [...otherTypes]
         : [];
+
+    
+    for (const output of node.outputs)
+        for (const input of output.connectedInputs)
+            if (input.node.type == IF_ELSE)
+                OpIfElse_onConnectInput(input.node, input.index);
 }

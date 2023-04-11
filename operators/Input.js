@@ -128,7 +128,7 @@ extends EventTarget
             {
                 graphView.headerInput.updateControl();
                 graphView.headerInput = null;
-                console.log('headerInput = ', graphView.headerInput);
+                //console.log('headerInput = ', graphView.headerInput);
             }
 
             
@@ -288,22 +288,22 @@ extends EventTarget
               'translateX(' + (isConnected ? -1 : 0) + 'px)'
             + 'translateY(-50%)';
         
-        this.div.style.width         = (isConnected ? 8 : 6) + 'px';
-        this.div.style.height        = (isConnected ? 8 : 6) + 'px';
-        this.div.style.borderRadius  = (isConnected ? 4 : 4) + 'px';
-        this.div.style.marginBottom  = (isConnected ? 4 : 6) + 'px';
-        this.div.style.boxShadow     = '0 0 0 1px ' + colorStyle;
-        this.div.style.pointerEvents = 'auto';
+        this.div.style.width                = (isConnected ? 8 : 6) + 'px';
+        this.div.style.height               = (isConnected ? 8 : 6) + 'px';
+        this.div.style.borderRadius         = (isConnected ? 4 : 4) + 'px';
+        this.div.style.marginBottom         = (isConnected ? 4 : 6) + 'px';
+        this.div.style.boxShadow            = '0 0 0 1px ' + colorStyle;
+        this.div.style.pointerEvents        = 'auto';
 
-        this.hitbox.style.left   = isConnected ? -2 : -3;
-        this.hitbox.style.top    = isConnected ? -2 : -3;
+        this.hitbox.style.left              = isConnected ? -2 : -3;
+        this.hitbox.style.top               = isConnected ? -2 : -3;
 
-        this.wireBall.style.left = '1px';
-        this.wireBall.style.top  = 'calc(50% - 3px)';
+        this.wireBall.style.left            = '1px';
+        this.wireBall.style.top             = 'calc(50% - 3px)';
 
         this.wireBall.style.backgroundColor = [255, 0, 255];
 
-        this.wireBall.style.zIndex = MAX_INT32;
+        this.wireBall.style.zIndex          = MAX_INT32;
 
 
         showElement(this.wireBall, isConnected); 
@@ -330,6 +330,17 @@ extends EventTarget
 
         if (output.node.isOrFollows(this.node))
             return false;
+
+
+        // const terminals = getTerminalsAfterNode(this.node);
+        // const inputs    = [];
+
+        // terminals.forEach(t => inputs.push(...t.inputs.filter(i => i.connected)));
+        
+        // if (    this.supportsTypes([ANY_TYPE])
+        //     && !inputs.find(i => i.canConnectFrom(output))
+        //     && !inputs.find(i => i.supportsTypes([ANY_TYPE])))
+        //     return false;
 
 
         return true;

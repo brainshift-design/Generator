@@ -1170,7 +1170,7 @@
 #btnCrashRestart
 {
     position: absolute;
-    right:    20px;
+    right:    22px;
     bottom:   20px;
 }
 
@@ -3900,6 +3900,7 @@ a
                 <p>•  fixed wrong invalid colors assigned to styles</p>
                 <p>•  fixed Mac shortcuts</p>
                 <p>•  adjusting color controls with arrow keys now supports undo</p>
+                <p>•  unsupported inputs/outputs are now hidden while connecting</p>
                 <p>•  added a right-click copy menu to the crash dialog</p>
                 <p>•  replaced restart checkboxes with buttons</p>
                 <p>•  fixed many UI issues</p>
@@ -46232,7 +46233,12 @@ class GraphView
     {
         for (const node of graph.nodes)
             for (const input of node.inputs)
-                input.div.style.opacity = !output || input.canConnectFrom(output) ? 1 : 0;
+                input.div.style.opacity = 
+                       !output 
+                    || input.canConnectFrom(output)
+                    || input.connected
+                    ? 1 
+                    : 0;
     }
     
     
@@ -46241,7 +46247,8 @@ class GraphView
     {
         for (const node of graph.nodes)
             for (const input of node.inputs)
-                if (input != except)
+                if (    input != except
+                    && !input.connected)
                     input.div.style.opacity = 0;
     }
     
@@ -46251,7 +46258,12 @@ class GraphView
     {
         for (const node of graph.nodes)
             for (const output of node.outputs)
-                output.div.style.opacity = !input ||  input.canConnectFrom(output) ? 1 : 0;
+                output.div.style.opacity = 
+                       !input 
+                    || input.canConnectFrom(output)
+                    || !output.connected
+                    ? 1 
+                    : 0;
     }
     
     
@@ -46260,7 +46272,8 @@ class GraphView
     {
         for (const node of graph.nodes)
             for (const output of node.outputs)
-                if (output != except)
+                if (    output != except
+                    && !output.connected)
                     output.div.style.opacity = 0;
     }
     
@@ -50966,7 +50979,7 @@ extends EventTarget
             {
                 graphView.headerInput.updateControl();
                 graphView.headerInput = null;
-                console.log('headerInput = ', graphView.headerInput);
+                //console.log('headerInput = ', graphView.headerInput);
             }
 
             
@@ -51126,22 +51139,22 @@ extends EventTarget
               'translateX(' + (isConnected ? -1 : 0) + 'px)'
             + 'translateY(-50%)';
         
-        this.div.style.width         = (isConnected ? 8 : 6) + 'px';
-        this.div.style.height        = (isConnected ? 8 : 6) + 'px';
-        this.div.style.borderRadius  = (isConnected ? 4 : 4) + 'px';
-        this.div.style.marginBottom  = (isConnected ? 4 : 6) + 'px';
-        this.div.style.boxShadow     = '0 0 0 1px ' + colorStyle;
-        this.div.style.pointerEvents = 'auto';
+        this.div.style.width                = (isConnected ? 8 : 6) + 'px';
+        this.div.style.height               = (isConnected ? 8 : 6) + 'px';
+        this.div.style.borderRadius         = (isConnected ? 4 : 4) + 'px';
+        this.div.style.marginBottom         = (isConnected ? 4 : 6) + 'px';
+        this.div.style.boxShadow            = '0 0 0 1px ' + colorStyle;
+        this.div.style.pointerEvents        = 'auto';
 
-        this.hitbox.style.left   = isConnected ? -2 : -3;
-        this.hitbox.style.top    = isConnected ? -2 : -3;
+        this.hitbox.style.left              = isConnected ? -2 : -3;
+        this.hitbox.style.top               = isConnected ? -2 : -3;
 
-        this.wireBall.style.left = '1px';
-        this.wireBall.style.top  = 'calc(50% - 3px)';
+        this.wireBall.style.left            = '1px';
+        this.wireBall.style.top             = 'calc(50% - 3px)';
 
         this.wireBall.style.backgroundColor = [255, 0, 255];
 
-        this.wireBall.style.zIndex = MAX_INT32;
+        this.wireBall.style.zIndex          = MAX_INT32;
 
 
         showElement(this.wireBall, isConnected); 
@@ -51168,6 +51181,17 @@ extends EventTarget
 
         if (output.node.isOrFollows(this.node))
             return false;
+
+
+        // const terminals = getTerminalsAfterNode(this.node);
+        // const inputs    = [];
+
+        // terminals.forEach(t => inputs.push(...t.inputs.filter(i => i.connected)));
+        
+        // if (    this.supportsTypes([ANY_TYPE])
+        //     && !inputs.find(i => i.canConnectFrom(output))
+        //     && !inputs.find(i => i.supportsTypes([ANY_TYPE])))
+        //     return false;
 
 
         return true;
@@ -51757,13 +51781,16 @@ class Wire
             }
         }
 
+        if (this.connection.output.node.id == 'ifElse')
+            console.log('types =', types);
 
-        if (    output
-            && !rgbIsNaN(output.wireColor))
+
+        if (   output
+            && output.supportsTypes([COLOR_VALUE]))//!rgbIsNaN(output.wireColor))
             return output.wireColor;
 
         else if (input
-             && !rgbIsNaN(input.wireColor))
+              && input.supportsTypes([COLOR_VALUE]))//!rgbIsNaN(input.wireColor))
             return input.wireColor;
 
         else if (!isEmpty(types))
@@ -55433,7 +55460,7 @@ extends OperatorBase
 
     canAutoConnectFrom(output)
     {
-        return true;
+        return true; //!getTerminalsAfterNode(this.node).find(n => n.inputs.canConnectFrom(output));
     }
 
     
@@ -55686,6 +55713,12 @@ function OpIfElse_onConnectInput(node, inputIndex)
     }
 
     
+    for (const output of node.outputs)
+        for (const input of output.connectedInputs)
+            if (input.node.type == IF_ELSE)
+                OpIfElse_onConnectInput(input.node, input.index);
+
+
     // if there is an outgoing connection from the node of a different type than
     // the incoming connection, delete the outgoing connection
 
@@ -55713,11 +55746,16 @@ function OpIfElse_onDisconnectInput(node, inputIndex)
         ? [...otherTypes]
         : [...ALL_TYPES];
 
-
     node.outputs[0].types = 
         otherInput.connected
         ? [...otherTypes]
         : [];
+
+    
+    for (const output of node.outputs)
+        for (const input of output.connectedInputs)
+            if (input.node.type == IF_ELSE)
+                OpIfElse_onConnectInput(input.node, input.index);
 }
 
 

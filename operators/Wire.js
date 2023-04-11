@@ -104,13 +104,16 @@ class Wire
             }
         }
 
+        if (this.connection.output.node.id == 'ifElse')
+            console.log('types =', types);
 
-        if (    output
-            && !rgbIsNaN(output.wireColor))
+
+        if (   output
+            && output.supportsTypes([COLOR_VALUE]))//!rgbIsNaN(output.wireColor))
             return output.wireColor;
 
         else if (input
-             && !rgbIsNaN(input.wireColor))
+              && input.supportsTypes([COLOR_VALUE]))//!rgbIsNaN(input.wireColor))
             return input.wireColor;
 
         else if (!isEmpty(types))

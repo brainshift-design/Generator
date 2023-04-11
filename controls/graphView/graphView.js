@@ -354,7 +354,12 @@ class GraphView
     {
         for (const node of graph.nodes)
             for (const input of node.inputs)
-                input.div.style.opacity = !output || input.canConnectFrom(output) ? 1 : 0;
+                input.div.style.opacity = 
+                       !output 
+                    || input.canConnectFrom(output)
+                    || input.connected
+                    ? 1 
+                    : 0;
     }
     
     
@@ -363,7 +368,8 @@ class GraphView
     {
         for (const node of graph.nodes)
             for (const input of node.inputs)
-                if (input != except)
+                if (    input != except
+                    && !input.connected)
                     input.div.style.opacity = 0;
     }
     
@@ -373,7 +379,12 @@ class GraphView
     {
         for (const node of graph.nodes)
             for (const output of node.outputs)
-                output.div.style.opacity = !input ||  input.canConnectFrom(output) ? 1 : 0;
+                output.div.style.opacity = 
+                       !input 
+                    || input.canConnectFrom(output)
+                    || !output.connected
+                    ? 1 
+                    : 0;
     }
     
     
@@ -382,7 +393,8 @@ class GraphView
     {
         for (const node of graph.nodes)
             for (const output of node.outputs)
-                if (output != except)
+                if (    output != except
+                    && !output.connected)
                     output.div.style.opacity = 0;
     }
     
