@@ -619,10 +619,10 @@ function uiUpdateValuesAndObjects(requestId, actionId, updateNodeId, updateParam
     lastRequestedId = -1;
 
         
-    if (dataModeTimeout)
+    if (loadRestartTimeout)
     {
-        clearTimeout(dataModeTimeout);
-        dataModeTimeout = null;
+        clearTimeout(loadRestartTimeout);
+        loadRestartTimeout = null;
     }
 
 
@@ -739,13 +739,6 @@ function uiUpdateValuesAndObjects(requestId, actionId, updateNodeId, updateParam
     graphView.updateScrollWithBounds();
 
 
-    // for (const node of nodes)
-    // {
-    //     node.updateMeasureData();
-    //     node.updateNode();
-    // }
-
-
     if (graphView.loadingNodes)
         setLoadingProgress((0.7 + 0.3 * updatedNodes / totalNodes) / 0.7)
 
@@ -753,16 +746,7 @@ function uiUpdateValuesAndObjects(requestId, actionId, updateNodeId, updateParam
     if (isLastChunk)
     {
         if (graphView.loadingNodes)
-        {
-            // for (const node of graph.nodes.filter(n => n.type == GROUP_NODE))
-            // {
-            //     node.updateProxyControls();
-            //     node.updateProxyWires();
-            //     node.updateMeasureData();
-            // }
-
-            uiSaveNodes(graph.nodes.map(n => n.id));
-        }
+           uiSaveNodes(graph.nodes.map(n => n.id));
 
 
         graphView.creatingNodes      = false;

@@ -105,9 +105,6 @@ function uiReturnFigGetLocalData(msg)
             initGeneratorMenus();
      
         
-        initCheckbox(chkCrashRestart, 'Restart in debug mode', settings.dataMode);
-    
-    
         onClassChange(document.childNodes[0], () =>
         { 
             initThemeColors();
@@ -253,6 +250,8 @@ function uiReturnFigLoadNodesAndConns(msg)
 
     if (settings.dataMode)
     {
+        menuBar.style.display = 'none';
+
         loadNodesAndConnsData(_n, _c);
     }
     else
@@ -288,11 +287,15 @@ function loadNodesAndConnsAsync(_nodes, _conns, setProgress)
 
 
     const chunkSize = 10; // nodes
+
     for (let i = 0; i < _nodes.length; i += chunkSize)
     {
-        if (dataModeTimeout) clearTimeout(dataModeTimeout);
-        dataModeTimeout = setTimeout(() => chkLoadingRestart.style.display = 'inline-block', 5000);
+        if (loadRestartTimeout) 
+            clearTimeout(loadRestartTimeout);
+        
+        loadRestartTimeout = setTimeout(() => btnLoadingRestart.style.display = 'inline-block', 5000);
 
+        
         promise = promise.then(nodes => 
         {
             const res = resolveNodes(
@@ -339,8 +342,12 @@ function loadConnectionsAsync(_nodes, _conns, loadedNodes, setProgress)
         });
 
 
-        if (dataModeTimeout) clearTimeout(dataModeTimeout);
-        dataModeTimeout = setTimeout(() => chkLoadingRestart.style.display = 'inline-block', 5000);
+
+        if (loadRestartTimeout) 
+            clearTimeout(loadRestartTimeout);
+
+        loadRestartTimeout = setTimeout(() => btnLoadingRestart.style.display = 'inline-block', 5000);
+
 
         const chunkSize = 10; // connections
         for (let i = 0; i < _conns.length; i += chunkSize)
@@ -377,8 +384,8 @@ function finishLoading(_nodes)
 {
     if (isEmpty(_nodes))
     {
-        clearTimeout(dataModeTimeout);
-        dataModeTimeout = null;
+        clearTimeout(loadRestartTimeout);
+        loadRestartTimeout = null;
 
         loadingOverlay.style.display = 'none'; // uncomment to monitor loading of slow nodes
     }

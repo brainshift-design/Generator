@@ -229,8 +229,6 @@ function initGeneratorMenus()
 
     menuMainDebug = new Menu('Debug', false);
     menuMainDebug.addItems([
-        menuItemDataMode              = new MenuItem('Restart in debug mode',              {checkCallback: () => settings.dataMode           , callback: () => updateSettingAndMenu('dataMode',         true, !settings.dataMode        ), setting: true}),
-                                        new MenuItem('',                                   {separator: true}),   
         menuItemShowNodeId            = new MenuItem('Show node IDs',
                                         {
                                             checkCallback: () => settings.showNodeId, 
@@ -250,7 +248,9 @@ function initGeneratorMenus()
                                         new MenuItem('',                                   {separator: true}),
                                         new MenuItem('Clear all local data',               {callback:      () => { hideAllMenus(); uiQueueMessageToFigma({cmd: 'figClearAllLocalData'}); }}),
                                         new MenuItem('',                                   {separator: true}),
-                                        new MenuItem('Log',                                {childMenu: menuDebugLog})]);
+                                        new MenuItem('Log',                                {childMenu: menuDebugLog}),
+                                        new MenuItem('',                                   {separator: true}),   
+        menuItemDataMode              = new MenuItem('Restart in debug mode',              {checkCallback: () => settings.dataMode, callback: () => uiRestartGenerator(true)})]);
                      
 
     menuMainHelp = new Menu('Help and subscription', false);

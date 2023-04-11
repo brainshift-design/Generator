@@ -31,7 +31,8 @@ function initCrashDialog(event, error)
     if (!crashed)
     {
         crashBack.addEventListener('pointerdown', e => { e.preventDefault(); });
-        chkCrashRestart.addEventListener('change', () => uiSetLocalData('dataMode', boolToString(chkCrashRestart.checked)));
+
+        btnCrashRestart.addEventListener('click', () => uiRestartGenerator(true));
 
         crashDetails.addEventListener('pointerup', e =>
         {

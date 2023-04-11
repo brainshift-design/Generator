@@ -704,6 +704,12 @@ function figStartGenerator() {
         });
     })();
 }
+function figRestartGenerator() {
+    figma.showUI(__html__, {
+        visible: false,
+        themeColors: true
+    });
+}
 var figObjectArrays = new Array(); // [ {nodeId, [objects]} ]
 var figStyleArrays = new Array(); // [ {nodeId, [styles]}  ]
 function figDeleteObjectsFromNodeIds(nodeIds) {
@@ -818,6 +824,9 @@ figma.ui.onmessage = function (msg) {
     switch (msg.cmd) {
         case 'figStartGenerator':
             figStartGenerator();
+            break;
+        case 'figRestartGenerator':
+            figRestartGenerator();
             break;
         case 'figDockWindowNormal':
             figDockWindow('normal');

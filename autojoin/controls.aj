@@ -17,8 +17,9 @@
 
 ../controls/menu/*.js
 ../controls/toggleButton/*.js
-../controls/select/*.js
 ../controls/menuSelect/*.js
+../controls/select/*.js
+../controls/button/*.js
 ../controls/checkbox/*.js
 
 

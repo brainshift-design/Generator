@@ -54,3 +54,15 @@ function figStartGenerator()
             viewportRect: figma.viewport.bounds });
     })();
 }
+
+
+
+function figRestartGenerator()
+{
+    figma.showUI(
+        __html__,
+        {
+            visible:     false,
+            themeColors: true
+        });
+}

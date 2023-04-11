@@ -57,6 +57,8 @@ clearConsole();
 
 initUtilContext();
 
+
+initLoadingOverlay();
 initDataMode();
 initWhatsNewDialog();
 initAboutDialog();

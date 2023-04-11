@@ -11,6 +11,7 @@
     ../controls/ColorControl/*.css
     ../controls/menuSelect/*.css
     ../controls/select/*.css
+    ../controls/button/*.css
     ../controls/checkbox/*.css
 
     ../operators/*.css

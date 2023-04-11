@@ -31,7 +31,6 @@
 {
     overflow-y: scroll;
     height:     calc(100% - 43px);
-    /* box-shadow: 0 0 0 1px red inset; */
 }
 
 

@@ -77,3 +77,11 @@ function uiHideClearUndoWarning()
          true, 
         !settings.showClearUndoWarning);
 }
+
+
+
+function uiRestartGenerator(dataMode)
+{
+    uiSetLocalData('dataMode', boolToString(dataMode));
+    uiPostMessageToFigma({cmd: 'figRestartGenerator'});
+}

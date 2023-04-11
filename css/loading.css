@@ -130,12 +130,33 @@
 }
 
 
-#chkLoadingRestart
+#btnLoadingRestart
 {
-    position:   absolute;
-    left:       49.5%;
-    top:        calc(64.5% + 0.5px);
-    transform:  translateX(-50%)
-                translateY(-50%);
-    display:    none;
+    position:      absolute;
+    left:          50%;
+    top:           calc(75%);
+    transform:     translateX(-50%)
+                   translateY(-50%);
+}
+
+
+.btnRestart
+{
+    position:      static;
+    font-family:   Inter;
+    font-weight:   500;
+    font-size:     11px;
+    color:         var(--figma-color-text);
+    padding:       10px 13px 10px 13px;
+    border-radius: 6px;
+    box-shadow:    0 0 0 1px inset var(--figma-color-text);
+    width:         fit-content;
+    /* display:       none; */
+}
+
+
+.btnRestart:active
+{
+    box-shadow:    0 0 0 2px inset var(--figma-color-bg-brand);
+    background:    var(--figma-color-bg-pressed);
 }

@@ -12,57 +12,6 @@
 <style>
 
 
-.button
-{
-    color:          var(--figma-color-text);
-    background:     var(--figma-color-bg);
-
-    font-size:      11px;
-    text-align:     center;
-
-    padding:        8px 14px;
-
-    border-radius:  6px;
-    box-shadow:     0 0 0 1px var(--figma-color-text) inset;
-}
-
-
-.button:active
-{
-    box-shadow: 0 0 0 2px var(--figma-color-bg-brand) inset;
-}
-
-
-.panelButton
-{
-    font-family:   Inter;
-    font-size:     11px;
-    width:         30;
-    height:        30;
-    background:    white;
-    min-width:     0;
-    min-height:    0;
-    border:        none;
-    border-radius: 2px;
-    position:      relative;
-    padding:       0;
-    background:    var(--figma-color-bg);
-}
-
-
-.panelButton:hover
-{
-    background: var(--figma-color-bg-hover);
-}
-
-
-.panelButton:active
-{
-    box-shadow: 0 0 0 2px var(--activeObjectColor) inset;
-    outline:    none;
-}
-
-
 :root
 {
     /* --colFigmaBlue: #0c8ce9; */
@@ -102,7 +51,6 @@
 {
     overflow-y: scroll;
     height:     calc(100% - 43px);
-    /* box-shadow: 0 0 0 1px red inset; */
 }
 
 
@@ -1218,11 +1166,11 @@
 }
 
 
-#chkCrashRestart
+#btnCrashRestart
 {
     position: absolute;
-    left: 25px;
-    top: calc(100% - 38px);
+    right:    17px;
+    bottom:   18px;
 }
 
 
@@ -1372,14 +1320,35 @@
 }
 
 
-#chkLoadingRestart
+#btnLoadingRestart
 {
-    position:   absolute;
-    left:       49.5%;
-    top:        calc(64.5% + 0.5px);
-    transform:  translateX(-50%)
-                translateY(-50%);
-    display:    none;
+    position:      absolute;
+    left:          50%;
+    top:           calc(75%);
+    transform:     translateX(-50%)
+                   translateY(-50%);
+}
+
+
+.btnRestart
+{
+    position:      static;
+    font-family:   Inter;
+    font-weight:   500;
+    font-size:     11px;
+    color:         var(--figma-color-text);
+    padding:       10px 13px 10px 13px;
+    border-radius: 6px;
+    box-shadow:    0 0 0 1px inset var(--figma-color-text);
+    width:         fit-content;
+    /* display:       none; */
+}
+
+
+.btnRestart:active
+{
+    box-shadow:    0 0 0 2px inset var(--figma-color-bg-brand);
+    background:    var(--figma-color-bg-pressed);
 }
 
 
@@ -1451,6 +1420,7 @@ div
     margin:  0;
     padding: 0;
 }
+
 
 
 #keyboardPanel
@@ -3017,6 +2987,57 @@ a
 }
 
 
+.button
+{
+    color:          var(--figma-color-text);
+    background:     var(--figma-color-bg);
+
+    font-size:      11px;
+    text-align:     center;
+
+    padding:        8px 14px;
+
+    border-radius:  6px;
+    box-shadow:     0 0 0 1px var(--figma-color-text) inset;
+}
+
+
+.button:active
+{
+    box-shadow: 0 0 0 2px var(--figma-color-bg-brand) inset;
+}
+
+
+.panelButton
+{
+    font-family:   Inter;
+    font-size:     11px;
+    width:         30;
+    height:        30;
+    background:    white;
+    min-width:     0;
+    min-height:    0;
+    border:        none;
+    border-radius: 2px;
+    position:      relative;
+    padding:       0;
+    background:    var(--figma-color-bg);
+}
+
+
+.panelButton:hover
+{
+    background: var(--figma-color-bg-hover);
+}
+
+
+.panelButton:active
+{
+    box-shadow: 0 0 0 2px var(--activeObjectColor) inset;
+    outline:    none;
+}
+
+
 .checkbox
 {
     font-family: Inter;
@@ -3672,14 +3693,14 @@ a
             <div id='loadingProgress'></div>
         </div>
     </div>
-    <div id='chkLoadingRestart'></div>
+    <div class='btnRestart' id='btnLoadingRestart'>Restart in debug mode</div>
 </div>
 
 
 <div id='dataModeView'>
 
     <div class='dataModeRowWrapper' id='dataModeTitleBar'>
-        <div id='chkDataModeRestart'></div>
+        <div class='btnRestart' id='btnDataModeRestart'>Restart in normal mode</div>
     </div>
 
     <div id='dataModeContent'>
@@ -3843,7 +3864,7 @@ a
                 <p id='crashDetails'></p>
             </div>
         </div>
-        <div id='chkCrashRestart'></div>
+        <div class='btnRestart' id='btnCrashRestart'>Restart in debug mode</div>
     </div>
 
 </div>
@@ -39592,7 +39613,8 @@ function initCrashDialog(event, error)
     if (!crashed)
     {
         crashBack.addEventListener('pointerdown', e => { e.preventDefault(); });
-        chkCrashRestart.addEventListener('change', () => uiSetLocalData('dataMode', boolToString(chkCrashRestart.checked)));
+
+        btnCrashRestart.addEventListener('click', () => uiRestartGenerator(true));
 
         crashDetails.addEventListener('pointerup', e =>
         {
@@ -44412,8 +44434,6 @@ function initGeneratorMenus()
 
     menuMainDebug = new Menu('Debug', false);
     menuMainDebug.addItems([
-        menuItemDataMode              = new MenuItem('Restart in debug mode',              {checkCallback: () => settings.dataMode           , callback: () => updateSettingAndMenu('dataMode',         true, !settings.dataMode        ), setting: true}),
-                                        new MenuItem('',                                   {separator: true}),   
         menuItemShowNodeId            = new MenuItem('Show node IDs',
                                         {
                                             checkCallback: () => settings.showNodeId, 
@@ -44433,7 +44453,9 @@ function initGeneratorMenus()
                                         new MenuItem('',                                   {separator: true}),
                                         new MenuItem('Clear all local data',               {callback:      () => { hideAllMenus(); uiQueueMessageToFigma({cmd: 'figClearAllLocalData'}); }}),
                                         new MenuItem('',                                   {separator: true}),
-                                        new MenuItem('Log',                                {childMenu: menuDebugLog})]);
+                                        new MenuItem('Log',                                {childMenu: menuDebugLog}),
+                                        new MenuItem('',                                   {separator: true}),   
+        menuItemDataMode              = new MenuItem('Restart in debug mode',              {checkCallback: () => settings.dataMode, callback: () => uiRestartGenerator(true)})]);
                      
 
     menuMainHelp = new Menu('Help and subscription', false);
@@ -44918,356 +44940,6 @@ function createToggleButton(width, height)
 
 
     return btn;
-}
-
-
-function initSelectMenu(select)
-{
-    select.menu = createDiv('selectMenu');
-
-    select.menu.hoverIndex       =  0;
-    select.menu.tabIndex         =  0;
-
-    select.menu.style.left       =  select.offsetLeft;
-    select.menu.style.height     = 'auto';
-    select.menu.style.textAlign  = 'center';
-    select.menu.style.background = '#222';
-    select.menu.style.zIndex     =  MAX_INT32-3;
-    
-
-
-    select.menu.addEventListener('focus', function() { select.menu.style.outline = 'none'; });
-
-    select.menu.addEventListener('keydown', function(e)
-    { 
-        if (e.code == 'Escape')
-            select.menu.blur();
-    });        
-    
-
-    
-    select.menu.tabIndex   = 0;
-    
-    select.menu.hoverIndex = 0;
-
-
-    select.selectBox = createDiv();
-        
-    // width is set with menu width in showMenu()
-    select.selectBox.style.display         = 'inline-block';
-    select.selectBox.style.width           = 'calc(100% + 1px)';
-    select.selectBox.style.height          = 24;
-    select.selectBox.style.backgroundColor = 'var(--figma-color-bg-brand)';
-    select.selectBox.style.position        = 'absolute';
-    select.selectBox.style.left            = -1; // -1 = border
-    
-    select.menu.appendChild(select.selectBox);
-    
-
-    select.menuWrap = createDiv();
-    
-    select.menuWrap.style.width         = 'auto';
-    select.menuWrap.style.height        = '100%';
-    select.menuWrap.style.position      = 'relative';
-    select.menuWrap.style.paddingLeft   = 4;
-    select.menuWrap.style.paddingRight  = 5;
-    select.menuWrap.style.paddingTop    = 7;
-    select.menuWrap.style.paddingBottom = 7;
-    select.menuWrap.style.margin        = 0;
-    select.menuWrap.style.marginRight   = 10;
-    
-    select.menu.appendChild(select.menuWrap);
-
-
-
-    select.menu.addEventListener('pointerdown', function(e)
-    {
-        e.stopPropagation();
-    });            
-    
-
-
-    select.menu.addEventListener('pointerup', function(e)
-    {
-        if (select.holding)
-            select.menu.selectCurrent();
-    });         
-
-
-
-    select.menu.addEventListener('pointermove', function(e)
-    {
-        select.menu.hoverIndex = select.indexFromY(e.clientY);
-        select.selectBox.style.top = 7 + select.menu.hoverIndex * 24;
-    });                
-    
-
-
-    select.menu.selectCurrent = function()
-    {
-        select.update(select.menu.hoverIndex);
-        select.hideMenu();
-        select.dispatchChangeEvent();
-        select.focus();
-
-        document.menuHadFocus = false;
-    };
-
-
-
-    select.menu.addEventListener('keydown', function(e)
-    {
-        if (   e.code == 'Enter' 
-            || e.code == 'NumpadEnter')
-        {
-            select.menu.selectCurrent();   
-        }
-        else if (e.code == 'ArrowUp')
-        {
-            select.menu.hoverIndex = Math.min(Math.max(0, select.menu.hoverIndex - 1), select.items.length-1);
-            select.updateMenu();
-        }
-        else if (e.code == 'ArrowDown')
-        {
-            select.menu.hoverIndex = Math.min(Math.max(0, select.menu.hoverIndex + 1), select.items.length-1);
-            select.updateMenu();
-        }        
-    });        
-
-
-
-    select.menu.addEventListener('focusout', function()
-    {
-        select.hideMenu();
-
-        select.menu.style.display = 'none';
-        select.parentNode.removeChild(select.menu);
-    });
-}
-
-
-function initSelect(select, items)
-{
-    select.className = 'menuSelect';
-    select.tabIndex = 0;    
-    
-    initSelectMenu(select);
-
-    select.holding  = false;
-    
-
-    
-    //////////////////////////////////////////////////////////////////////////////////
-    
-
-
-    select.initMenu = function()
-    {
-        select.check = createDiv();
-        
-        select.check.style.width    = 16;
-        select.check.style.height   = 16;
-        select.check.style.position = 'absolute';
-        select.check.style.left     = 8;
-        select.check.innerHTML      = '<svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" clip-rule="evenodd" d="M13.2069 5.20718L7.70694 10.7072L6.99983 11.4143L6.29272 10.7072L3.29272 7.70718L4.70694 6.29297L6.99983 8.58586L11.7927 3.79297L13.2069 5.20718Z" fill="white" fill-opacity="1"/></svg>';
-    };
-
-
-
-    select.resetMenu = function()
-    {
-        clearChildren(select.menuWrap);
-        select.menuWrap.appendChild(select.check);
-    };  
-
-
-
-    select.updateItems = function()
-    {
-        select.resetMenu();
-        
-        for (let i = 0; i < select.items.length; i++)
-        {
-            let item = createDiv();
-            let sub  = createDiv();
-            
-            item.style.width       = 'auto';
-            item.style.display     = 'block';
-            item.style.textAlign   = 'left';
-            item.style.paddingLeft = 30;
-            
-            sub .style.height      = 'auto';
-            sub .style.position    = 'relative';
-            sub .style.top         = '50%';
-            sub .style.transform   = 'translateY(-50%)';
-            
-            if (select.items[i].value == '-')
-            {
-                item.style.borderTop = '1px solid white';
-                item.style.marginTop = '6px';
-                item.style.height    = '4px';
-                item.style.position  = 'relative';
-                item.style.left      = '6px';
-                
-                item.disabled = true;
-            }
-            else
-            {
-                item.style.border = 'none';
-                item.style.height = 24;
-
-                item.disabled = false;
-
-                sub.innerHTML = select.items[i].text;
-            }
-
-            item.appendChild(sub);
-            select.menuWrap.appendChild(item);
-        }
-
-
-        let options = select.getElementsByTagName('option');
-
-        for (const node of options) 
-            node.disabled = node.value == '-';
-    };
-    
-
-
-    select.update = function(index)
-    {
-        select.value     = select.items[index].value;
-        select.innerHTML = select.items[index].text;
-    };
-    
-
-    
-    select.addEventListener('pointerdown', function(e)
-    {
-        if (e.button == 0)
-        {
-            e.preventDefault();
-            e.stopPropagation();
-            
-            select.buttonDown0 = true;        
-            select.setPointerCapture(e.pointerId);
-            
-            select.holding = false;
-            setTimeout(function() { onSelectClickTimer(select); }, 200);
-            
-            select.menu.hoverIndex = select.getSelectedIndex();
-
-            select.showMenu();
-        }        
-    });        
-    
-
-    
-    select.addEventListener('keydown', function(e)
-    {
-        if (   e.code == 'Enter' 
-            || e.code == 'NumpadEnter'
-            || e.code == 'ArrowUp'
-            || e.code == 'ArrowDown')
-        {
-            select.showMenu();
-        }        
-    });        
-
-
-
-    select.showMenu = function()
-    {  
-        select.menu.style.display = 'inline-block';
-
-        select.parentNode.appendChild(select.menu);
-        select.updateMenu();
-        
-        select.menu.focus();
-
-        document.menuHadFocus = true;
-    }        
-    
-
-
-    select.hideMenu = function()
-    {
-        select.menu.blur();
-    };    
-
-
-
-    select.updateMenu = function()
-    {
-        let iy = select.getSelectedIndex();
-        
-        let menuTop =
-            select.offsetTop 
-            - 3 // paddingTop
-            - 4 // hack this for now (select.menu.children[0].offsetHeight - select.menu.children[0].children[0].offsetHeight) / 2;
-            - iy * 24;
-        
-        menuTop = Math.min(Math.max(8, menuTop), document.body.clientHeight - 8 - select.menu.offsetHeight);
-        
-        select.menu .style.top = menuTop;
-        select.check.style.top = 7 + 4 + iy * 24;
-        
-        select.selectBox.style.top = 7 + select.menu.hoverIndex * 24;
-    };
-    
-
-
-    select.indexFromY = function(y)
-    {
-        let iy = Math.floor((y - 8 - select.menu.offsetTop) / 24);
-        iy = Math.min(Math.max(0, iy), select.items.length-1);
-        return iy;
-    };        
-    
-
-    
-    select.getSelectedIndex = function()
-    {
-        return select.items.findIndex(item => item.value == select.value);
-    };        
-
-
-
-    select.setValue = function(value)
-    {
-        select.value = value;
-        select.update(select.getSelectedIndex());
-        select.dispatchChangeEvent();
-    }
-
-
-
-    select.dispatchChangeEvent = function()
-    {
-        const onchange = new Event('change', 
-        {
-            selectedIndex: select.getSelectedIndex(),
-            selectedValue: select.items[select.getSelectedIndex()].value
-        });
-
-        select.dispatchEvent(onchange);
-    };
-
-
-    //////////////////////////////////////////////////////////////////////////////////
-
-    
-    select.items = items;
-    
-    select.update(0);
-    select.updateItems();
-}
-
-
-
-function onSelectClickTimer(select)
-{
-    select.holding = true;
 }
 
 
@@ -45765,6 +45437,356 @@ function initMenuSelect(select)
     };
 }
 
+
+
+function initSelectMenu(select)
+{
+    select.menu = createDiv('selectMenu');
+
+    select.menu.hoverIndex       =  0;
+    select.menu.tabIndex         =  0;
+
+    select.menu.style.left       =  select.offsetLeft;
+    select.menu.style.height     = 'auto';
+    select.menu.style.textAlign  = 'center';
+    select.menu.style.background = '#222';
+    select.menu.style.zIndex     =  MAX_INT32-3;
+    
+
+
+    select.menu.addEventListener('focus', function() { select.menu.style.outline = 'none'; });
+
+    select.menu.addEventListener('keydown', function(e)
+    { 
+        if (e.code == 'Escape')
+            select.menu.blur();
+    });        
+    
+
+    
+    select.menu.tabIndex   = 0;
+    
+    select.menu.hoverIndex = 0;
+
+
+    select.selectBox = createDiv();
+        
+    // width is set with menu width in showMenu()
+    select.selectBox.style.display         = 'inline-block';
+    select.selectBox.style.width           = 'calc(100% + 1px)';
+    select.selectBox.style.height          = 24;
+    select.selectBox.style.backgroundColor = 'var(--figma-color-bg-brand)';
+    select.selectBox.style.position        = 'absolute';
+    select.selectBox.style.left            = -1; // -1 = border
+    
+    select.menu.appendChild(select.selectBox);
+    
+
+    select.menuWrap = createDiv();
+    
+    select.menuWrap.style.width         = 'auto';
+    select.menuWrap.style.height        = '100%';
+    select.menuWrap.style.position      = 'relative';
+    select.menuWrap.style.paddingLeft   = 4;
+    select.menuWrap.style.paddingRight  = 5;
+    select.menuWrap.style.paddingTop    = 7;
+    select.menuWrap.style.paddingBottom = 7;
+    select.menuWrap.style.margin        = 0;
+    select.menuWrap.style.marginRight   = 10;
+    
+    select.menu.appendChild(select.menuWrap);
+
+
+
+    select.menu.addEventListener('pointerdown', function(e)
+    {
+        e.stopPropagation();
+    });            
+    
+
+
+    select.menu.addEventListener('pointerup', function(e)
+    {
+        if (select.holding)
+            select.menu.selectCurrent();
+    });         
+
+
+
+    select.menu.addEventListener('pointermove', function(e)
+    {
+        select.menu.hoverIndex = select.indexFromY(e.clientY);
+        select.selectBox.style.top = 7 + select.menu.hoverIndex * 24;
+    });                
+    
+
+
+    select.menu.selectCurrent = function()
+    {
+        select.update(select.menu.hoverIndex);
+        select.hideMenu();
+        select.dispatchChangeEvent();
+        select.focus();
+
+        document.menuHadFocus = false;
+    };
+
+
+
+    select.menu.addEventListener('keydown', function(e)
+    {
+        if (   e.code == 'Enter' 
+            || e.code == 'NumpadEnter')
+        {
+            select.menu.selectCurrent();   
+        }
+        else if (e.code == 'ArrowUp')
+        {
+            select.menu.hoverIndex = Math.min(Math.max(0, select.menu.hoverIndex - 1), select.items.length-1);
+            select.updateMenu();
+        }
+        else if (e.code == 'ArrowDown')
+        {
+            select.menu.hoverIndex = Math.min(Math.max(0, select.menu.hoverIndex + 1), select.items.length-1);
+            select.updateMenu();
+        }        
+    });        
+
+
+
+    select.menu.addEventListener('focusout', function()
+    {
+        select.hideMenu();
+
+        select.menu.style.display = 'none';
+        select.parentNode.removeChild(select.menu);
+    });
+}
+
+
+function initSelect(select, items)
+{
+    select.className = 'menuSelect';
+    select.tabIndex = 0;    
+    
+    initSelectMenu(select);
+
+    select.holding  = false;
+    
+
+    
+    //////////////////////////////////////////////////////////////////////////////////
+    
+
+
+    select.initMenu = function()
+    {
+        select.check = createDiv();
+        
+        select.check.style.width    = 16;
+        select.check.style.height   = 16;
+        select.check.style.position = 'absolute';
+        select.check.style.left     = 8;
+        select.check.innerHTML      = '<svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" clip-rule="evenodd" d="M13.2069 5.20718L7.70694 10.7072L6.99983 11.4143L6.29272 10.7072L3.29272 7.70718L4.70694 6.29297L6.99983 8.58586L11.7927 3.79297L13.2069 5.20718Z" fill="white" fill-opacity="1"/></svg>';
+    };
+
+
+
+    select.resetMenu = function()
+    {
+        clearChildren(select.menuWrap);
+        select.menuWrap.appendChild(select.check);
+    };  
+
+
+
+    select.updateItems = function()
+    {
+        select.resetMenu();
+        
+        for (let i = 0; i < select.items.length; i++)
+        {
+            let item = createDiv();
+            let sub  = createDiv();
+            
+            item.style.width       = 'auto';
+            item.style.display     = 'block';
+            item.style.textAlign   = 'left';
+            item.style.paddingLeft = 30;
+            
+            sub .style.height      = 'auto';
+            sub .style.position    = 'relative';
+            sub .style.top         = '50%';
+            sub .style.transform   = 'translateY(-50%)';
+            
+            if (select.items[i].value == '-')
+            {
+                item.style.borderTop = '1px solid white';
+                item.style.marginTop = '6px';
+                item.style.height    = '4px';
+                item.style.position  = 'relative';
+                item.style.left      = '6px';
+                
+                item.disabled = true;
+            }
+            else
+            {
+                item.style.border = 'none';
+                item.style.height = 24;
+
+                item.disabled = false;
+
+                sub.innerHTML = select.items[i].text;
+            }
+
+            item.appendChild(sub);
+            select.menuWrap.appendChild(item);
+        }
+
+
+        let options = select.getElementsByTagName('option');
+
+        for (const node of options) 
+            node.disabled = node.value == '-';
+    };
+    
+
+
+    select.update = function(index)
+    {
+        select.value     = select.items[index].value;
+        select.innerHTML = select.items[index].text;
+    };
+    
+
+    
+    select.addEventListener('pointerdown', function(e)
+    {
+        if (e.button == 0)
+        {
+            e.preventDefault();
+            e.stopPropagation();
+            
+            select.buttonDown0 = true;        
+            select.setPointerCapture(e.pointerId);
+            
+            select.holding = false;
+            setTimeout(function() { onSelectClickTimer(select); }, 200);
+            
+            select.menu.hoverIndex = select.getSelectedIndex();
+
+            select.showMenu();
+        }        
+    });        
+    
+
+    
+    select.addEventListener('keydown', function(e)
+    {
+        if (   e.code == 'Enter' 
+            || e.code == 'NumpadEnter'
+            || e.code == 'ArrowUp'
+            || e.code == 'ArrowDown')
+        {
+            select.showMenu();
+        }        
+    });        
+
+
+
+    select.showMenu = function()
+    {  
+        select.menu.style.display = 'inline-block';
+
+        select.parentNode.appendChild(select.menu);
+        select.updateMenu();
+        
+        select.menu.focus();
+
+        document.menuHadFocus = true;
+    }        
+    
+
+
+    select.hideMenu = function()
+    {
+        select.menu.blur();
+    };    
+
+
+
+    select.updateMenu = function()
+    {
+        let iy = select.getSelectedIndex();
+        
+        let menuTop =
+            select.offsetTop 
+            - 3 // paddingTop
+            - 4 // hack this for now (select.menu.children[0].offsetHeight - select.menu.children[0].children[0].offsetHeight) / 2;
+            - iy * 24;
+        
+        menuTop = Math.min(Math.max(8, menuTop), document.body.clientHeight - 8 - select.menu.offsetHeight);
+        
+        select.menu .style.top = menuTop;
+        select.check.style.top = 7 + 4 + iy * 24;
+        
+        select.selectBox.style.top = 7 + select.menu.hoverIndex * 24;
+    };
+    
+
+
+    select.indexFromY = function(y)
+    {
+        let iy = Math.floor((y - 8 - select.menu.offsetTop) / 24);
+        iy = Math.min(Math.max(0, iy), select.items.length-1);
+        return iy;
+    };        
+    
+
+    
+    select.getSelectedIndex = function()
+    {
+        return select.items.findIndex(item => item.value == select.value);
+    };        
+
+
+
+    select.setValue = function(value)
+    {
+        select.value = value;
+        select.update(select.getSelectedIndex());
+        select.dispatchChangeEvent();
+    }
+
+
+
+    select.dispatchChangeEvent = function()
+    {
+        const onchange = new Event('change', 
+        {
+            selectedIndex: select.getSelectedIndex(),
+            selectedValue: select.items[select.getSelectedIndex()].value
+        });
+
+        select.dispatchEvent(onchange);
+    };
+
+
+    //////////////////////////////////////////////////////////////////////////////////
+
+    
+    select.items = items;
+    
+    select.update(0);
+    select.updateItems();
+}
+
+
+
+function onSelectClickTimer(select)
+{
+    select.holding = true;
+}
 
 
 function initCheckbox(checkbox, name, defaultChecked)
@@ -66942,7 +66964,8 @@ function initCrashDialog(event, error)
     if (!crashed)
     {
         crashBack.addEventListener('pointerdown', e => { e.preventDefault(); });
-        chkCrashRestart.addEventListener('change', () => uiSetLocalData('dataMode', boolToString(chkCrashRestart.checked)));
+
+        btnCrashRestart.addEventListener('click', () => uiRestartGenerator(true));
 
         crashDetails.addEventListener('pointerup', e =>
         {
@@ -67085,19 +67108,11 @@ const zoomOutCursor =
 var _dataModeNodes = [];
 var _dataModeConns = [];
 
-var dataModeTimeout = null;
-
 
 
 function initDataMode()
 {
-    initCheckbox(chkDataModeRestart, 'Restart in debug mode', true );
-    initCheckbox(chkLoadingRestart,  'Restart in debug mode', false);
-
-    chkLoadingRestart.style.display = 'none';
-
-    chkDataModeRestart.addEventListener('change', () => uiSetLocalData('dataMode', boolToString(chkDataModeRestart.checked)));
-    chkLoadingRestart .addEventListener('change', () => uiSetLocalData('dataMode', boolToString(chkLoadingRestart .checked)));
+    btnDataModeRestart.addEventListener('click', () => uiRestartGenerator(false));
 }
 
 
@@ -67946,6 +67961,8 @@ clearConsole();
 
 initUtilContext();
 
+
+initLoadingOverlay();
 initDataMode();
 initWhatsNewDialog();
 initAboutDialog();
@@ -68403,6 +68420,17 @@ function setCurrentKeyboardTab(tab)
 
         keyboardPanelContent.children[i].style.display = i == currentKeyboardTab ? 'flex' : 'none';
     }
+}
+
+
+var loadRestartTimeout = null;
+
+
+
+function initLoadingOverlay()
+{
+    btnLoadingRestart .style.display = 'none';
+    btnLoadingRestart.addEventListener('click', () => uiRestartGenerator(true));
 }
 
 
@@ -69416,9 +69444,6 @@ function uiReturnFigGetLocalData(msg)
             initGeneratorMenus();
      
         
-        initCheckbox(chkCrashRestart, 'Restart in debug mode', settings.dataMode);
-    
-    
         onClassChange(document.childNodes[0], () =>
         { 
             initThemeColors();
@@ -69564,6 +69589,8 @@ function uiReturnFigLoadNodesAndConns(msg)
 
     if (settings.dataMode)
     {
+        menuBar.style.display = 'none';
+
         loadNodesAndConnsData(_n, _c);
     }
     else
@@ -69599,11 +69626,15 @@ function loadNodesAndConnsAsync(_nodes, _conns, setProgress)
 
 
     const chunkSize = 10; // nodes
+
     for (let i = 0; i < _nodes.length; i += chunkSize)
     {
-        if (dataModeTimeout) clearTimeout(dataModeTimeout);
-        dataModeTimeout = setTimeout(() => chkLoadingRestart.style.display = 'inline-block', 5000);
+        if (loadRestartTimeout) 
+            clearTimeout(loadRestartTimeout);
+        
+        loadRestartTimeout = setTimeout(() => btnLoadingRestart.style.display = 'inline-block', 5000);
 
+        
         promise = promise.then(nodes => 
         {
             const res = resolveNodes(
@@ -69650,8 +69681,12 @@ function loadConnectionsAsync(_nodes, _conns, loadedNodes, setProgress)
         });
 
 
-        if (dataModeTimeout) clearTimeout(dataModeTimeout);
-        dataModeTimeout = setTimeout(() => chkLoadingRestart.style.display = 'inline-block', 5000);
+
+        if (loadRestartTimeout) 
+            clearTimeout(loadRestartTimeout);
+
+        loadRestartTimeout = setTimeout(() => btnLoadingRestart.style.display = 'inline-block', 5000);
+
 
         const chunkSize = 10; // connections
         for (let i = 0; i < _conns.length; i += chunkSize)
@@ -69688,8 +69723,8 @@ function finishLoading(_nodes)
 {
     if (isEmpty(_nodes))
     {
-        clearTimeout(dataModeTimeout);
-        dataModeTimeout = null;
+        clearTimeout(loadRestartTimeout);
+        loadRestartTimeout = null;
 
         loadingOverlay.style.display = 'none'; // uncomment to monitor loading of slow nodes
     }
@@ -70810,10 +70845,10 @@ function uiUpdateValuesAndObjects(requestId, actionId, updateNodeId, updateParam
     lastRequestedId = -1;
 
         
-    if (dataModeTimeout)
+    if (loadRestartTimeout)
     {
-        clearTimeout(dataModeTimeout);
-        dataModeTimeout = null;
+        clearTimeout(loadRestartTimeout);
+        loadRestartTimeout = null;
     }
 
 
@@ -70930,13 +70965,6 @@ function uiUpdateValuesAndObjects(requestId, actionId, updateNodeId, updateParam
     graphView.updateScrollWithBounds();
 
 
-    // for (const node of nodes)
-    // {
-    //     node.updateMeasureData();
-    //     node.updateNode();
-    // }
-
-
     if (graphView.loadingNodes)
         setLoadingProgress((0.7 + 0.3 * updatedNodes / totalNodes) / 0.7)
 
@@ -70944,16 +70972,7 @@ function uiUpdateValuesAndObjects(requestId, actionId, updateNodeId, updateParam
     if (isLastChunk)
     {
         if (graphView.loadingNodes)
-        {
-            // for (const node of graph.nodes.filter(n => n.type == GROUP_NODE))
-            // {
-            //     node.updateProxyControls();
-            //     node.updateProxyWires();
-            //     node.updateMeasureData();
-            // }
-
-            uiSaveNodes(graph.nodes.map(n => n.id));
-        }
+           uiSaveNodes(graph.nodes.map(n => n.id));
 
 
         graphView.creatingNodes      = false;
@@ -71548,6 +71567,14 @@ function uiHideClearUndoWarning()
         'showClearUndoWarning',  
          true, 
         !settings.showClearUndoWarning);
+}
+
+
+
+function uiRestartGenerator(dataMode)
+{
+    uiSetLocalData('dataMode', boolToString(dataMode));
+    uiPostMessageToFigma({cmd: 'figRestartGenerator'});
 }
 
 

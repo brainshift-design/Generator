@@ -992,11 +992,11 @@
 }
 
 
-#chkCrashRestart
+#btnCrashRestart
 {
     position: absolute;
-    left: 25px;
-    top: calc(100% - 38px);
+    right:    17px;
+    bottom:   18px;
 }
 
 
