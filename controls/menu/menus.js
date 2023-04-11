@@ -245,7 +245,6 @@ function initGeneratorMenus()
                                         new MenuItem('Delete connections to...',           {callback:      () => showDeleteConnectionsDialog()}),                        
                                         new MenuItem('Delete all saved connections',       {callback:      () => { hideAllMenus(); uiRemoveAllSavedConnections(); }}),
                                         new MenuItem('Delete all style links',             {callback:      () => { hideAllMenus(); uiRemovePluginDataFromAllLocalStyles(); }}),
-                                        new MenuItem('',                                   {separator: true}),
                                         new MenuItem('Clear all local data',               {callback:      () => { hideAllMenus(); uiQueueMessageToFigma({cmd: 'figClearAllLocalData'}); }}),
                                         new MenuItem('',                                   {separator: true}),
                                         new MenuItem('Log',                                {childMenu: menuDebugLog}),

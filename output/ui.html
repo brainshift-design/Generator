@@ -404,10 +404,10 @@
 {
     position:         absolute;
     left:             50%;
-    top:              62px;
+    top:              58px;
     transform:        translateX(-50%);
-    width:            190px;
-    height:           50px;
+    width:            200px;
+    height:           58px;
     overflow:         hidden;
     pointer-events:   none;
     z-index:          100;
@@ -978,8 +978,8 @@
 #aboutBrainshiftLogo
 {
     position:  absolute;
-    top:       82px;
     left:      97px;
+    top:       82px;
 }
 
 
@@ -987,7 +987,7 @@
 {
     position: absolute;
     left:     33px;
-    top:      23px;
+    top:      22px;
 }
 
 
@@ -3894,7 +3894,8 @@ a
                 <p>•  fixed wrong invalid colors assigned to styles</p>
                 <p>•  fixed Mac shortcuts</p>
                 <p>•  adjusting color controls with arrow keys now supports undo</p>
-                <p>•  added a copy menu to the crash dialog</p>
+                <p>•  added a right-click copy menu to the crash dialog</p>
+                <p>•  replaced restart checkboxes with buttons</p>
                 <p>•  fixed many UI issues</p>
                 
                 <p><br/><br/><div id='chkHideWhatsNew'></div></p>
@@ -43416,7 +43417,7 @@ class Menu
 
         const margin = 8;
 
-        this.div.style.left = Math.min(Math.max(
+        const x = Math.min(Math.max(
             margin, 
             right
             ? (this.showOnLeft ? srcRect.x - this.div.offsetWidth : srcRect.x + srcRect.width)
@@ -43424,23 +43425,21 @@ class Menu
             graphView.div.offsetWidth - this.div.offsetWidth - margin);
 
 
-        const dy = subMenu ? 0 : 4;
+        const dy = subMenu ? 4 : -1;
 
-        this.div.style.top =
+        const y =
             right
             ? srcRect.y - dy - 3
             : srcRect.y - dy + srcRect.height + this.divArrow.offsetHeight;
 
+
+        this.showAt(x + 6, y, subMenu, false);
+        
             
-        this.divArrow.style.left = srcRect.x + srcRect.width/2;
-
-
         const menuRect = this.div.getBoundingClientRect();
-
-        this.divArrow.style.top = menuRect.y - this.divArrow.offsetHeight + 2;
-
-
-        currentMenus.push(this);
+        
+        this.divArrow.style.left = srcRect.x + srcRect.width/2;
+        this.divArrow.style.top  = menuRect.y - this.divArrow.offsetHeight + 2;
 
 
         if (this.button)
@@ -43470,7 +43469,7 @@ class Menu
 
         const margin = 8;
 
-        const dy     = subMenu ? 0 : 4;
+        const  dy    = subMenu ? 0 : 4;
         const _dy    = subMenu ? 4 : 0;
 
         let   left   = Math.min(Math.max(margin, x), graphView.div.offsetWidth - this.div.offsetWidth - margin) - 6;
@@ -43490,7 +43489,9 @@ class Menu
         {
             height = Math.min(height, graphHeight - 16);
             top    = menuBarHeight + Math.max(8, graphHeight - height);
-            left  += 10; // so it doesn't hit a menu item by accident once the menu appears
+            
+            if (!subMenu)
+                left  += 10; // so it doesn't hit a menu item by accident once the menu appears
         }
 
 
@@ -44450,7 +44451,6 @@ function initGeneratorMenus()
                                         new MenuItem('Delete connections to...',           {callback:      () => showDeleteConnectionsDialog()}),                        
                                         new MenuItem('Delete all saved connections',       {callback:      () => { hideAllMenus(); uiRemoveAllSavedConnections(); }}),
                                         new MenuItem('Delete all style links',             {callback:      () => { hideAllMenus(); uiRemovePluginDataFromAllLocalStyles(); }}),
-                                        new MenuItem('',                                   {separator: true}),
                                         new MenuItem('Clear all local data',               {callback:      () => { hideAllMenus(); uiQueueMessageToFigma({cmd: 'figClearAllLocalData'}); }}),
                                         new MenuItem('',                                   {separator: true}),
                                         new MenuItem('Log',                                {childMenu: menuDebugLog}),
@@ -69135,13 +69135,12 @@ function updateLicenseInfo(license)
         const date    = new Date(Date.parse(strPrep));
         const strDate = date.toLocaleString('en-UK', {dateStyle: 'medium'});
 
-        licenseWatermark    .style.display    = 'block';
-        //licenseWatermark    .style.boxShadow  = '0 0 0 1px inset ' + (darkMode ? '#ffffff08' : '#00000008');
+        licenseWatermark    .style.display    = 'none';//'block';
         licenseWatermark    .style.outline    = '2px dashed var(--figma-color-text-disabled)';
         licenseWatermark    .style.background = 'transparent';//darkMode ? '#ffffff0f' : '#0000000a';
         licenseWatermarkPath.style.fill       = 'transparent';//darkMode ? '#2e2e2e50' : '#ffffff80';
 
-        licenseInfo.innerHTML = '<span style="user-select: one; color: ' + (darkMode ? '#fffa' : '#000c') + ';">Valid until:&nbsp;&thinsp;</span><span style="font-weight: 700">' + strDate.replaceAll('/', '&hairsp;/&hairsp;') + '</span>';
+        licenseInfo.innerHTML = '<span style="user-select: one; color: ' + (darkMode ? '#fffa' : '#000c') + ';">License valid until:&nbsp;&thinsp;</span><span style="font-weight: 700">' + strDate.replaceAll('/', '&hairsp;/&hairsp;') + '</span>';
 
         subscribeWebsite.style.display = 'none';
     }

@@ -174,7 +174,7 @@ class Menu
 
         const margin = 8;
 
-        this.div.style.left = Math.min(Math.max(
+        const x = Math.min(Math.max(
             margin, 
             right
             ? (this.showOnLeft ? srcRect.x - this.div.offsetWidth : srcRect.x + srcRect.width)
@@ -182,23 +182,21 @@ class Menu
             graphView.div.offsetWidth - this.div.offsetWidth - margin);
 
 
-        const dy = subMenu ? 0 : 4;
+        const dy = subMenu ? 4 : -1;
 
-        this.div.style.top =
+        const y =
             right
             ? srcRect.y - dy - 3
             : srcRect.y - dy + srcRect.height + this.divArrow.offsetHeight;
 
+
+        this.showAt(x + 6, y, subMenu, false);
+        
             
-        this.divArrow.style.left = srcRect.x + srcRect.width/2;
-
-
         const menuRect = this.div.getBoundingClientRect();
-
-        this.divArrow.style.top = menuRect.y - this.divArrow.offsetHeight + 2;
-
-
-        currentMenus.push(this);
+        
+        this.divArrow.style.left = srcRect.x + srcRect.width/2;
+        this.divArrow.style.top  = menuRect.y - this.divArrow.offsetHeight + 2;
 
 
         if (this.button)
@@ -228,7 +226,7 @@ class Menu
 
         const margin = 8;
 
-        const dy     = subMenu ? 0 : 4;
+        const  dy    = subMenu ? 0 : 4;
         const _dy    = subMenu ? 4 : 0;
 
         let   left   = Math.min(Math.max(margin, x), graphView.div.offsetWidth - this.div.offsetWidth - margin) - 6;
@@ -248,7 +246,9 @@ class Menu
         {
             height = Math.min(height, graphHeight - 16);
             top    = menuBarHeight + Math.max(8, graphHeight - height);
-            left  += 10; // so it doesn't hit a menu item by accident once the menu appears
+            
+            if (!subMenu)
+                left  += 10; // so it doesn't hit a menu item by accident once the menu appears
         }
 
 
