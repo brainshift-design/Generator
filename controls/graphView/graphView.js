@@ -353,16 +353,8 @@ class GraphView
     showCompatibleInputs(output = null)
     {
         for (const node of graph.nodes)
-        {
             for (const input of node.inputs)
-            {
-                input.div.style.visibility = 
-                      !output 
-                    || input.canConnectFrom(output)
-                    ? 'visible'
-                    : 'hidden';
-            }
-        }
+                input.div.style.opacity = !output || input.canConnectFrom(output) ? 1 : 0;
     }
     
     
@@ -372,7 +364,7 @@ class GraphView
         for (const node of graph.nodes)
             for (const input of node.inputs)
                 if (input != except)
-                    input.div.style.visibility = 'hidden';
+                    input.div.style.opacity = 0;
     }
     
     
@@ -380,16 +372,8 @@ class GraphView
     showCompatibleOutputs(input = null)
     {
         for (const node of graph.nodes)
-        {
             for (const output of node.outputs)
-            {
-                output.div.style.visibility = 
-                       !input
-                    ||  input.canConnectFrom(output)
-                    ? 'visible'
-                    : 'hidden';
-            }
-        }
+                output.div.style.opacity = !input ||  input.canConnectFrom(output) ? 1 : 0;
     }
     
     
@@ -399,7 +383,7 @@ class GraphView
         for (const node of graph.nodes)
             for (const output of node.outputs)
                 if (output != except)
-                    output.div.style.visibility = 'hidden';
+                    output.div.style.opacity = 0;
     }
     
     

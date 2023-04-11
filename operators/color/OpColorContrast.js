@@ -91,8 +91,8 @@ extends OpColorBase
 
         const [request, ignore] = this.node.genRequestStart(gen);
         if (ignore) return request;
-console.log('1 request =', [...request]);
 
+        
         const input0 = this.node.inputs[0];
         const input1 = this.node.inputs[1];
 
@@ -107,11 +107,9 @@ console.log('1 request =', [...request]);
             
         else                       request.push(0);
 
-        console.log('2 request =', [...request]);
 
         request.push(...this.node.paramStandard.genRequest(gen));
 
-        console.log('3 request =', [...request]);
 
         gen.scope.pop();
         pushUnique(gen.passedNodes, this.node);
