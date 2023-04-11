@@ -165,6 +165,16 @@ class GraphView
 
 
 
+    update()
+    {
+        graphView.updatePanAndZoom(false);
+        graphView.updateScrollWithBounds();
+        graphView.div.style.height = 'calc(100% - ' + getTopHeight() + 'px)';
+        graphView.updateMeasureData();
+    }
+
+
+
     updateMeasureData()
     {
         this.measureData.clientRect = clientRect(this.div);

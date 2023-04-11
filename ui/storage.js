@@ -390,8 +390,10 @@ function finishLoading(_nodes)
 
 
     enableFeatures(productKey != NULL, settings.enableBetaFeatures); 
+    
+    graphView.update();
 
-
+    
     window.focus();
 }
 

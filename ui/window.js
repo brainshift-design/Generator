@@ -79,13 +79,9 @@ function uiReturnFigResizeWindow()
 {
     if (!settings.dataMode)
     {
-        graphView.updatePanAndZoom(false);
-        graphView.updateScrollWithBounds();
-
+        graphView.update();
         updateWhatsNewScrollbar(0);
     }
-
-    graphView.updateMeasureData();
 }
 
 

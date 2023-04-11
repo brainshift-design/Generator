@@ -197,10 +197,11 @@ GraphView.prototype.zoomToNodes = function(nodes)
 
 GraphView.prototype.zoomToRect = function(rect, margin = 40)
 {
-    const viewRect = this.measureData.clientRect;
-
+    const viewRect   = this.measureData.clientRect;
+console.log('viewRect =', viewRect);
     const viewAspect = viewRect.width / viewRect.height;
     const rectAspect = rect.width     / rect.height;
+
 
     this.zoom = 
         viewRect.width >= viewRect.height
@@ -216,7 +217,8 @@ GraphView.prototype.zoomToRect = function(rect, margin = 40)
            : (viewRect.width  - margin*2) / rect.width );
 
 
-    this.pan = {
+    this.pan = 
+    {
         x: viewRect.width /2 - (rect.x + rect.width /2) * this.zoom,
         y: viewRect.height/2 - (rect.y + rect.height/2) * this.zoom
     };

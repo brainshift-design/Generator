@@ -192,7 +192,7 @@ extends EventTarget
                 if (createAction)
                 {
                     actionManager.do(
-                        new SetParamValueAction(this.node.graph, this, value), 
+                        new SetParamValueAction(this, value), 
                           !isEmpty(actionManager.actions)
                         && actionManager.actions.at(-1).type == SET_PARAM_VALUE_ACTION
                         && this.changing);

@@ -2042,12 +2042,13 @@ a
 
 #_graphView
 {
-    display:  block;
-    overflow: hidden;
-    height:   calc(100% - 40px);
-    position: relative;
-    z-index:  2;
+    display:    block;
+    overflow:   hidden;
+    height:     calc(100% - 40px);
+    position:   relative;
+    z-index:    2;
     box-shadow: 0 1px 0 0 inset #383838;
+    /* box-shadow: 0 0 0 1px red inset; */
 }
 
 
@@ -3681,7 +3682,7 @@ a
 <div id='pagesBar'></div>
 
 
-<div id='_graphView' class='graphView'></div>
+<div id='_graphView'></div>
 
 <div id='selectBox'></div>
 
@@ -17241,6 +17242,7 @@ function updateMenuItemShowPages()
 {
     uiSetPageData('showPages', boolToString(settings.showPages));
     updatePages();
+    graphView.update();
 }
 
 
@@ -39463,6 +39465,7 @@ function updateMenuItemShowPages()
 {
     uiSetPageData('showPages', boolToString(settings.showPages));
     updatePages();
+    graphView.update();
 }
 
 
@@ -46067,6 +46070,16 @@ class GraphView
 
 
 
+    update()
+    {
+        graphView.updatePanAndZoom(false);
+        graphView.updateScrollWithBounds();
+        graphView.div.style.height = 'calc(100% - ' + getTopHeight() + 'px)';
+        graphView.updateMeasureData();
+    }
+
+
+
     updateMeasureData()
     {
         this.measureData.clientRect = clientRect(this.div);
@@ -47562,10 +47575,11 @@ GraphView.prototype.zoomToNodes = function(nodes)
 
 GraphView.prototype.zoomToRect = function(rect, margin = 40)
 {
-    const viewRect = this.measureData.clientRect;
-
+    const viewRect   = this.measureData.clientRect;
+console.log('viewRect =', viewRect);
     const viewAspect = viewRect.width / viewRect.height;
     const rectAspect = rect.width     / rect.height;
+
 
     this.zoom = 
         viewRect.width >= viewRect.height
@@ -47581,7 +47595,8 @@ GraphView.prototype.zoomToRect = function(rect, margin = 40)
            : (viewRect.width  - margin*2) / rect.width );
 
 
-    this.pan = {
+    this.pan = 
+    {
         x: viewRect.width /2 - (rect.x + rect.width /2) * this.zoom,
         y: viewRect.height/2 - (rect.y + rect.height/2) * this.zoom
     };
@@ -48233,7 +48248,7 @@ extends EventTarget
                 if (createAction)
                 {
                     actionManager.do(
-                        new SetParamValueAction(this.node.graph, this, value), 
+                        new SetParamValueAction(this, value), 
                           !isEmpty(actionManager.actions)
                         && actionManager.actions.at(-1).type == SET_PARAM_VALUE_ACTION
                         && this.changing);
@@ -69797,8 +69812,10 @@ function finishLoading(_nodes)
 
 
     enableFeatures(productKey != NULL, settings.enableBetaFeatures); 
+    
+    graphView.update();
 
-
+    
     window.focus();
 }
 
@@ -71924,13 +71941,9 @@ function uiReturnFigResizeWindow()
 {
     if (!settings.dataMode)
     {
-        graphView.updatePanAndZoom(false);
-        graphView.updateScrollWithBounds();
-
+        graphView.update();
         updateWhatsNewScrollbar(0);
     }
-
-    graphView.updateMeasureData();
 }
 
 
