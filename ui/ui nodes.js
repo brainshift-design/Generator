@@ -718,8 +718,8 @@ function uiUpdateValuesAndObjects(requestId, actionId, updateNodeId, updateParam
     }
 
 
-    if (!graphView.loadingNodes)
-        uiSaveNodes(nodes.map(n => n.id));
+    // if (!graphView.loadingNodes)
+    //     uiSaveNodes(nodes.map(n => n.id));
 
 
     for (const node of nodes)
@@ -745,9 +745,8 @@ function uiUpdateValuesAndObjects(requestId, actionId, updateNodeId, updateParam
 
     if (isLastChunk)
     {
-        if (graphView.loadingNodes)
-           uiSaveNodes(graph.nodes.map(n => n.id));
-
+        //if (graphView.loadingNodes)
+        //   uiSaveNodes(graph.nodes.map(n => n.id));
 
         graphView.creatingNodes      = false;
         graphView.pastingNodes       = false;
@@ -756,7 +755,7 @@ function uiUpdateValuesAndObjects(requestId, actionId, updateNodeId, updateParam
 
         actionManager.undoing        = false;
         actionManager.redoing        = false;
-
+        
         loadingOverlay.style.display = 'none'; // for loading
     }
 }
@@ -785,7 +784,7 @@ function uiSaveNodes(nodeIds)
         uiQueueMessageToFigma({
             cmd:     'figSaveNodes',
             nodeIds:  nodeIds,
-            nodeJson: nodeJson});
+            nodeJson: nodeJson });
     }
 }
 

@@ -41,7 +41,8 @@ function loadNodesAndConnsData(_nodes, _conns)
     _dataModeNodes = _nodes;
     _dataModeConns = _conns;
 
-    _dataModeNodes.soui_1rt((n1, n2) => 
+    
+    _dataModeNodes.sort((n1, n2) => 
     {
         if (n1.y != n2.y ) return parseFloat(n1.value.y) - parseFloat(n2.value.y);
         if (n1.x != n2.x ) return parseFloat(n1.value.x) - parseFloat(n2.value.x);
@@ -50,9 +51,9 @@ function loadNodesAndConnsData(_nodes, _conns)
 
     _dataModeConns.sort((c1, c2) => 
     {
-        if (c1.value.outputNodeId != c2.value.outputNodeId ) return c1.value.outputNodeId < c2.value.outputNodeId ? -1 : 1;
-        if (c1.value.outputId     != c2.value.outputId     ) return c1.value.outputId     < c2.value.outputId     ? -1 : 1;
-        if (c1.value.outputOrder  != c2.value.outputOrder  ) return parseInt(c1.value.outputOrder) - parseInt(c2.value.outputOrder);
+        if (c1.value.outputNodeId != c2.value.outputNodeId) return c1.value.outputNodeId < c2.value.outputNodeId ? -1 : 1;
+        if (c1.value.outputId     != c2.value.outputId    ) return c1.value.outputId     < c2.value.outputId     ? -1 : 1;
+        if (c1.value.outputOrder  != c2.value.outputOrder ) return parseInt(c1.value.outputOrder) - parseInt(c2.value.outputOrder);
         return 0;
     });
 
@@ -62,6 +63,9 @@ function loadNodesAndConnsData(_nodes, _conns)
 
 
     updateDataModeInfo();
+
+    
+    loadingOverlay.style.display = 'none';
 }
 
 

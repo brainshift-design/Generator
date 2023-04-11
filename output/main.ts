@@ -39,21 +39,6 @@ const nodeTag          = 'G_NODE';
 const connTag          = 'G_CONN';
 
 
-const smallScrollGap   =  6;
-const largeScrollGap   = 14;
-  
-var   menuBarHeight    = 40;
-var   pagesBarHeight   = 36;
-
-
-
-function getTopHeight() 
-{ 
-    return menuBarHeight 
-         + (settings.showPages ? pagesBarHeight : 0);
-}
-
-
 
 function toInt(f) { return Math.floor(f) | 0; }
 
@@ -1137,6 +1122,12 @@ figma.showUI(
         visible:     false,
         themeColors: true
     });
+
+
+    
+// figma.currentPage
+//     .getPluginDataKeys()
+//     .forEach(k => figma.currentPage.setPluginData(k, ''));
 
 
 

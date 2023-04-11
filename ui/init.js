@@ -12,7 +12,7 @@ var allUpdateNodes   = [];
 
 
 
-//uiClearAllLocalData();
+// uiClearAllLocalData();
 //uiQueueMessageToFigma({cmd: 'figLogAllLocalData', darkMode: darkMode});
 
 // uiClearLocalData('windowWidth');
@@ -30,7 +30,9 @@ var allUpdateNodes   = [];
 //uiRemovePluginDataFromAllLocalStyles();
 
 
+
 //uiRemoveAllSavedNodesAndConns();
+
 
 
 var currentUser = null;

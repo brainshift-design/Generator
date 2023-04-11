@@ -21,6 +21,12 @@ figma.showUI(
     });
 
 
+    
+// figma.currentPage
+//     .getPluginDataKeys()
+//     .forEach(k => figma.currentPage.setPluginData(k, ''));
+
+
 
 function figStartGenerator()
 {

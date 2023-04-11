@@ -4244,21 +4244,6 @@ const nodeTag          = 'G_NODE';
 const connTag          = 'G_CONN';
 
 
-const smallScrollGap   =  6;
-const largeScrollGap   = 14;
-  
-var   menuBarHeight    = 40;
-var   pagesBarHeight   = 36;
-
-
-
-function getTopHeight() 
-{ 
-    return menuBarHeight 
-         + (settings.showPages ? pagesBarHeight : 0);
-}
-
-
 
 function toInt(f) { return Math.floor(f) | 0; }
 
@@ -17674,6 +17659,7 @@ function genUpdateValuesAndObjects(requestId, actionId, updateNodeId, updatePara
         return;
     }
 
+
     //console.log('2 updateStyles =', [...updateStyles]);
 
     const nodeIds = filterUnique(updateValues.map(v => v.nodeId));
@@ -17696,9 +17682,9 @@ function genUpdateValuesAndObjects(requestId, actionId, updateNodeId, updatePara
     let sc = 0; // style chunk count
 
 
-    let nodeValChunk    = [],
-        objChunk        = [],
-        styleChunk      = [];
+    let nodeValChunk   = [],
+        objChunk       = [],
+        styleChunk     = [];
 
     let nodeValChunkId = 0;
         
@@ -17818,6 +17804,7 @@ function genQueueChunk(requestId, actionId, updateNodeId, updateParamId, nodeVal
         totalNodes:    totalNodes,
         isLastChunk:   isLastChunk
     });
+
 
     if (   !isEmpty(objChunk  )
         || !isEmpty(styleChunk))
@@ -23885,21 +23872,6 @@ const OBJECT_PREFIX    = 'G.';
   
 const nodeTag          = 'G_NODE';
 const connTag          = 'G_CONN';
-
-
-const smallScrollGap   =  6;
-const largeScrollGap   = 14;
-  
-var   menuBarHeight    = 40;
-var   pagesBarHeight   = 36;
-
-
-
-function getTopHeight() 
-{ 
-    return menuBarHeight 
-         + (settings.showPages ? pagesBarHeight : 0);
-}
 
 
 
@@ -67216,7 +67188,8 @@ function loadNodesAndConnsData(_nodes, _conns)
     _dataModeNodes = _nodes;
     _dataModeConns = _conns;
 
-    _dataModeNodes.soui_1rt((n1, n2) => 
+    
+    _dataModeNodes.sort((n1, n2) => 
     {
         if (n1.y != n2.y ) return parseFloat(n1.value.y) - parseFloat(n2.value.y);
         if (n1.x != n2.x ) return parseFloat(n1.value.x) - parseFloat(n2.value.x);
@@ -67225,9 +67198,9 @@ function loadNodesAndConnsData(_nodes, _conns)
 
     _dataModeConns.sort((c1, c2) => 
     {
-        if (c1.value.outputNodeId != c2.value.outputNodeId ) return c1.value.outputNodeId < c2.value.outputNodeId ? -1 : 1;
-        if (c1.value.outputId     != c2.value.outputId     ) return c1.value.outputId     < c2.value.outputId     ? -1 : 1;
-        if (c1.value.outputOrder  != c2.value.outputOrder  ) return parseInt(c1.value.outputOrder) - parseInt(c2.value.outputOrder);
+        if (c1.value.outputNodeId != c2.value.outputNodeId) return c1.value.outputNodeId < c2.value.outputNodeId ? -1 : 1;
+        if (c1.value.outputId     != c2.value.outputId    ) return c1.value.outputId     < c2.value.outputId     ? -1 : 1;
+        if (c1.value.outputOrder  != c2.value.outputOrder ) return parseInt(c1.value.outputOrder) - parseInt(c2.value.outputOrder);
         return 0;
     });
 
@@ -67237,6 +67210,9 @@ function loadNodesAndConnsData(_nodes, _conns)
 
 
     updateDataModeInfo();
+
+    
+    loadingOverlay.style.display = 'none';
 }
 
 
@@ -67984,7 +67960,7 @@ var allUpdateNodes   = [];
 
 
 
-//uiClearAllLocalData();
+// uiClearAllLocalData();
 //uiQueueMessageToFigma({cmd: 'figLogAllLocalData', darkMode: darkMode});
 
 // uiClearLocalData('windowWidth');
@@ -68002,7 +67978,9 @@ var allUpdateNodes   = [];
 //uiRemovePluginDataFromAllLocalStyles();
 
 
+
 //uiRemoveAllSavedNodesAndConns();
+
 
 
 var currentUser = null;
@@ -69653,11 +69631,11 @@ function uiReturnFigLoadNodesAndConns(msg)
         false); 
 
 
-    let   _nodeKeys  = msg.nodeKeys;
-    let   _nodes     = msg.nodeJson;
+    let _nodeKeys  = msg.nodeKeys;
+    let _nodes     = msg.nodeJson;
 
-    let   _connKeys  = msg.connKeys;
-    let   _conns     = msg.connJson;
+    let _connKeys  = msg.connKeys;
+    let _conns     = msg.connJson;
 
     
     const _n = [];
@@ -69742,7 +69720,7 @@ function loadConnectionsAsync(_nodes, _conns, loadedNodes, setProgress)
 {
     let promise = Promise.resolve([]);
 
-    
+
     if (_conns)
     {
         // variable inputs connections must be sorted by input index
@@ -69801,7 +69779,7 @@ function finishLoading(_nodes)
         clearTimeout(loadRestartTimer);
         loadRestartTimer = -1;
 
-        //loadingOverlay.style.display = 'none'; // uncomment to monitor loading of slow nodes
+        loadingOverlay.style.display = 'none';
     }
 
 
@@ -71019,8 +70997,8 @@ function uiUpdateValuesAndObjects(requestId, actionId, updateNodeId, updateParam
     }
 
 
-    if (!graphView.loadingNodes)
-        uiSaveNodes(nodes.map(n => n.id));
+    // if (!graphView.loadingNodes)
+    //     uiSaveNodes(nodes.map(n => n.id));
 
 
     for (const node of nodes)
@@ -71046,9 +71024,8 @@ function uiUpdateValuesAndObjects(requestId, actionId, updateNodeId, updateParam
 
     if (isLastChunk)
     {
-        if (graphView.loadingNodes)
-           uiSaveNodes(graph.nodes.map(n => n.id));
-
+        //if (graphView.loadingNodes)
+        //   uiSaveNodes(graph.nodes.map(n => n.id));
 
         graphView.creatingNodes      = false;
         graphView.pastingNodes       = false;
@@ -71057,7 +71034,7 @@ function uiUpdateValuesAndObjects(requestId, actionId, updateNodeId, updateParam
 
         actionManager.undoing        = false;
         actionManager.redoing        = false;
-
+        
         loadingOverlay.style.display = 'none'; // for loading
     }
 }
@@ -71086,7 +71063,7 @@ function uiSaveNodes(nodeIds)
         uiQueueMessageToFigma({
             cmd:     'figSaveNodes',
             nodeIds:  nodeIds,
-            nodeJson: nodeJson});
+            nodeJson: nodeJson });
     }
 }
 
@@ -71576,12 +71553,26 @@ var   numberControlChanging = null;
 var   overNumberControlCtrl = null;
 
 
-
 const graph                 = new Graph();
 var   graphView             = new GraphView(_graphView, graph);
          
 var   viewportZoom          = 1;
 var   viewportRect          = new Rect();
+
+
+const smallScrollGap        =  6;
+const largeScrollGap        = 14;
+       
+var   menuBarHeight         = 40;
+var   pagesBarHeight        = 36;
+
+
+
+function getTopHeight() 
+{ 
+    return menuBarHeight 
+        + (settings.showPages ? pagesBarHeight : 0);
+}
 
 
 
@@ -71590,7 +71581,7 @@ function uiError(text, options = {}, delay = 6000)
     uiNotify(
         text, 
         {
-            delay: delay, 
+            delay: delay,
             error: true,
             ...options
         });

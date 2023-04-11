@@ -231,11 +231,11 @@ function uiReturnFigLoadNodesAndConns(msg)
         false); 
 
 
-    let   _nodeKeys  = msg.nodeKeys;
-    let   _nodes     = msg.nodeJson;
+    let _nodeKeys  = msg.nodeKeys;
+    let _nodes     = msg.nodeJson;
 
-    let   _connKeys  = msg.connKeys;
-    let   _conns     = msg.connJson;
+    let _connKeys  = msg.connKeys;
+    let _conns     = msg.connJson;
 
     
     const _n = [];
@@ -320,7 +320,7 @@ function loadConnectionsAsync(_nodes, _conns, loadedNodes, setProgress)
 {
     let promise = Promise.resolve([]);
 
-    
+
     if (_conns)
     {
         // variable inputs connections must be sorted by input index
@@ -379,7 +379,7 @@ function finishLoading(_nodes)
         clearTimeout(loadRestartTimer);
         loadRestartTimer = -1;
 
-        //loadingOverlay.style.display = 'none'; // uncomment to monitor loading of slow nodes
+        loadingOverlay.style.display = 'none';
     }
 
 

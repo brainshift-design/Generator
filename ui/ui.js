@@ -10,12 +10,26 @@ var   numberControlChanging = null;
 var   overNumberControlCtrl = null;
 
 
-
 const graph                 = new Graph();
 var   graphView             = new GraphView(_graphView, graph);
          
 var   viewportZoom          = 1;
 var   viewportRect          = new Rect();
+
+
+const smallScrollGap        =  6;
+const largeScrollGap        = 14;
+       
+var   menuBarHeight         = 40;
+var   pagesBarHeight        = 36;
+
+
+
+function getTopHeight() 
+{ 
+    return menuBarHeight 
+        + (settings.showPages ? pagesBarHeight : 0);
+}
 
 
 
@@ -24,7 +38,7 @@ function uiError(text, options = {}, delay = 6000)
     uiNotify(
         text, 
         {
-            delay: delay, 
+            delay: delay,
             error: true,
             ...options
         });

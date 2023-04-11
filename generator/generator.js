@@ -167,6 +167,7 @@ function genUpdateValuesAndObjects(requestId, actionId, updateNodeId, updatePara
         return;
     }
 
+
     //console.log('2 updateStyles =', [...updateStyles]);
 
     const nodeIds = filterUnique(updateValues.map(v => v.nodeId));
@@ -189,9 +190,9 @@ function genUpdateValuesAndObjects(requestId, actionId, updateNodeId, updatePara
     let sc = 0; // style chunk count
 
 
-    let nodeValChunk    = [],
-        objChunk        = [],
-        styleChunk      = [];
+    let nodeValChunk   = [],
+        objChunk       = [],
+        styleChunk     = [];
 
     let nodeValChunkId = 0;
         
@@ -311,6 +312,7 @@ function genQueueChunk(requestId, actionId, updateNodeId, updateParamId, nodeVal
         totalNodes:    totalNodes,
         isLastChunk:   isLastChunk
     });
+
 
     if (   !isEmpty(objChunk  )
         || !isEmpty(styleChunk))

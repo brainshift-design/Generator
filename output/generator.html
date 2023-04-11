@@ -22,21 +22,6 @@ const nodeTag          = 'G_NODE';
 const connTag          = 'G_CONN';
 
 
-const smallScrollGap   =  6;
-const largeScrollGap   = 14;
-  
-var   menuBarHeight    = 40;
-var   pagesBarHeight   = 36;
-
-
-
-function getTopHeight() 
-{ 
-    return menuBarHeight 
-         + (settings.showPages ? pagesBarHeight : 0);
-}
-
-
 
 function toInt(f) { return Math.floor(f) | 0; }
 
@@ -13452,6 +13437,7 @@ function genUpdateValuesAndObjects(requestId, actionId, updateNodeId, updatePara
         return;
     }
 
+
     //console.log('2 updateStyles =', [...updateStyles]);
 
     const nodeIds = filterUnique(updateValues.map(v => v.nodeId));
@@ -13474,9 +13460,9 @@ function genUpdateValuesAndObjects(requestId, actionId, updateNodeId, updatePara
     let sc = 0; // style chunk count
 
 
-    let nodeValChunk    = [],
-        objChunk        = [],
-        styleChunk      = [];
+    let nodeValChunk   = [],
+        objChunk       = [],
+        styleChunk     = [];
 
     let nodeValChunkId = 0;
         
@@ -13596,6 +13582,7 @@ function genQueueChunk(requestId, actionId, updateNodeId, updateParamId, nodeVal
         totalNodes:    totalNodes,
         isLastChunk:   isLastChunk
     });
+
 
     if (   !isEmpty(objChunk  )
         || !isEmpty(styleChunk))
