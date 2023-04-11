@@ -12,7 +12,7 @@ GraphView.prototype.startConnectionFromOutput = function(pointerId, output, upda
         this.tempConn.wire.update(this.pStart.x, this.pStart.y);
 
     this.showCompatibleInputs(output);
-    this.hideAllOutputs();
+    this.hideAllOutputs(this.tempConn.output);
 
     output.updateControl();
 };
@@ -31,7 +31,7 @@ GraphView.prototype.startConnectionFromInput = function(pointerId, input, backIn
     this.tempConn.wire.update(this.pStart.x, this.pStart.y);
 
     this.showCompatibleOutputs(input);
-    this.hideAllInputs();
+    this.hideAllInputs(this.tempConn.input);
 
     input.updateControl();
 };

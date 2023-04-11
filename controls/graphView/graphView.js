@@ -367,11 +367,12 @@ class GraphView
     
     
     
-    hideAllInputs()
+    hideAllInputs(except = null)
     {
         for (const node of graph.nodes)
             for (const input of node.inputs)
-                input.div.style.visibility = 'hidden';
+                if (input != except)
+                    input.div.style.visibility = 'hidden';
     }
     
     
@@ -393,11 +394,12 @@ class GraphView
     
     
     
-    hideAllOutputs()
+    hideAllOutputs(except = null)
     {
         for (const node of graph.nodes)
             for (const output of node.outputs)
-                output.div.style.visibility = 'hidden';
+                if (output != except)
+                    output.div.style.visibility = 'hidden';
     }
     
     
