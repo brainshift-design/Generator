@@ -67,16 +67,16 @@ function updatePage(page)
            index ==  curPageIndex
         || index == overPageIndex;
 
-    pagesBar.style.background        = document.hasFocus() ? '#202020' : '#3b3b3b';
+    pagesBar.style.background        = document.hasFocus() ? '#202020' : '#383838';
 
     
     page.btnIcon .innerHTML          = iconPage;
     page.btnName .innerHTML          = page.name;
     page.btnClose.innerHTML          = iconPageClose;
     
-    page.button  .style.background   = isCurrent ? '#2c2c2c' : (document.hasFocus() ? '#202020' : '#3b3b3b');
+    page.button  .style.background   = isCurrent ? '#2c2c2c' : (document.hasFocus() ? '#202020' : '#383838');
     
-    page.button  .style.outline      = '1px solid ' + (document.hasFocus() ? (isCurrent ? '#ffffff20' : '#ffffff19') : (isCurrent ? '#ffffff28' : '#ffffff19'));
+    //page.button  .style.outline      = '1px solid ' + (document.hasFocus() ? (isCurrent ? '#ffffff20' : '#ffffff19') : (isCurrent ? '#ffffff28' : '#ffffff19'));
 
     page.btnIcon .style.opacity      = isCurrent ? 1 : 0.35;
     page.btnName .style.color        = isCurrent ? '#fffffff0' : '#fff6';

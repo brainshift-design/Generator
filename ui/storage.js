@@ -290,11 +290,7 @@ function loadNodesAndConnsAsync(_nodes, _conns, setProgress)
 
     for (let i = 0; i < _nodes.length; i += chunkSize)
     {
-        if (loadRestartTimeout) 
-            clearTimeout(loadRestartTimeout);
-        
-        loadRestartTimeout = setTimeout(() => btnLoadingRestart.style.display = 'inline-block', 5000);
-
+        restartLoadingTimer();
         
         promise = promise.then(nodes => 
         {
@@ -340,13 +336,9 @@ function loadConnectionsAsync(_nodes, _conns, loadedNodes, setProgress)
 
             return 0;
         });
+        
 
-
-
-        if (loadRestartTimeout) 
-            clearTimeout(loadRestartTimeout);
-
-        loadRestartTimeout = setTimeout(() => btnLoadingRestart.style.display = 'inline-block', 5000);
+        restartLoadingTimer();
 
 
         const chunkSize = 10; // connections
@@ -384,10 +376,10 @@ function finishLoading(_nodes)
 {
     if (isEmpty(_nodes))
     {
-        clearTimeout(loadRestartTimeout);
-        loadRestartTimeout = null;
+        clearTimeout(loadRestartTimer);
+        loadRestartTimer = -1;
 
-        loadingOverlay.style.display = 'none'; // uncomment to monitor loading of slow nodes
+        //loadingOverlay.style.display = 'none'; // uncomment to monitor loading of slow nodes
     }
 
 
@@ -409,10 +401,8 @@ function finishLoadingNodes(_nodes, loadedNodes, updateNodes, duplicates = false
 {
     _nodes
         .filter(_n => _n.active)
-        .map(_n => graph.nodeFromId(duplicates ? _n.newId : _n.id))
-        .forEach(n => n.makeActive());
-
-    //graphView.updateNodeTransforms(loadedNodes);
+        .map   (_n => graph.nodeFromId(duplicates ? _n.newId : _n.id))
+            .forEach(n => n.makeActive());
 
     updateTerminalsAfterNodes(loadedNodes, updateNodes);
 }
@@ -433,7 +423,7 @@ function resolveNodes(_nodes, first, last, nodes, pasting)
 
 
 
-function resolveConnections(_connections, first, last)
+function resolveConnections(nodes, _connections, first, last)
 {
     return new Promise(resolve => 
         requestAnimationFrame(() => 

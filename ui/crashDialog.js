@@ -20,7 +20,8 @@ function initCrashDialog(event, error)
             .replaceAll(/\(?data[a-zA-Z0-9/,;:=]*\)?/g, '')
             .replaceAll('at \n', '')
             .replaceAll('at ', '<br/>&nbsp;&nbsp;&nbsp;&nbsp;at ')
-            .replaceAll(/\(:[^\)]*\)/g, '');
+            .replaceAll(/\(:[^\)]*\)/g, '')
+            .replaceAll(/at :[0-9]+:[0-9]+/g, '');
 
         crashDetails.innerHTML += stack + '<br/>';
     }
@@ -53,6 +54,14 @@ function initCrashDialog(event, error)
 function showCrashDialog()
 {
     crashed = true;
+
+
+    if (loadRestartTimer > -1) 
+    {
+        clearTimeout(loadRestartTimer);
+        loadRestartTimer = -1;
+    }
+
 
     crashBack  .style.display = 'block';
     crashDialog.style.display = 'block';

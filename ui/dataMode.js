@@ -41,7 +41,7 @@ function loadNodesAndConnsData(_nodes, _conns)
     _dataModeNodes = _nodes;
     _dataModeConns = _conns;
 
-    _dataModeNodes.sort((n1, n2) => 
+    _dataModeNodes.soui_1rt((n1, n2) => 
     {
         if (n1.y != n2.y ) return parseFloat(n1.value.y) - parseFloat(n2.value.y);
         if (n1.x != n2.x ) return parseFloat(n1.value.x) - parseFloat(n2.value.x);

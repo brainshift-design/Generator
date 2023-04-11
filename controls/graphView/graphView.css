@@ -5,13 +5,14 @@
 }
 
 
-.graphView
+#_graphView
 {
-    z-index:  0;
     display:  block;
     overflow: hidden;
     height:   calc(100% - 40px);
     position: relative;
+    z-index:  2;
+    box-shadow: 0 1px 0 0 inset #383838;
 }
 
 

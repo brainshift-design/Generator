@@ -17,6 +17,7 @@
     height:     100%;
     display:    none;
     background: var(--figma-color-bg);
+    z-index:    4;
 }
 
 

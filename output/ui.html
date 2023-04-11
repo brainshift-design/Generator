@@ -37,6 +37,7 @@
     height:     100%;
     display:    none;
     background: var(--figma-color-bg);
+    z-index:    4;
 }
 
 
@@ -1169,8 +1170,8 @@
 #btnCrashRestart
 {
     position: absolute;
-    right:    17px;
-    bottom:   18px;
+    right:    20px;
+    bottom:   20px;
 }
 
 
@@ -1196,6 +1197,7 @@
     width:    100%;
     height:   100%;
     display:  block;
+    z-index:  10;
 }
 
 
@@ -1390,9 +1392,9 @@ html { font-family: 'Inter', sans-serif; }
 
 body
 {
-    margin:           0;
-    user-select:      none;
-    font-family:      Inter;
+    margin:                0;
+    user-select:           none;
+    font-family:           Inter;
 
     -webkit-touch-callout: none; 
       -webkit-user-select: none; 
@@ -1401,7 +1403,7 @@ body
           -ms-user-select: none; 
               user-select: none; 
 
-    overflow:         hidden;
+    overflow:              hidden;
 }
 
 
@@ -1654,7 +1656,7 @@ div
 {
     display:          flex;
     height:           36px;
-    background-color: #202020;
+    background-color: #1e1e1e;
     padding:          0;
     cursor:           default;
     position:         relative;
@@ -1671,7 +1673,7 @@ div
     min-width:    100px;
     max-width:    272px;
     height:       calc(100% - 11px);
-    outline:      1px solid #fff1;
+    outline:      1px solid var(--figma-color-bg-tertiary);
     padding-top:  11px;
     padding-right: 10px
 }
@@ -2038,13 +2040,14 @@ a
 }
 
 
-.graphView
+#_graphView
 {
-    z-index:  0;
     display:  block;
     overflow: hidden;
     height:   calc(100% - 40px);
     position: relative;
+    z-index:  2;
+    box-shadow: 0 1px 0 0 inset #383838;
 }
 
 
@@ -2290,7 +2293,7 @@ a
     display:          flex;
     height:           40px;
     background-color: #2c2c2c;
-    border-bottom:    1px solid var(--figma-color-bg-tertiary);
+    /* border-bottom:    1px solid var(--figma-color-bg-tertiary); */
     padding:          0;
     cursor:           default;
     position:         relative;
@@ -3674,8 +3677,8 @@ a
 </style>
 
 
-<div id='pagesBar'></div>
 <div id='menuBar'></div>
+<div id='pagesBar'></div>
 
 
 <div id='_graphView' class='graphView'></div>
@@ -39621,7 +39624,8 @@ function initCrashDialog(event, error)
             .replaceAll(/\(?data[a-zA-Z0-9/,;:=]*\)?/g, '')
             .replaceAll('at \n', '')
             .replaceAll('at ', '<br/>&nbsp;&nbsp;&nbsp;&nbsp;at ')
-            .replaceAll(/\(:[^\)]*\)/g, '');
+            .replaceAll(/\(:[^\)]*\)/g, '')
+            .replaceAll(/at :[0-9]+:[0-9]+/g, '');
 
         crashDetails.innerHTML += stack + '<br/>';
     }
@@ -39654,6 +39658,14 @@ function initCrashDialog(event, error)
 function showCrashDialog()
 {
     crashed = true;
+
+
+    if (loadRestartTimer > -1) 
+    {
+        clearTimeout(loadRestartTimer);
+        loadRestartTimer = -1;
+    }
+
 
     crashBack  .style.display = 'block';
     crashDialog.style.display = 'block';
@@ -44466,13 +44478,13 @@ function initGeneratorMenus()
                                             }
                                         }),
                                         new MenuItem('',                             {separator: true}),
+                                        new MenuItem('Log',                          {childMenu: menuDebugLog}),
+                                        new MenuItem('',                             {separator: true}),   
                                         new MenuItem('Delete connections to...',     {callback:      () => showDeleteConnectionsDialog()}),                        
                                         new MenuItem('Delete all saved connections', {callback:      () => { hideAllMenus(); uiRemoveAllSavedConnections(); }}),
                                         new MenuItem('Delete all style links',       {callback:      () => { hideAllMenus(); uiRemovePluginDataFromAllLocalStyles(); }}),
                                         new MenuItem('Clear all local data',         {callback:      () => { hideAllMenus(); uiQueueMessageToFigma({cmd: 'figClearAllLocalData'}); }}),
                                         new MenuItem('',                             {separator: true}),
-                                        new MenuItem('Log',                          {childMenu: menuDebugLog}),
-                                        new MenuItem('',                             {separator: true}),   
         menuItemDataMode              = new MenuItem('Restart in debug mode',        {checkCallback: () => settings.dataMode, callback: () => uiRestartGenerator(true)})]);
                      
 
@@ -66971,7 +66983,8 @@ function initCrashDialog(event, error)
             .replaceAll(/\(?data[a-zA-Z0-9/,;:=]*\)?/g, '')
             .replaceAll('at \n', '')
             .replaceAll('at ', '<br/>&nbsp;&nbsp;&nbsp;&nbsp;at ')
-            .replaceAll(/\(:[^\)]*\)/g, '');
+            .replaceAll(/\(:[^\)]*\)/g, '')
+            .replaceAll(/at :[0-9]+:[0-9]+/g, '');
 
         crashDetails.innerHTML += stack + '<br/>';
     }
@@ -67004,6 +67017,14 @@ function initCrashDialog(event, error)
 function showCrashDialog()
 {
     crashed = true;
+
+
+    if (loadRestartTimer > -1) 
+    {
+        clearTimeout(loadRestartTimer);
+        loadRestartTimer = -1;
+    }
+
 
     crashBack  .style.display = 'block';
     crashDialog.style.display = 'block';
@@ -67166,7 +67187,7 @@ function loadNodesAndConnsData(_nodes, _conns)
     _dataModeNodes = _nodes;
     _dataModeConns = _conns;
 
-    _dataModeNodes.sort((n1, n2) => 
+    _dataModeNodes.soui_1rt((n1, n2) => 
     {
         if (n1.y != n2.y ) return parseFloat(n1.value.y) - parseFloat(n2.value.y);
         if (n1.x != n2.x ) return parseFloat(n1.value.x) - parseFloat(n2.value.x);
@@ -68441,7 +68462,7 @@ function setCurrentKeyboardTab(tab)
 }
 
 
-var loadRestartTimeout = null;
+var loadRestartTimer = -1;
 
 
 
@@ -68449,6 +68470,21 @@ function initLoadingOverlay()
 {
     btnLoadingRestart .style.display = 'none';
     btnLoadingRestart.addEventListener('click', () => uiRestartGenerator(true));
+}
+
+
+
+function restartLoadingTimer()
+{
+    if (loadRestartTimer > -1) 
+        clearTimeout(loadRestartTimer);
+
+    loadRestartTimer = setTimeout(() => 
+    {
+        btnLoadingRestart.style.display = 'inline-block';
+        loadRestartTimer = -1;
+    }, 
+    5000);
 }
 
 
@@ -68891,16 +68927,16 @@ function updatePage(page)
            index ==  curPageIndex
         || index == overPageIndex;
 
-    pagesBar.style.background        = document.hasFocus() ? '#202020' : '#3b3b3b';
+    pagesBar.style.background        = document.hasFocus() ? '#202020' : '#383838';
 
     
     page.btnIcon .innerHTML          = iconPage;
     page.btnName .innerHTML          = page.name;
     page.btnClose.innerHTML          = iconPageClose;
     
-    page.button  .style.background   = isCurrent ? '#2c2c2c' : (document.hasFocus() ? '#202020' : '#3b3b3b');
+    page.button  .style.background   = isCurrent ? '#2c2c2c' : (document.hasFocus() ? '#202020' : '#383838');
     
-    page.button  .style.outline      = '1px solid ' + (document.hasFocus() ? (isCurrent ? '#ffffff20' : '#ffffff19') : (isCurrent ? '#ffffff28' : '#ffffff19'));
+    //page.button  .style.outline      = '1px solid ' + (document.hasFocus() ? (isCurrent ? '#ffffff20' : '#ffffff19') : (isCurrent ? '#ffffff28' : '#ffffff19'));
 
     page.btnIcon .style.opacity      = isCurrent ? 1 : 0.35;
     page.btnName .style.color        = isCurrent ? '#fffffff0' : '#fff6';
@@ -69646,11 +69682,7 @@ function loadNodesAndConnsAsync(_nodes, _conns, setProgress)
 
     for (let i = 0; i < _nodes.length; i += chunkSize)
     {
-        if (loadRestartTimeout) 
-            clearTimeout(loadRestartTimeout);
-        
-        loadRestartTimeout = setTimeout(() => btnLoadingRestart.style.display = 'inline-block', 5000);
-
+        restartLoadingTimer();
         
         promise = promise.then(nodes => 
         {
@@ -69696,13 +69728,9 @@ function loadConnectionsAsync(_nodes, _conns, loadedNodes, setProgress)
 
             return 0;
         });
+        
 
-
-
-        if (loadRestartTimeout) 
-            clearTimeout(loadRestartTimeout);
-
-        loadRestartTimeout = setTimeout(() => btnLoadingRestart.style.display = 'inline-block', 5000);
+        restartLoadingTimer();
 
 
         const chunkSize = 10; // connections
@@ -69740,10 +69768,10 @@ function finishLoading(_nodes)
 {
     if (isEmpty(_nodes))
     {
-        clearTimeout(loadRestartTimeout);
-        loadRestartTimeout = null;
+        clearTimeout(loadRestartTimer);
+        loadRestartTimer = -1;
 
-        loadingOverlay.style.display = 'none'; // uncomment to monitor loading of slow nodes
+        //loadingOverlay.style.display = 'none'; // uncomment to monitor loading of slow nodes
     }
 
 
@@ -69765,10 +69793,8 @@ function finishLoadingNodes(_nodes, loadedNodes, updateNodes, duplicates = false
 {
     _nodes
         .filter(_n => _n.active)
-        .map(_n => graph.nodeFromId(duplicates ? _n.newId : _n.id))
-        .forEach(n => n.makeActive());
-
-    //graphView.updateNodeTransforms(loadedNodes);
+        .map   (_n => graph.nodeFromId(duplicates ? _n.newId : _n.id))
+            .forEach(n => n.makeActive());
 
     updateTerminalsAfterNodes(loadedNodes, updateNodes);
 }
@@ -69789,7 +69815,7 @@ function resolveNodes(_nodes, first, last, nodes, pasting)
 
 
 
-function resolveConnections(_connections, first, last)
+function resolveConnections(nodes, _connections, first, last)
 {
     return new Promise(resolve => 
         requestAnimationFrame(() => 
@@ -70862,10 +70888,10 @@ function uiUpdateValuesAndObjects(requestId, actionId, updateNodeId, updateParam
     lastRequestedId = -1;
 
         
-    if (loadRestartTimeout)
+    if (loadRestartTimer > -1)
     {
-        clearTimeout(loadRestartTimeout);
-        loadRestartTimeout = null;
+        clearTimeout(loadRestartTimer);
+        loadRestartTimer = -1;
     }
 
 

@@ -619,10 +619,10 @@ function uiUpdateValuesAndObjects(requestId, actionId, updateNodeId, updateParam
     lastRequestedId = -1;
 
         
-    if (loadRestartTimeout)
+    if (loadRestartTimer > -1)
     {
-        clearTimeout(loadRestartTimeout);
-        loadRestartTimeout = null;
+        clearTimeout(loadRestartTimer);
+        loadRestartTimer = -1;
     }
 
 
