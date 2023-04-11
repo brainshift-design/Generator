@@ -56,50 +56,59 @@ GraphView.prototype.updateSelectBox = function(shiftKey, ctrlKey)
         this.measureData.clientRect.width  - 2,
         this.measureData.clientRect.height - 5);
 
-    let selection = validateRect(this.selectionRect);
+
+    let selection = clipRect(
+        validateRect(this.selectionRect), 
+        wndRect);
     
-    selection = clipRect(selection, wndRect);
-    
 
-    selectBox.style.left   = selection.x;
-    selectBox.style.top    = selection.y;
-    selectBox.style.width  = selection.width;
-    selectBox.style.height = selection.height;
-
-    selectBox.style.zIndex = MAX_INT32-3;
-
-
-    const selected = [];
-
-    for (const node of graph.nodes)
+    if (!selection.isNaN)
     {
-        if (rectsIntersect(
-                node.measureData.divBounds,
-                selection))
-            selected.push(node);
+        selectBox.style.left    = selection.x;
+        selectBox.style.top     = selection.y;
+        selectBox.style.width   = selection.width;
+        selectBox.style.height  = selection.height;
+
+        selectBox.style.display = 'block';
+        selectBox.style.zIndex  = MAX_INT32-3;
+
+
+        const selected = [];
+
+        for (const node of graph.nodes)
+        {
+            if (rectsIntersect(
+                    node.measureData.divBounds,
+                    selection))
+                selected.push(node);
+        }
+
+
+        if (shiftKey)
+            this.selectedNodes = this.lastSelectedNodes
+                .filter(n => !selected.includes(n))
+                .concat(selected.filter(n => !this.lastSelectedNodes.includes(n)));
+        else
+            this.selectedNodes = selected;
+        
+            
+        selectBox.style.zIndex = MAX_INT32-3;
+            
+            
+        const nodes = [
+            ...selected,                    
+            ...this._prevSelectedNodes,
+            ...this.lastSelectedNodes];
+
+        nodes.forEach(n => n.updateBorder());
+        updateComments(nodes.map(n => n.id));
+
+        this._prevSelectedNodes = selected;
     }
-
-
-    if (shiftKey)
-        this.selectedNodes = this.lastSelectedNodes
-            .filter(n => !selected.includes(n))
-            .concat(selected.filter(n => !this.lastSelectedNodes.includes(n)));
     else
-        this.selectedNodes = selected;
-    
-        
-    selectBox.style.zIndex = MAX_INT32-3;
-        
-        
-    const nodes = [
-        ...selected,                    
-        ...this._prevSelectedNodes,
-        ...this.lastSelectedNodes];
-
-    nodes.forEach(n => n.updateBorder());
-    updateComments(nodes.map(n => n.id));
-
-    this._prevSelectedNodes = selected;
+    {
+        selectBox.style.display = 'none';
+    }
 };
 
 
