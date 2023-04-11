@@ -371,7 +371,7 @@ class Wire
     updateStyle()
     {
         const conn  = this.connection;
-        let   color = this.getColor();
+        let   color = rgb_a(this.getColor(), 1);
     
 
         const l = rgb2hclok(color)[2];

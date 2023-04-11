@@ -17281,6 +17281,8 @@ function updateMenuItemShowOperationResults()
 
 function enableFeatures(subscription, beta)
 {
+    updateElementDisplay(menuItemShowPages           .div, subscription);
+    updateElementDisplay(menuPrefSep1                .div, subscription);
     updateElementDisplay(menuItemEnableBetaFeatures  .div, subscription);
 
     updateElementDisplay(btnFlow                     .div, subscription);
@@ -39501,6 +39503,8 @@ function updateMenuItemShowOperationResults()
 
 function enableFeatures(subscription, beta)
 {
+    updateElementDisplay(menuItemShowPages           .div, subscription);
+    updateElementDisplay(menuPrefSep1                .div, subscription);
     updateElementDisplay(menuItemEnableBetaFeatures  .div, subscription);
 
     updateElementDisplay(btnFlow                     .div, subscription);
@@ -44305,6 +44309,7 @@ var menuItemShowTooltipColorBlindness;
 var menuItemEnableZoomedOutParams;
 var menuItemMinZoomForParams;
 var menuItemShowPages;
+var menuPrefSep1;
 var menuItemShowAllColorSpaces;
 var menuItemShowBoolValues;
 var menuItemShowOperationResults;
@@ -44417,7 +44422,7 @@ function initGeneratorMenus()
     menuMainPreferences = new Menu('Preferences', false);
     menuMainPreferences.addItems([
         menuItemShowPages             = new MenuItem('Show pages',                    {checkCallback: () => settings.showAllColorSpaces,      callback: () => { updateSettingAndMenu('showPages',            true, !settings.showPages);             updateMenuItemShowPages();            }}),
-                                        new MenuItem('',                              {separator: true}),    
+        menuPrefSep1                  = new MenuItem('',                              {separator: true}),    
         menuItemShowAllColorSpaces    = new MenuItem('Show all color spaces',         {checkCallback: () => settings.showAllColorSpaces,     callback: () => { updateSettingAndMenu('showAllColorSpaces',   true, !settings.showAllColorSpaces);    updateMenuItemShowAllColorSpaces();   }}),
         menuItemShowOperationResults  = new MenuItem('Show operation results',        {checkCallback: () => settings.showOperationResults,   callback: () => { updateSettingAndMenu('showOperationResults', true, !settings.showOperationResults);  updateMenuItemShowOperationResults(); }}),
         menuItemShowBoolValues        = new MenuItem('Show boolean values as   ✓ ✗', {checkCallback: () => settings.showBoolValues,        callback: () => { updateSettingAndMenu('showBoolValues',       true, !settings.showBoolValues);        updateMenuItemShowBoolValues();       }}),
@@ -51968,7 +51973,7 @@ class Wire
     updateStyle()
     {
         const conn  = this.connection;
-        let   color = this.getColor();
+        let   color = rgb_a(this.getColor(), 1);
     
 
         const l = rgb2hclok(color)[2];
@@ -68998,6 +69003,7 @@ function removeLicense()
     productKeyInputBack.innerHTML = '•'.repeat(13);
     productKeyInput.value         = '';
 
+    updateLicenseInfo();
     enableFeatures(false, settings.enableBetaFeatures);
 }
 

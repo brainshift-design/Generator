@@ -37,6 +37,7 @@ function removeLicense()
     productKeyInputBack.innerHTML = '•'.repeat(13);
     productKeyInput.value         = '';
 
+    updateLicenseInfo();
     enableFeatures(false, settings.enableBetaFeatures);
 }
 

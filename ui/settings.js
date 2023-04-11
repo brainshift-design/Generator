@@ -235,6 +235,8 @@ function updateMenuItemShowOperationResults()
 
 function enableFeatures(subscription, beta)
 {
+    updateElementDisplay(menuItemShowPages           .div, subscription);
+    updateElementDisplay(menuPrefSep1                .div, subscription);
     updateElementDisplay(menuItemEnableBetaFeatures  .div, subscription);
 
     updateElementDisplay(btnFlow                     .div, subscription);
