@@ -55722,9 +55722,9 @@ function OpIfElse_onConnectInput(node, inputIndex)
     // if there is an outgoing connection from the node of a different type than
     // the incoming connection, delete the outgoing connection
 
-    // if (    node.outputs[0].connected
-    //     && !node.outputs[0].connectedInputs[0].canConnectFrom(firstOut))
-    //     node.outputs[0].connectedInputs.forEach(i => uiDisconnect(i));
+    if (    node.outputs[0].connected
+        && !node.outputs[0].connectedInputs[0].canConnectFrom(firstOut))
+        node.outputs[0].connectedInputs.forEach(i => uiDisconnect(i));
 }
 
 
