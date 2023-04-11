@@ -238,6 +238,7 @@ function enableFeatures(subscription, beta)
 {
     updateElementDisplay(menuItemShowPages           .div, subscription);
     updateElementDisplay(menuPrefSep1                .div, subscription);
+    updateElementDisplay(menuPrefSep2                .div, subscription);
     updateElementDisplay(menuItemEnableBetaFeatures  .div, subscription);
 
     updateElementDisplay(btnFlow                     .div, subscription);
@@ -273,7 +274,6 @@ function enableFeatures(subscription, beta)
     
     //updateMenuItemDisplay(menuItemNodeCopyAsJsCode    .div, subscription && beta);
     updateElementDisplay(menuItemNodeCopyAsJsFunction.div, subscription && beta);
-
 
     updateElementDisplay(shortcutCopyAsJavascript        , subscription && beta);
 

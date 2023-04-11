@@ -1027,7 +1027,7 @@
 {
     display:          none;
 
-    z-index:          1;
+    z-index:          10;
     
     position:         fixed;
     left:             0;
@@ -1048,7 +1048,7 @@
 
     font-family:   Inter;
 
-    z-index:       2;
+    z-index:       20;
     position:      absolute;
     top:           50%;
     left:          50%;
@@ -17270,6 +17270,7 @@ function enableFeatures(subscription, beta)
 {
     updateElementDisplay(menuItemShowPages           .div, subscription);
     updateElementDisplay(menuPrefSep1                .div, subscription);
+    updateElementDisplay(menuPrefSep2                .div, subscription);
     updateElementDisplay(menuItemEnableBetaFeatures  .div, subscription);
 
     updateElementDisplay(btnFlow                     .div, subscription);
@@ -17305,7 +17306,6 @@ function enableFeatures(subscription, beta)
     
     //updateMenuItemDisplay(menuItemNodeCopyAsJsCode    .div, subscription && beta);
     updateElementDisplay(menuItemNodeCopyAsJsFunction.div, subscription && beta);
-
 
     updateElementDisplay(shortcutCopyAsJavascript        , subscription && beta);
 
@@ -39480,6 +39480,7 @@ function enableFeatures(subscription, beta)
 {
     updateElementDisplay(menuItemShowPages           .div, subscription);
     updateElementDisplay(menuPrefSep1                .div, subscription);
+    updateElementDisplay(menuPrefSep2                .div, subscription);
     updateElementDisplay(menuItemEnableBetaFeatures  .div, subscription);
 
     updateElementDisplay(btnFlow                     .div, subscription);
@@ -39515,7 +39516,6 @@ function enableFeatures(subscription, beta)
     
     //updateMenuItemDisplay(menuItemNodeCopyAsJsCode    .div, subscription && beta);
     updateElementDisplay(menuItemNodeCopyAsJsFunction.div, subscription && beta);
-
 
     updateElementDisplay(shortcutCopyAsJavascript        , subscription && beta);
 
@@ -44291,6 +44291,7 @@ var menuItemShowOperationResults;
 var menuItemShowClearUndoWarning;
 var menuItemShowTooltips;
 var menuItemShowDebugMenu;
+var menuPrefSep2;
 
 var menuItemShowNodeId;
 
@@ -44404,8 +44405,8 @@ function initGeneratorMenus()
                                         new MenuItem('',                              {separator: true}),    
         menuItemShowTooltips          = new MenuItem('Show tooltips',                 {childMenu: menuShowTooltips}),
         menuItemShowClearUndoWarning  = new MenuItem('Show clear undo warning',       {checkCallback: () => settings.showClearUndoWarning,  callback: () => { updateSettingAndMenu('showClearUndoWarning',  true, !settings.showClearUndoWarning);                                        }}),
-                                        new MenuItem('',                              {separator: true}),    
         menuItemShowDebugMenu         = new MenuItem('Show debug menu',               {checkCallback: () => settings.showDebugMenu,         callback: () => { updateSettingAndMenu('showDebugMenu',         true, !settings.showDebugMenu);         updateMenuItemShowDebugMenu();        }}),
+        menuPrefSep2                  = new MenuItem('',                              {separator: true}),    
         menuItemEnableBetaFeatures    = new MenuItem('Enable beta features',          {checkCallback: () => settings.enableBetaFeatures,    callback: () => { updateSettingAndMenu('enableBetaFeatures',    true, !settings.enableBetaFeatures);    enableFeatures(true, settings.enableBetaFeatures); }}),
                                         new MenuItem('',                              {separator: true}),    
                                         new MenuItem('Keyboard layout...',            {callback: () => showKeyboardPanel()}),
@@ -51115,6 +51116,10 @@ extends EventTarget
         if (    this.outputMustBeCached 
             && !output.node.isCached())
             return false;
+
+        if (output.node.isOrFollows(this.node))
+            return false;
+
 
         return true;
     }

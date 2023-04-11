@@ -76,6 +76,7 @@ var menuItemShowOperationResults;
 var menuItemShowClearUndoWarning;
 var menuItemShowTooltips;
 var menuItemShowDebugMenu;
+var menuPrefSep2;
 
 var menuItemShowNodeId;
 
@@ -189,8 +190,8 @@ function initGeneratorMenus()
                                         new MenuItem('',                              {separator: true}),    
         menuItemShowTooltips          = new MenuItem('Show tooltips',                 {childMenu: menuShowTooltips}),
         menuItemShowClearUndoWarning  = new MenuItem('Show clear undo warning',       {checkCallback: () => settings.showClearUndoWarning,  callback: () => { updateSettingAndMenu('showClearUndoWarning',  true, !settings.showClearUndoWarning);                                        }}),
-                                        new MenuItem('',                              {separator: true}),    
         menuItemShowDebugMenu         = new MenuItem('Show debug menu',               {checkCallback: () => settings.showDebugMenu,         callback: () => { updateSettingAndMenu('showDebugMenu',         true, !settings.showDebugMenu);         updateMenuItemShowDebugMenu();        }}),
+        menuPrefSep2                  = new MenuItem('',                              {separator: true}),    
         menuItemEnableBetaFeatures    = new MenuItem('Enable beta features',          {checkCallback: () => settings.enableBetaFeatures,    callback: () => { updateSettingAndMenu('enableBetaFeatures',    true, !settings.enableBetaFeatures);    enableFeatures(true, settings.enableBetaFeatures); }}),
                                         new MenuItem('',                              {separator: true}),    
                                         new MenuItem('Keyboard layout...',            {callback: () => showKeyboardPanel()}),

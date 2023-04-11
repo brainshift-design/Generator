@@ -326,6 +326,10 @@ extends EventTarget
             && !output.node.isCached())
             return false;
 
+        if (output.node.isOrFollows(this.node))
+            return false;
+
+
         return true;
     }
 
