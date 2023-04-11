@@ -53644,15 +53644,23 @@ Operator.prototype.createHeader = function()
                 && !graphView.tempConn.output.node.isOrFollows(this)
                 &&  graphView.overInput)
             {
+                const overInput = graphView.overInput;
+
                 graphView          .endConnection(e.pointerId, getCtrlKey(e));
                 graphView.overInput.endConnection();
+
+                graphView.overInput = overInput; // to be able to use the input again immediately
             }
             else if ( graphView.tempConn.input
                   && !this.isOrFollows(graphView.tempConn.input.node)
                   &&  graphView.overOutput)
             {
+                const overOutput = graphView.overOutput;
+
                 graphView           .endConnection(e.pointerId, getCtrlKey(e));
                 graphView.overOutput.endConnection();
+
+                graphView.overOutput = overOutput; // to be able to use the output again immediately
             }
         }
 
