@@ -143,13 +143,13 @@
     margin:         0;
     display:        inline;
     width:          auto;
-    height:         14;
+    height:         15px;
     text-align:     center;
     white-space:    nowrap;
     vertical-align: top;
     left:           50%;
     text-rendering: geometricPrecision;
- /* box-shadow:     0 0 0 1px green inset; */
+ /* box-shadow:     0 0 0 1px orange inset; */
 }
 
 

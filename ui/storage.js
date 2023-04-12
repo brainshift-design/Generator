@@ -198,8 +198,7 @@ function uiReturnFigLoadNodesAndConns(msg)
 
     //uiLoadGraphView(_graphView);
 
-    console.log('msg.pageKeys =', msg.pageKeys);
-
+    
     if (!isEmpty(msg.pageKeys))
     {
         for (let i = 0; i < msg.pageKeys.length; i++)

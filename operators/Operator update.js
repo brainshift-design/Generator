@@ -217,7 +217,8 @@ Operator.prototype.updateHeaderLabel = function()
     
     this.label.style.top = 
           (  Math.floor(this.measureData.labelWrapperOffset.height/2 - this.measureData.labelOffset.height/2)
-           + Math.min(Math.max(1, 1/graph.currentPage.zoom), 2))
+           + Math.min(Math.max(1, 1/graph.currentPage.zoom), 2)
+           - (settings.showNodeId ? 1 : 0))
         + 'px';
 
 
@@ -237,7 +238,7 @@ Operator.prototype.updateHeaderLabel = function()
 
     this.label.style.color      = rgba2style(colors.text);
     this.label.style.fontSize   = this.active ? fontSize : 11;
-    this.label.style.height     = this.active ? fontSize * 14 / 11 : 14;
+    this.label.style.height     = this.active ? fontSize * 15 / 11 : 15;
 
     this.label.style.fontWeight = graph.currentPage.zoom < 1.2 ? '600' : 'normal';
 }
@@ -247,8 +248,15 @@ Operator.prototype.updateHeaderLabel = function()
 Operator.prototype.updateHeaderLabelText = function()
 {
     this.labelText.innerHTML = 
-          (settings.showNodeId ? this.id.replaceAll('/', ' / ') : this.name)
+          (settings.showNodeId ? this.id/*.replaceAll('/', ' / ')*/ : this.name)
         + (this.active && this.showActiveArrow ? '  ‣' : '');
+
+    this.labelText.style.fontFamily = 
+        settings.showNodeId 
+        ? 'Roboto Mono' 
+        : 'Inter';
+
+    // this.labelText.style.letterSpacing = settings.showNodeId ? '-1px' : 'default';
 }
 
 
