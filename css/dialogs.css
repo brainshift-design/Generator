@@ -948,6 +948,8 @@
     /* font-weight: bold; */
     height:        165px;
     margin-bottom: 30px;
+    position:      relative;
+    left:          1px;
     overflow-y:    scroll;
     /* box-shadow:    0 0 0 1px red inset; */
 }

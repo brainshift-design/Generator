@@ -3,9 +3,6 @@ class GraphPage
     id;
     name;
 
-    zoom = 1;
-    pan  = {x:0, y:0};
-
 
     button;
 
@@ -24,7 +21,9 @@ class GraphPage
 
         this._pan = pan;
         
-        uiSavePage(this);//uiSaveGraphView();
+        uiSavePages(
+            [this.id],
+            [this.toJson()]);//uiSaveGraphView();
 
         graphView.updatePanAndZoom(true);
     }
@@ -62,8 +61,10 @@ class GraphPage
             this._pan  = pan;
     
             
-            uiSavePage(this);//uiSaveGraphView();
-    
+            uiSavePages(
+                [this.id],
+                [this.toJson()]);//uiSaveGraphView();
+       
     
             graphView.panZoomTimer = setTimeout(() => 
             {

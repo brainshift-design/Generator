@@ -1123,6 +1123,8 @@
     /* font-weight: bold; */
     height:        165px;
     margin-bottom: 30px;
+    position:      relative;
+    left:          1px;
     overflow-y:    scroll;
     /* box-shadow:    0 0 0 1px red inset; */
 }
@@ -47401,7 +47403,7 @@ GraphView.prototype.createEvents = function()
             const zoom = Math.max(0.0001, Math.pow(2, dZoom - dWheelY / (touchpad ? 4 : 10)));
             const pan  = subv(graph.currentPage.pan, mulvs(subv(pos, graph.currentPage.pan), zoom / graph.currentPage.zoom - 1));
 
-            this.setPanAndZoom(pan, zoom);
+            graph.currentPage.setPanAndZoom(pan, zoom);
 
             this.updateWheelTimer();
         }
@@ -47453,7 +47455,7 @@ GraphView.prototype.createEvents = function()
         const zoom = this.zoomStart * e.scale;
         const pan  = subv(graph.currentPage.pan, mulvs(subv(p, graph.currentPage.pan), zoom / graph.currentPage.zoom - 1));
 
-        this.setPanAndZoom(pan, zoom);
+        graph.currentPage.setPanAndZoom(pan, zoom);
     });
 
 
@@ -47701,7 +47703,7 @@ GraphView.prototype.zoomToFit = function()
     if (!isEmpty(graph.nodes))
         this.zoomToNodes(graph.nodes);
     else
-        this.setPanAndZoom(point(0, 0), 1);
+        graph.currentPage.setPanAndZoom(point(0, 0), 1);
 };
 
 
@@ -63652,9 +63654,6 @@ class GraphPage
     id;
     name;
 
-    zoom = 1;
-    pan  = {x:0, y:0};
-
 
     button;
 
@@ -63673,7 +63672,9 @@ class GraphPage
 
         this._pan = pan;
         
-        uiSavePage(this);//uiSaveGraphView();
+        uiSavePages(
+            [this.id],
+            [this.toJson()]);//uiSaveGraphView();
 
         graphView.updatePanAndZoom(true);
     }
@@ -63700,6 +63701,7 @@ class GraphPage
 
     setPanAndZoom(pan, zoom)
     {
+        console.log('pan zoom');
         if (  (   pan  != this._pan
                || zoom != this._zoom)
             && zoom >= 0.02
@@ -63711,8 +63713,10 @@ class GraphPage
             this._pan  = pan;
     
             
-            uiSavePage(this);//uiSaveGraphView();
-    
+            uiSavePages(
+                [this.id],
+                [this.toJson()]);//uiSaveGraphView();
+       
     
             graphView.panZoomTimer = setTimeout(() => 
             {
@@ -71395,7 +71399,10 @@ function uiUpdateValuesAndObjects(requestId, actionId, updateNodeId, updateParam
         {
             uiSaveNodes(graph.nodes.map(n => n.id));
             
-            uiSavePages();
+            uiSavePages(
+                graph.pages,
+                graph.pages.map(p => p.toJson()));
+
             graph.updatePages();
         }
 
@@ -71420,11 +71427,12 @@ function uiToggleDisableNodes(nodes)
 
 
 
-function uiSavePages()
+function uiSavePages(pageIds, pageJson)
 {
     uiQueueMessageToFigma({
-        cmd:    'figSavePages',
-        pageIds: graph.pages.map(p => p.id).join(',') });
+        cmd:     'figSavePages',
+        pageIds:  pageIds,
+        pageJson: pageJson });
 }
 
 

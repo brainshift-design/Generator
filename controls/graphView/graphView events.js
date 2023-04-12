@@ -235,7 +235,7 @@ GraphView.prototype.createEvents = function()
             const zoom = Math.max(0.0001, Math.pow(2, dZoom - dWheelY / (touchpad ? 4 : 10)));
             const pan  = subv(graph.currentPage.pan, mulvs(subv(pos, graph.currentPage.pan), zoom / graph.currentPage.zoom - 1));
 
-            this.setPanAndZoom(pan, zoom);
+            graph.currentPage.setPanAndZoom(pan, zoom);
 
             this.updateWheelTimer();
         }
@@ -287,7 +287,7 @@ GraphView.prototype.createEvents = function()
         const zoom = this.zoomStart * e.scale;
         const pan  = subv(graph.currentPage.pan, mulvs(subv(p, graph.currentPage.pan), zoom / graph.currentPage.zoom - 1));
 
-        this.setPanAndZoom(pan, zoom);
+        graph.currentPage.setPanAndZoom(pan, zoom);
     });
 
 

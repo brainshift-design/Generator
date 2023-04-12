@@ -156,9 +156,14 @@ function figMarkForLoading(nodeKeys, connKeys)
 
 
 
-function figSavePages(pageIds)
+function figSavePages(pageIds, pageJson)
 {
-    figSetPageData('pages', pageIds);
+    for (let i = 0; i < pageIds.length; i++)
+    {
+        figSetPageData(
+            pageNameForStorage(pageIds[i]), 
+            pageJson[i]);
+    }
 }
 
 

@@ -749,7 +749,10 @@ function uiUpdateValuesAndObjects(requestId, actionId, updateNodeId, updateParam
         {
             uiSaveNodes(graph.nodes.map(n => n.id));
             
-            uiSavePages();
+            uiSavePages(
+                graph.pages,
+                graph.pages.map(p => p.toJson()));
+
             graph.updatePages();
         }
 
@@ -774,11 +777,12 @@ function uiToggleDisableNodes(nodes)
 
 
 
-function uiSavePages()
+function uiSavePages(pageIds, pageJson)
 {
     uiQueueMessageToFigma({
-        cmd:    'figSavePages',
-        pageIds: graph.pages.map(p => p.id).join(',') });
+        cmd:     'figSavePages',
+        pageIds:  pageIds,
+        pageJson: pageJson });
 }
 
 

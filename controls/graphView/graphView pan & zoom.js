@@ -142,7 +142,7 @@ GraphView.prototype.zoomToFit = function()
     if (!isEmpty(graph.nodes))
         this.zoomToNodes(graph.nodes);
     else
-        this.setPanAndZoom(point(0, 0), 1);
+        graph.currentPage.setPanAndZoom(point(0, 0), 1);
 };
 
 

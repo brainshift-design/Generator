@@ -880,7 +880,7 @@ figma.ui.onmessage = function (msg) {
             figSetPageData(msg.key, msg.value);
             break;
         case 'figSavePages':
-            figSavePages(msg.pageIds);
+            figSavePages(msg.pageIds, msg.pageJson);
             break;
         case 'figLoadNodesAndConns':
             figLoadNodesAndConns(msg.dataMode);
@@ -1580,8 +1580,10 @@ function figMarkForLoading(nodeKeys, connKeys) {
         .replace(set, not)
         .replace(not, set)));
 }
-function figSavePages(pageIds) {
-    figSetPageData('pages', pageIds);
+function figSavePages(pageIds, pageJson) {
+    for (let i = 0; i < pageIds.length; i++) {
+        figSetPageData(pageNameForStorage(pageIds[i]), pageJson[i]);
+    }
 }
 function figSaveNodes(nodeIds, nodeJson) {
     for (let i = 0; i < nodeIds.length; i++) {
