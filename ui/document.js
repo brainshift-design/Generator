@@ -64,7 +64,7 @@ document.addEventListener('pointerdown', function(e)
             document.sx = e.clientX;
             document.sy = e.clientY;
 
-            document.startPan = graphView.pan;
+            document.startPan = graph.currentPage.pan;
 
 
             uiPostMessageToFigma({
@@ -125,7 +125,7 @@ document.addEventListener('pointermove', function(e)
             document.startRect.width - e.clientX + document.sx,
             document.startRect.height);
 
-        //graphView.pan = point(document.startPan.x - e.clientX, document.startPan.y);
+        //graph.currentPage.pan = point(document.startPan.x - e.clientX, document.startPan.y);
     }
     else if (document.resizingR
           && document.startRectIsValid)
@@ -181,7 +181,7 @@ document.addEventListener('pointerup', function(e)
 
 
 
-window.addEventListener('focus', () => updatePages());
-window.addEventListener('blur',  () => updatePages());
+window.addEventListener('focus', () => graph.updatePages());
+window.addEventListener('blur',  () => graph.updatePages());
 
 document.addEventListener('contextmenu', e => e.preventDefault());

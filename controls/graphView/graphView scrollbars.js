@@ -107,7 +107,7 @@ GraphView.prototype.createScrollbarMethods = function()
             this.scrollbarX.pStart = e.clientX;
             this.scrollbarX.setPointerCapture(e.pointerId);
 
-            this.panStart = this.pan;
+            this.panStart = graph.currentPage.pan;
 
             for (const node of graph.nodes)
                 node.slx = node.div.offsetLeft;
@@ -154,7 +154,7 @@ GraphView.prototype.createScrollbarMethods = function()
             this.scrollbarX.style.left  = l;
             this.scrollbarX.style.width = r-l;
 
-            this.pan = point(
+            graph.currentPage.pan = point(
                 this.panStart.x - (e.clientX - this.scrollbarX.pStart) / this.scrollbarX.wStart * this.div.clientWidth,
                 this.panStart.y);
         }
@@ -179,7 +179,7 @@ GraphView.prototype.createScrollbarMethods = function()
             for (const node of graph.nodes)
                 node.div.sly = node.div.offsetTop;
 
-            this.panStart = this.pan;
+            this.panStart = graph.currentPage.pan;
         }
     });
 
@@ -223,7 +223,7 @@ GraphView.prototype.createScrollbarMethods = function()
             this.scrollbarY.style.top    = t;
             this.scrollbarY.style.height = b-t;
 
-            this.pan = point(
+            graph.currentPage.pan = point(
                 this.panStart.x, 
                 this.panStart.y - (e.clientY - this.scrollbarY.pStart) / this.scrollbarY.hStart * this.div.clientHeight);
         }

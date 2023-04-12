@@ -196,9 +196,9 @@ class Wire
         const _y3 = y2;
     
     
-        const tx  = 600 * graphView.zoom;
-        const ty  = 300 * graphView.zoom;
-        const ecc = 100 * graphView.zoom;
+        const tx  = 600 * graph.currentPage.zoom;
+        const ty  = 300 * graph.currentPage.zoom;
+        const ecc = 100 * graph.currentPage.zoom;
     
         const yf  = (0.3 + Math.min(Math.abs(y2 - y1) / ty, 0.8));
     
@@ -317,8 +317,8 @@ class Wire
     {
         let al = 
             dist >= 0
-            ? arcLength(p0, p1, p2, p3) - dist * graphView.zoom
-            : -dist * graphView.zoom;
+            ? arcLength(p0, p1, p2, p3) - dist * graph.currentPage.zoom
+            : -dist * graph.currentPage.zoom;
     
         if (al <= 0)
         {
@@ -351,8 +351,8 @@ class Wire
         const tx = pt.x;
         const ty = pt.y;
     
-        const tw = size * graphView.zoom;
-        const th = size * graphView.zoom;
+        const tw = size * graph.currentPage.zoom;
+        const th = size * graph.currentPage.zoom;
     
         const points =
                      (tx - tw/2) + ',' + (ty + th/2)
@@ -384,8 +384,8 @@ class Wire
         if (darkMode) bright = 1-bright;
     
         
-        // const innerOpacity = Math.round(bright * (darkMode ? 88 : 66) * Math.min(graphView.zoom, 5)).toString(16).padStart(2, '0');
-        //'+(Math.min(Math.max(1, 1/graphView.zoom), 5))+'
+        // const innerOpacity = Math.round(bright * (darkMode ? 88 : 66) * Math.min(graph.currentPage.zoom, 5)).toString(16).padStart(2, '0');
+        //'+(Math.min(Math.max(1, 1/graph.currentPage.zoom), 5))+'
         
         // this.curve.style.filter = 
         //     this.needsFilter
@@ -411,12 +411,12 @@ class Wire
     
             this.xp1.style.display          = 'inline';
             this.xp1.style.stroke           = rgba2style(rgb_a(darkMode ? [0.067, 0.067, 0.067] : [0.784, 0.784, 0.784], 1 - color[3]));
-            this.xp1.style.strokeDasharray  = 9 * graphView.zoom;
+            this.xp1.style.strokeDasharray  = 9 * graph.currentPage.zoom;
     
             this.xp2.style.display          = 'inline';
             this.xp2.style.stroke           = rgba2style(rgb_a(darkMode ? [0.302, 0.302, 0.302] : [1, 1, 1], 1 - color[3]));//darkMode ? '#4d4d4d' : '#fff';
-            this.xp2.style.strokeDasharray  = 9 * graphView.zoom;
-            this.xp2.style.strokeDashoffset = 9 * graphView.zoom;
+            this.xp2.style.strokeDasharray  = 9 * graph.currentPage.zoom;
+            this.xp2.style.strokeDashoffset = 9 * graph.currentPage.zoom;
         }
         else
         {
@@ -431,7 +431,7 @@ class Wire
     
             let dl = 0.05;
     
-            dl /= Math.min(1 - (1 - graphView.zoom) / 1.75, 1);
+            dl /= Math.min(1 - (1 - graph.currentPage.zoom) / 1.75, 1);
     
             if (hcl[2] > 0.27 - dl && hcl[2] <= 0.27)
                 color = invalid2validRgb(hclok2rgb([hcl[0], hcl[1], 0.27 - dl]));
@@ -480,7 +480,7 @@ class Wire
         this.curve .style.stroke         = wireStyle;
         this.curve2.style.stroke         = rgb2style(rgbDocumentBody);
     
-        this.curve.style.strokeDasharray = unknown ? 1.7 * graphView.zoom : 0;
+        this.curve.style.strokeDasharray = unknown ? 1.7 * graph.currentPage.zoom : 0;
     
         this. inBall.style.fill          = wireStyle;
         this.outBall.style.fill          = wireStyle;
@@ -499,15 +499,15 @@ class Wire
     
     
         let width = 
-            graphView.zoom < 1
-            ? graphView.zoom + (Math.pow(2, graphView.zoom - 1) - graphView.zoom) * 0.333
-            : graphView.zoom;
+            graph.currentPage.zoom < 1
+            ? graph.currentPage.zoom + (Math.pow(2, graph.currentPage.zoom - 1) - graph.currentPage.zoom) * 0.333
+            : graph.currentPage.zoom;
     
         width *= 1.6;
     
     
-        //      if (graphView.zoom < 1/7) width += 1 * (1 - graphView.zoom) * (7 * graphView.zoom);
-        // else if (graphView.zoom < 1  ) width += 1 * (1 - graphView.zoom);
+        //      if (graph.currentPage.zoom < 1/7) width += 1 * (1 - graph.currentPage.zoom) * (7 * graph.currentPage.zoom);
+        // else if (graph.currentPage.zoom < 1  ) width += 1 * (1 - graph.currentPage.zoom);
     
     
         this.curve .setAttribute('stroke-width', width * (listType ? (unknown ? 3.6 : 3.2) : (unknown ? 1.3 : 1)));
@@ -519,8 +519,8 @@ class Wire
         this.curve2.setAttribute('display', listType ? 'inline' : 'none');
     
     
-        this. inBall.style.r = 3 * graphView.zoom;
-        this.outBall.style.r = 3 * graphView.zoom;
+        this. inBall.style.r = 3 * graph.currentPage.zoom;
+        this.outBall.style.r = 3 * graph.currentPage.zoom;
     }
     
     

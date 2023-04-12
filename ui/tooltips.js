@@ -1,6 +1,6 @@
 function updateZoomTooltip()
 {
-    if (graphView.zoom < settings.minZoomForParams)
+    if (graph.currentPage.zoom < settings.minZoomForParams)
     {
         ttMinValueZoom.innerHTML =
               '<p style="margin-top: 1px; width: 100%; text-align: center; position: relative; left: -2px;">Zoom/view options</p>'

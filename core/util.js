@@ -315,3 +315,57 @@ function simpleIntHash(x)
 {
     return (x * 2654435761 % Math.pow(2, 32)) / Math.pow(2, 32);
 }
+
+
+
+function getNewNodeId(nodes, curId, id = curId)
+{
+    if (!nodes.find(n => n.id == id))
+        return id;
+    
+
+    let numLength = getNumLength(id);
+
+    if (numLength > 0)
+    {
+        const len = id.length - numLength;
+        let   num = parseInt(id.substring(len));
+
+        let newId = '';
+        while (newId == '' || nodes.find(n => n.id == newId))
+            newId = id.substring(0, len) + (++num);
+
+        return newId;
+    }
+
+    else if (numLength == 0)
+    {
+        let num   = 2;
+        let newId = id + num;
+
+        while (nodes.find(n => 
+               n.id != curId 
+            && n.id == newId))
+            newId = id + (++num);
+
+        return newId;
+    }
+
+    else
+        return id;
+}
+
+
+
+function getNumLength(name)
+{
+    let numLength = 0;
+
+    for (let i = name.length - 1; i >= 0; i--)
+    {
+        if (isDigit(name[i])) numLength++;
+        else break;
+    }
+
+    return numLength;
+}

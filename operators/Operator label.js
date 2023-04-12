@@ -26,7 +26,7 @@ Operator.prototype.createLabel = function()
 
         const wrect      = boundingRect(this.labelWrapper);
         const margin     = 14;
-        const viewMargin = margin * graphView.zoom;
+        const viewMargin = margin * graph.currentPage.zoom;
         
         const x          = e.clientX - wrect.x;
 
@@ -48,7 +48,7 @@ Operator.prototype.updateHeaderLabelOffsetX = function(f = this.labelOffsetFacto
 
 
     const margin     = 15;
-    const viewMargin = margin * graphView.zoom;
+    const viewMargin = margin * graph.currentPage.zoom;
 
     const wrect      = this.measureData.labelWrapperBounds;
     const rect       = this.measureData.labelBounds;
@@ -70,7 +70,7 @@ Operator.prototype.updateHeaderLabelOffsetX = function(f = this.labelOffsetFacto
     {
         this.label.style.left = 
             11 
-            - this.labelOffsetFactor * (rect.width - rw - 1) / graphView.zoom
+            - this.labelOffsetFactor * (rect.width - rw - 1) / graph.currentPage.zoom
             + (this.active ? activeOffset : 0);
             
         this.label.style.transform = 'none';

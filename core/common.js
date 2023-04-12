@@ -14,6 +14,7 @@ const OBJECT_PREFIX    = 'G.';
   
 const nodeTag          = 'G_NODE';
 const connTag          = 'G_CONN';
+const pageTag          = 'G_PAGE';
 
 
 
@@ -145,6 +146,7 @@ function rightArrowChar(list) { return list ? '⟹' : '⟶'; }
 
 function nodeNameForStorage(nodeId) { return nodeTag + ' ' + nodeId; }
 function connNameForStorage(name)   { return connTag + ' ' + name;   }
+function pageNameForStorage(name)   { return pageTag + ' ' + name;   }
 
 
 
@@ -238,6 +240,13 @@ function getConnectionString(outputNodeId, outputId, outputOrder, inputNodeId, i
          + arrow
          + inputNodeId  + join + inputId
          + ' )';
+}
+
+
+
+function getPageKey(pageId)
+{
+    return pageNameForStorage(pageId);
 }
 
 

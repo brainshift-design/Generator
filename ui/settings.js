@@ -194,7 +194,7 @@ function updateSettingsMenus()
 function updateMenuItemShowPages()
 {
     uiSetPageData('showPages', boolToString(settings.showPages));
-    updatePages();
+    graph.updatePages();
     graphView.update();
 }
 

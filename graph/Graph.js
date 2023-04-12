@@ -3,11 +3,18 @@ class Graph
     parentNodeGroup = null;
 
 
-    nodes            = [];
-    deferNodeIds     = [];
-    
+    pages           = [];
 
-    connections      = [];
+    pageIndex       = -1;
+    overIndex       = -1;
+    
+    get currentPage() { return this.pages[this.pageIndex]; }
+   
+    
+    nodes           = [];
+    deferNodeIds    = [];
+    
+    connections     = [];
 
 
 
@@ -18,60 +25,6 @@ class Graph
     }
 
 
-
-    getNewNodeId(curId, id)
-    {
-        if (!this.nodes.find(n => n.id == id))
-            return id;
-        
-
-        let numLength = this.getNumLength(id);
-
-        if (numLength > 0)
-        {
-            const len = id.length - numLength;
-            let   num = parseInt(id.substring(len));
-
-            let newId = '';
-            while (newId == '' || this.nodes.find(n => n.id == newId))
-                newId = id.substring(0, len) + (++num);
-
-            return newId;
-        }
-
-        else if (numLength == 0)
-        {
-            let num   = 2;
-            let newId = id + num;
-
-            while (this.nodes.find(n => 
-                   n.id != curId 
-                && n.id == newId))
-                newId = id + (++num);
-
-            return newId;
-        }
-
-        else
-            return id;
-    }
-    
-    
-    
-    getNumLength(name)
-    {
-        let numLength = 0;
-
-        for (let i = name.length - 1; i >= 0; i--)
-        {
-            if (isDigit(name[i])) numLength++;
-            else break;
-        }
-
-        return numLength;
-    }
-    
-    
 
     addNodes(nodes, placeNode = true)
     {
@@ -85,7 +38,7 @@ class Graph
     {
         node.graph = this;
 
-        node.id = this.getNewNodeId(node.id, node.id);
+        node.id = getNewNodeId(this.nodes, node.id);
         
         this.nodes.push(node);
         graphView.div.appendChild(node.div);

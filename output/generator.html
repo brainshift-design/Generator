@@ -20,6 +20,7 @@ const OBJECT_PREFIX    = 'G.';
   
 const nodeTag          = 'G_NODE';
 const connTag          = 'G_CONN';
+const pageTag          = 'G_PAGE';
 
 
 
@@ -151,6 +152,7 @@ function rightArrowChar(list) { return list ? '⟹' : '⟶'; }
 
 function nodeNameForStorage(nodeId) { return nodeTag + ' ' + nodeId; }
 function connNameForStorage(name)   { return connTag + ' ' + name;   }
+function pageNameForStorage(name)   { return pageTag + ' ' + name;   }
 
 
 
@@ -244,6 +246,13 @@ function getConnectionString(outputNodeId, outputId, outputOrder, inputNodeId, i
          + arrow
          + inputNodeId  + join + inputId
          + ' )';
+}
+
+
+
+function getPageKey(pageId)
+{
+    return pageNameForStorage(pageId);
 }
 
 
@@ -2371,6 +2380,61 @@ function simpleIntHash(x)
 }
 
 
+
+function getNewNodeId(nodes, curId, id = curId)
+{
+    if (!nodes.find(n => n.id == id))
+        return id;
+    
+
+    let numLength = getNumLength(id);
+
+    if (numLength > 0)
+    {
+        const len = id.length - numLength;
+        let   num = parseInt(id.substring(len));
+
+        let newId = '';
+        while (newId == '' || nodes.find(n => n.id == newId))
+            newId = id.substring(0, len) + (++num);
+
+        return newId;
+    }
+
+    else if (numLength == 0)
+    {
+        let num   = 2;
+        let newId = id + num;
+
+        while (nodes.find(n => 
+               n.id != curId 
+            && n.id == newId))
+            newId = id + (++num);
+
+        return newId;
+    }
+
+    else
+        return id;
+}
+
+
+
+function getNumLength(name)
+{
+    let numLength = 0;
+
+    for (let i = name.length - 1; i >= 0; i--)
+    {
+        if (isDigit(name[i])) numLength++;
+        else break;
+    }
+
+    return numLength;
+}
+
+
+
 "use strict";
 
 // Base64 / binary data / UTF-8 strings utilities
@@ -2863,7 +2927,7 @@ function clientPos(e)
 
 
 
-function elementHasSelectedText(element)
+function elementHasSelectedText(div)
 {
     const selection = window.getSelection();
 
@@ -2871,8 +2935,8 @@ function elementHasSelectedText(element)
     {
         const range = selection.getRangeAt(0);
         
-        if (   range.commonAncestorContainer === element
-            || element.contains(range.commonAncestorContainer))
+        if (   range.commonAncestorContainer === div
+            || div.contains(range.commonAncestorContainer))
         {
             const selectedText = range.toString().trim();
 
@@ -2882,6 +2946,17 @@ function elementHasSelectedText(element)
     }
 
     return false; 
+}
+
+
+
+function selectDivText(div)
+{
+    var range = document.createRange();
+    range.selectNode(div);
+
+    window.getSelection().removeAllRanges();
+    window.getSelection().addRange(range);    
 }
 
 
@@ -13003,7 +13078,7 @@ function updateSettingsMenus()
 function updateMenuItemShowPages()
 {
     uiSetPageData('showPages', boolToString(settings.showPages));
-    updatePages();
+    graph.updatePages();
     graphView.update();
 }
 

@@ -153,42 +153,6 @@ function uiReturnFigGetPageData(msg)
 
 
 
-function uiLoadGraphView(json)
-{
-    graphView.loadingNodes   = true;
-    graphView.canUpdateNodes = false;
-   
-    let pan  = point(0, 0);
-    let zoom = 1;
-
-    
-    if (json)
-    {
-        const data = JSON.parse(json);
-
-        pan = point( 
-            parseFloat(data.panx), 
-            parseFloat(data.pany));
-
-        if (isNaN(pan.x)) pan.x = 0;
-        if (isNaN(pan.y)) pan.y = 0;
-
-        
-        zoom = parseFloat(data.zoom);
-        if (isNaN(zoom)) zoom = 1;
-    }
-
-
-    graphView._zoom = zoom;
-    graphView._pan  = pan;
-
-
-    if (!settings.dataMode)
-        graphView.updatePanAndZoom(true);
-}
-
-
-
 function uiReturnFigLoadNodesAndConns(msg)
 {
     if (settings.logRawLoadNodes)
@@ -217,18 +181,42 @@ function uiReturnFigLoadNodesAndConns(msg)
     }
 
     
-    const _graphView          = msg.graphView;
-
+    //const _graphView          = msg.graphView;
     const _showAllColorSpaces = msg.showAllColorSpaces;
 
-
-    uiLoadGraphView(_graphView);
 
     updateSettingAndMenu(
         'showAllColorSpaces',
         _showAllColorSpaces, 
         _showAllColorSpaces ? parseBool(_showAllColorSpaces) : false,
         false); 
+
+
+    graphView.loadingNodes   = true;
+    graphView.canUpdateNodes = false;
+
+
+    //uiLoadGraphView(_graphView);
+
+
+    // const pagesIds = msg.pageIds.split(',');
+
+    // if (!isEmpty(pageIds))
+    // {
+    //     for (const pageId of pageIds)
+    //         graph.addPage('Graph');
+    // }
+    // else
+    // {
+        graph.addPage('Graph');
+
+        // graph.currentPage._zoom = zoom;
+        // graph.currentPage._pan  = pan;
+
+
+    if (!settings.dataMode)
+        graphView.updatePanAndZoom(true);
+        //}
 
 
     let _nodeKeys  = msg.nodeKeys;
@@ -540,10 +528,10 @@ function parseConnectionsAndConnect(data, pasteConnected, setProgress = null)
 
 
 
-function uiSaveGraphView()
-{
-    uiSetPageData(currentUser.id + ',graphView', graphView.toJson());
-}
+// function uiSaveGraphView()
+// {
+//     uiSetPageData(currentUser.id + ',graphView', graphView.toJson());
+// }
 
 
 

@@ -81,7 +81,7 @@ extends OperatorBase
                 e.stopImmediatePropagation();
 
 
-                if (graphView.zoom < settings.minZoomForParams)
+                if (graph.currentPage.zoom < settings.minZoomForParams)
                 {
                     forwardEvent(e, this.header);
                     return;
@@ -110,8 +110,8 @@ extends OperatorBase
                 return;
 
 
-            const dx = (e.clientX - sizer.sx) / graphView.zoom;
-            const dy = (e.clientY - sizer.sy) / graphView.zoom;
+            const dx = (e.clientX - sizer.sx) / graph.currentPage.zoom;
+            const dy = (e.clientY - sizer.sy) / graph.currentPage.zoom;
         
             setRect(sizer, dx, dy);
                 
@@ -275,7 +275,7 @@ extends OperatorBase
 
     updateSizers()
     {
-        const edge   = Math.ceil(sizeBorderWidth / graphView.zoom);
+        const edge   = Math.ceil(sizeBorderWidth / graph.currentPage.zoom);
         const corner = Math.max(4, edge);
 
         this.sizerL .style.width  = edge; 
@@ -297,7 +297,7 @@ extends OperatorBase
         this.sizerBR.style.height = corner; 
 
 
-        const canReact = graphView.zoom >= settings.minZoomForParams;
+        const canReact = graph.currentPage.zoom >= settings.minZoomForParams;
 
         this.sizerL.style.cursor  = canReact ? 'ew-resize'   : 'default';
         this.sizerR.style.cursor  = canReact ? 'ew-resize'   : 'default';

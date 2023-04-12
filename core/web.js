@@ -265,7 +265,7 @@ function clientPos(e)
 
 
 
-function elementHasSelectedText(element)
+function elementHasSelectedText(div)
 {
     const selection = window.getSelection();
 
@@ -273,8 +273,8 @@ function elementHasSelectedText(element)
     {
         const range = selection.getRangeAt(0);
         
-        if (   range.commonAncestorContainer === element
-            || element.contains(range.commonAncestorContainer))
+        if (   range.commonAncestorContainer === div
+            || div.contains(range.commonAncestorContainer))
         {
             const selectedText = range.toString().trim();
 
@@ -284,4 +284,15 @@ function elementHasSelectedText(element)
     }
 
     return false; 
+}
+
+
+
+function selectDivText(div)
+{
+    var range = document.createRange();
+    range.selectNode(div);
+
+    window.getSelection().removeAllRanges();
+    window.getSelection().addRange(range);    
 }

@@ -413,10 +413,10 @@ function initGeneratorMenus()
     menuZoom = new Menu('Zoom/view options');
     menuZoom.combineChecksAndIcons = true;
     menuZoom.addItems([
-                            new MenuItem('Zoom in',      {shortcut: osCtrl () + '+', callback: () => graphView.zoom *= Math.pow(2, 1/2)}),
-                            new MenuItem('Zoom out',     {shortcut: osCtrl () + '-', callback: () => graphView.zoom /= Math.pow(2, 1/2)}),
+                            new MenuItem('Zoom in',      {shortcut: osCtrl () + '+', callback: () => graph.currentPage.zoom *= Math.pow(2, 1/2)}),
+                            new MenuItem('Zoom out',     {shortcut: osCtrl () + '-', callback: () => graph.currentPage.zoom /= Math.pow(2, 1/2)}),
                             new MenuItem('Zoom to fit',  {shortcut: osShift() + '1', callback: () => graphView.zoomToFit()}),
-        menuItemZoomTo100 = new MenuItem('Zoom to 100%', {shortcut: osCtrl () + '0', callback: () => graphView.zoom = 1})]);//,
+        menuItemZoomTo100 = new MenuItem('Zoom to 100%', {shortcut: osCtrl () + '0', callback: () => graph.currentPage.zoom = 1})]);//,
                         //  new MenuItem('',             {separator: true}),
                         //  new MenuItem('Window',       {childMenu: menuWindow})]);
 
@@ -635,7 +635,9 @@ function initCopyMenu()
     menuCopy.clearItems();
 
     menuCopy.addItems([
-        new MenuItem('Copy', {enabled: elementHasSelectedText(crashDetails), callback: () => { hideAllMenus(); document.execCommand('copy'); }})]);
+        new MenuItem('Copy',       {enabled: elementHasSelectedText(crashDialogBody), callback: () => { hideAllMenus(); document.execCommand('copy'); }}),
+        new MenuItem('',           {separator: true }),
+        new MenuItem('Select all', {callback: () => { hideAllMenus(); selectDivText(crashDetails); }})]);
 }
 
 

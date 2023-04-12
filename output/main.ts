@@ -37,6 +37,7 @@ const OBJECT_PREFIX    = 'G.';
   
 const nodeTag          = 'G_NODE';
 const connTag          = 'G_CONN';
+const pageTag          = 'G_PAGE';
 
 
 
@@ -168,6 +169,7 @@ function rightArrowChar(list) { return list ? '⟹' : '⟶'; }
 
 function nodeNameForStorage(nodeId) { return nodeTag + ' ' + nodeId; }
 function connNameForStorage(name)   { return connTag + ' ' + name;   }
+function pageNameForStorage(name)   { return pageTag + ' ' + name;   }
 
 
 
@@ -261,6 +263,13 @@ function getConnectionString(outputNodeId, outputId, outputOrder, inputNodeId, i
          + arrow
          + inputNodeId  + join + inputId
          + ' )';
+}
+
+
+
+function getPageKey(pageId)
+{
+    return pageNameForStorage(pageId);
 }
 
 
@@ -1379,6 +1388,8 @@ figma.ui.onmessage = function(msg)
      
         case 'figGetPageData':                        figGetPageData                       (msg.key);                                     break;
         case 'figSetPageData':                        figSetPageData                       (msg.key, msg.value);                          break;
+        
+        case 'figSavePages':                          figSavePages                         (msg.pageIds);                                 break;
      
         case 'figLoadNodesAndConns':                  figLoadNodesAndConns                 (msg.dataMode);                                break;
         case 'figSaveNodes':                          figSaveNodes                         (msg.nodeIds, msg.nodeJson);                   break;
@@ -2374,6 +2385,9 @@ function figClearPageData(key)
 
 function figLoadNodesAndConns(dataMode)
 {
+    // const pageIds  = figma.currentPage.getPluginData('pages');
+
+
     const nodeKeys = figma.currentPage.getPluginDataKeys().filter(k => isNodeKey(k));
     const connKeys = figma.currentPage.getPluginDataKeys().filter(k => isConnKey(k));
 
@@ -2393,8 +2407,9 @@ function figLoadNodesAndConns(dataMode)
 
     figPostMessageToUi({
         cmd:               'uiReturnFigLoadNodesAndConns',
-        graphView:          graphView,
+        // graphView:          graphView,
         showAllColorSpaces: showAllColorSpaces,
+        //pageIds:            pageIds,
         nodeKeys:           nodeKeys,
         nodeJson:           nodes,
         connKeys:           connKeys,
@@ -2451,6 +2466,13 @@ function figMarkForLoading(nodeKeys, connKeys)
         figma.currentPage.getPluginData(k)
             .replace(set, not)
             .replace(not, set)));
+}
+
+
+
+function figSavePages(pageIds)
+{
+    figSetPageData('pages', pageIds);
 }
 
 

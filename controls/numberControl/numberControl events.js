@@ -34,7 +34,7 @@ NumberControl.prototype.initEvents = function()
         {
             if (   graphView.tempConn
                 ||   !settings.enableZoomedOutParams
-                   && graphView.zoom <= settings.minZoomForParams)
+                   && graph.currentPage.zoom <= settings.minZoomForParams)
                 this.div.style.cursor = 'default';
             else
                 this.updateCursor();

@@ -33,6 +33,8 @@ figma.ui.onmessage = function(msg)
      
         case 'figGetPageData':                        figGetPageData                       (msg.key);                                     break;
         case 'figSetPageData':                        figSetPageData                       (msg.key, msg.value);                          break;
+        
+        case 'figSavePages':                          figSavePages                         (msg.pageIds);                                 break;
      
         case 'figLoadNodesAndConns':                  figLoadNodesAndConns                 (msg.dataMode);                                break;
         case 'figSaveNodes':                          figSaveNodes                         (msg.nodeIds, msg.nodeJson);                   break;

@@ -165,7 +165,7 @@ extends Control
     canReact(e)
     {
         if (   (   settings.enableZoomedOutParams
-                || graphView.zoom > settings.minZoomForParams)
+                || graph.currentPage.zoom > settings.minZoomForParams)
             && !this.delayUseTimer)
             return true;
 

@@ -52,7 +52,7 @@ extends Control
     canReact(e)
     {
         if (   settings.enableZoomedOutParams
-            || graphView.zoom > settings.minZoomForParams)
+            || graph.currentPage.zoom > settings.minZoomForParams)
             return true;
 
         e.preventDefault();
@@ -149,7 +149,7 @@ extends Control
     {
         this.textbox.style.cursor = 
                hasFocus(this.textbox)
-            && graphView.zoom >= settings.minZoomForParams
+            && graph.currentPage.zoom >= settings.minZoomForParams
             ? 'text'
             : 'default';
     }

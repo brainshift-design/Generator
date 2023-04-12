@@ -67,46 +67,14 @@ class GraphView
 
 
 
-    _pan = point(0, 0);
-        
-    get pan() { return this._pan; }
-    set pan(pan)
-    {
-        if (this._pan == pan) return;
-
-        this._pan = pan;
-        
-        uiSaveGraphView();
-        this.updatePanAndZoom(true);
-    }
-    
-
     panning = false;
     panStart;
-
-    spaceDown = false;
-
     
-
-    _zoom   = 1;
+    spaceDown = false;
+    
+    
+    
     oldZoom = 1;
-
-    get zoom() { return this._zoom; }
-    set zoom(zoom)
-    {
-        if (this._zoom == zoom) return;
-
-        let pos = point(
-            window.innerWidth /2,
-            window.innerHeight/2);
-
-        pos.y -= getTopHeight();
-
-        const _pan = subv(this.pan, mulvs(subv(pos, this.pan), zoom / this.zoom - 1));
-
-        this.setPanAndZoom(_pan, zoom);
-    }
-
 
 
     zooming       = false;
@@ -235,7 +203,7 @@ class GraphView
             parseFloat(node.div.style.left ),
             parseFloat(node.div.style.top  ),
             parseFloat(node.div.style.width),
-            bounds.h / this.zoom); // node height isn't defined
+            bounds.h / graph.currentPage.zoom); // node height isn't defined
     }
 
 
@@ -244,10 +212,10 @@ class GraphView
     {
         const bounds = this.getNodeBounds(node);
 
-        bounds.x += this.pan.x / this.zoom;
-        bounds.y += this.pan.y / this.zoom;
-        bounds.w /= this.zoom;
-        bounds.h /= this.zoom;
+        bounds.x += graph.currentPage.pan.x / graph.currentPage.zoom;
+        bounds.y += graph.currentPage.pan.y / graph.currentPage.zoom;
+        bounds.w /= graph.currentPage.zoom;
+        bounds.h /= graph.currentPage.zoom;
 
         return bounds;
     }
@@ -284,13 +252,13 @@ class GraphView
 
         if (btn)
         {
-            node.div.style.left = (btn.offsetLeft + btn.offsetWidth/2 - this.pan.x) / this.zoom - nodeRect.width/2;
-            node.div.style.top  = (20 - this.pan.y) / this.zoom;
+            node.div.style.left = (btn.offsetLeft + btn.offsetWidth/2 - graph.currentPage.pan.x) / graph.currentPage.zoom - nodeRect.width/2;
+            node.div.style.top  = (20 - graph.currentPage.pan.y) / graph.currentPage.zoom;
         }
         else
         {
-            node.div.style.left = (this.div.offsetWidth /2 - this.pan.x                ) / this.zoom - nodeRect.width /2;
-            node.div.style.top  = (this.div.offsetHeight/2 - this.pan.y - getTopHeight()) / this.zoom - nodeRect.height/2;
+            node.div.style.left = (this.div.offsetWidth /2 - graph.currentPage.pan.x                ) / graph.currentPage.zoom - nodeRect.width /2;
+            node.div.style.top  = (this.div.offsetHeight/2 - graph.currentPage.pan.y - getTopHeight()) / graph.currentPage.zoom - nodeRect.height/2;
         }
     }
 
@@ -303,7 +271,7 @@ class GraphView
         const defaultPlacementGap = 30;
 
         input.node.div.style.left = output.node.div.offsetLeft + output.node.div.offsetWidth + defaultPlacementGap;
-        input.node.div.style.top  = output.node.div.offsetTop;//outputRect.y - this.pan.y/this.zoom - (inputRect.y - inputNodeRect.y);
+        input.node.div.style.top  = output.node.div.offsetTop;//outputRect.y - graph.currentPage.pan.y/graph.currentPage.zoom - (inputRect.y - inputNodeRect.y);
     }
 
 
@@ -403,8 +371,8 @@ class GraphView
     // point2screen(p)
     // {
     //     return point(
-    //         (p.x + this.pan.x / this.zoom) * this.zoom,
-    //         (p.y + this.pan.y / this.zoom) * this.zoom);
+    //         (p.x + graph.currentPage.pan.x / graph.currentPage.zoom) * graph.currentPage.zoom,
+    //         (p.y + graph.currentPage.pan.y / graph.currentPage.zoom) * graph.currentPage.zoom);
     // }
     
     
@@ -412,8 +380,8 @@ class GraphView
     // screen2point(p)
     // {
     //     return point(
-    //         p.x / this.zoom - this.pan.x / this.zoom,
-    //         p.y / this.zoom - this.pan.y / this.zoom);
+    //         p.x / graph.currentPage.zoom - graph.currentPage.pan.x / graph.currentPage.zoom,
+    //         p.y / graph.currentPage.zoom - graph.currentPage.pan.y / graph.currentPage.zoom);
     // }
     
     
@@ -421,10 +389,10 @@ class GraphView
     // rect2screen(rect)
     // {
     //     return new Rect(
-    //         (rect.x + this.pan.x / this.zoom) * this.zoom,
-    //         (rect.y + this.pan.y / this.zoom) * this.zoom,
-    //         rect.width  * this.zoom,
-    //         rect.height * this.zoom);
+    //         (rect.x + graph.currentPage.pan.x / graph.currentPage.zoom) * graph.currentPage.zoom,
+    //         (rect.y + graph.currentPage.pan.y / graph.currentPage.zoom) * graph.currentPage.zoom,
+    //         rect.width  * graph.currentPage.zoom,
+    //         rect.height * graph.currentPage.zoom);
     // }
     
     
@@ -432,22 +400,22 @@ class GraphView
     screen2rect(rect)
     {
         return new Rect(
-            rect.x / this.zoom - this.pan.x / this.zoom,
-            rect.y / this.zoom - this.pan.y / this.zoom,
-            rect.width  / this.zoom,
-            rect.height / this.zoom);
+            rect.x      / graph.currentPage.zoom - graph.currentPage.pan.x / graph.currentPage.zoom,
+            rect.y      / graph.currentPage.zoom - graph.currentPage.pan.y / graph.currentPage.zoom,
+            rect.width  / graph.currentPage.zoom,
+            rect.height / graph.currentPage.zoom);
     }
     
     
     
-    toJson()
-    {
-        const tab = '\n' + HTAB;
+    // toJson()
+    // {
+    //     const tab = '\n' + HTAB;
 
-        return '{'
-            + tab + '"zoom": "' + this.zoom  + '",'
-            + tab + '"panx": "' + this.pan.x + '",'
-            + tab + '"pany": "' + this.pan.y + '"'
-            + '\n}';
-    };
+    //     return '{'
+    //         + tab + '"zoom": "' + graph.currentPage.zoom  + '",'
+    //         + tab + '"panx": "' + graph.currentPage.pan.x + '",'
+    //         + tab + '"pany": "' + graph.currentPage.pan.y + '"'
+    //         + '\n}';
+    // };
 }

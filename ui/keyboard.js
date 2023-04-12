@@ -142,20 +142,20 @@ document.addEventListener('keydown', e =>
     else if (e.code == 'Minus'
           || e.code == 'NumpadSubtract')
     {
-        graphView.zoom /= Math.pow(2, 1/2);
+        graph.currentPage.zoom /= Math.pow(2, 1/2);
     }
 
     else if (e.code == 'Equal'
           || e.code == 'NumpadAdd')
     {
-        graphView.zoom *= Math.pow(2, 1/2);
+        graph.currentPage.zoom *= Math.pow(2, 1/2);
     }
 
     else if ((   e.code == 'Digit0'
               || e.code == 'Numpad0')
           && getCtrlKey(e))
     {
-        graphView.zoom = 1;
+        graph.currentPage.zoom = 1;
         uiNotify('Zoom to 100%');
     }
 

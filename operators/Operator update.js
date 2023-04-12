@@ -66,9 +66,9 @@ Operator.prototype.updateNode = function()
 Operator.prototype.updateBorder = function()
 {
     const scale = 
-        graphView.zoom >= 1
+        graph.currentPage.zoom >= 1
         ? 3
-        : 3 * (((1 / graphView.zoom - 1) / 2) + 1);
+        : 3 * (((1 / graph.currentPage.zoom - 1) / 2) + 1);
 
     this.div.style.boxShadow = 
         this._selected
@@ -217,7 +217,7 @@ Operator.prototype.updateHeaderLabel = function()
     
     this.label.style.top = 
           (  Math.floor(this.measureData.labelWrapperOffset.height/2 - this.measureData.labelOffset.height/2)
-           + Math.min(Math.max(1, 1/graphView.zoom), 2))
+           + Math.min(Math.max(1, 1/graph.currentPage.zoom), 2))
         + 'px';
 
 
@@ -230,16 +230,16 @@ Operator.prototype.updateHeaderLabel = function()
     let fontSize = 11;
 
     // compensate for bold active header names look THINNER when zoomed out
-         if (graphView.zoom < 0.5 ) fontSize = 17;
-    else if (graphView.zoom < 0.75) fontSize = 15;
-    else if (graphView.zoom < 1   ) fontSize = 13;
-    else if (graphView.zoom < 1.5 ) fontSize = 12;
+         if (graph.currentPage.zoom < 0.5 ) fontSize = 17;
+    else if (graph.currentPage.zoom < 0.75) fontSize = 15;
+    else if (graph.currentPage.zoom < 1   ) fontSize = 13;
+    else if (graph.currentPage.zoom < 1.5 ) fontSize = 12;
 
     this.label.style.color      = rgba2style(colors.text);
     this.label.style.fontSize   = this.active ? fontSize : 11;
     this.label.style.height     = this.active ? fontSize * 14 / 11 : 14;
 
-    this.label.style.fontWeight = graphView.zoom < 1.2 ? '600' : 'normal';
+    this.label.style.fontWeight = graph.currentPage.zoom < 1.2 ? '600' : 'normal';
 }
 
 
@@ -247,7 +247,7 @@ Operator.prototype.updateHeaderLabel = function()
 Operator.prototype.updateHeaderLabelText = function()
 {
     this.labelText.innerHTML = 
-          (settings.showNodeId ? 'ID: ' + this.id : this.name)
+          (settings.showNodeId ? this.id.replaceAll('/', ' / ') : this.name)
         + (this.active && this.showActiveArrow ? '  ‣' : '');
 }
 

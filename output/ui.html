@@ -1121,7 +1121,7 @@
 #crashDetails
 {
     /* font-weight: bold; */
-    height:        176px;
+    height:        165px;
     margin-bottom: 30px;
     overflow-y:    scroll;
     /* box-shadow:    0 0 0 1px red inset; */
@@ -1655,7 +1655,9 @@ div
 
 #pagesBar
 {
-    display:          inline-block;
+    display:          flex;
+    flex-wrap:        nowrap;
+    flex-grow:        1 1;
     width:            100%;
     height:           36px;
     background-color: #1e1e1e;
@@ -1663,28 +1665,20 @@ div
     cursor:           default;
     position:         relative;
     z-index:          0;
+    white-space:      nowrap;
     /* box-shadow:       0 0 0 1px red inset; */
-}
-
-
-#pagesHolder
-{
-    display:          inline-block;
-    width:            max-content;
-    height:           36px;
-    background-color: #1e1e1e;
-    padding:          0;
-    /* box-shadow:       0 0 0 1px blue inset; */
 }
 
 
 .page
 {
+    /* flex:          0 1 auto; */
+    flex-shrink:   1;
     font-family:   Inter;
     font-size:     11px;
     display:       inline-block;
-    width:         auto;
-    min-width:     100px;
+    /* width:         auto; */
+    /* min-width:     100px; */
     max-width:     272px;
     height:        calc(100% - 11px);
     outline:       1px solid var(--figma-color-bg-tertiary);
@@ -1699,18 +1693,19 @@ div
     width:        14px;
     height:       14px;
     margin-left:  13px;
-    margin-right: 9px;
     /* box-shadow:   0 0 0 1px red inset; */
 }
 
 
 .pageName
 {
-    display:    inline-block;
+    display:     inline-block;
+    flex-shrink: 1;
     /* height:  fit-content; */
     /* box-shadow: 0 0 0 1px orange inset; */
-    position:   relative;
-    top:       -3px;
+    margin-left: 9px;
+    position:    relative;
+    top:        -3px;
 }
 
 
@@ -1729,25 +1724,18 @@ div
 
 #btnAddPage
 {
-    display:     inline-block;
-    position:    relative;
-    left:        -4px;
-    top:         -3px;
-    width:       34px;
-    height:      calc(100% - 11px);
-    padding-top: 11px;
-    /* box-shadow:  0 0 0 1px orange inset; */
-}
-
-
-#addPagePlus
-{
-    width:       8px;
-    height:      8px;
-    /* box-shadow:  0 0 0 1px green inset; */
-    margin-left: 12px;
-    position:    relative;
-    top:         1px;
+    /* flex-shrink: 0 0 34px; */
+    display:       inline-block;
+    position:      relative;
+    left:          1px;
+    top:           -2px;
+    outline:       none;
+    /* width:         34px; */
+    height:        calc(100% - 13px);
+    padding-top:   13px;
+    padding-left:  11px;
+    padding-right: 12px;
+    /* box-shadow:    0 0 0 1px orange inset; */
 }
 
 
@@ -3720,8 +3708,11 @@ a
 
 <div id='menuBar'></div>
 <div id='pagesBar'>
-    <div id='pagesHolder'></div>
-    <div id='btnAddPage'><div id='addPagePlus'></div></div>
+    <div id='btnAddPage' class='page'>
+        <svg width="10" height="10" viewBox="0 0 10 10" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path id='btnAddPlus' fill-rule="evenodd" clip-rule="evenodd" d="M6 0.5H4V4L0.5 4V6H4V9.5H6V6H9.5V4L6 4V0.5Z" fill="white"/>
+        </svg>
+    </div>
 </div>
 
 
@@ -4286,6 +4277,7 @@ const OBJECT_PREFIX    = 'G.';
   
 const nodeTag          = 'G_NODE';
 const connTag          = 'G_CONN';
+const pageTag          = 'G_PAGE';
 
 
 
@@ -4417,6 +4409,7 @@ function rightArrowChar(list) { return list ? '⟹' : '⟶'; }
 
 function nodeNameForStorage(nodeId) { return nodeTag + ' ' + nodeId; }
 function connNameForStorage(name)   { return connTag + ' ' + name;   }
+function pageNameForStorage(name)   { return pageTag + ' ' + name;   }
 
 
 
@@ -4510,6 +4503,13 @@ function getConnectionString(outputNodeId, outputId, outputOrder, inputNodeId, i
          + arrow
          + inputNodeId  + join + inputId
          + ' )';
+}
+
+
+
+function getPageKey(pageId)
+{
+    return pageNameForStorage(pageId);
 }
 
 
@@ -6637,6 +6637,61 @@ function simpleIntHash(x)
 }
 
 
+
+function getNewNodeId(nodes, curId, id = curId)
+{
+    if (!nodes.find(n => n.id == id))
+        return id;
+    
+
+    let numLength = getNumLength(id);
+
+    if (numLength > 0)
+    {
+        const len = id.length - numLength;
+        let   num = parseInt(id.substring(len));
+
+        let newId = '';
+        while (newId == '' || nodes.find(n => n.id == newId))
+            newId = id.substring(0, len) + (++num);
+
+        return newId;
+    }
+
+    else if (numLength == 0)
+    {
+        let num   = 2;
+        let newId = id + num;
+
+        while (nodes.find(n => 
+               n.id != curId 
+            && n.id == newId))
+            newId = id + (++num);
+
+        return newId;
+    }
+
+    else
+        return id;
+}
+
+
+
+function getNumLength(name)
+{
+    let numLength = 0;
+
+    for (let i = name.length - 1; i >= 0; i--)
+    {
+        if (isDigit(name[i])) numLength++;
+        else break;
+    }
+
+    return numLength;
+}
+
+
+
 "use strict";
 
 // Base64 / binary data / UTF-8 strings utilities
@@ -7129,7 +7184,7 @@ function clientPos(e)
 
 
 
-function elementHasSelectedText(element)
+function elementHasSelectedText(div)
 {
     const selection = window.getSelection();
 
@@ -7137,8 +7192,8 @@ function elementHasSelectedText(element)
     {
         const range = selection.getRangeAt(0);
         
-        if (   range.commonAncestorContainer === element
-            || element.contains(range.commonAncestorContainer))
+        if (   range.commonAncestorContainer === div
+            || div.contains(range.commonAncestorContainer))
         {
             const selectedText = range.toString().trim();
 
@@ -7148,6 +7203,17 @@ function elementHasSelectedText(element)
     }
 
     return false; 
+}
+
+
+
+function selectDivText(div)
+{
+    var range = document.createRange();
+    range.selectNode(div);
+
+    window.getSelection().removeAllRanges();
+    window.getSelection().addRange(range);    
 }
 
 
@@ -17269,7 +17335,7 @@ function updateSettingsMenus()
 function updateMenuItemShowPages()
 {
     uiSetPageData('showPages', boolToString(settings.showPages));
-    updatePages();
+    graph.updatePages();
     graphView.update();
 }
 
@@ -23915,6 +23981,7 @@ const OBJECT_PREFIX    = 'G.';
   
 const nodeTag          = 'G_NODE';
 const connTag          = 'G_CONN';
+const pageTag          = 'G_PAGE';
 
 
 
@@ -24046,6 +24113,7 @@ function rightArrowChar(list) { return list ? '⟹' : '⟶'; }
 
 function nodeNameForStorage(nodeId) { return nodeTag + ' ' + nodeId; }
 function connNameForStorage(name)   { return connTag + ' ' + name;   }
+function pageNameForStorage(name)   { return pageTag + ' ' + name;   }
 
 
 
@@ -24139,6 +24207,13 @@ function getConnectionString(outputNodeId, outputId, outputOrder, inputNodeId, i
          + arrow
          + inputNodeId  + join + inputId
          + ' )';
+}
+
+
+
+function getPageKey(pageId)
+{
+    return pageNameForStorage(pageId);
 }
 
 
@@ -26266,6 +26341,61 @@ function simpleIntHash(x)
 }
 
 
+
+function getNewNodeId(nodes, curId, id = curId)
+{
+    if (!nodes.find(n => n.id == id))
+        return id;
+    
+
+    let numLength = getNumLength(id);
+
+    if (numLength > 0)
+    {
+        const len = id.length - numLength;
+        let   num = parseInt(id.substring(len));
+
+        let newId = '';
+        while (newId == '' || nodes.find(n => n.id == newId))
+            newId = id.substring(0, len) + (++num);
+
+        return newId;
+    }
+
+    else if (numLength == 0)
+    {
+        let num   = 2;
+        let newId = id + num;
+
+        while (nodes.find(n => 
+               n.id != curId 
+            && n.id == newId))
+            newId = id + (++num);
+
+        return newId;
+    }
+
+    else
+        return id;
+}
+
+
+
+function getNumLength(name)
+{
+    let numLength = 0;
+
+    for (let i = name.length - 1; i >= 0; i--)
+    {
+        if (isDigit(name[i])) numLength++;
+        else break;
+    }
+
+    return numLength;
+}
+
+
+
 "use strict";
 
 // Base64 / binary data / UTF-8 strings utilities
@@ -26758,7 +26888,7 @@ function clientPos(e)
 
 
 
-function elementHasSelectedText(element)
+function elementHasSelectedText(div)
 {
     const selection = window.getSelection();
 
@@ -26766,8 +26896,8 @@ function elementHasSelectedText(element)
     {
         const range = selection.getRangeAt(0);
         
-        if (   range.commonAncestorContainer === element
-            || element.contains(range.commonAncestorContainer))
+        if (   range.commonAncestorContainer === div
+            || div.contains(range.commonAncestorContainer))
         {
             const selectedText = range.toString().trim();
 
@@ -26777,6 +26907,17 @@ function elementHasSelectedText(element)
     }
 
     return false; 
+}
+
+
+
+function selectDivText(div)
+{
+    var range = document.createRange();
+    range.selectNode(div);
+
+    window.getSelection().removeAllRanges();
+    window.getSelection().addRange(range);    
 }
 
 
@@ -39478,7 +39619,7 @@ function updateSettingsMenus()
 function updateMenuItemShowPages()
 {
     uiSetPageData('showPages', boolToString(settings.showPages));
-    updatePages();
+    graph.updatePages();
     graphView.update();
 }
 
@@ -40004,7 +40145,7 @@ extends Control
     canReact(e)
     {
         if (   (   settings.enableZoomedOutParams
-                || graphView.zoom > settings.minZoomForParams)
+                || graph.currentPage.zoom > settings.minZoomForParams)
             && !this.delayUseTimer)
             return true;
 
@@ -40962,7 +41103,7 @@ NumberControl.prototype.initEvents = function()
         {
             if (   graphView.tempConn
                 ||   !settings.enableZoomedOutParams
-                   && graphView.zoom <= settings.minZoomForParams)
+                   && graph.currentPage.zoom <= settings.minZoomForParams)
                 this.div.style.cursor = 'default';
             else
                 this.updateCursor();
@@ -41621,7 +41762,7 @@ extends Control
     canReact(e)
     {
         if (   settings.enableZoomedOutParams
-            || graphView.zoom > settings.minZoomForParams)
+            || graph.currentPage.zoom > settings.minZoomForParams)
             return true;
 
         e.preventDefault();
@@ -41718,7 +41859,7 @@ extends Control
     {
         this.textbox.style.cursor = 
                hasFocus(this.textbox)
-            && graphView.zoom >= settings.minZoomForParams
+            && graph.currentPage.zoom >= settings.minZoomForParams
             ? 'text'
             : 'default';
     }
@@ -42139,7 +42280,7 @@ extends Control
     canReact(e)
     {
         if (   settings.enableZoomedOutParams
-            || graphView.zoom > settings.minZoomForParams)
+            || graph.currentPage.zoom > settings.minZoomForParams)
             return true;
 
         e.preventDefault();
@@ -43198,7 +43339,7 @@ const iconGenerator         = '<svg width="20" height="10" viewBox="0 0 20 10" f
 
 const iconPage              = '<svg width="14" height="14" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg"><rect width="14" height="14" rx="2.5" fill="#0C8CE9"/><path d="M7.4745 3.79841C7.83778 3.52553 8.2647 3.34457 8.78006 3.32152C8.92706 2.6837 9.49845 2.20813 10.1809 2.20813C10.9749 2.20813 11.6185 2.85175 11.6185 3.64569C11.6185 4.43963 10.9749 5.08325 10.1809 5.08325C9.61362 5.08325 9.12307 4.75465 8.88923 4.2774C8.54486 4.27815 8.28313 4.38963 8.0501 4.56468C7.73976 4.79779 7.47714 5.14458 7.16592 5.57207L7.10258 5.65929C6.7792 6.1051 6.39914 6.62905 5.86696 6.99999C6.39914 7.37093 6.7792 7.89489 7.10258 8.3407L7.16592 8.42792C7.47714 8.85541 7.73976 9.2022 8.0501 9.43531C8.28313 9.61036 8.54486 9.72184 8.88923 9.7226C9.12307 9.24535 9.61362 8.91674 10.1809 8.91674C10.9749 8.91674 11.6185 9.56035 11.6185 10.3543C11.6185 11.1482 10.9749 11.7919 10.1809 11.7919C9.49845 11.7919 8.92706 11.3163 8.78006 10.6785C8.2647 10.6554 7.83778 10.4745 7.4745 10.2016C7.03044 9.86801 6.68787 9.39958 6.39113 8.99198C5.871 8.27753 5.4567 7.71987 4.80484 7.54038C4.59126 8.06653 4.07511 8.43755 3.47231 8.43755C2.67837 8.43755 2.03475 7.79393 2.03475 6.99999C2.03475 6.20605 2.67837 5.56243 3.47231 5.56243C4.07512 5.56243 4.59127 5.93346 4.80485 6.45961C5.4567 6.28012 5.871 5.72245 6.39113 5.00801C6.68787 4.6004 7.03044 4.13197 7.4745 3.79841Z" fill="white"/></svg>';
 const iconPageClose         = '<svg width="9" height="10" viewBox="0 0 9 10" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="1.23505" y="9.01202" width="1.6925" height="9.641" transform="rotate(-135 1.23505 9.01202)" fill="white"/><rect x="8.05226" y="7.81525" width="1.6925" height="9.641" transform="rotate(135 8.05226 7.81525)" fill="white"/></svg>';
-const iconAddPage           = '<svg width="10" height="10" viewBox="0 0 10 10" fill="none" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" clip-rule="evenodd" d="M6 0.5H4V4L0.5 4V6H4V9.5H6V6H9.5V4L6 4V0.5Z" fill="white"/></svg>';
+// const iconAddPage           = '<svg width="10" height="10" viewBox="0 0 10 10" fill="none" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" clip-rule="evenodd" d="M6 0.5H4V4L0.5 4V6H4V9.5H6V6H9.5V4L6 4V0.5Z" fill="white"/></svg>';
 
 const iconList              = '<svg width="12" height="9" viewBox="0 0 12 9" fill="none" xmlns="http://www.w3.org/2000/svg"><rect width="9" height="1" fill="white"/><rect y="4" width="9" height="1" fill="white"/><rect y="8" width="9" height="1" fill="white"/></svg>';
 const iconItems             = '<svg width="17" height="11" viewBox="-1 0 17 11" fill="none" xmlns="http://www.w3.org/2000/svg"><rect width="9" height="1" transform="matrix(-1 0 0 1 9 1)" fill="white"/><rect width="9" height="1" transform="matrix(-1 0 0 1 9 5)" fill="white"/><rect width="9" height="1" transform="matrix(-1 0 0 1 9 9)" fill="white"/><circle r="1.5" transform="matrix(-1 0 0 1 13.5 9.5)" fill="white"/><circle r="1.5" transform="matrix(-1 0 0 1 13.5 5.5)" fill="white"/><circle r="1.5" transform="matrix(-1 0 0 1 13.5 1.5)" fill="white"/></svg>';
@@ -44090,8 +44231,8 @@ class MenuItem
                     node.sx  = node.div.offsetLeft;
                     node.sy  = node.div.offsetTop ;
 
-                    node.slx = node.div.offsetLeft - (defNodeWidth    / 2) - (              + graphView.pan.x) / graphView.zoom;
-                    node.sly = node.div.offsetTop  - (defHeaderHeight / 2) - (getTopHeight() + graphView.pan.y) / graphView.zoom;
+                    node.slx = node.div.offsetLeft - (defNodeWidth    / 2) - (              + graph.currentPage.pan.x) / graph.currentPage.zoom;
+                    node.sly = node.div.offsetTop  - (defHeaderHeight / 2) - (getTopHeight() + graph.currentPage.pan.y) / graph.currentPage.zoom;
 
                     node.div.dragging = true;
                     node.header.setPointerCapture(e.pointerId);
@@ -44670,10 +44811,10 @@ function initGeneratorMenus()
     menuZoom = new Menu('Zoom/view options');
     menuZoom.combineChecksAndIcons = true;
     menuZoom.addItems([
-                            new MenuItem('Zoom in',      {shortcut: osCtrl () + '+', callback: () => graphView.zoom *= Math.pow(2, 1/2)}),
-                            new MenuItem('Zoom out',     {shortcut: osCtrl () + '-', callback: () => graphView.zoom /= Math.pow(2, 1/2)}),
+                            new MenuItem('Zoom in',      {shortcut: osCtrl () + '+', callback: () => graph.currentPage.zoom *= Math.pow(2, 1/2)}),
+                            new MenuItem('Zoom out',     {shortcut: osCtrl () + '-', callback: () => graph.currentPage.zoom /= Math.pow(2, 1/2)}),
                             new MenuItem('Zoom to fit',  {shortcut: osShift() + '1', callback: () => graphView.zoomToFit()}),
-        menuItemZoomTo100 = new MenuItem('Zoom to 100%', {shortcut: osCtrl () + '0', callback: () => graphView.zoom = 1})]);//,
+        menuItemZoomTo100 = new MenuItem('Zoom to 100%', {shortcut: osCtrl () + '0', callback: () => graph.currentPage.zoom = 1})]);//,
                         //  new MenuItem('',             {separator: true}),
                         //  new MenuItem('Window',       {childMenu: menuWindow})]);
 
@@ -44892,7 +45033,9 @@ function initCopyMenu()
     menuCopy.clearItems();
 
     menuCopy.addItems([
-        new MenuItem('Copy', {enabled: elementHasSelectedText(crashDetails), callback: () => { hideAllMenus(); document.execCommand('copy'); }})]);
+        new MenuItem('Copy',       {enabled: elementHasSelectedText(crashDialogBody), callback: () => { hideAllMenus(); document.execCommand('copy'); }}),
+        new MenuItem('',           {separator: true }),
+        new MenuItem('Select all', {callback: () => { hideAllMenus(); selectDivText(crashDetails); }})]);
 }
 
 
@@ -45987,46 +46130,14 @@ class GraphView
 
 
 
-    _pan = point(0, 0);
-        
-    get pan() { return this._pan; }
-    set pan(pan)
-    {
-        if (this._pan == pan) return;
-
-        this._pan = pan;
-        
-        uiSaveGraphView();
-        this.updatePanAndZoom(true);
-    }
-    
-
     panning = false;
     panStart;
-
-    spaceDown = false;
-
     
-
-    _zoom   = 1;
+    spaceDown = false;
+    
+    
+    
     oldZoom = 1;
-
-    get zoom() { return this._zoom; }
-    set zoom(zoom)
-    {
-        if (this._zoom == zoom) return;
-
-        let pos = point(
-            window.innerWidth /2,
-            window.innerHeight/2);
-
-        pos.y -= getTopHeight();
-
-        const _pan = subv(this.pan, mulvs(subv(pos, this.pan), zoom / this.zoom - 1));
-
-        this.setPanAndZoom(_pan, zoom);
-    }
-
 
 
     zooming       = false;
@@ -46155,7 +46266,7 @@ class GraphView
             parseFloat(node.div.style.left ),
             parseFloat(node.div.style.top  ),
             parseFloat(node.div.style.width),
-            bounds.h / this.zoom); // node height isn't defined
+            bounds.h / graph.currentPage.zoom); // node height isn't defined
     }
 
 
@@ -46164,10 +46275,10 @@ class GraphView
     {
         const bounds = this.getNodeBounds(node);
 
-        bounds.x += this.pan.x / this.zoom;
-        bounds.y += this.pan.y / this.zoom;
-        bounds.w /= this.zoom;
-        bounds.h /= this.zoom;
+        bounds.x += graph.currentPage.pan.x / graph.currentPage.zoom;
+        bounds.y += graph.currentPage.pan.y / graph.currentPage.zoom;
+        bounds.w /= graph.currentPage.zoom;
+        bounds.h /= graph.currentPage.zoom;
 
         return bounds;
     }
@@ -46204,13 +46315,13 @@ class GraphView
 
         if (btn)
         {
-            node.div.style.left = (btn.offsetLeft + btn.offsetWidth/2 - this.pan.x) / this.zoom - nodeRect.width/2;
-            node.div.style.top  = (20 - this.pan.y) / this.zoom;
+            node.div.style.left = (btn.offsetLeft + btn.offsetWidth/2 - graph.currentPage.pan.x) / graph.currentPage.zoom - nodeRect.width/2;
+            node.div.style.top  = (20 - graph.currentPage.pan.y) / graph.currentPage.zoom;
         }
         else
         {
-            node.div.style.left = (this.div.offsetWidth /2 - this.pan.x                ) / this.zoom - nodeRect.width /2;
-            node.div.style.top  = (this.div.offsetHeight/2 - this.pan.y - getTopHeight()) / this.zoom - nodeRect.height/2;
+            node.div.style.left = (this.div.offsetWidth /2 - graph.currentPage.pan.x                ) / graph.currentPage.zoom - nodeRect.width /2;
+            node.div.style.top  = (this.div.offsetHeight/2 - graph.currentPage.pan.y - getTopHeight()) / graph.currentPage.zoom - nodeRect.height/2;
         }
     }
 
@@ -46223,7 +46334,7 @@ class GraphView
         const defaultPlacementGap = 30;
 
         input.node.div.style.left = output.node.div.offsetLeft + output.node.div.offsetWidth + defaultPlacementGap;
-        input.node.div.style.top  = output.node.div.offsetTop;//outputRect.y - this.pan.y/this.zoom - (inputRect.y - inputNodeRect.y);
+        input.node.div.style.top  = output.node.div.offsetTop;//outputRect.y - graph.currentPage.pan.y/graph.currentPage.zoom - (inputRect.y - inputNodeRect.y);
     }
 
 
@@ -46323,8 +46434,8 @@ class GraphView
     // point2screen(p)
     // {
     //     return point(
-    //         (p.x + this.pan.x / this.zoom) * this.zoom,
-    //         (p.y + this.pan.y / this.zoom) * this.zoom);
+    //         (p.x + graph.currentPage.pan.x / graph.currentPage.zoom) * graph.currentPage.zoom,
+    //         (p.y + graph.currentPage.pan.y / graph.currentPage.zoom) * graph.currentPage.zoom);
     // }
     
     
@@ -46332,8 +46443,8 @@ class GraphView
     // screen2point(p)
     // {
     //     return point(
-    //         p.x / this.zoom - this.pan.x / this.zoom,
-    //         p.y / this.zoom - this.pan.y / this.zoom);
+    //         p.x / graph.currentPage.zoom - graph.currentPage.pan.x / graph.currentPage.zoom,
+    //         p.y / graph.currentPage.zoom - graph.currentPage.pan.y / graph.currentPage.zoom);
     // }
     
     
@@ -46341,10 +46452,10 @@ class GraphView
     // rect2screen(rect)
     // {
     //     return new Rect(
-    //         (rect.x + this.pan.x / this.zoom) * this.zoom,
-    //         (rect.y + this.pan.y / this.zoom) * this.zoom,
-    //         rect.width  * this.zoom,
-    //         rect.height * this.zoom);
+    //         (rect.x + graph.currentPage.pan.x / graph.currentPage.zoom) * graph.currentPage.zoom,
+    //         (rect.y + graph.currentPage.pan.y / graph.currentPage.zoom) * graph.currentPage.zoom,
+    //         rect.width  * graph.currentPage.zoom,
+    //         rect.height * graph.currentPage.zoom);
     // }
     
     
@@ -46352,24 +46463,24 @@ class GraphView
     screen2rect(rect)
     {
         return new Rect(
-            rect.x / this.zoom - this.pan.x / this.zoom,
-            rect.y / this.zoom - this.pan.y / this.zoom,
-            rect.width  / this.zoom,
-            rect.height / this.zoom);
+            rect.x      / graph.currentPage.zoom - graph.currentPage.pan.x / graph.currentPage.zoom,
+            rect.y      / graph.currentPage.zoom - graph.currentPage.pan.y / graph.currentPage.zoom,
+            rect.width  / graph.currentPage.zoom,
+            rect.height / graph.currentPage.zoom);
     }
     
     
     
-    toJson()
-    {
-        const tab = '\n' + HTAB;
+    // toJson()
+    // {
+    //     const tab = '\n' + HTAB;
 
-        return '{'
-            + tab + '"zoom": "' + this.zoom  + '",'
-            + tab + '"panx": "' + this.pan.x + '",'
-            + tab + '"pany": "' + this.pan.y + '"'
-            + '\n}';
-    };
+    //     return '{'
+    //         + tab + '"zoom": "' + graph.currentPage.zoom  + '",'
+    //         + tab + '"panx": "' + graph.currentPage.pan.x + '",'
+    //         + tab + '"pany": "' + graph.currentPage.pan.y + '"'
+    //         + '\n}';
+    // };
 }
 
 
@@ -46615,8 +46726,8 @@ GraphView.prototype.pasteCopiedNodes = function(pasteConnected, clientX = Number
         if (text == '')
             return;
 
-        const x = (clientX - this.pan.x) / this.zoom;
-        const y = (clientY - this.pan.y) / this.zoom;
+        const x = (clientX - graph.currentPage.pan.x) / graph.currentPage.zoom;
+        const y = (clientY - graph.currentPage.pan.y) / graph.currentPage.zoom;
             
         actionManager.do(new PasteNodesAction(text, pasteConnected, false, x, y));
     });
@@ -47200,7 +47311,7 @@ GraphView.prototype.createEvents = function()
                     &&  this.selectionRect.h != 0
                     && !this.altDown)
                 {
-                    this.oldZoom = this.zoom;
+                    this.oldZoom = graph.currentPage.zoom;
                     this.endZoomSelection(e.pointerId, true);
                 }
                 else if (this.altDown)
@@ -47214,14 +47325,14 @@ GraphView.prototype.createEvents = function()
                     const selection = Rect.fromTypical(this.selectionRect);
 
 
-                    this.oldZoom = this.zoom;
+                    this.oldZoom = graph.currentPage.zoom;
                     this.endZoomSelection(e.pointerId, false);
 
-                    this.zoom /= 2;
+                    graph.currentPage.zoom /= 2;
                     
                     
-                    this.pan.x += wndRect.c - selection.c;
-                    this.pan.y += wndRect.m - selection.m;
+                    graph.currentPage.pan.x += wndRect.c - selection.c;
+                    graph.currentPage.pan.y += wndRect.m - selection.m;
 
 
                     this.updateNodes();
@@ -47270,7 +47381,7 @@ GraphView.prototype.createEvents = function()
         e.preventDefault();
 
 
-        const dZoom = Math.log(this.zoom) / Math.log(2);
+        const dZoom = Math.log(graph.currentPage.zoom) / Math.log(2);
 
 
         const touchpad = isTouchpad(e);
@@ -47288,7 +47399,7 @@ GraphView.prototype.createEvents = function()
                 e.clientY - getTopHeight());
 
             const zoom = Math.max(0.0001, Math.pow(2, dZoom - dWheelY / (touchpad ? 4 : 10)));
-            const pan  = subv(this.pan, mulvs(subv(pos, this.pan), zoom / this.zoom - 1));
+            const pan  = subv(graph.currentPage.pan, mulvs(subv(pos, graph.currentPage.pan), zoom / graph.currentPage.zoom - 1));
 
             this.setPanAndZoom(pan, zoom);
 
@@ -47296,12 +47407,12 @@ GraphView.prototype.createEvents = function()
         }
         else
         {
-            const dPanX = (e.shiftKey ? dWheelY : dWheelX) * 20 / Math.pow(this.zoom, 0.1);
-            const dPanY = (e.shiftKey ? dWheelX : dWheelY) * 20 / Math.pow(this.zoom, 0.1);
+            const dPanX = (e.shiftKey ? dWheelY : dWheelX) * 20 / Math.pow(graph.currentPage.zoom, 0.1);
+            const dPanY = (e.shiftKey ? dWheelX : dWheelY) * 20 / Math.pow(graph.currentPage.zoom, 0.1);
 
-            this.pan = point(
-                this.pan.x - dPanX,
-                this.pan.y - dPanY);
+            graph.currentPage.pan = point(
+                graph.currentPage.pan.x - dPanX,
+                graph.currentPage.pan.y - dPanY);
 
             
             if (this.selecting)
@@ -47329,7 +47440,7 @@ GraphView.prototype.createEvents = function()
 
 
 
-    this.div.addEventListener('gesturestart', e => { this.zoomStart = this.zoom; });
+    this.div.addEventListener('gesturestart', e => { this.zoomStart = graph.currentPage.zoom; });
 
 
 
@@ -47340,7 +47451,7 @@ GraphView.prototype.createEvents = function()
             this.p.y - getTopHeight());
 
         const zoom = this.zoomStart * e.scale;
-        const pan  = subv(this.pan, mulvs(subv(p, this.pan), zoom / this.zoom - 1));
+        const pan  = subv(graph.currentPage.pan, mulvs(subv(p, graph.currentPage.pan), zoom / graph.currentPage.zoom - 1));
 
         this.setPanAndZoom(pan, zoom);
     });
@@ -47430,9 +47541,9 @@ function graphView_onpointermove(e)
 
         const dp = subv(graphView.p, graphView.pStart);
 
-        graphView.setPanAndZoom(
+        graph.currentPage.setPanAndZoom(
             addv(graphView.panStart, dp), 
-            graphView.zoom);
+            graph.currentPage.zoom);
     }
 
     else if (graphView.selecting)
@@ -47446,36 +47557,6 @@ function graphView_onpointermove(e)
 }
 
 
-
-
-
-
-GraphView.prototype.setPanAndZoom = function(pan, zoom)
-{
-    if (  (   pan  != this._pan
-           || zoom != this._zoom)
-        && zoom >= 0.02
-        && zoom <= 50)
-    {
-        this.oldZoom = this.zoom;
-
-        this._zoom = zoom;
-        this._pan  = pan;
-
-        
-        uiSaveGraphView();
-
-
-        this.panZoomTimer = setTimeout(() => 
-        {
-            this.updatePanAndZoom(this.zoom != this.oldZoom);
-            this.panZoomTimer = null;
-        });
-    }
-};
-
-
-
 GraphView.prototype.updatePanAndZoom = function(updateNodes)
 {
     this.updateNodes(graph.nodes, updateNodes);
@@ -47486,11 +47567,11 @@ GraphView.prototype.updatePanAndZoom = function(updateNodes)
         updateZoomTooltip();
         updateZoomIcon();
 
-        menuItemZoomTo100.setChecked(equal(this.zoom, 1, 0.0001));
+        menuItemZoomTo100.setChecked(equal(graph.currentPage.zoom, 1, 0.0001));
     });
 
 
-    //console.log('pan = %s, zoom = %s', this.pan.x + ', ' + this.pan.y, this.zoom);
+    //console.log('pan = %s, zoom = %s', graph.currentPage.pan.x + ', ' + graph.currentPage.pan.y, graph.currentPage.zoom);
 };
 
 
@@ -47500,7 +47581,7 @@ GraphView.prototype.startPan = function(pointerId)
     this.div.setPointerCapture(pointerId);
 
     this.panning  = true;
-    this.panStart = this.pan;
+    this.panStart = graph.currentPage.pan;
 
     setCursor(panCursor);
 };
@@ -47582,7 +47663,7 @@ GraphView.prototype.endZoomSelection = function(pointerId, zoom)
 {
     if (zoom)
     {
-        this.oldZoom = this.zoom;
+        this.oldZoom = graph.currentPage.zoom;
 
 
         const wndRect = new Rect(
@@ -47650,12 +47731,12 @@ GraphView.prototype.zoomToNodes = function(nodes)
 GraphView.prototype.zoomToRect = function(rect, margin = 40)
 {
     const viewRect   = this.measureData.clientRect;
-console.log('viewRect =', viewRect);
+
     const viewAspect = viewRect.width / viewRect.height;
     const rectAspect = rect.width     / rect.height;
 
 
-    this.zoom = 
+    graph.currentPage.zoom = 
         viewRect.width >= viewRect.height
     
         ? (   rect.width >= rect.height
@@ -47669,10 +47750,10 @@ console.log('viewRect =', viewRect);
            : (viewRect.width  - margin*2) / rect.width );
 
 
-    this.pan = 
+    graph.currentPage.pan = 
     {
-        x: viewRect.width /2 - (rect.x + rect.width /2) * this.zoom,
-        y: viewRect.height/2 - (rect.y + rect.height/2) * this.zoom
+        x: viewRect.width /2 - (rect.x + rect.width /2) * graph.currentPage.zoom,
+        y: viewRect.height/2 - (rect.y + rect.height/2) * graph.currentPage.zoom
     };
 };
 
@@ -47680,20 +47761,20 @@ console.log('viewRect =', viewRect);
 
 function updateZoomIcon()
 {
-    btnZoom.divIcon.innerHTML       =  Math.round(graphView.zoom * 100) + '%';
+    btnZoom.divIcon.innerHTML       =  Math.round(graph.currentPage.zoom * 100) + '%';
     btnZoom.divIcon.style.transform = 'translateX(2px) translateY(-16px)';
 
 
-    if (   graphView.zoom < settings.minZoomForParams
-        && graphView.zoom < 1)
+    if (   graph.currentPage.zoom < settings.minZoomForParams
+        && graph.currentPage.zoom < 1)
     {
         zoomIconOverlay.style.left       = '14px';
         zoomIconOverlay.style.top        = '10px';
         zoomIconOverlay.style.width      = '28';
         zoomIconOverlay.style.background = 'url(\'data:image/svg+xml;utf8,<svg width="28" height="20" viewBox="0 0 28 20" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M4 0.5H24C25.933 0.5 27.5 2.067 27.5 4V19.5H0.5V4C0.5 2.067 2.067 0.5 4 0.5Z" stroke="white"/></svg>\')';
     }
-    else if (graphView.zoom < settings.minZoomForParams
-          && graphView.zoom < 10)
+    else if (graph.currentPage.zoom < settings.minZoomForParams
+          && graph.currentPage.zoom < 10)
     {
         zoomIconOverlay.style.left       = '12px';
         zoomIconOverlay.style.top        = '10px';
@@ -48004,7 +48085,7 @@ GraphView.prototype.createScrollbarMethods = function()
             this.scrollbarX.pStart = e.clientX;
             this.scrollbarX.setPointerCapture(e.pointerId);
 
-            this.panStart = this.pan;
+            this.panStart = graph.currentPage.pan;
 
             for (const node of graph.nodes)
                 node.slx = node.div.offsetLeft;
@@ -48051,7 +48132,7 @@ GraphView.prototype.createScrollbarMethods = function()
             this.scrollbarX.style.left  = l;
             this.scrollbarX.style.width = r-l;
 
-            this.pan = point(
+            graph.currentPage.pan = point(
                 this.panStart.x - (e.clientX - this.scrollbarX.pStart) / this.scrollbarX.wStart * this.div.clientWidth,
                 this.panStart.y);
         }
@@ -48076,7 +48157,7 @@ GraphView.prototype.createScrollbarMethods = function()
             for (const node of graph.nodes)
                 node.div.sly = node.div.offsetTop;
 
-            this.panStart = this.pan;
+            this.panStart = graph.currentPage.pan;
         }
     });
 
@@ -48120,7 +48201,7 @@ GraphView.prototype.createScrollbarMethods = function()
             this.scrollbarY.style.top    = t;
             this.scrollbarY.style.height = b-t;
 
-            this.pan = point(
+            graph.currentPage.pan = point(
                 this.panStart.x, 
                 this.panStart.y - (e.clientY - this.scrollbarY.pStart) / this.scrollbarY.hStart * this.div.clientHeight);
         }
@@ -51097,7 +51178,7 @@ extends EventTarget
     canReact(e)
     {
         if (   settings.enableZoomedOutParams
-            || graphView.zoom > settings.minZoomForParams)
+            || graph.currentPage.zoom > settings.minZoomForParams)
             return true;
 
         e.preventDefault();
@@ -51451,7 +51532,7 @@ class Output
     canReact(e)
     {
         if (   settings.enableZoomedOutParams
-            || graphView.zoom > settings.minZoomForParams)
+            || graph.currentPage.zoom > settings.minZoomForParams)
             return true;
 
         e.preventDefault();
@@ -51917,9 +51998,9 @@ class Wire
         const _y3 = y2;
     
     
-        const tx  = 600 * graphView.zoom;
-        const ty  = 300 * graphView.zoom;
-        const ecc = 100 * graphView.zoom;
+        const tx  = 600 * graph.currentPage.zoom;
+        const ty  = 300 * graph.currentPage.zoom;
+        const ecc = 100 * graph.currentPage.zoom;
     
         const yf  = (0.3 + Math.min(Math.abs(y2 - y1) / ty, 0.8));
     
@@ -52038,8 +52119,8 @@ class Wire
     {
         let al = 
             dist >= 0
-            ? arcLength(p0, p1, p2, p3) - dist * graphView.zoom
-            : -dist * graphView.zoom;
+            ? arcLength(p0, p1, p2, p3) - dist * graph.currentPage.zoom
+            : -dist * graph.currentPage.zoom;
     
         if (al <= 0)
         {
@@ -52072,8 +52153,8 @@ class Wire
         const tx = pt.x;
         const ty = pt.y;
     
-        const tw = size * graphView.zoom;
-        const th = size * graphView.zoom;
+        const tw = size * graph.currentPage.zoom;
+        const th = size * graph.currentPage.zoom;
     
         const points =
                      (tx - tw/2) + ',' + (ty + th/2)
@@ -52105,8 +52186,8 @@ class Wire
         if (darkMode) bright = 1-bright;
     
         
-        // const innerOpacity = Math.round(bright * (darkMode ? 88 : 66) * Math.min(graphView.zoom, 5)).toString(16).padStart(2, '0');
-        //'+(Math.min(Math.max(1, 1/graphView.zoom), 5))+'
+        // const innerOpacity = Math.round(bright * (darkMode ? 88 : 66) * Math.min(graph.currentPage.zoom, 5)).toString(16).padStart(2, '0');
+        //'+(Math.min(Math.max(1, 1/graph.currentPage.zoom), 5))+'
         
         // this.curve.style.filter = 
         //     this.needsFilter
@@ -52132,12 +52213,12 @@ class Wire
     
             this.xp1.style.display          = 'inline';
             this.xp1.style.stroke           = rgba2style(rgb_a(darkMode ? [0.067, 0.067, 0.067] : [0.784, 0.784, 0.784], 1 - color[3]));
-            this.xp1.style.strokeDasharray  = 9 * graphView.zoom;
+            this.xp1.style.strokeDasharray  = 9 * graph.currentPage.zoom;
     
             this.xp2.style.display          = 'inline';
             this.xp2.style.stroke           = rgba2style(rgb_a(darkMode ? [0.302, 0.302, 0.302] : [1, 1, 1], 1 - color[3]));//darkMode ? '#4d4d4d' : '#fff';
-            this.xp2.style.strokeDasharray  = 9 * graphView.zoom;
-            this.xp2.style.strokeDashoffset = 9 * graphView.zoom;
+            this.xp2.style.strokeDasharray  = 9 * graph.currentPage.zoom;
+            this.xp2.style.strokeDashoffset = 9 * graph.currentPage.zoom;
         }
         else
         {
@@ -52152,7 +52233,7 @@ class Wire
     
             let dl = 0.05;
     
-            dl /= Math.min(1 - (1 - graphView.zoom) / 1.75, 1);
+            dl /= Math.min(1 - (1 - graph.currentPage.zoom) / 1.75, 1);
     
             if (hcl[2] > 0.27 - dl && hcl[2] <= 0.27)
                 color = invalid2validRgb(hclok2rgb([hcl[0], hcl[1], 0.27 - dl]));
@@ -52201,7 +52282,7 @@ class Wire
         this.curve .style.stroke         = wireStyle;
         this.curve2.style.stroke         = rgb2style(rgbDocumentBody);
     
-        this.curve.style.strokeDasharray = unknown ? 1.7 * graphView.zoom : 0;
+        this.curve.style.strokeDasharray = unknown ? 1.7 * graph.currentPage.zoom : 0;
     
         this. inBall.style.fill          = wireStyle;
         this.outBall.style.fill          = wireStyle;
@@ -52220,15 +52301,15 @@ class Wire
     
     
         let width = 
-            graphView.zoom < 1
-            ? graphView.zoom + (Math.pow(2, graphView.zoom - 1) - graphView.zoom) * 0.333
-            : graphView.zoom;
+            graph.currentPage.zoom < 1
+            ? graph.currentPage.zoom + (Math.pow(2, graph.currentPage.zoom - 1) - graph.currentPage.zoom) * 0.333
+            : graph.currentPage.zoom;
     
         width *= 1.6;
     
     
-        //      if (graphView.zoom < 1/7) width += 1 * (1 - graphView.zoom) * (7 * graphView.zoom);
-        // else if (graphView.zoom < 1  ) width += 1 * (1 - graphView.zoom);
+        //      if (graph.currentPage.zoom < 1/7) width += 1 * (1 - graph.currentPage.zoom) * (7 * graph.currentPage.zoom);
+        // else if (graph.currentPage.zoom < 1  ) width += 1 * (1 - graph.currentPage.zoom);
     
     
         this.curve .setAttribute('stroke-width', width * (listType ? (unknown ? 3.6 : 3.2) : (unknown ? 1.3 : 1)));
@@ -52240,8 +52321,8 @@ class Wire
         this.curve2.setAttribute('display', listType ? 'inline' : 'none');
     
     
-        this. inBall.style.r = 3 * graphView.zoom;
-        this.outBall.style.r = 3 * graphView.zoom;
+        this. inBall.style.r = 3 * graph.currentPage.zoom;
+        this.outBall.style.r = 3 * graph.currentPage.zoom;
     }
     
     
@@ -52402,7 +52483,7 @@ class Operator
     constructor(type, id, name, defWidth = defNodeWidth, progressBar = false)
     {
         this.#type             = type;
-        this.id                = id;
+        this.id                = createNodeId(id);
         
         this.enabled           = true;
         this.cached            = true;
@@ -53068,29 +53149,29 @@ class Operator
     {
         this.div.style.transform =
               'translate(' 
-            + (graphView.pan.x * graphView.zoom) + 'px, '
-            + (graphView.pan.y * graphView.zoom) + 'px) '
-            + 'scale(' + graphView.zoom + ')';
+            + (graph.currentPage.pan.x * graph.currentPage.zoom) + 'px, '
+            + (graph.currentPage.pan.y * graph.currentPage.zoom) + 'px) '
+            + 'scale(' + graph.currentPage.zoom + ')';
 
         this.div.style.transformOrigin = 
-              ((graphView.pan.x - nodeLeft) / nodeRect.width  * 100) + '% ' 
-            + ((graphView.pan.y - nodeTop ) / nodeRect.height * 100) + '%';  
+              ((graph.currentPage.pan.x - nodeLeft) / nodeRect.width  * 100) + '% ' 
+            + ((graph.currentPage.pan.y - nodeTop ) / nodeRect.height * 100) + '%';  
     }
 
 
 
     getOffsetRect()
     {
-        const ox   = -graphView.pan.x / graphView.zoom;
-        const oy   = -graphView.pan.y / graphView.zoom;
+        const ox   = -graph.currentPage.pan.x / graph.currentPage.zoom;
+        const oy   = -graph.currentPage.pan.y / graph.currentPage.zoom;
 
         const rect = boundingRect(this.div);
 
         return new DOMRect(
-            ox + (rect.left / graphView.zoom),
-            oy + (rect.top  / graphView.zoom), 
-            rect.width      / graphView.zoom, 
-            rect.height     / graphView.zoom);
+            ox + (rect.left / graph.currentPage.zoom),
+            oy + (rect.top  / graph.currentPage.zoom), 
+            rect.width      / graph.currentPage.zoom, 
+            rect.height     / graph.currentPage.zoom);
     }
 
 
@@ -53420,6 +53501,13 @@ function nodesAreParallel(nodes)
 // }
 
 
+
+function createNodeId(id)
+{
+    return graph.currentPage.id + '/' + id;
+}
+
+
 var  newReorderIndex = Number.NaN;
 var prevReorderIndex = Number.NaN;
 var  oldReorderIndex = Number.NaN;
@@ -53613,8 +53701,8 @@ Operator.prototype.createHeader = function()
 
         const headerRect = boundingRect(this.header);
 
-        const rightOfInputs = e.clientX - headerRect.x > 12 * graphView.zoom;
-        const leftOfOutputs = e.clientX - headerRect.x < headerRect.width - 12 * graphView.zoom;
+        const rightOfInputs = e.clientX - headerRect.x > 12 * graph.currentPage.zoom;
+        const leftOfOutputs = e.clientX - headerRect.x < headerRect.width - 12 * graph.currentPage.zoom;
 
         const tempConn  = graphView. tempConn;
         let   savedConn = graphView.savedConn;
@@ -53631,8 +53719,8 @@ Operator.prototype.createHeader = function()
 
             graphView.setNodePositions(
                 graphView.selectedNodes,
-                (e.clientX - this.sx) / graphView.zoom,
-                (e.clientY - this.sy) / graphView.zoom);
+                (e.clientX - this.sx) / graph.currentPage.zoom,
+                (e.clientY - this.sy) / graph.currentPage.zoom);
             
             this.div.moved = true;
 
@@ -53657,7 +53745,7 @@ Operator.prototype.createHeader = function()
 
 
                     const index = Math.min(Math.max(0, Math.round(
-                          ((e.clientY - rect.y) / graphView.zoom - padding - (connectionSize + connectionGap)/2) 
+                          ((e.clientY - rect.y) / graph.currentPage.zoom - padding - (connectionSize + connectionGap)/2) 
                         / (connectionSize + connectionGap))),
                         this.headerInputs.length-(this.headerInputs.length > 1 ? 2 : 1));
 
@@ -53943,7 +54031,7 @@ Operator.prototype.createLabel = function()
 
         const wrect      = boundingRect(this.labelWrapper);
         const margin     = 14;
-        const viewMargin = margin * graphView.zoom;
+        const viewMargin = margin * graph.currentPage.zoom;
         
         const x          = e.clientX - wrect.x;
 
@@ -53965,7 +54053,7 @@ Operator.prototype.updateHeaderLabelOffsetX = function(f = this.labelOffsetFacto
 
 
     const margin     = 15;
-    const viewMargin = margin * graphView.zoom;
+    const viewMargin = margin * graph.currentPage.zoom;
 
     const wrect      = this.measureData.labelWrapperBounds;
     const rect       = this.measureData.labelBounds;
@@ -53987,7 +54075,7 @@ Operator.prototype.updateHeaderLabelOffsetX = function(f = this.labelOffsetFacto
     {
         this.label.style.left = 
             11 
-            - this.labelOffsetFactor * (rect.width - rw - 1) / graphView.zoom
+            - this.labelOffsetFactor * (rect.width - rw - 1) / graph.currentPage.zoom
             + (this.active ? activeOffset : 0);
             
         this.label.style.transform = 'none';
@@ -54285,9 +54373,9 @@ Operator.prototype.updateNode = function()
 Operator.prototype.updateBorder = function()
 {
     const scale = 
-        graphView.zoom >= 1
+        graph.currentPage.zoom >= 1
         ? 3
-        : 3 * (((1 / graphView.zoom - 1) / 2) + 1);
+        : 3 * (((1 / graph.currentPage.zoom - 1) / 2) + 1);
 
     this.div.style.boxShadow = 
         this._selected
@@ -54436,7 +54524,7 @@ Operator.prototype.updateHeaderLabel = function()
     
     this.label.style.top = 
           (  Math.floor(this.measureData.labelWrapperOffset.height/2 - this.measureData.labelOffset.height/2)
-           + Math.min(Math.max(1, 1/graphView.zoom), 2))
+           + Math.min(Math.max(1, 1/graph.currentPage.zoom), 2))
         + 'px';
 
 
@@ -54449,16 +54537,16 @@ Operator.prototype.updateHeaderLabel = function()
     let fontSize = 11;
 
     // compensate for bold active header names look THINNER when zoomed out
-         if (graphView.zoom < 0.5 ) fontSize = 17;
-    else if (graphView.zoom < 0.75) fontSize = 15;
-    else if (graphView.zoom < 1   ) fontSize = 13;
-    else if (graphView.zoom < 1.5 ) fontSize = 12;
+         if (graph.currentPage.zoom < 0.5 ) fontSize = 17;
+    else if (graph.currentPage.zoom < 0.75) fontSize = 15;
+    else if (graph.currentPage.zoom < 1   ) fontSize = 13;
+    else if (graph.currentPage.zoom < 1.5 ) fontSize = 12;
 
     this.label.style.color      = rgba2style(colors.text);
     this.label.style.fontSize   = this.active ? fontSize : 11;
     this.label.style.height     = this.active ? fontSize * 14 / 11 : 14;
 
-    this.label.style.fontWeight = graphView.zoom < 1.2 ? '600' : 'normal';
+    this.label.style.fontWeight = graph.currentPage.zoom < 1.2 ? '600' : 'normal';
 }
 
 
@@ -54466,7 +54554,7 @@ Operator.prototype.updateHeaderLabel = function()
 Operator.prototype.updateHeaderLabelText = function()
 {
     this.labelText.innerHTML = 
-          (settings.showNodeId ? 'ID: ' + this.id : this.name)
+          (settings.showNodeId ? this.id.replaceAll('/', ' / ') : this.name)
         + (this.active && this.showActiveArrow ? '  ‣' : '');
 }
 
@@ -54826,7 +54914,7 @@ extends OperatorBase
                 e.stopImmediatePropagation();
 
 
-                if (graphView.zoom < settings.minZoomForParams)
+                if (graph.currentPage.zoom < settings.minZoomForParams)
                 {
                     forwardEvent(e, this.header);
                     return;
@@ -54855,8 +54943,8 @@ extends OperatorBase
                 return;
 
 
-            const dx = (e.clientX - sizer.sx) / graphView.zoom;
-            const dy = (e.clientY - sizer.sy) / graphView.zoom;
+            const dx = (e.clientX - sizer.sx) / graph.currentPage.zoom;
+            const dy = (e.clientY - sizer.sy) / graph.currentPage.zoom;
         
             setRect(sizer, dx, dy);
                 
@@ -55020,7 +55108,7 @@ extends OperatorBase
 
     updateSizers()
     {
-        const edge   = Math.ceil(sizeBorderWidth / graphView.zoom);
+        const edge   = Math.ceil(sizeBorderWidth / graph.currentPage.zoom);
         const corner = Math.max(4, edge);
 
         this.sizerL .style.width  = edge; 
@@ -55042,7 +55130,7 @@ extends OperatorBase
         this.sizerBR.style.height = corner; 
 
 
-        const canReact = graphView.zoom >= settings.minZoomForParams;
+        const canReact = graph.currentPage.zoom >= settings.minZoomForParams;
 
         this.sizerL.style.cursor  = canReact ? 'ew-resize'   : 'default';
         this.sizerR.style.cursor  = canReact ? 'ew-resize'   : 'default';
@@ -63559,16 +63647,234 @@ extends OperatorBase
 }
 
 
+class GraphPage
+{
+    id;
+    name;
+
+    zoom = 1;
+    pan  = {x:0, y:0};
+
+
+    button;
+
+    btnIcon;
+    btnName;
+    btnClose;
+
+
+
+    _pan = point(0, 0);
+        
+    get pan() { return this._pan; }
+    set pan(pan)
+    {
+        if (this._pan == pan) return;
+
+        this._pan = pan;
+        
+        uiSavePage(this);//uiSaveGraphView();
+
+        graphView.updatePanAndZoom(true);
+    }
+    
+
+    _zoom = 1;
+    
+    get zoom() { return this._zoom; }
+    set zoom(zoom)
+    {
+        if (this._zoom == zoom) return;
+
+        let pos = point(
+            window.innerWidth /2,
+            window.innerHeight/2);
+
+        pos.y -= getTopHeight();
+
+        const _pan = subv(this.pan, mulvs(subv(pos, this.pan), zoom / this.zoom - 1));
+
+        this.setPanAndZoom(_pan, zoom);
+    }
+
+
+    setPanAndZoom(pan, zoom)
+    {
+        if (  (   pan  != this._pan
+               || zoom != this._zoom)
+            && zoom >= 0.02
+            && zoom <= 50)
+        {
+            graphView.oldZoom = this.zoom;
+    
+            this._zoom = zoom;
+            this._pan  = pan;
+    
+            
+            uiSavePage(this);//uiSaveGraphView();
+    
+    
+            graphView.panZoomTimer = setTimeout(() => 
+            {
+                graphView.updatePanAndZoom(this.zoom != graphView.oldZoom);
+                graphView.panZoomTimer = null;
+            });
+        }
+    };
+    
+    
+    
+    constructor(name)
+    {
+        let id = 
+              name.substring(0, 1).toLowerCase() 
+            + name.substring(1);
+
+
+        this.name     = name;
+        this.id       = getNewNodeId(graph.pages, id);
+
+
+        this.button   = createDiv('page');
+
+        this.btnIcon  = createDiv('pageIcon');
+        this.btnName  = createDiv('pageName');
+        this.btnClose = createDiv('pageClose');
+
+
+        this.button  .appendChild(this.btnIcon);
+        this.button  .appendChild(this.btnName);
+        this.button  .appendChild(this.btnClose);
+
+
+
+        this.button.addEventListener('pointerenter', e => 
+        { 
+            graph.overIndex = graph.pages.indexOf(this); 
+            graph.updatePages(); 
+        });
+        
+        
+        this.button.addEventListener('pointerleave', e => 
+        { 
+            graph.overIndex = -1;
+            graph.updatePages(); 
+        });
+        
+        
+        this.button.addEventListener('pointerdown' , e => 
+        { 
+            graph.pageIndex = graph.pages.indexOf(this); 
+            graph.updatePages(); 
+        });
+
+
+
+        this.btnClose.addEventListener('pointerenter', e => 
+        { 
+            this.btnClose.style.opacity = 1;    
+        });
+        
+        
+        this.btnClose.addEventListener('pointerleave', e => 
+        { 
+            this.btnClose.style.opacity = 0.65; 
+        });
+        
+        
+        this.btnClose.addEventListener('pointerup', e => 
+        { 
+            /*nothing for now, TODO*/ 
+            graph.updatePages(); 
+        });
+    }
+
+
+
+    update()
+    {
+        const index = graph.pages.indexOf(this);
+
+        const isCurrent = 
+               index == graph.pageIndex
+            || index == graph.overIndex;
+
+        this.btnIcon .innerHTML           = iconPage;
+        this.btnName .innerHTML           = this.name;
+        this.btnClose.innerHTML           = iconPageClose;
+        
+        this.button  .style.background    = isCurrent ? '#2c2c2c' : (document.hasFocus() ? '#202020' : '#383838');
+        
+        this.btnIcon .style.display       = this.button.offsetWidth >= 75 ? 'inline-block' : 'none';
+        this.btnIcon .style.opacity       = isCurrent ? 1 : 0.35;
+        
+        this.btnName .style.color         = isCurrent ? '#fffffff0' : '#fff6';
+        this.btnName .style.fontWeight    = isCurrent ? 600 : 500;
+
+        this.btnClose.style.pointerEvents = isCurrent && graph.pages.length > 1 ? 'all' : 'none';
+        this.btnClose.style.visibility    = isCurrent && graph.pages.length > 1 ? 'visible' : 'hidden';
+        this.btnClose.style.opacity       = 0.65;
+    }
+
+
+
+    toJson()
+    {
+        const tab = '\n' + HTAB;
+
+        return '{'
+            + tab + '"id": "'   + this.id    + '",'
+            + tab + '"name": "' + this.name  + '",'
+            + tab + '"zoom": "' + graph.currentPage.zoom  + '",'
+            + tab + '"panx": "' + graph.currentPage.pan.x + '",'
+            + tab + '"pany": "' + graph.currentPage.pan.y + '"'
+            + '\n}';
+    }
+
+
+    
+    load(json)
+    {
+        this.pan  = point(0, 0);
+        this.zoom = 1;
+    
+        
+        if (json)
+        {
+            const data = JSON.parse(json);
+    
+            this.pan = point( 
+                parseFloat(data.panx), 
+                parseFloat(data.pany));
+    
+            if (isNaN(this.pan.x)) this.pan.x = 0;
+            if (isNaN(this.pan.y)) this.pan.y = 0;
+    
+            
+            this.zoom = parseFloat(data.zoom);
+            if (isNaN(this.zoom)) this.zoom = 1;
+        }
+    }
+}
+
+
 class Graph
 {
     parentNodeGroup = null;
 
 
-    nodes            = [];
-    deferNodeIds     = [];
-    
+    pages           = [];
 
-    connections      = [];
+    pageIndex       = -1;
+    overIndex       = -1;
+    
+    get currentPage() { return this.pages[this.pageIndex]; }
+   
+    
+    nodes           = [];
+    deferNodeIds    = [];
+    
+    connections     = [];
 
 
 
@@ -63579,60 +63885,6 @@ class Graph
     }
 
 
-
-    getNewNodeId(curId, id)
-    {
-        if (!this.nodes.find(n => n.id == id))
-            return id;
-        
-
-        let numLength = this.getNumLength(id);
-
-        if (numLength > 0)
-        {
-            const len = id.length - numLength;
-            let   num = parseInt(id.substring(len));
-
-            let newId = '';
-            while (newId == '' || this.nodes.find(n => n.id == newId))
-                newId = id.substring(0, len) + (++num);
-
-            return newId;
-        }
-
-        else if (numLength == 0)
-        {
-            let num   = 2;
-            let newId = id + num;
-
-            while (this.nodes.find(n => 
-                   n.id != curId 
-                && n.id == newId))
-                newId = id + (++num);
-
-            return newId;
-        }
-
-        else
-            return id;
-    }
-    
-    
-    
-    getNumLength(name)
-    {
-        let numLength = 0;
-
-        for (let i = name.length - 1; i >= 0; i--)
-        {
-            if (isDigit(name[i])) numLength++;
-            else break;
-        }
-
-        return numLength;
-    }
-    
-    
 
     addNodes(nodes, placeNode = true)
     {
@@ -63646,7 +63898,7 @@ class Graph
     {
         node.graph = this;
 
-        node.id = this.getNewNodeId(node.id, node.id);
+        node.id = getNewNodeId(this.nodes, node.id);
         
         this.nodes.push(node);
         graphView.div.appendChild(node.div);
@@ -64268,6 +64520,63 @@ function getActiveNodesFromNode(node, alreadyChecked = [])
 
     return activeNodes;
 }
+
+
+Graph.prototype.addPage = function(name)
+{
+    const page = new GraphPage(name);
+
+    this.pages.push(page);
+
+    
+    pagesBar.insertBefore(page.button, btnAddPage);
+
+
+    if (this.pageIndex < 0)
+        this.pageIndex = 0;
+};
+
+
+
+Graph.prototype.updatePages = function()
+{
+    pagesBar.style.background = document.hasFocus() ? '#202020' : '#383838';
+    pagesBar.style.display    = settings.showPages ? 'inline-block' : 'none';
+    
+    this.pages.forEach(p => p.update());
+    
+    updateAddButton(false);
+
+
+    // for (const node of graph.nodes)
+    // {
+    //     const id = node.id.split('/');
+
+    //     const pageId = id.length > 1 ? id[0]     : '';
+    //     const nodeId = id.length > 1 ? id.at(-1) : id[0];
+
+    //     node.div.style.display = pageId == graph.currentPage.id ? 'block' : 'none';
+    // }
+}
+
+
+
+function updateAddButton(over)
+{
+    btnAddPage.style.background = over ? '#2c2c2c' : (document.hasFocus() ? '#202020' : '#383838');
+    btnAddPlus.style.fill       = over ? '#ffffffe0' : 'rgba(255, 255, 255, 0.35)';
+}
+
+
+
+btnAddPage.addEventListener('pointerenter', e => updateAddButton(true ));
+btnAddPage.addEventListener('pointerleave', e => updateAddButton(false));
+
+btnAddPage.addEventListener('pointerup', e => 
+{
+    graph.addPage('Graph');
+    graph.updatePages();
+});
 
 
 class Action
@@ -67994,7 +68303,7 @@ document.addEventListener('pointerdown', function(e)
             document.sx = e.clientX;
             document.sy = e.clientY;
 
-            document.startPan = graphView.pan;
+            document.startPan = graph.currentPage.pan;
 
 
             uiPostMessageToFigma({
@@ -68055,7 +68364,7 @@ document.addEventListener('pointermove', function(e)
             document.startRect.width - e.clientX + document.sx,
             document.startRect.height);
 
-        //graphView.pan = point(document.startPan.x - e.clientX, document.startPan.y);
+        //graph.currentPage.pan = point(document.startPan.x - e.clientX, document.startPan.y);
     }
     else if (document.resizingR
           && document.startRectIsValid)
@@ -68111,8 +68420,8 @@ document.addEventListener('pointerup', function(e)
 
 
 
-window.addEventListener('focus', () => updatePages());
-window.addEventListener('blur',  () => updatePages());
+window.addEventListener('focus', () => graph.updatePages());
+window.addEventListener('blur',  () => graph.updatePages());
 
 document.addEventListener('contextmenu', e => e.preventDefault());
 
@@ -68364,20 +68673,20 @@ document.addEventListener('keydown', e =>
     else if (e.code == 'Minus'
           || e.code == 'NumpadSubtract')
     {
-        graphView.zoom /= Math.pow(2, 1/2);
+        graph.currentPage.zoom /= Math.pow(2, 1/2);
     }
 
     else if (e.code == 'Equal'
           || e.code == 'NumpadAdd')
     {
-        graphView.zoom *= Math.pow(2, 1/2);
+        graph.currentPage.zoom *= Math.pow(2, 1/2);
     }
 
     else if ((   e.code == 'Digit0'
               || e.code == 'Numpad0')
           && getCtrlKey(e))
     {
-        graphView.zoom = 1;
+        graph.currentPage.zoom = 1;
         uiNotify('Zoom to 100%');
     }
 
@@ -69036,122 +69345,6 @@ function setAutoCursor()
 };
 
 
-var graphPages   = [];
-
-var curPageIndex  = 0;
-var overPageIndex = -1;
-
-addPage('page1', 'Page 1');
-addPage('page2', 'Page 2');
-addPage('page3', 'Page 3');
-addPage('page4', 'Page 4');
-
-
-
-function curPage()
-{
-    return graphPages[curPageIndex];
-}
-
-
-
-function addPage(id, name)
-{
-    const btn      = createDiv('page');
-    
-    const btnIcon  = createDiv('pageIcon');
-    const btnName  = createDiv('pageName');
-    const btnClose = createDiv('pageClose');
-
-    btn.appendChild(btnIcon);
-    btn.appendChild(btnName);
-    btn.appendChild(btnClose);
-
-
-    const page =
-    {
-        id:       id, 
-        name:     name,
-        button:   btn,
-        btnIcon:  btnIcon,
-        btnName:  btnName,
-        btnClose: btnClose
-    };
-
-
-    btn.addEventListener('pointerenter', e => { overPageIndex = graphPages.indexOf(page); updatePages(); });
-    btn.addEventListener('pointerleave', e => { overPageIndex = -1;                       updatePages(); });
-    btn.addEventListener('pointerdown' , e => { curPageIndex  = graphPages.indexOf(page); updatePages(); });
-
-    btnClose.addEventListener('pointerenter', e => { btnClose.style.opacity = 1;    });
-    btnClose.addEventListener('pointerleave', e => { btnClose.style.opacity = 0.65; });
-    btnClose.addEventListener('pointerup'   , e => { /*nothing for now, TODO*/ updatePages(); });
-
-
-    graphPages.push(page);
-    pagesHolder.appendChild(page.button);
-
-
-    updatePages();
-}
-
-
-
-function updatePage(page)
-{
-    const index = Array.prototype.indexOf.call(pagesHolder.childNodes, page.button);
-
-    const isCurrent = 
-           index ==  curPageIndex
-        || index == overPageIndex;
-
-    pagesBar.style.background      = document.hasFocus() ? '#202020' : '#383838';
-
-    page.btnIcon .innerHTML        = iconPage;
-    page.btnName .innerHTML        = page.name;
-    page.btnClose.innerHTML        = iconPageClose;
-
-    page.button  .style.background = isCurrent ? '#2c2c2c' : (document.hasFocus() ? '#202020' : '#383838');
-    page.btnIcon .style.opacity    = isCurrent ? 1 : 0.35;
-    page.btnName .style.color      = isCurrent ? '#fffffff0' : '#fff6';
-    page.btnName .style.fontWeight = isCurrent ? 600 : 500;
-    page.btnClose.style.display    = isCurrent ? 'inline-block' : 'none';
-    page.btnClose.style.opacity    = 0.65;
-}
-
-
-
-function updatePages()
-{
-    pagesBar.style.display = 
-        settings.showPages
-        ? 'inline-block'
-        : 'none';
-    
-    for (const page of graphPages)
-        updatePage(page);
-    
-    updateAddButton(false);
-}
-
-
-
-function updateAddButton(over)
-{
-    btnAddPage .style.background = over ? '#2c2c2c' : (document.hasFocus() ? '#202020' : '#383838');
-    addPagePlus.style.opacity    = over ? 1 : 0.35;
-}
-
-
-
-btnAddPage.addEventListener('pointerenter', e => updateAddButton(true ));
-btnAddPage.addEventListener('pointerleave', e => updateAddButton(false));
-btnAddPage.addEventListener('pointerup'   , e => {addPage('page4', 'Page 4');});
-
-
-addPagePlus.innerHTML = iconAddPage;
-
-
 var productKey = NULL;
 
 
@@ -69739,42 +69932,6 @@ function uiReturnFigGetPageData(msg)
 
 
 
-function uiLoadGraphView(json)
-{
-    graphView.loadingNodes   = true;
-    graphView.canUpdateNodes = false;
-   
-    let pan  = point(0, 0);
-    let zoom = 1;
-
-    
-    if (json)
-    {
-        const data = JSON.parse(json);
-
-        pan = point( 
-            parseFloat(data.panx), 
-            parseFloat(data.pany));
-
-        if (isNaN(pan.x)) pan.x = 0;
-        if (isNaN(pan.y)) pan.y = 0;
-
-        
-        zoom = parseFloat(data.zoom);
-        if (isNaN(zoom)) zoom = 1;
-    }
-
-
-    graphView._zoom = zoom;
-    graphView._pan  = pan;
-
-
-    if (!settings.dataMode)
-        graphView.updatePanAndZoom(true);
-}
-
-
-
 function uiReturnFigLoadNodesAndConns(msg)
 {
     if (settings.logRawLoadNodes)
@@ -69803,18 +69960,42 @@ function uiReturnFigLoadNodesAndConns(msg)
     }
 
     
-    const _graphView          = msg.graphView;
-
+    //const _graphView          = msg.graphView;
     const _showAllColorSpaces = msg.showAllColorSpaces;
 
-
-    uiLoadGraphView(_graphView);
 
     updateSettingAndMenu(
         'showAllColorSpaces',
         _showAllColorSpaces, 
         _showAllColorSpaces ? parseBool(_showAllColorSpaces) : false,
         false); 
+
+
+    graphView.loadingNodes   = true;
+    graphView.canUpdateNodes = false;
+
+
+    //uiLoadGraphView(_graphView);
+
+
+    // const pagesIds = msg.pageIds.split(',');
+
+    // if (!isEmpty(pageIds))
+    // {
+    //     for (const pageId of pageIds)
+    //         graph.addPage('Graph');
+    // }
+    // else
+    // {
+        graph.addPage('Graph');
+
+        // graph.currentPage._zoom = zoom;
+        // graph.currentPage._pan  = pan;
+
+
+    if (!settings.dataMode)
+        graphView.updatePanAndZoom(true);
+        //}
 
 
     let _nodeKeys  = msg.nodeKeys;
@@ -70126,10 +70307,10 @@ function parseConnectionsAndConnect(data, pasteConnected, setProgress = null)
 
 
 
-function uiSaveGraphView()
-{
-    uiSetPageData(currentUser.id + ',graphView', graphView.toJson());
-}
+// function uiSaveGraphView()
+// {
+//     uiSetPageData(currentUser.id + ',graphView', graphView.toJson());
+// }
 
 
 
@@ -70371,7 +70552,7 @@ function hideTooltip(tooltip)
 
 function updateZoomTooltip()
 {
-    if (graphView.zoom < settings.minZoomForParams)
+    if (graph.currentPage.zoom < settings.minZoomForParams)
     {
         ttMinValueZoom.innerHTML =
               '<p style="margin-top: 1px; width: 100%; text-align: center; position: relative; left: -2px;">Zoom/view options</p>'
@@ -70908,7 +71089,7 @@ function uiPasteNodes(nodesJson, pasteConnected, x, y, updateNodes)
 
         for (let i = 0; i < data.nodes.length; i++)
         {
-            data.nodes[i].x = x + positions[i].x - positions[0].x + 5 / graphView.zoom;
+            data.nodes[i].x = x + positions[i].x - positions[0].x + 5 / graph.currentPage.zoom;
             data.nodes[i].y = y + positions[i].y - positions[0].y;
         }
     }
@@ -71211,7 +71392,12 @@ function uiUpdateValuesAndObjects(requestId, actionId, updateNodeId, updateParam
     if (isLastChunk)
     {
         if (graphView.loadingNodes)
-          uiSaveNodes(graph.nodes.map(n => n.id));
+        {
+            uiSaveNodes(graph.nodes.map(n => n.id));
+            
+            uiSavePages();
+            graph.updatePages();
+        }
 
         graphView.creatingNodes      = false;
         graphView.pastingNodes       = false;
@@ -71230,6 +71416,15 @@ function uiUpdateValuesAndObjects(requestId, actionId, updateNodeId, updateParam
 function uiToggleDisableNodes(nodes)
 {
     nodes.forEach(n => { n.enabled = !n.enabled; });
+}
+
+
+
+function uiSavePages()
+{
+    uiQueueMessageToFigma({
+        cmd:    'figSavePages',
+        pageIds: graph.pages.map(p => p.id).join(',') });
 }
 
 

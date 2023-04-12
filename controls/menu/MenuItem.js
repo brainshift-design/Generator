@@ -203,8 +203,8 @@ class MenuItem
                     node.sx  = node.div.offsetLeft;
                     node.sy  = node.div.offsetTop ;
 
-                    node.slx = node.div.offsetLeft - (defNodeWidth    / 2) - (              + graphView.pan.x) / graphView.zoom;
-                    node.sly = node.div.offsetTop  - (defHeaderHeight / 2) - (getTopHeight() + graphView.pan.y) / graphView.zoom;
+                    node.slx = node.div.offsetLeft - (defNodeWidth    / 2) - (              + graph.currentPage.pan.x) / graph.currentPage.zoom;
+                    node.sly = node.div.offsetTop  - (defHeaderHeight / 2) - (getTopHeight() + graph.currentPage.pan.y) / graph.currentPage.zoom;
 
                     node.div.dragging = true;
                     node.header.setPointerCapture(e.pointerId);

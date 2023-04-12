@@ -1,29 +1,3 @@
-GraphView.prototype.setPanAndZoom = function(pan, zoom)
-{
-    if (  (   pan  != this._pan
-           || zoom != this._zoom)
-        && zoom >= 0.02
-        && zoom <= 50)
-    {
-        this.oldZoom = this.zoom;
-
-        this._zoom = zoom;
-        this._pan  = pan;
-
-        
-        uiSaveGraphView();
-
-
-        this.panZoomTimer = setTimeout(() => 
-        {
-            this.updatePanAndZoom(this.zoom != this.oldZoom);
-            this.panZoomTimer = null;
-        });
-    }
-};
-
-
-
 GraphView.prototype.updatePanAndZoom = function(updateNodes)
 {
     this.updateNodes(graph.nodes, updateNodes);
@@ -34,11 +8,11 @@ GraphView.prototype.updatePanAndZoom = function(updateNodes)
         updateZoomTooltip();
         updateZoomIcon();
 
-        menuItemZoomTo100.setChecked(equal(this.zoom, 1, 0.0001));
+        menuItemZoomTo100.setChecked(equal(graph.currentPage.zoom, 1, 0.0001));
     });
 
 
-    //console.log('pan = %s, zoom = %s', this.pan.x + ', ' + this.pan.y, this.zoom);
+    //console.log('pan = %s, zoom = %s', graph.currentPage.pan.x + ', ' + graph.currentPage.pan.y, graph.currentPage.zoom);
 };
 
 
@@ -48,7 +22,7 @@ GraphView.prototype.startPan = function(pointerId)
     this.div.setPointerCapture(pointerId);
 
     this.panning  = true;
-    this.panStart = this.pan;
+    this.panStart = graph.currentPage.pan;
 
     setCursor(panCursor);
 };
@@ -130,7 +104,7 @@ GraphView.prototype.endZoomSelection = function(pointerId, zoom)
 {
     if (zoom)
     {
-        this.oldZoom = this.zoom;
+        this.oldZoom = graph.currentPage.zoom;
 
 
         const wndRect = new Rect(
@@ -198,12 +172,12 @@ GraphView.prototype.zoomToNodes = function(nodes)
 GraphView.prototype.zoomToRect = function(rect, margin = 40)
 {
     const viewRect   = this.measureData.clientRect;
-console.log('viewRect =', viewRect);
+
     const viewAspect = viewRect.width / viewRect.height;
     const rectAspect = rect.width     / rect.height;
 
 
-    this.zoom = 
+    graph.currentPage.zoom = 
         viewRect.width >= viewRect.height
     
         ? (   rect.width >= rect.height
@@ -217,10 +191,10 @@ console.log('viewRect =', viewRect);
            : (viewRect.width  - margin*2) / rect.width );
 
 
-    this.pan = 
+    graph.currentPage.pan = 
     {
-        x: viewRect.width /2 - (rect.x + rect.width /2) * this.zoom,
-        y: viewRect.height/2 - (rect.y + rect.height/2) * this.zoom
+        x: viewRect.width /2 - (rect.x + rect.width /2) * graph.currentPage.zoom,
+        y: viewRect.height/2 - (rect.y + rect.height/2) * graph.currentPage.zoom
     };
 };
 
@@ -228,20 +202,20 @@ console.log('viewRect =', viewRect);
 
 function updateZoomIcon()
 {
-    btnZoom.divIcon.innerHTML       =  Math.round(graphView.zoom * 100) + '%';
+    btnZoom.divIcon.innerHTML       =  Math.round(graph.currentPage.zoom * 100) + '%';
     btnZoom.divIcon.style.transform = 'translateX(2px) translateY(-16px)';
 
 
-    if (   graphView.zoom < settings.minZoomForParams
-        && graphView.zoom < 1)
+    if (   graph.currentPage.zoom < settings.minZoomForParams
+        && graph.currentPage.zoom < 1)
     {
         zoomIconOverlay.style.left       = '14px';
         zoomIconOverlay.style.top        = '10px';
         zoomIconOverlay.style.width      = '28';
         zoomIconOverlay.style.background = 'url(\'data:image/svg+xml;utf8,<svg width="28" height="20" viewBox="0 0 28 20" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M4 0.5H24C25.933 0.5 27.5 2.067 27.5 4V19.5H0.5V4C0.5 2.067 2.067 0.5 4 0.5Z" stroke="white"/></svg>\')';
     }
-    else if (graphView.zoom < settings.minZoomForParams
-          && graphView.zoom < 10)
+    else if (graph.currentPage.zoom < settings.minZoomForParams
+          && graph.currentPage.zoom < 10)
     {
         zoomIconOverlay.style.left       = '12px';
         zoomIconOverlay.style.top        = '10px';

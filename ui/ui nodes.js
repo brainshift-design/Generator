@@ -443,7 +443,7 @@ function uiPasteNodes(nodesJson, pasteConnected, x, y, updateNodes)
 
         for (let i = 0; i < data.nodes.length; i++)
         {
-            data.nodes[i].x = x + positions[i].x - positions[0].x + 5 / graphView.zoom;
+            data.nodes[i].x = x + positions[i].x - positions[0].x + 5 / graph.currentPage.zoom;
             data.nodes[i].y = y + positions[i].y - positions[0].y;
         }
     }
@@ -746,7 +746,12 @@ function uiUpdateValuesAndObjects(requestId, actionId, updateNodeId, updateParam
     if (isLastChunk)
     {
         if (graphView.loadingNodes)
-          uiSaveNodes(graph.nodes.map(n => n.id));
+        {
+            uiSaveNodes(graph.nodes.map(n => n.id));
+            
+            uiSavePages();
+            graph.updatePages();
+        }
 
         graphView.creatingNodes      = false;
         graphView.pastingNodes       = false;
@@ -765,6 +770,15 @@ function uiUpdateValuesAndObjects(requestId, actionId, updateNodeId, updateParam
 function uiToggleDisableNodes(nodes)
 {
     nodes.forEach(n => { n.enabled = !n.enabled; });
+}
+
+
+
+function uiSavePages()
+{
+    uiQueueMessageToFigma({
+        cmd:    'figSavePages',
+        pageIds: graph.pages.map(p => p.id).join(',') });
 }
 
 

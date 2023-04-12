@@ -176,7 +176,7 @@ class Output
     canReact(e)
     {
         if (   settings.enableZoomedOutParams
-            || graphView.zoom > settings.minZoomForParams)
+            || graph.currentPage.zoom > settings.minZoomForParams)
             return true;
 
         e.preventDefault();

@@ -71,6 +71,9 @@ function figClearPageData(key)
 
 function figLoadNodesAndConns(dataMode)
 {
+    // const pageIds  = figma.currentPage.getPluginData('pages');
+
+
     const nodeKeys = figma.currentPage.getPluginDataKeys().filter(k => isNodeKey(k));
     const connKeys = figma.currentPage.getPluginDataKeys().filter(k => isConnKey(k));
 
@@ -90,8 +93,9 @@ function figLoadNodesAndConns(dataMode)
 
     figPostMessageToUi({
         cmd:               'uiReturnFigLoadNodesAndConns',
-        graphView:          graphView,
+        // graphView:          graphView,
         showAllColorSpaces: showAllColorSpaces,
+        //pageIds:            pageIds,
         nodeKeys:           nodeKeys,
         nodeJson:           nodes,
         connKeys:           connKeys,
@@ -148,6 +152,13 @@ function figMarkForLoading(nodeKeys, connKeys)
         figma.currentPage.getPluginData(k)
             .replace(set, not)
             .replace(not, set)));
+}
+
+
+
+function figSavePages(pageIds)
+{
+    figSetPageData('pages', pageIds);
 }
 
 

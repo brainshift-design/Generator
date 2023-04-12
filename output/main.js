@@ -27,6 +27,7 @@ const GENERATOR_LOGO = '◦ G •';
 const OBJECT_PREFIX = 'G.';
 const nodeTag = 'G_NODE';
 const connTag = 'G_CONN';
+const pageTag = 'G_PAGE';
 function toInt(f) { return Math.floor(f) | 0; }
 function nextPow2(x) {
     x = toInt(x);
@@ -93,6 +94,7 @@ function leftArrowChar(list) { return list ? '⟸' : '⟵'; }
 function rightArrowChar(list) { return list ? '⟹' : '⟶'; }
 function nodeNameForStorage(nodeId) { return nodeTag + ' ' + nodeId; }
 function connNameForStorage(name) { return connTag + ' ' + name; }
+function pageNameForStorage(name) { return pageTag + ' ' + name; }
 function parseBool(str) {
     return str.toLowerCase() == 'true'
         || str == '1';
@@ -129,6 +131,9 @@ function getConnectionString(outputNodeId, outputId, outputOrder, inputNodeId, i
         + arrow
         + inputNodeId + join + inputId
         + ' )';
+}
+function getPageKey(pageId) {
+    return pageNameForStorage(pageId);
 }
 function superscriptNumber(num) {
     const str = num.toString();
@@ -874,6 +879,9 @@ figma.ui.onmessage = function (msg) {
         case 'figSetPageData':
             figSetPageData(msg.key, msg.value);
             break;
+        case 'figSavePages':
+            figSavePages(msg.pageIds);
+            break;
         case 'figLoadNodesAndConns':
             figLoadNodesAndConns(msg.dataMode);
             break;
@@ -1520,6 +1528,7 @@ function figClearPageData(key) {
     figma.currentPage.setPluginData(key, '');
 }
 function figLoadNodesAndConns(dataMode) {
+    // const pageIds  = figma.currentPage.getPluginData('pages');
     const nodeKeys = figma.currentPage.getPluginDataKeys().filter(k => isNodeKey(k));
     const connKeys = figma.currentPage.getPluginDataKeys().filter(k => isConnKey(k));
     if (!dataMode)
@@ -1531,8 +1540,9 @@ function figLoadNodesAndConns(dataMode) {
     const showAllColorSpaces = figma.currentPage.getPluginData('showAllColorSpaces');
     figPostMessageToUi({
         cmd: 'uiReturnFigLoadNodesAndConns',
-        graphView: graphView,
+        // graphView:          graphView,
         showAllColorSpaces: showAllColorSpaces,
+        //pageIds:            pageIds,
         nodeKeys: nodeKeys,
         nodeJson: nodes,
         connKeys: connKeys,
@@ -1569,6 +1579,9 @@ function figMarkForLoading(nodeKeys, connKeys) {
     connKeys.forEach(k => figma.currentPage.setPluginData(k, figma.currentPage.getPluginData(k)
         .replace(set, not)
         .replace(not, set)));
+}
+function figSavePages(pageIds) {
+    figSetPageData('pages', pageIds);
 }
 function figSaveNodes(nodeIds, nodeJson) {
     for (let i = 0; i < nodeIds.length; i++) {

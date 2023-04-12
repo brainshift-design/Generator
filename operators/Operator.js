@@ -133,7 +133,7 @@ class Operator
     constructor(type, id, name, defWidth = defNodeWidth, progressBar = false)
     {
         this.#type             = type;
-        this.id                = id;
+        this.id                = createNodeId(id);
         
         this.enabled           = true;
         this.cached            = true;
@@ -799,29 +799,29 @@ class Operator
     {
         this.div.style.transform =
               'translate(' 
-            + (graphView.pan.x * graphView.zoom) + 'px, '
-            + (graphView.pan.y * graphView.zoom) + 'px) '
-            + 'scale(' + graphView.zoom + ')';
+            + (graph.currentPage.pan.x * graph.currentPage.zoom) + 'px, '
+            + (graph.currentPage.pan.y * graph.currentPage.zoom) + 'px) '
+            + 'scale(' + graph.currentPage.zoom + ')';
 
         this.div.style.transformOrigin = 
-              ((graphView.pan.x - nodeLeft) / nodeRect.width  * 100) + '% ' 
-            + ((graphView.pan.y - nodeTop ) / nodeRect.height * 100) + '%';  
+              ((graph.currentPage.pan.x - nodeLeft) / nodeRect.width  * 100) + '% ' 
+            + ((graph.currentPage.pan.y - nodeTop ) / nodeRect.height * 100) + '%';  
     }
 
 
 
     getOffsetRect()
     {
-        const ox   = -graphView.pan.x / graphView.zoom;
-        const oy   = -graphView.pan.y / graphView.zoom;
+        const ox   = -graph.currentPage.pan.x / graph.currentPage.zoom;
+        const oy   = -graph.currentPage.pan.y / graph.currentPage.zoom;
 
         const rect = boundingRect(this.div);
 
         return new DOMRect(
-            ox + (rect.left / graphView.zoom),
-            oy + (rect.top  / graphView.zoom), 
-            rect.width      / graphView.zoom, 
-            rect.height     / graphView.zoom);
+            ox + (rect.left / graph.currentPage.zoom),
+            oy + (rect.top  / graph.currentPage.zoom), 
+            rect.width      / graph.currentPage.zoom, 
+            rect.height     / graph.currentPage.zoom);
     }
 
 
@@ -1149,3 +1149,10 @@ function nodesAreParallel(nodes)
 //         }
 //     }
 // }
+
+
+
+function createNodeId(id)
+{
+    return graph.currentPage.id + '/' + id;
+}

@@ -145,7 +145,7 @@ GraphView.prototype.createEvents = function()
                     &&  this.selectionRect.h != 0
                     && !this.altDown)
                 {
-                    this.oldZoom = this.zoom;
+                    this.oldZoom = graph.currentPage.zoom;
                     this.endZoomSelection(e.pointerId, true);
                 }
                 else if (this.altDown)
@@ -159,14 +159,14 @@ GraphView.prototype.createEvents = function()
                     const selection = Rect.fromTypical(this.selectionRect);
 
 
-                    this.oldZoom = this.zoom;
+                    this.oldZoom = graph.currentPage.zoom;
                     this.endZoomSelection(e.pointerId, false);
 
-                    this.zoom /= 2;
+                    graph.currentPage.zoom /= 2;
                     
                     
-                    this.pan.x += wndRect.c - selection.c;
-                    this.pan.y += wndRect.m - selection.m;
+                    graph.currentPage.pan.x += wndRect.c - selection.c;
+                    graph.currentPage.pan.y += wndRect.m - selection.m;
 
 
                     this.updateNodes();
@@ -215,7 +215,7 @@ GraphView.prototype.createEvents = function()
         e.preventDefault();
 
 
-        const dZoom = Math.log(this.zoom) / Math.log(2);
+        const dZoom = Math.log(graph.currentPage.zoom) / Math.log(2);
 
 
         const touchpad = isTouchpad(e);
@@ -233,7 +233,7 @@ GraphView.prototype.createEvents = function()
                 e.clientY - getTopHeight());
 
             const zoom = Math.max(0.0001, Math.pow(2, dZoom - dWheelY / (touchpad ? 4 : 10)));
-            const pan  = subv(this.pan, mulvs(subv(pos, this.pan), zoom / this.zoom - 1));
+            const pan  = subv(graph.currentPage.pan, mulvs(subv(pos, graph.currentPage.pan), zoom / graph.currentPage.zoom - 1));
 
             this.setPanAndZoom(pan, zoom);
 
@@ -241,12 +241,12 @@ GraphView.prototype.createEvents = function()
         }
         else
         {
-            const dPanX = (e.shiftKey ? dWheelY : dWheelX) * 20 / Math.pow(this.zoom, 0.1);
-            const dPanY = (e.shiftKey ? dWheelX : dWheelY) * 20 / Math.pow(this.zoom, 0.1);
+            const dPanX = (e.shiftKey ? dWheelY : dWheelX) * 20 / Math.pow(graph.currentPage.zoom, 0.1);
+            const dPanY = (e.shiftKey ? dWheelX : dWheelY) * 20 / Math.pow(graph.currentPage.zoom, 0.1);
 
-            this.pan = point(
-                this.pan.x - dPanX,
-                this.pan.y - dPanY);
+            graph.currentPage.pan = point(
+                graph.currentPage.pan.x - dPanX,
+                graph.currentPage.pan.y - dPanY);
 
             
             if (this.selecting)
@@ -274,7 +274,7 @@ GraphView.prototype.createEvents = function()
 
 
 
-    this.div.addEventListener('gesturestart', e => { this.zoomStart = this.zoom; });
+    this.div.addEventListener('gesturestart', e => { this.zoomStart = graph.currentPage.zoom; });
 
 
 
@@ -285,7 +285,7 @@ GraphView.prototype.createEvents = function()
             this.p.y - getTopHeight());
 
         const zoom = this.zoomStart * e.scale;
-        const pan  = subv(this.pan, mulvs(subv(p, this.pan), zoom / this.zoom - 1));
+        const pan  = subv(graph.currentPage.pan, mulvs(subv(p, graph.currentPage.pan), zoom / graph.currentPage.zoom - 1));
 
         this.setPanAndZoom(pan, zoom);
     });
@@ -375,9 +375,9 @@ function graphView_onpointermove(e)
 
         const dp = subv(graphView.p, graphView.pStart);
 
-        graphView.setPanAndZoom(
+        graph.currentPage.setPanAndZoom(
             addv(graphView.panStart, dp), 
-            graphView.zoom);
+            graph.currentPage.zoom);
     }
 
     else if (graphView.selecting)
@@ -389,6 +389,3 @@ function graphView_onpointermove(e)
     else if (graphView.tempConn)
         graphView.tempConn.wire.update(e.clientX, e.clientY);
 }
-
-
-

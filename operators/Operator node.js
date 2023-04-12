@@ -191,8 +191,8 @@ Operator.prototype.createHeader = function()
 
         const headerRect = boundingRect(this.header);
 
-        const rightOfInputs = e.clientX - headerRect.x > 12 * graphView.zoom;
-        const leftOfOutputs = e.clientX - headerRect.x < headerRect.width - 12 * graphView.zoom;
+        const rightOfInputs = e.clientX - headerRect.x > 12 * graph.currentPage.zoom;
+        const leftOfOutputs = e.clientX - headerRect.x < headerRect.width - 12 * graph.currentPage.zoom;
 
         const tempConn  = graphView. tempConn;
         let   savedConn = graphView.savedConn;
@@ -209,8 +209,8 @@ Operator.prototype.createHeader = function()
 
             graphView.setNodePositions(
                 graphView.selectedNodes,
-                (e.clientX - this.sx) / graphView.zoom,
-                (e.clientY - this.sy) / graphView.zoom);
+                (e.clientX - this.sx) / graph.currentPage.zoom,
+                (e.clientY - this.sy) / graph.currentPage.zoom);
             
             this.div.moved = true;
 
@@ -235,7 +235,7 @@ Operator.prototype.createHeader = function()
 
 
                     const index = Math.min(Math.max(0, Math.round(
-                          ((e.clientY - rect.y) / graphView.zoom - padding - (connectionSize + connectionGap)/2) 
+                          ((e.clientY - rect.y) / graph.currentPage.zoom - padding - (connectionSize + connectionGap)/2) 
                         / (connectionSize + connectionGap))),
                         this.headerInputs.length-(this.headerInputs.length > 1 ? 2 : 1));
 
