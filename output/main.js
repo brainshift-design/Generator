@@ -13,8 +13,10 @@ function isTagKey(key, tag) {
 function noTag(key, tag) {
     return key.substring(tag.length + 1);
 }
+function isPageKey(key) { return isTagKey(key, pageTag); }
 function isNodeKey(key) { return isTagKey(key, nodeTag); }
 function isConnKey(key) { return isTagKey(key, connTag); }
+function noPageTag(key) { return noTag(key, pageTag); }
 function noNodeTag(key) { return noTag(key, nodeTag); }
 function noConnTag(key) { return noTag(key, connTag); }
 const generatorVersion = 132;
@@ -906,11 +908,17 @@ figma.ui.onmessage = function (msg) {
         case 'figLogAllSavedConns':
             figLogAllSavedConns(msg.darkMode);
             break;
+        case 'figLogAllSavedPageKeys':
+            figLogAllSavedPageKeys(msg.darkMode);
+            break;
         case 'figLogAllSavedConnKeys':
             figLogAllSavedConnKeys(msg.darkMode);
             break;
         case 'figLogAllLocalData':
             figLogAllLocalData(msg.darkMode);
+            break;
+        case 'figRemoveAllSavedPages':
+            figRemoveAllSavedPages();
             break;
         case 'figSaveConnection':
             figSaveConnection(msg.key, msg.json);
@@ -1529,20 +1537,23 @@ function figClearPageData(key) {
 }
 function figLoadNodesAndConns(dataMode) {
     // const pageIds  = figma.currentPage.getPluginData('pages');
+    const pageKeys = figma.currentPage.getPluginDataKeys().filter(k => isPageKey(k));
     const nodeKeys = figma.currentPage.getPluginDataKeys().filter(k => isNodeKey(k));
     const connKeys = figma.currentPage.getPluginDataKeys().filter(k => isConnKey(k));
     if (!dataMode)
         figMarkForLoading(nodeKeys, connKeys);
+    const pages = pageKeys.map(k => figma.currentPage.getPluginData(k));
     const nodes = nodeKeys.map(k => figma.currentPage.getPluginData(k));
     const conns = connKeys.map(k => figma.currentPage.getPluginData(k));
     initPageStyles(nodes);
-    const graphView = figma.currentPage.getPluginData(figma.currentUser.id + ',graphView');
+    // const graphView          = figma.currentPage.getPluginData(figma.currentUser.id + ',graphView');
     const showAllColorSpaces = figma.currentPage.getPluginData('showAllColorSpaces');
     figPostMessageToUi({
         cmd: 'uiReturnFigLoadNodesAndConns',
         // graphView:          graphView,
         showAllColorSpaces: showAllColorSpaces,
-        //pageIds:            pageIds,
+        pageKeys: pageKeys,
+        pageJson: pages,
         nodeKeys: nodeKeys,
         nodeJson: nodes,
         connKeys: connKeys,
@@ -1640,6 +1651,11 @@ function figLogAllSavedConns(darkMode) {
     });
     connKeys.forEach(k => logSavedConn(JSON.parse(figma.currentPage.getPluginData(k)), darkMode));
 }
+function figLogAllSavedPageKeys(darkMode) {
+    const connKeys = figma.currentPage.getPluginDataKeys()
+        .filter(k => isPageKey(k));
+    connKeys.forEach(k => console.log('%c' + k, 'background: #fff; color: ' + (darkMode ? 'black' : 'white')));
+}
 function figLogAllSavedConnKeys(darkMode) {
     const connKeys = figma.currentPage.getPluginDataKeys()
         .filter(k => isConnKey(k));
@@ -1647,6 +1663,10 @@ function figLogAllSavedConnKeys(darkMode) {
 }
 function figLogAllLocalData(darkMode) {
     figma.clientStorage.keysAsync().then(keys => keys.forEach(k => figma.clientStorage.getAsync(k).then(val => console.log(k + ': ' + val))));
+}
+function figRemoveAllSavedPages() {
+    const pageKeys = figma.currentPage.getPluginDataKeys().filter(k => isPageKey(k));
+    pageKeys.forEach(k => figClearPageData(k));
 }
 function figSaveConnection(key, json) {
     figSetPageData(key, json);

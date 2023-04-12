@@ -164,9 +164,8 @@ class GraphPage
         this.btnName .style.fontWeight    = isCurrent ? 600 : 500;
 
         this.btnClose.style.pointerEvents = isCurrent && graph.pages.length > 1 ? 'all' : 'none';
-        this.btnClose.style.visibility    = isCurrent && graph.pages.length > 1 ? 'visible' : 'hidden';
-        this.btnClose.style.opacity       = 0.65;
-    }
+        //this.btnClose.style.visibility    = isCurrent && graph.pages.length > 1 ? 'visible' : 'hidden';
+        this.btnClose.style.opacity       = isCurrent && graph.pages.length > 1 ? 0.65 : 0;    }
 
 
 

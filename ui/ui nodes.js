@@ -750,7 +750,7 @@ function uiUpdateValuesAndObjects(requestId, actionId, updateNodeId, updateParam
             uiSaveNodes(graph.nodes.map(n => n.id));
             
             uiSavePages(
-                graph.pages,
+                graph.pages.map(p => p.id),
                 graph.pages.map(p => p.toJson()));
 
             graph.updatePages();
@@ -925,6 +925,15 @@ function uiDeleteSavedConnection(key, outputNodeId, outputId, outputOrder, input
     uiQueueMessageToFigma({
         cmd: 'figDeleteSavedConnection',
         key:  key
+    });
+}
+
+
+
+function uiRemoveAllSavedPages()
+{
+    uiQueueMessageToFigma({
+        cmd: 'figRemoveAllSavedPages'
     });
 }
 

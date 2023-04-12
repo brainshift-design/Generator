@@ -12,10 +12,12 @@ function noTag(key, tag)
 
 
 
+function isPageKey(key) { return isTagKey(key, pageTag); }
 function isNodeKey(key) { return isTagKey(key, nodeTag); }
 function isConnKey(key) { return isTagKey(key, connTag); }
 
 
 
+function noPageTag(key) { return noTag(key, pageTag); }
 function noNodeTag(key) { return noTag(key, nodeTag); }
 function noConnTag(key) { return noTag(key, connTag); }
