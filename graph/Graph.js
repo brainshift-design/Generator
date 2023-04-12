@@ -40,7 +40,7 @@ class Graph
 
         node.id = getNewNumberId(
             this.nodes, 
-            id => nodes.find(n => n.id == id), 
+            id => this.nodes.find(n => n.id == id), 
             node.id);
         
         this.nodes.push(node);

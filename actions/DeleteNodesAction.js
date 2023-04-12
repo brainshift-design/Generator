@@ -19,7 +19,7 @@ extends Action
             (cut ? 'CUT ' : 'DELETE ') + nodeIds.length + ' ' + countString('node', nodeIds.length));
 
         this.nodeIds         = [...nodeIds];
-        this.nodes           = nodeIds.map(id => graph.nodeFromId(id));
+        this.nodes           = nodeIds.map(id => nodeFromId(id));
         this.prevSelectedIds = graphView.selectedNodes.map(n => n.id);
     }
 
@@ -62,7 +62,7 @@ extends Action
 function deleteNodesAction_saveOldActiveNodes(act)
 {
     for (const nodeId of act.nodeIds)
-        pushUnique(act.oldActiveNodeIds, graph.getActiveNodesFromNodeId(nodeId).map(n => n.id));
+        pushUnique(act.oldActiveNodeIds, getActiveNodesFromNodeId(nodeId).map(n => n.id));
 }
 
 
@@ -73,7 +73,7 @@ function deleteNodesAction_saveNodePositions(act)
 
     for (const nodeId of act.nodeIds)
     {
-        const node = graph.nodeFromId(nodeId);
+        const node = nodeFromId(nodeId);
 
         act.nodePos.push(point(
             node.div.offsetLeft, 
@@ -224,14 +224,14 @@ function deleteNodesAction_restoreNodes(act)
 function deleteNodesAction_activateOldActiveNodes(act, updateNodes)
 {
     let oldActiveNodeIds = [...act.oldActiveNodeIds].sort((x, y) => 
-        (graph.nodeFromId(x) === graph.nodeFromId(y)) 
+        (nodeFromId(x) === nodeFromId(y)) 
         ? 0 
-        : graph.nodeFromId(y).isOrFollows(graph.nodeFromId(x)) 
+        : nodeFromId(y).isOrFollows(nodeFromId(x)) 
           ? -1 
           :  1);
     
     
-    const oldActiveNodes = oldActiveNodeIds.map(id => graph.nodeFromId(id));
+    const oldActiveNodes = oldActiveNodeIds.map(id => nodeFromId(id));
     
     graphView.selectByIds(act.prevSelectedIds);
     uiMakeNodesActive(oldActiveNodes);

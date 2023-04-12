@@ -2,7 +2,7 @@ class ToggleOperatorSymbolAction
 extends Action
 {
     nodeId;
-    get node() { return graph.nodeFromId(this.nodeId) } 
+    get node() { return nodeFromId(this.nodeId) } 
 
     showOnlySymbol;
 

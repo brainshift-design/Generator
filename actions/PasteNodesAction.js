@@ -44,7 +44,7 @@ extends Action
         this.oldActiveNodeIds = [];
 
         for (const nodeId of this.prevSelectedNodeIds)
-            pushUnique(this.oldActiveNodeIds, graph.getActiveNodesFromNodeId(nodeId).map(n => n.id));
+            pushUnique(this.oldActiveNodeIds, getActiveNodesFromNodeId(nodeId).map(n => n.id));
 
 
         const [nodes, _conns] = uiPasteNodes(this.copiedNodesJson, this.pasteConnected, this.x, this.y, updateNodes);
@@ -76,7 +76,7 @@ extends Action
                         conn.inputNodeId,
                         conn.inputId,
                         boolToString(
-                            graph.nodeFromId(conn.outputNodeId)
+                            nodeFromId(conn.outputNodeId)
                             .outputFromId(conn.outputId)
                             .supportsTypes(LIST_TYPES))));
         }
@@ -102,10 +102,10 @@ extends Action
 
 
         let oldActiveNodeIds = [...this.oldActiveNodeIds];
-        oldActiveNodeIds.sort((x, y) => (graph.nodeFromId(x) === graph.nodeFromId(y)) ? 0 : graph.nodeFromId(y).isOrFollows(graph.nodeFromId(x)) ? -1 : 1);
+        oldActiveNodeIds.sort((x, y) => (nodeFromId(x) === nodeFromId(y)) ? 0 : nodeFromId(y).isOrFollows(nodeFromId(x)) ? -1 : 1);
 
         for (const id of oldActiveNodeIds)
-            uiMakeNodeActive(graph.nodeFromId(id));
+            uiMakeNodeActive(nodeFromId(id));
     }
 
 

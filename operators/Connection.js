@@ -69,11 +69,11 @@ class Connection
 
 function parseConnectionJsonAndConnect(_conn, pasteConnected)
 {
-    const outputNode  = graph.nodeFromId(_conn.outputNodeId);
+    const outputNode  = nodeFromId(_conn.outputNodeId);
     const outputId    = _conn.outputId;
     const outputOrder = parseInt(_conn.outputOrder);
 
-    const inputNode   = graph.nodeFromId(_conn.inputNodeId);
+    const inputNode   = nodeFromId(_conn.inputNodeId);
     const inputId     = _conn.inputId;
 
 

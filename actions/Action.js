@@ -114,7 +114,7 @@ class Action
                 _conn.inputId,
                 _conn.list);
   
-            uiDisconnect(graph.nodeFromId(_conn.inputNodeId).inputFromId(_conn.inputId));
+            uiDisconnect(nodeFromId(_conn.inputNodeId).inputFromId(_conn.inputId));
         }
 
         this.newConnectionData = [];
@@ -126,7 +126,7 @@ class Action
     {
         for (const _conn of this.oldConnectionData)
         {
-            const outputNode = graph.nodeFromId(_conn.outputNodeId);
+            const outputNode = nodeFromId(_conn.outputNodeId);
             let   output     = outputNode.outputFromId(_conn.outputId);
 
             if (!isValid(output))
@@ -137,7 +137,7 @@ class Action
 
                 output = param.output;
 
-                const node = graph.nodeFromId(_conn.outputNodeId);
+                const node = nodeFromId(_conn.outputNodeId);
                 
                 param ._node = node;
                 output._node = node; 
@@ -151,7 +151,7 @@ class Action
 
             const oldConn = uiVariableConnectFromOutput(
                 output,
-                graph.nodeFromId(_conn.inputNodeId), _conn.inputId,
+                nodeFromId(_conn.inputNodeId), _conn.inputId,
                 _conn.outputOrder);
 
  
@@ -172,7 +172,7 @@ class Action
     deactivateNewActiveNodes()
     {
         for (const id of this.newActiveNodeIds)
-            uiMakeNodePassive(graph.nodeFromId(id));
+            uiMakeNodePassive(nodeFromId(id));
     
         uiDeleteObjectsAndStyles(this.newActiveNodeIds, false); 
     }

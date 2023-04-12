@@ -52,15 +52,25 @@ Graph.prototype.updatePages = function()
     updateAddButton(false);
 
 
-    // for (const node of graph.nodes)
-    // {
-    //     const id = node.id.split('/');
+    for (const node of graph.nodes)
+        node.div.style.display = node.pageId == graph.currentPage.id ? 'block' : 'none';
 
-    //     const pageId = id.length > 1 ? id[0]     : '';
-    //     const nodeId = id.length > 1 ? id.at(-1) : id[0];
 
-    //     node.div.style.display = pageId == graph.currentPage.id ? 'block' : 'none';
-    // }
+    graphView.updateNodeTransforms(graph.nodes.filter(n => n.pageId == graph.currentPage.id));
+    graphView.updateNodes();
+
+
+    updateZoomIcon();
+}
+
+
+
+Graph.prototype.updateSavedPages = function()
+{
+    uiSavePages(
+        this.pages.map(p => p.id), 
+        this.pages.map(p => p.toJson()),
+        graph.currentPage.id);
 }
 
 
@@ -69,7 +79,7 @@ function updateAddButton(over)
 {
     btnAddPage.style.background = over ? '#2c2c2c' : (document.hasFocus() ? '#202020' : '#383838');
     btnAddPlus.style.fill       = over ? '#ffffffe0' : 'rgba(255, 255, 255, 0.35)';
-}
+}    
 
 
 
@@ -83,5 +93,6 @@ btnAddPage.addEventListener('pointerup', e =>
 
     uiSavePages(
         graph.pages.map(p => p.id), 
-        graph.pages.map(p => p.toJson()));
+        graph.pages.map(p => p.toJson()),
+        graph.pages.find(p => graph.currentPage.id));
 });

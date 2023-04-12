@@ -1,20 +1,20 @@
 function nodeFromId(id)
 {
-    return this.nodes.find(n => n.id == id);
+    return graph.nodes.find(n => n.id == id);
 }
 
 
 
 function nodesFromIds(ids)
 {
-    return ids.map(id => this.nodeFromId(id));
+    return ids.map(id => nodeFromId(id));
 }
 
 
 
 function setNodeId(nodeId, newId)
 {
-    const node = this.nodeFromId(nodeId);
+    const node = nodeFromId(nodeId);
     node.id = newId;
 }
 
@@ -22,7 +22,7 @@ function setNodeId(nodeId, newId)
 
 function getActiveFromNodeId(nodeId, alreadyChecked = [])
 {
-    return getActiveFromNode(this.nodeFromId(nodeId), alreadyChecked);
+    return getActiveFromNode(nodeFromId(nodeId), alreadyChecked);
 }
 
 
@@ -32,7 +32,7 @@ function getActiveNodesAfterNodeId(nodeId, alreadyChecked = [])
     const rightActive = [];
     
    
-    const node = graph.nodeFromId(nodeId);
+    const node = nodeFromId(nodeId);
     
     if (node.active) 
         rightActive.push(node);
@@ -44,7 +44,7 @@ function getActiveNodesAfterNodeId(nodeId, alreadyChecked = [])
         {
             if (!alreadyChecked.includes(input.node))
             {
-                rightActive.push(...this.getActiveNodesAfterNodeId(
+                rightActive.push(...getActiveNodesAfterNodeId(
                     input.node.id, 
                     [...alreadyChecked, node]));
             }
@@ -59,5 +59,5 @@ function getActiveNodesAfterNodeId(nodeId, alreadyChecked = [])
 
 function getActiveNodesFromNodeId(nodeId, alreadyChecked = [])
 {
-    return getActiveNodesFromNode(this.nodeFromId(nodeId), alreadyChecked);
+    return getActiveNodesFromNode(nodeFromId(nodeId), alreadyChecked);
 }

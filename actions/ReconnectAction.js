@@ -31,17 +31,17 @@ extends Action
     
 
     
-    get outputNode()    { return graph.nodeFromId(this.outputNodeId); }
+    get outputNode()    { return nodeFromId(this.outputNodeId); }
     get output()        { return this.outputNode.outputs.find(o => o.id == this.outputId); }
 
-    get prevInputNode() { return graph.nodeFromId(this.prevInputNodeId); }
+    get prevInputNode() { return nodeFromId(this.prevInputNodeId); }
     get prevInput()     { return this.prevInputNode.inputFromId(this.prevInputId); }
     
-    get inputNode()     { return graph.nodeFromId(this.inputNodeId); }
+    get inputNode()     { return nodeFromId(this.inputNodeId); }
     get input()         { return this.inputNode.inputFromId(this.inputId); }
 
 
-    get oldOutputNode() { return graph.nodeFromId(this.oldOutputNodeId); }
+    get oldOutputNode() { return nodeFromId(this.oldOutputNodeId); }
     get oldOutput()     { return this.oldOutputNode.outputFromId(this.oldOutputId); }
     
 
@@ -128,7 +128,7 @@ extends Action
 
     savePrevInputActiveNodes()
     {
-        this.prevInputActiveNodeIds = graph.getActiveNodesAfterNodeId(this.prevInputNodeId).map(n => n.id);
+        this.prevInputActiveNodeIds = getActiveNodesAfterNodeId(this.prevInputNodeId).map(n => n.id);
     }
     
     

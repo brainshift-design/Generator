@@ -1391,7 +1391,7 @@ figma.ui.onmessage = function(msg)
         case 'figGetPageData':                        figGetPageData                       (msg.key);                                     break;
         case 'figSetPageData':                        figSetPageData                       (msg.key, msg.value);                          break;
         
-        case 'figSavePages':                          figSavePages                         (msg.pageIds, msg.pageJson);                   break;
+        case 'figSavePages':                          figSavePages                         (msg.pageIds, msg.pageJson, msg.currentPageId); break;
      
         case 'figLoadNodesAndConns':                  figLoadNodesAndConns                 (msg.dataMode);                                break;
         case 'figSaveNodes':                          figSaveNodes                         (msg.nodeIds, msg.nodeJson);                   break;
@@ -2407,23 +2407,24 @@ function figLoadNodesAndConns(dataMode)
     const nodes     = nodeKeys.map(k => figma.currentPage.getPluginData(k));
     const conns     = connKeys.map(k => figma.currentPage.getPluginData(k));
 
-    const pageOrder = figma.currentPage.getPluginData('pageOrder').split(',');
+
+    const pageOrder     = figma.currentPage.getPluginData('pageOrder').split(',');
+    const currentPageId = figma.currentPage.getPluginData('currentPageId');
     
 
     initPageStyles(nodes);
 
 
-    // const graphView          = figma.currentPage.getPluginData(figma.currentUser.id + ',graphView');
     const showAllColorSpaces = figma.currentPage.getPluginData('showAllColorSpaces');
 
 
     figPostMessageToUi({
         cmd:               'uiReturnFigLoadNodesAndConns',
-        // graphView:          graphView,
         showAllColorSpaces: showAllColorSpaces,
         pageKeys:           pageKeys,
         pageJson:           pages,
         pageOrder:          pageOrder,
+        currentPageId:      currentPageId,
         nodeKeys:           nodeKeys,
         nodeJson:           nodes,
         connKeys:           connKeys,
@@ -2484,7 +2485,7 @@ function figMarkForLoading(nodeKeys, connKeys)
 
 
 
-function figSavePages(pageIds, pageJson)
+function figSavePages(pageIds, pageJson, currentPageId)
 {
     for (let i = 0; i < pageIds.length; i++)
     {
@@ -2493,9 +2494,8 @@ function figSavePages(pageIds, pageJson)
             pageJson[i]);
     }
 
-    figSetPageData(
-        'pageOrder',
-        pageIds.join(','));
+    figSetPageData('pageOrder',     pageIds.join(','));
+    figSetPageData('currentPageId', currentPageId);
 }
 
 

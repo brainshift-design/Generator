@@ -47817,7 +47817,7 @@ GraphView.prototype.deselectAll = function()
 
 GraphView.prototype.selectByIds = function(nodeIds)
 {
-    this.selectedNodes = nodeIds.map(id => graph.nodeFromId(id));
+    this.selectedNodes = nodeIds.map(id => nodeFromId(id));
 };
 
 
@@ -51745,11 +51745,11 @@ class Connection
 
 function parseConnectionJsonAndConnect(_conn, pasteConnected)
 {
-    const outputNode  = graph.nodeFromId(_conn.outputNodeId);
+    const outputNode  = nodeFromId(_conn.outputNodeId);
     const outputId    = _conn.outputId;
     const outputOrder = parseInt(_conn.outputOrder);
 
-    const inputNode   = graph.nodeFromId(_conn.inputNodeId);
+    const inputNode   = nodeFromId(_conn.inputNodeId);
     const inputId     = _conn.inputId;
 
 
@@ -52280,7 +52280,7 @@ class Wire
         //     ||     conn.output
         //        &&  conn.output.param
         //        &&  conn.output.param._nodeId != undefined
-        //        &&  conn.output.node.graph.nodeFromId(conn.output.param._nodeId)
+        //        &&  conn.output.node.nodeFromId(conn.output.param._nodeId)
         //        && !nodeFromId(conn.output.param._nodeId).isCached();
     
     
@@ -52380,7 +52380,13 @@ class Operator
 
     id;
 
-    //get nodeId() { return this.id.split('/').at(-1); }
+    get pageId() 
+    { 
+        const nodePath = this.id.split('/');
+        return nodePath.length > 1 ? nodePath[0] : '';
+    }
+
+    get nodeId() { return this.id.split('/').at(-1); }
 
 
     _name;
@@ -55396,7 +55402,7 @@ extends OperatorBase
 
                     if (_conn)
                     {
-                        const conn = uiConnect(param.output, graph.nodeFromId(_conn.inputNodeId).inputFromId(_conn.inputId));
+                        const conn = uiConnect(param.output, nodeFromId(_conn.inputNodeId).inputFromId(_conn.inputId));
                         uiSaveConn(conn);
                     }
                 }
@@ -63506,7 +63512,7 @@ extends OperatorBase
 
                     if (_conn)
                     {
-                        const conn = uiConnect(param.output, graph.nodeFromId(_conn.inputNodeId).inputFromId(_conn.inputId));
+                        const conn = uiConnect(param.output, nodeFromId(_conn.inputNodeId).inputFromId(_conn.inputId));
                         uiSaveConn(conn);
                     }
                 }
@@ -63695,9 +63701,7 @@ class GraphPage
 
         this._pan = pan;
         
-        uiSavePages(
-            [this.id],
-            [this.toJson()]);//uiSaveGraphView();
+        graph.updateSavedPages();
 
         graphView.updatePanAndZoom(true);
     }
@@ -63735,10 +63739,8 @@ class GraphPage
             this._pan  = pan;
     
             
-            uiSavePages(
-                [this.id],
-                [this.toJson()]);//uiSaveGraphView();
-       
+            graph.updateSavedPages();
+                   
     
             graphView.panZoomTimer = setTimeout(() => 
             {
@@ -63788,6 +63790,8 @@ class GraphPage
             {
                 graph.pageIndex = graph.pages.indexOf(this); 
                 graph.updatePages(); 
+                
+                graph.updateSavedPages();
             }
         });
 
@@ -63938,7 +63942,7 @@ class Graph
 
         node.id = getNewNumberId(
             this.nodes, 
-            id => nodes.find(n => n.id == id), 
+            id => this.nodes.find(n => n.id == id), 
             node.id);
         
         this.nodes.push(node);
@@ -64099,21 +64103,21 @@ class Graph
 
 function nodeFromId(id)
 {
-    return this.nodes.find(n => n.id == id);
+    return graph.nodes.find(n => n.id == id);
 }
 
 
 
 function nodesFromIds(ids)
 {
-    return ids.map(id => this.nodeFromId(id));
+    return ids.map(id => nodeFromId(id));
 }
 
 
 
 function setNodeId(nodeId, newId)
 {
-    const node = this.nodeFromId(nodeId);
+    const node = nodeFromId(nodeId);
     node.id = newId;
 }
 
@@ -64121,7 +64125,7 @@ function setNodeId(nodeId, newId)
 
 function getActiveFromNodeId(nodeId, alreadyChecked = [])
 {
-    return getActiveFromNode(this.nodeFromId(nodeId), alreadyChecked);
+    return getActiveFromNode(nodeFromId(nodeId), alreadyChecked);
 }
 
 
@@ -64131,7 +64135,7 @@ function getActiveNodesAfterNodeId(nodeId, alreadyChecked = [])
     const rightActive = [];
     
    
-    const node = graph.nodeFromId(nodeId);
+    const node = nodeFromId(nodeId);
     
     if (node.active) 
         rightActive.push(node);
@@ -64143,7 +64147,7 @@ function getActiveNodesAfterNodeId(nodeId, alreadyChecked = [])
         {
             if (!alreadyChecked.includes(input.node))
             {
-                rightActive.push(...this.getActiveNodesAfterNodeId(
+                rightActive.push(...getActiveNodesAfterNodeId(
                     input.node.id, 
                     [...alreadyChecked, node]));
             }
@@ -64158,7 +64162,7 @@ function getActiveNodesAfterNodeId(nodeId, alreadyChecked = [])
 
 function getActiveNodesFromNodeId(nodeId, alreadyChecked = [])
 {
-    return getActiveNodesFromNode(this.nodeFromId(nodeId), alreadyChecked);
+    return getActiveNodesFromNode(nodeFromId(nodeId), alreadyChecked);
 }
 
 
@@ -64617,15 +64621,25 @@ Graph.prototype.updatePages = function()
     updateAddButton(false);
 
 
-    // for (const node of graph.nodes)
-    // {
-    //     const id = node.id.split('/');
+    for (const node of graph.nodes)
+        node.div.style.display = node.pageId == graph.currentPage.id ? 'block' : 'none';
 
-    //     const pageId = id.length > 1 ? id[0]     : '';
-    //     const nodeId = id.length > 1 ? id.at(-1) : id[0];
 
-    //     node.div.style.display = pageId == graph.currentPage.id ? 'block' : 'none';
-    // }
+    graphView.updateNodeTransforms(graph.nodes.filter(n => n.pageId == graph.currentPage.id));
+    graphView.updateNodes();
+
+
+    updateZoomIcon();
+}
+
+
+
+Graph.prototype.updateSavedPages = function()
+{
+    uiSavePages(
+        this.pages.map(p => p.id), 
+        this.pages.map(p => p.toJson()),
+        graph.currentPage.id);
 }
 
 
@@ -64634,7 +64648,7 @@ function updateAddButton(over)
 {
     btnAddPage.style.background = over ? '#2c2c2c' : (document.hasFocus() ? '#202020' : '#383838');
     btnAddPlus.style.fill       = over ? '#ffffffe0' : 'rgba(255, 255, 255, 0.35)';
-}
+}    
 
 
 
@@ -64648,7 +64662,8 @@ btnAddPage.addEventListener('pointerup', e =>
 
     uiSavePages(
         graph.pages.map(p => p.id), 
-        graph.pages.map(p => p.toJson()));
+        graph.pages.map(p => p.toJson()),
+        graph.pages.find(p => graph.currentPage.id));
 });
 
 
@@ -64768,7 +64783,7 @@ class Action
                 _conn.inputId,
                 _conn.list);
   
-            uiDisconnect(graph.nodeFromId(_conn.inputNodeId).inputFromId(_conn.inputId));
+            uiDisconnect(nodeFromId(_conn.inputNodeId).inputFromId(_conn.inputId));
         }
 
         this.newConnectionData = [];
@@ -64780,7 +64795,7 @@ class Action
     {
         for (const _conn of this.oldConnectionData)
         {
-            const outputNode = graph.nodeFromId(_conn.outputNodeId);
+            const outputNode = nodeFromId(_conn.outputNodeId);
             let   output     = outputNode.outputFromId(_conn.outputId);
 
             if (!isValid(output))
@@ -64791,7 +64806,7 @@ class Action
 
                 output = param.output;
 
-                const node = graph.nodeFromId(_conn.outputNodeId);
+                const node = nodeFromId(_conn.outputNodeId);
                 
                 param ._node = node;
                 output._node = node; 
@@ -64805,7 +64820,7 @@ class Action
 
             const oldConn = uiVariableConnectFromOutput(
                 output,
-                graph.nodeFromId(_conn.inputNodeId), _conn.inputId,
+                nodeFromId(_conn.inputNodeId), _conn.inputId,
                 _conn.outputOrder);
 
  
@@ -64826,7 +64841,7 @@ class Action
     deactivateNewActiveNodes()
     {
         for (const id of this.newActiveNodeIds)
-            uiMakeNodePassive(graph.nodeFromId(id));
+            uiMakeNodePassive(nodeFromId(id));
     
         uiDeleteObjectsAndStyles(this.newActiveNodeIds, false); 
     }
@@ -65094,14 +65109,14 @@ extends Action
     backInit              = false;
    
 
-    get outputNode()    { return graph.nodeFromId(this.outputNodeId); }
+    get outputNode()    { return nodeFromId(this.outputNodeId); }
     get output()        { return this.outputNode.outputFromId(this.outputId); }
     
-    get inputNode()     { return graph.nodeFromId(this.inputNodeId); }
+    get inputNode()     { return nodeFromId(this.inputNodeId); }
     get input()         { return this.inputNode.inputFromId(this.inputId); }
     
 
-    get oldOutputNode() { return graph.nodeFromId(this.oldOutputNodeId); }
+    get oldOutputNode() { return nodeFromId(this.oldOutputNodeId); }
     get oldOutput()     { return this.oldOutputNode.outputFromId(this.oldOutputId); }
 
 
@@ -65188,14 +65203,14 @@ function connectAction_backInitOutputValue(act)
 
 function connectAction_saveOutputActiveNodes(act)
 {
-    act.oldOutputActiveNodeId = idFromNode(graph.getActiveFromNodeId(act.outputNodeId));
+    act.oldOutputActiveNodeId = idFromNode(getActiveFromNodeId(act.outputNodeId));
 }
 
 
 
 function connectAction_saveInputActiveNodes(act)
 {
-    act.inputActiveNodeIds = graph.getActiveNodesAfterNodeId(act.inputNodeId).map(n => n.id);
+    act.inputActiveNodeIds = getActiveNodesAfterNodeId(act.inputNodeId).map(n => n.id);
 }
 
 
@@ -65252,7 +65267,7 @@ function connectAction_updateOldOutput(act, updateNodes)
         act.newActiveNodeIds.push(act.oldOutputNodeId);
 
         if (act.oldOutputActiveNodeId != NULL)
-            pushUnique(updateNodes, graph.nodeFromId(act.oldOutputActiveNodeId));
+            pushUnique(updateNodes, nodeFromId(act.oldOutputActiveNodeId));
     }
 }
 
@@ -65261,13 +65276,13 @@ function connectAction_updateOldOutput(act, updateNodes)
 function connectAction_updateInputActiveNodes(act, updateNodes)
 {
     const inputActiveNodeIds = [...act.inputActiveNodeIds].sort((x, y) => 
-        (graph.nodeFromId(x) === graph.nodeFromId(y)) ? 0 : graph.nodeFromId(y).isOrFollows(graph.nodeFromId(x)) ? -1 : 1);
+        (nodeFromId(x) === nodeFromId(y)) ? 0 : nodeFromId(y).isOrFollows(nodeFromId(x)) ? -1 : 1);
 
     for (const id of inputActiveNodeIds)
     {
         act.newActiveNodeIds.push(id);
 
-        const node = graph.nodeFromId(id);
+        const node = nodeFromId(id);
 
         uiMakeNodeActive(node);
         pushUnique(updateNodes, node);
@@ -65362,7 +65377,7 @@ function connectAction_activateOldActiveNodes(act, updateNodes)
 
     for (const id of act.inputActiveNodeIds)
     {
-        const oldInputActiveNode = graph.nodeFromId(id);
+        const oldInputActiveNode = nodeFromId(id);
         
         uiMakeNodeActive(oldInputActiveNode);
         pushUnique(updateNodes, oldInputActiveNode);
@@ -65374,7 +65389,7 @@ function connectAction_activateOldActiveNodes(act, updateNodes)
     {
         console.assert(act.oldOutputActiveNodeId != NULL, 'there should be an old output active node ID at this point')
 
-        const oldOutputActiveNode = graph.nodeFromId(act.oldOutputActiveNodeId);
+        const oldOutputActiveNode = nodeFromId(act.oldOutputActiveNodeId);
 
         uiMakeNodeActive(oldOutputActiveNode);
         pushUnique(updateNodes, oldOutputActiveNode);
@@ -65449,7 +65464,7 @@ extends Action
 
         if (insert)
         {
-            const selNode   = graph.nodeFromId(this.prevSelectedIds[0]);
+            const selNode   = nodeFromId(this.prevSelectedIds[0]);
             const selOutput = selNode.headerOutputs[0];
 
 
@@ -65473,7 +65488,7 @@ extends Action
                 for (const _conn of this.prevConnections)
                 {
                     const _output    = node.headerOutputs[0];
-                    const _inputNode = graph.nodeFromId(_conn.inputNodeId);
+                    const _inputNode = nodeFromId(_conn.inputNodeId);
                     const _input     = _inputNode.inputFromId(_conn.inputId);
 
                     if (_input.canConnectFrom(_output))
@@ -65515,9 +65530,9 @@ function createInsertNodeAction_savePrevConnections(act)
     if (act.prevSelectedIds.length == 0)
         return;
         
-    act.oldInputActiveNodeId = idFromNode(graph.getActiveFromNodeId(act.prevSelectedIds[0]));
+    act.oldInputActiveNodeId = idFromNode(getActiveFromNodeId(act.prevSelectedIds[0]));
 
-    const selNode = graph.nodeFromId(act.prevSelectedIds[0]);
+    const selNode = nodeFromId(act.prevSelectedIds[0]);
     const output  = selNode.outputs[0];
 
     for (const input of output.connectedInputs)
@@ -65589,9 +65604,9 @@ extends Action
 
         if (autoConnect)
         {
-            this.oldInputActiveNodeId = idFromNode(graph.getActiveFromNodeId(this.prevSelectedIds[0]));
+            this.oldInputActiveNodeId = idFromNode(getActiveFromNodeId(this.prevSelectedIds[0]));
 
-            const selNode = graph.nodeFromId(this.prevSelectedIds[0]);
+            const selNode = nodeFromId(this.prevSelectedIds[0]);
             const inputs  = this.node.headerInputs.filter(i => i.canConnectFrom(selNode.headerOutputs[0]));
             
             if (!isEmpty(inputs))
@@ -65644,7 +65659,7 @@ function createNodeAction_activateOldInput(act, updateNodes)
     if (act.oldInputActiveNodeId == NULL)
         return;
 
-    const oldInputActiveNode = graph.nodeFromId(act.oldInputActiveNodeId);
+    const oldInputActiveNode = nodeFromId(act.oldInputActiveNodeId);
     
     uiMakeNodeActive(oldInputActiveNode);
     pushUnique(updateNodes, oldInputActiveNode);
@@ -65674,7 +65689,7 @@ extends Action
             (cut ? 'CUT ' : 'DELETE ') + nodeIds.length + ' ' + countString('node', nodeIds.length));
 
         this.nodeIds         = [...nodeIds];
-        this.nodes           = nodeIds.map(id => graph.nodeFromId(id));
+        this.nodes           = nodeIds.map(id => nodeFromId(id));
         this.prevSelectedIds = graphView.selectedNodes.map(n => n.id);
     }
 
@@ -65717,7 +65732,7 @@ extends Action
 function deleteNodesAction_saveOldActiveNodes(act)
 {
     for (const nodeId of act.nodeIds)
-        pushUnique(act.oldActiveNodeIds, graph.getActiveNodesFromNodeId(nodeId).map(n => n.id));
+        pushUnique(act.oldActiveNodeIds, getActiveNodesFromNodeId(nodeId).map(n => n.id));
 }
 
 
@@ -65728,7 +65743,7 @@ function deleteNodesAction_saveNodePositions(act)
 
     for (const nodeId of act.nodeIds)
     {
-        const node = graph.nodeFromId(nodeId);
+        const node = nodeFromId(nodeId);
 
         act.nodePos.push(point(
             node.div.offsetLeft, 
@@ -65879,14 +65894,14 @@ function deleteNodesAction_restoreNodes(act)
 function deleteNodesAction_activateOldActiveNodes(act, updateNodes)
 {
     let oldActiveNodeIds = [...act.oldActiveNodeIds].sort((x, y) => 
-        (graph.nodeFromId(x) === graph.nodeFromId(y)) 
+        (nodeFromId(x) === nodeFromId(y)) 
         ? 0 
-        : graph.nodeFromId(y).isOrFollows(graph.nodeFromId(x)) 
+        : nodeFromId(y).isOrFollows(nodeFromId(x)) 
           ? -1 
           :  1);
     
     
-    const oldActiveNodes = oldActiveNodeIds.map(id => graph.nodeFromId(id));
+    const oldActiveNodes = oldActiveNodeIds.map(id => nodeFromId(id));
     
     graphView.selectByIds(act.prevSelectedIds);
     uiMakeNodesActive(oldActiveNodes);
@@ -65906,10 +65921,10 @@ extends Action
     inputId;
 
     
-    get outputNode() { return graph.nodeFromId(this.outputNodeId); }
+    get outputNode() { return nodeFromId(this.outputNodeId); }
     get output()     { return this.outputNode.outputFromId(this.outputId); }
     
-    get inputNode()  { return graph.nodeFromId(this.inputNodeId); }
+    get inputNode()  { return nodeFromId(this.inputNodeId); }
     get input()      { return this.inputNode.inputFromId(this.inputId); }
     
     
@@ -65967,7 +65982,7 @@ extends Action
 
     saveOldActiveNodes()
     {
-        this.oldActiveNodeIds = [...graph.getActiveNodesFromNodeId(this.inputNodeId).map(n => n.id)];
+        this.oldActiveNodeIds = [...getActiveNodesFromNodeId(this.inputNodeId).map(n => n.id)];
 
         if (!getActiveFromNode(this.outputNode, [this.inputNode]))
             this.newActiveNodeIds.push(this.outputNodeId);
@@ -66015,7 +66030,7 @@ extends Action
     deactivateNewActiveNodes()
     {
         for (const id of this.newActiveNodeIds)
-            uiMakeNodePassive(graph.nodeFromId(id));
+            uiMakeNodePassive(nodeFromId(id));
 
         uiDeleteObjectsAndStyles(this.newActiveNodeIds, false);
     }
@@ -66025,12 +66040,12 @@ extends Action
     activateOldActiveNodes(updateNodes)
     {
         const oldActiveNodeIds = [...this.oldActiveNodeIds].sort((x, y) => 
-            (graph.nodeFromId(x) === graph.nodeFromId(y)) ? 0 : graph.nodeFromId(y).isOrFollows(graph.nodeFromId(x)) ? -1 : 1);
+            (nodeFromId(x) === nodeFromId(y)) ? 0 : nodeFromId(y).isOrFollows(nodeFromId(x)) ? -1 : 1);
 
-        pushUnique(updateNodes, oldActiveNodeIds.map(id => graph.nodeFromId(id)));
+        pushUnique(updateNodes, oldActiveNodeIds.map(id => nodeFromId(id)));
 
         for (const id of oldActiveNodeIds)
-            uiMakeNodeActive(graph.nodeFromId(id));
+            uiMakeNodeActive(nodeFromId(id));
     }
 }
 
@@ -66039,7 +66054,7 @@ extends Action
 function DisconnectAction_activateNewNodes(act)
 {
     for (const id of act.newActiveNodeIds)
-        uiMakeNodeActive(graph.nodeFromId(id));
+        uiMakeNodeActive(nodeFromId(id));
 }
 
 
@@ -66060,7 +66075,7 @@ class LinkExistingStyleAction
 extends Action
 {
     nodeId;
-    get node() { return graph.nodeFromId(this.nodeId) } 
+    get node() { return nodeFromId(this.nodeId) } 
 
     get  inputNode() { return this.node; } // dummy for ConnectAction_...
     get outputNode() { return this.node; } // dummy for ConnectAction_...
@@ -66168,11 +66183,11 @@ extends Action
         this.newActiveNodeIds.forEach(id =>
             pushUnique(
                 this.oldActiveNodeIds, 
-                graph.getActiveNodesFromNodeId(id).map(n => n.id))); 
+                getActiveNodesFromNodeId(id).map(n => n.id))); 
 
         uiDeleteObjectsAndStyles(this.oldActiveNodeIds, false);
 
-        const newActiveNodes = this.newActiveNodeIds.map(id => graph.nodeFromId(id));
+        const newActiveNodes = this.newActiveNodeIds.map(id => nodeFromId(id));
 
         uiMakeNodesActive(newActiveNodes);
         pushUnique(updateNodes, newActiveNodes);
@@ -66186,12 +66201,12 @@ extends Action
     {
         for (const id of this.newActiveNodeIds)
             if (!this.oldActiveNodeIds.includes(id))
-                uiMakeNodePassive(graph.nodeFromId(id));
+                uiMakeNodePassive(nodeFromId(id));
 
         for (const id of this.oldActiveNodeIds)
-            uiMakeNodeActive(graph.nodeFromId(id));
+            uiMakeNodeActive(nodeFromId(id));
 
-        pushUnique(updateNodes, this.oldActiveNodeIds.map(id => graph.nodeFromId(id)));
+        pushUnique(updateNodes, this.oldActiveNodeIds.map(id => nodeFromId(id)));
 
         uiSaveNodes(filterUnique([...this.newActiveNodeIds, ...this.oldActiveNodeIds]));
     }
@@ -66244,7 +66259,7 @@ extends Action
         this.oldActiveNodeIds = [];
 
         for (const nodeId of this.prevSelectedNodeIds)
-            pushUnique(this.oldActiveNodeIds, graph.getActiveNodesFromNodeId(nodeId).map(n => n.id));
+            pushUnique(this.oldActiveNodeIds, getActiveNodesFromNodeId(nodeId).map(n => n.id));
 
 
         const [nodes, _conns] = uiPasteNodes(this.copiedNodesJson, this.pasteConnected, this.x, this.y, updateNodes);
@@ -66276,7 +66291,7 @@ extends Action
                         conn.inputNodeId,
                         conn.inputId,
                         boolToString(
-                            graph.nodeFromId(conn.outputNodeId)
+                            nodeFromId(conn.outputNodeId)
                             .outputFromId(conn.outputId)
                             .supportsTypes(LIST_TYPES))));
         }
@@ -66302,10 +66317,10 @@ extends Action
 
 
         let oldActiveNodeIds = [...this.oldActiveNodeIds];
-        oldActiveNodeIds.sort((x, y) => (graph.nodeFromId(x) === graph.nodeFromId(y)) ? 0 : graph.nodeFromId(y).isOrFollows(graph.nodeFromId(x)) ? -1 : 1);
+        oldActiveNodeIds.sort((x, y) => (nodeFromId(x) === nodeFromId(y)) ? 0 : nodeFromId(y).isOrFollows(nodeFromId(x)) ? -1 : 1);
 
         for (const id of oldActiveNodeIds)
-            uiMakeNodeActive(graph.nodeFromId(id));
+            uiMakeNodeActive(nodeFromId(id));
     }
 
 
@@ -66357,17 +66372,17 @@ extends Action
     
 
     
-    get outputNode()    { return graph.nodeFromId(this.outputNodeId); }
+    get outputNode()    { return nodeFromId(this.outputNodeId); }
     get output()        { return this.outputNode.outputs.find(o => o.id == this.outputId); }
 
-    get prevInputNode() { return graph.nodeFromId(this.prevInputNodeId); }
+    get prevInputNode() { return nodeFromId(this.prevInputNodeId); }
     get prevInput()     { return this.prevInputNode.inputFromId(this.prevInputId); }
     
-    get inputNode()     { return graph.nodeFromId(this.inputNodeId); }
+    get inputNode()     { return nodeFromId(this.inputNodeId); }
     get input()         { return this.inputNode.inputFromId(this.inputId); }
 
 
-    get oldOutputNode() { return graph.nodeFromId(this.oldOutputNodeId); }
+    get oldOutputNode() { return nodeFromId(this.oldOutputNodeId); }
     get oldOutput()     { return this.oldOutputNode.outputFromId(this.oldOutputId); }
     
 
@@ -66454,7 +66469,7 @@ extends Action
 
     savePrevInputActiveNodes()
     {
-        this.prevInputActiveNodeIds = graph.getActiveNodesAfterNodeId(this.prevInputNodeId).map(n => n.id);
+        this.prevInputActiveNodeIds = getActiveNodesAfterNodeId(this.prevInputNodeId).map(n => n.id);
     }
     
     
@@ -66517,7 +66532,7 @@ extends Action
             'REMOVE ' + nodeIds.length + ' ' + countString('node', nodeIds.length));
 
         this.nodeIds         = [...nodeIds];
-        this.nodes           = nodeIds.map(id => graph.nodeFromId(id));
+        this.nodes           = nodeIds.map(id => nodeFromId(id));
         this.prevSelectedIds = graphView.selectedNodes.map(n => n.id);
     }
 
@@ -66570,7 +66585,7 @@ extends Action
 
     prepareNewReconnections()
     {
-        const clusters = findConnectedClusters(this.nodeIds.map(n => graph.nodeFromId(n)));
+        const clusters = findConnectedClusters(this.nodeIds.map(n => nodeFromId(n)));
 
         
         for (const cluster of clusters)
@@ -66623,8 +66638,8 @@ function removeNodesAction_makeNewConnections(act)
         const _conn = act.newConnectionData[i];
         
         const conn = uiVariableConnect(
-             graph.nodeFromId(_conn.outputNodeId), _conn.outputId, 
-             graph.nodeFromId(_conn. inputNodeId), _conn. inputId,
+             nodeFromId(_conn.outputNodeId), _conn.outputId, 
+             nodeFromId(_conn. inputNodeId), _conn. inputId,
             _conn.outputOrder);
 
         uiSaveConn(conn);
@@ -66632,7 +66647,7 @@ function removeNodesAction_makeNewConnections(act)
 
              if (act.clusterActiveLeft [i]) pushUpdate(act, [act.clusterActiveLeft [i]]);
         else if (act.clusterActiveRight[i]) pushUpdate(act, [act.clusterActiveRight[i]]);
-        else                                uiMakeNodeActive(graph.nodeFromId(_conn.inputNodeId));
+        else                                uiMakeNodeActive(nodeFromId(_conn.inputNodeId));
     }
 }
 
@@ -66641,7 +66656,7 @@ class RenameNodeAction
 extends Action
 {
     nodeId;
-    get node() { return graph.nodeFromId(this.nodeId) } 
+    get node() { return nodeFromId(this.nodeId) } 
 
     oldName;
     newName;
@@ -66706,7 +66721,7 @@ extends Action
     {
         super(
             REORDER_CONNECTIONS_ACTION,
-              'REORDER CONNECTIONS ' + graph.nodeFromId(nodeId).id 
+              'REORDER CONNECTIONS ' + nodeFromId(nodeId).id 
             + '.' + oldInputId
             + ' to .' + newInputId);
 
@@ -66720,7 +66735,7 @@ extends Action
 
     do(updateNodes)
     {
-        const node = graph.nodeFromId(this.nodeId);
+        const node = nodeFromId(this.nodeId);
 
         this.swapConnections();
         
@@ -66735,7 +66750,7 @@ extends Action
 
     undo(updateNodes)
     {
-        const node = graph.nodeFromId(this.nodeId);
+        const node = nodeFromId(this.nodeId);
 
         this.swapConnections();
 
@@ -66750,7 +66765,7 @@ extends Action
 
     swapConnections()
     {
-        const node = graph.nodeFromId(this.nodeId);
+        const node = nodeFromId(this.nodeId);
 
         const oldInput = node.inputFromId(this.oldInputId);
         const newInput = node.inputFromId(this.newInputId);
@@ -66787,7 +66802,7 @@ extends Action
     {
         uiDeleteSavedConnectionsToNodeId(this.nodeId);
         
-        const node = graph.nodeFromId(this.nodeId);
+        const node = nodeFromId(this.nodeId);
 
         for (const input of node.inputs.filter(i => i.connected))
             uiSaveConn(input.connection);
@@ -66809,7 +66824,7 @@ extends Action
     {
         super(
             REORDER_INPUTS_ACTION,
-              'REORDER INPUTS ' + graph.nodeFromId(nodeId).id 
+              'REORDER INPUTS ' + nodeFromId(nodeId).id 
             + '.' + oldIndex
             + ' to .' + newIndex);
 
@@ -66826,14 +66841,14 @@ extends Action
 
         this.saveInputConnections();
         
-        pushUnique(updateNodes, graph.nodeFromId(this.nodeId));
+        pushUnique(updateNodes, nodeFromId(this.nodeId));
     }
 
 
 
     undo(updateNodes)
     {
-        const node = graph.nodeFromId(this.nodeId);
+        const node = nodeFromId(this.nodeId);
 
         moveInArray(node.inputs, this.newIndex, this.oldIndex);
         uiSaveNodes([this.nodeId]);
@@ -66847,7 +66862,7 @@ extends Action
 
     redo(updateNodes)
     {
-        const node = graph.nodeFromId(this.nodeId);
+        const node = nodeFromId(this.nodeId);
 
         moveInArray(node.inputs, this.oldIndex, this.newIndex);
         uiSaveNodes([this.nodeId]);
@@ -66863,7 +66878,7 @@ extends Action
     {
         uiDeleteSavedConnectionsToNodeId(this.nodeId);
         
-        const node = graph.nodeFromId(this.nodeId);
+        const node = nodeFromId(this.nodeId);
 
         for (const input of node.inputs.filter(i => i.connected))
             uiSaveConn(input.connection);
@@ -66915,7 +66930,7 @@ extends Action
 
         for (const id of this.getMovedIds())
         {
-            const node = graph.nodeFromId(id);
+            const node = nodeFromId(id);
 
             this.from.push([id, point(node.slx,      node.sly     )]);
             this.to  .push([id, point(node.slx + dx, node.sly + dy)]);
@@ -67045,7 +67060,7 @@ extends Action
 function updateComments(nodeIds)
 {
     nodeIds
-        .map(id => graph.nodeFromId(id))
+        .map(id => nodeFromId(id))
         .filter(n => n.type == COMMENT)
         .forEach(n => n.updateNode());
 }
@@ -67095,7 +67110,7 @@ class SetNodeRectAction
 extends Action
 {
     nodeId;
-    get node() { return graph.nodeFromId(this.nodeId) } 
+    get node() { return nodeFromId(this.nodeId) } 
 
     oldRect;
     newRect;
@@ -67170,7 +67185,7 @@ extends Action
 
     get param() 
     { 
-        return graph.nodeFromId(this.nodeId).params
+        return nodeFromId(this.nodeId).params
                .find(p => p.id == this.paramId); 
     } 
 
@@ -67259,7 +67274,7 @@ extends Action
 
     get param() 
     { 
-        return graph.nodeFromId(this.nodeId).params
+        return nodeFromId(this.nodeId).params
                .find(p => p.id == this.paramId); 
     } 
 
@@ -67344,7 +67359,7 @@ extends Action
 
     do(updateNodes)
     {
-        const nodes = this.selectedIds.map(id => graph.nodeFromId(id));
+        const nodes = this.selectedIds.map(id => nodeFromId(id));
 
         uiToggleDisableNodes(nodes);
         uiSaveNodes(nodes.map(n => n.id));
@@ -67365,7 +67380,7 @@ class ToggleOperatorSymbolAction
 extends Action
 {
     nodeId;
-    get node() { return graph.nodeFromId(this.nodeId) } 
+    get node() { return nodeFromId(this.nodeId) } 
 
     showOnlySymbol;
 
@@ -69204,8 +69219,8 @@ generator.onmessage = function(e)
                 
             break;
         
-        case 'uiInitNodeProgress':   graph.nodeFromId(msg.nodeId).initProgress();                break;
-        case 'uiUpdateNodeProgress': graph.nodeFromId(msg.nodeId).updateProgress(msg.progress);  break;
+        case 'uiInitNodeProgress':   nodeFromId(msg.nodeId).initProgress();                break;
+        case 'uiUpdateNodeProgress': nodeFromId(msg.nodeId).updateProgress(msg.progress);  break;
         
         case 'uiForwardToFigma':     uiPostMessageToFigma(msg.msg);                                        break;
     }
@@ -70049,7 +70064,6 @@ function uiReturnFigLoadNodesAndConns(msg)
     graphView.canUpdateNodes = false;
 
 
-    //uiLoadGraphView(_graphView);
 
     if (!isEmpty(msg.pageKeys))
     {
@@ -70064,9 +70078,14 @@ function uiReturnFigLoadNodesAndConns(msg)
 
         for (const id of msg.pageOrder)
             graph.addPage(pages.find(p => p.id == id));
+
+        console.log('msg.currentPageId =', msg.currentPageId);
+        if (msg.currentPageId != NULL)
+            graph.pageIndex = graph.pages.findIndex(p => p.id == msg.currentPageId);
     }
     else
         graph.createPage('Graph');
+
 
 
     if (!settings.dataMode)
@@ -70245,7 +70264,7 @@ function finishLoadingNodes(_nodes, loadedNodes, updateNodes, duplicates = false
 {
     _nodes
         .filter(_n => _n.active)
-        .map   (_n => graph.nodeFromId(duplicates ? _n.newId : _n.id))
+        .map   (_n => nodeFromId(duplicates ? _n.newId : _n.id))
             .forEach(n => n.makeActive());
 
     updateTerminalsAfterNodes(loadedNodes, updateNodes);
@@ -70910,7 +70929,7 @@ function canAutoConnectNode(node)
 
 function uiDeleteNodes(nodeIds)
 {
-    nodeIds.forEach(id => graph.nodeFromId(id).makePassive());
+    nodeIds.forEach(id => nodeFromId(id).makePassive());
 
     graph.deleteNodes(nodeIds);
 
@@ -71014,7 +71033,7 @@ function uiDisconnectAny(input)
 
 function uiUpdateSavedConnectionsToNodeId(nodeId, saveOld)
 {
-    const node = graph.nodeFromId(nodeId);
+    const node = nodeFromId(nodeId);
 
 
     uiDeleteSavedConnectionsToNodeId(node.id);
@@ -71120,7 +71139,7 @@ function uiMakeNodeRightPassive(node, fromNode = null)
 
 function uiShowParamValue(nodeId, paramName, value)
 {
-    const node = graph.nodeFromId(nodeId);
+    const node = nodeFromId(nodeId);
 
     if (!!node) // this is for deleted nodes which still exist
     {           // in genGraph but no longer in graph
@@ -71362,7 +71381,7 @@ function uiUpdateValuesAndObjects(requestId, actionId, updateNodeId, updateParam
         const nodeId = values[i++];
         const count  = values[i++];
 
-        const node   = graph.nodeFromId(nodeId);
+        const node   = nodeFromId(nodeId);
 
 
         if (node)
@@ -71470,11 +71489,8 @@ function uiUpdateValuesAndObjects(requestId, actionId, updateNodeId, updateParam
         {
             uiSaveNodes(graph.nodes.map(n => n.id));
             
-            uiSavePages(
-                graph.pages.map(p => p.id),
-                graph.pages.map(p => p.toJson()));
-
             graph.updatePages();
+            //graph.updateSavedPages();
         }
 
         graphView.creatingNodes      = false;
@@ -71498,12 +71514,13 @@ function uiToggleDisableNodes(nodes)
 
 
 
-function uiSavePages(pageIds, pageJson)
+function uiSavePages(pageIds, pageJson, currentPageId)
 {
     uiQueueMessageToFigma({
-        cmd:     'figSavePages',
-        pageIds:  pageIds,
-        pageJson: pageJson });
+        cmd:          'figSavePages',
+        pageIds:       pageIds,
+        pageJson:      pageJson,
+        currentPageId: currentPageId });
 }
 
 
@@ -71513,7 +71530,7 @@ function uiSaveNodes(nodeIds)
     const nodeJson = [];
 
     for (const id of nodeIds)
-        nodeJson.push(graph.nodeFromId(id).toJson());
+        nodeJson.push(nodeFromId(id).toJson());
 
     if (!isEmpty(nodeJson))
     {
@@ -71724,7 +71741,7 @@ function uiRemoveSavedNodesAndConns(nodeIds)
 
 function uiRemoveConnsToNodes(nodeIds)
 {
-    const nodes = nodeIds.map(id => graph.nodeFromId(id));
+    const nodes = nodeIds.map(id => nodeFromId(id));
 
     for (const node of nodes)
         for (const input of node.inputs)
@@ -71937,14 +71954,14 @@ function uiReturnFigGetAllLocalColorStyles(msg)
 
 function uiSetStyleId(msg)
 {
-    graph.nodeFromId(msg.nodeId).linkedStyleId = msg.styleId;
+    nodeFromId(msg.nodeId).linkedStyleId = msg.styleId;
 }
 
 
 
 function initLocalStylesMenu(styles, nodeId)
 {
-    const node = graph.nodeFromId(nodeId);
+    const node = nodeFromId(nodeId);
     console.assert(node.type == COLOR_STYLE, 'node must be COLOR_STYLE');
 
 

@@ -22,7 +22,7 @@ extends Action
             'REMOVE ' + nodeIds.length + ' ' + countString('node', nodeIds.length));
 
         this.nodeIds         = [...nodeIds];
-        this.nodes           = nodeIds.map(id => graph.nodeFromId(id));
+        this.nodes           = nodeIds.map(id => nodeFromId(id));
         this.prevSelectedIds = graphView.selectedNodes.map(n => n.id);
     }
 
@@ -75,7 +75,7 @@ extends Action
 
     prepareNewReconnections()
     {
-        const clusters = findConnectedClusters(this.nodeIds.map(n => graph.nodeFromId(n)));
+        const clusters = findConnectedClusters(this.nodeIds.map(n => nodeFromId(n)));
 
         
         for (const cluster of clusters)
@@ -128,8 +128,8 @@ function removeNodesAction_makeNewConnections(act)
         const _conn = act.newConnectionData[i];
         
         const conn = uiVariableConnect(
-             graph.nodeFromId(_conn.outputNodeId), _conn.outputId, 
-             graph.nodeFromId(_conn. inputNodeId), _conn. inputId,
+             nodeFromId(_conn.outputNodeId), _conn.outputId, 
+             nodeFromId(_conn. inputNodeId), _conn. inputId,
             _conn.outputOrder);
 
         uiSaveConn(conn);
@@ -137,6 +137,6 @@ function removeNodesAction_makeNewConnections(act)
 
              if (act.clusterActiveLeft [i]) pushUpdate(act, [act.clusterActiveLeft [i]]);
         else if (act.clusterActiveRight[i]) pushUpdate(act, [act.clusterActiveRight[i]]);
-        else                                uiMakeNodeActive(graph.nodeFromId(_conn.inputNodeId));
+        else                                uiMakeNodeActive(nodeFromId(_conn.inputNodeId));
     }
 }

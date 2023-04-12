@@ -16,7 +16,13 @@ class Operator
 
     id;
 
-    //get nodeId() { return this.id.split('/').at(-1); }
+    get pageId() 
+    { 
+        const nodePath = this.id.split('/');
+        return nodePath.length > 1 ? nodePath[0] : '';
+    }
+
+    get nodeId() { return this.id.split('/').at(-1); }
 
 
     _name;

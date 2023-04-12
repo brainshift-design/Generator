@@ -189,7 +189,7 @@ function canAutoConnectNode(node)
 
 function uiDeleteNodes(nodeIds)
 {
-    nodeIds.forEach(id => graph.nodeFromId(id).makePassive());
+    nodeIds.forEach(id => nodeFromId(id).makePassive());
 
     graph.deleteNodes(nodeIds);
 
@@ -293,7 +293,7 @@ function uiDisconnectAny(input)
 
 function uiUpdateSavedConnectionsToNodeId(nodeId, saveOld)
 {
-    const node = graph.nodeFromId(nodeId);
+    const node = nodeFromId(nodeId);
 
 
     uiDeleteSavedConnectionsToNodeId(node.id);
@@ -399,7 +399,7 @@ function uiMakeNodeRightPassive(node, fromNode = null)
 
 function uiShowParamValue(nodeId, paramName, value)
 {
-    const node = graph.nodeFromId(nodeId);
+    const node = nodeFromId(nodeId);
 
     if (!!node) // this is for deleted nodes which still exist
     {           // in genGraph but no longer in graph
@@ -641,7 +641,7 @@ function uiUpdateValuesAndObjects(requestId, actionId, updateNodeId, updateParam
         const nodeId = values[i++];
         const count  = values[i++];
 
-        const node   = graph.nodeFromId(nodeId);
+        const node   = nodeFromId(nodeId);
 
 
         if (node)
@@ -749,11 +749,8 @@ function uiUpdateValuesAndObjects(requestId, actionId, updateNodeId, updateParam
         {
             uiSaveNodes(graph.nodes.map(n => n.id));
             
-            uiSavePages(
-                graph.pages.map(p => p.id),
-                graph.pages.map(p => p.toJson()));
-
             graph.updatePages();
+            //graph.updateSavedPages();
         }
 
         graphView.creatingNodes      = false;
@@ -777,12 +774,13 @@ function uiToggleDisableNodes(nodes)
 
 
 
-function uiSavePages(pageIds, pageJson)
+function uiSavePages(pageIds, pageJson, currentPageId)
 {
     uiQueueMessageToFigma({
-        cmd:     'figSavePages',
-        pageIds:  pageIds,
-        pageJson: pageJson });
+        cmd:          'figSavePages',
+        pageIds:       pageIds,
+        pageJson:      pageJson,
+        currentPageId: currentPageId });
 }
 
 
@@ -792,7 +790,7 @@ function uiSaveNodes(nodeIds)
     const nodeJson = [];
 
     for (const id of nodeIds)
-        nodeJson.push(graph.nodeFromId(id).toJson());
+        nodeJson.push(nodeFromId(id).toJson());
 
     if (!isEmpty(nodeJson))
     {
@@ -1003,7 +1001,7 @@ function uiRemoveSavedNodesAndConns(nodeIds)
 
 function uiRemoveConnsToNodes(nodeIds)
 {
-    const nodes = nodeIds.map(id => graph.nodeFromId(id));
+    const nodes = nodeIds.map(id => nodeFromId(id));
 
     for (const node of nodes)
         for (const input of node.inputs)

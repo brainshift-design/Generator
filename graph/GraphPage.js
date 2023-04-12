@@ -21,9 +21,7 @@ class GraphPage
 
         this._pan = pan;
         
-        uiSavePages(
-            [this.id],
-            [this.toJson()]);//uiSaveGraphView();
+        graph.updateSavedPages();
 
         graphView.updatePanAndZoom(true);
     }
@@ -61,10 +59,8 @@ class GraphPage
             this._pan  = pan;
     
             
-            uiSavePages(
-                [this.id],
-                [this.toJson()]);//uiSaveGraphView();
-       
+            graph.updateSavedPages();
+                   
     
             graphView.panZoomTimer = setTimeout(() => 
             {
@@ -114,6 +110,8 @@ class GraphPage
             {
                 graph.pageIndex = graph.pages.indexOf(this); 
                 graph.updatePages(); 
+                
+                graph.updateSavedPages();
             }
         });
 

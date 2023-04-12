@@ -51,7 +51,7 @@ extends Action
 function updateComments(nodeIds)
 {
     nodeIds
-        .map(id => graph.nodeFromId(id))
+        .map(id => nodeFromId(id))
         .filter(n => n.type == COMMENT)
         .forEach(n => n.updateNode());
 }

@@ -9,10 +9,10 @@ extends Action
     inputId;
 
     
-    get outputNode() { return graph.nodeFromId(this.outputNodeId); }
+    get outputNode() { return nodeFromId(this.outputNodeId); }
     get output()     { return this.outputNode.outputFromId(this.outputId); }
     
-    get inputNode()  { return graph.nodeFromId(this.inputNodeId); }
+    get inputNode()  { return nodeFromId(this.inputNodeId); }
     get input()      { return this.inputNode.inputFromId(this.inputId); }
     
     
@@ -70,7 +70,7 @@ extends Action
 
     saveOldActiveNodes()
     {
-        this.oldActiveNodeIds = [...graph.getActiveNodesFromNodeId(this.inputNodeId).map(n => n.id)];
+        this.oldActiveNodeIds = [...getActiveNodesFromNodeId(this.inputNodeId).map(n => n.id)];
 
         if (!getActiveFromNode(this.outputNode, [this.inputNode]))
             this.newActiveNodeIds.push(this.outputNodeId);
@@ -118,7 +118,7 @@ extends Action
     deactivateNewActiveNodes()
     {
         for (const id of this.newActiveNodeIds)
-            uiMakeNodePassive(graph.nodeFromId(id));
+            uiMakeNodePassive(nodeFromId(id));
 
         uiDeleteObjectsAndStyles(this.newActiveNodeIds, false);
     }
@@ -128,12 +128,12 @@ extends Action
     activateOldActiveNodes(updateNodes)
     {
         const oldActiveNodeIds = [...this.oldActiveNodeIds].sort((x, y) => 
-            (graph.nodeFromId(x) === graph.nodeFromId(y)) ? 0 : graph.nodeFromId(y).isOrFollows(graph.nodeFromId(x)) ? -1 : 1);
+            (nodeFromId(x) === nodeFromId(y)) ? 0 : nodeFromId(y).isOrFollows(nodeFromId(x)) ? -1 : 1);
 
-        pushUnique(updateNodes, oldActiveNodeIds.map(id => graph.nodeFromId(id)));
+        pushUnique(updateNodes, oldActiveNodeIds.map(id => nodeFromId(id)));
 
         for (const id of oldActiveNodeIds)
-            uiMakeNodeActive(graph.nodeFromId(id));
+            uiMakeNodeActive(nodeFromId(id));
     }
 }
 
@@ -142,5 +142,5 @@ extends Action
 function DisconnectAction_activateNewNodes(act)
 {
     for (const id of act.newActiveNodeIds)
-        uiMakeNodeActive(graph.nodeFromId(id));
+        uiMakeNodeActive(nodeFromId(id));
 }

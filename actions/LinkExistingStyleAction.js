@@ -2,7 +2,7 @@ class LinkExistingStyleAction
 extends Action
 {
     nodeId;
-    get node() { return graph.nodeFromId(this.nodeId) } 
+    get node() { return nodeFromId(this.nodeId) } 
 
     get  inputNode() { return this.node; } // dummy for ConnectAction_...
     get outputNode() { return this.node; } // dummy for ConnectAction_...

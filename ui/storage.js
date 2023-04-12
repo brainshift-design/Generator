@@ -196,7 +196,6 @@ function uiReturnFigLoadNodesAndConns(msg)
     graphView.canUpdateNodes = false;
 
 
-    //uiLoadGraphView(_graphView);
 
     if (!isEmpty(msg.pageKeys))
     {
@@ -211,9 +210,14 @@ function uiReturnFigLoadNodesAndConns(msg)
 
         for (const id of msg.pageOrder)
             graph.addPage(pages.find(p => p.id == id));
+
+        console.log('msg.currentPageId =', msg.currentPageId);
+        if (msg.currentPageId != NULL)
+            graph.pageIndex = graph.pages.findIndex(p => p.id == msg.currentPageId);
     }
     else
         graph.createPage('Graph');
+
 
 
     if (!settings.dataMode)
@@ -392,7 +396,7 @@ function finishLoadingNodes(_nodes, loadedNodes, updateNodes, duplicates = false
 {
     _nodes
         .filter(_n => _n.active)
-        .map   (_n => graph.nodeFromId(duplicates ? _n.newId : _n.id))
+        .map   (_n => nodeFromId(duplicates ? _n.newId : _n.id))
             .forEach(n => n.makeActive());
 
     updateTerminalsAfterNodes(loadedNodes, updateNodes);

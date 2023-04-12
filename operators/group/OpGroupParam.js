@@ -110,7 +110,7 @@ extends OperatorBase
 
                     if (_conn)
                     {
-                        const conn = uiConnect(param.output, graph.nodeFromId(_conn.inputNodeId).inputFromId(_conn.inputId));
+                        const conn = uiConnect(param.output, nodeFromId(_conn.inputNodeId).inputFromId(_conn.inputId));
                         uiSaveConn(conn);
                     }
                 }

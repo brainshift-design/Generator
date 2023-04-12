@@ -126,14 +126,14 @@ function uiReturnFigGetAllLocalColorStyles(msg)
 
 function uiSetStyleId(msg)
 {
-    graph.nodeFromId(msg.nodeId).linkedStyleId = msg.styleId;
+    nodeFromId(msg.nodeId).linkedStyleId = msg.styleId;
 }
 
 
 
 function initLocalStylesMenu(styles, nodeId)
 {
-    const node = graph.nodeFromId(nodeId);
+    const node = nodeFromId(nodeId);
     console.assert(node.type == COLOR_STYLE, 'node must be COLOR_STYLE');
 
 

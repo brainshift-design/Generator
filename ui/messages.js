@@ -153,8 +153,8 @@ generator.onmessage = function(e)
                 
             break;
         
-        case 'uiInitNodeProgress':   graph.nodeFromId(msg.nodeId).initProgress();                break;
-        case 'uiUpdateNodeProgress': graph.nodeFromId(msg.nodeId).updateProgress(msg.progress);  break;
+        case 'uiInitNodeProgress':   nodeFromId(msg.nodeId).initProgress();                break;
+        case 'uiUpdateNodeProgress': nodeFromId(msg.nodeId).updateProgress(msg.progress);  break;
         
         case 'uiForwardToFigma':     uiPostMessageToFigma(msg.msg);                                        break;
     }

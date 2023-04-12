@@ -62,9 +62,9 @@ extends Action
 
         if (autoConnect)
         {
-            this.oldInputActiveNodeId = idFromNode(graph.getActiveFromNodeId(this.prevSelectedIds[0]));
+            this.oldInputActiveNodeId = idFromNode(getActiveFromNodeId(this.prevSelectedIds[0]));
 
-            const selNode = graph.nodeFromId(this.prevSelectedIds[0]);
+            const selNode = nodeFromId(this.prevSelectedIds[0]);
             const inputs  = this.node.headerInputs.filter(i => i.canConnectFrom(selNode.headerOutputs[0]));
             
             if (!isEmpty(inputs))
@@ -117,7 +117,7 @@ function createNodeAction_activateOldInput(act, updateNodes)
     if (act.oldInputActiveNodeId == NULL)
         return;
 
-    const oldInputActiveNode = graph.nodeFromId(act.oldInputActiveNodeId);
+    const oldInputActiveNode = nodeFromId(act.oldInputActiveNodeId);
     
     uiMakeNodeActive(oldInputActiveNode);
     pushUnique(updateNodes, oldInputActiveNode);

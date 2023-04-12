@@ -57,7 +57,7 @@ extends Action
 
         if (insert)
         {
-            const selNode   = graph.nodeFromId(this.prevSelectedIds[0]);
+            const selNode   = nodeFromId(this.prevSelectedIds[0]);
             const selOutput = selNode.headerOutputs[0];
 
 
@@ -81,7 +81,7 @@ extends Action
                 for (const _conn of this.prevConnections)
                 {
                     const _output    = node.headerOutputs[0];
-                    const _inputNode = graph.nodeFromId(_conn.inputNodeId);
+                    const _inputNode = nodeFromId(_conn.inputNodeId);
                     const _input     = _inputNode.inputFromId(_conn.inputId);
 
                     if (_input.canConnectFrom(_output))
@@ -123,9 +123,9 @@ function createInsertNodeAction_savePrevConnections(act)
     if (act.prevSelectedIds.length == 0)
         return;
         
-    act.oldInputActiveNodeId = idFromNode(graph.getActiveFromNodeId(act.prevSelectedIds[0]));
+    act.oldInputActiveNodeId = idFromNode(getActiveFromNodeId(act.prevSelectedIds[0]));
 
-    const selNode = graph.nodeFromId(act.prevSelectedIds[0]);
+    const selNode = nodeFromId(act.prevSelectedIds[0]);
     const output  = selNode.outputs[0];
 
     for (const input of output.connectedInputs)

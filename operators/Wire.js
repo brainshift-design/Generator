@@ -464,7 +464,7 @@ class Wire
         //     ||     conn.output
         //        &&  conn.output.param
         //        &&  conn.output.param._nodeId != undefined
-        //        &&  conn.output.node.graph.nodeFromId(conn.output.param._nodeId)
+        //        &&  conn.output.node.nodeFromId(conn.output.param._nodeId)
         //        && !nodeFromId(conn.output.param._nodeId).isCached();
     
     

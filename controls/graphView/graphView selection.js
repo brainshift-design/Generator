@@ -10,7 +10,7 @@ GraphView.prototype.deselectAll = function()
 
 GraphView.prototype.selectByIds = function(nodeIds)
 {
-    this.selectedNodes = nodeIds.map(id => graph.nodeFromId(id));
+    this.selectedNodes = nodeIds.map(id => nodeFromId(id));
 };
 
 
