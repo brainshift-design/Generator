@@ -249,7 +249,7 @@ Operator.prototype.updateHeaderLabelText = function()
 {
     this.labelText.innerHTML = 
           (settings.showNodeId ? this.id/*.replaceAll('/', ' / ')*/ : this.name)
-        + (this.active && this.showActiveArrow ? '  ‣' : '');
+        + (this.active && this.showActiveArrow ? (settings.showNodeId ? ' ' : '  ') + '‣' : '');
 
     this.labelText.style.fontFamily = 
         settings.showNodeId 

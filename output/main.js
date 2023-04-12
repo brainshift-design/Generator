@@ -917,6 +917,9 @@ figma.ui.onmessage = function (msg) {
         case 'figLogAllLocalData':
             figLogAllLocalData(msg.darkMode);
             break;
+        case 'figRemoveSavedPage':
+            figRemoveSavedPage(msg.pageId);
+            break;
         case 'figRemoveAllSavedPages':
             figRemoveAllSavedPages();
             break;
@@ -1663,6 +1666,9 @@ function figLogAllSavedConnKeys(darkMode) {
 }
 function figLogAllLocalData(darkMode) {
     figma.clientStorage.keysAsync().then(keys => keys.forEach(k => figma.clientStorage.getAsync(k).then(val => console.log(k + ': ' + val))));
+}
+function figRemoveSavedPage(pageId) {
+    figClearPageData(getPageKey(pageId));
 }
 function figRemoveAllSavedPages() {
     const pageKeys = figma.currentPage.getPluginDataKeys().filter(k => isPageKey(k));

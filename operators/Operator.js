@@ -16,6 +16,9 @@ class Operator
 
     id;
 
+    //get nodeId() { return this.id.split('/').at(-1); }
+
+
     _name;
     get name()     { return this._name; }
     set name(name) { this.setName(name); }

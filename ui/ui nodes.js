@@ -930,6 +930,16 @@ function uiDeleteSavedConnection(key, outputNodeId, outputId, outputOrder, input
 
 
 
+function uiRemoveSavedPage(pageId)
+{
+    uiQueueMessageToFigma({
+        cmd:   'figRemoveSavedPage',
+        pageId: pageId
+    });
+}
+
+
+
 function uiRemoveAllSavedPages()
 {
     uiQueueMessageToFigma({

@@ -1,33 +1,33 @@
-Graph.prototype.nodeFromId = function(id)
+function nodeFromId(id)
 {
     return this.nodes.find(n => n.id == id);
-};
+}
 
 
 
-Graph.prototype.nodesFromIds = function(ids)
+function nodesFromIds(ids)
 {
     return ids.map(id => this.nodeFromId(id));
-};
+}
 
 
 
-Graph.prototype.setNodeId = function(nodeId, newId)
+function setNodeId(nodeId, newId)
 {
     const node = this.nodeFromId(nodeId);
     node.id = newId;
-};
+}
 
 
 
-Graph.prototype.getActiveFromNodeId = function(nodeId, alreadyChecked = [])
+function getActiveFromNodeId(nodeId, alreadyChecked = [])
 {
     return getActiveFromNode(this.nodeFromId(nodeId), alreadyChecked);
-};
+}
 
 
 
-Graph.prototype.getActiveNodesAfterNodeId = function(nodeId, alreadyChecked = [])
+function getActiveNodesAfterNodeId(nodeId, alreadyChecked = [])
 {
     const rightActive = [];
     
@@ -53,11 +53,11 @@ Graph.prototype.getActiveNodesAfterNodeId = function(nodeId, alreadyChecked = []
 
 
     return rightActive;
-};
+}
 
 
 
-Graph.prototype.getActiveNodesFromNodeId = function(nodeId, alreadyChecked = [])
+function getActiveNodesFromNodeId(nodeId, alreadyChecked = [])
 {
     return getActiveNodesFromNode(this.nodeFromId(nodeId), alreadyChecked);
-};
+}

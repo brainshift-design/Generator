@@ -88,9 +88,9 @@ class GraphPage
         this.btnClose = createDiv('pageClose');
 
 
-        this.button  .appendChild(this.btnIcon);
-        this.button  .appendChild(this.btnName);
-        this.button  .appendChild(this.btnClose);
+        this.button.appendChild(this.btnIcon);
+        this.button.appendChild(this.btnName);
+        this.button.appendChild(this.btnClose);
 
 
 
@@ -110,8 +110,11 @@ class GraphPage
         
         this.button.addEventListener('pointerdown' , e => 
         { 
-            graph.pageIndex = graph.pages.indexOf(this); 
-            graph.updatePages(); 
+            if (e.button == 0)
+            {
+                graph.pageIndex = graph.pages.indexOf(this); 
+                graph.updatePages(); 
+            }
         });
 
 
@@ -130,8 +133,14 @@ class GraphPage
         
         this.btnClose.addEventListener('pointerup', e => 
         { 
-            /*nothing for now, TODO*/ 
-            graph.updatePages(); 
+            if (e.button == 0)
+            {
+                console.log('up');
+                graph.removePage(this);
+                uiRemoveSavedPage(this.id);
+
+                graph.updatePages();
+            }
         });
     }
 
@@ -155,7 +164,7 @@ class GraphPage
         this.btnIcon .style.opacity       = isCurrent ? 1 : 0.35;
         
         this.btnName .style.color         = isCurrent ? '#fffffff0' : '#fff6';
-        this.btnName .style.fontWeight    = isCurrent ? 600 : 500;
+        //this.btnName .style.fontWeight    = isCurrent ? 600 : 500;
 
         this.btnClose.style.pointerEvents = isCurrent && graph.pages.length > 1 ? 'all' : 'none';
         //this.btnClose.style.visibility    = isCurrent && graph.pages.length > 1 ? 'visible' : 'hidden';

@@ -318,9 +318,9 @@ function simpleIntHash(x)
 
 
 
-function getNewNodeId(nodes, curId, id = curId)
+function getNewNumberId(nodes, checkExists, curId, id = curId, join = '')
 {
-    if (!nodes.find(n => n.id == id))
+    if (!checkExists(id))//nodes.find(n => n.id == id))
         return id;
     
 
@@ -332,8 +332,8 @@ function getNewNodeId(nodes, curId, id = curId)
         let   num = parseInt(id.substring(len));
 
         let newId = '';
-        while (newId == '' || nodes.find(n => n.id == newId))
-            newId = id.substring(0, len) + (++num);
+        while (newId == '' || checkExists(newId))//nodes.find(n => n.id == newId))
+            newId = id.substring(0, len + join.length) + join + (++num);
 
         return newId;
     }
@@ -341,12 +341,12 @@ function getNewNodeId(nodes, curId, id = curId)
     else if (numLength == 0)
     {
         let num   = 2;
-        let newId = id + num;
+        let newId = id + join + num;
 
-        while (nodes.find(n => 
-               n.id != curId 
-            && n.id == newId))
-            newId = id + (++num);
+        while (checkExists(newId))//nodes.find(n => 
+            //    n.id != curId 
+            // && n.id == newId))
+            newId = id + join + (++num);
 
         return newId;
     }

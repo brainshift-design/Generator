@@ -1,18 +1,43 @@
 Graph.prototype.createPage = function(name)
 {
-    this.addPage(new GraphPage(name));
+    this.addPage(new GraphPage(
+        name.substring(0, 1).toLowerCase() + name.substring(1),
+        name));
 };
 
 
 
 Graph.prototype.addPage = function(page)
 {
+    page.id = getNewNumberId(
+        graph.pages, 
+        id => graph.pages.find(p => p.id == id), 
+        page.id);
+
+    page.name = getNewNumberId(
+        graph.pages, 
+        name => graph.pages.find(p => p.name == name), 
+        page.name, 
+        page.name, 
+        ' ');
+
     this.pages.push(page);
 
     pagesBar.insertBefore(page.button, btnAddPage);
 
-    if (this.pageIndex < 0)
-        this.pageIndex = 0;
+    this.pageIndex++;
+};
+
+
+
+Graph.prototype.removePage = function(page)
+{
+    removeFromArray(this.pages, page);
+
+    pagesBar.removeChild(page.button);
+
+    if (this.pageIndex >= this.pages.length)
+        this.pageIndex--;
 };
 
 
@@ -53,6 +78,10 @@ btnAddPage.addEventListener('pointerleave', e => updateAddButton(false));
 
 btnAddPage.addEventListener('pointerup', e => 
 {
-    graph.addPage('Graph');
+    graph.createPage('Graph');
     graph.updatePages();
+
+    uiSavePages(
+        [graph.pages.at(-1).id], 
+        [graph.pages.at(-1).toJson()]);
 });

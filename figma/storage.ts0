@@ -299,6 +299,13 @@ function figLogAllLocalData(darkMode)
 
 
 
+function figRemoveSavedPage(pageId)
+{
+    figClearPageData(getPageKey(pageId));
+}
+
+
+
 function figRemoveAllSavedPages()
 {
     const pageKeys = figma.currentPage.getPluginDataKeys().filter(k => isPageKey(k));
