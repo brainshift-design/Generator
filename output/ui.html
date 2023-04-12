@@ -105,6 +105,23 @@
 }
 
 
+.dataModePage
+{
+    font-family:    Inter;
+    font-size:      11px;
+    text-align:     center;
+    display:        inline-block;
+    min-width:      50px;
+    background:     var(--data-mode-node); 
+    border-radius:  3px;
+    margin:         2px 0px 0px 3px;
+    padding:        4px 4px;
+    box-shadow:     0 0 0 1px #dac inset;
+    white-space:    pre;
+    vertical-align: top;
+}
+
+
 .dataModeNode
 {
     font-family:    Inter;
@@ -136,6 +153,19 @@
     box-shadow:     0 0 0 1px #ad8 inset;
     white-space:    pre;
     vertical-align: top;
+}
+
+
+.pageDataHeader
+{
+    border-bottom: 1px solid #b8a; 
+    padding:       0px 11px 4px 9px;
+}
+
+
+.pageDataBody
+{
+    padding:       4px 11px 0px 0px;
 }
 
 
@@ -3744,6 +3774,11 @@ a
     </div>
 
     <div id='dataModeContent'>
+        
+        <div class='dataModeRowWrapper' id='dataModePagesWrapper'>
+            <div id='dataModePagesTitle' class='dataModeRowTitle'>Pages</div>
+            <div id='dataModePages'></div>
+        </div>
         
         <div class='dataModeRowWrapper' id='dataModeNodesWrapper'>
             <div id='dataModeNodesTitle' class='dataModeRowTitle'>Nodes</div>
@@ -44493,6 +44528,8 @@ var menuTextbox;
 
 var menuCopy;
 
+var menuPageData;
+var menuPageDataPages;
 var menuNodeData;
 var menuNodeDataNodes;
 var menuConnData;
@@ -45035,6 +45072,21 @@ function initGeneratorMenus()
 
 function initDataModeMenus()
 {
+    menuPageData = new Menu('Pages menu', false, false);
+    menuPageData.addItems([
+        new MenuItem('Delete all pages',  { callback: () => { hideAllMenus(); dataModeDeleteAllPages(); }}),
+        new MenuItem('',                  { separator: true }),
+        new MenuItem('Delete page',       { callback: () => { hideAllMenus(); dataModeDeletePage(menuPageData._div.page); }})]);
+
+
+    menuPageDataPages = new Menu('Pages menu', false, false);
+    menuPageDataPages.addItems([
+        new MenuItem('Expand all',       { callback: () => { hideAllMenus(); expandAllPageData();   }}),
+        new MenuItem('Collapse all',     { callback: () => { hideAllMenus(); collapseAllPageData(); }}),
+        new MenuItem('',                 { separator: true }),
+        new MenuItem('Delete all pages', { callback: () => { hideAllMenus(); dataModeDeleteAllPages(); }})]);
+
+
     menuNodeData = new Menu('Node menu', false, false);
     menuNodeData.addItems([
         new MenuItem('Delete connections from', { callback: () => { hideAllMenus(); dataModeDeleteConnectionsFromNode     (menuNodeData._div.node); }}),
@@ -67754,6 +67806,7 @@ const zoomOutCursor =
     + 'wvc3ZnPgo=) 8 8, auto';
 
 
+var _dataModePages = [];
 var _dataModeNodes = [];
 var _dataModeConns = [];
 
@@ -67792,12 +67845,13 @@ dataModeConnsWrapper.addEventListener('pointerdown', e =>
 
 
 
-function loadNodesAndConnsData(_nodes, _conns)
+function loadNodesAndConnsData(_pages, _nodes, _conns)
 {
-    _dataModeNodes = _nodes;
-    _dataModeConns = _conns;
+    _dataModePages = [..._pages];
+    _dataModeNodes = [..._nodes];
+    _dataModeConns = [..._conns];
 
-    
+
     _dataModeNodes.sort((n1, n2) => 
     {
         if (n1.y != n2.y ) return parseFloat(n1.value.y) - parseFloat(n2.value.y);
@@ -67814,6 +67868,7 @@ function loadNodesAndConnsData(_nodes, _conns)
     });
 
     
+    for (const _page of _dataModePages) dataModePages.appendChild(createPageDataDiv(_page));
     for (const _node of _dataModeNodes) dataModeNodes.appendChild(createNodeDataDiv(_node));
     for (const _conn of _dataModeConns) dataModeConns.appendChild(createConnDataDiv(_conn));
 
@@ -67830,6 +67885,59 @@ function updateDataModeInfo()
 {
     dataModeNodesTitle.innerHTML = dataModeNodes.children.length + '&thinsp;&nbsp;' + countString('node',       dataModeNodes.children.length);
     dataModeConnsTitle.innerHTML = dataModeConns.children.length + '&thinsp;&nbsp;' + countString('connection', dataModeConns.children.length);
+}
+
+
+
+function createPageDataDiv(_page)
+{
+    const div    = createDiv('dataModePage');
+    
+    const page   = JSON.parse(_page.value);
+    page._key    = _page.key;
+
+
+    div._page    = _page.value;
+    div. page    =  page;
+
+    div.showJson = false;
+
+
+    expandPageData(div);
+
+
+    div.addEventListener('dblclick', () =>
+    {
+        div.showJson = !div.showJson;
+        expandPageData(div, page, _page);
+    });
+
+
+    div.addEventListener('pointerenter', () => div.style.background = 'var(--data-mode-node-active)');
+    div.addEventListener('pointerleave', () => { if (!menuPageData._div) div.style.background = 'var(--data-mode-node)'; });
+
+
+    div.addEventListener('pointerdown', e =>
+    {
+        e.preventDefault();
+
+        if (e.button == 2)
+        {
+            e.stopPropagation();
+
+            // div.style.background = 'var(--data-mode-node-active)';
+
+            createDataMenuOnHide(
+                menuPageData,
+                div,
+                'var(--data-mode-node)'); 
+
+            menuPageData.showAt(e.clientX, e.clientY, false);
+        }
+    });
+
+
+    return div;
 }
 
 
@@ -67950,6 +68058,34 @@ function createDataMenuOnHide(menu, div, normal)
 
 
 
+function expandPageData(div)
+{
+    if (div.showJson)
+    {
+        div.innerHTML =
+              '<div class="pageDataHeader">' + div.page._key + '</div>'
+            + '<div class="pageDataBody">' + formatSavedDataJson(div._page) + '</div>';
+
+        div.style.paddingLeft   = '0px';
+        div.style.paddingRight  = '0px';
+        div.style.textAlign     = 'left';
+        div.style.fontFamily    = 'Roboto Mono';
+        div.style.letterSpacing = '-0.06em';
+    }
+    else
+    {
+        div.innerHTML = div.node.id;
+
+        div.style.paddingLeft   = '6px';
+        div.style.paddingRight  = '6px';
+        div.style.textAlign     = 'center';
+        div.style.fontFamily    = 'Inter';
+        div.style.letterSpacing = 0;
+    }
+}
+
+
+
 function expandNodeData(div)
 {
     if (div.showJson)
@@ -67958,7 +68094,7 @@ function expandNodeData(div)
         //   '<div>' + div._key + '</div><div>'
         // + (div.node.loading ? '&nbsp;🛑<br/>' : '')
               '<div class="nodeDataHeader">' + (div.node.loading ? '🛑&nbsp;' : '') + div.node._key + '</div>'
-            + '<div class="connDataBody">' + formatSavedDataJson(div._node) + '</div>';
+            + '<div class="nodeDataBody">' + formatSavedDataJson(div._node) + '</div>';
 
         div.style.paddingLeft   = '0px';
         div.style.paddingRight  = '0px';
@@ -68010,6 +68146,28 @@ function expandConnData(div)
         div.style.textAlign     = 'center';
         div.style.fontFamily    = 'Inter';
         div.style.letterSpacing = 0;
+    }
+}
+
+
+
+function expandAllPageData()
+{
+    for (const div of dataModePages.children)
+    {
+        div.showJson = true;
+        expandPageData(div, div.page, div._page);
+    }
+}
+
+
+
+function collapseAllPageData()
+{
+    for (const div of dataModePages.children)
+    {
+        div.showJson = false;
+        expandPageData(div, div.page, div._page);
     }
 }
 
@@ -70146,6 +70304,9 @@ function uiReturnFigLoadNodesAndConns(msg)
         graphView.updatePanAndZoom(true);
 
 
+    let _pageKeys  = msg.pageKeys;
+    let _pages     = msg.pageJson;
+
     let _nodeKeys  = msg.nodeKeys;
     let _nodes     = msg.nodeJson;
 
@@ -70153,9 +70314,11 @@ function uiReturnFigLoadNodesAndConns(msg)
     let _conns     = msg.connJson;
 
     
+    const _p = [];
     const _n = [];
     const _c = [];
 
+    for (let i = 0; i < _pages.length; i++) _n.push({key: _pageKeys[i], value: _pages[i]});
     for (let i = 0; i < _nodes.length; i++) _n.push({key: _nodeKeys[i], value: _nodes[i]});
     for (let i = 0; i < _conns.length; i++) _c.push({key: _connKeys[i], value: _conns[i]});
     
@@ -70167,7 +70330,7 @@ function uiReturnFigLoadNodesAndConns(msg)
     {
         menuBar.style.display = 'none';
 
-        loadNodesAndConnsData(_n, _c);
+        loadNodesAndConnsData(_p, _n, _c);
     }
     else
     {

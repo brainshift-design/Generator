@@ -237,6 +237,9 @@ function uiReturnFigLoadNodesAndConns(msg)
         graphView.updatePanAndZoom(true);
 
 
+    let _pageKeys  = msg.pageKeys;
+    let _pages     = msg.pageJson;
+
     let _nodeKeys  = msg.nodeKeys;
     let _nodes     = msg.nodeJson;
 
@@ -244,9 +247,11 @@ function uiReturnFigLoadNodesAndConns(msg)
     let _conns     = msg.connJson;
 
     
+    const _p = [];
     const _n = [];
     const _c = [];
 
+    for (let i = 0; i < _pages.length; i++) _n.push({key: _pageKeys[i], value: _pages[i]});
     for (let i = 0; i < _nodes.length; i++) _n.push({key: _nodeKeys[i], value: _nodes[i]});
     for (let i = 0; i < _conns.length; i++) _c.push({key: _connKeys[i], value: _conns[i]});
     
@@ -258,7 +263,7 @@ function uiReturnFigLoadNodesAndConns(msg)
     {
         menuBar.style.display = 'none';
 
-        loadNodesAndConnsData(_n, _c);
+        loadNodesAndConnsData(_p, _n, _c);
     }
     else
     {

@@ -1,3 +1,4 @@
+var _dataModePages = [];
 var _dataModeNodes = [];
 var _dataModeConns = [];
 
@@ -36,12 +37,13 @@ dataModeConnsWrapper.addEventListener('pointerdown', e =>
 
 
 
-function loadNodesAndConnsData(_nodes, _conns)
+function loadNodesAndConnsData(_pages, _nodes, _conns)
 {
-    _dataModeNodes = _nodes;
-    _dataModeConns = _conns;
+    _dataModePages = [..._pages];
+    _dataModeNodes = [..._nodes];
+    _dataModeConns = [..._conns];
 
-    
+
     _dataModeNodes.sort((n1, n2) => 
     {
         if (n1.y != n2.y ) return parseFloat(n1.value.y) - parseFloat(n2.value.y);
@@ -58,6 +60,7 @@ function loadNodesAndConnsData(_nodes, _conns)
     });
 
     
+    for (const _page of _dataModePages) dataModePages.appendChild(createPageDataDiv(_page));
     for (const _node of _dataModeNodes) dataModeNodes.appendChild(createNodeDataDiv(_node));
     for (const _conn of _dataModeConns) dataModeConns.appendChild(createConnDataDiv(_conn));
 
@@ -74,6 +77,59 @@ function updateDataModeInfo()
 {
     dataModeNodesTitle.innerHTML = dataModeNodes.children.length + '&thinsp;&nbsp;' + countString('node',       dataModeNodes.children.length);
     dataModeConnsTitle.innerHTML = dataModeConns.children.length + '&thinsp;&nbsp;' + countString('connection', dataModeConns.children.length);
+}
+
+
+
+function createPageDataDiv(_page)
+{
+    const div    = createDiv('dataModePage');
+    
+    const page   = JSON.parse(_page.value);
+    page._key    = _page.key;
+
+
+    div._page    = _page.value;
+    div. page    =  page;
+
+    div.showJson = false;
+
+
+    expandPageData(div);
+
+
+    div.addEventListener('dblclick', () =>
+    {
+        div.showJson = !div.showJson;
+        expandPageData(div, page, _page);
+    });
+
+
+    div.addEventListener('pointerenter', () => div.style.background = 'var(--data-mode-node-active)');
+    div.addEventListener('pointerleave', () => { if (!menuPageData._div) div.style.background = 'var(--data-mode-node)'; });
+
+
+    div.addEventListener('pointerdown', e =>
+    {
+        e.preventDefault();
+
+        if (e.button == 2)
+        {
+            e.stopPropagation();
+
+            // div.style.background = 'var(--data-mode-node-active)';
+
+            createDataMenuOnHide(
+                menuPageData,
+                div,
+                'var(--data-mode-node)'); 
+
+            menuPageData.showAt(e.clientX, e.clientY, false);
+        }
+    });
+
+
+    return div;
 }
 
 
@@ -194,6 +250,34 @@ function createDataMenuOnHide(menu, div, normal)
 
 
 
+function expandPageData(div)
+{
+    if (div.showJson)
+    {
+        div.innerHTML =
+              '<div class="pageDataHeader">' + div.page._key + '</div>'
+            + '<div class="pageDataBody">' + formatSavedDataJson(div._page) + '</div>';
+
+        div.style.paddingLeft   = '0px';
+        div.style.paddingRight  = '0px';
+        div.style.textAlign     = 'left';
+        div.style.fontFamily    = 'Roboto Mono';
+        div.style.letterSpacing = '-0.06em';
+    }
+    else
+    {
+        div.innerHTML = div.node.id;
+
+        div.style.paddingLeft   = '6px';
+        div.style.paddingRight  = '6px';
+        div.style.textAlign     = 'center';
+        div.style.fontFamily    = 'Inter';
+        div.style.letterSpacing = 0;
+    }
+}
+
+
+
 function expandNodeData(div)
 {
     if (div.showJson)
@@ -202,7 +286,7 @@ function expandNodeData(div)
         //   '<div>' + div._key + '</div><div>'
         // + (div.node.loading ? '&nbsp;🛑<br/>' : '')
               '<div class="nodeDataHeader">' + (div.node.loading ? '🛑&nbsp;' : '') + div.node._key + '</div>'
-            + '<div class="connDataBody">' + formatSavedDataJson(div._node) + '</div>';
+            + '<div class="nodeDataBody">' + formatSavedDataJson(div._node) + '</div>';
 
         div.style.paddingLeft   = '0px';
         div.style.paddingRight  = '0px';
@@ -254,6 +338,28 @@ function expandConnData(div)
         div.style.textAlign     = 'center';
         div.style.fontFamily    = 'Inter';
         div.style.letterSpacing = 0;
+    }
+}
+
+
+
+function expandAllPageData()
+{
+    for (const div of dataModePages.children)
+    {
+        div.showJson = true;
+        expandPageData(div, div.page, div._page);
+    }
+}
+
+
+
+function collapseAllPageData()
+{
+    for (const div of dataModePages.children)
+    {
+        div.showJson = false;
+        expandPageData(div, div.page, div._page);
     }
 }
 

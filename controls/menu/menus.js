@@ -55,6 +55,8 @@ var menuTextbox;
 
 var menuCopy;
 
+var menuPageData;
+var menuPageDataPages;
 var menuNodeData;
 var menuNodeDataNodes;
 var menuConnData;
@@ -597,6 +599,21 @@ function initGeneratorMenus()
 
 function initDataModeMenus()
 {
+    menuPageData = new Menu('Pages menu', false, false);
+    menuPageData.addItems([
+        new MenuItem('Delete all pages',  { callback: () => { hideAllMenus(); dataModeDeleteAllPages(); }}),
+        new MenuItem('',                  { separator: true }),
+        new MenuItem('Delete page',       { callback: () => { hideAllMenus(); dataModeDeletePage(menuPageData._div.page); }})]);
+
+
+    menuPageDataPages = new Menu('Pages menu', false, false);
+    menuPageDataPages.addItems([
+        new MenuItem('Expand all',       { callback: () => { hideAllMenus(); expandAllPageData();   }}),
+        new MenuItem('Collapse all',     { callback: () => { hideAllMenus(); collapseAllPageData(); }}),
+        new MenuItem('',                 { separator: true }),
+        new MenuItem('Delete all pages', { callback: () => { hideAllMenus(); dataModeDeleteAllPages(); }})]);
+
+
     menuNodeData = new Menu('Node menu', false, false);
     menuNodeData.addItems([
         new MenuItem('Delete connections from', { callback: () => { hideAllMenus(); dataModeDeleteConnectionsFromNode     (menuNodeData._div.node); }}),

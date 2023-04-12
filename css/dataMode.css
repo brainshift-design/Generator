@@ -85,6 +85,23 @@
 }
 
 
+.dataModePage
+{
+    font-family:    Inter;
+    font-size:      11px;
+    text-align:     center;
+    display:        inline-block;
+    min-width:      50px;
+    background:     var(--data-mode-node); 
+    border-radius:  3px;
+    margin:         2px 0px 0px 3px;
+    padding:        4px 4px;
+    box-shadow:     0 0 0 1px #dac inset;
+    white-space:    pre;
+    vertical-align: top;
+}
+
+
 .dataModeNode
 {
     font-family:    Inter;
@@ -116,6 +133,19 @@
     box-shadow:     0 0 0 1px #ad8 inset;
     white-space:    pre;
     vertical-align: top;
+}
+
+
+.pageDataHeader
+{
+    border-bottom: 1px solid #b8a; 
+    padding:       0px 11px 4px 9px;
+}
+
+
+.pageDataBody
+{
+    padding:       4px 11px 0px 0px;
 }
 
 
