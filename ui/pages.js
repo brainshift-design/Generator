@@ -46,12 +46,12 @@ function addPage(id, name)
     btn.addEventListener('pointerdown' , e => { curPageIndex  = graphPages.indexOf(page); updatePages(); });
 
     btnClose.addEventListener('pointerenter', e => { btnClose.style.opacity = 1;    });
-    btnClose.addEventListener('pointerleave', e => { btnClose.style.opacity = 0.7; });
+    btnClose.addEventListener('pointerleave', e => { btnClose.style.opacity = 0.65; });
     btnClose.addEventListener('pointerup'   , e => { /*nothing for now, TODO*/ updatePages(); });
 
 
     graphPages.push(page);
-    pagesBar.appendChild(page.button);
+    pagesHolder.appendChild(page.button);
 
 
     updatePages();
@@ -61,28 +61,24 @@ function addPage(id, name)
 
 function updatePage(page)
 {
-    const index     = Array.prototype.indexOf.call(pagesBar.childNodes, page.button);
+    const index = Array.prototype.indexOf.call(pagesHolder.childNodes, page.button);
 
     const isCurrent = 
            index ==  curPageIndex
         || index == overPageIndex;
 
-    pagesBar.style.background        = document.hasFocus() ? '#202020' : '#383838';
+    pagesBar.style.background      = document.hasFocus() ? '#202020' : '#383838';
 
-    
-    page.btnIcon .innerHTML          = iconPage;
-    page.btnName .innerHTML          = page.name;
-    page.btnClose.innerHTML          = iconPageClose;
-    
-    page.button  .style.background   = isCurrent ? '#2c2c2c' : (document.hasFocus() ? '#202020' : '#383838');
-    
-    //page.button  .style.outline      = '1px solid ' + (document.hasFocus() ? (isCurrent ? '#ffffff20' : '#ffffff19') : (isCurrent ? '#ffffff28' : '#ffffff19'));
+    page.btnIcon .innerHTML        = iconPage;
+    page.btnName .innerHTML        = page.name;
+    page.btnClose.innerHTML        = iconPageClose;
 
-    page.btnIcon .style.opacity      = isCurrent ? 1 : 0.35;
-    page.btnName .style.color        = isCurrent ? '#fffffff0' : '#fff6';
-    page.btnName .style.fontWeight   = isCurrent ? 600 : 500;
-    page.btnClose.style.display      = isCurrent ? 'inline-block' : 'none';
-    page.btnClose.style.opacity      = 0.7;
+    page.button  .style.background = isCurrent ? '#2c2c2c' : (document.hasFocus() ? '#202020' : '#383838');
+    page.btnIcon .style.opacity    = isCurrent ? 1 : 0.35;
+    page.btnName .style.color      = isCurrent ? '#fffffff0' : '#fff6';
+    page.btnName .style.fontWeight = isCurrent ? 600 : 500;
+    page.btnClose.style.display    = isCurrent ? 'inline-block' : 'none';
+    page.btnClose.style.opacity    = 0.65;
 }
 
 
@@ -91,9 +87,28 @@ function updatePages()
 {
     pagesBar.style.display = 
         settings.showPages
-        ? 'flex'
+        ? 'inline-block'
         : 'none';
-        
+    
     for (const page of graphPages)
         updatePage(page);
+    
+    updateAddButton(false);
 }
+
+
+
+function updateAddButton(over)
+{
+    btnAddPage .style.background = over ? '#2c2c2c' : (document.hasFocus() ? '#202020' : '#383838');
+    addPagePlus.style.opacity    = over ? 1 : 0.35;
+}
+
+
+
+btnAddPage.addEventListener('pointerenter', e => updateAddButton(true ));
+btnAddPage.addEventListener('pointerleave', e => updateAddButton(false));
+btnAddPage.addEventListener('pointerup'   , e => {addPage('page4', 'Page 4');});
+
+
+addPagePlus.innerHTML = iconAddPage;

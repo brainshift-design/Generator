@@ -320,6 +320,9 @@ extends EventTarget
 
     canConnectFrom(output)
     {
+        if (output.supportsTypes([ANY_TYPE]))
+            return false;
+
         if (   !this.canConnect
             || !this.supportsTypes(output.types))
             return false;

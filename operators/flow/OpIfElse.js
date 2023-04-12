@@ -308,7 +308,10 @@ function OpIfElse_onConnectInput(node, inputIndex)
         otherInput.types      = [...firstTypes];
         otherInput.wireColor  = [...firstOut.wireColor];
 
-        node.outputs[0].types = [...firstTypes];
+        node.outputs[0].types = 
+            firstTypes.includes(ANY_TYPE)
+            ? [ANY_TYPE]
+            : [...firstTypes];
     }
 
     
@@ -331,6 +334,9 @@ function OpIfElse_onConnectInput(node, inputIndex)
 function OpIfElse_onDisconnectInput(node, inputIndex)
 {
     const otherIndex = inputIndex == 0 ? 1 : 0;
+    
+    const firstInput = node.inputs[inputIndex];
+    //const firstOut   = firstInput.connectedOutput;
 
     const otherInput = node.inputs[otherIndex];
     const otherOut   = otherInput.connectedOutput;
@@ -348,11 +354,24 @@ function OpIfElse_onDisconnectInput(node, inputIndex)
     node.outputs[0].types = 
         otherInput.connected
         ? [...otherTypes]
-        : [];
+        : [ANY_TYPE];
 
-    
-    for (const output of node.outputs)
-        for (const input of output.connectedInputs)
-            if (input.node.type == IF_ELSE)
-                OpIfElse_onConnectInput(input.node, input.index);
+
+    // const connectedInputs = node.headerInputs.filter(i => i.connected);
+
+    // if (connectedInputs.length == 1)
+    // {
+    //     const input = connectedInputs[0];
+
+    //     uiDisconnect(input);
+
+    //     // if (input.node.type == IF_ELSE)
+    //     //     OpIfElse_onDisconnectInput(input.node, input.index);
+    // }
+    {
+        for (const output of node.outputs)
+            for (const input of output.connectedInputs)
+                if (input.node.type == IF_ELSE)
+                    OpIfElse_onConnectInput(input.node, input.index);
+    }
 }

@@ -90,7 +90,7 @@ class Wire
         if (output)
         {
             if (!isEmpty(output.types)) types.push(...output.types);
-            else                        types.push(output.node.type);
+            else if (output)            types.push(output.node.type);
         }
         else if (input)
         {
@@ -100,20 +100,17 @@ class Wire
             else
             {
                 if (!isEmpty(input.types)) types.push(...input.types);
-                else                       types.push(input.node.type);
+                else if (input)            types.push(input.node.type);
             }
         }
 
-        if (this.connection.output.node.id == 'ifElse')
-            console.log('types =', types);
-
 
         if (   output
-            && output.supportsTypes([COLOR_VALUE]))//!rgbIsNaN(output.wireColor))
+            && output.supportsTypes([COLOR_VALUE]))
             return output.wireColor;
 
         else if (input
-              && input.supportsTypes([COLOR_VALUE]))//!rgbIsNaN(input.wireColor))
+              && input.supportsTypes([COLOR_VALUE]))
             return input.wireColor;
 
         else if (!isEmpty(types))

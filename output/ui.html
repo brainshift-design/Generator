@@ -1154,6 +1154,7 @@
     box-shadow:       0 0 0 1px rgba(255, 255, 255, 0.25);  */
 }
 
+
 .figma-light #crashDetails::-webkit-scrollbar-thumb
 { 
     background-color: #0004;
@@ -1170,8 +1171,8 @@
 #btnCrashRestart
 {
     position: absolute;
-    right:    22px;
-    bottom:   20px;
+    right:    24px;
+    bottom:   21px;
 }
 
 
@@ -1654,39 +1655,47 @@ div
 
 #pagesBar
 {
-    display:          flex;
+    display:          inline-block;
+    width:            100%;
     height:           36px;
     background-color: #1e1e1e;
     padding:          0;
     cursor:           default;
     position:         relative;
     z-index:          0;
+    /* box-shadow:       0 0 0 1px red inset; */
+}
+
+
+#pagesHolder
+{
+    display:          inline-block;
+    width:            max-content;
+    height:           36px;
+    background-color: #1e1e1e;
+    padding:          0;
+    /* box-shadow:       0 0 0 1px blue inset; */
 }
 
 
 .page
 {
-    font-family:  Inter;
-    font-size:    11px;
-    display:      flex;
-    width:        auto;
-    min-width:    100px;
-    max-width:    272px;
-    height:       calc(100% - 11px);
-    outline:      1px solid var(--figma-color-bg-tertiary);
-    padding-top:  11px;
+    font-family:   Inter;
+    font-size:     11px;
+    display:       inline-block;
+    width:         auto;
+    min-width:     100px;
+    max-width:     272px;
+    height:        calc(100% - 11px);
+    outline:       1px solid var(--figma-color-bg-tertiary);
+    padding-top:   11px;
     padding-right: 10px
 }
 
 
-/* .page:hover
-{
-    background: #2c2c2c;
-} */
-
-
 .pageIcon
 {
+    display:      inline-block;
     width:        14px;
     height:       14px;
     margin-left:  13px;
@@ -1697,19 +1706,48 @@ div
 
 .pageName
 {
-    height:     fit-content;
+    display:    inline-block;
+    /* height:  fit-content; */
     /* box-shadow: 0 0 0 1px orange inset; */
-
+    position:   relative;
+    top:       -3px;
 }
 
 
 .pageClose
 {
+    display:     inline-block;
+    position:    relative;
+    top:         -2px;
     width:       8px;
     height:      8px;
     /* box-shadow:  0 0 0 1px green inset; */
     margin-top:  2px;
     margin-left: 13px;
+}
+
+
+#btnAddPage
+{
+    display:     inline-block;
+    position:    relative;
+    left:        -4px;
+    top:         -3px;
+    width:       34px;
+    height:      calc(100% - 11px);
+    padding-top: 11px;
+    /* box-shadow:  0 0 0 1px orange inset; */
+}
+
+
+#addPagePlus
+{
+    width:       8px;
+    height:      8px;
+    /* box-shadow:  0 0 0 1px green inset; */
+    margin-left: 12px;
+    position:    relative;
+    top:         1px;
 }
 
 
@@ -3681,7 +3719,10 @@ a
 
 
 <div id='menuBar'></div>
-<div id='pagesBar'></div>
+<div id='pagesBar'>
+    <div id='pagesHolder'></div>
+    <div id='btnAddPage'><div id='addPagePlus'></div></div>
+</div>
 
 
 <div id='_graphView'></div>
@@ -51171,6 +51212,9 @@ extends EventTarget
 
     canConnectFrom(output)
     {
+        if (output.supportsTypes([ANY_TYPE]))
+            return false;
+
         if (   !this.canConnect
             || !this.supportsTypes(output.types))
             return false;
@@ -51767,7 +51811,7 @@ class Wire
         if (output)
         {
             if (!isEmpty(output.types)) types.push(...output.types);
-            else                        types.push(output.node.type);
+            else if (output)            types.push(output.node.type);
         }
         else if (input)
         {
@@ -51777,20 +51821,17 @@ class Wire
             else
             {
                 if (!isEmpty(input.types)) types.push(...input.types);
-                else                       types.push(input.node.type);
+                else if (input)            types.push(input.node.type);
             }
         }
 
-        if (this.connection.output.node.id == 'ifElse')
-            console.log('types =', types);
-
 
         if (   output
-            && output.supportsTypes([COLOR_VALUE]))//!rgbIsNaN(output.wireColor))
+            && output.supportsTypes([COLOR_VALUE]))
             return output.wireColor;
 
         else if (input
-              && input.supportsTypes([COLOR_VALUE]))//!rgbIsNaN(input.wireColor))
+              && input.supportsTypes([COLOR_VALUE]))
             return input.wireColor;
 
         else if (!isEmpty(types))
@@ -55709,7 +55750,10 @@ function OpIfElse_onConnectInput(node, inputIndex)
         otherInput.types      = [...firstTypes];
         otherInput.wireColor  = [...firstOut.wireColor];
 
-        node.outputs[0].types = [...firstTypes];
+        node.outputs[0].types = 
+            firstTypes.includes(ANY_TYPE)
+            ? [ANY_TYPE]
+            : [...firstTypes];
     }
 
     
@@ -55732,6 +55776,9 @@ function OpIfElse_onConnectInput(node, inputIndex)
 function OpIfElse_onDisconnectInput(node, inputIndex)
 {
     const otherIndex = inputIndex == 0 ? 1 : 0;
+    
+    const firstInput = node.inputs[inputIndex];
+    //const firstOut   = firstInput.connectedOutput;
 
     const otherInput = node.inputs[otherIndex];
     const otherOut   = otherInput.connectedOutput;
@@ -55749,13 +55796,26 @@ function OpIfElse_onDisconnectInput(node, inputIndex)
     node.outputs[0].types = 
         otherInput.connected
         ? [...otherTypes]
-        : [];
+        : [ANY_TYPE];
 
-    
-    for (const output of node.outputs)
-        for (const input of output.connectedInputs)
-            if (input.node.type == IF_ELSE)
-                OpIfElse_onConnectInput(input.node, input.index);
+
+    // const connectedInputs = node.headerInputs.filter(i => i.connected);
+
+    // if (connectedInputs.length == 1)
+    // {
+    //     const input = connectedInputs[0];
+
+    //     uiDisconnect(input);
+
+    //     // if (input.node.type == IF_ELSE)
+    //     //     OpIfElse_onDisconnectInput(input.node, input.index);
+    // }
+    {
+        for (const output of node.outputs)
+            for (const input of output.connectedInputs)
+                if (input.node.type == IF_ELSE)
+                    OpIfElse_onConnectInput(input.node, input.index);
+    }
 }
 
 
@@ -69024,12 +69084,12 @@ function addPage(id, name)
     btn.addEventListener('pointerdown' , e => { curPageIndex  = graphPages.indexOf(page); updatePages(); });
 
     btnClose.addEventListener('pointerenter', e => { btnClose.style.opacity = 1;    });
-    btnClose.addEventListener('pointerleave', e => { btnClose.style.opacity = 0.7; });
+    btnClose.addEventListener('pointerleave', e => { btnClose.style.opacity = 0.65; });
     btnClose.addEventListener('pointerup'   , e => { /*nothing for now, TODO*/ updatePages(); });
 
 
     graphPages.push(page);
-    pagesBar.appendChild(page.button);
+    pagesHolder.appendChild(page.button);
 
 
     updatePages();
@@ -69039,28 +69099,24 @@ function addPage(id, name)
 
 function updatePage(page)
 {
-    const index     = Array.prototype.indexOf.call(pagesBar.childNodes, page.button);
+    const index = Array.prototype.indexOf.call(pagesHolder.childNodes, page.button);
 
     const isCurrent = 
            index ==  curPageIndex
         || index == overPageIndex;
 
-    pagesBar.style.background        = document.hasFocus() ? '#202020' : '#383838';
+    pagesBar.style.background      = document.hasFocus() ? '#202020' : '#383838';
 
-    
-    page.btnIcon .innerHTML          = iconPage;
-    page.btnName .innerHTML          = page.name;
-    page.btnClose.innerHTML          = iconPageClose;
-    
-    page.button  .style.background   = isCurrent ? '#2c2c2c' : (document.hasFocus() ? '#202020' : '#383838');
-    
-    //page.button  .style.outline      = '1px solid ' + (document.hasFocus() ? (isCurrent ? '#ffffff20' : '#ffffff19') : (isCurrent ? '#ffffff28' : '#ffffff19'));
+    page.btnIcon .innerHTML        = iconPage;
+    page.btnName .innerHTML        = page.name;
+    page.btnClose.innerHTML        = iconPageClose;
 
-    page.btnIcon .style.opacity      = isCurrent ? 1 : 0.35;
-    page.btnName .style.color        = isCurrent ? '#fffffff0' : '#fff6';
-    page.btnName .style.fontWeight   = isCurrent ? 600 : 500;
-    page.btnClose.style.display      = isCurrent ? 'inline-block' : 'none';
-    page.btnClose.style.opacity      = 0.7;
+    page.button  .style.background = isCurrent ? '#2c2c2c' : (document.hasFocus() ? '#202020' : '#383838');
+    page.btnIcon .style.opacity    = isCurrent ? 1 : 0.35;
+    page.btnName .style.color      = isCurrent ? '#fffffff0' : '#fff6';
+    page.btnName .style.fontWeight = isCurrent ? 600 : 500;
+    page.btnClose.style.display    = isCurrent ? 'inline-block' : 'none';
+    page.btnClose.style.opacity    = 0.65;
 }
 
 
@@ -69069,12 +69125,31 @@ function updatePages()
 {
     pagesBar.style.display = 
         settings.showPages
-        ? 'flex'
+        ? 'inline-block'
         : 'none';
-        
+    
     for (const page of graphPages)
         updatePage(page);
+    
+    updateAddButton(false);
 }
+
+
+
+function updateAddButton(over)
+{
+    btnAddPage .style.background = over ? '#2c2c2c' : (document.hasFocus() ? '#202020' : '#383838');
+    addPagePlus.style.opacity    = over ? 1 : 0.35;
+}
+
+
+
+btnAddPage.addEventListener('pointerenter', e => updateAddButton(true ));
+btnAddPage.addEventListener('pointerleave', e => updateAddButton(false));
+btnAddPage.addEventListener('pointerup'   , e => {addPage('page4', 'Page 4');});
+
+
+addPagePlus.innerHTML = iconAddPage;
 
 
 var productKey = NULL;
