@@ -1,12 +1,15 @@
-Graph.prototype.addPage = function(name)
+Graph.prototype.createPage = function(name)
 {
-    const page = new GraphPage(name);
+    this.addPage(new GraphPage(name));
+};
 
+
+
+Graph.prototype.addPage = function(page)
+{
     this.pages.push(page);
 
-    
     pagesBar.insertBefore(page.button, btnAddPage);
-
 
     if (this.pageIndex < 0)
         this.pageIndex = 0;

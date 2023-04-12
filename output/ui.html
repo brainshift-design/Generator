@@ -63741,16 +63741,10 @@ class GraphPage
     
     
     
-    constructor(name)
+    constructor(id, name)
     {
-        let id = 
-              name.substring(0, 1).toLowerCase() 
-            + name.substring(1);
-
-
+        this.id       = id;
         this.name     = name;
-        this.id       = getNewNodeId(graph.pages, id);
-
 
         this.button   = createDiv('page');
 
@@ -63851,24 +63845,29 @@ class GraphPage
     
     load(json)
     {
-        this.pan  = point(0, 0);
-        this.zoom = 1;
+        console.log('json =', json);
+        this._pan  = point(0, 0);
+        this._zoom = 1;
     
         
         if (json)
         {
             const data = JSON.parse(json);
-    
-            this.pan = point( 
+
+            this.id   = data.id;
+            this.name = data.name;
+
+
+            this._pan = point( 
                 parseFloat(data.panx), 
                 parseFloat(data.pany));
     
-            if (isNaN(this.pan.x)) this.pan.x = 0;
-            if (isNaN(this.pan.y)) this.pan.y = 0;
+            if (isNaN(this.pan.x)) this._pan.x = 0;
+            if (isNaN(this.pan.y)) this._pan.y = 0;
     
             
-            this.zoom = parseFloat(data.zoom);
-            if (isNaN(this.zoom)) this.zoom = 1;
+            this._zoom = parseFloat(data.zoom);
+            if (isNaN(this.zoom)) this._zoom = 1;
         }
     }
 }
@@ -64538,15 +64537,18 @@ function getActiveNodesFromNode(node, alreadyChecked = [])
 }
 
 
-Graph.prototype.addPage = function(name)
+Graph.prototype.createPage = function(name)
 {
-    const page = new GraphPage(name);
+    this.addPage(new GraphPage(name));
+};
 
+
+
+Graph.prototype.addPage = function(page)
+{
     this.pages.push(page);
 
-    
     pagesBar.insertBefore(page.button, btnAddPage);
-
 
     if (this.pageIndex < 0)
         this.pageIndex = 0;
@@ -69993,25 +69995,23 @@ function uiReturnFigLoadNodesAndConns(msg)
 
     //uiLoadGraphView(_graphView);
 
+    console.log('msg.pageKeys =', msg.pageKeys);
 
-    // const pagesIds = msg.pageIds.split(',');
-
-    // if (!isEmpty(pageIds))
-    // {
-    //     for (const pageId of pageIds)
-    //         graph.addPage('Graph');
-    // }
-    // else
-    // {
-        graph.addPage('Graph');
-
-        // graph.currentPage._zoom = zoom;
-        // graph.currentPage._pan  = pan;
+    if (!isEmpty(msg.pageKeys))
+    {
+        for (let i = 0; i < msg.pageKeys.length; i++)
+        {
+            const page = new GraphPage();
+            page.load(msg.pageJson[i]);
+            graph.addPage(page);
+        }
+    }
+    else
+        graph.createPage('Graph');
 
 
     if (!settings.dataMode)
         graphView.updatePanAndZoom(true);
-        //}
 
 
     let _nodeKeys  = msg.nodeKeys;

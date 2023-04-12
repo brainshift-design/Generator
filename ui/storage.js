@@ -198,25 +198,23 @@ function uiReturnFigLoadNodesAndConns(msg)
 
     //uiLoadGraphView(_graphView);
 
+    console.log('msg.pageKeys =', msg.pageKeys);
 
-    // const pagesIds = msg.pageIds.split(',');
-
-    // if (!isEmpty(pageIds))
-    // {
-    //     for (const pageId of pageIds)
-    //         graph.addPage('Graph');
-    // }
-    // else
-    // {
-        graph.addPage('Graph');
-
-        // graph.currentPage._zoom = zoom;
-        // graph.currentPage._pan  = pan;
+    if (!isEmpty(msg.pageKeys))
+    {
+        for (let i = 0; i < msg.pageKeys.length; i++)
+        {
+            const page = new GraphPage();
+            page.load(msg.pageJson[i]);
+            graph.addPage(page);
+        }
+    }
+    else
+        graph.createPage('Graph');
 
 
     if (!settings.dataMode)
         graphView.updatePanAndZoom(true);
-        //}
 
 
     let _nodeKeys  = msg.nodeKeys;

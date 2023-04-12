@@ -76,16 +76,10 @@ class GraphPage
     
     
     
-    constructor(name)
+    constructor(id, name)
     {
-        let id = 
-              name.substring(0, 1).toLowerCase() 
-            + name.substring(1);
-
-
+        this.id       = id;
         this.name     = name;
-        this.id       = getNewNodeId(graph.pages, id);
-
 
         this.button   = createDiv('page');
 
@@ -186,24 +180,28 @@ class GraphPage
     
     load(json)
     {
-        this.pan  = point(0, 0);
-        this.zoom = 1;
+        this._pan  = point(0, 0);
+        this._zoom = 1;
     
         
         if (json)
         {
             const data = JSON.parse(json);
-    
-            this.pan = point( 
+
+            this.id   = data.id;
+            this.name = data.name;
+
+
+            this._pan = point( 
                 parseFloat(data.panx), 
                 parseFloat(data.pany));
     
-            if (isNaN(this.pan.x)) this.pan.x = 0;
-            if (isNaN(this.pan.y)) this.pan.y = 0;
+            if (isNaN(this.pan.x)) this._pan.x = 0;
+            if (isNaN(this.pan.y)) this._pan.y = 0;
     
             
-            this.zoom = parseFloat(data.zoom);
-            if (isNaN(this.zoom)) this.zoom = 1;
+            this._zoom = parseFloat(data.zoom);
+            if (isNaN(this.zoom)) this._zoom = 1;
         }
     }
 }
