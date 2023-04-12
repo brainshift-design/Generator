@@ -21,8 +21,6 @@ class GraphPage
 
         this._pan = pan;
         
-        graph.updateSavedPages();
-
         graphView.updatePanAndZoom(true);
     }
     
@@ -59,9 +57,6 @@ class GraphPage
             this._pan  = pan;
     
             
-            graph.updateSavedPages();
-                   
-    
             graphView.panZoomTimer = setTimeout(() => 
             {
                 graphView.updatePanAndZoom(this.zoom != graphView.oldZoom);
@@ -139,9 +134,10 @@ class GraphPage
         { 
             if (e.button == 0)
             {
-                console.log('up');
                 graph.removePage(this);
+
                 uiRemoveSavedPage(this.id);
+                uiRemoveSavedNodesAndConns(graph.nodes.filter(n => n.pageId == this.id).map(n => n.id));
 
                 graph.updatePages();
             }
@@ -168,11 +164,10 @@ class GraphPage
         this.btnIcon .style.opacity       = isCurrent ? 1 : 0.35;
         
         this.btnName .style.color         = isCurrent ? '#fffffff0' : '#fff6';
-        //this.btnName .style.fontWeight    = isCurrent ? 600 : 500;
 
         this.btnClose.style.pointerEvents = isCurrent && graph.pages.length > 1 ? 'all' : 'none';
-        //this.btnClose.style.visibility    = isCurrent && graph.pages.length > 1 ? 'visible' : 'hidden';
-        this.btnClose.style.opacity       = isCurrent && graph.pages.length > 1 ? 0.65 : 0;    }
+        this.btnClose.style.opacity       = isCurrent && graph.pages.length > 1 ? 0.65 : 0;    
+    }
 
 
 
@@ -183,9 +178,9 @@ class GraphPage
         return '{'
             + tab + '"id": "'   + this.id    + '",'
             + tab + '"name": "' + this.name  + '",'
-            + tab + '"zoom": "' + graph.currentPage.zoom  + '",'
-            + tab + '"panx": "' + graph.currentPage.pan.x + '",'
-            + tab + '"pany": "' + graph.currentPage.pan.y + '"'
+            + tab + '"zoom": "' + this.zoom  + '",'
+            + tab + '"panx": "' + this.pan.x + '",'
+            + tab + '"pany": "' + this.pan.y + '"'
             + '\n}';
     }
 

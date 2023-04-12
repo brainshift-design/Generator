@@ -17175,9 +17175,11 @@ const settings =
     logObjectUpdates:              false,
     logStyleUpdates:               false,
             
+    logRawLoadPages:               false, 
     logRawLoadNodes:               false, 
     logRawLoadConnections:         false, 
         
+    logRawSavePages:               false, 
     logRawSaveNodes:               false, 
     logRawSaveConnections:         false, 
         
@@ -17220,9 +17222,11 @@ function updateSetting(settingName, value)
         case 'logObjectUpdates':              settings.logObjectUpdates              = value;  break;
         case 'logStyleUpdates':               settings.logStyleUpdates               = value;  break;
                    
+        case 'logRawLoadPages':               settings.logRawLoadPages               = value;  break;
         case 'logRawLoadNodes':               settings.logRawLoadNodes               = value;  break;
         case 'logRawLoadConnections':         settings.logRawLoadConnections         = value;  break;
                 
+        case 'logRawSavePages':               settings.logRawSavePages               = value;  break;
         case 'logRawSaveNodes':               settings.logRawSaveNodes               = value;  break;
         case 'logRawSaveConnections':         settings.logRawSaveConnections         = value;  break;
                 
@@ -17265,9 +17269,11 @@ function updateSettingAndMenu(settingName, valid, value, save = true)
         case 'logObjectUpdates':              updateSettingAndMenu_(valid, settingName, value, menuItemLogObjectUpdates             ); break;
         case 'logStyleUpdates':               updateSettingAndMenu_(valid, settingName, value, menuItemLogStyleUpdates              ); break;
                       
+        case 'logRawLoadPages':               updateSettingAndMenu_(valid, settingName, value, menuItemLogRawLoadPages              ); break;
         case 'logRawLoadNodes':               updateSettingAndMenu_(valid, settingName, value, menuItemLogRawLoadNodes              ); break;
         case 'logRawLoadConnections':         updateSettingAndMenu_(valid, settingName, value, menuItemLogRawLoadConnections        ); break;
                       
+        case 'logRawSavePages':               updateSettingAndMenu_(valid, settingName, value, menuItemLogRawSavePages              ); break;
         case 'logRawSaveNodes':               updateSettingAndMenu_(valid, settingName, value, menuItemLogRawSaveNodes              ); break;
         case 'logRawSaveConnections':         updateSettingAndMenu_(valid, settingName, value, menuItemLogRawSaveConnections        ); break;
                       
@@ -17324,9 +17330,11 @@ function updateSettingsMenus()
     menuItemLogObjectUpdates             .setChecked(settings.logObjectUpdates             );
     menuItemLogStyleUpdates              .setChecked(settings.logStyleUpdates              );
                   
+    menuItemLogRawLoadNodes              .setChecked(settings.logRawLoadPages              );
     menuItemLogRawLoadNodes              .setChecked(settings.logRawLoadNodes              );
     menuItemLogRawLoadConnections        .setChecked(settings.logRawLoadConnections        );
                     
+    menuItemLogRawSavePages              .setChecked(settings.logRawSaveNodes              );
     menuItemLogRawSaveNodes              .setChecked(settings.logRawSaveNodes              );
     menuItemLogRawSaveConnections        .setChecked(settings.logRawSaveConnections        );
                 
@@ -17389,7 +17397,7 @@ function enableFeatures(subscription, beta)
     updateElementDisplay(btnFlow                     .div, subscription);
     updateElementDisplay(btnText                     .div, subscription && beta);
     updateElementDisplay(btnShape                    .div, subscription && beta);
-    updateElementDisplay(btnGroup                    .div, subscription && beta);
+    updateElementDisplay(btnGroup                    .div, false);//subscription && beta);
 
     updateElementDisplay(menuItemLogObjectUpdates    .div, subscription && beta);
     
@@ -17473,9 +17481,11 @@ function loadLocalSettings()
     uiGetLocalData('logObjectUpdates'             );
     uiGetLocalData('logStyleUpdates'              );
             
+    uiGetLocalData('logRawLoadPages'              );
     uiGetLocalData('logRawLoadNodes'              );
     uiGetLocalData('logRawLoadConnections'        );
         
+    uiGetLocalData('logRawSavePages'              );
     uiGetLocalData('logRawSaveNodes'              );
     uiGetLocalData('logRawSaveConnections'        );
         
@@ -20957,6 +20967,13 @@ function logStyleUpdates(styles)
         '%cstyles', 
         'background: #b4d; color: white;', 
         styles);
+}
+
+
+
+function logSavePages(pageJson)
+{
+    console.log('%cSAVING PAGES\n' + pageJson, 'color: black; background: #ddeeee;');
 }
 
 
@@ -27362,6 +27379,13 @@ function logStyleUpdates(styles)
         '%cstyles', 
         'background: #b4d; color: white;', 
         styles);
+}
+
+
+
+function logSavePages(pageJson)
+{
+    console.log('%cSAVING PAGES\n' + pageJson, 'color: black; background: #ddeeee;');
 }
 
 
@@ -39461,9 +39485,11 @@ const settings =
     logObjectUpdates:              false,
     logStyleUpdates:               false,
             
+    logRawLoadPages:               false, 
     logRawLoadNodes:               false, 
     logRawLoadConnections:         false, 
         
+    logRawSavePages:               false, 
     logRawSaveNodes:               false, 
     logRawSaveConnections:         false, 
         
@@ -39506,9 +39532,11 @@ function updateSetting(settingName, value)
         case 'logObjectUpdates':              settings.logObjectUpdates              = value;  break;
         case 'logStyleUpdates':               settings.logStyleUpdates               = value;  break;
                    
+        case 'logRawLoadPages':               settings.logRawLoadPages               = value;  break;
         case 'logRawLoadNodes':               settings.logRawLoadNodes               = value;  break;
         case 'logRawLoadConnections':         settings.logRawLoadConnections         = value;  break;
                 
+        case 'logRawSavePages':               settings.logRawSavePages               = value;  break;
         case 'logRawSaveNodes':               settings.logRawSaveNodes               = value;  break;
         case 'logRawSaveConnections':         settings.logRawSaveConnections         = value;  break;
                 
@@ -39551,9 +39579,11 @@ function updateSettingAndMenu(settingName, valid, value, save = true)
         case 'logObjectUpdates':              updateSettingAndMenu_(valid, settingName, value, menuItemLogObjectUpdates             ); break;
         case 'logStyleUpdates':               updateSettingAndMenu_(valid, settingName, value, menuItemLogStyleUpdates              ); break;
                       
+        case 'logRawLoadPages':               updateSettingAndMenu_(valid, settingName, value, menuItemLogRawLoadPages              ); break;
         case 'logRawLoadNodes':               updateSettingAndMenu_(valid, settingName, value, menuItemLogRawLoadNodes              ); break;
         case 'logRawLoadConnections':         updateSettingAndMenu_(valid, settingName, value, menuItemLogRawLoadConnections        ); break;
                       
+        case 'logRawSavePages':               updateSettingAndMenu_(valid, settingName, value, menuItemLogRawSavePages              ); break;
         case 'logRawSaveNodes':               updateSettingAndMenu_(valid, settingName, value, menuItemLogRawSaveNodes              ); break;
         case 'logRawSaveConnections':         updateSettingAndMenu_(valid, settingName, value, menuItemLogRawSaveConnections        ); break;
                       
@@ -39610,9 +39640,11 @@ function updateSettingsMenus()
     menuItemLogObjectUpdates             .setChecked(settings.logObjectUpdates             );
     menuItemLogStyleUpdates              .setChecked(settings.logStyleUpdates              );
                   
+    menuItemLogRawLoadNodes              .setChecked(settings.logRawLoadPages              );
     menuItemLogRawLoadNodes              .setChecked(settings.logRawLoadNodes              );
     menuItemLogRawLoadConnections        .setChecked(settings.logRawLoadConnections        );
                     
+    menuItemLogRawSavePages              .setChecked(settings.logRawSaveNodes              );
     menuItemLogRawSaveNodes              .setChecked(settings.logRawSaveNodes              );
     menuItemLogRawSaveConnections        .setChecked(settings.logRawSaveConnections        );
                 
@@ -39675,7 +39707,7 @@ function enableFeatures(subscription, beta)
     updateElementDisplay(btnFlow                     .div, subscription);
     updateElementDisplay(btnText                     .div, subscription && beta);
     updateElementDisplay(btnShape                    .div, subscription && beta);
-    updateElementDisplay(btnGroup                    .div, subscription && beta);
+    updateElementDisplay(btnGroup                    .div, false);//subscription && beta);
 
     updateElementDisplay(menuItemLogObjectUpdates    .div, subscription && beta);
     
@@ -39759,9 +39791,11 @@ function loadLocalSettings()
     uiGetLocalData('logObjectUpdates'             );
     uiGetLocalData('logStyleUpdates'              );
             
+    uiGetLocalData('logRawLoadPages'              );
     uiGetLocalData('logRawLoadNodes'              );
     uiGetLocalData('logRawLoadConnections'        );
         
+    uiGetLocalData('logRawSavePages'              );
     uiGetLocalData('logRawSaveNodes'              );
     uiGetLocalData('logRawSaveConnections'        );
         
@@ -44532,8 +44566,10 @@ var menuItemLogRequests;
 var menuItemLogValueUpdates;
 var menuItemLogObjectUpdates;
 var menuItemLogStyleUpdates;
+var menuItemLogRawLoadPages;
 var menuItemLogRawLoadNodes;
 var menuItemLogRawLoadConnections;
+var menuItemLogRawSavePages;
 var menuItemLogRawSaveNodes;
 var menuItemLogRawSaveConnections;
 var menuItemLogRawRequests;
@@ -44609,6 +44645,9 @@ function initGeneratorMenus()
     menuDebugStorage = new Menu('Debug storage', false);
     menuDebugStorage.addItems([
         menuItemLogLoading            = new MenuItem('Load\u2008at start',  {checkCallback: () => settings.logLoading      ,      callback: () => updateSettingAndMenu('logLoading',            true, !settings.logLoading           ), setting: true}),
+                                        new MenuItem('',                    {separator: true}),                   
+        menuItemLogRawLoadPages       = new MenuItem('Load pages',          {checkCallback: () => settings.logRawLoadPages ,      callback: () => updateSettingAndMenu('logRawLoadPages',       true, !settings.logRawLoadPages      ), setting: true}),
+        menuItemLogRawSavePages       = new MenuItem('Save pages',          {checkCallback: () => settings.logRawSavePages ,      callback: () => updateSettingAndMenu('logRawSavePages',       true, !settings.logRawSavePages      ), setting: true}),
                                         new MenuItem('',                    {separator: true}),                   
         menuItemLogRawLoadNodes       = new MenuItem('Load nodes',          {checkCallback: () => settings.logRawLoadNodes ,      callback: () => updateSettingAndMenu('logRawLoadNodes',       true, !settings.logRawLoadNodes      ), setting: true}),
         menuItemLogRawSaveNodes       = new MenuItem('Save nodes',          {checkCallback: () => settings.logRawSaveNodes ,      callback: () => updateSettingAndMenu('logRawSaveNodes',       true, !settings.logRawSaveNodes      ), setting: true}),
@@ -46085,9 +46124,6 @@ class GraphView
     scrollbarY;
 
 
-    graph;
-
-
     wires          = [];
     
 
@@ -46182,7 +46218,7 @@ class GraphView
 
 
 
-    constructor(div, graph)
+    constructor(div)
     {
         this.div                     = div;
           
@@ -47536,6 +47572,8 @@ GraphView.prototype.updateWheelTimer = function()
             overNumberControl.updateCursor();
 
         setAutoCursor();
+
+        graph.updateSavedPages();
     }, 
     450);
 };
@@ -47610,6 +47648,8 @@ GraphView.prototype.endPan = function(pointerId, changeCursor)
 
     if (changeCursor)
         setAutoCursor();
+
+    graph.updateSavedPages();
 };
 
 
@@ -47706,6 +47746,9 @@ GraphView.prototype.endZoomSelection = function(pointerId, zoom)
 
     this.zoomSelecting    = false;
     selectBox.style.visibility = 'hidden';
+
+
+    graph.updateSavedPages();
 };
 
 
@@ -47769,12 +47812,19 @@ GraphView.prototype.zoomToRect = function(rect, margin = 40)
         x: viewRect.width /2 - (rect.x + rect.width /2) * graph.currentPage.zoom,
         y: viewRect.height/2 - (rect.y + rect.height/2) * graph.currentPage.zoom
     };
+
+    
+    graph.updateSavedPages();
 };
 
 
 
 function updateZoomIcon()
 {
+    if (settings.dataMode)
+        return;
+
+
     btnZoom.divIcon.innerHTML       =  Math.round(graph.currentPage.zoom * 100) + '%';
     btnZoom.divIcon.style.transform = 'translateX(2px) translateY(-16px)';
 
@@ -63701,8 +63751,6 @@ class GraphPage
 
         this._pan = pan;
         
-        graph.updateSavedPages();
-
         graphView.updatePanAndZoom(true);
     }
     
@@ -63739,9 +63787,6 @@ class GraphPage
             this._pan  = pan;
     
             
-            graph.updateSavedPages();
-                   
-    
             graphView.panZoomTimer = setTimeout(() => 
             {
                 graphView.updatePanAndZoom(this.zoom != graphView.oldZoom);
@@ -63819,9 +63864,10 @@ class GraphPage
         { 
             if (e.button == 0)
             {
-                console.log('up');
                 graph.removePage(this);
+
                 uiRemoveSavedPage(this.id);
+                uiRemoveSavedNodesAndConns(graph.nodes.filter(n => n.pageId == this.id).map(n => n.id));
 
                 graph.updatePages();
             }
@@ -63848,11 +63894,10 @@ class GraphPage
         this.btnIcon .style.opacity       = isCurrent ? 1 : 0.35;
         
         this.btnName .style.color         = isCurrent ? '#fffffff0' : '#fff6';
-        //this.btnName .style.fontWeight    = isCurrent ? 600 : 500;
 
         this.btnClose.style.pointerEvents = isCurrent && graph.pages.length > 1 ? 'all' : 'none';
-        //this.btnClose.style.visibility    = isCurrent && graph.pages.length > 1 ? 'visible' : 'hidden';
-        this.btnClose.style.opacity       = isCurrent && graph.pages.length > 1 ? 0.65 : 0;    }
+        this.btnClose.style.opacity       = isCurrent && graph.pages.length > 1 ? 0.65 : 0;    
+    }
 
 
 
@@ -63863,9 +63908,9 @@ class GraphPage
         return '{'
             + tab + '"id": "'   + this.id    + '",'
             + tab + '"name": "' + this.name  + '",'
-            + tab + '"zoom": "' + graph.currentPage.zoom  + '",'
-            + tab + '"panx": "' + graph.currentPage.pan.x + '",'
-            + tab + '"pany": "' + graph.currentPage.pan.y + '"'
+            + tab + '"zoom": "' + this.zoom  + '",'
+            + tab + '"panx": "' + this.pan.x + '",'
+            + tab + '"pany": "' + this.pan.y + '"'
             + '\n}';
     }
 
@@ -64659,11 +64704,7 @@ btnAddPage.addEventListener('pointerup', e =>
 {
     graph.createPage('Graph');
     graph.updatePages();
-
-    uiSavePages(
-        graph.pages.map(p => p.id), 
-        graph.pages.map(p => p.toJson()),
-        graph.pages.find(p => graph.currentPage.id));
+    graph.updateSavedPages();
 });
 
 
@@ -69934,9 +69975,11 @@ function uiReturnFigGetLocalData(msg)
         case 'logObjectUpdates': 
         case 'logStyleUpdates': 
 
+        case 'logRawLoadPages':    
         case 'logRawLoadNodes':    
         case 'logRawLoadConnections':    
 
+        case 'logRawSavePages': 
         case 'logRawSaveNodes': 
         case 'logRawSaveConnections': 
 
@@ -70067,6 +70110,18 @@ function uiReturnFigLoadNodesAndConns(msg)
 
     if (!isEmpty(msg.pageKeys))
     {
+        if (settings.logRawLoadPages)
+        {
+            for (const json of msg.pageJson)
+            {
+                console.log(
+                    '%cpages JSON = %s', 
+                    'background: #fee; color: black;',
+                    json.replaceAll('\\n', '\n')
+                        .replaceAll('\\"', '"'));
+            }
+        }
+
         const pages = [];
 
         for (let i = 0; i < msg.pageKeys.length; i++)
@@ -70079,7 +70134,6 @@ function uiReturnFigLoadNodesAndConns(msg)
         for (const id of msg.pageOrder)
             graph.addPage(pages.find(p => p.id == id));
 
-        console.log('msg.currentPageId =', msg.currentPageId);
         if (msg.currentPageId != NULL)
             graph.pageIndex = graph.pages.findIndex(p => p.id == msg.currentPageId);
     }
@@ -71516,6 +71570,9 @@ function uiToggleDisableNodes(nodes)
 
 function uiSavePages(pageIds, pageJson, currentPageId)
 {
+    if (settings.logRawSavePages)
+        logSavePages(pageJson.join('\n'));
+
     uiQueueMessageToFigma({
         cmd:          'figSavePages',
         pageIds:       pageIds,
@@ -72050,7 +72107,7 @@ var   overNumberControlCtrl = null;
 
 
 const graph                 = new Graph();
-var   graphView             = new GraphView(_graphView, graph);
+var   graphView             = new GraphView(_graphView);
          
 var   viewportZoom          = 1;
 var   viewportRect          = new Rect();

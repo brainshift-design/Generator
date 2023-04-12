@@ -37,6 +37,8 @@ GraphView.prototype.endPan = function(pointerId, changeCursor)
 
     if (changeCursor)
         setAutoCursor();
+
+    graph.updateSavedPages();
 };
 
 
@@ -133,6 +135,9 @@ GraphView.prototype.endZoomSelection = function(pointerId, zoom)
 
     this.zoomSelecting    = false;
     selectBox.style.visibility = 'hidden';
+
+
+    graph.updateSavedPages();
 };
 
 
@@ -196,12 +201,19 @@ GraphView.prototype.zoomToRect = function(rect, margin = 40)
         x: viewRect.width /2 - (rect.x + rect.width /2) * graph.currentPage.zoom,
         y: viewRect.height/2 - (rect.y + rect.height/2) * graph.currentPage.zoom
     };
+
+    
+    graph.updateSavedPages();
 };
 
 
 
 function updateZoomIcon()
 {
+    if (settings.dataMode)
+        return;
+
+
     btnZoom.divIcon.innerHTML       =  Math.round(graph.currentPage.zoom * 100) + '%';
     btnZoom.divIcon.style.transform = 'translateX(2px) translateY(-16px)';
 

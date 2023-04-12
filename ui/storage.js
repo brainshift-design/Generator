@@ -66,9 +66,11 @@ function uiReturnFigGetLocalData(msg)
         case 'logObjectUpdates': 
         case 'logStyleUpdates': 
 
+        case 'logRawLoadPages':    
         case 'logRawLoadNodes':    
         case 'logRawLoadConnections':    
 
+        case 'logRawSavePages': 
         case 'logRawSaveNodes': 
         case 'logRawSaveConnections': 
 
@@ -199,6 +201,18 @@ function uiReturnFigLoadNodesAndConns(msg)
 
     if (!isEmpty(msg.pageKeys))
     {
+        if (settings.logRawLoadPages)
+        {
+            for (const json of msg.pageJson)
+            {
+                console.log(
+                    '%cpages JSON = %s', 
+                    'background: #fee; color: black;',
+                    json.replaceAll('\\n', '\n')
+                        .replaceAll('\\"', '"'));
+            }
+        }
+
         const pages = [];
 
         for (let i = 0; i < msg.pageKeys.length; i++)
@@ -211,7 +225,6 @@ function uiReturnFigLoadNodesAndConns(msg)
         for (const id of msg.pageOrder)
             graph.addPage(pages.find(p => p.id == id));
 
-        console.log('msg.currentPageId =', msg.currentPageId);
         if (msg.currentPageId != NULL)
             graph.pageIndex = graph.pages.findIndex(p => p.id == msg.currentPageId);
     }

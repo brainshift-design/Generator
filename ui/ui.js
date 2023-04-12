@@ -11,7 +11,7 @@ var   overNumberControlCtrl = null;
 
 
 const graph                 = new Graph();
-var   graphView             = new GraphView(_graphView, graph);
+var   graphView             = new GraphView(_graphView);
          
 var   viewportZoom          = 1;
 var   viewportRect          = new Rect();

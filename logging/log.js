@@ -136,6 +136,13 @@ function logStyleUpdates(styles)
 
 
 
+function logSavePages(pageJson)
+{
+    console.log('%cSAVING PAGES\n' + pageJson, 'color: black; background: #ddeeee;');
+}
+
+
+
 function logSaveNodes(nodeJson)
 {
     console.log('%cSAVING NODES\n' + nodeJson, 'color: black; background: #ddeeff;');

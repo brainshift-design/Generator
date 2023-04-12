@@ -776,6 +776,9 @@ function uiToggleDisableNodes(nodes)
 
 function uiSavePages(pageIds, pageJson, currentPageId)
 {
+    if (settings.logRawSavePages)
+        logSavePages(pageJson.join('\n'));
+
     uiQueueMessageToFigma({
         cmd:          'figSavePages',
         pageIds:       pageIds,

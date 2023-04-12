@@ -8,9 +8,6 @@ class GraphView
     scrollbarY;
 
 
-    graph;
-
-
     wires          = [];
     
 
@@ -105,7 +102,7 @@ class GraphView
 
 
 
-    constructor(div, graph)
+    constructor(div)
     {
         this.div                     = div;
           

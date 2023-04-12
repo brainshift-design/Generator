@@ -30,9 +30,11 @@ const settings =
     logObjectUpdates:              false,
     logStyleUpdates:               false,
             
+    logRawLoadPages:               false, 
     logRawLoadNodes:               false, 
     logRawLoadConnections:         false, 
         
+    logRawSavePages:               false, 
     logRawSaveNodes:               false, 
     logRawSaveConnections:         false, 
         
@@ -75,9 +77,11 @@ function updateSetting(settingName, value)
         case 'logObjectUpdates':              settings.logObjectUpdates              = value;  break;
         case 'logStyleUpdates':               settings.logStyleUpdates               = value;  break;
                    
+        case 'logRawLoadPages':               settings.logRawLoadPages               = value;  break;
         case 'logRawLoadNodes':               settings.logRawLoadNodes               = value;  break;
         case 'logRawLoadConnections':         settings.logRawLoadConnections         = value;  break;
                 
+        case 'logRawSavePages':               settings.logRawSavePages               = value;  break;
         case 'logRawSaveNodes':               settings.logRawSaveNodes               = value;  break;
         case 'logRawSaveConnections':         settings.logRawSaveConnections         = value;  break;
                 
@@ -120,9 +124,11 @@ function updateSettingAndMenu(settingName, valid, value, save = true)
         case 'logObjectUpdates':              updateSettingAndMenu_(valid, settingName, value, menuItemLogObjectUpdates             ); break;
         case 'logStyleUpdates':               updateSettingAndMenu_(valid, settingName, value, menuItemLogStyleUpdates              ); break;
                       
+        case 'logRawLoadPages':               updateSettingAndMenu_(valid, settingName, value, menuItemLogRawLoadPages              ); break;
         case 'logRawLoadNodes':               updateSettingAndMenu_(valid, settingName, value, menuItemLogRawLoadNodes              ); break;
         case 'logRawLoadConnections':         updateSettingAndMenu_(valid, settingName, value, menuItemLogRawLoadConnections        ); break;
                       
+        case 'logRawSavePages':               updateSettingAndMenu_(valid, settingName, value, menuItemLogRawSavePages              ); break;
         case 'logRawSaveNodes':               updateSettingAndMenu_(valid, settingName, value, menuItemLogRawSaveNodes              ); break;
         case 'logRawSaveConnections':         updateSettingAndMenu_(valid, settingName, value, menuItemLogRawSaveConnections        ); break;
                       
@@ -179,9 +185,11 @@ function updateSettingsMenus()
     menuItemLogObjectUpdates             .setChecked(settings.logObjectUpdates             );
     menuItemLogStyleUpdates              .setChecked(settings.logStyleUpdates              );
                   
+    menuItemLogRawLoadNodes              .setChecked(settings.logRawLoadPages              );
     menuItemLogRawLoadNodes              .setChecked(settings.logRawLoadNodes              );
     menuItemLogRawLoadConnections        .setChecked(settings.logRawLoadConnections        );
                     
+    menuItemLogRawSavePages              .setChecked(settings.logRawSaveNodes              );
     menuItemLogRawSaveNodes              .setChecked(settings.logRawSaveNodes              );
     menuItemLogRawSaveConnections        .setChecked(settings.logRawSaveConnections        );
                 
@@ -244,7 +252,7 @@ function enableFeatures(subscription, beta)
     updateElementDisplay(btnFlow                     .div, subscription);
     updateElementDisplay(btnText                     .div, subscription && beta);
     updateElementDisplay(btnShape                    .div, subscription && beta);
-    updateElementDisplay(btnGroup                    .div, subscription && beta);
+    updateElementDisplay(btnGroup                    .div, false);//subscription && beta);
 
     updateElementDisplay(menuItemLogObjectUpdates    .div, subscription && beta);
     
@@ -328,9 +336,11 @@ function loadLocalSettings()
     uiGetLocalData('logObjectUpdates'             );
     uiGetLocalData('logStyleUpdates'              );
             
+    uiGetLocalData('logRawLoadPages'              );
     uiGetLocalData('logRawLoadNodes'              );
     uiGetLocalData('logRawLoadConnections'        );
         
+    uiGetLocalData('logRawSavePages'              );
     uiGetLocalData('logRawSaveNodes'              );
     uiGetLocalData('logRawSaveConnections'        );
         

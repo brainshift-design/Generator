@@ -356,6 +356,8 @@ GraphView.prototype.updateWheelTimer = function()
             overNumberControl.updateCursor();
 
         setAutoCursor();
+
+        graph.updateSavedPages();
     }, 
     450);
 };

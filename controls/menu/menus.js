@@ -128,8 +128,10 @@ var menuItemLogRequests;
 var menuItemLogValueUpdates;
 var menuItemLogObjectUpdates;
 var menuItemLogStyleUpdates;
+var menuItemLogRawLoadPages;
 var menuItemLogRawLoadNodes;
 var menuItemLogRawLoadConnections;
+var menuItemLogRawSavePages;
 var menuItemLogRawSaveNodes;
 var menuItemLogRawSaveConnections;
 var menuItemLogRawRequests;
@@ -205,6 +207,9 @@ function initGeneratorMenus()
     menuDebugStorage = new Menu('Debug storage', false);
     menuDebugStorage.addItems([
         menuItemLogLoading            = new MenuItem('Load\u2008at start',  {checkCallback: () => settings.logLoading      ,      callback: () => updateSettingAndMenu('logLoading',            true, !settings.logLoading           ), setting: true}),
+                                        new MenuItem('',                    {separator: true}),                   
+        menuItemLogRawLoadPages       = new MenuItem('Load pages',          {checkCallback: () => settings.logRawLoadPages ,      callback: () => updateSettingAndMenu('logRawLoadPages',       true, !settings.logRawLoadPages      ), setting: true}),
+        menuItemLogRawSavePages       = new MenuItem('Save pages',          {checkCallback: () => settings.logRawSavePages ,      callback: () => updateSettingAndMenu('logRawSavePages',       true, !settings.logRawSavePages      ), setting: true}),
                                         new MenuItem('',                    {separator: true}),                   
         menuItemLogRawLoadNodes       = new MenuItem('Load nodes',          {checkCallback: () => settings.logRawLoadNodes ,      callback: () => updateSettingAndMenu('logRawLoadNodes',       true, !settings.logRawLoadNodes      ), setting: true}),
         menuItemLogRawSaveNodes       = new MenuItem('Save nodes',          {checkCallback: () => settings.logRawSaveNodes ,      callback: () => updateSettingAndMenu('logRawSaveNodes',       true, !settings.logRawSaveNodes      ), setting: true}),

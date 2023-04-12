@@ -90,9 +90,5 @@ btnAddPage.addEventListener('pointerup', e =>
 {
     graph.createPage('Graph');
     graph.updatePages();
-
-    uiSavePages(
-        graph.pages.map(p => p.id), 
-        graph.pages.map(p => p.toJson()),
-        graph.pages.find(p => graph.currentPage.id));
+    graph.updateSavedPages();
 });
