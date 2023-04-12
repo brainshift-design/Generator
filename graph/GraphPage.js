@@ -131,6 +131,12 @@ class GraphPage
         });
         
         
+        this.btnClose.addEventListener('pointerdown', e =>
+        {
+            e.stopPropagation();
+        });
+
+
         this.btnClose.addEventListener('pointerup', e => 
         { 
             if (e.button == 0)

@@ -25,7 +25,7 @@ Graph.prototype.addPage = function(page)
 
     pagesBar.insertBefore(page.button, btnAddPage);
 
-    this.pageIndex++;
+    this.pageIndex = this.pages.length-1;
 };
 
 
