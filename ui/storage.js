@@ -198,15 +198,19 @@ function uiReturnFigLoadNodesAndConns(msg)
 
     //uiLoadGraphView(_graphView);
 
-
     if (!isEmpty(msg.pageKeys))
     {
+        const pages = [];
+
         for (let i = 0; i < msg.pageKeys.length; i++)
         {
             const page = new GraphPage();
             page.load(msg.pageJson[i]);
-            graph.addPage(page);
+            pages.push(page);
         }
+
+        for (const id of msg.pageOrder)
+            graph.addPage(pages.find(p => p.id == id));
     }
     else
         graph.createPage('Graph');

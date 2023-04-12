@@ -32,6 +32,7 @@ var allUpdateNodes   = [];
 
 
 //uiRemoveAllSavedNodesAndConns();
+//uiRemoveAllSavedPages();
 
 
 

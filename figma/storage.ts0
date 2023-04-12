@@ -74,17 +74,20 @@ function figLoadNodesAndConns(dataMode)
     // const pageIds  = figma.currentPage.getPluginData('pages');
 
 
-    const pageKeys = figma.currentPage.getPluginDataKeys().filter(k => isPageKey(k));
-    const nodeKeys = figma.currentPage.getPluginDataKeys().filter(k => isNodeKey(k));
-    const connKeys = figma.currentPage.getPluginDataKeys().filter(k => isConnKey(k));
+    const pageKeys  = figma.currentPage.getPluginDataKeys().filter(k => isPageKey(k));
+    const nodeKeys  = figma.currentPage.getPluginDataKeys().filter(k => isNodeKey(k));
+    const connKeys  = figma.currentPage.getPluginDataKeys().filter(k => isConnKey(k));
+
 
     if (!dataMode)
         figMarkForLoading(nodeKeys, connKeys);
 
-    const pages = pageKeys.map(k => figma.currentPage.getPluginData(k));
-    const nodes = nodeKeys.map(k => figma.currentPage.getPluginData(k));
-    const conns = connKeys.map(k => figma.currentPage.getPluginData(k));
+    const pages     = pageKeys.map(k => figma.currentPage.getPluginData(k));
+    const nodes     = nodeKeys.map(k => figma.currentPage.getPluginData(k));
+    const conns     = connKeys.map(k => figma.currentPage.getPluginData(k));
 
+    const pageOrder = figma.currentPage.getPluginData('pageOrder').split(',');
+    
 
     initPageStyles(nodes);
 
@@ -99,6 +102,7 @@ function figLoadNodesAndConns(dataMode)
         showAllColorSpaces: showAllColorSpaces,
         pageKeys:           pageKeys,
         pageJson:           pages,
+        pageOrder:          pageOrder,
         nodeKeys:           nodeKeys,
         nodeJson:           nodes,
         connKeys:           connKeys,
@@ -167,6 +171,10 @@ function figSavePages(pageIds, pageJson)
             pageNameForStorage(pageIds[i]), 
             pageJson[i]);
     }
+
+    figSetPageData(
+        'pageOrder',
+        pageIds.join(','));
 }
 
 
@@ -273,6 +281,12 @@ function figLogAllSavedPageKeys(darkMode)
         console.log(
             '%c'+k, 
             'background: #fff; color: ' + (darkMode ? 'black' : 'white')));
+
+    const pageOrder = figma.currentPage.getPluginData('pageOrder');
+        
+    console.log(
+        '%c'+pageOrder, 
+        'background: #fff; color: ' + (darkMode ? 'black' : 'white')));
 }
 
 
@@ -302,6 +316,10 @@ function figLogAllLocalData(darkMode)
 function figRemoveSavedPage(pageId)
 {
     figClearPageData(getPageKey(pageId));
+
+    const pageOrder = figGetPageData('pageOrder').split(',');
+    removeFromArrayWhere(pageOrder, id => id == pageId);
+    figSetPageData('pageOrder', pageOrder.join(','));
 }
 
 
@@ -310,6 +328,8 @@ function figRemoveAllSavedPages()
 {
     const pageKeys = figma.currentPage.getPluginDataKeys().filter(k => isPageKey(k));
     pageKeys.forEach(k => figClearPageData(k));
+
+    figClearPageData('pageOrder');
 }
 
 

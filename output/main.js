@@ -1548,6 +1548,7 @@ function figLoadNodesAndConns(dataMode) {
     const pages = pageKeys.map(k => figma.currentPage.getPluginData(k));
     const nodes = nodeKeys.map(k => figma.currentPage.getPluginData(k));
     const conns = connKeys.map(k => figma.currentPage.getPluginData(k));
+    const pageOrder = figma.currentPage.getPluginData('pageOrder').split(',');
     initPageStyles(nodes);
     // const graphView          = figma.currentPage.getPluginData(figma.currentUser.id + ',graphView');
     const showAllColorSpaces = figma.currentPage.getPluginData('showAllColorSpaces');
@@ -1557,6 +1558,7 @@ function figLoadNodesAndConns(dataMode) {
         showAllColorSpaces: showAllColorSpaces,
         pageKeys: pageKeys,
         pageJson: pages,
+        pageOrder: pageOrder,
         nodeKeys: nodeKeys,
         nodeJson: nodes,
         connKeys: connKeys,
@@ -1598,6 +1600,7 @@ function figSavePages(pageIds, pageJson) {
     for (let i = 0; i < pageIds.length; i++) {
         figSetPageData(pageNameForStorage(pageIds[i]), pageJson[i]);
     }
+    figSetPageData('pageOrder', pageIds.join(','));
 }
 function figSaveNodes(nodeIds, nodeJson) {
     for (let i = 0; i < nodeIds.length; i++) {
@@ -1658,6 +1661,9 @@ function figLogAllSavedPageKeys(darkMode) {
     const connKeys = figma.currentPage.getPluginDataKeys()
         .filter(k => isPageKey(k));
     connKeys.forEach(k => console.log('%c' + k, 'background: #fff; color: ' + (darkMode ? 'black' : 'white')));
+    const pageOrder = figma.currentPage.getPluginData('pageOrder');
+    console.log('%c' + pageOrder, 'background: #fff; color: ' + (darkMode ? 'black' : 'white'));
+    ;
 }
 function figLogAllSavedConnKeys(darkMode) {
     const connKeys = figma.currentPage.getPluginDataKeys()
@@ -1669,10 +1675,14 @@ function figLogAllLocalData(darkMode) {
 }
 function figRemoveSavedPage(pageId) {
     figClearPageData(getPageKey(pageId));
+    const pageOrder = figGetPageData('pageOrder').split(',');
+    removeFromArrayWhere(pageOrder, id => id == pageId);
+    figSetPageData('pageOrder', pageOrder.join(','));
 }
 function figRemoveAllSavedPages() {
     const pageKeys = figma.currentPage.getPluginDataKeys().filter(k => isPageKey(k));
     pageKeys.forEach(k => figClearPageData(k));
+    figClearPageData('pageOrder');
 }
 function figSaveConnection(key, json) {
     figSetPageData(key, json);

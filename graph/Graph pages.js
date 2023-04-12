@@ -82,6 +82,6 @@ btnAddPage.addEventListener('pointerup', e =>
     graph.updatePages();
 
     uiSavePages(
-        [graph.pages.at(-1).id], 
-        [graph.pages.at(-1).toJson()]);
+        graph.pages.map(p => p.id), 
+        graph.pages.map(p => p.toJson()));
 });
