@@ -52,7 +52,7 @@ class MenuButton
         this.callback    ??= options.callback;
         this.highlight   ??= options.highlight;
         this.useMenuName = options.useMenuName != undefined ? options.useMenuName : true;
-        
+
         this.selectLast  ??= options.selectLast;
         this.afterLabel  ??= options.afterLabel;
         this.noHighlight = options.noHighlight != undefined ? options.noHighlight : false;
@@ -225,9 +225,6 @@ class MenuButton
 
     update()
     {
-        if (this == btnPage)
-            console.log('this.noHighlight =', this.noHighlight);
-
         this.div.style.background =
                currentMenuButton == this
             ||    this.highlight 

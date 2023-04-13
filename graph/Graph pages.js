@@ -60,7 +60,7 @@ Graph.prototype.updatePages = function()
     graphView.updateNodes();
 
 
-    pageName.innerHTML = this.currentPage.name;
+    pageName.innerHTML = this.currentPage ? this.currentPage.name : '';
 
 
     updateZoomIcon();

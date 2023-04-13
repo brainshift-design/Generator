@@ -60,6 +60,8 @@ class Operator
     showActiveArrow    = false;
 
     sharpBottomCorners = false;
+
+    stripIdForJson     = false; // one-time flag
     
 
     defaultWidth;
@@ -142,7 +144,7 @@ class Operator
     constructor(type, id, name, defWidth = defNodeWidth, progressBar = false)
     {
         this.#type             = type;
-        this.id                = createNodeId(id);
+        this.id                = makeNodePath(id);
         
         this.enabled           = true;
         this.cached            = true;
@@ -918,16 +920,18 @@ class Operator
         const tab = HTAB;
 
         let json =
-              pos + tab + '"type": "'    + this.type                       + '",\n'
-            + pos + tab + '"id": "'      + this.id                         + '",\n'
-            + pos + tab + '"name": "'    + this.name.replace('"', '\\\"')  + '",\n'
-            + pos + tab + '"enabled": "' + boolToString(this.enabled)      + '",\n'
-            + pos + tab + '"x": "'       + parseFloat(this.div.style.left) + '",\n'
-            + pos + tab + '"y": "'       + parseFloat(this.div.style.top ) + '",\n'
-            + pos + tab + '"z": "'       + graph.nodes.indexOf(this)  + '"';
+              pos + tab + '"type": "'    + this.type                                     + '",\n'
+            + pos + tab + '"id": "'      + (this.stripIdForJson ? this.nodeId : this.id) + '",\n'
+            + pos + tab + '"name": "'    + this.name.replace('"', '\\\"')                + '",\n'
+            + pos + tab + '"enabled": "' + boolToString(this.enabled)                    + '",\n'
+            + pos + tab + '"x": "'       + parseFloat(this.div.style.left)               + '",\n'
+            + pos + tab + '"y": "'       + parseFloat(this.div.style.top )               + '",\n'
+            + pos + tab + '"z": "'       + graph.nodes.indexOf(this)                     + '"';
 
         if (this.active)
             json += ',\n' + pos + tab + '"active": "' + this.active + '"';
+
+        this.stripIdForJson = false;
 
         return json;
     }
@@ -1161,7 +1165,7 @@ function nodesAreParallel(nodes)
 
 
 
-function createNodeId(id)
+function makeNodePath(id)
 {
     return graph.currentPage.id + '/' + id;
 }

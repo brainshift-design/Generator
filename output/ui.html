@@ -43899,7 +43899,7 @@ class MenuButton
         this.callback    ??= options.callback;
         this.highlight   ??= options.highlight;
         this.useMenuName = options.useMenuName != undefined ? options.useMenuName : true;
-        
+
         this.selectLast  ??= options.selectLast;
         this.afterLabel  ??= options.afterLabel;
         this.noHighlight = options.noHighlight != undefined ? options.noHighlight : false;
@@ -44072,9 +44072,6 @@ class MenuButton
 
     update()
     {
-        if (this == btnPage)
-            console.log('this.noHighlight =', this.noHighlight);
-
         this.div.style.background =
                currentMenuButton == this
             ||    this.highlight 
@@ -51827,15 +51824,18 @@ class Connection
     
     input;
 
-    list     = false;
+    list           = false;
 
     wire;
     
-    backInit = false; // if true, on connection the value is possibly copied from the input to the output
+    backInit       = false; // if true, on connection the value is possibly copied from the input to the output
 
-    proxy    = null;
+    proxy          = null;
 
     
+    stripIdForCopy = false;
+
+
 
     constructor(output, input)
     {
@@ -51856,15 +51856,19 @@ class Connection
         let   pos = ' '.repeat(nTab);
         const tab = HTAB;
 
-        return formatConnJson(
+        const json = formatConnJson(
             pos, 
             tab,
-            this.output.node.id,
+            (this.stripIdForCopy ? this.output.node.nodeId : this.output.node.id),
             (this.output.param ? this.output.param.id : this.output.index),
             this.outputOrder,
-            this.input.node.id,
+            (this.stripIdForCopy ? this.input.node.nodeId : this.input.node.id),
             (this.input.param ? this.input.param.id : this.input.index),
             boolToString(this.output.supportsTypes(LIST_TYPES)));
+
+        this.stripIdForCopy = false;
+
+        return json;
     }
 
 
@@ -52566,6 +52570,8 @@ class Operator
     showActiveArrow    = false;
 
     sharpBottomCorners = false;
+
+    stripIdForJson     = false; // one-time flag
     
 
     defaultWidth;
@@ -52648,7 +52654,7 @@ class Operator
     constructor(type, id, name, defWidth = defNodeWidth, progressBar = false)
     {
         this.#type             = type;
-        this.id                = createNodeId(id);
+        this.id                = makeNodePath(id);
         
         this.enabled           = true;
         this.cached            = true;
@@ -53424,16 +53430,18 @@ class Operator
         const tab = HTAB;
 
         let json =
-              pos + tab + '"type": "'    + this.type                       + '",\n'
-            + pos + tab + '"id": "'      + this.id                         + '",\n'
-            + pos + tab + '"name": "'    + this.name.replace('"', '\\\"')  + '",\n'
-            + pos + tab + '"enabled": "' + boolToString(this.enabled)      + '",\n'
-            + pos + tab + '"x": "'       + parseFloat(this.div.style.left) + '",\n'
-            + pos + tab + '"y": "'       + parseFloat(this.div.style.top ) + '",\n'
-            + pos + tab + '"z": "'       + graph.nodes.indexOf(this)  + '"';
+              pos + tab + '"type": "'    + this.type                                     + '",\n'
+            + pos + tab + '"id": "'      + (this.stripIdForJson ? this.nodeId : this.id) + '",\n'
+            + pos + tab + '"name": "'    + this.name.replace('"', '\\\"')                + '",\n'
+            + pos + tab + '"enabled": "' + boolToString(this.enabled)                    + '",\n'
+            + pos + tab + '"x": "'       + parseFloat(this.div.style.left)               + '",\n'
+            + pos + tab + '"y": "'       + parseFloat(this.div.style.top )               + '",\n'
+            + pos + tab + '"z": "'       + graph.nodes.indexOf(this)                     + '"';
 
         if (this.active)
             json += ',\n' + pos + tab + '"active": "' + this.active + '"';
+
+        this.stripIdForJson = false;
 
         return json;
     }
@@ -53667,7 +53675,7 @@ function nodesAreParallel(nodes)
 
 
 
-function createNodeId(id)
+function makeNodePath(id)
 {
     return graph.currentPage.id + '/' + id;
 }
@@ -64766,7 +64774,7 @@ Graph.prototype.updatePages = function()
     graphView.updateNodes();
 
 
-    pageName.innerHTML = this.currentPage.name;
+    pageName.innerHTML = this.currentPage ? this.currentPage.name : '';
 
 
     updateZoomIcon();
@@ -68288,6 +68296,10 @@ function dataModeDeletePage(page)
 
     uiRemoveSavedPage(page.id);
 
+    graph.nodes
+        .filter (n => n.pageId == page.id)
+        .forEach(n => dataModeDeleteNode(n));
+
 
     let notice = 'Deleted page \'' + page.id + '\'';
 
@@ -70656,6 +70668,9 @@ function loadNode(_node, pasting)
 
     node.loadFromParsedJson(_node, pasting);
 
+    if (node.pageId == NULL)
+        node.id = makeNodePath(node.id);
+
     node.setPosition(
         parseFloat(_node.x), 
         parseFloat(_node.y),
@@ -71152,6 +71167,8 @@ function nodesToJson(nodes, encloseBraces = true, connOutputMustBeInNodes = true
     for (let i = 0; i < nodes.length; i++)
     {
         if (!first) json += ','; first = false;
+
+        nodes[i].stripIdForJson = true;
         json += NL + nodes[i].toJson(4);
     }
 
@@ -71202,6 +71219,8 @@ function connectionsToJson(nodes, connOutputMustBeInNodes)
     for (let i = 0; i < connections.length; i++)
     {
         if (i > 0) json += ',';
+
+        connections[i].stripIdForCopy = true;
         json += NL + connections[i].toJson(4);
     }
 

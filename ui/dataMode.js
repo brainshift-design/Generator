@@ -437,6 +437,10 @@ function dataModeDeletePage(page)
 
     uiRemoveSavedPage(page.id);
 
+    graph.nodes
+        .filter (n => n.pageId == page.id)
+        .forEach(n => dataModeDeleteNode(n));
+
 
     let notice = 'Deleted page \'' + page.id + '\'';
 

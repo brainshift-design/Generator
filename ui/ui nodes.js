@@ -111,6 +111,8 @@ function nodesToJson(nodes, encloseBraces = true, connOutputMustBeInNodes = true
     for (let i = 0; i < nodes.length; i++)
     {
         if (!first) json += ','; first = false;
+
+        nodes[i].stripIdForJson = true;
         json += NL + nodes[i].toJson(4);
     }
 
@@ -161,6 +163,8 @@ function connectionsToJson(nodes, connOutputMustBeInNodes)
     for (let i = 0; i < connections.length; i++)
     {
         if (i > 0) json += ',';
+
+        connections[i].stripIdForCopy = true;
         json += NL + connections[i].toJson(4);
     }
 

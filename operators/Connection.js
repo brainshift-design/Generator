@@ -9,15 +9,18 @@ class Connection
     
     input;
 
-    list     = false;
+    list           = false;
 
     wire;
     
-    backInit = false; // if true, on connection the value is possibly copied from the input to the output
+    backInit       = false; // if true, on connection the value is possibly copied from the input to the output
 
-    proxy    = null;
+    proxy          = null;
 
     
+    stripIdForCopy = false;
+
+
 
     constructor(output, input)
     {
@@ -38,15 +41,19 @@ class Connection
         let   pos = ' '.repeat(nTab);
         const tab = HTAB;
 
-        return formatConnJson(
+        const json = formatConnJson(
             pos, 
             tab,
-            this.output.node.id,
+            (this.stripIdForCopy ? this.output.node.nodeId : this.output.node.id),
             (this.output.param ? this.output.param.id : this.output.index),
             this.outputOrder,
-            this.input.node.id,
+            (this.stripIdForCopy ? this.input.node.nodeId : this.input.node.id),
             (this.input.param ? this.input.param.id : this.input.index),
             boolToString(this.output.supportsTypes(LIST_TYPES)));
+
+        this.stripIdForCopy = false;
+
+        return json;
     }
 
 

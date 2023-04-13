@@ -508,6 +508,9 @@ function loadNode(_node, pasting)
 
     node.loadFromParsedJson(_node, pasting);
 
+    if (node.pageId == NULL)
+        node.id = makeNodePath(node.id);
+
     node.setPosition(
         parseFloat(_node.x), 
         parseFloat(_node.y),
