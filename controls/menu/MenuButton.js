@@ -161,7 +161,9 @@ class MenuButton
         
 
         createTooltip(this.tooltip);
-        createTooltipSrc(this.div, this.div, () => this.tooltip);
+
+        if (this.name != '-')
+            createTooltipSrc(this.div, this.div, () => this.tooltip);
     }
 
 
@@ -227,7 +229,7 @@ class MenuButton
             ||    this.highlight 
                && this.highlight()
             ? 'var(--figma-color-bg-brand)'
-            : (this.over)// && !this.noHighlight)
+            : (this.over && !this.noHighlight)
               ? '#111'
               : 'transparent';
 
