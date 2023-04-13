@@ -229,7 +229,10 @@ function uiReturnFigLoadNodesAndConns(msg)
             graph.pageIndex = graph.pages.findIndex(p => p.id == msg.currentPageId);
     }
     else
+    {
         graph.createPage('Graph');
+        graph.updateSavedPages();
+    }
 
 
 
@@ -251,7 +254,7 @@ function uiReturnFigLoadNodesAndConns(msg)
     const _n = [];
     const _c = [];
 
-    for (let i = 0; i < _pages.length; i++) _n.push({key: _pageKeys[i], value: _pages[i]});
+    for (let i = 0; i < _pages.length; i++) _p.push({key: _pageKeys[i], value: _pages[i]});
     for (let i = 0; i < _nodes.length; i++) _n.push({key: _nodeKeys[i], value: _nodes[i]});
     for (let i = 0; i < _conns.length; i++) _c.push({key: _connKeys[i], value: _conns[i]});
     

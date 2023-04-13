@@ -8,6 +8,7 @@ var btnShape;
 var btnGroup;
 var btnHand;
 var btnComment;
+var btnPage;
 var btnZoom;
 
 
@@ -34,6 +35,7 @@ var menuMath;
 var menuBoolean;
 var menuCondition;
 
+var menuPage;
 
 var menuZoom;
 var menuWindow;
@@ -425,6 +427,12 @@ function initGeneratorMenus()
         menuItemWindowBottom   = new MenuItem('Bottom',   {icon: iconWindowDockBottom, shortcut: osAlt() + '2', callback: () => dockWindowTop     ()})]);
 
 
+    menuPage = new Menu('Page menu', false, false);
+    menuPage.addItems([
+        new MenuItem('Duplicate', {enabled: false, callback: () => {}}),
+        new MenuItem('Rename',    {enabled: false, callback: () => {}})]);
+
+        
     menuZoom = new Menu('Zoom/view options');
     menuZoom.combineChecksAndIcons = true;
     menuZoom.addItems([
@@ -556,7 +564,20 @@ function initGeneratorMenus()
     }});
 
 
-    menuBar.appendChild(createDiv('', 'groupName'));
+    //menuBar.appendChild(createDiv('', 'groupName'));
+
+
+    btnPage = new MenuButton(
+        '-', 
+        menuPage, 
+        {
+            afterLabel:  true,
+            useMenuName: false,
+            noHighlight: true
+        });
+
+    btnPage.divIcon.style.width = 4;
+    btnPage.div.style.marginRight = 'auto';
 
 
     btnZoom = new MenuButton(
@@ -566,7 +587,8 @@ function initGeneratorMenus()
             useMenuName: true, 
             selectLast:  false, 
             highlight:   () => currentMenus.includes(menuZoom),
-            tooltip:     ttMinValueZoom
+            tooltip:     ttMinValueZoom,
+            afterLabel:  true
         });
 
         
@@ -577,19 +599,18 @@ function initGeneratorMenus()
     btnZoom.divIcon.style.letterSpacing      = '-0.8px';
 
 
-    btnMain.div.style.paddingLeft = '6px';
+    btnMain.div.style.paddingLeft            = '6px';
 
-    btnStyle.setIcon(iconStyle);
-
-    btnZoom.div.style.position     = 'absolute';
-    btnZoom.div.style.right        = '0px';
-    btnZoom.div.style.paddingRight = '5px';
-    btnZoom.div.style.paddingLeft  = '11px';
-    // btnZoom.div.style.boxShadow = '0 0 0 1px red inset';
+    btnZoom.div.style.position               = 'absolute';
+    btnZoom.div.style.right                  = '0px';
+    btnZoom.div.style.paddingRight           = '5px';
+    btnZoom.div.style.paddingLeft            = '11px';
+    // btnZoom.div.style.boxShadow           = '0 0 0 1px red inset';
 
 
     btnMain   .setIcon(iconGenerator);
     btnShape  .setIcon(iconShapes);
+    btnStyle  .setIcon(iconStyle);
     btnGroup  .setIcon(iconGroup);
     btnHand   .setIcon(iconHand);
     btnComment.setIcon(iconComment);
@@ -601,8 +622,8 @@ function initDataModeMenus()
 {
     menuPageData = new Menu('Pages menu', false, false);
     menuPageData.addItems([
-        new MenuItem('Delete all pages',  { callback: () => { hideAllMenus(); dataModeDeleteAllPages(); }}),
-        new MenuItem('',                  { separator: true }),
+        // new MenuItem('Delete all pages',  { enabled: false, callback: () => { hideAllMenus(); dataModeDeleteAllPages(); }}),
+        // new MenuItem('',                  { enabled: false, separator: true }),
         new MenuItem('Delete page',       { callback: () => { hideAllMenus(); dataModeDeletePage(menuPageData._div.page); }})]);
 
 
@@ -611,7 +632,7 @@ function initDataModeMenus()
         new MenuItem('Expand all',       { callback: () => { hideAllMenus(); expandAllPageData();   }}),
         new MenuItem('Collapse all',     { callback: () => { hideAllMenus(); collapseAllPageData(); }}),
         new MenuItem('',                 { separator: true }),
-        new MenuItem('Delete all pages', { callback: () => { hideAllMenus(); dataModeDeleteAllPages(); }})]);
+        new MenuItem('Delete all pages', { callback: () => { hideAllMenus(); uiRemoveAllSavedPages(); }})]);
 
 
     menuNodeData = new Menu('Node menu', false, false);

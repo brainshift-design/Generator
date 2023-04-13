@@ -11,6 +11,19 @@ function initDataMode()
 
 
 
+dataModePagesWrapper.addEventListener('pointerdown', e =>
+{
+    e.preventDefault();
+
+    if (e.button == 2)
+    {
+        e.stopPropagation();
+        menuPageDataPages.showAt(e.clientX, e.clientY, false);
+    }
+});
+
+
+
 dataModeNodesWrapper.addEventListener('pointerdown', e =>
 {
     e.preventDefault();
@@ -39,10 +52,11 @@ dataModeConnsWrapper.addEventListener('pointerdown', e =>
 
 function loadNodesAndConnsData(_pages, _nodes, _conns)
 {
-    _dataModePages = [..._pages];
-    _dataModeNodes = [..._nodes];
-    _dataModeConns = [..._conns];
+    _dataModePages = _pages;
+    _dataModeNodes = _nodes;
+    _dataModeConns = _conns;
 
+    console.log('_dataModePages =', _dataModePages);
 
     _dataModeNodes.sort((n1, n2) => 
     {
@@ -75,6 +89,7 @@ function loadNodesAndConnsData(_pages, _nodes, _conns)
 
 function updateDataModeInfo()
 {
+    dataModePagesTitle.innerHTML = dataModePages.children.length + '&thinsp;&nbsp;' + countString('page',       dataModePages.children.length);
     dataModeNodesTitle.innerHTML = dataModeNodes.children.length + '&thinsp;&nbsp;' + countString('node',       dataModeNodes.children.length);
     dataModeConnsTitle.innerHTML = dataModeConns.children.length + '&thinsp;&nbsp;' + countString('connection', dataModeConns.children.length);
 }
@@ -266,7 +281,7 @@ function expandPageData(div)
     }
     else
     {
-        div.innerHTML = div.node.id;
+        div.innerHTML = div.page.id;
 
         div.style.paddingLeft   = '6px';
         div.style.paddingRight  = '6px';
@@ -405,6 +420,29 @@ function collapseAllConnData()
         div.showJson = false;
         expandConnData(div, div.conn, div._conn);
     }
+}
+
+
+
+function dataModeDeletePage(page)
+{
+    for (let i = dataModePages.children.length-1; i >= 0; i--)
+    {
+        const div = dataModePages.children[i];
+
+        if (div.page.id == page.id)
+            dataModePages.removeChild(div);
+    }
+
+
+    uiRemoveSavedPage(page.id);
+
+
+    let notice = 'Deleted page \'' + page.id + '\'';
+
+    updateDataModeInfo();
+
+    uiNotify(notice);
 }
 
 

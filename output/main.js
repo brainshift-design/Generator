@@ -1664,7 +1664,6 @@ function figLogAllSavedPageKeys(darkMode) {
     connKeys.forEach(k => console.log('%c' + k, 'background: #fff; color: ' + (darkMode ? 'black' : 'white')));
     const pageOrder = figma.currentPage.getPluginData('pageOrder');
     console.log('%c' + pageOrder, 'background: #fff; color: ' + (darkMode ? 'black' : 'white'));
-    ;
 }
 function figLogAllSavedConnKeys(darkMode) {
     const connKeys = figma.currentPage.getPluginDataKeys()

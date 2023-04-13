@@ -13,10 +13,16 @@
 
 
 
-#btnCreateNumber
+#pageName
 {
-    padding-left:  15px;
-    padding-right: 35px;
+    font-family:  Inter;
+    font-size:    14px;
+    color:        #fff;
+    padding-top:  11px;
+    margin-left:  auto;
+    /* margin-right: auto; */
+    white-space:  nowrap;
+    /* box-shadow:   0 0 0 1px yellow inset; */
 }
 
 

@@ -2607,7 +2607,7 @@ function figLogAllSavedPageKeys(darkMode)
         
     console.log(
         '%c'+pageOrder, 
-        'background: #fff; color: ' + (darkMode ? 'black' : 'white')));
+        'background: #fff; color: ' + (darkMode ? 'black' : 'white'));
 }
 
 

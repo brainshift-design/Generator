@@ -3,11 +3,13 @@ class MenuButton
     name;
     menu;
 
-    icon     = '';
+    icon          = NULL;
 
     callback;
     highlight;
-    useMenuName;
+    useMenuName   = true;
+    afterLabel;
+    noHighlight   = false;
 
     selectLast;
 
@@ -51,6 +53,9 @@ class MenuButton
         this.highlight   ??= options.highlight;
         this.useMenuName ??= options.useMenuName;
         this.selectLast  ??= options.selectLast;
+        this.afterLabel  ??= options.afterLabel;
+        this.noHighlight ??= options.noHighlight;
+
 
         if (!!options.tooltip)
         {
@@ -130,7 +135,11 @@ class MenuButton
         if (this.menu)
             this.div.appendChild(this.divArrow);
 
-        menuBar.appendChild(this.div);
+
+        if (this.afterLabel)
+            menuBar.appendChild(this.div);
+        else
+            menuBar.insertBefore(this.div, pageName);
     }
 
 
@@ -203,45 +212,41 @@ class MenuButton
     {
         const curMenus = [...currentMenus];
 
-        hideAllMenus()
+        hideAllMenus();
         
         if (!curMenus.includes(this.menu))
             this.menu.show(this.div, false);
-
-            // else
-            // this.div.style.background = '#111';
     }
 
 
 
     update()
     {
-        this.div.style.width = this.menu ? 50 : 40;
-
-
         this.div.style.background =
                currentMenuButton == this
             ||    this.highlight 
                && this.highlight()
-                ? 'var(--figma-color-bg-brand)'
-                : this.over
-                    ? '#111'
-                    : 'transparent';
+            ? 'var(--figma-color-bg-brand)'
+            : (this.over)// && !this.noHighlight)
+              ? '#111'
+              : 'transparent';
 
 
         const icon = 
-            this.icon != ''
+            this.icon != NULL
             ? this.icon
             : this.menu
                 ? this.menu.lastItem.icon
-                : '';
+                : NULL;
 
-        if (icon != '')
-        {
-            this.divIcon.style.background         = 'url(\'data:image/svg+xml;utf8,' + icon + '\')';
-            this.divIcon.style.backgroundPosition = '100% 50%';
-            this.divIcon.style.backgroundRepeat   = 'no-repeat';
-        }
+        this.divIcon.style.background         = 'url(\'data:image/svg+xml;utf8,' + icon + '\')';
+        this.divIcon.style.backgroundPosition = '100% 50%';
+        this.divIcon.style.backgroundRepeat   = 'no-repeat';
+
+        this.div.style.width = 
+            this.name != '-'
+            ? (this.menu ? 50 : 40)
+            : 24;
 
 
         if (!this.customTooltip)

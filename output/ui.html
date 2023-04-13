@@ -2362,10 +2362,16 @@ a
 
 
 
-#btnCreateNumber
+#pageName
 {
-    padding-left:  15px;
-    padding-right: 35px;
+    font-family:  Inter;
+    font-size:    14px;
+    color:        #fff;
+    padding-top:  11px;
+    margin-left:  auto;
+    /* margin-right: auto; */
+    white-space:  nowrap;
+    /* box-shadow:   0 0 0 1px yellow inset; */
 }
 
 
@@ -3738,7 +3744,9 @@ a
 </style>
 
 
-<div id='menuBar'></div>
+<div id='menuBar'>
+    <div id='pageName'>Page name</div>
+</div>
 <div id='pagesBar'>
     <div id='btnAddPage' class='page'>
         <svg width="10" height="10" viewBox="0 0 10 10" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -43842,11 +43850,13 @@ class MenuButton
     name;
     menu;
 
-    icon     = '';
+    icon          = NULL;
 
     callback;
     highlight;
-    useMenuName;
+    useMenuName   = true;
+    afterLabel;
+    noHighlight   = false;
 
     selectLast;
 
@@ -43890,6 +43900,9 @@ class MenuButton
         this.highlight   ??= options.highlight;
         this.useMenuName ??= options.useMenuName;
         this.selectLast  ??= options.selectLast;
+        this.afterLabel  ??= options.afterLabel;
+        this.noHighlight ??= options.noHighlight;
+
 
         if (!!options.tooltip)
         {
@@ -43969,7 +43982,11 @@ class MenuButton
         if (this.menu)
             this.div.appendChild(this.divArrow);
 
-        menuBar.appendChild(this.div);
+
+        if (this.afterLabel)
+            menuBar.appendChild(this.div);
+        else
+            menuBar.insertBefore(this.div, pageName);
     }
 
 
@@ -44042,45 +44059,41 @@ class MenuButton
     {
         const curMenus = [...currentMenus];
 
-        hideAllMenus()
+        hideAllMenus();
         
         if (!curMenus.includes(this.menu))
             this.menu.show(this.div, false);
-
-            // else
-            // this.div.style.background = '#111';
     }
 
 
 
     update()
     {
-        this.div.style.width = this.menu ? 50 : 40;
-
-
         this.div.style.background =
                currentMenuButton == this
             ||    this.highlight 
                && this.highlight()
-                ? 'var(--figma-color-bg-brand)'
-                : this.over
-                    ? '#111'
-                    : 'transparent';
+            ? 'var(--figma-color-bg-brand)'
+            : (this.over)// && !this.noHighlight)
+              ? '#111'
+              : 'transparent';
 
 
         const icon = 
-            this.icon != ''
+            this.icon != NULL
             ? this.icon
             : this.menu
                 ? this.menu.lastItem.icon
-                : '';
+                : NULL;
 
-        if (icon != '')
-        {
-            this.divIcon.style.background         = 'url(\'data:image/svg+xml;utf8,' + icon + '\')';
-            this.divIcon.style.backgroundPosition = '100% 50%';
-            this.divIcon.style.backgroundRepeat   = 'no-repeat';
-        }
+        this.divIcon.style.background         = 'url(\'data:image/svg+xml;utf8,' + icon + '\')';
+        this.divIcon.style.backgroundPosition = '100% 50%';
+        this.divIcon.style.backgroundRepeat   = 'no-repeat';
+
+        this.div.style.width = 
+            this.name != '-'
+            ? (this.menu ? 50 : 40)
+            : 24;
 
 
         if (!this.customTooltip)
@@ -44481,6 +44494,7 @@ var btnShape;
 var btnGroup;
 var btnHand;
 var btnComment;
+var btnPage;
 var btnZoom;
 
 
@@ -44507,6 +44521,7 @@ var menuMath;
 var menuBoolean;
 var menuCondition;
 
+var menuPage;
 
 var menuZoom;
 var menuWindow;
@@ -44898,6 +44913,12 @@ function initGeneratorMenus()
         menuItemWindowBottom   = new MenuItem('Bottom',   {icon: iconWindowDockBottom, shortcut: osAlt() + '2', callback: () => dockWindowTop     ()})]);
 
 
+    menuPage = new Menu('Page menu', false, false);
+    menuPage.addItems([
+        new MenuItem('Duplicate', {enabled: false, callback: () => {}}),
+        new MenuItem('Rename',    {enabled: false, callback: () => {}})]);
+
+        
     menuZoom = new Menu('Zoom/view options');
     menuZoom.combineChecksAndIcons = true;
     menuZoom.addItems([
@@ -45029,7 +45050,20 @@ function initGeneratorMenus()
     }});
 
 
-    menuBar.appendChild(createDiv('', 'groupName'));
+    //menuBar.appendChild(createDiv('', 'groupName'));
+
+
+    btnPage = new MenuButton(
+        '-', 
+        menuPage, 
+        {
+            afterLabel:  true,
+            useMenuName: false,
+            noHighlight: true
+        });
+
+    btnPage.divIcon.style.width = 4;
+    btnPage.div.style.marginRight = 'auto';
 
 
     btnZoom = new MenuButton(
@@ -45039,7 +45073,8 @@ function initGeneratorMenus()
             useMenuName: true, 
             selectLast:  false, 
             highlight:   () => currentMenus.includes(menuZoom),
-            tooltip:     ttMinValueZoom
+            tooltip:     ttMinValueZoom,
+            afterLabel:  true
         });
 
         
@@ -45050,19 +45085,18 @@ function initGeneratorMenus()
     btnZoom.divIcon.style.letterSpacing      = '-0.8px';
 
 
-    btnMain.div.style.paddingLeft = '6px';
+    btnMain.div.style.paddingLeft            = '6px';
 
-    btnStyle.setIcon(iconStyle);
-
-    btnZoom.div.style.position     = 'absolute';
-    btnZoom.div.style.right        = '0px';
-    btnZoom.div.style.paddingRight = '5px';
-    btnZoom.div.style.paddingLeft  = '11px';
-    // btnZoom.div.style.boxShadow = '0 0 0 1px red inset';
+    btnZoom.div.style.position               = 'absolute';
+    btnZoom.div.style.right                  = '0px';
+    btnZoom.div.style.paddingRight           = '5px';
+    btnZoom.div.style.paddingLeft            = '11px';
+    // btnZoom.div.style.boxShadow           = '0 0 0 1px red inset';
 
 
     btnMain   .setIcon(iconGenerator);
     btnShape  .setIcon(iconShapes);
+    btnStyle  .setIcon(iconStyle);
     btnGroup  .setIcon(iconGroup);
     btnHand   .setIcon(iconHand);
     btnComment.setIcon(iconComment);
@@ -45074,8 +45108,8 @@ function initDataModeMenus()
 {
     menuPageData = new Menu('Pages menu', false, false);
     menuPageData.addItems([
-        new MenuItem('Delete all pages',  { callback: () => { hideAllMenus(); dataModeDeleteAllPages(); }}),
-        new MenuItem('',                  { separator: true }),
+        // new MenuItem('Delete all pages',  { enabled: false, callback: () => { hideAllMenus(); dataModeDeleteAllPages(); }}),
+        // new MenuItem('',                  { enabled: false, separator: true }),
         new MenuItem('Delete page',       { callback: () => { hideAllMenus(); dataModeDeletePage(menuPageData._div.page); }})]);
 
 
@@ -45084,7 +45118,7 @@ function initDataModeMenus()
         new MenuItem('Expand all',       { callback: () => { hideAllMenus(); expandAllPageData();   }}),
         new MenuItem('Collapse all',     { callback: () => { hideAllMenus(); collapseAllPageData(); }}),
         new MenuItem('',                 { separator: true }),
-        new MenuItem('Delete all pages', { callback: () => { hideAllMenus(); dataModeDeleteAllPages(); }})]);
+        new MenuItem('Delete all pages', { callback: () => { hideAllMenus(); uiRemoveAllSavedPages(); }})]);
 
 
     menuNodeData = new Menu('Node menu', false, false);
@@ -64726,6 +64760,9 @@ Graph.prototype.updatePages = function()
     graphView.updateNodes();
 
 
+    pageName.innerHTML = this.currentPage.name;
+
+
     updateZoomIcon();
 }
 
@@ -67819,6 +67856,19 @@ function initDataMode()
 
 
 
+dataModePagesWrapper.addEventListener('pointerdown', e =>
+{
+    e.preventDefault();
+
+    if (e.button == 2)
+    {
+        e.stopPropagation();
+        menuPageDataPages.showAt(e.clientX, e.clientY, false);
+    }
+});
+
+
+
 dataModeNodesWrapper.addEventListener('pointerdown', e =>
 {
     e.preventDefault();
@@ -67847,10 +67897,11 @@ dataModeConnsWrapper.addEventListener('pointerdown', e =>
 
 function loadNodesAndConnsData(_pages, _nodes, _conns)
 {
-    _dataModePages = [..._pages];
-    _dataModeNodes = [..._nodes];
-    _dataModeConns = [..._conns];
+    _dataModePages = _pages;
+    _dataModeNodes = _nodes;
+    _dataModeConns = _conns;
 
+    console.log('_dataModePages =', _dataModePages);
 
     _dataModeNodes.sort((n1, n2) => 
     {
@@ -67883,6 +67934,7 @@ function loadNodesAndConnsData(_pages, _nodes, _conns)
 
 function updateDataModeInfo()
 {
+    dataModePagesTitle.innerHTML = dataModePages.children.length + '&thinsp;&nbsp;' + countString('page',       dataModePages.children.length);
     dataModeNodesTitle.innerHTML = dataModeNodes.children.length + '&thinsp;&nbsp;' + countString('node',       dataModeNodes.children.length);
     dataModeConnsTitle.innerHTML = dataModeConns.children.length + '&thinsp;&nbsp;' + countString('connection', dataModeConns.children.length);
 }
@@ -68074,7 +68126,7 @@ function expandPageData(div)
     }
     else
     {
-        div.innerHTML = div.node.id;
+        div.innerHTML = div.page.id;
 
         div.style.paddingLeft   = '6px';
         div.style.paddingRight  = '6px';
@@ -68213,6 +68265,29 @@ function collapseAllConnData()
         div.showJson = false;
         expandConnData(div, div.conn, div._conn);
     }
+}
+
+
+
+function dataModeDeletePage(page)
+{
+    for (let i = dataModePages.children.length-1; i >= 0; i--)
+    {
+        const div = dataModePages.children[i];
+
+        if (div.page.id == page.id)
+            dataModePages.removeChild(div);
+    }
+
+
+    uiRemoveSavedPage(page.id);
+
+
+    let notice = 'Deleted page \'' + page.id + '\'';
+
+    updateDataModeInfo();
+
+    uiNotify(notice);
 }
 
 
@@ -70296,7 +70371,10 @@ function uiReturnFigLoadNodesAndConns(msg)
             graph.pageIndex = graph.pages.findIndex(p => p.id == msg.currentPageId);
     }
     else
+    {
         graph.createPage('Graph');
+        graph.updateSavedPages();
+    }
 
 
 
@@ -70318,7 +70396,7 @@ function uiReturnFigLoadNodesAndConns(msg)
     const _n = [];
     const _c = [];
 
-    for (let i = 0; i < _pages.length; i++) _n.push({key: _pageKeys[i], value: _pages[i]});
+    for (let i = 0; i < _pages.length; i++) _p.push({key: _pageKeys[i], value: _pages[i]});
     for (let i = 0; i < _nodes.length; i++) _n.push({key: _nodeKeys[i], value: _nodes[i]});
     for (let i = 0; i < _conns.length; i++) _c.push({key: _connKeys[i], value: _conns[i]});
     
