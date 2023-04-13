@@ -215,7 +215,7 @@ function updateZoomIcon()
 
 
     btnZoom.divIcon.innerHTML       =  Math.round(graph.currentPage.zoom * 100) + '%';
-    btnZoom.divIcon.style.transform = 'translateX(2px) translateY(-16px)';
+    btnZoom.divIcon.style.transform = 'translateX(2px) translateY(-15px)';
 
 
     if (   graph.currentPage.zoom < settings.minZoomForParams
