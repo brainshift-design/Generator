@@ -155,6 +155,7 @@ function createNodeDataDiv(_node)
     
     const node   = JSON.parse(_node.value);
     node._key    = _node.key;
+    node .div    = div;
 
 
     div._node    = _node.value;
@@ -567,6 +568,30 @@ function dataModeDeleteConnectionsToAndFromNode(node)
 
     if (nRemovedConns > 0)
         uiNotify('Deleted ' + nRemovedConns + ' ' + countString('connection', nRemovedConns) + ' to and from \'' + node.id + '\'');
+}
+
+
+
+function dataModeDeletePathFromNodeId(node)
+{
+    console.log('node ', node);
+
+    uiRemoveSavedNodesAndConns([node.id]);
+    uiDeleteObjectsAndStyles([node.id], true);
+
+
+    const div = node.div;
+    
+
+    node.id = stripPathFromId(node.id);
+
+    delete node.loading;
+    delete node._key;
+    delete node.div;
+
+    uiSaveNodesJson([node.id], [node]);
+
+    //div.innerHTML = 
 }
 
 

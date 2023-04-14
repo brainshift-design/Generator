@@ -172,7 +172,7 @@ extends OpColorBase
 
               
         this.paramColor.controls[0].valueStyleLight = 
-        this.paramColor.controls[0].valueStyleDark  = 'transparent';//rgba2style(rgb_a(colors.back, 1));
+        this.paramColor.controls[0].valueStyleDark  = 'transparent';//rgba2style(rgb_a(colors.back));
 
         this.paramColor.controls[0].textStyleLight  = 
         this.paramColor.controls[0].textStyleDark   = rgba2style(colors.text);

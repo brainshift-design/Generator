@@ -75,7 +75,7 @@ GraphView.prototype.updateSelectBox = function(shiftKey, ctrlKey)
 
         const selected = [];
 
-        for (const node of graph.nodes)
+        for (const node of graph.pageNodes)
         {
             if (rectsIntersect(
                     node.measureData.divBounds,

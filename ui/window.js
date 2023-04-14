@@ -77,11 +77,14 @@ function uiResizeWindow(width, height)
 
 function uiReturnFigResizeWindow()
 {
-    if (!settings.dataMode)
-    {
-        graphView.update();
-        updateWhatsNewScrollbar(0);
-    }
+    if (settings.dataMode)
+        return;
+
+    graphView.update();
+    updateWhatsNewScrollbar(0);
+
+    pageName   .style.display =
+    btnPage.div.style.display = window.innerWidth > 590 ? 'inline-block' : 'none';
 }
 
 

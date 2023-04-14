@@ -374,6 +374,55 @@
 }    
 
 
+.headerCircleWrapper
+{
+    display:        inline-block;
+    width:          16px;
+    height:         16px;
+    border-radius:   8px;
+    margin-right:    7px;
+    position:       relative;
+    top:           -1px;
+    pointer-events: all;
+    overflow:       hidden;
+}
+
+
+.headerCircleBack
+{
+    width:          16px;
+    height:         16px;
+    pointer-events: none;
+    position:       absolute;
+    left:           0;
+    top:            0;
+}
+
+
+.headerCircle
+{
+    display:        inline-block;
+    width:          16px;
+    height:         16px;
+    position:       absolute;
+    left:           0;
+    top:            0;
+}
+
+
+.headerIcon
+{
+    width:          16px;
+    height:         16px;
+    pointer-events: none;
+    position:       absolute;
+    left:           50%;
+    top:            50%;
+    transform:      translateX(-50%)
+                    translateY(-50%);
+}    
+
+
 .reorderArrows
 {
     width:    5px;

@@ -1,61 +1,53 @@
 class   OpGroupNode
-extends ResizableBase
+extends OperatorBase
 {
-    children = [];
-
-
-
     constructor()
     {
         super(GROUP_NODE, 'group', 'group');
 
-        this.alwaysLoadParams   = true;
-        this.sharpBottomCorners = true;
-        
-        this.div.style.height   = '100px';
-
-
-
-        this.header.addEventListener('dblclick', e =>
-        {
-            if (e.button == 0)
-                this.children.forEach(n => n.selected = true);
-        });
+        //this.inert = true;
 
         
+        this.addInput (new Input(LIST_TYPES));
+        this.addOutput(new Output([LIST_VALUE], this.output_genRequest));
 
-        this.div.addEventListener('pointerdown', e =>
-        {
-            if (e.button == 0)
-            {
-                this.children.forEach(n => n.selected = true);
-            }        
-        });
+        this.alwaysLoadParams = true;
+        this.alwaysSaveParams = true;
     }
-    
-    
 
-    genRequest(gen)
+
+
+    output_genRequest(gen)
     {
-        // 'this' is the output
+        // 'this' is the output        
+
+    //     return this.node.genRequest(gen);
+    // }
+
+
+
+    // genRequest(gen)
+    // {
+    //     // 'this' is the node
 
         gen.scope.push({
-            nodeId:  this.id, 
+            nodeId:  this.node.id, 
             paramId: NULL });
 
-        const [request, ignore] = this.genRequestStart(gen);
+
+        const [request, ignore] = this.node.genRequestStart(gen);
         if (ignore) return request;
 
 
-        const input = this.inputs[0];
+        const input = this.node.inputs[0];
 
 
         request.push(input.connected ? 1 : 0);
 
-        if (input.connected)
+        if (input.connected) 
             request.push(...pushInputOrParam(input, gen));
 
-        
+
         gen.scope.pop();
         pushUnique(gen.passedNodes, this);
 
@@ -64,120 +56,74 @@ extends ResizableBase
 
 
 
-    // updateValues(requestId, actionId, updateParamId, paramIds, values) // virtual
-    // {
-    //     super.updateValues(requestId, actionId, updateParamId, paramIds, values);
-    // }
-
-    
-
-    updateProxyControls()
+    updateValues(requestId, actionId, updateParamId, paramIds, values)
     {
-        this.children = [];
+        //logFunction('OpItems.updateValues()');
 
-        for (const node of graph.nodes)
-        {
-            if (rectInside(node.measureData.divOffset, offsetRect(this.div)))
-                pushUnique(this.children, node);
-        }
+        const oldParams = [...this.params];
+        //console.log('oldParams =', [...oldParams]);
+
+        const action = actionFromId(actionId);
+
+        if (action)
+            pushUnique(oldParams, action.oldOutputParams);
+
+        // console.log('action =', action);
+
+        const oldParamConns = this.getAllParamConnections();
 
 
-        this.removeProxyWires();
+        this.disconnectAllParams(true);
         this.removeAllParams();
 
 
-        this.addProxyOutputParams();
-        this.addProxyInputParams();
-    }
-
-
-
-    addProxyOutputParams()
-    {
-        for (const node of this.children)
+        if (   paramIds.length > 1
+            ||    paramIds.length == 1 
+               && paramIds[0] != '')
         {
-            for (const param of node.params)
+            for (let i = 0; i < values.length; i++) 
             {
-                if (    param.output
-                    &&  param.output.connected)
+                const value = values[i];
+                const id    = 'item' + i;
+
+                const param = oldParams.find(p => 
+                       p.id == id
+                    && p.type == value.type);
+
+                if (   param
+                    && paramIds.includes(param.id)) 
                 {
-                    let includes = false;
+                    this.addParam(param, true);
 
-                    for (const input of param.output.connectedInputs)
+                    const _conn = oldParamConns.find(c =>
+                           c.outputNodeId == this.id
+                        && c.outputId     == param.id);
+
+                    if (_conn)
                     {
-                        if (this.children.includes(input.node))
-                        {
-                            includes = true;
-                            break;
-                        }
+                        const conn = uiConnect(param.output, nodeFromId(_conn.inputNodeId).inputFromId(_conn.inputId));
+                        uiSaveConn(conn);
                     }
-                    
-                    if (!includes)
-                        this.addParam(new ProxyParam(param));
                 }
+                else       
+                    this.createAndAddParamByType(value.type, id, false, false, true);
             }
         }
+
+        else if (isEmpty(paramIds))
+            this.removeAllParams();
+    
+        
+        super.updateValues(requestId, actionId, updateParamId, paramIds, values);
     }
 
 
 
-    addProxyInputParams()
-    {
-        for (const node of this.children)
-        {
-            for (const param of node.params)
-            {
-                if (    param.input
-                    &&  param.input.connected
-                    && !this.children.find(n => n.id == param.input.connectedOutput.node.id))
-                    this.addParam(new ProxyParam(param));
-            }
-        }
-    }
-
-
-
-    updateProxyWires()
-    {
-        const wires = 
-            this.params
-                .filter(p => p.input)
-                .map   (p => p.input.connection.wire);
-
-        graphView.updateWires(wires);
-    }
-
-
-
-    removeProxyWires()
+    updateParams()
     {
         for (const param of this.params)
-        {
-            if (param.input)
-                graphView.wireContainer.removeChild(param.input.connection.wire.svg);
-            
-            if (param.output) 
-                param.output.connectedInputs.forEach(i => 
-                    graphView.wireContainer.removeChild(i.connection.wire.svg));
-        }
-    }
+            param.enableControlText(false);
 
-
-
-    updateNode()
-    {
-        super.updateNode();
-
-        this.div.style.zIndex = 0;
-
-        this.inner.style.height          = this.div.offsetHeight;
-        this.inner.style.backgroundColor = darkMode ? '#5558' : '#ddd8';// 'var(--figma-color-border-disabled)';
-    }
-
-
-
-    paramsToJson(nTab = 0)
-    {
-        return '';
+        this.updateParamControls();
     }
 }

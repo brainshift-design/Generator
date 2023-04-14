@@ -109,7 +109,7 @@ GraphView.prototype.createScrollbarMethods = function()
 
             this.panStart = graph.currentPage.pan;
 
-            for (const node of graph.nodes)
+            for (const node of graph.pageNodes)
                 node.slx = node.div.offsetLeft;
         }
     });
@@ -126,7 +126,7 @@ GraphView.prototype.createScrollbarMethods = function()
 
             let bounds = Rect.NaN;
 
-            for (const node of graph.nodes)
+            for (const node of graph.pageNodes)
                 bounds = expandRect(bounds, boundingRect(node.div));
 
             if (bounds.l >= 0 && bounds.r < this.clientWidth)
@@ -176,7 +176,7 @@ GraphView.prototype.createScrollbarMethods = function()
             this.scrollbarY.pStart = e.clientY;
             this.scrollbarY.setPointerCapture(e.pointerId);
 
-            for (const node of graph.nodes)
+            for (const node of graph.pageNodes)
                 node.div.sly = node.div.offsetTop;
 
             this.panStart = graph.currentPage.pan;
@@ -195,7 +195,7 @@ GraphView.prototype.createScrollbarMethods = function()
 
             let bounds = Rect.NaN;
 
-            for (const node of graph.nodes)
+            for (const node of graph.pageNodes)
                 bounds = expandRect(bounds, boundingRect(node.div));
 
             if (bounds.t >= 0 && bounds.b < this.div.clientHeight)

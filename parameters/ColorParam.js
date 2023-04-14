@@ -191,7 +191,7 @@ extends Parameter
 
 
         const rgb        = this.value.toRgb();
-        const rgbaStripe = rgb_a(getStripeBackColor(rgb), 1);
+        const rgbaStripe = rgb_a(getStripeBackColor(rgb));
         const rgbaText   = getTextColorFromBackColor(rgbaStripe, 1);
         
         

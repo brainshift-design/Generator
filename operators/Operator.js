@@ -18,8 +18,7 @@ class Operator
 
     get pageId() 
     { 
-        const nodePath = this.id.split('/');
-        return nodePath.length > 1 ? nodePath[0] : '';
+        return pageIdFromPath(this.id);
     }
 
     get nodeId() { return this.id.split('/').at(-1); }
@@ -61,7 +60,7 @@ class Operator
 
     sharpBottomCorners = false;
 
-    stripIdForJson     = false; // one-time flag
+    stripIdForCopy     = false; // one-time flag
     
 
     defaultWidth;
@@ -851,7 +850,7 @@ class Operator
         const colInput   = this.active ? rgb_a(rgbaText, 0.4 ) : rgb_a(rgbSaturateHsv(rgbFromType(this.type, true), 0.5), 0.8);
         const colOutput  = this.active ? rgb_a(rgbaText, 0.35) : rgb_a(rgbSaturateHsv(rgbFromType(this.type, true), 0.5), 0.7);
         
-        const colWire    = rgbFromType(this.type, true);
+        const colWire = rgbFromType(this.type, true);
 
         
         return {
@@ -931,7 +930,7 @@ class Operator
         if (this.active)
             json += ',\n' + pos + tab + '"active": "' + this.active + '"';
 
-        this.stripIdForJson = false;
+        this.stripIdForCopy = false;
 
         return json;
     }

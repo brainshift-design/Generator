@@ -12741,11 +12741,6 @@ extends GOperator
 {
     input = null;
 
-    //item0
-    //item1
-    //item2
-    //...
-
 
 
     constructor(nodeId, options)
@@ -12763,14 +12758,7 @@ extends GOperator
 
         if (this.input) 
             copy.input = this.input.copy();
-        
-        for (const key of this.keys())
-        {
-            if (   key.length > 4
-                && key.substring(0, 4) == 'item')
-                Object.assign(copy, {[key]: this[key]});
-        }
-
+      
         return copy;
     }
 
@@ -12790,39 +12778,15 @@ extends GOperator
             this.value = this.input.toValue();
         }
         else
-            this.value = ListValue.NaN;
+            this.value = NullValue;
 
 
-        if (    this.value.isValid()
-            && !isEmpty(this.value.items))
-        {
-            for (let i = 0; i < this.value.items.length; i++)
-            {
-                const item = this.value.items[i];
-
-                Object.assign(this, {['item' + i]: item});
-                genPushUpdateValue(parse, this.nodeId, 'item' + i, item);
-            }
-        }
-        else
-            genPushUpdateValue(parse, this.nodeId, '', NullValue);
+        genPushUpdateValue(parse, this.nodeId, '', NullValue);
 
 
         this.validate();
 
         return this;
-    }
-
-
-
-    getParamFromId(paramId)
-    {
-        if (   paramId.length > 4
-            && paramId.substring(0, 4) == 'item'
-            && strIsNum(paramId.substring(4)))
-            return this[paramId];
-
-        return null;
     }
 
 
@@ -13138,7 +13102,7 @@ function enableFeatures(subscription, beta)
     updateElementDisplay(btnFlow                     .div, subscription);
     updateElementDisplay(btnText                     .div, subscription && beta);
     updateElementDisplay(btnShape                    .div, subscription && beta);
-    updateElementDisplay(btnGroup                    .div, false);//subscription && beta);
+    updateElementDisplay(btnGroup                    .div, subscription && beta);
 
     updateElementDisplay(menuItemLogObjectUpdates    .div, subscription && beta);
     
@@ -14609,13 +14573,13 @@ function genParseGroupParam(parse)
     const param = new GGroupParam(nodeId, options);
 
 
-    // let nInputs = -1;
+    let nInputs = -1;
     
-    // if (!ignore)
-    // {
-    //     nInputs = parseInt(parse.move());
-    //     console.assert(nInputs == 0 || nInputs == 1, 'nInputs must be [0, 1]');
-    // }
+    if (!ignore)
+    {
+        nInputs = parseInt(parse.move());
+        console.assert(nInputs == 0 || nInputs == 1, 'nInputs must be [0, 1]');
+    }
 
 
     if (parse.settings.logRequests) 
@@ -18118,7 +18082,7 @@ function rgba2style(rgba)
 
 
 
-function rgb2style_a(rgb, a)
+function rgb2style_a(rgb, a = 1)
 {
     return colorStyle_(rgb[0], rgb[1], rgb[2], a);
 }
@@ -18134,7 +18098,7 @@ function toRgba(rgb_)
 
 
 
-function rgb_a(rgb, a)
+function rgb_a(rgb, a = 1)
 {
     return [rgb[0], rgb[1], rgb[2], a];
 }

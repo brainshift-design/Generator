@@ -155,7 +155,7 @@ class GraphView
                 onlySelected
             && !isEmpty(this.selectedNodes)
             ? this.selectedNodes
-            : graph.nodes;
+            : graph.pageNodes;
 
         for (const node of nodes)
             bounds = expandRect(bounds, boundingRect(node.div));
@@ -170,7 +170,7 @@ class GraphView
         let bounds = Rect.NaN;
 
         if (!nodes)
-            nodes = graph.nodes;
+            nodes = graph.pageNodes;
 
         for (const node of nodes)
             bounds = expandRect(bounds, offsetRect(node.div));
@@ -184,7 +184,7 @@ class GraphView
     {
         let bounds = Rect.NaN;
 
-        for (const node of graph.nodes)
+        for (const node of graph.pageNodes)
             bounds = expandRect(bounds, boundingRect(node.div));
 
         return bounds;
@@ -225,7 +225,7 @@ class GraphView
 
         const intersecting = [];
         
-        for (const n of graph.nodes)
+        for (const n of graph.pageNodes)
         {
             const nBounds = this.getZoomedNodeBounds(n);
             
@@ -280,7 +280,7 @@ class GraphView
             +  node.inputs.filter(i => i.connected).length 
             + (node.outputs.find(o => o.connected) ? 1 : 0);
             
-        for (const n of graph.nodes)
+        for (const n of graph.pageNodes)
             n.div.style.zIndex = Math.max(0, Number(n.div.style.zIndex) - topIndices);
             
         node.div.style.zIndex = MAX_INT32-3; // -3 is for scrollbars;
@@ -317,7 +317,7 @@ class GraphView
 
     showCompatibleInputs(output = null)
     {
-        for (const node of graph.nodes)
+        for (const node of graph.pageNodes)
             for (const input of node.inputs)
                 input.div.style.opacity = 
                        !output 
@@ -331,7 +331,7 @@ class GraphView
     
     hideAllInputs(except = null)
     {
-        for (const node of graph.nodes)
+        for (const node of graph.pageNodes)
             for (const input of node.inputs)
                 if (    input != except
                     && !input.connected)
@@ -342,7 +342,7 @@ class GraphView
    
     showCompatibleOutputs(input = null)
     {
-        for (const node of graph.nodes)
+        for (const node of graph.pageNodes)
             for (const output of node.outputs)
                 output.div.style.opacity = 
                        !input 
@@ -356,7 +356,7 @@ class GraphView
     
     hideAllOutputs(except = null)
     {
-        for (const node of graph.nodes)
+        for (const node of graph.pageNodes)
             for (const output of node.outputs)
                 if (    output != except
                     && !output.connected)

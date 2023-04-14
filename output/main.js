@@ -1737,7 +1737,6 @@ var notifyNotificationHandler = null;
 var notifyDequeueHandler = () => notifyNotificationHandler = null;
 var windowDock = 'normal'; // '', 'maximize', 'top', 'left', 'right', 'bottom'
 function figGetMousePosition(clientPosition) {
-    console.log('figma.root =', figma.root.getRelaunchData());
     // (async () => 
     // {
     //     const relaunchData = await figma.ui.getRelaunchData();

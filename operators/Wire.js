@@ -59,11 +59,11 @@ class Wire
         this.inBall                 = createSvg('circle');
         this.inBall.style.position  = 'absolute';
     
-        this.arrow1                  = createSvg('polygon');
-        this.arrow1.style.position   = 'absolute';
+        this.arrow1                 = createSvg('polygon');
+        this.arrow1.style.position  = 'absolute';
 
-        this.arrow2                  = createSvg('polygon');
-        this.arrow2.style.position   = 'absolute';
+        this.arrow2                 = createSvg('polygon');
+        this.arrow2.style.position  = 'absolute';
 
 
         this.svg.appendChild(this.curve  );
@@ -114,7 +114,7 @@ class Wire
             return input.wireColor;
 
         else if (!isEmpty(types))
-            return rgb_a(rgbFromType(types[0], true), 1);
+            return rgb_a(rgbFromType(types[0], true));
 
         else 
             return rgbaInvalid;
@@ -375,7 +375,7 @@ class Wire
     updateStyle()
     {
         const conn  = this.connection;
-        let   color = rgb_a(this.getColor(), 1);
+        let   color = rgb_a(this.getColor());
     
 
         const l = rgb2hclok(color)[2];

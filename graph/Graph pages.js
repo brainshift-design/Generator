@@ -52,8 +52,16 @@ Graph.prototype.updatePages = function()
     updateAddButton(false);
 
 
+    
     for (const node of graph.nodes)
-        node.div.style.display = node.pageId == graph.currentPage.id ? 'block' : 'none';
+    {
+        const current = node.pageId == graph.currentPage.id;
+
+        node.div.style.display = current ? 'block' : 'none';
+
+        node.inputs .filter (i => i.connected)     .forEach(i => i.connection.wire.svg.style.display = current ? 'block' : 'none');
+        node.outputs.forEach(o => o.connectedInputs.forEach(i => i.connection.wire.svg.style.display = current ? 'block' : 'none'));
+    }
 
 
     graphView.updateNodeTransforms(graph.nodes.filter(n => n.pageId == graph.currentPage.id));

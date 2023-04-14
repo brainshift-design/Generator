@@ -1,7 +1,7 @@
 GraphView.prototype.updateNodes = function(nodes = null, updateNodes = true)
 {
     if (!nodes)
-        nodes = graph.nodes;
+        nodes = graph.pageNodes;
         
     
     documentBodyClient = clientRect(document.body);
@@ -83,7 +83,7 @@ GraphView.prototype.soloNode = function(node)
 {
     this._soloNode = node;
 
-    graph.nodes.forEach(n => 
+    graph.pageNodes.forEach(n => 
         n.div.style.opacity = 
                 n == this._soloNode
             || n.isConnectedTo(this._soloNode)
@@ -93,7 +93,7 @@ GraphView.prototype.soloNode = function(node)
     graph.connections.forEach(c =>
     { 
         c.wire.svg.style.opacity = 
-                c.input  && this._soloNode == c.input .node
+               c.input  && this._soloNode == c.input .node
             || c.output && this._soloNode == c.output.node
             ? 1 
             : 0.09;
@@ -109,8 +109,7 @@ GraphView.prototype.unsoloNode = function()
 {
     this._soloNode = null;
 
-    graph.nodes      .forEach(n => n.div     .style.opacity = 1);
-    graph.nodes      .forEach(n => n.div     .style.opacity = 1);
+    graph.pageNodes  .forEach(n => n.div     .style.opacity = 1);
     graph.connections.forEach(c => c.wire.svg.style.opacity = 1);
 
     this.updateWires(graph.connections.map(c => c.wire));
@@ -123,7 +122,7 @@ GraphView.prototype.updateShowWires = function(updateNodes = true)
     graph.connections.forEach(c => showElement(c.wire.svg, true));
 
     if (updateNodes) 
-        graph.nodes.forEach(n => n.updateNode());
+        graph.pageNodes.forEach(n => n.updateNode());
 };
 
 
@@ -150,8 +149,8 @@ GraphView.prototype.selectAllNodes = function(invert)
 
     this.selectedNodes = 
         invert
-        ? graph.nodes.filter(n => !lastSelected.includes(n))
-        : graph.nodes;
+        ? graph.pageNodes.filter(n => !lastSelected.includes(n))
+        : graph.pageNodes;
         
     actionManager.do(new SelectNodesAction(
         this.selectedNodes.map(n => n.id), 
@@ -312,7 +311,7 @@ GraphView.prototype.getTopNodeIndex = function()
 {
     let max = 0;
     
-    for (const node of graph.nodes)
+    for (const node of graph.pageNodes)
         max = Math.max(max, node.div.style.zIndex);
 
     return max;

@@ -8,13 +8,16 @@ class Graph
     pageIndex       = -1;
     overIndex       = -1;
     
-    get currentPage() { return this.pages[this.pageIndex]; }
-   
+    
     
     nodes           = [];
     deferNodeIds    = [];
     
     connections     = [];
+    
+    
+    get currentPage() { return this.pages[this.pageIndex]; }
+    get pageNodes  () { return this.nodes.filter(n => n.pageId == this.currentPage.id); }
 
 
 

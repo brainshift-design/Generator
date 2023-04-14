@@ -80,7 +80,7 @@ extends OperatorBase
 
         this.headerColor =
             val && val.type == COLOR_VALUE
-            ? rgb_a(val.toRgb(), 1)
+            ? rgb_a(val.toRgb())
             : null;
 
         if (!isEmpty(this.params)) 

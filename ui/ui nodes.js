@@ -112,7 +112,7 @@ function nodesToJson(nodes, encloseBraces = true, connOutputMustBeInNodes = true
     {
         if (!first) json += ','; first = false;
 
-        nodes[i].stripIdForJson = true;
+        nodes[i].stripIdForCopy = true;
         json += NL + nodes[i].toJson(4);
     }
 
@@ -177,7 +177,7 @@ function connectionsToJson(nodes, connOutputMustBeInNodes)
 
 function canAutoConnectNode(node)
 {
-    const selNode = graph.nodes.find(n => n.selected);
+    const selNode = graph.pageNodes.find(n => n.selected);
 
     if (  !selNode
         || isEmpty(selNode.headerOutputs))
@@ -799,16 +799,23 @@ function uiSaveNodes(nodeIds)
     for (const id of nodeIds)
         nodeJson.push(nodeFromId(id).toJson());
 
-    if (!isEmpty(nodeJson))
-    {
-        if (settings.logRawSaveNodes)
-            logSaveNodes(nodeJson.join('\n'));
+    uiSaveNodesJson(nodeIds, nodeJson);
+}
 
-        uiQueueMessageToFigma({
-            cmd:     'figSaveNodes',
-            nodeIds:  nodeIds,
-            nodeJson: nodeJson });
-    }
+
+
+function uiSaveNodesJson(nodeIds, nodeJson)
+{
+    if (isEmpty(nodeJson))
+        return;
+
+    if (settings.logRawSaveNodes)
+        logSaveNodes(nodeJson.join('\n'));
+
+    uiQueueMessageToFigma({
+        cmd:     'figSaveNodes',
+        nodeIds:  nodeIds,
+        nodeJson: nodeJson });
 }
 
 

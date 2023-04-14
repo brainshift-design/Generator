@@ -20,6 +20,8 @@
     color:        #fff;
     padding-top:  11px;
     margin-left:  auto;
+    position:     relative;
+    left:        -26px;
     /* margin-right: auto; */
     white-space:  nowrap;
     /* box-shadow:   0 0 0 1px yellow inset; */

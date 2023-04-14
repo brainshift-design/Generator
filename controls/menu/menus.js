@@ -576,8 +576,13 @@ function initGeneratorMenus()
             noHighlight: true
         });
 
-    btnPage.divIcon.style.width = 4;
+    btnPage.divIcon.style.width   = 4;
+    
     btnPage.div.style.marginRight = 'auto';
+    
+    btnPage.div.style.position    = 'relative';
+    btnPage.div.style.left        = '-26px';
+
 
 
     btnZoom = new MenuButton(
@@ -637,6 +642,8 @@ function initDataModeMenus()
 
     menuNodeData = new Menu('Node menu', false, false);
     menuNodeData.addItems([
+        new MenuItem('Remove path from ID',     { callback: () => { hideAllMenus(); dataModeDeletePathFromNodeId(menuNodeData._div.node); }}),
+        new MenuItem('',                        { separator: true }),
         new MenuItem('Delete connections from', { callback: () => { hideAllMenus(); dataModeDeleteConnectionsFromNode     (menuNodeData._div.node); }}),
         new MenuItem('Delete connections to'  , { callback: () => { hideAllMenus(); dataModeDeleteConnectionsToNode       (menuNodeData._div.node); }}),
         new MenuItem('Delete all connections',  { callback: () => { hideAllMenus(); dataModeDeleteConnectionsToAndFromNode(menuNodeData._div.node); }}),

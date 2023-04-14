@@ -1,6 +1,6 @@
 GraphView.prototype.updatePanAndZoom = function(updateNodes)
 {
-    this.updateNodes(graph.nodes, updateNodes);
+    this.updateNodes(graph.pageNodes, updateNodes);
 
     
     setTimeout(() =>
@@ -144,8 +144,8 @@ GraphView.prototype.endZoomSelection = function(pointerId, zoom)
 
 GraphView.prototype.zoomToFit = function()
 {
-    if (!isEmpty(graph.nodes))
-        this.zoomToNodes(graph.nodes);
+    if (!isEmpty(graph.pageNodes))
+        this.zoomToNodes(graph.pageNodes);
     else
         graph.currentPage.setPanAndZoom(point(0, 0), 1);
 };

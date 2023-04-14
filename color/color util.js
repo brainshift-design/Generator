@@ -250,7 +250,7 @@ function rgba2style(rgba)
 
 
 
-function rgb2style_a(rgb, a)
+function rgb2style_a(rgb, a = 1)
 {
     return colorStyle_(rgb[0], rgb[1], rgb[2], a);
 }
@@ -266,7 +266,7 @@ function toRgba(rgb_)
 
 
 
-function rgb_a(rgb, a)
+function rgb_a(rgb, a = 1)
 {
     return [rgb[0], rgb[1], rgb[2], a];
 }

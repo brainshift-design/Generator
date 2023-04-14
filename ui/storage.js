@@ -198,7 +198,6 @@ function uiReturnFigLoadNodesAndConns(msg)
     graphView.canUpdateNodes = false;
 
 
-
     if (!isEmpty(msg.pageKeys))
     {
         if (settings.logRawLoadPages)
@@ -417,7 +416,7 @@ function finishLoadingNodes(_nodes, loadedNodes, updateNodes, duplicates = false
 {
     _nodes
         .filter(_n => _n.active)
-        .map   (_n => nodeFromId(duplicates ? _n.newId : _n.id))
+        .map   (_n => nodeFromId(duplicates ? _n.newId : (pageIdFromPath(_n.id) == NULL ? makeNodePath(_n.id) : _n.id)))
             .forEach(n => n.makeActive());
 
     updateTerminalsAfterNodes(loadedNodes, updateNodes);
@@ -511,6 +510,7 @@ function loadNode(_node, pasting)
     if (node.pageId == NULL)
         node.id = makeNodePath(node.id);
 
+        
     node.setPosition(
         parseFloat(_node.x), 
         parseFloat(_node.y),

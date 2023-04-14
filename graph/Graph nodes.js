@@ -61,3 +61,18 @@ function getActiveNodesFromNodeId(nodeId, alreadyChecked = [])
 {
     return getActiveNodesFromNode(nodeFromId(nodeId), alreadyChecked);
 }
+
+
+
+function pageIdFromPath(_path)
+{
+    const path = _path.split('/');
+    return path.length > 1 ? path[0] : '';
+}
+
+
+
+function stripPathFromId(path)
+{
+    return path.split('/').at(-1);
+}

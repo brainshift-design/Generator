@@ -80,7 +80,7 @@ extends OperatorBase
 
         // this.headerColor =
         //     val && val.type == COLOR_VALUE
-        //     ? rgb_a(val.toRgb(), 1)
+        //     ? rgb_a(val.toRgb())
         //     : null;
 
         if (!isEmpty(this.params)) 
@@ -136,6 +136,7 @@ function OpCache_onConnectInput(node)
     // node.outputs[0].types = [...inOutput.types];
 
          if (inOutput.supportsTypes(NUMBER_TYPES)) node.addParam(node.paramNumber);
+    else if (inOutput.supportsTypes(  TEXT_TYPES)) node.addParam(node.paramText  );
     else if (inOutput.supportsTypes( COLOR_TYPES)) node.addParam(node.paramColor );
 }
 
