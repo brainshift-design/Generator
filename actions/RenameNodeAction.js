@@ -26,7 +26,9 @@ extends Action
     do(updateNodes)
     {
         this.oldName = this.node.name;
+
         this.node.setName(this.newName, {updateNodes: updateNodes});
+        this.node.renamed = true;
 
         uiSaveNodes([this.nodeId]);
     }

@@ -3574,7 +3574,7 @@ a
     width:          16px;
     height:         16px;
     border-radius:   8px;
-    margin-right:    7px;
+    margin-right:    3px;
     position:       relative;
     top:           -1px;
     pointer-events: all;
@@ -3606,8 +3606,8 @@ a
 
 .headerIcon
 {
-    width:          16px;
-    height:         16px;
+    width:          14px;
+    height:         14px;
     pointer-events: none;
     position:       absolute;
     left:           50%;
@@ -8143,6 +8143,7 @@ const SET_PARAM_SETTING_ACTION   = 'SET_PARAM_SETTING';
 const SET_NODE_RECT_ACTION       = 'SET_NODE_RECT';
 const TOGGLE_DISABLE_ACTION      = 'TOGGLE_DISABLE';
 const TOGGLE_SYMBOL_ACTION       = 'TOGGLE_SYMBOL';
+const TOGGLE_PARAM_HEADER_ACTION = 'TOGGLE_PARAM_HEADER';
 const SET_CURRENT_GRAPH_ACTION   = 'SET_CURRENT_GRAPH';
 
 
@@ -30417,6 +30418,7 @@ const SET_PARAM_SETTING_ACTION   = 'SET_PARAM_SETTING';
 const SET_NODE_RECT_ACTION       = 'SET_NODE_RECT';
 const TOGGLE_DISABLE_ACTION      = 'TOGGLE_DISABLE';
 const TOGGLE_SYMBOL_ACTION       = 'TOGGLE_SYMBOL';
+const TOGGLE_PARAM_HEADER_ACTION = 'TOGGLE_PARAM_HEADER';
 const SET_CURRENT_GRAPH_ACTION   = 'SET_CURRENT_GRAPH';
 
 
@@ -43480,7 +43482,7 @@ const iconStar              = '<svg width="18" height="18" viewBox="0 0 18 18" f
  
 const iconGroup             = '<svg width="17" height="16" viewBox="0 0 17 16" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M3 0.5H14C15.3807 0.5 16.5 1.61929 16.5 3V15.5H0.5V3C0.5 1.61929 1.61929 0.5 3 0.5Z" stroke="white"/><rect width="4" height="1" transform="matrix(-1 0 0 1 14 4)" fill="white"/><rect width="4" height="1" transform="matrix(-1 0 0 1 9 6)" fill="white"/><rect width="4" height="1" transform="matrix(-1 0 0 1 12 9)" fill="white"/><rect width="4" height="1" transform="matrix(-1 0 0 1 7 11)" fill="white"/></svg>';
 const iconGroupNode         = '<svg width="15" height="18" viewBox="0 -3 15 18" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M3 0.5H12C13.3807 0.5 14.5 1.61929 14.5 3V14.5H0.5V3C0.5 1.61929 1.61929 0.5 3 0.5Z" stroke="white"/><rect width="9" height="1" transform="matrix(-1 0 0 1 12 5)" fill="white"/><rect width="9" height="1" transform="matrix(-1 0 0 1 12 8)" fill="white"/><rect width="9" height="1" transform="matrix(-1 0 0 1 12 11)" fill="white"/></svg>';
-const iconGroupParam        = '<svg width="11" height="9" viewBox="0 0 11 9" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="0.5" y="0.5" width="10" height="8" rx="2.5" stroke="white"/><circle cx="5.5" cy="4.5" r="1.5" fill="white"/></svg>';
+const iconGroupParam        = '<svg width="11" height="11" viewBox="0 0 11 11" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="0.5" y="0.5" width="10" height="10" rx="1.5" stroke="white"/><circle cx="5.5" cy="5.5" r="1.5" fill="white"/></svg>';
 
 
 const iconHand              = '<svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" clip-rule="evenodd" d="M1.85653 12.2494L1.8554 12.2484C1.32015 11.771 1.2929 10.8911 1.7976 10.3815C2.3023 9.87193 3.1824 9.89065 3.665 10.4213L3.67129 10.4282L3.67773 10.435L4.27294 11.0653L5.99999 12.8943V10.3788V4C5.99999 3.46423 6.46423 3 6.99999 3C7.16906 3 7.33572 3.04789 7.48718 3.13836L7.99999 3.44469V9H8.99999V4.04203V3V2.27986V2C8.99999 1.46423 9.46423 1 9.99999 1C10.4142 1 10.807 1.27942 10.9437 1.66905L11.0597 2H11V9H12V2.4661L12.4437 2.16905C12.6058 2.06052 12.804 2 13 2C13.5358 2 14 2.46423 14 3V4V4.27549V6.02711V9H15V5.43676L15.5084 5.13662C15.6583 5.04814 15.8261 5 16 5C16.5358 5 17 5.46423 17 6V13.5C17 15.6001 15.7227 17.6052 13.812 18.4904C11.8955 19.3783 9.56768 19.0654 7.95351 17.7039L1.85653 12.2494ZM15 4.27549V4V3.17508V3C15 1.91195 14.088 1 13 1C12.9434 1 12.8868 1.00246 12.8304 1.00733C12.4943 1.03638 12.1668 1.15099 11.8873 1.3381C11.7759 1.02046 11.5846 0.741833 11.341 0.522228C10.9792 0.195965 10.5019 0 9.99999 0C9.18005 0 8.46014 0.517876 8.15511 1.23874C8.05538 1.47446 7.99999 1.73188 7.99999 2V2.27986C7.70403 2.10307 7.36184 2.00018 7.00094 2H6.99999C5.91195 2 4.99999 2.91195 4.99999 4V8.92652V9.18641V9.20713V10.3788L4.40481 9.74846C4.2821 9.61355 4.14593 9.49706 3.99999 9.39906C3.11355 8.80379 1.86654 8.89082 1.08709 9.67785C0.179345 10.5944 0.227074 12.136 1.18978 12.9947L7.2972 18.4585C9.20886 20.0788 11.9586 20.4512 14.2324 19.3978C16.4971 18.3486 18 15.989 18 13.5V6C18 4.91195 17.088 4 16 4C15.6382 4 15.2958 4.10085 15 4.27549Z" fill="white"/></svg>';
@@ -52533,7 +52535,9 @@ class Operator
     inert; // doesn't eval inputs if values exist
     slow;  // takes a while to finish operation, shows a progress bar
 
-    
+    renamed            = false;     
+
+
     inputs             = [];
     outputs            = [];
   
@@ -53417,6 +53421,7 @@ class Operator
               pos + tab + '"type": "'    + this.type                                     + '",\n'
             + pos + tab + '"id": "'      + (this.stripIdForJson ? this.nodeId : this.id) + '",\n'
             + pos + tab + '"name": "'    + this.name.replace('"', '\\\"')                + '",\n'
+            + pos + tab + '"renamed": "' + boolToString(this.renamed)                    + '",\n'
             + pos + tab + '"enabled": "' + boolToString(this.enabled)                    + '",\n'
             + pos + tab + '"x": "'       + parseFloat(this.div.style.left)               + '",\n'
             + pos + tab + '"y": "'       + parseFloat(this.div.style.top )               + '",\n'
@@ -53469,8 +53474,11 @@ class Operator
 
     loadFromParsedJson(_node, pasting)
     {
-        this.id   = _node.id;
-        this.name = _node.name;
+        this.id      = _node.id;
+        this.name    = _node.name;
+    
+        if (_node.renamed != undefined)
+            this.renamed = parseBool(_node.renamed);
 
         if (_node.enabled)
             this.enabled = parseBool(_node.enabled);
@@ -63359,8 +63367,8 @@ extends OperatorBase
         //this.inert = true;
 
         
-        this.addInput (new Input(LIST_TYPES));
-        this.addOutput(new Output([LIST_VALUE], this.output_genRequest));
+        // this.addInput (new Input(LIST_TYPES));
+        // this.addOutput(new Output([LIST_VALUE], this.output_genRequest));
 
         this.alwaysLoadParams = true;
         this.alwaysSaveParams = true;
@@ -63372,25 +63380,25 @@ extends OperatorBase
     {
         // 'this' is the output        
 
-    //     return this.node.genRequest(gen);
-    // }
+        return this.node.genRequest(gen);
+    }
 
 
 
-    // genRequest(gen)
-    // {
-    //     // 'this' is the node
+    genRequest(gen)
+    {
+        // 'this' is the node
 
         gen.scope.push({
-            nodeId:  this.node.id, 
+            nodeId:  this.id, 
             paramId: NULL });
 
 
-        const [request, ignore] = this.node.genRequestStart(gen);
+        const [request, ignore] = this.genRequestStart(gen);
         if (ignore) return request;
 
 
-        const input = this.node.inputs[0];
+        const input = this.inputs[0];
 
 
         request.push(input.connected ? 1 : 0);
@@ -63489,10 +63497,16 @@ extends OperatorBase
     circle;
     icon;
 
+    paramType = 0; // 0 = param
+                   // 1 = header
+                   // 2 = variable header
+
 
     constructor()
     {
         super(GROUP_PARAM, 'param', 'parameter');
+
+        this.alwaysLoadParams = true;
 
 
         this.addInput (new Input(ALL_TYPES));
@@ -63505,6 +63519,7 @@ extends OperatorBase
 
         this.headerCircle      = createDiv('headerCircleWrapper');;
         this.headerCircle.over = false;
+        this.headerCircle.down = false;
 
         this.headerCircle.addEventListener('pointerenter', e => { this.headerCircle.over = true;  this.updateHeader(); });
         this.headerCircle.addEventListener('pointerleave', e => { this.headerCircle.over = false; this.updateHeader(); });
@@ -63515,9 +63530,12 @@ extends OperatorBase
 
             if (e.button == 0)
             {
-                hideAllMenus(); 
+                hideAllMenus();
 
-                //...
+                let paramType = this.paramType + 1;
+                if (paramType == 3) paramType = 0;
+
+                actionManager.do(new ToggleParamHeaderAction(this.id, paramType));
             }
             else
                 e.preventDefault();
@@ -63613,12 +63631,45 @@ extends OperatorBase
                     rgbFromType(ANY_TYPE) //this.paramValue.value.isValid()
                 ? (isDark(rgbaStripe) ? [1, 1, 1] : [0, 0, 0])
                 : colors.text, 
-                this.headerCircle.over ? 0.7 : 0.35));
+                this.headerCircle.down 
+                ? 1 
+                : this.headerCircle.over
+                  ? 0.7 
+                  : 0.5));
 
         this.icon.style.display            = 'inline-block';
-        this.icon.style.background         = 'url(\'data:image/svg+xml;utf8,<svg width="12" height="12" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" clip-rule="evenodd" d="M2.57143 0C1.15126 0 0 1.15126 0 2.57143V9.42857C0 10.8487 1.15126 12 2.57143 12H9.42857C10.8487 12 12 10.8487 12 9.42857V2.57143C12 1.15126 10.8487 0 9.42857 0H2.57143ZM6 8.57143C7.42017 8.57143 8.57143 7.42017 8.57143 6C8.57143 4.57983 7.42017 3.42857 6 3.42857C4.57983 3.42857 3.42857 4.57983 3.42857 6C3.42857 7.42017 4.57983 8.57143 6 8.57143Z" fill="'+headerStyle+'"/></svg>\')';
+        this.icon.style.background         = this.paramType == 2
+                                             ? 'url(\'data:image/svg+xml;utf8,<svg width="12" height="12" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" clip-rule="evenodd" d="M0 3C0 1.34314 1.34314 0 3 0H9C10.6569 0 12 1.34314 12 3V9C12 10.6569 10.6569 12 9 12H3C1.34314 12 0 10.6569 0 9V3ZM5 2.5H7V5H9.5V7H7V9.5H5V7H2.5V5H5V2.5Z" fill="'+headerStyle+'"/></svg>\')'
+                                             : this.paramType == 1
+                                               ? 'url(\'data:image/svg+xml;utf8,<svg width="12" height="12" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" clip-rule="evenodd" d="M0 3C0 1.34314 1.34314 0 3 0H9C10.6569 0 12 1.34314 12 3V9C12 10.6569 10.6569 12 9 12H3C1.34314 12 0 10.6569 0 9V3ZM6 8C7.10455 8 8 7.10461 8 6C8 4.89539 7.10455 4 6 4C4.89545 4 4 4.89539 4 6C4 7.10461 4.89545 8 6 8Z" fill="'+headerStyle+'"/></svg>\')'
+                                               : 'url(\'data:image/svg+xml;utf8,<svg width="12" height="12" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" clip-rule="evenodd" d="M12 0H0V12H12V0ZM11 1H1V11H11V1Z" fill="'+headerStyle+'"/><path d="M8 6C8 7.10457 7.10457 8 6 8C4.89543 8 4 7.10457 4 6C4 4.89543 4.89543 4 6 4C7.10457 4 8 4.89543 8 6Z" fill="'+headerStyle+'"/></svg>\')';
+
         this.icon.style.backgroundPosition = '50% 50%';
         this.icon.style.backgroundRepeat   = 'no-repeat';
+    }
+
+
+
+    toJsonBase(nTab = 0) 
+    {
+        let   pos = ' '.repeat(nTab);
+        const tab = HTAB;
+
+        let json = super.toJsonBase(nTab);
+
+        json += ',\n' + pos + tab + '"paramType": "' + this.paramType + '"';
+
+        return json;
+    }
+
+
+
+    loadParams(_node, pasting)
+    {
+        super.loadParams(_node, pasting);
+
+        if (_node.paramType != undefined)
+            this.paramType = parseInt(_node.paramType);
     }
 }
 
@@ -66783,7 +66834,9 @@ extends Action
     do(updateNodes)
     {
         this.oldName = this.node.name;
+
         this.node.setName(this.newName, {updateNodes: updateNodes});
+        this.node.renamed = true;
 
         uiSaveNodes([this.nodeId]);
     }
@@ -67517,6 +67570,54 @@ extends Action
     undo(updateNodes)
     {
         this.node._showOnlySymbol = !this.showOnlySymbol;
+
+        this.node.updateNode();
+
+        uiSaveNodes([this.nodeId]);
+    }    
+}
+
+
+class ToggleParamHeaderAction
+extends Action
+{
+    nodeId;
+    get node() { return nodeFromId(this.nodeId) } 
+
+    prevParamType;
+    paramType;
+
+
+
+    constructor(nodeId, paramType)
+    {
+        super(
+            TOGGLE_PARAM_HEADER_ACTION,
+            'TOGGLE PARAM HEADER ' + boolToString(paramType));
+        
+        this.affectsConnections = false;
+
+        this.nodeId    = nodeId;
+        this.paramType = paramType;
+    }
+
+
+
+    do(updateNodes)
+    {
+        this.prevParamType  = this.paramType;
+        this.node.paramType = this.paramType;
+
+        this.node.updateNode();
+
+        uiSaveNodes([this.nodeId]);
+    }
+
+
+
+    undo(updateNodes)
+    {
+        this.node.paramType = this.prevParamType;
 
         this.node.updateNode();
 

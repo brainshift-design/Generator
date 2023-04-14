@@ -38,7 +38,9 @@ class Operator
     inert; // doesn't eval inputs if values exist
     slow;  // takes a while to finish operation, shows a progress bar
 
-    
+    renamed            = false;     
+
+
     inputs             = [];
     outputs            = [];
   
@@ -922,6 +924,7 @@ class Operator
               pos + tab + '"type": "'    + this.type                                     + '",\n'
             + pos + tab + '"id": "'      + (this.stripIdForJson ? this.nodeId : this.id) + '",\n'
             + pos + tab + '"name": "'    + this.name.replace('"', '\\\"')                + '",\n'
+            + pos + tab + '"renamed": "' + boolToString(this.renamed)                    + '",\n'
             + pos + tab + '"enabled": "' + boolToString(this.enabled)                    + '",\n'
             + pos + tab + '"x": "'       + parseFloat(this.div.style.left)               + '",\n'
             + pos + tab + '"y": "'       + parseFloat(this.div.style.top )               + '",\n'
@@ -974,8 +977,11 @@ class Operator
 
     loadFromParsedJson(_node, pasting)
     {
-        this.id   = _node.id;
-        this.name = _node.name;
+        this.id      = _node.id;
+        this.name    = _node.name;
+    
+        if (_node.renamed != undefined)
+            this.renamed = parseBool(_node.renamed);
 
         if (_node.enabled)
             this.enabled = parseBool(_node.enabled);

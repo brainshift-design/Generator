@@ -8,8 +8,8 @@ extends OperatorBase
         //this.inert = true;
 
         
-        this.addInput (new Input(LIST_TYPES));
-        this.addOutput(new Output([LIST_VALUE], this.output_genRequest));
+        // this.addInput (new Input(LIST_TYPES));
+        // this.addOutput(new Output([LIST_VALUE], this.output_genRequest));
 
         this.alwaysLoadParams = true;
         this.alwaysSaveParams = true;
@@ -21,25 +21,25 @@ extends OperatorBase
     {
         // 'this' is the output        
 
-    //     return this.node.genRequest(gen);
-    // }
+        return this.node.genRequest(gen);
+    }
 
 
 
-    // genRequest(gen)
-    // {
-    //     // 'this' is the node
+    genRequest(gen)
+    {
+        // 'this' is the node
 
         gen.scope.push({
-            nodeId:  this.node.id, 
+            nodeId:  this.id, 
             paramId: NULL });
 
 
-        const [request, ignore] = this.node.genRequestStart(gen);
+        const [request, ignore] = this.genRequestStart(gen);
         if (ignore) return request;
 
 
-        const input = this.node.inputs[0];
+        const input = this.inputs[0];
 
 
         request.push(input.connected ? 1 : 0);
