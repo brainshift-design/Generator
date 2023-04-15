@@ -246,7 +246,7 @@ function initGeneratorMenus()
 
     menuMainDebug = new Menu('Debug', false);
     menuMainDebug.addItems([
-        menuItemShowNodeId            = new MenuItem('Show node IDs',
+        menuItemShowNodeId            = new MenuItem('Show IDs',
                                         {
                                             checkCallback: () => settings.showNodeId, 
                                             callback:      () => 
@@ -256,6 +256,8 @@ function initGeneratorMenus()
                                                 graph.nodes.forEach(n => n.updateNode());
                                                 graph.nodes.forEach(n => n.updateMeasureData());
                                                 graph.nodes.forEach(n => n.updateHeaderLabelOffsetX());
+
+                                                graph.updatePages();
                                             }
                                         }),
                                         new MenuItem('',                             {separator: true}),
@@ -637,7 +639,7 @@ function initDataModeMenus()
         new MenuItem('Expand all',       { callback: () => { hideAllMenus(); expandAllPageData();   }}),
         new MenuItem('Collapse all',     { callback: () => { hideAllMenus(); collapseAllPageData(); }}),
         new MenuItem('',                 { separator: true }),
-        new MenuItem('Delete all pages', { callback: () => { hideAllMenus(); uiRemoveAllSavedPages(); }})]);
+        new MenuItem('Delete all pages', { enabled: false, callback: () => { hideAllMenus(); uiRemoveAllSavedPages(); }})]);
 
 
     menuNodeData = new Menu('Node menu', false, false);

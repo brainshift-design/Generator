@@ -40,7 +40,6 @@ extends Control
     successOnFocusOut = false;
     keyBlur           = false;
     
-    pointerEvents     = true;
     readOnly          = false;
      
     valueText         = '';
@@ -106,39 +105,11 @@ extends Control
         if (!(value instanceof ColorValue))
             console.assert(false, 'ColorControl.setValue(value) is ' + typeof value + ', must be a ColorValue');
 
-
         const oldValue = this.value.copy();
 
         this.value = value.copy();
 
-
-        if (this.showColor)
-        {
-            // const rgbBack = this.value.toRgb();
-
-            // if (!rgbIsNaN(rgbBack))
-            // {
-            //     const rgbStripeBack = getStripeBackColor(rgbBack);
-
-            //     this.valueStyleLight =
-            //     this.valueStyleDark  = rgb2style(rgbStripeBack);
-
-            //     this.textStyleLight  = 
-            //     this.textStyleDark   = rgba2style(getTextColorFromBackColor(rgbStripeBack));
-            // }
-            // else
-            // {
-            //     this.valueStyleLight =
-            //     this.valueStyleDark  = 'var(--figma-color-bg)';
-                
-            //     this.textStyleLight  = 'black';
-            //     this.textStyleDark   = 'white';
-            // }
-        }
-
-
         this.update();
-
         
         this.dispatchSetEvents(fireChangeEvent, value, oldValue, confirm);
     };
@@ -178,28 +149,11 @@ extends Control
 
     updateColors()
     {
-        //const rgbBack = this.value.toRgb();
-
-        // const rgbBack =
-        //     this.showColor
-        //     ? (darkMode 
-        //        ? this.valueStyleDark 
-        //        : this.valueStyleLight)
-        //     : (darkMode
-        //        ? this.backStyleDark 
-        //        : this.backStyleLight);
-
-        //const rgbStripeBack = getStripeBackColor(rgbBack);
-
         this.div    .style.background = darkMode ? this.backStyleDark : this.backStyleLight;
-        this.textbox.style.background = 'transparent';//rgb2style(rgbStripeBack);
-            
+        this.textbox.style.background = 'transparent';
 
         this.text   .style.color = 
         this.textbox.style.color = darkMode ? this.textStyleDark : this.textStyleLight;//rgba2style(rgb_a(getTextColorFromBackColor(rgbStripeBack), 0.7));//rgb2style(rgbStripeBack);
-            // darkMode 
-            // ? this.textStyleDark 
-            // : this.textStyleLight;
     };
 
 
@@ -235,40 +189,23 @@ extends Control
 
     updateFocusBorder()
     {
-        // if (this.buttonDown0)
-        // {
-        //     if (   !this.param
-        //         || !this.param.node.selected)
-        //         this.focus.style.boxShadow = '0 0 0 1px var(--figma-color-bg-brand) inset';
+        const colShadow = 
+            darkMode
+            ? 'rgba(255, 255, 255, 0.1)'
+            : 'rgba(0, 0, 0, 0.1)';
 
-        //     else
-        //     {
-        //         this.focus.style.boxShadow = '0 1px 0 0 var(--figma-color-bg-brand) inset';
-                    
-        //         if (this.param.index < this.param.node.params.length-1)
-        //             this.focus.style.boxShadow += ', 0 -1px 0 0 var(--figma-color-bg-brand) inset';
-        //     }
-        // }
-        // else
-        // {
-            const colShadow = 
-                darkMode
-                ? 'rgba(255, 255, 255, 0.1)'
-                : 'rgba(0, 0, 0, 0.1)';
+        if (this.param)
+        {
+            this.focus.style.boxShadow = '0 1px 0 0 ' + colShadow + ' inset';
 
-            if (this.param)
-            {
-                this.focus.style.boxShadow = '0 1px 0 0 ' + colShadow + ' inset';
-
-                if (    this.param.node
-                    &&  this.param.node.params.includes(this.param)
-                    && !isLastInArray(this.param.node.params, this.param))
-                    this.focus.style.boxShadow += ', 0 -1px 0 0 ' + colShadow + ' inset';
-            }
-            else
-            {
-                this.focus.style.boxShadow  = '0 0 0 1px ' + colShadow + ' inset ';
-            }
-        // }
+            if (    this.param.node
+                &&  this.param.node.params.includes(this.param)
+                && !isLastInArray(this.param.node.params, this.param))
+                this.focus.style.boxShadow += ', 0 -1px 0 0 ' + colShadow + ' inset';
+        }
+        else
+        {
+            this.focus.style.boxShadow  = '0 0 0 1px ' + colShadow + ' inset ';
+        }
     }
 }

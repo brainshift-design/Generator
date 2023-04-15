@@ -39928,9 +39928,13 @@ extends EventTarget
     height;
 
 
+    pointerEvents = true;
+
+
     measureData = { divBounds: new Rect(0, 0, 0, 0) };
  
 
+    
     constructor(div, param, id, name, width = defNodeWidth, height = defParamHeight)
     {
         super();
@@ -40104,7 +40108,6 @@ extends Control
     successOnFocusOut     = false;
     keyBlur               = false;
     
-    pointerEvents         = true;
     readOnly              = false;
      
     allowEditDecimals     = true;
@@ -41787,8 +41790,8 @@ extends Control
     
     successOnFocusOut = false;
     keyBlur           = false;
+
     
-    pointerEvents     = true;
     readOnly          = false;
     
 
@@ -41943,8 +41946,6 @@ TextControl.prototype.initTextarea = function()
 
     this.textbox.savedValue     = this.textbox.value;
 
-    //this.textbox.managing     = false; // undoing or redoing
-
 
 
     this.textbox.addEventListener('pointerdown', e =>
@@ -41974,7 +41975,8 @@ TextControl.prototype.initTextarea = function()
     
     this.textbox.addEventListener('pointermove', e =>
     {
-        e.stopPropagation();
+        e.preventDefault();
+        //e.stopPropagation();
     });
 
 
@@ -41998,31 +42000,6 @@ TextControl.prototype.initTextarea = function()
         e.stopPropagation();
 
 
-        // if (   e.code == 'KeyX'
-        //     && getCtrlKey(e))
-        // {
-        //     e.preventDefault();
-        //     document.execCommand('copy');
-        //     clearSelectedText(this.textbox);
-
-        //     this.setValue(this.textbox.value, true);
-        // }
-
-        // else if (   e.code == 'KeyC'
-        //     && getCtrlKey(e))
-        // {
-        //     e.preventDefault();
-        //     document.execCommand('copy');
-        // }
-
-        // else if (e.code == 'KeyV'
-        //       && getCtrlKey(e)
-        //       && !this.readOnly)
-        // {
-        //     // let the OS do its thing here
-        // }
-        
-        //else 
         if (   (      e.code == 'Enter'
                         && getCtrlKey(e)
                      || e.code == 'NumpadEnter')
@@ -42041,13 +42018,6 @@ TextControl.prototype.initTextarea = function()
         else if (e.code == 'Tab')
         {
             e.preventDefault();
-        }
-
-        else if (e.code == 'KeyZ'
-              && getCtrlKey(e))
-        {
-            //      if (e.shiftKey && !actionManager.redoing) actionManager.redo();
-            // else if (              !actionManager.undoing) actionManager.undo();
         }
     });
 
@@ -42070,26 +42040,6 @@ TextControl.prototype.initTextarea = function()
 
 
 
-    // this.textbox.addEventListener('paste', e =>
-    // {
-    //     e.preventDefault();
-
-    //     const value = e.clipboardData.getData('text/plain');
-
-    //     this.textbox.value = 
-    //           this.textbox.value.substring(0, this.textbox.selectionStart)
-    //         + value
-    //         + this.textbox.value.substring(this.textbox.selectionEnd);
-
-    //     this.setValue(
-    //         this.textbox.value, 
-    //         true, //!this.textbox.managing, 
-    //         true);
-    // });
-
-
-
-    
     this.textbox.addEventListener('focus', () =>
     {
         hideAllMenus();
@@ -42233,14 +42183,37 @@ TextControl.prototype.initEvents = function()
 {
     this.div.addEventListener('pointerenter', e =>
     {
-        if (!currentTooltip)
+        if (panMode)
+        {
+            setCursor(panCursor);
+            return;
+        }
+
+
+        if (   !graphView.spaceDown
+            &&  this.pointerEvents)
+        {
+            // if (graphView.tempConn)
+            //     this.div.style.cursor = 'default';
+
+                
+            // this.textbox.style.visibility = 'visible';
+            // this.textbox.style.opacity    = '100%';
+    
+            this.update();
+        }
+                else if (!currentTooltip)
             initTextTooltip(this.value);
+
     });
 
 
 
     this.div.addEventListener('pointermove', e =>
     {
+        e.stopPropagation();
+
+
         if (panMode)
         {
             setCursor(panCursor);
@@ -42249,8 +42222,8 @@ TextControl.prototype.initEvents = function()
 
         if (!this.pointerEvents)
             return;
-        
 
+            
         let rect = boundingRect(this.div);
         
         this.mouseOver = 
@@ -42328,6 +42301,59 @@ TextControl.prototype.initEvents = function()
 
 
 
+    this.div.addEventListener('pointerleave', e =>
+    {
+        if (panMode)
+            return;
+
+
+        // this.div.style.cursor       = 'default';
+        
+        // this.textbox.style.visibility = 'hidden';
+        // this.textbox.style.opacity    = 0;
+
+        this.update();
+
+
+        if (graphView.tempConn)
+        {
+            if (   graphView.tempConn.output
+                && graphView.tempConn.output.node != this.param.node)
+            {
+                const input = graphView.overInput;
+                
+                graphView.overInput   = null;
+                
+                if (input) // will be null if data types don't match or there's no auto input for someo other reason
+                {
+                    input.mouseOver = false;
+                    input.updateControl();
+                }
+                
+                graphView.tempConn.wire .inputPos = point_NaN;
+            }
+            else if (graphView.tempConn.input
+                  && graphView.tempConn.input.node != this.param.node)
+            {
+                const output = graphView.overOutput;
+                
+                graphView.overOutput = null;
+
+                if (output) // will be null if data types don't match or there's no auto output for someo other reason
+                {
+                    output.mouseOver = false;
+                    output.updateControl();
+                }
+
+                graphView.tempConn.wire .outputPos = point_NaN;
+
+                graphView.tempConn.input.updateControl();
+           }
+        }
+    });
+
+
+
     this.div.addEventListener('wheel', e =>
     {
         if (  !this.pointerEvents
@@ -42394,7 +42420,6 @@ extends Control
     successOnFocusOut = false;
     keyBlur           = false;
     
-    pointerEvents     = true;
     readOnly          = false;
      
     valueText         = '';
@@ -42460,39 +42485,11 @@ extends Control
         if (!(value instanceof ColorValue))
             console.assert(false, 'ColorControl.setValue(value) is ' + typeof value + ', must be a ColorValue');
 
-
         const oldValue = this.value.copy();
 
         this.value = value.copy();
 
-
-        if (this.showColor)
-        {
-            // const rgbBack = this.value.toRgb();
-
-            // if (!rgbIsNaN(rgbBack))
-            // {
-            //     const rgbStripeBack = getStripeBackColor(rgbBack);
-
-            //     this.valueStyleLight =
-            //     this.valueStyleDark  = rgb2style(rgbStripeBack);
-
-            //     this.textStyleLight  = 
-            //     this.textStyleDark   = rgba2style(getTextColorFromBackColor(rgbStripeBack));
-            // }
-            // else
-            // {
-            //     this.valueStyleLight =
-            //     this.valueStyleDark  = 'var(--figma-color-bg)';
-                
-            //     this.textStyleLight  = 'black';
-            //     this.textStyleDark   = 'white';
-            // }
-        }
-
-
         this.update();
-
         
         this.dispatchSetEvents(fireChangeEvent, value, oldValue, confirm);
     };
@@ -42532,28 +42529,11 @@ extends Control
 
     updateColors()
     {
-        //const rgbBack = this.value.toRgb();
-
-        // const rgbBack =
-        //     this.showColor
-        //     ? (darkMode 
-        //        ? this.valueStyleDark 
-        //        : this.valueStyleLight)
-        //     : (darkMode
-        //        ? this.backStyleDark 
-        //        : this.backStyleLight);
-
-        //const rgbStripeBack = getStripeBackColor(rgbBack);
-
         this.div    .style.background = darkMode ? this.backStyleDark : this.backStyleLight;
-        this.textbox.style.background = 'transparent';//rgb2style(rgbStripeBack);
-            
+        this.textbox.style.background = 'transparent';
 
         this.text   .style.color = 
         this.textbox.style.color = darkMode ? this.textStyleDark : this.textStyleLight;//rgba2style(rgb_a(getTextColorFromBackColor(rgbStripeBack), 0.7));//rgb2style(rgbStripeBack);
-            // darkMode 
-            // ? this.textStyleDark 
-            // : this.textStyleLight;
     };
 
 
@@ -42589,41 +42569,24 @@ extends Control
 
     updateFocusBorder()
     {
-        // if (this.buttonDown0)
-        // {
-        //     if (   !this.param
-        //         || !this.param.node.selected)
-        //         this.focus.style.boxShadow = '0 0 0 1px var(--figma-color-bg-brand) inset';
+        const colShadow = 
+            darkMode
+            ? 'rgba(255, 255, 255, 0.1)'
+            : 'rgba(0, 0, 0, 0.1)';
 
-        //     else
-        //     {
-        //         this.focus.style.boxShadow = '0 1px 0 0 var(--figma-color-bg-brand) inset';
-                    
-        //         if (this.param.index < this.param.node.params.length-1)
-        //             this.focus.style.boxShadow += ', 0 -1px 0 0 var(--figma-color-bg-brand) inset';
-        //     }
-        // }
-        // else
-        // {
-            const colShadow = 
-                darkMode
-                ? 'rgba(255, 255, 255, 0.1)'
-                : 'rgba(0, 0, 0, 0.1)';
+        if (this.param)
+        {
+            this.focus.style.boxShadow = '0 1px 0 0 ' + colShadow + ' inset';
 
-            if (this.param)
-            {
-                this.focus.style.boxShadow = '0 1px 0 0 ' + colShadow + ' inset';
-
-                if (    this.param.node
-                    &&  this.param.node.params.includes(this.param)
-                    && !isLastInArray(this.param.node.params, this.param))
-                    this.focus.style.boxShadow += ', 0 -1px 0 0 ' + colShadow + ' inset';
-            }
-            else
-            {
-                this.focus.style.boxShadow  = '0 0 0 1px ' + colShadow + ' inset ';
-            }
-        // }
+            if (    this.param.node
+                &&  this.param.node.params.includes(this.param)
+                && !isLastInArray(this.param.node.params, this.param))
+                this.focus.style.boxShadow += ', 0 -1px 0 0 ' + colShadow + ' inset';
+        }
+        else
+        {
+            this.focus.style.boxShadow  = '0 0 0 1px ' + colShadow + ' inset ';
+        }
     }
 }
 
@@ -43005,9 +42968,6 @@ ColorControl.prototype.initEvents = function()
 {
     this.div.addEventListener('pointerenter', e =>
     {
-        overColorControl = this;
-
-
         if (panMode)
         {
             setCursor(panCursor);
@@ -43221,9 +43181,6 @@ ColorControl.prototype.initEvents = function()
     
     this.div.addEventListener('pointerleave', e =>
     {
-        overColorControl = null;
-
-        
         if (panMode)
             return;
 
@@ -44806,7 +44763,7 @@ function initGeneratorMenus()
 
     menuMainDebug = new Menu('Debug', false);
     menuMainDebug.addItems([
-        menuItemShowNodeId            = new MenuItem('Show node IDs',
+        menuItemShowNodeId            = new MenuItem('Show IDs',
                                         {
                                             checkCallback: () => settings.showNodeId, 
                                             callback:      () => 
@@ -44816,6 +44773,8 @@ function initGeneratorMenus()
                                                 graph.nodes.forEach(n => n.updateNode());
                                                 graph.nodes.forEach(n => n.updateMeasureData());
                                                 graph.nodes.forEach(n => n.updateHeaderLabelOffsetX());
+
+                                                graph.updatePages();
                                             }
                                         }),
                                         new MenuItem('',                             {separator: true}),
@@ -45197,7 +45156,7 @@ function initDataModeMenus()
         new MenuItem('Expand all',       { callback: () => { hideAllMenus(); expandAllPageData();   }}),
         new MenuItem('Collapse all',     { callback: () => { hideAllMenus(); collapseAllPageData(); }}),
         new MenuItem('',                 { separator: true }),
-        new MenuItem('Delete all pages', { callback: () => { hideAllMenus(); uiRemoveAllSavedPages(); }})]);
+        new MenuItem('Delete all pages', { enabled: false, callback: () => { hideAllMenus(); uiRemoveAllSavedPages(); }})]);
 
 
     menuNodeData = new Menu('Node menu', false, false);
@@ -63468,6 +63427,9 @@ extends OperatorBase
 
         this.alwaysLoadParams = true;
         this.alwaysSaveParams = true;
+
+
+        graph.currentPage.groupId = this.id;
     }
 
 
@@ -63487,7 +63449,7 @@ extends OperatorBase
 
         gen.scope.push({
             nodeId:  this.id, 
-            paramId: NULL });
+            paramId: NULL }); 
 
 
         const [request, ignore] = this.genRequestStart(gen);
@@ -63611,7 +63573,10 @@ extends OperatorBase
 
         this.inputs[0].addEventListener('connect', e =>
         {
-            
+            if (this.paramType == 1)
+            {
+                
+            }
         });
 
 
@@ -64080,7 +64045,7 @@ class GraphPage
             || index == graph.overIndex;
 
         this.btnIcon .innerHTML           = iconPage;
-        this.btnName .innerHTML           = this.name;
+        this.btnName .innerHTML           = settings.showNodeId ? this.id : this.name;
         this.btnClose.innerHTML           = iconPageClose;
         
         this.button  .style.background    = isCurrent ? '#2c2c2c' : (document.hasFocus() ? '#202020' : '#383838');
@@ -64101,11 +64066,12 @@ class GraphPage
         const tab = '\n' + HTAB;
 
         return '{'
-            + tab + '"id": "'   + this.id    + '",'
-            + tab + '"name": "' + this.name  + '",'
-            + tab + '"zoom": "' + this.zoom  + '",'
-            + tab + '"panx": "' + this.pan.x + '",'
-            + tab + '"pany": "' + this.pan.y + '"'
+            + tab + '"id": "'      + this.id      + '",'
+            + tab + '"name": "'    + this.name    + '",'
+            + tab + '"zoom": "'    + this.zoom    + '",'
+            + tab + '"panx": "'    + this.pan.x   + '",'
+            + tab + '"pany": "'    + this.pan.y   + '",'
+            + tab + '"groupId": "' + this.groupId + '"'
             + '\n}';
     }
 
@@ -64135,6 +64101,9 @@ class GraphPage
             
             this._zoom = parseFloat(data.zoom);
             if (isNaN(this.zoom)) this._zoom = 1;
+
+
+            this.groupId = data.groupId;
         }
     }
 }
@@ -64895,7 +64864,12 @@ Graph.prototype.updatePages = function()
     graphView.updateNodes();
 
 
-    pageName.innerHTML = this.currentPage ? this.currentPage.name : '';
+    pageName.innerHTML = 
+        this.currentPage 
+        ? (settings.showNodeId 
+           ? this.currentPage.id
+           : this.currentPage.name)
+        : '';
 
 
     updateZoomIcon();
@@ -72568,10 +72542,7 @@ const resizeEdgeWidth       = 8;
 
 
 var   overNumberControl     = null;
-var   overColorControl      = null;
-  
 var   numberControlChanging = null;
-  
 var   overNumberControlCtrl = null;
 
 

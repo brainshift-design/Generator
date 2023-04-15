@@ -15,9 +15,13 @@ extends EventTarget
     height;
 
 
+    pointerEvents = true;
+
+
     measureData = { divBounds: new Rect(0, 0, 0, 0) };
  
 
+    
     constructor(div, param, id, name, width = defNodeWidth, height = defParamHeight)
     {
         super();

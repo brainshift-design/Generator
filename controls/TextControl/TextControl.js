@@ -12,8 +12,8 @@ extends Control
     
     successOnFocusOut = false;
     keyBlur           = false;
+
     
-    pointerEvents     = true;
     readOnly          = false;
     
 

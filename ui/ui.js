@@ -3,10 +3,7 @@ const resizeEdgeWidth       = 8;
 
 
 var   overNumberControl     = null;
-var   overColorControl      = null;
-  
 var   numberControlChanging = null;
-  
 var   overNumberControlCtrl = null;
 
 

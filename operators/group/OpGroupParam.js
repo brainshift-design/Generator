@@ -25,7 +25,10 @@ extends OperatorBase
 
         this.inputs[0].addEventListener('connect', e =>
         {
-            
+            if (this.paramType == 1)
+            {
+                
+            }
         });
 
 

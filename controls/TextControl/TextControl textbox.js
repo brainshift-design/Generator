@@ -10,8 +10,6 @@ TextControl.prototype.initTextarea = function()
 
     this.textbox.savedValue     = this.textbox.value;
 
-    //this.textbox.managing     = false; // undoing or redoing
-
 
 
     this.textbox.addEventListener('pointerdown', e =>
@@ -41,7 +39,8 @@ TextControl.prototype.initTextarea = function()
     
     this.textbox.addEventListener('pointermove', e =>
     {
-        e.stopPropagation();
+        e.preventDefault();
+        //e.stopPropagation();
     });
 
 
@@ -65,31 +64,6 @@ TextControl.prototype.initTextarea = function()
         e.stopPropagation();
 
 
-        // if (   e.code == 'KeyX'
-        //     && getCtrlKey(e))
-        // {
-        //     e.preventDefault();
-        //     document.execCommand('copy');
-        //     clearSelectedText(this.textbox);
-
-        //     this.setValue(this.textbox.value, true);
-        // }
-
-        // else if (   e.code == 'KeyC'
-        //     && getCtrlKey(e))
-        // {
-        //     e.preventDefault();
-        //     document.execCommand('copy');
-        // }
-
-        // else if (e.code == 'KeyV'
-        //       && getCtrlKey(e)
-        //       && !this.readOnly)
-        // {
-        //     // let the OS do its thing here
-        // }
-        
-        //else 
         if (   (      e.code == 'Enter'
                         && getCtrlKey(e)
                      || e.code == 'NumpadEnter')
@@ -108,13 +82,6 @@ TextControl.prototype.initTextarea = function()
         else if (e.code == 'Tab')
         {
             e.preventDefault();
-        }
-
-        else if (e.code == 'KeyZ'
-              && getCtrlKey(e))
-        {
-            //      if (e.shiftKey && !actionManager.redoing) actionManager.redo();
-            // else if (              !actionManager.undoing) actionManager.undo();
         }
     });
 
@@ -137,26 +104,6 @@ TextControl.prototype.initTextarea = function()
 
 
 
-    // this.textbox.addEventListener('paste', e =>
-    // {
-    //     e.preventDefault();
-
-    //     const value = e.clipboardData.getData('text/plain');
-
-    //     this.textbox.value = 
-    //           this.textbox.value.substring(0, this.textbox.selectionStart)
-    //         + value
-    //         + this.textbox.value.substring(this.textbox.selectionEnd);
-
-    //     this.setValue(
-    //         this.textbox.value, 
-    //         true, //!this.textbox.managing, 
-    //         true);
-    // });
-
-
-
-    
     this.textbox.addEventListener('focus', () =>
     {
         hideAllMenus();

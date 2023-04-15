@@ -165,7 +165,7 @@ class GraphPage
             || index == graph.overIndex;
 
         this.btnIcon .innerHTML           = iconPage;
-        this.btnName .innerHTML           = this.name;
+        this.btnName .innerHTML           = settings.showNodeId ? this.id : this.name;
         this.btnClose.innerHTML           = iconPageClose;
         
         this.button  .style.background    = isCurrent ? '#2c2c2c' : (document.hasFocus() ? '#202020' : '#383838');
@@ -186,11 +186,12 @@ class GraphPage
         const tab = '\n' + HTAB;
 
         return '{'
-            + tab + '"id": "'   + this.id    + '",'
-            + tab + '"name": "' + this.name  + '",'
-            + tab + '"zoom": "' + this.zoom  + '",'
-            + tab + '"panx": "' + this.pan.x + '",'
-            + tab + '"pany": "' + this.pan.y + '"'
+            + tab + '"id": "'      + this.id      + '",'
+            + tab + '"name": "'    + this.name    + '",'
+            + tab + '"zoom": "'    + this.zoom    + '",'
+            + tab + '"panx": "'    + this.pan.x   + '",'
+            + tab + '"pany": "'    + this.pan.y   + '",'
+            + tab + '"groupId": "' + this.groupId + '"'
             + '\n}';
     }
 
@@ -220,6 +221,9 @@ class GraphPage
             
             this._zoom = parseFloat(data.zoom);
             if (isNaN(this.zoom)) this._zoom = 1;
+
+
+            this.groupId = data.groupId;
         }
     }
 }

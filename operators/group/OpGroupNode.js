@@ -13,6 +13,9 @@ extends OperatorBase
 
         this.alwaysLoadParams = true;
         this.alwaysSaveParams = true;
+
+
+        graph.currentPage.groupId = this.id;
     }
 
 
@@ -32,7 +35,7 @@ extends OperatorBase
 
         gen.scope.push({
             nodeId:  this.id, 
-            paramId: NULL });
+            paramId: NULL }); 
 
 
         const [request, ignore] = this.genRequestStart(gen);

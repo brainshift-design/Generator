@@ -2,9 +2,6 @@ ColorControl.prototype.initEvents = function()
 {
     this.div.addEventListener('pointerenter', e =>
     {
-        overColorControl = this;
-
-
         if (panMode)
         {
             setCursor(panCursor);
@@ -218,9 +215,6 @@ ColorControl.prototype.initEvents = function()
     
     this.div.addEventListener('pointerleave', e =>
     {
-        overColorControl = null;
-
-        
         if (panMode)
             return;
 
