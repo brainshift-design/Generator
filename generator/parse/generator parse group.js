@@ -73,8 +73,8 @@ function genParseGroupParam(parse)
     parse.nTab++;
 
 
-    // if (nInputs == 1)
-    //     cache.input = genParse(parse);
+    if (nInputs == 1)
+        param.input = genParse(parse);
 
 
     parse.nTab--;

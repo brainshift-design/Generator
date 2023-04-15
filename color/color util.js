@@ -356,7 +356,7 @@ function getTextColorFromBackColor(rgb, opacity = 1)
 {
     return !rgbIsNaN(rgb)
            ? (opacity >= 0.5
-               ? (isDark(rgb)  ? [1, 1, 1, 0.75] : [0, 0, 0, 0.75])
+               ? (isDark(rgb) ? [1, 1, 1, 0.75] : [0, 0, 0, 0.75])
                : (darkMode ? [1, 1, 1, 0.75] : [0, 0, 0, 0.75]))
            : (darkMode ? rgbaNoColorTextDark : rgbaNoColorTextLight);
 }

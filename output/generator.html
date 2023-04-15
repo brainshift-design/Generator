@@ -2074,6 +2074,8 @@ function initUtilContext()
 {
     utilCanvas  = document.createElement('canvas');
     utilContext = utilCanvas.getContext('2d');
+
+    utilContext.willReadFrequently = true;
 }
 
 
@@ -12782,7 +12784,7 @@ extends GOperator
             this.value = NullValue;
 
 
-        genPushUpdateValue(parse, this.nodeId, '', NullValue);
+        genPushUpdateValue(parse, this.nodeId, 'value', this.value);
 
 
         this.validate();
@@ -14597,8 +14599,8 @@ function genParseGroupParam(parse)
     parse.nTab++;
 
 
-    // if (nInputs == 1)
-    //     cache.input = genParse(parse);
+    if (nInputs == 1)
+        param.input = genParse(parse);
 
 
     parse.nTab--;
@@ -18189,7 +18191,7 @@ function getTextColorFromBackColor(rgb, opacity = 1)
 {
     return !rgbIsNaN(rgb)
            ? (opacity >= 0.5
-               ? (isDark(rgb)  ? [1, 1, 1, 0.75] : [0, 0, 0, 0.75])
+               ? (isDark(rgb) ? [1, 1, 1, 0.75] : [0, 0, 0, 0.75])
                : (darkMode ? [1, 1, 1, 0.75] : [0, 0, 0, 0.75]))
            : (darkMode ? rgbaNoColorTextDark : rgbaNoColorTextLight);
 }

@@ -25,7 +25,7 @@ class Operator
 
 
     _name;
-    get name()     { return this._name; }
+    get name()     { return this._name;  }
     set name(name) { this.setName(name); }
 
 
@@ -268,6 +268,16 @@ class Operator
 
         this.outputs.push(output);
         this.outputControls.appendChild(output.div);
+    }
+
+
+
+    removeOutput(output)
+    {
+        output._node = null;
+
+        removeFromArray(this.outputs, output);
+        this.outputControls.removeChild(output.div);
     }
 
 

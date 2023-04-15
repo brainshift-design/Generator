@@ -247,14 +247,14 @@ function initGeneratorMenus()
 
     menuDebugDelete = new Menu('Debug generator', false);
     menuDebugDelete.addItems([
-        new MenuItem('All saved pages',       {callback:      () => { hideAllMenus(); uiRemoveAllSavedPages(); }}),
+        new MenuItem('All saved pages',       {callback: () => { hideAllMenus(); uiRemoveAllSavedPages(); }}),
         new MenuItem('',                      {separator: true}),                   
-        new MenuItem('Connections to...',     {callback:      () => showDeleteConnectionsDialog()}),                        
-        new MenuItem('All saved connections', {callback:      () => { hideAllMenus(); uiRemoveAllSavedConnections(); }}),
+        new MenuItem('Connections to...',     {callback: () => showDeleteConnectionsDialog()}),                        
+        new MenuItem('All saved connections', {callback: () => { hideAllMenus(); uiRemoveAllSavedConnections(); }}),
         new MenuItem('',                      {separator: true}),                   
-        new MenuItem('All style links',       {callback:      () => { hideAllMenus(); uiRemovePluginDataFromAllLocalStyles(); }}),
+        new MenuItem('All style links',       {callback: () => { hideAllMenus(); uiRemovePluginDataFromAllLocalStyles(); }}),
         new MenuItem('',                      {separator: true}),                   
-        new MenuItem('All local data',        {callback:      () => { hideAllMenus(); uiQueueMessageToFigma({cmd: 'figClearAllLocalData'}); }})]);
+        new MenuItem('All local data',        {callback: () => { hideAllMenus(); uiQueueMessageToFigma({cmd: 'figClearAllLocalData'}); }})]);
                      
 
     menuMainDebug = new Menu('Debug', false);

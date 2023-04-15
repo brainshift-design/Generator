@@ -12,6 +12,15 @@ extends OperatorBase
                    // 2 = variable header
 
 
+    get groupNode() 
+    { 
+        return graph.currentPage.groupId != NULL
+             ? nodeFromId(graph.currentPage.groupId)
+             : null;
+    }
+
+
+
     constructor()
     {
         super(GROUP_PARAM, 'param', 'parameter');
@@ -23,19 +32,14 @@ extends OperatorBase
         this.addOutput(new Output([ANY_TYPE], this.output_genRequest));
 
 
-        this.inputs[0].addEventListener('connect', e =>
-        {
-            if (this.paramType == 1)
-            {
-                
-            }
-        });
+        this.inputs[0].addEventListener('connect',    e => input_onconnect   (this));
+        this.inputs[0].addEventListener('disconnect', e => input_ondisconnect(this));
 
 
         this.circleBack        = createDiv('headerCircleBack');
         this.circle            = createDiv('headerCircle');
 
-        this.headerCircle      = createDiv('headerCircleWrapper');;
+        this.headerCircle      = createDiv('headerCircleWrapper');
         this.headerCircle.over = false;
         this.headerCircle.down = false;
 
@@ -188,5 +192,85 @@ extends OperatorBase
 
         if (_node.paramType != undefined)
             this.paramType = parseInt(_node.paramType);
+    }
+}
+
+
+
+function input_onconnect(node)
+{
+    if (node.paramType == 1)
+    {
+        if (   !node.inputs [0].connected
+            && !node.outputs[0].connected)
+            node.inputs[0].types = [...node.inputs[0].connectedOutput.types];
+            
+        node. inputs[0].types =
+        node.outputs[0].types = [...node.inputs[0].connectedOutput.types];
+        
+        // node.outputs[0].div.style.display = 'none';
+        
+        node.groupNode.addOutput(new Output([...node.inputs[0].types], node.groupNode.output_genRequest));
+        node.groupNode.updateNode();
+    }
+}
+
+
+
+function input_ondisconnect(node)
+{
+    if (node.paramType == 1)
+    {
+        if (!graph.pageNodes.find(n => 
+                   n.type      == GROUP_PARAM
+                && n.paramType == 1
+                && (   !isEmpty(n. inputs) && n. inputs[0].connected 
+                    || !isEmpty(n.outputs) && n.outputs[0].connected)))
+            node.inputs[0].types = [ANY_TYPE];
+
+        node. inputs[0].types = ALL_TYPES;
+        node.outputs[0].types = [ANY_TYPE];
+
+        // node.outputs[0].div.style.display = 'inline-block';
+        
+        node.groupNode.removeOutput(node.groupNode.outputs[0]);
+        node.groupNode.updateNode();
+    }
+}
+
+
+
+function output_onconnect(node)
+{
+    if (node.paramType == 1)
+    {
+        if (   !node.inputs [0].connected
+            && !node.outputs[0].connected)
+            node.outputs[0].types = [...node.inputs[0].connectedOutput.types];
+
+        // node.inputs[0].div.style.display = 'none';
+        
+        node.groupNode.addInput(new Input([...node.inputs[0].types]));
+        node.groupNode.updateNode();
+    }
+}
+
+
+
+function output_ondisconnect(node)
+{
+    if (node.paramType == 1)
+    {
+        if (!graph.pageNodes.find(n => 
+                   n.type      == GROUP_PARAM
+                && n.paramType == 1
+                && (   !isEmpty(n. inputs) && n. inputs[0].connected 
+                    || !isEmpty(n.outputs) && n.outputs[0].connected)))
+            node.outputs[0].types = [ANY_TYPE];
+
+        // node.inputs[0].div.style.display = 'inline-block';
+        
+        node.groupNode.removeInput(node.groupNode.outputs[0]);
+        node.groupNode.updateNode();
     }
 }

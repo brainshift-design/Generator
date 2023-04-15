@@ -11,6 +11,8 @@ function initUtilContext()
 {
     utilCanvas  = document.createElement('canvas');
     utilContext = utilCanvas.getContext('2d');
+
+    utilContext.willReadFrequently = true;
 }
 
 
