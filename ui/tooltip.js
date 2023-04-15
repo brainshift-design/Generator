@@ -69,17 +69,8 @@ function createTooltip(tooltip)
     tooltip.trap = false;
     
 
-    tooltip.addEventListener('pointerenter', () =>
-    {
-        console.log('tooltip enter 1');
-        inTooltip = tooltip;
-    });
-    
-    
-    tooltip.addEventListener('pointerleave', () =>
-    {
-        inTooltip = null;
-    });
+    tooltip.addEventListener('pointerenter', () => inTooltip = tooltip);
+    tooltip.addEventListener('pointerleave', () => inTooltip = null   );
 
 
     hideTooltip(tooltip);
@@ -91,7 +82,6 @@ function createTooltipPointerTrap(tooltip)
 {
     tooltip.addEventListener('pointerenter', e =>
     {
-        console.log('tooltip enter 2');
         //if (tooltipOutTimer >= 0)
         //{
             clearTimeout(tooltipOutTimer);
@@ -114,7 +104,6 @@ function createTooltipPointerTrap(tooltip)
 
         tooltipOutTimer = setTimeout(() => 
         {
-            console.log('timeout');
             if (currentTooltip) 
                 hideTooltip(currentTooltip);
 

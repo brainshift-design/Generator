@@ -79,7 +79,7 @@ class GraphPage
         this.name     = name;
     
 
-        this.groupId  = 'group_' + id; //groupId;
+        this.groupId  = groupId;
 
 
         this.button   = createDiv('page');

@@ -21,6 +21,7 @@ var menuShowTooltips;
 
 var menuDebugStorage;
 var menuDebugGenerator;
+var menuDebugDelete;
 
 var menuFlow;
 var menuNumber;
@@ -244,33 +245,41 @@ function initGeneratorMenus()
         menuItemLogActions            = new MenuItem('Actions',            {checkCallback: () => settings.logActions      ,      callback: () => updateSettingAndMenu('logActions',            true, !settings.logActions           ), setting: true})]);
                      
 
+    menuDebugDelete = new Menu('Debug generator', false);
+    menuDebugDelete.addItems([
+        new MenuItem('All saved pages',       {callback:      () => { hideAllMenus(); uiRemoveAllSavedPages(); }}),
+        new MenuItem('',                      {separator: true}),                   
+        new MenuItem('Connections to...',     {callback:      () => showDeleteConnectionsDialog()}),                        
+        new MenuItem('All saved connections', {callback:      () => { hideAllMenus(); uiRemoveAllSavedConnections(); }}),
+        new MenuItem('',                      {separator: true}),                   
+        new MenuItem('All style links',       {callback:      () => { hideAllMenus(); uiRemovePluginDataFromAllLocalStyles(); }}),
+        new MenuItem('',                      {separator: true}),                   
+        new MenuItem('All local data',        {callback:      () => { hideAllMenus(); uiQueueMessageToFigma({cmd: 'figClearAllLocalData'}); }})]);
+                     
+
     menuMainDebug = new Menu('Debug', false);
     menuMainDebug.addItems([
-        menuItemShowNodeId            = new MenuItem('Show IDs',
-                                        {
-                                            checkCallback: () => settings.showNodeId, 
-                                            callback:      () => 
-                                            {
-                                                updateSettingAndMenu('showNodeId', true, !settings.showNodeId);
-                                                
-                                                graph.nodes.forEach(n => n.updateNode());
-                                                graph.nodes.forEach(n => n.updateMeasureData());
-                                                graph.nodes.forEach(n => n.updateHeaderLabelOffsetX());
+        menuItemShowNodeId = new MenuItem('Show IDs',
+                             {
+                                 checkCallback: () => settings.showNodeId, 
+                                 callback:      () => 
+                                 {
+                                     updateSettingAndMenu('showNodeId', true, !settings.showNodeId);
+                                     
+                                     graph.nodes.forEach(n => n.updateNode());
+                                     graph.nodes.forEach(n => n.updateMeasureData());
+                                     graph.nodes.forEach(n => n.updateHeaderLabelOffsetX());
 
-                                                graph.updatePages();
-                                            }
-                                        }),
-                                        new MenuItem('',                             {separator: true}),
-                                        new MenuItem('Log storage',                  {childMenu: menuDebugStorage}),
-                                        new MenuItem('Log generator',                {childMenu: menuDebugGenerator}),
-                                        new MenuItem('',                             {separator: true}),   
-                                        new MenuItem('Delete all saved pages',       {callback:      () => { hideAllMenus(); uiRemoveAllSavedPages(); }}),
-                                        new MenuItem('Delete connections to...',     {callback:      () => showDeleteConnectionsDialog()}),                        
-                                        new MenuItem('Delete all saved connections', {callback:      () => { hideAllMenus(); uiRemoveAllSavedConnections(); }}),
-                                        new MenuItem('Delete all style links',       {callback:      () => { hideAllMenus(); uiRemovePluginDataFromAllLocalStyles(); }}),
-                                        new MenuItem('Clear all local data',         {callback:      () => { hideAllMenus(); uiQueueMessageToFigma({cmd: 'figClearAllLocalData'}); }}),
-                                        new MenuItem('',                             {separator: true}),
-        menuItemDataMode              = new MenuItem('Restart in debug mode',        {checkCallback: () => settings.dataMode, callback: () => uiRestartGenerator(true)})]);
+                                     graph.updatePages();
+                                 }
+                             }),
+                             new MenuItem('',                             {separator: true}),
+                             new MenuItem('Log storage',                  {childMenu: menuDebugStorage}),
+                             new MenuItem('Log generator',                {childMenu: menuDebugGenerator}),
+                             new MenuItem('',                             {separator: true}),   
+                             new MenuItem('Delete',                       {childMenu: menuDebugDelete}),
+                             new MenuItem('',                             {separator: true}),   
+        menuItemDataMode   = new MenuItem('Restart in debug mode',        {checkCallback: () => settings.dataMode, callback: () => uiRestartGenerator(true)})]);
                      
 
     menuMainHelp = new Menu('Help and subscription', false);

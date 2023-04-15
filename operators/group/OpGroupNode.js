@@ -16,6 +16,7 @@ extends OperatorBase
 
 
         graph.currentPage.groupId = this.id;
+        graph.updateSavedPages();
     }
 
 
