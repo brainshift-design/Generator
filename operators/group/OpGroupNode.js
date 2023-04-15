@@ -39,13 +39,13 @@ extends OperatorBase
         if (ignore) return request;
 
 
-        const input = this.inputs[0];
+        // const input = this.inputs[0];
 
 
-        request.push(input.connected ? 1 : 0);
+        // request.push(input.connected ? 1 : 0);
 
-        if (input.connected) 
-            request.push(...pushInputOrParam(input, gen));
+        // if (input.connected) 
+        //     request.push(...pushInputOrParam(input, gen));
 
 
         gen.scope.pop();
@@ -56,74 +56,74 @@ extends OperatorBase
 
 
 
-    updateValues(requestId, actionId, updateParamId, paramIds, values)
-    {
-        //logFunction('OpItems.updateValues()');
+    // updateValues(requestId, actionId, updateParamId, paramIds, values)
+    // {
+    //     //logFunction('OpItems.updateValues()');
 
-        const oldParams = [...this.params];
-        //console.log('oldParams =', [...oldParams]);
+    //     const oldParams = [...this.params];
+    //     //console.log('oldParams =', [...oldParams]);
 
-        const action = actionFromId(actionId);
+    //     const action = actionFromId(actionId);
 
-        if (action)
-            pushUnique(oldParams, action.oldOutputParams);
+    //     if (action)
+    //         pushUnique(oldParams, action.oldOutputParams);
 
-        // console.log('action =', action);
+    //     // console.log('action =', action);
 
-        const oldParamConns = this.getAllParamConnections();
-
-
-        this.disconnectAllParams(true);
-        this.removeAllParams();
+    //     const oldParamConns = this.getAllParamConnections();
 
 
-        if (   paramIds.length > 1
-            ||    paramIds.length == 1 
-               && paramIds[0] != '')
-        {
-            for (let i = 0; i < values.length; i++) 
-            {
-                const value = values[i];
-                const id    = 'item' + i;
+    //     this.disconnectAllParams(true);
+    //     this.removeAllParams();
 
-                const param = oldParams.find(p => 
-                       p.id == id
-                    && p.type == value.type);
 
-                if (   param
-                    && paramIds.includes(param.id)) 
-                {
-                    this.addParam(param, true);
+    //     if (   paramIds.length > 1
+    //         ||    paramIds.length == 1 
+    //            && paramIds[0] != '')
+    //     {
+    //         for (let i = 0; i < values.length; i++) 
+    //         {
+    //             const value = values[i];
+    //             const id    = 'item' + i;
 
-                    const _conn = oldParamConns.find(c =>
-                           c.outputNodeId == this.id
-                        && c.outputId     == param.id);
+    //             const param = oldParams.find(p => 
+    //                    p.id == id
+    //                 && p.type == value.type);
 
-                    if (_conn)
-                    {
-                        const conn = uiConnect(param.output, nodeFromId(_conn.inputNodeId).inputFromId(_conn.inputId));
-                        uiSaveConn(conn);
-                    }
-                }
-                else       
-                    this.createAndAddParamByType(value.type, id, false, false, true);
-            }
-        }
+    //             if (   param
+    //                 && paramIds.includes(param.id)) 
+    //             {
+    //                 this.addParam(param, true);
 
-        else if (isEmpty(paramIds))
-            this.removeAllParams();
+    //                 const _conn = oldParamConns.find(c =>
+    //                        c.outputNodeId == this.id
+    //                     && c.outputId     == param.id);
+
+    //                 if (_conn)
+    //                 {
+    //                     const conn = uiConnect(param.output, nodeFromId(_conn.inputNodeId).inputFromId(_conn.inputId));
+    //                     uiSaveConn(conn);
+    //                 }
+    //             }
+    //             else       
+    //                 this.createAndAddParamByType(value.type, id, false, false, true);
+    //         }
+    //     }
+
+    //     else if (isEmpty(paramIds))
+    //         this.removeAllParams();
     
         
-        super.updateValues(requestId, actionId, updateParamId, paramIds, values);
-    }
+    //     super.updateValues(requestId, actionId, updateParamId, paramIds, values);
+    // }
 
 
 
-    updateParams()
-    {
-        for (const param of this.params)
-            param.enableControlText(false);
+    // updateParams()
+    // {
+    //     for (const param of this.params)
+    //         param.enableControlText(false);
 
-        this.updateParamControls();
-    }
+    //     this.updateParamControls();
+    // }
 }

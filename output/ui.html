@@ -1470,6 +1470,7 @@ div
     border-bottom: 1px solid #ffffff0d;
     border-left:   1px solid #ffffff08;
     border-right:  1px solid #ffffff08;
+    z-index:       100;
 }
 
 
@@ -8095,9 +8096,9 @@ const BOOLEAN_XOR = 3;
 const BOOLEAN_OPS = 
 [   
     [BOOLEAN_NOT, 'not'],
-    [BOOLEAN_AND, 'and'],
+    [BOOLEAN_XOR, 'xor'], 
     [BOOLEAN_OR,  'or' ],
-    [BOOLEAN_XOR, 'xor'] 
+    [BOOLEAN_AND, 'and']
 ];
 
 
@@ -13799,7 +13800,7 @@ extends GTextType
         catch (e)
         {
             this.value = 
-                this.request.value.trim() == NULL
+                request.value.trim() == NULL
                 ? TextValue.NaN
                 : this.value = new TextValue(e.message);
         }
@@ -17064,13 +17065,13 @@ extends GOperator
             return this;
 
 
-        this.value = NullValue;
+        //this.value = NullValue;
         //     this.input
         //     ? (await this.input.eval(parse)).toValue()
         //     : NullValue;
 
 
-         genPushUpdateValue(parse, this.nodeId, 'value', this.value);
+        genPushUpdateValue(parse, this.nodeId, '', NullValue);
         
         
         this.validate();
@@ -30370,9 +30371,9 @@ const BOOLEAN_XOR = 3;
 const BOOLEAN_OPS = 
 [   
     [BOOLEAN_NOT, 'not'],
-    [BOOLEAN_AND, 'and'],
+    [BOOLEAN_XOR, 'xor'], 
     [BOOLEAN_OR,  'or' ],
-    [BOOLEAN_XOR, 'xor'] 
+    [BOOLEAN_AND, 'and']
 ];
 
 
@@ -36074,7 +36075,7 @@ extends GTextType
         catch (e)
         {
             this.value = 
-                this.request.value.trim() == NULL
+                request.value.trim() == NULL
                 ? TextValue.NaN
                 : this.value = new TextValue(e.message);
         }
@@ -39339,13 +39340,13 @@ extends GOperator
             return this;
 
 
-        this.value = NullValue;
+        //this.value = NullValue;
         //     this.input
         //     ? (await this.input.eval(parse)).toValue()
         //     : NullValue;
 
 
-         genPushUpdateValue(parse, this.nodeId, 'value', this.value);
+        genPushUpdateValue(parse, this.nodeId, '', NullValue);
         
         
         this.validate();
@@ -42238,6 +42239,95 @@ TextControl.prototype.initEvents = function()
 
 
 
+    this.div.addEventListener('pointermove', e =>
+    {
+        if (panMode)
+        {
+            setCursor(panCursor);
+            return;
+        }
+
+        if (!this.pointerEvents)
+            return;
+        
+
+        let rect = boundingRect(this.div);
+        
+        this.mouseOver = 
+               e.clientX >= rect.left
+            && e.clientX <  rect.right
+            && e.clientY >= rect.top                                     
+            && e.clientY <  rect.bottom;
+
+
+        this.clientX = e.clientX;
+
+        
+        if (    this.buttonDown0
+            && !this.readOnly)
+        {
+            //forwardEvent(e, this.textbox);
+            // ...
+        }
+        else if (graphView.tempConn
+              && this.param)
+        {
+            let savedInput = 
+                graphView.savedConn
+                ? graphView.savedConn.input
+                : null;
+
+
+            //console.log('graphView.tempConn =', graphView.tempConn);
+            
+            if (    graphView.tempConn.output
+                &&  this.param.input
+                &&  this.param.input.canConnectFrom(graphView.tempConn.output)
+                && !graphView.tempConn.output.node.isOrFollows(this.param.node)
+                && (  !this.param.input.connected // not already connected to this input
+                    || this.param.input.connectedOutput != graphView.tempConn.output
+                    || this.param.input == savedInput))
+            {
+                graphView.overInput = this.param.input;
+                    
+                this.param.input.mouseOver = true;
+                this.param.input.updateControl();
+
+                const rect = boundingRect(this.param.input.div);
+
+                graphView.tempConn.wire .inputPos = point(
+                    rect.x + rect.w/2,
+                    rect.y + rect.h/2 - getTopHeight());
+            }
+            else if ( graphView.tempConn.input
+                  &&  this.param.output
+                  &&  graphView.tempConn.input.canConnectTo(this.param.output)
+                  && !this.param.node.isOrFollows(graphView.tempConn.input.node))
+            {
+                graphView.overOutput = this.param.output;
+                    
+                this.param.output.mouseOver = true;
+                this.param.output.updateControl();
+
+
+                const rect = boundingRect(this.param.output.div);
+
+                graphView.tempConn.wire .outputPos = point(
+                    rect.x + rect.w/2,
+                    rect.y + rect.h/2 - getTopHeight());
+
+
+                graphView.tempConn.input.updateControl();
+            }
+        }
+        // else if (this.readOnly)
+        // {
+        //     this.moved = true;
+        // }
+    });
+
+
+
     this.div.addEventListener('wheel', e =>
     {
         if (  !this.pointerEvents
@@ -43480,7 +43570,7 @@ const iconEllipse           = '<svg width="16" height="16" viewBox="0 0 16 16" f
 const iconPolygon           = '<svg width="20" height="16" viewBox="0 0 20 16" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M1.82238 15.4885L10.0496 1.23853L18.2769 15.4885H1.82238Z" stroke="white"/></svg>';
 const iconStar              = '<svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M8.8156 2.24924L10.4021 7.13198L10.5144 7.47747H10.8776H16.0116L11.8581 10.4952L11.5642 10.7087L11.6765 11.0542L13.263 15.9369L9.10949 12.9192L8.8156 12.7057L8.5217 12.9192L4.3682 15.9369L5.9547 11.0542L6.06695 10.7087L5.77306 10.4952L1.61955 7.47747H6.75357H7.11684L7.2291 7.13198L8.8156 2.24924Z" stroke="white"/></svg>';
  
-const iconGroup             = '<svg width="17" height="16" viewBox="0 0 17 16" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M3 0.5H14C15.3807 0.5 16.5 1.61929 16.5 3V15.5H0.5V3C0.5 1.61929 1.61929 0.5 3 0.5Z" stroke="white"/><rect width="4" height="1" transform="matrix(-1 0 0 1 14 4)" fill="white"/><rect width="4" height="1" transform="matrix(-1 0 0 1 9 6)" fill="white"/><rect width="4" height="1" transform="matrix(-1 0 0 1 12 9)" fill="white"/><rect width="4" height="1" transform="matrix(-1 0 0 1 7 11)" fill="white"/></svg>';
+const iconGroup             = '<svg width="17" height="17" viewBox="0 -1 17 17" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M3 0.5H14C15.3807 0.5 16.5 1.61929 16.5 3V15.5H0.5V3C0.5 1.61929 1.61929 0.5 3 0.5Z" stroke="white"/><rect width="4" height="1" transform="matrix(-1 0 0 1 14 4)" fill="white"/><rect width="4" height="1" transform="matrix(-1 0 0 1 9 6)" fill="white"/><rect width="4" height="1" transform="matrix(-1 0 0 1 12 9)" fill="white"/><rect width="4" height="1" transform="matrix(-1 0 0 1 7 11)" fill="white"/></svg>';
 const iconGroupNode         = '<svg width="15" height="18" viewBox="0 -3 15 18" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M3 0.5H12C13.3807 0.5 14.5 1.61929 14.5 3V14.5H0.5V3C0.5 1.61929 1.61929 0.5 3 0.5Z" stroke="white"/><rect width="9" height="1" transform="matrix(-1 0 0 1 12 5)" fill="white"/><rect width="9" height="1" transform="matrix(-1 0 0 1 12 8)" fill="white"/><rect width="9" height="1" transform="matrix(-1 0 0 1 12 11)" fill="white"/></svg>';
 const iconGroupParam        = '<svg width="11" height="11" viewBox="0 0 11 11" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="0.5" y="0.5" width="10" height="10" rx="1.5" stroke="white"/><circle cx="5.5" cy="5.5" r="1.5" fill="white"/></svg>';
 
@@ -44785,10 +44875,10 @@ function initGeneratorMenus()
 
     menuBoolean = new Menu('Boolean', true, false);
     menuBoolean.addItems([
-        new MenuItem('Not', {icon: iconNot, callback: e => actionManager.do(getCreateNodeAction(NUMBER_NOT, btnNumber.div, getCreateOptions(e)))}),
         new MenuItem('And', {icon: iconAnd, callback: e => actionManager.do(getCreateNodeAction(NUMBER_AND, btnNumber.div, getCreateOptions(e)))}),
         new MenuItem('Or',  {icon: iconOr , callback: e => actionManager.do(getCreateNodeAction(NUMBER_OR,  btnNumber.div, getCreateOptions(e)))}),
-        new MenuItem('Xor', {icon: iconXor, callback: e => actionManager.do(getCreateNodeAction(NUMBER_XOR, btnNumber.div, getCreateOptions(e)))})]);
+        new MenuItem('Xor', {icon: iconXor, callback: e => actionManager.do(getCreateNodeAction(NUMBER_XOR, btnNumber.div, getCreateOptions(e)))}),
+        new MenuItem('Not', {icon: iconNot, callback: e => actionManager.do(getCreateNodeAction(NUMBER_NOT, btnNumber.div, getCreateOptions(e)))})]);
         
     
     menuCondition = new Menu('Conditional', true, false);
@@ -49165,7 +49255,9 @@ function initSelectParamMenu(param)
             options.enabled = false;
 
             
-        const item = new MenuItem(option, options);
+        const item = new MenuItem(
+            option.replaceAll('/', ' / '), 
+            options);
 
         item.setChecked(i == param.value.toNumber());
 
@@ -53044,12 +53136,6 @@ class Operator
 
         this.updateMeasureData();
 
-
-        for (const node of graph.nodes.filter(n => n.type == GROUP_NODE))
-        {
-            node.updateProxyControls();
-            node.updateProxyWires();
-        }
     }
 
 
@@ -53890,9 +53976,6 @@ Operator.prototype.createHeader = function()
             this.div.moved = true;
 
             graphView.updateScroll(x, w, h, bounds, yOffset);
-
-            if (this.type == GROUP_NODE)
-                this.updateProxyWires();
         }
         else if (   tempConn
                  && rightOfInputs
@@ -55137,7 +55220,6 @@ extends OperatorBase
                 if (sizer.resizing)
                 {
                     actionManager.do(new SetNodeRectAction(
-                        graph, 
                         this.id, 
                         sizer.startRect, 
                         offsetRect(this.div)));
@@ -57972,7 +58054,10 @@ extends OperatorWithValue
         this.addOutput(new Output([NUMBER_VALUE], this.output_genRequest));
         
         this.addParam(this.paramValue);
-        this.addParam(this.paramOperation = new SelectParam('operation', '', false, true, true, BOOLEAN_OPS.map(s => s[1]), 1));
+        this.addParam(this.paramOperation = new SelectParam('operation', '', false, true, true, BOOLEAN_OPS.map(s => s[1]), 3));
+
+
+        this.paramOperation.reverseMenu = true;
     }
     
     
@@ -58769,7 +58854,10 @@ extends OperatorWithValue
     {
         super(TEXT_REPLACE, 'replace', 'replace');
 
-        this.canDisable = true;
+        this.canDisable       = true;
+        
+        this.alwaysLoadParams = true;
+        this.alwaysSaveParams = true;
         
 
         this.addInput (new Input (TEXT_TYPES));
@@ -58781,6 +58869,8 @@ extends OperatorWithValue
 
 
         this.paramValue.controls[0].textbox.style.textAlign = 'center';
+        this.paramWhat .controls[0].textbox.style.textAlign = 'center';
+        this.paramWith .controls[0].textbox.style.textAlign = 'center';
     }
 
 
@@ -59004,13 +59094,19 @@ extends OperatorWithValue
         super(TEXT_FETCH, 'fetch', 'fetch', defNodeWidth, true);
 
         this.canDisable       = true;
+
         this.alwaysLoadParams = true;
+        this.alwaysSaveParams = true;
 
 
         this.addOutput(new Output([TEXT_VALUE], this.output_genRequest));
 
         this.addParam(this.paramValue);
         this.addParam(this.paramRequest = new TextParam('request', 'request', true,  true));
+
+
+        this.paramValue  .controls[0].textbox.style.textAlign = 'center';
+        this.paramRequest.controls[0].textbox.style.textAlign = 'center';
     }
 
 
@@ -63398,13 +63494,13 @@ extends OperatorBase
         if (ignore) return request;
 
 
-        const input = this.inputs[0];
+        // const input = this.inputs[0];
 
 
-        request.push(input.connected ? 1 : 0);
+        // request.push(input.connected ? 1 : 0);
 
-        if (input.connected) 
-            request.push(...pushInputOrParam(input, gen));
+        // if (input.connected) 
+        //     request.push(...pushInputOrParam(input, gen));
 
 
         gen.scope.pop();
@@ -63415,76 +63511,76 @@ extends OperatorBase
 
 
 
-    updateValues(requestId, actionId, updateParamId, paramIds, values)
-    {
-        //logFunction('OpItems.updateValues()');
+    // updateValues(requestId, actionId, updateParamId, paramIds, values)
+    // {
+    //     //logFunction('OpItems.updateValues()');
 
-        const oldParams = [...this.params];
-        //console.log('oldParams =', [...oldParams]);
+    //     const oldParams = [...this.params];
+    //     //console.log('oldParams =', [...oldParams]);
 
-        const action = actionFromId(actionId);
+    //     const action = actionFromId(actionId);
 
-        if (action)
-            pushUnique(oldParams, action.oldOutputParams);
+    //     if (action)
+    //         pushUnique(oldParams, action.oldOutputParams);
 
-        // console.log('action =', action);
+    //     // console.log('action =', action);
 
-        const oldParamConns = this.getAllParamConnections();
-
-
-        this.disconnectAllParams(true);
-        this.removeAllParams();
+    //     const oldParamConns = this.getAllParamConnections();
 
 
-        if (   paramIds.length > 1
-            ||    paramIds.length == 1 
-               && paramIds[0] != '')
-        {
-            for (let i = 0; i < values.length; i++) 
-            {
-                const value = values[i];
-                const id    = 'item' + i;
+    //     this.disconnectAllParams(true);
+    //     this.removeAllParams();
 
-                const param = oldParams.find(p => 
-                       p.id == id
-                    && p.type == value.type);
 
-                if (   param
-                    && paramIds.includes(param.id)) 
-                {
-                    this.addParam(param, true);
+    //     if (   paramIds.length > 1
+    //         ||    paramIds.length == 1 
+    //            && paramIds[0] != '')
+    //     {
+    //         for (let i = 0; i < values.length; i++) 
+    //         {
+    //             const value = values[i];
+    //             const id    = 'item' + i;
 
-                    const _conn = oldParamConns.find(c =>
-                           c.outputNodeId == this.id
-                        && c.outputId     == param.id);
+    //             const param = oldParams.find(p => 
+    //                    p.id == id
+    //                 && p.type == value.type);
 
-                    if (_conn)
-                    {
-                        const conn = uiConnect(param.output, nodeFromId(_conn.inputNodeId).inputFromId(_conn.inputId));
-                        uiSaveConn(conn);
-                    }
-                }
-                else       
-                    this.createAndAddParamByType(value.type, id, false, false, true);
-            }
-        }
+    //             if (   param
+    //                 && paramIds.includes(param.id)) 
+    //             {
+    //                 this.addParam(param, true);
 
-        else if (isEmpty(paramIds))
-            this.removeAllParams();
+    //                 const _conn = oldParamConns.find(c =>
+    //                        c.outputNodeId == this.id
+    //                     && c.outputId     == param.id);
+
+    //                 if (_conn)
+    //                 {
+    //                     const conn = uiConnect(param.output, nodeFromId(_conn.inputNodeId).inputFromId(_conn.inputId));
+    //                     uiSaveConn(conn);
+    //                 }
+    //             }
+    //             else       
+    //                 this.createAndAddParamByType(value.type, id, false, false, true);
+    //         }
+    //     }
+
+    //     else if (isEmpty(paramIds))
+    //         this.removeAllParams();
     
         
-        super.updateValues(requestId, actionId, updateParamId, paramIds, values);
-    }
+    //     super.updateValues(requestId, actionId, updateParamId, paramIds, values);
+    // }
 
 
 
-    updateParams()
-    {
-        for (const param of this.params)
-            param.enableControlText(false);
+    // updateParams()
+    // {
+    //     for (const param of this.params)
+    //         param.enableControlText(false);
 
-        this.updateParamControls();
-    }
+    //     this.updateParamControls();
+    // }
 }
 
 
@@ -63512,6 +63608,11 @@ extends OperatorBase
         this.addInput (new Input(ALL_TYPES));
         this.addOutput(new Output([ANY_TYPE], this.output_genRequest));
 
+
+        this.inputs[0].addEventListener('connect', e =>
+        {
+            
+        });
 
 
         this.circleBack        = createDiv('headerCircleBack');
@@ -63818,11 +63919,17 @@ class GraphPage
     name;
 
 
+    groupId;
+
+
     button;
 
     btnIcon;
     btnName;
     btnClose;
+
+
+    groupId; // a page with a group ID makes it a group
 
 
 
@@ -63881,10 +63988,14 @@ class GraphPage
     
     
     
-    constructor(id, name)
+    constructor(id, name, groupId = '')
     {
         this.id       = id;
         this.name     = name;
+    
+
+        this.groupId  = 'group_' + id; //groupId;
+
 
         this.button   = createDiv('page');
 
@@ -65875,7 +65986,6 @@ extends Action
         deleteNodesAction_activateOldActiveNodes(this, updateNodes);
 
         uiSaveNodes(
-            graph,
             [...this.nodeIds,
              ...this.newActiveNodeIds]);
     }
@@ -69167,7 +69277,9 @@ document.addEventListener('keydown', e =>
           && e.shiftKey)         
     {
         graphView.zoomToSelection();
-        uiNotify('Zoom to selection');
+
+        if (!isEmpty(graphView.selectedNodes))
+            uiNotify('Zoom to selection');
     }
 
     else if (e.code == 'Space'
@@ -72274,7 +72386,7 @@ function uiLinkNodeToExistingColorStyle(node, styleId, styleName, paints)
         node.paramValue.setValue(FillValue.NaN);
 
         // if (node.paramValue.input.connected)
-        //     actionManager.do(new DisconnectAction(node.graph, node.paramValue.input), true);
+        //     actionManager.do(new DisconnectAction(node.paramValue.input), true);
     }
 
 
@@ -72398,7 +72510,6 @@ function initLocalStylesMenu(styles, nodeId)
 
         options.callback = () => actionManager.do(
             new LinkExistingStyleAction(
-                graph,
                 nodeId,
                 style.id, 
                 style.name,
@@ -72418,7 +72529,7 @@ function initLocalStylesMenu(styles, nodeId)
         
     menuLocalStyles.addItems([
         new MenuItem('None', {
-            callback: e => actionManager.do(new LinkExistingStyleAction(node.graph, nodeId, NULL, '', [])),
+            callback: e => actionManager.do(new LinkExistingStyleAction(nodeId, NULL, '', [])),
             enabled:  node.linkedStyleId != NULL})
     ]);
 }

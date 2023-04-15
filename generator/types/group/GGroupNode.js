@@ -32,13 +32,13 @@ extends GOperator
             return this;
 
 
-        this.value = NullValue;
+        //this.value = NullValue;
         //     this.input
         //     ? (await this.input.eval(parse)).toValue()
         //     : NullValue;
 
 
-         genPushUpdateValue(parse, this.nodeId, 'value', this.value);
+        genPushUpdateValue(parse, this.nodeId, '', NullValue);
         
         
         this.validate();

@@ -170,7 +170,9 @@ document.addEventListener('keydown', e =>
           && e.shiftKey)         
     {
         graphView.zoomToSelection();
-        uiNotify('Zoom to selection');
+
+        if (!isEmpty(graphView.selectedNodes))
+            uiNotify('Zoom to selection');
     }
 
     else if (e.code == 'Space'

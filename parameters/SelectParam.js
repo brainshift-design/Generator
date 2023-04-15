@@ -183,7 +183,9 @@ function initSelectParamMenu(param)
             options.enabled = false;
 
             
-        const item = new MenuItem(option, options);
+        const item = new MenuItem(
+            option.replaceAll('/', ' / '), 
+            options);
 
         item.setChecked(i == param.value.toNumber());
 

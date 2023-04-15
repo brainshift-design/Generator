@@ -131,7 +131,6 @@ extends OperatorBase
                 if (sizer.resizing)
                 {
                     actionManager.do(new SetNodeRectAction(
-                        graph, 
                         this.id, 
                         sizer.startRect, 
                         offsetRect(this.div)));

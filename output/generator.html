@@ -3742,9 +3742,9 @@ const BOOLEAN_XOR = 3;
 const BOOLEAN_OPS = 
 [   
     [BOOLEAN_NOT, 'not'],
-    [BOOLEAN_AND, 'and'],
+    [BOOLEAN_XOR, 'xor'], 
     [BOOLEAN_OR,  'or' ],
-    [BOOLEAN_XOR, 'xor'] 
+    [BOOLEAN_AND, 'and']
 ];
 
 
@@ -9446,7 +9446,7 @@ extends GTextType
         catch (e)
         {
             this.value = 
-                this.request.value.trim() == NULL
+                request.value.trim() == NULL
                 ? TextValue.NaN
                 : this.value = new TextValue(e.message);
         }
@@ -12711,13 +12711,13 @@ extends GOperator
             return this;
 
 
-        this.value = NullValue;
+        //this.value = NullValue;
         //     this.input
         //     ? (await this.input.eval(parse)).toValue()
         //     : NullValue;
 
 
-         genPushUpdateValue(parse, this.nodeId, 'value', this.value);
+        genPushUpdateValue(parse, this.nodeId, '', NullValue);
         
         
         this.validate();

@@ -215,9 +215,6 @@ Operator.prototype.createHeader = function()
             this.div.moved = true;
 
             graphView.updateScroll(x, w, h, bounds, yOffset);
-
-            if (this.type == GROUP_NODE)
-                this.updateProxyWires();
         }
         else if (   tempConn
                  && rightOfInputs

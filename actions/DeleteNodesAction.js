@@ -51,7 +51,6 @@ extends Action
         deleteNodesAction_activateOldActiveNodes(this, updateNodes);
 
         uiSaveNodes(
-            graph,
             [...this.nodeIds,
              ...this.newActiveNodeIds]);
     }

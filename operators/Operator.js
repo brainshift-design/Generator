@@ -547,12 +547,6 @@ class Operator
 
         this.updateMeasureData();
 
-
-        for (const node of graph.nodes.filter(n => n.type == GROUP_NODE))
-        {
-            node.updateProxyControls();
-            node.updateProxyWires();
-        }
     }
 
 

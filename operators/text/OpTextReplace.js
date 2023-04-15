@@ -10,7 +10,10 @@ extends OperatorWithValue
     {
         super(TEXT_REPLACE, 'replace', 'replace');
 
-        this.canDisable = true;
+        this.canDisable       = true;
+        
+        this.alwaysLoadParams = true;
+        this.alwaysSaveParams = true;
         
 
         this.addInput (new Input (TEXT_TYPES));
@@ -22,6 +25,8 @@ extends OperatorWithValue
 
 
         this.paramValue.controls[0].textbox.style.textAlign = 'center';
+        this.paramWhat .controls[0].textbox.style.textAlign = 'center';
+        this.paramWith .controls[0].textbox.style.textAlign = 'center';
     }
 
 

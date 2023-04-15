@@ -23,6 +23,11 @@ extends OperatorBase
         this.addOutput(new Output([ANY_TYPE], this.output_genRequest));
 
 
+        this.inputs[0].addEventListener('connect', e =>
+        {
+            
+        });
+
 
         this.circleBack        = createDiv('headerCircleBack');
         this.circle            = createDiv('headerCircle');

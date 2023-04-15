@@ -758,9 +758,9 @@ const BOOLEAN_XOR = 3;
 const BOOLEAN_OPS = 
 [   
     [BOOLEAN_NOT, 'not'],
-    [BOOLEAN_AND, 'and'],
+    [BOOLEAN_XOR, 'xor'], 
     [BOOLEAN_OR,  'or' ],
-    [BOOLEAN_XOR, 'xor'] 
+    [BOOLEAN_AND, 'and']
 ];
 
 

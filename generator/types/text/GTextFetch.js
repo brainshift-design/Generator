@@ -56,7 +56,7 @@ extends GTextType
         catch (e)
         {
             this.value = 
-                this.request.value.trim() == NULL
+                request.value.trim() == NULL
                 ? TextValue.NaN
                 : this.value = new TextValue(e.message);
         }

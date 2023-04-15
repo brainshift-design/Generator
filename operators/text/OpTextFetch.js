@@ -10,13 +10,19 @@ extends OperatorWithValue
         super(TEXT_FETCH, 'fetch', 'fetch', defNodeWidth, true);
 
         this.canDisable       = true;
+
         this.alwaysLoadParams = true;
+        this.alwaysSaveParams = true;
 
 
         this.addOutput(new Output([TEXT_VALUE], this.output_genRequest));
 
         this.addParam(this.paramValue);
         this.addParam(this.paramRequest = new TextParam('request', 'request', true,  true));
+
+
+        this.paramValue  .controls[0].textbox.style.textAlign = 'center';
+        this.paramRequest.controls[0].textbox.style.textAlign = 'center';
     }
 
 

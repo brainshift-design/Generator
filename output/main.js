@@ -452,9 +452,9 @@ const BOOLEAN_OR = 2;
 const BOOLEAN_XOR = 3;
 const BOOLEAN_OPS = [
     [BOOLEAN_NOT, 'not'],
-    [BOOLEAN_AND, 'and'],
+    [BOOLEAN_XOR, 'xor'],
     [BOOLEAN_OR, 'or'],
-    [BOOLEAN_XOR, 'xor']
+    [BOOLEAN_AND, 'and']
 ];
 const CONDITION_LESS = 0;
 const CONDITION_LESS_OR_EQUAL = 1;
