@@ -8035,18 +8035,18 @@ const SHAPE_TYPES =
 ];
 
 
-const ALL_TYPES =
-[
-    ...FLOW_TYPES,
-    ...NUMBER_TYPES,
-    ...TEXT_TYPES,
-    ...COLOR_TYPES,
-    ...FILL_TYPES,
-    ...STROKE_TYPES,
-    ...GRADIENT_TYPES,
-    COLOR_STYLE,
-    ...SHAPE_TYPES
-];
+// const ALL_TYPES =
+// [
+//     ...FLOW_TYPES,
+//     ...NUMBER_TYPES,
+//     ...TEXT_TYPES,
+//     ...COLOR_TYPES,
+//     ...FILL_TYPES,
+//     ...STROKE_TYPES,
+//     ...GRADIENT_TYPES,
+//     COLOR_STYLE,
+//     ...SHAPE_TYPES
+// ];
 
 
 const GROUP_NODE     = 'GNODE';
@@ -30312,18 +30312,18 @@ const SHAPE_TYPES =
 ];
 
 
-const ALL_TYPES =
-[
-    ...FLOW_TYPES,
-    ...NUMBER_TYPES,
-    ...TEXT_TYPES,
-    ...COLOR_TYPES,
-    ...FILL_TYPES,
-    ...STROKE_TYPES,
-    ...GRADIENT_TYPES,
-    COLOR_STYLE,
-    ...SHAPE_TYPES
-];
+// const ALL_TYPES =
+// [
+//     ...FLOW_TYPES,
+//     ...NUMBER_TYPES,
+//     ...TEXT_TYPES,
+//     ...COLOR_TYPES,
+//     ...FILL_TYPES,
+//     ...STROKE_TYPES,
+//     ...GRADIENT_TYPES,
+//     COLOR_STYLE,
+//     ...SHAPE_TYPES
+// ];
 
 
 const GROUP_NODE     = 'GNODE';
@@ -47181,7 +47181,7 @@ GraphView.prototype.endConnection = function(pointerId, backInit = false)
         input.connecting = false;
 
         if (   output
-            && input.canConnectFrom(output)) // TO OUTPUT
+            && output.canConnectTo(input)) //input.canConnectFrom(output)) // TO OUTPUT
             actionManager.do(new ConnectAction(output, input, {backInit: backInit}));
 
         this.cancelConnection(pointerId);
@@ -48462,7 +48462,6 @@ extends EventTarget
     {
         super();
 
-
         this.#id                = id;
         this.#name              = name;
         this.#type              = type;
@@ -48472,12 +48471,9 @@ extends EventTarget
         this.div.style.position = 'relative';
         this.div.style.padding  = 0;
         this.div.style.width    = '100%';
-        //this.div.style.boxShadow = '0 0 0 1px red inset';
 
         this.input              = null;
         this.output             = null;
-
-        //enableElementText(this.div, true);
     }
 
 
@@ -51190,8 +51186,8 @@ extends EventTarget
         return this.node
              ? this.node.getInputId(this)
              : this.param
-             ? this.param.id
-             : '';     
+               ? this.param.id
+               : '';     
     }
     
     get index() { return this.node.inputs.indexOf(this); }
@@ -51218,21 +51214,16 @@ extends EventTarget
     {
         if (this._connectedOutput)
         {
-            this.dispatchEvent(new CustomEvent(
-                'disconnect', 
-                { detail: { input: this }}));
+            this                 .dispatchEvent(new CustomEvent('disconnect', { detail: { input:  this   }}));
+            this._connectedOutput.dispatchEvent(new CustomEvent('disconnect', { detail: { output: output }}));
         }
 
         this._connectedOutput = output;
 
         if (this._connectedOutput)
         {
-            this.dispatchEvent(new CustomEvent(
-                'connect', 
-                { detail: {
-                    output: output,
-                    input:  this 
-                }}));
+            this  .dispatchEvent(new CustomEvent('connect', { detail: { output: output, input: this }}));
+            output.dispatchEvent(new CustomEvent('connect', { detail: { output: output, input: this }}));
         }
     }
 
@@ -51272,6 +51263,7 @@ extends EventTarget
     {
         super();
         
+
         this.types            = [...types];
         this.getValuesForUndo = getValuesForUndo;
         this.getBackInitValue = getBackInitValue;
@@ -51490,14 +51482,17 @@ extends EventTarget
 
     supportsTypes(types)
     {
-        return arraysIntersect(this.types, types);
+        return this.types.includes(ANY_TYPE)
+             ? true
+             : arraysIntersect(this.types, types);
     }
 
 
 
     canConnectFrom(output)
     {
-        if (output.supportsTypes([ANY_TYPE]))
+        if (   output.supportsTypes([ANY_TYPE])
+            && this.types[0] != ANY_TYPE)
             return false;
 
         if (   !this.canConnect
@@ -51510,17 +51505,6 @@ extends EventTarget
 
         if (output.node.isOrFollows(this.node))
             return false;
-
-
-        // const terminals = getTerminalsAfterNode(this.node);
-        // const inputs    = [];
-
-        // terminals.forEach(t => inputs.push(...t.inputs.filter(i => i.connected)));
-        
-        // if (    this.supportsTypes([ANY_TYPE])
-        //     && !inputs.find(i => i.canConnectFrom(output))
-        //     && !inputs.find(i => i.supportsTypes([ANY_TYPE])))
-        //     return false;
 
 
         return true;
@@ -51559,6 +51543,7 @@ extends EventTarget
 
 
 class Output
+extends EventTarget
 {
     types = []; // an output can have multiple types
 
@@ -51572,8 +51557,8 @@ class Output
         return this.node 
              ? this.node.getOutputId(this) 
              : this.param
-             ? this.param.id
-             : ''; 
+               ? this.param.id
+               : ''; 
     }
 
     get index() { return this.node ? this.node.outputs.indexOf(this) : ''; }
@@ -51618,6 +51603,9 @@ class Output
 
     constructor(types, genRequest, getValuesForUndo = null, backInit = null)
     {
+        super();
+
+        
         this.types            = [...types];
         this.genRequest       = genRequest;
         this.getValuesForUndo = getValuesForUndo;
@@ -51662,7 +51650,7 @@ class Output
 
             if (   graphView.tempConn
                 && graphView.tempConn.input
-                && graphView.tempConn.input.types.includes(this.type))
+                && this.supportsTypes(graphView.tempConn.input.types))//.includes(this.type))
             {
                 const rect = boundingRect(this.div);
                 const loop = this.node.isOrFollows(graphView.tempConn.input.node);
@@ -51824,13 +51812,20 @@ class Output
 
     supportsTypes(types)
     {
-        return arraysIntersect(this.types, types);
+        return this.types.includes(ANY_TYPE)
+             ? true
+             : arraysIntersect(this.types, types);
     }
 
 
 
     canConnectTo(input)
     {
+        // console.log('this.supportsTypes([ANY_TYPE] =', this.supportsTypes([ANY_TYPE]));
+
+        if (this.supportsTypes([ANY_TYPE]))
+            return true;
+
         return arraysIntersect(this.types, input.types);
     }
 
@@ -52865,7 +52860,9 @@ class Operator
  
     getAutoOutput(inputTypes)
     {
-        const outputs = this.headerOutputs.filter(o => arraysIntersect(o.types, inputTypes));
+        const outputs = this.headerOutputs.filter(o => 
+               o.types.includes(ANY_TYPE)
+            || arraysIntersect(o.types, inputTypes));
 
         return  outputs.length == 1
             && !this.isOrFollows(graphView.tempConn.input.node)
@@ -54070,7 +54067,7 @@ Operator.prototype.createHeader = function()
                     graphView.selectedNodes.map(n => n.id), 
                     point(this.slx, this.sly),
                     point(this.div.offsetLeft, this.div.offsetTop),
-                    this.div.shiftOnPointerDown ));
+                    this.div.shiftOnPointerDown));
             }
             else if (!arraysAreEqual(graphView.selectedNodes, graphView.lastSelectedNodes))
             {
@@ -54083,7 +54080,6 @@ Operator.prototype.createHeader = function()
             this.header.releasePointerCapture(e.pointerId);
         }
 
-        
         else if (graphView.tempConn)
         {
             if (    graphView.tempConn.output
@@ -55463,7 +55459,7 @@ extends OperatorBase
     
     addNewInput()
     {
-        const newInput = new Input(ALL_TYPES);
+        const newInput = new Input([ANY_TYPE]);
         newInput.isNew = true;
 
         newInput.addEventListener('connect',    e => { onVariableConnectInput(this); e.detail.input.isNew = false; });
@@ -55781,8 +55777,8 @@ extends OperatorBase
         super(IF_ELSE, 'ifElse', 'if/else');
 
 
-        this.addInput (new Input(ALL_TYPES));
-        this.addInput (new Input(ALL_TYPES));
+        this.addInput (new Input([ANY_TYPE]));
+        this.addInput (new Input([ANY_TYPE]));
         this.addOutput(new Output([ANY_TYPE], this.output_genRequest));
 
 
@@ -56112,12 +56108,12 @@ function OpIfElse_onDisconnectInput(node, inputIndex)
 
 
     if (!node.inputs[otherIndex].connected)
-        node.inputs[inputIndex].types = [...ALL_TYPES];
+        node.inputs[inputIndex].types = [ANY_TYPE];
 
     node.inputs[otherIndex].types = 
         otherInput.connected 
         ? [...otherTypes]
-        : [...ALL_TYPES];
+        : [ANY_TYPE];
 
     node.outputs[0].types = 
         otherInput.connected
@@ -56152,7 +56148,7 @@ extends OperatorBase
     {
         super(START, 'start', 'start');
 
-        this.addInput (new Input (ALL_TYPES));
+        this.addInput (new Input ([ANY_TYPE]));
         this.addOutput(new Output([], this.output_genRequest));
 
         this.inputs[0].addEventListener('connect',    e => { OpStart_onConnectInput(this); });
@@ -56222,7 +56218,7 @@ extends OperatorBase
     {
         super(REPEAT, 'repeat', 'repeat');
 
-        this.addInput (new Input(ALL_TYPES));
+        this.addInput (new Input([ANY_TYPE]));
         this.addOutput(new Output([LIST_VALUE], this.output_genRequest));
 
         this.addParam(this.paramCount = new NumberParam('count', 'count', true, true, false, 1, 0, 100, 0));
@@ -56298,7 +56294,7 @@ extends OperatorBase
         this.cached = true;
         
 
-        this.addInput(new Input(ALL_TYPES));
+        this.addInput(new Input([ANY_TYPE]));
         //this.addOutput(new Output([], this.output_genRequest));
 
 
@@ -56450,7 +56446,7 @@ extends OperatorBase
         //this.cached = true;
         
 
-        this.addInput (new Input(ALL_TYPES));
+        this.addInput (new Input([ANY_TYPE]));
         this.addOutput(new Output([], this.output_genRequest));
 
 
@@ -63598,15 +63594,19 @@ extends OperatorBase
     {
         super(GROUP_PARAM, 'param', 'parameter');
 
+        
         this.alwaysLoadParams = true;
 
 
-        this.addInput (new Input(ALL_TYPES));
+        this.addInput (new Input([ANY_TYPE]));
         this.addOutput(new Output([ANY_TYPE], this.output_genRequest));
 
 
-        this.inputs[0].addEventListener('connect',    e => input_onconnect   (this));
-        this.inputs[0].addEventListener('disconnect', e => input_ondisconnect(this));
+        this. inputs[0].addEventListener('connect',    e =>  input_onconnect   (this));
+        this. inputs[0].addEventListener('disconnect', e =>  input_ondisconnect(this));
+
+        this.outputs[0].addEventListener('connect',    e => output_onconnect   (this));
+        this.outputs[0].addEventListener('disconnect', e => output_ondisconnect(this));
 
 
         this.circleBack        = createDiv('headerCircleBack');
@@ -63817,8 +63817,6 @@ function input_onconnect(node)
         node. inputs[0].types =
         node.outputs[0].types = [...node.inputs[0].connectedOutput.types];
         
-        // node.outputs[0].div.style.display = 'none';
-        
         node.groupNode.addOutput(new Output([...node.inputs[0].types], node.groupNode.output_genRequest));
         node.groupNode.updateNode();
     }
@@ -63837,20 +63835,11 @@ function input_ondisconnect(node)
                     || !isEmpty(n.outputs) && n.outputs[0].connected)))
             node.inputs[0].types = [ANY_TYPE];
 
-        node. inputs[0].types = ALL_TYPES;
+        node. inputs[0].types = [ANY_TYPE];
         node.outputs[0].types = [ANY_TYPE];
 
-        // node.outputs[0].div.style.display = 'inline-block';
-        
         node.groupNode.removeOutput(node.groupNode.outputs[0]);
         node.groupNode.updateNode();
-
-
-        // const colors = node.getHeaderColors();
-
-        // node.inputs[0].wireBall.style.background = rgb2style(colors.wire);
-        // node. inputs[0].color = colors. input;
-        // node.outputs[0].color = colors.output;
     }
 }
 
@@ -63862,11 +63851,9 @@ function output_onconnect(node)
     {
         if (   !node.inputs [0].connected
             && !node.outputs[0].connected)
-            node.outputs[0].types = [...node.inputs[0].connectedOutput.types];
+            node.outputs[0].types = [...node.outputs[0].connectedInputs[0].types];
 
-        // node.inputs[0].div.style.display = 'none';
-        
-        node.groupNode.addInput(new Input([...node.inputs[0].types]));
+        node.groupNode.addInput(new Input([...node.outputs[0].types]));
         node.groupNode.updateNode();
     }
 }

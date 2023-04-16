@@ -304,7 +304,9 @@ class Operator
  
     getAutoOutput(inputTypes)
     {
-        const outputs = this.headerOutputs.filter(o => arraysIntersect(o.types, inputTypes));
+        const outputs = this.headerOutputs.filter(o => 
+               o.types.includes(ANY_TYPE)
+            || arraysIntersect(o.types, inputTypes));
 
         return  outputs.length == 1
             && !this.isOrFollows(graphView.tempConn.input.node)

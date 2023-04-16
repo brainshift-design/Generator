@@ -16,7 +16,7 @@ extends OperatorBase
     
     addNewInput()
     {
-        const newInput = new Input(ALL_TYPES);
+        const newInput = new Input([ANY_TYPE]);
         newInput.isNew = true;
 
         newInput.addEventListener('connect',    e => { onVariableConnectInput(this); e.detail.input.isNew = false; });

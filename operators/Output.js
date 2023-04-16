@@ -1,4 +1,5 @@
 class Output
+extends EventTarget
 {
     types = []; // an output can have multiple types
 
@@ -12,8 +13,8 @@ class Output
         return this.node 
              ? this.node.getOutputId(this) 
              : this.param
-             ? this.param.id
-             : ''; 
+               ? this.param.id
+               : ''; 
     }
 
     get index() { return this.node ? this.node.outputs.indexOf(this) : ''; }
@@ -58,6 +59,9 @@ class Output
 
     constructor(types, genRequest, getValuesForUndo = null, backInit = null)
     {
+        super();
+
+        
         this.types            = [...types];
         this.genRequest       = genRequest;
         this.getValuesForUndo = getValuesForUndo;
@@ -102,7 +106,7 @@ class Output
 
             if (   graphView.tempConn
                 && graphView.tempConn.input
-                && graphView.tempConn.input.types.includes(this.type))
+                && this.supportsTypes(graphView.tempConn.input.types))//.includes(this.type))
             {
                 const rect = boundingRect(this.div);
                 const loop = this.node.isOrFollows(graphView.tempConn.input.node);
@@ -264,13 +268,20 @@ class Output
 
     supportsTypes(types)
     {
-        return arraysIntersect(this.types, types);
+        return this.types.includes(ANY_TYPE)
+             ? true
+             : arraysIntersect(this.types, types);
     }
 
 
 
     canConnectTo(input)
     {
+        // console.log('this.supportsTypes([ANY_TYPE] =', this.supportsTypes([ANY_TYPE]));
+
+        if (this.supportsTypes([ANY_TYPE]))
+            return true;
+
         return arraysIntersect(this.types, input.types);
     }
 

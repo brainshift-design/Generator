@@ -25,15 +25,19 @@ extends OperatorBase
     {
         super(GROUP_PARAM, 'param', 'parameter');
 
+        
         this.alwaysLoadParams = true;
 
 
-        this.addInput (new Input(ALL_TYPES));
+        this.addInput (new Input([ANY_TYPE]));
         this.addOutput(new Output([ANY_TYPE], this.output_genRequest));
 
 
-        this.inputs[0].addEventListener('connect',    e => input_onconnect   (this));
-        this.inputs[0].addEventListener('disconnect', e => input_ondisconnect(this));
+        this. inputs[0].addEventListener('connect',    e =>  input_onconnect   (this));
+        this. inputs[0].addEventListener('disconnect', e =>  input_ondisconnect(this));
+
+        this.outputs[0].addEventListener('connect',    e => output_onconnect   (this));
+        this.outputs[0].addEventListener('disconnect', e => output_ondisconnect(this));
 
 
         this.circleBack        = createDiv('headerCircleBack');
@@ -244,8 +248,6 @@ function input_onconnect(node)
         node. inputs[0].types =
         node.outputs[0].types = [...node.inputs[0].connectedOutput.types];
         
-        // node.outputs[0].div.style.display = 'none';
-        
         node.groupNode.addOutput(new Output([...node.inputs[0].types], node.groupNode.output_genRequest));
         node.groupNode.updateNode();
     }
@@ -264,20 +266,11 @@ function input_ondisconnect(node)
                     || !isEmpty(n.outputs) && n.outputs[0].connected)))
             node.inputs[0].types = [ANY_TYPE];
 
-        node. inputs[0].types = ALL_TYPES;
+        node. inputs[0].types = [ANY_TYPE];
         node.outputs[0].types = [ANY_TYPE];
 
-        // node.outputs[0].div.style.display = 'inline-block';
-        
         node.groupNode.removeOutput(node.groupNode.outputs[0]);
         node.groupNode.updateNode();
-
-
-        // const colors = node.getHeaderColors();
-
-        // node.inputs[0].wireBall.style.background = rgb2style(colors.wire);
-        // node. inputs[0].color = colors. input;
-        // node.outputs[0].color = colors.output;
     }
 }
 
@@ -289,11 +282,9 @@ function output_onconnect(node)
     {
         if (   !node.inputs [0].connected
             && !node.outputs[0].connected)
-            node.outputs[0].types = [...node.inputs[0].connectedOutput.types];
+            node.outputs[0].types = [...node.outputs[0].connectedInputs[0].types];
 
-        // node.inputs[0].div.style.display = 'none';
-        
-        node.groupNode.addInput(new Input([...node.inputs[0].types]));
+        node.groupNode.addInput(new Input([...node.outputs[0].types]));
         node.groupNode.updateNode();
     }
 }

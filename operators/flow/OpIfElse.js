@@ -13,8 +13,8 @@ extends OperatorBase
         super(IF_ELSE, 'ifElse', 'if/else');
 
 
-        this.addInput (new Input(ALL_TYPES));
-        this.addInput (new Input(ALL_TYPES));
+        this.addInput (new Input([ANY_TYPE]));
+        this.addInput (new Input([ANY_TYPE]));
         this.addOutput(new Output([ANY_TYPE], this.output_genRequest));
 
 
@@ -344,12 +344,12 @@ function OpIfElse_onDisconnectInput(node, inputIndex)
 
 
     if (!node.inputs[otherIndex].connected)
-        node.inputs[inputIndex].types = [...ALL_TYPES];
+        node.inputs[inputIndex].types = [ANY_TYPE];
 
     node.inputs[otherIndex].types = 
         otherInput.connected 
         ? [...otherTypes]
-        : [...ALL_TYPES];
+        : [ANY_TYPE];
 
     node.outputs[0].types = 
         otherInput.connected

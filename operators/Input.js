@@ -13,8 +13,8 @@ extends EventTarget
         return this.node
              ? this.node.getInputId(this)
              : this.param
-             ? this.param.id
-             : '';     
+               ? this.param.id
+               : '';     
     }
     
     get index() { return this.node.inputs.indexOf(this); }
@@ -41,21 +41,16 @@ extends EventTarget
     {
         if (this._connectedOutput)
         {
-            this.dispatchEvent(new CustomEvent(
-                'disconnect', 
-                { detail: { input: this }}));
+            this                 .dispatchEvent(new CustomEvent('disconnect', { detail: { input:  this   }}));
+            this._connectedOutput.dispatchEvent(new CustomEvent('disconnect', { detail: { output: output }}));
         }
 
         this._connectedOutput = output;
 
         if (this._connectedOutput)
         {
-            this.dispatchEvent(new CustomEvent(
-                'connect', 
-                { detail: {
-                    output: output,
-                    input:  this 
-                }}));
+            this  .dispatchEvent(new CustomEvent('connect', { detail: { output: output, input: this }}));
+            output.dispatchEvent(new CustomEvent('connect', { detail: { output: output, input: this }}));
         }
     }
 
@@ -95,6 +90,7 @@ extends EventTarget
     {
         super();
         
+
         this.types            = [...types];
         this.getValuesForUndo = getValuesForUndo;
         this.getBackInitValue = getBackInitValue;
@@ -313,14 +309,17 @@ extends EventTarget
 
     supportsTypes(types)
     {
-        return arraysIntersect(this.types, types);
+        return this.types.includes(ANY_TYPE)
+             ? true
+             : arraysIntersect(this.types, types);
     }
 
 
 
     canConnectFrom(output)
     {
-        if (output.supportsTypes([ANY_TYPE]))
+        if (   output.supportsTypes([ANY_TYPE])
+            && this.types[0] != ANY_TYPE)
             return false;
 
         if (   !this.canConnect
@@ -333,17 +332,6 @@ extends EventTarget
 
         if (output.node.isOrFollows(this.node))
             return false;
-
-
-        // const terminals = getTerminalsAfterNode(this.node);
-        // const inputs    = [];
-
-        // terminals.forEach(t => inputs.push(...t.inputs.filter(i => i.connected)));
-        
-        // if (    this.supportsTypes([ANY_TYPE])
-        //     && !inputs.find(i => i.canConnectFrom(output))
-        //     && !inputs.find(i => i.supportsTypes([ANY_TYPE])))
-        //     return false;
 
 
         return true;

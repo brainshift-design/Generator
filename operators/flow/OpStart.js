@@ -5,7 +5,7 @@ extends OperatorBase
     {
         super(START, 'start', 'start');
 
-        this.addInput (new Input (ALL_TYPES));
+        this.addInput (new Input ([ANY_TYPE]));
         this.addOutput(new Output([], this.output_genRequest));
 
         this.inputs[0].addEventListener('connect',    e => { OpStart_onConnectInput(this); });

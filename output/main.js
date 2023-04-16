@@ -413,17 +413,18 @@ const SHAPE_TYPES = [
     ...STAR_TYPES //,
     //TEXT
 ];
-const ALL_TYPES = [
-    ...FLOW_TYPES,
-    ...NUMBER_TYPES,
-    ...TEXT_TYPES,
-    ...COLOR_TYPES,
-    ...FILL_TYPES,
-    ...STROKE_TYPES,
-    ...GRADIENT_TYPES,
-    COLOR_STYLE,
-    ...SHAPE_TYPES
-];
+// const ALL_TYPES =
+// [
+//     ...FLOW_TYPES,
+//     ...NUMBER_TYPES,
+//     ...TEXT_TYPES,
+//     ...COLOR_TYPES,
+//     ...FILL_TYPES,
+//     ...STROKE_TYPES,
+//     ...GRADIENT_TYPES,
+//     COLOR_STYLE,
+//     ...SHAPE_TYPES
+// ];
 const GROUP_NODE = 'GNODE';
 const GROUP_PARAM = 'GPARAM';
 const GROUP_TYPES = [

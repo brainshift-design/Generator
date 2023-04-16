@@ -326,7 +326,7 @@ Operator.prototype.createHeader = function()
                     graphView.selectedNodes.map(n => n.id), 
                     point(this.slx, this.sly),
                     point(this.div.offsetLeft, this.div.offsetTop),
-                    this.div.shiftOnPointerDown ));
+                    this.div.shiftOnPointerDown));
             }
             else if (!arraysAreEqual(graphView.selectedNodes, graphView.lastSelectedNodes))
             {
@@ -339,7 +339,6 @@ Operator.prototype.createHeader = function()
             this.header.releasePointerCapture(e.pointerId);
         }
 
-        
         else if (graphView.tempConn)
         {
             if (    graphView.tempConn.output
