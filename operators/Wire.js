@@ -477,16 +477,16 @@ class Wire
             //     || conn.input.param.affectsHeader);
     
     
-        this.curve .style.stroke         = wireStyle;
-        this.curve2.style.stroke         = rgb2style(rgbDocumentBody);
+        this.curve  .style.stroke          = wireStyle;
+        this.curve2 .style.stroke          = rgb2style(rgbDocumentBody);
     
-        this.curve.style.strokeDasharray = unknown ? 1.7 * graph.currentPage.zoom : 0;
+        this.curve  .style.strokeDasharray = unknown ? 1.7 * graph.currentPage.zoom : 0;
     
-        this. inBall.style.fill          = wireStyle;
-        this.outBall.style.fill          = wireStyle;
+        this. inBall.style.fill            = wireStyle;
+        this.outBall.style.fill            = wireStyle;
 
-        this.arrow1 .style.fill          = arrowStyle;
-        this.arrow2 .style.fill          = arrowStyle;
+        this.arrow1 .style.fill            = arrowStyle;
+        this.arrow2 .style.fill            = arrowStyle;
     
     
         if (conn.output) conn.output.wireBall.style.background = wireStyle;

@@ -251,7 +251,7 @@ extends EventTarget
 
         const mouseOver =
                this.mouseOver
-            && !(   tc
+            && !(   tc 
                  && tc.input)
             && !(   tc
                  && tc.output
@@ -271,7 +271,7 @@ extends EventTarget
             rgba2style(rgb_a(
                 color,
                 mouseOver 
-                ? Math.min(color[3] * this.overFactor, 1) 
+                ? (tc ? tc.wire.color : Math.min(color[3] * this.overFactor, 1))
                 : color[3]));
 
 

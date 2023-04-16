@@ -3164,7 +3164,7 @@ a
     pointer-events: none;
     box-shadow:     0 0 0 1px rgba(0, 0, 0, 0.12);
     z-index:        10;
-    transition:     opacity 0.5s linear 0s;
+    transition:     opacity 0.33s linear 0s;
 }
 
 
@@ -3765,7 +3765,7 @@ a
     pointer-events: none;
     /* box-shadow:     0 0 0 1px rgba(0, 0, 0, 0.12); */
     z-index:        10;
-    transition:     opacity 0.5s linear 0s;
+    transition:     opacity 0.33s linear 0s;
 }
 
 
@@ -51428,7 +51428,7 @@ extends EventTarget
 
         const mouseOver =
                this.mouseOver
-            && !(   tc
+            && !(   tc 
                  && tc.input)
             && !(   tc
                  && tc.output
@@ -51448,7 +51448,7 @@ extends EventTarget
             rgba2style(rgb_a(
                 color,
                 mouseOver 
-                ? Math.min(color[3] * this.overFactor, 1) 
+                ? (tc ? tc.wire.color : Math.min(color[3] * this.overFactor, 1))
                 : color[3]));
 
 
@@ -52490,16 +52490,16 @@ class Wire
             //     || conn.input.param.affectsHeader);
     
     
-        this.curve .style.stroke         = wireStyle;
-        this.curve2.style.stroke         = rgb2style(rgbDocumentBody);
+        this.curve  .style.stroke          = wireStyle;
+        this.curve2 .style.stroke          = rgb2style(rgbDocumentBody);
     
-        this.curve.style.strokeDasharray = unknown ? 1.7 * graph.currentPage.zoom : 0;
+        this.curve  .style.strokeDasharray = unknown ? 1.7 * graph.currentPage.zoom : 0;
     
-        this. inBall.style.fill          = wireStyle;
-        this.outBall.style.fill          = wireStyle;
+        this. inBall.style.fill            = wireStyle;
+        this.outBall.style.fill            = wireStyle;
 
-        this.arrow1 .style.fill          = arrowStyle;
-        this.arrow2 .style.fill          = arrowStyle;
+        this.arrow1 .style.fill            = arrowStyle;
+        this.arrow2 .style.fill            = arrowStyle;
     
     
         if (conn.output) conn.output.wireBall.style.background = wireStyle;
@@ -53396,7 +53396,7 @@ class Operator
 
         return new DOMRect(
             ox + (rect.left / graph.currentPage.zoom),
-            oy + (rect.top  / graph.currentPage.zoom), 
+            oy + (rect.top  / graph.currentPage.zoom),
             rect.width      / graph.currentPage.zoom, 
             rect.height     / graph.currentPage.zoom);
     }
@@ -53410,6 +53410,7 @@ class Operator
             ? rgb_a(rgbDocumentBody, 0.95)
             : rgb_a(rgbFromType(this.type, this.active), 0.95);
 
+            
         const rgbaBorder = rgb_a(rgbFromType(this.type, this.active), 0.95);
 
         const rgbaText   = isDark(rgbaBack) ? [1, 1, 1, 1] : [0, 0, 0, 1]; 
@@ -53417,7 +53418,7 @@ class Operator
         const colInput   = this.active ? rgb_a(rgbaText, 0.4 ) : rgb_a(rgbSaturateHsv(rgbFromType(this.type, true), 0.5), 0.8);
         const colOutput  = this.active ? rgb_a(rgbaText, 0.35) : rgb_a(rgbSaturateHsv(rgbFromType(this.type, true), 0.5), 0.7);
         
-        const colWire = rgbFromType(this.type, true);
+        const colWire    = rgbFromType(this.type, true);
 
         
         return {
@@ -63744,6 +63745,42 @@ extends OperatorBase
 
 
 
+    getHeaderColors(options = {})
+    {
+        const colors = super.getHeaderColors(options);
+
+
+        if (this.inputs[0].connected)
+        {
+            if (   this.inputs[0].supportsTypes([COLOR_VALUE])
+                || this.inputs[0].supportsTypes([ FILL_VALUE]))
+                colors.input  =
+                colors.output =
+                colors.wire   = this.inputs[0].connectedOutput.wireColor;
+            else
+                colors.input  =
+                colors.output =
+                colors.wire   = rgbFromType(this.inputs[0].types[0], true);
+        }
+        else if (this.outputs[0].connected)
+        {
+            if (   this.outputs[0].supportsTypes([COLOR_VALUE])
+                || this.outputs[0].supportsTypes([ FILL_VALUE]))
+                colors.input  =
+                colors.output =
+                colors.wire   = this.outputs[0].connectedInputs[0].wireColor;
+            else
+                colors.input  =
+                colors.output =
+                colors.wire   = rgbFromType(this.outputs[0].types[0], true);
+        }
+
+
+        return colors;
+    }
+
+
+
     toJsonBase(nTab = 0) 
     {
         let   pos = ' '.repeat(nTab);
@@ -63807,6 +63844,13 @@ function input_ondisconnect(node)
         
         node.groupNode.removeOutput(node.groupNode.outputs[0]);
         node.groupNode.updateNode();
+
+
+        // const colors = node.getHeaderColors();
+
+        // node.inputs[0].wireBall.style.background = rgb2style(colors.wire);
+        // node. inputs[0].color = colors. input;
+        // node.outputs[0].color = colors.output;
     }
 }
 

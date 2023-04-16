@@ -172,6 +172,42 @@ extends OperatorBase
 
 
 
+    getHeaderColors(options = {})
+    {
+        const colors = super.getHeaderColors(options);
+
+
+        if (this.inputs[0].connected)
+        {
+            if (   this.inputs[0].supportsTypes([COLOR_VALUE])
+                || this.inputs[0].supportsTypes([ FILL_VALUE]))
+                colors.input  =
+                colors.output =
+                colors.wire   = this.inputs[0].connectedOutput.wireColor;
+            else
+                colors.input  =
+                colors.output =
+                colors.wire   = rgbFromType(this.inputs[0].types[0], true);
+        }
+        else if (this.outputs[0].connected)
+        {
+            if (   this.outputs[0].supportsTypes([COLOR_VALUE])
+                || this.outputs[0].supportsTypes([ FILL_VALUE]))
+                colors.input  =
+                colors.output =
+                colors.wire   = this.outputs[0].connectedInputs[0].wireColor;
+            else
+                colors.input  =
+                colors.output =
+                colors.wire   = rgbFromType(this.outputs[0].types[0], true);
+        }
+
+
+        return colors;
+    }
+
+
+
     toJsonBase(nTab = 0) 
     {
         let   pos = ' '.repeat(nTab);
@@ -235,6 +271,13 @@ function input_ondisconnect(node)
         
         node.groupNode.removeOutput(node.groupNode.outputs[0]);
         node.groupNode.updateNode();
+
+
+        // const colors = node.getHeaderColors();
+
+        // node.inputs[0].wireBall.style.background = rgb2style(colors.wire);
+        // node. inputs[0].color = colors. input;
+        // node.outputs[0].color = colors.output;
     }
 }
 

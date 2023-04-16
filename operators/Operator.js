@@ -835,7 +835,7 @@ class Operator
 
         return new DOMRect(
             ox + (rect.left / graph.currentPage.zoom),
-            oy + (rect.top  / graph.currentPage.zoom), 
+            oy + (rect.top  / graph.currentPage.zoom),
             rect.width      / graph.currentPage.zoom, 
             rect.height     / graph.currentPage.zoom);
     }
@@ -849,6 +849,7 @@ class Operator
             ? rgb_a(rgbDocumentBody, 0.95)
             : rgb_a(rgbFromType(this.type, this.active), 0.95);
 
+            
         const rgbaBorder = rgb_a(rgbFromType(this.type, this.active), 0.95);
 
         const rgbaText   = isDark(rgbaBack) ? [1, 1, 1, 1] : [0, 0, 0, 1]; 
@@ -856,7 +857,7 @@ class Operator
         const colInput   = this.active ? rgb_a(rgbaText, 0.4 ) : rgb_a(rgbSaturateHsv(rgbFromType(this.type, true), 0.5), 0.8);
         const colOutput  = this.active ? rgb_a(rgbaText, 0.35) : rgb_a(rgbSaturateHsv(rgbFromType(this.type, true), 0.5), 0.7);
         
-        const colWire = rgbFromType(this.type, true);
+        const colWire    = rgbFromType(this.type, true);
 
         
         return {
