@@ -49,7 +49,7 @@ class Connection
             this.outputOrder,
             (this.stripIdForCopy ? this.input.node.nodeId : this.input.node.id),
             (this.input.param ? this.input.param.id : this.input.index),
-            boolToString(this.output.supportsTypes(LIST_TYPES)));
+            boolToString(arraysIntersect(this.output.types, LIST_TYPES))); // not supportsTypes() here, because that allows LIST in case of ANY_TYPE
 
         this.stripIdForCopy = false;
 

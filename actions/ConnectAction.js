@@ -37,7 +37,7 @@ extends Action
     {
         super(
             CONNECT_ACTION,
-             'CONNECT ' 
+             'CONNECT '
             + output.node.id + '.' + output.id
             + ' ' + rightArrowChar(output.supportsTypes(LIST_TYPES)) + ' '
             + input.node.id + '.' + input.id);

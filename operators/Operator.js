@@ -186,14 +186,27 @@ class Operator
 
 
 
-    addInput(input)
+    addInput(input, assign = true)
     {
-        input._node = this;
+        if (assign)
+            input._node = this;
 
         const index = this.headerInputs.length;
 
         this.inputs.splice(index, 0, input);
         this.inputControls.insertBefore(input.div, this.inputControls.children[index]);
+    }
+
+
+
+    removeInput(input)
+    {
+        input._node = null;
+
+        removeFromArray(this.inputs, input);
+        this.inputControls.removeChild(input.div);
+
+        return input;
     }
 
 
@@ -262,9 +275,10 @@ class Operator
 
 
 
-    addOutput(output)
+    addOutput(output, assign = true)
     {
-        output._node = this;
+        if (assign)
+            output._node = this;
 
         this.outputs.push(output);
         this.outputControls.appendChild(output.div);
@@ -278,6 +292,8 @@ class Operator
 
         removeFromArray(this.outputs, output);
         this.outputControls.removeChild(output.div);
+
+        return output;
     }
 
 

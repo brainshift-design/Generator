@@ -17102,7 +17102,7 @@ extends GOperator
 
     constructor(nodeId, options)
     {
-        super(ITEMS, nodeId, options);
+        super(GROUP_PARAM, nodeId, options);
     }
 
 
@@ -39379,7 +39379,7 @@ extends GOperator
 
     constructor(nodeId, options)
     {
-        super(ITEMS, nodeId, options);
+        super(GROUP_PARAM, nodeId, options);
     }
 
 
@@ -51542,6 +51542,380 @@ extends EventTarget
 }
 
 
+// class   InputProxy
+// extends EventTarget
+// {
+//     input = null;
+
+
+//     types = []; // an input can accept multiple types
+
+
+//     _node  = null; get node () { return this._param ? this._param.node : this._node; }
+//     _param = null; get param() { return this._param; }
+
+
+//     get id()   
+//     { 
+//         return this.node
+//              ? this.node.getInputId(this)
+//              : this.param
+//                ? this.param.id
+//                : '';     
+//     }
+    
+//     get index() { return this.node.inputs.indexOf(this); }
+
+    
+//     colorLight;
+//     colorDark;
+
+//     wireColor;
+
+    
+//     div;
+//     hitbox;
+//     wireBall;
+
+
+//     measureData = { divBounds: new Rect(0, 0, 0, 0) };
+
+
+//     _connectedOutput = null;
+    
+//     get connectedOutput() { return this.input._connectedOutput; }
+//     set connectedOutput(output)
+//     {
+//         if (this.input._connectedOutput)
+//         {
+//             this.input                 .dispatchEvent(new CustomEvent('disconnect', { detail: { input:  this.input   }}));
+//             this.input._connectedOutput.dispatchEvent(new CustomEvent('disconnect', { detail: { output: output }}));
+//         }
+
+//         this.input._connectedOutput = output;
+
+//         if (this.input._connectedOutput)
+//         {
+//             this.input.dispatchEvent(new CustomEvent('connect', { detail: { output: output, input: this.input }}));
+//             output.dispatchEvent(new CustomEvent('connect', { detail: { output: output, input: this.input }}));
+//         }
+//     }
+
+
+//     get connected() { return this.input.connectedOutput != null; }
+
+
+//     canConnect         = true; // all connections master switch for minimum zoom
+//     canAutoConnect     = true;
+//     outputMustBeCached = false;
+
+
+//     connection         = null;
+           
+//     connecting         = false;
+//     mouseOver          = false;
+
+//     overFactor         = 1.7;
+           
+    
+//     initialSeed        = 0;
+//     currentSeed        = 0;
+       
+       
+//     isNew              = false; // this indicates that the input is the empty "new" input of a variable node
+
+
+//     getValuesForUndo; // function pointer, return array of [index,value] tuples
+
+//     getBackInitValue   = null;
+    
+//     feedback           = false; // sends data back to the output
+
+
+
+//     constructor(input)//types, getValuesForUndo = null, getBackInitValue = null)
+//     {
+//         super();
+        
+
+//         this.types            = [...input.types];
+//         this.getValuesForUndo = input.getValuesForUndo;
+//         this.getBackInitValue = input.getBackInitValue;
+
+
+//         this.div              = createDiv('input');
+//         this.hitbox           = createDiv('inputHitbox');
+//         this.wireBall         = createDiv('inputBall');
+        
+//         this.div.input        = this;
+        
+        
+//         this.colorLight       = [0, 0, 0, 1];
+//         this.colorDark        = [1, 1, 1, 1];
+
+//         this.wireColor        = rgbFromType(this.types[0], true);
+
+        
+//         this.div.appendChild(this.hitbox);
+//         this.div.appendChild(this.wireBall);
+
+
+                
+//         this.hitbox.addEventListener('pointerenter', e => 
+//         {
+//             if (!this.canReact(e))
+//                 return;
+
+
+//             if (graphView.headerInput)
+//             {
+//                 graphView.headerInput.updateControl();
+//                 graphView.headerInput = null;
+//                 //console.log('headerInput = ', graphView.headerInput);
+//             }
+
+            
+//             let savedInput = 
+//                 graphView.savedConn
+//                 ? graphView.savedConn.input
+//                 : null;
+
+                
+//             this.mouseOver = true;
+//             this.updateControl();
+
+
+//             const tc = graphView.tempConn;
+
+//             if (   tc
+//                 && tc.output
+//                 && this.canConnectFrom(tc.output)
+//                 && (  !this.connected
+//                     || this.connectedOutput != tc.output
+//                     || this == savedInput))
+//             {
+//                 const rect = boundingRect(this.div);
+//                 const loop = tc.output.node.isOrFollows(this.node);
+
+//                 if (!loop)
+//                 {
+//                     tc.wire.inputPos = point(
+//                         rect.x + rect.w/2,
+//                         rect.y + rect.h/2 - getTopHeight());
+//                 }
+
+//                 graphView.overInput = !loop ? this : null;
+//                 this.node.inputs.forEach(i => i.updateControl());
+//             }
+//             else if (!tc
+//                    ||    tc.output
+//                       && this.canConnectFrom(tc.output))
+//                 graphView.overInput = this;
+//         });
+
+        
+
+//         this.hitbox.addEventListener('pointerdown', e => 
+//         { 
+//             if (!this.canReact(e)) 
+//                 return false; 
+//         });
+
+
+
+//         this.hitbox.addEventListener('pointerleave', e => 
+//         {
+//             this.endConnection();
+//         });
+//     }
+
+
+
+//     endConnection()
+//     {
+//         graphView.overInput = null;
+
+//         this.mouseOver = false;
+//         this.updateControl();
+
+//         if (   graphView.tempConn
+//             && graphView.tempConn.output)
+//             graphView.tempConn.wire.inputPos = point_NaN;
+//     }
+
+
+
+//     canReact(e)
+//     {
+//         if (   settings.enableZoomedOutParams
+//             || graph.currentPage.zoom > settings.minZoomForParams)
+//             return true;
+
+//         e.preventDefault();
+//         e.stopPropagation();
+
+//         forwardEvent(e, this.node ? this.node.header : this.param.node.header);
+
+//         return false;
+//     }
+
+
+
+//     updateMeasureData()
+//     {
+//         this.measureData = 
+//         {
+//             divBounds: boundingRect(this.div)
+//         };
+//     }
+
+
+    
+//     // updateColor()
+//     // {
+//     //     this.colorDark = rgbFromTypeMode(
+//     //         !isEmpty(this.types) 
+//     //         ? this.types[0] 
+//     //         : NUMBER_VALUE, 
+//     //         true);
+
+//     //     this.colorLight = rgbFromTypeMode(
+//     //         !isEmpty(this.types) 
+//     //         ? this.types[0] 
+//     //         : NUMBER_VALUE, 
+//     //         false);
+//     // }
+
+
+
+//     updateControl()
+//     {
+//         const tc = graphView.tempConn;
+
+//         const mouseOver =
+//                this.mouseOver
+//             && !(   tc 
+//                  && tc.input)
+//             && !(   tc
+//                  && tc.output
+//                  && (  !this.canConnectFrom(tc.output)
+//                      || tc.output.node.isOrFollows(this.node)));
+
+//         const color = 
+//                this.param
+//             && this.param.type != COLOR_VALUE
+//             && this.param.type !=  FILL_VALUE
+//             ? rgb_a(rgbFromType(this.param.type, true), 0.5)
+//             : (darkMode
+//                ? this.colorDark
+//                : this.colorLight);
+
+//         const colorStyle = 
+//             rgba2style(rgb_a(
+//                 color,
+//                 mouseOver 
+//                 ? (tc ? tc.wire.color : Math.min(color[3] * this.overFactor, 1))
+//                 : color[3]));
+
+
+//         const isConnected =
+//                this.connected
+//             ||     tc
+//                && (   tc.input == this
+//                    ||    graphView.overInput == this
+//                       && !tc.input)
+//                && !(    tc.output
+//                     && !this.canConnectFrom(tc.output));
+
+//         this.div.style.transform = 
+//               'translateX(' + (isConnected ? -1 : 0) + 'px)'
+//             + 'translateY(-50%)';
+        
+//         this.div.style.width                = (isConnected ? 8 : 6) + 'px';
+//         this.div.style.height               = (isConnected ? 8 : 6) + 'px';
+//         this.div.style.borderRadius         = (isConnected ? 4 : 4) + 'px';
+//         this.div.style.marginBottom         = (isConnected ? 4 : 6) + 'px';
+//         this.div.style.boxShadow            = '0 0 0 1px ' + colorStyle;
+//         this.div.style.pointerEvents        = 'auto';
+
+//         this.hitbox.style.left              = isConnected ? -2 : -3;
+//         this.hitbox.style.top               = isConnected ? -2 : -3;
+
+//         this.wireBall.style.left            = '1px';
+//         this.wireBall.style.top             = 'calc(50% - 3px)';
+
+//         this.wireBall.style.backgroundColor = [255, 0, 255];
+
+//         this.wireBall.style.zIndex          = MAX_INT32;
+
+
+//         showElement(this.wireBall, isConnected); 
+//     }
+
+
+
+//     supportsTypes(types)
+//     {
+//         return this.types.includes(ANY_TYPE)
+//              ? true
+//              : arraysIntersect(this.types, types);
+//     }
+
+
+
+//     canConnectFrom(output)
+//     {
+//         if (   output.supportsTypes([ANY_TYPE])
+//             && this.types[0] != ANY_TYPE)
+//             return false;
+
+//         if (   !this.canConnect
+//             || !this.supportsTypes(output.types))
+//             return false;
+
+//         if (    this.outputMustBeCached 
+//             && !output.node.isCached())
+//             return false;
+
+//         if (output.node.isOrFollows(this.node))
+//             return false;
+
+
+//         return true;
+//     }
+
+
+
+//     isConnectedUncached()
+//     {
+//         return  this.connected 
+//             && !this.connectedOutput.node.isCached();
+//     }
+
+
+
+//     toJsDef(gen)
+//     {
+//         let js = '';
+
+
+//         js += gen.NL + 'const ' + this.name + ' = ';
+
+//         js += 
+//             this.connected
+//             ? this.connectedOutput.toJsCode(gen)
+//             : this.param
+//                 ? this.param.toJsCode(gen)
+//                 : 'Number.NaN';
+                
+//         js += ';';
+
+
+//         return js;
+//     }
+// }
+
+
 class Output
 extends EventTarget
 {
@@ -51859,6 +52233,9 @@ extends EventTarget
 }
 
 
+
+
+
 class Connection
 {
     static nextId = 0;
@@ -51910,7 +52287,7 @@ class Connection
             this.outputOrder,
             (this.stripIdForCopy ? this.input.node.nodeId : this.input.node.id),
             (this.input.param ? this.input.param.id : this.input.index),
-            boolToString(this.output.supportsTypes(LIST_TYPES)));
+            boolToString(arraysIntersect(this.output.types, LIST_TYPES))); // not supportsTypes() here, because that allows LIST in case of ANY_TYPE
 
         this.stripIdForCopy = false;
 
@@ -52503,7 +52880,7 @@ class Wire
     
         const listType = 
                conn.output
-            && conn.output.supportsTypes(LIST_TYPES);
+            && arraysIntersect(conn.output.types, LIST_TYPES);//supportsTypes(LIST_TYPES);
     
     
         let width = 
@@ -52521,8 +52898,8 @@ class Wire
         this.curve .setAttribute('stroke-width', width * (listType ? (unknown ? 3.6 : 3.2) : (unknown ? 1.3 : 1)));
         this.curve2.setAttribute('stroke-width', width * 1.4);
 
-        this.xp1.setAttribute('stroke-width', width * (listType ? (unknown ? 3.6 : 3.2) : (unknown ? 1.3 : 1)));
-        this.xp2.setAttribute('stroke-width', width * 1.4);
+        this.xp1   .setAttribute('stroke-width', width * (listType ? (unknown ? 3.6 : 3.2) : (unknown ? 1.3 : 1)));
+        this.xp2   .setAttribute('stroke-width', width * 1.4);
     
         this.curve2.setAttribute('display', listType ? 'inline' : 'none');
     
@@ -52742,14 +53119,27 @@ class Operator
 
 
 
-    addInput(input)
+    addInput(input, assign = true)
     {
-        input._node = this;
+        if (assign)
+            input._node = this;
 
         const index = this.headerInputs.length;
 
         this.inputs.splice(index, 0, input);
         this.inputControls.insertBefore(input.div, this.inputControls.children[index]);
+    }
+
+
+
+    removeInput(input)
+    {
+        input._node = null;
+
+        removeFromArray(this.inputs, input);
+        this.inputControls.removeChild(input.div);
+
+        return input;
     }
 
 
@@ -52818,9 +53208,10 @@ class Operator
 
 
 
-    addOutput(output)
+    addOutput(output, assign = true)
     {
-        output._node = this;
+        if (assign)
+            output._node = this;
 
         this.outputs.push(output);
         this.outputControls.appendChild(output.div);
@@ -52834,6 +53225,8 @@ class Operator
 
         removeFromArray(this.outputs, output);
         this.outputControls.removeChild(output.div);
+
+        return output;
     }
 
 
@@ -63581,6 +63974,11 @@ extends OperatorBase
                    // 2 = variable header
 
 
+    groupInput  = null;
+    groupOutput = null;
+
+
+
     get groupNode() 
     { 
         return graph.currentPage.groupId != NULL
@@ -63594,7 +63992,6 @@ extends OperatorBase
     {
         super(GROUP_PARAM, 'param', 'parameter');
 
-        
         this.alwaysLoadParams = true;
 
 
@@ -63651,6 +64048,13 @@ extends OperatorBase
 
     output_genRequest(gen)
     {
+        console.log('this.groupInput =', this.groupInput);
+
+        if (   this.node.groupInput
+            && this.node.groupInput.connected)
+            return this.node.groupInput.connectedOutput.genRequest(gen);
+
+
         // 'this' is the output        
 
         gen.scope.push({
@@ -63662,12 +64066,16 @@ extends OperatorBase
         if (ignore) return request;
 
 
-        const input = this.node.inputs[0];
+        //console.assert(this.groupInput, 'missing group input');
+        const input = this.node.groupInput;
+            // this.groupInput
+            // ? this.groupInput
+            // : this.node.inputs[0];
 
 
-        request.push(input.connected ? 1 : 0);
+        request.push(input && input.connected ? 1 : 0);
 
-        if (input.connected) 
+        if (input && input.connected) 
             request.push(...pushInputOrParam(input, gen));
 
 
@@ -63723,7 +64131,7 @@ extends OperatorBase
 
         const headerStyle = rgba2style(
             rgb_a(
-                    rgbFromType(ANY_TYPE) //this.paramValue.value.isValid()
+                rgbFromType(ANY_TYPE) //this.paramValue.value.isValid()
                 ? (isDark(rgbaStripe) ? [1, 1, 1] : [0, 0, 0])
                 : colors.text, 
                 this.headerCircle.down 
@@ -63788,7 +64196,10 @@ extends OperatorBase
 
         let json = super.toJsonBase(nTab);
 
-        json += ',\n' + pos + tab + '"paramType": "' + this.paramType + '"';
+        json += ',\n' + pos + tab + '"paramType": "'     +  this.paramType                                 + '"';
+        json += ',\n' + pos + tab + '"groupNodeId": "'   + (this.groupNode   ? this.groupNode  .id : NULL) + '"';
+        json += ',\n' + pos + tab + '"groupInputId": "'  + (this.groupInput  ? this.groupInput .id : NULL) + '"';
+        json += ',\n' + pos + tab + '"groupOutputId": "' + (this.groupOutput ? this.groupOutput.id : NULL) + '"';
 
         return json;
     }
@@ -63799,8 +64210,20 @@ extends OperatorBase
     {
         super.loadParams(_node, pasting);
 
-        if (_node.paramType != undefined)
-            this.paramType = parseInt(_node.paramType);
+        let paramNodeId   = NULL,
+            paramInputId  = NULL,
+            paramOutputId = NULL;
+
+        if (_node.paramType     != undefined) this.paramType     = parseInt(_node.paramType    );
+        if (_node.groupNodeId   != undefined) this.paramNodeId   = parseInt(_node.paramNodeId  );
+        if (_node.groupInputId  != undefined) this.paramInputId  = parseInt(_node.paramInputId );
+        if (_node.groupOutputId != undefined) this.paramOutputId = parseInt(_node.paramOutputId);
+
+        if (paramNodeId != NULL)
+        {
+                 if (paramInputId  != NULL) this.paramInput  = nodeFromId(paramNodeId).inputFromId (paramInputId );
+            else if (paramOutputId != NULL) this.paramOutput = nodeFromId(paramNodeId).outputFromId(paramOutputId);
+        }
     }
 }
 
@@ -63817,7 +64240,11 @@ function input_onconnect(node)
         node. inputs[0].types =
         node.outputs[0].types = [...node.inputs[0].connectedOutput.types];
         
-        node.groupNode.addOutput(new Output([...node.inputs[0].types], node.groupNode.output_genRequest));
+        node.outputs[0].div.style.display = 'none';
+
+        node.groupNode.addOutput(node.groupOutput = new Output([...node.inputs[0].types], node.groupNode.output_genRequest));
+        node.groupOutput.paramNode = node;
+
         node.groupNode.updateNode();
     }
 }
@@ -63838,7 +64265,11 @@ function input_ondisconnect(node)
         node. inputs[0].types = [ANY_TYPE];
         node.outputs[0].types = [ANY_TYPE];
 
-        node.groupNode.removeOutput(node.groupNode.outputs[0]);
+        node.outputs[0].div.style.display = 'inline-block';
+
+        node.groupNode.removeOutput(node.groupOutput);
+        node.groupOutput.paramNode = null;
+
         node.groupNode.updateNode();
     }
 }
@@ -63853,7 +64284,11 @@ function output_onconnect(node)
             && !node.outputs[0].connected)
             node.outputs[0].types = [...node.outputs[0].connectedInputs[0].types];
 
-        node.groupNode.addInput(new Input([...node.outputs[0].types]));
+        node.inputs[0].div.style.display = 'none';
+
+        node.groupNode.addInput(node.groupInput = new Input([...node.outputs[0].types]));
+        node.groupInput.paramNode = node;
+
         node.groupNode.updateNode();
     }
 }
@@ -63871,9 +64306,11 @@ function output_ondisconnect(node)
                     || !isEmpty(n.outputs) && n.outputs[0].connected)))
             node.outputs[0].types = [ANY_TYPE];
 
-        // node.inputs[0].div.style.display = 'inline-block';
+        node.inputs[0].div.style.display = 'inline-block';
         
-        node.groupNode.removeInput(node.groupNode.outputs[0]);
+        node.groupNode.removeInput(node.groupInput);
+        node.groupInput.paramNode = null;
+
         node.groupNode.updateNode();
     }
 }
@@ -64693,10 +65130,18 @@ function getTerminalsAfterNode(node)
     let after = [];
 
 
-    for (const output of node.outputs)
+    if (node.type == GROUP_NODE)
     {
-        for (const input of output.connectedInputs)
-            pushUnique(after, getTerminalsAfterNode(input.node));
+        for (const input of node.inputs)
+            pushUnique(after, getTerminalsAfterNode(input.paramNode));
+    }
+    else
+    {
+        for (const output of node.outputs)
+        {
+            for (const input of output.connectedInputs)
+                pushUnique(after, getTerminalsAfterNode(input.node));
+        }
     }
 
 
@@ -65503,7 +65948,7 @@ extends Action
     {
         super(
             CONNECT_ACTION,
-             'CONNECT ' 
+             'CONNECT '
             + output.node.id + '.' + output.id
             + ' ' + rightArrowChar(output.supportsTypes(LIST_TYPES)) + ' '
             + input.node.id + '.' + input.id);

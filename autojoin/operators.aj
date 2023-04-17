@@ -15,7 +15,9 @@
 // these have to be added in order because of dependencies
 
 ../operators/Input.js
+../operators/InputProxy.js
 ../operators/Output.js
+../operators/OutputProxy.js
 ../operators/Connection.js
 ../operators/Wire.js
 ../operators/Operator.js

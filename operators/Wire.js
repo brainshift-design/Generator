@@ -495,7 +495,7 @@ class Wire
     
         const listType = 
                conn.output
-            && conn.output.supportsTypes(LIST_TYPES);
+            && arraysIntersect(conn.output.types, LIST_TYPES);//supportsTypes(LIST_TYPES);
     
     
         let width = 
@@ -513,8 +513,8 @@ class Wire
         this.curve .setAttribute('stroke-width', width * (listType ? (unknown ? 3.6 : 3.2) : (unknown ? 1.3 : 1)));
         this.curve2.setAttribute('stroke-width', width * 1.4);
 
-        this.xp1.setAttribute('stroke-width', width * (listType ? (unknown ? 3.6 : 3.2) : (unknown ? 1.3 : 1)));
-        this.xp2.setAttribute('stroke-width', width * 1.4);
+        this.xp1   .setAttribute('stroke-width', width * (listType ? (unknown ? 3.6 : 3.2) : (unknown ? 1.3 : 1)));
+        this.xp2   .setAttribute('stroke-width', width * 1.4);
     
         this.curve2.setAttribute('display', listType ? 'inline' : 'none');
     

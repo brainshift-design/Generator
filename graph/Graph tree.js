@@ -159,10 +159,18 @@ function getTerminalsAfterNode(node)
     let after = [];
 
 
-    for (const output of node.outputs)
+    if (node.type == GROUP_NODE)
     {
-        for (const input of output.connectedInputs)
-            pushUnique(after, getTerminalsAfterNode(input.node));
+        for (const input of node.inputs)
+            pushUnique(after, getTerminalsAfterNode(input.paramNode));
+    }
+    else
+    {
+        for (const output of node.outputs)
+        {
+            for (const input of output.connectedInputs)
+                pushUnique(after, getTerminalsAfterNode(input.node));
+        }
     }
 
 

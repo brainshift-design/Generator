@@ -12,6 +12,11 @@ extends OperatorBase
                    // 2 = variable header
 
 
+    groupInput  = null;
+    groupOutput = null;
+
+
+
     get groupNode() 
     { 
         return graph.currentPage.groupId != NULL
@@ -25,7 +30,6 @@ extends OperatorBase
     {
         super(GROUP_PARAM, 'param', 'parameter');
 
-        
         this.alwaysLoadParams = true;
 
 
@@ -82,6 +86,13 @@ extends OperatorBase
 
     output_genRequest(gen)
     {
+        console.log('this.groupInput =', this.groupInput);
+
+        if (   this.node.groupInput
+            && this.node.groupInput.connected)
+            return this.node.groupInput.connectedOutput.genRequest(gen);
+
+
         // 'this' is the output        
 
         gen.scope.push({
@@ -93,12 +104,16 @@ extends OperatorBase
         if (ignore) return request;
 
 
-        const input = this.node.inputs[0];
+        //console.assert(this.groupInput, 'missing group input');
+        const input = this.node.groupInput;
+            // this.groupInput
+            // ? this.groupInput
+            // : this.node.inputs[0];
 
 
-        request.push(input.connected ? 1 : 0);
+        request.push(input && input.connected ? 1 : 0);
 
-        if (input.connected) 
+        if (input && input.connected) 
             request.push(...pushInputOrParam(input, gen));
 
 
@@ -154,7 +169,7 @@ extends OperatorBase
 
         const headerStyle = rgba2style(
             rgb_a(
-                    rgbFromType(ANY_TYPE) //this.paramValue.value.isValid()
+                rgbFromType(ANY_TYPE) //this.paramValue.value.isValid()
                 ? (isDark(rgbaStripe) ? [1, 1, 1] : [0, 0, 0])
                 : colors.text, 
                 this.headerCircle.down 
@@ -219,7 +234,10 @@ extends OperatorBase
 
         let json = super.toJsonBase(nTab);
 
-        json += ',\n' + pos + tab + '"paramType": "' + this.paramType + '"';
+        json += ',\n' + pos + tab + '"paramType": "'     +  this.paramType                                 + '"';
+        json += ',\n' + pos + tab + '"groupNodeId": "'   + (this.groupNode   ? this.groupNode  .id : NULL) + '"';
+        json += ',\n' + pos + tab + '"groupInputId": "'  + (this.groupInput  ? this.groupInput .id : NULL) + '"';
+        json += ',\n' + pos + tab + '"groupOutputId": "' + (this.groupOutput ? this.groupOutput.id : NULL) + '"';
 
         return json;
     }
@@ -230,8 +248,20 @@ extends OperatorBase
     {
         super.loadParams(_node, pasting);
 
-        if (_node.paramType != undefined)
-            this.paramType = parseInt(_node.paramType);
+        let paramNodeId   = NULL,
+            paramInputId  = NULL,
+            paramOutputId = NULL;
+
+        if (_node.paramType     != undefined) this.paramType     = parseInt(_node.paramType    );
+        if (_node.groupNodeId   != undefined) this.paramNodeId   = parseInt(_node.paramNodeId  );
+        if (_node.groupInputId  != undefined) this.paramInputId  = parseInt(_node.paramInputId );
+        if (_node.groupOutputId != undefined) this.paramOutputId = parseInt(_node.paramOutputId);
+
+        if (paramNodeId != NULL)
+        {
+                 if (paramInputId  != NULL) this.paramInput  = nodeFromId(paramNodeId).inputFromId (paramInputId );
+            else if (paramOutputId != NULL) this.paramOutput = nodeFromId(paramNodeId).outputFromId(paramOutputId);
+        }
     }
 }
 
@@ -248,7 +278,11 @@ function input_onconnect(node)
         node. inputs[0].types =
         node.outputs[0].types = [...node.inputs[0].connectedOutput.types];
         
-        node.groupNode.addOutput(new Output([...node.inputs[0].types], node.groupNode.output_genRequest));
+        node.outputs[0].div.style.display = 'none';
+
+        node.groupNode.addOutput(node.groupOutput = new Output([...node.inputs[0].types], node.groupNode.output_genRequest));
+        node.groupOutput.paramNode = node;
+
         node.groupNode.updateNode();
     }
 }
@@ -269,7 +303,11 @@ function input_ondisconnect(node)
         node. inputs[0].types = [ANY_TYPE];
         node.outputs[0].types = [ANY_TYPE];
 
-        node.groupNode.removeOutput(node.groupNode.outputs[0]);
+        node.outputs[0].div.style.display = 'inline-block';
+
+        node.groupNode.removeOutput(node.groupOutput);
+        node.groupOutput.paramNode = null;
+
         node.groupNode.updateNode();
     }
 }
@@ -284,7 +322,11 @@ function output_onconnect(node)
             && !node.outputs[0].connected)
             node.outputs[0].types = [...node.outputs[0].connectedInputs[0].types];
 
-        node.groupNode.addInput(new Input([...node.outputs[0].types]));
+        node.inputs[0].div.style.display = 'none';
+
+        node.groupNode.addInput(node.groupInput = new Input([...node.outputs[0].types]));
+        node.groupInput.paramNode = node;
+
         node.groupNode.updateNode();
     }
 }
@@ -302,9 +344,11 @@ function output_ondisconnect(node)
                     || !isEmpty(n.outputs) && n.outputs[0].connected)))
             node.outputs[0].types = [ANY_TYPE];
 
-        // node.inputs[0].div.style.display = 'inline-block';
+        node.inputs[0].div.style.display = 'inline-block';
         
-        node.groupNode.removeInput(node.groupNode.outputs[0]);
+        node.groupNode.removeInput(node.groupInput);
+        node.groupInput.paramNode = null;
+
         node.groupNode.updateNode();
     }
 }
