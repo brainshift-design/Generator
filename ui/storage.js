@@ -351,21 +351,46 @@ function loadConnectionsAsync(_nodes, _conns, loadedNodes, setProgress)
         });
         
 
+        // first resolve group parameter connections,
+        // as they create inputs and outputs in other nodes
+        
         restartLoadingTimer();
 
 
+        const _paramConns = _conns.filter(c => 
+               nodeFromId(c. inputNodeId).type == GROUP_PARAM
+            || nodeFromId(c.outputNodeId).type == GROUP_PARAM);
+
+        const _otherConns = _conns.filter(c => !_paramConns.includes(c));
+
+        
         const chunkSize = 10; // connections
-        for (let i = 0; i < _conns.length; i += chunkSize)
+
+        for (let i = 0; i < _paramConns.length; i += chunkSize)
         {
             promise = promise.then(() => 
             {
                 const res = resolveConnections(
                     _nodes,
-                    _conns, 
+                    _paramConns, 
                     i, 
-                    Math.min(i + chunkSize, _conns.length)); // exclusive
+                    Math.min(i + chunkSize, _paramConns.length)); // exclusive
 
-                setProgress((_nodes.length + i) / nozero(_nodes.length + _conns.length * 19/20)); // the proportion is arbitrary
+                return res;
+            });
+        }
+
+        for (let i = 0; i < _otherConns.length; i += chunkSize)
+        {
+            promise = promise.then(() => 
+            {
+                const res = resolveConnections(
+                    _nodes,
+                    _otherConns, 
+                    i, 
+                    Math.min(i + chunkSize, _otherConns.length)); // exclusive
+
+                setProgress((_nodes.length + i) / nozero(_nodes.length + _otherConns.length * 19/20)); // the proportion is arbitrary
                 return res;
             });
         }
