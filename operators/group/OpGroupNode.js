@@ -23,37 +23,33 @@ extends OperatorBase
 
     output_genRequest(gen)
     {
+        if (   this.paramNode
+            && this.paramNode.inputs[0].connected)
+            return this.paramNode.inputs[0].connectedOutput.genRequest(gen);
+
+
         // 'this' is the output        
 
-        return this.node.genRequest(gen);
-    }
-
-
-
-    genRequest(gen)
-    {
-        // 'this' is the node
-
         gen.scope.push({
-            nodeId:  this.id, 
+            nodeId:  this.node.id, 
             paramId: NULL }); 
 
 
-        const [request, ignore] = this.genRequestStart(gen);
+        const [request, ignore] = this.node.genRequestStart(gen);
         if (ignore) return request;
 
 
-        // const input = this.inputs[0];
+        const input = this.paramNode.inputs[0];//this.inputs[0];
 
 
-        // request.push(input.connected ? 1 : 0);
+        request.push(input.connected ? 1 : 0);
 
-        // if (input.connected) 
-        //     request.push(...pushInputOrParam(input, gen));
+        if (input.connected) 
+            request.push(...pushInputOrParam(input, gen));
 
 
         gen.scope.pop();
-        pushUnique(gen.passedNodes, this);
+        pushUnique(gen.passedNodes, this.node);
 
         return request;
     }

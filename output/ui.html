@@ -8049,8 +8049,8 @@ const SHAPE_TYPES =
 // ];
 
 
-const GROUP_NODE     = 'GNODE';
-const GROUP_PARAM    = 'GPARAM';
+const GROUP_NODE    = 'GNODE';
+const GROUP_PARAM   = 'GPARAM';
 
 
 const GROUP_TYPES =
@@ -8060,21 +8060,21 @@ const GROUP_TYPES =
 ];
 
 
-const COMMENT        = 'CMNT';
+const COMMENT       = 'CMNT';
 
 
-const ACTIVE         = 'ACT';
-const BEFORE_ACTIVE  = 'BEF';
-const DISABLED       = 'DIS';
-const NOCACHE        = 'NOC';
+const ACTIVE        = 'ACT';
+const BEFORE_ACTIVE = 'BEF';
+const DISABLED      = 'DIS';
+const NOCACHE       = 'NOC';
  
-const PARAM          = 'PARAM'; // nodeId paramId
+const PARAM         = 'PARAM'; // nodeId paramId
  
 
-const LOG            = 'LOG';
+const LOG           = 'LOG';
 
 
-const GRAPH          = 'GRAPH';
+const GRAPH         = 'GRAPH';
 
 
 const MATH_OPS = 
@@ -30326,8 +30326,8 @@ const SHAPE_TYPES =
 // ];
 
 
-const GROUP_NODE     = 'GNODE';
-const GROUP_PARAM    = 'GPARAM';
+const GROUP_NODE    = 'GNODE';
+const GROUP_PARAM   = 'GPARAM';
 
 
 const GROUP_TYPES =
@@ -30337,21 +30337,21 @@ const GROUP_TYPES =
 ];
 
 
-const COMMENT        = 'CMNT';
+const COMMENT       = 'CMNT';
 
 
-const ACTIVE         = 'ACT';
-const BEFORE_ACTIVE  = 'BEF';
-const DISABLED       = 'DIS';
-const NOCACHE        = 'NOC';
+const ACTIVE        = 'ACT';
+const BEFORE_ACTIVE = 'BEF';
+const DISABLED      = 'DIS';
+const NOCACHE       = 'NOC';
  
-const PARAM          = 'PARAM'; // nodeId paramId
+const PARAM         = 'PARAM'; // nodeId paramId
  
 
-const LOG            = 'LOG';
+const LOG           = 'LOG';
 
 
-const GRAPH          = 'GRAPH';
+const GRAPH         = 'GRAPH';
 
 
 const MATH_OPS = 
@@ -63850,37 +63850,33 @@ extends OperatorBase
 
     output_genRequest(gen)
     {
+        if (   this.paramNode
+            && this.paramNode.inputs[0].connected)
+            return this.paramNode.inputs[0].connectedOutput.genRequest(gen);
+
+
         // 'this' is the output        
 
-        return this.node.genRequest(gen);
-    }
-
-
-
-    genRequest(gen)
-    {
-        // 'this' is the node
-
         gen.scope.push({
-            nodeId:  this.id, 
+            nodeId:  this.node.id, 
             paramId: NULL }); 
 
 
-        const [request, ignore] = this.genRequestStart(gen);
+        const [request, ignore] = this.node.genRequestStart(gen);
         if (ignore) return request;
 
 
-        // const input = this.inputs[0];
+        const input = this.paramNode.inputs[0];//this.inputs[0];
 
 
-        // request.push(input.connected ? 1 : 0);
+        request.push(input.connected ? 1 : 0);
 
-        // if (input.connected) 
-        //     request.push(...pushInputOrParam(input, gen));
+        if (input.connected) 
+            request.push(...pushInputOrParam(input, gen));
 
 
         gen.scope.pop();
-        pushUnique(gen.passedNodes, this);
+        pushUnique(gen.passedNodes, this.node);
 
         return request;
     }
@@ -64048,7 +64044,7 @@ extends OperatorBase
 
     output_genRequest(gen)
     {
-        console.log('this.groupInput =', this.groupInput);
+        // console.log('this.groupInput =', this.groupInput);
 
         if (   this.node.groupInput
             && this.node.groupInput.connected)
@@ -65140,6 +65136,14 @@ function getTerminalsAfterNode(node)
     {
         for (const input of node.inputs)
             pushUnique(after, getTerminalsAfterNode(input.paramNode));
+    }
+    else if (node.type == GROUP_PARAM)
+    {
+        for (const output of node.groupNode.outputs)
+        {
+            for (const input of output.connectedInputs)
+                pushUnique(after, getTerminalsAfterNode(input.node));
+        }
     }
     else
     {

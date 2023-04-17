@@ -86,7 +86,7 @@ extends OperatorBase
 
     output_genRequest(gen)
     {
-        console.log('this.groupInput =', this.groupInput);
+        // console.log('this.groupInput =', this.groupInput);
 
         if (   this.node.groupInput
             && this.node.groupInput.connected)

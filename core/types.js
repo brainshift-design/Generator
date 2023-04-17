@@ -256,8 +256,8 @@ const SHAPE_TYPES =
 // ];
 
 
-const GROUP_NODE     = 'GNODE';
-const GROUP_PARAM    = 'GPARAM';
+const GROUP_NODE    = 'GNODE';
+const GROUP_PARAM   = 'GPARAM';
 
 
 const GROUP_TYPES =
@@ -267,21 +267,21 @@ const GROUP_TYPES =
 ];
 
 
-const COMMENT        = 'CMNT';
+const COMMENT       = 'CMNT';
 
 
-const ACTIVE         = 'ACT';
-const BEFORE_ACTIVE  = 'BEF';
-const DISABLED       = 'DIS';
-const NOCACHE        = 'NOC';
+const ACTIVE        = 'ACT';
+const BEFORE_ACTIVE = 'BEF';
+const DISABLED      = 'DIS';
+const NOCACHE       = 'NOC';
  
-const PARAM          = 'PARAM'; // nodeId paramId
+const PARAM         = 'PARAM'; // nodeId paramId
  
 
-const LOG            = 'LOG';
+const LOG           = 'LOG';
 
 
-const GRAPH          = 'GRAPH';
+const GRAPH         = 'GRAPH';
 
 
 const MATH_OPS = 
