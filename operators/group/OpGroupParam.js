@@ -305,6 +305,9 @@ function input_ondisconnect(node)
 
         node.outputs[0].div.style.display = 'inline-block';
 
+        if (node.groupOutput.connected)
+            node.groupOutput.connectedInputs.forEach(i => uiDisconnect(i));
+            
         node.groupNode.removeOutput(node.groupOutput);
         node.groupOutput.paramNode = null;
 
@@ -346,6 +349,9 @@ function output_ondisconnect(node)
 
         node.inputs[0].div.style.display = 'inline-block';
         
+        if (node.groupInput.connected)
+            uiDisconnect(node.groupInput);
+    
         node.groupNode.removeInput(node.groupInput);
         node.groupInput.paramNode = null;
 
