@@ -195,8 +195,8 @@ extends OperatorWithValue
             case 0:
                 if (time >= length)
                 {
+                    time = length;
                     this.playing = false;
-                    return;
                 }
                 
                 break;
@@ -221,6 +221,8 @@ extends OperatorWithValue
             new NumberValue(
                 time, 
                 this.paramTime.controls[0].decimals),
-            true);
+            false);
+
+        pushUpdateFromParam(null, [this], this.paramTime);
     }
 }
