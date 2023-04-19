@@ -1,7 +1,7 @@
 class GGroupNode
 extends GOperator
 {
-    // input = null;
+    input = null;
 
 
 
@@ -18,8 +18,8 @@ extends GOperator
 
         copy.copyBase(this);
 
-        // if (this.input) copy.input = this.input.copy();
-        // if (this.value) copy.value = this.value.copy();
+        if (this.input) copy.input = this.input.copy();
+        if (this.value) copy.value = this.value.copy();
 
         return copy;
     }
@@ -28,17 +28,17 @@ extends GOperator
 
     async eval(parse)
     {
-        if (this.valid)//isCached())
+        if (this.isCached())
             return this;
 
 
-        //this.value = NullValue;
-        //     this.input
-        //     ? (await this.input.eval(parse)).toValue()
-        //     : NullValue;
+        this.value = NullValue;
+            this.input
+            ? (await this.input.eval(parse)).toValue()
+            : NullValue;
 
 
-        genPushUpdateValue(parse, this.nodeId, '', NullValue);
+        genPushUpdateValue(parse, this.nodeId, 'value', this.value);
         
         
         this.validate();

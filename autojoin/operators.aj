@@ -51,6 +51,7 @@
 ../operators/number/OpInterpolate.js
 ../operators/number/OpNumberToText.js
 ../operators/number/OpSolve.js
+../operators/number/OpAnimate.js
 
 ../operators/number/arithmetic/OpMath.js
 ../operators/number/arithmetic/OpArithmetic.js

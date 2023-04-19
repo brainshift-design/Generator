@@ -7846,6 +7846,7 @@ const NUMBER_RANDOM           = 'RAND';
 const NUMBER_INTERPOLATE      = 'LERP'; 
 const NUMBER_TO_TEXT          = 'N2T';
 const NUMBER_SOLVE            = 'SOLVE';
+const NUMBER_ANIMATE          = 'ANIM';
 
 const NUMBER_MATH             = 'MATH';  
 const NUMBER_ADD              = 'ADD';   
@@ -12085,6 +12086,9 @@ extends GNumberType
             && this.target .isCached();
     }
 }
+
+
+
 
 
 
@@ -17036,7 +17040,7 @@ extends GObjectBase
 class GGroupNode
 extends GOperator
 {
-    // input = null;
+    input = null;
 
 
 
@@ -17053,8 +17057,8 @@ extends GOperator
 
         copy.copyBase(this);
 
-        // if (this.input) copy.input = this.input.copy();
-        // if (this.value) copy.value = this.value.copy();
+        if (this.input) copy.input = this.input.copy();
+        if (this.value) copy.value = this.value.copy();
 
         return copy;
     }
@@ -17063,17 +17067,17 @@ extends GOperator
 
     async eval(parse)
     {
-        if (this.valid)//isCached())
+        if (this.isCached())
             return this;
 
 
-        //this.value = NullValue;
-        //     this.input
-        //     ? (await this.input.eval(parse)).toValue()
-        //     : NullValue;
+        this.value = NullValue;
+            this.input
+            ? (await this.input.eval(parse)).toValue()
+            : NullValue;
 
 
-        genPushUpdateValue(parse, this.nodeId, '', NullValue);
+        genPushUpdateValue(parse, this.nodeId, 'value', this.value);
         
         
         this.validate();
@@ -17215,7 +17219,7 @@ const settings =
     showPages:                     false,
     showAllColorSpaces:            false,
     showBoolValues:                true,
-    showOperationResults:          true,
+    showOperationResults:          false,
     showClearUndoWarning:          true,
     showDebugMenu:                 false,
         
@@ -18886,20 +18890,20 @@ function genParseGroupNode(parse)
     const group = new GGroupNode(nodeId, options);
 
 
-    // let nInputs = -1;
+    let nInputs = -1;
     
-    // if (!ignore)
-    // {
-    //     nInputs = parseInt(parse.move());
-    //     console.assert(nInputs == 0 || nInputs == 1, 'nInputs must be [0, 1]');
-    // }
+    if (!ignore)
+    {
+        nInputs = parseInt(parse.move());
+        console.assert(nInputs == 0 || nInputs == 1, 'nInputs must be [0, 1]');
+    }
 
 
     if (parse.settings.logRequests) 
-        logReq(group, parse, ignore);//, nInputs);
+        logReq(group, parse, ignore, nInputs);
 
 
-    if (ignore) 
+    if (ignore)
     {
         genParseNodeEnd(parse, group);
         return parse.parsedNodes.find(n => n.nodeId == nodeId);
@@ -18909,8 +18913,8 @@ function genParseGroupNode(parse)
     parse.nTab++;
 
 
-    // if (nInputs == 1)
-    //     cache.input = genParse(parse);
+    if (nInputs == 1)
+        cache.input = genParse(parse);
 
 
     parse.nTab--;
@@ -30123,6 +30127,7 @@ const NUMBER_RANDOM           = 'RAND';
 const NUMBER_INTERPOLATE      = 'LERP'; 
 const NUMBER_TO_TEXT          = 'N2T';
 const NUMBER_SOLVE            = 'SOLVE';
+const NUMBER_ANIMATE          = 'ANIM';
 
 const NUMBER_MATH             = 'MATH';  
 const NUMBER_ADD              = 'ADD';   
@@ -34362,6 +34367,9 @@ extends GNumberType
             && this.target .isCached();
     }
 }
+
+
+
 
 
 
@@ -39313,7 +39321,7 @@ extends GObjectBase
 class GGroupNode
 extends GOperator
 {
-    // input = null;
+    input = null;
 
 
 
@@ -39330,8 +39338,8 @@ extends GOperator
 
         copy.copyBase(this);
 
-        // if (this.input) copy.input = this.input.copy();
-        // if (this.value) copy.value = this.value.copy();
+        if (this.input) copy.input = this.input.copy();
+        if (this.value) copy.value = this.value.copy();
 
         return copy;
     }
@@ -39340,17 +39348,17 @@ extends GOperator
 
     async eval(parse)
     {
-        if (this.valid)//isCached())
+        if (this.isCached())
             return this;
 
 
-        //this.value = NullValue;
-        //     this.input
-        //     ? (await this.input.eval(parse)).toValue()
-        //     : NullValue;
+        this.value = NullValue;
+            this.input
+            ? (await this.input.eval(parse)).toValue()
+            : NullValue;
 
 
-        genPushUpdateValue(parse, this.nodeId, '', NullValue);
+        genPushUpdateValue(parse, this.nodeId, 'value', this.value);
         
         
         this.validate();
@@ -39492,7 +39500,7 @@ const settings =
     showPages:                     false,
     showAllColorSpaces:            false,
     showBoolValues:                true,
-    showOperationResults:          true,
+    showOperationResults:          false,
     showClearUndoWarning:          true,
     showDebugMenu:                 false,
         
@@ -48692,14 +48700,20 @@ function checkControlVisible(param, control)
 
 
 
-function createParamFromType(type, hasOutput = false)
+function createParamFromType(type, options = {})
 {
-         if (NUMBER_TYPES.includes(type)) return new NumberParam('value', '', false, false, hasOutput);
-    else if (  TEXT_TYPES.includes(type)) return new   TextParam('value', '',        false, hasOutput);
-    else if ( COLOR_TYPES.includes(type)) return new  ColorParam('value', '', false, false, hasOutput);
-    else if (  FILL_TYPES.includes(type)) return new   FillParam('value', '', false, false, hasOutput);
-    else if (STROKE_TYPES.includes(type)) return new StrokeParam('value', '', false, false, hasOutput);
-    else if (  LIST_TYPES.includes(type)) return new   ListParam('value', '', false, false, hasOutput);
+    const id        = options.id        != undefined ? options.id        : 'value';
+    const name      = options.name      != undefined ? options.name      : '';
+    const showName  = options.showName  != undefined ? options.showName  : false;
+    const hasInput  = options.hasInput  != undefined ? options.hasInput  : false;
+    const hasOutput = options.hasOutput != undefined ? options.hasOutput : false;
+
+         if (NUMBER_TYPES.includes(type)) return new NumberParam(id, name, showName, hasInput, hasOutput);
+    else if (  TEXT_TYPES.includes(type)) return new   TextParam(id, name,           hasInput, hasOutput);
+    else if ( COLOR_TYPES.includes(type)) return new  ColorParam(id, name, showName, hasInput, hasOutput);
+    else if (  FILL_TYPES.includes(type)) return new   FillParam(id, name, showName, hasInput, hasOutput);
+    else if (STROKE_TYPES.includes(type)) return new StrokeParam(id, name, showName, hasInput, hasOutput);
+    else if (  LIST_TYPES.includes(type)) return new   ListParam(id, name, showName, hasInput, hasOutput);
 }
 
 
@@ -48817,7 +48831,7 @@ extends Parameter
             && this.input.connected)
             request.push(...pushInputOrParam(this.input, gen));
 
-        else request.push( 
+        else request.push(
             NUMBER_VALUE, 
             new NumberValue(
                 this.controls[0].value, 
@@ -53272,6 +53286,13 @@ class Operator
 
 
 
+    paramFromId(id)
+    {
+        return this.params.find(p => p.id == id);
+    }
+
+
+
     addParam(param, volatile = false)
     {
         param._node    = this;
@@ -55175,7 +55196,7 @@ Operator.prototype.updateHeaderLabel = function()
 Operator.prototype.updateHeaderLabelText = function()
 {
     this.labelText.innerHTML = 
-          (settings.showNodeId ? this.id/*.replaceAll('/', ' / ')*/ : this.name)
+          (settings.showNodeId ? '/'+this.nodeId : this.name)
         + (this.active && this.showActiveArrow ? (settings.showNodeId ? ' ' : '  ') + '‣' : '');
 
     this.labelText.style.fontFamily = 
@@ -55817,7 +55838,7 @@ extends ResizableBase
     {
         super(type, id, name, defWidth, progressBar);
 
-        this.paramValue = createParamFromType(type);
+        this.paramValue          = createParamFromType(type);
         this.paramValue.isResult = true;
     }
 
@@ -57986,6 +58007,58 @@ extends OperatorWithValue
             //  : 'Number.NaN';
     }
 }
+
+
+// class   OpAnimate
+// extends OperatorBase
+// {
+//     paramFrom;
+//     paramTo
+//     paramDuration;
+//     paramType;
+
+
+
+//     constructor()
+//     {
+//         super(NUMBER_ANIMATE, 'anim', 'animate');
+
+//         this.cached = false;
+        
+//         this.addOutput(new Output([NUMBER_VALUE], this.output_genRequest));
+
+//         this.addParam(this.paramFrom = new NumberParam('from', 'from', true, true, true,   0));
+//         this.addParam(this.paramTo   = new NumberParam('to',   'to',   true, true, true, 255));
+
+//         this.paramSeed.controls[0].allowEditDecimals = false;
+//         this.paramSeed.isDefault = () => false;
+//     }
+
+
+
+//     output_genRequest(gen)
+//     {
+//         // 'this' is the output
+
+//         gen.scope.push({
+//             nodeId:  this.node.id, 
+//             paramId: NULL });
+
+//         const [request, ignore] = this.node.genRequestStart(gen);
+//         if (ignore) return request;
+
+        
+//         request.push(...this.node.paramSeed.genRequest(gen));
+//         request.push(...this.node.paramMin .genRequest(gen));
+//         request.push(...this.node.paramMax .genRequest(gen));
+
+
+//         gen.scope.pop();
+//         pushUnique(gen.passedNodes, this.node);
+
+//         return request;
+//     }
+// }
 
 
 class   OpMath
@@ -63832,11 +63905,6 @@ extends OperatorBase
     {
         super(GROUP_NODE, 'group', 'group');
 
-        //this.inert = true;
-
-        
-        // this.addInput (new Input(LIST_TYPES));
-        // this.addOutput(new Output([LIST_VALUE], this.output_genRequest));
 
         this.alwaysLoadParams = true;
         this.alwaysSaveParams = true;
@@ -63854,7 +63922,7 @@ extends OperatorBase
             && this.paramNode.inputs[0].connected)
             return this.paramNode.inputs[0].connectedOutput.genRequest(gen);
 
-
+            
         // 'this' is the output        
 
         gen.scope.push({
@@ -63866,13 +63934,15 @@ extends OperatorBase
         if (ignore) return request;
 
 
-        const input = this.paramNode.inputs[0];//this.inputs[0];
+        request.push(0)
+
+        // const input = this.this.inputs[0];
 
 
-        request.push(input.connected ? 1 : 0);
+        // request.push(input.connected ? 1 : 0);
 
-        if (input.connected) 
-            request.push(...pushInputOrParam(input, gen));
+        // if (input.connected) 
+        //     request.push(...pushInputOrParam(input, gen));
 
 
         gen.scope.pop();
@@ -63883,76 +63953,34 @@ extends OperatorBase
 
 
 
-    // updateValues(requestId, actionId, updateParamId, paramIds, values)
-    // {
-    //     //logFunction('OpItems.updateValues()');
+    genRequest(gen) // for when there are no header outputs
+    {
+        // 'this' is the node
 
-    //     const oldParams = [...this.params];
-    //     //console.log('oldParams =', [...oldParams]);
-
-    //     const action = actionFromId(actionId);
-
-    //     if (action)
-    //         pushUnique(oldParams, action.oldOutputParams);
-
-    //     // console.log('action =', action);
-
-    //     const oldParamConns = this.getAllParamConnections();
+        gen.scope.push({
+            nodeId:  this.id, 
+            paramId: null });
 
 
-    //     this.disconnectAllParams(true);
-    //     this.removeAllParams();
+        const [request, ignore] = this.genRequestStart(gen);
+        if (ignore) return request;
 
 
-    //     if (   paramIds.length > 1
-    //         ||    paramIds.length == 1 
-    //            && paramIds[0] != '')
-    //     {
-    //         for (let i = 0; i < values.length; i++) 
-    //         {
-    //             const value = values[i];
-    //             const id    = 'item' + i;
+        gen.scope.pop();
+        pushUnique(gen.passedNodes, this);
 
-    //             const param = oldParams.find(p => 
-    //                    p.id == id
-    //                 && p.type == value.type);
-
-    //             if (   param
-    //                 && paramIds.includes(param.id)) 
-    //             {
-    //                 this.addParam(param, true);
-
-    //                 const _conn = oldParamConns.find(c =>
-    //                        c.outputNodeId == this.id
-    //                     && c.outputId     == param.id);
-
-    //                 if (_conn)
-    //                 {
-    //                     const conn = uiConnect(param.output, nodeFromId(_conn.inputNodeId).inputFromId(_conn.inputId));
-    //                     uiSaveConn(conn);
-    //                 }
-    //             }
-    //             else       
-    //                 this.createAndAddParamByType(value.type, id, false, false, true);
-    //         }
-    //     }
-
-    //     else if (isEmpty(paramIds))
-    //         this.removeAllParams();
-    
-        
-    //     super.updateValues(requestId, actionId, updateParamId, paramIds, values);
-    // }
+        return request;
+    }
 
 
 
-    // updateParams()
-    // {
-    //     for (const param of this.params)
-    //         param.enableControlText(false);
+    updateParams()
+    {
+        for (const param of this.params)
+            param.enableControlText(param.input ? true : false);
 
-    //     this.updateParamControls();
-    // }
+        this.updateParamControls();
+    }
 }
 
 
@@ -63970,9 +63998,9 @@ extends OperatorBase
                    // 2 = variable header
 
 
+    groupParam  = null;
     groupInput  = null;
     groupOutput = null;
-
 
 
     get groupNode() 
@@ -63991,7 +64019,7 @@ extends OperatorBase
         this.alwaysLoadParams = true;
 
 
-        this.addInput (new Input([ANY_TYPE]));
+        this.addInput (new Input ([ANY_TYPE]));
         this.addOutput(new Output([ANY_TYPE], this.output_genRequest));
 
 
@@ -64009,8 +64037,24 @@ extends OperatorBase
         this.headerCircle.over = false;
         this.headerCircle.down = false;
 
-        this.headerCircle.addEventListener('pointerenter', e => { this.headerCircle.over = true;  this.updateHeader(); });
-        this.headerCircle.addEventListener('pointerleave', e => { this.headerCircle.over = false; this.updateHeader(); });
+
+        this.headerCircle.addEventListener('pointerenter', e => 
+        { 
+            if (   this. inputs[0].connected
+                || this.outputs[0].connected)
+                return;
+
+            this.headerCircle.over = true;  
+            this.updateHeader(); 
+        });
+
+
+        this.headerCircle.addEventListener('pointerleave', e => 
+        { 
+            this.headerCircle.over = false; 
+            this.updateHeader(); 
+        });
+
 
         this.headerCircle.addEventListener('pointerdown',  e => 
         { 
@@ -64020,10 +64064,14 @@ extends OperatorBase
             {
                 hideAllMenus();
 
-                let paramType = this.paramType + 1;
-                if (paramType == 3) paramType = 0;
+                if (   !this. inputs[0].connected
+                    && !this.outputs[0].connected)
+                {
+                    let paramType = this.paramType + 1;
+                    if (paramType == 2 /*3*/) paramType = 0;
 
-                actionManager.do(new ToggleParamHeaderAction(this.id, paramType));
+                    actionManager.do(new ToggleParamHeaderAction(this.id, paramType));
+                }
             }
             else
                 e.preventDefault();
@@ -64046,9 +64094,14 @@ extends OperatorBase
     {
         // console.log('this.groupInput =', this.groupInput);
 
-        if (   this.node.groupInput
-            && this.node.groupInput.connected)
-            return this.node.groupInput.connectedOutput.genRequest(gen);
+        if (   this.node.groupInput)
+//            && this.node.groupInput.connected)
+        {
+            if (this.node.groupParam)
+                return this.node.groupParam.genRequest(gen);
+            else
+                return this.node.groupInput.connectedOutput.genRequest(gen);
+        }
 
 
         // 'this' is the output        
@@ -64083,6 +64136,17 @@ extends OperatorBase
 
 
 
+    // updateValues(requestId, actionId, updateParamId, paramIds, values)
+    // {
+    //     const value = values[paramIds.findIndex(id => id == 'value')];
+
+    //     this.paramValue.setValue(value, false, true, false);
+
+    //     super.updateValues(requestId, actionId, updateParamId, paramIds, values);
+    // }
+    
+    
+    
     updateHeader()
     {
         super.updateHeader();
@@ -64090,7 +64154,7 @@ extends OperatorBase
 
         if (true) //this.paramValue.value.isValid()
         {
-            const colors     = this.getHeaderColors();
+            const colors = this.getHeaderColors();
 
             //const rgb        = rgbFromType(ANY_TYPE);//this.paramValue.value.toRgba();
             //const rgbaStripe = rgb_a(getStripeBackColor(rgb));
@@ -64192,10 +64256,7 @@ extends OperatorBase
 
         let json = super.toJsonBase(nTab);
 
-        json += ',\n' + pos + tab + '"paramType": "'     +  this.paramType                                 + '"';
-        json += ',\n' + pos + tab + '"groupNodeId": "'   + (this.groupNode   ? this.groupNode  .id : NULL) + '"';
-        json += ',\n' + pos + tab + '"groupInputId": "'  + (this.groupInput  ? this.groupInput .id : NULL) + '"';
-        json += ',\n' + pos + tab + '"groupOutputId": "' + (this.groupOutput ? this.groupOutput.id : NULL) + '"';
+        json += ',\n' + pos + tab + '"paramType": "' +  this.paramType                                 + '"';
 
         return json;
     }
@@ -64206,20 +64267,8 @@ extends OperatorBase
     {
         super.loadParams(_node, pasting);
 
-        let paramNodeId   = NULL,
-            paramInputId  = NULL,
-            paramOutputId = NULL;
-
-        if (_node.paramType     != undefined) this.paramType     = parseInt(_node.paramType    );
-        if (_node.groupNodeId   != undefined) this.paramNodeId   = parseInt(_node.paramNodeId  );
-        if (_node.groupInputId  != undefined) this.paramInputId  = parseInt(_node.paramInputId );
-        if (_node.groupOutputId != undefined) this.paramOutputId = parseInt(_node.paramOutputId);
-
-        if (paramNodeId != NULL)
-        {
-                 if (paramInputId  != NULL) this.paramInput  = nodeFromId(paramNodeId).inputFromId (paramInputId );
-            else if (paramOutputId != NULL) this.paramOutput = nodeFromId(paramNodeId).outputFromId(paramOutputId);
-        }
+        if (_node.paramType != undefined) 
+            this.paramType = parseInt(_node.paramType);
     }
 }
 
@@ -64227,94 +64276,146 @@ extends OperatorBase
 
 function input_onconnect(node)
 {
-    if (node.paramType == 1)
-    {
-        if (   !node.inputs [0].connected
-            && !node.outputs[0].connected)
-            node.inputs[0].types = [...node.inputs[0].connectedOutput.types];
-            
-        node. inputs[0].types =
-        node.outputs[0].types = [...node.inputs[0].connectedOutput.types];
+    // if (   !node.inputs [0].connected
+    //     && !node.outputs[0].connected)
+        node.inputs[0].types = [...node.inputs[0].connectedOutput.types];
+    
         
-        node.outputs[0].div.style.display = 'none';
+    node. inputs[0].types =
+    node.outputs[0].types = [...node.inputs[0].connectedOutput.types];
+    
+    node.outputs[0].div.style.display = 'none';
 
-        node.groupNode.addOutput(node.groupOutput = new Output([...node.inputs[0].types], node.groupNode.output_genRequest));
-        node.groupOutput.paramNode = node;
 
-        node.groupNode.updateNode();
+    if (node.paramType == 0)
+    {
+        node.groupParam = createParamFromType(
+            node.inputs[0].types[0], 
+            {
+                hasOutput: true,
+                id:        node.nodeName,
+                name:      node.nodeName,
+                showName:  true
+            });
+
+        node.groupOutput = node.groupParam.output;
+        node.groupNode.addParam(node.groupParam);
     }
+    else if (node.paramType == 1)
+    {
+        node.groupOutput = new Output([...node.inputs[0].types], node.groupNode.output_genRequest);
+        node.groupNode.addOutput(node.groupOutput);
+    }
+    
+
+    node.groupOutput.paramNode = node;
+    node.groupNode.updateNode();
 }
 
 
 
 function input_ondisconnect(node)
 {
-    if (node.paramType == 1)
+    if (!graph.pageNodes.find(n => 
+               n.type      == GROUP_PARAM
+            && n.paramType == 1
+            && (   !isEmpty(n. inputs) && n. inputs[0].connected 
+                || !isEmpty(n.outputs) && n.outputs[0].connected)))
+        node.inputs[0].types = [ANY_TYPE];
+
+
+    node. inputs[0].types = [ANY_TYPE];
+    node.outputs[0].types = [ANY_TYPE];
+
+    node.outputs[0].div.style.display = 'inline-block';
+
+
+    if (node.groupOutput.connected)
+        node.groupOutput.connectedInputs.forEach(i => uiDisconnect(i));
+
+
+    if (node.paramType == 0)
     {
-        if (!graph.pageNodes.find(n => 
-                   n.type      == GROUP_PARAM
-                && n.paramType == 1
-                && (   !isEmpty(n. inputs) && n. inputs[0].connected 
-                    || !isEmpty(n.outputs) && n.outputs[0].connected)))
-            node.inputs[0].types = [ANY_TYPE];
-
-        node. inputs[0].types = [ANY_TYPE];
-        node.outputs[0].types = [ANY_TYPE];
-
-        node.outputs[0].div.style.display = 'inline-block';
-
-        if (node.groupOutput.connected)
-            node.groupOutput.connectedInputs.forEach(i => uiDisconnect(i));
-            
+        node.groupNode.removeParam(node.groupParam);
+        node.groupOutput.paramNode = null;
+    }
+    else if (node.paramType == 1)
+    {
         node.groupNode.removeOutput(node.groupOutput);
         node.groupOutput.paramNode = null;
-
-        node.groupNode.updateNode();
     }
+
+
+    node.groupNode.updateNode();
 }
 
 
 
 function output_onconnect(node)
 {
-    if (node.paramType == 1)
+    // console.log('XXX =', node.outputs[0].connectedInputs[0]);
+    // if (   !node.inputs [0].connected
+    //     && !node.outputs[0].connected)
+        node.outputs[0].types = [...node.outputs[0].connectedInputs[0].types];
+
+    node.inputs[0].div.style.display = 'none';
+
+
+    if (node.paramType == 0)
     {
-        if (   !node.inputs [0].connected
-            && !node.outputs[0].connected)
-            node.outputs[0].types = [...node.outputs[0].connectedInputs[0].types];
+        node.groupParam = createParamFromType(
+            node.outputs[0].types[0], 
+            {
+                hasInput: true,
+                name:     node.nodeId,
+                showName: true
+            });
 
-        node.inputs[0].div.style.display = 'none';
-
-        node.groupNode.addInput(node.groupInput = new Input([...node.outputs[0].types]));
-        node.groupInput.paramNode = node;
-
-        node.groupNode.updateNode();
+        node.groupInput = node.groupParam.input;
+        node.groupNode.addParam(node.groupParam);
     }
+    else if (node.paramType == 1)
+    {
+        node.groupInput = new Input([...node.outputs[0].types]);
+        node.groupNode.addInput(node.groupInput);
+    }
+    
+    
+    node.groupInput.paramNode = node;
+    node.groupNode.updateNode();
 }
 
 
 
 function output_ondisconnect(node)
 {
-    if (node.paramType == 1)
-    {
-        if (!graph.pageNodes.find(n => 
-                   n.type      == GROUP_PARAM
-                && n.paramType == 1
-                && (   !isEmpty(n. inputs) && n. inputs[0].connected 
-                    || !isEmpty(n.outputs) && n.outputs[0].connected)))
-            node.outputs[0].types = [ANY_TYPE];
+    if (!graph.pageNodes.find(n => 
+                n.type      == GROUP_PARAM
+            && n.paramType == 1
+            && (   !isEmpty(n. inputs) && n. inputs[0].connected 
+                || !isEmpty(n.outputs) && n.outputs[0].connected)))
+        node.outputs[0].types = [ANY_TYPE];
 
-        node.inputs[0].div.style.display = 'inline-block';
-        
-        if (node.groupInput.connected)
-            uiDisconnect(node.groupInput);
+    node.inputs[0].div.style.display = 'inline-block';
+
     
+    if (node.groupInput.connected)
+        uiDisconnect(node.groupInput);
+
+
+    if (node.paramType == 0)
+    {
+        node.groupNode.removeParam(node.groupParam);
+        node.groupInput.paramNode = null;
+    }
+    else if (node.paramType == 1)
+    {
         node.groupNode.removeInput(node.groupInput);
         node.groupInput.paramNode = null;
-
-        node.groupNode.updateNode();
     }
+
+
+    node.groupNode.updateNode();
 }
 
 
@@ -65135,10 +65236,18 @@ function getTerminalsAfterNode(node)
     if (node.type == GROUP_NODE)
     {
         for (const input of node.inputs)
+        {
             pushUnique(after, getTerminalsAfterNode(input.paramNode));
+        }
     }
     else if (node.type == GROUP_PARAM)
     {
+        for (const output of node.outputs)
+        {
+            for (const input of output.connectedInputs)
+                pushUnique(after, getTerminalsAfterNode(input.node));
+        }
+
         for (const output of node.groupNode.outputs)
         {
             for (const input of output.connectedInputs)
@@ -68143,7 +68252,7 @@ extends Action
             + this.param.node.id 
             + '.' + this.param.id 
             + ' = ' + this.newValue.toDisplayString() 
-            + ' (old value = ' + this.oldValue.toDisplayString() + ')';
+            + ' (old value = ' + (this.oldValue ? this.oldValue.toDisplayString() : '') + ')';
 
         pushUpdateFromParam(this, [this.param.node], this.param);
     }
@@ -68653,7 +68762,6 @@ function loadNodesAndConnsData(_pages, _nodes, _conns)
     _dataModeNodes = _nodes;
     _dataModeConns = _conns;
 
-    console.log('_dataModePages =', _dataModePages);
 
     _dataModeNodes.sort((n1, n2) => 
     {
@@ -70753,7 +70861,7 @@ function startupValidateLicense()
 
 
 
-var nextRequestId   = 0;
+var nextRequestId   =  0;
 var lastRequestedId = -1;
 
 
@@ -71222,6 +71330,9 @@ function loadNodesAndConnsAsync(_nodes, _conns, setProgress)
 
 
     let promise = Promise.resolve([]);
+
+
+    _nodes = _nodes.sort((a, b) => a.type == GROUP_NODE && b.type != GROUP_NODE);
 
 
     const chunkSize = 10; // nodes

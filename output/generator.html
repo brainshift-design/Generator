@@ -3492,6 +3492,7 @@ const NUMBER_RANDOM           = 'RAND';
 const NUMBER_INTERPOLATE      = 'LERP'; 
 const NUMBER_TO_TEXT          = 'N2T';
 const NUMBER_SOLVE            = 'SOLVE';
+const NUMBER_ANIMATE          = 'ANIM';
 
 const NUMBER_MATH             = 'MATH';  
 const NUMBER_ADD              = 'ADD';   
@@ -7731,6 +7732,9 @@ extends GNumberType
             && this.target .isCached();
     }
 }
+
+
+
 
 
 
@@ -12682,7 +12686,7 @@ extends GObjectBase
 class GGroupNode
 extends GOperator
 {
-    // input = null;
+    input = null;
 
 
 
@@ -12699,8 +12703,8 @@ extends GOperator
 
         copy.copyBase(this);
 
-        // if (this.input) copy.input = this.input.copy();
-        // if (this.value) copy.value = this.value.copy();
+        if (this.input) copy.input = this.input.copy();
+        if (this.value) copy.value = this.value.copy();
 
         return copy;
     }
@@ -12709,17 +12713,17 @@ extends GOperator
 
     async eval(parse)
     {
-        if (this.valid)//isCached())
+        if (this.isCached())
             return this;
 
 
-        //this.value = NullValue;
-        //     this.input
-        //     ? (await this.input.eval(parse)).toValue()
-        //     : NullValue;
+        this.value = NullValue;
+            this.input
+            ? (await this.input.eval(parse)).toValue()
+            : NullValue;
 
 
-        genPushUpdateValue(parse, this.nodeId, '', NullValue);
+        genPushUpdateValue(parse, this.nodeId, 'value', this.value);
         
         
         this.validate();
@@ -12861,7 +12865,7 @@ const settings =
     showPages:                     false,
     showAllColorSpaces:            false,
     showBoolValues:                true,
-    showOperationResults:          true,
+    showOperationResults:          false,
     showClearUndoWarning:          true,
     showDebugMenu:                 false,
         
@@ -14532,20 +14536,20 @@ function genParseGroupNode(parse)
     const group = new GGroupNode(nodeId, options);
 
 
-    // let nInputs = -1;
+    let nInputs = -1;
     
-    // if (!ignore)
-    // {
-    //     nInputs = parseInt(parse.move());
-    //     console.assert(nInputs == 0 || nInputs == 1, 'nInputs must be [0, 1]');
-    // }
+    if (!ignore)
+    {
+        nInputs = parseInt(parse.move());
+        console.assert(nInputs == 0 || nInputs == 1, 'nInputs must be [0, 1]');
+    }
 
 
     if (parse.settings.logRequests) 
-        logReq(group, parse, ignore);//, nInputs);
+        logReq(group, parse, ignore, nInputs);
 
 
-    if (ignore) 
+    if (ignore)
     {
         genParseNodeEnd(parse, group);
         return parse.parsedNodes.find(n => n.nodeId == nodeId);
@@ -14555,8 +14559,8 @@ function genParseGroupNode(parse)
     parse.nTab++;
 
 
-    // if (nInputs == 1)
-    //     cache.input = genParse(parse);
+    if (nInputs == 1)
+        cache.input = genParse(parse);
 
 
     parse.nTab--;

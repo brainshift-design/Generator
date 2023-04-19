@@ -339,6 +339,13 @@ class Operator
 
 
 
+    paramFromId(id)
+    {
+        return this.params.find(p => p.id == id);
+    }
+
+
+
     addParam(param, volatile = false)
     {
         param._node    = this;

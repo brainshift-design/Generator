@@ -506,6 +506,7 @@ const NUMBER_RANDOM           = 'RAND';
 const NUMBER_INTERPOLATE      = 'LERP'; 
 const NUMBER_TO_TEXT          = 'N2T';
 const NUMBER_SOLVE            = 'SOLVE';
+const NUMBER_ANIMATE          = 'ANIM';
 
 const NUMBER_MATH             = 'MATH';  
 const NUMBER_ADD              = 'ADD';   

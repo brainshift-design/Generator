@@ -42,7 +42,7 @@ extends Action
             + this.param.node.id 
             + '.' + this.param.id 
             + ' = ' + this.newValue.toDisplayString() 
-            + ' (old value = ' + this.oldValue.toDisplayString() + ')';
+            + ' (old value = ' + (this.oldValue ? this.oldValue.toDisplayString() : '') + ')';
 
         pushUpdateFromParam(this, [this.param.node], this.param);
     }

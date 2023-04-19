@@ -112,7 +112,7 @@ extends Parameter
             && this.input.connected)
             request.push(...pushInputOrParam(this.input, gen));
 
-        else request.push( 
+        else request.push(
             NUMBER_VALUE, 
             new NumberValue(
                 this.controls[0].value, 

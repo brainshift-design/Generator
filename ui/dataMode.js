@@ -56,7 +56,6 @@ function loadNodesAndConnsData(_pages, _nodes, _conns)
     _dataModeNodes = _nodes;
     _dataModeConns = _conns;
 
-    console.log('_dataModePages =', _dataModePages);
 
     _dataModeNodes.sort((n1, n2) => 
     {

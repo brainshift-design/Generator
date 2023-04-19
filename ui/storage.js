@@ -299,6 +299,9 @@ function loadNodesAndConnsAsync(_nodes, _conns, setProgress)
     let promise = Promise.resolve([]);
 
 
+    _nodes = _nodes.sort((a, b) => a.type == GROUP_NODE && b.type != GROUP_NODE);
+
+
     const chunkSize = 10; // nodes
 
     for (let i = 0; i < _nodes.length; i += chunkSize)

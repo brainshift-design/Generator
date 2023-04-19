@@ -8,7 +8,7 @@ const settings =
     showPages:                     false,
     showAllColorSpaces:            false,
     showBoolValues:                true,
-    showOperationResults:          true,
+    showOperationResults:          false,
     showClearUndoWarning:          true,
     showDebugMenu:                 false,
         

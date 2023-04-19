@@ -12,9 +12,9 @@ extends OperatorBase
                    // 2 = variable header
 
 
+    groupParam  = null;
     groupInput  = null;
     groupOutput = null;
-
 
 
     get groupNode() 
@@ -33,7 +33,7 @@ extends OperatorBase
         this.alwaysLoadParams = true;
 
 
-        this.addInput (new Input([ANY_TYPE]));
+        this.addInput (new Input ([ANY_TYPE]));
         this.addOutput(new Output([ANY_TYPE], this.output_genRequest));
 
 
@@ -51,8 +51,24 @@ extends OperatorBase
         this.headerCircle.over = false;
         this.headerCircle.down = false;
 
-        this.headerCircle.addEventListener('pointerenter', e => { this.headerCircle.over = true;  this.updateHeader(); });
-        this.headerCircle.addEventListener('pointerleave', e => { this.headerCircle.over = false; this.updateHeader(); });
+
+        this.headerCircle.addEventListener('pointerenter', e => 
+        { 
+            if (   this. inputs[0].connected
+                || this.outputs[0].connected)
+                return;
+
+            this.headerCircle.over = true;  
+            this.updateHeader(); 
+        });
+
+
+        this.headerCircle.addEventListener('pointerleave', e => 
+        { 
+            this.headerCircle.over = false; 
+            this.updateHeader(); 
+        });
+
 
         this.headerCircle.addEventListener('pointerdown',  e => 
         { 
@@ -62,10 +78,14 @@ extends OperatorBase
             {
                 hideAllMenus();
 
-                let paramType = this.paramType + 1;
-                if (paramType == 3) paramType = 0;
+                if (   !this. inputs[0].connected
+                    && !this.outputs[0].connected)
+                {
+                    let paramType = this.paramType + 1;
+                    if (paramType == 2 /*3*/) paramType = 0;
 
-                actionManager.do(new ToggleParamHeaderAction(this.id, paramType));
+                    actionManager.do(new ToggleParamHeaderAction(this.id, paramType));
+                }
             }
             else
                 e.preventDefault();
@@ -88,9 +108,14 @@ extends OperatorBase
     {
         // console.log('this.groupInput =', this.groupInput);
 
-        if (   this.node.groupInput
-            && this.node.groupInput.connected)
-            return this.node.groupInput.connectedOutput.genRequest(gen);
+        if (   this.node.groupInput)
+//            && this.node.groupInput.connected)
+        {
+            if (this.node.groupParam)
+                return this.node.groupParam.genRequest(gen);
+            else
+                return this.node.groupInput.connectedOutput.genRequest(gen);
+        }
 
 
         // 'this' is the output        
@@ -125,6 +150,17 @@ extends OperatorBase
 
 
 
+    // updateValues(requestId, actionId, updateParamId, paramIds, values)
+    // {
+    //     const value = values[paramIds.findIndex(id => id == 'value')];
+
+    //     this.paramValue.setValue(value, false, true, false);
+
+    //     super.updateValues(requestId, actionId, updateParamId, paramIds, values);
+    // }
+    
+    
+    
     updateHeader()
     {
         super.updateHeader();
@@ -132,7 +168,7 @@ extends OperatorBase
 
         if (true) //this.paramValue.value.isValid()
         {
-            const colors     = this.getHeaderColors();
+            const colors = this.getHeaderColors();
 
             //const rgb        = rgbFromType(ANY_TYPE);//this.paramValue.value.toRgba();
             //const rgbaStripe = rgb_a(getStripeBackColor(rgb));
@@ -234,10 +270,7 @@ extends OperatorBase
 
         let json = super.toJsonBase(nTab);
 
-        json += ',\n' + pos + tab + '"paramType": "'     +  this.paramType                                 + '"';
-        json += ',\n' + pos + tab + '"groupNodeId": "'   + (this.groupNode   ? this.groupNode  .id : NULL) + '"';
-        json += ',\n' + pos + tab + '"groupInputId": "'  + (this.groupInput  ? this.groupInput .id : NULL) + '"';
-        json += ',\n' + pos + tab + '"groupOutputId": "' + (this.groupOutput ? this.groupOutput.id : NULL) + '"';
+        json += ',\n' + pos + tab + '"paramType": "' +  this.paramType                                 + '"';
 
         return json;
     }
@@ -248,20 +281,8 @@ extends OperatorBase
     {
         super.loadParams(_node, pasting);
 
-        let paramNodeId   = NULL,
-            paramInputId  = NULL,
-            paramOutputId = NULL;
-
-        if (_node.paramType     != undefined) this.paramType     = parseInt(_node.paramType    );
-        if (_node.groupNodeId   != undefined) this.paramNodeId   = parseInt(_node.paramNodeId  );
-        if (_node.groupInputId  != undefined) this.paramInputId  = parseInt(_node.paramInputId );
-        if (_node.groupOutputId != undefined) this.paramOutputId = parseInt(_node.paramOutputId);
-
-        if (paramNodeId != NULL)
-        {
-                 if (paramInputId  != NULL) this.paramInput  = nodeFromId(paramNodeId).inputFromId (paramInputId );
-            else if (paramOutputId != NULL) this.paramOutput = nodeFromId(paramNodeId).outputFromId(paramOutputId);
-        }
+        if (_node.paramType != undefined) 
+            this.paramType = parseInt(_node.paramType);
     }
 }
 
@@ -269,92 +290,144 @@ extends OperatorBase
 
 function input_onconnect(node)
 {
-    if (node.paramType == 1)
-    {
-        if (   !node.inputs [0].connected
-            && !node.outputs[0].connected)
-            node.inputs[0].types = [...node.inputs[0].connectedOutput.types];
-            
-        node. inputs[0].types =
-        node.outputs[0].types = [...node.inputs[0].connectedOutput.types];
+    // if (   !node.inputs [0].connected
+    //     && !node.outputs[0].connected)
+        node.inputs[0].types = [...node.inputs[0].connectedOutput.types];
+    
         
-        node.outputs[0].div.style.display = 'none';
+    node. inputs[0].types =
+    node.outputs[0].types = [...node.inputs[0].connectedOutput.types];
+    
+    node.outputs[0].div.style.display = 'none';
 
-        node.groupNode.addOutput(node.groupOutput = new Output([...node.inputs[0].types], node.groupNode.output_genRequest));
-        node.groupOutput.paramNode = node;
 
-        node.groupNode.updateNode();
+    if (node.paramType == 0)
+    {
+        node.groupParam = createParamFromType(
+            node.inputs[0].types[0], 
+            {
+                hasOutput: true,
+                id:        node.nodeName,
+                name:      node.nodeName,
+                showName:  true
+            });
+
+        node.groupOutput = node.groupParam.output;
+        node.groupNode.addParam(node.groupParam);
     }
+    else if (node.paramType == 1)
+    {
+        node.groupOutput = new Output([...node.inputs[0].types], node.groupNode.output_genRequest);
+        node.groupNode.addOutput(node.groupOutput);
+    }
+    
+
+    node.groupOutput.paramNode = node;
+    node.groupNode.updateNode();
 }
 
 
 
 function input_ondisconnect(node)
 {
-    if (node.paramType == 1)
+    if (!graph.pageNodes.find(n => 
+               n.type      == GROUP_PARAM
+            && n.paramType == 1
+            && (   !isEmpty(n. inputs) && n. inputs[0].connected 
+                || !isEmpty(n.outputs) && n.outputs[0].connected)))
+        node.inputs[0].types = [ANY_TYPE];
+
+
+    node. inputs[0].types = [ANY_TYPE];
+    node.outputs[0].types = [ANY_TYPE];
+
+    node.outputs[0].div.style.display = 'inline-block';
+
+
+    if (node.groupOutput.connected)
+        node.groupOutput.connectedInputs.forEach(i => uiDisconnect(i));
+
+
+    if (node.paramType == 0)
     {
-        if (!graph.pageNodes.find(n => 
-                   n.type      == GROUP_PARAM
-                && n.paramType == 1
-                && (   !isEmpty(n. inputs) && n. inputs[0].connected 
-                    || !isEmpty(n.outputs) && n.outputs[0].connected)))
-            node.inputs[0].types = [ANY_TYPE];
-
-        node. inputs[0].types = [ANY_TYPE];
-        node.outputs[0].types = [ANY_TYPE];
-
-        node.outputs[0].div.style.display = 'inline-block';
-
-        if (node.groupOutput.connected)
-            node.groupOutput.connectedInputs.forEach(i => uiDisconnect(i));
-            
+        node.groupNode.removeParam(node.groupParam);
+        node.groupOutput.paramNode = null;
+    }
+    else if (node.paramType == 1)
+    {
         node.groupNode.removeOutput(node.groupOutput);
         node.groupOutput.paramNode = null;
-
-        node.groupNode.updateNode();
     }
+
+
+    node.groupNode.updateNode();
 }
 
 
 
 function output_onconnect(node)
 {
-    if (node.paramType == 1)
+    // console.log('XXX =', node.outputs[0].connectedInputs[0]);
+    // if (   !node.inputs [0].connected
+    //     && !node.outputs[0].connected)
+        node.outputs[0].types = [...node.outputs[0].connectedInputs[0].types];
+
+    node.inputs[0].div.style.display = 'none';
+
+
+    if (node.paramType == 0)
     {
-        if (   !node.inputs [0].connected
-            && !node.outputs[0].connected)
-            node.outputs[0].types = [...node.outputs[0].connectedInputs[0].types];
+        node.groupParam = createParamFromType(
+            node.outputs[0].types[0], 
+            {
+                hasInput: true,
+                name:     node.nodeId,
+                showName: true
+            });
 
-        node.inputs[0].div.style.display = 'none';
-
-        node.groupNode.addInput(node.groupInput = new Input([...node.outputs[0].types]));
-        node.groupInput.paramNode = node;
-
-        node.groupNode.updateNode();
+        node.groupInput = node.groupParam.input;
+        node.groupNode.addParam(node.groupParam);
     }
+    else if (node.paramType == 1)
+    {
+        node.groupInput = new Input([...node.outputs[0].types]);
+        node.groupNode.addInput(node.groupInput);
+    }
+    
+    
+    node.groupInput.paramNode = node;
+    node.groupNode.updateNode();
 }
 
 
 
 function output_ondisconnect(node)
 {
-    if (node.paramType == 1)
-    {
-        if (!graph.pageNodes.find(n => 
-                   n.type      == GROUP_PARAM
-                && n.paramType == 1
-                && (   !isEmpty(n. inputs) && n. inputs[0].connected 
-                    || !isEmpty(n.outputs) && n.outputs[0].connected)))
-            node.outputs[0].types = [ANY_TYPE];
+    if (!graph.pageNodes.find(n => 
+                n.type      == GROUP_PARAM
+            && n.paramType == 1
+            && (   !isEmpty(n. inputs) && n. inputs[0].connected 
+                || !isEmpty(n.outputs) && n.outputs[0].connected)))
+        node.outputs[0].types = [ANY_TYPE];
 
-        node.inputs[0].div.style.display = 'inline-block';
-        
-        if (node.groupInput.connected)
-            uiDisconnect(node.groupInput);
+    node.inputs[0].div.style.display = 'inline-block';
+
     
+    if (node.groupInput.connected)
+        uiDisconnect(node.groupInput);
+
+
+    if (node.paramType == 0)
+    {
+        node.groupNode.removeParam(node.groupParam);
+        node.groupInput.paramNode = null;
+    }
+    else if (node.paramType == 1)
+    {
         node.groupNode.removeInput(node.groupInput);
         node.groupInput.paramNode = null;
-
-        node.groupNode.updateNode();
     }
+
+
+    node.groupNode.updateNode();
 }

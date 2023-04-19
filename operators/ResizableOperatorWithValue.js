@@ -9,7 +9,7 @@ extends ResizableBase
     {
         super(type, id, name, defWidth, progressBar);
 
-        this.paramValue = createParamFromType(type);
+        this.paramValue          = createParamFromType(type);
         this.paramValue.isResult = true;
     }
 

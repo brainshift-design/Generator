@@ -5,11 +5,6 @@ extends OperatorBase
     {
         super(GROUP_NODE, 'group', 'group');
 
-        //this.inert = true;
-
-        
-        // this.addInput (new Input(LIST_TYPES));
-        // this.addOutput(new Output([LIST_VALUE], this.output_genRequest));
 
         this.alwaysLoadParams = true;
         this.alwaysSaveParams = true;
@@ -27,7 +22,7 @@ extends OperatorBase
             && this.paramNode.inputs[0].connected)
             return this.paramNode.inputs[0].connectedOutput.genRequest(gen);
 
-
+            
         // 'this' is the output        
 
         gen.scope.push({
@@ -39,13 +34,15 @@ extends OperatorBase
         if (ignore) return request;
 
 
-        const input = this.paramNode.inputs[0];//this.inputs[0];
+        request.push(0)
+
+        // const input = this.this.inputs[0];
 
 
-        request.push(input.connected ? 1 : 0);
+        // request.push(input.connected ? 1 : 0);
 
-        if (input.connected) 
-            request.push(...pushInputOrParam(input, gen));
+        // if (input.connected) 
+        //     request.push(...pushInputOrParam(input, gen));
 
 
         gen.scope.pop();
@@ -56,74 +53,32 @@ extends OperatorBase
 
 
 
-    // updateValues(requestId, actionId, updateParamId, paramIds, values)
-    // {
-    //     //logFunction('OpItems.updateValues()');
+    genRequest(gen) // for when there are no header outputs
+    {
+        // 'this' is the node
 
-    //     const oldParams = [...this.params];
-    //     //console.log('oldParams =', [...oldParams]);
-
-    //     const action = actionFromId(actionId);
-
-    //     if (action)
-    //         pushUnique(oldParams, action.oldOutputParams);
-
-    //     // console.log('action =', action);
-
-    //     const oldParamConns = this.getAllParamConnections();
+        gen.scope.push({
+            nodeId:  this.id, 
+            paramId: null });
 
 
-    //     this.disconnectAllParams(true);
-    //     this.removeAllParams();
+        const [request, ignore] = this.genRequestStart(gen);
+        if (ignore) return request;
 
 
-    //     if (   paramIds.length > 1
-    //         ||    paramIds.length == 1 
-    //            && paramIds[0] != '')
-    //     {
-    //         for (let i = 0; i < values.length; i++) 
-    //         {
-    //             const value = values[i];
-    //             const id    = 'item' + i;
+        gen.scope.pop();
+        pushUnique(gen.passedNodes, this);
 
-    //             const param = oldParams.find(p => 
-    //                    p.id == id
-    //                 && p.type == value.type);
-
-    //             if (   param
-    //                 && paramIds.includes(param.id)) 
-    //             {
-    //                 this.addParam(param, true);
-
-    //                 const _conn = oldParamConns.find(c =>
-    //                        c.outputNodeId == this.id
-    //                     && c.outputId     == param.id);
-
-    //                 if (_conn)
-    //                 {
-    //                     const conn = uiConnect(param.output, nodeFromId(_conn.inputNodeId).inputFromId(_conn.inputId));
-    //                     uiSaveConn(conn);
-    //                 }
-    //             }
-    //             else       
-    //                 this.createAndAddParamByType(value.type, id, false, false, true);
-    //         }
-    //     }
-
-    //     else if (isEmpty(paramIds))
-    //         this.removeAllParams();
-    
-        
-    //     super.updateValues(requestId, actionId, updateParamId, paramIds, values);
-    // }
+        return request;
+    }
 
 
 
-    // updateParams()
-    // {
-    //     for (const param of this.params)
-    //         param.enableControlText(false);
+    updateParams()
+    {
+        for (const param of this.params)
+            param.enableControlText(param.input ? true : false);
 
-    //     this.updateParamControls();
-    // }
+        this.updateParamControls();
+    }
 }

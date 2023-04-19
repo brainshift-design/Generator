@@ -59,6 +59,7 @@
 ../generator/types/number/GInterpolate.js
 ../generator/types/number/GNumberToText.js
 ../generator/types/number/GSolve.js
+../generator/types/number/GAnimate.js
 
 ../generator/types/number/arithmetic/GArithmetic.js
 ../generator/types/number/arithmetic/GMath.js
