@@ -7918,6 +7918,7 @@ const NUMBER_TYPES =
     NUMBER_INTERPOLATE,
     NUMBER_TO_TEXT,
     NUMBER_SOLVE,
+    NUMBER_ANIMATE,
 
     ...MATH_TYPES,
     ...BOOLEAN_TYPES,
@@ -12089,6 +12090,73 @@ extends GNumberType
 
 
 
+class GAnimate
+extends GNumberType
+{
+    from;
+    to;
+    curve;
+    type;
+    duration;
+    position;
+
+
+
+    constructor(nodeId, options)
+    {
+        super(NUMBER_ANIMATE, nodeId, options);
+    }
+
+
+    
+    copy()
+    {
+        const copy = new GAnimate(this.nodeId, this.options);
+
+        copy.copyBase(this);
+
+        if (this.from    ) copy.from     = this.from    .copy();
+        if (this.to      ) copy.to       = this.to      .copy();
+        if (this.curve   ) copy.curve    = this.curve   .copy();
+        if (this.type    ) copy.type     = this.type    .copy();
+        if (this.duration) copy.duration = this.duration.copy();
+        if (this.position) copy.position = this.position.copy();
+
+        return copy;
+    }
+
+
+
+    async eval(parse)
+    {
+        if (this.isCached())
+            return this;
+
+            
+        const from     = (await this.from    .eval(parse)).toValue();
+        const to       = (await this.to      .eval(parse)).toValue();
+        const curve    = (await this.curve   .eval(parse)).toValue();
+        const type     = (await this.type    .eval(parse)).toValue();
+        const duration = (await this.duration.eval(parse)).toValue();
+        const position = (await this.position.eval(parse)).toValue();
+    
+
+        this.value = new NumberValue(0);
+        
+
+        genPushUpdateValue(parse, this.nodeId, 'from',     from    );
+        genPushUpdateValue(parse, this.nodeId, 'to',       to      );
+        genPushUpdateValue(parse, this.nodeId, 'curve',    curve   );
+        genPushUpdateValue(parse, this.nodeId, 'type',     type    );
+        genPushUpdateValue(parse, this.nodeId, 'duration', duration);
+        genPushUpdateValue(parse, this.nodeId, 'position', position);
+        
+
+        this.validate();
+
+        return this;
+    }
+}
 
 
 
@@ -17040,7 +17108,8 @@ extends GObjectBase
 class GGroupNode
 extends GOperator
 {
-    input = null;
+    paramIds = [];
+    params    = [];
 
 
 
@@ -17057,8 +17126,7 @@ extends GOperator
 
         copy.copyBase(this);
 
-        if (this.input) copy.input = this.input.copy();
-        if (this.value) copy.value = this.value.copy();
+        copy.params = this.params.map(p => p.copy());
 
         return copy;
     }
@@ -17071,13 +17139,16 @@ extends GOperator
             return this;
 
 
-        this.value = NullValue;
-            this.input
-            ? (await this.input.eval(parse)).toValue()
-            : NullValue;
-
-
-        genPushUpdateValue(parse, this.nodeId, 'value', this.value);
+        if (!isEmpty(this.params))
+        {
+            for (let i = 0; i < this.params.length; i++)
+            {
+                const param = await this.params[i].eval(parse);
+                genPushUpdateValue(parse, this.nodeId, this.paramIds[i], param.toValue());
+            }
+        }
+        else
+            genPushUpdateValue(parse, this.nodeId, '', NullValue);
         
         
         this.validate();
@@ -17273,10 +17344,10 @@ function updateSetting(settingName, value)
                         
         case 'showNodeId':                    settings.showNodeId                    = value;  break;
 
-        case 'showTooltipLongText':           settings.showTooltipLongText           = value; break;
-        case 'showTooltipColorInterpolation': settings.showTooltipColorInterpolation = value; break;
-        case 'showTooltipColorBlindness':     settings.showTooltipColorBlindness     = value; break;
-        case 'showTooltipColorContrast':      settings.showTooltipColorContrast      = value; break;
+        case 'showTooltipLongText':           settings.showTooltipLongText           = value;  break;
+        case 'showTooltipColorInterpolation': settings.showTooltipColorInterpolation = value;  break;
+        case 'showTooltipColorBlindness':     settings.showTooltipColorBlindness     = value;  break;
+        case 'showTooltipColorContrast':      settings.showTooltipColorContrast      = value;  break;
 
         case 'enableBetaFeatures':            settings.enableBetaFeatures            = value;  break;
                    
@@ -17479,6 +17550,7 @@ function enableFeatures(subscription, beta)
     
     updateElementDisplay(menuItemSeries              .div, subscription && beta);    
     updateElementDisplay(menuItemSolve               .div, subscription && beta);    
+    updateElementDisplay(menuItemAnimate             .div, subscription && beta);    
     updateElementDisplay(menuItemNumberSep1          .div, subscription && beta);
     updateElementDisplay(menuItemNumberConvertToText .div, subscription && beta);
     
@@ -18890,17 +18962,17 @@ function genParseGroupNode(parse)
     const group = new GGroupNode(nodeId, options);
 
 
-    let nInputs = -1;
+    // let nParams = -1;
     
-    if (!ignore)
-    {
-        nInputs = parseInt(parse.move());
-        console.assert(nInputs == 0 || nInputs == 1, 'nInputs must be [0, 1]');
-    }
+    // if (!ignore)
+    // {
+    //     nParams = parseInt(parse.move());
+    //     //console.assert(nInputs == 0 || nInputs == 1, 'nInputs must be [0, 1]');
+    // }
 
 
     if (parse.settings.logRequests) 
-        logReq(group, parse, ignore, nInputs);
+        logReq(group, parse, ignore);//, nParams);
 
 
     if (ignore)
@@ -18913,8 +18985,13 @@ function genParseGroupNode(parse)
     parse.nTab++;
 
 
-    if (nInputs == 1)
-        cache.input = genParse(parse);
+    const nParams = parseInt(parse.move());
+
+    for (let i = 0; i < nParams; i++)
+    {
+        group.paramIds.push(parse.move());
+        group.params  .push(genParse(parse));
+    }
 
 
     parse.nTab--;
@@ -19650,6 +19727,46 @@ function genParseSolve(parse)
     genParseNodeEnd(parse, solve);
     return solve;
 }
+
+
+
+function genParseAnimate(parse)
+{
+    const [, nodeId, options, ignore] = genParseNodeStart(parse);
+
+
+    const anim = new GAnimate(nodeId, options);
+
+
+    if (parse.settings.logRequests) 
+        logReq(anim, parse);
+
+
+    if (ignore) 
+    {
+        genParseNodeEnd(parse, anim);
+        return parse.parsedNodes.find(n => n.nodeId == nodeId);
+    }
+
+
+    parse.nTab++;
+
+
+    anim.from     = genParse(parse);
+    anim.to       = genParse(parse);
+    anim.curve    = genParse(parse);
+    anim.type     = genParse(parse);
+    anim.duration = genParse(parse);
+    anim.position = genParse(parse);
+
+
+    parse.nTab--;
+
+
+    genParseNodeEnd(parse, anim);
+    return anim;
+}
+
 
 
 function genParseRectangle(parse)
@@ -20666,6 +20783,7 @@ function genParse(parse, inParam = true)
     else if (parse.next == NUMBER_INTERPOLATE     ) result = genParseInterpolate     (parse);
     else if (parse.next == NUMBER_TO_TEXT         ) result = genParseNumberToText    (parse);
     else if (parse.next == NUMBER_SOLVE           ) result = genParseSolve           (parse);
+    else if (parse.next == NUMBER_ANIMATE         ) result = genParseAnimate         (parse);
     
     else if (parse.next == NUMBER_MATH            ) result = genParseMath            (parse, (nodeId, options) => new GMath          (nodeId, options));
     else if (parse.next == NUMBER_ADD             ) result = genParseArithmetic      (parse, (nodeId, options) => new GAdd           (nodeId, options));
@@ -20724,8 +20842,8 @@ function genParse(parse, inParam = true)
     else if (parse.next == POLYGON                ) result = genParsePolygon         (parse);
     else if (parse.next == STAR                   ) result = genParseStar            (parse);
 
-    else if (parse.next == GROUP_NODE             ) result = genParseGroupNode          (parse);
-    else if (parse.next == GROUP_PARAM            ) result = genParseGroupParam    (parse);
+    else if (parse.next == GROUP_NODE             ) result = genParseGroupNode       (parse);
+    else if (parse.next == GROUP_PARAM            ) result = genParseGroupParam      (parse);
 
     else if (parse.next == COMMENT                ) result = genParseComment         (parse);
 
@@ -20852,51 +20970,6 @@ function genParseParamId(parse)
 
     return paramId;
 }
-
-
-
-function genParseGroupNode(parse)
-{
-    const [, nodeId, options, ignore] = genParseNodeStart(parse);
-
-
-    const cache = new GGroupNode(nodeId, options);
-
-
-    // let nInputs = -1;
-    
-    // if (!ignore)
-    // {
-    //     nInputs = parseInt(parse.move());
-    //     console.assert(nInputs == 0 || nInputs == 1, 'nInputs must be [0, 1]');
-    // }
-
-
-    if (parse.settings.logRequests) 
-        logReq(cache, parse, ignore);//, nInputs);
-
-
-    if (ignore) 
-    {
-        genParseNodeEnd(parse, cache);
-        return parse.parsedNodes.find(n => n.nodeId == nodeId);
-    }
-
-
-    parse.nTab++;
-
-
-    // if (nInputs == 1)
-    //     cache.input = genParse(parse);
-
-
-    parse.nTab--;
-
-
-    genParseNodeEnd(parse, cache);
-    return cache;
-}
-
 
 
 class RequestSettings
@@ -30199,6 +30272,7 @@ const NUMBER_TYPES =
     NUMBER_INTERPOLATE,
     NUMBER_TO_TEXT,
     NUMBER_SOLVE,
+    NUMBER_ANIMATE,
 
     ...MATH_TYPES,
     ...BOOLEAN_TYPES,
@@ -34370,6 +34444,73 @@ extends GNumberType
 
 
 
+class GAnimate
+extends GNumberType
+{
+    from;
+    to;
+    curve;
+    type;
+    duration;
+    position;
+
+
+
+    constructor(nodeId, options)
+    {
+        super(NUMBER_ANIMATE, nodeId, options);
+    }
+
+
+    
+    copy()
+    {
+        const copy = new GAnimate(this.nodeId, this.options);
+
+        copy.copyBase(this);
+
+        if (this.from    ) copy.from     = this.from    .copy();
+        if (this.to      ) copy.to       = this.to      .copy();
+        if (this.curve   ) copy.curve    = this.curve   .copy();
+        if (this.type    ) copy.type     = this.type    .copy();
+        if (this.duration) copy.duration = this.duration.copy();
+        if (this.position) copy.position = this.position.copy();
+
+        return copy;
+    }
+
+
+
+    async eval(parse)
+    {
+        if (this.isCached())
+            return this;
+
+            
+        const from     = (await this.from    .eval(parse)).toValue();
+        const to       = (await this.to      .eval(parse)).toValue();
+        const curve    = (await this.curve   .eval(parse)).toValue();
+        const type     = (await this.type    .eval(parse)).toValue();
+        const duration = (await this.duration.eval(parse)).toValue();
+        const position = (await this.position.eval(parse)).toValue();
+    
+
+        this.value = new NumberValue(0);
+        
+
+        genPushUpdateValue(parse, this.nodeId, 'from',     from    );
+        genPushUpdateValue(parse, this.nodeId, 'to',       to      );
+        genPushUpdateValue(parse, this.nodeId, 'curve',    curve   );
+        genPushUpdateValue(parse, this.nodeId, 'type',     type    );
+        genPushUpdateValue(parse, this.nodeId, 'duration', duration);
+        genPushUpdateValue(parse, this.nodeId, 'position', position);
+        
+
+        this.validate();
+
+        return this;
+    }
+}
 
 
 
@@ -39321,7 +39462,8 @@ extends GObjectBase
 class GGroupNode
 extends GOperator
 {
-    input = null;
+    paramIds = [];
+    params    = [];
 
 
 
@@ -39338,8 +39480,7 @@ extends GOperator
 
         copy.copyBase(this);
 
-        if (this.input) copy.input = this.input.copy();
-        if (this.value) copy.value = this.value.copy();
+        copy.params = this.params.map(p => p.copy());
 
         return copy;
     }
@@ -39352,13 +39493,16 @@ extends GOperator
             return this;
 
 
-        this.value = NullValue;
-            this.input
-            ? (await this.input.eval(parse)).toValue()
-            : NullValue;
-
-
-        genPushUpdateValue(parse, this.nodeId, 'value', this.value);
+        if (!isEmpty(this.params))
+        {
+            for (let i = 0; i < this.params.length; i++)
+            {
+                const param = await this.params[i].eval(parse);
+                genPushUpdateValue(parse, this.nodeId, this.paramIds[i], param.toValue());
+            }
+        }
+        else
+            genPushUpdateValue(parse, this.nodeId, '', NullValue);
         
         
         this.validate();
@@ -39554,10 +39698,10 @@ function updateSetting(settingName, value)
                         
         case 'showNodeId':                    settings.showNodeId                    = value;  break;
 
-        case 'showTooltipLongText':           settings.showTooltipLongText           = value; break;
-        case 'showTooltipColorInterpolation': settings.showTooltipColorInterpolation = value; break;
-        case 'showTooltipColorBlindness':     settings.showTooltipColorBlindness     = value; break;
-        case 'showTooltipColorContrast':      settings.showTooltipColorContrast      = value; break;
+        case 'showTooltipLongText':           settings.showTooltipLongText           = value;  break;
+        case 'showTooltipColorInterpolation': settings.showTooltipColorInterpolation = value;  break;
+        case 'showTooltipColorBlindness':     settings.showTooltipColorBlindness     = value;  break;
+        case 'showTooltipColorContrast':      settings.showTooltipColorContrast      = value;  break;
 
         case 'enableBetaFeatures':            settings.enableBetaFeatures            = value;  break;
                    
@@ -39760,6 +39904,7 @@ function enableFeatures(subscription, beta)
     
     updateElementDisplay(menuItemSeries              .div, subscription && beta);    
     updateElementDisplay(menuItemSolve               .div, subscription && beta);    
+    updateElementDisplay(menuItemAnimate             .div, subscription && beta);    
     updateElementDisplay(menuItemNumberSep1          .div, subscription && beta);
     updateElementDisplay(menuItemNumberConvertToText .div, subscription && beta);
     
@@ -43484,6 +43629,7 @@ const iconSeries            = '<svg width="16" height="11" viewBox="0 0 16 11" f
 const iconInterpolate       = '<svg width="19" height="13" viewBox="0 -1 19 13" fill="none" xmlns="http://www.w3.org/2000/svg"><line x1="0.284818" y1="10.6077" x2="18.759" y2="0.444666" stroke="white"/><ellipse cx="9.99556" cy="5.22745" rx="1.45202" ry="2.24173" transform="rotate(-25.1301 9.99556 5.22745)" fill="white"/></svg>';
 const iconNumberToText      = '<svg width="19" height="12" viewBox="0 0 19 12" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M16.2849 0V1.14446C16.2849 1.47359 16.224 1.8158 16.1022 2.17111C15.9839 2.52267 15.8208 2.85928 15.6129 3.18093C15.405 3.49883 15.1685 3.77186 14.9032 4L14 3.3885C14.1971 3.07807 14.3692 2.74334 14.5161 2.38429C14.6631 2.0215 14.7366 1.61197 14.7366 1.15568V0H16.2849ZM19 0V1.14446C19 1.47359 18.9391 1.8158 18.8172 2.17111C18.6989 2.52267 18.5358 2.85928 18.328 3.18093C18.1201 3.49883 17.8853 3.77186 17.6237 4L16.7204 3.3885C16.914 3.07807 17.0842 2.74334 17.2312 2.38429C17.3781 2.0215 17.4516 1.61197 17.4516 1.15568V0H19Z" fill="white"/><path d="M0 4V2.85554C0 2.52641 0.0590129 2.1842 0.177039 1.82889C0.298641 1.46985 0.463162 1.13137 0.670601 0.813464C0.881617 0.491819 1.11767 0.220664 1.37876 0L2.28004 0.6115C2.06903 0.944366 1.89199 1.29219 1.74893 1.65498C1.60944 2.01403 1.54149 2.41047 1.54506 2.84432V4H0ZM2.71996 4V2.85554C2.71996 2.52641 2.77897 2.1842 2.897 1.82889C3.0186 1.46985 3.18312 1.13137 3.39056 0.813464C3.60157 0.491819 3.83763 0.220664 4.09871 0L5 0.6115C4.78898 0.944366 4.61195 1.29219 4.46888 1.65498C4.3294 2.01403 4.26144 2.41047 4.26502 2.84432V4H2.71996Z" fill="white"/><path d="M5.42449 6.07985V11.9202H4.381V7.10932H4.34725L3 7.98194V7.01236L4.43163 6.07985H5.42449Z" fill="white"/><path d="M6.88705 11.9202V11.1559L8.88683 9.16825C9.07809 8.97243 9.23748 8.79848 9.36498 8.64639C9.49249 8.4943 9.58812 8.34696 9.65187 8.20437C9.71562 8.06179 9.7475 7.9097 9.7475 7.7481C9.7475 7.56369 9.70625 7.40589 9.62374 7.27471C9.54124 7.14164 9.4278 7.03897 9.28342 6.96673C9.13903 6.89449 8.97496 6.85836 8.7912 6.85836C8.60182 6.85836 8.43588 6.89829 8.29337 6.97814C8.15086 7.05608 8.04023 7.1673 7.96148 7.31179C7.8846 7.45627 7.84616 7.62833 7.84616 7.82795H6.8533C6.8533 7.45722 6.93674 7.13498 7.10363 6.86122C7.27051 6.58745 7.50021 6.37548 7.79272 6.22529C8.08711 6.0751 8.42463 6 8.80527 6C9.19154 6 9.53093 6.07319 9.82344 6.21958C10.116 6.36597 10.3428 6.56654 10.5041 6.82129C10.6672 7.07605 10.7488 7.36692 10.7488 7.69392C10.7488 7.91255 10.7075 8.12738 10.625 8.3384C10.5425 8.54943 10.3972 8.78327 10.1891 9.03992C9.98282 9.29658 9.69312 9.60741 9.31998 9.97243L8.32712 10.9962V11.0361H10.836V11.9202H6.88705Z" fill="white"/><path d="M13.8736 12C13.4686 12 13.1086 11.9297 12.7936 11.789C12.4804 11.6483 12.2329 11.4525 12.051 11.2015C11.8692 10.9506 11.7726 10.6606 11.7613 10.3317H12.8189C12.8283 10.4895 12.8798 10.6274 12.9736 10.7452C13.0673 10.8612 13.192 10.9515 13.3477 11.0162C13.5033 11.0808 13.6777 11.1131 13.8708 11.1131C14.0771 11.1131 14.2599 11.077 14.4193 11.0048C14.5787 10.9306 14.7034 10.8279 14.7934 10.6968C14.8834 10.5656 14.9274 10.4144 14.9256 10.2433C14.9274 10.0665 14.8824 9.91065 14.7905 9.77566C14.6987 9.64068 14.5655 9.53517 14.3912 9.45913C14.2186 9.38308 14.0105 9.34506 13.7667 9.34506H13.2577V8.52947H13.7667C13.9674 8.52947 14.1427 8.4943 14.2927 8.42395C14.4446 8.35361 14.5637 8.25475 14.6499 8.12738C14.7362 7.9981 14.7784 7.84886 14.7765 7.67966C14.7784 7.51426 14.7418 7.37072 14.6668 7.24905C14.5937 7.12548 14.4896 7.02947 14.3546 6.96103C14.2215 6.89259 14.0649 6.85836 13.8849 6.85836C13.7086 6.85836 13.5455 6.89068 13.3955 6.95532C13.2455 7.01996 13.1245 7.11217 13.0327 7.23194C12.9408 7.34981 12.892 7.49049 12.8864 7.65399H11.8823C11.8898 7.327 11.9826 7.03992 12.1607 6.79278C12.3407 6.54373 12.5808 6.34981 12.8808 6.21103C13.1808 6.07034 13.5174 6 13.8905 6C14.2749 6 14.6087 6.07319 14.8918 6.21958C15.1768 6.36407 15.3971 6.55894 15.5528 6.80418C15.7084 7.04943 15.7862 7.32034 15.7862 7.61692C15.7881 7.94582 15.6925 8.22148 15.4993 8.44392C15.3081 8.66635 15.0568 8.81179 14.7455 8.88023V8.92586C15.1506 8.98289 15.4609 9.13498 15.6765 9.38213C15.894 9.62738 16.0019 9.93251 16 10.2975C16 10.6245 15.9081 10.9173 15.7243 11.1759C15.5425 11.4325 15.2912 11.634 14.9706 11.7804C14.6518 11.9268 14.2861 12 13.8736 12Z" fill="white"/></svg>';
 const iconSolve             = '<svg width="18" height="14" viewBox="-4 0 18 14" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="5.5" cy="5.5" r="5" stroke="white"/><rect x="9.44473" y="8.55527" width="6.21958" height="1.25789" transform="rotate(45 9.44473 8.55527)" fill="white"/><path d="M4.40227 3L5.5 4.8457L6.61544 3H7.97167L6.33215 5.5L8 8H6.65085L5.5 6.19987L4.35977 8H3L4.65722 5.5L3.04249 3H4.40227Z" fill="white"/></svg>';
+const iconAnimate           = '<svg width="15" height="7" viewBox="0 0 15 7" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M6 0H15V1H6V0Z" fill="white"/><path d="M3 3H12V4H3V3Z" fill="white"/><path d="M0 6H9V7H0V6Z" fill="white"/></svg>';
  
 const iconMath              = '<svg width="17" height="18" viewBox="0 0 17 18" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M14.138 6.57967V0.485922H13.1039V6.57967H14.138ZM16.6678 4.04984V3.01575H10.5741V4.04984H16.6678Z" fill="white"/><path d="M11.3681 15.5004L16.5755 10.293L15.8738 9.59129L10.6664 14.7987L11.3681 15.5004ZM15.8738 15.5004L16.5755 14.7987L11.3681 9.59129L10.6664 10.293L15.8738 15.5004Z" fill="white"/><path d="M0.576652 12.0288V13.0629H6.48574V12.0288H0.576652ZM3.5312 15.7589C3.76202 15.7589 3.95899 15.6789 4.12211 15.5188C4.28214 15.3557 4.36216 15.1588 4.36216 14.9279C4.36216 14.7063 4.28214 14.5155 4.12211 14.3555C3.95899 14.1955 3.76202 14.1154 3.5312 14.1154C3.30961 14.1154 3.11879 14.1955 2.95875 14.3555C2.79872 14.5155 2.7187 14.7063 2.7187 14.9279C2.7187 15.1588 2.79872 15.3557 2.95875 15.5188C3.11879 15.6789 3.30961 15.7589 3.5312 15.7589ZM3.5312 10.9762C3.68508 10.9762 3.82511 10.9393 3.9513 10.8654C4.07748 10.7916 4.1775 10.6915 4.25137 10.5654C4.32523 10.4392 4.36216 10.2991 4.36216 10.1453C4.36216 9.92367 4.28214 9.73286 4.12211 9.57282C3.95899 9.41278 3.76202 9.33276 3.5312 9.33276C3.30961 9.33276 3.11879 9.41278 2.95875 9.57282C2.79872 9.73286 2.7187 9.92367 2.7187 10.1453C2.7187 10.3761 2.79872 10.5731 2.95875 10.7362C3.11879 10.8962 3.30961 10.9762 3.5312 10.9762Z" fill="white"/><path d="M0.576652 3.01575V4.04984H6.48574V3.01575H0.576652Z" fill="white"/></svg>';
 const iconAdd               = '<svg width="12" height="11" viewBox="0 0 12 11" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M4.78932 10.1318V0.756822H6.38023V10.1318H4.78932ZM0.897271 6.23978V4.64887H10.2723V6.23978H0.897271Z" fill="white"/></svg>';
@@ -44638,6 +44784,7 @@ var menuItemCopy;
 
 var menuItemSeries;
 var menuItemSolve;  
+var menuItemAnimate;  
 var menuItemNumberSep1;
 var menuItemNumberConvertToText;
 
@@ -44753,7 +44900,6 @@ function initGeneratorMenus()
                                         new MenuItem('',                    {separator: true}),
                                         new MenuItem('All page keys',       {callback:      () => { hideAllMenus(); uiQueueMessageToFigma({cmd: 'figLogAllSavedPageKeys', darkMode: darkMode}); }}),
                                         new MenuItem('All connection keys', {callback:      () => { hideAllMenus(); uiQueueMessageToFigma({cmd: 'figLogAllSavedConnKeys', darkMode: darkMode}); }}),
-                                        new MenuItem('',                    {separator: true}),
                                         new MenuItem('All local data',      {callback:      () => { hideAllMenus(); uiQueueMessageToFigma({cmd: 'figLogAllLocalData', darkMode: darkMode}); }}),
                                         new MenuItem('',                    {separator: true}),   
                                         new MenuItem('Undo stack',          {callback:      () => { hideAllMenus(); logUndoStack(); }}),
@@ -44762,14 +44908,14 @@ function initGeneratorMenus()
 
     menuDebugGenerator = new Menu('Debug generator', false);
     menuDebugGenerator.addItems([
-        menuItemLogRawRequests        = new MenuItem('Raw\u2008requests',  {checkCallback: () => settings.logRawRequests  ,      callback: () => updateSettingAndMenu('logRawRequests',        true, !settings.logRawRequests       ), setting: true}),
-        menuItemLogRawValues          = new MenuItem('Raw\u2008values',    {checkCallback: () => settings.logRawValues    ,      callback: () => updateSettingAndMenu('logRawValues',          true, !settings.logRawValues         ), setting: true}),
-                                        new MenuItem('',                            {separator: true}),                   
         menuItemLogRequests           = new MenuItem('Requests',           {checkCallback: () => settings.logRequests     ,      callback: () => updateSettingAndMenu('logRequests',           true, !settings.logRequests          ), setting: true}),
         menuItemLogValueUpdates       = new MenuItem('Values',             {checkCallback: () => settings.logValueUpdates ,      callback: () => updateSettingAndMenu('logValueUpdates',       true, !settings.logValueUpdates      ), setting: true}),
         menuItemLogObjectUpdates      = new MenuItem('Objects',            {checkCallback: () => settings.logObjectUpdates,      callback: () => updateSettingAndMenu('logObjectUpdates',      true, !settings.logObjectUpdates     ), setting: true}),
         menuItemLogStyleUpdates       = new MenuItem('Styles',             {checkCallback: () => settings.logStyleUpdates ,      callback: () => updateSettingAndMenu('logStyleUpdates',       true, !settings.logStyleUpdates      ), setting: true}),
-                                        new MenuItem('',                            {separator: true}),                   
+                                        new MenuItem('',                   {separator: true}),                   
+        menuItemLogRawRequests        = new MenuItem('Raw\u2008requests',  {checkCallback: () => settings.logRawRequests  ,      callback: () => updateSettingAndMenu('logRawRequests',        true, !settings.logRawRequests       ), setting: true}),
+        menuItemLogRawValues          = new MenuItem('Raw\u2008values',    {checkCallback: () => settings.logRawValues    ,      callback: () => updateSettingAndMenu('logRawValues',          true, !settings.logRawValues         ), setting: true}),
+                                        new MenuItem('',                   {separator: true}),                   
         menuItemLogMessages           = new MenuItem('Messages',           {checkCallback: () => settings.logMessages     ,      callback: () => updateSettingAndMenu('logMessages',           true, !settings.logMessages          ), setting: true}),
         menuItemLogActions            = new MenuItem('Actions',            {checkCallback: () => settings.logActions      ,      callback: () => updateSettingAndMenu('logActions',            true, !settings.logActions           ), setting: true})]);
                      
@@ -44889,6 +45035,7 @@ function initGeneratorMenus()
                                       new MenuItem('',                {separator: true}),
                                       new MenuItem('Interpolate',     {icon: iconInterpolate,  callback: e => actionManager.do(getCreateNodeAction(NUMBER_INTERPOLATE, btnNumber.div, getCreateOptions(e)))}),
         menuItemSolve               = new MenuItem('Solve',           {icon: iconSolve,        callback: e => actionManager.do(getCreateNodeAction(NUMBER_SOLVE,       btnNumber.div, getCreateOptions(e)))}),
+        menuItemAnimate             = new MenuItem('Animate',         {icon: iconAnimate,      callback: e => actionManager.do(getCreateNodeAction(NUMBER_ANIMATE,     btnNumber.div, getCreateOptions(e)))}),
         menuItemNumberSep1          = new MenuItem('',                {separator: true}),
         menuItemNumberConvertToText = new MenuItem('Convert to text', {icon: iconNumberToText, callback: e => actionManager.do(getCreateNodeAction(NUMBER_TO_TEXT,     btnNumber.div, getCreateOptions(e)))})]);
         
@@ -58009,56 +58156,65 @@ extends OperatorWithValue
 }
 
 
-// class   OpAnimate
-// extends OperatorBase
-// {
-//     paramFrom;
-//     paramTo
-//     paramDuration;
-//     paramType;
+class   OpAnimate
+extends OperatorBase
+{
+    paramFrom;
+    paramTo
+    paramCurve;
+    paramType;
+    paramDuration;
+    paramPosition;
 
 
 
-//     constructor()
-//     {
-//         super(NUMBER_ANIMATE, 'anim', 'animate');
+    constructor()
+    {
+        super(NUMBER_ANIMATE, 'anim', 'animate');
 
-//         this.cached = false;
+        this.cached = false;
         
-//         this.addOutput(new Output([NUMBER_VALUE], this.output_genRequest));
+        this.addOutput(new Output([NUMBER_VALUE], this.output_genRequest));
 
-//         this.addParam(this.paramFrom = new NumberParam('from', 'from', true, true, true,   0));
-//         this.addParam(this.paramTo   = new NumberParam('to',   'to',   true, true, true, 255));
+        this.addParam(this.paramPosition = new NumberParam('position', 'position', true,  true, true, 0, 0, 100));
+        this.addParam(this.paramDuration = new NumberParam('duration', 'duration', false, true, true, 1, 0, Number.MAX_SAFE_INTEGER, 1));
+        this.addParam(this.paramType     = new SelectParam('type',     'type',     false, true, true, ['once', 'repeat', 'ping-pong']));
+        this.addParam(this.paramCurve    = new SelectParam('curve',    'curve',    false, true, true, ['step', 'linear', 'ease in', 'ease out', 'smooth'], 1));
+        this.addParam(this.paramFrom     = new NumberParam('from',     'from',     true,  true, true, 0));
+        this.addParam(this.paramTo       = new NumberParam('to',       'to',       true,  true, true, 1));
 
-//         this.paramSeed.controls[0].allowEditDecimals = false;
-//         this.paramSeed.isDefault = () => false;
-//     }
+        this.paramDuration.controls[0].suffix = ' sec';
+        this.paramPosition.controls[0].suffix = '%';
+    }
 
 
 
-//     output_genRequest(gen)
-//     {
-//         // 'this' is the output
+    output_genRequest(gen)
+    {
+        // 'this' is the output
 
-//         gen.scope.push({
-//             nodeId:  this.node.id, 
-//             paramId: NULL });
+        gen.scope.push({
+            nodeId:  this.node.id, 
+            paramId: NULL });
 
-//         const [request, ignore] = this.node.genRequestStart(gen);
-//         if (ignore) return request;
+        const [request, ignore] = this.node.genRequestStart(gen);
+        if (ignore) return request;
 
         
-//         request.push(...this.node.paramSeed.genRequest(gen));
-//         request.push(...this.node.paramMin .genRequest(gen));
-//         request.push(...this.node.paramMax .genRequest(gen));
+        request.push(...this.node.paramFrom    .genRequest(gen));
+        request.push(...this.node.paramTo      .genRequest(gen));
+        request.push(...this.node.paramCurve   .genRequest(gen));
+        request.push(...this.node.paramType    .genRequest(gen));
+        request.push(...this.node.paramDuration.genRequest(gen));
+        request.push(...this.node.paramPosition.genRequest(gen));
 
 
-//         gen.scope.pop();
-//         pushUnique(gen.passedNodes, this.node);
+        gen.scope.pop();
+        pushUnique(gen.passedNodes, this.node);
 
-//         return request;
-//     }
-// }
+        return request;
+    }
+}
 
 
 class   OpMath
@@ -63907,7 +64063,7 @@ extends OperatorBase
 
 
         this.alwaysLoadParams = true;
-        this.alwaysSaveParams = true;
+        //this.alwaysSaveParams = true;
 
 
         graph.currentPage.groupId = this.id;
@@ -63920,7 +64076,7 @@ extends OperatorBase
     {
         if (   this.paramNode
             && this.paramNode.inputs[0].connected)
-            return this.paramNode.inputs[0].connectedOutput.genRequest(gen);
+            request.push(...this.paramNode.inputs[0].connectedOutput.genRequest(gen));
 
             
         // 'this' is the output        
@@ -63934,15 +64090,10 @@ extends OperatorBase
         if (ignore) return request;
 
 
-        request.push(0)
+        request.push(this.params.length);
 
-        // const input = this.this.inputs[0];
-
-
-        // request.push(input.connected ? 1 : 0);
-
-        // if (input.connected) 
-        //     request.push(...pushInputOrParam(input, gen));
+        for (const param of this.params)
+            request.push(param.name, ...param.genRequest(gen));
 
 
         gen.scope.pop();
@@ -63964,6 +64115,12 @@ extends OperatorBase
 
         const [request, ignore] = this.genRequestStart(gen);
         if (ignore) return request;
+
+
+        request.push(this.params.length);
+
+        for (const param of this.params)
+            request.push(param.name, ...param.genRequest(gen));
 
 
         gen.scope.pop();
@@ -64293,8 +64450,8 @@ function input_onconnect(node)
             node.inputs[0].types[0], 
             {
                 hasOutput: true,
-                id:        node.nodeName,
-                name:      node.nodeName,
+                id:        node.name,
+                name:      node.name,
                 showName:  true
             });
 
@@ -64367,7 +64524,8 @@ function output_onconnect(node)
             node.outputs[0].types[0], 
             {
                 hasInput: true,
-                name:     node.nodeId,
+                id:       node.name,
+                name:     node.name,
                 showName: true
             });
 
@@ -65235,10 +65393,8 @@ function getTerminalsAfterNode(node)
 
     if (node.type == GROUP_NODE)
     {
-        for (const input of node.inputs)
-        {
-            pushUnique(after, getTerminalsAfterNode(input.paramNode));
-        }
+        for (const input of node.inputs) pushUnique(after, getTerminalsAfterNode(input.paramNode));
+        for (const input of node.inputs) pushUnique(after, input.node);
     }
     else if (node.type == GROUP_PARAM)
     {
@@ -71969,6 +72125,7 @@ function createNode(nodeType, creatingButton = null, createdNodeId = -1, options
         case NUMBER_INTERPOLATE:      node = new OpInterpolate();       break;
         case NUMBER_TO_TEXT:          node = new OpNumberToText();      break;
         case NUMBER_SOLVE:            node = new OpSolve();             break;
+        case NUMBER_ANIMATE:          node = new OpAnimate();           break;
              
         case NUMBER_MATH:             node = new OpMath();              break;
         case NUMBER_ADD:              node = new OpAdd();               break;

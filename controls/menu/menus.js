@@ -109,6 +109,7 @@ var menuItemCopy;
 
 var menuItemSeries;
 var menuItemSolve;  
+var menuItemAnimate;  
 var menuItemNumberSep1;
 var menuItemNumberConvertToText;
 
@@ -224,7 +225,6 @@ function initGeneratorMenus()
                                         new MenuItem('',                    {separator: true}),
                                         new MenuItem('All page keys',       {callback:      () => { hideAllMenus(); uiQueueMessageToFigma({cmd: 'figLogAllSavedPageKeys', darkMode: darkMode}); }}),
                                         new MenuItem('All connection keys', {callback:      () => { hideAllMenus(); uiQueueMessageToFigma({cmd: 'figLogAllSavedConnKeys', darkMode: darkMode}); }}),
-                                        new MenuItem('',                    {separator: true}),
                                         new MenuItem('All local data',      {callback:      () => { hideAllMenus(); uiQueueMessageToFigma({cmd: 'figLogAllLocalData', darkMode: darkMode}); }}),
                                         new MenuItem('',                    {separator: true}),   
                                         new MenuItem('Undo stack',          {callback:      () => { hideAllMenus(); logUndoStack(); }}),
@@ -233,14 +233,14 @@ function initGeneratorMenus()
 
     menuDebugGenerator = new Menu('Debug generator', false);
     menuDebugGenerator.addItems([
-        menuItemLogRawRequests        = new MenuItem('Raw\u2008requests',  {checkCallback: () => settings.logRawRequests  ,      callback: () => updateSettingAndMenu('logRawRequests',        true, !settings.logRawRequests       ), setting: true}),
-        menuItemLogRawValues          = new MenuItem('Raw\u2008values',    {checkCallback: () => settings.logRawValues    ,      callback: () => updateSettingAndMenu('logRawValues',          true, !settings.logRawValues         ), setting: true}),
-                                        new MenuItem('',                            {separator: true}),                   
         menuItemLogRequests           = new MenuItem('Requests',           {checkCallback: () => settings.logRequests     ,      callback: () => updateSettingAndMenu('logRequests',           true, !settings.logRequests          ), setting: true}),
         menuItemLogValueUpdates       = new MenuItem('Values',             {checkCallback: () => settings.logValueUpdates ,      callback: () => updateSettingAndMenu('logValueUpdates',       true, !settings.logValueUpdates      ), setting: true}),
         menuItemLogObjectUpdates      = new MenuItem('Objects',            {checkCallback: () => settings.logObjectUpdates,      callback: () => updateSettingAndMenu('logObjectUpdates',      true, !settings.logObjectUpdates     ), setting: true}),
         menuItemLogStyleUpdates       = new MenuItem('Styles',             {checkCallback: () => settings.logStyleUpdates ,      callback: () => updateSettingAndMenu('logStyleUpdates',       true, !settings.logStyleUpdates      ), setting: true}),
-                                        new MenuItem('',                            {separator: true}),                   
+                                        new MenuItem('',                   {separator: true}),                   
+        menuItemLogRawRequests        = new MenuItem('Raw\u2008requests',  {checkCallback: () => settings.logRawRequests  ,      callback: () => updateSettingAndMenu('logRawRequests',        true, !settings.logRawRequests       ), setting: true}),
+        menuItemLogRawValues          = new MenuItem('Raw\u2008values',    {checkCallback: () => settings.logRawValues    ,      callback: () => updateSettingAndMenu('logRawValues',          true, !settings.logRawValues         ), setting: true}),
+                                        new MenuItem('',                   {separator: true}),                   
         menuItemLogMessages           = new MenuItem('Messages',           {checkCallback: () => settings.logMessages     ,      callback: () => updateSettingAndMenu('logMessages',           true, !settings.logMessages          ), setting: true}),
         menuItemLogActions            = new MenuItem('Actions',            {checkCallback: () => settings.logActions      ,      callback: () => updateSettingAndMenu('logActions',            true, !settings.logActions           ), setting: true})]);
                      
@@ -360,6 +360,7 @@ function initGeneratorMenus()
                                       new MenuItem('',                {separator: true}),
                                       new MenuItem('Interpolate',     {icon: iconInterpolate,  callback: e => actionManager.do(getCreateNodeAction(NUMBER_INTERPOLATE, btnNumber.div, getCreateOptions(e)))}),
         menuItemSolve               = new MenuItem('Solve',           {icon: iconSolve,        callback: e => actionManager.do(getCreateNodeAction(NUMBER_SOLVE,       btnNumber.div, getCreateOptions(e)))}),
+        menuItemAnimate             = new MenuItem('Animate',         {icon: iconAnimate,      callback: e => actionManager.do(getCreateNodeAction(NUMBER_ANIMATE,     btnNumber.div, getCreateOptions(e)))}),
         menuItemNumberSep1          = new MenuItem('',                {separator: true}),
         menuItemNumberConvertToText = new MenuItem('Convert to text', {icon: iconNumberToText, callback: e => actionManager.do(getCreateNodeAction(NUMBER_TO_TEXT,     btnNumber.div, getCreateOptions(e)))})]);
         

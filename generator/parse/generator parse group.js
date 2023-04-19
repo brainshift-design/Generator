@@ -6,17 +6,17 @@ function genParseGroupNode(parse)
     const group = new GGroupNode(nodeId, options);
 
 
-    let nInputs = -1;
+    // let nParams = -1;
     
-    if (!ignore)
-    {
-        nInputs = parseInt(parse.move());
-        console.assert(nInputs == 0 || nInputs == 1, 'nInputs must be [0, 1]');
-    }
+    // if (!ignore)
+    // {
+    //     nParams = parseInt(parse.move());
+    //     //console.assert(nInputs == 0 || nInputs == 1, 'nInputs must be [0, 1]');
+    // }
 
 
     if (parse.settings.logRequests) 
-        logReq(group, parse, ignore, nInputs);
+        logReq(group, parse, ignore);//, nParams);
 
 
     if (ignore)
@@ -29,8 +29,13 @@ function genParseGroupNode(parse)
     parse.nTab++;
 
 
-    if (nInputs == 1)
-        cache.input = genParse(parse);
+    const nParams = parseInt(parse.move());
+
+    for (let i = 0; i < nParams; i++)
+    {
+        group.paramIds.push(parse.move());
+        group.params  .push(genParse(parse));
+    }
 
 
     parse.nTab--;

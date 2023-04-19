@@ -161,10 +161,8 @@ function getTerminalsAfterNode(node)
 
     if (node.type == GROUP_NODE)
     {
-        for (const input of node.inputs)
-        {
-            pushUnique(after, getTerminalsAfterNode(input.paramNode));
-        }
+        for (const input of node.inputs) pushUnique(after, getTerminalsAfterNode(input.paramNode));
+        for (const input of node.inputs) pushUnique(after, input.node);
     }
     else if (node.type == GROUP_PARAM)
     {

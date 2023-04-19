@@ -3564,6 +3564,7 @@ const NUMBER_TYPES =
     NUMBER_INTERPOLATE,
     NUMBER_TO_TEXT,
     NUMBER_SOLVE,
+    NUMBER_ANIMATE,
 
     ...MATH_TYPES,
     ...BOOLEAN_TYPES,
@@ -7735,6 +7736,73 @@ extends GNumberType
 
 
 
+class GAnimate
+extends GNumberType
+{
+    from;
+    to;
+    curve;
+    type;
+    duration;
+    position;
+
+
+
+    constructor(nodeId, options)
+    {
+        super(NUMBER_ANIMATE, nodeId, options);
+    }
+
+
+    
+    copy()
+    {
+        const copy = new GAnimate(this.nodeId, this.options);
+
+        copy.copyBase(this);
+
+        if (this.from    ) copy.from     = this.from    .copy();
+        if (this.to      ) copy.to       = this.to      .copy();
+        if (this.curve   ) copy.curve    = this.curve   .copy();
+        if (this.type    ) copy.type     = this.type    .copy();
+        if (this.duration) copy.duration = this.duration.copy();
+        if (this.position) copy.position = this.position.copy();
+
+        return copy;
+    }
+
+
+
+    async eval(parse)
+    {
+        if (this.isCached())
+            return this;
+
+            
+        const from     = (await this.from    .eval(parse)).toValue();
+        const to       = (await this.to      .eval(parse)).toValue();
+        const curve    = (await this.curve   .eval(parse)).toValue();
+        const type     = (await this.type    .eval(parse)).toValue();
+        const duration = (await this.duration.eval(parse)).toValue();
+        const position = (await this.position.eval(parse)).toValue();
+    
+
+        this.value = new NumberValue(0);
+        
+
+        genPushUpdateValue(parse, this.nodeId, 'from',     from    );
+        genPushUpdateValue(parse, this.nodeId, 'to',       to      );
+        genPushUpdateValue(parse, this.nodeId, 'curve',    curve   );
+        genPushUpdateValue(parse, this.nodeId, 'type',     type    );
+        genPushUpdateValue(parse, this.nodeId, 'duration', duration);
+        genPushUpdateValue(parse, this.nodeId, 'position', position);
+        
+
+        this.validate();
+
+        return this;
+    }
+}
 
 
 
@@ -12686,7 +12754,8 @@ extends GObjectBase
 class GGroupNode
 extends GOperator
 {
-    input = null;
+    paramIds = [];
+    params    = [];
 
 
 
@@ -12703,8 +12772,7 @@ extends GOperator
 
         copy.copyBase(this);
 
-        if (this.input) copy.input = this.input.copy();
-        if (this.value) copy.value = this.value.copy();
+        copy.params = this.params.map(p => p.copy());
 
         return copy;
     }
@@ -12717,13 +12785,16 @@ extends GOperator
             return this;
 
 
-        this.value = NullValue;
-            this.input
-            ? (await this.input.eval(parse)).toValue()
-            : NullValue;
-
-
-        genPushUpdateValue(parse, this.nodeId, 'value', this.value);
+        if (!isEmpty(this.params))
+        {
+            for (let i = 0; i < this.params.length; i++)
+            {
+                const param = await this.params[i].eval(parse);
+                genPushUpdateValue(parse, this.nodeId, this.paramIds[i], param.toValue());
+            }
+        }
+        else
+            genPushUpdateValue(parse, this.nodeId, '', NullValue);
         
         
         this.validate();
@@ -12919,10 +12990,10 @@ function updateSetting(settingName, value)
                         
         case 'showNodeId':                    settings.showNodeId                    = value;  break;
 
-        case 'showTooltipLongText':           settings.showTooltipLongText           = value; break;
-        case 'showTooltipColorInterpolation': settings.showTooltipColorInterpolation = value; break;
-        case 'showTooltipColorBlindness':     settings.showTooltipColorBlindness     = value; break;
-        case 'showTooltipColorContrast':      settings.showTooltipColorContrast      = value; break;
+        case 'showTooltipLongText':           settings.showTooltipLongText           = value;  break;
+        case 'showTooltipColorInterpolation': settings.showTooltipColorInterpolation = value;  break;
+        case 'showTooltipColorBlindness':     settings.showTooltipColorBlindness     = value;  break;
+        case 'showTooltipColorContrast':      settings.showTooltipColorContrast      = value;  break;
 
         case 'enableBetaFeatures':            settings.enableBetaFeatures            = value;  break;
                    
@@ -13125,6 +13196,7 @@ function enableFeatures(subscription, beta)
     
     updateElementDisplay(menuItemSeries              .div, subscription && beta);    
     updateElementDisplay(menuItemSolve               .div, subscription && beta);    
+    updateElementDisplay(menuItemAnimate             .div, subscription && beta);    
     updateElementDisplay(menuItemNumberSep1          .div, subscription && beta);
     updateElementDisplay(menuItemNumberConvertToText .div, subscription && beta);
     
@@ -14536,17 +14608,17 @@ function genParseGroupNode(parse)
     const group = new GGroupNode(nodeId, options);
 
 
-    let nInputs = -1;
+    // let nParams = -1;
     
-    if (!ignore)
-    {
-        nInputs = parseInt(parse.move());
-        console.assert(nInputs == 0 || nInputs == 1, 'nInputs must be [0, 1]');
-    }
+    // if (!ignore)
+    // {
+    //     nParams = parseInt(parse.move());
+    //     //console.assert(nInputs == 0 || nInputs == 1, 'nInputs must be [0, 1]');
+    // }
 
 
     if (parse.settings.logRequests) 
-        logReq(group, parse, ignore, nInputs);
+        logReq(group, parse, ignore);//, nParams);
 
 
     if (ignore)
@@ -14559,8 +14631,13 @@ function genParseGroupNode(parse)
     parse.nTab++;
 
 
-    if (nInputs == 1)
-        cache.input = genParse(parse);
+    const nParams = parseInt(parse.move());
+
+    for (let i = 0; i < nParams; i++)
+    {
+        group.paramIds.push(parse.move());
+        group.params  .push(genParse(parse));
+    }
 
 
     parse.nTab--;
@@ -15296,6 +15373,46 @@ function genParseSolve(parse)
     genParseNodeEnd(parse, solve);
     return solve;
 }
+
+
+
+function genParseAnimate(parse)
+{
+    const [, nodeId, options, ignore] = genParseNodeStart(parse);
+
+
+    const anim = new GAnimate(nodeId, options);
+
+
+    if (parse.settings.logRequests) 
+        logReq(anim, parse);
+
+
+    if (ignore) 
+    {
+        genParseNodeEnd(parse, anim);
+        return parse.parsedNodes.find(n => n.nodeId == nodeId);
+    }
+
+
+    parse.nTab++;
+
+
+    anim.from     = genParse(parse);
+    anim.to       = genParse(parse);
+    anim.curve    = genParse(parse);
+    anim.type     = genParse(parse);
+    anim.duration = genParse(parse);
+    anim.position = genParse(parse);
+
+
+    parse.nTab--;
+
+
+    genParseNodeEnd(parse, anim);
+    return anim;
+}
+
 
 
 function genParseRectangle(parse)
@@ -16312,6 +16429,7 @@ function genParse(parse, inParam = true)
     else if (parse.next == NUMBER_INTERPOLATE     ) result = genParseInterpolate     (parse);
     else if (parse.next == NUMBER_TO_TEXT         ) result = genParseNumberToText    (parse);
     else if (parse.next == NUMBER_SOLVE           ) result = genParseSolve           (parse);
+    else if (parse.next == NUMBER_ANIMATE         ) result = genParseAnimate         (parse);
     
     else if (parse.next == NUMBER_MATH            ) result = genParseMath            (parse, (nodeId, options) => new GMath          (nodeId, options));
     else if (parse.next == NUMBER_ADD             ) result = genParseArithmetic      (parse, (nodeId, options) => new GAdd           (nodeId, options));
@@ -16370,8 +16488,8 @@ function genParse(parse, inParam = true)
     else if (parse.next == POLYGON                ) result = genParsePolygon         (parse);
     else if (parse.next == STAR                   ) result = genParseStar            (parse);
 
-    else if (parse.next == GROUP_NODE             ) result = genParseGroupNode          (parse);
-    else if (parse.next == GROUP_PARAM            ) result = genParseGroupParam    (parse);
+    else if (parse.next == GROUP_NODE             ) result = genParseGroupNode       (parse);
+    else if (parse.next == GROUP_PARAM            ) result = genParseGroupParam      (parse);
 
     else if (parse.next == COMMENT                ) result = genParseComment         (parse);
 
@@ -16498,51 +16616,6 @@ function genParseParamId(parse)
 
     return paramId;
 }
-
-
-
-function genParseGroupNode(parse)
-{
-    const [, nodeId, options, ignore] = genParseNodeStart(parse);
-
-
-    const cache = new GGroupNode(nodeId, options);
-
-
-    // let nInputs = -1;
-    
-    // if (!ignore)
-    // {
-    //     nInputs = parseInt(parse.move());
-    //     console.assert(nInputs == 0 || nInputs == 1, 'nInputs must be [0, 1]');
-    // }
-
-
-    if (parse.settings.logRequests) 
-        logReq(cache, parse, ignore);//, nInputs);
-
-
-    if (ignore) 
-    {
-        genParseNodeEnd(parse, cache);
-        return parse.parsedNodes.find(n => n.nodeId == nodeId);
-    }
-
-
-    parse.nTab++;
-
-
-    // if (nInputs == 1)
-    //     cache.input = genParse(parse);
-
-
-    parse.nTab--;
-
-
-    genParseNodeEnd(parse, cache);
-    return cache;
-}
-
 
 
 class RequestSettings

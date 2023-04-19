@@ -678,3 +678,42 @@ function genParseSolve(parse)
     genParseNodeEnd(parse, solve);
     return solve;
 }
+
+
+
+function genParseAnimate(parse)
+{
+    const [, nodeId, options, ignore] = genParseNodeStart(parse);
+
+
+    const anim = new GAnimate(nodeId, options);
+
+
+    if (parse.settings.logRequests) 
+        logReq(anim, parse);
+
+
+    if (ignore) 
+    {
+        genParseNodeEnd(parse, anim);
+        return parse.parsedNodes.find(n => n.nodeId == nodeId);
+    }
+
+
+    parse.nTab++;
+
+
+    anim.from     = genParse(parse);
+    anim.to       = genParse(parse);
+    anim.curve    = genParse(parse);
+    anim.type     = genParse(parse);
+    anim.duration = genParse(parse);
+    anim.position = genParse(parse);
+
+
+    parse.nTab--;
+
+
+    genParseNodeEnd(parse, anim);
+    return anim;
+}

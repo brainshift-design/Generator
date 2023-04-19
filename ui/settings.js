@@ -62,10 +62,10 @@ function updateSetting(settingName, value)
                         
         case 'showNodeId':                    settings.showNodeId                    = value;  break;
 
-        case 'showTooltipLongText':           settings.showTooltipLongText           = value; break;
-        case 'showTooltipColorInterpolation': settings.showTooltipColorInterpolation = value; break;
-        case 'showTooltipColorBlindness':     settings.showTooltipColorBlindness     = value; break;
-        case 'showTooltipColorContrast':      settings.showTooltipColorContrast      = value; break;
+        case 'showTooltipLongText':           settings.showTooltipLongText           = value;  break;
+        case 'showTooltipColorInterpolation': settings.showTooltipColorInterpolation = value;  break;
+        case 'showTooltipColorBlindness':     settings.showTooltipColorBlindness     = value;  break;
+        case 'showTooltipColorContrast':      settings.showTooltipColorContrast      = value;  break;
 
         case 'enableBetaFeatures':            settings.enableBetaFeatures            = value;  break;
                    
@@ -268,6 +268,7 @@ function enableFeatures(subscription, beta)
     
     updateElementDisplay(menuItemSeries              .div, subscription && beta);    
     updateElementDisplay(menuItemSolve               .div, subscription && beta);    
+    updateElementDisplay(menuItemAnimate             .div, subscription && beta);    
     updateElementDisplay(menuItemNumberSep1          .div, subscription && beta);
     updateElementDisplay(menuItemNumberConvertToText .div, subscription && beta);
     

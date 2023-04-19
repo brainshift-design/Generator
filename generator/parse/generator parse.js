@@ -103,6 +103,7 @@ function genParse(parse, inParam = true)
     else if (parse.next == NUMBER_INTERPOLATE     ) result = genParseInterpolate     (parse);
     else if (parse.next == NUMBER_TO_TEXT         ) result = genParseNumberToText    (parse);
     else if (parse.next == NUMBER_SOLVE           ) result = genParseSolve           (parse);
+    else if (parse.next == NUMBER_ANIMATE         ) result = genParseAnimate         (parse);
     
     else if (parse.next == NUMBER_MATH            ) result = genParseMath            (parse, (nodeId, options) => new GMath          (nodeId, options));
     else if (parse.next == NUMBER_ADD             ) result = genParseArithmetic      (parse, (nodeId, options) => new GAdd           (nodeId, options));
@@ -161,8 +162,8 @@ function genParse(parse, inParam = true)
     else if (parse.next == POLYGON                ) result = genParsePolygon         (parse);
     else if (parse.next == STAR                   ) result = genParseStar            (parse);
 
-    else if (parse.next == GROUP_NODE             ) result = genParseGroupNode          (parse);
-    else if (parse.next == GROUP_PARAM            ) result = genParseGroupParam    (parse);
+    else if (parse.next == GROUP_NODE             ) result = genParseGroupNode       (parse);
+    else if (parse.next == GROUP_PARAM            ) result = genParseGroupParam      (parse);
 
     else if (parse.next == COMMENT                ) result = genParseComment         (parse);
 
@@ -288,48 +289,4 @@ function genParseParamId(parse)
         parse.log += parse.tab + paramId;
 
     return paramId;
-}
-
-
-
-function genParseGroupNode(parse)
-{
-    const [, nodeId, options, ignore] = genParseNodeStart(parse);
-
-
-    const cache = new GGroupNode(nodeId, options);
-
-
-    // let nInputs = -1;
-    
-    // if (!ignore)
-    // {
-    //     nInputs = parseInt(parse.move());
-    //     console.assert(nInputs == 0 || nInputs == 1, 'nInputs must be [0, 1]');
-    // }
-
-
-    if (parse.settings.logRequests) 
-        logReq(cache, parse, ignore);//, nInputs);
-
-
-    if (ignore) 
-    {
-        genParseNodeEnd(parse, cache);
-        return parse.parsedNodes.find(n => n.nodeId == nodeId);
-    }
-
-
-    parse.nTab++;
-
-
-    // if (nInputs == 1)
-    //     cache.input = genParse(parse);
-
-
-    parse.nTab--;
-
-
-    genParseNodeEnd(parse, cache);
-    return cache;
 }

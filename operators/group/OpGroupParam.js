@@ -307,8 +307,8 @@ function input_onconnect(node)
             node.inputs[0].types[0], 
             {
                 hasOutput: true,
-                id:        node.nodeName,
-                name:      node.nodeName,
+                id:        node.name,
+                name:      node.name,
                 showName:  true
             });
 
@@ -381,7 +381,8 @@ function output_onconnect(node)
             node.outputs[0].types[0], 
             {
                 hasInput: true,
-                name:     node.nodeId,
+                id:       node.name,
+                name:     node.name,
                 showName: true
             });
 

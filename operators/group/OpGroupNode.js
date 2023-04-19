@@ -7,7 +7,7 @@ extends OperatorBase
 
 
         this.alwaysLoadParams = true;
-        this.alwaysSaveParams = true;
+        //this.alwaysSaveParams = true;
 
 
         graph.currentPage.groupId = this.id;
@@ -20,7 +20,7 @@ extends OperatorBase
     {
         if (   this.paramNode
             && this.paramNode.inputs[0].connected)
-            return this.paramNode.inputs[0].connectedOutput.genRequest(gen);
+            request.push(...this.paramNode.inputs[0].connectedOutput.genRequest(gen));
 
             
         // 'this' is the output        
@@ -34,15 +34,10 @@ extends OperatorBase
         if (ignore) return request;
 
 
-        request.push(0)
+        request.push(this.params.length);
 
-        // const input = this.this.inputs[0];
-
-
-        // request.push(input.connected ? 1 : 0);
-
-        // if (input.connected) 
-        //     request.push(...pushInputOrParam(input, gen));
+        for (const param of this.params)
+            request.push(param.name, ...param.genRequest(gen));
 
 
         gen.scope.pop();
@@ -64,6 +59,12 @@ extends OperatorBase
 
         const [request, ignore] = this.genRequestStart(gen);
         if (ignore) return request;
+
+
+        request.push(this.params.length);
+
+        for (const param of this.params)
+            request.push(param.name, ...param.genRequest(gen));
 
 
         gen.scope.pop();
