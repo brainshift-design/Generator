@@ -7743,8 +7743,8 @@ extends GNumberType
     to;
     curve;
     type;
-    duration;
-    position;
+    length;
+    time;
 
 
 
@@ -7761,12 +7761,12 @@ extends GNumberType
 
         copy.copyBase(this);
 
-        if (this.from    ) copy.from     = this.from    .copy();
-        if (this.to      ) copy.to       = this.to      .copy();
-        if (this.curve   ) copy.curve    = this.curve   .copy();
-        if (this.type    ) copy.type     = this.type    .copy();
-        if (this.duration) copy.duration = this.duration.copy();
-        if (this.position) copy.position = this.position.copy();
+        if (this.from  ) copy.from   = this.from  .copy();
+        if (this.to    ) copy.to     = this.to    .copy();
+        if (this.curve ) copy.curve  = this.curve .copy();
+        if (this.type  ) copy.type   = this.type  .copy();
+        if (this.length) copy.length = this.length.copy();
+        if (this.time  ) copy.time   = this.time  .copy();
 
         return copy;
     }
@@ -7779,23 +7779,81 @@ extends GNumberType
             return this;
 
             
-        const from     = (await this.from    .eval(parse)).toValue();
-        const to       = (await this.to      .eval(parse)).toValue();
-        const curve    = (await this.curve   .eval(parse)).toValue();
-        const type     = (await this.type    .eval(parse)).toValue();
-        const duration = (await this.duration.eval(parse)).toValue();
-        const position = (await this.position.eval(parse)).toValue();
+        const from   = (await this.from  .eval(parse)).toValue();
+        const to     = (await this.to    .eval(parse)).toValue();
+        const curve  = (await this.curve .eval(parse)).toValue();
+        const type   = (await this.type  .eval(parse)).toValue();
+        const length = (await this.length.eval(parse)).toValue();
+        const time   = (await this.time  .eval(parse)).toValue();
     
 
-        this.value = new NumberValue(0);
+        const maxDec = Math.max(from.decimals, to.decimals);
+
+        switch (curve.value)
+        {
+            case 0: 
+            {
+                this.value = new NumberValue(
+                    time.value < length.value ? from.value : to.value, 
+                    maxDec);
+    
+                break;
+            }
+            case 1: 
+            {
+                this.value = new NumberValue(
+                    from.value + (to.value - from.value) * time.value / length.value,
+                    maxDec);
+    
+                break;
+            }
+            case 2: 
+            {
+                let f = time.value / length.value;
+
+                f = 1 - sqr(1 - f);
+
+                this.value = new NumberValue(
+                    from.value + (to.value - from.value) * f,
+                    maxDec);
+    
+                break;
+            }
+            case 3: 
+            {
+                let f = time.value / length.value;
+
+                f = sqr(f);
+
+                this.value = new NumberValue(
+                    from.value + (to.value - from.value) * f,
+                    maxDec);
+    
+                break;
+            }
+            case 4: 
+            {
+                let f = time.value / length.value;
+
+                f = 6*Math.pow(f, 5) - 15*Math.pow(f, 4) + 10*Math.pow(f, 3);
+
+                this.value = new NumberValue(
+                    from.value + (to.value - from.value) * f,
+                    maxDec);
+    
+                break;
+            }
+        }
+        
         
 
-        genPushUpdateValue(parse, this.nodeId, 'from',     from    );
-        genPushUpdateValue(parse, this.nodeId, 'to',       to      );
-        genPushUpdateValue(parse, this.nodeId, 'curve',    curve   );
-        genPushUpdateValue(parse, this.nodeId, 'type',     type    );
-        genPushUpdateValue(parse, this.nodeId, 'duration', duration);
-        genPushUpdateValue(parse, this.nodeId, 'position', position);
+        genPushUpdateValue(parse, this.nodeId, 'value',  this.value);
+        genPushUpdateValue(parse, this.nodeId, 'from',   from      );
+        genPushUpdateValue(parse, this.nodeId, 'to',     to        );
+        genPushUpdateValue(parse, this.nodeId, 'curve',  curve     );
+        genPushUpdateValue(parse, this.nodeId, 'type',   type      );
+        genPushUpdateValue(parse, this.nodeId, 'length', length    );
+        genPushUpdateValue(parse, this.nodeId, 'time',   time      );
         
 
         this.validate();
@@ -15402,8 +15460,8 @@ function genParseAnimate(parse)
     anim.to       = genParse(parse);
     anim.curve    = genParse(parse);
     anim.type     = genParse(parse);
-    anim.duration = genParse(parse);
-    anim.position = genParse(parse);
+    anim.length = genParse(parse);
+    anim.time     = genParse(parse);
 
 
     parse.nTab--;

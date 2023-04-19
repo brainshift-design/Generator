@@ -312,6 +312,15 @@
 }
 
 
+.btnAnimatePlay
+{
+    width:          15px;
+    height:         15px;
+    margin-right:   6px;
+    pointer-events: all;
+}
+
+
 .styleCircleWrapper
 {
     display:        inline-block;

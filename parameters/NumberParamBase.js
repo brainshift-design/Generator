@@ -30,8 +30,6 @@ extends Parameter
     
     setValue(value, createAction, updateControl = true, dispatchEvents = true) 
     {
-        // console.log(this.id + '.setValue() value =', value);
-
         console.assert(
             value instanceof NumberValue,
             'value must be a NumberValue');
@@ -40,7 +38,6 @@ extends Parameter
         this.preSetValue(value, createAction, dispatchEvents);
 
         
-        //console.log('NumberParamBase.setValue value =', value);
         if (updateControl)
         {
             this.controls[0].setDecimals(value.decimals, value.decimals);

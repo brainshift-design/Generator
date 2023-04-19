@@ -707,8 +707,8 @@ function genParseAnimate(parse)
     anim.to       = genParse(parse);
     anim.curve    = genParse(parse);
     anim.type     = genParse(parse);
-    anim.duration = genParse(parse);
-    anim.position = genParse(parse);
+    anim.length = genParse(parse);
+    anim.time     = genParse(parse);
 
 
     parse.nTab--;

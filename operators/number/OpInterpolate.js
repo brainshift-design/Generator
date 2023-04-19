@@ -66,8 +66,8 @@ extends OperatorWithValue
 
     updateParams()
     {
-        this.paramAmount.enableControlText(true);
         this.paramValue .enableControlText(false);
+        this.paramAmount.enableControlText(true);
 
         this.updateParamControls();
     }
