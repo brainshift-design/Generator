@@ -42,7 +42,7 @@ extends GOperator
         await this.node.eval(parse);
         this.node.feedbackValue = null;
 
-        this.param = this.node.getParamFromId(this.paramId);
+        this.param = this.node.paramFromId(this.paramId);
 
 
         if (isValid(this.param)) // could have been deleted from OpRepeat for example
@@ -52,14 +52,14 @@ extends GOperator
             //     this.param = this.feedbackValue();
 
             const result = (await this.param.eval(parse)).toValue();
-            
+            console.log('result =', result);
             //this.param.feedbackValue = null;
-            return result;
+            return this.value = result;
         }
         else
         {
             //this.param.feedbackValue = null;
-            return NullValue;
+            return this.value = NullValue;
         }
     }
 

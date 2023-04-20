@@ -42,7 +42,7 @@ extends GNode
 
 
 
-    getParamFromId(paramId)
+    paramFromId(paramId)
     {
         return this[paramId];
     }

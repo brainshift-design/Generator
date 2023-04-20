@@ -2,7 +2,7 @@ class GGroupNode
 extends GOperator
 {
     paramIds = [];
-    params    = [];
+    params   = [];
 
 
 
@@ -22,6 +22,13 @@ extends GOperator
         copy.params = this.params.map(p => p.copy());
 
         return copy;
+    }
+
+
+
+    paramFromId(paramId)
+    {
+        return this.params[this.paramIds.findIndex(id => id == paramId)];
     }
 
 

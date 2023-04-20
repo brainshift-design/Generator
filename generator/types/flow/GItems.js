@@ -77,7 +77,7 @@ extends GOperator
 
 
 
-    getParamFromId(paramId)
+    paramFromId(paramId)
     {
         if (   paramId.length > 4
             && paramId.substring(0, 4) == 'item'
