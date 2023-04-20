@@ -22,6 +22,7 @@ document.addEventListener('keydown', e =>
         graphView.copySelectedNodes();
         graphView.deleteSelectedNodes(true);
     }
+
     // copy
     else if (   e.code == 'KeyC'
         && getCtrlKey(e))
@@ -93,7 +94,6 @@ document.addEventListener('keydown', e =>
     //       && getCtrlKey(e))
     //     layoutSelectedNodes();
 
-
     // toggled operation results
     else if (e.code == 'KeyR'
           && getCtrlKey(e)
@@ -102,7 +102,6 @@ document.addEventListener('keydown', e =>
         updateSettingAndMenu('showOperationResults',  true, !settings.showOperationResults);  
         updateMenuItemShowOperationResults();          
     }
-
 
     // escape
     else if (e.key == 'Escape')
@@ -257,6 +256,7 @@ document.addEventListener('keydown', e =>
               altPressedInMenu = true;
         }
     }
+
     else if (    e.key == 'Alt'
              && !e.shiftKey
              &&  graphView.spaceDown
@@ -268,6 +268,15 @@ document.addEventListener('keydown', e =>
 
     else if (e.code == 'Tab')
         e.preventDefault();
+
+    else if (e.code == 'KeyN') actionManager.do(getCreateNodeAction(NUMBER,      null, getCreateOptions(e)));
+    else if (e.code == 'KeyT') actionManager.do(getCreateNodeAction(TEXT,        null, getCreateOptions(e)));
+    else if (e.code == 'KeyC') actionManager.do(getCreateNodeAction(COLOR,       null, getCreateOptions(e, {random: e.altKey && !getCtrlKey(e)})));
+    else if (e.code == 'KeyG') actionManager.do(getCreateNodeAction(GROUP_NODE,  null, getCreateOptions(e)));
+    else if (e.code == 'KeyP') actionManager.do(getCreateNodeAction(GROUP_PARAM, null, getCreateOptions(e)));
+
+    // graph.nodes.at(-1).div.style.left = e.clientX - (defNodeWidth    / 2) - (               + graph.currentPage.pan.x) / graph.currentPage.zoom;
+    // graph.nodes.at(-1).div.style.top  = e.clientY - (defHeaderHeight / 2) - (getTopHeight() + graph.currentPage.pan.y) / graph.currentPage.zoom;
 });
 
 
@@ -310,6 +319,7 @@ document.addEventListener('keyup', e =>
 
         altPressedInMenu = false;
     }
+
     else if (e.key == 'Control')
     {
         if (graphView.spaceDown)
@@ -336,6 +346,7 @@ document.addEventListener('keyup', e =>
             overNumberControlCtrl = null;
         }
     }
+
     else if (e.key == 'Shift')
     {
         if (numberControlChanging)
@@ -344,6 +355,5 @@ document.addEventListener('keyup', e =>
             numberControlChanging.update();
         }
     }
-
 },
 false);

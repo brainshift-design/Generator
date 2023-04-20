@@ -172,6 +172,12 @@ function getTerminalsAfterNode(node)
                 pushUnique(after, getTerminalsAfterNode(input.node));
         }
 
+        
+        // iterating over outputs manually to avoid an endless loop 
+        // as with getTerminalsAfterNode(node.groupNode)
+
+        pushUnique(after, node.groupNode);
+        
         for (const output of node.groupNode.outputs)
         {
             for (const input of output.connectedInputs)

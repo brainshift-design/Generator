@@ -6,8 +6,7 @@ extends OperatorBase
         super(GROUP_NODE, 'group', 'group');
 
 
-        this.alwaysLoadParams = true;
-        //this.alwaysSaveParams = true;
+        this.saveParams = false;
 
 
         graph.currentPage.groupId = this.id;

@@ -111,6 +111,7 @@ var menuItemSeries;
 var menuItemSolve;  
 var menuItemAnimate;  
 var menuItemNumberSep1;
+var menuItemNumberSep2;
 var menuItemNumberConvertToText;
 
 var menuItemColor;
@@ -274,8 +275,8 @@ function initGeneratorMenus()
                                  }
                              }),
                              new MenuItem('',                             {separator: true}),
-                             new MenuItem('Log storage',                  {childMenu: menuDebugStorage}),
                              new MenuItem('Log generator',                {childMenu: menuDebugGenerator}),
+                             new MenuItem('Log storage',                  {childMenu: menuDebugStorage}),
                              new MenuItem('',                             {separator: true}),   
                              new MenuItem('Delete',                       {childMenu: menuDebugDelete}),
                              new MenuItem('',                             {separator: true}),   
@@ -344,7 +345,7 @@ function initGeneratorMenus()
     
     menuNumber = new Menu('Numbers', true, false);
     menuNumber.addItems([
-                                      new MenuItem('Number',          {icon: iconNumber,       callback: e => actionManager.do(getCreateNodeAction(NUMBER,             btnNumber.div, getCreateOptions(e)))}),
+                                      new MenuItem('Number',          {icon: iconNumber,       shortcut: 'N', callback: e => actionManager.do(getCreateNodeAction(NUMBER,             btnNumber.div, getCreateOptions(e)))}),
                                       new MenuItem('',                {separator: true}),
                                       new MenuItem('Sign',            {icon: iconSign,         callback: e => actionManager.do(getCreateNodeAction(NUMBER_SIGN,        btnNumber.div, getCreateOptions(e)))}),
                                       new MenuItem('Absolute',        {icon: iconAbsolute,     callback: e => actionManager.do(getCreateNodeAction(NUMBER_ABSOLUTE,    btnNumber.div, getCreateOptions(e)))}),
@@ -360,14 +361,15 @@ function initGeneratorMenus()
                                       new MenuItem('',                {separator: true}),
                                       new MenuItem('Interpolate',     {icon: iconInterpolate,  callback: e => actionManager.do(getCreateNodeAction(NUMBER_INTERPOLATE, btnNumber.div, getCreateOptions(e)))}),
         menuItemSolve               = new MenuItem('Solve',           {icon: iconSolve,        callback: e => actionManager.do(getCreateNodeAction(NUMBER_SOLVE,       btnNumber.div, getCreateOptions(e)))}),
-        menuItemAnimate             = new MenuItem('Animate',         {icon: iconAnimate,      callback: e => actionManager.do(getCreateNodeAction(NUMBER_ANIMATE,     btnNumber.div, getCreateOptions(e)))}),
         menuItemNumberSep1          = new MenuItem('',                {separator: true}),
+        menuItemAnimate             = new MenuItem('Animate',         {icon: iconAnimate,      callback: e => actionManager.do(getCreateNodeAction(NUMBER_ANIMATE,     btnNumber.div, getCreateOptions(e)))}),
+        menuItemNumberSep2          = new MenuItem('',                {separator: true}),
         menuItemNumberConvertToText = new MenuItem('Convert to text', {icon: iconNumberToText, callback: e => actionManager.do(getCreateNodeAction(NUMBER_TO_TEXT,     btnNumber.div, getCreateOptions(e)))})]);
         
     
     menuString = new Menu('Text nodes', true, false);
     menuString.addItems([
-        new MenuItem('Text',      {icon: iconText,          callback: e => actionManager.do(getCreateNodeAction(TEXT,           btnText.div, getCreateOptions(e)))}),
+        new MenuItem('Text',      {icon: iconText,          shortcut: 'T', callback: e => actionManager.do(getCreateNodeAction(TEXT,           btnText.div, getCreateOptions(e)))}),
         new MenuItem('',          {separator: true}),
         new MenuItem('Substring', {icon: iconTextSubstring, callback: e => actionManager.do(getCreateNodeAction(TEXT_SUBSTRING, btnText.div, getCreateOptions(e)))}),
         new MenuItem('Character', {icon: iconTextCharacter, callback: e => actionManager.do(getCreateNodeAction(TEXT_CHAR,      btnText.div, getCreateOptions(e)))}),
@@ -387,7 +389,7 @@ function initGeneratorMenus()
         
     menuColor = new Menu('Colors', true, true);
     menuColor.addItems([
-        menuItemColor        = new MenuItem('Color',         {icon: iconColor,            callback: e => actionManager.do(getCreateNodeAction(COLOR,             btnColor.div, getCreateOptions(e,  {random: e.altKey && !getCtrlKey(e)})))}),
+        menuItemColor        = new MenuItem('Color',         {icon: iconColor,            shortcut: 'C', callback: e => actionManager.do(getCreateNodeAction(COLOR,             btnColor.div, getCreateOptions(e,  {random: e.altKey && !getCtrlKey(e)})))}),
                                new MenuItem('',              {separator: true}),
                                new MenuItem('Valid sRGB',    {icon: iconValidColor,       callback: e => actionManager.do(getCreateNodeAction(VALID_COLOR,       btnColor.div, getCreateOptions(e)))}),
         menuItemCorrectColor = new MenuItem('Correct color', {icon: iconCorrectColor,     callback: e => actionManager.do(getCreateNodeAction(CORRECT_COLOR,     btnColor.div, getCreateOptions(e)))}),
@@ -425,7 +427,7 @@ function initGeneratorMenus()
     menuGroup = new Menu('Group nodes', true, false);
     menuGroup.addItems([
         new MenuItem('Group',     {icon: iconGroupNode,  callback: e => actionManager.do(getCreateNodeAction(GROUP_NODE,  btnGroup.div, getCreateOptions(e)))}),
-        new MenuItem('Parameter', {icon: iconGroupParam, callback: e => actionManager.do(getCreateNodeAction(GROUP_PARAM, btnGroup.div, getCreateOptions(e)))})]);
+        new MenuItem('Parameter', {icon: iconGroupParam, shortcut: 'P', callback: e => actionManager.do(getCreateNodeAction(GROUP_PARAM, btnGroup.div, getCreateOptions(e)))})]);
     
 
     menuWindow = new Menu('Window options', true, false);

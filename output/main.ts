@@ -711,7 +711,7 @@ const SHAPE_TYPES =
 // ];
 
 
-const GROUP_NODE    = 'GNODE';
+const GROUP_NODE    = 'GROUP';
 const GROUP_PARAM   = 'GPARAM';
 
 

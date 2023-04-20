@@ -109,6 +109,15 @@ extends Parameter
             && this.input.connected)
             request.push(...pushInputOrParam(this.input, gen));
 
+        else if (this.output
+              && this.output.paramNode
+              && this.output.paramNode.inputs[0].connected)
+        {
+            console.log('output');
+            request.push(...pushInputOrParam(this.output.paramNode.inputs[0], gen));
+            //request.push(...this.output.paramNode.inputs[0].connectedOutput.genRequest(gen));
+        }
+
         else request.push(
             NUMBER_VALUE, 
             new NumberValue(

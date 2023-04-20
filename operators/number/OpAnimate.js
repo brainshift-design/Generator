@@ -28,12 +28,12 @@ extends OperatorWithValue
         this.addOutput(new Output([NUMBER_VALUE], this.output_genRequest));
 
         this.addParam(this.paramValue);
-        this.addParam(this.paramFrom   = new NumberParam('from',   'from',   true,  true,  true,  0, Number.MIN_SAFE_INTEGER, Number.MAX_SAFE_INTEGER, 2));
-        this.addParam(this.paramTo     = new NumberParam('to',     'to',     true,  true,  true,  1, Number.MIN_SAFE_INTEGER, Number.MAX_SAFE_INTEGER, 2));
-        this.addParam(this.paramType   = new SelectParam('type',   'type',   false, true,  true,  ['once', 'repeat', 'ping-pong']));
-        this.addParam(this.paramCurve  = new SelectParam('curve',  'curve',  false, true,  true,  ['step', 'linear', 'ease in', 'ease out', 'smooth'], 1));
-        this.addParam(this.paramLength = new NumberParam('length', 'length', true,  true,  true,  1, 0, Number.MAX_SAFE_INTEGER, 1));
-        this.addParam(this.paramTime   = new NumberParam('time',   'time',   true,  false, false, 0, 0));
+        this.addParam(this.paramFrom   = new NumberParam('from',   'from',   true,  true, true, 0, Number.MIN_SAFE_INTEGER, Number.MAX_SAFE_INTEGER, 2));
+        this.addParam(this.paramTo     = new NumberParam('to',     'to',     true,  true, true, 1, Number.MIN_SAFE_INTEGER, Number.MAX_SAFE_INTEGER, 2));
+        this.addParam(this.paramType   = new SelectParam('type',   'type',   false, true, true, ['once', 'repeat', 'ping-pong']));
+        this.addParam(this.paramCurve  = new SelectParam('curve',  'curve',  false, true, true, ['step', 'linear', 'ease in', 'ease out', 'smooth'], 1));
+        this.addParam(this.paramLength = new NumberParam('length', 'length', true,  true, true, 1, 0, Number.MAX_SAFE_INTEGER, 1));
+        this.addParam(this.paramTime   = new NumberParam('time',   'time',   true,  true, true, 0, 0));
 
 
         this.paramLength.controls[0].suffix = ' sec';

@@ -8060,7 +8060,7 @@ const SHAPE_TYPES =
 // ];
 
 
-const GROUP_NODE    = 'GNODE';
+const GROUP_NODE    = 'GROUP';
 const GROUP_PARAM   = 'GPARAM';
 
 
@@ -11285,7 +11285,11 @@ extends GNumberType
 
         
         if (this.input)
+        {
+            console.log('this.input =', this.input);
             this.value = (await this.input.eval(parse)).toValue();
+            console.log('this.value =', this.value);
+        }
         else if (this.value)
             await this.value.eval(parse);
         else
@@ -17617,8 +17621,9 @@ function enableFeatures(subscription, beta)
     
     updateElementDisplay(menuItemSeries              .div, subscription && beta);    
     updateElementDisplay(menuItemSolve               .div, subscription && beta);    
-    updateElementDisplay(menuItemAnimate             .div, subscription && beta);    
     updateElementDisplay(menuItemNumberSep1          .div, subscription && beta);
+    updateElementDisplay(menuItemAnimate             .div, subscription && beta);    
+    updateElementDisplay(menuItemNumberSep2          .div, subscription && beta);
     updateElementDisplay(menuItemNumberConvertToText .div, subscription && beta);
     
     updateElementDisplay(menuItemCorrectColor        .div, subscription);
@@ -30472,7 +30477,7 @@ const SHAPE_TYPES =
 // ];
 
 
-const GROUP_NODE    = 'GNODE';
+const GROUP_NODE    = 'GROUP';
 const GROUP_PARAM   = 'GPARAM';
 
 
@@ -33697,7 +33702,11 @@ extends GNumberType
 
         
         if (this.input)
+        {
+            console.log('this.input =', this.input);
             this.value = (await this.input.eval(parse)).toValue();
+            console.log('this.value =', this.value);
+        }
         else if (this.value)
             await this.value.eval(parse);
         else
@@ -40029,8 +40038,9 @@ function enableFeatures(subscription, beta)
     
     updateElementDisplay(menuItemSeries              .div, subscription && beta);    
     updateElementDisplay(menuItemSolve               .div, subscription && beta);    
-    updateElementDisplay(menuItemAnimate             .div, subscription && beta);    
     updateElementDisplay(menuItemNumberSep1          .div, subscription && beta);
+    updateElementDisplay(menuItemAnimate             .div, subscription && beta);    
+    updateElementDisplay(menuItemNumberSep2          .div, subscription && beta);
     updateElementDisplay(menuItemNumberConvertToText .div, subscription && beta);
     
     updateElementDisplay(menuItemCorrectColor        .div, subscription);
@@ -44633,7 +44643,7 @@ class MenuItem
                     node.sx  = node.div.offsetLeft;
                     node.sy  = node.div.offsetTop ;
 
-                    node.slx = node.div.offsetLeft - (defNodeWidth    / 2) - (              + graph.currentPage.pan.x) / graph.currentPage.zoom;
+                    node.slx = node.div.offsetLeft - (defNodeWidth    / 2) - (               + graph.currentPage.pan.x) / graph.currentPage.zoom;
                     node.sly = node.div.offsetTop  - (defHeaderHeight / 2) - (getTopHeight() + graph.currentPage.pan.y) / graph.currentPage.zoom;
 
                     node.div.dragging = true;
@@ -44911,6 +44921,7 @@ var menuItemSeries;
 var menuItemSolve;  
 var menuItemAnimate;  
 var menuItemNumberSep1;
+var menuItemNumberSep2;
 var menuItemNumberConvertToText;
 
 var menuItemColor;
@@ -45074,8 +45085,8 @@ function initGeneratorMenus()
                                  }
                              }),
                              new MenuItem('',                             {separator: true}),
-                             new MenuItem('Log storage',                  {childMenu: menuDebugStorage}),
                              new MenuItem('Log generator',                {childMenu: menuDebugGenerator}),
+                             new MenuItem('Log storage',                  {childMenu: menuDebugStorage}),
                              new MenuItem('',                             {separator: true}),   
                              new MenuItem('Delete',                       {childMenu: menuDebugDelete}),
                              new MenuItem('',                             {separator: true}),   
@@ -45144,7 +45155,7 @@ function initGeneratorMenus()
     
     menuNumber = new Menu('Numbers', true, false);
     menuNumber.addItems([
-                                      new MenuItem('Number',          {icon: iconNumber,       callback: e => actionManager.do(getCreateNodeAction(NUMBER,             btnNumber.div, getCreateOptions(e)))}),
+                                      new MenuItem('Number',          {icon: iconNumber,       shortcut: 'N', callback: e => actionManager.do(getCreateNodeAction(NUMBER,             btnNumber.div, getCreateOptions(e)))}),
                                       new MenuItem('',                {separator: true}),
                                       new MenuItem('Sign',            {icon: iconSign,         callback: e => actionManager.do(getCreateNodeAction(NUMBER_SIGN,        btnNumber.div, getCreateOptions(e)))}),
                                       new MenuItem('Absolute',        {icon: iconAbsolute,     callback: e => actionManager.do(getCreateNodeAction(NUMBER_ABSOLUTE,    btnNumber.div, getCreateOptions(e)))}),
@@ -45160,14 +45171,15 @@ function initGeneratorMenus()
                                       new MenuItem('',                {separator: true}),
                                       new MenuItem('Interpolate',     {icon: iconInterpolate,  callback: e => actionManager.do(getCreateNodeAction(NUMBER_INTERPOLATE, btnNumber.div, getCreateOptions(e)))}),
         menuItemSolve               = new MenuItem('Solve',           {icon: iconSolve,        callback: e => actionManager.do(getCreateNodeAction(NUMBER_SOLVE,       btnNumber.div, getCreateOptions(e)))}),
-        menuItemAnimate             = new MenuItem('Animate',         {icon: iconAnimate,      callback: e => actionManager.do(getCreateNodeAction(NUMBER_ANIMATE,     btnNumber.div, getCreateOptions(e)))}),
         menuItemNumberSep1          = new MenuItem('',                {separator: true}),
+        menuItemAnimate             = new MenuItem('Animate',         {icon: iconAnimate,      callback: e => actionManager.do(getCreateNodeAction(NUMBER_ANIMATE,     btnNumber.div, getCreateOptions(e)))}),
+        menuItemNumberSep2          = new MenuItem('',                {separator: true}),
         menuItemNumberConvertToText = new MenuItem('Convert to text', {icon: iconNumberToText, callback: e => actionManager.do(getCreateNodeAction(NUMBER_TO_TEXT,     btnNumber.div, getCreateOptions(e)))})]);
         
     
     menuString = new Menu('Text nodes', true, false);
     menuString.addItems([
-        new MenuItem('Text',      {icon: iconText,          callback: e => actionManager.do(getCreateNodeAction(TEXT,           btnText.div, getCreateOptions(e)))}),
+        new MenuItem('Text',      {icon: iconText,          shortcut: 'T', callback: e => actionManager.do(getCreateNodeAction(TEXT,           btnText.div, getCreateOptions(e)))}),
         new MenuItem('',          {separator: true}),
         new MenuItem('Substring', {icon: iconTextSubstring, callback: e => actionManager.do(getCreateNodeAction(TEXT_SUBSTRING, btnText.div, getCreateOptions(e)))}),
         new MenuItem('Character', {icon: iconTextCharacter, callback: e => actionManager.do(getCreateNodeAction(TEXT_CHAR,      btnText.div, getCreateOptions(e)))}),
@@ -45187,7 +45199,7 @@ function initGeneratorMenus()
         
     menuColor = new Menu('Colors', true, true);
     menuColor.addItems([
-        menuItemColor        = new MenuItem('Color',         {icon: iconColor,            callback: e => actionManager.do(getCreateNodeAction(COLOR,             btnColor.div, getCreateOptions(e,  {random: e.altKey && !getCtrlKey(e)})))}),
+        menuItemColor        = new MenuItem('Color',         {icon: iconColor,            shortcut: 'C', callback: e => actionManager.do(getCreateNodeAction(COLOR,             btnColor.div, getCreateOptions(e,  {random: e.altKey && !getCtrlKey(e)})))}),
                                new MenuItem('',              {separator: true}),
                                new MenuItem('Valid sRGB',    {icon: iconValidColor,       callback: e => actionManager.do(getCreateNodeAction(VALID_COLOR,       btnColor.div, getCreateOptions(e)))}),
         menuItemCorrectColor = new MenuItem('Correct color', {icon: iconCorrectColor,     callback: e => actionManager.do(getCreateNodeAction(CORRECT_COLOR,     btnColor.div, getCreateOptions(e)))}),
@@ -45225,7 +45237,7 @@ function initGeneratorMenus()
     menuGroup = new Menu('Group nodes', true, false);
     menuGroup.addItems([
         new MenuItem('Group',     {icon: iconGroupNode,  callback: e => actionManager.do(getCreateNodeAction(GROUP_NODE,  btnGroup.div, getCreateOptions(e)))}),
-        new MenuItem('Parameter', {icon: iconGroupParam, callback: e => actionManager.do(getCreateNodeAction(GROUP_PARAM, btnGroup.div, getCreateOptions(e)))})]);
+        new MenuItem('Parameter', {icon: iconGroupParam, shortcut: 'P', callback: e => actionManager.do(getCreateNodeAction(GROUP_PARAM, btnGroup.div, getCreateOptions(e)))})]);
     
 
     menuWindow = new Menu('Window options', true, false);
@@ -49099,6 +49111,15 @@ extends Parameter
         if (   this.input
             && this.input.connected)
             request.push(...pushInputOrParam(this.input, gen));
+
+        else if (this.output
+              && this.output.paramNode
+              && this.output.paramNode.inputs[0].connected)
+        {
+            console.log('output');
+            request.push(...pushInputOrParam(this.output.paramNode.inputs[0], gen));
+            //request.push(...this.output.paramNode.inputs[0].connectedOutput.genRequest(gen));
+        }
 
         else request.push(
             NUMBER_VALUE, 
@@ -53269,6 +53290,8 @@ class Operator
     alwaysLoadParams   = false;
     alwaysSaveParams   = false;
 
+    saveParams         = true;  // master switch to not save any params
+
     canDisable         = false;
 
 
@@ -54149,8 +54172,9 @@ class Operator
 
         const nonDefaultParams = this.params.filter(p => !this.paramIsConsideredDefault(p));
 
-        if (  !isEmpty(nonDefaultParams) // don't include empty param section
-            || this.alwaysSaveParams)
+        if (    (  !isEmpty(nonDefaultParams) // don't include empty param section
+                 || this.alwaysSaveParams)
+             && this.saveParams)
             json += this.paramsToJson(nTab);
 
         json += '\n' + pos + '}';
@@ -58308,12 +58332,12 @@ extends OperatorWithValue
         this.addOutput(new Output([NUMBER_VALUE], this.output_genRequest));
 
         this.addParam(this.paramValue);
-        this.addParam(this.paramFrom   = new NumberParam('from',   'from',   true,  true,  true,  0, Number.MIN_SAFE_INTEGER, Number.MAX_SAFE_INTEGER, 2));
-        this.addParam(this.paramTo     = new NumberParam('to',     'to',     true,  true,  true,  1, Number.MIN_SAFE_INTEGER, Number.MAX_SAFE_INTEGER, 2));
-        this.addParam(this.paramType   = new SelectParam('type',   'type',   false, true,  true,  ['once', 'repeat', 'ping-pong']));
-        this.addParam(this.paramCurve  = new SelectParam('curve',  'curve',  false, true,  true,  ['step', 'linear', 'ease in', 'ease out', 'smooth'], 1));
-        this.addParam(this.paramLength = new NumberParam('length', 'length', true,  true,  true,  1, 0, Number.MAX_SAFE_INTEGER, 1));
-        this.addParam(this.paramTime   = new NumberParam('time',   'time',   true,  false, false, 0, 0));
+        this.addParam(this.paramFrom   = new NumberParam('from',   'from',   true,  true, true, 0, Number.MIN_SAFE_INTEGER, Number.MAX_SAFE_INTEGER, 2));
+        this.addParam(this.paramTo     = new NumberParam('to',     'to',     true,  true, true, 1, Number.MIN_SAFE_INTEGER, Number.MAX_SAFE_INTEGER, 2));
+        this.addParam(this.paramType   = new SelectParam('type',   'type',   false, true, true, ['once', 'repeat', 'ping-pong']));
+        this.addParam(this.paramCurve  = new SelectParam('curve',  'curve',  false, true, true, ['step', 'linear', 'ease in', 'ease out', 'smooth'], 1));
+        this.addParam(this.paramLength = new NumberParam('length', 'length', true,  true, true, 1, 0, Number.MAX_SAFE_INTEGER, 1));
+        this.addParam(this.paramTime   = new NumberParam('time',   'time',   true,  true, true, 0, 0));
 
 
         this.paramLength.controls[0].suffix = ' sec';
@@ -64353,8 +64377,7 @@ extends OperatorBase
         super(GROUP_NODE, 'group', 'group');
 
 
-        this.alwaysLoadParams = true;
-        //this.alwaysSaveParams = true;
+        this.saveParams = false;
 
 
         graph.currentPage.groupId = this.id;
@@ -65695,6 +65718,12 @@ function getTerminalsAfterNode(node)
                 pushUnique(after, getTerminalsAfterNode(input.node));
         }
 
+        
+        // iterating over outputs manually to avoid an endless loop 
+        // as with getTerminalsAfterNode(node.groupNode)
+
+        pushUnique(after, node.groupNode);
+        
         for (const output of node.groupNode.outputs)
         {
             for (const input of output.connectedInputs)
@@ -70252,6 +70281,7 @@ document.addEventListener('keydown', e =>
         graphView.copySelectedNodes();
         graphView.deleteSelectedNodes(true);
     }
+
     // copy
     else if (   e.code == 'KeyC'
         && getCtrlKey(e))
@@ -70323,7 +70353,6 @@ document.addEventListener('keydown', e =>
     //       && getCtrlKey(e))
     //     layoutSelectedNodes();
 
-
     // toggled operation results
     else if (e.code == 'KeyR'
           && getCtrlKey(e)
@@ -70332,7 +70361,6 @@ document.addEventListener('keydown', e =>
         updateSettingAndMenu('showOperationResults',  true, !settings.showOperationResults);  
         updateMenuItemShowOperationResults();          
     }
-
 
     // escape
     else if (e.key == 'Escape')
@@ -70487,6 +70515,7 @@ document.addEventListener('keydown', e =>
               altPressedInMenu = true;
         }
     }
+
     else if (    e.key == 'Alt'
              && !e.shiftKey
              &&  graphView.spaceDown
@@ -70498,6 +70527,15 @@ document.addEventListener('keydown', e =>
 
     else if (e.code == 'Tab')
         e.preventDefault();
+
+    else if (e.code == 'KeyN') actionManager.do(getCreateNodeAction(NUMBER,      null, getCreateOptions(e)));
+    else if (e.code == 'KeyT') actionManager.do(getCreateNodeAction(TEXT,        null, getCreateOptions(e)));
+    else if (e.code == 'KeyC') actionManager.do(getCreateNodeAction(COLOR,       null, getCreateOptions(e, {random: e.altKey && !getCtrlKey(e)})));
+    else if (e.code == 'KeyG') actionManager.do(getCreateNodeAction(GROUP_NODE,  null, getCreateOptions(e)));
+    else if (e.code == 'KeyP') actionManager.do(getCreateNodeAction(GROUP_PARAM, null, getCreateOptions(e)));
+
+    // graph.nodes.at(-1).div.style.left = e.clientX - (defNodeWidth    / 2) - (               + graph.currentPage.pan.x) / graph.currentPage.zoom;
+    // graph.nodes.at(-1).div.style.top  = e.clientY - (defHeaderHeight / 2) - (getTopHeight() + graph.currentPage.pan.y) / graph.currentPage.zoom;
 });
 
 
@@ -70540,6 +70578,7 @@ document.addEventListener('keyup', e =>
 
         altPressedInMenu = false;
     }
+
     else if (e.key == 'Control')
     {
         if (graphView.spaceDown)
@@ -70566,6 +70605,7 @@ document.addEventListener('keyup', e =>
             overNumberControlCtrl = null;
         }
     }
+
     else if (e.key == 'Shift')
     {
         if (numberControlChanging)
@@ -70574,7 +70614,6 @@ document.addEventListener('keyup', e =>
             numberControlChanging.update();
         }
     }
-
 },
 false);
 

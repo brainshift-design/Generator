@@ -53,6 +53,8 @@ class Operator
     alwaysLoadParams   = false;
     alwaysSaveParams   = false;
 
+    saveParams         = true;  // master switch to not save any params
+
     canDisable         = false;
 
 
@@ -933,8 +935,9 @@ class Operator
 
         const nonDefaultParams = this.params.filter(p => !this.paramIsConsideredDefault(p));
 
-        if (  !isEmpty(nonDefaultParams) // don't include empty param section
-            || this.alwaysSaveParams)
+        if (    (  !isEmpty(nonDefaultParams) // don't include empty param section
+                 || this.alwaysSaveParams)
+             && this.saveParams)
             json += this.paramsToJson(nTab);
 
         json += '\n' + pos + '}';

@@ -3697,7 +3697,7 @@ const SHAPE_TYPES =
 // ];
 
 
-const GROUP_NODE    = 'GNODE';
+const GROUP_NODE    = 'GROUP';
 const GROUP_PARAM   = 'GPARAM';
 
 
@@ -6922,7 +6922,11 @@ extends GNumberType
 
         
         if (this.input)
+        {
+            console.log('this.input =', this.input);
             this.value = (await this.input.eval(parse)).toValue();
+            console.log('this.value =', this.value);
+        }
         else if (this.value)
             await this.value.eval(parse);
         else
@@ -13254,8 +13258,9 @@ function enableFeatures(subscription, beta)
     
     updateElementDisplay(menuItemSeries              .div, subscription && beta);    
     updateElementDisplay(menuItemSolve               .div, subscription && beta);    
-    updateElementDisplay(menuItemAnimate             .div, subscription && beta);    
     updateElementDisplay(menuItemNumberSep1          .div, subscription && beta);
+    updateElementDisplay(menuItemAnimate             .div, subscription && beta);    
+    updateElementDisplay(menuItemNumberSep2          .div, subscription && beta);
     updateElementDisplay(menuItemNumberConvertToText .div, subscription && beta);
     
     updateElementDisplay(menuItemCorrectColor        .div, subscription);
