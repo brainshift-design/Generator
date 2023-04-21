@@ -3276,9 +3276,10 @@ a
 
 .nodeParamBack
 {
-    display:     block;
-    position:    relative;
-    z-index:     2000;
+    display:        flex;
+    flex-direction: column;
+    position:       relative;
+    z-index:        2000;
     /* box-shadow:  0 0 0 1px green inset; */
 }
 
@@ -53825,7 +53826,6 @@ class Operator
         }
 
         this.updateMeasureData();
-
     }
 
 
@@ -55277,9 +55277,6 @@ Operator.prototype.updateWireTransform = function()
 
 Operator.prototype.updateNode = function() 
 {
-    // this.      paramHolder.style.backgroundColor = darkMode ? '#363636' : 'white';
-    // this.hiddenParamBack.style.backgroundColor = darkMode ? '#363636' : 'white';
-
     this.updateHeader();
     this.updateHeaderLabel();
     this.updateBorder();
@@ -55416,17 +55413,6 @@ Operator.prototype.updateSubscribeStatus = function(subscribed)
 
 
 
-// Operator.prototype.updateParamBack = function(headerHeight)
-// {
-//     this.      paramHolder.style.height =
-//     this.hiddenParamBack.style.height = this.measureData.innerOffset.height - headerHeight;
-
-//     this.      paramHolder.style.top    =
-//     this.hiddenParamBack.style.top    = headerHeight;
-// }
-
-
-
 Operator.prototype.updateMeasureData = function()
 {
     this.measureData = 
@@ -55501,8 +55487,6 @@ Operator.prototype.updateHeaderLabelText = function()
         settings.showNodeId 
         ? 'Roboto Mono' 
         : 'Inter';
-
-    // this.labelText.style.letterSpacing = settings.showNodeId ? '-1px' : 'default';
 }
 
 
@@ -55562,20 +55546,18 @@ Operator.prototype.updateHeaderInputsAndOutputs = function()
 
     for (let i = 0; i < inputs.length; i++)
     {
-        inputs[i].div.style.top = inputY[i];// + (this.measureData.headerOffset.height - inputHeight)/2;
+        inputs[i].div.style.top = inputY[i];
         inputs[i].updateControl();
     }
 
     for (let i = 0; i < outputs.length; i++) 
     {
-        outputs[i].div.style.top = outputY[i];// + (this.measureData.headerOffset.height - outputHeight)/2;
+        outputs[i].div.style.top = outputY[i];
         outputs[i].updateControl();
     }
 
 
     return height;
-    //return Math.max(inputHeight, outputHeight);
-//         + this.header.connectionPadding * 2;
 }
 
 
@@ -64455,6 +64437,26 @@ extends OperatorBase
         for (const param of this.params)
             param.enableControlText(param.input ? true : false);
 
+            
+        const paramNodes = this.params.map(p => p.paramNode);
+
+        paramNodes.sort((a, b) => 
+        {
+            // if (a.inputs[0].connected && b.outputs[0].connected) return -1;
+            // if (b.inputs[0].connected && a.outputs[0].connected) return  1;
+            return a.div.offsetTop - b.div.offsetTop;
+        });
+
+        paramNodes.sort((a, b) => 
+                a.div.offsetTop - b.div.offsetTop
+            && !a.inputs[0].connected 
+            &&  b.inputs[0].connected);
+
+
+        for (let i = 0; i < paramNodes.length; i++)
+            paramNodes[i].groupParam.div.style.order = i;
+
+
         this.updateParamControls();
     }
 }
@@ -64736,6 +64738,7 @@ extends OperatorBase
                    n.type == GROUP_PARAM
                 && n != this);
 
+
             newName = getNewNumberId(
                 paramNodes, 
                 name => paramNodes.find(n => n.name == name), 
@@ -64743,18 +64746,18 @@ extends OperatorBase
                 newName, 
                 '');
 
+
             param._id = newName;
             param.setName(newName);
 
-            // pushUpdateFromParam(null, [this], param);
 
             uiSaveNodes([this.id]);
             uiSaveNodes([this.groupNode.id]);
             
-            uiUpdateSavedConnectionsToNodeId([this.id], true);
+            uiUpdateSavedConnectionsToNodeId  ([this.id], true);
             uiUpdateSavedConnectionsFromNodeId([this.id], true);
             
-            uiUpdateSavedConnectionsToNodeId([this.groupNode.id], true);
+            uiUpdateSavedConnectionsToNodeId  ([this.groupNode.id], true);
             uiUpdateSavedConnectionsFromNodeId([this.groupNode.id], true);
         }
 
@@ -64764,12 +64767,25 @@ extends OperatorBase
 
 
 
+    setPosition(x, y, updateTransform = true)
+    {
+        super.setPosition(x, y, updateTransform);
+
+        if (this.groupNode)
+        {
+            this.groupNode.updateNode();
+            graphView.updateNodeWireTransforms([this.groupNode]);
+        }
+    }
+
+
+
     toJsonBase(nTab = 0) 
     {
         let   pos = ' '.repeat(nTab);
         const tab = HTAB;
 
-        let json = super.toJsonBase(nTab);
+        let  json = super.toJsonBase(nTab);
 
         json += ',\n' + pos + tab + '"paramType": "' +  this.paramType                                 + '"';
 
@@ -64812,6 +64828,8 @@ function input_onconnect(node)
                 name:      node.name,
                 showName:  true
             });
+
+        node.groupParam.paramNode = node;
 
         node.groupOutput = node.groupParam.output;
         node.groupNode.addParam(node.groupParam);
@@ -64886,6 +64904,8 @@ function output_onconnect(node)
                 name:     node.name,
                 showName: true
             });
+
+        node.groupParam.paramNode = node;
 
         node.groupInput = node.groupParam.input;
         node.groupNode.addParam(node.groupParam);

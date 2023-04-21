@@ -81,9 +81,10 @@
 
 .nodeParamBack
 {
-    display:     block;
-    position:    relative;
-    z-index:     2000;
+    display:        flex;
+    flex-direction: column;
+    position:       relative;
+    z-index:        2000;
     /* box-shadow:  0 0 0 1px green inset; */
 }
 

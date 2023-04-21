@@ -583,7 +583,6 @@ class Operator
         }
 
         this.updateMeasureData();
-
     }
 
 

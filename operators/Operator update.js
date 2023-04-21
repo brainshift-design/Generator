@@ -31,9 +31,6 @@ Operator.prototype.updateWireTransform = function()
 
 Operator.prototype.updateNode = function() 
 {
-    // this.      paramHolder.style.backgroundColor = darkMode ? '#363636' : 'white';
-    // this.hiddenParamBack.style.backgroundColor = darkMode ? '#363636' : 'white';
-
     this.updateHeader();
     this.updateHeaderLabel();
     this.updateBorder();
@@ -170,17 +167,6 @@ Operator.prototype.updateSubscribeStatus = function(subscribed)
 
 
 
-// Operator.prototype.updateParamBack = function(headerHeight)
-// {
-//     this.      paramHolder.style.height =
-//     this.hiddenParamBack.style.height = this.measureData.innerOffset.height - headerHeight;
-
-//     this.      paramHolder.style.top    =
-//     this.hiddenParamBack.style.top    = headerHeight;
-// }
-
-
-
 Operator.prototype.updateMeasureData = function()
 {
     this.measureData = 
@@ -255,8 +241,6 @@ Operator.prototype.updateHeaderLabelText = function()
         settings.showNodeId 
         ? 'Roboto Mono' 
         : 'Inter';
-
-    // this.labelText.style.letterSpacing = settings.showNodeId ? '-1px' : 'default';
 }
 
 
@@ -316,20 +300,18 @@ Operator.prototype.updateHeaderInputsAndOutputs = function()
 
     for (let i = 0; i < inputs.length; i++)
     {
-        inputs[i].div.style.top = inputY[i];// + (this.measureData.headerOffset.height - inputHeight)/2;
+        inputs[i].div.style.top = inputY[i];
         inputs[i].updateControl();
     }
 
     for (let i = 0; i < outputs.length; i++) 
     {
-        outputs[i].div.style.top = outputY[i];// + (this.measureData.headerOffset.height - outputHeight)/2;
+        outputs[i].div.style.top = outputY[i];
         outputs[i].updateControl();
     }
 
 
     return height;
-    //return Math.max(inputHeight, outputHeight);
-//         + this.header.connectionPadding * 2;
 }
 
 

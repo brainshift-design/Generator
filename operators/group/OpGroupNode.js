@@ -79,6 +79,26 @@ extends OperatorBase
         for (const param of this.params)
             param.enableControlText(param.input ? true : false);
 
+            
+        const paramNodes = this.params.map(p => p.paramNode);
+
+        paramNodes.sort((a, b) => 
+        {
+            // if (a.inputs[0].connected && b.outputs[0].connected) return -1;
+            // if (b.inputs[0].connected && a.outputs[0].connected) return  1;
+            return a.div.offsetTop - b.div.offsetTop;
+        });
+
+        paramNodes.sort((a, b) => 
+                a.div.offsetTop - b.div.offsetTop
+            && !a.inputs[0].connected 
+            &&  b.inputs[0].connected);
+
+
+        for (let i = 0; i < paramNodes.length; i++)
+            paramNodes[i].groupParam.div.style.order = i;
+
+
         this.updateParamControls();
     }
 }

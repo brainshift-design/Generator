@@ -274,6 +274,7 @@ extends OperatorBase
                    n.type == GROUP_PARAM
                 && n != this);
 
+
             newName = getNewNumberId(
                 paramNodes, 
                 name => paramNodes.find(n => n.name == name), 
@@ -281,18 +282,18 @@ extends OperatorBase
                 newName, 
                 '');
 
+
             param._id = newName;
             param.setName(newName);
 
-            // pushUpdateFromParam(null, [this], param);
 
             uiSaveNodes([this.id]);
             uiSaveNodes([this.groupNode.id]);
             
-            uiUpdateSavedConnectionsToNodeId([this.id], true);
+            uiUpdateSavedConnectionsToNodeId  ([this.id], true);
             uiUpdateSavedConnectionsFromNodeId([this.id], true);
             
-            uiUpdateSavedConnectionsToNodeId([this.groupNode.id], true);
+            uiUpdateSavedConnectionsToNodeId  ([this.groupNode.id], true);
             uiUpdateSavedConnectionsFromNodeId([this.groupNode.id], true);
         }
 
@@ -302,12 +303,25 @@ extends OperatorBase
 
 
 
+    setPosition(x, y, updateTransform = true)
+    {
+        super.setPosition(x, y, updateTransform);
+
+        if (this.groupNode)
+        {
+            this.groupNode.updateNode();
+            graphView.updateNodeWireTransforms([this.groupNode]);
+        }
+    }
+
+
+
     toJsonBase(nTab = 0) 
     {
         let   pos = ' '.repeat(nTab);
         const tab = HTAB;
 
-        let json = super.toJsonBase(nTab);
+        let  json = super.toJsonBase(nTab);
 
         json += ',\n' + pos + tab + '"paramType": "' +  this.paramType                                 + '"';
 
@@ -350,6 +364,8 @@ function input_onconnect(node)
                 name:      node.name,
                 showName:  true
             });
+
+        node.groupParam.paramNode = node;
 
         node.groupOutput = node.groupParam.output;
         node.groupNode.addParam(node.groupParam);
@@ -424,6 +440,8 @@ function output_onconnect(node)
                 name:     node.name,
                 showName: true
             });
+
+        node.groupParam.paramNode = node;
 
         node.groupInput = node.groupParam.input;
         node.groupNode.addParam(node.groupParam);
