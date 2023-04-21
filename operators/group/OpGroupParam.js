@@ -113,7 +113,7 @@ extends OperatorBase
         {
             if (this.node.groupParam)
                 return this.node.groupParam.genRequest(gen);
-            else
+            else if (this.node.groupInput.connected)
                 return this.node.groupInput.connectedOutput.genRequest(gen);
         }
 
