@@ -64835,16 +64835,16 @@ function input_onconnect(node)
 
 function input_ondisconnect(node)
 {
-    if (!graph.pageNodes.find(n => 
-               n.type      == GROUP_PARAM
-            && n.paramType == 1
-            && (   !isEmpty(n. inputs) && n. inputs[0].connected 
-                || !isEmpty(n.outputs) && n.outputs[0].connected)))
-        node.inputs[0].types = [ANY_TYPE];
+    // if (!graph.pageNodes.find(n => 
+    //            n.type      == GROUP_PARAM
+    //         && n.paramType == 1
+    //         && (   !isEmpty(n. inputs) && n. inputs[0].connected 
+    //             || !isEmpty(n.outputs) && n.outputs[0].connected)))
+    //     node.inputs[0].types = [ANY_TYPE];
 
 
-    node. inputs[0].types = [ANY_TYPE];
     node.outputs[0].types = [ANY_TYPE];
+    node. inputs[0].types = [ANY_TYPE];
 
     node.outputs[0].div.style.display = 'inline-block';
 
@@ -64911,12 +64911,15 @@ function output_onconnect(node)
 
 function output_ondisconnect(node)
 {
-    if (!graph.pageNodes.find(n => 
-                n.type      == GROUP_PARAM
-            && n.paramType == 1
-            && (   !isEmpty(n. inputs) && n. inputs[0].connected 
-                || !isEmpty(n.outputs) && n.outputs[0].connected)))
-        node.outputs[0].types = [ANY_TYPE];
+    // if (!graph.pageNodes.find(n => 
+    //            n.type      == GROUP_PARAM
+    //         && n.paramType == 1
+    //         && (   !isEmpty(n. inputs) && n. inputs[0].connected 
+    //             || !isEmpty(n.outputs) && n.outputs[0].connected)))
+    //     node.outputs[0].types = [ANY_TYPE];
+
+    node.outputs[0].types = [ANY_TYPE];
+    node. inputs[0].types = [ANY_TYPE];
 
     node.inputs[0].div.style.display = 'inline-block';
 
@@ -64925,16 +64928,20 @@ function output_ondisconnect(node)
         uiDisconnect(node.groupInput);
 
 
-    if (node.paramType == 0)
+    if (node.paramType == 0) 
     {
+        node.groupParam.paramNode = null;
+
         node.groupNode.removeParam(node.groupParam);
-        node.groupInput.paramNode = null;
+        node.groupParam = null;
     }
-    else if (node.paramType == 1)
-    {
+    else if (node.paramType == 1) 
         node.groupNode.removeInput(node.groupInput);
-        node.groupInput.paramNode = null;
-    }
+
+
+    node.groupInput.types     = [ANY_TYPE];
+    node.groupInput.paramNode = null;
+    node.groupInput           = null;
 
 
     node.groupNode.updateNode();
