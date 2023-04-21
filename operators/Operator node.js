@@ -54,8 +54,7 @@ Operator.prototype.createNode = function()
     });
 
     
-    this.paramHolder       = createDiv('nodeParamBack');
-    //this.hiddenParamBack = createDiv('nodeHiddenParamBack');
+    this.paramHolder = createDiv('nodeParamBack');
 
 
     this.createHeader();

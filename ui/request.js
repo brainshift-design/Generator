@@ -66,6 +66,7 @@ function pushUpdateFromParam(action, nodes, param)
     const terminals = [];
     nodes.forEach(n => pushUnique(terminals, getTerminalsAfterNode(n)));
 
+    
     const uncachedInputNodes = [];
     terminals.forEach(n => pushUnique(uncachedInputNodes, n.getUncachedInputNodes()));
     uncachedInputNodes.forEach(n => pushUnique(terminals, getTerminalsAfterNode(n)));

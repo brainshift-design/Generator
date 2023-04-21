@@ -166,18 +166,18 @@ function getTerminalsAfterNode(node)
     }
     else if (node.type == GROUP_PARAM)
     {
+        pushUnique(after, node);
+        pushUnique(after, node.groupNode);
+        
+        // iterating over outputs manually to avoid an endless loop 
+        // as with getTerminalsAfterNode(node.groupNode)
+
         for (const output of node.outputs)
         {
             for (const input of output.connectedInputs)
                 pushUnique(after, getTerminalsAfterNode(input.node));
         }
 
-        
-        // iterating over outputs manually to avoid an endless loop 
-        // as with getTerminalsAfterNode(node.groupNode)
-
-        pushUnique(after, node.groupNode);
-        
         for (const output of node.groupNode.outputs)
         {
             for (const input of output.connectedInputs)

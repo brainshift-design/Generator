@@ -19,7 +19,7 @@ extends OperatorBase
     {
         if (   this.paramNode
             && this.paramNode.inputs[0].connected)
-            request.push(...this.paramNode.inputs[0].connectedOutput.genRequest(gen));
+            return this.paramNode.inputs[0].connectedOutput.genRequest(gen);
 
             
         // 'this' is the output        

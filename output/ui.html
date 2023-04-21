@@ -54507,8 +54507,7 @@ Operator.prototype.createNode = function()
     });
 
     
-    this.paramHolder       = createDiv('nodeParamBack');
-    //this.hiddenParamBack = createDiv('nodeHiddenParamBack');
+    this.paramHolder = createDiv('nodeParamBack');
 
 
     this.createHeader();
@@ -64377,7 +64376,7 @@ extends OperatorBase
     {
         if (   this.paramNode
             && this.paramNode.inputs[0].connected)
-            request.push(...this.paramNode.inputs[0].connectedOutput.genRequest(gen));
+            return this.paramNode.inputs[0].connectedOutput.genRequest(gen);
 
             
         // 'this' is the output        
@@ -64570,8 +64569,6 @@ extends OperatorBase
 
     output_genRequest(gen)
     {
-        // console.log('this.groupInput =', this.groupInput);
-
         if (   this.node.groupInput)
 //            && this.node.groupInput.connected)
         {
@@ -64614,17 +64611,6 @@ extends OperatorBase
 
 
 
-    // updateValues(requestId, actionId, updateParamId, paramIds, values)
-    // {
-    //     const value = values[paramIds.findIndex(id => id == 'value')];
-
-    //     this.paramValue.setValue(value, false, true, false);
-
-    //     super.updateValues(requestId, actionId, updateParamId, paramIds, values);
-    // }
-    
-    
-    
     updateHeader()
     {
         super.updateHeader();
@@ -65776,18 +65762,18 @@ function getTerminalsAfterNode(node)
     }
     else if (node.type == GROUP_PARAM)
     {
+        pushUnique(after, node);
+        pushUnique(after, node.groupNode);
+        
+        // iterating over outputs manually to avoid an endless loop 
+        // as with getTerminalsAfterNode(node.groupNode)
+
         for (const output of node.outputs)
         {
             for (const input of output.connectedInputs)
                 pushUnique(after, getTerminalsAfterNode(input.node));
         }
 
-        
-        // iterating over outputs manually to avoid an endless loop 
-        // as with getTerminalsAfterNode(node.groupNode)
-
-        pushUnique(after, node.groupNode);
-        
         for (const output of node.groupNode.outputs)
         {
             for (const input of output.connectedInputs)
@@ -71479,6 +71465,7 @@ function pushUpdateFromParam(action, nodes, param)
     const terminals = [];
     nodes.forEach(n => pushUnique(terminals, getTerminalsAfterNode(n)));
 
+    
     const uncachedInputNodes = [];
     terminals.forEach(n => pushUnique(uncachedInputNodes, n.getUncachedInputNodes()));
     uncachedInputNodes.forEach(n => pushUnique(terminals, getTerminalsAfterNode(n)));

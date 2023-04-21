@@ -106,8 +106,6 @@ extends OperatorBase
 
     output_genRequest(gen)
     {
-        // console.log('this.groupInput =', this.groupInput);
-
         if (   this.node.groupInput)
 //            && this.node.groupInput.connected)
         {
@@ -150,17 +148,6 @@ extends OperatorBase
 
 
 
-    // updateValues(requestId, actionId, updateParamId, paramIds, values)
-    // {
-    //     const value = values[paramIds.findIndex(id => id == 'value')];
-
-    //     this.paramValue.setValue(value, false, true, false);
-
-    //     super.updateValues(requestId, actionId, updateParamId, paramIds, values);
-    // }
-    
-    
-    
     updateHeader()
     {
         super.updateHeader();
