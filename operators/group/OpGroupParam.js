@@ -100,6 +100,9 @@ extends OperatorBase
         this.headerCircle.appendChild(this.icon);
         
         this.label.insertBefore(this.headerCircle, this.labelText);
+
+
+        this.setName(this.name);
     }
 
 
@@ -261,7 +264,6 @@ extends OperatorBase
                    n.type == GROUP_PARAM
                 && n != this);
 
-
             newName = getNewNumberId(
                 paramNodes, 
                 name => paramNodes.find(n => n.name == name), 
@@ -270,8 +272,11 @@ extends OperatorBase
                 '');
 
 
-            param._id = newName;
-            param.setName(newName);
+            if (param)
+            {
+                param._id = newName;
+                param.setName(newName);
+            }
 
 
             uiSaveNodes([this.id]);
