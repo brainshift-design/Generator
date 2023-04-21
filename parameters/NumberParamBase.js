@@ -113,7 +113,6 @@ extends Parameter
               && this.output.paramNode
               && this.output.paramNode.inputs[0].connected)
         {
-            console.log('output');
             request.push(...pushInputOrParam(this.output.paramNode.inputs[0], gen));
             //request.push(...this.output.paramNode.inputs[0].connectedOutput.genRequest(gen));
         }

@@ -306,15 +306,43 @@ function uiUpdateSavedConnectionsToNodeId(nodeId, saveOld)
 
     if (saveOld)
     {
-        for (const _input of node.inputs.filter(i => i.connected))
+        for (const input of node.inputs.filter(i => i.connected))
         {
             uiSaveConnection(
-                _input.connectedOutput.node.id,
-                _input.connectedOutput.id,
-                _input.connection.outputOrder,
-                 node .id,
-                _input.id,
-                _input.connection.toJson());
+                input.connectedOutput.node.id,
+                input.connectedOutput.id,
+                input.connection.outputOrder,
+                node .id,
+                input.id,
+                input.connection.toJson());
+        }
+    }
+}
+
+
+
+function uiUpdateSavedConnectionsFromNodeId(nodeId, saveOld)
+{
+    const node = nodeFromId(nodeId);
+
+
+    uiDeleteSavedConnectionsFromNodeId(node.id);
+
+
+    if (saveOld)
+    {
+        for (const output of node.outputs)
+        {
+            for (const input of output.connectedInputs)
+            {
+                uiSaveConnection(
+                    output.node.id,
+                    output.id,
+                    input.connection.outputOrder,
+                    input.node.id,
+                    input.id,
+                    input.connection.toJson());
+            }
         }
     }
 }

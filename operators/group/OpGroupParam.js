@@ -263,6 +263,45 @@ extends OperatorBase
 
 
 
+    setName(newName, options = {})
+    {
+        if (   this.paramType == 0
+            && this.groupNode)
+        {
+            const param = this.groupNode.paramFromId(this.name);
+
+            const paramNodes = graph.pageNodes.filter(n => 
+                   n.type == GROUP_PARAM
+                && n != this);
+
+            newName = getNewNumberId(
+                paramNodes, 
+                name => paramNodes.find(n => n.name == name), 
+                newName, 
+                newName, 
+                '');
+
+            param._id = newName;
+            param.setName(newName);
+
+            // pushUpdateFromParam(null, [this], param);
+
+            uiSaveNodes([this.id]);
+            uiSaveNodes([this.groupNode.id]);
+            
+            uiUpdateSavedConnectionsToNodeId([this.id], true);
+            uiUpdateSavedConnectionsFromNodeId([this.id], true);
+            
+            uiUpdateSavedConnectionsToNodeId([this.groupNode.id], true);
+            uiUpdateSavedConnectionsFromNodeId([this.groupNode.id], true);
+        }
+
+
+        super.setName(newName, options);
+    }
+
+
+
     toJsonBase(nTab = 0) 
     {
         let   pos = ' '.repeat(nTab);

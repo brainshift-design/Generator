@@ -35,11 +35,7 @@ extends GNumberType
 
         
         if (this.input)
-        {
-            console.log('this.input =', this.input);
             this.value = (await this.input.eval(parse)).toValue();
-            console.log('this.value =', this.value);
-        }
         else if (this.value)
             await this.value.eval(parse);
         else

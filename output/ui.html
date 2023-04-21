@@ -8811,7 +8811,7 @@ extends GOperator
             //     this.param = this.feedbackValue();
 
             const result = (await this.param.eval(parse)).toValue();
-            console.log('result =', result);
+
             //this.param.feedbackValue = null;
             return this.value = result;
         }
@@ -11285,11 +11285,7 @@ extends GNumberType
 
         
         if (this.input)
-        {
-            console.log('this.input =', this.input);
             this.value = (await this.input.eval(parse)).toValue();
-            console.log('this.value =', this.value);
-        }
         else if (this.value)
             await this.value.eval(parse);
         else
@@ -31235,7 +31231,7 @@ extends GOperator
             //     this.param = this.feedbackValue();
 
             const result = (await this.param.eval(parse)).toValue();
-            console.log('result =', result);
+
             //this.param.feedbackValue = null;
             return this.value = result;
         }
@@ -33709,11 +33705,7 @@ extends GNumberType
 
         
         if (this.input)
-        {
-            console.log('this.input =', this.input);
             this.value = (await this.input.eval(parse)).toValue();
-            console.log('this.value =', this.value);
-        }
         else if (this.value)
             await this.value.eval(parse);
         else
@@ -48725,7 +48717,7 @@ class Parameter
 extends EventTarget
 {
     #type;     get type()    { return this.#type;    }
-    #id;       get id()      { return this.#id;      }
+    _id;       get id()      { return this._id;      }
     #name;     get name()    { return this.#name;    }
     _node;     get node()    { return this._node;    }
     _div;      get div()     { return this._div;     }
@@ -48768,7 +48760,7 @@ extends EventTarget
     {
         super();
 
-        this.#id                = id;
+        this._id                = id;
         this.#name              = name;
         this.#type              = type;
 
@@ -49130,7 +49122,6 @@ extends Parameter
               && this.output.paramNode
               && this.output.paramNode.inputs[0].connected)
         {
-            console.log('output');
             request.push(...pushInputOrParam(this.output.paramNode.inputs[0], gen));
             //request.push(...this.output.paramNode.inputs[0].connectedOutput.genRequest(gen));
         }
@@ -64734,6 +64725,45 @@ extends OperatorBase
 
 
 
+    setName(newName, options = {})
+    {
+        if (   this.paramType == 0
+            && this.groupNode)
+        {
+            const param = this.groupNode.paramFromId(this.name);
+
+            const paramNodes = graph.pageNodes.filter(n => 
+                   n.type == GROUP_PARAM
+                && n != this);
+
+            newName = getNewNumberId(
+                paramNodes, 
+                name => paramNodes.find(n => n.name == name), 
+                newName, 
+                newName, 
+                '');
+
+            param._id = newName;
+            param.setName(newName);
+
+            // pushUpdateFromParam(null, [this], param);
+
+            uiSaveNodes([this.id]);
+            uiSaveNodes([this.groupNode.id]);
+            
+            uiUpdateSavedConnectionsToNodeId([this.id], true);
+            uiUpdateSavedConnectionsFromNodeId([this.id], true);
+            
+            uiUpdateSavedConnectionsToNodeId([this.groupNode.id], true);
+            uiUpdateSavedConnectionsFromNodeId([this.groupNode.id], true);
+        }
+
+
+        super.setName(newName, options);
+    }
+
+
+
     toJsonBase(nTab = 0) 
     {
         let   pos = ' '.repeat(nTab);
@@ -72752,15 +72782,43 @@ function uiUpdateSavedConnectionsToNodeId(nodeId, saveOld)
 
     if (saveOld)
     {
-        for (const _input of node.inputs.filter(i => i.connected))
+        for (const input of node.inputs.filter(i => i.connected))
         {
             uiSaveConnection(
-                _input.connectedOutput.node.id,
-                _input.connectedOutput.id,
-                _input.connection.outputOrder,
-                 node .id,
-                _input.id,
-                _input.connection.toJson());
+                input.connectedOutput.node.id,
+                input.connectedOutput.id,
+                input.connection.outputOrder,
+                node .id,
+                input.id,
+                input.connection.toJson());
+        }
+    }
+}
+
+
+
+function uiUpdateSavedConnectionsFromNodeId(nodeId, saveOld)
+{
+    const node = nodeFromId(nodeId);
+
+
+    uiDeleteSavedConnectionsFromNodeId(node.id);
+
+
+    if (saveOld)
+    {
+        for (const output of node.outputs)
+        {
+            for (const input of output.connectedInputs)
+            {
+                uiSaveConnection(
+                    output.node.id,
+                    output.id,
+                    input.connection.outputOrder,
+                    input.node.id,
+                    input.id,
+                    input.connection.toJson());
+            }
         }
     }
 }

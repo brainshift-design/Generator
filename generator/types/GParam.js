@@ -52,7 +52,7 @@ extends GOperator
             //     this.param = this.feedbackValue();
 
             const result = (await this.param.eval(parse)).toValue();
-            console.log('result =', result);
+
             //this.param.feedbackValue = null;
             return this.value = result;
         }

@@ -4448,7 +4448,7 @@ extends GOperator
             //     this.param = this.feedbackValue();
 
             const result = (await this.param.eval(parse)).toValue();
-            console.log('result =', result);
+
             //this.param.feedbackValue = null;
             return this.value = result;
         }
@@ -6922,11 +6922,7 @@ extends GNumberType
 
         
         if (this.input)
-        {
-            console.log('this.input =', this.input);
             this.value = (await this.input.eval(parse)).toValue();
-            console.log('this.value =', this.value);
-        }
         else if (this.value)
             await this.value.eval(parse);
         else
