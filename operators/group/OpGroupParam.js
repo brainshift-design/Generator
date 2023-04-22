@@ -104,6 +104,13 @@ extends OperatorBase
 
 
 
+    getDefaultOffset()
+    {
+        return -1.5;
+    }
+
+
+
     output_genRequest(gen)
     {
         const request = [];
@@ -224,10 +231,10 @@ extends OperatorBase
         this.icon.style.background         = this.paramType == 2
                                              ? 'url(\'data:image/svg+xml;utf8,<svg width="12" height="12" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" clip-rule="evenodd" d="M0 3C0 1.34314 1.34314 0 3 0H9C10.6569 0 12 1.34314 12 3V9C12 10.6569 10.6569 12 9 12H3C1.34314 12 0 10.6569 0 9V3ZM5 2.5H7V5H9.5V7H7V9.5H5V7H2.5V5H5V2.5Z" fill="'+headerStyle+'"/></svg>\')'
                                              : this.paramType == 1
-                                               ? 'url(\'data:image/svg+xml;utf8,<svg width="12" height="12" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" clip-rule="evenodd" d="M0 3C0 1.34314 1.34314 0 3 0H9C10.6569 0 12 1.34314 12 3V9C12 10.6569 10.6569 12 9 12H3C1.34314 12 0 10.6569 0 9V3ZM6 8C7.10455 8 8 7.10461 8 6C8 4.89539 7.10455 4 6 4C4.89545 4 4 4.89539 4 6C4 7.10461 4.89545 8 6 8Z" fill="'+headerStyle+'"/></svg>\')'
-                                               : 'url(\'data:image/svg+xml;utf8,<svg width="12" height="12" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" clip-rule="evenodd" d="M12 0H0V12H12V0ZM11 1H1V11H11V1Z" fill="'+headerStyle+'"/><path d="M8 6C8 7.10457 7.10457 8 6 8C4.89543 8 4 7.10457 4 6C4 4.89543 4.89543 4 6 4C7.10457 4 8 4.89543 8 6Z" fill="'+headerStyle+'"/></svg>\')';
+                                               ? 'url(\'data:image/svg+xml;utf8,<svg width="12" height="12" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" clip-rule="evenodd" d="M0 3C0 1.34314 1.34314 0 3 0H9C10.6569 0 12 1.34314 12 3V6H0V3Z" fill="'+headerStyle+'"/></svg>\')'
+                                               : 'url(\'data:image/svg+xml;utf8,<svg width="12" height="12" viewBox="0 -5 12 12" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="0.5" y="0.5" width="11" height="6" stroke="'+headerStyle+'"/></svg>\')';
 
-        this.icon.style.backgroundPosition = '50% 50%';
+        this.icon.style.backgroundPosition = '50% calc(50% + 1px)';
         this.icon.style.backgroundRepeat   = 'no-repeat';
     }
 

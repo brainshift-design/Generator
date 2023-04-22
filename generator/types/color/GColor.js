@@ -70,7 +70,7 @@ extends GColorType
                         input.c1, 
                         input.c2, 
                         input.c3);
-                        
+
                     const fromSpaceIndex = input.space.value;
 
                     const toSpaceIndex = Math.min(Math.max(

@@ -64,6 +64,7 @@ Operator.prototype.updateHeaderLabelOffsetX = function(f = this.labelOffsetFacto
 
 
     const activeOffset = this.getActiveOffset();
+    const defOffset    = this.getDefaultOffset();
 
 
     if (rect.width > rw)
@@ -79,7 +80,7 @@ Operator.prototype.updateHeaderLabelOffsetX = function(f = this.labelOffsetFacto
     {
         this.label.style.left = 
               'calc(50%' 
-            + (this.active && this.showActiveArrow ? (' + ' + activeOffset + 'px') : '') 
+            + (this.active && this.showActiveArrow ? (' + ' + activeOffset + 'px') : (' + ' + defOffset + 'px')) 
             + ')';
 
         this.label.style.transform = 'translateX(-50%)';

@@ -161,41 +161,52 @@ function getTerminalsAfterNode(node)
 
     if (node.type == GROUP_NODE)
     {
-        for (const input of node.inputs) pushUnique(after, getTerminalsAfterNode(input.paramNode));
-        for (const input of node.inputs) pushUnique(after, input.node);
+        for (const input of node.inputs)
+            pushUnique(after, getTerminalsAfterNode(input.paramNode));
+
+        // for (const input of node.inputs) pushUnique(after, input.node);
+        
+        for (const output of node.outputs) 
+            for (const input of output.connectedInputs) 
+                pushUnique(after, input.node);
     }
+
     else if (node.type == GROUP_PARAM)
     {
-        //pushUnique(after, node);
-        //pushUnique(after, node.groupNode);
-     
-        const afterNode = [];
-
-        for (const output of node.outputs)
+        if (node.output)
         {
-            for (const input of output.connectedInputs)
-                pushUnique(after, getTerminalsAfterNode(input.node));
+            const afterNode = [];
+
+            for (const output of node.outputs)
+            {
+                for (const input of output.connectedInputs)
+                    pushUnique(after, getTerminalsAfterNode(input.node));
+            }
+
+            if (isEmpty(afterNode))
+                pushUnique(afterNode, node);
+            
+            pushUnique(after, afterNode);
         }
 
-        if (isEmpty(afterNode))
-            pushUnique(afterNode, node);
 
-
-        const afterGroupNode = [];
-
-        for (const output of node.groupNode.outputs)
+        if (node.input)
         {
-            for (const input of output.connectedInputs)
-                pushUnique(afterGroupNode, getTerminalsAfterNode(input.node));
+            const afterGroupNode = [];
+
+            for (const output of node.groupNode.outputs)
+            {
+                for (const input of output.connectedInputs)
+                    pushUnique(afterGroupNode, getTerminalsAfterNode(input.node));
+            }
+
+            if (isEmpty(afterGroupNode))
+                pushUnique(afterGroupNode, node.groupNode);
+
+            pushUnique(after, afterGroupNode);
         }
-
-        if (isEmpty(afterGroupNode))
-            pushUnique(afterGroupNode, node.groupNode);
-
-
-        pushUnique(after, afterNode);
-        pushUnique(after, afterGroupNode);
     }
+    
     else
     {
         for (const output of node.outputs)

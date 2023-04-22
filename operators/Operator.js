@@ -904,6 +904,13 @@ class Operator
 
 
 
+    getDefaultOffset()
+    {
+        return 0;
+    }
+
+
+
     connectToSelected(selected)
     {
         console.assert(!isEmpty(selected));
