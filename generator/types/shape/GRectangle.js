@@ -46,33 +46,49 @@ extends GObjectBase
             return this;
 
             
+        const x      = this.x      ? (await this.x     .eval(parse)).toValue() : null;
+        const y      = this.y      ? (await this.y     .eval(parse)).toValue() : null;
+        const width  = this.width  ? (await this.width .eval(parse)).toValue() : null;
+        const height = this.height ? (await this.height.eval(parse)).toValue() : null;
+        const angle  = this.angle  ? (await this.angle .eval(parse)).toValue() : null;
+        const round  = this.round  ? (await this.round .eval(parse)).toValue() : null;
+
+
         if (this.input)
-            this.input = (await this.input.eval(parse)).copy();
+        {
+            const input = (await this.input.eval(parse)).toValue();
+
+            this.value = new RectangleValue(
+                this.nodeId,
+                x      ?? input.x,
+                y      ?? input.y,
+                width  ?? input.width,
+                height ?? input.height,
+                angle  ?? input.angle,
+                round  ?? input.round);
+        }
+        else
+        {
+            this.value = new RectangleValue(this.nodeId, x, y, width, height, angle, round);
+        }
+
+       
+        genPushUpdateValue(parse, this.nodeId, 'value',  this.value );
+        genPushUpdateValue(parse, this.nodeId, 'x',      this.x     .toValue());
+        genPushUpdateValue(parse, this.nodeId, 'y',      this.y     .toValue());
+        genPushUpdateValue(parse, this.nodeId, 'width',  this.width .toValue());
+        genPushUpdateValue(parse, this.nodeId, 'height', this.height.toValue());
+        genPushUpdateValue(parse, this.nodeId, 'angle',  this.angle .toValue());
+        genPushUpdateValue(parse, this.nodeId, 'round',  this.round .toValue());
+
 
         const hasInput =     
                this.input 
             && RECTANGLE_TYPES.includes(this.input.type);   
 
-            
-        if (this.x     ) this.x      = (await this.x     .eval(parse)).copy(); else if (hasInput) this.x      = this.input.x     .copy();
-        if (this.y     ) this.y      = (await this.y     .eval(parse)).copy(); else if (hasInput) this.y      = this.input.y     .copy();
-        if (this.width ) this.width  = (await this.width .eval(parse)).copy(); else if (hasInput) this.width  = this.input.width .copy();
-        if (this.height) this.height = (await this.height.eval(parse)).copy(); else if (hasInput) this.height = this.input.height.copy();
-        if (this.angle ) this.angle  = (await this.angle .eval(parse)).copy(); else if (hasInput) this.angle  = this.input.angle .copy();
-        if (this.round ) this.round  = (await this.round .eval(parse)).copy(); else if (hasInput) this.round  = this.input.round .copy();
-
-        
-        if (this.x     ) genPushUpdateValue(parse, this.nodeId, 'x',      this.x     .toValue());
-        if (this.y     ) genPushUpdateValue(parse, this.nodeId, 'y',      this.y     .toValue());
-        if (this.width ) genPushUpdateValue(parse, this.nodeId, 'width',  this.width .toValue());
-        if (this.height) genPushUpdateValue(parse, this.nodeId, 'height', this.height.toValue());
-        if (this.angle ) genPushUpdateValue(parse, this.nodeId, 'angle',  this.angle .toValue());
-        if (this.round ) genPushUpdateValue(parse, this.nodeId, 'round',  this.round .toValue());
-
-
         if (    hasInput
             && !this.options) this.objects = this.input.objects;
-        else                  this.evalObjects();
+        else                  await this.evalObjects(parse);
 
 
         this.validate();
@@ -82,7 +98,7 @@ extends GObjectBase
 
 
 
-    evalObjects(options = {})
+    async evalObjects(parse, options = {})
     {
         if (!this.options.enabled)
             return;
@@ -110,7 +126,7 @@ extends GObjectBase
         }
 
         
-        super.evalObjects();
+        await super.evalObjects(parse);
     }
 
 

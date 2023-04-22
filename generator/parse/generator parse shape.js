@@ -6,6 +6,15 @@ function genParseRectangle(parse)
     const rect = new GRectangle(nodeId, options);
 
 
+    let nInputs = -1;
+
+    if (!ignore)
+    {
+        nInputs = parseInt(parse.move());
+        console.assert(nInputs => 0 && nInputs <= 1, 'nInputs must be [0, 1]');
+    }
+
+
     if (parse.settings.logRequests) 
         logReq(rect, parse, ignore);
 
@@ -20,7 +29,7 @@ function genParseRectangle(parse)
     parse.nTab++;
 
 
-    if (RECTANGLE_TYPES.includes(parse.next))
+    if (nInputs == 1)
         rect.input = genParse(parse);
 
 
@@ -40,6 +49,7 @@ function genParseRectangle(parse)
         case 'height': rect.height = genParse(parse); break;
         case 'angle':  rect.angle  = genParse(parse); break;
         case 'round':  rect.round  = genParse(parse); break;
+        case 'props':  rect.props  = genParse(parse); break;
         }
     }
     
@@ -63,7 +73,7 @@ function genParseLine(parse)
 
 
     if (parse.settings.logRequests) 
-        logReqShape(line, parse, ignore);
+        logReq(line, parse, ignore);
 
 
     if (ignore) 
@@ -117,7 +127,7 @@ function genParseEllipse(parse)
 
 
     if (parse.settings.logRequests) 
-        logReqShape(ellipse, parse, ignore);
+        logReq(ellipse, parse, ignore);
 
 
     if (ignore) 
@@ -172,7 +182,7 @@ function genParsePolygon(parse)
 
 
     if (parse.settings.logRequests) 
-        logReqShape(poly, parse, ignore);
+        logReq(poly, parse, ignore);
 
 
     if (ignore) 
@@ -229,7 +239,7 @@ function genParseStar(parse)
 
 
     if (parse.settings.logRequests) 
-        logReqShape(star, parse, ignore);
+        logReq(star, parse, ignore);
 
 
     if (ignore) 

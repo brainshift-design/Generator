@@ -30,7 +30,7 @@ function genParseListValue(parse)
     const list = parse.move();
 
     if (parse.settings.logRequests) 
-        logReqListValue(list, parse, ignore);
+        logReqValue(LIST_VALUE, list, parse);
 
     return parseListValue(list)[0];
 }

@@ -6,7 +6,8 @@ extends GOperator
     
 
     objects = [];
-    styles  = [];
+    //styles  = [];
+    props   = [];
 
 
 
@@ -23,7 +24,8 @@ extends GOperator
         // if (base.stroke) this.stroke = base.stroke.copy();
 
         this.copyObjects(base.objects);
-        this.copyStyles (base.styles );
+        //this.copyStyles (base.styles );
+        this.copyProperties(base.props);
     }
 
 
@@ -35,9 +37,16 @@ extends GOperator
 
 
 
-    copyStyles(styles)
+    // copyStyles(styles)
+    // {
+    //     this.styles = styles.map(s => s.copy());
+    // }
+
+
+
+    copyProperties(props)
     {
-        this.styles = styles.map(s => s.copy());
+        this.props = props.map(p => p.copy());
     }
 
 
@@ -78,10 +87,37 @@ extends GOperator
 
 
 
-    evalObjects(options = {})
+    async evalObjects(parse)
     {
-        // for (const obj of this.objects)
-        //     obj.nodeId = this.nodeId;
+        const props = this.props ? (await this.props.eval(parse)).toValue() : null;
+
+        if (this.input)
+            this.value.props = props.copy();
+
+
+        for (const prop of this.props.value.items)
+        {
+            if (prop.type == COLOR_VALUE)
+            {
+                const rgb = scaleRgb(prop.toRgb());
+
+                for (const obj of this.objects)
+                {
+                    if (!obj.fills) 
+                        obj.fills = [];
+
+                    obj.fills.push([
+                        'SOLID', 
+                                rgb[0]
+                        + ' ' + rgb[1]
+                        + ' ' + rgb[2]
+                        + ' ' + '255']);
+                }
+            }
+        }
+
+
+        genPushUpdateValue(parse, this.nodeId, 'props', this.props.toValue());
     }
 
 
@@ -95,36 +131,6 @@ extends GOperator
 }
 
 
-
-
-
-// evalObjects()
-// {
-//     if (!this.objects)
-//         return;
-    
-    
-//     if (this.options.enabled)
-//     {
-//         const rgb = scaleRgb(this.color.toValue().toRgb());
-
-//         for (const obj of this.objects)
-//         {
-//             if (!obj.fills) 
-//                 obj.fills = [];
-
-//             obj.fills.push([
-//                 'SOLID', 
-//                         rgb[0]
-//                 + ' ' + rgb[1]
-//                 + ' ' + rgb[2]
-//                 + ' ' + this.opacity.toValue().toNumber()]);
-//         }
-//     }
-
-    
-//     super.evalObjects();
-// }
 
 
 

@@ -13,7 +13,7 @@ extends OperatorBase
 
     addBaseParams()
     {
-        //this.addParam(this.paramStyle = new StyleParam('style', 'style', true, false));
+        this.addParam(this.paramStyle = new ListParam('props', 'properties', true, true, true));
     }
 
 
@@ -34,6 +34,10 @@ extends OperatorBase
         
         
         const input = this.node.inputs[0];
+
+
+        request.push(input.connected ? 1 : 0);
+
 
         if (input.connected)
         {

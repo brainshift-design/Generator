@@ -80,7 +80,7 @@ extends GObjectBase
 
         if (    hasInput
             && !this.options) this.objects = this.input.objects;
-        else                  this.evalObjects();
+        else                  this.evalObjects(parse);
 
 
         this.validate();
@@ -90,7 +90,7 @@ extends GObjectBase
 
 
 
-   evalObjects(options = {})
+   evalObjects(parse, options = {})
    {
        if (!this.options.enabled)
            return;
@@ -122,7 +122,7 @@ extends GObjectBase
        }
 
        
-       super.evalObjects();
+       super.evalObjects(parse);
    }
 
 
