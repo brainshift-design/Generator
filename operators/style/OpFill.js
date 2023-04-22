@@ -265,7 +265,7 @@ extends OpColorBase
 
     getHeaderColors(options = {})
     {
-        const colors  = super.getHeaderColors();
+        const colors = super.getHeaderColors();
 
         const opacity = 
             this.paramOpacity.value.isValid() 
@@ -282,7 +282,7 @@ extends OpColorBase
         colors.wire = 
             !rgbaIsNaN(colors.stripeBack)
             ? colors.stripeBack
-            : rgbFromType(ANY_TYPE, false);
+            : rgb_a(rgbFromType(ANY_TYPE, false));
 
 
         return colors;
