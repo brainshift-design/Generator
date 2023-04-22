@@ -43,10 +43,9 @@ extends GObjectBase
         if (this.isCached())
             return this;
 
-
         let fill = this.fill ? (await this.fill.eval(parse)).toValue() : null;
 
-        if (fill.type == COLOR_VALUE)
+        if (fill && fill.type == COLOR_VALUE)
            fill = FillValue.fromRgb(scaleRgb(fill.toRgb()), 0xff);
         
 
