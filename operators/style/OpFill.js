@@ -164,26 +164,26 @@ extends OpColorBase
                 : 0;
 
 
-        this.paramColor.controls[0]. backStyleLight = 
-        this.paramColor.controls[0]. backStyleDark  = 
-            !rgbIsNaN(colors.stripeBack)
-            ? rgb2style(colors.stripeBack, 1)
-            : noColorStyle(colors.stripeBack);
+        // this.paramColor.controls[0]. backStyleLight = 
+        // this.paramColor.controls[0]. backStyleDark  = 
+        //     !rgbIsNaN(colors.stripeBack)
+        //     ? rgb2style(colors.stripeBack, 1)
+        //     : noColorStyle(colors.stripeBack);
 
               
-        this.paramColor.controls[0].valueStyleLight = 
-        this.paramColor.controls[0].valueStyleDark  = 'transparent';//rgba2style(rgb_a(colors.back));
+        // this.paramColor.controls[0].valueStyleLight = 
+        // this.paramColor.controls[0].valueStyleDark  = 'transparent';//rgba2style(rgb_a(colors.back));
 
-        this.paramColor.controls[0].textStyleLight  = 
-        this.paramColor.controls[0].textStyleDark   = rgba2style(colors.text);
+        // this.paramColor.controls[0].textStyleLight  = 
+        // this.paramColor.controls[0].textStyleDark   = rgba2style(colors.text);
 
-        this.paramColor. input.colorLight           =
-        this.paramColor. input.colorDark            = colors.input;
+        // this.paramColor. input.colorLight           =
+        // this.paramColor. input.colorDark            = colors.input;
         
-        this.paramColor.output.colorLight           =
-        this.paramColor.output.colorDark            = colors.output;
+        // this.paramColor.output.colorLight           =
+        // this.paramColor.output.colorDark            = colors.output;
 
-        this.paramColor.output.wireColor            = colors.stripeBack;
+        // this.paramColor.output.wireColor            = colors.stripeBack;
     }
 
 

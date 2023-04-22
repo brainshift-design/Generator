@@ -105,6 +105,7 @@ extends Control
         if (!(value instanceof ColorValue))
             console.assert(false, 'ColorControl.setValue(value) is ' + typeof value + ', must be a ColorValue');
 
+
         const oldValue = this.value.copy();
 
         this.value = value.copy();

@@ -3751,6 +3751,7 @@ a
 }
 
 
+
 .outputControls
 {
     width:          12px;
@@ -40973,31 +40974,27 @@ NumberControl.prototype.initTextbox = function()
         e.stopPropagation();
 
 
-        // if (   e.code == 'KeyX'
-        //     && getCtrlKey(e))
-        // {
-        //     // let the OS do its thing here
-        //     // // e.preventDefault();
-        //     // document.execCommand('copy');
-        //     // clearSelectedText(this.textbox);
-        // }
+        if (   e.code == 'KeyX'
+            && getCtrlKey(e)
+            && !this.readOnly)
+        {
+            //
+        }
 
-        // else if (   e.code == 'KeyC'
-        //     && getCtrlKey(e))
-        // {
-        //     // e.preventDefault();
-        //     // document.execCommand('copy');
-        // }
+        else if (   e.code == 'KeyC'
+            && getCtrlKey(e))
+        {
+            //
+        }
 
-        // else if (e.code == 'KeyV'
-        //       && getCtrlKey(e)
-        //       && !this.readOnly)
-        // {
-        //     // let the OS do its thing here
-        // }
+        else if (e.code == 'KeyV'
+              && getCtrlKey(e)
+              && !this.readOnly)
+        {
+            //
+        }
         
-        //else 
-        if (   (   e.code == 'Enter'
+        else if (   (   e.code == 'Enter'
                 || e.code == 'NumpadEnter')
             && !this.readOnly)
         {
@@ -41125,19 +41122,20 @@ NumberControl.prototype.initTextbox = function()
                 this.confirmTimer = setTimeout(() => controlTimer_confirm(this), 400);
             }
         }
-        else if (e.code == 'KeyZ'
-              && getCtrlKey(e))
-        {
-            // e.preventDefault();
-            //e.stopImmediatePropagation();
-
-            //      if (e.shiftKey && !actionManager.redoing) actionManager.redo();
-            // else if (              !actionManager.undoing) actionManager.undo();
-            
-            // this.updateTextbox();
-        }
-        // else 
+        // else if (e.code == 'KeyZ'
+        //       && getCtrlKey(e))
         // {
+        //     // e.preventDefault();
+        //     //e.stopImmediatePropagation();
+
+        //     //      if (e.shiftKey && !actionManager.redoing) actionManager.redo();
+        //     // else if (              !actionManager.undoing) actionManager.undo();
+            
+        //     // this.updateTextbox();
+        // }
+        else if (this.readOnly)
+            e.preventDefault();
+        //{
         //     let curVal = this.textbox.value;
 
         //     if (      e.key.length == 1
@@ -41177,7 +41175,7 @@ NumberControl.prototype.initTextbox = function()
         //     if (   nextVal < this.min - 0.001
         //         || nextVal > this.max)
         //         e.preventDefault();            
-        // }
+        //}
     });
 
 
@@ -42855,6 +42853,7 @@ extends Control
         if (!(value instanceof ColorValue))
             console.assert(false, 'ColorControl.setValue(value) is ' + typeof value + ', must be a ColorValue');
 
+
         const oldValue = this.value.copy();
 
         this.value = value.copy();
@@ -43018,22 +43017,27 @@ ColorControl.prototype.initTextbox = function()
         e.stopPropagation();
 
 
-        // if (   e.code == 'KeyC'
-        //     && getCtrlKey(e))
-        // {
-        //     e.preventDefault();
-        //     document.execCommand('copy');
-        // }
+        if (   e.code == 'KeyX'
+            && getCtrlKey(e)
+            && !this.readOnly)
+        {
+            //
+        }
 
-        // else if (e.code == 'KeyV'
-        //       && getCtrlKey(e)
-        //       && !this.readOnly)
-        // {
-        //     // let the OS do its thing here
-        // }
+        else if (   e.code == 'KeyC'
+            && getCtrlKey(e))
+        {
+            // 
+        }
+
+        else if (e.code == 'KeyV'
+              && getCtrlKey(e)
+              && !this.readOnly)
+        {
+            // 
+        }
         
-        ///else 
-        if (   (   e.code == 'Enter'
+        else if (   (   e.code == 'Enter'
                 || e.code == 'NumpadEnter')
             && !this.readOnly)
         {
@@ -43141,11 +43145,13 @@ ColorControl.prototype.initTextbox = function()
             }
         }
 
+        else if (this.readOnly)
+            e.preventDefault();
+
         else if (e.key != 'Control'
               && e.key != 'Shift'
               && e.key != 'Alt')           
             actionManager.redoActions = [];
-
     });
 
 
@@ -50049,7 +50055,17 @@ extends Parameter
         const rgbaStripe = rgb_a(getStripeBackColor(rgb));
         const rgbaText   = getTextColorFromBackColor(rgbaStripe, 1);
         
-        
+
+        this.controls[0].backStyleLight  =
+        this.controls[0].backStyleDark   = rgba2style(rgbaStripe);
+
+        this.controls[0].valueStyleLight = 
+        this.controls[0].valueStyleDark  = 'transparent';
+
+        this.controls[0].textStyleLight  = 
+        this.controls[0].textStyleDark   = rgba2style(rgbaText);
+
+
         if (this.input)
         {
             this.input.colorLight  = 
@@ -50333,14 +50349,12 @@ extends Parameter
 
         this.controls[0].textbox.style.position     = 'absolute';
         this.controls[0].textbox.style.left         =  0;
-        //this.controls[0].textbox.style.width        = '55%';
         this.controls[0].textbox.style.transform    = 'translateX(0)';
         this.controls[0].textbox.style.textAlign    = 'right';
         this.controls[0].textbox.style.paddingLeft  =  14;
         
         this.controls[1].textbox.style.position     = 'absolute';
         this.controls[1].textbox.style.right        =  0;
-        //this.controls[1].textbox.style.width        = '45%';
         this.controls[1].textbox.style.transform    = 'translateX(6px)';
         this.controls[1].textbox.style.textAlign    = 'left';
         this.controls[1].textbox.style.paddingRight =  10;
@@ -50356,7 +50370,7 @@ extends Parameter
         this.div.appendChild(this.controlWrapper);
 
        
-        if (hasInput)  this.initInput([...FILL_TYPES, ...COLOR_TYPES], getParamInputValuesForUndo, this.input_getBackInitValue);
+        if (hasInput)  this.initInput([FILL_VALUE, COLOR_VALUE], getParamInputValuesForUndo, this.input_getBackInitValue);
         if (hasOutput) this.initOutput([FILL_VALUE], this.output_genRequest, getParamOutputValuesForUndo, this.output_backInit);
 
 
@@ -50519,8 +50533,7 @@ extends Parameter
             // }
             // else if (this.input.connectedOutput.supportsTypes(FILL_TYPES))
                 
-            if (   this.input.connectedOutput.supportsTypes(COLOR_TYPES)
-                || this.input.connectedOutput.supportsTypes(FILL_TYPES ))
+            if (this.input.connectedOutput.supportsTypes([FILL_VALUE, COLOR_VALUE]))
                 request.push(...pushInputOrParam(this.input, gen));
             else
                 console.assert(false, 'invalid input for FillParam');
@@ -50744,14 +50757,23 @@ extends Parameter
     forceShowWarning = false;
     warningStyle;
 
-
+    
+    checkersHolder;
     checkers;
 
-    textControl;
-    control;
+    controlWrapper;
 
+
+    text;
+
+   
     
-    // get valueText() { return this.colorControl.valueText; }
+    get valueText() { return this.controls[0].valueText; }
+    set valueText(text) 
+    {
+        this.controls[0].valueText = text;
+        this.controls[0].update();
+    }
 
     
     value;
@@ -50760,100 +50782,142 @@ extends Parameter
     
     constructor(id,
                 name, 
+                showName,
                 hasInput,
                 hasOutput,
                 defaultValue = StrokeValue.NaN)
     {
         super(STROKE_VALUE, id, name);
 
+        this.checkersHolder = createDiv();
+        this.checkers       = createDiv();
 
-        this.checkers                     = createDiv();
+        this.controlWrapper = createDiv();
 
-        this.textControl                  = createDiv('colorControlText');
 
-        this.controls.push(new NumberControl(
-            createDiv(),
+        this.controls.push(new ColorControl(
+            null,
             this,
             this.id,
-            'stroke', 
-            true,
-            defaultValue.weight.value,
-            0));
+            'color', 
+            showName,
+            defaultValue.fill.color)); 
+
+        this.controls[0].showColor = false;
 
 
-        this.controls[0].setWidth(100);
+        this.defaultValue                           = defaultValue;
+        this.value                                  = defaultValue;
+
+
+        this.text                                   = createDiv('strokeValue');
+
+        this.text.style.position                    = 'absolute';
+        this.text.style.left                        = 0;
+        this.text.style.top                         = 0;
+        this.text.style.width                       = '100%';
+        this.text.style.height                      = defParamHeight - 4;
+        this.text.style.background                  = 'transparent';
+        this.text.style.fontFamily                  = 'Inter';
+        this.text.style.fontSize                    = 11;
+        this.text.style.fontWeight                  = '600';
+        this.text.style.fontStyle                   = 'italic';
+        this.text.style.textAlign                   = 'center';
+        this.text.style.paddingTop                  = '4px';
+
+        this.text.addEventListener('pointerdown', e => 
+        {
+            if (e.button != 1) 
+                e.stopPropagation();
+        });
 
         
-        this.defaultValue                 = defaultValue;
-        this.value                        = defaultValue;
+        this._warningOverlay                        = createDiv('colorValueWarningOverlay');
+        this._warningOverlay.style.zIndex           = 11;
 
-        
-        this.checkers.style.position      = 'absolute';
-        this.checkers.style.width         = '100%';
-        this.checkers.style.height        = defParamHeight;
-
-        this.textControl.style.width      = '100%';
-        this.textControl.style.textAlign  = 'center';
-
-        this._warningOverlay = createDiv('colorWarningOverlay');
-        this._warningOverlay.style.zIndex = 21;
         this.div.appendChild(this._warningOverlay);
 
 
-        this.controls[0].style.position       = 'absolute';
-        this.controls[0].style.display        = 'block';
-        this.controls[0].style.width          = '100%';
-        this.controls[0].style.height         = defParamHeight;
+        this.checkersHolder.style.position          = 'absolute';
+        this.checkersHolder.style.width             = '100%';
+        this.checkersHolder.style.height            = defParamHeight;
+        this.checkersHolder.style.overflow          = 'hidden';
+
+        this.checkers.style.position                = 'absolute';
+        this.checkers.style.width                   = '100%';
+        this.checkers.style.height                  = defParamHeight;
 
 
-        this.div.appendChild(this.checkers);
+        this.controlWrapper.style.position          = 'relative';
+        this.controlWrapper.style.display           = 'inline-block';
+        this.controlWrapper.style.width             = '100%';
+        this.controlWrapper.style.height            = defParamHeight;
+        //this.controlWrapper.style.zIndex            = 100;
 
-        this.div.appendChild(this.textControl);
-        this.div.appendChild(this.controls[0].div);
+
+        this.controls[0].successOnFocusOut          = true;
+        this.controls[0].div.style.display          = 'inline';
+        this.controls[0].div.style.width            = '100%';
+        this.controls[0].div.style.position         = 'absolute';
+        this.controls[0].div.style.left             = 0;
+
+   
+        this.controls[0].text.style.transform       = 'translateX(-50%)';
+
+
+        this.controls[0].textbox.style.position     = 'absolute';
+        this.controls[0].textbox.style.left         =  0;
+        this.controls[0].textbox.style.transform    = 'translateX(0)';
+        this.controls[0].textbox.style.textAlign    = 'right';
+        this.controls[0].textbox.style.paddingLeft  =  14;
+
+
+        this.controlWrapper.appendChild(this.controls[0].div);
+        
+        this.checkersHolder.appendChild(this.checkers);
+        this.div.appendChild(this.checkersHolder);
+
+        this.div.appendChild(this.controlWrapper);
+
+        this.div.appendChild(this.text);
 
        
-        if (hasInput)  this.initInput([...STROKE_TYPES, ...FILL_TYPES, ...COLOR_TYPES]);
-        if (hasOutput) this.initOutput([STROKE_VALUE], this.output_genRequest);
-
-
-        this.controls[0].addEventListener('confirm', () => 
-        { 
-            const value = this.value.copy();
-
-            value.weight = new NumberValue(
-                this.controls[0].value, 
-                this.controls[0].dec);
-
-            this.setValue(value, true, false);
-        });
+        if (hasInput)  this.initInput([STROKE_VALUE, FILL_VALUE, COLOR_VALUE], getParamInputValuesForUndo, this.input_getBackInitValue);
+        if (hasOutput) this.initOutput([STROKE_VALUE], this.output_genRequest, getParamOutputValuesForUndo, this.output_backInit);
     }
 
 
 
-    // setName(name, dispatchEvents = true)
-    // {
-    //     super.setName(name, dispatchEvents);
-    //     this.colorControl.setName(name);
-    // }
+    input_getBackInitValue()
+    {
+        // 'this' is the input
+
+        return this.param.value;
+    }
 
 
 
-    isDefault = () => this.value.equals(this.defaultValue);
+    output_backInit(value)
+    {
+        // 'this' is the output
+
+        console.assert(value.type == STROKE_VALUE, 'expected STROKE_VALUE in backInit()');
+        
+        this.param.setValue(value, false, true, false);
+    }
 
 
 
     setValue(value, createAction, updateControl = true, dispatchEvents = true) 
     {
-        //console.log('value =', value);
-        
         if (!(value instanceof StrokeValue))
             console.assert(false, 'StrokeParam.setValue(value) is ' + typeof value + ', must be a StrokeValue');
-
 
         console.assert(
                value.type 
             && value.type == STROKE_VALUE, 
             'StrokeParam value.type must be STROKE_VALUE');
+
 
         this.preSetValue(value, createAction, dispatchEvents);
 
@@ -50862,13 +50926,7 @@ extends Parameter
 
 
         if (updateControl)
-        {
-            this.controls[0].setDecimals(
-                this.value.weight.decimals, 
-                this.value.weight.decimals);
-                
-            this.controls[0].setValue(this.value.weight.value, false, false); 
-        }
+            this.controls[0].setValue(this.value.fill.color, false, false); 
 
 
         super.setValue(this.value, createAction, updateControl, dispatchEvents);
@@ -50876,6 +50934,20 @@ extends Parameter
 
         this.oldValue = this.value;
     }    
+
+
+
+    isVisible()
+    {
+        return this.controls[0].div.style.display != 'none';
+    }
+
+
+
+    resetControls()
+    {
+        this.controls[0].valueText = '';
+    }
 
 
 
@@ -50897,18 +50969,23 @@ extends Parameter
         if (   this.input
             && this.input.connected)
         {
-            request.push(...pushInputOrParam(this.input, gen));
+            // request.push(...pushInputOrParam(this.input, gen));
 
-            if (   this.input.connectedOutput.support( FILL_TYPES)
-                || this.input.connectedOutput.support(COLOR_TYPES))
-            {
-                const val = noNaN(this.controls[0].value,      1);
-                const dec = noNaN(this.controls[0].displayDec, 0);
+            // if (   this.input.connectedOutput.support( FILL_TYPES)
+            //     || this.input.connectedOutput.support(COLOR_TYPES))
+            // {
+            //     const val = noNaN(this.controls[0].value,      1);
+            //     const dec = noNaN(this.controls[0].displayDec, 0);
                 
-                request.push(
-                    NUMBER_VALUE, 
-                    new NumberValue(val, dec).toString());
-            }
+            //     request.push(
+            //         NUMBER_VALUE, 
+            //         new NumberValue(val, dec).toString());
+            // }
+
+            if (this.input.connectedOutput.supportsTypes([STROKE_VALUE, FILL_VALUE, COLOR_VALUE]))
+                request.push(...pushInputOrParam(this.input, gen));
+            else
+                console.assert(false, 'invalid input for FillParam');
         }
 
         else request.push( 
@@ -50929,92 +51006,92 @@ extends Parameter
 
     updateControls()
     {
-        if (   this.input.connected
-            && this.value.isValid())
+        checkControlVisible(this, this.controls[0]);
+        //checkControlVisible(this, this.controls[1]);
+
+
+        const noColor = 
+            darkMode
+            ? rgbNoColorDark
+            : rgbNoColorLight;
+
+
+        const rgba       = this.value.fill.toRgba();
+
+        const rgbaStripe = rgb_a(getStripeBackColor(rgba), rgba[3]);
+        const rgbaBack   = rgbaStripe;
+        const rgbaText   = getTextColorFromBackColor(rgbaStripe, rgba[3]);
+
+
+        this.controlWrapper.style.background =
+              !rgbaIsNaN(rgbaBack) 
+            && this.value.fill.opacity.isValid()
+            ? rgba2style(rgbaBack)
+            : noColorStyle(rgbaBack);//'transparent'; 
+
+
+        this.updateWarningOverlay();
+
+
+        this.div.style.background = 'transparent';//noColorStyle(rgba);
+
+
+        this.text.innerHTML = 'stroke ' + this.value.weight.value;
+
+        this.text.style.color = rgba2style(rgbaText);
+
+
+        if (this.input)
         {
-            const noColor = 
-                darkMode
-                ? rgbNoColorDark
-                : rgbNoColorLight;
-
-            const rgbaVal = this.value.fill.toRgba();
-            const rgbaText = getTextColorFromBackColor(rgbaVal, rgbaVal[3]);
-
-
-            //this.input.wireColor   = !rgbIsNaN(rgbaVal) ? rgbaVal : noColor;
             this.input.colorLight  = 
             this.input.colorDark   = rgb_a(rgbaText, 0.2);
+            this.input.wireColor   = !rgbaIsNaN(rgbaBack) ? rgbaBack : noColor;
+        }
 
-            //this.output.wireColor  = !rgbIsNaN(rgbaVal) ? rgbaVal : noColor;
+        if (this.output)
+        {
             this.output.colorLight =
             this.output.colorDark  = rgb_a(rgbaText, 0.2);
-
-
-            this.checkers.style.background =
-                darkMode
-                ?   'linear-gradient(45deg, #222 25%, transparent 25%, transparent 75%, #222 75%), '
-                  + 'linear-gradient(45deg, #222 25%, transparent 25%, transparent 75%, #222 75%)'
-                :   'linear-gradient(45deg, #ddd 25%, transparent 25%, transparent 75%, #ddd 75%), '
-                  + 'linear-gradient(45deg, #ddd 25%, transparent 25%, transparent 75%, #ddd 75%)';
-
-            this.checkers.style.display            = 'inline-block';
-            this.checkers.style.backgroundColor    = darkMode ? '#444' : '#fff';
-
-            this.checkers.style.backgroundSize     = '22px 22px';
-            this.checkers.style.backgroundPosition = '0 0, 11px 11px';
-    
-            this.checkers.style.left               = '-3.5px';
-            this.checkers.style.width              = 'calc(100% + 3.5px)';
-    
-            
-            this.controls[0].style.display     = 'inline-block';
-            
-            this.controls[0]. backStyleLight   = 
-            this.controls[0]. backStyleDark    = 
-            this.controls[0].valueStyleLight   = 
-            this.controls[0].valueStyleDark    = rgba2style(rgbaVal);
-
-            this.controls[0].textStyleLight    = 
-            this.controls[0].textStyleDark     = rgba2style(rgbaText);
-
-            this.controls[0].update();
-            
-
-            this.textControl.style.display = 'none';
-
-            this.updateWarningOverlay();
+            this.output.wireColor  = !rgbaIsNaN(rgbaBack) ? rgbaBack : noColor;
         }
-        else
-        {
-            const noColor  = darkMode ? rgbNoColorDark      : rgbNoColorLight;
-            const rgbaText = darkMode ? rgbaNoColorTextDark : rgbaNoColorTextLight;
 
 
-            //this.input.wireColor           = noColor;
-            this.input.colorLight          = 
-            this.input.colorDark           = rgb_a(rgbaText, 0.12);
+        this.checkers.style.background = 
+            darkMode
+            ?   'linear-gradient(-45deg, #222 25%, transparent 25%, transparent 75%, #222 75%), '
+              + 'linear-gradient(-45deg, #222 25%, transparent 25%, transparent 75%, #222 75%)'
+            :   'linear-gradient(-45deg, #ddd 25%, transparent 25%, transparent 75%, #ddd 75%), '
+              + 'linear-gradient(-45deg, #ddd 25%, transparent 25%, transparent 75%, #ddd 75%)';
+
+        this.checkers.style.display            = this.value.isValid() ? 'inline-block' : 'none';
+        this.checkers.style.backgroundColor    = darkMode ? '#444' : '#fff';
+   
+        this.checkers.style.backgroundSize     = '22px 22px';
+        this.checkers.style.backgroundPosition = '0 0, 11px 11px';
+   
+        this.checkers.style.left               = '-3.5px';
+        this.checkers.style.width              = 'calc(100% + 3.5px)';
         
-            //this.output.wireColor          = noColor;
-            this.output.colorLight         =
-            this.output.colorDark          = rgb_a(rgbaText, 0.12);
+        
+        this.controls[0].backStyleLight        = 
+        this.controls[0].backStyleDark         = 'transparent';
+         
+        this.controls[0].textStyleLight        = 
+        this.controls[0].textStyleDark         = rgba2style(rgbaText);
 
 
-            this.checkers.style.display    = 'none';
-            this.controls[0].style.display = 'none';
-            
-            this.textControl.style.display = 'inline-block';
-            this.textControl.style.color   = rgba2style(rgbaText);
-
-            this.textControl.innerHTML     = 'no stroke';
-            
-            this.div.style.background =
-                darkMode
-                ? 'rgba(56, 56, 56, 0.95)'
-                : 'rgba(255, 255, 255, 0.95)';
-        }
+        // this.controls[1].backStyleLight        = 
+        // this.controls[1].backStyleDark         = 'transparent';
 
 
-        this.div.style.height = defParamHeight;
+        // this.controls[1].textStyleLight        = 
+        // this.controls[1].textStyleDark         = rgba2style(rgbaText);
+
+        this.controls[0].update();
+        //this.controls[1].update();
+
+
+        this.controls[0].text.innerHTML = '';
 
 
         if (this.input ) this.input .updateControl();
@@ -51023,31 +51100,41 @@ extends Parameter
 
 
 
+    setName(name, dispatchEvents = true)
+    {
+        super.setName(name, dispatchEvents);
+        this.controls[0].setName(name);
+    }
+
+
+
+    isDefault = () => this.value.equals(this.defaultValue);
+
+
+
     // textboxHasFocus()
     // {
-    //     return hasFocus(this.weightControl.textbox)
-    //         || hasFocus(this.   fitControl.textbox)
-    //         || hasFocus(this.  joinControl.textbox);
+    //     return hasFocus(this.controls[0].textbox)
+    //         || hasFocus(this.controls[1].textbox);
     // }
 
 
 
     enableControlText(enable)
     {
-        enable &= !this.input || !this.input.connected;
+        //enable &= !this.input || !this.input.connected;
 
-        const opEnable = 
-                enable 
-            || !this.input 
-            || !this.input.connected 
-            ||  this.input.connectedOutput.support( FILL_TYPES)
-            ||  this.input.connectedOutput.support(COLOR_TYPES);
+        // const opEnable = 
+        //         enable 
+        //     || !this.input 
+        //     || !this.input.connected;
+            //||  this.input.connectedOutput.supportsTypes(COLOR_TYPES);
 
-        enableElementText(this.textControl, enable);
-        enableElementText(this.controls[0].div, opEnable);
-
-        this.controls[0].readOnly = !enable;
-        this.controls[1].readOnly = !opEnable;
+        enableElementText(this.controls[0].div, false);//enable);
+        //enableElementText(this.controls[1].div, enable);//opEnable);
+        
+        this.controls[0].readOnly = true;//!enable;
+        //this.controls[1].readOnly = !enable;//opEnable;
     }
     
     
@@ -51058,9 +51145,9 @@ extends Parameter
 
         const rgba = this.value.fill.toRgba();
 
-        if (!rgbIsNaN(rgba))
+        if (!rgbaIsNaN(rgba))
         {
-            if (  !rgbIsValid(rgba)
+            if (  !rgbaIsValid(rgba)
                 || this.forceShowWarning)
             {
                 if (!this.forceShowWarning)
@@ -51089,20 +51176,23 @@ extends Parameter
             ? this.div.offsetHeight
             : height;
 
+
+        const [warnStyle1, warnStyle2] = getWarningStyles(colBack);
+
         this._warningOverlay.style.background =
-               rgbIsOk(colBack)
+                rgbIsOk(colBack)
             && !this.forceShowWarning
             ? 'transparent'
-            : 'repeating-linear-gradient('
-               + '-45deg, '
-               + 'transparent 0 7px,'
-               +  this.warningStyle + ' 7px 14px)';
+            : getWarningGradient(7.8, warnStyle2, warnStyle1);
 
-        this._warningOverlay.style.display = 'block';
+               
+        this._warningOverlay.style.backgroundPosition = '0 0';
+        this._warningOverlay.style.backgroundSize     = 'calc(100% + 27.6px) 100%';
+        this._warningOverlay.style.display            = 'block';
     }
     
     
-
+    
     loadParam(_param)
     {
         this.setValue(parseStrokeValue(_param[2])[0], true, true, false);
@@ -56367,6 +56457,9 @@ extends OperatorBase
             for (let i = 0; i < values.length; i++) 
             {
                 const value = values[i];
+                if (!value.isValid()) continue;
+
+
                 const id    = 'item' + i;
 
                 const param = oldParams.find(p => 
@@ -64039,26 +64132,26 @@ extends OpColorBase
                 : 0;
 
 
-        this.paramColor.controls[0]. backStyleLight = 
-        this.paramColor.controls[0]. backStyleDark  = 
-            !rgbIsNaN(colors.stripeBack)
-            ? rgb2style(colors.stripeBack, 1)
-            : noColorStyle(colors.stripeBack);
+        // this.paramColor.controls[0]. backStyleLight = 
+        // this.paramColor.controls[0]. backStyleDark  = 
+        //     !rgbIsNaN(colors.stripeBack)
+        //     ? rgb2style(colors.stripeBack, 1)
+        //     : noColorStyle(colors.stripeBack);
 
               
-        this.paramColor.controls[0].valueStyleLight = 
-        this.paramColor.controls[0].valueStyleDark  = 'transparent';//rgba2style(rgb_a(colors.back));
+        // this.paramColor.controls[0].valueStyleLight = 
+        // this.paramColor.controls[0].valueStyleDark  = 'transparent';//rgba2style(rgb_a(colors.back));
 
-        this.paramColor.controls[0].textStyleLight  = 
-        this.paramColor.controls[0].textStyleDark   = rgba2style(colors.text);
+        // this.paramColor.controls[0].textStyleLight  = 
+        // this.paramColor.controls[0].textStyleDark   = rgba2style(colors.text);
 
-        this.paramColor. input.colorLight           =
-        this.paramColor. input.colorDark            = colors.input;
+        // this.paramColor. input.colorLight           =
+        // this.paramColor. input.colorDark            = colors.input;
         
-        this.paramColor.output.colorLight           =
-        this.paramColor.output.colorDark            = colors.output;
+        // this.paramColor.output.colorLight           =
+        // this.paramColor.output.colorDark            = colors.output;
 
-        this.paramColor.output.wireColor            = colors.stripeBack;
+        // this.paramColor.output.wireColor            = colors.stripeBack;
     }
 
 

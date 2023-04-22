@@ -39,31 +39,27 @@ NumberControl.prototype.initTextbox = function()
         e.stopPropagation();
 
 
-        // if (   e.code == 'KeyX'
-        //     && getCtrlKey(e))
-        // {
-        //     // let the OS do its thing here
-        //     // // e.preventDefault();
-        //     // document.execCommand('copy');
-        //     // clearSelectedText(this.textbox);
-        // }
+        if (   e.code == 'KeyX'
+            && getCtrlKey(e)
+            && !this.readOnly)
+        {
+            //
+        }
 
-        // else if (   e.code == 'KeyC'
-        //     && getCtrlKey(e))
-        // {
-        //     // e.preventDefault();
-        //     // document.execCommand('copy');
-        // }
+        else if (   e.code == 'KeyC'
+            && getCtrlKey(e))
+        {
+            //
+        }
 
-        // else if (e.code == 'KeyV'
-        //       && getCtrlKey(e)
-        //       && !this.readOnly)
-        // {
-        //     // let the OS do its thing here
-        // }
+        else if (e.code == 'KeyV'
+              && getCtrlKey(e)
+              && !this.readOnly)
+        {
+            //
+        }
         
-        //else 
-        if (   (   e.code == 'Enter'
+        else if (   (   e.code == 'Enter'
                 || e.code == 'NumpadEnter')
             && !this.readOnly)
         {
@@ -191,19 +187,20 @@ NumberControl.prototype.initTextbox = function()
                 this.confirmTimer = setTimeout(() => controlTimer_confirm(this), 400);
             }
         }
-        else if (e.code == 'KeyZ'
-              && getCtrlKey(e))
-        {
-            // e.preventDefault();
-            //e.stopImmediatePropagation();
-
-            //      if (e.shiftKey && !actionManager.redoing) actionManager.redo();
-            // else if (              !actionManager.undoing) actionManager.undo();
-            
-            // this.updateTextbox();
-        }
-        // else 
+        // else if (e.code == 'KeyZ'
+        //       && getCtrlKey(e))
         // {
+        //     // e.preventDefault();
+        //     //e.stopImmediatePropagation();
+
+        //     //      if (e.shiftKey && !actionManager.redoing) actionManager.redo();
+        //     // else if (              !actionManager.undoing) actionManager.undo();
+            
+        //     // this.updateTextbox();
+        // }
+        else if (this.readOnly)
+            e.preventDefault();
+        //{
         //     let curVal = this.textbox.value;
 
         //     if (      e.key.length == 1
@@ -243,7 +240,7 @@ NumberControl.prototype.initTextbox = function()
         //     if (   nextVal < this.min - 0.001
         //         || nextVal > this.max)
         //         e.preventDefault();            
-        // }
+        //}
     });
 
 

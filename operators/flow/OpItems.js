@@ -84,6 +84,9 @@ extends OperatorBase
             for (let i = 0; i < values.length; i++) 
             {
                 const value = values[i];
+                if (!value.isValid()) continue;
+
+
                 const id    = 'item' + i;
 
                 const param = oldParams.find(p => 

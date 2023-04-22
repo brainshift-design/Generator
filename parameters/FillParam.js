@@ -126,14 +126,12 @@ extends Parameter
 
         this.controls[0].textbox.style.position     = 'absolute';
         this.controls[0].textbox.style.left         =  0;
-        //this.controls[0].textbox.style.width        = '55%';
         this.controls[0].textbox.style.transform    = 'translateX(0)';
         this.controls[0].textbox.style.textAlign    = 'right';
         this.controls[0].textbox.style.paddingLeft  =  14;
         
         this.controls[1].textbox.style.position     = 'absolute';
         this.controls[1].textbox.style.right        =  0;
-        //this.controls[1].textbox.style.width        = '45%';
         this.controls[1].textbox.style.transform    = 'translateX(6px)';
         this.controls[1].textbox.style.textAlign    = 'left';
         this.controls[1].textbox.style.paddingRight =  10;
@@ -149,7 +147,7 @@ extends Parameter
         this.div.appendChild(this.controlWrapper);
 
        
-        if (hasInput)  this.initInput([...FILL_TYPES, ...COLOR_TYPES], getParamInputValuesForUndo, this.input_getBackInitValue);
+        if (hasInput)  this.initInput([FILL_VALUE, COLOR_VALUE], getParamInputValuesForUndo, this.input_getBackInitValue);
         if (hasOutput) this.initOutput([FILL_VALUE], this.output_genRequest, getParamOutputValuesForUndo, this.output_backInit);
 
 
@@ -312,8 +310,7 @@ extends Parameter
             // }
             // else if (this.input.connectedOutput.supportsTypes(FILL_TYPES))
                 
-            if (   this.input.connectedOutput.supportsTypes(COLOR_TYPES)
-                || this.input.connectedOutput.supportsTypes(FILL_TYPES ))
+            if (this.input.connectedOutput.supportsTypes([FILL_VALUE, COLOR_VALUE]))
                 request.push(...pushInputOrParam(this.input, gen));
             else
                 console.assert(false, 'invalid input for FillParam');

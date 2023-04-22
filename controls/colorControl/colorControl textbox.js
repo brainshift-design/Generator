@@ -55,22 +55,27 @@ ColorControl.prototype.initTextbox = function()
         e.stopPropagation();
 
 
-        // if (   e.code == 'KeyC'
-        //     && getCtrlKey(e))
-        // {
-        //     e.preventDefault();
-        //     document.execCommand('copy');
-        // }
+        if (   e.code == 'KeyX'
+            && getCtrlKey(e)
+            && !this.readOnly)
+        {
+            //
+        }
 
-        // else if (e.code == 'KeyV'
-        //       && getCtrlKey(e)
-        //       && !this.readOnly)
-        // {
-        //     // let the OS do its thing here
-        // }
+        else if (   e.code == 'KeyC'
+            && getCtrlKey(e))
+        {
+            // 
+        }
+
+        else if (e.code == 'KeyV'
+              && getCtrlKey(e)
+              && !this.readOnly)
+        {
+            // 
+        }
         
-        ///else 
-        if (   (   e.code == 'Enter'
+        else if (   (   e.code == 'Enter'
                 || e.code == 'NumpadEnter')
             && !this.readOnly)
         {
@@ -178,11 +183,13 @@ ColorControl.prototype.initTextbox = function()
             }
         }
 
+        else if (this.readOnly)
+            e.preventDefault();
+
         else if (e.key != 'Control'
               && e.key != 'Shift'
               && e.key != 'Alt')           
             actionManager.redoActions = [];
-
     });
 
 

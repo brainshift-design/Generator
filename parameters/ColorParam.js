@@ -194,7 +194,17 @@ extends Parameter
         const rgbaStripe = rgb_a(getStripeBackColor(rgb));
         const rgbaText   = getTextColorFromBackColor(rgbaStripe, 1);
         
-        
+
+        this.controls[0].backStyleLight  =
+        this.controls[0].backStyleDark   = rgba2style(rgbaStripe);
+
+        this.controls[0].valueStyleLight = 
+        this.controls[0].valueStyleDark  = 'transparent';
+
+        this.controls[0].textStyleLight  = 
+        this.controls[0].textStyleDark   = rgba2style(rgbaText);
+
+
         if (this.input)
         {
             this.input.colorLight  = 
