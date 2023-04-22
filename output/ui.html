@@ -54453,6 +54453,13 @@ function makeNodePath(id)
 }
 
 
+
+function idFromNodePath(path)
+{
+    return path.split('/').at(-1);
+}
+
+
 var  newReorderIndex = Number.NaN;
 var prevReorderIndex = Number.NaN;
 var  oldReorderIndex = Number.NaN;
@@ -64436,7 +64443,10 @@ extends OperatorBase
     updateParams()
     {
         for (const param of this.params)
+        {
             param.enableControlText(param.input ? true : false);
+            param.controls[0].showName = param.paramNode.name[0] != '.';
+        }
 
             
         const paramNodes = this.params.map(p => p.paramNode);
@@ -64759,15 +64769,22 @@ extends OperatorBase
                 param.setName(newName);
             }
 
+        
+            const id      = makeNodePath(idFromNodePath(this.id));
+            const groupId = makeNodePath(idFromNodePath(this.groupNode.id));
 
-            uiSaveNodes([this.id]);
-            uiSaveNodes([this.groupNode.id]);
+
+            uiSaveNodes([id]);
+            uiSaveNodes([groupId]);
             
-            uiUpdateSavedConnectionsToNodeId  ([this.id], true);
-            uiUpdateSavedConnectionsFromNodeId([this.id], true);
+            uiUpdateSavedConnectionsToNodeId  ([id], true);
+            uiUpdateSavedConnectionsFromNodeId([id], true);
             
-            uiUpdateSavedConnectionsToNodeId  ([this.groupNode.id], true);
-            uiUpdateSavedConnectionsFromNodeId([this.groupNode.id], true);
+            uiUpdateSavedConnectionsToNodeId  ([groupId], true);
+            uiUpdateSavedConnectionsFromNodeId([groupId], true);
+
+
+            nodeFromId(groupId).updateParams();
         }
 
 
@@ -64835,7 +64852,7 @@ function input_onconnect(node)
                 hasOutput: true,
                 id:        node.name,
                 name:      node.name,
-                showName:  true
+                showName:  node.name[0] != '.'
             });
 
         node.groupParam.paramNode = node;
@@ -64911,7 +64928,7 @@ function output_onconnect(node)
                 hasInput: true,
                 id:       node.name,
                 name:     node.name,
-                showName: true
+                showName: node.name[0] != '.'
             });
 
         node.groupParam.paramNode = node;
@@ -73352,7 +73369,10 @@ function uiSaveNodes(nodeIds)
     const nodeJson = [];
 
     for (const id of nodeIds)
-        nodeJson.push(nodeFromId(id).toJson());
+    {
+        const node = nodeFromId(id);
+        nodeJson.push(node.toJson());
+    }
 
     uiSaveNodesJson(nodeIds, nodeJson);
 }

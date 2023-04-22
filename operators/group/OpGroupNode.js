@@ -77,7 +77,10 @@ extends OperatorBase
     updateParams()
     {
         for (const param of this.params)
+        {
             param.enableControlText(param.input ? true : false);
+            param.controls[0].showName = param.paramNode.name[0] != '.';
+        }
 
             
         const paramNodes = this.params.map(p => p.paramNode);

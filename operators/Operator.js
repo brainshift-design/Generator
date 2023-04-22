@@ -1206,3 +1206,10 @@ function makeNodePath(id)
 {
     return graph.currentPage.id + '/' + id;
 }
+
+
+
+function idFromNodePath(path)
+{
+    return path.split('/').at(-1);
+}

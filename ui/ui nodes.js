@@ -827,7 +827,10 @@ function uiSaveNodes(nodeIds)
     const nodeJson = [];
 
     for (const id of nodeIds)
-        nodeJson.push(nodeFromId(id).toJson());
+    {
+        const node = nodeFromId(id);
+        nodeJson.push(node.toJson());
+    }
 
     uiSaveNodesJson(nodeIds, nodeJson);
 }

@@ -294,15 +294,22 @@ extends OperatorBase
                 param.setName(newName);
             }
 
+        
+            const id      = makeNodePath(idFromNodePath(this.id));
+            const groupId = makeNodePath(idFromNodePath(this.groupNode.id));
 
-            uiSaveNodes([this.id]);
-            uiSaveNodes([this.groupNode.id]);
+
+            uiSaveNodes([id]);
+            uiSaveNodes([groupId]);
             
-            uiUpdateSavedConnectionsToNodeId  ([this.id], true);
-            uiUpdateSavedConnectionsFromNodeId([this.id], true);
+            uiUpdateSavedConnectionsToNodeId  ([id], true);
+            uiUpdateSavedConnectionsFromNodeId([id], true);
             
-            uiUpdateSavedConnectionsToNodeId  ([this.groupNode.id], true);
-            uiUpdateSavedConnectionsFromNodeId([this.groupNode.id], true);
+            uiUpdateSavedConnectionsToNodeId  ([groupId], true);
+            uiUpdateSavedConnectionsFromNodeId([groupId], true);
+
+
+            nodeFromId(groupId).updateParams();
         }
 
 
@@ -370,7 +377,7 @@ function input_onconnect(node)
                 hasOutput: true,
                 id:        node.name,
                 name:      node.name,
-                showName:  true
+                showName:  node.name[0] != '.'
             });
 
         node.groupParam.paramNode = node;
@@ -446,7 +453,7 @@ function output_onconnect(node)
                 hasInput: true,
                 id:       node.name,
                 name:     node.name,
-                showName: true
+                showName: node.name[0] != '.'
             });
 
         node.groupParam.paramNode = node;
