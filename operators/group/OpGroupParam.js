@@ -118,9 +118,12 @@ extends OperatorBase
 
         if (this.node.groupInput)
         {
-            if (    this.node.groupParam
-                && !gen.passedNodes.includes(this.node.groupInput.connectedOutput.node))            {
-                return this.node.groupParam.genRequest(gen);
+            if (this.node.groupParam)
+            {
+                //if (!gen.passedNodes.includes(this.node.groupParam.input.connectedOutput.node))
+                    return this.node.groupParam.genRequest(gen);
+                // else
+                //     return [];
             }
 
             else if (this.node.groupInput.connected
@@ -141,12 +144,13 @@ extends OperatorBase
 
         const [_request, ignore] = this.node.genRequestStart(gen);
         if (ignore) return _request;
+        console.log('param id =', this.node.id);
 
 
         request.push(..._request);
 
 
-        const input = this.node.groupInput;
+        const groupInput = this.node.groupInput;
 
         const output = 
             !isEmpty(this.node.outputs)
@@ -154,14 +158,14 @@ extends OperatorBase
             : null;
 
 
-        request.push( input &&  input.connected ? 1 : 0);
+        request.push(groupInput && groupInput.connected ? 1 : 0);
         request.push(output && output.connected ? 1 : 0);
 
 
-        if (input && input.connected)
+        if (groupInput && groupInput.connected)
         {
-            request.push(...pushInputOrParam(input, gen));
-            request.push(input.connectedOutput.types[0]);
+            request.push(...pushInputOrParam(groupInput, gen));
+            request.push(groupInput.connectedOutput.types[0]);
         }
 
         else if (output && output.connected)
@@ -294,11 +298,8 @@ extends OperatorBase
 
     setName(newName, options = {})
     {
-        if (   this.paramType == 0
-            && this.groupNode)
+        if (this.paramType == 0)
         {
-            const param = this.groupNode.paramFromId(this.name);
-
             const paramNodes = graph.pageNodes.filter(n => 
                    n.type == GROUP_PARAM
                 && n != this);
@@ -311,28 +312,36 @@ extends OperatorBase
                 '');
 
 
-            if (param)
+            if (this.groupParam)
             {
-                param._id = newName;
-                param.setName(newName);
+                //const param = this.groupNode.paramFromId(this.name);
+
+                // if (param)
+                // {
+                    this.groupParam._id = newName;
+                    this.groupParam.setName(newName);
+                // }
             }
 
         
-            const id      = makeNodePath(idFromNodePath(this.id));
-            const groupId = makeNodePath(idFromNodePath(this.groupNode.id));
+            if (this.groupNode)
+            {
+                const id      = makeNodePath(idFromNodePath(this.id));
+                const groupId = makeNodePath(idFromNodePath(this.groupNode.id));
 
 
-            uiSaveNodes([id]);
-            uiSaveNodes([groupId]);
-            
-            uiUpdateSavedConnectionsToNodeId  ([id], true);
-            uiUpdateSavedConnectionsFromNodeId([id], true);
-            
-            uiUpdateSavedConnectionsToNodeId  ([groupId], true);
-            uiUpdateSavedConnectionsFromNodeId([groupId], true);
+                uiSaveNodes([id]);
+                uiSaveNodes([groupId]);
+                
+                uiUpdateSavedConnectionsToNodeId  ([id], true);
+                uiUpdateSavedConnectionsFromNodeId([id], true);
+                
+                uiUpdateSavedConnectionsToNodeId  ([groupId], true);
+                uiUpdateSavedConnectionsFromNodeId([groupId], true);
 
 
-            nodeFromId(groupId).updateParams();
+                nodeFromId(groupId).updateParams();
+            }
         }
 
 

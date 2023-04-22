@@ -21,6 +21,8 @@ extends GTextType
         if (this.input) 
             copy.input = this.input.copy();
         
+        copy.value = this.value;
+        
         return copy;
     }
 

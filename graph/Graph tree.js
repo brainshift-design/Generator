@@ -171,6 +171,13 @@ function getTerminalsAfterNode(node)
 
     else if (node.type == GROUP_PARAM)
     {
+        // if (   !isEmpty(node.inputs)
+        //     && !isEmpty(node.outputs))
+        // {
+        //     pushUnique(after, node);
+        // }
+
+        //else 
         if (!isEmpty(node.outputs))
         {
             const afterNode = [];
@@ -178,16 +185,16 @@ function getTerminalsAfterNode(node)
             for (const output of node.outputs)
             {
                 for (const input of output.connectedInputs)
-                    pushUnique(after, getTerminalsAfterNode(input.node));
+                    pushUnique(afterNode, getTerminalsAfterNode(input.node));
             }
 
             if (isEmpty(afterNode))
-                pushUnique(afterNode, node);
+               pushUnique(afterNode, node);
 
             pushUnique(after, afterNode);
         }
 
-
+        
         if (!isEmpty(node.inputs))
         {
             const afterGroupNode = [];

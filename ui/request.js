@@ -130,10 +130,10 @@ function pushInputOrParam(input, gen)
     {
         pushUnique(gen.paramNodes, input.connectedOutput.node);
 
-        return[ PARAM,
-                input.connectedOutput.types[0],
-                input.connectedOutput.node.id,
-                input.connectedOutput.param.id ];
+        return [ PARAM,
+                 input.connectedOutput.types[0],
+                 input.connectedOutput.node.id,
+                 input.connectedOutput.param.id ];
     }
     else
         return input.connectedOutput.genRequest(gen);
