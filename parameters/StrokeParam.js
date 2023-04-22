@@ -64,7 +64,7 @@ extends Parameter
         this.value                                  = defaultValue;
 
 
-        this.text                                   = createDiv('strokeValue');
+        this.text                                   = createDiv();
 
         this.text.style.position                    = 'absolute';
         this.text.style.left                        = 0;
@@ -239,7 +239,7 @@ extends Parameter
             if (this.input.connectedOutput.supportsTypes([STROKE_VALUE, FILL_VALUE, COLOR_VALUE]))
                 request.push(...pushInputOrParam(this.input, gen));
             else
-                console.assert(false, 'invalid input for FillParam');
+                console.assert(false, 'invalid input for StrokeParam');
         }
 
         else request.push( 

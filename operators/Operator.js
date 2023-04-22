@@ -387,7 +387,7 @@ class Operator
         else if ( COLOR_TYPES.includes(type)) return this.addParam(new  ColorParam(id, id, showName, hasInput, hasOutput), volatile);
         else if (  FILL_TYPES.includes(type)) return this.addParam(new   FillParam(id, id, showName, hasInput, hasOutput), volatile);
         else if (STROKE_TYPES.includes(type)) return this.addParam(new StrokeParam(id, id, showName, hasInput, hasOutput), volatile);
-        else if (  LIST_TYPES.includes(type)) return this.addParam(new   ListParam(id, id,           hasInput, hasOutput), volatile);
+        else if (  LIST_TYPES.includes(type)) return this.addParam(new   ListParam(id, id, showName, hasInput, hasOutput), volatile);
 
         else console.assert(false, 'cannot add parameter of type \'' + type + '\'');
 
@@ -403,7 +403,7 @@ class Operator
         else if ( COLOR_TYPES.includes(type)) return this.insertParam(index, new  ColorParam(id, id, showName, hasInput, hasOutput), volatile);
         else if (  FILL_TYPES.includes(type)) return this.insertParam(index, new   FillParam(id, id, showName, hasInput, hasOutput), volatile);
         else if (STROKE_TYPES.includes(type)) return this.insertParam(index, new StrokeParam(id, id, showName, hasInput, hasOutput), volatile);
-        else if (  LIST_TYPES.includes(type)) return this.insertParam(index, new   ListParam(id, id,           hasInput, hasOutput), volatile);
+        else if (  LIST_TYPES.includes(type)) return this.insertParam(index, new   ListParam(id, id, showName, hasInput, hasOutput), volatile);
 
         else console.assert(false, 'cannot insert parameter of type \'' + type + '\'');
 
@@ -1043,7 +1043,7 @@ class Operator
 
             if (index < 0)
             {
-                this.createAndAddParamByType(_param[0], _param[1], false, false, true);
+                this.createAndAddParamByType(_param[0], _param[1], false, false, false, true);
                 index = this.params.length-1;
             }
 

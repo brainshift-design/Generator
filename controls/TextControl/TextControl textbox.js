@@ -21,6 +21,17 @@ TextControl.prototype.initTextarea = function()
         if (!this.canReact(e))
             return;
 
+        
+        if (this.readOnly)
+        {
+            e.preventDefault();
+            //e.stopPropagation();
+
+            //forwardEvent(e, this.param.node.div);
+
+            return;
+        }
+
 
         if (e.button == 1)
         {

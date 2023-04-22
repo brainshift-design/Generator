@@ -10693,12 +10693,12 @@ extends GOperator
         {
             const input = (await this.inputs[i].eval(parse)).toValue();
 
-            if (input.type == LIST_VALUE)
-            {
-                for (const item of input.items)
-                    this.value.items.push(item);   
-            }
-            else
+            // if (input.type == LIST_VALUE)
+            // {
+            //     for (const item of input.items)
+            //         this.value.items.push(item);   
+            // }
+            // else
                 this.value.items.push(input);
         }
     
@@ -33153,12 +33153,12 @@ extends GOperator
         {
             const input = (await this.inputs[i].eval(parse)).toValue();
 
-            if (input.type == LIST_VALUE)
-            {
-                for (const item of input.items)
-                    this.value.items.push(item);   
-            }
-            else
+            // if (input.type == LIST_VALUE)
+            // {
+            //     for (const item of input.items)
+            //         this.value.items.push(item);   
+            // }
+            // else
                 this.value.items.push(input);
         }
     
@@ -42325,6 +42325,17 @@ TextControl.prototype.initTextarea = function()
         if (!this.canReact(e))
             return;
 
+        
+        if (this.readOnly)
+        {
+            e.preventDefault();
+            //e.stopPropagation();
+
+            //forwardEvent(e, this.param.node.div);
+
+            return;
+        }
+
 
         if (e.button == 1)
         {
@@ -50810,7 +50821,7 @@ extends Parameter
         this.value                                  = defaultValue;
 
 
-        this.text                                   = createDiv('strokeValue');
+        this.text                                   = createDiv();
 
         this.text.style.position                    = 'absolute';
         this.text.style.left                        = 0;
@@ -50985,7 +50996,7 @@ extends Parameter
             if (this.input.connectedOutput.supportsTypes([STROKE_VALUE, FILL_VALUE, COLOR_VALUE]))
                 request.push(...pushInputOrParam(this.input, gen));
             else
-                console.assert(false, 'invalid input for FillParam');
+                console.assert(false, 'invalid input for StrokeParam');
         }
 
         else request.push( 
@@ -51303,21 +51314,12 @@ extends Parameter
 class   ListParam
 extends Parameter
 {
-    value;
-    //defaultValue;
+    defaultValue;
 
     oldValue = null;
-
-    
-    // _warningOverlay;
-    
-    // forceShowWarning = false;
-    // warningStyle;
-
-
-    // checkers;
     
 
+   
     
     // get valueText() { return this.controls[0].valueText; }
     // set valueText(text) 
@@ -51327,318 +51329,181 @@ extends Parameter
     // }
 
     
-    // get value() { return this.controls[0].value; }
+    value;
     
 
     
     constructor(id,
                 name, 
+                showName,
                 hasInput,
                 hasOutput,
-                defaultValue = ColorValue.fromRgb([0x80, 0x80, 0x80]),
-                dragScale    = 0.05)
+                defaultValue = new ListValue())
     {
         super(LIST_VALUE, id, name);
 
-        //this.defaultValue = defaultValue;
+        this.defaultValue                           = defaultValue;
+        this.value                                  = defaultValue;
 
 
-        // this.controls[0] = new ColorControl(
-        //     null,
-        //     this,
-        //     this.id,
-        //     this.name, 
-        //     showName,
-        //     defaultValue,   
-        //     dragScale); 
+        this.controls.push(new TextControl(
+            null,
+            this,
+            this.id,
+            this.name,
+            ''));
 
-        // this.controls[0].successOnFocusOut = true;
-        // this.controls[0].div.zIndex        = 0;
-
-        // this.controls[0].div.style.display = 'inline-block';
-        // this.controls[0].div.style.width   = '100%';
-
-        
-        // this._warningOverlay = createDiv('colorWarningOverlay');
-        // this._warningOverlay.style.zIndex  = 21;
-        
-        // this.div.appendChild(this._warningOverlay);
-
-
-        // this.checkers                      = createDiv();
- 
-        // this.checkers.style.position       = 'absolute';
-        // this.checkers.style.width          = '100%';
-        // this.checkers.style.height         = defParamHeight;
-        // this.checkers.style.display        = 'none';
-        // this.checkers.style.pointerEvents  = 'none';
-
-
-        // this.div.appendChild(this.checkers);
-        // this.div.appendChild(this.controls[0].div);
+        this.controls[0].textbox.style.textAlign = 'center';
+   
+        this.div.appendChild(this.controls[0].div);
 
        
-        // if (hasInput)  this.initInput(COLOR_TYPES, getParamInputValuesForUndo, this.input_getBackInitValue);
-        // if (hasOutput) this.initOutput([COLOR_VALUE], this.output_genRequest, getParamOutputValuesForUndo, this.output_backInit);
-
-
-        // this.controls[0].addEventListener('confirm', () => 
-        // {
-        //     this.setValue(this.controls[0].value, true, false); 
-        // });
-
-
-        // this.controls[0].addEventListener('finishedit', e =>
-        // { 
-        //     if (!e.detail.success)
-        //         return;
-
-        //     if (   e.detail.value.trim() != ''
-        //         && e.detail.value != e.detail.oldValue)
-        //     {
-        //         const webColor = webColors.find(wc => wc.name.toLowerCase() == e.detail.value.toLowerCase());
-        //         if (webColor) e.detail.value = webColor.color;
-
-        //         const rgb = validHex2rgb(e.detail.value);
-        //         const val = ColorValue.fromRgb(scaleRgb(rgb));
-
-        //         this.setValue(val, true);
-        //         e.preventSetValue = true;
-        //     }
-        // });
+        if (hasInput)  this.initInput([LIST_VALUE], getParamInputValuesForUndo, this.input_getBackInitValue);
+        if (hasOutput) this.initOutput([LIST_VALUE], this.output_genRequest, getParamOutputValuesForUndo, this.output_backInit);
     }
 
 
 
-    // input_getBackInitValue()
-    // {
-    //     // 'this' is the input
+    input_getBackInitValue()
+    {
+        // 'this' is the input
 
-    //     return this.param.value;
-    // }
+        return this.param.value;
+    }
 
 
 
-    // output_backInit(value)
-    // {
-    //     // 'this' is the output
+    output_backInit(value)
+    {
+        // 'this' is the output
 
-    //     console.assert(value.type == COLOR_VALUE, 'expected COLOR_VALUE in backInit()');
+        console.assert(value.type == LIST_VALUE, 'expected LIST_VALUE in backInit()');
         
-    //     this.param.setValue(value, false, true, false);
-    // }
+        this.param.setValue(value, false, true, false);
+    }
 
 
 
-    // setName(name, dispatchEvents = true)
-    // {
-    //     super.setName(name, dispatchEvents);
-    //     this.controls[0].setName(name);
-    // }
+    setValue(value, createAction, updateControl = true, dispatchEvents = true) 
+    {
+        if (!(value instanceof ListValue))
+            console.assert(false, 'ListParam.setValue(value) is ' + typeof value + ', must be a ListValue');
+
+        console.assert(
+               value.type 
+            && value.type == LIST_VALUE, 
+            'ListParam value.type must be LIST_VALUE');
+
+
+        this.preSetValue(value, createAction, dispatchEvents);
+
+
+        this.value = value.copy();
+
+
+        // if (updateControl)
+        //     this.controls[0].setValue(this.value.items.length, false, false); 
+
+
+        super.setValue(this.value, createAction, updateControl, dispatchEvents);
+
+
+        this.oldValue = this.value;
+    }    
 
 
 
-    // isDefault = () => this.value.equals(this.defaultValue);
+    isVisible()
+    {
+        return this.controls[0].div.style.display != 'none';
+    }
 
 
 
-    // isVisible()
-    // {
-    //     return this.controls[0].div.style.display != 'none';
-    // }
-
-
-
-    // resetControls()
-    // {
-    //     this.controls[0].valueText = '';
-    // }
-
-
-
-    // setValue(value, createAction, updateControl = true, dispatchEvents = true) 
-    // {
-    //     console.assert(
-    //            value.type 
-    //         && value.type == COLOR_VALUE, 
-    //         'value.type must be COLOR_VALUE');
-            
-    //     this.preSetValue(value, createAction, dispatchEvents);
-
-    //     this.controls[0].value = value.copy();
-
-    //     if (updateControl)
-    //         this.controls[0].setValue(this.controls[0].value, true, false); 
-
-
-    //     super.setValue(value, createAction, updateControl, dispatchEvents);
-
-
-    //     this.oldValue = this.value.copy();
-    // }    
-
-
-
-    // updateControls()
-    // {
-    //     this.updateWarningOverlay();
-
-
-    //     const noColor = 
-    //         darkMode
-    //         ? rgbNoColorDark
-    //         : rgbNoColorLight;
-
-    //     const rgbVal   = this.value.toRgb();
-    //     const rgbaText = getTextColorFromBackColor(rgbVal, 1);
-
-    //     if (this.input)
-    //     {
-    //         this.input.colorLight  = 
-    //         this.input.colorDark   = rgb_a(rgbaText, 0.2);
-    //         this.input.wireColor   = !rgbIsNaN(rgbVal) ? rgbVal : noColor;
-    //     }
-
-    //     if (this.output)
-    //     {
-    //         this.output.colorLight =
-    //         this.output.colorDark  = rgb_a(rgbaText, 0.2);
-    //         this.output.wireColor  = !rgbIsNaN(rgbVal) ? rgbVal : noColor;
-    //     }
-
-
-    //     this.checkers.style.background = 
-    //         darkMode
-    //         ?   'linear-gradient(45deg, #222 25%, transparent 25%, transparent 75%, #222 75%), '
-    //           + 'linear-gradient(45deg, #222 25%, transparent 25%, transparent 75%, #222 75%)'
-    //         :   'linear-gradient(45deg, #ddd 25%, transparent 25%, transparent 75%, #ddd 75%), '
-    //           + 'linear-gradient(45deg, #ddd 25%, transparent 25%, transparent 75%, #ddd 75%)';
-
-    //     this.checkers.style.backgroundColor    = darkMode ? '#444' : '#fff';
-
-    //     this.checkers.style.backgroundSize     = '22px 22px';
-    //     this.checkers.style.backgroundPosition = '0 0, 11px 11px';
-
-    // this.checkers.style.left               = '-3.5px';
-    // this.checkers.style.width              = 'calc(100% + 3.5px)';
-
-    //     super.updateControls();
-    // }
-
-
-
-    // genRequest(gen)
-    // {
-    //     // this function exists because a parameter without an output
-    //     // should still be able to generate a request
+    genRequest(gen)
+    {
+        // this function exists because a parameter without an output
+        // should still be able to generate a request
         
-    //     // 'this' is the param
+        // 'this' is the param
 
-    //     if (    this.output
-    //         && !isEmpty(this.output.cache)
-    //         &&  gen.passedNodes.includes(this.node))
-    //         return this.output.cache;
-
-
-    //     const request = [];
+        if (    this.output
+            && !isEmpty(this.output.cache)
+            &&  gen.passedNodes.includes(this.node))
+            return this.output.cache;
 
 
-    //     if (   this.input
-    //         && this.input.connected)
-    //         request.push(...pushInputOrParam(this.input, gen));
+        const request = [];
 
-    //     else request.push( 
-    //         COLOR_VALUE, 
-    //         this.value.toString());
+        if (   this.input
+            && this.input.connected)
+        {
+            // request.push(...pushInputOrParam(this.input, gen));
+
+            // if (   this.input.connectedOutput.support( FILL_TYPES)
+            //     || this.input.connectedOutput.support(COLOR_TYPES))
+            // {
+            //     const val = noNaN(this.controls[0].value,      1);
+            //     const dec = noNaN(this.controls[0].displayDec, 0);
+                
+            //     request.push(
+            //         NUMBER_VALUE, 
+            //         new NumberValue(val, dec).toString());
+            // }
+
+            if (this.input.connectedOutput.supportsTypes([LIST_VALUE]))
+                request.push(...pushInputOrParam(this.input, gen));
+            else
+                console.assert(false, 'invalid input for ListParam');
+        }
+
+        else request.push( 
+            LIST_VALUE, 
+            this.value.toString());
+
+        return request;
+    }
 
 
-    //     return request;
-    // }
+
+    output_genRequest(gen)
+    {
+        return this.param.genRequest(gen);
+    }
 
 
 
-    // output_genRequest(gen)
-    // {
-    //     return this.param.genRequest(gen);
-    // }
-
-
-
-    // textboxHasFocus()
-    // {
-    //     return hasFocus(this.controls[0].textbox);
-    // }
-
-
-
-    // enableControlText(enable)
-    // {
-    //     enable &= 
-    //            !this.input 
-    //         || !this.input.connected;
-
-    //     enableElementText(this.controls[0].div, enable);
+    updateControls()
+    {
+        checkControlVisible(this, this.controls[0]);
         
-    //     this.controls[0].readOnly = !enable;
-    // }
-    
-    
-    
-    // updateWarningOverlay() 
-    // {
-    //     //console.log(this.id + '.updateWarningOverlay()');
 
-    //     const rgb = this.value.toRgb();
+        enableElementText(this.controls[0].div, false);
 
-    //     if (!rgbIsNaN(rgb))
-    //     {
-    //         if (  !rgbIsValid(rgb)
-    //             || this.forceShowWarning)
-    //         {
-    //             if (!this.forceShowWarning)
-    //                 this.warningStyle = getDefaultWarningStyle(rgb);
-
-    //             this.updateWarningOverlayStyle(rgb);
-    //         }
-    //         else
-    //             this._warningOverlay.style.display = 'none';
-    //     }
-    //     else
-    //     {
-    //         this.warningStyle = getDefaultWarningStyle(rgb);
-    //         this.updateWarningOverlayStyle(rgb);
-    //     }
-    // }
-
-
-
-    // updateWarningOverlayStyle(colBack, height = -1)
-    // {
-    //     //console.log('colBack =', colBack);
+        this.controls[0].readOnly = true;
         
-    //     this._warningOverlay.style.height = 
-    //         height < 0
-    //         ? this.div.offsetHeight
-    //         : height;
+        this.controls[0].textbox.style.fontStyle  = 'italic';
+        this.controls[0].textbox.style.fontWeight = 'bold';
 
-    //     this._warningOverlay.style.background =
-    //            rgbIsOk(colBack)
-    //         && !this.forceShowWarning
-    //         ? 'transparent'
-    //         : 'repeating-linear-gradient('
-    //            + '-45deg, '
-    //            + 'transparent 0 7px,'
-    //            +  this.warningStyle + ' 7px 14px)';
+        const nItems = this.value.items.length;
 
-    //     this._warningOverlay.style.display = 'block';
-    // }
-    
-    
-    
-    // loadParam(_param)
-    // {
-    //     this.setValue(parseColorValue(_param[2])[0], true, false, false);
-    // }
+        this.controls[0].textbox.value = nItems + ' ' + countString('item', nItems);
+
+
+        if (this.input ) this.input .updateControl();
+        if (this.output) this.output.updateControl();
+    }
+
+
+
+    isDefault = () => this.value.equals(this.defaultValue);
+
+
+
+   loadParam(_param)
+    {
+        this.setValue(parseListValue(_param[2])[0], true, true, false);
+    }
 }
 
 
@@ -53791,7 +53656,7 @@ class Operator
         else if ( COLOR_TYPES.includes(type)) return this.addParam(new  ColorParam(id, id, showName, hasInput, hasOutput), volatile);
         else if (  FILL_TYPES.includes(type)) return this.addParam(new   FillParam(id, id, showName, hasInput, hasOutput), volatile);
         else if (STROKE_TYPES.includes(type)) return this.addParam(new StrokeParam(id, id, showName, hasInput, hasOutput), volatile);
-        else if (  LIST_TYPES.includes(type)) return this.addParam(new   ListParam(id, id,           hasInput, hasOutput), volatile);
+        else if (  LIST_TYPES.includes(type)) return this.addParam(new   ListParam(id, id, showName, hasInput, hasOutput), volatile);
 
         else console.assert(false, 'cannot add parameter of type \'' + type + '\'');
 
@@ -53807,7 +53672,7 @@ class Operator
         else if ( COLOR_TYPES.includes(type)) return this.insertParam(index, new  ColorParam(id, id, showName, hasInput, hasOutput), volatile);
         else if (  FILL_TYPES.includes(type)) return this.insertParam(index, new   FillParam(id, id, showName, hasInput, hasOutput), volatile);
         else if (STROKE_TYPES.includes(type)) return this.insertParam(index, new StrokeParam(id, id, showName, hasInput, hasOutput), volatile);
-        else if (  LIST_TYPES.includes(type)) return this.insertParam(index, new   ListParam(id, id,           hasInput, hasOutput), volatile);
+        else if (  LIST_TYPES.includes(type)) return this.insertParam(index, new   ListParam(id, id, showName, hasInput, hasOutput), volatile);
 
         else console.assert(false, 'cannot insert parameter of type \'' + type + '\'');
 
@@ -54447,7 +54312,7 @@ class Operator
 
             if (index < 0)
             {
-                this.createAndAddParamByType(_param[0], _param[1], false, false, true);
+                this.createAndAddParamByType(_param[0], _param[1], false, false, false, true);
                 index = this.params.length-1;
             }
 
@@ -56482,7 +56347,7 @@ extends OperatorBase
                     }
                 }
                 else       
-                    this.createAndAddParamByType(value.type, id, false, false, true);
+                    this.createAndAddParamByType(value.type, id, false, false, false, true);
             }
         }
 
@@ -56584,7 +56449,7 @@ extends OperatorBase
 
         if (  !paramValue 
             && val) 
-            paramValue = this.createAndInsertParamByType(0, val.type, 'value', false, false, true);
+            paramValue = this.createAndInsertParamByType(0, val.type, 'value', false, false, false, true);
 
         
         this.paramIndex.controls[0].setMax(
@@ -56626,7 +56491,7 @@ extends OperatorBase
         const _paramValue = _node.params.find(p => p[1] == 'value');
         const _paramIndex = _node.params.find(p => p[1] == 'index');
 
-        this.createAndInsertParamByType(0, _paramValue[0], _paramValue[1], false, false, true);
+        this.createAndInsertParamByType(0, _paramValue[0], _paramValue[1], false, false, false, true);
         this.params[0].loadParam(_paramValue);
  
         this.paramIndex.loadParam(_paramIndex);
