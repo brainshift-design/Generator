@@ -44,7 +44,7 @@ extends GTextType
 async function evalJoinInputs(inputs, parse)
 {
     if (isEmpty(inputs))
-        return TextValue.NaN;
+        return new TextValue();//TextValue.NaN;
 
 
     const value = new TextValue();

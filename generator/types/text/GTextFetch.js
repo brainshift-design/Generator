@@ -57,8 +57,8 @@ extends GTextType
         {
             this.value = 
                 request.value.trim() == NULL
-                ? TextValue.NaN
-                : this.value = new TextValue(e.message);
+                ? new TextValue() //TextValue.NaN
+                : new TextValue(e.message);
         }
 
 

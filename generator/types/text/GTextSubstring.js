@@ -63,10 +63,10 @@ extends GTextType
                     this.value.value = this.value.value.substring(start.value, end.value);
             }
             else
-                this.value = TextValue.NaN;
+                this.value = new TextValue();//TextValue.NaN;
         }
         else
-            this.value = TextValue.NaN;
+            this.value = new TextValue();//TextValue.NaN;
 
 
         genPushUpdateValue(parse, this.nodeId, 'length', new NumberValue(length)); // used to set start and end maxima

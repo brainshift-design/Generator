@@ -17,13 +17,12 @@ extends OperatorBase
 
     output_genRequest(gen)
     {
+        // 'this' is the output        
         if (   this.paramNode
             && this.paramNode.inputs[0].connected)
             return this.paramNode.inputs[0].connectedOutput.genRequest(gen);
 
             
-        // 'this' is the output        
-
         gen.scope.push({
             nodeId:  this.node.id, 
             paramId: NULL }); 
@@ -103,5 +102,27 @@ extends OperatorBase
 
 
         this.updateParamControls();
+    }
+
+
+
+    getHeaderColors(options = {})
+    {
+        const colors = super.getHeaderColors(options);
+
+        if (!isEmpty(this.headerInputs))
+        {
+            colors.input  = 
+            colors.output =
+            colors.wire   = rgbFromType(this.headerInputs[0].types[0], true);
+        }
+        else if (!isEmpty(this.headerOutputs))
+        {
+            colors.input  = 
+            colors.output =
+            colors.wire   = rgbFromType(this.headerOutputs[0].types[0], true);
+        }
+
+        return colors;
     }
 }

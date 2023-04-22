@@ -2,6 +2,8 @@ class GGroupParam
 extends GOperator
 {
     input = null;
+    
+    dataType = NULL;
 
 
 
@@ -20,6 +22,8 @@ extends GOperator
 
         if (this.input) 
             copy.input = this.input.copy();
+        
+        copy.dataType = this.dataType;
       
         return copy;
     }
@@ -39,6 +43,10 @@ extends GOperator
 
             this.value = this.input.toValue();
         }
+
+        else if (this.dataType != NULL)
+            this.value = nullFromType(this.dataType);
+        
         else
             this.value = NullValue;
 

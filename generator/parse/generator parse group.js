@@ -55,12 +55,16 @@ function genParseGroupParam(parse)
     const param = new GGroupParam(nodeId, options);
 
 
-    let nInputs = -1;
+    let nInputs  = -1;
+    let nOutputs = -1;
     
     if (!ignore)
     {
-        nInputs = parseInt(parse.move());
-        console.assert(nInputs == 0 || nInputs == 1, 'nInputs must be [0, 1]');
+        nInputs  = parseInt(parse.move());
+        nOutputs = parseInt(parse.move());
+
+        console.assert(nInputs  == 0 || nInputs  == 1,  'nInputs must be [0, 1]');
+        console.assert(nOutputs == 0 || nOutputs == 1, 'nOutputs must be [0, 1]');
     }
 
 
@@ -79,7 +83,12 @@ function genParseGroupParam(parse)
 
 
     if (nInputs == 1)
-        param.input = genParse(parse);
+    {
+        param.input    = genParse(parse);
+        param.dataType = parse.move();
+    }
+    else if (nOutputs == 1)
+        param.dataType = parse.move();
 
 
     parse.nTab--;

@@ -116,17 +116,23 @@ extends OperatorBase
         const request = [];
 
 
-        if (   this.node.groupInput)
-//            && this.node.groupInput.connected)
+        if (this.node.groupInput)
         {
-            if (this.node.groupParam)
+            if (    this.node.groupParam
+                && !gen.passedNodes.includes(this.node.groupInput.connectedOutput.node))            {
                 return this.node.groupParam.genRequest(gen);
-            else if (this.node.groupInput.connected)
-                return this.node.groupInput.connectedOutput.genRequest(gen);
+            }
+
+            else if (this.node.groupInput.connected
+                 && !gen.passedNodes.includes(this.node.groupInput.connectedOutput.node))
+            {
+                const _request = this.node.groupInput.connectedOutput.genRequest(gen);
+                return _request;
+            }
         }
 
 
-        // 'this' is the output        
+        // 'this' is the output
 
         gen.scope.push({
             nodeId:  this.node.id, 
@@ -140,21 +146,31 @@ extends OperatorBase
         request.push(..._request);
 
 
-        //console.assert(this.groupInput, 'missing group input');
         const input = this.node.groupInput;
-            // this.groupInput
-            // ? this.groupInput
-            // : this.node.inputs[0];
+
+        const output = 
+            !isEmpty(this.node.outputs)
+            ? this.node.outputs[0]
+            : null;
 
 
-        request.push(input && input.connected ? 1 : 0);
+        request.push( input &&  input.connected ? 1 : 0);
+        request.push(output && output.connected ? 1 : 0);
 
-        if (input && input.connected) 
+
+        if (input && input.connected)
+        {
             request.push(...pushInputOrParam(input, gen));
+            request.push(input.connectedOutput.types[0]);
+        }
+
+        else if (output && output.connected)
+            request.push(output.connectedInputs[0].types[0]);
 
 
         gen.scope.pop();
         pushUnique(gen.passedNodes, this.node);
+
 
         return request;
     }

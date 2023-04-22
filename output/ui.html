@@ -8676,6 +8676,28 @@ function displayValue(type, value)
 }
 
 
+
+function nullFromType(type)
+{
+    switch (type)
+    {
+        case    NUMBER_VALUE: return NumberValue.NaN;
+        case     COLOR_VALUE: return ColorValue.NaN;
+        case      TEXT_VALUE: return new TextValue();
+     // case RECTANGLE_VALUE: return RectangleValue.NaN;
+     // case      LINE_VALUE: return      LineValue.NaN;
+     // case   ELLIPSE_VALUE: return   EllipseValue.NaN;
+     // case   POLYGON_VALUE: return   PolygonValue.NaN;
+     // case      STAR_VALUE: return      StarValue.NaN;
+        case      FILL_VALUE: return FillValue.NaN;
+        case    STROKE_VALUE: return StrokeValue.NaN;
+        case      LIST_VALUE: return ListValue.NaN;
+    }
+
+    console.assert(false, 'cannot determine null value from type \'' + type + '\'');
+}
+
+
 class GOperator
 extends GNode
 {
@@ -9073,12 +9095,12 @@ extends GValue
 
     getNaN()
     {
-        return TextValue.NaN;
+        return new TextValue();//TextValue.NaN;
     }
 
 
 
-    static NaN = Object.freeze(new TextValue(NAN_CHAR));
+    //static NaN = Object.freeze(new TextValue(NAN_CHAR));
 }
 
 
@@ -11914,7 +11936,7 @@ extends GNumberType
             this.value = new TextValue(str);
         }
         else
-            this.value = TextValue.NaN;
+            this.value = new TextValue();//TextValue.NaN;
 
 
         genPushUpdateValue(parse, this.nodeId, 'value',  this.value);
@@ -13504,7 +13526,7 @@ extends GTextType
         else if (this.value)
             await this.value.eval(parse);
         else
-            this.value = TextValue.NaN;
+            this.value = new TextValue();//TextValue.NaN;
 
 
         genPushUpdateValue(parse, this.nodeId, 'value', this.value);
@@ -13589,10 +13611,10 @@ extends GTextType
                     this.value.value = this.value.value.substring(start.value, end.value);
             }
             else
-                this.value = TextValue.NaN;
+                this.value = new TextValue();//TextValue.NaN;
         }
         else
-            this.value = TextValue.NaN;
+            this.value = new TextValue();//TextValue.NaN;
 
 
         genPushUpdateValue(parse, this.nodeId, 'length', new NumberValue(length)); // used to set start and end maxima
@@ -13725,7 +13747,7 @@ extends GTextType
                 _with.value);
         }
         else
-            this.value = TextValue.NaN;
+            this.value = new TextValue();//TextValue.NaN;
 
             
         genPushUpdateValue(parse, this.nodeId, 'what',  _what);
@@ -13788,7 +13810,7 @@ extends GTextType
 async function evalJoinInputs(inputs, parse)
 {
     if (isEmpty(inputs))
-        return TextValue.NaN;
+        return new TextValue();//TextValue.NaN;
 
 
     const value = new TextValue();
@@ -13943,8 +13965,8 @@ extends GTextType
         {
             this.value = 
                 request.value.trim() == NULL
-                ? TextValue.NaN
-                : this.value = new TextValue(e.message);
+                ? new TextValue() //TextValue.NaN
+                : new TextValue(e.message);
         }
 
 
@@ -17247,6 +17269,8 @@ class GGroupParam
 extends GOperator
 {
     input = null;
+    
+    dataType = NULL;
 
 
 
@@ -17265,6 +17289,8 @@ extends GOperator
 
         if (this.input) 
             copy.input = this.input.copy();
+        
+        copy.dataType = this.dataType;
       
         return copy;
     }
@@ -17284,6 +17310,10 @@ extends GOperator
 
             this.value = this.input.toValue();
         }
+
+        else if (this.dataType != NULL)
+            this.value = nullFromType(this.dataType);
+        
         else
             this.value = NullValue;
 
@@ -19087,12 +19117,16 @@ function genParseGroupParam(parse)
     const param = new GGroupParam(nodeId, options);
 
 
-    let nInputs = -1;
+    let nInputs  = -1;
+    let nOutputs = -1;
     
     if (!ignore)
     {
-        nInputs = parseInt(parse.move());
-        console.assert(nInputs == 0 || nInputs == 1, 'nInputs must be [0, 1]');
+        nInputs  = parseInt(parse.move());
+        nOutputs = parseInt(parse.move());
+
+        console.assert(nInputs  == 0 || nInputs  == 1,  'nInputs must be [0, 1]');
+        console.assert(nOutputs == 0 || nOutputs == 1, 'nOutputs must be [0, 1]');
     }
 
 
@@ -19111,7 +19145,12 @@ function genParseGroupParam(parse)
 
 
     if (nInputs == 1)
-        param.input = genParse(parse);
+    {
+        param.input    = genParse(parse);
+        param.dataType = parse.move();
+    }
+    else if (nOutputs == 1)
+        param.dataType = parse.move();
 
 
     parse.nTab--;
@@ -31096,6 +31135,28 @@ function displayValue(type, value)
 }
 
 
+
+function nullFromType(type)
+{
+    switch (type)
+    {
+        case    NUMBER_VALUE: return NumberValue.NaN;
+        case     COLOR_VALUE: return ColorValue.NaN;
+        case      TEXT_VALUE: return new TextValue();
+     // case RECTANGLE_VALUE: return RectangleValue.NaN;
+     // case      LINE_VALUE: return      LineValue.NaN;
+     // case   ELLIPSE_VALUE: return   EllipseValue.NaN;
+     // case   POLYGON_VALUE: return   PolygonValue.NaN;
+     // case      STAR_VALUE: return      StarValue.NaN;
+        case      FILL_VALUE: return FillValue.NaN;
+        case    STROKE_VALUE: return StrokeValue.NaN;
+        case      LIST_VALUE: return ListValue.NaN;
+    }
+
+    console.assert(false, 'cannot determine null value from type \'' + type + '\'');
+}
+
+
 class GOperator
 extends GNode
 {
@@ -31493,12 +31554,12 @@ extends GValue
 
     getNaN()
     {
-        return TextValue.NaN;
+        return new TextValue();//TextValue.NaN;
     }
 
 
 
-    static NaN = Object.freeze(new TextValue(NAN_CHAR));
+    //static NaN = Object.freeze(new TextValue(NAN_CHAR));
 }
 
 
@@ -34334,7 +34395,7 @@ extends GNumberType
             this.value = new TextValue(str);
         }
         else
-            this.value = TextValue.NaN;
+            this.value = new TextValue();//TextValue.NaN;
 
 
         genPushUpdateValue(parse, this.nodeId, 'value',  this.value);
@@ -35924,7 +35985,7 @@ extends GTextType
         else if (this.value)
             await this.value.eval(parse);
         else
-            this.value = TextValue.NaN;
+            this.value = new TextValue();//TextValue.NaN;
 
 
         genPushUpdateValue(parse, this.nodeId, 'value', this.value);
@@ -36009,10 +36070,10 @@ extends GTextType
                     this.value.value = this.value.value.substring(start.value, end.value);
             }
             else
-                this.value = TextValue.NaN;
+                this.value = new TextValue();//TextValue.NaN;
         }
         else
-            this.value = TextValue.NaN;
+            this.value = new TextValue();//TextValue.NaN;
 
 
         genPushUpdateValue(parse, this.nodeId, 'length', new NumberValue(length)); // used to set start and end maxima
@@ -36145,7 +36206,7 @@ extends GTextType
                 _with.value);
         }
         else
-            this.value = TextValue.NaN;
+            this.value = new TextValue();//TextValue.NaN;
 
             
         genPushUpdateValue(parse, this.nodeId, 'what',  _what);
@@ -36208,7 +36269,7 @@ extends GTextType
 async function evalJoinInputs(inputs, parse)
 {
     if (isEmpty(inputs))
-        return TextValue.NaN;
+        return new TextValue();//TextValue.NaN;
 
 
     const value = new TextValue();
@@ -36363,8 +36424,8 @@ extends GTextType
         {
             this.value = 
                 request.value.trim() == NULL
-                ? TextValue.NaN
-                : this.value = new TextValue(e.message);
+                ? new TextValue() //TextValue.NaN
+                : new TextValue(e.message);
         }
 
 
@@ -39667,6 +39728,8 @@ class GGroupParam
 extends GOperator
 {
     input = null;
+    
+    dataType = NULL;
 
 
 
@@ -39685,6 +39748,8 @@ extends GOperator
 
         if (this.input) 
             copy.input = this.input.copy();
+        
+        copy.dataType = this.dataType;
       
         return copy;
     }
@@ -39704,6 +39769,10 @@ extends GOperator
 
             this.value = this.input.toValue();
         }
+
+        else if (this.dataType != NULL)
+            this.value = nullFromType(this.dataType);
+        
         else
             this.value = NullValue;
 
@@ -45117,7 +45186,7 @@ function initGeneratorMenus()
         menuItemHelp  = new MenuItem('Help and subscription', {childMenu: menuMainHelp })]);
 
 
-    menuFlow = new Menu('Flow', true, false);
+    menuFlow = new Menu('Data flow', true, false);
     menuFlow.addItems([
         menuItemList          = new MenuItem('List',              {icon: iconList,   callback: e => actionManager.do(getCreateNodeAction(LIST,         btnNumber.div, getCreateOptions(e)))}),
         menuFlowSep1          = new MenuItem('',                  {separator: true}),     
@@ -45184,7 +45253,7 @@ function initGeneratorMenus()
         menuItemNumberConvertToText = new MenuItem('Convert to text', {icon: iconNumberToText, callback: e => actionManager.do(getCreateNodeAction(NUMBER_TO_TEXT,     btnNumber.div, getCreateOptions(e)))})]);
         
     
-    menuString = new Menu('Text nodes', true, false);
+    menuString = new Menu('Text', true, false);
     menuString.addItems([
         new MenuItem('Text',      {icon: iconText,          shortcut: 'T', callback: e => actionManager.do(getCreateNodeAction(TEXT,           btnText.div, getCreateOptions(e)))}),
         new MenuItem('',          {separator: true}),
@@ -45241,7 +45310,7 @@ function initGeneratorMenus()
         new MenuItem('Star',      {icon: iconStar,      callback: e => actionManager.do(getCreateNodeAction(STAR,      btnShape.div, getCreateOptions(e)))})]);
 
 
-    menuGroup = new Menu('Group nodes', true, false);
+    menuGroup = new Menu('Groups', true, false);
     menuGroup.addItems([
         new MenuItem('Group',     {icon: iconGroupNode,  callback: e => actionManager.do(getCreateNodeAction(GROUP_NODE,  btnGroup.div, getCreateOptions(e)))}),
         new MenuItem('Parameter', {icon: iconGroupParam, shortcut: 'P', callback: e => actionManager.do(getCreateNodeAction(GROUP_PARAM, btnGroup.div, getCreateOptions(e)))})]);
@@ -64389,13 +64458,12 @@ extends OperatorBase
 
     output_genRequest(gen)
     {
+        // 'this' is the output        
         if (   this.paramNode
             && this.paramNode.inputs[0].connected)
             return this.paramNode.inputs[0].connectedOutput.genRequest(gen);
 
             
-        // 'this' is the output        
-
         gen.scope.push({
             nodeId:  this.node.id, 
             paramId: NULL }); 
@@ -64475,6 +64543,28 @@ extends OperatorBase
 
 
         this.updateParamControls();
+    }
+
+
+
+    getHeaderColors(options = {})
+    {
+        const colors = super.getHeaderColors(options);
+
+        if (!isEmpty(this.headerInputs))
+        {
+            colors.input  = 
+            colors.output =
+            colors.wire   = rgbFromType(this.headerInputs[0].types[0], true);
+        }
+        else if (!isEmpty(this.headerOutputs))
+        {
+            colors.input  = 
+            colors.output =
+            colors.wire   = rgbFromType(this.headerOutputs[0].types[0], true);
+        }
+
+        return colors;
     }
 }
 
@@ -64597,17 +64687,23 @@ extends OperatorBase
         const request = [];
 
 
-        if (   this.node.groupInput)
-//            && this.node.groupInput.connected)
+        if (this.node.groupInput)
         {
-            if (this.node.groupParam)
+            if (    this.node.groupParam
+                && !gen.passedNodes.includes(this.node.groupInput.connectedOutput.node))            {
                 return this.node.groupParam.genRequest(gen);
-            else if (this.node.groupInput.connected)
-                return this.node.groupInput.connectedOutput.genRequest(gen);
+            }
+
+            else if (this.node.groupInput.connected
+                 && !gen.passedNodes.includes(this.node.groupInput.connectedOutput.node))
+            {
+                const _request = this.node.groupInput.connectedOutput.genRequest(gen);
+                return _request;
+            }
         }
 
 
-        // 'this' is the output        
+        // 'this' is the output
 
         gen.scope.push({
             nodeId:  this.node.id, 
@@ -64621,21 +64717,31 @@ extends OperatorBase
         request.push(..._request);
 
 
-        //console.assert(this.groupInput, 'missing group input');
         const input = this.node.groupInput;
-            // this.groupInput
-            // ? this.groupInput
-            // : this.node.inputs[0];
+
+        const output = 
+            !isEmpty(this.node.outputs)
+            ? this.node.outputs[0]
+            : null;
 
 
-        request.push(input && input.connected ? 1 : 0);
+        request.push( input &&  input.connected ? 1 : 0);
+        request.push(output && output.connected ? 1 : 0);
 
-        if (input && input.connected) 
+
+        if (input && input.connected)
+        {
             request.push(...pushInputOrParam(input, gen));
+            request.push(input.connectedOutput.types[0]);
+        }
+
+        else if (output && output.connected)
+            request.push(output.connectedInputs[0].types[0]);
 
 
         gen.scope.pop();
         pushUnique(gen.passedNodes, this.node);
+
 
         return request;
     }
@@ -65819,17 +65925,15 @@ function getTerminalsAfterNode(node)
     {
         for (const input of node.inputs)
             pushUnique(after, getTerminalsAfterNode(input.paramNode));
-
-        // for (const input of node.inputs) pushUnique(after, input.node);
-        
+            
         for (const output of node.outputs) 
             for (const input of output.connectedInputs) 
-                pushUnique(after, input.node);
+                pushUnique(after, getTerminalsAfterNode(input.node));//input.node);
     }
 
     else if (node.type == GROUP_PARAM)
     {
-        if (node.output)
+        if (!isEmpty(node.outputs))
         {
             const afterNode = [];
 
@@ -65841,12 +65945,12 @@ function getTerminalsAfterNode(node)
 
             if (isEmpty(afterNode))
                 pushUnique(afterNode, node);
-            
+
             pushUnique(after, afterNode);
         }
 
 
-        if (node.input)
+        if (!isEmpty(node.inputs))
         {
             const afterGroupNode = [];
 
@@ -71579,7 +71683,7 @@ function pushUpdateFromParam(action, nodes, param)
         pushUnique(gen.passedNodes, node);
     }
 
-    
+
     for (const node of gen.paramNodes)
     {
         if (   !terminals.includes(node)
@@ -73265,7 +73369,6 @@ function uiUpdateValuesAndObjects(requestId, actionId, updateNodeId, updateParam
 
                 switch (type)
                 {
-                    case      LIST_VALUE:  value = parseListValue     (values[i++])[0];  break;
                     case    NUMBER_VALUE:  value = parseNumberValue   (values[i++])[0];  break;
                     case      TEXT_VALUE:  value = parseTextValue     (values[i++])[0];  break;
                     case     COLOR_VALUE:  value = parseColorValue    (values[i++])[0];  break;
@@ -73276,6 +73379,7 @@ function uiUpdateValuesAndObjects(requestId, actionId, updateNodeId, updateParam
                     case   ELLIPSE_VALUE:  value = parseEllipseValue  (values[i++])[0];  break;
                     case   POLYGON_VALUE:  value = parsePolygonValue  (values[i++])[0];  break;
                     case      STAR_VALUE:  value = parseStarValue     (values[i++])[0];  break;
+                    case      LIST_VALUE:  value = parseListValue     (values[i++])[0];  break;
                     
                     default: console.assert(false, 'unknown type \'' + type + '\'');
                 }

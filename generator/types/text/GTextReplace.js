@@ -57,7 +57,7 @@ extends GTextType
                 _with.value);
         }
         else
-            this.value = TextValue.NaN;
+            this.value = new TextValue();//TextValue.NaN;
 
             
         genPushUpdateValue(parse, this.nodeId, 'what',  _what);

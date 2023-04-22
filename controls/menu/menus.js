@@ -300,7 +300,7 @@ function initGeneratorMenus()
         menuItemHelp  = new MenuItem('Help and subscription', {childMenu: menuMainHelp })]);
 
 
-    menuFlow = new Menu('Flow', true, false);
+    menuFlow = new Menu('Data flow', true, false);
     menuFlow.addItems([
         menuItemList          = new MenuItem('List',              {icon: iconList,   callback: e => actionManager.do(getCreateNodeAction(LIST,         btnNumber.div, getCreateOptions(e)))}),
         menuFlowSep1          = new MenuItem('',                  {separator: true}),     
@@ -367,7 +367,7 @@ function initGeneratorMenus()
         menuItemNumberConvertToText = new MenuItem('Convert to text', {icon: iconNumberToText, callback: e => actionManager.do(getCreateNodeAction(NUMBER_TO_TEXT,     btnNumber.div, getCreateOptions(e)))})]);
         
     
-    menuString = new Menu('Text nodes', true, false);
+    menuString = new Menu('Text', true, false);
     menuString.addItems([
         new MenuItem('Text',      {icon: iconText,          shortcut: 'T', callback: e => actionManager.do(getCreateNodeAction(TEXT,           btnText.div, getCreateOptions(e)))}),
         new MenuItem('',          {separator: true}),
@@ -424,7 +424,7 @@ function initGeneratorMenus()
         new MenuItem('Star',      {icon: iconStar,      callback: e => actionManager.do(getCreateNodeAction(STAR,      btnShape.div, getCreateOptions(e)))})]);
 
 
-    menuGroup = new Menu('Group nodes', true, false);
+    menuGroup = new Menu('Groups', true, false);
     menuGroup.addItems([
         new MenuItem('Group',     {icon: iconGroupNode,  callback: e => actionManager.do(getCreateNodeAction(GROUP_NODE,  btnGroup.div, getCreateOptions(e)))}),
         new MenuItem('Parameter', {icon: iconGroupParam, shortcut: 'P', callback: e => actionManager.do(getCreateNodeAction(GROUP_PARAM, btnGroup.div, getCreateOptions(e)))})]);

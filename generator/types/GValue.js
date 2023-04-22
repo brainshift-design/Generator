@@ -86,3 +86,25 @@ function displayValue(type, value)
 
     console.assert(false, 'cannot display value of type \'' + type + '\'');
 }
+
+
+
+function nullFromType(type)
+{
+    switch (type)
+    {
+        case    NUMBER_VALUE: return NumberValue.NaN;
+        case     COLOR_VALUE: return ColorValue.NaN;
+        case      TEXT_VALUE: return new TextValue();
+     // case RECTANGLE_VALUE: return RectangleValue.NaN;
+     // case      LINE_VALUE: return      LineValue.NaN;
+     // case   ELLIPSE_VALUE: return   EllipseValue.NaN;
+     // case   POLYGON_VALUE: return   PolygonValue.NaN;
+     // case      STAR_VALUE: return      StarValue.NaN;
+        case      FILL_VALUE: return FillValue.NaN;
+        case    STROKE_VALUE: return StrokeValue.NaN;
+        case      LIST_VALUE: return ListValue.NaN;
+    }
+
+    console.assert(false, 'cannot determine null value from type \'' + type + '\'');
+}

@@ -78,12 +78,12 @@ extends GValue
 
     getNaN()
     {
-        return TextValue.NaN;
+        return new TextValue();//TextValue.NaN;
     }
 
 
 
-    static NaN = Object.freeze(new TextValue(NAN_CHAR));
+    //static NaN = Object.freeze(new TextValue(NAN_CHAR));
 }
 
 

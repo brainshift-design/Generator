@@ -71,7 +71,7 @@ extends GNumberType
             this.value = new TextValue(str);
         }
         else
-            this.value = TextValue.NaN;
+            this.value = new TextValue();//TextValue.NaN;
 
 
         genPushUpdateValue(parse, this.nodeId, 'value',  this.value);

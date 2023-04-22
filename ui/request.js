@@ -97,7 +97,7 @@ function pushUpdateFromParam(action, nodes, param)
         pushUnique(gen.passedNodes, node);
     }
 
-    
+
     for (const node of gen.paramNodes)
     {
         if (   !terminals.includes(node)

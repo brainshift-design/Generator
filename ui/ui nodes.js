@@ -699,7 +699,6 @@ function uiUpdateValuesAndObjects(requestId, actionId, updateNodeId, updateParam
 
                 switch (type)
                 {
-                    case      LIST_VALUE:  value = parseListValue     (values[i++])[0];  break;
                     case    NUMBER_VALUE:  value = parseNumberValue   (values[i++])[0];  break;
                     case      TEXT_VALUE:  value = parseTextValue     (values[i++])[0];  break;
                     case     COLOR_VALUE:  value = parseColorValue    (values[i++])[0];  break;
@@ -710,6 +709,7 @@ function uiUpdateValuesAndObjects(requestId, actionId, updateNodeId, updateParam
                     case   ELLIPSE_VALUE:  value = parseEllipseValue  (values[i++])[0];  break;
                     case   POLYGON_VALUE:  value = parsePolygonValue  (values[i++])[0];  break;
                     case      STAR_VALUE:  value = parseStarValue     (values[i++])[0];  break;
+                    case      LIST_VALUE:  value = parseListValue     (values[i++])[0];  break;
                     
                     default: console.assert(false, 'unknown type \'' + type + '\'');
                 }
