@@ -123,8 +123,8 @@ Operator.prototype.initLabelTextbox = function()
 
     this.textbox.finish = success =>
     {
-        const enteredValue = this.textbox.value;
-        const   savedValue = this.textbox.savedValue;
+        const enteredValue = this.textbox.value     .trim();
+        const   savedValue = this.textbox.savedValue.trim();
 
         if (success) 
         {

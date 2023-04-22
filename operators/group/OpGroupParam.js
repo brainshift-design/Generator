@@ -100,22 +100,22 @@ extends OperatorBase
         this.headerCircle.appendChild(this.icon);
         
         this.label.insertBefore(this.headerCircle, this.labelText);
-
-
-        this.setName(this.name);
     }
 
 
 
     output_genRequest(gen)
     {
+        const request = [];
+
+
         if (   this.node.groupInput)
 //            && this.node.groupInput.connected)
         {
             if (this.node.groupParam)
-                return this.node.groupParam.genRequest(gen);
+                request.push(...this.node.groupParam.genRequest(gen));
             else if (this.node.groupInput.connected)
-                return this.node.groupInput.connectedOutput.genRequest(gen);
+                request.push(...this.node.groupInput.connectedOutput.genRequest(gen));
         }
 
 
@@ -126,8 +126,11 @@ extends OperatorBase
             paramId: NULL });
 
 
-        const [request, ignore] = this.node.genRequestStart(gen);
-        if (ignore) return request;
+        const [_request, ignore] = this.node.genRequestStart(gen);
+        if (ignore) return _request;
+
+
+        request.push(..._request);
 
 
         //console.assert(this.groupInput, 'missing group input');
@@ -147,6 +150,19 @@ extends OperatorBase
         pushUnique(gen.passedNodes, this.node);
 
         return request;
+    }
+
+
+    
+    updateValues(requestId, actionId, updateParamId, paramIds, values)
+    {
+        super.updateValues(requestId, actionId, updateParamId, paramIds, values);
+
+        if (   graphView.creatingNodes
+            || graphView.pastingNodes
+            || graphView.loadingNodes
+            || graphView.restoringNodes)
+            this.setName(this.name);
     }
 
 

@@ -954,7 +954,7 @@ class Operator
 
         let json =
               pos + tab + '"type": "'    + this.type                                     + '",\n'
-            + pos + tab + '"id": "'      + (this.stripIdForJson ? this.nodeId : this.id) + '",\n'
+            + pos + tab + '"id": "'      + (this.stripIdForCopy ? this.nodeId : this.id) + '",\n'
             + pos + tab + '"name": "'    + this.name.replace('"', '\\\"')                + '",\n'
             + pos + tab + '"renamed": "' + boolToString(this.renamed)                    + '",\n'
             + pos + tab + '"enabled": "' + boolToString(this.enabled)                    + '",\n'
@@ -1009,8 +1009,8 @@ class Operator
 
     loadFromParsedJson(_node, pasting)
     {
-        this.id      = _node.id;
-        this.name    = _node.name;
+        this.id   = _node.id;
+        this.name = _node.name;
     
         if (_node.renamed != undefined)
             this.renamed = parseBool(_node.renamed);

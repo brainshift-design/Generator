@@ -54197,7 +54197,7 @@ class Operator
 
         let json =
               pos + tab + '"type": "'    + this.type                                     + '",\n'
-            + pos + tab + '"id": "'      + (this.stripIdForJson ? this.nodeId : this.id) + '",\n'
+            + pos + tab + '"id": "'      + (this.stripIdForCopy ? this.nodeId : this.id) + '",\n'
             + pos + tab + '"name": "'    + this.name.replace('"', '\\\"')                + '",\n'
             + pos + tab + '"renamed": "' + boolToString(this.renamed)                    + '",\n'
             + pos + tab + '"enabled": "' + boolToString(this.enabled)                    + '",\n'
@@ -54252,8 +54252,8 @@ class Operator
 
     loadFromParsedJson(_node, pasting)
     {
-        this.id      = _node.id;
-        this.name    = _node.name;
+        this.id   = _node.id;
+        this.name = _node.name;
     
         if (_node.renamed != undefined)
             this.renamed = parseBool(_node.renamed);
@@ -55171,8 +55171,8 @@ Operator.prototype.initLabelTextbox = function()
 
     this.textbox.finish = success =>
     {
-        const enteredValue = this.textbox.value;
-        const   savedValue = this.textbox.savedValue;
+        const enteredValue = this.textbox.value     .trim();
+        const   savedValue = this.textbox.savedValue.trim();
 
         if (success) 
         {
@@ -64563,22 +64563,22 @@ extends OperatorBase
         this.headerCircle.appendChild(this.icon);
         
         this.label.insertBefore(this.headerCircle, this.labelText);
-
-
-        this.setName(this.name);
     }
 
 
 
     output_genRequest(gen)
     {
+        const request = [];
+
+
         if (   this.node.groupInput)
 //            && this.node.groupInput.connected)
         {
             if (this.node.groupParam)
-                return this.node.groupParam.genRequest(gen);
+                request.push(...this.node.groupParam.genRequest(gen));
             else if (this.node.groupInput.connected)
-                return this.node.groupInput.connectedOutput.genRequest(gen);
+                request.push(...this.node.groupInput.connectedOutput.genRequest(gen));
         }
 
 
@@ -64589,8 +64589,11 @@ extends OperatorBase
             paramId: NULL });
 
 
-        const [request, ignore] = this.node.genRequestStart(gen);
-        if (ignore) return request;
+        const [_request, ignore] = this.node.genRequestStart(gen);
+        if (ignore) return _request;
+
+
+        request.push(..._request);
 
 
         //console.assert(this.groupInput, 'missing group input');
@@ -64610,6 +64613,19 @@ extends OperatorBase
         pushUnique(gen.passedNodes, this.node);
 
         return request;
+    }
+
+
+    
+    updateValues(requestId, actionId, updateParamId, paramIds, values)
+    {
+        super.updateValues(requestId, actionId, updateParamId, paramIds, values);
+
+        if (   graphView.creatingNodes
+            || graphView.pastingNodes
+            || graphView.loadingNodes
+            || graphView.restoringNodes)
+            this.setName(this.name);
     }
 
 
@@ -73041,6 +73057,7 @@ function uiPasteNodes(nodesJson, pasteConnected, x, y, updateNodes)
         data.nodes[i].newId = nodes[i].id;
     }
 
+    console.log('data =', data);
     if (data.connections)
     {
         correctNodeNamesInConnections(data);
@@ -73318,10 +73335,17 @@ function uiSavePages(pageIds, pageJson, currentPageId)
 
 function uiSaveNodes(nodeIds)
 {
+    // console.trace();
+    console.log('nodeIds =', nodeIds);
     const nodeJson = [];
 
     for (const id of nodeIds)
-        nodeJson.push(nodeFromId(id).toJson());
+    {
+        const node = nodeFromId(id);
+        console.log('id =', id);
+        console.log('node =', node);
+        nodeJson.push(node.toJson());
+    }
 
     uiSaveNodesJson(nodeIds, nodeJson);
 }
