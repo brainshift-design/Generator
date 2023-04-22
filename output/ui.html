@@ -18251,6 +18251,8 @@ function genParseColor(parse)
 
     if (nInputs == 1)
     {
+        console.log('parse.request[parse.pos] =', parse.request[parse.pos]);
+        
         col.input = genParse(parse);
         paramIds = parse.move().split(',');
     }
@@ -19038,13 +19040,13 @@ function genParseGroupNode(parse)
     const group = new GGroupNode(nodeId, options);
 
 
-    // let nParams = -1;
+    let nParams = -1;
     
-    // if (!ignore)
-    // {
-    //     nParams = parseInt(parse.move());
-    //     //console.assert(nInputs == 0 || nInputs == 1, 'nInputs must be [0, 1]');
-    // }
+    if (!ignore)
+    {
+        nParams = parseInt(parse.move());
+        //console.assert(nInputs == 0 || nInputs == 1, 'nInputs must be [0, 1]');
+    }
 
 
     if (parse.settings.logRequests) 
@@ -19061,7 +19063,7 @@ function genParseGroupNode(parse)
     parse.nTab++;
 
 
-    const nParams = parseInt(parse.move());
+    //const nParams = parseInt(parse.move());
 
     for (let i = 0; i < nParams; i++)
     {
@@ -20923,7 +20925,7 @@ function genParse(parse, inParam = true)
 
     else if (parse.next == COMMENT                ) result = genParseComment         (parse);
 
-    else console.assert(false, 'unknown parse token \'' + parse.next + '\'');
+    else console.assert(false, 'unknown parse token \'' + parse.next + '\' @ ' + parse.pos);
 
 
     parse.inParam = false;
@@ -64576,9 +64578,9 @@ extends OperatorBase
 //            && this.node.groupInput.connected)
         {
             if (this.node.groupParam)
-                request.push(...this.node.groupParam.genRequest(gen));
+                return this.node.groupParam.genRequest(gen);
             else if (this.node.groupInput.connected)
-                request.push(...this.node.groupInput.connectedOutput.genRequest(gen));
+                return this.node.groupInput.connectedOutput.genRequest(gen);
         }
 
 
@@ -65790,11 +65792,10 @@ function getTerminalsAfterNode(node)
     }
     else if (node.type == GROUP_PARAM)
     {
-        pushUnique(after, node);
-        pushUnique(after, node.groupNode);
-        
-        // iterating over outputs manually to avoid an endless loop 
-        // as with getTerminalsAfterNode(node.groupNode)
+        //pushUnique(after, node);
+        //pushUnique(after, node.groupNode);
+     
+        const afterNode = [];
 
         for (const output of node.outputs)
         {
@@ -65802,11 +65803,24 @@ function getTerminalsAfterNode(node)
                 pushUnique(after, getTerminalsAfterNode(input.node));
         }
 
+        if (isEmpty(afterNode))
+            pushUnique(afterNode, node);
+
+
+        const afterGroupNode = [];
+
         for (const output of node.groupNode.outputs)
         {
             for (const input of output.connectedInputs)
-                pushUnique(after, getTerminalsAfterNode(input.node));
+                pushUnique(afterGroupNode, getTerminalsAfterNode(input.node));
         }
+
+        if (isEmpty(afterGroupNode))
+            pushUnique(afterGroupNode, node.groupNode);
+
+
+        pushUnique(after, afterNode);
+        pushUnique(after, afterGroupNode);
     }
     else
     {
@@ -73335,17 +73349,10 @@ function uiSavePages(pageIds, pageJson, currentPageId)
 
 function uiSaveNodes(nodeIds)
 {
-    // console.trace();
-    console.log('nodeIds =', nodeIds);
     const nodeJson = [];
 
     for (const id of nodeIds)
-    {
-        const node = nodeFromId(id);
-        console.log('id =', id);
-        console.log('node =', node);
-        nodeJson.push(node.toJson());
-    }
+        nodeJson.push(nodeFromId(id).toJson());
 
     uiSaveNodesJson(nodeIds, nodeJson);
 }

@@ -113,9 +113,9 @@ extends OperatorBase
 //            && this.node.groupInput.connected)
         {
             if (this.node.groupParam)
-                request.push(...this.node.groupParam.genRequest(gen));
+                return this.node.groupParam.genRequest(gen);
             else if (this.node.groupInput.connected)
-                request.push(...this.node.groupInput.connectedOutput.genRequest(gen));
+                return this.node.groupInput.connectedOutput.genRequest(gen);
         }
 
 

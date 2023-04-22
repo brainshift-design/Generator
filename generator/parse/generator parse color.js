@@ -49,6 +49,8 @@ function genParseColor(parse)
 
     if (nInputs == 1)
     {
+        console.log('parse.request[parse.pos] =', parse.request[parse.pos]);
+        
         col.input = genParse(parse);
         paramIds = parse.move().split(',');
     }

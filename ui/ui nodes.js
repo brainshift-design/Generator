@@ -824,17 +824,10 @@ function uiSavePages(pageIds, pageJson, currentPageId)
 
 function uiSaveNodes(nodeIds)
 {
-    // console.trace();
-    console.log('nodeIds =', nodeIds);
     const nodeJson = [];
 
     for (const id of nodeIds)
-    {
-        const node = nodeFromId(id);
-        console.log('id =', id);
-        console.log('node =', node);
-        nodeJson.push(node.toJson());
-    }
+        nodeJson.push(nodeFromId(id).toJson());
 
     uiSaveNodesJson(nodeIds, nodeJson);
 }

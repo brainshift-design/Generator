@@ -167,7 +167,7 @@ function genParse(parse, inParam = true)
 
     else if (parse.next == COMMENT                ) result = genParseComment         (parse);
 
-    else console.assert(false, 'unknown parse token \'' + parse.next + '\'');
+    else console.assert(false, 'unknown parse token \'' + parse.next + '\' @ ' + parse.pos);
 
 
     parse.inParam = false;

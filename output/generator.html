@@ -13887,6 +13887,8 @@ function genParseColor(parse)
 
     if (nInputs == 1)
     {
+        console.log('parse.request[parse.pos] =', parse.request[parse.pos]);
+        
         col.input = genParse(parse);
         paramIds = parse.move().split(',');
     }
@@ -14674,13 +14676,13 @@ function genParseGroupNode(parse)
     const group = new GGroupNode(nodeId, options);
 
 
-    // let nParams = -1;
+    let nParams = -1;
     
-    // if (!ignore)
-    // {
-    //     nParams = parseInt(parse.move());
-    //     //console.assert(nInputs == 0 || nInputs == 1, 'nInputs must be [0, 1]');
-    // }
+    if (!ignore)
+    {
+        nParams = parseInt(parse.move());
+        //console.assert(nInputs == 0 || nInputs == 1, 'nInputs must be [0, 1]');
+    }
 
 
     if (parse.settings.logRequests) 
@@ -14697,7 +14699,7 @@ function genParseGroupNode(parse)
     parse.nTab++;
 
 
-    const nParams = parseInt(parse.move());
+    //const nParams = parseInt(parse.move());
 
     for (let i = 0; i < nParams; i++)
     {
@@ -16559,7 +16561,7 @@ function genParse(parse, inParam = true)
 
     else if (parse.next == COMMENT                ) result = genParseComment         (parse);
 
-    else console.assert(false, 'unknown parse token \'' + parse.next + '\'');
+    else console.assert(false, 'unknown parse token \'' + parse.next + '\' @ ' + parse.pos);
 
 
     parse.inParam = false;
