@@ -1,5 +1,5 @@
 class GLine
-extends GObjectBase
+extends GShape
 {
     input  = null;
 
@@ -42,29 +42,43 @@ extends GObjectBase
             return this;
 
 
-        if (this.input)
-            await this.input.eval(parse);
-
-        const hasInput =     
-               this.input 
-            && LINE_TYPES.includes(this.input.type);   
-
-            
-        if (this.x     ) await this.x     .eval(parse); else if (hasInput) this.x     = this.input.x    ;
-        if (this.y     ) await this.y     .eval(parse); else if (hasInput) this.y     = this.input.y    ;
-        if (this.width ) await this.width .eval(parse); else if (hasInput) this.width = this.input.width;
-        if (this.angle ) await this.angle .eval(parse); else if (hasInput) this.angle = this.input.angle;
+        const x     = this.x     ? (await this.x    .eval(parse)).toValue() : null;
+        const y     = this.y     ? (await this.y    .eval(parse)).toValue() : null;
+        const width = this.width ? (await this.width.eval(parse)).toValue() : null;
+        const angle = this.angle ? (await this.angle.eval(parse)).toValue() : null;
 
         
-        if (this.x     ) genPushUpdateValue(parse, this.nodeId, 'x',      this.x     .toValue());
-        if (this.y     ) genPushUpdateValue(parse, this.nodeId, 'y',      this.y     .toValue());
-        if (this.width ) genPushUpdateValue(parse, this.nodeId, 'width',  this.width .toValue());
-        if (this.angle ) genPushUpdateValue(parse, this.nodeId, 'angle',  this.angle .toValue());
+        let input = null;
+
+        if (this.input)
+        {
+            input = (await this.input.eval(parse)).toValue();
+
+            this.value = new LineValue(
+                this.nodeId,
+                x     ?? input.x,
+                y     ?? input.y,
+                width ?? input.width,
+                angle ?? input.angle);
+        }
+        else
+        {
+            this.value = new LineValue(this.nodeId, x, y, width, angle);
+        }
 
 
-        if (    hasInput
-            && !this.options) this.objects = this.input.objects;
-        else                  this.evalObjects(parse);
+            
+        genPushUpdateValue(parse, this.nodeId, 'value', this.value      );
+        genPushUpdateValue(parse, this.nodeId, 'x',     this.value.x    );
+        genPushUpdateValue(parse, this.nodeId, 'y',     this.value.y    );
+        genPushUpdateValue(parse, this.nodeId, 'width', this.value.width);
+        genPushUpdateValue(parse, this.nodeId, 'angle', this.value.angle);
+
+
+        await this.evalBase(parse, input);
+
+
+        await this.evalObjects(parse);
 
 
         this.validate();
@@ -90,10 +104,10 @@ extends GObjectBase
                 new FigmaLine(
                     this.nodeId,
                     0,
-                    this.x    .toValue().value,
-                    this.y    .toValue().value,
-                    this.width.toValue().value,
-                    this.angle.toValue().value)
+                    this.value.x    .value,
+                    this.value.y    .value,
+                    this.value.width.value,
+                    this.value.angle.value)
             ];
         }
 
@@ -108,18 +122,23 @@ extends GObjectBase
         return this.x    .isValid()
             && this.y    .isValid()
             && this.width.isValid()
-            && this.angle.isValid();
+            && this.angle.isValid()
+            && super.isValid();
     }
 
 
 
     toValue()
     {
-        return new LineValue(
+        const line = new LineValue(
             this.nodeId,
             this.x     .toValue(),
             this.y     .toValue(),
             this.width .toValue(),
             this.angle .toValue());
+
+        line.props = this.props.toValue();
+
+        return line;
     }
 }

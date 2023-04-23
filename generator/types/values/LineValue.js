@@ -27,6 +27,7 @@ extends ShapeValue
     copy()
     {
         const copy = new LineValue(
+            this.nodeId,
             this.x    .copy(), 
             this.y    .copy(), 
             this.width.copy(), 
@@ -51,7 +52,8 @@ extends ShapeValue
         return !isNaN(this.x    )
             && !isNaN(this.y    )
             && !isNaN(this.width)
-            && !isNaN(this.angle);
+            && !isNaN(this.angle)
+            && super.isValid();
     }
 
 
@@ -93,16 +95,38 @@ extends ShapeValue
 
 
 
-function parseLineValue(str)
+function parseLineValue(str, i = -1)
 {
-    if (str == NAN_CHAE)
-        return LineValue.NaN;
+    if (   i <  0 && str    == NAN_DISPLAY
+        || i >= 0 && str[i] == NAN_DISPLAY)
+        return [LineValue.NaN, 1];
 
-    const rect = str.split(' ');
 
-    return new LineValue(
-        new NumberValue(parseNumberValue(rect[0])),
-        new NumberValue(parseNumberValue(rect[1])),
-        new NumberValue(parseNumberValue(rect[2])),
-        new NumberValue(parseNumberValue(rect[3])));
+    if (i < 0)
+    {
+        str = str.split(' ');
+        i   = 0;
+    }
+
+
+    const iStart = i;
+
+    const x     = parseNumberValue(str[i]); i += x    [1];
+    const y     = parseNumberValue(str[i]); i += y    [1];
+    const width = parseNumberValue(str[i]); i += width[1];
+    const angle = parseNumberValue(str[i]); i += angle[1];
+
+
+    const line = new LineValue(
+        '', // set node ID elsewhere
+        x    [0],
+        y    [0],
+        width[0],
+        angle[0]);
+
+
+    i = parseShapeBaseValue(str, i, line);
+
+    
+    return [line, i - iStart];
 }

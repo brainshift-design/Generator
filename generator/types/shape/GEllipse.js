@@ -1,5 +1,5 @@
 class GEllipse
-extends GObjectBase
+extends GShape
 {
     input  = null;
 
@@ -43,31 +43,45 @@ extends GObjectBase
             return this;
 
             
+        const x      = this.x      ? (await this.x     .eval(parse)).toValue() : null;
+        const y      = this.y      ? (await this.y     .eval(parse)).toValue() : null;
+        const width  = this.width  ? (await this.width .eval(parse)).toValue() : null;
+        const height = this.height ? (await this.height.eval(parse)).toValue() : null;
+        const angle  = this.angle  ? (await this.angle .eval(parse)).toValue() : null;
+
+
+        let input = null;
+
         if (this.input)
-            await this.input.eval(parse);
+        {
+            input = (await this.input.eval(parse)).toValue();
 
-        const hasInput =     
-               this.input 
-            && ELLIPSE_TYPES.includes(this.input.type);   
-
-            
-        if (this.x     ) await this.x     .eval(parse); else if (hasInput) this.x      = this.input.x     ;
-        if (this.y     ) await this.y     .eval(parse); else if (hasInput) this.y      = this.input.y     ;
-        if (this.width ) await this.width .eval(parse); else if (hasInput) this.width  = this.input.width ;
-        if (this.height) await this.height.eval(parse); else if (hasInput) this.height = this.input.height;
-        if (this.angle ) await this.angle .eval(parse); else if (hasInput) this.angle  = this.input.angle ;
-
-        
-        if (this.x     ) genPushUpdateValue(parse, this.nodeId, 'x',      this.x     .toValue());
-        if (this.y     ) genPushUpdateValue(parse, this.nodeId, 'y',      this.y     .toValue());
-        if (this.width ) genPushUpdateValue(parse, this.nodeId, 'width',  this.width .toValue());
-        if (this.height) genPushUpdateValue(parse, this.nodeId, 'height', this.height.toValue());
-        if (this.angle ) genPushUpdateValue(parse, this.nodeId, 'angle',  this.angle .toValue());
+            this.value = new EllipseValue(
+                this.nodeId,
+                x      ?? input.x,
+                y      ?? input.y,
+                width  ?? input.width,
+                height ?? input.height,
+                angle  ?? input.angle);
+        }
+        else
+        {
+            this.value = new EllipseValue(this.nodeId, x, y, width, height, angle);
+        }
 
 
-        if (    hasInput
-            && !this.options) this.objects = this.input.objects;
-        else                  this.evalObjects(parse);
+        genPushUpdateValue(parse, this.nodeId, 'value',  this.value       );
+        genPushUpdateValue(parse, this.nodeId, 'x',      this.value.x     );
+        genPushUpdateValue(parse, this.nodeId, 'y',      this.value.y     );
+        genPushUpdateValue(parse, this.nodeId, 'width',  this.value.width );
+        genPushUpdateValue(parse, this.nodeId, 'height', this.value.height);
+        genPushUpdateValue(parse, this.nodeId, 'angle',  this.value.angle );
+
+
+        await this.evalBase(parse, input);
+
+
+        await this.evalObjects(parse);
 
 
         this.validate();
@@ -114,19 +128,24 @@ extends GObjectBase
            && this.y     .isValid()
            && this.width .isValid()
            && this.height.isValid()
-           && this.angle .isValid();
+           && this.angle .isValid()
+           && super.isValid();
    }
 
 
 
    toValue()
    {
-       return new EllipseValue(
+       const ellipse = new EllipseValue(
            this.nodeId,
            this.x     .toValue(),
            this.y     .toValue(),
            this.width .toValue(),
            this.height.toValue(),
            this.angle .toValue());
+
+        ellipse.props = this.props.toValue();
+
+        return ellipse;
    }
 }

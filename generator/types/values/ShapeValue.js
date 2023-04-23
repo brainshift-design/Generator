@@ -54,13 +54,11 @@ extends GValue
 
 
 
-// function parseShapeBaseValue(str, i, obj)
-// {
-//     const fill   = parseFillValue  (str, i); i += fill  [1];
-//     const stroke = parseStrokeValue(str, i); i += stroke[1];
+function parseShapeBaseValue(str, i, obj)
+{
+    const props = parseListValue(str, i); i += props[1];
 
-//     obj.fill   = fill  [0];
-//     obj.stroke = stroke[0];
+    obj.props = props[0];
 
-//     return i;
-// }
+    return i;
+}

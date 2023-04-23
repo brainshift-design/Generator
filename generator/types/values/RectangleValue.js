@@ -67,6 +67,7 @@ extends ShapeValue
     }
 
 
+    
     toValue()
     {
         return this.copy();
@@ -144,7 +145,7 @@ function parseRectangleValue(str, i = -1)
         round [0]);
 
 
-    // i = parseShapeBaseValue(str, i, rect);
+    i = parseShapeBaseValue(str, i, rect);
 
     
     return [rect, i - iStart];

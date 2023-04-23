@@ -30,6 +30,7 @@ extends ShapeValue
     copy()
     {
         const copy = new EllipseValue(
+            this.nodeId,
             this.x     .copy(), 
             this.y     .copy(), 
             this.width .copy(), 
@@ -43,20 +44,28 @@ extends ShapeValue
 
 
 
+    async eval(parse)
+    {
+        return this;
+    }
+    
+    
+    
     isValid()
     {
         return !isNaN(this.x     )
             && !isNaN(this.y     )
             && !isNaN(this.width )
             && !isNaN(this.height)
-            && !isNaN(this.angle );
+            && !isNaN(this.angle )
+            && super.isValid();
     }
 
 
 
-    async eval(parse)
+    toValue()
     {
-        return this;
+        return this.copy();
     }
 
 
@@ -94,17 +103,40 @@ extends ShapeValue
 
 
 
-function parseEllipseValue(str)
+function parseEllipseValue(str, i = -1)
 {
-    if (str == NAN_DISPLAY)
-        return EllipseValue.NaN;
+    if (   i <  0 && str    == NAN_DISPLAY
+        || i >= 0 && str[i] == NAN_DISPLAY)
+        return [EllipseValue.NaN, 1];
 
-    const rect = str.split(' ');
 
-    return new EllipseValue(
-        new NumberValue(parseNumberValue(rect[0])[0]),
-        new NumberValue(parseNumberValue(rect[1])[0]),
-        new NumberValue(parseNumberValue(rect[2])[0]),
-        new NumberValue(parseNumberValue(rect[3])[0]),
-        new NumberValue(parseNumberValue(rect[4])[0]));
+    if (i < 0)
+    {
+        str = str.split(' ');
+        i   = 0;
+    }
+
+
+    const iStart = i;
+
+    const x      = parseNumberValue(str[i]); i += x     [1];
+    const y      = parseNumberValue(str[i]); i += y     [1];
+    const width  = parseNumberValue(str[i]); i += width [1];
+    const height = parseNumberValue(str[i]); i += height[1];
+    const angle  = parseNumberValue(str[i]); i += angle [1];
+
+
+    const ellipse = new EllipseValue(
+        '', // set node ID elsewhere
+        x     [0],
+        y     [0],
+        width [0],
+        height[0],
+        angle [0]);
+
+
+    i = parseShapeBaseValue(str, i, ellipse);
+
+    
+    return [ellipse, i - iStart];
 }

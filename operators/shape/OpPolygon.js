@@ -15,8 +15,8 @@ extends OpShapeBase
     {
         super(POLYGON, 'poly', 'polygon');
 
-        this.addInput (this.createInputForObjects([POLYGON, POLYGON_VALUE], getNodeInputValuesForUndo));
-        this.addOutput(new Output([POLYGON], this.output_genRequest));
+        this.addInput (this.createInputForObjects([POLYGON_VALUE], getNodeInputValuesForUndo));
+        this.addOutput(new Output([POLYGON_VALUE], this.output_genRequest));
 
         this.addParam(this.paramX       = new NumberParam('x',       'x',       true, true, true,   0));
         this.addParam(this.paramY       = new NumberParam('y',       'y',       true, true, true,   0));

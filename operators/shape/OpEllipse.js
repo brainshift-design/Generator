@@ -13,8 +13,8 @@ extends OpShapeBase
     {
         super(ELLIPSE, 'ellipse', 'ellipse');
 
-        this.addInput (this.createInputForObjects([ELLIPSE, ELLIPSE_VALUE], getNodeInputValuesForUndo));
-        this.addOutput(new Output([ELLIPSE], this.output_genRequest));
+        this.addInput (this.createInputForObjects([ELLIPSE_VALUE], getNodeInputValuesForUndo));
+        this.addOutput(new Output([ELLIPSE_VALUE], this.output_genRequest));
 
 
         this.addParam(this.paramX      = new NumberParam('x',      'x',      true, true, true,   0));

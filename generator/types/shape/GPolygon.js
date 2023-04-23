@@ -1,5 +1,5 @@
 class GPolygon
-extends GObjectBase
+extends GShape
 {
     input   = null;
 
@@ -48,35 +48,51 @@ extends GObjectBase
             return this;
 
             
-        if (this.input)
-            await this.input.eval(parse);
+        const x       = this.x       ? (await this.x      .eval(parse)).toValue() : null;
+        const y       = this.y       ? (await this.y      .eval(parse)).toValue() : null;
+        const width   = this.width   ? (await this.width  .eval(parse)).toValue() : null;
+        const height  = this.height  ? (await this.height .eval(parse)).toValue() : null;
+        const angle   = this.angle   ? (await this.angle  .eval(parse)).toValue() : null;
+        const round   = this.round   ? (await this.round  .eval(parse)).toValue() : null;
+        const corners = this.corners ? (await this.corners.eval(parse)).toValue() : null;
 
-        const hasInput =     
-               this.input 
-            && POLYGON_TYPES.includes(this.input.type);   
 
+        let input = null;
              
-        if (this.x      ) await this.x      .eval(parse); else if (hasInput) this.x       = this.input.x      ;
-        if (this.y      ) await this.y      .eval(parse); else if (hasInput) this.y       = this.input.y      ;
-        if (this.width  ) await this.width  .eval(parse); else if (hasInput) this.width   = this.input.width  ;
-        if (this.height ) await this.height .eval(parse); else if (hasInput) this.height  = this.input.height ;
-        if (this.angle  ) await this.angle  .eval(parse); else if (hasInput) this.angle   = this.input.angle  ;
-        if (this.round  ) await this.round  .eval(parse); else if (hasInput) this.round   = this.input.round  ;
-        if (this.corners) await this.corners.eval(parse); else if (hasInput) this.corners = this.input.corners;
+        if (this.input)
+        {
+            input = (await this.input.eval(parse)).toValue();
+
+            this.value = new PolygonValue(
+                this.nodeId,
+                x       ?? input.x,
+                y       ?? input.y,
+                width   ?? input.width,
+                height  ?? input.height,
+                angle   ?? input.angle,
+                round   ?? input.round,
+                corners ?? input.corners);
+        }
+        else
+        {
+            this.value = new PolygonValue(this.nodeId, x, y, width, height, angle, round, corners);
+        }
 
         
-        if (this.x      ) genPushUpdateValue(parse, this.nodeId, 'x',       this.x      .toValue());
-        if (this.y      ) genPushUpdateValue(parse, this.nodeId, 'y',       this.y      .toValue());
-        if (this.width  ) genPushUpdateValue(parse, this.nodeId, 'width',   this.width  .toValue());
-        if (this.height ) genPushUpdateValue(parse, this.nodeId, 'height',  this.height .toValue());
-        if (this.angle  ) genPushUpdateValue(parse, this.nodeId, 'angle',   this.angle  .toValue());
-        if (this.round  ) genPushUpdateValue(parse, this.nodeId, 'round',   this.round  .toValue());
-        if (this.corners) genPushUpdateValue(parse, this.nodeId, 'corners', this.corners.toValue());
+        genPushUpdateValue(parse, this.nodeId, 'value',   this.value        );
+        genPushUpdateValue(parse, this.nodeId, 'x',       this.value.x      );
+        genPushUpdateValue(parse, this.nodeId, 'y',       this.value.y      );
+        genPushUpdateValue(parse, this.nodeId, 'width',   this.value.width  );
+        genPushUpdateValue(parse, this.nodeId, 'height',  this.value.height );
+        genPushUpdateValue(parse, this.nodeId, 'angle',   this.value.angle  );
+        genPushUpdateValue(parse, this.nodeId, 'round',   this.value.round  );
+        genPushUpdateValue(parse, this.nodeId, 'corners', this.value.corners);
 
 
-        if (    hasInput
-            && !this.options) this.objects = this.input.objects;
-        else                  this.evalObjects(parse);
+        await this.evalBase(parse, input);
+
+
+        await this.evalObjects(parse);
 
 
         this.validate();
@@ -129,14 +145,15 @@ extends GObjectBase
             && this.height .isValid()
             && this.angle  .isValid()
             && this.round  .isValid()
-            && this.corners.isValid();
+            && this.corners.isValid()
+            && super.isValid();
     }
 
 
 
     toValue()
     {
-        return new PolygonValue(
+        const poly = new PolygonValue(
             this.nodeId,
             this.x      .toValue(),
             this.y      .toValue(),
@@ -145,5 +162,9 @@ extends GObjectBase
             this.angle  .toValue(),
             this.round  .toValue(),
             this.corners.toValue());
+
+        poly.props = this.props.toValue();
+
+        return poly;
     }
 }

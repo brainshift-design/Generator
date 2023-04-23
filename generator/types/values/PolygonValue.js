@@ -36,6 +36,7 @@ extends ShapeValue
     copy()
     {
         const copy = new PolygonValue(
+            this.nodeId,
             this.x      .copy(), 
             this.y      .copy(), 
             this.width  .copy(), 
@@ -66,7 +67,8 @@ extends ShapeValue
             && !isNaN(this.height )
             && !isNaN(this.angle  )
             && !isNaN(this.round  )
-            && !isNaN(this.corners);
+            && !isNaN(this.corners)
+            && super.isValid();
     }
 
 
@@ -117,20 +119,44 @@ extends ShapeValue
 
 
 
-function parsePolygonValue(str)
+function parsePolygonValue(str, i = -1)
 {
-    if (str == NAN_DISPLAY)
-        return PolygonValue.NaN;
+    if (   i <  0 && str    == NAN_DISPLAY
+        || i >= 0 && str[i] == NAN_DISPLAY)
+        return [PolygonValue.NaN, 1];
 
-    const poly = str.split(' ');
 
-    return new PolygonValue(
-        '',
-        new NumberValue(parseNumberValue(poly[0])),
-        new NumberValue(parseNumberValue(poly[1])),
-        new NumberValue(parseNumberValue(poly[2])),
-        new NumberValue(parseNumberValue(poly[3])),
-        new NumberValue(parseNumberValue(poly[4])),
-        new NumberValue(parseNumberValue(poly[5])),
-        new NumberValue(parseNumberValue(poly[6])));
+    if (i < 0)
+    {
+        str = str.split(' ');
+        i   = 0;
+    }
+
+
+    const iStart = i;
+
+    const x       = parseNumberValue(str[i]); i += x      [1];
+    const y       = parseNumberValue(str[i]); i += y      [1];
+    const width   = parseNumberValue(str[i]); i += width  [1];
+    const height  = parseNumberValue(str[i]); i += height [1];
+    const angle   = parseNumberValue(str[i]); i += angle  [1];
+    const round   = parseNumberValue(str[i]); i += round  [1];
+    const corners = parseNumberValue(str[i]); i += corners[1];
+
+
+    const poly = new PolygonValue(
+        '', // set node ID elsewhere
+        x      [0],
+        y      [0],
+        width  [0],
+        height [0],
+        angle  [0],
+        round  [0],
+        corners[0]);
+
+
+    i = parseShapeBaseValue(str, i, poly);
+
+    
+    return [poly, i - iStart];
 }

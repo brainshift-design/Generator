@@ -1,5 +1,5 @@
 class GColorStyle
-extends GObjectBase
+extends GShape
 {
     id;
     style;

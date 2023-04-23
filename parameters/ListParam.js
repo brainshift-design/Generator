@@ -30,10 +30,10 @@ extends Parameter
     {
         super(LIST_VALUE, id, name);
 
-        this.defaultValue                           = defaultValue;
-        this.value                                  = defaultValue;
+        this.defaultValue = defaultValue;
+        this.value        = defaultValue;
 
-        this.itemName = 'item';
+        this.itemName     = 'item';
 
 
         this.controls.push(new TextControl(
@@ -149,7 +149,7 @@ extends Parameter
 
         else request.push( 
             LIST_VALUE, 
-            this.value.toString());
+            (new ListValue()).toString());//this.value.toString());
 
         return request;
     }

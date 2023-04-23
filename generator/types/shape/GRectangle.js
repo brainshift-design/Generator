@@ -1,5 +1,5 @@
 class GRectangle
-extends GObjectBase
+extends GShape
 {
     input  = null;
 

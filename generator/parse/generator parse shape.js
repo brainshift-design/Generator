@@ -72,6 +72,15 @@ function genParseLine(parse)
     const line = new GLine(nodeId, options);
 
 
+    let nInputs = -1;
+
+    if (!ignore)
+    {
+        nInputs = parseInt(parse.move());
+        console.assert(nInputs => 0 && nInputs <= 1, 'nInputs must be [0, 1]');
+    }
+
+
     if (parse.settings.logRequests) 
         logReq(line, parse, ignore);
 
@@ -86,7 +95,7 @@ function genParseLine(parse)
     parse.nTab++;
 
 
-    if (LINE_TYPES.includes(parse.next))
+    if (nInputs == 1)
         line.input = genParse(parse);
 
 
@@ -104,6 +113,7 @@ function genParseLine(parse)
         case 'y':     line.y     = genParse(parse); break;
         case 'width': line.width = genParse(parse); break;
         case 'angle': line.angle = genParse(parse); break;
+        case 'props': line.props = genParse(parse); break;
         }
     }
 
@@ -126,6 +136,15 @@ function genParseEllipse(parse)
     const ellipse = new GEllipse(nodeId, options);
 
 
+    let nInputs = -1;
+
+    if (!ignore)
+    {
+        nInputs = parseInt(parse.move());
+        console.assert(nInputs => 0 && nInputs <= 1, 'nInputs must be [0, 1]');
+    }
+
+
     if (parse.settings.logRequests) 
         logReq(ellipse, parse, ignore);
 
@@ -140,7 +159,7 @@ function genParseEllipse(parse)
     parse.nTab++;
 
 
-    if (ELLIPSE_TYPES.includes(parse.next))
+    if (nInputs == 1)
         ellipse.input = genParse(parse);
 
 
@@ -159,6 +178,7 @@ function genParseEllipse(parse)
         case 'width':  ellipse.width  = genParse(parse); break;
         case 'height': ellipse.height = genParse(parse); break;
         case 'angle':  ellipse.angle  = genParse(parse); break;
+        case 'props':  ellipse.props  = genParse(parse); break;
         }
     }
     
@@ -181,6 +201,15 @@ function genParsePolygon(parse)
     const poly = new GPolygon(nodeId, options);
 
 
+    let nInputs = -1;
+
+    if (!ignore)
+    {
+        nInputs = parseInt(parse.move());
+        console.assert(nInputs => 0 && nInputs <= 1, 'nInputs must be [0, 1]');
+    }
+
+
     if (parse.settings.logRequests) 
         logReq(poly, parse, ignore);
 
@@ -195,7 +224,7 @@ function genParsePolygon(parse)
     parse.nTab++;
 
 
-    if (POLYGON_TYPES.includes(parse.next))
+    if (nInputs == 1)
         poly.input = genParse(parse);
 
 
@@ -216,6 +245,7 @@ function genParsePolygon(parse)
         case 'angle':   poly.angle   = genParse(parse); break;
         case 'round':   poly.round   = genParse(parse); break;
         case 'corners': poly.corners = genParse(parse); break;
+        case 'props':   poly.props   = genParse(parse); break;
         }
     }
     
@@ -238,6 +268,15 @@ function genParseStar(parse)
     const star = new GStar(nodeId, options);
 
 
+    let nInputs = -1;
+
+    if (!ignore)
+    {
+        nInputs = parseInt(parse.move());
+        console.assert(nInputs => 0 && nInputs <= 1, 'nInputs must be [0, 1]');
+    }
+
+
     if (parse.settings.logRequests) 
         logReq(star, parse, ignore);
 
@@ -252,7 +291,7 @@ function genParseStar(parse)
     parse.nTab++;
 
 
-    if (STAR_TYPES.includes(parse.next))
+    if (nInputs == 1)
         star.input = genParse(parse);
 
 
@@ -274,6 +313,7 @@ function genParseStar(parse)
         case 'round':  star.round  = genParse(parse); break;
         case 'points': star.points = genParse(parse); break;
         case 'convex': star.convex = genParse(parse); break;
+        case 'props':  star.props  = genParse(parse); break;
         }
     }
     

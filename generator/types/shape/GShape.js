@@ -1,4 +1,4 @@
-class GObjectBase
+class GShape
 extends GOperator
 {
     props   = null;

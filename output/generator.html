@@ -5604,16 +5604,14 @@ extends GValue
 
 
 
-// function parseShapeBaseValue(str, i, obj)
-// {
-//     const fill   = parseFillValue  (str, i); i += fill  [1];
-//     const stroke = parseStrokeValue(str, i); i += stroke[1];
+function parseShapeBaseValue(str, i, obj)
+{
+    const props = parseListValue(str, i); i += props[1];
 
-//     obj.fill   = fill  [0];
-//     obj.stroke = stroke[0];
+    obj.props = props[0];
 
-//     return i;
-// }
+    return i;
+}
 
 
 class RectangleValue
@@ -5685,6 +5683,7 @@ extends ShapeValue
     }
 
 
+    
     toValue()
     {
         return this.copy();
@@ -5762,7 +5761,7 @@ function parseRectangleValue(str, i = -1)
         round [0]);
 
 
-    // i = parseShapeBaseValue(str, i, rect);
+    i = parseShapeBaseValue(str, i, rect);
 
     
     return [rect, i - iStart];
@@ -5799,6 +5798,7 @@ extends ShapeValue
     copy()
     {
         const copy = new LineValue(
+            this.nodeId,
             this.x    .copy(), 
             this.y    .copy(), 
             this.width.copy(), 
@@ -5823,7 +5823,8 @@ extends ShapeValue
         return !isNaN(this.x    )
             && !isNaN(this.y    )
             && !isNaN(this.width)
-            && !isNaN(this.angle);
+            && !isNaN(this.angle)
+            && super.isValid();
     }
 
 
@@ -5865,18 +5866,40 @@ extends ShapeValue
 
 
 
-function parseLineValue(str)
+function parseLineValue(str, i = -1)
 {
-    if (str == NAN_CHAE)
-        return LineValue.NaN;
+    if (   i <  0 && str    == NAN_DISPLAY
+        || i >= 0 && str[i] == NAN_DISPLAY)
+        return [LineValue.NaN, 1];
 
-    const rect = str.split(' ');
 
-    return new LineValue(
-        new NumberValue(parseNumberValue(rect[0])),
-        new NumberValue(parseNumberValue(rect[1])),
-        new NumberValue(parseNumberValue(rect[2])),
-        new NumberValue(parseNumberValue(rect[3])));
+    if (i < 0)
+    {
+        str = str.split(' ');
+        i   = 0;
+    }
+
+
+    const iStart = i;
+
+    const x     = parseNumberValue(str[i]); i += x    [1];
+    const y     = parseNumberValue(str[i]); i += y    [1];
+    const width = parseNumberValue(str[i]); i += width[1];
+    const angle = parseNumberValue(str[i]); i += angle[1];
+
+
+    const line = new LineValue(
+        '', // set node ID elsewhere
+        x    [0],
+        y    [0],
+        width[0],
+        angle[0]);
+
+
+    i = parseShapeBaseValue(str, i, line);
+
+    
+    return [line, i - iStart];
 }
 
 
@@ -5913,6 +5936,7 @@ extends ShapeValue
     copy()
     {
         const copy = new EllipseValue(
+            this.nodeId,
             this.x     .copy(), 
             this.y     .copy(), 
             this.width .copy(), 
@@ -5926,20 +5950,28 @@ extends ShapeValue
 
 
 
+    async eval(parse)
+    {
+        return this;
+    }
+    
+    
+    
     isValid()
     {
         return !isNaN(this.x     )
             && !isNaN(this.y     )
             && !isNaN(this.width )
             && !isNaN(this.height)
-            && !isNaN(this.angle );
+            && !isNaN(this.angle )
+            && super.isValid();
     }
 
 
 
-    async eval(parse)
+    toValue()
     {
-        return this;
+        return this.copy();
     }
 
 
@@ -5977,19 +6009,42 @@ extends ShapeValue
 
 
 
-function parseEllipseValue(str)
+function parseEllipseValue(str, i = -1)
 {
-    if (str == NAN_DISPLAY)
-        return EllipseValue.NaN;
+    if (   i <  0 && str    == NAN_DISPLAY
+        || i >= 0 && str[i] == NAN_DISPLAY)
+        return [EllipseValue.NaN, 1];
 
-    const rect = str.split(' ');
 
-    return new EllipseValue(
-        new NumberValue(parseNumberValue(rect[0])[0]),
-        new NumberValue(parseNumberValue(rect[1])[0]),
-        new NumberValue(parseNumberValue(rect[2])[0]),
-        new NumberValue(parseNumberValue(rect[3])[0]),
-        new NumberValue(parseNumberValue(rect[4])[0]));
+    if (i < 0)
+    {
+        str = str.split(' ');
+        i   = 0;
+    }
+
+
+    const iStart = i;
+
+    const x      = parseNumberValue(str[i]); i += x     [1];
+    const y      = parseNumberValue(str[i]); i += y     [1];
+    const width  = parseNumberValue(str[i]); i += width [1];
+    const height = parseNumberValue(str[i]); i += height[1];
+    const angle  = parseNumberValue(str[i]); i += angle [1];
+
+
+    const ellipse = new EllipseValue(
+        '', // set node ID elsewhere
+        x     [0],
+        y     [0],
+        width [0],
+        height[0],
+        angle [0]);
+
+
+    i = parseShapeBaseValue(str, i, ellipse);
+
+    
+    return [ellipse, i - iStart];
 }
 
 
@@ -6032,6 +6087,7 @@ extends ShapeValue
     copy()
     {
         const copy = new PolygonValue(
+            this.nodeId,
             this.x      .copy(), 
             this.y      .copy(), 
             this.width  .copy(), 
@@ -6062,7 +6118,8 @@ extends ShapeValue
             && !isNaN(this.height )
             && !isNaN(this.angle  )
             && !isNaN(this.round  )
-            && !isNaN(this.corners);
+            && !isNaN(this.corners)
+            && super.isValid();
     }
 
 
@@ -6113,22 +6170,46 @@ extends ShapeValue
 
 
 
-function parsePolygonValue(str)
+function parsePolygonValue(str, i = -1)
 {
-    if (str == NAN_DISPLAY)
-        return PolygonValue.NaN;
+    if (   i <  0 && str    == NAN_DISPLAY
+        || i >= 0 && str[i] == NAN_DISPLAY)
+        return [PolygonValue.NaN, 1];
 
-    const poly = str.split(' ');
 
-    return new PolygonValue(
-        '',
-        new NumberValue(parseNumberValue(poly[0])),
-        new NumberValue(parseNumberValue(poly[1])),
-        new NumberValue(parseNumberValue(poly[2])),
-        new NumberValue(parseNumberValue(poly[3])),
-        new NumberValue(parseNumberValue(poly[4])),
-        new NumberValue(parseNumberValue(poly[5])),
-        new NumberValue(parseNumberValue(poly[6])));
+    if (i < 0)
+    {
+        str = str.split(' ');
+        i   = 0;
+    }
+
+
+    const iStart = i;
+
+    const x       = parseNumberValue(str[i]); i += x      [1];
+    const y       = parseNumberValue(str[i]); i += y      [1];
+    const width   = parseNumberValue(str[i]); i += width  [1];
+    const height  = parseNumberValue(str[i]); i += height [1];
+    const angle   = parseNumberValue(str[i]); i += angle  [1];
+    const round   = parseNumberValue(str[i]); i += round  [1];
+    const corners = parseNumberValue(str[i]); i += corners[1];
+
+
+    const poly = new PolygonValue(
+        '', // set node ID elsewhere
+        x      [0],
+        y      [0],
+        width  [0],
+        height [0],
+        angle  [0],
+        round  [0],
+        corners[0]);
+
+
+    i = parseShapeBaseValue(str, i, poly);
+
+    
+    return [poly, i - iStart];
 }
 
 
@@ -6174,6 +6255,7 @@ extends ShapeValue
     copy()
     {
         const copy = new StarValue(
+            this.nodeId,
             this.x     .copy(), 
             this.y     .copy(), 
             this.width .copy(), 
@@ -6206,7 +6288,8 @@ extends ShapeValue
             && !isNaN(this.angle )
             && !isNaN(this.round )
             && !isNaN(this.points)
-            && !isNaN(this.convex);
+            && !isNaN(this.convex)
+            && super.isValid();
     }
 
 
@@ -6260,22 +6343,48 @@ extends ShapeValue
 
 
 
-function parseStarValue(str)
+function parseStarValue(str, i = -1)
 {
-    if (str == NAN_DISPLAY)
-        return StarValue.NaN;
+    if (   i <  0 && str    == NAN_DISPLAY
+        || i >= 0 && str[i] == NAN_DISPLAY)
+        return [StarValue.NaN, 1];
 
-    const star = str.split(' ');
 
-    return new StarValue(
-        new NumberValue(parseNumberValue(star[0])),
-        new NumberValue(parseNumberValue(star[1])),
-        new NumberValue(parseNumberValue(star[2])),
-        new NumberValue(parseNumberValue(star[3])),
-        new NumberValue(parseNumberValue(star[4])),
-        new NumberValue(parseNumberValue(star[5])),
-        new NumberValue(parseNumberValue(star[6])),
-        new NumberValue(parseNumberValue(star[7])));
+    if (i < 0)
+    {
+        str = str.split(' ');
+        i   = 0;
+    }
+
+
+    const iStart = i;
+
+    const x      = parseNumberValue(str[i]); i += x     [1];
+    const y      = parseNumberValue(str[i]); i += y     [1];
+    const width  = parseNumberValue(str[i]); i += width [1];
+    const height = parseNumberValue(str[i]); i += height[1];
+    const angle  = parseNumberValue(str[i]); i += angle [1];
+    const round  = parseNumberValue(str[i]); i += round [1];
+    const points = parseNumberValue(str[i]); i += points[1];
+    const convex = parseNumberValue(str[i]); i += convex[1];
+
+
+    const star = new StarValue(
+        '', // set node ID elsewhere
+        x     [0],
+        y     [0],
+        width [0],
+        height[0],
+        angle [0],
+        round [0],
+        points[0],
+        convex[0]);
+
+
+    i = parseShapeBaseValue(str, i, star);
+
+    
+    return [star, i - iStart];
 }
 
 
@@ -11624,7 +11733,7 @@ extends GOperator
 }
 
 
-class GObjectBase
+class GShape
 extends GOperator
 {
     props   = null;
@@ -11835,7 +11944,7 @@ extends GOperator
 
 
 class GRectangle
-extends GObjectBase
+extends GShape
 {
     input  = null;
 
@@ -11998,7 +12107,7 @@ extends GObjectBase
 
 
 class GLine
-extends GObjectBase
+extends GShape
 {
     input  = null;
 
@@ -12041,29 +12150,43 @@ extends GObjectBase
             return this;
 
 
-        if (this.input)
-            await this.input.eval(parse);
-
-        const hasInput =     
-               this.input 
-            && LINE_TYPES.includes(this.input.type);   
-
-            
-        if (this.x     ) await this.x     .eval(parse); else if (hasInput) this.x     = this.input.x    ;
-        if (this.y     ) await this.y     .eval(parse); else if (hasInput) this.y     = this.input.y    ;
-        if (this.width ) await this.width .eval(parse); else if (hasInput) this.width = this.input.width;
-        if (this.angle ) await this.angle .eval(parse); else if (hasInput) this.angle = this.input.angle;
+        const x     = this.x     ? (await this.x    .eval(parse)).toValue() : null;
+        const y     = this.y     ? (await this.y    .eval(parse)).toValue() : null;
+        const width = this.width ? (await this.width.eval(parse)).toValue() : null;
+        const angle = this.angle ? (await this.angle.eval(parse)).toValue() : null;
 
         
-        if (this.x     ) genPushUpdateValue(parse, this.nodeId, 'x',      this.x     .toValue());
-        if (this.y     ) genPushUpdateValue(parse, this.nodeId, 'y',      this.y     .toValue());
-        if (this.width ) genPushUpdateValue(parse, this.nodeId, 'width',  this.width .toValue());
-        if (this.angle ) genPushUpdateValue(parse, this.nodeId, 'angle',  this.angle .toValue());
+        let input = null;
+
+        if (this.input)
+        {
+            input = (await this.input.eval(parse)).toValue();
+
+            this.value = new LineValue(
+                this.nodeId,
+                x     ?? input.x,
+                y     ?? input.y,
+                width ?? input.width,
+                angle ?? input.angle);
+        }
+        else
+        {
+            this.value = new LineValue(this.nodeId, x, y, width, angle);
+        }
 
 
-        if (    hasInput
-            && !this.options) this.objects = this.input.objects;
-        else                  this.evalObjects(parse);
+            
+        genPushUpdateValue(parse, this.nodeId, 'value', this.value      );
+        genPushUpdateValue(parse, this.nodeId, 'x',     this.value.x    );
+        genPushUpdateValue(parse, this.nodeId, 'y',     this.value.y    );
+        genPushUpdateValue(parse, this.nodeId, 'width', this.value.width);
+        genPushUpdateValue(parse, this.nodeId, 'angle', this.value.angle);
+
+
+        await this.evalBase(parse, input);
+
+
+        await this.evalObjects(parse);
 
 
         this.validate();
@@ -12089,10 +12212,10 @@ extends GObjectBase
                 new FigmaLine(
                     this.nodeId,
                     0,
-                    this.x    .toValue().value,
-                    this.y    .toValue().value,
-                    this.width.toValue().value,
-                    this.angle.toValue().value)
+                    this.value.x    .value,
+                    this.value.y    .value,
+                    this.value.width.value,
+                    this.value.angle.value)
             ];
         }
 
@@ -12107,25 +12230,30 @@ extends GObjectBase
         return this.x    .isValid()
             && this.y    .isValid()
             && this.width.isValid()
-            && this.angle.isValid();
+            && this.angle.isValid()
+            && super.isValid();
     }
 
 
 
     toValue()
     {
-        return new LineValue(
+        const line = new LineValue(
             this.nodeId,
             this.x     .toValue(),
             this.y     .toValue(),
             this.width .toValue(),
             this.angle .toValue());
+
+        line.props = this.props.toValue();
+
+        return line;
     }
 }
 
 
 class GEllipse
-extends GObjectBase
+extends GShape
 {
     input  = null;
 
@@ -12169,31 +12297,45 @@ extends GObjectBase
             return this;
 
             
+        const x      = this.x      ? (await this.x     .eval(parse)).toValue() : null;
+        const y      = this.y      ? (await this.y     .eval(parse)).toValue() : null;
+        const width  = this.width  ? (await this.width .eval(parse)).toValue() : null;
+        const height = this.height ? (await this.height.eval(parse)).toValue() : null;
+        const angle  = this.angle  ? (await this.angle .eval(parse)).toValue() : null;
+
+
+        let input = null;
+
         if (this.input)
-            await this.input.eval(parse);
+        {
+            input = (await this.input.eval(parse)).toValue();
 
-        const hasInput =     
-               this.input 
-            && ELLIPSE_TYPES.includes(this.input.type);   
-
-            
-        if (this.x     ) await this.x     .eval(parse); else if (hasInput) this.x      = this.input.x     ;
-        if (this.y     ) await this.y     .eval(parse); else if (hasInput) this.y      = this.input.y     ;
-        if (this.width ) await this.width .eval(parse); else if (hasInput) this.width  = this.input.width ;
-        if (this.height) await this.height.eval(parse); else if (hasInput) this.height = this.input.height;
-        if (this.angle ) await this.angle .eval(parse); else if (hasInput) this.angle  = this.input.angle ;
-
-        
-        if (this.x     ) genPushUpdateValue(parse, this.nodeId, 'x',      this.x     .toValue());
-        if (this.y     ) genPushUpdateValue(parse, this.nodeId, 'y',      this.y     .toValue());
-        if (this.width ) genPushUpdateValue(parse, this.nodeId, 'width',  this.width .toValue());
-        if (this.height) genPushUpdateValue(parse, this.nodeId, 'height', this.height.toValue());
-        if (this.angle ) genPushUpdateValue(parse, this.nodeId, 'angle',  this.angle .toValue());
+            this.value = new EllipseValue(
+                this.nodeId,
+                x      ?? input.x,
+                y      ?? input.y,
+                width  ?? input.width,
+                height ?? input.height,
+                angle  ?? input.angle);
+        }
+        else
+        {
+            this.value = new EllipseValue(this.nodeId, x, y, width, height, angle);
+        }
 
 
-        if (    hasInput
-            && !this.options) this.objects = this.input.objects;
-        else                  this.evalObjects(parse);
+        genPushUpdateValue(parse, this.nodeId, 'value',  this.value       );
+        genPushUpdateValue(parse, this.nodeId, 'x',      this.value.x     );
+        genPushUpdateValue(parse, this.nodeId, 'y',      this.value.y     );
+        genPushUpdateValue(parse, this.nodeId, 'width',  this.value.width );
+        genPushUpdateValue(parse, this.nodeId, 'height', this.value.height);
+        genPushUpdateValue(parse, this.nodeId, 'angle',  this.value.angle );
+
+
+        await this.evalBase(parse, input);
+
+
+        await this.evalObjects(parse);
 
 
         this.validate();
@@ -12240,26 +12382,31 @@ extends GObjectBase
            && this.y     .isValid()
            && this.width .isValid()
            && this.height.isValid()
-           && this.angle .isValid();
+           && this.angle .isValid()
+           && super.isValid();
    }
 
 
 
    toValue()
    {
-       return new EllipseValue(
+       const ellipse = new EllipseValue(
            this.nodeId,
            this.x     .toValue(),
            this.y     .toValue(),
            this.width .toValue(),
            this.height.toValue(),
            this.angle .toValue());
+
+        ellipse.props = this.props.toValue();
+
+        return ellipse;
    }
 }
 
 
 class GPolygon
-extends GObjectBase
+extends GShape
 {
     input   = null;
 
@@ -12308,35 +12455,51 @@ extends GObjectBase
             return this;
 
             
-        if (this.input)
-            await this.input.eval(parse);
+        const x       = this.x       ? (await this.x      .eval(parse)).toValue() : null;
+        const y       = this.y       ? (await this.y      .eval(parse)).toValue() : null;
+        const width   = this.width   ? (await this.width  .eval(parse)).toValue() : null;
+        const height  = this.height  ? (await this.height .eval(parse)).toValue() : null;
+        const angle   = this.angle   ? (await this.angle  .eval(parse)).toValue() : null;
+        const round   = this.round   ? (await this.round  .eval(parse)).toValue() : null;
+        const corners = this.corners ? (await this.corners.eval(parse)).toValue() : null;
 
-        const hasInput =     
-               this.input 
-            && POLYGON_TYPES.includes(this.input.type);   
 
+        let input = null;
              
-        if (this.x      ) await this.x      .eval(parse); else if (hasInput) this.x       = this.input.x      ;
-        if (this.y      ) await this.y      .eval(parse); else if (hasInput) this.y       = this.input.y      ;
-        if (this.width  ) await this.width  .eval(parse); else if (hasInput) this.width   = this.input.width  ;
-        if (this.height ) await this.height .eval(parse); else if (hasInput) this.height  = this.input.height ;
-        if (this.angle  ) await this.angle  .eval(parse); else if (hasInput) this.angle   = this.input.angle  ;
-        if (this.round  ) await this.round  .eval(parse); else if (hasInput) this.round   = this.input.round  ;
-        if (this.corners) await this.corners.eval(parse); else if (hasInput) this.corners = this.input.corners;
+        if (this.input)
+        {
+            input = (await this.input.eval(parse)).toValue();
+
+            this.value = new PolygonValue(
+                this.nodeId,
+                x       ?? input.x,
+                y       ?? input.y,
+                width   ?? input.width,
+                height  ?? input.height,
+                angle   ?? input.angle,
+                round   ?? input.round,
+                corners ?? input.corners);
+        }
+        else
+        {
+            this.value = new PolygonValue(this.nodeId, x, y, width, height, angle, round, corners);
+        }
 
         
-        if (this.x      ) genPushUpdateValue(parse, this.nodeId, 'x',       this.x      .toValue());
-        if (this.y      ) genPushUpdateValue(parse, this.nodeId, 'y',       this.y      .toValue());
-        if (this.width  ) genPushUpdateValue(parse, this.nodeId, 'width',   this.width  .toValue());
-        if (this.height ) genPushUpdateValue(parse, this.nodeId, 'height',  this.height .toValue());
-        if (this.angle  ) genPushUpdateValue(parse, this.nodeId, 'angle',   this.angle  .toValue());
-        if (this.round  ) genPushUpdateValue(parse, this.nodeId, 'round',   this.round  .toValue());
-        if (this.corners) genPushUpdateValue(parse, this.nodeId, 'corners', this.corners.toValue());
+        genPushUpdateValue(parse, this.nodeId, 'value',   this.value        );
+        genPushUpdateValue(parse, this.nodeId, 'x',       this.value.x      );
+        genPushUpdateValue(parse, this.nodeId, 'y',       this.value.y      );
+        genPushUpdateValue(parse, this.nodeId, 'width',   this.value.width  );
+        genPushUpdateValue(parse, this.nodeId, 'height',  this.value.height );
+        genPushUpdateValue(parse, this.nodeId, 'angle',   this.value.angle  );
+        genPushUpdateValue(parse, this.nodeId, 'round',   this.value.round  );
+        genPushUpdateValue(parse, this.nodeId, 'corners', this.value.corners);
 
 
-        if (    hasInput
-            && !this.options) this.objects = this.input.objects;
-        else                  this.evalObjects(parse);
+        await this.evalBase(parse, input);
+
+
+        await this.evalObjects(parse);
 
 
         this.validate();
@@ -12389,14 +12552,15 @@ extends GObjectBase
             && this.height .isValid()
             && this.angle  .isValid()
             && this.round  .isValid()
-            && this.corners.isValid();
+            && this.corners.isValid()
+            && super.isValid();
     }
 
 
 
     toValue()
     {
-        return new PolygonValue(
+        const poly = new PolygonValue(
             this.nodeId,
             this.x      .toValue(),
             this.y      .toValue(),
@@ -12405,12 +12569,16 @@ extends GObjectBase
             this.angle  .toValue(),
             this.round  .toValue(),
             this.corners.toValue());
+
+        poly.props = this.props.toValue();
+
+        return poly;
     }
 }
 
 
 class GStar
-extends GObjectBase
+extends GShape
 {
     input  = null;
 
@@ -12461,37 +12629,54 @@ extends GObjectBase
             return this;
 
             
-        if (this.input)
-            this.input = (await this.input.eval(parse)).copy();
+        const x      = this.x      ? (await this.x     .eval(parse)).toValue() : null;
+        const y      = this.y      ? (await this.y     .eval(parse)).toValue() : null;
+        const width  = this.width  ? (await this.width .eval(parse)).toValue() : null;
+        const height = this.height ? (await this.height.eval(parse)).toValue() : null;
+        const angle  = this.angle  ? (await this.angle .eval(parse)).toValue() : null;
+        const round  = this.round  ? (await this.round .eval(parse)).toValue() : null;
+        const points = this.points ? (await this.points.eval(parse)).toValue() : null;
+        const convex = this.convex ? (await this.convex.eval(parse)).toValue() : null;
 
-        const hasInput =     
-               this.input 
-            && STAR_TYPES.includes(this.input.type);   
+
+        let input = null;
+
+        if (this.input)
+        {
+            input = (await this.input.eval(parse)).toValue();
+
+            this.value = new StarValue(
+                this.nodeId,
+                x      ?? input.x,
+                y      ?? input.y,
+                width  ?? input.width,
+                height ?? input.height,
+                angle  ?? input.angle,
+                round  ?? input.round,
+                points ?? input.points,
+                convex ?? input.convex);
+        }
+        else
+        {
+            this.value = new StarValue(this.nodeId, x, y, width, height, angle, round, points, convex);
+        }
 
              
-        if (this.x     ) this.x      = (await this.x     .eval(parse)).copy(); else if (hasInput) this.x      = this.input.x     .copy();
-        if (this.y     ) this.y      = (await this.y     .eval(parse)).copy(); else if (hasInput) this.y      = this.input.y     .copy();
-        if (this.width ) this.width  = (await this.width .eval(parse)).copy(); else if (hasInput) this.width  = this.input.width .copy();
-        if (this.height) this.height = (await this.height.eval(parse)).copy(); else if (hasInput) this.height = this.input.height.copy();
-        if (this.angle ) this.angle  = (await this.angle .eval(parse)).copy(); else if (hasInput) this.angle  = this.input.angle .copy();
-        if (this.round ) this.round  = (await this.round .eval(parse)).copy(); else if (hasInput) this.round  = this.input.round .copy();
-        if (this.points) this.points = (await this.points.eval(parse)).copy(); else if (hasInput) this.points = this.input.points.copy();
-        if (this.convex) this.convex = (await this.convex.eval(parse)).copy(); else if (hasInput) this.convex = this.input.convex.copy();
-
-        
-        if (this.x     ) genPushUpdateValue(parse, this.nodeId, 'x',      this.x     .toValue());
-        if (this.y     ) genPushUpdateValue(parse, this.nodeId, 'y',      this.y     .toValue());
-        if (this.width ) genPushUpdateValue(parse, this.nodeId, 'width',  this.width .toValue());
-        if (this.height) genPushUpdateValue(parse, this.nodeId, 'height', this.height.toValue());
-        if (this.angle ) genPushUpdateValue(parse, this.nodeId, 'angle',  this.angle .toValue());
-        if (this.round ) genPushUpdateValue(parse, this.nodeId, 'round',  this.round .toValue());
-        if (this.points) genPushUpdateValue(parse, this.nodeId, 'points', this.points.toValue());
-        if (this.convex) genPushUpdateValue(parse, this.nodeId, 'convex', this.convex.toValue());
+        genPushUpdateValue(parse, this.nodeId, 'value',  this.value       );
+        genPushUpdateValue(parse, this.nodeId, 'x',      this.value.x     );
+        genPushUpdateValue(parse, this.nodeId, 'y',      this.value.y     );
+        genPushUpdateValue(parse, this.nodeId, 'width',  this.value.width );
+        genPushUpdateValue(parse, this.nodeId, 'height', this.value.height);
+        genPushUpdateValue(parse, this.nodeId, 'angle',  this.value.angle );
+        genPushUpdateValue(parse, this.nodeId, 'round',  this.value.round );
+        genPushUpdateValue(parse, this.nodeId, 'points', this.value.points);
+        genPushUpdateValue(parse, this.nodeId, 'convex', this.value.convex);
 
 
-        if (    hasInput
-            && !this.options) this.objects = this.input.objects;
-        else                  this.evalObjects(parse);
+        await this.evalBase(parse, input);
+
+
+        await this.evalObjects(parse);
 
 
         this.validate();
@@ -12569,7 +12754,7 @@ extends GObjectBase
 
 
 class GColorStyle
-extends GObjectBase
+extends GShape
 {
     id;
     style;
@@ -12755,7 +12940,7 @@ extends GOperator
 
 
 class GStroke
-extends GObjectBase
+extends GShape
 {
     input  = null;
 
@@ -13590,7 +13775,7 @@ function genRequest(request)
 
         for (const node of parse.parsedNodes)
         {
-            if (   node instanceof GObjectBase
+            if (   node instanceof GShape
                 && node.options.active)
             {
                 node.objects.forEach(o => genPushUpdateObject(parse, o));
@@ -15635,6 +15820,15 @@ function genParseLine(parse)
     const line = new GLine(nodeId, options);
 
 
+    let nInputs = -1;
+
+    if (!ignore)
+    {
+        nInputs = parseInt(parse.move());
+        console.assert(nInputs => 0 && nInputs <= 1, 'nInputs must be [0, 1]');
+    }
+
+
     if (parse.settings.logRequests) 
         logReq(line, parse, ignore);
 
@@ -15649,7 +15843,7 @@ function genParseLine(parse)
     parse.nTab++;
 
 
-    if (LINE_TYPES.includes(parse.next))
+    if (nInputs == 1)
         line.input = genParse(parse);
 
 
@@ -15667,6 +15861,7 @@ function genParseLine(parse)
         case 'y':     line.y     = genParse(parse); break;
         case 'width': line.width = genParse(parse); break;
         case 'angle': line.angle = genParse(parse); break;
+        case 'props': line.props = genParse(parse); break;
         }
     }
 
@@ -15689,6 +15884,15 @@ function genParseEllipse(parse)
     const ellipse = new GEllipse(nodeId, options);
 
 
+    let nInputs = -1;
+
+    if (!ignore)
+    {
+        nInputs = parseInt(parse.move());
+        console.assert(nInputs => 0 && nInputs <= 1, 'nInputs must be [0, 1]');
+    }
+
+
     if (parse.settings.logRequests) 
         logReq(ellipse, parse, ignore);
 
@@ -15703,7 +15907,7 @@ function genParseEllipse(parse)
     parse.nTab++;
 
 
-    if (ELLIPSE_TYPES.includes(parse.next))
+    if (nInputs == 1)
         ellipse.input = genParse(parse);
 
 
@@ -15722,6 +15926,7 @@ function genParseEllipse(parse)
         case 'width':  ellipse.width  = genParse(parse); break;
         case 'height': ellipse.height = genParse(parse); break;
         case 'angle':  ellipse.angle  = genParse(parse); break;
+        case 'props':  ellipse.props  = genParse(parse); break;
         }
     }
     
@@ -15744,6 +15949,15 @@ function genParsePolygon(parse)
     const poly = new GPolygon(nodeId, options);
 
 
+    let nInputs = -1;
+
+    if (!ignore)
+    {
+        nInputs = parseInt(parse.move());
+        console.assert(nInputs => 0 && nInputs <= 1, 'nInputs must be [0, 1]');
+    }
+
+
     if (parse.settings.logRequests) 
         logReq(poly, parse, ignore);
 
@@ -15758,7 +15972,7 @@ function genParsePolygon(parse)
     parse.nTab++;
 
 
-    if (POLYGON_TYPES.includes(parse.next))
+    if (nInputs == 1)
         poly.input = genParse(parse);
 
 
@@ -15779,6 +15993,7 @@ function genParsePolygon(parse)
         case 'angle':   poly.angle   = genParse(parse); break;
         case 'round':   poly.round   = genParse(parse); break;
         case 'corners': poly.corners = genParse(parse); break;
+        case 'props':   poly.props   = genParse(parse); break;
         }
     }
     
@@ -15801,6 +16016,15 @@ function genParseStar(parse)
     const star = new GStar(nodeId, options);
 
 
+    let nInputs = -1;
+
+    if (!ignore)
+    {
+        nInputs = parseInt(parse.move());
+        console.assert(nInputs => 0 && nInputs <= 1, 'nInputs must be [0, 1]');
+    }
+
+
     if (parse.settings.logRequests) 
         logReq(star, parse, ignore);
 
@@ -15815,7 +16039,7 @@ function genParseStar(parse)
     parse.nTab++;
 
 
-    if (STAR_TYPES.includes(parse.next))
+    if (nInputs == 1)
         star.input = genParse(parse);
 
 
@@ -15837,6 +16061,7 @@ function genParseStar(parse)
         case 'round':  star.round  = genParse(parse); break;
         case 'points': star.points = genParse(parse); break;
         case 'convex': star.convex = genParse(parse); break;
+        case 'props':  star.props  = genParse(parse); break;
         }
     }
     

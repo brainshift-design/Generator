@@ -39,6 +39,7 @@ extends ShapeValue
     copy()
     {
         const copy = new StarValue(
+            this.nodeId,
             this.x     .copy(), 
             this.y     .copy(), 
             this.width .copy(), 
@@ -71,7 +72,8 @@ extends ShapeValue
             && !isNaN(this.angle )
             && !isNaN(this.round )
             && !isNaN(this.points)
-            && !isNaN(this.convex);
+            && !isNaN(this.convex)
+            && super.isValid();
     }
 
 
@@ -125,20 +127,46 @@ extends ShapeValue
 
 
 
-function parseStarValue(str)
+function parseStarValue(str, i = -1)
 {
-    if (str == NAN_DISPLAY)
-        return StarValue.NaN;
+    if (   i <  0 && str    == NAN_DISPLAY
+        || i >= 0 && str[i] == NAN_DISPLAY)
+        return [StarValue.NaN, 1];
 
-    const star = str.split(' ');
 
-    return new StarValue(
-        new NumberValue(parseNumberValue(star[0])),
-        new NumberValue(parseNumberValue(star[1])),
-        new NumberValue(parseNumberValue(star[2])),
-        new NumberValue(parseNumberValue(star[3])),
-        new NumberValue(parseNumberValue(star[4])),
-        new NumberValue(parseNumberValue(star[5])),
-        new NumberValue(parseNumberValue(star[6])),
-        new NumberValue(parseNumberValue(star[7])));
+    if (i < 0)
+    {
+        str = str.split(' ');
+        i   = 0;
+    }
+
+
+    const iStart = i;
+
+    const x      = parseNumberValue(str[i]); i += x     [1];
+    const y      = parseNumberValue(str[i]); i += y     [1];
+    const width  = parseNumberValue(str[i]); i += width [1];
+    const height = parseNumberValue(str[i]); i += height[1];
+    const angle  = parseNumberValue(str[i]); i += angle [1];
+    const round  = parseNumberValue(str[i]); i += round [1];
+    const points = parseNumberValue(str[i]); i += points[1];
+    const convex = parseNumberValue(str[i]); i += convex[1];
+
+
+    const star = new StarValue(
+        '', // set node ID elsewhere
+        x     [0],
+        y     [0],
+        width [0],
+        height[0],
+        angle [0],
+        round [0],
+        points[0],
+        convex[0]);
+
+
+    i = parseShapeBaseValue(str, i, star);
+
+    
+    return [star, i - iStart];
 }
