@@ -103,6 +103,7 @@ extends OpColorBase
 
         
         this.paramColor.controls[0].showColor = false;
+        this.paramColor.showColorBack         = false;
 
         this.paramColor.addEventListener('change', () => 
         {
