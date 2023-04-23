@@ -7,7 +7,8 @@ extends GOperator
 
     objects = [];
     //styles  = [];
-    props   = [];
+    
+    props   = new ListValue();
 
 
 
@@ -95,83 +96,86 @@ extends GOperator
             this.value.props = props.copy();
 
 
-        for (const obj of this.objects)
+        if (this.props.value)
         {
-            // for (const prop of this.props.value.items)
-            for (let i = this.props.value.items.length-1; i >= 0; i--)
+            for (const obj of this.objects)
             {
-                const prop = this.props.value.items[i];
-                
-
-                if (prop.type == COLOR_VALUE)
+                // for (const prop of this.props.value.items)
+                for (let i = this.props.value.items.length-1; i >= 0; i--)
                 {
-                    if (!obj.fills) 
-                        obj.fills = [];
+                    const prop = this.props.value.items[i];
+                    
 
-
-                    const rgb = scaleRgb(prop.toRgb());
-
-                    obj.fills.push([
-                        'SOLID', 
-                                rgb[0]
-                        + ' ' + rgb[1]
-                        + ' ' + rgb[2]
-                        + ' ' + '255']);
-                }
-
-                else if (prop.type == FILL_VALUE)
-                {
-                    if (!obj.fills) 
-                        obj.fills = [];
-
-
-                    const rgb = scaleRgb(prop.color.toRgb());
-
-                    obj.fills.push([
-                        'SOLID', 
-                                rgb[0]
-                        + ' ' + rgb[1]
-                        + ' ' + rgb[2]
-                        + ' ' + prop.opacity.toValue().toNumber()]);
-                }
-
-                else if (prop.type == STROKE_VALUE)
-                {
-                    if (!obj.strokes)
-                        obj.strokes = [];
-
-
-                    const rgb = scaleRgb(prop.fill.color.toRgb());
-
-                    obj.strokes.push([
-                        'SOLID', 
-                                rgb[0]
-                        + ' ' + rgb[1]
-                        + ' ' + rgb[2]
-                        + ' ' + prop.fill.opacity.toValue().toNumber()]);
-
-
-                    obj.strokeWeight = prop.weight.toValue().toNumber();
-
-                    switch (prop.fit.toValue().value)
+                    if (prop.type == COLOR_VALUE)
                     {
-                        case 0: obj.strokeAlign = 'INSIDE';  break;
-                        case 1: obj.strokeAlign = 'CENTER';  break;
-                        case 2: obj.strokeAlign = 'OUTSIDE'; break;
+                        if (!obj.fills) 
+                            obj.fills = [];
+
+
+                        const rgb = scaleRgb(prop.toRgb());
+
+                        obj.fills.push([
+                            'SOLID', 
+                                    rgb[0]
+                            + ' ' + rgb[1]
+                            + ' ' + rgb[2]
+                            + ' ' + '255']);
                     }
 
-                    switch (prop.join.toValue().value)
+                    else if (prop.type == FILL_VALUE)
                     {
-                        case 0: obj.strokeJoin = 'MITER'; break;
-                        case 1: obj.strokeJoin = 'BEVEL'; break;
-                        case 2: obj.strokeJoin = 'ROUND'; break;
+                        if (!obj.fills) 
+                            obj.fills = [];
+
+
+                        const rgb = scaleRgb(prop.color.toRgb());
+
+                        obj.fills.push([
+                            'SOLID', 
+                                    rgb[0]
+                            + ' ' + rgb[1]
+                            + ' ' + rgb[2]
+                            + ' ' + prop.opacity.toValue().toNumber()]);
                     }
 
-                    obj.strokeMiterLimit = prop.miter.toValue().value;
+                    else if (prop.type == STROKE_VALUE)
+                    {
+                        if (!obj.strokes)
+                            obj.strokes = [];
+
+
+                        const rgb = scaleRgb(prop.fill.color.toRgb());
+
+                        obj.strokes.push([
+                            'SOLID', 
+                                    rgb[0]
+                            + ' ' + rgb[1]
+                            + ' ' + rgb[2]
+                            + ' ' + prop.fill.opacity.toValue().toNumber()]);
+
+
+                        obj.strokeWeight = prop.weight.toValue().toNumber();
+
+                        switch (prop.fit.toValue().value)
+                        {
+                            case 0: obj.strokeAlign = 'INSIDE';  break;
+                            case 1: obj.strokeAlign = 'CENTER';  break;
+                            case 2: obj.strokeAlign = 'OUTSIDE'; break;
+                        }
+
+                        switch (prop.join.toValue().value)
+                        {
+                            case 0: obj.strokeJoin = 'MITER'; break;
+                            case 1: obj.strokeJoin = 'BEVEL'; break;
+                            case 2: obj.strokeJoin = 'ROUND'; break;
+                        }
+
+                        obj.strokeMiterLimit = prop.miter.toValue().value;
+                    }
                 }
             }
         }
-
+        
 
         genPushUpdateValue(parse, this.nodeId, 'props', this.props.toValue());
     }
@@ -191,7 +195,7 @@ extends GOperator
 
 
 
-// evalObjects(options = {})
+// evalObjects(parse, options = {})
 // {
 //     if (!this.objects)
 //         return;
@@ -239,5 +243,5 @@ extends GOperator
 //     }
 
     
-//     super.evalObjects();
+//     super.evalObjects(parse);
 // }

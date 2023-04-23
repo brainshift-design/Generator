@@ -73,13 +73,13 @@ extends GObjectBase
         }
 
        
-        genPushUpdateValue(parse, this.nodeId, 'value',  this.value );
-        genPushUpdateValue(parse, this.nodeId, 'x',      this.x     .toValue());
-        genPushUpdateValue(parse, this.nodeId, 'y',      this.y     .toValue());
-        genPushUpdateValue(parse, this.nodeId, 'width',  this.width .toValue());
-        genPushUpdateValue(parse, this.nodeId, 'height', this.height.toValue());
-        genPushUpdateValue(parse, this.nodeId, 'angle',  this.angle .toValue());
-        genPushUpdateValue(parse, this.nodeId, 'round',  this.round .toValue());
+        genPushUpdateValue(parse, this.nodeId, 'value',  this.value       );
+        genPushUpdateValue(parse, this.nodeId, 'x',      this.value.x     );
+        genPushUpdateValue(parse, this.nodeId, 'y',      this.value.y     );
+        genPushUpdateValue(parse, this.nodeId, 'width',  this.value.width );
+        genPushUpdateValue(parse, this.nodeId, 'height', this.value.height);
+        genPushUpdateValue(parse, this.nodeId, 'angle',  this.value.angle );
+        genPushUpdateValue(parse, this.nodeId, 'round',  this.value.round );
 
 
         const hasInput =     
