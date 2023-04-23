@@ -36,18 +36,28 @@ extends GOperator
 
         this.value = new ListValue();
 
+        this.objects = [];
+
+
         for (let i = 0; i < this.inputs.length; i++)
         {
-            const input = (await this.inputs[i].eval(parse)).toValue();
+            await this.inputs[i].eval(parse);
 
-            // if (SHAPE_VALUES.includes(input.type))
-            //     input.evalObjects(parse);
-            // if (input.type == LIST_VALUE)
-            // {
-            //     for (const item of input.items)
-            //         this.value.items.push(item);   
-            // }
-            // else
+
+            for (let j = 0; j < this.inputs[i].objects.length; j++)
+            {
+                const obj = this.inputs[i].objects[j].copy();
+
+                obj.nodeId   = this.nodeId + '.' + i;
+                //obj.objectId = i + '_' + j;
+
+                this.objects.push(obj);
+            }
+
+
+            const input = this.inputs[i].toValue();
+
+            if (input)
                 this.value.items.push(input);
         }
     
@@ -55,10 +65,28 @@ extends GOperator
         genPushUpdateValue(parse, this.nodeId, 'value', this.value);
 
 
+        // this.evalObjects(parse);
+
+        
         this.validate();
 
         return this;
     }
+
+
+
+    // evalObjects(parse)
+    // {
+    //     for (let i = 0; i < this.objects.length; i++)
+    //     {
+    //         const obj = this.objects[i];
+
+    //         obj.nodeId   = this.nodeId;
+    //         obj.objectId = i;
+    //     }
+
+    //     super.evalObjects(parse);
+    // }
 
 
 

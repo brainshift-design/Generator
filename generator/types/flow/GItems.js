@@ -70,6 +70,9 @@ extends GOperator
             genPushUpdateValue(parse, this.nodeId, '', NullValue);
 
 
+        await this.evalObjects(parse);
+
+
         this.validate();
 
         return this;

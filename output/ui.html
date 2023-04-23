@@ -8713,6 +8713,9 @@ extends GNode
    
     feedbackValue = null; // () => {}
 
+
+    objects = []; // held by Operator because nodes like List and Repeat can also generate objects
+
     
     
     constructor(type, nodeId, options)
@@ -8730,15 +8733,24 @@ extends GNode
 
 
 
-    copyBase(src)
+    copyBase(base)
     {
-        super.copyBase(src);
+        super.copyBase(base);
         
-        this.nodeId   = src.nodeId;
-        this.nodeName = src.nodeName;
+        this.nodeId   = base.nodeId;
+        this.nodeName = base.nodeName;
 
-        this.valid    = src.valid;
-        this.topLevel = src.topLevel;
+        this.valid    = base.valid;
+        this.topLevel = base.topLevel;
+
+        this.copyObjects(base.objects);
+    }
+
+
+
+    copyObjects(objects)
+    {
+        this.objects = objects.map(o => o.copy());
     }
 
 
@@ -8767,6 +8779,13 @@ extends GNode
 
 
 
+    async evalObjects(parse)
+    {
+
+    }
+
+
+    
     toValue()
     {
         return null;
@@ -10857,18 +10876,28 @@ extends GOperator
 
         this.value = new ListValue();
 
+        this.objects = [];
+
+
         for (let i = 0; i < this.inputs.length; i++)
         {
-            const input = (await this.inputs[i].eval(parse)).toValue();
+            await this.inputs[i].eval(parse);
 
-            // if (SHAPE_VALUES.includes(input.type))
-            //     input.evalObjects(parse);
-            // if (input.type == LIST_VALUE)
-            // {
-            //     for (const item of input.items)
-            //         this.value.items.push(item);   
-            // }
-            // else
+
+            for (let j = 0; j < this.inputs[i].objects.length; j++)
+            {
+                const obj = this.inputs[i].objects[j].copy();
+
+                obj.nodeId   = this.nodeId + '.' + i;
+                //obj.objectId = i + '_' + j;
+
+                this.objects.push(obj);
+            }
+
+
+            const input = this.inputs[i].toValue();
+
+            if (input)
                 this.value.items.push(input);
         }
     
@@ -10876,10 +10905,28 @@ extends GOperator
         genPushUpdateValue(parse, this.nodeId, 'value', this.value);
 
 
+        // this.evalObjects(parse);
+
+        
         this.validate();
 
         return this;
     }
+
+
+
+    // evalObjects(parse)
+    // {
+    //     for (let i = 0; i < this.objects.length; i++)
+    //     {
+    //         const obj = this.objects[i];
+
+    //         obj.nodeId   = this.nodeId;
+    //         obj.objectId = i;
+    //     }
+
+    //     super.evalObjects(parse);
+    // }
 
 
 
@@ -10961,6 +11008,9 @@ extends GOperator
         }
         else
             genPushUpdateValue(parse, this.nodeId, '', NullValue);
+
+
+        await this.evalObjects(parse);
 
 
         this.validate();
@@ -11259,34 +11309,62 @@ extends GOperator
        
         this.value = new ListValue();
 
+        this.objects = [];
+
+
         if (this.input)
         {
             for (let i = 0; i < count.value; i++)
             {
-                const input = (await this.input.eval(parse)).toValue();
+                await this.input.eval(parse);
+
+
+                for (let j = 0; j < this.input.objects.length; j++)
+                {
+                    const obj = this.input.objects[j].copy();
+    
+                    obj.nodeId   = this.nodeId + '.' + i;
+                    //obj.objectId = i + '.' + j;
+    
+                    this.objects.push(obj);
+                }
+    
+                
+                const input = this.input.toValue();
 
                 if (input)
-                {
-                    // if (input.type == LIST_VALUE)
-                    // {
-                    //     for (const item of input.items)
-                    //         this.value.items.push(item.copy());
-                    // }
-                    // else
-                        this.value.items.push(input.copy());
-                }
+                    this.value.items.push(input.copy());
             }
         }
 
         
-        genPushUpdateValue(parse, this.nodeId, 'count', count);
         genPushUpdateValue(parse, this.nodeId, 'value', this.value);
+        genPushUpdateValue(parse, this.nodeId, 'count', count);
+
+
+        //console.log('this.objects =', this.objects);
+        // this.evalObjects(parse);
 
 
         this.validate();
 
         return this;
     }
+
+
+
+    // evalObjects(parse)
+    // {
+    //     for (let i = 0; i < this.objects.length; i++)
+    //     {
+    //         const obj = this.objects[i];
+
+    //         obj.nodeId   = this.nodeId;
+    //         obj.objectId = i;
+    //     }
+
+    //     super.evalObjects(parse);
+    // }
 
 
 
@@ -16171,9 +16249,6 @@ extends GOperator
     props   = null;
    
 
-    objects = [];
-
-
 
     constructor(type, nodeId, options)
     {
@@ -16185,14 +16260,6 @@ extends GOperator
     copyBase(base)
     {
         this.copyProperties(base.props);
-        this.copyObjects(base.objects);
-    }
-
-
-
-    copyObjects(objects)
-    {
-        this.objects = objects.map(o => o.copy());
     }
 
 
@@ -16215,7 +16282,7 @@ extends GOperator
             this.value.props = props;
 
 
-        genPushUpdateValue(parse, this.nodeId, 'props',  this.value.props);
+        genPushUpdateValue(parse, this.nodeId, 'props', this.value.props);
     }
 
 
@@ -16315,63 +16382,6 @@ extends GOperator
             && super.isValid();
     }
 }
-
-
-
-
-
-
-// evalObjects(parse, options = {})
-// {
-//     if (!this.objects)
-//         return;
-
-
-//     if (this.options.enabled)
-//     {
-//         const rgb = scaleRgb(this.fill.color.toValue().toRgb());
-
-//         for (const obj of this.objects)
-//         {
-//             if (!obj.strokes)
-//                 obj.strokes = [];
-
-//             obj.strokes.push([
-//                 'SOLID', 
-//                         rgb[0]
-//                 + ' ' + rgb[1]
-//                 + ' ' + rgb[2]
-//                 + ' ' + this.fill.opacity.toValue().value]);
-
-
-//             if (this.weight)
-//                 obj.strokeWeight = this.weight.toValue().value;
-
-//             if (this.fit)
-//                 switch (this.fit.toValue().value)
-//                 {
-//                     case 0: obj.strokeAlign = 'INSIDE';  break;
-//                     case 1: obj.strokeAlign = 'CENTER';  break;
-//                     case 2: obj.strokeAlign = 'OUTSIDE'; break;
-//                 }
-
-//             if (this.join)
-//                 switch (this.join.toValue().value)
-//                 {
-//                     case 0: obj.strokeJoin = 'MITER'; break;
-//                     case 1: obj.strokeJoin = 'BEVEL'; break;
-//                     case 2: obj.strokeJoin = 'ROUND'; break;
-//                 }
-
-//             if (this.miter)
-//                 obj.strokeMiterLimit = this.miter.toValue().value;
-//         }
-//     }
-
-    
-//     super.evalObjects(parse);
-// }
-
 
 
 class GRectangle
@@ -18210,12 +18220,11 @@ function genRequest(request)
 
         for (const node of parse.parsedNodes)
         {
+            node.objects.forEach(o => genPushUpdateObject(parse, o));
+
             if (   node instanceof GShape
                 && node.options.active)
-            {
-                node.objects.forEach(o => genPushUpdateObject(parse, o));
                 if (!!node.style) genPushUpdateStyle(parse, node.style);
-            }
         }
 
 
@@ -31518,6 +31527,9 @@ extends GNode
    
     feedbackValue = null; // () => {}
 
+
+    objects = []; // held by Operator because nodes like List and Repeat can also generate objects
+
     
     
     constructor(type, nodeId, options)
@@ -31535,15 +31547,24 @@ extends GNode
 
 
 
-    copyBase(src)
+    copyBase(base)
     {
-        super.copyBase(src);
+        super.copyBase(base);
         
-        this.nodeId   = src.nodeId;
-        this.nodeName = src.nodeName;
+        this.nodeId   = base.nodeId;
+        this.nodeName = base.nodeName;
 
-        this.valid    = src.valid;
-        this.topLevel = src.topLevel;
+        this.valid    = base.valid;
+        this.topLevel = base.topLevel;
+
+        this.copyObjects(base.objects);
+    }
+
+
+
+    copyObjects(objects)
+    {
+        this.objects = objects.map(o => o.copy());
     }
 
 
@@ -31572,6 +31593,13 @@ extends GNode
 
 
 
+    async evalObjects(parse)
+    {
+
+    }
+
+
+    
     toValue()
     {
         return null;
@@ -33662,18 +33690,28 @@ extends GOperator
 
         this.value = new ListValue();
 
+        this.objects = [];
+
+
         for (let i = 0; i < this.inputs.length; i++)
         {
-            const input = (await this.inputs[i].eval(parse)).toValue();
+            await this.inputs[i].eval(parse);
 
-            // if (SHAPE_VALUES.includes(input.type))
-            //     input.evalObjects(parse);
-            // if (input.type == LIST_VALUE)
-            // {
-            //     for (const item of input.items)
-            //         this.value.items.push(item);   
-            // }
-            // else
+
+            for (let j = 0; j < this.inputs[i].objects.length; j++)
+            {
+                const obj = this.inputs[i].objects[j].copy();
+
+                obj.nodeId   = this.nodeId + '.' + i;
+                //obj.objectId = i + '_' + j;
+
+                this.objects.push(obj);
+            }
+
+
+            const input = this.inputs[i].toValue();
+
+            if (input)
                 this.value.items.push(input);
         }
     
@@ -33681,10 +33719,28 @@ extends GOperator
         genPushUpdateValue(parse, this.nodeId, 'value', this.value);
 
 
+        // this.evalObjects(parse);
+
+        
         this.validate();
 
         return this;
     }
+
+
+
+    // evalObjects(parse)
+    // {
+    //     for (let i = 0; i < this.objects.length; i++)
+    //     {
+    //         const obj = this.objects[i];
+
+    //         obj.nodeId   = this.nodeId;
+    //         obj.objectId = i;
+    //     }
+
+    //     super.evalObjects(parse);
+    // }
 
 
 
@@ -33766,6 +33822,9 @@ extends GOperator
         }
         else
             genPushUpdateValue(parse, this.nodeId, '', NullValue);
+
+
+        await this.evalObjects(parse);
 
 
         this.validate();
@@ -34064,34 +34123,62 @@ extends GOperator
        
         this.value = new ListValue();
 
+        this.objects = [];
+
+
         if (this.input)
         {
             for (let i = 0; i < count.value; i++)
             {
-                const input = (await this.input.eval(parse)).toValue();
+                await this.input.eval(parse);
+
+
+                for (let j = 0; j < this.input.objects.length; j++)
+                {
+                    const obj = this.input.objects[j].copy();
+    
+                    obj.nodeId   = this.nodeId + '.' + i;
+                    //obj.objectId = i + '.' + j;
+    
+                    this.objects.push(obj);
+                }
+    
+                
+                const input = this.input.toValue();
 
                 if (input)
-                {
-                    // if (input.type == LIST_VALUE)
-                    // {
-                    //     for (const item of input.items)
-                    //         this.value.items.push(item.copy());
-                    // }
-                    // else
-                        this.value.items.push(input.copy());
-                }
+                    this.value.items.push(input.copy());
             }
         }
 
         
-        genPushUpdateValue(parse, this.nodeId, 'count', count);
         genPushUpdateValue(parse, this.nodeId, 'value', this.value);
+        genPushUpdateValue(parse, this.nodeId, 'count', count);
+
+
+        //console.log('this.objects =', this.objects);
+        // this.evalObjects(parse);
 
 
         this.validate();
 
         return this;
     }
+
+
+
+    // evalObjects(parse)
+    // {
+    //     for (let i = 0; i < this.objects.length; i++)
+    //     {
+    //         const obj = this.objects[i];
+
+    //         obj.nodeId   = this.nodeId;
+    //         obj.objectId = i;
+    //     }
+
+    //     super.evalObjects(parse);
+    // }
 
 
 
@@ -38976,9 +39063,6 @@ extends GOperator
     props   = null;
    
 
-    objects = [];
-
-
 
     constructor(type, nodeId, options)
     {
@@ -38990,14 +39074,6 @@ extends GOperator
     copyBase(base)
     {
         this.copyProperties(base.props);
-        this.copyObjects(base.objects);
-    }
-
-
-
-    copyObjects(objects)
-    {
-        this.objects = objects.map(o => o.copy());
     }
 
 
@@ -39020,7 +39096,7 @@ extends GOperator
             this.value.props = props;
 
 
-        genPushUpdateValue(parse, this.nodeId, 'props',  this.value.props);
+        genPushUpdateValue(parse, this.nodeId, 'props', this.value.props);
     }
 
 
@@ -39120,63 +39196,6 @@ extends GOperator
             && super.isValid();
     }
 }
-
-
-
-
-
-
-// evalObjects(parse, options = {})
-// {
-//     if (!this.objects)
-//         return;
-
-
-//     if (this.options.enabled)
-//     {
-//         const rgb = scaleRgb(this.fill.color.toValue().toRgb());
-
-//         for (const obj of this.objects)
-//         {
-//             if (!obj.strokes)
-//                 obj.strokes = [];
-
-//             obj.strokes.push([
-//                 'SOLID', 
-//                         rgb[0]
-//                 + ' ' + rgb[1]
-//                 + ' ' + rgb[2]
-//                 + ' ' + this.fill.opacity.toValue().value]);
-
-
-//             if (this.weight)
-//                 obj.strokeWeight = this.weight.toValue().value;
-
-//             if (this.fit)
-//                 switch (this.fit.toValue().value)
-//                 {
-//                     case 0: obj.strokeAlign = 'INSIDE';  break;
-//                     case 1: obj.strokeAlign = 'CENTER';  break;
-//                     case 2: obj.strokeAlign = 'OUTSIDE'; break;
-//                 }
-
-//             if (this.join)
-//                 switch (this.join.toValue().value)
-//                 {
-//                     case 0: obj.strokeJoin = 'MITER'; break;
-//                     case 1: obj.strokeJoin = 'BEVEL'; break;
-//                     case 2: obj.strokeJoin = 'ROUND'; break;
-//                 }
-
-//             if (this.miter)
-//                 obj.strokeMiterLimit = this.miter.toValue().value;
-//         }
-//     }
-
-    
-//     super.evalObjects(parse);
-// }
-
 
 
 class GRectangle

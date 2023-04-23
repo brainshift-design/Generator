@@ -42,34 +42,62 @@ extends GOperator
        
         this.value = new ListValue();
 
+        this.objects = [];
+
+
         if (this.input)
         {
             for (let i = 0; i < count.value; i++)
             {
-                const input = (await this.input.eval(parse)).toValue();
+                await this.input.eval(parse);
+
+
+                for (let j = 0; j < this.input.objects.length; j++)
+                {
+                    const obj = this.input.objects[j].copy();
+    
+                    obj.nodeId   = this.nodeId + '.' + i;
+                    //obj.objectId = i + '.' + j;
+    
+                    this.objects.push(obj);
+                }
+    
+                
+                const input = this.input.toValue();
 
                 if (input)
-                {
-                    // if (input.type == LIST_VALUE)
-                    // {
-                    //     for (const item of input.items)
-                    //         this.value.items.push(item.copy());
-                    // }
-                    // else
-                        this.value.items.push(input.copy());
-                }
+                    this.value.items.push(input.copy());
             }
         }
 
         
-        genPushUpdateValue(parse, this.nodeId, 'count', count);
         genPushUpdateValue(parse, this.nodeId, 'value', this.value);
+        genPushUpdateValue(parse, this.nodeId, 'count', count);
+
+
+        //console.log('this.objects =', this.objects);
+        // this.evalObjects(parse);
 
 
         this.validate();
 
         return this;
     }
+
+
+
+    // evalObjects(parse)
+    // {
+    //     for (let i = 0; i < this.objects.length; i++)
+    //     {
+    //         const obj = this.objects[i];
+
+    //         obj.nodeId   = this.nodeId;
+    //         obj.objectId = i;
+    //     }
+
+    //     super.evalObjects(parse);
+    // }
 
 
 

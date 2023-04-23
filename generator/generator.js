@@ -54,12 +54,11 @@ function genRequest(request)
 
         for (const node of parse.parsedNodes)
         {
+            node.objects.forEach(o => genPushUpdateObject(parse, o));
+
             if (   node instanceof GShape
                 && node.options.active)
-            {
-                node.objects.forEach(o => genPushUpdateObject(parse, o));
                 if (!!node.style) genPushUpdateStyle(parse, node.style);
-            }
         }
 
 
