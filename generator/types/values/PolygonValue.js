@@ -52,6 +52,20 @@ extends ShapeValue
 
 
 
+    equals(poly)
+    {
+        return poly
+            && this.x      .equals(poly.x      )
+            && this.y      .equals(poly.y      )
+            && this.width  .equals(poly.width  )
+            && this.height .equals(poly.height )
+            && this.angle  .equals(poly.angle  )
+            && this.round  .equals(poly.round  )
+            && this.corners.equals(poly.corners);
+    }
+
+
+
     async eval(parse)
     {
         return this;
@@ -61,13 +75,13 @@ extends ShapeValue
 
     isValid()
     {
-        return !isNaN(this.x      )
-            && !isNaN(this.y      )
-            && !isNaN(this.width  )
-            && !isNaN(this.height )
-            && !isNaN(this.angle  )
-            && !isNaN(this.round  )
-            && !isNaN(this.corners)
+        return this.x      .isValid()
+            && this.y      .isValid()
+            && this.width  .isValid()
+            && this.height .isValid()
+            && this.angle  .isValid()
+            && this.round  .isValid()
+            && this.corners.isValid()
             && super.isValid();
     }
 

@@ -109,7 +109,7 @@ extends OperatorBase
                     }
                 }
                 else       
-                    this.createAndAddParamByType(value.type, id, false, false, false, true);
+                    this.createAndAddParamByType(value.type, id, false, false, true, true);
             }
         }
 

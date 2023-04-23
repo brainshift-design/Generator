@@ -7,9 +7,12 @@
 ../parameters/ColorParam.js
 ../parameters/FillParam.js
 ../parameters/StrokeParam.js
-../parameters/ViewParam.js
-../parameters/ProxyParam.js
 ../parameters/ListParam.js
+../parameters/RectangleParam.js
+../parameters/LineParam.js
+../parameters/EllipseParam.js
+../parameters/PolygonParam.js
+../parameters/StarParam.js
 
 
 // these have to be added in order because of dependencies

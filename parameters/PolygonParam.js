@@ -1,4 +1,4 @@
-class   ListParam
+class   PolygonParam
 extends Parameter
 {
     defaultValue;
@@ -6,9 +6,6 @@ extends Parameter
     oldValue = null;
     
 
-    itemName;
-   
-    
     value;
     
 
@@ -18,14 +15,12 @@ extends Parameter
                 showName,
                 hasInput,
                 hasOutput,
-                defaultValue = new ListValue())
+                defaultValue = new PolygonValue())
     {
-        super(LIST_VALUE, id, name);
+        super(POLYGON_VALUE, id, name);
 
         this.defaultValue = defaultValue;
         this.value        = defaultValue;
-
-        this.itemName     = 'item';
 
 
         this.controls.push(new TextControl(
@@ -40,8 +35,8 @@ extends Parameter
         this.div.appendChild(this.controls[0].div);
 
        
-        if (hasInput)  this.initInput([LIST_VALUE], getParamInputValuesForUndo, this.input_getBackInitValue);
-        if (hasOutput) this.initOutput([LIST_VALUE], this.output_genRequest, getParamOutputValuesForUndo, this.output_backInit);
+        if (hasInput)  this.initInput([POLYGON_VALUE], getParamInputValuesForUndo, this.input_getBackInitValue);
+        if (hasOutput) this.initOutput([POLYGON_VALUE], this.output_genRequest, getParamOutputValuesForUndo, this.output_backInit);
     }
 
 
@@ -59,7 +54,7 @@ extends Parameter
     {
         // 'this' is the output
 
-        console.assert(value.type == LIST_VALUE, 'expected LIST_VALUE in backInit()');
+        console.assert(value.type == POLYGON_VALUE, 'expected POLYGON_VALUE in backInit()');
         
         this.param.setValue(value, false, true, false);
     }
@@ -68,13 +63,13 @@ extends Parameter
 
     setValue(value, createAction, updateControl = true, dispatchEvents = true) 
     {
-        if (!(value instanceof ListValue))
-            console.assert(false, 'ListParam.setValue(value) is ' + typeof value + ', must be a ListValue');
+        if (!(value instanceof PolygonValue))
+            console.assert(false, 'PolygonParam.setValue(value) is ' + typeof value + ', must be a PolygonValue');
 
         console.assert(
                value.type 
-            && value.type == LIST_VALUE, 
-            'ListParam value.type must be LIST_VALUE');
+            && value.type == POLYGON_VALUE, 
+            'PolygonParam value.type must be POLYGON_VALUE');
 
 
         this.preSetValue(value, createAction, dispatchEvents);
@@ -116,15 +111,15 @@ extends Parameter
         if (   this.input
             && this.input.connected)
         {
-            if (this.input.connectedOutput.supportsTypes([LIST_VALUE]))
+            if (this.input.connectedOutput.supportsTypes([POLYGON_VALUE]))
                 request.push(...pushInputOrParam(this.input, gen));
             else
-                console.assert(false, 'invalid input for ListParam');
+                console.assert(false, 'invalid input for PolygonParam');
         }
 
         else request.push( 
-            LIST_VALUE, 
-            (new ListValue()).toString());
+            POLYGON_VALUE, 
+            (new PolygonValue()).toString());
 
         return request;
     }
@@ -150,9 +145,7 @@ extends Parameter
         this.controls[0].textbox.style.fontStyle  = 'italic';
         this.controls[0].textbox.style.fontWeight = '500';
 
-        const nItems = this.value.items.length;
-
-        this.controls[0].textbox.value = nItems + ' ' + countString(this.itemName, nItems);
+        this.controls[0].textbox.value            = 'polygon';
 
 
         if (this.input ) this.input .updateControl();
@@ -167,6 +160,6 @@ extends Parameter
 
     loadParam(_param)
     {
-        this.setValue(parseListValue(_param[2])[0], true, true, false);
+        this.setValue(parsePolygonValue(_param[2])[0], true, true, false);
     }
 }

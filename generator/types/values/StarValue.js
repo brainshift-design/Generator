@@ -56,6 +56,21 @@ extends ShapeValue
 
 
 
+    equals(star)
+    {
+        return star
+            && this.x     .equals(star.x     )
+            && this.y     .equals(star.y     )
+            && this.width .equals(star.width )
+            && this.height.equals(star.height)
+            && this.angle .equals(star.angle )
+            && this.round .equals(star.round )
+            && this.points.equals(star.points)
+            && this.convex.equals(star.convex);
+    }
+
+
+
     async eval(parse)
     {
         return this;
@@ -65,14 +80,14 @@ extends ShapeValue
 
     isValid()
     {
-        return !isNaN(this.x     )
-            && !isNaN(this.y     )
-            && !isNaN(this.width )
-            && !isNaN(this.height)
-            && !isNaN(this.angle )
-            && !isNaN(this.round )
-            && !isNaN(this.points)
-            && !isNaN(this.convex)
+        return this.x     .isValid()
+            && this.y     .isValid()
+            && this.width .isValid()
+            && this.height.isValid()
+            && this.angle .isValid()
+            && this.round .isValid()
+            && this.points.isValid()
+            && this.convex.isValid()
             && super.isValid();
     }
 

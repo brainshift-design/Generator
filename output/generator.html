@@ -5664,6 +5664,19 @@ extends ShapeValue
 
 
 
+    equals(rect)
+    {
+        return rect
+            && this.x     .equals(rect.x     )
+            && this.y     .equals(rect.y     )
+            && this.width .equals(rect.width )
+            && this.height.equals(rect.height)
+            && this.angle .equals(rect.angle )
+            && this.round .equals(rect.round );
+    }
+
+
+
     async eval(parse)
     {
         return this;
@@ -5811,6 +5824,17 @@ extends ShapeValue
 
 
 
+    equals(line)
+    {
+        return line
+            && this.x     .equals(line.x    )
+            && this.y     .equals(line.y    )
+            && this.width .equals(line.width)
+            && this.angle .equals(line.angle);
+    }
+
+
+
     async eval(parse)
     {
         return this;
@@ -5820,10 +5844,10 @@ extends ShapeValue
 
     isValid()
     {
-        return !isNaN(this.x    )
-            && !isNaN(this.y    )
-            && !isNaN(this.width)
-            && !isNaN(this.angle)
+        return this.x     .isValid()
+            && this.y     .isValid()
+            && this.width .isValid()
+            && this.angle .isValid()
             && super.isValid();
     }
 
@@ -5950,6 +5974,18 @@ extends ShapeValue
 
 
 
+    equals(ellipse)
+    {
+        return ellipse
+            && this.x     .equals(ellipse.x     )
+            && this.y     .equals(ellipse.y     )
+            && this.width .equals(ellipse.width )
+            && this.height.equals(ellipse.height)
+            && this.angle .equals(ellipse.angle );
+    }
+
+
+
     async eval(parse)
     {
         return this;
@@ -5959,11 +5995,11 @@ extends ShapeValue
     
     isValid()
     {
-        return !isNaN(this.x     )
-            && !isNaN(this.y     )
-            && !isNaN(this.width )
-            && !isNaN(this.height)
-            && !isNaN(this.angle )
+        return this.x     .isValid()
+            && this.y     .isValid()
+            && this.width .isValid()
+            && this.height.isValid()
+            && this.angle .isValid()
             && super.isValid();
     }
 
@@ -6103,6 +6139,20 @@ extends ShapeValue
 
 
 
+    equals(poly)
+    {
+        return poly
+            && this.x      .equals(poly.x      )
+            && this.y      .equals(poly.y      )
+            && this.width  .equals(poly.width  )
+            && this.height .equals(poly.height )
+            && this.angle  .equals(poly.angle  )
+            && this.round  .equals(poly.round  )
+            && this.corners.equals(poly.corners);
+    }
+
+
+
     async eval(parse)
     {
         return this;
@@ -6112,13 +6162,13 @@ extends ShapeValue
 
     isValid()
     {
-        return !isNaN(this.x      )
-            && !isNaN(this.y      )
-            && !isNaN(this.width  )
-            && !isNaN(this.height )
-            && !isNaN(this.angle  )
-            && !isNaN(this.round  )
-            && !isNaN(this.corners)
+        return this.x      .isValid()
+            && this.y      .isValid()
+            && this.width  .isValid()
+            && this.height .isValid()
+            && this.angle  .isValid()
+            && this.round  .isValid()
+            && this.corners.isValid()
             && super.isValid();
     }
 
@@ -6272,6 +6322,21 @@ extends ShapeValue
 
 
 
+    equals(star)
+    {
+        return star
+            && this.x     .equals(star.x     )
+            && this.y     .equals(star.y     )
+            && this.width .equals(star.width )
+            && this.height.equals(star.height)
+            && this.angle .equals(star.angle )
+            && this.round .equals(star.round )
+            && this.points.equals(star.points)
+            && this.convex.equals(star.convex);
+    }
+
+
+
     async eval(parse)
     {
         return this;
@@ -6281,14 +6346,14 @@ extends ShapeValue
 
     isValid()
     {
-        return !isNaN(this.x     )
-            && !isNaN(this.y     )
-            && !isNaN(this.width )
-            && !isNaN(this.height)
-            && !isNaN(this.angle )
-            && !isNaN(this.round )
-            && !isNaN(this.points)
-            && !isNaN(this.convex)
+        return this.x     .isValid()
+            && this.y     .isValid()
+            && this.width .isValid()
+            && this.height.isValid()
+            && this.angle .isValid()
+            && this.round .isValid()
+            && this.points.isValid()
+            && this.convex.isValid()
             && super.isValid();
     }
 
@@ -6431,6 +6496,8 @@ extends GOperator
         {
             const input = (await this.inputs[i].eval(parse)).toValue();
 
+            // if (SHAPE_VALUES.includes(input.type))
+            //     input.evalObjects(parse);
             // if (input.type == LIST_VALUE)
             // {
             //     for (const item of input.items)
@@ -6835,13 +6902,13 @@ extends GOperator
 
                 if (input)
                 {
-                    if (input.type == LIST_VALUE)
-                    {
-                        for (const item of input.items)
-                            this.value.items.push(item);
-                    }
-                    else
-                        this.value.items.push(input);
+                    // if (input.type == LIST_VALUE)
+                    // {
+                    //     for (const item of input.items)
+                    //         this.value.items.push(item.copy());
+                    // }
+                    // else
+                        this.value.items.push(input.copy());
                 }
             }
         }
@@ -11868,7 +11935,6 @@ extends GOperator
     }
 
 
-
     
     evalStyle(options = {})
     {
@@ -12739,7 +12805,7 @@ extends GShape
 
    toValue()
    {
-       return new StarValue(
+       const star = new StarValue(
            this.nodeId,
            this.x     .toValue(),
            this.y     .toValue(),
@@ -12749,6 +12815,10 @@ extends GShape
            this.round .toValue(),
            this.points.toValue(),
            this.convex.toValue());
+
+        star.props = this.props.toValue();
+
+        return star;
    }
 }
 

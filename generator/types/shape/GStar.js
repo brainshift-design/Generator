@@ -160,7 +160,7 @@ extends GShape
 
    toValue()
    {
-       return new StarValue(
+       const star = new StarValue(
            this.nodeId,
            this.x     .toValue(),
            this.y     .toValue(),
@@ -170,5 +170,9 @@ extends GShape
            this.round .toValue(),
            this.points.toValue(),
            this.convex.toValue());
+
+        star.props = this.props.toValue();
+
+        return star;
    }
 }

@@ -133,7 +133,6 @@ extends GOperator
     }
 
 
-
     
     evalStyle(options = {})
     {

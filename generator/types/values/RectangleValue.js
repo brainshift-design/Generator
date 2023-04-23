@@ -48,6 +48,19 @@ extends ShapeValue
 
 
 
+    equals(rect)
+    {
+        return rect
+            && this.x     .equals(rect.x     )
+            && this.y     .equals(rect.y     )
+            && this.width .equals(rect.width )
+            && this.height.equals(rect.height)
+            && this.angle .equals(rect.angle )
+            && this.round .equals(rect.round );
+    }
+
+
+
     async eval(parse)
     {
         return this;

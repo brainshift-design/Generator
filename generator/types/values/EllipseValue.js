@@ -44,6 +44,18 @@ extends ShapeValue
 
 
 
+    equals(ellipse)
+    {
+        return ellipse
+            && this.x     .equals(ellipse.x     )
+            && this.y     .equals(ellipse.y     )
+            && this.width .equals(ellipse.width )
+            && this.height.equals(ellipse.height)
+            && this.angle .equals(ellipse.angle );
+    }
+
+
+
     async eval(parse)
     {
         return this;
@@ -53,11 +65,11 @@ extends ShapeValue
     
     isValid()
     {
-        return !isNaN(this.x     )
-            && !isNaN(this.y     )
-            && !isNaN(this.width )
-            && !isNaN(this.height)
-            && !isNaN(this.angle )
+        return this.x     .isValid()
+            && this.y     .isValid()
+            && this.width .isValid()
+            && this.height.isValid()
+            && this.angle .isValid()
             && super.isValid();
     }
 

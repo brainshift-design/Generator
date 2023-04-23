@@ -40,6 +40,17 @@ extends ShapeValue
 
 
 
+    equals(line)
+    {
+        return line
+            && this.x     .equals(line.x    )
+            && this.y     .equals(line.y    )
+            && this.width .equals(line.width)
+            && this.angle .equals(line.angle);
+    }
+
+
+
     async eval(parse)
     {
         return this;
@@ -49,10 +60,10 @@ extends ShapeValue
 
     isValid()
     {
-        return !isNaN(this.x    )
-            && !isNaN(this.y    )
-            && !isNaN(this.width)
-            && !isNaN(this.angle)
+        return this.x     .isValid()
+            && this.y     .isValid()
+            && this.width .isValid()
+            && this.angle .isValid()
             && super.isValid();
     }
 

@@ -3164,7 +3164,7 @@ a
     pointer-events: none;
     box-shadow:     0 0 0 1px rgba(0, 0, 0, 0.12);
     z-index:        10;
-    transition:     opacity 0.33s linear 0s;
+    transition:     opacity 0.2s linear 0s;
 }
 
 
@@ -3776,7 +3776,7 @@ a
     pointer-events: none;
     /* box-shadow:     0 0 0 1px rgba(0, 0, 0, 0.12); */
     z-index:        10;
-    transition:     opacity 0.33s linear 0s;
+    transition:     opacity 0.2s linear 0s;
 }
 
 
@@ -10029,6 +10029,19 @@ extends ShapeValue
 
 
 
+    equals(rect)
+    {
+        return rect
+            && this.x     .equals(rect.x     )
+            && this.y     .equals(rect.y     )
+            && this.width .equals(rect.width )
+            && this.height.equals(rect.height)
+            && this.angle .equals(rect.angle )
+            && this.round .equals(rect.round );
+    }
+
+
+
     async eval(parse)
     {
         return this;
@@ -10176,6 +10189,17 @@ extends ShapeValue
 
 
 
+    equals(line)
+    {
+        return line
+            && this.x     .equals(line.x    )
+            && this.y     .equals(line.y    )
+            && this.width .equals(line.width)
+            && this.angle .equals(line.angle);
+    }
+
+
+
     async eval(parse)
     {
         return this;
@@ -10185,10 +10209,10 @@ extends ShapeValue
 
     isValid()
     {
-        return !isNaN(this.x    )
-            && !isNaN(this.y    )
-            && !isNaN(this.width)
-            && !isNaN(this.angle)
+        return this.x     .isValid()
+            && this.y     .isValid()
+            && this.width .isValid()
+            && this.angle .isValid()
             && super.isValid();
     }
 
@@ -10315,6 +10339,18 @@ extends ShapeValue
 
 
 
+    equals(ellipse)
+    {
+        return ellipse
+            && this.x     .equals(ellipse.x     )
+            && this.y     .equals(ellipse.y     )
+            && this.width .equals(ellipse.width )
+            && this.height.equals(ellipse.height)
+            && this.angle .equals(ellipse.angle );
+    }
+
+
+
     async eval(parse)
     {
         return this;
@@ -10324,11 +10360,11 @@ extends ShapeValue
     
     isValid()
     {
-        return !isNaN(this.x     )
-            && !isNaN(this.y     )
-            && !isNaN(this.width )
-            && !isNaN(this.height)
-            && !isNaN(this.angle )
+        return this.x     .isValid()
+            && this.y     .isValid()
+            && this.width .isValid()
+            && this.height.isValid()
+            && this.angle .isValid()
             && super.isValid();
     }
 
@@ -10468,6 +10504,20 @@ extends ShapeValue
 
 
 
+    equals(poly)
+    {
+        return poly
+            && this.x      .equals(poly.x      )
+            && this.y      .equals(poly.y      )
+            && this.width  .equals(poly.width  )
+            && this.height .equals(poly.height )
+            && this.angle  .equals(poly.angle  )
+            && this.round  .equals(poly.round  )
+            && this.corners.equals(poly.corners);
+    }
+
+
+
     async eval(parse)
     {
         return this;
@@ -10477,13 +10527,13 @@ extends ShapeValue
 
     isValid()
     {
-        return !isNaN(this.x      )
-            && !isNaN(this.y      )
-            && !isNaN(this.width  )
-            && !isNaN(this.height )
-            && !isNaN(this.angle  )
-            && !isNaN(this.round  )
-            && !isNaN(this.corners)
+        return this.x      .isValid()
+            && this.y      .isValid()
+            && this.width  .isValid()
+            && this.height .isValid()
+            && this.angle  .isValid()
+            && this.round  .isValid()
+            && this.corners.isValid()
             && super.isValid();
     }
 
@@ -10637,6 +10687,21 @@ extends ShapeValue
 
 
 
+    equals(star)
+    {
+        return star
+            && this.x     .equals(star.x     )
+            && this.y     .equals(star.y     )
+            && this.width .equals(star.width )
+            && this.height.equals(star.height)
+            && this.angle .equals(star.angle )
+            && this.round .equals(star.round )
+            && this.points.equals(star.points)
+            && this.convex.equals(star.convex);
+    }
+
+
+
     async eval(parse)
     {
         return this;
@@ -10646,14 +10711,14 @@ extends ShapeValue
 
     isValid()
     {
-        return !isNaN(this.x     )
-            && !isNaN(this.y     )
-            && !isNaN(this.width )
-            && !isNaN(this.height)
-            && !isNaN(this.angle )
-            && !isNaN(this.round )
-            && !isNaN(this.points)
-            && !isNaN(this.convex)
+        return this.x     .isValid()
+            && this.y     .isValid()
+            && this.width .isValid()
+            && this.height.isValid()
+            && this.angle .isValid()
+            && this.round .isValid()
+            && this.points.isValid()
+            && this.convex.isValid()
             && super.isValid();
     }
 
@@ -10796,6 +10861,8 @@ extends GOperator
         {
             const input = (await this.inputs[i].eval(parse)).toValue();
 
+            // if (SHAPE_VALUES.includes(input.type))
+            //     input.evalObjects(parse);
             // if (input.type == LIST_VALUE)
             // {
             //     for (const item of input.items)
@@ -11200,13 +11267,13 @@ extends GOperator
 
                 if (input)
                 {
-                    if (input.type == LIST_VALUE)
-                    {
-                        for (const item of input.items)
-                            this.value.items.push(item);
-                    }
-                    else
-                        this.value.items.push(input);
+                    // if (input.type == LIST_VALUE)
+                    // {
+                    //     for (const item of input.items)
+                    //         this.value.items.push(item.copy());
+                    // }
+                    // else
+                        this.value.items.push(input.copy());
                 }
             }
         }
@@ -16233,7 +16300,6 @@ extends GOperator
     }
 
 
-
     
     evalStyle(options = {})
     {
@@ -17104,7 +17170,7 @@ extends GShape
 
    toValue()
    {
-       return new StarValue(
+       const star = new StarValue(
            this.nodeId,
            this.x     .toValue(),
            this.y     .toValue(),
@@ -17114,6 +17180,10 @@ extends GShape
            this.round .toValue(),
            this.points.toValue(),
            this.convex.toValue());
+
+        star.props = this.props.toValue();
+
+        return star;
    }
 }
 
@@ -32764,6 +32834,19 @@ extends ShapeValue
 
 
 
+    equals(rect)
+    {
+        return rect
+            && this.x     .equals(rect.x     )
+            && this.y     .equals(rect.y     )
+            && this.width .equals(rect.width )
+            && this.height.equals(rect.height)
+            && this.angle .equals(rect.angle )
+            && this.round .equals(rect.round );
+    }
+
+
+
     async eval(parse)
     {
         return this;
@@ -32911,6 +32994,17 @@ extends ShapeValue
 
 
 
+    equals(line)
+    {
+        return line
+            && this.x     .equals(line.x    )
+            && this.y     .equals(line.y    )
+            && this.width .equals(line.width)
+            && this.angle .equals(line.angle);
+    }
+
+
+
     async eval(parse)
     {
         return this;
@@ -32920,10 +33014,10 @@ extends ShapeValue
 
     isValid()
     {
-        return !isNaN(this.x    )
-            && !isNaN(this.y    )
-            && !isNaN(this.width)
-            && !isNaN(this.angle)
+        return this.x     .isValid()
+            && this.y     .isValid()
+            && this.width .isValid()
+            && this.angle .isValid()
             && super.isValid();
     }
 
@@ -33050,6 +33144,18 @@ extends ShapeValue
 
 
 
+    equals(ellipse)
+    {
+        return ellipse
+            && this.x     .equals(ellipse.x     )
+            && this.y     .equals(ellipse.y     )
+            && this.width .equals(ellipse.width )
+            && this.height.equals(ellipse.height)
+            && this.angle .equals(ellipse.angle );
+    }
+
+
+
     async eval(parse)
     {
         return this;
@@ -33059,11 +33165,11 @@ extends ShapeValue
     
     isValid()
     {
-        return !isNaN(this.x     )
-            && !isNaN(this.y     )
-            && !isNaN(this.width )
-            && !isNaN(this.height)
-            && !isNaN(this.angle )
+        return this.x     .isValid()
+            && this.y     .isValid()
+            && this.width .isValid()
+            && this.height.isValid()
+            && this.angle .isValid()
             && super.isValid();
     }
 
@@ -33203,6 +33309,20 @@ extends ShapeValue
 
 
 
+    equals(poly)
+    {
+        return poly
+            && this.x      .equals(poly.x      )
+            && this.y      .equals(poly.y      )
+            && this.width  .equals(poly.width  )
+            && this.height .equals(poly.height )
+            && this.angle  .equals(poly.angle  )
+            && this.round  .equals(poly.round  )
+            && this.corners.equals(poly.corners);
+    }
+
+
+
     async eval(parse)
     {
         return this;
@@ -33212,13 +33332,13 @@ extends ShapeValue
 
     isValid()
     {
-        return !isNaN(this.x      )
-            && !isNaN(this.y      )
-            && !isNaN(this.width  )
-            && !isNaN(this.height )
-            && !isNaN(this.angle  )
-            && !isNaN(this.round  )
-            && !isNaN(this.corners)
+        return this.x      .isValid()
+            && this.y      .isValid()
+            && this.width  .isValid()
+            && this.height .isValid()
+            && this.angle  .isValid()
+            && this.round  .isValid()
+            && this.corners.isValid()
             && super.isValid();
     }
 
@@ -33372,6 +33492,21 @@ extends ShapeValue
 
 
 
+    equals(star)
+    {
+        return star
+            && this.x     .equals(star.x     )
+            && this.y     .equals(star.y     )
+            && this.width .equals(star.width )
+            && this.height.equals(star.height)
+            && this.angle .equals(star.angle )
+            && this.round .equals(star.round )
+            && this.points.equals(star.points)
+            && this.convex.equals(star.convex);
+    }
+
+
+
     async eval(parse)
     {
         return this;
@@ -33381,14 +33516,14 @@ extends ShapeValue
 
     isValid()
     {
-        return !isNaN(this.x     )
-            && !isNaN(this.y     )
-            && !isNaN(this.width )
-            && !isNaN(this.height)
-            && !isNaN(this.angle )
-            && !isNaN(this.round )
-            && !isNaN(this.points)
-            && !isNaN(this.convex)
+        return this.x     .isValid()
+            && this.y     .isValid()
+            && this.width .isValid()
+            && this.height.isValid()
+            && this.angle .isValid()
+            && this.round .isValid()
+            && this.points.isValid()
+            && this.convex.isValid()
             && super.isValid();
     }
 
@@ -33531,6 +33666,8 @@ extends GOperator
         {
             const input = (await this.inputs[i].eval(parse)).toValue();
 
+            // if (SHAPE_VALUES.includes(input.type))
+            //     input.evalObjects(parse);
             // if (input.type == LIST_VALUE)
             // {
             //     for (const item of input.items)
@@ -33935,13 +34072,13 @@ extends GOperator
 
                 if (input)
                 {
-                    if (input.type == LIST_VALUE)
-                    {
-                        for (const item of input.items)
-                            this.value.items.push(item);
-                    }
-                    else
-                        this.value.items.push(input);
+                    // if (input.type == LIST_VALUE)
+                    // {
+                    //     for (const item of input.items)
+                    //         this.value.items.push(item.copy());
+                    // }
+                    // else
+                        this.value.items.push(input.copy());
                 }
             }
         }
@@ -38968,7 +39105,6 @@ extends GOperator
     }
 
 
-
     
     evalStyle(options = {})
     {
@@ -39839,7 +39975,7 @@ extends GShape
 
    toValue()
    {
-       return new StarValue(
+       const star = new StarValue(
            this.nodeId,
            this.x     .toValue(),
            this.y     .toValue(),
@@ -39849,6 +39985,10 @@ extends GShape
            this.round .toValue(),
            this.points.toValue(),
            this.convex.toValue());
+
+        star.props = this.props.toValue();
+
+        return star;
    }
 }
 
@@ -51716,106 +51856,6 @@ extends Parameter
 }
 
 
-// class   ViewParam
-// extends Parameter
-// {
-//     control;
-
-
-
-//     constructor(id, node)
-//     {
-//         super(GRAPH, id);
-
-//         this.control = new EmptyControl(null, this);
-
-//         this.div.appendChild(this.controls[0].div);
-
-//         this.controls[0].div.style.width  = '100%';
-//         this.controls[0].div.style.height = 'calc(90% - ' + node.header.offsetHeight + 'px)';
-//         //this.controls[0].div.style.minHeight = defParamHeight;
-//     }
-
-
-
-//     updateControls()
-//     {
-
-//     }
-// }
-
-
-class   ProxyParam
-extends Parameter
-{
-    param;
-
-    controls    = [];
-    connections = [];
-
-
-    constructor(param)
-    {
-        super(param.type, param.node.id + '_' + param.id);
-
-
-        this.param = param;
-        param.proxy = this;
-
-        this.div.style.height    = defParamHeight;
-        this.div.style.boxShadow = '0 0 0 1px yellow inset';
-
-
-        switch (param.type)
-        {
-            case NUMBER_VALUE: 
-            {
-                this.controls                      = [param.controls[0].copy()];
-                this.controls[0].param             = this;
-
-                this.controls[0].div.style.display = 'inline-block';
-                this.controls[0].div.style.width   = '100%';
-
-                this.div.appendChild(this.controls[0].div);
-
-                break;
-            }
-        }
-
-
-        if (param.input)
-        {
-            this.initInput(param.input.types, getParamInputValuesForUndo, null);
-
-            const conn = new Connection(param.input.connectedOutput, this.input);
-            this.connections.push(conn);
-
-            this.input.connection = conn;
-            param.input.connection.proxy = conn;
-
-            graphView.wireContainer.appendChild(conn.wire.svg);
-        }
-
-
-        if (param.output) 
-        {
-            this.initOutput(param.output.types, null, getParamOutputValuesForUndo, null);
-        }
-    }
-
-
-
-    updateControls()
-    {
-        for (let i = 0; i < this.controls.length; i++)
-        {
-            this.controls[i].setValue(this.param.controls[i].value, false, true, false);
-            this.controls[i].update();
-        }
-    }
-}
-
-
 class   ListParam
 extends Parameter
 {
@@ -51826,14 +51866,6 @@ extends Parameter
 
     itemName;
    
-    
-    // get valueText() { return this.controls[0].valueText; }
-    // set valueText(text) 
-    // {
-    //     this.controls[0].valueText = text;
-    //     this.controls[0].update();
-    // }
-
     
     value;
     
@@ -51909,10 +51941,6 @@ extends Parameter
         this.value = value.copy();
 
 
-        // if (updateControl)
-        //     this.controls[0].setValue(this.value.items.length, false, false); 
-
-
         super.setValue(this.value, createAction, updateControl, dispatchEvents);
 
 
@@ -51946,19 +51974,6 @@ extends Parameter
         if (   this.input
             && this.input.connected)
         {
-            // request.push(...pushInputOrParam(this.input, gen));
-
-            // if (   this.input.connectedOutput.support( FILL_TYPES)
-            //     || this.input.connectedOutput.support(COLOR_TYPES))
-            // {
-            //     const val = noNaN(this.controls[0].value,      1);
-            //     const dec = noNaN(this.controls[0].displayDec, 0);
-                
-            //     request.push(
-            //         NUMBER_VALUE, 
-            //         new NumberValue(val, dec).toString());
-            // }
-
             if (this.input.connectedOutput.supportsTypes([LIST_VALUE]))
                 request.push(...pushInputOrParam(this.input, gen));
             else
@@ -51967,7 +51982,7 @@ extends Parameter
 
         else request.push( 
             LIST_VALUE, 
-            (new ListValue()).toString());//this.value.toString());
+            (new ListValue()).toString());
 
         return request;
     }
@@ -52008,9 +52023,844 @@ extends Parameter
 
 
 
-   loadParam(_param)
+    loadParam(_param)
     {
         this.setValue(parseListValue(_param[2])[0], true, true, false);
+    }
+}
+
+
+class   RectangleParam
+extends Parameter
+{
+    defaultValue;
+
+    oldValue = null;
+    
+
+    value;
+    
+
+    
+    constructor(id,
+                name, 
+                showName,
+                hasInput,
+                hasOutput,
+                defaultValue = new RectangleValue())
+    {
+        super(RECTANGLE_VALUE, id, name);
+
+        this.defaultValue = defaultValue;
+        this.value        = defaultValue;
+
+
+        this.controls.push(new TextControl(
+            null,
+            this,
+            this.id,
+            this.name,
+            ''));
+
+        this.controls[0].textbox.style.textAlign = 'center';
+   
+        this.div.appendChild(this.controls[0].div);
+
+       
+        if (hasInput)  this.initInput([RECTANGLE_VALUE], getParamInputValuesForUndo, this.input_getBackInitValue);
+        if (hasOutput) this.initOutput([RECTANGLE_VALUE], this.output_genRequest, getParamOutputValuesForUndo, this.output_backInit);
+    }
+
+
+
+    input_getBackInitValue()
+    {
+        // 'this' is the input
+
+        return this.param.value;
+    }
+
+
+
+    output_backInit(value)
+    {
+        // 'this' is the output
+
+        console.assert(value.type == RECTANGLE_VALUE, 'expected RECTANGLE_VALUE in backInit()');
+        
+        this.param.setValue(value, false, true, false);
+    }
+
+
+
+    setValue(value, createAction, updateControl = true, dispatchEvents = true) 
+    {
+        if (!(value instanceof RectangleValue))
+            console.assert(false, 'RectangleParam.setValue(value) is ' + typeof value + ', must be a RectangleValue');
+
+        console.assert(
+               value.type 
+            && value.type == RECTANGLE_VALUE, 
+            'RectangleParam value.type must be RECTANGLE_VALUE');
+
+
+        this.preSetValue(value, createAction, dispatchEvents);
+
+
+        this.value = value.copy();
+
+
+        super.setValue(this.value, createAction, updateControl, dispatchEvents);
+
+
+        this.oldValue = this.value;
+    }    
+
+
+
+    isVisible()
+    {
+        return this.controls[0].div.style.display != 'none';
+    }
+
+
+
+    genRequest(gen)
+    {
+        // this function exists because a parameter without an output
+        // should still be able to generate a request
+        
+        // 'this' is the param
+
+        if (    this.output
+            && !isEmpty(this.output.cache)
+            &&  gen.passedNodes.includes(this.node))
+            return this.output.cache;
+
+
+        const request = [];
+
+        if (   this.input
+            && this.input.connected)
+        {
+            if (this.input.connectedOutput.supportsTypes([RECTANGLE_VALUE]))
+                request.push(...pushInputOrParam(this.input, gen));
+            else
+                console.assert(false, 'invalid input for RectangleParam');
+        }
+
+        else request.push( 
+            RECTANGLE_VALUE, 
+            (new RectangleValue()).toString());
+
+        return request;
+    }
+
+
+
+    output_genRequest(gen)
+    {
+        return this.param.genRequest(gen);
+    }
+
+
+
+    updateControls()
+    {
+        checkControlVisible(this, this.controls[0]);
+        
+
+        enableElementText(this.controls[0].div, false);
+
+        this.controls[0].readOnly = true;
+        
+        this.controls[0].textbox.style.fontStyle  = 'italic';
+        this.controls[0].textbox.style.fontWeight = '500';
+
+        this.controls[0].textbox.value            = 'rectangle';
+
+
+        if (this.input ) this.input .updateControl();
+        if (this.output) this.output.updateControl();
+    }
+
+
+
+    isDefault = () => this.value.equals(this.defaultValue);
+
+
+
+    loadParam(_param)
+    {
+        this.setValue(parseRectangleValue(_param[2])[0], true, true, false);
+    }
+}
+
+
+class   LineParam
+extends Parameter
+{
+    defaultValue;
+
+    oldValue = null;
+    
+
+    value;
+    
+
+    
+    constructor(id,
+                name, 
+                showName,
+                hasInput,
+                hasOutput,
+                defaultValue = new LineValue())
+    {
+        super(LINE_VALUE, id, name);
+
+        this.defaultValue = defaultValue;
+        this.value        = defaultValue;
+
+
+        this.controls.push(new TextControl(
+            null,
+            this,
+            this.id,
+            this.name,
+            ''));
+
+        this.controls[0].textbox.style.textAlign = 'center';
+   
+        this.div.appendChild(this.controls[0].div);
+
+       
+        if (hasInput)  this.initInput([LINE_VALUE], getParamInputValuesForUndo, this.input_getBackInitValue);
+        if (hasOutput) this.initOutput([LINE_VALUE], this.output_genRequest, getParamOutputValuesForUndo, this.output_backInit);
+    }
+
+
+
+    input_getBackInitValue()
+    {
+        // 'this' is the input
+
+        return this.param.value;
+    }
+
+
+
+    output_backInit(value)
+    {
+        // 'this' is the output
+
+        console.assert(value.type == LINE_VALUE, 'expected LINE_VALUE in backInit()');
+        
+        this.param.setValue(value, false, true, false);
+    }
+
+
+
+    setValue(value, createAction, updateControl = true, dispatchEvents = true) 
+    {
+        if (!(value instanceof LineValue))
+            console.assert(false, 'LineParam.setValue(value) is ' + typeof value + ', must be a LineValue');
+
+        console.assert(
+               value.type 
+            && value.type == LINE_VALUE, 
+            'LineParam value.type must be LINE_VALUE');
+
+
+        this.preSetValue(value, createAction, dispatchEvents);
+
+
+        this.value = value.copy();
+
+
+        super.setValue(this.value, createAction, updateControl, dispatchEvents);
+
+
+        this.oldValue = this.value;
+    }    
+
+
+
+    isVisible()
+    {
+        return this.controls[0].div.style.display != 'none';
+    }
+
+
+
+    genRequest(gen)
+    {
+        // this function exists because a parameter without an output
+        // should still be able to generate a request
+        
+        // 'this' is the param
+
+        if (    this.output
+            && !isEmpty(this.output.cache)
+            &&  gen.passedNodes.includes(this.node))
+            return this.output.cache;
+
+
+        const request = [];
+
+        if (   this.input
+            && this.input.connected)
+        {
+            if (this.input.connectedOutput.supportsTypes([LINE_VALUE]))
+                request.push(...pushInputOrParam(this.input, gen));
+            else
+                console.assert(false, 'invalid input for LineParam');
+        }
+
+        else request.push( 
+            LINE_VALUE, 
+            (new LineValue()).toString());
+
+        return request;
+    }
+
+
+
+    output_genRequest(gen)
+    {
+        return this.param.genRequest(gen);
+    }
+
+
+
+    updateControls()
+    {
+        checkControlVisible(this, this.controls[0]);
+        
+
+        enableElementText(this.controls[0].div, false);
+
+        this.controls[0].readOnly = true;
+        
+        this.controls[0].textbox.style.fontStyle  = 'italic';
+        this.controls[0].textbox.style.fontWeight = '500';
+
+        this.controls[0].textbox.value            = 'line';
+
+
+        if (this.input ) this.input .updateControl();
+        if (this.output) this.output.updateControl();
+    }
+
+
+
+    isDefault = () => this.value.equals(this.defaultValue);
+
+
+
+    loadParam(_param)
+    {
+        this.setValue(parseLineValue(_param[2])[0], true, true, false);
+    }
+}
+
+
+class   EllipseParam
+extends Parameter
+{
+    defaultValue;
+
+    oldValue = null;
+    
+
+    value;
+    
+
+    
+    constructor(id,
+                name, 
+                showName,
+                hasInput,
+                hasOutput,
+                defaultValue = new EllipseValue())
+    {
+        super(ELLIPSE_VALUE, id, name);
+
+        this.defaultValue = defaultValue;
+        this.value        = defaultValue;
+
+
+        this.controls.push(new TextControl(
+            null,
+            this,
+            this.id,
+            this.name,
+            ''));
+
+        this.controls[0].textbox.style.textAlign = 'center';
+   
+        this.div.appendChild(this.controls[0].div);
+
+       
+        if (hasInput)  this.initInput([ELLIPSE_VALUE], getParamInputValuesForUndo, this.input_getBackInitValue);
+        if (hasOutput) this.initOutput([ELLIPSE_VALUE], this.output_genRequest, getParamOutputValuesForUndo, this.output_backInit);
+    }
+
+
+
+    input_getBackInitValue()
+    {
+        // 'this' is the input
+
+        return this.param.value;
+    }
+
+
+
+    output_backInit(value)
+    {
+        // 'this' is the output
+
+        console.assert(value.type == ELLIPSE_VALUE, 'expected ELLIPSE_VALUE in backInit()');
+        
+        this.param.setValue(value, false, true, false);
+    }
+
+
+
+    setValue(value, createAction, updateControl = true, dispatchEvents = true) 
+    {
+        if (!(value instanceof EllipseValue))
+            console.assert(false, 'EllipseParam.setValue(value) is ' + typeof value + ', must be a EllipseValue');
+
+        console.assert(
+               value.type 
+            && value.type == ELLIPSE_VALUE, 
+            'EllipseParam value.type must be ELLIPSE_VALUE');
+
+
+        this.preSetValue(value, createAction, dispatchEvents);
+
+
+        this.value = value.copy();
+
+
+        super.setValue(this.value, createAction, updateControl, dispatchEvents);
+
+
+        this.oldValue = this.value;
+    }    
+
+
+
+    isVisible()
+    {
+        return this.controls[0].div.style.display != 'none';
+    }
+
+
+
+    genRequest(gen)
+    {
+        // this function exists because a parameter without an output
+        // should still be able to generate a request
+        
+        // 'this' is the param
+
+        if (    this.output
+            && !isEmpty(this.output.cache)
+            &&  gen.passedNodes.includes(this.node))
+            return this.output.cache;
+
+
+        const request = [];
+
+        if (   this.input
+            && this.input.connected)
+        {
+            if (this.input.connectedOutput.supportsTypes([ELLIPSE_VALUE]))
+                request.push(...pushInputOrParam(this.input, gen));
+            else
+                console.assert(false, 'invalid input for EllipseParam');
+        }
+
+        else request.push( 
+            ELLIPSE_VALUE, 
+            (new EllipseValue()).toString());
+
+        return request;
+    }
+
+
+
+    output_genRequest(gen)
+    {
+        return this.param.genRequest(gen);
+    }
+
+
+
+    updateControls()
+    {
+        checkControlVisible(this, this.controls[0]);
+        
+
+        enableElementText(this.controls[0].div, false);
+
+        this.controls[0].readOnly = true;
+        
+        this.controls[0].textbox.style.fontStyle  = 'italic';
+        this.controls[0].textbox.style.fontWeight = '500';
+
+        this.controls[0].textbox.value            = 'ellipse';
+
+
+        if (this.input ) this.input .updateControl();
+        if (this.output) this.output.updateControl();
+    }
+
+
+
+    isDefault = () => this.value.equals(this.defaultValue);
+
+
+
+    loadParam(_param)
+    {
+        this.setValue(parseEllipseValue(_param[2])[0], true, true, false);
+    }
+}
+
+
+class   PolygonParam
+extends Parameter
+{
+    defaultValue;
+
+    oldValue = null;
+    
+
+    value;
+    
+
+    
+    constructor(id,
+                name, 
+                showName,
+                hasInput,
+                hasOutput,
+                defaultValue = new PolygonValue())
+    {
+        super(POLYGON_VALUE, id, name);
+
+        this.defaultValue = defaultValue;
+        this.value        = defaultValue;
+
+
+        this.controls.push(new TextControl(
+            null,
+            this,
+            this.id,
+            this.name,
+            ''));
+
+        this.controls[0].textbox.style.textAlign = 'center';
+   
+        this.div.appendChild(this.controls[0].div);
+
+       
+        if (hasInput)  this.initInput([POLYGON_VALUE], getParamInputValuesForUndo, this.input_getBackInitValue);
+        if (hasOutput) this.initOutput([POLYGON_VALUE], this.output_genRequest, getParamOutputValuesForUndo, this.output_backInit);
+    }
+
+
+
+    input_getBackInitValue()
+    {
+        // 'this' is the input
+
+        return this.param.value;
+    }
+
+
+
+    output_backInit(value)
+    {
+        // 'this' is the output
+
+        console.assert(value.type == POLYGON_VALUE, 'expected POLYGON_VALUE in backInit()');
+        
+        this.param.setValue(value, false, true, false);
+    }
+
+
+
+    setValue(value, createAction, updateControl = true, dispatchEvents = true) 
+    {
+        if (!(value instanceof PolygonValue))
+            console.assert(false, 'PolygonParam.setValue(value) is ' + typeof value + ', must be a PolygonValue');
+
+        console.assert(
+               value.type 
+            && value.type == POLYGON_VALUE, 
+            'PolygonParam value.type must be POLYGON_VALUE');
+
+
+        this.preSetValue(value, createAction, dispatchEvents);
+
+
+        this.value = value.copy();
+
+
+        super.setValue(this.value, createAction, updateControl, dispatchEvents);
+
+
+        this.oldValue = this.value;
+    }    
+
+
+
+    isVisible()
+    {
+        return this.controls[0].div.style.display != 'none';
+    }
+
+
+
+    genRequest(gen)
+    {
+        // this function exists because a parameter without an output
+        // should still be able to generate a request
+        
+        // 'this' is the param
+
+        if (    this.output
+            && !isEmpty(this.output.cache)
+            &&  gen.passedNodes.includes(this.node))
+            return this.output.cache;
+
+
+        const request = [];
+
+        if (   this.input
+            && this.input.connected)
+        {
+            if (this.input.connectedOutput.supportsTypes([POLYGON_VALUE]))
+                request.push(...pushInputOrParam(this.input, gen));
+            else
+                console.assert(false, 'invalid input for PolygonParam');
+        }
+
+        else request.push( 
+            POLYGON_VALUE, 
+            (new PolygonValue()).toString());
+
+        return request;
+    }
+
+
+
+    output_genRequest(gen)
+    {
+        return this.param.genRequest(gen);
+    }
+
+
+
+    updateControls()
+    {
+        checkControlVisible(this, this.controls[0]);
+        
+
+        enableElementText(this.controls[0].div, false);
+
+        this.controls[0].readOnly = true;
+        
+        this.controls[0].textbox.style.fontStyle  = 'italic';
+        this.controls[0].textbox.style.fontWeight = '500';
+
+        this.controls[0].textbox.value            = 'polygon';
+
+
+        if (this.input ) this.input .updateControl();
+        if (this.output) this.output.updateControl();
+    }
+
+
+
+    isDefault = () => this.value.equals(this.defaultValue);
+
+
+
+    loadParam(_param)
+    {
+        this.setValue(parsePolygonValue(_param[2])[0], true, true, false);
+    }
+}
+
+
+class   StarParam
+extends Parameter
+{
+    defaultValue;
+
+    oldValue = null;
+    
+
+    value;
+    
+
+    
+    constructor(id,
+                name, 
+                showName,
+                hasInput,
+                hasOutput,
+                defaultValue = new StarValue())
+    {
+        super(STAR_VALUE, id, name);
+
+        this.defaultValue = defaultValue;
+        this.value        = defaultValue;
+
+
+        this.controls.push(new TextControl(
+            null,
+            this,
+            this.id,
+            this.name,
+            ''));
+
+        this.controls[0].textbox.style.textAlign = 'center';
+   
+        this.div.appendChild(this.controls[0].div);
+
+       
+        if (hasInput)  this.initInput([STAR_VALUE], getParamInputValuesForUndo, this.input_getBackInitValue);
+        if (hasOutput) this.initOutput([STAR_VALUE], this.output_genRequest, getParamOutputValuesForUndo, this.output_backInit);
+    }
+
+
+
+    input_getBackInitValue()
+    {
+        // 'this' is the input
+
+        return this.param.value;
+    }
+
+
+
+    output_backInit(value)
+    {
+        // 'this' is the output
+
+        console.assert(value.type == STAR_VALUE, 'expected STAR_VALUE in backInit()');
+        
+        this.param.setValue(value, false, true, false);
+    }
+
+
+
+    setValue(value, createAction, updateControl = true, dispatchEvents = true) 
+    {
+        if (!(value instanceof StarValue))
+            console.assert(false, 'StarParam.setValue(value) is ' + typeof value + ', must be a StarValue');
+
+        console.assert(
+               value.type 
+            && value.type == STAR_VALUE, 
+            'StarParam value.type must be STAR_VALUE');
+
+
+        this.preSetValue(value, createAction, dispatchEvents);
+
+
+        this.value = value.copy();
+
+
+        super.setValue(this.value, createAction, updateControl, dispatchEvents);
+
+
+        this.oldValue = this.value;
+    }    
+
+
+
+    isVisible()
+    {
+        return this.controls[0].div.style.display != 'none';
+    }
+
+
+
+    genRequest(gen)
+    {
+        // this function exists because a parameter without an output
+        // should still be able to generate a request
+        
+        // 'this' is the param
+
+        if (    this.output
+            && !isEmpty(this.output.cache)
+            &&  gen.passedNodes.includes(this.node))
+            return this.output.cache;
+
+
+        const request = [];
+
+        if (   this.input
+            && this.input.connected)
+        {
+            if (this.input.connectedOutput.supportsTypes([STAR_VALUE]))
+                request.push(...pushInputOrParam(this.input, gen));
+            else
+                console.assert(false, 'invalid input for StarParam');
+        }
+
+        else request.push( 
+            STAR_VALUE, 
+            (new StarValue()).toString());
+
+        return request;
+    }
+
+
+
+    output_genRequest(gen)
+    {
+        return this.param.genRequest(gen);
+    }
+
+
+
+    updateControls()
+    {
+        checkControlVisible(this, this.controls[0]);
+        
+
+        enableElementText(this.controls[0].div, false);
+
+        this.controls[0].readOnly = true;
+        
+        this.controls[0].textbox.style.fontStyle  = 'italic';
+        this.controls[0].textbox.style.fontWeight = '500';
+
+        this.controls[0].textbox.value            = 'star';
+
+
+        if (this.input ) this.input .updateControl();
+        if (this.output) this.output.updateControl();
+    }
+
+
+
+    isDefault = () => this.value.equals(this.defaultValue);
+
+
+
+    loadParam(_param)
+    {
+        this.setValue(parseStarValue(_param[2])[0], true, true, false);
     }
 }
 
@@ -54159,12 +55009,17 @@ class Operator
 
     createAndAddParamByType(type, id, showName, hasInput, hasOutput, volatile = false)
     {
-             if (NUMBER_TYPES.includes(type)) return this.addParam(new NumberParam(id, id, showName, hasInput, hasOutput), volatile);
-        else if (  TEXT_TYPES.includes(type)) return this.addParam(new   TextParam(id, id,           hasInput, hasOutput), volatile);
-        else if ( COLOR_TYPES.includes(type)) return this.addParam(new  ColorParam(id, id, showName, hasInput, hasOutput), volatile);
-        else if (  FILL_TYPES.includes(type)) return this.addParam(new   FillParam(id, id, showName, hasInput, hasOutput), volatile);
-        else if (STROKE_TYPES.includes(type)) return this.addParam(new StrokeParam(id, id, showName, hasInput, hasOutput), volatile);
-        else if (  LIST_TYPES.includes(type)) return this.addParam(new   ListParam(id, id, showName, hasInput, hasOutput), volatile);
+             if (type ==    NUMBER_VALUE) return this.addParam(new    NumberParam(id, id, showName, hasInput, hasOutput), volatile);
+        else if (type ==      TEXT_VALUE) return this.addParam(new      TextParam(id, id,           hasInput, hasOutput), volatile);
+        else if (type ==     COLOR_VALUE) return this.addParam(new     ColorParam(id, id, showName, hasInput, hasOutput), volatile);
+        else if (type ==      FILL_VALUE) return this.addParam(new      FillParam(id, id, showName, hasInput, hasOutput), volatile);
+        else if (type ==    STROKE_VALUE) return this.addParam(new    StrokeParam(id, id, showName, hasInput, hasOutput), volatile);
+        else if (type ==      LIST_VALUE) return this.addParam(new      ListParam(id, id, showName, hasInput, hasOutput), volatile);
+        else if (type == RECTANGLE_VALUE) return this.addParam(new RectangleParam(id, id, showName, hasInput, hasOutput), volatile);
+        else if (type ==      LINE_VALUE) return this.addParam(new      LineParam(id, id, showName, hasInput, hasOutput), volatile);
+        else if (type ==   ELLIPSE_VALUE) return this.addParam(new   EllipseParam(id, id, showName, hasInput, hasOutput), volatile);
+        else if (type ==   POLYGON_VALUE) return this.addParam(new   PolygonParam(id, id, showName, hasInput, hasOutput), volatile);
+        else if (type ==      STAR_VALUE) return this.addParam(new      StarParam(id, id, showName, hasInput, hasOutput), volatile);
 
         else console.assert(false, 'cannot add parameter of type \'' + type + '\'');
 
@@ -54175,12 +55030,16 @@ class Operator
 
     createAndInsertParamByType(index, type, id, showName, hasInput, hasOutput, volatile = false)
     {
-             if (NUMBER_TYPES.includes(type)) return this.insertParam(index, new NumberParam(id, id, showName, hasInput, hasOutput), volatile);
-        else if (  TEXT_TYPES.includes(type)) return this.insertParam(index, new   TextParam(id, id,           hasInput, hasOutput), volatile);
-        else if ( COLOR_TYPES.includes(type)) return this.insertParam(index, new  ColorParam(id, id, showName, hasInput, hasOutput), volatile);
-        else if (  FILL_TYPES.includes(type)) return this.insertParam(index, new   FillParam(id, id, showName, hasInput, hasOutput), volatile);
-        else if (STROKE_TYPES.includes(type)) return this.insertParam(index, new StrokeParam(id, id, showName, hasInput, hasOutput), volatile);
-        else if (  LIST_TYPES.includes(type)) return this.insertParam(index, new   ListParam(id, id, showName, hasInput, hasOutput), volatile);
+             if (type ==    NUMBER_VALUE) return this.insertParam(index, new    NumberParam(id, id, showName, hasInput, hasOutput), volatile);
+        else if (type ==      TEXT_VALUE) return this.insertParam(index, new      TextParam(id, id,           hasInput, hasOutput), volatile);
+        else if (type ==     COLOR_VALUE) return this.insertParam(index, new     ColorParam(id, id, showName, hasInput, hasOutput), volatile);
+        else if (type ==      FILL_VALUE) return this.insertParam(index, new      FillParam(id, id, showName, hasInput, hasOutput), volatile);
+        else if (type ==    STROKE_VALUE) return this.insertParam(index, new    StrokeParam(id, id, showName, hasInput, hasOutput), volatile);
+        else if (type ==      LIST_VALUE) return this.insertParam(index, new      ListParam(id, id, showName, hasInput, hasOutput), volatile);
+        else if (type == RECTANGLE_VALUE) return this.insertParam(index, new RectangleParam(id, id, showName, hasInput, hasOutput), volatile);
+        else if (type ==   ELLIPSE_VALUE) return this.insertParam(index, new   EllipseParam(id, id, showName, hasInput, hasOutput), volatile);
+        else if (type ==   POLYGON_VALUE) return this.insertParam(index, new   PolygonParam(id, id, showName, hasInput, hasOutput), volatile);
+        else if (type ==      STAR_VALUE) return this.insertParam(index, new      StarParam(id, id, showName, hasInput, hasOutput), volatile);
 
         else console.assert(false, 'cannot insert parameter of type \'' + type + '\'');
 
@@ -54820,7 +55679,7 @@ class Operator
 
             if (index < 0)
             {
-                this.createAndAddParamByType(_param[0], _param[1], false, false, false, true);
+                this.createAndAddParamByType(_param[0], _param[1], false, false, true, true);
                 index = this.params.length-1;
             }
 
@@ -56855,7 +57714,7 @@ extends OperatorBase
                     }
                 }
                 else       
-                    this.createAndAddParamByType(value.type, id, false, false, false, true);
+                    this.createAndAddParamByType(value.type, id, false, false, true, true);
             }
         }
 

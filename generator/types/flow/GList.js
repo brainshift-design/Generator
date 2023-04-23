@@ -40,6 +40,8 @@ extends GOperator
         {
             const input = (await this.inputs[i].eval(parse)).toValue();
 
+            // if (SHAPE_VALUES.includes(input.type))
+            //     input.evalObjects(parse);
             // if (input.type == LIST_VALUE)
             // {
             //     for (const item of input.items)
