@@ -106,11 +106,11 @@ class Wire
 
 
         if (   output
-            && output.supportsTypes([COLOR_VALUE, FILL_VALUE, STROKE_VALUE]))
+            && arraysIntersect(output.types, [COLOR_VALUE, FILL_VALUE, STROKE_VALUE]))
             return output.wireColor;
 
         else if (input
-              && input.supportsTypes([COLOR_VALUE, FILL_VALUE, STROKE_VALUE]))
+              && arraysIntersect(input.types, [COLOR_VALUE, FILL_VALUE, STROKE_VALUE]))
             return input.wireColor;
 
         else if (!isEmpty(types))
