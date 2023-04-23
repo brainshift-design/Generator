@@ -9918,13 +9918,12 @@ function parseListValue(str, i = -1)
     and objects hold stroke values directly, which incoming stroke values just set.
 */
 
-class ShapeBaseValue
+class ShapeValue
 extends GValue
 {
     nodeId;
 
-    // fill;
-    // stroke;
+    props;
 
 
 
@@ -9933,9 +9932,6 @@ extends GValue
         super(type);
 
         this.nodeId = nodeId; 
-
-        // this.fill   = FillValue.default.copy();
-        // this.stroke = StrokeValue.NaN  .copy();
     }
 
 
@@ -9944,17 +9940,14 @@ extends GValue
     {
         this.nodeId = base.nodeId;
 
-        // this.fill   = base.fill  .copy();
-        // this.stroke = base.stroke.copy();
+        this.props  = base.props.copy();
     }
 
 
 
     isValid()
     {
-        return true;
-        // return this.fill  .isValid()
-        //    && !this.stroke.isValid();
+        return this.props.isValid();
     }
 
 
@@ -9989,7 +9982,7 @@ extends GValue
 
 
 class RectangleValue
-extends ShapeBaseValue
+extends ShapeValue
 {
     x;
     y;
@@ -10052,7 +10045,8 @@ extends ShapeBaseValue
             && this.width .isValid()
             && this.height.isValid()
             && this.angle .isValid()
-            && this.round .isValid();
+            && this.round .isValid()
+            && super.isValid();
     }
 
 
@@ -10142,7 +10136,7 @@ function parseRectangleValue(str, i = -1)
 
 
 class LineValue
-extends ShapeBaseValue
+extends ShapeValue
 {
     x;
     y;
@@ -10253,7 +10247,7 @@ function parseLineValue(str)
 
 
 class EllipseValue
-extends ShapeBaseValue
+extends ShapeValue
 {
     x;
     y;
@@ -10366,7 +10360,7 @@ function parseEllipseValue(str)
 
 
 class PolygonValue
-extends ShapeBaseValue
+extends ShapeValue
 {
     x;
     y;
@@ -10505,7 +10499,7 @@ function parsePolygonValue(str)
 
 
 class StarValue
-extends ShapeBaseValue
+extends ShapeValue
 {
     x;
     y;
@@ -15998,14 +15992,10 @@ extends GOperator
 class GObjectBase
 extends GOperator
 {
-    // fill    = null;
-    // stroke  = null;
-    
+    props   = null;
+   
 
     objects = [];
-    //styles  = [];
-    
-    props   = new ListValue();
 
 
 
@@ -16018,12 +16008,8 @@ extends GOperator
 
     copyBase(base)
     {
-        // if (base.fill  ) this.fill   = base.fill  .copy();
-        // if (base.stroke) this.stroke = base.stroke.copy();
-
-        this.copyObjects(base.objects);
-        //this.copyStyles (base.styles );
         this.copyProperties(base.props);
+        this.copyObjects(base.objects);
     }
 
 
@@ -16035,13 +16021,6 @@ extends GOperator
 
 
 
-    // copyStyles(styles)
-    // {
-    //     this.styles = styles.map(s => s.copy());
-    // }
-
-
-
     copyProperties(props)
     {
         this.props = props.map(p => p.copy());
@@ -16049,132 +16028,99 @@ extends GOperator
 
 
 
-    // addUpdateObject(parse, nodeId, objects)
-    // {
-    //     if (this.options.active) 
-    //         genPushUpdateObject(parse, nodeId, objects);
-    //     else 
-    //         this.objects.push(...objects);
-    // }
-
-
-
-    evalBase(parse, input)
+    async evalBase(parse, input)
     {
-    //     if (!this.valid)
-    //     {
-    //         const fill   = evalFillValue  (this.fill,   parse);
-    //         const stroke = evalStrokeValue(this.stroke, parse);
-            
-    //         if (input)
-    //         {
-    //             if (this.fill  ) this.result.fill   = fill;
-    //             if (this.stroke) this.result.stroke = stroke;
-    //         }
-    //         else
-    //         {
-    //             this.result.fill   = fill;
-    //             this.result.stroke = stroke;
-    //         }
+        const props = this.props ? (await this.props.eval(parse)).toValue() : null;
 
 
-    //         genPushUpdateValue(parse, this.nodeId, 'fill',   this.result.fill  );
-    //         genPushUpdateValue(parse, this.nodeId, 'stroke', this.result.stroke);
-    //     }
+        if (this.input)
+            this.value.props = props ?? input.props;
+        else
+            this.value.props = props;
+
+
+        genPushUpdateValue(parse, this.nodeId, 'props',  this.value.props);
     }
 
 
 
     async evalObjects(parse)
     {
-        const props = this.props ? (await this.props.eval(parse)).toValue() : null;
-
-        if (this.input)
-            this.value.props = props.copy();
-
-
-        if (this.props.value)
+        for (const obj of this.objects)
         {
-            for (const obj of this.objects)
+            for (let i = this.value.props.items.length-1; i >= 0; i--)
             {
-                // for (const prop of this.props.value.items)
-                for (let i = this.props.value.items.length-1; i >= 0; i--)
+                const prop = this.value.props.items[i];
+                
+
+                if (prop.type == COLOR_VALUE)
                 {
-                    const prop = this.props.value.items[i];
-                    
+                    if (!obj.fills) 
+                        obj.fills = [];
 
-                    if (prop.type == COLOR_VALUE)
+
+                    const rgb = scaleRgb(prop.toRgb());
+
+                    obj.fills.push([
+                        'SOLID', 
+                                rgb[0]
+                        + ' ' + rgb[1]
+                        + ' ' + rgb[2]
+                        + ' ' + '255']);
+                }
+
+                else if (prop.type == FILL_VALUE)
+                {
+                    if (!obj.fills) 
+                        obj.fills = [];
+
+
+                    const rgb = scaleRgb(prop.color.toRgb());
+
+                    obj.fills.push([
+                        'SOLID', 
+                                rgb[0]
+                        + ' ' + rgb[1]
+                        + ' ' + rgb[2]
+                        + ' ' + prop.opacity.toValue().toNumber()]);
+                }
+
+                else if (prop.type == STROKE_VALUE)
+                {
+                    if (!obj.strokes)
+                        obj.strokes = [];
+
+
+                    const rgb = scaleRgb(prop.fill.color.toRgb());
+
+                    obj.strokes.push([
+                        'SOLID', 
+                                rgb[0]
+                        + ' ' + rgb[1]
+                        + ' ' + rgb[2]
+                        + ' ' + prop.fill.opacity.toValue().toNumber()]);
+
+
+                    obj.strokeWeight = prop.weight.toValue().toNumber();
+
+                    switch (prop.fit.toValue().value)
                     {
-                        if (!obj.fills) 
-                            obj.fills = [];
-
-
-                        const rgb = scaleRgb(prop.toRgb());
-
-                        obj.fills.push([
-                            'SOLID', 
-                                    rgb[0]
-                            + ' ' + rgb[1]
-                            + ' ' + rgb[2]
-                            + ' ' + '255']);
+                        case 0: obj.strokeAlign = 'INSIDE';  break;
+                        case 1: obj.strokeAlign = 'CENTER';  break;
+                        case 2: obj.strokeAlign = 'OUTSIDE'; break;
                     }
 
-                    else if (prop.type == FILL_VALUE)
+                    switch (prop.join.toValue().value)
                     {
-                        if (!obj.fills) 
-                            obj.fills = [];
-
-
-                        const rgb = scaleRgb(prop.color.toRgb());
-
-                        obj.fills.push([
-                            'SOLID', 
-                                    rgb[0]
-                            + ' ' + rgb[1]
-                            + ' ' + rgb[2]
-                            + ' ' + prop.opacity.toValue().toNumber()]);
+                        case 0: obj.strokeJoin = 'MITER'; break;
+                        case 1: obj.strokeJoin = 'BEVEL'; break;
+                        case 2: obj.strokeJoin = 'ROUND'; break;
                     }
 
-                    else if (prop.type == STROKE_VALUE)
-                    {
-                        if (!obj.strokes)
-                            obj.strokes = [];
-
-
-                        const rgb = scaleRgb(prop.fill.color.toRgb());
-
-                        obj.strokes.push([
-                            'SOLID', 
-                                    rgb[0]
-                            + ' ' + rgb[1]
-                            + ' ' + rgb[2]
-                            + ' ' + prop.fill.opacity.toValue().toNumber()]);
-
-
-                        obj.strokeWeight = prop.weight.toValue().toNumber();
-
-                        switch (prop.fit.toValue().value)
-                        {
-                            case 0: obj.strokeAlign = 'INSIDE';  break;
-                            case 1: obj.strokeAlign = 'CENTER';  break;
-                            case 2: obj.strokeAlign = 'OUTSIDE'; break;
-                        }
-
-                        switch (prop.join.toValue().value)
-                        {
-                            case 0: obj.strokeJoin = 'MITER'; break;
-                            case 1: obj.strokeJoin = 'BEVEL'; break;
-                            case 2: obj.strokeJoin = 'ROUND'; break;
-                        }
-
-                        obj.strokeMiterLimit = prop.miter.toValue().value;
-                    }
+                    obj.strokeMiterLimit = prop.miter.toValue().value;
                 }
             }
         }
-        
-
-        genPushUpdateValue(parse, this.nodeId, 'props', this.props.toValue());
     }
 
 
@@ -16184,6 +16130,14 @@ extends GOperator
     {
         // for (const style of this.styles)
         //     style.nodeId = this.nodeId;
+    }
+
+
+
+    isValid()
+    {
+        return this.props.isValid()
+            && super.isValid();
     }
 }
 
@@ -16301,9 +16255,11 @@ extends GObjectBase
         const round  = this.round  ? (await this.round .eval(parse)).toValue() : null;
 
 
+        let input = null;
+
         if (this.input)
         {
-            const input = (await this.input.eval(parse)).toValue();
+            input = (await this.input.eval(parse)).toValue();
 
             this.value = new RectangleValue(
                 this.nodeId,
@@ -16329,13 +16285,10 @@ extends GObjectBase
         genPushUpdateValue(parse, this.nodeId, 'round',  this.value.round );
 
 
-        const hasInput =     
-               this.input 
-            && RECTANGLE_TYPES.includes(this.input.type);   
+        await this.evalBase(parse, input);
 
-        if (    hasInput
-            && !this.options) this.objects = this.input.objects;
-        else                  await this.evalObjects(parse);
+
+        await this.evalObjects(parse);
 
 
         this.validate();
@@ -16351,24 +16304,24 @@ extends GObjectBase
             return;
             
             
-        if (   this.x 
-            && this.y 
-            && this.width 
-            && this.height 
-            && this.angle 
-            && this.round)
+        if (   this.value.x 
+            && this.value.y 
+            && this.value.width 
+            && this.value.height 
+            && this.value.angle 
+            && this.value.round)
         {
             this.objects = 
             [
                 new FigmaRectangle(
                                 this.nodeId,
                                 0,
-                                this.x     .toValue().value,
-                                this.y     .toValue().value,
-                                this.width .toValue().value,
-                                this.height.toValue().value,
-                                this.angle .toValue().value,
-                    Math.max(0, this.round .toValue().value))
+                                this.value.x     .value,
+                                this.value.y     .value,
+                                this.value.width .value,
+                                this.value.height.value,
+                                this.value.angle .value,
+                    Math.max(0, this.value.round .value))
             ];
         }
 
@@ -16385,14 +16338,15 @@ extends GObjectBase
             && this.width .isValid()
             && this.height.isValid()
             && this.angle .isValid()
-            && this.round .isValid();
+            && this.round .isValid()
+            && super.isValid();
     }
 
 
 
     toValue()
     {
-        return new RectangleValue(
+        const rect = new RectangleValue(
             this.nodeId,
             this.x     .toValue(),
             this.y     .toValue(),
@@ -16400,6 +16354,10 @@ extends GObjectBase
             this.height.toValue(),
             this.angle .toValue(),
             this.round .toValue());
+
+        rect.props = this.props.toValue();
+
+        return rect;
     }
 }
 
@@ -20022,8 +19980,8 @@ function genParseRectangle(parse)
         case 'props':  rect.props  = genParse(parse); break;
         }
     }
-    
-    
+
+
     parse.inParam = false;
     parse.nTab--;
 
@@ -32470,13 +32428,12 @@ function parseListValue(str, i = -1)
     and objects hold stroke values directly, which incoming stroke values just set.
 */
 
-class ShapeBaseValue
+class ShapeValue
 extends GValue
 {
     nodeId;
 
-    // fill;
-    // stroke;
+    props;
 
 
 
@@ -32485,9 +32442,6 @@ extends GValue
         super(type);
 
         this.nodeId = nodeId; 
-
-        // this.fill   = FillValue.default.copy();
-        // this.stroke = StrokeValue.NaN  .copy();
     }
 
 
@@ -32496,17 +32450,14 @@ extends GValue
     {
         this.nodeId = base.nodeId;
 
-        // this.fill   = base.fill  .copy();
-        // this.stroke = base.stroke.copy();
+        this.props  = base.props.copy();
     }
 
 
 
     isValid()
     {
-        return true;
-        // return this.fill  .isValid()
-        //    && !this.stroke.isValid();
+        return this.props.isValid();
     }
 
 
@@ -32541,7 +32492,7 @@ extends GValue
 
 
 class RectangleValue
-extends ShapeBaseValue
+extends ShapeValue
 {
     x;
     y;
@@ -32604,7 +32555,8 @@ extends ShapeBaseValue
             && this.width .isValid()
             && this.height.isValid()
             && this.angle .isValid()
-            && this.round .isValid();
+            && this.round .isValid()
+            && super.isValid();
     }
 
 
@@ -32694,7 +32646,7 @@ function parseRectangleValue(str, i = -1)
 
 
 class LineValue
-extends ShapeBaseValue
+extends ShapeValue
 {
     x;
     y;
@@ -32805,7 +32757,7 @@ function parseLineValue(str)
 
 
 class EllipseValue
-extends ShapeBaseValue
+extends ShapeValue
 {
     x;
     y;
@@ -32918,7 +32870,7 @@ function parseEllipseValue(str)
 
 
 class PolygonValue
-extends ShapeBaseValue
+extends ShapeValue
 {
     x;
     y;
@@ -33057,7 +33009,7 @@ function parsePolygonValue(str)
 
 
 class StarValue
-extends ShapeBaseValue
+extends ShapeValue
 {
     x;
     y;
@@ -38550,14 +38502,10 @@ extends GOperator
 class GObjectBase
 extends GOperator
 {
-    // fill    = null;
-    // stroke  = null;
-    
+    props   = null;
+   
 
     objects = [];
-    //styles  = [];
-    
-    props   = new ListValue();
 
 
 
@@ -38570,12 +38518,8 @@ extends GOperator
 
     copyBase(base)
     {
-        // if (base.fill  ) this.fill   = base.fill  .copy();
-        // if (base.stroke) this.stroke = base.stroke.copy();
-
-        this.copyObjects(base.objects);
-        //this.copyStyles (base.styles );
         this.copyProperties(base.props);
+        this.copyObjects(base.objects);
     }
 
 
@@ -38587,13 +38531,6 @@ extends GOperator
 
 
 
-    // copyStyles(styles)
-    // {
-    //     this.styles = styles.map(s => s.copy());
-    // }
-
-
-
     copyProperties(props)
     {
         this.props = props.map(p => p.copy());
@@ -38601,132 +38538,99 @@ extends GOperator
 
 
 
-    // addUpdateObject(parse, nodeId, objects)
-    // {
-    //     if (this.options.active) 
-    //         genPushUpdateObject(parse, nodeId, objects);
-    //     else 
-    //         this.objects.push(...objects);
-    // }
-
-
-
-    evalBase(parse, input)
+    async evalBase(parse, input)
     {
-    //     if (!this.valid)
-    //     {
-    //         const fill   = evalFillValue  (this.fill,   parse);
-    //         const stroke = evalStrokeValue(this.stroke, parse);
-            
-    //         if (input)
-    //         {
-    //             if (this.fill  ) this.result.fill   = fill;
-    //             if (this.stroke) this.result.stroke = stroke;
-    //         }
-    //         else
-    //         {
-    //             this.result.fill   = fill;
-    //             this.result.stroke = stroke;
-    //         }
+        const props = this.props ? (await this.props.eval(parse)).toValue() : null;
 
 
-    //         genPushUpdateValue(parse, this.nodeId, 'fill',   this.result.fill  );
-    //         genPushUpdateValue(parse, this.nodeId, 'stroke', this.result.stroke);
-    //     }
+        if (this.input)
+            this.value.props = props ?? input.props;
+        else
+            this.value.props = props;
+
+
+        genPushUpdateValue(parse, this.nodeId, 'props',  this.value.props);
     }
 
 
 
     async evalObjects(parse)
     {
-        const props = this.props ? (await this.props.eval(parse)).toValue() : null;
-
-        if (this.input)
-            this.value.props = props.copy();
-
-
-        if (this.props.value)
+        for (const obj of this.objects)
         {
-            for (const obj of this.objects)
+            for (let i = this.value.props.items.length-1; i >= 0; i--)
             {
-                // for (const prop of this.props.value.items)
-                for (let i = this.props.value.items.length-1; i >= 0; i--)
+                const prop = this.value.props.items[i];
+                
+
+                if (prop.type == COLOR_VALUE)
                 {
-                    const prop = this.props.value.items[i];
-                    
+                    if (!obj.fills) 
+                        obj.fills = [];
 
-                    if (prop.type == COLOR_VALUE)
+
+                    const rgb = scaleRgb(prop.toRgb());
+
+                    obj.fills.push([
+                        'SOLID', 
+                                rgb[0]
+                        + ' ' + rgb[1]
+                        + ' ' + rgb[2]
+                        + ' ' + '255']);
+                }
+
+                else if (prop.type == FILL_VALUE)
+                {
+                    if (!obj.fills) 
+                        obj.fills = [];
+
+
+                    const rgb = scaleRgb(prop.color.toRgb());
+
+                    obj.fills.push([
+                        'SOLID', 
+                                rgb[0]
+                        + ' ' + rgb[1]
+                        + ' ' + rgb[2]
+                        + ' ' + prop.opacity.toValue().toNumber()]);
+                }
+
+                else if (prop.type == STROKE_VALUE)
+                {
+                    if (!obj.strokes)
+                        obj.strokes = [];
+
+
+                    const rgb = scaleRgb(prop.fill.color.toRgb());
+
+                    obj.strokes.push([
+                        'SOLID', 
+                                rgb[0]
+                        + ' ' + rgb[1]
+                        + ' ' + rgb[2]
+                        + ' ' + prop.fill.opacity.toValue().toNumber()]);
+
+
+                    obj.strokeWeight = prop.weight.toValue().toNumber();
+
+                    switch (prop.fit.toValue().value)
                     {
-                        if (!obj.fills) 
-                            obj.fills = [];
-
-
-                        const rgb = scaleRgb(prop.toRgb());
-
-                        obj.fills.push([
-                            'SOLID', 
-                                    rgb[0]
-                            + ' ' + rgb[1]
-                            + ' ' + rgb[2]
-                            + ' ' + '255']);
+                        case 0: obj.strokeAlign = 'INSIDE';  break;
+                        case 1: obj.strokeAlign = 'CENTER';  break;
+                        case 2: obj.strokeAlign = 'OUTSIDE'; break;
                     }
 
-                    else if (prop.type == FILL_VALUE)
+                    switch (prop.join.toValue().value)
                     {
-                        if (!obj.fills) 
-                            obj.fills = [];
-
-
-                        const rgb = scaleRgb(prop.color.toRgb());
-
-                        obj.fills.push([
-                            'SOLID', 
-                                    rgb[0]
-                            + ' ' + rgb[1]
-                            + ' ' + rgb[2]
-                            + ' ' + prop.opacity.toValue().toNumber()]);
+                        case 0: obj.strokeJoin = 'MITER'; break;
+                        case 1: obj.strokeJoin = 'BEVEL'; break;
+                        case 2: obj.strokeJoin = 'ROUND'; break;
                     }
 
-                    else if (prop.type == STROKE_VALUE)
-                    {
-                        if (!obj.strokes)
-                            obj.strokes = [];
-
-
-                        const rgb = scaleRgb(prop.fill.color.toRgb());
-
-                        obj.strokes.push([
-                            'SOLID', 
-                                    rgb[0]
-                            + ' ' + rgb[1]
-                            + ' ' + rgb[2]
-                            + ' ' + prop.fill.opacity.toValue().toNumber()]);
-
-
-                        obj.strokeWeight = prop.weight.toValue().toNumber();
-
-                        switch (prop.fit.toValue().value)
-                        {
-                            case 0: obj.strokeAlign = 'INSIDE';  break;
-                            case 1: obj.strokeAlign = 'CENTER';  break;
-                            case 2: obj.strokeAlign = 'OUTSIDE'; break;
-                        }
-
-                        switch (prop.join.toValue().value)
-                        {
-                            case 0: obj.strokeJoin = 'MITER'; break;
-                            case 1: obj.strokeJoin = 'BEVEL'; break;
-                            case 2: obj.strokeJoin = 'ROUND'; break;
-                        }
-
-                        obj.strokeMiterLimit = prop.miter.toValue().value;
-                    }
+                    obj.strokeMiterLimit = prop.miter.toValue().value;
                 }
             }
         }
-        
-
-        genPushUpdateValue(parse, this.nodeId, 'props', this.props.toValue());
     }
 
 
@@ -38736,6 +38640,14 @@ extends GOperator
     {
         // for (const style of this.styles)
         //     style.nodeId = this.nodeId;
+    }
+
+
+
+    isValid()
+    {
+        return this.props.isValid()
+            && super.isValid();
     }
 }
 
@@ -38853,9 +38765,11 @@ extends GObjectBase
         const round  = this.round  ? (await this.round .eval(parse)).toValue() : null;
 
 
+        let input = null;
+
         if (this.input)
         {
-            const input = (await this.input.eval(parse)).toValue();
+            input = (await this.input.eval(parse)).toValue();
 
             this.value = new RectangleValue(
                 this.nodeId,
@@ -38881,13 +38795,10 @@ extends GObjectBase
         genPushUpdateValue(parse, this.nodeId, 'round',  this.value.round );
 
 
-        const hasInput =     
-               this.input 
-            && RECTANGLE_TYPES.includes(this.input.type);   
+        await this.evalBase(parse, input);
 
-        if (    hasInput
-            && !this.options) this.objects = this.input.objects;
-        else                  await this.evalObjects(parse);
+
+        await this.evalObjects(parse);
 
 
         this.validate();
@@ -38903,24 +38814,24 @@ extends GObjectBase
             return;
             
             
-        if (   this.x 
-            && this.y 
-            && this.width 
-            && this.height 
-            && this.angle 
-            && this.round)
+        if (   this.value.x 
+            && this.value.y 
+            && this.value.width 
+            && this.value.height 
+            && this.value.angle 
+            && this.value.round)
         {
             this.objects = 
             [
                 new FigmaRectangle(
                                 this.nodeId,
                                 0,
-                                this.x     .toValue().value,
-                                this.y     .toValue().value,
-                                this.width .toValue().value,
-                                this.height.toValue().value,
-                                this.angle .toValue().value,
-                    Math.max(0, this.round .toValue().value))
+                                this.value.x     .value,
+                                this.value.y     .value,
+                                this.value.width .value,
+                                this.value.height.value,
+                                this.value.angle .value,
+                    Math.max(0, this.value.round .value))
             ];
         }
 
@@ -38937,14 +38848,15 @@ extends GObjectBase
             && this.width .isValid()
             && this.height.isValid()
             && this.angle .isValid()
-            && this.round .isValid();
+            && this.round .isValid()
+            && super.isValid();
     }
 
 
 
     toValue()
     {
-        return new RectangleValue(
+        const rect = new RectangleValue(
             this.nodeId,
             this.x     .toValue(),
             this.y     .toValue(),
@@ -38952,6 +38864,10 @@ extends GObjectBase
             this.height.toValue(),
             this.angle .toValue(),
             this.round .toValue());
+
+        rect.props = this.props.toValue();
+
+        return rect;
     }
 }
 
@@ -51493,6 +51409,7 @@ extends Parameter
     oldValue = null;
     
 
+    itemName;
    
     
     // get valueText() { return this.controls[0].valueText; }
@@ -51518,6 +51435,8 @@ extends Parameter
 
         this.defaultValue                           = defaultValue;
         this.value                                  = defaultValue;
+
+        this.itemName = 'item';
 
 
         this.controls.push(new TextControl(
@@ -51657,11 +51576,11 @@ extends Parameter
         this.controls[0].readOnly = true;
         
         this.controls[0].textbox.style.fontStyle  = 'italic';
-        this.controls[0].textbox.style.fontWeight = 'bold';
+        this.controls[0].textbox.style.fontWeight = '500';
 
         const nItems = this.value.items.length;
 
-        this.controls[0].textbox.value = nItems + ' ' + countString('item', nItems);
+        this.controls[0].textbox.value = nItems + ' ' + countString(this.itemName, nItems);
 
 
         if (this.input ) this.input .updateControl();
@@ -63404,6 +63323,8 @@ extends OperatorBase
     addBaseParams()
     {
         this.addParam(this.paramStyle = new ListParam('props', 'properties', true, true, true));
+
+        this.paramStyle.itemName = 'style';
     }
 
 

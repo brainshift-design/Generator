@@ -1,5 +1,5 @@
 class StarValue
-extends ShapeBaseValue
+extends ShapeValue
 {
     x;
     y;

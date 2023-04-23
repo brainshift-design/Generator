@@ -1,5 +1,5 @@
 class LineValue
-extends ShapeBaseValue
+extends ShapeValue
 {
     x;
     y;

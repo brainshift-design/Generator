@@ -54,9 +54,11 @@ extends GObjectBase
         const round  = this.round  ? (await this.round .eval(parse)).toValue() : null;
 
 
+        let input = null;
+
         if (this.input)
         {
-            const input = (await this.input.eval(parse)).toValue();
+            input = (await this.input.eval(parse)).toValue();
 
             this.value = new RectangleValue(
                 this.nodeId,
@@ -82,13 +84,10 @@ extends GObjectBase
         genPushUpdateValue(parse, this.nodeId, 'round',  this.value.round );
 
 
-        const hasInput =     
-               this.input 
-            && RECTANGLE_TYPES.includes(this.input.type);   
+        await this.evalBase(parse, input);
 
-        if (    hasInput
-            && !this.options) this.objects = this.input.objects;
-        else                  await this.evalObjects(parse);
+
+        await this.evalObjects(parse);
 
 
         this.validate();
@@ -104,24 +103,24 @@ extends GObjectBase
             return;
             
             
-        if (   this.x 
-            && this.y 
-            && this.width 
-            && this.height 
-            && this.angle 
-            && this.round)
+        if (   this.value.x 
+            && this.value.y 
+            && this.value.width 
+            && this.value.height 
+            && this.value.angle 
+            && this.value.round)
         {
             this.objects = 
             [
                 new FigmaRectangle(
                                 this.nodeId,
                                 0,
-                                this.x     .toValue().value,
-                                this.y     .toValue().value,
-                                this.width .toValue().value,
-                                this.height.toValue().value,
-                                this.angle .toValue().value,
-                    Math.max(0, this.round .toValue().value))
+                                this.value.x     .value,
+                                this.value.y     .value,
+                                this.value.width .value,
+                                this.value.height.value,
+                                this.value.angle .value,
+                    Math.max(0, this.value.round .value))
             ];
         }
 
@@ -138,14 +137,15 @@ extends GObjectBase
             && this.width .isValid()
             && this.height.isValid()
             && this.angle .isValid()
-            && this.round .isValid();
+            && this.round .isValid()
+            && super.isValid();
     }
 
 
 
     toValue()
     {
-        return new RectangleValue(
+        const rect = new RectangleValue(
             this.nodeId,
             this.x     .toValue(),
             this.y     .toValue(),
@@ -153,5 +153,9 @@ extends GObjectBase
             this.height.toValue(),
             this.angle .toValue(),
             this.round .toValue());
+
+        rect.props = this.props.toValue();
+
+        return rect;
     }
 }

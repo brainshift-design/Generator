@@ -6,6 +6,7 @@ extends Parameter
     oldValue = null;
     
 
+    itemName;
    
     
     // get valueText() { return this.controls[0].valueText; }
@@ -31,6 +32,8 @@ extends Parameter
 
         this.defaultValue                           = defaultValue;
         this.value                                  = defaultValue;
+
+        this.itemName = 'item';
 
 
         this.controls.push(new TextControl(
@@ -170,11 +173,11 @@ extends Parameter
         this.controls[0].readOnly = true;
         
         this.controls[0].textbox.style.fontStyle  = 'italic';
-        this.controls[0].textbox.style.fontWeight = 'bold';
+        this.controls[0].textbox.style.fontWeight = '500';
 
         const nItems = this.value.items.length;
 
-        this.controls[0].textbox.value = nItems + ' ' + countString('item', nItems);
+        this.controls[0].textbox.value = nItems + ' ' + countString(this.itemName, nItems);
 
 
         if (this.input ) this.input .updateControl();

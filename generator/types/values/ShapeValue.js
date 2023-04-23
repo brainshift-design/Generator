@@ -3,13 +3,12 @@
     and objects hold stroke values directly, which incoming stroke values just set.
 */
 
-class ShapeBaseValue
+class ShapeValue
 extends GValue
 {
     nodeId;
 
-    // fill;
-    // stroke;
+    props;
 
 
 
@@ -18,9 +17,6 @@ extends GValue
         super(type);
 
         this.nodeId = nodeId; 
-
-        // this.fill   = FillValue.default.copy();
-        // this.stroke = StrokeValue.NaN  .copy();
     }
 
 
@@ -29,17 +25,14 @@ extends GValue
     {
         this.nodeId = base.nodeId;
 
-        // this.fill   = base.fill  .copy();
-        // this.stroke = base.stroke.copy();
+        this.props  = base.props.copy();
     }
 
 
 
     isValid()
     {
-        return true;
-        // return this.fill  .isValid()
-        //    && !this.stroke.isValid();
+        return this.props.isValid();
     }
 
 

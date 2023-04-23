@@ -1,5 +1,5 @@
 class RectangleValue
-extends ShapeBaseValue
+extends ShapeValue
 {
     x;
     y;
@@ -62,7 +62,8 @@ extends ShapeBaseValue
             && this.width .isValid()
             && this.height.isValid()
             && this.angle .isValid()
-            && this.round .isValid();
+            && this.round .isValid()
+            && super.isValid();
     }
 
 

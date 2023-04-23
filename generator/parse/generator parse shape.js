@@ -52,8 +52,8 @@ function genParseRectangle(parse)
         case 'props':  rect.props  = genParse(parse); break;
         }
     }
-    
-    
+
+
     parse.inParam = false;
     parse.nTab--;
 

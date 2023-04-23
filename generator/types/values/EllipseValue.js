@@ -1,5 +1,5 @@
 class EllipseValue
-extends ShapeBaseValue
+extends ShapeValue
 {
     x;
     y;

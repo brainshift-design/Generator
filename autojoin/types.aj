@@ -29,7 +29,7 @@
 
 //../generator/types/values/ColorStopValue.js
 
-../generator/types/values/ShapeBaseValue.js
+../generator/types/values/ShapeValue.js
 ../generator/types/values/RectangleValue.js
 ../generator/types/values/LineValue.js
 ../generator/types/values/EllipseValue.js

@@ -1,5 +1,5 @@
 class PolygonValue
-extends ShapeBaseValue
+extends ShapeValue
 {
     x;
     y;

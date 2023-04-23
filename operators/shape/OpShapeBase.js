@@ -14,6 +14,8 @@ extends OperatorBase
     addBaseParams()
     {
         this.addParam(this.paramStyle = new ListParam('props', 'properties', true, true, true));
+
+        this.paramStyle.itemName = 'style';
     }
 
 
