@@ -726,6 +726,22 @@ var figStyleArrays = new Array(); // [ {nodeId, [styles]}  ]
 function figDeleteObjectsFromNodeIds(nodeIds) {
     figObjectArrays = figObjectArrays.filter(a => !nodeIds.includes(a.nodeId));
 }
+function figDeleteObjectsExcept(nodeIds, ignoreObjects) {
+    for (let i = figObjectArrays.length - 1; i >= 0; i--) {
+        const objArray = figObjectArrays[i];
+        if (!nodeIds.includes(objArray.nodeId))
+            continue;
+        for (let j = objArray.objects.length - 1; j >= 0; j--) {
+            const obj = objArray.objects[j];
+            if (!ignoreObjects.find(o => obj.name == makeObjectName(o))) {
+                obj.remove();
+                removeFromArray(objArray.objects, obj);
+            }
+        }
+        if (isEmpty(objArray.objects))
+            removeFromArray(figObjectArrays, objArray);
+    }
+}
 function figDeleteAllObjects() {
     for (const obj of figma.currentPage.children)
         if (!!obj.getPluginData('id'))
@@ -966,6 +982,9 @@ figma.ui.onmessage = function (msg) {
             figDeleteObjectsFromNodeIds(msg.nodeIds);
             figDeleteStylesFromNodeIds(msg.nodeIds, msg.mustDelete);
             break;
+        case 'figDeleteObjectsExcept':
+            figDeleteObjectsExcept(msg.nodeIds, msg.ignoreObjects);
+            break;
         case 'figTriggerUndo':
             figma.triggerUndo();
             break;
@@ -1051,9 +1070,13 @@ function figUpdateObjects(msg) {
             removeFrom(figObjects.objects, figObj);
         if (!isValid(figObj)
             || figObj.removed) // no existing object, create new object
+         {
             figCreateObject(figObjects.objects, genObj);
+        }
         else if (figObj.getPluginData('type') == genObj.type.toString()) // update existing object
+         {
             figUpdateObject(figObj, genObj);
+        }
         else // delete existing object, create new object
          {
             figObj.remove();

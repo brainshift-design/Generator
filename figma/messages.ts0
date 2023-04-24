@@ -73,14 +73,18 @@ figma.ui.onmessage = function(msg)
      
         // case 'figUpdateViewportRect':                 figPostMessageToUi({cmd: 'uiReturnUpdateViewportRect', viewportRect: figma.viewport.bounds }); break;
      
-        case 'figUpdateObjectsAndStyles':                      
+        case 'figUpdateObjectsAndStyles':
             figUpdateObjects(msg);
             figUpdateStyles(msg);
             break;
      
-        case 'figDeleteObjectsAndStyles':             
-            figDeleteObjectsFromNodeIds(msg.nodeIds); 
-            figDeleteStylesFromNodeIds(msg.nodeIds, msg.mustDelete); 
+        case 'figDeleteObjectsAndStyles':
+            figDeleteObjectsFromNodeIds(msg.nodeIds);
+            figDeleteStylesFromNodeIds(msg.nodeIds, msg.mustDelete);
+            break; 
+    
+        case 'figDeleteObjectsExcept':             
+            figDeleteObjectsExcept(msg.nodeIds, msg.ignoreObjects);
             break; 
     
         case 'figTriggerUndo': figma.triggerUndo(); break; 

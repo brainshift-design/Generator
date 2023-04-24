@@ -55,7 +55,7 @@ extends GColorType
         let   c2    = this.c2    ? (await this.c2   .eval(parse)).toValue()             : null;
         let   c3    = this.c3    ? (await this.c3   .eval(parse)).toValue()             : null;
 
-console.log('this.c3 =', this.c3);
+
         if (this.input)
         {
             const input = (await this.input.eval(parse)).toValue();

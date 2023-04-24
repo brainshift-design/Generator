@@ -1,3 +1,7 @@
+var requestObjects = [];
+
+
+
 function createNode(nodeType, creatingButton = null, createdNodeId = -1, options = {})
 {
     let node;
@@ -597,7 +601,7 @@ function updateGraphNodes()
     [...graphView.selectedNodes,     
      ...graphView._prevSelectedNodes,
      ...graphView.lastSelectedNodes]
-        .forEach(n => n.updateNode());
+       .forEach(n => n.updateNode());
 }
 
 
@@ -742,15 +746,6 @@ function uiUpdateValuesAndObjects(requestId, actionId, updateNodeId, updateParam
         if (settings.logObjectUpdates) logObjectUpdates([...objects]);
         if (settings.logStyleUpdates)  logStyleUpdates ([...styles ]);
 
-        uiQueueMessageToFigma({
-            cmd:          'figDeleteObjectsAndStyles',
-            updateNodeId:  updateNodeId,
-            updateParamId: updateParamId,
-            nodeIds:       nodes.map(n => n.id),
-            objects:       [...objects],
-            styles:        [...styles ]});
-
-
         objects = objects.filter(o => nodeFromId(o.nodeId).active);
 
         uiQueueMessageToFigma({
@@ -760,6 +755,8 @@ function uiUpdateValuesAndObjects(requestId, actionId, updateNodeId, updateParam
             nodeIds:       nodes.map(n => n.id),
             objects:       [...objects],
             styles:        [...styles ]});
+
+        requestObjects.push(...objects);
     }
 
 
@@ -790,6 +787,16 @@ function uiUpdateValuesAndObjects(requestId, actionId, updateNodeId, updateParam
 
     if (isLastChunk)
     {
+        uiQueueMessageToFigma({
+            cmd:          'figDeleteObjectsExcept',
+            updateNodeId:  updateNodeId,
+            updateParamId: updateParamId,
+            nodeIds:       nodes.map(n => n.id),
+            ignoreObjects: [...requestObjects]});
+
+        requestObjects = [];
+
+
         if (graphView.loadingNodes)
         {
             uiSaveNodes(graph.nodes.map(n => n.id));
