@@ -59,6 +59,7 @@ extends GNumberType
 
         //if (!this.valid)
         //{
+            //genPushUpdateValue(parse, this.nodeId, 'value', this.value);
             genPushUpdateValue(parse, this.nodeId, 'start', start);
             genPushUpdateValue(parse, this.nodeId, 'step',  step );
         //}

@@ -55,9 +55,10 @@ extends GNumberType
 
         if (!this.valid)
         {
-            genPushUpdateValue(parse, this.nodeId, 'seed', seed);
-            genPushUpdateValue(parse, this.nodeId, 'min',  min );
-            genPushUpdateValue(parse, this.nodeId, 'max',  max );
+            //genPushUpdateValue(parse, this.nodeId, 'value', this.value);
+            genPushUpdateValue(parse, this.nodeId, 'seed',  seed);
+            genPushUpdateValue(parse, this.nodeId, 'min',   min );
+            genPushUpdateValue(parse, this.nodeId, 'max',   max );
         }
         
 

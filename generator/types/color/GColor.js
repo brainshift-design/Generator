@@ -46,7 +46,7 @@ extends GColorType
 
     async eval(parse)
     {
-        if (this.valid)//this.isCached())
+        if (this.isCached())
             return this;
 
             
@@ -55,7 +55,7 @@ extends GColorType
         let   c2    = this.c2    ? (await this.c2   .eval(parse)).toValue()             : null;
         let   c3    = this.c3    ? (await this.c3   .eval(parse)).toValue()             : null;
 
-
+console.log('this.c3 =', this.c3);
         if (this.input)
         {
             const input = (await this.input.eval(parse)).toValue();
@@ -132,9 +132,9 @@ extends GColorType
             }
 
 
-            this.c1 = this.value.c1.copy();
-            this.c2 = this.value.c2.copy();
-            this.c3 = this.value.c3.copy();
+            if (!this.c1) this.c1 = this.value.c1.copy();
+            if (!this.c2) this.c2 = this.value.c2.copy();
+            if (!this.c3) this.c3 = this.value.c3.copy();
         }
 
 

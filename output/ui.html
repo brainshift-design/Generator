@@ -10904,28 +10904,10 @@ extends GOperator
         genPushUpdateValue(parse, this.nodeId, 'value', this.value);
 
 
-        // this.evalObjects(parse);
-
-        
         this.validate();
 
         return this;
     }
-
-
-
-    // evalObjects(parse)
-    // {
-    //     for (let i = 0; i < this.objects.length; i++)
-    //     {
-    //         const obj = this.objects[i];
-
-    //         obj.nodeId   = this.nodeId;
-    //         obj.objectId = i;
-    //     }
-
-    //     super.evalObjects(parse);
-    // }
 
 
 
@@ -11933,6 +11915,7 @@ extends GNumberType
 
         //if (!this.valid)
         //{
+            //genPushUpdateValue(parse, this.nodeId, 'value', this.value);
             genPushUpdateValue(parse, this.nodeId, 'start', start);
             genPushUpdateValue(parse, this.nodeId, 'step',  step );
         //}
@@ -12003,9 +11986,10 @@ extends GNumberType
 
         if (!this.valid)
         {
-            genPushUpdateValue(parse, this.nodeId, 'seed', seed);
-            genPushUpdateValue(parse, this.nodeId, 'min',  min );
-            genPushUpdateValue(parse, this.nodeId, 'max',  max );
+            //genPushUpdateValue(parse, this.nodeId, 'value', this.value);
+            genPushUpdateValue(parse, this.nodeId, 'seed',  seed);
+            genPushUpdateValue(parse, this.nodeId, 'min',   min );
+            genPushUpdateValue(parse, this.nodeId, 'max',   max );
         }
         
 
@@ -14825,7 +14809,7 @@ extends GColorType
 
     async eval(parse)
     {
-        if (this.valid)//this.isCached())
+        if (this.isCached())
             return this;
 
             
@@ -14834,7 +14818,7 @@ extends GColorType
         let   c2    = this.c2    ? (await this.c2   .eval(parse)).toValue()             : null;
         let   c3    = this.c3    ? (await this.c3   .eval(parse)).toValue()             : null;
 
-
+console.log('this.c3 =', this.c3);
         if (this.input)
         {
             const input = (await this.input.eval(parse)).toValue();
@@ -14911,9 +14895,9 @@ extends GColorType
             }
 
 
-            this.c1 = this.value.c1.copy();
-            this.c2 = this.value.c2.copy();
-            this.c3 = this.value.c3.copy();
+            if (!this.c1) this.c1 = this.value.c1.copy();
+            if (!this.c2) this.c2 = this.value.c2.copy();
+            if (!this.c3) this.c3 = this.value.c3.copy();
         }
 
 
@@ -33697,28 +33681,10 @@ extends GOperator
         genPushUpdateValue(parse, this.nodeId, 'value', this.value);
 
 
-        // this.evalObjects(parse);
-
-        
         this.validate();
 
         return this;
     }
-
-
-
-    // evalObjects(parse)
-    // {
-    //     for (let i = 0; i < this.objects.length; i++)
-    //     {
-    //         const obj = this.objects[i];
-
-    //         obj.nodeId   = this.nodeId;
-    //         obj.objectId = i;
-    //     }
-
-    //     super.evalObjects(parse);
-    // }
 
 
 
@@ -34726,6 +34692,7 @@ extends GNumberType
 
         //if (!this.valid)
         //{
+            //genPushUpdateValue(parse, this.nodeId, 'value', this.value);
             genPushUpdateValue(parse, this.nodeId, 'start', start);
             genPushUpdateValue(parse, this.nodeId, 'step',  step );
         //}
@@ -34796,9 +34763,10 @@ extends GNumberType
 
         if (!this.valid)
         {
-            genPushUpdateValue(parse, this.nodeId, 'seed', seed);
-            genPushUpdateValue(parse, this.nodeId, 'min',  min );
-            genPushUpdateValue(parse, this.nodeId, 'max',  max );
+            //genPushUpdateValue(parse, this.nodeId, 'value', this.value);
+            genPushUpdateValue(parse, this.nodeId, 'seed',  seed);
+            genPushUpdateValue(parse, this.nodeId, 'min',   min );
+            genPushUpdateValue(parse, this.nodeId, 'max',   max );
         }
         
 
@@ -37618,7 +37586,7 @@ extends GColorType
 
     async eval(parse)
     {
-        if (this.valid)//this.isCached())
+        if (this.isCached())
             return this;
 
             
@@ -37627,7 +37595,7 @@ extends GColorType
         let   c2    = this.c2    ? (await this.c2   .eval(parse)).toValue()             : null;
         let   c3    = this.c3    ? (await this.c3   .eval(parse)).toValue()             : null;
 
-
+console.log('this.c3 =', this.c3);
         if (this.input)
         {
             const input = (await this.input.eval(parse)).toValue();
@@ -37704,9 +37672,9 @@ extends GColorType
             }
 
 
-            this.c1 = this.value.c1.copy();
-            this.c2 = this.value.c2.copy();
-            this.c3 = this.value.c3.copy();
+            if (!this.c1) this.c1 = this.value.c1.copy();
+            if (!this.c2) this.c2 = this.value.c2.copy();
+            if (!this.c3) this.c3 = this.value.c3.copy();
         }
 
 
@@ -54537,7 +54505,7 @@ class Wire
         this.curve  .style.stroke          = wireStyle;
         this.curve2 .style.stroke          = rgb2style(rgbDocumentBody);
     
-        this.curve  .style.strokeDasharray = unknown ? 1.7 * graph.currentPage.zoom : 0;
+        this.curve  .style.strokeDasharray = unknown ? (5.4 * graph.currentPage.zoom) + ' ' + (2.7 * graph.currentPage.zoom) : '0';
     
         this. inBall.style.fill            = wireStyle;
         this.outBall.style.fill            = wireStyle;
@@ -54567,10 +54535,10 @@ class Wire
         // else if (graph.currentPage.zoom < 1  ) width += 1 * (1 - graph.currentPage.zoom);
     
     
-        this.curve .setAttribute('stroke-width', width * (listType ? (unknown ? 3.6 : 3.2) : (unknown ? 1.3 : 1)));
+        this.curve .setAttribute('stroke-width', width * (listType ? (unknown ? 3.6 : 3.2) : (unknown ? 1.2 : 1)));
         this.curve2.setAttribute('stroke-width', width * 1.4);
 
-        this.xp1   .setAttribute('stroke-width', width * (listType ? (unknown ? 3.6 : 3.2) : (unknown ? 1.3 : 1)));
+        this.xp1   .setAttribute('stroke-width', width * (listType ? (unknown ? 3.6 : 3.2) : (unknown ? 1.2 : 1)));
         this.xp2   .setAttribute('stroke-width', width * 1.4);
     
         this.curve2.setAttribute('display', listType ? 'inline' : 'none');
