@@ -15,6 +15,9 @@ extends OpShapeBase
     {
         super(POLYGON, 'poly', 'polygon');
 
+        this.canDisable = true;
+
+        
         this.addInput (this.createInputForObjects([POLYGON_VALUE], getNodeInputValuesForUndo));
         this.addOutput(new Output([POLYGON_VALUE], this.output_genRequest));
 

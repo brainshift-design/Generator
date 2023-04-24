@@ -45994,7 +45994,7 @@ function initGeneratorMenus()
         menuItemNodeEdit           = new MenuItem('Edit...',         {callback: e => { hideAllMenus(); graphView.editSelectedCustomNode(); }}),
                                      new MenuItem('',                {separator: true}),
         // menuItemNodeActivate    = new MenuItem('Activate',        {callback: () => makeSelectedNodesActive()}),
-        menuItemNodeEnableDisable  = new MenuItem('Enable/Disable',  {shortcut:  osCtrlShift() + 'E',  callback: () => actionManager.do(new ToggleDisableNodesAction(ctedNodes.map(n => n.id)))}),
+        menuItemNodeEnableDisable  = new MenuItem('Enable/Disable',  {shortcut:  osCtrlShift() + 'E',  callback: () => actionManager.do(new ToggleDisableNodesAction(graphView.selectedNodes.map(n => n.id)))}),
         menuItemNodeSep3           = new MenuItem('',                {separator: true}),
         menuItemNodeRemove         = new MenuItem('Remove',          {shortcut:  osCtrl() + '⌫',             callback: e => { hideAllMenus(); graphView.removeSelectedNodes(true); }})]);
 
@@ -56256,6 +56256,7 @@ Operator.prototype.createInfo = function()
     this.divDisabled.style.height        =  100;
     this.divDisabled.style.background    = '#e88b';
     this.divDisabled.style.pointerEvents = 'none';
+    //this.divDisabled.style.zIndex        = 100;
 };
 
 
@@ -56730,7 +56731,7 @@ Operator.prototype.updateDisabled = function()
     const height = Math.min(this.measureData.divOffset.width, this.measureData.divOffset.height) + 70;
 
     this.divDisabled.style.display   = this.enabled ? 'none' : 'inline-block';
-    this.divDisabled.style.zIndex    = 1000;
+    this.divDisabled.style.zIndex    = 10000;
     this.divDisabled.style.height    = height;
     this.divDisabled.style.transform = 'rotate(45deg)';
     this.divDisabled.style.left      = (this.measureData.divOffset.width  - this.measureData.disabledOffset.width ) / 2;
@@ -64637,6 +64638,8 @@ extends OpShapeBase
     {
         super(RECTANGLE, 'rect', 'rectangle');
 
+        this.canDisable = true;
+        
 
         this.addInput (this.createInputForObjects([RECTANGLE_VALUE], getNodeInputValuesForUndo));
         this.addOutput(new Output([RECTANGLE_VALUE], this.output_genRequest));
@@ -64689,6 +64692,9 @@ extends OpShapeBase
     {
         super(LINE, 'line', 'line');
 
+        this.canDisable = true;
+
+        
         this.addInput (this.createInputForObjects([LINE_VALUE], getNodeInputValuesForUndo));
         this.addOutput(new Output([LINE_VALUE], this.output_genRequest));
 
@@ -64722,6 +64728,9 @@ extends OpShapeBase
     constructor()
     {
         super(ELLIPSE, 'ellipse', 'ellipse');
+
+        this.canDisable = true;
+        
 
         this.addInput (this.createInputForObjects([ELLIPSE_VALUE], getNodeInputValuesForUndo));
         this.addOutput(new Output([ELLIPSE_VALUE], this.output_genRequest));
@@ -64761,6 +64770,9 @@ extends OpShapeBase
     {
         super(POLYGON, 'poly', 'polygon');
 
+        this.canDisable = true;
+
+        
         this.addInput (this.createInputForObjects([POLYGON_VALUE], getNodeInputValuesForUndo));
         this.addOutput(new Output([POLYGON_VALUE], this.output_genRequest));
 
@@ -64814,6 +64826,9 @@ extends OpShapeBase
     {
         super(STAR, 'star', 'star');
 
+        this.canDisable = true;
+
+        
         this.addInput (this.createInputForObjects([STAR_VALUE], getNodeInputValuesForUndo));
         this.addOutput(new Output([STAR_VALUE], this.output_genRequest));
 

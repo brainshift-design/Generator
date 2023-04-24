@@ -447,6 +447,7 @@ Operator.prototype.createInfo = function()
     this.divDisabled.style.height        =  100;
     this.divDisabled.style.background    = '#e88b';
     this.divDisabled.style.pointerEvents = 'none';
+    //this.divDisabled.style.zIndex        = 100;
 };
 
 

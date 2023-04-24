@@ -16,6 +16,9 @@ extends OpShapeBase
     {
         super(STAR, 'star', 'star');
 
+        this.canDisable = true;
+
+        
         this.addInput (this.createInputForObjects([STAR_VALUE], getNodeInputValuesForUndo));
         this.addOutput(new Output([STAR_VALUE], this.output_genRequest));
 

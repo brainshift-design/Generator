@@ -128,7 +128,7 @@ Operator.prototype.updateDisabled = function()
     const height = Math.min(this.measureData.divOffset.width, this.measureData.divOffset.height) + 70;
 
     this.divDisabled.style.display   = this.enabled ? 'none' : 'inline-block';
-    this.divDisabled.style.zIndex    = 1000;
+    this.divDisabled.style.zIndex    = 10000;
     this.divDisabled.style.height    = height;
     this.divDisabled.style.transform = 'rotate(45deg)';
     this.divDisabled.style.left      = (this.measureData.divOffset.width  - this.measureData.disabledOffset.width ) / 2;

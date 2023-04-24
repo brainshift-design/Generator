@@ -12,6 +12,9 @@ extends OpShapeBase
     {
         super(LINE, 'line', 'line');
 
+        this.canDisable = true;
+
+        
         this.addInput (this.createInputForObjects([LINE_VALUE], getNodeInputValuesForUndo));
         this.addOutput(new Output([LINE_VALUE], this.output_genRequest));
 

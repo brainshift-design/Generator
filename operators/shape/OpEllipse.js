@@ -13,6 +13,9 @@ extends OpShapeBase
     {
         super(ELLIPSE, 'ellipse', 'ellipse');
 
+        this.canDisable = true;
+        
+
         this.addInput (this.createInputForObjects([ELLIPSE_VALUE], getNodeInputValuesForUndo));
         this.addOutput(new Output([ELLIPSE_VALUE], this.output_genRequest));
 
