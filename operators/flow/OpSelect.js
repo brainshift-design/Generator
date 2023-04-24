@@ -9,7 +9,7 @@ extends OperatorBase
     {
         super(SELECT, 'select', 'select');
 
-        this.alwaysSaveParams = true;
+        //this.alwaysSaveParams = true;
 
 
         this.addInput(new Input(LIST_TYPES, getNodeInputValuesForUndo));
@@ -75,8 +75,7 @@ extends OperatorBase
             this.removeParam(paramValue);
 
 
-        if (  !paramValue 
-            && val) 
+        if (!paramValue && val) 
             paramValue = this.createAndInsertParamByType(0, val.type, 'value', false, false, false, true);
 
         

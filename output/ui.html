@@ -8022,6 +8022,10 @@ const STAR_VALUE       = 'STAR#';
 const STAR             = 'STAR'; 
 const STAR_TYPES       = [STAR_VALUE, STAR];
 
+const TEXTSHAPE_VALUE  = 'TXTS#';
+const TEXTSHAPE        = 'TXTS'; 
+const TEXTSHAPE_TYPES  = [TEXTSHAPE_VALUE, TEXTSHAPE];
+
 
 const SHAPE_VALUES =
 [
@@ -8031,7 +8035,8 @@ const SHAPE_VALUES =
     LINE_VALUE,
     ELLIPSE_VALUE,
     POLYGON_VALUE,
-    STAR_VALUE
+    STAR_VALUE,
+    TEXTSHAPE_VALUE
 ];
 
 
@@ -8043,8 +8048,8 @@ const SHAPE_TYPES =
     ...LINE_TYPES,
     ...ELLIPSE_TYPES,
     ...POLYGON_TYPES,
-    ...STAR_TYPES//,
-    //TEXT
+    ...STAR_TYPES,
+    ...TEXTSHAPE_TYPES
 ];
 
 
@@ -10838,6 +10843,9 @@ function parseStarValue(str, i = -1)
 
 
 
+
+
+
 class GList
 extends GOperator
 {
@@ -11077,7 +11085,6 @@ extends GOperator
         if (this.input)
         {
             const input = (await this.input.eval(parse)).toValue();
-
 
             length = input.items.length;
 
@@ -17174,6 +17181,9 @@ extends GShape
         return star;
    }
 }
+
+
+
 
 
 class GColorStyle
@@ -30819,6 +30829,10 @@ const STAR_VALUE       = 'STAR#';
 const STAR             = 'STAR'; 
 const STAR_TYPES       = [STAR_VALUE, STAR];
 
+const TEXTSHAPE_VALUE  = 'TXTS#';
+const TEXTSHAPE        = 'TXTS'; 
+const TEXTSHAPE_TYPES  = [TEXTSHAPE_VALUE, TEXTSHAPE];
+
 
 const SHAPE_VALUES =
 [
@@ -30828,7 +30842,8 @@ const SHAPE_VALUES =
     LINE_VALUE,
     ELLIPSE_VALUE,
     POLYGON_VALUE,
-    STAR_VALUE
+    STAR_VALUE,
+    TEXTSHAPE_VALUE
 ];
 
 
@@ -30840,8 +30855,8 @@ const SHAPE_TYPES =
     ...LINE_TYPES,
     ...ELLIPSE_TYPES,
     ...POLYGON_TYPES,
-    ...STAR_TYPES//,
-    //TEXT
+    ...STAR_TYPES,
+    ...TEXTSHAPE_TYPES
 ];
 
 
@@ -33635,6 +33650,9 @@ function parseStarValue(str, i = -1)
 
 
 
+
+
+
 class GList
 extends GOperator
 {
@@ -33874,7 +33892,6 @@ extends GOperator
         if (this.input)
         {
             const input = (await this.input.eval(parse)).toValue();
-
 
             length = input.items.length;
 
@@ -39973,6 +39990,9 @@ extends GShape
 }
 
 
+
+
+
 class GColorStyle
 extends GShape
 {
@@ -44521,7 +44541,7 @@ const iconColor             = '<svg width="13" height="15" viewBox="0 0 13 15" f
 const iconRandomColor       = '<svg width="13" height="15" viewBox="0 0 13 15" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M11.9099 3.43385C10.8155 2.2502 9.24936 1.50909 7.51016 1.50909C4.20148 1.50909 1.51926 4.19132 1.51926 7.5C1.51926 10.8087 4.20148 13.4909 7.51016 13.4909C9.24936 13.4909 10.8155 12.7498 11.9099 11.5662" stroke="white" stroke-width="1.2"/><path d="M6.77317 8.80159V8.71763C6.77533 8.32795 6.81193 8.01793 6.88297 7.78757C6.95617 7.55721 7.05951 7.37206 7.19299 7.23212C7.32647 7.09003 7.48902 6.95978 7.68063 6.84137C7.81195 6.75956 7.92929 6.67021 8.03263 6.57333C8.13812 6.4743 8.22101 6.3645 8.28129 6.24393C8.34157 6.12122 8.37171 5.98451 8.37171 5.8338C8.37171 5.66372 8.33188 5.51625 8.25222 5.39138C8.17257 5.26651 8.06492 5.16963 7.92929 5.10074C7.79581 5.03184 7.64618 4.9974 7.4804 4.9974C7.32755 4.9974 7.18223 5.03077 7.04444 5.09751C6.90881 5.16209 6.79578 5.26113 6.70536 5.39461C6.61709 5.52594 6.56757 5.69279 6.55681 5.89516H5.40715C5.41791 5.48611 5.51695 5.14379 5.70425 4.86822C5.89371 4.59265 6.14345 4.38597 6.45347 4.24818C6.76564 4.1104 7.1101 4.0415 7.48686 4.0415C7.89807 4.0415 8.25976 4.11363 8.57193 4.25787C8.88626 4.40212 9.13061 4.60772 9.305 4.87468C9.48154 5.13949 9.56981 5.45381 9.56981 5.81766C9.56981 6.06309 9.52998 6.28269 9.45032 6.47645C9.37281 6.67021 9.26194 6.84244 9.11769 6.99315C8.97345 7.14385 8.80229 7.27841 8.60423 7.39682C8.42984 7.50446 8.28667 7.61642 8.17472 7.73267C8.06492 7.84893 7.98311 7.98564 7.92929 8.1428C7.87762 8.29781 7.85071 8.48942 7.84855 8.71763V8.80159H6.77317Z" fill="white"/><path d="M6.7784 10.8136C6.94344 10.9761 7.14021 11.0574 7.36872 11.0574C7.52106 11.0574 7.65943 11.0205 7.78384 10.9469C7.91079 10.8707 8.01235 10.7692 8.08852 10.6422C8.16723 10.5153 8.20658 10.3744 8.20658 10.2195C8.20658 9.99099 8.1228 9.79549 7.95522 9.63299C7.79019 9.4705 7.59469 9.38925 7.36872 9.38925C7.14021 9.38925 6.94344 9.4705 6.7784 9.63299C6.61337 9.79549 6.53085 9.99099 6.53085 10.2195C6.53085 10.4531 6.61337 10.6511 6.7784 10.8136Z" fill="white"/></svg>';
 const iconValidColor        = '<svg width="17" height="15" viewBox="-1 0 17 15" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M11.8409 11.5662C10.7465 12.7498 9.18038 13.4909 7.44118 13.4909C4.13249 13.4909 1.45027 10.8087 1.45027 7.5C1.45027 4.19131 4.13249 1.50909 7.44118 1.50909C8.66322 1.50909 9.80806 2.02212 10.7556 2.65033" stroke="white" stroke-width="1.2"/><path fill-rule="evenodd" clip-rule="evenodd" d="M15.6832 3.62548L9.18921 10.1195L5.38744 6.31769L6.52965 5.17548L9.18921 7.83504L14.5411 2.48326L15.6832 3.62548Z" fill="white"/></svg>';
 const iconCorrectColor      = '<svg width="14" height="15" viewBox="0 0 14 15" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M11.9123 3.43385C10.8179 2.2502 9.25181 1.50909 7.51261 1.50909C4.20392 1.50909 1.5217 4.19132 1.5217 7.5C1.5217 10.8087 4.20392 13.4909 7.51261 13.4909C9.25181 13.4909 10.8179 12.7498 11.9123 11.5662" stroke="white" stroke-width="1.2"/><path d="M6.97348 10.659L7.06123 8.24587L5.02106 9.54017L4.49457 8.61881L6.64443 7.5L4.49457 6.3812L5.02106 5.45983L7.06123 6.75414L6.97348 4.34103H8.02648L7.93873 6.75414L9.9789 5.45983L10.5054 6.3812L8.35554 7.5L10.5054 8.61881L9.9789 9.54017L7.93873 8.24587L8.02648 10.659H6.97348Z" fill="white"/></svg>';
-const iconWebContrast       = '<svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M12 4H8V12H10V11H9V5H11V6H12V4Z" fill="white"/><path d="M12 4H8V12H10V11H9V5H11V6H12V4Z" fill="white"/><path d="M12 4H8V12H10V11H9V5H11V6H12V4Z" fill="white"/><path fill-rule="evenodd" clip-rule="evenodd" d="M0 1.5C0 0.671573 0.671573 0 1.5 0H14.5C15.3284 0 16 0.671573 16 1.5V14.5C16 15.3284 15.3284 16 14.5 16H1.5C0.671573 16 0 15.3284 0 14.5V1.5ZM8 1H14.5C14.7761 1 15 1.22386 15 1.5V14.5C15 14.7761 14.7761 15 14.5 15H8V12H5.67075V11H7V5H5.09626V6.23481H3.90374V4H8V1Z" fill="white"/></svg>';
+const iconWebContrast       = '<svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M12 4H8V12H10V11H9V5H11V6.267H12V4Z" fill="white"/><path d="M12 4H8V12H10V11H9V5H11V6.267H12V4Z" fill="white"/><path d="M12 4H8V12H10V11H9V5H11V6.267H12V4Z" fill="white"/><path fill-rule="evenodd" clip-rule="evenodd" d="M0 1.5C0 0.671573 0.671573 0 1.5 0H14.5C15.3284 0 16 0.671573 16 1.5V14.5C16 15.3284 15.3284 16 14.5 16H1.5C0.671573 16 0 15.3284 0 14.5V1.5ZM8 1H14.5C14.7761 1 15 1.22386 15 1.5V14.5C15 14.7761 14.7761 15 14.5 15H8V12.2H5.47075V10.8H6.8V5.2H5.22306V6.73713H3.80043V3.8H8V1Z" fill="white"/></svg>';
 const iconColorblind        = '<svg width="21" height="21" viewBox="0 0 21 21" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M10.5 19.5371C15.491 19.5371 19.5371 15.491 19.5371 10.5C19.5371 5.50898 15.491 1.46295 10.5 1.46295C5.50898 1.46295 1.46295 5.50898 1.46295 10.5C1.46295 15.491 5.50898 19.5371 10.5 19.5371Z" stroke="white"/><path fill-rule="evenodd" clip-rule="evenodd" d="M9.37288 4.83079C9.73798 4.75856 10.1149 4.7208 10.5 4.7208C10.8851 4.7208 11.262 4.75856 11.6271 4.83079L11.3554 6.20417C11.0793 6.14955 10.7934 6.1208 10.5 6.1208C10.2066 6.1208 9.92068 6.14955 9.64458 6.20417L9.37288 4.83079ZM5.69463 7.2885C6.11636 6.65857 6.65856 6.11636 7.28849 5.69464L8.06734 6.85799C7.58948 7.17791 7.17791 7.58948 6.85799 8.06734L5.69463 7.2885ZM13.7115 5.69464C14.3414 6.11636 14.8836 6.65857 15.3054 7.2885L14.142 8.06734C13.8221 7.58948 13.4105 7.17791 12.9327 6.85799L13.7115 5.69464ZM16.1692 9.37289C16.2414 9.73799 16.2792 10.1149 16.2792 10.5C16.2792 10.8851 16.2414 11.262 16.1692 11.6271L14.7958 11.3554C14.8504 11.0793 14.8792 10.7934 14.8792 10.5C14.8792 10.2066 14.8504 9.92068 14.7958 9.64458L16.1692 9.37289ZM4.7208 10.5C4.7208 10.1149 4.75856 9.73799 4.83078 9.37289L6.20417 9.64458C6.14955 9.92068 6.1208 10.2066 6.1208 10.5C6.1208 10.7934 6.14955 11.0793 6.20417 11.3554L4.83078 11.6271C4.75856 11.262 4.7208 10.8851 4.7208 10.5ZM7.28849 15.3054C6.65856 14.8836 6.11636 14.3414 5.69463 13.7115L6.85799 12.9327C7.17791 13.4105 7.58948 13.8221 8.06734 14.142L7.28849 15.3054ZM15.3054 13.7115C14.8836 14.3414 14.3414 14.8836 13.7115 15.3054L12.9327 14.142C13.4105 13.8221 13.8221 13.4105 14.142 12.9327L15.3054 13.7115ZM10.5 16.2792C10.1149 16.2792 9.73798 16.2414 9.37288 16.1692L9.64458 14.7958C9.92068 14.8505 10.2066 14.8792 10.5 14.8792C10.7934 14.8792 11.0793 14.8505 11.3554 14.7958L11.6271 16.1692C11.262 16.2414 10.8851 16.2792 10.5 16.2792Z" fill="white"/><path d="M10.5 11.9909C11.3234 11.9909 11.9909 11.3234 11.9909 10.5C11.9909 9.6766 11.3234 9.0091 10.5 9.0091C9.6766 9.0091 9.0091 9.6766 9.0091 10.5C9.0091 11.3234 9.6766 11.9909 10.5 11.9909Z" fill="white"/></svg>';
 const iconColorInterpolate  = '<svg width="18" height="19" viewBox="0 0 18 19" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="9.5" cy="2.5" r="2.5" fill="white" fill-opacity="0.1"/><circle cx="9.5" cy="2.5" r="2" stroke="white" stroke-opacity="0.4"/><circle cx="2.5" cy="9.5" r="2.5" fill="white" fill-opacity="0.4"/><circle cx="2.5" cy="9.5" r="2" stroke="white" stroke-opacity="0.61"/><circle cx="9.5" cy="16.5" r="2.5" fill="white" fill-opacity="0.8"/><circle cx="9.5" cy="16.5" r="2" stroke="white" stroke-opacity="0.9"/><circle cx="14.5" cy="14.5" r="2" fill="white" stroke="white"/><circle cx="14.5" cy="4.5" r="2" stroke="white" stroke-opacity="0.4"/><circle cx="4.5" cy="14.5" r="2.5" fill="white" fill-opacity="0.6"/><circle cx="4.5" cy="14.5" r="2" stroke="white" stroke-opacity="0.8"/><circle cx="4.5" cy="4.5" r="2.5" fill="white" fill-opacity="0.2"/><circle cx="4.5" cy="4.5" r="2" stroke="white" stroke-opacity="0.55"/></svg>';
 const iconColorBlend        = '<svg width="14" height="15" viewBox="-1 0 15 15" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M-4.02642e-07 9C-5.48785e-07 10.5913 0.63214 12.1174 1.75736 13.2426C2.88258 14.3679 4.4087 15 6 15C7.5913 15 9.11742 14.3679 10.2426 13.2426C11.3679 12.1174 12 10.5913 12 9L6 9L-4.02642e-07 9Z" fill="white"/><path d="M0.499999 9.2647C0.499999 7.80555 0.917848 6.69229 1.85417 5.39097C2.66503 4.26403 3.84136 3.02592 5.4562 1.32626C5.64008 1.13273 5.82964 0.933209 6.02499 0.727189C6.22035 0.933214 6.40992 1.13274 6.5938 1.32628C8.20864 3.02593 9.38496 4.26403 10.1958 5.39097C11.1321 6.69229 11.55 7.80555 11.55 9.26471C11.55 12.1331 9.09987 14.5 6.02499 14.5C2.95012 14.5 0.499998 12.1331 0.499999 9.2647Z" stroke="white"/></svg>';
@@ -44540,6 +44560,8 @@ const iconLine              = '<svg width="17" height="17" viewBox="0 1 17 18" f
 const iconEllipse           = '<svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="8" cy="8" r="7.5" stroke="white"/></svg>';
 const iconPolygon           = '<svg width="20" height="16" viewBox="0 0 20 16" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M1.82238 15.4885L10.0496 1.23853L18.2769 15.4885H1.82238Z" stroke="white"/></svg>';
 const iconStar              = '<svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M8.8156 2.24924L10.4021 7.13198L10.5144 7.47747H10.8776H16.0116L11.8581 10.4952L11.5642 10.7087L11.6765 11.0542L13.263 15.9369L9.10949 12.9192L8.8156 12.7057L8.5217 12.9192L4.3682 15.9369L5.9547 11.0542L6.06695 10.7087L5.77306 10.4952L1.61955 7.47747H6.75357H7.11684L7.2291 7.13198L8.8156 2.24924Z" stroke="white"/></svg>';
+const iconTextShape         = '<svg width="13" height="16" viewBox="0 0 13 16" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M0 4V0H13V4H12V1H7V15H10V16H3V15H6V1H1V4H0Z" fill="white"/></svg>';
+const iconSelected          = '<svg width="19" height="19" viewBox="0 0 19 19" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="4.5" y="4.5" width="4" height="4" stroke="white"/><circle cx="12.5" cy="6.5" r="2" stroke="white"/><line x1="4.4364" y1="15.069" x2="8.9364" y2="10.3022" stroke="white"/><path d="M10.3349 14.75L12.5 11L14.6651 14.75H10.3349Z" stroke="white"/><rect x="0.5" y="0.5" width="2" height="2" stroke="white"/><rect x="0.5" y="16.5" width="2" height="2" stroke="white"/><rect x="16.5" y="16.5" width="2" height="2" stroke="white"/><rect x="16.5" y="0.5" width="2" height="2" stroke="white"/><rect x="3" y="1" width="13" height="1" fill="white"/><rect x="3" y="17" width="13" height="1" fill="white"/><rect x="17" y="16" width="13" height="1" transform="rotate(-90 17 16)" fill="white"/><rect x="1" y="16" width="13" height="1" transform="rotate(-90 1 16)" fill="white"/></svg>';
  
 const iconGroup             = '<svg width="17" height="17" viewBox="0 -1 17 17" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M3 0.5H14C15.3807 0.5 16.5 1.61929 16.5 3V15.5H0.5V3C0.5 1.61929 1.61929 0.5 3 0.5Z" stroke="white"/><rect width="4" height="1" transform="matrix(-1 0 0 1 14 4)" fill="white"/><rect width="4" height="1" transform="matrix(-1 0 0 1 9 6)" fill="white"/><rect width="4" height="1" transform="matrix(-1 0 0 1 12 9)" fill="white"/><rect width="4" height="1" transform="matrix(-1 0 0 1 7 11)" fill="white"/></svg>';
 const iconGroupNode         = '<svg width="15" height="18" viewBox="0 -3 15 18" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M3 0.5H12C13.3807 0.5 14.5 1.61929 14.5 3V14.5H0.5V3C0.5 1.61929 1.61929 0.5 3 0.5Z" stroke="white"/><rect width="9" height="1" transform="matrix(-1 0 0 1 12 5)" fill="white"/><rect width="9" height="1" transform="matrix(-1 0 0 1 12 8)" fill="white"/><rect width="9" height="1" transform="matrix(-1 0 0 1 12 11)" fill="white"/></svg>';
@@ -45657,6 +45679,10 @@ var menuItemStyleStroke;
 var menuItemStyleSep1;
 
 
+var menuItemShapeSep1;
+var menuItemShapeSelected;
+
+
 var menuItemDataMode;
 
 var menuItemLogMessages;
@@ -45948,11 +45974,15 @@ function initGeneratorMenus()
     
     menuShape = new Menu('Shapes', true, false);
     menuShape.addItems([
-        new MenuItem('Rectangle', {icon: iconRectangle, callback: e => actionManager.do(getCreateNodeAction(RECTANGLE, btnShape.div, getCreateOptions(e)))}),
-        new MenuItem('Line',      {icon: iconLine,      callback: e => actionManager.do(getCreateNodeAction(LINE,      btnShape.div, getCreateOptions(e)))}),
-        new MenuItem('Ellipse',   {icon: iconEllipse,   callback: e => actionManager.do(getCreateNodeAction(ELLIPSE,   btnShape.div, getCreateOptions(e)))}),
-        new MenuItem('Polygon',   {icon: iconPolygon,   callback: e => actionManager.do(getCreateNodeAction(POLYGON,   btnShape.div, getCreateOptions(e)))}),
-        new MenuItem('Star',      {icon: iconStar,      callback: e => actionManager.do(getCreateNodeAction(STAR,      btnShape.div, getCreateOptions(e)))})]);
+                                new MenuItem('Rectangle',        {icon: iconRectangle, callback: e => actionManager.do(getCreateNodeAction(RECTANGLE, btnShape.div, getCreateOptions(e)))}),
+                                new MenuItem('Line',             {icon: iconLine,      callback: e => actionManager.do(getCreateNodeAction(LINE,      btnShape.div, getCreateOptions(e)))}),
+                                new MenuItem('Ellipse',          {icon: iconEllipse,   callback: e => actionManager.do(getCreateNodeAction(ELLIPSE,   btnShape.div, getCreateOptions(e)))}),
+                                new MenuItem('Polygon',          {icon: iconPolygon,   callback: e => actionManager.do(getCreateNodeAction(POLYGON,   btnShape.div, getCreateOptions(e)))}),
+                                new MenuItem('Star',             {icon: iconStar,      callback: e => actionManager.do(getCreateNodeAction(STAR,      btnShape.div, getCreateOptions(e)))}),
+                                new MenuItem('',                 {separator: true}),
+                                new MenuItem('Text',             {icon: iconTextShape, callback: e => actionManager.do(getCreateNodeAction(TEXTSHAPE, btnShape.div, getCreateOptions(e)))}),
+        menuItemShapeSep1     = new MenuItem('',                 {separator: true}),
+        menuItemShapeSelected = new MenuItem('Selected objects', {icon: iconSelected,  enabled: false})]);
 
 
     menuGroup = new Menu('Groups', true, false);
@@ -55006,6 +55036,7 @@ class Operator
         else if (type ==   ELLIPSE_VALUE) return this.addParam(new   EllipseParam(id, id, showName, hasInput, hasOutput), volatile);
         else if (type ==   POLYGON_VALUE) return this.addParam(new   PolygonParam(id, id, showName, hasInput, hasOutput), volatile);
         else if (type ==      STAR_VALUE) return this.addParam(new      StarParam(id, id, showName, hasInput, hasOutput), volatile);
+        else if (type == TEXTSHAPE_VALUE) return this.addParam(new TextShapeParam(id, id, showName, hasInput, hasOutput), volatile);
 
         else console.assert(false, 'cannot add parameter of type \'' + type + '\'');
 
@@ -55027,6 +55058,7 @@ class Operator
         else if (type ==   ELLIPSE_VALUE) return this.insertParam(index, new   EllipseParam(id, id, showName, hasInput, hasOutput), volatile);
         else if (type ==   POLYGON_VALUE) return this.insertParam(index, new   PolygonParam(id, id, showName, hasInput, hasOutput), volatile);
         else if (type ==      STAR_VALUE) return this.insertParam(index, new      StarParam(id, id, showName, hasInput, hasOutput), volatile);
+        else if (type == TEXTSHAPE_VALUE) return this.insertParam(index, new TextShapeParam(id, id, showName, hasInput, hasOutput), volatile);
 
         else console.assert(false, 'cannot insert parameter of type \'' + type + '\'');
 
@@ -57734,7 +57766,7 @@ extends OperatorBase
     {
         super(SELECT, 'select', 'select');
 
-        this.alwaysSaveParams = true;
+        //this.alwaysSaveParams = true;
 
 
         this.addInput(new Input(LIST_TYPES, getNodeInputValuesForUndo));
@@ -57800,8 +57832,7 @@ extends OperatorBase
             this.removeParam(paramValue);
 
 
-        if (  !paramValue 
-            && val) 
+        if (!paramValue && val) 
             paramValue = this.createAndInsertParamByType(0, val.type, 'value', false, false, false, true);
 
         
@@ -64901,6 +64932,9 @@ extends OpShapeBase
         this.paramRound.controls[0].update();
     }
 }
+
+
+
 
 
 class   OpColorStyle
@@ -74109,6 +74143,7 @@ function createNode(nodeType, creatingButton = null, createdNodeId = -1, options
         case ELLIPSE:                 node = new OpEllipse();           break;
         case POLYGON:                 node = new OpPolygon();           break;
         case STAR:                    node = new OpStar();              break;
+        case TEXTSHAPE:               node = new OpTextShape();         break;
       
         case GROUP_NODE:              node = new OpGroupNode();         break;
         case GROUP_PARAM:             node = new OpGroupParam();        break;

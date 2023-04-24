@@ -218,6 +218,10 @@ const STAR_VALUE       = 'STAR#';
 const STAR             = 'STAR'; 
 const STAR_TYPES       = [STAR_VALUE, STAR];
 
+const TEXTSHAPE_VALUE  = 'TXTS#';
+const TEXTSHAPE        = 'TXTS'; 
+const TEXTSHAPE_TYPES  = [TEXTSHAPE_VALUE, TEXTSHAPE];
+
 
 const SHAPE_VALUES =
 [
@@ -227,7 +231,8 @@ const SHAPE_VALUES =
     LINE_VALUE,
     ELLIPSE_VALUE,
     POLYGON_VALUE,
-    STAR_VALUE
+    STAR_VALUE,
+    TEXTSHAPE_VALUE
 ];
 
 
@@ -239,8 +244,8 @@ const SHAPE_TYPES =
     ...LINE_TYPES,
     ...ELLIPSE_TYPES,
     ...POLYGON_TYPES,
-    ...STAR_TYPES//,
-    //TEXT
+    ...STAR_TYPES,
+    ...TEXTSHAPE_TYPES
 ];
 
 

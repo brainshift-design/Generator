@@ -35,6 +35,7 @@
 ../generator/types/values/EllipseValue.js
 ../generator/types/values/PolygonValue.js
 ../generator/types/values/StarValue.js
+../generator/types/values/TextShapeValue.js
 
 
 ../generator/types/flow/GList.js
@@ -119,6 +120,7 @@
 ../generator/types/shape/GEllipse.js
 ../generator/types/shape/GPolygon.js
 ../generator/types/shape/GStar.js
+../generator/types/shape/GTextShape.js
 
 
 ../generator/types/style/GColorStyle.js

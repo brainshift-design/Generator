@@ -80,6 +80,7 @@ function createNode(nodeType, creatingButton = null, createdNodeId = -1, options
         case ELLIPSE:                 node = new OpEllipse();           break;
         case POLYGON:                 node = new OpPolygon();           break;
         case STAR:                    node = new OpStar();              break;
+        case TEXTSHAPE:               node = new OpTextShape();         break;
       
         case GROUP_NODE:              node = new OpGroupNode();         break;
         case GROUP_PARAM:             node = new OpGroupParam();        break;

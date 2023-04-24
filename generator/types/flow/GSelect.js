@@ -46,7 +46,6 @@ extends GOperator
         {
             const input = (await this.input.eval(parse)).toValue();
 
-
             length = input.items.length;
 
             index.value = Math.min(index.value, input.items.length-1);

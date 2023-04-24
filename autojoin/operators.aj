@@ -13,6 +13,7 @@
 ../parameters/EllipseParam.js
 ../parameters/PolygonParam.js
 ../parameters/StarParam.js
+../parameters/TextShapeParam.js
 
 
 // these have to be added in order because of dependencies
@@ -109,6 +110,7 @@
 ../operators/shape/OpEllipse.js
 ../operators/shape/OpPolygon.js
 ../operators/shape/OpStar.js
+../operators/shape/OpTextShape.js
 
 
 ../operators/style/OpColorStyle.js
