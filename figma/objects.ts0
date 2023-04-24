@@ -99,7 +99,7 @@ function figUpdateObject(figObj, genObj)
 function makeObjectName(obj)
 {
     return OBJECT_PREFIX + obj.nodeId
-         + (obj.objectId > -1 ? '.'+obj.objectId : '');
+         + (obj.objectId > -1 ? ' ' + obj.objectId : '');
 }
 
 

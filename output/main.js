@@ -26,7 +26,7 @@ const HTAB = '  '; // half-tab
 const TAB = '    ';
 const NL = '\n';
 const GENERATOR_LOGO = '◦ G •';
-const OBJECT_PREFIX = 'G.';
+const OBJECT_PREFIX = 'G ';
 const nodeTag = 'G_NODE';
 const connTag = 'G_CONN';
 const pageTag = 'G_PAGE';
@@ -1083,7 +1083,7 @@ function figUpdateObject(figObj, genObj) {
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 function makeObjectName(obj) {
     return OBJECT_PREFIX + obj.nodeId
-        + (obj.objectId > -1 ? '.' + obj.objectId : '');
+        + (obj.objectId > -1 ? ' ' + obj.objectId : '');
 }
 function genRectIsValid(genRect) {
     return genRect.x != null && !isNaN(genRect.x)

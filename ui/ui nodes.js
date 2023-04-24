@@ -546,7 +546,7 @@ function uiPasteNodes(nodesJson, pasteConnected, x, y, updateNodes)
         data.nodes[i].newId = nodes[i].id;
     }
 
-    console.log('data =', data);
+
     if (data.connections)
     {
         correctNodeNamesInConnections(data);

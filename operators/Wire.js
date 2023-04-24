@@ -456,25 +456,25 @@ class Wire
                 : [0.5, 0.5, 0.5, 0.5 ], 
                 color, 
                 color[3]));
-    
-        // const isNotCached = 
-        //            conn.output
-        //        &&  conn.output.node
-        //        && !conn.output.node.isCached()
-        //     ||     conn.output
-        //        &&  conn.output.param
-        //        &&  conn.output.param._nodeId != undefined
-        //        &&  conn.output.node.nodeFromId(conn.output.param._nodeId)
-        //        && !nodeFromId(conn.output.param._nodeId).isCached();
-    
-    
-        const unknown = false;
-            //    conn.output
-            // && isNotCached
-            // && conn.input
-            // && conn.input.node.isOrFollowedByMultiplier()
-            // && (  !conn.input.param 
-            //     || conn.input.param.affectsHeader);
+
+                
+        const isNotCached = 
+                   conn.output
+               &&  conn.output.node
+               && !conn.output.node.isCached()
+            ||     conn.output
+               &&  conn.output.param
+               &&  conn.output.param._nodeId != undefined
+               &&  conn.output.node.nodeFromId(conn.output.param._nodeId)
+               && !nodeFromId(conn.output.param._nodeId).isCached();
+        
+        const unknown =
+               conn.output
+            && isNotCached
+            && conn.input
+            && conn.input.node.isOrFollowedByMultiplier()
+            && (  !conn.input.param 
+                || conn.input.param.affectsHeader);
     
     
         this.curve  .style.stroke          = wireStyle;
