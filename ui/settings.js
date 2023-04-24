@@ -262,9 +262,9 @@ function enableFeatures(subscription, beta)
     updateElementDisplay(menuItemSelect              .div, subscription && beta);
     updateElementDisplay(menuFlowSep2                .div, subscription && beta);
     updateElementDisplay(menuItemRepeat              .div, subscription && beta);
-    updateElementDisplay(menuFlowSep3                .div, subscription && beta);
-    updateElementDisplay(menuItemCache               .div, subscription && beta);
-    updateElementDisplay(menuItemCopy                .div, subscription && beta);
+    // updateElementDisplay(menuFlowSep3                .div, subscription && beta);
+    // updateElementDisplay(menuItemCache               .div, subscription && beta);
+    // updateElementDisplay(menuItemCopy                .div, subscription && beta);
     
     updateElementDisplay(menuItemSeries              .div, subscription && beta);    
     updateElementDisplay(menuItemSolve               .div, subscription && beta);    

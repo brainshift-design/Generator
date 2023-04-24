@@ -5,6 +5,7 @@ extends OperatorBase
     {
         super(LIST, 'list', 'list');
 
+        this.canDisable     = true;
         this.variableInputs = true;
 
 

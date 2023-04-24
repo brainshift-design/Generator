@@ -47,7 +47,13 @@ extends GOperator
 
         if (this.input)
         {
-            for (let i = 0; i < count.value; i++)
+            const nItems = 
+                this.options.enabled 
+                ? count.value 
+                : 1;
+
+                
+            for (let i = 0; i < nItems; i++)
             {
                 await this.input.eval(parse);
 

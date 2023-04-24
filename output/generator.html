@@ -6519,19 +6519,24 @@ extends GOperator
             await this.inputs[i].eval(parse);
 
 
-            for (let j = 0; j < this.inputs[i].objects.length; j++)
+            if (this.options.enabled)
             {
-                const obj = this.inputs[i].objects[j].copy();
+                for (let j = 0; j < this.inputs[i].objects.length; j++)
+                {
+                    const obj = this.inputs[i].objects[j].copy();
 
-                obj.nodeId   = this.nodeId + '.' + i;
+                    obj.nodeId   = this.nodeId;
+                    obj.objectId = i;
 
-                this.objects.push(obj);
+                    this.objects.push(obj);
+                }
             }
 
 
             const input = this.inputs[i].toValue();
 
-            if (input)
+            if (   input
+                && this.options.enabled)
                 this.value.items.push(input);
         }
     
@@ -6605,10 +6610,14 @@ extends GOperator
             if (!this.input.value)
                 await this.input.eval(parse);
 
-            this.value = this.input.toValue();
+            this.value   = this.input.toValue();
+            this.objects = clone(this.input.objects);
         }
         else
-            this.value = ListValue.NaN;
+        {
+            this.value   = ListValue.NaN;
+            this.objects = [];
+        }
 
 
         if (    this.value.isValid()
@@ -6626,7 +6635,8 @@ extends GOperator
             genPushUpdateValue(parse, this.nodeId, '', NullValue);
 
 
-        await this.evalObjects(parse);
+        for (let j = 0; j < this.objects.length; j++)
+            this.objects[j].nodeId = this.nodeId;
 
 
         this.validate();
@@ -6930,7 +6940,13 @@ extends GOperator
 
         if (this.input)
         {
-            for (let i = 0; i < count.value; i++)
+            const nItems = 
+                this.options.enabled 
+                ? count.value 
+                : 1;
+
+                
+            for (let i = 0; i < nItems; i++)
             {
                 await this.input.eval(parse);
 
@@ -10588,14 +10604,12 @@ extends GColorType
 
 
 
-    // toValue()
-    // {
-    //     return new ColorValue(
-    //         this.space ? this.space.toValue() : NumberValue.NaN,
-    //         this.c1    ? this.c1   .toValue() : NumberValue.NaN,
-    //         this.c2    ? this.c2   .toValue() : NumberValue.NaN,
-    //         this.c3    ? this.c3   .toValue() : NumberValue.NaN);
-    // }
+    toValue()
+    {
+        return this.options.enabled
+             ? this.value.copy()
+             : ColorValue.NaN;
+    }
 }
 
 
@@ -12972,9 +12986,11 @@ extends GOperator
 
     toValue()
     {
-        return new FillValue(
-            this.color   ? this.color  .toValue() : this.input.color  .toValue(),
-            this.opacity ? this.opacity.toValue() : this.input.opacity.toValue());
+        return this.options.enabled
+             ? new FillValue(
+                   this.color   ? this.color  .toValue() : this.input.color  .toValue(),
+                   this.opacity ? this.opacity.toValue() : this.input.opacity.toValue())
+             : FillValue.NaN;
     }
 }
 
@@ -13094,11 +13110,13 @@ extends GShape
     toValue()
     {
         return new StrokeValue(
-            this.validateFill(this.fill   ? this.fill  .toValue() : this.input.fill  .toValue()),
-                              this.weight ? this.weight.toValue() : this.input.weight.toValue(),
-                              this.fit    ? this.fit   .toValue() : this.input.fit   .toValue(),
-                              this.join   ? this.join  .toValue() : this.input.join  .toValue(),
-                              this.miter  ? this.miter .toValue() : this.input.miter .toValue());
+            this.options.enabled
+            ? this.validateFill(this.fill ? this.fill.toValue() : this.input.fill.toValue())
+            : FillValue.NaN,
+            this.weight ? this.weight.toValue() : this.input.weight.toValue(),
+            this.fit    ? this.fit   .toValue() : this.input.fit   .toValue(),
+            this.join   ? this.join  .toValue() : this.input.join  .toValue(),
+            this.miter  ? this.miter .toValue() : this.input.miter .toValue());
     }                 
 }
 
@@ -13557,9 +13575,9 @@ function enableFeatures(subscription, beta)
     updateElementDisplay(menuItemSelect              .div, subscription && beta);
     updateElementDisplay(menuFlowSep2                .div, subscription && beta);
     updateElementDisplay(menuItemRepeat              .div, subscription && beta);
-    updateElementDisplay(menuFlowSep3                .div, subscription && beta);
-    updateElementDisplay(menuItemCache               .div, subscription && beta);
-    updateElementDisplay(menuItemCopy                .div, subscription && beta);
+    // updateElementDisplay(menuFlowSep3                .div, subscription && beta);
+    // updateElementDisplay(menuItemCache               .div, subscription && beta);
+    // updateElementDisplay(menuItemCopy                .div, subscription && beta);
     
     updateElementDisplay(menuItemSeries              .div, subscription && beta);    
     updateElementDisplay(menuItemSolve               .div, subscription && beta);    

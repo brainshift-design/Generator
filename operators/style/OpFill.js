@@ -14,6 +14,8 @@ extends OpColorBase
     {
         super(FILL, 'fill', 'fill');
 
+        this.canDisable = true;
+        
 
         this.colorBack      = createDiv('colorBack');
         this.checkersHolder = createDiv('nodeHeaderCheckersHolder');

@@ -190,12 +190,10 @@ extends GColorType
 
 
 
-    // toValue()
-    // {
-    //     return new ColorValue(
-    //         this.space ? this.space.toValue() : NumberValue.NaN,
-    //         this.c1    ? this.c1   .toValue() : NumberValue.NaN,
-    //         this.c2    ? this.c2   .toValue() : NumberValue.NaN,
-    //         this.c3    ? this.c3   .toValue() : NumberValue.NaN);
-    // }
+    toValue()
+    {
+        return this.options.enabled
+             ? this.value.copy()
+             : ColorValue.NaN;
+    }
 }

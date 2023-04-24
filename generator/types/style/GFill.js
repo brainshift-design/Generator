@@ -77,8 +77,10 @@ extends GOperator
 
     toValue()
     {
-        return new FillValue(
-            this.color   ? this.color  .toValue() : this.input.color  .toValue(),
-            this.opacity ? this.opacity.toValue() : this.input.opacity.toValue());
+        return this.options.enabled
+             ? new FillValue(
+                   this.color   ? this.color  .toValue() : this.input.color  .toValue(),
+                   this.opacity ? this.opacity.toValue() : this.input.opacity.toValue())
+             : FillValue.NaN;
     }
 }

@@ -60,7 +60,10 @@ document.addEventListener('keydown', e =>
           && e.shiftKey)
     {
         e.preventDefault();
-        actionManager.do(new ToggleDisableNodesAction(graphView.selectedNodes.map(n => n.id)));
+
+        if (!graphView.selectedNodes.find(n => !n.canDisable))
+            actionManager.do(new ToggleDisableNodesAction(graphView.selectedNodes.map(n => n.id)));
+            
         return false;
     }
 

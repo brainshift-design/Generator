@@ -10884,19 +10884,24 @@ extends GOperator
             await this.inputs[i].eval(parse);
 
 
-            for (let j = 0; j < this.inputs[i].objects.length; j++)
+            if (this.options.enabled)
             {
-                const obj = this.inputs[i].objects[j].copy();
+                for (let j = 0; j < this.inputs[i].objects.length; j++)
+                {
+                    const obj = this.inputs[i].objects[j].copy();
 
-                obj.nodeId   = this.nodeId + '.' + i;
+                    obj.nodeId   = this.nodeId;
+                    obj.objectId = i;
 
-                this.objects.push(obj);
+                    this.objects.push(obj);
+                }
             }
 
 
             const input = this.inputs[i].toValue();
 
-            if (input)
+            if (   input
+                && this.options.enabled)
                 this.value.items.push(input);
         }
     
@@ -10970,10 +10975,14 @@ extends GOperator
             if (!this.input.value)
                 await this.input.eval(parse);
 
-            this.value = this.input.toValue();
+            this.value   = this.input.toValue();
+            this.objects = clone(this.input.objects);
         }
         else
-            this.value = ListValue.NaN;
+        {
+            this.value   = ListValue.NaN;
+            this.objects = [];
+        }
 
 
         if (    this.value.isValid()
@@ -10991,7 +11000,8 @@ extends GOperator
             genPushUpdateValue(parse, this.nodeId, '', NullValue);
 
 
-        await this.evalObjects(parse);
+        for (let j = 0; j < this.objects.length; j++)
+            this.objects[j].nodeId = this.nodeId;
 
 
         this.validate();
@@ -11295,7 +11305,13 @@ extends GOperator
 
         if (this.input)
         {
-            for (let i = 0; i < count.value; i++)
+            const nItems = 
+                this.options.enabled 
+                ? count.value 
+                : 1;
+
+                
+            for (let i = 0; i < nItems; i++)
             {
                 await this.input.eval(parse);
 
@@ -14953,14 +14969,12 @@ extends GColorType
 
 
 
-    // toValue()
-    // {
-    //     return new ColorValue(
-    //         this.space ? this.space.toValue() : NumberValue.NaN,
-    //         this.c1    ? this.c1   .toValue() : NumberValue.NaN,
-    //         this.c2    ? this.c2   .toValue() : NumberValue.NaN,
-    //         this.c3    ? this.c3   .toValue() : NumberValue.NaN);
-    // }
+    toValue()
+    {
+        return this.options.enabled
+             ? this.value.copy()
+             : ColorValue.NaN;
+    }
 }
 
 
@@ -17337,9 +17351,11 @@ extends GOperator
 
     toValue()
     {
-        return new FillValue(
-            this.color   ? this.color  .toValue() : this.input.color  .toValue(),
-            this.opacity ? this.opacity.toValue() : this.input.opacity.toValue());
+        return this.options.enabled
+             ? new FillValue(
+                   this.color   ? this.color  .toValue() : this.input.color  .toValue(),
+                   this.opacity ? this.opacity.toValue() : this.input.opacity.toValue())
+             : FillValue.NaN;
     }
 }
 
@@ -17459,11 +17475,13 @@ extends GShape
     toValue()
     {
         return new StrokeValue(
-            this.validateFill(this.fill   ? this.fill  .toValue() : this.input.fill  .toValue()),
-                              this.weight ? this.weight.toValue() : this.input.weight.toValue(),
-                              this.fit    ? this.fit   .toValue() : this.input.fit   .toValue(),
-                              this.join   ? this.join  .toValue() : this.input.join  .toValue(),
-                              this.miter  ? this.miter .toValue() : this.input.miter .toValue());
+            this.options.enabled
+            ? this.validateFill(this.fill ? this.fill.toValue() : this.input.fill.toValue())
+            : FillValue.NaN,
+            this.weight ? this.weight.toValue() : this.input.weight.toValue(),
+            this.fit    ? this.fit   .toValue() : this.input.fit   .toValue(),
+            this.join   ? this.join  .toValue() : this.input.join  .toValue(),
+            this.miter  ? this.miter .toValue() : this.input.miter .toValue());
     }                 
 }
 
@@ -17922,9 +17940,9 @@ function enableFeatures(subscription, beta)
     updateElementDisplay(menuItemSelect              .div, subscription && beta);
     updateElementDisplay(menuFlowSep2                .div, subscription && beta);
     updateElementDisplay(menuItemRepeat              .div, subscription && beta);
-    updateElementDisplay(menuFlowSep3                .div, subscription && beta);
-    updateElementDisplay(menuItemCache               .div, subscription && beta);
-    updateElementDisplay(menuItemCopy                .div, subscription && beta);
+    // updateElementDisplay(menuFlowSep3                .div, subscription && beta);
+    // updateElementDisplay(menuItemCache               .div, subscription && beta);
+    // updateElementDisplay(menuItemCopy                .div, subscription && beta);
     
     updateElementDisplay(menuItemSeries              .div, subscription && beta);    
     updateElementDisplay(menuItemSolve               .div, subscription && beta);    
@@ -33663,19 +33681,24 @@ extends GOperator
             await this.inputs[i].eval(parse);
 
 
-            for (let j = 0; j < this.inputs[i].objects.length; j++)
+            if (this.options.enabled)
             {
-                const obj = this.inputs[i].objects[j].copy();
+                for (let j = 0; j < this.inputs[i].objects.length; j++)
+                {
+                    const obj = this.inputs[i].objects[j].copy();
 
-                obj.nodeId   = this.nodeId + '.' + i;
+                    obj.nodeId   = this.nodeId;
+                    obj.objectId = i;
 
-                this.objects.push(obj);
+                    this.objects.push(obj);
+                }
             }
 
 
             const input = this.inputs[i].toValue();
 
-            if (input)
+            if (   input
+                && this.options.enabled)
                 this.value.items.push(input);
         }
     
@@ -33749,10 +33772,14 @@ extends GOperator
             if (!this.input.value)
                 await this.input.eval(parse);
 
-            this.value = this.input.toValue();
+            this.value   = this.input.toValue();
+            this.objects = clone(this.input.objects);
         }
         else
-            this.value = ListValue.NaN;
+        {
+            this.value   = ListValue.NaN;
+            this.objects = [];
+        }
 
 
         if (    this.value.isValid()
@@ -33770,7 +33797,8 @@ extends GOperator
             genPushUpdateValue(parse, this.nodeId, '', NullValue);
 
 
-        await this.evalObjects(parse);
+        for (let j = 0; j < this.objects.length; j++)
+            this.objects[j].nodeId = this.nodeId;
 
 
         this.validate();
@@ -34074,7 +34102,13 @@ extends GOperator
 
         if (this.input)
         {
-            for (let i = 0; i < count.value; i++)
+            const nItems = 
+                this.options.enabled 
+                ? count.value 
+                : 1;
+
+                
+            for (let i = 0; i < nItems; i++)
             {
                 await this.input.eval(parse);
 
@@ -37732,14 +37766,12 @@ extends GColorType
 
 
 
-    // toValue()
-    // {
-    //     return new ColorValue(
-    //         this.space ? this.space.toValue() : NumberValue.NaN,
-    //         this.c1    ? this.c1   .toValue() : NumberValue.NaN,
-    //         this.c2    ? this.c2   .toValue() : NumberValue.NaN,
-    //         this.c3    ? this.c3   .toValue() : NumberValue.NaN);
-    // }
+    toValue()
+    {
+        return this.options.enabled
+             ? this.value.copy()
+             : ColorValue.NaN;
+    }
 }
 
 
@@ -40116,9 +40148,11 @@ extends GOperator
 
     toValue()
     {
-        return new FillValue(
-            this.color   ? this.color  .toValue() : this.input.color  .toValue(),
-            this.opacity ? this.opacity.toValue() : this.input.opacity.toValue());
+        return this.options.enabled
+             ? new FillValue(
+                   this.color   ? this.color  .toValue() : this.input.color  .toValue(),
+                   this.opacity ? this.opacity.toValue() : this.input.opacity.toValue())
+             : FillValue.NaN;
     }
 }
 
@@ -40238,11 +40272,13 @@ extends GShape
     toValue()
     {
         return new StrokeValue(
-            this.validateFill(this.fill   ? this.fill  .toValue() : this.input.fill  .toValue()),
-                              this.weight ? this.weight.toValue() : this.input.weight.toValue(),
-                              this.fit    ? this.fit   .toValue() : this.input.fit   .toValue(),
-                              this.join   ? this.join  .toValue() : this.input.join  .toValue(),
-                              this.miter  ? this.miter .toValue() : this.input.miter .toValue());
+            this.options.enabled
+            ? this.validateFill(this.fill ? this.fill.toValue() : this.input.fill.toValue())
+            : FillValue.NaN,
+            this.weight ? this.weight.toValue() : this.input.weight.toValue(),
+            this.fit    ? this.fit   .toValue() : this.input.fit   .toValue(),
+            this.join   ? this.join  .toValue() : this.input.join  .toValue(),
+            this.miter  ? this.miter .toValue() : this.input.miter .toValue());
     }                 
 }
 
@@ -40701,9 +40737,9 @@ function enableFeatures(subscription, beta)
     updateElementDisplay(menuItemSelect              .div, subscription && beta);
     updateElementDisplay(menuFlowSep2                .div, subscription && beta);
     updateElementDisplay(menuItemRepeat              .div, subscription && beta);
-    updateElementDisplay(menuFlowSep3                .div, subscription && beta);
-    updateElementDisplay(menuItemCache               .div, subscription && beta);
-    updateElementDisplay(menuItemCopy                .div, subscription && beta);
+    // updateElementDisplay(menuFlowSep3                .div, subscription && beta);
+    // updateElementDisplay(menuItemCache               .div, subscription && beta);
+    // updateElementDisplay(menuItemCopy                .div, subscription && beta);
     
     updateElementDisplay(menuItemSeries              .div, subscription && beta);    
     updateElementDisplay(menuItemSolve               .div, subscription && beta);    
@@ -45804,10 +45840,10 @@ function initGeneratorMenus()
         menuItemIfElse        = new MenuItem('I&hairsp;f / else', {icon: iconIfElse, callback: e => actionManager.do(getCreateNodeAction(IF_ELSE,      btnNumber.div, getCreateOptions(e))), disambiguate: true}),
         menuFlowSep2          = new MenuItem('',                  {separator: true}),
       //menuItemStart         = new MenuItem('Start',             {icon: iconStart,  callback: e => actionManager.do(getCreateNodeAction(START,        btnNumber.div, getCreateOptions(e)))}),
-        menuItemRepeat        = new MenuItem('Repeat',            {icon: iconRepeat, callback: e => actionManager.do(getCreateNodeAction(REPEAT,       btnNumber.div, getCreateOptions(e)))}),
-        menuFlowSep3          = new MenuItem('',                  {separator: true}),
-        menuItemCache         = new MenuItem('Cache',             {icon: iconCache,  callback: e => actionManager.do(getCreateNodeAction(CACHE,        btnNumber.div, getCreateOptions(e)))}),
-        menuItemCopy          = new MenuItem('Copy',              {icon: iconCopy,   callback: e => actionManager.do(getCreateNodeAction(COPY,         btnNumber.div, getCreateOptions(e)))})]);
+        menuItemRepeat        = new MenuItem('Repeat',            {icon: iconRepeat, callback: e => actionManager.do(getCreateNodeAction(REPEAT,       btnNumber.div, getCreateOptions(e)))})]);//,
+        // menuFlowSep3          = new MenuItem('',                  {separator: true}),
+        // menuItemCache         = new MenuItem('Cache',             {icon: iconCache,  callback: e => actionManager.do(getCreateNodeAction(CACHE,        btnNumber.div, getCreateOptions(e)))}),
+        // menuItemCopy          = new MenuItem('Copy',              {icon: iconCopy,   callback: e => actionManager.do(getCreateNodeAction(COPY,         btnNumber.div, getCreateOptions(e)))})]);
     
     
     menuMath = new Menu('Math', true, false);
@@ -54987,6 +55023,7 @@ class Operator
         else if (type ==    STROKE_VALUE) return this.insertParam(index, new    StrokeParam(id, id, showName, hasInput, hasOutput), volatile);
         else if (type ==      LIST_VALUE) return this.insertParam(index, new      ListParam(id, id, showName, hasInput, hasOutput), volatile);
         else if (type == RECTANGLE_VALUE) return this.insertParam(index, new RectangleParam(id, id, showName, hasInput, hasOutput), volatile);
+        else if (type ==      LINE_VALUE) return this.insertParam(index, new      LineParam(id, id, showName, hasInput, hasOutput), volatile);
         else if (type ==   ELLIPSE_VALUE) return this.insertParam(index, new   EllipseParam(id, id, showName, hasInput, hasOutput), volatile);
         else if (type ==   POLYGON_VALUE) return this.insertParam(index, new   PolygonParam(id, id, showName, hasInput, hasOutput), volatile);
         else if (type ==      STAR_VALUE) return this.insertParam(index, new      StarParam(id, id, showName, hasInput, hasOutput), volatile);
@@ -57499,6 +57536,7 @@ extends OperatorBase
     {
         super(LIST, 'list', 'list');
 
+        this.canDisable     = true;
         this.variableInputs = true;
 
 
@@ -57560,9 +57598,7 @@ extends OperatorBase
     {
         super(ITEMS, 'items', 'items');
 
-        //this.inert = true;
 
-        
         this.addInput (new Input(LIST_TYPES));
         this.addOutput(new Output([LIST_VALUE], this.output_genRequest));
 
@@ -65187,6 +65223,8 @@ extends OpColorBase
     {
         super(FILL, 'fill', 'fill');
 
+        this.canDisable = true;
+        
 
         this.colorBack      = createDiv('colorBack');
         this.checkersHolder = createDiv('nodeHeaderCheckersHolder');
@@ -65495,6 +65533,8 @@ extends OpColorBase
     {
         super(STROKE, 'stroke', 'stroke');
 
+        this.canDisable = true;
+        
 
         this.colorBack      = createDiv('colorBack');
         this.checkersHolder = createDiv('nodeHeaderCheckersHolder');
@@ -71872,7 +71912,10 @@ document.addEventListener('keydown', e =>
           && e.shiftKey)
     {
         e.preventDefault();
-        actionManager.do(new ToggleDisableNodesAction(graphView.selectedNodes.map(n => n.id)));
+
+        if (!graphView.selectedNodes.find(n => !n.canDisable))
+            actionManager.do(new ToggleDisableNodesAction(graphView.selectedNodes.map(n => n.id)));
+            
         return false;
     }
 

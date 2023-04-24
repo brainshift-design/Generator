@@ -113,10 +113,12 @@ extends GShape
     toValue()
     {
         return new StrokeValue(
-            this.validateFill(this.fill   ? this.fill  .toValue() : this.input.fill  .toValue()),
-                              this.weight ? this.weight.toValue() : this.input.weight.toValue(),
-                              this.fit    ? this.fit   .toValue() : this.input.fit   .toValue(),
-                              this.join   ? this.join  .toValue() : this.input.join  .toValue(),
-                              this.miter  ? this.miter .toValue() : this.input.miter .toValue());
+            this.options.enabled
+            ? this.validateFill(this.fill ? this.fill.toValue() : this.input.fill.toValue())
+            : FillValue.NaN,
+            this.weight ? this.weight.toValue() : this.input.weight.toValue(),
+            this.fit    ? this.fit   .toValue() : this.input.fit   .toValue(),
+            this.join   ? this.join  .toValue() : this.input.join  .toValue(),
+            this.miter  ? this.miter .toValue() : this.input.miter .toValue());
     }                 
 }

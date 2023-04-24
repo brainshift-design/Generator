@@ -49,10 +49,14 @@ extends GOperator
             if (!this.input.value)
                 await this.input.eval(parse);
 
-            this.value = this.input.toValue();
+            this.value   = this.input.toValue();
+            this.objects = clone(this.input.objects);
         }
         else
-            this.value = ListValue.NaN;
+        {
+            this.value   = ListValue.NaN;
+            this.objects = [];
+        }
 
 
         if (    this.value.isValid()
@@ -70,7 +74,8 @@ extends GOperator
             genPushUpdateValue(parse, this.nodeId, '', NullValue);
 
 
-        await this.evalObjects(parse);
+        for (let j = 0; j < this.objects.length; j++)
+            this.objects[j].nodeId = this.nodeId;
 
 
         this.validate();

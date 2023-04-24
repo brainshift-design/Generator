@@ -44,19 +44,24 @@ extends GOperator
             await this.inputs[i].eval(parse);
 
 
-            for (let j = 0; j < this.inputs[i].objects.length; j++)
+            if (this.options.enabled)
             {
-                const obj = this.inputs[i].objects[j].copy();
+                for (let j = 0; j < this.inputs[i].objects.length; j++)
+                {
+                    const obj = this.inputs[i].objects[j].copy();
 
-                obj.nodeId   = this.nodeId + '.' + i;
+                    obj.nodeId   = this.nodeId;
+                    obj.objectId = i;
 
-                this.objects.push(obj);
+                    this.objects.push(obj);
+                }
             }
 
 
             const input = this.inputs[i].toValue();
 
-            if (input)
+            if (   input
+                && this.options.enabled)
                 this.value.items.push(input);
         }
     

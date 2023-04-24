@@ -5,9 +5,7 @@ extends OperatorBase
     {
         super(ITEMS, 'items', 'items');
 
-        //this.inert = true;
 
-        
         this.addInput (new Input(LIST_TYPES));
         this.addOutput(new Output([LIST_VALUE], this.output_genRequest));
 

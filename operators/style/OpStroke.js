@@ -16,6 +16,8 @@ extends OpColorBase
     {
         super(STROKE, 'stroke', 'stroke');
 
+        this.canDisable = true;
+        
 
         this.colorBack      = createDiv('colorBack');
         this.checkersHolder = createDiv('nodeHeaderCheckersHolder');
