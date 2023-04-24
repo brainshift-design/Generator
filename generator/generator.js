@@ -109,7 +109,8 @@ function genPushUpdateObject(parse, object)
     pushUniqueExcept(
         parse.updateObjects,
         object,
-        o => o.nodeId == object.nodeId);
+        o =>    o.nodeId   == object.nodeId
+             && o.objectId == object.objectId);
 }
 
 
@@ -167,13 +168,11 @@ function genUpdateValuesAndObjects(requestId, actionId, updateNodeId, updatePara
     }
 
 
-    //console.log('2 updateStyles =', [...updateStyles]);
-
     const nodeIds = filterUnique(updateValues.map(v => v.nodeId));
     const counts  = nodeIds.map(id => updateValues.filter(v => v.nodeId == id).length);
 
 
-    // send value updates in chunks
+    // send updates in chunks
 
     const approxNodeChunkSize = 20;
     const objChunkSize        = 100;

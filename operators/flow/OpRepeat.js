@@ -47,6 +47,7 @@ extends OperatorBase
         gen.scope.pop();
         pushUnique(gen.passedNodes, this.node);
 
+
         return request;
     }
 
@@ -55,6 +56,7 @@ extends OperatorBase
     updateValues(requestId, actionId, updateParamId, paramIds, values)
     {
         const count = values[paramIds.findIndex(id => id == 'count')];
+
         if (count) this.paramCount.setValue(count, false, true, false);
     }
 

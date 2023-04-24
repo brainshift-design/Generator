@@ -735,12 +735,23 @@ function uiUpdateValuesAndObjects(requestId, actionId, updateNodeId, updateParam
         }
     }
 
-
+    
     if (   !isEmpty(objects)
         || !isEmpty(styles))
     {
         if (settings.logObjectUpdates) logObjectUpdates([...objects]);
         if (settings.logStyleUpdates)  logStyleUpdates ([...styles ]);
+
+        uiQueueMessageToFigma({
+            cmd:          'figDeleteObjectsAndStyles',
+            updateNodeId:  updateNodeId,
+            updateParamId: updateParamId,
+            nodeIds:       nodes.map(n => n.id),
+            objects:       [...objects],
+            styles:        [...styles ]});
+
+
+        objects = objects.filter(o => nodeFromId(o.nodeId).active);
 
         uiQueueMessageToFigma({
             cmd:          'figUpdateObjectsAndStyles',

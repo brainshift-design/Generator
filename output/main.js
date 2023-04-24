@@ -1037,14 +1037,15 @@ function figUpdateObjects(msg) {
             curNodeId = genObj.nodeId;
             figObjects = figObjectArrays.find(a => a.nodeId == genObj.nodeId);
             if (!figObjects) {
-                figObjectArrays.push(figObjects = {
-                    nodeId: genObj.nodeId,
-                    existing: genObj.existing,
-                    objects: []
-                });
+                figObjectArrays.push(figObjects =
+                    {
+                        nodeId: genObj.nodeId,
+                        existing: genObj.existing,
+                        objects: []
+                    });
             }
         }
-        const figObj = figObjects.objects[genObj.objectId];
+        const figObj = figObjects.objects.find(o => o.name == makeObjectName(genObj));
         if (isValid(figObj)
             && figObj.removed)
             removeFrom(figObjects.objects, figObj);

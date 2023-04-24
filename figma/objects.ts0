@@ -43,17 +43,19 @@ function figUpdateObjects(msg)
 
             if (!figObjects)
             {
-                figObjectArrays.push(figObjects = {
+                figObjectArrays.push(figObjects = 
+                {
                     nodeId:   genObj.nodeId, 
                     existing: genObj.existing,
-                    objects:  []});
+                    objects:  []
+                });
             }
         }
 
 
-        const figObj = figObjects.objects[genObj.objectId];
+        const figObj = figObjects.objects.find(o => o.name == makeObjectName(genObj));
 
-
+        
         if (   isValid(figObj)
             && figObj.removed)
             removeFrom(figObjects.objects, figObj);

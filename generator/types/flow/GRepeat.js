@@ -56,13 +56,13 @@ extends GOperator
                 {
                     const obj = this.input.objects[j].copy();
     
-                    obj.nodeId   = this.nodeId + '.' + i;
-                    //obj.objectId = i + '.' + j;
+                    obj.nodeId   = this.nodeId;
+                    obj.objectId = i;
     
                     this.objects.push(obj);
                 }
     
-                
+
                 const input = this.input.toValue();
 
                 if (input)
@@ -75,29 +75,10 @@ extends GOperator
         genPushUpdateValue(parse, this.nodeId, 'count', count);
 
 
-        //console.log('this.objects =', this.objects);
-        // this.evalObjects(parse);
-
-
         this.validate();
 
         return this;
     }
-
-
-
-    // evalObjects(parse)
-    // {
-    //     for (let i = 0; i < this.objects.length; i++)
-    //     {
-    //         const obj = this.objects[i];
-
-    //         obj.nodeId   = this.nodeId;
-    //         obj.objectId = i;
-    //     }
-
-    //     super.evalObjects(parse);
-    // }
 
 
 

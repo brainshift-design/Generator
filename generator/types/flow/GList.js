@@ -49,7 +49,6 @@ extends GOperator
                 const obj = this.inputs[i].objects[j].copy();
 
                 obj.nodeId   = this.nodeId + '.' + i;
-                //obj.objectId = i + '_' + j;
 
                 this.objects.push(obj);
             }
