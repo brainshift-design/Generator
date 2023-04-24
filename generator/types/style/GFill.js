@@ -56,12 +56,12 @@ extends GOperator
         }
 
 
-        this.color   = this.value.color  .copy();
-        this.opacity = this.value.opacity.copy();
+        // if (!this.color  ) this.color   = this.value.color  .copy();
+        // if (!this.opacity) this.opacity = this.value.opacity.copy();
 
 
-        genPushUpdateValue(parse, this.nodeId, 'color',   this.color  );
-        genPushUpdateValue(parse, this.nodeId, 'opacity', this.opacity);
+        genPushUpdateValue(parse, this.nodeId, 'color',   this.value.color  );
+        genPushUpdateValue(parse, this.nodeId, 'opacity', this.value.opacity);
 
 
         this.validate();

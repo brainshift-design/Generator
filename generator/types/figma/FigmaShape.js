@@ -1,15 +1,15 @@
 class FigmaShape
 extends FigmaObject
 {
-    objectId    = -1;
+    objectId = -1;
 
-    fills       = [];
-    strokeFills = [];
+    fills    = [];
+    strokes  = [];
 
     strokeWeight;
     strokeFit;
     strokeJoin;
-    strokeMiter;
+    strokeMiterLimit;
 
 
 
@@ -24,12 +24,12 @@ extends FigmaObject
 
     copyBase(base)
     {
-        this.fills        = clone(base.fills);
-        this.strokeFills  = clone(base.strokeFills);
+        this.fills            = clone(base.fills);
+        this.strokes          = clone(base.strokes);
 
-        this.strokeWeight = base.strokeWeight;
-        this.strokeFit    = base.strokeFit;
-        this.strokeJoin   = base.strokeJoin;
-        this.strokeMiter  = base.strokeMiter;
+        this.strokeWeight     = base.strokeWeight;
+        this.strokeFit        = base.strokeFit;
+        this.strokeJoin       = base.strokeJoin;
+        this.strokeMiterLimit = base.strokeMiterLimit;
     }
 }

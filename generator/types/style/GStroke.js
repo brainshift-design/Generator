@@ -72,18 +72,18 @@ extends GShape
         }
 
 
-        this.fill   = this.value.fill  .copy();
-        this.weight = this.value.weight.copy();
-        this.fit    = this.value.fit   .copy();
-        this.join   = this.value.join  .copy();
-        this.miter  = this.value.miter .copy();
+        // this.fill   = this.value.fill  .copy();
+        // this.weight = this.value.weight.copy();
+        // this.fit    = this.value.fit   .copy();
+        // this.join   = this.value.join  .copy();
+        // this.miter  = this.value.miter .copy();
 
 
-        genPushUpdateValue(parse, this.nodeId, 'fill',   this.fill  );
-        genPushUpdateValue(parse, this.nodeId, 'weight', this.weight);
-        genPushUpdateValue(parse, this.nodeId, 'fit',    this.fit   );
-        genPushUpdateValue(parse, this.nodeId, 'join',   this.join  );
-        genPushUpdateValue(parse, this.nodeId, 'miter',  this.miter );
+        genPushUpdateValue(parse, this.nodeId, 'fill',   this.value.fill  );
+        genPushUpdateValue(parse, this.nodeId, 'weight', this.value.weight);
+        genPushUpdateValue(parse, this.nodeId, 'fit',    this.value.fit   );
+        genPushUpdateValue(parse, this.nodeId, 'join',   this.value.join  );
+        genPushUpdateValue(parse, this.nodeId, 'miter',  this.value.miter );
 
 
         this.validate();

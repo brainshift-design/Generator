@@ -8219,13 +8219,13 @@ class FigmaObject
 
     copyBase(base)
     {
-        this.fills        = clone(base.fills);
-        this.strokeFills  = clone(base.strokeFills);
-
-        this.strokeWeight = base.strokeWeight;
-        this.strokeFit    = base.strokeFit;
-        this.strokeJoin   = base.strokeJoin;
-        this.strokeMiter  = base.strokeMiter;
+        this.fills            = clone(base.fills);
+        this.stroks           = clone(base.strokes);
+    
+        this.strokeWeight     = base.strokeWeight;
+        this.strokeFit        = base.strokeFit;
+        this.strokeJoin       = base.strokeJoin;
+        this.strokeMiterLimit = base.strokeMiterLimit;
     }
 }
 
@@ -8233,15 +8233,15 @@ class FigmaObject
 class FigmaShape
 extends FigmaObject
 {
-    objectId    = -1;
+    objectId = -1;
 
-    fills       = [];
-    strokeFills = [];
+    fills    = [];
+    strokes  = [];
 
     strokeWeight;
     strokeFit;
     strokeJoin;
-    strokeMiter;
+    strokeMiterLimit;
 
 
 
@@ -8256,13 +8256,13 @@ extends FigmaObject
 
     copyBase(base)
     {
-        this.fills        = clone(base.fills);
-        this.strokeFills  = clone(base.strokeFills);
+        this.fills            = clone(base.fills);
+        this.strokes          = clone(base.strokes);
 
-        this.strokeWeight = base.strokeWeight;
-        this.strokeFit    = base.strokeFit;
-        this.strokeJoin   = base.strokeJoin;
-        this.strokeMiter  = base.strokeMiter;
+        this.strokeWeight     = base.strokeWeight;
+        this.strokeFit        = base.strokeFit;
+        this.strokeJoin       = base.strokeJoin;
+        this.strokeMiterLimit = base.strokeMiterLimit;
     }
 }
 
@@ -16253,6 +16253,7 @@ extends GOperator
 
     async evalObjects(parse)
     {
+        console.log('this.value.props =', this.value.props);
         for (const obj of this.objects)
         {
             for (let i = this.value.props.items.length-1; i >= 0; i--)
@@ -16312,9 +16313,9 @@ extends GOperator
 
                     switch (prop.fit.toValue().value)
                     {
-                        case 0: obj.strokeAlign = 'INSIDE';  break;
-                        case 1: obj.strokeAlign = 'CENTER';  break;
-                        case 2: obj.strokeAlign = 'OUTSIDE'; break;
+                        case 0: obj.strokeFit = 'INSIDE';  break;
+                        case 1: obj.strokeFit = 'CENTER';  break;
+                        case 2: obj.strokeFit = 'OUTSIDE'; break;
                     }
 
                     switch (prop.join.toValue().value)
@@ -16325,6 +16326,7 @@ extends GOperator
                     }
 
                     obj.strokeMiterLimit = prop.miter.toValue().value;
+                    console.log('obj =', obj);
                 }
             }
         }
@@ -17316,12 +17318,12 @@ extends GOperator
         }
 
 
-        this.color   = this.value.color  .copy();
-        this.opacity = this.value.opacity.copy();
+        // if (!this.color  ) this.color   = this.value.color  .copy();
+        // if (!this.opacity) this.opacity = this.value.opacity.copy();
 
 
-        genPushUpdateValue(parse, this.nodeId, 'color',   this.color  );
-        genPushUpdateValue(parse, this.nodeId, 'opacity', this.opacity);
+        genPushUpdateValue(parse, this.nodeId, 'color',   this.value.color  );
+        genPushUpdateValue(parse, this.nodeId, 'opacity', this.value.opacity);
 
 
         this.validate();
@@ -17422,18 +17424,18 @@ extends GShape
         }
 
 
-        this.fill   = this.value.fill  .copy();
-        this.weight = this.value.weight.copy();
-        this.fit    = this.value.fit   .copy();
-        this.join   = this.value.join  .copy();
-        this.miter  = this.value.miter .copy();
+        // this.fill   = this.value.fill  .copy();
+        // this.weight = this.value.weight.copy();
+        // this.fit    = this.value.fit   .copy();
+        // this.join   = this.value.join  .copy();
+        // this.miter  = this.value.miter .copy();
 
 
-        genPushUpdateValue(parse, this.nodeId, 'fill',   this.fill  );
-        genPushUpdateValue(parse, this.nodeId, 'weight', this.weight);
-        genPushUpdateValue(parse, this.nodeId, 'fit',    this.fit   );
-        genPushUpdateValue(parse, this.nodeId, 'join',   this.join  );
-        genPushUpdateValue(parse, this.nodeId, 'miter',  this.miter );
+        genPushUpdateValue(parse, this.nodeId, 'fill',   this.value.fill  );
+        genPushUpdateValue(parse, this.nodeId, 'weight', this.value.weight);
+        genPushUpdateValue(parse, this.nodeId, 'fit',    this.value.fit   );
+        genPushUpdateValue(parse, this.nodeId, 'join',   this.value.join  );
+        genPushUpdateValue(parse, this.nodeId, 'miter',  this.value.miter );
 
 
         this.validate();
@@ -30996,13 +30998,13 @@ class FigmaObject
 
     copyBase(base)
     {
-        this.fills        = clone(base.fills);
-        this.strokeFills  = clone(base.strokeFills);
-
-        this.strokeWeight = base.strokeWeight;
-        this.strokeFit    = base.strokeFit;
-        this.strokeJoin   = base.strokeJoin;
-        this.strokeMiter  = base.strokeMiter;
+        this.fills            = clone(base.fills);
+        this.stroks           = clone(base.strokes);
+    
+        this.strokeWeight     = base.strokeWeight;
+        this.strokeFit        = base.strokeFit;
+        this.strokeJoin       = base.strokeJoin;
+        this.strokeMiterLimit = base.strokeMiterLimit;
     }
 }
 
@@ -31010,15 +31012,15 @@ class FigmaObject
 class FigmaShape
 extends FigmaObject
 {
-    objectId    = -1;
+    objectId = -1;
 
-    fills       = [];
-    strokeFills = [];
+    fills    = [];
+    strokes  = [];
 
     strokeWeight;
     strokeFit;
     strokeJoin;
-    strokeMiter;
+    strokeMiterLimit;
 
 
 
@@ -31033,13 +31035,13 @@ extends FigmaObject
 
     copyBase(base)
     {
-        this.fills        = clone(base.fills);
-        this.strokeFills  = clone(base.strokeFills);
+        this.fills            = clone(base.fills);
+        this.strokes          = clone(base.strokes);
 
-        this.strokeWeight = base.strokeWeight;
-        this.strokeFit    = base.strokeFit;
-        this.strokeJoin   = base.strokeJoin;
-        this.strokeMiter  = base.strokeMiter;
+        this.strokeWeight     = base.strokeWeight;
+        this.strokeFit        = base.strokeFit;
+        this.strokeJoin       = base.strokeJoin;
+        this.strokeMiterLimit = base.strokeMiterLimit;
     }
 }
 
@@ -39030,6 +39032,7 @@ extends GOperator
 
     async evalObjects(parse)
     {
+        console.log('this.value.props =', this.value.props);
         for (const obj of this.objects)
         {
             for (let i = this.value.props.items.length-1; i >= 0; i--)
@@ -39089,9 +39092,9 @@ extends GOperator
 
                     switch (prop.fit.toValue().value)
                     {
-                        case 0: obj.strokeAlign = 'INSIDE';  break;
-                        case 1: obj.strokeAlign = 'CENTER';  break;
-                        case 2: obj.strokeAlign = 'OUTSIDE'; break;
+                        case 0: obj.strokeFit = 'INSIDE';  break;
+                        case 1: obj.strokeFit = 'CENTER';  break;
+                        case 2: obj.strokeFit = 'OUTSIDE'; break;
                     }
 
                     switch (prop.join.toValue().value)
@@ -39102,6 +39105,7 @@ extends GOperator
                     }
 
                     obj.strokeMiterLimit = prop.miter.toValue().value;
+                    console.log('obj =', obj);
                 }
             }
         }
@@ -40093,12 +40097,12 @@ extends GOperator
         }
 
 
-        this.color   = this.value.color  .copy();
-        this.opacity = this.value.opacity.copy();
+        // if (!this.color  ) this.color   = this.value.color  .copy();
+        // if (!this.opacity) this.opacity = this.value.opacity.copy();
 
 
-        genPushUpdateValue(parse, this.nodeId, 'color',   this.color  );
-        genPushUpdateValue(parse, this.nodeId, 'opacity', this.opacity);
+        genPushUpdateValue(parse, this.nodeId, 'color',   this.value.color  );
+        genPushUpdateValue(parse, this.nodeId, 'opacity', this.value.opacity);
 
 
         this.validate();
@@ -40199,18 +40203,18 @@ extends GShape
         }
 
 
-        this.fill   = this.value.fill  .copy();
-        this.weight = this.value.weight.copy();
-        this.fit    = this.value.fit   .copy();
-        this.join   = this.value.join  .copy();
-        this.miter  = this.value.miter .copy();
+        // this.fill   = this.value.fill  .copy();
+        // this.weight = this.value.weight.copy();
+        // this.fit    = this.value.fit   .copy();
+        // this.join   = this.value.join  .copy();
+        // this.miter  = this.value.miter .copy();
 
 
-        genPushUpdateValue(parse, this.nodeId, 'fill',   this.fill  );
-        genPushUpdateValue(parse, this.nodeId, 'weight', this.weight);
-        genPushUpdateValue(parse, this.nodeId, 'fit',    this.fit   );
-        genPushUpdateValue(parse, this.nodeId, 'join',   this.join  );
-        genPushUpdateValue(parse, this.nodeId, 'miter',  this.miter );
+        genPushUpdateValue(parse, this.nodeId, 'fill',   this.value.fill  );
+        genPushUpdateValue(parse, this.nodeId, 'weight', this.value.weight);
+        genPushUpdateValue(parse, this.nodeId, 'fit',    this.value.fit   );
+        genPushUpdateValue(parse, this.nodeId, 'join',   this.value.join  );
+        genPushUpdateValue(parse, this.nodeId, 'miter',  this.value.miter );
 
 
         this.validate();

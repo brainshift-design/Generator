@@ -544,13 +544,14 @@ function setObjectFills(obj, src)
 
 function setObjectStrokes(obj, src)
 {
+    console.log('src =', src);
     if (    src.strokes != null
         && !isEmpty(src.strokes))
     {
         obj.strokes = getObjectFills(src.strokes);
 
         obj.strokeWeight     = Math.max(0, src.strokeWeight);
-        obj.strokeAlign      = src.strokeAlign;
+        obj.strokeAlign      = src.strokeFit;
         obj.strokeJoin       = src.strokeJoin;
         obj.strokeMiterLimit = Math.min(Math.max(0, src.strokeMiterLimit), 16);
     }

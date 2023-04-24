@@ -44,6 +44,7 @@ extends GOperator
 
     async evalObjects(parse)
     {
+        console.log('this.value.props =', this.value.props);
         for (const obj of this.objects)
         {
             for (let i = this.value.props.items.length-1; i >= 0; i--)
@@ -103,9 +104,9 @@ extends GOperator
 
                     switch (prop.fit.toValue().value)
                     {
-                        case 0: obj.strokeAlign = 'INSIDE';  break;
-                        case 1: obj.strokeAlign = 'CENTER';  break;
-                        case 2: obj.strokeAlign = 'OUTSIDE'; break;
+                        case 0: obj.strokeFit = 'INSIDE';  break;
+                        case 1: obj.strokeFit = 'CENTER';  break;
+                        case 2: obj.strokeFit = 'OUTSIDE'; break;
                     }
 
                     switch (prop.join.toValue().value)
@@ -116,6 +117,7 @@ extends GOperator
                     }
 
                     obj.strokeMiterLimit = prop.miter.toValue().value;
+                    console.log('obj =', obj);
                 }
             }
         }
