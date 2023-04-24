@@ -2073,7 +2073,6 @@ function setObjectFills(obj, src)
 
 function setObjectStrokes(obj, src)
 {
-    console.log('src =', src);
     if (    src.strokes != null
         && !isEmpty(src.strokes))
     {
@@ -2084,7 +2083,6 @@ function setObjectStrokes(obj, src)
         obj.strokeJoin       = src.strokeJoin;
         obj.strokeMiterLimit = Math.min(Math.max(0, src.strokeMiterLimit), 16);
     }
-
     else
         obj.strokes = [];
 }

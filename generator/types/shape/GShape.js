@@ -44,7 +44,6 @@ extends GOperator
 
     async evalObjects(parse)
     {
-        console.log('this.value.props =', this.value.props);
         for (const obj of this.objects)
         {
             for (let i = this.value.props.items.length-1; i >= 0; i--)
@@ -117,7 +116,6 @@ extends GOperator
                     }
 
                     obj.strokeMiterLimit = prop.miter.toValue().value;
-                    console.log('obj =', obj);
                 }
             }
         }

@@ -16,7 +16,7 @@ extends GValue
                 miter  = new NumberValue(28.96, 2))
     {
         if (fill.type != FILL_VALUE)
-            console.assert(false, 'fill.type must be FILL_VALUE');
+            console.assert(false, 'fill.type is ' + fill.type + ', must be FILL_VALUE');
 
 
         super(STROKE_VALUE);

@@ -45,9 +45,8 @@ extends GShape
 
         let fill = this.fill ? (await this.fill.eval(parse)).toValue() : null;
 
-        if (fill && fill.type == COLOR_VALUE)
-           fill = FillValue.fromRgb(scaleRgb(fill.toRgb()), 0xff);
-        
+        fill = this.validateFill(fill);
+
 
         const weight = this.weight ? (await this.weight.eval(parse)).toValue() : null;
         const fit    = this.fit    ? (await this.fit   .eval(parse)).toValue() : null;
@@ -72,13 +71,6 @@ extends GShape
         }
 
 
-        // this.fill   = this.value.fill  .copy();
-        // this.weight = this.value.weight.copy();
-        // this.fit    = this.value.fit   .copy();
-        // this.join   = this.value.join  .copy();
-        // this.miter  = this.value.miter .copy();
-
-
         genPushUpdateValue(parse, this.nodeId, 'fill',   this.value.fill  );
         genPushUpdateValue(parse, this.nodeId, 'weight', this.value.weight);
         genPushUpdateValue(parse, this.nodeId, 'fit',    this.value.fit   );
@@ -89,6 +81,20 @@ extends GShape
         this.validate();
 
         return this;
+    }
+
+
+
+    validateFill(fill)
+    {
+        if (!fill)
+            return null;
+
+
+        if (fill.type == COLOR_VALUE)
+            return FillValue.fromRgb(scaleRgb(fill.toRgb()), 0xff);
+        else
+            return fill;
     }
 
 
@@ -107,7 +113,7 @@ extends GShape
     toValue()
     {
         return new StrokeValue(
-            this.fill   ? this.fill  .toValue() : this.input.fill  .toValue(),
+            this.validateFill(this.fill   ? this.fill  .toValue() : this.input.fill  .toValue()),
             this.weight ? this.weight.toValue() : this.input.weight.toValue(),
             this.fit    ? this.fit   .toValue() : this.input.fit   .toValue(),
             this.join   ? this.join  .toValue() : this.input.join  .toValue(),

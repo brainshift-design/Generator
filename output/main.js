@@ -1338,7 +1338,6 @@ function setObjectFills(obj, src) {
         obj.fills = [];
 }
 function setObjectStrokes(obj, src) {
-    console.log('src =', src);
     if (src.strokes != null
         && !isEmpty(src.strokes)) {
         obj.strokes = getObjectFills(src.strokes);
