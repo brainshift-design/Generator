@@ -1316,16 +1316,24 @@ function getObjectFills(objFills) {
         const fill = _fill[1].split(' ');
         switch (_fill[0]) {
             case 'SOLID':
-                fills.push({
-                    type: 'SOLID',
-                    color: {
+                {
+                    const color = {
                         r: Math.min(Math.max(0, parseFloat(fill[0]) / 0xff), 1),
                         g: Math.min(Math.max(0, parseFloat(fill[1]) / 0xff), 1),
                         b: Math.min(Math.max(0, parseFloat(fill[2]) / 0xff), 1)
-                    },
-                    opacity: Math.min(Math.max(0, parseFloat(fill[3]) / 100), 1)
-                });
-                break;
+                    };
+                    const opacity = Math.min(Math.max(0, parseFloat(fill[3]) / 100), 1);
+                    if (!isNaN(color.r)
+                        && !isNaN(color.g)
+                        && !isNaN(color.b)
+                        && !isNaN(opacity))
+                        fills.push({
+                            type: 'SOLID',
+                            color: color,
+                            opacity: opacity
+                        });
+                    break;
+                }
         }
     }
     return fills;
