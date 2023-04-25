@@ -481,7 +481,7 @@ class Wire
         this.curve  .style.stroke          = wireStyle;
         this.curve2 .style.stroke          = rgb2style(rgbDocumentBody);
     
-        this.curve  .style.strokeDasharray = unknown ? (5.4 * graph.currentPage.zoom) + ' ' + (2.7 * graph.currentPage.zoom) : '0';
+        this.curve  .style.strokeDasharray = unknown ? (2.7 * graph.currentPage.zoom) + ' ' + (2.7 * graph.currentPage.zoom) : '0';
     
         this. inBall.style.fill            = wireStyle;
         this.outBall.style.fill            = wireStyle;
@@ -511,10 +511,10 @@ class Wire
         // else if (graph.currentPage.zoom < 1  ) width += 1 * (1 - graph.currentPage.zoom);
     
     
-        this.curve .setAttribute('stroke-width', width * (listType ? (unknown ? 3.6 : 3.2) : (unknown ? 1.2 : 1)));
+        this.curve .setAttribute('stroke-width', width * (listType ? (unknown ? 3.6 : 3.2) : (unknown ? 1.3 : 1)));
         this.curve2.setAttribute('stroke-width', width * 1.4);
 
-        this.xp1   .setAttribute('stroke-width', width * (listType ? (unknown ? 3.6 : 3.2) : (unknown ? 1.2 : 1)));
+        this.xp1   .setAttribute('stroke-width', width * (listType ? (unknown ? 3.6 : 3.2) : (unknown ? 1.3 : 1)));
         this.xp2   .setAttribute('stroke-width', width * 1.4);
     
         this.curve2.setAttribute('display', listType ? 'inline' : 'none');
