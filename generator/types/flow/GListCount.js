@@ -3,7 +3,7 @@ extends GOperator
 {
     input = null;
 
-    count = null;
+    value = null;
 
 
 
@@ -39,13 +39,13 @@ extends GOperator
         if (this.input)
         {
             await this.input.eval(parse);
-            this.count = new NumberValue(this.input.toValue().items.length);
+            this.value = new NumberValue(this.input.toValue().items.length);
         }
         else
-            this.count = NumberValue.NaN;
+            this.value = NumberValue.NaN;
 
 
-        genPushUpdateValue(parse, this.nodeId, 'count', this.count);
+        genPushUpdateValue(parse, this.nodeId, 'value', this.value);
 
 
         this.validate();

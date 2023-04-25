@@ -11561,7 +11561,7 @@ extends GOperator
 {
     input = null;
 
-    count = null;
+    value = null;
 
 
 
@@ -11597,13 +11597,13 @@ extends GOperator
         if (this.input)
         {
             await this.input.eval(parse);
-            this.count = new NumberValue(this.input.toValue().items.length);
+            this.value = new NumberValue(this.input.toValue().items.length);
         }
         else
-            this.count = NumberValue.NaN;
+            this.value = NumberValue.NaN;
 
 
-        genPushUpdateValue(parse, this.nodeId, 'count', this.count);
+        genPushUpdateValue(parse, this.nodeId, 'value', this.value);
 
 
         this.validate();
@@ -11802,7 +11802,7 @@ extends GOperator
     {
         if (this.isCached())
             return this;
-
+            
 
         let count = (await this.count.eval(parse)).toValue();
         count = new NumberValue(Math.round(count.value));
@@ -11823,6 +11823,7 @@ extends GOperator
                 
             for (let i = 0; i < nItems; i++)
             {
+                this.input.valid = false;
                 await this.input.eval(parse);
 
 
@@ -35280,7 +35281,7 @@ extends GOperator
 {
     input = null;
 
-    count = null;
+    value = null;
 
 
 
@@ -35316,13 +35317,13 @@ extends GOperator
         if (this.input)
         {
             await this.input.eval(parse);
-            this.count = new NumberValue(this.input.toValue().items.length);
+            this.value = new NumberValue(this.input.toValue().items.length);
         }
         else
-            this.count = NumberValue.NaN;
+            this.value = NumberValue.NaN;
 
 
-        genPushUpdateValue(parse, this.nodeId, 'count', this.count);
+        genPushUpdateValue(parse, this.nodeId, 'value', this.value);
 
 
         this.validate();
@@ -35521,7 +35522,7 @@ extends GOperator
     {
         if (this.isCached())
             return this;
-
+            
 
         let count = (await this.count.eval(parse)).toValue();
         count = new NumberValue(Math.round(count.value));
@@ -35542,6 +35543,7 @@ extends GOperator
                 
             for (let i = 0; i < nItems; i++)
             {
+                this.input.valid = false;
                 await this.input.eval(parse);
 
 
@@ -44612,15 +44614,16 @@ extends Control
 
 TextControl.prototype.initTextarea = function()
 {
-    this.textbox                = createTextarea('textControlTextarea');
+    this.textbox                 = createTextarea('textControlTextarea');
 
-    this.textbox.control        = this;
-    this.textbox.defPlaceholder = ' . . .';
-    this.textbox.placeholder    = this.textbox.defPlaceholder;
+    this.textbox.control         = this;
+    this.textbox.defPlaceholder  = ' . . .';
+    this.textbox.placeholder     = this.textbox.defPlaceholder;
 
-    this.textbox.style.height   = defParamHeight;
+    this.textbox.style.height    = defParamHeight;
+    this.textbox.style.textAlign = 'center';
 
-    this.textbox.savedValue     = this.textbox.value;
+    this.textbox.savedValue      = this.textbox.value;
 
 
 
@@ -47597,9 +47600,9 @@ function initGeneratorMenus()
     menuString.addItems([
         new MenuItem('Text',      {icon: iconText,          shortcut: 'T', callback: e => actionManager.do(getCreateNodeAction(TEXT,           btnText.div, getCreateOptions(e)))}),
         new MenuItem('',          {separator: true}),
-        new MenuItem('Substring', {icon: iconTextSubstring, callback: e => actionManager.do(getCreateNodeAction(TEXT_SUBSTRING, btnText.div, getCreateOptions(e)))}),
         new MenuItem('Character', {icon: iconTextCharacter, callback: e => actionManager.do(getCreateNodeAction(TEXT_CHAR,      btnText.div, getCreateOptions(e)))}),
         new MenuItem('',          {separator: true}),
+        new MenuItem('Substring', {icon: iconTextSubstring, callback: e => actionManager.do(getCreateNodeAction(TEXT_SUBSTRING, btnText.div, getCreateOptions(e)))}),
         new MenuItem('Join',      {icon: iconTextJoin,      callback: e => actionManager.do(getCreateNodeAction(TEXT_JOIN,      btnText.div, getCreateOptions(e)))}),
         new MenuItem('Replace',   {icon: iconTextReplace,   callback: e => actionManager.do(getCreateNodeAction(TEXT_REPLACE,   btnText.div, getCreateOptions(e)))}),
         new MenuItem('',          {separator: true}),
@@ -56350,6 +56353,7 @@ class Operator
 
     enabled;
     cached;
+    
     inert; // doesn't eval inputs if values exist
     slow;  // takes a while to finish operation, shows a progress bar
 
@@ -57148,10 +57152,11 @@ class Operator
             const beforeActive = nextActive && nextActive.follows(this);
 
             const options =
-                  ((this.active     ? 1 : 0) << 0)
-                | ((beforeActive    ? 1 : 0) << 1)
-                | ((this.enabled    ? 1 : 0) << 2)
-                | ((this.isCached() ? 1 : 0) << 3)
+                  ((this.active  ? 1 : 0) << 0)
+                | ((beforeActive ? 1 : 0) << 1)
+                | ((this.enabled ? 1 : 0) << 2)
+                | ((this.cached  ? 1 : 0) << 3)
+                //| ((this.isCached() ? 1 : 0) << 3)
                 | nodeOptions;
 
             request.push(options);
@@ -59481,7 +59486,7 @@ extends OperatorBase
     {
         super(SELECT, 'select', 'select');
 
-        //this.alwaysSaveParams = true;
+        this.alwaysSaveParams = true;
 
 
         this.addInput(new Input(LIST_TYPES, getNodeInputValuesForUndo));
@@ -59601,7 +59606,7 @@ extends OperatorBase
 class   OpListCount
 extends OperatorBase
 {
-    paramCount;
+    paramValue;
 
 
     
@@ -59612,7 +59617,7 @@ extends OperatorBase
 
         this.addInput (new Input([LIST_VALUE]));
 
-        this.addParam(this.paramCount = new NumberParam('count', 'count', true, false, true, 0, 0));
+        this.addParam(this.paramValue = new NumberParam('value', 'value', false, false, true, 0, 0));
     }
 
 
@@ -59658,7 +59663,7 @@ extends OperatorBase
 
     updateParams()
     {
-        this.paramCount.enableControlText(false);
+        this.paramValue.enableControlText(false);
 
         this.updateParamControls();
     }
@@ -60121,6 +60126,7 @@ extends OperatorBase
     {
         super(REPEAT, 'repeat', 'repeat');
 
+        
         this.addInput (new Input([ANY_TYPE]));
         this.addOutput(new Output([LIST_VALUE], this.output_genRequest));
 

@@ -1,14 +1,15 @@
 TextControl.prototype.initTextarea = function()
 {
-    this.textbox                = createTextarea('textControlTextarea');
+    this.textbox                 = createTextarea('textControlTextarea');
 
-    this.textbox.control        = this;
-    this.textbox.defPlaceholder = ' . . .';
-    this.textbox.placeholder    = this.textbox.defPlaceholder;
+    this.textbox.control         = this;
+    this.textbox.defPlaceholder  = ' . . .';
+    this.textbox.placeholder     = this.textbox.defPlaceholder;
 
-    this.textbox.style.height   = defParamHeight;
+    this.textbox.style.height    = defParamHeight;
+    this.textbox.style.textAlign = 'center';
 
-    this.textbox.savedValue     = this.textbox.value;
+    this.textbox.savedValue      = this.textbox.value;
 
 
 

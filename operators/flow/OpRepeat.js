@@ -9,6 +9,7 @@ extends OperatorBase
     {
         super(REPEAT, 'repeat', 'repeat');
 
+        
         this.addInput (new Input([ANY_TYPE]));
         this.addOutput(new Output([LIST_VALUE], this.output_genRequest));
 

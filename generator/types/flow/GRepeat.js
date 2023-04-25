@@ -34,7 +34,7 @@ extends GOperator
     {
         if (this.isCached())
             return this;
-
+            
 
         let count = (await this.count.eval(parse)).toValue();
         count = new NumberValue(Math.round(count.value));
@@ -55,6 +55,7 @@ extends GOperator
                 
             for (let i = 0; i < nItems; i++)
             {
+                this.input.valid = false;
                 await this.input.eval(parse);
 
 

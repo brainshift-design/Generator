@@ -1,7 +1,7 @@
 class   OpListCount
 extends OperatorBase
 {
-    paramCount;
+    paramValue;
 
 
     
@@ -12,7 +12,7 @@ extends OperatorBase
 
         this.addInput (new Input([LIST_VALUE]));
 
-        this.addParam(this.paramCount = new NumberParam('count', 'count', true, false, true, 0, 0));
+        this.addParam(this.paramValue = new NumberParam('value', 'value', false, false, true, 0, 0));
     }
 
 
@@ -58,7 +58,7 @@ extends OperatorBase
 
     updateParams()
     {
-        this.paramCount.enableControlText(false);
+        this.paramValue.enableControlText(false);
 
         this.updateParamControls();
     }
