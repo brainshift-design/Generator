@@ -68,6 +68,31 @@ extends GValue
 
 
 
+    toJson()
+    {
+        if (!this.items)
+            return '';
+
+
+        let str = '';
+        
+        
+        str += this.items.length;
+
+        for (let i = 0; i < this.items.length; i++)
+        {
+            const item = this.items[i];
+
+            str += ' ' + item.type + ' ';
+            str += item.toJson();
+        }
+
+
+        return str;
+    }
+
+
+
     toString()
     {
         if (!this.items)

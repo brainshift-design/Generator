@@ -240,7 +240,7 @@ extends EventTarget
         if (id == '')
             id = this.id;
 
-        return pos + '["' + this.type  + '", "' + id  + '", "' + this.value.toString() + '"]';
+        return pos + '["' + this.type  + '", "' + id  + '", "' + this.value.toJson() + '"]';
     }
 
 

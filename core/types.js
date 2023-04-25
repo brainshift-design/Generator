@@ -1,6 +1,8 @@
 const LIST_VALUE              = 'LIST#';
 const LIST                    = 'LIST';
-    
+
+const LIST_EXPAND             = 'LEXP';
+
 const ITEMS                   = 'ITEMS';
 const SELECT                  = 'SEL';
 const IF_ELSE                 = 'IF';
@@ -19,6 +21,7 @@ const LIST_TYPES =
 [
     LIST_VALUE,
     LIST,
+    LIST_EXPAND,
     ITEMS,
     REPEAT
 ];

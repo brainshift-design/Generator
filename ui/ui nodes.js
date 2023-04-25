@@ -9,6 +9,7 @@ function createNode(nodeType, creatingButton = null, createdNodeId = -1, options
     switch (nodeType)
     {
         case LIST:                    node = new OpList();              break;
+        case LIST_EXPAND:             node = new OpExpandList();        break;
         case ITEMS:                   node = new OpItems();             break;
         case SELECT:                  node = new OpSelect();            break;
         case IF_ELSE:                 node = new OpIfElse();            break;

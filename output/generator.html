@@ -3439,7 +3439,9 @@ function normalizeSeed(x)
 
 const LIST_VALUE              = 'LIST#';
 const LIST                    = 'LIST';
-    
+
+const LIST_EXPAND             = 'LEXP';
+
 const ITEMS                   = 'ITEMS';
 const SELECT                  = 'SEL';
 const IF_ELSE                 = 'IF';
@@ -3458,6 +3460,7 @@ const LIST_TYPES =
 [
     LIST_VALUE,
     LIST,
+    LIST_EXPAND,
     ITEMS,
     REPEAT
 ];
@@ -4325,6 +4328,13 @@ extends GNode
 
 
 
+    toJson() 
+    { 
+        return this.toString(); 
+    }
+
+
+
     toString() 
     { 
         return this.type; 
@@ -4798,6 +4808,13 @@ extends GValue
     isValid()
     {
         return this.value != NAN_CHAR;
+    }
+
+
+
+    toJson()
+    {
+        return this.value.replace('\\', '\\\\');
     }
 
 
@@ -5539,6 +5556,31 @@ extends GValue
     toValue()
     {
         return this.copy();
+    }
+
+
+
+    toJson()
+    {
+        if (!this.items)
+            return '';
+
+
+        let str = '';
+        
+        
+        str += this.items.length;
+
+        for (let i = 0; i < this.items.length; i++)
+        {
+            const item = this.items[i];
+
+            str += ' ' + item.type + ' ';
+            str += item.toJson();
+        }
+
+
+        return str;
     }
 
 
@@ -6877,6 +6919,81 @@ extends GOperator
     }
 }
 
+
+
+class GExpandList
+extends GOperator
+{
+    input = null;
+
+    constructor(nodeId, options)
+    {
+        super(LIST_EXPAND, nodeId, options);
+    }
+
+
+
+    copy()
+    {
+        const copy = new GItems(this.nodeId, this.options);
+        
+        copy.copyBase(this);
+
+        if (this.input) 
+            copy.input = this.input.copy();
+
+        return copy;
+    }
+
+
+
+    async eval(parse)
+    {
+        if (this.isCached())
+            return this;
+
+
+
+        if (this.input)
+        {
+            const input = (await this.input.eval(parse)).toValue();
+
+
+            this.value = new ListValue();
+
+            for (const item of input.items)
+            {
+                this.value.items.push(item);   
+
+                if (item.type == LIST_VALUE)
+                {
+                    for (const listItem of item.items)
+                        this.value.items.push(listItem);
+                }
+            }
+        }
+        else
+        {
+            this.value = ListValue.NaN;
+        }
+
+
+        genPushUpdateValue(parse, this.nodeId, 'value', this.value);
+
+
+
+        this.validate();
+
+        return this;
+    }
+
+
+
+    toValue()
+    {
+        return this.value.copy();
+    }
+}
 
 
 class GItems
@@ -14133,11 +14250,12 @@ function enableFeatures(subscription, beta)
     
     updateElementDisplay(menuItemList                .div, subscription && beta);
     updateElementDisplay(menuFlowSep1                .div, subscription && beta);
+    updateElementDisplay(menuItemExpandList          .div, subscription && beta);
     updateElementDisplay(menuItemItems               .div, subscription && beta);
-    updateElementDisplay(menuItemSelect              .div, subscription && beta);
     updateElementDisplay(menuFlowSep2                .div, subscription && beta);
+    updateElementDisplay(menuItemSelect              .div, subscription && beta);
+    updateElementDisplay(menuFlowSep3                .div, subscription && beta);
     updateElementDisplay(menuItemRepeat              .div, subscription && beta);
-    // updateElementDisplay(menuFlowSep3                .div, subscription && beta);
     // updateElementDisplay(menuItemCache               .div, subscription && beta);
     // updateElementDisplay(menuItemCopy                .div, subscription && beta);
     
@@ -15215,6 +15333,50 @@ function genParseList(parse)
         
     genParseNodeEnd(parse, list);
     return list;
+}
+
+
+
+function genParseExpandList(parse)
+{
+    const [, nodeId, options, ignore] = genParseNodeStart(parse);
+
+
+    const expand = new GExpandList(nodeId, options);
+
+    
+    let nInputs = -1;
+    
+    if (!ignore)
+    {
+        nInputs = parseInt(parse.move());
+        console.assert(nInputs == 0 || nInputs == 1, 'nInputs must be [0, 1]');
+    }
+
+
+    if (parse.settings.logRequests) 
+        logReq(expand, parse, ignore, nInputs);
+
+
+    if (ignore) 
+    {
+        genParseNodeEnd(parse, expand);
+        return parse.parsedNodes.find(n => n.nodeId == nodeId);
+    }
+
+
+    parse.nTab++;
+
+
+    if (nInputs == 1)
+        expand.input = genParse(parse);
+
+
+    parse.nTab--;
+
+
+    genParseNodeEnd(parse, expand);
+    return expand;
 }
 
 
@@ -17490,6 +17652,7 @@ function genParse(parse, inParam = true)
         
     else if (parse.next == LIST_VALUE             ) result = genParseListValue       (parse);
     else if (parse.next == LIST                   ) result = genParseList            (parse);
+    else if (parse.next == LIST_EXPAND            ) result = genParseExpandList      (parse);
     else if (parse.next == ITEMS                  ) result = genParseItems           (parse);
     else if (parse.next == SELECT                 ) result = genParseSelect          (parse);
     else if (parse.next == IF_ELSE                ) result = genParseIfElse          (parse);

@@ -19,12 +19,12 @@ figma.showUI(
         visible:     false,
         themeColors: true
     });
-
+    
 
     
 // figma.currentPage
 //     .getPluginDataKeys()
-//     .forEach(k => figma.currentPage.setPluginData(k, ''));
+//     .forEach(k => figma.currentPage.setPluginData(k, figma.currentPage.getPluginData(k).replace('\\', '\\\\')));
 
 
 
@@ -61,7 +61,7 @@ function figStartGenerator()
             cmd:         'uiReturnFigStartGenerator',
             currentUser:  figma.currentUser,
             productKey:   productKey,
-            viewportRect: figma.viewport.bound,
+            viewportRect: figma.viewport.bounds,
             fonts:        fonts });
     })();
 }

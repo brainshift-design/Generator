@@ -12,7 +12,7 @@ extends OperatorBase
         this.addInput (new Input([ANY_TYPE]));
         this.addOutput(new Output([LIST_VALUE], this.output_genRequest));
 
-        this.addParam(this.paramCount = new NumberParam('count', 'count', true, true, false, 1, 0, 100, 0));
+        this.addParam(this.paramCount = new NumberParam('count', 'count', true, true, false, 1, 0, 1000, 0));
 
 
         this.paramCount.controls[0].allowEditDecimals = false;

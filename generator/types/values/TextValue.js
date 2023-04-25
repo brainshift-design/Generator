@@ -53,6 +53,13 @@ extends GValue
 
 
 
+    toJson()
+    {
+        return this.value.replace('\\', '\\\\');
+    }
+
+
+
     toString()
     {
         return this.value;

@@ -30,6 +30,13 @@ extends GNode
 
 
 
+    toJson() 
+    { 
+        return this.toString(); 
+    }
+
+
+
     toString() 
     { 
         return this.type; 

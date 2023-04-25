@@ -37,6 +37,7 @@
 
 
 ../operators/flow/OpList.js
+../operators/flow/OpExpandList.js
 ../operators/flow/OpItems.js
 ../operators/flow/OpSelect.js
 ../operators/flow/OpIfElse.js

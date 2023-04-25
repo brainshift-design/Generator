@@ -453,7 +453,9 @@ function cleanStyleId(styleId)
 
 const LIST_VALUE              = 'LIST#';
 const LIST                    = 'LIST';
-    
+
+const LIST_EXPAND             = 'LEXP';
+
 const ITEMS                   = 'ITEMS';
 const SELECT                  = 'SEL';
 const IF_ELSE                 = 'IF';
@@ -472,6 +474,7 @@ const LIST_TYPES =
 [
     LIST_VALUE,
     LIST,
+    LIST_EXPAND,
     ITEMS,
     REPEAT
 ];
@@ -1141,12 +1144,12 @@ figma.showUI(
         visible:     false,
         themeColors: true
     });
-
+    
 
     
 // figma.currentPage
 //     .getPluginDataKeys()
-//     .forEach(k => figma.currentPage.setPluginData(k, ''));
+//     .forEach(k => figma.currentPage.setPluginData(k, figma.currentPage.getPluginData(k).replace('\\', '\\\\')));
 
 
 
@@ -1183,7 +1186,7 @@ function figStartGenerator()
             cmd:         'uiReturnFigStartGenerator',
             currentUser:  figma.currentUser,
             productKey:   productKey,
-            viewportRect: figma.viewport.bound,
+            viewportRect: figma.viewport.bounds,
             fonts:        fonts });
     })();
 }
@@ -2624,11 +2627,13 @@ function initPageStyles(nodes)
 {
     figStyleArrays = [];
 
+    
     const paintStyles = figma.getLocalPaintStyles();
 
 
     for (const _node of nodes)
     {
+        console.log('_node =', _node);
         const node = JSON.parse(_node);
 
         if (node.type == COLOR_STYLE)
