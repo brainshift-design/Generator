@@ -288,13 +288,6 @@ function osCtrlShift(plus = true) { return isMac ? osShift(plus) + osCtrl(plus) 
 
 
 
-function isMultiplier(node)
-{
-    return node instanceof OpRepeat;
-}
-
-
-
 function getCreateNodeAction(type, creatingButton, options)
 {
     let node = createNode(type);

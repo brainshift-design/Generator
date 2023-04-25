@@ -6716,13 +6716,6 @@ function osCtrlShift(plus = true) { return isMac ? osShift(plus) + osCtrl(plus) 
 
 
 
-function isMultiplier(node)
-{
-    return node instanceof OpRepeat;
-}
-
-
-
 function getCreateNodeAction(type, creatingButton, options)
 {
     let node = createNode(type);
@@ -27846,13 +27839,6 @@ function osCtrl     (plus = true) { return isMac ? ('⌘' + (plus ? ' ' : ''))
 function osAlt      (plus = true) { return isMac ? ('⌥' + (plus ? ' ' : '')) : ('Alt'   + (plus ? '+' : '')); }
 function osShift    (plus = true) { return isMac ? ('⇧' + (plus ? ' ' : '')) : ('Shift' + (plus ? '+' : '')); }
 function osCtrlShift(plus = true) { return isMac ? osShift(plus) + osCtrl(plus) : osCtrl(plus) + osShift(plus); }
-
-
-
-function isMultiplier(node)
-{
-    return node instanceof OpRepeat;
-}
 
 
 
@@ -55597,7 +55583,7 @@ extends EventTarget
 
         for (const input of this.connectedInputs)
         {
-            if (isMultiplier(input.node))
+            if (input.node.isMultiplier())
                 return true;
 
             else if (input.node.hasMultipliedOutputs())
@@ -56239,10 +56225,11 @@ class Wire
                && !nodeFromId(conn.output.param._nodeId).isCached();
         
         const unknown =
-               conn.output
-            && isNotCached
-            && conn.input
-            && conn.input.node.isOrFollowedByMultiplier()
+                isNotCached
+            &&  conn.output
+            && !conn.output.node.isMultiplier()
+            &&  conn.input
+            &&  conn.input.node.isOrFollowedByMultiplier()
             && (  !conn.input.param 
                 || conn.input.param.affectsHeader);
     
@@ -57038,9 +57025,16 @@ class Operator
 
 
 
+    isMultiplier()
+    {
+        return false;
+    }
+
+
+
     isOrFollowedByMultiplier()
     {
-        return isMultiplier(this)
+        return this.isMultiplier()
              ? true
              : this.hasMultipliedOutputs();
     }
@@ -60139,6 +60133,13 @@ extends OperatorBase
     
     
 
+    isMultiplier()
+    {
+        return true;
+    }
+
+
+    
     output_genRequest(gen)
     {
         // 'this' is the output

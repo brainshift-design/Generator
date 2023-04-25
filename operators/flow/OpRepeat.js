@@ -22,6 +22,13 @@ extends OperatorBase
     
     
 
+    isMultiplier()
+    {
+        return true;
+    }
+
+
+    
     output_genRequest(gen)
     {
         // 'this' is the output

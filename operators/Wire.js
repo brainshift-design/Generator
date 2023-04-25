@@ -469,10 +469,11 @@ class Wire
                && !nodeFromId(conn.output.param._nodeId).isCached();
         
         const unknown =
-               conn.output
-            && isNotCached
-            && conn.input
-            && conn.input.node.isOrFollowedByMultiplier()
+                isNotCached
+            &&  conn.output
+            && !conn.output.node.isMultiplier()
+            &&  conn.input
+            &&  conn.input.node.isOrFollowedByMultiplier()
             && (  !conn.input.param 
                 || conn.input.param.affectsHeader);
     

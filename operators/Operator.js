@@ -720,9 +720,16 @@ class Operator
 
 
 
+    isMultiplier()
+    {
+        return false;
+    }
+
+
+
     isOrFollowedByMultiplier()
     {
-        return isMultiplier(this)
+        return this.isMultiplier()
              ? true
              : this.hasMultipliedOutputs();
     }
