@@ -1338,7 +1338,7 @@ function figCreateText(obj) {
         return __awaiter(this, void 0, void 0, function* () {
             yield figma.loadFontAsync(fontName);
             text.fontName = fontName;
-            text.fontSize = obj.size;
+            text.fontSize = Math.max(1, obj.size);
             text.characters = obj.text;
             //setTextStyle(text, obj);
         });
@@ -1362,7 +1362,7 @@ function figUpdateText(figText, genText) {
         return __awaiter(this, void 0, void 0, function* () {
             yield figma.loadFontAsync(fontName);
             figText.fontName = fontName;
-            figText.fontSize = genText.size;
+            figText.fontSize = Math.max(1, genText.size);
             figText.characters = genText.text;
             //setTextStyle(figText, genText);
         });

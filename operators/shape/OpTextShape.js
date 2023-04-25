@@ -40,7 +40,7 @@ extends OpShapeBase
         this.addParam(this.paramAngle         = new NumberParam('angle',         'angle',  true,  true, true,   0, -180,   180));
         this.addParam(this.paramFont          = new SelectParam('font',          'font',   false, true, true, [...new Set(fonts)], interIndex));
         this.addParam(this.paramStyle         = new SelectParam('style',         'style',  false, true, true, [''], 0));
-        this.addParam(this.paramSize          = new NumberParam('size',          'size',   true,  true, true,  12,  0));
+        this.addParam(this.paramSize          = new NumberParam('size',          'size',   true,  true, true,  12, 1));
         this.addParam(this.paramAlignH        = new SelectParam('alignH',        'align',  true,  true, true, ['left', 'center', 'right', 'justify'], 0));
         this.addParam(this.paramAlignV        = new SelectParam('alignV',        'align',  true,  true, true, ['bottom', 'middle', 'top'], 1));
         this.addParam(this.paramLineHeight    = new NumberParam('lineHeight',    'line',   true,  true, true, 100));

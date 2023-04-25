@@ -2059,7 +2059,7 @@ function figCreateText(obj)
         await figma.loadFontAsync(fontName); 
 
         text.fontName   = fontName;
-        text.fontSize   = obj.size;
+        text.fontSize   = Math.max(1, obj.size);
         
         text.characters = obj.text;
 
@@ -2104,7 +2104,7 @@ function figUpdateText(figText, genText)
         await figma.loadFontAsync(fontName); 
 
         figText.fontName   = fontName;
-        figText.fontSize   = genText.size;
+        figText.fontSize   = Math.max(1, genText.size);
 
         figText.characters = genText.text;
 

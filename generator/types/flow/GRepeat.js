@@ -55,9 +55,6 @@ extends GOperator
 
             for (let i = 0; i < nItems; i++)
             {
-                if (this.nodeId == 'graph/repeat2')                
-                    console.log('this.input =', this.input);
-    
                 this.input.invalidate();
                 await this.input.eval(parse);
 

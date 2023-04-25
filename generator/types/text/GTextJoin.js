@@ -54,11 +54,19 @@ async function evalJoinInputs(inputs, parse)
     {
         const val = (await inputs[i].eval(parse)).toValue();
 
-        console.assert(
-            val.type == TEXT_VALUE, 
-            'val.type must be TEXT_VALUE');
+        if (val.type == LIST_VALUE)
+        {
+            for (const item of val.items)
+                value.value += item.value;
+        }
+        else
+        {
+            console.assert(
+                val.type == TEXT_VALUE, 
+                'val.type must be TEXT_VALUE');
 
-        value.value += val.value;
+            value.value += val.value;
+        }
     }
 
 
