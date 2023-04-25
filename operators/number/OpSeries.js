@@ -8,7 +8,7 @@ extends OperatorBase
 
     constructor()
     {
-        super(NUMBER_SERIES, 'series', 'series');
+        super(NUMBER_SERIES, 'sequence', 'sequence');
 
         this.cached = false;
         

@@ -15,7 +15,10 @@ extends OperatorBase
         this.addOutput(new Output([LIST_VALUE], this.output_genRequest));
 
         this.addParam(this.paramValue     = new ListParam('value',     '',          true, true));
-        this.addParam(this.paramSeparator = new TextParam('separator', 'separator', true, true));
+        this.addParam(this.paramSeparator = new TextParam('separator', 'separator', true, true, ','));
+
+
+        this.paramSeparator.controls[0].textbox.style.textAlign = 'center';
     }
 
 

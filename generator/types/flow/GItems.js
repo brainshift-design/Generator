@@ -46,7 +46,7 @@ extends GOperator
 
         if (this.input)
         {
-            if (!this.input.value)
+            //if (!this.input.value)
                 await this.input.eval(parse);
 
             this.value   = this.input.toValue();

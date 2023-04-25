@@ -5,6 +5,7 @@ const LIST_EXPAND             = 'LEXP';
 
 const ITEMS                   = 'ITEMS';
 const SELECT                  = 'SEL';
+const LIST_COUNT              = 'COUNT';
 const IF_ELSE                 = 'IF';
     
 const START                   = 'START';
@@ -23,6 +24,7 @@ const LIST_TYPES =
     LIST,
     LIST_EXPAND,
     ITEMS,
+    LIST_COUNT,
     REPEAT
 ];
 

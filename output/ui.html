@@ -7809,6 +7809,7 @@ const LIST_EXPAND             = 'LEXP';
 
 const ITEMS                   = 'ITEMS';
 const SELECT                  = 'SEL';
+const LIST_COUNT              = 'COUNT';
 const IF_ELSE                 = 'IF';
     
 const START                   = 'START';
@@ -7827,6 +7828,7 @@ const LIST_TYPES =
     LIST,
     LIST_EXPAND,
     ITEMS,
+    LIST_COUNT,
     REPEAT
 ];
 
@@ -11417,7 +11419,7 @@ extends GOperator
 
         if (this.input)
         {
-            if (!this.input.value)
+            //if (!this.input.value)
                 await this.input.eval(parse);
 
             this.value   = this.input.toValue();
@@ -11551,6 +11553,70 @@ extends GOperator
     {
         return this.value.copy();
     }
+}
+
+
+class GListCount
+extends GOperator
+{
+    input = null;
+
+    count = null;
+
+
+
+    constructor(nodeId, options)
+    {
+        super(LIST_COUNT, nodeId, options);
+    }
+
+
+
+    copy()
+    {
+        const copy = new GListCount(this.nodeId, this.options);
+        
+        copy.copyBase(this);
+
+        if (this.input) 
+            copy.input = this.input.copy();
+
+        if (this.count) copy.count = this.count.copy();
+
+        return copy;
+    }
+
+
+
+    async eval(parse)
+    {
+        if (this.isCached())
+            return this;
+
+
+        if (this.input)
+        {
+            await this.input.eval(parse);
+            this.count = new NumberValue(this.input.toValue().items.length);
+        }
+        else
+            this.count = NumberValue.NaN;
+
+
+        genPushUpdateValue(parse, this.nodeId, 'count', this.count);
+
+
+        this.validate();
+
+        return this;
+    }
+
+
+
+    // toValue()
+    // {
+    //     return this.value.copy();
+    // }
 }
 
 
@@ -18627,6 +18693,7 @@ function enableFeatures(subscription, beta)
     updateElementDisplay(menuItemItems               .div, subscription && beta);
     updateElementDisplay(menuFlowSep2                .div, subscription && beta);
     updateElementDisplay(menuItemSelect              .div, subscription && beta);
+    updateElementDisplay(menuItemCount               .div, subscription && beta);
     updateElementDisplay(menuFlowSep3                .div, subscription && beta);
     updateElementDisplay(menuItemRepeat              .div, subscription && beta);
     // updateElementDisplay(menuItemCache               .div, subscription && beta);
@@ -19804,7 +19871,7 @@ function genParseSelect(parse)
 
 
     const sel = new GSelect(nodeId, options);
-
+    
 
     let nInputs = -1;
     
@@ -19834,12 +19901,56 @@ function genParseSelect(parse)
 
     sel.index = genParse(parse);
 
-
+    
     parse.nTab--;
 
 
     genParseNodeEnd(parse, sel);
     return sel;
+}
+
+
+
+function genParseListCount(parse)
+{
+    const [, nodeId, options, ignore] = genParseNodeStart(parse);
+
+
+    const count = new GListCount(nodeId, options);
+
+    
+    let nInputs = -1;
+    
+    if (!ignore)
+    {
+        nInputs = parseInt(parse.move());
+        console.assert(nInputs == 0 || nInputs == 1, 'nInputs must be [0, 1]');
+    }
+
+
+    if (parse.settings.logRequests) 
+        logReq(count, parse, ignore, nInputs);
+
+
+    if (ignore) 
+    {
+        genParseNodeEnd(parse, count);
+        return parse.parsedNodes.find(n => n.nodeId == nodeId);
+    }
+
+
+    parse.nTab++;
+
+
+    if (nInputs == 1)
+        count.input = genParse(parse);
+
+
+    parse.nTab--;
+
+
+    genParseNodeEnd(parse, count);
+    return count;
 }
 
 
@@ -22028,6 +22139,7 @@ function genParse(parse, inParam = true)
     else if (parse.next == LIST_EXPAND            ) result = genParseExpandList      (parse);
     else if (parse.next == ITEMS                  ) result = genParseItems           (parse);
     else if (parse.next == SELECT                 ) result = genParseSelect          (parse);
+    else if (parse.next == LIST_COUNT             ) result = genParseListCount       (parse);
     else if (parse.next == IF_ELSE                ) result = genParseIfElse          (parse);
     else if (parse.next == START                  ) result = genParseStart           (parse);
     else if (parse.next == REPEAT                 ) result = genParseRepeat          (parse);
@@ -31416,6 +31528,7 @@ const LIST_EXPAND             = 'LEXP';
 
 const ITEMS                   = 'ITEMS';
 const SELECT                  = 'SEL';
+const LIST_COUNT              = 'COUNT';
 const IF_ELSE                 = 'IF';
     
 const START                   = 'START';
@@ -31434,6 +31547,7 @@ const LIST_TYPES =
     LIST,
     LIST_EXPAND,
     ITEMS,
+    LIST_COUNT,
     REPEAT
 ];
 
@@ -35024,7 +35138,7 @@ extends GOperator
 
         if (this.input)
         {
-            if (!this.input.value)
+            //if (!this.input.value)
                 await this.input.eval(parse);
 
             this.value   = this.input.toValue();
@@ -35158,6 +35272,70 @@ extends GOperator
     {
         return this.value.copy();
     }
+}
+
+
+class GListCount
+extends GOperator
+{
+    input = null;
+
+    count = null;
+
+
+
+    constructor(nodeId, options)
+    {
+        super(LIST_COUNT, nodeId, options);
+    }
+
+
+
+    copy()
+    {
+        const copy = new GListCount(this.nodeId, this.options);
+        
+        copy.copyBase(this);
+
+        if (this.input) 
+            copy.input = this.input.copy();
+
+        if (this.count) copy.count = this.count.copy();
+
+        return copy;
+    }
+
+
+
+    async eval(parse)
+    {
+        if (this.isCached())
+            return this;
+
+
+        if (this.input)
+        {
+            await this.input.eval(parse);
+            this.count = new NumberValue(this.input.toValue().items.length);
+        }
+        else
+            this.count = NumberValue.NaN;
+
+
+        genPushUpdateValue(parse, this.nodeId, 'count', this.count);
+
+
+        this.validate();
+
+        return this;
+    }
+
+
+
+    // toValue()
+    // {
+    //     return this.value.copy();
+    // }
 }
 
 
@@ -42234,6 +42412,7 @@ function enableFeatures(subscription, beta)
     updateElementDisplay(menuItemItems               .div, subscription && beta);
     updateElementDisplay(menuFlowSep2                .div, subscription && beta);
     updateElementDisplay(menuItemSelect              .div, subscription && beta);
+    updateElementDisplay(menuItemCount               .div, subscription && beta);
     updateElementDisplay(menuFlowSep3                .div, subscription && beta);
     updateElementDisplay(menuItemRepeat              .div, subscription && beta);
     // updateElementDisplay(menuItemCache               .div, subscription && beta);
@@ -45972,12 +46151,13 @@ const iconList              = '<svg width="12" height="9" viewBox="0 0 12 9" fil
 const iconExpandList        = '<svg width="15" height="11" viewBox="0 0 15 11" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M0 5H9V6H0V5Z" fill="white"/><path d="M13.5 11C12.6716 11 12 10.3284 12 9.5C12 8.67157 12.6716 8 13.5 8C14.3284 8 15 8.67157 15 9.5C15 10.3284 14.3284 11 13.5 11Z" fill="white"/><path d="M13.5 7C12.6716 7 12 6.32843 12 5.5C12 4.67157 12.6716 4 13.5 4C14.3284 4 15 4.67157 15 5.5C15 6.32843 14.3284 7 13.5 7Z" fill="white"/><path d="M13.5 3C12.6716 3 12 2.32843 12 1.5C12 0.671573 12.6716 0 13.5 0C14.3284 0 15 0.671573 15 1.5C15 2.32843 14.3284 3 13.5 3Z" fill="white"/></svg>';
 const iconItems             = '<svg width="17" height="11" viewBox="-1 0 17 11" fill="none" xmlns="http://www.w3.org/2000/svg"><rect width="9" height="1" transform="matrix(-1 0 0 1 9 1)" fill="white"/><rect width="9" height="1" transform="matrix(-1 0 0 1 9 5)" fill="white"/><rect width="9" height="1" transform="matrix(-1 0 0 1 9 9)" fill="white"/><circle r="1.5" transform="matrix(-1 0 0 1 13.5 9.5)" fill="white"/><circle r="1.5" transform="matrix(-1 0 0 1 13.5 5.5)" fill="white"/><circle r="1.5" transform="matrix(-1 0 0 1 13.5 1.5)" fill="white"/></svg>';
 const iconSelect            = '<svg width="15" height="9" viewBox="0 0 15 9" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M0 0H9V1H0V0Z" fill="white"/><path d="M0 4H9V5H0V4Z" fill="white"/><path d="M0 8H9V9H0V8Z" fill="white"/><path d="M13.5 6C12.6716 6 12 5.32843 12 4.5C12 3.67157 12.6716 3 13.5 3C14.3284 3 15 3.67157 15 4.5C15 5.32843 14.3284 6 13.5 6Z" fill="white"/></svg>';
+const iconCount             = '<svg width="16" height="11" viewBox="0 0 16 11" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M15.0334 0V11H12.0334V10H14.0667L14.0334 1H12L12.0334 0H15.0334Z" fill="white"/><path d="M0 11V0H3V1H0.966639V10H3V11H0Z" fill="white"/><path d="M7.5 11C6.67157 11 6 10.3284 6 9.5C6 8.67157 6.67157 8 7.5 8C8.32843 8 9 8.67157 9 9.5C9 10.3284 8.32843 11 7.5 11Z" fill="white"/><path d="M7.5 7C6.67157 7 6 6.32843 6 5.5C6 4.67157 6.67157 4 7.5 4C8.32843 4 9 4.67157 9 5.5C9 6.32843 8.32843 7 7.5 7Z" fill="white"/><path d="M7.5 3C6.67157 3 6 2.32843 6 1.5C6 0.671573 6.67157 0 7.5 0C8.32843 0 9 0.671573 9 1.5C9 2.32843 8.32843 3 7.5 3Z" fill="white"/></svg>';
 const iconStart             = '<svg width="16" height="8" viewBox="0 0 16 8" fill="none" xmlns="http://www.w3.org/2000/svg"><rect width="4.97369" height="1" transform="matrix(-0.707107 0.707107 0.707107 0.707107 14.53 2.86006)" fill="white"/><rect x="6" y="3" width="8" height="1" fill="white"/><circle cx="1.5" cy="3.5" r="1.5" fill="white"/><rect width="5" height="1" transform="matrix(-0.707107 -0.707107 -0.707107 0.707107 15.2426 3.53554)" fill="white"/></svg>';
 const iconRepeat            = '<svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><circle r="1.5" transform="matrix(-1 0 0 1 8.5 13.6003)" fill="white"/><path d="M12.996 11.5078C14.0482 10.4921 14.7227 9.16438 14.9093 7.74161C15.0958 6.31883 14.7834 4.88515 14.023 3.67489C13.2626 2.46463 12.0993 1.54937 10.7232 1.0787C9.34705 0.608019 7.83949 0.609769 6.44689 1.08365C5.05429 1.55754 3.85902 2.47553 3.05643 3.6876C2.25383 4.89967 1.89138 6.33413 2.02832 7.75654C2.12729 8.78463 2.48292 9.76246 3.05643 10.6082" stroke="white"/><rect width="4.97369" height="1" transform="matrix(-1 0 0 1 5.00183 10.0282)" fill="white"/><rect width="4.01843" height="1" transform="matrix(1.19249e-08 -1 -1 -1.19249e-08 5.00183 11.0282)" fill="white"/></svg>';
 const iconForEach           = '<svg width="15" height="11" viewBox="0 0 15 11" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="6" y="9" width="9" height="1" fill="white"/><circle cx="1.5" cy="9.5" r="1.5" fill="white"/><circle cx="1.5" cy="5.5" r="1.5" fill="white"/><circle cx="1.5" cy="1.5" r="1.5" fill="white"/></svg>';
 const iconCache             = '<svg width="15" height="11" viewBox="0 0 15 11" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M2.30351 1C1.68386 1.65376 1.20533 2.44219 0.906274 3.31653C0.435594 4.69266 0.437344 6.20022 0.911224 7.59282C1.21856 8.49597 1.71269 9.31613 2.35268 10" stroke="white"/><path d="M12.7415 1C13.3612 1.65376 13.8397 2.44219 14.1387 3.31653C14.6094 4.69266 14.6077 6.20022 14.1338 7.59282C13.8265 8.49597 13.3323 9.31613 12.6923 10" stroke="white"/><circle r="1.5" transform="matrix(-1 0 0 1 7.5 5.5)" fill="white"/></svg>';
 const iconCopy              = '<svg width="15" height="8" viewBox="0 0 15 8" fill="none" xmlns="http://www.w3.org/2000/svg"><circle r="1.5" transform="matrix(-1 0 0 1 13.5 1.5)" fill="white"/><circle r="1.5" transform="matrix(-1 0 0 1 13.5 6.5)" fill="white"/><path d="M0 1H9V2H0V1Z" fill="white"/></svg>';
-const iconIfElse            = '<svg width="17" height="8" viewBox="-1 0 17 8" fill="none" xmlns="http://www.w3.org/2000/svg"><rect y="2" width="9" height="1" fill="white"/><rect y="6" width="9" height="1" fill="white"/><path d="M12.8788 5.52801V5.41935C12.8809 5.04648 12.9139 4.74925 12.9778 4.52766C13.0439 4.30607 13.1398 4.12709 13.2655 3.99073C13.3912 3.85436 13.5425 3.73078 13.7193 3.61999C13.8514 3.53476 13.9697 3.44634 14.0741 3.35472C14.1785 3.2631 14.2616 3.16189 14.3234 3.0511C14.3852 2.93817 14.4161 2.81246 14.4161 2.67397C14.4161 2.52695 14.3809 2.39804 14.3106 2.28725C14.2403 2.17645 14.1455 2.09122 14.0261 2.03156C13.9089 1.97191 13.779 1.94208 13.6362 1.94208C13.4977 1.94208 13.3667 1.97297 13.2431 2.03476C13.1195 2.09442 13.0183 2.18391 12.9395 2.30323C12.8607 2.42041 12.818 2.56637 12.8116 2.74108H11.5077C11.5183 2.31495 11.6206 1.96338 11.8145 1.68639C12.0084 1.40728 12.2651 1.19953 12.5847 1.06317C12.9043 0.924675 13.257 0.855428 13.6426 0.855428C14.0666 0.855428 14.4416 0.925741 14.7676 1.06637C15.0936 1.20486 15.3493 1.40621 15.5347 1.67041C15.72 1.93462 15.8127 2.25316 15.8127 2.62602C15.8127 2.87531 15.7712 3.09691 15.6881 3.2908C15.6071 3.48256 15.4931 3.65301 15.3461 3.80216C15.1991 3.94918 15.0254 4.08235 14.8251 4.20166C14.6568 4.30181 14.5183 4.40621 14.4097 4.51487C14.3031 4.62354 14.2232 4.74925 14.17 4.89201C14.1188 5.03476 14.0922 5.21054 14.0901 5.41935V5.52801H12.8788ZM13.5116 7.57347C13.2985 7.57347 13.1163 7.49889 12.9651 7.34975C12.8159 7.19847 12.7424 7.01736 12.7445 6.80642C12.7424 6.59762 12.8159 6.41864 12.9651 6.26949C13.1163 6.12034 13.2985 6.04577 13.5116 6.04577C13.714 6.04577 13.8919 6.12034 14.0453 6.26949C14.1987 6.41864 14.2765 6.59762 14.2786 6.80642C14.2765 6.94705 14.2392 7.07595 14.1668 7.19314C14.0964 7.3082 14.0038 7.40088 13.8887 7.4712C13.7736 7.53938 13.6479 7.57347 13.5116 7.57347Z" fill="white"/></svg>';
+const iconIfElse            = '<svg width="16" height="7" viewBox="0 0 16 7" fill="none" xmlns="http://www.w3.org/2000/svg"><rect y="1" width="9" height="1" fill="white"/><rect y="5" width="9" height="1" fill="white"/><path d="M13.157 4.8687V4.75547C13.1591 4.36695 13.1911 4.05725 13.253 3.82636C13.317 3.59546 13.4099 3.40898 13.5318 3.26689C13.6536 3.1248 13.8002 2.99604 13.9715 2.88059C14.0995 2.79179 14.2141 2.69965 14.3153 2.60419C14.4165 2.50872 14.497 2.40327 14.5569 2.28782C14.6167 2.17016 14.6467 2.03917 14.6467 1.89486C14.6467 1.74167 14.6126 1.60736 14.5445 1.49191C14.4763 1.37647 14.3845 1.28766 14.2688 1.2255C14.1553 1.16334 14.0293 1.13225 13.891 1.13225C13.7568 1.13225 13.6298 1.16445 13.5101 1.22883C13.3903 1.29099 13.2922 1.38424 13.2159 1.50856C13.1395 1.63067 13.0982 1.78275 13.092 1.9648H11.8284C11.8387 1.52077 11.9378 1.15446 12.1257 0.865842C12.3136 0.575008 12.5624 0.358548 12.8721 0.21646C13.1818 0.0721535 13.5235 0 13.8972 0C14.3081 0 14.6714 0.0732636 14.9873 0.219791C15.3032 0.364098 15.551 0.573898 15.7306 0.849191C15.9102 1.12448 16.0001 1.45639 16.0001 1.84491C16.0001 2.10466 15.9598 2.33555 15.8793 2.53758C15.8008 2.73739 15.6904 2.915 15.5479 3.07041C15.4054 3.2236 15.2372 3.36235 15.0431 3.48668C14.88 3.59102 14.7458 3.69981 14.6405 3.81304C14.5372 3.92626 14.4598 4.05725 14.4082 4.20599C14.3587 4.35474 14.3328 4.5379 14.3308 4.75547V4.8687H13.157ZM13.7702 6.9C13.5638 6.9 13.3872 6.8223 13.2406 6.66689C13.0961 6.50926 13.0249 6.32055 13.0269 6.10076C13.0249 5.88319 13.0961 5.6967 13.2406 5.54129C13.3872 5.38589 13.5638 5.30818 13.7702 5.30818C13.9664 5.30818 14.1388 5.38589 14.2874 5.54129C14.4361 5.6967 14.5114 5.88319 14.5135 6.10076C14.5114 6.24729 14.4753 6.38161 14.4051 6.50371C14.337 6.6236 14.2472 6.72017 14.1357 6.79344C14.0242 6.86448 13.9024 6.9 13.7702 6.9Z" fill="white"/></svg>';
  
 const iconNumber            = '<svg width="17" height="7" viewBox="0 0 17 7" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M14.4917 7C14.0139 7 13.5892 6.91793 13.2176 6.7538C12.8483 6.58967 12.5563 6.36122 12.3417 6.06844C12.1272 5.77567 12.0133 5.43742 12 5.05371H13.2475C13.2586 5.2378 13.3194 5.39861 13.43 5.53612C13.5406 5.67142 13.6877 5.77677 13.8713 5.85219C14.0548 5.9276 14.2605 5.9653 14.4884 5.9653C14.7317 5.9653 14.9473 5.92316 15.1353 5.83888C15.3234 5.75238 15.4705 5.6326 15.5766 5.47956C15.6828 5.32652 15.7348 5.15019 15.7326 4.95057C15.7348 4.7443 15.6817 4.56242 15.5733 4.40494C15.4649 4.24747 15.3079 4.12437 15.1022 4.03565C14.8987 3.94693 14.6532 3.90257 14.3656 3.90257H13.7651V2.95105H14.3656C14.6023 2.95105 14.8091 2.91001 14.986 2.82795C15.1652 2.74588 15.3057 2.63055 15.4074 2.48194C15.5092 2.33112 15.5589 2.157 15.5567 1.9596C15.5589 1.76664 15.5158 1.59918 15.4273 1.45722C15.3411 1.31305 15.2183 1.20105 15.059 1.1212C14.902 1.04135 14.7173 1.00143 14.505 1.00143C14.297 1.00143 14.1046 1.03913 13.9277 1.11454C13.7507 1.18996 13.608 1.29753 13.4997 1.43726C13.3913 1.57478 13.3338 1.73891 13.3271 1.92966H12.1427C12.1515 1.54816 12.261 1.21324 12.4711 0.924905C12.6835 0.634347 12.9666 0.408112 13.3205 0.246198C13.6744 0.0820661 14.0714 0 14.5116 0C14.965 0 15.3588 0.0853929 15.6927 0.256179C16.029 0.424746 16.2888 0.652091 16.4724 0.938213C16.656 1.22433 16.7478 1.5404 16.7478 1.88641C16.75 2.27012 16.6372 2.59173 16.4094 2.85124C16.1838 3.11074 15.8874 3.28042 15.5202 3.36027V3.4135C15.998 3.48004 16.3641 3.65748 16.6184 3.94582C16.875 4.23194 17.0022 4.58793 17 5.01378C17 5.39528 16.8916 5.73685 16.6748 6.0385C16.4603 6.33793 16.1639 6.57304 15.7856 6.74382C15.4096 6.91461 14.9783 7 14.4917 7Z" fill="white"/><path d="M5.04237 7V6.09634L7.66243 3.75289C7.90254 3.52136 8.10264 3.31567 8.26271 3.13584C8.42279 2.95601 8.54284 2.78179 8.62288 2.6132C8.70292 2.44461 8.74294 2.26477 8.74294 2.0737C8.74294 1.85565 8.69115 1.66908 8.58757 1.51397C8.48399 1.35662 8.34157 1.23523 8.16031 1.14981C7.97905 1.06439 7.66361 1.01493 7.43291 1.01493C7.19515 1.01493 6.98682 1.06214 6.80791 1.15655C6.629 1.24872 6.49011 1.38022 6.39124 1.55106C6.29473 1.7219 6.24647 1.92534 6.24647 2.16137H5C5 1.72302 5.10476 1.342 5.31427 1.0183C5.52378 0.694605 5.81215 0.443963 6.17938 0.266378C6.54896 0.0887927 6.97269 0 7.45056 0C7.9355 0 8.47105 0.0932886 8.83828 0.266378C9.20551 0.439467 9.49035 0.676622 9.6928 0.977842C9.8976 1.27906 10 1.62299 10 2.00963C10 2.26814 9.94821 2.52216 9.84463 2.77168C9.74105 3.02119 9.55862 3.29769 9.29732 3.60116C9.03837 3.90462 8.67467 4.27216 8.20622 4.70376L6.85028 5.90751V5.95472H10V7H5.04237Z" fill="white"/><path d="M3 0V7H1.70882V1.23389H1.66705L0 2.27979V1.11768L1.77146 0H3Z" fill="white"/></svg>';
 const iconSign              = '<svg width="7" height="11" viewBox="0 0 7 11" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M2.90606 7V0H4.09394V7H2.90606ZM0 4.09394V2.90606H7V4.09394H0Z" fill="white"/><path d="M7 10V11H0V10H7Z" fill="white"/></svg>';
@@ -46017,7 +46197,7 @@ const iconText              = '<svg width="19" height="7" viewBox="0 0 19 7" fil
 const iconTextSubstring     = '<svg width="17" height="10" viewBox="0 -2 17 10" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M6 7V0H8.56544C9.04974 0 9.45223 0.0797524 9.77291 0.239258C10.0958 0.396484 10.3368 0.611816 10.4961 0.885254C10.6575 1.15869 10.7382 1.46859 10.7382 1.81494C10.7382 2.09977 10.6859 2.34359 10.5812 2.54639C10.4764 2.74691 10.3357 2.90983 10.159 3.03516C9.98233 3.16048 9.7849 3.25049 9.56675 3.30518V3.37354C9.80454 3.38721 10.0325 3.46354 10.2507 3.60254C10.471 3.73926 10.651 3.93294 10.7906 4.18359C10.9302 4.43424 11 4.7373 11 5.09277C11 5.45508 10.916 5.78092 10.748 6.07031C10.5801 6.35742 10.327 6.58415 9.98887 6.75049C9.65074 6.91683 9.22535 7 8.7127 7H6ZM7.21401 5.94043H8.51963C8.9603 5.94043 9.2777 5.8527 9.47186 5.67725C9.66819 5.49951 9.76636 5.27165 9.76636 4.99365C9.76636 4.7863 9.71728 4.59945 9.61911 4.43311C9.52094 4.26449 9.38133 4.13232 9.20026 4.03662C9.0192 3.93864 8.80323 3.88965 8.55236 3.88965H7.21401V5.94043ZM7.21401 2.97705H8.41492C8.62435 2.97705 8.81305 2.93717 8.98102 2.85742C9.149 2.77539 9.28098 2.66032 9.37696 2.51221C9.47513 2.36182 9.52421 2.18408 9.52421 1.979C9.52421 1.70784 9.43259 1.48454 9.24935 1.30908C9.06828 1.13363 8.79887 1.0459 8.4411 1.0459H7.21401V2.97705Z" fill="white"/><path d="M1.4991 7.23161C1.29659 7.23161 1.12301 7.16039 0.978358 7.01797C0.833709 6.87554 0.762497 6.70197 0.764722 6.49723C0.762497 6.29695 0.833709 6.12559 0.978358 5.98317C1.12301 5.84074 1.29659 5.76953 1.4991 5.76953C1.69493 5.76953 1.86517 5.84074 2.00982 5.98317C2.1567 6.12559 2.23125 6.29695 2.23347 6.49723C2.23125 6.63298 2.19564 6.75649 2.12665 6.86776C2.05989 6.97902 1.97088 7.06804 1.85961 7.1348C1.75056 7.19934 1.63039 7.23161 1.4991 7.23161Z" fill="white"/><path d="M13.5054 7.23161C13.3029 7.23161 13.1293 7.16039 12.9847 7.01797C12.84 6.87554 12.7688 6.70197 12.7711 6.49723C12.7688 6.29695 12.84 6.12559 12.9847 5.98317C13.1293 5.84074 13.3029 5.76953 13.5054 5.76953C13.7013 5.76953 13.8715 5.84074 14.0162 5.98317C14.163 6.12559 14.2376 6.29695 14.2398 6.49723C14.2376 6.63298 14.202 6.75649 14.133 6.86776C14.0662 6.97902 13.9772 7.06804 13.8659 7.1348C13.7569 7.19934 13.6367 7.23161 13.5054 7.23161Z" fill="white"/><path d="M3.49441 7.23161C3.2919 7.23161 3.11832 7.16039 2.97367 7.01797C2.82902 6.87554 2.75781 6.70197 2.76004 6.49723C2.75781 6.29695 2.82902 6.12559 2.97367 5.98317C3.11832 5.84074 3.2919 5.76953 3.49441 5.76953C3.69025 5.76953 3.86049 5.84074 4.00514 5.98317C4.15201 6.12559 4.22656 6.29695 4.22879 6.49723C4.22656 6.63298 4.19096 6.75649 4.12197 6.86776C4.05521 6.97902 3.96619 7.06804 3.85492 7.1348C3.74588 7.19934 3.62571 7.23161 3.49441 7.23161Z" fill="white"/><path d="M15.5007 7.23161C15.2982 7.23161 15.1247 7.16039 14.98 7.01797C14.8354 6.87554 14.7641 6.70197 14.7664 6.49723C14.7641 6.29695 14.8354 6.12559 14.98 5.98317C15.1247 5.84074 15.2982 5.76953 15.5007 5.76953C15.6966 5.76953 15.8668 5.84074 16.0115 5.98317C16.1583 6.12559 16.2329 6.29695 16.2351 6.49723C16.2329 6.63298 16.1973 6.75649 16.1283 6.86776C16.0615 6.97902 15.9725 7.06804 15.8613 7.1348C15.7522 7.19934 15.632 7.23161 15.5007 7.23161Z" fill="white"/></svg>';
 const iconTextReplace       = '<svg width="19" height="16" viewBox="0 0 19 16" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M19 9.39211H17.7568C17.7213 9.18805 17.656 9.00729 17.5607 8.84981C17.4654 8.69011 17.3468 8.55482 17.205 8.44392C17.0632 8.33302 16.9014 8.24984 16.7197 8.19439C16.5402 8.13672 16.3463 8.10789 16.138 8.10789C15.7679 8.10789 15.4399 8.20105 15.154 8.38736C14.8681 8.57145 14.6443 8.84205 14.4825 9.19914C14.3208 9.55402 14.2399 9.98764 14.2399 10.5C14.2399 11.0212 14.3208 11.4604 14.4825 11.8175C14.6465 12.1724 14.8704 12.4407 15.154 12.6226C15.4399 12.8023 15.7668 12.8921 16.1346 12.8921C16.3385 12.8921 16.5291 12.8655 16.7064 12.8123C16.8859 12.7568 17.0465 12.6759 17.1884 12.5694C17.3324 12.4629 17.4532 12.3321 17.5507 12.1768C17.6504 12.0215 17.7191 11.8441 17.7568 11.6445L19 11.6511C18.9535 11.975 18.8526 12.2788 18.6975 12.5627C18.5446 12.8466 18.344 13.0973 18.0958 13.3146C17.8476 13.5298 17.5573 13.6984 17.2249 13.8203C16.8925 13.9401 16.5235 14 16.118 14C15.5197 14 14.9856 13.8614 14.5158 13.5841C14.046 13.3069 13.6759 12.9065 13.4055 12.3831C13.1352 11.8596 13 11.2319 13 10.5C13 9.76584 13.1363 9.13815 13.4089 8.61692C13.6814 8.09347 14.0526 7.69312 14.5224 7.41587C14.9922 7.13862 15.5241 7 16.118 7C16.497 7 16.8493 7.05323 17.1751 7.1597C17.5008 7.26616 17.7911 7.42253 18.046 7.6288C18.3008 7.83286 18.5103 8.08349 18.6742 8.3807C18.8404 8.6757 18.949 9.01283 19 9.39211Z" fill="white"/><path d="M1.24987 14H0L2.27564 7H3.7212L6 14H4.75013L3.02367 8.43555H2.97317L1.24987 14ZM1.2909 11.2554H4.69963V12.2739H1.2909V11.2554Z" fill="white"/><path d="M8 16V11H10.0759C10.4574 11 10.7755 11.0545 11.0304 11.1636C11.2852 11.2726 11.4768 11.424 11.6051 11.6177C11.7333 11.8097 11.7975 12.0311 11.7975 12.2817C11.7975 12.4771 11.757 12.6488 11.6759 12.7969C11.5949 12.9434 11.4835 13.0638 11.3418 13.1582C11.2017 13.251 11.0414 13.3169 10.8608 13.356V13.4048C11.0582 13.4129 11.243 13.4666 11.4152 13.5659C11.589 13.6652 11.73 13.8044 11.838 13.9834C11.946 14.1608 12 14.3724 12 14.6182C12 14.8835 11.9316 15.1203 11.7949 15.3286C11.6599 15.5353 11.4599 15.6989 11.1949 15.8193C10.93 15.9398 10.6034 16 10.2152 16H8ZM9.0962 15.1357H9.98987C10.2954 15.1357 10.5181 15.0796 10.6582 14.9673C10.7983 14.8534 10.8684 14.702 10.8684 14.5132C10.8684 14.3748 10.8338 14.2528 10.7646 14.147C10.6954 14.0412 10.5966 13.9582 10.4684 13.8979C10.3418 13.8377 10.1907 13.8076 10.0152 13.8076H9.0962V15.1357ZM9.0962 13.0923H9.90886C10.0591 13.0923 10.1924 13.0671 10.3089 13.0166C10.427 12.9645 10.5198 12.8913 10.5873 12.7969C10.6565 12.7025 10.6911 12.5894 10.6911 12.4575C10.6911 12.2769 10.6245 12.1312 10.4911 12.0205C10.3595 11.9098 10.1722 11.8545 9.92911 11.8545H9.0962V13.0923Z" fill="white"/><path fill-rule="evenodd" clip-rule="evenodd" d="M9.05758 8.64355L9.23002 8.76764L9.73959 8.05948L11.0933 6.90017L10.4428 6.14064L9.48886 6.95761C9.48453 5.97188 9.30757 4.81845 8.79688 3.77457C8.18769 2.52934 7.10594 1.45073 5.33322 1.02438L5.09938 1.99666C6.54887 2.34526 7.40452 3.20406 7.89862 4.21402C8.33403 5.10405 8.48993 6.11878 8.48896 7.00242L7.35652 6.18756L6.77245 6.99926L8.22215 8.04242L8.00316 8.22997L8.65362 8.9895L9.05758 8.64355Z" fill="white"/></svg>';
 const iconTextJoin          = '<svg width="19" height="7" viewBox="0 0 19 7" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M8.9328 6V1H10.0672V6H8.9328ZM7 4.0672V2.9328H12V4.0672H7Z" fill="white"/><path d="M14 7V0H16.5654C17.0497 0 17.4522 0.0797524 17.7729 0.239258C18.0958 0.396484 18.3368 0.611816 18.4961 0.885254C18.6575 1.15869 18.7382 1.46859 18.7382 1.81494C18.7382 2.09977 18.6859 2.34359 18.5812 2.54639C18.4764 2.74691 18.3357 2.90983 18.159 3.03516C17.9823 3.16048 17.7849 3.25049 17.5668 3.30518V3.37354C17.8045 3.38721 18.0325 3.46354 18.2507 3.60254C18.471 3.73926 18.651 3.93294 18.7906 4.18359C18.9302 4.43424 19 4.7373 19 5.09277C19 5.45508 18.916 5.78092 18.748 6.07031C18.5801 6.35742 18.327 6.58415 17.9889 6.75049C17.6507 6.91683 17.2253 7 16.7127 7H14ZM15.214 5.94043H16.5196C16.9603 5.94043 17.2777 5.8527 17.4719 5.67725C17.6682 5.49951 17.7664 5.27165 17.7664 4.99365C17.7664 4.7863 17.7173 4.59945 17.6191 4.43311C17.5209 4.26449 17.3813 4.13232 17.2003 4.03662C17.0192 3.93864 16.8032 3.88965 16.5524 3.88965H15.214V5.94043ZM15.214 2.97705H16.4149C16.6243 2.97705 16.813 2.93717 16.981 2.85742C17.149 2.77539 17.281 2.66032 17.377 2.51221C17.4751 2.36182 17.5242 2.18408 17.5242 1.979C17.5242 1.70784 17.4326 1.48454 17.2493 1.30908C17.0683 1.13363 16.7989 1.0459 16.4411 1.0459H15.214V2.97705Z" fill="white"/><path d="M1.24987 7H0L2.27564 0H3.7212L6 7H4.75013L3.02367 1.43555H2.97317L1.24987 7ZM1.2909 4.25537H4.69963V5.27393H1.2909V4.25537Z" fill="white"/></svg>';
-const iconTextCharacter     = '<svg width="13" height="11" viewBox="0 0 13 11" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M13 0V11H10V10H12.0334L12 1H9.96664L10 0H13Z" fill="white"/><path d="M0 11V0H3V1H0.966639V10H3V11H0Z" fill="white"/><path d="M8.01993 6.08483V2H9V8.91003H8.01993V7.74036H7.95349C7.80399 8.09126 7.57143 8.38968 7.25581 8.6356C6.9402 8.87854 6.54153 9 6.0598 9C5.66113 9 5.30676 8.90553 4.99668 8.71658C4.6866 8.52464 4.44297 8.23672 4.26578 7.85283C4.08859 7.46594 4 6.97858 4 6.39075V2H4.98007V6.31877C4.98007 6.82262 5.11019 7.22451 5.37043 7.52442C5.63344 7.82434 5.96844 7.97429 6.37542 7.97429C6.61905 7.97429 6.86683 7.90681 7.11877 7.77185C7.37348 7.63689 7.58666 7.42995 7.75831 7.15103C7.93272 6.87211 8.01993 6.51671 8.01993 6.08483Z" fill="white"/></svg>';
+const iconTextCharacter     = '<svg width="16" height="11" viewBox="0 0 16 11" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M15.0334 0V11H12.0334V10H14.0667L14.0334 1H12L12.0334 0H15.0334Z" fill="white"/><path d="M0 11V0H3V1H0.966639V10H3V11H0Z" fill="white"/><path d="M9.01993 6.08483V2H10V8.91003H9.01993V7.74036H8.95349C8.80399 8.09126 8.57143 8.38968 8.25581 8.6356C7.9402 8.87854 7.54153 9 7.0598 9C6.66113 9 6.30676 8.90553 5.99668 8.71658C5.6866 8.52464 5.44297 8.23672 5.26578 7.85283C5.08859 7.46594 5 6.97858 5 6.39075V2H5.98007V6.31877C5.98007 6.82262 6.11019 7.22451 6.37043 7.52442C6.63344 7.82434 6.96844 7.97429 7.37542 7.97429C7.61905 7.97429 7.86683 7.90681 8.11877 7.77185C8.37348 7.63689 8.58666 7.42995 8.75831 7.15103C8.93272 6.87211 9.01993 6.51671 9.01993 6.08483Z" fill="white"/></svg>';
 const iconTextCSV           = '<svg width="19" height="10" viewBox="0 0 19 10" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M13 3H19V4H13V3Z" fill="white"/><path d="M13 0H19V1H13V0Z" fill="white"/><path d="M13 6H19V7H13V6Z" fill="white"/><path d="M13 9H19V10H13V9Z" fill="white"/><path d="M2.37774 3.5L2.32234 3.96875C2.28257 4.3267 2.21155 4.69034 2.10928 5.05966C2.00984 5.43182 1.90473 5.77415 1.79393 6.08665C1.68314 6.39915 1.10795 6.82102 1.03977 7H0C0.0397727 6.8267 0.579446 6.41477 0.647628 6.11648C0.718651 5.81818 0.786833 5.48296 0.852173 5.1108C0.647628 4.90081 0.210938 5.05966 0 5V3.5H2.37774Z" fill="white"/><path d="M6.37774 3.5L6.32234 3.96875C6.28257 4.3267 6.21155 4.69034 6.10928 5.05966C6.00984 5.43182 5.90473 5.77415 5.79393 6.08665C5.68314 6.39915 5.10795 6.82102 5.03977 7H4C4.03977 6.8267 4.57945 6.41477 4.64763 6.11648C4.71865 5.81818 4.78683 5.48296 4.85217 5.1108C4.64763 4.90081 4.21094 5.05966 4 5V3.5H6.37774Z" fill="white"/><path d="M10.3777 3.5L10.3223 3.96875C10.2826 4.3267 10.2115 4.69034 10.1093 5.05966C10.0098 5.43182 9.90473 5.77415 9.79393 6.08665C9.68314 6.39915 9.10795 6.82102 9.03977 7H8C8.03977 6.8267 8.57945 6.41477 8.64763 6.11648C8.71865 5.81818 8.78683 5.48296 8.85217 5.1108C8.64763 4.90081 8.21094 5.05966 8 5V3.5H10.3777Z" fill="white"/></svg>';
 const iconTextFetch         = '<svg width="17" height="11" viewBox="0 0 17 11" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M0.5 5.51719V4.98437C1.05152 4.98437 1.93627 4.88411 2.15423 4.68359C2.3755 4.48307 2.48614 4.14792 2.48614 3.67813V2.30313C2.48614 1.90781 2.52907 1.56549 2.61494 1.27617C2.70411 0.986849 2.84777 0.747657 3.04592 0.558594C3.24407 0.369532 3.50827 0.229167 3.83853 0.137501C4.16878 0.0458335 5.51453 0 6 0V0.842188C5.61691 0.842188 4.37684 0.89375 4.15557 0.996875C3.9376 1.1 3.78238 1.26042 3.68991 1.47813C3.60074 1.69297 3.55616 1.96797 3.55616 2.30313V4.02188C3.55616 4.24531 3.52148 4.4487 3.45213 4.63203C3.38608 4.81536 3.26223 4.97292 3.08059 5.10469C2.89896 5.23646 2.63971 5.33815 2.30285 5.40977C1.96929 5.48138 1.03501 5.51719 0.5 5.51719ZM6 11C5.51453 11 4.16878 10.9542 3.83853 10.8625C3.50827 10.7708 3.24407 10.6305 3.04592 10.4414C2.84777 10.2523 2.70411 10.0132 2.61494 9.72383C2.52907 9.4345 2.48614 9.09219 2.48614 8.69687V7.32188C2.48614 6.85208 2.3755 6.51693 2.15423 6.31641C1.93627 6.11589 1.05152 6.01562 0.5 6.01562V5.48281C1.03501 5.48281 1.96929 5.51862 2.30285 5.59023C2.63971 5.66185 2.89896 5.76354 3.08059 5.89531C3.26223 6.02708 3.38608 6.18464 3.45213 6.36797C3.52148 6.5513 3.55616 6.75469 3.55616 6.97813V8.69687C3.55616 9.03203 3.60074 9.30703 3.68991 9.52188C3.78238 9.73672 3.9376 9.8957 4.15557 9.99883C4.37684 10.1048 5.61691 10.1578 6 10.1578V11ZM0.5 6.01562V4.98437H2.1691V6.01562H0.5Z" fill="white"/><path d="M16.5 5.48281V6.01562C15.9485 6.01562 15.0621 6.11589 14.8408 6.31641C14.6228 6.51693 14.5139 6.85208 14.5139 7.32188V8.69687C14.5139 9.09219 14.4693 9.4345 14.3801 9.72383C14.2942 10.0132 14.1522 10.2523 13.9541 10.4414C13.7559 10.6305 13.4917 10.7708 13.1615 10.8625C12.8312 10.9542 11.4855 11 11 11V10.1578C11.3831 10.1578 12.6215 10.1048 12.8395 9.99883C13.0607 9.8957 13.216 9.73672 13.3051 9.52188C13.3976 9.30703 13.4438 9.03203 13.4438 8.69687V6.97813C13.4438 6.75469 13.4769 6.5513 13.5429 6.36797C13.6123 6.18464 13.7378 6.02708 13.9194 5.89531C14.101 5.76354 14.3586 5.66185 14.6922 5.59023C15.0291 5.51862 15.965 5.48281 16.5 5.48281ZM11 0C11.4855 0 12.8312 0.0458335 13.1615 0.137501C13.4917 0.229167 13.7559 0.369532 13.9541 0.558594C14.1522 0.747657 14.2942 0.986849 14.3801 1.27617C14.4693 1.56549 14.5139 1.90781 14.5139 2.30313V3.67813C14.5139 4.14792 14.6228 4.48307 14.8408 4.68359C15.0621 4.88411 15.9485 4.98437 16.5 4.98437V5.51719C15.965 5.51719 15.0291 5.48138 14.6922 5.40977C14.3586 5.33815 14.101 5.23646 13.9194 5.10469C13.7378 4.97292 13.6123 4.81536 13.5429 4.63203C13.4769 4.4487 13.4438 4.24531 13.4438 4.02188V2.30313C13.4438 1.96797 13.3976 1.69297 13.3051 1.47813C13.216 1.26042 13.0607 1.1 12.8395 0.996875C12.6215 0.89375 11.3831 0.842188 11 0.842188V0ZM16.5 4.98437V6.01562H14.8309V4.98437H16.5Z" fill="white"/></svg>';
 
@@ -47137,6 +47317,7 @@ var menuFlowSep1;
 var menuItemExpandList;
 var menuItemItems;
 var menuItemSelect;
+var menuItemCount;
 var menuItemIfElse;
 var menuFlowSep2;
 var menuItemStart;
@@ -47347,9 +47528,10 @@ function initGeneratorMenus()
         menuItemList          = new MenuItem('List',              {icon: iconList,       callback: e => actionManager.do(getCreateNodeAction(LIST,         btnNumber.div, getCreateOptions(e)))}),
         menuFlowSep1          = new MenuItem('',                  {separator: true}),     
         menuItemItems         = new MenuItem('Items',             {icon: iconItems,      callback: e => actionManager.do(getCreateNodeAction(ITEMS,        btnNumber.div, getCreateOptions(e)))}),
+        menuItemSelect        = new MenuItem('Select',            {icon: iconSelect,     callback: e => actionManager.do(getCreateNodeAction(SELECT,       btnNumber.div, getCreateOptions(e)))}),
+        menuItemCount         = new MenuItem('Count',             {icon: iconCount,      callback: e => actionManager.do(getCreateNodeAction(LIST_COUNT,   btnNumber.div, getCreateOptions(e)))}),
         //menuItemExpandList    = new MenuItem('Expand',            {icon: iconExpandList, callback: e => actionManager.do(getCreateNodeAction(LIST_EXPAND,  btnNumber.div, getCreateOptions(e)))}),
         menuFlowSep2          = new MenuItem('',                  {separator: true}),
-        menuItemSelect        = new MenuItem('Select',            {icon: iconSelect,     callback: e => actionManager.do(getCreateNodeAction(SELECT,       btnNumber.div, getCreateOptions(e)))}),
         menuItemIfElse        = new MenuItem('I&hairsp;f / else', {icon: iconIfElse,     callback: e => actionManager.do(getCreateNodeAction(IF_ELSE,      btnNumber.div, getCreateOptions(e))), disambiguate: true}),
         menuFlowSep3          = new MenuItem('',                  {separator: true}),
       //menuItemStart         = new MenuItem('Start',             {icon: iconStart,      callback: e => actionManager.do(getCreateNodeAction(START,        btnNumber.div, getCreateOptions(e)))}),
@@ -47400,7 +47582,7 @@ function initGeneratorMenus()
                                       new MenuItem('Boolean',         {icon: iconBoolean,      childMenu: menuBoolean,   callback: e => actionManager.do(getCreateNodeAction(NUMBER_BOOLEAN,     btnNumber.div, getCreateOptions(e)))}),
                                       new MenuItem('Condition',       {icon: iconCondition,    childMenu: menuCondition, callback: e => actionManager.do(getCreateNodeAction(NUMBER_CONDITION,   btnNumber.div, getCreateOptions(e)))}),
                                       new MenuItem('',                {separator: true}),
-        menuItemSeries              = new MenuItem('Series',          {icon: iconSeries,       callback: e => actionManager.do(getCreateNodeAction(NUMBER_SERIES,      btnNumber.div, getCreateOptions(e)))}),
+        menuItemSeries              = new MenuItem('Sequence',        {icon: iconSeries,       callback: e => actionManager.do(getCreateNodeAction(NUMBER_SERIES,      btnNumber.div, getCreateOptions(e)))}),
                                       new MenuItem('Random',          {icon: iconRandom,       callback: e => actionManager.do(getCreateNodeAction(NUMBER_RANDOM,      btnNumber.div, getCreateOptions(e)))}),
                                       new MenuItem('',                {separator: true}),
                                       new MenuItem('Interpolate',     {icon: iconInterpolate,  callback: e => actionManager.do(getCreateNodeAction(NUMBER_INTERPOLATE, btnNumber.div, getCreateOptions(e)))}),
@@ -59365,8 +59547,8 @@ extends OperatorBase
             this.removeParam(paramValue);
 
 
-        if (!paramValue && val) 
-            paramValue = this.createAndInsertParamByType(0, val.type, 'value', false, false, false, true);
+        if (!paramValue && val)
+            paramValue = this.createAndInsertParamByType(0, val.type, 'value', false, false, true, true);
 
         
         this.paramIndex.controls[0].setMax(
@@ -59408,10 +59590,77 @@ extends OperatorBase
         const _paramValue = _node.params.find(p => p[1] == 'value');
         const _paramIndex = _node.params.find(p => p[1] == 'index');
 
-        this.createAndInsertParamByType(0, _paramValue[0], _paramValue[1], false, false, false, true);
+        this.createAndInsertParamByType(0, _paramValue[0], _paramValue[1], false, false, true, true);
         this.params[0].loadParam(_paramValue);
  
         this.paramIndex.loadParam(_paramIndex);
+    }
+}
+
+
+class   OpListCount
+extends OperatorBase
+{
+    paramCount;
+
+
+    
+    constructor()
+    {
+        super(LIST_COUNT, 'count', 'count');
+
+
+        this.addInput (new Input([LIST_VALUE]));
+
+        this.addParam(this.paramCount = new NumberParam('count', 'count', true, false, true, 0, 0));
+    }
+
+
+
+    output_genRequest(gen)
+    {
+        // 'this' is the output        
+
+        return this.node.genRequest(gen);
+    }
+
+
+
+    genRequest(gen)
+    {
+        // 'this' is the node
+
+        gen.scope.push({
+            nodeId:  this.id, 
+            paramId: NULL });
+
+
+        const [request, ignore] = this.genRequestStart(gen);
+        if (ignore) return request;
+
+
+        const input = this.inputs[0];
+
+
+        request.push(input.connected ? 1 : 0);
+
+        if (input.connected) 
+            request.push(...pushInputOrParam(input, gen));
+
+
+        gen.scope.pop();
+        pushUnique(gen.passedNodes, this);
+
+        return request;
+    }
+
+
+
+    updateParams()
+    {
+        this.paramCount.enableControlText(false);
+
+        this.updateParamControls();
     }
 }
 
@@ -60977,7 +61226,7 @@ extends OperatorBase
 
     constructor()
     {
-        super(NUMBER_SERIES, 'series', 'series');
+        super(NUMBER_SERIES, 'sequence', 'sequence');
 
         this.cached = false;
         
@@ -62909,7 +63158,10 @@ extends OperatorBase
         this.addOutput(new Output([LIST_VALUE], this.output_genRequest));
 
         this.addParam(this.paramValue     = new ListParam('value',     '',          true, true));
-        this.addParam(this.paramSeparator = new TextParam('separator', 'separator', true, true));
+        this.addParam(this.paramSeparator = new TextParam('separator', 'separator', true, true, ','));
+
+
+        this.paramSeparator.controls[0].textbox.style.textAlign = 'center';
     }
 
 
@@ -75601,6 +75853,7 @@ function createNode(nodeType, creatingButton = null, createdNodeId = -1, options
         case LIST_EXPAND:             node = new OpExpandList();        break;
         case ITEMS:                   node = new OpItems();             break;
         case SELECT:                  node = new OpSelect();            break;
+        case LIST_COUNT:              node = new OpListCount();         break;
         case IF_ELSE:                 node = new OpIfElse();            break;
         case START:                   node = new OpStart();             break;
         case REPEAT:                  node = new OpRepeat();            break;
