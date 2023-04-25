@@ -727,11 +727,31 @@ class Operator
 
 
 
+    isOrPrecededByMultiplier()
+    {
+        return this.isMultiplier()
+             ? true
+             : this.hasMultipliedInputs();
+    }
+
+
+
     isOrFollowedByMultiplier()
     {
         return this.isMultiplier()
              ? true
              : this.hasMultipliedOutputs();
+    }
+
+
+
+    hasMultipliedInputs()
+    {
+        for (const input of this.inputs)
+            if (input.isMultiplied())
+                return true;
+
+        return false;
     }
 
 

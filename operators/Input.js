@@ -347,6 +347,20 @@ extends EventTarget
 
 
 
+
+    isMultiplied()
+    {
+        if (   this.connectedOutput
+            && this.connectedOutput.node.isMultiplier())
+            return true;
+
+        else if (   this.connectedOutput
+                 && this.connectedOutput.node.hasMultipliedInputs())
+            return true;
+    }
+
+
+
     toJsDef(gen)
     {
         let js = '';

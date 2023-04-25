@@ -32,9 +32,6 @@ extends GOperator
 
     async eval(parse)
     {
-        if (this.nodeId == 'graph/repeat2')                
-            console.log('eval()');
-
         if (this.isCached())
             return this;
             
@@ -73,11 +70,7 @@ extends GOperator
                 }
     
 
-                if (this.nodeId == 'graph/repeat2')
-                    console.log('this.input =', this.input);                
                 const input = this.input.toValue();
-                if (this.nodeId == 'graph/repeat2')
-                    console.log('input =', input);                
 
                 if (input)
                     this.value.items.push(input.copy());

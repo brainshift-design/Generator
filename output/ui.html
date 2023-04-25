@@ -11800,9 +11800,6 @@ extends GOperator
 
     async eval(parse)
     {
-        if (this.nodeId == 'graph/repeat2')                
-            console.log('eval()');
-
         if (this.isCached())
             return this;
             
@@ -11841,11 +11838,7 @@ extends GOperator
                 }
     
 
-                if (this.nodeId == 'graph/repeat2')
-                    console.log('this.input =', this.input);                
                 const input = this.input.toValue();
-                if (this.nodeId == 'graph/repeat2')
-                    console.log('input =', input);                
 
                 if (input)
                     this.value.items.push(input.copy());
@@ -35527,9 +35520,6 @@ extends GOperator
 
     async eval(parse)
     {
-        if (this.nodeId == 'graph/repeat2')                
-            console.log('eval()');
-
         if (this.isCached())
             return this;
             
@@ -35568,11 +35558,7 @@ extends GOperator
                 }
     
 
-                if (this.nodeId == 'graph/repeat2')
-                    console.log('this.input =', this.input);                
                 const input = this.input.toValue();
-                if (this.nodeId == 'graph/repeat2')
-                    console.log('input =', input);                
 
                 if (input)
                     this.value.items.push(input.copy());
@@ -54919,6 +54905,20 @@ extends EventTarget
 
 
 
+
+    isMultiplied()
+    {
+        if (   this.connectedOutput
+            && this.connectedOutput.node.isMultiplier())
+            return true;
+
+        else if (   this.connectedOutput
+                 && this.connectedOutput.node.hasMultipliedInputs())
+            return true;
+    }
+
+
+
     toJsDef(gen)
     {
         let js = '';
@@ -56246,6 +56246,7 @@ class Wire
                    conn.output
                &&  conn.output.node
                && !conn.output.node.isCached()
+            //&& !conn.output.node.isMultiplier()
             ||     conn.output
                &&  conn.output.param
                &&  conn.output.param._nodeId != undefined
@@ -56255,7 +56256,7 @@ class Wire
         const unknown =
                 isNotCached
             &&  conn.output
-            && !conn.output.node.isMultiplier()
+            && !conn.output.node.isOrPrecededByMultiplier()
             &&  conn.input
             &&  conn.input.node.isOrFollowedByMultiplier()
             && (  !conn.input.param 
@@ -57060,11 +57061,31 @@ class Operator
 
 
 
+    isOrPrecededByMultiplier()
+    {
+        return this.isMultiplier()
+             ? true
+             : this.hasMultipliedInputs();
+    }
+
+
+
     isOrFollowedByMultiplier()
     {
         return this.isMultiplier()
              ? true
              : this.hasMultipliedOutputs();
+    }
+
+
+
+    hasMultipliedInputs()
+    {
+        for (const input of this.inputs)
+            if (input.isMultiplied())
+                return true;
+
+        return false;
     }
 
 
