@@ -70,4 +70,11 @@ extends GOperator
         return super.isCached();
 //            && this.node.isCached();
     }
+
+
+
+    toValue()
+    {
+        return this.value;
+    }
 }
