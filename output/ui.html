@@ -8875,6 +8875,13 @@ extends GNode
     // {
     //     return this.valid;
     // }
+
+
+
+    invalidate()
+    {
+        this.valid = false;
+    }
 }
 
 
@@ -8931,10 +8938,10 @@ extends GOperator
             //     //&& this.param.type == NUMBER_VALUE)
             //     this.param = this.feedbackValue();
 
-            const result = (await this.param.eval(parse)).toValue();
+            const value = (await this.param.eval(parse)).toValue();
 
             //this.param.feedbackValue = null;
-            return this.value = result;
+            return this.value = value;
         }
         else
         {
@@ -8956,6 +8963,16 @@ extends GOperator
     toValue()
     {
         return this.value;
+    }
+
+
+
+    invalidate()
+    {
+        super.invalidate();
+
+        if (this.node)
+            this.node.valid = false;
     }
 }
 
@@ -11823,7 +11840,10 @@ extends GOperator
 
             for (let i = 0; i < nItems; i++)
             {
-                this.input.valid = false;
+                if (this.nodeId == 'graph/repeat2')                
+                    console.log('this.input =', this.input);
+    
+                this.input.invalidate();
                 await this.input.eval(parse);
 
 
@@ -32595,6 +32615,13 @@ extends GNode
     // {
     //     return this.valid;
     // }
+
+
+
+    invalidate()
+    {
+        this.valid = false;
+    }
 }
 
 
@@ -32651,10 +32678,10 @@ extends GOperator
             //     //&& this.param.type == NUMBER_VALUE)
             //     this.param = this.feedbackValue();
 
-            const result = (await this.param.eval(parse)).toValue();
+            const value = (await this.param.eval(parse)).toValue();
 
             //this.param.feedbackValue = null;
-            return this.value = result;
+            return this.value = value;
         }
         else
         {
@@ -32676,6 +32703,16 @@ extends GOperator
     toValue()
     {
         return this.value;
+    }
+
+
+
+    invalidate()
+    {
+        super.invalidate();
+
+        if (this.node)
+            this.node.valid = false;
     }
 }
 
@@ -35543,7 +35580,10 @@ extends GOperator
 
             for (let i = 0; i < nItems; i++)
             {
-                this.input.valid = false;
+                if (this.nodeId == 'graph/repeat2')                
+                    console.log('this.input =', this.input);
+    
+                this.input.invalidate();
                 await this.input.eval(parse);
 
 
@@ -54900,7 +54940,8 @@ extends EventTarget
     isConnectedUncached()
     {
         return  this.connected 
-            && !this.connectedOutput.node.isCached();
+            && !this.connectedOutput.node.isCached()
+            && !this.connectedOutput.node.isOrPrecededByMultiplier();
     }
 
 
@@ -54915,6 +54956,8 @@ extends EventTarget
         else if (   this.connectedOutput
                  && this.connectedOutput.node.hasMultipliedInputs())
             return true;
+
+        return false;
     }
 
 
@@ -56246,7 +56289,6 @@ class Wire
                    conn.output
                &&  conn.output.node
                && !conn.output.node.isCached()
-            //&& !conn.output.node.isMultiplier()
             ||     conn.output
                &&  conn.output.param
                &&  conn.output.param._nodeId != undefined
@@ -56256,7 +56298,9 @@ class Wire
         const unknown =
                 isNotCached
             &&  conn.output
-            && !conn.output.node.isOrPrecededByMultiplier()
+            && (  !conn.output.node.isOrPrecededByMultiplier()
+                ||   !conn.output.node.isMultiplier()
+                   && conn.output.node.inputs.find(i => i.isConnectedUncached()))
             &&  conn.input
             &&  conn.input.node.isOrFollowedByMultiplier()
             && (  !conn.input.param 

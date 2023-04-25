@@ -51,10 +51,10 @@ extends GOperator
             //     //&& this.param.type == NUMBER_VALUE)
             //     this.param = this.feedbackValue();
 
-            const result = (await this.param.eval(parse)).toValue();
+            const value = (await this.param.eval(parse)).toValue();
 
             //this.param.feedbackValue = null;
-            return this.value = result;
+            return this.value = value;
         }
         else
         {
@@ -76,5 +76,15 @@ extends GOperator
     toValue()
     {
         return this.value;
+    }
+
+
+
+    invalidate()
+    {
+        super.invalidate();
+
+        if (this.node)
+            this.node.valid = false;
     }
 }

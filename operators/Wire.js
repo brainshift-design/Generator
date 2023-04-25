@@ -462,7 +462,6 @@ class Wire
                    conn.output
                &&  conn.output.node
                && !conn.output.node.isCached()
-            //&& !conn.output.node.isMultiplier()
             ||     conn.output
                &&  conn.output.param
                &&  conn.output.param._nodeId != undefined
@@ -472,7 +471,9 @@ class Wire
         const unknown =
                 isNotCached
             &&  conn.output
-            && !conn.output.node.isOrPrecededByMultiplier()
+            && (  !conn.output.node.isOrPrecededByMultiplier()
+                ||   !conn.output.node.isMultiplier()
+                   && conn.output.node.inputs.find(i => i.isConnectedUncached()))
             &&  conn.input
             &&  conn.input.node.isOrFollowedByMultiplier()
             && (  !conn.input.param 

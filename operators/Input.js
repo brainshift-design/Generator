@@ -342,7 +342,8 @@ extends EventTarget
     isConnectedUncached()
     {
         return  this.connected 
-            && !this.connectedOutput.node.isCached();
+            && !this.connectedOutput.node.isCached()
+            && !this.connectedOutput.node.isOrPrecededByMultiplier();
     }
 
 
@@ -357,6 +358,8 @@ extends EventTarget
         else if (   this.connectedOutput
                  && this.connectedOutput.node.hasMultipliedInputs())
             return true;
+
+        return false;
     }
 
 

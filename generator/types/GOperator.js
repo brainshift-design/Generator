@@ -96,4 +96,11 @@ extends GNode
     // {
     //     return this.valid;
     // }
+
+
+
+    invalidate()
+    {
+        this.valid = false;
+    }
 }

@@ -4510,6 +4510,13 @@ extends GNode
     // {
     //     return this.valid;
     // }
+
+
+
+    invalidate()
+    {
+        this.valid = false;
+    }
 }
 
 
@@ -4566,10 +4573,10 @@ extends GOperator
             //     //&& this.param.type == NUMBER_VALUE)
             //     this.param = this.feedbackValue();
 
-            const result = (await this.param.eval(parse)).toValue();
+            const value = (await this.param.eval(parse)).toValue();
 
             //this.param.feedbackValue = null;
-            return this.value = result;
+            return this.value = value;
         }
         else
         {
@@ -4591,6 +4598,16 @@ extends GOperator
     toValue()
     {
         return this.value;
+    }
+
+
+
+    invalidate()
+    {
+        super.invalidate();
+
+        if (this.node)
+            this.node.valid = false;
     }
 }
 
@@ -7458,7 +7475,10 @@ extends GOperator
 
             for (let i = 0; i < nItems; i++)
             {
-                this.input.valid = false;
+                if (this.nodeId == 'graph/repeat2')                
+                    console.log('this.input =', this.input);
+    
+                this.input.invalidate();
                 await this.input.eval(parse);
 
 
