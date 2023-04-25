@@ -9,6 +9,7 @@
 ../generator/types/figma/FigmaEllipse.js
 ../generator/types/figma/FigmaPolygon.js
 ../generator/types/figma/FigmaStar.js
+../generator/types/figma/FigmaText.js
 
 ../generator/types/figma/FigmaColorStyle.js
 

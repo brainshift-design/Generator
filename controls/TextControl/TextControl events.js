@@ -93,7 +93,7 @@ TextControl.prototype.initEvents = function()
             }
             else if ( graphView.tempConn.input
                   &&  this.param.output
-                  &&  graphView.tempConn.input.canConnectTo(this.param.output)
+                  &&  graphView.tempConn.input.canConnectFrom(this.param.output)
                   && !this.param.node.isOrFollows(graphView.tempConn.input.node))
             {
                 graphView.overOutput = this.param.output;

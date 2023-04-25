@@ -43,6 +43,6 @@
     [../autojoin/operators.aj]
 
     ../actions/*.js
-    ../ui/*!(settings).js
+    ../ui/*!(settings,crashDialog).js
 
 ../html/ui_3.html

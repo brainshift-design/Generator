@@ -421,15 +421,15 @@ function initGeneratorMenus()
     
     menuShape = new Menu('Shapes', true, false);
     menuShape.addItems([
-                                new MenuItem('Rectangle',        {icon: iconRectangle, callback: e => actionManager.do(getCreateNodeAction(RECTANGLE, btnShape.div, getCreateOptions(e)))}),
-                                new MenuItem('Line',             {icon: iconLine,      callback: e => actionManager.do(getCreateNodeAction(LINE,      btnShape.div, getCreateOptions(e)))}),
-                                new MenuItem('Ellipse',          {icon: iconEllipse,   callback: e => actionManager.do(getCreateNodeAction(ELLIPSE,   btnShape.div, getCreateOptions(e)))}),
-                                new MenuItem('Polygon',          {icon: iconPolygon,   callback: e => actionManager.do(getCreateNodeAction(POLYGON,   btnShape.div, getCreateOptions(e)))}),
-                                new MenuItem('Star',             {icon: iconStar,      callback: e => actionManager.do(getCreateNodeAction(STAR,      btnShape.div, getCreateOptions(e)))}),
-                                new MenuItem('',                 {separator: true}),
-                                new MenuItem('Text',             {icon: iconTextShape, callback: e => actionManager.do(getCreateNodeAction(TEXTSHAPE, btnShape.div, getCreateOptions(e)))}),
-        menuItemShapeSep1     = new MenuItem('',                 {separator: true}),
-        menuItemShapeSelected = new MenuItem('Selected objects', {icon: iconSelected,  enabled: false})]);
+                                new MenuItem('Rectangle',           {icon: iconRectangle, callback: e => actionManager.do(getCreateNodeAction(RECTANGLE, btnShape.div, getCreateOptions(e)))}),
+                                new MenuItem('Line',                {icon: iconLine,      callback: e => actionManager.do(getCreateNodeAction(LINE,      btnShape.div, getCreateOptions(e)))}),
+                                new MenuItem('Ellipse',             {icon: iconEllipse,   callback: e => actionManager.do(getCreateNodeAction(ELLIPSE,   btnShape.div, getCreateOptions(e)))}),
+                                new MenuItem('Polygon',             {icon: iconPolygon,   callback: e => actionManager.do(getCreateNodeAction(POLYGON,   btnShape.div, getCreateOptions(e)))}),
+                                new MenuItem('Star',                {icon: iconStar,      callback: e => actionManager.do(getCreateNodeAction(STAR,      btnShape.div, getCreateOptions(e)))}),
+                                new MenuItem('',                    {separator: true}),
+                                new MenuItem('Text',                {icon: iconTextShape, callback: e => actionManager.do(getCreateNodeAction(TEXTSHAPE, btnShape.div, getCreateOptions(e)))}),
+        menuItemShapeSep1     = new MenuItem('',                    {separator: true}),
+        menuItemShapeSelected = new MenuItem('Selected objects...', {icon: iconSelected,  enabled: false})]);
 
 
     menuGroup = new Menu('Groups', true, false);

@@ -21,6 +21,9 @@ var   menuBarHeight         = 40;
 var   pagesBarHeight        = 36;
 
 
+var   figFonts              = [];
+
+
 
 function getTopHeight() 
 { 

@@ -78,7 +78,12 @@ function uiReturnFigStartGenerator(msg)
 
     initKeyboardPanel();
 
+ 
+    figFonts = msg.fonts;
+    uiQueueMessageToGenerator({cmd: 'initFonts', fonts: figFonts});
     
+
+
     graphView.updateMeasureData();
 
     viewportRect = msg.viewportRect;
@@ -87,8 +92,8 @@ function uiReturnFigStartGenerator(msg)
     uiGetLocalData('showWhatsNew');
 
 
-    currentUser = msg.currentUser;
-    productKey  = msg.productKey;
+    currentUser  = msg.currentUser;
+    productKey   = msg.productKey;
 
     startupValidateLicense();
     // enableFeatures() is called when loading is done

@@ -1175,11 +1175,16 @@ function figStartGenerator()
         figma.ui.show();
 
         
+        const fonts = await figma.listAvailableFontsAsync();
+        // console.log('figma fonts =', fonts);
+ 
+
         figPostMessageToUi({
             cmd:         'uiReturnFigStartGenerator',
             currentUser:  figma.currentUser,
             productKey:   productKey,
-            viewportRect: figma.viewport.bounds });
+            viewportRect: figma.viewport.bound,
+            fonts:        fonts });
     })();
 }
 
@@ -1543,6 +1548,7 @@ function figCreateObject(objects, genObj)
         case ELLIPSE:    figObj = figCreateEllipse(genObj);  break;
         case POLYGON:    figObj = figCreatePolygon(genObj);  break;
         case STAR:       figObj = figCreateStar   (genObj);  break;
+        case TEXTSHAPE:  figObj = figCreateText   (genObj);  break;
     }
 
     console.assert(!!figObj, 'no Figma object created');
@@ -1589,7 +1595,7 @@ function figUpdateObjects(msg)
 
         const figObj = figObjects.objects.find(o => o.name == makeObjectName(genObj));
 
-        
+        console.log('figObj =', figObj);
         if (   isValid(figObj)
             && figObj.removed)
             removeFrom(figObjects.objects, figObj);
@@ -1625,12 +1631,9 @@ function figUpdateObject(figObj, genObj)
         case ELLIPSE:    figUpdateEllipse(figObj, genObj);  break;
         case POLYGON:    figUpdatePolygon(figObj, genObj);  break;
         case STAR:       figUpdateStar   (figObj, genObj);  break;
+        case TEXTSHAPE:  figUpdateText   (figObj, genObj);  break;
     }
 }
-
-
-
-///////////////////////////////////////////////////////////////////////////////////////////////////
 
 
 
@@ -1639,6 +1642,10 @@ function makeObjectName(obj)
     return OBJECT_PREFIX + obj.nodeId
          + (obj.objectId > -1 ? ' ' + obj.objectId : '');
 }
+
+
+
+///////////////////////////////////////////////////////////////////////////////////////////////////
 
 
 
@@ -2005,6 +2012,97 @@ function figUpdateStar(figStar, genStar)
 
     setObjectFills  (figStar, genStar);
     setObjectStrokes(figStar, genStar);
+}
+
+
+
+///////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+
+function genTextIsValid(genText)
+{
+    return genText.text   != null && !isNaN(genText.text  )
+        && genText.x      != null && !isNaN(genText.x     )
+        && genText.y      != null && !isNaN(genText.y     )
+        && genText.width  != null && !isNaN(genText.width )
+        && genText.height != null && !isNaN(genText.height)
+        && genText.angle  != null && !isNaN(genText.angle );
+}
+
+
+
+function figCreateText(obj)
+{
+    //console.log(obj);
+
+    const text = figma.createText();
+
+    text.name = makeObjectName(obj);
+
+    if (!genTextIsValid(obj))
+        return text;
+
+
+    text.fontName   = { family: obj.font, style: 'Regular' };
+    text.fontSize   = obj.size;
+
+
+    (async function() { await figma.loadFontAsync(text.fontName); })();
+    text.characters = obj.text;
+
+
+    text.x          = obj.x;
+    text.y          = obj.y;
+
+
+    text.resize(
+        Math.max(0.01, obj.width), 
+        Math.max(0.01, obj.height));
+        
+    text.rotation   = obj.angle;
+    
+
+    setObjectFills  (text, obj);
+    setObjectStrokes(text, obj);
+
+
+    return text;
+}
+
+
+
+function figUpdateText(figText, genText)
+{
+    if (!genRectIsValid(genText))
+        return;
+
+
+    text.fontName   = { family: obj.font, style: 'Regular' };
+    text.fontSize   = obj.size;
+
+
+    (async function() { await figma.loadFontAsync(text.fontName); })();
+    text.characters = obj.text;
+
+
+    figText.x            = genText.x;
+    figText.y            = genText.y;
+
+
+    if (   figText.width  != genText.width
+        || figText.height != genText.height)
+    {
+        figText.resize(
+            Math.max(0.01, genText.width), 
+            Math.max(0.01, genText.height));
+    }
+
+    figText.rotation     = genText.angle;
+
+
+    setObjectFills  (figText, genText);
+    setObjectStrokes(figText, genText);
 }
 
 

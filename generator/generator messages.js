@@ -1,8 +1,9 @@
 var genFigMessagePosted = false;
 
+var uiMessages          = [];
 
 
-var uiMessages = [];
+var figFonts            = [];
 
 
 
@@ -17,7 +18,9 @@ onmessage = function(e)
     // processMessage(msg).next();
     switch (msg.cmd)
     {
-        case 'genRequest':       genRequest(msg.request); break;
+        case 'initFonts':        figFonts = msg.fonts;         break;
+     
+        case 'genRequest':       genRequest(msg.request);      break;
 
         //case 'genFetchResponse': genFetchResponse(msg.result, msg.response); break;
 

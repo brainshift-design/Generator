@@ -161,6 +161,7 @@ function genParse(parse, inParam = true)
     else if (parse.next == ELLIPSE                ) result = genParseEllipse         (parse);
     else if (parse.next == POLYGON                ) result = genParsePolygon         (parse);
     else if (parse.next == STAR                   ) result = genParseStar            (parse);
+    else if (parse.next == TEXTSHAPE              ) result = genParseTextShape       (parse);
 
     else if (parse.next == GROUP_NODE             ) result = genParseGroupNode       (parse);
     else if (parse.next == GROUP_PARAM            ) result = genParseGroupParam      (parse);

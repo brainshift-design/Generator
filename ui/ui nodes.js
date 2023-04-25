@@ -714,6 +714,7 @@ function uiUpdateValuesAndObjects(requestId, actionId, updateNodeId, updateParam
                     case   ELLIPSE_VALUE:  value = parseEllipseValue  (values[i++])[0];  break;
                     case   POLYGON_VALUE:  value = parsePolygonValue  (values[i++])[0];  break;
                     case      STAR_VALUE:  value = parseStarValue     (values[i++])[0];  break;
+                    case TEXTSHAPE_VALUE:  value = parseTextShapeValue(values[i++])[0];  break;
                     case      LIST_VALUE:  value = parseListValue     (values[i++])[0];  break;
                     
                     default: console.assert(false, 'unknown type \'' + type + '\'');

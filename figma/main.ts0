@@ -53,11 +53,16 @@ function figStartGenerator()
         figma.ui.show();
 
         
+        const fonts = await figma.listAvailableFontsAsync();
+        // console.log('figma fonts =', fonts);
+ 
+
         figPostMessageToUi({
             cmd:         'uiReturnFigStartGenerator',
             currentUser:  figma.currentUser,
             productKey:   productKey,
-            viewportRect: figma.viewport.bounds });
+            viewportRect: figma.viewport.bound,
+            fonts:        fonts });
     })();
 }
 
