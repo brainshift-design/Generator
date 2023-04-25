@@ -1595,7 +1595,6 @@ function figUpdateObjects(msg)
 
         const figObj = figObjects.objects.find(o => o.name == makeObjectName(genObj));
 
-        console.log('figObj =', figObj);
         if (   isValid(figObj)
             && figObj.removed)
             removeFrom(figObjects.objects, figObj);
@@ -2022,34 +2021,45 @@ function figUpdateStar(figStar, genStar)
 
 function genTextIsValid(genText)
 {
-    return genText.text   != null && !isNaN(genText.text  )
+    return genText.text   != null
         && genText.x      != null && !isNaN(genText.x     )
         && genText.y      != null && !isNaN(genText.y     )
         && genText.width  != null && !isNaN(genText.width )
         && genText.height != null && !isNaN(genText.height)
-        && genText.angle  != null && !isNaN(genText.angle );
+        && genText.angle  != null && !isNaN(genText.angle )
+        && genText.font   != null && genText.font != NULL
+        && genText.size   != null && !isNaN(genText.size  );
 }
 
 
 
 function figCreateText(obj)
 {
-    //console.log(obj);
-
     const text = figma.createText();
-
+    
     text.name = makeObjectName(obj);
 
     if (!genTextIsValid(obj))
         return text;
 
 
-    text.fontName   = { family: obj.font, style: 'Regular' };
-    text.fontSize   = obj.size;
+    const fontName = 
+    { 
+        family: obj.font, 
+        style: 'Regular' 
+    };
 
+    (async function() 
+    {
+        await figma.loadFontAsync(fontName); 
 
-    (async function() { await figma.loadFontAsync(text.fontName); })();
-    text.characters = obj.text;
+        text.fontName   = fontName;
+        text.fontSize   = obj.size;
+        
+        text.characters = obj.text;
+
+        //setTextStyle(text, obj);
+    })();
 
 
     text.x          = obj.x;
@@ -2074,16 +2084,27 @@ function figCreateText(obj)
 
 function figUpdateText(figText, genText)
 {
-    if (!genRectIsValid(genText))
+    if (!genTextIsValid(genText))
         return;
 
 
-    text.fontName   = { family: obj.font, style: 'Regular' };
-    text.fontSize   = obj.size;
+    const fontName = 
+    { 
+        family: genText.font, 
+        style: 'Regular' 
+    };
 
+    (async function() 
+    { 
+        await figma.loadFontAsync(fontName); 
 
-    (async function() { await figma.loadFontAsync(text.fontName); })();
-    text.characters = obj.text;
+        figText.fontName   = fontName;
+        figText.fontSize   = genText.size;
+
+        figText.characters = genText.text;
+
+        //setTextStyle(figText, genText);
+    })();
 
 
     figText.x            = genText.x;
@@ -2103,6 +2124,16 @@ function figUpdateText(figText, genText)
 
     setObjectFills  (figText, genText);
     setObjectStrokes(figText, genText);
+}
+
+
+
+function setTextStyle(figText, genText)
+{
+    //switch (genText.style)
+    //{
+
+    //}
 }
 
 

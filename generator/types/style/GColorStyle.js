@@ -2,7 +2,8 @@ class GColorStyle
 extends GShape
 {
     id;
-    style;
+
+    colorStyle;
 
     existing;
     linked;
@@ -22,11 +23,11 @@ extends GShape
     {
         const copy = new GColorStyle(this.nodeId, this.options);
 
-        copy.id       = this.id;
-        copy.style    = this.style.copy();
+        copy.id         = this.id;
+        copy.colorStyle = this.colorStyle.copy();
         
-        copy.existing = this.existing;
-        copy.linked   = this.linked;
+        copy.existing   = this.existing;
+        copy.linked     = this.linked;
 
         return copy;
     }
@@ -74,12 +75,12 @@ extends GShape
             return;
 
             
-        const style = new FigmaColorStyle(this.nodeId, this.id, this.name);
+        const colorStyle = new FigmaColorStyle(this.nodeId, this.id, this.name);
 
-        style.existing = this.existing;
+        colorStyle.existing = this.existing;
 
 
-        style.paints = 
+        colorStyle.paints = 
         [
             [ 'SOLID', 
                       Math.round(options.rgba[0] * 0xff)
@@ -89,6 +90,6 @@ extends GShape
         ];
 
 
-        this.style = style;
+        this.colorStyle = colorStyle;
     }
 }

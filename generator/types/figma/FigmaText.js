@@ -8,22 +8,32 @@ extends FigmaShape
     height;
     angle;
     font;
+    style;
     size;
+    alignH;
+    alignV;
+    lineHeight;
+    letterSpacing;
 
 
 
-    constructor(nodeId, objectId, text, x, y, width, height, angle, font, size)
+    constructor(nodeId, objectId, text, x, y, width, height, angle, font, style, size, alignH, alignV, lineHeight, letterSpacing)
     {
         super(TEXTSHAPE, nodeId, objectId);
         
-        this.text   = text;
-        this.x      = x;
-        this.y      = y;
-        this.width  = width;
-        this.height = height;
-        this.angle  = angle;
-        this.font   = font;
-        this.size   = size;
+        this.text          = text;
+        this.x             = x;
+        this.y             = y;
+        this.width         = width;
+        this.height        = height;
+        this.angle         = angle;
+        this.font          = font;
+        this.style         = style;
+        this.size          = size;
+        this.alignH        = alignH;
+        this.alignV        = alignV;
+        this.lineHeight    = lineHeight;
+        this.letterSpacing = letterSpacing;
     }
 
 
@@ -40,7 +50,12 @@ extends FigmaShape
             this.height,
             this.angle,
             this.font,
-            this.size);
+            this.style,
+            this.size,
+            this.alignH,
+            this.alignV,
+            this.lineHeight,
+            this.letterSpacing);
 
         copy.copyBase(this);
 

@@ -372,16 +372,21 @@ function genParseTextShape(parse)
         parse.inParam = true;
 
         switch (paramId)
-        {
-        case 'text':   text.text   = genParse(parse); break;
-        case 'x':      text.x      = genParse(parse); break;
-        case 'y':      text.y      = genParse(parse); break;
-        case 'width':  text.width  = genParse(parse); break;
-        case 'height': text.height = genParse(parse); break;
-        case 'angle':  text.angle  = genParse(parse); break;
-        case 'font':   text.font   = genParse(parse); break;
-        case 'size':   text.size   = genParse(parse); break;
-        case 'props':  text.props  = genParse(parse); break;
+        {       
+        case 'text':          text.text          = genParse(parse); break;
+        case 'x':             text.x             = genParse(parse); break;
+        case 'y':             text.y             = genParse(parse); break;
+        case 'width':         text.width         = genParse(parse); break;
+        case 'height':        text.height        = genParse(parse); break;
+        case 'angle':         text.angle         = genParse(parse); break;
+        case 'font':          text.font          = genParse(parse); break;
+        case 'style':         text.style         = genParse(parse); break;
+        case 'size':          text.size          = genParse(parse); break;
+        case 'props':         text.props         = genParse(parse); break;
+        case 'alignH':        text.alignH        = genParse(parse); break;
+        case 'alignV':        text.alignV        = genParse(parse); break;
+        case 'lineHeight':    text.lineHeight    = genParse(parse); break;
+        case 'letterSpacing': text.letterSpacing = genParse(parse); break;
         }
     }
 

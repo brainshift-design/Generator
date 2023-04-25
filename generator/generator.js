@@ -58,7 +58,7 @@ function genRequest(request)
 
             if (   node instanceof GShape
                 && node.options.active)
-                if (!!node.style) genPushUpdateStyle(parse, node.style);
+                if (!!node.colorStyle) genPushUpdateColorStyle(parse, node.colorStyle);
         }
 
 
@@ -115,7 +115,7 @@ function genPushUpdateObject(parse, object)
 
 
 
-function genPushUpdateStyle(parse, style)
+function genPushUpdateColorStyle(parse, style)
 {
     pushUniqueExcept(
         parse.updateStyles,

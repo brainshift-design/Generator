@@ -1,7 +1,7 @@
 class   OpShapeBase
 extends OperatorBase
 {
-    paramStyle;
+    paramProperties;
 
 
     constructor(type, id, name, defWidth = defNodeWidth)
@@ -13,9 +13,9 @@ extends OperatorBase
 
     addBaseParams()
     {
-        this.addParam(this.paramStyle = new ListParam('props', 'properties', true, true, true));
+        this.addParam(this.paramProperties = new ListParam('props', 'styles', true, true, true));
 
-        this.paramStyle.itemName = 'style';
+        this.paramProperties.itemName = 'style';
     }
 
 
