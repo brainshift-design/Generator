@@ -1688,7 +1688,6 @@ function initPageStyles(nodes) {
     figStyleArrays = [];
     const paintStyles = figma.getLocalPaintStyles();
     for (const _node of nodes) {
-        console.log('_node =', _node);
         const node = JSON.parse(_node);
         if (node.type == COLOR_STYLE) {
             const style = paintStyles.find(s => {

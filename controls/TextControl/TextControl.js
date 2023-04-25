@@ -7,6 +7,8 @@ extends Control
     textbox;
     placeholder;
 
+    valueText         = '';
+
 
     enableChangeEvent = true;
     
@@ -127,7 +129,10 @@ extends Control
             ? UNKNOWN_DISPLAY
             : this.textbox.defPlaceholder;
 
-        if (this.value == NAN_CHAR)
+
+        if (this.valueText != '')
+            this.textbox.value = this.valueText;
+        else if (this.value == NAN_CHAR)
             this.textbox.value = '';
 
 

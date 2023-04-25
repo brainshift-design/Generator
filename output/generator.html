@@ -4731,7 +4731,7 @@ function parseNumberValue(str)
     if (str.indexOf(',') < 0)
     {
         console.trace();
-        console.assert(false, 'number value missing \',\'');
+        console.assert(false, 'number value \'' + str + '\' missing \',\'');
     }
 
     
@@ -4814,7 +4814,7 @@ extends GValue
 
     toJson()
     {
-        return this.value.replace('\\', '\\\\');
+        return toUtf8(this.value);
     }
 
 
@@ -4856,7 +4856,7 @@ extends GValue
 
 function parseTextValue(str)
 {
-    const text = new TextValue(str);
+    const text = new TextValue(fromUtf8(str));
 
     return [text, 1];
 }
@@ -6898,8 +6898,16 @@ extends GOperator
             const input = this.inputs[i].toValue();
 
             if (   input
-                && this.options.enabled)
-                this.value.items.push(input);
+                && this.options.enabled)            
+            {
+                if (input.type == LIST_VALUE)
+                {
+                    for (const item of input.items)
+                        this.value.items.push(item);   
+                }
+                else
+                    this.value.items.push(input);
+            }
         }
     
 
@@ -14250,7 +14258,7 @@ function enableFeatures(subscription, beta)
     
     updateElementDisplay(menuItemList                .div, subscription && beta);
     updateElementDisplay(menuFlowSep1                .div, subscription && beta);
-    updateElementDisplay(menuItemExpandList          .div, subscription && beta);
+    //updateElementDisplay(menuItemExpandList          .div, subscription && beta);
     updateElementDisplay(menuItemItems               .div, subscription && beta);
     updateElementDisplay(menuFlowSep2                .div, subscription && beta);
     updateElementDisplay(menuItemSelect              .div, subscription && beta);

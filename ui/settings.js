@@ -258,7 +258,7 @@ function enableFeatures(subscription, beta)
     
     updateElementDisplay(menuItemList                .div, subscription && beta);
     updateElementDisplay(menuFlowSep1                .div, subscription && beta);
-    updateElementDisplay(menuItemExpandList          .div, subscription && beta);
+    //updateElementDisplay(menuItemExpandList          .div, subscription && beta);
     updateElementDisplay(menuItemItems               .div, subscription && beta);
     updateElementDisplay(menuFlowSep2                .div, subscription && beta);
     updateElementDisplay(menuItemSelect              .div, subscription && beta);

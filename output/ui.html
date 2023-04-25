@@ -9096,7 +9096,7 @@ function parseNumberValue(str)
     if (str.indexOf(',') < 0)
     {
         console.trace();
-        console.assert(false, 'number value missing \',\'');
+        console.assert(false, 'number value \'' + str + '\' missing \',\'');
     }
 
     
@@ -9179,7 +9179,7 @@ extends GValue
 
     toJson()
     {
-        return this.value.replace('\\', '\\\\');
+        return toUtf8(this.value);
     }
 
 
@@ -9221,7 +9221,7 @@ extends GValue
 
 function parseTextValue(str)
 {
-    const text = new TextValue(str);
+    const text = new TextValue(fromUtf8(str));
 
     return [text, 1];
 }
@@ -11263,8 +11263,16 @@ extends GOperator
             const input = this.inputs[i].toValue();
 
             if (   input
-                && this.options.enabled)
-                this.value.items.push(input);
+                && this.options.enabled)            
+            {
+                if (input.type == LIST_VALUE)
+                {
+                    for (const item of input.items)
+                        this.value.items.push(item);   
+                }
+                else
+                    this.value.items.push(input);
+            }
         }
     
 
@@ -18615,7 +18623,7 @@ function enableFeatures(subscription, beta)
     
     updateElementDisplay(menuItemList                .div, subscription && beta);
     updateElementDisplay(menuFlowSep1                .div, subscription && beta);
-    updateElementDisplay(menuItemExpandList          .div, subscription && beta);
+    //updateElementDisplay(menuItemExpandList          .div, subscription && beta);
     updateElementDisplay(menuItemItems               .div, subscription && beta);
     updateElementDisplay(menuFlowSep2                .div, subscription && beta);
     updateElementDisplay(menuItemSelect              .div, subscription && beta);
@@ -32695,7 +32703,7 @@ function parseNumberValue(str)
     if (str.indexOf(',') < 0)
     {
         console.trace();
-        console.assert(false, 'number value missing \',\'');
+        console.assert(false, 'number value \'' + str + '\' missing \',\'');
     }
 
     
@@ -32778,7 +32786,7 @@ extends GValue
 
     toJson()
     {
-        return this.value.replace('\\', '\\\\');
+        return toUtf8(this.value);
     }
 
 
@@ -32820,7 +32828,7 @@ extends GValue
 
 function parseTextValue(str)
 {
-    const text = new TextValue(str);
+    const text = new TextValue(fromUtf8(str));
 
     return [text, 1];
 }
@@ -34862,8 +34870,16 @@ extends GOperator
             const input = this.inputs[i].toValue();
 
             if (   input
-                && this.options.enabled)
-                this.value.items.push(input);
+                && this.options.enabled)            
+            {
+                if (input.type == LIST_VALUE)
+                {
+                    for (const item of input.items)
+                        this.value.items.push(item);   
+                }
+                else
+                    this.value.items.push(input);
+            }
         }
     
 
@@ -42214,7 +42230,7 @@ function enableFeatures(subscription, beta)
     
     updateElementDisplay(menuItemList                .div, subscription && beta);
     updateElementDisplay(menuFlowSep1                .div, subscription && beta);
-    updateElementDisplay(menuItemExpandList          .div, subscription && beta);
+    //updateElementDisplay(menuItemExpandList          .div, subscription && beta);
     updateElementDisplay(menuItemItems               .div, subscription && beta);
     updateElementDisplay(menuFlowSep2                .div, subscription && beta);
     updateElementDisplay(menuItemSelect              .div, subscription && beta);
@@ -44261,6 +44277,8 @@ extends Control
     textbox;
     placeholder;
 
+    valueText         = '';
+
 
     enableChangeEvent = true;
     
@@ -44381,7 +44399,10 @@ extends Control
             ? UNKNOWN_DISPLAY
             : this.textbox.defPlaceholder;
 
-        if (this.value == NAN_CHAR)
+
+        if (this.valueText != '')
+            this.textbox.value = this.valueText;
+        else if (this.value == NAN_CHAR)
             this.textbox.value = '';
 
 
@@ -47326,7 +47347,7 @@ function initGeneratorMenus()
         menuItemList          = new MenuItem('List',              {icon: iconList,       callback: e => actionManager.do(getCreateNodeAction(LIST,         btnNumber.div, getCreateOptions(e)))}),
         menuFlowSep1          = new MenuItem('',                  {separator: true}),     
         menuItemItems         = new MenuItem('Items',             {icon: iconItems,      callback: e => actionManager.do(getCreateNodeAction(ITEMS,        btnNumber.div, getCreateOptions(e)))}),
-        menuItemExpandList    = new MenuItem('Expand',            {icon: iconExpandList, callback: e => actionManager.do(getCreateNodeAction(LIST_EXPAND,  btnNumber.div, getCreateOptions(e)))}),
+        //menuItemExpandList    = new MenuItem('Expand',            {icon: iconExpandList, callback: e => actionManager.do(getCreateNodeAction(LIST_EXPAND,  btnNumber.div, getCreateOptions(e)))}),
         menuFlowSep2          = new MenuItem('',                  {separator: true}),
         menuItemSelect        = new MenuItem('Select',            {icon: iconSelect,     callback: e => actionManager.do(getCreateNodeAction(SELECT,       btnNumber.div, getCreateOptions(e)))}),
         menuItemIfElse        = new MenuItem('I&hairsp;f / else', {icon: iconIfElse,     callback: e => actionManager.do(getCreateNodeAction(IF_ELSE,      btnNumber.div, getCreateOptions(e))), disambiguate: true}),
@@ -62499,6 +62520,8 @@ extends ResizableBase
     updateParams()
     {
         this.paramValue.enableControlText(!this.inputs[0].connected);
+        this.paramValue.controls[0].valueText = this.isUnknown() ? UNKNOWN_DISPLAY : '';
+
         this.updateValueParam();
 
         this.updateParamControls();
@@ -62611,6 +62634,8 @@ extends OperatorWithValue
     updateParams()
     {
         this.paramValue.enableControlText(false);
+        this.paramValue.controls[0].valueText = this.isUnknown() ? UNKNOWN_DISPLAY : '';
+
         this.paramStart.enableControlText(true);
         this.paramEnd  .enableControlText(true);
 
@@ -62679,6 +62704,8 @@ extends OperatorWithValue
     updateParams()
     {
         this.paramValue.enableControlText(false);
+        this.paramValue.controls[0].valueText = this.isUnknown() ? UNKNOWN_DISPLAY : '';
+
         this.paramCode .enableControlText(true);
 
         this.updateParamControls();
@@ -62754,6 +62781,8 @@ extends OperatorWithValue
     updateParams()
     {
         this.paramValue.enableControlText(false);
+        this.paramValue.controls[0].valueText = this.isUnknown() ? UNKNOWN_DISPLAY : '';
+
         this.paramWhat .enableControlText(true);
         this.paramWith .enableControlText(true);
 
@@ -62997,7 +63026,9 @@ extends OperatorWithValue
 
     updateParams()
     {
-        this.paramValue  .enableControlText(false);
+        this.paramValue.enableControlText(false);
+        this.paramValue.controls[0].valueText = this.isUnknown() ? UNKNOWN_DISPLAY : '';
+
         this.paramRequest.enableControlText(true);
 
         this.updateParamControls();

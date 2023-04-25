@@ -61,8 +61,16 @@ extends GOperator
             const input = this.inputs[i].toValue();
 
             if (   input
-                && this.options.enabled)
-                this.value.items.push(input);
+                && this.options.enabled)            
+            {
+                if (input.type == LIST_VALUE)
+                {
+                    for (const item of input.items)
+                        this.value.items.push(item);   
+                }
+                else
+                    this.value.items.push(input);
+            }
         }
     
 
