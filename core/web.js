@@ -296,3 +296,40 @@ function selectDivText(div)
     window.getSelection().removeAllRanges();
     window.getSelection().addRange(range);    
 }
+
+
+
+function loadFromLocalFile(callback)
+{
+    const input = document.createElement('input');
+
+    input.type   = 'file';
+    input.accept = '.gen';
+    
+    input.onchange = e => 
+    { 
+        const file = e.target.files[0]; 
+
+        const reader = new FileReader();
+        reader.readAsText(file,'UTF-8');
+
+        reader.onload = e => callback(e.target.result);
+    }; 
+
+    input.click();
+}
+
+
+
+function saveToLocalFile(content, filename, contentType)
+{
+    const a    = document.createElement('a');
+    const file = new Blob([content], {type: contentType});
+
+    a.download = filename;
+    a.href     = URL.createObjectURL(file);
+
+    a.click();
+
+    URL.revokeObjectURL(a.href);
+}

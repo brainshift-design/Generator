@@ -417,6 +417,11 @@ function finishLoading(_nodes)
 {
     if (isEmpty(_nodes))
     {
+        graphView.creatingNodes  = false;
+        graphView.pastingNodes   = false;
+        graphView.loadingNodes   = false;
+        graphView.restoringNodes = false;
+
         clearTimeout(loadRestartTimer);
         loadRestartTimer = -1;
 

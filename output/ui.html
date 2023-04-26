@@ -4037,12 +4037,16 @@ a
             <div id='whatsNewBody'>
                 <h1 style='margin-top: 20px;'>What's new in Generator</h1>
 
-                <p>•  fixed wrong invalid colors assigned to styles</p>
-                <p>•  fixed Mac shortcuts</p>
-                <p>•  adjusting color controls with arrow keys now supports undo</p>
-                <p>•  unsupported inputs/outputs are now hidden while connecting</p>
+                <p>•  added basic text nodes (subscription only for now)</p>
+                <p>•  added basic shape nodes (subscription only for now)</p>
+                <p>•  added more data flow nodes like Select and Repeat (subscription only for now)</p>
                 <p>•  added a right-click copy menu to the crash dialog</p>
                 <p>•  replaced restart checkboxes with buttons</p>
+                <p>•  added 'Import from file' and 'Save selected to file' for nodes</p>
+                <p>•  adjusting color controls with arrow keys now supports undo</p>
+                <p>•  unsupported inputs/outputs are now hidden while connecting</p>
+                <p>•  fixed wrong invalid colors assigned to styles</p>
+                <p>•  fixed Mac shortcuts</p>
                 <p>•  fixed many UI issues</p>
                 
                 <p><br/><br/><div id='chkHideWhatsNew'></div></p>
@@ -7317,6 +7321,43 @@ function selectDivText(div)
 
     window.getSelection().removeAllRanges();
     window.getSelection().addRange(range);    
+}
+
+
+
+function loadFromLocalFile(callback)
+{
+    const input = document.createElement('input');
+
+    input.type   = 'file';
+    input.accept = '.gen';
+    
+    input.onchange = e => 
+    { 
+        const file = e.target.files[0]; 
+
+        const reader = new FileReader();
+        reader.readAsText(file,'UTF-8');
+
+        reader.onload = e => callback(e.target.result);
+    }; 
+
+    input.click();
+}
+
+
+
+function saveToLocalFile(content, filename, contentType)
+{
+    const a    = document.createElement('a');
+    const file = new Blob([content], {type: contentType});
+
+    a.download = filename;
+    a.href     = URL.createObjectURL(file);
+
+    a.click();
+
+    URL.revokeObjectURL(a.href);
 }
 
 
@@ -28478,6 +28519,43 @@ function selectDivText(div)
 }
 
 
+
+function loadFromLocalFile(callback)
+{
+    const input = document.createElement('input');
+
+    input.type   = 'file';
+    input.accept = '.gen';
+    
+    input.onchange = e => 
+    { 
+        const file = e.target.files[0]; 
+
+        const reader = new FileReader();
+        reader.readAsText(file,'UTF-8');
+
+        reader.onload = e => callback(e.target.result);
+    }; 
+
+    input.click();
+}
+
+
+
+function saveToLocalFile(content, filename, contentType)
+{
+    const a    = document.createElement('a');
+    const file = new Blob([content], {type: contentType});
+
+    a.download = filename;
+    a.href     = URL.createObjectURL(file);
+
+    a.click();
+
+    URL.revokeObjectURL(a.href);
+}
+
+
 const webColors = [
     {name: 'AliceBlue',            color: 'f0f8ff'},
     {name: 'AntiqueWhite',         color: 'faebd7'},
@@ -47283,6 +47361,7 @@ var btnZoom;
 
 
 var menuMain;
+var menuMainFile;
 var menuMainPreferences;
 var menuMainDebug;
 var menuMainHelp;
@@ -47466,6 +47545,13 @@ function initGeneratorMenus()
         menuItemShowTooltipColorBlindness     = new MenuItem('Color blindness',     {checkCallback: () => settings.showTooltipColorBlindness,     callback: () => { updateSettingAndMenu('showTooltipColorBlindness',     true, !settings.showTooltipColorBlindness    ); }})]);
 
 
+    menuMainFile = new Menu('File', false);
+    menuMainFile.addItems([
+        new MenuItem('Import from file...',  {callback: () => { hideAllMenus(); uiImportFromLocalFile(); }}),
+        new MenuItem('',                   {separator: true}),    
+        new MenuItem('Save selected to file...', {callback: async () => { hideAllMenus(); uiSaveSelectionToLocalFile(); }})]);
+
+
     menuMainPreferences = new Menu('Preferences', false);
     menuMainPreferences.addItems([
         menuItemShowPages             = new MenuItem('Show pages',                    {checkCallback: () => settings.showAllColorSpaces,      callback: () => { updateSettingAndMenu('showPages',            true, !settings.showPages);             updateMenuItemShowPages();            }}),
@@ -47570,6 +47656,8 @@ function initGeneratorMenus()
 
     menuMain = new Menu('Main menu', false);
     menuMain.addItems([
+                        new MenuItem('File',                  {childMenu: menuMainFile}),
+                        new MenuItem('',                      {separator: true}),
                         new MenuItem('Preferences',           {childMenu: menuMainPreferences}),
         menuItemDebug = new MenuItem('Debug',                 {childMenu: menuMainDebug}),
                         new MenuItem('',                      {separator: true}),
@@ -73778,7 +73866,10 @@ var altPressedInMenu = false;
 
 document.addEventListener('keydown', e =>
 {
-    if (crashed)
+    if (   crashed
+        || graphView.loadingNodes
+        || graphView.pastingNodes
+        || graphView.restoringNodes)
     {
         e.preventDefault();
         e.stopPropagation();
@@ -75455,6 +75546,11 @@ function finishLoading(_nodes)
 {
     if (isEmpty(_nodes))
     {
+        graphView.creatingNodes  = false;
+        graphView.pastingNodes   = false;
+        graphView.loadingNodes   = false;
+        graphView.restoringNodes = false;
+
         clearTimeout(loadRestartTimer);
         loadRestartTimer = -1;
 
@@ -77104,6 +77200,23 @@ function uiUpdateViewportRect()
 }
 
 
+
+function uiImportFromLocalFile()
+{
+    loadFromLocalFile(json => 
+    {
+        actionManager.do(new PasteNodesAction(json, false));
+    });
+}
+
+
+
+function uiSaveSelectionToLocalFile()
+{
+    const json = uiCopyNodes(graphView.selectedNodes.map(n => n.id));
+
+    saveToLocalFile(json, 'selection.gen', 'text/plain');
+}
 
 
 function uiLinkNodeToExistingColorStyle(node, styleId, styleName, paints)

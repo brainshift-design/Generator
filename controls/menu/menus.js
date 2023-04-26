@@ -13,6 +13,7 @@ var btnZoom;
 
 
 var menuMain;
+var menuMainFile;
 var menuMainPreferences;
 var menuMainDebug;
 var menuMainHelp;
@@ -196,6 +197,13 @@ function initGeneratorMenus()
         menuItemShowTooltipColorBlindness     = new MenuItem('Color blindness',     {checkCallback: () => settings.showTooltipColorBlindness,     callback: () => { updateSettingAndMenu('showTooltipColorBlindness',     true, !settings.showTooltipColorBlindness    ); }})]);
 
 
+    menuMainFile = new Menu('File', false);
+    menuMainFile.addItems([
+        new MenuItem('Import from file...',  {callback: () => { hideAllMenus(); uiImportFromLocalFile(); }}),
+        new MenuItem('',                   {separator: true}),    
+        new MenuItem('Save selected to file...', {callback: async () => { hideAllMenus(); uiSaveSelectionToLocalFile(); }})]);
+
+
     menuMainPreferences = new Menu('Preferences', false);
     menuMainPreferences.addItems([
         menuItemShowPages             = new MenuItem('Show pages',                    {checkCallback: () => settings.showAllColorSpaces,      callback: () => { updateSettingAndMenu('showPages',            true, !settings.showPages);             updateMenuItemShowPages();            }}),
@@ -300,6 +308,8 @@ function initGeneratorMenus()
 
     menuMain = new Menu('Main menu', false);
     menuMain.addItems([
+                        new MenuItem('File',                  {childMenu: menuMainFile}),
+                        new MenuItem('',                      {separator: true}),
                         new MenuItem('Preferences',           {childMenu: menuMainPreferences}),
         menuItemDebug = new MenuItem('Debug',                 {childMenu: menuMainDebug}),
                         new MenuItem('',                      {separator: true}),

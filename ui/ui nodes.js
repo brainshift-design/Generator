@@ -1152,3 +1152,21 @@ function uiUpdateViewportRect()
     });
 }
 
+
+
+function uiImportFromLocalFile()
+{
+    loadFromLocalFile(json => 
+    {
+        actionManager.do(new PasteNodesAction(json, false));
+    });
+}
+
+
+
+function uiSaveSelectionToLocalFile()
+{
+    const json = uiCopyNodes(graphView.selectedNodes.map(n => n.id));
+
+    saveToLocalFile(json, 'selection.gen', 'text/plain');
+}

@@ -4,7 +4,10 @@ var altPressedInMenu = false;
 
 document.addEventListener('keydown', e =>
 {
-    if (crashed)
+    if (   crashed
+        || graphView.loadingNodes
+        || graphView.pastingNodes
+        || graphView.restoringNodes)
     {
         e.preventDefault();
         e.stopPropagation();
