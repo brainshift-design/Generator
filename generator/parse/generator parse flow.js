@@ -327,17 +327,17 @@ function genParseStart(parse)
     const start = new GStart(nodeId, options);
 
 
-    let nInputs = -1;
+    // let nInputs = -1;
     
-    if (!ignore)
-    {
-        nInputs = parseInt(parse.move());
-        console.assert(nInputs == 0 || nInputs == 1, 'nInputs must be [0, 1]');
-    }
+    // if (!ignore)
+    // {
+    //     nInputs = parseInt(parse.move());
+    //     console.assert(nInputs == 0 || nInputs == 1, 'nInputs must be [0, 1]');
+    // }
 
 
     if (parse.settings.logRequests) 
-        logReq(start, parse, ignore, nInputs);
+        logReq(start, parse, ignore);//, nInputs);
 
 
     if (ignore) 
@@ -350,8 +350,8 @@ function genParseStart(parse)
     parse.nTab++;
 
 
-    if (nInputs == 1)
-        start.input = genParse(parse);
+    // if (nInputs == 1)
+    //     start.input = genParse(parse);
 
     start.repeatId = genParse(parse);
 

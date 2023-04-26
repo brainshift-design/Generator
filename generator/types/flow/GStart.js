@@ -1,7 +1,7 @@
 class GStart
 extends GOperator
 {
-    input = null;
+    //input = null;
 
 
 
@@ -18,7 +18,7 @@ extends GOperator
 
         copy.copyBase(this);
 
-        if (this.input) copy.input = this.input.copy();
+        //if (this.input) copy.input = this.input.copy();
         if (this.value) copy.value = this.value.copy();
 
         return copy;
@@ -35,12 +35,12 @@ extends GOperator
         const repeatId = (await this.repeatId.eval(parse)).toValue();
 
 
-        if (this.input)
-        {
-            this.input = (await this.input.eval(parse)).copy();
-            this.value = this.input.toValue();
-        }
-        else
+        // if (this.input)
+        // {
+        //     this.input = (await this.input.eval(parse)).copy();
+        //     this.value = this.input.toValue();
+        // }
+        // else
             this.value = NullValue;
 
         

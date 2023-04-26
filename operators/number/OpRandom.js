@@ -13,6 +13,7 @@ extends OperatorBase
 
         this.cached = false;
         
+        this.addInput (new Input ([ANY_TYPE]));
         this.addOutput(new Output([NUMBER_VALUE], this.output_genRequest));
 
         this.addParam(this.paramSeed = new NumberParam('seed', 'seed', true, true, true, Math.floor(Math.random() * 10000), 0, 0x7fffffff));

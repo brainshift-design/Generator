@@ -13,11 +13,11 @@ extends OperatorBase
         this.addOutput(new Output([ANY_TYPE], this.output_genRequest));
 
 
-        this.addParam(this.paramRepeatId = new TextParam('repeatId', 'repeat ID', false, true));
+        this.addParam(this.paramRepeatId = new TextParam('repeatId', 'ID', false, true));
 
 
-        this.inputs[0].addEventListener('connect',    e => { OpStart_onConnectInput(this); });
-        this.inputs[0].addEventListener('disconnect', e => OpStart_onDisconnectInput(this));
+        // this.inputs[0].addEventListener('connect',    e => { OpStart_onConnectInput(this); });
+        // this.inputs[0].addEventListener('disconnect', e => OpStart_onDisconnectInput(this));
     }
 
 
@@ -34,13 +34,13 @@ extends OperatorBase
         if (ignore) return request;
 
         
-        const input = this.node.inputs[0];
+        // const input = this.node.inputs[0];
 
 
-        request.push(input.connected ? 1 : 0);
+        // request.push(input.connected ? 1 : 0);
 
-        if (input.connected)
-            request.push(...pushInputOrParam(input, gen));
+        // if (input.connected)
+        //     request.push(...pushInputOrParam(input, gen));
 
 
         request.push(...this.node.paramRepeatId.genRequest(gen));
@@ -55,14 +55,14 @@ extends OperatorBase
 
 
 
-function OpStart_onConnectInput(node)
-{
-    node.outputs[0].types = [...node.inputs[0].connectedOutput.types];
-}
+// function OpStart_onConnectInput(node)
+// {
+//     node.outputs[0].types = [...node.inputs[0].connectedOutput.types];
+// }
 
 
 
-function OpStart_onDisconnectInput(node)
-{
-    node.outputs[0].types = [ANY_TYPE];
-}
+// function OpStart_onDisconnectInput(node)
+// {
+//     node.outputs[0].types = [ANY_TYPE];
+// }

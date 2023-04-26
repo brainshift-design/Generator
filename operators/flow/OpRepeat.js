@@ -16,7 +16,7 @@ extends OperatorBase
 
 
         this.addParam(this.paramCount    = new NumberParam('count',    'count',     true, true, false, 1, 0, 1000, 0));
-        this.addParam(this.paramRepeatId = new TextParam  ('repeatId', 'repeat ID', true, false));
+        this.addParam(this.paramRepeatId = new TextParam  ('repeatId', 'ID', true, false));
 
 
         this.paramCount.controls[0].allowEditDecimals = false;
@@ -67,10 +67,12 @@ extends OperatorBase
 
     updateValues(requestId, actionId, updateParamId, paramIds, values)
     {
-        const value = values[paramIds.findIndex(id => id == 'value')];
-        const count = values[paramIds.findIndex(id => id == 'count')];
+        const value    = values[paramIds.findIndex(id => id == 'value'   )];
+        const count    = values[paramIds.findIndex(id => id == 'count'   )];
+        const repeatId = values[paramIds.findIndex(id => id == 'repeatId')];
 
-        if (count) this.paramCount.setValue(count, false, true, false);
+        if (count   ) this.paramCount   .setValue(count,    false, true, false);
+        if (repeatId) this.paramRepeatId.setValue(repeatId, false, true, false);
 
         specifyListOutput(value, this.outputs[0]);
     }
