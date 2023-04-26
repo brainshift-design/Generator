@@ -231,7 +231,7 @@ extends GShape
             this.alignH       .toValue(),
             this.alignV       .toValue(),
             this.lineHeight   .toValue(),
-            this.letterSPacing.toValue());
+            this.letterSpacing.toValue());
 
         rect.props = this.props.toValue();
 
