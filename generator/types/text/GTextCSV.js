@@ -43,7 +43,7 @@ extends GOperator
         // {
         //     const input = (await this.inputs[i].eval(parse)).toValue();
 
-        //     if (input.type == LIST_VALUE)
+        //     if (LIST_VALUES.includes(input.type))
         //     {
         //         for (const item of input.items)
         //             this.value.items.push(item);   

@@ -452,6 +452,11 @@ function cleanStyleId(styleId)
 
 
 const LIST_VALUE              = 'LIST#';
+
+const NUMBER_LIST_VALUE       = 'NLIST#';
+const   TEXT_LIST_VALUE       = 'TLIST#';
+const  SHAPE_LIST_VALUE       = 'SLIST#';
+
 const LIST                    = 'LIST';
 
 const LIST_EXPAND             = 'LEXP';
@@ -474,11 +479,23 @@ const ANY_TYPE                = 'ANY';
 const LIST_TYPES =
 [
     LIST_VALUE,
+    NUMBER_LIST_VALUE,
+    TEXT_LIST_VALUE,
+    SHAPE_LIST_VALUE,
     LIST,
     LIST_EXPAND,
     ITEMS,
     LIST_COUNT,
     REPEAT
+];
+
+
+const LIST_VALUES =
+[
+           LIST_VALUE,
+    NUMBER_LIST_VALUE,
+      TEXT_LIST_VALUE,
+     SHAPE_LIST_VALUE
 ];
 
 
@@ -573,6 +590,7 @@ const CONDITION_TYPES =
 const NUMBER_TYPES =
 [
     NUMBER_VALUE,
+    NUMBER_LIST_VALUE,
     NUMBER,
     NUMBER_SIGN,
     NUMBER_ABSOLUTE,
@@ -604,6 +622,7 @@ const TEXT_FETCH     = 'FETCH';
 const TEXT_TYPES =
 [
     TEXT_VALUE,
+    TEXT_LIST_VALUE,
     TEXT,
     TEXT_SUBSTRING,
     TEXT_JOIN,
@@ -684,7 +703,7 @@ const TEXTSHAPE_TYPES  = [TEXTSHAPE_VALUE, TEXTSHAPE];
 const SHAPE_VALUES =
 [
     SHAPE_VALUE,
-
+    SHAPE_LIST_VALUE,
     RECTANGLE_VALUE,
     LINE_VALUE,
     ELLIPSE_VALUE,

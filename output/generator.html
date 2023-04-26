@@ -441,35 +441,35 @@ function rgbFromType(type, active)
 
 function rgbFromTypeMode(type, active, mode)
 {
-    if (FLOW_TYPES.includes(type))
-        return active 
-        ? (mode ? rgbActiveFlowDark   : rgbActiveFlowLight)
-        : (mode ? rgbFlowDark         : rgbFlowLight      );
-
     if (NUMBER_TYPES.includes(type))
         return active 
         ? (mode ? rgbActiveNumberDark : rgbActiveNumberLight)
         : (mode ? rgbNumberDark       : rgbNumberLight      );
 
-    if (TEXT_TYPES.includes(type))
+    else if (TEXT_TYPES.includes(type))
         return active 
         ? (mode ? rgbActiveTextDark   : rgbActiveTextLight)
         : (mode ? rgbTextDark         : rgbTextLight      );
 
-    if (type == COLOR_STYLE)
+    else if (type == COLOR_STYLE)
         return active 
         ? (mode ? rgbActiveFlowDark   : rgbActiveFlowLight)
         : (mode ? rgbFlowDark         : rgbFlowLight      );
 
-    if (SHAPE_TYPES.includes(type))
+    else if (SHAPE_TYPES.includes(type))
         return active 
         ? (mode ? rgbActiveShapeDark  : rgbActiveShapeLight)
         : (mode ? rgbShapeDark        : rgbShapeLight      );
 
-    if (GROUP_TYPES.includes(type))
+    else if (GROUP_TYPES.includes(type))
         return active 
         ? (mode ? rgbActiveGroupDark  : rgbActiveGroupLight)
         : (mode ? rgbGroupDark        : rgbGroupLight      );
+
+    else if (FLOW_TYPES.includes(type))
+        return active 
+        ? (mode ? rgbActiveFlowDark   : rgbActiveFlowLight)
+        : (mode ? rgbFlowDark         : rgbFlowLight      );
 
         
     switch (type)
@@ -3468,6 +3468,11 @@ function normalizeSeed(x)
 
 
 const LIST_VALUE              = 'LIST#';
+
+const NUMBER_LIST_VALUE       = 'NLIST#';
+const   TEXT_LIST_VALUE       = 'TLIST#';
+const  SHAPE_LIST_VALUE       = 'SLIST#';
+
 const LIST                    = 'LIST';
 
 const LIST_EXPAND             = 'LEXP';
@@ -3490,11 +3495,23 @@ const ANY_TYPE                = 'ANY';
 const LIST_TYPES =
 [
     LIST_VALUE,
+    NUMBER_LIST_VALUE,
+    TEXT_LIST_VALUE,
+    SHAPE_LIST_VALUE,
     LIST,
     LIST_EXPAND,
     ITEMS,
     LIST_COUNT,
     REPEAT
+];
+
+
+const LIST_VALUES =
+[
+           LIST_VALUE,
+    NUMBER_LIST_VALUE,
+      TEXT_LIST_VALUE,
+     SHAPE_LIST_VALUE
 ];
 
 
@@ -3589,6 +3606,7 @@ const CONDITION_TYPES =
 const NUMBER_TYPES =
 [
     NUMBER_VALUE,
+    NUMBER_LIST_VALUE,
     NUMBER,
     NUMBER_SIGN,
     NUMBER_ABSOLUTE,
@@ -3620,6 +3638,7 @@ const TEXT_FETCH     = 'FETCH';
 const TEXT_TYPES =
 [
     TEXT_VALUE,
+    TEXT_LIST_VALUE,
     TEXT,
     TEXT_SUBSTRING,
     TEXT_JOIN,
@@ -3700,7 +3719,7 @@ const TEXTSHAPE_TYPES  = [TEXTSHAPE_VALUE, TEXTSHAPE];
 const SHAPE_VALUES =
 [
     SHAPE_VALUE,
-
+    SHAPE_LIST_VALUE,
     RECTANGLE_VALUE,
     LINE_VALUE,
     ELLIPSE_VALUE,
@@ -6956,7 +6975,7 @@ extends GOperator
             if (   input
                 && this.options.enabled)            
             {
-                if (input.type == LIST_VALUE)
+                if (LIST_VALUES.includes(input.type))
                 {
                     for (const item of input.items)
                         this.value.items.push(item);   
@@ -7029,7 +7048,7 @@ extends GOperator
             {
                 this.value.items.push(item);   
 
-                if (item.type == LIST_VALUE)
+                if (LIST_VALUES.includes(item.type))
                 {
                     for (const listItem of item.items)
                         this.value.items.push(listItem);
@@ -8810,12 +8829,26 @@ async function evalAddInputs(inputs, parse)
     {
         const val = (await inputs[i].eval(parse)).toValue();
 
-        console.assert(
-            val.type == NUMBER_VALUE, 
-            'val.type must be NUMBER_VALUE');
+        if (LIST_VALUES.includes(val.type))
+        {
+            for (const item of val.items)
+            {
+                if (item.type == NUMBER_VALUE)
+                {
+                    value.value   += item.value;
+                    value.decimals = Math.max(value.decimals, item.decimals);
+                }
+            }
+        }
+        else
+        {
+            console.assert(
+                val.type == NUMBER_VALUE, 
+                'val.type must be NUMBER_VALUE');
 
-        value.value   += val.value;
-        value.decimals = Math.max(value.decimals, val.decimals);
+            value.value   += val.value;
+            value.decimals = Math.max(value.decimals, val.decimals);
+        }
     }
 
 
@@ -10251,10 +10284,13 @@ async function evalJoinInputs(inputs, parse)
     {
         const val = (await inputs[i].eval(parse)).toValue();
 
-        if (val.type == LIST_VALUE)
+        if (LIST_VALUES.includes(val.type))
         {
             for (const item of val.items)
-                value.value += item.value;
+        {
+                if (item.type == TEXT_VALUE)
+                    value.value += item.value;
+            }
         }
         else
         {
@@ -10316,7 +10352,7 @@ extends GOperator
         // {
         //     const input = (await this.inputs[i].eval(parse)).toValue();
 
-        //     if (input.type == LIST_VALUE)
+        //     if (LIST_VALUES.includes(input.type))
         //     {
         //         for (const item of input.items)
         //             this.value.items.push(item);   
@@ -17832,7 +17868,10 @@ function genParse(parse, inParam = true)
 
          if (parse.next == PARAM                  ) result = genParseParam           (parse);
         
-    else if (parse.next == LIST_VALUE             ) result = genParseListValue       (parse);
+    else if (parse.next ==        LIST_VALUE             
+          || parse.next == NUMBER_LIST_VALUE             
+          || parse.next ==   TEXT_LIST_VALUE             
+          || parse.next ==  SHAPE_LIST_VALUE      ) result = genParseListValue       (parse);
     else if (parse.next == LIST                   ) result = genParseList            (parse);
     else if (parse.next == LIST_EXPAND            ) result = genParseExpandList      (parse);
     else if (parse.next == ITEMS                  ) result = genParseItems           (parse);

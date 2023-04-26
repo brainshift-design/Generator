@@ -56,4 +56,16 @@ extends OperatorBase
 
         return request;
     }
+
+
+
+    updateValues(requestId, actionId, updateParamId, paramIds, values)
+    {
+        super.updateValues(requestId, actionId, updateParamId, paramIds, values);
+
+        const value = values[paramIds.findIndex(id => id == 'value')];
+        console.assert(LIST_VALUES.includes(value.type));
+
+        specifyListOutput(value, this.outputs[0]);
+    }
 }

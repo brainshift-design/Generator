@@ -59,7 +59,7 @@ extends Parameter
     {
         // 'this' is the output
 
-        console.assert(value.type == LIST_VALUE, 'expected LIST_VALUE in backInit()');
+        console.assert(LIST_VALUES.includes(value.type), 'expected LIST_VALUE in backInit()');
         
         this.param.setValue(value, false, true, false);
     }
@@ -73,7 +73,7 @@ extends Parameter
 
         console.assert(
                value.type 
-            && value.type == LIST_VALUE, 
+            && LIST_VALUES.includes(value.type), 
             'ListParam value.type must be LIST_VALUE');
 
 

@@ -63,7 +63,7 @@ extends GOperator
             if (   input
                 && this.options.enabled)            
             {
-                if (input.type == LIST_VALUE)
+                if (LIST_VALUES.includes(input.type))
                 {
                     for (const item of input.items)
                         this.value.items.push(item);   

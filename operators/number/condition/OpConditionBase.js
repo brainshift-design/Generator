@@ -8,8 +8,8 @@ extends OperatorWithSymbol
         this.alwaysLoadParams = true;
 
         
-        this.addInput(new Input(NUMBER_TYPES));
-        this.addInput(new Input(NUMBER_TYPES));
+        this.addInput(new Input([NUMBER_VALUE]));
+        this.addInput(new Input([NUMBER_VALUE]));
 
         this.addOutput(new Output([NUMBER_VALUE], this.output_genRequest));
 

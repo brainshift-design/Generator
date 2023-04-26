@@ -54,10 +54,13 @@ async function evalJoinInputs(inputs, parse)
     {
         const val = (await inputs[i].eval(parse)).toValue();
 
-        if (val.type == LIST_VALUE)
+        if (LIST_VALUES.includes(val.type))
         {
             for (const item of val.items)
-                value.value += item.value;
+        {
+                if (item.type == TEXT_VALUE)
+                    value.value += item.value;
+            }
         }
         else
         {

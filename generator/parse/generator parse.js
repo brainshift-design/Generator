@@ -81,7 +81,10 @@ function genParse(parse, inParam = true)
 
          if (parse.next == PARAM                  ) result = genParseParam           (parse);
         
-    else if (parse.next == LIST_VALUE             ) result = genParseListValue       (parse);
+    else if (parse.next ==        LIST_VALUE             
+          || parse.next == NUMBER_LIST_VALUE             
+          || parse.next ==   TEXT_LIST_VALUE             
+          || parse.next ==  SHAPE_LIST_VALUE      ) result = genParseListValue       (parse);
     else if (parse.next == LIST                   ) result = genParseList            (parse);
     else if (parse.next == LIST_EXPAND            ) result = genParseExpandList      (parse);
     else if (parse.next == ITEMS                  ) result = genParseItems           (parse);

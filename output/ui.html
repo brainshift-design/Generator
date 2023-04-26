@@ -4810,35 +4810,35 @@ function rgbFromType(type, active)
 
 function rgbFromTypeMode(type, active, mode)
 {
-    if (FLOW_TYPES.includes(type))
-        return active 
-        ? (mode ? rgbActiveFlowDark   : rgbActiveFlowLight)
-        : (mode ? rgbFlowDark         : rgbFlowLight      );
-
     if (NUMBER_TYPES.includes(type))
         return active 
         ? (mode ? rgbActiveNumberDark : rgbActiveNumberLight)
         : (mode ? rgbNumberDark       : rgbNumberLight      );
 
-    if (TEXT_TYPES.includes(type))
+    else if (TEXT_TYPES.includes(type))
         return active 
         ? (mode ? rgbActiveTextDark   : rgbActiveTextLight)
         : (mode ? rgbTextDark         : rgbTextLight      );
 
-    if (type == COLOR_STYLE)
+    else if (type == COLOR_STYLE)
         return active 
         ? (mode ? rgbActiveFlowDark   : rgbActiveFlowLight)
         : (mode ? rgbFlowDark         : rgbFlowLight      );
 
-    if (SHAPE_TYPES.includes(type))
+    else if (SHAPE_TYPES.includes(type))
         return active 
         ? (mode ? rgbActiveShapeDark  : rgbActiveShapeLight)
         : (mode ? rgbShapeDark        : rgbShapeLight      );
 
-    if (GROUP_TYPES.includes(type))
+    else if (GROUP_TYPES.includes(type))
         return active 
         ? (mode ? rgbActiveGroupDark  : rgbActiveGroupLight)
         : (mode ? rgbGroupDark        : rgbGroupLight      );
+
+    else if (FLOW_TYPES.includes(type))
+        return active 
+        ? (mode ? rgbActiveFlowDark   : rgbActiveFlowLight)
+        : (mode ? rgbFlowDark         : rgbFlowLight      );
 
         
     switch (type)
@@ -7837,6 +7837,11 @@ function normalizeSeed(x)
 
 
 const LIST_VALUE              = 'LIST#';
+
+const NUMBER_LIST_VALUE       = 'NLIST#';
+const   TEXT_LIST_VALUE       = 'TLIST#';
+const  SHAPE_LIST_VALUE       = 'SLIST#';
+
 const LIST                    = 'LIST';
 
 const LIST_EXPAND             = 'LEXP';
@@ -7859,11 +7864,23 @@ const ANY_TYPE                = 'ANY';
 const LIST_TYPES =
 [
     LIST_VALUE,
+    NUMBER_LIST_VALUE,
+    TEXT_LIST_VALUE,
+    SHAPE_LIST_VALUE,
     LIST,
     LIST_EXPAND,
     ITEMS,
     LIST_COUNT,
     REPEAT
+];
+
+
+const LIST_VALUES =
+[
+           LIST_VALUE,
+    NUMBER_LIST_VALUE,
+      TEXT_LIST_VALUE,
+     SHAPE_LIST_VALUE
 ];
 
 
@@ -7958,6 +7975,7 @@ const CONDITION_TYPES =
 const NUMBER_TYPES =
 [
     NUMBER_VALUE,
+    NUMBER_LIST_VALUE,
     NUMBER,
     NUMBER_SIGN,
     NUMBER_ABSOLUTE,
@@ -7989,6 +8007,7 @@ const TEXT_FETCH     = 'FETCH';
 const TEXT_TYPES =
 [
     TEXT_VALUE,
+    TEXT_LIST_VALUE,
     TEXT,
     TEXT_SUBSTRING,
     TEXT_JOIN,
@@ -8069,7 +8088,7 @@ const TEXTSHAPE_TYPES  = [TEXTSHAPE_VALUE, TEXTSHAPE];
 const SHAPE_VALUES =
 [
     SHAPE_VALUE,
-
+    SHAPE_LIST_VALUE,
     RECTANGLE_VALUE,
     LINE_VALUE,
     ELLIPSE_VALUE,
@@ -11325,7 +11344,7 @@ extends GOperator
             if (   input
                 && this.options.enabled)            
             {
-                if (input.type == LIST_VALUE)
+                if (LIST_VALUES.includes(input.type))
                 {
                     for (const item of input.items)
                         this.value.items.push(item);   
@@ -11398,7 +11417,7 @@ extends GOperator
             {
                 this.value.items.push(item);   
 
-                if (item.type == LIST_VALUE)
+                if (LIST_VALUES.includes(item.type))
                 {
                     for (const listItem of item.items)
                         this.value.items.push(listItem);
@@ -13179,12 +13198,26 @@ async function evalAddInputs(inputs, parse)
     {
         const val = (await inputs[i].eval(parse)).toValue();
 
-        console.assert(
-            val.type == NUMBER_VALUE, 
-            'val.type must be NUMBER_VALUE');
+        if (LIST_VALUES.includes(val.type))
+        {
+            for (const item of val.items)
+            {
+                if (item.type == NUMBER_VALUE)
+                {
+                    value.value   += item.value;
+                    value.decimals = Math.max(value.decimals, item.decimals);
+                }
+            }
+        }
+        else
+        {
+            console.assert(
+                val.type == NUMBER_VALUE, 
+                'val.type must be NUMBER_VALUE');
 
-        value.value   += val.value;
-        value.decimals = Math.max(value.decimals, val.decimals);
+            value.value   += val.value;
+            value.decimals = Math.max(value.decimals, val.decimals);
+        }
     }
 
 
@@ -14620,10 +14653,13 @@ async function evalJoinInputs(inputs, parse)
     {
         const val = (await inputs[i].eval(parse)).toValue();
 
-        if (val.type == LIST_VALUE)
+        if (LIST_VALUES.includes(val.type))
         {
             for (const item of val.items)
-                value.value += item.value;
+        {
+                if (item.type == TEXT_VALUE)
+                    value.value += item.value;
+            }
         }
         else
         {
@@ -14685,7 +14721,7 @@ extends GOperator
         // {
         //     const input = (await this.inputs[i].eval(parse)).toValue();
 
-        //     if (input.type == LIST_VALUE)
+        //     if (LIST_VALUES.includes(input.type))
         //     {
         //         for (const item of input.items)
         //             this.value.items.push(item);   
@@ -22201,7 +22237,10 @@ function genParse(parse, inParam = true)
 
          if (parse.next == PARAM                  ) result = genParseParam           (parse);
         
-    else if (parse.next == LIST_VALUE             ) result = genParseListValue       (parse);
+    else if (parse.next ==        LIST_VALUE             
+          || parse.next == NUMBER_LIST_VALUE             
+          || parse.next ==   TEXT_LIST_VALUE             
+          || parse.next ==  SHAPE_LIST_VALUE      ) result = genParseListValue       (parse);
     else if (parse.next == LIST                   ) result = genParseList            (parse);
     else if (parse.next == LIST_EXPAND            ) result = genParseExpandList      (parse);
     else if (parse.next == ITEMS                  ) result = genParseItems           (parse);
@@ -26005,35 +26044,35 @@ function rgbFromType(type, active)
 
 function rgbFromTypeMode(type, active, mode)
 {
-    if (FLOW_TYPES.includes(type))
-        return active 
-        ? (mode ? rgbActiveFlowDark   : rgbActiveFlowLight)
-        : (mode ? rgbFlowDark         : rgbFlowLight      );
-
     if (NUMBER_TYPES.includes(type))
         return active 
         ? (mode ? rgbActiveNumberDark : rgbActiveNumberLight)
         : (mode ? rgbNumberDark       : rgbNumberLight      );
 
-    if (TEXT_TYPES.includes(type))
+    else if (TEXT_TYPES.includes(type))
         return active 
         ? (mode ? rgbActiveTextDark   : rgbActiveTextLight)
         : (mode ? rgbTextDark         : rgbTextLight      );
 
-    if (type == COLOR_STYLE)
+    else if (type == COLOR_STYLE)
         return active 
         ? (mode ? rgbActiveFlowDark   : rgbActiveFlowLight)
         : (mode ? rgbFlowDark         : rgbFlowLight      );
 
-    if (SHAPE_TYPES.includes(type))
+    else if (SHAPE_TYPES.includes(type))
         return active 
         ? (mode ? rgbActiveShapeDark  : rgbActiveShapeLight)
         : (mode ? rgbShapeDark        : rgbShapeLight      );
 
-    if (GROUP_TYPES.includes(type))
+    else if (GROUP_TYPES.includes(type))
         return active 
         ? (mode ? rgbActiveGroupDark  : rgbActiveGroupLight)
         : (mode ? rgbGroupDark        : rgbGroupLight      );
+
+    else if (FLOW_TYPES.includes(type))
+        return active 
+        ? (mode ? rgbActiveFlowDark   : rgbActiveFlowLight)
+        : (mode ? rgbFlowDark         : rgbFlowLight      );
 
         
     switch (type)
@@ -31619,6 +31658,11 @@ function validateLicenseKey(license, key, rec = false)
 
 
 const LIST_VALUE              = 'LIST#';
+
+const NUMBER_LIST_VALUE       = 'NLIST#';
+const   TEXT_LIST_VALUE       = 'TLIST#';
+const  SHAPE_LIST_VALUE       = 'SLIST#';
+
 const LIST                    = 'LIST';
 
 const LIST_EXPAND             = 'LEXP';
@@ -31641,11 +31685,23 @@ const ANY_TYPE                = 'ANY';
 const LIST_TYPES =
 [
     LIST_VALUE,
+    NUMBER_LIST_VALUE,
+    TEXT_LIST_VALUE,
+    SHAPE_LIST_VALUE,
     LIST,
     LIST_EXPAND,
     ITEMS,
     LIST_COUNT,
     REPEAT
+];
+
+
+const LIST_VALUES =
+[
+           LIST_VALUE,
+    NUMBER_LIST_VALUE,
+      TEXT_LIST_VALUE,
+     SHAPE_LIST_VALUE
 ];
 
 
@@ -31740,6 +31796,7 @@ const CONDITION_TYPES =
 const NUMBER_TYPES =
 [
     NUMBER_VALUE,
+    NUMBER_LIST_VALUE,
     NUMBER,
     NUMBER_SIGN,
     NUMBER_ABSOLUTE,
@@ -31771,6 +31828,7 @@ const TEXT_FETCH     = 'FETCH';
 const TEXT_TYPES =
 [
     TEXT_VALUE,
+    TEXT_LIST_VALUE,
     TEXT,
     TEXT_SUBSTRING,
     TEXT_JOIN,
@@ -31851,7 +31909,7 @@ const TEXTSHAPE_TYPES  = [TEXTSHAPE_VALUE, TEXTSHAPE];
 const SHAPE_VALUES =
 [
     SHAPE_VALUE,
-
+    SHAPE_LIST_VALUE,
     RECTANGLE_VALUE,
     LINE_VALUE,
     ELLIPSE_VALUE,
@@ -35107,7 +35165,7 @@ extends GOperator
             if (   input
                 && this.options.enabled)            
             {
-                if (input.type == LIST_VALUE)
+                if (LIST_VALUES.includes(input.type))
                 {
                     for (const item of input.items)
                         this.value.items.push(item);   
@@ -35180,7 +35238,7 @@ extends GOperator
             {
                 this.value.items.push(item);   
 
-                if (item.type == LIST_VALUE)
+                if (LIST_VALUES.includes(item.type))
                 {
                     for (const listItem of item.items)
                         this.value.items.push(listItem);
@@ -36961,12 +37019,26 @@ async function evalAddInputs(inputs, parse)
     {
         const val = (await inputs[i].eval(parse)).toValue();
 
-        console.assert(
-            val.type == NUMBER_VALUE, 
-            'val.type must be NUMBER_VALUE');
+        if (LIST_VALUES.includes(val.type))
+        {
+            for (const item of val.items)
+            {
+                if (item.type == NUMBER_VALUE)
+                {
+                    value.value   += item.value;
+                    value.decimals = Math.max(value.decimals, item.decimals);
+                }
+            }
+        }
+        else
+        {
+            console.assert(
+                val.type == NUMBER_VALUE, 
+                'val.type must be NUMBER_VALUE');
 
-        value.value   += val.value;
-        value.decimals = Math.max(value.decimals, val.decimals);
+            value.value   += val.value;
+            value.decimals = Math.max(value.decimals, val.decimals);
+        }
     }
 
 
@@ -38402,10 +38474,13 @@ async function evalJoinInputs(inputs, parse)
     {
         const val = (await inputs[i].eval(parse)).toValue();
 
-        if (val.type == LIST_VALUE)
+        if (LIST_VALUES.includes(val.type))
         {
             for (const item of val.items)
-                value.value += item.value;
+        {
+                if (item.type == TEXT_VALUE)
+                    value.value += item.value;
+            }
         }
         else
         {
@@ -38467,7 +38542,7 @@ extends GOperator
         // {
         //     const input = (await this.inputs[i].eval(parse)).toValue();
 
-        //     if (input.type == LIST_VALUE)
+        //     if (LIST_VALUES.includes(input.type))
         //     {
         //         for (const item of input.items)
         //             this.value.items.push(item);   
@@ -47533,7 +47608,7 @@ var menuItemNodeEnableDisable;
 var menuItemLicenseSep1;
 var menuItemLicenseRemove;
 
-
+``
 
 function initGeneratorMenus()
 {
@@ -53743,7 +53818,7 @@ extends Parameter
     {
         // 'this' is the output
 
-        console.assert(value.type == LIST_VALUE, 'expected LIST_VALUE in backInit()');
+        console.assert(LIST_VALUES.includes(value.type), 'expected LIST_VALUE in backInit()');
         
         this.param.setValue(value, false, true, false);
     }
@@ -53757,7 +53832,7 @@ extends Parameter
 
         console.assert(
                value.type 
-            && value.type == LIST_VALUE, 
+            && LIST_VALUES.includes(value.type), 
             'ListParam value.type must be LIST_VALUE');
 
 
@@ -56390,7 +56465,7 @@ class Wire
             ||     conn.output
                &&  conn.output.param
                &&  conn.output.param._nodeId != undefined
-               &&  nodeFromId(conn.output.param._nodeId)
+            &&  nodeFromId(conn.output.param._nodeId)
                && !nodeFromId(conn.output.param._nodeId).isCached();
         
         const unknown =
@@ -57735,6 +57810,24 @@ function makeNodePath(id)
 function idFromNodePath(path)
 {
     return path.split('/').at(-1);
+}
+
+
+
+function specifyListOutput(value, output)
+{
+    let type = NULL;
+
+    for (const item of value.items)
+    {
+             if (type == NULL     )   type = item.type;
+        else if (type != item.type) { type = ANY_TYPE; break; }
+    }
+    
+         if (type == NUMBER_VALUE) output.types = [NUMBER_LIST_VALUE];
+    else if (type ==   TEXT_VALUE) output.types = [  TEXT_LIST_VALUE];
+    else if (type ==  SHAPE_VALUE) output.types = [ SHAPE_LIST_VALUE];
+    else                           output.types = [       LIST_VALUE];
 }
 
 
@@ -59480,6 +59573,18 @@ extends OperatorBase
         pushUnique(gen.passedNodes, this.node);
 
         return request;
+    }
+
+
+
+    updateValues(requestId, actionId, updateParamId, paramIds, values)
+    {
+        super.updateValues(requestId, actionId, updateParamId, paramIds, values);
+
+        const value = values[paramIds.findIndex(id => id == 'value')];
+        console.assert(LIST_VALUES.includes(value.type));
+
+        specifyListOutput(value, this.outputs[0]);
     }
 }
 
@@ -61956,7 +62061,7 @@ extends OperatorWithValue
     
     addNewInput()
     {
-        const newInput = new Input(NUMBER_TYPES);
+        const newInput = new Input([NUMBER_VALUE, LIST_VALUE]);
         newInput.isNew = true;
 
         newInput.addEventListener('connect',    e => { onVariableConnectInput(this); e.detail.input.isNew = false; });
@@ -62033,7 +62138,7 @@ extends OperatorWithSymbol
     
     addNewInput()
     {
-        const newInput = new Input(NUMBER_TYPES);
+        const newInput = new Input([NUMBER_VALUE, ...LIST_VALUES]);
         newInput.isNew = true;
 
         newInput.addEventListener('connect',    e => { onVariableConnectInput(this); e.detail.input.isNew = false; });
@@ -62472,7 +62577,7 @@ extends OperatorWithValue
     
     addNewInput()
     {
-        const newInput = new Input(NUMBER_TYPES);
+        const newInput = new Input([NUMBER_VALUE, ...LIST_VALUES]);
         newInput.isNew = true;
 
         newInput.addEventListener('connect',    e => { onVariableConnectInput(this); e.detail.input.isNew = false; });
@@ -62693,8 +62798,8 @@ extends OperatorWithSymbol
         this.alwaysLoadParams = true;
 
         
-        this.addInput(new Input(NUMBER_TYPES));
-        this.addInput(new Input(NUMBER_TYPES));
+        this.addInput(new Input([NUMBER_VALUE]));
+        this.addInput(new Input([NUMBER_VALUE]));
 
         this.addOutput(new Output([NUMBER_VALUE], this.output_genRequest));
 
@@ -63261,7 +63366,7 @@ extends ResizableOperatorWithValue
     
     addNewInput()
     {
-        const newInput = new Input([TEXT_VALUE, LIST_VALUE]);
+        const newInput = new Input([TEXT_VALUE, ...LIST_VALUES]);
         newInput.isNew = true;
 
         newInput.addEventListener('connect',    e => { onVariableConnectInput(this); e.detail.input.isNew = false; });

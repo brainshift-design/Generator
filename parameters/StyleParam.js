@@ -58,7 +58,7 @@
 
 //         console.assert(
 //                value.type 
-//             && value.type == LIST_VALUE, 
+//             && LIST_VALUES(value.type), 
 //             'StyleParam value.type must be STYLE_VALUE');
 
 //         this.preSetValue(value, createAction, dispatchEvents);

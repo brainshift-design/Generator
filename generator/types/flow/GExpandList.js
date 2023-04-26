@@ -42,7 +42,7 @@ extends GOperator
             {
                 this.value.items.push(item);   
 
-                if (item.type == LIST_VALUE)
+                if (LIST_VALUES.includes(item.type))
                 {
                     for (const listItem of item.items)
                         this.value.items.push(listItem);

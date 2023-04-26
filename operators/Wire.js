@@ -465,7 +465,7 @@ class Wire
             ||     conn.output
                &&  conn.output.param
                &&  conn.output.param._nodeId != undefined
-               &&  nodeFromId(conn.output.param._nodeId)
+            &&  nodeFromId(conn.output.param._nodeId)
                && !nodeFromId(conn.output.param._nodeId).isCached();
         
         const unknown =
