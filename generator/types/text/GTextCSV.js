@@ -1,7 +1,7 @@
 class GTextCSV
 extends GOperator
 {
-    inputs = [];
+    input;
 
     value;
     separator;
@@ -37,24 +37,26 @@ extends GOperator
             return this;
 
 
+        const separator = (await this.separator.eval(parse)).toValue();
+
+
         this.value = new ListValue();
 
-        // for (let i = 0; i < this.inputs.length; i++)
-        // {
-        //     const input = (await this.inputs[i].eval(parse)).toValue();
 
-        //     if (LIST_VALUES.includes(input.type))
-        //     {
-        //         for (const item of input.items)
-        //             this.value.items.push(item);   
-        //     }
-        //     else
-        //         this.value.items.push(input);
-        // }
+        if (this.input)
+        {
+            const input = (await this.input.eval(parse)).toValue();
+            console.assert(input.type == TEXT_VALUE, 'input must be TEXT_VALUE');
+
+            const items = input.value.split(separator.value);
+
+            for (const item of items)
+                this.value.items.push(new TextValue(item));
+        }
     
 
-        genPushUpdateValue(parse, this.nodeId, 'value',     this.value    );
-        genPushUpdateValue(parse, this.nodeId, 'separator', this.separator);
+        genPushUpdateValue(parse, this.nodeId, 'value',     this.value);
+        genPushUpdateValue(parse, this.nodeId, 'separator', separator);
 
 
         this.validate();

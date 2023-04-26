@@ -74,6 +74,9 @@ extends GOperator
             genPushUpdateValue(parse, this.nodeId, '', NullValue);
 
 
+        genPushUpdateValue(parse, this.nodeId, 'value', this.value);
+
+
         for (let j = 0; j < this.objects.length; j++)
             this.objects[j].nodeId = this.nodeId;
 

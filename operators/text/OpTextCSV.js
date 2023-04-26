@@ -11,11 +11,10 @@ extends OperatorBase
         super(TEXT_CSV, 'csv', 'csv');
 
 
-        this.addInput (new Input (TEXT_TYPES));
-        this.addOutput(new Output([LIST_VALUE], this.output_genRequest));
+        this.addInput(new Input([TEXT_VALUE]));
 
-        this.addParam(this.paramValue     = new ListParam('value',     '',          true, true));
-        this.addParam(this.paramSeparator = new TextParam('separator', 'separator', true, true, ','));
+        this.addParam(this.paramValue     = new ListParam('value',     '',          false, false, true));
+        this.addParam(this.paramSeparator = new TextParam('separator', 'separator',        true, true, ','));
 
 
         this.paramSeparator.controls[0].textbox.style.textAlign = 'center';
@@ -23,19 +22,20 @@ extends OperatorBase
 
 
 
-    output_genRequest(gen)
+    genRequest(gen)
     {
-        // 'this' is the output
+        // 'this' is the node
 
         gen.scope.push({
-            nodeId:  this.node.id, 
+            nodeId:  this.id, 
             paramId: NULL });
 
-        const [request, ignore] = this.node.genRequestStart(gen);
+
+        const [request, ignore] = this.genRequestStart(gen);
         if (ignore) return request;
 
         
-        const input = this.node.inputs[0];
+        const input = this.inputs[0];
 
 
         request.push(input.connected ? 1 : 0);
@@ -43,11 +43,11 @@ extends OperatorBase
         if (input.connected)
             request.push(...pushInputOrParam(input, gen));
 
-        request.push(...this.node.paramSeparator.genRequest(gen));
+        request.push(...this.paramSeparator.genRequest(gen));
 
         
         gen.scope.pop();
-        pushUnique(gen.passedNodes, this.node);
+        pushUnique(gen.passedNodes, this);
 
         return request;
     }

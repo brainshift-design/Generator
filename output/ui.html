@@ -11525,6 +11525,9 @@ extends GOperator
             genPushUpdateValue(parse, this.nodeId, '', NullValue);
 
 
+        genPushUpdateValue(parse, this.nodeId, 'value', this.value);
+
+
         for (let j = 0; j < this.objects.length; j++)
             this.objects[j].nodeId = this.nodeId;
 
@@ -15015,7 +15018,7 @@ async function evalJoinInputs(inputs, parse)
 class GTextCSV
 extends GOperator
 {
-    inputs = [];
+    input;
 
     value;
     separator;
@@ -15051,24 +15054,26 @@ extends GOperator
             return this;
 
 
+        const separator = (await this.separator.eval(parse)).toValue();
+
+
         this.value = new ListValue();
 
-        // for (let i = 0; i < this.inputs.length; i++)
-        // {
-        //     const input = (await this.inputs[i].eval(parse)).toValue();
 
-        //     if (LIST_VALUES.includes(input.type))
-        //     {
-        //         for (const item of input.items)
-        //             this.value.items.push(item);   
-        //     }
-        //     else
-        //         this.value.items.push(input);
-        // }
+        if (this.input)
+        {
+            const input = (await this.input.eval(parse)).toValue();
+            console.assert(input.type == TEXT_VALUE, 'input must be TEXT_VALUE');
+
+            const items = input.value.split(separator.value);
+
+            for (const item of items)
+                this.value.items.push(new TextValue(item));
+        }
     
 
-        genPushUpdateValue(parse, this.nodeId, 'value',     this.value    );
-        genPushUpdateValue(parse, this.nodeId, 'separator', this.separator);
+        genPushUpdateValue(parse, this.nodeId, 'value',     this.value);
+        genPushUpdateValue(parse, this.nodeId, 'separator', separator);
 
 
         this.validate();
@@ -35681,6 +35686,9 @@ extends GOperator
             genPushUpdateValue(parse, this.nodeId, '', NullValue);
 
 
+        genPushUpdateValue(parse, this.nodeId, 'value', this.value);
+
+
         for (let j = 0; j < this.objects.length; j++)
             this.objects[j].nodeId = this.nodeId;
 
@@ -39171,7 +39179,7 @@ async function evalJoinInputs(inputs, parse)
 class GTextCSV
 extends GOperator
 {
-    inputs = [];
+    input;
 
     value;
     separator;
@@ -39207,24 +39215,26 @@ extends GOperator
             return this;
 
 
+        const separator = (await this.separator.eval(parse)).toValue();
+
+
         this.value = new ListValue();
 
-        // for (let i = 0; i < this.inputs.length; i++)
-        // {
-        //     const input = (await this.inputs[i].eval(parse)).toValue();
 
-        //     if (LIST_VALUES.includes(input.type))
-        //     {
-        //         for (const item of input.items)
-        //             this.value.items.push(item);   
-        //     }
-        //     else
-        //         this.value.items.push(input);
-        // }
+        if (this.input)
+        {
+            const input = (await this.input.eval(parse)).toValue();
+            console.assert(input.type == TEXT_VALUE, 'input must be TEXT_VALUE');
+
+            const items = input.value.split(separator.value);
+
+            for (const item of items)
+                this.value.items.push(new TextValue(item));
+        }
     
 
-        genPushUpdateValue(parse, this.nodeId, 'value',     this.value    );
-        genPushUpdateValue(parse, this.nodeId, 'separator', this.separator);
+        genPushUpdateValue(parse, this.nodeId, 'value',     this.value);
+        genPushUpdateValue(parse, this.nodeId, 'separator', separator);
 
 
         this.validate();
@@ -54515,6 +54525,9 @@ extends Parameter
 
         super.setValue(this.value, createAction, updateControl, dispatchEvents);
 
+        if (this.output)
+            specifyListOutput(this.value, this.output);
+
 
         this.oldValue = this.value;
     }    
@@ -64045,7 +64058,7 @@ extends ResizableOperatorWithValue
     
     addNewInput()
     {
-        const newInput = new Input([TEXT_VALUE, TEXT_LIST_VALUE]);
+        const newInput = new Input([TEXT_VALUE, TEXT_LIST_VALUE, LIST_VALUE]);
         newInput.isNew = true;
 
         newInput.addEventListener('connect',    e => { onVariableConnectInput(this); e.detail.input.isNew = false; });
@@ -64136,11 +64149,10 @@ extends OperatorBase
         super(TEXT_CSV, 'csv', 'csv');
 
 
-        this.addInput (new Input (TEXT_TYPES));
-        this.addOutput(new Output([LIST_VALUE], this.output_genRequest));
+        this.addInput(new Input([TEXT_VALUE]));
 
-        this.addParam(this.paramValue     = new ListParam('value',     '',          true, true));
-        this.addParam(this.paramSeparator = new TextParam('separator', 'separator', true, true, ','));
+        this.addParam(this.paramValue     = new ListParam('value',     '',          false, false, true));
+        this.addParam(this.paramSeparator = new TextParam('separator', 'separator',        true, true, ','));
 
 
         this.paramSeparator.controls[0].textbox.style.textAlign = 'center';
@@ -64148,19 +64160,20 @@ extends OperatorBase
 
 
 
-    output_genRequest(gen)
+    genRequest(gen)
     {
-        // 'this' is the output
+        // 'this' is the node
 
         gen.scope.push({
-            nodeId:  this.node.id, 
+            nodeId:  this.id, 
             paramId: NULL });
 
-        const [request, ignore] = this.node.genRequestStart(gen);
+
+        const [request, ignore] = this.genRequestStart(gen);
         if (ignore) return request;
 
         
-        const input = this.node.inputs[0];
+        const input = this.inputs[0];
 
 
         request.push(input.connected ? 1 : 0);
@@ -64168,11 +64181,11 @@ extends OperatorBase
         if (input.connected)
             request.push(...pushInputOrParam(input, gen));
 
-        request.push(...this.node.paramSeparator.genRequest(gen));
+        request.push(...this.paramSeparator.genRequest(gen));
 
         
         gen.scope.pop();
-        pushUnique(gen.passedNodes, this.node);
+        pushUnique(gen.passedNodes, this);
 
         return request;
     }

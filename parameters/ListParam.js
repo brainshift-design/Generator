@@ -85,6 +85,9 @@ extends Parameter
 
         super.setValue(this.value, createAction, updateControl, dispatchEvents);
 
+        if (this.output)
+            specifyListOutput(this.value, this.output);
+
 
         this.oldValue = this.value;
     }    
