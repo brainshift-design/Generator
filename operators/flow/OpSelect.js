@@ -12,7 +12,7 @@ extends OperatorBase
         this.alwaysSaveParams = true;
 
 
-        this.addInput(new Input(LIST_TYPES, getNodeInputValuesForUndo));
+        this.addInput(new Input(LIST_VALUES, getNodeInputValuesForUndo));
 
         this.addParam(this.paramIndex = new NumberParam('index', 'index', true, true, false, 0, 0));
         this.paramIndex.controls[0].allowEditDecimals = false;

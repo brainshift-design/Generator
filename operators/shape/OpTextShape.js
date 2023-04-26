@@ -57,4 +57,20 @@ extends OpShapeBase
 
         this.addBaseParams();
     }
+
+
+
+    updateParams()
+    {
+        const fontName = figUniqueFontNames[this.paramFont.value.toNumber()];
+        
+        this.paramStyle.setOptions(
+            figFonts
+                .filter(f => f.fontName.family == fontName)
+                .map(f => f.fontName.style));
+
+        this.paramStyle.controls[0].setMax(this.paramStyle.options.length-1);
+
+        super.updateParamControls();
+    }
 }

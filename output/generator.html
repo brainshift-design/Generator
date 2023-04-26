@@ -15002,16 +15002,16 @@ function initFonts(fonts, uniqueFontNames)
 
 function genRequest(request)
 {
-    const requestId             = parseInt(request[0]);
-    const actionId              = parseInt(request[1]);
-    const set                   = parseInt(request[2]);
+    const requestId            = parseInt(request[0]);
+    const actionId             = parseInt(request[1]);
+    const set                  = parseInt(request[2]);
 
-    const showAllColorSpaces = (set >> 0) & 1 != 0;
-    const logRequests           = (set >> 1) & 1 != 0;
+    const showAllColorSpaces   = (set >> 0) & 1 != 0;
+    const logRequests          = (set >> 1) & 1 != 0;
 
 
-    const updateNodeId          = request[3];
-    const updateParamId         = request[4];
+    const updateNodeId         = request[3];
+    const updateParamId        = request[4];
 
 
     const parse = new Parse(

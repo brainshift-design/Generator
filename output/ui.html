@@ -19374,16 +19374,16 @@ function initFonts(fonts, uniqueFontNames)
 
 function genRequest(request)
 {
-    const requestId             = parseInt(request[0]);
-    const actionId              = parseInt(request[1]);
-    const set                   = parseInt(request[2]);
+    const requestId            = parseInt(request[0]);
+    const actionId             = parseInt(request[1]);
+    const set                  = parseInt(request[2]);
 
-    const showAllColorSpaces = (set >> 0) & 1 != 0;
-    const logRequests           = (set >> 1) & 1 != 0;
+    const showAllColorSpaces   = (set >> 0) & 1 != 0;
+    const logRequests          = (set >> 1) & 1 != 0;
 
 
-    const updateNodeId          = request[3];
-    const updateParamId         = request[4];
+    const updateNodeId         = request[3];
+    const updateParamId        = request[4];
 
 
     const parse = new Parse(
@@ -60336,7 +60336,7 @@ extends OperatorBase
         super(ITEMS, 'items', 'items');
 
 
-        this.addInput (new Input([LIST_VALUE]));
+        this.addInput (new Input(LIST_VALUES));
         this.addOutput(new Output([LIST_VALUE], this.output_genRequest));
 
         this.alwaysLoadParams = true;
@@ -60479,7 +60479,7 @@ extends OperatorBase
         this.alwaysSaveParams = true;
 
 
-        this.addInput(new Input(LIST_TYPES, getNodeInputValuesForUndo));
+        this.addInput(new Input(LIST_VALUES, getNodeInputValuesForUndo));
 
         this.addParam(this.paramIndex = new NumberParam('index', 'index', true, true, false, 0, 0));
         this.paramIndex.controls[0].allowEditDecimals = false;
@@ -67794,6 +67794,22 @@ extends OpShapeBase
 
         this.addBaseParams();
     }
+
+
+
+    updateParams()
+    {
+        const fontName = figUniqueFontNames[this.paramFont.value.toNumber()];
+        
+        this.paramStyle.setOptions(
+            figFonts
+                .filter(f => f.fontName.family == fontName)
+                .map(f => f.fontName.style));
+
+        this.paramStyle.controls[0].setMax(this.paramStyle.options.length-1);
+
+        super.updateParamControls();
+    }
 }
 
 
@@ -74639,8 +74655,8 @@ function uiReturnFigStartGenerator(msg)
     initKeyboardPanel();
 
  
-    figFonts           = msg.fonts;
-    figUniqueFontNames = [...new Set(figFonts.map(f => f.fontName.family))];
+    figFonts           = [...msg.fonts];
+    figUniqueFontNames = [...new Set(msg.fonts.map(f => f.fontName.family))];
 
     
     uiQueueMessageToGenerator(

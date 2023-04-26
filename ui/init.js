@@ -79,8 +79,8 @@ function uiReturnFigStartGenerator(msg)
     initKeyboardPanel();
 
  
-    figFonts           = msg.fonts;
-    figUniqueFontNames = [...new Set(figFonts.map(f => f.fontName.family))];
+    figFonts           = [...msg.fonts];
+    figUniqueFontNames = [...new Set(msg.fonts.map(f => f.fontName.family))];
 
     
     uiQueueMessageToGenerator(
