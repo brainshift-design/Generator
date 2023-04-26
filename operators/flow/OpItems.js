@@ -116,6 +116,11 @@ extends OperatorBase
     
         
         super.updateValues(requestId, actionId, updateParamId, paramIds, values);
+
+
+        const value = values[paramIds.findIndex(id => id == 'value')];
+
+        specifyListOutput(value, this.outputs[0]);
     }
 
 

@@ -52,12 +52,23 @@ async function evalMultiplyInputs(inputs, parse)
         {
             const val = (await inputs[i].eval(parse)).toValue();
 
-            console.assert(
-                val.type == NUMBER_VALUE, 
-                'val.type must be NUMBER_VALUE');
+            if (LIST_VALUES.includes(val.type))
+            {
+                for (const item of val.items)
+                {
+                    value.value   *= item.value;
+                    value.decimals = Math.max(value.decimals, item.decimals);
+                }
+            }
+            else
+            {
+                console.assert(
+                    val.type == NUMBER_VALUE, 
+                    'val.type must be NUMBER_VALUE');
 
-            value.value   *= val.value;
-            value.decimals = Math.max(value.decimals, val.decimals);
+                value.value   *= val.value;
+                value.decimals = Math.max(value.decimals, val.decimals);
+            }
         }
     }
 

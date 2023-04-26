@@ -20,7 +20,7 @@ extends OperatorWithValue
     
     addNewInput()
     {
-        const newInput = new Input([NUMBER_VALUE, ...LIST_VALUES]);
+        const newInput = new Input([NUMBER_VALUE, NUMBER_LIST_VALUE]);
         newInput.isNew = true;
 
         newInput.addEventListener('connect',    e => { onVariableConnectInput(this); e.detail.input.isNew = false; });

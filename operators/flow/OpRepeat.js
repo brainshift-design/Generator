@@ -28,7 +28,7 @@ extends OperatorBase
     }
 
 
-    
+
     output_genRequest(gen)
     {
         // 'this' is the output
@@ -63,9 +63,12 @@ extends OperatorBase
 
     updateValues(requestId, actionId, updateParamId, paramIds, values)
     {
+        const value = values[paramIds.findIndex(id => id == 'value')];
         const count = values[paramIds.findIndex(id => id == 'count')];
 
         if (count) this.paramCount.setValue(count, false, true, false);
+
+        specifyListOutput(value, this.outputs[0]);
     }
 
 

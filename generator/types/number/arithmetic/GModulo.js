@@ -48,27 +48,81 @@ async function evalModuloInputs(inputs, parse)
     {
         const val0 = (await inputs[0].eval(parse)).toValue();
 
-        value.value    = val0.value;
-        value.decimals = val0.decimals;
+        if (    LIST_VALUES.includes(val0.type)
+            && !isEmpty(val0.items))
+        {
+            const item0 = val0.items[0];
+
+            value.value    = item0.value;
+            value.decimals = item0.decimals;
+
+            for (let i = 1; i < val0.items.length; i++)
+            {
+                const item = val0.items[i];
+                
+                if (item.type == NUMBER_VALUE)
+                {
+                    if (item.value == 0) 
+                    { 
+                        value.value    = Number.NaN; 
+                        value.decimals = 0;
+                        break; 
+                    }
+
+                    value.decimals = Math.max(value.decimals, item.decimals);
+                    value.value    = floorTo(value.value % item.value, value.decimals);
+                }                    
+            }
+        }
+        else
+        {
+            console.assert(
+                val0.type == NUMBER_VALUE, 
+                'val0.type must be NUMBER_VALUE');
+
+            value.value    = val0.value;
+            value.decimals = val0.decimals;
+        }
 
 
         for (let i = 1; i < inputs.length; i++)
         {
             const val = (await inputs[i].eval(parse)).toValue();
 
-            console.assert(
-                val.type == NUMBER_VALUE, 
-                'val.type must be NUMBER_VALUE');
+            if (LIST_VALUES.includes(val.type))
+            {
+                for (const item of val.items)
+                {
+                    if (item.type == NUMBER_VALUE)
+                    {
+                        if (item.value == 0) 
+                        { 
+                            value.value    = Number.NaN; 
+                            value.decimals = 0;
+                            break; 
+                        }
 
-            if (val.value == 0) 
-            { 
-                value.value    = Number.NaN; 
-                value.decimals = 0;
-                break; 
+                        value.decimals = Math.max(value.decimals, item.decimals);
+                        value.value    = floorTo(value.value % item.value, value.decimals);
+                    }                    
+                }
             }
+            else
+            {
+                console.assert(
+                    val.type == NUMBER_VALUE, 
+                    'val.type must be NUMBER_VALUE');
 
-            value.decimals = Math.max(value.decimals, val.decimals);
-            value.value    = floorTo(value.value % val.value, value.decimals);
+                if (val.value == 0) 
+                { 
+                    value.value    = Number.NaN; 
+                    value.decimals = 0;
+                    break; 
+                }
+
+                value.decimals = Math.max(value.decimals, val.decimals);
+                value.value    = floorTo(value.value % val.value, value.decimals);
+            }
         }
     }
 

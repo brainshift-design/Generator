@@ -41,7 +41,7 @@ async function evalXorInputs(inputs, parse)
         return NumberValue.NaN;
 
 
-    const value = new NumberValue();
+    const value = new NumberValue(0);
 
 
     let flipped;
@@ -51,7 +51,30 @@ async function evalXorInputs(inputs, parse)
         const val0 = (await inputs[0].eval(parse)).toValue();
         if (!val0.isValid()) return NumberValue.NaN;
 
-        flipped = val0.toNumber() != 0;
+        if (    LIST_VALUES.includes(val0.type)
+            && !isEmpty(val0.items))
+        {
+            const item0 = val0.items[0];
+
+            flipped = item0.toNumber() != 0;
+
+            for (let i = 1; i < val0.items.length; i++)
+            {
+                const item = val0.items[i];
+                
+                if (   item.type == NUMBER_VALUE
+                    && item.toNumber() != 0)
+                    flipped++;
+            }
+        }
+        else
+        {
+            console.assert(
+                val0.type == NUMBER_VALUE, 
+                'val0.type must be NUMBER_VALUE');
+
+            flipped = val0.toNumber() != 0;
+        }
 
 
         for (let i = 1; i < inputs.length; i++)
@@ -59,12 +82,24 @@ async function evalXorInputs(inputs, parse)
             const val = (await inputs[i].eval(parse)).toValue();
             if (!val.isValid()) return NumberValue.NaN;
 
-            console.assert(
-                val.type == NUMBER_VALUE, 
-                'val.type must be NUMBER_VALUE');
-                
-            if (val.toNumber() != 0)
-                flipped++;
+            if (LIST_VALUES.includes(val.type))
+            {
+                for (const item of val.items)
+                {
+                    if (   item.type == NUMBER_VALUE
+                        && item.toNumber() != 0)
+                        flipped++;
+                    }
+            }
+            else
+            {
+                console.assert(
+                    val.type == NUMBER_VALUE, 
+                    'val.type must be NUMBER_VALUE');
+                    
+                if (val.toNumber() != 0)
+                    flipped++;
+            }
         }
 
 

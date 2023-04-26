@@ -9,8 +9,8 @@ extends OperatorWithValue
     {
         super(NUMBER_CONDITION, 'cond', 'condition');
 
-        this.addInput(new Input(NUMBER_TYPES));
-        this.addInput(new Input(NUMBER_TYPES));
+        this.addInput(new Input([NUMBER_VALUE]));
+        this.addInput(new Input([NUMBER_VALUE]));
 
         this.addOutput(new Output([NUMBER_VALUE], this.output_genRequest));
 
