@@ -54,6 +54,10 @@ async function evalMultiplyInputs(inputs, parse)
 
             if (LIST_VALUES.includes(val.type))
             {
+                if (   isEmpty(val.items)
+                    || val.items[0].type != NUMBER_VALUE)
+                    return NumberValue.NaN;
+
                 for (const item of val.items)
                 {
                     value.value   *= item.value;

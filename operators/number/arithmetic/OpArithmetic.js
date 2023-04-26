@@ -19,7 +19,7 @@ extends OperatorWithSymbol
     
     addNewInput()
     {
-        const newInput = new Input([NUMBER_VALUE, NUMBER_LIST_VALUE]);
+        const newInput = new Input([NUMBER_VALUE, NUMBER_LIST_VALUE, LIST_VALUE]);
         newInput.isNew = true;
 
         newInput.addEventListener('connect',    e => { onVariableConnectInput(this); e.detail.input.isNew = false; });

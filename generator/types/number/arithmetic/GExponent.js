@@ -69,9 +69,8 @@ async function evalExponentInputs(inputs, parse)
         }
         else
         {
-            console.assert(
-                val0.type == NUMBER_VALUE, 
-                'val0.type must be NUMBER_VALUE');
+            if (val0.type != NUMBER_VALUE)
+                return NumberValue.NaN;
 
             value.value    = val0.value;
             value.decimals = val0.decimals;

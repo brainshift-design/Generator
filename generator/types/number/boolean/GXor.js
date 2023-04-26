@@ -69,9 +69,8 @@ async function evalXorInputs(inputs, parse)
         }
         else
         {
-            console.assert(
-                val0.type == NUMBER_VALUE, 
-                'val0.type must be NUMBER_VALUE');
+            if (val0.type != NUMBER_VALUE)
+                return NumberValue.NaN;
 
             flipped = val0.toNumber() != 0;
         }
