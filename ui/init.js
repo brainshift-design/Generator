@@ -79,10 +79,17 @@ function uiReturnFigStartGenerator(msg)
     initKeyboardPanel();
 
  
-    figFonts = msg.fonts;
-    uiQueueMessageToGenerator({cmd: 'initFonts', fonts: figFonts});
-    
+    figFonts           = msg.fonts;
+    figUniqueFontNames = [...new Set(figFonts.map(f => f.fontName.family))];
 
+    
+    uiQueueMessageToGenerator(
+    {
+        cmd:            'initFonts', 
+        fonts:           figFonts,
+        uniqueFontNames: figUniqueFontNames
+    });
+    
 
     graphView.updateMeasureData();
 

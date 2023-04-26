@@ -2598,6 +2598,7 @@ a
     background-color: var(--figma-color-bg);
     text-align:       center;
     touch-action:     none;
+    /* box-shadow:       0 0 0 1px red inset; */
 }    
 
 
@@ -4046,6 +4047,7 @@ a
                 <p>•  added 'Import from file' and 'Save selected to file' for nodes</p>
                 <p>•  adjusting color controls with arrow keys now supports undo</p>
                 <p>•  unsupported inputs/outputs are now hidden while connecting</p>
+                <p>•  wires are not colored according to the type they carry</p>
                 <p>•  fixed wrong invalid colors assigned to styles</p>
                 <p>•  fixed Mac shortcuts</p>
                 <p>•  fixed many UI issues</p>
@@ -18298,7 +18300,7 @@ extends GShape
             && this.value.lineHeight
             && this.value.letterSpacing)
         {
-            const font = figFonts[this.value.font.value];
+            const fontName = figUniqueFontNames[this.value.font.value];
 
             this.objects = 
             [
@@ -18311,7 +18313,7 @@ extends GShape
                     this.value.width        .value,
                     this.value.height       .value,
                     this.value.angle        .value,
-                    font.fontName.family,
+                    fontName,
                     this.value.style        .value,
                     this.value.size         .value,
                     this.value.alignH       .value,
@@ -19234,6 +19236,7 @@ var uiMessages          = [];
 
 
 var figFonts            = [];
+var figUniqueFontNames  = [];
 
 
 
@@ -19248,7 +19251,7 @@ onmessage = function(e)
     // processMessage(msg).next();
     switch (msg.cmd)
     {
-        case 'initFonts':        figFonts = msg.fonts;         break;
+        case 'initFonts':        initFonts(msg.fonts, msg.uniqueFontNames); break;
      
         case 'genRequest':       genRequest(msg.request);      break;
 
@@ -19358,6 +19361,14 @@ var lastUpdateObjects  =  [];
 var lastUpdateStyles   =  [];
 
 //var stopGenerate       =  false;
+
+
+
+function initFonts(fonts, uniqueFontNames)
+{
+    figFonts           = fonts;
+    figUniqueFontNames = uniqueFontNames;
+}
 
 
 
@@ -42459,7 +42470,7 @@ extends GShape
             && this.value.lineHeight
             && this.value.letterSpacing)
         {
-            const font = figFonts[this.value.font.value];
+            const fontName = figUniqueFontNames[this.value.font.value];
 
             this.objects = 
             [
@@ -42472,7 +42483,7 @@ extends GShape
                     this.value.width        .value,
                     this.value.height       .value,
                     this.value.angle        .value,
-                    font.fontName.family,
+                    fontName,
                     this.value.style        .value,
                     this.value.size         .value,
                     this.value.alignH       .value,
@@ -52347,7 +52358,7 @@ extends Parameter
     }
 
 
-    
+
     setValue(value, createAction, updateControl = true, dispatchEvents = true) 
     {
         console.assert(
@@ -52565,7 +52576,7 @@ extends NumberParamBase
         this.div.appendChild(this.controls[0].div);
 
        
-        if (hasInput)  this.initInput(NUMBER_TYPES, getParamInputValuesForUndo, this.input_getBackInitValue);
+        if (hasInput)  this.initInput([NUMBER_VALUE], getParamInputValuesForUndo, this.input_getBackInitValue);
         if (hasOutput) this.initOutput([NUMBER_VALUE], this.output_genRequest, getParamOutputValuesForUndo, this.output_backInit);
 
 
@@ -52661,14 +52672,14 @@ extends NumberParamBase
 class   SelectParam
 extends NumberParamBase
 {
-    options          = [];
-    excludeFromMenu  = []; // indices
-    separatorsBefore = [];
+    options           = [];
+    excludeFromMenu   = []; // indices
+    separatorsBefore  = [];
     
     
-    reverseMenu     = false;
+    reverseMenu       = false;
 
-
+    
 
     constructor(id,
                 name,
@@ -52681,7 +52692,7 @@ extends NumberParamBase
         super(NUMBER_VALUE, id, name);
 
         this.controls[0] = new NumberControl(
-            createDiv(),
+            createDiv('numberControl'),
             this,
             this.id,
             this.name, 
@@ -52713,7 +52724,7 @@ extends NumberParamBase
         this.div.appendChild(this.controls[0].div);
 
 
-        if (hasInput)  this.initInput(NUMBER_TYPES, getParamInputValuesForUndo, this.input_getBackInitValue);
+        if (hasInput)  this.initInput([NUMBER_VALUE], getParamInputValuesForUndo, this.input_getBackInitValue);
         if (hasOutput) this.initOutput([NUMBER_VALUE], this.output_genRequest, getParamOutputValuesForUndo, this.output_backInit);
 
 
@@ -67754,8 +67765,7 @@ extends OpShapeBase
         this.addOutput(new Output([TEXTSHAPE_VALUE], this.output_genRequest));
 
 
-        const fonts      = figFonts.map(f => f.fontName.family);
-        const interIndex = fonts.findIndex(f => f == 'Inter');
+        const interIndex = figUniqueFontNames.findIndex(f => f == 'Inter');
 
       
         this.addParam(this.paramText          = new   TextParam('text',          '',       true,  true));
@@ -67764,7 +67774,7 @@ extends OpShapeBase
         this.addParam(this.paramWidth         = new NumberParam('width',         'width',  true,  true, true, 100,    0.01));
         this.addParam(this.paramHeight        = new NumberParam('height',        'height', true,  true, true, 100,    0.01));
         this.addParam(this.paramAngle         = new NumberParam('angle',         'angle',  true,  true, true,   0, -180,   180));
-        this.addParam(this.paramFont          = new SelectParam('font',          'font',   false, true, true, [...new Set(fonts)], interIndex));
+        this.addParam(this.paramFont          = new SelectParam('font',          'font',   false, true, true, figUniqueFontNames, interIndex));
         this.addParam(this.paramStyle         = new SelectParam('style',         'style',  false, true, true, [''], 0));
         this.addParam(this.paramSize          = new NumberParam('size',          'size',   true,  true, true,  12, 1));
         this.addParam(this.paramAlignH        = new SelectParam('alignH',        'align',  true,  true, true, ['left', 'center', 'right', 'justify'], 0));
@@ -74629,10 +74639,17 @@ function uiReturnFigStartGenerator(msg)
     initKeyboardPanel();
 
  
-    figFonts = msg.fonts;
-    uiQueueMessageToGenerator({cmd: 'initFonts', fonts: figFonts});
-    
+    figFonts           = msg.fonts;
+    figUniqueFontNames = [...new Set(figFonts.map(f => f.fontName.family))];
 
+    
+    uiQueueMessageToGenerator(
+    {
+        cmd:            'initFonts', 
+        fonts:           figFonts,
+        uniqueFontNames: figUniqueFontNames
+    });
+    
 
     graphView.updateMeasureData();
 
@@ -78250,6 +78267,7 @@ var   pagesBarHeight        = 36;
 
 
 var   figFonts              = [];
+var   figUniqueFontNames    = [];
 
 
 

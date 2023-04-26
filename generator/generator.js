@@ -9,6 +9,14 @@ var lastUpdateStyles   =  [];
 
 
 
+function initFonts(fonts, uniqueFontNames)
+{
+    figFonts           = fonts;
+    figUniqueFontNames = uniqueFontNames;
+}
+
+
+
 function genRequest(request)
 {
     const requestId             = parseInt(request[0]);

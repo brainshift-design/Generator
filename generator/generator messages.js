@@ -4,6 +4,7 @@ var uiMessages          = [];
 
 
 var figFonts            = [];
+var figUniqueFontNames  = [];
 
 
 
@@ -18,7 +19,7 @@ onmessage = function(e)
     // processMessage(msg).next();
     switch (msg.cmd)
     {
-        case 'initFonts':        figFonts = msg.fonts;         break;
+        case 'initFonts':        initFonts(msg.fonts, msg.uniqueFontNames); break;
      
         case 'genRequest':       genRequest(msg.request);      break;
 

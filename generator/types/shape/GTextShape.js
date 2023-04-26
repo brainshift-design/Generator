@@ -166,7 +166,7 @@ extends GShape
             && this.value.lineHeight
             && this.value.letterSpacing)
         {
-            const font = figFonts[this.value.font.value];
+            const fontName = figUniqueFontNames[this.value.font.value];
 
             this.objects = 
             [
@@ -179,7 +179,7 @@ extends GShape
                     this.value.width        .value,
                     this.value.height       .value,
                     this.value.angle        .value,
-                    font.fontName.family,
+                    fontName,
                     this.value.style        .value,
                     this.value.size         .value,
                     this.value.alignH       .value,

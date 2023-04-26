@@ -22,6 +22,7 @@ var   pagesBarHeight        = 36;
 
 
 var   figFonts              = [];
+var   figUniqueFontNames    = [];
 
 
 

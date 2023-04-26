@@ -27,7 +27,7 @@ extends Parameter
     }
 
 
-    
+
     setValue(value, createAction, updateControl = true, dispatchEvents = true) 
     {
         console.assert(

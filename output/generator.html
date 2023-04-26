@@ -13928,7 +13928,7 @@ extends GShape
             && this.value.lineHeight
             && this.value.letterSpacing)
         {
-            const font = figFonts[this.value.font.value];
+            const fontName = figUniqueFontNames[this.value.font.value];
 
             this.objects = 
             [
@@ -13941,7 +13941,7 @@ extends GShape
                     this.value.width        .value,
                     this.value.height       .value,
                     this.value.angle        .value,
-                    font.fontName.family,
+                    fontName,
                     this.value.style        .value,
                     this.value.size         .value,
                     this.value.alignH       .value,
@@ -14864,6 +14864,7 @@ var uiMessages          = [];
 
 
 var figFonts            = [];
+var figUniqueFontNames  = [];
 
 
 
@@ -14878,7 +14879,7 @@ onmessage = function(e)
     // processMessage(msg).next();
     switch (msg.cmd)
     {
-        case 'initFonts':        figFonts = msg.fonts;         break;
+        case 'initFonts':        initFonts(msg.fonts, msg.uniqueFontNames); break;
      
         case 'genRequest':       genRequest(msg.request);      break;
 
@@ -14988,6 +14989,14 @@ var lastUpdateObjects  =  [];
 var lastUpdateStyles   =  [];
 
 //var stopGenerate       =  false;
+
+
+
+function initFonts(fonts, uniqueFontNames)
+{
+    figFonts           = fonts;
+    figUniqueFontNames = uniqueFontNames;
+}
 
 
 

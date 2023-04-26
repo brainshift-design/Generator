@@ -1,14 +1,14 @@
 class   SelectParam
 extends NumberParamBase
 {
-    options          = [];
-    excludeFromMenu  = []; // indices
-    separatorsBefore = [];
+    options           = [];
+    excludeFromMenu   = []; // indices
+    separatorsBefore  = [];
     
     
-    reverseMenu     = false;
+    reverseMenu       = false;
 
-
+    
 
     constructor(id,
                 name,
@@ -21,7 +21,7 @@ extends NumberParamBase
         super(NUMBER_VALUE, id, name);
 
         this.controls[0] = new NumberControl(
-            createDiv(),
+            createDiv('numberControl'),
             this,
             this.id,
             this.name, 
@@ -53,7 +53,7 @@ extends NumberParamBase
         this.div.appendChild(this.controls[0].div);
 
 
-        if (hasInput)  this.initInput(NUMBER_TYPES, getParamInputValuesForUndo, this.input_getBackInitValue);
+        if (hasInput)  this.initInput([NUMBER_VALUE], getParamInputValuesForUndo, this.input_getBackInitValue);
         if (hasOutput) this.initOutput([NUMBER_VALUE], this.output_genRequest, getParamOutputValuesForUndo, this.output_backInit);
 
 
