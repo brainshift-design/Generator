@@ -28,15 +28,26 @@ extends GOperator
 
     async eval(parse)
     {
+        if (this.isCached())
+            return this;
+            
+
+        const repeatId = (await this.repeatId.eval(parse)).toValue();
+
+
         if (this.input)
         {
             this.input = (await this.input.eval(parse)).copy();
             this.value = this.input.toValue();
         }
         else
-            this.value = null;
+            this.value = NullValue;
 
         
+        genPushUpdateValue(parse, this.nodeId, 'value',    this.value);
+        genPushUpdateValue(parse, this.nodeId, 'repeatId', repeatId);
+
+
         this.validate();
 
         return this;

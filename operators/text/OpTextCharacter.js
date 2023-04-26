@@ -7,16 +7,14 @@ extends OperatorWithValue
 
     constructor()
     {
-        super(TEXT_CHAR, 'char', 'character');
+        super(TEXT_CHAR, 'charFromCode', 'char from code');
 
 
         this.addOutput(new Output([TEXT_VALUE], this.output_genRequest));
 
         this.addParam(this.paramValue);
-        this.addParam(this.paramCode = new NumberParam('code', 'unicode', true,  true,  true, 32, 0, 0xFFFF));
+        this.addParam(this.paramCode = new NumberParam('code', 'unicode', true,  true,  true, 65, 0, 0xFFFF));
 
-
-        this.paramValue.controls[0].textbox.style.textAlign = 'center';
 
         this.paramCode.controls[0].showHex           = true;
         this.paramCode.controls[0].allowEditDecimals = false;

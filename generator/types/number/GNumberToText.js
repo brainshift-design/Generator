@@ -3,8 +3,8 @@ extends GNumberType
 {
     input = null;
 
+    number;
     format;
-    digits;
 
 
     
@@ -24,8 +24,8 @@ extends GNumberType
         if (this.input) 
             copy.input = this.input.copy();
 
+        copy.number = this.number.copy();
         copy.format = this.format.copy();
-        copy.digits = this.digits.copy();
 
         return copy;
     }
@@ -38,45 +38,29 @@ extends GNumberType
             return this;
 
 
+        const number = (await this.number.eval(parse)).toValue();
         const format = (await this.format.eval(parse)).toValue();
-        const digits = (await this.digits.eval(parse)).toValue();
 
 
-        if (this.input)
+        let str = NAN_CHAR;
+
+        switch (format.value)
         {
-            const input = (await this.input.eval(parse)).toValue();
+            case 0: // dec
+                str = numToString(number.value, -number.decimals);
+            break;
 
-            console.assert(
-                input.type == NUMBER_VALUE, 
-                'input.type must be NUMBER_VALUE');
-
-                
-            let str = NAN_CHAR;
-
-            switch (format.value)
-            {
-                case 0: 
-                    str = numToString(Math.round(input.value), digits.value, false);
-                    break;
-
-                case 1: // hex
-                    str = numToString(Math.round(input.value), digits.value, true).toUpperCase();
-                    break;
-
-                case 2: // float
-                    str = numToString(input.value, -digits.value);
-                    break;
-            }
-
-            this.value = new TextValue(str);
+            case 1: // hex
+                str = numToString(Math.round(number.value), number.decimals, true).toUpperCase();
+                break;
         }
-        else
-            this.value = new TextValue();//TextValue.NaN;
+
+        this.value = new TextValue(str);
 
 
         genPushUpdateValue(parse, this.nodeId, 'value',  this.value);
+        genPushUpdateValue(parse, this.nodeId, 'number', number    );
         genPushUpdateValue(parse, this.nodeId, 'format', format    );
-        genPushUpdateValue(parse, this.nodeId, 'digits', digits    );
 
 
         this.validate();

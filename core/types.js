@@ -73,7 +73,6 @@ const NUMBER_LIMITS           = 'LIM';
 const NUMBER_SERIES           = 'SER';  
 const NUMBER_RANDOM           = 'RAND';  
 const NUMBER_INTERPOLATE      = 'LERP'; 
-const NUMBER_TO_TEXT          = 'N2T';
 const NUMBER_SOLVE            = 'SOLVE';
 const NUMBER_ANIMATE          = 'ANIM';
 
@@ -146,7 +145,6 @@ const NUMBER_TYPES =
     NUMBER_SERIES,
     NUMBER_RANDOM,
     NUMBER_INTERPOLATE,
-    NUMBER_TO_TEXT,
     NUMBER_SOLVE,
     NUMBER_ANIMATE,
 
@@ -162,6 +160,7 @@ const TEXT_SUBSTRING = 'TSUB';
 const TEXT_REPLACE   = 'TREPL'; 
 const TEXT_JOIN      = 'TJOIN';  
 const TEXT_CHAR      = 'TCHAR';
+const NUMBER_TO_TEXT = 'N2T';
 const TEXT_CSV       = 'TCSV';
 const TEXT_FETCH     = 'FETCH';
 
@@ -175,6 +174,7 @@ const TEXT_TYPES =
     TEXT_JOIN,
     TEXT_REPLACE,
     TEXT_CHAR,
+    NUMBER_TO_TEXT,
     TEXT_CSV,
     TEXT_FETCH
 ];

@@ -106,7 +106,6 @@ function genParse(parse, inParam = true)
     else if (parse.next == NUMBER_RANDOM          ) result = genParseRandom          (parse);
     else if (parse.next == NUMBER_SERIES          ) result = genParseSeries          (parse);
     else if (parse.next == NUMBER_INTERPOLATE     ) result = genParseInterpolate     (parse);
-    else if (parse.next == NUMBER_TO_TEXT         ) result = genParseNumberToText    (parse);
     else if (parse.next == NUMBER_SOLVE           ) result = genParseSolve           (parse);
     else if (parse.next == NUMBER_ANIMATE         ) result = genParseAnimate         (parse);
     
@@ -136,6 +135,7 @@ function genParse(parse, inParam = true)
     else if (parse.next == TEXT                   ) result = genParseText            (parse);
     else if (parse.next == TEXT_SUBSTRING         ) result = genParseTextSubstring   (parse);
     else if (parse.next == TEXT_CHAR              ) result = genParseTextCharacter   (parse);
+    else if (parse.next == NUMBER_TO_TEXT         ) result = genParseNumberToText    (parse);
     else if (parse.next == TEXT_REPLACE           ) result = genParseTextReplace     (parse);
     else if (parse.next == TEXT_JOIN              ) result = genParseTextJoin        (parse);
     else if (parse.next == TEXT_CSV               ) result = genParseTextCSV         (parse);

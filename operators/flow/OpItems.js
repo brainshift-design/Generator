@@ -79,13 +79,13 @@ extends OperatorBase
             ||    paramIds.length == 1 
                && paramIds[0] != '')
         {
-            for (let i = 0; i < values.length; i++) 
+            for (let i = 0; i < values.length - 1; i++) 
             {
                 const value = values[i];
                 if (!value.isValid()) continue;
 
 
-                const id    = 'item' + i;
+                const id = 'item' + i;
 
                 const param = oldParams.find(p => 
                        p.id == id

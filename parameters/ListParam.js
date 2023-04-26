@@ -119,8 +119,14 @@ extends Parameter
         if (   this.input
             && this.input.connected)
         {
-            if (this.input.connectedOutput.supportsTypes([LIST_VALUE]))
+            if (this.input.connectedOutput.supportsTypes(this.input.types))
                 request.push(...pushInputOrParam(this.input, gen));
+            // if (this.input.connectedOutput.supportsTypes([LIST_VALUE]))
+            //     request.push(...pushInputOrParam(this.input, gen));
+            // else if (this.input.connectedOutput.supportsTypes(this.input.types))
+            //     request.push(
+            //         LIST_VALUE, 1,
+            //         ...pushInputOrParam(this.input, gen));
             else
                 console.assert(false, 'invalid input for ListParam');
         }

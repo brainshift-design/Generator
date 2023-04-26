@@ -4,6 +4,7 @@ extends GOperator
     input = null;
 
     count;
+    repeatId;
 
 
 
@@ -22,8 +23,9 @@ extends GOperator
 
         if (this.input) copy.input = this.input.copy();
 
-        copy.count = this.count.copy();
-        copy.value = this.value.copy();
+        copy.value    = this.value   .copy();
+        copy.count    = this.count   .copy();
+        copy.repeatId = this.repeatId.copy();
 
         return copy;
     }
@@ -36,7 +38,9 @@ extends GOperator
             return this;
             
 
-        let count = (await this.count.eval(parse)).toValue();
+        let   count    = (await this.count   .eval(parse)).toValue();
+        const repeatId = (await this.repeatId.eval(parse)).toValue();
+
         count = new NumberValue(Math.round(count.value));
 
        
@@ -78,8 +82,9 @@ extends GOperator
         }
 
         
-        genPushUpdateValue(parse, this.nodeId, 'value', this.value);
-        genPushUpdateValue(parse, this.nodeId, 'count', count);
+        genPushUpdateValue(parse, this.nodeId, 'value',    this.value);
+        genPushUpdateValue(parse, this.nodeId, 'count',    count);
+        genPushUpdateValue(parse, this.nodeId, 'repeatId', repeatId);
 
 
         this.validate();

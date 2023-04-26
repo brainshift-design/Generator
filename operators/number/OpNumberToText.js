@@ -1,27 +1,21 @@
 class   OpNumberToText
-extends OperatorBase
+extends OperatorWithValue
 {
-    paramValue;
+    paramNumber;
     paramFormat;
-    paramDigits;
 
 
 
     constructor()
     {
-        super(NUMBER_TO_TEXT, 'toText', 'to text');
+        super(NUMBER_TO_TEXT, 'numAsText', 'number as text');
 
 
-        this.addInput (new Input (NUMBER_TYPES));
-        this.addOutput(new Output([NUMBER_VALUE], this.output_genRequest));
+        this.addOutput(new Output([TEXT_VALUE], this.output_genRequest));
 
-        this.addParam(this.paramValue  = new   TextParam('value',  '',              false, true));
-        this.addParam(this.paramFormat = new SelectParam('format', 'format', false, true,  true, ['decimal', 'hex', 'float']));
-        this.addParam(this.paramDigits = new NumberParam('digits', 'digits', true,  true,  true, 0, 0, 10));
-
-        this.paramValue .controls[0].textbox.style.textAlign = 'center';
-        
-        this.paramDigits.controls[0].allowEditDecimals = false;
+        this.addParam(this.paramValue);
+        this.addParam(this.paramNumber = new NumberParam('number', 'number', false, true,  true));
+        this.addParam(this.paramFormat = new SelectParam('format', 'format', false, true,  true, ['decimal', 'hexadecimal']));
     }
 
 
@@ -46,8 +40,8 @@ extends OperatorBase
         if (input.connected)
             request.push(...pushInputOrParam(input, gen));
 
+        request.push(...this.node.paramNumber.genRequest(gen));
         request.push(...this.node.paramFormat.genRequest(gen));
-        request.push(...this.node.paramDigits.genRequest(gen));
 
         
         gen.scope.pop();
@@ -61,8 +55,8 @@ extends OperatorBase
     updateParams()
     {
         this.paramValue .enableControlText(false);
+        this.paramNumber.enableControlText(true);
         this.paramFormat.enableControlText(true);
-        this.paramDigits.enableControlText(true);
 
         this.updateParamControls();
     }

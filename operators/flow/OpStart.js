@@ -1,22 +1,23 @@
 class   OpStart
 extends OperatorBase
 {
+    paramRepeatId;
+
+
+
     constructor()
     {
         super(START, 'start', 'start');
 
         this.addInput (new Input ([ANY_TYPE]));
-        this.addOutput(new Output([], this.output_genRequest));
+        this.addOutput(new Output([ANY_TYPE], this.output_genRequest));
+
+
+        this.addParam(this.paramRepeatId = new TextParam('repeatId', 'repeat ID', false, true));
+
 
         this.inputs[0].addEventListener('connect',    e => { OpStart_onConnectInput(this); });
         this.inputs[0].addEventListener('disconnect', e => OpStart_onDisconnectInput(this));
-    }
-
-
-
-    isCached()
-    {
-        return false;
     }
 
 
@@ -41,7 +42,10 @@ extends OperatorBase
         if (input.connected)
             request.push(...pushInputOrParam(input, gen));
 
-            
+
+        request.push(...this.node.paramRepeatId.genRequest(gen));
+
+        
         gen.scope.pop();
         pushUnique(gen.passedNodes, this.node);
 
@@ -60,5 +64,5 @@ function OpStart_onConnectInput(node)
 
 function OpStart_onDisconnectInput(node)
 {
-    node.outputs[0].types = [];
+    node.outputs[0].types = [ANY_TYPE];
 }

@@ -353,6 +353,8 @@ function genParseStart(parse)
     if (nInputs == 1)
         start.input = genParse(parse);
 
+    start.repeatId = genParse(parse);
+
 
     parse.nTab--;
 
@@ -397,7 +399,8 @@ function genParseRepeat(parse)
     if (nInputs == 1)
         rep.input = genParse(parse);
 
-    rep.count = genParse(parse);
+    rep.count    = genParse(parse);
+    rep.repeatId = genParse(parse);
 
 
     parse.nTab--;

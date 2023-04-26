@@ -74,6 +74,7 @@ extends GOperator
             genPushUpdateValue(parse, this.nodeId, '', NullValue);
 
 
+
         genPushUpdateValue(parse, this.nodeId, 'value', this.value);
 
 

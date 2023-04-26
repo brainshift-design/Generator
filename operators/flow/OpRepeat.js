@@ -2,6 +2,7 @@ class   OpRepeat
 extends OperatorBase
 {
     paramCount;
+    paramRepeatId;
 
 
 
@@ -13,7 +14,9 @@ extends OperatorBase
         this.addInput (new Input([ANY_TYPE]));
         this.addOutput(new Output([LIST_VALUE], this.output_genRequest));
 
-        this.addParam(this.paramCount = new NumberParam('count', 'count', true, true, false, 1, 0, 1000, 0));
+
+        this.addParam(this.paramCount    = new NumberParam('count',    'count',     true, true, false, 1, 0, 1000, 0));
+        this.addParam(this.paramRepeatId = new TextParam  ('repeatId', 'repeat ID', true, false));
 
 
         this.paramCount.controls[0].allowEditDecimals = false;
@@ -49,7 +52,8 @@ extends OperatorBase
         if (input.connected)
             request.push(...pushInputOrParam(input, gen));
 
-        request.push(...this.node.paramCount.genRequest(gen));
+        request.push(...this.node.paramCount   .genRequest(gen));
+        request.push(...this.node.paramRepeatId.genRequest(gen));
 
         
         gen.scope.pop();
@@ -75,7 +79,8 @@ extends OperatorBase
 
     updateParams()
     {
-        this.paramCount.enableControlText(true);
+        this.paramCount   .enableControlText(true);
+        this.paramRepeatId.enableControlText(false);
 
         this.updateParamControls();
     }

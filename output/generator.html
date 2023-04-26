@@ -3542,7 +3542,6 @@ const NUMBER_LIMITS           = 'LIM';
 const NUMBER_SERIES           = 'SER';  
 const NUMBER_RANDOM           = 'RAND';  
 const NUMBER_INTERPOLATE      = 'LERP'; 
-const NUMBER_TO_TEXT          = 'N2T';
 const NUMBER_SOLVE            = 'SOLVE';
 const NUMBER_ANIMATE          = 'ANIM';
 
@@ -3615,7 +3614,6 @@ const NUMBER_TYPES =
     NUMBER_SERIES,
     NUMBER_RANDOM,
     NUMBER_INTERPOLATE,
-    NUMBER_TO_TEXT,
     NUMBER_SOLVE,
     NUMBER_ANIMATE,
 
@@ -3631,6 +3629,7 @@ const TEXT_SUBSTRING = 'TSUB';
 const TEXT_REPLACE   = 'TREPL'; 
 const TEXT_JOIN      = 'TJOIN';  
 const TEXT_CHAR      = 'TCHAR';
+const NUMBER_TO_TEXT = 'N2T';
 const TEXT_CSV       = 'TCSV';
 const TEXT_FETCH     = 'FETCH';
 
@@ -3644,6 +3643,7 @@ const TEXT_TYPES =
     TEXT_JOIN,
     TEXT_REPLACE,
     TEXT_CHAR,
+    NUMBER_TO_TEXT,
     TEXT_CSV,
     TEXT_FETCH
 ];
@@ -7155,6 +7155,7 @@ extends GOperator
             genPushUpdateValue(parse, this.nodeId, '', NullValue);
 
 
+
         genPushUpdateValue(parse, this.nodeId, 'value', this.value);
 
 
@@ -7453,15 +7454,26 @@ extends GOperator
 
     async eval(parse)
     {
+        if (this.isCached())
+            return this;
+            
+
+        const repeatId = (await this.repeatId.eval(parse)).toValue();
+
+
         if (this.input)
         {
             this.input = (await this.input.eval(parse)).copy();
             this.value = this.input.toValue();
         }
         else
-            this.value = null;
+            this.value = NullValue;
 
         
+        genPushUpdateValue(parse, this.nodeId, 'value',    this.value);
+        genPushUpdateValue(parse, this.nodeId, 'repeatId', repeatId);
+
+
         this.validate();
 
         return this;
@@ -7483,6 +7495,7 @@ extends GOperator
     input = null;
 
     count;
+    repeatId;
 
 
 
@@ -7501,8 +7514,9 @@ extends GOperator
 
         if (this.input) copy.input = this.input.copy();
 
-        copy.count = this.count.copy();
-        copy.value = this.value.copy();
+        copy.value    = this.value   .copy();
+        copy.count    = this.count   .copy();
+        copy.repeatId = this.repeatId.copy();
 
         return copy;
     }
@@ -7515,7 +7529,9 @@ extends GOperator
             return this;
             
 
-        let count = (await this.count.eval(parse)).toValue();
+        let   count    = (await this.count   .eval(parse)).toValue();
+        const repeatId = (await this.repeatId.eval(parse)).toValue();
+
         count = new NumberValue(Math.round(count.value));
 
        
@@ -7557,8 +7573,9 @@ extends GOperator
         }
 
         
-        genPushUpdateValue(parse, this.nodeId, 'value', this.value);
-        genPushUpdateValue(parse, this.nodeId, 'count', count);
+        genPushUpdateValue(parse, this.nodeId, 'value',    this.value);
+        genPushUpdateValue(parse, this.nodeId, 'count',    count);
+        genPushUpdateValue(parse, this.nodeId, 'repeatId', repeatId);
 
 
         this.validate();
@@ -8319,8 +8336,8 @@ extends GNumberType
 {
     input = null;
 
+    number;
     format;
-    digits;
 
 
     
@@ -8340,8 +8357,8 @@ extends GNumberType
         if (this.input) 
             copy.input = this.input.copy();
 
+        copy.number = this.number.copy();
         copy.format = this.format.copy();
-        copy.digits = this.digits.copy();
 
         return copy;
     }
@@ -8354,45 +8371,29 @@ extends GNumberType
             return this;
 
 
+        const number = (await this.number.eval(parse)).toValue();
         const format = (await this.format.eval(parse)).toValue();
-        const digits = (await this.digits.eval(parse)).toValue();
 
 
-        if (this.input)
+        let str = NAN_CHAR;
+
+        switch (format.value)
         {
-            const input = (await this.input.eval(parse)).toValue();
+            case 0: // dec
+                str = numToString(number.value, -number.decimals);
+            break;
 
-            console.assert(
-                input.type == NUMBER_VALUE, 
-                'input.type must be NUMBER_VALUE');
-
-                
-            let str = NAN_CHAR;
-
-            switch (format.value)
-            {
-                case 0: 
-                    str = numToString(Math.round(input.value), digits.value, false);
-                    break;
-
-                case 1: // hex
-                    str = numToString(Math.round(input.value), digits.value, true).toUpperCase();
-                    break;
-
-                case 2: // float
-                    str = numToString(input.value, -digits.value);
-                    break;
-            }
-
-            this.value = new TextValue(str);
+            case 1: // hex
+                str = numToString(Math.round(number.value), number.decimals, true).toUpperCase();
+                break;
         }
-        else
-            this.value = new TextValue();//TextValue.NaN;
+
+        this.value = new TextValue(str);
 
 
         genPushUpdateValue(parse, this.nodeId, 'value',  this.value);
+        genPushUpdateValue(parse, this.nodeId, 'number', number    );
         genPushUpdateValue(parse, this.nodeId, 'format', format    );
-        genPushUpdateValue(parse, this.nodeId, 'digits', digits    );
 
 
         this.validate();
@@ -12835,7 +12836,13 @@ extends GOperator
 
     async evalBase(parse, input)
     {
-        const props = this.props ? (await this.props.eval(parse)).toValue() : null;
+        let props = this.props ? (await this.props.eval(parse)).toValue() : null;
+
+        if (   props
+            && (   props.type ==  COLOR_VALUE
+                || props.type ==   FILL_VALUE
+                || props.type == STROKE_VALUE))
+            props = new ListValue([props]);
 
 
         if (this.input)
@@ -14769,6 +14776,7 @@ function enableFeatures(subscription, beta)
     updateElementDisplay(menuItemSelect              .div, subscription && beta);
     updateElementDisplay(menuItemCount               .div, subscription && beta);
     updateElementDisplay(menuFlowSep3                .div, subscription && beta);
+    updateElementDisplay(menuItemStart               .div, subscription && beta);
     updateElementDisplay(menuItemRepeat              .div, subscription && beta);
     // updateElementDisplay(menuItemCache               .div, subscription && beta);
     // updateElementDisplay(menuItemCopy                .div, subscription && beta);
@@ -14777,8 +14785,6 @@ function enableFeatures(subscription, beta)
     updateElementDisplay(menuItemSolve               .div, subscription && beta);    
     updateElementDisplay(menuItemNumberSep1          .div, subscription && beta);
     updateElementDisplay(menuItemAnimate             .div, subscription && beta);    
-    updateElementDisplay(menuItemNumberSep2          .div, subscription && beta);
-    updateElementDisplay(menuItemNumberConvertToText .div, subscription && beta);
     
     updateElementDisplay(menuItemCorrectColor        .div, subscription);
     updateElementDisplay(menuItemColorSep1           .div, subscription);
@@ -16135,6 +16141,8 @@ function genParseStart(parse)
     if (nInputs == 1)
         start.input = genParse(parse);
 
+    start.repeatId = genParse(parse);
+
 
     parse.nTab--;
 
@@ -16179,7 +16187,8 @@ function genParseRepeat(parse)
     if (nInputs == 1)
         rep.input = genParse(parse);
 
-    rep.count = genParse(parse);
+    rep.count    = genParse(parse);
+    rep.repeatId = genParse(parse);
 
 
     parse.nTab--;
@@ -16965,53 +16974,6 @@ function genParseConditionBase(parse, newNode)
 
     genParseNodeEnd(parse, cond);
     return cond;
-}
-
-
-
-function genParseNumberToText(parse)
-{
-    const [, nodeId, options, ignore] = genParseNodeStart(parse);
-
-
-    const num2text = new GNumberToText(nodeId, options);
-   
-
-    let nInputs = -1;
-    
-    if (!ignore)
-    {
-        nInputs = parseInt(parse.move());
-        console.assert(nInputs == 0 || nInputs == 1, 'nInputs must be [0, 1]');
-    }
-
-    
-    if (parse.settings.logRequests) 
-        logReq(num2text, parse, ignore, nInputs);
-
-
-    if (ignore) 
-    {
-        genParseNodeEnd(parse, num2text);
-        return parse.parsedNodes.find(n => n.nodeId == nodeId);
-    }
-
-
-    parse.nTab++;
-
-
-    if (nInputs == 1)
-        num2text.input = genParse(parse);
-
-    num2text.format = genParse(parse);
-    num2text.digits = genParse(parse);
-
-    
-    parse.nTab--;
-
-
-    genParseNodeEnd(parse, num2text);
-    return num2text;
 }
 
 
@@ -18043,6 +18005,53 @@ function genParseTextCharacter(parse)
 
 
 
+function genParseNumberToText(parse)
+{
+    const [, nodeId, options, ignore] = genParseNodeStart(parse);
+
+
+    const num2text = new GNumberToText(nodeId, options);
+   
+
+    let nInputs = -1;
+    
+    if (!ignore)
+    {
+        nInputs = parseInt(parse.move());
+        console.assert(nInputs == 0 || nInputs == 1, 'nInputs must be [0, 1]');
+    }
+
+    
+    if (parse.settings.logRequests) 
+        logReq(num2text, parse, ignore, nInputs);
+
+
+    if (ignore) 
+    {
+        genParseNodeEnd(parse, num2text);
+        return parse.parsedNodes.find(n => n.nodeId == nodeId);
+    }
+
+
+    parse.nTab++;
+
+
+    if (nInputs == 1)
+        num2text.input = genParse(parse);
+
+    num2text.number = genParse(parse);
+    num2text.format = genParse(parse);
+
+    
+    parse.nTab--;
+
+
+    genParseNodeEnd(parse, num2text);
+    return num2text;
+}
+
+
+
 function genParseTextCSV(parse)
 {
     const [, nodeId, options, ignore] = genParseNodeStart(parse);
@@ -18242,7 +18251,6 @@ function genParse(parse, inParam = true)
     else if (parse.next == NUMBER_RANDOM          ) result = genParseRandom          (parse);
     else if (parse.next == NUMBER_SERIES          ) result = genParseSeries          (parse);
     else if (parse.next == NUMBER_INTERPOLATE     ) result = genParseInterpolate     (parse);
-    else if (parse.next == NUMBER_TO_TEXT         ) result = genParseNumberToText    (parse);
     else if (parse.next == NUMBER_SOLVE           ) result = genParseSolve           (parse);
     else if (parse.next == NUMBER_ANIMATE         ) result = genParseAnimate         (parse);
     
@@ -18272,6 +18280,7 @@ function genParse(parse, inParam = true)
     else if (parse.next == TEXT                   ) result = genParseText            (parse);
     else if (parse.next == TEXT_SUBSTRING         ) result = genParseTextSubstring   (parse);
     else if (parse.next == TEXT_CHAR              ) result = genParseTextCharacter   (parse);
+    else if (parse.next == NUMBER_TO_TEXT         ) result = genParseNumberToText    (parse);
     else if (parse.next == TEXT_REPLACE           ) result = genParseTextReplace     (parse);
     else if (parse.next == TEXT_JOIN              ) result = genParseTextJoin        (parse);
     else if (parse.next == TEXT_CSV               ) result = genParseTextCSV         (parse);

@@ -28,7 +28,13 @@ extends GOperator
 
     async evalBase(parse, input)
     {
-        const props = this.props ? (await this.props.eval(parse)).toValue() : null;
+        let props = this.props ? (await this.props.eval(parse)).toValue() : null;
+
+        if (   props
+            && (   props.type ==  COLOR_VALUE
+                || props.type ==   FILL_VALUE
+                || props.type == STROKE_VALUE))
+            props = new ListValue([props]);
 
 
         if (this.input)
