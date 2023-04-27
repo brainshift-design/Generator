@@ -104,11 +104,11 @@ extends GNumberType
 
 
 
-    // invalidateForward(parse)
-    // {
-    //     this.init  = false;
-    //     this.valid = false;
+    invalidate()
+    {
+        super.invalidate();
 
-    //     super.invalidateForward(parse);
-    // }
+        if (this.start) this.start.invalidate();
+        if (this.step ) this.step .invalidate();
+    }
 }

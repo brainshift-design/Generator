@@ -87,4 +87,15 @@ extends GNumberType
             && (!this.min   || this.min  .isCached())
             && (!this.max   || this.max  .isCached());
     }
+
+
+
+    invalidate()
+    {
+        super.invalidate();
+
+        if (this.input) this.input.invalidate();
+        if (this.min  ) this.min  .invalidate();
+        if (this.max  ) this.max  .invalidate();
+    }
 }

@@ -70,4 +70,15 @@ extends GOperator
 
         return this;
     }
+
+
+
+    invalidate()
+    {
+        super.invalidate();
+
+        if (this.input   ) this.input   .invalidate();
+        if (this.fill    ) this.fill    .invalidate();
+        if (this.position) this.position.invalidate();
+    }
 }

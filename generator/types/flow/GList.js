@@ -88,4 +88,13 @@ extends GOperator
     {
         return this.value.copy();
     }
+
+
+
+    invalidate()
+    {
+        super.invalidate();
+
+        this.inputs.forEach(i => i.invalidate());
+    }
 }

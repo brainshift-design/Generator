@@ -31,10 +31,8 @@ function rgb2hsv(rgb)
 
 function hsv2rgb_(h, s, v)
 {
-    // h %= 1;
-
-    // if (h < 0) h += 1;
-    //while (h > 1) h -= 1;
+    while (h < 0) h++;
+    h %= 1;
 
     if (s == 0)
         return [v, v, v]; // achromatic

@@ -32,6 +32,9 @@ function rgb2hsl(rgb)
 
 function hsl2rgb_(h, s, l)
 {
+    while (h < 0) h++;
+    h %= 1;
+
     let q =
         l < 0.5
         ? l * (1 + s)

@@ -237,4 +237,26 @@ extends GShape
 
         return rect;
     }
+
+
+
+    invalidate()
+    {
+        super.invalidate();
+        
+        if (this.input        ) this.input        .invalidate();
+        if (this.text         ) this.text         .invalidate();
+        if (this.x            ) this.x            .invalidate();
+        if (this.y            ) this.y            .invalidate();
+        if (this.width        ) this.width        .invalidate();
+        if (this.height       ) this.height       .invalidate();
+        if (this.angle        ) this.angle        .invalidate();
+        if (this.font         ) this.font         .invalidate();
+        if (this.style        ) this.style        .invalidate();
+        if (this.size         ) this.size         .invalidate();
+        if (this.alignH       ) this.alignH       .invalidate();
+        if (this.alignV       ) this.alignV       .invalidate();
+        if (this.lineHeight   ) this.lineHeight   .invalidate();
+        if (this.letterSpacing) this.letterSpacing.invalidate();
+    }
 }

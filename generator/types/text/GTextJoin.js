@@ -37,6 +37,15 @@ extends GTextType
 
         return this;
     }
+
+
+
+    invalidate()
+    {
+        super.invalidate();
+
+        this.inputs.forEach(i => i.invalidate());
+    }
 }
 
 

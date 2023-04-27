@@ -71,6 +71,7 @@ extends GColorType
                         input.c2, 
                         input.c3);
 
+
                     const fromSpaceIndex = input.space.value;
 
                     const toSpaceIndex = Math.min(Math.max(
@@ -180,6 +181,15 @@ extends GColorType
 
 
 
+    toValue()
+    {
+        return this.options.enabled
+             ? this.value.copy()
+             : ColorValue.NaN;
+    }
+
+
+
     isValid()
     {
         return this.space.isValid()
@@ -190,10 +200,14 @@ extends GColorType
 
 
 
-    toValue()
+    invalidate()
     {
-        return this.options.enabled
-             ? this.value.copy()
-             : ColorValue.NaN;
+        super.invalidate();
+
+        if (this.input) this.input.invalidate();
+        if (this.space) this.space.invalidate();
+        if (this.c1   ) this.c1   .invalidate();
+        if (this.c2   ) this.c2   .invalidate();
+        if (this.c3   ) this.c3   .invalidate();
     }
 }

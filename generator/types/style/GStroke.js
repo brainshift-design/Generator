@@ -96,6 +96,20 @@ extends GShape
         else
             return fill;
     }
+    
+    
+    
+    toValue()
+    {
+        return new StrokeValue(
+            this.options.enabled
+            ? this.validateFill(this.fill ? this.fill.toValue() : this.input.fill.toValue())
+            : FillValue.NaN,
+            this.weight ? this.weight.toValue() : this.input.weight.toValue(),
+            this.fit    ? this.fit   .toValue() : this.input.fit   .toValue(),
+            this.join   ? this.join  .toValue() : this.input.join  .toValue(),
+            this.miter  ? this.miter .toValue() : this.input.miter .toValue());
+    }                 
 
 
 
@@ -110,15 +124,15 @@ extends GShape
 
 
 
-    toValue()
+    invalidate()
     {
-        return new StrokeValue(
-            this.options.enabled
-            ? this.validateFill(this.fill ? this.fill.toValue() : this.input.fill.toValue())
-            : FillValue.NaN,
-            this.weight ? this.weight.toValue() : this.input.weight.toValue(),
-            this.fit    ? this.fit   .toValue() : this.input.fit   .toValue(),
-            this.join   ? this.join  .toValue() : this.input.join  .toValue(),
-            this.miter  ? this.miter .toValue() : this.input.miter .toValue());
-    }                 
+        super.invalidate();
+
+        if (this.input ) this.input .invalidate();
+        if (this.fill  ) this.fill  .invalidate();
+        if (this.weight) this.weight.invalidate();
+        if (this.fit   ) this.fit   .invalidate();
+        if (this.join  ) this.join  .invalidate();
+        if (this.miter ) this.miter .invalidate();
+    }
 }

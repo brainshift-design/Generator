@@ -79,4 +79,15 @@ extends GNumberType
 
         return this;
     }
+
+
+
+    invalidate()
+    {
+        super.invalidate();
+
+        if (this.input   ) this.input   .invalidate();
+        if (this.type    ) this.type    .invalidate();
+        if (this.decimals) this.decimals.invalidate();
+    }
 }

@@ -105,4 +105,13 @@ extends GOperator
     {
         return this.value.copy();
     }
+
+
+
+    invalidate()
+    {
+        super.invalidate();
+
+        if (this.input) this.input.invalidate();
+    }
 }

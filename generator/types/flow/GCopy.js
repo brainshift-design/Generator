@@ -1,9 +1,12 @@
 class GCopy
 extends GOperator
 {
-    input = null;
+    input     = null;
 
     copy;
+
+    evaluated = false;
+
 
 
     constructor(nodeId, options)
@@ -30,7 +33,8 @@ extends GOperator
 
     async eval(parse)
     {
-        if (this.isCached())
+        if (this.isCached()
+            )
             return this;
 
 
@@ -54,5 +58,14 @@ extends GOperator
         return this.value
              ? this.value.copy() 
              : null;
+    }
+
+
+
+    invalidate()
+    {
+        super.invalidate();
+
+        // if (this.input  ) this.input  .invalidate();
     }
 }

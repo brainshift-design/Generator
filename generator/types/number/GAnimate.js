@@ -122,4 +122,18 @@ extends GNumberType
 
         return this;
     }
+
+
+
+    invalidate()
+    {
+        super.invalidate();
+
+        if (this.from  ) this.from  .invalidate();
+        if (this.to    ) this.to    .invalidate();
+        if (this.curve ) this.curve .invalidate();
+        if (this.type  ) this.type  .invalidate();
+        if (this.length) this.length.invalidate();
+        if (this.time  ) this.time  .invalidate();
+    }
 }

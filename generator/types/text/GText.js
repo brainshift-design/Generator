@@ -56,4 +56,13 @@ extends GTextType
     {
         return this.value != NAN_CHAR;
     }
+
+
+
+    invalidate()
+    {
+        super.invalidate();
+
+        if (this.input) this.input.invalidate();
+    }
 }

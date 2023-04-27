@@ -130,4 +130,17 @@ extends GColorType
                 lerp(l0, l1, f) ];
         }
     }
+
+
+
+    invalidate()
+    {
+        super.invalidate();
+
+        if (this.input0) this.input0.invalidate();
+        if (this.input1) this.input1.invalidate();
+        if (this.space ) this.space .invalidate();
+        if (this.amount) this.amount.invalidate();
+        if (this.gamma ) this.gamma .invalidate();
+    }
 }

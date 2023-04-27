@@ -50,4 +50,14 @@ extends GTextType
 
         return this;
     }
+
+
+
+    invalidate()
+    {
+        super.invalidate();
+
+        if (this.input) this.input.invalidate();
+        if (this.code ) this.code .invalidate();
+    }
 }

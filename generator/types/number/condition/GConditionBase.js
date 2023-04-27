@@ -3,6 +3,16 @@ extends GNumberType
 {
     input0 = null;
     input1 = null;
+
+
+
+    invalidate()
+    {
+        super.invalidate();
+
+        if (this.input0) this.input0.invalidate();
+        if (this.input1) this.input1.invalidate();
+    }
 }
 
 

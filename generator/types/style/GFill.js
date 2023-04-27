@@ -64,6 +64,17 @@ extends GOperator
 
         return this;
     }
+    
+    
+    
+    toValue()
+    {
+        return this.options.enabled
+        ? new FillValue(
+            this.color   ? this.color  .toValue() : this.input.color  .toValue(),
+            this.opacity ? this.opacity.toValue() : this.input.opacity.toValue())
+            : FillValue.NaN;
+    }
 
 
 
@@ -75,12 +86,12 @@ extends GOperator
 
 
 
-    toValue()
+    invalidate()
     {
-        return this.options.enabled
-             ? new FillValue(
-                   this.color   ? this.color  .toValue() : this.input.color  .toValue(),
-                   this.opacity ? this.opacity.toValue() : this.input.opacity.toValue())
-             : FillValue.NaN;
+        super.invalidate();
+
+        if (this.input  ) this.input  .invalidate();
+        if (this.color  ) this.color  .invalidate();
+        if (this.opacity) this.opacity.invalidate();
     }
 }

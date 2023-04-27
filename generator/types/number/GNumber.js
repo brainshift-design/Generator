@@ -28,6 +28,14 @@ extends GNumberType
 
 
 
+    isCached()
+    {
+        return super.isCached()
+            && (!this.input || this.input.isCached());
+    }
+
+
+
     async eval(parse)
     {
         if (this.isCached())
@@ -64,9 +72,10 @@ extends GNumberType
 
 
 
-    isCached()
+    invalidate()
     {
-        return super.isCached()
-            && (!this.input || this.input.isCached());
+        super.invalidate();
+
+        if (this.input) this.input.invalidate();
     }
 }

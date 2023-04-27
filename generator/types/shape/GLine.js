@@ -117,17 +117,6 @@ extends GShape
 
 
 
-    isValid()
-    {
-        return this.x    .isValid()
-            && this.y    .isValid()
-            && this.width.isValid()
-            && this.angle.isValid()
-            && super.isValid();
-    }
-
-
-
     toValue()
     {
         const line = new LineValue(
@@ -140,5 +129,29 @@ extends GShape
         line.props = this.props.toValue();
 
         return line;
+    }
+
+
+
+    isValid()
+    {
+        return this.x    .isValid()
+            && this.y    .isValid()
+            && this.width.isValid()
+            && this.angle.isValid()
+            && super.isValid();
+    }
+
+
+
+    invalidate()
+    {
+        super.invalidate();
+
+        if (this.input ) this.input .invalidate();
+        if (this.x     ) this.x     .invalidate();
+        if (this.y     ) this.y     .invalidate();
+        if (this.width ) this.width .invalidate();
+        if (this.angle ) this.angle .invalidate();
     }
 }

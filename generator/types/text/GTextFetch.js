@@ -70,6 +70,16 @@ extends GTextType
 
         return this;
     }
+
+
+
+    invalidate()
+    {
+        super.invalidate();
+
+        if (this.input  ) this.input  .invalidate();
+        if (this.request) this.request.invalidate();
+    }
 }
 
 

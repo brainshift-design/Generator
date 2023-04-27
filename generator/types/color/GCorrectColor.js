@@ -176,4 +176,17 @@ extends GColorType
 
         return this;
     }
+
+
+
+    invalidate()
+    {
+        super.invalidate();
+
+        if (this.input  ) this.input  .invalidate();
+        if (this.order  ) this.order  .invalidate();
+        if (this.margin1) this.margin1.invalidate();
+        if (this.margin2) this.margin2.invalidate();
+        if (this.margin3) this.margin3.invalidate();
+    }
 }

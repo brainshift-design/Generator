@@ -115,4 +115,16 @@ extends GColorType
             case 15: return blendLuminosity(col0, col1, opacity);
         }
     }
+
+
+
+    invalidate()
+    {
+        super.invalidate();
+
+        if (this.input0 ) this.input0 .invalidate();
+        if (this.input1 ) this.input1 .invalidate();
+        if (this.mode   ) this.mode   .invalidate();
+        if (this.opacity) this.opacity.invalidate();
+    }
 }

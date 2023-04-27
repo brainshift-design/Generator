@@ -61,4 +61,15 @@ extends GNumberType
 
         return this;
     }
+
+
+
+    invalidate()
+    {
+        super.invalidate();
+
+        if (this.input0   ) this.input0   .invalidate();
+        if (this.input1   ) this.input1   .invalidate();
+        if (this.operation) this.operation.invalidate();
+    }
 }

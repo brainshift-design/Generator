@@ -3,6 +3,8 @@ extends GOperator
 {
     input = null;
 
+
+
     constructor(nodeId, options)
     {
         super(LIST_EXPAND, nodeId, options);
@@ -69,5 +71,14 @@ extends GOperator
     toValue()
     {
         return this.value.copy();
+    }
+
+
+
+    invalidate()
+    {
+        super.invalidate();
+
+        if (this.input  ) this.input  .invalidate();
     }
 }

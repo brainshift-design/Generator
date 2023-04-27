@@ -6,6 +6,7 @@ extends OperatorBase
 
     headerColor = null;
 
+    
 
     constructor()
     {

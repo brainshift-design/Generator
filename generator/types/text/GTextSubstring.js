@@ -80,4 +80,15 @@ extends GTextType
 
         return this;
     }
+
+
+
+    invalidate()
+    {
+        super.invalidate();
+
+        if (this.input) this.input.invalidate();
+        if (this.start) this.start.invalidate();
+        if (this.end  ) this.end  .invalidate();
+    }
 }

@@ -84,7 +84,6 @@ extends GOperator
     {
         super.invalidate();
 
-        if (this.node)
-            this.node.valid = false;
+        if (this.node) this.node.invalidate();
     }
 }

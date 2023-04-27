@@ -2,6 +2,10 @@ class GNode
 {
     type;
 
+
+    valid; // has been evaluated
+
+
     options = {};
     data    = {}; // for type conversion info
 
@@ -33,31 +37,6 @@ class GNode
 
 
 
-    validate()
-    {
-        this.valid = true;
-    }
-
-
-
-    isValid() // is a valid value
-    {
-        return false;
-    }
-
-
-
-    invalidateForward(parse)
-    {
-        this.targets.forEach(t => 
-        {
-            t.valid = false;
-            t.invalidateForward(parse);
-        });
-    }
-
-
-
     toValue()
     {
         return null;
@@ -75,5 +54,26 @@ class GNode
     toJson()
     {
         return this.toString();
+    }
+
+
+
+    isValid() // is a valid value
+    {
+        return false;
+    }
+
+
+
+    validate()
+    {
+        this.valid = true;
+    }
+
+
+
+    invalidate()
+    {
+        this.valid = false;
     }
 }

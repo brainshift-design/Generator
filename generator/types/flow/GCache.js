@@ -54,4 +54,13 @@ extends GOperator
              ? this.value.copy() 
              : null;
     }
+
+
+
+    invalidate()
+    {
+        super.invalidate();
+
+        // if (this.input  ) this.input  .invalidate();
+    }
 }

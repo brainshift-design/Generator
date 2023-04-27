@@ -4,7 +4,6 @@ extends GNode
     nodeId;
     nodeName;
 
-    valid; // has been evaluated
     topLevel;
 
     value;
@@ -89,25 +88,4 @@ extends GNode
     {
         return null;
     }
-
-
-
-    // isValid()
-    // {
-    //     return this.valid;
-    // }
-
-
-
-    invalidate()
-    {
-        this.valid = false;
-    }
-
-
-
-    // invalidateVolatile() // sequence, random, anything where the value changes on each subsequent iteration
-    // {
-
-    // }
 }

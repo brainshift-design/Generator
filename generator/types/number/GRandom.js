@@ -71,4 +71,15 @@ extends GNumberType
 
         return this;
     }
+
+
+
+    invalidate()
+    {
+        super.invalidate();
+
+        if (this.seed) this.seed.invalidate();
+        if (this.min ) this.min .invalidate();
+        if (this.max ) this.max .invalidate();
+    }
 }

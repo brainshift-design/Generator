@@ -164,4 +164,15 @@ extends GNumberType
             && this.current.isCached()
             && this.target .isCached();
     }
+
+
+
+    invalidate()
+    {
+        super.invalidate();
+
+        if (this.input  ) this.input  .invalidate();
+        if (this.current) this.current.invalidate();
+        if (this.target ) this.target .invalidate();
+    }
 }

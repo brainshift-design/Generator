@@ -4316,6 +4316,10 @@ class GNode
 {
     type;
 
+
+    valid; // has been evaluated
+
+
     options = {};
     data    = {}; // for type conversion info
 
@@ -4347,31 +4351,6 @@ class GNode
 
 
 
-    validate()
-    {
-        this.valid = true;
-    }
-
-
-
-    isValid() // is a valid value
-    {
-        return false;
-    }
-
-
-
-    invalidateForward(parse)
-    {
-        this.targets.forEach(t => 
-        {
-            t.valid = false;
-            t.invalidateForward(parse);
-        });
-    }
-
-
-
     toValue()
     {
         return null;
@@ -4389,6 +4368,27 @@ class GNode
     toJson()
     {
         return this.toString();
+    }
+
+
+
+    isValid() // is a valid value
+    {
+        return false;
+    }
+
+
+
+    validate()
+    {
+        this.valid = true;
+    }
+
+
+
+    invalidate()
+    {
+        this.valid = false;
     }
 }
 
@@ -4521,7 +4521,6 @@ extends GNode
     nodeId;
     nodeName;
 
-    valid; // has been evaluated
     topLevel;
 
     value;
@@ -4606,27 +4605,6 @@ extends GNode
     {
         return null;
     }
-
-
-
-    // isValid()
-    // {
-    //     return this.valid;
-    // }
-
-
-
-    invalidate()
-    {
-        this.valid = false;
-    }
-
-
-
-    // invalidateVolatile() // sequence, random, anything where the value changes on each subsequent iteration
-    // {
-
-    // }
 }
 
 
@@ -4716,8 +4694,7 @@ extends GOperator
     {
         super.invalidate();
 
-        if (this.node)
-            this.node.valid = false;
+        if (this.node) this.node.invalidate();
     }
 }
 
@@ -7054,6 +7031,15 @@ extends GOperator
     {
         return this.value.copy();
     }
+
+
+
+    invalidate()
+    {
+        super.invalidate();
+
+        this.inputs.forEach(i => i.invalidate());
+    }
 }
 
 
@@ -7062,6 +7048,8 @@ class GExpandList
 extends GOperator
 {
     input = null;
+
+
 
     constructor(nodeId, options)
     {
@@ -7129,6 +7117,15 @@ extends GOperator
     toValue()
     {
         return this.value.copy();
+    }
+
+
+
+    invalidate()
+    {
+        super.invalidate();
+
+        if (this.input  ) this.input  .invalidate();
     }
 }
 
@@ -7240,6 +7237,15 @@ extends GOperator
     {
         return this.value.copy();
     }
+
+
+
+    invalidate()
+    {
+        super.invalidate();
+
+        if (this.input) this.input.invalidate();
+    }
 }
 
 
@@ -7319,6 +7325,16 @@ extends GOperator
     {
         return this.value.copy();
     }
+
+
+
+    invalidate()
+    {
+        super.invalidate();
+
+        if (this.input) this.input.invalidate();
+        if (this.index) this.index.invalidate();
+    }
 }
 
 
@@ -7383,6 +7399,15 @@ extends GOperator
     // {
     //     return this.value.copy();
     // }
+
+
+
+    invalidate()
+    {
+        super.invalidate();
+
+        if (this.input) this.input.invalidate();
+    }
 }
 
 
@@ -7473,6 +7498,17 @@ extends GOperator
         return this.value
              ? this.value.copy() 
              : null;
+    }
+
+
+
+    invalidate()
+    {
+        super.invalidate();
+
+        if (this.input0   ) this.input0   .invalidate();
+        if (this.input1   ) this.input1   .invalidate();
+        if (this.condition) this.condition.invalidate();
     }
 }
 
@@ -7600,7 +7636,6 @@ extends GOperator
 
         if (this.repeatId.type != NUMBER_VALUE)
         {
-            console.log('this.repeatId.type =', this.repeatId.type);
             console.assert(
                    this.repeatId.type == NUMBER_SERIES
                 || this.repeatId.type == NUMBER_RANDOM,
@@ -7690,6 +7725,16 @@ extends GOperator
     {
         return this.value.copy();
     }
+
+
+
+    invalidate()
+    {
+        super.invalidate();
+
+        if (this.input) this.input.invalidate();
+        if (this.count) this.count.invalidate();
+    }
 }
 
 
@@ -7750,6 +7795,15 @@ extends GOperator
              ? this.value.copy() 
              : null;
     }
+
+
+
+    invalidate()
+    {
+        super.invalidate();
+
+        // if (this.input  ) this.input  .invalidate();
+    }
 }
 
 
@@ -7757,9 +7811,12 @@ extends GOperator
 class GCopy
 extends GOperator
 {
-    input = null;
+    input     = null;
 
     copy;
+
+    evaluated = false;
+
 
 
     constructor(nodeId, options)
@@ -7786,7 +7843,8 @@ extends GOperator
 
     async eval(parse)
     {
-        if (this.isCached())
+        if (this.isCached()
+            )
             return this;
 
 
@@ -7810,6 +7868,15 @@ extends GOperator
         return this.value
              ? this.value.copy() 
              : null;
+    }
+
+
+
+    invalidate()
+    {
+        super.invalidate();
+
+        // if (this.input  ) this.input  .invalidate();
     }
 }
 
@@ -7868,6 +7935,14 @@ extends GNumberType
 
 
 
+    isCached()
+    {
+        return super.isCached()
+            && (!this.input || this.input.isCached());
+    }
+
+
+
     async eval(parse)
     {
         if (this.isCached())
@@ -7904,10 +7979,11 @@ extends GNumberType
 
 
 
-    isCached()
+    invalidate()
     {
-        return super.isCached()
-            && (!this.input || this.input.isCached());
+        super.invalidate();
+
+        if (this.input) this.input.invalidate();
     }
 }
 
@@ -7968,8 +8044,16 @@ extends GNumberType
 
         return this;
     }
-}
 
+
+
+    invalidate()
+    {
+        super.invalidate();
+
+        if (this.input) this.input.invalidate();
+    }
+}
 
 
 class GAbsolute
@@ -8027,6 +8111,15 @@ extends GNumberType
         this.validate();
 
         return this;
+    }
+
+
+
+    invalidate()
+    {
+        super.invalidate();
+
+        if (this.input) this.input.invalidate();
     }
 }
 
@@ -8112,6 +8205,17 @@ extends GNumberType
         this.validate();
 
         return this;
+    }
+
+
+
+    invalidate()
+    {
+        super.invalidate();
+
+        if (this.input   ) this.input   .invalidate();
+        if (this.type    ) this.type    .invalidate();
+        if (this.decimals) this.decimals.invalidate();
     }
 }
 
@@ -8205,6 +8309,17 @@ extends GNumberType
             && (!this.input || this.input.isCached())
             && (!this.min   || this.min  .isCached())
             && (!this.max   || this.max  .isCached());
+    }
+
+
+
+    invalidate()
+    {
+        super.invalidate();
+
+        if (this.input) this.input.invalidate();
+        if (this.min  ) this.min  .invalidate();
+        if (this.max  ) this.max  .invalidate();
     }
 }
 
@@ -8316,13 +8431,13 @@ extends GNumberType
 
 
 
-    // invalidateForward(parse)
-    // {
-    //     this.init  = false;
-    //     this.valid = false;
+    invalidate()
+    {
+        super.invalidate();
 
-    //     super.invalidateForward(parse);
-    // }
+        if (this.start) this.start.invalidate();
+        if (this.step ) this.step .invalidate();
+    }
 }
 
 
@@ -8400,6 +8515,17 @@ extends GNumberType
 
         return this;
     }
+
+
+
+    invalidate()
+    {
+        super.invalidate();
+
+        if (this.seed) this.seed.invalidate();
+        if (this.min ) this.min .invalidate();
+        if (this.max ) this.max .invalidate();
+    }
 }
 
 
@@ -8475,6 +8601,17 @@ extends GNumberType
 
         return this;
     }
+
+
+
+    invalidate()
+    {
+        super.invalidate();
+
+        if (this.input0) this.input0.invalidate();
+        if (this.input1) this.input1.invalidate();
+        if (this.amount) this.amount.invalidate();
+    }
 }
 
 
@@ -8482,7 +8619,7 @@ extends GNumberType
 class GNumberToText
 extends GNumberType
 {
-    input = null;
+    //input = null;
 
     number;
     format;
@@ -8547,6 +8684,16 @@ extends GNumberType
         this.validate();
 
         return this;
+    }
+
+
+
+    invalidate()
+    {
+        super.invalidate();
+
+        if (this.number) this.number.invalidate();
+        if (this.format) this.format.invalidate();
     }
 }
 
@@ -8718,6 +8865,17 @@ extends GNumberType
             && this.current.isCached()
             && this.target .isCached();
     }
+
+
+
+    invalidate()
+    {
+        super.invalidate();
+
+        if (this.input  ) this.input  .invalidate();
+        if (this.current) this.current.invalidate();
+        if (this.target ) this.target .invalidate();
+    }
 }
 
 
@@ -8846,6 +9004,20 @@ extends GNumberType
 
         return this;
     }
+
+
+
+    invalidate()
+    {
+        super.invalidate();
+
+        if (this.from  ) this.from  .invalidate();
+        if (this.to    ) this.to    .invalidate();
+        if (this.curve ) this.curve .invalidate();
+        if (this.type  ) this.type  .invalidate();
+        if (this.length) this.length.invalidate();
+        if (this.time  ) this.time  .invalidate();
+    }
 }
 
 
@@ -8864,6 +9036,15 @@ extends GNumberType
                 return false;
 
         return super.isCached();
+    }
+
+
+
+    invalidate()
+    {
+        super.invalidate();
+
+        this.inputs.forEach(i => i.invalidate());
     }
 }
 
@@ -8926,6 +9107,15 @@ extends GArithmetic
         this.validate();
 
         return this;
+    }
+
+
+
+    invalidate()
+    {
+        super.invalidate();
+
+        if (this.operation) this.operation.invalidate();
     }
 }
 
@@ -9637,6 +9827,15 @@ extends GArithmetic
 
         return this;
     }
+
+
+
+    invalidate()
+    {
+        super.invalidate();
+
+        if (this.operation) this.operation.invalidate();
+    }
 }
 
 
@@ -10084,6 +10283,16 @@ extends GNumberType
 {
     input0 = null;
     input1 = null;
+
+
+
+    invalidate()
+    {
+        super.invalidate();
+
+        if (this.input0) this.input0.invalidate();
+        if (this.input1) this.input1.invalidate();
+    }
 }
 
 
@@ -10163,6 +10372,17 @@ extends GNumberType
         this.validate();
 
         return this;
+    }
+
+
+
+    invalidate()
+    {
+        super.invalidate();
+
+        if (this.input0   ) this.input0   .invalidate();
+        if (this.input1   ) this.input1   .invalidate();
+        if (this.operation) this.operation.invalidate();
     }
 }
 
@@ -10494,6 +10714,15 @@ extends GTextType
     {
         return this.value != NAN_CHAR;
     }
+
+
+
+    invalidate()
+    {
+        super.invalidate();
+
+        if (this.input) this.input.invalidate();
+    }
 }
 
 
@@ -10579,6 +10808,17 @@ extends GTextType
 
         return this;
     }
+
+
+
+    invalidate()
+    {
+        super.invalidate();
+
+        if (this.input) this.input.invalidate();
+        if (this.start) this.start.invalidate();
+        if (this.end  ) this.end  .invalidate();
+    }
 }
 
 
@@ -10634,6 +10874,16 @@ extends GTextType
         this.validate();
 
         return this;
+    }
+
+
+
+    invalidate()
+    {
+        super.invalidate();
+
+        if (this.input) this.input.invalidate();
+        if (this.code ) this.code .invalidate();
     }
 }
 
@@ -10711,6 +10961,17 @@ extends GTextType
 
         return this;
     }
+
+
+
+    invalidate()
+    {
+        super.invalidate();
+
+        if (this.input) this.input.invalidate();
+        if (this.what ) this.what .invalidate();
+        if (this.with ) this.with .invalidate();
+    }
 }
 
 
@@ -10753,6 +11014,15 @@ extends GTextType
         this.validate();
 
         return this;
+    }
+
+
+
+    invalidate()
+    {
+        super.invalidate();
+
+        this.inputs.forEach(i => i.invalidate());
     }
 }
 
@@ -10866,6 +11136,17 @@ extends GOperator
     // {
     //     return this.value.copy();
     // }
+
+
+
+    invalidate()
+    {
+        super.invalidate();
+
+        if (this.input    ) this.input    .invalidate();
+        if (this.value    ) this.value    .invalidate();
+        if (this.separator) this.separator.invalidate();
+    }
 }
 
 
@@ -10941,6 +11222,16 @@ extends GTextType
         this.validate();
 
         return this;
+    }
+
+
+
+    invalidate()
+    {
+        super.invalidate();
+
+        if (this.input  ) this.input  .invalidate();
+        if (this.request) this.request.invalidate();
     }
 }
 
@@ -11583,6 +11874,7 @@ extends GColorType
                         input.c2, 
                         input.c3);
 
+
                     const fromSpaceIndex = input.space.value;
 
                     const toSpaceIndex = Math.min(Math.max(
@@ -11692,6 +11984,15 @@ extends GColorType
 
 
 
+    toValue()
+    {
+        return this.options.enabled
+             ? this.value.copy()
+             : ColorValue.NaN;
+    }
+
+
+
     isValid()
     {
         return this.space.isValid()
@@ -11702,11 +12003,15 @@ extends GColorType
 
 
 
-    toValue()
+    invalidate()
     {
-        return this.options.enabled
-             ? this.value.copy()
-             : ColorValue.NaN;
+        super.invalidate();
+
+        if (this.input) this.input.invalidate();
+        if (this.space) this.space.invalidate();
+        if (this.c1   ) this.c1   .invalidate();
+        if (this.c2   ) this.c2   .invalidate();
+        if (this.c3   ) this.c3   .invalidate();
     }
 }
 
@@ -11840,6 +12145,16 @@ extends GColorType
         this.validate();
 
         return this;
+    }
+
+
+
+    invalidate()
+    {
+        super.invalidate();
+
+        if (this.input  ) this.input  .invalidate();
+        if (this.quality) this.quality.invalidate();
     }
 }
 
@@ -12023,6 +12338,19 @@ extends GColorType
 
         return this;
     }
+
+
+
+    invalidate()
+    {
+        super.invalidate();
+
+        if (this.input  ) this.input  .invalidate();
+        if (this.order  ) this.order  .invalidate();
+        if (this.margin1) this.margin1.invalidate();
+        if (this.margin2) this.margin2.invalidate();
+        if (this.margin3) this.margin3.invalidate();
+    }
 }
 
 
@@ -12155,6 +12483,18 @@ extends GColorType
 
         return this;
     }
+
+
+
+    invalidate()
+    {
+        super.invalidate();
+
+        if (this.input0  ) this.input0  .invalidate();
+        if (this.input1  ) this.input1  .invalidate();
+        if (this.standard) this.standard.invalidate();
+        if (this.contrast) this.contrast.invalidate();
+    }
 }
 
 
@@ -12248,6 +12588,18 @@ extends GColorType
         this.validate();
 
         return this;
+    }
+
+
+
+    invalidate()
+    {
+        super.invalidate();
+
+        if (this.input ) this.input.invalidate();
+        if (this.l     ) this.l    .invalidate();
+        if (this.m     ) this.m    .invalidate();
+        if (this.s     ) this.s    .invalidate();
     }
 }
 
@@ -12385,6 +12737,19 @@ extends GColorType
                 lerp(l0, l1, f) ];
         }
     }
+
+
+
+    invalidate()
+    {
+        super.invalidate();
+
+        if (this.input0) this.input0.invalidate();
+        if (this.input1) this.input1.invalidate();
+        if (this.space ) this.space .invalidate();
+        if (this.amount) this.amount.invalidate();
+        if (this.gamma ) this.gamma .invalidate();
+    }
 }
 
 
@@ -12505,6 +12870,18 @@ extends GColorType
             case 14: return blendColor     (col0, col1, opacity);
             case 15: return blendLuminosity(col0, col1, opacity);
         }
+    }
+
+
+
+    invalidate()
+    {
+        super.invalidate();
+
+        if (this.input0 ) this.input0 .invalidate();
+        if (this.input1 ) this.input1 .invalidate();
+        if (this.mode   ) this.mode   .invalidate();
+        if (this.opacity) this.opacity.invalidate();
     }
 }
 
@@ -12951,13 +13328,24 @@ extends GOperator
 
         return this;
     }
+
+
+
+    invalidate()
+    {
+        super.invalidate();
+
+        if (this.input   ) this.input   .invalidate();
+        if (this.fill    ) this.fill    .invalidate();
+        if (this.position) this.position.invalidate();
+    }
 }
 
 
 class GShape
 extends GOperator
 {
-    props   = null;
+    props = null;
    
 
 
@@ -13095,8 +13483,17 @@ extends GOperator
 
     isValid()
     {
-        return this.props.isValid()
-            && super.isValid();
+        return super.isValid()
+            && this.props.isValid();
+    }
+
+
+
+    invalidate()
+    {
+        super.invalidate();
+
+        if (this.props) this.props.invalidate();
     }
 }
 
@@ -13233,19 +13630,6 @@ extends GShape
 
 
 
-    isValid()
-    {
-        return this.x     .isValid()
-            && this.y     .isValid()
-            && this.width .isValid()
-            && this.height.isValid()
-            && this.angle .isValid()
-            && this.round .isValid()
-            && super.isValid();
-    }
-
-
-
     toValue()
     {
         const rect = new RectangleValue(
@@ -13260,6 +13644,34 @@ extends GShape
         rect.props = this.props.toValue();
 
         return rect;
+    }
+
+
+
+    isValid()
+    {
+        return this.x     .isValid()
+            && this.y     .isValid()
+            && this.width .isValid()
+            && this.height.isValid()
+            && this.angle .isValid()
+            && this.round .isValid()
+            && super.isValid();
+    }
+
+
+
+    invalidate()
+    {
+        super.invalidate();
+
+        if (this.input ) this.input .invalidate();
+        if (this.x     ) this.x     .invalidate();
+        if (this.y     ) this.y     .invalidate();
+        if (this.width ) this.width .invalidate();
+        if (this.height) this.height.invalidate();
+        if (this.angle ) this.angle .invalidate();
+        if (this.round ) this.round .invalidate();
     }
 }
 
@@ -13383,17 +13795,6 @@ extends GShape
 
 
 
-    isValid()
-    {
-        return this.x    .isValid()
-            && this.y    .isValid()
-            && this.width.isValid()
-            && this.angle.isValid()
-            && super.isValid();
-    }
-
-
-
     toValue()
     {
         const line = new LineValue(
@@ -13406,6 +13807,30 @@ extends GShape
         line.props = this.props.toValue();
 
         return line;
+    }
+
+
+
+    isValid()
+    {
+        return this.x    .isValid()
+            && this.y    .isValid()
+            && this.width.isValid()
+            && this.angle.isValid()
+            && super.isValid();
+    }
+
+
+
+    invalidate()
+    {
+        super.invalidate();
+
+        if (this.input ) this.input .invalidate();
+        if (this.x     ) this.x     .invalidate();
+        if (this.y     ) this.y     .invalidate();
+        if (this.width ) this.width .invalidate();
+        if (this.angle ) this.angle .invalidate();
     }
 }
 
@@ -13531,20 +13956,8 @@ extends GShape
        
        super.evalObjects(parse);
    }
-
-
-
-   isValid()
-   {
-       return this.x     .isValid()
-           && this.y     .isValid()
-           && this.width .isValid()
-           && this.height.isValid()
-           && this.angle .isValid()
-           && super.isValid();
-   }
-
-
+   
+   
 
    toValue()
    {
@@ -13557,9 +13970,35 @@ extends GShape
            this.angle .toValue());
 
         ellipse.props = this.props.toValue();
-
+        
         return ellipse;
-   }
+    }
+    
+    
+        
+    isValid()
+    {
+        return this.x     .isValid()
+            && this.y     .isValid()
+            && this.width .isValid()
+            && this.height.isValid()
+            && this.angle .isValid()
+            && super.isValid();
+    }
+
+
+
+    invalidate()
+    {
+        super.invalidate();
+
+        if (this.input ) this.input .invalidate();
+        if (this.x     ) this.x     .invalidate();
+        if (this.y     ) this.y     .invalidate();
+        if (this.width ) this.width .invalidate();
+        if (this.height) this.height.invalidate();
+        if (this.angle ) this.angle .invalidate();
+    }
 }
 
 
@@ -13702,20 +14141,6 @@ extends GShape
 
 
 
-    isValid()
-    {
-        return this.x      .isValid()
-            && this.y      .isValid()
-            && this.width  .isValid()
-            && this.height .isValid()
-            && this.angle  .isValid()
-            && this.round  .isValid()
-            && this.corners.isValid()
-            && super.isValid();
-    }
-
-
-
     toValue()
     {
         const poly = new PolygonValue(
@@ -13731,6 +14156,36 @@ extends GShape
         poly.props = this.props.toValue();
 
         return poly;
+    }
+
+
+
+    isValid()
+    {
+        return this.x      .isValid()
+            && this.y      .isValid()
+            && this.width  .isValid()
+            && this.height .isValid()
+            && this.angle  .isValid()
+            && this.round  .isValid()
+            && this.corners.isValid()
+            && super.isValid();
+    }
+
+
+
+    invalidate()
+    {
+        super.invalidate();
+
+        if (this.input  ) this.input  .invalidate();
+        if (this.x      ) this.x      .invalidate();
+        if (this.y      ) this.y      .invalidate();
+        if (this.width  ) this.width  .invalidate();
+        if (this.height ) this.height .invalidate();
+        if (this.angle  ) this.angle  .invalidate();
+        if (this.round  ) this.round  .invalidate();
+        if (this.corners) this.corners.invalidate();
     }
 }
 
@@ -13881,22 +14336,8 @@ extends GShape
 
 
 
-   isValid()
-   {
-       return this.x     .isValid()
-           && this.y     .isValid()
-           && this.width .isValid()
-           && this.height.isValid()
-           && this.angle .isValid()
-           && this.round .isValid()
-           && this.points.isValid()
-           && this.convex.isValid();
-   }
-
-
-
-   toValue()
-   {
+    toValue()
+    {
        const star = new StarValue(
            this.nodeId,
            this.x     .toValue(),
@@ -13911,6 +14352,37 @@ extends GShape
         star.props = this.props.toValue();
 
         return star;
+   }
+
+
+
+   isValid()
+   {
+      return this.x     .isValid()
+          && this.y     .isValid()
+          && this.width .isValid()
+          && this.height.isValid()
+          && this.angle .isValid()
+          && this.round .isValid()
+          && this.points.isValid()
+          && this.convex.isValid();
+   }
+
+
+
+   invalidate()
+   {
+      super.invalidate();
+
+      if (this.input ) this.input .invalidate();
+      if (this.x     ) this.x     .invalidate();
+      if (this.y     ) this.y     .invalidate();
+      if (this.width ) this.width .invalidate();
+      if (this.height) this.height.invalidate();
+      if (this.angle ) this.angle .invalidate();
+      if (this.round ) this.round .invalidate();
+      if (this.points) this.points.invalidate();
+      if (this.convex) this.convex.invalidate();
    }
 }
 
@@ -14154,6 +14626,28 @@ extends GShape
 
         return rect;
     }
+
+
+
+    invalidate()
+    {
+        super.invalidate();
+        
+        if (this.input        ) this.input        .invalidate();
+        if (this.text         ) this.text         .invalidate();
+        if (this.x            ) this.x            .invalidate();
+        if (this.y            ) this.y            .invalidate();
+        if (this.width        ) this.width        .invalidate();
+        if (this.height       ) this.height       .invalidate();
+        if (this.angle        ) this.angle        .invalidate();
+        if (this.font         ) this.font         .invalidate();
+        if (this.style        ) this.style        .invalidate();
+        if (this.size         ) this.size         .invalidate();
+        if (this.alignH       ) this.alignH       .invalidate();
+        if (this.alignV       ) this.alignV       .invalidate();
+        if (this.lineHeight   ) this.lineHeight   .invalidate();
+        if (this.letterSpacing) this.letterSpacing.invalidate();
+    }
 }
 
 
@@ -14320,6 +14814,17 @@ extends GOperator
 
         return this;
     }
+    
+    
+    
+    toValue()
+    {
+        return this.options.enabled
+        ? new FillValue(
+            this.color   ? this.color  .toValue() : this.input.color  .toValue(),
+            this.opacity ? this.opacity.toValue() : this.input.opacity.toValue())
+            : FillValue.NaN;
+    }
 
 
 
@@ -14331,13 +14836,13 @@ extends GOperator
 
 
 
-    toValue()
+    invalidate()
     {
-        return this.options.enabled
-             ? new FillValue(
-                   this.color   ? this.color  .toValue() : this.input.color  .toValue(),
-                   this.opacity ? this.opacity.toValue() : this.input.opacity.toValue())
-             : FillValue.NaN;
+        super.invalidate();
+
+        if (this.input  ) this.input  .invalidate();
+        if (this.color  ) this.color  .invalidate();
+        if (this.opacity) this.opacity.invalidate();
     }
 }
 
@@ -14440,6 +14945,20 @@ extends GShape
         else
             return fill;
     }
+    
+    
+    
+    toValue()
+    {
+        return new StrokeValue(
+            this.options.enabled
+            ? this.validateFill(this.fill ? this.fill.toValue() : this.input.fill.toValue())
+            : FillValue.NaN,
+            this.weight ? this.weight.toValue() : this.input.weight.toValue(),
+            this.fit    ? this.fit   .toValue() : this.input.fit   .toValue(),
+            this.join   ? this.join  .toValue() : this.input.join  .toValue(),
+            this.miter  ? this.miter .toValue() : this.input.miter .toValue());
+    }                 
 
 
 
@@ -14454,17 +14973,17 @@ extends GShape
 
 
 
-    toValue()
+    invalidate()
     {
-        return new StrokeValue(
-            this.options.enabled
-            ? this.validateFill(this.fill ? this.fill.toValue() : this.input.fill.toValue())
-            : FillValue.NaN,
-            this.weight ? this.weight.toValue() : this.input.weight.toValue(),
-            this.fit    ? this.fit   .toValue() : this.input.fit   .toValue(),
-            this.join   ? this.join  .toValue() : this.input.join  .toValue(),
-            this.miter  ? this.miter .toValue() : this.input.miter .toValue());
-    }                 
+        super.invalidate();
+
+        if (this.input ) this.input .invalidate();
+        if (this.fill  ) this.fill  .invalidate();
+        if (this.weight) this.weight.invalidate();
+        if (this.fit   ) this.fit   .invalidate();
+        if (this.join  ) this.join  .invalidate();
+        if (this.miter ) this.miter .invalidate();
+    }
 }
 
 
@@ -14533,6 +15052,16 @@ extends GOperator
         return this.value
              ? this.value.copy() 
              : null;
+    }
+
+
+
+    invalidate()
+    {
+        super.invalidate();
+
+        this.inputs.forEach(i => i.invalidate())
+        this.params.forEach(p => p.invalidate())
     }
 }
 
@@ -14604,6 +15133,15 @@ extends GOperator
     toValue()
     {
         return this.value.copy();
+    }
+
+
+
+    invalidate()
+    {
+        super.invalidate();
+
+        if (this.input) this.input.invalidate();
     }
 }
 
@@ -19231,10 +19769,8 @@ function rgb2hsv(rgb)
 
 function hsv2rgb_(h, s, v)
 {
-    // h %= 1;
-
-    // if (h < 0) h += 1;
-    //while (h > 1) h -= 1;
+    while (h < 0) h++;
+    h %= 1;
 
     if (s == 0)
         return [v, v, v]; // achromatic
@@ -19301,6 +19837,9 @@ function rgb2hsl(rgb)
 
 function hsl2rgb_(h, s, l)
 {
+    while (h < 0) h++;
+    h %= 1;
+
     let q =
         l < 0.5
         ? l * (1 + s)

@@ -1,7 +1,7 @@
 class GShape
 extends GOperator
 {
-    props   = null;
+    props = null;
    
 
 
@@ -139,7 +139,16 @@ extends GOperator
 
     isValid()
     {
-        return this.props.isValid()
-            && super.isValid();
+        return super.isValid()
+            && this.props.isValid();
+    }
+
+
+
+    invalidate()
+    {
+        super.invalidate();
+
+        if (this.props) this.props.invalidate();
     }
 }

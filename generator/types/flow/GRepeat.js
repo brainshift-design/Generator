@@ -55,7 +55,6 @@ extends GOperator
 
         if (this.repeatId.type != NUMBER_VALUE)
         {
-            console.log('this.repeatId.type =', this.repeatId.type);
             console.assert(
                    this.repeatId.type == NUMBER_SERIES
                 || this.repeatId.type == NUMBER_RANDOM,
@@ -144,5 +143,15 @@ extends GOperator
     toValue()
     {
         return this.value.copy();
+    }
+
+
+
+    invalidate()
+    {
+        super.invalidate();
+
+        if (this.input) this.input.invalidate();
+        if (this.count) this.count.invalidate();
     }
 }

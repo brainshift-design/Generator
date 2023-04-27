@@ -54,4 +54,13 @@ extends GArithmetic
 
         return this;
     }
+
+
+
+    invalidate()
+    {
+        super.invalidate();
+
+        if (this.operation) this.operation.invalidate();
+    }
 }

@@ -137,20 +137,6 @@ extends GShape
 
 
 
-    isValid()
-    {
-        return this.x      .isValid()
-            && this.y      .isValid()
-            && this.width  .isValid()
-            && this.height .isValid()
-            && this.angle  .isValid()
-            && this.round  .isValid()
-            && this.corners.isValid()
-            && super.isValid();
-    }
-
-
-
     toValue()
     {
         const poly = new PolygonValue(
@@ -166,5 +152,35 @@ extends GShape
         poly.props = this.props.toValue();
 
         return poly;
+    }
+
+
+
+    isValid()
+    {
+        return this.x      .isValid()
+            && this.y      .isValid()
+            && this.width  .isValid()
+            && this.height .isValid()
+            && this.angle  .isValid()
+            && this.round  .isValid()
+            && this.corners.isValid()
+            && super.isValid();
+    }
+
+
+
+    invalidate()
+    {
+        super.invalidate();
+
+        if (this.input  ) this.input  .invalidate();
+        if (this.x      ) this.x      .invalidate();
+        if (this.y      ) this.y      .invalidate();
+        if (this.width  ) this.width  .invalidate();
+        if (this.height ) this.height .invalidate();
+        if (this.angle  ) this.angle  .invalidate();
+        if (this.round  ) this.round  .invalidate();
+        if (this.corners) this.corners.invalidate();
     }
 }

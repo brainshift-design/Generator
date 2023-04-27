@@ -13,4 +13,13 @@ extends GNumberType
 
         return super.isCached();
     }
+
+
+
+    invalidate()
+    {
+        super.invalidate();
+
+        this.inputs.forEach(i => i.invalidate());
+    }
 }

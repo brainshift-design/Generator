@@ -70,4 +70,15 @@ extends GTextType
 
         return this;
     }
+
+
+
+    invalidate()
+    {
+        super.invalidate();
+
+        if (this.input) this.input.invalidate();
+        if (this.what ) this.what .invalidate();
+        if (this.with ) this.with .invalidate();
+    }
 }

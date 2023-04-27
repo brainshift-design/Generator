@@ -64,4 +64,14 @@ extends GOperator
              ? this.value.copy() 
              : null;
     }
+
+
+
+    invalidate()
+    {
+        super.invalidate();
+
+        this.inputs.forEach(i => i.invalidate())
+        this.params.forEach(p => p.invalidate())
+    }
 }

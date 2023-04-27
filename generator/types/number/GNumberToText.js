@@ -1,7 +1,7 @@
 class GNumberToText
 extends GNumberType
 {
-    input = null;
+    //input = null;
 
     number;
     format;
@@ -66,5 +66,15 @@ extends GNumberType
         this.validate();
 
         return this;
+    }
+
+
+
+    invalidate()
+    {
+        super.invalidate();
+
+        if (this.number) this.number.invalidate();
+        if (this.format) this.format.invalidate();
     }
 }

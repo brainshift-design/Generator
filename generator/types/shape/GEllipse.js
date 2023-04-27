@@ -119,20 +119,8 @@ extends GShape
        
        super.evalObjects(parse);
    }
-
-
-
-   isValid()
-   {
-       return this.x     .isValid()
-           && this.y     .isValid()
-           && this.width .isValid()
-           && this.height.isValid()
-           && this.angle .isValid()
-           && super.isValid();
-   }
-
-
+   
+   
 
    toValue()
    {
@@ -145,7 +133,33 @@ extends GShape
            this.angle .toValue());
 
         ellipse.props = this.props.toValue();
-
+        
         return ellipse;
-   }
+    }
+    
+    
+        
+    isValid()
+    {
+        return this.x     .isValid()
+            && this.y     .isValid()
+            && this.width .isValid()
+            && this.height.isValid()
+            && this.angle .isValid()
+            && super.isValid();
+    }
+
+
+
+    invalidate()
+    {
+        super.invalidate();
+
+        if (this.input ) this.input .invalidate();
+        if (this.x     ) this.x     .invalidate();
+        if (this.y     ) this.y     .invalidate();
+        if (this.width ) this.width .invalidate();
+        if (this.height) this.height.invalidate();
+        if (this.angle ) this.angle .invalidate();
+    }
 }

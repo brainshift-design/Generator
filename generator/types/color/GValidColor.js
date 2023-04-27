@@ -128,4 +128,14 @@ extends GColorType
 
         return this;
     }
+
+
+
+    invalidate()
+    {
+        super.invalidate();
+
+        if (this.input  ) this.input  .invalidate();
+        if (this.quality) this.quality.invalidate();
+    }
 }
