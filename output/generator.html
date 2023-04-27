@@ -8280,7 +8280,7 @@ extends GNumberType
 
         
         // console.log('parse.repeats =', [...parse.repeats]);
-        if (   isEmpty(parse.repeats)
+        if (  !parse.repeats.find(r => r.nodeId == this.repeatNodeId) //isEmpty(parse.repeats)
             || parse.repeats.at(-1).nodeId == this.repeatNodeId)
         {
             this.current.value += step.value;
@@ -16943,11 +16943,11 @@ function genParseRandom(parse)
     parse.nTab++;
 
 
-    if (nInputs == 1)
-    {
-        rnd.input = genParse(parse);
-        rnd.input.targets.push(rnd);
-    }
+    // if (nInputs == 1)
+    // {
+    //     rnd.input = genParse(parse);
+    //     rnd.input.targets.push(rnd);
+    // }
 
 
     rnd.seed = genParse(parse);  rnd.seed.targets.push(rnd);

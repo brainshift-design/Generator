@@ -10,6 +10,8 @@ extends OperatorBase
     {
         super(REPEAT, 'repeat', 'repeat');
 
+        this.canDisable = true;
+
         
         this.addInput (new Input([ANY_VALUE]));
         this.addOutput(new Output([ANY_VALUE], this.output_genRequest));

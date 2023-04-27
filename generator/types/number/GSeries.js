@@ -68,7 +68,7 @@ extends GNumberType
 
         
         // console.log('parse.repeats =', [...parse.repeats]);
-        if (   isEmpty(parse.repeats)
+        if (  !parse.repeats.find(r => r.nodeId == this.repeatNodeId) //isEmpty(parse.repeats)
             || parse.repeats.at(-1).nodeId == this.repeatNodeId)
         {
             this.current.value += step.value;

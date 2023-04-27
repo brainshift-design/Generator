@@ -396,11 +396,11 @@ function genParseRandom(parse)
     parse.nTab++;
 
 
-    if (nInputs == 1)
-    {
-        rnd.input = genParse(parse);
-        rnd.input.targets.push(rnd);
-    }
+    // if (nInputs == 1)
+    // {
+    //     rnd.input = genParse(parse);
+    //     rnd.input.targets.push(rnd);
+    // }
 
 
     rnd.seed = genParse(parse);  rnd.seed.targets.push(rnd);
