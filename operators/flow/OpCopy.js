@@ -14,7 +14,7 @@ extends OperatorBase
         //this.cached = true;
         
 
-        this.addInput (new Input([ANY_TYPE]));
+        this.addInput (new Input([ANY_VALUE]));
         this.addOutput(new Output([], this.output_genRequest));
 
 

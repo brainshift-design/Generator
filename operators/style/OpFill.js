@@ -284,7 +284,7 @@ extends OpColorBase
         colors.wire = 
             !rgbaIsNaN(colors.stripeBack)
             ? colors.stripeBack
-            : rgb_a(rgbFromType(ANY_TYPE, false));
+            : rgb_a(rgbFromType(ANY_VALUE, false));
 
 
         return colors;

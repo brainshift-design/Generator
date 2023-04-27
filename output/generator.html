@@ -466,7 +466,8 @@ function rgbFromTypeMode(type, active, mode)
         ? (mode ? rgbActiveGroupDark  : rgbActiveGroupLight)
         : (mode ? rgbGroupDark        : rgbGroupLight      );
 
-    else if (FLOW_TYPES.includes(type))
+    else if (FLOW_TYPES.includes(type)
+          || type == ANY_VALUE)
         return active 
         ? (mode ? rgbActiveFlowDark   : rgbActiveFlowLight)
         : (mode ? rgbFlowDark         : rgbFlowLight      );
@@ -3489,7 +3490,7 @@ const CACHE                   = 'CACHE';
 const COPY                    = 'COPY';
 
 
-const ANY_TYPE                = 'ANY';
+const ANY_VALUE                = 'ANY#';
 
 
 const LIST_TYPES =
@@ -3520,7 +3521,6 @@ const FOREACH                 = 'FOR';
 
 const FLOW_TYPES =
 [
-    ANY_TYPE,
     ...LIST_TYPES,
     ITEMS,
     SELECT,
@@ -3739,6 +3739,33 @@ const SHAPE_TYPES =
     ...POLYGON_TYPES,
     ...STAR_TYPES,
     ...TEXTSHAPE_TYPES
+];
+
+
+const ALL_VALUES =
+[
+           LIST_VALUE,
+    NUMBER_LIST_VALUE,
+      TEXT_LIST_VALUE,
+     SHAPE_LIST_VALUE,
+     
+         NUMBER_VALUE,
+           TEXT_VALUE,
+          COLOR_VALUE,
+
+           FILL_VALUE,
+         STROKE_VALUE,
+
+     COLOR_STOP_VALUE,
+       GRADIENT_VALUE,
+
+          SHAPE_VALUE,
+      RECTANGLE_VALUE,
+           LINE_VALUE,
+        ELLIPSE_VALUE,
+        POLYGON_VALUE,
+           STAR_VALUE,
+      TEXTSHAPE_VALUE
 ];
 
 
@@ -4292,6 +4319,8 @@ class GNode
     options = {};
     data    = {}; // for type conversion info
 
+    
+
 
 
     constructor(type, options) 
@@ -4572,6 +4601,13 @@ extends GNode
     invalidate()
     {
         this.valid = false;
+    }
+
+
+
+    invalidateForward()
+    {
+        
     }
 }
 
@@ -7548,18 +7584,18 @@ extends GOperator
                 : 1;
 
 
-            for (let i = 0; i < nItems; i++)
+            for (let i = 0, id = 0; i < nItems; i++)
             {
                 this.input.invalidate();
                 await this.input.eval(parse);
 
 
-                for (let j = 0; j < this.input.objects.length; j++)
+                for (let j = 0; j < this.input.objects.length; j++, id++)
                 {
                     const obj = this.input.objects[j].copy();
     
                     obj.nodeId   = this.nodeId;
-                    obj.objectId = i;
+                    obj.objectId = id;
     
                     this.objects.push(obj);
                 }

@@ -13,9 +13,9 @@ extends OperatorBase
         super(IF_ELSE, 'ifElse', 'if/else');
 
 
-        this.addInput (new Input([ANY_TYPE]));
-        this.addInput (new Input([ANY_TYPE]));
-        this.addOutput(new Output([ANY_TYPE], this.output_genRequest));
+        this.addInput (new Input([ANY_VALUE]));
+        this.addInput (new Input([ANY_VALUE]));
+        this.addOutput(new Output([ANY_VALUE], this.output_genRequest));
 
 
         this.addParam(this.paramCondition = new NumberParam('condition', 'condition', true, true, true, 1, 0, 1));
@@ -118,7 +118,7 @@ extends OperatorBase
                   && this.paramCondition.value.value == 0)
                 this.outputs[0].wireColor = this.inputs[1].wireColor;
             else
-                this.outputs[0].wireColor = rgbFromType(ANY_TYPE, true);
+                this.outputs[0].wireColor = rgbFromType(ANY_VALUE, true);
 
             // console.log('this.inputs[0] =', this.inputs[0]);
             // console.log('this.outputs[0] =', this.outputs[0]);
@@ -135,14 +135,14 @@ extends OperatorBase
                   && this.paramCondition.value.value == 0)
                 this.outputs[0].wireColor = colors.outputWire;
             else
-                this.outputs[0].wireColor = rgbFromType(ANY_TYPE, true);
+                this.outputs[0].wireColor = rgbFromType(ANY_VALUE, true);
 
             // console.log('this.inputs[0] =', this.inputs[0]);
             // console.log('this.outputs[0] =', this.outputs[0]);
         }
         
         else
-            this.outputs[0].wireColor = rgbFromType(ANY_TYPE, true);
+            this.outputs[0].wireColor = rgbFromType(ANY_VALUE, true);
 
 
         this.updateParamControls();
@@ -162,7 +162,7 @@ extends OperatorBase
     //         ? this.inputs[0].types[0]
     //         : this.inputs[1].connected
     //           ? this.inputs[1].types[0]
-    //           : ANY_TYPE;
+    //           : ANY_VALUE;
 
 
     //     if (COLOR_TYPES.includes(type))
@@ -189,7 +189,7 @@ extends OperatorBase
             ? this.inputs[0].types[0]
             : this.inputs[1].connected
               ? this.inputs[1].types[0]
-              : ANY_TYPE;
+              : ANY_VALUE;
 
 
         let colorActive  = rgbFromType(type, true);
@@ -248,7 +248,7 @@ extends OperatorBase
 
                 colors.outputWire = wireColor;
                 colors.output = rgbaLerp(
-                    rgb_a(getTextColorFromBackColor(rgbFromType(ANY_TYPE, true)), 0.3),
+                    rgb_a(getTextColorFromBackColor(rgbFromType(ANY_VALUE, true)), 0.3),
                     wireColor,
                     wireColor[3]);
             }
@@ -260,7 +260,7 @@ extends OperatorBase
 
                 colors.outputWire = wireColor;
                 colors.output = rgbaLerp(
-                    rgb_a(getTextColorFromBackColor(rgbFromType(ANY_TYPE, true)), 0.3),
+                    rgb_a(getTextColorFromBackColor(rgbFromType(ANY_VALUE, true)), 0.3),
                     wireColor,
                     wireColor[3]);
             }
@@ -271,7 +271,7 @@ extends OperatorBase
 
                 colors.outputWire = wireColor;
                 colors.output = rgbaLerp(
-                    rgb_a(getTextColorFromBackColor(rgbFromType(ANY_TYPE, true)), 0.3),
+                    rgb_a(getTextColorFromBackColor(rgbFromType(ANY_VALUE, true)), 0.3),
                     wireColor,
                     wireColor[3]);
             }
@@ -309,8 +309,8 @@ function OpIfElse_onConnectInput(node, inputIndex)
         otherInput.wireColor  = [...firstOut.wireColor];
 
         node.outputs[0].types = 
-            firstTypes.includes(ANY_TYPE)
-            ? [ANY_TYPE]
+            firstTypes.includes(ANY_VALUE)
+            ? [ANY_VALUE]
             : [...firstTypes];
     }
 
@@ -344,17 +344,17 @@ function OpIfElse_onDisconnectInput(node, inputIndex)
 
 
     if (!node.inputs[otherIndex].connected)
-        node.inputs[inputIndex].types = [ANY_TYPE];
+        node.inputs[inputIndex].types = [ANY_VALUE];
 
     node.inputs[otherIndex].types = 
         otherInput.connected 
         ? [...otherTypes]
-        : [ANY_TYPE];
+        : [ANY_VALUE];
 
     node.outputs[0].types = 
         otherInput.connected
         ? [...otherTypes]
-        : [ANY_TYPE];
+        : [ANY_VALUE];
 
 
     // const connectedInputs = node.headerInputs.filter(i => i.connected);

@@ -324,7 +324,7 @@ class Operator
     getAutoOutput(inputTypes)
     {
         const outputs = this.headerOutputs.filter(o => 
-               o.types.includes(ANY_TYPE)
+               o.types.includes(ANY_VALUE)
             || arraysIntersect(o.types, inputTypes));
 
         return  outputs.length == 1
@@ -1270,7 +1270,7 @@ function specifyListOutput(value, output)
     for (const item of value.items)
     {
              if (type == NULL     )   type = item.type;
-        else if (type != item.type) { type = ANY_TYPE; break; }
+        else if (type != item.type) { type = ANY_VALUE; break; }
     }
     
          if (type == NUMBER_VALUE) output.types = [NUMBER_LIST_VALUE];

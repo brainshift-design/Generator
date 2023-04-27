@@ -248,7 +248,7 @@ const START = 'START';
 const REPEAT = 'REPT';
 const CACHE = 'CACHE';
 const COPY = 'COPY';
-const ANY_TYPE = 'ANY';
+const ANY_VALUE = 'ANY#';
 const LIST_TYPES = [
     LIST_VALUE,
     NUMBER_LIST_VALUE,
@@ -268,7 +268,6 @@ const LIST_VALUES = [
 ];
 const FOREACH = 'FOR';
 const FLOW_TYPES = [
-    ANY_TYPE,
     ...LIST_TYPES,
     ITEMS,
     SELECT,
@@ -437,6 +436,26 @@ const SHAPE_TYPES = [
     ...POLYGON_TYPES,
     ...STAR_TYPES,
     ...TEXTSHAPE_TYPES
+];
+const ALL_VALUES = [
+    LIST_VALUE,
+    NUMBER_LIST_VALUE,
+    TEXT_LIST_VALUE,
+    SHAPE_LIST_VALUE,
+    NUMBER_VALUE,
+    TEXT_VALUE,
+    COLOR_VALUE,
+    FILL_VALUE,
+    STROKE_VALUE,
+    COLOR_STOP_VALUE,
+    GRADIENT_VALUE,
+    SHAPE_VALUE,
+    RECTANGLE_VALUE,
+    LINE_VALUE,
+    ELLIPSE_VALUE,
+    POLYGON_VALUE,
+    STAR_VALUE,
+    TEXTSHAPE_VALUE
 ];
 // const ALL_TYPES =
 // [

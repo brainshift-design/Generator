@@ -4838,7 +4838,8 @@ function rgbFromTypeMode(type, active, mode)
         ? (mode ? rgbActiveGroupDark  : rgbActiveGroupLight)
         : (mode ? rgbGroupDark        : rgbGroupLight      );
 
-    else if (FLOW_TYPES.includes(type))
+    else if (FLOW_TYPES.includes(type)
+          || type == ANY_VALUE)
         return active 
         ? (mode ? rgbActiveFlowDark   : rgbActiveFlowLight)
         : (mode ? rgbFlowDark         : rgbFlowLight      );
@@ -7861,7 +7862,7 @@ const CACHE                   = 'CACHE';
 const COPY                    = 'COPY';
 
 
-const ANY_TYPE                = 'ANY';
+const ANY_VALUE                = 'ANY#';
 
 
 const LIST_TYPES =
@@ -7892,7 +7893,6 @@ const FOREACH                 = 'FOR';
 
 const FLOW_TYPES =
 [
-    ANY_TYPE,
     ...LIST_TYPES,
     ITEMS,
     SELECT,
@@ -8111,6 +8111,33 @@ const SHAPE_TYPES =
     ...POLYGON_TYPES,
     ...STAR_TYPES,
     ...TEXTSHAPE_TYPES
+];
+
+
+const ALL_VALUES =
+[
+           LIST_VALUE,
+    NUMBER_LIST_VALUE,
+      TEXT_LIST_VALUE,
+     SHAPE_LIST_VALUE,
+     
+         NUMBER_VALUE,
+           TEXT_VALUE,
+          COLOR_VALUE,
+
+           FILL_VALUE,
+         STROKE_VALUE,
+
+     COLOR_STOP_VALUE,
+       GRADIENT_VALUE,
+
+          SHAPE_VALUE,
+      RECTANGLE_VALUE,
+           LINE_VALUE,
+        ELLIPSE_VALUE,
+        POLYGON_VALUE,
+           STAR_VALUE,
+      TEXTSHAPE_VALUE
 ];
 
 
@@ -8664,6 +8691,8 @@ class GNode
     options = {};
     data    = {}; // for type conversion info
 
+    
+
 
 
     constructor(type, options) 
@@ -8944,6 +8973,13 @@ extends GNode
     invalidate()
     {
         this.valid = false;
+    }
+
+
+
+    invalidateForward()
+    {
+        
     }
 }
 
@@ -11920,18 +11956,18 @@ extends GOperator
                 : 1;
 
 
-            for (let i = 0; i < nItems; i++)
+            for (let i = 0, id = 0; i < nItems; i++)
             {
                 this.input.invalidate();
                 await this.input.eval(parse);
 
 
-                for (let j = 0; j < this.input.objects.length; j++)
+                for (let j = 0; j < this.input.objects.length; j++, id++)
                 {
                     const obj = this.input.objects[j].copy();
     
                     obj.nodeId   = this.nodeId;
-                    obj.objectId = i;
+                    obj.objectId = id;
     
                     this.objects.push(obj);
                 }
@@ -26430,7 +26466,8 @@ function rgbFromTypeMode(type, active, mode)
         ? (mode ? rgbActiveGroupDark  : rgbActiveGroupLight)
         : (mode ? rgbGroupDark        : rgbGroupLight      );
 
-    else if (FLOW_TYPES.includes(type))
+    else if (FLOW_TYPES.includes(type)
+          || type == ANY_VALUE)
         return active 
         ? (mode ? rgbActiveFlowDark   : rgbActiveFlowLight)
         : (mode ? rgbFlowDark         : rgbFlowLight      );
@@ -32040,7 +32077,7 @@ const CACHE                   = 'CACHE';
 const COPY                    = 'COPY';
 
 
-const ANY_TYPE                = 'ANY';
+const ANY_VALUE                = 'ANY#';
 
 
 const LIST_TYPES =
@@ -32071,7 +32108,6 @@ const FOREACH                 = 'FOR';
 
 const FLOW_TYPES =
 [
-    ANY_TYPE,
     ...LIST_TYPES,
     ITEMS,
     SELECT,
@@ -32290,6 +32326,33 @@ const SHAPE_TYPES =
     ...POLYGON_TYPES,
     ...STAR_TYPES,
     ...TEXTSHAPE_TYPES
+];
+
+
+const ALL_VALUES =
+[
+           LIST_VALUE,
+    NUMBER_LIST_VALUE,
+      TEXT_LIST_VALUE,
+     SHAPE_LIST_VALUE,
+     
+         NUMBER_VALUE,
+           TEXT_VALUE,
+          COLOR_VALUE,
+
+           FILL_VALUE,
+         STROKE_VALUE,
+
+     COLOR_STOP_VALUE,
+       GRADIENT_VALUE,
+
+          SHAPE_VALUE,
+      RECTANGLE_VALUE,
+           LINE_VALUE,
+        ELLIPSE_VALUE,
+        POLYGON_VALUE,
+           STAR_VALUE,
+      TEXTSHAPE_VALUE
 ];
 
 
@@ -32843,6 +32906,8 @@ class GNode
     options = {};
     data    = {}; // for type conversion info
 
+    
+
 
 
     constructor(type, options) 
@@ -33123,6 +33188,13 @@ extends GNode
     invalidate()
     {
         this.valid = false;
+    }
+
+
+
+    invalidateForward()
+    {
+        
     }
 }
 
@@ -36099,18 +36171,18 @@ extends GOperator
                 : 1;
 
 
-            for (let i = 0; i < nItems; i++)
+            for (let i = 0, id = 0; i < nItems; i++)
             {
                 this.input.invalidate();
                 await this.input.eval(parse);
 
 
-                for (let j = 0; j < this.input.objects.length; j++)
+                for (let j = 0; j < this.input.objects.length; j++, id++)
                 {
                     const obj = this.input.objects[j].copy();
     
                     obj.nodeId   = this.nodeId;
-                    obj.objectId = i;
+                    obj.objectId = id;
     
                     this.objects.push(obj);
                 }
@@ -55793,7 +55865,7 @@ extends EventTarget
 
     supportsTypes(types)
     {
-        return this.types.includes(ANY_TYPE)
+        return this.types.includes(ANY_VALUE)
              ? true
              : arraysIntersect(this.types, types);
     }
@@ -55802,8 +55874,8 @@ extends EventTarget
 
     canConnectFrom(output)
     {
-        if (   output.supportsTypes([ANY_TYPE])
-            && this.types[0] != ANY_TYPE)
+        if (   output.supportsTypes([ANY_VALUE])
+            && this.types[0] != ANY_VALUE)
             return false;
 
         if (   !this.canConnect
@@ -56184,7 +56256,7 @@ extends EventTarget
 
 //     supportsTypes(types)
 //     {
-//         return this.types.includes(ANY_TYPE)
+//         return this.types.includes(ANY_VALUE)
 //              ? true
 //              : arraysIntersect(this.types, types);
 //     }
@@ -56193,8 +56265,8 @@ extends EventTarget
 
 //     canConnectFrom(output)
 //     {
-//         if (   output.supportsTypes([ANY_TYPE])
-//             && this.types[0] != ANY_TYPE)
+//         if (   output.supportsTypes([ANY_VALUE])
+//             && this.types[0] != ANY_VALUE)
 //             return false;
 
 //         if (   !this.canConnect
@@ -56514,7 +56586,7 @@ extends EventTarget
 
     supportsTypes(types)
     {
-        return this.types.includes(ANY_TYPE)
+        return this.types.includes(ANY_VALUE)
              ? true
              : arraysIntersect(this.types, types);
     }
@@ -56523,9 +56595,9 @@ extends EventTarget
 
     canConnectTo(input)
     {
-        // console.log('this.supportsTypes([ANY_TYPE] =', this.supportsTypes([ANY_TYPE]));
+        // console.log('this.supportsTypes([ANY_VALUE] =', this.supportsTypes([ANY_VALUE]));
 
-        if (this.supportsTypes([ANY_TYPE]))
+        if (this.supportsTypes([ANY_VALUE]))
             return true;
 
         return arraysIntersect(this.types, input.types);
@@ -56615,7 +56687,7 @@ class Connection
             this.outputOrder,
             (this.stripIdForCopy ? this.input.node.nodeId : this.input.node.id),
             (this.input.param ? this.input.param.id : this.input.index),
-            boolToString(arraysIntersect(this.output.types, LIST_TYPES))); // not supportsTypes() here, because that allows LIST in case of ANY_TYPE
+            boolToString(arraysIntersect(this.output.types, LIST_TYPES))); // not supportsTypes() here, because that allows LIST in case of ANY_VALUE
 
         this.stripIdForCopy = false;
 
@@ -57588,7 +57660,7 @@ class Operator
     getAutoOutput(inputTypes)
     {
         const outputs = this.headerOutputs.filter(o => 
-               o.types.includes(ANY_TYPE)
+               o.types.includes(ANY_VALUE)
             || arraysIntersect(o.types, inputTypes));
 
         return  outputs.length == 1
@@ -58534,7 +58606,7 @@ function specifyListOutput(value, output)
     for (const item of value.items)
     {
              if (type == NULL     )   type = item.type;
-        else if (type != item.type) { type = ANY_TYPE; break; }
+        else if (type != item.type) { type = ANY_VALUE; break; }
     }
     
          if (type == NUMBER_VALUE) output.types = [NUMBER_LIST_VALUE];
@@ -60248,7 +60320,7 @@ extends OperatorBase
     
     addNewInput()
     {
-        const newInput = new Input([ANY_TYPE]);
+        const newInput = new Input([ANY_VALUE]);
         newInput.isNew = true;
 
         newInput.addEventListener('connect',    e => { onVariableConnectInput(this); e.detail.input.isNew = false; });
@@ -60693,9 +60765,9 @@ extends OperatorBase
         super(IF_ELSE, 'ifElse', 'if/else');
 
 
-        this.addInput (new Input([ANY_TYPE]));
-        this.addInput (new Input([ANY_TYPE]));
-        this.addOutput(new Output([ANY_TYPE], this.output_genRequest));
+        this.addInput (new Input([ANY_VALUE]));
+        this.addInput (new Input([ANY_VALUE]));
+        this.addOutput(new Output([ANY_VALUE], this.output_genRequest));
 
 
         this.addParam(this.paramCondition = new NumberParam('condition', 'condition', true, true, true, 1, 0, 1));
@@ -60798,7 +60870,7 @@ extends OperatorBase
                   && this.paramCondition.value.value == 0)
                 this.outputs[0].wireColor = this.inputs[1].wireColor;
             else
-                this.outputs[0].wireColor = rgbFromType(ANY_TYPE, true);
+                this.outputs[0].wireColor = rgbFromType(ANY_VALUE, true);
 
             // console.log('this.inputs[0] =', this.inputs[0]);
             // console.log('this.outputs[0] =', this.outputs[0]);
@@ -60815,14 +60887,14 @@ extends OperatorBase
                   && this.paramCondition.value.value == 0)
                 this.outputs[0].wireColor = colors.outputWire;
             else
-                this.outputs[0].wireColor = rgbFromType(ANY_TYPE, true);
+                this.outputs[0].wireColor = rgbFromType(ANY_VALUE, true);
 
             // console.log('this.inputs[0] =', this.inputs[0]);
             // console.log('this.outputs[0] =', this.outputs[0]);
         }
         
         else
-            this.outputs[0].wireColor = rgbFromType(ANY_TYPE, true);
+            this.outputs[0].wireColor = rgbFromType(ANY_VALUE, true);
 
 
         this.updateParamControls();
@@ -60842,7 +60914,7 @@ extends OperatorBase
     //         ? this.inputs[0].types[0]
     //         : this.inputs[1].connected
     //           ? this.inputs[1].types[0]
-    //           : ANY_TYPE;
+    //           : ANY_VALUE;
 
 
     //     if (COLOR_TYPES.includes(type))
@@ -60869,7 +60941,7 @@ extends OperatorBase
             ? this.inputs[0].types[0]
             : this.inputs[1].connected
               ? this.inputs[1].types[0]
-              : ANY_TYPE;
+              : ANY_VALUE;
 
 
         let colorActive  = rgbFromType(type, true);
@@ -60928,7 +61000,7 @@ extends OperatorBase
 
                 colors.outputWire = wireColor;
                 colors.output = rgbaLerp(
-                    rgb_a(getTextColorFromBackColor(rgbFromType(ANY_TYPE, true)), 0.3),
+                    rgb_a(getTextColorFromBackColor(rgbFromType(ANY_VALUE, true)), 0.3),
                     wireColor,
                     wireColor[3]);
             }
@@ -60940,7 +61012,7 @@ extends OperatorBase
 
                 colors.outputWire = wireColor;
                 colors.output = rgbaLerp(
-                    rgb_a(getTextColorFromBackColor(rgbFromType(ANY_TYPE, true)), 0.3),
+                    rgb_a(getTextColorFromBackColor(rgbFromType(ANY_VALUE, true)), 0.3),
                     wireColor,
                     wireColor[3]);
             }
@@ -60951,7 +61023,7 @@ extends OperatorBase
 
                 colors.outputWire = wireColor;
                 colors.output = rgbaLerp(
-                    rgb_a(getTextColorFromBackColor(rgbFromType(ANY_TYPE, true)), 0.3),
+                    rgb_a(getTextColorFromBackColor(rgbFromType(ANY_VALUE, true)), 0.3),
                     wireColor,
                     wireColor[3]);
             }
@@ -60989,8 +61061,8 @@ function OpIfElse_onConnectInput(node, inputIndex)
         otherInput.wireColor  = [...firstOut.wireColor];
 
         node.outputs[0].types = 
-            firstTypes.includes(ANY_TYPE)
-            ? [ANY_TYPE]
+            firstTypes.includes(ANY_VALUE)
+            ? [ANY_VALUE]
             : [...firstTypes];
     }
 
@@ -61024,17 +61096,17 @@ function OpIfElse_onDisconnectInput(node, inputIndex)
 
 
     if (!node.inputs[otherIndex].connected)
-        node.inputs[inputIndex].types = [ANY_TYPE];
+        node.inputs[inputIndex].types = [ANY_VALUE];
 
     node.inputs[otherIndex].types = 
         otherInput.connected 
         ? [...otherTypes]
-        : [ANY_TYPE];
+        : [ANY_VALUE];
 
     node.outputs[0].types = 
         otherInput.connected
         ? [...otherTypes]
-        : [ANY_TYPE];
+        : [ANY_VALUE];
 
 
     // const connectedInputs = node.headerInputs.filter(i => i.connected);
@@ -61068,8 +61140,8 @@ extends OperatorBase
     {
         super(START, 'start', 'start');
 
-        this.addInput (new Input ([ANY_TYPE]));
-        this.addOutput(new Output([ANY_TYPE], this.output_genRequest));
+        this.addInput (new Input ([ANY_VALUE]));
+        this.addOutput(new Output([ANY_VALUE], this.output_genRequest));
 
 
         this.addParam(this.paramRepeatId = new TextParam('repeatId', 'ID', false, true));
@@ -61123,7 +61195,7 @@ extends OperatorBase
 
 // function OpStart_onDisconnectInput(node)
 // {
-//     node.outputs[0].types = [ANY_TYPE];
+//     node.outputs[0].types = [ANY_VALUE];
 // }
 
 
@@ -61140,8 +61212,8 @@ extends OperatorBase
         super(REPEAT, 'repeat', 'repeat');
 
         
-        this.addInput (new Input([ANY_TYPE]));
-        this.addOutput(new Output([LIST_VALUE], this.output_genRequest));
+        this.addInput (new Input([ANY_VALUE]));
+        this.addOutput(new Output([ANY_VALUE], this.output_genRequest));
 
 
         this.addParam(this.paramCount    = new NumberParam('count',    'count',     true, true, false, 1, 0, 1000, 0));
@@ -61234,7 +61306,7 @@ extends OperatorBase
         this.cached = true;
         
 
-        this.addInput(new Input([ANY_TYPE]));
+        this.addInput(new Input([ANY_VALUE]));
         //this.addOutput(new Output([], this.output_genRequest));
 
 
@@ -61386,7 +61458,7 @@ extends OperatorBase
         //this.cached = true;
         
 
-        this.addInput (new Input([ANY_TYPE]));
+        this.addInput (new Input([ANY_VALUE]));
         this.addOutput(new Output([], this.output_genRequest));
 
 
@@ -62214,7 +62286,7 @@ extends OperatorBase
 
         this.cached = false;
         
-        this.addInput (new Input ([ANY_TYPE]));
+        this.addInput (new Input ([ANY_VALUE]));
         this.addOutput(new Output([NUMBER_VALUE], this.output_genRequest));
 
         this.addParam(this.paramSeed = new NumberParam('seed', 'seed', true, true, true, Math.floor(Math.random() * 10000), 0, 0x7fffffff));
@@ -62266,7 +62338,7 @@ extends OperatorBase
 
         this.cached = false;
         
-        this.addInput (new Input ([ANY_TYPE]));
+        this.addInput (new Input ([ANY_VALUE]));
         this.addOutput(new Output([NUMBER_VALUE], this.output_genRequest));
 
         this.addParam(this.paramStart = new NumberParam('start', 'start', true, true, false, 0));
@@ -62692,12 +62764,12 @@ extends OperatorWithValue
     {
         const colors = this.getHeaderColors();
 
-        const rgba       = rgb_a(rgbFromType(ANY_TYPE));
+        const rgba       = rgb_a(rgbFromType(ANY_VALUE));
         const rgbaStripe = rgb_a(getStripeBackColor(rgba), rgba[3]);
 
         const headerStyle = rgba2style(
             rgb_a(
-                rgbFromType(ANY_TYPE) //this.paramValue.value.isValid()
+                rgbFromType(ANY_VALUE) //this.paramValue.value.isValid()
                 ? (isDark(rgbaStripe) ? [1, 1, 1] : [0, 0, 0])
                 : colors.text, 
                 this.btnPlay.down 
@@ -68427,7 +68499,7 @@ extends OpColorBase
         colors.wire = 
             !rgbaIsNaN(colors.stripeBack)
             ? colors.stripeBack
-            : rgb_a(rgbFromType(ANY_TYPE, false));
+            : rgb_a(rgbFromType(ANY_VALUE, false));
 
 
         return colors;
@@ -68695,7 +68767,7 @@ extends OpColorBase
         colors.wire = 
             !rgbaIsNaN(colors.stripeBack)
             ? colors.stripeBack
-            : rgbFromType(ANY_TYPE, false);
+            : rgbFromType(ANY_VALUE, false);
 
         return colors;
     }
@@ -68878,8 +68950,8 @@ extends OperatorBase
         this.alwaysLoadParams = true;
 
 
-        this.addInput (new Input ([ANY_TYPE]));
-        this.addOutput(new Output([ANY_TYPE], this.output_genRequest));
+        this.addInput (new Input ([ANY_VALUE]));
+        this.addOutput(new Output([ANY_VALUE], this.output_genRequest));
 
 
         this. inputs[0].addEventListener('connect',    e =>  input_onconnect   (this));
@@ -69048,7 +69120,7 @@ extends OperatorBase
         {
             const colors = this.getHeaderColors();
 
-            //const rgb        = rgbFromType(ANY_TYPE);//this.paramValue.value.toRgba();
+            //const rgb        = rgbFromType(ANY_VALUE);//this.paramValue.value.toRgba();
             //const rgbaStripe = rgb_a(getStripeBackColor(rgb));
             
             this.circleBack.style.visibility = 'hidden';//'visible';
@@ -69078,12 +69150,12 @@ extends OperatorBase
     {
         const colors = this.getHeaderColors();
 
-        const rgba       = rgb_a(rgbFromType(ANY_TYPE));
+        const rgba       = rgb_a(rgbFromType(ANY_VALUE));
         const rgbaStripe = rgb_a(getStripeBackColor(rgba), rgba[3]);
 
         const headerStyle = rgba2style(
             rgb_a(
-                rgbFromType(ANY_TYPE) //this.paramValue.value.isValid()
+                rgbFromType(ANY_VALUE) //this.paramValue.value.isValid()
                 ? (isDark(rgbaStripe) ? [1, 1, 1] : [0, 0, 0])
                 : colors.text, 
                 this.headerCircle.down 
@@ -69282,11 +69354,11 @@ function input_ondisconnect(node)
     //         && n.paramType == 1
     //         && (   !isEmpty(n. inputs) && n. inputs[0].connected 
     //             || !isEmpty(n.outputs) && n.outputs[0].connected)))
-    //     node.inputs[0].types = [ANY_TYPE];
+    //     node.inputs[0].types = [ANY_VALUE];
 
 
-    node.outputs[0].types = [ANY_TYPE];
-    node. inputs[0].types = [ANY_TYPE];
+    node.outputs[0].types = [ANY_VALUE];
+    node. inputs[0].types = [ANY_VALUE];
 
     node.outputs[0].div.style.display = 'inline-block';
 
@@ -69358,10 +69430,10 @@ function output_ondisconnect(node)
     //         && n.paramType == 1
     //         && (   !isEmpty(n. inputs) && n. inputs[0].connected 
     //             || !isEmpty(n.outputs) && n.outputs[0].connected)))
-    //     node.outputs[0].types = [ANY_TYPE];
+    //     node.outputs[0].types = [ANY_VALUE];
 
-    node.outputs[0].types = [ANY_TYPE];
-    node. inputs[0].types = [ANY_TYPE];
+    node.outputs[0].types = [ANY_VALUE];
+    node. inputs[0].types = [ANY_VALUE];
 
     node.inputs[0].div.style.display = 'inline-block';
 
@@ -69381,7 +69453,7 @@ function output_ondisconnect(node)
         node.groupNode.removeInput(node.groupInput);
 
 
-    node.groupInput.types     = [ANY_TYPE];
+    node.groupInput.types     = [ANY_VALUE];
     node.groupInput.paramNode = null;
     node.groupInput           = null;
 

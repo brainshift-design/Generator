@@ -9,8 +9,8 @@ extends OperatorBase
     {
         super(START, 'start', 'start');
 
-        this.addInput (new Input ([ANY_TYPE]));
-        this.addOutput(new Output([ANY_TYPE], this.output_genRequest));
+        this.addInput (new Input ([ANY_VALUE]));
+        this.addOutput(new Output([ANY_VALUE], this.output_genRequest));
 
 
         this.addParam(this.paramRepeatId = new TextParam('repeatId', 'ID', false, true));
@@ -64,5 +64,5 @@ extends OperatorBase
 
 // function OpStart_onDisconnectInput(node)
 // {
-//     node.outputs[0].types = [ANY_TYPE];
+//     node.outputs[0].types = [ANY_VALUE];
 // }

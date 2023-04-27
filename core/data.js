@@ -32,7 +32,8 @@ function rgbFromTypeMode(type, active, mode)
         ? (mode ? rgbActiveGroupDark  : rgbActiveGroupLight)
         : (mode ? rgbGroupDark        : rgbGroupLight      );
 
-    else if (FLOW_TYPES.includes(type))
+    else if (FLOW_TYPES.includes(type)
+          || type == ANY_VALUE)
         return active 
         ? (mode ? rgbActiveFlowDark   : rgbActiveFlowLight)
         : (mode ? rgbFlowDark         : rgbFlowLight      );

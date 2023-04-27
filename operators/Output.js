@@ -268,7 +268,7 @@ extends EventTarget
 
     supportsTypes(types)
     {
-        return this.types.includes(ANY_TYPE)
+        return this.types.includes(ANY_VALUE)
              ? true
              : arraysIntersect(this.types, types);
     }
@@ -277,9 +277,9 @@ extends EventTarget
 
     canConnectTo(input)
     {
-        // console.log('this.supportsTypes([ANY_TYPE] =', this.supportsTypes([ANY_TYPE]));
+        // console.log('this.supportsTypes([ANY_VALUE] =', this.supportsTypes([ANY_VALUE]));
 
-        if (this.supportsTypes([ANY_TYPE]))
+        if (this.supportsTypes([ANY_VALUE]))
             return true;
 
         return arraysIntersect(this.types, input.types);

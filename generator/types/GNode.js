@@ -5,6 +5,8 @@ class GNode
     options = {};
     data    = {}; // for type conversion info
 
+    
+
 
 
     constructor(type, options) 

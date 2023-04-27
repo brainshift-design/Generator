@@ -33,8 +33,8 @@ extends OperatorBase
         this.alwaysLoadParams = true;
 
 
-        this.addInput (new Input ([ANY_TYPE]));
-        this.addOutput(new Output([ANY_TYPE], this.output_genRequest));
+        this.addInput (new Input ([ANY_VALUE]));
+        this.addOutput(new Output([ANY_VALUE], this.output_genRequest));
 
 
         this. inputs[0].addEventListener('connect',    e =>  input_onconnect   (this));
@@ -203,7 +203,7 @@ extends OperatorBase
         {
             const colors = this.getHeaderColors();
 
-            //const rgb        = rgbFromType(ANY_TYPE);//this.paramValue.value.toRgba();
+            //const rgb        = rgbFromType(ANY_VALUE);//this.paramValue.value.toRgba();
             //const rgbaStripe = rgb_a(getStripeBackColor(rgb));
             
             this.circleBack.style.visibility = 'hidden';//'visible';
@@ -233,12 +233,12 @@ extends OperatorBase
     {
         const colors = this.getHeaderColors();
 
-        const rgba       = rgb_a(rgbFromType(ANY_TYPE));
+        const rgba       = rgb_a(rgbFromType(ANY_VALUE));
         const rgbaStripe = rgb_a(getStripeBackColor(rgba), rgba[3]);
 
         const headerStyle = rgba2style(
             rgb_a(
-                rgbFromType(ANY_TYPE) //this.paramValue.value.isValid()
+                rgbFromType(ANY_VALUE) //this.paramValue.value.isValid()
                 ? (isDark(rgbaStripe) ? [1, 1, 1] : [0, 0, 0])
                 : colors.text, 
                 this.headerCircle.down 
@@ -437,11 +437,11 @@ function input_ondisconnect(node)
     //         && n.paramType == 1
     //         && (   !isEmpty(n. inputs) && n. inputs[0].connected 
     //             || !isEmpty(n.outputs) && n.outputs[0].connected)))
-    //     node.inputs[0].types = [ANY_TYPE];
+    //     node.inputs[0].types = [ANY_VALUE];
 
 
-    node.outputs[0].types = [ANY_TYPE];
-    node. inputs[0].types = [ANY_TYPE];
+    node.outputs[0].types = [ANY_VALUE];
+    node. inputs[0].types = [ANY_VALUE];
 
     node.outputs[0].div.style.display = 'inline-block';
 
@@ -513,10 +513,10 @@ function output_ondisconnect(node)
     //         && n.paramType == 1
     //         && (   !isEmpty(n. inputs) && n. inputs[0].connected 
     //             || !isEmpty(n.outputs) && n.outputs[0].connected)))
-    //     node.outputs[0].types = [ANY_TYPE];
+    //     node.outputs[0].types = [ANY_VALUE];
 
-    node.outputs[0].types = [ANY_TYPE];
-    node. inputs[0].types = [ANY_TYPE];
+    node.outputs[0].types = [ANY_VALUE];
+    node. inputs[0].types = [ANY_VALUE];
 
     node.inputs[0].div.style.display = 'inline-block';
 
@@ -536,7 +536,7 @@ function output_ondisconnect(node)
         node.groupNode.removeInput(node.groupInput);
 
 
-    node.groupInput.types     = [ANY_TYPE];
+    node.groupInput.types     = [ANY_VALUE];
     node.groupInput.paramNode = null;
     node.groupInput           = null;
 

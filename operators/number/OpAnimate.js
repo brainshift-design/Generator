@@ -159,12 +159,12 @@ extends OperatorWithValue
     {
         const colors = this.getHeaderColors();
 
-        const rgba       = rgb_a(rgbFromType(ANY_TYPE));
+        const rgba       = rgb_a(rgbFromType(ANY_VALUE));
         const rgbaStripe = rgb_a(getStripeBackColor(rgba), rgba[3]);
 
         const headerStyle = rgba2style(
             rgb_a(
-                rgbFromType(ANY_TYPE) //this.paramValue.value.isValid()
+                rgbFromType(ANY_VALUE) //this.paramValue.value.isValid()
                 ? (isDark(rgbaStripe) ? [1, 1, 1] : [0, 0, 0])
                 : colors.text, 
                 this.btnPlay.down 

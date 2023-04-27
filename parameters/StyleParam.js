@@ -38,7 +38,7 @@
 //         this.div.appendChild(this.textControl);
 
        
-//         if (hasInput)  this.initInput([ANY_TYPE]);
+//         if (hasInput)  this.initInput([ANY_VALUE]);
 //         if (hasOutput) this.initOutput([LIST_VALUE], this.output_genRequest);
 //     }
 
@@ -95,7 +95,7 @@
 //         {
 //             request.push(...pushInputOrParam(this.input, gen));
 
-//             // if (this.input.connectedOutput.supportsTypes([ANY_TYPE]))
+//             // if (this.input.connectedOutput.supportsTypes([ANY_VALUE]))
 //             // {
 //             //     const val = noNaN(this.controls[0].value,      1);
 //             //     const dec = noNaN(this.controls[0].displayDec, 0);
@@ -191,7 +191,7 @@
 //                 enable 
 //             || !this.input 
 //             || !this.input.connected 
-//             ||  this.input.connectedOutput.supportsTypes([ANY_TYPE]);
+//             ||  this.input.connectedOutput.supportsTypes([ANY_VALUE]);
 
 //         enableElementText(this.textControl, enable);
 //         this.textControl.readOnly = !enable;

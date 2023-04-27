@@ -57,18 +57,18 @@ extends GOperator
                 : 1;
 
 
-            for (let i = 0; i < nItems; i++)
+            for (let i = 0, id = 0; i < nItems; i++)
             {
                 this.input.invalidate();
                 await this.input.eval(parse);
 
 
-                for (let j = 0; j < this.input.objects.length; j++)
+                for (let j = 0; j < this.input.objects.length; j++, id++)
                 {
                     const obj = this.input.objects[j].copy();
     
                     obj.nodeId   = this.nodeId;
-                    obj.objectId = i;
+                    obj.objectId = id;
     
                     this.objects.push(obj);
                 }

@@ -103,4 +103,11 @@ extends GNode
     {
         this.valid = false;
     }
+
+
+
+    invalidateForward()
+    {
+        
+    }
 }

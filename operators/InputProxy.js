@@ -312,7 +312,7 @@
 
 //     supportsTypes(types)
 //     {
-//         return this.types.includes(ANY_TYPE)
+//         return this.types.includes(ANY_VALUE)
 //              ? true
 //              : arraysIntersect(this.types, types);
 //     }
@@ -321,8 +321,8 @@
 
 //     canConnectFrom(output)
 //     {
-//         if (   output.supportsTypes([ANY_TYPE])
-//             && this.types[0] != ANY_TYPE)
+//         if (   output.supportsTypes([ANY_VALUE])
+//             && this.types[0] != ANY_VALUE)
 //             return false;
 
 //         if (   !this.canConnect

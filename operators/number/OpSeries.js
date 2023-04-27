@@ -12,7 +12,7 @@ extends OperatorBase
 
         this.cached = false;
         
-        this.addInput (new Input ([ANY_TYPE]));
+        this.addInput (new Input ([ANY_VALUE]));
         this.addOutput(new Output([NUMBER_VALUE], this.output_genRequest));
 
         this.addParam(this.paramStart = new NumberParam('start', 'start', true, true, false, 0));
