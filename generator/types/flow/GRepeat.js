@@ -32,6 +32,14 @@ extends GOperator
 
 
 
+    isCached()
+    {
+        return this.valid;//
+            //|| this.repeatId;
+    }
+
+
+
     async eval(parse)
     {
         if (this.isCached())
@@ -41,9 +49,22 @@ extends GOperator
         let   count    = (await this.count   .eval(parse)).toValue();
         //const repeatId = (await this.repeatId.eval(parse)).toValue();
 
+
         count = new NumberValue(Math.round(count.value));
 
-       
+
+        if (this.repeatId.type != NUMBER)
+        {
+            console.assert(
+                   this.repeatId.type == NUMBER_SERIES
+                || this.repeatId.type == NUMBER_RANDOM,
+                'only volatile types can be repeated');
+
+            console.log('this.repeatId =', this.repeatId);
+            this.repeatId.repeatCount = count.value;
+        }
+
+
         this.value = new ListValue();
 
         this.objects = [];
@@ -59,10 +80,22 @@ extends GOperator
 
             for (let i = 0, id = 0; i < nItems; i++)
             {
-                //if (this.repeatId)
-                //    this.repeatId.node.invalidateForward(parse);
+                if (this.repeatId.type != NUMBER)
+                {
+                    console.assert(
+                           this.repeatId.type == NUMBER_SERIES
+                        || this.repeatId.type == NUMBER_RANDOM,
+                        'only volatile types can be repeated');
 
-                this.input.invalidate();
+                    // console.log('this.repeatId =', this.repeatId);
+                    // this.repeatId.repeatCount = count.value;
+                    this.input.invalidate();
+                    this.repeatId.valid = false;
+                }
+                else
+                    this.input.invalidate();
+
+
                 await this.input.eval(parse);
 
 
@@ -81,20 +114,17 @@ extends GOperator
 
                 if (input)
                     this.value.items.push(input.copy());
-
-
-                if (this.repeatId)
-                {
-                    console.log('this.repeatId =', this.repeadId);
-                    //this.repeatId.input.init = false;
-                }
             }
+
+
+            // if (this.repeatId)
+            //     this.repeatId.init = false;
         }
 
         
         genPushUpdateValue(parse, this.nodeId, 'value',    this.value);
         genPushUpdateValue(parse, this.nodeId, 'count',    count);
-        //genPushUpdateValue(parse, this.nodeId, 'repeatId', repeatId);
+        genPushUpdateValue(parse, this.nodeId, 'repeatId', NumberValue.NaN);
 
 
         this.validate();

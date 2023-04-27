@@ -4,9 +4,11 @@ extends GNumberType
     start;
     step;
 
-    current;
+    current     = null;
 
-    init = false;
+    init        = false;
+
+    repeatCount = 0;
 
 
 
@@ -35,31 +37,32 @@ extends GNumberType
 
     async eval(parse)
     {
-        // if (this.isCached())
-        //     return this;
+        if (this.isCached())
+            return this;
             
 
         // input not used for evaluation
 
 
-        if (!this.valid)
-        {
+        //if (!this.valid)
+        //{
             await this.start.eval(parse);
             await this.step .eval(parse);
-        }
+        //}
 
 
         const start = this.start.toValue();
         const step  = this.step .toValue();
     
 
-        if (!this.init)
+        if (  !this.current
+            || this.repeatCount == 0)//!this.init)
         {
             this.current = start.copy();
             this.init = true;
         }
         
-        
+
         this.value = new NumberValue(
             this.current.value,
             Math.max(start.decimals, step.decimals));
@@ -71,6 +74,10 @@ extends GNumberType
         genPushUpdateValue(parse, this.nodeId, 'step',  step );
         
 
+        if (this.repeatCount > 0)
+            this.repeatCount--;
+
+
         this.validate();
 
         return this;
@@ -78,11 +85,11 @@ extends GNumberType
 
 
 
-    invalidateForward(parse)
-    {
-        this.init  = false;
-        this.valid = false;
+    // invalidateForward(parse)
+    // {
+    //     this.init  = false;
+    //     this.valid = false;
 
-        super.invalidateForward(parse);
-    }
+    //     super.invalidateForward(parse);
+    // }
 }

@@ -55,7 +55,7 @@ extends GValue
 
     toJson()
     {
-        return toUtf8(this.value);
+        return encodeURIComponent(this.value);
     }
 
 
@@ -97,7 +97,7 @@ extends GValue
 
 function parseTextValue(str)
 {
-    const text = new TextValue(fromUtf8(str));
+    const text = new TextValue(decodeURIComponent(str));
 
     return [text, 1];
 }

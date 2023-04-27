@@ -7,6 +7,8 @@ extends GNumberType
 
     random = null;
 
+    repeatCount = 0;
+
 
 
     constructor(nodeId, options)

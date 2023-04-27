@@ -106,7 +106,7 @@ function genPushUpdateValue(parse, nodeId, paramId, value)
         nodeId:  nodeId,
         paramId: paramId,
         type:    value.type, // needed to correctly parse NAN_DISPLAY
-        value:   value
+        value:   value.toJson()
     });
 }
 
