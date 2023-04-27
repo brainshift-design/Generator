@@ -327,17 +327,17 @@ function genParseStart(parse)
     const start = new GStart(nodeId, options);
 
 
-    // let nInputs = -1;
+    let nInputs = -1;
     
-    // if (!ignore)
-    // {
-    //     nInputs = parseInt(parse.move());
-    //     console.assert(nInputs == 0 || nInputs == 1, 'nInputs must be [0, 1]');
-    // }
+    if (!ignore)
+    {
+        nInputs = parseInt(parse.move());
+        console.assert(nInputs == 0 || nInputs == 1, 'nInputs must be [0, 1]');
+    }
 
 
     if (parse.settings.logRequests) 
-        logReq(start, parse, ignore);//, nInputs);
+        logReq(start, parse, ignore, nInputs);
 
 
     if (ignore) 
@@ -350,10 +350,15 @@ function genParseStart(parse)
     parse.nTab++;
 
 
-    // if (nInputs == 1)
-    //     start.input = genParse(parse);
+    if (nInputs == 1)
+    {
+        start.input = genParse(parse);
+        start.input.targets.push(start);
+    }
+
 
     start.repeatId = genParse(parse);
+    // don't set target as it shoudn't be updated
 
 
     parse.nTab--;
@@ -397,10 +402,13 @@ function genParseRepeat(parse)
 
 
     if (nInputs == 1)
+    {
         rep.input = genParse(parse);
+        rep.input.targets.push(rep);
+    }
 
-    rep.count    = genParse(parse);
-    rep.repeatId = genParse(parse);
+    rep.count    = genParse(parse);  rep.count.targets.push(rep);
+    rep.repeatId = genParse(parse);  // don't set target here
 
 
     parse.nTab--;

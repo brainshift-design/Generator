@@ -38,6 +38,15 @@ extends OperatorBase
         if (ignore) return request;
 
         
+        // const input = this.node.inputs[0];
+
+
+        // request.push(input.connected ? 1 : 0);
+        
+        // if (input.connected)
+        //     request.push(...pushInputOrParam(input, gen));
+
+
         request.push(...this.node.paramSeed.genRequest(gen));
         request.push(...this.node.paramMin .genRequest(gen));
         request.push(...this.node.paramMax .genRequest(gen));

@@ -6,6 +6,8 @@ extends GNumberType
 
     current;
 
+    init = false;
+
 
 
     constructor(nodeId, options)
@@ -33,7 +35,12 @@ extends GNumberType
 
     async eval(parse)
     {
-        //logString('GSeries.eval()');
+        // if (this.isCached())
+        //     return this;
+            
+
+        // input not used for evaluation
+
 
         if (!this.valid)
         {
@@ -46,9 +53,12 @@ extends GNumberType
         const step  = this.step .toValue();
     
 
-        if (!this.valid)
+        if (!this.init)
+        {
             this.current = start.copy();
-
+            this.init = true;
+        }
+        
         
         this.value = new NumberValue(
             this.current.value,
@@ -57,16 +67,22 @@ extends GNumberType
         this.current.value += step.value;
 
 
-        //if (!this.valid)
-        //{
-            //genPushUpdateValue(parse, this.nodeId, 'value', this.value);
-            genPushUpdateValue(parse, this.nodeId, 'start', start);
-            genPushUpdateValue(parse, this.nodeId, 'step',  step );
-        //}
+        genPushUpdateValue(parse, this.nodeId, 'start', start);
+        genPushUpdateValue(parse, this.nodeId, 'step',  step );
         
 
         this.validate();
 
         return this;
+    }
+
+
+
+    invalidateForward(parse)
+    {
+        this.init  = false;
+        this.valid = false;
+
+        super.invalidateForward(parse);
     }
 }

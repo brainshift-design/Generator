@@ -49,7 +49,7 @@ function genParseColor(parse)
 
     if (nInputs == 1)
     {
-        col.input = genParse(parse);
+        col.input = genParse(parse);  col.input.targets.push(col);
         paramIds = parse.move().split(',');
     }
     else
@@ -62,11 +62,11 @@ function genParseColor(parse)
     {
         switch (id)
         {
-        case 'space':   col.space   = genParse(parse); break;
-        case 'convert': col.convert = genParse(parse); break;
-        case 'c1':      col.c1      = genParse(parse); break;
-        case 'c2':      col.c2      = genParse(parse); break;
-        case 'c3':      col.c3      = genParse(parse); break;
+        case 'space':   col.space   = genParse(parse);  col.space  .targets.push(col);  break;
+        case 'convert': col.convert = genParse(parse);  col.convert.targets.push(col);  break;
+        case 'c1':      col.c1      = genParse(parse);  col.c1     .targets.push(col);  break;
+        case 'c2':      col.c2      = genParse(parse);  col.c2     .targets.push(col);  break;
+        case 'c3':      col.c3      = genParse(parse);  col.c3     .targets.push(col);  break;
         }
     }
     

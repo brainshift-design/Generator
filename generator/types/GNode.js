@@ -5,7 +5,7 @@ class GNode
     options = {};
     data    = {}; // for type conversion info
 
-    
+    targets = []; // clients of this object that use its data
 
 
 
@@ -43,6 +43,17 @@ class GNode
     isValid() // is a valid value
     {
         return false;
+    }
+
+
+
+    invalidateForward(parse)
+    {
+        this.targets.forEach(t => 
+        {
+            t.valid = false;
+            t.invalidateForward(parse);
+        });
     }
 
 

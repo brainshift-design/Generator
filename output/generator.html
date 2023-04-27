@@ -4319,7 +4319,7 @@ class GNode
     options = {};
     data    = {}; // for type conversion info
 
-    
+    targets = []; // clients of this object that use its data
 
 
 
@@ -4357,6 +4357,17 @@ class GNode
     isValid() // is a valid value
     {
         return false;
+    }
+
+
+
+    invalidateForward(parse)
+    {
+        this.targets.forEach(t => 
+        {
+            t.valid = false;
+            t.invalidateForward(parse);
+        });
     }
 
 
@@ -4605,10 +4616,10 @@ extends GNode
 
 
 
-    invalidateForward()
-    {
-        
-    }
+    // invalidateVolatile() // sequence, random, anything where the value changes on each subsequent iteration
+    // {
+
+    // }
 }
 
 
@@ -7566,7 +7577,7 @@ extends GOperator
             
 
         let   count    = (await this.count   .eval(parse)).toValue();
-        const repeatId = (await this.repeatId.eval(parse)).toValue();
+        //const repeatId = (await this.repeatId.eval(parse)).toValue();
 
         count = new NumberValue(Math.round(count.value));
 
@@ -7586,6 +7597,9 @@ extends GOperator
 
             for (let i = 0, id = 0; i < nItems; i++)
             {
+                //if (this.repeatId)
+                //    this.repeatId.node.invalidateForward(parse);
+
                 this.input.invalidate();
                 await this.input.eval(parse);
 
@@ -7605,13 +7619,20 @@ extends GOperator
 
                 if (input)
                     this.value.items.push(input.copy());
+
+
+                if (this.repeatId)
+                {
+                    console.log('this.repeatId =', this.repeadId);
+                    //this.repeatId.input.init = false;
+                }
             }
         }
 
         
         genPushUpdateValue(parse, this.nodeId, 'value',    this.value);
         genPushUpdateValue(parse, this.nodeId, 'count',    count);
-        genPushUpdateValue(parse, this.nodeId, 'repeatId', repeatId);
+        //genPushUpdateValue(parse, this.nodeId, 'repeatId', repeatId);
 
 
         this.validate();
@@ -8153,6 +8174,8 @@ extends GNumberType
 
     current;
 
+    init = false;
+
 
 
     constructor(nodeId, options)
@@ -8180,7 +8203,12 @@ extends GNumberType
 
     async eval(parse)
     {
-        //logString('GSeries.eval()');
+        // if (this.isCached())
+        //     return this;
+            
+
+        // input not used for evaluation
+
 
         if (!this.valid)
         {
@@ -8193,9 +8221,12 @@ extends GNumberType
         const step  = this.step .toValue();
     
 
-        if (!this.valid)
+        if (!this.init)
+        {
             this.current = start.copy();
-
+            this.init = true;
+        }
+        
         
         this.value = new NumberValue(
             this.current.value,
@@ -8204,17 +8235,23 @@ extends GNumberType
         this.current.value += step.value;
 
 
-        //if (!this.valid)
-        //{
-            //genPushUpdateValue(parse, this.nodeId, 'value', this.value);
-            genPushUpdateValue(parse, this.nodeId, 'start', start);
-            genPushUpdateValue(parse, this.nodeId, 'step',  step );
-        //}
+        genPushUpdateValue(parse, this.nodeId, 'start', start);
+        genPushUpdateValue(parse, this.nodeId, 'step',  step );
         
 
         this.validate();
 
         return this;
+    }
+
+
+
+    invalidateForward(parse)
+    {
+        this.init  = false;
+        this.valid = false;
+
+        super.invalidateForward(parse);
     }
 }
 
@@ -8259,6 +8296,9 @@ extends GNumberType
     {
         if (this.isCached())
             return this;
+
+
+        // input not used for evaluation
 
             
         const seed = (await this.seed.eval(parse)).toValue();
@@ -14812,7 +14852,7 @@ function enableFeatures(subscription, beta)
     updateElementDisplay(menuItemSelect              .div, subscription && beta);
     updateElementDisplay(menuItemCount               .div, subscription && beta);
     updateElementDisplay(menuFlowSep3                .div, subscription && beta);
-    updateElementDisplay(menuItemStart               .div, subscription && beta);
+    //updateElementDisplay(menuItemStart               .div, subscription && beta);
     updateElementDisplay(menuItemRepeat              .div, subscription && beta);
     // updateElementDisplay(menuItemCache               .div, subscription && beta);
     // updateElementDisplay(menuItemCopy                .div, subscription && beta);
@@ -15453,7 +15493,7 @@ function genParseColor(parse)
 
     if (nInputs == 1)
     {
-        col.input = genParse(parse);
+        col.input = genParse(parse);  col.input.targets.push(col);
         paramIds = parse.move().split(',');
     }
     else
@@ -15466,11 +15506,11 @@ function genParseColor(parse)
     {
         switch (id)
         {
-        case 'space':   col.space   = genParse(parse); break;
-        case 'convert': col.convert = genParse(parse); break;
-        case 'c1':      col.c1      = genParse(parse); break;
-        case 'c2':      col.c2      = genParse(parse); break;
-        case 'c3':      col.c3      = genParse(parse); break;
+        case 'space':   col.space   = genParse(parse);  col.space  .targets.push(col);  break;
+        case 'convert': col.convert = genParse(parse);  col.convert.targets.push(col);  break;
+        case 'c1':      col.c1      = genParse(parse);  col.c1     .targets.push(col);  break;
+        case 'c2':      col.c2      = genParse(parse);  col.c2     .targets.push(col);  break;
+        case 'c3':      col.c3      = genParse(parse);  col.c3     .targets.push(col);  break;
         }
     }
     
@@ -16151,17 +16191,17 @@ function genParseStart(parse)
     const start = new GStart(nodeId, options);
 
 
-    // let nInputs = -1;
+    let nInputs = -1;
     
-    // if (!ignore)
-    // {
-    //     nInputs = parseInt(parse.move());
-    //     console.assert(nInputs == 0 || nInputs == 1, 'nInputs must be [0, 1]');
-    // }
+    if (!ignore)
+    {
+        nInputs = parseInt(parse.move());
+        console.assert(nInputs == 0 || nInputs == 1, 'nInputs must be [0, 1]');
+    }
 
 
     if (parse.settings.logRequests) 
-        logReq(start, parse, ignore);//, nInputs);
+        logReq(start, parse, ignore, nInputs);
 
 
     if (ignore) 
@@ -16174,10 +16214,15 @@ function genParseStart(parse)
     parse.nTab++;
 
 
-    // if (nInputs == 1)
-    //     start.input = genParse(parse);
+    if (nInputs == 1)
+    {
+        start.input = genParse(parse);
+        start.input.targets.push(start);
+    }
+
 
     start.repeatId = genParse(parse);
+    // don't set target as it shoudn't be updated
 
 
     parse.nTab--;
@@ -16221,10 +16266,13 @@ function genParseRepeat(parse)
 
 
     if (nInputs == 1)
+    {
         rep.input = genParse(parse);
+        rep.input.targets.push(rep);
+    }
 
-    rep.count    = genParse(parse);
-    rep.repeatId = genParse(parse);
+    rep.count    = genParse(parse);  rep.count.targets.push(rep);
+    rep.repeatId = genParse(parse);  // don't set target here
 
 
     parse.nTab--;
@@ -16749,8 +16797,17 @@ function genParseSeries(parse)
     const series = new GSeries(nodeId, options);
 
 
+    // let nInputs = -1;
+    
+    // if (!ignore)
+    // {
+    //     nInputs = parseInt(parse.move());
+    //     console.assert(nInputs == 0 || nInputs == 1, 'nInputs must be [0, 1]');
+    // }
+
+
     if (parse.settings.logRequests) 
-        logReq(series, parse, ignore);
+        logReq(series, parse, ignore);//, nInputs);
 
 
     if (ignore) 
@@ -16763,8 +16820,15 @@ function genParseSeries(parse)
     parse.nTab++;
 
 
-    series.start = genParse(parse);
-    series.step  = genParse(parse);
+    // if (nInputs == 1)
+    // {
+    //     series.input = genParse(parse);
+    //     series.input.targets.push(series);
+    // }
+
+
+    series.start = genParse(parse);  series.start.targets.push(series);
+    series.step  = genParse(parse);  series.step .targets.push(series);
 
 
     parse.nTab--;
@@ -16784,8 +16848,17 @@ function genParseRandom(parse)
     const rnd = new GRandom(nodeId, options);
 
 
+    // let nInputs = -1;
+    
+    // if (!ignore)
+    // {
+    //     nInputs = parseInt(parse.move());
+    //     console.assert(nInputs == 0 || nInputs == 1, 'nInputs must be [0, 1]');
+    // }
+
+
     if (parse.settings.logRequests) 
-        logReq(rnd, parse);
+        logReq(rnd, parse, ignore);//, nInputs);
 
 
     if (ignore) 
@@ -16798,9 +16871,16 @@ function genParseRandom(parse)
     parse.nTab++;
 
 
-    rnd.seed = genParse(parse);
-    rnd.min  = genParse(parse);
-    rnd.max  = genParse(parse);
+    if (nInputs == 1)
+    {
+        rnd.input = genParse(parse);
+        rnd.input.targets.push(rnd);
+    }
+
+
+    rnd.seed = genParse(parse);  rnd.seed.targets.push(rnd);
+    rnd.min  = genParse(parse);  rnd.min .targets.push(rnd);
+    rnd.max  = genParse(parse);  rnd.max .targets.push(rnd);
 
 
     parse.nTab--;

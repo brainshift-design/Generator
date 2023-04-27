@@ -322,8 +322,17 @@ function genParseSeries(parse)
     const series = new GSeries(nodeId, options);
 
 
+    // let nInputs = -1;
+    
+    // if (!ignore)
+    // {
+    //     nInputs = parseInt(parse.move());
+    //     console.assert(nInputs == 0 || nInputs == 1, 'nInputs must be [0, 1]');
+    // }
+
+
     if (parse.settings.logRequests) 
-        logReq(series, parse, ignore);
+        logReq(series, parse, ignore);//, nInputs);
 
 
     if (ignore) 
@@ -336,8 +345,15 @@ function genParseSeries(parse)
     parse.nTab++;
 
 
-    series.start = genParse(parse);
-    series.step  = genParse(parse);
+    // if (nInputs == 1)
+    // {
+    //     series.input = genParse(parse);
+    //     series.input.targets.push(series);
+    // }
+
+
+    series.start = genParse(parse);  series.start.targets.push(series);
+    series.step  = genParse(parse);  series.step .targets.push(series);
 
 
     parse.nTab--;
@@ -357,8 +373,17 @@ function genParseRandom(parse)
     const rnd = new GRandom(nodeId, options);
 
 
+    // let nInputs = -1;
+    
+    // if (!ignore)
+    // {
+    //     nInputs = parseInt(parse.move());
+    //     console.assert(nInputs == 0 || nInputs == 1, 'nInputs must be [0, 1]');
+    // }
+
+
     if (parse.settings.logRequests) 
-        logReq(rnd, parse);
+        logReq(rnd, parse, ignore);//, nInputs);
 
 
     if (ignore) 
@@ -371,9 +396,16 @@ function genParseRandom(parse)
     parse.nTab++;
 
 
-    rnd.seed = genParse(parse);
-    rnd.min  = genParse(parse);
-    rnd.max  = genParse(parse);
+    if (nInputs == 1)
+    {
+        rnd.input = genParse(parse);
+        rnd.input.targets.push(rnd);
+    }
+
+
+    rnd.seed = genParse(parse);  rnd.seed.targets.push(rnd);
+    rnd.min  = genParse(parse);  rnd.min .targets.push(rnd);
+    rnd.max  = genParse(parse);  rnd.max .targets.push(rnd);
 
 
     parse.nTab--;

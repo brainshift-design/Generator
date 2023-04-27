@@ -8691,7 +8691,7 @@ class GNode
     options = {};
     data    = {}; // for type conversion info
 
-    
+    targets = []; // clients of this object that use its data
 
 
 
@@ -8729,6 +8729,17 @@ class GNode
     isValid() // is a valid value
     {
         return false;
+    }
+
+
+
+    invalidateForward(parse)
+    {
+        this.targets.forEach(t => 
+        {
+            t.valid = false;
+            t.invalidateForward(parse);
+        });
     }
 
 
@@ -8977,10 +8988,10 @@ extends GNode
 
 
 
-    invalidateForward()
-    {
-        
-    }
+    // invalidateVolatile() // sequence, random, anything where the value changes on each subsequent iteration
+    // {
+
+    // }
 }
 
 
@@ -11938,7 +11949,7 @@ extends GOperator
             
 
         let   count    = (await this.count   .eval(parse)).toValue();
-        const repeatId = (await this.repeatId.eval(parse)).toValue();
+        //const repeatId = (await this.repeatId.eval(parse)).toValue();
 
         count = new NumberValue(Math.round(count.value));
 
@@ -11958,6 +11969,9 @@ extends GOperator
 
             for (let i = 0, id = 0; i < nItems; i++)
             {
+                //if (this.repeatId)
+                //    this.repeatId.node.invalidateForward(parse);
+
                 this.input.invalidate();
                 await this.input.eval(parse);
 
@@ -11977,13 +11991,20 @@ extends GOperator
 
                 if (input)
                     this.value.items.push(input.copy());
+
+
+                if (this.repeatId)
+                {
+                    console.log('this.repeatId =', this.repeadId);
+                    //this.repeatId.input.init = false;
+                }
             }
         }
 
         
         genPushUpdateValue(parse, this.nodeId, 'value',    this.value);
         genPushUpdateValue(parse, this.nodeId, 'count',    count);
-        genPushUpdateValue(parse, this.nodeId, 'repeatId', repeatId);
+        //genPushUpdateValue(parse, this.nodeId, 'repeatId', repeatId);
 
 
         this.validate();
@@ -12525,6 +12546,8 @@ extends GNumberType
 
     current;
 
+    init = false;
+
 
 
     constructor(nodeId, options)
@@ -12552,7 +12575,12 @@ extends GNumberType
 
     async eval(parse)
     {
-        //logString('GSeries.eval()');
+        // if (this.isCached())
+        //     return this;
+            
+
+        // input not used for evaluation
+
 
         if (!this.valid)
         {
@@ -12565,9 +12593,12 @@ extends GNumberType
         const step  = this.step .toValue();
     
 
-        if (!this.valid)
+        if (!this.init)
+        {
             this.current = start.copy();
-
+            this.init = true;
+        }
+        
         
         this.value = new NumberValue(
             this.current.value,
@@ -12576,17 +12607,23 @@ extends GNumberType
         this.current.value += step.value;
 
 
-        //if (!this.valid)
-        //{
-            //genPushUpdateValue(parse, this.nodeId, 'value', this.value);
-            genPushUpdateValue(parse, this.nodeId, 'start', start);
-            genPushUpdateValue(parse, this.nodeId, 'step',  step );
-        //}
+        genPushUpdateValue(parse, this.nodeId, 'start', start);
+        genPushUpdateValue(parse, this.nodeId, 'step',  step );
         
 
         this.validate();
 
         return this;
+    }
+
+
+
+    invalidateForward(parse)
+    {
+        this.init  = false;
+        this.valid = false;
+
+        super.invalidateForward(parse);
     }
 }
 
@@ -12631,6 +12668,9 @@ extends GNumberType
     {
         if (this.isCached())
             return this;
+
+
+        // input not used for evaluation
 
             
         const seed = (await this.seed.eval(parse)).toValue();
@@ -19184,7 +19224,7 @@ function enableFeatures(subscription, beta)
     updateElementDisplay(menuItemSelect              .div, subscription && beta);
     updateElementDisplay(menuItemCount               .div, subscription && beta);
     updateElementDisplay(menuFlowSep3                .div, subscription && beta);
-    updateElementDisplay(menuItemStart               .div, subscription && beta);
+    //updateElementDisplay(menuItemStart               .div, subscription && beta);
     updateElementDisplay(menuItemRepeat              .div, subscription && beta);
     // updateElementDisplay(menuItemCache               .div, subscription && beta);
     // updateElementDisplay(menuItemCopy                .div, subscription && beta);
@@ -19825,7 +19865,7 @@ function genParseColor(parse)
 
     if (nInputs == 1)
     {
-        col.input = genParse(parse);
+        col.input = genParse(parse);  col.input.targets.push(col);
         paramIds = parse.move().split(',');
     }
     else
@@ -19838,11 +19878,11 @@ function genParseColor(parse)
     {
         switch (id)
         {
-        case 'space':   col.space   = genParse(parse); break;
-        case 'convert': col.convert = genParse(parse); break;
-        case 'c1':      col.c1      = genParse(parse); break;
-        case 'c2':      col.c2      = genParse(parse); break;
-        case 'c3':      col.c3      = genParse(parse); break;
+        case 'space':   col.space   = genParse(parse);  col.space  .targets.push(col);  break;
+        case 'convert': col.convert = genParse(parse);  col.convert.targets.push(col);  break;
+        case 'c1':      col.c1      = genParse(parse);  col.c1     .targets.push(col);  break;
+        case 'c2':      col.c2      = genParse(parse);  col.c2     .targets.push(col);  break;
+        case 'c3':      col.c3      = genParse(parse);  col.c3     .targets.push(col);  break;
         }
     }
     
@@ -20523,17 +20563,17 @@ function genParseStart(parse)
     const start = new GStart(nodeId, options);
 
 
-    // let nInputs = -1;
+    let nInputs = -1;
     
-    // if (!ignore)
-    // {
-    //     nInputs = parseInt(parse.move());
-    //     console.assert(nInputs == 0 || nInputs == 1, 'nInputs must be [0, 1]');
-    // }
+    if (!ignore)
+    {
+        nInputs = parseInt(parse.move());
+        console.assert(nInputs == 0 || nInputs == 1, 'nInputs must be [0, 1]');
+    }
 
 
     if (parse.settings.logRequests) 
-        logReq(start, parse, ignore);//, nInputs);
+        logReq(start, parse, ignore, nInputs);
 
 
     if (ignore) 
@@ -20546,10 +20586,15 @@ function genParseStart(parse)
     parse.nTab++;
 
 
-    // if (nInputs == 1)
-    //     start.input = genParse(parse);
+    if (nInputs == 1)
+    {
+        start.input = genParse(parse);
+        start.input.targets.push(start);
+    }
+
 
     start.repeatId = genParse(parse);
+    // don't set target as it shoudn't be updated
 
 
     parse.nTab--;
@@ -20593,10 +20638,13 @@ function genParseRepeat(parse)
 
 
     if (nInputs == 1)
+    {
         rep.input = genParse(parse);
+        rep.input.targets.push(rep);
+    }
 
-    rep.count    = genParse(parse);
-    rep.repeatId = genParse(parse);
+    rep.count    = genParse(parse);  rep.count.targets.push(rep);
+    rep.repeatId = genParse(parse);  // don't set target here
 
 
     parse.nTab--;
@@ -21121,8 +21169,17 @@ function genParseSeries(parse)
     const series = new GSeries(nodeId, options);
 
 
+    // let nInputs = -1;
+    
+    // if (!ignore)
+    // {
+    //     nInputs = parseInt(parse.move());
+    //     console.assert(nInputs == 0 || nInputs == 1, 'nInputs must be [0, 1]');
+    // }
+
+
     if (parse.settings.logRequests) 
-        logReq(series, parse, ignore);
+        logReq(series, parse, ignore);//, nInputs);
 
 
     if (ignore) 
@@ -21135,8 +21192,15 @@ function genParseSeries(parse)
     parse.nTab++;
 
 
-    series.start = genParse(parse);
-    series.step  = genParse(parse);
+    // if (nInputs == 1)
+    // {
+    //     series.input = genParse(parse);
+    //     series.input.targets.push(series);
+    // }
+
+
+    series.start = genParse(parse);  series.start.targets.push(series);
+    series.step  = genParse(parse);  series.step .targets.push(series);
 
 
     parse.nTab--;
@@ -21156,8 +21220,17 @@ function genParseRandom(parse)
     const rnd = new GRandom(nodeId, options);
 
 
+    // let nInputs = -1;
+    
+    // if (!ignore)
+    // {
+    //     nInputs = parseInt(parse.move());
+    //     console.assert(nInputs == 0 || nInputs == 1, 'nInputs must be [0, 1]');
+    // }
+
+
     if (parse.settings.logRequests) 
-        logReq(rnd, parse);
+        logReq(rnd, parse, ignore);//, nInputs);
 
 
     if (ignore) 
@@ -21170,9 +21243,16 @@ function genParseRandom(parse)
     parse.nTab++;
 
 
-    rnd.seed = genParse(parse);
-    rnd.min  = genParse(parse);
-    rnd.max  = genParse(parse);
+    if (nInputs == 1)
+    {
+        rnd.input = genParse(parse);
+        rnd.input.targets.push(rnd);
+    }
+
+
+    rnd.seed = genParse(parse);  rnd.seed.targets.push(rnd);
+    rnd.min  = genParse(parse);  rnd.min .targets.push(rnd);
+    rnd.max  = genParse(parse);  rnd.max .targets.push(rnd);
 
 
     parse.nTab--;
@@ -32906,7 +32986,7 @@ class GNode
     options = {};
     data    = {}; // for type conversion info
 
-    
+    targets = []; // clients of this object that use its data
 
 
 
@@ -32944,6 +33024,17 @@ class GNode
     isValid() // is a valid value
     {
         return false;
+    }
+
+
+
+    invalidateForward(parse)
+    {
+        this.targets.forEach(t => 
+        {
+            t.valid = false;
+            t.invalidateForward(parse);
+        });
     }
 
 
@@ -33192,10 +33283,10 @@ extends GNode
 
 
 
-    invalidateForward()
-    {
-        
-    }
+    // invalidateVolatile() // sequence, random, anything where the value changes on each subsequent iteration
+    // {
+
+    // }
 }
 
 
@@ -36153,7 +36244,7 @@ extends GOperator
             
 
         let   count    = (await this.count   .eval(parse)).toValue();
-        const repeatId = (await this.repeatId.eval(parse)).toValue();
+        //const repeatId = (await this.repeatId.eval(parse)).toValue();
 
         count = new NumberValue(Math.round(count.value));
 
@@ -36173,6 +36264,9 @@ extends GOperator
 
             for (let i = 0, id = 0; i < nItems; i++)
             {
+                //if (this.repeatId)
+                //    this.repeatId.node.invalidateForward(parse);
+
                 this.input.invalidate();
                 await this.input.eval(parse);
 
@@ -36192,13 +36286,20 @@ extends GOperator
 
                 if (input)
                     this.value.items.push(input.copy());
+
+
+                if (this.repeatId)
+                {
+                    console.log('this.repeatId =', this.repeadId);
+                    //this.repeatId.input.init = false;
+                }
             }
         }
 
         
         genPushUpdateValue(parse, this.nodeId, 'value',    this.value);
         genPushUpdateValue(parse, this.nodeId, 'count',    count);
-        genPushUpdateValue(parse, this.nodeId, 'repeatId', repeatId);
+        //genPushUpdateValue(parse, this.nodeId, 'repeatId', repeatId);
 
 
         this.validate();
@@ -36740,6 +36841,8 @@ extends GNumberType
 
     current;
 
+    init = false;
+
 
 
     constructor(nodeId, options)
@@ -36767,7 +36870,12 @@ extends GNumberType
 
     async eval(parse)
     {
-        //logString('GSeries.eval()');
+        // if (this.isCached())
+        //     return this;
+            
+
+        // input not used for evaluation
+
 
         if (!this.valid)
         {
@@ -36780,9 +36888,12 @@ extends GNumberType
         const step  = this.step .toValue();
     
 
-        if (!this.valid)
+        if (!this.init)
+        {
             this.current = start.copy();
-
+            this.init = true;
+        }
+        
         
         this.value = new NumberValue(
             this.current.value,
@@ -36791,17 +36902,23 @@ extends GNumberType
         this.current.value += step.value;
 
 
-        //if (!this.valid)
-        //{
-            //genPushUpdateValue(parse, this.nodeId, 'value', this.value);
-            genPushUpdateValue(parse, this.nodeId, 'start', start);
-            genPushUpdateValue(parse, this.nodeId, 'step',  step );
-        //}
+        genPushUpdateValue(parse, this.nodeId, 'start', start);
+        genPushUpdateValue(parse, this.nodeId, 'step',  step );
         
 
         this.validate();
 
         return this;
+    }
+
+
+
+    invalidateForward(parse)
+    {
+        this.init  = false;
+        this.valid = false;
+
+        super.invalidateForward(parse);
     }
 }
 
@@ -36846,6 +36963,9 @@ extends GNumberType
     {
         if (this.isCached())
             return this;
+
+
+        // input not used for evaluation
 
             
         const seed = (await this.seed.eval(parse)).toValue();
@@ -43399,7 +43519,7 @@ function enableFeatures(subscription, beta)
     updateElementDisplay(menuItemSelect              .div, subscription && beta);
     updateElementDisplay(menuItemCount               .div, subscription && beta);
     updateElementDisplay(menuFlowSep3                .div, subscription && beta);
-    updateElementDisplay(menuItemStart               .div, subscription && beta);
+    //updateElementDisplay(menuItemStart               .div, subscription && beta);
     updateElementDisplay(menuItemRepeat              .div, subscription && beta);
     // updateElementDisplay(menuItemCache               .div, subscription && beta);
     // updateElementDisplay(menuItemCopy                .div, subscription && beta);
@@ -48527,7 +48647,7 @@ function initGeneratorMenus()
         menuFlowSep2          = new MenuItem('',                  {separator: true}),
         menuItemIfElse        = new MenuItem('I&hairsp;f / else', {icon: iconIfElse,     callback: e => actionManager.do(getCreateNodeAction(IF_ELSE,      btnNumber.div, getCreateOptions(e))), disambiguate: true}),
         menuFlowSep3          = new MenuItem('',                  {separator: true}),
-        menuItemStart         = new MenuItem('Start',             {icon: iconStart,      callback: e => actionManager.do(getCreateNodeAction(START,        btnNumber.div, getCreateOptions(e)))}),
+        //settinmenuItemStart         = new MenuItem('Start',             {icon: iconStart,      callback: e => actionManager.do(getCreateNodeAction(START,        btnNumber.div, getCreateOptions(e)))}),
         menuItemRepeat        = new MenuItem('Repeat',            {icon: iconRepeat,     callback: e => actionManager.do(getCreateNodeAction(REPEAT,       btnNumber.div, getCreateOptions(e)))})]);//,
         // menuFlowSep3          = new MenuItem('',                  {separator: true}),
         // menuItemCache         = new MenuItem('Cache',             {icon: iconCache,  callback: e => actionManager.do(getCreateNodeAction(CACHE,        btnNumber.div, getCreateOptions(e)))}),
@@ -57042,8 +57162,16 @@ class Wire
 
         const back = _x0 - _x3 > defNodeWidth * 1.5;
 
-        this.arrow1.setAttribute('display', fb || this.connection.backInit ? 'inline' : 'none');
-        this.arrow2.setAttribute('display', fb || back                     ? 'inline' : 'none');
+        const display1 = 
+               fb 
+            || this.connection.backInit
+            ||    this.connection.input
+               && this.connection.input.id == 'repeatId';
+
+        const display2 = fb || back;
+
+        this.arrow1.setAttribute('display', display1 ? 'inline' : 'none');
+        this.arrow2.setAttribute('display', display2 ? 'inline' : 'none');
     }
     
     
@@ -57085,15 +57213,22 @@ class Wire
         const p3 = point(x3, y3); 
     
     
-        const fb = 
-               this.connection.input
-            && this.connection.input.feedback;
+        let fb;
+        
+        if (   this.connection.input
+            && this.connection.input.feedback)
+            fb = -25;
+        else if (this.connection.input
+              && this.connection.input.id == 'repeatId')
+            fb = -45;
+        else
+            fb =  25;
 
         const back = x0 - x3 > defNodeWidth * 1.5;
 
 
-        this.updateArrow(p0, p1, p2, p3, this.arrow1, fb ? -25 : 25, 9, 0, fb, back);
-        this.updateArrow(p0, p1, p2, p3, this.arrow2,      -35     , 9, 1, fb, back);
+        this.updateArrow(p0, p1, p2, p3, this.arrow1,  fb, 9, 0, fb, back);
+        this.updateArrow(p0, p1, p2, p3, this.arrow2, -35, 9, 1, fb, back);
     }
     
     
@@ -57257,7 +57392,8 @@ class Wire
                 isNotCached
             &&  conn.output
             && (  !conn.output.node.isOrPrecededByMultiplier()
-                ||   !conn.output.node.isMultiplier()
+                ||   (   !conn.output.node.isMultiplier()
+                      || !conn.output.node.paramRepeatId.input.connected)
                    && conn.output.node.inputs.find(i => i.isConnectedUncached()))
             &&  conn.input
             &&  conn.input.node.isOrFollowedByMultiplier()
@@ -61144,7 +61280,7 @@ extends OperatorBase
         this.addOutput(new Output([ANY_VALUE], this.output_genRequest));
 
 
-        this.addParam(this.paramRepeatId = new TextParam('repeatId', 'ID', false, true));
+        this.addParam(this.paramRepeatId = new TextParam('repeatId', '↱', false, true));
 
 
         // this.inputs[0].addEventListener('connect',    e => { OpStart_onConnectInput(this); });
@@ -61165,13 +61301,13 @@ extends OperatorBase
         if (ignore) return request;
 
         
-        // const input = this.node.inputs[0];
+        const input = this.node.inputs[0];
 
 
-        // request.push(input.connected ? 1 : 0);
+        request.push(input.connected ? 1 : 0);
 
-        // if (input.connected)
-        //     request.push(...pushInputOrParam(input, gen));
+        if (input.connected)
+            request.push(...pushInputOrParam(input, gen));
 
 
         request.push(...this.node.paramRepeatId.genRequest(gen));
@@ -61216,8 +61352,8 @@ extends OperatorBase
         this.addOutput(new Output([ANY_VALUE], this.output_genRequest));
 
 
-        this.addParam(this.paramCount    = new NumberParam('count',    'count',     true, true, false, 1, 0, 1000, 0));
-        this.addParam(this.paramRepeatId = new TextParam  ('repeatId', 'ID', true, false));
+        this.addParam(this.paramCount    = new NumberParam('count',    'count', true, true, true, 1, 0, 1000, 0));
+        this.addParam(this.paramRepeatId = new NumberParam ('repeatId', '',     false, true, false));
 
 
         this.paramCount.controls[0].allowEditDecimals = false;
@@ -61283,7 +61419,9 @@ extends OperatorBase
     updateParams()
     {
         this.paramCount   .enableControlText(true);
+
         this.paramRepeatId.enableControlText(false);
+        this.paramRepeatId.controls[0].valueText = '↵';
 
         this.updateParamControls();
     }
@@ -62311,6 +62449,15 @@ extends OperatorBase
         if (ignore) return request;
 
         
+        // const input = this.node.inputs[0];
+
+
+        // request.push(input.connected ? 1 : 0);
+        
+        // if (input.connected)
+        //     request.push(...pushInputOrParam(input, gen));
+
+
         request.push(...this.node.paramSeed.genRequest(gen));
         request.push(...this.node.paramMin .genRequest(gen));
         request.push(...this.node.paramMax .genRequest(gen));
@@ -62338,11 +62485,11 @@ extends OperatorBase
 
         this.cached = false;
         
-        this.addInput (new Input ([ANY_VALUE]));
+        //this.addInput (new Input ([ANY_VALUE]));
         this.addOutput(new Output([NUMBER_VALUE], this.output_genRequest));
 
-        this.addParam(this.paramStart = new NumberParam('start', 'start', true, true, false, 0));
-        this.addParam(this.paramStep  = new NumberParam('step',  'step',  true, true, false, 1));
+        this.addParam(this.paramStart = new NumberParam('start', 'start', true, true, true, 0));
+        this.addParam(this.paramStep  = new NumberParam('step',  'step',  true, true, true, 1));
     }
 
 
@@ -62359,6 +62506,15 @@ extends OperatorBase
         if (ignore) return request;
 
         
+        // const input = this.node.inputs[0];
+
+
+        // request.push(input.connected ? 1 : 0);
+        
+        // if (input.connected)
+        //     request.push(...pushInputOrParam(input, gen));
+
+
         request.push(...this.node.paramStart.genRequest(gen));
         request.push(...this.node.paramStep .genRequest(gen));
 

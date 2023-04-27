@@ -12,11 +12,11 @@ extends OperatorBase
 
         this.cached = false;
         
-        this.addInput (new Input ([ANY_VALUE]));
+        //this.addInput (new Input ([ANY_VALUE]));
         this.addOutput(new Output([NUMBER_VALUE], this.output_genRequest));
 
-        this.addParam(this.paramStart = new NumberParam('start', 'start', true, true, false, 0));
-        this.addParam(this.paramStep  = new NumberParam('step',  'step',  true, true, false, 1));
+        this.addParam(this.paramStart = new NumberParam('start', 'start', true, true, true, 0));
+        this.addParam(this.paramStep  = new NumberParam('step',  'step',  true, true, true, 1));
     }
 
 
@@ -33,6 +33,15 @@ extends OperatorBase
         if (ignore) return request;
 
         
+        // const input = this.node.inputs[0];
+
+
+        // request.push(input.connected ? 1 : 0);
+        
+        // if (input.connected)
+        //     request.push(...pushInputOrParam(input, gen));
+
+
         request.push(...this.node.paramStart.genRequest(gen));
         request.push(...this.node.paramStep .genRequest(gen));
 

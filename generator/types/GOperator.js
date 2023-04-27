@@ -106,8 +106,8 @@ extends GNode
 
 
 
-    invalidateForward()
-    {
-        
-    }
+    // invalidateVolatile() // sequence, random, anything where the value changes on each subsequent iteration
+    // {
+
+    // }
 }

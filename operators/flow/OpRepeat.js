@@ -15,8 +15,8 @@ extends OperatorBase
         this.addOutput(new Output([ANY_VALUE], this.output_genRequest));
 
 
-        this.addParam(this.paramCount    = new NumberParam('count',    'count',     true, true, false, 1, 0, 1000, 0));
-        this.addParam(this.paramRepeatId = new TextParam  ('repeatId', 'ID', true, false));
+        this.addParam(this.paramCount    = new NumberParam('count',    'count', true, true, true, 1, 0, 1000, 0));
+        this.addParam(this.paramRepeatId = new NumberParam ('repeatId', '',     false, true, false));
 
 
         this.paramCount.controls[0].allowEditDecimals = false;
@@ -82,7 +82,9 @@ extends OperatorBase
     updateParams()
     {
         this.paramCount   .enableControlText(true);
+
         this.paramRepeatId.enableControlText(false);
+        this.paramRepeatId.controls[0].valueText = '↵';
 
         this.updateParamControls();
     }

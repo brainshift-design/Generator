@@ -39,7 +39,7 @@ extends GOperator
             
 
         let   count    = (await this.count   .eval(parse)).toValue();
-        const repeatId = (await this.repeatId.eval(parse)).toValue();
+        //const repeatId = (await this.repeatId.eval(parse)).toValue();
 
         count = new NumberValue(Math.round(count.value));
 
@@ -59,6 +59,9 @@ extends GOperator
 
             for (let i = 0, id = 0; i < nItems; i++)
             {
+                //if (this.repeatId)
+                //    this.repeatId.node.invalidateForward(parse);
+
                 this.input.invalidate();
                 await this.input.eval(parse);
 
@@ -78,13 +81,20 @@ extends GOperator
 
                 if (input)
                     this.value.items.push(input.copy());
+
+
+                if (this.repeatId)
+                {
+                    console.log('this.repeatId =', this.repeadId);
+                    //this.repeatId.input.init = false;
+                }
             }
         }
 
         
         genPushUpdateValue(parse, this.nodeId, 'value',    this.value);
         genPushUpdateValue(parse, this.nodeId, 'count',    count);
-        genPushUpdateValue(parse, this.nodeId, 'repeatId', repeatId);
+        //genPushUpdateValue(parse, this.nodeId, 'repeatId', repeatId);
 
 
         this.validate();

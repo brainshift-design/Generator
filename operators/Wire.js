@@ -257,8 +257,16 @@ class Wire
 
         const back = _x0 - _x3 > defNodeWidth * 1.5;
 
-        this.arrow1.setAttribute('display', fb || this.connection.backInit ? 'inline' : 'none');
-        this.arrow2.setAttribute('display', fb || back                     ? 'inline' : 'none');
+        const display1 = 
+               fb 
+            || this.connection.backInit
+            ||    this.connection.input
+               && this.connection.input.id == 'repeatId';
+
+        const display2 = fb || back;
+
+        this.arrow1.setAttribute('display', display1 ? 'inline' : 'none');
+        this.arrow2.setAttribute('display', display2 ? 'inline' : 'none');
     }
     
     
@@ -300,15 +308,22 @@ class Wire
         const p3 = point(x3, y3); 
     
     
-        const fb = 
-               this.connection.input
-            && this.connection.input.feedback;
+        let fb;
+        
+        if (   this.connection.input
+            && this.connection.input.feedback)
+            fb = -25;
+        else if (this.connection.input
+              && this.connection.input.id == 'repeatId')
+            fb = -45;
+        else
+            fb =  25;
 
         const back = x0 - x3 > defNodeWidth * 1.5;
 
 
-        this.updateArrow(p0, p1, p2, p3, this.arrow1, fb ? -25 : 25, 9, 0, fb, back);
-        this.updateArrow(p0, p1, p2, p3, this.arrow2,      -35     , 9, 1, fb, back);
+        this.updateArrow(p0, p1, p2, p3, this.arrow1,  fb, 9, 0, fb, back);
+        this.updateArrow(p0, p1, p2, p3, this.arrow2, -35, 9, 1, fb, back);
     }
     
     
@@ -472,7 +487,8 @@ class Wire
                 isNotCached
             &&  conn.output
             && (  !conn.output.node.isOrPrecededByMultiplier()
-                ||   !conn.output.node.isMultiplier()
+                ||   (   !conn.output.node.isMultiplier()
+                      || !conn.output.node.paramRepeatId.input.connected)
                    && conn.output.node.inputs.find(i => i.isConnectedUncached()))
             &&  conn.input
             &&  conn.input.node.isOrFollowedByMultiplier()
