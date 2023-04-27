@@ -67,16 +67,25 @@ extends GNumberType
             Math.max(start.decimals, step.decimals));
 
         
-        console.log('parse.repeats =', [...parse.repeats]);
+        // console.log('parse.repeats =', [...parse.repeats]);
         if (   isEmpty(parse.repeats)
             || parse.repeats.at(-1).nodeId == this.repeatNodeId)
         {
             this.current.value += step.value;
 
-            const repeat = parse.repeats.at(-1);
+            if (!isEmpty(parse.repeats))
+            {
+                const repeat = parse.repeats.at(-1);
 
-            if (repeat.iteration == repeat.total-1)
-                parse.repeats.pop();
+                if (repeat.iteration == repeat.total-1)
+                {
+                    console.assert(
+                        parse.repeats.at(-1).nodeId == this.repeatNodeId, 
+                        'nested repeat error');
+
+                    parse.repeats.pop();
+                }
+            }
         }
 
 

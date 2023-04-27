@@ -53,8 +53,9 @@ extends GOperator
         count = new NumberValue(Math.round(count.value));
 
 
-        if (this.repeatId.type != NUMBER)
+        if (this.repeatId.type != NUMBER_VALUE)
         {
+            console.log('this.repeatId.type =', this.repeatId.type);
             console.assert(
                    this.repeatId.type == NUMBER_SERIES
                 || this.repeatId.type == NUMBER_RANDOM,
@@ -77,7 +78,7 @@ extends GOperator
         };
 
 
-        if (this.repeatId.type != NUMBER)
+        if (this.repeatId.type != NUMBER_VALUE)
             parse.repeats.push(repeat);
 
 
@@ -91,7 +92,7 @@ extends GOperator
 
             for (let i = 0, id = 0; i < nItems; i++)
             {
-                if (this.repeatId.type != NUMBER)
+                if (this.repeatId.type != NUMBER_VALUE)
                 {
                     this.repeatId.valid        = false;
                     this.repeatId.repeatNodeId = this.nodeId;

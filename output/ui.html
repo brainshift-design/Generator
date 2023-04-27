@@ -11970,8 +11970,9 @@ extends GOperator
         count = new NumberValue(Math.round(count.value));
 
 
-        if (this.repeatId.type != NUMBER)
+        if (this.repeatId.type != NUMBER_VALUE)
         {
+            console.log('this.repeatId.type =', this.repeatId.type);
             console.assert(
                    this.repeatId.type == NUMBER_SERIES
                 || this.repeatId.type == NUMBER_RANDOM,
@@ -11994,7 +11995,7 @@ extends GOperator
         };
 
 
-        if (this.repeatId.type != NUMBER)
+        if (this.repeatId.type != NUMBER_VALUE)
             parse.repeats.push(repeat);
 
 
@@ -12008,7 +12009,7 @@ extends GOperator
 
             for (let i = 0, id = 0; i < nItems; i++)
             {
-                if (this.repeatId.type != NUMBER)
+                if (this.repeatId.type != NUMBER_VALUE)
                 {
                     this.repeatId.valid        = false;
                     this.repeatId.repeatNodeId = this.nodeId;
@@ -12650,16 +12651,25 @@ extends GNumberType
             Math.max(start.decimals, step.decimals));
 
         
-        console.log('parse.repeats =', [...parse.repeats]);
+        // console.log('parse.repeats =', [...parse.repeats]);
         if (   isEmpty(parse.repeats)
             || parse.repeats.at(-1).nodeId == this.repeatNodeId)
         {
             this.current.value += step.value;
 
-            const repeat = parse.repeats.at(-1);
+            if (!isEmpty(parse.repeats))
+            {
+                const repeat = parse.repeats.at(-1);
 
-            if (repeat.iteration == repeat.total-1)
-                parse.repeats.pop();
+                if (repeat.iteration == repeat.total-1)
+                {
+                    console.assert(
+                        parse.repeats.at(-1).nodeId == this.repeatNodeId, 
+                        'nested repeat error');
+
+                    parse.repeats.pop();
+                }
+            }
         }
 
 
@@ -36332,8 +36342,9 @@ extends GOperator
         count = new NumberValue(Math.round(count.value));
 
 
-        if (this.repeatId.type != NUMBER)
+        if (this.repeatId.type != NUMBER_VALUE)
         {
+            console.log('this.repeatId.type =', this.repeatId.type);
             console.assert(
                    this.repeatId.type == NUMBER_SERIES
                 || this.repeatId.type == NUMBER_RANDOM,
@@ -36356,7 +36367,7 @@ extends GOperator
         };
 
 
-        if (this.repeatId.type != NUMBER)
+        if (this.repeatId.type != NUMBER_VALUE)
             parse.repeats.push(repeat);
 
 
@@ -36370,7 +36381,7 @@ extends GOperator
 
             for (let i = 0, id = 0; i < nItems; i++)
             {
-                if (this.repeatId.type != NUMBER)
+                if (this.repeatId.type != NUMBER_VALUE)
                 {
                     this.repeatId.valid        = false;
                     this.repeatId.repeatNodeId = this.nodeId;
@@ -37012,16 +37023,25 @@ extends GNumberType
             Math.max(start.decimals, step.decimals));
 
         
-        console.log('parse.repeats =', [...parse.repeats]);
+        // console.log('parse.repeats =', [...parse.repeats]);
         if (   isEmpty(parse.repeats)
             || parse.repeats.at(-1).nodeId == this.repeatNodeId)
         {
             this.current.value += step.value;
 
-            const repeat = parse.repeats.at(-1);
+            if (!isEmpty(parse.repeats))
+            {
+                const repeat = parse.repeats.at(-1);
 
-            if (repeat.iteration == repeat.total-1)
-                parse.repeats.pop();
+                if (repeat.iteration == repeat.total-1)
+                {
+                    console.assert(
+                        parse.repeats.at(-1).nodeId == this.repeatNodeId, 
+                        'nested repeat error');
+
+                    parse.repeats.pop();
+                }
+            }
         }
 
 
