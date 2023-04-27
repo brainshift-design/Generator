@@ -217,12 +217,15 @@ extends OperatorWithValue
         }
 
 
-        this.paramTime.setValue(
-            new NumberValue(
-                time, 
-                this.paramTime.controls[0].decimals),
-            false);
+        setTimeout(() =>
+        {
+            this.paramTime.setValue(
+                new NumberValue(
+                    time, 
+                    this.paramTime.controls[0].decimals),
+                false);
 
-        pushUpdateFromParam(null, [this], this.paramTime);
+            pushUpdateFromParam(null, [this], this.paramTime);
+        });
     }
 }

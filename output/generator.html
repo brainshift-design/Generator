@@ -7591,7 +7591,7 @@ extends GOperator
             return this;
             
 
-        let   count    = (await this.count   .eval(parse)).toValue();
+        let count = (await this.count.eval(parse)).toValue();
         //const repeatId = (await this.repeatId.eval(parse)).toValue();
 
 
@@ -7605,7 +7605,6 @@ extends GOperator
                 || this.repeatId.type == NUMBER_RANDOM,
                 'only volatile types can be repeated');
 
-            console.log('this.repeatId =', this.repeatId);
             this.repeatId.repeatCount = count.value;
         }
 
@@ -7613,6 +7612,18 @@ extends GOperator
         this.value = new ListValue();
 
         this.objects = [];
+
+
+        let repeat =             
+        {
+            nodeId:    this.nodeId,
+            iteration: 0,
+            total:     0
+        };
+
+
+        if (this.repeatId.type != NUMBER)
+            parse.repeats.push(repeat);
 
 
         if (this.input)
@@ -7627,23 +7638,18 @@ extends GOperator
             {
                 if (this.repeatId.type != NUMBER)
                 {
-                    console.assert(
-                           this.repeatId.type == NUMBER_SERIES
-                        || this.repeatId.type == NUMBER_RANDOM,
-                        'only volatile types can be repeated');
+                    this.repeatId.valid        = false;
+                    this.repeatId.repeatNodeId = this.nodeId;
 
-                    // console.log('this.repeatId =', this.repeatId);
-                    // this.repeatId.repeatCount = count.value;
-                    this.input.invalidate();
-                    this.repeatId.valid = false;
+                    repeat.iteration = i;
+                    repeat.total     = nItems;
                 }
-                else
-                    this.input.invalidate();
-
-
+                
+                
+                this.input.invalidate();
                 await this.input.eval(parse);
 
-
+                
                 for (let j = 0; j < this.input.objects.length; j++, id++)
                 {
                     const obj = this.input.objects[j].copy();
@@ -7662,8 +7668,8 @@ extends GOperator
             }
 
 
-            // if (this.repeatId)
-            //     this.repeatId.init = false;
+            if (this.repeatId)
+                this.repeatId.init = false;
         }
 
         
@@ -8209,11 +8215,11 @@ extends GNumberType
     start;
     step;
 
-    current     = null;
+    current      = null;
 
-    init        = false;
+    init         = false;
 
-    repeatCount = 0;
+    repeaNodetId = NULL;
 
 
 
@@ -8260,8 +8266,7 @@ extends GNumberType
         const step  = this.step .toValue();
     
 
-        if (  !this.current
-            || this.repeatCount == 0)//!this.init)
+        if (!this.init)
         {
             this.current = start.copy();
             this.init = true;
@@ -8272,15 +8277,26 @@ extends GNumberType
             this.current.value,
             Math.max(start.decimals, step.decimals));
 
-        this.current.value += step.value;
+        
+        console.log('parse.repeats =', [...parse.repeats]);
+        if (   isEmpty(parse.repeats)
+            || parse.repeats.at(-1).nodeId == this.repeatNodeId)
+        {
+            this.current.value += step.value;
+
+            const repeat = parse.repeats.at(-1);
+
+            if (repeat.iteration == repeat.total-1)
+                parse.repeats.pop();
+        }
 
 
         genPushUpdateValue(parse, this.nodeId, 'start', start);
         genPushUpdateValue(parse, this.nodeId, 'step',  step );
         
 
-        if (this.repeatCount > 0)
-            this.repeatCount--;
+        // if (this.repeatCount > 0)
+        //     this.repeatCount--;
 
 
         this.validate();
@@ -18331,6 +18347,10 @@ class Parse
     scope         = []; // current parse stack
     parsedNodes   = []; // must be evaluated to create the value updates
 
+
+    repeats       = [];
+
+
     paramNodeIds  = [];
 
     updateParams  = [];
@@ -18339,6 +18359,7 @@ class Parse
     updateStyles  = [];
 
     
+
     get next() { return this.request[this.pos]; }
 
     get afterNext() 

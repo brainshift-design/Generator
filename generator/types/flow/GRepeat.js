@@ -46,7 +46,7 @@ extends GOperator
             return this;
             
 
-        let   count    = (await this.count   .eval(parse)).toValue();
+        let count = (await this.count.eval(parse)).toValue();
         //const repeatId = (await this.repeatId.eval(parse)).toValue();
 
 
@@ -60,7 +60,6 @@ extends GOperator
                 || this.repeatId.type == NUMBER_RANDOM,
                 'only volatile types can be repeated');
 
-            console.log('this.repeatId =', this.repeatId);
             this.repeatId.repeatCount = count.value;
         }
 
@@ -68,6 +67,18 @@ extends GOperator
         this.value = new ListValue();
 
         this.objects = [];
+
+
+        let repeat =             
+        {
+            nodeId:    this.nodeId,
+            iteration: 0,
+            total:     0
+        };
+
+
+        if (this.repeatId.type != NUMBER)
+            parse.repeats.push(repeat);
 
 
         if (this.input)
@@ -82,23 +93,18 @@ extends GOperator
             {
                 if (this.repeatId.type != NUMBER)
                 {
-                    console.assert(
-                           this.repeatId.type == NUMBER_SERIES
-                        || this.repeatId.type == NUMBER_RANDOM,
-                        'only volatile types can be repeated');
+                    this.repeatId.valid        = false;
+                    this.repeatId.repeatNodeId = this.nodeId;
 
-                    // console.log('this.repeatId =', this.repeatId);
-                    // this.repeatId.repeatCount = count.value;
-                    this.input.invalidate();
-                    this.repeatId.valid = false;
+                    repeat.iteration = i;
+                    repeat.total     = nItems;
                 }
-                else
-                    this.input.invalidate();
-
-
+                
+                
+                this.input.invalidate();
                 await this.input.eval(parse);
 
-
+                
                 for (let j = 0; j < this.input.objects.length; j++, id++)
                 {
                     const obj = this.input.objects[j].copy();
@@ -117,8 +123,8 @@ extends GOperator
             }
 
 
-            // if (this.repeatId)
-            //     this.repeatId.init = false;
+            if (this.repeatId)
+                this.repeatId.init = false;
         }
 
         

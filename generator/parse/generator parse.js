@@ -24,6 +24,10 @@ class Parse
     scope         = []; // current parse stack
     parsedNodes   = []; // must be evaluated to create the value updates
 
+
+    repeats       = [];
+
+
     paramNodeIds  = [];
 
     updateParams  = [];
@@ -32,6 +36,7 @@ class Parse
     updateStyles  = [];
 
     
+
     get next() { return this.request[this.pos]; }
 
     get afterNext() 

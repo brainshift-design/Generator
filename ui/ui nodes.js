@@ -817,6 +817,7 @@ function uiUpdateValuesAndObjects(requestId, actionId, updateNodeId, updateParam
         actionManager.undoing        = false;
         actionManager.redoing        = false;
         
+        
         loadingOverlay.style.display = 'none'; // for loading
     }
 }
