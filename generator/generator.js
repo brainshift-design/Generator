@@ -311,7 +311,7 @@ function genQueueChunk(requestId, actionId, updateNodeId, updateParamId, nodeVal
         updateNodeId:  updateNodeId,
         updateParamId: updateParamId,
         chunkId:       nodeValChunkId,
-        values:        [...nodeValChunk].map(v => v ? v.toString() : NAN_DISPLAY),
+        values:        [...nodeValChunk].map(v => v.toString()),
         objects:       [...objChunk],
         styles:        [...styleChunk],
         updatedNodes:  updatedNodes,

@@ -54,6 +54,7 @@ extends GOperator
                 this.value.items.push(new TextValue(item));
         }
     
+
         genPushUpdateValue(parse, this.nodeId, 'value',     this.value);
         genPushUpdateValue(parse, this.nodeId, 'separator', separator);
 

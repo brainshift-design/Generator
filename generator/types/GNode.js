@@ -69,4 +69,11 @@ class GNode
     { 
         return this.type; 
     }
+
+
+
+    toJson()
+    {
+        return this.toString();
+    }
 }
