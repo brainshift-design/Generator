@@ -109,7 +109,7 @@ function genParse(parse, inParam = true)
     else if (parse.next == NUMBER_ROUND           ) result = genParseRound           (parse);
     else if (parse.next == NUMBER_LIMITS          ) result = genParseLimits          (parse);
     else if (parse.next == NUMBER_RANDOM          ) result = genParseRandom          (parse);
-    else if (parse.next == NUMBER_SERIES          ) result = genParseSeries          (parse);
+    else if (parse.next == NUMBER_SEQUENCE        ) result = genParseSequence        (parse);
     else if (parse.next == NUMBER_INTERPOLATE     ) result = genParseInterpolate     (parse);
     else if (parse.next == NUMBER_SOLVE           ) result = genParseSolve           (parse);
     else if (parse.next == NUMBER_ANIMATE         ) result = genParseAnimate         (parse);

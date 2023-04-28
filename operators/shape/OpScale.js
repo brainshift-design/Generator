@@ -20,8 +20,8 @@ extends OperatorBase
         this.addOutput(new Output([SHAPE_VALUE], this.output_genRequest));
 
 
-        this.addParam(this.paramX       = new NumberParam('x',       'x',        true, true, true, 100));
-        this.addParam(this.paramY       = new NumberParam('y',       'y',        true, true, true, 100));
+        this.addParam(this.paramX       = new NumberParam('x',       'width',    true, true, true, 100));
+        this.addParam(this.paramY       = new NumberParam('y',       'height',   true, true, true, 100));
         this.addParam(this.paramOriginX = new NumberParam('originX', 'center x', true, true, true,  50));
         this.addParam(this.paramOriginY = new NumberParam('originY', 'center y', true, true, true,  50));
 
@@ -31,8 +31,8 @@ extends OperatorBase
         this.paramOriginX.controls[0].suffix = '%';
         this.paramOriginY.controls[0].suffix = '%';
 
-        this.paramX.controls[0].setMin(0);
-        this.paramY.controls[0].setMin(0);
+        this.paramX      .controls[0].setMin(0);
+        this.paramY      .controls[0].setMin(0);
 
         this.paramOriginX.controls[0].displayMin = 0;
         this.paramOriginX.controls[0].displayMax = 100;

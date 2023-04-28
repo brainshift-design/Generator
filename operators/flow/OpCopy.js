@@ -1,10 +1,7 @@
 class   OpCopy
 extends OperatorBase
 {
-    paramNumber;
-    paramColor;
-
-    headerColor = null;
+    //paramCount;
 
     
 
@@ -12,15 +9,11 @@ extends OperatorBase
     {
         super(COPY, 'copy', 'copy');
 
-        //this.cached = true;
-        
-
-        this.addInput (new Input([ANY_VALUE]));
-        this.addOutput(new Output([], this.output_genRequest));
+        this.addInput (new Input(ALL_VALUES));
+        this.addOutput(new Output([ANY_VALUE], this.output_genRequest));
 
 
-        this.paramNumber = new NumberParam('copy', '', false, false, true);
-        this.paramColor  = new  ColorParam('copy', '', false, false, true);
+        //this.paramCount = this.addParam(new NumberParam('count', 'count', true, true, true, 1, 1));
 
         
         this.inputs[0].addEventListener('connect',    () => OpCopy_onConnectInput(this));
@@ -64,49 +57,13 @@ extends OperatorBase
             request.push(...pushInputOrParam(input, gen));
 
         
+        //request.push(...this.node.paramCount.genRequest(gen));
+
+
         gen.scope.pop();
         pushUnique(gen.passedNodes, this.node);
 
         return request;
-    }
-
-
-
-    updateValues(requestId, actionId, updateParamId, paramIds, values) // virtual
-    {
-        //super.updateValues(requestId, actionId, updateParamId, paramIds, values);
-
-
-        const val = values[paramIds.findIndex(id => id == 'copy')];
-
-        this.headerColor =
-            val && val.type == COLOR_VALUE
-            ? rgb_a(val.toRgb())
-            : null;
-
-        if (!isEmpty(this.params)) 
-        {
-            this.params[0].setValue(val);
-            this.params[0].enableControlText(false);
-        }
-    }
-
-
-
-    updateParams()
-    {
-        const paramValue = this.params.find(p => p.id == 'copy');
-
-        if (paramValue)
-        {
-            paramValue.enableControlText(false);
-
-            paramValue.controls[0].valueText =  this.isUnknown() ? UNKNOWN_DISPLAY : '';
-            paramValue.controls[0].showBar   = !this.isUnknown();
-        }
-
-        
-        this.updateParamControls();
     }
 
 
@@ -137,32 +94,18 @@ extends OperatorBase
 
         return colors;
     }
-
-
-
-    paramsToJson(nTab = 0)
-    {
-        return '';
-    }
 }
 
 
 
 function OpCopy_onConnectInput(node)
 {
-    const inOutput = node.inputs[0].connectedOutput;
-
-    node.outputs[0].types = [...inOutput.types];
-
-         if (inOutput.supportsTypes(NUMBER_TYPES)) node.addParam(node.paramNumber);
-    else if (inOutput.supportsTypes( COLOR_TYPES)) node.addParam(node.paramColor);
+    node.outputs[0].types = [...node.inputs[0].connectedOutput.types];
 }
 
 
 
 function OpCopy_onDisconnectInput(node)
 {
-    node.outputs[0].types = [];
-    
-    node.removeAllParams();
+    node.outputs[0].types = [ANY_VALUE];
 }

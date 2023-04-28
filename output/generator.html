@@ -3549,7 +3549,7 @@ const NUMBER_SIGN             = 'NSIGN';
 const NUMBER_ABSOLUTE         = 'ABS';   
 const NUMBER_ROUND            = 'ROUND';   
 const NUMBER_LIMITS           = 'LIM';   
-const NUMBER_SERIES           = 'SER';  
+const NUMBER_SEQUENCE         = 'SEQ';  
 const NUMBER_RANDOM           = 'RAND';  
 const NUMBER_INTERPOLATE      = 'LERP'; 
 const NUMBER_SOLVE            = 'SOLVE';
@@ -3621,7 +3621,7 @@ const NUMBER_TYPES =
     NUMBER_ABSOLUTE,
     NUMBER_ROUND,
     NUMBER_LIMITS,
-    NUMBER_SERIES,
+    NUMBER_SEQUENCE,
     NUMBER_RANDOM,
     NUMBER_INTERPOLATE,
     NUMBER_SOLVE,
@@ -4728,7 +4728,7 @@ extends GOperator
 
     toValue()
     {
-        return this.value;
+        return this.value.copy();
     }
 
 
@@ -7680,7 +7680,7 @@ extends GOperator
         if (this.repeatId.type != NUMBER_VALUE)
         {
             console.assert(
-                   this.repeatId.type == NUMBER_SERIES
+                   this.repeatId.type == NUMBER_SEQUENCE
                 || this.repeatId.type == NUMBER_RANDOM,
                 'only volatile types can be repeated');
 
@@ -7854,11 +7854,9 @@ extends GOperator
 class GCopy
 extends GOperator
 {
-    input     = null;
+    input = null;
 
-    copy;
-
-    evaluated = false;
+    //count = null;
 
 
 
@@ -7875,9 +7873,9 @@ extends GOperator
 
         copy.copyBase(this);
 
-        if (this.input) copy.input = this.input.copy();
         if (this.value) copy.value = this.value.copy();
-        if (this.copy)  copy.copy  = this.copy .copy();
+        if (this.input) copy.input = this.input.copy();
+        //if (this.count) copy.count = this.count.copy();
 
         return copy;
     }
@@ -7886,17 +7884,21 @@ extends GOperator
 
     async eval(parse)
     {
-        if (this.isCached()
-            )
+        if (this.isCached())
             return this;
 
 
-        this.value = this.input ? (await this.input.eval(parse)).toValue() : NullValue;
-        this.copy  = this.value ? this.value.copy()                        : NullValue;
+        //const count = (await this.count.eval(parse)).toValue();
 
 
+        this.value = 
+            this.input 
+            ? (await this.input.eval(parse)).toValue() 
+            : NullValue;
+
+        
         genPushUpdateValue(parse, this.nodeId, 'value', this.value);
-        genPushUpdateValue(parse, this.nodeId, 'copy',  this.copy);
+        //genPushUpdateValue(parse, this.nodeId, 'count', count);
 
         
         this.validate();
@@ -7908,9 +7910,7 @@ extends GOperator
 
     toValue()
     {
-        return this.value
-             ? this.value.copy() 
-             : null;
+        return this.value.copy();
     }
 
 
@@ -7919,7 +7919,8 @@ extends GOperator
     {
         super.invalidate();
 
-        // if (this.input  ) this.input  .invalidate();
+        if (this.input) this.input.invalidate();
+        //if (this.count) this.count.invalidate();
     }
 }
 
@@ -8368,7 +8369,7 @@ extends GNumberType
 
 
 
-class GSeries
+class GSequence
 extends GNumberType
 {
     start;
@@ -8385,14 +8386,14 @@ extends GNumberType
 
     constructor(nodeId, options)
     {
-        super(NUMBER_SERIES, nodeId, options);
+        super(NUMBER_SEQUENCE, nodeId, options);
     }
 
 
     
     copy()
     {
-        const copy = new GSeries(this.nodeId, this.options);
+        const copy = new GSequence(this.nodeId, this.options);
 
         copy.copyBase(this);
 
@@ -8431,24 +8432,23 @@ extends GNumberType
             Math.max(start.decimals, step.decimals));
 
         
-        if (  !parse.repeats.find(r => r.nodeId == this.repeatNodeId)
-            || parse.repeats.at(-1).nodeId == this.repeatNodeId)
+        if (!parse.repeats.find(r => r.nodeId == this.repeatNodeId))
+            this.current.value += step.value;
+
+        else if (  !isEmpty(parse.repeats)
+                && parse.repeats.at(-1).nodeId == this.repeatNodeId)
         {
             this.current.value += step.value;
 
+            const repeat = parse.repeats.at(-1);
 
-            if (!isEmpty(parse.repeats))
+            if (repeat.iteration == repeat.total-1)
             {
-                const repeat = parse.repeats.at(-1);
+                console.assert(
+                    parse.repeats.at(-1).nodeId == this.repeatNodeId, 
+                    'nested repeat error');
 
-                if (repeat.iteration == repeat.total-1)
-                {
-                    console.assert(
-                        parse.repeats.at(-1).nodeId == this.repeatNodeId, 
-                        'nested repeat error');
-
-                    parse.repeats.pop();
-                }
+                parse.repeats.pop();
             }
         }
 
@@ -13472,7 +13472,7 @@ extends GOperator
         genPushUpdateValue(parse, this.nodeId, 'height', this.value.height);
         genPushUpdateValue(parse, this.nodeId, 'angle',  this.value.angle );
 
-        genPushUpdateValue(parse, this.nodeId, 'props',  this.value.props);
+        genPushUpdateValue(parse, this.nodeId, 'props',  this.value.props );
     }
 
 
@@ -14654,7 +14654,7 @@ extends GOperator
         genPushUpdateValue(parse, this.nodeId, 'y',     y         );
 
 
-        await this.evalObjects(parse);
+        await this.evalObjects(parse, {x: x, y: y});
 
 
         this.validate();
@@ -14680,8 +14680,8 @@ extends GOperator
         {
             obj.nodeId = this.nodeId;
 
-            obj.x += this.x.toValue().toNumber();
-            obj.y += this.y.toValue().toNumber();
+            obj.x += options.x.toNumber();
+            obj.y += options.y.toNumber();
         }
 
         
@@ -14712,7 +14712,7 @@ extends GOperator
 
     toValue()
     {
-        return this.value;
+        return this.value.copy();
     }
 }
 
@@ -14782,7 +14782,7 @@ extends GOperator
         genPushUpdateValue(parse, this.nodeId, 'oy',    oy        );
 
 
-        await this.evalObjects(parse);
+        await this.evalObjects(parse, {angle: angle, ox: ox, oy: oy});
 
 
         this.validate();
@@ -14814,15 +14814,15 @@ extends GOperator
         {
             obj.nodeId = this.nodeId;
 
-            obj.angle += this.angle.toValue().toNumber(); 
+            obj.angle += options.angle.toNumber(); 
 
             const angle = angle_(bounds.width, bounds.height);
             const halfd = Math.sqrt(sqr(bounds.width) + sqr(bounds.height)) / 2;
 
             const v     = vector(angle + obj.angle/360*Tau, halfd);
 
-            const dx    = 0.5 - this.ox.toValue().toNumber()/100;
-            const dy    = 0.5 + this.oy.toValue().toNumber()/100;
+            const dx    = 0.5 - options.ox.toNumber()/100;
+            const dy    = 0.5 + options.oy.toNumber()/100;
 
             obj.x = obj.x + bounds.width /2 - v.x + dx * bounds.width * Math.cos(-obj.angle/360*Tau) - dy * bounds.height * Math.sin(obj.angle/360*Tau);
             obj.y = obj.y + bounds.height/2 + v.y + dx * bounds.width * Math.sin(-obj.angle/360*Tau) - dy * bounds.height * Math.cos(obj.angle/360*Tau);
@@ -14858,7 +14858,7 @@ extends GOperator
 
     toValue()
     {
-        return this.value;
+        return this.value.copy();
     }
 }
 
@@ -14907,9 +14907,9 @@ extends GOperator
         if (this.isCached())
             return this;
 
-            
-        const x  = this.x  ? (await this. x.eval(parse)).toValue() : null;
-        const y  = this.y  ? (await this. y.eval(parse)).toValue() : null;
+
+        const x  = this.x  ? (await this.x .eval(parse)).toValue() : null;
+        const y  = this.y  ? (await this.y .eval(parse)).toValue() : null;
         const ox = this.ox ? (await this.ox.eval(parse)).toValue() : null;
         const oy = this.oy ? (await this.oy.eval(parse)).toValue() : null;
 
@@ -14932,7 +14932,7 @@ extends GOperator
         genPushUpdateValue(parse, this.nodeId, 'oy',    oy        );
 
 
-        await this.evalObjects(parse);
+        await this.evalObjects(parse, {x: x, y: y, ox: ox, oy: oy});
 
 
         this.validate();
@@ -14964,11 +14964,11 @@ extends GOperator
         {
             obj.nodeId = this.nodeId;
             
-            obj.width  *= this.x.toValue().toNumber()/100;
-            obj.height *= this.y.toValue().toNumber()/100;
+            obj.width  *= options.x.toNumber()/100;
+            obj.height *= options.y.toNumber()/100;
 
-            obj.x -= (obj.width  - bounds.width ) * this.ox.toValue().toNumber()/100;
-            obj.y -= (obj.height - bounds.height) * this.oy.toValue().toNumber()/100;
+            obj.x -= (obj.width  - bounds.width ) * options.ox.toNumber()/100;
+            obj.y -= (obj.height - bounds.height) * options.oy.toNumber()/100;
         }
 
         
@@ -14992,18 +14992,18 @@ extends GOperator
     {
         super.invalidate();
 
-        if (this.input ) this.input .invalidate();
-        if (this.x     ) this.x     .invalidate();
-        if (this.y     ) this.y     .invalidate();
-        if (this.ox    ) this.ox    .invalidate();
-        if (this.oy    ) this.oy    .invalidate();
+        if (this.input) this.input.invalidate();
+        if (this.x    ) this.x    .invalidate();
+        if (this.y    ) this.y    .invalidate();
+        if (this.ox   ) this.ox   .invalidate();
+        if (this.oy   ) this.oy   .invalidate();
     }
 
 
 
     toValue()
     {
-        return this.value;
+        return this.value.copy();
     }
 }
 
@@ -15824,7 +15824,7 @@ function enableFeatures(subscription, beta)
     // updateElementDisplay(menuItemCache               .div, subscription && beta);
     // updateElementDisplay(menuItemCopy                .div, subscription && beta);
     
-    updateElementDisplay(menuItemSeries              .div, subscription && beta);    
+    updateElementDisplay(menuItemSequence              .div, subscription && beta);    
     updateElementDisplay(menuItemSolve               .div, subscription && beta);    
     updateElementDisplay(menuItemNumberSep1          .div, subscription && beta);
     updateElementDisplay(menuItemAnimate             .div, subscription && beta);    
@@ -17330,6 +17330,9 @@ function genParseCopy(parse)
         copy.input = genParse(parse);
 
 
+    //copy.count = genParse(parse);
+
+
     parse.nTab--;
 
 
@@ -17756,12 +17759,12 @@ function genParseArithmetic(parse, newNode)
 
 
 
-function genParseSeries(parse)
+function genParseSequence(parse)
 {
     const [, nodeId, options, ignore] = genParseNodeStart(parse);
 
 
-    const series = new GSeries(nodeId, options);
+    const seq = new GSequence(nodeId, options);
 
 
     // let nInputs = -1;
@@ -17774,12 +17777,12 @@ function genParseSeries(parse)
 
 
     if (parse.settings.logRequests) 
-        logReq(series, parse, ignore);//, nInputs);
+        logReq(seq, parse, ignore);//, nInputs);
 
 
     if (ignore) 
     {
-        genParseNodeEnd(parse, series);
+        genParseNodeEnd(parse, seq);
         return parse.parsedNodes.find(n => n.nodeId == nodeId);
     }
 
@@ -17789,20 +17792,20 @@ function genParseSeries(parse)
 
     // if (nInputs == 1)
     // {
-    //     series.input = genParse(parse);
-    //     series.input.targets.push(series);
+    //     seq.input = genParse(parse);
+    //     seq.input.targets.push(seq);
     // }
 
 
-    series.start = genParse(parse);  series.start.targets.push(series);
-    series.step  = genParse(parse);  series.step .targets.push(series);
+    seq.start = genParse(parse);  seq.start.targets.push(seq);
+    seq.step  = genParse(parse);  seq.step .targets.push(seq);
 
 
     parse.nTab--;
 
 
-    genParseNodeEnd(parse, series);
-    return series;
+    genParseNodeEnd(parse, seq);
+    return seq;
 }
 
 
@@ -18685,7 +18688,7 @@ function genParseScale(parse)
     scale.ox = genParse(parse);
     scale.oy = genParse(parse);
 
-
+    
     parse.inParam = false;
     parse.nTab--;
 
@@ -19483,7 +19486,7 @@ function genParse(parse, inParam = true)
     else if (parse.next == NUMBER_ROUND           ) result = genParseRound           (parse);
     else if (parse.next == NUMBER_LIMITS          ) result = genParseLimits          (parse);
     else if (parse.next == NUMBER_RANDOM          ) result = genParseRandom          (parse);
-    else if (parse.next == NUMBER_SERIES          ) result = genParseSeries          (parse);
+    else if (parse.next == NUMBER_SEQUENCE        ) result = genParseSequence        (parse);
     else if (parse.next == NUMBER_INTERPOLATE     ) result = genParseInterpolate     (parse);
     else if (parse.next == NUMBER_SOLVE           ) result = genParseSolve           (parse);
     else if (parse.next == NUMBER_ANIMATE         ) result = genParseAnimate         (parse);

@@ -69,7 +69,7 @@ const NUMBER_SIGN             = 'NSIGN';
 const NUMBER_ABSOLUTE         = 'ABS';   
 const NUMBER_ROUND            = 'ROUND';   
 const NUMBER_LIMITS           = 'LIM';   
-const NUMBER_SERIES           = 'SER';  
+const NUMBER_SEQUENCE         = 'SEQ';  
 const NUMBER_RANDOM           = 'RAND';  
 const NUMBER_INTERPOLATE      = 'LERP'; 
 const NUMBER_SOLVE            = 'SOLVE';
@@ -141,7 +141,7 @@ const NUMBER_TYPES =
     NUMBER_ABSOLUTE,
     NUMBER_ROUND,
     NUMBER_LIMITS,
-    NUMBER_SERIES,
+    NUMBER_SEQUENCE,
     NUMBER_RANDOM,
     NUMBER_INTERPOLATE,
     NUMBER_SOLVE,

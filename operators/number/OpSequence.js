@@ -1,4 +1,4 @@
-class   OpSeries
+class   OpSequence
 extends OperatorBase
 {
     paramStart;
@@ -8,7 +8,7 @@ extends OperatorBase
 
     constructor()
     {
-        super(NUMBER_SERIES, 'sequence', 'sequence');
+        super(NUMBER_SEQUENCE, 'sequence', 'sequence');
 
         this.cached = false;
         

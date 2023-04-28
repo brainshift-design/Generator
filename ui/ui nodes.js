@@ -25,7 +25,7 @@ function createNode(nodeType, creatingButton = null, createdNodeId = -1, options
         case NUMBER_ROUND:            node = new OpRound();             break;
         case NUMBER_LIMITS:           node = new OpLimits();            break;
         case NUMBER_RANDOM:           node = new OpRandom();            break;
-        case NUMBER_SERIES:           node = new OpSeries();            break;
+        case NUMBER_SEQUENCE:           node = new OpSequence();            break;
         case NUMBER_INTERPOLATE:      node = new OpInterpolate();       break;
         case NUMBER_TO_TEXT:          node = new OpNumberToText();      break;
         case NUMBER_SOLVE:            node = new OpSolve();             break;
@@ -768,7 +768,8 @@ function uiUpdateValuesAndObjects(requestId, actionId, updateNodeId, updateParam
     }
 
 
-    if (!graphView.loadingNodes)
+    if (   !graphView.loadingNodes
+        && !numberControlChanging)
         uiSaveNodes(nodes.map(n => n.id));
 
 

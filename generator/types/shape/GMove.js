@@ -59,7 +59,7 @@ extends GOperator
         genPushUpdateValue(parse, this.nodeId, 'y',     y         );
 
 
-        await this.evalObjects(parse);
+        await this.evalObjects(parse, {x: x, y: y});
 
 
         this.validate();
@@ -85,8 +85,8 @@ extends GOperator
         {
             obj.nodeId = this.nodeId;
 
-            obj.x += this.x.toValue().toNumber();
-            obj.y += this.y.toValue().toNumber();
+            obj.x += options.x.toNumber();
+            obj.y += options.y.toNumber();
         }
 
         
@@ -117,6 +117,6 @@ extends GOperator
 
     toValue()
     {
-        return this.value;
+        return this.value.copy();
     }
 }

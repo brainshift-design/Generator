@@ -75,7 +75,7 @@ extends GOperator
 
     toValue()
     {
-        return this.value;
+        return this.value.copy();
     }
 
 

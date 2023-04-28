@@ -499,6 +499,9 @@ function genParseCopy(parse)
         copy.input = genParse(parse);
 
 
+    //copy.count = genParse(parse);
+
+
     parse.nTab--;
 
 

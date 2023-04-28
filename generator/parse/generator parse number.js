@@ -314,12 +314,12 @@ function genParseArithmetic(parse, newNode)
 
 
 
-function genParseSeries(parse)
+function genParseSequence(parse)
 {
     const [, nodeId, options, ignore] = genParseNodeStart(parse);
 
 
-    const series = new GSeries(nodeId, options);
+    const seq = new GSequence(nodeId, options);
 
 
     // let nInputs = -1;
@@ -332,12 +332,12 @@ function genParseSeries(parse)
 
 
     if (parse.settings.logRequests) 
-        logReq(series, parse, ignore);//, nInputs);
+        logReq(seq, parse, ignore);//, nInputs);
 
 
     if (ignore) 
     {
-        genParseNodeEnd(parse, series);
+        genParseNodeEnd(parse, seq);
         return parse.parsedNodes.find(n => n.nodeId == nodeId);
     }
 
@@ -347,20 +347,20 @@ function genParseSeries(parse)
 
     // if (nInputs == 1)
     // {
-    //     series.input = genParse(parse);
-    //     series.input.targets.push(series);
+    //     seq.input = genParse(parse);
+    //     seq.input.targets.push(seq);
     // }
 
 
-    series.start = genParse(parse);  series.start.targets.push(series);
-    series.step  = genParse(parse);  series.step .targets.push(series);
+    seq.start = genParse(parse);  seq.start.targets.push(seq);
+    seq.step  = genParse(parse);  seq.step .targets.push(seq);
 
 
     parse.nTab--;
 
 
-    genParseNodeEnd(parse, series);
-    return series;
+    genParseNodeEnd(parse, seq);
+    return seq;
 }
 
 

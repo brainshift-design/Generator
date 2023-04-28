@@ -7921,7 +7921,7 @@ const NUMBER_SIGN             = 'NSIGN';
 const NUMBER_ABSOLUTE         = 'ABS';   
 const NUMBER_ROUND            = 'ROUND';   
 const NUMBER_LIMITS           = 'LIM';   
-const NUMBER_SERIES           = 'SER';  
+const NUMBER_SEQUENCE         = 'SEQ';  
 const NUMBER_RANDOM           = 'RAND';  
 const NUMBER_INTERPOLATE      = 'LERP'; 
 const NUMBER_SOLVE            = 'SOLVE';
@@ -7993,7 +7993,7 @@ const NUMBER_TYPES =
     NUMBER_ABSOLUTE,
     NUMBER_ROUND,
     NUMBER_LIMITS,
-    NUMBER_SERIES,
+    NUMBER_SEQUENCE,
     NUMBER_RANDOM,
     NUMBER_INTERPOLATE,
     NUMBER_SOLVE,
@@ -9100,7 +9100,7 @@ extends GOperator
 
     toValue()
     {
-        return this.value;
+        return this.value.copy();
     }
 
 
@@ -12052,7 +12052,7 @@ extends GOperator
         if (this.repeatId.type != NUMBER_VALUE)
         {
             console.assert(
-                   this.repeatId.type == NUMBER_SERIES
+                   this.repeatId.type == NUMBER_SEQUENCE
                 || this.repeatId.type == NUMBER_RANDOM,
                 'only volatile types can be repeated');
 
@@ -12226,11 +12226,9 @@ extends GOperator
 class GCopy
 extends GOperator
 {
-    input     = null;
+    input = null;
 
-    copy;
-
-    evaluated = false;
+    //count = null;
 
 
 
@@ -12247,9 +12245,9 @@ extends GOperator
 
         copy.copyBase(this);
 
-        if (this.input) copy.input = this.input.copy();
         if (this.value) copy.value = this.value.copy();
-        if (this.copy)  copy.copy  = this.copy .copy();
+        if (this.input) copy.input = this.input.copy();
+        //if (this.count) copy.count = this.count.copy();
 
         return copy;
     }
@@ -12258,17 +12256,21 @@ extends GOperator
 
     async eval(parse)
     {
-        if (this.isCached()
-            )
+        if (this.isCached())
             return this;
 
 
-        this.value = this.input ? (await this.input.eval(parse)).toValue() : NullValue;
-        this.copy  = this.value ? this.value.copy()                        : NullValue;
+        //const count = (await this.count.eval(parse)).toValue();
 
 
+        this.value = 
+            this.input 
+            ? (await this.input.eval(parse)).toValue() 
+            : NullValue;
+
+        
         genPushUpdateValue(parse, this.nodeId, 'value', this.value);
-        genPushUpdateValue(parse, this.nodeId, 'copy',  this.copy);
+        //genPushUpdateValue(parse, this.nodeId, 'count', count);
 
         
         this.validate();
@@ -12280,9 +12282,7 @@ extends GOperator
 
     toValue()
     {
-        return this.value
-             ? this.value.copy() 
-             : null;
+        return this.value.copy();
     }
 
 
@@ -12291,7 +12291,8 @@ extends GOperator
     {
         super.invalidate();
 
-        // if (this.input  ) this.input  .invalidate();
+        if (this.input) this.input.invalidate();
+        //if (this.count) this.count.invalidate();
     }
 }
 
@@ -12740,7 +12741,7 @@ extends GNumberType
 
 
 
-class GSeries
+class GSequence
 extends GNumberType
 {
     start;
@@ -12757,14 +12758,14 @@ extends GNumberType
 
     constructor(nodeId, options)
     {
-        super(NUMBER_SERIES, nodeId, options);
+        super(NUMBER_SEQUENCE, nodeId, options);
     }
 
 
     
     copy()
     {
-        const copy = new GSeries(this.nodeId, this.options);
+        const copy = new GSequence(this.nodeId, this.options);
 
         copy.copyBase(this);
 
@@ -12803,24 +12804,23 @@ extends GNumberType
             Math.max(start.decimals, step.decimals));
 
         
-        if (  !parse.repeats.find(r => r.nodeId == this.repeatNodeId)
-            || parse.repeats.at(-1).nodeId == this.repeatNodeId)
+        if (!parse.repeats.find(r => r.nodeId == this.repeatNodeId))
+            this.current.value += step.value;
+
+        else if (  !isEmpty(parse.repeats)
+                && parse.repeats.at(-1).nodeId == this.repeatNodeId)
         {
             this.current.value += step.value;
 
+            const repeat = parse.repeats.at(-1);
 
-            if (!isEmpty(parse.repeats))
+            if (repeat.iteration == repeat.total-1)
             {
-                const repeat = parse.repeats.at(-1);
+                console.assert(
+                    parse.repeats.at(-1).nodeId == this.repeatNodeId, 
+                    'nested repeat error');
 
-                if (repeat.iteration == repeat.total-1)
-                {
-                    console.assert(
-                        parse.repeats.at(-1).nodeId == this.repeatNodeId, 
-                        'nested repeat error');
-
-                    parse.repeats.pop();
-                }
+                parse.repeats.pop();
             }
         }
 
@@ -17844,7 +17844,7 @@ extends GOperator
         genPushUpdateValue(parse, this.nodeId, 'height', this.value.height);
         genPushUpdateValue(parse, this.nodeId, 'angle',  this.value.angle );
 
-        genPushUpdateValue(parse, this.nodeId, 'props',  this.value.props);
+        genPushUpdateValue(parse, this.nodeId, 'props',  this.value.props );
     }
 
 
@@ -19026,7 +19026,7 @@ extends GOperator
         genPushUpdateValue(parse, this.nodeId, 'y',     y         );
 
 
-        await this.evalObjects(parse);
+        await this.evalObjects(parse, {x: x, y: y});
 
 
         this.validate();
@@ -19052,8 +19052,8 @@ extends GOperator
         {
             obj.nodeId = this.nodeId;
 
-            obj.x += this.x.toValue().toNumber();
-            obj.y += this.y.toValue().toNumber();
+            obj.x += options.x.toNumber();
+            obj.y += options.y.toNumber();
         }
 
         
@@ -19084,7 +19084,7 @@ extends GOperator
 
     toValue()
     {
-        return this.value;
+        return this.value.copy();
     }
 }
 
@@ -19154,7 +19154,7 @@ extends GOperator
         genPushUpdateValue(parse, this.nodeId, 'oy',    oy        );
 
 
-        await this.evalObjects(parse);
+        await this.evalObjects(parse, {angle: angle, ox: ox, oy: oy});
 
 
         this.validate();
@@ -19186,15 +19186,15 @@ extends GOperator
         {
             obj.nodeId = this.nodeId;
 
-            obj.angle += this.angle.toValue().toNumber(); 
+            obj.angle += options.angle.toNumber(); 
 
             const angle = angle_(bounds.width, bounds.height);
             const halfd = Math.sqrt(sqr(bounds.width) + sqr(bounds.height)) / 2;
 
             const v     = vector(angle + obj.angle/360*Tau, halfd);
 
-            const dx    = 0.5 - this.ox.toValue().toNumber()/100;
-            const dy    = 0.5 + this.oy.toValue().toNumber()/100;
+            const dx    = 0.5 - options.ox.toNumber()/100;
+            const dy    = 0.5 + options.oy.toNumber()/100;
 
             obj.x = obj.x + bounds.width /2 - v.x + dx * bounds.width * Math.cos(-obj.angle/360*Tau) - dy * bounds.height * Math.sin(obj.angle/360*Tau);
             obj.y = obj.y + bounds.height/2 + v.y + dx * bounds.width * Math.sin(-obj.angle/360*Tau) - dy * bounds.height * Math.cos(obj.angle/360*Tau);
@@ -19230,7 +19230,7 @@ extends GOperator
 
     toValue()
     {
-        return this.value;
+        return this.value.copy();
     }
 }
 
@@ -19279,9 +19279,9 @@ extends GOperator
         if (this.isCached())
             return this;
 
-            
-        const x  = this.x  ? (await this. x.eval(parse)).toValue() : null;
-        const y  = this.y  ? (await this. y.eval(parse)).toValue() : null;
+
+        const x  = this.x  ? (await this.x .eval(parse)).toValue() : null;
+        const y  = this.y  ? (await this.y .eval(parse)).toValue() : null;
         const ox = this.ox ? (await this.ox.eval(parse)).toValue() : null;
         const oy = this.oy ? (await this.oy.eval(parse)).toValue() : null;
 
@@ -19304,7 +19304,7 @@ extends GOperator
         genPushUpdateValue(parse, this.nodeId, 'oy',    oy        );
 
 
-        await this.evalObjects(parse);
+        await this.evalObjects(parse, {x: x, y: y, ox: ox, oy: oy});
 
 
         this.validate();
@@ -19336,11 +19336,11 @@ extends GOperator
         {
             obj.nodeId = this.nodeId;
             
-            obj.width  *= this.x.toValue().toNumber()/100;
-            obj.height *= this.y.toValue().toNumber()/100;
+            obj.width  *= options.x.toNumber()/100;
+            obj.height *= options.y.toNumber()/100;
 
-            obj.x -= (obj.width  - bounds.width ) * this.ox.toValue().toNumber()/100;
-            obj.y -= (obj.height - bounds.height) * this.oy.toValue().toNumber()/100;
+            obj.x -= (obj.width  - bounds.width ) * options.ox.toNumber()/100;
+            obj.y -= (obj.height - bounds.height) * options.oy.toNumber()/100;
         }
 
         
@@ -19364,18 +19364,18 @@ extends GOperator
     {
         super.invalidate();
 
-        if (this.input ) this.input .invalidate();
-        if (this.x     ) this.x     .invalidate();
-        if (this.y     ) this.y     .invalidate();
-        if (this.ox    ) this.ox    .invalidate();
-        if (this.oy    ) this.oy    .invalidate();
+        if (this.input) this.input.invalidate();
+        if (this.x    ) this.x    .invalidate();
+        if (this.y    ) this.y    .invalidate();
+        if (this.ox   ) this.ox   .invalidate();
+        if (this.oy   ) this.oy   .invalidate();
     }
 
 
 
     toValue()
     {
-        return this.value;
+        return this.value.copy();
     }
 }
 
@@ -20196,7 +20196,7 @@ function enableFeatures(subscription, beta)
     // updateElementDisplay(menuItemCache               .div, subscription && beta);
     // updateElementDisplay(menuItemCopy                .div, subscription && beta);
     
-    updateElementDisplay(menuItemSeries              .div, subscription && beta);    
+    updateElementDisplay(menuItemSequence              .div, subscription && beta);    
     updateElementDisplay(menuItemSolve               .div, subscription && beta);    
     updateElementDisplay(menuItemNumberSep1          .div, subscription && beta);
     updateElementDisplay(menuItemAnimate             .div, subscription && beta);    
@@ -21702,6 +21702,9 @@ function genParseCopy(parse)
         copy.input = genParse(parse);
 
 
+    //copy.count = genParse(parse);
+
+
     parse.nTab--;
 
 
@@ -22128,12 +22131,12 @@ function genParseArithmetic(parse, newNode)
 
 
 
-function genParseSeries(parse)
+function genParseSequence(parse)
 {
     const [, nodeId, options, ignore] = genParseNodeStart(parse);
 
 
-    const series = new GSeries(nodeId, options);
+    const seq = new GSequence(nodeId, options);
 
 
     // let nInputs = -1;
@@ -22146,12 +22149,12 @@ function genParseSeries(parse)
 
 
     if (parse.settings.logRequests) 
-        logReq(series, parse, ignore);//, nInputs);
+        logReq(seq, parse, ignore);//, nInputs);
 
 
     if (ignore) 
     {
-        genParseNodeEnd(parse, series);
+        genParseNodeEnd(parse, seq);
         return parse.parsedNodes.find(n => n.nodeId == nodeId);
     }
 
@@ -22161,20 +22164,20 @@ function genParseSeries(parse)
 
     // if (nInputs == 1)
     // {
-    //     series.input = genParse(parse);
-    //     series.input.targets.push(series);
+    //     seq.input = genParse(parse);
+    //     seq.input.targets.push(seq);
     // }
 
 
-    series.start = genParse(parse);  series.start.targets.push(series);
-    series.step  = genParse(parse);  series.step .targets.push(series);
+    seq.start = genParse(parse);  seq.start.targets.push(seq);
+    seq.step  = genParse(parse);  seq.step .targets.push(seq);
 
 
     parse.nTab--;
 
 
-    genParseNodeEnd(parse, series);
-    return series;
+    genParseNodeEnd(parse, seq);
+    return seq;
 }
 
 
@@ -23057,7 +23060,7 @@ function genParseScale(parse)
     scale.ox = genParse(parse);
     scale.oy = genParse(parse);
 
-
+    
     parse.inParam = false;
     parse.nTab--;
 
@@ -23855,7 +23858,7 @@ function genParse(parse, inParam = true)
     else if (parse.next == NUMBER_ROUND           ) result = genParseRound           (parse);
     else if (parse.next == NUMBER_LIMITS          ) result = genParseLimits          (parse);
     else if (parse.next == NUMBER_RANDOM          ) result = genParseRandom          (parse);
-    else if (parse.next == NUMBER_SERIES          ) result = genParseSeries          (parse);
+    else if (parse.next == NUMBER_SEQUENCE        ) result = genParseSequence        (parse);
     else if (parse.next == NUMBER_INTERPOLATE     ) result = genParseInterpolate     (parse);
     else if (parse.next == NUMBER_SOLVE           ) result = genParseSolve           (parse);
     else if (parse.next == NUMBER_ANIMATE         ) result = genParseAnimate         (parse);
@@ -33340,7 +33343,7 @@ const NUMBER_SIGN             = 'NSIGN';
 const NUMBER_ABSOLUTE         = 'ABS';   
 const NUMBER_ROUND            = 'ROUND';   
 const NUMBER_LIMITS           = 'LIM';   
-const NUMBER_SERIES           = 'SER';  
+const NUMBER_SEQUENCE         = 'SEQ';  
 const NUMBER_RANDOM           = 'RAND';  
 const NUMBER_INTERPOLATE      = 'LERP'; 
 const NUMBER_SOLVE            = 'SOLVE';
@@ -33412,7 +33415,7 @@ const NUMBER_TYPES =
     NUMBER_ABSOLUTE,
     NUMBER_ROUND,
     NUMBER_LIMITS,
-    NUMBER_SERIES,
+    NUMBER_SEQUENCE,
     NUMBER_RANDOM,
     NUMBER_INTERPOLATE,
     NUMBER_SOLVE,
@@ -34519,7 +34522,7 @@ extends GOperator
 
     toValue()
     {
-        return this.value;
+        return this.value.copy();
     }
 
 
@@ -37471,7 +37474,7 @@ extends GOperator
         if (this.repeatId.type != NUMBER_VALUE)
         {
             console.assert(
-                   this.repeatId.type == NUMBER_SERIES
+                   this.repeatId.type == NUMBER_SEQUENCE
                 || this.repeatId.type == NUMBER_RANDOM,
                 'only volatile types can be repeated');
 
@@ -37645,11 +37648,9 @@ extends GOperator
 class GCopy
 extends GOperator
 {
-    input     = null;
+    input = null;
 
-    copy;
-
-    evaluated = false;
+    //count = null;
 
 
 
@@ -37666,9 +37667,9 @@ extends GOperator
 
         copy.copyBase(this);
 
-        if (this.input) copy.input = this.input.copy();
         if (this.value) copy.value = this.value.copy();
-        if (this.copy)  copy.copy  = this.copy .copy();
+        if (this.input) copy.input = this.input.copy();
+        //if (this.count) copy.count = this.count.copy();
 
         return copy;
     }
@@ -37677,17 +37678,21 @@ extends GOperator
 
     async eval(parse)
     {
-        if (this.isCached()
-            )
+        if (this.isCached())
             return this;
 
 
-        this.value = this.input ? (await this.input.eval(parse)).toValue() : NullValue;
-        this.copy  = this.value ? this.value.copy()                        : NullValue;
+        //const count = (await this.count.eval(parse)).toValue();
 
 
+        this.value = 
+            this.input 
+            ? (await this.input.eval(parse)).toValue() 
+            : NullValue;
+
+        
         genPushUpdateValue(parse, this.nodeId, 'value', this.value);
-        genPushUpdateValue(parse, this.nodeId, 'copy',  this.copy);
+        //genPushUpdateValue(parse, this.nodeId, 'count', count);
 
         
         this.validate();
@@ -37699,9 +37704,7 @@ extends GOperator
 
     toValue()
     {
-        return this.value
-             ? this.value.copy() 
-             : null;
+        return this.value.copy();
     }
 
 
@@ -37710,7 +37713,8 @@ extends GOperator
     {
         super.invalidate();
 
-        // if (this.input  ) this.input  .invalidate();
+        if (this.input) this.input.invalidate();
+        //if (this.count) this.count.invalidate();
     }
 }
 
@@ -38159,7 +38163,7 @@ extends GNumberType
 
 
 
-class GSeries
+class GSequence
 extends GNumberType
 {
     start;
@@ -38176,14 +38180,14 @@ extends GNumberType
 
     constructor(nodeId, options)
     {
-        super(NUMBER_SERIES, nodeId, options);
+        super(NUMBER_SEQUENCE, nodeId, options);
     }
 
 
     
     copy()
     {
-        const copy = new GSeries(this.nodeId, this.options);
+        const copy = new GSequence(this.nodeId, this.options);
 
         copy.copyBase(this);
 
@@ -38222,24 +38226,23 @@ extends GNumberType
             Math.max(start.decimals, step.decimals));
 
         
-        if (  !parse.repeats.find(r => r.nodeId == this.repeatNodeId)
-            || parse.repeats.at(-1).nodeId == this.repeatNodeId)
+        if (!parse.repeats.find(r => r.nodeId == this.repeatNodeId))
+            this.current.value += step.value;
+
+        else if (  !isEmpty(parse.repeats)
+                && parse.repeats.at(-1).nodeId == this.repeatNodeId)
         {
             this.current.value += step.value;
 
+            const repeat = parse.repeats.at(-1);
 
-            if (!isEmpty(parse.repeats))
+            if (repeat.iteration == repeat.total-1)
             {
-                const repeat = parse.repeats.at(-1);
+                console.assert(
+                    parse.repeats.at(-1).nodeId == this.repeatNodeId, 
+                    'nested repeat error');
 
-                if (repeat.iteration == repeat.total-1)
-                {
-                    console.assert(
-                        parse.repeats.at(-1).nodeId == this.repeatNodeId, 
-                        'nested repeat error');
-
-                    parse.repeats.pop();
-                }
+                parse.repeats.pop();
             }
         }
 
@@ -43263,7 +43266,7 @@ extends GOperator
         genPushUpdateValue(parse, this.nodeId, 'height', this.value.height);
         genPushUpdateValue(parse, this.nodeId, 'angle',  this.value.angle );
 
-        genPushUpdateValue(parse, this.nodeId, 'props',  this.value.props);
+        genPushUpdateValue(parse, this.nodeId, 'props',  this.value.props );
     }
 
 
@@ -44445,7 +44448,7 @@ extends GOperator
         genPushUpdateValue(parse, this.nodeId, 'y',     y         );
 
 
-        await this.evalObjects(parse);
+        await this.evalObjects(parse, {x: x, y: y});
 
 
         this.validate();
@@ -44471,8 +44474,8 @@ extends GOperator
         {
             obj.nodeId = this.nodeId;
 
-            obj.x += this.x.toValue().toNumber();
-            obj.y += this.y.toValue().toNumber();
+            obj.x += options.x.toNumber();
+            obj.y += options.y.toNumber();
         }
 
         
@@ -44503,7 +44506,7 @@ extends GOperator
 
     toValue()
     {
-        return this.value;
+        return this.value.copy();
     }
 }
 
@@ -44573,7 +44576,7 @@ extends GOperator
         genPushUpdateValue(parse, this.nodeId, 'oy',    oy        );
 
 
-        await this.evalObjects(parse);
+        await this.evalObjects(parse, {angle: angle, ox: ox, oy: oy});
 
 
         this.validate();
@@ -44605,15 +44608,15 @@ extends GOperator
         {
             obj.nodeId = this.nodeId;
 
-            obj.angle += this.angle.toValue().toNumber(); 
+            obj.angle += options.angle.toNumber(); 
 
             const angle = angle_(bounds.width, bounds.height);
             const halfd = Math.sqrt(sqr(bounds.width) + sqr(bounds.height)) / 2;
 
             const v     = vector(angle + obj.angle/360*Tau, halfd);
 
-            const dx    = 0.5 - this.ox.toValue().toNumber()/100;
-            const dy    = 0.5 + this.oy.toValue().toNumber()/100;
+            const dx    = 0.5 - options.ox.toNumber()/100;
+            const dy    = 0.5 + options.oy.toNumber()/100;
 
             obj.x = obj.x + bounds.width /2 - v.x + dx * bounds.width * Math.cos(-obj.angle/360*Tau) - dy * bounds.height * Math.sin(obj.angle/360*Tau);
             obj.y = obj.y + bounds.height/2 + v.y + dx * bounds.width * Math.sin(-obj.angle/360*Tau) - dy * bounds.height * Math.cos(obj.angle/360*Tau);
@@ -44649,7 +44652,7 @@ extends GOperator
 
     toValue()
     {
-        return this.value;
+        return this.value.copy();
     }
 }
 
@@ -44698,9 +44701,9 @@ extends GOperator
         if (this.isCached())
             return this;
 
-            
-        const x  = this.x  ? (await this. x.eval(parse)).toValue() : null;
-        const y  = this.y  ? (await this. y.eval(parse)).toValue() : null;
+
+        const x  = this.x  ? (await this.x .eval(parse)).toValue() : null;
+        const y  = this.y  ? (await this.y .eval(parse)).toValue() : null;
         const ox = this.ox ? (await this.ox.eval(parse)).toValue() : null;
         const oy = this.oy ? (await this.oy.eval(parse)).toValue() : null;
 
@@ -44723,7 +44726,7 @@ extends GOperator
         genPushUpdateValue(parse, this.nodeId, 'oy',    oy        );
 
 
-        await this.evalObjects(parse);
+        await this.evalObjects(parse, {x: x, y: y, ox: ox, oy: oy});
 
 
         this.validate();
@@ -44755,11 +44758,11 @@ extends GOperator
         {
             obj.nodeId = this.nodeId;
             
-            obj.width  *= this.x.toValue().toNumber()/100;
-            obj.height *= this.y.toValue().toNumber()/100;
+            obj.width  *= options.x.toNumber()/100;
+            obj.height *= options.y.toNumber()/100;
 
-            obj.x -= (obj.width  - bounds.width ) * this.ox.toValue().toNumber()/100;
-            obj.y -= (obj.height - bounds.height) * this.oy.toValue().toNumber()/100;
+            obj.x -= (obj.width  - bounds.width ) * options.ox.toNumber()/100;
+            obj.y -= (obj.height - bounds.height) * options.oy.toNumber()/100;
         }
 
         
@@ -44783,18 +44786,18 @@ extends GOperator
     {
         super.invalidate();
 
-        if (this.input ) this.input .invalidate();
-        if (this.x     ) this.x     .invalidate();
-        if (this.y     ) this.y     .invalidate();
-        if (this.ox    ) this.ox    .invalidate();
-        if (this.oy    ) this.oy    .invalidate();
+        if (this.input) this.input.invalidate();
+        if (this.x    ) this.x    .invalidate();
+        if (this.y    ) this.y    .invalidate();
+        if (this.ox   ) this.ox   .invalidate();
+        if (this.oy   ) this.oy   .invalidate();
     }
 
 
 
     toValue()
     {
-        return this.value;
+        return this.value.copy();
     }
 }
 
@@ -45615,7 +45618,7 @@ function enableFeatures(subscription, beta)
     // updateElementDisplay(menuItemCache               .div, subscription && beta);
     // updateElementDisplay(menuItemCopy                .div, subscription && beta);
     
-    updateElementDisplay(menuItemSeries              .div, subscription && beta);    
+    updateElementDisplay(menuItemSequence              .div, subscription && beta);    
     updateElementDisplay(menuItemSolve               .div, subscription && beta);    
     updateElementDisplay(menuItemNumberSep1          .div, subscription && beta);
     updateElementDisplay(menuItemAnimate             .div, subscription && beta);    
@@ -49352,7 +49355,7 @@ const iconStart             = '<svg width="17" height="8" viewBox="0 0 17 8" fil
 const iconRepeat            = '<svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><circle r="1.5" transform="matrix(-1 0 0 1 8.5 13.6003)" fill="white"/><path d="M12.996 11.5078C14.0482 10.4921 14.7227 9.16438 14.9093 7.74161C15.0958 6.31883 14.7834 4.88515 14.023 3.67489C13.2626 2.46463 12.0993 1.54937 10.7232 1.0787C9.34705 0.608019 7.83949 0.609769 6.44689 1.08365C5.05429 1.55754 3.85902 2.47553 3.05643 3.6876C2.25383 4.89967 1.89138 6.33413 2.02832 7.75654C2.12729 8.78463 2.48292 9.76246 3.05643 10.6082" stroke="white"/><rect width="4.97369" height="1" transform="matrix(-1 0 0 1 5.00183 10.0282)" fill="white"/><rect width="4.01843" height="1" transform="matrix(1.19249e-08 -1 -1 -1.19249e-08 5.00183 11.0282)" fill="white"/></svg>';
 const iconForEach           = '<svg width="15" height="11" viewBox="0 0 15 11" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="6" y="9" width="9" height="1" fill="white"/><circle cx="1.5" cy="9.5" r="1.5" fill="white"/><circle cx="1.5" cy="5.5" r="1.5" fill="white"/><circle cx="1.5" cy="1.5" r="1.5" fill="white"/></svg>';
 const iconCache             = '<svg width="15" height="11" viewBox="0 0 15 11" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M2.30351 1C1.68386 1.65376 1.20533 2.44219 0.906274 3.31653C0.435594 4.69266 0.437344 6.20022 0.911224 7.59282C1.21856 8.49597 1.71269 9.31613 2.35268 10" stroke="white"/><path d="M12.7415 1C13.3612 1.65376 13.8397 2.44219 14.1387 3.31653C14.6094 4.69266 14.6077 6.20022 14.1338 7.59282C13.8265 8.49597 13.3323 9.31613 12.6923 10" stroke="white"/><circle r="1.5" transform="matrix(-1 0 0 1 7.5 5.5)" fill="white"/></svg>';
-const iconCopy              = '<svg width="15" height="8" viewBox="0 0 15 8" fill="none" xmlns="http://www.w3.org/2000/svg"><circle r="1.5" transform="matrix(-1 0 0 1 13.5 1.5)" fill="white"/><circle r="1.5" transform="matrix(-1 0 0 1 13.5 6.5)" fill="white"/><path d="M0 1H9V2H0V1Z" fill="white"/></svg>';
+const iconCopy              = '<svg width="15" height="11" viewBox="0 0 15 11" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M0 5H9V6H0V5Z" fill="white"/><path d="M13.5 11C12.6716 11 12 10.3284 12 9.5C12 8.67157 12.6716 8 13.5 8C14.3284 8 15 8.67157 15 9.5C15 10.3284 14.3284 11 13.5 11Z" fill="white"/><path d="M13.5 7C12.6716 7 12 6.32843 12 5.5C12 4.67157 12.6716 4 13.5 4C14.3284 4 15 4.67157 15 5.5C15 6.32843 14.3284 7 13.5 7Z" fill="white"/><path d="M13.5 3C12.6716 3 12 2.32843 12 1.5C12 0.671573 12.6716 0 13.5 0C14.3284 0 15 0.671573 15 1.5C15 2.32843 14.3284 3 13.5 3Z" fill="white"/></svg>';
 const iconIfElse            = '<svg width="16" height="7" viewBox="0 0 16 7" fill="none" xmlns="http://www.w3.org/2000/svg"><rect y="1" width="9" height="1" fill="white"/><rect y="5" width="9" height="1" fill="white"/><path d="M13.157 4.8687V4.75547C13.1591 4.36695 13.1911 4.05725 13.253 3.82636C13.317 3.59546 13.4099 3.40898 13.5318 3.26689C13.6536 3.1248 13.8002 2.99604 13.9715 2.88059C14.0995 2.79179 14.2141 2.69965 14.3153 2.60419C14.4165 2.50872 14.497 2.40327 14.5569 2.28782C14.6167 2.17016 14.6467 2.03917 14.6467 1.89486C14.6467 1.74167 14.6126 1.60736 14.5445 1.49191C14.4763 1.37647 14.3845 1.28766 14.2688 1.2255C14.1553 1.16334 14.0293 1.13225 13.891 1.13225C13.7568 1.13225 13.6298 1.16445 13.5101 1.22883C13.3903 1.29099 13.2922 1.38424 13.2159 1.50856C13.1395 1.63067 13.0982 1.78275 13.092 1.9648H11.8284C11.8387 1.52077 11.9378 1.15446 12.1257 0.865842C12.3136 0.575008 12.5624 0.358548 12.8721 0.21646C13.1818 0.0721535 13.5235 0 13.8972 0C14.3081 0 14.6714 0.0732636 14.9873 0.219791C15.3032 0.364098 15.551 0.573898 15.7306 0.849191C15.9102 1.12448 16.0001 1.45639 16.0001 1.84491C16.0001 2.10466 15.9598 2.33555 15.8793 2.53758C15.8008 2.73739 15.6904 2.915 15.5479 3.07041C15.4054 3.2236 15.2372 3.36235 15.0431 3.48668C14.88 3.59102 14.7458 3.69981 14.6405 3.81304C14.5372 3.92626 14.4598 4.05725 14.4082 4.20599C14.3587 4.35474 14.3328 4.5379 14.3308 4.75547V4.8687H13.157ZM13.7702 6.9C13.5638 6.9 13.3872 6.8223 13.2406 6.66689C13.0961 6.50926 13.0249 6.32055 13.0269 6.10076C13.0249 5.88319 13.0961 5.6967 13.2406 5.54129C13.3872 5.38589 13.5638 5.30818 13.7702 5.30818C13.9664 5.30818 14.1388 5.38589 14.2874 5.54129C14.4361 5.6967 14.5114 5.88319 14.5135 6.10076C14.5114 6.24729 14.4753 6.38161 14.4051 6.50371C14.337 6.6236 14.2472 6.72017 14.1357 6.79344C14.0242 6.86448 13.9024 6.9 13.7702 6.9Z" fill="white"/></svg>';
  
 const iconNumber            = '<svg width="17" height="7" viewBox="0 0 17 7" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M14.4917 7C14.0139 7 13.5892 6.91793 13.2176 6.7538C12.8483 6.58967 12.5563 6.36122 12.3417 6.06844C12.1272 5.77567 12.0133 5.43742 12 5.05371H13.2475C13.2586 5.2378 13.3194 5.39861 13.43 5.53612C13.5406 5.67142 13.6877 5.77677 13.8713 5.85219C14.0548 5.9276 14.2605 5.9653 14.4884 5.9653C14.7317 5.9653 14.9473 5.92316 15.1353 5.83888C15.3234 5.75238 15.4705 5.6326 15.5766 5.47956C15.6828 5.32652 15.7348 5.15019 15.7326 4.95057C15.7348 4.7443 15.6817 4.56242 15.5733 4.40494C15.4649 4.24747 15.3079 4.12437 15.1022 4.03565C14.8987 3.94693 14.6532 3.90257 14.3656 3.90257H13.7651V2.95105H14.3656C14.6023 2.95105 14.8091 2.91001 14.986 2.82795C15.1652 2.74588 15.3057 2.63055 15.4074 2.48194C15.5092 2.33112 15.5589 2.157 15.5567 1.9596C15.5589 1.76664 15.5158 1.59918 15.4273 1.45722C15.3411 1.31305 15.2183 1.20105 15.059 1.1212C14.902 1.04135 14.7173 1.00143 14.505 1.00143C14.297 1.00143 14.1046 1.03913 13.9277 1.11454C13.7507 1.18996 13.608 1.29753 13.4997 1.43726C13.3913 1.57478 13.3338 1.73891 13.3271 1.92966H12.1427C12.1515 1.54816 12.261 1.21324 12.4711 0.924905C12.6835 0.634347 12.9666 0.408112 13.3205 0.246198C13.6744 0.0820661 14.0714 0 14.5116 0C14.965 0 15.3588 0.0853929 15.6927 0.256179C16.029 0.424746 16.2888 0.652091 16.4724 0.938213C16.656 1.22433 16.7478 1.5404 16.7478 1.88641C16.75 2.27012 16.6372 2.59173 16.4094 2.85124C16.1838 3.11074 15.8874 3.28042 15.5202 3.36027V3.4135C15.998 3.48004 16.3641 3.65748 16.6184 3.94582C16.875 4.23194 17.0022 4.58793 17 5.01378C17 5.39528 16.8916 5.73685 16.6748 6.0385C16.4603 6.33793 16.1639 6.57304 15.7856 6.74382C15.4096 6.91461 14.9783 7 14.4917 7Z" fill="white"/><path d="M5.04237 7V6.09634L7.66243 3.75289C7.90254 3.52136 8.10264 3.31567 8.26271 3.13584C8.42279 2.95601 8.54284 2.78179 8.62288 2.6132C8.70292 2.44461 8.74294 2.26477 8.74294 2.0737C8.74294 1.85565 8.69115 1.66908 8.58757 1.51397C8.48399 1.35662 8.34157 1.23523 8.16031 1.14981C7.97905 1.06439 7.66361 1.01493 7.43291 1.01493C7.19515 1.01493 6.98682 1.06214 6.80791 1.15655C6.629 1.24872 6.49011 1.38022 6.39124 1.55106C6.29473 1.7219 6.24647 1.92534 6.24647 2.16137H5C5 1.72302 5.10476 1.342 5.31427 1.0183C5.52378 0.694605 5.81215 0.443963 6.17938 0.266378C6.54896 0.0887927 6.97269 0 7.45056 0C7.9355 0 8.47105 0.0932886 8.83828 0.266378C9.20551 0.439467 9.49035 0.676622 9.6928 0.977842C9.8976 1.27906 10 1.62299 10 2.00963C10 2.26814 9.94821 2.52216 9.84463 2.77168C9.74105 3.02119 9.55862 3.29769 9.29732 3.60116C9.03837 3.90462 8.67467 4.27216 8.20622 4.70376L6.85028 5.90751V5.95472H10V7H5.04237Z" fill="white"/><path d="M3 0V7H1.70882V1.23389H1.66705L0 2.27979V1.11768L1.77146 0H3Z" fill="white"/></svg>';
@@ -49361,7 +49364,7 @@ const iconAbsolute          = '<svg width="13" height="13" viewBox="0 0 13 13" f
 const iconRound             = '<svg width="17" height="13" viewBox="0 0 17 13" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M4.74422 12.2978C3.1 12 1.51382 9.72099 1.51382 6.5C1.51382 3.27901 3.1 1 4.74422 0.702217" stroke="white" stroke-width="1.1"/><path d="M12.3 12.2978C13.9442 12 15.5304 9.72099 15.5304 6.5C15.5304 3.27901 13.9442 1 12.3 0.702217" stroke="white" stroke-width="1.1"/><path d="M7.40227 4L8.5 5.8457L9.61544 4H10.9717L9.33215 6.5L11 9H9.65085L8.5 7.19987L7.35977 9H6L7.65722 6.5L6.04249 4H7.40227Z" fill="white"/></svg>';
 const iconLimits            = '<svg width="18" height="14" viewBox="0 0 18 14" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M0 0H0.904239L3.03042 5.81055H3.10374L5.22992 0H6.13416V7H5.42543V1.68164H5.36434L3.40922 7H2.72494L0.769825 1.68164H0.708728V7H0V0Z" fill="white"/><path d="M7.9098 7H7.11553L9.41279 0H10.1948L12.4921 7H11.6978L9.82825 1.10742H9.77937L7.9098 7ZM8.20306 4.26563H11.4046V5.01758H8.20306V4.26563Z" fill="white"/><path d="M13.8332 0L15.4461 2.91211H15.495L17.108 0H18L16.0327 3.5L18 7H17.108L15.495 4.14258H15.4461L13.8332 7H12.9412L14.9574 3.5L12.9412 0H13.8332Z" fill="white"/><path d="M1 8H1.85014L3.84911 12.9805H3.91804L5.91702 8H6.76716V14H6.10083V9.44141H6.04339L4.20525 14H3.5619L1.72377 9.44141H1.66632V14H1V8Z" fill="white"/><path d="M9.90758 8V14H9.1953V8H9.90758Z" fill="white"/><path d="M17 8V14H16.3107L13.1054 9.28906H13.048V14H12.3357V8H13.025L16.2418 12.7227H16.2992V8H17Z" fill="white"/></svg>';
 const iconRandom            = '<svg width="7" height="11" viewBox="0 0 7 11" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M2.57613 7.88313V7.82014C2.58313 7.15175 2.65312 6.61983 2.7861 6.22439C2.91908 5.82895 3.10805 5.50875 3.35302 5.26379C3.59798 5.01883 3.89193 4.79311 4.23488 4.58664C4.44135 4.46066 4.62682 4.31193 4.79129 4.14046C4.95577 3.96549 5.08525 3.76427 5.17973 3.5368C5.27772 3.30934 5.32671 3.05738 5.32671 2.78092C5.32671 2.43797 5.24622 2.14052 5.08525 1.88856C4.92427 1.6366 4.70906 1.44238 4.4396 1.3059C4.17014 1.16942 3.87094 1.10118 3.54199 1.10118C3.25503 1.10118 2.97857 1.16067 2.71261 1.27965C2.44665 1.39863 2.22444 1.58585 2.04597 1.84131C1.86749 2.09677 1.76426 2.43097 1.73626 2.84391H0.413467C0.441463 2.249 0.595439 1.73983 0.875396 1.31639C1.15885 0.89296 1.53155 0.56926 1.99347 0.345294C2.4589 0.121329 2.97507 0.00934601 3.54199 0.00934601C4.15789 0.00934601 4.69331 0.131827 5.14824 0.376789C5.60667 0.621752 5.96011 0.9577 6.20858 1.38463C6.46054 1.81157 6.58652 2.29799 6.58652 2.84391C6.58652 3.22885 6.52703 3.57705 6.40804 3.8885C6.29256 4.19995 6.12459 4.47816 5.90412 4.72312C5.68716 4.96808 5.4247 5.18505 5.11674 5.37402C4.80879 5.56649 4.56208 5.76946 4.37661 5.98293C4.19114 6.19289 4.05641 6.44311 3.97242 6.73356C3.88843 7.02402 3.84294 7.38621 3.83594 7.82014V7.88313H2.57613ZM3.24803 10.9907C2.98907 10.9907 2.76686 10.8979 2.58138 10.7124C2.39591 10.527 2.30318 10.3048 2.30318 10.0458C2.30318 9.78684 2.39591 9.56463 2.58138 9.37915C2.76686 9.19368 2.98907 9.10095 3.24803 9.10095C3.50699 9.10095 3.72921 9.19368 3.91468 9.37915C4.10015 9.56463 4.19289 9.78684 4.19289 10.0458C4.19289 10.2173 4.14914 10.3748 4.06166 10.5182C3.97767 10.6617 3.86394 10.7772 3.72046 10.8647C3.58048 10.9487 3.423 10.9907 3.24803 10.9907Z" fill="white"/></svg>';
-const iconSeries            = '<svg width="16" height="11" viewBox="0 0 16 11" fill="none" xmlns="http://www.w3.org/2000/svg"><rect y="9" width="1" height="2" fill="white"/><rect x="5" y="6" width="1" height="5" fill="white"/><rect x="10" y="3" width="1" height="8" fill="white"/><rect x="15" width="1" height="11" fill="white"/></svg>';
+const iconSequence            = '<svg width="16" height="11" viewBox="0 0 16 11" fill="none" xmlns="http://www.w3.org/2000/svg"><rect y="9" width="1" height="2" fill="white"/><rect x="5" y="6" width="1" height="5" fill="white"/><rect x="10" y="3" width="1" height="8" fill="white"/><rect x="15" width="1" height="11" fill="white"/></svg>';
 const iconInterpolate       = '<svg width="19" height="13" viewBox="0 -1 19 13" fill="none" xmlns="http://www.w3.org/2000/svg"><line x1="0.284818" y1="10.6077" x2="18.759" y2="0.444666" stroke="white"/><ellipse cx="9.99556" cy="5.22745" rx="1.45202" ry="2.24173" transform="rotate(-25.1301 9.99556 5.22745)" fill="white"/></svg>';
 const iconSolve             = '<svg width="18" height="14" viewBox="-4 0 18 14" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="5.5" cy="5.5" r="5" stroke="white"/><rect x="9.44473" y="8.55527" width="6.21958" height="1.25789" transform="rotate(45 9.44473 8.55527)" fill="white"/><path d="M4.40227 3L5.5 4.8457L6.61544 3H7.97167L6.33215 5.5L8 8H6.65085L5.5 6.19987L4.35977 8H3L4.65722 5.5L3.04249 3H4.40227Z" fill="white"/></svg>';
 const iconAnimate           = '<svg width="15" height="7" viewBox="0 0 15 7" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M6 0H15V1H6V0Z" fill="white"/><path d="M3 3H12V4H3V3Z" fill="white"/><path d="M0 6H9V7H0V6Z" fill="white"/></svg>';
@@ -50550,7 +50553,7 @@ var menuFlowSep3;
 var menuItemCache;
 var menuItemCopy;
 
-var menuItemSeries;
+var menuItemSequence;
 var menuItemSolve;  
 var menuItemAnimate;  
 var menuItemNumberSep1;
@@ -50766,10 +50769,10 @@ function initGeneratorMenus()
         menuItemIfElse        = new MenuItem('I&hairsp;f / else', {icon: iconIfElse,     callback: e => actionManager.do(getCreateNodeAction(IF_ELSE,      btnNumber.div, getCreateOptions(e))), disambiguate: true}),
         menuFlowSep3          = new MenuItem('',                  {separator: true}),
         //settinmenuItemStart         = new MenuItem('Start',             {icon: iconStart,      callback: e => actionManager.do(getCreateNodeAction(START,        btnNumber.div, getCreateOptions(e)))}),
-        menuItemRepeat        = new MenuItem('Repeat',            {icon: iconRepeat,     callback: e => actionManager.do(getCreateNodeAction(REPEAT,       btnNumber.div, getCreateOptions(e)))}),//,
+        menuItemCopy          = new MenuItem('Copy',              {icon: iconCopy,   callback: e => actionManager.do(getCreateNodeAction(COPY,         btnNumber.div, getCreateOptions(e)))}),
+        menuItemRepeat        = new MenuItem('Repeat',            {icon: iconRepeat,     callback: e => actionManager.do(getCreateNodeAction(REPEAT,       btnNumber.div, getCreateOptions(e)))})]);
         // menuFlowSep3          = new MenuItem('',                  {separator: true}),
         // menuItemCache         = new MenuItem('Cache',             {icon: iconCache,  callback: e => actionManager.do(getCreateNodeAction(CACHE,        btnNumber.div, getCreateOptions(e)))}),
-        menuItemCopy          = new MenuItem('Copy',              {icon: iconCopy,   callback: e => actionManager.do(getCreateNodeAction(COPY,         btnNumber.div, getCreateOptions(e)))})]);
     
     
     menuMath = new Menu('Math', true, false);
@@ -50813,7 +50816,7 @@ function initGeneratorMenus()
                                       new MenuItem('Boolean',        {icon: iconBoolean,      childMenu: menuBoolean,   callback: e => actionManager.do(getCreateNodeAction(NUMBER_BOOLEAN,     btnNumber.div, getCreateOptions(e)))}),
                                       new MenuItem('Condition',      {icon: iconCondition,    childMenu: menuCondition, callback: e => actionManager.do(getCreateNodeAction(NUMBER_CONDITION,   btnNumber.div, getCreateOptions(e)))}),
                                       new MenuItem('',               {separator: true}),
-        menuItemSeries              = new MenuItem('Sequence...',    {icon: iconSeries,       callback: e => actionManager.do(getCreateNodeAction(NUMBER_SERIES,      btnNumber.div, getCreateOptions(e)))}),
+        menuItemSequence              = new MenuItem('Sequence...',    {icon: iconSequence,       callback: e => actionManager.do(getCreateNodeAction(NUMBER_SEQUENCE,      btnNumber.div, getCreateOptions(e)))}),
                                       new MenuItem('Random...',      {icon: iconRandom,       callback: e => actionManager.do(getCreateNodeAction(NUMBER_RANDOM,      btnNumber.div, getCreateOptions(e)))}),
                                       new MenuItem('',               {separator: true}),
                                       new MenuItem('Interpolate',    {icon: iconInterpolate,  callback: e => actionManager.do(getCreateNodeAction(NUMBER_INTERPOLATE, btnNumber.div, getCreateOptions(e)))}),
@@ -63707,10 +63710,7 @@ function OpCache_onDisconnectInput(node)
 class   OpCopy
 extends OperatorBase
 {
-    paramNumber;
-    paramColor;
-
-    headerColor = null;
+    //paramCount;
 
     
 
@@ -63718,15 +63718,11 @@ extends OperatorBase
     {
         super(COPY, 'copy', 'copy');
 
-        //this.cached = true;
-        
-
-        this.addInput (new Input([ANY_VALUE]));
-        this.addOutput(new Output([], this.output_genRequest));
+        this.addInput (new Input(ALL_VALUES));
+        this.addOutput(new Output([ANY_VALUE], this.output_genRequest));
 
 
-        this.paramNumber = new NumberParam('copy', '', false, false, true);
-        this.paramColor  = new  ColorParam('copy', '', false, false, true);
+        //this.paramCount = this.addParam(new NumberParam('count', 'count', true, true, true, 1, 1));
 
         
         this.inputs[0].addEventListener('connect',    () => OpCopy_onConnectInput(this));
@@ -63770,49 +63766,13 @@ extends OperatorBase
             request.push(...pushInputOrParam(input, gen));
 
         
+        //request.push(...this.node.paramCount.genRequest(gen));
+
+
         gen.scope.pop();
         pushUnique(gen.passedNodes, this.node);
 
         return request;
-    }
-
-
-
-    updateValues(requestId, actionId, updateParamId, paramIds, values) // virtual
-    {
-        //super.updateValues(requestId, actionId, updateParamId, paramIds, values);
-
-
-        const val = values[paramIds.findIndex(id => id == 'copy')];
-
-        this.headerColor =
-            val && val.type == COLOR_VALUE
-            ? rgb_a(val.toRgb())
-            : null;
-
-        if (!isEmpty(this.params)) 
-        {
-            this.params[0].setValue(val);
-            this.params[0].enableControlText(false);
-        }
-    }
-
-
-
-    updateParams()
-    {
-        const paramValue = this.params.find(p => p.id == 'copy');
-
-        if (paramValue)
-        {
-            paramValue.enableControlText(false);
-
-            paramValue.controls[0].valueText =  this.isUnknown() ? UNKNOWN_DISPLAY : '';
-            paramValue.controls[0].showBar   = !this.isUnknown();
-        }
-
-        
-        this.updateParamControls();
     }
 
 
@@ -63843,34 +63803,20 @@ extends OperatorBase
 
         return colors;
     }
-
-
-
-    paramsToJson(nTab = 0)
-    {
-        return '';
-    }
 }
 
 
 
 function OpCopy_onConnectInput(node)
 {
-    const inOutput = node.inputs[0].connectedOutput;
-
-    node.outputs[0].types = [...inOutput.types];
-
-         if (inOutput.supportsTypes(NUMBER_TYPES)) node.addParam(node.paramNumber);
-    else if (inOutput.supportsTypes( COLOR_TYPES)) node.addParam(node.paramColor);
+    node.outputs[0].types = [...node.inputs[0].connectedOutput.types];
 }
 
 
 
 function OpCopy_onDisconnectInput(node)
 {
-    node.outputs[0].types = [];
-    
-    node.removeAllParams();
+    node.outputs[0].types = [ANY_VALUE];
 }
 
 
@@ -64586,7 +64532,7 @@ extends OperatorBase
 }
 
 
-class   OpSeries
+class   OpSequence
 extends OperatorBase
 {
     paramStart;
@@ -64596,7 +64542,7 @@ extends OperatorBase
 
     constructor()
     {
-        super(NUMBER_SERIES, 'sequence', 'sequence');
+        super(NUMBER_SEQUENCE, 'sequence', 'sequence');
 
         this.cached = false;
         
@@ -70364,8 +70310,8 @@ extends OperatorBase
         this.addOutput(new Output([SHAPE_VALUE], this.output_genRequest));
 
 
-        this.addParam(this.paramX       = new NumberParam('x',       'x',        true, true, true, 100));
-        this.addParam(this.paramY       = new NumberParam('y',       'y',        true, true, true, 100));
+        this.addParam(this.paramX       = new NumberParam('x',       'width',    true, true, true, 100));
+        this.addParam(this.paramY       = new NumberParam('y',       'height',   true, true, true, 100));
         this.addParam(this.paramOriginX = new NumberParam('originX', 'center x', true, true, true,  50));
         this.addParam(this.paramOriginY = new NumberParam('originY', 'center y', true, true, true,  50));
 
@@ -70375,8 +70321,8 @@ extends OperatorBase
         this.paramOriginX.controls[0].suffix = '%';
         this.paramOriginY.controls[0].suffix = '%';
 
-        this.paramX.controls[0].setMin(0);
-        this.paramY.controls[0].setMin(0);
+        this.paramX      .controls[0].setMin(0);
+        this.paramY      .controls[0].setMin(0);
 
         this.paramOriginX.controls[0].displayMin = 0;
         this.paramOriginX.controls[0].displayMax = 100;
@@ -79529,7 +79475,7 @@ function createNode(nodeType, creatingButton = null, createdNodeId = -1, options
         case NUMBER_ROUND:            node = new OpRound();             break;
         case NUMBER_LIMITS:           node = new OpLimits();            break;
         case NUMBER_RANDOM:           node = new OpRandom();            break;
-        case NUMBER_SERIES:           node = new OpSeries();            break;
+        case NUMBER_SEQUENCE:           node = new OpSequence();            break;
         case NUMBER_INTERPOLATE:      node = new OpInterpolate();       break;
         case NUMBER_TO_TEXT:          node = new OpNumberToText();      break;
         case NUMBER_SOLVE:            node = new OpSolve();             break;
@@ -80272,7 +80218,8 @@ function uiUpdateValuesAndObjects(requestId, actionId, updateNodeId, updateParam
     }
 
 
-    if (!graphView.loadingNodes)
+    if (   !graphView.loadingNodes
+        && !numberControlChanging)
         uiSaveNodes(nodes.map(n => n.id));
 
 

@@ -1,11 +1,9 @@
 class GCopy
 extends GOperator
 {
-    input     = null;
+    input = null;
 
-    copy;
-
-    evaluated = false;
+    //count = null;
 
 
 
@@ -22,9 +20,9 @@ extends GOperator
 
         copy.copyBase(this);
 
-        if (this.input) copy.input = this.input.copy();
         if (this.value) copy.value = this.value.copy();
-        if (this.copy)  copy.copy  = this.copy .copy();
+        if (this.input) copy.input = this.input.copy();
+        //if (this.count) copy.count = this.count.copy();
 
         return copy;
     }
@@ -33,17 +31,21 @@ extends GOperator
 
     async eval(parse)
     {
-        if (this.isCached()
-            )
+        if (this.isCached())
             return this;
 
 
-        this.value = this.input ? (await this.input.eval(parse)).toValue() : NullValue;
-        this.copy  = this.value ? this.value.copy()                        : NullValue;
+        //const count = (await this.count.eval(parse)).toValue();
 
 
+        this.value = 
+            this.input 
+            ? (await this.input.eval(parse)).toValue() 
+            : NullValue;
+
+        
         genPushUpdateValue(parse, this.nodeId, 'value', this.value);
-        genPushUpdateValue(parse, this.nodeId, 'copy',  this.copy);
+        //genPushUpdateValue(parse, this.nodeId, 'count', count);
 
         
         this.validate();
@@ -55,9 +57,7 @@ extends GOperator
 
     toValue()
     {
-        return this.value
-             ? this.value.copy() 
-             : null;
+        return this.value.copy();
     }
 
 
@@ -66,6 +66,7 @@ extends GOperator
     {
         super.invalidate();
 
-        // if (this.input  ) this.input  .invalidate();
+        if (this.input) this.input.invalidate();
+        //if (this.count) this.count.invalidate();
     }
 }

@@ -58,7 +58,7 @@
 ../generator/types/number/GAbsolute.js
 ../generator/types/number/GRound.js
 ../generator/types/number/GLimits.js
-../generator/types/number/GSeries.js
+../generator/types/number/GSequence.js
 ../generator/types/number/GRandom.js
 ../generator/types/number/GInterpolate.js
 ../generator/types/number/GNumberToText.js

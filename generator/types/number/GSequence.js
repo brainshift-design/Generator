@@ -1,4 +1,4 @@
-class GSeries
+class GSequence
 extends GNumberType
 {
     start;
@@ -15,14 +15,14 @@ extends GNumberType
 
     constructor(nodeId, options)
     {
-        super(NUMBER_SERIES, nodeId, options);
+        super(NUMBER_SEQUENCE, nodeId, options);
     }
 
 
     
     copy()
     {
-        const copy = new GSeries(this.nodeId, this.options);
+        const copy = new GSequence(this.nodeId, this.options);
 
         copy.copyBase(this);
 
@@ -61,24 +61,23 @@ extends GNumberType
             Math.max(start.decimals, step.decimals));
 
         
-        if (  !parse.repeats.find(r => r.nodeId == this.repeatNodeId)
-            || parse.repeats.at(-1).nodeId == this.repeatNodeId)
+        if (!parse.repeats.find(r => r.nodeId == this.repeatNodeId))
+            this.current.value += step.value;
+
+        else if (  !isEmpty(parse.repeats)
+                && parse.repeats.at(-1).nodeId == this.repeatNodeId)
         {
             this.current.value += step.value;
 
+            const repeat = parse.repeats.at(-1);
 
-            if (!isEmpty(parse.repeats))
+            if (repeat.iteration == repeat.total-1)
             {
-                const repeat = parse.repeats.at(-1);
+                console.assert(
+                    parse.repeats.at(-1).nodeId == this.repeatNodeId, 
+                    'nested repeat error');
 
-                if (repeat.iteration == repeat.total-1)
-                {
-                    console.assert(
-                        parse.repeats.at(-1).nodeId == this.repeatNodeId, 
-                        'nested repeat error');
-
-                    parse.repeats.pop();
-                }
+                parse.repeats.pop();
             }
         }
 

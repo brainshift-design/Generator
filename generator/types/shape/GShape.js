@@ -75,7 +75,7 @@ extends GOperator
         genPushUpdateValue(parse, this.nodeId, 'height', this.value.height);
         genPushUpdateValue(parse, this.nodeId, 'angle',  this.value.angle );
 
-        genPushUpdateValue(parse, this.nodeId, 'props',  this.value.props);
+        genPushUpdateValue(parse, this.nodeId, 'props',  this.value.props );
     }
 
 

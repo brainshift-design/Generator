@@ -536,7 +536,7 @@ function genParseScale(parse)
     scale.ox = genParse(parse);
     scale.oy = genParse(parse);
 
-
+    
     parse.inParam = false;
     parse.nTab--;
 

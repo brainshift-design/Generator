@@ -56,7 +56,7 @@ extends GOperator
         if (this.repeatId.type != NUMBER_VALUE)
         {
             console.assert(
-                   this.repeatId.type == NUMBER_SERIES
+                   this.repeatId.type == NUMBER_SEQUENCE
                 || this.repeatId.type == NUMBER_RANDOM,
                 'only volatile types can be repeated');
 

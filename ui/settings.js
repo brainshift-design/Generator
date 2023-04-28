@@ -269,7 +269,7 @@ function enableFeatures(subscription, beta)
     // updateElementDisplay(menuItemCache               .div, subscription && beta);
     // updateElementDisplay(menuItemCopy                .div, subscription && beta);
     
-    updateElementDisplay(menuItemSeries              .div, subscription && beta);    
+    updateElementDisplay(menuItemSequence              .div, subscription && beta);    
     updateElementDisplay(menuItemSolve               .div, subscription && beta);    
     updateElementDisplay(menuItemNumberSep1          .div, subscription && beta);
     updateElementDisplay(menuItemAnimate             .div, subscription && beta);    
