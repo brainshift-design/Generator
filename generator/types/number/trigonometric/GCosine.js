@@ -27,7 +27,7 @@ extends GTrigBase
             return this;
 
 
-        this.value = evalCosine(this.input, parse);
+        this.value = await evalCosine(this.input, parse);
 
 
         genPushUpdateValue(parse, this.nodeId, 'value', this.value);
@@ -46,10 +46,9 @@ async function evalCosine(input, parse)
     if (!input)
         return NumberValue.NaN;
 
+    let value = (await input.eval(parse)).toValue();
 
-    const value = (await input.eval(parse)).toValue();
-
-    value.value = new NumberValue(Math.cos(value.value, 10));
+    value = new NumberValue(Math.cos(value.value, 10));
 
     return value;
 }

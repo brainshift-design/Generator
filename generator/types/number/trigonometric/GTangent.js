@@ -27,7 +27,7 @@ extends GTrigBase
             return this;
 
 
-        this.value = evalTangent(this.input, parse);
+        this.value = await evalTangent(this.input, parse);
 
 
         genPushUpdateValue(parse, this.nodeId, 'value', this.value);
@@ -41,15 +41,14 @@ extends GTrigBase
 
 
 
-async function evalTangeng(input, parse)
+async function evalTangent(input, parse)
 {
     if (!input)
         return NumberValue.NaN;
 
+    let value = (await input.eval(parse)).toValue();
 
-    const value = (await input.eval(parse)).toValue();
-
-    value.value = new NumberValue(Math.tan(value.value, 10));
+    value = new NumberValue(Math.tan(value.value, 10));
 
     return value;
 }

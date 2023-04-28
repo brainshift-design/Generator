@@ -1,4 +1,4 @@
-class GTgig
+class GTrig
 extends GNumberType
 {
     input = null;
@@ -35,7 +35,7 @@ extends GNumberType
             return this;
 
 
-        const func = (await this.operation.eval(parse)).toValue().toInteger();
+        const func = (await this.function.eval(parse)).toValue().toInteger();
 
         func.value = Math.min(Math.max(0, func.value), TRIG_OPS.length-1);
 

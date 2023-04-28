@@ -27,7 +27,7 @@ extends GTrigBase
             return this;
 
 
-        this.value = evalSine(this.input, parse);
+        this.value = await evalSine(this.input, parse);
 
 
         genPushUpdateValue(parse, this.nodeId, 'value', this.value);
@@ -36,6 +36,13 @@ extends GTrigBase
         this.validate();
 
         return this;
+    }
+
+
+
+    toValue()
+    {
+        return this.value.copy();
     }
 }
 
@@ -46,10 +53,9 @@ async function evalSine(input, parse)
     if (!input)
         return NumberValue.NaN;
 
+    let value = (await input.eval(parse)).toValue();
 
-    const value = (await input.eval(parse)).toValue();
-
-    value.value = new NumberValue(Math.sin(value.value, 10));
+    value = new NumberValue(Math.sin(value.value, 10));
 
     return value;
 }
