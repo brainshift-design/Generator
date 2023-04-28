@@ -3577,6 +3577,11 @@ const NUMBER_LESS_OR_EQUAL    = 'LE';
 const NUMBER_GREATER          = 'GT';
 const NUMBER_GREATER_OR_EQUAL = 'GE';
 
+const NUMBER_TRIG             = 'TRIG';  
+const NUMBER_SIN              = 'SIN';   
+const NUMBER_COS              = 'COS';   
+const NUMBER_TAN              = 'TAN';   
+
 
 const MATH_TYPES =
 [
@@ -3612,6 +3617,15 @@ const CONDITION_TYPES =
 ];
 
 
+const TRIG_TYPES =
+[
+    NUMBER_TRIG,
+    NUMBER_SIN,
+    NUMBER_COS,
+    NUMBER_TAN
+];
+
+
 const NUMBER_TYPES =
 [
     NUMBER_VALUE,
@@ -3629,7 +3643,8 @@ const NUMBER_TYPES =
 
     ...MATH_TYPES,
     ...BOOLEAN_TYPES,
-    ...CONDITION_TYPES
+    ...CONDITION_TYPES,
+    ...TRIG_TYPES
 ];
 
 
@@ -3873,6 +3888,20 @@ const CONDITION_OPS =
     [CONDITION_EQUAL,            '='],
     [CONDITION_GREATER_OR_EQUAL, '≥'],
     [CONDITION_GREATER,          '>']
+];
+
+
+
+const TRIG_SIN = 0;
+const TRIG_COS = 1;
+const TRIG_TAN = 2;
+
+
+const TRIG_OPS = 
+[   
+    [TRIG_SIN, 'sin'],
+    [TRIG_COS, 'cos'],
+    [TRIG_TAN, 'tan']
 ];
 
 
@@ -10684,6 +10713,266 @@ extends GConditionBase
     }
 }
 
+
+
+class GTrigBase
+extends GNumberType
+{
+    input;
+
+
+
+    invalidate()
+    {
+        super.invalidate();
+
+        if (this.input) this.input.invalidate();
+    }
+}
+
+
+
+class GTgig
+extends GNumberType
+{
+    input = null;
+
+    function;
+
+
+
+    constructor(nodeId, options)
+    {
+        super(NUMBER_TRIG, nodeId, options);
+    }
+
+
+    
+    copy()
+    {
+        const copy = new GTrig(this.nodeId, this.options);
+
+        copy.copyBase(this);
+
+        if (this.input) copy.input = this.input.copy();
+
+        copy.operation = this.operation.copy();
+
+        return copy;
+    }
+
+
+
+    async eval(parse)
+    {
+        if (this.isCached())
+            return this;
+
+
+        const func = (await this.operation.eval(parse)).toValue().toInteger();
+
+        func.value = Math.min(Math.max(0, func.value), TRIG_OPS.length-1);
+
+        
+        switch (func.value)
+        {
+            case TRIG_SIN: this.value = await evalSine   (this.input, parse);  break;
+            case TRIG_COS: this.value = await evalCosine (this.input, parse);  break;
+            case TRIG_TAN: this.value = await evalTangent(this.input, parse);  break;
+        }
+
+
+        genPushUpdateValue(parse, this.nodeId, 'value',    this.value);
+        genPushUpdateValue(parse, this.nodeId, 'function', func);
+
+
+        this.validate();
+
+        return this;
+    }
+
+
+
+    invalidate()
+    {
+        super.invalidate();
+
+        if (this.input0   ) this.input0   .invalidate();
+        if (this.input1   ) this.input1   .invalidate();
+        if (this.operation) this.operation.invalidate();
+    }
+}
+
+
+class GSine
+extends GTrigBase
+{
+    constructor(nodeId, options)
+    {
+        super(NUMBER_SIN, nodeId, options);
+    }
+
+
+    
+    copy()
+    {
+        const copy = new GSine(this.nodeId, this.options);
+        
+        copy.copyBase(this);
+
+        if (this.input) copy.input = this.input.copy();
+        
+        return copy;
+    }
+
+
+
+    async eval(parse)
+    {
+        if (this.isCached())
+            return this;
+
+
+        this.value = evalSine(this.input, parse);
+
+
+        genPushUpdateValue(parse, this.nodeId, 'value', this.value);
+
+
+        this.validate();
+
+        return this;
+    }
+}
+
+
+
+async function evalSine(input, parse)
+{
+    if (!input)
+        return NumberValue.NaN;
+
+
+    const value = (await input.eval(parse)).toValue();
+
+    value.value = new NumberValue(Math.sin(value.value, 10));
+
+    return value;
+}
+
+
+class GCosine
+extends GTrigBase
+{
+    constructor(nodeId, options)
+    {
+        super(NUMBER_COS, nodeId, options);
+    }
+
+
+    
+    copy()
+    {
+        const copy = new GCosine(this.nodeId, this.options);
+        
+        copy.copyBase(this);
+
+        if (this.input) copy.input = this.input.copy();
+        
+        return copy;
+    }
+
+
+
+    async eval(parse)
+    {
+        if (this.isCached())
+            return this;
+
+
+        this.value = evalCosine(this.input, parse);
+
+
+        genPushUpdateValue(parse, this.nodeId, 'value', this.value);
+
+
+        this.validate();
+
+        return this;
+    }
+}
+
+
+
+async function evalCosine(input, parse)
+{
+    if (!input)
+        return NumberValue.NaN;
+
+
+    const value = (await input.eval(parse)).toValue();
+
+    value.value = new NumberValue(Math.cos(value.value, 10));
+
+    return value;
+}
+
+
+class GTangent
+extends GTrigBase
+{
+    constructor(nodeId, options)
+    {
+        super(NUMBER_TAN, nodeId, options);
+    }
+
+
+    
+    copy()
+    {
+        const copy = new GTangent(this.nodeId, this.options);
+        
+        copy.copyBase(this);
+
+        if (this.input) copy.input = this.input.copy();
+        
+        return copy;
+    }
+
+
+
+    async eval(parse)
+    {
+        if (this.isCached())
+            return this;
+
+
+        this.value = evalTangent(this.input, parse);
+
+
+        genPushUpdateValue(parse, this.nodeId, 'value', this.value);
+
+
+        this.validate();
+
+        return this;
+    }
+}
+
+
+
+async function evalTangeng(input, parse)
+{
+    if (!input)
+        return NumberValue.NaN;
+
+
+    const value = (await input.eval(parse)).toValue();
+
+    value.value = new NumberValue(Math.tan(value.value, 10));
+
+    return value;
+}
 
 
 class GTextType
@@ -17990,6 +18279,7 @@ function genParseCondition(parse)
 
     parse.nTab++;
 
+
     if (nInputs == 2)
     {
         cond.input0    = genParse(parse);
@@ -18005,6 +18295,7 @@ function genParseCondition(parse)
     {
         cond.operation = genParse(parse);
     }
+
 
     parse.nTab--;
 
@@ -18060,6 +18351,95 @@ function genParseConditionBase(parse, newNode)
 
     genParseNodeEnd(parse, cond);
     return cond;
+}
+
+
+
+function genParseTrigonometric(parse)
+{
+    const [, nodeId, options, ignore] = genParseNodeStart(parse);
+
+
+    const trig = new GTrig(nodeId, options);
+
+
+    let nInputs = -1;
+    
+    if (!ignore)
+    {
+        nInputs = parseInt(parse.move());
+        console.assert(nInputs == 0 || nInputs == 1, 'nInputs must be [0, 1]');
+    }
+
+    
+    if (parse.settings.logRequests) 
+        logReq(trig, parse, ignore, nInputs);
+
+
+    if (ignore) 
+    {
+        genParseNodeEnd(parse, trig);
+        return parse.parsedNodes.find(n => n.nodeId == nodeId);
+    }
+
+
+    parse.nTab++;
+
+
+    if (nInputs == 1)
+        trig.input = genParse(parse);
+
+    trig.function = genParse(parse);
+
+    parse.nTab--;
+
+
+    genParseNodeEnd(parse, trig);
+    return trig;
+}
+
+
+
+function genParseTrigBase(parse, newNode)
+{
+    const [type, nodeId, options, ignore] = genParseNodeStart(parse);
+
+
+    const trig = newNode(nodeId, options);
+
+
+    let nInputs = -1;
+    
+    if (!ignore)
+    {
+        nInputs = parseInt(parse.move());
+        console.assert(nInputs == 0 || nInputs == 1, 'nInputs must be [0, 1]');
+    }
+
+    
+    if (parse.settings.logRequests)
+        logReq(trig, parse, ignore, nInputs); 
+
+
+    if (ignore) 
+    {
+        genParseNodeEnd(parse, trig);
+        return parse.parsedNodes.find(n => n.nodeId == nodeId);
+    }
+
+
+    parse.nTab++;
+
+
+    if (nInputs == 1)
+        trig.input = genParse(parse);
+
+
+    parse.nTab--;
+
+
+    genParseNodeEnd(parse, trig);
+    return trig;
 }
 
 
@@ -19512,6 +19892,11 @@ function genParse(parse, inParam = true)
     else if (parse.next == NUMBER_LESS_OR_EQUAL   ) result = genParseConditionBase   (parse, (nodeId, options) => new GLessOrEqual   (nodeId, options));
     else if (parse.next == NUMBER_GREATER         ) result = genParseConditionBase   (parse, (nodeId, options) => new GGreater       (nodeId, options));
     else if (parse.next == NUMBER_GREATER_OR_EQUAL) result = genParseConditionBase   (parse, (nodeId, options) => new GGreaterOrEqual(nodeId, options));
+
+    else if (parse.next == NUMBER_TRIG            ) result = genParseTrigonometric   (parse);
+    else if (parse.next == NUMBER_SIN             ) result = genParseTrigBase        (parse, (nodeId, options) => new GSine          (nodeId, options));
+    else if (parse.next == NUMBER_COS             ) result = genParseTrigBase        (parse, (nodeId, options) => new GCosine        (nodeId, options));
+    else if (parse.next == NUMBER_TAN             ) result = genParseTrigBase        (parse, (nodeId, options) => new GTangent       (nodeId, options));
 
     else if (parse.next == TEXT_VALUE             ) result = genParseTextValue       (parse);
     else if (parse.next == TEXT                   ) result = genParseText            (parse);

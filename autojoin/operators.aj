@@ -84,6 +84,12 @@
 ../operators/number/condition/OpGreater.js
 ../operators/number/condition/OpGreaterOrEqual.js
 
+../operators/number/trigonometric/OpTrig.js
+../operators/number/trigonometric/OpTrigBase.js
+../operators/number/trigonometric/OpSine.js
+../operators/number/trigonometric/OpCosine.js
+../operators/number/trigonometric/OpTangent.js
+
 
 ../operators/text/OpText.js
 ../operators/text/OpTextSubstring.js

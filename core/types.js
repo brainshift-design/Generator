@@ -97,6 +97,11 @@ const NUMBER_LESS_OR_EQUAL    = 'LE';
 const NUMBER_GREATER          = 'GT';
 const NUMBER_GREATER_OR_EQUAL = 'GE';
 
+const NUMBER_TRIG             = 'TRIG';  
+const NUMBER_SIN              = 'SIN';   
+const NUMBER_COS              = 'COS';   
+const NUMBER_TAN              = 'TAN';   
+
 
 const MATH_TYPES =
 [
@@ -132,6 +137,15 @@ const CONDITION_TYPES =
 ];
 
 
+const TRIG_TYPES =
+[
+    NUMBER_TRIG,
+    NUMBER_SIN,
+    NUMBER_COS,
+    NUMBER_TAN
+];
+
+
 const NUMBER_TYPES =
 [
     NUMBER_VALUE,
@@ -149,7 +163,8 @@ const NUMBER_TYPES =
 
     ...MATH_TYPES,
     ...BOOLEAN_TYPES,
-    ...CONDITION_TYPES
+    ...CONDITION_TYPES,
+    ...TRIG_TYPES
 ];
 
 
@@ -393,6 +408,20 @@ const CONDITION_OPS =
     [CONDITION_EQUAL,            '='],
     [CONDITION_GREATER_OR_EQUAL, '≥'],
     [CONDITION_GREATER,          '>']
+];
+
+
+
+const TRIG_SIN = 0;
+const TRIG_COS = 1;
+const TRIG_TAN = 2;
+
+
+const TRIG_OPS = 
+[   
+    [TRIG_SIN, 'sin'],
+    [TRIG_COS, 'cos'],
+    [TRIG_TAN, 'tan']
 ];
 
 

@@ -52,6 +52,11 @@ function createNode(nodeType, creatingButton = null, createdNodeId = -1, options
         case NUMBER_LESS_OR_EQUAL:    node = new OpLessOrEqual();       break;
         case NUMBER_GREATER:          node = new OpGreater();           break;
         case NUMBER_GREATER_OR_EQUAL: node = new OpGreaterOrEqual();    break;
+
+        case NUMBER_TRIG:             node = new OpTrig();              break;
+        case NUMBER_SIN:              node = new OpSine();              break;
+        case NUMBER_COS:              node = new OpCosine();            break;
+        case NUMBER_TAN:              node = new OpTangent();           break;
          
         case TEXT:                    node = new OpText();              break;
         case TEXT_SUBSTRING:          node = new OpTextSubstring();     break;

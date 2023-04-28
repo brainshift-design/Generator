@@ -7949,6 +7949,11 @@ const NUMBER_LESS_OR_EQUAL    = 'LE';
 const NUMBER_GREATER          = 'GT';
 const NUMBER_GREATER_OR_EQUAL = 'GE';
 
+const NUMBER_TRIG             = 'TRIG';  
+const NUMBER_SIN              = 'SIN';   
+const NUMBER_COS              = 'COS';   
+const NUMBER_TAN              = 'TAN';   
+
 
 const MATH_TYPES =
 [
@@ -7984,6 +7989,15 @@ const CONDITION_TYPES =
 ];
 
 
+const TRIG_TYPES =
+[
+    NUMBER_TRIG,
+    NUMBER_SIN,
+    NUMBER_COS,
+    NUMBER_TAN
+];
+
+
 const NUMBER_TYPES =
 [
     NUMBER_VALUE,
@@ -8001,7 +8015,8 @@ const NUMBER_TYPES =
 
     ...MATH_TYPES,
     ...BOOLEAN_TYPES,
-    ...CONDITION_TYPES
+    ...CONDITION_TYPES,
+    ...TRIG_TYPES
 ];
 
 
@@ -8245,6 +8260,20 @@ const CONDITION_OPS =
     [CONDITION_EQUAL,            '='],
     [CONDITION_GREATER_OR_EQUAL, '≥'],
     [CONDITION_GREATER,          '>']
+];
+
+
+
+const TRIG_SIN = 0;
+const TRIG_COS = 1;
+const TRIG_TAN = 2;
+
+
+const TRIG_OPS = 
+[   
+    [TRIG_SIN, 'sin'],
+    [TRIG_COS, 'cos'],
+    [TRIG_TAN, 'tan']
 ];
 
 
@@ -15056,6 +15085,266 @@ extends GConditionBase
     }
 }
 
+
+
+class GTrigBase
+extends GNumberType
+{
+    input;
+
+
+
+    invalidate()
+    {
+        super.invalidate();
+
+        if (this.input) this.input.invalidate();
+    }
+}
+
+
+
+class GTgig
+extends GNumberType
+{
+    input = null;
+
+    function;
+
+
+
+    constructor(nodeId, options)
+    {
+        super(NUMBER_TRIG, nodeId, options);
+    }
+
+
+    
+    copy()
+    {
+        const copy = new GTrig(this.nodeId, this.options);
+
+        copy.copyBase(this);
+
+        if (this.input) copy.input = this.input.copy();
+
+        copy.operation = this.operation.copy();
+
+        return copy;
+    }
+
+
+
+    async eval(parse)
+    {
+        if (this.isCached())
+            return this;
+
+
+        const func = (await this.operation.eval(parse)).toValue().toInteger();
+
+        func.value = Math.min(Math.max(0, func.value), TRIG_OPS.length-1);
+
+        
+        switch (func.value)
+        {
+            case TRIG_SIN: this.value = await evalSine   (this.input, parse);  break;
+            case TRIG_COS: this.value = await evalCosine (this.input, parse);  break;
+            case TRIG_TAN: this.value = await evalTangent(this.input, parse);  break;
+        }
+
+
+        genPushUpdateValue(parse, this.nodeId, 'value',    this.value);
+        genPushUpdateValue(parse, this.nodeId, 'function', func);
+
+
+        this.validate();
+
+        return this;
+    }
+
+
+
+    invalidate()
+    {
+        super.invalidate();
+
+        if (this.input0   ) this.input0   .invalidate();
+        if (this.input1   ) this.input1   .invalidate();
+        if (this.operation) this.operation.invalidate();
+    }
+}
+
+
+class GSine
+extends GTrigBase
+{
+    constructor(nodeId, options)
+    {
+        super(NUMBER_SIN, nodeId, options);
+    }
+
+
+    
+    copy()
+    {
+        const copy = new GSine(this.nodeId, this.options);
+        
+        copy.copyBase(this);
+
+        if (this.input) copy.input = this.input.copy();
+        
+        return copy;
+    }
+
+
+
+    async eval(parse)
+    {
+        if (this.isCached())
+            return this;
+
+
+        this.value = evalSine(this.input, parse);
+
+
+        genPushUpdateValue(parse, this.nodeId, 'value', this.value);
+
+
+        this.validate();
+
+        return this;
+    }
+}
+
+
+
+async function evalSine(input, parse)
+{
+    if (!input)
+        return NumberValue.NaN;
+
+
+    const value = (await input.eval(parse)).toValue();
+
+    value.value = new NumberValue(Math.sin(value.value, 10));
+
+    return value;
+}
+
+
+class GCosine
+extends GTrigBase
+{
+    constructor(nodeId, options)
+    {
+        super(NUMBER_COS, nodeId, options);
+    }
+
+
+    
+    copy()
+    {
+        const copy = new GCosine(this.nodeId, this.options);
+        
+        copy.copyBase(this);
+
+        if (this.input) copy.input = this.input.copy();
+        
+        return copy;
+    }
+
+
+
+    async eval(parse)
+    {
+        if (this.isCached())
+            return this;
+
+
+        this.value = evalCosine(this.input, parse);
+
+
+        genPushUpdateValue(parse, this.nodeId, 'value', this.value);
+
+
+        this.validate();
+
+        return this;
+    }
+}
+
+
+
+async function evalCosine(input, parse)
+{
+    if (!input)
+        return NumberValue.NaN;
+
+
+    const value = (await input.eval(parse)).toValue();
+
+    value.value = new NumberValue(Math.cos(value.value, 10));
+
+    return value;
+}
+
+
+class GTangent
+extends GTrigBase
+{
+    constructor(nodeId, options)
+    {
+        super(NUMBER_TAN, nodeId, options);
+    }
+
+
+    
+    copy()
+    {
+        const copy = new GTangent(this.nodeId, this.options);
+        
+        copy.copyBase(this);
+
+        if (this.input) copy.input = this.input.copy();
+        
+        return copy;
+    }
+
+
+
+    async eval(parse)
+    {
+        if (this.isCached())
+            return this;
+
+
+        this.value = evalTangent(this.input, parse);
+
+
+        genPushUpdateValue(parse, this.nodeId, 'value', this.value);
+
+
+        this.validate();
+
+        return this;
+    }
+}
+
+
+
+async function evalTangeng(input, parse)
+{
+    if (!input)
+        return NumberValue.NaN;
+
+
+    const value = (await input.eval(parse)).toValue();
+
+    value.value = new NumberValue(Math.tan(value.value, 10));
+
+    return value;
+}
 
 
 class GTextType
@@ -22362,6 +22651,7 @@ function genParseCondition(parse)
 
     parse.nTab++;
 
+
     if (nInputs == 2)
     {
         cond.input0    = genParse(parse);
@@ -22377,6 +22667,7 @@ function genParseCondition(parse)
     {
         cond.operation = genParse(parse);
     }
+
 
     parse.nTab--;
 
@@ -22432,6 +22723,95 @@ function genParseConditionBase(parse, newNode)
 
     genParseNodeEnd(parse, cond);
     return cond;
+}
+
+
+
+function genParseTrigonometric(parse)
+{
+    const [, nodeId, options, ignore] = genParseNodeStart(parse);
+
+
+    const trig = new GTrig(nodeId, options);
+
+
+    let nInputs = -1;
+    
+    if (!ignore)
+    {
+        nInputs = parseInt(parse.move());
+        console.assert(nInputs == 0 || nInputs == 1, 'nInputs must be [0, 1]');
+    }
+
+    
+    if (parse.settings.logRequests) 
+        logReq(trig, parse, ignore, nInputs);
+
+
+    if (ignore) 
+    {
+        genParseNodeEnd(parse, trig);
+        return parse.parsedNodes.find(n => n.nodeId == nodeId);
+    }
+
+
+    parse.nTab++;
+
+
+    if (nInputs == 1)
+        trig.input = genParse(parse);
+
+    trig.function = genParse(parse);
+
+    parse.nTab--;
+
+
+    genParseNodeEnd(parse, trig);
+    return trig;
+}
+
+
+
+function genParseTrigBase(parse, newNode)
+{
+    const [type, nodeId, options, ignore] = genParseNodeStart(parse);
+
+
+    const trig = newNode(nodeId, options);
+
+
+    let nInputs = -1;
+    
+    if (!ignore)
+    {
+        nInputs = parseInt(parse.move());
+        console.assert(nInputs == 0 || nInputs == 1, 'nInputs must be [0, 1]');
+    }
+
+    
+    if (parse.settings.logRequests)
+        logReq(trig, parse, ignore, nInputs); 
+
+
+    if (ignore) 
+    {
+        genParseNodeEnd(parse, trig);
+        return parse.parsedNodes.find(n => n.nodeId == nodeId);
+    }
+
+
+    parse.nTab++;
+
+
+    if (nInputs == 1)
+        trig.input = genParse(parse);
+
+
+    parse.nTab--;
+
+
+    genParseNodeEnd(parse, trig);
+    return trig;
 }
 
 
@@ -23884,6 +24264,11 @@ function genParse(parse, inParam = true)
     else if (parse.next == NUMBER_LESS_OR_EQUAL   ) result = genParseConditionBase   (parse, (nodeId, options) => new GLessOrEqual   (nodeId, options));
     else if (parse.next == NUMBER_GREATER         ) result = genParseConditionBase   (parse, (nodeId, options) => new GGreater       (nodeId, options));
     else if (parse.next == NUMBER_GREATER_OR_EQUAL) result = genParseConditionBase   (parse, (nodeId, options) => new GGreaterOrEqual(nodeId, options));
+
+    else if (parse.next == NUMBER_TRIG            ) result = genParseTrigonometric   (parse);
+    else if (parse.next == NUMBER_SIN             ) result = genParseTrigBase        (parse, (nodeId, options) => new GSine          (nodeId, options));
+    else if (parse.next == NUMBER_COS             ) result = genParseTrigBase        (parse, (nodeId, options) => new GCosine        (nodeId, options));
+    else if (parse.next == NUMBER_TAN             ) result = genParseTrigBase        (parse, (nodeId, options) => new GTangent       (nodeId, options));
 
     else if (parse.next == TEXT_VALUE             ) result = genParseTextValue       (parse);
     else if (parse.next == TEXT                   ) result = genParseText            (parse);
@@ -33371,6 +33756,11 @@ const NUMBER_LESS_OR_EQUAL    = 'LE';
 const NUMBER_GREATER          = 'GT';
 const NUMBER_GREATER_OR_EQUAL = 'GE';
 
+const NUMBER_TRIG             = 'TRIG';  
+const NUMBER_SIN              = 'SIN';   
+const NUMBER_COS              = 'COS';   
+const NUMBER_TAN              = 'TAN';   
+
 
 const MATH_TYPES =
 [
@@ -33406,6 +33796,15 @@ const CONDITION_TYPES =
 ];
 
 
+const TRIG_TYPES =
+[
+    NUMBER_TRIG,
+    NUMBER_SIN,
+    NUMBER_COS,
+    NUMBER_TAN
+];
+
+
 const NUMBER_TYPES =
 [
     NUMBER_VALUE,
@@ -33423,7 +33822,8 @@ const NUMBER_TYPES =
 
     ...MATH_TYPES,
     ...BOOLEAN_TYPES,
-    ...CONDITION_TYPES
+    ...CONDITION_TYPES,
+    ...TRIG_TYPES
 ];
 
 
@@ -33667,6 +34067,20 @@ const CONDITION_OPS =
     [CONDITION_EQUAL,            '='],
     [CONDITION_GREATER_OR_EQUAL, '≥'],
     [CONDITION_GREATER,          '>']
+];
+
+
+
+const TRIG_SIN = 0;
+const TRIG_COS = 1;
+const TRIG_TAN = 2;
+
+
+const TRIG_OPS = 
+[   
+    [TRIG_SIN, 'sin'],
+    [TRIG_COS, 'cos'],
+    [TRIG_TAN, 'tan']
 ];
 
 
@@ -40478,6 +40892,266 @@ extends GConditionBase
     }
 }
 
+
+
+class GTrigBase
+extends GNumberType
+{
+    input;
+
+
+
+    invalidate()
+    {
+        super.invalidate();
+
+        if (this.input) this.input.invalidate();
+    }
+}
+
+
+
+class GTgig
+extends GNumberType
+{
+    input = null;
+
+    function;
+
+
+
+    constructor(nodeId, options)
+    {
+        super(NUMBER_TRIG, nodeId, options);
+    }
+
+
+    
+    copy()
+    {
+        const copy = new GTrig(this.nodeId, this.options);
+
+        copy.copyBase(this);
+
+        if (this.input) copy.input = this.input.copy();
+
+        copy.operation = this.operation.copy();
+
+        return copy;
+    }
+
+
+
+    async eval(parse)
+    {
+        if (this.isCached())
+            return this;
+
+
+        const func = (await this.operation.eval(parse)).toValue().toInteger();
+
+        func.value = Math.min(Math.max(0, func.value), TRIG_OPS.length-1);
+
+        
+        switch (func.value)
+        {
+            case TRIG_SIN: this.value = await evalSine   (this.input, parse);  break;
+            case TRIG_COS: this.value = await evalCosine (this.input, parse);  break;
+            case TRIG_TAN: this.value = await evalTangent(this.input, parse);  break;
+        }
+
+
+        genPushUpdateValue(parse, this.nodeId, 'value',    this.value);
+        genPushUpdateValue(parse, this.nodeId, 'function', func);
+
+
+        this.validate();
+
+        return this;
+    }
+
+
+
+    invalidate()
+    {
+        super.invalidate();
+
+        if (this.input0   ) this.input0   .invalidate();
+        if (this.input1   ) this.input1   .invalidate();
+        if (this.operation) this.operation.invalidate();
+    }
+}
+
+
+class GSine
+extends GTrigBase
+{
+    constructor(nodeId, options)
+    {
+        super(NUMBER_SIN, nodeId, options);
+    }
+
+
+    
+    copy()
+    {
+        const copy = new GSine(this.nodeId, this.options);
+        
+        copy.copyBase(this);
+
+        if (this.input) copy.input = this.input.copy();
+        
+        return copy;
+    }
+
+
+
+    async eval(parse)
+    {
+        if (this.isCached())
+            return this;
+
+
+        this.value = evalSine(this.input, parse);
+
+
+        genPushUpdateValue(parse, this.nodeId, 'value', this.value);
+
+
+        this.validate();
+
+        return this;
+    }
+}
+
+
+
+async function evalSine(input, parse)
+{
+    if (!input)
+        return NumberValue.NaN;
+
+
+    const value = (await input.eval(parse)).toValue();
+
+    value.value = new NumberValue(Math.sin(value.value, 10));
+
+    return value;
+}
+
+
+class GCosine
+extends GTrigBase
+{
+    constructor(nodeId, options)
+    {
+        super(NUMBER_COS, nodeId, options);
+    }
+
+
+    
+    copy()
+    {
+        const copy = new GCosine(this.nodeId, this.options);
+        
+        copy.copyBase(this);
+
+        if (this.input) copy.input = this.input.copy();
+        
+        return copy;
+    }
+
+
+
+    async eval(parse)
+    {
+        if (this.isCached())
+            return this;
+
+
+        this.value = evalCosine(this.input, parse);
+
+
+        genPushUpdateValue(parse, this.nodeId, 'value', this.value);
+
+
+        this.validate();
+
+        return this;
+    }
+}
+
+
+
+async function evalCosine(input, parse)
+{
+    if (!input)
+        return NumberValue.NaN;
+
+
+    const value = (await input.eval(parse)).toValue();
+
+    value.value = new NumberValue(Math.cos(value.value, 10));
+
+    return value;
+}
+
+
+class GTangent
+extends GTrigBase
+{
+    constructor(nodeId, options)
+    {
+        super(NUMBER_TAN, nodeId, options);
+    }
+
+
+    
+    copy()
+    {
+        const copy = new GTangent(this.nodeId, this.options);
+        
+        copy.copyBase(this);
+
+        if (this.input) copy.input = this.input.copy();
+        
+        return copy;
+    }
+
+
+
+    async eval(parse)
+    {
+        if (this.isCached())
+            return this;
+
+
+        this.value = evalTangent(this.input, parse);
+
+
+        genPushUpdateValue(parse, this.nodeId, 'value', this.value);
+
+
+        this.validate();
+
+        return this;
+    }
+}
+
+
+
+async function evalTangeng(input, parse)
+{
+    if (!input)
+        return NumberValue.NaN;
+
+
+    const value = (await input.eval(parse)).toValue();
+
+    value.value = new NumberValue(Math.tan(value.value, 10));
+
+    return value;
+}
 
 
 class GTextType
@@ -49359,10 +50033,6 @@ const iconCopy              = '<svg width="15" height="11" viewBox="0 0 15 11" f
 const iconIfElse            = '<svg width="16" height="7" viewBox="0 0 16 7" fill="none" xmlns="http://www.w3.org/2000/svg"><rect y="1" width="9" height="1" fill="white"/><rect y="5" width="9" height="1" fill="white"/><path d="M13.157 4.8687V4.75547C13.1591 4.36695 13.1911 4.05725 13.253 3.82636C13.317 3.59546 13.4099 3.40898 13.5318 3.26689C13.6536 3.1248 13.8002 2.99604 13.9715 2.88059C14.0995 2.79179 14.2141 2.69965 14.3153 2.60419C14.4165 2.50872 14.497 2.40327 14.5569 2.28782C14.6167 2.17016 14.6467 2.03917 14.6467 1.89486C14.6467 1.74167 14.6126 1.60736 14.5445 1.49191C14.4763 1.37647 14.3845 1.28766 14.2688 1.2255C14.1553 1.16334 14.0293 1.13225 13.891 1.13225C13.7568 1.13225 13.6298 1.16445 13.5101 1.22883C13.3903 1.29099 13.2922 1.38424 13.2159 1.50856C13.1395 1.63067 13.0982 1.78275 13.092 1.9648H11.8284C11.8387 1.52077 11.9378 1.15446 12.1257 0.865842C12.3136 0.575008 12.5624 0.358548 12.8721 0.21646C13.1818 0.0721535 13.5235 0 13.8972 0C14.3081 0 14.6714 0.0732636 14.9873 0.219791C15.3032 0.364098 15.551 0.573898 15.7306 0.849191C15.9102 1.12448 16.0001 1.45639 16.0001 1.84491C16.0001 2.10466 15.9598 2.33555 15.8793 2.53758C15.8008 2.73739 15.6904 2.915 15.5479 3.07041C15.4054 3.2236 15.2372 3.36235 15.0431 3.48668C14.88 3.59102 14.7458 3.69981 14.6405 3.81304C14.5372 3.92626 14.4598 4.05725 14.4082 4.20599C14.3587 4.35474 14.3328 4.5379 14.3308 4.75547V4.8687H13.157ZM13.7702 6.9C13.5638 6.9 13.3872 6.8223 13.2406 6.66689C13.0961 6.50926 13.0249 6.32055 13.0269 6.10076C13.0249 5.88319 13.0961 5.6967 13.2406 5.54129C13.3872 5.38589 13.5638 5.30818 13.7702 5.30818C13.9664 5.30818 14.1388 5.38589 14.2874 5.54129C14.4361 5.6967 14.5114 5.88319 14.5135 6.10076C14.5114 6.24729 14.4753 6.38161 14.4051 6.50371C14.337 6.6236 14.2472 6.72017 14.1357 6.79344C14.0242 6.86448 13.9024 6.9 13.7702 6.9Z" fill="white"/></svg>';
  
 const iconNumber            = '<svg width="17" height="7" viewBox="0 0 17 7" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M14.4917 7C14.0139 7 13.5892 6.91793 13.2176 6.7538C12.8483 6.58967 12.5563 6.36122 12.3417 6.06844C12.1272 5.77567 12.0133 5.43742 12 5.05371H13.2475C13.2586 5.2378 13.3194 5.39861 13.43 5.53612C13.5406 5.67142 13.6877 5.77677 13.8713 5.85219C14.0548 5.9276 14.2605 5.9653 14.4884 5.9653C14.7317 5.9653 14.9473 5.92316 15.1353 5.83888C15.3234 5.75238 15.4705 5.6326 15.5766 5.47956C15.6828 5.32652 15.7348 5.15019 15.7326 4.95057C15.7348 4.7443 15.6817 4.56242 15.5733 4.40494C15.4649 4.24747 15.3079 4.12437 15.1022 4.03565C14.8987 3.94693 14.6532 3.90257 14.3656 3.90257H13.7651V2.95105H14.3656C14.6023 2.95105 14.8091 2.91001 14.986 2.82795C15.1652 2.74588 15.3057 2.63055 15.4074 2.48194C15.5092 2.33112 15.5589 2.157 15.5567 1.9596C15.5589 1.76664 15.5158 1.59918 15.4273 1.45722C15.3411 1.31305 15.2183 1.20105 15.059 1.1212C14.902 1.04135 14.7173 1.00143 14.505 1.00143C14.297 1.00143 14.1046 1.03913 13.9277 1.11454C13.7507 1.18996 13.608 1.29753 13.4997 1.43726C13.3913 1.57478 13.3338 1.73891 13.3271 1.92966H12.1427C12.1515 1.54816 12.261 1.21324 12.4711 0.924905C12.6835 0.634347 12.9666 0.408112 13.3205 0.246198C13.6744 0.0820661 14.0714 0 14.5116 0C14.965 0 15.3588 0.0853929 15.6927 0.256179C16.029 0.424746 16.2888 0.652091 16.4724 0.938213C16.656 1.22433 16.7478 1.5404 16.7478 1.88641C16.75 2.27012 16.6372 2.59173 16.4094 2.85124C16.1838 3.11074 15.8874 3.28042 15.5202 3.36027V3.4135C15.998 3.48004 16.3641 3.65748 16.6184 3.94582C16.875 4.23194 17.0022 4.58793 17 5.01378C17 5.39528 16.8916 5.73685 16.6748 6.0385C16.4603 6.33793 16.1639 6.57304 15.7856 6.74382C15.4096 6.91461 14.9783 7 14.4917 7Z" fill="white"/><path d="M5.04237 7V6.09634L7.66243 3.75289C7.90254 3.52136 8.10264 3.31567 8.26271 3.13584C8.42279 2.95601 8.54284 2.78179 8.62288 2.6132C8.70292 2.44461 8.74294 2.26477 8.74294 2.0737C8.74294 1.85565 8.69115 1.66908 8.58757 1.51397C8.48399 1.35662 8.34157 1.23523 8.16031 1.14981C7.97905 1.06439 7.66361 1.01493 7.43291 1.01493C7.19515 1.01493 6.98682 1.06214 6.80791 1.15655C6.629 1.24872 6.49011 1.38022 6.39124 1.55106C6.29473 1.7219 6.24647 1.92534 6.24647 2.16137H5C5 1.72302 5.10476 1.342 5.31427 1.0183C5.52378 0.694605 5.81215 0.443963 6.17938 0.266378C6.54896 0.0887927 6.97269 0 7.45056 0C7.9355 0 8.47105 0.0932886 8.83828 0.266378C9.20551 0.439467 9.49035 0.676622 9.6928 0.977842C9.8976 1.27906 10 1.62299 10 2.00963C10 2.26814 9.94821 2.52216 9.84463 2.77168C9.74105 3.02119 9.55862 3.29769 9.29732 3.60116C9.03837 3.90462 8.67467 4.27216 8.20622 4.70376L6.85028 5.90751V5.95472H10V7H5.04237Z" fill="white"/><path d="M3 0V7H1.70882V1.23389H1.66705L0 2.27979V1.11768L1.77146 0H3Z" fill="white"/></svg>';
-const iconSign              = '<svg width="7" height="11" viewBox="0 0 7 11" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M2.90606 7V0H4.09394V7H2.90606ZM0 4.09394V2.90606H7V4.09394H0Z" fill="white"/><path d="M7 10V11H0V10H7Z" fill="white"/></svg>';
-const iconAbsolute          = '<svg width="13" height="13" viewBox="0 0 13 13" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M5.40227 4L6.5 5.8457L7.61544 4H8.97167L7.33215 6.5L9 9H7.65085L6.5 7.19987L5.35977 9H4L5.65722 6.5L4.04249 4H5.40227Z" fill="white"/><rect width="1" height="13" transform="matrix(-1 0 0 1 13 0)" fill="white"/><rect width="1" height="13" transform="matrix(-1 0 0 1 1 0)" fill="white"/></svg>';
-const iconRound             = '<svg width="17" height="13" viewBox="0 0 17 13" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M4.74422 12.2978C3.1 12 1.51382 9.72099 1.51382 6.5C1.51382 3.27901 3.1 1 4.74422 0.702217" stroke="white" stroke-width="1.1"/><path d="M12.3 12.2978C13.9442 12 15.5304 9.72099 15.5304 6.5C15.5304 3.27901 13.9442 1 12.3 0.702217" stroke="white" stroke-width="1.1"/><path d="M7.40227 4L8.5 5.8457L9.61544 4H10.9717L9.33215 6.5L11 9H9.65085L8.5 7.19987L7.35977 9H6L7.65722 6.5L6.04249 4H7.40227Z" fill="white"/></svg>';
-const iconLimits            = '<svg width="18" height="14" viewBox="0 0 18 14" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M0 0H0.904239L3.03042 5.81055H3.10374L5.22992 0H6.13416V7H5.42543V1.68164H5.36434L3.40922 7H2.72494L0.769825 1.68164H0.708728V7H0V0Z" fill="white"/><path d="M7.9098 7H7.11553L9.41279 0H10.1948L12.4921 7H11.6978L9.82825 1.10742H9.77937L7.9098 7ZM8.20306 4.26563H11.4046V5.01758H8.20306V4.26563Z" fill="white"/><path d="M13.8332 0L15.4461 2.91211H15.495L17.108 0H18L16.0327 3.5L18 7H17.108L15.495 4.14258H15.4461L13.8332 7H12.9412L14.9574 3.5L12.9412 0H13.8332Z" fill="white"/><path d="M1 8H1.85014L3.84911 12.9805H3.91804L5.91702 8H6.76716V14H6.10083V9.44141H6.04339L4.20525 14H3.5619L1.72377 9.44141H1.66632V14H1V8Z" fill="white"/><path d="M9.90758 8V14H9.1953V8H9.90758Z" fill="white"/><path d="M17 8V14H16.3107L13.1054 9.28906H13.048V14H12.3357V8H13.025L16.2418 12.7227H16.2992V8H17Z" fill="white"/></svg>';
 const iconRandom            = '<svg width="7" height="11" viewBox="0 0 7 11" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M2.57613 7.88313V7.82014C2.58313 7.15175 2.65312 6.61983 2.7861 6.22439C2.91908 5.82895 3.10805 5.50875 3.35302 5.26379C3.59798 5.01883 3.89193 4.79311 4.23488 4.58664C4.44135 4.46066 4.62682 4.31193 4.79129 4.14046C4.95577 3.96549 5.08525 3.76427 5.17973 3.5368C5.27772 3.30934 5.32671 3.05738 5.32671 2.78092C5.32671 2.43797 5.24622 2.14052 5.08525 1.88856C4.92427 1.6366 4.70906 1.44238 4.4396 1.3059C4.17014 1.16942 3.87094 1.10118 3.54199 1.10118C3.25503 1.10118 2.97857 1.16067 2.71261 1.27965C2.44665 1.39863 2.22444 1.58585 2.04597 1.84131C1.86749 2.09677 1.76426 2.43097 1.73626 2.84391H0.413467C0.441463 2.249 0.595439 1.73983 0.875396 1.31639C1.15885 0.89296 1.53155 0.56926 1.99347 0.345294C2.4589 0.121329 2.97507 0.00934601 3.54199 0.00934601C4.15789 0.00934601 4.69331 0.131827 5.14824 0.376789C5.60667 0.621752 5.96011 0.9577 6.20858 1.38463C6.46054 1.81157 6.58652 2.29799 6.58652 2.84391C6.58652 3.22885 6.52703 3.57705 6.40804 3.8885C6.29256 4.19995 6.12459 4.47816 5.90412 4.72312C5.68716 4.96808 5.4247 5.18505 5.11674 5.37402C4.80879 5.56649 4.56208 5.76946 4.37661 5.98293C4.19114 6.19289 4.05641 6.44311 3.97242 6.73356C3.88843 7.02402 3.84294 7.38621 3.83594 7.82014V7.88313H2.57613ZM3.24803 10.9907C2.98907 10.9907 2.76686 10.8979 2.58138 10.7124C2.39591 10.527 2.30318 10.3048 2.30318 10.0458C2.30318 9.78684 2.39591 9.56463 2.58138 9.37915C2.76686 9.19368 2.98907 9.10095 3.24803 9.10095C3.50699 9.10095 3.72921 9.19368 3.91468 9.37915C4.10015 9.56463 4.19289 9.78684 4.19289 10.0458C4.19289 10.2173 4.14914 10.3748 4.06166 10.5182C3.97767 10.6617 3.86394 10.7772 3.72046 10.8647C3.58048 10.9487 3.423 10.9907 3.24803 10.9907Z" fill="white"/></svg>';
 const iconSequence            = '<svg width="16" height="11" viewBox="0 0 16 11" fill="none" xmlns="http://www.w3.org/2000/svg"><rect y="9" width="1" height="2" fill="white"/><rect x="5" y="6" width="1" height="5" fill="white"/><rect x="10" y="3" width="1" height="8" fill="white"/><rect x="15" width="1" height="11" fill="white"/></svg>';
 const iconInterpolate       = '<svg width="19" height="13" viewBox="0 -1 19 13" fill="none" xmlns="http://www.w3.org/2000/svg"><line x1="0.284818" y1="10.6077" x2="18.759" y2="0.444666" stroke="white"/><ellipse cx="9.99556" cy="5.22745" rx="1.45202" ry="2.24173" transform="rotate(-25.1301 9.99556 5.22745)" fill="white"/></svg>';
@@ -49390,7 +50060,18 @@ const iconLess              = '<svg width="10" height="11" viewBox="0 0 10 11" f
 const iconLessOrEqual       = '<svg width="10" height="12" viewBox="0 0 10 12" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M9.16477 11.3182H0.0170455V9.72727H9.16477V11.3182ZM0.0170455 5.29545V4.15909L9.16477 0.863636V2.59659L2.77273 4.69886L2.82955 4.58523V4.86932L2.77273 4.75568L9.16477 6.85795V8.59091L0.0170455 5.29545Z" fill="white"/></svg>';
 const iconGreater           = '<svg width="10" height="11" viewBox="0 0 10 11" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M9.16477 5.88636L0.0170455 10.5455V8.72727L7.03409 5.34659L6.97727 5.46023V5.17614L7.03409 5.28977L0.0170455 1.90909V0.0909088L9.16477 4.75V5.88636Z" fill="white"/></svg>';
 const iconGreaterOrEqual    = '<svg width="10" height="12" viewBox="0 0 10 12" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M0.0170455 11.3182V9.72727H9.16477V11.3182H0.0170455ZM9.16477 5.29545L0.0170455 8.59091V6.85795L6.40909 4.75568L6.35227 4.86932V4.58523L6.40909 4.69886L0.0170455 2.59659V0.863636L9.16477 4.15909V5.29545Z" fill="white"/></svg>';
- 
+
+const iconFunctions         = '<svg width="19" height="13" viewBox="0 0 19 13" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M4.91534 3.92272V5.1159H0.599995V3.92272H4.91534ZM1.78323 11.5591V3.03778C1.78323 2.56051 1.88764 2.16444 2.09644 1.84957C2.30525 1.53139 2.582 1.29441 2.9267 1.13863C3.2714 0.97954 3.64592 0.899994 4.05028 0.899994C4.34857 0.899994 4.60378 0.924852 4.8159 0.974568C5.02803 1.02097 5.18546 1.06406 5.28821 1.10383L4.94019 2.30695C4.87059 2.28707 4.7811 2.26387 4.67173 2.23735C4.56235 2.20752 4.42978 2.19261 4.274 2.19261C3.91273 2.19261 3.65421 2.2821 3.49843 2.46107C3.34597 2.64005 3.26974 2.89857 3.26974 3.23664V11.5591H1.78323Z" fill="white"/><path d="M8.3 6.33878C8.3 5.09257 8.46406 3.94579 8.79218 2.89844C9.12031 1.85109 9.59924 0.884943 10.229 0H11.5912C11.3459 0.328125 11.1172 0.730824 10.9051 1.2081C10.693 1.68537 10.5074 2.20904 10.3483 2.77912C10.1892 3.34588 10.0649 3.93419 9.97542 4.54403C9.88594 5.15057 9.84119 5.74882 9.84119 6.33878C9.84119 7.1276 9.91908 7.92637 10.0749 8.73509C10.2306 9.5438 10.4411 10.2945 10.7062 10.9872C10.9714 11.6799 11.2664 12.245 11.5912 12.6825H10.229C9.59924 11.7976 9.12031 10.8314 8.79218 9.78409C8.46406 8.73674 8.3 7.58831 8.3 6.33878Z" fill="white"/><path d="M18.2912 6.33878C18.2912 7.58831 18.1271 8.73674 17.799 9.78409C17.4709 10.8314 16.992 11.7976 16.3622 12.6825H15C15.2453 12.3544 15.474 11.9517 15.6861 11.4744C15.8982 10.9972 16.0838 10.4751 16.2429 9.90838C16.402 9.33831 16.5263 8.74834 16.6158 8.13849C16.7053 7.52865 16.75 6.92874 16.75 6.33878C16.75 5.55327 16.6721 4.75616 16.5163 3.94744C16.3606 3.13873 16.1501 2.38802 15.8849 1.69531C15.6198 1.0026 15.3248 0.4375 15 0H16.3622C16.992 0.884943 17.4709 1.85109 17.799 2.89844C18.1271 3.94579 18.2912 5.09257 18.2912 6.33878Z" fill="white"/></svg>';
+const iconSign              = '<svg width="7" height="11" viewBox="0 0 7 11" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M2.90606 7V0H4.09394V7H2.90606ZM0 4.09394V2.90606H7V4.09394H0Z" fill="white"/><path d="M7 10V11H0V10H7Z" fill="white"/></svg>';
+const iconAbsolute          = '<svg width="13" height="13" viewBox="0 0 13 13" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M5.40227 4L6.5 5.8457L7.61544 4H8.97167L7.33215 6.5L9 9H7.65085L6.5 7.19987L5.35977 9H4L5.65722 6.5L4.04249 4H5.40227Z" fill="white"/><rect width="1" height="13" transform="matrix(-1 0 0 1 13 0)" fill="white"/><rect width="1" height="13" transform="matrix(-1 0 0 1 1 0)" fill="white"/></svg>';
+const iconRound             = '<svg width="17" height="13" viewBox="0 0 17 13" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M4.74422 12.2978C3.1 12 1.51382 9.72099 1.51382 6.5C1.51382 3.27901 3.1 1 4.74422 0.702217" stroke="white" stroke-width="1.1"/><path d="M12.3 12.2978C13.9442 12 15.5304 9.72099 15.5304 6.5C15.5304 3.27901 13.9442 1 12.3 0.702217" stroke="white" stroke-width="1.1"/><path d="M7.40227 4L8.5 5.8457L9.61544 4H10.9717L9.33215 6.5L11 9H9.65085L8.5 7.19987L7.35977 9H6L7.65722 6.5L6.04249 4H7.40227Z" fill="white"/></svg>';
+const iconLimits            = '<svg width="18" height="14" viewBox="0 0 18 14" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M0 0H0.904239L3.03042 5.81055H3.10374L5.22992 0H6.13416V7H5.42543V1.68164H5.36434L3.40922 7H2.72494L0.769825 1.68164H0.708728V7H0V0Z" fill="white"/><path d="M7.9098 7H7.11553L9.41279 0H10.1948L12.4921 7H11.6978L9.82825 1.10742H9.77937L7.9098 7ZM8.20306 4.26563H11.4046V5.01758H8.20306V4.26563Z" fill="white"/><path d="M13.8332 0L15.4461 2.91211H15.495L17.108 0H18L16.0327 3.5L18 7H17.108L15.495 4.14258H15.4461L13.8332 7H12.9412L14.9574 3.5L12.9412 0H13.8332Z" fill="white"/><path d="M1 8H1.85014L3.84911 12.9805H3.91804L5.91702 8H6.76716V14H6.10083V9.44141H6.04339L4.20525 14H3.5619L1.72377 9.44141H1.66632V14H1V8Z" fill="white"/><path d="M9.90758 8V14H9.1953V8H9.90758Z" fill="white"/><path d="M17 8V14H16.3107L13.1054 9.28906H13.048V14H12.3357V8H13.025L16.2418 12.7227H16.2992V8H17Z" fill="white"/></svg>';
+
+const iconTrigonometric     = '<svg width="17" height="13" viewBox="0 0 17 13" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M0 6H17V7H0V6Z" fill="white"/><path d="M16.5001 6.50003C15.2694 9.83336 14.0386 11.5 12.5001 11.5C10.9617 11.5 9.73089 9.83336 8.50012 6.50003C7.26935 3.1667 6.03858 1.50003 4.50012 1.50003C2.96166 1.50003 1.73089 3.1667 0.500122 6.50003" stroke="white"/><path d="M-5.68248e-07 13L0 0L1 4.37114e-08L1 13L-5.68248e-07 13Z" fill="white"/><path d="M17 1.50003C15.4615 1.50003 14.2308 3.1667 13 6.50003C11.7692 9.83336 10.5385 11.5 9 11.5C7.46154 11.5 6.23077 9.83336 5 6.50003C3.76923 3.1667 2.53846 1.50003 1 1.50003" stroke="white"/><path d="M11.4999 -1.64154e-07C11.4999 2.99999 10.282 4.99999 8.99988 6.49998C7.71779 7.99998 6.49988 10 6.49988 13" stroke="white"/></svg>';
+const iconSine              = '<svg width="17" height="14" viewBox="0 0 17 14" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M0 7H17V8H0V7Z" fill="white"/><path d="M16.5001 7.50003C15.2694 10.8334 14.0386 12.5 12.5001 12.5C10.9617 12.5 9.73089 10.8334 8.50012 7.50003C7.26935 4.1667 6.03858 2.50003 4.50012 2.50003C2.96166 2.50003 1.73089 4.1667 0.500122 7.50003" stroke="white"/><path d="M-6.11959e-07 14L0 0L1 4.37114e-08L1 14L-6.11959e-07 14Z" fill="white"/></svg>';
+const iconCosine            = '<svg width="17" height="14" viewBox="0 0 17 14" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M0 6H17V7H0V6Z" fill="white"/><path d="M17 2.50003C15.4615 2.50003 14.2308 4.1667 13 7.50003C11.7692 10.8334 10.5385 12.5 9 12.5C7.46154 12.5 6.23077 10.8334 5 7.50003C3.76923 4.1667 2.53846 2.50003 1 2.50003" stroke="white"/><path d="M-6.11959e-07 14L0 0L1 4.37114e-08L1 14L-6.11959e-07 14Z" fill="white"/></svg>';
+const iconTangent           = '<svg width="17" height="15" viewBox="0 0 17 15" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M0 7H17V8H0V7Z" fill="white"/><path d="M4.50047 1C4.50047 3.76923 2.90784 5.93552 1.90784 7.32014" stroke="white"/><path d="M13.4999 14C13.4999 11.2308 15.0925 9.06447 16.0925 7.67986" stroke="white"/><path d="M11.4999 1C11.4999 3.99999 10.282 5.99999 8.99988 7.49998C7.71779 8.99998 6.49988 11 6.49988 14" stroke="white"/><path d="M-6.55671e-07 15L0 0L1 4.37114e-08L1 15L-6.55671e-07 15Z" fill="white"/></svg>';
+
 const iconText              = '<svg width="19" height="7" viewBox="0 0 19 7" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M19 2.39211H17.7568C17.7213 2.18805 17.656 2.00729 17.5607 1.84981C17.4654 1.69011 17.3468 1.55482 17.205 1.44392C17.0632 1.33302 16.9014 1.24984 16.7197 1.19439C16.5402 1.13672 16.3463 1.10789 16.1379 1.10789C15.7679 1.10789 15.4399 1.20105 15.154 1.38736C14.8681 1.57145 14.6443 1.84205 14.4825 2.19914C14.3208 2.55402 14.2399 2.98764 14.2399 3.5C14.2399 4.02123 14.3208 4.46039 14.4825 4.81749C14.6465 5.17237 14.8704 5.44075 15.154 5.62262C15.4399 5.80228 15.7668 5.89211 16.1346 5.89211C16.3385 5.89211 16.5291 5.86549 16.7064 5.81226C16.8859 5.75681 17.0465 5.67586 17.1884 5.56939C17.3324 5.46293 17.4532 5.33207 17.5507 5.17681C17.6504 5.02155 17.7191 4.84411 17.7568 4.64449L19 4.65114C18.9535 4.97497 18.8526 5.27883 18.6975 5.56274C18.5446 5.84664 18.344 6.09727 18.0958 6.31464C17.8476 6.52978 17.5573 6.69835 17.2249 6.82034C16.8925 6.94011 16.5235 7 16.118 7C15.5197 7 14.9856 6.86138 14.5158 6.58413C14.046 6.30688 13.6759 5.90653 13.4055 5.38308C13.1352 4.85963 13 4.23194 13 3.5C13 2.76584 13.1363 2.13815 13.4089 1.61692C13.6814 1.09347 14.0526 0.693124 14.5224 0.415875C14.9922 0.138625 15.5241 0 16.118 0C16.497 0 16.8493 0.0532321 17.1751 0.159696C17.5008 0.26616 17.7911 0.422529 18.046 0.628803C18.3008 0.832858 18.5103 1.08349 18.6742 1.3807C18.8404 1.6757 18.949 2.01283 19 2.39211Z" fill="white"/><path d="M7 7V0H9.56545C10.0497 0 10.4522 0.0797524 10.7729 0.239258C11.0958 0.396484 11.3368 0.611816 11.4961 0.885254C11.6575 1.15869 11.7382 1.46859 11.7382 1.81494C11.7382 2.09977 11.6859 2.34359 11.5812 2.54639C11.4764 2.74691 11.3357 2.90983 11.159 3.03516C10.9823 3.16048 10.7849 3.25049 10.5668 3.30518V3.37354C10.8045 3.38721 11.0325 3.46354 11.2507 3.60254C11.471 3.73926 11.651 3.93294 11.7906 4.18359C11.9302 4.43424 12 4.7373 12 5.09277C12 5.45508 11.916 5.78092 11.748 6.07031C11.5801 6.35742 11.327 6.58415 10.9889 6.75049C10.6507 6.91683 10.2253 7 9.7127 7H7ZM8.21401 5.94043H9.51963C9.9603 5.94043 10.2777 5.8527 10.4719 5.67725C10.6682 5.49951 10.7664 5.27165 10.7664 4.99365C10.7664 4.7863 10.7173 4.59945 10.6191 4.43311C10.5209 4.26449 10.3813 4.13232 10.2003 4.03662C10.0192 3.93864 9.80323 3.88965 9.55236 3.88965H8.21401V5.94043ZM8.21401 2.97705H9.41492C9.62435 2.97705 9.81305 2.93717 9.98102 2.85742C10.149 2.77539 10.281 2.66032 10.377 2.51221C10.4751 2.36182 10.5242 2.18408 10.5242 1.979C10.5242 1.70784 10.4326 1.48454 10.2493 1.30908C10.0683 1.13363 9.79887 1.0459 9.4411 1.0459H8.21401V2.97705Z" fill="white"/><path d="M1.24987 7H0L2.27564 0H3.7212L6 7H4.75013L3.02367 1.43555H2.97317L1.24987 7ZM1.2909 4.25537H4.69963V5.27393H1.2909V4.25537Z" fill="white"/></svg>';
 const iconTextSubstring     = '<svg width="17" height="10" viewBox="0 -2 17 10" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M6 7V0H8.56544C9.04974 0 9.45223 0.0797524 9.77291 0.239258C10.0958 0.396484 10.3368 0.611816 10.4961 0.885254C10.6575 1.15869 10.7382 1.46859 10.7382 1.81494C10.7382 2.09977 10.6859 2.34359 10.5812 2.54639C10.4764 2.74691 10.3357 2.90983 10.159 3.03516C9.98233 3.16048 9.7849 3.25049 9.56675 3.30518V3.37354C9.80454 3.38721 10.0325 3.46354 10.2507 3.60254C10.471 3.73926 10.651 3.93294 10.7906 4.18359C10.9302 4.43424 11 4.7373 11 5.09277C11 5.45508 10.916 5.78092 10.748 6.07031C10.5801 6.35742 10.327 6.58415 9.98887 6.75049C9.65074 6.91683 9.22535 7 8.7127 7H6ZM7.21401 5.94043H8.51963C8.9603 5.94043 9.2777 5.8527 9.47186 5.67725C9.66819 5.49951 9.76636 5.27165 9.76636 4.99365C9.76636 4.7863 9.71728 4.59945 9.61911 4.43311C9.52094 4.26449 9.38133 4.13232 9.20026 4.03662C9.0192 3.93864 8.80323 3.88965 8.55236 3.88965H7.21401V5.94043ZM7.21401 2.97705H8.41492C8.62435 2.97705 8.81305 2.93717 8.98102 2.85742C9.149 2.77539 9.28098 2.66032 9.37696 2.51221C9.47513 2.36182 9.52421 2.18408 9.52421 1.979C9.52421 1.70784 9.43259 1.48454 9.24935 1.30908C9.06828 1.13363 8.79887 1.0459 8.4411 1.0459H7.21401V2.97705Z" fill="white"/><path d="M1.4991 7.23161C1.29659 7.23161 1.12301 7.16039 0.978358 7.01797C0.833709 6.87554 0.762497 6.70197 0.764722 6.49723C0.762497 6.29695 0.833709 6.12559 0.978358 5.98317C1.12301 5.84074 1.29659 5.76953 1.4991 5.76953C1.69493 5.76953 1.86517 5.84074 2.00982 5.98317C2.1567 6.12559 2.23125 6.29695 2.23347 6.49723C2.23125 6.63298 2.19564 6.75649 2.12665 6.86776C2.05989 6.97902 1.97088 7.06804 1.85961 7.1348C1.75056 7.19934 1.63039 7.23161 1.4991 7.23161Z" fill="white"/><path d="M13.5054 7.23161C13.3029 7.23161 13.1293 7.16039 12.9847 7.01797C12.84 6.87554 12.7688 6.70197 12.7711 6.49723C12.7688 6.29695 12.84 6.12559 12.9847 5.98317C13.1293 5.84074 13.3029 5.76953 13.5054 5.76953C13.7013 5.76953 13.8715 5.84074 14.0162 5.98317C14.163 6.12559 14.2376 6.29695 14.2398 6.49723C14.2376 6.63298 14.202 6.75649 14.133 6.86776C14.0662 6.97902 13.9772 7.06804 13.8659 7.1348C13.7569 7.19934 13.6367 7.23161 13.5054 7.23161Z" fill="white"/><path d="M3.49441 7.23161C3.2919 7.23161 3.11832 7.16039 2.97367 7.01797C2.82902 6.87554 2.75781 6.70197 2.76004 6.49723C2.75781 6.29695 2.82902 6.12559 2.97367 5.98317C3.11832 5.84074 3.2919 5.76953 3.49441 5.76953C3.69025 5.76953 3.86049 5.84074 4.00514 5.98317C4.15201 6.12559 4.22656 6.29695 4.22879 6.49723C4.22656 6.63298 4.19096 6.75649 4.12197 6.86776C4.05521 6.97902 3.96619 7.06804 3.85492 7.1348C3.74588 7.19934 3.62571 7.23161 3.49441 7.23161Z" fill="white"/><path d="M15.5007 7.23161C15.2982 7.23161 15.1247 7.16039 14.98 7.01797C14.8354 6.87554 14.7641 6.70197 14.7664 6.49723C14.7641 6.29695 14.8354 6.12559 14.98 5.98317C15.1247 5.84074 15.2982 5.76953 15.5007 5.76953C15.6966 5.76953 15.8668 5.84074 16.0115 5.98317C16.1583 6.12559 16.2329 6.29695 16.2351 6.49723C16.2329 6.63298 16.1973 6.75649 16.1283 6.86776C16.0615 6.97902 15.9725 7.06804 15.8613 7.1348C15.7522 7.19934 15.632 7.23161 15.5007 7.23161Z" fill="white"/></svg>';
 const iconTextReplace       = '<svg width="19" height="16" viewBox="0 0 19 16" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M19 9.39211H17.7568C17.7213 9.18805 17.656 9.00729 17.5607 8.84981C17.4654 8.69011 17.3468 8.55482 17.205 8.44392C17.0632 8.33302 16.9014 8.24984 16.7197 8.19439C16.5402 8.13672 16.3463 8.10789 16.138 8.10789C15.7679 8.10789 15.4399 8.20105 15.154 8.38736C14.8681 8.57145 14.6443 8.84205 14.4825 9.19914C14.3208 9.55402 14.2399 9.98764 14.2399 10.5C14.2399 11.0212 14.3208 11.4604 14.4825 11.8175C14.6465 12.1724 14.8704 12.4407 15.154 12.6226C15.4399 12.8023 15.7668 12.8921 16.1346 12.8921C16.3385 12.8921 16.5291 12.8655 16.7064 12.8123C16.8859 12.7568 17.0465 12.6759 17.1884 12.5694C17.3324 12.4629 17.4532 12.3321 17.5507 12.1768C17.6504 12.0215 17.7191 11.8441 17.7568 11.6445L19 11.6511C18.9535 11.975 18.8526 12.2788 18.6975 12.5627C18.5446 12.8466 18.344 13.0973 18.0958 13.3146C17.8476 13.5298 17.5573 13.6984 17.2249 13.8203C16.8925 13.9401 16.5235 14 16.118 14C15.5197 14 14.9856 13.8614 14.5158 13.5841C14.046 13.3069 13.6759 12.9065 13.4055 12.3831C13.1352 11.8596 13 11.2319 13 10.5C13 9.76584 13.1363 9.13815 13.4089 8.61692C13.6814 8.09347 14.0526 7.69312 14.5224 7.41587C14.9922 7.13862 15.5241 7 16.118 7C16.497 7 16.8493 7.05323 17.1751 7.1597C17.5008 7.26616 17.7911 7.42253 18.046 7.6288C18.3008 7.83286 18.5103 8.08349 18.6742 8.3807C18.8404 8.6757 18.949 9.01283 19 9.39211Z" fill="white"/><path d="M1.24987 14H0L2.27564 7H3.7212L6 14H4.75013L3.02367 8.43555H2.97317L1.24987 14ZM1.2909 11.2554H4.69963V12.2739H1.2909V11.2554Z" fill="white"/><path d="M8 16V11H10.0759C10.4574 11 10.7755 11.0545 11.0304 11.1636C11.2852 11.2726 11.4768 11.424 11.6051 11.6177C11.7333 11.8097 11.7975 12.0311 11.7975 12.2817C11.7975 12.4771 11.757 12.6488 11.6759 12.7969C11.5949 12.9434 11.4835 13.0638 11.3418 13.1582C11.2017 13.251 11.0414 13.3169 10.8608 13.356V13.4048C11.0582 13.4129 11.243 13.4666 11.4152 13.5659C11.589 13.6652 11.73 13.8044 11.838 13.9834C11.946 14.1608 12 14.3724 12 14.6182C12 14.8835 11.9316 15.1203 11.7949 15.3286C11.6599 15.5353 11.4599 15.6989 11.1949 15.8193C10.93 15.9398 10.6034 16 10.2152 16H8ZM9.0962 15.1357H9.98987C10.2954 15.1357 10.5181 15.0796 10.6582 14.9673C10.7983 14.8534 10.8684 14.702 10.8684 14.5132C10.8684 14.3748 10.8338 14.2528 10.7646 14.147C10.6954 14.0412 10.5966 13.9582 10.4684 13.8979C10.3418 13.8377 10.1907 13.8076 10.0152 13.8076H9.0962V15.1357ZM9.0962 13.0923H9.90886C10.0591 13.0923 10.1924 13.0671 10.3089 13.0166C10.427 12.9645 10.5198 12.8913 10.5873 12.7969C10.6565 12.7025 10.6911 12.5894 10.6911 12.4575C10.6911 12.2769 10.6245 12.1312 10.4911 12.0205C10.3595 11.9098 10.1722 11.8545 9.92911 11.8545H9.0962V13.0923Z" fill="white"/><path fill-rule="evenodd" clip-rule="evenodd" d="M9.05758 8.64355L9.23002 8.76764L9.73959 8.05948L11.0933 6.90017L10.4428 6.14064L9.48886 6.95761C9.48453 5.97188 9.30757 4.81845 8.79688 3.77457C8.18769 2.52934 7.10594 1.45073 5.33322 1.02438L5.09938 1.99666C6.54887 2.34526 7.40452 3.20406 7.89862 4.21402C8.33403 5.10405 8.48993 6.11878 8.48896 7.00242L7.35652 6.18756L6.77245 6.99926L8.22215 8.04242L8.00316 8.22997L8.65362 8.9895L9.05758 8.64355Z" fill="white"/></svg>';
@@ -50479,6 +51160,8 @@ var menuGroup;
 var menuMath;
 var menuBoolean;
 var menuCondition;
+var menuTrig;
+var menuFunctions;
 
 var menuPage;
 
@@ -50774,7 +51457,7 @@ function initGeneratorMenus()
         // menuFlowSep3          = new MenuItem('',                  {separator: true}),
         // menuItemCache         = new MenuItem('Cache',             {icon: iconCache,  callback: e => actionManager.do(getCreateNodeAction(CACHE,        btnNumber.div, getCreateOptions(e)))}),
     
-    
+
     menuMath = new Menu('Math', true, false);
     menuMath.addItems([
         new MenuItem('Power',       {icon: iconExponent, callback: e => actionManager.do(getCreateNodeAction(NUMBER_EXPONENT, btnNumber.div, getCreateOptions(e)))}),
@@ -50803,26 +51486,39 @@ function initGeneratorMenus()
         new MenuItem('Less',             {icon: iconLess,           callback: e => actionManager.do(getCreateNodeAction(NUMBER_LESS,             btnNumber.div, getCreateOptions(e)))})]);
         
     
+    menuTrig = new Menu('Trigonometric', true, false);
+    menuTrig.addItems([
+        new MenuItem('Sine',    {icon: iconSine,    callback: e => actionManager.do(getCreateNodeAction(NUMBER_SIN, btnNumber.div, getCreateOptions(e)))}),
+        new MenuItem('Cosine',  {icon: iconCosine,  callback: e => actionManager.do(getCreateNodeAction(NUMBER_COS, btnNumber.div, getCreateOptions(e)))}),
+        new MenuItem('Tangent', {icon: iconTangent, callback: e => actionManager.do(getCreateNodeAction(NUMBER_TAN, btnNumber.div, getCreateOptions(e)))})]);
+        
+    
+    menuFunctions = new Menu('Functions', true, false);
+    menuFunctions.addItems([
+        new MenuItem('Sign',     {icon: iconSign,     callback: e => actionManager.do(getCreateNodeAction(NUMBER_SIGN,        btnNumber.div, getCreateOptions(e)))}),
+        new MenuItem('Absolute', {icon: iconAbsolute, callback: e => actionManager.do(getCreateNodeAction(NUMBER_ABSOLUTE,    btnNumber.div, getCreateOptions(e)))}),
+        new MenuItem('Round',    {icon: iconRound,    callback: e => actionManager.do(getCreateNodeAction(NUMBER_ROUND,       btnNumber.div, getCreateOptions(e)))}),
+        new MenuItem('Limits',   {icon: iconLimits,   callback: e => actionManager.do(getCreateNodeAction(NUMBER_LIMITS,      btnNumber.div, getCreateOptions(e)))})]);
+        
+
     menuNumber = new Menu('Numbers', true, false);
     menuNumber.addItems([
-                                      new MenuItem('Number',         {icon: iconNumber,       shortcut: 'N', callback: e => actionManager.do(getCreateNodeAction(NUMBER,             btnNumber.div, getCreateOptions(e)))}),
-                                      new MenuItem('',               {separator: true}),
-                                      new MenuItem('Sign',           {icon: iconSign,         callback: e => actionManager.do(getCreateNodeAction(NUMBER_SIGN,        btnNumber.div, getCreateOptions(e)))}),
-                                      new MenuItem('Absolute',       {icon: iconAbsolute,     callback: e => actionManager.do(getCreateNodeAction(NUMBER_ABSOLUTE,    btnNumber.div, getCreateOptions(e)))}),
-                                      new MenuItem('Round',          {icon: iconRound,        callback: e => actionManager.do(getCreateNodeAction(NUMBER_ROUND,       btnNumber.div, getCreateOptions(e)))}),
-                                      new MenuItem('Limits',         {icon: iconLimits,       callback: e => actionManager.do(getCreateNodeAction(NUMBER_LIMITS,      btnNumber.div, getCreateOptions(e)))}),
-                                      new MenuItem('',               {separator: true}),
-                                      new MenuItem('Math',           {icon: iconMath,         childMenu: menuMath,      callback: e => actionManager.do(getCreateNodeAction(NUMBER_MATH,        btnNumber.div, getCreateOptions(e)))}),
-                                      new MenuItem('Boolean',        {icon: iconBoolean,      childMenu: menuBoolean,   callback: e => actionManager.do(getCreateNodeAction(NUMBER_BOOLEAN,     btnNumber.div, getCreateOptions(e)))}),
-                                      new MenuItem('Condition',      {icon: iconCondition,    childMenu: menuCondition, callback: e => actionManager.do(getCreateNodeAction(NUMBER_CONDITION,   btnNumber.div, getCreateOptions(e)))}),
-                                      new MenuItem('',               {separator: true}),
-        menuItemSequence              = new MenuItem('Sequence...',    {icon: iconSequence,       callback: e => actionManager.do(getCreateNodeAction(NUMBER_SEQUENCE,      btnNumber.div, getCreateOptions(e)))}),
-                                      new MenuItem('Random...',      {icon: iconRandom,       callback: e => actionManager.do(getCreateNodeAction(NUMBER_RANDOM,      btnNumber.div, getCreateOptions(e)))}),
-                                      new MenuItem('',               {separator: true}),
-                                      new MenuItem('Interpolate',    {icon: iconInterpolate,  callback: e => actionManager.do(getCreateNodeAction(NUMBER_INTERPOLATE, btnNumber.div, getCreateOptions(e)))}),
-        menuItemSolve               = new MenuItem('Solve',          {icon: iconSolve,        callback: e => actionManager.do(getCreateNodeAction(NUMBER_SOLVE,       btnNumber.div, getCreateOptions(e)))}),
-        menuItemNumberSep1          = new MenuItem('',               {separator: true}),
-        menuItemAnimate             = new MenuItem('Animate',        {icon: iconAnimate,      callback: e => actionManager.do(getCreateNodeAction(NUMBER_ANIMATE,     btnNumber.div, getCreateOptions(e)))})]);
+                             new MenuItem('Number',        {icon: iconNumber,      shortcut: 'N', callback: e => actionManager.do(getCreateNodeAction(NUMBER,             btnNumber.div, getCreateOptions(e)))}),
+                             new MenuItem('',              {separator: true}),
+                             new MenuItem('Math',          {icon: iconMath,        childMenu: menuMath,      callback: e => actionManager.do(getCreateNodeAction(NUMBER_MATH,      btnNumber.div, getCreateOptions(e)))}),
+                             new MenuItem('Boolean',       {icon: iconBoolean,     childMenu: menuBoolean,   callback: e => actionManager.do(getCreateNodeAction(NUMBER_BOOLEAN,   btnNumber.div, getCreateOptions(e)))}),
+                             new MenuItem('Condition',     {icon: iconCondition,   childMenu: menuCondition, callback: e => actionManager.do(getCreateNodeAction(NUMBER_CONDITION, btnNumber.div, getCreateOptions(e)))}),
+                             new MenuItem('Trigonometric', {icon: iconSine,        childMenu: menuTrig,      callback: e => actionManager.do(getCreateNodeAction(NUMBER_TRIG,      btnNumber.div, getCreateOptions(e)))}),
+                             new MenuItem('',              {separator: true}),
+                             new MenuItem('Functions',     {icon: iconFunctions,   childMenu: menuFunctions}),
+                             new MenuItem('',              {separator: true}),
+        menuItemSequence   = new MenuItem('Sequence...',   {icon: iconSequence,    callback: e => actionManager.do(getCreateNodeAction(NUMBER_SEQUENCE,      btnNumber.div, getCreateOptions(e)))}),
+                             new MenuItem('Random...',     {icon: iconRandom,      callback: e => actionManager.do(getCreateNodeAction(NUMBER_RANDOM,      btnNumber.div, getCreateOptions(e)))}),
+                             new MenuItem('',              {separator: true}),
+                             new MenuItem('Interpolate',   {icon: iconInterpolate, callback: e => actionManager.do(getCreateNodeAction(NUMBER_INTERPOLATE, btnNumber.div, getCreateOptions(e)))}),
+        menuItemSolve      = new MenuItem('Solve',         {icon: iconSolve,       callback: e => actionManager.do(getCreateNodeAction(NUMBER_SOLVE,       btnNumber.div, getCreateOptions(e)))}),
+        menuItemNumberSep1 = new MenuItem('',              {separator: true}),
+        menuItemAnimate    = new MenuItem('Animate',       {icon: iconAnimate,     callback: e => actionManager.do(getCreateNodeAction(NUMBER_ANIMATE,     btnNumber.div, getCreateOptions(e)))})]);
         
     
     menuString = new Menu('Text', true, false);
@@ -65988,6 +66684,150 @@ extends OpConditionBase
 }
 
 
+class   OpTrig
+extends OperatorWithValue
+{
+    paramFunction;
+
+
+
+    constructor(type, id, name, symbol)
+    {
+        super(type, id, name, symbol);
+
+        this.canDisable       = true;
+        this.alwaysLoadParams = true;
+
+        
+        this.addInput(new Input([NUMBER_VALUE]));
+        this.addOutput(new Output([NUMBER_VALUE], this.output_genRequest));
+
+        this.addParam(this.paramValue);
+        this.addParam(this.paramOperation = new SelectParam('function', '', false, true, true, TRIG_OPS.map(s => s[1]), 2));
+    }
+
+
+
+    output_genRequest(gen)
+    {
+        // 'this' is the output
+
+        gen.scope.push({
+            nodeId:  this.node.id, 
+            paramId: NULL });
+
+        const [request, ignore] = this.node.genRequestStart(gen);
+        if (ignore) return request;
+
+        
+        const input = this.node.inputs[0];
+
+
+        request.push(input.connected ? 1 : 0);
+
+        if (input.connected)
+            request.push(...pushInputOrParam(input, gen));
+
+
+        request.push(...this.node.paramFunction.genRequest(gen));
+
+
+        gen.scope.pop();
+        pushUnique(gen.passedNodes, this.node);
+
+        return request;
+    }
+
+
+
+    updateParams()
+    {
+        this.paramValue   .enableControlText(false);
+        this.paramFunction.enableControlText(true);
+
+        this.updateParamControls();
+    }
+}
+
+
+class   OpTrigBase
+extends OperatorWithValue
+{
+    constructor(type, id, name, symbol)
+    {
+        super(type, id, name, symbol);
+
+        this.canDisable       = true;
+        this.alwaysLoadParams = true;
+
+        
+        this.addInput(new Input([NUMBER_VALUE]));
+        this.addOutput(new Output([NUMBER_VALUE], this.output_genRequest));
+
+        this.addParam(this.paramValue);
+    }
+
+
+
+    output_genRequest(gen)
+    {
+        // 'this' is the output
+
+        gen.scope.push({
+            nodeId:  this.node.id, 
+            paramId: NULL });
+
+        const [request, ignore] = this.node.genRequestStart(gen);
+        if (ignore) return request;
+
+        
+        const input = this.node.inputs[0];
+
+
+        request.push(input.connected ? 1 : 0);
+
+        if (input.connected)
+            request.push(...pushInputOrParam(input, gen));
+
+
+        gen.scope.pop();
+        pushUnique(gen.passedNodes, this.node);
+
+        return request;
+    }
+}
+
+
+class OpSine
+extends OpTrigBase
+{
+    constructor()
+    {
+        super(NUMBER_SIN, 'sin', 'sin');
+    }
+}
+
+
+class OpCosine
+extends OpTrigBase
+{
+    constructor()
+    {
+        super(NUMBER_COS, 'cos', 'cos');
+    }
+}
+
+
+class OpTangent
+extends OpTrigBase
+{
+    constructor()
+    {
+        super(NUMBER_TAN, 'tan', 'tan');
+    }
+}
+
+
 class   OpText
 extends ResizableBase
 {
@@ -79502,6 +80342,11 @@ function createNode(nodeType, creatingButton = null, createdNodeId = -1, options
         case NUMBER_LESS_OR_EQUAL:    node = new OpLessOrEqual();       break;
         case NUMBER_GREATER:          node = new OpGreater();           break;
         case NUMBER_GREATER_OR_EQUAL: node = new OpGreaterOrEqual();    break;
+
+        case NUMBER_TRIG:             node = new OpTrig();              break;
+        case NUMBER_SIN:              node = new OpSine();              break;
+        case NUMBER_COS:              node = new OpCosine();            break;
+        case NUMBER_TAN:              node = new OpTangent();           break;
          
         case TEXT:                    node = new OpText();              break;
         case TEXT_SUBSTRING:          node = new OpTextSubstring();     break;

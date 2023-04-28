@@ -89,6 +89,12 @@
 ../generator/types/number/condition/GGreater.js
 ../generator/types/number/condition/GGreaterOrEqual.js
 
+../generator/types/number/trigonometric/GTrigBase.js
+../generator/types/number/trigonometric/GTrig.js
+../generator/types/number/trigonometric/GSine.js
+../generator/types/number/trigonometric/GCosine.js
+../generator/types/number/trigonometric/GTangent.js
+
 
 ../generator/types/text/GTextType.js
 
