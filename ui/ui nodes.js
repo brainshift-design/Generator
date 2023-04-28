@@ -85,7 +85,9 @@ function createNode(nodeType, creatingButton = null, createdNodeId = -1, options
         case TEXTSHAPE:               node = new OpTextShape();         break;
       
         case MOVE:                    node = new OpMove();              break;
-        
+        case ROTATE:                  node = new OpRotate();            break;
+        case SCALE:                   node = new OpScale();             break;
+
         case GROUP_NODE:              node = new OpGroupNode();         break;
         case GROUP_PARAM:             node = new OpGroupParam();        break;
 

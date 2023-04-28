@@ -446,3 +446,101 @@ function genParseMove(parse)
     genParseNodeEnd(parse, move);
     return move;
 }
+
+
+
+function genParseRotate(parse)
+{
+    const [, nodeId, options, ignore] = genParseNodeStart(parse);
+
+
+    const rotate = new GRotate(nodeId, options);
+
+
+    let nInputs = -1;
+
+    if (!ignore)
+    {
+        nInputs = parseInt(parse.move());
+        console.assert(nInputs => 0 && nInputs <= 1, 'nInputs must be [0, 1]');
+    }
+
+
+    if (parse.settings.logRequests) 
+        logReq(rotate, parse, ignore);
+
+
+    if (ignore) 
+    {
+        genParseNodeEnd(parse, rotate);
+        return parse.parsedNodes.find(n => n.nodeId == nodeId);
+    }
+
+
+    parse.nTab++;
+
+
+    if (nInputs == 1)
+        rotate.input = genParse(parse);
+
+    rotate.angle = genParse(parse);
+    rotate.ox    = genParse(parse);
+    rotate.oy    = genParse(parse);
+
+
+    parse.inParam = false;
+    parse.nTab--;
+
+
+    genParseNodeEnd(parse, rotate);
+    return rotate;
+}
+
+
+function genParseScale(parse)
+{
+    const [, nodeId, options, ignore] = genParseNodeStart(parse);
+
+
+    const scale = new GScale(nodeId, options);
+
+
+    let nInputs = -1;
+
+    if (!ignore)
+    {
+        nInputs = parseInt(parse.move());
+        console.assert(nInputs => 0 && nInputs <= 1, 'nInputs must be [0, 1]');
+    }
+
+
+    if (parse.settings.logRequests) 
+        logReq(scale, parse, ignore);
+
+
+    if (ignore) 
+    {
+        genParseNodeEnd(parse, scale);
+        return parse.parsedNodes.find(n => n.nodeId == nodeId);
+    }
+
+
+    parse.nTab++;
+
+
+    if (nInputs == 1)
+        scale.input = genParse(parse);
+
+    scale.x  = genParse(parse);
+    scale.y  = genParse(parse);
+    scale.ox = genParse(parse);
+    scale.oy = genParse(parse);
+
+
+    parse.inParam = false;
+    parse.nTab--;
+
+
+    genParseNodeEnd(parse, scale);
+    return scale;
+}

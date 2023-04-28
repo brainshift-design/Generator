@@ -20,6 +20,7 @@ extends GOperator
 
     copyBase(base)
     {
+        //if (base.value ) this.value  = base.value .copy();
         if (base.x     ) this.x      = base.x     .copy();
         if (base.y     ) this.y      = base.y     .copy();
         if (base.width ) this.width  = base.width .copy();

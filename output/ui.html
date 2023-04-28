@@ -5215,6 +5215,16 @@ function angle(v)
 
 
 
+function angle_(x, y)
+{
+    let angle = Math.atan2(y, x);
+    if (angle < 0) angle += Tau;
+
+    return angle;
+}
+
+
+
 function anglev(v1, v2)
 {
     return anglev_(v1.x, v1.y, v2.x, v2.y);
@@ -17743,6 +17753,7 @@ extends GOperator
 
     copyBase(base)
     {
+        //if (base.value ) this.value  = base.value .copy();
         if (base.x     ) this.x      = base.x     .copy();
         if (base.y     ) this.y      = base.y     .copy();
         if (base.width ) this.width  = base.width .copy();
@@ -17911,9 +17922,9 @@ extends GOperator
 class GRectangle
 extends GShape
 {
-    input  = null;
+    input = null;
 
-    round  = null;
+    round = null;
 
 
 
@@ -17933,7 +17944,7 @@ extends GShape
         if (this.input) 
             copy.input = this.input.copy();
 
-        if (this.round ) copy.round  = this.round .copy();
+        if (this.round ) copy.round = this.round.copy();
 
         return copy;
     }
@@ -19069,8 +19080,9 @@ extends GOperator
         if (this.input) 
             copy.input = this.input.copy();
 
-        if (this.x) copy.x = this.x.copy();
-        if (this.y) copy.y = this.y.copy();
+        if (this.value) copy.value = this.value.copy();
+        if (this.x    ) copy.x     = this.x    .copy();
+        if (this.y    ) copy.y     = this.y    .copy();
 
         return copy;
     }
@@ -19090,22 +19102,17 @@ extends GOperator
         if (this.input)
         {
             this.value = (await this.input.eval(parse)).toValue();
-
-            this.value.x.value   += x.value;
-            this.value.x.decimals = Math.max(this.value.x.decimals, x.decimals);
-
-            this.value.y.value   += y.value;
-            this.value.y.decimals = Math.max(this.value.y.decimals, y.decimals);
+            this.value.nodeId = this.nodeId;
         }
         else
         {
             this.value = NullValue;
         }
 
-       
+        
         genPushUpdateValue(parse, this.nodeId, 'value', this.value);
-        genPushUpdateValue(parse, this.nodeId, 'x',     x);
-        genPushUpdateValue(parse, this.nodeId, 'y',     y);
+        genPushUpdateValue(parse, this.nodeId, 'x',     x         );
+        genPushUpdateValue(parse, this.nodeId, 'y',     y         );
 
 
         await this.evalObjects(parse);
@@ -19133,7 +19140,7 @@ extends GOperator
         for (const obj of this.objects)
         {
             obj.nodeId = this.nodeId;
-            
+
             obj.x += this.x.toNumber();
             obj.y += this.y.toNumber();
         }
@@ -19161,13 +19168,305 @@ extends GOperator
         if (this.x     ) this.x     .invalidate();
         if (this.y     ) this.y     .invalidate();
     }
+
+
+
+    toValue()
+    {
+        return this.value;
+    }
 }
 
 
+class GRotate
+extends GOperator
+{
+    input = null;
+
+    angle = null;
+    ox    = null;
+    oy    = null;
 
 
 
+    constructor(nodeId, options)
+    {
+        super(ROTATE, nodeId, options);
+    }
 
+
+
+    copy()
+    {
+        const copy = new GRotate(this.nodeId, this.options);
+
+        copy.copyBase(this);
+
+        if (this.input) 
+            copy.input = this.input.copy();
+
+        if (this.value) copy.value = this.value.copy();
+        if (this.angle) copy.angle = this.angle.copy();
+        if (this.ox   ) copy.ox    = this.ox   .copy();
+        if (this.oy   ) copy.oy    = this.oy   .copy();
+
+        return copy;
+    }
+
+
+
+    async eval(parse)
+    {
+        if (this.isCached())
+            return this;
+
+            
+        const angle = this.angle ? (await this.angle.eval(parse)).toValue() : null;
+        const ox    = this.ox    ? (await this.ox   .eval(parse)).toValue() : null;
+        const oy    = this.oy    ? (await this.oy   .eval(parse)).toValue() : null;
+
+
+        if (this.input)
+        {
+            this.value = (await this.input.eval(parse)).toValue();
+            this.value.nodeId = this.nodeId;
+        }
+        else
+        {
+            this.value = NullValue;
+        }
+
+       
+        genPushUpdateValue(parse, this.nodeId, 'value', this.value);
+        genPushUpdateValue(parse, this.nodeId, 'angle', angle     );
+        genPushUpdateValue(parse, this.nodeId, 'ox',    ox        );
+        genPushUpdateValue(parse, this.nodeId, 'oy',    oy        );
+
+
+        await this.evalObjects(parse);
+
+
+        this.validate();
+
+        return this;
+    }
+
+
+
+    async evalObjects(parse, options = {})
+    {
+        if (!this.options.enabled)
+            return;
+            
+
+        this.objects = 
+            this.input 
+            ? clone(this.input.objects) 
+            : [];
+
+
+        let bounds = Rect.NaN;
+
+        for (const obj of this.objects)
+            bounds = expandRect(bounds, new Rect(obj.x, obj.y, obj.width, obj.height));
+
+
+        for (const obj of this.objects)
+        {
+            obj.nodeId = this.nodeId;
+            
+            obj.angle += this.angle.toNumber(); 
+
+            const angle = angle_(bounds.width, bounds.height);
+            const halfd = Math.sqrt(sqr(bounds.width) + sqr(bounds.height)) / 2;
+
+            const v     = vector(angle + obj.angle/360*Tau, halfd);
+
+            const dx    = 0.5 - this.ox.toNumber()/100;
+            const dy    = 0.5 + this.oy.toNumber()/100;
+
+            obj.x = obj.x + bounds.width /2 - v.x + dx * bounds.width * Math.cos(-obj.angle/360*Tau) - dy * bounds.height * Math.sin(obj.angle/360*Tau);
+            obj.y = obj.y + bounds.height/2 + v.y + dx * bounds.width * Math.sin(-obj.angle/360*Tau) - dy * bounds.height * Math.cos(obj.angle/360*Tau);
+        }
+
+        
+        await super.evalObjects(parse);
+    }
+
+
+
+    isValid()
+    {
+        return super.isValid()
+            && this.angle.isValid()
+            && this.ox   .isValid()
+            && this.oy   .isValid();
+    }
+
+
+
+    invalidate()
+    {
+        super.invalidate();
+
+        if (this.input ) this.input .invalidate();
+        if (this.angle ) this.angle .invalidate();
+        if (this.ox    ) this.ox    .invalidate();
+        if (this.oy    ) this.oy    .invalidate();
+    }
+
+
+
+    toValue()
+    {
+        return this.value;
+    }
+}
+
+
+class GScale
+extends GOperator
+{
+    input = null;
+
+    x     = null;
+    y     = null;
+    ox    = null;
+    oy    = null;
+
+
+
+    constructor(nodeId, options)
+    {
+        super(SCALE, nodeId, options);
+    }
+
+
+
+    copy()
+    {
+        const copy = new GScale(this.nodeId, this.options);
+
+        copy.copyBase(this);
+
+        if (this.input) 
+            copy.input = this.input.copy();
+
+        if (this.value) copy.value = this.value.copy();
+        if (this.x    ) copy.x     = this.x    .copy();
+        if (this.y    ) copy.y     = this.y    .copy();
+        if (this.ox   ) copy.ox    = this.ox   .copy();
+        if (this.oy   ) copy.oy    = this.oy   .copy();
+
+        return copy;
+    }
+
+
+
+    async eval(parse)
+    {
+        if (this.isCached())
+            return this;
+
+            
+        const x  = this.x  ? (await this. x.eval(parse)).toValue() : null;
+        const y  = this.y  ? (await this. y.eval(parse)).toValue() : null;
+        const ox = this.ox ? (await this.ox.eval(parse)).toValue() : null;
+        const oy = this.oy ? (await this.oy.eval(parse)).toValue() : null;
+
+
+        if (this.input)
+        {
+            this.value = (await this.input.eval(parse)).toValue();
+            this.value.nodeId = this.nodeId;
+        }
+        else
+        {
+            this.value = NullValue;
+        }
+
+       
+        genPushUpdateValue(parse, this.nodeId, 'value', this.value);
+        genPushUpdateValue(parse, this.nodeId, 'x',     x         );
+        genPushUpdateValue(parse, this.nodeId, 'y',     y         );
+        genPushUpdateValue(parse, this.nodeId, 'ox',    ox        );
+        genPushUpdateValue(parse, this.nodeId, 'oy',    oy        );
+
+
+        await this.evalObjects(parse);
+
+
+        this.validate();
+
+        return this;
+    }
+
+
+
+    async evalObjects(parse, options = {})
+    {
+        if (!this.options.enabled)
+            return;
+            
+
+        this.objects = 
+            this.input 
+            ? clone(this.input.objects) 
+            : [];
+
+
+        let bounds = Rect.NaN;
+
+        for (const obj of this.objects)
+            bounds = expandRect(bounds, new Rect(obj.x, obj.y, obj.width, obj.height));
+
+
+        for (const obj of this.objects)
+        {
+            obj.nodeId = this.nodeId;
+            
+            obj.width  *= this.x.toNumber()/100;
+            obj.height *= this.y.toNumber()/100;
+
+            obj.x -= (obj.width  - bounds.width ) * this.ox.toNumber()/100;
+            obj.y -= (obj.height - bounds.height) * this.oy.toNumber()/100;
+        }
+
+        
+        await super.evalObjects(parse);
+    }
+
+
+
+    isValid()
+    {
+        return super.isValid()
+            && this.x .isValid()
+            && this.y .isValid()
+            && this.ox.isValid()
+            && this.oy.isValid();
+    }
+
+
+
+    invalidate()
+    {
+        super.invalidate();
+
+        if (this.input ) this.input .invalidate();
+        if (this.x     ) this.x     .invalidate();
+        if (this.y     ) this.y     .invalidate();
+        if (this.ox    ) this.ox    .invalidate();
+        if (this.oy    ) this.oy    .invalidate();
+    }
+
+
+
+    toValue()
+    {
+        return this.value;
+    }
+}
 
 
 class GColorStyle
@@ -22759,6 +23058,104 @@ function genParseMove(parse)
 }
 
 
+
+function genParseRotate(parse)
+{
+    const [, nodeId, options, ignore] = genParseNodeStart(parse);
+
+
+    const rotate = new GRotate(nodeId, options);
+
+
+    let nInputs = -1;
+
+    if (!ignore)
+    {
+        nInputs = parseInt(parse.move());
+        console.assert(nInputs => 0 && nInputs <= 1, 'nInputs must be [0, 1]');
+    }
+
+
+    if (parse.settings.logRequests) 
+        logReq(rotate, parse, ignore);
+
+
+    if (ignore) 
+    {
+        genParseNodeEnd(parse, rotate);
+        return parse.parsedNodes.find(n => n.nodeId == nodeId);
+    }
+
+
+    parse.nTab++;
+
+
+    if (nInputs == 1)
+        rotate.input = genParse(parse);
+
+    rotate.angle = genParse(parse);
+    rotate.ox    = genParse(parse);
+    rotate.oy    = genParse(parse);
+
+
+    parse.inParam = false;
+    parse.nTab--;
+
+
+    genParseNodeEnd(parse, rotate);
+    return rotate;
+}
+
+
+function genParseScale(parse)
+{
+    const [, nodeId, options, ignore] = genParseNodeStart(parse);
+
+
+    const scale = new GScale(nodeId, options);
+
+
+    let nInputs = -1;
+
+    if (!ignore)
+    {
+        nInputs = parseInt(parse.move());
+        console.assert(nInputs => 0 && nInputs <= 1, 'nInputs must be [0, 1]');
+    }
+
+
+    if (parse.settings.logRequests) 
+        logReq(scale, parse, ignore);
+
+
+    if (ignore) 
+    {
+        genParseNodeEnd(parse, scale);
+        return parse.parsedNodes.find(n => n.nodeId == nodeId);
+    }
+
+
+    parse.nTab++;
+
+
+    if (nInputs == 1)
+        scale.input = genParse(parse);
+
+    scale.x  = genParse(parse);
+    scale.y  = genParse(parse);
+    scale.ox = genParse(parse);
+    scale.oy = genParse(parse);
+
+
+    parse.inParam = false;
+    parse.nTab--;
+
+
+    genParseNodeEnd(parse, scale);
+    return scale;
+}
+
+
 function genParseFillValue(parse)
 {
     parse.pos++; // FILL_VALUE
@@ -23612,6 +24009,8 @@ function genParse(parse, inParam = true)
     else if (parse.next == TEXTSHAPE              ) result = genParseTextShape       (parse);
 
     else if (parse.next == MOVE                   ) result = genParseMove            (parse);
+    else if (parse.next == ROTATE                 ) result = genParseRotate          (parse);
+    else if (parse.next == SCALE                  ) result = genParseScale           (parse);
 
     else if (parse.next == GROUP_NODE             ) result = genParseGroupNode       (parse);
     else if (parse.next == GROUP_PARAM            ) result = genParseGroupParam      (parse);
@@ -27729,6 +28128,16 @@ function crossv2(v1, v2)
 function angle(v)
 {
     let angle = Math.atan2(v.y, v.x);
+    if (angle < 0) angle += Tau;
+
+    return angle;
+}
+
+
+
+function angle_(x, y)
+{
+    let angle = Math.atan2(y, x);
     if (angle < 0) angle += Tau;
 
     return angle;
@@ -42852,6 +43261,7 @@ extends GOperator
 
     copyBase(base)
     {
+        //if (base.value ) this.value  = base.value .copy();
         if (base.x     ) this.x      = base.x     .copy();
         if (base.y     ) this.y      = base.y     .copy();
         if (base.width ) this.width  = base.width .copy();
@@ -43020,9 +43430,9 @@ extends GOperator
 class GRectangle
 extends GShape
 {
-    input  = null;
+    input = null;
 
-    round  = null;
+    round = null;
 
 
 
@@ -43042,7 +43452,7 @@ extends GShape
         if (this.input) 
             copy.input = this.input.copy();
 
-        if (this.round ) copy.round  = this.round .copy();
+        if (this.round ) copy.round = this.round.copy();
 
         return copy;
     }
@@ -44178,8 +44588,9 @@ extends GOperator
         if (this.input) 
             copy.input = this.input.copy();
 
-        if (this.x) copy.x = this.x.copy();
-        if (this.y) copy.y = this.y.copy();
+        if (this.value) copy.value = this.value.copy();
+        if (this.x    ) copy.x     = this.x    .copy();
+        if (this.y    ) copy.y     = this.y    .copy();
 
         return copy;
     }
@@ -44199,22 +44610,17 @@ extends GOperator
         if (this.input)
         {
             this.value = (await this.input.eval(parse)).toValue();
-
-            this.value.x.value   += x.value;
-            this.value.x.decimals = Math.max(this.value.x.decimals, x.decimals);
-
-            this.value.y.value   += y.value;
-            this.value.y.decimals = Math.max(this.value.y.decimals, y.decimals);
+            this.value.nodeId = this.nodeId;
         }
         else
         {
             this.value = NullValue;
         }
 
-       
+        
         genPushUpdateValue(parse, this.nodeId, 'value', this.value);
-        genPushUpdateValue(parse, this.nodeId, 'x',     x);
-        genPushUpdateValue(parse, this.nodeId, 'y',     y);
+        genPushUpdateValue(parse, this.nodeId, 'x',     x         );
+        genPushUpdateValue(parse, this.nodeId, 'y',     y         );
 
 
         await this.evalObjects(parse);
@@ -44242,7 +44648,7 @@ extends GOperator
         for (const obj of this.objects)
         {
             obj.nodeId = this.nodeId;
-            
+
             obj.x += this.x.toNumber();
             obj.y += this.y.toNumber();
         }
@@ -44270,13 +44676,305 @@ extends GOperator
         if (this.x     ) this.x     .invalidate();
         if (this.y     ) this.y     .invalidate();
     }
+
+
+
+    toValue()
+    {
+        return this.value;
+    }
 }
 
 
+class GRotate
+extends GOperator
+{
+    input = null;
+
+    angle = null;
+    ox    = null;
+    oy    = null;
 
 
 
+    constructor(nodeId, options)
+    {
+        super(ROTATE, nodeId, options);
+    }
 
+
+
+    copy()
+    {
+        const copy = new GRotate(this.nodeId, this.options);
+
+        copy.copyBase(this);
+
+        if (this.input) 
+            copy.input = this.input.copy();
+
+        if (this.value) copy.value = this.value.copy();
+        if (this.angle) copy.angle = this.angle.copy();
+        if (this.ox   ) copy.ox    = this.ox   .copy();
+        if (this.oy   ) copy.oy    = this.oy   .copy();
+
+        return copy;
+    }
+
+
+
+    async eval(parse)
+    {
+        if (this.isCached())
+            return this;
+
+            
+        const angle = this.angle ? (await this.angle.eval(parse)).toValue() : null;
+        const ox    = this.ox    ? (await this.ox   .eval(parse)).toValue() : null;
+        const oy    = this.oy    ? (await this.oy   .eval(parse)).toValue() : null;
+
+
+        if (this.input)
+        {
+            this.value = (await this.input.eval(parse)).toValue();
+            this.value.nodeId = this.nodeId;
+        }
+        else
+        {
+            this.value = NullValue;
+        }
+
+       
+        genPushUpdateValue(parse, this.nodeId, 'value', this.value);
+        genPushUpdateValue(parse, this.nodeId, 'angle', angle     );
+        genPushUpdateValue(parse, this.nodeId, 'ox',    ox        );
+        genPushUpdateValue(parse, this.nodeId, 'oy',    oy        );
+
+
+        await this.evalObjects(parse);
+
+
+        this.validate();
+
+        return this;
+    }
+
+
+
+    async evalObjects(parse, options = {})
+    {
+        if (!this.options.enabled)
+            return;
+            
+
+        this.objects = 
+            this.input 
+            ? clone(this.input.objects) 
+            : [];
+
+
+        let bounds = Rect.NaN;
+
+        for (const obj of this.objects)
+            bounds = expandRect(bounds, new Rect(obj.x, obj.y, obj.width, obj.height));
+
+
+        for (const obj of this.objects)
+        {
+            obj.nodeId = this.nodeId;
+            
+            obj.angle += this.angle.toNumber(); 
+
+            const angle = angle_(bounds.width, bounds.height);
+            const halfd = Math.sqrt(sqr(bounds.width) + sqr(bounds.height)) / 2;
+
+            const v     = vector(angle + obj.angle/360*Tau, halfd);
+
+            const dx    = 0.5 - this.ox.toNumber()/100;
+            const dy    = 0.5 + this.oy.toNumber()/100;
+
+            obj.x = obj.x + bounds.width /2 - v.x + dx * bounds.width * Math.cos(-obj.angle/360*Tau) - dy * bounds.height * Math.sin(obj.angle/360*Tau);
+            obj.y = obj.y + bounds.height/2 + v.y + dx * bounds.width * Math.sin(-obj.angle/360*Tau) - dy * bounds.height * Math.cos(obj.angle/360*Tau);
+        }
+
+        
+        await super.evalObjects(parse);
+    }
+
+
+
+    isValid()
+    {
+        return super.isValid()
+            && this.angle.isValid()
+            && this.ox   .isValid()
+            && this.oy   .isValid();
+    }
+
+
+
+    invalidate()
+    {
+        super.invalidate();
+
+        if (this.input ) this.input .invalidate();
+        if (this.angle ) this.angle .invalidate();
+        if (this.ox    ) this.ox    .invalidate();
+        if (this.oy    ) this.oy    .invalidate();
+    }
+
+
+
+    toValue()
+    {
+        return this.value;
+    }
+}
+
+
+class GScale
+extends GOperator
+{
+    input = null;
+
+    x     = null;
+    y     = null;
+    ox    = null;
+    oy    = null;
+
+
+
+    constructor(nodeId, options)
+    {
+        super(SCALE, nodeId, options);
+    }
+
+
+
+    copy()
+    {
+        const copy = new GScale(this.nodeId, this.options);
+
+        copy.copyBase(this);
+
+        if (this.input) 
+            copy.input = this.input.copy();
+
+        if (this.value) copy.value = this.value.copy();
+        if (this.x    ) copy.x     = this.x    .copy();
+        if (this.y    ) copy.y     = this.y    .copy();
+        if (this.ox   ) copy.ox    = this.ox   .copy();
+        if (this.oy   ) copy.oy    = this.oy   .copy();
+
+        return copy;
+    }
+
+
+
+    async eval(parse)
+    {
+        if (this.isCached())
+            return this;
+
+            
+        const x  = this.x  ? (await this. x.eval(parse)).toValue() : null;
+        const y  = this.y  ? (await this. y.eval(parse)).toValue() : null;
+        const ox = this.ox ? (await this.ox.eval(parse)).toValue() : null;
+        const oy = this.oy ? (await this.oy.eval(parse)).toValue() : null;
+
+
+        if (this.input)
+        {
+            this.value = (await this.input.eval(parse)).toValue();
+            this.value.nodeId = this.nodeId;
+        }
+        else
+        {
+            this.value = NullValue;
+        }
+
+       
+        genPushUpdateValue(parse, this.nodeId, 'value', this.value);
+        genPushUpdateValue(parse, this.nodeId, 'x',     x         );
+        genPushUpdateValue(parse, this.nodeId, 'y',     y         );
+        genPushUpdateValue(parse, this.nodeId, 'ox',    ox        );
+        genPushUpdateValue(parse, this.nodeId, 'oy',    oy        );
+
+
+        await this.evalObjects(parse);
+
+
+        this.validate();
+
+        return this;
+    }
+
+
+
+    async evalObjects(parse, options = {})
+    {
+        if (!this.options.enabled)
+            return;
+            
+
+        this.objects = 
+            this.input 
+            ? clone(this.input.objects) 
+            : [];
+
+
+        let bounds = Rect.NaN;
+
+        for (const obj of this.objects)
+            bounds = expandRect(bounds, new Rect(obj.x, obj.y, obj.width, obj.height));
+
+
+        for (const obj of this.objects)
+        {
+            obj.nodeId = this.nodeId;
+            
+            obj.width  *= this.x.toNumber()/100;
+            obj.height *= this.y.toNumber()/100;
+
+            obj.x -= (obj.width  - bounds.width ) * this.ox.toNumber()/100;
+            obj.y -= (obj.height - bounds.height) * this.oy.toNumber()/100;
+        }
+
+        
+        await super.evalObjects(parse);
+    }
+
+
+
+    isValid()
+    {
+        return super.isValid()
+            && this.x .isValid()
+            && this.y .isValid()
+            && this.ox.isValid()
+            && this.oy.isValid();
+    }
+
+
+
+    invalidate()
+    {
+        super.invalidate();
+
+        if (this.input ) this.input .invalidate();
+        if (this.x     ) this.x     .invalidate();
+        if (this.y     ) this.y     .invalidate();
+        if (this.ox    ) this.ox    .invalidate();
+        if (this.oy    ) this.oy    .invalidate();
+    }
+
+
+
+    toValue()
+    {
+        return this.value;
+    }
+}
 
 
 class GColorStyle
@@ -48903,7 +49601,9 @@ const iconStar              = '<svg width="18" height="18" viewBox="0 0 18 18" f
 const iconTextShape         = '<svg width="13" height="16" viewBox="0 0 13 16" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M0 4V0H13V4H12V1H7V15H10V16H3V15H6V1H1V4H0Z" fill="white"/></svg>';
 const iconSelected          = '<svg width="19" height="19" viewBox="0 0 19 19" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="4.5" y="4.5" width="4" height="4" stroke="white"/><circle cx="12.5" cy="6.5" r="2" stroke="white"/><line x1="4.4364" y1="15.069" x2="8.9364" y2="10.3022" stroke="white"/><path d="M10.3349 14.75L12.5 11L14.6651 14.75H10.3349Z" stroke="white"/><rect x="0.5" y="0.5" width="2" height="2" stroke="white"/><rect x="0.5" y="16.5" width="2" height="2" stroke="white"/><rect x="16.5" y="16.5" width="2" height="2" stroke="white"/><rect x="16.5" y="0.5" width="2" height="2" stroke="white"/><rect x="3" y="1" width="13" height="1" fill="white"/><rect x="3" y="17" width="13" height="1" fill="white"/><rect x="17" y="16" width="13" height="1" transform="rotate(-90 17 16)" fill="white"/><rect x="1" y="16" width="13" height="1" transform="rotate(-90 1 16)" fill="white"/></svg>';
 
-const iconMove              = '<svg width="19" height="19" viewBox="0 0 19 19" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M11.7659 16.7133L11.0652 16.0062L9.51476 17.571L7.9665 16.0084L7.26587 16.7155L9.51475 18.9852L11.7659 16.7133Z" fill="white"/><path d="M2.29518 11.7426L3.00229 11.0419L1.43749 9.49147L3.00005 7.94322L2.29294 7.24258L0.0232734 9.49147L2.29518 11.7426Z" fill="white"/><path d="M7.26587 2.2719L7.9665 2.979L9.51698 1.41421L11.0652 2.97676L11.7659 2.26965L9.51698 -1.16407e-05L7.26587 2.2719Z" fill="white"/><path d="M16.7366 7.24258L16.0294 7.94322L17.5942 9.4937L16.0317 11.0419L16.7388 11.7426L19.0085 9.4937L16.7366 7.24258Z" fill="white"/><rect x="6.5" y="6.5" width="6" height="6" stroke="white"/></svg>'; 
+const iconMove              = '<svg width="19" height="19" viewBox="0 0 19 19" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="6.5" y="6.5" width="6" height="6" stroke="white"/><path d="M17.3034 9.48924L15.6526 7.83845L16.5019 6.98914L19 9.48725L16.4764 12.011L15.629 11.1636L17.3034 9.48924Z" fill="white"/><path d="M1.69664 9.51085L3.34744 11.1616L2.49812 12.011L7.84779e-06 9.51284L2.52365 6.98914L3.371 7.83649L1.69664 9.51085Z" fill="white"/><path d="M9.4892 1.69664L7.8384 3.34743L6.98909 2.49812L9.48721 7.5202e-06L12.0109 2.52365L11.1636 3.371L9.4892 1.69664Z" fill="white"/><path d="M9.5108 17.3034L11.1616 15.6526L12.0109 16.5019L9.51279 19L6.98909 16.4764L7.83644 15.629L9.5108 17.3034Z" fill="white"/></svg>'; 
+const iconRotate            = '<svg width="18" height="19" viewBox="0 0 18 19" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="5.5" y="6.5" width="6" height="6" stroke="white"/><path d="M4.91298 3.01223L3.75264 4.17257L4.60195 5.02188L7.10007 2.52376L4.57642 6.10352e-05L3.72907 0.847412L4.89376 2.0121C3.3015 2.07772 2.08097 2.42201 1.25143 3.25155C0.319557 4.18342 3.8147e-05 5.60873 3.8147e-05 7.50015H1.00004C1.00004 5.67144 1.32045 4.59674 1.95854 3.95865C2.52509 3.3921 3.43585 3.07599 4.91298 3.01223Z" fill="white"/><path d="M17.1001 11.4999C17.1001 13.3913 16.7806 14.8166 15.8487 15.7485C15.0192 16.578 13.7986 16.9223 12.2064 16.9879L13.3711 18.1526L12.5237 19L10.0001 16.4763L12.4982 13.9782L13.3475 14.8275L12.1872 15.9878C13.6643 15.924 14.575 15.6079 15.1416 15.0414C15.7797 14.4033 16.1001 13.3286 16.1001 11.4999H17.1001Z" fill="white"/></svg>'; 
+const iconScale             = '<svg width="15" height="15" viewBox="0 0 15 15" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M0 0V15H15V9H14V14L1 14V1L6 1V0H0Z" fill="white"/><path d="M10 1V2.38419e-07L15 0V5H14V1.70718L6.70718 9H10V10H5V5H6V8.29297L13.293 1L10 1Z" fill="white"/></svg>'; 
 
 
 const iconGroup             = '<svg width="17" height="17" viewBox="0 -1 17 17" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M3 0.5H14C15.3807 0.5 16.5 1.61929 16.5 3V15.5H0.5V3C0.5 1.61929 1.61929 0.5 3 0.5Z" stroke="white"/><rect width="4" height="1" transform="matrix(-1 0 0 1 14 4)" fill="white"/><rect width="4" height="1" transform="matrix(-1 0 0 1 9 6)" fill="white"/><rect width="4" height="1" transform="matrix(-1 0 0 1 12 9)" fill="white"/><rect width="4" height="1" transform="matrix(-1 0 0 1 7 11)" fill="white"/></svg>';
@@ -50361,7 +51061,9 @@ function initGeneratorMenus()
         menuItemShapeSep1     = new MenuItem('',                    {separator: true}),
         menuItemShapeSelected = new MenuItem('Selected objects...', {icon: iconSelected,  enabled: false}),
                                 new MenuItem('',                    {separator: true}),
-                                new MenuItem('Move',                {icon: iconMove,      callback: e => actionManager.do(getCreateNodeAction(MOVE,      btnShape.div, getCreateOptions(e)))})]);
+                                new MenuItem('Move',                {icon: iconMove,      callback: e => actionManager.do(getCreateNodeAction(MOVE,      btnShape.div, getCreateOptions(e)))}),
+                                new MenuItem('Rotate',              {icon: iconRotate,    callback: e => actionManager.do(getCreateNodeAction(ROTATE,    btnShape.div, getCreateOptions(e)))}),
+                                new MenuItem('Scale',               {icon: iconScale,     callback: e => actionManager.do(getCreateNodeAction(SCALE,     btnShape.div, getCreateOptions(e)))})]);
 
 
     menuGroup = new Menu('Groups', true, false);
@@ -69685,11 +70387,15 @@ extends OperatorBase
 
         
         this.addInput (new Input (SHAPE_VALUES));
-        this.addOutput(new Output(SHAPE_VALUE, this.output_genRequest));
+        this.addOutput(new Output([SHAPE_VALUE], this.output_genRequest));
 
 
         this.addParam(this.paramX = new NumberParam('x', 'x', true, true, true));
         this.addParam(this.paramY = new NumberParam('y', 'y', true, true, true));
+
+
+        this.inputs[0].addEventListener('connect',    e => OpMove_onConnectInput(this));
+        this.inputs[0].addEventListener('disconnect', e => OpMove_onDisconnectInput(this));
     }
     
     
@@ -69728,9 +70434,208 @@ extends OperatorBase
 
 
 
+function OpMove_onConnectInput(node)
+{
+    node.outputs[0].types = [...node.inputs[0].connectedOutput.types];
+}
 
 
 
+function OpMove_onDisconnectInput(node)
+{
+    node.outputs[0].types = [SHAPE_VALUE];
+}
+
+
+class   OpRotate
+extends OperatorBase
+{
+    paramAngle;
+    
+    paramOriginX;
+    paramOriginY;
+
+
+
+    constructor()
+    {
+        super(ROTATE, 'rotate', 'rotate');
+
+        this.canDisable = true;
+
+        
+        this.addInput (new Input (SHAPE_VALUES));
+        this.addOutput(new Output([SHAPE_VALUE], this.output_genRequest));
+
+
+        this.addParam(this.paramAngle   = new NumberParam('angle',   'angle',    true, true, true,  0));
+        this.addParam(this.paramOriginX = new NumberParam('originX', 'center x', true, true, true, 50));
+        this.addParam(this.paramOriginY = new NumberParam('originY', 'center y', true, true, true, 50));
+
+
+        this.paramAngle  .controls[0].suffix      = '°';
+        this.paramAngle  .controls[0].dragReverse = true;
+
+        this.paramOriginX.controls[0].suffix      = '%';
+        this.paramOriginY.controls[0].suffix      = '%';
+
+        this.paramOriginX.controls[0].displayMin  = 0;
+        this.paramOriginX.controls[0].displayMax  = 100;
+
+        this.paramOriginY.controls[0].displayMin  = 0;
+        this.paramOriginY.controls[0].displayMax  = 100;
+
+
+        this.inputs[0].addEventListener('connect',    e => OpRotate_onConnectInput(this));
+        this.inputs[0].addEventListener('disconnect', e => OpRotate_onDisconnectInput(this));
+    }
+    
+    
+
+    output_genRequest(gen)
+    {
+        // 'this' is the output
+
+        gen.scope.push({
+            nodeId:  this.node.id, 
+            paramId: NULL });
+
+        const [request, ignore] = this.node.genRequestStart(gen);
+        if (ignore) return request;
+
+
+        const input = this.node.inputs[0];
+
+
+        request.push(input.connected ? 1 : 0);
+
+        if (input.connected)
+            request.push(...pushInputOrParam(input, gen));
+
+        request.push(...this.node.paramAngle  .genRequest(gen));
+        request.push(...this.node.paramOriginX.genRequest(gen));
+        request.push(...this.node.paramOriginY.genRequest(gen));
+
+        
+        gen.scope.pop();
+        pushUnique(gen.passedNodes, this.node);
+
+
+        return request;
+    }
+}
+
+
+
+function OpRotate_onConnectInput(node)
+{
+    node.outputs[0].types = [...node.inputs[0].connectedOutput.types];
+}
+
+
+
+function OpRotate_onDisconnectInput(node)
+{
+    node.outputs[0].types = [SHAPE_VALUE];
+}
+
+
+class   OpScale
+extends OperatorBase
+{
+    paramX;
+    paramY;
+    
+    paramOriginX;
+    paramOriginY;
+
+
+
+    constructor()
+    {
+        super(SCALE, 'scale', 'scale');
+
+        this.canDisable = true;
+
+        
+        this.addInput (new Input (SHAPE_VALUES));
+        this.addOutput(new Output([SHAPE_VALUE], this.output_genRequest));
+
+
+        this.addParam(this.paramX       = new NumberParam('x',       'x',        true, true, true, 100));
+        this.addParam(this.paramY       = new NumberParam('y',       'y',        true, true, true, 100));
+        this.addParam(this.paramOriginX = new NumberParam('originX', 'center x', true, true, true,  50));
+        this.addParam(this.paramOriginY = new NumberParam('originY', 'center y', true, true, true,  50));
+
+
+        this.paramX      .controls[0].suffix = '%';
+        this.paramY      .controls[0].suffix = '%';
+        this.paramOriginX.controls[0].suffix = '%';
+        this.paramOriginY.controls[0].suffix = '%';
+
+        this.paramX.controls[0].setMin(0);
+        this.paramY.controls[0].setMin(0);
+
+        this.paramOriginX.controls[0].displayMin = 0;
+        this.paramOriginX.controls[0].displayMax = 100;
+
+        this.paramOriginY.controls[0].displayMin = 0;
+        this.paramOriginY.controls[0].displayMax = 100;
+
+
+        this.inputs[0].addEventListener('connect',    e => OpScale_onConnectInput   (this));
+        this.inputs[0].addEventListener('disconnect', e => OpScale_onDisconnectInput(this));
+    }
+    
+    
+
+    output_genRequest(gen)
+    {
+        // 'this' is the output
+
+        gen.scope.push({
+            nodeId:  this.node.id, 
+            paramId: NULL });
+
+        const [request, ignore] = this.node.genRequestStart(gen);
+        if (ignore) return request;
+
+
+        const input = this.node.inputs[0];
+
+
+        request.push(input.connected ? 1 : 0);
+
+        if (input.connected)
+            request.push(...pushInputOrParam(input, gen));
+
+        request.push(...this.node.paramX      .genRequest(gen));
+        request.push(...this.node.paramY      .genRequest(gen));
+        request.push(...this.node.paramOriginX.genRequest(gen));
+        request.push(...this.node.paramOriginY.genRequest(gen));
+
+        
+        gen.scope.pop();
+        pushUnique(gen.passedNodes, this.node);
+
+
+        return request;
+    }
+}
+
+
+
+function OpScale_onConnectInput(node)
+{
+    node.outputs[0].types = [...node.inputs[0].connectedOutput.types];
+}
+
+
+
+function OpScale_onDisconnectInput(node, input)
+{
+    node.outputs[0].types = [SHAPE_VALUE];
+}
 
 
 class   OpColorStyle
@@ -78882,7 +79787,9 @@ function createNode(nodeType, creatingButton = null, createdNodeId = -1, options
         case TEXTSHAPE:               node = new OpTextShape();         break;
       
         case MOVE:                    node = new OpMove();              break;
-        
+        case ROTATE:                  node = new OpRotate();            break;
+        case SCALE:                   node = new OpScale();             break;
+
         case GROUP_NODE:              node = new OpGroupNode();         break;
         case GROUP_PARAM:             node = new OpGroupParam();        break;
 

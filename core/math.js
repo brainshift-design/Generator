@@ -171,6 +171,16 @@ function angle(v)
 
 
 
+function angle_(x, y)
+{
+    let angle = Math.atan2(y, x);
+    if (angle < 0) angle += Tau;
+
+    return angle;
+}
+
+
+
 function anglev(v1, v2)
 {
     return anglev_(v1.x, v1.y, v2.x, v2.y);

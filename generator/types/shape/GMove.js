@@ -24,8 +24,9 @@ extends GOperator
         if (this.input) 
             copy.input = this.input.copy();
 
-        if (this.x) copy.x = this.x.copy();
-        if (this.y) copy.y = this.y.copy();
+        if (this.value) copy.value = this.value.copy();
+        if (this.x    ) copy.x     = this.x    .copy();
+        if (this.y    ) copy.y     = this.y    .copy();
 
         return copy;
     }
@@ -45,22 +46,17 @@ extends GOperator
         if (this.input)
         {
             this.value = (await this.input.eval(parse)).toValue();
-
-            this.value.x.value   += x.value;
-            this.value.x.decimals = Math.max(this.value.x.decimals, x.decimals);
-
-            this.value.y.value   += y.value;
-            this.value.y.decimals = Math.max(this.value.y.decimals, y.decimals);
+            this.value.nodeId = this.nodeId;
         }
         else
         {
             this.value = NullValue;
         }
 
-       
+        
         genPushUpdateValue(parse, this.nodeId, 'value', this.value);
-        genPushUpdateValue(parse, this.nodeId, 'x',     x);
-        genPushUpdateValue(parse, this.nodeId, 'y',     y);
+        genPushUpdateValue(parse, this.nodeId, 'x',     x         );
+        genPushUpdateValue(parse, this.nodeId, 'y',     y         );
 
 
         await this.evalObjects(parse);
@@ -88,7 +84,7 @@ extends GOperator
         for (const obj of this.objects)
         {
             obj.nodeId = this.nodeId;
-            
+
             obj.x += this.x.toNumber();
             obj.y += this.y.toNumber();
         }
@@ -115,5 +111,12 @@ extends GOperator
         if (this.input ) this.input .invalidate();
         if (this.x     ) this.x     .invalidate();
         if (this.y     ) this.y     .invalidate();
+    }
+
+
+
+    toValue()
+    {
+        return this.value;
     }
 }
