@@ -7,7 +7,10 @@ extends GNumberType
 
     random = null;
 
-    repeatCount = 0;
+
+    init         = false;
+
+    repeaNodetId = NULL;
 
 
 
@@ -49,8 +52,11 @@ extends GNumberType
         const max  = (await this.max .eval(parse)).toValue();
     
 
-        if (!this.valid)
+        if (!this.init)
+        {
             this.random = new Random(seed.value);
+            this.init   = true;
+        }
 
         
         this.value = new NumberValue(
@@ -58,13 +64,28 @@ extends GNumberType
             Math.max(min.decimals, max.decimals));
 
 
-        if (!this.valid)
+        if (  !parse.repeats.find(r => r.nodeId == this.repeatNodeId)
+            || parse.repeats.at(-1).nodeId == this.repeatNodeId)
         {
-            //genPushUpdateValue(parse, this.nodeId, 'value', this.value);
-            genPushUpdateValue(parse, this.nodeId, 'seed',  seed);
-            genPushUpdateValue(parse, this.nodeId, 'min',   min );
-            genPushUpdateValue(parse, this.nodeId, 'max',   max );
+            if (!isEmpty(parse.repeats))
+            {
+                const repeat = parse.repeats.at(-1);
+
+                if (repeat.iteration == repeat.total-1)
+                {
+                    console.assert(
+                        parse.repeats.at(-1).nodeId == this.repeatNodeId, 
+                        'nested repeat error');
+
+                    parse.repeats.pop();
+                }
+            }
         }
+
+
+        genPushUpdateValue(parse, this.nodeId, 'seed',  seed);
+        genPushUpdateValue(parse, this.nodeId, 'min',   min );
+        genPushUpdateValue(parse, this.nodeId, 'max',   max );
         
 
         this.validate();

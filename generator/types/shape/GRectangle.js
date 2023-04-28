@@ -132,13 +132,8 @@ extends GShape
 
     isValid()
     {
-        return this.x     .isValid()
-            && this.y     .isValid()
-            && this.width .isValid()
-            && this.height.isValid()
-            && this.angle .isValid()
-            && this.round .isValid()
-            && super.isValid();
+        return super.isValid()
+            && this.round.isValid();
     }
 
 
@@ -148,11 +143,6 @@ extends GShape
         super.invalidate();
 
         if (this.input ) this.input .invalidate();
-        if (this.x     ) this.x     .invalidate();
-        if (this.y     ) this.y     .invalidate();
-        if (this.width ) this.width .invalidate();
-        if (this.height) this.height.invalidate();
-        if (this.angle ) this.angle .invalidate();
         if (this.round ) this.round .invalidate();
     }
 }

@@ -8338,6 +8338,31 @@ class FigmaObject
         this.strokeJoin       = base.strokeJoin;
         this.strokeMiterLimit = base.strokeMiterLimit;
     }
+
+
+
+    copy()
+    {
+        console.assert(false, 'invalid use of abstract class FigmaObject');
+        return null;
+    }
+}
+
+
+
+function copyFigmaObject(obj)
+{
+    switch (obj.type)
+    {
+        case RECTANGLE: return FigmaRectangle.prototype.copy.call(obj);
+        case LINE:      return FigmaLine     .prototype.copy.call(obj);
+        case ELLIPSE:   return FigmaEllipse  .prototype.copy.call(obj);
+        case POLYGON:   return FigmaPolygon  .prototype.copy.call(obj);
+        case STAR:      return FigmaStar     .prototype.copy.call(obj);
+    }
+
+    console.assert(false, 'invalid Figma object type \'' + obj.type + '\'');
+    return null;
 }
 
 
@@ -12078,8 +12103,8 @@ extends GOperator
                 
                 for (let j = 0; j < this.input.objects.length; j++, id++)
                 {
-                    const obj = this.input.objects[j].copy();
-    
+                    const obj = copyFigmaObject(this.input.objects[j]);
+                    
                     obj.nodeId   = this.nodeId;
                     obj.objectId = id;
     
@@ -12723,8 +12748,9 @@ extends GNumberType
 
     current      = null;
 
-    init         = false;
 
+    init         = false;
+    
     repeaNodetId = NULL;
 
 
@@ -12761,15 +12787,8 @@ extends GNumberType
         // input not used for evaluation
 
 
-        //if (!this.valid)
-        //{
-            await this.start.eval(parse);
-            await this.step .eval(parse);
-        //}
-
-
-        const start = this.start.toValue();
-        const step  = this.step .toValue();
+        const start = (await this.start.eval(parse)).toValue();
+        const step  = (await this.step .eval(parse)).toValue();
     
 
         if (!this.init)
@@ -12784,11 +12803,11 @@ extends GNumberType
             Math.max(start.decimals, step.decimals));
 
         
-        // console.log('parse.repeats =', [...parse.repeats]);
-        if (  !parse.repeats.find(r => r.nodeId == this.repeatNodeId) //isEmpty(parse.repeats)
+        if (  !parse.repeats.find(r => r.nodeId == this.repeatNodeId)
             || parse.repeats.at(-1).nodeId == this.repeatNodeId)
         {
             this.current.value += step.value;
+
 
             if (!isEmpty(parse.repeats))
             {
@@ -12809,10 +12828,6 @@ extends GNumberType
         genPushUpdateValue(parse, this.nodeId, 'start', start);
         genPushUpdateValue(parse, this.nodeId, 'step',  step );
         
-
-        // if (this.repeatCount > 0)
-        //     this.repeatCount--;
-
 
         this.validate();
 
@@ -12841,7 +12856,10 @@ extends GNumberType
 
     random = null;
 
-    repeatCount = 0;
+
+    init         = false;
+
+    repeaNodetId = NULL;
 
 
 
@@ -12883,8 +12901,11 @@ extends GNumberType
         const max  = (await this.max .eval(parse)).toValue();
     
 
-        if (!this.valid)
+        if (!this.init)
+        {
             this.random = new Random(seed.value);
+            this.init   = true;
+        }
 
         
         this.value = new NumberValue(
@@ -12892,13 +12913,28 @@ extends GNumberType
             Math.max(min.decimals, max.decimals));
 
 
-        if (!this.valid)
+        if (  !parse.repeats.find(r => r.nodeId == this.repeatNodeId)
+            || parse.repeats.at(-1).nodeId == this.repeatNodeId)
         {
-            //genPushUpdateValue(parse, this.nodeId, 'value', this.value);
-            genPushUpdateValue(parse, this.nodeId, 'seed',  seed);
-            genPushUpdateValue(parse, this.nodeId, 'min',   min );
-            genPushUpdateValue(parse, this.nodeId, 'max',   max );
+            if (!isEmpty(parse.repeats))
+            {
+                const repeat = parse.repeats.at(-1);
+
+                if (repeat.iteration == repeat.total-1)
+                {
+                    console.assert(
+                        parse.repeats.at(-1).nodeId == this.repeatNodeId, 
+                        'nested repeat error');
+
+                    parse.repeats.pop();
+                }
+            }
         }
+
+
+        genPushUpdateValue(parse, this.nodeId, 'seed',  seed);
+        genPushUpdateValue(parse, this.nodeId, 'min',   min );
+        genPushUpdateValue(parse, this.nodeId, 'max',   max );
         
 
         this.validate();
@@ -17905,7 +17941,12 @@ extends GOperator
     isValid()
     {
         return super.isValid()
-            && this.props.isValid();
+            && this.x     .isValid()
+            && this.y     .isValid()
+            && this.width .isValid()
+            && this.height.isValid()
+            && this.angle .isValid()
+            && this.props .isValid();
     }
 
 
@@ -17914,7 +17955,12 @@ extends GOperator
     {
         super.invalidate();
 
-        if (this.props) this.props.invalidate();
+        if (this.x     ) this.x     .invalidate();
+        if (this.y     ) this.y     .invalidate();
+        if (this.width ) this.width .invalidate();
+        if (this.height) this.height.invalidate();
+        if (this.angle ) this.angle .invalidate();
+        if (this.props ) this.props .invalidate();
     }
 }
 
@@ -18053,13 +18099,8 @@ extends GShape
 
     isValid()
     {
-        return this.x     .isValid()
-            && this.y     .isValid()
-            && this.width .isValid()
-            && this.height.isValid()
-            && this.angle .isValid()
-            && this.round .isValid()
-            && super.isValid();
+        return super.isValid()
+            && this.round.isValid();
     }
 
 
@@ -18069,11 +18110,6 @@ extends GShape
         super.invalidate();
 
         if (this.input ) this.input .invalidate();
-        if (this.x     ) this.x     .invalidate();
-        if (this.y     ) this.y     .invalidate();
-        if (this.width ) this.width .invalidate();
-        if (this.height) this.height.invalidate();
-        if (this.angle ) this.angle .invalidate();
         if (this.round ) this.round .invalidate();
     }
 }
@@ -18083,11 +18119,6 @@ class GLine
 extends GShape
 {
     input  = null;
-
-    x      = null;
-    y      = null;
-    width  = null;
-    angle  = null;
 
 
 
@@ -18107,11 +18138,6 @@ extends GShape
         if (this.input) 
             copy.input = this.input.copy();
 
-        if (this.x     ) copy.x      = this.x     .copy();
-        if (this.y     ) copy.y      = this.y     .copy();
-        if (this.width ) copy.width  = this.width .copy();
-        if (this.angle ) copy.angle  = this.angle .copy();
-
         return copy;
     }
 
@@ -18123,12 +18149,9 @@ extends GShape
             return this;
 
 
-        const x     = this.x     ? (await this.x    .eval(parse)).toValue() : null;
-        const y     = this.y     ? (await this.y    .eval(parse)).toValue() : null;
-        const width = this.width ? (await this.width.eval(parse)).toValue() : null;
-        const angle = this.angle ? (await this.angle.eval(parse)).toValue() : null;
+        const [x, y, width, height, angle] = await this.evalBaseParams(parse);
 
-        
+            
         let input = null;
 
         if (this.input)
@@ -18150,10 +18173,6 @@ extends GShape
 
             
         genPushUpdateValue(parse, this.nodeId, 'value', this.value      );
-        genPushUpdateValue(parse, this.nodeId, 'x',     this.value.x    );
-        genPushUpdateValue(parse, this.nodeId, 'y',     this.value.y    );
-        genPushUpdateValue(parse, this.nodeId, 'width', this.value.width);
-        genPushUpdateValue(parse, this.nodeId, 'angle', this.value.angle);
 
 
         await this.evalBase(parse, input);
@@ -18214,26 +18233,11 @@ extends GShape
 
 
 
-    isValid()
-    {
-        return this.x    .isValid()
-            && this.y    .isValid()
-            && this.width.isValid()
-            && this.angle.isValid()
-            && super.isValid();
-    }
-
-
-
     invalidate()
     {
         super.invalidate();
 
         if (this.input ) this.input .invalidate();
-        if (this.x     ) this.x     .invalidate();
-        if (this.y     ) this.y     .invalidate();
-        if (this.width ) this.width .invalidate();
-        if (this.angle ) this.angle .invalidate();
     }
 }
 
@@ -18242,12 +18246,6 @@ class GEllipse
 extends GShape
 {
     input  = null;
-
-    x      = null;
-    y      = null;
-    width  = null;
-    height = null;
-    angle  = null;
 
 
 
@@ -18267,12 +18265,6 @@ extends GShape
         if (this.input) 
             copy.input = this.input.copy();
 
-        if (this.x     ) copy.x      = this.x     .copy();
-        if (this.y     ) copy.y      = this.y     .copy();
-        if (this.width ) copy.width  = this.width .copy();
-        if (this.height) copy.height = this.height.copy();
-        if (this.angle ) copy.angle  = this.angle .copy();
-
         return copy;
     }
 
@@ -18282,12 +18274,8 @@ extends GShape
         if (this.isCached())
             return this;
 
-            
-        const x      = this.x      ? (await this.x     .eval(parse)).toValue() : null;
-        const y      = this.y      ? (await this.y     .eval(parse)).toValue() : null;
-        const width  = this.width  ? (await this.width .eval(parse)).toValue() : null;
-        const height = this.height ? (await this.height.eval(parse)).toValue() : null;
-        const angle  = this.angle  ? (await this.angle .eval(parse)).toValue() : null;
+
+        const [x, y, width, height, angle] = await this.evalBaseParams(parse);
 
 
         let input = null;
@@ -18311,11 +18299,6 @@ extends GShape
 
 
         genPushUpdateValue(parse, this.nodeId, 'value',  this.value       );
-        genPushUpdateValue(parse, this.nodeId, 'x',      this.value.x     );
-        genPushUpdateValue(parse, this.nodeId, 'y',      this.value.y     );
-        genPushUpdateValue(parse, this.nodeId, 'width',  this.value.width );
-        genPushUpdateValue(parse, this.nodeId, 'height', this.value.height);
-        genPushUpdateValue(parse, this.nodeId, 'angle',  this.value.angle );
 
 
         await this.evalBase(parse, input);
@@ -18379,28 +18362,11 @@ extends GShape
     
     
         
-    isValid()
-    {
-        return this.x     .isValid()
-            && this.y     .isValid()
-            && this.width .isValid()
-            && this.height.isValid()
-            && this.angle .isValid()
-            && super.isValid();
-    }
-
-
-
     invalidate()
     {
         super.invalidate();
 
         if (this.input ) this.input .invalidate();
-        if (this.x     ) this.x     .invalidate();
-        if (this.y     ) this.y     .invalidate();
-        if (this.width ) this.width .invalidate();
-        if (this.height) this.height.invalidate();
-        if (this.angle ) this.angle .invalidate();
     }
 }
 
@@ -18410,11 +18376,6 @@ extends GShape
 {
     input   = null;
 
-    x       = null;
-    y       = null;
-    width   = null;
-    height  = null;
-    angle   = null;
     round   = null;
     corners = null;
 
@@ -18436,11 +18397,6 @@ extends GShape
         if (this.input) 
             copy.input = this.input.copy();
 
-        if (this.x      ) copy.x       = this.x      .copy();
-        if (this.y      ) copy.y       = this.y      .copy();
-        if (this.width  ) copy.width   = this.width  .copy();
-        if (this.height ) copy.height  = this.height .copy();
-        if (this.angle  ) copy.angle   = this.angle  .copy();
         if (this.round  ) copy.round   = this.round  .copy();
         if (this.corners) copy.corners = this.corners.copy();
 
@@ -18455,11 +18411,8 @@ extends GShape
             return this;
 
             
-        const x       = this.x       ? (await this.x      .eval(parse)).toValue() : null;
-        const y       = this.y       ? (await this.y      .eval(parse)).toValue() : null;
-        const width   = this.width   ? (await this.width  .eval(parse)).toValue() : null;
-        const height  = this.height  ? (await this.height .eval(parse)).toValue() : null;
-        const angle   = this.angle   ? (await this.angle  .eval(parse)).toValue() : null;
+        const [x, y, width, height, angle] = await this.evalBaseParams(parse);
+
         const round   = this.round   ? (await this.round  .eval(parse)).toValue() : null;
         const corners = this.corners ? (await this.corners.eval(parse)).toValue() : null;
 
@@ -18487,11 +18440,6 @@ extends GShape
 
         
         genPushUpdateValue(parse, this.nodeId, 'value',   this.value        );
-        genPushUpdateValue(parse, this.nodeId, 'x',       this.value.x      );
-        genPushUpdateValue(parse, this.nodeId, 'y',       this.value.y      );
-        genPushUpdateValue(parse, this.nodeId, 'width',   this.value.width  );
-        genPushUpdateValue(parse, this.nodeId, 'height',  this.value.height );
-        genPushUpdateValue(parse, this.nodeId, 'angle',   this.value.angle  );
         genPushUpdateValue(parse, this.nodeId, 'round',   this.value.round  );
         genPushUpdateValue(parse, this.nodeId, 'corners', this.value.corners);
 
@@ -18565,14 +18513,9 @@ extends GShape
 
     isValid()
     {
-        return this.x      .isValid()
-            && this.y      .isValid()
-            && this.width  .isValid()
-            && this.height .isValid()
-            && this.angle  .isValid()
+        return super.isValid()
             && this.round  .isValid()
-            && this.corners.isValid()
-            && super.isValid();
+            && this.corners.isValid();
     }
 
 
@@ -18582,11 +18525,6 @@ extends GShape
         super.invalidate();
 
         if (this.input  ) this.input  .invalidate();
-        if (this.x      ) this.x      .invalidate();
-        if (this.y      ) this.y      .invalidate();
-        if (this.width  ) this.width  .invalidate();
-        if (this.height ) this.height .invalidate();
-        if (this.angle  ) this.angle  .invalidate();
         if (this.round  ) this.round  .invalidate();
         if (this.corners) this.corners.invalidate();
     }
@@ -18598,11 +18536,6 @@ extends GShape
 {
     input  = null;
 
-    x      = null;
-    y      = null;
-    width  = null;
-    height = null;
-    angle  = null;
     round  = null;
     points = null;
     convex = null;
@@ -18625,11 +18558,6 @@ extends GShape
         if (this.input) 
             copy.input = this.input.copy();
 
-        if (this.x     ) copy.x      = this.x     .copy();
-        if (this.y     ) copy.y      = this.y     .copy();
-        if (this.width ) copy.width  = this.width .copy();
-        if (this.height) copy.height = this.height.copy();
-        if (this.angle ) copy.angle  = this.angle .copy();
         if (this.round ) copy.round  = this.round .copy();
         if (this.points) copy.points = this.points.copy();
         if (this.convex) copy.convex = this.convex.copy();
@@ -18645,11 +18573,8 @@ extends GShape
             return this;
 
             
-        const x      = this.x      ? (await this.x     .eval(parse)).toValue() : null;
-        const y      = this.y      ? (await this.y     .eval(parse)).toValue() : null;
-        const width  = this.width  ? (await this.width .eval(parse)).toValue() : null;
-        const height = this.height ? (await this.height.eval(parse)).toValue() : null;
-        const angle  = this.angle  ? (await this.angle .eval(parse)).toValue() : null;
+        const [x, y, width, height, angle] = await this.evalBaseParams(parse);
+
         const round  = this.round  ? (await this.round .eval(parse)).toValue() : null;
         const points = this.points ? (await this.points.eval(parse)).toValue() : null;
         const convex = this.convex ? (await this.convex.eval(parse)).toValue() : null;
@@ -18679,11 +18604,6 @@ extends GShape
 
              
         genPushUpdateValue(parse, this.nodeId, 'value',  this.value       );
-        genPushUpdateValue(parse, this.nodeId, 'x',      this.value.x     );
-        genPushUpdateValue(parse, this.nodeId, 'y',      this.value.y     );
-        genPushUpdateValue(parse, this.nodeId, 'width',  this.value.width );
-        genPushUpdateValue(parse, this.nodeId, 'height', this.value.height);
-        genPushUpdateValue(parse, this.nodeId, 'angle',  this.value.angle );
         genPushUpdateValue(parse, this.nodeId, 'round',  this.value.round );
         genPushUpdateValue(parse, this.nodeId, 'points', this.value.points);
         genPushUpdateValue(parse, this.nodeId, 'convex', this.value.convex);
@@ -18761,11 +18681,7 @@ extends GShape
 
    isValid()
    {
-      return this.x     .isValid()
-          && this.y     .isValid()
-          && this.width .isValid()
-          && this.height.isValid()
-          && this.angle .isValid()
+      return super.isValid()
           && this.round .isValid()
           && this.points.isValid()
           && this.convex.isValid();
@@ -18778,11 +18694,6 @@ extends GShape
       super.invalidate();
 
       if (this.input ) this.input .invalidate();
-      if (this.x     ) this.x     .invalidate();
-      if (this.y     ) this.y     .invalidate();
-      if (this.width ) this.width .invalidate();
-      if (this.height) this.height.invalidate();
-      if (this.angle ) this.angle .invalidate();
       if (this.round ) this.round .invalidate();
       if (this.points) this.points.invalidate();
       if (this.convex) this.convex.invalidate();
@@ -19141,8 +19052,8 @@ extends GOperator
         {
             obj.nodeId = this.nodeId;
 
-            obj.x += this.x.toNumber();
-            obj.y += this.y.toNumber();
+            obj.x += this.x.toValue().toNumber();
+            obj.y += this.y.toValue().toNumber();
         }
 
         
@@ -19274,16 +19185,16 @@ extends GOperator
         for (const obj of this.objects)
         {
             obj.nodeId = this.nodeId;
-            
-            obj.angle += this.angle.toNumber(); 
+
+            obj.angle += this.angle.toValue().toNumber(); 
 
             const angle = angle_(bounds.width, bounds.height);
             const halfd = Math.sqrt(sqr(bounds.width) + sqr(bounds.height)) / 2;
 
             const v     = vector(angle + obj.angle/360*Tau, halfd);
 
-            const dx    = 0.5 - this.ox.toNumber()/100;
-            const dy    = 0.5 + this.oy.toNumber()/100;
+            const dx    = 0.5 - this.ox.toValue().toNumber()/100;
+            const dy    = 0.5 + this.oy.toValue().toNumber()/100;
 
             obj.x = obj.x + bounds.width /2 - v.x + dx * bounds.width * Math.cos(-obj.angle/360*Tau) - dy * bounds.height * Math.sin(obj.angle/360*Tau);
             obj.y = obj.y + bounds.height/2 + v.y + dx * bounds.width * Math.sin(-obj.angle/360*Tau) - dy * bounds.height * Math.cos(obj.angle/360*Tau);
@@ -19425,11 +19336,11 @@ extends GOperator
         {
             obj.nodeId = this.nodeId;
             
-            obj.width  *= this.x.toNumber()/100;
-            obj.height *= this.y.toNumber()/100;
+            obj.width  *= this.x.toValue().toNumber()/100;
+            obj.height *= this.y.toValue().toNumber()/100;
 
-            obj.x -= (obj.width  - bounds.width ) * this.ox.toNumber()/100;
-            obj.y -= (obj.height - bounds.height) * this.oy.toNumber()/100;
+            obj.x -= (obj.width  - bounds.width ) * this.ox.toValue().toNumber()/100;
+            obj.y -= (obj.height - bounds.height) * this.oy.toValue().toNumber()/100;
         }
 
         
@@ -33846,6 +33757,31 @@ class FigmaObject
         this.strokeJoin       = base.strokeJoin;
         this.strokeMiterLimit = base.strokeMiterLimit;
     }
+
+
+
+    copy()
+    {
+        console.assert(false, 'invalid use of abstract class FigmaObject');
+        return null;
+    }
+}
+
+
+
+function copyFigmaObject(obj)
+{
+    switch (obj.type)
+    {
+        case RECTANGLE: return FigmaRectangle.prototype.copy.call(obj);
+        case LINE:      return FigmaLine     .prototype.copy.call(obj);
+        case ELLIPSE:   return FigmaEllipse  .prototype.copy.call(obj);
+        case POLYGON:   return FigmaPolygon  .prototype.copy.call(obj);
+        case STAR:      return FigmaStar     .prototype.copy.call(obj);
+    }
+
+    console.assert(false, 'invalid Figma object type \'' + obj.type + '\'');
+    return null;
 }
 
 
@@ -37586,8 +37522,8 @@ extends GOperator
                 
                 for (let j = 0; j < this.input.objects.length; j++, id++)
                 {
-                    const obj = this.input.objects[j].copy();
-    
+                    const obj = copyFigmaObject(this.input.objects[j]);
+                    
                     obj.nodeId   = this.nodeId;
                     obj.objectId = id;
     
@@ -38231,8 +38167,9 @@ extends GNumberType
 
     current      = null;
 
-    init         = false;
 
+    init         = false;
+    
     repeaNodetId = NULL;
 
 
@@ -38269,15 +38206,8 @@ extends GNumberType
         // input not used for evaluation
 
 
-        //if (!this.valid)
-        //{
-            await this.start.eval(parse);
-            await this.step .eval(parse);
-        //}
-
-
-        const start = this.start.toValue();
-        const step  = this.step .toValue();
+        const start = (await this.start.eval(parse)).toValue();
+        const step  = (await this.step .eval(parse)).toValue();
     
 
         if (!this.init)
@@ -38292,11 +38222,11 @@ extends GNumberType
             Math.max(start.decimals, step.decimals));
 
         
-        // console.log('parse.repeats =', [...parse.repeats]);
-        if (  !parse.repeats.find(r => r.nodeId == this.repeatNodeId) //isEmpty(parse.repeats)
+        if (  !parse.repeats.find(r => r.nodeId == this.repeatNodeId)
             || parse.repeats.at(-1).nodeId == this.repeatNodeId)
         {
             this.current.value += step.value;
+
 
             if (!isEmpty(parse.repeats))
             {
@@ -38317,10 +38247,6 @@ extends GNumberType
         genPushUpdateValue(parse, this.nodeId, 'start', start);
         genPushUpdateValue(parse, this.nodeId, 'step',  step );
         
-
-        // if (this.repeatCount > 0)
-        //     this.repeatCount--;
-
 
         this.validate();
 
@@ -38349,7 +38275,10 @@ extends GNumberType
 
     random = null;
 
-    repeatCount = 0;
+
+    init         = false;
+
+    repeaNodetId = NULL;
 
 
 
@@ -38391,8 +38320,11 @@ extends GNumberType
         const max  = (await this.max .eval(parse)).toValue();
     
 
-        if (!this.valid)
+        if (!this.init)
+        {
             this.random = new Random(seed.value);
+            this.init   = true;
+        }
 
         
         this.value = new NumberValue(
@@ -38400,13 +38332,28 @@ extends GNumberType
             Math.max(min.decimals, max.decimals));
 
 
-        if (!this.valid)
+        if (  !parse.repeats.find(r => r.nodeId == this.repeatNodeId)
+            || parse.repeats.at(-1).nodeId == this.repeatNodeId)
         {
-            //genPushUpdateValue(parse, this.nodeId, 'value', this.value);
-            genPushUpdateValue(parse, this.nodeId, 'seed',  seed);
-            genPushUpdateValue(parse, this.nodeId, 'min',   min );
-            genPushUpdateValue(parse, this.nodeId, 'max',   max );
+            if (!isEmpty(parse.repeats))
+            {
+                const repeat = parse.repeats.at(-1);
+
+                if (repeat.iteration == repeat.total-1)
+                {
+                    console.assert(
+                        parse.repeats.at(-1).nodeId == this.repeatNodeId, 
+                        'nested repeat error');
+
+                    parse.repeats.pop();
+                }
+            }
         }
+
+
+        genPushUpdateValue(parse, this.nodeId, 'seed',  seed);
+        genPushUpdateValue(parse, this.nodeId, 'min',   min );
+        genPushUpdateValue(parse, this.nodeId, 'max',   max );
         
 
         this.validate();
@@ -43413,7 +43360,12 @@ extends GOperator
     isValid()
     {
         return super.isValid()
-            && this.props.isValid();
+            && this.x     .isValid()
+            && this.y     .isValid()
+            && this.width .isValid()
+            && this.height.isValid()
+            && this.angle .isValid()
+            && this.props .isValid();
     }
 
 
@@ -43422,7 +43374,12 @@ extends GOperator
     {
         super.invalidate();
 
-        if (this.props) this.props.invalidate();
+        if (this.x     ) this.x     .invalidate();
+        if (this.y     ) this.y     .invalidate();
+        if (this.width ) this.width .invalidate();
+        if (this.height) this.height.invalidate();
+        if (this.angle ) this.angle .invalidate();
+        if (this.props ) this.props .invalidate();
     }
 }
 
@@ -43561,13 +43518,8 @@ extends GShape
 
     isValid()
     {
-        return this.x     .isValid()
-            && this.y     .isValid()
-            && this.width .isValid()
-            && this.height.isValid()
-            && this.angle .isValid()
-            && this.round .isValid()
-            && super.isValid();
+        return super.isValid()
+            && this.round.isValid();
     }
 
 
@@ -43577,11 +43529,6 @@ extends GShape
         super.invalidate();
 
         if (this.input ) this.input .invalidate();
-        if (this.x     ) this.x     .invalidate();
-        if (this.y     ) this.y     .invalidate();
-        if (this.width ) this.width .invalidate();
-        if (this.height) this.height.invalidate();
-        if (this.angle ) this.angle .invalidate();
         if (this.round ) this.round .invalidate();
     }
 }
@@ -43591,11 +43538,6 @@ class GLine
 extends GShape
 {
     input  = null;
-
-    x      = null;
-    y      = null;
-    width  = null;
-    angle  = null;
 
 
 
@@ -43615,11 +43557,6 @@ extends GShape
         if (this.input) 
             copy.input = this.input.copy();
 
-        if (this.x     ) copy.x      = this.x     .copy();
-        if (this.y     ) copy.y      = this.y     .copy();
-        if (this.width ) copy.width  = this.width .copy();
-        if (this.angle ) copy.angle  = this.angle .copy();
-
         return copy;
     }
 
@@ -43631,12 +43568,9 @@ extends GShape
             return this;
 
 
-        const x     = this.x     ? (await this.x    .eval(parse)).toValue() : null;
-        const y     = this.y     ? (await this.y    .eval(parse)).toValue() : null;
-        const width = this.width ? (await this.width.eval(parse)).toValue() : null;
-        const angle = this.angle ? (await this.angle.eval(parse)).toValue() : null;
+        const [x, y, width, height, angle] = await this.evalBaseParams(parse);
 
-        
+            
         let input = null;
 
         if (this.input)
@@ -43658,10 +43592,6 @@ extends GShape
 
             
         genPushUpdateValue(parse, this.nodeId, 'value', this.value      );
-        genPushUpdateValue(parse, this.nodeId, 'x',     this.value.x    );
-        genPushUpdateValue(parse, this.nodeId, 'y',     this.value.y    );
-        genPushUpdateValue(parse, this.nodeId, 'width', this.value.width);
-        genPushUpdateValue(parse, this.nodeId, 'angle', this.value.angle);
 
 
         await this.evalBase(parse, input);
@@ -43722,26 +43652,11 @@ extends GShape
 
 
 
-    isValid()
-    {
-        return this.x    .isValid()
-            && this.y    .isValid()
-            && this.width.isValid()
-            && this.angle.isValid()
-            && super.isValid();
-    }
-
-
-
     invalidate()
     {
         super.invalidate();
 
         if (this.input ) this.input .invalidate();
-        if (this.x     ) this.x     .invalidate();
-        if (this.y     ) this.y     .invalidate();
-        if (this.width ) this.width .invalidate();
-        if (this.angle ) this.angle .invalidate();
     }
 }
 
@@ -43750,12 +43665,6 @@ class GEllipse
 extends GShape
 {
     input  = null;
-
-    x      = null;
-    y      = null;
-    width  = null;
-    height = null;
-    angle  = null;
 
 
 
@@ -43775,12 +43684,6 @@ extends GShape
         if (this.input) 
             copy.input = this.input.copy();
 
-        if (this.x     ) copy.x      = this.x     .copy();
-        if (this.y     ) copy.y      = this.y     .copy();
-        if (this.width ) copy.width  = this.width .copy();
-        if (this.height) copy.height = this.height.copy();
-        if (this.angle ) copy.angle  = this.angle .copy();
-
         return copy;
     }
 
@@ -43790,12 +43693,8 @@ extends GShape
         if (this.isCached())
             return this;
 
-            
-        const x      = this.x      ? (await this.x     .eval(parse)).toValue() : null;
-        const y      = this.y      ? (await this.y     .eval(parse)).toValue() : null;
-        const width  = this.width  ? (await this.width .eval(parse)).toValue() : null;
-        const height = this.height ? (await this.height.eval(parse)).toValue() : null;
-        const angle  = this.angle  ? (await this.angle .eval(parse)).toValue() : null;
+
+        const [x, y, width, height, angle] = await this.evalBaseParams(parse);
 
 
         let input = null;
@@ -43819,11 +43718,6 @@ extends GShape
 
 
         genPushUpdateValue(parse, this.nodeId, 'value',  this.value       );
-        genPushUpdateValue(parse, this.nodeId, 'x',      this.value.x     );
-        genPushUpdateValue(parse, this.nodeId, 'y',      this.value.y     );
-        genPushUpdateValue(parse, this.nodeId, 'width',  this.value.width );
-        genPushUpdateValue(parse, this.nodeId, 'height', this.value.height);
-        genPushUpdateValue(parse, this.nodeId, 'angle',  this.value.angle );
 
 
         await this.evalBase(parse, input);
@@ -43887,28 +43781,11 @@ extends GShape
     
     
         
-    isValid()
-    {
-        return this.x     .isValid()
-            && this.y     .isValid()
-            && this.width .isValid()
-            && this.height.isValid()
-            && this.angle .isValid()
-            && super.isValid();
-    }
-
-
-
     invalidate()
     {
         super.invalidate();
 
         if (this.input ) this.input .invalidate();
-        if (this.x     ) this.x     .invalidate();
-        if (this.y     ) this.y     .invalidate();
-        if (this.width ) this.width .invalidate();
-        if (this.height) this.height.invalidate();
-        if (this.angle ) this.angle .invalidate();
     }
 }
 
@@ -43918,11 +43795,6 @@ extends GShape
 {
     input   = null;
 
-    x       = null;
-    y       = null;
-    width   = null;
-    height  = null;
-    angle   = null;
     round   = null;
     corners = null;
 
@@ -43944,11 +43816,6 @@ extends GShape
         if (this.input) 
             copy.input = this.input.copy();
 
-        if (this.x      ) copy.x       = this.x      .copy();
-        if (this.y      ) copy.y       = this.y      .copy();
-        if (this.width  ) copy.width   = this.width  .copy();
-        if (this.height ) copy.height  = this.height .copy();
-        if (this.angle  ) copy.angle   = this.angle  .copy();
         if (this.round  ) copy.round   = this.round  .copy();
         if (this.corners) copy.corners = this.corners.copy();
 
@@ -43963,11 +43830,8 @@ extends GShape
             return this;
 
             
-        const x       = this.x       ? (await this.x      .eval(parse)).toValue() : null;
-        const y       = this.y       ? (await this.y      .eval(parse)).toValue() : null;
-        const width   = this.width   ? (await this.width  .eval(parse)).toValue() : null;
-        const height  = this.height  ? (await this.height .eval(parse)).toValue() : null;
-        const angle   = this.angle   ? (await this.angle  .eval(parse)).toValue() : null;
+        const [x, y, width, height, angle] = await this.evalBaseParams(parse);
+
         const round   = this.round   ? (await this.round  .eval(parse)).toValue() : null;
         const corners = this.corners ? (await this.corners.eval(parse)).toValue() : null;
 
@@ -43995,11 +43859,6 @@ extends GShape
 
         
         genPushUpdateValue(parse, this.nodeId, 'value',   this.value        );
-        genPushUpdateValue(parse, this.nodeId, 'x',       this.value.x      );
-        genPushUpdateValue(parse, this.nodeId, 'y',       this.value.y      );
-        genPushUpdateValue(parse, this.nodeId, 'width',   this.value.width  );
-        genPushUpdateValue(parse, this.nodeId, 'height',  this.value.height );
-        genPushUpdateValue(parse, this.nodeId, 'angle',   this.value.angle  );
         genPushUpdateValue(parse, this.nodeId, 'round',   this.value.round  );
         genPushUpdateValue(parse, this.nodeId, 'corners', this.value.corners);
 
@@ -44073,14 +43932,9 @@ extends GShape
 
     isValid()
     {
-        return this.x      .isValid()
-            && this.y      .isValid()
-            && this.width  .isValid()
-            && this.height .isValid()
-            && this.angle  .isValid()
+        return super.isValid()
             && this.round  .isValid()
-            && this.corners.isValid()
-            && super.isValid();
+            && this.corners.isValid();
     }
 
 
@@ -44090,11 +43944,6 @@ extends GShape
         super.invalidate();
 
         if (this.input  ) this.input  .invalidate();
-        if (this.x      ) this.x      .invalidate();
-        if (this.y      ) this.y      .invalidate();
-        if (this.width  ) this.width  .invalidate();
-        if (this.height ) this.height .invalidate();
-        if (this.angle  ) this.angle  .invalidate();
         if (this.round  ) this.round  .invalidate();
         if (this.corners) this.corners.invalidate();
     }
@@ -44106,11 +43955,6 @@ extends GShape
 {
     input  = null;
 
-    x      = null;
-    y      = null;
-    width  = null;
-    height = null;
-    angle  = null;
     round  = null;
     points = null;
     convex = null;
@@ -44133,11 +43977,6 @@ extends GShape
         if (this.input) 
             copy.input = this.input.copy();
 
-        if (this.x     ) copy.x      = this.x     .copy();
-        if (this.y     ) copy.y      = this.y     .copy();
-        if (this.width ) copy.width  = this.width .copy();
-        if (this.height) copy.height = this.height.copy();
-        if (this.angle ) copy.angle  = this.angle .copy();
         if (this.round ) copy.round  = this.round .copy();
         if (this.points) copy.points = this.points.copy();
         if (this.convex) copy.convex = this.convex.copy();
@@ -44153,11 +43992,8 @@ extends GShape
             return this;
 
             
-        const x      = this.x      ? (await this.x     .eval(parse)).toValue() : null;
-        const y      = this.y      ? (await this.y     .eval(parse)).toValue() : null;
-        const width  = this.width  ? (await this.width .eval(parse)).toValue() : null;
-        const height = this.height ? (await this.height.eval(parse)).toValue() : null;
-        const angle  = this.angle  ? (await this.angle .eval(parse)).toValue() : null;
+        const [x, y, width, height, angle] = await this.evalBaseParams(parse);
+
         const round  = this.round  ? (await this.round .eval(parse)).toValue() : null;
         const points = this.points ? (await this.points.eval(parse)).toValue() : null;
         const convex = this.convex ? (await this.convex.eval(parse)).toValue() : null;
@@ -44187,11 +44023,6 @@ extends GShape
 
              
         genPushUpdateValue(parse, this.nodeId, 'value',  this.value       );
-        genPushUpdateValue(parse, this.nodeId, 'x',      this.value.x     );
-        genPushUpdateValue(parse, this.nodeId, 'y',      this.value.y     );
-        genPushUpdateValue(parse, this.nodeId, 'width',  this.value.width );
-        genPushUpdateValue(parse, this.nodeId, 'height', this.value.height);
-        genPushUpdateValue(parse, this.nodeId, 'angle',  this.value.angle );
         genPushUpdateValue(parse, this.nodeId, 'round',  this.value.round );
         genPushUpdateValue(parse, this.nodeId, 'points', this.value.points);
         genPushUpdateValue(parse, this.nodeId, 'convex', this.value.convex);
@@ -44269,11 +44100,7 @@ extends GShape
 
    isValid()
    {
-      return this.x     .isValid()
-          && this.y     .isValid()
-          && this.width .isValid()
-          && this.height.isValid()
-          && this.angle .isValid()
+      return super.isValid()
           && this.round .isValid()
           && this.points.isValid()
           && this.convex.isValid();
@@ -44286,11 +44113,6 @@ extends GShape
       super.invalidate();
 
       if (this.input ) this.input .invalidate();
-      if (this.x     ) this.x     .invalidate();
-      if (this.y     ) this.y     .invalidate();
-      if (this.width ) this.width .invalidate();
-      if (this.height) this.height.invalidate();
-      if (this.angle ) this.angle .invalidate();
       if (this.round ) this.round .invalidate();
       if (this.points) this.points.invalidate();
       if (this.convex) this.convex.invalidate();
@@ -44649,8 +44471,8 @@ extends GOperator
         {
             obj.nodeId = this.nodeId;
 
-            obj.x += this.x.toNumber();
-            obj.y += this.y.toNumber();
+            obj.x += this.x.toValue().toNumber();
+            obj.y += this.y.toValue().toNumber();
         }
 
         
@@ -44782,16 +44604,16 @@ extends GOperator
         for (const obj of this.objects)
         {
             obj.nodeId = this.nodeId;
-            
-            obj.angle += this.angle.toNumber(); 
+
+            obj.angle += this.angle.toValue().toNumber(); 
 
             const angle = angle_(bounds.width, bounds.height);
             const halfd = Math.sqrt(sqr(bounds.width) + sqr(bounds.height)) / 2;
 
             const v     = vector(angle + obj.angle/360*Tau, halfd);
 
-            const dx    = 0.5 - this.ox.toNumber()/100;
-            const dy    = 0.5 + this.oy.toNumber()/100;
+            const dx    = 0.5 - this.ox.toValue().toNumber()/100;
+            const dy    = 0.5 + this.oy.toValue().toNumber()/100;
 
             obj.x = obj.x + bounds.width /2 - v.x + dx * bounds.width * Math.cos(-obj.angle/360*Tau) - dy * bounds.height * Math.sin(obj.angle/360*Tau);
             obj.y = obj.y + bounds.height/2 + v.y + dx * bounds.width * Math.sin(-obj.angle/360*Tau) - dy * bounds.height * Math.cos(obj.angle/360*Tau);
@@ -44933,11 +44755,11 @@ extends GOperator
         {
             obj.nodeId = this.nodeId;
             
-            obj.width  *= this.x.toNumber()/100;
-            obj.height *= this.y.toNumber()/100;
+            obj.width  *= this.x.toValue().toNumber()/100;
+            obj.height *= this.y.toValue().toNumber()/100;
 
-            obj.x -= (obj.width  - bounds.width ) * this.ox.toNumber()/100;
-            obj.y -= (obj.height - bounds.height) * this.oy.toNumber()/100;
+            obj.x -= (obj.width  - bounds.width ) * this.ox.toValue().toNumber()/100;
+            obj.y -= (obj.height - bounds.height) * this.oy.toValue().toNumber()/100;
         }
 
         
@@ -64727,7 +64549,6 @@ extends OperatorBase
 
         this.cached = false;
         
-        this.addInput (new Input ([ANY_VALUE]));
         this.addOutput(new Output([NUMBER_VALUE], this.output_genRequest));
 
         this.addParam(this.paramSeed = new NumberParam('seed', 'seed', true, true, true, Math.floor(Math.random() * 10000), 0, 0x7fffffff));
@@ -64752,15 +64573,6 @@ extends OperatorBase
         if (ignore) return request;
 
         
-        // const input = this.node.inputs[0];
-
-
-        // request.push(input.connected ? 1 : 0);
-        
-        // if (input.connected)
-        //     request.push(...pushInputOrParam(input, gen));
-
-
         request.push(...this.node.paramSeed.genRequest(gen));
         request.push(...this.node.paramMin .genRequest(gen));
         request.push(...this.node.paramMax .genRequest(gen));
@@ -64788,7 +64600,6 @@ extends OperatorBase
 
         this.cached = false;
         
-        //this.addInput (new Input ([ANY_VALUE]));
         this.addOutput(new Output([NUMBER_VALUE], this.output_genRequest));
 
         this.addParam(this.paramStart = new NumberParam('start', 'start', true, true, true, 0));
@@ -64809,15 +64620,6 @@ extends OperatorBase
         if (ignore) return request;
 
         
-        // const input = this.node.inputs[0];
-
-
-        // request.push(input.connected ? 1 : 0);
-        
-        // if (input.connected)
-        //     request.push(...pushInputOrParam(input, gen));
-
-
         request.push(...this.node.paramStart.genRequest(gen));
         request.push(...this.node.paramStep .genRequest(gen));
 

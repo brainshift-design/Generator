@@ -94,16 +94,16 @@ extends GOperator
         for (const obj of this.objects)
         {
             obj.nodeId = this.nodeId;
-            
-            obj.angle += this.angle.toNumber(); 
+
+            obj.angle += this.angle.toValue().toNumber(); 
 
             const angle = angle_(bounds.width, bounds.height);
             const halfd = Math.sqrt(sqr(bounds.width) + sqr(bounds.height)) / 2;
 
             const v     = vector(angle + obj.angle/360*Tau, halfd);
 
-            const dx    = 0.5 - this.ox.toNumber()/100;
-            const dy    = 0.5 + this.oy.toNumber()/100;
+            const dx    = 0.5 - this.ox.toValue().toNumber()/100;
+            const dy    = 0.5 + this.oy.toValue().toNumber()/100;
 
             obj.x = obj.x + bounds.width /2 - v.x + dx * bounds.width * Math.cos(-obj.angle/360*Tau) - dy * bounds.height * Math.sin(obj.angle/360*Tau);
             obj.y = obj.y + bounds.height/2 + v.y + dx * bounds.width * Math.sin(-obj.angle/360*Tau) - dy * bounds.height * Math.cos(obj.angle/360*Tau);

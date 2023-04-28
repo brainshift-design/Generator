@@ -85,8 +85,8 @@ extends GOperator
         {
             obj.nodeId = this.nodeId;
 
-            obj.x += this.x.toNumber();
-            obj.y += this.y.toNumber();
+            obj.x += this.x.toValue().toNumber();
+            obj.y += this.y.toValue().toNumber();
         }
 
         

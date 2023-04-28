@@ -3,11 +3,6 @@ extends GShape
 {
     input  = null;
 
-    x      = null;
-    y      = null;
-    width  = null;
-    angle  = null;
-
 
 
     constructor(nodeId, options)
@@ -26,11 +21,6 @@ extends GShape
         if (this.input) 
             copy.input = this.input.copy();
 
-        if (this.x     ) copy.x      = this.x     .copy();
-        if (this.y     ) copy.y      = this.y     .copy();
-        if (this.width ) copy.width  = this.width .copy();
-        if (this.angle ) copy.angle  = this.angle .copy();
-
         return copy;
     }
 
@@ -42,12 +32,9 @@ extends GShape
             return this;
 
 
-        const x     = this.x     ? (await this.x    .eval(parse)).toValue() : null;
-        const y     = this.y     ? (await this.y    .eval(parse)).toValue() : null;
-        const width = this.width ? (await this.width.eval(parse)).toValue() : null;
-        const angle = this.angle ? (await this.angle.eval(parse)).toValue() : null;
+        const [x, y, width, height, angle] = await this.evalBaseParams(parse);
 
-        
+            
         let input = null;
 
         if (this.input)
@@ -69,10 +56,6 @@ extends GShape
 
             
         genPushUpdateValue(parse, this.nodeId, 'value', this.value      );
-        genPushUpdateValue(parse, this.nodeId, 'x',     this.value.x    );
-        genPushUpdateValue(parse, this.nodeId, 'y',     this.value.y    );
-        genPushUpdateValue(parse, this.nodeId, 'width', this.value.width);
-        genPushUpdateValue(parse, this.nodeId, 'angle', this.value.angle);
 
 
         await this.evalBase(parse, input);
@@ -133,25 +116,10 @@ extends GShape
 
 
 
-    isValid()
-    {
-        return this.x    .isValid()
-            && this.y    .isValid()
-            && this.width.isValid()
-            && this.angle.isValid()
-            && super.isValid();
-    }
-
-
-
     invalidate()
     {
         super.invalidate();
 
         if (this.input ) this.input .invalidate();
-        if (this.x     ) this.x     .invalidate();
-        if (this.y     ) this.y     .invalidate();
-        if (this.width ) this.width .invalidate();
-        if (this.angle ) this.angle .invalidate();
     }
 }

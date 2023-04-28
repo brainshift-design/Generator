@@ -172,7 +172,12 @@ extends GOperator
     isValid()
     {
         return super.isValid()
-            && this.props.isValid();
+            && this.x     .isValid()
+            && this.y     .isValid()
+            && this.width .isValid()
+            && this.height.isValid()
+            && this.angle .isValid()
+            && this.props .isValid();
     }
 
 
@@ -181,6 +186,11 @@ extends GOperator
     {
         super.invalidate();
 
-        if (this.props) this.props.invalidate();
+        if (this.x     ) this.x     .invalidate();
+        if (this.y     ) this.y     .invalidate();
+        if (this.width ) this.width .invalidate();
+        if (this.height) this.height.invalidate();
+        if (this.angle ) this.angle .invalidate();
+        if (this.props ) this.props .invalidate();
     }
 }

@@ -13,7 +13,6 @@ extends OperatorBase
 
         this.cached = false;
         
-        this.addInput (new Input ([ANY_VALUE]));
         this.addOutput(new Output([NUMBER_VALUE], this.output_genRequest));
 
         this.addParam(this.paramSeed = new NumberParam('seed', 'seed', true, true, true, Math.floor(Math.random() * 10000), 0, 0x7fffffff));
@@ -38,15 +37,6 @@ extends OperatorBase
         if (ignore) return request;
 
         
-        // const input = this.node.inputs[0];
-
-
-        // request.push(input.connected ? 1 : 0);
-        
-        // if (input.connected)
-        //     request.push(...pushInputOrParam(input, gen));
-
-
         request.push(...this.node.paramSeed.genRequest(gen));
         request.push(...this.node.paramMin .genRequest(gen));
         request.push(...this.node.paramMax .genRequest(gen));

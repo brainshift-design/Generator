@@ -107,8 +107,8 @@ extends GOperator
                 
                 for (let j = 0; j < this.input.objects.length; j++, id++)
                 {
-                    const obj = this.input.objects[j].copy();
-    
+                    const obj = copyFigmaObject(this.input.objects[j]);
+                    
                     obj.nodeId   = this.nodeId;
                     obj.objectId = id;
     

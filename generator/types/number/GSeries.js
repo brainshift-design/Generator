@@ -6,8 +6,9 @@ extends GNumberType
 
     current      = null;
 
-    init         = false;
 
+    init         = false;
+    
     repeaNodetId = NULL;
 
 
@@ -44,15 +45,8 @@ extends GNumberType
         // input not used for evaluation
 
 
-        //if (!this.valid)
-        //{
-            await this.start.eval(parse);
-            await this.step .eval(parse);
-        //}
-
-
-        const start = this.start.toValue();
-        const step  = this.step .toValue();
+        const start = (await this.start.eval(parse)).toValue();
+        const step  = (await this.step .eval(parse)).toValue();
     
 
         if (!this.init)
@@ -67,11 +61,11 @@ extends GNumberType
             Math.max(start.decimals, step.decimals));
 
         
-        // console.log('parse.repeats =', [...parse.repeats]);
-        if (  !parse.repeats.find(r => r.nodeId == this.repeatNodeId) //isEmpty(parse.repeats)
+        if (  !parse.repeats.find(r => r.nodeId == this.repeatNodeId)
             || parse.repeats.at(-1).nodeId == this.repeatNodeId)
         {
             this.current.value += step.value;
+
 
             if (!isEmpty(parse.repeats))
             {
@@ -92,10 +86,6 @@ extends GNumberType
         genPushUpdateValue(parse, this.nodeId, 'start', start);
         genPushUpdateValue(parse, this.nodeId, 'step',  step );
         
-
-        // if (this.repeatCount > 0)
-        //     this.repeatCount--;
-
 
         this.validate();
 

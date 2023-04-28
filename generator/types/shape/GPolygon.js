@@ -3,11 +3,6 @@ extends GShape
 {
     input   = null;
 
-    x       = null;
-    y       = null;
-    width   = null;
-    height  = null;
-    angle   = null;
     round   = null;
     corners = null;
 
@@ -29,11 +24,6 @@ extends GShape
         if (this.input) 
             copy.input = this.input.copy();
 
-        if (this.x      ) copy.x       = this.x      .copy();
-        if (this.y      ) copy.y       = this.y      .copy();
-        if (this.width  ) copy.width   = this.width  .copy();
-        if (this.height ) copy.height  = this.height .copy();
-        if (this.angle  ) copy.angle   = this.angle  .copy();
         if (this.round  ) copy.round   = this.round  .copy();
         if (this.corners) copy.corners = this.corners.copy();
 
@@ -48,11 +38,8 @@ extends GShape
             return this;
 
             
-        const x       = this.x       ? (await this.x      .eval(parse)).toValue() : null;
-        const y       = this.y       ? (await this.y      .eval(parse)).toValue() : null;
-        const width   = this.width   ? (await this.width  .eval(parse)).toValue() : null;
-        const height  = this.height  ? (await this.height .eval(parse)).toValue() : null;
-        const angle   = this.angle   ? (await this.angle  .eval(parse)).toValue() : null;
+        const [x, y, width, height, angle] = await this.evalBaseParams(parse);
+
         const round   = this.round   ? (await this.round  .eval(parse)).toValue() : null;
         const corners = this.corners ? (await this.corners.eval(parse)).toValue() : null;
 
@@ -80,11 +67,6 @@ extends GShape
 
         
         genPushUpdateValue(parse, this.nodeId, 'value',   this.value        );
-        genPushUpdateValue(parse, this.nodeId, 'x',       this.value.x      );
-        genPushUpdateValue(parse, this.nodeId, 'y',       this.value.y      );
-        genPushUpdateValue(parse, this.nodeId, 'width',   this.value.width  );
-        genPushUpdateValue(parse, this.nodeId, 'height',  this.value.height );
-        genPushUpdateValue(parse, this.nodeId, 'angle',   this.value.angle  );
         genPushUpdateValue(parse, this.nodeId, 'round',   this.value.round  );
         genPushUpdateValue(parse, this.nodeId, 'corners', this.value.corners);
 
@@ -158,14 +140,9 @@ extends GShape
 
     isValid()
     {
-        return this.x      .isValid()
-            && this.y      .isValid()
-            && this.width  .isValid()
-            && this.height .isValid()
-            && this.angle  .isValid()
+        return super.isValid()
             && this.round  .isValid()
-            && this.corners.isValid()
-            && super.isValid();
+            && this.corners.isValid();
     }
 
 
@@ -175,11 +152,6 @@ extends GShape
         super.invalidate();
 
         if (this.input  ) this.input  .invalidate();
-        if (this.x      ) this.x      .invalidate();
-        if (this.y      ) this.y      .invalidate();
-        if (this.width  ) this.width  .invalidate();
-        if (this.height ) this.height .invalidate();
-        if (this.angle  ) this.angle  .invalidate();
         if (this.round  ) this.round  .invalidate();
         if (this.corners) this.corners.invalidate();
     }

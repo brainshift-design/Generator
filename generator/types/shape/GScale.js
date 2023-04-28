@@ -99,11 +99,11 @@ extends GOperator
         {
             obj.nodeId = this.nodeId;
             
-            obj.width  *= this.x.toNumber()/100;
-            obj.height *= this.y.toNumber()/100;
+            obj.width  *= this.x.toValue().toNumber()/100;
+            obj.height *= this.y.toValue().toNumber()/100;
 
-            obj.x -= (obj.width  - bounds.width ) * this.ox.toNumber()/100;
-            obj.y -= (obj.height - bounds.height) * this.oy.toNumber()/100;
+            obj.x -= (obj.width  - bounds.width ) * this.ox.toValue().toNumber()/100;
+            obj.y -= (obj.height - bounds.height) * this.oy.toValue().toNumber()/100;
         }
 
         
