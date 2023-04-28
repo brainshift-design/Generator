@@ -63,8 +63,7 @@ extends GNumberType
     {
         super.invalidate();
 
-        if (this.input0   ) this.input0   .invalidate();
-        if (this.input1   ) this.input1   .invalidate();
-        if (this.operation) this.operation.invalidate();
+        if (this.input   ) this.input   .invalidate();
+        if (this.function) this.function.invalidate();
     }
 }

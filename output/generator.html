@@ -443,34 +443,34 @@ function rgbFromTypeMode(type, active, mode)
 {
     if (NUMBER_TYPES.includes(type))
         return active 
-        ? (mode ? rgbActiveNumberDark : rgbActiveNumberLight)
-        : (mode ? rgbNumberDark       : rgbNumberLight      );
+            ? (mode ? rgbActiveNumberDark : rgbActiveNumberLight)
+            : (mode ? rgbNumberDark       : rgbNumberLight      );
 
     else if (TEXT_TYPES.includes(type))
         return active 
-        ? (mode ? rgbActiveTextDark   : rgbActiveTextLight)
-        : (mode ? rgbTextDark         : rgbTextLight      );
+            ? (mode ? rgbActiveTextDark   : rgbActiveTextLight)
+            : (mode ? rgbTextDark         : rgbTextLight      );
 
     else if (type == COLOR_STYLE)
         return active 
-        ? (mode ? rgbActiveFlowDark   : rgbActiveFlowLight)
-        : (mode ? rgbFlowDark         : rgbFlowLight      );
+            ? (mode ? rgbActiveFlowDark   : rgbActiveFlowLight)
+            : (mode ? rgbFlowDark         : rgbFlowLight      );
 
     else if (SHAPE_TYPES.includes(type))
         return active 
-        ? (mode ? rgbActiveShapeDark  : rgbActiveShapeLight)
-        : (mode ? rgbShapeDark        : rgbShapeLight      );
+            ? (mode ? rgbActiveShapeDark  : rgbActiveShapeLight)
+            : (mode ? rgbShapeDark        : rgbShapeLight      );
 
     else if (GROUP_TYPES.includes(type))
         return active 
-        ? (mode ? rgbActiveGroupDark  : rgbActiveGroupLight)
-        : (mode ? rgbGroupDark        : rgbGroupLight      );
+            ? (mode ? rgbActiveGroupDark  : rgbActiveGroupLight)
+            : (mode ? rgbGroupDark        : rgbGroupLight      );
 
     else if (FLOW_TYPES.includes(type)
           || type == ANY_VALUE)
         return active 
-        ? (mode ? rgbActiveFlowDark   : rgbActiveFlowLight)
-        : (mode ? rgbFlowDark         : rgbFlowLight      );
+            ? (mode ? rgbActiveFlowDark   : rgbActiveFlowLight)
+            : (mode ? rgbFlowDark         : rgbFlowLight      );
 
         
     switch (type)
@@ -484,8 +484,11 @@ function rgbFromTypeMode(type, active, mode)
         case COLORBLIND:
         case COLOR_BLEND:
             return active 
-                 ? rgbActiveColor  
-                 : rgbColor;
+                ? (mode ? rgbActiveFlowDark   : rgbActiveFlowLight)
+                : (mode ? rgbFlowDark         : rgbFlowLight      );
+            // return active 
+            //      ? rgbActiveColor  
+            //      : rgbColor;
     }
 
     return 'magenta';
@@ -7885,8 +7888,6 @@ extends GOperator
 {
     input = null;
 
-    //count = null;
-
 
 
     constructor(nodeId, options)
@@ -7904,7 +7905,6 @@ extends GOperator
 
         if (this.value) copy.value = this.value.copy();
         if (this.input) copy.input = this.input.copy();
-        //if (this.count) copy.count = this.count.copy();
 
         return copy;
     }
@@ -7917,9 +7917,6 @@ extends GOperator
             return this;
 
 
-        //const count = (await this.count.eval(parse)).toValue();
-
-
         this.value = 
             this.input 
             ? (await this.input.eval(parse)).toValue() 
@@ -7927,7 +7924,6 @@ extends GOperator
 
         
         genPushUpdateValue(parse, this.nodeId, 'value', this.value);
-        //genPushUpdateValue(parse, this.nodeId, 'count', count);
 
         
         this.validate();
@@ -7949,7 +7945,6 @@ extends GOperator
         super.invalidate();
 
         if (this.input) this.input.invalidate();
-        //if (this.count) this.count.invalidate();
     }
 }
 
@@ -10797,9 +10792,8 @@ extends GNumberType
     {
         super.invalidate();
 
-        if (this.input0   ) this.input0   .invalidate();
-        if (this.input1   ) this.input1   .invalidate();
-        if (this.operation) this.operation.invalidate();
+        if (this.input   ) this.input   .invalidate();
+        if (this.function) this.function.invalidate();
     }
 }
 
@@ -12131,11 +12125,11 @@ extends GOperator
     
 
 
-    copyBase(src)
+    copyBase(base)
     {
-        super.copyBase(src);
+        super.copyBase(base);
 
-        if (src.value) this.value = src.value.copy();
+        if (base.value) this.value = base.value.copy();
     }
 
 
@@ -12198,7 +12192,7 @@ extends GColorType
         if (this.isCached())
             return this;
 
-            
+
         const space = this.space ? (await this.space.eval(parse)).toValue().toInteger() : null; 
         let   c1    = this.c1    ? (await this.c1   .eval(parse)).toValue()             : null;
         let   c2    = this.c2    ? (await this.c2   .eval(parse)).toValue()             : null;
@@ -12389,6 +12383,7 @@ extends GColorType
         if (this.input) 
             copy.input = this.input.copy();
 
+        if (this.value  ) copy.value   = this.value  .copy();
         if (this.quality) copy.quality = this.quality.copy();
 
         return copy;
@@ -12409,12 +12404,12 @@ extends GColorType
         {
             const input = (await this.input.eval(parse)).toValue();
 
-
+// console.log('input =', input);
             if (this.options.enabled)
             {
-                if (   !isValid(this.value) 
-                    || !this.value.isValid()) 
-                {
+                // if (   !isValid(this.value) 
+                //     || !this.value.isValid()) 
+                // {
                     let rgb = input.toRgb();
 
                     if (quality.value == 0) // clip sRGB
@@ -12475,7 +12470,7 @@ extends GColorType
                             }
                         //}
                     }
-                }
+                //}
             }
             else
                 this.value = input;
@@ -12484,8 +12479,8 @@ extends GColorType
             this.value = ColorValue.NaN;
 
             
-        genPushUpdateValue(parse, this.nodeId, 'quality', quality);
         genPushUpdateValue(parse, this.nodeId, 'value',   this.value);
+        genPushUpdateValue(parse, this.nodeId, 'quality', quality);
 
 
         this.validate();
@@ -12570,20 +12565,20 @@ extends GColorType
 
             if (this.options.enabled)
             {
-                if (   isValid(this.order  ) && this.order  .isValid()
-                    && isValid(this.margin1) && this.margin1.isValid()
-                    && isValid(this.margin2) && this.margin2.isValid()
-                    && isValid(this.margin3) && this.margin3.isValid()
-                    && isValid(this.value  ) && this.value  .isValid())
-                {
-                    genPushUpdateValue(parse, this.nodeId, 'order'  , this.order  );
-                    genPushUpdateValue(parse, this.nodeId, 'margin1', this.margin1);
-                    genPushUpdateValue(parse, this.nodeId, 'margin2', this.margin2);
-                    genPushUpdateValue(parse, this.nodeId, 'margin3', this.margin3);
-                    genPushUpdateValue(parse, this.nodeId, 'value'  , this.value  );
-                }
-                else
-                {
+                // if (   isValid(this.order  ) && this.order  .isValid()
+                //     && isValid(this.margin1) && this.margin1.isValid()
+                //     && isValid(this.margin2) && this.margin2.isValid()
+                //     && isValid(this.margin3) && this.margin3.isValid()
+                //     && isValid(this.value  ) && this.value  .isValid())
+                // {
+                //     genPushUpdateValue(parse, this.nodeId, 'order'  , this.order  );
+                //     genPushUpdateValue(parse, this.nodeId, 'margin1', this.margin1);
+                //     genPushUpdateValue(parse, this.nodeId, 'margin2', this.margin2);
+                //     genPushUpdateValue(parse, this.nodeId, 'margin3', this.margin3);
+                //     genPushUpdateValue(parse, this.nodeId, 'value'  , this.value  );
+                // }
+                // else
+                // {
                     const rgb = input.toRgb();
                     
                     if (!rgbIsOk(rgb))
@@ -12647,7 +12642,7 @@ extends GColorType
                             genPushUpdateValue(parse, this.nodeId, 'value',   ColorValue .NaN);
                         }
                     //}
-                }
+                //}
             }
             else
             {

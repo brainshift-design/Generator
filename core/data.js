@@ -9,34 +9,34 @@ function rgbFromTypeMode(type, active, mode)
 {
     if (NUMBER_TYPES.includes(type))
         return active 
-        ? (mode ? rgbActiveNumberDark : rgbActiveNumberLight)
-        : (mode ? rgbNumberDark       : rgbNumberLight      );
+            ? (mode ? rgbActiveNumberDark : rgbActiveNumberLight)
+            : (mode ? rgbNumberDark       : rgbNumberLight      );
 
     else if (TEXT_TYPES.includes(type))
         return active 
-        ? (mode ? rgbActiveTextDark   : rgbActiveTextLight)
-        : (mode ? rgbTextDark         : rgbTextLight      );
+            ? (mode ? rgbActiveTextDark   : rgbActiveTextLight)
+            : (mode ? rgbTextDark         : rgbTextLight      );
 
     else if (type == COLOR_STYLE)
         return active 
-        ? (mode ? rgbActiveFlowDark   : rgbActiveFlowLight)
-        : (mode ? rgbFlowDark         : rgbFlowLight      );
+            ? (mode ? rgbActiveFlowDark   : rgbActiveFlowLight)
+            : (mode ? rgbFlowDark         : rgbFlowLight      );
 
     else if (SHAPE_TYPES.includes(type))
         return active 
-        ? (mode ? rgbActiveShapeDark  : rgbActiveShapeLight)
-        : (mode ? rgbShapeDark        : rgbShapeLight      );
+            ? (mode ? rgbActiveShapeDark  : rgbActiveShapeLight)
+            : (mode ? rgbShapeDark        : rgbShapeLight      );
 
     else if (GROUP_TYPES.includes(type))
         return active 
-        ? (mode ? rgbActiveGroupDark  : rgbActiveGroupLight)
-        : (mode ? rgbGroupDark        : rgbGroupLight      );
+            ? (mode ? rgbActiveGroupDark  : rgbActiveGroupLight)
+            : (mode ? rgbGroupDark        : rgbGroupLight      );
 
     else if (FLOW_TYPES.includes(type)
           || type == ANY_VALUE)
         return active 
-        ? (mode ? rgbActiveFlowDark   : rgbActiveFlowLight)
-        : (mode ? rgbFlowDark         : rgbFlowLight      );
+            ? (mode ? rgbActiveFlowDark   : rgbActiveFlowLight)
+            : (mode ? rgbFlowDark         : rgbFlowLight      );
 
         
     switch (type)
@@ -50,8 +50,11 @@ function rgbFromTypeMode(type, active, mode)
         case COLORBLIND:
         case COLOR_BLEND:
             return active 
-                 ? rgbActiveColor  
-                 : rgbColor;
+                ? (mode ? rgbActiveFlowDark   : rgbActiveFlowLight)
+                : (mode ? rgbFlowDark         : rgbFlowLight      );
+            // return active 
+            //      ? rgbActiveColor  
+            //      : rgbColor;
     }
 
     return 'magenta';

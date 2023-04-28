@@ -3,8 +3,6 @@ extends GOperator
 {
     input = null;
 
-    //count = null;
-
 
 
     constructor(nodeId, options)
@@ -22,7 +20,6 @@ extends GOperator
 
         if (this.value) copy.value = this.value.copy();
         if (this.input) copy.input = this.input.copy();
-        //if (this.count) copy.count = this.count.copy();
 
         return copy;
     }
@@ -35,9 +32,6 @@ extends GOperator
             return this;
 
 
-        //const count = (await this.count.eval(parse)).toValue();
-
-
         this.value = 
             this.input 
             ? (await this.input.eval(parse)).toValue() 
@@ -45,7 +39,6 @@ extends GOperator
 
         
         genPushUpdateValue(parse, this.nodeId, 'value', this.value);
-        //genPushUpdateValue(parse, this.nodeId, 'count', count);
 
         
         this.validate();
@@ -67,6 +60,5 @@ extends GOperator
         super.invalidate();
 
         if (this.input) this.input.invalidate();
-        //if (this.count) this.count.invalidate();
     }
 }

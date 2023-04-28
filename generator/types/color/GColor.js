@@ -49,7 +49,7 @@ extends GColorType
         if (this.isCached())
             return this;
 
-            
+
         const space = this.space ? (await this.space.eval(parse)).toValue().toInteger() : null; 
         let   c1    = this.c1    ? (await this.c1   .eval(parse)).toValue()             : null;
         let   c2    = this.c2    ? (await this.c2   .eval(parse)).toValue()             : null;

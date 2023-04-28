@@ -48,8 +48,8 @@ extends OpColorBase
 
         const input = this.node.inputs[0];
 
-        request.push(input.connected ? 1 : 0);
 
+        request.push(input.connected ? 1 : 0);
 
         if (input.connected)
             request.push(...pushInputOrParam(input, gen));

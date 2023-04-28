@@ -62,20 +62,20 @@ extends GColorType
 
             if (this.options.enabled)
             {
-                if (   isValid(this.order  ) && this.order  .isValid()
-                    && isValid(this.margin1) && this.margin1.isValid()
-                    && isValid(this.margin2) && this.margin2.isValid()
-                    && isValid(this.margin3) && this.margin3.isValid()
-                    && isValid(this.value  ) && this.value  .isValid())
-                {
-                    genPushUpdateValue(parse, this.nodeId, 'order'  , this.order  );
-                    genPushUpdateValue(parse, this.nodeId, 'margin1', this.margin1);
-                    genPushUpdateValue(parse, this.nodeId, 'margin2', this.margin2);
-                    genPushUpdateValue(parse, this.nodeId, 'margin3', this.margin3);
-                    genPushUpdateValue(parse, this.nodeId, 'value'  , this.value  );
-                }
-                else
-                {
+                // if (   isValid(this.order  ) && this.order  .isValid()
+                //     && isValid(this.margin1) && this.margin1.isValid()
+                //     && isValid(this.margin2) && this.margin2.isValid()
+                //     && isValid(this.margin3) && this.margin3.isValid()
+                //     && isValid(this.value  ) && this.value  .isValid())
+                // {
+                //     genPushUpdateValue(parse, this.nodeId, 'order'  , this.order  );
+                //     genPushUpdateValue(parse, this.nodeId, 'margin1', this.margin1);
+                //     genPushUpdateValue(parse, this.nodeId, 'margin2', this.margin2);
+                //     genPushUpdateValue(parse, this.nodeId, 'margin3', this.margin3);
+                //     genPushUpdateValue(parse, this.nodeId, 'value'  , this.value  );
+                // }
+                // else
+                // {
                     const rgb = input.toRgb();
                     
                     if (!rgbIsOk(rgb))
@@ -139,7 +139,7 @@ extends GColorType
                             genPushUpdateValue(parse, this.nodeId, 'value',   ColorValue .NaN);
                         }
                     //}
-                }
+                //}
             }
             else
             {

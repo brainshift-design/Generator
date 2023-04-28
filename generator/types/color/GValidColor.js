@@ -25,6 +25,7 @@ extends GColorType
         if (this.input) 
             copy.input = this.input.copy();
 
+        if (this.value  ) copy.value   = this.value  .copy();
         if (this.quality) copy.quality = this.quality.copy();
 
         return copy;
@@ -45,12 +46,12 @@ extends GColorType
         {
             const input = (await this.input.eval(parse)).toValue();
 
-
+// console.log('input =', input);
             if (this.options.enabled)
             {
-                if (   !isValid(this.value) 
-                    || !this.value.isValid()) 
-                {
+                // if (   !isValid(this.value) 
+                //     || !this.value.isValid()) 
+                // {
                     let rgb = input.toRgb();
 
                     if (quality.value == 0) // clip sRGB
@@ -111,7 +112,7 @@ extends GColorType
                             }
                         //}
                     }
-                }
+                //}
             }
             else
                 this.value = input;
@@ -120,8 +121,8 @@ extends GColorType
             this.value = ColorValue.NaN;
 
             
-        genPushUpdateValue(parse, this.nodeId, 'quality', quality);
         genPushUpdateValue(parse, this.nodeId, 'value',   this.value);
+        genPushUpdateValue(parse, this.nodeId, 'quality', quality);
 
 
         this.validate();

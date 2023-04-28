@@ -1,31 +1,20 @@
 class   OpCopy
 extends OperatorBase
 {
-    //paramCount;
-
-    
-
     constructor()
     {
         super(COPY, 'copy', 'copy');
+
+        this.canDisable = true;
+
 
         this.addInput (new Input(ALL_VALUES));
         this.addOutput(new Output([ANY_VALUE], this.output_genRequest));
 
 
-        //this.paramCount = this.addParam(new NumberParam('count', 'count', true, true, true, 1, 1));
-
-        
         this.inputs[0].addEventListener('connect',    () => OpCopy_onConnectInput(this));
         this.inputs[0].addEventListener('disconnect', () => OpCopy_onDisconnectInput(this));
     }
-    
-    
-
-    // isCached()
-    // {
-    //     return true;
-    // }
 
 
 
@@ -57,9 +46,6 @@ extends OperatorBase
             request.push(...pushInputOrParam(input, gen));
 
         
-        //request.push(...this.node.paramCount.genRequest(gen));
-
-
         gen.scope.pop();
         pushUnique(gen.passedNodes, this.node);
 
@@ -84,7 +70,6 @@ extends OperatorBase
             ? rgb_a(rgbDocumentBody, 0.95)
             : rgb_a(rgbFromType(type, this.active), 0.95);
 
-        // colors.border = rgb_a(rgbFromType(this.type, this.active), 0.95);
 
         colors.text    = isDark(colors.back) ? [1, 1, 1, 1] : [0, 0, 0, 1]; 
 

@@ -5,11 +5,11 @@ extends GOperator
     
 
 
-    copyBase(src)
+    copyBase(base)
     {
-        super.copyBase(src);
+        super.copyBase(base);
 
-        if (src.value) this.value = src.value.copy();
+        if (base.value) this.value = base.value.copy();
     }
 
 
