@@ -435,21 +435,8 @@ function genParseMove(parse)
     if (nInputs == 1)
         move.input = genParse(parse);
 
-
-    const nParamIds = genParseParamCount(parse);
-
-    for (let i = 0; i < nParamIds; i++)
-    {
-        const paramId = genParseParamId(parse);
-
-        parse.inParam = true;
-
-        switch (paramId)
-        {
-        case 'x': move.x = genParse(parse); break;
-        case 'y': move.y = genParse(parse); break;
-        }
-    }
+    move.x = genParse(parse);
+    move.y = genParse(parse);
 
 
     parse.inParam = false;

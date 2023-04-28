@@ -58,9 +58,9 @@ extends GOperator
         }
 
        
-        genPushUpdateValue(parse, this.nodeId, 'value', this.value  );
-        genPushUpdateValue(parse, this.nodeId, 'x',     this.value.x);
-        genPushUpdateValue(parse, this.nodeId, 'y',     this.value.y);
+        genPushUpdateValue(parse, this.nodeId, 'value', this.value);
+        genPushUpdateValue(parse, this.nodeId, 'x',     x);
+        genPushUpdateValue(parse, this.nodeId, 'y',     y);
 
 
         await this.evalObjects(parse);
@@ -79,11 +79,16 @@ extends GOperator
             return;
             
 
-        this.objects = [...this.input.objects];
+        this.objects = 
+            this.input 
+            ? clone(this.input.objects) 
+            : [];
 
 
         for (const obj of this.objects)
         {
+            obj.nodeId = this.nodeId;
+            
             obj.x += this.x.toNumber();
             obj.y += this.y.toNumber();
         }
