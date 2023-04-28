@@ -40,8 +40,7 @@ class MenuItem
     divSeparator;
 
 
-    //button0   = false;
-    //dragStart = null;
+    mouseOver = false;
 
 
 
@@ -173,7 +172,8 @@ class MenuItem
         {
             if (this.enabled)
             {
-                this.divHighlight.style.background = 'var(--figma-color-bg-brand)';
+                this.mouseOver = true;
+                this.update();
 
 
                 if (   this.button0
@@ -257,7 +257,8 @@ class MenuItem
     
         this.div.addEventListener('pointerleave', () =>
         {
-            this.divHighlight.style.background = 'transparent';
+            this.mouseOver = false;
+            this.update();
 
             this.enteredDiv    = false;
             this.enteredExpand = false;
@@ -295,6 +296,8 @@ class MenuItem
             if (!currentMenus.includes(this.childMenu))
             {
                 hideAllMenusAfter(this.parentMenu);
+
+                this.childMenu.parentItem = this;
                 this.childMenu.show(this.div, true, true);
             }
         }
@@ -362,6 +365,13 @@ class MenuItem
 
     update()
     {
+        this.divHighlight.style.background = 
+               this.mouseOver
+            ||    this.childMenu
+               && this.childMenu.visible
+            ? 'var(--figma-color-bg-brand)'
+            : 'transparent';
+
         this.divCheck.style.visibility = this.checked ? 'visible' : 'hidden';
         this.div     .style.opacity    = this.enabled ? '100%'    : '40%';
     }

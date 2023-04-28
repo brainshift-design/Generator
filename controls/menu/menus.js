@@ -441,7 +441,9 @@ function initGeneratorMenus()
                                 new MenuItem('',                    {separator: true}),
                                 new MenuItem('Text',                {icon: iconTextShape, callback: e => actionManager.do(getCreateNodeAction(TEXTSHAPE, btnShape.div, getCreateOptions(e)))}),
         menuItemShapeSep1     = new MenuItem('',                    {separator: true}),
-        menuItemShapeSelected = new MenuItem('Selected objects...', {icon: iconSelected,  enabled: false})]);
+        menuItemShapeSelected = new MenuItem('Selected objects...', {icon: iconSelected,  enabled: false}),
+                                new MenuItem('',                    {separator: true}),
+                                new MenuItem('Move',                {icon: iconMove,      callback: e => actionManager.do(getCreateNodeAction(MOVE,      btnShape.div, getCreateOptions(e)))})]);
 
 
     menuGroup = new Menu('Groups', true, false);

@@ -107,7 +107,6 @@ extends GNumberType
             }
         }
         
-        
 
         genPushUpdateValue(parse, this.nodeId, 'value',  this.value);
         genPushUpdateValue(parse, this.nodeId, 'from',   from      );

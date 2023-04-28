@@ -698,6 +698,10 @@ const TEXTSHAPE_VALUE  = 'TXTS#';
 const TEXTSHAPE        = 'TXTS'; 
 const TEXTSHAPE_TYPES  = [TEXTSHAPE_VALUE, TEXTSHAPE];
 
+const MOVE             = 'MOVE';
+const ROTATE           = 'ROT';
+const SCALE            = 'SCALE';
+
 
 const SHAPE_VALUES =
 [
@@ -721,7 +725,11 @@ const SHAPE_TYPES =
     ...ELLIPSE_TYPES,
     ...POLYGON_TYPES,
     ...STAR_TYPES,
-    ...TEXTSHAPE_TYPES
+    ...TEXTSHAPE_TYPES,
+
+    MOVE,
+    ROTATE,
+    SCALE
 ];
 
 

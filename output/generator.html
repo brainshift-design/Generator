@@ -3715,6 +3715,10 @@ const TEXTSHAPE_VALUE  = 'TXTS#';
 const TEXTSHAPE        = 'TXTS'; 
 const TEXTSHAPE_TYPES  = [TEXTSHAPE_VALUE, TEXTSHAPE];
 
+const MOVE             = 'MOVE';
+const ROTATE           = 'ROT';
+const SCALE            = 'SCALE';
+
 
 const SHAPE_VALUES =
 [
@@ -3738,7 +3742,11 @@ const SHAPE_TYPES =
     ...ELLIPSE_TYPES,
     ...POLYGON_TYPES,
     ...STAR_TYPES,
-    ...TEXTSHAPE_TYPES
+    ...TEXTSHAPE_TYPES,
+
+    MOVE,
+    ROTATE,
+    SCALE
 ];
 
 
@@ -8989,7 +8997,6 @@ extends GNumberType
             }
         }
         
-        
 
         genPushUpdateValue(parse, this.nodeId, 'value',  this.value);
         genPushUpdateValue(parse, this.nodeId, 'from',   from      );
@@ -13345,7 +13352,13 @@ extends GOperator
 class GShape
 extends GOperator
 {
-    props = null;
+    x      = null;
+    y      = null;
+    width  = null;
+    height = null;
+    angle  = null;
+
+    props  = null;
    
 
 
@@ -13358,6 +13371,12 @@ extends GOperator
 
     copyBase(base)
     {
+        if (base.x     ) this.x      = base.x     .copy();
+        if (base.y     ) this.y      = base.y     .copy();
+        if (base.width ) this.width  = base.width .copy();
+        if (base.height) this.height = base.height.copy();
+        if (base.angle ) this.angle  = base.angle .copy();
+
         this.copyProperties(base.props);
     }
 
@@ -13366,6 +13385,19 @@ extends GOperator
     copyProperties(props)
     {
         this.props = props.map(p => p.copy());
+    }
+
+
+
+    async evalBaseParams(parse)
+    {
+        const x      = this.x      ? (await this.x     .eval(parse)).toValue() : null;
+        const y      = this.y      ? (await this.y     .eval(parse)).toValue() : null;
+        const width  = this.width  ? (await this.width .eval(parse)).toValue() : null;
+        const height = this.height ? (await this.height.eval(parse)).toValue() : null;
+        const angle  = this.angle  ? (await this.angle .eval(parse)).toValue() : null;
+
+        return [x, y, width, height, angle];
     }
 
 
@@ -13387,7 +13419,13 @@ extends GOperator
             this.value.props = props;
 
 
-        genPushUpdateValue(parse, this.nodeId, 'props', this.value.props);
+        genPushUpdateValue(parse, this.nodeId, 'x',      this.value.x     );
+        genPushUpdateValue(parse, this.nodeId, 'y',      this.value.y     );
+        genPushUpdateValue(parse, this.nodeId, 'width',  this.value.width );
+        genPushUpdateValue(parse, this.nodeId, 'height', this.value.height);
+        genPushUpdateValue(parse, this.nodeId, 'angle',  this.value.angle );
+
+        genPushUpdateValue(parse, this.nodeId, 'props',  this.value.props);
     }
 
 
@@ -13503,11 +13541,6 @@ extends GShape
 {
     input  = null;
 
-    x      = null;
-    y      = null;
-    width  = null;
-    height = null;
-    angle  = null;
     round  = null;
 
 
@@ -13528,11 +13561,6 @@ extends GShape
         if (this.input) 
             copy.input = this.input.copy();
 
-        if (this.x     ) copy.x      = this.x     .copy();
-        if (this.y     ) copy.y      = this.y     .copy();
-        if (this.width ) copy.width  = this.width .copy();
-        if (this.height) copy.height = this.height.copy();
-        if (this.angle ) copy.angle  = this.angle .copy();
         if (this.round ) copy.round  = this.round .copy();
 
         return copy;
@@ -13545,13 +13573,10 @@ extends GShape
         if (this.isCached())
             return this;
 
-            
-        const x      = this.x      ? (await this.x     .eval(parse)).toValue() : null;
-        const y      = this.y      ? (await this.y     .eval(parse)).toValue() : null;
-        const width  = this.width  ? (await this.width .eval(parse)).toValue() : null;
-        const height = this.height ? (await this.height.eval(parse)).toValue() : null;
-        const angle  = this.angle  ? (await this.angle .eval(parse)).toValue() : null;
-        const round  = this.round  ? (await this.round .eval(parse)).toValue() : null;
+        
+        const [x, y, width, height, angle] = await this.evalBaseParams(parse);
+
+        const round = this.round ? (await this.round.eval(parse)).toValue() : null;
 
 
         let input = null;
@@ -13575,13 +13600,8 @@ extends GShape
         }
 
        
-        genPushUpdateValue(parse, this.nodeId, 'value',  this.value       );
-        genPushUpdateValue(parse, this.nodeId, 'x',      this.value.x     );
-        genPushUpdateValue(parse, this.nodeId, 'y',      this.value.y     );
-        genPushUpdateValue(parse, this.nodeId, 'width',  this.value.width );
-        genPushUpdateValue(parse, this.nodeId, 'height', this.value.height);
-        genPushUpdateValue(parse, this.nodeId, 'angle',  this.value.angle );
-        genPushUpdateValue(parse, this.nodeId, 'round',  this.value.round );
+        genPushUpdateValue(parse, this.nodeId, 'value', this.value      );
+        genPushUpdateValue(parse, this.nodeId, 'round', this.value.round);
 
 
         await this.evalBase(parse, input);
@@ -13603,14 +13623,14 @@ extends GShape
             return;
             
             
-        if (   this.value.x 
-            && this.value.y 
-            && this.value.width 
-            && this.value.height 
-            && this.value.angle 
+        if (   this.value.x
+            && this.value.y
+            && this.value.width
+            && this.value.height
+            && this.value.angle
             && this.value.round)
         {
-            this.objects = 
+            this.objects =
             [
                 new FigmaRectangle(
                                 this.nodeId,
@@ -14649,6 +14669,128 @@ extends GShape
         if (this.letterSpacing) this.letterSpacing.invalidate();
     }
 }
+
+
+class GMove
+extends GOperator
+{
+    input = null;
+
+    x     = null;
+    y     = null;
+
+
+
+    constructor(nodeId, options)
+    {
+        super(MOVE, nodeId, options);
+    }
+
+
+
+    copy()
+    {
+        const copy = new GMove(this.nodeId, this.options);
+
+        copy.copyBase(this);
+
+        if (this.input) 
+            copy.input = this.input.copy();
+
+        if (this.x) copy.x = this.x.copy();
+        if (this.y) copy.y = this.y.copy();
+
+        return copy;
+    }
+
+
+
+    async eval(parse)
+    {
+        if (this.isCached())
+            return this;
+
+            
+        const x = this.x ? (await this.x.eval(parse)).toValue() : null;
+        const y = this.y ? (await this.y.eval(parse)).toValue() : null;
+
+
+        if (this.input)
+        {
+            this.value = (await this.input.eval(parse)).toValue();
+
+            this.value.x.value   += x.value;
+            this.value.x.decimals = Math.max(this.value.x.decimals, x.decimals);
+
+            this.value.y.value   += y.value;
+            this.value.y.decimals = Math.max(this.value.y.decimals, y.decimals);
+        }
+        else
+        {
+            this.value = NullValue;
+        }
+
+       
+        genPushUpdateValue(parse, this.nodeId, 'value', this.value  );
+        genPushUpdateValue(parse, this.nodeId, 'x',     this.value.x);
+        genPushUpdateValue(parse, this.nodeId, 'y',     this.value.y);
+
+
+        await this.evalObjects(parse);
+
+
+        this.validate();
+
+        return this;
+    }
+
+
+
+    async evalObjects(parse, options = {})
+    {
+        if (!this.options.enabled)
+            return;
+            
+
+        this.objects = [...this.input.objects];
+
+
+        for (const obj of this.objects)
+        {
+            obj.x += this.x.toNumber();
+            obj.y += this.y.toNumber();
+        }
+
+        
+        await super.evalObjects(parse);
+    }
+
+
+
+    isValid()
+    {
+        return super.isValid()
+            && this.x.isValid()
+            && this.y.isValid();
+    }
+
+
+
+    invalidate()
+    {
+        super.invalidate();
+
+        if (this.input ) this.input .invalidate();
+        if (this.x     ) this.x     .invalidate();
+        if (this.y     ) this.y     .invalidate();
+    }
+}
+
+
+
+
+
+
 
 
 class GColorStyle
@@ -18192,6 +18334,67 @@ function genParseTextShape(parse)
 }
 
 
+
+function genParseMove(parse)
+{
+    const [, nodeId, options, ignore] = genParseNodeStart(parse);
+
+
+    const move = new GMove(nodeId, options);
+
+
+    let nInputs = -1;
+
+    if (!ignore)
+    {
+        nInputs = parseInt(parse.move());
+        console.assert(nInputs => 0 && nInputs <= 1, 'nInputs must be [0, 1]');
+    }
+
+
+    if (parse.settings.logRequests) 
+        logReq(move, parse, ignore);
+
+
+    if (ignore) 
+    {
+        genParseNodeEnd(parse, move);
+        return parse.parsedNodes.find(n => n.nodeId == nodeId);
+    }
+
+
+    parse.nTab++;
+
+
+    if (nInputs == 1)
+        move.input = genParse(parse);
+
+
+    const nParamIds = genParseParamCount(parse);
+
+    for (let i = 0; i < nParamIds; i++)
+    {
+        const paramId = genParseParamId(parse);
+
+        parse.inParam = true;
+
+        switch (paramId)
+        {
+        case 'x': move.x = genParse(parse); break;
+        case 'y': move.y = genParse(parse); break;
+        }
+    }
+
+
+    parse.inParam = false;
+    parse.nTab--;
+
+
+    genParseNodeEnd(parse, move);
+    return move;
+}
+
+
 function genParseFillValue(parse)
 {
     parse.pos++; // FILL_VALUE
@@ -19043,6 +19246,8 @@ function genParse(parse, inParam = true)
     else if (parse.next == POLYGON                ) result = genParsePolygon         (parse);
     else if (parse.next == STAR                   ) result = genParseStar            (parse);
     else if (parse.next == TEXTSHAPE              ) result = genParseTextShape       (parse);
+
+    else if (parse.next == MOVE                   ) result = genParseMove            (parse);
 
     else if (parse.next == GROUP_NODE             ) result = genParseGroupNode       (parse);
     else if (parse.next == GROUP_PARAM            ) result = genParseGroupParam      (parse);

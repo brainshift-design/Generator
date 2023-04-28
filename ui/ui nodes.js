@@ -84,6 +84,8 @@ function createNode(nodeType, creatingButton = null, createdNodeId = -1, options
         case STAR:                    node = new OpStar();              break;
         case TEXTSHAPE:               node = new OpTextShape();         break;
       
+        case MOVE:                    node = new OpMove();              break;
+        
         case GROUP_NODE:              node = new OpGroupNode();         break;
         case GROUP_PARAM:             node = new OpGroupParam();        break;
 
@@ -817,7 +819,7 @@ function uiUpdateValuesAndObjects(requestId, actionId, updateNodeId, updateParam
         actionManager.undoing        = false;
         actionManager.redoing        = false;
         
-        
+
         loadingOverlay.style.display = 'none'; // for loading
     }
 }

@@ -114,6 +114,10 @@
 ../operators/shape/OpStar.js
 ../operators/shape/OpTextShape.js
 
+../operators/shape/OpMove.js
+../operators/shape/OpRotate.js
+../operators/shape/OpScale.js
+
 
 ../operators/style/OpColorStyle.js
 ../operators/style/OpFill.js

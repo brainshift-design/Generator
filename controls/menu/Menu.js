@@ -6,6 +6,7 @@ var currentMenuButton = null;
 class Menu
 {
     parentMenu = null;
+    parentItem = null;
 
     name;
     button = null;
@@ -30,6 +31,8 @@ class Menu
     minWidth = 200;
 
     init     = null; // ()
+
+    visible  = false;
 
 
     onHide   = null; // removes itself after firing
@@ -264,6 +267,9 @@ class Menu
 
 
         currentMenus.push(this);
+
+        
+        this.visible = true;
     }
 
 
@@ -293,6 +299,12 @@ class Menu
 
 
         removeFrom(currentMenus, this);
+
+
+        this.visible = false;
+
+        if (this.parentItem)
+            this.parentItem.update();
     }
 }
 

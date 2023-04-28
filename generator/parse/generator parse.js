@@ -173,6 +173,8 @@ function genParse(parse, inParam = true)
     else if (parse.next == STAR                   ) result = genParseStar            (parse);
     else if (parse.next == TEXTSHAPE              ) result = genParseTextShape       (parse);
 
+    else if (parse.next == MOVE                   ) result = genParseMove            (parse);
+
     else if (parse.next == GROUP_NODE             ) result = genParseGroupNode       (parse);
     else if (parse.next == GROUP_PARAM            ) result = genParseGroupParam      (parse);
 

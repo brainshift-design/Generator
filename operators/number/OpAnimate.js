@@ -37,7 +37,7 @@ extends OperatorWithValue
 
 
         this.paramLength.controls[0].suffix = ' sec';
-        this.paramTime    .controls[0].suffix = ' sec';
+        this.paramTime  .controls[0].suffix = ' sec';
 
 
         this.btnPlay = createDiv('btnAnimatePlay');

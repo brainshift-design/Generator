@@ -1,7 +1,13 @@
 class GShape
 extends GOperator
 {
-    props = null;
+    x      = null;
+    y      = null;
+    width  = null;
+    height = null;
+    angle  = null;
+
+    props  = null;
    
 
 
@@ -14,6 +20,12 @@ extends GOperator
 
     copyBase(base)
     {
+        if (base.x     ) this.x      = base.x     .copy();
+        if (base.y     ) this.y      = base.y     .copy();
+        if (base.width ) this.width  = base.width .copy();
+        if (base.height) this.height = base.height.copy();
+        if (base.angle ) this.angle  = base.angle .copy();
+
         this.copyProperties(base.props);
     }
 
@@ -22,6 +34,19 @@ extends GOperator
     copyProperties(props)
     {
         this.props = props.map(p => p.copy());
+    }
+
+
+
+    async evalBaseParams(parse)
+    {
+        const x      = this.x      ? (await this.x     .eval(parse)).toValue() : null;
+        const y      = this.y      ? (await this.y     .eval(parse)).toValue() : null;
+        const width  = this.width  ? (await this.width .eval(parse)).toValue() : null;
+        const height = this.height ? (await this.height.eval(parse)).toValue() : null;
+        const angle  = this.angle  ? (await this.angle .eval(parse)).toValue() : null;
+
+        return [x, y, width, height, angle];
     }
 
 
@@ -43,7 +68,13 @@ extends GOperator
             this.value.props = props;
 
 
-        genPushUpdateValue(parse, this.nodeId, 'props', this.value.props);
+        genPushUpdateValue(parse, this.nodeId, 'x',      this.value.x     );
+        genPushUpdateValue(parse, this.nodeId, 'y',      this.value.y     );
+        genPushUpdateValue(parse, this.nodeId, 'width',  this.value.width );
+        genPushUpdateValue(parse, this.nodeId, 'height', this.value.height);
+        genPushUpdateValue(parse, this.nodeId, 'angle',  this.value.angle );
+
+        genPushUpdateValue(parse, this.nodeId, 'props',  this.value.props);
     }
 
 

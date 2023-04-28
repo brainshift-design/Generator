@@ -398,3 +398,64 @@ function genParseTextShape(parse)
     genParseNodeEnd(parse, text);
     return text;
 }
+
+
+
+function genParseMove(parse)
+{
+    const [, nodeId, options, ignore] = genParseNodeStart(parse);
+
+
+    const move = new GMove(nodeId, options);
+
+
+    let nInputs = -1;
+
+    if (!ignore)
+    {
+        nInputs = parseInt(parse.move());
+        console.assert(nInputs => 0 && nInputs <= 1, 'nInputs must be [0, 1]');
+    }
+
+
+    if (parse.settings.logRequests) 
+        logReq(move, parse, ignore);
+
+
+    if (ignore) 
+    {
+        genParseNodeEnd(parse, move);
+        return parse.parsedNodes.find(n => n.nodeId == nodeId);
+    }
+
+
+    parse.nTab++;
+
+
+    if (nInputs == 1)
+        move.input = genParse(parse);
+
+
+    const nParamIds = genParseParamCount(parse);
+
+    for (let i = 0; i < nParamIds; i++)
+    {
+        const paramId = genParseParamId(parse);
+
+        parse.inParam = true;
+
+        switch (paramId)
+        {
+        case 'x': move.x = genParse(parse); break;
+        case 'y': move.y = genParse(parse); break;
+        }
+    }
+
+
+    parse.inParam = false;
+    parse.nTab--;
+
+
+    genParseNodeEnd(parse, move);
+    return move;
+}

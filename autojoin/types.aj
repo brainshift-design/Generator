@@ -125,6 +125,10 @@
 ../generator/types/shape/GStar.js
 ../generator/types/shape/GTextShape.js
 
+../generator/types/shape/GMove.js
+../generator/types/shape/GRotate.js
+../generator/types/shape/GScale.js
+
 
 ../generator/types/style/GColorStyle.js
 ../generator/types/style/GFill.js
