@@ -367,11 +367,12 @@ function getNumLength(name)
 
 
 
-function trimCharFromStart(str, char) 
+function trimCharFromStart(str, trim) 
 {
-    while (str.charAt(0) == char) 
+    while (str.length >= trim.length
+        && str.substring(0, trim.length) == trim) 
     {
-        str = str.substring(1);
+        str = str.substring(trim.length);
         console.log('str =', str);
     }
 
@@ -380,10 +381,11 @@ function trimCharFromStart(str, char)
 
 
 
-function trimCharFromEnd(str, char) 
+function trimCharFromEnd(str, trim) 
 {
-    while (str.charAt(str.length - 1) == char) 
-        str = str.substring(0, str.length - 1);
+    while (str.length >= trim.length
+        && str.substring(str.length - trim.length) == trim) 
+        str = str.substring(0, str.length - trim.length);
 
     return str;
 }
