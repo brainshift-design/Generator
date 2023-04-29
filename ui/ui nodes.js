@@ -25,7 +25,7 @@ function createNode(nodeType, creatingButton = null, createdNodeId = -1, options
         case NUMBER_ROUND:            node = new OpRound();             break;
         case NUMBER_LIMITS:           node = new OpLimits();            break;
         case NUMBER_RANDOM:           node = new OpRandom();            break;
-        case NUMBER_SEQUENCE:           node = new OpSequence();            break;
+        case NUMBER_SEQUENCE:         node = new OpSequence();            break;
         case NUMBER_INTERPOLATE:      node = new OpInterpolate();       break;
         case NUMBER_TO_TEXT:          node = new OpNumberToText();      break;
         case NUMBER_SOLVE:            node = new OpSolve();             break;
@@ -59,6 +59,7 @@ function createNode(nodeType, creatingButton = null, createdNodeId = -1, options
         case NUMBER_TAN:              node = new OpTangent();           break;
          
         case TEXT:                    node = new OpText();              break;
+        case TEXT_TRIM:               node = new OpTextTrim();          break;
         case TEXT_SUBSTRING:          node = new OpTextSubstring();     break;
         case TEXT_CHAR:               node = new OpTextCharacter();     break;
         case TEXT_REPLACE:            node = new OpTextReplace();       break;

@@ -1,4 +1,4 @@
-class GTextSubstring
+class GTextTrim
 extends GTextType
 {
     input = null;
@@ -10,14 +10,14 @@ extends GTextType
     
     constructor(nodeId, options)
     {
-        super(TEXT_SUBSTRING, nodeId, options);
+        super(TEXT_TRIM, nodeId, options);
     }
 
 
     
     copy()
     {
-        const copy = new GTextSubstring(this.nodeId, this.options);
+        const copy = new GTextTrim(this.nodeId, this.options);
 
         copy.copyBase(this);
 
@@ -41,38 +41,30 @@ extends GTextType
         const start = (await this.start.eval(parse)).toValue();
         const end   = (await this.end  .eval(parse)).toValue();
 
-        let   length = 0;
-
 
         if (this.input)
         {
-            const input = (await this.input.eval(parse)).toValue();
-            
-            length = input.value.length;
-            
-            this.value = input.copy();
+            this.value = (await this.input.eval(parse)).toValue();
             
             console.assert(
                 this.value.type == TEXT_VALUE, 
                 'this.value.type must be TEXT_VALUE');
                 
                 
-            if(start.value <= end.value)
+            if (this.options.enabled)
             {
-                if (this.options.enabled)
-                    this.value.value = this.value.value.substring(start.value, end.value);
+                if (start.value.length > 0) this.value.value = trimCharFromStart(this.value.value, start.value);
+                if (end  .value.length > 0) this.value.value = trimCharFromEnd  (this.value.value, end  .value);
             }
-            else
-                this.value = new TextValue();//TextValue.NaN;
         }
         else
             this.value = new TextValue();//TextValue.NaN;
 
 
-        genPushUpdateValue(parse, this.nodeId, 'value',  this.value);
-        genPushUpdateValue(parse, this.nodeId, 'length', new NumberValue(length)); // used to set start and end maxima
-        genPushUpdateValue(parse, this.nodeId, 'start',  start);
-        genPushUpdateValue(parse, this.nodeId, 'end',    end);
+        genPushUpdateValue(parse, this.nodeId, 'value', this.value);
+        genPushUpdateValue(parse, this.nodeId, 'start', start);
+        genPushUpdateValue(parse, this.nodeId, 'end',   end);
+        
 
 
         this.validate();

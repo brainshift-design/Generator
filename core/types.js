@@ -170,6 +170,7 @@ const NUMBER_TYPES =
 
 const TEXT_VALUE     = 'TEXT#';  
 const TEXT           = 'TEXT';   
+const TEXT_TRIM      = 'TTRIM';   
 const TEXT_SUBSTRING = 'TSUB'; 
 const TEXT_REPLACE   = 'TREPL'; 
 const TEXT_JOIN      = 'TJOIN';  
@@ -184,6 +185,7 @@ const TEXT_TYPES =
     TEXT_VALUE,
     TEXT_LIST_VALUE,
     TEXT,
+    TEXT_TRIM,
     TEXT_SUBSTRING,
     TEXT_JOIN,
     TEXT_REPLACE,

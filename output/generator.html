@@ -2443,6 +2443,28 @@ function getNumLength(name)
 
 
 
+function trimCharFromStart(str, char) 
+{
+    while (str.charAt(0) == char) 
+    {
+        str = str.substring(1);
+        console.log('str =', str);
+    }
+
+    return str;
+}
+
+
+
+function trimCharFromEnd(str, char) 
+{
+    while (str.charAt(str.length - 1) == char) 
+        str = str.substring(0, str.length - 1);
+
+    return str;
+}
+
+
 "use strict";
 
 // Base64 / binary data / UTF-8 strings utilities
@@ -3652,6 +3674,7 @@ const NUMBER_TYPES =
 
 const TEXT_VALUE     = 'TEXT#';  
 const TEXT           = 'TEXT';   
+const TEXT_TRIM      = 'TTRIM';   
 const TEXT_SUBSTRING = 'TSUB'; 
 const TEXT_REPLACE   = 'TREPL'; 
 const TEXT_JOIN      = 'TJOIN';  
@@ -3666,6 +3689,7 @@ const TEXT_TYPES =
     TEXT_VALUE,
     TEXT_LIST_VALUE,
     TEXT,
+    TEXT_TRIM,
     TEXT_SUBSTRING,
     TEXT_JOIN,
     TEXT_REPLACE,
@@ -11142,6 +11166,94 @@ extends GTextType
 }
 
 
+class GTextTrim
+extends GTextType
+{
+    input = null;
+
+    start;
+    end;
+
+
+    
+    constructor(nodeId, options)
+    {
+        super(TEXT_TRIM, nodeId, options);
+    }
+
+
+    
+    copy()
+    {
+        const copy = new GTextTrim(this.nodeId, this.options);
+
+        copy.copyBase(this);
+
+        if (this.input) 
+            copy.input = this.input.copy();
+
+        copy.start = this.start.copy();
+        copy.end   = this.end  .copy();
+
+        return copy;
+    }
+
+
+
+    async eval(parse)
+    {
+        if (this.isCached())
+            return this;
+
+
+        const start = (await this.start.eval(parse)).toValue();
+        const end   = (await this.end  .eval(parse)).toValue();
+
+
+        if (this.input)
+        {
+            this.value = (await this.input.eval(parse)).toValue();
+            
+            console.assert(
+                this.value.type == TEXT_VALUE, 
+                'this.value.type must be TEXT_VALUE');
+                
+                
+            if (this.options.enabled)
+            {
+                if (start.value.length > 0) this.value.value = trimCharFromStart(this.value.value, start.value);
+                if (end  .value.length > 0) this.value.value = trimCharFromEnd  (this.value.value, end  .value);
+            }
+        }
+        else
+            this.value = new TextValue();//TextValue.NaN;
+
+
+        genPushUpdateValue(parse, this.nodeId, 'value', this.value);
+        genPushUpdateValue(parse, this.nodeId, 'start', start);
+        genPushUpdateValue(parse, this.nodeId, 'end',   end);
+        
+
+
+        this.validate();
+
+        return this;
+    }
+
+
+
+    invalidate()
+    {
+        super.invalidate();
+
+        if (this.input) this.input.invalidate();
+        if (this.start) this.start.invalidate();
+        if (this.end  ) this.end  .invalidate();
+    }
+}
+
+
+
 class GTextSubstring
 extends GTextType
 {
@@ -11213,11 +11325,10 @@ extends GTextType
             this.value = new TextValue();//TextValue.NaN;
 
 
+        genPushUpdateValue(parse, this.nodeId, 'value',  this.value);
         genPushUpdateValue(parse, this.nodeId, 'length', new NumberValue(length)); // used to set start and end maxima
         genPushUpdateValue(parse, this.nodeId, 'start',  start);
         genPushUpdateValue(parse, this.nodeId, 'end',    end);
-        
-        genPushUpdateValue(parse, this.nodeId, 'value', this.value);
 
 
         this.validate();
@@ -19507,6 +19618,53 @@ function genParseText(parse)
 
 
 
+function genParseTextTrim(parse)
+{
+    const [, nodeId, options, ignore] = genParseNodeStart(parse);
+
+
+    const trim = new GTextTrim(nodeId, options);
+   
+
+    let nInputs = -1;
+    
+    if (!ignore)
+    {
+        nInputs = parseInt(parse.move());
+        console.assert(nInputs == 0 || nInputs == 1, 'nInputs must be [0, 1]');
+    }
+
+    
+    if (parse.settings.logRequests) 
+        logReq(trim, parse, ignore, nInputs);
+
+
+    if (ignore) 
+    {
+        genParseNodeEnd(parse, trim);
+        return parse.parsedNodes.find(n => n.nodeId == nodeId);
+    }
+
+
+    parse.nTab++;
+
+
+    if (nInputs == 1)
+        trim.input = genParse(parse);
+
+    trim.start = genParse(parse);
+    trim.end   = genParse(parse);
+
+    
+    parse.nTab--;
+
+
+    genParseNodeEnd(parse, trim);
+    return trim;
+}
+
+
+
 function genParseTextSubstring(parse)
 {
     const [, nodeId, options, ignore] = genParseNodeStart(parse);
@@ -19970,6 +20128,7 @@ function genParse(parse, inParam = true)
 
     else if (parse.next == TEXT_VALUE             ) result = genParseTextValue       (parse);
     else if (parse.next == TEXT                   ) result = genParseText            (parse);
+    else if (parse.next == TEXT_TRIM              ) result = genParseTextTrim        (parse);
     else if (parse.next == TEXT_SUBSTRING         ) result = genParseTextSubstring   (parse);
     else if (parse.next == TEXT_CHAR              ) result = genParseTextCharacter   (parse);
     else if (parse.next == NUMBER_TO_TEXT         ) result = genParseNumberToText    (parse);

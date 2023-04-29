@@ -99,6 +99,7 @@
 ../generator/types/text/GTextType.js
 
 ../generator/types/text/GText.js
+../generator/types/text/GTextTrim.js
 ../generator/types/text/GTextSubstring.js
 ../generator/types/text/GTextCharacter.js
 ../generator/types/text/GTextReplace.js

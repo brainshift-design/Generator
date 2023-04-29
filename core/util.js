@@ -364,3 +364,26 @@ function getNumLength(name)
 
     return numLength;
 }
+
+
+
+function trimCharFromStart(str, char) 
+{
+    while (str.charAt(0) == char) 
+    {
+        str = str.substring(1);
+        console.log('str =', str);
+    }
+
+    return str;
+}
+
+
+
+function trimCharFromEnd(str, char) 
+{
+    while (str.charAt(str.length - 1) == char) 
+        str = str.substring(0, str.length - 1);
+
+    return str;
+}

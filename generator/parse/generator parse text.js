@@ -48,6 +48,53 @@ function genParseText(parse)
 
 
 
+function genParseTextTrim(parse)
+{
+    const [, nodeId, options, ignore] = genParseNodeStart(parse);
+
+
+    const trim = new GTextTrim(nodeId, options);
+   
+
+    let nInputs = -1;
+    
+    if (!ignore)
+    {
+        nInputs = parseInt(parse.move());
+        console.assert(nInputs == 0 || nInputs == 1, 'nInputs must be [0, 1]');
+    }
+
+    
+    if (parse.settings.logRequests) 
+        logReq(trim, parse, ignore, nInputs);
+
+
+    if (ignore) 
+    {
+        genParseNodeEnd(parse, trim);
+        return parse.parsedNodes.find(n => n.nodeId == nodeId);
+    }
+
+
+    parse.nTab++;
+
+
+    if (nInputs == 1)
+        trim.input = genParse(parse);
+
+    trim.start = genParse(parse);
+    trim.end   = genParse(parse);
+
+    
+    parse.nTab--;
+
+
+    genParseNodeEnd(parse, trim);
+    return trim;
+}
+
+
+
 function genParseTextSubstring(parse)
 {
     const [, nodeId, options, ignore] = genParseNodeStart(parse);
