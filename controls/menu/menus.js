@@ -406,6 +406,8 @@ function initGeneratorMenus()
         new MenuItem('Join',                {icon: iconTextJoin,      callback: e => actionManager.do(getCreateNodeAction(TEXT_JOIN,      btnText.div, getCreateOptions(e)))}),
         new MenuItem('Replace',             {icon: iconTextReplace,   callback: e => actionManager.do(getCreateNodeAction(TEXT_REPLACE,   btnText.div, getCreateOptions(e)))}),
         new MenuItem('',                    {separator: true}),
+        new MenuItem('Length',              {icon: iconTextLength,    callback: e => actionManager.do(getCreateNodeAction(TEXT_LENGTH,    btnText.div, getCreateOptions(e)))}),
+        new MenuItem('',                    {separator: true}),
         new MenuItem('Character from code', {icon: iconTextCharacter, callback: e => actionManager.do(getCreateNodeAction(TEXT_CHAR,      btnText.div, getCreateOptions(e)))}),
         new MenuItem('Number as text',      {icon: iconNumberToText,  callback: e => actionManager.do(getCreateNodeAction(NUMBER_TO_TEXT,     btnNumber.div, getCreateOptions(e)))}),
         new MenuItem('',                    {separator: true}),

@@ -21,10 +21,9 @@ extends GOperator
 
         copy.copyBase(this);
 
-        copy.inputs    = this.inputs.map(i => i.copy());
-
-        copy.value     = this.value    .copy();
-        copy.separator = this.separator.copy();
+        if (this.input    ) copy.input     = this.input    .copy();
+        if (this.value    ) copy.value     = this.value    .copy();
+        if (this.separator) copy.separator = this.separator.copy();
 
         return copy;
     }

@@ -52,7 +52,7 @@ extends GOperator
 
             if (length > 0)
             {
-                index.value = Math.min(index.value, input.items.length-1);
+                index.value = Math.min(Math.max(0, index.value), input.items.length-1);
 
                 index = 
                     index.isValid()

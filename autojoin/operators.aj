@@ -92,6 +92,7 @@
 
 
 ../operators/text/OpText.js
+../operators/text/OpTextLength.js
 ../operators/text/OpTextTrim.js
 ../operators/text/OpTextSubstring.js
 ../operators/text/OpTextCharacter.js

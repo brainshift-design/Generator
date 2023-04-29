@@ -3676,6 +3676,7 @@ const NUMBER_TYPES =
 
 const TEXT_VALUE     = 'TEXT#';  
 const TEXT           = 'TEXT';   
+const TEXT_LENGTH    = 'TLEN';   
 const TEXT_TRIM      = 'TTRIM';   
 const TEXT_SUBSTRING = 'TSUB'; 
 const TEXT_REPLACE   = 'TREPL'; 
@@ -3691,6 +3692,7 @@ const TEXT_TYPES =
     TEXT_VALUE,
     TEXT_LIST_VALUE,
     TEXT,
+    TEXT_LENGTH,
     TEXT_TRIM,
     TEXT_SUBSTRING,
     TEXT_JOIN,
@@ -7443,7 +7445,7 @@ extends GOperator
 
             if (length > 0)
             {
-                index.value = Math.min(index.value, input.items.length-1);
+                index.value = Math.min(Math.max(0, index.value), input.items.length-1);
 
                 index = 
                     index.isValid()
@@ -11168,6 +11170,74 @@ extends GTextType
 }
 
 
+class GTextLength
+extends GOperator
+{
+    input;
+
+
+
+    constructor(nodeId, options)
+    {
+        super(TEXT_LENGTH, nodeId, options);
+    }
+
+
+    
+    copy()
+    {
+        const copy = new GTextLength(this.nodeId, this.options);
+
+        copy.copyBase(this);
+
+        if (this.input ) copy.input  = this.input .copy();
+        if (this.length) copy.length = this.length.copy();
+
+        return copy;
+    }
+
+
+
+    async eval(parse)
+    {
+        if (this.isCached())
+            return this;
+
+
+        let length;
+
+
+        if (this.input)
+        {
+            const input = (await this.input.eval(parse)).toValue();
+            console.assert(input.type == TEXT_VALUE, 'input must be TEXT_VALUE');
+
+            length = new NumberValue(input.value.length);
+        }
+        else
+            length = NumberValue.NaN;
+    
+
+        genPushUpdateValue(parse, this.nodeId, 'length', length);
+
+
+        this.validate();
+
+        return this;
+    }
+
+
+
+    invalidate()
+    {
+        super.invalidate();
+
+        if (this.input ) this.input .invalidate();
+    }
+}
+
+
+
 class GTextTrim
 extends GTextType
 {
@@ -11616,10 +11686,9 @@ extends GOperator
 
         copy.copyBase(this);
 
-        copy.inputs    = this.inputs.map(i => i.copy());
-
-        copy.value     = this.value    .copy();
-        copy.separator = this.separator.copy();
+        if (this.input    ) copy.input     = this.input    .copy();
+        if (this.value    ) copy.value     = this.value    .copy();
+        if (this.separator) copy.separator = this.separator.copy();
 
         return copy;
     }
@@ -19620,6 +19689,50 @@ function genParseText(parse)
 
 
 
+function genParseTextLength(parse)
+{
+    const [, nodeId, options, ignore] = genParseNodeStart(parse);
+
+
+    const len = new GTextLength(nodeId, options);
+   
+
+    let nInputs = -1;
+    
+    if (!ignore)
+    {
+        nInputs = parseInt(parse.move());
+        console.assert(nInputs == 0 || nInputs == 1, 'nInputs must be [0, 1]');
+    }
+
+    
+    if (parse.settings.logRequests) 
+        logReq(len, parse, ignore, nInputs);
+
+
+    if (ignore) 
+    {
+        genParseNodeEnd(parse, len);
+        return parse.parsedNodes.find(n => n.nodeId == nodeId);
+    }
+
+
+    parse.nTab++;
+
+
+    if (nInputs == 1)
+        len.input = genParse(parse);
+
+    
+    parse.nTab--;
+
+
+    genParseNodeEnd(parse, len);
+    return len;
+}
+
+
+
 function genParseTextTrim(parse)
 {
     const [, nodeId, options, ignore] = genParseNodeStart(parse);
@@ -20130,6 +20243,7 @@ function genParse(parse, inParam = true)
 
     else if (parse.next == TEXT_VALUE             ) result = genParseTextValue       (parse);
     else if (parse.next == TEXT                   ) result = genParseText            (parse);
+    else if (parse.next == TEXT_LENGTH            ) result = genParseTextLength      (parse);
     else if (parse.next == TEXT_TRIM              ) result = genParseTextTrim        (parse);
     else if (parse.next == TEXT_SUBSTRING         ) result = genParseTextSubstring   (parse);
     else if (parse.next == TEXT_CHAR              ) result = genParseTextCharacter   (parse);

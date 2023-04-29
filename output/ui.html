@@ -8048,6 +8048,7 @@ const NUMBER_TYPES =
 
 const TEXT_VALUE     = 'TEXT#';  
 const TEXT           = 'TEXT';   
+const TEXT_LENGTH    = 'TLEN';   
 const TEXT_TRIM      = 'TTRIM';   
 const TEXT_SUBSTRING = 'TSUB'; 
 const TEXT_REPLACE   = 'TREPL'; 
@@ -8063,6 +8064,7 @@ const TEXT_TYPES =
     TEXT_VALUE,
     TEXT_LIST_VALUE,
     TEXT,
+    TEXT_LENGTH,
     TEXT_TRIM,
     TEXT_SUBSTRING,
     TEXT_JOIN,
@@ -11815,7 +11817,7 @@ extends GOperator
 
             if (length > 0)
             {
-                index.value = Math.min(index.value, input.items.length-1);
+                index.value = Math.min(Math.max(0, index.value), input.items.length-1);
 
                 index = 
                     index.isValid()
@@ -15540,6 +15542,74 @@ extends GTextType
 }
 
 
+class GTextLength
+extends GOperator
+{
+    input;
+
+
+
+    constructor(nodeId, options)
+    {
+        super(TEXT_LENGTH, nodeId, options);
+    }
+
+
+    
+    copy()
+    {
+        const copy = new GTextLength(this.nodeId, this.options);
+
+        copy.copyBase(this);
+
+        if (this.input ) copy.input  = this.input .copy();
+        if (this.length) copy.length = this.length.copy();
+
+        return copy;
+    }
+
+
+
+    async eval(parse)
+    {
+        if (this.isCached())
+            return this;
+
+
+        let length;
+
+
+        if (this.input)
+        {
+            const input = (await this.input.eval(parse)).toValue();
+            console.assert(input.type == TEXT_VALUE, 'input must be TEXT_VALUE');
+
+            length = new NumberValue(input.value.length);
+        }
+        else
+            length = NumberValue.NaN;
+    
+
+        genPushUpdateValue(parse, this.nodeId, 'length', length);
+
+
+        this.validate();
+
+        return this;
+    }
+
+
+
+    invalidate()
+    {
+        super.invalidate();
+
+        if (this.input ) this.input .invalidate();
+    }
+}
+
+
+
 class GTextTrim
 extends GTextType
 {
@@ -15988,10 +16058,9 @@ extends GOperator
 
         copy.copyBase(this);
 
-        copy.inputs    = this.inputs.map(i => i.copy());
-
-        copy.value     = this.value    .copy();
-        copy.separator = this.separator.copy();
+        if (this.input    ) copy.input     = this.input    .copy();
+        if (this.value    ) copy.value     = this.value    .copy();
+        if (this.separator) copy.separator = this.separator.copy();
 
         return copy;
     }
@@ -23992,6 +24061,50 @@ function genParseText(parse)
 
 
 
+function genParseTextLength(parse)
+{
+    const [, nodeId, options, ignore] = genParseNodeStart(parse);
+
+
+    const len = new GTextLength(nodeId, options);
+   
+
+    let nInputs = -1;
+    
+    if (!ignore)
+    {
+        nInputs = parseInt(parse.move());
+        console.assert(nInputs == 0 || nInputs == 1, 'nInputs must be [0, 1]');
+    }
+
+    
+    if (parse.settings.logRequests) 
+        logReq(len, parse, ignore, nInputs);
+
+
+    if (ignore) 
+    {
+        genParseNodeEnd(parse, len);
+        return parse.parsedNodes.find(n => n.nodeId == nodeId);
+    }
+
+
+    parse.nTab++;
+
+
+    if (nInputs == 1)
+        len.input = genParse(parse);
+
+    
+    parse.nTab--;
+
+
+    genParseNodeEnd(parse, len);
+    return len;
+}
+
+
+
 function genParseTextTrim(parse)
 {
     const [, nodeId, options, ignore] = genParseNodeStart(parse);
@@ -24502,6 +24615,7 @@ function genParse(parse, inParam = true)
 
     else if (parse.next == TEXT_VALUE             ) result = genParseTextValue       (parse);
     else if (parse.next == TEXT                   ) result = genParseText            (parse);
+    else if (parse.next == TEXT_LENGTH            ) result = genParseTextLength      (parse);
     else if (parse.next == TEXT_TRIM              ) result = genParseTextTrim        (parse);
     else if (parse.next == TEXT_SUBSTRING         ) result = genParseTextSubstring   (parse);
     else if (parse.next == TEXT_CHAR              ) result = genParseTextCharacter   (parse);
@@ -34086,6 +34200,7 @@ const NUMBER_TYPES =
 
 const TEXT_VALUE     = 'TEXT#';  
 const TEXT           = 'TEXT';   
+const TEXT_LENGTH    = 'TLEN';   
 const TEXT_TRIM      = 'TTRIM';   
 const TEXT_SUBSTRING = 'TSUB'; 
 const TEXT_REPLACE   = 'TREPL'; 
@@ -34101,6 +34216,7 @@ const TEXT_TYPES =
     TEXT_VALUE,
     TEXT_LIST_VALUE,
     TEXT,
+    TEXT_LENGTH,
     TEXT_TRIM,
     TEXT_SUBSTRING,
     TEXT_JOIN,
@@ -37853,7 +37969,7 @@ extends GOperator
 
             if (length > 0)
             {
-                index.value = Math.min(index.value, input.items.length-1);
+                index.value = Math.min(Math.max(0, index.value), input.items.length-1);
 
                 index = 
                     index.isValid()
@@ -41578,6 +41694,74 @@ extends GTextType
 }
 
 
+class GTextLength
+extends GOperator
+{
+    input;
+
+
+
+    constructor(nodeId, options)
+    {
+        super(TEXT_LENGTH, nodeId, options);
+    }
+
+
+    
+    copy()
+    {
+        const copy = new GTextLength(this.nodeId, this.options);
+
+        copy.copyBase(this);
+
+        if (this.input ) copy.input  = this.input .copy();
+        if (this.length) copy.length = this.length.copy();
+
+        return copy;
+    }
+
+
+
+    async eval(parse)
+    {
+        if (this.isCached())
+            return this;
+
+
+        let length;
+
+
+        if (this.input)
+        {
+            const input = (await this.input.eval(parse)).toValue();
+            console.assert(input.type == TEXT_VALUE, 'input must be TEXT_VALUE');
+
+            length = new NumberValue(input.value.length);
+        }
+        else
+            length = NumberValue.NaN;
+    
+
+        genPushUpdateValue(parse, this.nodeId, 'length', length);
+
+
+        this.validate();
+
+        return this;
+    }
+
+
+
+    invalidate()
+    {
+        super.invalidate();
+
+        if (this.input ) this.input .invalidate();
+    }
+}
+
+
+
 class GTextTrim
 extends GTextType
 {
@@ -42026,10 +42210,9 @@ extends GOperator
 
         copy.copyBase(this);
 
-        copy.inputs    = this.inputs.map(i => i.copy());
-
-        copy.value     = this.value    .copy();
-        copy.separator = this.separator.copy();
+        if (this.input    ) copy.input     = this.input    .copy();
+        if (this.value    ) copy.value     = this.value    .copy();
+        if (this.separator) copy.separator = this.separator.copy();
 
         return copy;
     }
@@ -50499,6 +50682,7 @@ const iconCosine            = '<svg width="17" height="14" viewBox="0 0 17 14" f
 const iconTangent           = '<svg width="17" height="15" viewBox="0 0 17 15" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M0 7H17V8H0V7Z" fill="white"/><path d="M4.50047 1C4.50047 3.76923 2.90784 5.93552 1.90784 7.32014" stroke="white"/><path d="M13.4999 14C13.4999 11.2308 15.0925 9.06447 16.0925 7.67986" stroke="white"/><path d="M11.4999 1C11.4999 3.99999 10.282 5.99999 8.99988 7.49998C7.71779 8.99998 6.49988 11 6.49988 14" stroke="white"/><path d="M-6.55671e-07 15L0 0L1 4.37114e-08L1 15L-6.55671e-07 15Z" fill="white"/></svg>';
 
 const iconText              = '<svg width="19" height="7" viewBox="0 0 19 7" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M19 2.39211H17.7568C17.7213 2.18805 17.656 2.00729 17.5607 1.84981C17.4654 1.69011 17.3468 1.55482 17.205 1.44392C17.0632 1.33302 16.9014 1.24984 16.7197 1.19439C16.5402 1.13672 16.3463 1.10789 16.1379 1.10789C15.7679 1.10789 15.4399 1.20105 15.154 1.38736C14.8681 1.57145 14.6443 1.84205 14.4825 2.19914C14.3208 2.55402 14.2399 2.98764 14.2399 3.5C14.2399 4.02123 14.3208 4.46039 14.4825 4.81749C14.6465 5.17237 14.8704 5.44075 15.154 5.62262C15.4399 5.80228 15.7668 5.89211 16.1346 5.89211C16.3385 5.89211 16.5291 5.86549 16.7064 5.81226C16.8859 5.75681 17.0465 5.67586 17.1884 5.56939C17.3324 5.46293 17.4532 5.33207 17.5507 5.17681C17.6504 5.02155 17.7191 4.84411 17.7568 4.64449L19 4.65114C18.9535 4.97497 18.8526 5.27883 18.6975 5.56274C18.5446 5.84664 18.344 6.09727 18.0958 6.31464C17.8476 6.52978 17.5573 6.69835 17.2249 6.82034C16.8925 6.94011 16.5235 7 16.118 7C15.5197 7 14.9856 6.86138 14.5158 6.58413C14.046 6.30688 13.6759 5.90653 13.4055 5.38308C13.1352 4.85963 13 4.23194 13 3.5C13 2.76584 13.1363 2.13815 13.4089 1.61692C13.6814 1.09347 14.0526 0.693124 14.5224 0.415875C14.9922 0.138625 15.5241 0 16.118 0C16.497 0 16.8493 0.0532321 17.1751 0.159696C17.5008 0.26616 17.7911 0.422529 18.046 0.628803C18.3008 0.832858 18.5103 1.08349 18.6742 1.3807C18.8404 1.6757 18.949 2.01283 19 2.39211Z" fill="white"/><path d="M7 7V0H9.56545C10.0497 0 10.4522 0.0797524 10.7729 0.239258C11.0958 0.396484 11.3368 0.611816 11.4961 0.885254C11.6575 1.15869 11.7382 1.46859 11.7382 1.81494C11.7382 2.09977 11.6859 2.34359 11.5812 2.54639C11.4764 2.74691 11.3357 2.90983 11.159 3.03516C10.9823 3.16048 10.7849 3.25049 10.5668 3.30518V3.37354C10.8045 3.38721 11.0325 3.46354 11.2507 3.60254C11.471 3.73926 11.651 3.93294 11.7906 4.18359C11.9302 4.43424 12 4.7373 12 5.09277C12 5.45508 11.916 5.78092 11.748 6.07031C11.5801 6.35742 11.327 6.58415 10.9889 6.75049C10.6507 6.91683 10.2253 7 9.7127 7H7ZM8.21401 5.94043H9.51963C9.9603 5.94043 10.2777 5.8527 10.4719 5.67725C10.6682 5.49951 10.7664 5.27165 10.7664 4.99365C10.7664 4.7863 10.7173 4.59945 10.6191 4.43311C10.5209 4.26449 10.3813 4.13232 10.2003 4.03662C10.0192 3.93864 9.80323 3.88965 9.55236 3.88965H8.21401V5.94043ZM8.21401 2.97705H9.41492C9.62435 2.97705 9.81305 2.93717 9.98102 2.85742C10.149 2.77539 10.281 2.66032 10.377 2.51221C10.4751 2.36182 10.5242 2.18408 10.5242 1.979C10.5242 1.70784 10.4326 1.48454 10.2493 1.30908C10.0683 1.13363 9.79887 1.0459 9.4411 1.0459H8.21401V2.97705Z" fill="white"/><path d="M1.24987 7H0L2.27564 0H3.7212L6 7H4.75013L3.02367 1.43555H2.97317L1.24987 7ZM1.2909 4.25537H4.69963V5.27393H1.2909V4.25537Z" fill="white"/></svg>';
+const iconTextLength        = '<svg width="19" height="13" viewBox="0 0 19 13" fill="none" xmlns="http://www.w3.org/2000/svg"><rect y="10" width="1" height="3" fill="white"/><rect x="6" y="10" width="1" height="3" fill="white"/><rect x="12" y="10" width="1" height="3" fill="white"/><rect x="18" y="10" width="1" height="3" fill="white"/><rect y="12" width="19" height="1" fill="white"/><path d="M19 2.39211H17.7568C17.7213 2.18805 17.656 2.00729 17.5607 1.84981C17.4654 1.69011 17.3468 1.55482 17.205 1.44392C17.0632 1.33302 16.9014 1.24984 16.7197 1.19439C16.5402 1.13672 16.3463 1.10789 16.1379 1.10789C15.7679 1.10789 15.4399 1.20105 15.154 1.38736C14.8681 1.57145 14.6443 1.84205 14.4825 2.19914C14.3208 2.55402 14.2399 2.98764 14.2399 3.5C14.2399 4.02123 14.3208 4.46039 14.4825 4.81749C14.6465 5.17237 14.8704 5.44075 15.154 5.62262C15.4399 5.80228 15.7668 5.89211 16.1346 5.89211C16.3385 5.89211 16.5291 5.86549 16.7064 5.81226C16.8859 5.75681 17.0465 5.67586 17.1884 5.56939C17.3324 5.46293 17.4532 5.33207 17.5507 5.17681C17.6504 5.02155 17.7191 4.84411 17.7568 4.64449L19 4.65114C18.9535 4.97497 18.8526 5.27883 18.6975 5.56274C18.5446 5.84664 18.344 6.09727 18.0958 6.31464C17.8476 6.52978 17.5573 6.69835 17.2249 6.82034C16.8925 6.94011 16.5235 7 16.118 7C15.5197 7 14.9856 6.86138 14.5158 6.58413C14.046 6.30688 13.6759 5.90653 13.4055 5.38308C13.1352 4.85963 13 4.23194 13 3.5C13 2.76584 13.1363 2.13815 13.4089 1.61692C13.6814 1.09347 14.0526 0.693124 14.5224 0.415875C14.9922 0.138625 15.5241 0 16.118 0C16.497 0 16.8493 0.0532321 17.1751 0.159696C17.5008 0.26616 17.7911 0.422529 18.046 0.628803C18.3008 0.832858 18.5103 1.08349 18.6742 1.3807C18.8404 1.6757 18.949 2.01283 19 2.39211Z" fill="white"/><path d="M7 7V0H9.56545C10.0497 0 10.4522 0.0797524 10.7729 0.239258C11.0958 0.396484 11.3368 0.611816 11.4961 0.885254C11.6575 1.15869 11.7382 1.46859 11.7382 1.81494C11.7382 2.09977 11.6859 2.34359 11.5812 2.54639C11.4764 2.74691 11.3357 2.90983 11.159 3.03516C10.9823 3.16048 10.7849 3.25049 10.5668 3.30518V3.37354C10.8045 3.38721 11.0325 3.46354 11.2507 3.60254C11.471 3.73926 11.651 3.93294 11.7906 4.18359C11.9302 4.43424 12 4.7373 12 5.09277C12 5.45508 11.916 5.78092 11.748 6.07031C11.5801 6.35742 11.327 6.58415 10.9889 6.75049C10.6507 6.91683 10.2253 7 9.7127 7H7ZM8.21401 5.94043H9.51963C9.9603 5.94043 10.2777 5.8527 10.4719 5.67725C10.6682 5.49951 10.7664 5.27165 10.7664 4.99365C10.7664 4.7863 10.7173 4.59945 10.6191 4.43311C10.5209 4.26449 10.3813 4.13232 10.2003 4.03662C10.0192 3.93864 9.80323 3.88965 9.55236 3.88965H8.21401V5.94043ZM8.21401 2.97705H9.41492C9.62435 2.97705 9.81305 2.93717 9.98102 2.85742C10.149 2.77539 10.281 2.66032 10.377 2.51221C10.4751 2.36182 10.5242 2.18408 10.5242 1.979C10.5242 1.70784 10.4326 1.48454 10.2493 1.30908C10.0683 1.13363 9.79887 1.0459 9.4411 1.0459H8.21401V2.97705Z" fill="white"/><path d="M1.24987 7H0L2.27564 0H3.7212L6 7H4.75013L3.02367 1.43555H2.97317L1.24987 7ZM1.2909 4.25537H4.69963V5.27393H1.2909V4.25537Z" fill="white"/></svg>';
 const iconTextTrim          = '<svg width="13" height="13" viewBox="0 0 13 13" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M4.10001 9.93637V3.10001H6.71705C7.21109 3.10001 7.62167 3.17789 7.9488 3.33367C8.27815 3.48722 8.52406 3.69752 8.68651 3.96457C8.85119 4.23161 8.93353 4.53426 8.93353 4.87252C8.93353 5.15069 8.88012 5.38881 8.7733 5.58687C8.66648 5.7827 8.52295 5.94181 8.34269 6.06421C8.16243 6.18661 7.96104 6.27451 7.7385 6.32792V6.39468C7.98107 6.40803 8.21362 6.48258 8.43616 6.61833C8.66092 6.75185 8.84451 6.94101 8.98694 7.1858C9.12936 7.43059 9.20057 7.72657 9.20057 8.07373C9.20057 8.42756 9.1149 8.74579 8.94354 9.02842C8.77219 9.30881 8.51405 9.53024 8.16911 9.69269C7.82418 9.85514 7.39023 9.93637 6.86726 9.93637H4.10001ZM5.33843 8.90157H6.67032C7.11985 8.90157 7.44364 8.81589 7.6417 8.64454C7.84198 8.47096 7.94212 8.24842 7.94212 7.97692C7.94212 7.77441 7.89205 7.59193 7.79191 7.42948C7.69177 7.2648 7.54934 7.13573 7.36464 7.04226C7.17993 6.94657 6.95962 6.89873 6.7037 6.89873H5.33843V8.90157ZM5.33843 6.00746H6.5635C6.77714 6.00746 6.96963 5.96852 7.14099 5.89063C7.31234 5.81052 7.44698 5.69814 7.54489 5.55349C7.64503 5.40661 7.69511 5.23303 7.69511 5.03275C7.69511 4.76793 7.60164 4.54984 7.41471 4.37849C7.23 4.20713 6.95517 4.12145 6.59021 4.12145H5.33843V6.00746Z" fill="white"/><rect width="1" height="13" fill="white"/><rect x="12" width="1" height="13" fill="white"/></svg>';
 const iconTextSubstring     = '<svg width="19" height="11" viewBox="0 -3 19 11" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M1.4833 7.1899C1.28079 7.1899 1.10721 7.11869 0.962558 6.97627C0.817908 6.83384 0.746696 6.66026 0.748921 6.45553C0.746696 6.25524 0.817908 6.08389 0.962558 5.94147C1.10721 5.79904 1.28079 5.72783 1.4833 5.72783C1.67913 5.72783 1.84937 5.79904 1.99402 5.94147C2.1409 6.08389 2.21545 6.25524 2.21767 6.45553C2.21545 6.59128 2.17984 6.71478 2.11085 6.82605C2.04409 6.93732 1.95508 7.02634 1.84381 7.0931C1.73476 7.15763 1.61459 7.1899 1.4833 7.1899Z" fill="white"/><path d="M14.5234 7.1899C14.3209 7.1899 14.1474 7.11869 14.0027 6.97627C13.8581 6.83384 13.7868 6.66026 13.7891 6.45553C13.7868 6.25524 13.8581 6.08389 14.0027 5.94147C14.1474 5.79904 14.3209 5.72783 14.5234 5.72783C14.7193 5.72783 14.8895 5.79904 15.0342 5.94147C15.181 6.08389 15.2556 6.25524 15.2578 6.45553C15.2556 6.59128 15.22 6.71478 15.151 6.82605C15.0842 6.93732 14.9952 7.02634 14.884 7.0931C14.7749 7.15763 14.6547 7.1899 14.5234 7.1899Z" fill="white"/><path d="M4.4766 7.1899C4.27409 7.1899 4.10051 7.11869 3.95586 6.97627C3.81121 6.83384 3.74 6.66026 3.74222 6.45553C3.74 6.25524 3.81121 6.08389 3.95586 5.94147C4.10051 5.79904 4.27409 5.72783 4.4766 5.72783C4.67243 5.72783 4.84267 5.79904 4.98732 5.94147C5.1342 6.08389 5.20875 6.25524 5.21097 6.45553C5.20875 6.59128 5.17314 6.71478 5.10415 6.82605C5.03739 6.93732 4.94838 7.02634 4.83711 7.0931C4.72807 7.15763 4.6079 7.1899 4.4766 7.1899Z" fill="white"/><path d="M17.5168 7.1899C17.3142 7.1899 17.1407 7.11869 16.996 6.97627C16.8514 6.83384 16.7802 6.66026 16.7824 6.45553C16.7802 6.25524 16.8514 6.08389 16.996 5.94147C17.1407 5.79904 17.3142 5.72783 17.5168 5.72783C17.7126 5.72783 17.8828 5.79904 18.0275 5.94147C18.1744 6.08389 18.2489 6.25524 18.2511 6.45553C18.2489 6.59128 18.2133 6.71478 18.1443 6.82605C18.0776 6.93732 17.9885 7.02634 17.8773 7.0931C17.7682 7.15763 17.6481 7.1899 17.5168 7.1899Z" fill="white"/><path d="M7.06596 6.91818V0.0818176H9.68301C10.177 0.0818176 10.5876 0.159706 10.9148 0.315482C11.2441 0.469034 11.49 0.679332 11.6525 0.946377C11.8171 1.21342 11.8995 1.51607 11.8995 1.85433C11.8995 2.1325 11.8461 2.37062 11.7393 2.56868C11.6324 2.76451 11.4889 2.92363 11.3086 3.04602C11.1284 3.16842 10.927 3.25632 10.7045 3.30973V3.37649C10.947 3.38984 11.1796 3.46439 11.4021 3.60014C11.6269 3.73366 11.8105 3.92282 11.9529 4.16761C12.0953 4.4124 12.1665 4.70838 12.1665 5.05554C12.1665 5.40937 12.0809 5.7276 11.9095 6.01023C11.7381 6.29062 11.48 6.51205 11.1351 6.6745C10.7901 6.83696 10.3562 6.91818 9.83322 6.91818H7.06596ZM8.30439 5.88338H9.63628C10.0858 5.88338 10.4096 5.7977 10.6077 5.62635C10.8079 5.45277 10.9081 5.23023 10.9081 4.95873C10.9081 4.75623 10.858 4.57374 10.7579 4.41129C10.6577 4.24661 10.5153 4.11754 10.3306 4.02408C10.1459 3.92839 9.92558 3.88054 9.66966 3.88054H8.30439V5.88338ZM8.30439 2.98928H9.52946C9.74309 2.98928 9.93559 2.95033 10.1069 2.87244C10.2783 2.79233 10.4129 2.67995 10.5109 2.5353C10.611 2.38842 10.6611 2.21484 10.6611 2.01456C10.6611 1.74974 10.5676 1.53165 10.3807 1.3603C10.196 1.18894 9.92112 1.10327 9.55616 1.10327H8.30439V2.98928Z" fill="white"/></svg>';
 const iconTextReplace       = '<svg width="19" height="16" viewBox="0 0 19 16" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M19 9.39211H17.7568C17.7213 9.18805 17.656 9.00729 17.5607 8.84981C17.4654 8.69011 17.3468 8.55482 17.205 8.44392C17.0632 8.33302 16.9014 8.24984 16.7197 8.19439C16.5402 8.13672 16.3463 8.10789 16.138 8.10789C15.7679 8.10789 15.4399 8.20105 15.154 8.38736C14.8681 8.57145 14.6443 8.84205 14.4825 9.19914C14.3208 9.55402 14.2399 9.98764 14.2399 10.5C14.2399 11.0212 14.3208 11.4604 14.4825 11.8175C14.6465 12.1724 14.8704 12.4407 15.154 12.6226C15.4399 12.8023 15.7668 12.8921 16.1346 12.8921C16.3385 12.8921 16.5291 12.8655 16.7064 12.8123C16.8859 12.7568 17.0465 12.6759 17.1884 12.5694C17.3324 12.4629 17.4532 12.3321 17.5507 12.1768C17.6504 12.0215 17.7191 11.8441 17.7568 11.6445L19 11.6511C18.9535 11.975 18.8526 12.2788 18.6975 12.5627C18.5446 12.8466 18.344 13.0973 18.0958 13.3146C17.8476 13.5298 17.5573 13.6984 17.2249 13.8203C16.8925 13.9401 16.5235 14 16.118 14C15.5197 14 14.9856 13.8614 14.5158 13.5841C14.046 13.3069 13.6759 12.9065 13.4055 12.3831C13.1352 11.8596 13 11.2319 13 10.5C13 9.76584 13.1363 9.13815 13.4089 8.61692C13.6814 8.09347 14.0526 7.69312 14.5224 7.41587C14.9922 7.13862 15.5241 7 16.118 7C16.497 7 16.8493 7.05323 17.1751 7.1597C17.5008 7.26616 17.7911 7.42253 18.046 7.6288C18.3008 7.83286 18.5103 8.08349 18.6742 8.3807C18.8404 8.6757 18.949 9.01283 19 9.39211Z" fill="white"/><path d="M1.24987 14H0L2.27564 7H3.7212L6 14H4.75013L3.02367 8.43555H2.97317L1.24987 14ZM1.2909 11.2554H4.69963V12.2739H1.2909V11.2554Z" fill="white"/><path d="M8 16V11H10.0759C10.4574 11 10.7755 11.0545 11.0304 11.1636C11.2852 11.2726 11.4768 11.424 11.6051 11.6177C11.7333 11.8097 11.7975 12.0311 11.7975 12.2817C11.7975 12.4771 11.757 12.6488 11.6759 12.7969C11.5949 12.9434 11.4835 13.0638 11.3418 13.1582C11.2017 13.251 11.0414 13.3169 10.8608 13.356V13.4048C11.0582 13.4129 11.243 13.4666 11.4152 13.5659C11.589 13.6652 11.73 13.8044 11.838 13.9834C11.946 14.1608 12 14.3724 12 14.6182C12 14.8835 11.9316 15.1203 11.7949 15.3286C11.6599 15.5353 11.4599 15.6989 11.1949 15.8193C10.93 15.9398 10.6034 16 10.2152 16H8ZM9.0962 15.1357H9.98987C10.2954 15.1357 10.5181 15.0796 10.6582 14.9673C10.7983 14.8534 10.8684 14.702 10.8684 14.5132C10.8684 14.3748 10.8338 14.2528 10.7646 14.147C10.6954 14.0412 10.5966 13.9582 10.4684 13.8979C10.3418 13.8377 10.1907 13.8076 10.0152 13.8076H9.0962V15.1357ZM9.0962 13.0923H9.90886C10.0591 13.0923 10.1924 13.0671 10.3089 13.0166C10.427 12.9645 10.5198 12.8913 10.5873 12.7969C10.6565 12.7025 10.6911 12.5894 10.6911 12.4575C10.6911 12.2769 10.6245 12.1312 10.4911 12.0205C10.3595 11.9098 10.1722 11.8545 9.92911 11.8545H9.0962V13.0923Z" fill="white"/><path fill-rule="evenodd" clip-rule="evenodd" d="M9.05758 8.64355L9.23002 8.76764L9.73959 8.05948L11.0933 6.90017L10.4428 6.14064L9.48886 6.95761C9.48453 5.97188 9.30757 4.81845 8.79688 3.77457C8.18769 2.52934 7.10594 1.45073 5.33322 1.02438L5.09938 1.99666C6.54887 2.34526 7.40452 3.20406 7.89862 4.21402C8.33403 5.10405 8.48993 6.11878 8.48896 7.00242L7.35652 6.18756L6.77245 6.99926L8.22215 8.04242L8.00316 8.22997L8.65362 8.9895L9.05758 8.64355Z" fill="white"/></svg>';
@@ -51956,6 +52140,8 @@ function initGeneratorMenus()
         new MenuItem('Substring',           {icon: iconTextSubstring, callback: e => actionManager.do(getCreateNodeAction(TEXT_SUBSTRING, btnText.div, getCreateOptions(e)))}),
         new MenuItem('Join',                {icon: iconTextJoin,      callback: e => actionManager.do(getCreateNodeAction(TEXT_JOIN,      btnText.div, getCreateOptions(e)))}),
         new MenuItem('Replace',             {icon: iconTextReplace,   callback: e => actionManager.do(getCreateNodeAction(TEXT_REPLACE,   btnText.div, getCreateOptions(e)))}),
+        new MenuItem('',                    {separator: true}),
+        new MenuItem('Length',              {icon: iconTextLength,    callback: e => actionManager.do(getCreateNodeAction(TEXT_LENGTH,    btnText.div, getCreateOptions(e)))}),
         new MenuItem('',                    {separator: true}),
         new MenuItem('Character from code', {icon: iconTextCharacter, callback: e => actionManager.do(getCreateNodeAction(TEXT_CHAR,      btnText.div, getCreateOptions(e)))}),
         new MenuItem('Number as text',      {icon: iconNumberToText,  callback: e => actionManager.do(getCreateNodeAction(NUMBER_TO_TEXT,     btnNumber.div, getCreateOptions(e)))}),
@@ -67376,6 +67562,64 @@ extends ResizableBase
 }
 
 
+class   OpTextLength
+extends OperatorBase
+{
+    paramLength;
+
+
+
+    constructor()
+    {
+        super(TEXT_LENGTH, 'length', 'length');
+
+
+        this.addInput(new Input([TEXT_VALUE]));
+
+        this.addParam(this.paramLength = new NumberParam('length', 'length', false, false, true));
+    }
+
+
+
+    genRequest(gen)
+    {
+        // 'this' is the node
+
+        gen.scope.push({
+            nodeId:  this.id, 
+            paramId: NULL });
+
+
+        const [request, ignore] = this.genRequestStart(gen);
+        if (ignore) return request;
+
+        
+        const input = this.inputs[0];
+
+
+        request.push(input.connected ? 1 : 0);
+        
+        if (input.connected)
+            request.push(...pushInputOrParam(input, gen));
+
+        
+        gen.scope.pop();
+        pushUnique(gen.passedNodes, this);
+
+        return request;
+    }
+
+
+
+    updateParams()
+    {
+        this.paramLength.enableControlText(false);
+
+        this.updateParamControls();
+    }
+}
+
+
 class   OpTextTrim
 extends OperatorWithValue
 {
@@ -80237,8 +80481,8 @@ function loadConnectionsAsync(_nodes, _conns, loadedNodes, setProgress)
 
 
         const _paramConns = _conns.filter(c => 
-               nodeFromId(c. inputNodeId).type == GROUP_PARAM
-            || nodeFromId(c.outputNodeId).type == GROUP_PARAM);
+               nodeFromId(c. inputNodeId) && nodeFromId(c. inputNodeId).type == GROUP_PARAM
+            || nodeFromId(c.outputNodeId) && nodeFromId(c.outputNodeId).type == GROUP_PARAM);
 
         const _otherConns = _conns.filter(c => !_paramConns.includes(c));
 
@@ -80853,6 +81097,7 @@ function createNode(nodeType, creatingButton = null, createdNodeId = -1, options
         case NUMBER_TAN:              node = new OpTangent();           break;
          
         case TEXT:                    node = new OpText();              break;
+        case TEXT_LENGTH:             node = new OpTextLength();        break;
         case TEXT_TRIM:               node = new OpTextTrim();          break;
         case TEXT_SUBSTRING:          node = new OpTextSubstring();     break;
         case TEXT_CHAR:               node = new OpTextCharacter();     break;

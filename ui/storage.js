@@ -361,8 +361,8 @@ function loadConnectionsAsync(_nodes, _conns, loadedNodes, setProgress)
 
 
         const _paramConns = _conns.filter(c => 
-               nodeFromId(c. inputNodeId).type == GROUP_PARAM
-            || nodeFromId(c.outputNodeId).type == GROUP_PARAM);
+               nodeFromId(c. inputNodeId) && nodeFromId(c. inputNodeId).type == GROUP_PARAM
+            || nodeFromId(c.outputNodeId) && nodeFromId(c.outputNodeId).type == GROUP_PARAM);
 
         const _otherConns = _conns.filter(c => !_paramConns.includes(c));
 
