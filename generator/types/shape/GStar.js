@@ -1,3 +1,4 @@
+
 class GStar
 extends GShape
 {
@@ -108,7 +109,7 @@ extends GShape
            [
                new FigmaStar(
                                this.nodeId,
-                               0,
+                               -1,
                                this.x     .toValue().value,
                                this.y     .toValue().value,
                                this.width .toValue().value,

@@ -1317,6 +1317,7 @@ function figDeleteObjectsExcept(nodeIds, ignoreObjects)
         {
             const obj = objArray.objects[j];
             
+            
             if (!ignoreObjects.find(o => obj.name == makeObjectName(o)))
             {
                 obj.remove();

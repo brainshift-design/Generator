@@ -3976,19 +3976,25 @@ const BlendModes =
 class FigmaObject
 {
     type;
+    
     nodeId = '';
+
+    uniqueId;
 
 
     constructor(type, nodeId)
     {
-        this.type   = type;
-        this.nodeId = nodeId;
+        this.type     = type;
+        this.nodeId   = nodeId;
+        this.uniqueId = Math.round(Math.random() * 10000);
     }
 
 
 
     copyBase(base)
     {
+        this.uniqueId         = base.uniqueId;
+
         this.fills            = clone(base.fills);
         this.stroks           = clone(base.strokes);
     
@@ -7095,7 +7101,7 @@ extends GOperator
                     const obj = this.inputs[i].objects[j].copy();
 
                     obj.nodeId   = this.nodeId;
-                    obj.objectId = o;
+                    obj.objectId = o+1;
                     obj.listId   = i;
 
                     this.objects.push(obj);
@@ -7424,7 +7430,7 @@ extends GOperator
                     const obj = _objects[j].copy();
 
                     obj.nodeId   = this.nodeId;
-                    obj.objectId = j;
+                    obj.objectId = (index.value+1) * Math.pow(10, getDigitCount(length)) + (j+1);
                     obj.listId   = -1;
 
                     this.objects.push(obj);
@@ -14044,7 +14050,7 @@ extends GShape
             [
                 new FigmaRectangle(
                                 this.nodeId,
-                                0,
+                                -1,
                                 this.value.x     .value,
                                 this.value.y     .value,
                                 this.value.width .value,
@@ -14184,7 +14190,7 @@ extends GShape
             [
                 new FigmaLine(
                     this.nodeId,
-                    0,
+                    -1,
                     this.value.x    .value,
                     this.value.y    .value,
                     this.value.width.value,
@@ -14311,7 +14317,7 @@ extends GShape
            [
                new FigmaEllipse(
                     this.nodeId,
-                    0,
+                    -1,
                     this.x     .toValue().value,
                     this.y     .toValue().value,
                     this.width .toValue().value,
@@ -14456,7 +14462,7 @@ extends GShape
             [
                 new FigmaPolygon(
                                 this.nodeId,
-                                0,
+                                -1,
                                 this.x      .toValue().value,
                                 this.y      .toValue().value,
                                 this.width  .toValue().value,
@@ -14510,6 +14516,7 @@ extends GShape
         if (this.corners) this.corners.invalidate();
     }
 }
+
 
 
 class GStar
@@ -14622,7 +14629,7 @@ extends GShape
            [
                new FigmaStar(
                                this.nodeId,
-                               0,
+                               -1,
                                this.x     .toValue().value,
                                this.y     .toValue().value,
                                this.width .toValue().value,

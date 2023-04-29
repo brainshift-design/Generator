@@ -1,19 +1,25 @@
 class FigmaObject
 {
     type;
+    
     nodeId = '';
+
+    uniqueId;
 
 
     constructor(type, nodeId)
     {
-        this.type   = type;
-        this.nodeId = nodeId;
+        this.type     = type;
+        this.nodeId   = nodeId;
+        this.uniqueId = Math.round(Math.random() * 10000);
     }
 
 
 
     copyBase(base)
     {
+        this.uniqueId         = base.uniqueId;
+
         this.fills            = clone(base.fills);
         this.stroks           = clone(base.strokes);
     

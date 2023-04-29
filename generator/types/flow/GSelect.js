@@ -69,7 +69,7 @@ extends GOperator
                     const obj = _objects[j].copy();
 
                     obj.nodeId   = this.nodeId;
-                    obj.objectId = j;
+                    obj.objectId = (index.value+1) * Math.pow(10, getDigitCount(length)) + (j+1);
                     obj.listId   = -1;
 
                     this.objects.push(obj);

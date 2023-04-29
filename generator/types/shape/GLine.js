@@ -86,7 +86,7 @@ extends GShape
             [
                 new FigmaLine(
                     this.nodeId,
-                    0,
+                    -1,
                     this.value.x    .value,
                     this.value.y    .value,
                     this.value.width.value,
