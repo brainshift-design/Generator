@@ -199,9 +199,9 @@ function initGeneratorMenus()
 
     menuMainFile = new Menu('File', false);
     menuMainFile.addItems([
-        new MenuItem('Import from file...',  {callback: () => { hideAllMenus(); uiImportFromLocalFile(); }}),
-        new MenuItem('',                   {separator: true}),    
-        new MenuItem('Save selected to file...', {callback: async () => { hideAllMenus(); uiSaveSelectionToLocalFile(); }})]);
+        new MenuItem('Import from file...',      {callback: () => { hideAllMenus(); uiImportFromLocalFile(); }}),
+        new MenuItem('',                         {separator: true}),    
+        new MenuItem('Save selected to file...', {shortcut: osCtrl() + 'S', callback: () => { hideAllMenus(); uiSaveSelectionToLocalFile(); }})]);
 
 
     menuMainPreferences = new Menu('Preferences', false);

@@ -18,13 +18,21 @@ document.addEventListener('keydown', e =>
     let setLastKeyDown = true;
 
 
+    // save to file
+    if (e.code == 'KeyS'
+          && getCtrlKey(e))
+    {
+        e.preventDefault();
+        uiSaveSelectionToLocalFile();
+    }
+
     // cut
-    if (   e.code == 'KeyX'
+    else if (   e.code == 'KeyX'
         && getCtrlKey(e))
     {
         graphView.copySelectedNodes();
         graphView.deleteSelectedNodes(true);
-    }
+    }    
 
     // copy
     else if (   e.code == 'KeyC'
@@ -34,16 +42,16 @@ document.addEventListener('keydown', e =>
 
         if (e.shiftKey) graphView.copySelectedNodesAsJavascript();
         else            graphView.copySelectedNodes();
-    }
+    }    
 
     // paste
     else if (e.code == 'KeyV'
           && getCtrlKey(e)
           && !e.altKey)
-    {
+    {  
         e.preventDefault();
         graphView.pasteCopiedNodes(e.shiftKey);
-    }
+    }    
 
     // duplicate
     else if (e.code == 'KeyD'

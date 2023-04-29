@@ -4041,7 +4041,7 @@ a
                 <p>•  added basic text nodes (subscription only for now)</p>
                 <p>•  added basic shape nodes (subscription only for now)</p>
                 <p>•  added more data flow nodes like List, Select and Repeat (subscription only for now)</p>
-                <p>•  Lists can be connected to some variable inputs to perform the operation on all list items (ex. connecting a list of numbers to an add node will add all the numbers in that list together)</p>
+                <p>•  lists can be connected to some variable inputs to perform the operation on all list items (ex. connecting a list of numbers to an add node will add all the numbers in that list together)</p>
                 <p>•  added a right-click copy menu to the crash dialog</p>
                 <p>•  replaced restart checkboxes with buttons</p>
                 <p>•  added 'Import from file' and 'Save selected to file' for nodes</p>
@@ -52056,9 +52056,9 @@ function initGeneratorMenus()
 
     menuMainFile = new Menu('File', false);
     menuMainFile.addItems([
-        new MenuItem('Import from file...',  {callback: () => { hideAllMenus(); uiImportFromLocalFile(); }}),
-        new MenuItem('',                   {separator: true}),    
-        new MenuItem('Save selected to file...', {callback: async () => { hideAllMenus(); uiSaveSelectionToLocalFile(); }})]);
+        new MenuItem('Import from file...',      {callback: () => { hideAllMenus(); uiImportFromLocalFile(); }}),
+        new MenuItem('',                         {separator: true}),    
+        new MenuItem('Save selected to file...', {shortcut: osCtrl() + 'S', callback: () => { hideAllMenus(); uiSaveSelectionToLocalFile(); }})]);
 
 
     menuMainPreferences = new Menu('Preferences', false);
@@ -79036,13 +79036,21 @@ document.addEventListener('keydown', e =>
     let setLastKeyDown = true;
 
 
+    // save to file
+    if (e.code == 'KeyS'
+          && getCtrlKey(e))
+    {
+        e.preventDefault();
+        uiSaveSelectionToLocalFile();
+    }
+
     // cut
-    if (   e.code == 'KeyX'
+    else if (   e.code == 'KeyX'
         && getCtrlKey(e))
     {
         graphView.copySelectedNodes();
         graphView.deleteSelectedNodes(true);
-    }
+    }    
 
     // copy
     else if (   e.code == 'KeyC'
@@ -79052,16 +79060,16 @@ document.addEventListener('keydown', e =>
 
         if (e.shiftKey) graphView.copySelectedNodesAsJavascript();
         else            graphView.copySelectedNodes();
-    }
+    }    
 
     // paste
     else if (e.code == 'KeyV'
           && getCtrlKey(e)
           && !e.altKey)
-    {
+    {  
         e.preventDefault();
         graphView.pasteCopiedNodes(e.shiftKey);
-    }
+    }    
 
     // duplicate
     else if (e.code == 'KeyD'
