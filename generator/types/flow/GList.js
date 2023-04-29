@@ -71,14 +71,14 @@ extends GOperator
                 if (LIST_VALUES.includes(input.type))
                 {
                     for (const item of input.items)
-                        this.value.items.push(item);   
+                        this.value.items.push(item.copy());   
                 }
                 else
                     this.value.items.push(input.copy());
             }
         }
 
-        
+
         genPushUpdateValue(parse, this.nodeId, 'value', this.value);
 
 

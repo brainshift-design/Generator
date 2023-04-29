@@ -53,7 +53,7 @@ extends ShapeValue
 
     copy()
     {
-        const copy = new RectangleValue(
+        const copy = new TextShapeValue(
             this.nodeId,
             this.text         .copy(),
             this.x            .copy(), 
