@@ -16,7 +16,7 @@ extends OperatorBase
         this.canDisable = true;
 
         
-        this.addInput (new Input (SHAPE_VALUES));
+        this.addInput (new Input ([...SHAPE_VALUES, LIST_VALUE]));
         this.addOutput(new Output([SHAPE_VALUE], this.output_genRequest));
 
 

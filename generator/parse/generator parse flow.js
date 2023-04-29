@@ -351,10 +351,7 @@ function genParseStart(parse)
 
 
     if (nInputs == 1)
-    {
         start.input = genParse(parse);
-        start.input.targets.push(start);
-    }
 
 
     start.repeatId = genParse(parse);
@@ -402,12 +399,9 @@ function genParseRepeat(parse)
 
 
     if (nInputs == 1)
-    {
         rep.input = genParse(parse);
-        rep.input.targets.push(rep);
-    }
 
-    rep.count    = genParse(parse);  rep.count.targets.push(rep);
+    rep.count    = genParse(parse);
     rep.repeatId = genParse(parse);  // don't set target here
 
 

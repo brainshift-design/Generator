@@ -346,14 +346,11 @@ function genParseSequence(parse)
 
 
     // if (nInputs == 1)
-    // {
     //     seq.input = genParse(parse);
-    //     seq.input.targets.push(seq);
-    // }
 
 
-    seq.start = genParse(parse);  seq.start.targets.push(seq);
-    seq.step  = genParse(parse);  seq.step .targets.push(seq);
+    seq.start = genParse(parse);
+    seq.step  = genParse(parse);
 
 
     parse.nTab--;
@@ -397,15 +394,12 @@ function genParseRandom(parse)
 
 
     // if (nInputs == 1)
-    // {
     //     rnd.input = genParse(parse);
-    //     rnd.input.targets.push(rnd);
-    // }
 
 
-    rnd.seed = genParse(parse);  rnd.seed.targets.push(rnd);
-    rnd.min  = genParse(parse);  rnd.min .targets.push(rnd);
-    rnd.max  = genParse(parse);  rnd.max .targets.push(rnd);
+    rnd.seed = genParse(parse);
+    rnd.min  = genParse(parse);
+    rnd.max  = genParse(parse);
 
 
     parse.nTab--;

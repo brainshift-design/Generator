@@ -9,8 +9,6 @@ class GNode
     options = {};
     data    = {}; // for type conversion info
 
-    targets = []; // clients of this object that use its data
-
 
 
     constructor(type, options) 

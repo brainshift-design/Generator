@@ -34,22 +34,6 @@ extends GValue
     {
         return this.props.isValid();
     }
-
-
-
-    // toString()
-    // {
-    //     return      this.fill  .toString()
-    //         + ' ' + this.stroke.toString();
-    // }
-
-
-
-    // toDisplayString()
-    // {
-    //     return      this.fill  .toDisplayString()
-    //         + ' ' + this.stroke.toDisplayString();
-    // }
 }
 
 

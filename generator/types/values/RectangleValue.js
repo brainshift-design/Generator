@@ -68,26 +68,6 @@ extends ShapeValue
 
 
 
-    isValid()
-    {
-        return this.x     .isValid()
-            && this.y     .isValid()
-            && this.width .isValid()
-            && this.height.isValid()
-            && this.angle .isValid()
-            && this.round .isValid()
-            && super.isValid();
-    }
-
-
-    
-    toValue()
-    {
-        return this.copy();
-    }
-
-
-
     toString()
     {
         return      this.x     .toString()
@@ -112,6 +92,26 @@ extends ShapeValue
 
 
 
+    toValue()
+    {
+        return this.copy();
+    }
+
+
+
+    isValid()
+    {
+        return this.x     .isValid()
+            && this.y     .isValid()
+            && this.width .isValid()
+            && this.height.isValid()
+            && this.angle .isValid()
+            && this.round .isValid()
+            && super.isValid();
+    }
+
+
+    
     static NaN = new RectangleValue(
         '',
         NumberValue.NaN,

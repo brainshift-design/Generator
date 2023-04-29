@@ -4823,11 +4823,6 @@ function rgbFromTypeMode(type, active, mode)
             ? (mode ? rgbActiveTextDark   : rgbActiveTextLight)
             : (mode ? rgbTextDark         : rgbTextLight      );
 
-    else if (type == COLOR_STYLE)
-        return active 
-            ? (mode ? rgbActiveFlowDark   : rgbActiveFlowLight)
-            : (mode ? rgbFlowDark         : rgbFlowLight      );
-
     else if (SHAPE_TYPES.includes(type))
         return active 
             ? (mode ? rgbActiveShapeDark  : rgbActiveShapeLight)
@@ -4844,7 +4839,11 @@ function rgbFromTypeMode(type, active, mode)
             ? (mode ? rgbActiveFlowDark   : rgbActiveFlowLight)
             : (mode ? rgbFlowDark         : rgbFlowLight      );
 
-        
+    else if (type == COLOR_STYLE)
+        return active 
+            ? (mode ? rgbActiveFlowDark   : rgbActiveFlowLight)
+            : (mode ? rgbFlowDark         : rgbFlowLight      );
+
     switch (type)
     {
         case COLOR_VALUE:           
@@ -8770,8 +8769,6 @@ class GNode
     options = {};
     data    = {}; // for type conversion info
 
-    targets = []; // clients of this object that use its data
-
 
 
     constructor(type, options) 
@@ -10223,12 +10220,20 @@ function parseListValue(str, i = -1)
         
         switch (type)
         {
-            case NUMBER_VALUE: { const num    = parseNumberValue(str[i]); i += num   [1]; list.items.push(num   [0]); break; }
-            case TEXT_VALUE:   { const text   = parseTextValue  (str[i]); i += text  [1]; list.items.push(text  [0]); break; }
-            case COLOR_VALUE:  { const col    = parseColorValue (str, i); i += col   [1]; list.items.push(col   [0]); break; }
-            case FILL_VALUE:   { const fill   = parseFillValue  (str, i); i += fill  [1]; list.items.push(fill  [0]); break; }
-            case STROKE_VALUE: { const stroke = parseStrokeValue(str, i); i += stroke[1]; list.items.push(stroke[0]); break; }
-            case LIST_VALUE:   { const _list  = parseListValue  (str, i); i += _list [1]; list.items.push(_list [0]); break; }
+            case      NUMBER_VALUE: { const num     = parseNumberValue    (str[i]);  i += num    [1];  list.items.push(num    [0]);  break; }
+            case        TEXT_VALUE: { const text    = parseTextValue      (str[i]);  i += text   [1];  list.items.push(text   [0]);  break; }
+            case       COLOR_VALUE: { const col     = parseColorValue     (str, i);  i += col    [1];  list.items.push(col    [0]);  break; }
+            case        FILL_VALUE: { const fill    = parseFillValue      (str, i);  i += fill   [1];  list.items.push(fill   [0]);  break; }
+            case      STROKE_VALUE: { const stroke  = parseStrokeValue    (str, i);  i += stroke [1];  list.items.push(stroke [0]);  break; }
+            case   RECTANGLE_VALUE: { const rect    = parseRectangleValue (str, i);  i += rect   [1];  list.items.push(rect   [0]);  break; }
+            case        LINE_VALUE: { const line    = parseLineValue      (str, i);  i += line   [1];  list.items.push(line   [0]);  break; }
+            case     ELLIPSE_VALUE: { const ellipse = parseEllipseValue   (str, i);  i += ellipse[1];  list.items.push(ellipse[0]);  break; }
+            case     POLYGON_VALUE: { const poly    = parsePolygonValue   (str, i);  i += poly   [1];  list.items.push(poly   [0]);  break; }
+            case        STAR_VALUE: { const star    = parseStarValue      (str, i);  i += star   [1];  list.items.push(star   [0]);  break; }
+            case        LIST_VALUE:  
+            case NUMBER_LIST_VALUE:  
+            case   TEXT_LIST_VALUE:  
+            case  SHAPE_LIST_VALUE: { const _list  = parseListValue  (str, i); i += _list [1]; list.items.push(_list [0]); break; }
         }
     }
  
@@ -10275,22 +10280,6 @@ extends GValue
     {
         return this.props.isValid();
     }
-
-
-
-    // toString()
-    // {
-    //     return      this.fill  .toString()
-    //         + ' ' + this.stroke.toString();
-    // }
-
-
-
-    // toDisplayString()
-    // {
-    //     return      this.fill  .toDisplayString()
-    //         + ' ' + this.stroke.toDisplayString();
-    // }
 }
 
 
@@ -10375,26 +10364,6 @@ extends ShapeValue
 
 
 
-    isValid()
-    {
-        return this.x     .isValid()
-            && this.y     .isValid()
-            && this.width .isValid()
-            && this.height.isValid()
-            && this.angle .isValid()
-            && this.round .isValid()
-            && super.isValid();
-    }
-
-
-    
-    toValue()
-    {
-        return this.copy();
-    }
-
-
-
     toString()
     {
         return      this.x     .toString()
@@ -10419,6 +10388,26 @@ extends ShapeValue
 
 
 
+    toValue()
+    {
+        return this.copy();
+    }
+
+
+
+    isValid()
+    {
+        return this.x     .isValid()
+            && this.y     .isValid()
+            && this.width .isValid()
+            && this.height.isValid()
+            && this.angle .isValid()
+            && this.round .isValid()
+            && super.isValid();
+    }
+
+
+    
     static NaN = new RectangleValue(
         '',
         NumberValue.NaN,
@@ -11433,6 +11422,8 @@ extends GOperator
         {
             await this.inputs[i].eval(parse);
 
+            
+            // first copy the input objects
 
             if (this.options.enabled)
             {
@@ -11448,6 +11439,8 @@ extends GOperator
             }
 
 
+            // now create the output value
+
             const input = this.inputs[i].toValue();
 
             if (   input
@@ -11459,11 +11452,11 @@ extends GOperator
                         this.value.items.push(item);   
                 }
                 else
-                    this.value.items.push(input);
+                    this.value.items.push(input.copy());
             }
         }
-    
 
+        
         genPushUpdateValue(parse, this.nodeId, 'value', this.value);
 
 
@@ -21120,7 +21113,7 @@ function genParseColor(parse)
 
     if (nInputs == 1)
     {
-        col.input = genParse(parse);  col.input.targets.push(col);
+        col.input = genParse(parse);
         paramIds = parse.move().split(',');
     }
     else
@@ -21133,11 +21126,11 @@ function genParseColor(parse)
     {
         switch (id)
         {
-        case 'space':   col.space   = genParse(parse);  col.space  .targets.push(col);  break;
-        case 'convert': col.convert = genParse(parse);  col.convert.targets.push(col);  break;
-        case 'c1':      col.c1      = genParse(parse);  col.c1     .targets.push(col);  break;
-        case 'c2':      col.c2      = genParse(parse);  col.c2     .targets.push(col);  break;
-        case 'c3':      col.c3      = genParse(parse);  col.c3     .targets.push(col);  break;
+        case 'space':   col.space   = genParse(parse);  break;
+        case 'convert': col.convert = genParse(parse);  break;
+        case 'c1':      col.c1      = genParse(parse);  break;
+        case 'c2':      col.c2      = genParse(parse);  break;
+        case 'c3':      col.c3      = genParse(parse);  break;
         }
     }
     
@@ -21842,10 +21835,7 @@ function genParseStart(parse)
 
 
     if (nInputs == 1)
-    {
         start.input = genParse(parse);
-        start.input.targets.push(start);
-    }
 
 
     start.repeatId = genParse(parse);
@@ -21893,12 +21883,9 @@ function genParseRepeat(parse)
 
 
     if (nInputs == 1)
-    {
         rep.input = genParse(parse);
-        rep.input.targets.push(rep);
-    }
 
-    rep.count    = genParse(parse);  rep.count.targets.push(rep);
+    rep.count    = genParse(parse);
     rep.repeatId = genParse(parse);  // don't set target here
 
 
@@ -22451,14 +22438,11 @@ function genParseSequence(parse)
 
 
     // if (nInputs == 1)
-    // {
     //     seq.input = genParse(parse);
-    //     seq.input.targets.push(seq);
-    // }
 
 
-    seq.start = genParse(parse);  seq.start.targets.push(seq);
-    seq.step  = genParse(parse);  seq.step .targets.push(seq);
+    seq.start = genParse(parse);
+    seq.step  = genParse(parse);
 
 
     parse.nTab--;
@@ -22502,15 +22486,12 @@ function genParseRandom(parse)
 
 
     // if (nInputs == 1)
-    // {
     //     rnd.input = genParse(parse);
-    //     rnd.input.targets.push(rnd);
-    // }
 
 
-    rnd.seed = genParse(parse);  rnd.seed.targets.push(rnd);
-    rnd.min  = genParse(parse);  rnd.min .targets.push(rnd);
-    rnd.max  = genParse(parse);  rnd.max .targets.push(rnd);
+    rnd.seed = genParse(parse);
+    rnd.min  = genParse(parse);
+    rnd.max  = genParse(parse);
 
 
     parse.nTab--;
@@ -28041,11 +28022,6 @@ function rgbFromTypeMode(type, active, mode)
             ? (mode ? rgbActiveTextDark   : rgbActiveTextLight)
             : (mode ? rgbTextDark         : rgbTextLight      );
 
-    else if (type == COLOR_STYLE)
-        return active 
-            ? (mode ? rgbActiveFlowDark   : rgbActiveFlowLight)
-            : (mode ? rgbFlowDark         : rgbFlowLight      );
-
     else if (SHAPE_TYPES.includes(type))
         return active 
             ? (mode ? rgbActiveShapeDark  : rgbActiveShapeLight)
@@ -28062,7 +28038,11 @@ function rgbFromTypeMode(type, active, mode)
             ? (mode ? rgbActiveFlowDark   : rgbActiveFlowLight)
             : (mode ? rgbFlowDark         : rgbFlowLight      );
 
-        
+    else if (type == COLOR_STYLE)
+        return active 
+            ? (mode ? rgbActiveFlowDark   : rgbActiveFlowLight)
+            : (mode ? rgbFlowDark         : rgbFlowLight      );
+
     switch (type)
     {
         case COLOR_VALUE:           
@@ -34576,8 +34556,6 @@ class GNode
     options = {};
     data    = {}; // for type conversion info
 
-    targets = []; // clients of this object that use its data
-
 
 
     constructor(type, options) 
@@ -36029,12 +36007,20 @@ function parseListValue(str, i = -1)
         
         switch (type)
         {
-            case NUMBER_VALUE: { const num    = parseNumberValue(str[i]); i += num   [1]; list.items.push(num   [0]); break; }
-            case TEXT_VALUE:   { const text   = parseTextValue  (str[i]); i += text  [1]; list.items.push(text  [0]); break; }
-            case COLOR_VALUE:  { const col    = parseColorValue (str, i); i += col   [1]; list.items.push(col   [0]); break; }
-            case FILL_VALUE:   { const fill   = parseFillValue  (str, i); i += fill  [1]; list.items.push(fill  [0]); break; }
-            case STROKE_VALUE: { const stroke = parseStrokeValue(str, i); i += stroke[1]; list.items.push(stroke[0]); break; }
-            case LIST_VALUE:   { const _list  = parseListValue  (str, i); i += _list [1]; list.items.push(_list [0]); break; }
+            case      NUMBER_VALUE: { const num     = parseNumberValue    (str[i]);  i += num    [1];  list.items.push(num    [0]);  break; }
+            case        TEXT_VALUE: { const text    = parseTextValue      (str[i]);  i += text   [1];  list.items.push(text   [0]);  break; }
+            case       COLOR_VALUE: { const col     = parseColorValue     (str, i);  i += col    [1];  list.items.push(col    [0]);  break; }
+            case        FILL_VALUE: { const fill    = parseFillValue      (str, i);  i += fill   [1];  list.items.push(fill   [0]);  break; }
+            case      STROKE_VALUE: { const stroke  = parseStrokeValue    (str, i);  i += stroke [1];  list.items.push(stroke [0]);  break; }
+            case   RECTANGLE_VALUE: { const rect    = parseRectangleValue (str, i);  i += rect   [1];  list.items.push(rect   [0]);  break; }
+            case        LINE_VALUE: { const line    = parseLineValue      (str, i);  i += line   [1];  list.items.push(line   [0]);  break; }
+            case     ELLIPSE_VALUE: { const ellipse = parseEllipseValue   (str, i);  i += ellipse[1];  list.items.push(ellipse[0]);  break; }
+            case     POLYGON_VALUE: { const poly    = parsePolygonValue   (str, i);  i += poly   [1];  list.items.push(poly   [0]);  break; }
+            case        STAR_VALUE: { const star    = parseStarValue      (str, i);  i += star   [1];  list.items.push(star   [0]);  break; }
+            case        LIST_VALUE:  
+            case NUMBER_LIST_VALUE:  
+            case   TEXT_LIST_VALUE:  
+            case  SHAPE_LIST_VALUE: { const _list  = parseListValue  (str, i); i += _list [1]; list.items.push(_list [0]); break; }
         }
     }
  
@@ -36081,22 +36067,6 @@ extends GValue
     {
         return this.props.isValid();
     }
-
-
-
-    // toString()
-    // {
-    //     return      this.fill  .toString()
-    //         + ' ' + this.stroke.toString();
-    // }
-
-
-
-    // toDisplayString()
-    // {
-    //     return      this.fill  .toDisplayString()
-    //         + ' ' + this.stroke.toDisplayString();
-    // }
 }
 
 
@@ -36181,26 +36151,6 @@ extends ShapeValue
 
 
 
-    isValid()
-    {
-        return this.x     .isValid()
-            && this.y     .isValid()
-            && this.width .isValid()
-            && this.height.isValid()
-            && this.angle .isValid()
-            && this.round .isValid()
-            && super.isValid();
-    }
-
-
-    
-    toValue()
-    {
-        return this.copy();
-    }
-
-
-
     toString()
     {
         return      this.x     .toString()
@@ -36225,6 +36175,26 @@ extends ShapeValue
 
 
 
+    toValue()
+    {
+        return this.copy();
+    }
+
+
+
+    isValid()
+    {
+        return this.x     .isValid()
+            && this.y     .isValid()
+            && this.width .isValid()
+            && this.height.isValid()
+            && this.angle .isValid()
+            && this.round .isValid()
+            && super.isValid();
+    }
+
+
+    
     static NaN = new RectangleValue(
         '',
         NumberValue.NaN,
@@ -37239,6 +37209,8 @@ extends GOperator
         {
             await this.inputs[i].eval(parse);
 
+            
+            // first copy the input objects
 
             if (this.options.enabled)
             {
@@ -37254,6 +37226,8 @@ extends GOperator
             }
 
 
+            // now create the output value
+
             const input = this.inputs[i].toValue();
 
             if (   input
@@ -37265,11 +37239,11 @@ extends GOperator
                         this.value.items.push(item);   
                 }
                 else
-                    this.value.items.push(input);
+                    this.value.items.push(input.copy());
             }
         }
-    
 
+        
         genPushUpdateValue(parse, this.nodeId, 'value', this.value);
 
 
@@ -61563,11 +61537,11 @@ function specifyListOutput(value, output)
              if (type == NULL     )   type = item.type;
         else if (type != item.type) { type = ANY_VALUE; break; }
     }
-    
-         if (type == NUMBER_VALUE) output.types = [NUMBER_LIST_VALUE];
-    else if (type ==   TEXT_VALUE) output.types = [  TEXT_LIST_VALUE];
-    else if (type ==  SHAPE_VALUE) output.types = [ SHAPE_LIST_VALUE];
-    else                           output.types = [       LIST_VALUE];
+
+         if (type == NUMBER_VALUE)        output.types = [NUMBER_LIST_VALUE];
+    else if (type ==   TEXT_VALUE)        output.types = [  TEXT_LIST_VALUE];
+    else if (SHAPE_VALUES.includes(type)) output.types = [ SHAPE_LIST_VALUE];
+    else                                  output.types = [       LIST_VALUE];
 }
 
 
@@ -71035,7 +71009,7 @@ extends OperatorBase
         this.canDisable = true;
 
         
-        this.addInput (new Input (SHAPE_VALUES));
+        this.addInput (new Input ([...SHAPE_VALUES, LIST_VALUE]));
         this.addOutput(new Output([SHAPE_VALUE], this.output_genRequest));
 
 
@@ -71129,7 +71103,7 @@ extends OperatorBase
         this.canDisable = true;
 
         
-        this.addInput (new Input (SHAPE_VALUES));
+        this.addInput (new Input ([...SHAPE_VALUES, LIST_VALUE]));
         this.addOutput(new Output([SHAPE_VALUE], this.output_genRequest));
 
 

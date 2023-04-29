@@ -43,6 +43,8 @@ extends GOperator
         {
             await this.inputs[i].eval(parse);
 
+            
+            // first copy the input objects
 
             if (this.options.enabled)
             {
@@ -58,6 +60,8 @@ extends GOperator
             }
 
 
+            // now create the output value
+
             const input = this.inputs[i].toValue();
 
             if (   input
@@ -69,11 +73,11 @@ extends GOperator
                         this.value.items.push(item);   
                 }
                 else
-                    this.value.items.push(input);
+                    this.value.items.push(input.copy());
             }
         }
-    
 
+        
         genPushUpdateValue(parse, this.nodeId, 'value', this.value);
 
 

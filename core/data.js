@@ -17,11 +17,6 @@ function rgbFromTypeMode(type, active, mode)
             ? (mode ? rgbActiveTextDark   : rgbActiveTextLight)
             : (mode ? rgbTextDark         : rgbTextLight      );
 
-    else if (type == COLOR_STYLE)
-        return active 
-            ? (mode ? rgbActiveFlowDark   : rgbActiveFlowLight)
-            : (mode ? rgbFlowDark         : rgbFlowLight      );
-
     else if (SHAPE_TYPES.includes(type))
         return active 
             ? (mode ? rgbActiveShapeDark  : rgbActiveShapeLight)
@@ -38,7 +33,11 @@ function rgbFromTypeMode(type, active, mode)
             ? (mode ? rgbActiveFlowDark   : rgbActiveFlowLight)
             : (mode ? rgbFlowDark         : rgbFlowLight      );
 
-        
+    else if (type == COLOR_STYLE)
+        return active 
+            ? (mode ? rgbActiveFlowDark   : rgbActiveFlowLight)
+            : (mode ? rgbFlowDark         : rgbFlowLight      );
+
     switch (type)
     {
         case COLOR_VALUE:           

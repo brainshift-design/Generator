@@ -178,12 +178,20 @@ function parseListValue(str, i = -1)
         
         switch (type)
         {
-            case NUMBER_VALUE: { const num    = parseNumberValue(str[i]); i += num   [1]; list.items.push(num   [0]); break; }
-            case TEXT_VALUE:   { const text   = parseTextValue  (str[i]); i += text  [1]; list.items.push(text  [0]); break; }
-            case COLOR_VALUE:  { const col    = parseColorValue (str, i); i += col   [1]; list.items.push(col   [0]); break; }
-            case FILL_VALUE:   { const fill   = parseFillValue  (str, i); i += fill  [1]; list.items.push(fill  [0]); break; }
-            case STROKE_VALUE: { const stroke = parseStrokeValue(str, i); i += stroke[1]; list.items.push(stroke[0]); break; }
-            case LIST_VALUE:   { const _list  = parseListValue  (str, i); i += _list [1]; list.items.push(_list [0]); break; }
+            case      NUMBER_VALUE: { const num     = parseNumberValue    (str[i]);  i += num    [1];  list.items.push(num    [0]);  break; }
+            case        TEXT_VALUE: { const text    = parseTextValue      (str[i]);  i += text   [1];  list.items.push(text   [0]);  break; }
+            case       COLOR_VALUE: { const col     = parseColorValue     (str, i);  i += col    [1];  list.items.push(col    [0]);  break; }
+            case        FILL_VALUE: { const fill    = parseFillValue      (str, i);  i += fill   [1];  list.items.push(fill   [0]);  break; }
+            case      STROKE_VALUE: { const stroke  = parseStrokeValue    (str, i);  i += stroke [1];  list.items.push(stroke [0]);  break; }
+            case   RECTANGLE_VALUE: { const rect    = parseRectangleValue (str, i);  i += rect   [1];  list.items.push(rect   [0]);  break; }
+            case        LINE_VALUE: { const line    = parseLineValue      (str, i);  i += line   [1];  list.items.push(line   [0]);  break; }
+            case     ELLIPSE_VALUE: { const ellipse = parseEllipseValue   (str, i);  i += ellipse[1];  list.items.push(ellipse[0]);  break; }
+            case     POLYGON_VALUE: { const poly    = parsePolygonValue   (str, i);  i += poly   [1];  list.items.push(poly   [0]);  break; }
+            case        STAR_VALUE: { const star    = parseStarValue      (str, i);  i += star   [1];  list.items.push(star   [0]);  break; }
+            case        LIST_VALUE:  
+            case NUMBER_LIST_VALUE:  
+            case   TEXT_LIST_VALUE:  
+            case  SHAPE_LIST_VALUE: { const _list  = parseListValue  (str, i); i += _list [1]; list.items.push(_list [0]); break; }
         }
     }
  
