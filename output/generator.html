@@ -15366,16 +15366,37 @@ extends GOperator
 
             obj.angle += options.angle.toNumber(); 
 
-            const angle = angle_(bounds.width, bounds.height);
-            const halfd = Math.sqrt(sqr(bounds.width) + sqr(bounds.height)) / 2;
+            const angle = anglev_(
+                bounds.x + bounds.width /2, 
+                bounds.y + bounds.height/2,
+                obj.x,
+                obj.y);
 
-            const v     = vector(angle + obj.angle/360*Tau, halfd);
+            const halfd = distance_(//Math.sqrt(sqr(bounds.width) + sqr(bounds.height)) / 2;
+                bounds.x + bounds.width /2,
+                bounds.y + bounds.height/2,
+                obj.x,
+                obj.y);
+
+            const a     = obj.angle/360*Tau;
+            const v     = vector(angle - a, halfd);
 
             const dx    = 0.5 - options.ox.toNumber()/100;
-            const dy    = 0.5 + options.oy.toNumber()/100;
+            const dy    = 0.5 - options.oy.toNumber()/100;
 
-            obj.x = obj.x + bounds.width /2 - v.x + dx * bounds.width * Math.cos(-obj.angle/360*Tau) - dy * bounds.height * Math.sin(obj.angle/360*Tau);
-            obj.y = obj.y + bounds.height/2 + v.y + dx * bounds.width * Math.sin(-obj.angle/360*Tau) - dy * bounds.height * Math.cos(obj.angle/360*Tau);
+            obj.x = 
+                  bounds.x 
+                + bounds.width /2 
+                + v.x 
+                + dx * bounds.width  * Math.cos(a) 
+                - dy * bounds.height * Math.sin(a);
+
+            obj.y = 
+                  bounds.y
+                + bounds.height/2
+                + v.y 
+                + dx * bounds.width  * Math.sin(a) 
+                - dy * bounds.height * Math.cos(a);
         }
 
         
