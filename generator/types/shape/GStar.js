@@ -76,7 +76,7 @@ extends GShape
         genPushUpdateValue(parse, this.nodeId, 'convex', this.value.convex);
 
 
-        await this.evalBase(parse, input);
+        await this.evalShapeBase(parse, input);
 
 
         await this.evalObjects(parse);

@@ -66,7 +66,7 @@ extends GShape
         genPushUpdateValue(parse, this.nodeId, 'round', this.value.round);
 
 
-        await this.evalBase(parse, input);
+        await this.evalShapeBase(parse, input);
 
 
         await this.evalObjects(parse);

@@ -39,12 +39,15 @@ extends GOperator
 
 
 
-    async evalBaseParams(parse)
+    async evalBaseParams(parse, evalHeight = true)
     {
         const x      = this.x      ? (await this.x     .eval(parse)).toValue() : null;
         const y      = this.y      ? (await this.y     .eval(parse)).toValue() : null;
         const width  = this.width  ? (await this.width .eval(parse)).toValue() : null;
-        const height = this.height ? (await this.height.eval(parse)).toValue() : null;
+
+        const height = evalHeight
+                    && this.height ? (await this.height.eval(parse)).toValue() : null;
+
         const angle  = this.angle  ? (await this.angle .eval(parse)).toValue() : null;
 
         return [x, y, width, height, angle];
@@ -52,7 +55,7 @@ extends GOperator
 
 
 
-    async evalBase(parse, input)
+    async evalShapeBase(parse, input, evalHeight = true)
     {
         let props = this.props ? (await this.props.eval(parse)).toValue() : null;
 
@@ -72,7 +75,10 @@ extends GOperator
         genPushUpdateValue(parse, this.nodeId, 'x',      this.value.x     );
         genPushUpdateValue(parse, this.nodeId, 'y',      this.value.y     );
         genPushUpdateValue(parse, this.nodeId, 'width',  this.value.width );
-        genPushUpdateValue(parse, this.nodeId, 'height', this.value.height);
+
+        if (evalHeight)
+            genPushUpdateValue(parse, this.nodeId, 'height', this.value.height);
+
         genPushUpdateValue(parse, this.nodeId, 'angle',  this.value.angle );
 
         genPushUpdateValue(parse, this.nodeId, 'props',  this.value.props );

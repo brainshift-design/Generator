@@ -188,6 +188,7 @@ function parseListValue(str, i = -1)
             case     ELLIPSE_VALUE: { const ellipse = parseEllipseValue   (str, i);  i += ellipse[1];  list.items.push(ellipse[0]);  break; }
             case     POLYGON_VALUE: { const poly    = parsePolygonValue   (str, i);  i += poly   [1];  list.items.push(poly   [0]);  break; }
             case        STAR_VALUE: { const star    = parseStarValue      (str, i);  i += star   [1];  list.items.push(star   [0]);  break; }
+            case   TEXTSHAPE_VALUE: { const star    = parseTextShapeValue (str, i);  i += star   [1];  list.items.push(star   [0]);  break; }
             case        LIST_VALUE:  
             case NUMBER_LIST_VALUE:  
             case   TEXT_LIST_VALUE:  

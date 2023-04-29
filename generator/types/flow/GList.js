@@ -39,7 +39,7 @@ extends GOperator
         this.objects = [];
 
 
-        for (let i = 0; i < this.inputs.length; i++)
+        for (let i = 0, o = 0; i < this.inputs.length; i++)
         {
             await this.inputs[i].eval(parse);
 
@@ -48,12 +48,13 @@ extends GOperator
 
             if (this.options.enabled)
             {
-                for (let j = 0; j < this.inputs[i].objects.length; j++)
+                for (let j = 0; j < this.inputs[i].objects.length; j++, o++)
                 {
                     const obj = this.inputs[i].objects[j].copy();
 
                     obj.nodeId   = this.nodeId;
-                    obj.objectId = i;
+                    obj.objectId = o;
+                    obj.listId   = i;
 
                     this.objects.push(obj);
                 }

@@ -36,10 +36,11 @@ extends GOperator
 
 
         let index = (await this.index.eval(parse)).toValue();
-        index = new NumberValue(Math.round(index.value));
 
 
-        let length = 0;
+        this.objects = [];
+
+        let length   = 0;
 
 
         if (this.input)
@@ -48,13 +49,42 @@ extends GOperator
 
             length = input.items.length;
 
-            index.value = Math.min(index.value, input.items.length-1);
 
-            this.value = input.items[index.value];
+            if (length > 0)
+            {
+                index.value = Math.min(index.value, input.items.length-1);
+
+                index = 
+                    index.isValid()
+                    ? new NumberValue(Math.round(index.value))
+                    : new NumberValue(0);
+
+                this.value = input.items[index.value];
+
+                
+                const _objects = this.input.objects.filter(o => o.listId == index.value);
+
+                for (let j = 0; j < _objects.length; j++)
+                {
+                    const obj = _objects[j].copy();
+
+                    obj.nodeId   = this.nodeId;
+                    obj.objectId = j;
+                    obj.listId   = -1;
+
+                    this.objects.push(obj);
+                }
+            }
+            else
+            {
+                this.value = NullValue;
+                index      = NumberValue.NaN;
+            }
         }
         else
         {
             this.value = NullValue;
+            index      = NumberValue.NaN;
         }
 
 

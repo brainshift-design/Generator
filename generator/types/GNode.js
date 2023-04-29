@@ -5,6 +5,7 @@ class GNode
 
     valid; // has been evaluated
 
+    listId  = -1;
 
     options = {};
     data    = {}; // for type conversion info

@@ -230,8 +230,8 @@ class MenuItem
                         else if ( e.clientX - rect.x >= rect.width - this.arrowWidth
                             && !this.enteredExpand)
                         {
-                            this.divHighlight.style.left  = 'calc(100% - ' + (this.childMenu && this.callback ? this.arrowWidth : 0) + 'px)';
-                            this.divHighlight.style.width = this.arrowWidth + 'px';
+                            this.divHighlight.style.left  = 0;//'calc(100% - ' + (this.childMenu && this.callback ? this.arrowWidth : 0) + 'px)';
+                            this.divHighlight.style.width = '100%';//this.arrowWidth + 'px';
 
                             this.showChildMenu();
 
@@ -284,7 +284,7 @@ class MenuItem
             this.divIcon.style.backgroundRepeat   = 'no-repeat';
         }
         else
-            this.divIcon.style.background = 'transparent';
+            this.divIcon.style.background         = 'transparent';
     }
 
 

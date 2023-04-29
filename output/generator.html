@@ -4393,6 +4393,7 @@ class GNode
 
     valid; // has been evaluated
 
+    listId  = -1;
 
     options = {};
     data    = {}; // for type conversion info
@@ -5858,6 +5859,7 @@ function parseListValue(str, i = -1)
             case     ELLIPSE_VALUE: { const ellipse = parseEllipseValue   (str, i);  i += ellipse[1];  list.items.push(ellipse[0]);  break; }
             case     POLYGON_VALUE: { const poly    = parsePolygonValue   (str, i);  i += poly   [1];  list.items.push(poly   [0]);  break; }
             case        STAR_VALUE: { const star    = parseStarValue      (str, i);  i += star   [1];  list.items.push(star   [0]);  break; }
+            case   TEXTSHAPE_VALUE: { const star    = parseTextShapeValue (str, i);  i += star   [1];  list.items.push(star   [0]);  break; }
             case        LIST_VALUE:  
             case NUMBER_LIST_VALUE:  
             case   TEXT_LIST_VALUE:  
@@ -7046,7 +7048,7 @@ extends GOperator
         this.objects = [];
 
 
-        for (let i = 0; i < this.inputs.length; i++)
+        for (let i = 0, o = 0; i < this.inputs.length; i++)
         {
             await this.inputs[i].eval(parse);
 
@@ -7055,12 +7057,13 @@ extends GOperator
 
             if (this.options.enabled)
             {
-                for (let j = 0; j < this.inputs[i].objects.length; j++)
+                for (let j = 0; j < this.inputs[i].objects.length; j++, o++)
                 {
                     const obj = this.inputs[i].objects[j].copy();
 
                     obj.nodeId   = this.nodeId;
-                    obj.objectId = i;
+                    obj.objectId = o;
+                    obj.listId   = i;
 
                     this.objects.push(obj);
                 }
@@ -7355,10 +7358,11 @@ extends GOperator
 
 
         let index = (await this.index.eval(parse)).toValue();
-        index = new NumberValue(Math.round(index.value));
 
 
-        let length = 0;
+        this.objects = [];
+
+        let length   = 0;
 
 
         if (this.input)
@@ -7367,13 +7371,42 @@ extends GOperator
 
             length = input.items.length;
 
-            index.value = Math.min(index.value, input.items.length-1);
 
-            this.value = input.items[index.value];
+            if (length > 0)
+            {
+                index.value = Math.min(index.value, input.items.length-1);
+
+                index = 
+                    index.isValid()
+                    ? new NumberValue(Math.round(index.value))
+                    : new NumberValue(0);
+
+                this.value = input.items[index.value];
+
+                
+                const _objects = this.input.objects.filter(o => o.listId == index.value);
+
+                for (let j = 0; j < _objects.length; j++)
+                {
+                    const obj = _objects[j].copy();
+
+                    obj.nodeId   = this.nodeId;
+                    obj.objectId = j;
+                    obj.listId   = -1;
+
+                    this.objects.push(obj);
+                }
+            }
+            else
+            {
+                this.value = NullValue;
+                index      = NumberValue.NaN;
+            }
         }
         else
         {
             this.value = NullValue;
+            index      = NumberValue.NaN;
         }
 
 
@@ -13717,12 +13750,15 @@ extends GOperator
 
 
 
-    async evalBaseParams(parse)
+    async evalBaseParams(parse, evalHeight = true)
     {
         const x      = this.x      ? (await this.x     .eval(parse)).toValue() : null;
         const y      = this.y      ? (await this.y     .eval(parse)).toValue() : null;
         const width  = this.width  ? (await this.width .eval(parse)).toValue() : null;
-        const height = this.height ? (await this.height.eval(parse)).toValue() : null;
+
+        const height = evalHeight
+                    && this.height ? (await this.height.eval(parse)).toValue() : null;
+
         const angle  = this.angle  ? (await this.angle .eval(parse)).toValue() : null;
 
         return [x, y, width, height, angle];
@@ -13730,7 +13766,7 @@ extends GOperator
 
 
 
-    async evalBase(parse, input)
+    async evalShapeBase(parse, input, evalHeight = true)
     {
         let props = this.props ? (await this.props.eval(parse)).toValue() : null;
 
@@ -13750,7 +13786,10 @@ extends GOperator
         genPushUpdateValue(parse, this.nodeId, 'x',      this.value.x     );
         genPushUpdateValue(parse, this.nodeId, 'y',      this.value.y     );
         genPushUpdateValue(parse, this.nodeId, 'width',  this.value.width );
-        genPushUpdateValue(parse, this.nodeId, 'height', this.value.height);
+
+        if (evalHeight)
+            genPushUpdateValue(parse, this.nodeId, 'height', this.value.height);
+
         genPushUpdateValue(parse, this.nodeId, 'angle',  this.value.angle );
 
         genPushUpdateValue(parse, this.nodeId, 'props',  this.value.props );
@@ -13942,7 +13981,7 @@ extends GShape
         genPushUpdateValue(parse, this.nodeId, 'round', this.value.round);
 
 
-        await this.evalBase(parse, input);
+        await this.evalShapeBase(parse, input);
 
 
         await this.evalObjects(parse);
@@ -14058,7 +14097,7 @@ extends GShape
             return this;
 
 
-        const [x, y, width, height, angle] = await this.evalBaseParams(parse);
+        const [x, y, width, height, angle] = await this.evalBaseParams(parse, false);
 
             
         let input = null;
@@ -14081,10 +14120,10 @@ extends GShape
 
 
             
-        genPushUpdateValue(parse, this.nodeId, 'value', this.value      );
+        genPushUpdateValue(parse, this.nodeId, 'value', this.value);
 
 
-        await this.evalBase(parse, input);
+        await this.evalShapeBase(parse, input, false);
 
 
         await this.evalObjects(parse);
@@ -14210,7 +14249,7 @@ extends GShape
         genPushUpdateValue(parse, this.nodeId, 'value',  this.value       );
 
 
-        await this.evalBase(parse, input);
+        await this.evalShapeBase(parse, input);
 
 
         await this.evalObjects(parse);
@@ -14353,7 +14392,7 @@ extends GShape
         genPushUpdateValue(parse, this.nodeId, 'corners', this.value.corners);
 
 
-        await this.evalBase(parse, input);
+        await this.evalShapeBase(parse, input);
 
 
         await this.evalObjects(parse);
@@ -14518,7 +14557,7 @@ extends GShape
         genPushUpdateValue(parse, this.nodeId, 'convex', this.value.convex);
 
 
-        await this.evalBase(parse, input);
+        await this.evalShapeBase(parse, input);
 
 
         await this.evalObjects(parse);
@@ -14745,7 +14784,7 @@ extends GShape
         genPushUpdateValue(parse, this.nodeId, 'letterSpacing', this.value.letterSpacing);
 
 
-        await this.evalBase(parse, input);
+        await this.evalShapeBase(parse, input);
 
 
         await this.evalObjects(parse);

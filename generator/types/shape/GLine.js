@@ -32,7 +32,7 @@ extends GShape
             return this;
 
 
-        const [x, y, width, height, angle] = await this.evalBaseParams(parse);
+        const [x, y, width, height, angle] = await this.evalBaseParams(parse, false);
 
             
         let input = null;
@@ -55,10 +55,10 @@ extends GShape
 
 
             
-        genPushUpdateValue(parse, this.nodeId, 'value', this.value      );
+        genPushUpdateValue(parse, this.nodeId, 'value', this.value);
 
 
-        await this.evalBase(parse, input);
+        await this.evalShapeBase(parse, input, false);
 
 
         await this.evalObjects(parse);
