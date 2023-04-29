@@ -57,7 +57,7 @@ extends GOperator
                     if (obj.objectId != NULL) obj.objectId += ' ';
                     obj.objectId += (o + 1).toString();
                     
-                    obj.listId    = i;
+                    obj.listId = i;
 
                     this.objects.push(obj);
                 }
