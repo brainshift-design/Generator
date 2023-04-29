@@ -10235,7 +10235,7 @@ function parseListValue(str, i = -1)
             case        LIST_VALUE:  
             case NUMBER_LIST_VALUE:  
             case   TEXT_LIST_VALUE:  
-            case  SHAPE_LIST_VALUE: { const _list  = parseListValue  (str, i); i += _list [1]; list.items.push(_list [0]); break; }
+            case  SHAPE_LIST_VALUE: { const _list   = parseListValue      (str, i);  i += _list  [1];  list.items.push(_list  [0]);  break; }
         }
     }
  
@@ -10243,6 +10243,39 @@ function parseListValue(str, i = -1)
     return [
         list, 
         i - iStart];
+}
+
+
+
+function finalListTypeFromItems(items)
+{
+    return finalListTypeFromTypes(items.map(i => i.type));
+}
+
+
+
+function finalListTypeFromTypes(types)
+{
+    let _type = NULL;
+
+    for (const type of types)
+    {
+        if (_type == NULL)   
+            _type = type;
+            
+        else if (_type != type
+              && !SHAPE_VALUES.includes(_type)
+              && !SHAPE_VALUES.includes( type))
+        { 
+            _type = ANY_VALUE;
+            break; 
+        }
+    }
+
+         if (_type == NUMBER_VALUE)        return NUMBER_LIST_VALUE;
+    else if (_type ==   TEXT_VALUE)        return   TEXT_LIST_VALUE;
+    else if (SHAPE_VALUES.includes(_type)) return  SHAPE_LIST_VALUE;
+    else                                   return        LIST_VALUE;
 }
 
 
@@ -36061,7 +36094,7 @@ function parseListValue(str, i = -1)
             case        LIST_VALUE:  
             case NUMBER_LIST_VALUE:  
             case   TEXT_LIST_VALUE:  
-            case  SHAPE_LIST_VALUE: { const _list  = parseListValue  (str, i); i += _list [1]; list.items.push(_list [0]); break; }
+            case  SHAPE_LIST_VALUE: { const _list   = parseListValue      (str, i);  i += _list  [1];  list.items.push(_list  [0]);  break; }
         }
     }
  
@@ -36069,6 +36102,39 @@ function parseListValue(str, i = -1)
     return [
         list, 
         i - iStart];
+}
+
+
+
+function finalListTypeFromItems(items)
+{
+    return finalListTypeFromTypes(items.map(i => i.type));
+}
+
+
+
+function finalListTypeFromTypes(types)
+{
+    let _type = NULL;
+
+    for (const type of types)
+    {
+        if (_type == NULL)   
+            _type = type;
+            
+        else if (_type != type
+              && !SHAPE_VALUES.includes(_type)
+              && !SHAPE_VALUES.includes( type))
+        { 
+            _type = ANY_VALUE;
+            break; 
+        }
+    }
+
+         if (_type == NUMBER_VALUE)        return NUMBER_LIST_VALUE;
+    else if (_type ==   TEXT_VALUE)        return   TEXT_LIST_VALUE;
+    else if (SHAPE_VALUES.includes(_type)) return  SHAPE_LIST_VALUE;
+    else                                   return        LIST_VALUE;
 }
 
 
@@ -51024,8 +51090,8 @@ class MenuItem
                         else if ( e.clientX - rect.x >= rect.width - this.arrowWidth
                             && !this.enteredExpand)
                         {
-                            this.divHighlight.style.left  = 0;//'calc(100% - ' + (this.childMenu && this.callback ? this.arrowWidth : 0) + 'px)';
-                            this.divHighlight.style.width = '100%';//this.arrowWidth + 'px';
+                            this.divHighlight.style.left  = 0;
+                            this.divHighlight.style.width = '100%';
 
                             this.showChildMenu();
 
@@ -57612,7 +57678,7 @@ extends Parameter
         super.setValue(this.value, createAction, updateControl, dispatchEvents);
 
         if (this.output)
-            specifyListOutput(this.value, this.output);
+            this.output.types = [...finalListTypeFromItems(this.value.items)];
 
 
         this.oldValue = this.value;
@@ -61606,23 +61672,6 @@ function idFromNodePath(path)
 
 
 
-function specifyListOutput(value, output)
-{
-    let type = NULL;
-
-    for (const item of value.items)
-    {
-             if (type == NULL     )   type = item.type;
-        else if (type != item.type) { type = ANY_VALUE; break; }
-    }
-
-         if (type == NUMBER_VALUE)        output.types = [NUMBER_LIST_VALUE];
-    else if (type ==   TEXT_VALUE)        output.types = [  TEXT_LIST_VALUE];
-    else if (SHAPE_VALUES.includes(type)) output.types = [ SHAPE_LIST_VALUE];
-    else                                  output.types = [       LIST_VALUE];
-}
-
-
 var  newReorderIndex = Number.NaN;
 var prevReorderIndex = Number.NaN;
 var  oldReorderIndex = Number.NaN;
@@ -63376,7 +63425,33 @@ extends OperatorBase
         const value = values[paramIds.findIndex(id => id == 'value')];
         console.assert(LIST_VALUES.includes(value.type));
 
-        specifyListOutput(value, this.outputs[0]);
+        this.outputs[0].types = [finalListTypeFromItems(value.items)];
+    }
+
+
+
+    getHeaderColors(options = {})
+    {
+        const colors = super.getHeaderColors(options);
+
+        const inputTypes = this.connectedHeaderInputs.map(i => i.connectedOutput.types[0]);
+
+        const type = 
+            this.inputs[0].connected 
+            ? finalListTypeFromTypes(inputTypes)
+            : this.type;
+
+
+        colors.back = rgb_a(rgbFromType(type, this.active), 0.95);
+
+
+        colors.text   = isDark(colors.back) ? [1, 1, 1, 1] : [0, 0, 0, 1]; 
+
+        colors.input  = this.active ? rgb_a(colors.text, 0.4)  : rgb_a(rgbSaturateHsv(rgbFromType(type, true), 0.5), 0.8);
+        colors.output = this.active ? rgb_a(colors.text, 0.35) : rgb_a(rgbSaturateHsv(rgbFromType(type, true), 0.5), 0.7);
+        colors.wire   = rgbFromType(type, true);
+
+        return colors;
     }
 }
 
@@ -63547,7 +63622,7 @@ extends OperatorBase
 
         const value = values[paramIds.findIndex(id => id == 'value')];
 
-        specifyListOutput(value, this.outputs[0]);
+        this.outputs[0].types = [...finalListTypeFromItems(value.items)];
     }
 
 
@@ -63577,6 +63652,7 @@ extends OperatorBase
 
 
         this.addInput(new Input(LIST_VALUES, getNodeInputValuesForUndo));
+        this.addOutput(new Output([ANY_VALUE], this.output_genRequest));
 
         this.addParam(this.paramIndex = new NumberParam('index', 'index', true, true, false, 0, 0));
         this.paramIndex.controls[0].allowEditDecimals = false;
@@ -63625,67 +63701,94 @@ extends OperatorBase
 
 
 
-    updateValues(requestId, actionId, updateParamId, paramIds, values)
-    {
-        const val    = values[paramIds.findIndex(id => id == 'value' )];
-        const length = values[paramIds.findIndex(id => id == 'length')];
+    // updateValues(requestId, actionId, updateParamId, paramIds, values)
+    // {
+    //     const val    = values[paramIds.findIndex(id => id == 'value' )];
+    //     const length = values[paramIds.findIndex(id => id == 'length')];
 
 
-        let paramValue = this.params.find(p => p.id == 'value');
+    //     let paramValue = this.params.find(p => p.id == 'value');
 
-        if (   paramValue
-            && (  !val
-                || paramValue.type != val.type))
-            this.removeParam(paramValue);
+    //     if (   paramValue
+    //         && (  !val
+    //             || paramValue.type != val.type))
+    //         this.removeParam(paramValue);
 
 
-        if (!paramValue && val)
-            paramValue = this.createAndInsertParamByType(0, val.type, 'value', false, false, true, true);
+    //     if (!paramValue && val)
+    //         paramValue = this.createAndInsertParamByType(0, val.type, 'value', false, false, true, true);
 
         
-        this.paramIndex.controls[0].setMax(
-               length
-            && length.value > 0
-            ? length.value-1
-            : Number.MAX_SAFE_INTEGER);
+    //     this.paramIndex.controls[0].setMax(
+    //            length
+    //         && length.value > 0
+    //         ? length.value-1
+    //         : Number.MAX_SAFE_INTEGER);
   
         
-        super.updateValues(requestId, actionId, updateParamId, paramIds, values);
-    }
+    //     super.updateValues(requestId, actionId, updateParamId, paramIds, values);
+    // }
 
 
 
-    updateParams()
-    {
-        //const paramValue = this.params.find(p => p.id == 'value');
+    // updateParams()
+    // {
+    //     //const paramValue = this.params.find(p => p.id == 'value');
 
-        this.paramIndex.enableControlText(true);
-
-
-        // if (paramValue)
-        // {
-        //     paramValue.enableControlText(true);
-        //     paramValue.controls[0].valueText = this.paramIndex.value < 0 ? UNKNOWN_DISPLAY : '';
-        // }
+    //     this.paramIndex.enableControlText(true);
 
 
-        this.updateParamControls();
-    }
+    //     // if (paramValue)
+    //     // {
+    //     //     paramValue.enableControlText(true);
+    //     //     paramValue.controls[0].valueText = this.paramIndex.value < 0 ? UNKNOWN_DISPLAY : '';
+    //     // }
+
+
+    //     this.updateParamControls();
+    // }
 
 
 
-    loadParams(_node, pasting)
-    {
-        if (!_node.params)
-            return;
+    // loadParams(_node, pasting)
+    // {
+    //     if (!_node.params)
+    //         return;
 
-        const _paramValue = _node.params.find(p => p[1] == 'value');
-        const _paramIndex = _node.params.find(p => p[1] == 'index');
+    //     const _paramValue = _node.params.find(p => p[1] == 'value');
+    //     const _paramIndex = _node.params.find(p => p[1] == 'index');
 
-        this.createAndInsertParamByType(0, _paramValue[0], _paramValue[1], false, false, true, true);
-        this.params[0].loadParam(_paramValue);
+    //     this.createAndInsertParamByType(0, _paramValue[0], _paramValue[1], false, false, true, true);
+    //     this.params[0].loadParam(_paramValue);
  
-        this.paramIndex.loadParam(_paramIndex);
+    //     this.paramIndex.loadParam(_paramIndex);
+    // }
+
+
+
+    getHeaderColors(options = {})
+    {
+        const colors = super.getHeaderColors(options);
+
+        const inputTypes = this.connectedHeaderInputs.map(i => i.connectedOutput.types[0]);
+
+        
+        const type = 
+            this.inputs[0].connected 
+            ? finalListTypeFromTypes(inputTypes)
+            : this.type;
+
+
+        colors.back = rgb_a(rgbFromType(type, this.active), 0.95);
+
+
+        colors.text   = isDark(colors.back) ? [1, 1, 1, 1] : [0, 0, 0, 1]; 
+
+        colors.input  = this.active ? rgb_a(colors.text, 0.4)  : rgb_a(rgbSaturateHsv(rgbFromType(type, true), 0.5), 0.8);
+        colors.output = this.active ? rgb_a(colors.text, 0.35) : rgb_a(rgbSaturateHsv(rgbFromType(type, true), 0.5), 0.7);
+        colors.wire   = rgbFromType(type, true);
+
+        return colors;
     }
 }
 
@@ -64284,7 +64387,7 @@ extends OperatorBase
         if (count   ) this.paramCount   .setValue(count,    false, true, false);
         if (repeatId) this.paramRepeatId.setValue(repeatId, false, true, false);
 
-        specifyListOutput(value, this.outputs[0]);
+        this.outputs[0].types = [...finalListTypeFromItems(value.items)];
     }
 
 

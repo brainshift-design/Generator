@@ -1260,21 +1260,3 @@ function idFromNodePath(path)
 {
     return path.split('/').at(-1);
 }
-
-
-
-function specifyListOutput(value, output)
-{
-    let type = NULL;
-
-    for (const item of value.items)
-    {
-             if (type == NULL     )   type = item.type;
-        else if (type != item.type) { type = ANY_VALUE; break; }
-    }
-
-         if (type == NUMBER_VALUE)        output.types = [NUMBER_LIST_VALUE];
-    else if (type ==   TEXT_VALUE)        output.types = [  TEXT_LIST_VALUE];
-    else if (SHAPE_VALUES.includes(type)) output.types = [ SHAPE_LIST_VALUE];
-    else                                  output.types = [       LIST_VALUE];
-}

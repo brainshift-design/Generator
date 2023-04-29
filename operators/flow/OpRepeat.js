@@ -76,7 +76,7 @@ extends OperatorBase
         if (count   ) this.paramCount   .setValue(count,    false, true, false);
         if (repeatId) this.paramRepeatId.setValue(repeatId, false, true, false);
 
-        specifyListOutput(value, this.outputs[0]);
+        this.outputs[0].types = [...finalListTypeFromItems(value.items)];
     }
 
 

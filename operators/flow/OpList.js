@@ -66,6 +66,32 @@ extends OperatorBase
         const value = values[paramIds.findIndex(id => id == 'value')];
         console.assert(LIST_VALUES.includes(value.type));
 
-        specifyListOutput(value, this.outputs[0]);
+        this.outputs[0].types = [finalListTypeFromItems(value.items)];
+    }
+
+
+
+    getHeaderColors(options = {})
+    {
+        const colors = super.getHeaderColors(options);
+
+        const inputTypes = this.connectedHeaderInputs.map(i => i.connectedOutput.types[0]);
+
+        const type = 
+            this.inputs[0].connected 
+            ? finalListTypeFromTypes(inputTypes)
+            : this.type;
+
+
+        colors.back = rgb_a(rgbFromType(type, this.active), 0.95);
+
+
+        colors.text   = isDark(colors.back) ? [1, 1, 1, 1] : [0, 0, 0, 1]; 
+
+        colors.input  = this.active ? rgb_a(colors.text, 0.4)  : rgb_a(rgbSaturateHsv(rgbFromType(type, true), 0.5), 0.8);
+        colors.output = this.active ? rgb_a(colors.text, 0.35) : rgb_a(rgbSaturateHsv(rgbFromType(type, true), 0.5), 0.7);
+        colors.wire   = rgbFromType(type, true);
+
+        return colors;
     }
 }

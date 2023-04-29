@@ -120,7 +120,7 @@ extends OperatorBase
 
         const value = values[paramIds.findIndex(id => id == 'value')];
 
-        specifyListOutput(value, this.outputs[0]);
+        this.outputs[0].types = [...finalListTypeFromItems(value.items)];
     }
 
 

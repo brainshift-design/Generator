@@ -13,6 +13,7 @@ extends OperatorBase
 
 
         this.addInput(new Input(LIST_VALUES, getNodeInputValuesForUndo));
+        this.addOutput(new Output([ANY_VALUE], this.output_genRequest));
 
         this.addParam(this.paramIndex = new NumberParam('index', 'index', true, true, false, 0, 0));
         this.paramIndex.controls[0].allowEditDecimals = false;
@@ -61,66 +62,93 @@ extends OperatorBase
 
 
 
-    updateValues(requestId, actionId, updateParamId, paramIds, values)
-    {
-        const val    = values[paramIds.findIndex(id => id == 'value' )];
-        const length = values[paramIds.findIndex(id => id == 'length')];
+    // updateValues(requestId, actionId, updateParamId, paramIds, values)
+    // {
+    //     const val    = values[paramIds.findIndex(id => id == 'value' )];
+    //     const length = values[paramIds.findIndex(id => id == 'length')];
 
 
-        let paramValue = this.params.find(p => p.id == 'value');
+    //     let paramValue = this.params.find(p => p.id == 'value');
 
-        if (   paramValue
-            && (  !val
-                || paramValue.type != val.type))
-            this.removeParam(paramValue);
+    //     if (   paramValue
+    //         && (  !val
+    //             || paramValue.type != val.type))
+    //         this.removeParam(paramValue);
 
 
-        if (!paramValue && val)
-            paramValue = this.createAndInsertParamByType(0, val.type, 'value', false, false, true, true);
+    //     if (!paramValue && val)
+    //         paramValue = this.createAndInsertParamByType(0, val.type, 'value', false, false, true, true);
 
         
-        this.paramIndex.controls[0].setMax(
-               length
-            && length.value > 0
-            ? length.value-1
-            : Number.MAX_SAFE_INTEGER);
+    //     this.paramIndex.controls[0].setMax(
+    //            length
+    //         && length.value > 0
+    //         ? length.value-1
+    //         : Number.MAX_SAFE_INTEGER);
   
         
-        super.updateValues(requestId, actionId, updateParamId, paramIds, values);
-    }
+    //     super.updateValues(requestId, actionId, updateParamId, paramIds, values);
+    // }
 
 
 
-    updateParams()
-    {
-        //const paramValue = this.params.find(p => p.id == 'value');
+    // updateParams()
+    // {
+    //     //const paramValue = this.params.find(p => p.id == 'value');
 
-        this.paramIndex.enableControlText(true);
-
-
-        // if (paramValue)
-        // {
-        //     paramValue.enableControlText(true);
-        //     paramValue.controls[0].valueText = this.paramIndex.value < 0 ? UNKNOWN_DISPLAY : '';
-        // }
+    //     this.paramIndex.enableControlText(true);
 
 
-        this.updateParamControls();
-    }
+    //     // if (paramValue)
+    //     // {
+    //     //     paramValue.enableControlText(true);
+    //     //     paramValue.controls[0].valueText = this.paramIndex.value < 0 ? UNKNOWN_DISPLAY : '';
+    //     // }
+
+
+    //     this.updateParamControls();
+    // }
 
 
 
-    loadParams(_node, pasting)
-    {
-        if (!_node.params)
-            return;
+    // loadParams(_node, pasting)
+    // {
+    //     if (!_node.params)
+    //         return;
 
-        const _paramValue = _node.params.find(p => p[1] == 'value');
-        const _paramIndex = _node.params.find(p => p[1] == 'index');
+    //     const _paramValue = _node.params.find(p => p[1] == 'value');
+    //     const _paramIndex = _node.params.find(p => p[1] == 'index');
 
-        this.createAndInsertParamByType(0, _paramValue[0], _paramValue[1], false, false, true, true);
-        this.params[0].loadParam(_paramValue);
+    //     this.createAndInsertParamByType(0, _paramValue[0], _paramValue[1], false, false, true, true);
+    //     this.params[0].loadParam(_paramValue);
  
-        this.paramIndex.loadParam(_paramIndex);
+    //     this.paramIndex.loadParam(_paramIndex);
+    // }
+
+
+
+    getHeaderColors(options = {})
+    {
+        const colors = super.getHeaderColors(options);
+
+        const inputTypes = this.connectedHeaderInputs.map(i => i.connectedOutput.types[0]);
+
+        
+        const type = 
+            this.inputs[0].connected 
+            ? finalListTypeFromTypes(inputTypes)
+            : this.type;
+
+
+        colors.back = rgb_a(rgbFromType(type, this.active), 0.95);
+
+
+        colors.text   = isDark(colors.back) ? [1, 1, 1, 1] : [0, 0, 0, 1]; 
+
+        colors.input  = this.active ? rgb_a(colors.text, 0.4)  : rgb_a(rgbSaturateHsv(rgbFromType(type, true), 0.5), 0.8);
+        colors.output = this.active ? rgb_a(colors.text, 0.35) : rgb_a(rgbSaturateHsv(rgbFromType(type, true), 0.5), 0.7);
+        colors.wire   = rgbFromType(type, true);
+
+        return colors;
     }
 }
