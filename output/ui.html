@@ -6819,10 +6819,7 @@ function trimCharFromStart(str, trim)
 {
     while (str.length >= trim.length
         && str.substring(0, trim.length) == trim) 
-    {
         str = str.substring(trim.length);
-        console.log('str =', str);
-    }
 
     return str;
 }
@@ -11839,7 +11836,7 @@ extends GOperator
                     obj.objectId += index.value.toString();
 
                     obj.listId    = -1;
-
+                    
                     this.objects.push(obj);
                 }
             }
@@ -30383,10 +30380,7 @@ function trimCharFromStart(str, trim)
 {
     while (str.length >= trim.length
         && str.substring(0, trim.length) == trim) 
-    {
         str = str.substring(trim.length);
-        console.log('str =', str);
-    }
 
     return str;
 }
@@ -37991,7 +37985,7 @@ extends GOperator
                     obj.objectId += index.value.toString();
 
                     obj.listId    = -1;
-
+                    
                     this.objects.push(obj);
                 }
             }
@@ -64140,6 +64134,8 @@ extends OperatorBase
 {
     paramIndex;
 
+    length;
+
 
 
     constructor()
@@ -64204,14 +64200,19 @@ extends OperatorBase
         super.updateValues(requestId, actionId, updateParamId, paramIds, values);
 
         
-        const value  = values[paramIds.findIndex(id => id == 'value')];
-        const length = values[paramIds.findIndex(id => id == 'length')];
-
+        const value = values[paramIds.findIndex(id => id == 'value')];
+        this.length = values[paramIds.findIndex(id => id == 'length')];
 
         this.outputs[0].types = [value.type];
+    }
 
 
-        this.paramIndex.controls[0].setMax(length.value - 1);
+
+    updateParams()
+    {
+        this.paramIndex.controls[0].setMax(Math.max(0, this.length.value - 1));
+
+        this.updateParamControls();
     }
 
 

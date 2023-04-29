@@ -371,10 +371,7 @@ function trimCharFromStart(str, trim)
 {
     while (str.length >= trim.length
         && str.substring(0, trim.length) == trim) 
-    {
         str = str.substring(trim.length);
-        console.log('str =', str);
-    }
 
     return str;
 }

@@ -74,7 +74,7 @@ extends GOperator
                     obj.objectId += index.value.toString();
 
                     obj.listId    = -1;
-
+                    
                     this.objects.push(obj);
                 }
             }

@@ -3,6 +3,8 @@ extends OperatorBase
 {
     paramIndex;
 
+    length;
+
 
 
     constructor()
@@ -67,14 +69,19 @@ extends OperatorBase
         super.updateValues(requestId, actionId, updateParamId, paramIds, values);
 
         
-        const value  = values[paramIds.findIndex(id => id == 'value')];
-        const length = values[paramIds.findIndex(id => id == 'length')];
-
+        const value = values[paramIds.findIndex(id => id == 'value')];
+        this.length = values[paramIds.findIndex(id => id == 'length')];
 
         this.outputs[0].types = [value.type];
+    }
 
 
-        this.paramIndex.controls[0].setMax(length.value - 1);
+
+    updateParams()
+    {
+        this.paramIndex.controls[0].setMax(Math.max(0, this.length.value - 1));
+
+        this.updateParamControls();
     }
 
 
