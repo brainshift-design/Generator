@@ -86,7 +86,7 @@ extends Parameter
         super.setValue(this.value, createAction, updateControl, dispatchEvents);
 
         if (this.output)
-            this.output.types = [...finalListTypeFromItems(this.value.items)];
+            this.output.types = [finalListTypeFromItems(this.value.items)];
 
 
         this.oldValue = this.value;

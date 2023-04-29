@@ -49,6 +49,7 @@ function copyFigmaObject(obj)
         case ELLIPSE:   return FigmaEllipse  .prototype.copy.call(obj);
         case POLYGON:   return FigmaPolygon  .prototype.copy.call(obj);
         case STAR:      return FigmaStar     .prototype.copy.call(obj);
+        case TEXTSHAPE: return FigmaText     .prototype.copy.call(obj);
     }
 
     console.assert(false, 'invalid Figma object type \'' + obj.type + '\'');

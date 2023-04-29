@@ -1114,7 +1114,7 @@ function figCreateObject(objects, genObj) {
             break;
     }
     console.assert(!!figObj, 'no Figma object created');
-    figObj.setPluginData('id', genObj.objectId.toString());
+    figObj.setPluginData('id', genObj.objectId);
     figObj.setPluginData('type', genObj.type);
     figObj.setPluginData('nodeId', genObj.nodeId);
     //figObj.setPluginData('nodeName', genObj.nodeName);
@@ -1181,7 +1181,7 @@ function figUpdateObject(figObj, genObj) {
 }
 function makeObjectName(obj) {
     return OBJECT_PREFIX + obj.nodeId
-        + (obj.objectId > -1 ? ' ' + obj.objectId : '');
+        + (obj.objectId != '' ? ' ' + obj.objectId : '');
 }
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 function genRectIsValid(genRect) {

@@ -1,7 +1,7 @@
 class FigmaShape
 extends FigmaObject
 {
-    objectId = -1;
+    objectId = NULL;
 
     fills    = [];
     strokes  = [];

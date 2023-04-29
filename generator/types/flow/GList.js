@@ -52,9 +52,12 @@ extends GOperator
                 {
                     const obj = this.inputs[i].objects[j].copy();
 
-                    obj.nodeId   = this.nodeId;
-                    obj.objectId = o+1;
-                    obj.listId   = i;
+                    obj.nodeId    = this.nodeId;
+
+                    if (obj.objectId != NULL) obj.objectId += ' ';
+                    obj.objectId += (o + 1).toString();
+                    
+                    obj.listId    = i;
 
                     this.objects.push(obj);
                 }

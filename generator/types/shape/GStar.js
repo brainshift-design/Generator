@@ -109,7 +109,7 @@ extends GShape
            [
                new FigmaStar(
                                this.nodeId,
-                               -1,
+                               NULL,
                                this.x     .toValue().value,
                                this.y     .toValue().value,
                                this.width .toValue().value,

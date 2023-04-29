@@ -89,7 +89,7 @@ extends GOperator
                 : 1;
 
 
-            for (let i = 0, id = 0; i < nItems; i++)
+            for (let i = 0, o = 0; i < nItems; i++)
             {
                 if (this.repeatId.type != NUMBER_VALUE)
                 {
@@ -105,12 +105,14 @@ extends GOperator
                 await this.input.eval(parse);
 
                 
-                for (let j = 0; j < this.input.objects.length; j++, id++)
+                for (let j = 0; j < this.input.objects.length; j++, o++)
                 {
                     const obj = copyFigmaObject(this.input.objects[j]);
                     
-                    obj.nodeId   = this.nodeId;
-                    obj.objectId = id;
+                    obj.nodeId    = this.nodeId;
+
+                    if (obj.objectId != NULL) obj.objectId += ' ';
+                    obj.objectId += (o+1).toString();
     
                     this.objects.push(obj);
                 }
