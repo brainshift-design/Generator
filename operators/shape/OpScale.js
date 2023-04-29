@@ -41,8 +41,8 @@ extends OperatorBase
         this.paramOriginY.controls[0].displayMax = 100;
 
 
-        this.inputs[0].addEventListener('connect',    e => OpScale_onConnectInput   (this));
-        this.inputs[0].addEventListener('disconnect', e => OpScale_onDisconnectInput(this));
+        // this.inputs[0].addEventListener('connect',    e => OpScale_onConnectInput   (this));
+        // this.inputs[0].addEventListener('disconnect', e => OpScale_onDisconnectInput(this));
     }
     
     
@@ -79,18 +79,30 @@ extends OperatorBase
 
         return request;
     }
+
+
+
+    updateValues(requestId, actionId, updateParamId, paramIds, values)
+    {
+        super.updateValues(requestId, actionId, updateParamId, paramIds, values);
+
+        this.outputs[0].types = 
+            this.inputs[0].connected
+            ? [...this.inputs[0].connectedOutput.types]
+            : [ANY_VALUE];
+    }
 }
 
 
 
-function OpScale_onConnectInput(node)
-{
-    node.outputs[0].types = [...node.inputs[0].connectedOutput.types];
-}
+// function OpScale_onConnectInput(node)
+// {
+//     node.outputs[0].types = [...node.inputs[0].connectedOutput.types];
+// }
 
 
 
-function OpScale_onDisconnectInput(node, input)
-{
-    node.outputs[0].types = [SHAPE_VALUE];
-}
+// function OpScale_onDisconnectInput(node, input)
+// {
+//     node.outputs[0].types = [SHAPE_VALUE];
+// }

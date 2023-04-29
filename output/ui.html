@@ -19744,14 +19744,14 @@ extends GOperator
 
 
             const angle = anglev_(
-                bounds.x + bounds.width /2, 
-                bounds.y + bounds.height/2,
+                /*bounds.x*/ + bounds.width /2, 
+                /*bounds.y*/ + bounds.height/2,
                 obj.x,
                 obj.y);
 
             const halfd = distance_(
-                bounds.x + bounds.width /2,
-                bounds.y + bounds.height/2,
+                /*bounds.x +*/ bounds.width /2,
+                /*bounds.y +*/ bounds.height/2,
                 obj.x,
                 obj.y);
 
@@ -19935,7 +19935,7 @@ extends GOperator
                 obj.y);
 
 
-            const a  = obj.angle/360*Tau;
+            const a  = 0;//obj.angle/360*Tau;
             const v  = vector(angle - a, halfd);
 
             v.x *= x;
@@ -45957,14 +45957,14 @@ extends GOperator
 
 
             const angle = anglev_(
-                bounds.x + bounds.width /2, 
-                bounds.y + bounds.height/2,
+                /*bounds.x*/ + bounds.width /2, 
+                /*bounds.y*/ + bounds.height/2,
                 obj.x,
                 obj.y);
 
             const halfd = distance_(
-                bounds.x + bounds.width /2,
-                bounds.y + bounds.height/2,
+                /*bounds.x +*/ bounds.width /2,
+                /*bounds.y +*/ bounds.height/2,
                 obj.x,
                 obj.y);
 
@@ -46148,7 +46148,7 @@ extends GOperator
                 obj.y);
 
 
-            const a  = obj.angle/360*Tau;
+            const a  = 0;//obj.angle/360*Tau;
             const v  = vector(angle - a, halfd);
 
             v.x *= x;
@@ -71859,8 +71859,8 @@ extends OperatorBase
         this.addParam(this.paramY = new NumberParam('y', 'y', true, true, true));
 
 
-        this.inputs[0].addEventListener('connect',    e => OpMove_onConnectInput(this));
-        this.inputs[0].addEventListener('disconnect', e => OpMove_onDisconnectInput(this));
+        // this.inputs[0].addEventListener('connect',    e => OpMove_onConnectInput(this));
+        // this.inputs[0].addEventListener('disconnect', e => OpMove_onDisconnectInput(this));
     }
     
     
@@ -71895,21 +71895,33 @@ extends OperatorBase
 
         return request;
     }
+
+
+
+    updateValues(requestId, actionId, updateParamId, paramIds, values)
+    {
+        super.updateValues(requestId, actionId, updateParamId, paramIds, values);
+
+        this.outputs[0].types = 
+            this.inputs[0].connected
+            ? [...this.inputs[0].connectedOutput.types]
+            : [ANY_VALUE];
+    }
 }
 
 
 
-function OpMove_onConnectInput(node)
-{
-    node.outputs[0].types = [...node.inputs[0].connectedOutput.types];
-}
+// function OpMove_onConnectInput(node)
+// {
+//     node.outputs[0].types = [...node.inputs[0].connectedOutput.types];
+// }
 
 
 
-function OpMove_onDisconnectInput(node)
-{
-    node.outputs[0].types = [SHAPE_VALUE];
-}
+// function OpMove_onDisconnectInput(node)
+// {
+//     node.outputs[0].types = [SHAPE_VALUE];
+// }
 
 
 class   OpRotate
@@ -71951,8 +71963,8 @@ extends OperatorBase
         this.paramOriginY.controls[0].displayMax  = 100;
 
 
-        this.inputs[0].addEventListener('connect',    e => OpRotate_onConnectInput(this));
-        this.inputs[0].addEventListener('disconnect', e => OpRotate_onDisconnectInput(this));
+        // this.inputs[0].addEventListener('connect',    e => OpRotate_onConnectInput(this));
+        // this.inputs[0].addEventListener('disconnect', e => OpRotate_onDisconnectInput(this));
     }
     
     
@@ -71988,21 +72000,33 @@ extends OperatorBase
 
         return request;
     }
+
+
+
+    updateValues(requestId, actionId, updateParamId, paramIds, values)
+    {
+        super.updateValues(requestId, actionId, updateParamId, paramIds, values);
+
+        this.outputs[0].types = 
+            this.inputs[0].connected
+            ? [...this.inputs[0].connectedOutput.types]
+            : [ANY_VALUE];
+    }
 }
 
 
 
-function OpRotate_onConnectInput(node)
-{
-    node.outputs[0].types = [...node.inputs[0].connectedOutput.types];
-}
+// function OpRotate_onConnectInput(node)
+// {
+//     node.outputs[0].types = [...node.inputs[0].connectedOutput.types];
+// }
 
 
 
-function OpRotate_onDisconnectInput(node)
-{
-    node.outputs[0].types = [SHAPE_VALUE];
-}
+// function OpRotate_onDisconnectInput(node)
+// {
+//     node.outputs[0].types = [SHAPE_VALUE];
+// }
 
 
 class   OpScale
@@ -72048,8 +72072,8 @@ extends OperatorBase
         this.paramOriginY.controls[0].displayMax = 100;
 
 
-        this.inputs[0].addEventListener('connect',    e => OpScale_onConnectInput   (this));
-        this.inputs[0].addEventListener('disconnect', e => OpScale_onDisconnectInput(this));
+        // this.inputs[0].addEventListener('connect',    e => OpScale_onConnectInput   (this));
+        // this.inputs[0].addEventListener('disconnect', e => OpScale_onDisconnectInput(this));
     }
     
     
@@ -72086,21 +72110,33 @@ extends OperatorBase
 
         return request;
     }
+
+
+
+    updateValues(requestId, actionId, updateParamId, paramIds, values)
+    {
+        super.updateValues(requestId, actionId, updateParamId, paramIds, values);
+
+        this.outputs[0].types = 
+            this.inputs[0].connected
+            ? [...this.inputs[0].connectedOutput.types]
+            : [ANY_VALUE];
+    }
 }
 
 
 
-function OpScale_onConnectInput(node)
-{
-    node.outputs[0].types = [...node.inputs[0].connectedOutput.types];
-}
+// function OpScale_onConnectInput(node)
+// {
+//     node.outputs[0].types = [...node.inputs[0].connectedOutput.types];
+// }
 
 
 
-function OpScale_onDisconnectInput(node, input)
-{
-    node.outputs[0].types = [SHAPE_VALUE];
-}
+// function OpScale_onDisconnectInput(node, input)
+// {
+//     node.outputs[0].types = [SHAPE_VALUE];
+// }
 
 
 class   OpColorStyle

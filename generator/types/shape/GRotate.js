@@ -103,14 +103,14 @@ extends GOperator
 
 
             const angle = anglev_(
-                bounds.x + bounds.width /2, 
-                bounds.y + bounds.height/2,
+                /*bounds.x*/ + bounds.width /2, 
+                /*bounds.y*/ + bounds.height/2,
                 obj.x,
                 obj.y);
 
             const halfd = distance_(
-                bounds.x + bounds.width /2,
-                bounds.y + bounds.height/2,
+                /*bounds.x +*/ bounds.width /2,
+                /*bounds.y +*/ bounds.height/2,
                 obj.x,
                 obj.y);
 
