@@ -10269,7 +10269,7 @@ function finalListTypeFromTypes(types)
     {
         if (_type == NULL)   
             _type = type;
-            
+
         else if (_type != type
               && !SHAPE_VALUES.includes(_type)
               && !SHAPE_VALUES.includes( type))
@@ -10279,10 +10279,10 @@ function finalListTypeFromTypes(types)
         }
     }
 
-         if (_type == NUMBER_VALUE)        return NUMBER_LIST_VALUE;
-    else if (_type ==   TEXT_VALUE)        return   TEXT_LIST_VALUE;
-    else if (SHAPE_VALUES.includes(_type)) return  SHAPE_LIST_VALUE;
-    else                                   return        LIST_VALUE;
+         if (  _type == NUMBER_VALUE || _type == NUMBER_LIST_VALUE)  return NUMBER_LIST_VALUE;
+    else if (  _type ==   TEXT_VALUE || _type ==   TEXT_LIST_VALUE)  return   TEXT_LIST_VALUE;
+    else if (SHAPE_VALUES.includes(_type))                           return  SHAPE_LIST_VALUE;
+    else                                                             return        LIST_VALUE;
 }
 
 
@@ -11851,7 +11851,7 @@ extends GOperator
     {
         super.invalidate();
 
-        if (this.input) this.input.invalidate();
+        //if (this.input) this.input.invalidate();
         if (this.index) this.index.invalidate();
     }
 }
@@ -36144,7 +36144,7 @@ function finalListTypeFromTypes(types)
     {
         if (_type == NULL)   
             _type = type;
-            
+
         else if (_type != type
               && !SHAPE_VALUES.includes(_type)
               && !SHAPE_VALUES.includes( type))
@@ -36154,10 +36154,10 @@ function finalListTypeFromTypes(types)
         }
     }
 
-         if (_type == NUMBER_VALUE)        return NUMBER_LIST_VALUE;
-    else if (_type ==   TEXT_VALUE)        return   TEXT_LIST_VALUE;
-    else if (SHAPE_VALUES.includes(_type)) return  SHAPE_LIST_VALUE;
-    else                                   return        LIST_VALUE;
+         if (  _type == NUMBER_VALUE || _type == NUMBER_LIST_VALUE)  return NUMBER_LIST_VALUE;
+    else if (  _type ==   TEXT_VALUE || _type ==   TEXT_LIST_VALUE)  return   TEXT_LIST_VALUE;
+    else if (SHAPE_VALUES.includes(_type))                           return  SHAPE_LIST_VALUE;
+    else                                                             return        LIST_VALUE;
 }
 
 
@@ -37726,7 +37726,7 @@ extends GOperator
     {
         super.invalidate();
 
-        if (this.input) this.input.invalidate();
+        //if (this.input) this.input.invalidate();
         if (this.index) this.index.invalidate();
     }
 }
@@ -60357,17 +60357,17 @@ class Wire
             &&  nodeFromId(conn.output.param._nodeId)
                && !nodeFromId(conn.output.param._nodeId).isCached();
         
-        const unknown =
-                isNotCached
-            &&  conn.output
-            && (  !conn.output.node.isOrPrecededByMultiplier()
-                ||   (   !conn.output.node.isMultiplier()
-                      || !conn.output.node.paramRepeatId.input.connected)
-                   && conn.output.node.inputs.find(i => i.isConnectedUncached()))
-            &&  conn.input
-            &&  conn.input.node.isOrFollowedByMultiplier()
-            && (  !conn.input.param 
-                || conn.input.param.affectsHeader);
+        const unknown = false;
+            //     isNotCached
+            // &&  conn.output
+            // && (  !conn.output.node.isOrPrecededByMultiplier()
+            //     ||   (   !conn.output.node.isMultiplier()
+            //           || !conn.output.node.paramRepeatId.input.connected)
+            //        && conn.output.node.inputs.find(i => i.isConnectedUncached()))
+            // &&  conn.input
+            // &&  conn.input.node.isOrFollowedByMultiplier()
+            // && (  !conn.input.param 
+            //     || conn.input.param.affectsHeader);
     
     
         this.curve  .style.stroke          = wireStyle;
@@ -63756,13 +63756,12 @@ extends OperatorBase
 
         const inputTypes = this.connectedHeaderInputs.map(i => i.connectedOutput.types[0]);
 
-        
         const type = 
             this.inputs[0].connected 
             ? finalListTypeFromTypes(inputTypes)
             : this.type;
 
-
+            
         colors.back = rgb_a(rgbFromType(type, this.active), 0.95);
 
 
@@ -64388,30 +64387,30 @@ extends OperatorBase
 
 
 
-    // getHeaderColors(options = {})
-    // {
-    //     const colors = super.getHeaderColors(options);
+    getHeaderColors(options = {})
+    {
+        const colors = super.getHeaderColors(options);
 
-    //     const inputTypes = this.connectedHeaderInputs.map(i => i.connectedOutput.types[0]);
+        const inputTypes = this.connectedHeaderInputs.map(i => i.connectedOutput.types[0]);
 
         
-    //     const type = 
-    //         this.inputs[0].connected 
-    //         ? finalListTypeFromTypes(inputTypes)
-    //         : this.type;
+        const type = 
+            this.inputs[0].connected 
+            ? finalListTypeFromTypes(inputTypes)
+            : this.type;
 
 
-    //     colors.back = rgb_a(rgbFromType(type, this.active), 0.95);
+        colors.back = rgb_a(rgbFromType(type, this.active), 0.95);
 
 
-    //     colors.text   = isDark(colors.back) ? [1, 1, 1, 1] : [0, 0, 0, 1]; 
+        colors.text   = isDark(colors.back) ? [1, 1, 1, 1] : [0, 0, 0, 1]; 
 
-    //     colors.input  = this.active ? rgb_a(colors.text, 0.4)  : rgb_a(rgbSaturateHsv(rgbFromType(type, true), 0.5), 0.8);
-    //     colors.output = this.active ? rgb_a(colors.text, 0.35) : rgb_a(rgbSaturateHsv(rgbFromType(type, true), 0.5), 0.7);
-    //     colors.wire   = rgbFromType(type, true);
+        colors.input  = this.active ? rgb_a(colors.text, 0.4)  : rgb_a(rgbSaturateHsv(rgbFromType(type, true), 0.5), 0.8);
+        colors.output = this.active ? rgb_a(colors.text, 0.35) : rgb_a(rgbSaturateHsv(rgbFromType(type, true), 0.5), 0.7);
+        colors.wire   = rgbFromType(type, true);
 
-    //     return colors;
-    // }
+        return colors;
+    }
 }
 
 

@@ -114,7 +114,7 @@ extends GOperator
     {
         super.invalidate();
 
-        if (this.input) this.input.invalidate();
+        //if (this.input) this.input.invalidate();
         if (this.index) this.index.invalidate();
     }
 }

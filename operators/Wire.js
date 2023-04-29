@@ -483,17 +483,17 @@ class Wire
             &&  nodeFromId(conn.output.param._nodeId)
                && !nodeFromId(conn.output.param._nodeId).isCached();
         
-        const unknown =
-                isNotCached
-            &&  conn.output
-            && (  !conn.output.node.isOrPrecededByMultiplier()
-                ||   (   !conn.output.node.isMultiplier()
-                      || !conn.output.node.paramRepeatId.input.connected)
-                   && conn.output.node.inputs.find(i => i.isConnectedUncached()))
-            &&  conn.input
-            &&  conn.input.node.isOrFollowedByMultiplier()
-            && (  !conn.input.param 
-                || conn.input.param.affectsHeader);
+        const unknown = false;
+            //     isNotCached
+            // &&  conn.output
+            // && (  !conn.output.node.isOrPrecededByMultiplier()
+            //     ||   (   !conn.output.node.isMultiplier()
+            //           || !conn.output.node.paramRepeatId.input.connected)
+            //        && conn.output.node.inputs.find(i => i.isConnectedUncached()))
+            // &&  conn.input
+            // &&  conn.input.node.isOrFollowedByMultiplier()
+            // && (  !conn.input.param 
+            //     || conn.input.param.affectsHeader);
     
     
         this.curve  .style.stroke          = wireStyle;
