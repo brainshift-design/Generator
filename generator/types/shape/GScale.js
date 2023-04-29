@@ -95,15 +95,54 @@ extends GOperator
             bounds = expandRect(bounds, new Rect(obj.x, obj.y, obj.width, obj.height));
 
 
+        const x  = Math.max(0, options.x.toNumber()/100);
+        const y  = Math.max(0, options.y.toNumber()/100);
+
+        const dx = options.ox.toNumber()/100;
+        const dy = options.oy.toNumber()/100;
+
+
         for (const obj of this.objects)
         {
             obj.nodeId = this.nodeId;
-            
-            obj.width  *= options.x.toNumber()/100;
-            obj.height *= options.y.toNumber()/100;
 
-            obj.x -= (obj.width  - bounds.width ) * options.ox.toNumber()/100;
-            obj.y -= (obj.height - bounds.height) * options.oy.toNumber()/100;
+            obj.width  *= x;
+            obj.height *= y;
+
+
+            const angle = anglev_(
+                bounds.x + (dx * bounds.width ), 
+                bounds.y + (dy * bounds.height),
+                obj.x,
+                obj.y);
+
+            const halfd = distance_(
+                bounds.x + (dx * bounds.width ), 
+                bounds.y + (dy * bounds.height),
+                obj.x,
+                obj.y);
+
+
+            const a  = obj.angle/360*Tau;
+            const v  = vector(angle - a, halfd);
+
+            v.x *= x;
+            v.y *= y;
+
+
+            obj.x = 
+                  bounds.x 
+                + bounds.width /2 
+                + v.x 
+                - (dx - 0.5) * bounds.width  * Math.cos(-a) 
+                - (dy - 0.5) * bounds.height * Math.sin( a);
+
+            obj.y = 
+                  bounds.y
+                + bounds.height/2
+                + v.y 
+                - (dx - 0.5) * bounds.width  * Math.sin(-a) 
+                - (dy - 0.5) * bounds.height * Math.cos( a);
         }
 
         
