@@ -14,10 +14,10 @@ extends Action
 
     do(updateNodes)
     {
-        const [nodesJson, pan, zoom] = 
+        const [pan, zoom, nodesJson] = 
             graph.pages.length == 0
-            ? CreatePageAction_prepareFreeNodes(this)
-            : NULL;
+            ? CreatePageAction_prepareNodes()
+            : [{x: 0, y: 0}, 1, NULL];
 
 
         this.page = graph.createPage('Graph');
@@ -27,17 +27,17 @@ extends Action
 
         
         if (graph.pages.length == 1)
-            CreatePageAction_updateFreeNodes(this, nodesJson, pan, zoom);
+            CreatePageAction_updateNodes(this, pan, zoom, nodesJson);
     }
 
 
 
     undo(updateNodes)
     {
-        const nodesJson = 
+        const [pan, zoom, nodesJson] = 
             graph.pages.length == 1
-            ? CreatePageAction_prepareFreeNodes(this)
-            : NULL;
+            ? CreatePageAction_prepareNodes()
+            : [{x: 0, y: 0}, 1, NULL];
 
         graph.removePage(this.page);
 
@@ -48,27 +48,32 @@ extends Action
 
         
         if (graph.pages.length == 0)
-            CreatePageAction_updateFreeNodes(this, nodesJson);
+            CreatePageAction_updateNodes(this, pan, zoom, nodesJson);
     }
 }
 
 
 
-function CreatePageAction_prepareFreeNodes(action)
+function CreatePageAction_prepareNodes()
 {
-    return uiCopyNodes(graph.currentPage.nodes.map(n => n.id));
+    return [
+        graph.currentPage._pan,
+        graph.currentPage._zoom,
+        uiCopyNodes(graph.currentPage.nodes.map(n => n.id)) ];
 }
 
 
 
-function CreatePageAction_updateFreeNodes(action, nodesJson)
+function CreatePageAction_updateNodes(action, pan, zoom, nodesJson)
 {
-    console.log('nodesJson =', nodesJson);
     if (nodesJson != NULL)
+    {
         uiPasteNodes(nodesJson, false);
+        graphView.pastingNodes = false;
+    }
 
-    action.pages[0]._zoom = action.defaultPage._zoom;
-    action.pages[0]._pan  = action.defaultPage._pan;
+    graph.currentPage._pan  = pan;
+    graph.currentPage._zoom = zoom;
 
     graphView.updateNodes(graph.currentPage.nodes);
 }
