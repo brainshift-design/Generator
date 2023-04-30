@@ -180,22 +180,20 @@ function logUpdateSavedConnections(conns)
 
 function logUndoStack()
 {
-    let log = 'UNDO STACK:\n';
+    let log = 
+        'UNDO STACK:\n'
+        + actionManager.actions.map(a => '    ' + a.name).join('\n');
 
-    for (const act of actionManager.actions)
-        log += act.name + '\n';
-
-        console.log('%c%s', 'background: #ffd; color: #b80;', log);
-    }
+    console.log('%c%s', 'background: #ffd; color: #b80;', log);
+}
 
 
 
 function logRedoStack()
 {
-    let log = 'REDO STACK:\n';
-
-    for (const act of actionManager.redoActions)
-        log += act.name + '\n';
+    let log = 
+         'REDO STACK:\n'
+        + actionManager.redoActions.map(a => '    ' + a.name).join('\n');
 
     console.log('%c%s', 'background: #fff4e8; color: #c64;', log);
 }

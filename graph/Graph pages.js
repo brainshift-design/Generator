@@ -14,11 +14,6 @@ Graph.prototype.createPage = function(name, add = true)
 
 Graph.prototype.addPage = function(page)
 {
-    let nodesJson = NULL;
-    if (isEmpty(this.pages))
-        nodesJson = uiCopyNodes(this.defaultPage.nodes.map(n => n.id));        
-
-
     page.id = getNewNumberId(
         graph.pages, 
         id => graph.pages.find(p => p.id == id), 
@@ -36,16 +31,6 @@ Graph.prototype.addPage = function(page)
     pagesBar.insertBefore(page.button, btnAddPage);
 
     this.pageIndex = this.pages.length-1;
-
-
-    if (this.pages.length == 1)
-    {
-        if (nodesJson != NULL)
-            uiPasteNodes(nodesJson, false);
-
-        this.pages[0]._zoom = this.defaultPage._zoom;
-        this.pages[0]._pan  = this.defaultPage._pan;
-    }
 };
 
 
@@ -111,18 +96,22 @@ Graph.prototype.updatePages = function()
     this.updatePageName();
         
     updateZoomIcon();
-}
+};
 
 
 
 Graph.prototype.updatePageName = function()
 {
-    pageName   .style.display =
-    btnPage.div.style.display =
-          !isEmpty(graph.pages)
+    const display =
+          !isEmpty(this.pages)
         && window.innerWidth > 590 
         ? 'inline-block' 
         : 'none';
+
+    pageName.style.display = display;
+
+    if (btnPage)
+        btnPage.div.style.display = display;
 };
 
 
@@ -133,7 +122,7 @@ Graph.prototype.updateSavedPages = function()
         this.pages.map(p => p.id), 
         this.pages.map(p => p.toJson()),
         graph.currentPage.id);
-}
+};
 
 
 

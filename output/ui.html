@@ -25041,22 +25041,20 @@ function logUpdateSavedConnections(conns)
 
 function logUndoStack()
 {
-    let log = 'UNDO STACK:\n';
+    let log = 
+        'UNDO STACK:\n'
+        + actionManager.actions.map(a => '    ' + a.name).join('\n');
 
-    for (const act of actionManager.actions)
-        log += act.name + '\n';
-
-        console.log('%c%s', 'background: #ffd; color: #b80;', log);
-    }
+    console.log('%c%s', 'background: #ffd; color: #b80;', log);
+}
 
 
 
 function logRedoStack()
 {
-    let log = 'REDO STACK:\n';
-
-    for (const act of actionManager.redoActions)
-        log += act.name + '\n';
+    let log = 
+         'REDO STACK:\n'
+        + actionManager.redoActions.map(a => '    ' + a.name).join('\n');
 
     console.log('%c%s', 'background: #fff4e8; color: #c64;', log);
 }
@@ -31520,22 +31518,20 @@ function logUpdateSavedConnections(conns)
 
 function logUndoStack()
 {
-    let log = 'UNDO STACK:\n';
+    let log = 
+        'UNDO STACK:\n'
+        + actionManager.actions.map(a => '    ' + a.name).join('\n');
 
-    for (const act of actionManager.actions)
-        log += act.name + '\n';
-
-        console.log('%c%s', 'background: #ffd; color: #b80;', log);
-    }
+    console.log('%c%s', 'background: #ffd; color: #b80;', log);
+}
 
 
 
 function logRedoStack()
 {
-    let log = 'REDO STACK:\n';
-
-    for (const act of actionManager.redoActions)
-        log += act.name + '\n';
+    let log = 
+         'REDO STACK:\n'
+        + actionManager.redoActions.map(a => '    ' + a.name).join('\n');
 
     console.log('%c%s', 'background: #fff4e8; color: #c64;', log);
 }
@@ -74879,11 +74875,6 @@ Graph.prototype.createPage = function(name, add = true)
 
 Graph.prototype.addPage = function(page)
 {
-    let nodesJson = NULL;
-    if (isEmpty(this.pages))
-        nodesJson = uiCopyNodes(this.defaultPage.nodes.map(n => n.id));        
-
-
     page.id = getNewNumberId(
         graph.pages, 
         id => graph.pages.find(p => p.id == id), 
@@ -74901,16 +74892,6 @@ Graph.prototype.addPage = function(page)
     pagesBar.insertBefore(page.button, btnAddPage);
 
     this.pageIndex = this.pages.length-1;
-
-
-    if (this.pages.length == 1)
-    {
-        if (nodesJson != NULL)
-            uiPasteNodes(nodesJson, false);
-
-        this.pages[0]._zoom = this.defaultPage._zoom;
-        this.pages[0]._pan  = this.defaultPage._pan;
-    }
 };
 
 
@@ -74976,18 +74957,22 @@ Graph.prototype.updatePages = function()
     this.updatePageName();
         
     updateZoomIcon();
-}
+};
 
 
 
 Graph.prototype.updatePageName = function()
 {
-    pageName   .style.display =
-    btnPage.div.style.display =
-          !isEmpty(graph.pages)
+    const display =
+          !isEmpty(this.pages)
         && window.innerWidth > 590 
         ? 'inline-block' 
         : 'none';
+
+    pageName.style.display = display;
+
+    if (btnPage)
+        btnPage.div.style.display = display;
 };
 
 
@@ -74998,7 +74983,7 @@ Graph.prototype.updateSavedPages = function()
         this.pages.map(p => p.id), 
         this.pages.map(p => p.toJson()),
         graph.currentPage.id);
-}
+};
 
 
 
@@ -76043,25 +76028,63 @@ extends Action
 
     do(updateNodes)
     {
+        const [nodesJson, pan, zoom] = 
+            graph.pages.length == 0
+            ? CreatePageAction_prepareFreeNodes(this)
+            : NULL;
+
+
         this.page = graph.createPage('Graph');
 
         graph.updatePages();
         graph.updateSavedPages();
 
-        graphView.updateNodes(graph.currentPage.nodes);
+        
+        if (graph.pages.length == 1)
+            CreatePageAction_updateFreeNodes(this, nodesJson, pan, zoom);
     }
 
 
 
     undo(updateNodes)
     {
+        const nodesJson = 
+            graph.pages.length == 1
+            ? CreatePageAction_prepareFreeNodes(this)
+            : NULL;
+
         graph.removePage(this.page);
 
         uiRemoveSavedPage(this.page.id);
         uiRemoveSavedNodesAndConns(graph.nodes.filter(n => n.pageId == this.page.id).map(n => n.id));
 
         graph.updatePages();
+
+        
+        if (graph.pages.length == 0)
+            CreatePageAction_updateFreeNodes(this, nodesJson);
     }
+}
+
+
+
+function CreatePageAction_prepareFreeNodes(action)
+{
+    return uiCopyNodes(graph.currentPage.nodes.map(n => n.id));
+}
+
+
+
+function CreatePageAction_updateFreeNodes(action, nodesJson)
+{
+    console.log('nodesJson =', nodesJson);
+    if (nodesJson != NULL)
+        uiPasteNodes(nodesJson, false);
+
+    action.pages[0]._zoom = action.defaultPage._zoom;
+    action.pages[0]._pan  = action.defaultPage._pan;
+
+    graphView.updateNodes(graph.currentPage.nodes);
 }
 
 
