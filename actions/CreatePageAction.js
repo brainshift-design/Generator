@@ -44,11 +44,12 @@ extends Action
         uiRemoveSavedPage(this.page.id);
         uiRemoveSavedNodesAndConns(graph.nodes.filter(n => n.pageId == this.page.id).map(n => n.id));
 
-        graph.updatePages();
-
-        
+       
         if (graph.pages.length == 0)
             CreatePageAction_updateNodes(this, pan, zoom, nodesJson);
+
+
+        graph.updatePages();
     }
 }
 
@@ -56,10 +57,15 @@ extends Action
 
 function CreatePageAction_prepareNodes()
 {
+    const nodeIds = graph.currentPage.nodes.map(n => n.id);
+
+    const nodesJson = uiCopyNodes(nodeIds);
+    uiDeleteNodes(nodeIds);
+
     return [
         graph.currentPage._pan,
         graph.currentPage._zoom,
-        uiCopyNodes(graph.currentPage.nodes.map(n => n.id)) ];
+        nodesJson ];
 }
 
 
@@ -72,8 +78,7 @@ function CreatePageAction_updateNodes(action, pan, zoom, nodesJson)
         graphView.pastingNodes = false;
     }
 
-    graph.currentPage._pan  = pan;
-    graph.currentPage._zoom = zoom;
+    graph.currentPage.setPanAndZoom(pan, zoom);
 
     graphView.updateNodes(graph.currentPage.nodes);
 }

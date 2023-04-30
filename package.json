@@ -2,7 +2,7 @@
   "name":        "Generator",
   "version":     "132",
   "description": "Generative design for Figma",
-  "author":      "Alex Bourt",
+  "author":      "Brainshift",
   "license":     "Proprietary",
 
   "main": "output/main.js",

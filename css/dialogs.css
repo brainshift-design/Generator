@@ -703,7 +703,7 @@
     transform:     translateX(-50%)
                    translateY(-50%);
     width:         270px;
-    height:        160px;
+    height:        118px;
 
     overflow:      hidden;
     
@@ -803,6 +803,7 @@
 
 #aboutBrainshiftLogo
 {
+    display:   none;
     position:  absolute;
     left:      97px;
     top:       82px;
