@@ -227,6 +227,19 @@ class Menu
         document.body.appendChild(this.div);
 
 
+        this.update(x, y, subMenu);
+
+
+        currentMenus.push(this);
+
+        
+        this.visible = true;
+    }
+
+
+
+    update(x, y, subMenu)
+    {
         const margin = 8;
 
         const  dy    = subMenu ? 0 : 4;
@@ -255,21 +268,18 @@ class Menu
         }
 
 
+        this.div.style.left = left;
+        this.div.style.top  = top + _dy;
+
+
         this.div.style.overflowY = 
             top + height > graphHeight-8 
             ? 'overlay' 
             : 'hidden';
 
         
-        this.div.style.left   = left;
-        this.div.style.top    = top + _dy;
         this.div.style.height = height + 'px';
 
-
-        currentMenus.push(this);
-
-        
-        this.visible = true;
     }
 
 

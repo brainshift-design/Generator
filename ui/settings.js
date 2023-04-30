@@ -297,6 +297,11 @@ function enableFeatures(subscription, beta)
 function updateMenuItemShowDebugMenu()
 {
     updateElementDisplay(menuItemDebug.div, settings.showDebugMenu);
+
+    menuMain.update(
+        boundingRect(menuMain.div).x + 6,
+        boundingRect(menuMain.div).y- 4,
+        true);
 }
 
  

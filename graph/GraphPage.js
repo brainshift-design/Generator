@@ -4,6 +4,23 @@ class GraphPage
     name;
 
 
+    parent;
+
+    get path() 
+    {
+        let path = '';
+        let page = this;
+        
+        while (page)
+        {
+            path = page.id + '/' + path;
+            page = page.parent;
+        }
+
+        return path;
+    }
+
+
     groupId;
 
 
@@ -15,6 +32,10 @@ class GraphPage
 
 
     groupId; // a page with a group ID makes it a group
+
+
+
+    get nodes() { return graph.nodes.filter(n => n.pageId == this.id); }
 
 
 
@@ -143,14 +164,7 @@ class GraphPage
         this.btnClose.addEventListener('pointerup', e => 
         { 
             if (e.button == 0)
-            {
-                graph.removePage(this);
-
-                uiRemoveSavedPage(this.id);
-                uiRemoveSavedNodesAndConns(graph.nodes.filter(n => n.pageId == this.id).map(n => n.id));
-
-                graph.updatePages();
-            }
+                actionManager.do(new DeletePageAction(this.id));
         });
     }
 
@@ -164,19 +178,16 @@ class GraphPage
                index == graph.pageIndex
             || index == graph.overIndex;
 
-        this.btnIcon .innerHTML           = iconPage;
-        this.btnName .innerHTML           = settings.showNodeId ? this.id : this.name;
-        this.btnClose.innerHTML           = iconPageClose;
+        this.btnIcon .innerHTML        = iconPage;
+        this.btnName .innerHTML        = settings.showNodeId ? this.id : this.name;
+        this.btnClose.innerHTML        = iconPageClose;
         
-        this.button  .style.background    = isCurrent ? '#2c2c2c' : (document.hasFocus() ? '#202020' : '#383838');
+        this.button  .style.background = isCurrent ? '#2c2c2c' : (document.hasFocus() ? '#202020' : '#383838');
         
-        this.btnIcon .style.display       = this.button.offsetWidth >= 75 ? 'inline-block' : 'none';
-        this.btnIcon .style.opacity       = isCurrent ? 1 : 0.35;
+        this.btnIcon .style.display    = this.button.offsetWidth >= 75 ? 'inline-block' : 'none';
+        this.btnIcon .style.opacity    = isCurrent ? 1 : 0.35;
         
-        this.btnName .style.color         = isCurrent ? '#fffffff0' : '#fff6';
-
-        this.btnClose.style.pointerEvents = isCurrent && graph.pages.length > 1 ? 'all' : 'none';
-        this.btnClose.style.opacity       = isCurrent && graph.pages.length > 1 ? 0.65 : 0;    
+        this.btnName .style.color      = isCurrent ? '#fffffff0' : '#fff6';
     }
 
 

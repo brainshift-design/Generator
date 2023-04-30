@@ -589,8 +589,6 @@ function dataModeDeletePathFromNodeId(node)
     delete node.div;
 
     uiSaveNodesJson([node.id], [node]);
-
-    //div.innerHTML = 
 }
 
 

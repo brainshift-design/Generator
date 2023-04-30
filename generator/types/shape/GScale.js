@@ -80,69 +80,76 @@ extends GOperator
     async evalObjects(parse, options = {})
     {
         if (!this.options.enabled)
-            return;
-            
-
-        this.objects = 
-            this.input 
-            ? clone(this.input.objects) 
-            : [];
-
-
-        let bounds = Rect.NaN;
-
-        for (const obj of this.objects)
-            bounds = expandRect(bounds, new Rect(obj.x, obj.y, obj.width, obj.height));
-
-
-        const x  = Math.max(0, options.x.toNumber()/100);
-        const y  = Math.max(0, options.y.toNumber()/100);
-
-        const dx = options.ox.toNumber()/100;
-        const dy = options.oy.toNumber()/100;
-
-
-        for (const obj of this.objects)
         {
-            obj.nodeId = this.nodeId;
+            this.objects = clone(this.input.objects);
+         
+            for (const obj of this.objects)
+                obj.nodeId = this.nodeId;
+        }
 
-            obj.width  *= x;
-            obj.height *= y;
-
-
-            const angle = anglev_(
-                bounds.x + (dx * bounds.width ), 
-                bounds.y + (dy * bounds.height),
-                obj.x,
-                obj.y);
-
-            const halfd = distance_(
-                bounds.x + (dx * bounds.width ), 
-                bounds.y + (dy * bounds.height),
-                obj.x,
-                obj.y);
+        else
+        {
+            this.objects = 
+                this.input 
+                ? clone(this.input.objects) 
+                : [];
 
 
-            const a  = 0;//obj.angle/360*Tau;
-            const v  = vector(angle - a, halfd);
+            let bounds = Rect.NaN;
 
-            v.x *= x;
-            v.y *= y;
+            for (const obj of this.objects)
+                bounds = expandRect(bounds, new Rect(obj.x, obj.y, obj.width, obj.height));
 
 
-            obj.x = 
-                  bounds.x 
-                + bounds.width /2 
-                + v.x 
-                - (dx - 0.5) * bounds.width  * Math.cos(-a) 
-                - (dy - 0.5) * bounds.height * Math.sin( a);
+            const x  = Math.max(0, options.x.toNumber()/100);
+            const y  = Math.max(0, options.y.toNumber()/100);
 
-            obj.y = 
-                  bounds.y
-                + bounds.height/2
-                + v.y 
-                - (dx - 0.5) * bounds.width  * Math.sin(-a) 
-                - (dy - 0.5) * bounds.height * Math.cos( a);
+            const dx = options.ox.toNumber()/100;
+            const dy = options.oy.toNumber()/100;
+
+
+            for (const obj of this.objects)
+            {
+                obj.nodeId = this.nodeId;
+
+                obj.width  *= x;
+                obj.height *= y;
+
+
+                const angle = anglev_(
+                    bounds.x + (dx * bounds.width ), 
+                    bounds.y + (dy * bounds.height),
+                    obj.x,
+                    obj.y);
+
+                const halfd = distance_(
+                    bounds.x + (dx * bounds.width ), 
+                    bounds.y + (dy * bounds.height),
+                    obj.x,
+                    obj.y);
+
+
+                const a  = 0;//obj.angle/360*Tau;
+                const v  = vector(angle - a, halfd);
+
+                v.x *= x;
+                v.y *= y;
+
+
+                obj.x = 
+                    bounds.x 
+                    + bounds.width /2 
+                    + v.x 
+                    - (dx - 0.5) * bounds.width  * Math.cos(-a) 
+                    - (dy - 0.5) * bounds.height * Math.sin( a);
+
+                obj.y = 
+                    bounds.y
+                    + bounds.height/2
+                    + v.y 
+                    - (dx - 0.5) * bounds.width  * Math.sin(-a) 
+                    - (dy - 0.5) * bounds.height * Math.cos( a);
+            }
         }
 
         

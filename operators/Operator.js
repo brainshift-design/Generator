@@ -1251,7 +1251,12 @@ function nodesAreParallel(nodes)
 
 function makeNodePath(id)
 {
-    return graph.currentPage.id + '/' + id;
+    const path =
+        graph.currentPage.id != NULL
+        ? graph.currentPage.path
+        : NULL;
+
+    return path + id;
 }
 
 

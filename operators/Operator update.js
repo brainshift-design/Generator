@@ -234,7 +234,7 @@ Operator.prototype.updateHeaderLabel = function()
 Operator.prototype.updateHeaderLabelText = function()
 {
     this.labelText.innerHTML = 
-          (settings.showNodeId ? '/'+this.nodeId : this.name + (this.cached ? '' : '...'))
+          (settings.showNodeId ? this.nodeId : this.name + (this.cached ? '' : '...'))
         + (this.active && this.showActiveArrow ? (settings.showNodeId ? ' ' : '  ') + '‣' : '');
 
     this.labelText.style.fontFamily = 

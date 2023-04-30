@@ -18,19 +18,19 @@ function createNode(nodeType, creatingButton = null, createdNodeId = -1, options
         case REPEAT:                  node = new OpRepeat();            break;
         case CACHE:                   node = new OpCache();             break;
         case COPY:                    node = new OpCopy();              break;
-      
+
         case NUMBER:                  node = new OpNumber();            break;
         case NUMBER_SIGN:             node = new OpSign();              break;
         case NUMBER_ABSOLUTE:         node = new OpAbsolute();          break;
         case NUMBER_ROUND:            node = new OpRound();             break;
         case NUMBER_LIMITS:           node = new OpLimits();            break;
         case NUMBER_RANDOM:           node = new OpRandom();            break;
-        case NUMBER_SEQUENCE:         node = new OpSequence();            break;
+        case NUMBER_SEQUENCE:         node = new OpSequence();          break;
         case NUMBER_INTERPOLATE:      node = new OpInterpolate();       break;
         case NUMBER_TO_TEXT:          node = new OpNumberToText();      break;
         case NUMBER_SOLVE:            node = new OpSolve();             break;
         case NUMBER_ANIMATE:          node = new OpAnimate();           break;
-             
+
         case NUMBER_MATH:             node = new OpMath();              break;
         case NUMBER_ADD:              node = new OpAdd();               break;
         case NUMBER_SUBTRACT:         node = new OpSubtract();          break;
@@ -38,13 +38,13 @@ function createNode(nodeType, creatingButton = null, createdNodeId = -1, options
         case NUMBER_DIVIDE:           node = new OpDivide();            break;
         case NUMBER_MODULO:           node = new OpModulo();            break;
         case NUMBER_EXPONENT:         node = new OpExponent();          break;
-             
+
         case NUMBER_BOOLEAN:          node = new OpBoolean();           break;
         case NUMBER_NOT:              node = new OpNot();               break;
         case NUMBER_AND:              node = new OpAnd();               break;
         case NUMBER_OR:               node = new OpOr();                break;
         case NUMBER_XOR:              node = new OpXor();               break;
-         
+
         case NUMBER_CONDITION:        node = new OpCondition();         break;
         case NUMBER_EQUAL:            node = new OpEqual();             break;
         case NUMBER_NOT_EQUAL:        node = new OpNotEqual();          break;
@@ -57,7 +57,7 @@ function createNode(nodeType, creatingButton = null, createdNodeId = -1, options
         case NUMBER_SIN:              node = new OpSine();              break;
         case NUMBER_COS:              node = new OpCosine();            break;
         case NUMBER_TAN:              node = new OpTangent();           break;
-         
+
         case TEXT:                    node = new OpText();              break;
         case TEXT_LENGTH:             node = new OpTextLength();        break;
         case TEXT_TRIM:               node = new OpTextTrim();          break;
@@ -67,7 +67,7 @@ function createNode(nodeType, creatingButton = null, createdNodeId = -1, options
         case TEXT_JOIN:               node = new OpTextJoin();          break;
         case TEXT_CSV:                node = new OpTextCSV();           break;
         case TEXT_FETCH:              node = new OpTextFetch();         break;
-        
+
         case COLOR:                   node = new OpColor(options);      break;
         case VALID_COLOR:             node = new OpValidColor();        break;
         case CORRECT_COLOR:           node = new OpCorrectColor();      break;
@@ -75,22 +75,22 @@ function createNode(nodeType, creatingButton = null, createdNodeId = -1, options
         case COLORBLIND:              node = new OpColorBlind();        break;
         case COLOR_INTERPOLATE:       node = new OpColorInterpolate();  break;
         case COLOR_BLEND:             node = new OpColorBlend();        break;
-             
+
         case COLOR_STOP:              node = new OpColorStop();         break;
         case GRADIENT:                node = new OpGradient();          break;
-      
+
         case FILL:                    node = new OpFill();              break;
         case STROKE:                  node = new OpStroke();            break;
 
         case COLOR_STYLE:             node = new OpColorStyle(options); break;
-     
+
         case RECTANGLE:               node = new OpRectangle();         break;
         case LINE:                    node = new OpLine();              break;
         case ELLIPSE:                 node = new OpEllipse();           break;
         case POLYGON:                 node = new OpPolygon();           break;
         case STAR:                    node = new OpStar();              break;
         case TEXTSHAPE:               node = new OpTextShape();         break;
-      
+
         case MOVE:                    node = new OpMove();              break;
         case ROTATE:                  node = new OpRotate();            break;
         case SCALE:                   node = new OpScale();             break;
@@ -99,7 +99,7 @@ function createNode(nodeType, creatingButton = null, createdNodeId = -1, options
         case GROUP_PARAM:             node = new OpGroupParam();        break;
 
         case COMMENT:                 node = new OpComment();           break;
-     
+
         default:                      console.assert(false, 'Graph.js/createNode() cannot create type ' + nodeType);
     }
     
@@ -473,7 +473,7 @@ function uiCopyNodes(nodeIds)
 
 
 
-function uiPasteNodes(nodesJson, pasteConnected, x, y, updateNodes)
+function uiPasteNodes(nodesJson, loading, pasteConnected, x, y, updateNodes)
 {
     //console.log(nodesJson);
 
@@ -574,10 +574,11 @@ function uiPasteNodes(nodesJson, pasteConnected, x, y, updateNodes)
         data.connections = []; // return an empty array if no data was loaded
 
 
-    graphView.selectedNodes = nodes;
-
-
-    finishLoadingNodes(data.nodes, nodes, updateNodes, true);
+    if (loading)
+    {
+        graphView.selectedNodes = nodes;
+        finishLoadingNodes(data.nodes, nodes, updateNodes, true);
+    }
 
 
     return [nodes, data.connections];

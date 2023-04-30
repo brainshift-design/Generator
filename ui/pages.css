@@ -73,7 +73,6 @@
     display:       inline-block;
     position:      relative;
     left:          1px;
-    top:           -2px;
     outline:       none;
     /* width:         34px; */
     height:        calc(100% - 13px);

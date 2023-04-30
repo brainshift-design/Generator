@@ -83,8 +83,7 @@ function uiReturnFigResizeWindow()
     graphView.update();
     updateWhatsNewScrollbar(0);
 
-    pageName   .style.display =
-    btnPage.div.style.display = window.innerWidth > 590 ? 'inline-block' : 'none';
+    graph.updatePageName();
 }
 
 

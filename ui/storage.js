@@ -227,11 +227,11 @@ function uiReturnFigLoadNodesAndConns(msg)
         if (msg.currentPageId != NULL)
             graph.pageIndex = graph.pages.findIndex(p => p.id == msg.currentPageId);
     }
-    else
-    {
-        graph.createPage('Graph');
-        graph.updateSavedPages();
-    }
+    // else
+    // {
+        // graph.createPage('Graph');
+        // graph.updateSavedPages();
+    // }
 
 
 

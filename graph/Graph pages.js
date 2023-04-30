@@ -1,14 +1,24 @@
-Graph.prototype.createPage = function(name)
+Graph.prototype.createPage = function(name, add = true)
 {
-    this.addPage(new GraphPage(
+    const page = new GraphPage(
         name.substring(0, 1).toLowerCase() + name.substring(1),
-        name));
+        name);
+
+    if (add)
+        this.addPage(page);
+
+    return page;
 };
 
 
 
 Graph.prototype.addPage = function(page)
 {
+    let nodesJson = NULL;
+    if (isEmpty(this.pages))
+        nodesJson = uiCopyNodes(this.defaultPage.nodes.map(n => n.id));        
+
+
     page.id = getNewNumberId(
         graph.pages, 
         id => graph.pages.find(p => p.id == id), 
@@ -26,18 +36,37 @@ Graph.prototype.addPage = function(page)
     pagesBar.insertBefore(page.button, btnAddPage);
 
     this.pageIndex = this.pages.length-1;
+
+
+    if (this.pages.length == 1)
+    {
+        if (nodesJson != NULL)
+            uiPasteNodes(nodesJson, false);
+
+        this.pages[0]._zoom = this.defaultPage._zoom;
+        this.pages[0]._pan  = this.defaultPage._pan;
+    }
 };
 
 
 
 Graph.prototype.removePage = function(page)
 {
+    let nodesJson = NULL;
+    if (this.pages.length == 1)
+        nodesJson = uiCopyNodes(this.defaultPage.nodes.map(n => n.id));        
+
+
     removeFromArray(this.pages, page);
 
     pagesBar.removeChild(page.button);
 
     if (this.pageIndex >= this.pages.length)
         this.pageIndex--;
+
+
+    if (nodesJson != NULL)
+        uiPasteNodes(nodesJson, false);
 };
 
 
@@ -49,8 +78,8 @@ Graph.prototype.updatePages = function()
     
     this.pages.forEach(p => p.update());
     
-    updateAddButton(false);
 
+    updateAddButton(false);
 
     
     for (const node of graph.nodes)
@@ -76,8 +105,25 @@ Graph.prototype.updatePages = function()
         : '';
 
 
+    btnAddPage.style.top = isEmpty(graph.pages) ?  '0px' : '-2px';
+
+
+    this.updatePageName();
+        
     updateZoomIcon();
 }
+
+
+
+Graph.prototype.updatePageName = function()
+{
+    pageName   .style.display =
+    btnPage.div.style.display =
+          !isEmpty(graph.pages)
+        && window.innerWidth > 590 
+        ? 'inline-block' 
+        : 'none';
+};
 
 
 
@@ -104,7 +150,12 @@ btnAddPage.addEventListener('pointerleave', e => updateAddButton(false));
 
 btnAddPage.addEventListener('pointerup', e => 
 {
-    graph.createPage('Graph');
-    graph.updatePages();
-    graph.updateSavedPages();
+    actionManager.do(new CreatePageAction());
 });
+
+
+
+function pageFromId(pageId)
+{
+    return graph.pages.find(p => p.id == pageId);
+}
