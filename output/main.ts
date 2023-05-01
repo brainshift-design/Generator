@@ -1374,7 +1374,7 @@ function figDeleteAllObjects()
 {
     console.log('delete all objects');
     for (const obj of figma.currentPage.children)
-        if (!!obj.getPluginData('id')) 
+        if (obj.getPluginData('id') != null) 
             obj.remove();
 }
 
