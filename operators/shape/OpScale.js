@@ -4,8 +4,8 @@ extends OperatorBase
     paramX;
     paramY;
     
-    paramOriginX;
-    paramOriginY;
+    paramCenterX;
+    paramCenterY;
 
 
 
@@ -22,23 +22,15 @@ extends OperatorBase
 
         this.addParam(this.paramX       = new NumberParam('x',       'width',    true, true, true, 100));
         this.addParam(this.paramY       = new NumberParam('y',       'height',   true, true, true, 100));
-        this.addParam(this.paramOriginX = new NumberParam('originX', 'center x', true, true, true,  50));
-        this.addParam(this.paramOriginY = new NumberParam('originY', 'center y', true, true, true,  50));
+        this.addParam(this.paramCenterX = new NumberParam('centerX', 'center x', true, true, true,   0));
+        this.addParam(this.paramCenterY = new NumberParam('centerY', 'center y', true, true, true,   0));
 
 
-        this.paramX      .controls[0].suffix = '%';
-        this.paramY      .controls[0].suffix = '%';
-        this.paramOriginX.controls[0].suffix = '%';
-        this.paramOriginY.controls[0].suffix = '%';
+        this.paramX.controls[0].suffix = '%';
+        this.paramY.controls[0].suffix = '%';
 
-        this.paramX      .controls[0].setMin(0);
-        this.paramY      .controls[0].setMin(0);
-
-        this.paramOriginX.controls[0].displayMin = 0;
-        this.paramOriginX.controls[0].displayMax = 100;
-
-        this.paramOriginY.controls[0].displayMin = 0;
-        this.paramOriginY.controls[0].displayMax = 100;
+        this.paramX.controls[0].setMin(0);
+        this.paramY.controls[0].setMin(0);
 
 
         // this.inputs[0].addEventListener('connect',    e => OpScale_onConnectInput   (this));
@@ -69,8 +61,8 @@ extends OperatorBase
 
         request.push(...this.node.paramX      .genRequest(gen));
         request.push(...this.node.paramY      .genRequest(gen));
-        request.push(...this.node.paramOriginX.genRequest(gen));
-        request.push(...this.node.paramOriginY.genRequest(gen));
+        request.push(...this.node.paramCenterX.genRequest(gen));
+        request.push(...this.node.paramCenterY.genRequest(gen));
 
         
         gen.scope.pop();
@@ -90,6 +82,15 @@ extends OperatorBase
             this.inputs[0].connected
             ? [...this.inputs[0].connectedOutput.types]
             : [ANY_VALUE];
+
+
+        const bounds = values[paramIds.findIndex(id => id == 'bounds')];
+
+        this.paramCenterX.controls[0].displayMin = -bounds.width.value/2;
+        this.paramCenterX.controls[0].displayMax =  bounds.width.value/2;
+
+        this.paramCenterY.controls[0].displayMin = -bounds.height.value/2;
+        this.paramCenterY.controls[0].displayMax =  bounds.height.value/2;
     }
 }
 

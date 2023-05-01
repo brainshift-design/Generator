@@ -269,6 +269,17 @@ const ROTATE           = 'ROT';
 const SCALE            = 'SCALE';
 
 
+const POINT            = 'PT';
+const POINT_VALUE      = 'PT#';
+
+
+const POINT_TYPES =
+[
+    POINT,
+    POINT_VALUE
+];
+
+
 const SHAPE_VALUES =
 [
     SHAPE_VALUE,
@@ -278,17 +289,7 @@ const SHAPE_VALUES =
     ELLIPSE_VALUE,
     POLYGON_VALUE,
     STAR_VALUE,
-    TEXTSHAPE_VALUE
-];
-
-
-const POINT            = 'PT';
-const POINT_VALUE      = 'PT#';
-
-
-const POINT_TYPES =
-[
-    POINT,
+    TEXTSHAPE_VALUE,
     POINT_VALUE
 ];
 

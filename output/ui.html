@@ -8145,6 +8145,17 @@ const ROTATE           = 'ROT';
 const SCALE            = 'SCALE';
 
 
+const POINT            = 'PT';
+const POINT_VALUE      = 'PT#';
+
+
+const POINT_TYPES =
+[
+    POINT,
+    POINT_VALUE
+];
+
+
 const SHAPE_VALUES =
 [
     SHAPE_VALUE,
@@ -8154,17 +8165,7 @@ const SHAPE_VALUES =
     ELLIPSE_VALUE,
     POLYGON_VALUE,
     STAR_VALUE,
-    TEXTSHAPE_VALUE
-];
-
-
-const POINT            = 'PT';
-const POINT_VALUE      = 'PT#';
-
-
-const POINT_TYPES =
-[
-    POINT,
+    TEXTSHAPE_VALUE,
     POINT_VALUE
 ];
 
@@ -11472,8 +11473,10 @@ function parseTextShapeValue(str, i = -1)
 
 
 class PointValue
-extends ShapeValue
+extends GValue
 {
+    nodeId;
+
     x;
     y;
 
@@ -11483,20 +11486,13 @@ extends ShapeValue
                 x = new NumberValue(0), 
                 y = new NumberValue(0))
     {
-        super(POINT_VALUE, nodeId);
+        super(POINT_VALUE);
 
-        this.x = x;
-        this.y = y;
+        this.nodeId = nodeId;
+
+        this.x      = x;
+        this.y      = y;
     }
-
-
-
-    // static fromString(str)
-    // {
-    //     return new NumberValue(
-    //         parseFloat(str),
-    //         decCount(str));
-    // }
 
 
 
@@ -11506,8 +11502,6 @@ extends ShapeValue
             this.nodeId,
             this.x.copy(), 
             this.y.copy());
-
-        copy.copyBase(this);
 
         return copy;
     }
@@ -20013,11 +20007,11 @@ extends GOperator
 class GRotate
 extends GOperator
 {
-    input = null;
+    input   = null;
 
-    angle = null;
-    ox    = null;
-    oy    = null;
+    angle   = null;
+    centerX = null;
+    centerY = null;
 
 
 
@@ -20037,10 +20031,10 @@ extends GOperator
         if (this.input) 
             copy.input = this.input.copy();
 
-        if (this.value) copy.value = this.value.copy();
-        if (this.angle) copy.angle = this.angle.copy();
-        if (this.ox   ) copy.ox    = this.ox   .copy();
-        if (this.oy   ) copy.oy    = this.oy   .copy();
+        //if (this.value  ) copy.value   = this.value  .copy();
+        if (this.angle  ) copy.angle   = this.angle  .copy();
+        if (this.centerX) copy.centerX = this.centerX.copy();
+        if (this.centerY) copy.centerY = this.centerY.copy();
 
         return copy;
     }
@@ -20052,10 +20046,10 @@ extends GOperator
         if (this.isCached())
             return this;
 
-            
-        const angle = this.angle ? (await this.angle.eval(parse)).toValue() : null;
-        const ox    = this.ox    ? (await this.ox   .eval(parse)).toValue() : null;
-        const oy    = this.oy    ? (await this.oy   .eval(parse)).toValue() : null;
+        //console.log('this.centerX =', this.centerX);
+        const angle   = this.angle   ? (await this.angle  .eval(parse)).toValue() : null;
+        const centerX = this.centerX ? (await this.centerX.eval(parse)).toValue() : null;
+        const centerY = this.centerY ? (await this.centerY.eval(parse)).toValue() : null;
 
 
         if (this.input)
@@ -20069,16 +20063,33 @@ extends GOperator
         }
 
        
+        const _bounds = await this.evalObjects(parse, 
+        {
+            angle:   angle, 
+            centerX: centerX, 
+            centerY: centerY
+        });
+
+
         if (parse.isLastRepeat())
         {
-            genPushUpdateValue(parse, this.nodeId, 'value', this.value);
-            genPushUpdateValue(parse, this.nodeId, 'angle', angle     );
-            genPushUpdateValue(parse, this.nodeId, 'ox',    ox        );
-            genPushUpdateValue(parse, this.nodeId, 'oy',    oy        );
+            genPushUpdateValue(parse, this.nodeId, 'value',   this.value);
+            genPushUpdateValue(parse, this.nodeId, 'angle',   angle     );
+            genPushUpdateValue(parse, this.nodeId, 'centerX', centerX   );
+            genPushUpdateValue(parse, this.nodeId, 'centerY', centerY   );
+
+
+            const bounds = new RectangleValue(
+                this.nodeId,
+                new NumberValue(_bounds.x     ), 
+                new NumberValue(_bounds.y     ), 
+                new NumberValue(_bounds.width ),
+                new NumberValue(_bounds.height),
+                new NumberValue(0),
+                new NumberValue(0));
+
+            genPushUpdateValue(parse, this.nodeId, 'bounds', bounds);
         }
-
-
-        await this.evalObjects(parse, {angle: angle, ox: ox, oy: oy});
 
 
         this.validate();
@@ -20106,8 +20117,8 @@ extends GOperator
             bounds = expandRect(bounds, new Rect(obj.x, obj.y, obj.width, obj.height));
 
 
-        const dx = options.ox.toNumber()/100 - 0.5;
-        const dy = options.oy.toNumber()/100 - 0.5;
+        const dx = options.centerX.toNumber() / (bounds.width /2);
+        const dy = options.centerY.toNumber() / (bounds.height/2);
 
 
         for (const obj of this.objects)
@@ -20151,6 +20162,9 @@ extends GOperator
 
         
         await super.evalObjects(parse);
+
+
+        return bounds;
     }
 
 
@@ -20158,9 +20172,9 @@ extends GOperator
     isValid()
     {
         return super.isValid()
-            && this.angle.isValid()
-            && this.ox   .isValid()
-            && this.oy   .isValid();
+            && this.angle  .isValid()
+            && this.centerX.isValid()
+            && this.centerY.isValid();
     }
 
 
@@ -20169,10 +20183,10 @@ extends GOperator
     {
         super.invalidate();
 
-        if (this.input ) this.input .invalidate();
-        if (this.angle ) this.angle .invalidate();
-        if (this.ox    ) this.ox    .invalidate();
-        if (this.oy    ) this.oy    .invalidate();
+        if (this.input  ) this.input  .invalidate();
+        if (this.angle  ) this.angle  .invalidate();
+        if (this.centerX) this.centerX.invalidate();
+        if (this.centerY) this.centerY.invalidate();
     }
 
 
@@ -20187,12 +20201,12 @@ extends GOperator
 class GScale
 extends GOperator
 {
-    input = null;
+    input   = null;
 
-    x     = null;
-    y     = null;
-    ox    = null;
-    oy    = null;
+    x       = null;
+    y       = null;
+    centerX = null;
+    centerY = null;
 
 
 
@@ -20212,11 +20226,11 @@ extends GOperator
         if (this.input) 
             copy.input = this.input.copy();
 
-        if (this.value) copy.value = this.value.copy();
-        if (this.x    ) copy.x     = this.x    .copy();
-        if (this.y    ) copy.y     = this.y    .copy();
-        if (this.ox   ) copy.ox    = this.ox   .copy();
-        if (this.oy   ) copy.oy    = this.oy   .copy();
+        //if (this.value) copy.value = this.value.copy();
+        if (this.x      ) copy.x       = this.x      .copy();
+        if (this.y      ) copy.y       = this.y      .copy();
+        if (this.centerX) copy.centerX = this.centerX.copy();
+        if (this.centerY) copy.centerY = this.centerY.copy();
 
         return copy;
     }
@@ -20229,10 +20243,10 @@ extends GOperator
             return this;
 
 
-        const x  = this.x  ? (await this.x .eval(parse)).toValue() : null;
-        const y  = this.y  ? (await this.y .eval(parse)).toValue() : null;
-        const ox = this.ox ? (await this.ox.eval(parse)).toValue() : null;
-        const oy = this.oy ? (await this.oy.eval(parse)).toValue() : null;
+        const x       = this.x       ? (await this.x      .eval(parse)).toValue() : null;
+        const y       = this.y       ? (await this.y      .eval(parse)).toValue() : null;
+        const centerX = this.centerX ? (await this.centerX.eval(parse)).toValue() : null;
+        const centerY = this.centerY ? (await this.centerY.eval(parse)).toValue() : null;
 
 
         if (this.input)
@@ -20246,18 +20260,36 @@ extends GOperator
         }
 
        
+        const _bounds = await this.evalObjects(parse, 
+        {
+            x:       x, 
+            y:       y, 
+            centerX: centerX, 
+            centerY: centerY
+        });
+
+
         if (parse.isLastRepeat())
         {
-            genPushUpdateValue(parse, this.nodeId, 'value', this.value);
-            genPushUpdateValue(parse, this.nodeId, 'x',     x         );
-            genPushUpdateValue(parse, this.nodeId, 'y',     y         );
-            genPushUpdateValue(parse, this.nodeId, 'ox',    ox        );
-            genPushUpdateValue(parse, this.nodeId, 'oy',    oy        );
+            genPushUpdateValue(parse, this.nodeId, 'value',   this.value);
+            genPushUpdateValue(parse, this.nodeId, 'x',       x         );
+            genPushUpdateValue(parse, this.nodeId, 'y',       y         );
+            genPushUpdateValue(parse, this.nodeId, 'centerX', centerX   );
+            genPushUpdateValue(parse, this.nodeId, 'centerY', centerY   );
+
+
+            const bounds = new RectangleValue(
+                this.nodeId,
+                new NumberValue(_bounds.x     ), 
+                new NumberValue(_bounds.y     ), 
+                new NumberValue(_bounds.width ),
+                new NumberValue(_bounds.height),
+                new NumberValue(0),
+                new NumberValue(0));
+
+            genPushUpdateValue(parse, this.nodeId, 'bounds', bounds);
         }
         
-
-        await this.evalObjects(parse, {x: x, y: y, ox: ox, oy: oy});
-
 
         this.validate();
 
@@ -20293,8 +20325,8 @@ extends GOperator
             const x  = Math.max(0, options.x.toNumber()/100);
             const y  = Math.max(0, options.y.toNumber()/100);
 
-            const dx = options.ox.toNumber()/100;
-            const dy = options.oy.toNumber()/100;
+            const dx = options.centerX.toNumber() / (bounds.width /2);
+            const dy = options.centerY.toNumber() / (bounds.height/2);
 
 
             for (const obj of this.objects)
@@ -20352,8 +20384,8 @@ extends GOperator
         return super.isValid()
             && this.x .isValid()
             && this.y .isValid()
-            && this.ox.isValid()
-            && this.oy.isValid();
+            && this.centerX.isValid()
+            && this.centerY.isValid();
     }
 
 
@@ -20365,8 +20397,8 @@ extends GOperator
         if (this.input) this.input.invalidate();
         if (this.x    ) this.x    .invalidate();
         if (this.y    ) this.y    .invalidate();
-        if (this.ox   ) this.ox   .invalidate();
-        if (this.oy   ) this.oy   .invalidate();
+        if (this.centerX   ) this.centerX   .invalidate();
+        if (this.centerY   ) this.centerY   .invalidate();
     }
 
 
@@ -24255,11 +24287,11 @@ function genParseRotate(parse)
     if (nInputs == 1)
         rotate.input = genParse(parse);
 
-    rotate.angle = genParse(parse);
-    rotate.ox    = genParse(parse);
-    rotate.oy    = genParse(parse);
+    rotate.angle   = genParse(parse);
+    rotate.centerX = genParse(parse);
+    rotate.centerY = genParse(parse);
 
-
+    
     parse.inParam = false;
     parse.nTab--;
 
@@ -24267,6 +24299,7 @@ function genParseRotate(parse)
     genParseNodeEnd(parse, rotate);
     return rotate;
 }
+
 
 
 function genParseScale(parse)
@@ -24305,8 +24338,8 @@ function genParseScale(parse)
 
     scale.x  = genParse(parse);
     scale.y  = genParse(parse);
-    scale.ox = genParse(parse);
-    scale.oy = genParse(parse);
+    scale.centerX = genParse(parse);
+    scale.centerY = genParse(parse);
 
     
     parse.inParam = false;
@@ -34986,6 +35019,17 @@ const ROTATE           = 'ROT';
 const SCALE            = 'SCALE';
 
 
+const POINT            = 'PT';
+const POINT_VALUE      = 'PT#';
+
+
+const POINT_TYPES =
+[
+    POINT,
+    POINT_VALUE
+];
+
+
 const SHAPE_VALUES =
 [
     SHAPE_VALUE,
@@ -34995,17 +35039,7 @@ const SHAPE_VALUES =
     ELLIPSE_VALUE,
     POLYGON_VALUE,
     STAR_VALUE,
-    TEXTSHAPE_VALUE
-];
-
-
-const POINT            = 'PT';
-const POINT_VALUE      = 'PT#';
-
-
-const POINT_TYPES =
-[
-    POINT,
+    TEXTSHAPE_VALUE,
     POINT_VALUE
 ];
 
@@ -38313,8 +38347,10 @@ function parseTextShapeValue(str, i = -1)
 
 
 class PointValue
-extends ShapeValue
+extends GValue
 {
+    nodeId;
+
     x;
     y;
 
@@ -38324,20 +38360,13 @@ extends ShapeValue
                 x = new NumberValue(0), 
                 y = new NumberValue(0))
     {
-        super(POINT_VALUE, nodeId);
+        super(POINT_VALUE);
 
-        this.x = x;
-        this.y = y;
+        this.nodeId = nodeId;
+
+        this.x      = x;
+        this.y      = y;
     }
-
-
-
-    // static fromString(str)
-    // {
-    //     return new NumberValue(
-    //         parseFloat(str),
-    //         decCount(str));
-    // }
 
 
 
@@ -38347,8 +38376,6 @@ extends ShapeValue
             this.nodeId,
             this.x.copy(), 
             this.y.copy());
-
-        copy.copyBase(this);
 
         return copy;
     }
@@ -46854,11 +46881,11 @@ extends GOperator
 class GRotate
 extends GOperator
 {
-    input = null;
+    input   = null;
 
-    angle = null;
-    ox    = null;
-    oy    = null;
+    angle   = null;
+    centerX = null;
+    centerY = null;
 
 
 
@@ -46878,10 +46905,10 @@ extends GOperator
         if (this.input) 
             copy.input = this.input.copy();
 
-        if (this.value) copy.value = this.value.copy();
-        if (this.angle) copy.angle = this.angle.copy();
-        if (this.ox   ) copy.ox    = this.ox   .copy();
-        if (this.oy   ) copy.oy    = this.oy   .copy();
+        //if (this.value  ) copy.value   = this.value  .copy();
+        if (this.angle  ) copy.angle   = this.angle  .copy();
+        if (this.centerX) copy.centerX = this.centerX.copy();
+        if (this.centerY) copy.centerY = this.centerY.copy();
 
         return copy;
     }
@@ -46893,10 +46920,10 @@ extends GOperator
         if (this.isCached())
             return this;
 
-            
-        const angle = this.angle ? (await this.angle.eval(parse)).toValue() : null;
-        const ox    = this.ox    ? (await this.ox   .eval(parse)).toValue() : null;
-        const oy    = this.oy    ? (await this.oy   .eval(parse)).toValue() : null;
+        //console.log('this.centerX =', this.centerX);
+        const angle   = this.angle   ? (await this.angle  .eval(parse)).toValue() : null;
+        const centerX = this.centerX ? (await this.centerX.eval(parse)).toValue() : null;
+        const centerY = this.centerY ? (await this.centerY.eval(parse)).toValue() : null;
 
 
         if (this.input)
@@ -46910,16 +46937,33 @@ extends GOperator
         }
 
        
+        const _bounds = await this.evalObjects(parse, 
+        {
+            angle:   angle, 
+            centerX: centerX, 
+            centerY: centerY
+        });
+
+
         if (parse.isLastRepeat())
         {
-            genPushUpdateValue(parse, this.nodeId, 'value', this.value);
-            genPushUpdateValue(parse, this.nodeId, 'angle', angle     );
-            genPushUpdateValue(parse, this.nodeId, 'ox',    ox        );
-            genPushUpdateValue(parse, this.nodeId, 'oy',    oy        );
+            genPushUpdateValue(parse, this.nodeId, 'value',   this.value);
+            genPushUpdateValue(parse, this.nodeId, 'angle',   angle     );
+            genPushUpdateValue(parse, this.nodeId, 'centerX', centerX   );
+            genPushUpdateValue(parse, this.nodeId, 'centerY', centerY   );
+
+
+            const bounds = new RectangleValue(
+                this.nodeId,
+                new NumberValue(_bounds.x     ), 
+                new NumberValue(_bounds.y     ), 
+                new NumberValue(_bounds.width ),
+                new NumberValue(_bounds.height),
+                new NumberValue(0),
+                new NumberValue(0));
+
+            genPushUpdateValue(parse, this.nodeId, 'bounds', bounds);
         }
-
-
-        await this.evalObjects(parse, {angle: angle, ox: ox, oy: oy});
 
 
         this.validate();
@@ -46947,8 +46991,8 @@ extends GOperator
             bounds = expandRect(bounds, new Rect(obj.x, obj.y, obj.width, obj.height));
 
 
-        const dx = options.ox.toNumber()/100 - 0.5;
-        const dy = options.oy.toNumber()/100 - 0.5;
+        const dx = options.centerX.toNumber() / (bounds.width /2);
+        const dy = options.centerY.toNumber() / (bounds.height/2);
 
 
         for (const obj of this.objects)
@@ -46992,6 +47036,9 @@ extends GOperator
 
         
         await super.evalObjects(parse);
+
+
+        return bounds;
     }
 
 
@@ -46999,9 +47046,9 @@ extends GOperator
     isValid()
     {
         return super.isValid()
-            && this.angle.isValid()
-            && this.ox   .isValid()
-            && this.oy   .isValid();
+            && this.angle  .isValid()
+            && this.centerX.isValid()
+            && this.centerY.isValid();
     }
 
 
@@ -47010,10 +47057,10 @@ extends GOperator
     {
         super.invalidate();
 
-        if (this.input ) this.input .invalidate();
-        if (this.angle ) this.angle .invalidate();
-        if (this.ox    ) this.ox    .invalidate();
-        if (this.oy    ) this.oy    .invalidate();
+        if (this.input  ) this.input  .invalidate();
+        if (this.angle  ) this.angle  .invalidate();
+        if (this.centerX) this.centerX.invalidate();
+        if (this.centerY) this.centerY.invalidate();
     }
 
 
@@ -47028,12 +47075,12 @@ extends GOperator
 class GScale
 extends GOperator
 {
-    input = null;
+    input   = null;
 
-    x     = null;
-    y     = null;
-    ox    = null;
-    oy    = null;
+    x       = null;
+    y       = null;
+    centerX = null;
+    centerY = null;
 
 
 
@@ -47053,11 +47100,11 @@ extends GOperator
         if (this.input) 
             copy.input = this.input.copy();
 
-        if (this.value) copy.value = this.value.copy();
-        if (this.x    ) copy.x     = this.x    .copy();
-        if (this.y    ) copy.y     = this.y    .copy();
-        if (this.ox   ) copy.ox    = this.ox   .copy();
-        if (this.oy   ) copy.oy    = this.oy   .copy();
+        //if (this.value) copy.value = this.value.copy();
+        if (this.x      ) copy.x       = this.x      .copy();
+        if (this.y      ) copy.y       = this.y      .copy();
+        if (this.centerX) copy.centerX = this.centerX.copy();
+        if (this.centerY) copy.centerY = this.centerY.copy();
 
         return copy;
     }
@@ -47070,10 +47117,10 @@ extends GOperator
             return this;
 
 
-        const x  = this.x  ? (await this.x .eval(parse)).toValue() : null;
-        const y  = this.y  ? (await this.y .eval(parse)).toValue() : null;
-        const ox = this.ox ? (await this.ox.eval(parse)).toValue() : null;
-        const oy = this.oy ? (await this.oy.eval(parse)).toValue() : null;
+        const x       = this.x       ? (await this.x      .eval(parse)).toValue() : null;
+        const y       = this.y       ? (await this.y      .eval(parse)).toValue() : null;
+        const centerX = this.centerX ? (await this.centerX.eval(parse)).toValue() : null;
+        const centerY = this.centerY ? (await this.centerY.eval(parse)).toValue() : null;
 
 
         if (this.input)
@@ -47087,18 +47134,36 @@ extends GOperator
         }
 
        
+        const _bounds = await this.evalObjects(parse, 
+        {
+            x:       x, 
+            y:       y, 
+            centerX: centerX, 
+            centerY: centerY
+        });
+
+
         if (parse.isLastRepeat())
         {
-            genPushUpdateValue(parse, this.nodeId, 'value', this.value);
-            genPushUpdateValue(parse, this.nodeId, 'x',     x         );
-            genPushUpdateValue(parse, this.nodeId, 'y',     y         );
-            genPushUpdateValue(parse, this.nodeId, 'ox',    ox        );
-            genPushUpdateValue(parse, this.nodeId, 'oy',    oy        );
+            genPushUpdateValue(parse, this.nodeId, 'value',   this.value);
+            genPushUpdateValue(parse, this.nodeId, 'x',       x         );
+            genPushUpdateValue(parse, this.nodeId, 'y',       y         );
+            genPushUpdateValue(parse, this.nodeId, 'centerX', centerX   );
+            genPushUpdateValue(parse, this.nodeId, 'centerY', centerY   );
+
+
+            const bounds = new RectangleValue(
+                this.nodeId,
+                new NumberValue(_bounds.x     ), 
+                new NumberValue(_bounds.y     ), 
+                new NumberValue(_bounds.width ),
+                new NumberValue(_bounds.height),
+                new NumberValue(0),
+                new NumberValue(0));
+
+            genPushUpdateValue(parse, this.nodeId, 'bounds', bounds);
         }
         
-
-        await this.evalObjects(parse, {x: x, y: y, ox: ox, oy: oy});
-
 
         this.validate();
 
@@ -47134,8 +47199,8 @@ extends GOperator
             const x  = Math.max(0, options.x.toNumber()/100);
             const y  = Math.max(0, options.y.toNumber()/100);
 
-            const dx = options.ox.toNumber()/100;
-            const dy = options.oy.toNumber()/100;
+            const dx = options.centerX.toNumber() / (bounds.width /2);
+            const dy = options.centerY.toNumber() / (bounds.height/2);
 
 
             for (const obj of this.objects)
@@ -47193,8 +47258,8 @@ extends GOperator
         return super.isValid()
             && this.x .isValid()
             && this.y .isValid()
-            && this.ox.isValid()
-            && this.oy.isValid();
+            && this.centerX.isValid()
+            && this.centerY.isValid();
     }
 
 
@@ -47206,8 +47271,8 @@ extends GOperator
         if (this.input) this.input.invalidate();
         if (this.x    ) this.x    .invalidate();
         if (this.y    ) this.y    .invalidate();
-        if (this.ox   ) this.ox   .invalidate();
-        if (this.oy   ) this.oy   .invalidate();
+        if (this.centerX   ) this.centerX   .invalidate();
+        if (this.centerY   ) this.centerY   .invalidate();
     }
 
 
@@ -72725,7 +72790,7 @@ extends OpShapeBase
 
 
 class   OpRectangle
-extends OpShapeBase
+extends OpShape
 {
     paramX;
     paramY;
@@ -72781,7 +72846,7 @@ extends OpShapeBase
 
 
 class   OpLine
-extends OpShapeBase
+extends OpShape
 {
     paramX;
     paramY;
@@ -72817,7 +72882,7 @@ extends OpShapeBase
 
 
 class   OpEllipse
-extends OpShapeBase
+extends OpShape
 {
     paramX;
     paramY;
@@ -72856,7 +72921,7 @@ extends OpShapeBase
 
 
 class   OpPolygon
-extends OpShapeBase
+extends OpShape
 {
     paramX;
     paramY;
@@ -72911,7 +72976,7 @@ extends OpShapeBase
 
 
 class   OpStar
-extends OpShapeBase
+extends OpShape
 {
     paramX;
     paramY;
@@ -72970,7 +73035,7 @@ extends OpShapeBase
 
 
 class   OpTextShape
-extends OpShapeBase
+extends OpShape
 {
     paramText;
     paramX;
@@ -73140,8 +73205,8 @@ extends OperatorBase
 {
     paramAngle;
     
-    paramOriginX;
-    paramOriginY;
+    paramCenterX;
+    paramCenterY;
 
 
 
@@ -73156,22 +73221,13 @@ extends OperatorBase
         this.addOutput(new Output([SHAPE_VALUE], this.output_genRequest));
 
 
-        this.addParam(this.paramAngle   = new NumberParam('angle',   'angle',    true, true, true,  0));
-        this.addParam(this.paramOriginX = new NumberParam('originX', 'center x', true, true, true, 50));
-        this.addParam(this.paramOriginY = new NumberParam('originY', 'center y', true, true, true, 50));
+        this.addParam(this.paramAngle   = new NumberParam('angle',   'angle',    true, true, true, 0));
+        this.addParam(this.paramCenterX = new NumberParam('centerX', 'center x', true, true, true, 0));
+        this.addParam(this.paramCenterY = new NumberParam('centerY', 'center y', true, true, true, 0));
 
 
-        this.paramAngle  .controls[0].suffix      = '°';
-        this.paramAngle  .controls[0].dragReverse = true;
-
-        this.paramOriginX.controls[0].suffix      = '%';
-        this.paramOriginY.controls[0].suffix      = '%';
-
-        this.paramOriginX.controls[0].displayMin  = 0;
-        this.paramOriginX.controls[0].displayMax  = 100;
-
-        this.paramOriginY.controls[0].displayMin  = 0;
-        this.paramOriginY.controls[0].displayMax  = 100;
+        this.paramAngle.controls[0].suffix      = '°';
+        this.paramAngle.controls[0].dragReverse = true;
 
 
         // this.inputs[0].addEventListener('connect',    e => OpRotate_onConnectInput(this));
@@ -73201,8 +73257,8 @@ extends OperatorBase
             request.push(...pushInputOrParam(input, gen));
 
         request.push(...this.node.paramAngle  .genRequest(gen));
-        request.push(...this.node.paramOriginX.genRequest(gen));
-        request.push(...this.node.paramOriginY.genRequest(gen));
+        request.push(...this.node.paramCenterX.genRequest(gen));
+        request.push(...this.node.paramCenterY.genRequest(gen));
 
         
         gen.scope.pop();
@@ -73222,6 +73278,15 @@ extends OperatorBase
             this.inputs[0].connected
             ? [...this.inputs[0].connectedOutput.types]
             : [ANY_VALUE];
+
+
+        const bounds = values[paramIds.findIndex(id => id == 'bounds')];
+
+        this.paramCenterX.controls[0].displayMin = -bounds.width.value/2;
+        this.paramCenterX.controls[0].displayMax =  bounds.width.value/2;
+
+        this.paramCenterY.controls[0].displayMin = -bounds.height.value/2;
+        this.paramCenterY.controls[0].displayMax =  bounds.height.value/2;
     }
 }
 
@@ -73246,8 +73311,8 @@ extends OperatorBase
     paramX;
     paramY;
     
-    paramOriginX;
-    paramOriginY;
+    paramCenterX;
+    paramCenterY;
 
 
 
@@ -73264,23 +73329,15 @@ extends OperatorBase
 
         this.addParam(this.paramX       = new NumberParam('x',       'width',    true, true, true, 100));
         this.addParam(this.paramY       = new NumberParam('y',       'height',   true, true, true, 100));
-        this.addParam(this.paramOriginX = new NumberParam('originX', 'center x', true, true, true,  50));
-        this.addParam(this.paramOriginY = new NumberParam('originY', 'center y', true, true, true,  50));
+        this.addParam(this.paramCenterX = new NumberParam('centerX', 'center x', true, true, true,   0));
+        this.addParam(this.paramCenterY = new NumberParam('centerY', 'center y', true, true, true,   0));
 
 
-        this.paramX      .controls[0].suffix = '%';
-        this.paramY      .controls[0].suffix = '%';
-        this.paramOriginX.controls[0].suffix = '%';
-        this.paramOriginY.controls[0].suffix = '%';
+        this.paramX.controls[0].suffix = '%';
+        this.paramY.controls[0].suffix = '%';
 
-        this.paramX      .controls[0].setMin(0);
-        this.paramY      .controls[0].setMin(0);
-
-        this.paramOriginX.controls[0].displayMin = 0;
-        this.paramOriginX.controls[0].displayMax = 100;
-
-        this.paramOriginY.controls[0].displayMin = 0;
-        this.paramOriginY.controls[0].displayMax = 100;
+        this.paramX.controls[0].setMin(0);
+        this.paramY.controls[0].setMin(0);
 
 
         // this.inputs[0].addEventListener('connect',    e => OpScale_onConnectInput   (this));
@@ -73311,8 +73368,8 @@ extends OperatorBase
 
         request.push(...this.node.paramX      .genRequest(gen));
         request.push(...this.node.paramY      .genRequest(gen));
-        request.push(...this.node.paramOriginX.genRequest(gen));
-        request.push(...this.node.paramOriginY.genRequest(gen));
+        request.push(...this.node.paramCenterX.genRequest(gen));
+        request.push(...this.node.paramCenterY.genRequest(gen));
 
         
         gen.scope.pop();
@@ -73332,6 +73389,15 @@ extends OperatorBase
             this.inputs[0].connected
             ? [...this.inputs[0].connectedOutput.types]
             : [ANY_VALUE];
+
+
+        const bounds = values[paramIds.findIndex(id => id == 'bounds')];
+
+        this.paramCenterX.controls[0].displayMin = -bounds.width.value/2;
+        this.paramCenterX.controls[0].displayMax =  bounds.width.value/2;
+
+        this.paramCenterY.controls[0].displayMin = -bounds.height.value/2;
+        this.paramCenterY.controls[0].displayMax =  bounds.height.value/2;
     }
 }
 

@@ -3,8 +3,8 @@ extends OperatorBase
 {
     paramAngle;
     
-    paramOriginX;
-    paramOriginY;
+    paramCenterX;
+    paramCenterY;
 
 
 
@@ -19,22 +19,13 @@ extends OperatorBase
         this.addOutput(new Output([SHAPE_VALUE], this.output_genRequest));
 
 
-        this.addParam(this.paramAngle   = new NumberParam('angle',   'angle',    true, true, true,  0));
-        this.addParam(this.paramOriginX = new NumberParam('originX', 'center x', true, true, true, 50));
-        this.addParam(this.paramOriginY = new NumberParam('originY', 'center y', true, true, true, 50));
+        this.addParam(this.paramAngle   = new NumberParam('angle',   'angle',    true, true, true, 0));
+        this.addParam(this.paramCenterX = new NumberParam('centerX', 'center x', true, true, true, 0));
+        this.addParam(this.paramCenterY = new NumberParam('centerY', 'center y', true, true, true, 0));
 
 
-        this.paramAngle  .controls[0].suffix      = '°';
-        this.paramAngle  .controls[0].dragReverse = true;
-
-        this.paramOriginX.controls[0].suffix      = '%';
-        this.paramOriginY.controls[0].suffix      = '%';
-
-        this.paramOriginX.controls[0].displayMin  = 0;
-        this.paramOriginX.controls[0].displayMax  = 100;
-
-        this.paramOriginY.controls[0].displayMin  = 0;
-        this.paramOriginY.controls[0].displayMax  = 100;
+        this.paramAngle.controls[0].suffix      = '°';
+        this.paramAngle.controls[0].dragReverse = true;
 
 
         // this.inputs[0].addEventListener('connect',    e => OpRotate_onConnectInput(this));
@@ -64,8 +55,8 @@ extends OperatorBase
             request.push(...pushInputOrParam(input, gen));
 
         request.push(...this.node.paramAngle  .genRequest(gen));
-        request.push(...this.node.paramOriginX.genRequest(gen));
-        request.push(...this.node.paramOriginY.genRequest(gen));
+        request.push(...this.node.paramCenterX.genRequest(gen));
+        request.push(...this.node.paramCenterY.genRequest(gen));
 
         
         gen.scope.pop();
@@ -85,6 +76,15 @@ extends OperatorBase
             this.inputs[0].connected
             ? [...this.inputs[0].connectedOutput.types]
             : [ANY_VALUE];
+
+
+        const bounds = values[paramIds.findIndex(id => id == 'bounds')];
+
+        this.paramCenterX.controls[0].displayMin = -bounds.width.value/2;
+        this.paramCenterX.controls[0].displayMax =  bounds.width.value/2;
+
+        this.paramCenterY.controls[0].displayMin = -bounds.height.value/2;
+        this.paramCenterY.controls[0].displayMax =  bounds.height.value/2;
     }
 }
 

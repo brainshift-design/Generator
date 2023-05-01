@@ -1,5 +1,5 @@
 class   OpTextShape
-extends OpShapeBase
+extends OpShape
 {
     paramText;
     paramX;

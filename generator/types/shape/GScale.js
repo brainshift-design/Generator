@@ -1,12 +1,12 @@
 class GScale
 extends GOperator
 {
-    input = null;
+    input   = null;
 
-    x     = null;
-    y     = null;
-    ox    = null;
-    oy    = null;
+    x       = null;
+    y       = null;
+    centerX = null;
+    centerY = null;
 
 
 
@@ -26,11 +26,11 @@ extends GOperator
         if (this.input) 
             copy.input = this.input.copy();
 
-        if (this.value) copy.value = this.value.copy();
-        if (this.x    ) copy.x     = this.x    .copy();
-        if (this.y    ) copy.y     = this.y    .copy();
-        if (this.ox   ) copy.ox    = this.ox   .copy();
-        if (this.oy   ) copy.oy    = this.oy   .copy();
+        //if (this.value) copy.value = this.value.copy();
+        if (this.x      ) copy.x       = this.x      .copy();
+        if (this.y      ) copy.y       = this.y      .copy();
+        if (this.centerX) copy.centerX = this.centerX.copy();
+        if (this.centerY) copy.centerY = this.centerY.copy();
 
         return copy;
     }
@@ -43,10 +43,10 @@ extends GOperator
             return this;
 
 
-        const x  = this.x  ? (await this.x .eval(parse)).toValue() : null;
-        const y  = this.y  ? (await this.y .eval(parse)).toValue() : null;
-        const ox = this.ox ? (await this.ox.eval(parse)).toValue() : null;
-        const oy = this.oy ? (await this.oy.eval(parse)).toValue() : null;
+        const x       = this.x       ? (await this.x      .eval(parse)).toValue() : null;
+        const y       = this.y       ? (await this.y      .eval(parse)).toValue() : null;
+        const centerX = this.centerX ? (await this.centerX.eval(parse)).toValue() : null;
+        const centerY = this.centerY ? (await this.centerY.eval(parse)).toValue() : null;
 
 
         if (this.input)
@@ -60,18 +60,36 @@ extends GOperator
         }
 
        
+        const _bounds = await this.evalObjects(parse, 
+        {
+            x:       x, 
+            y:       y, 
+            centerX: centerX, 
+            centerY: centerY
+        });
+
+
         if (parse.isLastRepeat())
         {
-            genPushUpdateValue(parse, this.nodeId, 'value', this.value);
-            genPushUpdateValue(parse, this.nodeId, 'x',     x         );
-            genPushUpdateValue(parse, this.nodeId, 'y',     y         );
-            genPushUpdateValue(parse, this.nodeId, 'ox',    ox        );
-            genPushUpdateValue(parse, this.nodeId, 'oy',    oy        );
+            genPushUpdateValue(parse, this.nodeId, 'value',   this.value);
+            genPushUpdateValue(parse, this.nodeId, 'x',       x         );
+            genPushUpdateValue(parse, this.nodeId, 'y',       y         );
+            genPushUpdateValue(parse, this.nodeId, 'centerX', centerX   );
+            genPushUpdateValue(parse, this.nodeId, 'centerY', centerY   );
+
+
+            const bounds = new RectangleValue(
+                this.nodeId,
+                new NumberValue(_bounds.x     ), 
+                new NumberValue(_bounds.y     ), 
+                new NumberValue(_bounds.width ),
+                new NumberValue(_bounds.height),
+                new NumberValue(0),
+                new NumberValue(0));
+
+            genPushUpdateValue(parse, this.nodeId, 'bounds', bounds);
         }
         
-
-        await this.evalObjects(parse, {x: x, y: y, ox: ox, oy: oy});
-
 
         this.validate();
 
@@ -107,8 +125,8 @@ extends GOperator
             const x  = Math.max(0, options.x.toNumber()/100);
             const y  = Math.max(0, options.y.toNumber()/100);
 
-            const dx = options.ox.toNumber()/100;
-            const dy = options.oy.toNumber()/100;
+            const dx = options.centerX.toNumber() / (bounds.width /2);
+            const dy = options.centerY.toNumber() / (bounds.height/2);
 
 
             for (const obj of this.objects)
@@ -166,8 +184,8 @@ extends GOperator
         return super.isValid()
             && this.x .isValid()
             && this.y .isValid()
-            && this.ox.isValid()
-            && this.oy.isValid();
+            && this.centerX.isValid()
+            && this.centerY.isValid();
     }
 
 
@@ -179,8 +197,8 @@ extends GOperator
         if (this.input) this.input.invalidate();
         if (this.x    ) this.x    .invalidate();
         if (this.y    ) this.y    .invalidate();
-        if (this.ox   ) this.ox   .invalidate();
-        if (this.oy   ) this.oy   .invalidate();
+        if (this.centerX   ) this.centerX   .invalidate();
+        if (this.centerY   ) this.centerY   .invalidate();
     }
 
 

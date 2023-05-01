@@ -1,5 +1,5 @@
 class   OpPolygon
-extends OpShapeBase
+extends OpShape
 {
     paramX;
     paramY;

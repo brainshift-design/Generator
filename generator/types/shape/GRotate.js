@@ -1,11 +1,11 @@
 class GRotate
 extends GOperator
 {
-    input = null;
+    input   = null;
 
-    angle = null;
-    ox    = null;
-    oy    = null;
+    angle   = null;
+    centerX = null;
+    centerY = null;
 
 
 
@@ -25,10 +25,10 @@ extends GOperator
         if (this.input) 
             copy.input = this.input.copy();
 
-        if (this.value) copy.value = this.value.copy();
-        if (this.angle) copy.angle = this.angle.copy();
-        if (this.ox   ) copy.ox    = this.ox   .copy();
-        if (this.oy   ) copy.oy    = this.oy   .copy();
+        //if (this.value  ) copy.value   = this.value  .copy();
+        if (this.angle  ) copy.angle   = this.angle  .copy();
+        if (this.centerX) copy.centerX = this.centerX.copy();
+        if (this.centerY) copy.centerY = this.centerY.copy();
 
         return copy;
     }
@@ -40,10 +40,10 @@ extends GOperator
         if (this.isCached())
             return this;
 
-            
-        const angle = this.angle ? (await this.angle.eval(parse)).toValue() : null;
-        const ox    = this.ox    ? (await this.ox   .eval(parse)).toValue() : null;
-        const oy    = this.oy    ? (await this.oy   .eval(parse)).toValue() : null;
+        //console.log('this.centerX =', this.centerX);
+        const angle   = this.angle   ? (await this.angle  .eval(parse)).toValue() : null;
+        const centerX = this.centerX ? (await this.centerX.eval(parse)).toValue() : null;
+        const centerY = this.centerY ? (await this.centerY.eval(parse)).toValue() : null;
 
 
         if (this.input)
@@ -57,16 +57,33 @@ extends GOperator
         }
 
        
+        const _bounds = await this.evalObjects(parse, 
+        {
+            angle:   angle, 
+            centerX: centerX, 
+            centerY: centerY
+        });
+
+
         if (parse.isLastRepeat())
         {
-            genPushUpdateValue(parse, this.nodeId, 'value', this.value);
-            genPushUpdateValue(parse, this.nodeId, 'angle', angle     );
-            genPushUpdateValue(parse, this.nodeId, 'ox',    ox        );
-            genPushUpdateValue(parse, this.nodeId, 'oy',    oy        );
+            genPushUpdateValue(parse, this.nodeId, 'value',   this.value);
+            genPushUpdateValue(parse, this.nodeId, 'angle',   angle     );
+            genPushUpdateValue(parse, this.nodeId, 'centerX', centerX   );
+            genPushUpdateValue(parse, this.nodeId, 'centerY', centerY   );
+
+
+            const bounds = new RectangleValue(
+                this.nodeId,
+                new NumberValue(_bounds.x     ), 
+                new NumberValue(_bounds.y     ), 
+                new NumberValue(_bounds.width ),
+                new NumberValue(_bounds.height),
+                new NumberValue(0),
+                new NumberValue(0));
+
+            genPushUpdateValue(parse, this.nodeId, 'bounds', bounds);
         }
-
-
-        await this.evalObjects(parse, {angle: angle, ox: ox, oy: oy});
 
 
         this.validate();
@@ -94,8 +111,8 @@ extends GOperator
             bounds = expandRect(bounds, new Rect(obj.x, obj.y, obj.width, obj.height));
 
 
-        const dx = options.ox.toNumber()/100 - 0.5;
-        const dy = options.oy.toNumber()/100 - 0.5;
+        const dx = options.centerX.toNumber() / (bounds.width /2);
+        const dy = options.centerY.toNumber() / (bounds.height/2);
 
 
         for (const obj of this.objects)
@@ -139,6 +156,9 @@ extends GOperator
 
         
         await super.evalObjects(parse);
+
+
+        return bounds;
     }
 
 
@@ -146,9 +166,9 @@ extends GOperator
     isValid()
     {
         return super.isValid()
-            && this.angle.isValid()
-            && this.ox   .isValid()
-            && this.oy   .isValid();
+            && this.angle  .isValid()
+            && this.centerX.isValid()
+            && this.centerY.isValid();
     }
 
 
@@ -157,10 +177,10 @@ extends GOperator
     {
         super.invalidate();
 
-        if (this.input ) this.input .invalidate();
-        if (this.angle ) this.angle .invalidate();
-        if (this.ox    ) this.ox    .invalidate();
-        if (this.oy    ) this.oy    .invalidate();
+        if (this.input  ) this.input  .invalidate();
+        if (this.angle  ) this.angle  .invalidate();
+        if (this.centerX) this.centerX.invalidate();
+        if (this.centerY) this.centerY.invalidate();
     }
 
 

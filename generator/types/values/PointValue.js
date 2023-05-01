@@ -1,6 +1,8 @@
 class PointValue
-extends ShapeValue
+extends GValue
 {
+    nodeId;
+
     x;
     y;
 
@@ -10,20 +12,13 @@ extends ShapeValue
                 x = new NumberValue(0), 
                 y = new NumberValue(0))
     {
-        super(POINT_VALUE, nodeId);
+        super(POINT_VALUE);
 
-        this.x = x;
-        this.y = y;
+        this.nodeId = nodeId;
+
+        this.x      = x;
+        this.y      = y;
     }
-
-
-
-    // static fromString(str)
-    // {
-    //     return new NumberValue(
-    //         parseFloat(str),
-    //         decCount(str));
-    // }
 
 
 
@@ -33,8 +28,6 @@ extends ShapeValue
             this.nodeId,
             this.x.copy(), 
             this.y.copy());
-
-        copy.copyBase(this);
 
         return copy;
     }

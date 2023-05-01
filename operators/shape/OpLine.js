@@ -1,5 +1,5 @@
 class   OpLine
-extends OpShapeBase
+extends OpShape
 {
     paramX;
     paramY;

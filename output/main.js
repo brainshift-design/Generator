@@ -436,6 +436,12 @@ const TEXTSHAPE_TYPES = [TEXTSHAPE_VALUE, TEXTSHAPE];
 const MOVE = 'MOVE';
 const ROTATE = 'ROT';
 const SCALE = 'SCALE';
+const POINT = 'PT';
+const POINT_VALUE = 'PT#';
+const POINT_TYPES = [
+    POINT,
+    POINT_VALUE
+];
 const SHAPE_VALUES = [
     SHAPE_VALUE,
     SHAPE_LIST_VALUE,
@@ -444,12 +450,7 @@ const SHAPE_VALUES = [
     ELLIPSE_VALUE,
     POLYGON_VALUE,
     STAR_VALUE,
-    TEXTSHAPE_VALUE
-];
-const POINT = 'PT';
-const POINT_VALUE = 'PT#';
-const POINT_TYPES = [
-    POINT,
+    TEXTSHAPE_VALUE,
     POINT_VALUE
 ];
 const SHAPE_TYPES = [
@@ -837,6 +838,7 @@ function figDeleteObjectsExcept(nodeIds, ignoreObjects) {
     }
 }
 function figDeleteAllObjects() {
+    console.log('delete all objects');
     for (const obj of figma.currentPage.children)
         if (!!obj.getPluginData('id'))
             obj.remove();

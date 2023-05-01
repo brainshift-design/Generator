@@ -483,11 +483,11 @@ function genParseRotate(parse)
     if (nInputs == 1)
         rotate.input = genParse(parse);
 
-    rotate.angle = genParse(parse);
-    rotate.ox    = genParse(parse);
-    rotate.oy    = genParse(parse);
+    rotate.angle   = genParse(parse);
+    rotate.centerX = genParse(parse);
+    rotate.centerY = genParse(parse);
 
-
+    
     parse.inParam = false;
     parse.nTab--;
 
@@ -495,6 +495,7 @@ function genParseRotate(parse)
     genParseNodeEnd(parse, rotate);
     return rotate;
 }
+
 
 
 function genParseScale(parse)
@@ -533,8 +534,8 @@ function genParseScale(parse)
 
     scale.x  = genParse(parse);
     scale.y  = genParse(parse);
-    scale.ox = genParse(parse);
-    scale.oy = genParse(parse);
+    scale.centerX = genParse(parse);
+    scale.centerY = genParse(parse);
 
     
     parse.inParam = false;
