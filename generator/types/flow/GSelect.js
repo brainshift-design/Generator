@@ -91,9 +91,12 @@ extends GOperator
         }
 
 
-        genPushUpdateValue(parse, this.nodeId, 'value',  this.value);
-        genPushUpdateValue(parse, this.nodeId, 'length', new NumberValue(length));
-        genPushUpdateValue(parse, this.nodeId, 'index',  index);
+        if (parse.isLastRepeat())
+        {
+            genPushUpdateValue(parse, this.nodeId, 'value',  this.value);
+            genPushUpdateValue(parse, this.nodeId, 'length', new NumberValue(length));
+            genPushUpdateValue(parse, this.nodeId, 'index',  index);
+        }
 
 
         this.validate();

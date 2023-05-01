@@ -48,8 +48,11 @@ extends GNumberType
         }
 
 
-        genPushUpdateValue(parse, this.nodeId, 'value',    this.value);
-        genPushUpdateValue(parse, this.nodeId, 'function', func);
+        if (parse.isLastRepeat())
+        {
+            genPushUpdateValue(parse, this.nodeId, 'value',    this.value);
+            genPushUpdateValue(parse, this.nodeId, 'function', func);
+        }
 
 
         this.validate();

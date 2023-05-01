@@ -131,10 +131,13 @@ extends GOperator
                 this.repeatId.init = false;
         }
 
-        
-        genPushUpdateValue(parse, this.nodeId, 'value',    this.value);
-        genPushUpdateValue(parse, this.nodeId, 'count',    count);
-        genPushUpdateValue(parse, this.nodeId, 'repeatId', NumberValue.NaN);
+
+        if (parse.isLastRepeat())
+        {
+            genPushUpdateValue(parse, this.nodeId, 'value',    this.value);
+            genPushUpdateValue(parse, this.nodeId, 'count',    count);
+            genPushUpdateValue(parse, this.nodeId, 'repeatId', NumberValue.NaN);
+        }
 
 
         this.validate();

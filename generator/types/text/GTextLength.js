@@ -46,7 +46,8 @@ extends GOperator
             length = NumberValue.NaN;
     
 
-        genPushUpdateValue(parse, this.nodeId, 'length', length);
+        if (parse.isLastRepeat())
+            genPushUpdateValue(parse, this.nodeId, 'length', length);
 
 
         this.validate();

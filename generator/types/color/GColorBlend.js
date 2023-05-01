@@ -76,10 +76,13 @@ extends GColorType
             this.value = ColorValue.NaN;
 
 
-        genPushUpdateValue(parse, this.nodeId, 'value',   this.value);
-        genPushUpdateValue(parse, this.nodeId, 'mode',    mode );
-        genPushUpdateValue(parse, this.nodeId, 'opacity', opacity);
-
+        if (parse.isLastRepeat())
+        {
+            genPushUpdateValue(parse, this.nodeId, 'value',   this.value);
+            genPushUpdateValue(parse, this.nodeId, 'mode',    mode );
+            genPushUpdateValue(parse, this.nodeId, 'opacity', opacity);
+        }
+        
 
         this.validate();
         

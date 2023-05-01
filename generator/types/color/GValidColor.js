@@ -121,9 +121,12 @@ extends GColorType
             this.value = ColorValue.NaN;
 
             
-        genPushUpdateValue(parse, this.nodeId, 'value',   this.value);
-        genPushUpdateValue(parse, this.nodeId, 'quality', quality);
-
+        if (parse.isLastRepeat())
+        {
+            genPushUpdateValue(parse, this.nodeId, 'value',   this.value);
+            genPushUpdateValue(parse, this.nodeId, 'quality', quality);
+        }
+        
 
         this.validate();
 

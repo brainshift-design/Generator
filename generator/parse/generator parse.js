@@ -69,6 +69,15 @@ class Parse
     {
         return this.request[this.pos++];
     }
+
+
+
+    isLastRepeat() 
+    {
+        return isEmpty(this.repeats)
+            ||    this.repeats.length == 1
+               && this.repeats[0].iteration == this.repeats[0].total-1;
+    }
 }
 
 

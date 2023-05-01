@@ -66,10 +66,13 @@ extends GShape
         }
 
         
-        genPushUpdateValue(parse, this.nodeId, 'value',   this.value        );
-        genPushUpdateValue(parse, this.nodeId, 'round',   this.value.round  );
-        genPushUpdateValue(parse, this.nodeId, 'corners', this.value.corners);
-
+        if (parse.isLastRepeat())
+        {
+            genPushUpdateValue(parse, this.nodeId, 'value',   this.value        );
+            genPushUpdateValue(parse, this.nodeId, 'round',   this.value.round  );
+            genPushUpdateValue(parse, this.nodeId, 'corners', this.value.corners);
+        }
+        
 
         await this.evalShapeBase(parse, input);
 

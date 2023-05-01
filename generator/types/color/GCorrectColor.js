@@ -118,11 +118,14 @@ extends GColorType
                             this.margin3 = new NumberValue(closest3);
                             this.value   = ColorValue.fromDataColor(this._color);
 
-                            genPushUpdateValue(parse, this.nodeId, 'order',   new NumberValue(closestOrder));
-                            genPushUpdateValue(parse, this.nodeId, 'margin1', new NumberValue(closest1    ));
-                            genPushUpdateValue(parse, this.nodeId, 'margin2', new NumberValue(closest2    ));
-                            genPushUpdateValue(parse, this.nodeId, 'margin3', new NumberValue(closest3    ));
-                            genPushUpdateValue(parse, this.nodeId, 'value',   this.value);
+                            if (parse.isLastRepeat())
+                            {
+                                genPushUpdateValue(parse, this.nodeId, 'order',   new NumberValue(closestOrder));
+                                genPushUpdateValue(parse, this.nodeId, 'margin1', new NumberValue(closest1    ));
+                                genPushUpdateValue(parse, this.nodeId, 'margin2', new NumberValue(closest2    ));
+                                genPushUpdateValue(parse, this.nodeId, 'margin3', new NumberValue(closest3    ));
+                                genPushUpdateValue(parse, this.nodeId, 'value',   this.value);
+                            }
                         }
                         else
                         {
@@ -132,11 +135,14 @@ extends GColorType
                             this.margin3 = NumberValue.NaN;
                             this.value   = ColorValue .NaN;
 
-                            genPushUpdateValue(parse, this.nodeId, 'order',   NumberValue.NaN);
-                            genPushUpdateValue(parse, this.nodeId, 'margin1', NumberValue.NaN);
-                            genPushUpdateValue(parse, this.nodeId, 'margin2', NumberValue.NaN);
-                            genPushUpdateValue(parse, this.nodeId, 'margin3', NumberValue.NaN);
-                            genPushUpdateValue(parse, this.nodeId, 'value',   ColorValue .NaN);
+                            if (parse.isLastRepeat())
+                            {
+                                genPushUpdateValue(parse, this.nodeId, 'order',   NumberValue.NaN);
+                                genPushUpdateValue(parse, this.nodeId, 'margin1', NumberValue.NaN);
+                                genPushUpdateValue(parse, this.nodeId, 'margin2', NumberValue.NaN);
+                                genPushUpdateValue(parse, this.nodeId, 'margin3', NumberValue.NaN);
+                                genPushUpdateValue(parse, this.nodeId, 'value',   ColorValue .NaN);
+                            }
                         }
                     //}
                 //}
@@ -149,11 +155,14 @@ extends GColorType
                 this.margin3 = NumberValue.NaN;
                 this.value   = input;
 
-                genPushUpdateValue(parse, this.nodeId, 'order'  , this.order  );
-                genPushUpdateValue(parse, this.nodeId, 'margin1', this.margin1);
-                genPushUpdateValue(parse, this.nodeId, 'margin2', this.margin2);
-                genPushUpdateValue(parse, this.nodeId, 'margin3', this.margin3);
-                genPushUpdateValue(parse, this.nodeId, 'value',   this.value  );
+                if (parse.isLastRepeat())
+                {
+                    genPushUpdateValue(parse, this.nodeId, 'order'  , this.order  );
+                    genPushUpdateValue(parse, this.nodeId, 'margin1', this.margin1);
+                    genPushUpdateValue(parse, this.nodeId, 'margin2', this.margin2);
+                    genPushUpdateValue(parse, this.nodeId, 'margin3', this.margin3);
+                    genPushUpdateValue(parse, this.nodeId, 'value',   this.value  );
+                }
             }
         }
         else
@@ -164,11 +173,14 @@ extends GColorType
             this.margin3 = NumberValue.NaN;
             this.value   = ColorValue .NaN;
 
-            genPushUpdateValue(parse, this.nodeId, 'order',   NumberValue.NaN);
-            genPushUpdateValue(parse, this.nodeId, 'margin1', NumberValue.NaN);
-            genPushUpdateValue(parse, this.nodeId, 'margin2', NumberValue.NaN);
-            genPushUpdateValue(parse, this.nodeId, 'margin3', NumberValue.NaN);
-            genPushUpdateValue(parse, this.nodeId, 'value',   ColorValue .NaN);
+            if (parse.isLastRepeat())
+            {
+                genPushUpdateValue(parse, this.nodeId, 'order',   NumberValue.NaN);
+                genPushUpdateValue(parse, this.nodeId, 'margin1', NumberValue.NaN);
+                genPushUpdateValue(parse, this.nodeId, 'margin2', NumberValue.NaN);
+                genPushUpdateValue(parse, this.nodeId, 'margin3', NumberValue.NaN);
+                genPushUpdateValue(parse, this.nodeId, 'value',   ColorValue .NaN);
+            }
         }
 
 

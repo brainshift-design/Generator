@@ -58,9 +58,12 @@ extends GNumberType
         this.value = new TextValue(str);
 
 
-        genPushUpdateValue(parse, this.nodeId, 'value',  this.value);
-        genPushUpdateValue(parse, this.nodeId, 'number', number    );
-        genPushUpdateValue(parse, this.nodeId, 'format', format    );
+        if (parse.isLastRepeat())
+        {
+            genPushUpdateValue(parse, this.nodeId, 'value',  this.value);
+            genPushUpdateValue(parse, this.nodeId, 'number', number    );
+            genPushUpdateValue(parse, this.nodeId, 'format', format    );
+        }
 
 
         this.validate();

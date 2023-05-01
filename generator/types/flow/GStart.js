@@ -43,9 +43,12 @@ extends GOperator
         // else
             this.value = NullValue;
 
-        
-        genPushUpdateValue(parse, this.nodeId, 'value',    this.value);
-        genPushUpdateValue(parse, this.nodeId, 'repeatId', repeatId);
+
+        if (parse.isLastRepeat())
+        {
+            genPushUpdateValue(parse, this.nodeId, 'value',    this.value);
+            genPushUpdateValue(parse, this.nodeId, 'repeatId', repeatId);
+        }
 
 
         this.validate();

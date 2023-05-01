@@ -42,8 +42,11 @@ extends GTextType
         this.value = new TextValue(String.fromCharCode(code.value));
 
 
-        genPushUpdateValue(parse, this.nodeId, 'value', this.value);
-        genPushUpdateValue(parse, this.nodeId, 'code',  code);
+        if (parse.isLastRepeat())
+        {
+            genPushUpdateValue(parse, this.nodeId, 'value', this.value);
+            genPushUpdateValue(parse, this.nodeId, 'code',  code);
+        }
 
 
         this.validate();

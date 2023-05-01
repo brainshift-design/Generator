@@ -108,13 +108,16 @@ extends GNumberType
         }
         
 
-        genPushUpdateValue(parse, this.nodeId, 'value',  this.value);
-        genPushUpdateValue(parse, this.nodeId, 'from',   from      );
-        genPushUpdateValue(parse, this.nodeId, 'to',     to        );
-        genPushUpdateValue(parse, this.nodeId, 'curve',  curve     );
-        genPushUpdateValue(parse, this.nodeId, 'type',   type      );
-        genPushUpdateValue(parse, this.nodeId, 'length', length    );
-        genPushUpdateValue(parse, this.nodeId, 'time',   time      );
+        if (parse.isLastRepeat())
+        {
+            genPushUpdateValue(parse, this.nodeId, 'value',  this.value);
+            genPushUpdateValue(parse, this.nodeId, 'from',   from      );
+            genPushUpdateValue(parse, this.nodeId, 'to',     to        );
+            genPushUpdateValue(parse, this.nodeId, 'curve',  curve     );
+            genPushUpdateValue(parse, this.nodeId, 'type',   type      );
+            genPushUpdateValue(parse, this.nodeId, 'length', length    );
+            genPushUpdateValue(parse, this.nodeId, 'time',   time      );
+        }
         
 
         this.validate();

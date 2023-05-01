@@ -31,17 +31,14 @@ Graph.prototype.addPage = function(page)
     pagesBar.insertBefore(page.button, btnAddPage);
 
     this.pageIndex = this.pages.length-1;
+
+    // console.log('add this.pageIndex =', this.pageIndex);        
 };
 
 
 
 Graph.prototype.removePage = function(page)
 {
-    let nodesJson = NULL;
-    if (this.pages.length == 1)
-        nodesJson = uiCopyNodes(this.defaultPage.nodes.map(n => n.id));        
-
-
     removeFromArray(this.pages, page);
 
     pagesBar.removeChild(page.button);
@@ -49,21 +46,23 @@ Graph.prototype.removePage = function(page)
     if (this.pageIndex >= this.pages.length)
         this.pageIndex--;
 
-
-    if (nodesJson != NULL)
-        uiPasteNodes(nodesJson, false);
+    // console.log('remove this.pageIndex =', this.pageIndex);        
+    // console.log('this.currentPage.id =', this.currentPage.id);
 };
 
 
 
 Graph.prototype.updatePages = function()
 {
+    // console.log('1 update this.pageIndex =', this.pageIndex);        
+
     pagesBar.style.background = document.hasFocus() ? '#202020' : '#383838';
     pagesBar.style.display    = settings.showPages ? 'inline-block' : 'none';
     
     this.pages.forEach(p => p.update());
-    
+    this.pages[0].button.style.display = 'none';    
 
+    
     updateAddButton(false);
 
     
@@ -90,11 +89,12 @@ Graph.prototype.updatePages = function()
         : '';
 
 
-    btnAddPage.style.top = isEmpty(graph.pages) ?  '0px' : '-2px';
+    btnAddPage.style.top = graph.pages.length == 1 ? '0px' : '-2px';
 
 
     this.updatePageName();
-        
+
+    // console.log('2 update this.pageIndex =', this.pageIndex);        
     updateZoomIcon();
 };
 
@@ -103,7 +103,7 @@ Graph.prototype.updatePages = function()
 Graph.prototype.updatePageName = function()
 {
     const display =
-          !isEmpty(this.pages)
+           this.pages.length > 1
         && window.innerWidth > 590 
         ? 'inline-block' 
         : 'none';
@@ -118,6 +118,7 @@ Graph.prototype.updatePageName = function()
 
 Graph.prototype.updateSavedPages = function()
 {
+    // console.log('graph.currentPage.id =', graph.currentPage.id);
     uiSavePages(
         this.pages.map(p => p.id), 
         this.pages.map(p => p.toJson()),

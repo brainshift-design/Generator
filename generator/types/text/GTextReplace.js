@@ -60,10 +60,13 @@ extends GTextType
             this.value = new TextValue();//TextValue.NaN;
 
             
-        genPushUpdateValue(parse, this.nodeId, 'what',  _what);
-        genPushUpdateValue(parse, this.nodeId, 'with',  _with);
+        if (parse.isLastRepeat())
+        {
+            genPushUpdateValue(parse, this.nodeId, 'what',  _what);
+            genPushUpdateValue(parse, this.nodeId, 'with',  _with);
         
-        genPushUpdateValue(parse, this.nodeId, 'value', this.value);
+            genPushUpdateValue(parse, this.nodeId, 'value', this.value);
+        }
 
         
         this.validate();

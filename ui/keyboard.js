@@ -19,24 +19,25 @@ document.addEventListener('keydown', e =>
 
 
     // save to file
-    if (e.code == 'KeyS'
-          && getCtrlKey(e))
+    if (   e.code == 'KeyS'
+        && getCtrlKey(e)
+        && e.shiftKey)
     {
         e.preventDefault();
         uiSaveSelectionToLocalFile();
     }
 
     // cut
-    else if (   e.code == 'KeyX'
-        && getCtrlKey(e))
+    else if (e.code == 'KeyX'
+          && getCtrlKey(e))
     {
         graphView.copySelectedNodes();
         graphView.deleteSelectedNodes(true);
     }    
 
     // copy
-    else if (   e.code == 'KeyC'
-        && getCtrlKey(e))
+    else if (e.code == 'KeyC'
+          && getCtrlKey(e))
     {
         e.preventDefault();
 

@@ -57,10 +57,13 @@ extends GOperator
         }
 
        
-        genPushUpdateValue(parse, this.nodeId, 'value', this.value);
-        genPushUpdateValue(parse, this.nodeId, 'angle', angle     );
-        genPushUpdateValue(parse, this.nodeId, 'ox',    ox        );
-        genPushUpdateValue(parse, this.nodeId, 'oy',    oy        );
+        if (parse.isLastRepeat())
+        {
+            genPushUpdateValue(parse, this.nodeId, 'value', this.value);
+            genPushUpdateValue(parse, this.nodeId, 'angle', angle     );
+            genPushUpdateValue(parse, this.nodeId, 'ox',    ox        );
+            genPushUpdateValue(parse, this.nodeId, 'oy',    oy        );
+        }
 
 
         await this.evalObjects(parse, {angle: angle, ox: ox, oy: oy});

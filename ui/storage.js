@@ -183,7 +183,6 @@ function uiReturnFigLoadNodesAndConns(msg)
     }
 
     
-    //const _graphView          = msg.graphView;
     const _showAllColorSpaces = msg.showAllColorSpaces;
 
 
@@ -212,6 +211,7 @@ function uiReturnFigLoadNodesAndConns(msg)
             }
         }
 
+
         const pages = [];
 
         for (let i = 0; i < msg.pageKeys.length; i++)
@@ -221,17 +221,19 @@ function uiReturnFigLoadNodesAndConns(msg)
             pages.push(page);
         }
 
+        
         for (const id of msg.pageOrder)
             graph.addPage(pages.find(p => p.id == id));
 
-        if (msg.currentPageId != NULL)
-            graph.pageIndex = graph.pages.findIndex(p => p.id == msg.currentPageId);
+
+        console.log('msg.currentPageId =', msg.currentPageId);
+        graph.pageIndex = graph.pages.findIndex(p => p.id == msg.currentPageId);
     }
-    // else
-    // {
-        // graph.createPage('Graph');
-        // graph.updateSavedPages();
-    // }
+    else
+    {
+        graph.createPage('');
+        graph.updateSavedPages();
+    }
 
 
 
@@ -239,14 +241,14 @@ function uiReturnFigLoadNodesAndConns(msg)
         graphView.updatePanAndZoom(true);
 
 
-    let _pageKeys  = msg.pageKeys;
-    let _pages     = msg.pageJson;
+    let _pageKeys = msg.pageKeys;
+    let _pages    = msg.pageJson;
 
-    let _nodeKeys  = msg.nodeKeys;
-    let _nodes     = msg.nodeJson;
+    let _nodeKeys = msg.nodeKeys;
+    let _nodes    = msg.nodeJson;
 
-    let _connKeys  = msg.connKeys;
-    let _conns     = msg.connJson;
+    let _connKeys = msg.connKeys;
+    let _conns    = msg.connJson;
 
     
     const _p = [];

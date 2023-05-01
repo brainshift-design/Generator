@@ -71,12 +71,15 @@ extends GShape
         }
 
 
-        genPushUpdateValue(parse, this.nodeId, 'fill',   this.value.fill  );
-        genPushUpdateValue(parse, this.nodeId, 'weight', this.value.weight);
-        genPushUpdateValue(parse, this.nodeId, 'fit',    this.value.fit   );
-        genPushUpdateValue(parse, this.nodeId, 'join',   this.value.join  );
-        genPushUpdateValue(parse, this.nodeId, 'miter',  this.value.miter );
-
+        if (parse.isLastRepeat())
+        {
+            genPushUpdateValue(parse, this.nodeId, 'fill',   this.value.fill  );
+            genPushUpdateValue(parse, this.nodeId, 'weight', this.value.weight);
+            genPushUpdateValue(parse, this.nodeId, 'fit',    this.value.fit   );
+            genPushUpdateValue(parse, this.nodeId, 'join',   this.value.join  );
+            genPushUpdateValue(parse, this.nodeId, 'miter',  this.value.miter );
+        }
+        
 
         this.validate();
 

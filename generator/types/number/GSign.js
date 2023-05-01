@@ -47,7 +47,8 @@ extends GNumberType
             this.value = NumberValue.NaN;
 
 
-        genPushUpdateValue(parse, this.nodeId, 'value', this.value);
+        if (parse.isLastRepeat())
+            genPushUpdateValue(parse, this.nodeId, 'value', this.value);
 
 
         this.validate();

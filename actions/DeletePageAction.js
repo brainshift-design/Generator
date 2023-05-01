@@ -34,8 +34,8 @@ extends Action
         graph.updatePages();
 
         
-        if (graph.pages.length == 0)
-            CreatePageAction_updateNodes(this, pan, zoom, nodesJson);
+        // if (graph.pages.length == 0)
+        //     CreatePageAction_updateNodes(this, pan, zoom, nodesJson);
     }
 
 
@@ -54,7 +54,7 @@ extends Action
         graph.updateSavedPages();
 
         
-        if (graph.pages.length == 1)
-            CreatePageAction_updateNodes(this, pan, zoom, nodesJson);
+        // if (graph.pages.length == 1)
+        //     CreatePageAction_updateNodes(this, pan, zoom, nodesJson);
     }
 }

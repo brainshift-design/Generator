@@ -56,9 +56,12 @@ extends GOperator
         }
 
 
-        genPushUpdateValue(parse, this.nodeId, 'color',   this.value.color  );
-        genPushUpdateValue(parse, this.nodeId, 'opacity', this.value.opacity);
-
+        if (parse.isLastRepeat())
+        {
+            genPushUpdateValue(parse, this.nodeId, 'color',   this.value.color  );
+            genPushUpdateValue(parse, this.nodeId, 'opacity', this.value.opacity);
+        }
+        
 
         this.validate();
 

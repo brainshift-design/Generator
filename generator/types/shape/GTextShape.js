@@ -117,21 +117,24 @@ extends GShape
         }
 
        
-        genPushUpdateValue(parse, this.nodeId, 'value',         this.value              );
-        genPushUpdateValue(parse, this.nodeId, 'text',          this.value.text         );
-        genPushUpdateValue(parse, this.nodeId, 'x',             this.value.x            );
-        genPushUpdateValue(parse, this.nodeId, 'y',             this.value.y            );
-        genPushUpdateValue(parse, this.nodeId, 'width',         this.value.width        );
-        genPushUpdateValue(parse, this.nodeId, 'height',        this.value.height       );
-        genPushUpdateValue(parse, this.nodeId, 'angle',         this.value.angle        );
-        genPushUpdateValue(parse, this.nodeId, 'font',          this.value.font         );
-        genPushUpdateValue(parse, this.nodeId, 'style',         this.value.style        );
-        genPushUpdateValue(parse, this.nodeId, 'size',          this.value.size         );
-        genPushUpdateValue(parse, this.nodeId, 'alignH',        this.value.alignH       );
-        genPushUpdateValue(parse, this.nodeId, 'alignV',        this.value.alignV       );
-        genPushUpdateValue(parse, this.nodeId, 'lineHeight',    this.value.lineHeight   );
-        genPushUpdateValue(parse, this.nodeId, 'letterSpacing', this.value.letterSpacing);
-
+        if (parse.isLastRepeat())
+        {
+            genPushUpdateValue(parse, this.nodeId, 'value',         this.value              );
+            genPushUpdateValue(parse, this.nodeId, 'text',          this.value.text         );
+            genPushUpdateValue(parse, this.nodeId, 'x',             this.value.x            );
+            genPushUpdateValue(parse, this.nodeId, 'y',             this.value.y            );
+            genPushUpdateValue(parse, this.nodeId, 'width',         this.value.width        );
+            genPushUpdateValue(parse, this.nodeId, 'height',        this.value.height       );
+            genPushUpdateValue(parse, this.nodeId, 'angle',         this.value.angle        );
+            genPushUpdateValue(parse, this.nodeId, 'font',          this.value.font         );
+            genPushUpdateValue(parse, this.nodeId, 'style',         this.value.style        );
+            genPushUpdateValue(parse, this.nodeId, 'size',          this.value.size         );
+            genPushUpdateValue(parse, this.nodeId, 'alignH',        this.value.alignH       );
+            genPushUpdateValue(parse, this.nodeId, 'alignV',        this.value.alignV       );
+            genPushUpdateValue(parse, this.nodeId, 'lineHeight',    this.value.lineHeight   );
+            genPushUpdateValue(parse, this.nodeId, 'letterSpacing', this.value.letterSpacing);
+        }
+        
 
         await this.evalShapeBase(parse, input);
 

@@ -37,8 +37,9 @@ extends GOperator
             ? (await this.input.eval(parse)).toValue() 
             : NullValue;
 
-        
-        genPushUpdateValue(parse, this.nodeId, 'value', this.value);
+
+        if (parse.isLastRepeat())
+            genPushUpdateValue(parse, this.nodeId, 'value', this.value);
 
         
         this.validate();

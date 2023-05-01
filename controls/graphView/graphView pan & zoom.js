@@ -62,6 +62,7 @@ GraphView.prototype.isPanning = function(e)
 };
 
 
+
 GraphView.prototype.startZoomSelection = function(pointerId, x, y)
 {
     this.div.setPointerCapture(pointerId);

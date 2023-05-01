@@ -53,8 +53,11 @@ extends GNumberType
         }
 
 
-        genPushUpdateValue(parse, this.nodeId, 'operation', op);
-        genPushUpdateValue(parse, this.nodeId, 'value',     this.value);
+        if (parse.isLastRepeat())
+        {
+            genPushUpdateValue(parse, this.nodeId, 'operation', op);
+            genPushUpdateValue(parse, this.nodeId, 'value',     this.value);
+        }
 
 
         this.validate();

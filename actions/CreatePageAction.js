@@ -14,10 +14,10 @@ extends Action
 
     do(updateNodes)
     {
-        const [pan, zoom, nodesJson] = 
-            graph.pages.length == 0
-            ? CreatePageAction_prepareNodes()
-            : [{x: 0, y: 0}, 1, NULL];
+        // const [pan, zoom, nodesJson] = 
+        //     graph.pages.length == 1
+        //     ? CreatePageAction_prepareNodes()
+        //     : [{x: 0, y: 0}, 1, NULL];
 
 
         this.page = graph.createPage('Graph');
@@ -26,18 +26,27 @@ extends Action
         graph.updateSavedPages();
 
         
-        if (graph.pages.length == 1)
-            CreatePageAction_updateNodes(this, pan, zoom, nodesJson);
+        if (graph.pages.length == 2)
+        {
+            for (const node of graph.currentPage.nodes)
+            {
+                node.pageId = this.page.id;
+                node.id     = makeNodePath(node.nodeId);
+            }
+        }
+            // CreatePageAction_updateNodes(this, pan, zoom, nodesJson);
+
+        graphView.updateNodes(this.page.nodes);
     }
 
 
 
     undo(updateNodes)
     {
-        const [pan, zoom, nodesJson] = 
-            graph.pages.length == 1
-            ? CreatePageAction_prepareNodes()
-            : [{x: 0, y: 0}, 1, NULL];
+        // const [pan, zoom, nodesJson] = 
+        //     graph.pages.length == 2
+        //     ? CreatePageAction_prepareNodes()
+        //     : [{x: 0, y: 0}, 1, NULL];
 
         graph.removePage(this.page);
 
@@ -45,8 +54,19 @@ extends Action
         uiRemoveSavedNodesAndConns(graph.nodes.filter(n => n.pageId == this.page.id).map(n => n.id));
 
        
-        if (graph.pages.length == 0)
-            CreatePageAction_updateNodes(this, pan, zoom, nodesJson);
+        if (graph.pages.length == 1)
+        {
+            if (graph.pages.length == 2)
+            {
+                for (const node of this.page.nodes)
+                {
+                    console.log('node =', node);
+                    node.pageId = graph.pages[0].id;
+                    node.id     = makeNodePath(node.nodeId);
+                }
+            }
+        }
+            // CreatePageAction_updateNodes(this, pan, zoom, nodesJson);
 
 
         graph.updatePages();
@@ -55,30 +75,32 @@ extends Action
 
 
 
-function CreatePageAction_prepareNodes()
-{
-    const nodeIds = graph.currentPage.nodes.map(n => n.id);
+// function CreatePageAction_prepareNodes()
+// {
+//     const nodeIds = graph.currentPage.nodes.map(n => n.id);
 
-    const nodesJson = uiCopyNodes(nodeIds);
-    uiDeleteNodes(nodeIds);
+//     const nodesJson = uiCopyNodes(nodeIds);
+//     uiDeleteNodes(nodeIds);
 
-    return [
-        graph.currentPage._pan,
-        graph.currentPage._zoom,
-        nodesJson ];
-}
+//     return [
+//         graph.currentPage._pan,
+//         graph.currentPage._zoom,
+//         nodesJson ];
+// }
 
 
 
-function CreatePageAction_updateNodes(action, pan, zoom, nodesJson)
-{
-    if (nodesJson != NULL)
-    {
-        uiPasteNodes(nodesJson, false);
-        graphView.pastingNodes = false;
-    }
+// function CreatePageAction_updateNodes(action, pan, zoom, nodesJson)
+// {
+//     if (nodesJson != NULL)
+//     {
+//         const [nodes, dataConns] = uiPasteNodes(nodesJson, false);
+//         uiSaveNodes(nodes.map(n => n.id));
 
-    graph.currentPage.setPanAndZoom(pan, zoom);
+//         graphView.pastingNodes = false;
+//     }
 
-    graphView.updateNodes(graph.currentPage.nodes);
-}
+//     graph.currentPage.setPanAndZoom(pan, zoom);
+
+//     graphView.updateNodes(graph.currentPage.nodes);
+// }

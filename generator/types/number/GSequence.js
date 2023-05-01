@@ -82,9 +82,12 @@ extends GNumberType
         }
 
 
-        genPushUpdateValue(parse, this.nodeId, 'start', start);
-        genPushUpdateValue(parse, this.nodeId, 'step',  step );
-        
+        if (parse.isLastRepeat())
+        {
+            genPushUpdateValue(parse, this.nodeId, 'start', start);
+            genPushUpdateValue(parse, this.nodeId, 'step',  step );
+        }
+
 
         this.validate();
 

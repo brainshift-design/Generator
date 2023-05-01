@@ -81,17 +81,23 @@ extends GColorType
             }
 
 
-            genPushUpdateValue(parse, this.nodeId, 'text', input0);
-            genPushUpdateValue(parse, this.nodeId, 'back', input1);
+            if (parse.isLastRepeat())
+            {
+                genPushUpdateValue(parse, this.nodeId, 'text', input0);
+                genPushUpdateValue(parse, this.nodeId, 'back', input1);
+            }
         }
 
         else if (this.input0) 
         {
             const input0 = (await this.input0.eval(parse)).toValue();
 
-            genPushUpdateValue(parse, this.nodeId, 'text', input0.isValid() ? input0 : ColorValue.NaN);
-            genPushUpdateValue(parse, this.nodeId, 'back', ColorValue.NaN);
-
+            if (parse.isLastRepeat())
+            {
+                genPushUpdateValue(parse, this.nodeId, 'text', input0.isValid() ? input0 : ColorValue.NaN);
+                genPushUpdateValue(parse, this.nodeId, 'back', ColorValue.NaN);
+            }
+            
             this.value    = ColorValue.NaN;
             this.contrast = NumberValue.NaN;
         }
@@ -100,8 +106,11 @@ extends GColorType
         {
             const input1 = (await this.input1.eval(parse)).toValue();
 
-            genPushUpdateValue(parse, this.nodeId, 'text', ColorValue.NaN);
-            genPushUpdateValue(parse, this.nodeId, 'back', input1.isValid() ? input1 : ColorValue.NaN);
+            if (parse.isLastRepeat())
+            {
+                genPushUpdateValue(parse, this.nodeId, 'text', ColorValue.NaN);
+                genPushUpdateValue(parse, this.nodeId, 'back', input1.isValid() ? input1 : ColorValue.NaN);
+            }
 
             this.value    = input1.isValid() ? input1 : ColorValue.NaN;
             this.contrast = NumberValue.NaN;
@@ -112,14 +121,20 @@ extends GColorType
             this.value    = ColorValue.NaN;
             this.contrast = NumberValue.NaN;
 
-            genPushUpdateValue(parse, this.nodeId, 'text', ColorValue.NaN);
-            genPushUpdateValue(parse, this.nodeId, 'back', ColorValue.NaN);
+            if (parse.isLastRepeat())
+            {
+                genPushUpdateValue(parse, this.nodeId, 'text', ColorValue.NaN);
+                genPushUpdateValue(parse, this.nodeId, 'back', ColorValue.NaN);
+            }
         }
         
 
 
-        genPushUpdateValue(parse, this.nodeId, 'standard', standard);
-        genPushUpdateValue(parse, this.nodeId, 'contrast', this.contrast);
+        if (parse.isLastRepeat())
+        {
+            genPushUpdateValue(parse, this.nodeId, 'standard', standard);
+            genPushUpdateValue(parse, this.nodeId, 'contrast', this.contrast);
+        }
 
 
         this.validate();

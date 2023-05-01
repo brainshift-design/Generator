@@ -83,9 +83,12 @@ extends GNumberType
         }
 
 
-        genPushUpdateValue(parse, this.nodeId, 'seed',  seed);
-        genPushUpdateValue(parse, this.nodeId, 'min',   min );
-        genPushUpdateValue(parse, this.nodeId, 'max',   max );
+        if (parse.isLastRepeat())
+        {
+            genPushUpdateValue(parse, this.nodeId, 'seed',  seed);
+            genPushUpdateValue(parse, this.nodeId, 'min',   min );
+            genPushUpdateValue(parse, this.nodeId, 'max',   max );
+        }
         
 
         this.validate();

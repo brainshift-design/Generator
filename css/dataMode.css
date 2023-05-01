@@ -92,6 +92,7 @@
     text-align:     center;
     display:        inline-block;
     min-width:      50px;
+    min-height:     14px;
     background:     var(--data-mode-node); 
     border-radius:  3px;
     margin:         2px 0px 0px 3px;
