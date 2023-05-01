@@ -24,6 +24,8 @@ extends FigmaObject
 
     copyBase(base)
     {
+        super.copyBase(base);
+        
         this.fills            = clone(base.fills);
         this.strokes          = clone(base.strokes);
 

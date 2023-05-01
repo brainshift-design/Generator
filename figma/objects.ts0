@@ -6,11 +6,13 @@ function updatePointSizes()
 {
     if (figma.viewport.zoom != curZoom)
     {
-        figPostMessageToUi({
+        figPostMessageToUi(
+        {
             cmd: 'uiUpdateZoom', 
-            zoom: figma.viewport.zoom});
-
-
+            zoom: figma.viewport.zoom 
+        });
+        
+        
         curZoom = figma.viewport.zoom;
 
         for (const point of figPoints)
@@ -55,10 +57,11 @@ function figCreateObject(objects, genObj)
     figObj.setPluginData('id',       genObj.objectId);
     figObj.setPluginData('type',     genObj.type);
     figObj.setPluginData('nodeId',   genObj.nodeId);
+
     
     if (genObj.data == 'point')
         figPoints.push(figObj);
-    
+
 
     objects.push(figObj);
 

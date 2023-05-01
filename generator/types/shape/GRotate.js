@@ -132,8 +132,8 @@ extends GOperator
                 obj.y);
 
 
-            const a  = obj.angle/360*Tau;
-            const v  = vector(angle - a, halfd);
+            const a = obj.angle/360*Tau;
+            const v = vector(angle - a, halfd);
 
 
             obj.x = 

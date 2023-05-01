@@ -6,7 +6,7 @@ class FigmaObject
 
     uniqueId;
 
-    data = null;
+    data = NULL;
 
 
 
@@ -23,8 +23,10 @@ class FigmaObject
     {
         this.uniqueId         = base.uniqueId;
 
+        this.data             = base.data;
+
         this.fills            = clone(base.fills);
-        this.stroks           = clone(base.strokes);
+        this.strokes          = clone(base.strokes);
     
         this.strokeWeight     = base.strokeWeight;
         this.strokeAlign      = base.strokeAlign;
