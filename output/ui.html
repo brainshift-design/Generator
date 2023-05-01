@@ -50134,16 +50134,6 @@ NumberControl.prototype.initEvents = function()
         clearTimeout(this.clickTimer);
 
   
-        if (this.isPointerLocked())
-        {
-            this.setValue(
-                this.value,
-                false, 
-                true,
-                e.shiftKey);
-        }
-
-
         if (graphView.tempConn)
         {
             if (    graphView.tempConn.output
@@ -50165,15 +50155,28 @@ NumberControl.prototype.initEvents = function()
         else if (this.moved
               || document.menuHadFocus)
         {
-            this.unlockPointer(e.pointerId);
-
             if (param)
                 param.noUpdate = false;  
 
             this.shiftDown        = false;
             numberControlChanging = null;
  
+
+            this.setValue(
+                this.value,
+                false, 
+                true,
+                e.shiftKey);
+
+            this.unlockPointer(e.pointerId);
+
+
             this.update();
+
+
+            pushUpdateFromParam(null, [param.node], param);
+
+
             return;            
         }
 
@@ -50190,9 +50193,8 @@ NumberControl.prototype.initEvents = function()
             this.shiftDown   = false;
 
             numberControlChanging = null;
+            overNumberControl     = null;
 
-
-            overNumberControl = null;
             this.updateCursor();
             this.startDelayUseTimer();
         }
