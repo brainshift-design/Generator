@@ -89,3 +89,24 @@ extends GNode
         return null;
     }
 }
+
+
+
+function getObjBounds(objects)
+{
+    let bounds = Rect.NaN;
+
+
+    for (const obj of objects)
+    {
+        const [width, height] =
+            obj.type != POINT
+            ? [obj.width, obj.height]
+            : [0, 0];
+
+        bounds = expandRect(bounds, new Rect(obj.x, obj.y, width, height));
+    }
+
+
+    return bounds;
+}

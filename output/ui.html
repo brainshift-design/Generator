@@ -9113,6 +9113,27 @@ extends GNode
 }
 
 
+
+function getObjBounds(objects)
+{
+    let bounds = Rect.NaN;
+
+
+    for (const obj of objects)
+    {
+        const [width, height] =
+            obj.type != POINT
+            ? [obj.width, obj.height]
+            : [0, 0];
+
+        bounds = expandRect(bounds, new Rect(obj.x, obj.y, width, height));
+    }
+
+
+    return bounds;
+}
+
+
 class GParam
 extends GOperator
 {
@@ -20111,10 +20132,7 @@ extends GOperator
             : [];
 
 
-        let bounds = Rect.NaN;
-
-        for (const obj of this.objects)
-            bounds = expandRect(bounds, new Rect(obj.x, obj.y, obj.width, obj.height));
+        const bounds = getObjBounds(this.objects);
 
 
         const dx = options.centerX.toNumber() / (bounds.width /2);
@@ -20316,10 +20334,7 @@ extends GOperator
                 : [];
 
 
-            let bounds = Rect.NaN;
-
-            for (const obj of this.objects)
-                bounds = expandRect(bounds, new Rect(obj.x, obj.y, obj.width, obj.height));
+            const bounds = getObjBounds(this.objects);
 
 
             const x  = Math.max(0, options.x.toNumber()/100);
@@ -35987,6 +36002,27 @@ extends GNode
 }
 
 
+
+function getObjBounds(objects)
+{
+    let bounds = Rect.NaN;
+
+
+    for (const obj of objects)
+    {
+        const [width, height] =
+            obj.type != POINT
+            ? [obj.width, obj.height]
+            : [0, 0];
+
+        bounds = expandRect(bounds, new Rect(obj.x, obj.y, width, height));
+    }
+
+
+    return bounds;
+}
+
+
 class GParam
 extends GOperator
 {
@@ -46985,10 +47021,7 @@ extends GOperator
             : [];
 
 
-        let bounds = Rect.NaN;
-
-        for (const obj of this.objects)
-            bounds = expandRect(bounds, new Rect(obj.x, obj.y, obj.width, obj.height));
+        const bounds = getObjBounds(this.objects);
 
 
         const dx = options.centerX.toNumber() / (bounds.width /2);
@@ -47190,10 +47223,7 @@ extends GOperator
                 : [];
 
 
-            let bounds = Rect.NaN;
-
-            for (const obj of this.objects)
-                bounds = expandRect(bounds, new Rect(obj.x, obj.y, obj.width, obj.height));
+            const bounds = getObjBounds(this.objects);
 
 
             const x  = Math.max(0, options.x.toNumber()/100);
@@ -48930,7 +48960,7 @@ extends Control
                    : cx + v * sw);
 
             this.bar.style.left   = Math.max(0, x);
-            this.bar.style.width  = Math.min(Math.max(0, Math.round(Math.abs(v) * sw) + Math.min(0, x)), this.measureData.offsetRect.width);
+            this.bar.style.width  = Math.min(Math.max(0, Math.round(Math.abs(v) * sw) + Math.min(0, x)), Math.max(0, this.measureData.offsetRect.width - Math.max(0, x)));
 
             this.bar.style.top    = sh * this.barTop;
             this.bar.style.height = sh * (this.barBottom - this.barTop);

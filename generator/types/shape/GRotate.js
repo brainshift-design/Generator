@@ -105,10 +105,7 @@ extends GOperator
             : [];
 
 
-        let bounds = Rect.NaN;
-
-        for (const obj of this.objects)
-            bounds = expandRect(bounds, new Rect(obj.x, obj.y, obj.width, obj.height));
+        const bounds = getObjBounds(this.objects);
 
 
         const dx = options.centerX.toNumber() / (bounds.width /2);

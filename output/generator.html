@@ -4740,6 +4740,27 @@ extends GNode
 }
 
 
+
+function getObjBounds(objects)
+{
+    let bounds = Rect.NaN;
+
+
+    for (const obj of objects)
+    {
+        const [width, height] =
+            obj.type != POINT
+            ? [obj.width, obj.height]
+            : [0, 0];
+
+        bounds = expandRect(bounds, new Rect(obj.x, obj.y, width, height));
+    }
+
+
+    return bounds;
+}
+
+
 class GParam
 extends GOperator
 {
@@ -15738,10 +15759,7 @@ extends GOperator
             : [];
 
 
-        let bounds = Rect.NaN;
-
-        for (const obj of this.objects)
-            bounds = expandRect(bounds, new Rect(obj.x, obj.y, obj.width, obj.height));
+        const bounds = getObjBounds(this.objects);
 
 
         const dx = options.centerX.toNumber() / (bounds.width /2);
@@ -15943,10 +15961,7 @@ extends GOperator
                 : [];
 
 
-            let bounds = Rect.NaN;
-
-            for (const obj of this.objects)
-                bounds = expandRect(bounds, new Rect(obj.x, obj.y, obj.width, obj.height));
+            const bounds = getObjBounds(this.objects);
 
 
             const x  = Math.max(0, options.x.toNumber()/100);

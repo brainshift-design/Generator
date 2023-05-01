@@ -359,7 +359,7 @@ extends Control
                    : cx + v * sw);
 
             this.bar.style.left   = Math.max(0, x);
-            this.bar.style.width  = Math.min(Math.max(0, Math.round(Math.abs(v) * sw) + Math.min(0, x)), this.measureData.offsetRect.width);
+            this.bar.style.width  = Math.min(Math.max(0, Math.round(Math.abs(v) * sw) + Math.min(0, x)), Math.max(0, this.measureData.offsetRect.width - Math.max(0, x)));
 
             this.bar.style.top    = sh * this.barTop;
             this.bar.style.height = sh * (this.barBottom - this.barTop);
