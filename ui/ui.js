@@ -25,6 +25,9 @@ var   figFonts              = [];
 var   figUniqueFontNames    = [];
 
 
+var   viewportZoom          = 1;
+
+
 
 function getTopHeight() 
 { 
@@ -99,4 +102,11 @@ function uiRestartGenerator(dataMode)
 {
     uiSetLocalData('dataMode', boolToString(dataMode));
     uiPostMessageToFigma({cmd: 'figRestartGenerator'});
+}
+
+
+
+function uiUpdateZoom(zoom)
+{
+    viewportZoom = zoom;
 }

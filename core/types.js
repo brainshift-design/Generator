@@ -282,6 +282,17 @@ const SHAPE_VALUES =
 ];
 
 
+const POINT            = 'PT';
+const POINT_VALUE      = 'PT#';
+
+
+const POINT_TYPES =
+[
+    POINT,
+    POINT_VALUE
+];
+
+
 const SHAPE_TYPES =
 [
     ...SHAPE_VALUES,
@@ -295,7 +306,9 @@ const SHAPE_TYPES =
 
     MOVE,
     ROTATE,
-    SCALE
+    SCALE,
+
+    ...POINT_TYPES
 ];
 
 

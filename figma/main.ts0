@@ -21,7 +21,12 @@ figma.showUI(
     });
     
 
-    
+
+var curZoom = figma.viewport.zoom;
+setInterval(() => updatePointSizes(), 250);
+
+
+
 // figma.currentPage
 //     .getPluginDataKeys()
 //     .forEach(k => figma.currentPage.setPluginData(k, figma.currentPage.getPluginData(k).replace('\\', '\\\\')));
@@ -62,6 +67,7 @@ function figStartGenerator()
             currentUser:  figma.currentUser,
             productKey:   productKey,
             viewportRect: figma.viewport.bounds,
+            viewportZoom: figma.viewport.zoom,
             fonts:        fonts });
     })();
 }

@@ -5,7 +5,15 @@ var figStyleArrays  = new Array(); // [ {nodeId, [styles]}  ]
 
 function figDeleteObjectsFromNodeIds(nodeIds)
 {
+    figma.currentPage
+        .findAll(o => nodeIds.includes(o.getPluginData('nodeId')))
+        .forEach(o => o.remove());
+
     figObjectArrays = figObjectArrays.filter(a => !nodeIds.includes(a.nodeId));
+
+    for (let i = figPoints.length-1; i >= 0; i--)
+        if (nodeIds.includes(figPoints.nodeId))
+            figPoints.splice(i, 1);
 }
 
 
@@ -28,7 +36,11 @@ function figDeleteObjectsExcept(nodeIds, ignoreObjects)
             if (!ignoreObjects.find(o => obj.name == makeObjectName(o)))
             {
                 obj.remove();
+
                 removeFromArray(objArray.objects, obj);
+
+                if (figPoints.includes(obj))
+                    removeFromArray(figPoints, obj);
             }
         }
         
@@ -54,10 +66,6 @@ function figDeleteStylesFromNodeIds(nodeIds, mustDelete)
     // styles are deleted first
     
     const paintStyles = figma.getLocalPaintStyles();
-
-    figma.currentPage
-        .findAll(o => nodeIds.includes(o.getPluginData('nodeId')))
-        .forEach(o => o.remove());
 
     paintStyles
         .filter(s => 

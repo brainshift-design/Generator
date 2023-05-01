@@ -94,6 +94,7 @@ function uiReturnFigStartGenerator(msg)
     graphView.updateMeasureData();
 
     viewportRect = msg.viewportRect;
+    viewportZoom = msg.viewportZoom;
 
     
     uiGetLocalData('showWhatsNew');

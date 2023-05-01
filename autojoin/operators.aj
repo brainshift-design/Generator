@@ -115,6 +115,7 @@
 
 
 ../operators/shape/OpShapeBase.js
+../operators/shape/OpShape.js
 ../operators/shape/OpRectangle.js
 ../operators/shape/OpLine.js
 ../operators/shape/OpEllipse.js
@@ -125,6 +126,8 @@
 ../operators/shape/OpMove.js
 ../operators/shape/OpRotate.js
 ../operators/shape/OpScale.js
+
+../operators/shape/OpPoint.js
 
 
 ../operators/style/OpColorStyle.js

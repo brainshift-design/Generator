@@ -226,7 +226,7 @@ function uiReturnFigLoadNodesAndConns(msg)
             graph.addPage(pages.find(p => p.id == id));
 
 
-        console.log('msg.currentPageId =', msg.currentPageId);
+        //console.log('msg.currentPageId =', msg.currentPageId);
         graph.pageIndex = graph.pages.findIndex(p => p.id == msg.currentPageId);
     }
     else

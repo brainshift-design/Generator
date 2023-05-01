@@ -446,6 +446,12 @@ const SHAPE_VALUES = [
     STAR_VALUE,
     TEXTSHAPE_VALUE
 ];
+const POINT = 'PT';
+const POINT_VALUE = 'PT#';
+const POINT_TYPES = [
+    POINT,
+    POINT_VALUE
+];
 const SHAPE_TYPES = [
     ...SHAPE_VALUES,
     ...RECTANGLE_TYPES,
@@ -456,7 +462,8 @@ const SHAPE_TYPES = [
     ...TEXTSHAPE_TYPES,
     MOVE,
     ROTATE,
-    SCALE
+    SCALE,
+    ...POINT_TYPES
 ];
 const ALL_VALUES = [
     LIST_VALUE,
@@ -752,6 +759,8 @@ figma.showUI(__html__, {
     visible: false,
     themeColors: true
 });
+var curZoom = figma.viewport.zoom;
+setInterval(() => updatePointSizes(), 250);
 // figma.currentPage
 //     .getPluginDataKeys()
 //     .forEach(k => figma.currentPage.setPluginData(k, figma.currentPage.getPluginData(k).replace('\\', '\\\\')));
@@ -786,6 +795,7 @@ function figStartGenerator() {
                 currentUser: figma.currentUser,
                 productKey: productKey,
                 viewportRect: figma.viewport.bounds,
+                viewportZoom: figma.viewport.zoom,
                 fonts: fonts
             });
         });
@@ -800,7 +810,13 @@ function figRestartGenerator() {
 var figObjectArrays = new Array(); // [ {nodeId, [objects]} ]
 var figStyleArrays = new Array(); // [ {nodeId, [styles]}  ]
 function figDeleteObjectsFromNodeIds(nodeIds) {
+    figma.currentPage
+        .findAll(o => nodeIds.includes(o.getPluginData('nodeId')))
+        .forEach(o => o.remove());
     figObjectArrays = figObjectArrays.filter(a => !nodeIds.includes(a.nodeId));
+    for (let i = figPoints.length - 1; i >= 0; i--)
+        if (nodeIds.includes(figPoints.nodeId))
+            figPoints.splice(i, 1);
 }
 function figDeleteObjectsExcept(nodeIds, ignoreObjects) {
     for (let i = figObjectArrays.length - 1; i >= 0; i--) {
@@ -812,6 +828,8 @@ function figDeleteObjectsExcept(nodeIds, ignoreObjects) {
             if (!ignoreObjects.find(o => obj.name == makeObjectName(o))) {
                 obj.remove();
                 removeFromArray(objArray.objects, obj);
+                if (figPoints.includes(obj))
+                    removeFromArray(figPoints, obj);
             }
         }
         if (isEmpty(objArray.objects))
@@ -826,9 +844,6 @@ function figDeleteAllObjects() {
 function figDeleteStylesFromNodeIds(nodeIds, mustDelete) {
     // styles are deleted first
     const paintStyles = figma.getLocalPaintStyles();
-    figma.currentPage
-        .findAll(o => nodeIds.includes(o.getPluginData('nodeId')))
-        .forEach(o => o.remove());
     paintStyles
         .filter(s => nodeIds.includes(s.getPluginData('nodeId')))
         //            && !parseBool(s.getPluginData('existing')))
@@ -1097,6 +1112,32 @@ function figPostMessageToUi(msg) {
 //     figPostMessageToGenerator({cmd: 'genEndFigMessage'}); 
 // }
 ///////////////////////////////////////////////////////////////////////////////////////////////////
+var figPoints = [];
+function updatePointSizes() {
+    if (figma.viewport.zoom != curZoom) {
+        figPostMessageToUi({
+            cmd: 'uiUpdateZoom',
+            zoom: figma.viewport.zoom
+        });
+        curZoom = figma.viewport.zoom;
+        for (const point of figPoints) {
+            const _x = point.x + point.width / 2;
+            const _y = point.y + point.height / 2;
+            point.resize(8 / curZoom, 8 / curZoom);
+            point.strokeWeight = 1.25 / curZoom;
+            point.x = _x - point.width / 2;
+            point.y = _y - point.height / 2;
+        }
+    }
+}
+function updatePointSize(point) {
+    const _x = point.x + point.width / 2;
+    const _y = point.y + point.height / 2;
+    point.resize(8 / curZoom, 8 / curZoom);
+    point.strokeWeight = 1.25 / curZoom;
+    point.x = _x - point.width / 2;
+    point.y = _y - point.height / 2;
+}
 function figCreateObject(objects, genObj) {
     let figObj;
     switch (genObj.type) {
@@ -1123,7 +1164,8 @@ function figCreateObject(objects, genObj) {
     figObj.setPluginData('id', genObj.objectId);
     figObj.setPluginData('type', genObj.type);
     figObj.setPluginData('nodeId', genObj.nodeId);
-    //figObj.setPluginData('nodeName', genObj.nodeName);
+    if (genObj.data == 'point')
+        figPoints.push(figObj);
     objects.push(figObj);
     figma.currentPage.appendChild(figObj);
 }
@@ -1143,23 +1185,40 @@ function figUpdateObjects(msg) {
                     });
             }
         }
-        const figObj = figObjects.objects.find(o => o.name == makeObjectName(genObj));
+        console.log('figObjects.objects =', figObjects.objects);
+        console.log('1');
+        const figObj = figObjects.objects.find(o => o.removed || o.name == makeObjectName(genObj));
+        console.log('11');
         if (isValid(figObj)
-            && figObj.removed)
+            && figObj.removed) {
+            console.log('2');
             removeFrom(figObjects.objects, figObj);
+            if (figPoints.includes(figObj))
+                removeFromArray(figPoints, figObj);
+            console.log('3');
+        }
+        console.log('4');
         if (!isValid(figObj)
             || figObj.removed) // no existing object, create new object
          {
+            console.log('5');
             figCreateObject(figObjects.objects, genObj);
+            console.log('6');
         }
         else if (figObj.getPluginData('type') == genObj.type.toString()) // update existing object
          {
+            console.log('7');
             figUpdateObject(figObj, genObj);
+            console.log('8');
         }
         else // delete existing object, create new object
          {
+            console.log('9');
             figObj.remove();
+            if (figPoints.includes(figObj))
+                removeFromArray(figPoints, figObj);
             figCreateObject(figObjects.objects, genObj);
+            console.log('10');
         }
     }
 }
@@ -1275,10 +1334,14 @@ function figCreateEllipse(obj) {
         return ellipse;
     ellipse.x = obj.x;
     ellipse.y = obj.y;
-    ellipse.resize(Math.max(0.01, obj.width), Math.max(0.01, obj.height));
     ellipse.rotation = obj.angle;
-    setObjectFills(ellipse, obj);
-    setObjectStrokes(ellipse, obj);
+    if (figPoints.includes(ellipse))
+        updatePointSize(ellipse);
+    else {
+        ellipse.resize(Math.max(0.01, obj.width), Math.max(0.01, obj.height));
+        setObjectFills(ellipse, obj);
+        setObjectStrokes(ellipse, obj);
+    }
     return ellipse;
 }
 function figUpdateEllipse(figEllipse, genEllipse) {
@@ -1500,7 +1563,7 @@ function setObjectStrokes(obj, src) {
         && !isEmpty(src.strokes)) {
         obj.strokes = getObjectFills(src.strokes);
         obj.strokeWeight = Math.max(0, src.strokeWeight);
-        obj.strokeAlign = src.strokeFit;
+        obj.strokeAlign = src.strokeAlign;
         obj.strokeJoin = src.strokeJoin;
         obj.strokeMiterLimit = Math.min(Math.max(0, src.strokeMiterLimit), 16);
     }

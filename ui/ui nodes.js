@@ -95,6 +95,8 @@ function createNode(nodeType, creatingButton = null, createdNodeId = -1, options
         case ROTATE:                  node = new OpRotate();            break;
         case SCALE:                   node = new OpScale();             break;
 
+        case POINT:                   node = new OpPoint();             break;
+
         case GROUP_NODE:              node = new OpGroupNode();         break;
         case GROUP_PARAM:             node = new OpGroupParam();        break;
 
@@ -729,6 +731,7 @@ function uiUpdateValuesAndObjects(requestId, actionId, updateNodeId, updateParam
                     case   POLYGON_VALUE:  value = parsePolygonValue  (values[i++])[0];  break;
                     case      STAR_VALUE:  value = parseStarValue     (values[i++])[0];  break;
                     case TEXTSHAPE_VALUE:  value = parseTextShapeValue(values[i++])[0];  break;
+                    case     POINT_VALUE:  value = parsePointValue    (values[i++])[0];  break;
                     case      LIST_VALUE:  value = parseListValue     (values[i++])[0];  break;
                     
                     default: console.assert(false, 'unknown type \'' + type + '\'');

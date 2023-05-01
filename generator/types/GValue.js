@@ -44,6 +44,13 @@ extends GNode
 
 
 
+    toDisplayString()
+    {
+        return this.toString();
+    }
+
+
+
     toJsCode(gen)
     {
         console.assert(false, 'invalid abstract method');
@@ -86,6 +93,7 @@ function displayValue(type, value)
         case   POLYGON_VALUE: return parsePolygonValue  (value)[0].toDisplayString();
         case      STAR_VALUE: return parseStarValue     (value)[0].toDisplayString();
         case TEXTSHAPE_VALUE: return parseTextShapeValue(value)[0].toDisplayString();
+        case     POINT_VALUE: return parsePointValue    (value)[0].toDisplayString();
         case      FILL_VALUE: return parseFillValue     (value)[0].toDisplayString();
         case    STROKE_VALUE: return parseStrokeValue   (value)[0].toDisplayString();
         case      LIST_VALUE: return parseListValue     (value)[0].toDisplayString();
@@ -110,6 +118,7 @@ function nullFromType(type)
         case   POLYGON_VALUE: return   PolygonValue.NaN;
         case      STAR_VALUE: return      StarValue.NaN;
         case TEXTSHAPE_VALUE: return TextShapeValue.NaN;
+        case     POINT_VALUE: return     PointValue.NaN;
         case      FILL_VALUE: return FillValue.NaN;
         case    STROKE_VALUE: return StrokeValue.NaN;
         case      LIST_VALUE: return ListValue.NaN;

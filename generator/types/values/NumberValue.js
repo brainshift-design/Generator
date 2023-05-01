@@ -82,16 +82,16 @@ extends GValue
 
     toString()
     {
-        return printNum(this.value) + ',' + printNum(this.decimals); // only NumberValue can do this, other _Values have to list all members
+        return printNum(this.value) + ',' + printNum(this.decimals);
     }
 
 
 
     toSimpleString()
     {
-        return !isNaN(this.value)
-              ? numToString(this.value, this.decimals)
-              : NAN_DISPLAY; // only NumberValue can do this, other _Values have to list all members
+        return this.isValid()
+             ? numToString(this.value, this.decimals)
+             : NAN_DISPLAY;
     }
 
 

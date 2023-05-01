@@ -735,6 +735,17 @@ const SHAPE_VALUES =
 ];
 
 
+const POINT            = 'PT';
+const POINT_VALUE      = 'PT#';
+
+
+const POINT_TYPES =
+[
+    POINT,
+    POINT_VALUE
+];
+
+
 const SHAPE_TYPES =
 [
     ...SHAPE_VALUES,
@@ -748,7 +759,9 @@ const SHAPE_TYPES =
 
     MOVE,
     ROTATE,
-    SCALE
+    SCALE,
+
+    ...POINT_TYPES
 ];
 
 
@@ -1235,7 +1248,12 @@ figma.showUI(
     });
     
 
-    
+
+var curZoom = figma.viewport.zoom;
+setInterval(() => updatePointSizes(), 250);
+
+
+
 // figma.currentPage
 //     .getPluginDataKeys()
 //     .forEach(k => figma.currentPage.setPluginData(k, figma.currentPage.getPluginData(k).replace('\\', '\\\\')));
@@ -1276,6 +1294,7 @@ function figStartGenerator()
             currentUser:  figma.currentUser,
             productKey:   productKey,
             viewportRect: figma.viewport.bounds,
+            viewportZoom: figma.viewport.zoom,
             fonts:        fonts });
     })();
 }
@@ -1303,7 +1322,15 @@ var figStyleArrays  = new Array(); // [ {nodeId, [styles]}  ]
 
 function figDeleteObjectsFromNodeIds(nodeIds)
 {
+    figma.currentPage
+        .findAll(o => nodeIds.includes(o.getPluginData('nodeId')))
+        .forEach(o => o.remove());
+
     figObjectArrays = figObjectArrays.filter(a => !nodeIds.includes(a.nodeId));
+
+    for (let i = figPoints.length-1; i >= 0; i--)
+        if (nodeIds.includes(figPoints.nodeId))
+            figPoints.splice(i, 1);
 }
 
 
@@ -1326,7 +1353,11 @@ function figDeleteObjectsExcept(nodeIds, ignoreObjects)
             if (!ignoreObjects.find(o => obj.name == makeObjectName(o)))
             {
                 obj.remove();
+
                 removeFromArray(objArray.objects, obj);
+
+                if (figPoints.includes(obj))
+                    removeFromArray(figPoints, obj);
             }
         }
         
@@ -1352,10 +1383,6 @@ function figDeleteStylesFromNodeIds(nodeIds, mustDelete)
     // styles are deleted first
     
     const paintStyles = figma.getLocalPaintStyles();
-
-    figma.currentPage
-        .findAll(o => nodeIds.includes(o.getPluginData('nodeId')))
-        .forEach(o => o.remove());
 
     paintStyles
         .filter(s => 
@@ -1630,6 +1657,58 @@ function figPostMessageToUi(msg)
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 
 
+var figPoints = [];
+
+
+
+function updatePointSizes()
+{
+    if (figma.viewport.zoom != curZoom)
+    {
+        figPostMessageToUi({
+            cmd: 'uiUpdateZoom', 
+            zoom: figma.viewport.zoom});
+
+
+        curZoom = figma.viewport.zoom;
+
+
+        for (const point of figPoints)
+        {
+            const _x = point.x + point.width /2;
+            const _y = point.y + point.height/2;
+
+            point.resize(
+                8 / curZoom, 
+                8 / curZoom);
+
+            point.strokeWeight = 1.25 / curZoom;
+    
+            point.x = _x - point.width /2;
+            point.y = _y - point.height/2;
+        }
+    }
+}
+
+
+
+function updatePointSize(point)
+{
+    const _x = point.x + point.width /2;
+    const _y = point.y + point.height/2;
+
+    point.resize(
+        8 / curZoom, 
+        8 / curZoom);
+
+    point.strokeWeight = 1.25 / curZoom;
+
+    point.x = _x - point.width /2;
+    point.y = _y - point.height/2;
+}
+
+
+
 function figCreateObject(objects, genObj)
 {
     let figObj;
@@ -1649,7 +1728,9 @@ function figCreateObject(objects, genObj)
     figObj.setPluginData('id',       genObj.objectId);
     figObj.setPluginData('type',     genObj.type);
     figObj.setPluginData('nodeId',   genObj.nodeId);
-    //figObj.setPluginData('nodeName', genObj.nodeName);
+    
+    if (genObj.data == 'point')
+        figPoints.push(figObj);
     
 
     objects.push(figObj);
@@ -1685,29 +1766,48 @@ function figUpdateObjects(msg)
             }
         }
 
-
-        const figObj = figObjects.objects.find(o => o.name == makeObjectName(genObj));
+console.log('figObjects.objects =', figObjects.objects);
+console.log('1');
+        const figObj = figObjects.objects.find(o => o.removed || o.name == makeObjectName(genObj));
+        console.log('11');
 
         if (   isValid(figObj)
             && figObj.removed)
+        {
+            console.log('2');
             removeFrom(figObjects.objects, figObj);
-
+        
+            if (figPoints.includes(figObj)
+                removeFromArray(figPoints, figObj);
+            console.log('3');
+        }
+        console.log('4');
 
         if (  !isValid(figObj)
             || figObj.removed) // no existing object, create new object
         {
+            console.log('5');
             figCreateObject(figObjects.objects, genObj);
+            console.log('6');
         }
 
         else if (figObj.getPluginData('type') == genObj.type.toString()) // update existing object
         {
+            console.log('7');
             figUpdateObject(figObj, genObj);
+            console.log('8');
         }
 
         else // delete existing object, create new object
         {
+            console.log('9');
             figObj.remove();
+
+            if (figPoints.includes(figObj)
+                removeFromArray(figPoints, figObj);
+
             figCreateObject(figObjects.objects, genObj);
+            console.log('10');
         }
     }
 }
@@ -1906,17 +2006,23 @@ function figCreateEllipse(obj)
 
     ellipse.x = obj.x;
     ellipse.y = obj.y;
-    
-    ellipse.resize(
-        Math.max(0.01, obj.width), 
-        Math.max(0.01, obj.height));
-        
+
     ellipse.rotation = obj.angle;
 
-
-    setObjectFills  (ellipse, obj);
-    setObjectStrokes(ellipse, obj);
     
+    if (figPoints.includes(ellipse))
+        updatePointSize(ellipse);
+        
+    else
+    {
+        ellipse.resize(
+            Math.max(0.01, obj.width), 
+            Math.max(0.01, obj.height));
+
+        setObjectFills  (ellipse, obj);
+        setObjectStrokes(ellipse, obj);
+    }
+
     
     return ellipse;
 }
@@ -2317,7 +2423,7 @@ function setObjectStrokes(obj, src)
         obj.strokes = getObjectFills(src.strokes);
 
         obj.strokeWeight     = Math.max(0, src.strokeWeight);
-        obj.strokeAlign      = src.strokeFit;
+        obj.strokeAlign      = src.strokeAlign;
         obj.strokeJoin       = src.strokeJoin;
         obj.strokeMiterLimit = Math.min(Math.max(0, src.strokeMiterLimit), 16);
     }

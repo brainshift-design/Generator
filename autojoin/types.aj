@@ -37,6 +37,7 @@
 ../generator/types/values/PolygonValue.js
 ../generator/types/values/StarValue.js
 ../generator/types/values/TextShapeValue.js
+../generator/types/values/PointValue.js
 
 
 ../generator/types/flow/GList.js
@@ -136,6 +137,8 @@
 ../generator/types/shape/GMove.js
 ../generator/types/shape/GRotate.js
 ../generator/types/shape/GScale.js
+
+../generator/types/shape/GPoint.js
 
 
 ../generator/types/style/GColorStyle.js

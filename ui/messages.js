@@ -45,6 +45,8 @@ onmessage = e =>
 
         case 'uiSetStyleId':                      uiSetStyleId                     (msg);          break;
         case 'uiHideClearUndoWarning':            uiHideClearUndoWarning           ();             break;
+
+        case 'uiUpdateZoom':                      uiUpdateZoom                     (msg.zoom);     break;
     }
 }    
 

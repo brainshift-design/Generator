@@ -8158,6 +8158,17 @@ const SHAPE_VALUES =
 ];
 
 
+const POINT            = 'PT';
+const POINT_VALUE      = 'PT#';
+
+
+const POINT_TYPES =
+[
+    POINT,
+    POINT_VALUE
+];
+
+
 const SHAPE_TYPES =
 [
     ...SHAPE_VALUES,
@@ -8171,7 +8182,9 @@ const SHAPE_TYPES =
 
     MOVE,
     ROTATE,
-    SCALE
+    SCALE,
+
+    ...POINT_TYPES
 ];
 
 
@@ -8380,6 +8393,9 @@ class FigmaObject
 
     uniqueId;
 
+    data = null;
+
+
 
     constructor(type, nodeId)
     {
@@ -8398,7 +8414,7 @@ class FigmaObject
         this.stroks           = clone(base.strokes);
     
         this.strokeWeight     = base.strokeWeight;
-        this.strokeFit        = base.strokeFit;
+        this.strokeAlign        = base.strokeAlign;
         this.strokeJoin       = base.strokeJoin;
         this.strokeMiterLimit = base.strokeMiterLimit;
     }
@@ -8440,7 +8456,7 @@ extends FigmaObject
     strokes  = [];
 
     strokeWeight;
-    strokeFit;
+    strokeAlign;
     strokeJoin;
     strokeMiterLimit;
 
@@ -8461,7 +8477,7 @@ extends FigmaObject
         this.strokes          = clone(base.strokes);
 
         this.strokeWeight     = base.strokeWeight;
-        this.strokeFit        = base.strokeFit;
+        this.strokeAlign        = base.strokeAlign;
         this.strokeJoin       = base.strokeJoin;
         this.strokeMiterLimit = base.strokeMiterLimit;
     }
@@ -8919,6 +8935,13 @@ extends GNode
 
 
 
+    toDisplayString()
+    {
+        return this.toString();
+    }
+
+
+
     toJsCode(gen)
     {
         console.assert(false, 'invalid abstract method');
@@ -8961,6 +8984,7 @@ function displayValue(type, value)
         case   POLYGON_VALUE: return parsePolygonValue  (value)[0].toDisplayString();
         case      STAR_VALUE: return parseStarValue     (value)[0].toDisplayString();
         case TEXTSHAPE_VALUE: return parseTextShapeValue(value)[0].toDisplayString();
+        case     POINT_VALUE: return parsePointValue    (value)[0].toDisplayString();
         case      FILL_VALUE: return parseFillValue     (value)[0].toDisplayString();
         case    STROKE_VALUE: return parseStrokeValue   (value)[0].toDisplayString();
         case      LIST_VALUE: return parseListValue     (value)[0].toDisplayString();
@@ -8985,6 +9009,7 @@ function nullFromType(type)
         case   POLYGON_VALUE: return   PolygonValue.NaN;
         case      STAR_VALUE: return      StarValue.NaN;
         case TEXTSHAPE_VALUE: return TextShapeValue.NaN;
+        case     POINT_VALUE: return     PointValue.NaN;
         case      FILL_VALUE: return FillValue.NaN;
         case    STROKE_VALUE: return StrokeValue.NaN;
         case      LIST_VALUE: return ListValue.NaN;
@@ -9262,16 +9287,16 @@ extends GValue
 
     toString()
     {
-        return printNum(this.value) + ',' + printNum(this.decimals); // only NumberValue can do this, other _Values have to list all members
+        return printNum(this.value) + ',' + printNum(this.decimals);
     }
 
 
 
     toSimpleString()
     {
-        return !isNaN(this.value)
-              ? numToString(this.value, this.decimals)
-              : NAN_DISPLAY; // only NumberValue can do this, other _Values have to list all members
+        return this.isValid()
+             ? numToString(this.value, this.decimals)
+             : NAN_DISPLAY;
     }
 
 
@@ -11446,6 +11471,149 @@ function parseTextShapeValue(str, i = -1)
 
 
 
+class PointValue
+extends ShapeValue
+{
+    x;
+    y;
+
+
+
+    constructor(nodeId,
+                x = new NumberValue(0), 
+                y = new NumberValue(0))
+    {
+        super(POINT_VALUE, nodeId);
+
+        this.x = x;
+        this.y = y;
+    }
+
+
+
+    // static fromString(str)
+    // {
+    //     return new NumberValue(
+    //         parseFloat(str),
+    //         decCount(str));
+    // }
+
+
+
+    copy()
+    {
+        const copy = new PointValue(
+            this.nodeId,
+            this.x.copy(), 
+            this.y.copy());
+
+        copy.copyBase(this);
+
+        return copy;
+    }
+
+
+
+    equals(p)
+    {
+        return p
+            && this.x.equals(p.x)
+            && this.y.equals(p.y);
+    }
+
+
+
+    async eval(parse)
+    {
+        return this;
+    }
+
+
+
+    isValid()
+    {
+        return this.x.isValid()
+            && this.y.isValid();
+    }
+
+
+
+    toString()
+    {
+        return      this.x.toString()
+            + ' ' + this.y.toString();
+    }
+
+
+
+    toDisplayString()
+    {
+        return      this.x.toDisplayString()
+            + ' ' + this.y.toDisplayString();
+    }
+
+
+
+    toValue()
+    {
+        return this.copy();
+    }
+
+
+
+    toJsCode(gen)
+    {
+        return '';//this.toSimpleString();
+    }
+
+
+
+    getNaN()
+    {
+        return PointValue.NaN;
+    }
+
+
+
+    static NaN = Object.freeze(new PointValue(
+        '',
+        NumberValue.NaN, 
+        NumberValue.NaN));
+}
+
+
+
+function parsePointValue(str, i = -1)
+{
+    if (   i <  0 && str    == NAN_DISPLAY
+        || i >= 0 && str[i] == NAN_DISPLAY)
+        return [PointValue.NaN, 1];
+
+
+    if (i < 0)
+    {
+        str = str.split(' ');
+        i   = 0;
+    }
+
+
+    const iStart = i;
+
+    const x = parseNumberValue(str[i]); i += x     [1];
+    const y = parseNumberValue(str[i]); i += y     [1];
+
+
+    const rect = new PointValue(
+        '', // set node ID elsewhere
+        x[0],
+        y[0]);
+
+
+    return [rect, i - iStart];
+}
+
+
+
 class GList
 extends GOperator
 {
@@ -12523,7 +12691,8 @@ extends GNumberType
             this.value = this.feedbackValue();
 
 
-        genPushUpdateValue(parse, this.nodeId, 'value', this.value);    
+        if (parse.isLastRepeat())
+            genPushUpdateValue(parse, this.nodeId, 'value', this.value);    
 
 
         this.validate();
@@ -12599,7 +12768,8 @@ extends GNumberType
             this.value = NumberValue.NaN;
 
 
-        genPushUpdateValue(parse, this.nodeId, 'value', this.value);
+        if (parse.isLastRepeat())
+            genPushUpdateValue(parse, this.nodeId, 'value', this.value);
 
 
         this.validate();
@@ -12667,7 +12837,8 @@ extends GNumberType
             this.value = NumberValue.NaN;
 
 
-        genPushUpdateValue(parse, this.nodeId, 'value', this.value);
+        if (parse.isLastRepeat())
+            genPushUpdateValue(parse, this.nodeId, 'value', this.value);
 
 
         this.validate();
@@ -12759,9 +12930,12 @@ extends GNumberType
             this.value = NumberValue.NaN;
 
 
-        genPushUpdateValue(parse, this.nodeId, 'type',     type);
-        genPushUpdateValue(parse, this.nodeId, 'decimals', dec );
-        genPushUpdateValue(parse, this.nodeId, 'value',    this.value);
+        if (parse.isLastRepeat())
+        {
+            genPushUpdateValue(parse, this.nodeId, 'type',     type);
+            genPushUpdateValue(parse, this.nodeId, 'decimals', dec );
+            genPushUpdateValue(parse, this.nodeId, 'value',    this.value);
+        }
 
 
         this.validate();
@@ -12853,9 +13027,12 @@ extends GNumberType
             this.value = this.feedbackValue();
 
 
-        genPushUpdateValue(parse, this.nodeId, 'value', this.value);
-        genPushUpdateValue(parse, this.nodeId, 'min',   min);
-        genPushUpdateValue(parse, this.nodeId, 'max',   max);
+        if (parse.isLastRepeat())
+        {
+            genPushUpdateValue(parse, this.nodeId, 'value', this.value);
+            genPushUpdateValue(parse, this.nodeId, 'min',   min);
+            genPushUpdateValue(parse, this.nodeId, 'max',   max);
+        }
 
 
         this.validate();
@@ -12971,9 +13148,7 @@ extends GNumberType
         }
 
 
-        if (   isEmpty(parse.repeats)
-            ||    parse.repeats.length == 1
-               && parse.repeats[0].iteration == parse.repeats[0].total-1)
+        if (parse.isLastRepeat())
         {
             genPushUpdateValue(parse, this.nodeId, 'start', start);
             genPushUpdateValue(parse, this.nodeId, 'step',  step );
@@ -13083,8 +13258,7 @@ extends GNumberType
         }
 
 
-        if (   isEmpty(parse.repeats)
-            || parse.repeats.at(-1).iteration == parse.repeats.at(-1).total-1)
+        if (parse.isLastRepeat())
         {
             genPushUpdateValue(parse, this.nodeId, 'seed',  seed);
             genPushUpdateValue(parse, this.nodeId, 'min',   min );
@@ -13174,9 +13348,12 @@ extends GNumberType
             this.value = NumberValue.NaN;
 
 
-        genPushUpdateValue(parse, this.nodeId, 'amount', amount);
-        genPushUpdateValue(parse, this.nodeId, 'value',  this.value);
-
+        if (parse.isLastRepeat())
+        {
+            genPushUpdateValue(parse, this.nodeId, 'amount', amount);
+            genPushUpdateValue(parse, this.nodeId, 'value',  this.value);
+        }
+        
 
         this.validate();
 
@@ -13257,9 +13434,12 @@ extends GNumberType
         this.value = new TextValue(str);
 
 
-        genPushUpdateValue(parse, this.nodeId, 'value',  this.value);
-        genPushUpdateValue(parse, this.nodeId, 'number', number    );
-        genPushUpdateValue(parse, this.nodeId, 'format', format    );
+        if (parse.isLastRepeat())
+        {
+            genPushUpdateValue(parse, this.nodeId, 'value',  this.value);
+            genPushUpdateValue(parse, this.nodeId, 'number', number    );
+            genPushUpdateValue(parse, this.nodeId, 'format', format    );
+        }
 
 
         this.validate();
@@ -13424,9 +13604,12 @@ extends GNumberType
         
         // TODO push good result value to input 
 
-        genPushUpdateValue(parse, this.nodeId, 'value',   this.value);
-        genPushUpdateValue(parse, this.nodeId, 'current', current   );
-        genPushUpdateValue(parse, this.nodeId, 'target',  target    );
+        if (parse.isLastRepeat())
+        {
+            genPushUpdateValue(parse, this.nodeId, 'value',   this.value);
+            genPushUpdateValue(parse, this.nodeId, 'current', current   );
+            genPushUpdateValue(parse, this.nodeId, 'target',  target    );
+        }
 
 
         this.validate();
@@ -13571,13 +13754,16 @@ extends GNumberType
         }
         
 
-        genPushUpdateValue(parse, this.nodeId, 'value',  this.value);
-        genPushUpdateValue(parse, this.nodeId, 'from',   from      );
-        genPushUpdateValue(parse, this.nodeId, 'to',     to        );
-        genPushUpdateValue(parse, this.nodeId, 'curve',  curve     );
-        genPushUpdateValue(parse, this.nodeId, 'type',   type      );
-        genPushUpdateValue(parse, this.nodeId, 'length', length    );
-        genPushUpdateValue(parse, this.nodeId, 'time',   time      );
+        if (parse.isLastRepeat())
+        {
+            genPushUpdateValue(parse, this.nodeId, 'value',  this.value);
+            genPushUpdateValue(parse, this.nodeId, 'from',   from      );
+            genPushUpdateValue(parse, this.nodeId, 'to',     to        );
+            genPushUpdateValue(parse, this.nodeId, 'curve',  curve     );
+            genPushUpdateValue(parse, this.nodeId, 'type',   type      );
+            genPushUpdateValue(parse, this.nodeId, 'length', length    );
+            genPushUpdateValue(parse, this.nodeId, 'time',   time      );
+        }
         
 
         this.validate();
@@ -14422,8 +14608,11 @@ extends GArithmetic
         }
 
         
-        genPushUpdateValue(parse, this.nodeId, 'operation', op);
-        genPushUpdateValue(parse, this.nodeId, 'value',     this.value);
+        if (parse.isLastRepeat())
+        {
+            genPushUpdateValue(parse, this.nodeId, 'operation', op);
+            genPushUpdateValue(parse, this.nodeId, 'value',     this.value);
+        }
 
 
         this.validate();
@@ -14467,9 +14656,13 @@ extends GArithmetic
         if (this.isCached())
             return this;
 
+
         this.value = await evalNandInputs(this.inputs, parse);
         
-        genPushUpdateValue(parse, this.nodeId, 'value', this.value);
+
+        if (parse.isLastRepeat())
+            genPushUpdateValue(parse, this.nodeId, 'value', this.value);
+
 
         this.validate();
 
@@ -14575,10 +14768,14 @@ extends GArithmetic
         if (this.isCached())
             return this;
 
+
         this.value = await evalAndInputs(this.inputs, parse);
         
-        genPushUpdateValue(parse, this.nodeId, 'value', this.value);
 
+        if (parse.isLastRepeat())
+            genPushUpdateValue(parse, this.nodeId, 'value', this.value);
+
+        
         this.validate();
 
         return this;
@@ -14686,9 +14883,13 @@ extends GArithmetic
         if (this.isCached())
             return this;
 
+
         this.value = await evalOrInputs(this.inputs, parse);
         
-        genPushUpdateValue(parse, this.nodeId, 'value', this.value);
+
+        if (parse.isLastRepeat())
+            genPushUpdateValue(parse, this.nodeId, 'value', this.value);
+
 
         this.validate();
 
@@ -14794,9 +14995,13 @@ extends GArithmetic
         if (this.isCached())
             return this;
 
+
         this.value = await evalXorInputs(this.inputs, parse);
         
-        genPushUpdateValue(parse, this.nodeId, 'value', this.value);
+
+        if (parse.isLastRepeat())
+            genPushUpdateValue(parse, this.nodeId, 'value', this.value);
+
 
         this.validate();
 
@@ -14968,8 +15173,11 @@ extends GNumberType
         }
 
 
-        genPushUpdateValue(parse, this.nodeId, 'operation', op);
-        genPushUpdateValue(parse, this.nodeId, 'value',     this.value);
+        if (parse.isLastRepeat())
+        {
+            genPushUpdateValue(parse, this.nodeId, 'operation', op);
+            genPushUpdateValue(parse, this.nodeId, 'value',     this.value);
+        }
 
 
         this.validate();
@@ -15015,13 +15223,17 @@ extends GConditionBase
         if (this.isCached())
             return this;
 
+
         this.value = await evalConditionInputs(
             this.input0, 
             this.input1, 
             (a, b) => a == b, 
             parse);
             
-        genPushUpdateValue(parse, this.nodeId, 'value', this.value);
+
+        if (parse.isLastRepeat())
+            genPushUpdateValue(parse, this.nodeId, 'value', this.value);
+
 
         this.validate();
 
@@ -15056,13 +15268,17 @@ extends GConditionBase
         if (this.isCached())
             return this;
 
+
         this.value = await evalConditionInputs(
             this.input0, 
             this.input1, 
             (a, b) => a != b, 
             parse);
         
-        genPushUpdateValue(parse, this.nodeId, 'value', this.value);
+
+        if (parse.isLastRepeat())
+            genPushUpdateValue(parse, this.nodeId, 'value', this.value);
+
 
         this.validate();
 
@@ -15096,13 +15312,17 @@ extends GConditionBase
         if (this.isCached())
             return this;
 
-            this.value = await evalConditionInputs(
-                this.input0, 
-                this.input1, 
-                (a, b) => a < b, 
-                parse);
+
+        this.value = await evalConditionInputs(
+            this.input0, 
+            this.input1, 
+            (a, b) => a < b, 
+            parse);
             
-        genPushUpdateValue(parse, this.nodeId, 'value', this.value);
+
+        if (parse.isLastRepeat())
+            genPushUpdateValue(parse, this.nodeId, 'value', this.value);
+
 
         this.validate();
 
@@ -15111,6 +15331,48 @@ extends GConditionBase
 }
 
 
+class GLessOrEqual
+extends GConditionBase
+{
+    constructor(nodeId, options)
+    {
+        super(NUMBER_LESS_OR_EQUAL, nodeId, options);
+    }
+
+
+    
+    copy()
+    {
+        const copy = new GLessOrEqual(this.nodeId, this.options);
+        copy.copyBase(this);
+        copy.inputs = this.inputs.map(i => i.copy());
+        return copy;
+    }
+
+
+
+    async eval(parse)
+    {
+        if (this.isCached())
+            return this;
+
+
+        this.value = await evalConditionInputs(
+            this.input0, 
+            this.input1, 
+            (a, b) => a <= b, 
+            parse);
+            
+
+        if (parse.isLastRepeat())
+            genPushUpdateValue(parse, this.nodeId, 'value', this.value);
+
+
+        this.validate();
+
+        return this;
+    }
+}
 
 
 
@@ -15139,13 +15401,17 @@ extends GConditionBase
         if (this.isCached())
             return this;
 
+
         this.value = await evalConditionInputs(
             this.input0, 
             this.input1, 
             (a, b) => a > b, 
             parse);
         
-        genPushUpdateValue(parse, this.nodeId, 'value', this.value);
+
+        if (parse.isLastRepeat())
+            genPushUpdateValue(parse, this.nodeId, 'value', this.value);
+
 
         this.validate();
 
@@ -15182,13 +15448,17 @@ extends GConditionBase
         if (this.isCached())
             return this;
 
+
         this.value = await evalConditionInputs(
             this.input0, 
             this.input1, 
             (a, b) => a >= b, 
             parse);
             
-        genPushUpdateValue(parse, this.nodeId, 'value', this.value);
+
+        if (parse.isLastRepeat())
+            genPushUpdateValue(parse, this.nodeId, 'value', this.value);
+
 
         this.validate();
 
@@ -15215,16 +15485,256 @@ extends GNumberType
 
 
 
+class GTrig
+extends GNumberType
+{
+    input = null;
+
+    function;
 
 
 
+    constructor(nodeId, options)
+    {
+        super(NUMBER_TRIG, nodeId, options);
+    }
+
+
+    
+    copy()
+    {
+        const copy = new GTrig(this.nodeId, this.options);
+
+        copy.copyBase(this);
+
+        if (this.input) copy.input = this.input.copy();
+
+        copy.operation = this.operation.copy();
+
+        return copy;
+    }
 
 
 
+    async eval(parse)
+    {
+        if (this.isCached())
+            return this;
+
+
+        const func = (await this.function.eval(parse)).toValue().toInteger();
+
+        func.value = Math.min(Math.max(0, func.value), TRIG_OPS.length-1);
+
+        
+        switch (func.value)
+        {
+            case TRIG_SIN: this.value = await evalSine   (this.input, parse);  break;
+            case TRIG_COS: this.value = await evalCosine (this.input, parse);  break;
+            case TRIG_TAN: this.value = await evalTangent(this.input, parse);  break;
+        }
+
+
+        if (parse.isLastRepeat())
+        {
+            genPushUpdateValue(parse, this.nodeId, 'value',    this.value);
+            genPushUpdateValue(parse, this.nodeId, 'function', func);
+        }
+
+
+        this.validate();
+
+        return this;
+    }
 
 
 
+    invalidate()
+    {
+        super.invalidate();
 
+        if (this.input   ) this.input   .invalidate();
+        if (this.function) this.function.invalidate();
+    }
+}
+
+
+class GSine
+extends GTrigBase
+{
+    constructor(nodeId, options)
+    {
+        super(NUMBER_SIN, nodeId, options);
+    }
+
+
+    
+    copy()
+    {
+        const copy = new GSine(this.nodeId, this.options);
+        
+        copy.copyBase(this);
+
+        if (this.input) copy.input = this.input.copy();
+        
+        return copy;
+    }
+
+
+
+    async eval(parse)
+    {
+        if (this.isCached())
+            return this;
+
+
+        this.value = await evalSine(this.input, parse);
+
+
+        if (parse.isLastRepeat())
+            genPushUpdateValue(parse, this.nodeId, 'value', this.value);
+
+
+        this.validate();
+
+        return this;
+    }
+
+
+
+    toValue()
+    {
+        return this.value.copy();
+    }
+}
+
+
+
+async function evalSine(input, parse)
+{
+    if (!input)
+        return NumberValue.NaN;
+
+    let value = (await input.eval(parse)).toValue();
+
+    value = new NumberValue(Math.sin(value.value, 10));
+
+    return value;
+}
+
+
+class GCosine
+extends GTrigBase
+{
+    constructor(nodeId, options)
+    {
+        super(NUMBER_COS, nodeId, options);
+    }
+
+
+    
+    copy()
+    {
+        const copy = new GCosine(this.nodeId, this.options);
+        
+        copy.copyBase(this);
+
+        if (this.input) copy.input = this.input.copy();
+        
+        return copy;
+    }
+
+
+
+    async eval(parse)
+    {
+        if (this.isCached())
+            return this;
+
+
+        this.value = await evalCosine(this.input, parse);
+
+
+        if (parse.isLastRepeat())
+            genPushUpdateValue(parse, this.nodeId, 'value', this.value);
+
+
+        this.validate();
+
+        return this;
+    }
+}
+
+
+
+async function evalCosine(input, parse)
+{
+    if (!input)
+        return NumberValue.NaN;
+
+    let value = (await input.eval(parse)).toValue();
+
+    value = new NumberValue(Math.cos(value.value, 10));
+
+    return value;
+}
+
+
+class GTangent
+extends GTrigBase
+{
+    constructor(nodeId, options)
+    {
+        super(NUMBER_TAN, nodeId, options);
+    }
+
+
+    
+    copy()
+    {
+        const copy = new GTangent(this.nodeId, this.options);
+        
+        copy.copyBase(this);
+
+        if (this.input) copy.input = this.input.copy();
+        
+        return copy;
+    }
+
+
+
+    async eval(parse)
+    {
+        if (this.isCached())
+            return this;
+
+
+        this.value = await evalTangent(this.input, parse);
+
+
+        if (parse.isLastRepeat())
+            genPushUpdateValue(parse, this.nodeId, 'value', this.value);
+
+
+        this.validate();
+
+        return this;
+    }
+}
+
+
+
+async function evalTangent(input, parse)
+{
+    if (!input)
+        return NumberValue.NaN;
+
+    let value = (await input.eval(parse)).toValue();
+
+    value = new NumberValue(Math.tan(value.value, 10));
+
+    return value;
+}
 
 
 class GTextType
@@ -18304,9 +18814,9 @@ extends GOperator
 
                     switch (prop.fit.toValue().value)
                     {
-                        case 0: obj.strokeFit = 'INSIDE';  break;
-                        case 1: obj.strokeFit = 'CENTER';  break;
-                        case 2: obj.strokeFit = 'OUTSIDE'; break;
+                        case 0: obj.strokeAlign = 'INSIDE';  break;
+                        case 1: obj.strokeAlign = 'CENTER';  break;
+                        case 2: obj.strokeAlign = 'OUTSIDE'; break;
                     }
 
                     switch (prop.join.toValue().value)
@@ -19864,6 +20374,155 @@ extends GOperator
     toValue()
     {
         return this.value.copy();
+    }
+}
+
+
+class GPoint
+extends GOperator
+{
+    input = null;
+
+    x     = null;
+    y     = null;
+
+
+
+    constructor(nodeId, options)
+    {
+        super(POINT, nodeId, options);
+    }
+
+
+
+    copy()
+    {
+        const copy = new GPoint(this.nodeId, this.options);
+
+        copy.copyBase(this);
+
+        if (this.input) 
+            copy.input = this.input.copy();
+
+        if (this.x) copy.x = this.x.copy();
+        if (this.y) copy.y = this.y.copy();
+
+        return copy;
+    }
+
+
+
+    async eval(parse)
+    {
+        if (this.isCached())
+            return this;
+
+        
+        const x = this.x ? (await this.x.eval(parse)).toValue() : null;
+        const y = this.y ? (await this.y.eval(parse)).toValue() : null;
+
+
+        let input = null;
+
+        if (this.input)
+        {
+            input = (await this.input.eval(parse)).toValue();
+
+            this.value = new PointValue(
+                this.nodeId,
+                x ?? input.x,
+                y ?? input.y);
+        }
+        else
+        {
+            this.value = new PointValue(this.nodeId, x, y);
+        }
+
+       
+        if (parse.isLastRepeat())
+        {
+            genPushUpdateValue(parse, this.nodeId, 'value', this.value);
+            genPushUpdateValue(parse, this.nodeId, 'x',     x         );
+            genPushUpdateValue(parse, this.nodeId, 'y',     y         );
+        }
+
+
+        await this.evalObjects(parse);
+
+
+        this.validate();
+
+        return this;
+    }
+
+
+
+    async evalObjects(parse, options = {})
+    {
+        if (!this.options.enabled)
+            return;
+            
+            
+        if (   this.value.x
+            && this.value.y)
+        {
+            const point = new FigmaEllipse(
+                this.nodeId,
+                NULL,
+                this.value.x.value - 4,
+                this.value.y.value - 4,
+                8,
+                8,
+                0);
+
+            point  .fills.push(['SOLID', '255 255 255 100']);
+            point.strokes.push(['SOLID',  '12 140 233 100']);
+
+            point.strokeWeight     =  1.25;
+            point.strokeAlign      = 'INSIDE';
+            point.strokeJoin       = 'MITER';
+            point.strokeMiterLimit =  28.96;
+            point.data             = 'point';
+            point._x               = this.value.x.value;
+            point._y               = this.value.y.value;
+
+            this.objects = [point];
+        }
+
+        
+        await super.evalObjects(parse);
+    }
+
+
+
+    toValue()
+    {
+        const rect = new PointValue(
+            this.nodeId,
+            this.x.toValue(),
+            this.y.toValue());
+
+        return rect;
+    }
+
+
+
+    isValid()
+    {
+        return super.isValid()
+            && this.x.isValid()
+            && this.y.isValid();
+    }
+
+
+
+    invalidate()
+    {
+        super.invalidate();
+
+        if (this.input) this.input.invalidate();
+        if (this.x    ) this.x    .invalidate();
+        if (this.y    ) this.y    .invalidate();
     }
 }
 
@@ -23654,6 +24313,68 @@ function genParseScale(parse)
 }
 
 
+
+function genParsePoint(parse)
+{
+    const [, nodeId, options, ignore] = genParseNodeStart(parse);
+
+
+    const point = new GPoint(nodeId, options);
+
+
+    let nInputs = -1;
+
+    if (!ignore)
+    {
+        nInputs = parseInt(parse.move());
+        console.assert(nInputs => 0 && nInputs <= 1, 'nInputs must be [0, 1]');
+    }
+
+
+    if (parse.settings.logRequests) 
+        logReq(point, parse, ignore);
+
+
+    if (ignore) 
+    {
+        genParseNodeEnd(parse, point);
+        return parse.parsedNodes.find(n => n.nodeId == nodeId);
+    }
+
+
+    parse.nTab++;
+
+
+    if (nInputs == 1)
+        point.input = genParse(parse);
+
+
+    const nParamIds = genParseParamCount(parse);
+
+    for (let i = 0; i < nParamIds; i++)
+    {
+        const paramId = genParseParamId(parse);
+
+        parse.inParam = true;
+
+        switch (paramId)
+        {
+        case 'x': point.x = genParse(parse); break;
+        case 'y': point.y = genParse(parse); break;
+        }
+    }
+
+
+    parse.inParam = false;
+    parse.nTab--;
+
+
+    genParseNodeEnd(parse, point);
+    return point;
+}
+
+
+
 function genParseFillValue(parse)
 {
     parse.pos++; // FILL_VALUE
@@ -24616,6 +25337,8 @@ function genParse(parse, inParam = true)
     else if (parse.next == MOVE                   ) result = genParseMove            (parse);
     else if (parse.next == ROTATE                 ) result = genParseRotate          (parse);
     else if (parse.next == SCALE                  ) result = genParseScale           (parse);
+    
+    else if (parse.next == POINT                  ) result = genParsePoint           (parse);
 
     else if (parse.next == GROUP_NODE             ) result = genParseGroupNode       (parse);
     else if (parse.next == GROUP_PARAM            ) result = genParseGroupParam      (parse);
@@ -34266,6 +34989,17 @@ const SHAPE_VALUES =
 ];
 
 
+const POINT            = 'PT';
+const POINT_VALUE      = 'PT#';
+
+
+const POINT_TYPES =
+[
+    POINT,
+    POINT_VALUE
+];
+
+
 const SHAPE_TYPES =
 [
     ...SHAPE_VALUES,
@@ -34279,7 +35013,9 @@ const SHAPE_TYPES =
 
     MOVE,
     ROTATE,
-    SCALE
+    SCALE,
+
+    ...POINT_TYPES
 ];
 
 
@@ -34488,6 +35224,9 @@ class FigmaObject
 
     uniqueId;
 
+    data = null;
+
+
 
     constructor(type, nodeId)
     {
@@ -34506,7 +35245,7 @@ class FigmaObject
         this.stroks           = clone(base.strokes);
     
         this.strokeWeight     = base.strokeWeight;
-        this.strokeFit        = base.strokeFit;
+        this.strokeAlign        = base.strokeAlign;
         this.strokeJoin       = base.strokeJoin;
         this.strokeMiterLimit = base.strokeMiterLimit;
     }
@@ -34548,7 +35287,7 @@ extends FigmaObject
     strokes  = [];
 
     strokeWeight;
-    strokeFit;
+    strokeAlign;
     strokeJoin;
     strokeMiterLimit;
 
@@ -34569,7 +35308,7 @@ extends FigmaObject
         this.strokes          = clone(base.strokes);
 
         this.strokeWeight     = base.strokeWeight;
-        this.strokeFit        = base.strokeFit;
+        this.strokeAlign        = base.strokeAlign;
         this.strokeJoin       = base.strokeJoin;
         this.strokeMiterLimit = base.strokeMiterLimit;
     }
@@ -35027,6 +35766,13 @@ extends GNode
 
 
 
+    toDisplayString()
+    {
+        return this.toString();
+    }
+
+
+
     toJsCode(gen)
     {
         console.assert(false, 'invalid abstract method');
@@ -35069,6 +35815,7 @@ function displayValue(type, value)
         case   POLYGON_VALUE: return parsePolygonValue  (value)[0].toDisplayString();
         case      STAR_VALUE: return parseStarValue     (value)[0].toDisplayString();
         case TEXTSHAPE_VALUE: return parseTextShapeValue(value)[0].toDisplayString();
+        case     POINT_VALUE: return parsePointValue    (value)[0].toDisplayString();
         case      FILL_VALUE: return parseFillValue     (value)[0].toDisplayString();
         case    STROKE_VALUE: return parseStrokeValue   (value)[0].toDisplayString();
         case      LIST_VALUE: return parseListValue     (value)[0].toDisplayString();
@@ -35093,6 +35840,7 @@ function nullFromType(type)
         case   POLYGON_VALUE: return   PolygonValue.NaN;
         case      STAR_VALUE: return      StarValue.NaN;
         case TEXTSHAPE_VALUE: return TextShapeValue.NaN;
+        case     POINT_VALUE: return     PointValue.NaN;
         case      FILL_VALUE: return FillValue.NaN;
         case    STROKE_VALUE: return StrokeValue.NaN;
         case      LIST_VALUE: return ListValue.NaN;
@@ -35370,16 +36118,16 @@ extends GValue
 
     toString()
     {
-        return printNum(this.value) + ',' + printNum(this.decimals); // only NumberValue can do this, other _Values have to list all members
+        return printNum(this.value) + ',' + printNum(this.decimals);
     }
 
 
 
     toSimpleString()
     {
-        return !isNaN(this.value)
-              ? numToString(this.value, this.decimals)
-              : NAN_DISPLAY; // only NumberValue can do this, other _Values have to list all members
+        return this.isValid()
+             ? numToString(this.value, this.decimals)
+             : NAN_DISPLAY;
     }
 
 
@@ -37550,6 +38298,149 @@ function parseTextShapeValue(str, i = -1)
 
     
     return [txts, i - iStart];
+}
+
+
+
+class PointValue
+extends ShapeValue
+{
+    x;
+    y;
+
+
+
+    constructor(nodeId,
+                x = new NumberValue(0), 
+                y = new NumberValue(0))
+    {
+        super(POINT_VALUE, nodeId);
+
+        this.x = x;
+        this.y = y;
+    }
+
+
+
+    // static fromString(str)
+    // {
+    //     return new NumberValue(
+    //         parseFloat(str),
+    //         decCount(str));
+    // }
+
+
+
+    copy()
+    {
+        const copy = new PointValue(
+            this.nodeId,
+            this.x.copy(), 
+            this.y.copy());
+
+        copy.copyBase(this);
+
+        return copy;
+    }
+
+
+
+    equals(p)
+    {
+        return p
+            && this.x.equals(p.x)
+            && this.y.equals(p.y);
+    }
+
+
+
+    async eval(parse)
+    {
+        return this;
+    }
+
+
+
+    isValid()
+    {
+        return this.x.isValid()
+            && this.y.isValid();
+    }
+
+
+
+    toString()
+    {
+        return      this.x.toString()
+            + ' ' + this.y.toString();
+    }
+
+
+
+    toDisplayString()
+    {
+        return      this.x.toDisplayString()
+            + ' ' + this.y.toDisplayString();
+    }
+
+
+
+    toValue()
+    {
+        return this.copy();
+    }
+
+
+
+    toJsCode(gen)
+    {
+        return '';//this.toSimpleString();
+    }
+
+
+
+    getNaN()
+    {
+        return PointValue.NaN;
+    }
+
+
+
+    static NaN = Object.freeze(new PointValue(
+        '',
+        NumberValue.NaN, 
+        NumberValue.NaN));
+}
+
+
+
+function parsePointValue(str, i = -1)
+{
+    if (   i <  0 && str    == NAN_DISPLAY
+        || i >= 0 && str[i] == NAN_DISPLAY)
+        return [PointValue.NaN, 1];
+
+
+    if (i < 0)
+    {
+        str = str.split(' ');
+        i   = 0;
+    }
+
+
+    const iStart = i;
+
+    const x = parseNumberValue(str[i]); i += x     [1];
+    const y = parseNumberValue(str[i]); i += y     [1];
+
+
+    const rect = new PointValue(
+        '', // set node ID elsewhere
+        x[0],
+        y[0]);
+
+
+    return [rect, i - iStart];
 }
 
 
@@ -44754,9 +45645,9 @@ extends GOperator
 
                     switch (prop.fit.toValue().value)
                     {
-                        case 0: obj.strokeFit = 'INSIDE';  break;
-                        case 1: obj.strokeFit = 'CENTER';  break;
-                        case 2: obj.strokeFit = 'OUTSIDE'; break;
+                        case 0: obj.strokeAlign = 'INSIDE';  break;
+                        case 1: obj.strokeAlign = 'CENTER';  break;
+                        case 2: obj.strokeAlign = 'OUTSIDE'; break;
                     }
 
                     switch (prop.join.toValue().value)
@@ -46314,6 +47205,155 @@ extends GOperator
     toValue()
     {
         return this.value.copy();
+    }
+}
+
+
+class GPoint
+extends GOperator
+{
+    input = null;
+
+    x     = null;
+    y     = null;
+
+
+
+    constructor(nodeId, options)
+    {
+        super(POINT, nodeId, options);
+    }
+
+
+
+    copy()
+    {
+        const copy = new GPoint(this.nodeId, this.options);
+
+        copy.copyBase(this);
+
+        if (this.input) 
+            copy.input = this.input.copy();
+
+        if (this.x) copy.x = this.x.copy();
+        if (this.y) copy.y = this.y.copy();
+
+        return copy;
+    }
+
+
+
+    async eval(parse)
+    {
+        if (this.isCached())
+            return this;
+
+        
+        const x = this.x ? (await this.x.eval(parse)).toValue() : null;
+        const y = this.y ? (await this.y.eval(parse)).toValue() : null;
+
+
+        let input = null;
+
+        if (this.input)
+        {
+            input = (await this.input.eval(parse)).toValue();
+
+            this.value = new PointValue(
+                this.nodeId,
+                x ?? input.x,
+                y ?? input.y);
+        }
+        else
+        {
+            this.value = new PointValue(this.nodeId, x, y);
+        }
+
+       
+        if (parse.isLastRepeat())
+        {
+            genPushUpdateValue(parse, this.nodeId, 'value', this.value);
+            genPushUpdateValue(parse, this.nodeId, 'x',     x         );
+            genPushUpdateValue(parse, this.nodeId, 'y',     y         );
+        }
+
+
+        await this.evalObjects(parse);
+
+
+        this.validate();
+
+        return this;
+    }
+
+
+
+    async evalObjects(parse, options = {})
+    {
+        if (!this.options.enabled)
+            return;
+            
+            
+        if (   this.value.x
+            && this.value.y)
+        {
+            const point = new FigmaEllipse(
+                this.nodeId,
+                NULL,
+                this.value.x.value - 4,
+                this.value.y.value - 4,
+                8,
+                8,
+                0);
+
+            point  .fills.push(['SOLID', '255 255 255 100']);
+            point.strokes.push(['SOLID',  '12 140 233 100']);
+
+            point.strokeWeight     =  1.25;
+            point.strokeAlign      = 'INSIDE';
+            point.strokeJoin       = 'MITER';
+            point.strokeMiterLimit =  28.96;
+            point.data             = 'point';
+            point._x               = this.value.x.value;
+            point._y               = this.value.y.value;
+
+            this.objects = [point];
+        }
+
+        
+        await super.evalObjects(parse);
+    }
+
+
+
+    toValue()
+    {
+        const rect = new PointValue(
+            this.nodeId,
+            this.x.toValue(),
+            this.y.toValue());
+
+        return rect;
+    }
+
+
+
+    isValid()
+    {
+        return super.isValid()
+            && this.x.isValid()
+            && this.y.isValid();
+    }
+
+
+
+    invalidate()
+    {
+        super.invalidate();
+
+        if (this.input) this.input.invalidate();
+        if (this.x    ) this.x    .invalidate();
+        if (this.y    ) this.y    .invalidate();
     }
 }
 
@@ -50967,6 +52007,7 @@ const iconPolygon           = '<svg width="20" height="16" viewBox="0 0 20 16" f
 const iconStar              = '<svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M8.8156 2.24924L10.4021 7.13198L10.5144 7.47747H10.8776H16.0116L11.8581 10.4952L11.5642 10.7087L11.6765 11.0542L13.263 15.9369L9.10949 12.9192L8.8156 12.7057L8.5217 12.9192L4.3682 15.9369L5.9547 11.0542L6.06695 10.7087L5.77306 10.4952L1.61955 7.47747H6.75357H7.11684L7.2291 7.13198L8.8156 2.24924Z" stroke="white"/></svg>';
 const iconTextShape         = '<svg width="13" height="16" viewBox="0 0 13 16" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M0 4V0H13V4H12V1H7V15H10V16H3V15H6V1H1V4H0Z" fill="white"/></svg>';
 const iconSelected          = '<svg width="19" height="19" viewBox="0 0 19 19" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="4.5" y="4.5" width="4" height="4" stroke="white"/><circle cx="12.5" cy="6.5" r="2" stroke="white"/><line x1="4.4364" y1="15.069" x2="8.9364" y2="10.3022" stroke="white"/><path d="M10.3349 14.75L12.5 11L14.6651 14.75H10.3349Z" stroke="white"/><rect x="0.5" y="0.5" width="2" height="2" stroke="white"/><rect x="0.5" y="16.5" width="2" height="2" stroke="white"/><rect x="16.5" y="16.5" width="2" height="2" stroke="white"/><rect x="16.5" y="0.5" width="2" height="2" stroke="white"/><rect x="3" y="1" width="13" height="1" fill="white"/><rect x="3" y="17" width="13" height="1" fill="white"/><rect x="17" y="16" width="13" height="1" transform="rotate(-90 17 16)" fill="white"/><rect x="1" y="16" width="13" height="1" transform="rotate(-90 1 16)" fill="white"/></svg>';
+const iconPoint             = '<svg width="5" height="5" viewBox="0 0 5 5" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="2.5" cy="2.5" r="2.07507" fill="white"/></svg>';
 
 const iconMove              = '<svg width="19" height="19" viewBox="0 0 19 19" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="6.5" y="6.5" width="6" height="6" stroke="white"/><path d="M17.3034 9.48924L15.6526 7.83845L16.5019 6.98914L19 9.48725L16.4764 12.011L15.629 11.1636L17.3034 9.48924Z" fill="white"/><path d="M1.69664 9.51085L3.34744 11.1616L2.49812 12.011L7.84779e-06 9.51284L2.52365 6.98914L3.371 7.83649L1.69664 9.51085Z" fill="white"/><path d="M9.4892 1.69664L7.8384 3.34743L6.98909 2.49812L9.48721 7.5202e-06L12.0109 2.52365L11.1636 3.371L9.4892 1.69664Z" fill="white"/><path d="M9.5108 17.3034L11.1616 15.6526L12.0109 16.5019L9.51279 19L6.98909 16.4764L7.83644 15.629L9.5108 17.3034Z" fill="white"/></svg>'; 
 const iconRotate            = '<svg width="18" height="19" viewBox="0 0 18 19" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="5.5" y="6.5" width="6" height="6" stroke="white"/><path d="M4.91298 3.01223L3.75264 4.17257L4.60195 5.02188L7.10007 2.52376L4.57642 6.10352e-05L3.72907 0.847412L4.89376 2.0121C3.3015 2.07772 2.08097 2.42201 1.25143 3.25155C0.319557 4.18342 3.8147e-05 5.60873 3.8147e-05 7.50015H1.00004C1.00004 5.67144 1.32045 4.59674 1.95854 3.95865C2.52509 3.3921 3.43585 3.07599 4.91298 3.01223Z" fill="white"/><path d="M17.1001 11.4999C17.1001 13.3913 16.7806 14.8166 15.8487 15.7485C15.0192 16.578 13.7986 16.9223 12.2064 16.9879L13.3711 18.1526L12.5237 19L10.0001 16.4763L12.4982 13.9782L13.3475 14.8275L12.1872 15.9878C13.6643 15.924 14.575 15.6079 15.1416 15.0414C15.7797 14.4033 16.1001 13.3286 16.1001 11.4999H17.1001Z" fill="white"/></svg>'; 
@@ -52453,8 +53494,9 @@ function initGeneratorMenus()
                                 new MenuItem('Ellipse',             {icon: iconEllipse,   callback: e => actionManager.do(getCreateNodeAction(ELLIPSE,   btnShape.div, getCreateOptions(e)))}),
                                 new MenuItem('Polygon',             {icon: iconPolygon,   callback: e => actionManager.do(getCreateNodeAction(POLYGON,   btnShape.div, getCreateOptions(e)))}),
                                 new MenuItem('Star',                {icon: iconStar,      callback: e => actionManager.do(getCreateNodeAction(STAR,      btnShape.div, getCreateOptions(e)))}),
-                                new MenuItem('',                    {separator: true}),
                                 new MenuItem('Text',                {icon: iconTextShape, callback: e => actionManager.do(getCreateNodeAction(TEXTSHAPE, btnShape.div, getCreateOptions(e)))}),
+                                new MenuItem('',                    {separator: true}),
+                                new MenuItem('Point',               {icon: iconPoint,     callback: e => actionManager.do(getCreateNodeAction(POINT,     btnShape.div, getCreateOptions(e)))}),
         menuItemShapeSep1     = new MenuItem('',                    {separator: true}),
         menuItemShapeSelected = new MenuItem('Selected objects...', {icon: iconSelected,  enabled: false}),
                                 new MenuItem('',                    {separator: true}),
@@ -65416,7 +66458,7 @@ extends OperatorBase
     {
         super(NUMBER, 'num', 'number');
 
-        this.addInput (new Input (NUMBER_TYPES, getNodeInputValuesForUndo, this.input_getBackInitValue));
+        this.addInput (new Input ([NUMBER_VALUE], getNodeInputValuesForUndo, this.input_getBackInitValue));
         this.addOutput(new Output([NUMBER_VALUE], this.output_genRequest, getNodeOutputValuesForUndo, this.output_backInit));
 
         this.addParam(this.paramValue = new NumberParam('value', '', false, false, false));
@@ -71573,22 +72615,9 @@ extends OpColorBase
 class   OpShapeBase
 extends OperatorBase
 {
-    paramProperties;
-
-
     constructor(type, id, name, defWidth = defNodeWidth)
     {
         super(type, id, name, defWidth);
-    }
-
-
-
-    addBaseParams()
-    {
-        this.addParam(this.paramProperties = new ListParam('props', 'styles', true, true, true));
-
-        this.paramProperties.itemName = 'style';
-        this.paramProperties.input.types.push(COLOR_VALUE, FILL_VALUE, STROKE_VALUE);
     }
 
 
@@ -71654,6 +72683,30 @@ extends OperatorBase
             param.enableControlText(enable);
 
         this.updateParamControls();
+    }
+}
+
+
+
+class   OpShape
+extends OpShapeBase
+{
+    paramProperties;
+
+
+    constructor(type, id, name, defWidth = defNodeWidth)
+    {
+        super(type, id, name, defWidth);
+    }
+
+
+
+    addBaseParams()
+    {
+        this.addParam(this.paramProperties = new ListParam('props', 'styles', true, true, true));
+
+        this.paramProperties.itemName = 'style';
+        this.paramProperties.input.types.push(COLOR_VALUE, FILL_VALUE, STROKE_VALUE);
     }
 }
 
@@ -72283,6 +73336,129 @@ extends OperatorBase
 // {
 //     node.outputs[0].types = [SHAPE_VALUE];
 // }
+
+
+class   OpPoint
+extends OpShapeBase
+{
+    paramX;
+    paramY;
+
+    zoom = 1;
+
+
+
+    constructor()
+    {
+        super(POINT, 'point', 'point');
+
+        this.addInput (new Input ([POINT_VALUE], getNodeInputValuesForUndo, this.input_getBackInitValue));
+        this.addOutput(new Output([POINT_VALUE], this.output_genRequest, getNodeOutputValuesForUndo, this.output_backInit));
+
+        this.addParam(this.paramX = new NumberParam('x', 'x', true, true, true, 0));
+        this.addParam(this.paramX = new NumberParam('y', 'y', true, true, true, 0));
+    }
+
+
+
+    input_getBackInitValue()
+    {
+        // 'this' is the input
+
+        return new PointValue(
+            this.node.paramX.value,
+            this.node.paramY.value);
+    }
+
+
+
+    output_backInit(value)
+    {
+        // 'this' is the output
+
+        console.assert(value.type == POINT_VALUE, 'expected POINT_VALUE in backInit()');
+        
+        this.node.paramX.setValue(value.x, false, true, false);
+        this.node.paramY.setValue(value.y, false, true, false);
+    }
+
+
+
+//     paramIsConsideredDefault(param)
+//     {
+//         return  param.isDefault()
+//             && !this.inputs[0].connected;
+//     }
+
+
+
+//     toJavascript(gen)
+//     {
+//         const conn = this.inputs[0].connected;
+
+
+//         gen.nTab++;
+//         const defs = this.toJsDefs(gen);
+//         gen.nTab--;
+
+
+//         let js = gen.NL + 'function ' + this.name + '(';
+        
+//         if (   conn 
+//             && defs == NULL)
+//             js += 'input';
+
+//         js += ')';
+
+
+//         js += gen.NL + '{';
+//         gen.nTab++;
+
+
+//         js += defs;
+
+
+//         js += gen.NL + 'return ';
+//         js += conn ? 'input' : this.toJsCode(gen);
+//         js += ';'
+
+
+//         gen.nTab--;
+//         js += gen.NL + '}';
+
+
+//         return js;
+//     }
+
+
+
+//     toJsDefs(gen)
+//     {
+//         if (  !this.inputs[0].connected
+//             || gen.connectedOut(this))
+//             return '';
+
+        
+//         let js = '';
+
+
+//         js += gen.NL + 'const input = ';
+//         js += this.inputs[0].connectedOutput.toJsCode(gen);
+//         js += ';';
+
+
+//         return js;
+//     }
+
+
+
+//     toJsCode(gen)
+//     {
+//         return this.inputs[0].connected
+//              ? this.inputs[0].connectedOutput.toJsCode(gen)
+//              : this.paramValue.value.toJsCode(gen);
+//     }
+}
 
 
 class   OpColorStyle
@@ -79361,6 +80537,7 @@ function uiReturnFigStartGenerator(msg)
     graphView.updateMeasureData();
 
     viewportRect = msg.viewportRect;
+    viewportZoom = msg.viewportZoom;
 
     
     uiGetLocalData('showWhatsNew');
@@ -79901,6 +81078,8 @@ onmessage = e =>
 
         case 'uiSetStyleId':                      uiSetStyleId                     (msg);          break;
         case 'uiHideClearUndoWarning':            uiHideClearUndoWarning           ();             break;
+
+        case 'uiUpdateZoom':                      uiUpdateZoom                     (msg.zoom);     break;
     }
 }    
 
@@ -80885,7 +82064,7 @@ function uiReturnFigLoadNodesAndConns(msg)
             graph.addPage(pages.find(p => p.id == id));
 
 
-        console.log('msg.currentPageId =', msg.currentPageId);
+        //console.log('msg.currentPageId =', msg.currentPageId);
         graph.pageIndex = graph.pages.findIndex(p => p.id == msg.currentPageId);
     }
     else
@@ -81674,6 +82853,8 @@ function createNode(nodeType, creatingButton = null, createdNodeId = -1, options
         case ROTATE:                  node = new OpRotate();            break;
         case SCALE:                   node = new OpScale();             break;
 
+        case POINT:                   node = new OpPoint();             break;
+
         case GROUP_NODE:              node = new OpGroupNode();         break;
         case GROUP_PARAM:             node = new OpGroupParam();        break;
 
@@ -82308,6 +83489,7 @@ function uiUpdateValuesAndObjects(requestId, actionId, updateNodeId, updateParam
                     case   POLYGON_VALUE:  value = parsePolygonValue  (values[i++])[0];  break;
                     case      STAR_VALUE:  value = parseStarValue     (values[i++])[0];  break;
                     case TEXTSHAPE_VALUE:  value = parseTextShapeValue(values[i++])[0];  break;
+                    case     POINT_VALUE:  value = parsePointValue    (values[i++])[0];  break;
                     case      LIST_VALUE:  value = parseListValue     (values[i++])[0];  break;
                     
                     default: console.assert(false, 'unknown type \'' + type + '\'');
@@ -83002,6 +84184,9 @@ var   figFonts              = [];
 var   figUniqueFontNames    = [];
 
 
+var   viewportZoom          = 1;
+
+
 
 function getTopHeight() 
 { 
@@ -83076,6 +84261,13 @@ function uiRestartGenerator(dataMode)
 {
     uiSetLocalData('dataMode', boolToString(dataMode));
     uiPostMessageToFigma({cmd: 'figRestartGenerator'});
+}
+
+
+
+function uiUpdateZoom(zoom)
+{
+    viewportZoom = zoom;
 }
 
 

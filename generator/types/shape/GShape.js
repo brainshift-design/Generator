@@ -150,9 +150,9 @@ extends GOperator
 
                     switch (prop.fit.toValue().value)
                     {
-                        case 0: obj.strokeFit = 'INSIDE';  break;
-                        case 1: obj.strokeFit = 'CENTER';  break;
-                        case 2: obj.strokeFit = 'OUTSIDE'; break;
+                        case 0: obj.strokeAlign = 'INSIDE';  break;
+                        case 1: obj.strokeAlign = 'CENTER';  break;
+                        case 2: obj.strokeAlign = 'OUTSIDE'; break;
                     }
 
                     switch (prop.join.toValue().value)

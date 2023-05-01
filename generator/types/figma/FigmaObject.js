@@ -6,6 +6,9 @@ class FigmaObject
 
     uniqueId;
 
+    data = null;
+
+
 
     constructor(type, nodeId)
     {
@@ -24,7 +27,7 @@ class FigmaObject
         this.stroks           = clone(base.strokes);
     
         this.strokeWeight     = base.strokeWeight;
-        this.strokeFit        = base.strokeFit;
+        this.strokeAlign        = base.strokeAlign;
         this.strokeJoin       = base.strokeJoin;
         this.strokeMiterLimit = base.strokeMiterLimit;
     }

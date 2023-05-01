@@ -7,7 +7,7 @@ extends FigmaObject
     strokes  = [];
 
     strokeWeight;
-    strokeFit;
+    strokeAlign;
     strokeJoin;
     strokeMiterLimit;
 
@@ -28,7 +28,7 @@ extends FigmaObject
         this.strokes          = clone(base.strokes);
 
         this.strokeWeight     = base.strokeWeight;
-        this.strokeFit        = base.strokeFit;
+        this.strokeAlign        = base.strokeAlign;
         this.strokeJoin       = base.strokeJoin;
         this.strokeMiterLimit = base.strokeMiterLimit;
     }
