@@ -1322,15 +1322,15 @@ var figStyleArrays  = new Array(); // [ {nodeId, [styles]}  ]
 
 function figDeleteObjectsFromNodeIds(nodeIds)
 {
+    for (let i = figPoints.length-1; i >= 0; i--)
+        if (nodeIds.includes(figPoints[i].getPluginData('nodeId')))
+            figPoints.splice(i, 1);
+
     figma.currentPage
         .findAll(o => nodeIds.includes(o.getPluginData('nodeId')))
         .forEach(o => o.remove());
 
     figObjectArrays = figObjectArrays.filter(a => !nodeIds.includes(a.nodeId));
-
-    for (let i = figPoints.length-1; i >= 0; i--)
-        if (nodeIds.includes(figPoints[i].getPluginData('nodeId')))
-            figPoints.splice(i, 1);
 }
 
 
@@ -1685,7 +1685,6 @@ function updatePointSize(point)
     const _y = point.y + point.height/2;
 
     const size = 8 / curZoom;
-    console.log('size =', size);
     point.resizeWithoutConstraints(size, size);
 
     point.x = _x - point.width /2;
