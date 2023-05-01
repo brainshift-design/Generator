@@ -4041,7 +4041,7 @@ class FigmaObject
         this.stroks           = clone(base.strokes);
     
         this.strokeWeight     = base.strokeWeight;
-        this.strokeAlign        = base.strokeAlign;
+        this.strokeAlign      = base.strokeAlign;
         this.strokeJoin       = base.strokeJoin;
         this.strokeMiterLimit = base.strokeMiterLimit;
     }
@@ -4104,7 +4104,7 @@ extends FigmaObject
         this.strokes          = clone(base.strokes);
 
         this.strokeWeight     = base.strokeWeight;
-        this.strokeAlign        = base.strokeAlign;
+        this.strokeAlign      = base.strokeAlign;
         this.strokeJoin       = base.strokeJoin;
         this.strokeMiterLimit = base.strokeMiterLimit;
     }
@@ -16093,19 +16093,21 @@ extends GOperator
         if (   this.value.x
             && this.value.y)
         {
+            const size = 8 / parse.viewportZoom;
+
             const point = new FigmaEllipse(
                 this.nodeId,
                 NULL,
-                this.value.x.value - 4,
-                this.value.y.value - 4,
-                8,
-                8,
+                this.value.x.value - size/2,
+                this.value.y.value - size/2,
+                size,
+                size,
                 0);
 
             point  .fills.push(['SOLID', '255 255 255 100']);
             point.strokes.push(['SOLID',  '12 140 233 100']);
 
-            point.strokeWeight     =  1.25;
+            point.strokeWeight     =  1.25 / parse.viewportZoom;
             point.strokeAlign      = 'INSIDE';
             point.strokeJoin       = 'MITER';
             point.strokeMiterLimit =  28.96;
@@ -17225,12 +17227,15 @@ function genRequest(request)
     const updateNodeId         = request[3];
     const updateParamId        = request[4];
 
+    const viewportZoom         = request[5];
+
 
     const parse = new Parse(
         request, 
-        5,
+        6,
         updateNodeId, 
         updateParamId, 
+        viewportZoom,
         showAllColorSpaces,
         logRequests);
 
@@ -20793,6 +20798,9 @@ class Parse
     updateNodeId;
     updateParamId;
 
+    viewportZoom;
+
+
     scope         = []; // current parse stack
     parsedNodes   = []; // must be evaluated to create the value updates
 
@@ -20820,7 +20828,7 @@ class Parse
 
 
 
-    constructor(request, firstPos, updateNodeId, updateParamId, showAllColorSpaces, logRequests)
+    constructor(request, firstPos, updateNodeId, updateParamId, viewportZoom, showAllColorSpaces, logRequests)
     {
         this.request       = request;
           
@@ -20830,6 +20838,8 @@ class Parse
         this.updateNodeId  = updateNodeId; 
         this.updateParamId = updateParamId;
    
+        this.viewportZoom  = viewportZoom;
+        
         
         this.settings.showAllColorSpaces = showAllColorSpaces;
         this.settings.logRequests           = logRequests;

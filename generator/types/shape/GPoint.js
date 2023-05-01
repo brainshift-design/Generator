@@ -86,19 +86,21 @@ extends GOperator
         if (   this.value.x
             && this.value.y)
         {
+            const size = 8 / parse.viewportZoom;
+
             const point = new FigmaEllipse(
                 this.nodeId,
                 NULL,
-                this.value.x.value - 4,
-                this.value.y.value - 4,
-                8,
-                8,
+                this.value.x.value - size/2,
+                this.value.y.value - size/2,
+                size,
+                size,
                 0);
 
             point  .fills.push(['SOLID', '255 255 255 100']);
             point.strokes.push(['SOLID',  '12 140 233 100']);
 
-            point.strokeWeight     =  1.25;
+            point.strokeWeight     =  1.25 / parse.viewportZoom;
             point.strokeAlign      = 'INSIDE';
             point.strokeJoin       = 'MITER';
             point.strokeMiterLimit =  28.96;

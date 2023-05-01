@@ -12,7 +12,7 @@ function figDeleteObjectsFromNodeIds(nodeIds)
     figObjectArrays = figObjectArrays.filter(a => !nodeIds.includes(a.nodeId));
 
     for (let i = figPoints.length-1; i >= 0; i--)
-        if (nodeIds.includes(figPoints.nodeId))
+        if (nodeIds.includes(figPoints[i].getPluginData('nodeId')))
             figPoints.splice(i, 1);
 }
 

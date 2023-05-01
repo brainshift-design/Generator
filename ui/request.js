@@ -57,6 +57,9 @@ function pushUpdateFromParam(action, nodes, param)
     else       request.push(NULL, NULL);
 
 
+    request.push(viewportZoom);
+
+
     if (   !graphView.loadingNodes
         && !graphView.pastingNodes
         && !graphView.restoringNodes)

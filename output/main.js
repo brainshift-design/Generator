@@ -815,7 +815,7 @@ function figDeleteObjectsFromNodeIds(nodeIds) {
         .forEach(o => o.remove());
     figObjectArrays = figObjectArrays.filter(a => !nodeIds.includes(a.nodeId));
     for (let i = figPoints.length - 1; i >= 0; i--)
-        if (nodeIds.includes(figPoints.nodeId))
+        if (nodeIds.includes(figPoints[i].getPluginData('nodeId')))
             figPoints.splice(i, 1);
 }
 function figDeleteObjectsExcept(nodeIds, ignoreObjects) {
@@ -1120,23 +1120,19 @@ function updatePointSizes() {
             zoom: figma.viewport.zoom
         });
         curZoom = figma.viewport.zoom;
-        for (const point of figPoints) {
-            const _x = point.x + point.width / 2;
-            const _y = point.y + point.height / 2;
-            point.resize(8 / curZoom, 8 / curZoom);
-            point.strokeWeight = 1.25 / curZoom;
-            point.x = _x - point.width / 2;
-            point.y = _y - point.height / 2;
-        }
+        for (const point of figPoints)
+            updatePointSize(point);
     }
 }
 function updatePointSize(point) {
     const _x = point.x + point.width / 2;
     const _y = point.y + point.height / 2;
-    point.resize(8 / curZoom, 8 / curZoom);
-    point.strokeWeight = 1.25 / curZoom;
+    const size = 8 / curZoom;
+    console.log('size =', size);
+    point.resizeWithoutConstraints(size, size);
     point.x = _x - point.width / 2;
     point.y = _y - point.height / 2;
+    point.strokeWeight = 1.25 / curZoom;
 }
 function figCreateObject(objects, genObj) {
     let figObj;
@@ -1185,40 +1181,25 @@ function figUpdateObjects(msg) {
                     });
             }
         }
-        console.log('figObjects.objects =', figObjects.objects);
-        console.log('1');
-        const figObj = figObjects.objects.find(o => o.removed || o.name == makeObjectName(genObj));
-        console.log('11');
+        const figObj = figObjects.objects.find(o => o.removed
+            || o.name == makeObjectName(genObj));
         if (isValid(figObj)
             && figObj.removed) {
-            console.log('2');
             removeFrom(figObjects.objects, figObj);
             if (figPoints.includes(figObj))
                 removeFromArray(figPoints, figObj);
-            console.log('3');
         }
-        console.log('4');
         if (!isValid(figObj)
             || figObj.removed) // no existing object, create new object
-         {
-            console.log('5');
             figCreateObject(figObjects.objects, genObj);
-            console.log('6');
-        }
         else if (figObj.getPluginData('type') == genObj.type.toString()) // update existing object
-         {
-            console.log('7');
             figUpdateObject(figObj, genObj);
-            console.log('8');
-        }
         else // delete existing object, create new object
          {
-            console.log('9');
             figObj.remove();
             if (figPoints.includes(figObj))
                 removeFromArray(figPoints, figObj);
             figCreateObject(figObjects.objects, genObj);
-            console.log('10');
         }
     }
 }

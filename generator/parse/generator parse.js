@@ -21,6 +21,9 @@ class Parse
     updateNodeId;
     updateParamId;
 
+    viewportZoom;
+
+
     scope         = []; // current parse stack
     parsedNodes   = []; // must be evaluated to create the value updates
 
@@ -48,7 +51,7 @@ class Parse
 
 
 
-    constructor(request, firstPos, updateNodeId, updateParamId, showAllColorSpaces, logRequests)
+    constructor(request, firstPos, updateNodeId, updateParamId, viewportZoom, showAllColorSpaces, logRequests)
     {
         this.request       = request;
           
@@ -58,6 +61,8 @@ class Parse
         this.updateNodeId  = updateNodeId; 
         this.updateParamId = updateParamId;
    
+        this.viewportZoom  = viewportZoom;
+        
         
         this.settings.showAllColorSpaces = showAllColorSpaces;
         this.settings.logRequests           = logRequests;

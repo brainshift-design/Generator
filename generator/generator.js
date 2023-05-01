@@ -30,12 +30,15 @@ function genRequest(request)
     const updateNodeId         = request[3];
     const updateParamId        = request[4];
 
+    const viewportZoom         = request[5];
+
 
     const parse = new Parse(
         request, 
-        5,
+        6,
         updateNodeId, 
         updateParamId, 
+        viewportZoom,
         showAllColorSpaces,
         logRequests);
 

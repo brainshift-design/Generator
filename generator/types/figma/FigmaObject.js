@@ -27,7 +27,7 @@ class FigmaObject
         this.stroks           = clone(base.strokes);
     
         this.strokeWeight     = base.strokeWeight;
-        this.strokeAlign        = base.strokeAlign;
+        this.strokeAlign      = base.strokeAlign;
         this.strokeJoin       = base.strokeJoin;
         this.strokeMiterLimit = base.strokeMiterLimit;
     }
