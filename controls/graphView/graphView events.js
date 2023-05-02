@@ -203,6 +203,30 @@ GraphView.prototype.createEvents = function()
 
 
 
+    this.div.addEventListener('dblclick', e =>
+    {
+        if (    e.button == 0
+            && !e.shiftKey)
+        {
+            const activeNodes = [];
+
+            for (const node of graph.currentPage.nodes)
+            {
+                if (node.active)
+                {
+                    uiMakeNodePassive(node);
+                    activeNodes.push(node);
+                }
+            }
+
+            graphView.updateNodes(activeNodes);
+            
+            uiDeleteObjectsAndStyles(activeNodes.map(n => n.id));
+        }
+    });
+
+
+
     this.div.addEventListener('wheel', e =>
     {
         if (this.btn1down)

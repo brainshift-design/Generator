@@ -81,6 +81,15 @@ extends GValue
 
 
 
+    toPoint()
+    {
+        return point(
+            this.x.toNumber(),
+            this.y.toNumber());
+    }
+
+
+
     toJsCode(gen)
     {
         return '';//this.toSimpleString();

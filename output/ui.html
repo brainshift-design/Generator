@@ -8892,67 +8892,63 @@ function getPathDataFromPoints(points, closed, degree)
 
     switch (degree)
     {
-    case 0: // linear
+    case 0: pathData = getLinearPathData   (points.map(p => p.toPoint())); break;
+    case 1: pathData = getQuadraticPathData(points.map(p => p.toPoint())); break;
+    case 2: pathData = getCubicPathData    (points.map(p => p.toPoint())); break;
+
+    case 3: // smooth
         if (points.length < 2)
             break;
 
-        pathData += 'M';
-        pathData += ' ' + points[0].x.toNumber();
-        pathData += ' ' + points[0].y.toNumber();
 
+        const bp = [];
+
+
+        // first point
+        let [pp, p, pn] = getSmoothSegment(
+            points[0], 
+            points[0],
+            points[1]);
+
+        bp.push(p);
+
+
+        let _pp = pn;
+
+
+        // middle points
         for (let i = 1; i < points.length; i++)
         {
-            pathData += 
-                  ' L'
-                + ' ' + points[i].x.toNumber()
-                + ' ' + points[i].y.toNumber();
+            [pp, p, pn] = getSmoothSegment(
+                points[i-1], 
+                points[i],
+                i == points.length-1 ? points[i] : points[i+1]);
+
+            bp.push(_pp, pp, p);
+
+            _pp = pn;
         }
 
-        break;
 
-    case 1: // quadratic
-        if (points.length < 3)
-            break;
-
-        pathData += 'M';
-        pathData += ' ' + points[0].x.toNumber();
-        pathData += ' ' + points[0].y.toNumber();
-
-        for (let i = 1; i < points.length-1; i += 2)
+       
+        if (bp.length > 3)
         {
-            pathData += 
-                    ' Q'
-                + ' ' + points[i  ].x.toNumber()
-                + ' ' + points[i  ].y.toNumber()
-                + ' ' + points[i+1].x.toNumber()
-                + ' ' + points[i+1].y.toNumber();
+            if (closed)
+            {
+                bp[1]           = addv(bp[0],     mulvs(unitv(subv(bp.at(-1), bp[0])), -distance(bp[3],     bp[0]    )/3));
+                bp[bp.length-2] = addv(bp.at(-1), mulvs(unitv(subv(bp[0], bp.at(-1))), -distance(bp.at(-4), bp.at(-1))/3));
+            }
+            else // open
+            {
+                bp[1]           = addv(bp[0],     mulvs(unitv(subv(bp[2],     bp[0]    )), distance(bp[3],     bp[0]    )/3));
+                bp[bp.length-2] = addv(bp.at(-1), mulvs(unitv(subv(bp.at(-3), bp.at(-1))), distance(bp.at(-4), bp.at(-1))/3));
+            }
         }
 
-        break;
 
-    case 2: // cubic
-        if (points.length < 4)
-            break;
+        pathData = getCubicPathData(bp);
 
-        pathData += 'M';
-        pathData += ' ' + points[0].x.toNumber();
-        pathData += ' ' + points[0].y.toNumber();
 
-        for (let i = 1; i < points.length-2; i += 3)
-        {
-            pathData += 
-                    ' C'
-                + ' ' + points[i  ].x.toNumber()
-                + ' ' + points[i  ].y.toNumber()
-                + ' ' + points[i+1].x.toNumber()
-                + ' ' + points[i+1].y.toNumber()
-                + ' ' + points[i+2].x.toNumber()
-                + ' ' + points[i+2].y.toNumber();
-        }
-
-        break;
-
-    case 3: // smooth
         break;
     }
 
@@ -8960,7 +8956,8 @@ function getPathDataFromPoints(points, closed, degree)
     const pointsAreValid =
            degree == 0 && points.length > 2
         || degree == 1 && points.length > 2
-        || degree == 2 && points.length > 3;
+        || degree == 2 && points.length > 3
+        || degree == 3 && points.length > 2;
 
 
     if (   pointsAreValid
@@ -8968,10 +8965,123 @@ function getPathDataFromPoints(points, closed, degree)
             || points[0].equals(points.at(-1))))
         pathData += ' Z';
 
-console.log('pathData =', pathData);
+
+    //console.log('pathData =', pathData);
     return pathData;
 }
 
+
+
+function getLinearPathData(points)
+{
+    let pathData = '';
+
+
+    if (points.length < 2)
+        return pathData;
+
+
+    pathData += 'M';
+    pathData += ' ' + points[0].x;
+    pathData += ' ' + points[0].y;
+
+    for (let i = 1; i < points.length; i++)
+    {
+        pathData += 
+                ' L'
+            + ' ' + points[i].x
+            + ' ' + points[i].y;
+    }
+
+
+    return pathData;
+}
+
+
+
+function getQuadraticPathData(points)
+{
+    let pathData = '';
+
+
+    if (points.length < 3)
+        return pathData;
+
+
+    pathData += 'M';
+    pathData += ' ' + points[0].x;
+    pathData += ' ' + points[0].y;
+
+    for (let i = 1; i < points.length-1; i += 2)
+    {
+        pathData += 
+                ' Q'
+            + ' ' + points[i  ].x
+            + ' ' + points[i  ].y
+            + ' ' + points[i+1].x
+            + ' ' + points[i+1].y;
+    }
+
+
+    return pathData;
+}
+
+
+
+function getCubicPathData(points)
+{
+    let pathData = '';
+
+
+    if (points.length < 4)
+        return pathData;
+
+
+    pathData += 'M';
+    pathData += ' ' + points[0].x;
+    pathData += ' ' + points[0].y;
+
+    for (let i = 1; i < points.length-2; i += 3)
+    {
+        pathData += 
+                ' C'
+            + ' ' + points[i  ].x
+            + ' ' + points[i  ].y
+            + ' ' + points[i+1].x
+            + ' ' + points[i+1].y
+            + ' ' + points[i+2].x
+            + ' ' + points[i+2].y;
+    }
+
+
+    return pathData;
+}
+
+
+
+function getSmoothSegment(_pointP, _point, _pointN)
+{
+    const _pp = point(
+        _pointP.x.toNumber(),
+        _pointP.y.toNumber());
+
+    const _p = point(
+        _point.x.toNumber(),
+        _point.y.toNumber());
+
+    const _pn = point(
+        _pointN.x.toNumber(),
+        _pointN.y.toNumber());
+
+
+    const v = subv(_pn, _pp);
+
+    const pp = addv(_p, mulvs(unitv(v), -lengthv(v)/2 / 3));
+    const pn = addv(_p, mulvs(unitv(v),  lengthv(v)/2 / 3));
+
+
+    return [pp, _p, pn];
+}
 
 
 class FigmaColorStyle
@@ -11774,6 +11884,15 @@ extends GValue
     toValue()
     {
         return this.copy();
+    }
+
+
+
+    toPoint()
+    {
+        return point(
+            this.x.toNumber(),
+            this.y.toNumber());
     }
 
 
@@ -21993,7 +22112,7 @@ function updateMenuItemShowDebugMenu()
 
     menuMain.update(
         boundingRect(menuMain.div).x + 6,
-        boundingRect(menuMain.div).y- 4,
+        boundingRect(menuMain.div).y - 4,
         true);
 }
 
@@ -36435,67 +36554,63 @@ function getPathDataFromPoints(points, closed, degree)
 
     switch (degree)
     {
-    case 0: // linear
+    case 0: pathData = getLinearPathData   (points.map(p => p.toPoint())); break;
+    case 1: pathData = getQuadraticPathData(points.map(p => p.toPoint())); break;
+    case 2: pathData = getCubicPathData    (points.map(p => p.toPoint())); break;
+
+    case 3: // smooth
         if (points.length < 2)
             break;
 
-        pathData += 'M';
-        pathData += ' ' + points[0].x.toNumber();
-        pathData += ' ' + points[0].y.toNumber();
 
+        const bp = [];
+
+
+        // first point
+        let [pp, p, pn] = getSmoothSegment(
+            points[0], 
+            points[0],
+            points[1]);
+
+        bp.push(p);
+
+
+        let _pp = pn;
+
+
+        // middle points
         for (let i = 1; i < points.length; i++)
         {
-            pathData += 
-                  ' L'
-                + ' ' + points[i].x.toNumber()
-                + ' ' + points[i].y.toNumber();
+            [pp, p, pn] = getSmoothSegment(
+                points[i-1], 
+                points[i],
+                i == points.length-1 ? points[i] : points[i+1]);
+
+            bp.push(_pp, pp, p);
+
+            _pp = pn;
         }
 
-        break;
 
-    case 1: // quadratic
-        if (points.length < 3)
-            break;
-
-        pathData += 'M';
-        pathData += ' ' + points[0].x.toNumber();
-        pathData += ' ' + points[0].y.toNumber();
-
-        for (let i = 1; i < points.length-1; i += 2)
+       
+        if (bp.length > 3)
         {
-            pathData += 
-                    ' Q'
-                + ' ' + points[i  ].x.toNumber()
-                + ' ' + points[i  ].y.toNumber()
-                + ' ' + points[i+1].x.toNumber()
-                + ' ' + points[i+1].y.toNumber();
+            if (closed)
+            {
+                bp[1]           = addv(bp[0],     mulvs(unitv(subv(bp.at(-1), bp[0])), -distance(bp[3],     bp[0]    )/3));
+                bp[bp.length-2] = addv(bp.at(-1), mulvs(unitv(subv(bp[0], bp.at(-1))), -distance(bp.at(-4), bp.at(-1))/3));
+            }
+            else // open
+            {
+                bp[1]           = addv(bp[0],     mulvs(unitv(subv(bp[2],     bp[0]    )), distance(bp[3],     bp[0]    )/3));
+                bp[bp.length-2] = addv(bp.at(-1), mulvs(unitv(subv(bp.at(-3), bp.at(-1))), distance(bp.at(-4), bp.at(-1))/3));
+            }
         }
 
-        break;
 
-    case 2: // cubic
-        if (points.length < 4)
-            break;
+        pathData = getCubicPathData(bp);
 
-        pathData += 'M';
-        pathData += ' ' + points[0].x.toNumber();
-        pathData += ' ' + points[0].y.toNumber();
 
-        for (let i = 1; i < points.length-2; i += 3)
-        {
-            pathData += 
-                    ' C'
-                + ' ' + points[i  ].x.toNumber()
-                + ' ' + points[i  ].y.toNumber()
-                + ' ' + points[i+1].x.toNumber()
-                + ' ' + points[i+1].y.toNumber()
-                + ' ' + points[i+2].x.toNumber()
-                + ' ' + points[i+2].y.toNumber();
-        }
-
-        break;
-
-    case 3: // smooth
         break;
     }
 
@@ -36503,7 +36618,8 @@ function getPathDataFromPoints(points, closed, degree)
     const pointsAreValid =
            degree == 0 && points.length > 2
         || degree == 1 && points.length > 2
-        || degree == 2 && points.length > 3;
+        || degree == 2 && points.length > 3
+        || degree == 3 && points.length > 2;
 
 
     if (   pointsAreValid
@@ -36511,10 +36627,123 @@ function getPathDataFromPoints(points, closed, degree)
             || points[0].equals(points.at(-1))))
         pathData += ' Z';
 
-console.log('pathData =', pathData);
+
+    //console.log('pathData =', pathData);
     return pathData;
 }
 
+
+
+function getLinearPathData(points)
+{
+    let pathData = '';
+
+
+    if (points.length < 2)
+        return pathData;
+
+
+    pathData += 'M';
+    pathData += ' ' + points[0].x;
+    pathData += ' ' + points[0].y;
+
+    for (let i = 1; i < points.length; i++)
+    {
+        pathData += 
+                ' L'
+            + ' ' + points[i].x
+            + ' ' + points[i].y;
+    }
+
+
+    return pathData;
+}
+
+
+
+function getQuadraticPathData(points)
+{
+    let pathData = '';
+
+
+    if (points.length < 3)
+        return pathData;
+
+
+    pathData += 'M';
+    pathData += ' ' + points[0].x;
+    pathData += ' ' + points[0].y;
+
+    for (let i = 1; i < points.length-1; i += 2)
+    {
+        pathData += 
+                ' Q'
+            + ' ' + points[i  ].x
+            + ' ' + points[i  ].y
+            + ' ' + points[i+1].x
+            + ' ' + points[i+1].y;
+    }
+
+
+    return pathData;
+}
+
+
+
+function getCubicPathData(points)
+{
+    let pathData = '';
+
+
+    if (points.length < 4)
+        return pathData;
+
+
+    pathData += 'M';
+    pathData += ' ' + points[0].x;
+    pathData += ' ' + points[0].y;
+
+    for (let i = 1; i < points.length-2; i += 3)
+    {
+        pathData += 
+                ' C'
+            + ' ' + points[i  ].x
+            + ' ' + points[i  ].y
+            + ' ' + points[i+1].x
+            + ' ' + points[i+1].y
+            + ' ' + points[i+2].x
+            + ' ' + points[i+2].y;
+    }
+
+
+    return pathData;
+}
+
+
+
+function getSmoothSegment(_pointP, _point, _pointN)
+{
+    const _pp = point(
+        _pointP.x.toNumber(),
+        _pointP.y.toNumber());
+
+    const _p = point(
+        _point.x.toNumber(),
+        _point.y.toNumber());
+
+    const _pn = point(
+        _pointN.x.toNumber(),
+        _pointN.y.toNumber());
+
+
+    const v = subv(_pn, _pp);
+
+    const pp = addv(_p, mulvs(unitv(v), -lengthv(v)/2 / 3));
+    const pn = addv(_p, mulvs(unitv(v),  lengthv(v)/2 / 3));
+
+
+    return [pp, _p, pn];
+}
 
 
 class FigmaColorStyle
@@ -39317,6 +39546,15 @@ extends GValue
     toValue()
     {
         return this.copy();
+    }
+
+
+
+    toPoint()
+    {
+        return point(
+            this.x.toNumber(),
+            this.y.toNumber());
     }
 
 
@@ -49536,7 +49774,7 @@ function updateMenuItemShowDebugMenu()
 
     menuMain.update(
         boundingRect(menuMain.div).x + 6,
-        boundingRect(menuMain.div).y- 4,
+        boundingRect(menuMain.div).y - 4,
         true);
 }
 
@@ -57438,6 +57676,30 @@ GraphView.prototype.createEvents = function()
         {
             this.btn1down = false;
             this.endPan(e.pointerId, true);
+        }
+    });
+
+
+
+    this.div.addEventListener('dblclick', e =>
+    {
+        if (    e.button == 0
+            && !e.shiftKey)
+        {
+            const activeNodes = [];
+
+            for (const node of graph.currentPage.nodes)
+            {
+                if (node.active)
+                {
+                    uiMakeNodePassive(node);
+                    activeNodes.push(node);
+                }
+            }
+
+            graphView.updateNodes(activeNodes);
+            
+            uiDeleteObjectsAndStyles(activeNodes.map(n => n.id));
         }
     });
 
@@ -65412,7 +65674,10 @@ Operator.prototype.createHeader = function()
             && e.clientY >= bounds.top  && e.clientY < bounds.bottom)
             this.showLabelTextbox();
         else if (!this.header.ignoreDoubleClick)
+        {
             actionManager.do(new MakeActiveNodesAction([this.id], e.shiftKey));
+            e.stopPropagation();
+        }
 
         this.header.ignoreDoubleClick = false;
     });
@@ -74562,7 +74827,7 @@ extends OpShape
 
 
         this.addParam(this.paramPoints  = new ListParam  ('points',  'points',  true,  true, true));
-        this.addParam(this.paramClosed  = new SelectParam('closed',  'closed',  false, true, true, ['open', 'closed'], 3));
+        this.addParam(this.paramClosed  = new SelectParam('closed',  'closed',  false, true, true, ['open', 'closed'], 0));
         this.addParam(this.paramDegree  = new SelectParam('degree',  'degree',  false, true, true, ['linear', 'quadratic', 'cubic', 'smooth'], 3));
         this.addParam(this.paramWinding = new SelectParam('winding', 'winding', false, true, true, ['even-odd', 'non-zero']));
         this.addParam(this.paramRound   = new NumberParam('round',   'round',   true,  true, true, 0, 0));

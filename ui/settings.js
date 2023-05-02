@@ -300,7 +300,7 @@ function updateMenuItemShowDebugMenu()
 
     menuMain.update(
         boundingRect(menuMain.div).x + 6,
-        boundingRect(menuMain.div).y- 4,
+        boundingRect(menuMain.div).y - 4,
         true);
 }
 
