@@ -24,6 +24,8 @@ function writeTextToClipboard(str)
         {
             document.execCommand('copy') ? res() : rej();
             textArea.remove();
+
+            prevActive.focus();
         });
     }
 }

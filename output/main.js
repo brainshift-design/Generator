@@ -433,6 +433,9 @@ const STAR_TYPES = [STAR_VALUE, STAR];
 const TEXTSHAPE_VALUE = 'TXTS#';
 const TEXTSHAPE = 'TXTS';
 const TEXTSHAPE_TYPES = [TEXTSHAPE_VALUE, TEXTSHAPE];
+const VECTOR_PATH_VALUE = 'VEC#';
+const VECTOR_PATH = 'VEC';
+const VECTOR_PATH_TYPES = [VECTOR_PATH_VALUE, VECTOR_PATH];
 const MOVE = 'MOVE';
 const ROTATE = 'ROT';
 const SCALE = 'SCALE';
@@ -451,7 +454,8 @@ const SHAPE_VALUES = [
     POLYGON_VALUE,
     STAR_VALUE,
     TEXTSHAPE_VALUE,
-    POINT_VALUE
+    POINT_VALUE,
+    VECTOR_PATH_VALUE
 ];
 const SHAPE_TYPES = [
     ...SHAPE_VALUES,
@@ -461,10 +465,11 @@ const SHAPE_TYPES = [
     ...POLYGON_TYPES,
     ...STAR_TYPES,
     ...TEXTSHAPE_TYPES,
+    ...POINT_TYPES,
+    ...VECTOR_PATH_TYPES,
     MOVE,
     ROTATE,
-    SCALE,
-    ...POINT_TYPES
+    SCALE
 ];
 const ALL_VALUES = [
     LIST_VALUE,
@@ -484,7 +489,9 @@ const ALL_VALUES = [
     ELLIPSE_VALUE,
     POLYGON_VALUE,
     STAR_VALUE,
-    TEXTSHAPE_VALUE
+    TEXTSHAPE_VALUE,
+    POINT_VALUE,
+    VECTOR_PATH_VALUE
 ];
 // const ALL_TYPES =
 // [
@@ -761,7 +768,7 @@ figma.showUI(__html__, {
     themeColors: true
 });
 var curZoom = figma.viewport.zoom;
-setInterval(() => updatePointSizes(), 250);
+setInterval(() => updatePointSizes(), 100);
 // figma.currentPage
 //     .getPluginDataKeys()
 //     .forEach(k => figma.currentPage.setPluginData(k, figma.currentPage.getPluginData(k).replace('\\', '\\\\')));
@@ -838,7 +845,6 @@ function figDeleteObjectsExcept(nodeIds, ignoreObjects) {
     }
 }
 function figDeleteAllObjects() {
-    console.log('delete all objects');
     for (const obj of figma.currentPage.children)
         if (obj.getPluginData('id') != null)
             obj.remove();
@@ -1135,6 +1141,14 @@ function updatePointSize(point) {
     point.y = _y - point.height / 2;
     point.strokeWeight = 1.25 / curZoom;
 }
+function updatePointSize_(point, genPoint) {
+    const size = 8 / curZoom;
+    point.resizeWithoutConstraints(size, size);
+    point.x = genPoint.x - size / 2;
+    point.y = genPoint.y - size / 2;
+    point.strokeWeight = 1.25 / curZoom;
+}
+///////////////////////////////////////////////////////////////////////////////////////////////////
 function figCreateObject(objects, genObj) {
     let figObj;
     switch (genObj.type) {
@@ -1156,12 +1170,18 @@ function figCreateObject(objects, genObj) {
         case TEXTSHAPE:
             figObj = figCreateText(genObj);
             break;
+        case POINT:
+            figObj = figCreatePoint(genObj);
+            break;
+        case VECTOR_PATH:
+            figObj = figCreateVectorPath(genObj);
+            break;
     }
     console.assert(!!figObj, 'no Figma object created');
     figObj.setPluginData('id', genObj.objectId);
     figObj.setPluginData('type', genObj.type);
     figObj.setPluginData('nodeId', genObj.nodeId);
-    if (genObj.data == 'point')
+    if (genObj.type == POINT)
         figPoints.push(figObj);
     objects.push(figObj);
     figma.currentPage.appendChild(figObj);
@@ -1223,6 +1243,12 @@ function figUpdateObject(figObj, genObj) {
             break;
         case TEXTSHAPE:
             figUpdateText(figObj, genObj);
+            break;
+        case VECTOR_PATH:
+            figUpdatePoint(figObj, genObj);
+            break;
+        case VECTOR_PATH:
+            figUpdateVectorPath(figObj, genObj);
             break;
     }
 }
@@ -1493,6 +1519,78 @@ function setTextStyle(figText, genText) {
     //}
 }
 ///////////////////////////////////////////////////////////////////////////////////////////////////
+function genPointIsValid(genPoint) {
+    return genPoint.x != null && !isNaN(genPoint.x)
+        && genPoint.y != null && !isNaN(genPoint.y);
+}
+function figCreatePoint(genPoint) {
+    // console.log('genPoint =', genPoint);
+    const point = figma.createEllipse();
+    point.name = makeObjectName(genPoint);
+    if (!genPointIsValid(genPoint))
+        return point;
+    point.rotation = 0;
+    if (figPoints.includes(point))
+        updatePointSize_(point, genPoint);
+    else {
+        const size = 8 / curZoom;
+        point.x = genPoint.x - size / 2;
+        point.y = genPoint.y - size / 2;
+        point.resizeWithoutConstraints(size, size);
+        point.fills = getObjectFills([['SOLID', '255 255 255 100']]);
+        point.strokes = getObjectFills([['SOLID', '12 140 233 100']]);
+        point.strokeWeight = 1.25 / curZoom;
+        point.strokeAlign = 'INSIDE';
+        point.strokeJoin = 'MITER';
+        point.strokeMiterLimit = 2;
+    }
+    return point;
+}
+function figUpdatePoint(figPoint, genPoint) {
+    if (!genPointIsValid(genPoint))
+        return;
+    const size = 8 / curZoom;
+    figPoint.x = genPoint.x - size / 2;
+    figPoint.y = genPoint.y - size / 2;
+    figPoint.resizeWithoutConstraints(size, size);
+    point.strokeWeight = 1.25 / curZoom;
+}
+///////////////////////////////////////////////////////////////////////////////////////////////////
+function genVectorPathIsValid(genPath) {
+    return genPath.winding != null && !isNaN(genPath.winding)
+        && genPath.round != null && !isNaN(genPath.round);
+}
+function figCreateVectorPath(genPath) {
+    //console.log(obj);
+    const figPath = figma.createVector();
+    figPath.name = makeObjectName(genPath);
+    if (!genVectorPathIsValid(genPath))
+        return figPath;
+    figPath.x = 0; //genPath.x;
+    figPath.y = 0; //genPath.y;
+    figPath.vectorPaths = [{
+            windingRule: genPath.winding == 1 ? 'NONZERO' : 'EVENODD',
+            data: genPath.pathData
+        }];
+    figPath.cornerRadius = genPath.round;
+    setObjectFills(figPath, genPath);
+    setObjectStrokes(figPath, genPath);
+    return figPath;
+}
+function figUpdateVectorPath(figPath, genPath) {
+    if (!genVectorPathIsValid(genPath))
+        return;
+    figPath.x = 0; //genPath.x;
+    figPath.y = 0; //genPath.y;
+    figPath.vectorPaths = [{
+            windingRule: genPath.winding == 1 ? 'NONZERO' : 'EVENODD',
+            data: genPath.pathData
+        }];
+    figPath.cornerRadius = genPath.round;
+    setObjectFills(figPath, genPath);
+    setObjectStrokes(figPath, genPath);
+}
+///////////////////////////////////////////////////////////////////////////////////////////////////
 // function figCreateFrame()
 // {
 //     let frame = figma.createFrame();
@@ -1506,6 +1604,7 @@ function setTextStyle(figText, genText) {
 // }
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 function getObjectFills(objFills) {
+    console.log('objFills =', objFills);
     const fills = [];
     for (const _fill of objFills) {
         const fill = _fill[1].split(' ');
@@ -1547,7 +1646,9 @@ function setObjectStrokes(obj, src) {
         obj.strokeWeight = Math.max(0, src.strokeWeight);
         obj.strokeAlign = src.strokeAlign;
         obj.strokeJoin = src.strokeJoin;
-        obj.strokeMiterLimit = Math.min(Math.max(0, src.strokeMiterLimit), 16);
+        const miterAngle = src.strokeMiterLimit / 360 * Tau;
+        const miterLimit = 1 / Math.sin(miterAngle / 2);
+        obj.strokeMiterLimit = Math.min(Math.max(0, miterLimit), 16);
     }
     else
         obj.strokes = [];

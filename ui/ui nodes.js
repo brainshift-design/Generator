@@ -90,6 +90,7 @@ function createNode(nodeType, creatingButton = null, createdNodeId = -1, options
         case POLYGON:                 node = new OpPolygon();           break;
         case STAR:                    node = new OpStar();              break;
         case TEXTSHAPE:               node = new OpTextShape();         break;
+        case VECTOR_PATH:             node = new OpVectorPath();        break;
 
         case MOVE:                    node = new OpMove();              break;
         case ROTATE:                  node = new OpRotate();            break;
@@ -720,19 +721,20 @@ function uiUpdateValuesAndObjects(requestId, actionId, updateNodeId, updateParam
 
                 switch (type)
                 {
-                    case    NUMBER_VALUE:  value = parseNumberValue   (values[i++])[0];  break;
-                    case      TEXT_VALUE:  value = parseTextValue     (values[i++])[0];  break;
-                    case     COLOR_VALUE:  value = parseColorValue    (values[i++])[0];  break;
-                    case      FILL_VALUE:  value = parseFillValue     (values[i++])[0];  break;
-                    case    STROKE_VALUE:  value = parseStrokeValue   (values[i++])[0];  break;
-                    case RECTANGLE_VALUE:  value = parseRectangleValue(values[i++])[0];  break;
-                    case      LINE_VALUE:  value = parseLineValue     (values[i++])[0];  break;
-                    case   ELLIPSE_VALUE:  value = parseEllipseValue  (values[i++])[0];  break;
-                    case   POLYGON_VALUE:  value = parsePolygonValue  (values[i++])[0];  break;
-                    case      STAR_VALUE:  value = parseStarValue     (values[i++])[0];  break;
-                    case TEXTSHAPE_VALUE:  value = parseTextShapeValue(values[i++])[0];  break;
-                    case     POINT_VALUE:  value = parsePointValue    (values[i++])[0];  break;
-                    case      LIST_VALUE:  value = parseListValue     (values[i++])[0];  break;
+                    case      NUMBER_VALUE: value = parseNumberValue    (values[i++])[0];  break;
+                    case        TEXT_VALUE: value = parseTextValue      (values[i++])[0];  break;
+                    case       COLOR_VALUE: value = parseColorValue     (values[i++])[0];  break;
+                    case        FILL_VALUE: value = parseFillValue      (values[i++])[0];  break;
+                    case      STROKE_VALUE: value = parseStrokeValue    (values[i++])[0];  break;
+                    case   RECTANGLE_VALUE: value = parseRectangleValue (values[i++])[0];  break;
+                    case        LINE_VALUE: value = parseLineValue      (values[i++])[0];  break;
+                    case     ELLIPSE_VALUE: value = parseEllipseValue   (values[i++])[0];  break;
+                    case     POLYGON_VALUE: value = parsePolygonValue   (values[i++])[0];  break;
+                    case        STAR_VALUE: value = parseStarValue      (values[i++])[0];  break;
+                    case   TEXTSHAPE_VALUE: value = parseTextShapeValue (values[i++])[0];  break;
+                    case       POINT_VALUE: value = parsePointValue     (values[i++])[0];  break;
+                    case VECTOR_PATH_VALUE: value = parseVectorPathValue(values[i++])[0];  break;
+                    case        LIST_VALUE: value = parseListValue      (values[i++])[0];  break;
                     
                     default: console.assert(false, 'unknown type \'' + type + '\'');
                 }

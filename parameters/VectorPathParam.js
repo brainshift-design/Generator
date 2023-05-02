@@ -1,4 +1,4 @@
-class   ListParam
+class   VectorPathParam
 extends Parameter
 {
     defaultValue;
@@ -6,14 +6,7 @@ extends Parameter
     oldValue = null;
     
 
-    itemName;
-    showZero = false;
-
-    
     value;
-
-
-    listTypes = []; // the only types to consider, unless it's empty, then it's all types
     
 
     
@@ -22,14 +15,12 @@ extends Parameter
                 showName,
                 hasInput,
                 hasOutput,
-                defaultValue = new ListValue())
+                defaultValue = new VectorPathValue())
     {
-        super(LIST_VALUE, id, name);
+        super(VECTOR_PATH_VALUE, id, name);
 
         this.defaultValue = defaultValue;
         this.value        = defaultValue;
-
-        this.itemName     = 'item';
 
 
         this.controls.push(new TextControl(
@@ -44,8 +35,8 @@ extends Parameter
         this.div.appendChild(this.controls[0].div);
 
        
-        if (hasInput)  this.initInput([LIST_VALUE], getParamInputValuesForUndo, this.input_getBackInitValue);
-        if (hasOutput) this.initOutput([LIST_VALUE], this.output_genRequest, getParamOutputValuesForUndo, this.output_backInit);
+        if (hasInput)  this.initInput([VECTOR_PATH_VALUE], getParamInputValuesForUndo, this.input_getBackInitValue);
+        if (hasOutput) this.initOutput([VECTOR_PATH_VALUE], this.output_genRequest, getParamOutputValuesForUndo, this.output_backInit);
     }
 
 
@@ -63,7 +54,7 @@ extends Parameter
     {
         // 'this' is the output
 
-        console.assert(LIST_VALUES.includes(value.type), 'expected LIST_VALUE in backInit()');
+        console.assert(value.type == VECTOR_PATH_VALUE, 'expected VECTOR_PATH_VALUE in backInit()');
         
         this.param.setValue(value, false, true, false);
     }
@@ -72,13 +63,13 @@ extends Parameter
 
     setValue(value, createAction, updateControl = true, dispatchEvents = true) 
     {
-        if (!(value instanceof ListValue))
-            console.assert(false, 'ListParam.setValue(value) is ' + typeof value + ', must be a ListValue');
+        if (!(value instanceof VectorPathValue))
+            console.assert(false, 'RectangleParam.setValue(value) is ' + typeof value + ', must be a VectorPathValue');
 
         console.assert(
                value.type 
-            && LIST_VALUES.includes(value.type), 
-            'ListParam value.type must be LIST_VALUE');
+            && value.type == VECTOR_PATH_VALUE, 
+            'RectangleParam value.type must be VECTOR_PATH_VALUE');
 
 
         this.preSetValue(value, createAction, dispatchEvents);
@@ -88,9 +79,6 @@ extends Parameter
 
 
         super.setValue(this.value, createAction, updateControl, dispatchEvents);
-
-        if (this.output)
-            this.output.types = [finalListTypeFromItems(this.value.items)];
 
 
         this.oldValue = this.value;
@@ -123,21 +111,15 @@ extends Parameter
         if (   this.input
             && this.input.connected)
         {
-            if (this.input.connectedOutput.supportsTypes(this.input.types))
+            if (this.input.connectedOutput.supportsTypes([VECTOR_PATH_VALUE]))
                 request.push(...pushInputOrParam(this.input, gen));
-            // if (this.input.connectedOutput.supportsTypes([LIST_VALUE]))
-            //     request.push(...pushInputOrParam(this.input, gen));
-            // else if (this.input.connectedOutput.supportsTypes(this.input.types))
-            //     request.push(
-            //         LIST_VALUE, 1,
-            //         ...pushInputOrParam(this.input, gen));
             else
-                console.assert(false, 'invalid input for ListParam');
+                console.assert(false, 'invalid input for RectangleParam');
         }
 
         else request.push( 
-            LIST_VALUE, 
-            (new ListValue()).toString());
+            VECTOR_PATH_VALUE, 
+            (new VectorPathValue()).toString());
 
         return request;
     }
@@ -163,13 +145,7 @@ extends Parameter
         this.controls[0].textbox.style.fontStyle  = 'italic';
         this.controls[0].textbox.style.fontWeight = '500';
 
-        const nItems = this.value.items
-            .filter(i => isEmpty(this.listTypes) || this.listTypes.includes(i.type))
-            .length;
-
-        this.controls[0].textbox.value = 
-              (nItems != 0 || this.showZero ? nItems + ' ' : '') 
-            + countString(this.itemName, nItems);
+        this.controls[0].textbox.value            = 'rectangle';
 
 
         if (this.input ) this.input .updateControl();
@@ -184,6 +160,6 @@ extends Parameter
 
     loadParam(_param)
     {
-        this.setValue(parseListValue(_param[2])[0], true, true, false);
+        this.setValue(parseVectorPathValue(_param[2])[0], true, true, false);
     }
 }

@@ -383,18 +383,20 @@ class Operator
 
     createAndAddParamByType(type, id, showName, hasInput, hasOutput, volatile = false)
     {
-             if (type ==    NUMBER_VALUE) return this.addParam(new    NumberParam(id, id, showName, hasInput, hasOutput), volatile);
-        else if (type ==      TEXT_VALUE) return this.addParam(new      TextParam(id, id,           hasInput, hasOutput), volatile);
-        else if (type ==     COLOR_VALUE) return this.addParam(new     ColorParam(id, id, showName, hasInput, hasOutput), volatile);
-        else if (type ==      FILL_VALUE) return this.addParam(new      FillParam(id, id, showName, hasInput, hasOutput), volatile);
-        else if (type ==    STROKE_VALUE) return this.addParam(new    StrokeParam(id, id, showName, hasInput, hasOutput), volatile);
-        else if (type ==      LIST_VALUE) return this.addParam(new      ListParam(id, id, showName, hasInput, hasOutput), volatile);
-        else if (type == RECTANGLE_VALUE) return this.addParam(new RectangleParam(id, id, showName, hasInput, hasOutput), volatile);
-        else if (type ==      LINE_VALUE) return this.addParam(new      LineParam(id, id, showName, hasInput, hasOutput), volatile);
-        else if (type ==   ELLIPSE_VALUE) return this.addParam(new   EllipseParam(id, id, showName, hasInput, hasOutput), volatile);
-        else if (type ==   POLYGON_VALUE) return this.addParam(new   PolygonParam(id, id, showName, hasInput, hasOutput), volatile);
-        else if (type ==      STAR_VALUE) return this.addParam(new      StarParam(id, id, showName, hasInput, hasOutput), volatile);
-        else if (type == TEXTSHAPE_VALUE) return this.addParam(new TextShapeParam(id, id, showName, hasInput, hasOutput), volatile);
+             if (type ==      NUMBER_VALUE) return this.addParam(new     NumberParam(id, id, showName, hasInput, hasOutput), volatile);
+        else if (type ==        TEXT_VALUE) return this.addParam(new       TextParam(id, id,           hasInput, hasOutput), volatile);
+        else if (type ==       COLOR_VALUE) return this.addParam(new      ColorParam(id, id, showName, hasInput, hasOutput), volatile);
+        else if (type ==        FILL_VALUE) return this.addParam(new       FillParam(id, id, showName, hasInput, hasOutput), volatile);
+        else if (type ==      STROKE_VALUE) return this.addParam(new     StrokeParam(id, id, showName, hasInput, hasOutput), volatile);
+        else if (type ==        LIST_VALUE) return this.addParam(new       ListParam(id, id, showName, hasInput, hasOutput), volatile);
+        else if (type ==   RECTANGLE_VALUE) return this.addParam(new  RectangleParam(id, id, showName, hasInput, hasOutput), volatile);
+        else if (type ==        LINE_VALUE) return this.addParam(new       LineParam(id, id, showName, hasInput, hasOutput), volatile);
+        else if (type ==     ELLIPSE_VALUE) return this.addParam(new    EllipseParam(id, id, showName, hasInput, hasOutput), volatile);
+        else if (type ==     POLYGON_VALUE) return this.addParam(new    PolygonParam(id, id, showName, hasInput, hasOutput), volatile);
+        else if (type ==        STAR_VALUE) return this.addParam(new       StarParam(id, id, showName, hasInput, hasOutput), volatile);
+        else if (type ==   TEXTSHAPE_VALUE) return this.addParam(new  TextShapeParam(id, id, showName, hasInput, hasOutput), volatile);
+        else if (type ==       POINT_VALUE) return this.addParam(new      PointParam(id, id, showName, hasInput, hasOutput), volatile);
+        else if (type == VECTOR_PATH_VALUE) return this.addParam(new VectorPathParam(id, id, showName, hasInput, hasOutput), volatile);
 
         else console.assert(false, 'cannot add parameter of type \'' + type + '\'');
 
@@ -405,18 +407,20 @@ class Operator
 
     createAndInsertParamByType(index, type, id, showName, hasInput, hasOutput, volatile = false)
     {
-             if (type ==    NUMBER_VALUE) return this.insertParam(index, new    NumberParam(id, id, showName, hasInput, hasOutput), volatile);
-        else if (type ==      TEXT_VALUE) return this.insertParam(index, new      TextParam(id, id,           hasInput, hasOutput), volatile);
-        else if (type ==     COLOR_VALUE) return this.insertParam(index, new     ColorParam(id, id, showName, hasInput, hasOutput), volatile);
-        else if (type ==      FILL_VALUE) return this.insertParam(index, new      FillParam(id, id, showName, hasInput, hasOutput), volatile);
-        else if (type ==    STROKE_VALUE) return this.insertParam(index, new    StrokeParam(id, id, showName, hasInput, hasOutput), volatile);
-        else if (type ==      LIST_VALUE) return this.insertParam(index, new      ListParam(id, id, showName, hasInput, hasOutput), volatile);
-        else if (type == RECTANGLE_VALUE) return this.insertParam(index, new RectangleParam(id, id, showName, hasInput, hasOutput), volatile);
-        else if (type ==      LINE_VALUE) return this.insertParam(index, new      LineParam(id, id, showName, hasInput, hasOutput), volatile);
-        else if (type ==   ELLIPSE_VALUE) return this.insertParam(index, new   EllipseParam(id, id, showName, hasInput, hasOutput), volatile);
-        else if (type ==   POLYGON_VALUE) return this.insertParam(index, new   PolygonParam(id, id, showName, hasInput, hasOutput), volatile);
-        else if (type ==      STAR_VALUE) return this.insertParam(index, new      StarParam(id, id, showName, hasInput, hasOutput), volatile);
-        else if (type == TEXTSHAPE_VALUE) return this.insertParam(index, new TextShapeParam(id, id, showName, hasInput, hasOutput), volatile);
+             if (type ==      NUMBER_VALUE) return this.insertParam(index, new     NumberParam(id, id, showName, hasInput, hasOutput), volatile);
+        else if (type ==        TEXT_VALUE) return this.insertParam(index, new       TextParam(id, id,           hasInput, hasOutput), volatile);
+        else if (type ==       COLOR_VALUE) return this.insertParam(index, new      ColorParam(id, id, showName, hasInput, hasOutput), volatile);
+        else if (type ==        FILL_VALUE) return this.insertParam(index, new       FillParam(id, id, showName, hasInput, hasOutput), volatile);
+        else if (type ==      STROKE_VALUE) return this.insertParam(index, new     StrokeParam(id, id, showName, hasInput, hasOutput), volatile);
+        else if (type ==        LIST_VALUE) return this.insertParam(index, new       ListParam(id, id, showName, hasInput, hasOutput), volatile);
+        else if (type ==   RECTANGLE_VALUE) return this.insertParam(index, new  RectangleParam(id, id, showName, hasInput, hasOutput), volatile);
+        else if (type ==        LINE_VALUE) return this.insertParam(index, new       LineParam(id, id, showName, hasInput, hasOutput), volatile);
+        else if (type ==     ELLIPSE_VALUE) return this.insertParam(index, new    EllipseParam(id, id, showName, hasInput, hasOutput), volatile);
+        else if (type ==     POLYGON_VALUE) return this.insertParam(index, new    PolygonParam(id, id, showName, hasInput, hasOutput), volatile);
+        else if (type ==        STAR_VALUE) return this.insertParam(index, new       StarParam(id, id, showName, hasInput, hasOutput), volatile);
+        else if (type ==   TEXTSHAPE_VALUE) return this.insertParam(index, new  TextShapeParam(id, id, showName, hasInput, hasOutput), volatile);
+        else if (type ==       POINT_VALUE) return this.insertParam(index, new      PointParam(id, id, showName, hasInput, hasOutput), volatile);
+        else if (type == VECTOR_PATH_VALUE) return this.insertParam(index, new VectorPathParam(id, id, showName, hasInput, hasOutput), volatile);
 
         else console.assert(false, 'cannot insert parameter of type \'' + type + '\'');
 

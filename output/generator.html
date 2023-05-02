@@ -3204,6 +3204,8 @@ function writeTextToClipboard(str)
         {
             document.execCommand('copy') ? res() : rej();
             textArea.remove();
+
+            prevActive.focus();
         });
     }
 }
@@ -3722,58 +3724,63 @@ const COLOR_TYPES =
 ];
 
 
-const FILL_VALUE       = 'FILL#';
-const FILL             = 'FILL';
-const FILL_TYPES       = [FILL_VALUE, FILL];
+const FILL_VALUE        = 'FILL#';
+const FILL              = 'FILL';
+const FILL_TYPES        = [FILL_VALUE, FILL];
+ 
+const STROKE_VALUE      = 'STRK#';
+const STROKE            = 'STRK';
+const STROKE_TYPES      = [STROKE_VALUE, STROKE];
+ 
+const COLOR_STOP_VALUE  = 'CSTOP#';
+const COLOR_STOP        = 'CSTOP';
+ 
+const GRADIENT_VALUE    = 'GRAD#';
+const GRADIENT          = 'GRAD';
+const GRADIENT_TYPES    = [GRADIENT_VALUE, GRADIENT];
+ 
+ 
+const COLOR_STYLE       = 'CSTL';
+ 
+ 
+const SHAPE_VALUE       = 'SHP#'; // abstract placeholder
+ 
+const RECTANGLE_VALUE   = 'RECT#';
+const RECTANGLE         = 'RECT'; 
+const RECTANGLE_TYPES   = [RECTANGLE_VALUE, RECTANGLE];
+ 
+const LINE_VALUE        = 'LINE#';
+const LINE              = 'LINE'; 
+const LINE_TYPES        = [LINE_VALUE, LINE];
+ 
+const ELLIPSE_VALUE     = 'ELPS#';
+const ELLIPSE           = 'ELPS'; 
+const ELLIPSE_TYPES     = [ELLIPSE_VALUE, ELLIPSE];
+ 
+const POLYGON_VALUE     = 'POLY#';
+const POLYGON           = 'POLY'; 
+const POLYGON_TYPES     = [POLYGON_VALUE, POLYGON];
+ 
+const STAR_VALUE        = 'STAR#';
+const STAR              = 'STAR'; 
+const STAR_TYPES        = [STAR_VALUE, STAR];
+ 
+const TEXTSHAPE_VALUE   = 'TXTS#';
+const TEXTSHAPE         = 'TXTS'; 
+const TEXTSHAPE_TYPES   = [TEXTSHAPE_VALUE, TEXTSHAPE];
 
-const STROKE_VALUE     = 'STRK#';
-const STROKE           = 'STRK';
-const STROKE_TYPES     = [STROKE_VALUE, STROKE];
-
-const COLOR_STOP_VALUE = 'CSTOP#';
-const COLOR_STOP       = 'CSTOP';
-
-const GRADIENT_VALUE   = 'GRAD#';
-const GRADIENT         = 'GRAD';
-const GRADIENT_TYPES   = [GRADIENT_VALUE, GRADIENT];
+const VECTOR_PATH_VALUE = 'VEC#';
+const VECTOR_PATH       = 'VEC'; 
+const VECTOR_PATH_TYPES = [VECTOR_PATH_VALUE, VECTOR_PATH];
 
 
-const COLOR_STYLE      = 'CSTL';
-
-
-const SHAPE_VALUE      = 'SHP#'; // abstract placeholder
-
-const RECTANGLE_VALUE  = 'RECT#';
-const RECTANGLE        = 'RECT'; 
-const RECTANGLE_TYPES  = [RECTANGLE_VALUE, RECTANGLE];
-
-const LINE_VALUE       = 'LINE#';
-const LINE             = 'LINE'; 
-const LINE_TYPES       = [LINE_VALUE, LINE];
-
-const ELLIPSE_VALUE    = 'ELPS#';
-const ELLIPSE          = 'ELPS'; 
-const ELLIPSE_TYPES    = [ELLIPSE_VALUE, ELLIPSE];
-
-const POLYGON_VALUE    = 'POLY#';
-const POLYGON          = 'POLY'; 
-const POLYGON_TYPES    = [POLYGON_VALUE, POLYGON];
-
-const STAR_VALUE       = 'STAR#';
-const STAR             = 'STAR'; 
-const STAR_TYPES       = [STAR_VALUE, STAR];
-
-const TEXTSHAPE_VALUE  = 'TXTS#';
-const TEXTSHAPE        = 'TXTS'; 
-const TEXTSHAPE_TYPES  = [TEXTSHAPE_VALUE, TEXTSHAPE];
-
-const MOVE             = 'MOVE';
-const ROTATE           = 'ROT';
-const SCALE            = 'SCALE';
-
-
-const POINT            = 'PT';
-const POINT_VALUE      = 'PT#';
+const MOVE              = 'MOVE';
+const ROTATE            = 'ROT';
+const SCALE             = 'SCALE';
+ 
+ 
+const POINT             = 'PT';
+const POINT_VALUE       = 'PT#';
 
 
 const POINT_TYPES =
@@ -3793,7 +3800,8 @@ const SHAPE_VALUES =
     POLYGON_VALUE,
     STAR_VALUE,
     TEXTSHAPE_VALUE,
-    POINT_VALUE
+    POINT_VALUE,
+    VECTOR_PATH_VALUE
 ];
 
 
@@ -3807,39 +3815,41 @@ const SHAPE_TYPES =
     ...POLYGON_TYPES,
     ...STAR_TYPES,
     ...TEXTSHAPE_TYPES,
+    ...POINT_TYPES,
+    ...VECTOR_PATH_TYPES,
 
     MOVE,
     ROTATE,
-    SCALE,
-
-    ...POINT_TYPES
+    SCALE
 ];
 
 
 const ALL_VALUES =
 [
-           LIST_VALUE,
-    NUMBER_LIST_VALUE,
-      TEXT_LIST_VALUE,
-     SHAPE_LIST_VALUE,
+            LIST_VALUE,
+     NUMBER_LIST_VALUE,
+       TEXT_LIST_VALUE,
+      SHAPE_LIST_VALUE,
      
-         NUMBER_VALUE,
-           TEXT_VALUE,
-          COLOR_VALUE,
-
-           FILL_VALUE,
-         STROKE_VALUE,
-
-     COLOR_STOP_VALUE,
-       GRADIENT_VALUE,
-
-          SHAPE_VALUE,
-      RECTANGLE_VALUE,
-           LINE_VALUE,
-        ELLIPSE_VALUE,
-        POLYGON_VALUE,
-           STAR_VALUE,
-      TEXTSHAPE_VALUE
+          NUMBER_VALUE,
+            TEXT_VALUE,
+           COLOR_VALUE,
+ 
+            FILL_VALUE,
+          STROKE_VALUE,
+ 
+      COLOR_STOP_VALUE,
+        GRADIENT_VALUE,
+ 
+           SHAPE_VALUE,
+       RECTANGLE_VALUE,
+            LINE_VALUE,
+         ELLIPSE_VALUE,
+         POLYGON_VALUE,
+            STAR_VALUE,
+       TEXTSHAPE_VALUE,
+           POINT_VALUE,
+     VECTOR_PATH_VALUE
 ];
 
 
@@ -4021,8 +4031,6 @@ class FigmaObject
 
     uniqueId;
 
-    data = NULL;
-
 
 
     constructor(type, nodeId)
@@ -4037,8 +4045,6 @@ class FigmaObject
     copyBase(base)
     {
         this.uniqueId         = base.uniqueId;
-
-        this.data             = base.data;
 
         this.fills            = clone(base.fills);
         this.strokes          = clone(base.strokes);
@@ -4064,12 +4070,14 @@ function copyFigmaObject(obj)
 {
     switch (obj.type)
     {
-        case RECTANGLE: return FigmaRectangle.prototype.copy.call(obj);
-        case LINE:      return FigmaLine     .prototype.copy.call(obj);
-        case ELLIPSE:   return FigmaEllipse  .prototype.copy.call(obj);
-        case POLYGON:   return FigmaPolygon  .prototype.copy.call(obj);
-        case STAR:      return FigmaStar     .prototype.copy.call(obj);
-        case TEXTSHAPE: return FigmaText     .prototype.copy.call(obj);
+        case RECTANGLE:   return FigmaRectangle .prototype.copy.call(obj);
+        case LINE:        return FigmaLine      .prototype.copy.call(obj);
+        case ELLIPSE:     return FigmaEllipse   .prototype.copy.call(obj);
+        case POLYGON:     return FigmaPolygon   .prototype.copy.call(obj);
+        case STAR:        return FigmaStar      .prototype.copy.call(obj);
+        case TEXTSHAPE:   return FigmaText      .prototype.copy.call(obj);
+        case POINT:       return FigmaPoint     .prototype.copy.call(obj);
+        case VECTOR_PATH: return FigmaVectorPath.prototype.copy.call(obj);
     }
 
     console.assert(false, 'invalid Figma object type \'' + obj.type + '\'');
@@ -4209,7 +4217,7 @@ extends FigmaShape
     height;
     angle;
 
-
+    
 
     constructor(nodeId, objectId, x, y, width, height, angle)
     {
@@ -4405,6 +4413,185 @@ extends FigmaShape
         return copy;
     }
 }
+
+
+class FigmaPoint
+extends FigmaShape
+{
+    x;
+    y;
+
+    
+
+    constructor(nodeId, objectId, x, y)
+    {
+        super(POINT, nodeId, objectId);
+        
+        this.x = x;
+        this.y = y;
+    }
+
+
+
+    copy()
+    {
+        const copy = new FigmaPoint(
+            this.nodeId,
+            this.objectId,
+            this.x,
+            this.y);
+
+        copy.copyBase(this);
+
+        return copy;
+    }
+}
+
+
+class FigmaVectorPath
+extends FigmaShape
+{
+    x;
+    y;
+    pathData;
+    winding;
+    round;
+
+
+
+    constructor(nodeId, objectId, points, degree, winding, round)
+    {
+        super(VECTOR_PATH, nodeId, objectId);
+        
+        this.pathData = getPathDataFromPoints(points, degree);
+        
+
+        let minX = Number.MAX_SAFE_INTEGER;
+        let minY = Number.MAX_SAFE_INTEGER;
+
+        for (const p of points)
+        {
+            minX = Math.min(minX, p.x.toNumber());
+            minY = Math.min(minY, p.y.toNumber());
+        }
+
+
+        this.x = minX;
+        this.y = minY;
+        
+        
+        // for (const p of points)
+        // {
+        //     p.x.value -= minX;
+        //     p.y.value -= minY;
+        // }
+
+
+        this.winding  = winding;
+        this.round    = round;
+    }
+
+
+
+    copy()
+    {
+        const copy = new FigmaVectorPath(
+            this.nodeId,
+            this.objectId,
+            [], 0,
+            this.winding,
+            this.round);
+
+        copy.pathData = this.pathData;
+
+        copy.copyBase(this);
+
+        return copy;
+    }
+}
+
+
+
+function getPathDataFromPoints(points, degree)
+{
+    let pathData = '';
+
+
+    switch (degree)
+    {
+    case 0: // linear
+        if (points.length < 2)
+            break;
+
+        pathData += 'M';
+        pathData += ' ' + points[0].x.toNumber();
+        pathData += ' ' + points[0].y.toNumber();
+
+        for (let i = 1; i < points.length; i++)
+        {
+            pathData += 
+                  ' L'
+                + ' ' + points[i].x.toNumber()
+                + ' ' + points[i].y.toNumber();
+        }
+
+        break;
+
+    case 1: // quadratic
+        if (points.length < 3)
+            break;
+
+        pathData += 'M';
+        pathData += ' ' + points[0].x.toNumber();
+        pathData += ' ' + points[0].y.toNumber();
+
+        for (let i = 1; i < points.length; i += 2)
+        {
+            pathData += 
+                    ' Q'
+                + ' ' + points[i  ].x.toNumber()
+                + ' ' + points[i  ].y.toNumber()
+                + ' ' + points[i+1].x.toNumber()
+                + ' ' + points[i+1].y.toNumber();
+        }
+
+        break;
+
+    case 2: // cubic
+        if (points.length < 4)
+            break;
+
+        pathData += 'M';
+        pathData += ' ' + points[0].x.toNumber();
+        pathData += ' ' + points[0].y.toNumber();
+
+        for (let i = 1; i < points.length; i += 3)
+        {
+            pathData += 
+                    ' C'
+                + ' ' + points[i  ].x.toNumber()
+                + ' ' + points[i  ].y.toNumber()
+                + ' ' + points[i+1].x.toNumber()
+                + ' ' + points[i+1].y.toNumber()
+                + ' ' + points[i+2].x.toNumber()
+                + ' ' + points[i+2].y.toNumber();
+        }
+
+        break;
+
+    case 3: // smooth
+        break;
+    }
+
+
+    if (   points.length > 2
+        && points[0].equals(points.at(-1)))
+        pathData += ' Z';
+
+
+    return pathData;
+}
+
 
 
 class FigmaColorStyle
@@ -4607,19 +4794,20 @@ function displayValue(type, value)
 
     switch (type)
     {
-        case    NUMBER_VALUE: return parseNumberValue   (value)[0].toDisplayString();
-        case     COLOR_VALUE: return parseColorValue    (value)[0].toDisplayString();
-        case      TEXT_VALUE: const val = parseTextValue(value)[0]; return val == '' ? '\'\'' : val.toDisplayString();
-        case RECTANGLE_VALUE: return parseRectangleValue(value)[0].toDisplayString();
-        case      LINE_VALUE: return parseLineValue     (value)[0].toDisplayString();
-        case   ELLIPSE_VALUE: return parseEllipseValue  (value)[0].toDisplayString();
-        case   POLYGON_VALUE: return parsePolygonValue  (value)[0].toDisplayString();
-        case      STAR_VALUE: return parseStarValue     (value)[0].toDisplayString();
-        case TEXTSHAPE_VALUE: return parseTextShapeValue(value)[0].toDisplayString();
-        case     POINT_VALUE: return parsePointValue    (value)[0].toDisplayString();
-        case      FILL_VALUE: return parseFillValue     (value)[0].toDisplayString();
-        case    STROKE_VALUE: return parseStrokeValue   (value)[0].toDisplayString();
-        case      LIST_VALUE: return parseListValue     (value)[0].toDisplayString();
+        case      NUMBER_VALUE: return parseNumberValue    (value)[0].toDisplayString();
+        case       COLOR_VALUE: return parseColorValue     (value)[0].toDisplayString();
+        case        TEXT_VALUE: const val = parseTextValue (value)[0]; return val == '' ? '\'\'' : val.toDisplayString();
+        case   RECTANGLE_VALUE: return parseRectangleValue (value)[0].toDisplayString();
+        case        LINE_VALUE: return parseLineValue      (value)[0].toDisplayString();
+        case     ELLIPSE_VALUE: return parseEllipseValue   (value)[0].toDisplayString();
+        case     POLYGON_VALUE: return parsePolygonValue   (value)[0].toDisplayString();
+        case        STAR_VALUE: return parseStarValue      (value)[0].toDisplayString();
+        case   TEXTSHAPE_VALUE: return parseTextShapeValue (value)[0].toDisplayString();
+        case       POINT_VALUE: return parsePointValue     (value)[0].toDisplayString();
+        case VECTOR_PATH_VALUE: return parseVectorPathValue(value)[0].toDisplayString();
+        case        FILL_VALUE: return parseFillValue      (value)[0].toDisplayString();
+        case      STROKE_VALUE: return parseStrokeValue    (value)[0].toDisplayString();
+        case        LIST_VALUE: return parseListValue      (value)[0].toDisplayString();
     }
 
 
@@ -4632,19 +4820,20 @@ function nullFromType(type)
 {
     switch (type)
     {
-        case    NUMBER_VALUE: return NumberValue.NaN;
-        case     COLOR_VALUE: return ColorValue.NaN;
-        case      TEXT_VALUE: return new TextValue();
-        case RECTANGLE_VALUE: return RectangleValue.NaN;
-        case      LINE_VALUE: return      LineValue.NaN;
-        case   ELLIPSE_VALUE: return   EllipseValue.NaN;
-        case   POLYGON_VALUE: return   PolygonValue.NaN;
-        case      STAR_VALUE: return      StarValue.NaN;
-        case TEXTSHAPE_VALUE: return TextShapeValue.NaN;
-        case     POINT_VALUE: return     PointValue.NaN;
-        case      FILL_VALUE: return FillValue.NaN;
-        case    STROKE_VALUE: return StrokeValue.NaN;
-        case      LIST_VALUE: return ListValue.NaN;
+        case      NUMBER_VALUE: return     NumberValue.NaN;
+        case       COLOR_VALUE: return      ColorValue.NaN;
+        case        TEXT_VALUE: return new TextValue();
+        case   RECTANGLE_VALUE: return  RectangleValue.NaN;
+        case        LINE_VALUE: return       LineValue.NaN;
+        case     ELLIPSE_VALUE: return    EllipseValue.NaN;
+        case     POLYGON_VALUE: return    PolygonValue.NaN;
+        case        STAR_VALUE: return       StarValue.NaN;
+        case   TEXTSHAPE_VALUE: return  TextShapeValue.NaN;
+        case       POINT_VALUE: return      PointValue.NaN;
+        case VECTOR_PATH_VALUE: return VectorPathValue.NaN;
+        case        FILL_VALUE: return       FillValue.NaN;
+        case      STROKE_VALUE: return     StrokeValue.NaN;
+        case        LIST_VALUE: return       ListValue.NaN;
     }
 
     console.assert(false, 'cannot determine null value from type \'' + type + '\'');
@@ -5935,7 +6124,7 @@ function parseListValue(str, i = -1)
         {
             case      NUMBER_VALUE: { const num     = parseNumberValue    (str[i]);  i += num    [1];  list.items.push(num    [0]);  break; }
             case        TEXT_VALUE: { const text    = parseTextValue      (str[i]);  i += text   [1];  list.items.push(text   [0]);  break; }
-            case       COLOR_VALUE: { const col     = parseColorValue     (str, i);  i += col    [1];  list.items.push(col    [0]);  break; }
+            case       COLOR_VALUE: { const color   = parseColorValue     (str, i);  i += color  [1];  list.items.push(color  [0]);  break; }
             case        FILL_VALUE: { const fill    = parseFillValue      (str, i);  i += fill   [1];  list.items.push(fill   [0]);  break; }
             case      STROKE_VALUE: { const stroke  = parseStrokeValue    (str, i);  i += stroke [1];  list.items.push(stroke [0]);  break; }
             case   RECTANGLE_VALUE: { const rect    = parseRectangleValue (str, i);  i += rect   [1];  list.items.push(rect   [0]);  break; }
@@ -5943,15 +6132,17 @@ function parseListValue(str, i = -1)
             case     ELLIPSE_VALUE: { const ellipse = parseEllipseValue   (str, i);  i += ellipse[1];  list.items.push(ellipse[0]);  break; }
             case     POLYGON_VALUE: { const poly    = parsePolygonValue   (str, i);  i += poly   [1];  list.items.push(poly   [0]);  break; }
             case        STAR_VALUE: { const star    = parseStarValue      (str, i);  i += star   [1];  list.items.push(star   [0]);  break; }
-            case   TEXTSHAPE_VALUE: { const star    = parseTextShapeValue (str, i);  i += star   [1];  list.items.push(star   [0]);  break; }
+            case   TEXTSHAPE_VALUE: { const text    = parseTextShapeValue (str, i);  i += text   [1];  list.items.push(text   [0]);  break; }
+            case       POINT_VALUE: { const point   = parsePointValue     (str, i);  i += point  [1];  list.items.push(point  [0]);  break; }
+            case VECTOR_PATH_VALUE: { const path    = parseVectorPathValue(str, i);  i += path   [1];  list.items.push(path   [0]);  break; }
             case        LIST_VALUE:  
             case NUMBER_LIST_VALUE:  
             case   TEXT_LIST_VALUE:  
             case  SHAPE_LIST_VALUE: { const _list   = parseListValue      (str, i);  i += _list  [1];  list.items.push(_list  [0]);  break; }
         }
     }
- 
 
+    
     return [
         list, 
         i - iStart];
@@ -7245,8 +7436,8 @@ function parsePointValue(str, i = -1)
 
     const iStart = i;
 
-    const x = parseNumberValue(str[i]); i += x     [1];
-    const y = parseNumberValue(str[i]); i += y     [1];
+    const x = parseNumberValue(str[i]); i += x[1];
+    const y = parseNumberValue(str[i]); i += y[1];
 
 
     const rect = new PointValue(
@@ -7256,6 +7447,151 @@ function parsePointValue(str, i = -1)
 
 
     return [rect, i - iStart];
+}
+
+
+
+class VectorPathValue
+extends ShapeValue
+{
+    points;
+    degree;
+    winding;
+    round;
+
+
+
+    constructor(nodeId,
+                points  = new NumberValue(0), 
+                degree  = new NumberValue(0), 
+                winding = new NumberValue(0), 
+                round   = new NumberValue(0))
+    {
+        super(VECTOR_PATH_VALUE, nodeId);
+
+        this.points  = points;
+        this.degree  = degree;
+        this.winding = winding;
+        this.round   = round;
+    }
+
+
+
+    copy()
+    {
+        const copy = new VectorPathValue(
+            this.nodeId,
+            this.points .copy(), 
+            this.degree .copy(), 
+            this.winding.copy(), 
+            this.round  .copy());
+
+        copy.copyBase(this);
+
+        return copy;
+    }
+
+
+
+    equals(rect)
+    {
+        return rect
+            && this.points .equals(rect.points )
+            && this.degree .equals(rect.degree )
+            && this.winding.equals(rect.winding)
+            && this.round  .equals(rect.round  );
+    }
+
+
+
+    async eval(parse)
+    {
+        return this;
+    }
+
+
+
+    toString()
+    {
+        return      this.points .toString()
+            + ' ' + this.degree .toString()
+            + ' ' + this.winding.toString()
+            + ' ' + this.round  .toString();
+    }
+
+
+
+    toDisplayString()
+    {
+        return      this.points .toDisplayString()
+            + ' ' + this.degree .toDisplayString()
+            + ' ' + this.winding.toDisplayString()
+            + ' ' + this.round  .toDisplayString();
+    }
+
+
+
+    toValue()
+    {
+        return this.copy();
+    }
+
+
+
+    isValid()
+    {
+        return this.points .isValid()
+            && this.degree .isValid()
+            && this.winding.isValid()
+            && this.round  .isValid()
+            && super.isValid();
+    }
+
+
+    
+    static NaN = new VectorPathValue(
+        '',
+        ListValue  .NaN,
+        NumberValue.NaN,
+        NumberValue.NaN,
+        NumberValue.NaN);
+}
+
+
+
+function parseVectorPathValue(str, i = -1)
+{
+    if (   i <  0 && str    == NAN_DISPLAY
+        || i >= 0 && str[i] == NAN_DISPLAY)
+        return [VectorPathValue.NaN, 1];
+
+
+    if (i < 0)
+    {
+        str = str.split(' ');
+        i   = 0;
+    }
+
+
+    const iStart = i;
+
+    const points  = parseListValue  (str, i); i += points [1];
+    const degree  = parseNumberValue(str[i]); i += degree [1];
+    const winding = parseNumberValue(str[i]); i += winding[1];
+    const round   = parseNumberValue(str[i]); i += round  [1];
+
+    const path = new VectorPathValue(
+        '', // set node ID elsewhere
+        points [0],
+        degree [0],
+        winding[0],
+        round  [0]);
+
+
+    i = parseShapeBaseValue(str, i, path);
+
+    
+    return [path, i - iStart];
 }
 
 
@@ -14381,19 +14717,20 @@ extends GOperator
         else
             this.value.props = props;
 
-
+            
         if (parse.isLastRepeat())
         {
-            genPushUpdateValue(parse, this.nodeId, 'x',      this.value.x     );
-            genPushUpdateValue(parse, this.nodeId, 'y',      this.value.y     );
-            genPushUpdateValue(parse, this.nodeId, 'width',  this.value.width );
+            if (this.value.x     != undefined) genPushUpdateValue(parse, this.nodeId, 'x',     this.value.x    );
+            if (this.value.y     != undefined) genPushUpdateValue(parse, this.nodeId, 'y',     this.value.y    );
+            if (this.value.width != undefined) genPushUpdateValue(parse, this.nodeId, 'width', this.value.width);
 
-            if (evalHeight) // lines don't have height
+            if (   evalHeight // lines don't have height
+                && this.value.height != undefined)
                 genPushUpdateValue(parse, this.nodeId, 'height', this.value.height);
 
-            genPushUpdateValue(parse, this.nodeId, 'angle',  this.value.angle );
+            if (this.value.angle != undefined) genPushUpdateValue(parse, this.nodeId, 'angle',  this.value.angle );
 
-            genPushUpdateValue(parse, this.nodeId, 'props',  this.value.props );
+            if (this.value.props != undefined) genPushUpdateValue(parse, this.nodeId, 'props',  this.value.props);
         }
     }
 
@@ -14626,7 +14963,7 @@ extends GShape
             ];
         }
 
-        
+
         await super.evalObjects(parse);
     }
 
@@ -15529,6 +15866,185 @@ extends GShape
 }
 
 
+class GVectorPath
+extends GShape
+{
+    input   = null;
+
+    points  = null;
+    degree  = null;
+    winding = null;
+    round   = null;
+
+
+
+    constructor(nodeId, options)
+    {
+        super(VECTOR_PATH, nodeId, options);
+    }
+
+
+
+    copy()
+    {
+        const copy = new GVectorPath(this.nodeId, this.options);
+
+        copy.copyBase(this);
+
+        if (this.input) 
+            copy.input = this.input.copy();
+
+        if (this.points ) copy.points  = this.points .copy();
+        if (this.degree ) copy.degree  = this.degree .copy();
+        if (this.winding) copy.winding = this.winding.copy();
+        if (this.round  ) copy.round   = this.round  .copy();
+
+        return copy;
+    }
+
+
+
+    async eval(parse)
+    {
+        if (this.isCached())
+            return this;
+
+
+        const points  = this.points  ? (await this.points .eval(parse)).toValue() : null;
+        const degree  = this.degree  ? (await this.degree .eval(parse)).toValue() : null;
+        const winding = this.winding ? (await this.winding.eval(parse)).toValue() : null;
+        const round   = this.round   ? (await this.round  .eval(parse)).toValue() : null;
+
+
+        let input = null;
+
+        if (this.input)
+        {
+            input = (await this.input.eval(parse)).toValue();
+
+            this.value = new VectorPathValue(
+                this.nodeId,
+                points  ?? input.points,
+                degree  ?? input.degree,
+                winding ?? input.winding,
+                round   ?? input.round);
+        }
+        else
+        {
+            this.value = new VectorPathValue(this.nodeId, points, degree, winding, round);
+        }
+
+
+        if (parse.isLastRepeat())
+        {
+            genPushUpdateValue(parse, this.nodeId, 'value',   this.value        );
+            genPushUpdateValue(parse, this.nodeId, 'points',  this.value.points );
+            genPushUpdateValue(parse, this.nodeId, 'degree',  this.value.degree );
+            genPushUpdateValue(parse, this.nodeId, 'winding', this.value.winding);
+            genPushUpdateValue(parse, this.nodeId, 'round',   this.value.round  );
+        }
+
+
+        await this.evalShapeBase(parse, input);
+
+
+        await this.evalObjects(parse);
+
+
+        this.validate();
+
+        return this;
+    }
+
+
+
+    async evalObjects(parse, options = {})
+    {
+        if (!this.options.enabled)
+            return;
+            
+
+        const points = [];
+
+        if (this.points.objects)
+        {
+            console.log('this.points.objects =', this.points.objects);
+            const objPoints = this.points.objects.filter(o => o.type == POINT);
+
+            for (const pt of objPoints)
+                points.push(new PointValue(
+                    new NumberValue(pt._x), 
+                    new NumberValue(pt._y)));
+        }
+
+
+console.log('points =', points);
+        if (   points.length >= 2
+            && this.value.degree 
+            && this.value.winding
+            && this.value.round)
+        {
+            this.objects =
+            [
+                new FigmaVectorPath(
+                    this.nodeId,
+                    NULL,
+                    points,
+                    this.value.degree .value,
+                    this.value.winding.value,
+                    this.value.round  .value)
+            ];
+        }
+        else
+            this.objects = [];
+
+
+        
+        await super.evalObjects(parse);
+    }
+
+
+
+    toValue()
+    {
+        const path = new VectorPathValue(
+            this.nodeId,
+            this.points .toValue(),
+            this.degree .toValue(),
+            this.winding.toValue(),
+            this.round  .toValue());
+
+        path.props = this.props.toValue();
+
+        return path;
+    }
+
+
+
+    isValid()
+    {
+        return super.isValid()
+            && this.points .isValid()
+            && this.degree .isValid()
+            && this.winding.isValid()
+            && this.round  .isValid();
+    }
+
+
+
+    invalidate()
+    {
+        super.invalidate();
+
+        if (this.input  ) this.input  .invalidate();
+        if (this.points ) this.points .invalidate();
+        if (this.degree ) this.degree .invalidate();
+        if (this.winding) this.winding.invalidate();
+        if (this.round  ) this.round  .invalidate();
+    }
+}
+
+
 class GMove
 extends GOperator
 {
@@ -16144,27 +16660,11 @@ extends GOperator
         if (   this.value.x
             && this.value.y)
         {
-            const size = 8 / parse.viewportZoom;
-
-            const point = new FigmaEllipse(
+            const point = new FigmaPoint(
                 this.nodeId,
                 NULL,
-                this.value.x.value - size/2,
-                this.value.y.value - size/2,
-                size,
-                size,
-                0);
-
-            point  .fills.push(['SOLID', '255 255 255 100']);
-            point.strokes.push(['SOLID',  '12 140 233 100']);
-
-            point.strokeWeight     =  1.25 / parse.viewportZoom;
-            point.strokeAlign      = 'INSIDE';
-            point.strokeJoin       = 'MITER';
-            point.strokeMiterLimit =  28.96;
-            point.data             = 'point';
-            point._x               = this.value.x.value;
-            point._y               = this.value.y.value;
+                this.value.x.value,
+                this.value.y.value);
 
             this.objects = [point];
         }
@@ -19851,6 +20351,159 @@ function genParseTextShape(parse)
 
 
 
+function genParsePointValue(parse)
+{
+    parse.pos++; // POINT_VALUE
+
+    const point = parse.move();
+
+    if (parse.settings.logRequests) 
+        logReqValue(POINT_VALUE, point, parse);
+
+    return parsePointValue(point)[0];
+}
+
+
+
+function genParsePoint(parse)
+{
+    const [, nodeId, options, ignore] = genParseNodeStart(parse);
+
+
+    const point = new GPoint(nodeId, options);
+
+
+    let nInputs = -1;
+
+    if (!ignore)
+    {
+        nInputs = parseInt(parse.move());
+        console.assert(nInputs => 0 && nInputs <= 1, 'nInputs must be [0, 1]');
+    }
+
+
+    if (parse.settings.logRequests) 
+        logReq(point, parse, ignore);
+
+
+    if (ignore) 
+    {
+        genParseNodeEnd(parse, point);
+        return parse.parsedNodes.find(n => n.nodeId == nodeId);
+    }
+
+
+    parse.nTab++;
+
+
+    if (nInputs == 1)
+        point.input = genParse(parse);
+
+
+    const nParamIds = genParseParamCount(parse);
+
+    for (let i = 0; i < nParamIds; i++)
+    {
+        const paramId = genParseParamId(parse);
+
+        parse.inParam = true;
+
+        switch (paramId)
+        {
+        case 'x': point.x = genParse(parse); break;
+        case 'y': point.y = genParse(parse); break;
+        }
+    }
+
+
+    parse.inParam = false;
+    parse.nTab--;
+
+
+    genParseNodeEnd(parse, point);
+    return point;
+}
+
+
+
+function genParseVectorPathValue(parse)
+{
+    parse.pos++; // VECTOR_PATH_VALUE
+
+    const path = parse.move();
+
+    if (parse.settings.logRequests) 
+        logReqValue(VECTOR_PATH_VALUE, path, parse);
+
+    return parseVectorPathValue(path)[0];
+}
+
+
+
+function genParseVectorPath(parse)
+{
+    const [, nodeId, options, ignore] = genParseNodeStart(parse);
+
+
+    const path = new GVectorPath(nodeId, options);
+
+
+    let nInputs = -1;
+
+    if (!ignore)
+    {
+        nInputs = parseInt(parse.move());
+        console.assert(nInputs => 0 && nInputs <= 1, 'nInputs must be [0, 1]');
+    }
+
+
+    if (parse.settings.logRequests) 
+        logReq(path, parse, ignore);
+
+
+    if (ignore) 
+    {
+        genParseNodeEnd(parse, path);
+        return parse.parsedNodes.find(n => n.nodeId == nodeId);
+    }
+
+
+    parse.nTab++;
+
+
+    if (nInputs == 1)
+        path.input = genParse(parse);
+
+
+    const nParamIds = genParseParamCount(parse);
+
+    for (let i = 0; i < nParamIds; i++)
+    {
+        const paramId = genParseParamId(parse);
+
+        parse.inParam = true;
+
+        switch (paramId)
+        {       
+        case 'points':  path.points  = genParse(parse); break;
+        case 'degree':  path.degree  = genParse(parse); break;
+        case 'winding': path.winding = genParse(parse); break;
+        case 'round':   path.round   = genParse(parse); break;
+        case 'props':   path.props   = genParse(parse); break;
+        }
+    }
+
+
+    parse.inParam = false;
+    parse.nTab--;
+
+
+    genParseNodeEnd(parse, path);
+    return path;
+}
+
+
+
 function genParseMove(parse)
 {
     const [, nodeId, options, ignore] = genParseNodeStart(parse);
@@ -19995,68 +20648,6 @@ function genParseScale(parse)
     genParseNodeEnd(parse, scale);
     return scale;
 }
-
-
-
-function genParsePoint(parse)
-{
-    const [, nodeId, options, ignore] = genParseNodeStart(parse);
-
-
-    const point = new GPoint(nodeId, options);
-
-
-    let nInputs = -1;
-
-    if (!ignore)
-    {
-        nInputs = parseInt(parse.move());
-        console.assert(nInputs => 0 && nInputs <= 1, 'nInputs must be [0, 1]');
-    }
-
-
-    if (parse.settings.logRequests) 
-        logReq(point, parse, ignore);
-
-
-    if (ignore) 
-    {
-        genParseNodeEnd(parse, point);
-        return parse.parsedNodes.find(n => n.nodeId == nodeId);
-    }
-
-
-    parse.nTab++;
-
-
-    if (nInputs == 1)
-        point.input = genParse(parse);
-
-
-    const nParamIds = genParseParamCount(parse);
-
-    for (let i = 0; i < nParamIds; i++)
-    {
-        const paramId = genParseParamId(parse);
-
-        parse.inParam = true;
-
-        switch (paramId)
-        {
-        case 'x': point.x = genParse(parse); break;
-        case 'y': point.y = genParse(parse); break;
-        }
-    }
-
-
-    parse.inParam = false;
-    parse.nTab--;
-
-
-    genParseNodeEnd(parse, point);
-    return point;
-}
-
 
 
 function genParseFillValue(parse)
@@ -20891,7 +21482,7 @@ class Parse
         this.updateParamId = updateParamId;
    
         this.viewportZoom  = viewportZoom;
-        
+
         
         this.settings.showAllColorSpaces = showAllColorSpaces;
         this.settings.logRequests           = logRequests;
@@ -21023,11 +21614,15 @@ function genParse(parse, inParam = true)
     else if (parse.next == STAR                   ) result = genParseStar            (parse);
     else if (parse.next == TEXTSHAPE              ) result = genParseTextShape       (parse);
 
+    else if (parse.next == VECTOR_PATH_VALUE      ) result = genParseVectorPathValue (parse);
+    else if (parse.next == VECTOR_PATH            ) result = genParseVectorPath      (parse);
+
+    else if (parse.next == POINT_VALUE            ) result = genParsePointValue      (parse);
+    else if (parse.next == POINT                  ) result = genParsePoint           (parse);
+
     else if (parse.next == MOVE                   ) result = genParseMove            (parse);
     else if (parse.next == ROTATE                 ) result = genParseRotate          (parse);
     else if (parse.next == SCALE                  ) result = genParseScale           (parse);
-    
-    else if (parse.next == POINT                  ) result = genParsePoint           (parse);
 
     else if (parse.next == GROUP_NODE             ) result = genParseGroupNode       (parse);
     else if (parse.next == GROUP_PARAM            ) result = genParseGroupParam      (parse);

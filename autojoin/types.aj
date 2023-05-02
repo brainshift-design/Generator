@@ -10,6 +10,8 @@
 ../generator/types/figma/FigmaPolygon.js
 ../generator/types/figma/FigmaStar.js
 ../generator/types/figma/FigmaText.js
+../generator/types/figma/FigmaPoint.js
+../generator/types/figma/FigmaVectorPath.js
 
 ../generator/types/figma/FigmaColorStyle.js
 
@@ -38,6 +40,7 @@
 ../generator/types/values/StarValue.js
 ../generator/types/values/TextShapeValue.js
 ../generator/types/values/PointValue.js
+../generator/types/values/VectorPathValue.js
 
 
 ../generator/types/flow/GList.js
@@ -133,6 +136,8 @@
 ../generator/types/shape/GPolygon.js
 ../generator/types/shape/GStar.js
 ../generator/types/shape/GTextShape.js
+../generator/types/shape/GVectorPath.js
+
 
 ../generator/types/shape/GMove.js
 ../generator/types/shape/GRotate.js

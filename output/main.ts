@@ -672,58 +672,63 @@ const COLOR_TYPES =
 ];
 
 
-const FILL_VALUE       = 'FILL#';
-const FILL             = 'FILL';
-const FILL_TYPES       = [FILL_VALUE, FILL];
+const FILL_VALUE        = 'FILL#';
+const FILL              = 'FILL';
+const FILL_TYPES        = [FILL_VALUE, FILL];
+ 
+const STROKE_VALUE      = 'STRK#';
+const STROKE            = 'STRK';
+const STROKE_TYPES      = [STROKE_VALUE, STROKE];
+ 
+const COLOR_STOP_VALUE  = 'CSTOP#';
+const COLOR_STOP        = 'CSTOP';
+ 
+const GRADIENT_VALUE    = 'GRAD#';
+const GRADIENT          = 'GRAD';
+const GRADIENT_TYPES    = [GRADIENT_VALUE, GRADIENT];
+ 
+ 
+const COLOR_STYLE       = 'CSTL';
+ 
+ 
+const SHAPE_VALUE       = 'SHP#'; // abstract placeholder
+ 
+const RECTANGLE_VALUE   = 'RECT#';
+const RECTANGLE         = 'RECT'; 
+const RECTANGLE_TYPES   = [RECTANGLE_VALUE, RECTANGLE];
+ 
+const LINE_VALUE        = 'LINE#';
+const LINE              = 'LINE'; 
+const LINE_TYPES        = [LINE_VALUE, LINE];
+ 
+const ELLIPSE_VALUE     = 'ELPS#';
+const ELLIPSE           = 'ELPS'; 
+const ELLIPSE_TYPES     = [ELLIPSE_VALUE, ELLIPSE];
+ 
+const POLYGON_VALUE     = 'POLY#';
+const POLYGON           = 'POLY'; 
+const POLYGON_TYPES     = [POLYGON_VALUE, POLYGON];
+ 
+const STAR_VALUE        = 'STAR#';
+const STAR              = 'STAR'; 
+const STAR_TYPES        = [STAR_VALUE, STAR];
+ 
+const TEXTSHAPE_VALUE   = 'TXTS#';
+const TEXTSHAPE         = 'TXTS'; 
+const TEXTSHAPE_TYPES   = [TEXTSHAPE_VALUE, TEXTSHAPE];
 
-const STROKE_VALUE     = 'STRK#';
-const STROKE           = 'STRK';
-const STROKE_TYPES     = [STROKE_VALUE, STROKE];
-
-const COLOR_STOP_VALUE = 'CSTOP#';
-const COLOR_STOP       = 'CSTOP';
-
-const GRADIENT_VALUE   = 'GRAD#';
-const GRADIENT         = 'GRAD';
-const GRADIENT_TYPES   = [GRADIENT_VALUE, GRADIENT];
+const VECTOR_PATH_VALUE = 'VEC#';
+const VECTOR_PATH       = 'VEC'; 
+const VECTOR_PATH_TYPES = [VECTOR_PATH_VALUE, VECTOR_PATH];
 
 
-const COLOR_STYLE      = 'CSTL';
-
-
-const SHAPE_VALUE      = 'SHP#'; // abstract placeholder
-
-const RECTANGLE_VALUE  = 'RECT#';
-const RECTANGLE        = 'RECT'; 
-const RECTANGLE_TYPES  = [RECTANGLE_VALUE, RECTANGLE];
-
-const LINE_VALUE       = 'LINE#';
-const LINE             = 'LINE'; 
-const LINE_TYPES       = [LINE_VALUE, LINE];
-
-const ELLIPSE_VALUE    = 'ELPS#';
-const ELLIPSE          = 'ELPS'; 
-const ELLIPSE_TYPES    = [ELLIPSE_VALUE, ELLIPSE];
-
-const POLYGON_VALUE    = 'POLY#';
-const POLYGON          = 'POLY'; 
-const POLYGON_TYPES    = [POLYGON_VALUE, POLYGON];
-
-const STAR_VALUE       = 'STAR#';
-const STAR             = 'STAR'; 
-const STAR_TYPES       = [STAR_VALUE, STAR];
-
-const TEXTSHAPE_VALUE  = 'TXTS#';
-const TEXTSHAPE        = 'TXTS'; 
-const TEXTSHAPE_TYPES  = [TEXTSHAPE_VALUE, TEXTSHAPE];
-
-const MOVE             = 'MOVE';
-const ROTATE           = 'ROT';
-const SCALE            = 'SCALE';
-
-
-const POINT            = 'PT';
-const POINT_VALUE      = 'PT#';
+const MOVE              = 'MOVE';
+const ROTATE            = 'ROT';
+const SCALE             = 'SCALE';
+ 
+ 
+const POINT             = 'PT';
+const POINT_VALUE       = 'PT#';
 
 
 const POINT_TYPES =
@@ -743,7 +748,8 @@ const SHAPE_VALUES =
     POLYGON_VALUE,
     STAR_VALUE,
     TEXTSHAPE_VALUE,
-    POINT_VALUE
+    POINT_VALUE,
+    VECTOR_PATH_VALUE
 ];
 
 
@@ -757,39 +763,41 @@ const SHAPE_TYPES =
     ...POLYGON_TYPES,
     ...STAR_TYPES,
     ...TEXTSHAPE_TYPES,
+    ...POINT_TYPES,
+    ...VECTOR_PATH_TYPES,
 
     MOVE,
     ROTATE,
-    SCALE,
-
-    ...POINT_TYPES
+    SCALE
 ];
 
 
 const ALL_VALUES =
 [
-           LIST_VALUE,
-    NUMBER_LIST_VALUE,
-      TEXT_LIST_VALUE,
-     SHAPE_LIST_VALUE,
+            LIST_VALUE,
+     NUMBER_LIST_VALUE,
+       TEXT_LIST_VALUE,
+      SHAPE_LIST_VALUE,
      
-         NUMBER_VALUE,
-           TEXT_VALUE,
-          COLOR_VALUE,
-
-           FILL_VALUE,
-         STROKE_VALUE,
-
-     COLOR_STOP_VALUE,
-       GRADIENT_VALUE,
-
-          SHAPE_VALUE,
-      RECTANGLE_VALUE,
-           LINE_VALUE,
-        ELLIPSE_VALUE,
-        POLYGON_VALUE,
-           STAR_VALUE,
-      TEXTSHAPE_VALUE
+          NUMBER_VALUE,
+            TEXT_VALUE,
+           COLOR_VALUE,
+ 
+            FILL_VALUE,
+          STROKE_VALUE,
+ 
+      COLOR_STOP_VALUE,
+        GRADIENT_VALUE,
+ 
+           SHAPE_VALUE,
+       RECTANGLE_VALUE,
+            LINE_VALUE,
+         ELLIPSE_VALUE,
+         POLYGON_VALUE,
+            STAR_VALUE,
+       TEXTSHAPE_VALUE,
+           POINT_VALUE,
+     VECTOR_PATH_VALUE
 ];
 
 
@@ -1251,7 +1259,7 @@ figma.showUI(
 
 
 var curZoom = figma.viewport.zoom;
-setInterval(() => updatePointSizes(), 250);
+setInterval(() => updatePointSizes(), 100);
 
 
 
@@ -1372,7 +1380,6 @@ function figDeleteObjectsExcept(nodeIds, ignoreObjects)
 
 function figDeleteAllObjects()
 {
-    console.log('delete all objects');
     for (const obj of figma.currentPage.children)
         if (obj.getPluginData('id') != null) 
             obj.remove();
@@ -1699,18 +1706,39 @@ function updatePointSize(point)
 
 
 
+
+function updatePointSize_(point, genPoint)
+{
+    const size = 8 / curZoom;
+
+    point.resizeWithoutConstraints(size, size);
+
+    point.x = genPoint.x - size/2;
+    point.y = genPoint.y - size/2;
+
+    point.strokeWeight = 1.25 / curZoom;
+}
+
+
+
+///////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+
 function figCreateObject(objects, genObj)
 {
     let figObj;
 
     switch (genObj.type)
     {
-        case RECTANGLE:  figObj = figCreateRect   (genObj);  break;
-        case LINE:       figObj = figCreateLine   (genObj);  break;
-        case ELLIPSE:    figObj = figCreateEllipse(genObj);  break;
-        case POLYGON:    figObj = figCreatePolygon(genObj);  break;
-        case STAR:       figObj = figCreateStar   (genObj);  break;
-        case TEXTSHAPE:  figObj = figCreateText   (genObj);  break;
+        case RECTANGLE:   figObj = figCreateRect      (genObj);  break;
+        case LINE:        figObj = figCreateLine      (genObj);  break;
+        case ELLIPSE:     figObj = figCreateEllipse   (genObj);  break;
+        case POLYGON:     figObj = figCreatePolygon   (genObj);  break;
+        case STAR:        figObj = figCreateStar      (genObj);  break;
+        case TEXTSHAPE:   figObj = figCreateText      (genObj);  break;
+        case POINT:       figObj = figCreatePoint     (genObj);  break;
+        case VECTOR_PATH: figObj = figCreateVectorPath(genObj);  break;
     }
 
     console.assert(!!figObj, 'no Figma object created');
@@ -1720,7 +1748,7 @@ function figCreateObject(objects, genObj)
     figObj.setPluginData('nodeId',   genObj.nodeId);
 
     
-    if (genObj.data == 'point')
+    if (genObj.type == POINT)
         figPoints.push(figObj);
 
 
@@ -1798,12 +1826,14 @@ function figUpdateObject(figObj, genObj)
 {
     switch (genObj.type)
     {
-        case RECTANGLE:  figUpdateRect   (figObj, genObj);  break;
-        case LINE:       figUpdateLine   (figObj, genObj);  break;
-        case ELLIPSE:    figUpdateEllipse(figObj, genObj);  break;
-        case POLYGON:    figUpdatePolygon(figObj, genObj);  break;
-        case STAR:       figUpdateStar   (figObj, genObj);  break;
-        case TEXTSHAPE:  figUpdateText   (figObj, genObj);  break;
+        case RECTANGLE:   figUpdateRect      (figObj, genObj);  break;
+        case LINE:        figUpdateLine      (figObj, genObj);  break;
+        case ELLIPSE:     figUpdateEllipse   (figObj, genObj);  break;
+        case POLYGON:     figUpdatePolygon   (figObj, genObj);  break;
+        case STAR:        figUpdateStar      (figObj, genObj);  break;
+        case TEXTSHAPE:   figUpdateText      (figObj, genObj);  break;
+        case VECTOR_PATH: figUpdatePoint     (figObj, genObj);  break;
+        case VECTOR_PATH: figUpdateVectorPath(figObj, genObj);  break;
     }
 }
 
@@ -2321,6 +2351,151 @@ function setTextStyle(figText, genText)
 
 
 
+function genPointIsValid(genPoint)
+{
+    return genPoint.x != null && !isNaN(genPoint.x)
+        && genPoint.y != null && !isNaN(genPoint.y);
+}
+
+
+
+function figCreatePoint(genPoint)
+{    
+    // console.log('genPoint =', genPoint);
+
+    const point = figma.createEllipse();
+
+    point.name = makeObjectName(genPoint);
+
+    if (!genPointIsValid(genPoint))
+        return point;
+
+
+    point.rotation = 0;
+
+    
+    if (figPoints.includes(point))
+        updatePointSize_(point, genPoint);
+
+    else
+    {
+        const size = 8 / curZoom;
+
+        point.x = genPoint.x - size/2;
+        point.y = genPoint.y - size/2;
+
+        point.resizeWithoutConstraints(size, size);
+
+        
+        point.fills            =  getObjectFills([['SOLID', '255 255 255 100']]);
+        point.strokes          =  getObjectFills([['SOLID',  '12 140 233 100']]);
+
+        point.strokeWeight     =  1.25 / curZoom;
+        point.strokeAlign      = 'INSIDE';
+        point.strokeJoin       = 'MITER';
+        point.strokeMiterLimit =  2;
+    }
+
+    
+    return point;
+}
+
+
+
+function figUpdatePoint(figPoint, genPoint)
+{
+    if (!genPointIsValid(genPoint))
+        return;
+
+
+    const size = 8 / curZoom;
+
+    figPoint.x = genPoint.x - size/2;
+    figPoint.y = genPoint.y - size/2;
+
+    figPoint.resizeWithoutConstraints(size, size);
+
+
+    point.strokeWeight =  1.25 / curZoom;
+}
+
+
+
+///////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+
+function genVectorPathIsValid(genPath)
+{
+    return genPath.winding != null && !isNaN(genPath.winding)
+        && genPath.round   != null && !isNaN(genPath.round  );
+}
+
+
+
+function figCreateVectorPath(genPath)
+{
+    //console.log(obj);
+
+    const figPath = figma.createVector();
+
+    figPath.name = makeObjectName(genPath);
+
+    if (!genVectorPathIsValid(genPath))
+        return figPath;
+
+    
+    figPath.x = 0; //genPath.x;
+    figPath.y = 0; //genPath.y;
+
+
+    figPath.vectorPaths = [{
+        windingRule: genPath.winding == 1 ? 'NONZERO' : 'EVENODD',
+        data:        genPath.pathData
+    }];
+
+
+    figPath.cornerRadius = genPath.round;
+
+
+    setObjectFills  (figPath, genPath);
+    setObjectStrokes(figPath, genPath);
+
+
+    return figPath;
+}
+
+
+
+function figUpdateVectorPath(figPath, genPath)
+{
+    if (!genVectorPathIsValid(genPath))
+        return;
+
+
+    figPath.x = 0; //genPath.x;
+    figPath.y = 0; //genPath.y;
+
+    
+    figPath.vectorPaths = [{
+        windingRule: genPath.winding == 1 ? 'NONZERO' : 'EVENODD',
+        data:        genPath.pathData
+    }];
+
+
+    figPath.cornerRadius = genPath.round;
+    
+
+    setObjectFills  (figPath, genPath);
+    setObjectStrokes(figPath, genPath);
+}
+
+
+
+///////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+
 // function figCreateFrame()
 // {
 //     let frame = figma.createFrame();
@@ -2345,7 +2520,9 @@ function setTextStyle(figText, genText)
 
 function getObjectFills(objFills)
 {
+    console.log('objFills =', objFills);
     const fills = [];
+
 
     for (const _fill of objFills)
     {
@@ -2379,6 +2556,7 @@ function getObjectFills(objFills)
         }
     }
 
+
     return fills;
 }
 
@@ -2400,12 +2578,16 @@ function setObjectStrokes(obj, src)
     if (    src.strokes != null
         && !isEmpty(src.strokes))
     {
-        obj.strokes = getObjectFills(src.strokes);
+        obj.strokes      = getObjectFills(src.strokes);
 
-        obj.strokeWeight     = Math.max(0, src.strokeWeight);
-        obj.strokeAlign      = src.strokeAlign;
-        obj.strokeJoin       = src.strokeJoin;
-        obj.strokeMiterLimit = Math.min(Math.max(0, src.strokeMiterLimit), 16);
+        obj.strokeWeight = Math.max(0, src.strokeWeight);
+        obj.strokeAlign  = src.strokeAlign;
+        obj.strokeJoin   = src.strokeJoin;
+        
+        const miterAngle = src.strokeMiterLimit / 360 * Tau;
+        const miterLimit = 1 / Math.sin(miterAngle / 2);
+        
+        obj.strokeMiterLimit = Math.min(Math.max(0, miterLimit), 16);
     }
     else
         obj.strokes = [];

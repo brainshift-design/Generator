@@ -219,58 +219,63 @@ const COLOR_TYPES =
 ];
 
 
-const FILL_VALUE       = 'FILL#';
-const FILL             = 'FILL';
-const FILL_TYPES       = [FILL_VALUE, FILL];
+const FILL_VALUE        = 'FILL#';
+const FILL              = 'FILL';
+const FILL_TYPES        = [FILL_VALUE, FILL];
+ 
+const STROKE_VALUE      = 'STRK#';
+const STROKE            = 'STRK';
+const STROKE_TYPES      = [STROKE_VALUE, STROKE];
+ 
+const COLOR_STOP_VALUE  = 'CSTOP#';
+const COLOR_STOP        = 'CSTOP';
+ 
+const GRADIENT_VALUE    = 'GRAD#';
+const GRADIENT          = 'GRAD';
+const GRADIENT_TYPES    = [GRADIENT_VALUE, GRADIENT];
+ 
+ 
+const COLOR_STYLE       = 'CSTL';
+ 
+ 
+const SHAPE_VALUE       = 'SHP#'; // abstract placeholder
+ 
+const RECTANGLE_VALUE   = 'RECT#';
+const RECTANGLE         = 'RECT'; 
+const RECTANGLE_TYPES   = [RECTANGLE_VALUE, RECTANGLE];
+ 
+const LINE_VALUE        = 'LINE#';
+const LINE              = 'LINE'; 
+const LINE_TYPES        = [LINE_VALUE, LINE];
+ 
+const ELLIPSE_VALUE     = 'ELPS#';
+const ELLIPSE           = 'ELPS'; 
+const ELLIPSE_TYPES     = [ELLIPSE_VALUE, ELLIPSE];
+ 
+const POLYGON_VALUE     = 'POLY#';
+const POLYGON           = 'POLY'; 
+const POLYGON_TYPES     = [POLYGON_VALUE, POLYGON];
+ 
+const STAR_VALUE        = 'STAR#';
+const STAR              = 'STAR'; 
+const STAR_TYPES        = [STAR_VALUE, STAR];
+ 
+const TEXTSHAPE_VALUE   = 'TXTS#';
+const TEXTSHAPE         = 'TXTS'; 
+const TEXTSHAPE_TYPES   = [TEXTSHAPE_VALUE, TEXTSHAPE];
 
-const STROKE_VALUE     = 'STRK#';
-const STROKE           = 'STRK';
-const STROKE_TYPES     = [STROKE_VALUE, STROKE];
-
-const COLOR_STOP_VALUE = 'CSTOP#';
-const COLOR_STOP       = 'CSTOP';
-
-const GRADIENT_VALUE   = 'GRAD#';
-const GRADIENT         = 'GRAD';
-const GRADIENT_TYPES   = [GRADIENT_VALUE, GRADIENT];
+const VECTOR_PATH_VALUE = 'VEC#';
+const VECTOR_PATH       = 'VEC'; 
+const VECTOR_PATH_TYPES = [VECTOR_PATH_VALUE, VECTOR_PATH];
 
 
-const COLOR_STYLE      = 'CSTL';
-
-
-const SHAPE_VALUE      = 'SHP#'; // abstract placeholder
-
-const RECTANGLE_VALUE  = 'RECT#';
-const RECTANGLE        = 'RECT'; 
-const RECTANGLE_TYPES  = [RECTANGLE_VALUE, RECTANGLE];
-
-const LINE_VALUE       = 'LINE#';
-const LINE             = 'LINE'; 
-const LINE_TYPES       = [LINE_VALUE, LINE];
-
-const ELLIPSE_VALUE    = 'ELPS#';
-const ELLIPSE          = 'ELPS'; 
-const ELLIPSE_TYPES    = [ELLIPSE_VALUE, ELLIPSE];
-
-const POLYGON_VALUE    = 'POLY#';
-const POLYGON          = 'POLY'; 
-const POLYGON_TYPES    = [POLYGON_VALUE, POLYGON];
-
-const STAR_VALUE       = 'STAR#';
-const STAR             = 'STAR'; 
-const STAR_TYPES       = [STAR_VALUE, STAR];
-
-const TEXTSHAPE_VALUE  = 'TXTS#';
-const TEXTSHAPE        = 'TXTS'; 
-const TEXTSHAPE_TYPES  = [TEXTSHAPE_VALUE, TEXTSHAPE];
-
-const MOVE             = 'MOVE';
-const ROTATE           = 'ROT';
-const SCALE            = 'SCALE';
-
-
-const POINT            = 'PT';
-const POINT_VALUE      = 'PT#';
+const MOVE              = 'MOVE';
+const ROTATE            = 'ROT';
+const SCALE             = 'SCALE';
+ 
+ 
+const POINT             = 'PT';
+const POINT_VALUE       = 'PT#';
 
 
 const POINT_TYPES =
@@ -290,7 +295,8 @@ const SHAPE_VALUES =
     POLYGON_VALUE,
     STAR_VALUE,
     TEXTSHAPE_VALUE,
-    POINT_VALUE
+    POINT_VALUE,
+    VECTOR_PATH_VALUE
 ];
 
 
@@ -304,39 +310,41 @@ const SHAPE_TYPES =
     ...POLYGON_TYPES,
     ...STAR_TYPES,
     ...TEXTSHAPE_TYPES,
+    ...POINT_TYPES,
+    ...VECTOR_PATH_TYPES,
 
     MOVE,
     ROTATE,
-    SCALE,
-
-    ...POINT_TYPES
+    SCALE
 ];
 
 
 const ALL_VALUES =
 [
-           LIST_VALUE,
-    NUMBER_LIST_VALUE,
-      TEXT_LIST_VALUE,
-     SHAPE_LIST_VALUE,
+            LIST_VALUE,
+     NUMBER_LIST_VALUE,
+       TEXT_LIST_VALUE,
+      SHAPE_LIST_VALUE,
      
-         NUMBER_VALUE,
-           TEXT_VALUE,
-          COLOR_VALUE,
-
-           FILL_VALUE,
-         STROKE_VALUE,
-
-     COLOR_STOP_VALUE,
-       GRADIENT_VALUE,
-
-          SHAPE_VALUE,
-      RECTANGLE_VALUE,
-           LINE_VALUE,
-        ELLIPSE_VALUE,
-        POLYGON_VALUE,
-           STAR_VALUE,
-      TEXTSHAPE_VALUE
+          NUMBER_VALUE,
+            TEXT_VALUE,
+           COLOR_VALUE,
+ 
+            FILL_VALUE,
+          STROKE_VALUE,
+ 
+      COLOR_STOP_VALUE,
+        GRADIENT_VALUE,
+ 
+           SHAPE_VALUE,
+       RECTANGLE_VALUE,
+            LINE_VALUE,
+         ELLIPSE_VALUE,
+         POLYGON_VALUE,
+            STAR_VALUE,
+       TEXTSHAPE_VALUE,
+           POINT_VALUE,
+     VECTOR_PATH_VALUE
 ];
 
 

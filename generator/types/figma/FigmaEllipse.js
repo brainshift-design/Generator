@@ -7,7 +7,7 @@ extends FigmaShape
     height;
     angle;
 
-
+    
 
     constructor(nodeId, objectId, x, y, width, height, angle)
     {

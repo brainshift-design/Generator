@@ -71,19 +71,20 @@ extends GOperator
         else
             this.value.props = props;
 
-
+            
         if (parse.isLastRepeat())
         {
-            genPushUpdateValue(parse, this.nodeId, 'x',      this.value.x     );
-            genPushUpdateValue(parse, this.nodeId, 'y',      this.value.y     );
-            genPushUpdateValue(parse, this.nodeId, 'width',  this.value.width );
+            if (this.value.x     != undefined) genPushUpdateValue(parse, this.nodeId, 'x',     this.value.x    );
+            if (this.value.y     != undefined) genPushUpdateValue(parse, this.nodeId, 'y',     this.value.y    );
+            if (this.value.width != undefined) genPushUpdateValue(parse, this.nodeId, 'width', this.value.width);
 
-            if (evalHeight) // lines don't have height
+            if (   evalHeight // lines don't have height
+                && this.value.height != undefined)
                 genPushUpdateValue(parse, this.nodeId, 'height', this.value.height);
 
-            genPushUpdateValue(parse, this.nodeId, 'angle',  this.value.angle );
+            if (this.value.angle != undefined) genPushUpdateValue(parse, this.nodeId, 'angle',  this.value.angle );
 
-            genPushUpdateValue(parse, this.nodeId, 'props',  this.value.props );
+            if (this.value.props != undefined) genPushUpdateValue(parse, this.nodeId, 'props',  this.value.props);
         }
     }
 

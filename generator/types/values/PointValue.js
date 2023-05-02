@@ -119,8 +119,8 @@ function parsePointValue(str, i = -1)
 
     const iStart = i;
 
-    const x = parseNumberValue(str[i]); i += x     [1];
-    const y = parseNumberValue(str[i]); i += y     [1];
+    const x = parseNumberValue(str[i]); i += x[1];
+    const y = parseNumberValue(str[i]); i += y[1];
 
 
     const rect = new PointValue(

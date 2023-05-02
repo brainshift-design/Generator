@@ -38,18 +38,39 @@ function updatePointSize(point)
 
 
 
+
+function updatePointSize_(point, genPoint)
+{
+    const size = 8 / curZoom;
+
+    point.resizeWithoutConstraints(size, size);
+
+    point.x = genPoint.x - size/2;
+    point.y = genPoint.y - size/2;
+
+    point.strokeWeight = 1.25 / curZoom;
+}
+
+
+
+///////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+
 function figCreateObject(objects, genObj)
 {
     let figObj;
 
     switch (genObj.type)
     {
-        case RECTANGLE:  figObj = figCreateRect   (genObj);  break;
-        case LINE:       figObj = figCreateLine   (genObj);  break;
-        case ELLIPSE:    figObj = figCreateEllipse(genObj);  break;
-        case POLYGON:    figObj = figCreatePolygon(genObj);  break;
-        case STAR:       figObj = figCreateStar   (genObj);  break;
-        case TEXTSHAPE:  figObj = figCreateText   (genObj);  break;
+        case RECTANGLE:   figObj = figCreateRect      (genObj);  break;
+        case LINE:        figObj = figCreateLine      (genObj);  break;
+        case ELLIPSE:     figObj = figCreateEllipse   (genObj);  break;
+        case POLYGON:     figObj = figCreatePolygon   (genObj);  break;
+        case STAR:        figObj = figCreateStar      (genObj);  break;
+        case TEXTSHAPE:   figObj = figCreateText      (genObj);  break;
+        case POINT:       figObj = figCreatePoint     (genObj);  break;
+        case VECTOR_PATH: figObj = figCreateVectorPath(genObj);  break;
     }
 
     console.assert(!!figObj, 'no Figma object created');
@@ -59,7 +80,7 @@ function figCreateObject(objects, genObj)
     figObj.setPluginData('nodeId',   genObj.nodeId);
 
     
-    if (genObj.data == 'point')
+    if (genObj.type == POINT)
         figPoints.push(figObj);
 
 
@@ -137,12 +158,14 @@ function figUpdateObject(figObj, genObj)
 {
     switch (genObj.type)
     {
-        case RECTANGLE:  figUpdateRect   (figObj, genObj);  break;
-        case LINE:       figUpdateLine   (figObj, genObj);  break;
-        case ELLIPSE:    figUpdateEllipse(figObj, genObj);  break;
-        case POLYGON:    figUpdatePolygon(figObj, genObj);  break;
-        case STAR:       figUpdateStar   (figObj, genObj);  break;
-        case TEXTSHAPE:  figUpdateText   (figObj, genObj);  break;
+        case RECTANGLE:   figUpdateRect      (figObj, genObj);  break;
+        case LINE:        figUpdateLine      (figObj, genObj);  break;
+        case ELLIPSE:     figUpdateEllipse   (figObj, genObj);  break;
+        case POLYGON:     figUpdatePolygon   (figObj, genObj);  break;
+        case STAR:        figUpdateStar      (figObj, genObj);  break;
+        case TEXTSHAPE:   figUpdateText      (figObj, genObj);  break;
+        case VECTOR_PATH: figUpdatePoint     (figObj, genObj);  break;
+        case VECTOR_PATH: figUpdateVectorPath(figObj, genObj);  break;
     }
 }
 
@@ -660,6 +683,151 @@ function setTextStyle(figText, genText)
 
 
 
+function genPointIsValid(genPoint)
+{
+    return genPoint.x != null && !isNaN(genPoint.x)
+        && genPoint.y != null && !isNaN(genPoint.y);
+}
+
+
+
+function figCreatePoint(genPoint)
+{    
+    // console.log('genPoint =', genPoint);
+
+    const point = figma.createEllipse();
+
+    point.name = makeObjectName(genPoint);
+
+    if (!genPointIsValid(genPoint))
+        return point;
+
+
+    point.rotation = 0;
+
+    
+    if (figPoints.includes(point))
+        updatePointSize_(point, genPoint);
+
+    else
+    {
+        const size = 8 / curZoom;
+
+        point.x = genPoint.x - size/2;
+        point.y = genPoint.y - size/2;
+
+        point.resizeWithoutConstraints(size, size);
+
+        
+        point.fills            =  getObjectFills([['SOLID', '255 255 255 100']]);
+        point.strokes          =  getObjectFills([['SOLID',  '12 140 233 100']]);
+
+        point.strokeWeight     =  1.25 / curZoom;
+        point.strokeAlign      = 'INSIDE';
+        point.strokeJoin       = 'MITER';
+        point.strokeMiterLimit =  2;
+    }
+
+    
+    return point;
+}
+
+
+
+function figUpdatePoint(figPoint, genPoint)
+{
+    if (!genPointIsValid(genPoint))
+        return;
+
+
+    const size = 8 / curZoom;
+
+    figPoint.x = genPoint.x - size/2;
+    figPoint.y = genPoint.y - size/2;
+
+    figPoint.resizeWithoutConstraints(size, size);
+
+
+    point.strokeWeight =  1.25 / curZoom;
+}
+
+
+
+///////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+
+function genVectorPathIsValid(genPath)
+{
+    return genPath.winding != null && !isNaN(genPath.winding)
+        && genPath.round   != null && !isNaN(genPath.round  );
+}
+
+
+
+function figCreateVectorPath(genPath)
+{
+    //console.log(obj);
+
+    const figPath = figma.createVector();
+
+    figPath.name = makeObjectName(genPath);
+
+    if (!genVectorPathIsValid(genPath))
+        return figPath;
+
+    
+    figPath.x = 0; //genPath.x;
+    figPath.y = 0; //genPath.y;
+
+
+    figPath.vectorPaths = [{
+        windingRule: genPath.winding == 1 ? 'NONZERO' : 'EVENODD',
+        data:        genPath.pathData
+    }];
+
+
+    figPath.cornerRadius = genPath.round;
+
+
+    setObjectFills  (figPath, genPath);
+    setObjectStrokes(figPath, genPath);
+
+
+    return figPath;
+}
+
+
+
+function figUpdateVectorPath(figPath, genPath)
+{
+    if (!genVectorPathIsValid(genPath))
+        return;
+
+
+    figPath.x = 0; //genPath.x;
+    figPath.y = 0; //genPath.y;
+
+    
+    figPath.vectorPaths = [{
+        windingRule: genPath.winding == 1 ? 'NONZERO' : 'EVENODD',
+        data:        genPath.pathData
+    }];
+
+
+    figPath.cornerRadius = genPath.round;
+    
+
+    setObjectFills  (figPath, genPath);
+    setObjectStrokes(figPath, genPath);
+}
+
+
+
+///////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+
 // function figCreateFrame()
 // {
 //     let frame = figma.createFrame();
@@ -684,7 +852,9 @@ function setTextStyle(figText, genText)
 
 function getObjectFills(objFills)
 {
+    console.log('objFills =', objFills);
     const fills = [];
+
 
     for (const _fill of objFills)
     {
@@ -718,6 +888,7 @@ function getObjectFills(objFills)
         }
     }
 
+
     return fills;
 }
 
@@ -739,12 +910,16 @@ function setObjectStrokes(obj, src)
     if (    src.strokes != null
         && !isEmpty(src.strokes))
     {
-        obj.strokes = getObjectFills(src.strokes);
+        obj.strokes      = getObjectFills(src.strokes);
 
-        obj.strokeWeight     = Math.max(0, src.strokeWeight);
-        obj.strokeAlign      = src.strokeAlign;
-        obj.strokeJoin       = src.strokeJoin;
-        obj.strokeMiterLimit = Math.min(Math.max(0, src.strokeMiterLimit), 16);
+        obj.strokeWeight = Math.max(0, src.strokeWeight);
+        obj.strokeAlign  = src.strokeAlign;
+        obj.strokeJoin   = src.strokeJoin;
+        
+        const miterAngle = src.strokeMiterLimit / 360 * Tau;
+        const miterLimit = 1 / Math.sin(miterAngle / 2);
+        
+        obj.strokeMiterLimit = Math.min(Math.max(0, miterLimit), 16);
     }
     else
         obj.strokes = [];

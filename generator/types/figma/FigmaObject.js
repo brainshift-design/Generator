@@ -6,8 +6,6 @@ class FigmaObject
 
     uniqueId;
 
-    data = NULL;
-
 
 
     constructor(type, nodeId)
@@ -22,8 +20,6 @@ class FigmaObject
     copyBase(base)
     {
         this.uniqueId         = base.uniqueId;
-
-        this.data             = base.data;
 
         this.fills            = clone(base.fills);
         this.strokes          = clone(base.strokes);
@@ -49,12 +45,14 @@ function copyFigmaObject(obj)
 {
     switch (obj.type)
     {
-        case RECTANGLE: return FigmaRectangle.prototype.copy.call(obj);
-        case LINE:      return FigmaLine     .prototype.copy.call(obj);
-        case ELLIPSE:   return FigmaEllipse  .prototype.copy.call(obj);
-        case POLYGON:   return FigmaPolygon  .prototype.copy.call(obj);
-        case STAR:      return FigmaStar     .prototype.copy.call(obj);
-        case TEXTSHAPE: return FigmaText     .prototype.copy.call(obj);
+        case RECTANGLE:   return FigmaRectangle .prototype.copy.call(obj);
+        case LINE:        return FigmaLine      .prototype.copy.call(obj);
+        case ELLIPSE:     return FigmaEllipse   .prototype.copy.call(obj);
+        case POLYGON:     return FigmaPolygon   .prototype.copy.call(obj);
+        case STAR:        return FigmaStar      .prototype.copy.call(obj);
+        case TEXTSHAPE:   return FigmaText      .prototype.copy.call(obj);
+        case POINT:       return FigmaPoint     .prototype.copy.call(obj);
+        case VECTOR_PATH: return FigmaVectorPath.prototype.copy.call(obj);
     }
 
     console.assert(false, 'invalid Figma object type \'' + obj.type + '\'');

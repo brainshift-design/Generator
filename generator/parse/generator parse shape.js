@@ -401,6 +401,159 @@ function genParseTextShape(parse)
 
 
 
+function genParsePointValue(parse)
+{
+    parse.pos++; // POINT_VALUE
+
+    const point = parse.move();
+
+    if (parse.settings.logRequests) 
+        logReqValue(POINT_VALUE, point, parse);
+
+    return parsePointValue(point)[0];
+}
+
+
+
+function genParsePoint(parse)
+{
+    const [, nodeId, options, ignore] = genParseNodeStart(parse);
+
+
+    const point = new GPoint(nodeId, options);
+
+
+    let nInputs = -1;
+
+    if (!ignore)
+    {
+        nInputs = parseInt(parse.move());
+        console.assert(nInputs => 0 && nInputs <= 1, 'nInputs must be [0, 1]');
+    }
+
+
+    if (parse.settings.logRequests) 
+        logReq(point, parse, ignore);
+
+
+    if (ignore) 
+    {
+        genParseNodeEnd(parse, point);
+        return parse.parsedNodes.find(n => n.nodeId == nodeId);
+    }
+
+
+    parse.nTab++;
+
+
+    if (nInputs == 1)
+        point.input = genParse(parse);
+
+
+    const nParamIds = genParseParamCount(parse);
+
+    for (let i = 0; i < nParamIds; i++)
+    {
+        const paramId = genParseParamId(parse);
+
+        parse.inParam = true;
+
+        switch (paramId)
+        {
+        case 'x': point.x = genParse(parse); break;
+        case 'y': point.y = genParse(parse); break;
+        }
+    }
+
+
+    parse.inParam = false;
+    parse.nTab--;
+
+
+    genParseNodeEnd(parse, point);
+    return point;
+}
+
+
+
+function genParseVectorPathValue(parse)
+{
+    parse.pos++; // VECTOR_PATH_VALUE
+
+    const path = parse.move();
+
+    if (parse.settings.logRequests) 
+        logReqValue(VECTOR_PATH_VALUE, path, parse);
+
+    return parseVectorPathValue(path)[0];
+}
+
+
+
+function genParseVectorPath(parse)
+{
+    const [, nodeId, options, ignore] = genParseNodeStart(parse);
+
+
+    const path = new GVectorPath(nodeId, options);
+
+
+    let nInputs = -1;
+
+    if (!ignore)
+    {
+        nInputs = parseInt(parse.move());
+        console.assert(nInputs => 0 && nInputs <= 1, 'nInputs must be [0, 1]');
+    }
+
+
+    if (parse.settings.logRequests) 
+        logReq(path, parse, ignore);
+
+
+    if (ignore) 
+    {
+        genParseNodeEnd(parse, path);
+        return parse.parsedNodes.find(n => n.nodeId == nodeId);
+    }
+
+
+    parse.nTab++;
+
+
+    if (nInputs == 1)
+        path.input = genParse(parse);
+
+
+    const nParamIds = genParseParamCount(parse);
+
+    for (let i = 0; i < nParamIds; i++)
+    {
+        const paramId = genParseParamId(parse);
+
+        parse.inParam = true;
+
+        switch (paramId)
+        {       
+        case 'points':  path.points  = genParse(parse); break;
+        case 'degree':  path.degree  = genParse(parse); break;
+        case 'winding': path.winding = genParse(parse); break;
+        case 'round':   path.round   = genParse(parse); break;
+        case 'props':   path.props   = genParse(parse); break;
+        }
+    }
+
+
+    parse.inParam = false;
+    parse.nTab--;
+
+
+    genParseNodeEnd(parse, path);
+    return path;
+}
+
+
+
 function genParseMove(parse)
 {
     const [, nodeId, options, ignore] = genParseNodeStart(parse);
@@ -544,65 +697,4 @@ function genParseScale(parse)
 
     genParseNodeEnd(parse, scale);
     return scale;
-}
-
-
-
-function genParsePoint(parse)
-{
-    const [, nodeId, options, ignore] = genParseNodeStart(parse);
-
-
-    const point = new GPoint(nodeId, options);
-
-
-    let nInputs = -1;
-
-    if (!ignore)
-    {
-        nInputs = parseInt(parse.move());
-        console.assert(nInputs => 0 && nInputs <= 1, 'nInputs must be [0, 1]');
-    }
-
-
-    if (parse.settings.logRequests) 
-        logReq(point, parse, ignore);
-
-
-    if (ignore) 
-    {
-        genParseNodeEnd(parse, point);
-        return parse.parsedNodes.find(n => n.nodeId == nodeId);
-    }
-
-
-    parse.nTab++;
-
-
-    if (nInputs == 1)
-        point.input = genParse(parse);
-
-
-    const nParamIds = genParseParamCount(parse);
-
-    for (let i = 0; i < nParamIds; i++)
-    {
-        const paramId = genParseParamId(parse);
-
-        parse.inParam = true;
-
-        switch (paramId)
-        {
-        case 'x': point.x = genParse(parse); break;
-        case 'y': point.y = genParse(parse); break;
-        }
-    }
-
-
-    parse.inParam = false;
-    parse.nTab--;
-
-
-    genParseNodeEnd(parse, point);
-    return point;
 }

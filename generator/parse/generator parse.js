@@ -62,7 +62,7 @@ class Parse
         this.updateParamId = updateParamId;
    
         this.viewportZoom  = viewportZoom;
-        
+
         
         this.settings.showAllColorSpaces = showAllColorSpaces;
         this.settings.logRequests           = logRequests;
@@ -194,11 +194,15 @@ function genParse(parse, inParam = true)
     else if (parse.next == STAR                   ) result = genParseStar            (parse);
     else if (parse.next == TEXTSHAPE              ) result = genParseTextShape       (parse);
 
+    else if (parse.next == VECTOR_PATH_VALUE      ) result = genParseVectorPathValue (parse);
+    else if (parse.next == VECTOR_PATH            ) result = genParseVectorPath      (parse);
+
+    else if (parse.next == POINT_VALUE            ) result = genParsePointValue      (parse);
+    else if (parse.next == POINT                  ) result = genParsePoint           (parse);
+
     else if (parse.next == MOVE                   ) result = genParseMove            (parse);
     else if (parse.next == ROTATE                 ) result = genParseRotate          (parse);
     else if (parse.next == SCALE                  ) result = genParseScale           (parse);
-    
-    else if (parse.next == POINT                  ) result = genParsePoint           (parse);
 
     else if (parse.next == GROUP_NODE             ) result = genParseGroupNode       (parse);
     else if (parse.next == GROUP_PARAM            ) result = genParseGroupParam      (parse);

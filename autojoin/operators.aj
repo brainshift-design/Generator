@@ -14,6 +14,7 @@
 ../parameters/PolygonParam.js
 ../parameters/StarParam.js
 ../parameters/TextShapeParam.js
+../parameters/VectorPathParam.js
 
 
 // these have to be added in order because of dependencies
@@ -122,6 +123,7 @@
 ../operators/shape/OpPolygon.js
 ../operators/shape/OpStar.js
 ../operators/shape/OpTextShape.js
+../operators/shape/OpVectorPath.js
 
 ../operators/shape/OpMove.js
 ../operators/shape/OpRotate.js

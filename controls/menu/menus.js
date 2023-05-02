@@ -453,20 +453,21 @@ function initGeneratorMenus()
     
     menuShape = new Menu('Shapes', true, false);
     menuShape.addItems([
-                                new MenuItem('Rectangle',           {icon: iconRectangle, callback: e => actionManager.do(getCreateNodeAction(RECTANGLE, btnShape.div, getCreateOptions(e)))}),
-                                new MenuItem('Line',                {icon: iconLine,      callback: e => actionManager.do(getCreateNodeAction(LINE,      btnShape.div, getCreateOptions(e)))}),
-                                new MenuItem('Ellipse',             {icon: iconEllipse,   callback: e => actionManager.do(getCreateNodeAction(ELLIPSE,   btnShape.div, getCreateOptions(e)))}),
-                                new MenuItem('Polygon',             {icon: iconPolygon,   callback: e => actionManager.do(getCreateNodeAction(POLYGON,   btnShape.div, getCreateOptions(e)))}),
-                                new MenuItem('Star',                {icon: iconStar,      callback: e => actionManager.do(getCreateNodeAction(STAR,      btnShape.div, getCreateOptions(e)))}),
-                                new MenuItem('Text',                {icon: iconTextShape, callback: e => actionManager.do(getCreateNodeAction(TEXTSHAPE, btnShape.div, getCreateOptions(e)))}),
+                                new MenuItem('Point',               {icon: iconPoint,      callback: e => actionManager.do(getCreateNodeAction(POINT,       btnShape.div, getCreateOptions(e)))}),
+                                new MenuItem('Vector path',         {icon: iconVectorPath, callback: e => actionManager.do(getCreateNodeAction(VECTOR_PATH, btnShape.div, getCreateOptions(e)))}),
                                 new MenuItem('',                    {separator: true}),
-                                new MenuItem('Point',               {icon: iconPoint,     callback: e => actionManager.do(getCreateNodeAction(POINT,     btnShape.div, getCreateOptions(e)))}),
+                                new MenuItem('Rectangle',           {icon: iconRectangle,  callback: e => actionManager.do(getCreateNodeAction(RECTANGLE,   btnShape.div, getCreateOptions(e)))}),
+                                new MenuItem('Line',                {icon: iconLine,       callback: e => actionManager.do(getCreateNodeAction(LINE,        btnShape.div, getCreateOptions(e)))}),
+                                new MenuItem('Ellipse',             {icon: iconEllipse,    callback: e => actionManager.do(getCreateNodeAction(ELLIPSE,     btnShape.div, getCreateOptions(e)))}),
+                                new MenuItem('Polygon',             {icon: iconPolygon,    callback: e => actionManager.do(getCreateNodeAction(POLYGON,     btnShape.div, getCreateOptions(e)))}),
+                                new MenuItem('Star',                {icon: iconStar,       callback: e => actionManager.do(getCreateNodeAction(STAR,        btnShape.div, getCreateOptions(e)))}),
+                                new MenuItem('Text',                {icon: iconTextShape,  callback: e => actionManager.do(getCreateNodeAction(TEXTSHAPE,   btnShape.div, getCreateOptions(e)))}),
         menuItemShapeSep1     = new MenuItem('',                    {separator: true}),
-        menuItemShapeSelected = new MenuItem('Selected objects...', {icon: iconSelected,  enabled: false}),
+        menuItemShapeSelected = new MenuItem('Selected objects...', {icon: iconSelected,   enabled: false}),
                                 new MenuItem('',                    {separator: true}),
-                                new MenuItem('Move',                {icon: iconMove,      callback: e => actionManager.do(getCreateNodeAction(MOVE,      btnShape.div, getCreateOptions(e)))}),
-                                new MenuItem('Rotate',              {icon: iconRotate,    callback: e => actionManager.do(getCreateNodeAction(ROTATE,    btnShape.div, getCreateOptions(e)))}),
-                                new MenuItem('Scale',               {icon: iconScale,     callback: e => actionManager.do(getCreateNodeAction(SCALE,     btnShape.div, getCreateOptions(e)))})]);
+                                new MenuItem('Move',                {icon: iconMove,       callback: e => actionManager.do(getCreateNodeAction(MOVE,        btnShape.div, getCreateOptions(e)))}),
+                                new MenuItem('Rotate',              {icon: iconRotate,     callback: e => actionManager.do(getCreateNodeAction(ROTATE,      btnShape.div, getCreateOptions(e)))}),
+                                new MenuItem('Scale',               {icon: iconScale,      callback: e => actionManager.do(getCreateNodeAction(SCALE,       btnShape.div, getCreateOptions(e)))})]);
 
 
     menuGroup = new Menu('Groups', true, false);

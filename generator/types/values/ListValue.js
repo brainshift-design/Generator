@@ -180,7 +180,7 @@ function parseListValue(str, i = -1)
         {
             case      NUMBER_VALUE: { const num     = parseNumberValue    (str[i]);  i += num    [1];  list.items.push(num    [0]);  break; }
             case        TEXT_VALUE: { const text    = parseTextValue      (str[i]);  i += text   [1];  list.items.push(text   [0]);  break; }
-            case       COLOR_VALUE: { const col     = parseColorValue     (str, i);  i += col    [1];  list.items.push(col    [0]);  break; }
+            case       COLOR_VALUE: { const color   = parseColorValue     (str, i);  i += color  [1];  list.items.push(color  [0]);  break; }
             case        FILL_VALUE: { const fill    = parseFillValue      (str, i);  i += fill   [1];  list.items.push(fill   [0]);  break; }
             case      STROKE_VALUE: { const stroke  = parseStrokeValue    (str, i);  i += stroke [1];  list.items.push(stroke [0]);  break; }
             case   RECTANGLE_VALUE: { const rect    = parseRectangleValue (str, i);  i += rect   [1];  list.items.push(rect   [0]);  break; }
@@ -188,15 +188,17 @@ function parseListValue(str, i = -1)
             case     ELLIPSE_VALUE: { const ellipse = parseEllipseValue   (str, i);  i += ellipse[1];  list.items.push(ellipse[0]);  break; }
             case     POLYGON_VALUE: { const poly    = parsePolygonValue   (str, i);  i += poly   [1];  list.items.push(poly   [0]);  break; }
             case        STAR_VALUE: { const star    = parseStarValue      (str, i);  i += star   [1];  list.items.push(star   [0]);  break; }
-            case   TEXTSHAPE_VALUE: { const star    = parseTextShapeValue (str, i);  i += star   [1];  list.items.push(star   [0]);  break; }
+            case   TEXTSHAPE_VALUE: { const text    = parseTextShapeValue (str, i);  i += text   [1];  list.items.push(text   [0]);  break; }
+            case       POINT_VALUE: { const point   = parsePointValue     (str, i);  i += point  [1];  list.items.push(point  [0]);  break; }
+            case VECTOR_PATH_VALUE: { const path    = parseVectorPathValue(str, i);  i += path   [1];  list.items.push(path   [0]);  break; }
             case        LIST_VALUE:  
             case NUMBER_LIST_VALUE:  
             case   TEXT_LIST_VALUE:  
             case  SHAPE_LIST_VALUE: { const _list   = parseListValue      (str, i);  i += _list  [1];  list.items.push(_list  [0]);  break; }
         }
     }
- 
 
+    
     return [
         list, 
         i - iStart];

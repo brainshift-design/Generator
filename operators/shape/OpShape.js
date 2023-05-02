@@ -15,7 +15,9 @@ extends OpShapeBase
     {
         this.addParam(this.paramProperties = new ListParam('props', 'styles', true, true, true));
 
-        this.paramProperties.itemName = 'style';
-        this.paramProperties.input.types.push(COLOR_VALUE, FILL_VALUE, STROKE_VALUE);
+        this.paramProperties.itemName  = 'style';
+        this.paramProperties.showZero  = false;
+        this.paramProperties.listTypes = [COLOR_VALUE, FILL_VALUE, STROKE_VALUE];
+        this.paramProperties.input.types.push(...this.paramProperties.listTypes);
     }
 }
