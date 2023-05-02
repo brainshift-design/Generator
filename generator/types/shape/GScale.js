@@ -101,15 +101,16 @@ extends GOperator
     async evalObjects(parse, options = {})
     {
         if (!this.options.enabled)
-        {
-            this.objects = clone(this.input.objects);
+            return;
+        // {
+        //     this.objects = clone(this.input.objects);
          
-            for (const obj of this.objects)
-                obj.nodeId = this.nodeId;
-        }
+        //     for (const obj of this.objects)
+        //         obj.nodeId = this.nodeId;
+        // }
 
-        else
-        {
+        // else
+        // {
             this.objects = 
                 this.input 
                 ? clone(this.input.objects) 
@@ -122,8 +123,16 @@ extends GOperator
             const x  = Math.max(0, options.x.toNumber()/100);
             const y  = Math.max(0, options.y.toNumber()/100);
 
-            const dx = options.centerX.toNumber() / (bounds.width /2);
-            const dy = options.centerY.toNumber() / (bounds.height/2);
+            
+            const dx = 
+                bounds.width != 0
+                ? options.centerX.toNumber() / (bounds.width /2)
+                : options.centerX.toNumber();
+
+            const dy = 
+                bounds.height != 0
+                ? options.centerY.toNumber() / (bounds.height/2)
+                : options.centerY.toNumber();
 
 
             for (const obj of this.objects)
@@ -154,24 +163,31 @@ extends GOperator
                 v.y *= y;
 
 
+                const bw = bounds.width  != 0 ? bounds.width  : 1;
+                const bh = bounds.height != 0 ? bounds.height : 1;
+
+
                 obj.x = 
-                    bounds.x 
+                      bounds.x 
                     + bounds.width /2 
                     + v.x 
-                    - (dx - 0.5) * bounds.width  * Math.cos(-a) 
-                    - (dy - 0.5) * bounds.height * Math.sin( a);
+                    - (dx - 0.5) * bw * Math.cos(-a) 
+                    - (dy - 0.5) * bh * Math.sin( a);
 
                 obj.y = 
-                    bounds.y
+                      bounds.y
                     + bounds.height/2
                     + v.y 
-                    - (dx - 0.5) * bounds.width  * Math.sin(-a) 
-                    - (dy - 0.5) * bounds.height * Math.cos( a);
+                    - (dx - 0.5) * bw * Math.sin(-a) 
+                    - (dy - 0.5) * bh * Math.cos( a);
             }
-        }
+       // }
 
         
         await super.evalObjects(parse);
+
+
+        return bounds;
     }
 
 

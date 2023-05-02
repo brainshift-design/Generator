@@ -100,7 +100,6 @@ extends GShape
 
         if (this.points.objects)
         {
-            console.log('this.points.objects =', this.points.objects);
             const objPoints = this.points.objects.filter(o => o.type == POINT);
 
             for (const pt of objPoints)
@@ -111,7 +110,6 @@ extends GShape
         }
 
 
-console.log('points =', points);
         if (   points.length >= 2
             && this.value.degree 
             && this.value.winding

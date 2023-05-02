@@ -65,7 +65,7 @@ class Parse
 
         
         this.settings.showAllColorSpaces = showAllColorSpaces;
-        this.settings.logRequests           = logRequests;
+        this.settings.logRequests        = logRequests;
     }
 
 

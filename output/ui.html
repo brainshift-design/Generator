@@ -20341,7 +20341,6 @@ extends GShape
 
         if (this.points.objects)
         {
-            console.log('this.points.objects =', this.points.objects);
             const objPoints = this.points.objects.filter(o => o.type == POINT);
 
             for (const pt of objPoints)
@@ -20352,7 +20351,6 @@ extends GShape
         }
 
 
-console.log('points =', points);
         if (   points.length >= 2
             && this.value.degree 
             && this.value.winding
@@ -20445,7 +20443,7 @@ extends GOperator
         if (this.input) 
             copy.input = this.input.copy();
 
-        if (this.value) copy.value = this.value.copy();
+        //if (this.value) copy.value = this.value.copy();
         if (this.x    ) copy.x     = this.x    .copy();
         if (this.y    ) copy.y     = this.y    .copy();
 
@@ -20475,15 +20473,15 @@ extends GOperator
         }
 
         
+        await this.evalObjects(parse, {x: x, y: y});
+
+
         if (parse.isLastRepeat())
         {
             genPushUpdateValue(parse, this.nodeId, 'value', this.value);
             genPushUpdateValue(parse, this.nodeId, 'x',     x         );
             genPushUpdateValue(parse, this.nodeId, 'y',     y         );
         }
-
-
-        await this.evalObjects(parse, {x: x, y: y});
 
 
         this.validate();
@@ -20652,19 +20650,27 @@ extends GOperator
             ? clone(this.input.objects) 
             : [];
 
-
         const bounds = getObjBounds(this.objects);
 
 
-        const dx = options.centerX.toNumber() / (bounds.width /2);
-        const dy = options.centerY.toNumber() / (bounds.height/2);
+        const dx = 
+            bounds.width != 0
+            ? options.centerX.toNumber() / (bounds.width /2)
+            : options.centerX.toNumber();
 
+        const dy = 
+            bounds.height != 0
+            ? options.centerY.toNumber() / (bounds.height/2)
+            : options.centerY.toNumber();
 
         for (const obj of this.objects)
         {
             obj.nodeId = this.nodeId;
 
-            obj.angle += options.angle.toNumber(); 
+            obj.angle = 
+                isValid(obj.angle)
+                ? obj.angle + options.angle.toNumber()
+                : options.angle.toNumber(); 
 
 
             const angle = anglev_(
@@ -20684,19 +20690,22 @@ extends GOperator
             const v = vector(angle - a, halfd);
 
 
+            const bw = bounds.width  != 0 ? bounds.width  : 1;
+            const bh = bounds.height != 0 ? bounds.height : 1;
+
             obj.x = 
                   bounds.x 
                 + bounds.width /2 
                 + v.x 
-                - dx * bounds.width  * Math.cos(-a) 
-                - dy * bounds.height * Math.sin( a);
+                - dx * bw * Math.cos(-a) 
+                - dy * bh * Math.sin( a);
 
             obj.y = 
                   bounds.y
                 + bounds.height/2
                 + v.y 
-                - dx * bounds.width  * Math.sin(-a) 
-                - dy * bounds.height * Math.cos( a);
+                - dx * bw * Math.sin(-a) 
+                - dy * bh * Math.cos( a);
         }
 
         
@@ -20840,15 +20849,16 @@ extends GOperator
     async evalObjects(parse, options = {})
     {
         if (!this.options.enabled)
-        {
-            this.objects = clone(this.input.objects);
+            return;
+        // {
+        //     this.objects = clone(this.input.objects);
          
-            for (const obj of this.objects)
-                obj.nodeId = this.nodeId;
-        }
+        //     for (const obj of this.objects)
+        //         obj.nodeId = this.nodeId;
+        // }
 
-        else
-        {
+        // else
+        // {
             this.objects = 
                 this.input 
                 ? clone(this.input.objects) 
@@ -20861,8 +20871,16 @@ extends GOperator
             const x  = Math.max(0, options.x.toNumber()/100);
             const y  = Math.max(0, options.y.toNumber()/100);
 
-            const dx = options.centerX.toNumber() / (bounds.width /2);
-            const dy = options.centerY.toNumber() / (bounds.height/2);
+            
+            const dx = 
+                bounds.width != 0
+                ? options.centerX.toNumber() / (bounds.width /2)
+                : options.centerX.toNumber();
+
+            const dy = 
+                bounds.height != 0
+                ? options.centerY.toNumber() / (bounds.height/2)
+                : options.centerY.toNumber();
 
 
             for (const obj of this.objects)
@@ -20893,24 +20911,31 @@ extends GOperator
                 v.y *= y;
 
 
+                const bw = bounds.width  != 0 ? bounds.width  : 1;
+                const bh = bounds.height != 0 ? bounds.height : 1;
+
+
                 obj.x = 
-                    bounds.x 
+                      bounds.x 
                     + bounds.width /2 
                     + v.x 
-                    - (dx - 0.5) * bounds.width  * Math.cos(-a) 
-                    - (dy - 0.5) * bounds.height * Math.sin( a);
+                    - (dx - 0.5) * bw * Math.cos(-a) 
+                    - (dy - 0.5) * bh * Math.sin( a);
 
                 obj.y = 
-                    bounds.y
+                      bounds.y
                     + bounds.height/2
                     + v.y 
-                    - (dx - 0.5) * bounds.width  * Math.sin(-a) 
-                    - (dy - 0.5) * bounds.height * Math.cos( a);
+                    - (dx - 0.5) * bw * Math.sin(-a) 
+                    - (dy - 0.5) * bh * Math.cos( a);
             }
-        }
+       // }
 
         
         await super.evalObjects(parse);
+
+
+        return bounds;
     }
 
 
@@ -25859,7 +25884,7 @@ class Parse
 
         
         this.settings.showAllColorSpaces = showAllColorSpaces;
-        this.settings.logRequests           = logRequests;
+        this.settings.logRequests        = logRequests;
     }
 
 
@@ -47830,7 +47855,6 @@ extends GShape
 
         if (this.points.objects)
         {
-            console.log('this.points.objects =', this.points.objects);
             const objPoints = this.points.objects.filter(o => o.type == POINT);
 
             for (const pt of objPoints)
@@ -47841,7 +47865,6 @@ extends GShape
         }
 
 
-console.log('points =', points);
         if (   points.length >= 2
             && this.value.degree 
             && this.value.winding
@@ -47934,7 +47957,7 @@ extends GOperator
         if (this.input) 
             copy.input = this.input.copy();
 
-        if (this.value) copy.value = this.value.copy();
+        //if (this.value) copy.value = this.value.copy();
         if (this.x    ) copy.x     = this.x    .copy();
         if (this.y    ) copy.y     = this.y    .copy();
 
@@ -47964,15 +47987,15 @@ extends GOperator
         }
 
         
+        await this.evalObjects(parse, {x: x, y: y});
+
+
         if (parse.isLastRepeat())
         {
             genPushUpdateValue(parse, this.nodeId, 'value', this.value);
             genPushUpdateValue(parse, this.nodeId, 'x',     x         );
             genPushUpdateValue(parse, this.nodeId, 'y',     y         );
         }
-
-
-        await this.evalObjects(parse, {x: x, y: y});
 
 
         this.validate();
@@ -48141,19 +48164,27 @@ extends GOperator
             ? clone(this.input.objects) 
             : [];
 
-
         const bounds = getObjBounds(this.objects);
 
 
-        const dx = options.centerX.toNumber() / (bounds.width /2);
-        const dy = options.centerY.toNumber() / (bounds.height/2);
+        const dx = 
+            bounds.width != 0
+            ? options.centerX.toNumber() / (bounds.width /2)
+            : options.centerX.toNumber();
 
+        const dy = 
+            bounds.height != 0
+            ? options.centerY.toNumber() / (bounds.height/2)
+            : options.centerY.toNumber();
 
         for (const obj of this.objects)
         {
             obj.nodeId = this.nodeId;
 
-            obj.angle += options.angle.toNumber(); 
+            obj.angle = 
+                isValid(obj.angle)
+                ? obj.angle + options.angle.toNumber()
+                : options.angle.toNumber(); 
 
 
             const angle = anglev_(
@@ -48173,19 +48204,22 @@ extends GOperator
             const v = vector(angle - a, halfd);
 
 
+            const bw = bounds.width  != 0 ? bounds.width  : 1;
+            const bh = bounds.height != 0 ? bounds.height : 1;
+
             obj.x = 
                   bounds.x 
                 + bounds.width /2 
                 + v.x 
-                - dx * bounds.width  * Math.cos(-a) 
-                - dy * bounds.height * Math.sin( a);
+                - dx * bw * Math.cos(-a) 
+                - dy * bh * Math.sin( a);
 
             obj.y = 
                   bounds.y
                 + bounds.height/2
                 + v.y 
-                - dx * bounds.width  * Math.sin(-a) 
-                - dy * bounds.height * Math.cos( a);
+                - dx * bw * Math.sin(-a) 
+                - dy * bh * Math.cos( a);
         }
 
         
@@ -48329,15 +48363,16 @@ extends GOperator
     async evalObjects(parse, options = {})
     {
         if (!this.options.enabled)
-        {
-            this.objects = clone(this.input.objects);
+            return;
+        // {
+        //     this.objects = clone(this.input.objects);
          
-            for (const obj of this.objects)
-                obj.nodeId = this.nodeId;
-        }
+        //     for (const obj of this.objects)
+        //         obj.nodeId = this.nodeId;
+        // }
 
-        else
-        {
+        // else
+        // {
             this.objects = 
                 this.input 
                 ? clone(this.input.objects) 
@@ -48350,8 +48385,16 @@ extends GOperator
             const x  = Math.max(0, options.x.toNumber()/100);
             const y  = Math.max(0, options.y.toNumber()/100);
 
-            const dx = options.centerX.toNumber() / (bounds.width /2);
-            const dy = options.centerY.toNumber() / (bounds.height/2);
+            
+            const dx = 
+                bounds.width != 0
+                ? options.centerX.toNumber() / (bounds.width /2)
+                : options.centerX.toNumber();
+
+            const dy = 
+                bounds.height != 0
+                ? options.centerY.toNumber() / (bounds.height/2)
+                : options.centerY.toNumber();
 
 
             for (const obj of this.objects)
@@ -48382,24 +48425,31 @@ extends GOperator
                 v.y *= y;
 
 
+                const bw = bounds.width  != 0 ? bounds.width  : 1;
+                const bh = bounds.height != 0 ? bounds.height : 1;
+
+
                 obj.x = 
-                    bounds.x 
+                      bounds.x 
                     + bounds.width /2 
                     + v.x 
-                    - (dx - 0.5) * bounds.width  * Math.cos(-a) 
-                    - (dy - 0.5) * bounds.height * Math.sin( a);
+                    - (dx - 0.5) * bw * Math.cos(-a) 
+                    - (dy - 0.5) * bh * Math.sin( a);
 
                 obj.y = 
-                    bounds.y
+                      bounds.y
                     + bounds.height/2
                     + v.y 
-                    - (dx - 0.5) * bounds.width  * Math.sin(-a) 
-                    - (dy - 0.5) * bounds.height * Math.cos( a);
+                    - (dx - 0.5) * bw * Math.sin(-a) 
+                    - (dy - 0.5) * bh * Math.cos( a);
             }
-        }
+       // }
 
         
         await super.evalObjects(parse);
+
+
+        return bounds;
     }
 
 
@@ -74494,10 +74544,6 @@ extends OperatorBase
 
         this.addParam(this.paramX = new NumberParam('x', 'x', true, true, true));
         this.addParam(this.paramY = new NumberParam('y', 'y', true, true, true));
-
-
-        // this.inputs[0].addEventListener('connect',    e => OpMove_onConnectInput(this));
-        // this.inputs[0].addEventListener('disconnect', e => OpMove_onDisconnectInput(this));
     }
     
     
@@ -74548,19 +74594,6 @@ extends OperatorBase
 
 
 
-// function OpMove_onConnectInput(node)
-// {
-//     node.outputs[0].types = [...node.inputs[0].connectedOutput.types];
-// }
-
-
-
-// function OpMove_onDisconnectInput(node)
-// {
-//     node.outputs[0].types = [SHAPE_VALUE];
-// }
-
-
 class   OpRotate
 extends OperatorBase
 {
@@ -74589,10 +74622,6 @@ extends OperatorBase
 
         this.paramAngle.controls[0].suffix      = '°';
         this.paramAngle.controls[0].dragReverse = true;
-
-
-        // this.inputs[0].addEventListener('connect',    e => OpRotate_onConnectInput(this));
-        // this.inputs[0].addEventListener('disconnect', e => OpRotate_onDisconnectInput(this));
     }
     
     
@@ -74643,27 +74672,32 @@ extends OperatorBase
 
         const bounds = values[paramIds.findIndex(id => id == 'bounds')];
 
-        this.paramCenterX.controls[0].displayMin = -bounds.width.value/2;
-        this.paramCenterX.controls[0].displayMax =  bounds.width.value/2;
 
-        this.paramCenterY.controls[0].displayMin = -bounds.height.value/2;
-        this.paramCenterY.controls[0].displayMax =  bounds.height.value/2;
+        if (bounds.width.value > 0)
+        {
+            this.paramCenterX.controls[0].displayMin = -bounds.width.value/2;
+            this.paramCenterX.controls[0].displayMax =  bounds.width.value/2;
+        }
+        else
+        {
+            this.paramCenterX.controls[0].displayMin = this.paramCenterX.controls[0].min;
+            this.paramCenterX.controls[0].displayMax = this.paramCenterX.controls[0].max;
+        }
+
+
+        if (bounds.height.value > 0)
+        {
+            this.paramCenterY.controls[0].displayMin = -bounds.height.value/2;
+            this.paramCenterY.controls[0].displayMax =  bounds.height.value/2;
+        }
+        else
+        {
+            this.paramCenterY.controls[0].displayMin = this.paramCenterY.controls[0].min;
+            this.paramCenterY.controls[0].displayMax = this.paramCenterY.controls[0].max;
+        }
     }
 }
 
-
-
-// function OpRotate_onConnectInput(node)
-// {
-//     node.outputs[0].types = [...node.inputs[0].connectedOutput.types];
-// }
-
-
-
-// function OpRotate_onDisconnectInput(node)
-// {
-//     node.outputs[0].types = [SHAPE_VALUE];
-// }
 
 
 class   OpScale
@@ -74699,10 +74733,6 @@ extends OperatorBase
 
         this.paramX.controls[0].setMin(0);
         this.paramY.controls[0].setMin(0);
-
-
-        // this.inputs[0].addEventListener('connect',    e => OpScale_onConnectInput   (this));
-        // this.inputs[0].addEventListener('disconnect', e => OpScale_onDisconnectInput(this));
     }
     
     
@@ -74754,27 +74784,32 @@ extends OperatorBase
 
         const bounds = values[paramIds.findIndex(id => id == 'bounds')];
 
-        this.paramCenterX.controls[0].displayMin = -bounds.width.value/2;
-        this.paramCenterX.controls[0].displayMax =  bounds.width.value/2;
+        
+        if (bounds.width.value > 0)
+        {
+            this.paramCenterX.controls[0].displayMin = -bounds.width.value/2;
+            this.paramCenterX.controls[0].displayMax =  bounds.width.value/2;
+        }
+        else
+        {
+            this.paramCenterX.controls[0].displayMin = this.paramCenterX.controls[0].min;
+            this.paramCenterX.controls[0].displayMax = this.paramCenterX.controls[0].max;
+        }
 
-        this.paramCenterY.controls[0].displayMin = -bounds.height.value/2;
-        this.paramCenterY.controls[0].displayMax =  bounds.height.value/2;
+
+        if (bounds.height.value > 0)
+        {
+            this.paramCenterY.controls[0].displayMin = -bounds.height.value/2;
+            this.paramCenterY.controls[0].displayMax =  bounds.height.value/2;
+        }
+        else
+        {
+            this.paramCenterY.controls[0].displayMin = this.paramCenterY.controls[0].min;
+            this.paramCenterY.controls[0].displayMax = this.paramCenterY.controls[0].max;
+        }
     }
 }
 
-
-
-// function OpScale_onConnectInput(node)
-// {
-//     node.outputs[0].types = [...node.inputs[0].connectedOutput.types];
-// }
-
-
-
-// function OpScale_onDisconnectInput(node, input)
-// {
-//     node.outputs[0].types = [SHAPE_VALUE];
-// }
 
 
 class   OpPoint

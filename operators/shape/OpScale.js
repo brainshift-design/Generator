@@ -31,10 +31,6 @@ extends OperatorBase
 
         this.paramX.controls[0].setMin(0);
         this.paramY.controls[0].setMin(0);
-
-
-        // this.inputs[0].addEventListener('connect',    e => OpScale_onConnectInput   (this));
-        // this.inputs[0].addEventListener('disconnect', e => OpScale_onDisconnectInput(this));
     }
     
     
@@ -86,24 +82,28 @@ extends OperatorBase
 
         const bounds = values[paramIds.findIndex(id => id == 'bounds')];
 
-        this.paramCenterX.controls[0].displayMin = -bounds.width.value/2;
-        this.paramCenterX.controls[0].displayMax =  bounds.width.value/2;
+        
+        if (bounds.width.value > 0)
+        {
+            this.paramCenterX.controls[0].displayMin = -bounds.width.value/2;
+            this.paramCenterX.controls[0].displayMax =  bounds.width.value/2;
+        }
+        else
+        {
+            this.paramCenterX.controls[0].displayMin = this.paramCenterX.controls[0].min;
+            this.paramCenterX.controls[0].displayMax = this.paramCenterX.controls[0].max;
+        }
 
-        this.paramCenterY.controls[0].displayMin = -bounds.height.value/2;
-        this.paramCenterY.controls[0].displayMax =  bounds.height.value/2;
+
+        if (bounds.height.value > 0)
+        {
+            this.paramCenterY.controls[0].displayMin = -bounds.height.value/2;
+            this.paramCenterY.controls[0].displayMax =  bounds.height.value/2;
+        }
+        else
+        {
+            this.paramCenterY.controls[0].displayMin = this.paramCenterY.controls[0].min;
+            this.paramCenterY.controls[0].displayMax = this.paramCenterY.controls[0].max;
+        }
     }
 }
-
-
-
-// function OpScale_onConnectInput(node)
-// {
-//     node.outputs[0].types = [...node.inputs[0].connectedOutput.types];
-// }
-
-
-
-// function OpScale_onDisconnectInput(node, input)
-// {
-//     node.outputs[0].types = [SHAPE_VALUE];
-// }

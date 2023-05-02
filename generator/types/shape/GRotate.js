@@ -104,19 +104,27 @@ extends GOperator
             ? clone(this.input.objects) 
             : [];
 
-
         const bounds = getObjBounds(this.objects);
 
 
-        const dx = options.centerX.toNumber() / (bounds.width /2);
-        const dy = options.centerY.toNumber() / (bounds.height/2);
+        const dx = 
+            bounds.width != 0
+            ? options.centerX.toNumber() / (bounds.width /2)
+            : options.centerX.toNumber();
 
+        const dy = 
+            bounds.height != 0
+            ? options.centerY.toNumber() / (bounds.height/2)
+            : options.centerY.toNumber();
 
         for (const obj of this.objects)
         {
             obj.nodeId = this.nodeId;
 
-            obj.angle += options.angle.toNumber(); 
+            obj.angle = 
+                isValid(obj.angle)
+                ? obj.angle + options.angle.toNumber()
+                : options.angle.toNumber(); 
 
 
             const angle = anglev_(
@@ -136,19 +144,22 @@ extends GOperator
             const v = vector(angle - a, halfd);
 
 
+            const bw = bounds.width  != 0 ? bounds.width  : 1;
+            const bh = bounds.height != 0 ? bounds.height : 1;
+
             obj.x = 
                   bounds.x 
                 + bounds.width /2 
                 + v.x 
-                - dx * bounds.width  * Math.cos(-a) 
-                - dy * bounds.height * Math.sin( a);
+                - dx * bw * Math.cos(-a) 
+                - dy * bh * Math.sin( a);
 
             obj.y = 
                   bounds.y
                 + bounds.height/2
                 + v.y 
-                - dx * bounds.width  * Math.sin(-a) 
-                - dy * bounds.height * Math.cos( a);
+                - dx * bw * Math.sin(-a) 
+                - dy * bh * Math.cos( a);
         }
 
         

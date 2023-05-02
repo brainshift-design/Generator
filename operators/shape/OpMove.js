@@ -19,10 +19,6 @@ extends OperatorBase
 
         this.addParam(this.paramX = new NumberParam('x', 'x', true, true, true));
         this.addParam(this.paramY = new NumberParam('y', 'y', true, true, true));
-
-
-        // this.inputs[0].addEventListener('connect',    e => OpMove_onConnectInput(this));
-        // this.inputs[0].addEventListener('disconnect', e => OpMove_onDisconnectInput(this));
     }
     
     
@@ -70,17 +66,3 @@ extends OperatorBase
             : [ANY_VALUE];
     }
 }
-
-
-
-// function OpMove_onConnectInput(node)
-// {
-//     node.outputs[0].types = [...node.inputs[0].connectedOutput.types];
-// }
-
-
-
-// function OpMove_onDisconnectInput(node)
-// {
-//     node.outputs[0].types = [SHAPE_VALUE];
-// }
