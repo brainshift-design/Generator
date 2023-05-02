@@ -73,9 +73,9 @@ extends GNumberType
 
             if (repeat.iteration == repeat.total-1)
             {
-                console.assert(
-                    parse.repeats.at(-1).nodeId == this.repeatNodeId, 
-                    'nested repeat error');
+                // console.assert(
+                //     parse.repeats.at(-1).nodeId == this.repeatNodeId, 
+                //     'nested repeat error');
 
                 parse.repeats.pop();
             }
