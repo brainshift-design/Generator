@@ -373,7 +373,7 @@ function uiUpdateSavedConnectionsFromNodeId(nodeId, saveOld)
 function makeSelectedNodesActive()
 {
     if (graphView.selectedNodes.find(n => !n.active))
-        actionManager.do(new MakeActiveNodesAction(graphView.selectedNodes.map(n => n.id)));
+        actionManager.do(new MakeActiveNodesAction(graphView.selectedNodes.map(n => n.id), false));
 }
 
 
@@ -388,16 +388,15 @@ function uiMakeNodeActive(node)
 
 
 
-function uiMakeNodesActive(nodes)
+function uiMakeNodesActive(nodes, shiftKey = false)
 {
-    for (const node of nodes)
+    if (!shiftKey)
     {
-        if (node.active) continue;
-
-        uiMakeNodePassive(node);
-        uiMakeNodeLeftPassive (node);
-        uiMakeNodeRightPassive(node);
+        for (const node of graph.currentPage.nodes)
+            if (node.active)
+                uiMakeNodePassive(node);
     }
+
 
     for (const node of nodes)
     {

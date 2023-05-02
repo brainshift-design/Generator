@@ -65412,7 +65412,7 @@ Operator.prototype.createHeader = function()
             && e.clientY >= bounds.top  && e.clientY < bounds.bottom)
             this.showLabelTextbox();
         else if (!this.header.ignoreDoubleClick)
-            actionManager.do(new MakeActiveNodesAction([this.id]));
+            actionManager.do(new MakeActiveNodesAction([this.id], e.shiftKey));
 
         this.header.ignoreDoubleClick = false;
     });
@@ -79481,19 +79481,23 @@ extends Action
 class MakeActiveNodesAction
 extends Action
 {
-    newActiveNodeIds = [];
+    shiftKey;
 
+
+    newActiveNodeIds = [];
     oldActiveNodeIds = [];
 
 
 
-    constructor(activeNodeIds)
+    constructor(activeNodeIds, shiftKey)
     {
         super(
             MAKE_ACTIVE_ACTION, 
             'MAKE ACTIVE ' + nodeIdArrayToString(activeNodeIds));
 
-        this.newActiveNodeIds = [...activeNodeIds];
+        this.shiftKey           = shiftKey;
+        
+        this.newActiveNodeIds   = [...activeNodeIds];
         this.affectsConnections = false;
     }
 
@@ -79512,7 +79516,7 @@ extends Action
 
         const newActiveNodes = this.newActiveNodeIds.map(id => nodeFromId(id));
 
-        uiMakeNodesActive(newActiveNodes);
+        uiMakeNodesActive(newActiveNodes, this.shiftKey);
         pushUnique(updateNodes, newActiveNodes);
 
         uiSaveNodes(filterUnique([...this.newActiveNodeIds, ...this.oldActiveNodeIds]));
@@ -84668,7 +84672,7 @@ function uiUpdateSavedConnectionsFromNodeId(nodeId, saveOld)
 function makeSelectedNodesActive()
 {
     if (graphView.selectedNodes.find(n => !n.active))
-        actionManager.do(new MakeActiveNodesAction(graphView.selectedNodes.map(n => n.id)));
+        actionManager.do(new MakeActiveNodesAction(graphView.selectedNodes.map(n => n.id), false));
 }
 
 
@@ -84683,16 +84687,15 @@ function uiMakeNodeActive(node)
 
 
 
-function uiMakeNodesActive(nodes)
+function uiMakeNodesActive(nodes, shiftKey = false)
 {
-    for (const node of nodes)
+    if (!shiftKey)
     {
-        if (node.active) continue;
-
-        uiMakeNodePassive(node);
-        uiMakeNodeLeftPassive (node);
-        uiMakeNodeRightPassive(node);
+        for (const node of graph.currentPage.nodes)
+            if (node.active)
+                uiMakeNodePassive(node);
     }
+
 
     for (const node of nodes)
     {

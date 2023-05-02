@@ -1,19 +1,23 @@
 class MakeActiveNodesAction
 extends Action
 {
-    newActiveNodeIds = [];
+    shiftKey;
 
+
+    newActiveNodeIds = [];
     oldActiveNodeIds = [];
 
 
 
-    constructor(activeNodeIds)
+    constructor(activeNodeIds, shiftKey)
     {
         super(
             MAKE_ACTIVE_ACTION, 
             'MAKE ACTIVE ' + nodeIdArrayToString(activeNodeIds));
 
-        this.newActiveNodeIds = [...activeNodeIds];
+        this.shiftKey           = shiftKey;
+        
+        this.newActiveNodeIds   = [...activeNodeIds];
         this.affectsConnections = false;
     }
 
@@ -32,7 +36,7 @@ extends Action
 
         const newActiveNodes = this.newActiveNodeIds.map(id => nodeFromId(id));
 
-        uiMakeNodesActive(newActiveNodes);
+        uiMakeNodesActive(newActiveNodes, this.shiftKey);
         pushUnique(updateNodes, newActiveNodes);
 
         uiSaveNodes(filterUnique([...this.newActiveNodeIds, ...this.oldActiveNodeIds]));
