@@ -4,6 +4,7 @@ extends GShape
     input   = null;
 
     points  = null;
+    closed  = null;
     degree  = null;
     winding = null;
     round   = null;
@@ -27,6 +28,7 @@ extends GShape
             copy.input = this.input.copy();
 
         if (this.points ) copy.points  = this.points .copy();
+        if (this.closed ) copy.closed  = this.closed .copy();
         if (this.degree ) copy.degree  = this.degree .copy();
         if (this.winding) copy.winding = this.winding.copy();
         if (this.round  ) copy.round   = this.round  .copy();
@@ -43,6 +45,7 @@ extends GShape
 
 
         const points  = this.points  ? (await this.points .eval(parse)).toValue() : null;
+        const closed  = this.closed  ? (await this.closed .eval(parse)).toValue() : null;
         const degree  = this.degree  ? (await this.degree .eval(parse)).toValue() : null;
         const winding = this.winding ? (await this.winding.eval(parse)).toValue() : null;
         const round   = this.round   ? (await this.round  .eval(parse)).toValue() : null;
@@ -57,13 +60,14 @@ extends GShape
             this.value = new VectorPathValue(
                 this.nodeId,
                 points  ?? input.points,
+                closed  ?? input.closed,
                 degree  ?? input.degree,
                 winding ?? input.winding,
                 round   ?? input.round);
         }
         else
         {
-            this.value = new VectorPathValue(this.nodeId, points, degree, winding, round);
+            this.value = new VectorPathValue(this.nodeId, points, closed, degree, winding, round);
         }
 
 
@@ -71,6 +75,7 @@ extends GShape
         {
             genPushUpdateValue(parse, this.nodeId, 'value',   this.value        );
             genPushUpdateValue(parse, this.nodeId, 'points',  this.value.points );
+            genPushUpdateValue(parse, this.nodeId, 'closed',  this.value.closed );
             genPushUpdateValue(parse, this.nodeId, 'degree',  this.value.degree );
             genPushUpdateValue(parse, this.nodeId, 'winding', this.value.winding);
             genPushUpdateValue(parse, this.nodeId, 'round',   this.value.round  );
@@ -111,6 +116,7 @@ extends GShape
 
 
         if (   points.length >= 2
+            && this.value.closed 
             && this.value.degree 
             && this.value.winding
             && this.value.round)
@@ -121,6 +127,7 @@ extends GShape
                     this.nodeId,
                     NULL,
                     points,
+                    this.value.closed .value,
                     this.value.degree .value,
                     this.value.winding.value,
                     this.value.round  .value)
@@ -141,6 +148,7 @@ extends GShape
         const path = new VectorPathValue(
             this.nodeId,
             this.points .toValue(),
+            this.closed .toValue(),
             this.degree .toValue(),
             this.winding.toValue(),
             this.round  .toValue());
@@ -156,6 +164,7 @@ extends GShape
     {
         return super.isValid()
             && this.points .isValid()
+            && this.closed .isValid()
             && this.degree .isValid()
             && this.winding.isValid()
             && this.round  .isValid();
@@ -169,6 +178,7 @@ extends GShape
 
         if (this.input  ) this.input  .invalidate();
         if (this.points ) this.points .invalidate();
+        if (this.closed ) this.closed .invalidate();
         if (this.degree ) this.degree .invalidate();
         if (this.winding) this.winding.invalidate();
         if (this.round  ) this.round  .invalidate();

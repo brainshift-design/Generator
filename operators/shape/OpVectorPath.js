@@ -1,6 +1,7 @@
 class   OpVectorPath
 extends OpShape
 {
+    paramClosed;
     paramPoints;
     paramDegree;
     paramWinding;
@@ -14,12 +15,13 @@ extends OpShape
 
         this.canDisable = true;
 
-        
+
         this.addInput(this.createInputForObjects([VECTOR_PATH_VALUE], getNodeInputValuesForUndo));
         this.addOutput(new Output([VECTOR_PATH_VALUE], this.output_genRequest));
 
 
         this.addParam(this.paramPoints  = new ListParam  ('points',  'points',  true,  true, true));
+        this.addParam(this.paramClosed  = new SelectParam('closed',  'closed',  false, true, true, ['open', 'closed'], 3));
         this.addParam(this.paramDegree  = new SelectParam('degree',  'degree',  false, true, true, ['linear', 'quadratic', 'cubic', 'smooth'], 3));
         this.addParam(this.paramWinding = new SelectParam('winding', 'winding', false, true, true, ['even-odd', 'non-zero']));
         this.addParam(this.paramRound   = new NumberParam('round',   'round',   true,  true, true, 0, 0));

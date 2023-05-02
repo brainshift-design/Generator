@@ -8832,11 +8832,11 @@ extends FigmaShape
 
 
 
-    constructor(nodeId, objectId, points, degree, winding, round)
+    constructor(nodeId, objectId, points, closed, degree, winding, round)
     {
         super(VECTOR_PATH, nodeId, objectId);
         
-        this.pathData = getPathDataFromPoints(points, degree);
+        this.pathData = getPathDataFromPoints(points, closed, degree);
         
 
         let minX = Number.MAX_SAFE_INTEGER;
@@ -8871,7 +8871,7 @@ extends FigmaShape
         const copy = new FigmaVectorPath(
             this.nodeId,
             this.objectId,
-            [], 0,
+            [], 0, 0,
             this.winding,
             this.round);
 
@@ -8885,7 +8885,7 @@ extends FigmaShape
 
 
 
-function getPathDataFromPoints(points, degree)
+function getPathDataFromPoints(points, closed, degree)
 {
     let pathData = '';
 
@@ -8957,11 +8957,18 @@ function getPathDataFromPoints(points, degree)
     }
 
 
-    if (   points.length > 2
-        && points[0].equals(points.at(-1)))
+    const pointsAreValid =
+           degree == 0 && points.length > 2
+        || degree == 1 && points.length > 2
+        || degree == 2 && points.length > 3;
+
+
+    if (   pointsAreValid
+        && (   closed
+            || points[0].equals(points.at(-1))))
         pathData += ' Z';
 
-
+console.log('pathData =', pathData);
     return pathData;
 }
 
@@ -11828,6 +11835,7 @@ class VectorPathValue
 extends ShapeValue
 {
     points;
+    closed;
     degree;
     winding;
     round;
@@ -11836,6 +11844,7 @@ extends ShapeValue
 
     constructor(nodeId,
                 points  = new NumberValue(0), 
+                closed  = new NumberValue(0), 
                 degree  = new NumberValue(0), 
                 winding = new NumberValue(0), 
                 round   = new NumberValue(0))
@@ -11843,6 +11852,7 @@ extends ShapeValue
         super(VECTOR_PATH_VALUE, nodeId);
 
         this.points  = points;
+        this.closed  = closed;
         this.degree  = degree;
         this.winding = winding;
         this.round   = round;
@@ -11855,6 +11865,7 @@ extends ShapeValue
         const copy = new VectorPathValue(
             this.nodeId,
             this.points .copy(), 
+            this.closed .copy(), 
             this.degree .copy(), 
             this.winding.copy(), 
             this.round  .copy());
@@ -11870,6 +11881,7 @@ extends ShapeValue
     {
         return rect
             && this.points .equals(rect.points )
+            && this.closed .equals(rect.closed )
             && this.degree .equals(rect.degree )
             && this.winding.equals(rect.winding)
             && this.round  .equals(rect.round  );
@@ -11887,6 +11899,7 @@ extends ShapeValue
     toString()
     {
         return      this.points .toString()
+            + ' ' + this.closed .toString()
             + ' ' + this.degree .toString()
             + ' ' + this.winding.toString()
             + ' ' + this.round  .toString();
@@ -11897,6 +11910,7 @@ extends ShapeValue
     toDisplayString()
     {
         return      this.points .toDisplayString()
+            + ' ' + this.closed .toDisplayString()
             + ' ' + this.degree .toDisplayString()
             + ' ' + this.winding.toDisplayString()
             + ' ' + this.round  .toDisplayString();
@@ -11914,6 +11928,7 @@ extends ShapeValue
     isValid()
     {
         return this.points .isValid()
+            && this.closed .isValid()
             && this.degree .isValid()
             && this.winding.isValid()
             && this.round  .isValid()
@@ -11925,6 +11940,7 @@ extends ShapeValue
     static NaN = new VectorPathValue(
         '',
         ListValue  .NaN,
+        NumberValue.NaN,
         NumberValue.NaN,
         NumberValue.NaN,
         NumberValue.NaN);
@@ -11949,6 +11965,7 @@ function parseVectorPathValue(str, i = -1)
     const iStart = i;
 
     const points  = parseListValue  (str, i); i += points [1];
+    const closed  = parseNumberValue(str[i]); i += closed [1];
     const degree  = parseNumberValue(str[i]); i += degree [1];
     const winding = parseNumberValue(str[i]); i += winding[1];
     const round   = parseNumberValue(str[i]); i += round  [1];
@@ -11956,6 +11973,7 @@ function parseVectorPathValue(str, i = -1)
     const path = new VectorPathValue(
         '', // set node ID elsewhere
         points [0],
+        closed [0],
         degree [0],
         winding[0],
         round  [0]);
@@ -20245,6 +20263,7 @@ extends GShape
     input   = null;
 
     points  = null;
+    closed  = null;
     degree  = null;
     winding = null;
     round   = null;
@@ -20268,6 +20287,7 @@ extends GShape
             copy.input = this.input.copy();
 
         if (this.points ) copy.points  = this.points .copy();
+        if (this.closed ) copy.closed  = this.closed .copy();
         if (this.degree ) copy.degree  = this.degree .copy();
         if (this.winding) copy.winding = this.winding.copy();
         if (this.round  ) copy.round   = this.round  .copy();
@@ -20284,6 +20304,7 @@ extends GShape
 
 
         const points  = this.points  ? (await this.points .eval(parse)).toValue() : null;
+        const closed  = this.closed  ? (await this.closed .eval(parse)).toValue() : null;
         const degree  = this.degree  ? (await this.degree .eval(parse)).toValue() : null;
         const winding = this.winding ? (await this.winding.eval(parse)).toValue() : null;
         const round   = this.round   ? (await this.round  .eval(parse)).toValue() : null;
@@ -20298,13 +20319,14 @@ extends GShape
             this.value = new VectorPathValue(
                 this.nodeId,
                 points  ?? input.points,
+                closed  ?? input.closed,
                 degree  ?? input.degree,
                 winding ?? input.winding,
                 round   ?? input.round);
         }
         else
         {
-            this.value = new VectorPathValue(this.nodeId, points, degree, winding, round);
+            this.value = new VectorPathValue(this.nodeId, points, closed, degree, winding, round);
         }
 
 
@@ -20312,6 +20334,7 @@ extends GShape
         {
             genPushUpdateValue(parse, this.nodeId, 'value',   this.value        );
             genPushUpdateValue(parse, this.nodeId, 'points',  this.value.points );
+            genPushUpdateValue(parse, this.nodeId, 'closed',  this.value.closed );
             genPushUpdateValue(parse, this.nodeId, 'degree',  this.value.degree );
             genPushUpdateValue(parse, this.nodeId, 'winding', this.value.winding);
             genPushUpdateValue(parse, this.nodeId, 'round',   this.value.round  );
@@ -20352,6 +20375,7 @@ extends GShape
 
 
         if (   points.length >= 2
+            && this.value.closed 
             && this.value.degree 
             && this.value.winding
             && this.value.round)
@@ -20362,6 +20386,7 @@ extends GShape
                     this.nodeId,
                     NULL,
                     points,
+                    this.value.closed .value,
                     this.value.degree .value,
                     this.value.winding.value,
                     this.value.round  .value)
@@ -20382,6 +20407,7 @@ extends GShape
         const path = new VectorPathValue(
             this.nodeId,
             this.points .toValue(),
+            this.closed .toValue(),
             this.degree .toValue(),
             this.winding.toValue(),
             this.round  .toValue());
@@ -20397,6 +20423,7 @@ extends GShape
     {
         return super.isValid()
             && this.points .isValid()
+            && this.closed .isValid()
             && this.degree .isValid()
             && this.winding.isValid()
             && this.round  .isValid();
@@ -20410,6 +20437,7 @@ extends GShape
 
         if (this.input  ) this.input  .invalidate();
         if (this.points ) this.points .invalidate();
+        if (this.closed ) this.closed .invalidate();
         if (this.degree ) this.degree .invalidate();
         if (this.winding) this.winding.invalidate();
         if (this.round  ) this.round  .invalidate();
@@ -24885,6 +24913,7 @@ function genParseVectorPath(parse)
         switch (paramId)
         {       
         case 'points':  path.points  = genParse(parse); break;
+        case 'closed':  path.closed  = genParse(parse); break;
         case 'degree':  path.degree  = genParse(parse); break;
         case 'winding': path.winding = genParse(parse); break;
         case 'round':   path.round   = genParse(parse); break;
@@ -36346,11 +36375,11 @@ extends FigmaShape
 
 
 
-    constructor(nodeId, objectId, points, degree, winding, round)
+    constructor(nodeId, objectId, points, closed, degree, winding, round)
     {
         super(VECTOR_PATH, nodeId, objectId);
         
-        this.pathData = getPathDataFromPoints(points, degree);
+        this.pathData = getPathDataFromPoints(points, closed, degree);
         
 
         let minX = Number.MAX_SAFE_INTEGER;
@@ -36385,7 +36414,7 @@ extends FigmaShape
         const copy = new FigmaVectorPath(
             this.nodeId,
             this.objectId,
-            [], 0,
+            [], 0, 0,
             this.winding,
             this.round);
 
@@ -36399,7 +36428,7 @@ extends FigmaShape
 
 
 
-function getPathDataFromPoints(points, degree)
+function getPathDataFromPoints(points, closed, degree)
 {
     let pathData = '';
 
@@ -36471,11 +36500,18 @@ function getPathDataFromPoints(points, degree)
     }
 
 
-    if (   points.length > 2
-        && points[0].equals(points.at(-1)))
+    const pointsAreValid =
+           degree == 0 && points.length > 2
+        || degree == 1 && points.length > 2
+        || degree == 2 && points.length > 3;
+
+
+    if (   pointsAreValid
+        && (   closed
+            || points[0].equals(points.at(-1))))
         pathData += ' Z';
 
-
+console.log('pathData =', pathData);
     return pathData;
 }
 
@@ -39342,6 +39378,7 @@ class VectorPathValue
 extends ShapeValue
 {
     points;
+    closed;
     degree;
     winding;
     round;
@@ -39350,6 +39387,7 @@ extends ShapeValue
 
     constructor(nodeId,
                 points  = new NumberValue(0), 
+                closed  = new NumberValue(0), 
                 degree  = new NumberValue(0), 
                 winding = new NumberValue(0), 
                 round   = new NumberValue(0))
@@ -39357,6 +39395,7 @@ extends ShapeValue
         super(VECTOR_PATH_VALUE, nodeId);
 
         this.points  = points;
+        this.closed  = closed;
         this.degree  = degree;
         this.winding = winding;
         this.round   = round;
@@ -39369,6 +39408,7 @@ extends ShapeValue
         const copy = new VectorPathValue(
             this.nodeId,
             this.points .copy(), 
+            this.closed .copy(), 
             this.degree .copy(), 
             this.winding.copy(), 
             this.round  .copy());
@@ -39384,6 +39424,7 @@ extends ShapeValue
     {
         return rect
             && this.points .equals(rect.points )
+            && this.closed .equals(rect.closed )
             && this.degree .equals(rect.degree )
             && this.winding.equals(rect.winding)
             && this.round  .equals(rect.round  );
@@ -39401,6 +39442,7 @@ extends ShapeValue
     toString()
     {
         return      this.points .toString()
+            + ' ' + this.closed .toString()
             + ' ' + this.degree .toString()
             + ' ' + this.winding.toString()
             + ' ' + this.round  .toString();
@@ -39411,6 +39453,7 @@ extends ShapeValue
     toDisplayString()
     {
         return      this.points .toDisplayString()
+            + ' ' + this.closed .toDisplayString()
             + ' ' + this.degree .toDisplayString()
             + ' ' + this.winding.toDisplayString()
             + ' ' + this.round  .toDisplayString();
@@ -39428,6 +39471,7 @@ extends ShapeValue
     isValid()
     {
         return this.points .isValid()
+            && this.closed .isValid()
             && this.degree .isValid()
             && this.winding.isValid()
             && this.round  .isValid()
@@ -39439,6 +39483,7 @@ extends ShapeValue
     static NaN = new VectorPathValue(
         '',
         ListValue  .NaN,
+        NumberValue.NaN,
         NumberValue.NaN,
         NumberValue.NaN,
         NumberValue.NaN);
@@ -39463,6 +39508,7 @@ function parseVectorPathValue(str, i = -1)
     const iStart = i;
 
     const points  = parseListValue  (str, i); i += points [1];
+    const closed  = parseNumberValue(str[i]); i += closed [1];
     const degree  = parseNumberValue(str[i]); i += degree [1];
     const winding = parseNumberValue(str[i]); i += winding[1];
     const round   = parseNumberValue(str[i]); i += round  [1];
@@ -39470,6 +39516,7 @@ function parseVectorPathValue(str, i = -1)
     const path = new VectorPathValue(
         '', // set node ID elsewhere
         points [0],
+        closed [0],
         degree [0],
         winding[0],
         round  [0]);
@@ -47759,6 +47806,7 @@ extends GShape
     input   = null;
 
     points  = null;
+    closed  = null;
     degree  = null;
     winding = null;
     round   = null;
@@ -47782,6 +47830,7 @@ extends GShape
             copy.input = this.input.copy();
 
         if (this.points ) copy.points  = this.points .copy();
+        if (this.closed ) copy.closed  = this.closed .copy();
         if (this.degree ) copy.degree  = this.degree .copy();
         if (this.winding) copy.winding = this.winding.copy();
         if (this.round  ) copy.round   = this.round  .copy();
@@ -47798,6 +47847,7 @@ extends GShape
 
 
         const points  = this.points  ? (await this.points .eval(parse)).toValue() : null;
+        const closed  = this.closed  ? (await this.closed .eval(parse)).toValue() : null;
         const degree  = this.degree  ? (await this.degree .eval(parse)).toValue() : null;
         const winding = this.winding ? (await this.winding.eval(parse)).toValue() : null;
         const round   = this.round   ? (await this.round  .eval(parse)).toValue() : null;
@@ -47812,13 +47862,14 @@ extends GShape
             this.value = new VectorPathValue(
                 this.nodeId,
                 points  ?? input.points,
+                closed  ?? input.closed,
                 degree  ?? input.degree,
                 winding ?? input.winding,
                 round   ?? input.round);
         }
         else
         {
-            this.value = new VectorPathValue(this.nodeId, points, degree, winding, round);
+            this.value = new VectorPathValue(this.nodeId, points, closed, degree, winding, round);
         }
 
 
@@ -47826,6 +47877,7 @@ extends GShape
         {
             genPushUpdateValue(parse, this.nodeId, 'value',   this.value        );
             genPushUpdateValue(parse, this.nodeId, 'points',  this.value.points );
+            genPushUpdateValue(parse, this.nodeId, 'closed',  this.value.closed );
             genPushUpdateValue(parse, this.nodeId, 'degree',  this.value.degree );
             genPushUpdateValue(parse, this.nodeId, 'winding', this.value.winding);
             genPushUpdateValue(parse, this.nodeId, 'round',   this.value.round  );
@@ -47866,6 +47918,7 @@ extends GShape
 
 
         if (   points.length >= 2
+            && this.value.closed 
             && this.value.degree 
             && this.value.winding
             && this.value.round)
@@ -47876,6 +47929,7 @@ extends GShape
                     this.nodeId,
                     NULL,
                     points,
+                    this.value.closed .value,
                     this.value.degree .value,
                     this.value.winding.value,
                     this.value.round  .value)
@@ -47896,6 +47950,7 @@ extends GShape
         const path = new VectorPathValue(
             this.nodeId,
             this.points .toValue(),
+            this.closed .toValue(),
             this.degree .toValue(),
             this.winding.toValue(),
             this.round  .toValue());
@@ -47911,6 +47966,7 @@ extends GShape
     {
         return super.isValid()
             && this.points .isValid()
+            && this.closed .isValid()
             && this.degree .isValid()
             && this.winding.isValid()
             && this.round  .isValid();
@@ -47924,6 +47980,7 @@ extends GShape
 
         if (this.input  ) this.input  .invalidate();
         if (this.points ) this.points .invalidate();
+        if (this.closed ) this.closed .invalidate();
         if (this.degree ) this.degree .invalidate();
         if (this.winding) this.winding.invalidate();
         if (this.round  ) this.round  .invalidate();
@@ -74485,6 +74542,7 @@ extends OpShape
 class   OpVectorPath
 extends OpShape
 {
+    paramClosed;
     paramPoints;
     paramDegree;
     paramWinding;
@@ -74498,12 +74556,13 @@ extends OpShape
 
         this.canDisable = true;
 
-        
+
         this.addInput(this.createInputForObjects([VECTOR_PATH_VALUE], getNodeInputValuesForUndo));
         this.addOutput(new Output([VECTOR_PATH_VALUE], this.output_genRequest));
 
 
         this.addParam(this.paramPoints  = new ListParam  ('points',  'points',  true,  true, true));
+        this.addParam(this.paramClosed  = new SelectParam('closed',  'closed',  false, true, true, ['open', 'closed'], 3));
         this.addParam(this.paramDegree  = new SelectParam('degree',  'degree',  false, true, true, ['linear', 'quadratic', 'cubic', 'smooth'], 3));
         this.addParam(this.paramWinding = new SelectParam('winding', 'winding', false, true, true, ['even-odd', 'non-zero']));
         this.addParam(this.paramRound   = new NumberParam('round',   'round',   true,  true, true, 0, 0));

@@ -9,11 +9,11 @@ extends FigmaShape
 
 
 
-    constructor(nodeId, objectId, points, degree, winding, round)
+    constructor(nodeId, objectId, points, closed, degree, winding, round)
     {
         super(VECTOR_PATH, nodeId, objectId);
         
-        this.pathData = getPathDataFromPoints(points, degree);
+        this.pathData = getPathDataFromPoints(points, closed, degree);
         
 
         let minX = Number.MAX_SAFE_INTEGER;
@@ -48,7 +48,7 @@ extends FigmaShape
         const copy = new FigmaVectorPath(
             this.nodeId,
             this.objectId,
-            [], 0,
+            [], 0, 0,
             this.winding,
             this.round);
 
@@ -62,7 +62,7 @@ extends FigmaShape
 
 
 
-function getPathDataFromPoints(points, degree)
+function getPathDataFromPoints(points, closed, degree)
 {
     let pathData = '';
 
@@ -134,10 +134,17 @@ function getPathDataFromPoints(points, degree)
     }
 
 
-    if (   points.length > 2
-        && points[0].equals(points.at(-1)))
+    const pointsAreValid =
+           degree == 0 && points.length > 2
+        || degree == 1 && points.length > 2
+        || degree == 2 && points.length > 3;
+
+
+    if (   pointsAreValid
+        && (   closed
+            || points[0].equals(points.at(-1))))
         pathData += ' Z';
 
-
+console.log('pathData =', pathData);
     return pathData;
 }

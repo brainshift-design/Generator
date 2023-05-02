@@ -536,6 +536,7 @@ function genParseVectorPath(parse)
         switch (paramId)
         {       
         case 'points':  path.points  = genParse(parse); break;
+        case 'closed':  path.closed  = genParse(parse); break;
         case 'degree':  path.degree  = genParse(parse); break;
         case 'winding': path.winding = genParse(parse); break;
         case 'round':   path.round   = genParse(parse); break;

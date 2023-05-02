@@ -2,6 +2,7 @@ class VectorPathValue
 extends ShapeValue
 {
     points;
+    closed;
     degree;
     winding;
     round;
@@ -10,6 +11,7 @@ extends ShapeValue
 
     constructor(nodeId,
                 points  = new NumberValue(0), 
+                closed  = new NumberValue(0), 
                 degree  = new NumberValue(0), 
                 winding = new NumberValue(0), 
                 round   = new NumberValue(0))
@@ -17,6 +19,7 @@ extends ShapeValue
         super(VECTOR_PATH_VALUE, nodeId);
 
         this.points  = points;
+        this.closed  = closed;
         this.degree  = degree;
         this.winding = winding;
         this.round   = round;
@@ -29,6 +32,7 @@ extends ShapeValue
         const copy = new VectorPathValue(
             this.nodeId,
             this.points .copy(), 
+            this.closed .copy(), 
             this.degree .copy(), 
             this.winding.copy(), 
             this.round  .copy());
@@ -44,6 +48,7 @@ extends ShapeValue
     {
         return rect
             && this.points .equals(rect.points )
+            && this.closed .equals(rect.closed )
             && this.degree .equals(rect.degree )
             && this.winding.equals(rect.winding)
             && this.round  .equals(rect.round  );
@@ -61,6 +66,7 @@ extends ShapeValue
     toString()
     {
         return      this.points .toString()
+            + ' ' + this.closed .toString()
             + ' ' + this.degree .toString()
             + ' ' + this.winding.toString()
             + ' ' + this.round  .toString();
@@ -71,6 +77,7 @@ extends ShapeValue
     toDisplayString()
     {
         return      this.points .toDisplayString()
+            + ' ' + this.closed .toDisplayString()
             + ' ' + this.degree .toDisplayString()
             + ' ' + this.winding.toDisplayString()
             + ' ' + this.round  .toDisplayString();
@@ -88,6 +95,7 @@ extends ShapeValue
     isValid()
     {
         return this.points .isValid()
+            && this.closed .isValid()
             && this.degree .isValid()
             && this.winding.isValid()
             && this.round  .isValid()
@@ -99,6 +107,7 @@ extends ShapeValue
     static NaN = new VectorPathValue(
         '',
         ListValue  .NaN,
+        NumberValue.NaN,
         NumberValue.NaN,
         NumberValue.NaN,
         NumberValue.NaN);
@@ -123,6 +132,7 @@ function parseVectorPathValue(str, i = -1)
     const iStart = i;
 
     const points  = parseListValue  (str, i); i += points [1];
+    const closed  = parseNumberValue(str[i]); i += closed [1];
     const degree  = parseNumberValue(str[i]); i += degree [1];
     const winding = parseNumberValue(str[i]); i += winding[1];
     const round   = parseNumberValue(str[i]); i += round  [1];
@@ -130,6 +140,7 @@ function parseVectorPathValue(str, i = -1)
     const path = new VectorPathValue(
         '', // set node ID elsewhere
         points [0],
+        closed [0],
         degree [0],
         winding[0],
         round  [0]);
