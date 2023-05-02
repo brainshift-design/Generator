@@ -105,8 +105,9 @@ extends GShape
 
             for (const pt of objPoints)
                 points.push(new PointValue(
-                    new NumberValue(pt._x), 
-                    new NumberValue(pt._y)));
+                    this.nodeId,
+                    new NumberValue(pt.x), 
+                    new NumberValue(pt.y)));
         }
 
 

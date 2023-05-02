@@ -26,6 +26,7 @@ extends OpShapeBase
         // 'this' is the input
 
         return new PointValue(
+            this.nodeId,
             this.node.paramX.value,
             this.node.paramY.value);
     }

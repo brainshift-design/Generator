@@ -4545,7 +4545,7 @@ function getPathDataFromPoints(points, degree)
         pathData += ' ' + points[0].x.toNumber();
         pathData += ' ' + points[0].y.toNumber();
 
-        for (let i = 1; i < points.length; i += 2)
+        for (let i = 1; i < points.length-1; i += 2)
         {
             pathData += 
                     ' Q'
@@ -4565,7 +4565,7 @@ function getPathDataFromPoints(points, degree)
         pathData += ' ' + points[0].x.toNumber();
         pathData += ' ' + points[0].y.toNumber();
 
-        for (let i = 1; i < points.length; i += 3)
+        for (let i = 1; i < points.length-2; i += 3)
         {
             pathData += 
                     ' C'
@@ -15973,8 +15973,9 @@ extends GShape
 
             for (const pt of objPoints)
                 points.push(new PointValue(
-                    new NumberValue(pt._x), 
-                    new NumberValue(pt._y)));
+                    this.nodeId,
+                    new NumberValue(pt.x), 
+                    new NumberValue(pt.y)));
         }
 
 

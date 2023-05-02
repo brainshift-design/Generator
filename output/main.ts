@@ -1832,7 +1832,7 @@ function figUpdateObject(figObj, genObj)
         case POLYGON:     figUpdatePolygon   (figObj, genObj);  break;
         case STAR:        figUpdateStar      (figObj, genObj);  break;
         case TEXTSHAPE:   figUpdateText      (figObj, genObj);  break;
-        case VECTOR_PATH: figUpdatePoint     (figObj, genObj);  break;
+        case POINT:       figUpdatePoint     (figObj, genObj);  break;
         case VECTOR_PATH: figUpdateVectorPath(figObj, genObj);  break;
     }
 }
@@ -2416,7 +2416,7 @@ function figUpdatePoint(figPoint, genPoint)
     figPoint.resizeWithoutConstraints(size, size);
 
 
-    point.strokeWeight =  1.25 / curZoom;
+    figPoint.strokeWeight =  1.25 / curZoom;
 }
 
 
@@ -2520,7 +2520,6 @@ function figUpdateVectorPath(figPath, genPath)
 
 function getObjectFills(objFills)
 {
-    console.log('objFills =', objFills);
     const fills = [];
 
 
@@ -2584,7 +2583,7 @@ function setObjectStrokes(obj, src)
         obj.strokeAlign  = src.strokeAlign;
         obj.strokeJoin   = src.strokeJoin;
         
-        const miterAngle = src.strokeMiterLimit / 360 * Tau;
+        const miterAngle = src.strokeMiterLimit / 360 * Math.PI*2;
         const miterLimit = 1 / Math.sin(miterAngle / 2);
         
         obj.strokeMiterLimit = Math.min(Math.max(0, miterLimit), 16);

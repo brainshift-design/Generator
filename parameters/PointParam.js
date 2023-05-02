@@ -19,6 +19,8 @@ extends Parameter
     {
         super(POINT_VALUE, id, name);
 
+        defaultValue.nodeId = this.nodeId;
+
         this.defaultValue = defaultValue;
         this.value        = defaultValue;
 
@@ -119,7 +121,7 @@ extends Parameter
 
         else request.push( 
             POINT_VALUE, 
-            (new PointValue()).toString());
+            (new PointValue(this.nodeId)).toString());
 
         return request;
     }

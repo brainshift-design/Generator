@@ -95,7 +95,7 @@ function getPathDataFromPoints(points, degree)
         pathData += ' ' + points[0].x.toNumber();
         pathData += ' ' + points[0].y.toNumber();
 
-        for (let i = 1; i < points.length; i += 2)
+        for (let i = 1; i < points.length-1; i += 2)
         {
             pathData += 
                     ' Q'
@@ -115,7 +115,7 @@ function getPathDataFromPoints(points, degree)
         pathData += ' ' + points[0].x.toNumber();
         pathData += ' ' + points[0].y.toNumber();
 
-        for (let i = 1; i < points.length; i += 3)
+        for (let i = 1; i < points.length-2; i += 3)
         {
             pathData += 
                     ' C'
