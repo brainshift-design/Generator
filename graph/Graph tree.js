@@ -273,7 +273,7 @@ function getActiveInBranchFromNode(node, alreadyChecked = [])
     }
 
 
-    const nodeOutputs = node.headerOutputs
+    const nodeOutputs = node.outputs//headerOutputs
         .filter(o => o.connectedInputs.length == 1);
 
     if (    nodeOutputs.length == 1
@@ -304,9 +304,9 @@ function getActiveFromNode(node, alreadyChecked = [])
     if (leftActive) return leftActive;
 
 
-    for (const output of node.headerOutputs)
+    for (const output of node.outputs)//headerOutputs)
     {
-        for (const input of output.connectedInputs.filter(i => !i.param))
+        for (const input of output.connectedInputs)//.filter(i => !i.param))
         {
             if (!alreadyChecked.includes(input.node))
             {
@@ -335,10 +335,10 @@ function getActiveBeforeNode(node, alreadyChecked = [])
         return node;
 
 
-    for (const input of node.headerInputs)
+    for (const input of node.inputs)//headerInputs)
     {
         if (    input.connected
-            && !input.connectedOutput.param
+            //&& !input.connectedOutput.param
             && !alreadyChecked.includes(input.connectedOutput.node))
         {
             const leftActive = getActiveFromNode(
@@ -364,10 +364,10 @@ function getActiveOnlyBeforeNode(node, alreadyChecked = [])
         return node;
 
 
-    for (const input of node.headerInputs)
+    for (const input of node.inputs)//headerInputs)
     {
         if (    input.connected
-            && !input.connectedOutput.param
+            //&& !input.connectedOutput.param
             && !alreadyChecked.includes(input.connectedOutput.node))
         {
             const leftActive = getActiveOnlyBeforeNode(
@@ -403,7 +403,7 @@ function getActiveAfterNode(node, includeParams = false, alreadyChecked = [])
             ? output.connectedInputs
             : output.connectedHeaderInputs;
 
-        for (const input of connectedInputs.filter(i => !i.param))
+        for (const input of connectedInputs)//.filter(i => !i.param))
         {
             if (!alreadyChecked.includes(input.node))
             {
@@ -432,18 +432,18 @@ function getActiveNodesFromNode(node, alreadyChecked = [])
         activeNodes.push(node);
 
 
-    for (const input of node.headerInputs)
+    for (const input of node.inputs)//headerInputs)
     {
         if (    input.connected
-            && !input.connectedOutput.param
+            //&& !input.connectedOutput.param
             && !alreadyChecked.includes(input.connectedOutput.node))
             pushUnique(activeNodes, getActiveNodesFromNode(input.connectedOutput.node, [...alreadyChecked, node]));
     }
 
 
-    for (const output of node.headerOutputs)
+    for (const output of node.outputs)//headerOutputs)
     {
-        for (const input of output.connectedInputs.filter(i => !i.param))
+        for (const input of output.connectedInputs)//.filter(i => !i.param))
         {
             if (!alreadyChecked.includes(input.node))
                 pushUnique(activeNodes, getActiveNodesFromNode(input.node, [...alreadyChecked, node]));

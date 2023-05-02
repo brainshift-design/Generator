@@ -420,10 +420,10 @@ function uiMakeNodePassive(node)
 
 function uiMakeNodeLeftPassive(node, fromNode = null)
 {
-    for (const input of node.headerInputs)
+    for (const input of node.inputs)//headerInputs)
     {
         if (    input.connected
-            && !input.connectedOutput.param
+            //&& !input.connectedOutput.param
             && (  !fromNode
                 || input.connectedOutput.node != fromNode))
         {
@@ -437,9 +437,9 @@ function uiMakeNodeLeftPassive(node, fromNode = null)
 
 function uiMakeNodeRightPassive(node, fromNode = null)
 {
-    for (const output of node.headerOutputs)
+    for (const output of node.outputs)//headerOutputs)
     {
-        for (const connInput of output.connectedInputs.filter(i => !i.param))
+        for (const connInput of output.connectedInputs)//.filter(i => !i.param))
         {
             uiMakeNodePassive(connInput.node);
             uiMakeNodeRightPassive(connInput.node, node);
