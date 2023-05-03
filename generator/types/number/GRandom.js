@@ -73,9 +73,8 @@ extends GNumberType
 
                 if (repeat.iteration == repeat.total-1)
                 {
-                    // console.assert(
-                    //     parse.repeats.at(-1).nodeId == this.repeatNodeId, 
-                    //     'nested repeat error');
+                    // if (parse.repeats.at(-1).nodeId != this.repeatNodeId)
+                    //     console.warn('Generator: Invalid nested repeat on \'' + this.nodeId + '\'');
 
                     parse.repeats.pop();
                 }

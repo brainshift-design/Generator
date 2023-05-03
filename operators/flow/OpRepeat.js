@@ -23,6 +23,8 @@ extends OperatorBase
 
         this.paramCount.controls[0].allowEditDecimals = false;
         this.paramCount.affectsHeader = false;
+
+        this.paramRepeatId.input.types.push(NUMBER_LIST_VALUE);
     }
     
     

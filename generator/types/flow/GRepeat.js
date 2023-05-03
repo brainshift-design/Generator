@@ -55,12 +55,14 @@ extends GOperator
 
         if (this.repeatId.type != NUMBER_VALUE)
         {
+            console.log('this.repeatId.type =', this.repeatId.type);
             console.assert(
                    this.repeatId.type == NUMBER_SEQUENCE
-                || this.repeatId.type == NUMBER_RANDOM,
+                || this.repeatId.type == NUMBER_RANDOM
+                || this.repeatId.type == LIST,
                 'only volatile types can be repeated');
 
-            this.repeatId.repeatCount = count.value;
+            setRepeatCount(this.repeatId, count.value);
         }
 
 
@@ -75,7 +77,6 @@ extends GOperator
             iteration: 0,
             total:     0
         };
-
 
         if (this.repeatId.type != NUMBER_VALUE)
             parse.repeats.push(repeat);
@@ -93,8 +94,7 @@ extends GOperator
             {
                 if (this.repeatId.type != NUMBER_VALUE)
                 {
-                    this.repeatId.valid        = false;
-                    this.repeatId.repeatNodeId = this.nodeId;
+                    invalidateRepeat(this.repeatId, this.nodeId);
 
                     repeat.iteration = i;
                     repeat.total     = nItems;
@@ -128,7 +128,7 @@ extends GOperator
 
 
             if (this.repeatId)
-                this.repeatId.init = false;
+                uninitRepeat(this.repeatId);
         }
 
 
@@ -160,5 +160,54 @@ extends GOperator
 
         if (this.input) this.input.invalidate();
         if (this.count) this.count.invalidate();
+    }
+}
+
+
+
+function setRepeatCount(repeat, count)
+{
+    if (repeat.type == LIST)
+    {
+        for (const input of repeat.inputs)
+            setRepeatCount(input, count);
+    }
+    else
+    {
+        repeat.repeatCount = count;
+    }
+}
+
+
+
+function invalidateRepeat(repeat, nodeId)
+{
+    if (repeat.type == LIST)
+    {
+        for (const input of repeat.inputs)
+        {
+            input.valid        = false;
+            input.repeatNodeId = nodeId;
+        }
+    }
+    else
+    {
+        repeat.valid        = false;
+        repeat.repeatNodeId = nodeId;
+    }
+}
+
+
+
+function uninitRepeat(repeat)
+{
+    if (repeat.type == LIST)
+    {
+        for (const input of repeat.inputs)
+            uninitRepeat(input);
+    }
+    else
+    {
+        repeat.init = false;
     }
 }

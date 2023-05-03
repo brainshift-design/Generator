@@ -52,6 +52,8 @@ extends GNumberType
         if (!this.init)
         {
             this.current = start.copy();
+            this.current.value -= step.toNumber();
+
             this.init = true;
         }
         
@@ -62,20 +64,19 @@ extends GNumberType
 
         
         if (!parse.repeats.find(r => r.nodeId == this.repeatNodeId))
-            this.current.value += step.value;
+            this.current.value += step.toNumber();
 
         else if (  !isEmpty(parse.repeats)
                 && parse.repeats.at(-1).nodeId == this.repeatNodeId)
         {
-            this.current.value += step.value;
+            this.current.value += step.toNumber();
 
             const repeat = parse.repeats.at(-1);
 
             if (repeat.iteration == repeat.total-1)
             {
-                // console.assert(
-                //     parse.repeats.at(-1).nodeId == this.repeatNodeId, 
-                //     'nested repeat error');
+                // if (parse.repeats.at(-1).nodeId != this.repeatNodeId)
+                //     console.warn('Generator: Invalid nested repeat on \'' + this.nodeId + '\'');
 
                 parse.repeats.pop();
             }
