@@ -17,7 +17,7 @@ extends OperatorWithValue
         this.addOutput(new Output([NUMBER_VALUE], this.output_genRequest));
 
         this.addParam(this.paramValue);
-        this.addParam(this.paramFunction = new SelectParam('function', '', false, true, true, TRIG_OPS.map(s => s[1]), 2));
+        this.addParam(this.paramFunction = new SelectParam('function', '', false, true, true, TRIG_OPS.map(s => s[1]), 0));
     }
 
 

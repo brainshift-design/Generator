@@ -4550,64 +4550,12 @@ function getPathDataFromPoints(points, closed, degree)
 
     switch (degree)
     {
-    case 0: pathData = getLinearPathData   (points.map(p => p.toPoint())); break;
-    case 1: pathData = getQuadraticPathData(points.map(p => p.toPoint())); break;
-    case 2: pathData = getCubicPathData    (points.map(p => p.toPoint())); break;
-
-    case 3: // smooth
-        if (points.length < 2)
-            break;
-
-
-        const bp = [];
-
-
-        // first point
-        let [pp, p, pn] = getSmoothSegment(
-            points[0], 
-            points[0],
-            points[1]);
-
-        bp.push(p);
-
-
-        let _pp = pn;
-
-
-        // middle points
-        for (let i = 1; i < points.length; i++)
-        {
-            [pp, p, pn] = getSmoothSegment(
-                points[i-1], 
-                points[i],
-                i == points.length-1 ? points[i] : points[i+1]);
-
-            bp.push(_pp, pp, p);
-
-            _pp = pn;
-        }
-
-
-       
-        if (bp.length > 3)
-        {
-            if (closed)
-            {
-                bp[1]           = addv(bp[0],     mulvs(unitv(subv(bp.at(-1), bp[0])), -distance(bp[3],     bp[0]    )/3));
-                bp[bp.length-2] = addv(bp.at(-1), mulvs(unitv(subv(bp[0], bp.at(-1))), -distance(bp.at(-4), bp.at(-1))/3));
-            }
-            else // open
-            {
-                bp[1]           = addv(bp[0],     mulvs(unitv(subv(bp[2],     bp[0]    )), distance(bp[3],     bp[0]    )/3));
-                bp[bp.length-2] = addv(bp.at(-1), mulvs(unitv(subv(bp.at(-3), bp.at(-1))), distance(bp.at(-4), bp.at(-1))/3));
-            }
-        }
-
-
-        pathData = getCubicPathData(bp);
-
-
-        break;
+    case 0: pathData = getLinearPathData   (points.map(p => p.toPoint()));    break;
+    case 1: pathData = getQuadraticPathData(points.map(p => p.toPoint()));    break;
+    case 2: pathData = getCubicPathData    (points.map(p => p.toPoint()));    break;
+    case 3: pathData = getSmoothPathData   (points, closed);                  break;
+    case 4: pathData = getSinePathData     (points, closed, getSineXSegment); break;
+    case 5: pathData = getSinePathData     (points, closed, getSineYSegment); break;
     }
 
 
@@ -4717,6 +4665,61 @@ function getCubicPathData(points)
 
 
 
+function getSmoothPathData(points, closed)
+{
+    if (points.length < 2)
+        return '';
+
+
+    const bp = [];
+
+
+    // first point
+    let [pp, p, pn] = getSmoothSegment(
+        points[0], 
+        points[0],
+        points[1]);
+
+    bp.push(p);
+
+
+    let _pp = pn;
+
+
+    // middle points
+    for (let i = 1; i < points.length; i++)
+    {
+        [pp, p, pn] = getSmoothSegment(
+            points[i-1], 
+            points[i],
+            i == points.length-1 ? points[i] : points[i+1]);
+
+        bp.push(_pp, pp, p);
+
+        _pp = pn;
+    }
+
+
+    if (bp.length > 3)
+    {
+        if (closed)
+        {
+            bp[1]           = addv(bp[0],     mulvs(unitv(subv(bp.at(-1), bp[0])), -distance(bp[3],     bp[0]    )/3));
+            bp[bp.length-2] = addv(bp.at(-1), mulvs(unitv(subv(bp[0], bp.at(-1))), -distance(bp.at(-4), bp.at(-1))/3));
+        }
+        else // open
+        {
+            bp[1]           = addv(bp[0],     mulvs(unitv(subv(bp[2],     bp[0]    )), distance(bp[3],     bp[0]    )/3));
+            bp[bp.length-2] = addv(bp.at(-1), mulvs(unitv(subv(bp.at(-3), bp.at(-1))), distance(bp.at(-4), bp.at(-1))/3));
+        }
+    }
+
+
+    return getCubicPathData(bp);
+}
+
+
+
 function getSmoothSegment(_pointP, _point, _pointN)
 {
     const _pp = point(
@@ -4737,6 +4740,107 @@ function getSmoothSegment(_pointP, _point, _pointN)
     const pp = addv(_p, mulvs(unitv(v), -lengthv(v)/2 / 3));
     const pn = addv(_p, mulvs(unitv(v),  lengthv(v)/2 / 3));
 
+
+    return [pp, _p, pn];
+}
+
+
+
+function getSinePathData(points, closed, getSineSegment)
+{
+    if (points.length < 2)
+        return '';
+
+
+    const bp = [];
+
+
+    // first point
+    let [pp, p, pn] = getSineSegment(
+        points[0], 
+        points[0],
+        points[1]);
+
+    bp.push(p);
+
+
+    let _pp = pn;
+
+
+    // middle points
+    for (let i = 1; i < points.length; i++)
+    {
+        [pp, p, pn] = getSineSegment(
+            points[i-1], 
+            points[i],
+            i == points.length-1 ? points[i] : points[i+1]);
+
+        bp.push(_pp, pp, p);
+
+        _pp = pn;
+    }
+
+
+    if (bp.length > 3)
+    {
+        if (closed)
+        {
+            bp[1]           = addv(bp[0],     mulvs(unitv(subv(bp.at(-1), bp[0])), -distance(bp[3],     bp[0]    )/3));
+            bp[bp.length-2] = addv(bp.at(-1), mulvs(unitv(subv(bp[0], bp.at(-1))), -distance(bp.at(-4), bp.at(-1))/3));
+        }
+        else // open
+        {
+            bp[1]           = addv(bp[0],     mulvs(unitv(subv(bp[2],     bp[0]    )), distance(bp[3],     bp[0]    )/3));
+            bp[bp.length-2] = addv(bp.at(-1), mulvs(unitv(subv(bp.at(-3), bp.at(-1))), distance(bp.at(-4), bp.at(-1))/3));
+        }
+    }
+
+
+    return getCubicPathData(bp);
+}
+
+
+
+function getSineXSegment(_pointP, _point, _pointN)
+{
+    const _pp = point(
+        NumberValue.prototype.toNumber.call(_pointP.x),
+        NumberValue.prototype.toNumber.call(_pointP.y));
+
+    const _p = point(
+        NumberValue.prototype.toNumber.call(_point.x),
+        NumberValue.prototype.toNumber.call(_point.y));
+
+    const _pn = point(
+        NumberValue.prototype.toNumber.call(_pointN.x),
+        NumberValue.prototype.toNumber.call(_pointN.y));
+
+
+    const pp = point(_p.x - (_p.x - _pp.x) * 0.3615, _p.y);
+    const pn = point(_p.x + (_pn.x - _p.x) * 0.3615, _p.y);
+
+    return [pp, _p, pn];
+}
+
+
+
+function getSineYSegment(_pointP, _point, _pointN)
+{
+    const _pp = point(
+        NumberValue.prototype.toNumber.call(_pointP.x),
+        NumberValue.prototype.toNumber.call(_pointP.y));
+
+    const _p = point(
+        NumberValue.prototype.toNumber.call(_point.x),
+        NumberValue.prototype.toNumber.call(_point.y));
+
+    const _pn = point(
+        NumberValue.prototype.toNumber.call(_pointN.x),
+        NumberValue.prototype.toNumber.call(_pointN.y));
+
+
+    const pp = point(_p.x, _p.y - (_p.y - _pp.y) * 0.3615);
+    const pn = point(_p.x, _p.y + (_pn.y - _p.y) * 0.3615);
 
     return [pp, _p, pn];
 }
