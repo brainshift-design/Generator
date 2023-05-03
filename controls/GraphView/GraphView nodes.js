@@ -182,6 +182,20 @@ GraphView.prototype.copySelectedNodes = function()
 
 
 
+GraphView.prototype.groupSelectedNodes = function()
+{
+
+};
+
+
+
+GraphView.prototype.ungroupSelectedNodes = function()
+{
+
+};
+
+
+
 class GenJS
 {
     nodes;

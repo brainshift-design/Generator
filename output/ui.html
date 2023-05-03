@@ -55397,15 +55397,18 @@ var menuItemNodePasteConnected;
 var menuItemNodeRemove;
 var menuItemNodeLayout;
 var menuItemNodeSep1;
+var menuItemNodeGroupSelected;
+var menuItemNodeUngroup;
+var menuItemNodeSep2;
 var menuItemNodeRename;
 //var menuItemNodeEdit;
 var menuItemNodeLeaveOnCanvas;
-var menuItemNodeSep2;
+var menuItemNodeSep3;
 var menuItemNodeSelect;
 // var menuItemNodeBringToFront;
 // var menuItemNodeSendToBack;
 //var menuItemNodeActivate;
-var menuItemNodeSep3;
+var menuItemNodeSep4;
 var menuItemNodeEnableDisable;
 
 
@@ -55428,7 +55431,7 @@ function initGeneratorMenus()
     menuMainFile.addItems([
         new MenuItem('Import from file...',      {callback: () => { hideAllMenus(); uiImportFromLocalFile(); }}),
         new MenuItem('',                         {separator: true}),    
-        new MenuItem('Save selected to file...', {shortcut: osCtrl() + osShift()+'S', callback: () => { hideAllMenus(); uiSaveSelectionToLocalFile(); }})]);
+        new MenuItem('Save selected to file...', {shortcut: osCtrlShift() + 'S', callback: () => { hideAllMenus(); uiSaveSelectionToLocalFile(); }})]);
 
 
     menuMainPreferences = new Menu('Preferences', false);
@@ -55767,15 +55770,18 @@ function initGeneratorMenus()
                                    //new MenuItem('',                {separator: true}),
       //menuItemNodeLayout         = new MenuItem('Layout',          {enabled:   false, shortcut: osCtrl() + 'L', callback: e => { hideAllMenus(); layoutSelectedNodes(); }}),
         menuItemNodeSep1           = new MenuItem('',                {separator: true}),
-        menuItemNodeSelect         = new MenuItem('Select',          {childMenu: menuNodeSelect}),
+        menuItemNodeGroupSelected  = new MenuItem('Group selected',  {shortcut:  osCtrl() + 'G',       callback: e => { hideAllMenus(); graphView.groupSelectedNodes();   }}),
+        menuItemNodeUngroup        = new MenuItem('Ungroup',         {                                 callback: e => { hideAllMenus(); graphView.ungroupSelectedNodes(); }}),
         menuItemNodeSep2           = new MenuItem('',                {separator: true}),
+        menuItemNodeSelect         = new MenuItem('Select',          {childMenu: menuNodeSelect}),
+        menuItemNodeSep3           = new MenuItem('',                {separator: true}),
         // menuItemNodeRename      = new MenuItem('Rename',          {shortcut:  osCtrl() + 'R',       callback: e => { hideAllMenus(); graphView.renameSelectedNode(); }}),
         // menuItemNodeEdit           = new MenuItem('Edit...',      {callback: e => { hideAllMenus(); graphView.editSelectedCustomNode(); }}),
         //                              new MenuItem('',             {separator: true}),
         // menuItemNodeActivate    = new MenuItem('Activate',        {callback: () => makeSelectedNodesActive()}),
         menuItemNodeEnableDisable  = new MenuItem('Enable/Disable',  {shortcut:  osCtrlShift() + 'E',  callback: () => actionManager.do(new ToggleDisableNodesAction(graphView.selectedNodes.map(n => n.id)))}),
         menuItemNodeLeaveOnCanvas  = new MenuItem('Leave on canvas', {callback: e => { hideAllMenus(); }}),
-        menuItemNodeSep3           = new MenuItem('',                {separator: true}),
+        menuItemNodeSep4           = new MenuItem('',                {separator: true}),
         menuItemNodeRemove         = new MenuItem('Remove',          {shortcut:  osCtrl() + '⌫',      callback: e => { hideAllMenus(); graphView.removeSelectedNodes(true); }})]);
 
 
@@ -55784,6 +55790,7 @@ function initGeneratorMenus()
     {
         const single     = graphView.selectedNodes.length == 1;
         const hasObjects = isEmpty(graphView.selectedNodes.filter(n => !SHAPE_TYPES.includes(n.type)));
+        const hasGroups  = isEmpty(graphView.selectedNodes.filter(n => n.type != GROUP_NODE));
         
 
         //const parallel = nodesAreParallel(graphView.selectedNodes);
@@ -55791,13 +55798,14 @@ function initGeneratorMenus()
         const canDisable = !graphView.selectedNodes.find(n => !n.canDisable);
 
 
-        updateElementDisplay(menuItemNodeSep1         .div, single);
+        updateElementDisplay(menuItemNodeUngroup      .div, hasGroups);
+        updateElementDisplay(menuItemNodeSep2         .div, single);
       //updateMenuItemDisplay(menuItemNodeRename       .div, single);
         //updateElementDisplay(menuItemNodeEdit         .div, single);
         updateElementDisplay(menuItemNodeLeaveOnCanvas.div, hasObjects);
-        updateElementDisplay(menuItemNodeSep2         .div, single);
+        updateElementDisplay(menuItemNodeSep3         .div, single);
         updateElementDisplay(menuItemNodeSelect       .div, single);
-        updateElementDisplay(menuItemNodeSep3         .div, canDisable);
+        updateElementDisplay(menuItemNodeSep4         .div, canDisable);
         updateElementDisplay(menuItemNodeEnableDisable.div, canDisable);
     };
 
@@ -57616,6 +57624,20 @@ GraphView.prototype.copySelectedNodes = function()
     copiedNodesJson = uiCopyNodes(this.selectedNodes.map(n => n.id));
 
     writeTextToClipboard(copiedNodesJson);
+};
+
+
+
+GraphView.prototype.groupSelectedNodes = function()
+{
+
+};
+
+
+
+GraphView.prototype.ungroupSelectedNodes = function()
+{
+
 };
 
 
