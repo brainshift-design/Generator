@@ -126,3 +126,16 @@ function expandRect(rect1, rect2)
         Math.max(rect2.r, rect1.r),
         Math.max(rect2.b, rect1.b));
 }
+
+
+
+function expandRect_(rect, p)
+{
+    if (rect.isNaN) return new Rect(p.x, p.y, 0, 0);
+
+    return new AbsRect(
+        Math.min(p.x, rect.l),
+        Math.min(p.y, rect.t),
+        Math.max(p.x, rect.r),
+        Math.max(p.y, rect.b));
+}

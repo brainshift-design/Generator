@@ -3,6 +3,11 @@ extends FigmaShape
 {
     x;
     y;
+    
+    points;
+    closed;
+    degree;
+
     pathData;
     winding;
     round;
@@ -13,32 +18,14 @@ extends FigmaShape
     {
         super(VECTOR_PATH, nodeId, objectId);
         
-        this.pathData = getPathDataFromPoints(points, closed, degree);
+        this.points = [...points];
+        this.closed = closed;
+        this.degree = degree;
+
+        this.updatePathData();
         
-
-        let minX = Number.MAX_SAFE_INTEGER;
-        let minY = Number.MAX_SAFE_INTEGER;
-
-        for (const p of points)
-        {
-            minX = Math.min(minX, p.x.toNumber());
-            minY = Math.min(minY, p.y.toNumber());
-        }
-
-
-        this.x = minX;
-        this.y = minY;
-        
-        
-        // for (const p of points)
-        // {
-        //     p.x.value -= minX;
-        //     p.y.value -= minY;
-        // }
-
-
-        this.winding  = winding;
-        this.round    = round;
+        this.winding = winding;
+        this.round   = round;
     }
 
 
@@ -52,11 +39,38 @@ extends FigmaShape
             this.winding,
             this.round);
 
+        copy.x        = this.x;
+        copy.y        = this.y;
+
+        copy.points   = [...this.points];
+        copy.closed   = this.closed;
+        copy.degree   = this.degree;
+
         copy.pathData = this.pathData;
 
         copy.copyBase(this);
 
         return copy;
+    }
+
+
+
+    updatePathData()
+    {
+        let minX = Number.MAX_SAFE_INTEGER;
+        let minY = Number.MAX_SAFE_INTEGER;
+
+        for (const p of this.points)
+        {
+            minX = Math.min(minX, NumberValue.prototype.toNumber.call(p.x));
+            minY = Math.min(minY, NumberValue.prototype.toNumber.call(p.y));
+        }
+
+
+        this.x = minX;
+        this.y = minY;
+
+        this.pathData = getPathDataFromPoints(this.points, this.closed, this.degree);
     }
 }
 
@@ -165,7 +179,7 @@ function getLinearPathData(points)
     for (let i = 1; i < points.length; i++)
     {
         pathData += 
-                ' L'
+              ' L'
             + ' ' + points[i].x
             + ' ' + points[i].y;
     }
@@ -239,16 +253,16 @@ function getCubicPathData(points)
 function getSmoothSegment(_pointP, _point, _pointN)
 {
     const _pp = point(
-        _pointP.x.toNumber(),
-        _pointP.y.toNumber());
+        NumberValue.prototype.toNumber.call(_pointP.x),
+        NumberValue.prototype.toNumber.call(_pointP.y));
 
     const _p = point(
-        _point.x.toNumber(),
-        _point.y.toNumber());
+        NumberValue.prototype.toNumber.call(_point.x),
+        NumberValue.prototype.toNumber.call(_point.y));
 
     const _pn = point(
-        _pointN.x.toNumber(),
-        _pointN.y.toNumber());
+        NumberValue.prototype.toNumber.call(_pointN.x),
+        NumberValue.prototype.toNumber.call(_pointN.y));
 
 
     const v = subv(_pn, _pp);

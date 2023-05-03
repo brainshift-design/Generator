@@ -172,7 +172,8 @@ var menuItemNodeRemove;
 var menuItemNodeLayout;
 var menuItemNodeSep1;
 var menuItemNodeRename;
-var menuItemNodeEdit;
+//var menuItemNodeEdit;
+var menuItemNodeLeaveOnCanvas;
 var menuItemNodeSep2;
 var menuItemNodeSelect;
 // var menuItemNodeBringToFront;
@@ -532,8 +533,8 @@ function initGeneratorMenus()
 
     menuNode = new Menu('Node menu', false, false);
     menuNode.addItems([
-        menuItemNodeCopy           = new MenuItem('Copy',            {shortcut:  osCtrl() + 'C',              callback: () => graphView.copySelectedNodes() }),
-        menuItemNodePaste          = new MenuItem('Paste here',      {shortcut:  osCtrl() + 'V',              callback: e => { hideAllMenus(); graphView.pasteCopiedNodes(false); }}),
+        menuItemNodeCopy           = new MenuItem('Copy',            {shortcut:  osCtrl() + 'C',       callback: () => graphView.copySelectedNodes() }),
+        menuItemNodePaste          = new MenuItem('Paste here',      {shortcut:  osCtrl() + 'V',       callback: e => { hideAllMenus(); graphView.pasteCopiedNodes(false); }}),
         menuItemNodePasteConnected = new MenuItem('Paste connected', {shortcut:  osCtrlShift() + 'D',  callback: e => { hideAllMenus(); graphView.pasteCopiedNodes(true ); }}),
                                      new MenuItem('Copy/Paste as',   {childMenu: menuNodeCopyAs}),
                                    //new MenuItem('',                {separator: true}),
@@ -541,18 +542,23 @@ function initGeneratorMenus()
         menuItemNodeSep1           = new MenuItem('',                {separator: true}),
         menuItemNodeSelect         = new MenuItem('Select',          {childMenu: menuNodeSelect}),
         menuItemNodeSep2           = new MenuItem('',                {separator: true}),
-        // menuItemNodeRename      = new MenuItem('Rename',          {shortcut:  osCtrl() + 'R',              callback: e => { hideAllMenus(); graphView.renameSelectedNode(); }}),
-        menuItemNodeEdit           = new MenuItem('Edit...',         {callback: e => { hideAllMenus(); graphView.editSelectedCustomNode(); }}),
-                                     new MenuItem('',                {separator: true}),
+        // menuItemNodeRename      = new MenuItem('Rename',          {shortcut:  osCtrl() + 'R',       callback: e => { hideAllMenus(); graphView.renameSelectedNode(); }}),
+        // menuItemNodeEdit           = new MenuItem('Edit...',      {callback: e => { hideAllMenus(); graphView.editSelectedCustomNode(); }}),
+        //                              new MenuItem('',             {separator: true}),
         // menuItemNodeActivate    = new MenuItem('Activate',        {callback: () => makeSelectedNodesActive()}),
         menuItemNodeEnableDisable  = new MenuItem('Enable/Disable',  {shortcut:  osCtrlShift() + 'E',  callback: () => actionManager.do(new ToggleDisableNodesAction(graphView.selectedNodes.map(n => n.id)))}),
+        menuItemNodeLeaveOnCanvas  = new MenuItem('Leave on canvas', {callback: e => { hideAllMenus(); }}),
         menuItemNodeSep3           = new MenuItem('',                {separator: true}),
-        menuItemNodeRemove         = new MenuItem('Remove',          {shortcut:  osCtrl() + '⌫',             callback: e => { hideAllMenus(); graphView.removeSelectedNodes(true); }})]);
+        menuItemNodeRemove         = new MenuItem('Remove',          {shortcut:  osCtrl() + '⌫',      callback: e => { hideAllMenus(); graphView.removeSelectedNodes(true); }})]);
+
 
 
     menuNode.init = () => 
     {
-        const single   = graphView.selectedNodes.length == 1;
+        const single     = graphView.selectedNodes.length == 1;
+        const hasObjects = isEmpty(graphView.selectedNodes.filter(n => !SHAPE_TYPES.includes(n.type)));
+        
+
         //const parallel = nodesAreParallel(graphView.selectedNodes);
 
         const canDisable = !graphView.selectedNodes.find(n => !n.canDisable);
@@ -560,12 +566,14 @@ function initGeneratorMenus()
 
         updateElementDisplay(menuItemNodeSep1         .div, single);
       //updateMenuItemDisplay(menuItemNodeRename       .div, single);
-        updateElementDisplay(menuItemNodeEdit         .div, single);
+        //updateElementDisplay(menuItemNodeEdit         .div, single);
+        updateElementDisplay(menuItemNodeLeaveOnCanvas.div, hasObjects);
         updateElementDisplay(menuItemNodeSep2         .div, single);
         updateElementDisplay(menuItemNodeSelect       .div, single);
         updateElementDisplay(menuItemNodeSep3         .div, canDisable);
         updateElementDisplay(menuItemNodeEnableDisable.div, canDisable);
     };
+
 
 
     menuRemoveLicense = new Menu('Remove license', false, false);

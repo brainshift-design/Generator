@@ -99,12 +99,26 @@ function getObjBounds(objects)
 
     for (const obj of objects)
     {
-        const [width, height] =
-            obj.type != POINT
-            ? [obj.width, obj.height]
-            : [0, 0];
+        if (obj.type == VECTOR_PATH)
+        {
+            for (const p of obj.points)
+            {
+                bounds = expandRect_(
+                    bounds, 
+                    point(
+                        NumberValue.prototype.toNumber.call(p.x), 
+                        NumberValue.prototype.toNumber.call(p.y)));
+            }
+        }
+        else
+        {
+            const [width, height] =
+                obj.type != POINT
+                ? [obj.width, obj.height]
+                : [0, 0];
 
-        bounds = expandRect(bounds, new Rect(obj.x, obj.y, width, height));
+            bounds = expandRect(bounds, new Rect(obj.x, obj.y, width, height));
+        }
     }
 
 

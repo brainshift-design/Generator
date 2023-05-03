@@ -102,42 +102,84 @@ extends GOperator
     {
         if (!this.options.enabled)
             return;
-        // {
-        //     this.objects = clone(this.input.objects);
-         
-        //     for (const obj of this.objects)
-        //         obj.nodeId = this.nodeId;
-        // }
-
-        // else
-        // {
-            this.objects = 
-                this.input 
-                ? clone(this.input.objects) 
-                : [];
 
 
-            const bounds = getObjBounds(this.objects);
+        this.objects = 
+            this.input 
+            ? clone(this.input.objects) 
+            : [];
 
 
-            const x  = Math.max(0, options.x.toNumber()/100);
-            const y  = Math.max(0, options.y.toNumber()/100);
-
-            
-            const dx = 
-                bounds.width != 0
-                ? options.centerX.toNumber() / (bounds.width /2)
-                : options.centerX.toNumber();
-
-            const dy = 
-                bounds.height != 0
-                ? options.centerY.toNumber() / (bounds.height/2)
-                : options.centerY.toNumber();
+        const bounds = getObjBounds(this.objects);
 
 
-            for (const obj of this.objects)
+        for (const obj of this.objects)
+        {
+            obj.nodeId = this.nodeId;
+
+
+            const bw = bounds.width  != 0 ? bounds.width  : 1;
+            const bh = bounds.height != 0 ? bounds.height : 1;
+
+
+            if (obj.type == VECTOR_PATH)
             {
-                obj.nodeId = this.nodeId;
+                const x  = Math.max(0, options.x.toNumber()/100);
+                const y  = Math.max(0, options.y.toNumber()/100);
+
+                const dx = 0.5 + options.centerX.toNumber() / (bounds.width /2);
+                const dy = 0.5 + options.centerY.toNumber() / (bounds.height/2);
+
+
+                for (const p of obj.points)
+                {
+                    const d = distance_(
+                        p.x.value, 
+                        p.y.value, 
+                        bounds.x + dx * bounds.width, 
+                        bounds.y + dy * bounds.height);
+
+                    const a = anglev_(
+                        bounds.x + dx * bounds.width, 
+                        bounds.y + dy * bounds.height, 
+                        p.x.value, 
+                        p.y.value);
+
+                    const v = mulv(
+                        vector(a, d),
+                        point(x, y));
+
+                    
+                    p.x.value = 
+                          bounds.x 
+                        + bounds.width/2 
+                        + v.x;
+
+                    p.y.value = 
+                          bounds.y
+                        + bounds.height/2
+                        + v.y;
+                }
+
+
+                FigmaVectorPath.prototype.updatePathData.call(obj);
+            }
+            else
+            {
+                const x  = Math.max(0, options.x.toNumber()/100);
+                const y  = Math.max(0, options.y.toNumber()/100);
+                
+
+                const dx = 
+                    bounds.width != 0
+                    ? options.centerX.toNumber() / (bounds.width /2)
+                    : options.centerX.toNumber();
+
+                const dy = 
+                    bounds.height != 0
+                    ? options.centerY.toNumber() / (bounds.height/2)
+                    : options.centerY.toNumber();
+
 
                 obj.width  *= x;
                 obj.height *= y;
@@ -156,19 +198,14 @@ extends GOperator
                     obj.y);
 
 
-                const a  = 0;//obj.angle/360*Tau;
-                const v  = vector(angle - a, halfd);
+                const a = 0;
+                const v = vector(angle - a, halfd);
 
                 v.x *= x;
                 v.y *= y;
 
-
-                const bw = bounds.width  != 0 ? bounds.width  : 1;
-                const bh = bounds.height != 0 ? bounds.height : 1;
-
-
                 obj.x = 
-                      bounds.x 
+                        bounds.x 
                     + bounds.width /2 
                     + v.x 
                     - (dx - 0.5) * bw * Math.cos(-a) 
@@ -181,7 +218,7 @@ extends GOperator
                     - (dx - 0.5) * bw * Math.sin(-a) 
                     - (dy - 0.5) * bh * Math.cos( a);
             }
-       // }
+        }
 
         
         await super.evalObjects(parse);

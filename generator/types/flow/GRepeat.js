@@ -108,8 +108,8 @@ extends GOperator
                 for (let j = 0; j < this.input.objects.length; j++, o++)
                 {
                     const obj = copyFigmaObject(this.input.objects[j]);
-                    
-                    obj.nodeId    = this.nodeId;
+
+                    obj.nodeId = this.nodeId;
 
                     if (obj.objectId != NULL) obj.objectId += ' ';
                     obj.objectId += (o+1).toString();
@@ -134,8 +134,8 @@ extends GOperator
 
         if (parse.isLastRepeat())
         {
-            genPushUpdateValue(parse, this.nodeId, 'value',    this.value);
-            genPushUpdateValue(parse, this.nodeId, 'count',    count);
+            genPushUpdateValue(parse, this.nodeId, 'value',    this.value     );
+            genPushUpdateValue(parse, this.nodeId, 'count',    count          );
             genPushUpdateValue(parse, this.nodeId, 'repeatId', NumberValue.NaN);
         }
 

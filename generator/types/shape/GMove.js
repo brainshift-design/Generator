@@ -83,13 +83,26 @@ extends GOperator
             ? clone(this.input.objects) 
             : [];
 
-
+            
         for (const obj of this.objects)
         {
             obj.nodeId = this.nodeId;
 
-            obj.x += options.x.toNumber();
-            obj.y += options.y.toNumber();
+            if (obj.type == VECTOR_PATH)
+            {
+                for (const p of obj.points)
+                {
+                    p.x.value += options.x.toNumber();
+                    p.y.value += options.y.toNumber();
+                }
+
+                FigmaVectorPath.prototype.updatePathData.call(obj);
+            }
+            else
+            {
+                obj.x += options.x.toNumber();
+                obj.y += options.y.toNumber();
+            }
         }
 
         

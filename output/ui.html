@@ -6408,6 +6408,19 @@ function expandRect(rect1, rect2)
 
 
 
+function expandRect_(rect, p)
+{
+    if (rect.isNaN) return new Rect(p.x, p.y, 0, 0);
+
+    return new AbsRect(
+        Math.min(p.x, rect.l),
+        Math.min(p.y, rect.t),
+        Math.max(p.x, rect.r),
+        Math.max(p.y, rect.b));
+}
+
+
+
 class Random
 {
     seed;
@@ -8826,6 +8839,11 @@ extends FigmaShape
 {
     x;
     y;
+    
+    points;
+    closed;
+    degree;
+
     pathData;
     winding;
     round;
@@ -8836,32 +8854,14 @@ extends FigmaShape
     {
         super(VECTOR_PATH, nodeId, objectId);
         
-        this.pathData = getPathDataFromPoints(points, closed, degree);
+        this.points = [...points];
+        this.closed = closed;
+        this.degree = degree;
+
+        this.updatePathData();
         
-
-        let minX = Number.MAX_SAFE_INTEGER;
-        let minY = Number.MAX_SAFE_INTEGER;
-
-        for (const p of points)
-        {
-            minX = Math.min(minX, p.x.toNumber());
-            minY = Math.min(minY, p.y.toNumber());
-        }
-
-
-        this.x = minX;
-        this.y = minY;
-        
-        
-        // for (const p of points)
-        // {
-        //     p.x.value -= minX;
-        //     p.y.value -= minY;
-        // }
-
-
-        this.winding  = winding;
-        this.round    = round;
+        this.winding = winding;
+        this.round   = round;
     }
 
 
@@ -8875,11 +8875,38 @@ extends FigmaShape
             this.winding,
             this.round);
 
+        copy.x        = this.x;
+        copy.y        = this.y;
+
+        copy.points   = [...this.points];
+        copy.closed   = this.closed;
+        copy.degree   = this.degree;
+
         copy.pathData = this.pathData;
 
         copy.copyBase(this);
 
         return copy;
+    }
+
+
+
+    updatePathData()
+    {
+        let minX = Number.MAX_SAFE_INTEGER;
+        let minY = Number.MAX_SAFE_INTEGER;
+
+        for (const p of this.points)
+        {
+            minX = Math.min(minX, NumberValue.prototype.toNumber.call(p.x));
+            minY = Math.min(minY, NumberValue.prototype.toNumber.call(p.y));
+        }
+
+
+        this.x = minX;
+        this.y = minY;
+
+        this.pathData = getPathDataFromPoints(this.points, this.closed, this.degree);
     }
 }
 
@@ -8988,7 +9015,7 @@ function getLinearPathData(points)
     for (let i = 1; i < points.length; i++)
     {
         pathData += 
-                ' L'
+              ' L'
             + ' ' + points[i].x
             + ' ' + points[i].y;
     }
@@ -9062,16 +9089,16 @@ function getCubicPathData(points)
 function getSmoothSegment(_pointP, _point, _pointN)
 {
     const _pp = point(
-        _pointP.x.toNumber(),
-        _pointP.y.toNumber());
+        NumberValue.prototype.toNumber.call(_pointP.x),
+        NumberValue.prototype.toNumber.call(_pointP.y));
 
     const _p = point(
-        _point.x.toNumber(),
-        _point.y.toNumber());
+        NumberValue.prototype.toNumber.call(_point.x),
+        NumberValue.prototype.toNumber.call(_point.y));
 
     const _pn = point(
-        _pointN.x.toNumber(),
-        _pointN.y.toNumber());
+        NumberValue.prototype.toNumber.call(_pointN.x),
+        NumberValue.prototype.toNumber.call(_pointN.y));
 
 
     const v = subv(_pn, _pp);
@@ -9431,12 +9458,26 @@ function getObjBounds(objects)
 
     for (const obj of objects)
     {
-        const [width, height] =
-            obj.type != POINT
-            ? [obj.width, obj.height]
-            : [0, 0];
+        if (obj.type == VECTOR_PATH)
+        {
+            for (const p of obj.points)
+            {
+                bounds = expandRect_(
+                    bounds, 
+                    point(
+                        NumberValue.prototype.toNumber.call(p.x), 
+                        NumberValue.prototype.toNumber.call(p.y)));
+            }
+        }
+        else
+        {
+            const [width, height] =
+                obj.type != POINT
+                ? [obj.width, obj.height]
+                : [0, 0];
 
-        bounds = expandRect(bounds, new Rect(obj.x, obj.y, width, height));
+            bounds = expandRect(bounds, new Rect(obj.x, obj.y, width, height));
+        }
     }
 
 
@@ -12909,8 +12950,8 @@ extends GOperator
                 for (let j = 0; j < this.input.objects.length; j++, o++)
                 {
                     const obj = copyFigmaObject(this.input.objects[j]);
-                    
-                    obj.nodeId    = this.nodeId;
+
+                    obj.nodeId = this.nodeId;
 
                     if (obj.objectId != NULL) obj.objectId += ' ';
                     obj.objectId += (o+1).toString();
@@ -12935,8 +12976,8 @@ extends GOperator
 
         if (parse.isLastRepeat())
         {
-            genPushUpdateValue(parse, this.nodeId, 'value',    this.value);
-            genPushUpdateValue(parse, this.nodeId, 'count',    count);
+            genPushUpdateValue(parse, this.nodeId, 'value',    this.value     );
+            genPushUpdateValue(parse, this.nodeId, 'count',    count          );
             genPushUpdateValue(parse, this.nodeId, 'repeatId', NumberValue.NaN);
         }
 
@@ -20649,13 +20690,26 @@ extends GOperator
             ? clone(this.input.objects) 
             : [];
 
-
+            
         for (const obj of this.objects)
         {
             obj.nodeId = this.nodeId;
 
-            obj.x += options.x.toNumber();
-            obj.y += options.y.toNumber();
+            if (obj.type == VECTOR_PATH)
+            {
+                for (const p of obj.points)
+                {
+                    p.x.value += options.x.toNumber();
+                    p.y.value += options.y.toNumber();
+                }
+
+                FigmaVectorPath.prototype.updatePathData.call(obj);
+            }
+            else
+            {
+                obj.x += options.x.toNumber();
+                obj.y += options.y.toNumber();
+            }
         }
 
         
@@ -20797,22 +20851,14 @@ extends GOperator
             ? clone(this.input.objects) 
             : [];
 
+
         const bounds = getObjBounds(this.objects);
 
-
-        const dx = 
-            bounds.width != 0
-            ? options.centerX.toNumber() / (bounds.width /2)
-            : options.centerX.toNumber();
-
-        const dy = 
-            bounds.height != 0
-            ? options.centerY.toNumber() / (bounds.height/2)
-            : options.centerY.toNumber();
 
         for (const obj of this.objects)
         {
             obj.nodeId = this.nodeId;
+
 
             obj.angle = 
                 isValid(obj.angle)
@@ -20820,39 +20866,90 @@ extends GOperator
                 : options.angle.toNumber(); 
 
 
-            const angle = anglev_(
-                bounds.x + bounds.width /2, 
-                bounds.y + bounds.height/2,
-                obj.x,
-                obj.y);
-
-            const halfd = distance_(
-                bounds.x + bounds.width /2,
-                bounds.y + bounds.height/2,
-                obj.x,
-                obj.y);
-
-
-            const a = obj.angle/360*Tau;
-            const v = vector(angle - a, halfd);
-
-
             const bw = bounds.width  != 0 ? bounds.width  : 1;
             const bh = bounds.height != 0 ? bounds.height : 1;
 
-            obj.x = 
-                  bounds.x 
-                + bounds.width /2 
-                + v.x 
-                - dx * bw * Math.cos(-a) 
-                - dy * bh * Math.sin( a);
 
-            obj.y = 
-                  bounds.y
-                + bounds.height/2
-                + v.y 
-                - dx * bw * Math.sin(-a) 
-                - dy * bh * Math.cos( a);
+            if (obj.type == VECTOR_PATH)
+            {
+                const dx = 0.5 + options.centerX.toNumber() / (bounds.width /2);
+                const dy = 0.5 + options.centerY.toNumber() / (bounds.height/2);
+
+
+                for (const p of obj.points)
+                {
+                    const d = distance_(
+                        p.x.value, 
+                        p.y.value, 
+                        bounds.x + dx * bounds.width, 
+                        bounds.y + dy * bounds.height);
+
+                    const a = anglev_(
+                        bounds.x + dx * bounds.width, 
+                        bounds.y + dy * bounds.height, 
+                        p.x.value, 
+                        p.y.value);
+
+                    const v = vector(a + options.angle.toNumber()/360*Tau, d);
+
+                    
+                    p.x.value = 
+                          bounds.x 
+                        + bounds.width/2 
+                        + v.x;
+
+                    p.y.value = 
+                          bounds.y
+                        + bounds.height/2
+                        + v.y;
+                }
+
+
+                FigmaVectorPath.prototype.updatePathData.call(obj);
+            }
+            else
+            {
+                const dx = 
+                    bounds.width != 0
+                    ? options.centerX.toNumber() / (bounds.width /2)
+                    : options.centerX.toNumber();
+
+                const dy = 
+                    bounds.height != 0
+                    ? options.centerY.toNumber() / (bounds.height/2)
+                    : options.centerY.toNumber();
+
+
+                const angle = anglev_(
+                    bounds.x + bounds.width /2, 
+                    bounds.y + bounds.height/2,
+                    obj.x,
+                    obj.y);
+
+                const halfd = distance_(
+                    bounds.x + bounds.width /2,
+                    bounds.y + bounds.height/2,
+                    obj.x,
+                    obj.y);
+
+                const a = obj.angle/360*Tau;
+                const v = vector(angle - a, halfd);
+
+
+                obj.x = 
+                    bounds.x 
+                    + bounds.width /2 
+                    + v.x 
+                    - dx * bw * Math.cos(-a) 
+                    - dy * bh * Math.sin( a);
+
+                obj.y = 
+                    bounds.y
+                    + bounds.height/2
+                    + v.y 
+                    - dx * bw * Math.sin(-a) 
+                    - dy * bh * Math.cos( a);
+            }
         }
 
         
@@ -20997,42 +21094,84 @@ extends GOperator
     {
         if (!this.options.enabled)
             return;
-        // {
-        //     this.objects = clone(this.input.objects);
-         
-        //     for (const obj of this.objects)
-        //         obj.nodeId = this.nodeId;
-        // }
-
-        // else
-        // {
-            this.objects = 
-                this.input 
-                ? clone(this.input.objects) 
-                : [];
 
 
-            const bounds = getObjBounds(this.objects);
+        this.objects = 
+            this.input 
+            ? clone(this.input.objects) 
+            : [];
 
 
-            const x  = Math.max(0, options.x.toNumber()/100);
-            const y  = Math.max(0, options.y.toNumber()/100);
-
-            
-            const dx = 
-                bounds.width != 0
-                ? options.centerX.toNumber() / (bounds.width /2)
-                : options.centerX.toNumber();
-
-            const dy = 
-                bounds.height != 0
-                ? options.centerY.toNumber() / (bounds.height/2)
-                : options.centerY.toNumber();
+        const bounds = getObjBounds(this.objects);
 
 
-            for (const obj of this.objects)
+        for (const obj of this.objects)
+        {
+            obj.nodeId = this.nodeId;
+
+
+            const bw = bounds.width  != 0 ? bounds.width  : 1;
+            const bh = bounds.height != 0 ? bounds.height : 1;
+
+
+            if (obj.type == VECTOR_PATH)
             {
-                obj.nodeId = this.nodeId;
+                const x  = Math.max(0, options.x.toNumber()/100);
+                const y  = Math.max(0, options.y.toNumber()/100);
+
+                const dx = 0.5 + options.centerX.toNumber() / (bounds.width /2);
+                const dy = 0.5 + options.centerY.toNumber() / (bounds.height/2);
+
+
+                for (const p of obj.points)
+                {
+                    const d = distance_(
+                        p.x.value, 
+                        p.y.value, 
+                        bounds.x + dx * bounds.width, 
+                        bounds.y + dy * bounds.height);
+
+                    const a = anglev_(
+                        bounds.x + dx * bounds.width, 
+                        bounds.y + dy * bounds.height, 
+                        p.x.value, 
+                        p.y.value);
+
+                    const v = mulv(
+                        vector(a, d),
+                        point(x, y));
+
+                    
+                    p.x.value = 
+                          bounds.x 
+                        + bounds.width/2 
+                        + v.x;
+
+                    p.y.value = 
+                          bounds.y
+                        + bounds.height/2
+                        + v.y;
+                }
+
+
+                FigmaVectorPath.prototype.updatePathData.call(obj);
+            }
+            else
+            {
+                const x  = Math.max(0, options.x.toNumber()/100);
+                const y  = Math.max(0, options.y.toNumber()/100);
+                
+
+                const dx = 
+                    bounds.width != 0
+                    ? options.centerX.toNumber() / (bounds.width /2)
+                    : options.centerX.toNumber();
+
+                const dy = 
+                    bounds.height != 0
+                    ? options.centerY.toNumber() / (bounds.height/2)
+                    : options.centerY.toNumber();
+
 
                 obj.width  *= x;
                 obj.height *= y;
@@ -21051,19 +21190,14 @@ extends GOperator
                     obj.y);
 
 
-                const a  = 0;//obj.angle/360*Tau;
-                const v  = vector(angle - a, halfd);
+                const a = 0;
+                const v = vector(angle - a, halfd);
 
                 v.x *= x;
                 v.y *= y;
 
-
-                const bw = bounds.width  != 0 ? bounds.width  : 1;
-                const bh = bounds.height != 0 ? bounds.height : 1;
-
-
                 obj.x = 
-                      bounds.x 
+                        bounds.x 
                     + bounds.width /2 
                     + v.x 
                     - (dx - 0.5) * bw * Math.cos(-a) 
@@ -21076,7 +21210,7 @@ extends GOperator
                     - (dx - 0.5) * bw * Math.sin(-a) 
                     - (dy - 0.5) * bh * Math.cos( a);
             }
-       // }
+        }
 
         
         await super.evalObjects(parse);
@@ -31484,6 +31618,19 @@ function expandRect(rect1, rect2)
 
 
 
+function expandRect_(rect, p)
+{
+    if (rect.isNaN) return new Rect(p.x, p.y, 0, 0);
+
+    return new AbsRect(
+        Math.min(p.x, rect.l),
+        Math.min(p.y, rect.t),
+        Math.max(p.x, rect.r),
+        Math.max(p.y, rect.b));
+}
+
+
+
 class Random
 {
     seed;
@@ -36488,6 +36635,11 @@ extends FigmaShape
 {
     x;
     y;
+    
+    points;
+    closed;
+    degree;
+
     pathData;
     winding;
     round;
@@ -36498,32 +36650,14 @@ extends FigmaShape
     {
         super(VECTOR_PATH, nodeId, objectId);
         
-        this.pathData = getPathDataFromPoints(points, closed, degree);
+        this.points = [...points];
+        this.closed = closed;
+        this.degree = degree;
+
+        this.updatePathData();
         
-
-        let minX = Number.MAX_SAFE_INTEGER;
-        let minY = Number.MAX_SAFE_INTEGER;
-
-        for (const p of points)
-        {
-            minX = Math.min(minX, p.x.toNumber());
-            minY = Math.min(minY, p.y.toNumber());
-        }
-
-
-        this.x = minX;
-        this.y = minY;
-        
-        
-        // for (const p of points)
-        // {
-        //     p.x.value -= minX;
-        //     p.y.value -= minY;
-        // }
-
-
-        this.winding  = winding;
-        this.round    = round;
+        this.winding = winding;
+        this.round   = round;
     }
 
 
@@ -36537,11 +36671,38 @@ extends FigmaShape
             this.winding,
             this.round);
 
+        copy.x        = this.x;
+        copy.y        = this.y;
+
+        copy.points   = [...this.points];
+        copy.closed   = this.closed;
+        copy.degree   = this.degree;
+
         copy.pathData = this.pathData;
 
         copy.copyBase(this);
 
         return copy;
+    }
+
+
+
+    updatePathData()
+    {
+        let minX = Number.MAX_SAFE_INTEGER;
+        let minY = Number.MAX_SAFE_INTEGER;
+
+        for (const p of this.points)
+        {
+            minX = Math.min(minX, NumberValue.prototype.toNumber.call(p.x));
+            minY = Math.min(minY, NumberValue.prototype.toNumber.call(p.y));
+        }
+
+
+        this.x = minX;
+        this.y = minY;
+
+        this.pathData = getPathDataFromPoints(this.points, this.closed, this.degree);
     }
 }
 
@@ -36650,7 +36811,7 @@ function getLinearPathData(points)
     for (let i = 1; i < points.length; i++)
     {
         pathData += 
-                ' L'
+              ' L'
             + ' ' + points[i].x
             + ' ' + points[i].y;
     }
@@ -36724,16 +36885,16 @@ function getCubicPathData(points)
 function getSmoothSegment(_pointP, _point, _pointN)
 {
     const _pp = point(
-        _pointP.x.toNumber(),
-        _pointP.y.toNumber());
+        NumberValue.prototype.toNumber.call(_pointP.x),
+        NumberValue.prototype.toNumber.call(_pointP.y));
 
     const _p = point(
-        _point.x.toNumber(),
-        _point.y.toNumber());
+        NumberValue.prototype.toNumber.call(_point.x),
+        NumberValue.prototype.toNumber.call(_point.y));
 
     const _pn = point(
-        _pointN.x.toNumber(),
-        _pointN.y.toNumber());
+        NumberValue.prototype.toNumber.call(_pointN.x),
+        NumberValue.prototype.toNumber.call(_pointN.y));
 
 
     const v = subv(_pn, _pp);
@@ -37093,12 +37254,26 @@ function getObjBounds(objects)
 
     for (const obj of objects)
     {
-        const [width, height] =
-            obj.type != POINT
-            ? [obj.width, obj.height]
-            : [0, 0];
+        if (obj.type == VECTOR_PATH)
+        {
+            for (const p of obj.points)
+            {
+                bounds = expandRect_(
+                    bounds, 
+                    point(
+                        NumberValue.prototype.toNumber.call(p.x), 
+                        NumberValue.prototype.toNumber.call(p.y)));
+            }
+        }
+        else
+        {
+            const [width, height] =
+                obj.type != POINT
+                ? [obj.width, obj.height]
+                : [0, 0];
 
-        bounds = expandRect(bounds, new Rect(obj.x, obj.y, width, height));
+            bounds = expandRect(bounds, new Rect(obj.x, obj.y, width, height));
+        }
     }
 
 
@@ -40571,8 +40746,8 @@ extends GOperator
                 for (let j = 0; j < this.input.objects.length; j++, o++)
                 {
                     const obj = copyFigmaObject(this.input.objects[j]);
-                    
-                    obj.nodeId    = this.nodeId;
+
+                    obj.nodeId = this.nodeId;
 
                     if (obj.objectId != NULL) obj.objectId += ' ';
                     obj.objectId += (o+1).toString();
@@ -40597,8 +40772,8 @@ extends GOperator
 
         if (parse.isLastRepeat())
         {
-            genPushUpdateValue(parse, this.nodeId, 'value',    this.value);
-            genPushUpdateValue(parse, this.nodeId, 'count',    count);
+            genPushUpdateValue(parse, this.nodeId, 'value',    this.value     );
+            genPushUpdateValue(parse, this.nodeId, 'count',    count          );
             genPushUpdateValue(parse, this.nodeId, 'repeatId', NumberValue.NaN);
         }
 
@@ -48311,13 +48486,26 @@ extends GOperator
             ? clone(this.input.objects) 
             : [];
 
-
+            
         for (const obj of this.objects)
         {
             obj.nodeId = this.nodeId;
 
-            obj.x += options.x.toNumber();
-            obj.y += options.y.toNumber();
+            if (obj.type == VECTOR_PATH)
+            {
+                for (const p of obj.points)
+                {
+                    p.x.value += options.x.toNumber();
+                    p.y.value += options.y.toNumber();
+                }
+
+                FigmaVectorPath.prototype.updatePathData.call(obj);
+            }
+            else
+            {
+                obj.x += options.x.toNumber();
+                obj.y += options.y.toNumber();
+            }
         }
 
         
@@ -48459,22 +48647,14 @@ extends GOperator
             ? clone(this.input.objects) 
             : [];
 
+
         const bounds = getObjBounds(this.objects);
 
-
-        const dx = 
-            bounds.width != 0
-            ? options.centerX.toNumber() / (bounds.width /2)
-            : options.centerX.toNumber();
-
-        const dy = 
-            bounds.height != 0
-            ? options.centerY.toNumber() / (bounds.height/2)
-            : options.centerY.toNumber();
 
         for (const obj of this.objects)
         {
             obj.nodeId = this.nodeId;
+
 
             obj.angle = 
                 isValid(obj.angle)
@@ -48482,39 +48662,90 @@ extends GOperator
                 : options.angle.toNumber(); 
 
 
-            const angle = anglev_(
-                bounds.x + bounds.width /2, 
-                bounds.y + bounds.height/2,
-                obj.x,
-                obj.y);
-
-            const halfd = distance_(
-                bounds.x + bounds.width /2,
-                bounds.y + bounds.height/2,
-                obj.x,
-                obj.y);
-
-
-            const a = obj.angle/360*Tau;
-            const v = vector(angle - a, halfd);
-
-
             const bw = bounds.width  != 0 ? bounds.width  : 1;
             const bh = bounds.height != 0 ? bounds.height : 1;
 
-            obj.x = 
-                  bounds.x 
-                + bounds.width /2 
-                + v.x 
-                - dx * bw * Math.cos(-a) 
-                - dy * bh * Math.sin( a);
 
-            obj.y = 
-                  bounds.y
-                + bounds.height/2
-                + v.y 
-                - dx * bw * Math.sin(-a) 
-                - dy * bh * Math.cos( a);
+            if (obj.type == VECTOR_PATH)
+            {
+                const dx = 0.5 + options.centerX.toNumber() / (bounds.width /2);
+                const dy = 0.5 + options.centerY.toNumber() / (bounds.height/2);
+
+
+                for (const p of obj.points)
+                {
+                    const d = distance_(
+                        p.x.value, 
+                        p.y.value, 
+                        bounds.x + dx * bounds.width, 
+                        bounds.y + dy * bounds.height);
+
+                    const a = anglev_(
+                        bounds.x + dx * bounds.width, 
+                        bounds.y + dy * bounds.height, 
+                        p.x.value, 
+                        p.y.value);
+
+                    const v = vector(a + options.angle.toNumber()/360*Tau, d);
+
+                    
+                    p.x.value = 
+                          bounds.x 
+                        + bounds.width/2 
+                        + v.x;
+
+                    p.y.value = 
+                          bounds.y
+                        + bounds.height/2
+                        + v.y;
+                }
+
+
+                FigmaVectorPath.prototype.updatePathData.call(obj);
+            }
+            else
+            {
+                const dx = 
+                    bounds.width != 0
+                    ? options.centerX.toNumber() / (bounds.width /2)
+                    : options.centerX.toNumber();
+
+                const dy = 
+                    bounds.height != 0
+                    ? options.centerY.toNumber() / (bounds.height/2)
+                    : options.centerY.toNumber();
+
+
+                const angle = anglev_(
+                    bounds.x + bounds.width /2, 
+                    bounds.y + bounds.height/2,
+                    obj.x,
+                    obj.y);
+
+                const halfd = distance_(
+                    bounds.x + bounds.width /2,
+                    bounds.y + bounds.height/2,
+                    obj.x,
+                    obj.y);
+
+                const a = obj.angle/360*Tau;
+                const v = vector(angle - a, halfd);
+
+
+                obj.x = 
+                    bounds.x 
+                    + bounds.width /2 
+                    + v.x 
+                    - dx * bw * Math.cos(-a) 
+                    - dy * bh * Math.sin( a);
+
+                obj.y = 
+                    bounds.y
+                    + bounds.height/2
+                    + v.y 
+                    - dx * bw * Math.sin(-a) 
+                    - dy * bh * Math.cos( a);
+            }
         }
 
         
@@ -48659,42 +48890,84 @@ extends GOperator
     {
         if (!this.options.enabled)
             return;
-        // {
-        //     this.objects = clone(this.input.objects);
-         
-        //     for (const obj of this.objects)
-        //         obj.nodeId = this.nodeId;
-        // }
-
-        // else
-        // {
-            this.objects = 
-                this.input 
-                ? clone(this.input.objects) 
-                : [];
 
 
-            const bounds = getObjBounds(this.objects);
+        this.objects = 
+            this.input 
+            ? clone(this.input.objects) 
+            : [];
 
 
-            const x  = Math.max(0, options.x.toNumber()/100);
-            const y  = Math.max(0, options.y.toNumber()/100);
-
-            
-            const dx = 
-                bounds.width != 0
-                ? options.centerX.toNumber() / (bounds.width /2)
-                : options.centerX.toNumber();
-
-            const dy = 
-                bounds.height != 0
-                ? options.centerY.toNumber() / (bounds.height/2)
-                : options.centerY.toNumber();
+        const bounds = getObjBounds(this.objects);
 
 
-            for (const obj of this.objects)
+        for (const obj of this.objects)
+        {
+            obj.nodeId = this.nodeId;
+
+
+            const bw = bounds.width  != 0 ? bounds.width  : 1;
+            const bh = bounds.height != 0 ? bounds.height : 1;
+
+
+            if (obj.type == VECTOR_PATH)
             {
-                obj.nodeId = this.nodeId;
+                const x  = Math.max(0, options.x.toNumber()/100);
+                const y  = Math.max(0, options.y.toNumber()/100);
+
+                const dx = 0.5 + options.centerX.toNumber() / (bounds.width /2);
+                const dy = 0.5 + options.centerY.toNumber() / (bounds.height/2);
+
+
+                for (const p of obj.points)
+                {
+                    const d = distance_(
+                        p.x.value, 
+                        p.y.value, 
+                        bounds.x + dx * bounds.width, 
+                        bounds.y + dy * bounds.height);
+
+                    const a = anglev_(
+                        bounds.x + dx * bounds.width, 
+                        bounds.y + dy * bounds.height, 
+                        p.x.value, 
+                        p.y.value);
+
+                    const v = mulv(
+                        vector(a, d),
+                        point(x, y));
+
+                    
+                    p.x.value = 
+                          bounds.x 
+                        + bounds.width/2 
+                        + v.x;
+
+                    p.y.value = 
+                          bounds.y
+                        + bounds.height/2
+                        + v.y;
+                }
+
+
+                FigmaVectorPath.prototype.updatePathData.call(obj);
+            }
+            else
+            {
+                const x  = Math.max(0, options.x.toNumber()/100);
+                const y  = Math.max(0, options.y.toNumber()/100);
+                
+
+                const dx = 
+                    bounds.width != 0
+                    ? options.centerX.toNumber() / (bounds.width /2)
+                    : options.centerX.toNumber();
+
+                const dy = 
+                    bounds.height != 0
+                    ? options.centerY.toNumber() / (bounds.height/2)
+                    : options.centerY.toNumber();
+
 
                 obj.width  *= x;
                 obj.height *= y;
@@ -48713,19 +48986,14 @@ extends GOperator
                     obj.y);
 
 
-                const a  = 0;//obj.angle/360*Tau;
-                const v  = vector(angle - a, halfd);
+                const a = 0;
+                const v = vector(angle - a, halfd);
 
                 v.x *= x;
                 v.y *= y;
 
-
-                const bw = bounds.width  != 0 ? bounds.width  : 1;
-                const bh = bounds.height != 0 ? bounds.height : 1;
-
-
                 obj.x = 
-                      bounds.x 
+                        bounds.x 
                     + bounds.width /2 
                     + v.x 
                     - (dx - 0.5) * bw * Math.cos(-a) 
@@ -48738,7 +49006,7 @@ extends GOperator
                     - (dx - 0.5) * bw * Math.sin(-a) 
                     - (dy - 0.5) * bh * Math.cos( a);
             }
-       // }
+        }
 
         
         await super.evalObjects(parse);
@@ -54768,7 +55036,8 @@ var menuItemNodeRemove;
 var menuItemNodeLayout;
 var menuItemNodeSep1;
 var menuItemNodeRename;
-var menuItemNodeEdit;
+//var menuItemNodeEdit;
+var menuItemNodeLeaveOnCanvas;
 var menuItemNodeSep2;
 var menuItemNodeSelect;
 // var menuItemNodeBringToFront;
@@ -55128,8 +55397,8 @@ function initGeneratorMenus()
 
     menuNode = new Menu('Node menu', false, false);
     menuNode.addItems([
-        menuItemNodeCopy           = new MenuItem('Copy',            {shortcut:  osCtrl() + 'C',              callback: () => graphView.copySelectedNodes() }),
-        menuItemNodePaste          = new MenuItem('Paste here',      {shortcut:  osCtrl() + 'V',              callback: e => { hideAllMenus(); graphView.pasteCopiedNodes(false); }}),
+        menuItemNodeCopy           = new MenuItem('Copy',            {shortcut:  osCtrl() + 'C',       callback: () => graphView.copySelectedNodes() }),
+        menuItemNodePaste          = new MenuItem('Paste here',      {shortcut:  osCtrl() + 'V',       callback: e => { hideAllMenus(); graphView.pasteCopiedNodes(false); }}),
         menuItemNodePasteConnected = new MenuItem('Paste connected', {shortcut:  osCtrlShift() + 'D',  callback: e => { hideAllMenus(); graphView.pasteCopiedNodes(true ); }}),
                                      new MenuItem('Copy/Paste as',   {childMenu: menuNodeCopyAs}),
                                    //new MenuItem('',                {separator: true}),
@@ -55137,18 +55406,23 @@ function initGeneratorMenus()
         menuItemNodeSep1           = new MenuItem('',                {separator: true}),
         menuItemNodeSelect         = new MenuItem('Select',          {childMenu: menuNodeSelect}),
         menuItemNodeSep2           = new MenuItem('',                {separator: true}),
-        // menuItemNodeRename      = new MenuItem('Rename',          {shortcut:  osCtrl() + 'R',              callback: e => { hideAllMenus(); graphView.renameSelectedNode(); }}),
-        menuItemNodeEdit           = new MenuItem('Edit...',         {callback: e => { hideAllMenus(); graphView.editSelectedCustomNode(); }}),
-                                     new MenuItem('',                {separator: true}),
+        // menuItemNodeRename      = new MenuItem('Rename',          {shortcut:  osCtrl() + 'R',       callback: e => { hideAllMenus(); graphView.renameSelectedNode(); }}),
+        // menuItemNodeEdit           = new MenuItem('Edit...',      {callback: e => { hideAllMenus(); graphView.editSelectedCustomNode(); }}),
+        //                              new MenuItem('',             {separator: true}),
         // menuItemNodeActivate    = new MenuItem('Activate',        {callback: () => makeSelectedNodesActive()}),
         menuItemNodeEnableDisable  = new MenuItem('Enable/Disable',  {shortcut:  osCtrlShift() + 'E',  callback: () => actionManager.do(new ToggleDisableNodesAction(graphView.selectedNodes.map(n => n.id)))}),
+        menuItemNodeLeaveOnCanvas  = new MenuItem('Leave on canvas', {callback: e => { hideAllMenus(); }}),
         menuItemNodeSep3           = new MenuItem('',                {separator: true}),
-        menuItemNodeRemove         = new MenuItem('Remove',          {shortcut:  osCtrl() + '⌫',             callback: e => { hideAllMenus(); graphView.removeSelectedNodes(true); }})]);
+        menuItemNodeRemove         = new MenuItem('Remove',          {shortcut:  osCtrl() + '⌫',      callback: e => { hideAllMenus(); graphView.removeSelectedNodes(true); }})]);
+
 
 
     menuNode.init = () => 
     {
-        const single   = graphView.selectedNodes.length == 1;
+        const single     = graphView.selectedNodes.length == 1;
+        const hasObjects = isEmpty(graphView.selectedNodes.filter(n => !SHAPE_TYPES.includes(n.type)));
+        
+
         //const parallel = nodesAreParallel(graphView.selectedNodes);
 
         const canDisable = !graphView.selectedNodes.find(n => !n.canDisable);
@@ -55156,12 +55430,14 @@ function initGeneratorMenus()
 
         updateElementDisplay(menuItemNodeSep1         .div, single);
       //updateMenuItemDisplay(menuItemNodeRename       .div, single);
-        updateElementDisplay(menuItemNodeEdit         .div, single);
+        //updateElementDisplay(menuItemNodeEdit         .div, single);
+        updateElementDisplay(menuItemNodeLeaveOnCanvas.div, hasObjects);
         updateElementDisplay(menuItemNodeSep2         .div, single);
         updateElementDisplay(menuItemNodeSelect       .div, single);
         updateElementDisplay(menuItemNodeSep3         .div, canDisable);
         updateElementDisplay(menuItemNodeEnableDisable.div, canDisable);
     };
+
 
 
     menuRemoveLicense = new Menu('Remove license', false, false);
