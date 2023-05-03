@@ -3587,6 +3587,7 @@ const NUMBER_SIGN             = 'NSIGN';
 const NUMBER_ABSOLUTE         = 'ABS';   
 const NUMBER_ROUND            = 'ROUND';   
 const NUMBER_LIMITS           = 'LIM';   
+const NUMBER_CONSTANT         = 'CONST';  
 const NUMBER_DISTRIBUTE       = 'DISTR';  
 const NUMBER_SEQUENCE         = 'SEQ';  
 const NUMBER_RANDOM           = 'RAND';  
@@ -3674,6 +3675,7 @@ const NUMBER_TYPES =
     NUMBER_ABSOLUTE,
     NUMBER_ROUND,
     NUMBER_LIMITS,
+    NUMBER_CONSTANT,
     NUMBER_DISTRIBUTE,
     NUMBER_SEQUENCE,
     NUMBER_RANDOM,
@@ -9287,6 +9289,84 @@ extends GNumberType
 
 
 
+class GConstant
+extends GNumberType
+{
+    constant;
+
+
+
+    constructor(nodeId, options)
+    {
+        super(NUMBER_CONSTANT, nodeId, options);
+    }
+
+
+    
+    copy()
+    {
+        const copy = new GConstant(this.nodeId, this.options);
+
+        copy.copyBase(this);
+
+        if (this.constant) copy.constant = this.constant.copy();
+
+        return copy;
+    }
+
+
+
+    async eval(parse)
+    {
+        if (this.isCached())
+            return this;
+            
+
+        // input not used for evaluation
+
+
+        const constant = (await this.constant.eval(parse)).toValue();
+    
+        let value;
+
+        switch (Math.min(Math.max(0, constant.toNumber()), 5))
+        {
+            case 0: value = 0.6180339887; break; // phi
+            case 1: value = 1.4142135623; break; // √̅2
+            case 2: value = 1.6180339887; break; // PHI
+            case 3: value = 2.7182818284; break; // e
+            case 4: value = 3.1415926536; break; // pi
+            case 5: value = 6.2831853072; break; // tau
+        }
+
+
+        this.value = new NumberValue(value, 10);
+
+        
+        if (parse.isLastRepeat())
+        {
+            genPushUpdateValue(parse, this.nodeId, 'value',   this.value);
+            genPushUpdateValue(parse, this.nodeId, 'constant', constant);
+        }
+
+
+        this.validate();
+
+        return this;
+    }
+
+
+
+    invalidate()
+    {
+        super.invalidate();
+
+        if (this.constant) this.constant.invalidate();
+    }
+}
+
+
+
 class GDistribute
 extends GNumberType
 {
@@ -9364,7 +9444,7 @@ extends GNumberType
 
 
         if (!parse.repeats.find(r => r.nodeId == this.repeatNodeId))
-            this.current.value = (start.toNumber() + end.toNumber()) / 2; //+= step;
+            this.current.value = start.toNumber();//(start.toNumber() + end.toNumber()) / 2; //+= step;
 
         else if (!isEmpty(parse.repeats)
                && parse.repeats.at(-1).nodeId == this.repeatNodeId)
@@ -19954,6 +20034,40 @@ function genParseArithmetic(parse, newNode)
 
 
 
+function genParseConstant(parse)
+{
+    const [, nodeId, options, ignore] = genParseNodeStart(parse);
+
+
+    const _const = new GConstant(nodeId, options);
+
+
+    if (parse.settings.logRequests) 
+        logReq(_const, parse, ignore);
+
+
+    if (ignore) 
+    {
+        genParseNodeEnd(parse, _const);
+        return parse.parsedNodes.find(n => n.nodeId == nodeId);
+    }
+
+
+    parse.nTab++;
+
+
+    _const.constant = genParse(parse);
+
+
+    parse.nTab--;
+
+
+    genParseNodeEnd(parse, _const);
+    return _const;
+}
+
+
+
 function genParseDistribute(parse)
 {
     const [, nodeId, options, ignore] = genParseNodeStart(parse);
@@ -22035,6 +22149,7 @@ function genParse(parse, inParam = true)
     else if (parse.next == NUMBER_ROUND           ) result = genParseRound           (parse);
     else if (parse.next == NUMBER_LIMITS          ) result = genParseLimits          (parse);
     else if (parse.next == NUMBER_RANDOM          ) result = genParseRandom          (parse);
+    else if (parse.next == NUMBER_CONSTANT        ) result = genParseConstant        (parse);
     else if (parse.next == NUMBER_DISTRIBUTE      ) result = genParseDistribute      (parse);
     else if (parse.next == NUMBER_SEQUENCE        ) result = genParseSequence        (parse);
     else if (parse.next == NUMBER_INTERPOLATE     ) result = genParseInterpolate     (parse);

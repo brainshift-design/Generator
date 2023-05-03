@@ -75,7 +75,7 @@ extends GNumberType
 
 
         if (!parse.repeats.find(r => r.nodeId == this.repeatNodeId))
-            this.current.value = (start.toNumber() + end.toNumber()) / 2; //+= step;
+            this.current.value = start.toNumber();//(start.toNumber() + end.toNumber()) / 2; //+= step;
 
         else if (!isEmpty(parse.repeats)
                && parse.repeats.at(-1).nodeId == this.repeatNodeId)

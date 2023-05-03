@@ -123,6 +123,7 @@ function genParse(parse, inParam = true)
     else if (parse.next == NUMBER_ROUND           ) result = genParseRound           (parse);
     else if (parse.next == NUMBER_LIMITS          ) result = genParseLimits          (parse);
     else if (parse.next == NUMBER_RANDOM          ) result = genParseRandom          (parse);
+    else if (parse.next == NUMBER_CONSTANT        ) result = genParseConstant        (parse);
     else if (parse.next == NUMBER_DISTRIBUTE      ) result = genParseDistribute      (parse);
     else if (parse.next == NUMBER_SEQUENCE        ) result = genParseSequence        (parse);
     else if (parse.next == NUMBER_INTERPOLATE     ) result = genParseInterpolate     (parse);

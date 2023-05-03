@@ -314,6 +314,40 @@ function genParseArithmetic(parse, newNode)
 
 
 
+function genParseConstant(parse)
+{
+    const [, nodeId, options, ignore] = genParseNodeStart(parse);
+
+
+    const _const = new GConstant(nodeId, options);
+
+
+    if (parse.settings.logRequests) 
+        logReq(_const, parse, ignore);
+
+
+    if (ignore) 
+    {
+        genParseNodeEnd(parse, _const);
+        return parse.parsedNodes.find(n => n.nodeId == nodeId);
+    }
+
+
+    parse.nTab++;
+
+
+    _const.constant = genParse(parse);
+
+
+    parse.nTab--;
+
+
+    genParseNodeEnd(parse, _const);
+    return _const;
+}
+
+
+
 function genParseDistribute(parse)
 {
     const [, nodeId, options, ignore] = genParseNodeStart(parse);
