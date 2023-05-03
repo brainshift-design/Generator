@@ -75,7 +75,7 @@ extends GOperator
         {
             nodeId:    this.nodeId,
             iteration: 0,
-            total:     0
+            total:     1
         };
 
         //if (this.repeatId.type != NUMBER_VALUE)
