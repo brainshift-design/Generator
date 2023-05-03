@@ -55,7 +55,6 @@ extends GOperator
 
         if (this.repeatId.type != NUMBER_VALUE)
         {
-            console.log('this.repeatId.type =', this.repeatId.type);
             console.assert(
                    this.repeatId.type == NUMBER_SEQUENCE
                 || this.repeatId.type == NUMBER_RANDOM

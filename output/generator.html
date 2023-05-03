@@ -6310,7 +6310,20 @@ function parseListValue(str, i = -1)
 
 function finalListTypeFromItems(items)
 {
-    return finalListTypeFromTypes(items.map(i => i.type));
+    const types = [];
+    
+    for (const item of items)
+    {
+        if (   item.type ==        LIST_VALUE
+            || item.type == NUMBER_LIST_VALUE
+            || item.type ==   TEXT_LIST_VALUE
+            || item.type ==  SHAPE_LIST_VALUE)
+            types.push(finalListTypeFromItems(item.items));
+        else
+            types.push(item.type);
+    }
+
+    return finalListTypeFromTypes(types);
 }
 
 
@@ -8524,7 +8537,6 @@ extends GOperator
 
         if (this.repeatId.type != NUMBER_VALUE)
         {
-            console.log('this.repeatId.type =', this.repeatId.type);
             console.assert(
                    this.repeatId.type == NUMBER_SEQUENCE
                 || this.repeatId.type == NUMBER_RANDOM
@@ -9351,8 +9363,8 @@ extends GNumberType
             {
                 // if (parse.repeats.at(-1).nodeId != this.repeatNodeId)
                 //     console.warn('Generator: Invalid nested repeat on \'' + this.nodeId + '\'');
-
-                parse.repeats.pop();
+                // else
+                    parse.repeats.pop();
             }
         }
 
@@ -9459,8 +9471,8 @@ extends GNumberType
                 {
                     // if (parse.repeats.at(-1).nodeId != this.repeatNodeId)
                     //     console.warn('Generator: Invalid nested repeat on \'' + this.nodeId + '\'');
-
-                    parse.repeats.pop();
+                    // else
+                        parse.repeats.pop();
                 }
             }
         }

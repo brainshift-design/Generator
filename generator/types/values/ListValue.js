@@ -208,7 +208,20 @@ function parseListValue(str, i = -1)
 
 function finalListTypeFromItems(items)
 {
-    return finalListTypeFromTypes(items.map(i => i.type));
+    const types = [];
+    
+    for (const item of items)
+    {
+        if (   item.type ==        LIST_VALUE
+            || item.type == NUMBER_LIST_VALUE
+            || item.type ==   TEXT_LIST_VALUE
+            || item.type ==  SHAPE_LIST_VALUE)
+            types.push(finalListTypeFromItems(item.items));
+        else
+            types.push(item.type);
+    }
+
+    return finalListTypeFromTypes(types);
 }
 
 
