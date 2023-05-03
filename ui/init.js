@@ -29,6 +29,8 @@ var allUpdateNodes   = [];
 //uiRemoveSavedNodesAndConns(['color']);
 //uiRemovePluginDataFromAllLocalStyles();
 
+//uiCleanAllIds();
+
 
 
 //uiRemoveAllSavedNodesAndConns();

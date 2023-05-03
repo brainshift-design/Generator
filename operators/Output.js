@@ -39,6 +39,9 @@ extends EventTarget
     get connectedHeaderInputs() { return this.connectedInputs.filter(i => !i.param); }
     get connected() { return !isEmpty(this.connectedInputs); }
 
+    
+    get connections() { return this.connectedInputs.map(i => i.connection); }
+
 
     mouseOver  = false;
     connecting = false;

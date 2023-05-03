@@ -228,6 +228,9 @@ function uiReturnFigLoadNodesAndConns(msg)
 
         //console.log('msg.currentPageId =', msg.currentPageId);
         graph.pageIndex = graph.pages.findIndex(p => p.id == msg.currentPageId);
+
+        if (graph.pageIndex < 0) // for cases where the pages were corrupted
+            graph.pageIndex = 0; // because of a crash or a bug
     }
     else
     {

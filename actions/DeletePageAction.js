@@ -18,43 +18,59 @@ extends Action
 
     do(updateNodes)
     {
-        const [pan, zoom, nodesJson] = 
-            graph.pages.length == 1
-            ? CreatePageAction_prepareNodes()
-            : [{x: 0, y: 0}, 1, NULL];
-
-
         this.oldPage = pageFromId(this.pageId);
 
-        graph.removePage(this.oldPage);
 
+        graph.removePage(this.oldPage);
         uiRemoveSavedPage(this.pageId);
-        uiRemoveSavedNodesAndConns(graph.nodes.filter(n => n.pageId == this.pageId).map(n => n.id));
+
+
+        if (graph.pages.length == 1)
+        {
+            uiRemoveSavedNodesAndConns(this.oldPage.nodes.map(n => n.id));
+
+            for (const node of this.oldPage.nodes)
+                node.id = makeNodePath(node.nodeId);
+
+            graphView.updateNodes(graph.pages[0].nodes);
+            uiSaveNodes(graph.pages[0].nodes.map(n => n.id));
+
+            uiSaveConnections(getConnsFromNodes(graph.pages[0].nodes));
+
+            graph.pages[0]._zoom = this.oldPage._zoom;
+            graph.pages[0]._pan  = this.oldPage._pan;
+        }
+
 
         graph.updatePages();
-
-        
-        // if (graph.pages.length == 0)
-        //     CreatePageAction_updateNodes(this, pan, zoom, nodesJson);
+        graph.updateSavedPages();
     }
 
 
 
     undo(updateNodes)
     {
-        const [pan, zoom, nodesJson] = 
-            graph.pages.length == 0
-            ? CreatePageAction_prepareNodes()
-            : [{x: 0, y: 0}, 1, NULL];
-
-
         graph.addPage(this.oldPage);
+
+
+        if (graph.pages.length == 2)
+        {
+            uiRemoveSavedNodesAndConns(graph.pages[0].nodes.map(n => n.id));
+
+            for (const node of graph.pages[0].nodes)
+                node.id = makeNodePath(node.nodeId);
+
+            graphView.updateNodes(this.oldPage.nodes);
+            uiSaveNodes(this.oldPage.nodes.map(n => n.id));
+
+            uiSaveConnections(getConnsFromNodes(this.oldPage.nodes));
+
+            this.oldPage._zoom = graph.pages[0]._zoom;
+            this.oldPage._pan  = graph.pages[0]._pan;
+        }
+
 
         graph.updatePages();
         graph.updateSavedPages();
-
-        
-        // if (graph.pages.length == 1)
-        //     CreatePageAction_updateNodes(this, pan, zoom, nodesJson);
     }
 }

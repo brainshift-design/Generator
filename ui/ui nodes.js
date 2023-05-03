@@ -976,7 +976,7 @@ function uiDeleteSavedConn(conn)
     if (settings.logRawSaveConnections)
     {
         console.log(
-             '%cDELETING SAVED CONNE '
+             '%cDELETING SAVED CONN '
             + getConnString(conn, true),
             'color: black; background: #ddeeff;');
     }
@@ -1123,6 +1123,15 @@ function uiRemovePluginDataFromAllLocalStyles()
 
 
 
+// function uiCleanAllIds()
+// {
+//     uiQueueMessageToFigma({
+//         cmd: 'figCleanAllIds'
+//     });
+// }
+
+
+
 function uiLogAllSavedNodesAndConns()
 {
     uiQueueMessageToFigma({
@@ -1188,4 +1197,19 @@ function uiSaveSelectionToLocalFile()
     const json = uiCopyNodes(graphView.selectedNodes.map(n => n.id));
 
     saveToLocalFile(json, 'selection.gen', 'text/plain');
+}
+
+
+
+function getConnsFromNodes(nodes)
+{
+    const conns = [];
+
+    for (const node of nodes)
+    {
+        pushUnique(conns, node.connectedInputs .map(i => i.connection));
+        pushUnique(conns, node.connectedOutputs.map(o => o.connections));
+    }
+
+    return conns;
 }
