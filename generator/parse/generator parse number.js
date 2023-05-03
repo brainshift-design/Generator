@@ -314,6 +314,41 @@ function genParseArithmetic(parse, newNode)
 
 
 
+function genParseDistribute(parse)
+{
+    const [, nodeId, options, ignore] = genParseNodeStart(parse);
+
+
+    const dist = new GDistribute(nodeId, options);
+
+
+    if (parse.settings.logRequests) 
+        logReq(dist, parse, ignore);
+
+
+    if (ignore) 
+    {
+        genParseNodeEnd(parse, dist);
+        return parse.parsedNodes.find(n => n.nodeId == nodeId);
+    }
+
+
+    parse.nTab++;
+
+
+    dist.start = genParse(parse);
+    dist.end   = genParse(parse);
+
+
+    parse.nTab--;
+
+
+    genParseNodeEnd(parse, dist);
+    return dist;
+}
+
+
+
 function genParseSequence(parse)
 {
     const [, nodeId, options, ignore] = genParseNodeStart(parse);
@@ -322,17 +357,8 @@ function genParseSequence(parse)
     const seq = new GSequence(nodeId, options);
 
 
-    // let nInputs = -1;
-    
-    // if (!ignore)
-    // {
-    //     nInputs = parseInt(parse.move());
-    //     console.assert(nInputs == 0 || nInputs == 1, 'nInputs must be [0, 1]');
-    // }
-
-
     if (parse.settings.logRequests) 
-        logReq(seq, parse, ignore);//, nInputs);
+        logReq(seq, parse, ignore);
 
 
     if (ignore) 
@@ -343,10 +369,6 @@ function genParseSequence(parse)
 
 
     parse.nTab++;
-
-
-    // if (nInputs == 1)
-    //     seq.input = genParse(parse);
 
 
     seq.start = genParse(parse);
@@ -370,17 +392,8 @@ function genParseRandom(parse)
     const rnd = new GRandom(nodeId, options);
 
 
-    // let nInputs = -1;
-    
-    // if (!ignore)
-    // {
-    //     nInputs = parseInt(parse.move());
-    //     console.assert(nInputs == 0 || nInputs == 1, 'nInputs must be [0, 1]');
-    // }
-
-
     if (parse.settings.logRequests) 
-        logReq(rnd, parse, ignore);//, nInputs);
+        logReq(rnd, parse, ignore);
 
 
     if (ignore) 
@@ -391,10 +404,6 @@ function genParseRandom(parse)
 
 
     parse.nTab++;
-
-
-    // if (nInputs == 1)
-    //     rnd.input = genParse(parse);
 
 
     rnd.seed = genParse(parse);

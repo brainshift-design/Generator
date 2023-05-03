@@ -7960,6 +7960,7 @@ const NUMBER_SIGN             = 'NSIGN';
 const NUMBER_ABSOLUTE         = 'ABS';   
 const NUMBER_ROUND            = 'ROUND';   
 const NUMBER_LIMITS           = 'LIM';   
+const NUMBER_DISTRIBUTE       = 'DISTR';  
 const NUMBER_SEQUENCE         = 'SEQ';  
 const NUMBER_RANDOM           = 'RAND';  
 const NUMBER_INTERPOLATE      = 'LERP'; 
@@ -8046,6 +8047,7 @@ const NUMBER_TYPES =
     NUMBER_ABSOLUTE,
     NUMBER_ROUND,
     NUMBER_LIMITS,
+    NUMBER_DISTRIBUTE,
     NUMBER_SEQUENCE,
     NUMBER_RANDOM,
     NUMBER_INTERPOLATE,
@@ -12911,7 +12913,8 @@ extends GOperator
         if (this.repeatId.type != NUMBER_VALUE)
         {
             console.assert(
-                   this.repeatId.type == NUMBER_SEQUENCE
+                   this.repeatId.type == NUMBER_DISTRIBUTE
+                || this.repeatId.type == NUMBER_SEQUENCE
                 || this.repeatId.type == NUMBER_RANDOM
                 || this.repeatId.type == LIST,
                 'only volatile types can be repeated');
@@ -12932,7 +12935,7 @@ extends GOperator
             total:     0
         };
 
-        if (this.repeatId.type != NUMBER_VALUE)
+        //if (this.repeatId.type != NUMBER_VALUE)
             parse.repeats.push(repeat);
 
 
@@ -13657,6 +13660,120 @@ extends GNumberType
 
 
 
+class GDistribute
+extends GNumberType
+{
+    start;
+    end;
+
+    current      = null;
+
+
+    init         = false;
+    
+    repeaNodetId = NULL;
+
+
+
+    constructor(nodeId, options)
+    {
+        super(NUMBER_DISTRIBUTE, nodeId, options);
+    }
+
+
+    
+    copy()
+    {
+        const copy = new GDistribute(this.nodeId, this.options);
+
+        copy.copyBase(this);
+
+        if (this.start  ) copy.start   = this.start  .copy();
+        if (this.end    ) copy.step    = this.end    .copy();
+
+        if (this.current) copy.current = this.current.copy();
+
+        return copy;
+    }
+
+
+
+    async eval(parse)
+    {
+        if (this.isCached())
+            return this;
+            
+
+        // input not used for evaluation
+
+
+        const start = (await this.start.eval(parse)).toValue();
+        const end   = (await this.end  .eval(parse)).toValue();
+    
+
+        if (!this.init)
+        {
+            this.current = start.copy();
+            this.init    = true;
+        }
+        
+
+        this.value = new NumberValue(
+            this.current.value,
+            Math.max(start.decimals, end.decimals));
+
+        
+        if (parse.isLastRepeat())
+        {
+            genPushUpdateValue(parse, this.nodeId, 'start', start);
+            genPushUpdateValue(parse, this.nodeId, 'end',   end  );
+        }
+
+
+        const step = 
+            !isEmpty(parse.repeats)
+            ? (end.toNumber() - start.toNumber()) / Math.max(1, parse.repeats.at(-1).total - 1)
+            : 0;
+
+
+        if (!parse.repeats.find(r => r.nodeId == this.repeatNodeId))
+            this.current.value = (start.toNumber() + end.toNumber()) / 2; //+= step;
+
+        else if (!isEmpty(parse.repeats)
+               && parse.repeats.at(-1).nodeId == this.repeatNodeId)
+        {
+            const repeat = parse.repeats.at(-1);
+
+            this.current.value += step;
+                
+            if (repeat.iteration == repeat.total-1)
+            {
+                // if (parse.repeats.at(-1).nodeId != this.repeatNodeId)
+                //     console.warn('Generator: Invalid nested repeat on \'' + this.nodeId + '\'');
+                // else
+                    parse.repeats.pop();
+            }
+        }
+
+
+        this.validate();
+
+        return this;
+    }
+
+
+
+    invalidate()
+    {
+        super.invalidate();
+
+        if (this.start) this.start.invalidate();
+        if (this.end  ) this.end  .invalidate();
+    }
+}
+
+
+
 class GSequence
 extends GNumberType
 {
@@ -13711,9 +13828,7 @@ extends GNumberType
         if (!this.init)
         {
             this.current = start.copy();
-            this.current.value -= step.toNumber();
-
-            this.init = true;
+            this.init    = true;
         }
         
 
@@ -13722,15 +13837,22 @@ extends GNumberType
             Math.max(start.decimals, step.decimals));
 
         
+        if (parse.isLastRepeat())
+        {
+            genPushUpdateValue(parse, this.nodeId, 'start', start);
+            genPushUpdateValue(parse, this.nodeId, 'step',  step );
+        }
+
+
         if (!parse.repeats.find(r => r.nodeId == this.repeatNodeId))
             this.current.value += step.toNumber();
 
         else if (  !isEmpty(parse.repeats)
                 && parse.repeats.at(-1).nodeId == this.repeatNodeId)
         {
-            this.current.value += step.toNumber();
-
             const repeat = parse.repeats.at(-1);
+
+            this.current.value += step.toNumber();
 
             if (repeat.iteration == repeat.total-1)
             {
@@ -13739,13 +13861,6 @@ extends GNumberType
                 // else
                     parse.repeats.pop();
             }
-        }
-
-
-        if (parse.isLastRepeat())
-        {
-            genPushUpdateValue(parse, this.nodeId, 'start', start);
-            genPushUpdateValue(parse, this.nodeId, 'step',  step );
         }
 
 
@@ -24212,6 +24327,41 @@ function genParseArithmetic(parse, newNode)
 
 
 
+function genParseDistribute(parse)
+{
+    const [, nodeId, options, ignore] = genParseNodeStart(parse);
+
+
+    const dist = new GDistribute(nodeId, options);
+
+
+    if (parse.settings.logRequests) 
+        logReq(dist, parse, ignore);
+
+
+    if (ignore) 
+    {
+        genParseNodeEnd(parse, dist);
+        return parse.parsedNodes.find(n => n.nodeId == nodeId);
+    }
+
+
+    parse.nTab++;
+
+
+    dist.start = genParse(parse);
+    dist.end   = genParse(parse);
+
+
+    parse.nTab--;
+
+
+    genParseNodeEnd(parse, dist);
+    return dist;
+}
+
+
+
 function genParseSequence(parse)
 {
     const [, nodeId, options, ignore] = genParseNodeStart(parse);
@@ -24220,17 +24370,8 @@ function genParseSequence(parse)
     const seq = new GSequence(nodeId, options);
 
 
-    // let nInputs = -1;
-    
-    // if (!ignore)
-    // {
-    //     nInputs = parseInt(parse.move());
-    //     console.assert(nInputs == 0 || nInputs == 1, 'nInputs must be [0, 1]');
-    // }
-
-
     if (parse.settings.logRequests) 
-        logReq(seq, parse, ignore);//, nInputs);
+        logReq(seq, parse, ignore);
 
 
     if (ignore) 
@@ -24241,10 +24382,6 @@ function genParseSequence(parse)
 
 
     parse.nTab++;
-
-
-    // if (nInputs == 1)
-    //     seq.input = genParse(parse);
 
 
     seq.start = genParse(parse);
@@ -24268,17 +24405,8 @@ function genParseRandom(parse)
     const rnd = new GRandom(nodeId, options);
 
 
-    // let nInputs = -1;
-    
-    // if (!ignore)
-    // {
-    //     nInputs = parseInt(parse.move());
-    //     console.assert(nInputs == 0 || nInputs == 1, 'nInputs must be [0, 1]');
-    // }
-
-
     if (parse.settings.logRequests) 
-        logReq(rnd, parse, ignore);//, nInputs);
+        logReq(rnd, parse, ignore);
 
 
     if (ignore) 
@@ -24289,10 +24417,6 @@ function genParseRandom(parse)
 
 
     parse.nTab++;
-
-
-    // if (nInputs == 1)
-    //     rnd.input = genParse(parse);
 
 
     rnd.seed = genParse(parse);
@@ -26284,6 +26408,7 @@ function genParse(parse, inParam = true)
     else if (parse.next == NUMBER_ROUND           ) result = genParseRound           (parse);
     else if (parse.next == NUMBER_LIMITS          ) result = genParseLimits          (parse);
     else if (parse.next == NUMBER_RANDOM          ) result = genParseRandom          (parse);
+    else if (parse.next == NUMBER_DISTRIBUTE      ) result = genParseDistribute      (parse);
     else if (parse.next == NUMBER_SEQUENCE        ) result = genParseSequence        (parse);
     else if (parse.next == NUMBER_INTERPOLATE     ) result = genParseInterpolate     (parse);
     else if (parse.next == NUMBER_SOLVE           ) result = genParseSolve           (parse);
@@ -35816,6 +35941,7 @@ const NUMBER_SIGN             = 'NSIGN';
 const NUMBER_ABSOLUTE         = 'ABS';   
 const NUMBER_ROUND            = 'ROUND';   
 const NUMBER_LIMITS           = 'LIM';   
+const NUMBER_DISTRIBUTE       = 'DISTR';  
 const NUMBER_SEQUENCE         = 'SEQ';  
 const NUMBER_RANDOM           = 'RAND';  
 const NUMBER_INTERPOLATE      = 'LERP'; 
@@ -35902,6 +36028,7 @@ const NUMBER_TYPES =
     NUMBER_ABSOLUTE,
     NUMBER_ROUND,
     NUMBER_LIMITS,
+    NUMBER_DISTRIBUTE,
     NUMBER_SEQUENCE,
     NUMBER_RANDOM,
     NUMBER_INTERPOLATE,
@@ -40767,7 +40894,8 @@ extends GOperator
         if (this.repeatId.type != NUMBER_VALUE)
         {
             console.assert(
-                   this.repeatId.type == NUMBER_SEQUENCE
+                   this.repeatId.type == NUMBER_DISTRIBUTE
+                || this.repeatId.type == NUMBER_SEQUENCE
                 || this.repeatId.type == NUMBER_RANDOM
                 || this.repeatId.type == LIST,
                 'only volatile types can be repeated');
@@ -40788,7 +40916,7 @@ extends GOperator
             total:     0
         };
 
-        if (this.repeatId.type != NUMBER_VALUE)
+        //if (this.repeatId.type != NUMBER_VALUE)
             parse.repeats.push(repeat);
 
 
@@ -41513,6 +41641,120 @@ extends GNumberType
 
 
 
+class GDistribute
+extends GNumberType
+{
+    start;
+    end;
+
+    current      = null;
+
+
+    init         = false;
+    
+    repeaNodetId = NULL;
+
+
+
+    constructor(nodeId, options)
+    {
+        super(NUMBER_DISTRIBUTE, nodeId, options);
+    }
+
+
+    
+    copy()
+    {
+        const copy = new GDistribute(this.nodeId, this.options);
+
+        copy.copyBase(this);
+
+        if (this.start  ) copy.start   = this.start  .copy();
+        if (this.end    ) copy.step    = this.end    .copy();
+
+        if (this.current) copy.current = this.current.copy();
+
+        return copy;
+    }
+
+
+
+    async eval(parse)
+    {
+        if (this.isCached())
+            return this;
+            
+
+        // input not used for evaluation
+
+
+        const start = (await this.start.eval(parse)).toValue();
+        const end   = (await this.end  .eval(parse)).toValue();
+    
+
+        if (!this.init)
+        {
+            this.current = start.copy();
+            this.init    = true;
+        }
+        
+
+        this.value = new NumberValue(
+            this.current.value,
+            Math.max(start.decimals, end.decimals));
+
+        
+        if (parse.isLastRepeat())
+        {
+            genPushUpdateValue(parse, this.nodeId, 'start', start);
+            genPushUpdateValue(parse, this.nodeId, 'end',   end  );
+        }
+
+
+        const step = 
+            !isEmpty(parse.repeats)
+            ? (end.toNumber() - start.toNumber()) / Math.max(1, parse.repeats.at(-1).total - 1)
+            : 0;
+
+
+        if (!parse.repeats.find(r => r.nodeId == this.repeatNodeId))
+            this.current.value = (start.toNumber() + end.toNumber()) / 2; //+= step;
+
+        else if (!isEmpty(parse.repeats)
+               && parse.repeats.at(-1).nodeId == this.repeatNodeId)
+        {
+            const repeat = parse.repeats.at(-1);
+
+            this.current.value += step;
+                
+            if (repeat.iteration == repeat.total-1)
+            {
+                // if (parse.repeats.at(-1).nodeId != this.repeatNodeId)
+                //     console.warn('Generator: Invalid nested repeat on \'' + this.nodeId + '\'');
+                // else
+                    parse.repeats.pop();
+            }
+        }
+
+
+        this.validate();
+
+        return this;
+    }
+
+
+
+    invalidate()
+    {
+        super.invalidate();
+
+        if (this.start) this.start.invalidate();
+        if (this.end  ) this.end  .invalidate();
+    }
+}
+
+
+
 class GSequence
 extends GNumberType
 {
@@ -41567,9 +41809,7 @@ extends GNumberType
         if (!this.init)
         {
             this.current = start.copy();
-            this.current.value -= step.toNumber();
-
-            this.init = true;
+            this.init    = true;
         }
         
 
@@ -41578,15 +41818,22 @@ extends GNumberType
             Math.max(start.decimals, step.decimals));
 
         
+        if (parse.isLastRepeat())
+        {
+            genPushUpdateValue(parse, this.nodeId, 'start', start);
+            genPushUpdateValue(parse, this.nodeId, 'step',  step );
+        }
+
+
         if (!parse.repeats.find(r => r.nodeId == this.repeatNodeId))
             this.current.value += step.toNumber();
 
         else if (  !isEmpty(parse.repeats)
                 && parse.repeats.at(-1).nodeId == this.repeatNodeId)
         {
-            this.current.value += step.toNumber();
-
             const repeat = parse.repeats.at(-1);
+
+            this.current.value += step.toNumber();
 
             if (repeat.iteration == repeat.total-1)
             {
@@ -41595,13 +41842,6 @@ extends GNumberType
                 // else
                     parse.repeats.pop();
             }
-        }
-
-
-        if (parse.isLastRepeat())
-        {
-            genPushUpdateValue(parse, this.nodeId, 'start', start);
-            genPushUpdateValue(parse, this.nodeId, 'step',  step );
         }
 
 
@@ -53880,7 +54120,8 @@ const iconIfElse            = '<svg width="17" height="7" viewBox="-1 0 17 7" fi
  
 const iconNumber            = '<svg width="17" height="7" viewBox="0 0 17 7" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M14.4917 7C14.0139 7 13.5892 6.91793 13.2176 6.7538C12.8483 6.58967 12.5563 6.36122 12.3417 6.06844C12.1272 5.77567 12.0133 5.43742 12 5.05371H13.2475C13.2586 5.2378 13.3194 5.39861 13.43 5.53612C13.5406 5.67142 13.6877 5.77677 13.8713 5.85219C14.0548 5.9276 14.2605 5.9653 14.4884 5.9653C14.7317 5.9653 14.9473 5.92316 15.1353 5.83888C15.3234 5.75238 15.4705 5.6326 15.5766 5.47956C15.6828 5.32652 15.7348 5.15019 15.7326 4.95057C15.7348 4.7443 15.6817 4.56242 15.5733 4.40494C15.4649 4.24747 15.3079 4.12437 15.1022 4.03565C14.8987 3.94693 14.6532 3.90257 14.3656 3.90257H13.7651V2.95105H14.3656C14.6023 2.95105 14.8091 2.91001 14.986 2.82795C15.1652 2.74588 15.3057 2.63055 15.4074 2.48194C15.5092 2.33112 15.5589 2.157 15.5567 1.9596C15.5589 1.76664 15.5158 1.59918 15.4273 1.45722C15.3411 1.31305 15.2183 1.20105 15.059 1.1212C14.902 1.04135 14.7173 1.00143 14.505 1.00143C14.297 1.00143 14.1046 1.03913 13.9277 1.11454C13.7507 1.18996 13.608 1.29753 13.4997 1.43726C13.3913 1.57478 13.3338 1.73891 13.3271 1.92966H12.1427C12.1515 1.54816 12.261 1.21324 12.4711 0.924905C12.6835 0.634347 12.9666 0.408112 13.3205 0.246198C13.6744 0.0820661 14.0714 0 14.5116 0C14.965 0 15.3588 0.0853929 15.6927 0.256179C16.029 0.424746 16.2888 0.652091 16.4724 0.938213C16.656 1.22433 16.7478 1.5404 16.7478 1.88641C16.75 2.27012 16.6372 2.59173 16.4094 2.85124C16.1838 3.11074 15.8874 3.28042 15.5202 3.36027V3.4135C15.998 3.48004 16.3641 3.65748 16.6184 3.94582C16.875 4.23194 17.0022 4.58793 17 5.01378C17 5.39528 16.8916 5.73685 16.6748 6.0385C16.4603 6.33793 16.1639 6.57304 15.7856 6.74382C15.4096 6.91461 14.9783 7 14.4917 7Z" fill="white"/><path d="M5.04237 7V6.09634L7.66243 3.75289C7.90254 3.52136 8.10264 3.31567 8.26271 3.13584C8.42279 2.95601 8.54284 2.78179 8.62288 2.6132C8.70292 2.44461 8.74294 2.26477 8.74294 2.0737C8.74294 1.85565 8.69115 1.66908 8.58757 1.51397C8.48399 1.35662 8.34157 1.23523 8.16031 1.14981C7.97905 1.06439 7.66361 1.01493 7.43291 1.01493C7.19515 1.01493 6.98682 1.06214 6.80791 1.15655C6.629 1.24872 6.49011 1.38022 6.39124 1.55106C6.29473 1.7219 6.24647 1.92534 6.24647 2.16137H5C5 1.72302 5.10476 1.342 5.31427 1.0183C5.52378 0.694605 5.81215 0.443963 6.17938 0.266378C6.54896 0.0887927 6.97269 0 7.45056 0C7.9355 0 8.47105 0.0932886 8.83828 0.266378C9.20551 0.439467 9.49035 0.676622 9.6928 0.977842C9.8976 1.27906 10 1.62299 10 2.00963C10 2.26814 9.94821 2.52216 9.84463 2.77168C9.74105 3.02119 9.55862 3.29769 9.29732 3.60116C9.03837 3.90462 8.67467 4.27216 8.20622 4.70376L6.85028 5.90751V5.95472H10V7H5.04237Z" fill="white"/><path d="M3 0V7H1.70882V1.23389H1.66705L0 2.27979V1.11768L1.77146 0H3Z" fill="white"/></svg>';
 const iconRandom            = '<svg width="7" height="11" viewBox="0 0 7 11" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M2.57613 7.88313V7.82014C2.58313 7.15175 2.65312 6.61983 2.7861 6.22439C2.91908 5.82895 3.10805 5.50875 3.35302 5.26379C3.59798 5.01883 3.89193 4.79311 4.23488 4.58664C4.44135 4.46066 4.62682 4.31193 4.79129 4.14046C4.95577 3.96549 5.08525 3.76427 5.17973 3.5368C5.27772 3.30934 5.32671 3.05738 5.32671 2.78092C5.32671 2.43797 5.24622 2.14052 5.08525 1.88856C4.92427 1.6366 4.70906 1.44238 4.4396 1.3059C4.17014 1.16942 3.87094 1.10118 3.54199 1.10118C3.25503 1.10118 2.97857 1.16067 2.71261 1.27965C2.44665 1.39863 2.22444 1.58585 2.04597 1.84131C1.86749 2.09677 1.76426 2.43097 1.73626 2.84391H0.413467C0.441463 2.249 0.595439 1.73983 0.875396 1.31639C1.15885 0.89296 1.53155 0.56926 1.99347 0.345294C2.4589 0.121329 2.97507 0.00934601 3.54199 0.00934601C4.15789 0.00934601 4.69331 0.131827 5.14824 0.376789C5.60667 0.621752 5.96011 0.9577 6.20858 1.38463C6.46054 1.81157 6.58652 2.29799 6.58652 2.84391C6.58652 3.22885 6.52703 3.57705 6.40804 3.8885C6.29256 4.19995 6.12459 4.47816 5.90412 4.72312C5.68716 4.96808 5.4247 5.18505 5.11674 5.37402C4.80879 5.56649 4.56208 5.76946 4.37661 5.98293C4.19114 6.19289 4.05641 6.44311 3.97242 6.73356C3.88843 7.02402 3.84294 7.38621 3.83594 7.82014V7.88313H2.57613ZM3.24803 10.9907C2.98907 10.9907 2.76686 10.8979 2.58138 10.7124C2.39591 10.527 2.30318 10.3048 2.30318 10.0458C2.30318 9.78684 2.39591 9.56463 2.58138 9.37915C2.76686 9.19368 2.98907 9.10095 3.24803 9.10095C3.50699 9.10095 3.72921 9.19368 3.91468 9.37915C4.10015 9.56463 4.19289 9.78684 4.19289 10.0458C4.19289 10.2173 4.14914 10.3748 4.06166 10.5182C3.97767 10.6617 3.86394 10.7772 3.72046 10.8647C3.58048 10.9487 3.423 10.9907 3.24803 10.9907Z" fill="white"/></svg>';
-const iconSequence            = '<svg width="16" height="11" viewBox="0 0 16 11" fill="none" xmlns="http://www.w3.org/2000/svg"><rect y="9" width="1" height="2" fill="white"/><rect x="5" y="6" width="1" height="5" fill="white"/><rect x="10" y="3" width="1" height="8" fill="white"/><rect x="15" width="1" height="11" fill="white"/></svg>';
+const iconDistribute        = '<svg width="19" height="7" viewBox="0 0 19 7" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="18" width="1" height="7" fill="white"/><rect width="1" height="7" fill="white"/><rect x="6" width="1" height="7" fill="white"/><rect x="3" y="3" width="1" height="1" fill="white"/><rect x="9" y="3" width="1" height="1" fill="white"/><rect x="15" y="3" width="1" height="1" fill="white"/><rect x="12" width="1" height="7" fill="white"/></svg>';
+const iconSequence          = '<svg width="16" height="11" viewBox="0 0 16 11" fill="none" xmlns="http://www.w3.org/2000/svg"><rect y="9" width="1" height="2" fill="white"/><rect x="5" y="6" width="1" height="5" fill="white"/><rect x="10" y="3" width="1" height="8" fill="white"/><rect x="15" width="1" height="11" fill="white"/></svg>';
 const iconInterpolate       = '<svg width="19" height="13" viewBox="0 -1 19 13" fill="none" xmlns="http://www.w3.org/2000/svg"><line x1="0.284818" y1="10.6077" x2="18.759" y2="0.444666" stroke="white"/><ellipse cx="9.99556" cy="5.22745" rx="1.45202" ry="2.24173" transform="rotate(-25.1301 9.99556 5.22745)" fill="white"/></svg>';
 const iconSolve             = '<svg width="18" height="14" viewBox="-4 0 18 14" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="5.5" cy="5.5" r="5" stroke="white"/><rect x="9.44473" y="8.55527" width="6.21958" height="1.25789" transform="rotate(45 9.44473 8.55527)" fill="white"/><path d="M4.40227 3L5.5 4.8457L6.61544 3H7.97167L6.33215 5.5L8 8H6.65085L5.5 6.19987L4.35977 8H3L4.65722 5.5L3.04249 3H4.40227Z" fill="white"/></svg>';
 const iconAnimate           = '<svg width="15" height="7" viewBox="0 0 15 7" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M6 0H15V1H6V0Z" fill="white"/><path d="M3 3H12V4H3V3Z" fill="white"/><path d="M0 6H9V7H0V6Z" fill="white"/></svg>';
@@ -55096,6 +55337,7 @@ var menuFlowSep3;
 var menuItemCache;
 var menuItemCopy;
 
+var menuItemDistribute;
 var menuItemSequence;
 var menuItemSolve;  
 var menuItemAnimate;  
@@ -55375,7 +55617,8 @@ function initGeneratorMenus()
                              new MenuItem('',              {separator: true}),
                              new MenuItem('Functions',     {icon: iconFunctions,   childMenu: menuFunctions}),
                              new MenuItem('',              {separator: true}),
-        menuItemSequence   = new MenuItem('Sequence...',   {icon: iconSequence,    callback: e => actionManager.do(getCreateNodeAction(NUMBER_SEQUENCE,      btnNumber.div, getCreateOptions(e)))}),
+        menuItemDistribute = new MenuItem('Distribute...', {icon: iconDistribute,  callback: e => actionManager.do(getCreateNodeAction(NUMBER_DISTRIBUTE,  btnNumber.div, getCreateOptions(e)))}),
+        menuItemSequence   = new MenuItem('Sequence...',   {icon: iconSequence,    callback: e => actionManager.do(getCreateNodeAction(NUMBER_SEQUENCE,    btnNumber.div, getCreateOptions(e)))}),
                              new MenuItem('Random...',     {icon: iconRandom,      callback: e => actionManager.do(getCreateNodeAction(NUMBER_RANDOM,      btnNumber.div, getCreateOptions(e)))}),
                              new MenuItem('',              {separator: true}),
                              new MenuItem('Interpolate',   {icon: iconInterpolate, callback: e => actionManager.do(getCreateNodeAction(NUMBER_INTERPOLATE, btnNumber.div, getCreateOptions(e)))}),
@@ -69272,29 +69515,24 @@ extends OperatorWithValue
 }
 
 
-class   OpRandom
+class   OpDistribute
 extends OperatorBase
 {
-    paramSeed;
-    paramMin;
-    paramMax;
+    paramStart;
+    paramEnd;
 
 
 
     constructor()
     {
-        super(NUMBER_RANDOM, 'random', 'random');
+        super(NUMBER_DISTRIBUTE, 'distribute', 'distribute');
 
         this.cached = false;
         
         this.addOutput(new Output([NUMBER_VALUE], this.output_genRequest));
 
-        this.addParam(this.paramSeed = new NumberParam('seed', 'seed', true, true, true, Math.floor(Math.random() * 10000), 0, 0x7fffffff));
-        this.addParam(this.paramMin  = new NumberParam('min',  'min',  true, true, true,   0));
-        this.addParam(this.paramMax  = new NumberParam('max',  'max',  true, true, true, 255));
-
-        this.paramSeed.controls[0].allowEditDecimals = false;
-        this.paramSeed.isDefault = () => false;
+        this.addParam(this.paramStart = new NumberParam('start', 'start', true, true, true, 0));
+        this.addParam(this.paramEnd   = new NumberParam('end',   'end',   true, true, true, 0));
     }
 
 
@@ -69311,9 +69549,8 @@ extends OperatorBase
         if (ignore) return request;
 
         
-        request.push(...this.node.paramSeed.genRequest(gen));
-        request.push(...this.node.paramMin .genRequest(gen));
-        request.push(...this.node.paramMax .genRequest(gen));
+        request.push(...this.node.paramStart.genRequest(gen));
+        request.push(...this.node.paramEnd  .genRequest(gen));
 
 
         gen.scope.pop();
@@ -69360,6 +69597,58 @@ extends OperatorBase
         
         request.push(...this.node.paramStart.genRequest(gen));
         request.push(...this.node.paramStep .genRequest(gen));
+
+
+        gen.scope.pop();
+        pushUnique(gen.passedNodes, this.node);
+
+        return request;
+    }
+}
+
+
+class   OpRandom
+extends OperatorBase
+{
+    paramSeed;
+    paramMin;
+    paramMax;
+
+
+
+    constructor()
+    {
+        super(NUMBER_RANDOM, 'random', 'random');
+
+        this.cached = false;
+        
+        this.addOutput(new Output([NUMBER_VALUE], this.output_genRequest));
+
+        this.addParam(this.paramSeed = new NumberParam('seed', 'seed', true, true, true, Math.floor(Math.random() * 10000), 0, 0x7fffffff));
+        this.addParam(this.paramMin  = new NumberParam('min',  'min',  true, true, true,   0));
+        this.addParam(this.paramMax  = new NumberParam('max',  'max',  true, true, true, 255));
+
+        this.paramSeed.controls[0].allowEditDecimals = false;
+        this.paramSeed.isDefault = () => false;
+    }
+
+
+
+    output_genRequest(gen)
+    {
+        // 'this' is the output
+
+        gen.scope.push({
+            nodeId:  this.node.id, 
+            paramId: NULL });
+
+        const [request, ignore] = this.node.genRequestStart(gen);
+        if (ignore) return request;
+
+        
+        request.push(...this.node.paramSeed.genRequest(gen));
+        request.push(...this.node.paramMin .genRequest(gen));
+        request.push(...this.node.paramMax .genRequest(gen));
 
 
         gen.scope.pop();
@@ -84987,6 +85276,7 @@ function createNode(nodeType, creatingButton = null, createdNodeId = -1, options
         case NUMBER_ROUND:            node = new OpRound();             break;
         case NUMBER_LIMITS:           node = new OpLimits();            break;
         case NUMBER_RANDOM:           node = new OpRandom();            break;
+        case NUMBER_DISTRIBUTE:       node = new OpDistribute();        break;
         case NUMBER_SEQUENCE:         node = new OpSequence();          break;
         case NUMBER_INTERPOLATE:      node = new OpInterpolate();       break;
         case NUMBER_TO_TEXT:          node = new OpNumberToText();      break;

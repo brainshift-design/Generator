@@ -1,8 +1,8 @@
-class GSequence
+class GDistribute
 extends GNumberType
 {
     start;
-    step;
+    end;
 
     current      = null;
 
@@ -15,19 +15,19 @@ extends GNumberType
 
     constructor(nodeId, options)
     {
-        super(NUMBER_SEQUENCE, nodeId, options);
+        super(NUMBER_DISTRIBUTE, nodeId, options);
     }
 
 
     
     copy()
     {
-        const copy = new GSequence(this.nodeId, this.options);
+        const copy = new GDistribute(this.nodeId, this.options);
 
         copy.copyBase(this);
 
         if (this.start  ) copy.start   = this.start  .copy();
-        if (this.step   ) copy.step    = this.step   .copy();
+        if (this.end    ) copy.step    = this.end    .copy();
 
         if (this.current) copy.current = this.current.copy();
 
@@ -46,7 +46,7 @@ extends GNumberType
 
 
         const start = (await this.start.eval(parse)).toValue();
-        const step  = (await this.step .eval(parse)).toValue();
+        const end   = (await this.end  .eval(parse)).toValue();
     
 
         if (!this.init)
@@ -58,26 +58,32 @@ extends GNumberType
 
         this.value = new NumberValue(
             this.current.value,
-            Math.max(start.decimals, step.decimals));
+            Math.max(start.decimals, end.decimals));
 
         
         if (parse.isLastRepeat())
         {
             genPushUpdateValue(parse, this.nodeId, 'start', start);
-            genPushUpdateValue(parse, this.nodeId, 'step',  step );
+            genPushUpdateValue(parse, this.nodeId, 'end',   end  );
         }
 
 
-        if (!parse.repeats.find(r => r.nodeId == this.repeatNodeId))
-            this.current.value += step.toNumber();
+        const step = 
+            !isEmpty(parse.repeats)
+            ? (end.toNumber() - start.toNumber()) / Math.max(1, parse.repeats.at(-1).total - 1)
+            : 0;
 
-        else if (  !isEmpty(parse.repeats)
-                && parse.repeats.at(-1).nodeId == this.repeatNodeId)
+
+        if (!parse.repeats.find(r => r.nodeId == this.repeatNodeId))
+            this.current.value = (start.toNumber() + end.toNumber()) / 2; //+= step;
+
+        else if (!isEmpty(parse.repeats)
+               && parse.repeats.at(-1).nodeId == this.repeatNodeId)
         {
             const repeat = parse.repeats.at(-1);
 
-            this.current.value += step.toNumber();
-
+            this.current.value += step;
+                
             if (repeat.iteration == repeat.total-1)
             {
                 // if (parse.repeats.at(-1).nodeId != this.repeatNodeId)
@@ -100,6 +106,6 @@ extends GNumberType
         super.invalidate();
 
         if (this.start) this.start.invalidate();
-        if (this.step ) this.step .invalidate();
+        if (this.end  ) this.end  .invalidate();
     }
 }

@@ -3587,6 +3587,7 @@ const NUMBER_SIGN             = 'NSIGN';
 const NUMBER_ABSOLUTE         = 'ABS';   
 const NUMBER_ROUND            = 'ROUND';   
 const NUMBER_LIMITS           = 'LIM';   
+const NUMBER_DISTRIBUTE       = 'DISTR';  
 const NUMBER_SEQUENCE         = 'SEQ';  
 const NUMBER_RANDOM           = 'RAND';  
 const NUMBER_INTERPOLATE      = 'LERP'; 
@@ -3673,6 +3674,7 @@ const NUMBER_TYPES =
     NUMBER_ABSOLUTE,
     NUMBER_ROUND,
     NUMBER_LIMITS,
+    NUMBER_DISTRIBUTE,
     NUMBER_SEQUENCE,
     NUMBER_RANDOM,
     NUMBER_INTERPOLATE,
@@ -8538,7 +8540,8 @@ extends GOperator
         if (this.repeatId.type != NUMBER_VALUE)
         {
             console.assert(
-                   this.repeatId.type == NUMBER_SEQUENCE
+                   this.repeatId.type == NUMBER_DISTRIBUTE
+                || this.repeatId.type == NUMBER_SEQUENCE
                 || this.repeatId.type == NUMBER_RANDOM
                 || this.repeatId.type == LIST,
                 'only volatile types can be repeated');
@@ -8559,7 +8562,7 @@ extends GOperator
             total:     0
         };
 
-        if (this.repeatId.type != NUMBER_VALUE)
+        //if (this.repeatId.type != NUMBER_VALUE)
             parse.repeats.push(repeat);
 
 
@@ -9284,6 +9287,120 @@ extends GNumberType
 
 
 
+class GDistribute
+extends GNumberType
+{
+    start;
+    end;
+
+    current      = null;
+
+
+    init         = false;
+    
+    repeaNodetId = NULL;
+
+
+
+    constructor(nodeId, options)
+    {
+        super(NUMBER_DISTRIBUTE, nodeId, options);
+    }
+
+
+    
+    copy()
+    {
+        const copy = new GDistribute(this.nodeId, this.options);
+
+        copy.copyBase(this);
+
+        if (this.start  ) copy.start   = this.start  .copy();
+        if (this.end    ) copy.step    = this.end    .copy();
+
+        if (this.current) copy.current = this.current.copy();
+
+        return copy;
+    }
+
+
+
+    async eval(parse)
+    {
+        if (this.isCached())
+            return this;
+            
+
+        // input not used for evaluation
+
+
+        const start = (await this.start.eval(parse)).toValue();
+        const end   = (await this.end  .eval(parse)).toValue();
+    
+
+        if (!this.init)
+        {
+            this.current = start.copy();
+            this.init    = true;
+        }
+        
+
+        this.value = new NumberValue(
+            this.current.value,
+            Math.max(start.decimals, end.decimals));
+
+        
+        if (parse.isLastRepeat())
+        {
+            genPushUpdateValue(parse, this.nodeId, 'start', start);
+            genPushUpdateValue(parse, this.nodeId, 'end',   end  );
+        }
+
+
+        const step = 
+            !isEmpty(parse.repeats)
+            ? (end.toNumber() - start.toNumber()) / Math.max(1, parse.repeats.at(-1).total - 1)
+            : 0;
+
+
+        if (!parse.repeats.find(r => r.nodeId == this.repeatNodeId))
+            this.current.value = (start.toNumber() + end.toNumber()) / 2; //+= step;
+
+        else if (!isEmpty(parse.repeats)
+               && parse.repeats.at(-1).nodeId == this.repeatNodeId)
+        {
+            const repeat = parse.repeats.at(-1);
+
+            this.current.value += step;
+                
+            if (repeat.iteration == repeat.total-1)
+            {
+                // if (parse.repeats.at(-1).nodeId != this.repeatNodeId)
+                //     console.warn('Generator: Invalid nested repeat on \'' + this.nodeId + '\'');
+                // else
+                    parse.repeats.pop();
+            }
+        }
+
+
+        this.validate();
+
+        return this;
+    }
+
+
+
+    invalidate()
+    {
+        super.invalidate();
+
+        if (this.start) this.start.invalidate();
+        if (this.end  ) this.end  .invalidate();
+    }
+}
+
+
+
 class GSequence
 extends GNumberType
 {
@@ -9338,9 +9455,7 @@ extends GNumberType
         if (!this.init)
         {
             this.current = start.copy();
-            this.current.value -= step.toNumber();
-
-            this.init = true;
+            this.init    = true;
         }
         
 
@@ -9349,15 +9464,22 @@ extends GNumberType
             Math.max(start.decimals, step.decimals));
 
         
+        if (parse.isLastRepeat())
+        {
+            genPushUpdateValue(parse, this.nodeId, 'start', start);
+            genPushUpdateValue(parse, this.nodeId, 'step',  step );
+        }
+
+
         if (!parse.repeats.find(r => r.nodeId == this.repeatNodeId))
             this.current.value += step.toNumber();
 
         else if (  !isEmpty(parse.repeats)
                 && parse.repeats.at(-1).nodeId == this.repeatNodeId)
         {
-            this.current.value += step.toNumber();
-
             const repeat = parse.repeats.at(-1);
+
+            this.current.value += step.toNumber();
 
             if (repeat.iteration == repeat.total-1)
             {
@@ -9366,13 +9488,6 @@ extends GNumberType
                 // else
                     parse.repeats.pop();
             }
-        }
-
-
-        if (parse.isLastRepeat())
-        {
-            genPushUpdateValue(parse, this.nodeId, 'start', start);
-            genPushUpdateValue(parse, this.nodeId, 'step',  step );
         }
 
 
@@ -19839,6 +19954,41 @@ function genParseArithmetic(parse, newNode)
 
 
 
+function genParseDistribute(parse)
+{
+    const [, nodeId, options, ignore] = genParseNodeStart(parse);
+
+
+    const dist = new GDistribute(nodeId, options);
+
+
+    if (parse.settings.logRequests) 
+        logReq(dist, parse, ignore);
+
+
+    if (ignore) 
+    {
+        genParseNodeEnd(parse, dist);
+        return parse.parsedNodes.find(n => n.nodeId == nodeId);
+    }
+
+
+    parse.nTab++;
+
+
+    dist.start = genParse(parse);
+    dist.end   = genParse(parse);
+
+
+    parse.nTab--;
+
+
+    genParseNodeEnd(parse, dist);
+    return dist;
+}
+
+
+
 function genParseSequence(parse)
 {
     const [, nodeId, options, ignore] = genParseNodeStart(parse);
@@ -19847,17 +19997,8 @@ function genParseSequence(parse)
     const seq = new GSequence(nodeId, options);
 
 
-    // let nInputs = -1;
-    
-    // if (!ignore)
-    // {
-    //     nInputs = parseInt(parse.move());
-    //     console.assert(nInputs == 0 || nInputs == 1, 'nInputs must be [0, 1]');
-    // }
-
-
     if (parse.settings.logRequests) 
-        logReq(seq, parse, ignore);//, nInputs);
+        logReq(seq, parse, ignore);
 
 
     if (ignore) 
@@ -19868,10 +20009,6 @@ function genParseSequence(parse)
 
 
     parse.nTab++;
-
-
-    // if (nInputs == 1)
-    //     seq.input = genParse(parse);
 
 
     seq.start = genParse(parse);
@@ -19895,17 +20032,8 @@ function genParseRandom(parse)
     const rnd = new GRandom(nodeId, options);
 
 
-    // let nInputs = -1;
-    
-    // if (!ignore)
-    // {
-    //     nInputs = parseInt(parse.move());
-    //     console.assert(nInputs == 0 || nInputs == 1, 'nInputs must be [0, 1]');
-    // }
-
-
     if (parse.settings.logRequests) 
-        logReq(rnd, parse, ignore);//, nInputs);
+        logReq(rnd, parse, ignore);
 
 
     if (ignore) 
@@ -19916,10 +20044,6 @@ function genParseRandom(parse)
 
 
     parse.nTab++;
-
-
-    // if (nInputs == 1)
-    //     rnd.input = genParse(parse);
 
 
     rnd.seed = genParse(parse);
@@ -21911,6 +22035,7 @@ function genParse(parse, inParam = true)
     else if (parse.next == NUMBER_ROUND           ) result = genParseRound           (parse);
     else if (parse.next == NUMBER_LIMITS          ) result = genParseLimits          (parse);
     else if (parse.next == NUMBER_RANDOM          ) result = genParseRandom          (parse);
+    else if (parse.next == NUMBER_DISTRIBUTE      ) result = genParseDistribute      (parse);
     else if (parse.next == NUMBER_SEQUENCE        ) result = genParseSequence        (parse);
     else if (parse.next == NUMBER_INTERPOLATE     ) result = genParseInterpolate     (parse);
     else if (parse.next == NUMBER_SOLVE           ) result = genParseSolve           (parse);

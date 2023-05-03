@@ -112,6 +112,7 @@ var menuFlowSep3;
 var menuItemCache;
 var menuItemCopy;
 
+var menuItemDistribute;
 var menuItemSequence;
 var menuItemSolve;  
 var menuItemAnimate;  
@@ -391,7 +392,8 @@ function initGeneratorMenus()
                              new MenuItem('',              {separator: true}),
                              new MenuItem('Functions',     {icon: iconFunctions,   childMenu: menuFunctions}),
                              new MenuItem('',              {separator: true}),
-        menuItemSequence   = new MenuItem('Sequence...',   {icon: iconSequence,    callback: e => actionManager.do(getCreateNodeAction(NUMBER_SEQUENCE,      btnNumber.div, getCreateOptions(e)))}),
+        menuItemDistribute = new MenuItem('Distribute...', {icon: iconDistribute,  callback: e => actionManager.do(getCreateNodeAction(NUMBER_DISTRIBUTE,  btnNumber.div, getCreateOptions(e)))}),
+        menuItemSequence   = new MenuItem('Sequence...',   {icon: iconSequence,    callback: e => actionManager.do(getCreateNodeAction(NUMBER_SEQUENCE,    btnNumber.div, getCreateOptions(e)))}),
                              new MenuItem('Random...',     {icon: iconRandom,      callback: e => actionManager.do(getCreateNodeAction(NUMBER_RANDOM,      btnNumber.div, getCreateOptions(e)))}),
                              new MenuItem('',              {separator: true}),
                              new MenuItem('Interpolate',   {icon: iconInterpolate, callback: e => actionManager.do(getCreateNodeAction(NUMBER_INTERPOLATE, btnNumber.div, getCreateOptions(e)))}),

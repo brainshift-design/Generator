@@ -53,8 +53,9 @@
 ../operators/number/OpAbsolute.js
 ../operators/number/OpRound.js
 ../operators/number/OpLimits.js
-../operators/number/OpRandom.js
+../operators/number/OpDistribute.js
 ../operators/number/OpSequence.js
+../operators/number/OpRandom.js
 ../operators/number/OpInterpolate.js
 ../operators/number/OpNumberToText.js
 ../operators/number/OpSolve.js
