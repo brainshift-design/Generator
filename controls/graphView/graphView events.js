@@ -219,6 +219,7 @@ GraphView.prototype.createEvents = function()
                 }
             }
 
+            uiSaveNodes(activeNodes.map(n => n.id));
             graphView.updateNodes(activeNodes);
             
             uiDeleteObjectsAndStyles(activeNodes.map(n => n.id));
