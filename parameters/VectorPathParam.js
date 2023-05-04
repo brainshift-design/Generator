@@ -114,7 +114,7 @@ extends Parameter
             if (this.input.connectedOutput.supportsTypes([VECTOR_PATH_VALUE]))
                 request.push(...pushInputOrParam(this.input, gen));
             else
-                console.assert(false, 'invalid input for RectangleParam');
+                console.assert(false, 'invalid input for VectorPathParam (' + this.node.id + ')');
         }
 
         else request.push( 

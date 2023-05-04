@@ -13829,9 +13829,9 @@ extends GNumberType
 class GDistribute
 extends GNumberType
 {
+    from;
     start;
     end;
-    bias;
 
 
     current      = null;
@@ -13856,9 +13856,9 @@ extends GNumberType
 
         copy.copyBase(this);
 
+        if (this.from   ) copy.from    = this.from   .copy();
         if (this.start  ) copy.start   = this.start  .copy();
         if (this.end    ) copy.end     = this.end    .copy();
-        if (this.bias   ) copy.bias    = this.bias   .copy();
 
         if (this.current) copy.current = this.current.copy();
 
@@ -13876,16 +13876,16 @@ extends GNumberType
         // input not used for evaluation
 
 
+        const from  = (await this.from .eval(parse)).toValue();
         const start = (await this.start.eval(parse)).toValue();
         const end   = (await this.end  .eval(parse)).toValue();
-        const bias  = (await this.bias .eval(parse)).toValue();
     
 
         const repeat = parse.repeats.find(r => r.nodeId == this.repeatNodeId);
 
         const step = 
             repeat
-            ? (end.toNumber() - start.toNumber()) / Math.max(1, parse.repeats.at(-1).total - (bias.value == 1 ? 1 : 0))
+            ? (end.toNumber() - start.toNumber()) / Math.max(1, parse.repeats.at(-1).total - (from.value == 1 ? 1 : 0))
             : 0;
 
 
@@ -13894,7 +13894,7 @@ extends GNumberType
             if (  !repeat
                 || repeat.total <= 1)
             {
-                switch (bias.value)
+                switch (from.value)
                 {
                     case 0: this.current = start.copy();                                             break;
                     case 1: this.current = new NumberValue((start.toNumber() + end.toNumber()) / 2); break;
@@ -13905,7 +13905,7 @@ extends GNumberType
             {
                 this.current = start.copy();
 
-                if (bias.value == 2)
+                if (from.value == 2)
                     this.current.value += step;
             }
 
@@ -13923,7 +13923,7 @@ extends GNumberType
         {
             genPushUpdateValue(parse, this.nodeId, 'start', start);
             genPushUpdateValue(parse, this.nodeId, 'end',   end  );
-            genPushUpdateValue(parse, this.nodeId, 'bias',  bias );
+            genPushUpdateValue(parse, this.nodeId, 'from',  from );
         }
 
 
@@ -24572,9 +24572,9 @@ function genParseDistribute(parse)
     parse.nTab++;
 
 
+    dist.from  = genParse(parse);
     dist.start = genParse(parse);
     dist.end   = genParse(parse);
-    dist.bias  = genParse(parse);
 
 
     parse.nTab--;
@@ -42034,9 +42034,9 @@ extends GNumberType
 class GDistribute
 extends GNumberType
 {
+    from;
     start;
     end;
-    bias;
 
 
     current      = null;
@@ -42061,9 +42061,9 @@ extends GNumberType
 
         copy.copyBase(this);
 
+        if (this.from   ) copy.from    = this.from   .copy();
         if (this.start  ) copy.start   = this.start  .copy();
         if (this.end    ) copy.end     = this.end    .copy();
-        if (this.bias   ) copy.bias    = this.bias   .copy();
 
         if (this.current) copy.current = this.current.copy();
 
@@ -42081,16 +42081,16 @@ extends GNumberType
         // input not used for evaluation
 
 
+        const from  = (await this.from .eval(parse)).toValue();
         const start = (await this.start.eval(parse)).toValue();
         const end   = (await this.end  .eval(parse)).toValue();
-        const bias  = (await this.bias .eval(parse)).toValue();
     
 
         const repeat = parse.repeats.find(r => r.nodeId == this.repeatNodeId);
 
         const step = 
             repeat
-            ? (end.toNumber() - start.toNumber()) / Math.max(1, parse.repeats.at(-1).total - (bias.value == 1 ? 1 : 0))
+            ? (end.toNumber() - start.toNumber()) / Math.max(1, parse.repeats.at(-1).total - (from.value == 1 ? 1 : 0))
             : 0;
 
 
@@ -42099,7 +42099,7 @@ extends GNumberType
             if (  !repeat
                 || repeat.total <= 1)
             {
-                switch (bias.value)
+                switch (from.value)
                 {
                     case 0: this.current = start.copy();                                             break;
                     case 1: this.current = new NumberValue((start.toNumber() + end.toNumber()) / 2); break;
@@ -42110,7 +42110,7 @@ extends GNumberType
             {
                 this.current = start.copy();
 
-                if (bias.value == 2)
+                if (from.value == 2)
                     this.current.value += step;
             }
 
@@ -42128,7 +42128,7 @@ extends GNumberType
         {
             genPushUpdateValue(parse, this.nodeId, 'start', start);
             genPushUpdateValue(parse, this.nodeId, 'end',   end  );
-            genPushUpdateValue(parse, this.nodeId, 'bias',  bias );
+            genPushUpdateValue(parse, this.nodeId, 'from',  from );
         }
 
 
@@ -61389,7 +61389,7 @@ extends Parameter
             if (this.input.connectedOutput.supportsTypes([FILL_VALUE, COLOR_VALUE]))
                 request.push(...pushInputOrParam(this.input, gen));
             else
-                console.assert(false, 'invalid input for FillParam');
+                console.assert(false, 'invalid input for FillParam (' + this.node.id + ')');
         }
 
         else request.push( 
@@ -61838,7 +61838,7 @@ extends Parameter
             if (this.input.connectedOutput.supportsTypes([STROKE_VALUE, FILL_VALUE, COLOR_VALUE]))
                 request.push(...pushInputOrParam(this.input, gen));
             else
-                console.assert(false, 'invalid input for StrokeParam');
+                console.assert(false, 'invalid input for StrokeParam (' + this.node.id + ')');
         }
 
         else request.push( 
@@ -62187,7 +62187,7 @@ extends Parameter
             //         LIST_VALUE, 1,
             //         ...pushInputOrParam(this.input, gen));
             else
-                console.assert(false, 'invalid input for ListParam');
+                console.assert(false, 'invalid input for ListParam (' + this.node.id + ')');
         }
 
         else request.push( 
@@ -62360,7 +62360,7 @@ extends Parameter
             if (this.input.connectedOutput.supportsTypes([RECTANGLE_VALUE]))
                 request.push(...pushInputOrParam(this.input, gen));
             else
-                console.assert(false, 'invalid input for RectangleParam');
+                console.assert(false, 'invalid input for RectangleParam (' + this.node.id + ')');
         }
 
         else request.push( 
@@ -62527,7 +62527,7 @@ extends Parameter
             if (this.input.connectedOutput.supportsTypes([LINE_VALUE]))
                 request.push(...pushInputOrParam(this.input, gen));
             else
-                console.assert(false, 'invalid input for LineParam');
+                console.assert(false, 'invalid input for LineParam (' + this.node.id + ')');
         }
 
         else request.push( 
@@ -62694,7 +62694,7 @@ extends Parameter
             if (this.input.connectedOutput.supportsTypes([ELLIPSE_VALUE]))
                 request.push(...pushInputOrParam(this.input, gen));
             else
-                console.assert(false, 'invalid input for EllipseParam');
+                console.assert(false, 'invalid input for EllipseParam (' + this.node.id + ')');
         }
 
         else request.push( 
@@ -62861,7 +62861,7 @@ extends Parameter
             if (this.input.connectedOutput.supportsTypes([POLYGON_VALUE]))
                 request.push(...pushInputOrParam(this.input, gen));
             else
-                console.assert(false, 'invalid input for PolygonParam');
+                console.assert(false, 'invalid input for PolygonParam (' + this.node.id + ')');
         }
 
         else request.push( 
@@ -63028,7 +63028,7 @@ extends Parameter
             if (this.input.connectedOutput.supportsTypes([STAR_VALUE]))
                 request.push(...pushInputOrParam(this.input, gen));
             else
-                console.assert(false, 'invalid input for StarParam');
+                console.assert(false, 'invalid input for StarParam (' + this.node.id + ')');
         }
 
         else request.push( 
@@ -63198,7 +63198,7 @@ extends Parameter
             if (this.input.connectedOutput.supportsTypes([VECTOR_PATH_VALUE]))
                 request.push(...pushInputOrParam(this.input, gen));
             else
-                console.assert(false, 'invalid input for RectangleParam');
+                console.assert(false, 'invalid input for VectorPathParam (' + this.node.id + ')');
         }
 
         else request.push( 
@@ -70033,7 +70033,7 @@ extends OperatorBase
 {
     paramStart;
     paramEnd;
-    paramBias;
+    paramFrom;
 
 
 
@@ -70045,9 +70045,9 @@ extends OperatorBase
         
         this.addOutput(new Output([NUMBER_VALUE], this.output_genRequest));
 
+        this.addParam(this.paramFrom  = new SelectParam('from',  'from',  true, true, true, ['start', 'middle', 'end'], 1));
         this.addParam(this.paramStart = new NumberParam('start', 'start', true, true, true, 0));
         this.addParam(this.paramEnd   = new NumberParam('end',   'end',   true, true, true, 0));
-        this.addParam(this.paramBias  = new SelectParam('bias',  'bias',  true, true, true, ['start', 'middle', 'end'], 1));
     }
 
 
@@ -70066,7 +70066,7 @@ extends OperatorBase
         
         request.push(...this.node.paramStart.genRequest(gen));
         request.push(...this.node.paramEnd  .genRequest(gen));
-        request.push(...this.node.paramBias .genRequest(gen));
+        request.push(...this.node.paramFrom .genRequest(gen));
 
 
         gen.scope.pop();

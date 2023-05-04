@@ -1,9 +1,9 @@
 class GDistribute
 extends GNumberType
 {
+    from;
     start;
     end;
-    bias;
 
 
     current      = null;
@@ -28,9 +28,9 @@ extends GNumberType
 
         copy.copyBase(this);
 
+        if (this.from   ) copy.from    = this.from   .copy();
         if (this.start  ) copy.start   = this.start  .copy();
         if (this.end    ) copy.end     = this.end    .copy();
-        if (this.bias   ) copy.bias    = this.bias   .copy();
 
         if (this.current) copy.current = this.current.copy();
 
@@ -48,16 +48,16 @@ extends GNumberType
         // input not used for evaluation
 
 
+        const from  = (await this.from .eval(parse)).toValue();
         const start = (await this.start.eval(parse)).toValue();
         const end   = (await this.end  .eval(parse)).toValue();
-        const bias  = (await this.bias .eval(parse)).toValue();
     
 
         const repeat = parse.repeats.find(r => r.nodeId == this.repeatNodeId);
 
         const step = 
             repeat
-            ? (end.toNumber() - start.toNumber()) / Math.max(1, parse.repeats.at(-1).total - (bias.value == 1 ? 1 : 0))
+            ? (end.toNumber() - start.toNumber()) / Math.max(1, parse.repeats.at(-1).total - (from.value == 1 ? 1 : 0))
             : 0;
 
 
@@ -66,7 +66,7 @@ extends GNumberType
             if (  !repeat
                 || repeat.total <= 1)
             {
-                switch (bias.value)
+                switch (from.value)
                 {
                     case 0: this.current = start.copy();                                             break;
                     case 1: this.current = new NumberValue((start.toNumber() + end.toNumber()) / 2); break;
@@ -77,7 +77,7 @@ extends GNumberType
             {
                 this.current = start.copy();
 
-                if (bias.value == 2)
+                if (from.value == 2)
                     this.current.value += step;
             }
 
@@ -95,7 +95,7 @@ extends GNumberType
         {
             genPushUpdateValue(parse, this.nodeId, 'start', start);
             genPushUpdateValue(parse, this.nodeId, 'end',   end  );
-            genPushUpdateValue(parse, this.nodeId, 'bias',  bias );
+            genPushUpdateValue(parse, this.nodeId, 'from',  from );
         }
 
 

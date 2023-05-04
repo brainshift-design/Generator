@@ -313,7 +313,7 @@ extends Parameter
             if (this.input.connectedOutput.supportsTypes([FILL_VALUE, COLOR_VALUE]))
                 request.push(...pushInputOrParam(this.input, gen));
             else
-                console.assert(false, 'invalid input for FillParam');
+                console.assert(false, 'invalid input for FillParam (' + this.node.id + ')');
         }
 
         else request.push( 

@@ -1759,9 +1759,6 @@ function figCreateObject(objects, genObj)
 
 
     objects.push(figObj);
-
-
-    figma.currentPage.appendChild(figObj);
 }
 
 
@@ -1824,6 +1821,11 @@ function figUpdateObjects(msg)
             figCreateObject(figObjects.objects, genObj);
         }
     }
+
+
+    // put points on top
+    for (const point of figPoints)
+        point.parent.appendChild(point);
 }
 
 

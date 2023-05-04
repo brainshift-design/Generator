@@ -114,7 +114,7 @@ extends Parameter
             if (this.input.connectedOutput.supportsTypes([POLYGON_VALUE]))
                 request.push(...pushInputOrParam(this.input, gen));
             else
-                console.assert(false, 'invalid input for PolygonParam');
+                console.assert(false, 'invalid input for PolygonParam (' + this.node.id + ')');
         }
 
         else request.push( 

@@ -239,7 +239,7 @@ extends Parameter
             if (this.input.connectedOutput.supportsTypes([STROKE_VALUE, FILL_VALUE, COLOR_VALUE]))
                 request.push(...pushInputOrParam(this.input, gen));
             else
-                console.assert(false, 'invalid input for StrokeParam');
+                console.assert(false, 'invalid input for StrokeParam (' + this.node.id + ')');
         }
 
         else request.push( 

@@ -114,7 +114,7 @@ extends Parameter
             if (this.input.connectedOutput.supportsTypes([STAR_VALUE]))
                 request.push(...pushInputOrParam(this.input, gen));
             else
-                console.assert(false, 'invalid input for StarParam');
+                console.assert(false, 'invalid input for StarParam (' + this.node.id + ')');
         }
 
         else request.push( 

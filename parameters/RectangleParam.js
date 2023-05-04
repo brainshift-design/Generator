@@ -114,7 +114,7 @@ extends Parameter
             if (this.input.connectedOutput.supportsTypes([RECTANGLE_VALUE]))
                 request.push(...pushInputOrParam(this.input, gen));
             else
-                console.assert(false, 'invalid input for RectangleParam');
+                console.assert(false, 'invalid input for RectangleParam (' + this.node.id + ')');
         }
 
         else request.push( 

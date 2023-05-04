@@ -132,7 +132,7 @@ extends Parameter
             //         LIST_VALUE, 1,
             //         ...pushInputOrParam(this.input, gen));
             else
-                console.assert(false, 'invalid input for ListParam');
+                console.assert(false, 'invalid input for ListParam (' + this.node.id + ')');
         }
 
         else request.push( 

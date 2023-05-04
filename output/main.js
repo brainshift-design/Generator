@@ -1190,7 +1190,6 @@ function figCreateObject(objects, genObj) {
     if (genObj.type == POINT)
         figPoints.push(figObj);
     objects.push(figObj);
-    figma.currentPage.appendChild(figObj);
 }
 function figUpdateObjects(msg) {
     let curNodeId = NULL;
@@ -1229,6 +1228,9 @@ function figUpdateObjects(msg) {
             figCreateObject(figObjects.objects, genObj);
         }
     }
+    // put points on top
+    for (const point of figPoints)
+        point.parent.appendChild(point);
 }
 function figUpdateObject(figObj, genObj) {
     switch (genObj.type) {

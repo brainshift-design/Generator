@@ -114,7 +114,7 @@ extends Parameter
             if (this.input.connectedOutput.supportsTypes([LINE_VALUE]))
                 request.push(...pushInputOrParam(this.input, gen));
             else
-                console.assert(false, 'invalid input for LineParam');
+                console.assert(false, 'invalid input for LineParam (' + this.node.id + ')');
         }
 
         else request.push( 
