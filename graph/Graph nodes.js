@@ -66,7 +66,7 @@ function getActiveNodesFromNodeId(nodeId, alreadyChecked = [])
 
 function pageIdFromPath(_path)
 {
-    const path = _path.split('/');
+   const path = _path.split('/');
     return path.length > 1 ? path[0] : '';
 }
 

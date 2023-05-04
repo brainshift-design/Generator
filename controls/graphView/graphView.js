@@ -147,6 +147,18 @@ class GraphView
 
 
 
+    getNodeArrayBounds(nodes)
+    {
+        let bounds = Rect.NaN;
+
+        for (const node of nodes)
+            bounds = expandRect(bounds, boundingRect(node.div));
+
+        return bounds;
+    }
+
+
+
     getAllNodeBounds(onlySelected = false)
     {
         let bounds = Rect.NaN;
@@ -180,15 +192,15 @@ class GraphView
 
 
 
-    getAllNodeBounds()
-    {
-        let bounds = Rect.NaN;
+    // getAllNodeBounds()
+    // {
+    //     let bounds = Rect.NaN;
 
-        for (const node of graph.pageNodes)
-            bounds = expandRect(bounds, boundingRect(node.div));
+    //     for (const node of graph.pageNodes)
+    //         bounds = expandRect(bounds, boundingRect(node.div));
 
-        return bounds;
-    }
+    //     return bounds;
+    // }
 
 
 

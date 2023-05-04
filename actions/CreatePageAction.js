@@ -21,13 +21,16 @@ extends Action
         {
             uiRemoveSavedNodesAndConns(graph.pages[0].nodes.map(n => n.id));
 
+
             for (const node of graph.pages[0].nodes)
-                node.id = makeNodePath(node.nodeId);
+                node.id = makeNodePath(node);
 
             graphView.updateNodes(this.page.nodes);
-            uiSaveNodes(this.page.nodes.map(n => n.id));
 
+
+            uiSaveNodes(this.page.nodes.map(n => n.id));
             uiSaveConnections(getConnsFromNodes(this.page.nodes));
+
 
             this.page._zoom = graph.pages[0]._zoom;
             this.page._pan  = graph.pages[0]._pan;
@@ -50,14 +53,17 @@ extends Action
         {
             uiRemoveSavedNodesAndConns(this.page.nodes.map(n => n.id));
 
+
             for (const node of this.page.nodes)
-                node.id = makeNodePath(node.nodeId);
+                node.id = makeNodePath(node);
 
             graphView.updateNodes(graph.pages[0].nodes);
+            
+            
             uiSaveNodes(graph.pages[0].nodes.map(n => n.id));
-
             uiSaveConnections(getConnsFromNodes(graph.pages[0].nodes));
 
+            
             graph.pages[0]._zoom = this.page._zoom;
             graph.pages[0]._pan  = this.page._pan;
         }

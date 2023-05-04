@@ -45,7 +45,7 @@ class Graph
             this.nodes, 
             id => this.nodes.find(n => n.id == id), 
             node.id);
-        
+
         this.nodes.push(node);
         graphView.div.appendChild(node.div);
         

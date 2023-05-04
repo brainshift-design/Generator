@@ -1,13 +1,18 @@
 class GroupNodesAction
 extends Action
 {
-    page;
+    group;
+    groupNode = null;
+
+    nodes;
 
 
 
-    constructor(options)
+    constructor(nodes)
     {
         super(GROUP_NODES_ACTION, 'GROUP NODES');
+
+        this.nodes = [...nodes];
     }
 
 
@@ -15,29 +20,56 @@ extends Action
     do(updateNodes)
     {
         // get node bounds
-        let bounds = this.getAllNodeBounds(true);
+        let bounds = graphView.getNodeArrayBounds(this.nodes);
 
 
         // create group page
-        this.currentPage.groups.push(new GraphPage('group', 'group'));
+        this.group = new GraphPage('group', 'group');
+        graph.currentPage.groups.push(this.group);
         
-
-        // move selected nodes to group page
         
         // delete old nodes and connections
+        uiRemoveSavedNodesAndConns(this.nodes.map(n => n.id));
+
+        
+        // move selected nodes to group page
+        this.nodes.forEach(n => n.group = this.group);
+        this.nodes.forEach(n => n.id = makeNodePath(n));
+
+
         // save new nodes and connections
+        uiSaveNodes(this.nodes.map(n => n.id));
+        uiSaveConnections(getConnsFromNodes(this.nodes));
 
-        // offset nodes inside group to start at TL 0,0
 
-        // create group node in center of bounds
+        // create group node
+        this.groupNode = createNode(GROUP_NODE);
+
+        graph.addNode(this.groupNode);
+        
 
         // in group page create param nodes for all in and out connections
+        GroupNodesAction_createInputNodes(this);
+        GroupNodesAction_createOutputNodes(this);
 
-        // disconnect
-        // unsave connections
 
-        // reconnect through param nodes
-        // save new connections
+        // move group node to center of bounds
+        this.groupNode.setPosition(
+            bounds.x + bounds.width /2 - defNodeWidth,
+            bounds.y + bounds.height/2 - 100); // TODO: change this 100 to the group node's actual height
+
+        
+        // update and save group node
+        // graphView.updateNodes([
+        //        this.groupNode,
+        //     ...this.group.nodes], true);
+
+        uiSaveNodes(this.group.nodes.map(n => n.id));
+
+
+        this.group.nodes.forEach(n => n.div.style.display = 'none');
+
+        pushUpdate(this, [this.groupNode]);
     }
 
 
@@ -45,5 +77,104 @@ extends Action
     undo(updateNodes)
     {
 
+    }
+}
+
+
+
+function GroupNodesAction_createInputNodes(action)
+{
+    // get all outside inputs
+
+    const inConns = [];
+
+    for (const node of action.nodes)
+        for (const input of node.connectedInputs)
+            if (!action.nodes.includes(input.connectedOutput.node))
+                pushUnique(inConns, input.connection);
+
+
+    // insert param node into connection
+
+    for (const conn of inConns)
+    {
+        const output = conn.output;
+        const input  = conn.input;
+
+        
+        // unsave connection
+        uiDeleteSavedConn(conn);
+
+        // disconnect
+        uiDisconnect(input);
+
+
+        // create param node 
+        // set it to the left of the input node
+        const paramNode = createNode(GROUP_PARAM);
+        action.group.addNode(paramNode);
+
+        paramNode.setPosition(
+            input.node.div.offsetX - defNodeWidth - 100,
+            input.node.div.offsetY);
+
+
+        // reconnect through param nodes
+        const connOut = uiConnect(output, paramNode.inputs[0]);
+        const connIn  = uiConnect(paramNode.outputs[0], input);
+
+        // save new connections
+        uiSaveConn(connOut);
+        uiSaveConn(connIn);
+    }
+}
+
+
+
+function GroupNodesAction_createOutputNodes(action)
+{
+    // get all outside outputs
+
+    const outConns = [];
+
+    for (const node of action.nodes)
+        for (const output of node.connectedOutputs)
+            for (const input of output.connectedInputs)
+                if (!action.nodes.includes(input.node))
+                    pushUnique(outConns, input.connection);
+
+
+    // insert param node into connection
+
+    for (const conn of outConns)
+    {
+        const output = conn.output;
+        const input  = conn.input;
+
+        
+        // unsave connection
+        uiDeleteSavedConn(conn);
+
+        // disconnect
+        uiDisconnect(input);
+
+
+        // create param node 
+        // set it to the left of the input node
+        const paramNode = createNode(GROUP_PARAM);
+        action.group.addNode(paramNode);
+
+        paramNode.setPosition(
+            input.node.div.offsetX + defNodeWidth + 100,
+            input.node.div.offsetY);
+
+
+        // reconnect through param nodes
+        const connIn  = uiConnect(output, paramNode.inputs[0]);
+        const connOut = uiConnect(paramNode.outputs[0], input);
+
+        // save new connections
+        uiSaveConn(connOut);
+        uiSaveConn(connIn);
     }
 }

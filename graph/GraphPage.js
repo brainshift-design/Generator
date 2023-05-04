@@ -190,14 +190,32 @@ class GraphPage
     {
         const tab = '\n' + HTAB;
 
-        return '{'
+        let json =
+             '{'
             + tab + '"id": "'      + this.id      + '",'
             + tab + '"name": "'    + this.name    + '",'
             + tab + '"zoom": "'    + this.zoom    + '",'
             + tab + '"panx": "'    + this.pan.x   + '",'
             + tab + '"pany": "'    + this.pan.y   + '",'
-            + tab + '"groupId": "' + this.groupId + '"'
+            + tab + '"groups":'
+            + tab + '[';
+
+        for (let i = 0; i < this.groups.length; i++)
+        {
+            const group = this.groups[i];
+
+            json += tab + HTAB + HTAB + group.toJson()
+
+            if (i < this.groups.length-1)
+                json += ',';
+        }
+
+        json +=
+              tab + ']'
             + '\n}';
+
+
+        return json;
     }
 
 
@@ -228,7 +246,14 @@ class GraphPage
             if (isNaN(this.zoom)) this._zoom = 1;
 
 
-            this.groupId = data.groupId;
+            for (const _group in data.groups)
+            {
+                const group = new GraphPage(_group.id);
+                group._pan  = point(data.panx, data.pany);
+                group._zoom = data.zoom;
+
+                this.groups.push(group);
+            }
         }
     }
 }

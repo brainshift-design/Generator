@@ -372,6 +372,7 @@ function genParseDistribute(parse)
 
     dist.start = genParse(parse);
     dist.end   = genParse(parse);
+    dist.bias  = genParse(parse);
 
 
     parse.nTab--;

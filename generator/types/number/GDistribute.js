@@ -3,6 +3,8 @@ extends GNumberType
 {
     start;
     end;
+    bias;
+
 
     current      = null;
 
@@ -27,7 +29,8 @@ extends GNumberType
         copy.copyBase(this);
 
         if (this.start  ) copy.start   = this.start  .copy();
-        if (this.end    ) copy.step    = this.end    .copy();
+        if (this.end    ) copy.end     = this.end    .copy();
+        if (this.bias   ) copy.bias    = this.bias   .copy();
 
         if (this.current) copy.current = this.current.copy();
 
@@ -47,12 +50,39 @@ extends GNumberType
 
         const start = (await this.start.eval(parse)).toValue();
         const end   = (await this.end  .eval(parse)).toValue();
+        const bias  = (await this.bias .eval(parse)).toValue();
     
+
+        const repeat = parse.repeats.find(r => r.nodeId == this.repeatNodeId);
+
+        const step = 
+            repeat
+            ? (end.toNumber() - start.toNumber()) / Math.max(1, parse.repeats.at(-1).total - (bias.value == 1 ? 1 : 0))
+            : 0;
+
 
         if (!this.init)
         {
-            this.current = start.copy();
-            this.init    = true;
+            if (  !repeat
+                || repeat.total <= 1)
+            {
+                switch (bias.value)
+                {
+                    case 0: this.current = start.copy();                                             break;
+                    case 1: this.current = new NumberValue((start.toNumber() + end.toNumber()) / 2); break;
+                    case 2: this.current = end.copy();                                               break;
+                }
+            }
+            else
+            {
+                this.current = start.copy();
+
+                if (bias.value == 2)
+                    this.current.value += step;
+            }
+
+
+            this.init = true;
         }
         
 
@@ -65,20 +95,12 @@ extends GNumberType
         {
             genPushUpdateValue(parse, this.nodeId, 'start', start);
             genPushUpdateValue(parse, this.nodeId, 'end',   end  );
+            genPushUpdateValue(parse, this.nodeId, 'bias',  bias );
         }
 
 
-        const step = 
-            !isEmpty(parse.repeats)
-            ? (end.toNumber() - start.toNumber()) / Math.max(1, parse.repeats.at(-1).total - 1)
-            : 0;
-
-
-        if (!parse.repeats.find(r => r.nodeId == this.repeatNodeId))
-            this.current.value = start.toNumber();//(start.toNumber() + end.toNumber()) / 2; //+= step;
-
-        else if (!isEmpty(parse.repeats)
-               && parse.repeats.at(-1).nodeId == this.repeatNodeId)
+        if (  !isEmpty(parse.repeats)
+            && parse.repeats.at(-1).nodeId == this.repeatNodeId)
         {
             const repeat = parse.repeats.at(-1);
 

@@ -454,7 +454,7 @@ function finishLoadingNodes(_nodes, loadedNodes, updateNodes, duplicates = false
 {
     _nodes
         .filter(_n => _n.active)
-        .map   (_n => nodeFromId(duplicates ? _n.newId : (pageIdFromPath(_n.id) == NULL ? makeNodePath(_n.id) : _n.id)))
+        .map   (_n => nodeFromId(duplicates ? _n.newId : (pageIdFromPath(_n.id) == NULL ? makeNodePath(_n) : _n.id)))
             .forEach(n => n.makeActive());
 
     updateTerminalsAfterNodes(loadedNodes, updateNodes);
@@ -546,7 +546,7 @@ function loadNode(_node, pasting)
     node.loadFromParsedJson(_node, pasting);
 
     if (node.pageId == NULL)
-        node.id = makeNodePath(node.id);
+        node.id = makeNodePath(node);
 
         
     node.setPosition(
@@ -609,10 +609,10 @@ function dataColorToJson(color, nTab)
 
     let json =
           pos + tab + '[\n'
-        + pos + tab + tab + '"'+color[0] +'",\n'
-        + pos + tab + tab +     color[1] + ',\n'
-        + pos + tab + tab +     color[2] + ',\n'
-        + pos + tab + tab +     color[3] +  '\n'
+        + pos + tab + tab + '"' + color[0] +'",\n'
+        + pos + tab + tab +       color[1] + ',\n'
+        + pos + tab + tab +       color[2] + ',\n'
+        + pos + tab + tab +       color[3] +  '\n'
         + pos + tab + ']';
 
     return json;

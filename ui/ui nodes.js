@@ -512,49 +512,7 @@ function uiPasteNodes(nodesJson, loading, pasteConnected, x, y, updateNodes)
     }
 
 
-    // if new nodes are outside of viewport, move them to center of viewport
-
-    // const viewRect = graphView.measureData.clientRect;
-
-    // let l = Number.MAX_SAFE_INTEGER;
-    // let t = Number.MAX_SAFE_INTEGER;
-    // let r = Number.MIN_SAFE_INTEGER;
-    // let b = Number.MIN_SAFE_INTEGER;
-    
-    // for (let i = 0; i < data.nodes.length; i++)
-    // {
-    //     console.log('data.nodes[i] =', data.nodes[i]);
-
-    //     l = Math.min(l, data.nodes[i].x);
-    //     t = Math.min(t, data.nodes[i].y);
-    //     r = Math.max(r, data.nodes[i].x + data.nodes[i].width);
-    //     b = Math.max(b, data.nodes[i].y + data.nodes[i].height);
-    // }
-    
-    // console.log('l =', l);
-    // console.log('t =', t);
-    // console.log('r =', r);
-    // console.log('b =', b);
-
-    // if (   l >  viewRect.r 
-    //     || t >  viewRect.b 
-    //     || r <= viewRect.l
-    //     || b <= viewRect.t)
-    // {
-    //     const cx = (l + r) / 2;
-    //     const cy = (t + b) / 2;
-        
-    //     const vx = viewRect.c;
-    //     const vy = viewRect.m;
-        
-    //     for (let i = 0; i < data.nodes.length; i++)
-    //     {
-    //         data.nodes[i].x -= vx - cx;
-    //         data.nodes[i].y -= vy - cy;
-
-    //         console.log('data.nodes[i] =', data.nodes[i]);
-    //     }
-    // }
+    //moveNodesToViewport(data.nodes);
 
 
     const nodes = loadNodes(data, true);
@@ -586,6 +544,55 @@ function uiPasteNodes(nodesJson, loading, pasteConnected, x, y, updateNodes)
 
 
     return [nodes, data.connections];
+}
+
+
+
+function moveNodesToViewport(nodes)
+{
+    // if new nodes are outside of viewport, move them to center of viewport
+
+    // const viewRect = graphView.measureData.clientRect;
+
+    // let l = Number.MAX_SAFE_INTEGER;
+    // let t = Number.MAX_SAFE_INTEGER;
+    // let r = Number.MIN_SAFE_INTEGER;
+    // let b = Number.MIN_SAFE_INTEGER;
+    
+    // for (let i = 0; i < nodes.length; i++)
+    // {
+    //     console.log('nodes[i] =', nodes[i]);
+
+    //     l = Math.min(l, nodes[i].x);
+    //     t = Math.min(t, nodes[i].y);
+    //     r = Math.max(r, nodes[i].x + nodes[i].width);
+    //     b = Math.max(b, nodes[i].y + nodes[i].height);
+    // }
+    
+    // console.log('l =', l);
+    // console.log('t =', t);
+    // console.log('r =', r);
+    // console.log('b =', b);
+
+    // if (   l >  viewRect.r 
+    //     || t >  viewRect.b 
+    //     || r <= viewRect.l
+    //     || b <= viewRect.t)
+    // {
+    //     const cx = (l + r) / 2;
+    //     const cy = (t + b) / 2;
+        
+    //     const vx = viewRect.c;
+    //     const vy = viewRect.m;
+        
+    //     for (let i = 0; i < nodes.length; i++)
+    //     {
+    //         nodes[i].x -= vx - cx;
+    //         nodes[i].y -= vy - cy;
+
+    //         console.log('nodes[i] =', nodes[i]);
+    //     }
+    // }
 }
 
 

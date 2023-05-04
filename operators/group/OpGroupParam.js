@@ -325,8 +325,8 @@ extends OperatorBase
         
             if (this.groupNode)
             {
-                const id      = makeNodePath(idFromNodePath(this.id));
-                const groupId = makeNodePath(idFromNodePath(this.groupNode.id));
+                const id = makeNodePath(this);
+                //const groupId = makeNodePath(this.groupNode.id));
 
 
                 uiSaveNodes([id]);

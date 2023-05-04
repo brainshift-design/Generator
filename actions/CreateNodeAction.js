@@ -6,17 +6,12 @@ extends Action
 
     options;
 
-
     node;
 
-
     prevSelectedIds      = []; // currently selected nodes that are deselected as a result of creation
-
     oldInputActiveNodeId = NULL;
 
-
     autoConnect;
-
 
     creatingButton;
     
@@ -54,7 +49,7 @@ extends Action
             &&  canAutoConnectNode(this.node)
             && !!this.options.autoConnect;
 
-            
+
         graph.addNode(this.node, !autoConnect);
 
         this.createdNodeId = this.node.id;

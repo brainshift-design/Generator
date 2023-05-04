@@ -386,7 +386,7 @@ function initGeneratorMenus()
 
     menuNumber = new Menu('Numbers', true, false);
     menuNumber.addItems([
-                             new MenuItem('Number',        {icon: iconNumber,      shortcut: 'N', callback: e => actionManager.do(getCreateNodeAction(NUMBER,             btnNumber.div, getCreateOptions(e)))}),
+                             new MenuItem('Number',        {icon: iconNumber,      callback: e => actionManager.do(getCreateNodeAction(NUMBER,             btnNumber.div, getCreateOptions(e)))}),
                              new MenuItem('',              {separator: true}),
                              new MenuItem('Math',          {icon: iconMath,        childMenu: menuMath,      callback: e => actionManager.do(getCreateNodeAction(NUMBER_MATH,      btnNumber.div, getCreateOptions(e)))}),
                              new MenuItem('Boolean',       {icon: iconBoolean,     childMenu: menuBoolean,   callback: e => actionManager.do(getCreateNodeAction(NUMBER_BOOLEAN,   btnNumber.div, getCreateOptions(e)))}),
@@ -408,7 +408,7 @@ function initGeneratorMenus()
     
     menuString = new Menu('Text', true, false);
     menuString.addItems([
-        new MenuItem('Text',                {icon: iconText,          shortcut: 'T', callback: e => actionManager.do(getCreateNodeAction(TEXT,           btnText.div, getCreateOptions(e)))}),
+        new MenuItem('Text',                {icon: iconText,          callback: e => actionManager.do(getCreateNodeAction(TEXT,           btnText.div, getCreateOptions(e)))}),
         new MenuItem('',                    {separator: true}),
         new MenuItem('Trim',                {icon: iconTextTrim,      callback: e => actionManager.do(getCreateNodeAction(TEXT_TRIM,      btnText.div, getCreateOptions(e)))}),
         new MenuItem('Substring',           {icon: iconTextSubstring, callback: e => actionManager.do(getCreateNodeAction(TEXT_SUBSTRING, btnText.div, getCreateOptions(e)))}),
@@ -480,7 +480,7 @@ function initGeneratorMenus()
     menuGroup = new Menu('Groups', true, false);
     menuGroup.addItems([
         new MenuItem('Group',     {icon: iconGroupNode,  callback: e => actionManager.do(getCreateNodeAction(GROUP_NODE,  btnGroup.div, getCreateOptions(e)))}),
-        new MenuItem('Parameter', {icon: iconGroupParam, shortcut: 'P', callback: e => actionManager.do(getCreateNodeAction(GROUP_PARAM, btnGroup.div, getCreateOptions(e)))})]);
+        new MenuItem('Parameter', {icon: iconGroupParam, callback: e => actionManager.do(getCreateNodeAction(GROUP_PARAM, btnGroup.div, getCreateOptions(e)))})]);
     
 
     menuWindow = new Menu('Window options', true, false);

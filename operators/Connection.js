@@ -76,11 +76,11 @@ class Connection
 
 function parseConnectionJsonAndConnect(_conn, pasteConnected)
 {
-    const outputNode  = nodeFromId(pageIdFromPath(_conn.outputNodeId) == NULL ? makeNodePath(_conn.outputNodeId) : _conn.outputNodeId);
+    const outputNode  = nodeFromId(pageIdFromPath(_conn.outputNodeId) == NULL ? makeNodePath(nodeFromId(_conn.outputNodeId)) : _conn.outputNodeId);
     const outputId    = _conn.outputId;
     const outputOrder = parseInt(_conn.outputOrder);
 
-    const inputNode   = nodeFromId(pageIdFromPath(_conn.inputNodeId) == NULL ? makeNodePath(_conn.inputNodeId) : _conn.inputNodeId);
+    const inputNode   = nodeFromId(pageIdFromPath(_conn.inputNodeId) == NULL ? makeNodePath(nodeFromId(_conn.inputNodeId)) : _conn.inputNodeId);
     const inputId     = _conn.inputId;
 
 

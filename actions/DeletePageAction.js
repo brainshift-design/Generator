@@ -30,7 +30,7 @@ extends Action
             uiRemoveSavedNodesAndConns(this.oldPage.nodes.map(n => n.id));
 
             for (const node of this.oldPage.nodes)
-                node.id = makeNodePath(node.nodeId);
+                node.id = makeNodePath(node);
 
             graphView.updateNodes(graph.pages[0].nodes);
             uiSaveNodes(graph.pages[0].nodes.map(n => n.id));
@@ -58,7 +58,7 @@ extends Action
             uiRemoveSavedNodesAndConns(graph.pages[0].nodes.map(n => n.id));
 
             for (const node of graph.pages[0].nodes)
-                node.id = makeNodePath(node.nodeId);
+                node.id = makeNodePath(node);
 
             graphView.updateNodes(this.oldPage.nodes);
             uiSaveNodes(this.oldPage.nodes.map(n => n.id));

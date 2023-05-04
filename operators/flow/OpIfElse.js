@@ -13,8 +13,8 @@ extends OperatorBase
         super(IF_ELSE, 'ifElse', 'if/else');
 
 
-        this.addInput (new Input([ANY_VALUE]));
-        this.addInput (new Input([ANY_VALUE]));
+        this.addInput (new Input ([ANY_VALUE]));
+        this.addInput (new Input ([ANY_VALUE]));
         this.addOutput(new Output([ANY_VALUE], this.output_genRequest));
 
 

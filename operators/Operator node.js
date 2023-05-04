@@ -490,3 +490,14 @@ Operator.prototype.endNodeProgress = function()
 {
     this.progressWrapper.style.display = 'none';
 };
+
+
+
+Operator.prototype.setPosition = function(x, y, updateTransform = true)
+{
+    this.div.style.left = x + 'px';
+    this.div.style.top  = y + 'px';
+
+    if (updateTransform)
+        graphView.updateNodeTransforms([this]);
+}

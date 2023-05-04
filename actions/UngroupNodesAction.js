@@ -1,17 +1,10 @@
-class DeletePageAction
+class UngroupNodesAction
 extends Action
 {
-    pageId;
-
-    oldPage = null;
-
-
-
     constructor(pageId)
     {
-        super(DELETE_PAGE_ACTION, 'DELETE PAGE');
+        super(UNGROUP_NODES_ACTION, 'UNGROUP NODES');
 
-        this.pageId = pageId;
     }
 
 

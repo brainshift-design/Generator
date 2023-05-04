@@ -24,6 +24,9 @@ class Operator
     get nodeId() { return this.id.split('/').at(-1); }
 
 
+    group = null; // to which the node belongs
+
+
     _name;
     get name()     { return this._name;  }
     set name(name) { this.setName(name); }
@@ -151,7 +154,9 @@ class Operator
     constructor(type, id, name, defWidth = defNodeWidth, progressBar = false)
     {
         this.#type             = type;
-        this.id                = makeNodePath(id);
+        
+        this.id                = id;
+        this.id                = makeNodePath(this);
         
         this.enabled           = true;
         this.cached            = true;
@@ -1256,14 +1261,18 @@ function nodesAreParallel(nodes)
 
 
 
-function makeNodePath(id)
+function makeNodePath(node)
 {
-    const path =
-        graph.currentPage.id != NULL
-        ? graph.currentPage.path
-        : NULL;
+    let path = node.id;
 
-    return path + id;
+    let group = node;
+    while (group = group.group)
+        path = group.id + '/' + path;
+
+    if (graph.currentPage.id != NULL)
+        path = graph.currentPage.id + '/' + path;
+
+    return path;
 }
 
 

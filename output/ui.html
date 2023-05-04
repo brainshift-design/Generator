@@ -13799,6 +13799,8 @@ extends GNumberType
 {
     start;
     end;
+    bias;
+
 
     current      = null;
 
@@ -13823,7 +13825,8 @@ extends GNumberType
         copy.copyBase(this);
 
         if (this.start  ) copy.start   = this.start  .copy();
-        if (this.end    ) copy.step    = this.end    .copy();
+        if (this.end    ) copy.end     = this.end    .copy();
+        if (this.bias   ) copy.bias    = this.bias   .copy();
 
         if (this.current) copy.current = this.current.copy();
 
@@ -13843,12 +13846,39 @@ extends GNumberType
 
         const start = (await this.start.eval(parse)).toValue();
         const end   = (await this.end  .eval(parse)).toValue();
+        const bias  = (await this.bias .eval(parse)).toValue();
     
+
+        const repeat = parse.repeats.find(r => r.nodeId == this.repeatNodeId);
+
+        const step = 
+            repeat
+            ? (end.toNumber() - start.toNumber()) / Math.max(1, parse.repeats.at(-1).total - (bias.value == 1 ? 1 : 0))
+            : 0;
+
 
         if (!this.init)
         {
-            this.current = start.copy();
-            this.init    = true;
+            if (  !repeat
+                || repeat.total <= 1)
+            {
+                switch (bias.value)
+                {
+                    case 0: this.current = start.copy();                                             break;
+                    case 1: this.current = new NumberValue((start.toNumber() + end.toNumber()) / 2); break;
+                    case 2: this.current = end.copy();                                               break;
+                }
+            }
+            else
+            {
+                this.current = start.copy();
+
+                if (bias.value == 2)
+                    this.current.value += step;
+            }
+
+
+            this.init = true;
         }
         
 
@@ -13861,20 +13891,12 @@ extends GNumberType
         {
             genPushUpdateValue(parse, this.nodeId, 'start', start);
             genPushUpdateValue(parse, this.nodeId, 'end',   end  );
+            genPushUpdateValue(parse, this.nodeId, 'bias',  bias );
         }
 
 
-        const step = 
-            !isEmpty(parse.repeats)
-            ? (end.toNumber() - start.toNumber()) / Math.max(1, parse.repeats.at(-1).total - 1)
-            : 0;
-
-
-        if (!parse.repeats.find(r => r.nodeId == this.repeatNodeId))
-            this.current.value = start.toNumber();//(start.toNumber() + end.toNumber()) / 2; //+= step;
-
-        else if (!isEmpty(parse.repeats)
-               && parse.repeats.at(-1).nodeId == this.repeatNodeId)
+        if (  !isEmpty(parse.repeats)
+            && parse.repeats.at(-1).nodeId == this.repeatNodeId)
         {
             const repeat = parse.repeats.at(-1);
 
@@ -22079,9 +22101,10 @@ extends GOperator
         if (this.isCached())
             return this;
 
-
         if (parse.isLastRepeat())
         {
+            console.log('group eval');
+
             if (!isEmpty(this.params))
             {
                 for (let i = 0; i < this.params.length; i++)
@@ -24519,6 +24542,7 @@ function genParseDistribute(parse)
 
     dist.start = genParse(parse);
     dist.end   = genParse(parse);
+    dist.bias  = genParse(parse);
 
 
     parse.nTab--;
@@ -41948,6 +41972,8 @@ extends GNumberType
 {
     start;
     end;
+    bias;
+
 
     current      = null;
 
@@ -41972,7 +41998,8 @@ extends GNumberType
         copy.copyBase(this);
 
         if (this.start  ) copy.start   = this.start  .copy();
-        if (this.end    ) copy.step    = this.end    .copy();
+        if (this.end    ) copy.end     = this.end    .copy();
+        if (this.bias   ) copy.bias    = this.bias   .copy();
 
         if (this.current) copy.current = this.current.copy();
 
@@ -41992,12 +42019,39 @@ extends GNumberType
 
         const start = (await this.start.eval(parse)).toValue();
         const end   = (await this.end  .eval(parse)).toValue();
+        const bias  = (await this.bias .eval(parse)).toValue();
     
+
+        const repeat = parse.repeats.find(r => r.nodeId == this.repeatNodeId);
+
+        const step = 
+            repeat
+            ? (end.toNumber() - start.toNumber()) / Math.max(1, parse.repeats.at(-1).total - (bias.value == 1 ? 1 : 0))
+            : 0;
+
 
         if (!this.init)
         {
-            this.current = start.copy();
-            this.init    = true;
+            if (  !repeat
+                || repeat.total <= 1)
+            {
+                switch (bias.value)
+                {
+                    case 0: this.current = start.copy();                                             break;
+                    case 1: this.current = new NumberValue((start.toNumber() + end.toNumber()) / 2); break;
+                    case 2: this.current = end.copy();                                               break;
+                }
+            }
+            else
+            {
+                this.current = start.copy();
+
+                if (bias.value == 2)
+                    this.current.value += step;
+            }
+
+
+            this.init = true;
         }
         
 
@@ -42010,20 +42064,12 @@ extends GNumberType
         {
             genPushUpdateValue(parse, this.nodeId, 'start', start);
             genPushUpdateValue(parse, this.nodeId, 'end',   end  );
+            genPushUpdateValue(parse, this.nodeId, 'bias',  bias );
         }
 
 
-        const step = 
-            !isEmpty(parse.repeats)
-            ? (end.toNumber() - start.toNumber()) / Math.max(1, parse.repeats.at(-1).total - 1)
-            : 0;
-
-
-        if (!parse.repeats.find(r => r.nodeId == this.repeatNodeId))
-            this.current.value = start.toNumber();//(start.toNumber() + end.toNumber()) / 2; //+= step;
-
-        else if (!isEmpty(parse.repeats)
-               && parse.repeats.at(-1).nodeId == this.repeatNodeId)
+        if (  !isEmpty(parse.repeats)
+            && parse.repeats.at(-1).nodeId == this.repeatNodeId)
         {
             const repeat = parse.repeats.at(-1);
 
@@ -50228,9 +50274,10 @@ extends GOperator
         if (this.isCached())
             return this;
 
-
         if (parse.isLastRepeat())
         {
+            console.log('group eval');
+
             if (!isEmpty(this.params))
             {
                 for (let i = 0; i < this.params.length; i++)
@@ -55914,7 +55961,7 @@ function initGeneratorMenus()
 
     menuNumber = new Menu('Numbers', true, false);
     menuNumber.addItems([
-                             new MenuItem('Number',        {icon: iconNumber,      shortcut: 'N', callback: e => actionManager.do(getCreateNodeAction(NUMBER,             btnNumber.div, getCreateOptions(e)))}),
+                             new MenuItem('Number',        {icon: iconNumber,      callback: e => actionManager.do(getCreateNodeAction(NUMBER,             btnNumber.div, getCreateOptions(e)))}),
                              new MenuItem('',              {separator: true}),
                              new MenuItem('Math',          {icon: iconMath,        childMenu: menuMath,      callback: e => actionManager.do(getCreateNodeAction(NUMBER_MATH,      btnNumber.div, getCreateOptions(e)))}),
                              new MenuItem('Boolean',       {icon: iconBoolean,     childMenu: menuBoolean,   callback: e => actionManager.do(getCreateNodeAction(NUMBER_BOOLEAN,   btnNumber.div, getCreateOptions(e)))}),
@@ -55936,7 +55983,7 @@ function initGeneratorMenus()
     
     menuString = new Menu('Text', true, false);
     menuString.addItems([
-        new MenuItem('Text',                {icon: iconText,          shortcut: 'T', callback: e => actionManager.do(getCreateNodeAction(TEXT,           btnText.div, getCreateOptions(e)))}),
+        new MenuItem('Text',                {icon: iconText,          callback: e => actionManager.do(getCreateNodeAction(TEXT,           btnText.div, getCreateOptions(e)))}),
         new MenuItem('',                    {separator: true}),
         new MenuItem('Trim',                {icon: iconTextTrim,      callback: e => actionManager.do(getCreateNodeAction(TEXT_TRIM,      btnText.div, getCreateOptions(e)))}),
         new MenuItem('Substring',           {icon: iconTextSubstring, callback: e => actionManager.do(getCreateNodeAction(TEXT_SUBSTRING, btnText.div, getCreateOptions(e)))}),
@@ -56008,7 +56055,7 @@ function initGeneratorMenus()
     menuGroup = new Menu('Groups', true, false);
     menuGroup.addItems([
         new MenuItem('Group',     {icon: iconGroupNode,  callback: e => actionManager.do(getCreateNodeAction(GROUP_NODE,  btnGroup.div, getCreateOptions(e)))}),
-        new MenuItem('Parameter', {icon: iconGroupParam, shortcut: 'P', callback: e => actionManager.do(getCreateNodeAction(GROUP_PARAM, btnGroup.div, getCreateOptions(e)))})]);
+        new MenuItem('Parameter', {icon: iconGroupParam, callback: e => actionManager.do(getCreateNodeAction(GROUP_PARAM, btnGroup.div, getCreateOptions(e)))})]);
     
 
     menuWindow = new Menu('Window options', true, false);
@@ -57477,6 +57524,18 @@ class GraphView
 
 
 
+    getNodeArrayBounds(nodes)
+    {
+        let bounds = Rect.NaN;
+
+        for (const node of nodes)
+            bounds = expandRect(bounds, boundingRect(node.div));
+
+        return bounds;
+    }
+
+
+
     getAllNodeBounds(onlySelected = false)
     {
         let bounds = Rect.NaN;
@@ -57510,15 +57569,15 @@ class GraphView
 
 
 
-    getAllNodeBounds()
-    {
-        let bounds = Rect.NaN;
+    // getAllNodeBounds()
+    // {
+    //     let bounds = Rect.NaN;
 
-        for (const node of graph.pageNodes)
-            bounds = expandRect(bounds, boundingRect(node.div));
+    //     for (const node of graph.pageNodes)
+    //         bounds = expandRect(bounds, boundingRect(node.div));
 
-        return bounds;
-    }
+    //     return bounds;
+    // }
 
 
 
@@ -64288,11 +64347,11 @@ class Connection
 
 function parseConnectionJsonAndConnect(_conn, pasteConnected)
 {
-    const outputNode  = nodeFromId(pageIdFromPath(_conn.outputNodeId) == NULL ? makeNodePath(_conn.outputNodeId) : _conn.outputNodeId);
+    const outputNode  = nodeFromId(pageIdFromPath(_conn.outputNodeId) == NULL ? makeNodePath(nodeFromId(_conn.outputNodeId)) : _conn.outputNodeId);
     const outputId    = _conn.outputId;
     const outputOrder = parseInt(_conn.outputOrder);
 
-    const inputNode   = nodeFromId(pageIdFromPath(_conn.inputNodeId) == NULL ? makeNodePath(_conn.inputNodeId) : _conn.inputNodeId);
+    const inputNode   = nodeFromId(pageIdFromPath(_conn.inputNodeId) == NULL ? makeNodePath(nodeFromId(_conn.inputNodeId)) : _conn.inputNodeId);
     const inputId     = _conn.inputId;
 
 
@@ -64950,6 +65009,9 @@ class Operator
     get nodeId() { return this.id.split('/').at(-1); }
 
 
+    group = null; // to which the node belongs
+
+
     _name;
     get name()     { return this._name;  }
     set name(name) { this.setName(name); }
@@ -65077,7 +65139,9 @@ class Operator
     constructor(type, id, name, defWidth = defNodeWidth, progressBar = false)
     {
         this.#type             = type;
-        this.id                = makeNodePath(id);
+        
+        this.id                = id;
+        this.id                = makeNodePath(this);
         
         this.enabled           = true;
         this.cached            = true;
@@ -66182,14 +66246,18 @@ function nodesAreParallel(nodes)
 
 
 
-function makeNodePath(id)
+function makeNodePath(node)
 {
-    const path =
-        graph.currentPage.id != NULL
-        ? graph.currentPage.path
-        : NULL;
+    let path = node.id;
 
-    return path + id;
+    let group = node;
+    while (group = group.group)
+        path = group.id + '/' + path;
+
+    if (graph.currentPage.id != NULL)
+        path = graph.currentPage.id + '/' + path;
+
+    return path;
 }
 
 
@@ -66693,6 +66761,17 @@ Operator.prototype.endNodeProgress = function()
 {
     this.progressWrapper.style.display = 'none';
 };
+
+
+
+Operator.prototype.setPosition = function(x, y, updateTransform = true)
+{
+    this.div.style.left = x + 'px';
+    this.div.style.top  = y + 'px';
+
+    if (updateTransform)
+        graphView.updateNodeTransforms([this]);
+}
 
 
 Operator.prototype.createLabel = function()
@@ -67234,7 +67313,7 @@ Operator.prototype.updateHeaderLabel = function()
 Operator.prototype.updateHeaderLabelText = function()
 {
     this.labelText.innerHTML = 
-          (settings.showNodeId ? this.id : this.name + (this.cached ? '' : '...'))
+          (settings.showNodeId ? this.id : this.name + (this.cached ? '' : '...'))// + (this.type == NUMBER_DISTRIBUTE ? '  ↵' : '')))
         + (this.active && this.showActiveArrow ? (settings.showNodeId ? ' ' : '  ') + '‣' : '');
 
     this.labelText.style.fontFamily = 
@@ -68365,8 +68444,8 @@ extends OperatorBase
         super(IF_ELSE, 'ifElse', 'if/else');
 
 
-        this.addInput (new Input([ANY_VALUE]));
-        this.addInput (new Input([ANY_VALUE]));
+        this.addInput (new Input ([ANY_VALUE]));
+        this.addInput (new Input ([ANY_VALUE]));
         this.addOutput(new Output([ANY_VALUE], this.output_genRequest));
 
 
@@ -69889,6 +69968,7 @@ extends OperatorBase
 {
     paramStart;
     paramEnd;
+    paramBias;
 
 
 
@@ -69902,6 +69982,7 @@ extends OperatorBase
 
         this.addParam(this.paramStart = new NumberParam('start', 'start', true, true, true, 0));
         this.addParam(this.paramEnd   = new NumberParam('end',   'end',   true, true, true, 0));
+        this.addParam(this.paramBias  = new SelectParam('bias',  'bias',  true, true, true, ['start', 'middle', 'end'], 1));
     }
 
 
@@ -69920,6 +70001,7 @@ extends OperatorBase
         
         request.push(...this.node.paramStart.genRequest(gen));
         request.push(...this.node.paramEnd  .genRequest(gen));
+        request.push(...this.node.paramBias .genRequest(gen));
 
 
         gen.scope.pop();
@@ -77649,8 +77731,8 @@ extends OperatorBase
         
             if (this.groupNode)
             {
-                const id      = makeNodePath(idFromNodePath(this.id));
-                const groupId = makeNodePath(idFromNodePath(this.groupNode.id));
+                const id = makeNodePath(this);
+                //const groupId = makeNodePath(this.groupNode.id));
 
 
                 uiSaveNodes([id]);
@@ -78198,14 +78280,32 @@ class GraphPage
     {
         const tab = '\n' + HTAB;
 
-        return '{'
+        let json =
+             '{'
             + tab + '"id": "'      + this.id      + '",'
             + tab + '"name": "'    + this.name    + '",'
             + tab + '"zoom": "'    + this.zoom    + '",'
             + tab + '"panx": "'    + this.pan.x   + '",'
             + tab + '"pany": "'    + this.pan.y   + '",'
-            + tab + '"groupId": "' + this.groupId + '"'
+            + tab + '"groups":'
+            + tab + '[';
+
+        for (let i = 0; i < this.groups.length; i++)
+        {
+            const group = this.groups[i];
+
+            json += tab + HTAB + HTAB + group.toJson()
+
+            if (i < this.groups.length-1)
+                json += ',';
+        }
+
+        json +=
+              tab + ']'
             + '\n}';
+
+
+        return json;
     }
 
 
@@ -78236,7 +78336,14 @@ class GraphPage
             if (isNaN(this.zoom)) this._zoom = 1;
 
 
-            this.groupId = data.groupId;
+            for (const _group in data.groups)
+            {
+                const group = new GraphPage(_group.id);
+                group._pan  = point(data.panx, data.pany);
+                group._zoom = data.zoom;
+
+                this.groups.push(group);
+            }
         }
     }
 }
@@ -78289,7 +78396,7 @@ class Graph
             this.nodes, 
             id => this.nodes.find(n => n.id == id), 
             node.id);
-        
+
         this.nodes.push(node);
         graphView.div.appendChild(node.div);
         
@@ -78514,7 +78621,7 @@ function getActiveNodesFromNodeId(nodeId, alreadyChecked = [])
 
 function pageIdFromPath(_path)
 {
-    const path = _path.split('/');
+   const path = _path.split('/');
     return path.length > 1 ? path[0] : '';
 }
 
@@ -80017,17 +80124,12 @@ extends Action
 
     options;
 
-
     node;
 
-
     prevSelectedIds      = []; // currently selected nodes that are deselected as a result of creation
-
     oldInputActiveNodeId = NULL;
 
-
     autoConnect;
-
 
     creatingButton;
     
@@ -80065,7 +80167,7 @@ extends Action
             &&  canAutoConnectNode(this.node)
             && !!this.options.autoConnect;
 
-            
+
         graph.addNode(this.node, !autoConnect);
 
         this.createdNodeId = this.node.id;
@@ -80160,13 +80262,16 @@ extends Action
         {
             uiRemoveSavedNodesAndConns(graph.pages[0].nodes.map(n => n.id));
 
+
             for (const node of graph.pages[0].nodes)
-                node.id = makeNodePath(node.nodeId);
+                node.id = makeNodePath(node);
 
             graphView.updateNodes(this.page.nodes);
-            uiSaveNodes(this.page.nodes.map(n => n.id));
 
+
+            uiSaveNodes(this.page.nodes.map(n => n.id));
             uiSaveConnections(getConnsFromNodes(this.page.nodes));
+
 
             this.page._zoom = graph.pages[0]._zoom;
             this.page._pan  = graph.pages[0]._pan;
@@ -80189,14 +80294,17 @@ extends Action
         {
             uiRemoveSavedNodesAndConns(this.page.nodes.map(n => n.id));
 
+
             for (const node of this.page.nodes)
-                node.id = makeNodePath(node.nodeId);
+                node.id = makeNodePath(node);
 
             graphView.updateNodes(graph.pages[0].nodes);
+            
+            
             uiSaveNodes(graph.pages[0].nodes.map(n => n.id));
-
             uiSaveConnections(getConnsFromNodes(graph.pages[0].nodes));
 
+            
             graph.pages[0]._zoom = this.page._zoom;
             graph.pages[0]._pan  = this.page._pan;
         }
@@ -80482,7 +80590,7 @@ extends Action
             uiRemoveSavedNodesAndConns(this.oldPage.nodes.map(n => n.id));
 
             for (const node of this.oldPage.nodes)
-                node.id = makeNodePath(node.nodeId);
+                node.id = makeNodePath(node);
 
             graphView.updateNodes(graph.pages[0].nodes);
             uiSaveNodes(graph.pages[0].nodes.map(n => n.id));
@@ -80510,7 +80618,7 @@ extends Action
             uiRemoveSavedNodesAndConns(graph.pages[0].nodes.map(n => n.id));
 
             for (const node of graph.pages[0].nodes)
-                node.id = makeNodePath(node.nodeId);
+                node.id = makeNodePath(node);
 
             graphView.updateNodes(this.oldPage.nodes);
             uiSaveNodes(this.oldPage.nodes.map(n => n.id));
@@ -80692,13 +80800,18 @@ extends Action
 class GroupNodesAction
 extends Action
 {
-    page;
+    group;
+    groupNode = null;
+
+    nodes;
 
 
 
-    constructor(options)
+    constructor(nodes)
     {
         super(GROUP_NODES_ACTION, 'GROUP NODES');
+
+        this.nodes = [...nodes];
     }
 
 
@@ -80706,29 +80819,56 @@ extends Action
     do(updateNodes)
     {
         // get node bounds
-        let bounds = this.getAllNodeBounds(true);
+        let bounds = graphView.getNodeArrayBounds(this.nodes);
 
 
         // create group page
-        this.currentPage.groups.push(new GraphPage('group', 'group'));
+        this.group = new GraphPage('group', 'group');
+        graph.currentPage.groups.push(this.group);
         
-
-        // move selected nodes to group page
         
         // delete old nodes and connections
+        uiRemoveSavedNodesAndConns(this.nodes.map(n => n.id));
+
+        
+        // move selected nodes to group page
+        this.nodes.forEach(n => n.group = this.group);
+        this.nodes.forEach(n => n.id = makeNodePath(n));
+
+
         // save new nodes and connections
+        uiSaveNodes(this.nodes.map(n => n.id));
+        uiSaveConnections(getConnsFromNodes(this.nodes));
 
-        // offset nodes inside group to start at TL 0,0
 
-        // create group node in center of bounds
+        // create group node
+        this.groupNode = createNode(GROUP_NODE);
+
+        graph.addNode(this.groupNode);
+        
 
         // in group page create param nodes for all in and out connections
+        GroupNodesAction_createInputNodes(this);
+        GroupNodesAction_createOutputNodes(this);
 
-        // disconnect
-        // unsave connections
 
-        // reconnect through param nodes
-        // save new connections
+        // move group node to center of bounds
+        this.groupNode.setPosition(
+            bounds.x + bounds.width /2 - defNodeWidth,
+            bounds.y + bounds.height/2 - 100); // TODO: change this 100 to the group node's actual height
+
+        
+        // update and save group node
+        // graphView.updateNodes([
+        //        this.groupNode,
+        //     ...this.group.nodes], true);
+
+        uiSaveNodes(this.group.nodes.map(n => n.id));
+
+
+        this.group.nodes.forEach(n => n.div.style.display = 'none');
+
+        pushUpdate(this, [this.groupNode]);
     }
 
 
@@ -80739,6 +80879,104 @@ extends Action
     }
 }
 
+
+
+function GroupNodesAction_createInputNodes(action)
+{
+    // get all outside inputs
+
+    const inConns = [];
+
+    for (const node of action.nodes)
+        for (const input of node.connectedInputs)
+            if (!action.nodes.includes(input.connectedOutput.node))
+                pushUnique(inConns, input.connection);
+
+
+    // insert param node into connection
+
+    for (const conn of inConns)
+    {
+        const output = conn.output;
+        const input  = conn.input;
+
+        
+        // unsave connection
+        uiDeleteSavedConn(conn);
+
+        // disconnect
+        uiDisconnect(input);
+
+
+        // create param node 
+        // set it to the left of the input node
+        const paramNode = createNode(GROUP_PARAM);
+        action.group.addNode(paramNode);
+
+        paramNode.setPosition(
+            input.node.div.offsetX - defNodeWidth - 100,
+            input.node.div.offsetY);
+
+
+        // reconnect through param nodes
+        const connOut = uiConnect(output, paramNode.inputs[0]);
+        const connIn  = uiConnect(paramNode.outputs[0], input);
+
+        // save new connections
+        uiSaveConn(connOut);
+        uiSaveConn(connIn);
+    }
+}
+
+
+
+function GroupNodesAction_createOutputNodes(action)
+{
+    // get all outside outputs
+
+    const outConns = [];
+
+    for (const node of action.nodes)
+        for (const output of node.connectedOutputs)
+            for (const input of output.connectedInputs)
+                if (!action.nodes.includes(input.node))
+                    pushUnique(outConns, input.connection);
+
+
+    // insert param node into connection
+
+    for (const conn of outConns)
+    {
+        const output = conn.output;
+        const input  = conn.input;
+
+        
+        // unsave connection
+        uiDeleteSavedConn(conn);
+
+        // disconnect
+        uiDisconnect(input);
+
+
+        // create param node 
+        // set it to the left of the input node
+        const paramNode = createNode(GROUP_PARAM);
+        action.group.addNode(paramNode);
+
+        paramNode.setPosition(
+            input.node.div.offsetX + defNodeWidth + 100,
+            input.node.div.offsetY);
+
+
+        // reconnect through param nodes
+        const connIn  = uiConnect(output, paramNode.inputs[0]);
+        const connOut = uiConnect(paramNode.outputs[0], input);
+
+        // save new connections
+        uiSaveConn(connOut);
+        uiSaveConn(connIn);
+    }
+}
 
 
 class LinkExistingStyleAction
@@ -82146,20 +82384,13 @@ extends Action
 }
 
 
-class DeletePageAction
+class UngroupNodesAction
 extends Action
 {
-    pageId;
-
-    oldPage = null;
-
-
-
     constructor(pageId)
     {
-        super(DELETE_PAGE_ACTION, 'DELETE PAGE');
+        super(UNGROUP_NODES_ACTION, 'UNGROUP NODES');
 
-        this.pageId = pageId;
     }
 
 
@@ -83580,6 +83811,14 @@ document.addEventListener('keydown', e =>
     else if (e.code == 'KeyA'
           && getCtrlKey(e))
         graphView.selectAllNodes(e.shiftKey);
+
+    // group selected
+    else if (e.code == 'KeyG'
+          && getCtrlKey(e))
+    {
+        if (!isEmpty(graphView.selectedNodes))
+            actionManager.do(new GroupNodesAction(graphView.selectedNodes));
+    }
 
     // undo/redo
     else if (e.code == 'KeyZ'
@@ -85232,7 +85471,7 @@ function finishLoadingNodes(_nodes, loadedNodes, updateNodes, duplicates = false
 {
     _nodes
         .filter(_n => _n.active)
-        .map   (_n => nodeFromId(duplicates ? _n.newId : (pageIdFromPath(_n.id) == NULL ? makeNodePath(_n.id) : _n.id)))
+        .map   (_n => nodeFromId(duplicates ? _n.newId : (pageIdFromPath(_n.id) == NULL ? makeNodePath(_n) : _n.id)))
             .forEach(n => n.makeActive());
 
     updateTerminalsAfterNodes(loadedNodes, updateNodes);
@@ -85324,7 +85563,7 @@ function loadNode(_node, pasting)
     node.loadFromParsedJson(_node, pasting);
 
     if (node.pageId == NULL)
-        node.id = makeNodePath(node.id);
+        node.id = makeNodePath(node);
 
         
     node.setPosition(
@@ -85387,10 +85626,10 @@ function dataColorToJson(color, nTab)
 
     let json =
           pos + tab + '[\n'
-        + pos + tab + tab + '"'+color[0] +'",\n'
-        + pos + tab + tab +     color[1] + ',\n'
-        + pos + tab + tab +     color[2] + ',\n'
-        + pos + tab + tab +     color[3] +  '\n'
+        + pos + tab + tab + '"' + color[0] +'",\n'
+        + pos + tab + tab +       color[1] + ',\n'
+        + pos + tab + tab +       color[2] + ',\n'
+        + pos + tab + tab +       color[3] +  '\n'
         + pos + tab + ']';
 
     return json;
@@ -86213,49 +86452,7 @@ function uiPasteNodes(nodesJson, loading, pasteConnected, x, y, updateNodes)
     }
 
 
-    // if new nodes are outside of viewport, move them to center of viewport
-
-    // const viewRect = graphView.measureData.clientRect;
-
-    // let l = Number.MAX_SAFE_INTEGER;
-    // let t = Number.MAX_SAFE_INTEGER;
-    // let r = Number.MIN_SAFE_INTEGER;
-    // let b = Number.MIN_SAFE_INTEGER;
-    
-    // for (let i = 0; i < data.nodes.length; i++)
-    // {
-    //     console.log('data.nodes[i] =', data.nodes[i]);
-
-    //     l = Math.min(l, data.nodes[i].x);
-    //     t = Math.min(t, data.nodes[i].y);
-    //     r = Math.max(r, data.nodes[i].x + data.nodes[i].width);
-    //     b = Math.max(b, data.nodes[i].y + data.nodes[i].height);
-    // }
-    
-    // console.log('l =', l);
-    // console.log('t =', t);
-    // console.log('r =', r);
-    // console.log('b =', b);
-
-    // if (   l >  viewRect.r 
-    //     || t >  viewRect.b 
-    //     || r <= viewRect.l
-    //     || b <= viewRect.t)
-    // {
-    //     const cx = (l + r) / 2;
-    //     const cy = (t + b) / 2;
-        
-    //     const vx = viewRect.c;
-    //     const vy = viewRect.m;
-        
-    //     for (let i = 0; i < data.nodes.length; i++)
-    //     {
-    //         data.nodes[i].x -= vx - cx;
-    //         data.nodes[i].y -= vy - cy;
-
-    //         console.log('data.nodes[i] =', data.nodes[i]);
-    //     }
-    // }
+    //moveNodesToViewport(data.nodes);
 
 
     const nodes = loadNodes(data, true);
@@ -86287,6 +86484,55 @@ function uiPasteNodes(nodesJson, loading, pasteConnected, x, y, updateNodes)
 
 
     return [nodes, data.connections];
+}
+
+
+
+function moveNodesToViewport(nodes)
+{
+    // if new nodes are outside of viewport, move them to center of viewport
+
+    // const viewRect = graphView.measureData.clientRect;
+
+    // let l = Number.MAX_SAFE_INTEGER;
+    // let t = Number.MAX_SAFE_INTEGER;
+    // let r = Number.MIN_SAFE_INTEGER;
+    // let b = Number.MIN_SAFE_INTEGER;
+    
+    // for (let i = 0; i < nodes.length; i++)
+    // {
+    //     console.log('nodes[i] =', nodes[i]);
+
+    //     l = Math.min(l, nodes[i].x);
+    //     t = Math.min(t, nodes[i].y);
+    //     r = Math.max(r, nodes[i].x + nodes[i].width);
+    //     b = Math.max(b, nodes[i].y + nodes[i].height);
+    // }
+    
+    // console.log('l =', l);
+    // console.log('t =', t);
+    // console.log('r =', r);
+    // console.log('b =', b);
+
+    // if (   l >  viewRect.r 
+    //     || t >  viewRect.b 
+    //     || r <= viewRect.l
+    //     || b <= viewRect.t)
+    // {
+    //     const cx = (l + r) / 2;
+    //     const cy = (t + b) / 2;
+        
+    //     const vx = viewRect.c;
+    //     const vy = viewRect.m;
+        
+    //     for (let i = 0; i < nodes.length; i++)
+    //     {
+    //         nodes[i].x -= vx - cx;
+    //         nodes[i].y -= vy - cy;
+
+    //         console.log('nodes[i] =', nodes[i]);
+    //     }
+    // }
 }
 
 

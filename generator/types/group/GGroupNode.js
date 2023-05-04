@@ -38,9 +38,10 @@ extends GOperator
         if (this.isCached())
             return this;
 
-
         if (parse.isLastRepeat())
         {
+            console.log('group eval');
+
             if (!isEmpty(this.params))
             {
                 for (let i = 0; i < this.params.length; i++)

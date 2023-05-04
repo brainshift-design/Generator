@@ -84,6 +84,14 @@ document.addEventListener('keydown', e =>
           && getCtrlKey(e))
         graphView.selectAllNodes(e.shiftKey);
 
+    // group selected
+    else if (e.code == 'KeyG'
+          && getCtrlKey(e))
+    {
+        if (!isEmpty(graphView.selectedNodes))
+            actionManager.do(new GroupNodesAction(graphView.selectedNodes));
+    }
+
     // undo/redo
     else if (e.code == 'KeyZ'
           && getCtrlKey(e)
