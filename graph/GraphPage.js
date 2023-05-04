@@ -21,9 +21,6 @@ class GraphPage
     }
 
 
-    groupId;
-
-
     button;
 
     btnIcon;
@@ -31,7 +28,7 @@ class GraphPage
     btnClose;
 
 
-    groupId; // a page with a group ID makes it a group
+    groups = [];
 
 
 
@@ -94,14 +91,11 @@ class GraphPage
     
     
     
-    constructor(id, name, groupId = '')
+    constructor(id, name)
     {
         this.id       = id;
         this.name     = name;
     
-
-        this.groupId  = groupId;
-
 
         this.button   = createDiv('page');
 

@@ -8373,6 +8373,8 @@ const TOGGLE_PARAM_HEADER_ACTION = 'TOGGLE_PARAM_HEADER';
 const SET_CURRENT_GRAPH_ACTION   = 'SET_CURRENT_GRAPH';
 const CREATE_PAGE_ACTION         = 'CREATE_PAGE';
 const DELETE_PAGE_ACTION         = 'DELETE_PAGE';
+const GROUP_NODES_ACTION         = 'GROUP_NODES';
+const UNGROUP_NODES_ACTION       = 'UNGROUP_NODES';
 
 
 const BLEND_NORMAL      = 'BNORM';
@@ -36520,6 +36522,8 @@ const TOGGLE_PARAM_HEADER_ACTION = 'TOGGLE_PARAM_HEADER';
 const SET_CURRENT_GRAPH_ACTION   = 'SET_CURRENT_GRAPH';
 const CREATE_PAGE_ACTION         = 'CREATE_PAGE';
 const DELETE_PAGE_ACTION         = 'DELETE_PAGE';
+const GROUP_NODES_ACTION         = 'GROUP_NODES';
+const UNGROUP_NODES_ACTION       = 'UNGROUP_NODES';
 
 
 const BLEND_NORMAL      = 'BNORM';
@@ -56070,8 +56074,8 @@ function initGeneratorMenus()
                                    //new MenuItem('',                {separator: true}),
       //menuItemNodeLayout         = new MenuItem('Layout',          {enabled:   false, shortcut: osCtrl() + 'L', callback: e => { hideAllMenus(); layoutSelectedNodes(); }}),
         menuItemNodeSep1           = new MenuItem('',                {separator: true}),
-        menuItemNodeGroupSelected  = new MenuItem('Group selected',  {shortcut:  osCtrl() + 'G',       callback: e => { hideAllMenus(); graphView.groupSelectedNodes();   }}),
-        menuItemNodeUngroup        = new MenuItem('Ungroup',         {                                 callback: e => { hideAllMenus(); graphView.ungroupSelectedNodes(); }}),
+        menuItemNodeGroupSelected  = new MenuItem('Group selected',  {shortcut:  osCtrl() + 'G',       callback: e => { hideAllMenus(); actionManager.do(new   GroupNodesAction(graphView.selectedNodes)); }}),
+        menuItemNodeUngroup        = new MenuItem('Ungroup',         {                                 callback: e => { hideAllMenus(); actionManager.do(new UngroupNodesAction(graphView.selectedNodes)); }}),
         menuItemNodeSep2           = new MenuItem('',                {separator: true}),
         menuItemNodeSelect         = new MenuItem('Select',          {childMenu: menuNodeSelect}),
         menuItemNodeSep3           = new MenuItem('',                {separator: true}),
@@ -57924,56 +57928,6 @@ GraphView.prototype.copySelectedNodes = function()
     copiedNodesJson = uiCopyNodes(this.selectedNodes.map(n => n.id));
 
     writeTextToClipboard(copiedNodesJson);
-};
-
-
-
-GraphView.prototype.groupSelectedNodes = function()
-{
-    // get node bounds
-
-    // create group page
-
-    // move selected nodes to group page
-    // delete old nodes and connections
-    // save new nodes and connections
-
-    // offset nodes inside group to start at TL 0,0
-
-    // create group node in center of bounds
-
-    // in group page create param nodes for all in and out connections
-
-    // disconnect
-    // unsave connections
-
-    // reconnect through param nodes
-    // save new connections
-};
-
-
-
-GraphView.prototype.ungroupSelectedNodes = function()
-{
-    // get node bounds inside group
-    // get node position of group node
-
-    // disconnect params
-    // unsave connections
-
-    // delete param nodes
-
-    // move rest of nodes one path level up
-    // delete old nodes and connections
-    // save new nodes and connections
-
-    // offset new nodes to center on old group node
-
-    // connect to outside directly
-    // save new connections
-
-    // delete group node
-    // delete group page
 };
 
 
@@ -78075,9 +78029,6 @@ class GraphPage
     }
 
 
-    groupId;
-
-
     button;
 
     btnIcon;
@@ -78085,7 +78036,7 @@ class GraphPage
     btnClose;
 
 
-    groupId; // a page with a group ID makes it a group
+    groups = [];
 
 
 
@@ -78148,14 +78099,11 @@ class GraphPage
     
     
     
-    constructor(id, name, groupId = '')
+    constructor(id, name)
     {
         this.id       = id;
         this.name     = name;
     
-
-        this.groupId  = groupId;
-
 
         this.button   = createDiv('page');
 
@@ -80741,6 +80689,58 @@ extends Action
 
 
 
+class GroupNodesAction
+extends Action
+{
+    page;
+
+
+
+    constructor(options)
+    {
+        super(GROUP_NODES_ACTION, 'GROUP NODES');
+    }
+
+
+
+    do(updateNodes)
+    {
+        // get node bounds
+        let bounds = this.getAllNodeBounds(true);
+
+
+        // create group page
+        this.currentPage.groups.push(new GraphPage('group', 'group'));
+        
+
+        // move selected nodes to group page
+        
+        // delete old nodes and connections
+        // save new nodes and connections
+
+        // offset nodes inside group to start at TL 0,0
+
+        // create group node in center of bounds
+
+        // in group page create param nodes for all in and out connections
+
+        // disconnect
+        // unsave connections
+
+        // reconnect through param nodes
+        // save new connections
+    }
+
+
+
+    undo(updateNodes)
+    {
+
+    }
+}
+
+
+
 class LinkExistingStyleAction
 extends Action
 {
@@ -82143,6 +82143,56 @@ extends Action
 
         uiSaveNodes([this.nodeId]);
     }    
+}
+
+
+class DeletePageAction
+extends Action
+{
+    pageId;
+
+    oldPage = null;
+
+
+
+    constructor(pageId)
+    {
+        super(DELETE_PAGE_ACTION, 'DELETE PAGE');
+
+        this.pageId = pageId;
+    }
+
+
+
+    do(updateNodes)
+    {
+        // get node bounds inside group
+        // get node position of group node
+
+        // disconnect params
+        // unsave connections
+
+        // delete param nodes
+
+        // move rest of nodes one path level up
+        // delete old nodes and connections
+        // save new nodes and connections
+
+        // offset new nodes to center on old group node
+
+        // connect to outside directly
+        // save new connections
+
+        // delete group node
+        // delete group page
+    }
+
+
+
+    undo(updateNodes)
+    {
+
+    }
 }
 
 
@@ -83731,11 +83781,11 @@ document.addEventListener('keydown', e =>
     else if (e.code == 'Tab')
         e.preventDefault();
 
-    else if (e.code == 'KeyN') actionManager.do(getCreateNodeAction(NUMBER,      null, getCreateOptions(e)));
-    else if (e.code == 'KeyT') actionManager.do(getCreateNodeAction(TEXT,        null, getCreateOptions(e)));
-    else if (e.code == 'KeyC') actionManager.do(getCreateNodeAction(COLOR,       null, getCreateOptions(e, {random: e.altKey && !getCtrlKey(e)})));
-    else if (e.code == 'KeyG') actionManager.do(getCreateNodeAction(GROUP_NODE,  null, getCreateOptions(e)));
-    else if (e.code == 'KeyP') actionManager.do(getCreateNodeAction(GROUP_PARAM, null, getCreateOptions(e)));
+    // else if (e.code == 'KeyN' && !getCtrlKey(e) && !e.shiftKey && !e.altKey) actionManager.do(getCreateNodeAction(NUMBER,      null, getCreateOptions(e)));
+    // else if (e.code == 'KeyT' && !getCtrlKey(e) && !e.shiftKey && !e.altKey) actionManager.do(getCreateNodeAction(TEXT,        null, getCreateOptions(e)));
+    // else if (e.code == 'KeyC' && !getCtrlKey(e) && !e.shiftKey && !e.altKey) actionManager.do(getCreateNodeAction(COLOR,       null, getCreateOptions(e, {random: e.altKey && !getCtrlKey(e)})));
+    // else if (e.code == 'KeyG' && !getCtrlKey(e) && !e.shiftKey && !e.altKey) actionManager.do(getCreateNodeAction(GROUP_NODE,  null, getCreateOptions(e)));
+    // else if (e.code == 'KeyP' && !getCtrlKey(e) && !e.shiftKey && !e.altKey) actionManager.do(getCreateNodeAction(GROUP_PARAM, null, getCreateOptions(e)));
 
     // graph.nodes.at(-1).div.style.left = e.clientX - (defNodeWidth    / 2) - (               + graph.currentPage.pan.x) / graph.currentPage.zoom;
     // graph.nodes.at(-1).div.style.top  = e.clientY - (defHeaderHeight / 2) - (getTopHeight() + graph.currentPage.pan.y) / graph.currentPage.zoom;

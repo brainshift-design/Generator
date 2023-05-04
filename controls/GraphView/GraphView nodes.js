@@ -182,56 +182,6 @@ GraphView.prototype.copySelectedNodes = function()
 
 
 
-GraphView.prototype.groupSelectedNodes = function()
-{
-    // get node bounds
-
-    // create group page
-
-    // move selected nodes to group page
-    // delete old nodes and connections
-    // save new nodes and connections
-
-    // offset nodes inside group to start at TL 0,0
-
-    // create group node in center of bounds
-
-    // in group page create param nodes for all in and out connections
-
-    // disconnect
-    // unsave connections
-
-    // reconnect through param nodes
-    // save new connections
-};
-
-
-
-GraphView.prototype.ungroupSelectedNodes = function()
-{
-    // get node bounds inside group
-    // get node position of group node
-
-    // disconnect params
-    // unsave connections
-
-    // delete param nodes
-
-    // move rest of nodes one path level up
-    // delete old nodes and connections
-    // save new nodes and connections
-
-    // offset new nodes to center on old group node
-
-    // connect to outside directly
-    // save new connections
-
-    // delete group node
-    // delete group page
-};
-
-
-
 class GenJS
 {
     nodes;
