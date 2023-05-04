@@ -9559,15 +9559,12 @@ function getObjBounds(objects)
                         NumberValue.prototype.toNumber.call(p.y)));
             }
         }
-        else
-        {
-            const [width, height] =
-                obj.type != POINT
-                ? [obj.width, obj.height]
-                : [0, 0];
+ 
+        else if (obj.type == POINT)
+            bounds = expandRect_(bounds, point(obj.x, obj.y));
 
-            bounds = expandRect(bounds, new Rect(obj.x, obj.y, width, height));
-        }
+        else
+            bounds = expandRect(bounds, new Rect(obj.x, obj.y, obj.width, obj.height));
     }
 
 
@@ -21218,7 +21215,7 @@ extends GOperator
 
         const bounds = getObjBounds(this.objects);
 
-
+        
         for (const obj of this.objects)
         {
             obj.nodeId = this.nodeId;
@@ -37765,15 +37762,12 @@ function getObjBounds(objects)
                         NumberValue.prototype.toNumber.call(p.y)));
             }
         }
-        else
-        {
-            const [width, height] =
-                obj.type != POINT
-                ? [obj.width, obj.height]
-                : [0, 0];
+ 
+        else if (obj.type == POINT)
+            bounds = expandRect_(bounds, point(obj.x, obj.y));
 
-            bounds = expandRect(bounds, new Rect(obj.x, obj.y, width, height));
-        }
+        else
+            bounds = expandRect(bounds, new Rect(obj.x, obj.y, obj.width, obj.height));
     }
 
 
@@ -49424,7 +49418,7 @@ extends GOperator
 
         const bounds = getObjBounds(this.objects);
 
-
+        
         for (const obj of this.objects)
         {
             obj.nodeId = this.nodeId;
@@ -62180,8 +62174,6 @@ extends Parameter
         if (   this.input
             && this.input.connected)
         {
-            console.log('this.input.connectedOutput.node.id =', this.input.connectedOutput.node.id);
-            console.log('this.input.connectedOutput.types =', [...this.input.connectedOutput.types]);
             if (this.input.supportsTypes(this.input.connectedOutput.types))
                 request.push(...pushInputOrParam(this.input, gen));
             // if (this.input.connectedOutput.supportsTypes([LIST_VALUE]))

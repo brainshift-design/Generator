@@ -110,15 +110,12 @@ function getObjBounds(objects)
                         NumberValue.prototype.toNumber.call(p.y)));
             }
         }
-        else
-        {
-            const [width, height] =
-                obj.type != POINT
-                ? [obj.width, obj.height]
-                : [0, 0];
+ 
+        else if (obj.type == POINT)
+            bounds = expandRect_(bounds, point(obj.x, obj.y));
 
-            bounds = expandRect(bounds, new Rect(obj.x, obj.y, width, height));
-        }
+        else
+            bounds = expandRect(bounds, new Rect(obj.x, obj.y, obj.width, obj.height));
     }
 
 

@@ -107,7 +107,7 @@ extends GOperator
 
         const bounds = getObjBounds(this.objects);
 
-
+        
         for (const obj of this.objects)
         {
             obj.nodeId = this.nodeId;
