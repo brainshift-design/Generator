@@ -19,6 +19,10 @@ extends OperatorBase
 
         this.addParam(this.paramX = new NumberParam('x', 'x', true, true, true));
         this.addParam(this.paramY = new NumberParam('y', 'y', true, true, true));
+
+
+        this.inputs[0].addEventListener('connect',    e => this.outputs[0].types = [finalListTypeFromTypes(this.inputs[0].connectedOutput.types)]);
+        this.inputs[0].addEventListener('disconnect', e => this.outputs[0].types = [SHAPE_VALUE]);
     }
     
     
@@ -52,17 +56,5 @@ extends OperatorBase
 
 
         return request;
-    }
-
-
-
-    updateValues(requestId, actionId, updateParamId, paramIds, values)
-    {
-        super.updateValues(requestId, actionId, updateParamId, paramIds, values);
-
-        this.outputs[0].types = 
-            this.inputs[0].connected
-            ? [...this.inputs[0].connectedOutput.types]
-            : [ANY_VALUE];
     }
 }

@@ -37,8 +37,8 @@ extends OperatorBase
         const input = new Input([COLOR_TYPES]);
         input.isNew = true;
 
-        input.addEventListener('connect',    () => { onVariableConnectInput(this); input.isNew = false; });
-        input.addEventListener('disconnect', () => onVariableDisconnectInput(this, input));
+        input.addEventListener('connect',    () => { onVariableConnectInput(e.detail.input); input.isNew = false; });
+        input.addEventListener('disconnect', () => onVariableDisconnectInput(e.detail.input));
 
         this.addInput(input);
 

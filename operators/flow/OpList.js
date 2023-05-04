@@ -20,8 +20,8 @@ extends OperatorBase
         const newInput = new Input([ANY_VALUE]);
         newInput.isNew = true;
 
-        newInput.addEventListener('connect',    e => { onVariableConnectInput(this); e.detail.input.isNew = false; });
-        newInput.addEventListener('disconnect', e => onVariableDisconnectInput(this, e.detail.input));
+        newInput.addEventListener('connect',    e => { onVariableConnectInput(e.detail.input); e.detail.input.isNew = false; });
+        newInput.addEventListener('disconnect', e => onVariableDisconnectInput(e.detail.input));
 
         this.addInput(newInput);
 
@@ -65,8 +65,6 @@ extends OperatorBase
 
         const value = values[paramIds.findIndex(id => id == 'value')];
         console.assert(LIST_VALUES.includes(value.type));
-
-        this.outputs[0].types = [finalListTypeFromItems(value.items)];
     }
 
 

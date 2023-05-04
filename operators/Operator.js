@@ -154,7 +154,7 @@ class Operator
     constructor(type, id, name, defWidth = defNodeWidth, progressBar = false)
     {
         this.#type             = type;
-        
+
         this.id                = id;
         this.id                = makeNodePath(this);
         
@@ -1174,17 +1174,35 @@ function areConnected(node1, node2)
 
 
 
-function onVariableConnectInput(node)
+function onVariableConnectInput(input)
 {
-    node.addNewInput();
+    input.node.addNewInput();
+
+    updateOutputListTypeFromConnectedInputs(input.node);
 }
 
 
 
-function onVariableDisconnectInput(node, input)
+function onVariableDisconnectInput(input)
 {
-    removeFromArray(node.inputs, input);
-    node.inputControls.removeChild(input.div);
+    removeFromArray(input.node.inputs, input);
+
+    input.node.inputControls.removeChild(input.div);
+
+    updateOutputListTypeFromConnectedInputs(input.node);
+}
+
+
+
+
+function updateOutputListTypeFromConnectedInputs(node)
+{
+    const types = [];
+
+    for (const input of node.connectedInputs)
+        pushUnique(types, input.connectedOutput.types);
+
+    node.outputs[0].types = [finalListTypeFromTypes(types)];
 }
 
 

@@ -10809,6 +10809,7 @@ function finalListTypeFromTypes(types)
         }
     }
 
+
          if (  _type == NUMBER_VALUE || _type == NUMBER_LIST_VALUE)  return NUMBER_LIST_VALUE;
     else if (  _type ==   TEXT_VALUE || _type ==   TEXT_LIST_VALUE)  return   TEXT_LIST_VALUE;
     else if (SHAPE_VALUES.includes(_type))                           return  SHAPE_LIST_VALUE;
@@ -39014,6 +39015,7 @@ function finalListTypeFromTypes(types)
         }
     }
 
+
          if (  _type == NUMBER_VALUE || _type == NUMBER_LIST_VALUE)  return NUMBER_LIST_VALUE;
     else if (  _type ==   TEXT_VALUE || _type ==   TEXT_LIST_VALUE)  return   TEXT_LIST_VALUE;
     else if (SHAPE_VALUES.includes(_type))                           return  SHAPE_LIST_VALUE;
@@ -62178,7 +62180,9 @@ extends Parameter
         if (   this.input
             && this.input.connected)
         {
-            if (this.input.connectedOutput.supportsTypes(this.input.types))
+            console.log('this.input.connectedOutput.node.id =', this.input.connectedOutput.node.id);
+            console.log('this.input.connectedOutput.types =', [...this.input.connectedOutput.types]);
+            if (this.input.supportsTypes(this.input.connectedOutput.types))
                 request.push(...pushInputOrParam(this.input, gen));
             // if (this.input.connectedOutput.supportsTypes([LIST_VALUE]))
             //     request.push(...pushInputOrParam(this.input, gen));
@@ -65204,7 +65208,7 @@ class Operator
     constructor(type, id, name, defWidth = defNodeWidth, progressBar = false)
     {
         this.#type             = type;
-        
+
         this.id                = id;
         this.id                = makeNodePath(this);
         
@@ -66224,17 +66228,35 @@ function areConnected(node1, node2)
 
 
 
-function onVariableConnectInput(node)
+function onVariableConnectInput(input)
 {
-    node.addNewInput();
+    input.node.addNewInput();
+
+    updateOutputListTypeFromConnectedInputs(input.node);
 }
 
 
 
-function onVariableDisconnectInput(node, input)
+function onVariableDisconnectInput(input)
 {
-    removeFromArray(node.inputs, input);
-    node.inputControls.removeChild(input.div);
+    removeFromArray(input.node.inputs, input);
+
+    input.node.inputControls.removeChild(input.div);
+
+    updateOutputListTypeFromConnectedInputs(input.node);
+}
+
+
+
+
+function updateOutputListTypeFromConnectedInputs(node)
+{
+    const types = [];
+
+    for (const input of node.connectedInputs)
+        pushUnique(types, input.connectedOutput.types);
+
+    node.outputs[0].types = [finalListTypeFromTypes(types)];
 }
 
 
@@ -68055,8 +68077,8 @@ extends OperatorBase
         const newInput = new Input([ANY_VALUE]);
         newInput.isNew = true;
 
-        newInput.addEventListener('connect',    e => { onVariableConnectInput(this); e.detail.input.isNew = false; });
-        newInput.addEventListener('disconnect', e => onVariableDisconnectInput(this, e.detail.input));
+        newInput.addEventListener('connect',    e => { onVariableConnectInput(e.detail.input); e.detail.input.isNew = false; });
+        newInput.addEventListener('disconnect', e => onVariableDisconnectInput(e.detail.input));
 
         this.addInput(newInput);
 
@@ -68100,8 +68122,6 @@ extends OperatorBase
 
         const value = values[paramIds.findIndex(id => id == 'value')];
         console.assert(LIST_VALUES.includes(value.type));
-
-        this.outputs[0].types = [finalListTypeFromItems(value.items)];
     }
 
 
@@ -70671,8 +70691,8 @@ extends OperatorWithValue
         const newInput = new Input([NUMBER_VALUE, NUMBER_LIST_VALUE, LIST_VALUE]);
         newInput.isNew = true;
 
-        newInput.addEventListener('connect',    e => { onVariableConnectInput(this); e.detail.input.isNew = false; });
-        newInput.addEventListener('disconnect', e => onVariableDisconnectInput(this, e.detail.input));
+        newInput.addEventListener('connect',    e => { onVariableConnectInput(e.detail.input); e.detail.input.isNew = false; });
+        newInput.addEventListener('disconnect', e => onVariableDisconnectInput(e.detail.input));
 
         this.addInput(newInput);
 
@@ -70748,8 +70768,8 @@ extends OperatorWithSymbol
         const newInput = new Input([NUMBER_VALUE, NUMBER_LIST_VALUE, LIST_VALUE]);
         newInput.isNew = true;
 
-        newInput.addEventListener('connect',    e => { onVariableConnectInput(this); e.detail.input.isNew = false; });
-        newInput.addEventListener('disconnect', e => onVariableDisconnectInput(this, e.detail.input));
+        newInput.addEventListener('connect',    e => { onVariableConnectInput(e.detail.input); e.detail.input.isNew = false; });
+        newInput.addEventListener('disconnect', e => onVariableDisconnectInput(e.detail.input));
 
         this.addInput(newInput);
 
@@ -71091,8 +71111,8 @@ extends OperatorWithValue
         const newInput = new Input([NUMBER_VALUE, NUMBER_LIST_VALUE, LIST_VALUE]);
         newInput.isNew = true;
 
-        newInput.addEventListener('connect',    e => { onVariableConnectInput(this); e.detail.input.isNew = false; });
-        newInput.addEventListener('disconnect', e => onVariableDisconnectInput(this, e.detail.input));
+        newInput.addEventListener('connect',    e => { onVariableConnectInput(e.detail.input); e.detail.input.isNew = false; });
+        newInput.addEventListener('disconnect', e => onVariableDisconnectInput(e.detail.input));
 
         this.addInput(newInput);
 
@@ -71187,8 +71207,8 @@ extends OperatorWithValue
         const newInput = new Input([NUMBER_VALUE, NUMBER_LIST_VALUE, LIST_VALUE]);
         newInput.isNew = true;
 
-        newInput.addEventListener('connect',    e => { onVariableConnectInput(this); e.detail.input.isNew = false; });
-        newInput.addEventListener('disconnect', e => onVariableDisconnectInput(this, e.detail.input));
+        newInput.addEventListener('connect',    e => { onVariableConnectInput(e.detail.input); e.detail.input.isNew = false; });
+        newInput.addEventListener('disconnect', e => onVariableDisconnectInput(e.detail.input));
 
         this.addInput(newInput);
 
@@ -72252,8 +72272,8 @@ extends ResizableOperatorWithValue
         const newInput = new Input([TEXT_VALUE, TEXT_LIST_VALUE, LIST_VALUE]);
         newInput.isNew = true;
 
-        newInput.addEventListener('connect',    e => { onVariableConnectInput(this); e.detail.input.isNew = false; });
-        newInput.addEventListener('disconnect', e => onVariableDisconnectInput(this, e.detail.input));
+        newInput.addEventListener('connect',    e => { onVariableConnectInput(e.detail.input); e.detail.input.isNew = false; });
+        newInput.addEventListener('disconnect', e => onVariableDisconnectInput(e.detail.input));
 
         this.addInput(newInput);
 
@@ -76071,6 +76091,10 @@ extends OperatorBase
 
         this.addParam(this.paramX = new NumberParam('x', 'x', true, true, true));
         this.addParam(this.paramY = new NumberParam('y', 'y', true, true, true));
+
+
+        this.inputs[0].addEventListener('connect',    e => this.outputs[0].types = [finalListTypeFromTypes(this.inputs[0].connectedOutput.types)]);
+        this.inputs[0].addEventListener('disconnect', e => this.outputs[0].types = [SHAPE_VALUE]);
     }
     
     
@@ -76105,18 +76129,6 @@ extends OperatorBase
 
         return request;
     }
-
-
-
-    updateValues(requestId, actionId, updateParamId, paramIds, values)
-    {
-        super.updateValues(requestId, actionId, updateParamId, paramIds, values);
-
-        this.outputs[0].types = 
-            this.inputs[0].connected
-            ? [...this.inputs[0].connectedOutput.types]
-            : [ANY_VALUE];
-    }
 }
 
 
@@ -76149,6 +76161,10 @@ extends OperatorBase
 
         this.paramAngle.controls[0].suffix      = '°';
         this.paramAngle.controls[0].dragReverse = true;
+
+
+        this.inputs[0].addEventListener('connect',    e => this.outputs[0].types = [finalListTypeFromTypes(this.inputs[0].connectedOutput.types)]);
+        this.inputs[0].addEventListener('disconnect', e => this.outputs[0].types = [SHAPE_VALUE]);
     }
     
     
@@ -76190,11 +76206,6 @@ extends OperatorBase
     updateValues(requestId, actionId, updateParamId, paramIds, values)
     {
         super.updateValues(requestId, actionId, updateParamId, paramIds, values);
-
-        this.outputs[0].types = 
-            this.inputs[0].connected
-            ? [...this.inputs[0].connectedOutput.types]
-            : [ANY_VALUE];
 
 
         const bounds = values[paramIds.findIndex(id => id == 'bounds')];
@@ -76260,6 +76271,10 @@ extends OperatorBase
 
         this.paramX.controls[0].setMin(0);
         this.paramY.controls[0].setMin(0);
+
+
+        this.inputs[0].addEventListener('connect',    e => this.outputs[0].types = [finalListTypeFromTypes(this.inputs[0].connectedOutput.types)]);
+        this.inputs[0].addEventListener('disconnect', e => this.outputs[0].types = [SHAPE_VALUE]);
     }
     
     
@@ -76302,11 +76317,6 @@ extends OperatorBase
     updateValues(requestId, actionId, updateParamId, paramIds, values)
     {
         super.updateValues(requestId, actionId, updateParamId, paramIds, values);
-
-        this.outputs[0].types = 
-            this.inputs[0].connected
-            ? [...this.inputs[0].connectedOutput.types]
-            : [ANY_VALUE];
 
 
         const bounds = values[paramIds.findIndex(id => id == 'bounds')];
@@ -85244,7 +85254,7 @@ function uiReturnFigLoadNodesAndConns(msg)
         for (const json of msg.nodeJson)
         {
             console.log(
-                '%cnodes JSON = %s', 
+                '%cnodes JSON = \n%s', 
                 'background: #fed; color: black;',
                 json.replaceAll('\\n', '\n')
                     .replaceAll('\\"', '"'));

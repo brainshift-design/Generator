@@ -1824,6 +1824,7 @@ function figUpdateObjects(msg)
 
 
     // put points on top
+    
     for (const point of figPoints)
         point.parent.appendChild(point);
 }
