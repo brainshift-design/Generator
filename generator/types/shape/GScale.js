@@ -186,14 +186,14 @@ extends GOperator
 
 
                 const angle = anglev_(
-                    bounds.x + (dx * bounds.width ), 
-                    bounds.y + (dy * bounds.height),
+                    bounds.x + ((dx + 0.5) * bounds.width ), 
+                    bounds.y + ((dy + 0.5) * bounds.height),
                     obj.x,
                     obj.y);
 
                 const halfd = distance_(
-                    bounds.x + (dx * bounds.width ), 
-                    bounds.y + (dy * bounds.height),
+                    bounds.x + ((dx + 0.5) * bounds.width ), 
+                    bounds.y + ((dy + 0.5) * bounds.height),
                     obj.x,
                     obj.y);
 
@@ -205,7 +205,7 @@ extends GOperator
                 v.y *= y;
 
                 obj.x = 
-                        bounds.x 
+                      bounds.x 
                     + bounds.width /2 
                     + v.x 
                     - (dx - 0.5) * bw * Math.cos(-a) 

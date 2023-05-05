@@ -9084,16 +9084,31 @@ function getSmoothPathData(points, closed, getSegment)
     {
         if (closed)
         {
-            // last segment
-            [pp, p, pn] = getSegment(
-                points.at(-1), 
-                points.at( 0),
-                points.at( 1));
-    
-            bp.push(_pp, pp, p);
+            if (   equal(bp[0].x, bp.at(-1).x, 0.01)
+                && equal(bp[0].y, bp.at(-1).y, 0.01))
+            {
+                // last segment
+                [pp, p, pn] = getSegment(
+                    points.at(-2), 
+                    points.at( 0),
+                    points.at( 1));
 
-            bp[1]           = addv(bp[0],     mulvs(unitv(subv(bp.at(-1), bp[0])), -distance(bp[3],     bp[0]    )/3));
-            bp[bp.length-2] = addv(bp.at(-1), mulvs(unitv(subv(bp[0], bp.at(-1))), -distance(bp.at(-4), bp.at(-1))/3));
+                bp[1]           = pn;
+                bp[bp.length-2] = pp;
+            }
+            else
+            {
+                // last segment
+                [pp, p, pn] = getSegment(
+                    points.at(-1), 
+                    points.at( 0),
+                    points.at( 1));
+
+                bp.push(_pp, pp, p);
+
+                bp[1]           = pn;
+                bp[bp.length-2] = pp;
+            }
         }
         else // open
         {
@@ -9122,31 +9137,31 @@ function getSmoothSegment(_pointP, _point, _pointN)
         NumberValue.prototype.toNumber.call(_pointN.x),
         NumberValue.prototype.toNumber.call(_pointN.y));
 
-    // console.log('_pp =', _pp);
-    // console.log('_p  =', _p );
-    // console.log('_pn =', _pn);
 
     const v = subv(_pn, _pp);
     
     
     let a = angleDiff(
-        angle(_p, _pp), 
-        angle(_pn, _p));
-
-    while (a > Tau/2)
-        a -= Tau;
-
-    //a = Math.abs(a);
-    console.log('a =', a);
+        angle(subv(_p, _pp)), 
+        angle(subv(_pn, _p)));
+       
+    a = Math.abs(a);
+    while (a > Tau/2) a -= Tau;
     
 
     const k     = 4 * (Math.sqrt(2) - 1) / 3;        // or use the value 0.55191502449 from http://spencermortensen.com/articles/bezier-circle/
 	const kCorr = 0.9993391093366649465402826439248; // slight improvement (see Bézier Curves p. 13, Gernot Hoffmann);
 
-    const f = 
+    let f = 
         a < Tau/4
         ? k*kCorr * Math.sin(a)
         : 1/3 + (k*kCorr - 1/3) * Math.sin(a);
+
+    const mind = Math.min(distance(_pp, _p), distance(_p, _pn));
+    const maxd = Math.max(distance(_pp, _p), distance(_p, _pn));
+
+    f = f + (1/3 - f) * (1 - mind/maxd);
+
 
     const pp = addv(_p, mulvs(unitv(v), -lengthv(v)/2 * f));
     const pn = addv(_p, mulvs(unitv(v),  lengthv(v)/2 * f));
@@ -21299,14 +21314,14 @@ extends GOperator
 
 
                 obj.x = 
-                    bounds.x 
+                      bounds.x 
                     + bounds.width /2 
                     + v.x 
                     - dx * bw * Math.cos(-a) 
                     - dy * bh * Math.sin( a);
 
                 obj.y = 
-                    bounds.y
+                      bounds.y
                     + bounds.height/2
                     + v.y 
                     - dx * bw * Math.sin(-a) 
@@ -21540,14 +21555,14 @@ extends GOperator
 
 
                 const angle = anglev_(
-                    bounds.x + (dx * bounds.width ), 
-                    bounds.y + (dy * bounds.height),
+                    bounds.x + ((dx + 0.5) * bounds.width ), 
+                    bounds.y + ((dy + 0.5) * bounds.height),
                     obj.x,
                     obj.y);
 
                 const halfd = distance_(
-                    bounds.x + (dx * bounds.width ), 
-                    bounds.y + (dy * bounds.height),
+                    bounds.x + ((dx + 0.5) * bounds.width ), 
+                    bounds.y + ((dy + 0.5) * bounds.height),
                     obj.x,
                     obj.y);
 
@@ -21559,7 +21574,7 @@ extends GOperator
                 v.y *= y;
 
                 obj.x = 
-                        bounds.x 
+                      bounds.x 
                     + bounds.width /2 
                     + v.x 
                     - (dx - 0.5) * bw * Math.cos(-a) 
@@ -37286,16 +37301,31 @@ function getSmoothPathData(points, closed, getSegment)
     {
         if (closed)
         {
-            // last segment
-            [pp, p, pn] = getSegment(
-                points.at(-1), 
-                points.at( 0),
-                points.at( 1));
-    
-            bp.push(_pp, pp, p);
+            if (   equal(bp[0].x, bp.at(-1).x, 0.01)
+                && equal(bp[0].y, bp.at(-1).y, 0.01))
+            {
+                // last segment
+                [pp, p, pn] = getSegment(
+                    points.at(-2), 
+                    points.at( 0),
+                    points.at( 1));
 
-            bp[1]           = addv(bp[0],     mulvs(unitv(subv(bp.at(-1), bp[0])), -distance(bp[3],     bp[0]    )/3));
-            bp[bp.length-2] = addv(bp.at(-1), mulvs(unitv(subv(bp[0], bp.at(-1))), -distance(bp.at(-4), bp.at(-1))/3));
+                bp[1]           = pn;
+                bp[bp.length-2] = pp;
+            }
+            else
+            {
+                // last segment
+                [pp, p, pn] = getSegment(
+                    points.at(-1), 
+                    points.at( 0),
+                    points.at( 1));
+
+                bp.push(_pp, pp, p);
+
+                bp[1]           = pn;
+                bp[bp.length-2] = pp;
+            }
         }
         else // open
         {
@@ -37324,31 +37354,31 @@ function getSmoothSegment(_pointP, _point, _pointN)
         NumberValue.prototype.toNumber.call(_pointN.x),
         NumberValue.prototype.toNumber.call(_pointN.y));
 
-    // console.log('_pp =', _pp);
-    // console.log('_p  =', _p );
-    // console.log('_pn =', _pn);
 
     const v = subv(_pn, _pp);
     
     
     let a = angleDiff(
-        angle(_p, _pp), 
-        angle(_pn, _p));
-
-    while (a > Tau/2)
-        a -= Tau;
-
-    //a = Math.abs(a);
-    console.log('a =', a);
+        angle(subv(_p, _pp)), 
+        angle(subv(_pn, _p)));
+       
+    a = Math.abs(a);
+    while (a > Tau/2) a -= Tau;
     
 
     const k     = 4 * (Math.sqrt(2) - 1) / 3;        // or use the value 0.55191502449 from http://spencermortensen.com/articles/bezier-circle/
 	const kCorr = 0.9993391093366649465402826439248; // slight improvement (see Bézier Curves p. 13, Gernot Hoffmann);
 
-    const f = 
+    let f = 
         a < Tau/4
         ? k*kCorr * Math.sin(a)
         : 1/3 + (k*kCorr - 1/3) * Math.sin(a);
+
+    const mind = Math.min(distance(_pp, _p), distance(_p, _pn));
+    const maxd = Math.max(distance(_pp, _p), distance(_p, _pn));
+
+    f = f + (1/3 - f) * (1 - mind/maxd);
+
 
     const pp = addv(_p, mulvs(unitv(v), -lengthv(v)/2 * f));
     const pn = addv(_p, mulvs(unitv(v),  lengthv(v)/2 * f));
@@ -49501,14 +49531,14 @@ extends GOperator
 
 
                 obj.x = 
-                    bounds.x 
+                      bounds.x 
                     + bounds.width /2 
                     + v.x 
                     - dx * bw * Math.cos(-a) 
                     - dy * bh * Math.sin( a);
 
                 obj.y = 
-                    bounds.y
+                      bounds.y
                     + bounds.height/2
                     + v.y 
                     - dx * bw * Math.sin(-a) 
@@ -49742,14 +49772,14 @@ extends GOperator
 
 
                 const angle = anglev_(
-                    bounds.x + (dx * bounds.width ), 
-                    bounds.y + (dy * bounds.height),
+                    bounds.x + ((dx + 0.5) * bounds.width ), 
+                    bounds.y + ((dy + 0.5) * bounds.height),
                     obj.x,
                     obj.y);
 
                 const halfd = distance_(
-                    bounds.x + (dx * bounds.width ), 
-                    bounds.y + (dy * bounds.height),
+                    bounds.x + ((dx + 0.5) * bounds.width ), 
+                    bounds.y + ((dy + 0.5) * bounds.height),
                     obj.x,
                     obj.y);
 
@@ -49761,7 +49791,7 @@ extends GOperator
                 v.y *= y;
 
                 obj.x = 
-                        bounds.x 
+                      bounds.x 
                     + bounds.width /2 
                     + v.x 
                     - (dx - 0.5) * bw * Math.cos(-a) 
@@ -63085,6 +63115,178 @@ extends Parameter
 
 
 
+class   PointParam
+extends Parameter
+{
+    defaultValue;
+
+    oldValue = null;
+    
+
+    value;
+    
+
+    
+    constructor(id,
+                name, 
+                showName,
+                hasInput,
+                hasOutput,
+                defaultValue = new PointValue())
+    {
+        super(POINT_VALUE, id, name);
+
+        defaultValue.nodeId = this.nodeId;
+
+        this.defaultValue = defaultValue;
+        this.value        = defaultValue;
+
+
+        this.controls.push(new TextControl(
+            null,
+            this,
+            this.id,
+            this.name,
+            ''));
+
+        this.controls[0].textbox.style.textAlign = 'center';
+       
+        this.div.appendChild(this.controls[0].div);
+
+       
+        if (hasInput)  this.initInput([POINT_VALUE], getParamInputValuesForUndo, this.input_getBackInitValue);
+        if (hasOutput) this.initOutput([POINT_VALUE], this.output_genRequest, getParamOutputValuesForUndo, this.output_backInit);
+    }
+
+
+
+    input_getBackInitValue()
+    {
+        // 'this' is the input
+
+        return this.param.value;
+    }
+
+
+
+    output_backInit(value)
+    {
+        // 'this' is the output
+
+        console.assert(value.type == POINT_VALUE, 'expected POINT_VALUE in backInit()');
+        
+        this.param.setValue(value, false, true, false);
+    }
+
+
+
+    setValue(value, createAction, updateControl = true, dispatchEvents = true) 
+    {
+        if (!(value instanceof PointValue))
+            console.assert(false, 'PointParam.setValue(value) is ' + typeof value + ', must be a PointValue');
+
+        console.assert(
+               value.type 
+            && value.type == POINT_VALUE, 
+            'PointParam value.type must be POINT_VALUE');
+
+
+        this.preSetValue(value, createAction, dispatchEvents);
+
+
+        this.value = value.copy();
+
+
+        super.setValue(this.value, createAction, updateControl, dispatchEvents);
+
+
+        this.oldValue = this.value;
+    }    
+
+
+
+    isVisible()
+    {
+        return this.controls[0].div.style.display != 'none';
+    }
+
+
+
+    genRequest(gen)
+    {
+        // this function exists because a parameter without an output
+        // should still be able to generate a request
+        
+        // 'this' is the param
+
+        if (    this.output
+            && !isEmpty(this.output.cache)
+            &&  gen.passedNodes.includes(this.node))
+            return this.output.cache;
+
+
+        const request = [];
+
+        if (   this.input
+            && this.input.connected)
+        {
+            if (this.input.connectedOutput.supportsTypes(this.input.types))
+                request.push(...pushInputOrParam(this.input, gen));
+            else
+                console.assert(false, 'invalid input for PointParam (' + this.node.id + ')');
+        }
+
+        else request.push( 
+            POINT_VALUE, 
+            (new PointValue(this.nodeId)).toString());
+
+        return request;
+    }
+
+
+
+    output_genRequest(gen)
+    {
+        return this.param.genRequest(gen);
+    }
+
+
+
+    updateControls()
+    {
+        checkControlVisible(this, this.controls[0]);
+        
+
+        enableElementText(this.controls[0].div, false);
+
+        this.controls[0].readOnly = true;
+        
+        this.controls[0].textbox.style.fontStyle  = 'italic';
+        this.controls[0].textbox.style.fontWeight = '500';
+
+        this.controls[0].textbox.value = 
+              printNum(this.value.x.value)  
+            + ', ' 
+            + printNum(this.value.y.value);
+
+
+        if (this.input ) this.input .updateControl();
+        if (this.output) this.output.updateControl();
+    }
+
+
+
+    isDefault = () => this.value.equals(this.defaultValue);
+
+
+
+    loadParam(_param)
+    {
+        this.setValue(parsePointValue(_param[2])[0], true, true, false);
+    }
+}
+
+
 class   VectorPathParam
 extends Parameter
 {
@@ -66337,7 +66539,8 @@ function makeNodePath(node)
     let path = idFromNodePath(node.id);
 
     let group = node;
-    console.log('group.group =', group.group);
+    //console.log('group =', group);
+    //console.log('group.group =', group.group);
     while (isValid(group = group.group))
         path = group.id + '/' + path;
 
@@ -70051,9 +70254,9 @@ extends OperatorWithValue
 class   OpDistribute
 extends OperatorBase
 {
+    paramFrom;
     paramStart;
     paramEnd;
-    paramFrom;
 
 
 
@@ -70084,9 +70287,9 @@ extends OperatorBase
         if (ignore) return request;
 
         
+        request.push(...this.node.paramFrom .genRequest(gen));
         request.push(...this.node.paramStart.genRequest(gen));
         request.push(...this.node.paramEnd  .genRequest(gen));
-        request.push(...this.node.paramFrom .genRequest(gen));
 
 
         gen.scope.pop();
@@ -80343,9 +80546,10 @@ extends Action
             graph.pages[0].groups = [];
 
 
-            for (const node of graph.pages[0].nodes)
-                node.id = makeNodePath(node);
+            for (const node of graph.pages[0].nodes) node.id = makeNodePath(node);
+            //for (const node of this.page.nodes     ) node.id = makeNodePath(node);
 
+                
             graphView.updateNodes(this.page.nodes);
 
 

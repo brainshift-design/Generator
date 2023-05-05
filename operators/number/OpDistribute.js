@@ -1,9 +1,9 @@
 class   OpDistribute
 extends OperatorBase
 {
+    paramFrom;
     paramStart;
     paramEnd;
-    paramFrom;
 
 
 
@@ -34,9 +34,9 @@ extends OperatorBase
         if (ignore) return request;
 
         
+        request.push(...this.node.paramFrom .genRequest(gen));
         request.push(...this.node.paramStart.genRequest(gen));
         request.push(...this.node.paramEnd  .genRequest(gen));
-        request.push(...this.node.paramFrom .genRequest(gen));
 
 
         gen.scope.pop();

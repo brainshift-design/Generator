@@ -1284,7 +1284,8 @@ function makeNodePath(node)
     let path = idFromNodePath(node.id);
 
     let group = node;
-    console.log('group.group =', group.group);
+    //console.log('group =', group);
+    //console.log('group.group =', group.group);
     while (isValid(group = group.group))
         path = group.id + '/' + path;
 

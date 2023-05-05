@@ -190,14 +190,14 @@ extends GOperator
 
 
                 obj.x = 
-                    bounds.x 
+                      bounds.x 
                     + bounds.width /2 
                     + v.x 
                     - dx * bw * Math.cos(-a) 
                     - dy * bh * Math.sin( a);
 
                 obj.y = 
-                    bounds.y
+                      bounds.y
                     + bounds.height/2
                     + v.y 
                     - dx * bw * Math.sin(-a) 

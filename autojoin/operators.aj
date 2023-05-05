@@ -14,6 +14,7 @@
 ../parameters/PolygonParam.js
 ../parameters/StarParam.js
 ../parameters/TextShapeParam.js
+../parameters/PointParam.js
 ../parameters/VectorPathParam.js
 
 

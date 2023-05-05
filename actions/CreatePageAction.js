@@ -26,9 +26,10 @@ extends Action
             graph.pages[0].groups = [];
 
 
-            for (const node of graph.pages[0].nodes)
-                node.id = makeNodePath(node);
+            for (const node of graph.pages[0].nodes) node.id = makeNodePath(node);
+            //for (const node of this.page.nodes     ) node.id = makeNodePath(node);
 
+                
             graphView.updateNodes(this.page.nodes);
 
 

@@ -4710,16 +4710,31 @@ function getSmoothPathData(points, closed, getSegment)
     {
         if (closed)
         {
-            // last segment
-            [pp, p, pn] = getSegment(
-                points.at(-1), 
-                points.at( 0),
-                points.at( 1));
-    
-            bp.push(_pp, pp, p);
+            if (   equal(bp[0].x, bp.at(-1).x, 0.01)
+                && equal(bp[0].y, bp.at(-1).y, 0.01))
+            {
+                // last segment
+                [pp, p, pn] = getSegment(
+                    points.at(-2), 
+                    points.at( 0),
+                    points.at( 1));
 
-            bp[1]           = addv(bp[0],     mulvs(unitv(subv(bp.at(-1), bp[0])), -distance(bp[3],     bp[0]    )/3));
-            bp[bp.length-2] = addv(bp.at(-1), mulvs(unitv(subv(bp[0], bp.at(-1))), -distance(bp.at(-4), bp.at(-1))/3));
+                bp[1]           = pn;
+                bp[bp.length-2] = pp;
+            }
+            else
+            {
+                // last segment
+                [pp, p, pn] = getSegment(
+                    points.at(-1), 
+                    points.at( 0),
+                    points.at( 1));
+
+                bp.push(_pp, pp, p);
+
+                bp[1]           = pn;
+                bp[bp.length-2] = pp;
+            }
         }
         else // open
         {
@@ -4748,31 +4763,31 @@ function getSmoothSegment(_pointP, _point, _pointN)
         NumberValue.prototype.toNumber.call(_pointN.x),
         NumberValue.prototype.toNumber.call(_pointN.y));
 
-    // console.log('_pp =', _pp);
-    // console.log('_p  =', _p );
-    // console.log('_pn =', _pn);
 
     const v = subv(_pn, _pp);
     
     
     let a = angleDiff(
-        angle(_p, _pp), 
-        angle(_pn, _p));
-
-    while (a > Tau/2)
-        a -= Tau;
-
-    //a = Math.abs(a);
-    console.log('a =', a);
+        angle(subv(_p, _pp)), 
+        angle(subv(_pn, _p)));
+       
+    a = Math.abs(a);
+    while (a > Tau/2) a -= Tau;
     
 
     const k     = 4 * (Math.sqrt(2) - 1) / 3;        // or use the value 0.55191502449 from http://spencermortensen.com/articles/bezier-circle/
 	const kCorr = 0.9993391093366649465402826439248; // slight improvement (see Bézier Curves p. 13, Gernot Hoffmann);
 
-    const f = 
+    let f = 
         a < Tau/4
         ? k*kCorr * Math.sin(a)
         : 1/3 + (k*kCorr - 1/3) * Math.sin(a);
+
+    const mind = Math.min(distance(_pp, _p), distance(_p, _pn));
+    const maxd = Math.max(distance(_pp, _p), distance(_p, _pn));
+
+    f = f + (1/3 - f) * (1 - mind/maxd);
+
 
     const pp = addv(_p, mulvs(unitv(v), -lengthv(v)/2 * f));
     const pn = addv(_p, mulvs(unitv(v),  lengthv(v)/2 * f));
@@ -16925,14 +16940,14 @@ extends GOperator
 
 
                 obj.x = 
-                    bounds.x 
+                      bounds.x 
                     + bounds.width /2 
                     + v.x 
                     - dx * bw * Math.cos(-a) 
                     - dy * bh * Math.sin( a);
 
                 obj.y = 
-                    bounds.y
+                      bounds.y
                     + bounds.height/2
                     + v.y 
                     - dx * bw * Math.sin(-a) 
@@ -17166,14 +17181,14 @@ extends GOperator
 
 
                 const angle = anglev_(
-                    bounds.x + (dx * bounds.width ), 
-                    bounds.y + (dy * bounds.height),
+                    bounds.x + ((dx + 0.5) * bounds.width ), 
+                    bounds.y + ((dy + 0.5) * bounds.height),
                     obj.x,
                     obj.y);
 
                 const halfd = distance_(
-                    bounds.x + (dx * bounds.width ), 
-                    bounds.y + (dy * bounds.height),
+                    bounds.x + ((dx + 0.5) * bounds.width ), 
+                    bounds.y + ((dy + 0.5) * bounds.height),
                     obj.x,
                     obj.y);
 
@@ -17185,7 +17200,7 @@ extends GOperator
                 v.y *= y;
 
                 obj.x = 
-                        bounds.x 
+                      bounds.x 
                     + bounds.width /2 
                     + v.x 
                     - (dx - 0.5) * bw * Math.cos(-a) 
