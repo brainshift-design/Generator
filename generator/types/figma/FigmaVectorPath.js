@@ -309,16 +309,25 @@ function getSmoothSegment(_pointP, _point, _pointN)
     const k     = 4 * (Math.sqrt(2) - 1) / 3;        // or use the value 0.55191502449 from http://spencermortensen.com/articles/bezier-circle/
 	const kCorr = 0.9993391093366649465402826439248; // slight improvement (see Bézier Curves p. 13, Gernot Hoffmann);
 
-    let f = 
-        a < Tau/4
-        ? k*kCorr * Math.sin(a)
-        : 1/3 + (k*kCorr - 1/3) * Math.sin(a);
+    let f;
+    
+    console.log('a =', a);    
+    if (a > Tau/4)
+    {
+        f = 1/3 + (k*kCorr - 1/3) * Math.sin(a); //k*kCorr * Math.sin(a);
 
-    const mind = Math.min(distance(_pp, _p), distance(_p, _pn));
-    const maxd = Math.max(distance(_pp, _p), distance(_p, _pn));
+        // const mind = Math.min(distance(_pp, _p), distance(_p, _pn));
+        // const maxd = Math.max(distance(_pp, _p), distance(_p, _pn));
 
-    f = f + (1/3 - f) * (1 - mind/maxd);
-
+        // f = f + (1/3 - f) * (1 - mind/maxd);
+    }
+    else
+    {
+        const ha = halfArcAngle(_pp, _p, _pn);
+        console.log('aa =', ha);
+        f = 4/3 * Math.tan(Math.abs(ha)/4);//1/3 + (k*kCorr - 1/3) * Math.sin(a);    
+    }
+    
 
     const pp = addv(_p, mulvs(unitv(v), -lengthv(v)/2 * f));
     const pn = addv(_p, mulvs(unitv(v),  lengthv(v)/2 * f));

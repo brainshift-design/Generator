@@ -253,3 +253,39 @@ function boundingRect(elem)
         bounds.width,
         bounds.height);
 }
+
+
+
+function circleCenter(p1, p2, p3)
+{
+    const v1 = subv(p2, p1);
+    const v2 = subv(p3, p2);
+
+    const m1 = divvs(addv(p1, p2), 2);
+    const m2 = divvs(addv(p2, p3), 2);
+
+    return intersectLines(
+        m1, addv(m1, v2), 
+        m2, subv(m2, v1), 
+        false);
+}
+
+
+
+function halfArcAngle(p1, p2, p3)
+{
+    // returns the angle of the first half of the arc p1-p2
+
+    const pc = circleCenter(p1, p2, p3);
+
+    let a = angleDiff(
+        angle(subv(p1, pc)),
+        angle(subv(p2, pc)));
+
+    // console.log('angle(subv(p1, pc) =', angle(subv(p1, pc)));    
+    // console.log('angle(subv(p2, pc) =', angle(subv(p2, pc)));        
+    // while (a < 0)
+    //     a += Tau;
+
+    return a;
+}

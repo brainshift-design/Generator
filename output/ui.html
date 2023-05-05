@@ -5931,6 +5931,42 @@ function boundingRect(elem)
 }
 
 
+
+function circleCenter(p1, p2, p3)
+{
+    const v1 = subv(p2, p1);
+    const v2 = subv(p3, p2);
+
+    const m1 = divvs(addv(p1, p2), 2);
+    const m2 = divvs(addv(p2, p3), 2);
+
+    return intersectLines(
+        m1, addv(m1, v2), 
+        m2, subv(m2, v1), 
+        false);
+}
+
+
+
+function halfArcAngle(p1, p2, p3)
+{
+    // returns the angle of the first half of the arc p1-p2
+
+    const pc = circleCenter(p1, p2, p3);
+
+    let a = angleDiff(
+        angle(subv(p1, pc)),
+        angle(subv(p2, pc)));
+
+    // console.log('angle(subv(p1, pc) =', angle(subv(p1, pc)));    
+    // console.log('angle(subv(p2, pc) =', angle(subv(p2, pc)));        
+    // while (a < 0)
+    //     a += Tau;
+
+    return a;
+}
+
+
 function bezierTangent(x0, y0, x1, y1, x2, y2, x3, y3, t)
 {
     const p0 = point(x0, y0);
@@ -9152,16 +9188,25 @@ function getSmoothSegment(_pointP, _point, _pointN)
     const k     = 4 * (Math.sqrt(2) - 1) / 3;        // or use the value 0.55191502449 from http://spencermortensen.com/articles/bezier-circle/
 	const kCorr = 0.9993391093366649465402826439248; // slight improvement (see Bézier Curves p. 13, Gernot Hoffmann);
 
-    let f = 
-        a < Tau/4
-        ? k*kCorr * Math.sin(a)
-        : 1/3 + (k*kCorr - 1/3) * Math.sin(a);
+    let f;
+    
+    console.log('a =', a);    
+    if (a > Tau/4)
+    {
+        f = 1/3 + (k*kCorr - 1/3) * Math.sin(a); //k*kCorr * Math.sin(a);
 
-    const mind = Math.min(distance(_pp, _p), distance(_p, _pn));
-    const maxd = Math.max(distance(_pp, _p), distance(_p, _pn));
+        // const mind = Math.min(distance(_pp, _p), distance(_p, _pn));
+        // const maxd = Math.max(distance(_pp, _p), distance(_p, _pn));
 
-    f = f + (1/3 - f) * (1 - mind/maxd);
-
+        // f = f + (1/3 - f) * (1 - mind/maxd);
+    }
+    else
+    {
+        const ha = halfArcAngle(_pp, _p, _pn);
+        console.log('aa =', ha);
+        f = 4/3 * Math.tan(Math.abs(ha)/4);//1/3 + (k*kCorr - 1/3) * Math.sin(a);    
+    }
+    
 
     const pp = addv(_p, mulvs(unitv(v), -lengthv(v)/2 * f));
     const pn = addv(_p, mulvs(unitv(v),  lengthv(v)/2 * f));
@@ -31562,6 +31607,42 @@ function boundingRect(elem)
 }
 
 
+
+function circleCenter(p1, p2, p3)
+{
+    const v1 = subv(p2, p1);
+    const v2 = subv(p3, p2);
+
+    const m1 = divvs(addv(p1, p2), 2);
+    const m2 = divvs(addv(p2, p3), 2);
+
+    return intersectLines(
+        m1, addv(m1, v2), 
+        m2, subv(m2, v1), 
+        false);
+}
+
+
+
+function halfArcAngle(p1, p2, p3)
+{
+    // returns the angle of the first half of the arc p1-p2
+
+    const pc = circleCenter(p1, p2, p3);
+
+    let a = angleDiff(
+        angle(subv(p1, pc)),
+        angle(subv(p2, pc)));
+
+    // console.log('angle(subv(p1, pc) =', angle(subv(p1, pc)));    
+    // console.log('angle(subv(p2, pc) =', angle(subv(p2, pc)));        
+    // while (a < 0)
+    //     a += Tau;
+
+    return a;
+}
+
+
 function bezierTangent(x0, y0, x1, y1, x2, y2, x3, y3, t)
 {
     const p0 = point(x0, y0);
@@ -37369,16 +37450,25 @@ function getSmoothSegment(_pointP, _point, _pointN)
     const k     = 4 * (Math.sqrt(2) - 1) / 3;        // or use the value 0.55191502449 from http://spencermortensen.com/articles/bezier-circle/
 	const kCorr = 0.9993391093366649465402826439248; // slight improvement (see Bézier Curves p. 13, Gernot Hoffmann);
 
-    let f = 
-        a < Tau/4
-        ? k*kCorr * Math.sin(a)
-        : 1/3 + (k*kCorr - 1/3) * Math.sin(a);
+    let f;
+    
+    console.log('a =', a);    
+    if (a > Tau/4)
+    {
+        f = 1/3 + (k*kCorr - 1/3) * Math.sin(a); //k*kCorr * Math.sin(a);
 
-    const mind = Math.min(distance(_pp, _p), distance(_p, _pn));
-    const maxd = Math.max(distance(_pp, _p), distance(_p, _pn));
+        // const mind = Math.min(distance(_pp, _p), distance(_p, _pn));
+        // const maxd = Math.max(distance(_pp, _p), distance(_p, _pn));
 
-    f = f + (1/3 - f) * (1 - mind/maxd);
-
+        // f = f + (1/3 - f) * (1 - mind/maxd);
+    }
+    else
+    {
+        const ha = halfArcAngle(_pp, _p, _pn);
+        console.log('aa =', ha);
+        f = 4/3 * Math.tan(Math.abs(ha)/4);//1/3 + (k*kCorr - 1/3) * Math.sin(a);    
+    }
+    
 
     const pp = addv(_p, mulvs(unitv(v), -lengthv(v)/2 * f));
     const pn = addv(_p, mulvs(unitv(v),  lengthv(v)/2 * f));
@@ -62211,6 +62301,8 @@ extends Parameter
         if (   this.input
             && this.input.connected)
         {
+            console.log('this.input.types =', this.input.types);
+            console.log('this.input.connectedOutput.types =', this.input.connectedOutput.types);
             if (this.input.supportsTypes(this.input.connectedOutput.types))
                 request.push(...pushInputOrParam(this.input, gen));
             // if (this.input.connectedOutput.supportsTypes([LIST_VALUE]))
@@ -69182,7 +69274,7 @@ extends OperatorBase
 
         
         this.addInput (new Input([ANY_VALUE]));
-        this.addOutput(new Output([ANY_VALUE], this.output_genRequest));
+        this.addOutput(new Output([LIST_VALUE], this.output_genRequest));
 
 
         this.addParam(this.paramCount    = new NumberParam('count',    'count', true, true, true, 1, 0, 1000, 0));
@@ -69247,6 +69339,7 @@ extends OperatorBase
         if (repeatId) this.paramRepeatId.setValue(repeatId, false, true, false);
 
         this.outputs[0].types = [finalListTypeFromItems(value.items)];
+        console.log('this.outputs[0].types =', this.outputs[0].types);
     }
 
 

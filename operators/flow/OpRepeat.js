@@ -14,7 +14,7 @@ extends OperatorBase
 
         
         this.addInput (new Input([ANY_VALUE]));
-        this.addOutput(new Output([ANY_VALUE], this.output_genRequest));
+        this.addOutput(new Output([LIST_VALUE], this.output_genRequest));
 
 
         this.addParam(this.paramCount    = new NumberParam('count',    'count', true, true, true, 1, 0, 1000, 0));
@@ -79,6 +79,7 @@ extends OperatorBase
         if (repeatId) this.paramRepeatId.setValue(repeatId, false, true, false);
 
         this.outputs[0].types = [finalListTypeFromItems(value.items)];
+        console.log('this.outputs[0].types =', this.outputs[0].types);
     }
 
 
