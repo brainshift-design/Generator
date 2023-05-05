@@ -1583,6 +1583,7 @@ figma.ui.onmessage = function(msg)
         case 'figLogAllSavedConns':                   figLogAllSavedConns                  (msg.darkMode);                                break;
      
         case 'figLogAllSavedPageKeys':                figLogAllSavedPageKeys               (msg.darkMode);                                break;
+        case 'figLogAllSavedPages':                   figLogAllSavedPages                  (msg.darkMode);                                break;
         case 'figLogAllSavedConnKeys':                figLogAllSavedConnKeys               (msg.darkMode);                                break;
 
         case 'figLogAllLocalData':                    figLogAllLocalData                   (msg.darkMode);                                break;
@@ -3157,6 +3158,25 @@ function figLogAllSavedPageKeys(darkMode)
     connKeys.forEach(k => 
         console.log(
             '%c'+k, 
+            'background: #fff; color: ' + (darkMode ? 'black' : 'white')));
+
+    const pageOrder = figma.currentPage.getPluginData('pageOrder');
+        
+    console.log(
+        '%c'+pageOrder, 
+        'background: #fff; color: ' + (darkMode ? 'black' : 'white'));
+}
+
+
+
+function figLogAllSavedPages(darkMode)
+{
+    const connKeys = figma.currentPage.getPluginDataKeys()
+        .filter(k => isPageKey(k));
+        
+    connKeys.forEach(k => 
+        console.log(
+            '%c'+figma.currentPage.getPluginData(k), 
             'background: #fff; color: ' + (darkMode ? 'black' : 'white')));
 
     const pageOrder = figma.currentPage.getPluginData('pageOrder');

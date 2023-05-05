@@ -22134,8 +22134,6 @@ extends GOperator
 
         if (parse.isLastRepeat())
         {
-            console.log('group eval');
-
             if (!isEmpty(this.params))
             {
                 for (let i = 0; i < this.params.length; i++)
@@ -50338,8 +50336,6 @@ extends GOperator
 
         if (parse.isLastRepeat())
         {
-            console.log('group eval');
-
             if (!isEmpty(this.params))
             {
                 for (let i = 0; i < this.params.length; i++)
@@ -55884,7 +55880,10 @@ function initGeneratorMenus()
                                         new MenuItem('',                    {separator: true}),
                                         new MenuItem('All page keys',       {callback:      () => { hideAllMenus(); uiQueueMessageToFigma({cmd: 'figLogAllSavedPageKeys', darkMode: darkMode}); }}),
                                         new MenuItem('All connection keys', {callback:      () => { hideAllMenus(); uiQueueMessageToFigma({cmd: 'figLogAllSavedConnKeys', darkMode: darkMode}); }}),
-                                        new MenuItem('All local data',      {callback:      () => { hideAllMenus(); uiQueueMessageToFigma({cmd: 'figLogAllLocalData', darkMode: darkMode}); }}),
+                                        new MenuItem('',                    {separator: true}),   
+                                        new MenuItem('All pages',           {callback:      () => { hideAllMenus(); uiQueueMessageToFigma({cmd: 'figLogAllSavedPages',    darkMode: darkMode}); }}),
+                                        new MenuItem('',                    {separator: true}),   
+                                        new MenuItem('All local data',      {callback:      () => { hideAllMenus(); uiQueueMessageToFigma({cmd: 'figLogAllLocalData',     darkMode: darkMode}); }}),
                                         new MenuItem('',                    {separator: true}),   
                                         new MenuItem('Undo stack',          {callback:      () => { hideAllMenus(); logUndoStack(); }}),
                                         new MenuItem('Redo stack',          {callback:      () => { hideAllMenus(); logRedoStack(); }})]);
@@ -66335,10 +66334,11 @@ function nodesAreParallel(nodes)
 
 function makeNodePath(node)
 {
-    let path = node.id;
+    let path = idFromNodePath(node.id);
 
     let group = node;
-    while (group = group.group)
+    console.log('group.group =', group.group);
+    while (isValid(group = group.group))
         path = group.id + '/' + path;
 
     if (graph.currentPage.id != NULL)
@@ -78351,33 +78351,34 @@ class GraphPage
 
 
 
-    toJson()
+    toJson(_tab = '')
     {
-        const tab = '\n' + HTAB;
+        const tab = '\n' + _tab;// + HTAB;
+
 
         let json =
-             '{'
-            + tab + '"id": "'      + this.id      + '",'
-            + tab + '"name": "'    + this.name    + '",'
-            + tab + '"zoom": "'    + this.zoom    + '",'
-            + tab + '"panx": "'    + this.pan.x   + '",'
-            + tab + '"pany": "'    + this.pan.y   + '",'
-            + tab + '"groups":'
-            + tab + '[';
+              tab + '{'
+            + tab + HTAB + '"id": "'      + this.id      + '",'
+            + tab + HTAB + '"name": "'    + this.name    + '",'
+            + tab + HTAB + '"zoom": "'    + this.zoom    + '",'
+            + tab + HTAB + '"panx": "'    + this.pan.x   + '",'
+            + tab + HTAB + '"pany": "'    + this.pan.y   + '",'
+            + tab + HTAB + '"groups":'
+            + tab + HTAB + '[';
 
         for (let i = 0; i < this.groups.length; i++)
         {
             const group = this.groups[i];
 
-            json += tab + HTAB + HTAB + group.toJson()
+            json += group.toJson(_tab + HTAB + HTAB);
 
             if (i < this.groups.length-1)
                 json += ',';
         }
 
-        json +=
-              tab + ']'
-            + '\n}';
+        json += 
+              tab + HTAB + ']'
+            + tab + '}';
 
 
         return json;
@@ -78411,11 +78412,11 @@ class GraphPage
             if (isNaN(this.zoom)) this._zoom = 1;
 
 
-            for (const _group in data.groups)
+            for (const _group of data.groups)
             {
-                const group = new GraphPage(_group.id);
-                group._pan  = point(data.panx, data.pany);
-                group._zoom = data.zoom;
+                const group = new GraphPage(_group.id, _group.name);
+                group._pan  = point(_group.panx, _group.pany);
+                group._zoom = _group.zoom;
 
                 this.groups.push(group);
             }
@@ -80338,6 +80339,10 @@ extends Action
             uiRemoveSavedNodesAndConns(graph.pages[0].nodes.map(n => n.id));
 
 
+            this.page.groups = graph.pages[0].groups;
+            graph.pages[0].groups = [];
+
+
             for (const node of graph.pages[0].nodes)
                 node.id = makeNodePath(node);
 
@@ -80379,6 +80384,9 @@ extends Action
             uiSaveNodes(graph.pages[0].nodes.map(n => n.id));
             uiSaveConnections(getConnsFromNodes(graph.pages[0].nodes));
 
+
+            graph.pages[0].groups = this.page.groups;
+            this.page.groups = [];
             
             graph.pages[0]._zoom = this.page._zoom;
             graph.pages[0]._pan  = this.page._pan;

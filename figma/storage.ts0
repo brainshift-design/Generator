@@ -292,6 +292,25 @@ function figLogAllSavedPageKeys(darkMode)
 
 
 
+function figLogAllSavedPages(darkMode)
+{
+    const connKeys = figma.currentPage.getPluginDataKeys()
+        .filter(k => isPageKey(k));
+        
+    connKeys.forEach(k => 
+        console.log(
+            '%c'+figma.currentPage.getPluginData(k), 
+            'background: #fff; color: ' + (darkMode ? 'black' : 'white')));
+
+    const pageOrder = figma.currentPage.getPluginData('pageOrder');
+        
+    console.log(
+        '%c'+pageOrder, 
+        'background: #fff; color: ' + (darkMode ? 'black' : 'white'));
+}
+
+
+
 function figLogAllSavedConnKeys(darkMode)
 {
     const connKeys = figma.currentPage.getPluginDataKeys()

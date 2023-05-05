@@ -22,6 +22,10 @@ extends Action
             uiRemoveSavedNodesAndConns(graph.pages[0].nodes.map(n => n.id));
 
 
+            this.page.groups = graph.pages[0].groups;
+            graph.pages[0].groups = [];
+
+
             for (const node of graph.pages[0].nodes)
                 node.id = makeNodePath(node);
 
@@ -63,6 +67,9 @@ extends Action
             uiSaveNodes(graph.pages[0].nodes.map(n => n.id));
             uiSaveConnections(getConnsFromNodes(graph.pages[0].nodes));
 
+
+            graph.pages[0].groups = this.page.groups;
+            this.page.groups = [];
             
             graph.pages[0]._zoom = this.page._zoom;
             graph.pages[0]._pan  = this.page._pan;

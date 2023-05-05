@@ -186,33 +186,34 @@ class GraphPage
 
 
 
-    toJson()
+    toJson(_tab = '')
     {
-        const tab = '\n' + HTAB;
+        const tab = '\n' + _tab;// + HTAB;
+
 
         let json =
-             '{'
-            + tab + '"id": "'      + this.id      + '",'
-            + tab + '"name": "'    + this.name    + '",'
-            + tab + '"zoom": "'    + this.zoom    + '",'
-            + tab + '"panx": "'    + this.pan.x   + '",'
-            + tab + '"pany": "'    + this.pan.y   + '",'
-            + tab + '"groups":'
-            + tab + '[';
+              tab + '{'
+            + tab + HTAB + '"id": "'      + this.id      + '",'
+            + tab + HTAB + '"name": "'    + this.name    + '",'
+            + tab + HTAB + '"zoom": "'    + this.zoom    + '",'
+            + tab + HTAB + '"panx": "'    + this.pan.x   + '",'
+            + tab + HTAB + '"pany": "'    + this.pan.y   + '",'
+            + tab + HTAB + '"groups":'
+            + tab + HTAB + '[';
 
         for (let i = 0; i < this.groups.length; i++)
         {
             const group = this.groups[i];
 
-            json += tab + HTAB + HTAB + group.toJson()
+            json += group.toJson(_tab + HTAB + HTAB);
 
             if (i < this.groups.length-1)
                 json += ',';
         }
 
-        json +=
-              tab + ']'
-            + '\n}';
+        json += 
+              tab + HTAB + ']'
+            + tab + '}';
 
 
         return json;
@@ -246,11 +247,11 @@ class GraphPage
             if (isNaN(this.zoom)) this._zoom = 1;
 
 
-            for (const _group in data.groups)
+            for (const _group of data.groups)
             {
-                const group = new GraphPage(_group.id);
-                group._pan  = point(data.panx, data.pany);
-                group._zoom = data.zoom;
+                const group = new GraphPage(_group.id, _group.name);
+                group._pan  = point(_group.panx, _group.pany);
+                group._zoom = _group.zoom;
 
                 this.groups.push(group);
             }

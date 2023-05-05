@@ -247,7 +247,10 @@ function initGeneratorMenus()
                                         new MenuItem('',                    {separator: true}),
                                         new MenuItem('All page keys',       {callback:      () => { hideAllMenus(); uiQueueMessageToFigma({cmd: 'figLogAllSavedPageKeys', darkMode: darkMode}); }}),
                                         new MenuItem('All connection keys', {callback:      () => { hideAllMenus(); uiQueueMessageToFigma({cmd: 'figLogAllSavedConnKeys', darkMode: darkMode}); }}),
-                                        new MenuItem('All local data',      {callback:      () => { hideAllMenus(); uiQueueMessageToFigma({cmd: 'figLogAllLocalData', darkMode: darkMode}); }}),
+                                        new MenuItem('',                    {separator: true}),   
+                                        new MenuItem('All pages',           {callback:      () => { hideAllMenus(); uiQueueMessageToFigma({cmd: 'figLogAllSavedPages',    darkMode: darkMode}); }}),
+                                        new MenuItem('',                    {separator: true}),   
+                                        new MenuItem('All local data',      {callback:      () => { hideAllMenus(); uiQueueMessageToFigma({cmd: 'figLogAllLocalData',     darkMode: darkMode}); }}),
                                         new MenuItem('',                    {separator: true}),   
                                         new MenuItem('Undo stack',          {callback:      () => { hideAllMenus(); logUndoStack(); }}),
                                         new MenuItem('Redo stack',          {callback:      () => { hideAllMenus(); logRedoStack(); }})]);

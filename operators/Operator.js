@@ -1281,10 +1281,11 @@ function nodesAreParallel(nodes)
 
 function makeNodePath(node)
 {
-    let path = node.id;
+    let path = idFromNodePath(node.id);
 
     let group = node;
-    while (group = group.group)
+    console.log('group.group =', group.group);
+    while (isValid(group = group.group))
         path = group.id + '/' + path;
 
     if (graph.currentPage.id != NULL)
