@@ -4390,7 +4390,7 @@ const TAB              = '    ';
 const NL               = '\n';
   
 const GENERATOR_LOGO   = '◦ G •';
-const OBJECT_PREFIX    = 'G ';
+const OBJECT_PREFIX    = GENERATOR_LOGO + ' ';//'G ';
   
 const nodeTag          = 'G_NODE';
 const connTag          = 'G_CONN';
@@ -6494,7 +6494,7 @@ function pluralString(count, pluralChar = 's')
 
 
 
-function countString(itemName, count)
+function countString(count, itemName)
 {
     const lastChar   = itemName.at(-1);
     const pluralChar = lastChar == lastChar.toUpperCase() ? 'S' : 's';
@@ -9128,6 +9128,7 @@ function getSmoothSegment(_pointP, _point, _pointN)
 
     const v = subv(_pn, _pp);
     
+    
     let a = angleDiff(
         angle(_p, _pp), 
         angle(_pn, _p));
@@ -9135,7 +9136,7 @@ function getSmoothSegment(_pointP, _point, _pointN)
     while (a > Tau/2)
         a -= Tau;
 
-    a = Math.abs(a);
+    //a = Math.abs(a);
     console.log('a =', a);
     
 
@@ -26997,7 +26998,7 @@ function logSaveNodes(nodeJson)
 
 function logSaveConnections(conns)
 {
-    let log = 'SAVING ' + conns.length + ' ' + countString('CONNECTION', conns.length);
+    let log = 'SAVING ' + conns.length + ' ' + countString(conns.length, 'CONNECTION');
 
     for (const conn of conns)
         log += '\n' + conn.toJson();
@@ -27011,7 +27012,7 @@ function logSaveConnections(conns)
 
 function logUpdateSavedConnections(conns)
 {
-    let log = 'UPDATING ' + conns.length + ' ' + countString('SAVED CONNECTION', conns.length);
+    let log = 'UPDATING ' + conns.length + ' ' + countString(conns.length, 'SAVED CONNECTION');
 
     for (const conn of conns)
         log += '\n' + conn.toJson();
@@ -30007,7 +30008,7 @@ const TAB              = '    ';
 const NL               = '\n';
   
 const GENERATOR_LOGO   = '◦ G •';
-const OBJECT_PREFIX    = 'G ';
+const OBJECT_PREFIX    = GENERATOR_LOGO + ' ';//'G ';
   
 const nodeTag          = 'G_NODE';
 const connTag          = 'G_CONN';
@@ -32111,7 +32112,7 @@ function pluralString(count, pluralChar = 's')
 
 
 
-function countString(itemName, count)
+function countString(count, itemName)
 {
     const lastChar   = itemName.at(-1);
     const pluralChar = lastChar == lastChar.toUpperCase() ? 'S' : 's';
@@ -33489,7 +33490,7 @@ function logSaveNodes(nodeJson)
 
 function logSaveConnections(conns)
 {
-    let log = 'SAVING ' + conns.length + ' ' + countString('CONNECTION', conns.length);
+    let log = 'SAVING ' + conns.length + ' ' + countString(conns.length, 'CONNECTION');
 
     for (const conn of conns)
         log += '\n' + conn.toJson();
@@ -33503,7 +33504,7 @@ function logSaveConnections(conns)
 
 function logUpdateSavedConnections(conns)
 {
-    let log = 'UPDATING ' + conns.length + ' ' + countString('SAVED CONNECTION', conns.length);
+    let log = 'UPDATING ' + conns.length + ' ' + countString(conns.length, 'SAVED CONNECTION');
 
     for (const conn of conns)
         log += '\n' + conn.toJson();
@@ -37331,6 +37332,7 @@ function getSmoothSegment(_pointP, _point, _pointN)
 
     const v = subv(_pn, _pp);
     
+    
     let a = angleDiff(
         angle(_p, _pp), 
         angle(_pn, _p));
@@ -37338,7 +37340,7 @@ function getSmoothSegment(_pointP, _point, _pointN)
     while (a > Tau/2)
         a -= Tau;
 
-    a = Math.abs(a);
+    //a = Math.abs(a);
     console.log('a =', a);
     
 
@@ -55799,6 +55801,8 @@ var menuItemWindowBottom;
 var menuItemGraphPaste;
 var menuItemGraphPasteConnected;
 
+var menuItemNodeEditGroup;
+var menuItemNodeSepGroup;
 var menuItemNodeCopy;
 var menuItemNodeCopyAsJsCode;
 var menuItemNodeCopyAsJsFunction;
@@ -56174,6 +56178,8 @@ function initGeneratorMenus()
 
     menuNode = new Menu('Node menu', false, false);
     menuNode.addItems([
+        menuItemNodeEditGroup      = new MenuItem('Edit group...',   {callback: e => { hideAllMenus();  }}),
+        menuItemNodeSepGroup       = new MenuItem('',                {separator: true}),
         menuItemNodeCopy           = new MenuItem('Copy',            {shortcut:  osCtrl() + 'C',       callback: () => graphView.copySelectedNodes() }),
         menuItemNodePaste          = new MenuItem('Paste here',      {shortcut:  osCtrl() + 'V',       callback: e => { hideAllMenus(); graphView.pasteCopiedNodes(false); }}),
         menuItemNodePasteConnected = new MenuItem('Paste connected', {shortcut:  osCtrlShift() + 'D',  callback: e => { hideAllMenus(); graphView.pasteCopiedNodes(true ); }}),
@@ -56209,10 +56215,12 @@ function initGeneratorMenus()
         const canDisable = !graphView.selectedNodes.find(n => !n.canDisable);
 
 
+        updateElementDisplay(menuItemNodeEditGroup    .div, hasGroups && single);
+        updateElementDisplay(menuItemNodeSepGroup     .div, hasGroups && single);
         updateElementDisplay(menuItemNodeUngroup      .div, hasGroups);
         updateElementDisplay(menuItemNodeSep2         .div, single);
-      //updateMenuItemDisplay(menuItemNodeRename       .div, single);
-        //updateElementDisplay(menuItemNodeEdit         .div, single);
+      //updateMenuItemDisplay(menuItemNodeRename      .div, single);
+        //updateElementDisplay(menuItemNodeEdit       .div, single);
         updateElementDisplay(menuItemNodeLeaveOnCanvas.div, hasObjects);
         updateElementDisplay(menuItemNodeSep3         .div, single);
         updateElementDisplay(menuItemNodeSelect       .div, single);
@@ -56351,7 +56359,7 @@ function initDataModeMenus()
         new MenuItem('Expand all',       { callback: () => { hideAllMenus(); expandAllPageData();   }}),
         new MenuItem('Collapse all',     { callback: () => { hideAllMenus(); collapseAllPageData(); }}),
         new MenuItem('',                 { separator: true }),
-        new MenuItem('Delete all pages', { enabled: false, callback: () => { hideAllMenus(); uiRemoveAllSavedPages(); }})]);
+        new MenuItem('Delete all pages', { callback: () => { hideAllMenus(); dataModeDeleteAllPages(); }})]);
 
 
     menuNodeData = new Menu('Node menu', false, false);
@@ -62220,7 +62228,7 @@ extends Parameter
 
         this.controls[0].textbox.value = 
               (nItems != 0 || this.showZero ? nItems + ' ' : '') 
-            + countString(this.itemName, nItems);
+            + countString(nItems, this.itemName);
 
 
         if (this.input ) this.input .updateControl();
@@ -80402,7 +80410,7 @@ extends Action
     {
         super(
             DELETE_ACTION, 
-            (cut ? 'CUT ' : 'DELETE ') + nodeIds.length + ' ' + countString('node', nodeIds.length));
+            (cut ? 'CUT ' : 'DELETE ') + nodeIds.length + ' ' + countString(nodeIds.length, 'node'));
 
         this.nodeIds         = [...nodeIds];
         this.nodes           = nodeIds.map(id => nodeFromId(id));
@@ -80903,11 +80911,6 @@ extends Action
         this.nodes.forEach(n => n.id = makeNodePath(n));
 
 
-        // save new nodes and connections
-        uiSaveNodes(this.nodes.map(n => n.id));
-        uiSaveConnections(getConnsFromNodes(this.nodes));
-
-
         // create group node
         this.groupNode = createNode(GROUP_NODE);
 
@@ -80924,18 +80927,19 @@ extends Action
             bounds.x + bounds.width /2 - defNodeWidth,
             bounds.y + bounds.height/2 - 100); // TODO: change this 100 to the group node's actual height
 
-        
-        // update and save group node
-        // graphView.updateNodes([
-        //        this.groupNode,
-        //     ...this.group.nodes], true);
 
-        uiSaveNodes(this.group.nodes.map(n => n.id));
+        // save new nodes and connections
+        uiSaveNodes([this.groupNode.id]);
+        uiSaveNodes(this.nodes.map(n => n.id));
+        uiSaveConnections(getConnsFromNodes(this.nodes));
 
 
         this.group.nodes.forEach(n => n.div.style.display = 'none');
+        this.groupNode.div.style.display = 'block';
 
-        pushUpdate(this, [this.groupNode]);
+        
+        uiMakeNodeActive(this.groupNode);
+        pushUnique(updateNodes, this.groupNode);
     }
 
 
@@ -81217,7 +81221,7 @@ extends Action
 
         super(
             PASTE_ACTION,
-            'PASTE ' + data.nodes.length + ' ' + countString('node', data.nodes.length));
+            'PASTE ' + data.nodes.length + ' ' + countString(data.nodes.length, 'node'));
 
         this.copiedNodesJson = copiedNodesJson;
         this.pasteConnected  = pasteConnected;
@@ -81312,7 +81316,7 @@ extends Action
             action += ' & connected';
 
         uiNotify(
-            action + ' ' + nodes.length + ' ' + countString('node', nodes.length), 
+            action + ' ' + nodes.length + ' ' + countString(nodes.length, 'node'), 
             {delay: 2500});
     }
 }
@@ -81508,7 +81512,7 @@ extends Action
     {
         super(
             REMOVE_ACTION,
-            'REMOVE ' + nodeIds.length + ' ' + countString('node', nodeIds.length));
+            'REMOVE ' + nodeIds.length + ' ' + countString(nodeIds.length, 'node'));
 
         this.nodeIds         = [...nodeIds];
         this.nodes           = nodeIds.map(id => nodeFromId(id));
@@ -81888,7 +81892,7 @@ extends Action
         super(
             SELECT_MOVE_ACTION,
               'SELECT MOVE ' + newSelectedIds.length 
-            + ' ' + countString('node', newSelectedIds.length));
+            + ' ' + countString(newSelectedIds.length, 'node'));
 
         this.affectsConnections = false;
 
@@ -82001,7 +82005,7 @@ extends Action
         super(
             SELECT_ACTION,
               'SELECT ' + selectedIds.length 
-            + ' ' + countString('node', selectedIds.length));
+            + ' ' + countString(selectedIds.length, 'node'));
 
         this.affectsConnections = false;
 
@@ -82331,7 +82335,7 @@ extends Action
         super(
             TOGGLE_DISABLE_ACTION,
               'TOGGLE DISABLE ' + selectedIds.length 
-            + ' ' + countString('node', selectedIds.length));
+            + ' ' + countStringselectedIds.length, 'node');
 
         this.selectedIds = [...selectedIds];
     }
@@ -82793,9 +82797,9 @@ function loadNodesAndConnsData(_pages, _nodes, _conns)
 
 function updateDataModeInfo()
 {
-    dataModePagesTitle.innerHTML = dataModePages.children.length + '&thinsp;&nbsp;' + countString('page',       dataModePages.children.length);
-    dataModeNodesTitle.innerHTML = dataModeNodes.children.length + '&thinsp;&nbsp;' + countString('node',       dataModeNodes.children.length);
-    dataModeConnsTitle.innerHTML = dataModeConns.children.length + '&thinsp;&nbsp;' + countString('connection', dataModeConns.children.length);
+    dataModePagesTitle.innerHTML = dataModePages.children.length + '&thinsp;&nbsp;' + countString(dataModePages.children.length, 'page'      );
+    dataModeNodesTitle.innerHTML = dataModeNodes.children.length + '&thinsp;&nbsp;' + countString(dataModeNodes.children.length, 'node'      );
+    dataModeConnsTitle.innerHTML = dataModeConns.children.length + '&thinsp;&nbsp;' + countString(dataModeConns.children.length, 'connection');
 }
 
 
@@ -83129,7 +83133,21 @@ function collapseAllConnData()
 
 
 
-function dataModeDeletePage(page)
+function dataModeDeleteAllPages()
+{
+    const nPages = graph.pages.length;
+    const notice = 'Deleted ' + nPages + ' ' + countString(nPages, 'page');
+
+    for (const page of graph.pages)
+        dataModeDeletePage(page, false);
+
+    if (nPages > 0)
+        uiNotify(notice);
+}
+
+
+
+function dataModeDeletePage(page, notify = true)
 {
     for (let i = dataModePages.children.length-1; i >= 0; i--)
     {
@@ -83147,11 +83165,12 @@ function dataModeDeletePage(page)
         .forEach(n => dataModeDeleteNode(n));
 
 
-    let notice = 'Deleted page \'' + page.id + '\'';
+    const notice = 'Deleted page \'' + page.id + '\'';
 
     updateDataModeInfo();
 
-    uiNotify(notice);
+    if (notify)
+        uiNotify(notice);
 }
 
 
@@ -83188,7 +83207,7 @@ function dataModeDeleteNode(node)
     let notice = 'Deleted node \'' + node.id + '\'';
 
     if (nRemovedConns > 0)
-        notice += ' and ' + nRemovedConns + ' ' + countString('connection', nRemovedConns);
+        notice += ' and ' + nRemovedConns + ' ' + countString(nRemovedConns, 'connection');
 
 
     updateDataModeInfo();
@@ -83215,10 +83234,10 @@ function dataModeDeleteAllNodes()
         dataModeConns.removeChild(dataModeConns.children[i]);
 
 
-    let notice = 'Deleted ' + nRemovedNodes + ' ' + countString('node', nRemovedNodes);
+    let notice = 'Deleted ' + nRemovedNodes + ' ' + countString(nRemovedNodes, 'node');
 
     if (nRemovedConns > 0)
-        notice += ' and ' + nRemovedConns + ' ' + countString('connection', nRemovedConns);
+        notice += ' and ' + nRemovedConns + ' ' + countString(nRemovedConns, 'connection');
 
 
     updateDataModeInfo();
@@ -83242,7 +83261,7 @@ function dataModeDeleteAllConnections()
     updateDataModeInfo();
 
     if (nRemovedConns > 0)
-        uiNotify('Deleted ' + nRemovedConns + ' ' + countString('connection', nRemovedConns));
+        uiNotify('Deleted ' + nRemovedConns + ' ' + countString(nRemovedConns, 'connection'));
 }
 
 
@@ -83271,7 +83290,7 @@ function dataModeDeleteConnectionsToAndFromNode(node)
     updateDataModeInfo();
 
     if (nRemovedConns > 0)
-        uiNotify('Deleted ' + nRemovedConns + ' ' + countString('connection', nRemovedConns) + ' to and from \'' + node.id + '\'');
+        uiNotify('Deleted ' + nRemovedConns + ' ' + countString(nRemovedConns, 'connection') + ' to and from \'' + node.id + '\'');
 }
 
 
@@ -83320,7 +83339,7 @@ function dataModeDeleteConnectionsFromNode(node)
     updateDataModeInfo();
 
     if (nRemovedConns > 0)
-        uiNotify('Deleted ' + nRemovedConns + ' ' + countString('connection', nRemovedConns) + ' from \'' + node.id + '\'');
+        uiNotify('Deleted ' + nRemovedConns + ' ' + countString(nRemovedConns, 'connection') + ' from \'' + node.id + '\'');
 }
 
 
@@ -83347,7 +83366,7 @@ function dataModeDeleteConnectionsToNode(node)
     updateDataModeInfo();
 
     if (nRemovedConns > 0)
-        uiNotify('Deleted ' + nRemovedConns + ' ' + countString('connection', nRemovedConns) + ' to \'' + node.id + '\'');
+        uiNotify('Deleted ' + nRemovedConns + ' ' + countString(nRemovedConns, 'connection') + ' to \'' + node.id + '\'');
 }
 
 
@@ -83813,8 +83832,18 @@ document.addEventListener('keydown', e =>
     let setLastKeyDown = true;
 
 
+    // restart
+    if (    e.code == 'KeyR'
+        &&  getCtrlKey(e)
+        &&  e.altKey
+        && !e.shiftKey)
+    {
+        e.preventDefault();
+        uiRestartGenerator(true);
+    }
+
     // save to file
-    if (   e.code == 'KeyS'
+    else if (   e.code == 'KeyS'
         && getCtrlKey(e)
         && e.shiftKey)
     {

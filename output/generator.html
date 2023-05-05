@@ -16,7 +16,7 @@ const TAB              = '    ';
 const NL               = '\n';
   
 const GENERATOR_LOGO   = '◦ G •';
-const OBJECT_PREFIX    = 'G ';
+const OBJECT_PREFIX    = GENERATOR_LOGO + ' ';//'G ';
   
 const nodeTag          = 'G_NODE';
 const connTag          = 'G_CONN';
@@ -2120,7 +2120,7 @@ function pluralString(count, pluralChar = 's')
 
 
 
-function countString(itemName, count)
+function countString(count, itemName)
 {
     const lastChar   = itemName.at(-1);
     const pluralChar = lastChar == lastChar.toUpperCase() ? 'S' : 's';
@@ -4754,6 +4754,7 @@ function getSmoothSegment(_pointP, _point, _pointN)
 
     const v = subv(_pn, _pp);
     
+    
     let a = angleDiff(
         angle(_p, _pp), 
         angle(_pn, _p));
@@ -4761,7 +4762,7 @@ function getSmoothSegment(_pointP, _point, _pointN)
     while (a > Tau/2)
         a -= Tau;
 
-    a = Math.abs(a);
+    //a = Math.abs(a);
     console.log('a =', a);
     
 
@@ -22623,7 +22624,7 @@ function logSaveNodes(nodeJson)
 
 function logSaveConnections(conns)
 {
-    let log = 'SAVING ' + conns.length + ' ' + countString('CONNECTION', conns.length);
+    let log = 'SAVING ' + conns.length + ' ' + countString(conns.length, 'CONNECTION');
 
     for (const conn of conns)
         log += '\n' + conn.toJson();
@@ -22637,7 +22638,7 @@ function logSaveConnections(conns)
 
 function logUpdateSavedConnections(conns)
 {
-    let log = 'UPDATING ' + conns.length + ' ' + countString('SAVED CONNECTION', conns.length);
+    let log = 'UPDATING ' + conns.length + ' ' + countString(conns.length, 'SAVED CONNECTION');
 
     for (const conn of conns)
         log += '\n' + conn.toJson();

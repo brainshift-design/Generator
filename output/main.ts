@@ -35,7 +35,7 @@ const TAB              = '    ';
 const NL               = '\n';
   
 const GENERATOR_LOGO   = '◦ G •';
-const OBJECT_PREFIX    = 'G ';
+const OBJECT_PREFIX    = GENERATOR_LOGO + ' ';//'G ';
   
 const nodeTag          = 'G_NODE';
 const connTag          = 'G_CONN';

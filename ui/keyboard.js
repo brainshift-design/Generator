@@ -18,8 +18,18 @@ document.addEventListener('keydown', e =>
     let setLastKeyDown = true;
 
 
+    // restart
+    if (    e.code == 'KeyR'
+        &&  getCtrlKey(e)
+        &&  e.altKey
+        && !e.shiftKey)
+    {
+        e.preventDefault();
+        uiRestartGenerator(true);
+    }
+
     // save to file
-    if (   e.code == 'KeyS'
+    else if (   e.code == 'KeyS'
         && getCtrlKey(e)
         && e.shiftKey)
     {

@@ -19,7 +19,7 @@ extends Action
         super(
             SELECT_MOVE_ACTION,
               'SELECT MOVE ' + newSelectedIds.length 
-            + ' ' + countString('node', newSelectedIds.length));
+            + ' ' + countString(newSelectedIds.length, 'node'));
 
         this.affectsConnections = false;
 

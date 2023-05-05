@@ -152,7 +152,7 @@ function logSaveNodes(nodeJson)
 
 function logSaveConnections(conns)
 {
-    let log = 'SAVING ' + conns.length + ' ' + countString('CONNECTION', conns.length);
+    let log = 'SAVING ' + conns.length + ' ' + countString(conns.length, 'CONNECTION');
 
     for (const conn of conns)
         log += '\n' + conn.toJson();
@@ -166,7 +166,7 @@ function logSaveConnections(conns)
 
 function logUpdateSavedConnections(conns)
 {
-    let log = 'UPDATING ' + conns.length + ' ' + countString('SAVED CONNECTION', conns.length);
+    let log = 'UPDATING ' + conns.length + ' ' + countString(conns.length, 'SAVED CONNECTION');
 
     for (const conn of conns)
         log += '\n' + conn.toJson();

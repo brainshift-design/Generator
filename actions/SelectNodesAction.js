@@ -11,7 +11,7 @@ extends Action
         super(
             SELECT_ACTION,
               'SELECT ' + selectedIds.length 
-            + ' ' + countString('node', selectedIds.length));
+            + ' ' + countString(selectedIds.length, 'node'));
 
         this.affectsConnections = false;
 

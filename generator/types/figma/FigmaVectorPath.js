@@ -285,6 +285,7 @@ function getSmoothSegment(_pointP, _point, _pointN)
 
     const v = subv(_pn, _pp);
     
+    
     let a = angleDiff(
         angle(_p, _pp), 
         angle(_pn, _p));
@@ -292,7 +293,7 @@ function getSmoothSegment(_pointP, _point, _pointN)
     while (a > Tau/2)
         a -= Tau;
 
-    a = Math.abs(a);
+    //a = Math.abs(a);
     console.log('a =', a);
     
 

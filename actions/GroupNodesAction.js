@@ -37,11 +37,6 @@ extends Action
         this.nodes.forEach(n => n.id = makeNodePath(n));
 
 
-        // save new nodes and connections
-        uiSaveNodes(this.nodes.map(n => n.id));
-        uiSaveConnections(getConnsFromNodes(this.nodes));
-
-
         // create group node
         this.groupNode = createNode(GROUP_NODE);
 
@@ -58,18 +53,19 @@ extends Action
             bounds.x + bounds.width /2 - defNodeWidth,
             bounds.y + bounds.height/2 - 100); // TODO: change this 100 to the group node's actual height
 
-        
-        // update and save group node
-        // graphView.updateNodes([
-        //        this.groupNode,
-        //     ...this.group.nodes], true);
 
-        uiSaveNodes(this.group.nodes.map(n => n.id));
+        // save new nodes and connections
+        uiSaveNodes([this.groupNode.id]);
+        uiSaveNodes(this.nodes.map(n => n.id));
+        uiSaveConnections(getConnsFromNodes(this.nodes));
 
 
         this.group.nodes.forEach(n => n.div.style.display = 'none');
+        this.groupNode.div.style.display = 'block';
 
-        pushUpdate(this, [this.groupNode]);
+        
+        uiMakeNodeActive(this.groupNode);
+        pushUnique(updateNodes, this.groupNode);
     }
 
 

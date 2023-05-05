@@ -19,7 +19,7 @@ extends Action
     {
         super(
             REMOVE_ACTION,
-            'REMOVE ' + nodeIds.length + ' ' + countString('node', nodeIds.length));
+            'REMOVE ' + nodeIds.length + ' ' + countString(nodeIds.length, 'node'));
 
         this.nodeIds         = [...nodeIds];
         this.nodes           = nodeIds.map(id => nodeFromId(id));

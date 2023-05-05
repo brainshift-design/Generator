@@ -23,7 +23,7 @@ extends Action
 
         super(
             PASTE_ACTION,
-            'PASTE ' + data.nodes.length + ' ' + countString('node', data.nodes.length));
+            'PASTE ' + data.nodes.length + ' ' + countString(data.nodes.length, 'node'));
 
         this.copiedNodesJson = copiedNodesJson;
         this.pasteConnected  = pasteConnected;
@@ -118,7 +118,7 @@ extends Action
             action += ' & connected';
 
         uiNotify(
-            action + ' ' + nodes.length + ' ' + countString('node', nodes.length), 
+            action + ' ' + nodes.length + ' ' + countString(nodes.length, 'node'), 
             {delay: 2500});
     }
 }

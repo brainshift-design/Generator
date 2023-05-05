@@ -88,9 +88,9 @@ function loadNodesAndConnsData(_pages, _nodes, _conns)
 
 function updateDataModeInfo()
 {
-    dataModePagesTitle.innerHTML = dataModePages.children.length + '&thinsp;&nbsp;' + countString('page',       dataModePages.children.length);
-    dataModeNodesTitle.innerHTML = dataModeNodes.children.length + '&thinsp;&nbsp;' + countString('node',       dataModeNodes.children.length);
-    dataModeConnsTitle.innerHTML = dataModeConns.children.length + '&thinsp;&nbsp;' + countString('connection', dataModeConns.children.length);
+    dataModePagesTitle.innerHTML = dataModePages.children.length + '&thinsp;&nbsp;' + countString(dataModePages.children.length, 'page'      );
+    dataModeNodesTitle.innerHTML = dataModeNodes.children.length + '&thinsp;&nbsp;' + countString(dataModeNodes.children.length, 'node'      );
+    dataModeConnsTitle.innerHTML = dataModeConns.children.length + '&thinsp;&nbsp;' + countString(dataModeConns.children.length, 'connection');
 }
 
 
@@ -424,7 +424,21 @@ function collapseAllConnData()
 
 
 
-function dataModeDeletePage(page)
+function dataModeDeleteAllPages()
+{
+    const nPages = graph.pages.length;
+    const notice = 'Deleted ' + nPages + ' ' + countString(nPages, 'page');
+
+    for (const page of graph.pages)
+        dataModeDeletePage(page, false);
+
+    if (nPages > 0)
+        uiNotify(notice);
+}
+
+
+
+function dataModeDeletePage(page, notify = true)
 {
     for (let i = dataModePages.children.length-1; i >= 0; i--)
     {
@@ -442,11 +456,12 @@ function dataModeDeletePage(page)
         .forEach(n => dataModeDeleteNode(n));
 
 
-    let notice = 'Deleted page \'' + page.id + '\'';
+    const notice = 'Deleted page \'' + page.id + '\'';
 
     updateDataModeInfo();
 
-    uiNotify(notice);
+    if (notify)
+        uiNotify(notice);
 }
 
 
@@ -483,7 +498,7 @@ function dataModeDeleteNode(node)
     let notice = 'Deleted node \'' + node.id + '\'';
 
     if (nRemovedConns > 0)
-        notice += ' and ' + nRemovedConns + ' ' + countString('connection', nRemovedConns);
+        notice += ' and ' + nRemovedConns + ' ' + countString(nRemovedConns, 'connection');
 
 
     updateDataModeInfo();
@@ -510,10 +525,10 @@ function dataModeDeleteAllNodes()
         dataModeConns.removeChild(dataModeConns.children[i]);
 
 
-    let notice = 'Deleted ' + nRemovedNodes + ' ' + countString('node', nRemovedNodes);
+    let notice = 'Deleted ' + nRemovedNodes + ' ' + countString(nRemovedNodes, 'node');
 
     if (nRemovedConns > 0)
-        notice += ' and ' + nRemovedConns + ' ' + countString('connection', nRemovedConns);
+        notice += ' and ' + nRemovedConns + ' ' + countString(nRemovedConns, 'connection');
 
 
     updateDataModeInfo();
@@ -537,7 +552,7 @@ function dataModeDeleteAllConnections()
     updateDataModeInfo();
 
     if (nRemovedConns > 0)
-        uiNotify('Deleted ' + nRemovedConns + ' ' + countString('connection', nRemovedConns));
+        uiNotify('Deleted ' + nRemovedConns + ' ' + countString(nRemovedConns, 'connection'));
 }
 
 
@@ -566,7 +581,7 @@ function dataModeDeleteConnectionsToAndFromNode(node)
     updateDataModeInfo();
 
     if (nRemovedConns > 0)
-        uiNotify('Deleted ' + nRemovedConns + ' ' + countString('connection', nRemovedConns) + ' to and from \'' + node.id + '\'');
+        uiNotify('Deleted ' + nRemovedConns + ' ' + countString(nRemovedConns, 'connection') + ' to and from \'' + node.id + '\'');
 }
 
 
@@ -615,7 +630,7 @@ function dataModeDeleteConnectionsFromNode(node)
     updateDataModeInfo();
 
     if (nRemovedConns > 0)
-        uiNotify('Deleted ' + nRemovedConns + ' ' + countString('connection', nRemovedConns) + ' from \'' + node.id + '\'');
+        uiNotify('Deleted ' + nRemovedConns + ' ' + countString(nRemovedConns, 'connection') + ' from \'' + node.id + '\'');
 }
 
 
@@ -642,7 +657,7 @@ function dataModeDeleteConnectionsToNode(node)
     updateDataModeInfo();
 
     if (nRemovedConns > 0)
-        uiNotify('Deleted ' + nRemovedConns + ' ' + countString('connection', nRemovedConns) + ' to \'' + node.id + '\'');
+        uiNotify('Deleted ' + nRemovedConns + ' ' + countString(nRemovedConns, 'connection') + ' to \'' + node.id + '\'');
 }
 
 

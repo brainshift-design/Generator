@@ -164,6 +164,8 @@ var menuItemWindowBottom;
 var menuItemGraphPaste;
 var menuItemGraphPasteConnected;
 
+var menuItemNodeEditGroup;
+var menuItemNodeSepGroup;
 var menuItemNodeCopy;
 var menuItemNodeCopyAsJsCode;
 var menuItemNodeCopyAsJsFunction;
@@ -539,6 +541,8 @@ function initGeneratorMenus()
 
     menuNode = new Menu('Node menu', false, false);
     menuNode.addItems([
+        menuItemNodeEditGroup      = new MenuItem('Edit group...',   {callback: e => { hideAllMenus();  }}),
+        menuItemNodeSepGroup       = new MenuItem('',                {separator: true}),
         menuItemNodeCopy           = new MenuItem('Copy',            {shortcut:  osCtrl() + 'C',       callback: () => graphView.copySelectedNodes() }),
         menuItemNodePaste          = new MenuItem('Paste here',      {shortcut:  osCtrl() + 'V',       callback: e => { hideAllMenus(); graphView.pasteCopiedNodes(false); }}),
         menuItemNodePasteConnected = new MenuItem('Paste connected', {shortcut:  osCtrlShift() + 'D',  callback: e => { hideAllMenus(); graphView.pasteCopiedNodes(true ); }}),
@@ -574,10 +578,12 @@ function initGeneratorMenus()
         const canDisable = !graphView.selectedNodes.find(n => !n.canDisable);
 
 
+        updateElementDisplay(menuItemNodeEditGroup    .div, hasGroups && single);
+        updateElementDisplay(menuItemNodeSepGroup     .div, hasGroups && single);
         updateElementDisplay(menuItemNodeUngroup      .div, hasGroups);
         updateElementDisplay(menuItemNodeSep2         .div, single);
-      //updateMenuItemDisplay(menuItemNodeRename       .div, single);
-        //updateElementDisplay(menuItemNodeEdit         .div, single);
+      //updateMenuItemDisplay(menuItemNodeRename      .div, single);
+        //updateElementDisplay(menuItemNodeEdit       .div, single);
         updateElementDisplay(menuItemNodeLeaveOnCanvas.div, hasObjects);
         updateElementDisplay(menuItemNodeSep3         .div, single);
         updateElementDisplay(menuItemNodeSelect       .div, single);
@@ -716,7 +722,7 @@ function initDataModeMenus()
         new MenuItem('Expand all',       { callback: () => { hideAllMenus(); expandAllPageData();   }}),
         new MenuItem('Collapse all',     { callback: () => { hideAllMenus(); collapseAllPageData(); }}),
         new MenuItem('',                 { separator: true }),
-        new MenuItem('Delete all pages', { enabled: false, callback: () => { hideAllMenus(); uiRemoveAllSavedPages(); }})]);
+        new MenuItem('Delete all pages', { callback: () => { hideAllMenus(); dataModeDeleteAllPages(); }})]);
 
 
     menuNodeData = new Menu('Node menu', false, false);

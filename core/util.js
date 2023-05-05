@@ -31,7 +31,7 @@ function pluralString(count, pluralChar = 's')
 
 
 
-function countString(itemName, count)
+function countString(count, itemName)
 {
     const lastChar   = itemName.at(-1);
     const pluralChar = lastChar == lastChar.toUpperCase() ? 'S' : 's';

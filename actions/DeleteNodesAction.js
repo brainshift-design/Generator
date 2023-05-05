@@ -16,7 +16,7 @@ extends Action
     {
         super(
             DELETE_ACTION, 
-            (cut ? 'CUT ' : 'DELETE ') + nodeIds.length + ' ' + countString('node', nodeIds.length));
+            (cut ? 'CUT ' : 'DELETE ') + nodeIds.length + ' ' + countString(nodeIds.length, 'node'));
 
         this.nodeIds         = [...nodeIds];
         this.nodes           = nodeIds.map(id => nodeFromId(id));

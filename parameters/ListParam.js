@@ -169,7 +169,7 @@ extends Parameter
 
         this.controls[0].textbox.value = 
               (nItems != 0 || this.showZero ? nItems + ' ' : '') 
-            + countString(this.itemName, nItems);
+            + countString(nItems, this.itemName);
 
 
         if (this.input ) this.input .updateControl();
