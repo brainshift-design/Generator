@@ -380,11 +380,14 @@ function makeSelectedNodesActive()
 
 
 
-function uiMakeNodeActive(node)
+function uiMakeNodeActive(node, makePassive = true)
 {
-    uiMakeNodeLeftPassive (node);
-    uiMakeNodeRightPassive(node);
-
+    if (makePassive)
+    {
+        uiMakeNodeLeftPassive (node);
+        uiMakeNodeRightPassive(node);
+    }
+    
     node.makeActive();
 }    
 

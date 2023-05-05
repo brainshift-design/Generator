@@ -346,7 +346,7 @@ Operator.prototype.createHeader = function()
             {
                 const overInput = graphView.overInput;
 
-                graphView          .endConnection(e.pointerId, getCtrlKey(e));
+                graphView          .endConnection(e.pointerId, getCtrlKey(e), e.shiftKey);
                 graphView.overInput.endConnection();
 
                 if (!graphView.headerInput)
@@ -358,7 +358,7 @@ Operator.prototype.createHeader = function()
             {
                 const overOutput = graphView.overOutput;
 
-                graphView           .endConnection(e.pointerId, getCtrlKey(e));
+                graphView           .endConnection(e.pointerId, getCtrlKey(e), e.shiftKey);
                 graphView.overOutput.endConnection();
 
                 if (!graphView.headerOutput)

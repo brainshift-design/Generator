@@ -52793,14 +52793,14 @@ NumberControl.prototype.initEvents = function()
                 && !graphView.tempConn.output.node.isOrFollows(param.node)
                 &&  graphView.overInput)
             {
-                graphView.endConnection(e.pointerId, getCtrlKey(e));
+                graphView.endConnection(e.pointerId, getCtrlKey(e), e.shiftKey);
                 graphView.overInput.endConnection();
             }
             else if (graphView.tempConn.input
                 && !param.node.isOrFollows(graphView.tempConn.input.node)
                 &&  graphView.overOutput)
             {
-                graphView.endConnection(e.pointerId, getCtrlKey(e));
+                graphView.endConnection(e.pointerId, getCtrlKey(e), e.shiftKey);
                 graphView.overOutput.endConnection();
             }
         }
@@ -54492,14 +54492,14 @@ ColorControl.prototype.initEvents = function()
                 && !graphView.tempConn.output.node.isOrFollows(this.param.node)
                 &&  graphView.overInput)
             {
-                graphView.endConnection(e.pointerId, getCtrlKey(e));
+                graphView.endConnection(e.pointerId, getCtrlKey(e), e.shiftKey);
                 graphView.overInput.endConnection();
             }
             else if (graphView.tempConn.input
                 && !this.param.node.isOrFollows(graphView.tempConn.input.node)
                 &&  graphView.overOutput)
             {
-                graphView.endConnection(e.pointerId, getCtrlKey(e));
+                graphView.endConnection(e.pointerId, getCtrlKey(e), e.shiftKey);
                 graphView.overOutput.endConnection();
             }
         }
@@ -58447,7 +58447,7 @@ GraphView.prototype.cancelConnection = function(pointerId)
 
 
 
-GraphView.prototype.endConnection = function(pointerId, backInit = false)
+GraphView.prototype.endConnection = function(pointerId, backInit = false, shiftKey = false)
 {
     if (this.tempConn.output) // FROM OUTPUT
     {
@@ -58468,8 +58468,8 @@ GraphView.prototype.endConnection = function(pointerId, backInit = false)
             if (  !savedConnInput
                 || savedConnInput != input) // TO INPUT
             {
-                if (input.node.variableInputs) this.endConnectionFromOutputToVariable(output, input, savedConnInput, backInit);
-                else                           this.endConnectionFromOutputToFixed   (output, input, savedConnInput, backInit);
+                if (input.node.variableInputs) this.endConnectionFromOutputToVariable(output, input, savedConnInput, backInit, shiftKey);
+                else                           this.endConnectionFromOutputToFixed   (output, input, savedConnInput, backInit, shiftKey);
             }
             // if (   !isNaN(newReorderIndex)
             //     && !isNaN(oldReorderIndex)
@@ -58559,7 +58559,7 @@ GraphView.prototype.endConnection = function(pointerId, backInit = false)
 
         if (   output
             && output.canConnectTo(input)) //input.canConnectFrom(output)) // TO OUTPUT
-            actionManager.do(new ConnectAction(output, input, {backInit: backInit}));
+            actionManager.do(new ConnectAction(output, input, {backInit: backInit, shiftKey: shiftKey}));
 
         this.cancelConnection(pointerId);
     }
@@ -58567,14 +58567,14 @@ GraphView.prototype.endConnection = function(pointerId, backInit = false)
 
 
 
-GraphView.prototype.endConnectionFromOutputToFixed = function(output, input, savedConnInput, backInit = false)
+GraphView.prototype.endConnectionFromOutputToFixed = function(output, input, savedConnInput, backInit = false, shiftKey = false)
 {
     if (   !savedConnInput
         && (  !input.connected
             || input.connectedOutput != this.tempConn.output))
     {
         //console.log('F1 connect new');
-        actionManager.do(new ConnectAction(output, input, {backInit: backInit}));
+        actionManager.do(new ConnectAction(output, input, {backInit: backInit, shiftKey: shiftKey}));
     }
     else if (savedConnInput
           && savedConnInput.connectedOutput == output)
@@ -58594,14 +58594,14 @@ GraphView.prototype.endConnectionFromOutputToFixed = function(output, input, sav
 
 
 
-GraphView.prototype.endConnectionFromOutputToVariable = function(output, input, savedConnInput, backInit = false)
+GraphView.prototype.endConnectionFromOutputToVariable = function(output, input, savedConnInput, backInit = false, shiftKey = false)
 {
     if (   !savedConnInput
         && (  !input.connected
             || input.connectedOutput != this.tempConn.output))
     {
         //console.log('V1 connect new');
-        actionManager.do(new ConnectAction(output, input, {backInit: backInit}));
+        actionManager.do(new ConnectAction(output, input, {backInit: backInit, shiftKey: shiftKey}));
     }
     else if (savedConnInput
           && savedConnInput.connectedOutput == output
@@ -58922,7 +58922,7 @@ GraphView.prototype.createEvents = function()
 
         else if (e.button == 0
             && this.tempConn)
-            this.endConnection(e.pointerId, getCtrlKey(e));
+            this.endConnection(e.pointerId, getCtrlKey(e), e.shiftKey);
 
         else if (e.button == 1
             && this.panning)
@@ -67055,7 +67055,7 @@ Operator.prototype.createHeader = function()
             {
                 const overInput = graphView.overInput;
 
-                graphView          .endConnection(e.pointerId, getCtrlKey(e));
+                graphView          .endConnection(e.pointerId, getCtrlKey(e), e.shiftKey);
                 graphView.overInput.endConnection();
 
                 if (!graphView.headerInput)
@@ -67067,7 +67067,7 @@ Operator.prototype.createHeader = function()
             {
                 const overOutput = graphView.overOutput;
 
-                graphView           .endConnection(e.pointerId, getCtrlKey(e));
+                graphView           .endConnection(e.pointerId, getCtrlKey(e), e.shiftKey);
                 graphView.overOutput.endConnection();
 
                 if (!graphView.headerOutput)
@@ -80111,6 +80111,7 @@ extends Action
     oldOutputActiveNodeId = NULL;
     
     backInit              = false;
+    shiftKey              = false;
    
 
     get outputNode()    { return nodeFromId(this.outputNodeId); }
@@ -80147,9 +80148,8 @@ extends Action
         this.oldOutputOrder  = input.connected ? input.connection.outputOrder  : -1;
 
 
-        if (   options 
-            && isValid(options.backInit))
-            this.backInit = options.backInit;
+        if (isValid(options.backInit)) this.backInit = options.backInit;
+        if (isValid(options.shiftKey)) this.shiftKey = options.shiftKey;
     }
 
 
@@ -80266,7 +80266,7 @@ function connectAction_updateOldOutput(act, updateNodes)
     
     if (!getActiveFromNode(act.oldOutputNode))
     {
-        uiMakeNodeActive(act.oldOutputNode);
+        uiMakeNodeActive(act.oldOutputNode, !act.shiftKey);
 
         act.newActiveNodeIds.push(act.oldOutputNodeId);
 
@@ -80288,7 +80288,7 @@ function connectAction_updateInputActiveNodes(act, updateNodes)
 
         const node = nodeFromId(id);
 
-        uiMakeNodeActive(node);
+        uiMakeNodeActive(node, !act.shiftKey);
         pushUnique(updateNodes, node);
     }
 }
@@ -86777,11 +86777,14 @@ function makeSelectedNodesActive()
 
 
 
-function uiMakeNodeActive(node)
+function uiMakeNodeActive(node, makePassive = true)
 {
-    uiMakeNodeLeftPassive (node);
-    uiMakeNodeRightPassive(node);
-
+    if (makePassive)
+    {
+        uiMakeNodeLeftPassive (node);
+        uiMakeNodeRightPassive(node);
+    }
+    
     node.makeActive();
 }    
 

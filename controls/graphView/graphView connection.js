@@ -75,7 +75,7 @@ GraphView.prototype.cancelConnection = function(pointerId)
 
 
 
-GraphView.prototype.endConnection = function(pointerId, backInit = false)
+GraphView.prototype.endConnection = function(pointerId, backInit = false, shiftKey = false)
 {
     if (this.tempConn.output) // FROM OUTPUT
     {
@@ -96,8 +96,8 @@ GraphView.prototype.endConnection = function(pointerId, backInit = false)
             if (  !savedConnInput
                 || savedConnInput != input) // TO INPUT
             {
-                if (input.node.variableInputs) this.endConnectionFromOutputToVariable(output, input, savedConnInput, backInit);
-                else                           this.endConnectionFromOutputToFixed   (output, input, savedConnInput, backInit);
+                if (input.node.variableInputs) this.endConnectionFromOutputToVariable(output, input, savedConnInput, backInit, shiftKey);
+                else                           this.endConnectionFromOutputToFixed   (output, input, savedConnInput, backInit, shiftKey);
             }
             // if (   !isNaN(newReorderIndex)
             //     && !isNaN(oldReorderIndex)
@@ -187,7 +187,7 @@ GraphView.prototype.endConnection = function(pointerId, backInit = false)
 
         if (   output
             && output.canConnectTo(input)) //input.canConnectFrom(output)) // TO OUTPUT
-            actionManager.do(new ConnectAction(output, input, {backInit: backInit}));
+            actionManager.do(new ConnectAction(output, input, {backInit: backInit, shiftKey: shiftKey}));
 
         this.cancelConnection(pointerId);
     }
@@ -195,14 +195,14 @@ GraphView.prototype.endConnection = function(pointerId, backInit = false)
 
 
 
-GraphView.prototype.endConnectionFromOutputToFixed = function(output, input, savedConnInput, backInit = false)
+GraphView.prototype.endConnectionFromOutputToFixed = function(output, input, savedConnInput, backInit = false, shiftKey = false)
 {
     if (   !savedConnInput
         && (  !input.connected
             || input.connectedOutput != this.tempConn.output))
     {
         //console.log('F1 connect new');
-        actionManager.do(new ConnectAction(output, input, {backInit: backInit}));
+        actionManager.do(new ConnectAction(output, input, {backInit: backInit, shiftKey: shiftKey}));
     }
     else if (savedConnInput
           && savedConnInput.connectedOutput == output)
@@ -222,14 +222,14 @@ GraphView.prototype.endConnectionFromOutputToFixed = function(output, input, sav
 
 
 
-GraphView.prototype.endConnectionFromOutputToVariable = function(output, input, savedConnInput, backInit = false)
+GraphView.prototype.endConnectionFromOutputToVariable = function(output, input, savedConnInput, backInit = false, shiftKey = false)
 {
     if (   !savedConnInput
         && (  !input.connected
             || input.connectedOutput != this.tempConn.output))
     {
         //console.log('V1 connect new');
-        actionManager.do(new ConnectAction(output, input, {backInit: backInit}));
+        actionManager.do(new ConnectAction(output, input, {backInit: backInit, shiftKey: shiftKey}));
     }
     else if (savedConnInput
           && savedConnInput.connectedOutput == output

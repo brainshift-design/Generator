@@ -19,6 +19,7 @@ extends Action
     oldOutputActiveNodeId = NULL;
     
     backInit              = false;
+    shiftKey              = false;
    
 
     get outputNode()    { return nodeFromId(this.outputNodeId); }
@@ -55,9 +56,8 @@ extends Action
         this.oldOutputOrder  = input.connected ? input.connection.outputOrder  : -1;
 
 
-        if (   options 
-            && isValid(options.backInit))
-            this.backInit = options.backInit;
+        if (isValid(options.backInit)) this.backInit = options.backInit;
+        if (isValid(options.shiftKey)) this.shiftKey = options.shiftKey;
     }
 
 
@@ -174,7 +174,7 @@ function connectAction_updateOldOutput(act, updateNodes)
     
     if (!getActiveFromNode(act.oldOutputNode))
     {
-        uiMakeNodeActive(act.oldOutputNode);
+        uiMakeNodeActive(act.oldOutputNode, !act.shiftKey);
 
         act.newActiveNodeIds.push(act.oldOutputNodeId);
 
@@ -196,7 +196,7 @@ function connectAction_updateInputActiveNodes(act, updateNodes)
 
         const node = nodeFromId(id);
 
-        uiMakeNodeActive(node);
+        uiMakeNodeActive(node, !act.shiftKey);
         pushUnique(updateNodes, node);
     }
 }

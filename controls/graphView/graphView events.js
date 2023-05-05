@@ -191,7 +191,7 @@ GraphView.prototype.createEvents = function()
 
         else if (e.button == 0
             && this.tempConn)
-            this.endConnection(e.pointerId, getCtrlKey(e));
+            this.endConnection(e.pointerId, getCtrlKey(e), e.shiftKey);
 
         else if (e.button == 1
             && this.panning)

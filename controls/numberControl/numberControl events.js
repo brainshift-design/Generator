@@ -446,14 +446,14 @@ NumberControl.prototype.initEvents = function()
                 && !graphView.tempConn.output.node.isOrFollows(param.node)
                 &&  graphView.overInput)
             {
-                graphView.endConnection(e.pointerId, getCtrlKey(e));
+                graphView.endConnection(e.pointerId, getCtrlKey(e), e.shiftKey);
                 graphView.overInput.endConnection();
             }
             else if (graphView.tempConn.input
                 && !param.node.isOrFollows(graphView.tempConn.input.node)
                 &&  graphView.overOutput)
             {
-                graphView.endConnection(e.pointerId, getCtrlKey(e));
+                graphView.endConnection(e.pointerId, getCtrlKey(e), e.shiftKey);
                 graphView.overOutput.endConnection();
             }
         }
