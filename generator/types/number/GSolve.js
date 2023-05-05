@@ -142,17 +142,28 @@ extends GNumberType
         
         // TODO push good result value to input 
 
-        if (parse.isLastRepeat())
-        {
-            genPushUpdateValue(parse, this.nodeId, 'value',   this.value);
-            genPushUpdateValue(parse, this.nodeId, 'current', current   );
-            genPushUpdateValue(parse, this.nodeId, 'target',  target    );
-        }
+        this.updateValues =
+        [
+            ['value',   this.value],
+            ['current', current   ],
+            ['target',  target    ]
+        ];
 
 
         this.validate();
 
         return this;
+    }
+
+
+
+    pushValueUpdates(parse)
+    {
+        super.pushValueUpdates(parse);
+
+        if (this.input  ) this.input  .pushValueUpdates(parse);
+        if (this.current) this.current.pushValueUpdates(parse);
+        if (this.target ) this.target .pushValueUpdates(parse);
     }
 
 

@@ -52,16 +52,25 @@ extends GNumberType
         this.value = new NumberValue(value, 10);
 
         
-        if (parse.isLastRepeat())
-        {
-            genPushUpdateValue(parse, this.nodeId, 'value',   this.value);
-            genPushUpdateValue(parse, this.nodeId, 'constant', constant);
-        }
+        this.updateValues =
+        [
+            ['value',   this.value],
+            ['constant', constant ]
+        ];
 
 
         this.validate();
 
         return this;
+    }
+
+
+
+    pushValueUpdates(parse)
+    {
+        super.pushValueUpdates(parse);
+
+        if (this.constant) this.constant.pushValueUpdates(parse);
     }
 
 

@@ -66,12 +66,12 @@ extends GShape
         }
 
         
-        if (parse.isLastRepeat())
-        {
-            genPushUpdateValue(parse, this.nodeId, 'value',   this.value        );
-            genPushUpdateValue(parse, this.nodeId, 'round',   this.value.round  );
-            genPushUpdateValue(parse, this.nodeId, 'corners', this.value.corners);
-        }
+        this.updateValues =
+        [
+            ['value',   this.value        ],
+            ['round',   this.value.round  ],
+            ['corners', this.value.corners]
+        ];
         
 
         await this.evalShapeBase(parse, input);
@@ -118,6 +118,17 @@ extends GShape
 
         
         super.evalObjects(parse);
+    }
+
+
+
+    pushValueUpdates(parse)
+    {
+        super.pushValueUpdates(parse);
+
+        if (this.input  ) this.input  .pushValueUpdates(parse);
+        if (this.round  ) this.round  .pushValueUpdates(parse);
+        if (this.corners) this.corners.pushValueUpdates(parse);
     }
 
 

@@ -64,12 +64,22 @@ extends GOperator
             this.valid        = true;
 
 
-            if (parse.isLastRepeat())
-                genPushUpdateValue(parse, this.nodeId, 'value', this.result);
+            this.updateValues = [['value', this.result]];
         }
 
 
         return this;
+    }
+
+
+
+    pushValueUpdates(parse)
+    {
+        super.pushValueUpdates(parse);
+
+        if (this.input   ) this.input   .pushValueUpdates(parse);
+        if (this.fill    ) this.fill    .pushValueUpdates(parse);
+        if (this.position) this.position.pushValueUpdates(parse);
     }
 
 

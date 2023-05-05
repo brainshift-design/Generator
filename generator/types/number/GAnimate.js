@@ -108,21 +108,35 @@ extends GNumberType
         }
         
 
-        if (parse.isLastRepeat())
-        {
-            genPushUpdateValue(parse, this.nodeId, 'value',  this.value);
-            genPushUpdateValue(parse, this.nodeId, 'from',   from      );
-            genPushUpdateValue(parse, this.nodeId, 'to',     to        );
-            genPushUpdateValue(parse, this.nodeId, 'curve',  curve     );
-            genPushUpdateValue(parse, this.nodeId, 'type',   type      );
-            genPushUpdateValue(parse, this.nodeId, 'length', length    );
-            genPushUpdateValue(parse, this.nodeId, 'time',   time      );
-        }
+        this.updateValues =
+        [
+            ['value',  this.value],
+            ['from',   from      ],
+            ['to',     to        ],
+            ['curve',  curve     ],
+            ['type',   type      ],
+            ['length', length    ],
+            ['time',   time      ]
+        ];
         
 
         this.validate();
 
         return this;
+    }
+
+
+
+    pushValueUpdates(parse)
+    {
+        super.pushValueUpdates(parse);
+
+        if (this.from  ) this.from  .pushValueUpdates(parse);
+        if (this.to    ) this.to    .pushValueUpdates(parse);
+        if (this.curve ) this.curve .pushValueUpdates(parse);
+        if (this.type  ) this.type  .pushValueUpdates(parse);
+        if (this.length) this.length.pushValueUpdates(parse);
+        if (this.time  ) this.time  .pushValueUpdates(parse);
     }
 
 

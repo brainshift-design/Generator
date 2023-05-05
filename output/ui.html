@@ -9215,25 +9215,10 @@ function getSmoothSegment(_pointP, _point, _pointN)
     const k     = 4 * (Math.sqrt(2) - 1) / 3;        // or use the value 0.55191502449 from http://spencermortensen.com/articles/bezier-circle/
 	const kCorr = 0.9993391093366649465402826439248; // slight improvement (see Bézier Curves p. 13, Gernot Hoffmann);
 
-    let f;
-    
-    console.log('a =', a);    
-    if (a > Tau/4)
-    {
-        f = 1/3 + (k*kCorr - 1/3) * Math.sin(a); //k*kCorr * Math.sin(a);
-
-        // const mind = Math.min(distance(_pp, _p), distance(_p, _pn));
-        // const maxd = Math.max(distance(_pp, _p), distance(_p, _pn));
-
-        // f = f + (1/3 - f) * (1 - mind/maxd);
-    }
-    else
-    {
-        f = 1/3 + (k*kCorr - 1/3) * (1 - Math.cos(a)); //k*kCorr * Math.sin(a);
-        // const ha = halfArcAngle(_pp, _p, _pn);
-        // console.log('aa =', ha);
-        // f = 4/3 * Math.tan(Math.abs(ha)/4);
-    }
+    let f =
+        a > Tau/4
+        ? 1/3 + (k*kCorr - 1/3) * Math.sin(a)
+        : 1/3 + (k*kCorr - 1/3) * (1 - Math.cos(a));
     
 
     const pp = addv(_p, mulvs(unitv(v), -lengthv(v)/2 * f));
@@ -9330,10 +9315,12 @@ class GNode
 
     valid; // has been evaluated
 
-    listId  = -1;
+    listId       = -1;
 
-    options = {};
-    data    = {}; // for type conversion info
+    options      = {};
+    data         = {}; // for type conversion info
+
+    updateValues = [];
 
 
 
@@ -9385,6 +9372,14 @@ class GNode
     isValid() // is a valid value
     {
         return false;
+    }
+
+
+    
+    pushValueUpdates(parse)
+    {
+        for (const value of this.updateValues)
+            genPushUpdateValue(parse, this.nodeId, value[0], value[1]);
     }
 
 
@@ -9546,7 +9541,7 @@ extends GNode
 
     value;
 
-   
+
     feedbackValue = null; // () => {}
 
 
@@ -9621,7 +9616,7 @@ extends GNode
     }
 
 
-    
+
     toValue()
     {
         return null;
@@ -9708,22 +9703,37 @@ extends GOperator
         this.param = this.node.paramFromId(this.paramId);
 
 
-        if (isValid(this.param)) // could have been deleted from OpRepeat for example
+        console.log('this.node =', this.node);
+        if (isValid(this.param))
         {
             // if (   this.feedbackValue)
             //     //&& this.param.type == NUMBER_VALUE)
             //     this.param = this.feedbackValue();
-
-            const value = (await this.param.eval(parse)).toValue();
-
+            
+            if (   !this.node.valid
+                || !this.value) // could have been deleted from OpRepeat for example
+            {
+                const value = (await this.param.eval(parse)).toValue();
+                this.value = value;
+            }
+            
             //this.param.feedbackValue = null;
-            return this.value = value;
+            return this.value;
         }
         else
         {
             //this.param.feedbackValue = null;
             return this.value = NullValue;
         }
+    }
+
+
+
+    pushValueUpdates(parse)
+    {
+        super.pushValueUpdates(parse);
+
+        if (this.node) this.node.pushValueUpdates(parse);
     }
 
 
@@ -12421,13 +12431,21 @@ extends GOperator
         }
 
 
-        if (parse.isLastRepeat())
-            genPushUpdateValue(parse, this.nodeId, 'value', this.value);
+        this.updateValues = [['value', this.value]];
 
 
         this.validate();
 
         return this;
+    }
+
+
+
+    pushValueUpdates(parse)
+    {
+        super.pushValueUpdates(parse);
+
+        this.inputs.forEach(i => i.pushValueUpdates(parse));
     }
 
 
@@ -12509,13 +12527,21 @@ extends GOperator
 
 
 
-        if (parse.isLastRepeat())
-            genPushUpdateValue(parse, this.nodeId, 'value', this.value);
+        this.updateValues = [['value', this.value]];
 
 
         this.validate();
 
         return this;
+    }
+
+
+
+    pushValueUpdates(parse)
+    {
+        super.pushValueUpdates(parse);
+
+        if (this.input) this.input.pushValueUpdates(parse);
     }
 
 
@@ -12531,7 +12557,7 @@ extends GOperator
     {
         super.invalidate();
 
-        if (this.input  ) this.input  .invalidate();
+        if (this.input) this.input.invalidate();
     }
 }
 
@@ -12597,25 +12623,25 @@ extends GOperator
         }
 
 
-        if (parse.isLastRepeat())
+        this.updateValues = [];
+
+
+        if (    this.value.isValid()
+            && !isEmpty(this.value.items))
         {
-            if (    this.value.isValid()
-                && !isEmpty(this.value.items))
+            for (let i = 0; i < this.value.items.length; i++)
             {
-                for (let i = 0; i < this.value.items.length; i++)
-                {
-                    const item = this.value.items[i];
+                const item = this.value.items[i];
 
-                    Object.assign(this, {['item' + i]: item});
-                    genPushUpdateValue(parse, this.nodeId, 'item' + i, item);
-                }
+                Object.assign(this, {['item' + i]: item});
+                this.updateValues.push(['item' + i, item]);
             }
-            else
-                genPushUpdateValue(parse, this.nodeId, '', NullValue);
-
-
-            genPushUpdateValue(parse, this.nodeId, 'value', this.value);
         }
+        else
+            this.updateValues.push(['', NullValue]);
+
+
+        this.updateValues.push(['value', this.value]);
 
 
         for (let j = 0; j < this.objects.length; j++)
@@ -12625,6 +12651,15 @@ extends GOperator
         this.validate();
 
         return this;
+    }
+
+
+
+    pushValueUpdates(parse)
+    {
+        super.pushValueUpdates(parse);
+
+        if (this.input) this.input.pushValueUpdates(parse);
     }
 
 
@@ -12750,17 +12785,26 @@ extends GOperator
         }
 
 
-        if (parse.isLastRepeat())
-        {
-            genPushUpdateValue(parse, this.nodeId, 'value',  this.value);
-            genPushUpdateValue(parse, this.nodeId, 'length', new NumberValue(length));
-            genPushUpdateValue(parse, this.nodeId, 'index',  index);
-        }
+        this.updateValues =
+        [
+            ['value',  this.value             ],
+            ['length', new NumberValue(length)],
+            ['index',  index                  ]
+        ];
 
 
         this.validate();
 
         return this;
+    }
+
+
+
+    pushValueUpdates()
+    {
+        super.pushValueUpdates();
+
+        if (this.index) this.index.pushValueUpdates();
     }
 
 
@@ -12776,7 +12820,6 @@ extends GOperator
     {
         super.invalidate();
 
-        //if (this.input) this.input.invalidate();
         if (this.index) this.index.invalidate();
     }
 }
@@ -12829,13 +12872,21 @@ extends GOperator
             this.value = NumberValue.NaN;
 
 
-        if (parse.isLastRepeat())
-            genPushUpdateValue(parse, this.nodeId, 'value', this.value);
+        this.updateValues = [['value', this.value]];
 
 
         this.validate();
 
         return this;
+    }
+
+
+
+    pushValueUpdates(parse)
+    {
+        super.pushValueUpdates(parse);
+
+        if (this.input) this.input.pushValueUpdates(parse);
     }
 
 
@@ -12927,16 +12978,27 @@ extends GOperator
             this.value = NullValue;
 
 
-        if (parse.isLastRepeat())
-        {
-            genPushUpdateValue(parse, this.nodeId, 'condition', cond);
-            genPushUpdateValue(parse, this.nodeId, 'value',     this.value);
-        }
+        this.updateValues =
+        [
+            ['condition', cond      ],
+            ['value',     this.value]
+        ];
         
         
         this.validate();
 
         return this;
+    }
+
+
+
+    pushValueUpdates(parse)
+    {
+        super.pushValueUpdates(parse);
+
+        if (this.input0   ) this.input0   .pushValueUpdates(parse);
+        if (this.input1   ) this.input1   .pushValueUpdates(parse);
+        if (this.condition) this.condition.pushValueUpdates(parse);
     }
 
 
@@ -13008,11 +13070,11 @@ extends GOperator
             this.value = NullValue;
 
 
-        if (parse.isLastRepeat())
-        {
-            genPushUpdateValue(parse, this.nodeId, 'value',    this.value);
-            genPushUpdateValue(parse, this.nodeId, 'repeatId', repeatId);
-        }
+        this.updateValues =
+        [
+            ['value',    this.value],
+            ['repeatId', repeatId  ]
+        ];
 
 
         this.validate();
@@ -13111,15 +13173,17 @@ extends GOperator
         };
 
         //if (this.repeatId.type != NUMBER_VALUE)
-            parse.repeats.push(repeat);
-
-
+        
+        
         if (this.input)
         {
             const nItems = 
                 this.options.enabled 
                 ? count.value 
                 : 1;
+            
+            
+            parse.repeats.push(repeat);
 
 
             for (let i = 0, o = 0; i < nItems; i++)
@@ -13159,22 +13223,36 @@ extends GOperator
             }
 
 
+            console.assert(parse.repeats.at(-1) == repeat, 'invalid nested repeat');
+            parse.repeats.pop();
+
+                
             if (this.repeatId)
                 uninitRepeat(this.repeatId);
         }
 
 
-        if (parse.isLastRepeat())
-        {
-            genPushUpdateValue(parse, this.nodeId, 'value',    this.value     );
-            genPushUpdateValue(parse, this.nodeId, 'count',    count          );
-            genPushUpdateValue(parse, this.nodeId, 'repeatId', NumberValue.NaN);
-        }
+        this.updateValues =
+        [
+            ['value',    this.value     ],
+            ['count',    count          ],
+            ['repeatId', NumberValue.NaN]
+        ];
 
 
         this.validate();
 
         return this;
+    }
+
+
+
+    pushValueUpdates(parse)
+    {
+        super.pushValueUpdates(parse);
+
+        if (this.input) this.input.pushValueUpdates(parse);
+        if (this.count) this.count.pushValueUpdates(parse);
     }
 
 
@@ -13285,13 +13363,21 @@ extends GOperator
             : NullValue;
 
 
-        if (parse.isLastRepeat())
-            genPushUpdateValue(parse, this.nodeId, 'value', this.value);
+        this.updateValues = [['value', this.value]];
         
         
         this.validate();
 
         return this;
+    }
+
+
+
+    pushValueUpdates(parse)
+    {
+        super.pushValueUpdates(parse);
+
+        // if (this.input  ) this.input  .invalidate();
     }
 
 
@@ -13355,8 +13441,7 @@ extends GOperator
             : NullValue;
 
 
-        if (parse.isLastRepeat())
-            genPushUpdateValue(parse, this.nodeId, 'value', this.value);
+        this.updateValues = [['value', this.value]];
 
         
         this.validate();
@@ -13462,13 +13547,21 @@ extends GNumberType
             this.value = this.feedbackValue();
 
 
-        if (parse.isLastRepeat())
-            genPushUpdateValue(parse, this.nodeId, 'value', this.value);    
+        this.updateValues = [['value', this.value]];    
 
 
         this.validate();
 
         return this;
+    }
+
+
+
+    pushValueUpdates(parse)
+    {
+        super.pushValueUpdates(parse);
+
+        if (this.input) this.input.pushValueUpdates(parse);
     }
 
 
@@ -13539,13 +13632,21 @@ extends GNumberType
             this.value = NumberValue.NaN;
 
 
-        if (parse.isLastRepeat())
-            genPushUpdateValue(parse, this.nodeId, 'value', this.value);
+        this.updateValues = [['value', this.value]];
 
 
         this.validate();
 
         return this;
+    }
+
+
+
+    pushValueUpdates(parse)
+    {
+        super.pushValueUpdates(parse);
+
+        if (this.input) this.input.pushValueUpdates(parse);
     }
 
 
@@ -13608,13 +13709,21 @@ extends GNumberType
             this.value = NumberValue.NaN;
 
 
-        if (parse.isLastRepeat())
-            genPushUpdateValue(parse, this.nodeId, 'value', this.value);
+        this.updateValues = [['value', this.value]];
 
 
         this.validate();
 
         return this;
+    }
+
+
+
+    pushValueUpdates(parse)
+    {
+        super.pushValueUpdates(parse);
+
+        if (this.input) this.input.pushValueUpdates(parse);
     }
 
 
@@ -13701,12 +13810,12 @@ extends GNumberType
             this.value = NumberValue.NaN;
 
 
-        if (parse.isLastRepeat())
-        {
-            genPushUpdateValue(parse, this.nodeId, 'type',     type);
-            genPushUpdateValue(parse, this.nodeId, 'decimals', dec );
-            genPushUpdateValue(parse, this.nodeId, 'value',    this.value);
-        }
+        this.updateValues =
+        [
+            ['type',     type      ],
+            ['decimals', dec       ],
+            ['value',    this.value]
+        ];
 
 
         this.validate();
@@ -13798,17 +13907,28 @@ extends GNumberType
             this.value = this.feedbackValue();
 
 
-        if (parse.isLastRepeat())
-        {
-            genPushUpdateValue(parse, this.nodeId, 'value', this.value);
-            genPushUpdateValue(parse, this.nodeId, 'min',   min);
-            genPushUpdateValue(parse, this.nodeId, 'max',   max);
-        }
+        this.updateValues =
+        [
+            ['value', this.value],
+            ['min',   min       ],
+            ['max',   max       ]
+        ];
 
 
         this.validate();
 
         return this;
+    }
+
+
+
+    pushValueUpdates(parse)
+    {
+        super.pushValueUpdates(parse);
+
+        if (this.input) this.input.pushValueUpdates(parse);
+        if (this.min  ) this.min  .pushValueUpdates(parse);
+        if (this.max  ) this.max  .pushValueUpdates(parse);
     }
 
 
@@ -13889,16 +14009,25 @@ extends GNumberType
         this.value = new NumberValue(value, 10);
 
         
-        if (parse.isLastRepeat())
-        {
-            genPushUpdateValue(parse, this.nodeId, 'value',   this.value);
-            genPushUpdateValue(parse, this.nodeId, 'constant', constant);
-        }
+        this.updateValues =
+        [
+            ['value',   this.value],
+            ['constant', constant ]
+        ];
 
 
         this.validate();
 
         return this;
+    }
+
+
+
+    pushValueUpdates(parse)
+    {
+        super.pushValueUpdates(parse);
+
+        if (this.constant) this.constant.pushValueUpdates(parse);
     }
 
 
@@ -14006,12 +14135,12 @@ extends GNumberType
             Math.max(start.decimals, end.decimals));
 
         
-        if (parse.isLastRepeat())
-        {
-            genPushUpdateValue(parse, this.nodeId, 'start', start);
-            genPushUpdateValue(parse, this.nodeId, 'end',   end  );
-            genPushUpdateValue(parse, this.nodeId, 'from',  from );
-        }
+        this.updateValues =
+        [
+            ['from',  from ],
+            ['start', start],
+            ['end',   end  ]
+        ];
 
 
         if (  !isEmpty(parse.repeats)
@@ -14020,20 +14149,40 @@ extends GNumberType
             const repeat = parse.repeats.at(-1);
 
             this.current.value += step;
-                
-            if (repeat.iteration == repeat.total-1)
-            {
-                // if (parse.repeats.at(-1).nodeId != this.repeatNodeId)
-                //     console.warn('Generator: Invalid nested repeat on \'' + this.nodeId + '\'');
-                // else
-                    parse.repeats.pop();
-            }
+
+            // if (   parse.repeats.length == 1
+            //     && parse.repeats[0].iteration == parse.repeats[0].repeat.total-1)
+            // {
+            //     if (   this.repeatNodeId != NULL
+            //         && parse.repeats[0].nodeId != this.repeatNodeId)
+            //         console.warn('Generator: Invalid nested repeat on \'' + this.nodeId + '\'');
+    
+            //     //parse.repeats.pop();
+            // }
+                   
+            // if (repeat.iteration == repeat.total-1)
+            // {
+            //     // if (parse.repeats.at(-1).nodeId != this.repeatNodeId)
+            //     //     console.warn('Generator: Invalid nested repeat on \'' + this.nodeId + '\'');
+            //     // else
+            //         parse.repeats.pop();
+            // }
         }
 
 
         this.validate();
 
         return this;
+    }
+
+
+
+    pushValueUpdates(parse)
+    {
+        super.pushValueUpdates(parse);
+
+        if (this.start) this.start.pushValueUpdates(parse);
+        if (this.end  ) this.end  .pushValueUpdates(parse);
     }
 
 
@@ -14112,11 +14261,11 @@ extends GNumberType
             Math.max(start.decimals, step.decimals));
 
         
-        if (parse.isLastRepeat())
-        {
-            genPushUpdateValue(parse, this.nodeId, 'start', start);
-            genPushUpdateValue(parse, this.nodeId, 'step',  step );
-        }
+        this.updateValues =
+        [
+            ['start', start],
+            ['step',  step ]
+        ];
 
 
         if (!parse.repeats.find(r => r.nodeId == this.repeatNodeId))
@@ -14124,24 +14273,33 @@ extends GNumberType
 
         else if (  !isEmpty(parse.repeats)
                 && parse.repeats.at(-1).nodeId == this.repeatNodeId)
-        {
-            const repeat = parse.repeats.at(-1);
-
             this.current.value += step.toNumber();
 
-            if (repeat.iteration == repeat.total-1)
-            {
-                // if (parse.repeats.at(-1).nodeId != this.repeatNodeId)
-                //     console.warn('Generator: Invalid nested repeat on \'' + this.nodeId + '\'');
-                // else
-                    parse.repeats.pop();
-            }
-        }
+
+        // if (   parse.repeats.length == 1
+        //     && parse.repeats[0].iteration == parse.repeats[0].repeat.total-1)
+        // {
+        //     if (   this.repeatNodeId != NULL
+        //         && parse.repeats[0].nodeId != this.repeatNodeId)
+        //         console.warn('Generator: Invalid nested repeat on \'' + this.nodeId + '\'');
+
+        //     //parse.repeats.pop();
+        // }
 
 
         this.validate();
 
         return this;
+    }
+
+
+
+    pushValueUpdates(parse)
+    {
+        super.pushValueUpdates(parse);
+
+        if (this.start) this.start.pushValueUpdates(parse);
+        if (this.step ) this.step .pushValueUpdates(parse);
     }
 
 
@@ -14228,30 +14386,52 @@ extends GNumberType
         {
             if (!isEmpty(parse.repeats))
             {
-                const repeat = parse.repeats.at(-1);
+                // const repeat = parse.repeats.at(-1);
 
-                if (repeat.iteration == repeat.total-1)
-                {
-                    // if (parse.repeats.at(-1).nodeId != this.repeatNodeId)
-                    //     console.warn('Generator: Invalid nested repeat on \'' + this.nodeId + '\'');
-                    // else
-                        parse.repeats.pop();
-                }
+                // if (   parse.repeats.length == 1
+                //     && parse.repeats[0].iteration == parse.repeats[0].repeat.total-1)
+                // {
+                //     if (   this.repeatNodeId != NULL
+                //         && parse.repeats[0].nodeId != this.repeatNodeId)
+                //         console.warn('Generator: Invalid nested repeat on \'' + this.nodeId + '\'');
+        
+                //     //parse.repeats.pop();
+                // }
+
+
+                // if (repeat.iteration == repeat.total-1)
+                // {
+                //     // if (parse.repeats.at(-1).nodeId != this.repeatNodeId)
+                //     //     console.warn('Generator: Invalid nested repeat on \'' + this.nodeId + '\'');
+                //     // else
+                //         parse.repeats.pop();
+                // }
             }
         }
 
 
-        if (parse.isLastRepeat())
-        {
-            genPushUpdateValue(parse, this.nodeId, 'seed',  seed);
-            genPushUpdateValue(parse, this.nodeId, 'min',   min );
-            genPushUpdateValue(parse, this.nodeId, 'max',   max );
-        }
+        this.updateValues =
+        [
+            ['seed',  seed],
+            ['min',   min ],
+            ['max',   max ]
+        ];
         
 
         this.validate();
 
         return this;
+    }
+
+
+
+    pushUpdateValues(parse)
+    {
+        super.pushUpdateValues(parse);
+
+        if (this.seed) this.seed.pushUpdateValues(parse);
+        if (this.min ) this.min .pushUpdateValues(parse);
+        if (this.max ) this.max .pushUpdateValues(parse);
     }
 
 
@@ -14331,16 +14511,27 @@ extends GNumberType
             this.value = NumberValue.NaN;
 
 
-        if (parse.isLastRepeat())
-        {
-            genPushUpdateValue(parse, this.nodeId, 'amount', amount);
-            genPushUpdateValue(parse, this.nodeId, 'value',  this.value);
-        }
+        this.updateValues =
+        [
+            ['amount', amount    ],
+            ['value',  this.value]
+        ];
         
 
         this.validate();
 
         return this;
+    }
+
+
+
+    pushValueUpdates(parse)
+    {
+        super.pushValueUpdates(parse);
+
+        if (this.input0) this.input0.pushValueUpdates(parse);
+        if (this.input1) this.input1.pushValueUpdates(parse);
+        if (this.amount) this.amount.pushValueUpdates(parse);
     }
 
 
@@ -14417,17 +14608,27 @@ extends GNumberType
         this.value = new TextValue(str);
 
 
-        if (parse.isLastRepeat())
-        {
-            genPushUpdateValue(parse, this.nodeId, 'value',  this.value);
-            genPushUpdateValue(parse, this.nodeId, 'number', number    );
-            genPushUpdateValue(parse, this.nodeId, 'format', format    );
-        }
+        this.updateValues =
+        [
+            ['value',  this.value],
+            ['number', number    ],
+            ['format', format    ]
+        ];
 
 
         this.validate();
 
         return this;
+    }
+
+
+
+    pushValueUpdates(parse)
+    {
+        super.pushValueUpdates(parse);
+
+        if (this.number) this.number.pushValueUpdates(parse);
+        if (this.format) this.format.pushValueUpdates(parse);
     }
 
 
@@ -14587,17 +14788,28 @@ extends GNumberType
         
         // TODO push good result value to input 
 
-        if (parse.isLastRepeat())
-        {
-            genPushUpdateValue(parse, this.nodeId, 'value',   this.value);
-            genPushUpdateValue(parse, this.nodeId, 'current', current   );
-            genPushUpdateValue(parse, this.nodeId, 'target',  target    );
-        }
+        this.updateValues =
+        [
+            ['value',   this.value],
+            ['current', current   ],
+            ['target',  target    ]
+        ];
 
 
         this.validate();
 
         return this;
+    }
+
+
+
+    pushValueUpdates(parse)
+    {
+        super.pushValueUpdates(parse);
+
+        if (this.input  ) this.input  .pushValueUpdates(parse);
+        if (this.current) this.current.pushValueUpdates(parse);
+        if (this.target ) this.target .pushValueUpdates(parse);
     }
 
 
@@ -14737,21 +14949,35 @@ extends GNumberType
         }
         
 
-        if (parse.isLastRepeat())
-        {
-            genPushUpdateValue(parse, this.nodeId, 'value',  this.value);
-            genPushUpdateValue(parse, this.nodeId, 'from',   from      );
-            genPushUpdateValue(parse, this.nodeId, 'to',     to        );
-            genPushUpdateValue(parse, this.nodeId, 'curve',  curve     );
-            genPushUpdateValue(parse, this.nodeId, 'type',   type      );
-            genPushUpdateValue(parse, this.nodeId, 'length', length    );
-            genPushUpdateValue(parse, this.nodeId, 'time',   time      );
-        }
+        this.updateValues =
+        [
+            ['value',  this.value],
+            ['from',   from      ],
+            ['to',     to        ],
+            ['curve',  curve     ],
+            ['type',   type      ],
+            ['length', length    ],
+            ['time',   time      ]
+        ];
         
 
         this.validate();
 
         return this;
+    }
+
+
+
+    pushValueUpdates(parse)
+    {
+        super.pushValueUpdates(parse);
+
+        if (this.from  ) this.from  .pushValueUpdates(parse);
+        if (this.to    ) this.to    .pushValueUpdates(parse);
+        if (this.curve ) this.curve .pushValueUpdates(parse);
+        if (this.type  ) this.type  .pushValueUpdates(parse);
+        if (this.length) this.length.pushValueUpdates(parse);
+        if (this.time  ) this.time  .pushValueUpdates(parse);
     }
 
 
@@ -14785,6 +15011,15 @@ extends GNumberType
                 return false;
 
         return super.isCached();
+    }
+
+
+
+    pushValueUpdates(parse)
+    {
+        super.pushValueUpdates(parse);
+
+        this.inputs.forEach(i => i.pushValueUpdates(parse));
     }
 
 
@@ -14848,16 +15083,25 @@ extends GArithmetic
         }
 
         
-        if (parse.isLastRepeat())
-        {
-            genPushUpdateValue(parse, this.nodeId, 'operation', op);
-            genPushUpdateValue(parse, this.nodeId, 'value',     this.value);
-        }
+        this.updateValues =
+        [
+            ['operation', op        ],
+            ['value',     this.value]
+        ];
 
 
         this.validate();
 
         return this;
+    }
+
+
+
+    pushValueUpdates(parse)
+    {
+        super.pushValueUpdates(parse);
+
+        if (this.operation) this.operation.pushValueUpdates(parse);
     }
 
 
@@ -14899,8 +15143,7 @@ extends GArithmetic
 
         this.value = await evalAddInputs(this.inputs, parse);
         
-        if (parse.isLastRepeat())
-            genPushUpdateValue(parse, this.nodeId, 'value', this.value);
+        this.updateValues = [['value', this.value]];
 
         this.validate();
 
@@ -14983,8 +15226,7 @@ extends GArithmetic
         this.value = await evalSubtractInputs(this.inputs, parse);
 
 
-        if (parse.isLastRepeat())
-            genPushUpdateValue(parse, this.nodeId, 'value', this.value);
+        this.updateValues = [['value', this.value]];
 
 
         this.validate();
@@ -15098,8 +15340,7 @@ extends GArithmetic
         this.value = await evalMultiplyInputs(this.inputs, parse);
 
 
-        if (parse.isLastRepeat())
-            genPushUpdateValue(parse, this.nodeId, 'value', this.value);
+        this.updateValues = [['value', this.value]];
 
 
         this.validate();
@@ -15185,8 +15426,7 @@ extends GArithmetic
         this.value = await evalDivideInputs(this.inputs, parse);
     
         
-        if (parse.isLastRepeat())
-            genPushUpdateValue(parse, this.nodeId, 'value', this.value);
+        this.updateValues = [['value', this.value]];
 
 
         this.validate();
@@ -15321,8 +15561,7 @@ extends GArithmetic
         this.value = await evalModuloInputs(this.inputs, parse);
 
 
-        if (parse.isLastRepeat())
-            genPushUpdateValue(parse, this.nodeId, 'value', this.value);
+        this.updateValues = [['value', this.value]];
 
 
         this.validate();
@@ -15457,8 +15696,7 @@ extends GArithmetic
         this.value = await evalExponentInputs(this.inputs, parse);
 
 
-        if (parse.isLastRepeat())
-            genPushUpdateValue(parse, this.nodeId, 'value', this.value);
+        this.updateValues = [['value', this.value]];
 
 
         this.validate();
@@ -15591,16 +15829,25 @@ extends GArithmetic
         }
 
         
-        if (parse.isLastRepeat())
-        {
-            genPushUpdateValue(parse, this.nodeId, 'operation', op);
-            genPushUpdateValue(parse, this.nodeId, 'value',     this.value);
-        }
+        this.updateValues =
+        [
+            ['operation', op        ],
+            ['value',     this.value]
+        ];
 
 
         this.validate();
 
         return this;
+    }
+
+
+
+    pushUpdateValues(parse)
+    {
+        super.pushUpdateValues(parse);
+
+        if (this.operation) this.operation.pushUpdateValues(parse);
     }
 
 
@@ -15643,8 +15890,7 @@ extends GArithmetic
         this.value = await evalNandInputs(this.inputs, parse);
         
 
-        if (parse.isLastRepeat())
-            genPushUpdateValue(parse, this.nodeId, 'value', this.value);
+        this.updateValues = [['value', this.value]];
 
 
         this.validate();
@@ -15755,8 +16001,7 @@ extends GArithmetic
         this.value = await evalAndInputs(this.inputs, parse);
         
 
-        if (parse.isLastRepeat())
-            genPushUpdateValue(parse, this.nodeId, 'value', this.value);
+        this.updateValues = [['value', this.value]];
 
         
         this.validate();
@@ -15870,8 +16115,7 @@ extends GArithmetic
         this.value = await evalOrInputs(this.inputs, parse);
         
 
-        if (parse.isLastRepeat())
-            genPushUpdateValue(parse, this.nodeId, 'value', this.value);
+        this.updateValues = [['value', this.value]];
 
 
         this.validate();
@@ -15982,8 +16226,7 @@ extends GArithmetic
         this.value = await evalXorInputs(this.inputs, parse);
         
 
-        if (parse.isLastRepeat())
-            genPushUpdateValue(parse, this.nodeId, 'value', this.value);
+        this.updateValues = [['value', this.value]];
 
 
         this.validate();
@@ -16077,6 +16320,16 @@ extends GNumberType
 
 
 
+    pushValueUpdates(parse)
+    {
+        super.pushValueUpdates(parse);
+
+        if (this.input0) this.input0.pushValueUpdates(parse);
+        if (this.input1) this.input1.pushValueUpdates(parse);
+    }
+
+
+
     invalidate()
     {
         super.invalidate();
@@ -16156,16 +16409,27 @@ extends GNumberType
         }
 
 
-        if (parse.isLastRepeat())
-        {
-            genPushUpdateValue(parse, this.nodeId, 'operation', op);
-            genPushUpdateValue(parse, this.nodeId, 'value',     this.value);
-        }
+        this.updateValues =
+        [
+            ['operation', op        ],
+            ['value',     this.value]
+        ];
 
 
         this.validate();
 
         return this;
+    }
+
+
+
+    pushValueUpdates(parse)
+    {
+        super.pushValueUpdates(parse);
+
+        if (this.input0   ) this.input0   .pushValueUpdates(parse);
+        if (this.input1   ) this.input1   .pushValueUpdates(parse);
+        if (this.operation) this.operation.pushValueUpdates(parse);
     }
 
 
@@ -16214,8 +16478,7 @@ extends GConditionBase
             parse);
             
 
-        if (parse.isLastRepeat())
-            genPushUpdateValue(parse, this.nodeId, 'value', this.value);
+        this.updateValues = [['value', this.value]];
 
 
         this.validate();
@@ -16259,8 +16522,7 @@ extends GConditionBase
             parse);
         
 
-        if (parse.isLastRepeat())
-            genPushUpdateValue(parse, this.nodeId, 'value', this.value);
+        this.updateValues = [['value', this.value]];
 
 
         this.validate();
@@ -16303,8 +16565,7 @@ extends GConditionBase
             parse);
             
 
-        if (parse.isLastRepeat())
-            genPushUpdateValue(parse, this.nodeId, 'value', this.value);
+        this.updateValues = [['value', this.value]];
 
 
         this.validate();
@@ -16347,8 +16608,7 @@ extends GConditionBase
             parse);
             
 
-        if (parse.isLastRepeat())
-            genPushUpdateValue(parse, this.nodeId, 'value', this.value);
+        this.updateValues = [['value', this.value]];
 
 
         this.validate();
@@ -16392,8 +16652,7 @@ extends GConditionBase
             parse);
         
 
-        if (parse.isLastRepeat())
-            genPushUpdateValue(parse, this.nodeId, 'value', this.value);
+        this.updateValues = [['value', this.value]];
 
 
         this.validate();
@@ -16439,8 +16698,7 @@ extends GConditionBase
             parse);
             
 
-        if (parse.isLastRepeat())
-            genPushUpdateValue(parse, this.nodeId, 'value', this.value);
+        this.updateValues = [['value', this.value]];
 
 
         this.validate();
@@ -16455,6 +16713,15 @@ class GTrigBase
 extends GNumberType
 {
     input;
+
+
+
+    pushValueUpdates(parse)
+    {
+        super.pushValueUpdates(parse);
+
+        if (this.input) this.input.pushValueUpdates(parse);
+    }
 
 
 
@@ -16518,16 +16785,26 @@ extends GNumberType
         }
 
 
-        if (parse.isLastRepeat())
-        {
-            genPushUpdateValue(parse, this.nodeId, 'value',    this.value);
-            genPushUpdateValue(parse, this.nodeId, 'function', func);
-        }
+        this.updateValues =
+        [
+            ['value',    this.value],
+            ['function', func      ]
+        ];
 
 
         this.validate();
 
         return this;
+    }
+
+
+
+    pushValueUpdates(parse)
+    {
+        super.pushValueUpdates(parse);
+
+        if (this.input   ) this.input   .pushValueUpdates(parse);
+        if (this.function) this.function.pushValueUpdates(parse);
     }
 
 
@@ -16574,8 +16851,7 @@ extends GTrigBase
         this.value = await evalSine(this.input, parse);
 
 
-        if (parse.isLastRepeat())
-            genPushUpdateValue(parse, this.nodeId, 'value', this.value);
+        this.updateValues = [['value', this.value]];
 
 
         this.validate();
@@ -16638,8 +16914,7 @@ extends GTrigBase
         this.value = await evalCosine(this.input, parse);
 
 
-        if (parse.isLastRepeat())
-            genPushUpdateValue(parse, this.nodeId, 'value', this.value);
+        this.updateValues = [['value', this.value]];
 
 
         this.validate();
@@ -16695,8 +16970,7 @@ extends GTrigBase
         this.value = await evalTangent(this.input, parse);
 
 
-        if (parse.isLastRepeat())
-            genPushUpdateValue(parse, this.nodeId, 'value', this.value);
+        this.updateValues = [['value', this.value]];
 
 
         this.validate();
@@ -16787,13 +17061,21 @@ extends GTextType
             this.value = new TextValue();//TextValue.NaN;
 
 
-        if (parse.isLastRepeat())
-            genPushUpdateValue(parse, this.nodeId, 'value', this.value);
+        this.updateValues = [['value', this.value]];
 
         
         this.validate();
 
         return this;
+    }
+
+
+
+    pushValueUpdates(parse)
+    {
+        super.pushValueUpdates(parse);
+
+        if (this.input) this.input.pushValueUpdates(parse);
     }
 
 
@@ -16862,13 +17144,21 @@ extends GOperator
             length = NumberValue.NaN;
     
 
-        if (parse.isLastRepeat())
-            genPushUpdateValue(parse, this.nodeId, 'length', length);
+        this.updateValues = [['length', length]];
 
 
         this.validate();
 
         return this;
+    }
+
+
+
+    pushValueUpdates(parse)
+    {
+        super.pushValueUpdates(parse);
+
+        if (this.input) this.input.pushValueUpdates();
     }
 
 
@@ -16946,17 +17236,28 @@ extends GTextType
             this.value = new TextValue();//TextValue.NaN;
 
 
-        if (parse.isLastRepeat())
-        {
-            genPushUpdateValue(parse, this.nodeId, 'value', this.value);
-            genPushUpdateValue(parse, this.nodeId, 'start', start);
-            genPushUpdateValue(parse, this.nodeId, 'end',   end);
-        }
+        this.updateValues =
+        [
+            ['value', this.value],
+            ['start', start     ],
+            ['end',   end       ]
+        ];
 
 
         this.validate();
 
         return this;
+    }
+
+
+
+    pushValueUpdates(parse)
+    {
+        super.pushValueUpdates(parse);
+
+        if (this.input) this.input.pushValueUpdates(parse);
+        if (this.start) this.start.pushValueUpdates(parse);
+        if (this.end  ) this.end  .pushValueUpdates(parse);
     }
 
 
@@ -17044,18 +17345,29 @@ extends GTextType
             this.value = new TextValue();//TextValue.NaN;
 
 
-        if (parse.isLastRepeat())
-        {
-            genPushUpdateValue(parse, this.nodeId, 'value',  this.value);
-            genPushUpdateValue(parse, this.nodeId, 'length', new NumberValue(length)); // used to set start and end maxima
-            genPushUpdateValue(parse, this.nodeId, 'start',  start);
-            genPushUpdateValue(parse, this.nodeId, 'end',    end);
-        }
+        this.updateValues =
+        [
+            ['value',  this.value             ],
+            ['length', new NumberValue(length)], // used to set start and end maxima
+            ['start',  start                  ],
+            ['end',    end                    ]
+        ];
         
 
         this.validate();
 
         return this;
+    }
+
+
+
+    pushValueUpdates(parse)
+    {
+        super.pushValueUpdates(parse);
+
+        if (this.input) this.input.pushValueUpdates(parse);
+        if (this.start) this.start.pushValueUpdates(parse);
+        if (this.end  ) this.end  .pushValueUpdates(parse);
     }
 
 
@@ -17116,16 +17428,26 @@ extends GTextType
         this.value = new TextValue(String.fromCharCode(code.value));
 
 
-        if (parse.isLastRepeat())
-        {
-            genPushUpdateValue(parse, this.nodeId, 'value', this.value);
-            genPushUpdateValue(parse, this.nodeId, 'code',  code);
-        }
+        this.updateValues =
+        [
+            ['value', this.value],
+            ['code',  code      ]
+        ];
 
 
         this.validate();
 
         return this;
+    }
+
+
+
+    pushValueUpdates(parse)
+    {
+        super.pushValueUpdates(parse);
+
+        if (this.input) this.input.pushValueUpdates(parse);
+        if (this.code ) this.code .pushValueUpdates(parse);
     }
 
 
@@ -17203,18 +17525,28 @@ extends GTextType
             this.value = new TextValue();//TextValue.NaN;
 
             
-        if (parse.isLastRepeat())
-        {
-            genPushUpdateValue(parse, this.nodeId, 'what',  _what);
-            genPushUpdateValue(parse, this.nodeId, 'with',  _with);
-        
-            genPushUpdateValue(parse, this.nodeId, 'value', this.value);
-        }
+        this.updateValues =
+        [
+            ['value', this.value],
+            ['what',  _what     ],
+            ['with',  _with     ]
+        ];
 
         
         this.validate();
 
         return this;
+    }
+
+
+
+    pushValueUpdates(parse)
+    {
+        super.pushValueUpdates(parse);
+
+        if (this.input) this.input.pushValueUpdates(parse);
+        if (this.what ) this.what .pushValueUpdates(parse);
+        if (this.with ) this.with .pushValueUpdates(parse);
     }
 
 
@@ -17264,13 +17596,22 @@ extends GTextType
         this.value = await evalJoinInputs(this.inputs, parse);
         
 
-        if (parse.isLastRepeat())
+        this.updateValues =
             genPushUpdateValue(parse, this.nodeId, 'value', this.value);
 
 
         this.validate();
 
         return this;
+    }
+
+
+
+    pushValueUpdates(parse)
+    {
+        super.pushValueUpdates(parse);
+
+        this.inputs.forEach(i => i.pushValueUpdates(parse));
     }
 
 
@@ -17377,16 +17718,27 @@ extends GOperator
         }
     
 
-        if (parse.isLastRepeat())
-        {
-            genPushUpdateValue(parse, this.nodeId, 'value',     this.value);
-            genPushUpdateValue(parse, this.nodeId, 'separator', separator);
-        }
+        this.updateValues =
+        [
+            ['value',     this.value],
+            ['separator', separator ]
+        ];
         
 
         this.validate();
 
         return this;
+    }
+
+
+
+    pushValueUpdates(parse)
+    {
+        super.pushValueUpdates(parse);
+
+        if (this.input    ) this.input    .pushValueUpdates(parse);
+        if (this.value    ) this.value    .pushValueUpdates(parse);
+        if (this.separator) this.separator.pushValueUpdates(parse);
     }
 
 
@@ -17474,16 +17826,26 @@ extends GTextType
         }
 
 
-        if (parse.isLastRepeat())
-        {
-            genPushUpdateValue(parse, this.nodeId, 'value',   this.value);
-            genPushUpdateValue(parse, this.nodeId, 'request', request   );
-        }
+        this.updateValues =
+        [
+            ['value',   this.value],
+            ['request', request   ]
+        ];
         
         
         this.validate();
 
         return this;
+    }
+
+
+
+    pushValueUpdates(parse)
+    {
+        super.pushValueUpdates(parse);
+
+        if (this.input  ) this.input  .pushValueUpdates(parse);
+        if (this.request) this.request.pushValueUpdates(parse);
     }
 
 
@@ -18212,19 +18574,32 @@ extends GColorType
                 NumberValue.NaN);
 
 
-        if (parse.isLastRepeat())
-        {
-            genPushUpdateValue(parse, this.nodeId, 'convert', this.convert    );
-            genPushUpdateValue(parse, this.nodeId, 'space',   this.value.space);
-            genPushUpdateValue(parse, this.nodeId, 'c1',      this.value.c1   );
-            genPushUpdateValue(parse, this.nodeId, 'c2',      this.value.c2   );
-            genPushUpdateValue(parse, this.nodeId, 'c3',      this.value.c3   );
-        }
+        this.updateValues = 
+        [
+            ['convert', this.convert    ],
+            ['space',   this.value.space],
+            ['c1',      this.value.c1   ],
+            ['c2',      this.value.c2   ],
+            ['c3',      this.value.c3   ]
+        ];
 
 
         this.validate();
 
         return this;
+    }
+
+
+
+    pushValueUpdates(parse)
+    {
+        super.pushValueUpdates(parse);
+
+        if (this.input) this.input.pushValueUpdates(parse);
+        if (this.space) this.space.pushValueUpdates(parse);
+        if (this.c1   ) this.c1   .pushValueUpdates(parse);
+        if (this.c2   ) this.c2   .pushValueUpdates(parse);
+        if (this.c3   ) this.c3   .pushValueUpdates(parse);
     }
 
 
@@ -18326,7 +18701,7 @@ extends GColorType
         {
             const input = (await this.input.eval(parse)).toValue();
 
-// console.log('input =', input);
+
             if (this.options.enabled)
             {
                 // if (   !isValid(this.value) 
@@ -18401,16 +18776,26 @@ extends GColorType
             this.value = ColorValue.NaN;
 
             
-        if (parse.isLastRepeat())
-        {
-            genPushUpdateValue(parse, this.nodeId, 'value',   this.value);
-            genPushUpdateValue(parse, this.nodeId, 'quality', quality);
-        }
+        this.updateValues =
+        [
+            ['value',   this.value],
+            ['quality', quality   ]
+        ];
         
 
         this.validate();
 
         return this;
+    }
+
+
+
+    pushValueUpdates(parse)
+    {
+        super.pushValueUpdates(parse);
+
+        if (this.input  ) this.input  .pushValueUpdates(parse);
+        if (this.quality) this.quality.pushValueUpdates(parse);
     }
 
 
@@ -18546,14 +18931,14 @@ extends GColorType
                             this.margin3 = new NumberValue(closest3);
                             this.value   = ColorValue.fromDataColor(this._color);
 
-                            if (parse.isLastRepeat())
-                            {
-                                genPushUpdateValue(parse, this.nodeId, 'order',   new NumberValue(closestOrder));
-                                genPushUpdateValue(parse, this.nodeId, 'margin1', new NumberValue(closest1    ));
-                                genPushUpdateValue(parse, this.nodeId, 'margin2', new NumberValue(closest2    ));
-                                genPushUpdateValue(parse, this.nodeId, 'margin3', new NumberValue(closest3    ));
-                                genPushUpdateValue(parse, this.nodeId, 'value',   this.value);
-                            }
+                            this.updateValues =
+                            [
+                                ['order',   new NumberValue(closestOrder)],
+                                ['margin1', new NumberValue(closest1    )],
+                                ['margin2', new NumberValue(closest2    )],
+                                ['margin3', new NumberValue(closest3    )],
+                                ['value',   this.value                   ]
+                            ];
                         }
                         else
                         {
@@ -18563,14 +18948,14 @@ extends GColorType
                             this.margin3 = NumberValue.NaN;
                             this.value   = ColorValue .NaN;
 
-                            if (parse.isLastRepeat())
-                            {
-                                genPushUpdateValue(parse, this.nodeId, 'order',   NumberValue.NaN);
-                                genPushUpdateValue(parse, this.nodeId, 'margin1', NumberValue.NaN);
-                                genPushUpdateValue(parse, this.nodeId, 'margin2', NumberValue.NaN);
-                                genPushUpdateValue(parse, this.nodeId, 'margin3', NumberValue.NaN);
-                                genPushUpdateValue(parse, this.nodeId, 'value',   ColorValue .NaN);
-                            }
+                            this.updateValues =
+                            [
+                                ['order',   NumberValue.NaN],
+                                ['margin1', NumberValue.NaN],
+                                ['margin2', NumberValue.NaN],
+                                ['margin3', NumberValue.NaN],
+                                ['value',   ColorValue .NaN]
+                            ];
                         }
                     //}
                 //}
@@ -18583,14 +18968,14 @@ extends GColorType
                 this.margin3 = NumberValue.NaN;
                 this.value   = input;
 
-                if (parse.isLastRepeat())
-                {
-                    genPushUpdateValue(parse, this.nodeId, 'order'  , this.order  );
-                    genPushUpdateValue(parse, this.nodeId, 'margin1', this.margin1);
-                    genPushUpdateValue(parse, this.nodeId, 'margin2', this.margin2);
-                    genPushUpdateValue(parse, this.nodeId, 'margin3', this.margin3);
-                    genPushUpdateValue(parse, this.nodeId, 'value',   this.value  );
-                }
+                this.updateValues =
+                [
+                    ['order'  , this.order  ],
+                    ['margin1', this.margin1],
+                    ['margin2', this.margin2],
+                    ['margin3', this.margin3],
+                    ['value',   this.value  ]
+                ];
             }
         }
         else
@@ -18601,20 +18986,33 @@ extends GColorType
             this.margin3 = NumberValue.NaN;
             this.value   = ColorValue .NaN;
 
-            if (parse.isLastRepeat())
-            {
-                genPushUpdateValue(parse, this.nodeId, 'order',   NumberValue.NaN);
-                genPushUpdateValue(parse, this.nodeId, 'margin1', NumberValue.NaN);
-                genPushUpdateValue(parse, this.nodeId, 'margin2', NumberValue.NaN);
-                genPushUpdateValue(parse, this.nodeId, 'margin3', NumberValue.NaN);
-                genPushUpdateValue(parse, this.nodeId, 'value',   ColorValue .NaN);
-            }
+            this.updateValues =
+            [
+                ['order',   NumberValue.NaN],
+                ['margin1', NumberValue.NaN],
+                ['margin2', NumberValue.NaN],
+                ['margin3', NumberValue.NaN],
+                ['value',   ColorValue .NaN]
+            ];
         }
 
 
         this.validate();
 
         return this;
+    }
+
+
+
+    pushValueUpdates(parse)
+    {
+        super.pushValueUpdates(parse);
+
+        if (this.input  ) this.input  .pushValueUpdates(parse);
+        if (this.order  ) this.order  .pushValueUpdates(parse);
+        if (this.margin1) this.margin1.pushValueUpdates(parse);
+        if (this.margin2) this.margin2.pushValueUpdates(parse);
+        if (this.margin3) this.margin3.pushValueUpdates(parse);
     }
 
 
@@ -18716,22 +19114,22 @@ extends GColorType
             }
 
 
-            if (parse.isLastRepeat())
-            {
-                genPushUpdateValue(parse, this.nodeId, 'text', input0);
-                genPushUpdateValue(parse, this.nodeId, 'back', input1);
-            }
+            this.updateValues =
+            [
+                ['text', input0],
+                ['back', input1]
+            ];
         }
 
         else if (this.input0) 
         {
             const input0 = (await this.input0.eval(parse)).toValue();
 
-            if (parse.isLastRepeat())
-            {
-                genPushUpdateValue(parse, this.nodeId, 'text', input0.isValid() ? input0 : ColorValue.NaN);
-                genPushUpdateValue(parse, this.nodeId, 'back', ColorValue.NaN);
-            }
+            this.updateValues =
+            [
+                ['text', input0.isValid() ? input0 : ColorValue.NaN],
+                ['back', ColorValue.NaN                            ]
+            ];
             
             this.value    = ColorValue.NaN;
             this.contrast = NumberValue.NaN;
@@ -18741,11 +19139,11 @@ extends GColorType
         {
             const input1 = (await this.input1.eval(parse)).toValue();
 
-            if (parse.isLastRepeat())
-            {
-                genPushUpdateValue(parse, this.nodeId, 'text', ColorValue.NaN);
-                genPushUpdateValue(parse, this.nodeId, 'back', input1.isValid() ? input1 : ColorValue.NaN);
-            }
+            this.updateValues =
+            [
+                ['text', ColorValue.NaN                            ],
+                ['back', input1.isValid() ? input1 : ColorValue.NaN]
+            ];
 
             this.value    = input1.isValid() ? input1 : ColorValue.NaN;
             this.contrast = NumberValue.NaN;
@@ -18756,25 +19154,35 @@ extends GColorType
             this.value    = ColorValue.NaN;
             this.contrast = NumberValue.NaN;
 
-            if (parse.isLastRepeat())
-            {
-                genPushUpdateValue(parse, this.nodeId, 'text', ColorValue.NaN);
-                genPushUpdateValue(parse, this.nodeId, 'back', ColorValue.NaN);
-            }
+            this.updateValues =
+            [
+                ['text', ColorValue.NaN],
+                ['back', ColorValue.NaN]
+            ];
         }
         
 
 
-        if (parse.isLastRepeat())
-        {
-            genPushUpdateValue(parse, this.nodeId, 'standard', standard);
-            genPushUpdateValue(parse, this.nodeId, 'contrast', this.contrast);
-        }
+        this.updateValues.push(
+            ['standard', standard     ],
+            ['contrast', this.contrast]);
 
 
         this.validate();
 
         return this;
+    }
+
+
+
+    pushValueUpdates(parse)
+    {
+        super.pushValueUpdates(parse);
+
+        if (this.input0  ) this.input0  .pushValueUpdates(parse);
+        if (this.input1  ) this.input1  .pushValueUpdates(parse);
+        if (this.standard) this.standard.pushValueUpdates(parse);
+        if (this.contrast) this.contrast.pushValueUpdates(parse);
     }
 
 
@@ -18872,18 +19280,30 @@ extends GColorType
             this.value = ColorValue.NaN;
 
 
-        if (parse.isLastRepeat())
-        {
-            genPushUpdateValue(parse, this.nodeId, 'l',     l);
-            genPushUpdateValue(parse, this.nodeId, 'm',     m);
-            genPushUpdateValue(parse, this.nodeId, 's',     s);
-            genPushUpdateValue(parse, this.nodeId, 'value', this.value);
-        }
+        this.updateValues =
+        [
+            ['l',     l         ],
+            ['m',     m         ],
+            ['s',     s         ],
+            ['value', this.value]
+        ];
         
 
         this.validate();
 
         return this;
+    }
+
+
+
+    pushValueUpdates(parse)
+    {
+        super.pushValueUpdates(parse);
+
+        if (this.input ) this.input.pushValueUpdates(parse);
+        if (this.l     ) this.l    .pushValueUpdates(parse);
+        if (this.m     ) this.m    .pushValueUpdates(parse);
+        if (this.s     ) this.s    .pushValueUpdates(parse);
     }
 
 
@@ -18990,13 +19410,13 @@ extends GColorType
             this.value = ColorValue.NaN;
 
 
-        if (parse.isLastRepeat())
-        {
-            genPushUpdateValue(parse, this.nodeId, 'space',  space );
-            genPushUpdateValue(parse, this.nodeId, 'amount', amount);
-            genPushUpdateValue(parse, this.nodeId, 'gamma',  gamma );
-            genPushUpdateValue(parse, this.nodeId, 'value',  this.value);
-        }
+        this.updateValues =
+        [
+            ['space',  space     ],
+            ['amount', amount    ],
+            ['gamma',  gamma     ],
+            ['value',  this.value]
+        ];
         
 
         this.validate();
@@ -19035,6 +19455,19 @@ extends GColorType
                 lerp(c0, c1, f),
                 lerp(l0, l1, f) ];
         }
+    }
+
+
+
+    pushValueUpdates(parse)
+    {
+        super.pushValueUpdates(parse);
+
+        if (this.input0) this.input0.pushValueUpdates(parse);
+        if (this.input1) this.input1.pushValueUpdates(parse);
+        if (this.space ) this.space .pushValueUpdates(parse);
+        if (this.amount) this.amount.pushValueUpdates(parse);
+        if (this.gamma ) this.gamma .pushValueUpdates(parse);
     }
 
 
@@ -19131,17 +19564,29 @@ extends GColorType
             this.value = ColorValue.NaN;
 
 
-        if (parse.isLastRepeat())
-        {
-            genPushUpdateValue(parse, this.nodeId, 'value',   this.value);
-            genPushUpdateValue(parse, this.nodeId, 'mode',    mode );
-            genPushUpdateValue(parse, this.nodeId, 'opacity', opacity);
-        }
-        
+        this.updateValues = 
+        [
+            ['value',   this.value],
+            ['mode',    mode      ],
+            ['opacity', opacity   ]
+        ];
+
 
         this.validate();
         
         return this;
+    }
+
+
+
+    pushValueUpdates(parse)
+    {
+        super.pushValueUpdates(parse);
+
+        if (this.input0 ) this.input0 .pushValueUpdates(parse);
+        if (this.input1 ) this.input1 .pushValueUpdates(parse);
+        if (this.mode   ) this.mode   .pushValueUpdates(parse);
+        if (this.opacity) this.opacity.pushValueUpdates(parse);
     }
 
 
@@ -19624,12 +20069,22 @@ extends GOperator
             this.valid        = true;
 
 
-            if (parse.isLastRepeat())
-                genPushUpdateValue(parse, this.nodeId, 'value', this.result);
+            this.updateValues = [['value', this.result]];
         }
 
 
         return this;
+    }
+
+
+
+    pushValueUpdates(parse)
+    {
+        super.pushValueUpdates(parse);
+
+        if (this.input   ) this.input   .pushValueUpdates(parse);
+        if (this.fill    ) this.fill    .pushValueUpdates(parse);
+        if (this.position) this.position.pushValueUpdates(parse);
     }
 
 
@@ -19719,20 +20174,20 @@ extends GOperator
             this.value.props = props;
 
             
-        if (parse.isLastRepeat())
-        {
-            if (this.value.x     != undefined) genPushUpdateValue(parse, this.nodeId, 'x',     this.value.x    );
-            if (this.value.y     != undefined) genPushUpdateValue(parse, this.nodeId, 'y',     this.value.y    );
-            if (this.value.width != undefined) genPushUpdateValue(parse, this.nodeId, 'width', this.value.width);
+        this.updateValues = [];
 
-            if (   evalHeight // lines don't have height
-                && this.value.height != undefined)
-                genPushUpdateValue(parse, this.nodeId, 'height', this.value.height);
 
-            if (this.value.angle != undefined) genPushUpdateValue(parse, this.nodeId, 'angle',  this.value.angle );
+        if (this.value.x     != undefined) this.updateValues.push(['x',     this.value.x    ]);
+        if (this.value.y     != undefined) this.updateValues.push(['y',     this.value.y    ]);
+        if (this.value.width != undefined) this.updateValues.push(['width', this.value.width]);
 
-            if (this.value.props != undefined) genPushUpdateValue(parse, this.nodeId, 'props',  this.value.props);
-        }
+        if (   evalHeight // lines don't have height
+            && this.value.height != undefined)
+            this.updateValues.push(['height', this.value.height]);
+
+        if (this.value.angle != undefined) this.updateValues.push(['angle',  this.value.angle]);
+
+        if (this.value.props != undefined) this.updateValues.push(['props',  this.value.props]);
     }
 
 
@@ -19814,6 +20269,20 @@ extends GOperator
                 }
             }
         }
+    }
+
+
+
+    pushValueUpdates(parse)
+    {
+        super.pushValueUpdates(parse);
+
+        if (this.x     ) this.x     .pushValueUpdates(parse);
+        if (this.y     ) this.y     .pushValueUpdates(parse);
+        if (this.width ) this.width .pushValueUpdates(parse);
+        if (this.height) this.height.pushValueUpdates(parse);
+        if (this.angle ) this.angle .pushValueUpdates(parse);
+        if (this.props ) this.props .pushValueUpdates(parse);
     }
 
 
@@ -19917,11 +20386,11 @@ extends GShape
         }
 
        
-        if (parse.isLastRepeat())
-        {
-            genPushUpdateValue(parse, this.nodeId, 'value', this.value      );
-            genPushUpdateValue(parse, this.nodeId, 'round', this.value.round);
-        }
+        this.updateValues =
+        [
+            ['value', this.value      ],
+            ['round', this.value.round]
+        ];
 
 
         await this.evalShapeBase(parse, input);
@@ -19966,6 +20435,16 @@ extends GShape
 
 
         await super.evalObjects(parse);
+    }
+
+
+
+    pushValueUpdates(parse)
+    {
+        super.pushValueUpdates(parse);
+
+        if (this.input) this.input.pushValueUpdates(parse);
+        if (this.round) this.round.pushValueUpdates(parse);
     }
 
 
@@ -20062,8 +20541,7 @@ extends GShape
         }
 
 
-        if (parse.isLastRepeat())
-            genPushUpdateValue(parse, this.nodeId, 'value', this.value);
+        this.updateValues = [['value', this.value]];
 
 
         await this.evalShapeBase(parse, input, false);
@@ -20104,6 +20582,15 @@ extends GShape
 
         
         super.evalObjects(parse);
+    }
+
+
+
+    pushValueUpdates(parse)
+    {
+        super.pushValueUpdates(parse);
+
+        if (this.input) this.input.pushValueUpdates(parse);
     }
 
 
@@ -20189,8 +20676,7 @@ extends GShape
         }
 
 
-        if (parse.isLastRepeat())
-            genPushUpdateValue(parse, this.nodeId, 'value',  this.value       );
+        this.updateValues = [['value', this.value]];
 
 
         await this.evalShapeBase(parse, input);
@@ -20235,6 +20721,15 @@ extends GShape
        super.evalObjects(parse);
    }
    
+    
+        
+   pushValueUpdates(parse)
+   {
+       super.pushValueUpdates(parse);
+
+       if (this.input) this.input.pushValueUpdates(prase);
+   }
+
    
 
    toValue()
@@ -20258,7 +20753,7 @@ extends GShape
     {
         super.invalidate();
 
-        if (this.input ) this.input .invalidate();
+        if (this.input) this.input.invalidate();
     }
 }
 
@@ -20331,12 +20826,12 @@ extends GShape
         }
 
         
-        if (parse.isLastRepeat())
-        {
-            genPushUpdateValue(parse, this.nodeId, 'value',   this.value        );
-            genPushUpdateValue(parse, this.nodeId, 'round',   this.value.round  );
-            genPushUpdateValue(parse, this.nodeId, 'corners', this.value.corners);
-        }
+        this.updateValues =
+        [
+            ['value',   this.value        ],
+            ['round',   this.value.round  ],
+            ['corners', this.value.corners]
+        ];
         
 
         await this.evalShapeBase(parse, input);
@@ -20383,6 +20878,17 @@ extends GShape
 
         
         super.evalObjects(parse);
+    }
+
+
+
+    pushValueUpdates(parse)
+    {
+        super.pushValueUpdates(parse);
+
+        if (this.input  ) this.input  .pushValueUpdates(parse);
+        if (this.round  ) this.round  .pushValueUpdates(parse);
+        if (this.corners) this.corners.pushValueUpdates(parse);
     }
 
 
@@ -20499,13 +21005,13 @@ extends GShape
         }
 
              
-        if (parse.isLastRepeat())
-        {
-            genPushUpdateValue(parse, this.nodeId, 'value',  this.value       );
-            genPushUpdateValue(parse, this.nodeId, 'round',  this.value.round );
-            genPushUpdateValue(parse, this.nodeId, 'points', this.value.points);
-            genPushUpdateValue(parse, this.nodeId, 'convex', this.value.convex);
-        }
+        this.updateValues =
+        [
+            ['value',  this.value       ],
+            ['round',  this.value.round ],
+            ['points', this.value.points],
+            ['convex', this.value.convex]
+        ];
 
 
         await this.evalShapeBase(parse, input);
@@ -20555,6 +21061,18 @@ extends GShape
        
        super.evalObjects(parse);
    }
+
+
+
+   pushValueUpdates(parse)
+   {
+      super.pushValueUpdates(parse);
+
+      if (this.input ) this.input .pushValueUpdates(parse);
+      if (this.round ) this.round .pushValueUpdates(parse);
+      if (this.points) this.points.pushValueUpdates(parse);
+      if (this.convex) this.convex.pushValueUpdates(parse);
+    }
 
 
 
@@ -20719,23 +21237,23 @@ extends GShape
         }
 
        
-        if (parse.isLastRepeat())
-        {
-            genPushUpdateValue(parse, this.nodeId, 'value',         this.value              );
-            genPushUpdateValue(parse, this.nodeId, 'text',          this.value.text         );
-            genPushUpdateValue(parse, this.nodeId, 'x',             this.value.x            );
-            genPushUpdateValue(parse, this.nodeId, 'y',             this.value.y            );
-            genPushUpdateValue(parse, this.nodeId, 'width',         this.value.width        );
-            genPushUpdateValue(parse, this.nodeId, 'height',        this.value.height       );
-            genPushUpdateValue(parse, this.nodeId, 'angle',         this.value.angle        );
-            genPushUpdateValue(parse, this.nodeId, 'font',          this.value.font         );
-            genPushUpdateValue(parse, this.nodeId, 'style',         this.value.style        );
-            genPushUpdateValue(parse, this.nodeId, 'size',          this.value.size         );
-            genPushUpdateValue(parse, this.nodeId, 'alignH',        this.value.alignH       );
-            genPushUpdateValue(parse, this.nodeId, 'alignV',        this.value.alignV       );
-            genPushUpdateValue(parse, this.nodeId, 'lineHeight',    this.value.lineHeight   );
-            genPushUpdateValue(parse, this.nodeId, 'letterSpacing', this.value.letterSpacing);
-        }
+        this.updateValues =
+        [
+            ['value',         this.value              ],
+            ['text',          this.value.text         ],
+            ['x',             this.value.x            ],
+            ['y',             this.value.y            ],
+            ['width',         this.value.width        ],
+            ['height',        this.value.height       ],
+            ['angle',         this.value.angle        ],
+            ['font',          this.value.font         ],
+            ['style',         this.value.style        ],
+            ['size',          this.value.size         ],
+            ['alignH',        this.value.alignH       ],
+            ['alignV',        this.value.alignV       ],
+            ['lineHeight',    this.value.lineHeight   ],
+            ['letterSpacing', this.value.letterSpacing]
+        ];
         
 
         await this.evalShapeBase(parse, input);
@@ -20796,6 +21314,28 @@ extends GShape
 
         
         await super.evalObjects(parse);
+    }
+
+
+
+    pushValueUpdates(parse)
+    {
+        super.pushValueUpdates(parse);
+        
+        if (this.input        ) this.input        .pushValueUpdates(parse);
+        if (this.text         ) this.text         .pushValueUpdates(parse);
+        if (this.x            ) this.x            .pushValueUpdates(parse);
+        if (this.y            ) this.y            .pushValueUpdates(parse);
+        if (this.width        ) this.width        .pushValueUpdates(parse);
+        if (this.height       ) this.height       .pushValueUpdates(parse);
+        if (this.angle        ) this.angle        .pushValueUpdates(parse);
+        if (this.font         ) this.font         .pushValueUpdates(parse);
+        if (this.style        ) this.style        .pushValueUpdates(parse);
+        if (this.size         ) this.size         .pushValueUpdates(parse);
+        if (this.alignH       ) this.alignH       .pushValueUpdates(parse);
+        if (this.alignV       ) this.alignV       .pushValueUpdates(parse);
+        if (this.lineHeight   ) this.lineHeight   .pushValueUpdates(parse);
+        if (this.letterSpacing) this.letterSpacing.pushValueUpdates(parse);
     }
 
 
@@ -20940,15 +21480,15 @@ extends GShape
         }
 
 
-        if (parse.isLastRepeat())
-        {
-            genPushUpdateValue(parse, this.nodeId, 'value',   this.value        );
-            genPushUpdateValue(parse, this.nodeId, 'points',  this.value.points );
-            genPushUpdateValue(parse, this.nodeId, 'closed',  this.value.closed );
-            genPushUpdateValue(parse, this.nodeId, 'degree',  this.value.degree );
-            genPushUpdateValue(parse, this.nodeId, 'winding', this.value.winding);
-            genPushUpdateValue(parse, this.nodeId, 'round',   this.value.round  );
-        }
+        this.updateValues =
+        [
+            ['value',   this.value        ],
+            ['points',  this.value.points ],
+            ['closed',  this.value.closed ],
+            ['degree',  this.value.degree ],
+            ['winding', this.value.winding],
+            ['round',   this.value.round  ]
+        ];
 
 
         await this.evalShapeBase(parse, input);
@@ -21008,6 +21548,20 @@ extends GShape
 
         
         await super.evalObjects(parse);
+    }
+
+
+
+    pushValueUpdates(parse)
+    {
+        super.pushValueUpdates(parse);
+
+        if (this.input  ) this.input  .pushValueUpdates(parse);
+        if (this.points ) this.points .pushValueUpdates(parse);
+        if (this.closed ) this.closed .pushValueUpdates(parse);
+        if (this.degree ) this.degree .pushValueUpdates(parse);
+        if (this.winding) this.winding.pushValueUpdates(parse);
+        if (this.round  ) this.round  .pushValueUpdates(parse);
     }
 
 
@@ -21082,8 +21636,8 @@ extends GOperator
             copy.input = this.input.copy();
 
         //if (this.value) copy.value = this.value.copy();
-        if (this.x    ) copy.x     = this.x    .copy();
-        if (this.y    ) copy.y     = this.y    .copy();
+        if (this.x) copy.x = this.x.copy();
+        if (this.y) copy.y = this.y.copy();
 
         return copy;
     }
@@ -21114,12 +21668,12 @@ extends GOperator
         await this.evalObjects(parse, {x: x, y: y});
 
 
-        if (parse.isLastRepeat())
-        {
-            genPushUpdateValue(parse, this.nodeId, 'value', this.value);
-            genPushUpdateValue(parse, this.nodeId, 'x',     x         );
-            genPushUpdateValue(parse, this.nodeId, 'y',     y         );
-        }
+        this.updateValues =
+        [
+            ['value', this.value],
+            ['x',     x         ],
+            ['y',     y         ]
+        ];
 
 
         this.validate();
@@ -21164,6 +21718,17 @@ extends GOperator
 
         
         await super.evalObjects(parse);
+    }
+
+
+
+    pushValueUpdates(parse)
+    {
+        super.pushValueUpdates(parse);
+
+        if (this.input) this.input.pushValueUpdates(parse);
+        if (this.x    ) this.x    .pushValueUpdates(parse);
+        if (this.y    ) this.y    .pushValueUpdates(parse);
     }
 
 
@@ -21262,25 +21827,23 @@ extends GOperator
         });
 
 
-        if (parse.isLastRepeat())
-        {
-            genPushUpdateValue(parse, this.nodeId, 'value',   this.value);
-            genPushUpdateValue(parse, this.nodeId, 'angle',   angle     );
-            genPushUpdateValue(parse, this.nodeId, 'centerX', centerX   );
-            genPushUpdateValue(parse, this.nodeId, 'centerY', centerY   );
+        const bounds = new RectangleValue(
+            this.nodeId,
+            new NumberValue(_bounds.x     ), 
+            new NumberValue(_bounds.y     ), 
+            new NumberValue(_bounds.width ),
+            new NumberValue(_bounds.height),
+            new NumberValue(0),
+            new NumberValue(0));
 
-
-            const bounds = new RectangleValue(
-                this.nodeId,
-                new NumberValue(_bounds.x     ), 
-                new NumberValue(_bounds.y     ), 
-                new NumberValue(_bounds.width ),
-                new NumberValue(_bounds.height),
-                new NumberValue(0),
-                new NumberValue(0));
-
-            genPushUpdateValue(parse, this.nodeId, 'bounds', bounds);
-        }
+        this.updateValues =
+        [
+            ['value',   this.value],
+            ['angle',   angle     ],
+            ['centerX', centerX   ],
+            ['centerY', centerY   ],
+            ['bounds',  bounds    ]
+        ];
 
 
         this.validate();
@@ -21411,6 +21974,18 @@ extends GOperator
 
 
 
+    pushValueUpdates(parse)
+    {
+        super.pushValueUpdates(parse);
+
+        if (this.input  ) this.input  .pushValueUpdates(parse);
+        if (this.angle  ) this.angle  .pushValueUpdates(parse);
+        if (this.centerX) this.centerX.pushValueUpdates(parse);
+        if (this.centerY) this.centerY.pushValueUpdates(parse);
+    }
+
+
+
     isValid()
     {
         return super.isValid()
@@ -21511,26 +22086,24 @@ extends GOperator
         });
 
 
-        if (parse.isLastRepeat())
-        {
-            genPushUpdateValue(parse, this.nodeId, 'value',   this.value);
-            genPushUpdateValue(parse, this.nodeId, 'x',       x         );
-            genPushUpdateValue(parse, this.nodeId, 'y',       y         );
-            genPushUpdateValue(parse, this.nodeId, 'centerX', centerX   );
-            genPushUpdateValue(parse, this.nodeId, 'centerY', centerY   );
+        const bounds = new RectangleValue(
+            this.nodeId,
+            new NumberValue(_bounds.x     ), 
+            new NumberValue(_bounds.y     ), 
+            new NumberValue(_bounds.width ),
+            new NumberValue(_bounds.height),
+            new NumberValue(0),
+            new NumberValue(0));
 
-
-            const bounds = new RectangleValue(
-                this.nodeId,
-                new NumberValue(_bounds.x     ), 
-                new NumberValue(_bounds.y     ), 
-                new NumberValue(_bounds.width ),
-                new NumberValue(_bounds.height),
-                new NumberValue(0),
-                new NumberValue(0));
-
-            genPushUpdateValue(parse, this.nodeId, 'bounds', bounds);
-        }
+        this.updateValues =
+        [
+            ['value',   this.value],
+            ['x',       x         ],
+            ['y',       y         ],
+            ['centerX', centerX   ],
+            ['centerY', centerY   ],
+            ['bounds',  bounds    ]
+        ];
         
 
         this.validate();
@@ -21671,6 +22244,19 @@ extends GOperator
 
 
 
+    pushValueUpdates(parse)
+    {
+        super.pushValueUpdates(parse);
+
+        if (this.input  ) this.input  .pushValueUpdates(parse);
+        if (this.x      ) this.x      .pushValueUpdates(parse);
+        if (this.y      ) this.y      .pushValueUpdates(parse);
+        if (this.centerX) this.centerX.pushValueUpdates(parse);
+        if (this.centerY) this.centerY.pushValueUpdates(parse);
+    }
+
+
+
     isValid()
     {
         return super.isValid()
@@ -21763,12 +22349,12 @@ extends GOperator
         }
 
        
-        if (parse.isLastRepeat())
-        {
-            genPushUpdateValue(parse, this.nodeId, 'value', this.value);
-            genPushUpdateValue(parse, this.nodeId, 'x',     x         );
-            genPushUpdateValue(parse, this.nodeId, 'y',     y         );
-        }
+        this.updateValues =
+        [
+            ['value', this.value],
+            ['x',     x         ],
+            ['y',     y         ]
+        ];
 
 
         await this.evalObjects(parse);
@@ -21801,6 +22387,17 @@ extends GOperator
 
         
         await super.evalObjects(parse);
+    }
+
+
+
+    pushValueUpdates(parse)
+    {
+        super.pushValueUpdates(parse);
+
+        if (this.input) this.input.pushValueUpdates(parse);
+        if (this.x    ) this.x    .pushValueUpdates(parse);
+        if (this.y    ) this.y    .pushValueUpdates(parse);
     }
 
 
@@ -21898,8 +22495,7 @@ extends GShape
             this.value = FillValue.NaN;
 
 
-        if (parse.isLastRepeat())
-            genPushUpdateValue(parse, this.nodeId, 'value', this.value);
+        this.updateValues = [['value', this.value]];
 
 
         this.validate();
@@ -21926,11 +22522,29 @@ extends GShape
                       Math.round(options.rgba[0] * 0xff)
               + ' ' + Math.round(options.rgba[1] * 0xff)
               + ' ' + Math.round(options.rgba[2] * 0xff)
-              + ' ' + Math.round(options.rgba[3] * 100 )]
+              + ' ' + Math.round(options.rgba[3] * 100 ) ]
         ];
 
 
         this.colorStyle = colorStyle;
+    }
+
+
+
+    pushValueUpdates(parse)
+    {
+        super.pushValueUpdates(parse);
+
+        if (this.colorStyle) this.colorStyle.pushValueUpdates(parse);
+    }
+
+
+
+    invalidate()
+    {
+        super.invalidate();
+
+        if (this.colorStyle) this.colorStyle.invalidate();
     }
 }
 
@@ -21993,16 +22607,27 @@ extends GOperator
         }
 
 
-        if (parse.isLastRepeat())
-        {
-            genPushUpdateValue(parse, this.nodeId, 'color',   this.value.color  );
-            genPushUpdateValue(parse, this.nodeId, 'opacity', this.value.opacity);
-        }
+        this.updateValues =
+        [
+            ['color',   this.value.color  ],
+            ['opacity', this.value.opacity]
+        ];
         
 
         this.validate();
 
         return this;
+    }
+
+
+
+    pushValueUpdates(parse)
+    {
+        super.pushValueUpdates(parse);
+
+        if (this.input  ) this.input  .pushValueUpdates(parse);
+        if (this.color  ) this.color  .pushValueUpdates(parse);
+        if (this.opacity) this.opacity.pushValueUpdates(parse);
     }
     
     
@@ -22110,14 +22735,14 @@ extends GShape
         }
 
 
-        if (parse.isLastRepeat())
-        {
-            genPushUpdateValue(parse, this.nodeId, 'fill',   this.value.fill  );
-            genPushUpdateValue(parse, this.nodeId, 'weight', this.value.weight);
-            genPushUpdateValue(parse, this.nodeId, 'fit',    this.value.fit   );
-            genPushUpdateValue(parse, this.nodeId, 'join',   this.value.join  );
-            genPushUpdateValue(parse, this.nodeId, 'miter',  this.value.miter );
-        }
+        this.updateValues =
+        [
+            ['fill',   this.value.fill  ],
+            ['weight', this.value.weight],
+            ['fit',    this.value.fit   ],
+            ['join',   this.value.join  ],
+            ['miter',  this.value.miter ]
+        ];
         
 
         this.validate();
@@ -22138,7 +22763,20 @@ extends GShape
         else
             return fill;
     }
-    
+
+
+
+    pushValueUpdates(parse)
+    {
+        super.pushValueUpdates(parse);
+
+        if (this.input ) this.input .pushValueUpdates(parse);
+        if (this.fill  ) this.fill  .pushValueUpdates(parse);
+        if (this.weight) this.weight.pushValueUpdates(parse);
+        if (this.fit   ) this.fit   .pushValueUpdates(parse);
+        if (this.join  ) this.join  .pushValueUpdates(parse);
+        if (this.miter ) this.miter .pushValueUpdates(parse);
+    }    
     
     
     toValue()
@@ -22220,19 +22858,20 @@ extends GOperator
         if (this.isCached())
             return this;
 
-        if (parse.isLastRepeat())
+
+        this.updateValues = [];
+
+
+        if (!isEmpty(this.params))
         {
-            if (!isEmpty(this.params))
+            for (let i = 0; i < this.params.length; i++)
             {
-                for (let i = 0; i < this.params.length; i++)
-                {
-                    const param = await this.params[i].eval(parse);
-                    genPushUpdateValue(parse, this.nodeId, this.paramIds[i], param.toValue());
-                }
+                const param = await this.params[i].eval(parse);
+                this.updateValues.push([this.paramIds[i], param.toValue()]);
             }
-            else
-                genPushUpdateValue(parse, this.nodeId, '', NullValue);
         }
+        else
+            this.updateValues.push(['', NullValue]);
                 
         
         this.validate();
@@ -22315,13 +22954,21 @@ extends GOperator
             this.value = NullValue;
 
 
-        if (parse.isLastRepeat())
-            genPushUpdateValue(parse, this.nodeId, 'value', this.value);
+        this.updateValues = [['value', this.value]];
 
 
         this.validate();
 
         return this;
+    }
+
+
+
+    pushValueUpdates(parse)
+    {
+        super.pushValueUpdates(parse);
+
+        if (this.input) this.input.pushValueUpdates(parse);
     }
 
 
@@ -22372,8 +23019,7 @@ extends GOperator
         this.value = NullValue;
 
 
-        if (parse.isLastRepeat())
-            genPushUpdateValue(parse, this.nodeId, 'value', this.value);
+        this.updateValues = [['value', this.value]];
         
         
         this.validate();
@@ -22939,7 +23585,9 @@ function genRequest(request)
         for (const node of    paramNodes) await node.eval(parse);
         for (const node of topLevelNodes) await node.eval(parse);
 
+        for (const node of topLevelNodes) node.pushValueUpdates(parse);
 
+        
         for (const node of parse.parsedNodes)
         {
             node.objects.forEach(o => genPushUpdateObject(parse, o));
@@ -37505,25 +38153,10 @@ function getSmoothSegment(_pointP, _point, _pointN)
     const k     = 4 * (Math.sqrt(2) - 1) / 3;        // or use the value 0.55191502449 from http://spencermortensen.com/articles/bezier-circle/
 	const kCorr = 0.9993391093366649465402826439248; // slight improvement (see Bézier Curves p. 13, Gernot Hoffmann);
 
-    let f;
-    
-    console.log('a =', a);    
-    if (a > Tau/4)
-    {
-        f = 1/3 + (k*kCorr - 1/3) * Math.sin(a); //k*kCorr * Math.sin(a);
-
-        // const mind = Math.min(distance(_pp, _p), distance(_p, _pn));
-        // const maxd = Math.max(distance(_pp, _p), distance(_p, _pn));
-
-        // f = f + (1/3 - f) * (1 - mind/maxd);
-    }
-    else
-    {
-        f = 1/3 + (k*kCorr - 1/3) * (1 - Math.cos(a)); //k*kCorr * Math.sin(a);
-        // const ha = halfArcAngle(_pp, _p, _pn);
-        // console.log('aa =', ha);
-        // f = 4/3 * Math.tan(Math.abs(ha)/4);
-    }
+    let f =
+        a > Tau/4
+        ? 1/3 + (k*kCorr - 1/3) * Math.sin(a)
+        : 1/3 + (k*kCorr - 1/3) * (1 - Math.cos(a));
     
 
     const pp = addv(_p, mulvs(unitv(v), -lengthv(v)/2 * f));
@@ -37620,10 +38253,12 @@ class GNode
 
     valid; // has been evaluated
 
-    listId  = -1;
+    listId       = -1;
 
-    options = {};
-    data    = {}; // for type conversion info
+    options      = {};
+    data         = {}; // for type conversion info
+
+    updateValues = [];
 
 
 
@@ -37675,6 +38310,14 @@ class GNode
     isValid() // is a valid value
     {
         return false;
+    }
+
+
+    
+    pushValueUpdates(parse)
+    {
+        for (const value of this.updateValues)
+            genPushUpdateValue(parse, this.nodeId, value[0], value[1]);
     }
 
 
@@ -37836,7 +38479,7 @@ extends GNode
 
     value;
 
-   
+
     feedbackValue = null; // () => {}
 
 
@@ -37911,7 +38554,7 @@ extends GNode
     }
 
 
-    
+
     toValue()
     {
         return null;
@@ -37998,22 +38641,37 @@ extends GOperator
         this.param = this.node.paramFromId(this.paramId);
 
 
-        if (isValid(this.param)) // could have been deleted from OpRepeat for example
+        console.log('this.node =', this.node);
+        if (isValid(this.param))
         {
             // if (   this.feedbackValue)
             //     //&& this.param.type == NUMBER_VALUE)
             //     this.param = this.feedbackValue();
-
-            const value = (await this.param.eval(parse)).toValue();
-
+            
+            if (   !this.node.valid
+                || !this.value) // could have been deleted from OpRepeat for example
+            {
+                const value = (await this.param.eval(parse)).toValue();
+                this.value = value;
+            }
+            
             //this.param.feedbackValue = null;
-            return this.value = value;
+            return this.value;
         }
         else
         {
             //this.param.feedbackValue = null;
             return this.value = NullValue;
         }
+    }
+
+
+
+    pushValueUpdates(parse)
+    {
+        super.pushValueUpdates(parse);
+
+        if (this.node) this.node.pushValueUpdates(parse);
     }
 
 
@@ -40711,13 +41369,21 @@ extends GOperator
         }
 
 
-        if (parse.isLastRepeat())
-            genPushUpdateValue(parse, this.nodeId, 'value', this.value);
+        this.updateValues = [['value', this.value]];
 
 
         this.validate();
 
         return this;
+    }
+
+
+
+    pushValueUpdates(parse)
+    {
+        super.pushValueUpdates(parse);
+
+        this.inputs.forEach(i => i.pushValueUpdates(parse));
     }
 
 
@@ -40799,13 +41465,21 @@ extends GOperator
 
 
 
-        if (parse.isLastRepeat())
-            genPushUpdateValue(parse, this.nodeId, 'value', this.value);
+        this.updateValues = [['value', this.value]];
 
 
         this.validate();
 
         return this;
+    }
+
+
+
+    pushValueUpdates(parse)
+    {
+        super.pushValueUpdates(parse);
+
+        if (this.input) this.input.pushValueUpdates(parse);
     }
 
 
@@ -40821,7 +41495,7 @@ extends GOperator
     {
         super.invalidate();
 
-        if (this.input  ) this.input  .invalidate();
+        if (this.input) this.input.invalidate();
     }
 }
 
@@ -40887,25 +41561,25 @@ extends GOperator
         }
 
 
-        if (parse.isLastRepeat())
+        this.updateValues = [];
+
+
+        if (    this.value.isValid()
+            && !isEmpty(this.value.items))
         {
-            if (    this.value.isValid()
-                && !isEmpty(this.value.items))
+            for (let i = 0; i < this.value.items.length; i++)
             {
-                for (let i = 0; i < this.value.items.length; i++)
-                {
-                    const item = this.value.items[i];
+                const item = this.value.items[i];
 
-                    Object.assign(this, {['item' + i]: item});
-                    genPushUpdateValue(parse, this.nodeId, 'item' + i, item);
-                }
+                Object.assign(this, {['item' + i]: item});
+                this.updateValues.push(['item' + i, item]);
             }
-            else
-                genPushUpdateValue(parse, this.nodeId, '', NullValue);
-
-
-            genPushUpdateValue(parse, this.nodeId, 'value', this.value);
         }
+        else
+            this.updateValues.push(['', NullValue]);
+
+
+        this.updateValues.push(['value', this.value]);
 
 
         for (let j = 0; j < this.objects.length; j++)
@@ -40915,6 +41589,15 @@ extends GOperator
         this.validate();
 
         return this;
+    }
+
+
+
+    pushValueUpdates(parse)
+    {
+        super.pushValueUpdates(parse);
+
+        if (this.input) this.input.pushValueUpdates(parse);
     }
 
 
@@ -41040,17 +41723,26 @@ extends GOperator
         }
 
 
-        if (parse.isLastRepeat())
-        {
-            genPushUpdateValue(parse, this.nodeId, 'value',  this.value);
-            genPushUpdateValue(parse, this.nodeId, 'length', new NumberValue(length));
-            genPushUpdateValue(parse, this.nodeId, 'index',  index);
-        }
+        this.updateValues =
+        [
+            ['value',  this.value             ],
+            ['length', new NumberValue(length)],
+            ['index',  index                  ]
+        ];
 
 
         this.validate();
 
         return this;
+    }
+
+
+
+    pushValueUpdates()
+    {
+        super.pushValueUpdates();
+
+        if (this.index) this.index.pushValueUpdates();
     }
 
 
@@ -41066,7 +41758,6 @@ extends GOperator
     {
         super.invalidate();
 
-        //if (this.input) this.input.invalidate();
         if (this.index) this.index.invalidate();
     }
 }
@@ -41119,13 +41810,21 @@ extends GOperator
             this.value = NumberValue.NaN;
 
 
-        if (parse.isLastRepeat())
-            genPushUpdateValue(parse, this.nodeId, 'value', this.value);
+        this.updateValues = [['value', this.value]];
 
 
         this.validate();
 
         return this;
+    }
+
+
+
+    pushValueUpdates(parse)
+    {
+        super.pushValueUpdates(parse);
+
+        if (this.input) this.input.pushValueUpdates(parse);
     }
 
 
@@ -41217,16 +41916,27 @@ extends GOperator
             this.value = NullValue;
 
 
-        if (parse.isLastRepeat())
-        {
-            genPushUpdateValue(parse, this.nodeId, 'condition', cond);
-            genPushUpdateValue(parse, this.nodeId, 'value',     this.value);
-        }
+        this.updateValues =
+        [
+            ['condition', cond      ],
+            ['value',     this.value]
+        ];
         
         
         this.validate();
 
         return this;
+    }
+
+
+
+    pushValueUpdates(parse)
+    {
+        super.pushValueUpdates(parse);
+
+        if (this.input0   ) this.input0   .pushValueUpdates(parse);
+        if (this.input1   ) this.input1   .pushValueUpdates(parse);
+        if (this.condition) this.condition.pushValueUpdates(parse);
     }
 
 
@@ -41298,11 +42008,11 @@ extends GOperator
             this.value = NullValue;
 
 
-        if (parse.isLastRepeat())
-        {
-            genPushUpdateValue(parse, this.nodeId, 'value',    this.value);
-            genPushUpdateValue(parse, this.nodeId, 'repeatId', repeatId);
-        }
+        this.updateValues =
+        [
+            ['value',    this.value],
+            ['repeatId', repeatId  ]
+        ];
 
 
         this.validate();
@@ -41401,15 +42111,17 @@ extends GOperator
         };
 
         //if (this.repeatId.type != NUMBER_VALUE)
-            parse.repeats.push(repeat);
-
-
+        
+        
         if (this.input)
         {
             const nItems = 
                 this.options.enabled 
                 ? count.value 
                 : 1;
+            
+            
+            parse.repeats.push(repeat);
 
 
             for (let i = 0, o = 0; i < nItems; i++)
@@ -41449,22 +42161,36 @@ extends GOperator
             }
 
 
+            console.assert(parse.repeats.at(-1) == repeat, 'invalid nested repeat');
+            parse.repeats.pop();
+
+                
             if (this.repeatId)
                 uninitRepeat(this.repeatId);
         }
 
 
-        if (parse.isLastRepeat())
-        {
-            genPushUpdateValue(parse, this.nodeId, 'value',    this.value     );
-            genPushUpdateValue(parse, this.nodeId, 'count',    count          );
-            genPushUpdateValue(parse, this.nodeId, 'repeatId', NumberValue.NaN);
-        }
+        this.updateValues =
+        [
+            ['value',    this.value     ],
+            ['count',    count          ],
+            ['repeatId', NumberValue.NaN]
+        ];
 
 
         this.validate();
 
         return this;
+    }
+
+
+
+    pushValueUpdates(parse)
+    {
+        super.pushValueUpdates(parse);
+
+        if (this.input) this.input.pushValueUpdates(parse);
+        if (this.count) this.count.pushValueUpdates(parse);
     }
 
 
@@ -41575,13 +42301,21 @@ extends GOperator
             : NullValue;
 
 
-        if (parse.isLastRepeat())
-            genPushUpdateValue(parse, this.nodeId, 'value', this.value);
+        this.updateValues = [['value', this.value]];
         
         
         this.validate();
 
         return this;
+    }
+
+
+
+    pushValueUpdates(parse)
+    {
+        super.pushValueUpdates(parse);
+
+        // if (this.input  ) this.input  .invalidate();
     }
 
 
@@ -41645,8 +42379,7 @@ extends GOperator
             : NullValue;
 
 
-        if (parse.isLastRepeat())
-            genPushUpdateValue(parse, this.nodeId, 'value', this.value);
+        this.updateValues = [['value', this.value]];
 
         
         this.validate();
@@ -41752,13 +42485,21 @@ extends GNumberType
             this.value = this.feedbackValue();
 
 
-        if (parse.isLastRepeat())
-            genPushUpdateValue(parse, this.nodeId, 'value', this.value);    
+        this.updateValues = [['value', this.value]];    
 
 
         this.validate();
 
         return this;
+    }
+
+
+
+    pushValueUpdates(parse)
+    {
+        super.pushValueUpdates(parse);
+
+        if (this.input) this.input.pushValueUpdates(parse);
     }
 
 
@@ -41829,13 +42570,21 @@ extends GNumberType
             this.value = NumberValue.NaN;
 
 
-        if (parse.isLastRepeat())
-            genPushUpdateValue(parse, this.nodeId, 'value', this.value);
+        this.updateValues = [['value', this.value]];
 
 
         this.validate();
 
         return this;
+    }
+
+
+
+    pushValueUpdates(parse)
+    {
+        super.pushValueUpdates(parse);
+
+        if (this.input) this.input.pushValueUpdates(parse);
     }
 
 
@@ -41898,13 +42647,21 @@ extends GNumberType
             this.value = NumberValue.NaN;
 
 
-        if (parse.isLastRepeat())
-            genPushUpdateValue(parse, this.nodeId, 'value', this.value);
+        this.updateValues = [['value', this.value]];
 
 
         this.validate();
 
         return this;
+    }
+
+
+
+    pushValueUpdates(parse)
+    {
+        super.pushValueUpdates(parse);
+
+        if (this.input) this.input.pushValueUpdates(parse);
     }
 
 
@@ -41991,12 +42748,12 @@ extends GNumberType
             this.value = NumberValue.NaN;
 
 
-        if (parse.isLastRepeat())
-        {
-            genPushUpdateValue(parse, this.nodeId, 'type',     type);
-            genPushUpdateValue(parse, this.nodeId, 'decimals', dec );
-            genPushUpdateValue(parse, this.nodeId, 'value',    this.value);
-        }
+        this.updateValues =
+        [
+            ['type',     type      ],
+            ['decimals', dec       ],
+            ['value',    this.value]
+        ];
 
 
         this.validate();
@@ -42088,17 +42845,28 @@ extends GNumberType
             this.value = this.feedbackValue();
 
 
-        if (parse.isLastRepeat())
-        {
-            genPushUpdateValue(parse, this.nodeId, 'value', this.value);
-            genPushUpdateValue(parse, this.nodeId, 'min',   min);
-            genPushUpdateValue(parse, this.nodeId, 'max',   max);
-        }
+        this.updateValues =
+        [
+            ['value', this.value],
+            ['min',   min       ],
+            ['max',   max       ]
+        ];
 
 
         this.validate();
 
         return this;
+    }
+
+
+
+    pushValueUpdates(parse)
+    {
+        super.pushValueUpdates(parse);
+
+        if (this.input) this.input.pushValueUpdates(parse);
+        if (this.min  ) this.min  .pushValueUpdates(parse);
+        if (this.max  ) this.max  .pushValueUpdates(parse);
     }
 
 
@@ -42179,16 +42947,25 @@ extends GNumberType
         this.value = new NumberValue(value, 10);
 
         
-        if (parse.isLastRepeat())
-        {
-            genPushUpdateValue(parse, this.nodeId, 'value',   this.value);
-            genPushUpdateValue(parse, this.nodeId, 'constant', constant);
-        }
+        this.updateValues =
+        [
+            ['value',   this.value],
+            ['constant', constant ]
+        ];
 
 
         this.validate();
 
         return this;
+    }
+
+
+
+    pushValueUpdates(parse)
+    {
+        super.pushValueUpdates(parse);
+
+        if (this.constant) this.constant.pushValueUpdates(parse);
     }
 
 
@@ -42296,12 +43073,12 @@ extends GNumberType
             Math.max(start.decimals, end.decimals));
 
         
-        if (parse.isLastRepeat())
-        {
-            genPushUpdateValue(parse, this.nodeId, 'start', start);
-            genPushUpdateValue(parse, this.nodeId, 'end',   end  );
-            genPushUpdateValue(parse, this.nodeId, 'from',  from );
-        }
+        this.updateValues =
+        [
+            ['from',  from ],
+            ['start', start],
+            ['end',   end  ]
+        ];
 
 
         if (  !isEmpty(parse.repeats)
@@ -42310,20 +43087,40 @@ extends GNumberType
             const repeat = parse.repeats.at(-1);
 
             this.current.value += step;
-                
-            if (repeat.iteration == repeat.total-1)
-            {
-                // if (parse.repeats.at(-1).nodeId != this.repeatNodeId)
-                //     console.warn('Generator: Invalid nested repeat on \'' + this.nodeId + '\'');
-                // else
-                    parse.repeats.pop();
-            }
+
+            // if (   parse.repeats.length == 1
+            //     && parse.repeats[0].iteration == parse.repeats[0].repeat.total-1)
+            // {
+            //     if (   this.repeatNodeId != NULL
+            //         && parse.repeats[0].nodeId != this.repeatNodeId)
+            //         console.warn('Generator: Invalid nested repeat on \'' + this.nodeId + '\'');
+    
+            //     //parse.repeats.pop();
+            // }
+                   
+            // if (repeat.iteration == repeat.total-1)
+            // {
+            //     // if (parse.repeats.at(-1).nodeId != this.repeatNodeId)
+            //     //     console.warn('Generator: Invalid nested repeat on \'' + this.nodeId + '\'');
+            //     // else
+            //         parse.repeats.pop();
+            // }
         }
 
 
         this.validate();
 
         return this;
+    }
+
+
+
+    pushValueUpdates(parse)
+    {
+        super.pushValueUpdates(parse);
+
+        if (this.start) this.start.pushValueUpdates(parse);
+        if (this.end  ) this.end  .pushValueUpdates(parse);
     }
 
 
@@ -42402,11 +43199,11 @@ extends GNumberType
             Math.max(start.decimals, step.decimals));
 
         
-        if (parse.isLastRepeat())
-        {
-            genPushUpdateValue(parse, this.nodeId, 'start', start);
-            genPushUpdateValue(parse, this.nodeId, 'step',  step );
-        }
+        this.updateValues =
+        [
+            ['start', start],
+            ['step',  step ]
+        ];
 
 
         if (!parse.repeats.find(r => r.nodeId == this.repeatNodeId))
@@ -42414,24 +43211,33 @@ extends GNumberType
 
         else if (  !isEmpty(parse.repeats)
                 && parse.repeats.at(-1).nodeId == this.repeatNodeId)
-        {
-            const repeat = parse.repeats.at(-1);
-
             this.current.value += step.toNumber();
 
-            if (repeat.iteration == repeat.total-1)
-            {
-                // if (parse.repeats.at(-1).nodeId != this.repeatNodeId)
-                //     console.warn('Generator: Invalid nested repeat on \'' + this.nodeId + '\'');
-                // else
-                    parse.repeats.pop();
-            }
-        }
+
+        // if (   parse.repeats.length == 1
+        //     && parse.repeats[0].iteration == parse.repeats[0].repeat.total-1)
+        // {
+        //     if (   this.repeatNodeId != NULL
+        //         && parse.repeats[0].nodeId != this.repeatNodeId)
+        //         console.warn('Generator: Invalid nested repeat on \'' + this.nodeId + '\'');
+
+        //     //parse.repeats.pop();
+        // }
 
 
         this.validate();
 
         return this;
+    }
+
+
+
+    pushValueUpdates(parse)
+    {
+        super.pushValueUpdates(parse);
+
+        if (this.start) this.start.pushValueUpdates(parse);
+        if (this.step ) this.step .pushValueUpdates(parse);
     }
 
 
@@ -42518,30 +43324,52 @@ extends GNumberType
         {
             if (!isEmpty(parse.repeats))
             {
-                const repeat = parse.repeats.at(-1);
+                // const repeat = parse.repeats.at(-1);
 
-                if (repeat.iteration == repeat.total-1)
-                {
-                    // if (parse.repeats.at(-1).nodeId != this.repeatNodeId)
-                    //     console.warn('Generator: Invalid nested repeat on \'' + this.nodeId + '\'');
-                    // else
-                        parse.repeats.pop();
-                }
+                // if (   parse.repeats.length == 1
+                //     && parse.repeats[0].iteration == parse.repeats[0].repeat.total-1)
+                // {
+                //     if (   this.repeatNodeId != NULL
+                //         && parse.repeats[0].nodeId != this.repeatNodeId)
+                //         console.warn('Generator: Invalid nested repeat on \'' + this.nodeId + '\'');
+        
+                //     //parse.repeats.pop();
+                // }
+
+
+                // if (repeat.iteration == repeat.total-1)
+                // {
+                //     // if (parse.repeats.at(-1).nodeId != this.repeatNodeId)
+                //     //     console.warn('Generator: Invalid nested repeat on \'' + this.nodeId + '\'');
+                //     // else
+                //         parse.repeats.pop();
+                // }
             }
         }
 
 
-        if (parse.isLastRepeat())
-        {
-            genPushUpdateValue(parse, this.nodeId, 'seed',  seed);
-            genPushUpdateValue(parse, this.nodeId, 'min',   min );
-            genPushUpdateValue(parse, this.nodeId, 'max',   max );
-        }
+        this.updateValues =
+        [
+            ['seed',  seed],
+            ['min',   min ],
+            ['max',   max ]
+        ];
         
 
         this.validate();
 
         return this;
+    }
+
+
+
+    pushUpdateValues(parse)
+    {
+        super.pushUpdateValues(parse);
+
+        if (this.seed) this.seed.pushUpdateValues(parse);
+        if (this.min ) this.min .pushUpdateValues(parse);
+        if (this.max ) this.max .pushUpdateValues(parse);
     }
 
 
@@ -42621,16 +43449,27 @@ extends GNumberType
             this.value = NumberValue.NaN;
 
 
-        if (parse.isLastRepeat())
-        {
-            genPushUpdateValue(parse, this.nodeId, 'amount', amount);
-            genPushUpdateValue(parse, this.nodeId, 'value',  this.value);
-        }
+        this.updateValues =
+        [
+            ['amount', amount    ],
+            ['value',  this.value]
+        ];
         
 
         this.validate();
 
         return this;
+    }
+
+
+
+    pushValueUpdates(parse)
+    {
+        super.pushValueUpdates(parse);
+
+        if (this.input0) this.input0.pushValueUpdates(parse);
+        if (this.input1) this.input1.pushValueUpdates(parse);
+        if (this.amount) this.amount.pushValueUpdates(parse);
     }
 
 
@@ -42707,17 +43546,27 @@ extends GNumberType
         this.value = new TextValue(str);
 
 
-        if (parse.isLastRepeat())
-        {
-            genPushUpdateValue(parse, this.nodeId, 'value',  this.value);
-            genPushUpdateValue(parse, this.nodeId, 'number', number    );
-            genPushUpdateValue(parse, this.nodeId, 'format', format    );
-        }
+        this.updateValues =
+        [
+            ['value',  this.value],
+            ['number', number    ],
+            ['format', format    ]
+        ];
 
 
         this.validate();
 
         return this;
+    }
+
+
+
+    pushValueUpdates(parse)
+    {
+        super.pushValueUpdates(parse);
+
+        if (this.number) this.number.pushValueUpdates(parse);
+        if (this.format) this.format.pushValueUpdates(parse);
     }
 
 
@@ -42877,17 +43726,28 @@ extends GNumberType
         
         // TODO push good result value to input 
 
-        if (parse.isLastRepeat())
-        {
-            genPushUpdateValue(parse, this.nodeId, 'value',   this.value);
-            genPushUpdateValue(parse, this.nodeId, 'current', current   );
-            genPushUpdateValue(parse, this.nodeId, 'target',  target    );
-        }
+        this.updateValues =
+        [
+            ['value',   this.value],
+            ['current', current   ],
+            ['target',  target    ]
+        ];
 
 
         this.validate();
 
         return this;
+    }
+
+
+
+    pushValueUpdates(parse)
+    {
+        super.pushValueUpdates(parse);
+
+        if (this.input  ) this.input  .pushValueUpdates(parse);
+        if (this.current) this.current.pushValueUpdates(parse);
+        if (this.target ) this.target .pushValueUpdates(parse);
     }
 
 
@@ -43027,21 +43887,35 @@ extends GNumberType
         }
         
 
-        if (parse.isLastRepeat())
-        {
-            genPushUpdateValue(parse, this.nodeId, 'value',  this.value);
-            genPushUpdateValue(parse, this.nodeId, 'from',   from      );
-            genPushUpdateValue(parse, this.nodeId, 'to',     to        );
-            genPushUpdateValue(parse, this.nodeId, 'curve',  curve     );
-            genPushUpdateValue(parse, this.nodeId, 'type',   type      );
-            genPushUpdateValue(parse, this.nodeId, 'length', length    );
-            genPushUpdateValue(parse, this.nodeId, 'time',   time      );
-        }
+        this.updateValues =
+        [
+            ['value',  this.value],
+            ['from',   from      ],
+            ['to',     to        ],
+            ['curve',  curve     ],
+            ['type',   type      ],
+            ['length', length    ],
+            ['time',   time      ]
+        ];
         
 
         this.validate();
 
         return this;
+    }
+
+
+
+    pushValueUpdates(parse)
+    {
+        super.pushValueUpdates(parse);
+
+        if (this.from  ) this.from  .pushValueUpdates(parse);
+        if (this.to    ) this.to    .pushValueUpdates(parse);
+        if (this.curve ) this.curve .pushValueUpdates(parse);
+        if (this.type  ) this.type  .pushValueUpdates(parse);
+        if (this.length) this.length.pushValueUpdates(parse);
+        if (this.time  ) this.time  .pushValueUpdates(parse);
     }
 
 
@@ -43075,6 +43949,15 @@ extends GNumberType
                 return false;
 
         return super.isCached();
+    }
+
+
+
+    pushValueUpdates(parse)
+    {
+        super.pushValueUpdates(parse);
+
+        this.inputs.forEach(i => i.pushValueUpdates(parse));
     }
 
 
@@ -43138,16 +44021,25 @@ extends GArithmetic
         }
 
         
-        if (parse.isLastRepeat())
-        {
-            genPushUpdateValue(parse, this.nodeId, 'operation', op);
-            genPushUpdateValue(parse, this.nodeId, 'value',     this.value);
-        }
+        this.updateValues =
+        [
+            ['operation', op        ],
+            ['value',     this.value]
+        ];
 
 
         this.validate();
 
         return this;
+    }
+
+
+
+    pushValueUpdates(parse)
+    {
+        super.pushValueUpdates(parse);
+
+        if (this.operation) this.operation.pushValueUpdates(parse);
     }
 
 
@@ -43189,8 +44081,7 @@ extends GArithmetic
 
         this.value = await evalAddInputs(this.inputs, parse);
         
-        if (parse.isLastRepeat())
-            genPushUpdateValue(parse, this.nodeId, 'value', this.value);
+        this.updateValues = [['value', this.value]];
 
         this.validate();
 
@@ -43273,8 +44164,7 @@ extends GArithmetic
         this.value = await evalSubtractInputs(this.inputs, parse);
 
 
-        if (parse.isLastRepeat())
-            genPushUpdateValue(parse, this.nodeId, 'value', this.value);
+        this.updateValues = [['value', this.value]];
 
 
         this.validate();
@@ -43388,8 +44278,7 @@ extends GArithmetic
         this.value = await evalMultiplyInputs(this.inputs, parse);
 
 
-        if (parse.isLastRepeat())
-            genPushUpdateValue(parse, this.nodeId, 'value', this.value);
+        this.updateValues = [['value', this.value]];
 
 
         this.validate();
@@ -43475,8 +44364,7 @@ extends GArithmetic
         this.value = await evalDivideInputs(this.inputs, parse);
     
         
-        if (parse.isLastRepeat())
-            genPushUpdateValue(parse, this.nodeId, 'value', this.value);
+        this.updateValues = [['value', this.value]];
 
 
         this.validate();
@@ -43611,8 +44499,7 @@ extends GArithmetic
         this.value = await evalModuloInputs(this.inputs, parse);
 
 
-        if (parse.isLastRepeat())
-            genPushUpdateValue(parse, this.nodeId, 'value', this.value);
+        this.updateValues = [['value', this.value]];
 
 
         this.validate();
@@ -43747,8 +44634,7 @@ extends GArithmetic
         this.value = await evalExponentInputs(this.inputs, parse);
 
 
-        if (parse.isLastRepeat())
-            genPushUpdateValue(parse, this.nodeId, 'value', this.value);
+        this.updateValues = [['value', this.value]];
 
 
         this.validate();
@@ -43881,16 +44767,25 @@ extends GArithmetic
         }
 
         
-        if (parse.isLastRepeat())
-        {
-            genPushUpdateValue(parse, this.nodeId, 'operation', op);
-            genPushUpdateValue(parse, this.nodeId, 'value',     this.value);
-        }
+        this.updateValues =
+        [
+            ['operation', op        ],
+            ['value',     this.value]
+        ];
 
 
         this.validate();
 
         return this;
+    }
+
+
+
+    pushUpdateValues(parse)
+    {
+        super.pushUpdateValues(parse);
+
+        if (this.operation) this.operation.pushUpdateValues(parse);
     }
 
 
@@ -43933,8 +44828,7 @@ extends GArithmetic
         this.value = await evalNandInputs(this.inputs, parse);
         
 
-        if (parse.isLastRepeat())
-            genPushUpdateValue(parse, this.nodeId, 'value', this.value);
+        this.updateValues = [['value', this.value]];
 
 
         this.validate();
@@ -44045,8 +44939,7 @@ extends GArithmetic
         this.value = await evalAndInputs(this.inputs, parse);
         
 
-        if (parse.isLastRepeat())
-            genPushUpdateValue(parse, this.nodeId, 'value', this.value);
+        this.updateValues = [['value', this.value]];
 
         
         this.validate();
@@ -44160,8 +45053,7 @@ extends GArithmetic
         this.value = await evalOrInputs(this.inputs, parse);
         
 
-        if (parse.isLastRepeat())
-            genPushUpdateValue(parse, this.nodeId, 'value', this.value);
+        this.updateValues = [['value', this.value]];
 
 
         this.validate();
@@ -44272,8 +45164,7 @@ extends GArithmetic
         this.value = await evalXorInputs(this.inputs, parse);
         
 
-        if (parse.isLastRepeat())
-            genPushUpdateValue(parse, this.nodeId, 'value', this.value);
+        this.updateValues = [['value', this.value]];
 
 
         this.validate();
@@ -44367,6 +45258,16 @@ extends GNumberType
 
 
 
+    pushValueUpdates(parse)
+    {
+        super.pushValueUpdates(parse);
+
+        if (this.input0) this.input0.pushValueUpdates(parse);
+        if (this.input1) this.input1.pushValueUpdates(parse);
+    }
+
+
+
     invalidate()
     {
         super.invalidate();
@@ -44446,16 +45347,27 @@ extends GNumberType
         }
 
 
-        if (parse.isLastRepeat())
-        {
-            genPushUpdateValue(parse, this.nodeId, 'operation', op);
-            genPushUpdateValue(parse, this.nodeId, 'value',     this.value);
-        }
+        this.updateValues =
+        [
+            ['operation', op        ],
+            ['value',     this.value]
+        ];
 
 
         this.validate();
 
         return this;
+    }
+
+
+
+    pushValueUpdates(parse)
+    {
+        super.pushValueUpdates(parse);
+
+        if (this.input0   ) this.input0   .pushValueUpdates(parse);
+        if (this.input1   ) this.input1   .pushValueUpdates(parse);
+        if (this.operation) this.operation.pushValueUpdates(parse);
     }
 
 
@@ -44504,8 +45416,7 @@ extends GConditionBase
             parse);
             
 
-        if (parse.isLastRepeat())
-            genPushUpdateValue(parse, this.nodeId, 'value', this.value);
+        this.updateValues = [['value', this.value]];
 
 
         this.validate();
@@ -44549,8 +45460,7 @@ extends GConditionBase
             parse);
         
 
-        if (parse.isLastRepeat())
-            genPushUpdateValue(parse, this.nodeId, 'value', this.value);
+        this.updateValues = [['value', this.value]];
 
 
         this.validate();
@@ -44593,8 +45503,7 @@ extends GConditionBase
             parse);
             
 
-        if (parse.isLastRepeat())
-            genPushUpdateValue(parse, this.nodeId, 'value', this.value);
+        this.updateValues = [['value', this.value]];
 
 
         this.validate();
@@ -44637,8 +45546,7 @@ extends GConditionBase
             parse);
             
 
-        if (parse.isLastRepeat())
-            genPushUpdateValue(parse, this.nodeId, 'value', this.value);
+        this.updateValues = [['value', this.value]];
 
 
         this.validate();
@@ -44682,8 +45590,7 @@ extends GConditionBase
             parse);
         
 
-        if (parse.isLastRepeat())
-            genPushUpdateValue(parse, this.nodeId, 'value', this.value);
+        this.updateValues = [['value', this.value]];
 
 
         this.validate();
@@ -44729,8 +45636,7 @@ extends GConditionBase
             parse);
             
 
-        if (parse.isLastRepeat())
-            genPushUpdateValue(parse, this.nodeId, 'value', this.value);
+        this.updateValues = [['value', this.value]];
 
 
         this.validate();
@@ -44745,6 +45651,15 @@ class GTrigBase
 extends GNumberType
 {
     input;
+
+
+
+    pushValueUpdates(parse)
+    {
+        super.pushValueUpdates(parse);
+
+        if (this.input) this.input.pushValueUpdates(parse);
+    }
 
 
 
@@ -44808,16 +45723,26 @@ extends GNumberType
         }
 
 
-        if (parse.isLastRepeat())
-        {
-            genPushUpdateValue(parse, this.nodeId, 'value',    this.value);
-            genPushUpdateValue(parse, this.nodeId, 'function', func);
-        }
+        this.updateValues =
+        [
+            ['value',    this.value],
+            ['function', func      ]
+        ];
 
 
         this.validate();
 
         return this;
+    }
+
+
+
+    pushValueUpdates(parse)
+    {
+        super.pushValueUpdates(parse);
+
+        if (this.input   ) this.input   .pushValueUpdates(parse);
+        if (this.function) this.function.pushValueUpdates(parse);
     }
 
 
@@ -44864,8 +45789,7 @@ extends GTrigBase
         this.value = await evalSine(this.input, parse);
 
 
-        if (parse.isLastRepeat())
-            genPushUpdateValue(parse, this.nodeId, 'value', this.value);
+        this.updateValues = [['value', this.value]];
 
 
         this.validate();
@@ -44928,8 +45852,7 @@ extends GTrigBase
         this.value = await evalCosine(this.input, parse);
 
 
-        if (parse.isLastRepeat())
-            genPushUpdateValue(parse, this.nodeId, 'value', this.value);
+        this.updateValues = [['value', this.value]];
 
 
         this.validate();
@@ -44985,8 +45908,7 @@ extends GTrigBase
         this.value = await evalTangent(this.input, parse);
 
 
-        if (parse.isLastRepeat())
-            genPushUpdateValue(parse, this.nodeId, 'value', this.value);
+        this.updateValues = [['value', this.value]];
 
 
         this.validate();
@@ -45077,13 +45999,21 @@ extends GTextType
             this.value = new TextValue();//TextValue.NaN;
 
 
-        if (parse.isLastRepeat())
-            genPushUpdateValue(parse, this.nodeId, 'value', this.value);
+        this.updateValues = [['value', this.value]];
 
         
         this.validate();
 
         return this;
+    }
+
+
+
+    pushValueUpdates(parse)
+    {
+        super.pushValueUpdates(parse);
+
+        if (this.input) this.input.pushValueUpdates(parse);
     }
 
 
@@ -45152,13 +46082,21 @@ extends GOperator
             length = NumberValue.NaN;
     
 
-        if (parse.isLastRepeat())
-            genPushUpdateValue(parse, this.nodeId, 'length', length);
+        this.updateValues = [['length', length]];
 
 
         this.validate();
 
         return this;
+    }
+
+
+
+    pushValueUpdates(parse)
+    {
+        super.pushValueUpdates(parse);
+
+        if (this.input) this.input.pushValueUpdates();
     }
 
 
@@ -45236,17 +46174,28 @@ extends GTextType
             this.value = new TextValue();//TextValue.NaN;
 
 
-        if (parse.isLastRepeat())
-        {
-            genPushUpdateValue(parse, this.nodeId, 'value', this.value);
-            genPushUpdateValue(parse, this.nodeId, 'start', start);
-            genPushUpdateValue(parse, this.nodeId, 'end',   end);
-        }
+        this.updateValues =
+        [
+            ['value', this.value],
+            ['start', start     ],
+            ['end',   end       ]
+        ];
 
 
         this.validate();
 
         return this;
+    }
+
+
+
+    pushValueUpdates(parse)
+    {
+        super.pushValueUpdates(parse);
+
+        if (this.input) this.input.pushValueUpdates(parse);
+        if (this.start) this.start.pushValueUpdates(parse);
+        if (this.end  ) this.end  .pushValueUpdates(parse);
     }
 
 
@@ -45334,18 +46283,29 @@ extends GTextType
             this.value = new TextValue();//TextValue.NaN;
 
 
-        if (parse.isLastRepeat())
-        {
-            genPushUpdateValue(parse, this.nodeId, 'value',  this.value);
-            genPushUpdateValue(parse, this.nodeId, 'length', new NumberValue(length)); // used to set start and end maxima
-            genPushUpdateValue(parse, this.nodeId, 'start',  start);
-            genPushUpdateValue(parse, this.nodeId, 'end',    end);
-        }
+        this.updateValues =
+        [
+            ['value',  this.value             ],
+            ['length', new NumberValue(length)], // used to set start and end maxima
+            ['start',  start                  ],
+            ['end',    end                    ]
+        ];
         
 
         this.validate();
 
         return this;
+    }
+
+
+
+    pushValueUpdates(parse)
+    {
+        super.pushValueUpdates(parse);
+
+        if (this.input) this.input.pushValueUpdates(parse);
+        if (this.start) this.start.pushValueUpdates(parse);
+        if (this.end  ) this.end  .pushValueUpdates(parse);
     }
 
 
@@ -45406,16 +46366,26 @@ extends GTextType
         this.value = new TextValue(String.fromCharCode(code.value));
 
 
-        if (parse.isLastRepeat())
-        {
-            genPushUpdateValue(parse, this.nodeId, 'value', this.value);
-            genPushUpdateValue(parse, this.nodeId, 'code',  code);
-        }
+        this.updateValues =
+        [
+            ['value', this.value],
+            ['code',  code      ]
+        ];
 
 
         this.validate();
 
         return this;
+    }
+
+
+
+    pushValueUpdates(parse)
+    {
+        super.pushValueUpdates(parse);
+
+        if (this.input) this.input.pushValueUpdates(parse);
+        if (this.code ) this.code .pushValueUpdates(parse);
     }
 
 
@@ -45493,18 +46463,28 @@ extends GTextType
             this.value = new TextValue();//TextValue.NaN;
 
             
-        if (parse.isLastRepeat())
-        {
-            genPushUpdateValue(parse, this.nodeId, 'what',  _what);
-            genPushUpdateValue(parse, this.nodeId, 'with',  _with);
-        
-            genPushUpdateValue(parse, this.nodeId, 'value', this.value);
-        }
+        this.updateValues =
+        [
+            ['value', this.value],
+            ['what',  _what     ],
+            ['with',  _with     ]
+        ];
 
         
         this.validate();
 
         return this;
+    }
+
+
+
+    pushValueUpdates(parse)
+    {
+        super.pushValueUpdates(parse);
+
+        if (this.input) this.input.pushValueUpdates(parse);
+        if (this.what ) this.what .pushValueUpdates(parse);
+        if (this.with ) this.with .pushValueUpdates(parse);
     }
 
 
@@ -45554,13 +46534,22 @@ extends GTextType
         this.value = await evalJoinInputs(this.inputs, parse);
         
 
-        if (parse.isLastRepeat())
+        this.updateValues =
             genPushUpdateValue(parse, this.nodeId, 'value', this.value);
 
 
         this.validate();
 
         return this;
+    }
+
+
+
+    pushValueUpdates(parse)
+    {
+        super.pushValueUpdates(parse);
+
+        this.inputs.forEach(i => i.pushValueUpdates(parse));
     }
 
 
@@ -45667,16 +46656,27 @@ extends GOperator
         }
     
 
-        if (parse.isLastRepeat())
-        {
-            genPushUpdateValue(parse, this.nodeId, 'value',     this.value);
-            genPushUpdateValue(parse, this.nodeId, 'separator', separator);
-        }
+        this.updateValues =
+        [
+            ['value',     this.value],
+            ['separator', separator ]
+        ];
         
 
         this.validate();
 
         return this;
+    }
+
+
+
+    pushValueUpdates(parse)
+    {
+        super.pushValueUpdates(parse);
+
+        if (this.input    ) this.input    .pushValueUpdates(parse);
+        if (this.value    ) this.value    .pushValueUpdates(parse);
+        if (this.separator) this.separator.pushValueUpdates(parse);
     }
 
 
@@ -45764,16 +46764,26 @@ extends GTextType
         }
 
 
-        if (parse.isLastRepeat())
-        {
-            genPushUpdateValue(parse, this.nodeId, 'value',   this.value);
-            genPushUpdateValue(parse, this.nodeId, 'request', request   );
-        }
+        this.updateValues =
+        [
+            ['value',   this.value],
+            ['request', request   ]
+        ];
         
         
         this.validate();
 
         return this;
+    }
+
+
+
+    pushValueUpdates(parse)
+    {
+        super.pushValueUpdates(parse);
+
+        if (this.input  ) this.input  .pushValueUpdates(parse);
+        if (this.request) this.request.pushValueUpdates(parse);
     }
 
 
@@ -46502,19 +47512,32 @@ extends GColorType
                 NumberValue.NaN);
 
 
-        if (parse.isLastRepeat())
-        {
-            genPushUpdateValue(parse, this.nodeId, 'convert', this.convert    );
-            genPushUpdateValue(parse, this.nodeId, 'space',   this.value.space);
-            genPushUpdateValue(parse, this.nodeId, 'c1',      this.value.c1   );
-            genPushUpdateValue(parse, this.nodeId, 'c2',      this.value.c2   );
-            genPushUpdateValue(parse, this.nodeId, 'c3',      this.value.c3   );
-        }
+        this.updateValues = 
+        [
+            ['convert', this.convert    ],
+            ['space',   this.value.space],
+            ['c1',      this.value.c1   ],
+            ['c2',      this.value.c2   ],
+            ['c3',      this.value.c3   ]
+        ];
 
 
         this.validate();
 
         return this;
+    }
+
+
+
+    pushValueUpdates(parse)
+    {
+        super.pushValueUpdates(parse);
+
+        if (this.input) this.input.pushValueUpdates(parse);
+        if (this.space) this.space.pushValueUpdates(parse);
+        if (this.c1   ) this.c1   .pushValueUpdates(parse);
+        if (this.c2   ) this.c2   .pushValueUpdates(parse);
+        if (this.c3   ) this.c3   .pushValueUpdates(parse);
     }
 
 
@@ -46616,7 +47639,7 @@ extends GColorType
         {
             const input = (await this.input.eval(parse)).toValue();
 
-// console.log('input =', input);
+
             if (this.options.enabled)
             {
                 // if (   !isValid(this.value) 
@@ -46691,16 +47714,26 @@ extends GColorType
             this.value = ColorValue.NaN;
 
             
-        if (parse.isLastRepeat())
-        {
-            genPushUpdateValue(parse, this.nodeId, 'value',   this.value);
-            genPushUpdateValue(parse, this.nodeId, 'quality', quality);
-        }
+        this.updateValues =
+        [
+            ['value',   this.value],
+            ['quality', quality   ]
+        ];
         
 
         this.validate();
 
         return this;
+    }
+
+
+
+    pushValueUpdates(parse)
+    {
+        super.pushValueUpdates(parse);
+
+        if (this.input  ) this.input  .pushValueUpdates(parse);
+        if (this.quality) this.quality.pushValueUpdates(parse);
     }
 
 
@@ -46836,14 +47869,14 @@ extends GColorType
                             this.margin3 = new NumberValue(closest3);
                             this.value   = ColorValue.fromDataColor(this._color);
 
-                            if (parse.isLastRepeat())
-                            {
-                                genPushUpdateValue(parse, this.nodeId, 'order',   new NumberValue(closestOrder));
-                                genPushUpdateValue(parse, this.nodeId, 'margin1', new NumberValue(closest1    ));
-                                genPushUpdateValue(parse, this.nodeId, 'margin2', new NumberValue(closest2    ));
-                                genPushUpdateValue(parse, this.nodeId, 'margin3', new NumberValue(closest3    ));
-                                genPushUpdateValue(parse, this.nodeId, 'value',   this.value);
-                            }
+                            this.updateValues =
+                            [
+                                ['order',   new NumberValue(closestOrder)],
+                                ['margin1', new NumberValue(closest1    )],
+                                ['margin2', new NumberValue(closest2    )],
+                                ['margin3', new NumberValue(closest3    )],
+                                ['value',   this.value                   ]
+                            ];
                         }
                         else
                         {
@@ -46853,14 +47886,14 @@ extends GColorType
                             this.margin3 = NumberValue.NaN;
                             this.value   = ColorValue .NaN;
 
-                            if (parse.isLastRepeat())
-                            {
-                                genPushUpdateValue(parse, this.nodeId, 'order',   NumberValue.NaN);
-                                genPushUpdateValue(parse, this.nodeId, 'margin1', NumberValue.NaN);
-                                genPushUpdateValue(parse, this.nodeId, 'margin2', NumberValue.NaN);
-                                genPushUpdateValue(parse, this.nodeId, 'margin3', NumberValue.NaN);
-                                genPushUpdateValue(parse, this.nodeId, 'value',   ColorValue .NaN);
-                            }
+                            this.updateValues =
+                            [
+                                ['order',   NumberValue.NaN],
+                                ['margin1', NumberValue.NaN],
+                                ['margin2', NumberValue.NaN],
+                                ['margin3', NumberValue.NaN],
+                                ['value',   ColorValue .NaN]
+                            ];
                         }
                     //}
                 //}
@@ -46873,14 +47906,14 @@ extends GColorType
                 this.margin3 = NumberValue.NaN;
                 this.value   = input;
 
-                if (parse.isLastRepeat())
-                {
-                    genPushUpdateValue(parse, this.nodeId, 'order'  , this.order  );
-                    genPushUpdateValue(parse, this.nodeId, 'margin1', this.margin1);
-                    genPushUpdateValue(parse, this.nodeId, 'margin2', this.margin2);
-                    genPushUpdateValue(parse, this.nodeId, 'margin3', this.margin3);
-                    genPushUpdateValue(parse, this.nodeId, 'value',   this.value  );
-                }
+                this.updateValues =
+                [
+                    ['order'  , this.order  ],
+                    ['margin1', this.margin1],
+                    ['margin2', this.margin2],
+                    ['margin3', this.margin3],
+                    ['value',   this.value  ]
+                ];
             }
         }
         else
@@ -46891,20 +47924,33 @@ extends GColorType
             this.margin3 = NumberValue.NaN;
             this.value   = ColorValue .NaN;
 
-            if (parse.isLastRepeat())
-            {
-                genPushUpdateValue(parse, this.nodeId, 'order',   NumberValue.NaN);
-                genPushUpdateValue(parse, this.nodeId, 'margin1', NumberValue.NaN);
-                genPushUpdateValue(parse, this.nodeId, 'margin2', NumberValue.NaN);
-                genPushUpdateValue(parse, this.nodeId, 'margin3', NumberValue.NaN);
-                genPushUpdateValue(parse, this.nodeId, 'value',   ColorValue .NaN);
-            }
+            this.updateValues =
+            [
+                ['order',   NumberValue.NaN],
+                ['margin1', NumberValue.NaN],
+                ['margin2', NumberValue.NaN],
+                ['margin3', NumberValue.NaN],
+                ['value',   ColorValue .NaN]
+            ];
         }
 
 
         this.validate();
 
         return this;
+    }
+
+
+
+    pushValueUpdates(parse)
+    {
+        super.pushValueUpdates(parse);
+
+        if (this.input  ) this.input  .pushValueUpdates(parse);
+        if (this.order  ) this.order  .pushValueUpdates(parse);
+        if (this.margin1) this.margin1.pushValueUpdates(parse);
+        if (this.margin2) this.margin2.pushValueUpdates(parse);
+        if (this.margin3) this.margin3.pushValueUpdates(parse);
     }
 
 
@@ -47006,22 +48052,22 @@ extends GColorType
             }
 
 
-            if (parse.isLastRepeat())
-            {
-                genPushUpdateValue(parse, this.nodeId, 'text', input0);
-                genPushUpdateValue(parse, this.nodeId, 'back', input1);
-            }
+            this.updateValues =
+            [
+                ['text', input0],
+                ['back', input1]
+            ];
         }
 
         else if (this.input0) 
         {
             const input0 = (await this.input0.eval(parse)).toValue();
 
-            if (parse.isLastRepeat())
-            {
-                genPushUpdateValue(parse, this.nodeId, 'text', input0.isValid() ? input0 : ColorValue.NaN);
-                genPushUpdateValue(parse, this.nodeId, 'back', ColorValue.NaN);
-            }
+            this.updateValues =
+            [
+                ['text', input0.isValid() ? input0 : ColorValue.NaN],
+                ['back', ColorValue.NaN                            ]
+            ];
             
             this.value    = ColorValue.NaN;
             this.contrast = NumberValue.NaN;
@@ -47031,11 +48077,11 @@ extends GColorType
         {
             const input1 = (await this.input1.eval(parse)).toValue();
 
-            if (parse.isLastRepeat())
-            {
-                genPushUpdateValue(parse, this.nodeId, 'text', ColorValue.NaN);
-                genPushUpdateValue(parse, this.nodeId, 'back', input1.isValid() ? input1 : ColorValue.NaN);
-            }
+            this.updateValues =
+            [
+                ['text', ColorValue.NaN                            ],
+                ['back', input1.isValid() ? input1 : ColorValue.NaN]
+            ];
 
             this.value    = input1.isValid() ? input1 : ColorValue.NaN;
             this.contrast = NumberValue.NaN;
@@ -47046,25 +48092,35 @@ extends GColorType
             this.value    = ColorValue.NaN;
             this.contrast = NumberValue.NaN;
 
-            if (parse.isLastRepeat())
-            {
-                genPushUpdateValue(parse, this.nodeId, 'text', ColorValue.NaN);
-                genPushUpdateValue(parse, this.nodeId, 'back', ColorValue.NaN);
-            }
+            this.updateValues =
+            [
+                ['text', ColorValue.NaN],
+                ['back', ColorValue.NaN]
+            ];
         }
         
 
 
-        if (parse.isLastRepeat())
-        {
-            genPushUpdateValue(parse, this.nodeId, 'standard', standard);
-            genPushUpdateValue(parse, this.nodeId, 'contrast', this.contrast);
-        }
+        this.updateValues.push(
+            ['standard', standard     ],
+            ['contrast', this.contrast]);
 
 
         this.validate();
 
         return this;
+    }
+
+
+
+    pushValueUpdates(parse)
+    {
+        super.pushValueUpdates(parse);
+
+        if (this.input0  ) this.input0  .pushValueUpdates(parse);
+        if (this.input1  ) this.input1  .pushValueUpdates(parse);
+        if (this.standard) this.standard.pushValueUpdates(parse);
+        if (this.contrast) this.contrast.pushValueUpdates(parse);
     }
 
 
@@ -47162,18 +48218,30 @@ extends GColorType
             this.value = ColorValue.NaN;
 
 
-        if (parse.isLastRepeat())
-        {
-            genPushUpdateValue(parse, this.nodeId, 'l',     l);
-            genPushUpdateValue(parse, this.nodeId, 'm',     m);
-            genPushUpdateValue(parse, this.nodeId, 's',     s);
-            genPushUpdateValue(parse, this.nodeId, 'value', this.value);
-        }
+        this.updateValues =
+        [
+            ['l',     l         ],
+            ['m',     m         ],
+            ['s',     s         ],
+            ['value', this.value]
+        ];
         
 
         this.validate();
 
         return this;
+    }
+
+
+
+    pushValueUpdates(parse)
+    {
+        super.pushValueUpdates(parse);
+
+        if (this.input ) this.input.pushValueUpdates(parse);
+        if (this.l     ) this.l    .pushValueUpdates(parse);
+        if (this.m     ) this.m    .pushValueUpdates(parse);
+        if (this.s     ) this.s    .pushValueUpdates(parse);
     }
 
 
@@ -47280,13 +48348,13 @@ extends GColorType
             this.value = ColorValue.NaN;
 
 
-        if (parse.isLastRepeat())
-        {
-            genPushUpdateValue(parse, this.nodeId, 'space',  space );
-            genPushUpdateValue(parse, this.nodeId, 'amount', amount);
-            genPushUpdateValue(parse, this.nodeId, 'gamma',  gamma );
-            genPushUpdateValue(parse, this.nodeId, 'value',  this.value);
-        }
+        this.updateValues =
+        [
+            ['space',  space     ],
+            ['amount', amount    ],
+            ['gamma',  gamma     ],
+            ['value',  this.value]
+        ];
         
 
         this.validate();
@@ -47325,6 +48393,19 @@ extends GColorType
                 lerp(c0, c1, f),
                 lerp(l0, l1, f) ];
         }
+    }
+
+
+
+    pushValueUpdates(parse)
+    {
+        super.pushValueUpdates(parse);
+
+        if (this.input0) this.input0.pushValueUpdates(parse);
+        if (this.input1) this.input1.pushValueUpdates(parse);
+        if (this.space ) this.space .pushValueUpdates(parse);
+        if (this.amount) this.amount.pushValueUpdates(parse);
+        if (this.gamma ) this.gamma .pushValueUpdates(parse);
     }
 
 
@@ -47421,17 +48502,29 @@ extends GColorType
             this.value = ColorValue.NaN;
 
 
-        if (parse.isLastRepeat())
-        {
-            genPushUpdateValue(parse, this.nodeId, 'value',   this.value);
-            genPushUpdateValue(parse, this.nodeId, 'mode',    mode );
-            genPushUpdateValue(parse, this.nodeId, 'opacity', opacity);
-        }
-        
+        this.updateValues = 
+        [
+            ['value',   this.value],
+            ['mode',    mode      ],
+            ['opacity', opacity   ]
+        ];
+
 
         this.validate();
         
         return this;
+    }
+
+
+
+    pushValueUpdates(parse)
+    {
+        super.pushValueUpdates(parse);
+
+        if (this.input0 ) this.input0 .pushValueUpdates(parse);
+        if (this.input1 ) this.input1 .pushValueUpdates(parse);
+        if (this.mode   ) this.mode   .pushValueUpdates(parse);
+        if (this.opacity) this.opacity.pushValueUpdates(parse);
     }
 
 
@@ -47914,12 +49007,22 @@ extends GOperator
             this.valid        = true;
 
 
-            if (parse.isLastRepeat())
-                genPushUpdateValue(parse, this.nodeId, 'value', this.result);
+            this.updateValues = [['value', this.result]];
         }
 
 
         return this;
+    }
+
+
+
+    pushValueUpdates(parse)
+    {
+        super.pushValueUpdates(parse);
+
+        if (this.input   ) this.input   .pushValueUpdates(parse);
+        if (this.fill    ) this.fill    .pushValueUpdates(parse);
+        if (this.position) this.position.pushValueUpdates(parse);
     }
 
 
@@ -48009,20 +49112,20 @@ extends GOperator
             this.value.props = props;
 
             
-        if (parse.isLastRepeat())
-        {
-            if (this.value.x     != undefined) genPushUpdateValue(parse, this.nodeId, 'x',     this.value.x    );
-            if (this.value.y     != undefined) genPushUpdateValue(parse, this.nodeId, 'y',     this.value.y    );
-            if (this.value.width != undefined) genPushUpdateValue(parse, this.nodeId, 'width', this.value.width);
+        this.updateValues = [];
 
-            if (   evalHeight // lines don't have height
-                && this.value.height != undefined)
-                genPushUpdateValue(parse, this.nodeId, 'height', this.value.height);
 
-            if (this.value.angle != undefined) genPushUpdateValue(parse, this.nodeId, 'angle',  this.value.angle );
+        if (this.value.x     != undefined) this.updateValues.push(['x',     this.value.x    ]);
+        if (this.value.y     != undefined) this.updateValues.push(['y',     this.value.y    ]);
+        if (this.value.width != undefined) this.updateValues.push(['width', this.value.width]);
 
-            if (this.value.props != undefined) genPushUpdateValue(parse, this.nodeId, 'props',  this.value.props);
-        }
+        if (   evalHeight // lines don't have height
+            && this.value.height != undefined)
+            this.updateValues.push(['height', this.value.height]);
+
+        if (this.value.angle != undefined) this.updateValues.push(['angle',  this.value.angle]);
+
+        if (this.value.props != undefined) this.updateValues.push(['props',  this.value.props]);
     }
 
 
@@ -48104,6 +49207,20 @@ extends GOperator
                 }
             }
         }
+    }
+
+
+
+    pushValueUpdates(parse)
+    {
+        super.pushValueUpdates(parse);
+
+        if (this.x     ) this.x     .pushValueUpdates(parse);
+        if (this.y     ) this.y     .pushValueUpdates(parse);
+        if (this.width ) this.width .pushValueUpdates(parse);
+        if (this.height) this.height.pushValueUpdates(parse);
+        if (this.angle ) this.angle .pushValueUpdates(parse);
+        if (this.props ) this.props .pushValueUpdates(parse);
     }
 
 
@@ -48207,11 +49324,11 @@ extends GShape
         }
 
        
-        if (parse.isLastRepeat())
-        {
-            genPushUpdateValue(parse, this.nodeId, 'value', this.value      );
-            genPushUpdateValue(parse, this.nodeId, 'round', this.value.round);
-        }
+        this.updateValues =
+        [
+            ['value', this.value      ],
+            ['round', this.value.round]
+        ];
 
 
         await this.evalShapeBase(parse, input);
@@ -48256,6 +49373,16 @@ extends GShape
 
 
         await super.evalObjects(parse);
+    }
+
+
+
+    pushValueUpdates(parse)
+    {
+        super.pushValueUpdates(parse);
+
+        if (this.input) this.input.pushValueUpdates(parse);
+        if (this.round) this.round.pushValueUpdates(parse);
     }
 
 
@@ -48352,8 +49479,7 @@ extends GShape
         }
 
 
-        if (parse.isLastRepeat())
-            genPushUpdateValue(parse, this.nodeId, 'value', this.value);
+        this.updateValues = [['value', this.value]];
 
 
         await this.evalShapeBase(parse, input, false);
@@ -48394,6 +49520,15 @@ extends GShape
 
         
         super.evalObjects(parse);
+    }
+
+
+
+    pushValueUpdates(parse)
+    {
+        super.pushValueUpdates(parse);
+
+        if (this.input) this.input.pushValueUpdates(parse);
     }
 
 
@@ -48479,8 +49614,7 @@ extends GShape
         }
 
 
-        if (parse.isLastRepeat())
-            genPushUpdateValue(parse, this.nodeId, 'value',  this.value       );
+        this.updateValues = [['value', this.value]];
 
 
         await this.evalShapeBase(parse, input);
@@ -48525,6 +49659,15 @@ extends GShape
        super.evalObjects(parse);
    }
    
+    
+        
+   pushValueUpdates(parse)
+   {
+       super.pushValueUpdates(parse);
+
+       if (this.input) this.input.pushValueUpdates(prase);
+   }
+
    
 
    toValue()
@@ -48548,7 +49691,7 @@ extends GShape
     {
         super.invalidate();
 
-        if (this.input ) this.input .invalidate();
+        if (this.input) this.input.invalidate();
     }
 }
 
@@ -48621,12 +49764,12 @@ extends GShape
         }
 
         
-        if (parse.isLastRepeat())
-        {
-            genPushUpdateValue(parse, this.nodeId, 'value',   this.value        );
-            genPushUpdateValue(parse, this.nodeId, 'round',   this.value.round  );
-            genPushUpdateValue(parse, this.nodeId, 'corners', this.value.corners);
-        }
+        this.updateValues =
+        [
+            ['value',   this.value        ],
+            ['round',   this.value.round  ],
+            ['corners', this.value.corners]
+        ];
         
 
         await this.evalShapeBase(parse, input);
@@ -48673,6 +49816,17 @@ extends GShape
 
         
         super.evalObjects(parse);
+    }
+
+
+
+    pushValueUpdates(parse)
+    {
+        super.pushValueUpdates(parse);
+
+        if (this.input  ) this.input  .pushValueUpdates(parse);
+        if (this.round  ) this.round  .pushValueUpdates(parse);
+        if (this.corners) this.corners.pushValueUpdates(parse);
     }
 
 
@@ -48789,13 +49943,13 @@ extends GShape
         }
 
              
-        if (parse.isLastRepeat())
-        {
-            genPushUpdateValue(parse, this.nodeId, 'value',  this.value       );
-            genPushUpdateValue(parse, this.nodeId, 'round',  this.value.round );
-            genPushUpdateValue(parse, this.nodeId, 'points', this.value.points);
-            genPushUpdateValue(parse, this.nodeId, 'convex', this.value.convex);
-        }
+        this.updateValues =
+        [
+            ['value',  this.value       ],
+            ['round',  this.value.round ],
+            ['points', this.value.points],
+            ['convex', this.value.convex]
+        ];
 
 
         await this.evalShapeBase(parse, input);
@@ -48845,6 +49999,18 @@ extends GShape
        
        super.evalObjects(parse);
    }
+
+
+
+   pushValueUpdates(parse)
+   {
+      super.pushValueUpdates(parse);
+
+      if (this.input ) this.input .pushValueUpdates(parse);
+      if (this.round ) this.round .pushValueUpdates(parse);
+      if (this.points) this.points.pushValueUpdates(parse);
+      if (this.convex) this.convex.pushValueUpdates(parse);
+    }
 
 
 
@@ -49009,23 +50175,23 @@ extends GShape
         }
 
        
-        if (parse.isLastRepeat())
-        {
-            genPushUpdateValue(parse, this.nodeId, 'value',         this.value              );
-            genPushUpdateValue(parse, this.nodeId, 'text',          this.value.text         );
-            genPushUpdateValue(parse, this.nodeId, 'x',             this.value.x            );
-            genPushUpdateValue(parse, this.nodeId, 'y',             this.value.y            );
-            genPushUpdateValue(parse, this.nodeId, 'width',         this.value.width        );
-            genPushUpdateValue(parse, this.nodeId, 'height',        this.value.height       );
-            genPushUpdateValue(parse, this.nodeId, 'angle',         this.value.angle        );
-            genPushUpdateValue(parse, this.nodeId, 'font',          this.value.font         );
-            genPushUpdateValue(parse, this.nodeId, 'style',         this.value.style        );
-            genPushUpdateValue(parse, this.nodeId, 'size',          this.value.size         );
-            genPushUpdateValue(parse, this.nodeId, 'alignH',        this.value.alignH       );
-            genPushUpdateValue(parse, this.nodeId, 'alignV',        this.value.alignV       );
-            genPushUpdateValue(parse, this.nodeId, 'lineHeight',    this.value.lineHeight   );
-            genPushUpdateValue(parse, this.nodeId, 'letterSpacing', this.value.letterSpacing);
-        }
+        this.updateValues =
+        [
+            ['value',         this.value              ],
+            ['text',          this.value.text         ],
+            ['x',             this.value.x            ],
+            ['y',             this.value.y            ],
+            ['width',         this.value.width        ],
+            ['height',        this.value.height       ],
+            ['angle',         this.value.angle        ],
+            ['font',          this.value.font         ],
+            ['style',         this.value.style        ],
+            ['size',          this.value.size         ],
+            ['alignH',        this.value.alignH       ],
+            ['alignV',        this.value.alignV       ],
+            ['lineHeight',    this.value.lineHeight   ],
+            ['letterSpacing', this.value.letterSpacing]
+        ];
         
 
         await this.evalShapeBase(parse, input);
@@ -49086,6 +50252,28 @@ extends GShape
 
         
         await super.evalObjects(parse);
+    }
+
+
+
+    pushValueUpdates(parse)
+    {
+        super.pushValueUpdates(parse);
+        
+        if (this.input        ) this.input        .pushValueUpdates(parse);
+        if (this.text         ) this.text         .pushValueUpdates(parse);
+        if (this.x            ) this.x            .pushValueUpdates(parse);
+        if (this.y            ) this.y            .pushValueUpdates(parse);
+        if (this.width        ) this.width        .pushValueUpdates(parse);
+        if (this.height       ) this.height       .pushValueUpdates(parse);
+        if (this.angle        ) this.angle        .pushValueUpdates(parse);
+        if (this.font         ) this.font         .pushValueUpdates(parse);
+        if (this.style        ) this.style        .pushValueUpdates(parse);
+        if (this.size         ) this.size         .pushValueUpdates(parse);
+        if (this.alignH       ) this.alignH       .pushValueUpdates(parse);
+        if (this.alignV       ) this.alignV       .pushValueUpdates(parse);
+        if (this.lineHeight   ) this.lineHeight   .pushValueUpdates(parse);
+        if (this.letterSpacing) this.letterSpacing.pushValueUpdates(parse);
     }
 
 
@@ -49230,15 +50418,15 @@ extends GShape
         }
 
 
-        if (parse.isLastRepeat())
-        {
-            genPushUpdateValue(parse, this.nodeId, 'value',   this.value        );
-            genPushUpdateValue(parse, this.nodeId, 'points',  this.value.points );
-            genPushUpdateValue(parse, this.nodeId, 'closed',  this.value.closed );
-            genPushUpdateValue(parse, this.nodeId, 'degree',  this.value.degree );
-            genPushUpdateValue(parse, this.nodeId, 'winding', this.value.winding);
-            genPushUpdateValue(parse, this.nodeId, 'round',   this.value.round  );
-        }
+        this.updateValues =
+        [
+            ['value',   this.value        ],
+            ['points',  this.value.points ],
+            ['closed',  this.value.closed ],
+            ['degree',  this.value.degree ],
+            ['winding', this.value.winding],
+            ['round',   this.value.round  ]
+        ];
 
 
         await this.evalShapeBase(parse, input);
@@ -49298,6 +50486,20 @@ extends GShape
 
         
         await super.evalObjects(parse);
+    }
+
+
+
+    pushValueUpdates(parse)
+    {
+        super.pushValueUpdates(parse);
+
+        if (this.input  ) this.input  .pushValueUpdates(parse);
+        if (this.points ) this.points .pushValueUpdates(parse);
+        if (this.closed ) this.closed .pushValueUpdates(parse);
+        if (this.degree ) this.degree .pushValueUpdates(parse);
+        if (this.winding) this.winding.pushValueUpdates(parse);
+        if (this.round  ) this.round  .pushValueUpdates(parse);
     }
 
 
@@ -49372,8 +50574,8 @@ extends GOperator
             copy.input = this.input.copy();
 
         //if (this.value) copy.value = this.value.copy();
-        if (this.x    ) copy.x     = this.x    .copy();
-        if (this.y    ) copy.y     = this.y    .copy();
+        if (this.x) copy.x = this.x.copy();
+        if (this.y) copy.y = this.y.copy();
 
         return copy;
     }
@@ -49404,12 +50606,12 @@ extends GOperator
         await this.evalObjects(parse, {x: x, y: y});
 
 
-        if (parse.isLastRepeat())
-        {
-            genPushUpdateValue(parse, this.nodeId, 'value', this.value);
-            genPushUpdateValue(parse, this.nodeId, 'x',     x         );
-            genPushUpdateValue(parse, this.nodeId, 'y',     y         );
-        }
+        this.updateValues =
+        [
+            ['value', this.value],
+            ['x',     x         ],
+            ['y',     y         ]
+        ];
 
 
         this.validate();
@@ -49454,6 +50656,17 @@ extends GOperator
 
         
         await super.evalObjects(parse);
+    }
+
+
+
+    pushValueUpdates(parse)
+    {
+        super.pushValueUpdates(parse);
+
+        if (this.input) this.input.pushValueUpdates(parse);
+        if (this.x    ) this.x    .pushValueUpdates(parse);
+        if (this.y    ) this.y    .pushValueUpdates(parse);
     }
 
 
@@ -49552,25 +50765,23 @@ extends GOperator
         });
 
 
-        if (parse.isLastRepeat())
-        {
-            genPushUpdateValue(parse, this.nodeId, 'value',   this.value);
-            genPushUpdateValue(parse, this.nodeId, 'angle',   angle     );
-            genPushUpdateValue(parse, this.nodeId, 'centerX', centerX   );
-            genPushUpdateValue(parse, this.nodeId, 'centerY', centerY   );
+        const bounds = new RectangleValue(
+            this.nodeId,
+            new NumberValue(_bounds.x     ), 
+            new NumberValue(_bounds.y     ), 
+            new NumberValue(_bounds.width ),
+            new NumberValue(_bounds.height),
+            new NumberValue(0),
+            new NumberValue(0));
 
-
-            const bounds = new RectangleValue(
-                this.nodeId,
-                new NumberValue(_bounds.x     ), 
-                new NumberValue(_bounds.y     ), 
-                new NumberValue(_bounds.width ),
-                new NumberValue(_bounds.height),
-                new NumberValue(0),
-                new NumberValue(0));
-
-            genPushUpdateValue(parse, this.nodeId, 'bounds', bounds);
-        }
+        this.updateValues =
+        [
+            ['value',   this.value],
+            ['angle',   angle     ],
+            ['centerX', centerX   ],
+            ['centerY', centerY   ],
+            ['bounds',  bounds    ]
+        ];
 
 
         this.validate();
@@ -49701,6 +50912,18 @@ extends GOperator
 
 
 
+    pushValueUpdates(parse)
+    {
+        super.pushValueUpdates(parse);
+
+        if (this.input  ) this.input  .pushValueUpdates(parse);
+        if (this.angle  ) this.angle  .pushValueUpdates(parse);
+        if (this.centerX) this.centerX.pushValueUpdates(parse);
+        if (this.centerY) this.centerY.pushValueUpdates(parse);
+    }
+
+
+
     isValid()
     {
         return super.isValid()
@@ -49801,26 +51024,24 @@ extends GOperator
         });
 
 
-        if (parse.isLastRepeat())
-        {
-            genPushUpdateValue(parse, this.nodeId, 'value',   this.value);
-            genPushUpdateValue(parse, this.nodeId, 'x',       x         );
-            genPushUpdateValue(parse, this.nodeId, 'y',       y         );
-            genPushUpdateValue(parse, this.nodeId, 'centerX', centerX   );
-            genPushUpdateValue(parse, this.nodeId, 'centerY', centerY   );
+        const bounds = new RectangleValue(
+            this.nodeId,
+            new NumberValue(_bounds.x     ), 
+            new NumberValue(_bounds.y     ), 
+            new NumberValue(_bounds.width ),
+            new NumberValue(_bounds.height),
+            new NumberValue(0),
+            new NumberValue(0));
 
-
-            const bounds = new RectangleValue(
-                this.nodeId,
-                new NumberValue(_bounds.x     ), 
-                new NumberValue(_bounds.y     ), 
-                new NumberValue(_bounds.width ),
-                new NumberValue(_bounds.height),
-                new NumberValue(0),
-                new NumberValue(0));
-
-            genPushUpdateValue(parse, this.nodeId, 'bounds', bounds);
-        }
+        this.updateValues =
+        [
+            ['value',   this.value],
+            ['x',       x         ],
+            ['y',       y         ],
+            ['centerX', centerX   ],
+            ['centerY', centerY   ],
+            ['bounds',  bounds    ]
+        ];
         
 
         this.validate();
@@ -49961,6 +51182,19 @@ extends GOperator
 
 
 
+    pushValueUpdates(parse)
+    {
+        super.pushValueUpdates(parse);
+
+        if (this.input  ) this.input  .pushValueUpdates(parse);
+        if (this.x      ) this.x      .pushValueUpdates(parse);
+        if (this.y      ) this.y      .pushValueUpdates(parse);
+        if (this.centerX) this.centerX.pushValueUpdates(parse);
+        if (this.centerY) this.centerY.pushValueUpdates(parse);
+    }
+
+
+
     isValid()
     {
         return super.isValid()
@@ -50053,12 +51287,12 @@ extends GOperator
         }
 
        
-        if (parse.isLastRepeat())
-        {
-            genPushUpdateValue(parse, this.nodeId, 'value', this.value);
-            genPushUpdateValue(parse, this.nodeId, 'x',     x         );
-            genPushUpdateValue(parse, this.nodeId, 'y',     y         );
-        }
+        this.updateValues =
+        [
+            ['value', this.value],
+            ['x',     x         ],
+            ['y',     y         ]
+        ];
 
 
         await this.evalObjects(parse);
@@ -50091,6 +51325,17 @@ extends GOperator
 
         
         await super.evalObjects(parse);
+    }
+
+
+
+    pushValueUpdates(parse)
+    {
+        super.pushValueUpdates(parse);
+
+        if (this.input) this.input.pushValueUpdates(parse);
+        if (this.x    ) this.x    .pushValueUpdates(parse);
+        if (this.y    ) this.y    .pushValueUpdates(parse);
     }
 
 
@@ -50188,8 +51433,7 @@ extends GShape
             this.value = FillValue.NaN;
 
 
-        if (parse.isLastRepeat())
-            genPushUpdateValue(parse, this.nodeId, 'value', this.value);
+        this.updateValues = [['value', this.value]];
 
 
         this.validate();
@@ -50216,11 +51460,29 @@ extends GShape
                       Math.round(options.rgba[0] * 0xff)
               + ' ' + Math.round(options.rgba[1] * 0xff)
               + ' ' + Math.round(options.rgba[2] * 0xff)
-              + ' ' + Math.round(options.rgba[3] * 100 )]
+              + ' ' + Math.round(options.rgba[3] * 100 ) ]
         ];
 
 
         this.colorStyle = colorStyle;
+    }
+
+
+
+    pushValueUpdates(parse)
+    {
+        super.pushValueUpdates(parse);
+
+        if (this.colorStyle) this.colorStyle.pushValueUpdates(parse);
+    }
+
+
+
+    invalidate()
+    {
+        super.invalidate();
+
+        if (this.colorStyle) this.colorStyle.invalidate();
     }
 }
 
@@ -50283,16 +51545,27 @@ extends GOperator
         }
 
 
-        if (parse.isLastRepeat())
-        {
-            genPushUpdateValue(parse, this.nodeId, 'color',   this.value.color  );
-            genPushUpdateValue(parse, this.nodeId, 'opacity', this.value.opacity);
-        }
+        this.updateValues =
+        [
+            ['color',   this.value.color  ],
+            ['opacity', this.value.opacity]
+        ];
         
 
         this.validate();
 
         return this;
+    }
+
+
+
+    pushValueUpdates(parse)
+    {
+        super.pushValueUpdates(parse);
+
+        if (this.input  ) this.input  .pushValueUpdates(parse);
+        if (this.color  ) this.color  .pushValueUpdates(parse);
+        if (this.opacity) this.opacity.pushValueUpdates(parse);
     }
     
     
@@ -50400,14 +51673,14 @@ extends GShape
         }
 
 
-        if (parse.isLastRepeat())
-        {
-            genPushUpdateValue(parse, this.nodeId, 'fill',   this.value.fill  );
-            genPushUpdateValue(parse, this.nodeId, 'weight', this.value.weight);
-            genPushUpdateValue(parse, this.nodeId, 'fit',    this.value.fit   );
-            genPushUpdateValue(parse, this.nodeId, 'join',   this.value.join  );
-            genPushUpdateValue(parse, this.nodeId, 'miter',  this.value.miter );
-        }
+        this.updateValues =
+        [
+            ['fill',   this.value.fill  ],
+            ['weight', this.value.weight],
+            ['fit',    this.value.fit   ],
+            ['join',   this.value.join  ],
+            ['miter',  this.value.miter ]
+        ];
         
 
         this.validate();
@@ -50428,7 +51701,20 @@ extends GShape
         else
             return fill;
     }
-    
+
+
+
+    pushValueUpdates(parse)
+    {
+        super.pushValueUpdates(parse);
+
+        if (this.input ) this.input .pushValueUpdates(parse);
+        if (this.fill  ) this.fill  .pushValueUpdates(parse);
+        if (this.weight) this.weight.pushValueUpdates(parse);
+        if (this.fit   ) this.fit   .pushValueUpdates(parse);
+        if (this.join  ) this.join  .pushValueUpdates(parse);
+        if (this.miter ) this.miter .pushValueUpdates(parse);
+    }    
     
     
     toValue()
@@ -50510,19 +51796,20 @@ extends GOperator
         if (this.isCached())
             return this;
 
-        if (parse.isLastRepeat())
+
+        this.updateValues = [];
+
+
+        if (!isEmpty(this.params))
         {
-            if (!isEmpty(this.params))
+            for (let i = 0; i < this.params.length; i++)
             {
-                for (let i = 0; i < this.params.length; i++)
-                {
-                    const param = await this.params[i].eval(parse);
-                    genPushUpdateValue(parse, this.nodeId, this.paramIds[i], param.toValue());
-                }
+                const param = await this.params[i].eval(parse);
+                this.updateValues.push([this.paramIds[i], param.toValue()]);
             }
-            else
-                genPushUpdateValue(parse, this.nodeId, '', NullValue);
         }
+        else
+            this.updateValues.push(['', NullValue]);
                 
         
         this.validate();
@@ -50605,13 +51892,21 @@ extends GOperator
             this.value = NullValue;
 
 
-        if (parse.isLastRepeat())
-            genPushUpdateValue(parse, this.nodeId, 'value', this.value);
+        this.updateValues = [['value', this.value]];
 
 
         this.validate();
 
         return this;
+    }
+
+
+
+    pushValueUpdates(parse)
+    {
+        super.pushValueUpdates(parse);
+
+        if (this.input) this.input.pushValueUpdates(parse);
     }
 
 
@@ -50662,8 +51957,7 @@ extends GOperator
         this.value = NullValue;
 
 
-        if (parse.isLastRepeat())
-            genPushUpdateValue(parse, this.nodeId, 'value', this.value);
+        this.updateValues = [['value', this.value]];
         
         
         this.validate();
@@ -62357,16 +63651,8 @@ extends Parameter
         if (   this.input
             && this.input.connected)
         {
-            console.log('this.input.types =', this.input.types);
-            console.log('this.input.connectedOutput.types =', this.input.connectedOutput.types);
             if (this.input.supportsTypes(this.input.connectedOutput.types))
                 request.push(...pushInputOrParam(this.input, gen));
-            // if (this.input.connectedOutput.supportsTypes([LIST_VALUE]))
-            //     request.push(...pushInputOrParam(this.input, gen));
-            // else if (this.input.connectedOutput.supportsTypes(this.input.types))
-            //     request.push(
-            //         LIST_VALUE, 1,
-            //         ...pushInputOrParam(this.input, gen));
             else
                 console.assert(false, 'invalid input for ListParam (' + this.node.id + ')');
         }
@@ -68986,9 +70272,6 @@ extends OperatorBase
                 this.outputs[0].wireColor = this.inputs[1].wireColor;
             else
                 this.outputs[0].wireColor = rgbFromType(ANY_VALUE, true);
-
-            // console.log('this.inputs[0] =', this.inputs[0]);
-            // console.log('this.outputs[0] =', this.outputs[0]);
         }
 
         else if (this.outputs[0].supportsTypes([FILL_VALUE]))
@@ -69003,9 +70286,6 @@ extends OperatorBase
                 this.outputs[0].wireColor = colors.outputWire;
             else
                 this.outputs[0].wireColor = rgbFromType(ANY_VALUE, true);
-
-            // console.log('this.inputs[0] =', this.inputs[0]);
-            // console.log('this.outputs[0] =', this.outputs[0]);
         }
         
         else
@@ -69395,7 +70675,6 @@ extends OperatorBase
         if (repeatId) this.paramRepeatId.setValue(repeatId, false, true, false);
 
         this.outputs[0].types = [finalListTypeFromItems(value.items)];
-        console.log('this.outputs[0].types =', this.outputs[0].types);
     }
 
 
@@ -69425,10 +70704,10 @@ extends OperatorBase
             : this.type;
 
 
-        colors.back = rgb_a(rgbFromType(type, this.active), 0.95);
+        // colors.back = rgb_a(rgbFromType(type, this.active), 0.95);
 
 
-        colors.text   = isDark(colors.back) ? [1, 1, 1, 1] : [0, 0, 0, 1]; 
+        // colors.text   = isDark(colors.back) ? [1, 1, 1, 1] : [0, 0, 0, 1]; 
 
         colors.input  = this.active ? rgb_a(colors.text, 0.4)  : rgb_a(rgbSaturateHsv(rgbFromType(type, true), 0.5), 0.8);
         colors.output = this.active ? rgb_a(colors.text, 0.35) : rgb_a(rgbSaturateHsv(rgbFromType(type, true), 0.5), 0.7);

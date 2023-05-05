@@ -31,13 +31,22 @@ extends GTextType
         this.value = await evalJoinInputs(this.inputs, parse);
         
 
-        if (parse.isLastRepeat())
+        this.updateValues =
             genPushUpdateValue(parse, this.nodeId, 'value', this.value);
 
 
         this.validate();
 
         return this;
+    }
+
+
+
+    pushValueUpdates(parse)
+    {
+        super.pushValueUpdates(parse);
+
+        this.inputs.forEach(i => i.pushValueUpdates(parse));
     }
 
 

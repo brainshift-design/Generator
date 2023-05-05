@@ -71,14 +71,14 @@ extends GShape
         }
 
 
-        if (parse.isLastRepeat())
-        {
-            genPushUpdateValue(parse, this.nodeId, 'fill',   this.value.fill  );
-            genPushUpdateValue(parse, this.nodeId, 'weight', this.value.weight);
-            genPushUpdateValue(parse, this.nodeId, 'fit',    this.value.fit   );
-            genPushUpdateValue(parse, this.nodeId, 'join',   this.value.join  );
-            genPushUpdateValue(parse, this.nodeId, 'miter',  this.value.miter );
-        }
+        this.updateValues =
+        [
+            ['fill',   this.value.fill  ],
+            ['weight', this.value.weight],
+            ['fit',    this.value.fit   ],
+            ['join',   this.value.join  ],
+            ['miter',  this.value.miter ]
+        ];
         
 
         this.validate();
@@ -99,7 +99,20 @@ extends GShape
         else
             return fill;
     }
-    
+
+
+
+    pushValueUpdates(parse)
+    {
+        super.pushValueUpdates(parse);
+
+        if (this.input ) this.input .pushValueUpdates(parse);
+        if (this.fill  ) this.fill  .pushValueUpdates(parse);
+        if (this.weight) this.weight.pushValueUpdates(parse);
+        if (this.fit   ) this.fit   .pushValueUpdates(parse);
+        if (this.join  ) this.join  .pushValueUpdates(parse);
+        if (this.miter ) this.miter .pushValueUpdates(parse);
+    }    
     
     
     toValue()

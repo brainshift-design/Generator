@@ -46,16 +46,25 @@ extends GArithmetic
         }
 
         
-        if (parse.isLastRepeat())
-        {
-            genPushUpdateValue(parse, this.nodeId, 'operation', op);
-            genPushUpdateValue(parse, this.nodeId, 'value',     this.value);
-        }
+        this.updateValues =
+        [
+            ['operation', op        ],
+            ['value',     this.value]
+        ];
 
 
         this.validate();
 
         return this;
+    }
+
+
+
+    pushUpdateValues(parse)
+    {
+        super.pushUpdateValues(parse);
+
+        if (this.operation) this.operation.pushUpdateValues(parse);
     }
 
 

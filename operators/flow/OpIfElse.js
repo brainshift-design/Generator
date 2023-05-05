@@ -119,9 +119,6 @@ extends OperatorBase
                 this.outputs[0].wireColor = this.inputs[1].wireColor;
             else
                 this.outputs[0].wireColor = rgbFromType(ANY_VALUE, true);
-
-            // console.log('this.inputs[0] =', this.inputs[0]);
-            // console.log('this.outputs[0] =', this.outputs[0]);
         }
 
         else if (this.outputs[0].supportsTypes([FILL_VALUE]))
@@ -136,9 +133,6 @@ extends OperatorBase
                 this.outputs[0].wireColor = colors.outputWire;
             else
                 this.outputs[0].wireColor = rgbFromType(ANY_VALUE, true);
-
-            // console.log('this.inputs[0] =', this.inputs[0]);
-            // console.log('this.outputs[0] =', this.outputs[0]);
         }
         
         else

@@ -72,20 +72,20 @@ extends GOperator
             this.value.props = props;
 
             
-        if (parse.isLastRepeat())
-        {
-            if (this.value.x     != undefined) genPushUpdateValue(parse, this.nodeId, 'x',     this.value.x    );
-            if (this.value.y     != undefined) genPushUpdateValue(parse, this.nodeId, 'y',     this.value.y    );
-            if (this.value.width != undefined) genPushUpdateValue(parse, this.nodeId, 'width', this.value.width);
+        this.updateValues = [];
 
-            if (   evalHeight // lines don't have height
-                && this.value.height != undefined)
-                genPushUpdateValue(parse, this.nodeId, 'height', this.value.height);
 
-            if (this.value.angle != undefined) genPushUpdateValue(parse, this.nodeId, 'angle',  this.value.angle );
+        if (this.value.x     != undefined) this.updateValues.push(['x',     this.value.x    ]);
+        if (this.value.y     != undefined) this.updateValues.push(['y',     this.value.y    ]);
+        if (this.value.width != undefined) this.updateValues.push(['width', this.value.width]);
 
-            if (this.value.props != undefined) genPushUpdateValue(parse, this.nodeId, 'props',  this.value.props);
-        }
+        if (   evalHeight // lines don't have height
+            && this.value.height != undefined)
+            this.updateValues.push(['height', this.value.height]);
+
+        if (this.value.angle != undefined) this.updateValues.push(['angle',  this.value.angle]);
+
+        if (this.value.props != undefined) this.updateValues.push(['props',  this.value.props]);
     }
 
 
@@ -167,6 +167,20 @@ extends GOperator
                 }
             }
         }
+    }
+
+
+
+    pushValueUpdates(parse)
+    {
+        super.pushValueUpdates(parse);
+
+        if (this.x     ) this.x     .pushValueUpdates(parse);
+        if (this.y     ) this.y     .pushValueUpdates(parse);
+        if (this.width ) this.width .pushValueUpdates(parse);
+        if (this.height) this.height.pushValueUpdates(parse);
+        if (this.angle ) this.angle .pushValueUpdates(parse);
+        if (this.props ) this.props .pushValueUpdates(parse);
     }
 
 

@@ -62,16 +62,26 @@ extends GTextType
         }
 
 
-        if (parse.isLastRepeat())
-        {
-            genPushUpdateValue(parse, this.nodeId, 'value',   this.value);
-            genPushUpdateValue(parse, this.nodeId, 'request', request   );
-        }
+        this.updateValues =
+        [
+            ['value',   this.value],
+            ['request', request   ]
+        ];
         
         
         this.validate();
 
         return this;
+    }
+
+
+
+    pushValueUpdates(parse)
+    {
+        super.pushValueUpdates(parse);
+
+        if (this.input  ) this.input  .pushValueUpdates(parse);
+        if (this.request) this.request.pushValueUpdates(parse);
     }
 
 

@@ -61,11 +61,11 @@ extends GNumberType
             Math.max(start.decimals, step.decimals));
 
         
-        if (parse.isLastRepeat())
-        {
-            genPushUpdateValue(parse, this.nodeId, 'start', start);
-            genPushUpdateValue(parse, this.nodeId, 'step',  step );
-        }
+        this.updateValues =
+        [
+            ['start', start],
+            ['step',  step ]
+        ];
 
 
         if (!parse.repeats.find(r => r.nodeId == this.repeatNodeId))
@@ -73,24 +73,33 @@ extends GNumberType
 
         else if (  !isEmpty(parse.repeats)
                 && parse.repeats.at(-1).nodeId == this.repeatNodeId)
-        {
-            const repeat = parse.repeats.at(-1);
-
             this.current.value += step.toNumber();
 
-            if (repeat.iteration == repeat.total-1)
-            {
-                // if (parse.repeats.at(-1).nodeId != this.repeatNodeId)
-                //     console.warn('Generator: Invalid nested repeat on \'' + this.nodeId + '\'');
-                // else
-                    parse.repeats.pop();
-            }
-        }
+
+        // if (   parse.repeats.length == 1
+        //     && parse.repeats[0].iteration == parse.repeats[0].repeat.total-1)
+        // {
+        //     if (   this.repeatNodeId != NULL
+        //         && parse.repeats[0].nodeId != this.repeatNodeId)
+        //         console.warn('Generator: Invalid nested repeat on \'' + this.nodeId + '\'');
+
+        //     //parse.repeats.pop();
+        // }
 
 
         this.validate();
 
         return this;
+    }
+
+
+
+    pushValueUpdates(parse)
+    {
+        super.pushValueUpdates(parse);
+
+        if (this.start) this.start.pushValueUpdates(parse);
+        if (this.step ) this.step .pushValueUpdates(parse);
     }
 
 

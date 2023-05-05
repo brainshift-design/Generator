@@ -70,12 +70,12 @@ extends GNumberType
             this.value = NumberValue.NaN;
 
 
-        if (parse.isLastRepeat())
-        {
-            genPushUpdateValue(parse, this.nodeId, 'type',     type);
-            genPushUpdateValue(parse, this.nodeId, 'decimals', dec );
-            genPushUpdateValue(parse, this.nodeId, 'value',    this.value);
-        }
+        this.updateValues =
+        [
+            ['type',     type      ],
+            ['decimals', dec       ],
+            ['value',    this.value]
+        ];
 
 
         this.validate();

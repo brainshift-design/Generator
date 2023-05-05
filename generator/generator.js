@@ -62,7 +62,9 @@ function genRequest(request)
         for (const node of    paramNodes) await node.eval(parse);
         for (const node of topLevelNodes) await node.eval(parse);
 
+        for (const node of topLevelNodes) node.pushValueUpdates(parse);
 
+        
         for (const node of parse.parsedNodes)
         {
             node.objects.forEach(o => genPushUpdateObject(parse, o));

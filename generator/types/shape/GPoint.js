@@ -59,12 +59,12 @@ extends GOperator
         }
 
        
-        if (parse.isLastRepeat())
-        {
-            genPushUpdateValue(parse, this.nodeId, 'value', this.value);
-            genPushUpdateValue(parse, this.nodeId, 'x',     x         );
-            genPushUpdateValue(parse, this.nodeId, 'y',     y         );
-        }
+        this.updateValues =
+        [
+            ['value', this.value],
+            ['x',     x         ],
+            ['y',     y         ]
+        ];
 
 
         await this.evalObjects(parse);
@@ -97,6 +97,17 @@ extends GOperator
 
         
         await super.evalObjects(parse);
+    }
+
+
+
+    pushValueUpdates(parse)
+    {
+        super.pushValueUpdates(parse);
+
+        if (this.input) this.input.pushValueUpdates(parse);
+        if (this.x    ) this.x    .pushValueUpdates(parse);
+        if (this.y    ) this.y    .pushValueUpdates(parse);
     }
 
 

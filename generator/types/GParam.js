@@ -45,22 +45,37 @@ extends GOperator
         this.param = this.node.paramFromId(this.paramId);
 
 
-        if (isValid(this.param)) // could have been deleted from OpRepeat for example
+        console.log('this.node =', this.node);
+        if (isValid(this.param))
         {
             // if (   this.feedbackValue)
             //     //&& this.param.type == NUMBER_VALUE)
             //     this.param = this.feedbackValue();
-
-            const value = (await this.param.eval(parse)).toValue();
-
+            
+            if (   !this.node.valid
+                || !this.value) // could have been deleted from OpRepeat for example
+            {
+                const value = (await this.param.eval(parse)).toValue();
+                this.value = value;
+            }
+            
             //this.param.feedbackValue = null;
-            return this.value = value;
+            return this.value;
         }
         else
         {
             //this.param.feedbackValue = null;
             return this.value = NullValue;
         }
+    }
+
+
+
+    pushValueUpdates(parse)
+    {
+        super.pushValueUpdates(parse);
+
+        if (this.node) this.node.pushValueUpdates(parse);
     }
 
 

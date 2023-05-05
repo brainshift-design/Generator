@@ -54,16 +54,27 @@ extends GOperator
         }
     
 
-        if (parse.isLastRepeat())
-        {
-            genPushUpdateValue(parse, this.nodeId, 'value',     this.value);
-            genPushUpdateValue(parse, this.nodeId, 'separator', separator);
-        }
+        this.updateValues =
+        [
+            ['value',     this.value],
+            ['separator', separator ]
+        ];
         
 
         this.validate();
 
         return this;
+    }
+
+
+
+    pushValueUpdates(parse)
+    {
+        super.pushValueUpdates(parse);
+
+        if (this.input    ) this.input    .pushValueUpdates(parse);
+        if (this.value    ) this.value    .pushValueUpdates(parse);
+        if (this.separator) this.separator.pushValueUpdates(parse);
     }
 
 

@@ -68,17 +68,28 @@ extends GNumberType
             this.value = this.feedbackValue();
 
 
-        if (parse.isLastRepeat())
-        {
-            genPushUpdateValue(parse, this.nodeId, 'value', this.value);
-            genPushUpdateValue(parse, this.nodeId, 'min',   min);
-            genPushUpdateValue(parse, this.nodeId, 'max',   max);
-        }
+        this.updateValues =
+        [
+            ['value', this.value],
+            ['min',   min       ],
+            ['max',   max       ]
+        ];
 
 
         this.validate();
 
         return this;
+    }
+
+
+
+    pushValueUpdates(parse)
+    {
+        super.pushValueUpdates(parse);
+
+        if (this.input) this.input.pushValueUpdates(parse);
+        if (this.min  ) this.min  .pushValueUpdates(parse);
+        if (this.max  ) this.max  .pushValueUpdates(parse);
     }
 
 

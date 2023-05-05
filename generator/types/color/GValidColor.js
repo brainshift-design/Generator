@@ -46,7 +46,7 @@ extends GColorType
         {
             const input = (await this.input.eval(parse)).toValue();
 
-// console.log('input =', input);
+
             if (this.options.enabled)
             {
                 // if (   !isValid(this.value) 
@@ -121,16 +121,26 @@ extends GColorType
             this.value = ColorValue.NaN;
 
             
-        if (parse.isLastRepeat())
-        {
-            genPushUpdateValue(parse, this.nodeId, 'value',   this.value);
-            genPushUpdateValue(parse, this.nodeId, 'quality', quality);
-        }
+        this.updateValues =
+        [
+            ['value',   this.value],
+            ['quality', quality   ]
+        ];
         
 
         this.validate();
 
         return this;
+    }
+
+
+
+    pushValueUpdates(parse)
+    {
+        super.pushValueUpdates(parse);
+
+        if (this.input  ) this.input  .pushValueUpdates(parse);
+        if (this.quality) this.quality.pushValueUpdates(parse);
     }
 
 

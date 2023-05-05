@@ -44,11 +44,11 @@ extends GOperator
             this.value = NullValue;
 
 
-        if (parse.isLastRepeat())
-        {
-            genPushUpdateValue(parse, this.nodeId, 'value',    this.value);
-            genPushUpdateValue(parse, this.nodeId, 'repeatId', repeatId);
-        }
+        this.updateValues =
+        [
+            ['value',    this.value],
+            ['repeatId', repeatId  ]
+        ];
 
 
         this.validate();

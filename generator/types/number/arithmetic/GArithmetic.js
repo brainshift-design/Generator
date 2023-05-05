@@ -16,6 +16,15 @@ extends GNumberType
 
 
 
+    pushValueUpdates(parse)
+    {
+        super.pushValueUpdates(parse);
+
+        this.inputs.forEach(i => i.pushValueUpdates(parse));
+    }
+
+
+
     invalidate()
     {
         super.invalidate();

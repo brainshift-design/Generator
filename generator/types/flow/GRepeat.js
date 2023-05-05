@@ -79,15 +79,17 @@ extends GOperator
         };
 
         //if (this.repeatId.type != NUMBER_VALUE)
-            parse.repeats.push(repeat);
-
-
+        
+        
         if (this.input)
         {
             const nItems = 
                 this.options.enabled 
                 ? count.value 
                 : 1;
+            
+            
+            parse.repeats.push(repeat);
 
 
             for (let i = 0, o = 0; i < nItems; i++)
@@ -127,22 +129,36 @@ extends GOperator
             }
 
 
+            console.assert(parse.repeats.at(-1) == repeat, 'invalid nested repeat');
+            parse.repeats.pop();
+
+                
             if (this.repeatId)
                 uninitRepeat(this.repeatId);
         }
 
 
-        if (parse.isLastRepeat())
-        {
-            genPushUpdateValue(parse, this.nodeId, 'value',    this.value     );
-            genPushUpdateValue(parse, this.nodeId, 'count',    count          );
-            genPushUpdateValue(parse, this.nodeId, 'repeatId', NumberValue.NaN);
-        }
+        this.updateValues =
+        [
+            ['value',    this.value     ],
+            ['count',    count          ],
+            ['repeatId', NumberValue.NaN]
+        ];
 
 
         this.validate();
 
         return this;
+    }
+
+
+
+    pushValueUpdates(parse)
+    {
+        super.pushValueUpdates(parse);
+
+        if (this.input) this.input.pushValueUpdates(parse);
+        if (this.count) this.count.pushValueUpdates(parse);
     }
 
 

@@ -46,13 +46,21 @@ extends GOperator
             length = NumberValue.NaN;
     
 
-        if (parse.isLastRepeat())
-            genPushUpdateValue(parse, this.nodeId, 'length', length);
+        this.updateValues = [['length', length]];
 
 
         this.validate();
 
         return this;
+    }
+
+
+
+    pushValueUpdates(parse)
+    {
+        super.pushValueUpdates(parse);
+
+        if (this.input) this.input.pushValueUpdates();
     }
 
 

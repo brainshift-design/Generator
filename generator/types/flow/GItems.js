@@ -59,25 +59,25 @@ extends GOperator
         }
 
 
-        if (parse.isLastRepeat())
+        this.updateValues = [];
+
+
+        if (    this.value.isValid()
+            && !isEmpty(this.value.items))
         {
-            if (    this.value.isValid()
-                && !isEmpty(this.value.items))
+            for (let i = 0; i < this.value.items.length; i++)
             {
-                for (let i = 0; i < this.value.items.length; i++)
-                {
-                    const item = this.value.items[i];
+                const item = this.value.items[i];
 
-                    Object.assign(this, {['item' + i]: item});
-                    genPushUpdateValue(parse, this.nodeId, 'item' + i, item);
-                }
+                Object.assign(this, {['item' + i]: item});
+                this.updateValues.push(['item' + i, item]);
             }
-            else
-                genPushUpdateValue(parse, this.nodeId, '', NullValue);
-
-
-            genPushUpdateValue(parse, this.nodeId, 'value', this.value);
         }
+        else
+            this.updateValues.push(['', NullValue]);
+
+
+        this.updateValues.push(['value', this.value]);
 
 
         for (let j = 0; j < this.objects.length; j++)
@@ -87,6 +87,15 @@ extends GOperator
         this.validate();
 
         return this;
+    }
+
+
+
+    pushValueUpdates(parse)
+    {
+        super.pushValueUpdates(parse);
+
+        if (this.input) this.input.pushValueUpdates(parse);
     }
 
 

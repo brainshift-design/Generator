@@ -30,8 +30,7 @@ extends GTrigBase
         this.value = await evalTangent(this.input, parse);
 
 
-        if (parse.isLastRepeat())
-            genPushUpdateValue(parse, this.nodeId, 'value', this.value);
+        this.updateValues = [['value', this.value]];
 
 
         this.validate();

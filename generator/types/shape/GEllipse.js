@@ -54,8 +54,7 @@ extends GShape
         }
 
 
-        if (parse.isLastRepeat())
-            genPushUpdateValue(parse, this.nodeId, 'value',  this.value       );
+        this.updateValues = [['value', this.value]];
 
 
         await this.evalShapeBase(parse, input);
@@ -100,6 +99,15 @@ extends GShape
        super.evalObjects(parse);
    }
    
+    
+        
+   pushValueUpdates(parse)
+   {
+       super.pushValueUpdates(parse);
+
+       if (this.input) this.input.pushValueUpdates(prase);
+   }
+
    
 
    toValue()
@@ -123,6 +131,6 @@ extends GShape
     {
         super.invalidate();
 
-        if (this.input ) this.input .invalidate();
+        if (this.input) this.input.invalidate();
     }
 }

@@ -69,18 +69,29 @@ extends GTextType
             this.value = new TextValue();//TextValue.NaN;
 
 
-        if (parse.isLastRepeat())
-        {
-            genPushUpdateValue(parse, this.nodeId, 'value',  this.value);
-            genPushUpdateValue(parse, this.nodeId, 'length', new NumberValue(length)); // used to set start and end maxima
-            genPushUpdateValue(parse, this.nodeId, 'start',  start);
-            genPushUpdateValue(parse, this.nodeId, 'end',    end);
-        }
+        this.updateValues =
+        [
+            ['value',  this.value             ],
+            ['length', new NumberValue(length)], // used to set start and end maxima
+            ['start',  start                  ],
+            ['end',    end                    ]
+        ];
         
 
         this.validate();
 
         return this;
+    }
+
+
+
+    pushValueUpdates(parse)
+    {
+        super.pushValueUpdates(parse);
+
+        if (this.input) this.input.pushValueUpdates(parse);
+        if (this.start) this.start.pushValueUpdates(parse);
+        if (this.end  ) this.end  .pushValueUpdates(parse);
     }
 
 

@@ -71,15 +71,15 @@ extends GShape
         }
 
 
-        if (parse.isLastRepeat())
-        {
-            genPushUpdateValue(parse, this.nodeId, 'value',   this.value        );
-            genPushUpdateValue(parse, this.nodeId, 'points',  this.value.points );
-            genPushUpdateValue(parse, this.nodeId, 'closed',  this.value.closed );
-            genPushUpdateValue(parse, this.nodeId, 'degree',  this.value.degree );
-            genPushUpdateValue(parse, this.nodeId, 'winding', this.value.winding);
-            genPushUpdateValue(parse, this.nodeId, 'round',   this.value.round  );
-        }
+        this.updateValues =
+        [
+            ['value',   this.value        ],
+            ['points',  this.value.points ],
+            ['closed',  this.value.closed ],
+            ['degree',  this.value.degree ],
+            ['winding', this.value.winding],
+            ['round',   this.value.round  ]
+        ];
 
 
         await this.evalShapeBase(parse, input);
@@ -139,6 +139,20 @@ extends GShape
 
         
         await super.evalObjects(parse);
+    }
+
+
+
+    pushValueUpdates(parse)
+    {
+        super.pushValueUpdates(parse);
+
+        if (this.input  ) this.input  .pushValueUpdates(parse);
+        if (this.points ) this.points .pushValueUpdates(parse);
+        if (this.closed ) this.closed .pushValueUpdates(parse);
+        if (this.degree ) this.degree .pushValueUpdates(parse);
+        if (this.winding) this.winding.pushValueUpdates(parse);
+        if (this.round  ) this.round  .pushValueUpdates(parse);
     }
 
 

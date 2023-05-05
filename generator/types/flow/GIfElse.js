@@ -69,16 +69,27 @@ extends GOperator
             this.value = NullValue;
 
 
-        if (parse.isLastRepeat())
-        {
-            genPushUpdateValue(parse, this.nodeId, 'condition', cond);
-            genPushUpdateValue(parse, this.nodeId, 'value',     this.value);
-        }
+        this.updateValues =
+        [
+            ['condition', cond      ],
+            ['value',     this.value]
+        ];
         
         
         this.validate();
 
         return this;
+    }
+
+
+
+    pushValueUpdates(parse)
+    {
+        super.pushValueUpdates(parse);
+
+        if (this.input0   ) this.input0   .pushValueUpdates(parse);
+        if (this.input1   ) this.input1   .pushValueUpdates(parse);
+        if (this.condition) this.condition.pushValueUpdates(parse);
     }
 
 

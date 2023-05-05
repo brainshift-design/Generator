@@ -69,30 +69,52 @@ extends GNumberType
         {
             if (!isEmpty(parse.repeats))
             {
-                const repeat = parse.repeats.at(-1);
+                // const repeat = parse.repeats.at(-1);
 
-                if (repeat.iteration == repeat.total-1)
-                {
-                    // if (parse.repeats.at(-1).nodeId != this.repeatNodeId)
-                    //     console.warn('Generator: Invalid nested repeat on \'' + this.nodeId + '\'');
-                    // else
-                        parse.repeats.pop();
-                }
+                // if (   parse.repeats.length == 1
+                //     && parse.repeats[0].iteration == parse.repeats[0].repeat.total-1)
+                // {
+                //     if (   this.repeatNodeId != NULL
+                //         && parse.repeats[0].nodeId != this.repeatNodeId)
+                //         console.warn('Generator: Invalid nested repeat on \'' + this.nodeId + '\'');
+        
+                //     //parse.repeats.pop();
+                // }
+
+
+                // if (repeat.iteration == repeat.total-1)
+                // {
+                //     // if (parse.repeats.at(-1).nodeId != this.repeatNodeId)
+                //     //     console.warn('Generator: Invalid nested repeat on \'' + this.nodeId + '\'');
+                //     // else
+                //         parse.repeats.pop();
+                // }
             }
         }
 
 
-        if (parse.isLastRepeat())
-        {
-            genPushUpdateValue(parse, this.nodeId, 'seed',  seed);
-            genPushUpdateValue(parse, this.nodeId, 'min',   min );
-            genPushUpdateValue(parse, this.nodeId, 'max',   max );
-        }
+        this.updateValues =
+        [
+            ['seed',  seed],
+            ['min',   min ],
+            ['max',   max ]
+        ];
         
 
         this.validate();
 
         return this;
+    }
+
+
+
+    pushUpdateValues(parse)
+    {
+        super.pushUpdateValues(parse);
+
+        if (this.seed) this.seed.pushUpdateValues(parse);
+        if (this.min ) this.min .pushUpdateValues(parse);
+        if (this.max ) this.max .pushUpdateValues(parse);
     }
 
 

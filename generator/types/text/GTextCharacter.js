@@ -42,16 +42,26 @@ extends GTextType
         this.value = new TextValue(String.fromCharCode(code.value));
 
 
-        if (parse.isLastRepeat())
-        {
-            genPushUpdateValue(parse, this.nodeId, 'value', this.value);
-            genPushUpdateValue(parse, this.nodeId, 'code',  code);
-        }
+        this.updateValues =
+        [
+            ['value', this.value],
+            ['code',  code      ]
+        ];
 
 
         this.validate();
 
         return this;
+    }
+
+
+
+    pushValueUpdates(parse)
+    {
+        super.pushValueUpdates(parse);
+
+        if (this.input) this.input.pushValueUpdates(parse);
+        if (this.code ) this.code .pushValueUpdates(parse);
     }
 
 

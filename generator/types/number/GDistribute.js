@@ -91,12 +91,12 @@ extends GNumberType
             Math.max(start.decimals, end.decimals));
 
         
-        if (parse.isLastRepeat())
-        {
-            genPushUpdateValue(parse, this.nodeId, 'start', start);
-            genPushUpdateValue(parse, this.nodeId, 'end',   end  );
-            genPushUpdateValue(parse, this.nodeId, 'from',  from );
-        }
+        this.updateValues =
+        [
+            ['from',  from ],
+            ['start', start],
+            ['end',   end  ]
+        ];
 
 
         if (  !isEmpty(parse.repeats)
@@ -105,20 +105,40 @@ extends GNumberType
             const repeat = parse.repeats.at(-1);
 
             this.current.value += step;
-                
-            if (repeat.iteration == repeat.total-1)
-            {
-                // if (parse.repeats.at(-1).nodeId != this.repeatNodeId)
-                //     console.warn('Generator: Invalid nested repeat on \'' + this.nodeId + '\'');
-                // else
-                    parse.repeats.pop();
-            }
+
+            // if (   parse.repeats.length == 1
+            //     && parse.repeats[0].iteration == parse.repeats[0].repeat.total-1)
+            // {
+            //     if (   this.repeatNodeId != NULL
+            //         && parse.repeats[0].nodeId != this.repeatNodeId)
+            //         console.warn('Generator: Invalid nested repeat on \'' + this.nodeId + '\'');
+    
+            //     //parse.repeats.pop();
+            // }
+                   
+            // if (repeat.iteration == repeat.total-1)
+            // {
+            //     // if (parse.repeats.at(-1).nodeId != this.repeatNodeId)
+            //     //     console.warn('Generator: Invalid nested repeat on \'' + this.nodeId + '\'');
+            //     // else
+            //         parse.repeats.pop();
+            // }
         }
 
 
         this.validate();
 
         return this;
+    }
+
+
+
+    pushValueUpdates(parse)
+    {
+        super.pushValueUpdates(parse);
+
+        if (this.start) this.start.pushValueUpdates(parse);
+        if (this.end  ) this.end  .pushValueUpdates(parse);
     }
 
 

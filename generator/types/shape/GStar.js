@@ -71,13 +71,13 @@ extends GShape
         }
 
              
-        if (parse.isLastRepeat())
-        {
-            genPushUpdateValue(parse, this.nodeId, 'value',  this.value       );
-            genPushUpdateValue(parse, this.nodeId, 'round',  this.value.round );
-            genPushUpdateValue(parse, this.nodeId, 'points', this.value.points);
-            genPushUpdateValue(parse, this.nodeId, 'convex', this.value.convex);
-        }
+        this.updateValues =
+        [
+            ['value',  this.value       ],
+            ['round',  this.value.round ],
+            ['points', this.value.points],
+            ['convex', this.value.convex]
+        ];
 
 
         await this.evalShapeBase(parse, input);
@@ -127,6 +127,18 @@ extends GShape
        
        super.evalObjects(parse);
    }
+
+
+
+   pushValueUpdates(parse)
+   {
+      super.pushValueUpdates(parse);
+
+      if (this.input ) this.input .pushValueUpdates(parse);
+      if (this.round ) this.round .pushValueUpdates(parse);
+      if (this.points) this.points.pushValueUpdates(parse);
+      if (this.convex) this.convex.pushValueUpdates(parse);
+    }
 
 
 

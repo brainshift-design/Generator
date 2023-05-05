@@ -53,16 +53,27 @@ extends GNumberType
         }
 
 
-        if (parse.isLastRepeat())
-        {
-            genPushUpdateValue(parse, this.nodeId, 'operation', op);
-            genPushUpdateValue(parse, this.nodeId, 'value',     this.value);
-        }
+        this.updateValues =
+        [
+            ['operation', op        ],
+            ['value',     this.value]
+        ];
 
 
         this.validate();
 
         return this;
+    }
+
+
+
+    pushValueUpdates(parse)
+    {
+        super.pushValueUpdates(parse);
+
+        if (this.input0   ) this.input0   .pushValueUpdates(parse);
+        if (this.input1   ) this.input1   .pushValueUpdates(parse);
+        if (this.operation) this.operation.pushValueUpdates(parse);
     }
 
 

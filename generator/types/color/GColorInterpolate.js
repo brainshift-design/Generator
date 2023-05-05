@@ -87,13 +87,13 @@ extends GColorType
             this.value = ColorValue.NaN;
 
 
-        if (parse.isLastRepeat())
-        {
-            genPushUpdateValue(parse, this.nodeId, 'space',  space );
-            genPushUpdateValue(parse, this.nodeId, 'amount', amount);
-            genPushUpdateValue(parse, this.nodeId, 'gamma',  gamma );
-            genPushUpdateValue(parse, this.nodeId, 'value',  this.value);
-        }
+        this.updateValues =
+        [
+            ['space',  space     ],
+            ['amount', amount    ],
+            ['gamma',  gamma     ],
+            ['value',  this.value]
+        ];
         
 
         this.validate();
@@ -132,6 +132,19 @@ extends GColorType
                 lerp(c0, c1, f),
                 lerp(l0, l1, f) ];
         }
+    }
+
+
+
+    pushValueUpdates(parse)
+    {
+        super.pushValueUpdates(parse);
+
+        if (this.input0) this.input0.pushValueUpdates(parse);
+        if (this.input1) this.input1.pushValueUpdates(parse);
+        if (this.space ) this.space .pushValueUpdates(parse);
+        if (this.amount) this.amount.pushValueUpdates(parse);
+        if (this.gamma ) this.gamma .pushValueUpdates(parse);
     }
 
 

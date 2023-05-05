@@ -25,8 +25,8 @@ extends GOperator
             copy.input = this.input.copy();
 
         //if (this.value) copy.value = this.value.copy();
-        if (this.x    ) copy.x     = this.x    .copy();
-        if (this.y    ) copy.y     = this.y    .copy();
+        if (this.x) copy.x = this.x.copy();
+        if (this.y) copy.y = this.y.copy();
 
         return copy;
     }
@@ -57,12 +57,12 @@ extends GOperator
         await this.evalObjects(parse, {x: x, y: y});
 
 
-        if (parse.isLastRepeat())
-        {
-            genPushUpdateValue(parse, this.nodeId, 'value', this.value);
-            genPushUpdateValue(parse, this.nodeId, 'x',     x         );
-            genPushUpdateValue(parse, this.nodeId, 'y',     y         );
-        }
+        this.updateValues =
+        [
+            ['value', this.value],
+            ['x',     x         ],
+            ['y',     y         ]
+        ];
 
 
         this.validate();
@@ -107,6 +107,17 @@ extends GOperator
 
         
         await super.evalObjects(parse);
+    }
+
+
+
+    pushValueUpdates(parse)
+    {
+        super.pushValueUpdates(parse);
+
+        if (this.input) this.input.pushValueUpdates(parse);
+        if (this.x    ) this.x    .pushValueUpdates(parse);
+        if (this.y    ) this.y    .pushValueUpdates(parse);
     }
 
 

@@ -59,8 +59,7 @@ extends GShape
             this.value = FillValue.NaN;
 
 
-        if (parse.isLastRepeat())
-            genPushUpdateValue(parse, this.nodeId, 'value', this.value);
+        this.updateValues = [['value', this.value]];
 
 
         this.validate();
@@ -87,10 +86,28 @@ extends GShape
                       Math.round(options.rgba[0] * 0xff)
               + ' ' + Math.round(options.rgba[1] * 0xff)
               + ' ' + Math.round(options.rgba[2] * 0xff)
-              + ' ' + Math.round(options.rgba[3] * 100 )]
+              + ' ' + Math.round(options.rgba[3] * 100 ) ]
         ];
 
 
         this.colorStyle = colorStyle;
+    }
+
+
+
+    pushValueUpdates(parse)
+    {
+        super.pushValueUpdates(parse);
+
+        if (this.colorStyle) this.colorStyle.pushValueUpdates(parse);
+    }
+
+
+
+    invalidate()
+    {
+        super.invalidate();
+
+        if (this.colorStyle) this.colorStyle.invalidate();
     }
 }

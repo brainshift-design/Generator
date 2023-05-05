@@ -79,7 +79,6 @@ extends OperatorBase
         if (repeatId) this.paramRepeatId.setValue(repeatId, false, true, false);
 
         this.outputs[0].types = [finalListTypeFromItems(value.items)];
-        console.log('this.outputs[0].types =', this.outputs[0].types);
     }
 
 
@@ -109,10 +108,10 @@ extends OperatorBase
             : this.type;
 
 
-        colors.back = rgb_a(rgbFromType(type, this.active), 0.95);
+        // colors.back = rgb_a(rgbFromType(type, this.active), 0.95);
 
 
-        colors.text   = isDark(colors.back) ? [1, 1, 1, 1] : [0, 0, 0, 1]; 
+        // colors.text   = isDark(colors.back) ? [1, 1, 1, 1] : [0, 0, 0, 1]; 
 
         colors.input  = this.active ? rgb_a(colors.text, 0.4)  : rgb_a(rgbSaturateHsv(rgbFromType(type, true), 0.5), 0.8);
         colors.output = this.active ? rgb_a(colors.text, 0.35) : rgb_a(rgbSaturateHsv(rgbFromType(type, true), 0.5), 0.7);

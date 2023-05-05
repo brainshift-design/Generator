@@ -117,23 +117,23 @@ extends GShape
         }
 
        
-        if (parse.isLastRepeat())
-        {
-            genPushUpdateValue(parse, this.nodeId, 'value',         this.value              );
-            genPushUpdateValue(parse, this.nodeId, 'text',          this.value.text         );
-            genPushUpdateValue(parse, this.nodeId, 'x',             this.value.x            );
-            genPushUpdateValue(parse, this.nodeId, 'y',             this.value.y            );
-            genPushUpdateValue(parse, this.nodeId, 'width',         this.value.width        );
-            genPushUpdateValue(parse, this.nodeId, 'height',        this.value.height       );
-            genPushUpdateValue(parse, this.nodeId, 'angle',         this.value.angle        );
-            genPushUpdateValue(parse, this.nodeId, 'font',          this.value.font         );
-            genPushUpdateValue(parse, this.nodeId, 'style',         this.value.style        );
-            genPushUpdateValue(parse, this.nodeId, 'size',          this.value.size         );
-            genPushUpdateValue(parse, this.nodeId, 'alignH',        this.value.alignH       );
-            genPushUpdateValue(parse, this.nodeId, 'alignV',        this.value.alignV       );
-            genPushUpdateValue(parse, this.nodeId, 'lineHeight',    this.value.lineHeight   );
-            genPushUpdateValue(parse, this.nodeId, 'letterSpacing', this.value.letterSpacing);
-        }
+        this.updateValues =
+        [
+            ['value',         this.value              ],
+            ['text',          this.value.text         ],
+            ['x',             this.value.x            ],
+            ['y',             this.value.y            ],
+            ['width',         this.value.width        ],
+            ['height',        this.value.height       ],
+            ['angle',         this.value.angle        ],
+            ['font',          this.value.font         ],
+            ['style',         this.value.style        ],
+            ['size',          this.value.size         ],
+            ['alignH',        this.value.alignH       ],
+            ['alignV',        this.value.alignV       ],
+            ['lineHeight',    this.value.lineHeight   ],
+            ['letterSpacing', this.value.letterSpacing]
+        ];
         
 
         await this.evalShapeBase(parse, input);
@@ -194,6 +194,28 @@ extends GShape
 
         
         await super.evalObjects(parse);
+    }
+
+
+
+    pushValueUpdates(parse)
+    {
+        super.pushValueUpdates(parse);
+        
+        if (this.input        ) this.input        .pushValueUpdates(parse);
+        if (this.text         ) this.text         .pushValueUpdates(parse);
+        if (this.x            ) this.x            .pushValueUpdates(parse);
+        if (this.y            ) this.y            .pushValueUpdates(parse);
+        if (this.width        ) this.width        .pushValueUpdates(parse);
+        if (this.height       ) this.height       .pushValueUpdates(parse);
+        if (this.angle        ) this.angle        .pushValueUpdates(parse);
+        if (this.font         ) this.font         .pushValueUpdates(parse);
+        if (this.style        ) this.style        .pushValueUpdates(parse);
+        if (this.size         ) this.size         .pushValueUpdates(parse);
+        if (this.alignH       ) this.alignH       .pushValueUpdates(parse);
+        if (this.alignV       ) this.alignV       .pushValueUpdates(parse);
+        if (this.lineHeight   ) this.lineHeight   .pushValueUpdates(parse);
+        if (this.letterSpacing) this.letterSpacing.pushValueUpdates(parse);
     }
 
 

@@ -56,16 +56,27 @@ extends GOperator
         }
 
 
-        if (parse.isLastRepeat())
-        {
-            genPushUpdateValue(parse, this.nodeId, 'color',   this.value.color  );
-            genPushUpdateValue(parse, this.nodeId, 'opacity', this.value.opacity);
-        }
+        this.updateValues =
+        [
+            ['color',   this.value.color  ],
+            ['opacity', this.value.opacity]
+        ];
         
 
         this.validate();
 
         return this;
+    }
+
+
+
+    pushValueUpdates(parse)
+    {
+        super.pushValueUpdates(parse);
+
+        if (this.input  ) this.input  .pushValueUpdates(parse);
+        if (this.color  ) this.color  .pushValueUpdates(parse);
+        if (this.opacity) this.opacity.pushValueUpdates(parse);
     }
     
     

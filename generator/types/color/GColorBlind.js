@@ -78,18 +78,30 @@ extends GColorType
             this.value = ColorValue.NaN;
 
 
-        if (parse.isLastRepeat())
-        {
-            genPushUpdateValue(parse, this.nodeId, 'l',     l);
-            genPushUpdateValue(parse, this.nodeId, 'm',     m);
-            genPushUpdateValue(parse, this.nodeId, 's',     s);
-            genPushUpdateValue(parse, this.nodeId, 'value', this.value);
-        }
+        this.updateValues =
+        [
+            ['l',     l         ],
+            ['m',     m         ],
+            ['s',     s         ],
+            ['value', this.value]
+        ];
         
 
         this.validate();
 
         return this;
+    }
+
+
+
+    pushValueUpdates(parse)
+    {
+        super.pushValueUpdates(parse);
+
+        if (this.input ) this.input.pushValueUpdates(parse);
+        if (this.l     ) this.l    .pushValueUpdates(parse);
+        if (this.m     ) this.m    .pushValueUpdates(parse);
+        if (this.s     ) this.s    .pushValueUpdates(parse);
     }
 
 

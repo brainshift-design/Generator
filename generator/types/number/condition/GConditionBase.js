@@ -6,6 +6,16 @@ extends GNumberType
 
 
 
+    pushValueUpdates(parse)
+    {
+        super.pushValueUpdates(parse);
+
+        if (this.input0) this.input0.pushValueUpdates(parse);
+        if (this.input1) this.input1.pushValueUpdates(parse);
+    }
+
+
+
     invalidate()
     {
         super.invalidate();

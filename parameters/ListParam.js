@@ -123,16 +123,8 @@ extends Parameter
         if (   this.input
             && this.input.connected)
         {
-            console.log('this.input.types =', this.input.types);
-            console.log('this.input.connectedOutput.types =', this.input.connectedOutput.types);
             if (this.input.supportsTypes(this.input.connectedOutput.types))
                 request.push(...pushInputOrParam(this.input, gen));
-            // if (this.input.connectedOutput.supportsTypes([LIST_VALUE]))
-            //     request.push(...pushInputOrParam(this.input, gen));
-            // else if (this.input.connectedOutput.supportsTypes(this.input.types))
-            //     request.push(
-            //         LIST_VALUE, 1,
-            //         ...pushInputOrParam(this.input, gen));
             else
                 console.assert(false, 'invalid input for ListParam (' + this.node.id + ')');
         }

@@ -69,26 +69,24 @@ extends GOperator
         });
 
 
-        if (parse.isLastRepeat())
-        {
-            genPushUpdateValue(parse, this.nodeId, 'value',   this.value);
-            genPushUpdateValue(parse, this.nodeId, 'x',       x         );
-            genPushUpdateValue(parse, this.nodeId, 'y',       y         );
-            genPushUpdateValue(parse, this.nodeId, 'centerX', centerX   );
-            genPushUpdateValue(parse, this.nodeId, 'centerY', centerY   );
+        const bounds = new RectangleValue(
+            this.nodeId,
+            new NumberValue(_bounds.x     ), 
+            new NumberValue(_bounds.y     ), 
+            new NumberValue(_bounds.width ),
+            new NumberValue(_bounds.height),
+            new NumberValue(0),
+            new NumberValue(0));
 
-
-            const bounds = new RectangleValue(
-                this.nodeId,
-                new NumberValue(_bounds.x     ), 
-                new NumberValue(_bounds.y     ), 
-                new NumberValue(_bounds.width ),
-                new NumberValue(_bounds.height),
-                new NumberValue(0),
-                new NumberValue(0));
-
-            genPushUpdateValue(parse, this.nodeId, 'bounds', bounds);
-        }
+        this.updateValues =
+        [
+            ['value',   this.value],
+            ['x',       x         ],
+            ['y',       y         ],
+            ['centerX', centerX   ],
+            ['centerY', centerY   ],
+            ['bounds',  bounds    ]
+        ];
         
 
         this.validate();
@@ -225,6 +223,19 @@ extends GOperator
 
 
         return bounds;
+    }
+
+
+
+    pushValueUpdates(parse)
+    {
+        super.pushValueUpdates(parse);
+
+        if (this.input  ) this.input  .pushValueUpdates(parse);
+        if (this.x      ) this.x      .pushValueUpdates(parse);
+        if (this.y      ) this.y      .pushValueUpdates(parse);
+        if (this.centerX) this.centerX.pushValueUpdates(parse);
+        if (this.centerY) this.centerY.pushValueUpdates(parse);
     }
 
 

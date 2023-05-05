@@ -61,16 +61,27 @@ extends GNumberType
             this.value = NumberValue.NaN;
 
 
-        if (parse.isLastRepeat())
-        {
-            genPushUpdateValue(parse, this.nodeId, 'amount', amount);
-            genPushUpdateValue(parse, this.nodeId, 'value',  this.value);
-        }
+        this.updateValues =
+        [
+            ['amount', amount    ],
+            ['value',  this.value]
+        ];
         
 
         this.validate();
 
         return this;
+    }
+
+
+
+    pushValueUpdates(parse)
+    {
+        super.pushValueUpdates(parse);
+
+        if (this.input0) this.input0.pushValueUpdates(parse);
+        if (this.input1) this.input1.pushValueUpdates(parse);
+        if (this.amount) this.amount.pushValueUpdates(parse);
     }
 
 

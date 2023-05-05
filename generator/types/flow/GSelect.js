@@ -91,17 +91,26 @@ extends GOperator
         }
 
 
-        if (parse.isLastRepeat())
-        {
-            genPushUpdateValue(parse, this.nodeId, 'value',  this.value);
-            genPushUpdateValue(parse, this.nodeId, 'length', new NumberValue(length));
-            genPushUpdateValue(parse, this.nodeId, 'index',  index);
-        }
+        this.updateValues =
+        [
+            ['value',  this.value             ],
+            ['length', new NumberValue(length)],
+            ['index',  index                  ]
+        ];
 
 
         this.validate();
 
         return this;
+    }
+
+
+
+    pushValueUpdates()
+    {
+        super.pushValueUpdates();
+
+        if (this.index) this.index.pushValueUpdates();
     }
 
 
@@ -117,7 +126,6 @@ extends GOperator
     {
         super.invalidate();
 
-        //if (this.input) this.input.invalidate();
         if (this.index) this.index.invalidate();
     }
 }

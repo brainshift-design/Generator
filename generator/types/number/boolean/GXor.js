@@ -27,8 +27,7 @@ extends GArithmetic
         this.value = await evalXorInputs(this.inputs, parse);
         
 
-        if (parse.isLastRepeat())
-            genPushUpdateValue(parse, this.nodeId, 'value', this.value);
+        this.updateValues = [['value', this.value]];
 
 
         this.validate();

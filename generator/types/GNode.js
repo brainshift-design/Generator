@@ -5,10 +5,12 @@ class GNode
 
     valid; // has been evaluated
 
-    listId  = -1;
+    listId       = -1;
 
-    options = {};
-    data    = {}; // for type conversion info
+    options      = {};
+    data         = {}; // for type conversion info
+
+    updateValues = [];
 
 
 
@@ -60,6 +62,14 @@ class GNode
     isValid() // is a valid value
     {
         return false;
+    }
+
+
+    
+    pushValueUpdates(parse)
+    {
+        for (const value of this.updateValues)
+            genPushUpdateValue(parse, this.nodeId, value[0], value[1]);
     }
 
 

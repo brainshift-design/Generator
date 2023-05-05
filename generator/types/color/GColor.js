@@ -147,19 +147,32 @@ extends GColorType
                 NumberValue.NaN);
 
 
-        if (parse.isLastRepeat())
-        {
-            genPushUpdateValue(parse, this.nodeId, 'convert', this.convert    );
-            genPushUpdateValue(parse, this.nodeId, 'space',   this.value.space);
-            genPushUpdateValue(parse, this.nodeId, 'c1',      this.value.c1   );
-            genPushUpdateValue(parse, this.nodeId, 'c2',      this.value.c2   );
-            genPushUpdateValue(parse, this.nodeId, 'c3',      this.value.c3   );
-        }
+        this.updateValues = 
+        [
+            ['convert', this.convert    ],
+            ['space',   this.value.space],
+            ['c1',      this.value.c1   ],
+            ['c2',      this.value.c2   ],
+            ['c3',      this.value.c3   ]
+        ];
 
 
         this.validate();
 
         return this;
+    }
+
+
+
+    pushValueUpdates(parse)
+    {
+        super.pushValueUpdates(parse);
+
+        if (this.input) this.input.pushValueUpdates(parse);
+        if (this.space) this.space.pushValueUpdates(parse);
+        if (this.c1   ) this.c1   .pushValueUpdates(parse);
+        if (this.c2   ) this.c2   .pushValueUpdates(parse);
+        if (this.c3   ) this.c3   .pushValueUpdates(parse);
     }
 
 

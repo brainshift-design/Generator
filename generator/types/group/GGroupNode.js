@@ -38,19 +38,20 @@ extends GOperator
         if (this.isCached())
             return this;
 
-        if (parse.isLastRepeat())
+
+        this.updateValues = [];
+
+
+        if (!isEmpty(this.params))
         {
-            if (!isEmpty(this.params))
+            for (let i = 0; i < this.params.length; i++)
             {
-                for (let i = 0; i < this.params.length; i++)
-                {
-                    const param = await this.params[i].eval(parse);
-                    genPushUpdateValue(parse, this.nodeId, this.paramIds[i], param.toValue());
-                }
+                const param = await this.params[i].eval(parse);
+                this.updateValues.push([this.paramIds[i], param.toValue()]);
             }
-            else
-                genPushUpdateValue(parse, this.nodeId, '', NullValue);
         }
+        else
+            this.updateValues.push(['', NullValue]);
                 
         
         this.validate();
