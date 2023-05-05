@@ -4588,12 +4588,12 @@ function getPathDataFromPoints(points, closed, degree)
 
     switch (degree)
     {
-    case 0: pathData = getLinearPathData   (points.map(p => p.toPoint()));     break;
-    case 1: pathData = getQuadraticPathData(points.map(p => p.toPoint()));     break;
-    case 2: pathData = getCubicPathData    (points.map(p => p.toPoint()));     break;
-    case 3: pathData = getSmoothPathData   (points, closed, getSmoothSegment); break;
-    case 4: pathData = getSmoothPathData   (points, closed, getSineXSegment);  break;
-    case 5: pathData = getSmoothPathData   (points, closed, getSineYSegment);  break;
+    case 0: pathData = getLinearPathData   (points.map(p => p.toPoint()));         break;
+    case 1: pathData = getQuadraticPathData(points.map(p => p.toPoint()), closed); break;
+    case 2: pathData = getCubicPathData    (points.map(p => p.toPoint()), closed); break;
+    case 3: pathData = getSmoothPathData   (points, closed, getSmoothSegment);     break;
+    case 4: pathData = getSmoothPathData   (points, closed, getSineXSegment);      break;
+    case 5: pathData = getSmoothPathData   (points, closed, getSineYSegment);      break;
     }
 
 
@@ -4645,7 +4645,7 @@ function getLinearPathData(points)
 
 
 
-function getQuadraticPathData(points)
+function getQuadraticPathData(points, closed)
 {
     let pathData = '';
 
@@ -4658,14 +4658,27 @@ function getQuadraticPathData(points)
     pathData += ' ' + points[0].x;
     pathData += ' ' + points[0].y;
 
-    for (let i = 1; i < points.length-1; i += 2)
+    let i;
+    for (i = 1; i < points.length-1; i += 2)
     {
         pathData += 
-                ' Q'
+              ' Q'
             + ' ' + points[i  ].x
             + ' ' + points[i  ].y
             + ' ' + points[i+1].x
             + ' ' + points[i+1].y;
+    }
+
+
+    if (   points.length - i == 1
+        && closed)
+    {
+        pathData += 
+              ' Q'
+            + ' ' + points.at(-1).x
+            + ' ' + points.at(-1).y
+            + ' ' + points.at( 0).x
+            + ' ' + points.at( 0).y;
     }
 
 
@@ -4674,7 +4687,7 @@ function getQuadraticPathData(points)
 
 
 
-function getCubicPathData(points)
+function getCubicPathData(points, closed)
 {
     let pathData = '';
 
@@ -4687,16 +4700,30 @@ function getCubicPathData(points)
     pathData += ' ' + points[0].x;
     pathData += ' ' + points[0].y;
 
-    for (let i = 1; i < points.length-2; i += 3)
+    let i;
+    for (i = 1; i < points.length-2; i += 3)
     {
         pathData += 
-                ' C'
+              ' C'
             + ' ' + points[i  ].x
             + ' ' + points[i  ].y
             + ' ' + points[i+1].x
             + ' ' + points[i+1].y
             + ' ' + points[i+2].x
             + ' ' + points[i+2].y;
+    }
+
+
+    if (points.length - i == 2)
+    {
+        pathData += 
+              ' C'
+            + ' ' + points.at(-2).x
+            + ' ' + points.at(-2).y
+            + ' ' + points.at(-1).x
+            + ' ' + points.at(-1).y
+            + ' ' + points.at( 0).x
+            + ' ' + points.at( 0).y;
     }
 
 
@@ -4828,9 +4855,10 @@ function getSmoothSegment(_pointP, _point, _pointN)
     }
     else
     {
-        const ha = halfArcAngle(_pp, _p, _pn);
-        console.log('aa =', ha);
-        f = 4/3 * Math.tan(Math.abs(ha)/4);//1/3 + (k*kCorr - 1/3) * Math.sin(a);    
+        f = 1/3 + (k*kCorr - 1/3) * (1 - Math.cos(a)); //k*kCorr * Math.sin(a);
+        // const ha = halfArcAngle(_pp, _p, _pn);
+        // console.log('aa =', ha);
+        // f = 4/3 * Math.tan(Math.abs(ha)/4);
     }
     
 
