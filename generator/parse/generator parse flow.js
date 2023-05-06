@@ -401,8 +401,8 @@ function genParseRepeat(parse)
     if (nInputs == 1)
         rep.input = genParse(parse);
 
-    rep.count    = genParse(parse);
-    rep.repeatId = genParse(parse);  // don't set target here
+    rep.count = genParse(parse);
+    rep.loop  = genParse(parse);  // don't set target here
 
 
     parse.nTab--;

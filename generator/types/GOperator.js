@@ -8,7 +8,6 @@ extends GNode
 
     value;
 
-
     feedbackValue = null; // () => {}
 
 

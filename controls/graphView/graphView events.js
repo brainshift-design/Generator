@@ -384,7 +384,7 @@ GraphView.prototype.updateWheelTimer = function()
 
         graph.updateSavedPages();
     }, 
-    450);
+    400);
 };
 
 

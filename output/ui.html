@@ -6461,14 +6461,18 @@ function expandRect_(rect, p)
 class Random
 {
     seed;
-    last;
+    index; // for next()
+
+    cache;
 
 
 
-    constructor(seed = 0, last = seed)//(seed = 0xb9ef7ca4, last = seed)
+    constructor(seed = 0)
     { 
-        this.seed = seed; 
-        this.last = last;
+        this.seed  = seed; 
+        this.index = 0;
+        
+        this.updateCache(256);
     }
 
 
@@ -6480,20 +6484,52 @@ class Random
 
 
 
-    next()
+    updateCache(size)
     {
-        this.last = this.seed;
-        
-        this.seed = (this.seed + 0x7ed55d16) + (this.seed << 12);
-        this.seed = (this.seed ^ 0xc761c23c) ^ (this.seed >> 19);
-        this.seed = (this.seed + 0x165667b1) + (this.seed <<  5);
-        this.seed = (this.seed + 0xd3a2646c) ^ (this.seed <<  9);
-        this.seed = (this.seed + 0xfd7046c5) + (this.seed <<  3);
-        this.seed = (this.seed ^ 0xb55a4f09) ^ (this.seed >> 16);
+        this.cache = new Int32Array(size);
 
-        return this.seed / -0x7fffffff;
+        let seed = this.seed;
+        let last = seed;
+
+        for (let i = 0; i < size; i++)
+            this.cache[i] = seed = this.generate(seed, last);
     }
 
+
+
+    next()
+    {
+        if (this.index >= this.cache.length)
+            this.updateCache(nextPow2(this.index));
+
+        return this.cache[this.index++] / -0x7fffffff;
+    }
+
+
+
+    get(index)
+    {
+        if (index >= this.cache.length)
+            this.updateCache(nextPow2(index));
+
+        return this.cache[index] / -0x7fffffff;
+    }
+
+
+
+    generate(seed, last)
+    {
+        last = seed;
+        
+        seed = (seed + 0x7ed55d16) + (seed << 12);
+        seed = (seed ^ 0xc761c23c) ^ (seed >> 19);
+        seed = (seed + 0x165667b1) + (seed <<  5);
+        seed = (seed + 0xd3a2646c) ^ (seed <<  9);
+        seed = (seed + 0xfd7046c5) + (seed <<  3);
+        seed = (seed ^ 0xb55a4f09) ^ (seed >> 16);
+
+        return seed;
+    }
 }
 
 
@@ -9317,6 +9353,10 @@ class GNode
 
     listId       = -1;
 
+
+    iteration     = 0;
+
+
     options      = {};
     data         = {}; // for type conversion info
 
@@ -9387,6 +9427,7 @@ class GNode
     validate()
     {
         this.valid = true;
+        this.iteration++;
     }
 
 
@@ -9540,7 +9581,6 @@ extends GNode
     topLevel;
 
     value;
-
 
     feedbackValue = null; // () => {}
 
@@ -13098,7 +13138,7 @@ extends GOperator
     input = null;
 
     count;
-    repeatId;
+    loop;
 
 
 
@@ -13117,9 +13157,9 @@ extends GOperator
 
         if (this.input) copy.input = this.input.copy();
 
-        copy.value    = this.value   .copy();
-        copy.count    = this.count   .copy();
-        copy.repeatId = this.repeatId.copy();
+        copy.value = this.value.copy();
+        copy.count = this.count.copy();
+        copy.loop  = this.loop .copy();
 
         return copy;
     }
@@ -13128,8 +13168,7 @@ extends GOperator
 
     isCached()
     {
-        return this.valid;//
-            //|| this.repeatId;
+        return this.valid;
     }
 
 
@@ -13141,22 +13180,21 @@ extends GOperator
             
 
         let count = (await this.count.eval(parse)).toValue();
-        //const repeatId = (await this.repeatId.eval(parse)).toValue();
 
 
         count = new NumberValue(Math.round(count.value));
 
 
-        if (this.repeatId.type != NUMBER_VALUE)
+        if (this.loop.type != NUMBER_VALUE)
         {
             console.assert(
-                   this.repeatId.type == NUMBER_DISTRIBUTE
-                || this.repeatId.type == NUMBER_SEQUENCE
-                || this.repeatId.type == NUMBER_RANDOM
-                || this.repeatId.type == LIST,
+                   this.loop.type == NUMBER_DISTRIBUTE
+                || this.loop.type == NUMBER_SEQUENCE
+                || this.loop.type == NUMBER_RANDOM
+                || this.loop.type == LIST,
                 'only volatile types can be repeated');
 
-            setRepeatCount(this.repeatId, count.value);
+            this.setRepeatCount(this.loop, count.value);
         }
 
 
@@ -13165,16 +13203,14 @@ extends GOperator
         this.objects = [];
 
 
-        let repeat =             
+        let repeat =
         {
-            nodeId:    this.nodeId,
+            repeatId:  this.nodeId,
             iteration: 0,
             total:     1
         };
 
-        //if (this.repeatId.type != NUMBER_VALUE)
-        
-        
+
         if (this.input)
         {
             const nItems = 
@@ -13188,9 +13224,9 @@ extends GOperator
 
             for (let i = 0, o = 0; i < nItems; i++)
             {
-                if (this.repeatId.type != NUMBER_VALUE)
+                if (this.loop.type != NUMBER_VALUE)
                 {
-                    invalidateRepeat(this.repeatId, this.nodeId);
+                    this.invalidateRepeat(this.loop, this.nodeId);
 
                     repeat.iteration = i;
                     repeat.total     = nItems;
@@ -13225,18 +13261,14 @@ extends GOperator
 
             console.assert(parse.repeats.at(-1) == repeat, 'invalid nested repeat');
             parse.repeats.pop();
-
-                
-            if (this.repeatId)
-                uninitRepeat(this.repeatId);
         }
 
 
         this.updateValues =
         [
-            ['value',    this.value     ],
-            ['count',    count          ],
-            ['repeatId', NumberValue.NaN]
+            ['value',  this.value     ],
+            ['count',  count          ],
+            ['loop',   NumberValue.NaN]
         ];
 
 
@@ -13271,54 +13303,39 @@ extends GOperator
         if (this.input) this.input.invalidate();
         if (this.count) this.count.invalidate();
     }
-}
 
 
 
-function setRepeatCount(repeat, count)
-{
-    if (repeat.type == LIST)
+    setRepeatCount(loop, count)
     {
-        for (const input of repeat.inputs)
-            setRepeatCount(input, count);
-    }
-    else
-    {
-        repeat.repeatCount = count;
-    }
-}
-
-
-
-function invalidateRepeat(repeat, nodeId)
-{
-    if (repeat.type == LIST)
-    {
-        for (const input of repeat.inputs)
+        if (loop.type == LIST)
         {
-            input.valid        = false;
-            input.repeatNodeId = nodeId;
+            for (const input of loop.inputs)
+                this.setRepeatCount(input, count);
+        }
+        else
+        {
+            loop.repeatCount = count;
         }
     }
-    else
-    {
-        repeat.valid        = false;
-        repeat.repeatNodeId = nodeId;
-    }
-}
 
 
 
-function uninitRepeat(repeat)
-{
-    if (repeat.type == LIST)
+    invalidateRepeat(loop, nodeId)
     {
-        for (const input of repeat.inputs)
-            uninitRepeat(input);
-    }
-    else
-    {
-        repeat.init = false;
+        if (loop.type == LIST)
+        {
+            for (const input of loop.inputs)
+            {
+                input.valid        = false;
+                input.loopId = nodeId;
+            }
+        }
+        else
+        {
+            loop.valid        = false;
+            loop.loopId = nodeId;
+        }
     }
 }
 
@@ -14050,12 +14067,7 @@ extends GNumberType
     end;
 
 
-    current      = null;
-
-
-    init         = false;
-    
-    repeaNodetId = NULL;
+    loopId = NULL;
 
 
 
@@ -14097,77 +14109,26 @@ extends GNumberType
         const end   = (await this.end  .eval(parse)).toValue();
     
 
-        const repeat = parse.repeats.find(r => r.nodeId == this.repeatNodeId);
+        const repeat    = parse.repeats.find(r => r.repeatId == this.loopId);
+        const iteration = repeat ? repeat.iteration : this.iteration;
 
         const step = 
             repeat
-            ? (end.toNumber() - start.toNumber()) / Math.max(1, parse.repeats.at(-1).total - (from.value == 1 ? 1 : 0))
+            ? (end.toNumber() - start.toNumber()) / Math.max(1, repeat.total - (from.value == 1 ? 1 : 0))
             : 0;
 
-
-        if (!this.init)
-        {
-            if (  !repeat
-                || repeat.total <= 1)
-            {
-                switch (from.value)
-                {
-                    case 0: this.current = start.copy();                                             break;
-                    case 1: this.current = new NumberValue((start.toNumber() + end.toNumber()) / 2); break;
-                    case 2: this.current = end.copy();                                               break;
-                }
-            }
-            else
-            {
-                this.current = start.copy();
-
-                if (from.value == 2)
-                    this.current.value += step;
-            }
-
-
-            this.init = true;
-        }
-        
-
+            
         this.value = new NumberValue(
-            this.current.value,
+            start.toNumber() + step * iteration,
             Math.max(start.decimals, end.decimals));
 
-        
+            
         this.updateValues =
         [
             ['from',  from ],
             ['start', start],
             ['end',   end  ]
         ];
-
-
-        if (  !isEmpty(parse.repeats)
-            && parse.repeats.at(-1).nodeId == this.repeatNodeId)
-        {
-            const repeat = parse.repeats.at(-1);
-
-            this.current.value += step;
-
-            // if (   parse.repeats.length == 1
-            //     && parse.repeats[0].iteration == parse.repeats[0].repeat.total-1)
-            // {
-            //     if (   this.repeatNodeId != NULL
-            //         && parse.repeats[0].nodeId != this.repeatNodeId)
-            //         console.warn('Generator: Invalid nested repeat on \'' + this.nodeId + '\'');
-    
-            //     //parse.repeats.pop();
-            // }
-                   
-            // if (repeat.iteration == repeat.total-1)
-            // {
-            //     // if (parse.repeats.at(-1).nodeId != this.repeatNodeId)
-            //     //     console.warn('Generator: Invalid nested repeat on \'' + this.nodeId + '\'');
-            //     // else
-            //         parse.repeats.pop();
-            // }
-        }
 
 
         this.validate();
@@ -14181,6 +14142,7 @@ extends GNumberType
     {
         super.pushValueUpdates(parse);
 
+        if (this.from ) this.from .pushValueUpdates(parse);
         if (this.start) this.start.pushValueUpdates(parse);
         if (this.end  ) this.end  .pushValueUpdates(parse);
     }
@@ -14191,6 +14153,7 @@ extends GNumberType
     {
         super.invalidate();
 
+        if (this.from ) this.from .invalidate();
         if (this.start) this.start.invalidate();
         if (this.end  ) this.end  .invalidate();
     }
@@ -14204,12 +14167,8 @@ extends GNumberType
     start;
     step;
 
-    current      = null;
 
-
-    init         = false;
-    
-    repeaNodetId = NULL;
+    loopId  = NULL;
 
 
 
@@ -14249,42 +14208,20 @@ extends GNumberType
         const step  = (await this.step .eval(parse)).toValue();
     
 
-        if (!this.init)
-        {
-            this.current = start.copy();
-            this.init    = true;
-        }
-        
+        const repeat    = parse.repeats.find(r => r.repeatId == this.loopId);
+        const iteration = repeat ? repeat.iteration : this.iteration;
 
+        
         this.value = new NumberValue(
-            this.current.value,
+            start.toNumber() + step.toNumber() * iteration,
             Math.max(start.decimals, step.decimals));
 
-        
+            
         this.updateValues =
         [
             ['start', start],
             ['step',  step ]
         ];
-
-
-        if (!parse.repeats.find(r => r.nodeId == this.repeatNodeId))
-            this.current.value += step.toNumber();
-
-        else if (  !isEmpty(parse.repeats)
-                && parse.repeats.at(-1).nodeId == this.repeatNodeId)
-            this.current.value += step.toNumber();
-
-
-        // if (   parse.repeats.length == 1
-        //     && parse.repeats[0].iteration == parse.repeats[0].repeat.total-1)
-        // {
-        //     if (   this.repeatNodeId != NULL
-        //         && parse.repeats[0].nodeId != this.repeatNodeId)
-        //         console.warn('Generator: Invalid nested repeat on \'' + this.nodeId + '\'');
-
-        //     //parse.repeats.pop();
-        // }
 
 
         this.validate();
@@ -14325,9 +14262,7 @@ extends GNumberType
     random = null;
 
 
-    init         = false;
-
-    repeaNodetId = NULL;
+    loopId = NULL;
 
 
 
@@ -14369,52 +14304,25 @@ extends GNumberType
         const max  = (await this.max .eval(parse)).toValue();
     
 
-        if (!this.init)
-        {
+        if (  !this.random
+            || this.random.seed != seed.value)
             this.random = new Random(seed.value);
-            this.init   = true;
-        }
+
+
+        const repeat    = parse.repeats.find(r => r.repeatId == this.loopId);
+        const iteration = repeat ? repeat.iteration : this.iteration;
 
         
         this.value = new NumberValue(
-            min.value + this.random.next() * (max.value - min.value),
+            min.value + this.random.get(iteration) * (max.value - min.value),
             Math.max(min.decimals, max.decimals));
-
-
-        if (  !parse.repeats.find(r => r.nodeId == this.repeatNodeId)
-            || parse.repeats.at(-1).nodeId == this.repeatNodeId)
-        {
-            if (!isEmpty(parse.repeats))
-            {
-                // const repeat = parse.repeats.at(-1);
-
-                // if (   parse.repeats.length == 1
-                //     && parse.repeats[0].iteration == parse.repeats[0].repeat.total-1)
-                // {
-                //     if (   this.repeatNodeId != NULL
-                //         && parse.repeats[0].nodeId != this.repeatNodeId)
-                //         console.warn('Generator: Invalid nested repeat on \'' + this.nodeId + '\'');
-        
-                //     //parse.repeats.pop();
-                // }
-
-
-                // if (repeat.iteration == repeat.total-1)
-                // {
-                //     // if (parse.repeats.at(-1).nodeId != this.repeatNodeId)
-                //     //     console.warn('Generator: Invalid nested repeat on \'' + this.nodeId + '\'');
-                //     // else
-                //         parse.repeats.pop();
-                // }
-            }
-        }
 
 
         this.updateValues =
         [
-            ['seed',  seed],
-            ['min',   min ],
-            ['max',   max ]
+            ['seed', seed],
+            ['min',  min ],
+            ['max',  max ]
         ];
         
 
@@ -21691,7 +21599,7 @@ extends GOperator
 
         this.objects = 
             this.input 
-            ? clone(this.input.objects) 
+            ? clone(this.input.objects)
             : [];
 
             
@@ -24728,8 +24636,8 @@ function genParseRepeat(parse)
     if (nInputs == 1)
         rep.input = genParse(parse);
 
-    rep.count    = genParse(parse);
-    rep.repeatId = genParse(parse);  // don't set target here
+    rep.count = genParse(parse);
+    rep.loop  = genParse(parse);  // don't set target here
 
 
     parse.nTab--;
@@ -32813,14 +32721,18 @@ function expandRect_(rect, p)
 class Random
 {
     seed;
-    last;
+    index; // for next()
+
+    cache;
 
 
 
-    constructor(seed = 0, last = seed)//(seed = 0xb9ef7ca4, last = seed)
+    constructor(seed = 0)
     { 
-        this.seed = seed; 
-        this.last = last;
+        this.seed  = seed; 
+        this.index = 0;
+        
+        this.updateCache(256);
     }
 
 
@@ -32832,20 +32744,52 @@ class Random
 
 
 
-    next()
+    updateCache(size)
     {
-        this.last = this.seed;
-        
-        this.seed = (this.seed + 0x7ed55d16) + (this.seed << 12);
-        this.seed = (this.seed ^ 0xc761c23c) ^ (this.seed >> 19);
-        this.seed = (this.seed + 0x165667b1) + (this.seed <<  5);
-        this.seed = (this.seed + 0xd3a2646c) ^ (this.seed <<  9);
-        this.seed = (this.seed + 0xfd7046c5) + (this.seed <<  3);
-        this.seed = (this.seed ^ 0xb55a4f09) ^ (this.seed >> 16);
+        this.cache = new Int32Array(size);
 
-        return this.seed / -0x7fffffff;
+        let seed = this.seed;
+        let last = seed;
+
+        for (let i = 0; i < size; i++)
+            this.cache[i] = seed = this.generate(seed, last);
     }
 
+
+
+    next()
+    {
+        if (this.index >= this.cache.length)
+            this.updateCache(nextPow2(this.index));
+
+        return this.cache[this.index++] / -0x7fffffff;
+    }
+
+
+
+    get(index)
+    {
+        if (index >= this.cache.length)
+            this.updateCache(nextPow2(index));
+
+        return this.cache[index] / -0x7fffffff;
+    }
+
+
+
+    generate(seed, last)
+    {
+        last = seed;
+        
+        seed = (seed + 0x7ed55d16) + (seed << 12);
+        seed = (seed ^ 0xc761c23c) ^ (seed >> 19);
+        seed = (seed + 0x165667b1) + (seed <<  5);
+        seed = (seed + 0xd3a2646c) ^ (seed <<  9);
+        seed = (seed + 0xfd7046c5) + (seed <<  3);
+        seed = (seed ^ 0xb55a4f09) ^ (seed >> 16);
+
+        return seed;
+    }
 }
 
 
@@ -38255,6 +38199,10 @@ class GNode
 
     listId       = -1;
 
+
+    iteration     = 0;
+
+
     options      = {};
     data         = {}; // for type conversion info
 
@@ -38325,6 +38273,7 @@ class GNode
     validate()
     {
         this.valid = true;
+        this.iteration++;
     }
 
 
@@ -38478,7 +38427,6 @@ extends GNode
     topLevel;
 
     value;
-
 
     feedbackValue = null; // () => {}
 
@@ -42036,7 +41984,7 @@ extends GOperator
     input = null;
 
     count;
-    repeatId;
+    loop;
 
 
 
@@ -42055,9 +42003,9 @@ extends GOperator
 
         if (this.input) copy.input = this.input.copy();
 
-        copy.value    = this.value   .copy();
-        copy.count    = this.count   .copy();
-        copy.repeatId = this.repeatId.copy();
+        copy.value = this.value.copy();
+        copy.count = this.count.copy();
+        copy.loop  = this.loop .copy();
 
         return copy;
     }
@@ -42066,8 +42014,7 @@ extends GOperator
 
     isCached()
     {
-        return this.valid;//
-            //|| this.repeatId;
+        return this.valid;
     }
 
 
@@ -42079,22 +42026,21 @@ extends GOperator
             
 
         let count = (await this.count.eval(parse)).toValue();
-        //const repeatId = (await this.repeatId.eval(parse)).toValue();
 
 
         count = new NumberValue(Math.round(count.value));
 
 
-        if (this.repeatId.type != NUMBER_VALUE)
+        if (this.loop.type != NUMBER_VALUE)
         {
             console.assert(
-                   this.repeatId.type == NUMBER_DISTRIBUTE
-                || this.repeatId.type == NUMBER_SEQUENCE
-                || this.repeatId.type == NUMBER_RANDOM
-                || this.repeatId.type == LIST,
+                   this.loop.type == NUMBER_DISTRIBUTE
+                || this.loop.type == NUMBER_SEQUENCE
+                || this.loop.type == NUMBER_RANDOM
+                || this.loop.type == LIST,
                 'only volatile types can be repeated');
 
-            setRepeatCount(this.repeatId, count.value);
+            this.setRepeatCount(this.loop, count.value);
         }
 
 
@@ -42103,16 +42049,14 @@ extends GOperator
         this.objects = [];
 
 
-        let repeat =             
+        let repeat =
         {
-            nodeId:    this.nodeId,
+            repeatId:  this.nodeId,
             iteration: 0,
             total:     1
         };
 
-        //if (this.repeatId.type != NUMBER_VALUE)
-        
-        
+
         if (this.input)
         {
             const nItems = 
@@ -42126,9 +42070,9 @@ extends GOperator
 
             for (let i = 0, o = 0; i < nItems; i++)
             {
-                if (this.repeatId.type != NUMBER_VALUE)
+                if (this.loop.type != NUMBER_VALUE)
                 {
-                    invalidateRepeat(this.repeatId, this.nodeId);
+                    this.invalidateRepeat(this.loop, this.nodeId);
 
                     repeat.iteration = i;
                     repeat.total     = nItems;
@@ -42163,18 +42107,14 @@ extends GOperator
 
             console.assert(parse.repeats.at(-1) == repeat, 'invalid nested repeat');
             parse.repeats.pop();
-
-                
-            if (this.repeatId)
-                uninitRepeat(this.repeatId);
         }
 
 
         this.updateValues =
         [
-            ['value',    this.value     ],
-            ['count',    count          ],
-            ['repeatId', NumberValue.NaN]
+            ['value',  this.value     ],
+            ['count',  count          ],
+            ['loop',   NumberValue.NaN]
         ];
 
 
@@ -42209,54 +42149,39 @@ extends GOperator
         if (this.input) this.input.invalidate();
         if (this.count) this.count.invalidate();
     }
-}
 
 
 
-function setRepeatCount(repeat, count)
-{
-    if (repeat.type == LIST)
+    setRepeatCount(loop, count)
     {
-        for (const input of repeat.inputs)
-            setRepeatCount(input, count);
-    }
-    else
-    {
-        repeat.repeatCount = count;
-    }
-}
-
-
-
-function invalidateRepeat(repeat, nodeId)
-{
-    if (repeat.type == LIST)
-    {
-        for (const input of repeat.inputs)
+        if (loop.type == LIST)
         {
-            input.valid        = false;
-            input.repeatNodeId = nodeId;
+            for (const input of loop.inputs)
+                this.setRepeatCount(input, count);
+        }
+        else
+        {
+            loop.repeatCount = count;
         }
     }
-    else
-    {
-        repeat.valid        = false;
-        repeat.repeatNodeId = nodeId;
-    }
-}
 
 
 
-function uninitRepeat(repeat)
-{
-    if (repeat.type == LIST)
+    invalidateRepeat(loop, nodeId)
     {
-        for (const input of repeat.inputs)
-            uninitRepeat(input);
-    }
-    else
-    {
-        repeat.init = false;
+        if (loop.type == LIST)
+        {
+            for (const input of loop.inputs)
+            {
+                input.valid        = false;
+                input.loopId = nodeId;
+            }
+        }
+        else
+        {
+            loop.valid        = false;
+            loop.loopId = nodeId;
+        }
     }
 }
 
@@ -42988,12 +42913,7 @@ extends GNumberType
     end;
 
 
-    current      = null;
-
-
-    init         = false;
-    
-    repeaNodetId = NULL;
+    loopId = NULL;
 
 
 
@@ -43035,77 +42955,26 @@ extends GNumberType
         const end   = (await this.end  .eval(parse)).toValue();
     
 
-        const repeat = parse.repeats.find(r => r.nodeId == this.repeatNodeId);
+        const repeat    = parse.repeats.find(r => r.repeatId == this.loopId);
+        const iteration = repeat ? repeat.iteration : this.iteration;
 
         const step = 
             repeat
-            ? (end.toNumber() - start.toNumber()) / Math.max(1, parse.repeats.at(-1).total - (from.value == 1 ? 1 : 0))
+            ? (end.toNumber() - start.toNumber()) / Math.max(1, repeat.total - (from.value == 1 ? 1 : 0))
             : 0;
 
-
-        if (!this.init)
-        {
-            if (  !repeat
-                || repeat.total <= 1)
-            {
-                switch (from.value)
-                {
-                    case 0: this.current = start.copy();                                             break;
-                    case 1: this.current = new NumberValue((start.toNumber() + end.toNumber()) / 2); break;
-                    case 2: this.current = end.copy();                                               break;
-                }
-            }
-            else
-            {
-                this.current = start.copy();
-
-                if (from.value == 2)
-                    this.current.value += step;
-            }
-
-
-            this.init = true;
-        }
-        
-
+            
         this.value = new NumberValue(
-            this.current.value,
+            start.toNumber() + step * iteration,
             Math.max(start.decimals, end.decimals));
 
-        
+            
         this.updateValues =
         [
             ['from',  from ],
             ['start', start],
             ['end',   end  ]
         ];
-
-
-        if (  !isEmpty(parse.repeats)
-            && parse.repeats.at(-1).nodeId == this.repeatNodeId)
-        {
-            const repeat = parse.repeats.at(-1);
-
-            this.current.value += step;
-
-            // if (   parse.repeats.length == 1
-            //     && parse.repeats[0].iteration == parse.repeats[0].repeat.total-1)
-            // {
-            //     if (   this.repeatNodeId != NULL
-            //         && parse.repeats[0].nodeId != this.repeatNodeId)
-            //         console.warn('Generator: Invalid nested repeat on \'' + this.nodeId + '\'');
-    
-            //     //parse.repeats.pop();
-            // }
-                   
-            // if (repeat.iteration == repeat.total-1)
-            // {
-            //     // if (parse.repeats.at(-1).nodeId != this.repeatNodeId)
-            //     //     console.warn('Generator: Invalid nested repeat on \'' + this.nodeId + '\'');
-            //     // else
-            //         parse.repeats.pop();
-            // }
-        }
 
 
         this.validate();
@@ -43119,6 +42988,7 @@ extends GNumberType
     {
         super.pushValueUpdates(parse);
 
+        if (this.from ) this.from .pushValueUpdates(parse);
         if (this.start) this.start.pushValueUpdates(parse);
         if (this.end  ) this.end  .pushValueUpdates(parse);
     }
@@ -43129,6 +42999,7 @@ extends GNumberType
     {
         super.invalidate();
 
+        if (this.from ) this.from .invalidate();
         if (this.start) this.start.invalidate();
         if (this.end  ) this.end  .invalidate();
     }
@@ -43142,12 +43013,8 @@ extends GNumberType
     start;
     step;
 
-    current      = null;
 
-
-    init         = false;
-    
-    repeaNodetId = NULL;
+    loopId  = NULL;
 
 
 
@@ -43187,42 +43054,20 @@ extends GNumberType
         const step  = (await this.step .eval(parse)).toValue();
     
 
-        if (!this.init)
-        {
-            this.current = start.copy();
-            this.init    = true;
-        }
-        
+        const repeat    = parse.repeats.find(r => r.repeatId == this.loopId);
+        const iteration = repeat ? repeat.iteration : this.iteration;
 
+        
         this.value = new NumberValue(
-            this.current.value,
+            start.toNumber() + step.toNumber() * iteration,
             Math.max(start.decimals, step.decimals));
 
-        
+            
         this.updateValues =
         [
             ['start', start],
             ['step',  step ]
         ];
-
-
-        if (!parse.repeats.find(r => r.nodeId == this.repeatNodeId))
-            this.current.value += step.toNumber();
-
-        else if (  !isEmpty(parse.repeats)
-                && parse.repeats.at(-1).nodeId == this.repeatNodeId)
-            this.current.value += step.toNumber();
-
-
-        // if (   parse.repeats.length == 1
-        //     && parse.repeats[0].iteration == parse.repeats[0].repeat.total-1)
-        // {
-        //     if (   this.repeatNodeId != NULL
-        //         && parse.repeats[0].nodeId != this.repeatNodeId)
-        //         console.warn('Generator: Invalid nested repeat on \'' + this.nodeId + '\'');
-
-        //     //parse.repeats.pop();
-        // }
 
 
         this.validate();
@@ -43263,9 +43108,7 @@ extends GNumberType
     random = null;
 
 
-    init         = false;
-
-    repeaNodetId = NULL;
+    loopId = NULL;
 
 
 
@@ -43307,52 +43150,25 @@ extends GNumberType
         const max  = (await this.max .eval(parse)).toValue();
     
 
-        if (!this.init)
-        {
+        if (  !this.random
+            || this.random.seed != seed.value)
             this.random = new Random(seed.value);
-            this.init   = true;
-        }
+
+
+        const repeat    = parse.repeats.find(r => r.repeatId == this.loopId);
+        const iteration = repeat ? repeat.iteration : this.iteration;
 
         
         this.value = new NumberValue(
-            min.value + this.random.next() * (max.value - min.value),
+            min.value + this.random.get(iteration) * (max.value - min.value),
             Math.max(min.decimals, max.decimals));
-
-
-        if (  !parse.repeats.find(r => r.nodeId == this.repeatNodeId)
-            || parse.repeats.at(-1).nodeId == this.repeatNodeId)
-        {
-            if (!isEmpty(parse.repeats))
-            {
-                // const repeat = parse.repeats.at(-1);
-
-                // if (   parse.repeats.length == 1
-                //     && parse.repeats[0].iteration == parse.repeats[0].repeat.total-1)
-                // {
-                //     if (   this.repeatNodeId != NULL
-                //         && parse.repeats[0].nodeId != this.repeatNodeId)
-                //         console.warn('Generator: Invalid nested repeat on \'' + this.nodeId + '\'');
-        
-                //     //parse.repeats.pop();
-                // }
-
-
-                // if (repeat.iteration == repeat.total-1)
-                // {
-                //     // if (parse.repeats.at(-1).nodeId != this.repeatNodeId)
-                //     //     console.warn('Generator: Invalid nested repeat on \'' + this.nodeId + '\'');
-                //     // else
-                //         parse.repeats.pop();
-                // }
-            }
-        }
 
 
         this.updateValues =
         [
-            ['seed',  seed],
-            ['min',   min ],
-            ['max',   max ]
+            ['seed', seed],
+            ['min',  min ],
+            ['max',  max ]
         ];
         
 
@@ -50629,7 +50445,7 @@ extends GOperator
 
         this.objects = 
             this.input 
-            ? clone(this.input.objects) 
+            ? clone(this.input.objects)
             : [];
 
             
@@ -60409,7 +60225,7 @@ GraphView.prototype.updateWheelTimer = function()
 
         graph.updateSavedPages();
     }, 
-    450);
+    400);
 };
 
 
@@ -70598,7 +70414,7 @@ class   OpRepeat
 extends OperatorBase
 {
     paramCount;
-    paramRepeatId;
+    paramLoop;
 
 
 
@@ -70613,14 +70429,14 @@ extends OperatorBase
         this.addOutput(new Output([LIST_VALUE], this.output_genRequest));
 
 
-        this.addParam(this.paramCount    = new NumberParam('count',    'count', true, true, true, 1, 0, 1000, 0));
-        this.addParam(this.paramRepeatId = new NumberParam ('repeatId', '',     false, true, false));
+        this.addParam(this.paramCount = new NumberParam('count', 'count', true, true, true, 1, 0, 1000, 0));
+        this.addParam(this.paramLoop  = new NumberParam('loop',  '',      false, true, false));
 
 
         this.paramCount.controls[0].allowEditDecimals = false;
         this.paramCount.affectsHeader = false;
 
-        this.paramRepeatId.input.types.push(NUMBER_LIST_VALUE);
+        this.paramLoop.input.types.push(NUMBER_LIST_VALUE);
     }
     
     
@@ -70652,8 +70468,8 @@ extends OperatorBase
         if (input.connected)
             request.push(...pushInputOrParam(input, gen));
 
-        request.push(...this.node.paramCount   .genRequest(gen));
-        request.push(...this.node.paramRepeatId.genRequest(gen));
+        request.push(...this.node.paramCount.genRequest(gen));
+        request.push(...this.node.paramLoop .genRequest(gen));
 
         
         gen.scope.pop();
@@ -70667,12 +70483,12 @@ extends OperatorBase
 
     updateValues(requestId, actionId, updateParamId, paramIds, values)
     {
-        const value    = values[paramIds.findIndex(id => id == 'value'   )];
-        const count    = values[paramIds.findIndex(id => id == 'count'   )];
-        const repeatId = values[paramIds.findIndex(id => id == 'repeatId')];
+        const value = values[paramIds.findIndex(id => id == 'value')];
+        const count = values[paramIds.findIndex(id => id == 'count')];
+        const loop  = values[paramIds.findIndex(id => id == 'loop' )];
 
-        if (count   ) this.paramCount   .setValue(count,    false, true, false);
-        if (repeatId) this.paramRepeatId.setValue(repeatId, false, true, false);
+        if (count) this.paramCount.setValue(count, false, true, false);
+        if (loop ) this.paramLoop .setValue(loop,  false, true, false);
 
         this.outputs[0].types = [finalListTypeFromItems(value.items)];
     }
@@ -70681,10 +70497,10 @@ extends OperatorBase
 
     updateParams()
     {
-        this.paramCount   .enableControlText(true);
+        this.paramCount.enableControlText(true);
 
-        this.paramRepeatId.enableControlText(false);
-        this.paramRepeatId.controls[0].valueText = '↵';
+        this.paramLoop .enableControlText(false);
+        this.paramLoop .controls[0].valueText = '↵';
 
         this.updateParamControls();
     }

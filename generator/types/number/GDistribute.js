@@ -6,12 +6,7 @@ extends GNumberType
     end;
 
 
-    current      = null;
-
-
-    init         = false;
-    
-    repeaNodetId = NULL;
+    loopId = NULL;
 
 
 
@@ -53,77 +48,26 @@ extends GNumberType
         const end   = (await this.end  .eval(parse)).toValue();
     
 
-        const repeat = parse.repeats.find(r => r.nodeId == this.repeatNodeId);
+        const repeat    = parse.repeats.find(r => r.repeatId == this.loopId);
+        const iteration = repeat ? repeat.iteration : this.iteration;
 
         const step = 
             repeat
-            ? (end.toNumber() - start.toNumber()) / Math.max(1, parse.repeats.at(-1).total - (from.value == 1 ? 1 : 0))
+            ? (end.toNumber() - start.toNumber()) / Math.max(1, repeat.total - (from.value == 1 ? 1 : 0))
             : 0;
 
-
-        if (!this.init)
-        {
-            if (  !repeat
-                || repeat.total <= 1)
-            {
-                switch (from.value)
-                {
-                    case 0: this.current = start.copy();                                             break;
-                    case 1: this.current = new NumberValue((start.toNumber() + end.toNumber()) / 2); break;
-                    case 2: this.current = end.copy();                                               break;
-                }
-            }
-            else
-            {
-                this.current = start.copy();
-
-                if (from.value == 2)
-                    this.current.value += step;
-            }
-
-
-            this.init = true;
-        }
-        
-
+            
         this.value = new NumberValue(
-            this.current.value,
+            start.toNumber() + step * iteration,
             Math.max(start.decimals, end.decimals));
 
-        
+            
         this.updateValues =
         [
             ['from',  from ],
             ['start', start],
             ['end',   end  ]
         ];
-
-
-        if (  !isEmpty(parse.repeats)
-            && parse.repeats.at(-1).nodeId == this.repeatNodeId)
-        {
-            const repeat = parse.repeats.at(-1);
-
-            this.current.value += step;
-
-            // if (   parse.repeats.length == 1
-            //     && parse.repeats[0].iteration == parse.repeats[0].repeat.total-1)
-            // {
-            //     if (   this.repeatNodeId != NULL
-            //         && parse.repeats[0].nodeId != this.repeatNodeId)
-            //         console.warn('Generator: Invalid nested repeat on \'' + this.nodeId + '\'');
-    
-            //     //parse.repeats.pop();
-            // }
-                   
-            // if (repeat.iteration == repeat.total-1)
-            // {
-            //     // if (parse.repeats.at(-1).nodeId != this.repeatNodeId)
-            //     //     console.warn('Generator: Invalid nested repeat on \'' + this.nodeId + '\'');
-            //     // else
-            //         parse.repeats.pop();
-            // }
-        }
 
 
         this.validate();
@@ -137,6 +81,7 @@ extends GNumberType
     {
         super.pushValueUpdates(parse);
 
+        if (this.from ) this.from .pushValueUpdates(parse);
         if (this.start) this.start.pushValueUpdates(parse);
         if (this.end  ) this.end  .pushValueUpdates(parse);
     }
@@ -147,6 +92,7 @@ extends GNumberType
     {
         super.invalidate();
 
+        if (this.from ) this.from .invalidate();
         if (this.start) this.start.invalidate();
         if (this.end  ) this.end  .invalidate();
     }

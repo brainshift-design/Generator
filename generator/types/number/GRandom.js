@@ -8,9 +8,7 @@ extends GNumberType
     random = null;
 
 
-    init         = false;
-
-    repeaNodetId = NULL;
+    loopId = NULL;
 
 
 
@@ -52,52 +50,25 @@ extends GNumberType
         const max  = (await this.max .eval(parse)).toValue();
     
 
-        if (!this.init)
-        {
+        if (  !this.random
+            || this.random.seed != seed.value)
             this.random = new Random(seed.value);
-            this.init   = true;
-        }
+
+
+        const repeat    = parse.repeats.find(r => r.repeatId == this.loopId);
+        const iteration = repeat ? repeat.iteration : this.iteration;
 
         
         this.value = new NumberValue(
-            min.value + this.random.next() * (max.value - min.value),
+            min.value + this.random.get(iteration) * (max.value - min.value),
             Math.max(min.decimals, max.decimals));
-
-
-        if (  !parse.repeats.find(r => r.nodeId == this.repeatNodeId)
-            || parse.repeats.at(-1).nodeId == this.repeatNodeId)
-        {
-            if (!isEmpty(parse.repeats))
-            {
-                // const repeat = parse.repeats.at(-1);
-
-                // if (   parse.repeats.length == 1
-                //     && parse.repeats[0].iteration == parse.repeats[0].repeat.total-1)
-                // {
-                //     if (   this.repeatNodeId != NULL
-                //         && parse.repeats[0].nodeId != this.repeatNodeId)
-                //         console.warn('Generator: Invalid nested repeat on \'' + this.nodeId + '\'');
-        
-                //     //parse.repeats.pop();
-                // }
-
-
-                // if (repeat.iteration == repeat.total-1)
-                // {
-                //     // if (parse.repeats.at(-1).nodeId != this.repeatNodeId)
-                //     //     console.warn('Generator: Invalid nested repeat on \'' + this.nodeId + '\'');
-                //     // else
-                //         parse.repeats.pop();
-                // }
-            }
-        }
 
 
         this.updateValues =
         [
-            ['seed',  seed],
-            ['min',   min ],
-            ['max',   max ]
+            ['seed', seed],
+            ['min',  min ],
+            ['max',  max ]
         ];
         
 

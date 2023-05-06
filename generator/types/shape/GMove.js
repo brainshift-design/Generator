@@ -80,7 +80,7 @@ extends GOperator
 
         this.objects = 
             this.input 
-            ? clone(this.input.objects) 
+            ? clone(this.input.objects)
             : [];
 
             

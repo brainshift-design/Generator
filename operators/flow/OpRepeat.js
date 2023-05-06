@@ -2,7 +2,7 @@ class   OpRepeat
 extends OperatorBase
 {
     paramCount;
-    paramRepeatId;
+    paramLoop;
 
 
 
@@ -17,14 +17,14 @@ extends OperatorBase
         this.addOutput(new Output([LIST_VALUE], this.output_genRequest));
 
 
-        this.addParam(this.paramCount    = new NumberParam('count',    'count', true, true, true, 1, 0, 1000, 0));
-        this.addParam(this.paramRepeatId = new NumberParam ('repeatId', '',     false, true, false));
+        this.addParam(this.paramCount = new NumberParam('count', 'count', true, true, true, 1, 0, 1000, 0));
+        this.addParam(this.paramLoop  = new NumberParam('loop',  '',      false, true, false));
 
 
         this.paramCount.controls[0].allowEditDecimals = false;
         this.paramCount.affectsHeader = false;
 
-        this.paramRepeatId.input.types.push(NUMBER_LIST_VALUE);
+        this.paramLoop.input.types.push(NUMBER_LIST_VALUE);
     }
     
     
@@ -56,8 +56,8 @@ extends OperatorBase
         if (input.connected)
             request.push(...pushInputOrParam(input, gen));
 
-        request.push(...this.node.paramCount   .genRequest(gen));
-        request.push(...this.node.paramRepeatId.genRequest(gen));
+        request.push(...this.node.paramCount.genRequest(gen));
+        request.push(...this.node.paramLoop .genRequest(gen));
 
         
         gen.scope.pop();
@@ -71,12 +71,12 @@ extends OperatorBase
 
     updateValues(requestId, actionId, updateParamId, paramIds, values)
     {
-        const value    = values[paramIds.findIndex(id => id == 'value'   )];
-        const count    = values[paramIds.findIndex(id => id == 'count'   )];
-        const repeatId = values[paramIds.findIndex(id => id == 'repeatId')];
+        const value = values[paramIds.findIndex(id => id == 'value')];
+        const count = values[paramIds.findIndex(id => id == 'count')];
+        const loop  = values[paramIds.findIndex(id => id == 'loop' )];
 
-        if (count   ) this.paramCount   .setValue(count,    false, true, false);
-        if (repeatId) this.paramRepeatId.setValue(repeatId, false, true, false);
+        if (count) this.paramCount.setValue(count, false, true, false);
+        if (loop ) this.paramLoop .setValue(loop,  false, true, false);
 
         this.outputs[0].types = [finalListTypeFromItems(value.items)];
     }
@@ -85,10 +85,10 @@ extends OperatorBase
 
     updateParams()
     {
-        this.paramCount   .enableControlText(true);
+        this.paramCount.enableControlText(true);
 
-        this.paramRepeatId.enableControlText(false);
-        this.paramRepeatId.controls[0].valueText = '↵';
+        this.paramLoop .enableControlText(false);
+        this.paramLoop .controls[0].valueText = '↵';
 
         this.updateParamControls();
     }

@@ -4,12 +4,8 @@ extends GNumberType
     start;
     step;
 
-    current      = null;
 
-
-    init         = false;
-    
-    repeaNodetId = NULL;
+    loopId  = NULL;
 
 
 
@@ -49,42 +45,20 @@ extends GNumberType
         const step  = (await this.step .eval(parse)).toValue();
     
 
-        if (!this.init)
-        {
-            this.current = start.copy();
-            this.init    = true;
-        }
-        
+        const repeat    = parse.repeats.find(r => r.repeatId == this.loopId);
+        const iteration = repeat ? repeat.iteration : this.iteration;
 
+        
         this.value = new NumberValue(
-            this.current.value,
+            start.toNumber() + step.toNumber() * iteration,
             Math.max(start.decimals, step.decimals));
 
-        
+            
         this.updateValues =
         [
             ['start', start],
             ['step',  step ]
         ];
-
-
-        if (!parse.repeats.find(r => r.nodeId == this.repeatNodeId))
-            this.current.value += step.toNumber();
-
-        else if (  !isEmpty(parse.repeats)
-                && parse.repeats.at(-1).nodeId == this.repeatNodeId)
-            this.current.value += step.toNumber();
-
-
-        // if (   parse.repeats.length == 1
-        //     && parse.repeats[0].iteration == parse.repeats[0].repeat.total-1)
-        // {
-        //     if (   this.repeatNodeId != NULL
-        //         && parse.repeats[0].nodeId != this.repeatNodeId)
-        //         console.warn('Generator: Invalid nested repeat on \'' + this.nodeId + '\'');
-
-        //     //parse.repeats.pop();
-        // }
 
 
         this.validate();

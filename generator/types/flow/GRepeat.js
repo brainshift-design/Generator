@@ -4,7 +4,7 @@ extends GOperator
     input = null;
 
     count;
-    repeatId;
+    loop;
 
 
 
@@ -23,9 +23,9 @@ extends GOperator
 
         if (this.input) copy.input = this.input.copy();
 
-        copy.value    = this.value   .copy();
-        copy.count    = this.count   .copy();
-        copy.repeatId = this.repeatId.copy();
+        copy.value = this.value.copy();
+        copy.count = this.count.copy();
+        copy.loop  = this.loop .copy();
 
         return copy;
     }
@@ -34,8 +34,7 @@ extends GOperator
 
     isCached()
     {
-        return this.valid;//
-            //|| this.repeatId;
+        return this.valid;
     }
 
 
@@ -47,22 +46,21 @@ extends GOperator
             
 
         let count = (await this.count.eval(parse)).toValue();
-        //const repeatId = (await this.repeatId.eval(parse)).toValue();
 
 
         count = new NumberValue(Math.round(count.value));
 
 
-        if (this.repeatId.type != NUMBER_VALUE)
+        if (this.loop.type != NUMBER_VALUE)
         {
             console.assert(
-                   this.repeatId.type == NUMBER_DISTRIBUTE
-                || this.repeatId.type == NUMBER_SEQUENCE
-                || this.repeatId.type == NUMBER_RANDOM
-                || this.repeatId.type == LIST,
+                   this.loop.type == NUMBER_DISTRIBUTE
+                || this.loop.type == NUMBER_SEQUENCE
+                || this.loop.type == NUMBER_RANDOM
+                || this.loop.type == LIST,
                 'only volatile types can be repeated');
 
-            setRepeatCount(this.repeatId, count.value);
+            this.setRepeatCount(this.loop, count.value);
         }
 
 
@@ -71,16 +69,14 @@ extends GOperator
         this.objects = [];
 
 
-        let repeat =             
+        let repeat =
         {
-            nodeId:    this.nodeId,
+            repeatId:  this.nodeId,
             iteration: 0,
             total:     1
         };
 
-        //if (this.repeatId.type != NUMBER_VALUE)
-        
-        
+
         if (this.input)
         {
             const nItems = 
@@ -94,9 +90,9 @@ extends GOperator
 
             for (let i = 0, o = 0; i < nItems; i++)
             {
-                if (this.repeatId.type != NUMBER_VALUE)
+                if (this.loop.type != NUMBER_VALUE)
                 {
-                    invalidateRepeat(this.repeatId, this.nodeId);
+                    this.invalidateRepeat(this.loop, this.nodeId);
 
                     repeat.iteration = i;
                     repeat.total     = nItems;
@@ -131,18 +127,14 @@ extends GOperator
 
             console.assert(parse.repeats.at(-1) == repeat, 'invalid nested repeat');
             parse.repeats.pop();
-
-                
-            if (this.repeatId)
-                uninitRepeat(this.repeatId);
         }
 
 
         this.updateValues =
         [
-            ['value',    this.value     ],
-            ['count',    count          ],
-            ['repeatId', NumberValue.NaN]
+            ['value',  this.value     ],
+            ['count',  count          ],
+            ['loop',   NumberValue.NaN]
         ];
 
 
@@ -177,53 +169,38 @@ extends GOperator
         if (this.input) this.input.invalidate();
         if (this.count) this.count.invalidate();
     }
-}
 
 
 
-function setRepeatCount(repeat, count)
-{
-    if (repeat.type == LIST)
+    setRepeatCount(loop, count)
     {
-        for (const input of repeat.inputs)
-            setRepeatCount(input, count);
-    }
-    else
-    {
-        repeat.repeatCount = count;
-    }
-}
-
-
-
-function invalidateRepeat(repeat, nodeId)
-{
-    if (repeat.type == LIST)
-    {
-        for (const input of repeat.inputs)
+        if (loop.type == LIST)
         {
-            input.valid        = false;
-            input.repeatNodeId = nodeId;
+            for (const input of loop.inputs)
+                this.setRepeatCount(input, count);
+        }
+        else
+        {
+            loop.repeatCount = count;
         }
     }
-    else
-    {
-        repeat.valid        = false;
-        repeat.repeatNodeId = nodeId;
-    }
-}
 
 
 
-function uninitRepeat(repeat)
-{
-    if (repeat.type == LIST)
+    invalidateRepeat(loop, nodeId)
     {
-        for (const input of repeat.inputs)
-            uninitRepeat(input);
-    }
-    else
-    {
-        repeat.init = false;
+        if (loop.type == LIST)
+        {
+            for (const input of loop.inputs)
+            {
+                input.valid        = false;
+                input.loopId = nodeId;
+            }
+        }
+        else
+        {
+            loop.valid        = false;
+            loop.loopId = nodeId;
+        }
     }
 }
