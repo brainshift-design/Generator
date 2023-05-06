@@ -58,7 +58,7 @@ extends GNumberType
 
             
         this.value = new NumberValue(
-            start.toNumber() + step * iteration,
+            start.toNumber() + step * iteration + (from.value == 2 ? step : 0),
             Math.max(start.decimals, end.decimals));
 
             
