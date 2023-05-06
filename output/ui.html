@@ -8236,6 +8236,14 @@ const VECTOR_PATH_VALUE = 'VEC#';
 const VECTOR_PATH       = 'VEC'; 
 const VECTOR_PATH_TYPES = [VECTOR_PATH_VALUE, VECTOR_PATH];
 
+const SHAPE_GROUP_VALUE = 'SGRP#';
+const SHAPE_GROUP       = 'SGRP';
+const SHAPE_GROUP_TYPES = [SHAPE_GROUP_VALUE, SHAPE_GROUP];
+
+const FRAME_VALUE       = 'FRM#';
+const FRAME             = 'FRM';
+const FRAME_TYPES       = [FRAME_VALUE, FRAME];
+
 
 const MOVE              = 'MOVE';
 const ROTATE            = 'ROT';
@@ -8264,7 +8272,9 @@ const SHAPE_VALUES =
     STAR_VALUE,
     TEXTSHAPE_VALUE,
     POINT_VALUE,
-    VECTOR_PATH_VALUE
+    VECTOR_PATH_VALUE,
+    SHAPE_GROUP_VALUE,
+    FRAME_VALUE
 ];
 
 
@@ -8280,6 +8290,8 @@ const SHAPE_TYPES =
     ...TEXTSHAPE_TYPES,
     ...POINT_TYPES,
     ...VECTOR_PATH_TYPES,
+    ...SHAPE_GROUP_TYPES,
+    ...FRAME_TYPES,
 
     MOVE,
     ROTATE,
@@ -8312,22 +8324,10 @@ const ALL_VALUES =
             STAR_VALUE,
        TEXTSHAPE_VALUE,
            POINT_VALUE,
-     VECTOR_PATH_VALUE
+     VECTOR_PATH_VALUE,
+     SHAPE_GROUP_VALUE,
+           FRAME_VALUE
 ];
-
-
-// const ALL_TYPES =
-// [
-//     ...FLOW_TYPES,
-//     ...NUMBER_TYPES,
-//     ...TEXT_TYPES,
-//     ...COLOR_TYPES,
-//     ...FILL_TYPES,
-//     ...STROKE_TYPES,
-//     ...GRADIENT_TYPES,
-//     COLOR_STYLE,
-//     ...SHAPE_TYPES
-// ];
 
 
 const GROUP_NODE    = 'GROUP';
@@ -9311,6 +9311,12 @@ function getSineYSegment(_pointP, _point, _pointN)
 }
 
 
+
+
+
+
+
+
 class FigmaColorStyle
 extends FigmaObject
 {
@@ -9743,7 +9749,6 @@ extends GOperator
         this.param = this.node.paramFromId(this.paramId);
 
 
-        console.log('this.node =', this.node);
         if (isValid(this.param))
         {
             // if (   this.feedbackValue)
@@ -12384,6 +12389,12 @@ function parseVectorPathValue(str, i = -1)
     
     return [path, i - iStart];
 }
+
+
+
+
+
+
 
 
 
@@ -20387,8 +20398,8 @@ extends GShape
     {
         super.invalidate();
 
-        if (this.input ) this.input .invalidate();
-        if (this.round ) this.round .invalidate();
+        if (this.input) this.input.invalidate();
+        if (this.round) this.round.invalidate();
     }
 }
 
@@ -21344,7 +21355,7 @@ extends GShape
         if (this.input) 
             copy.input = this.input.copy();
 
-        if (this.points ) copy.points  = this.points .copy();
+        if (this.points ) copy.objects  = this.points .copy();
         if (this.closed ) copy.closed  = this.closed .copy();
         if (this.degree ) copy.degree  = this.degree .copy();
         if (this.winding) copy.winding = this.winding.copy();
@@ -26234,6 +26245,139 @@ function genParseVectorPath(parse)
 
 
 
+function genParseShapeGroup(parse)
+{
+    const [, nodeId, options, ignore] = genParseNodeStart(parse);
+
+
+    const group = new GShapeGroup(nodeId, options);
+
+
+    let nInputs = -1;
+
+    if (!ignore)
+    {
+        nInputs = parseInt(parse.move());
+        console.assert(nInputs => 0 && nInputs <= 1, 'nInputs must be [0, 1]');
+    }
+
+
+    if (parse.settings.logRequests) 
+        logReq(group, parse, ignore);
+
+
+    if (ignore) 
+    {
+        genParseNodeEnd(parse, group);
+        return parse.parsedNodes.find(n => n.nodeId == nodeId);
+    }
+
+
+    parse.nTab++;
+
+
+    if (nInputs == 1)
+        group.input = genParse(parse);
+
+
+    const nParamIds = genParseParamCount(parse);
+
+    for (let i = 0; i < nParamIds; i++)
+    {
+        const paramId = genParseParamId(parse);
+
+        parse.inParam = true;
+
+        switch (paramId)
+        {
+        case 'x':       group.x       = genParse(parse); break;
+        case 'y':       group.y       = genParse(parse); break;
+        case 'width':   group.width   = genParse(parse); break;
+        case 'height':  group.height  = genParse(parse); break;
+        case 'angle':   group.angle   = genParse(parse); break;
+        case 'objects': group.objects = genParse(parse); break;
+        case 'props':   group.props   = genParse(parse); break;
+        }
+    }
+
+
+    parse.inParam = false;
+    parse.nTab--;
+
+
+    genParseNodeEnd(parse, group);
+    return group;
+}
+
+
+
+function genParseFrame(parse)
+{
+    const [, nodeId, options, ignore] = genParseNodeStart(parse);
+
+
+    const frame = new GFrame(nodeId, options);
+
+
+    let nInputs = -1;
+
+    if (!ignore)
+    {
+        nInputs = parseInt(parse.move());
+        console.assert(nInputs => 0 && nInputs <= 1, 'nInputs must be [0, 1]');
+    }
+
+
+    if (parse.settings.logRequests) 
+        logReq(frame, parse, ignore);
+
+
+    if (ignore) 
+    {
+        genParseNodeEnd(parse, frame);
+        return parse.parsedNodes.find(n => n.nodeId == nodeId);
+    }
+
+
+    parse.nTab++;
+
+
+    if (nInputs == 1)
+        frame.input = genParse(parse);
+
+
+    const nParamIds = genParseParamCount(parse);
+
+    for (let i = 0; i < nParamIds; i++)
+    {
+        const paramId = genParseParamId(parse);
+
+        parse.inParam = true;
+
+        switch (paramId)
+        {
+        case 'x':       frame.x       = genParse(parse); break;
+        case 'y':       frame.y       = genParse(parse); break;
+        case 'width':   frame.width   = genParse(parse); break;
+        case 'height':  frame.height  = genParse(parse); break;
+        case 'angle':   frame.angle   = genParse(parse); break;
+        case 'round':   frame.round   = genParse(parse); break;
+        case 'objects': frame.objects = genParse(parse); break;
+        case 'props':   frame.props   = genParse(parse); break;
+        }
+    }
+
+
+    parse.inParam = false;
+    parse.nTab--;
+
+
+    genParseNodeEnd(parse, frame);
+    return frame;
+}
+
+
+
 function genParseMove(parse)
 {
     const [, nodeId, options, ignore] = genParseNodeStart(parse);
@@ -27346,11 +27490,16 @@ function genParse(parse, inParam = true)
     else if (parse.next == STAR                   ) result = genParseStar            (parse);
     else if (parse.next == TEXTSHAPE              ) result = genParseTextShape       (parse);
 
+    else if (parse.next == POINT_VALUE            ) result = genParsePointValue      (parse);
+    else if (parse.next == POINT                  ) result = genParsePoint           (parse);
     else if (parse.next == VECTOR_PATH_VALUE      ) result = genParseVectorPathValue (parse);
     else if (parse.next == VECTOR_PATH            ) result = genParseVectorPath      (parse);
 
-    else if (parse.next == POINT_VALUE            ) result = genParsePointValue      (parse);
-    else if (parse.next == POINT                  ) result = genParsePoint           (parse);
+    else if (parse.next == SHAPE_GROUP_VALUE      ) result = genParseShapeGroupValue (parse);
+    else if (parse.next == SHAPE_GROUP            ) result = genParseShapeGroup      (parse);
+
+    else if (parse.next == FRAME_VALUE            ) result = genParseFrameValue      (parse);
+    else if (parse.next == FRAME                  ) result = genParseFrame           (parse);
 
     else if (parse.next == MOVE                   ) result = genParseMove            (parse);
     else if (parse.next == ROTATE                 ) result = genParseRotate          (parse);
@@ -37082,6 +37231,14 @@ const VECTOR_PATH_VALUE = 'VEC#';
 const VECTOR_PATH       = 'VEC'; 
 const VECTOR_PATH_TYPES = [VECTOR_PATH_VALUE, VECTOR_PATH];
 
+const SHAPE_GROUP_VALUE = 'SGRP#';
+const SHAPE_GROUP       = 'SGRP';
+const SHAPE_GROUP_TYPES = [SHAPE_GROUP_VALUE, SHAPE_GROUP];
+
+const FRAME_VALUE       = 'FRM#';
+const FRAME             = 'FRM';
+const FRAME_TYPES       = [FRAME_VALUE, FRAME];
+
 
 const MOVE              = 'MOVE';
 const ROTATE            = 'ROT';
@@ -37110,7 +37267,9 @@ const SHAPE_VALUES =
     STAR_VALUE,
     TEXTSHAPE_VALUE,
     POINT_VALUE,
-    VECTOR_PATH_VALUE
+    VECTOR_PATH_VALUE,
+    SHAPE_GROUP_VALUE,
+    FRAME_VALUE
 ];
 
 
@@ -37126,6 +37285,8 @@ const SHAPE_TYPES =
     ...TEXTSHAPE_TYPES,
     ...POINT_TYPES,
     ...VECTOR_PATH_TYPES,
+    ...SHAPE_GROUP_TYPES,
+    ...FRAME_TYPES,
 
     MOVE,
     ROTATE,
@@ -37158,22 +37319,10 @@ const ALL_VALUES =
             STAR_VALUE,
        TEXTSHAPE_VALUE,
            POINT_VALUE,
-     VECTOR_PATH_VALUE
+     VECTOR_PATH_VALUE,
+     SHAPE_GROUP_VALUE,
+           FRAME_VALUE
 ];
-
-
-// const ALL_TYPES =
-// [
-//     ...FLOW_TYPES,
-//     ...NUMBER_TYPES,
-//     ...TEXT_TYPES,
-//     ...COLOR_TYPES,
-//     ...FILL_TYPES,
-//     ...STROKE_TYPES,
-//     ...GRADIENT_TYPES,
-//     COLOR_STYLE,
-//     ...SHAPE_TYPES
-// ];
 
 
 const GROUP_NODE    = 'GROUP';
@@ -38157,6 +38306,12 @@ function getSineYSegment(_pointP, _point, _pointN)
 }
 
 
+
+
+
+
+
+
 class FigmaColorStyle
 extends FigmaObject
 {
@@ -38589,7 +38744,6 @@ extends GOperator
         this.param = this.node.paramFromId(this.paramId);
 
 
-        console.log('this.node =', this.node);
         if (isValid(this.param))
         {
             // if (   this.feedbackValue)
@@ -41230,6 +41384,12 @@ function parseVectorPathValue(str, i = -1)
     
     return [path, i - iStart];
 }
+
+
+
+
+
+
 
 
 
@@ -49233,8 +49393,8 @@ extends GShape
     {
         super.invalidate();
 
-        if (this.input ) this.input .invalidate();
-        if (this.round ) this.round .invalidate();
+        if (this.input) this.input.invalidate();
+        if (this.round) this.round.invalidate();
     }
 }
 
@@ -50190,7 +50350,7 @@ extends GShape
         if (this.input) 
             copy.input = this.input.copy();
 
-        if (this.points ) copy.points  = this.points .copy();
+        if (this.points ) copy.objects  = this.points .copy();
         if (this.closed ) copy.closed  = this.closed .copy();
         if (this.degree ) copy.degree  = this.degree .copy();
         if (this.winding) copy.winding = this.winding.copy();
@@ -55891,6 +56051,8 @@ const iconTextShape         = '<svg width="13" height="16" viewBox="0 0 13 16" f
 const iconSelected          = '<svg width="19" height="19" viewBox="0 0 19 19" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="4.5" y="4.5" width="4" height="4" stroke="white"/><circle cx="12.5" cy="6.5" r="2" stroke="white"/><line x1="4.4364" y1="15.069" x2="8.9364" y2="10.3022" stroke="white"/><path d="M10.3349 14.75L12.5 11L14.6651 14.75H10.3349Z" stroke="white"/><rect x="0.5" y="0.5" width="2" height="2" stroke="white"/><rect x="0.5" y="16.5" width="2" height="2" stroke="white"/><rect x="16.5" y="16.5" width="2" height="2" stroke="white"/><rect x="16.5" y="0.5" width="2" height="2" stroke="white"/><rect x="3" y="1" width="13" height="1" fill="white"/><rect x="3" y="17" width="13" height="1" fill="white"/><rect x="17" y="16" width="13" height="1" transform="rotate(-90 17 16)" fill="white"/><rect x="1" y="16" width="13" height="1" transform="rotate(-90 1 16)" fill="white"/></svg>';
 const iconPoint             = '<svg width="5" height="5" viewBox="0 0 5 5" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="2.5" cy="2.5" r="2.07507" fill="white"/></svg>';
 const iconVectorPath        = '<svg width="18" height="17" viewBox="0 0 18 17" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="2.50012" cy="1" r="0.75" stroke="white" stroke-width="0.5"/><circle cx="15.4999" cy="16.0002" r="0.75" stroke="white" stroke-width="0.5"/><path d="M2.8714 11.9166C9 -13 10 29 15.1694 5.03541" stroke="white" stroke-width="1.5"/><circle cx="15.5001" cy="4" r="1.5" stroke="white"/><circle cx="2.49988" cy="13" r="1.5" stroke="white"/><rect x="2" y="9" width="1" height="1" fill="white"/><rect x="2" y="7" width="1" height="1" fill="white"/><rect x="2" y="5" width="1" height="1" fill="white"/><rect x="2" y="3" width="1" height="1" fill="white"/><rect x="15" y="13" width="1" height="1" fill="white"/><rect x="15" y="11" width="1" height="1" fill="white"/><rect x="15" y="9" width="1" height="1" fill="white"/><rect x="15" y="7" width="1" height="1" fill="white"/></svg>';
+const iconShapeGroup        = '<svg width="17" height="18" viewBox="0 0 17 18" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="3.5" y="3.5" width="4" height="4" stroke="white"/><circle cx="11.5" cy="5.5" r="2" stroke="white"/><line x1="3.4364" y1="14.8688" x2="7.9364" y2="10.1019" stroke="white"/><path d="M9.33494 14.4498L11.5 10.6998L13.6651 14.4498H9.33494Z" stroke="white"/><path d="M1.78814e-07 4H1L1 1H4V0H0L1.78814e-07 4Z" fill="white"/><path d="M17 14L16 14L16 17L13 17L13 18L17 18L17 14Z" fill="white"/><path d="M4 18L4 17L1 17L1 14L-1.74846e-07 14L0 18L4 18Z" fill="white"/><path d="M13 3.96837e-09L13 1L16 1L16 4L17 4L17 0L13 3.96837e-09Z" fill="white"/></svg>';
+const iconFrame             = '<svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" clip-rule="evenodd" d="M4 0H3V3H0V4H3V12H0V13H3V16H4V13H12V16H13V13H16V12H13V4H16V3H13V0H12V3H4V0ZM12 12V4H4V12H12Z" fill="white"/></svg>';
 
 const iconMove              = '<svg width="19" height="19" viewBox="0 0 19 19" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="6.5" y="6.5" width="6" height="6" stroke="white"/><path d="M17.3034 9.48924L15.6526 7.83845L16.5019 6.98914L19 9.48725L16.4764 12.011L15.629 11.1636L17.3034 9.48924Z" fill="white"/><path d="M1.69664 9.51085L3.34744 11.1616L2.49812 12.011L7.84779e-06 9.51284L2.52365 6.98914L3.371 7.83649L1.69664 9.51085Z" fill="white"/><path d="M9.4892 1.69664L7.8384 3.34743L6.98909 2.49812L9.48721 7.5202e-06L12.0109 2.52365L11.1636 3.371L9.4892 1.69664Z" fill="white"/><path d="M9.5108 17.3034L11.1616 15.6526L12.0109 16.5019L9.51279 19L6.98909 16.4764L7.83644 15.629L9.5108 17.3034Z" fill="white"/></svg>'; 
 const iconRotate            = '<svg width="18" height="19" viewBox="0 0 18 19" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="5.5" y="6.5" width="6" height="6" stroke="white"/><path d="M4.91298 3.01223L3.75264 4.17257L4.60195 5.02188L7.10007 2.52376L4.57642 6.10352e-05L3.72907 0.847412L4.89376 2.0121C3.3015 2.07772 2.08097 2.42201 1.25143 3.25155C0.319557 4.18342 3.8147e-05 5.60873 3.8147e-05 7.50015H1.00004C1.00004 5.67144 1.32045 4.59674 1.95854 3.95865C2.52509 3.3921 3.43585 3.07599 4.91298 3.01223Z" fill="white"/><path d="M17.1001 11.4999C17.1001 13.3913 16.7806 14.8166 15.8487 15.7485C15.0192 16.578 13.7986 16.9223 12.2064 16.9879L13.3711 18.1526L12.5237 19L10.0001 16.4763L12.4982 13.9782L13.3475 14.8275L12.1872 15.9878C13.6643 15.924 14.575 15.6079 15.1416 15.0414C15.7797 14.4033 16.1001 13.3286 16.1001 11.4999H17.1001Z" fill="white"/></svg>'; 
@@ -57393,6 +57555,9 @@ function initGeneratorMenus()
                                 new MenuItem('Polygon',             {icon: iconPolygon,    callback: e => actionManager.do(getCreateNodeAction(POLYGON,     btnShape.div, getCreateOptions(e)))}),
                                 new MenuItem('Star',                {icon: iconStar,       callback: e => actionManager.do(getCreateNodeAction(STAR,        btnShape.div, getCreateOptions(e)))}),
                                 new MenuItem('Text',                {icon: iconTextShape,  callback: e => actionManager.do(getCreateNodeAction(TEXTSHAPE,   btnShape.div, getCreateOptions(e)))}),
+                                new MenuItem('',                    {separator: true}),
+                                new MenuItem('Group',               {icon: iconShapeGroup, callback: e => actionManager.do(getCreateNodeAction(SHAPE_GROUP, btnShape.div, getCreateOptions(e)))}),
+                                new MenuItem('Frame',               {icon: iconFrame,      callback: e => actionManager.do(getCreateNodeAction(FRAME,       btnShape.div, getCreateOptions(e)))}),
         menuItemShapeSep1     = new MenuItem('',                    {separator: true}),
         menuItemShapeSelected = new MenuItem('Selected objects...', {icon: iconSelected,   enabled: false}),
                                 new MenuItem('',                    {separator: true}),
@@ -64704,6 +64869,12 @@ extends Parameter
 }
 
 
+
+
+
+
+
+
 class   Input
 extends EventTarget
 {
@@ -68852,8 +69023,11 @@ Operator.prototype.updateHeaderLabel = function()
 
 Operator.prototype.updateHeaderLabelText = function()
 {
+    const prefix = this.type == REPEAT ? '...' : '';
+    const suffix = this.cached         ? ''    : '...';
+
     this.labelText.innerHTML = 
-          (settings.showNodeId ? this.id : this.name + (this.cached ? '' : '...'))// + (this.type == NUMBER_DISTRIBUTE ? '  ↵' : '')))
+          (settings.showNodeId ? this.id : prefix + this.name + suffix)
         + (this.active && this.showActiveArrow ? (settings.showNodeId ? ' ' : '  ') + '‣' : '');
 
     this.labelText.style.fontFamily = 
@@ -70499,7 +70673,7 @@ extends OperatorBase
     {
         this.paramCount.enableControlText(true);
 
-        this.paramLoop .enableControlText(false);
+        this.paramLoop .enableControlText(true);
         this.paramLoop .controls[0].valueText = '↵';
 
         this.updateParamControls();
@@ -77474,11 +77648,135 @@ extends OpShape
 }
 
 
+class   OpPoint
+extends OpShapeBase
+{
+    paramX;
+    paramY;
+
+    zoom = 1;
+
+
+
+    constructor()
+    {
+        super(POINT, 'point', 'point');
+
+        this.addInput (new Input ([POINT_VALUE], getNodeInputValuesForUndo, this.input_getBackInitValue));
+        this.addOutput(new Output([POINT_VALUE], this.output_genRequest, getNodeOutputValuesForUndo, this.output_backInit));
+
+        this.addParam(this.paramX = new NumberParam('x', 'x', true, true, true, 0));
+        this.addParam(this.paramX = new NumberParam('y', 'y', true, true, true, 0));
+    }
+
+
+
+    input_getBackInitValue()
+    {
+        // 'this' is the input
+
+        return new PointValue(
+            this.nodeId,
+            this.node.paramX.value,
+            this.node.paramY.value);
+    }
+
+
+
+    output_backInit(value)
+    {
+        // 'this' is the output
+
+        console.assert(value.type == POINT_VALUE, 'expected POINT_VALUE in backInit()');
+        
+        this.node.paramX.setValue(value.x, false, true, false);
+        this.node.paramY.setValue(value.y, false, true, false);
+    }
+
+
+
+//     paramIsConsideredDefault(param)
+//     {
+//         return  param.isDefault()
+//             && !this.inputs[0].connected;
+//     }
+
+
+
+//     toJavascript(gen)
+//     {
+//         const conn = this.inputs[0].connected;
+
+
+//         gen.nTab++;
+//         const defs = this.toJsDefs(gen);
+//         gen.nTab--;
+
+
+//         let js = gen.NL + 'function ' + this.name + '(';
+        
+//         if (   conn 
+//             && defs == NULL)
+//             js += 'input';
+
+//         js += ')';
+
+
+//         js += gen.NL + '{';
+//         gen.nTab++;
+
+
+//         js += defs;
+
+
+//         js += gen.NL + 'return ';
+//         js += conn ? 'input' : this.toJsCode(gen);
+//         js += ';'
+
+
+//         gen.nTab--;
+//         js += gen.NL + '}';
+
+
+//         return js;
+//     }
+
+
+
+//     toJsDefs(gen)
+//     {
+//         if (  !this.inputs[0].connected
+//             || gen.connectedOut(this))
+//             return '';
+
+        
+//         let js = '';
+
+
+//         js += gen.NL + 'const input = ';
+//         js += this.inputs[0].connectedOutput.toJsCode(gen);
+//         js += ';';
+
+
+//         return js;
+//     }
+
+
+
+//     toJsCode(gen)
+//     {
+//         return this.inputs[0].connected
+//              ? this.inputs[0].connectedOutput.toJsCode(gen)
+//              : this.paramValue.value.toJsCode(gen);
+//     }
+}
+
+
 class   OpVectorPath
 extends OpShape
 {
-    paramClosed;
     paramPoints;
+    paramClosed;
     paramDegree;
     paramWinding;
     paramRound;
@@ -77515,6 +77813,151 @@ extends OpShape
         this.addBaseParams();
     }
 }
+
+
+class   OpShapeGroup
+extends OpShape
+{
+    paramX;
+    paramY;
+    paramWidth;
+    paramHeight;
+    paramAngle;
+    paramObjects;
+
+
+    
+    constructor()
+    {
+        super(SHAPE_GROUP, 'group', 'group');
+
+        this.canDisable = true;
+
+
+        this.addInput(this.createInputForObjects(SHAPE_VALUES, getNodeInputValuesForUndo));
+        this.addOutput(new Output([SHAPE_GROUP_VALUE], this.output_genRequest));
+
+
+        this.addParam(this.paramX       = new NumberParam('x',       'x',       true, true, true,   0));
+        this.addParam(this.paramY       = new NumberParam('y',       'y',       true, true, true,   0));
+        this.addParam(this.paramWidth   = new NumberParam('width',   'width',   true, true, true, 100,    0.01));
+        this.addParam(this.paramHeight  = new NumberParam('height',  'height',  true, true, true, 100,    0.01));
+        this.addParam(this.paramAngle   = new NumberParam('angle',   'angle',   true, true, true,   0, -180,   180));
+        this.addParam(this.paramObjects = new ListParam  ('objects', 'objects', true, true, true));
+
+        
+        this.paramObjects.input.types.push(SHAPE_LIST_VALUE);
+        this.paramObjects.listTypes = SHAPE_VALUES;
+
+        this.paramPoints.itemName    = 'point';
+        this.paramPoints.showZero    =  false;
+
+        this.paramDegree.reverseMenu =  true;
+
+
+        this.addBaseParams();
+    }
+}
+
+
+class   OpFrame
+extends OpShape
+{
+    paramX;
+    paramY;
+    paramWidth;
+    paramHeight;
+    paramAngle;
+    paramRound;
+
+
+
+    constructor()
+    {
+        super(FRAME, 'frame', 'frame');
+
+        this.canDisable     = true;
+        this.variableInputs = true;
+
+
+        this.addNewInput();
+        this.addOutput(new Output([SHAPE_LIST_VALUE], this.output_genRequest));
+
+
+        this.addParam(this.paramX      = new NumberParam('x',      'x',      true, true, true,   0));
+        this.addParam(this.paramY      = new NumberParam('y',      'y',      true, true, true,   0));
+        this.addParam(this.paramWidth  = new NumberParam('width',  'width',  true, true, true, 100,    0.01));
+        this.addParam(this.paramHeight = new NumberParam('height', 'height', true, true, true, 100,    0.01));
+        this.addParam(this.paramAngle  = new NumberParam('angle',  'angle',  true, true, true,   0, -180,   180));
+        this.addParam(this.paramRound  = new NumberParam('round',  'round',  true, true, true,   0,    0));
+
+
+        this.paramWidth .addEventListener('change', () => this.updateRound());
+        this.paramHeight.addEventListener('change', () => this.updateRound());
+
+        this.paramAngle.controls[0].setSuffix('°', true);
+        this.paramAngle.controls[0].wrapValue   = true;
+        this.paramAngle.controls[0].dragReverse = true;
+
+
+        this.addBaseParams();
+    }
+    
+    
+    
+    addNewInput()
+    {
+        const newInput = new Input(SHAPE_VALUES);
+        newInput.isNew = true;
+
+        newInput.addEventListener('connect',    e => { onVariableConnectInput(e.detail.input); e.detail.input.isNew = false; });
+        newInput.addEventListener('disconnect', e => onVariableDisconnectInput(e.detail.input));
+
+        this.addInput(newInput);
+
+        return newInput;
+    }
+
+
+
+    output_genRequest(gen)
+    {
+        // 'this' is the output
+
+        gen.scope.push({
+            nodeId:  this.node.id, 
+            paramId: NULL });
+
+        const [request, ignore] = this.node.genRequestStart(gen);
+        if (ignore) return request;
+
+
+        const connectedInputs = this.node.inputs.filter(i => i.connected && !i.param);
+
+
+        request.push(connectedInputs.length); // utility values like param count are stored as numbers
+        
+        for (const input of connectedInputs)
+            request.push(...pushInputOrParam(input, gen));
+
+        
+        gen.scope.pop();
+        pushUnique(gen.passedNodes, this.node);
+
+        return request;
+    }
+
+
+
+    updateValues(requestId, actionId, updateParamId, paramIds, values)
+    {
+        super.updateValues(requestId, actionId, updateParamId, paramIds, values);
+
+        const value = values[paramIds.findIndex(id => id == 'value')];
+        console.assert(value.type == SHAPE_LIST_VALUE, 'value.type must be SHAPE_LIST_VALUE');
+    }
+}
+
 
 
 class   OpMove
@@ -77794,130 +78237,6 @@ extends OperatorBase
     }
 }
 
-
-
-class   OpPoint
-extends OpShapeBase
-{
-    paramX;
-    paramY;
-
-    zoom = 1;
-
-
-
-    constructor()
-    {
-        super(POINT, 'point', 'point');
-
-        this.addInput (new Input ([POINT_VALUE], getNodeInputValuesForUndo, this.input_getBackInitValue));
-        this.addOutput(new Output([POINT_VALUE], this.output_genRequest, getNodeOutputValuesForUndo, this.output_backInit));
-
-        this.addParam(this.paramX = new NumberParam('x', 'x', true, true, true, 0));
-        this.addParam(this.paramX = new NumberParam('y', 'y', true, true, true, 0));
-    }
-
-
-
-    input_getBackInitValue()
-    {
-        // 'this' is the input
-
-        return new PointValue(
-            this.nodeId,
-            this.node.paramX.value,
-            this.node.paramY.value);
-    }
-
-
-
-    output_backInit(value)
-    {
-        // 'this' is the output
-
-        console.assert(value.type == POINT_VALUE, 'expected POINT_VALUE in backInit()');
-        
-        this.node.paramX.setValue(value.x, false, true, false);
-        this.node.paramY.setValue(value.y, false, true, false);
-    }
-
-
-
-//     paramIsConsideredDefault(param)
-//     {
-//         return  param.isDefault()
-//             && !this.inputs[0].connected;
-//     }
-
-
-
-//     toJavascript(gen)
-//     {
-//         const conn = this.inputs[0].connected;
-
-
-//         gen.nTab++;
-//         const defs = this.toJsDefs(gen);
-//         gen.nTab--;
-
-
-//         let js = gen.NL + 'function ' + this.name + '(';
-        
-//         if (   conn 
-//             && defs == NULL)
-//             js += 'input';
-
-//         js += ')';
-
-
-//         js += gen.NL + '{';
-//         gen.nTab++;
-
-
-//         js += defs;
-
-
-//         js += gen.NL + 'return ';
-//         js += conn ? 'input' : this.toJsCode(gen);
-//         js += ';'
-
-
-//         gen.nTab--;
-//         js += gen.NL + '}';
-
-
-//         return js;
-//     }
-
-
-
-//     toJsDefs(gen)
-//     {
-//         if (  !this.inputs[0].connected
-//             || gen.connectedOut(this))
-//             return '';
-
-        
-//         let js = '';
-
-
-//         js += gen.NL + 'const input = ';
-//         js += this.inputs[0].connectedOutput.toJsCode(gen);
-//         js += ';';
-
-
-//         return js;
-//     }
-
-
-
-//     toJsCode(gen)
-//     {
-//         return this.inputs[0].connected
-//              ? this.inputs[0].connectedOutput.toJsCode(gen)
-//              : this.paramValue.value.toJsCode(gen);
-//     }
-}
 
 
 class   OpColorStyle
@@ -87585,6 +87904,8 @@ function createNode(nodeType, creatingButton = null, createdNodeId = -1, options
         case STAR:                    node = new OpStar();              break;
         case TEXTSHAPE:               node = new OpTextShape();         break;
         case VECTOR_PATH:             node = new OpVectorPath();        break;
+        case SHAPE_GROUP:             node = new OpShapeGroup();        break;
+        case FRAME:                   node = new OpFrame();             break;
 
         case MOVE:                    node = new OpMove();              break;
         case ROTATE:                  node = new OpRotate();            break;

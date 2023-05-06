@@ -27,7 +27,7 @@ extends GShape
         if (this.input) 
             copy.input = this.input.copy();
 
-        if (this.points ) copy.points  = this.points .copy();
+        if (this.points ) copy.objects  = this.points .copy();
         if (this.closed ) copy.closed  = this.closed .copy();
         if (this.degree ) copy.degree  = this.degree .copy();
         if (this.winding) copy.winding = this.winding.copy();

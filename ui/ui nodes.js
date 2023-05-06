@@ -93,6 +93,8 @@ function createNode(nodeType, creatingButton = null, createdNodeId = -1, options
         case STAR:                    node = new OpStar();              break;
         case TEXTSHAPE:               node = new OpTextShape();         break;
         case VECTOR_PATH:             node = new OpVectorPath();        break;
+        case SHAPE_GROUP:             node = new OpShapeGroup();        break;
+        case FRAME:                   node = new OpFrame();             break;
 
         case MOVE:                    node = new OpMove();              break;
         case ROTATE:                  node = new OpRotate();            break;

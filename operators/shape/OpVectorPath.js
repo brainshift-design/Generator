@@ -1,8 +1,8 @@
 class   OpVectorPath
 extends OpShape
 {
-    paramClosed;
     paramPoints;
+    paramClosed;
     paramDegree;
     paramWinding;
     paramRound;

@@ -87,7 +87,7 @@ extends OperatorBase
     {
         this.paramCount.enableControlText(true);
 
-        this.paramLoop .enableControlText(false);
+        this.paramLoop .enableControlText(true);
         this.paramLoop .controls[0].valueText = '↵';
 
         this.updateParamControls();

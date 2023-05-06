@@ -16,6 +16,8 @@
 ../parameters/TextShapeParam.js
 ../parameters/PointParam.js
 ../parameters/VectorPathParam.js
+../parameters/ShapeGroupParam.js
+../parameters/FrameParam.js
 
 
 // these have to be added in order because of dependencies
@@ -126,13 +128,15 @@
 ../operators/shape/OpPolygon.js
 ../operators/shape/OpStar.js
 ../operators/shape/OpTextShape.js
+../operators/shape/OpPoint.js
 ../operators/shape/OpVectorPath.js
+../operators/shape/OpShapeGroup.js
+../operators/shape/OpFrame.js
 
 ../operators/shape/OpMove.js
 ../operators/shape/OpRotate.js
 ../operators/shape/OpScale.js
 
-../operators/shape/OpPoint.js
 
 
 ../operators/style/OpColorStyle.js

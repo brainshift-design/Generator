@@ -233,8 +233,11 @@ Operator.prototype.updateHeaderLabel = function()
 
 Operator.prototype.updateHeaderLabelText = function()
 {
+    const prefix = this.type == REPEAT ? '...' : '';
+    const suffix = this.cached         ? ''    : '...';
+
     this.labelText.innerHTML = 
-          (settings.showNodeId ? this.id : this.name + (this.cached ? '' : '...'))// + (this.type == NUMBER_DISTRIBUTE ? '  ↵' : '')))
+          (settings.showNodeId ? this.id : prefix + this.name + suffix)
         + (this.active && this.showActiveArrow ? (settings.showNodeId ? ' ' : '  ') + '‣' : '');
 
     this.labelText.style.fontFamily = 

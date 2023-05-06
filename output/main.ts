@@ -725,6 +725,14 @@ const VECTOR_PATH_VALUE = 'VEC#';
 const VECTOR_PATH       = 'VEC'; 
 const VECTOR_PATH_TYPES = [VECTOR_PATH_VALUE, VECTOR_PATH];
 
+const SHAPE_GROUP_VALUE = 'SGRP#';
+const SHAPE_GROUP       = 'SGRP';
+const SHAPE_GROUP_TYPES = [SHAPE_GROUP_VALUE, SHAPE_GROUP];
+
+const FRAME_VALUE       = 'FRM#';
+const FRAME             = 'FRM';
+const FRAME_TYPES       = [FRAME_VALUE, FRAME];
+
 
 const MOVE              = 'MOVE';
 const ROTATE            = 'ROT';
@@ -753,7 +761,9 @@ const SHAPE_VALUES =
     STAR_VALUE,
     TEXTSHAPE_VALUE,
     POINT_VALUE,
-    VECTOR_PATH_VALUE
+    VECTOR_PATH_VALUE,
+    SHAPE_GROUP_VALUE,
+    FRAME_VALUE
 ];
 
 
@@ -769,6 +779,8 @@ const SHAPE_TYPES =
     ...TEXTSHAPE_TYPES,
     ...POINT_TYPES,
     ...VECTOR_PATH_TYPES,
+    ...SHAPE_GROUP_TYPES,
+    ...FRAME_TYPES,
 
     MOVE,
     ROTATE,
@@ -801,22 +813,10 @@ const ALL_VALUES =
             STAR_VALUE,
        TEXTSHAPE_VALUE,
            POINT_VALUE,
-     VECTOR_PATH_VALUE
+     VECTOR_PATH_VALUE,
+     SHAPE_GROUP_VALUE,
+           FRAME_VALUE
 ];
-
-
-// const ALL_TYPES =
-// [
-//     ...FLOW_TYPES,
-//     ...NUMBER_TYPES,
-//     ...TEXT_TYPES,
-//     ...COLOR_TYPES,
-//     ...FILL_TYPES,
-//     ...STROKE_TYPES,
-//     ...GRADIENT_TYPES,
-//     COLOR_STYLE,
-//     ...SHAPE_TYPES
-// ];
 
 
 const GROUP_NODE    = 'GROUP';

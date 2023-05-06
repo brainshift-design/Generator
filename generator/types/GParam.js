@@ -45,7 +45,6 @@ extends GOperator
         this.param = this.node.paramFromId(this.paramId);
 
 
-        console.log('this.node =', this.node);
         if (isValid(this.param))
         {
             // if (   this.feedbackValue)

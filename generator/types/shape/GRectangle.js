@@ -155,7 +155,7 @@ extends GShape
     {
         super.invalidate();
 
-        if (this.input ) this.input .invalidate();
-        if (this.round ) this.round .invalidate();
+        if (this.input) this.input.invalidate();
+        if (this.round) this.round.invalidate();
     }
 }

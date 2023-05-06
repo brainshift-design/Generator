@@ -3862,6 +3862,14 @@ const VECTOR_PATH_VALUE = 'VEC#';
 const VECTOR_PATH       = 'VEC'; 
 const VECTOR_PATH_TYPES = [VECTOR_PATH_VALUE, VECTOR_PATH];
 
+const SHAPE_GROUP_VALUE = 'SGRP#';
+const SHAPE_GROUP       = 'SGRP';
+const SHAPE_GROUP_TYPES = [SHAPE_GROUP_VALUE, SHAPE_GROUP];
+
+const FRAME_VALUE       = 'FRM#';
+const FRAME             = 'FRM';
+const FRAME_TYPES       = [FRAME_VALUE, FRAME];
+
 
 const MOVE              = 'MOVE';
 const ROTATE            = 'ROT';
@@ -3890,7 +3898,9 @@ const SHAPE_VALUES =
     STAR_VALUE,
     TEXTSHAPE_VALUE,
     POINT_VALUE,
-    VECTOR_PATH_VALUE
+    VECTOR_PATH_VALUE,
+    SHAPE_GROUP_VALUE,
+    FRAME_VALUE
 ];
 
 
@@ -3906,6 +3916,8 @@ const SHAPE_TYPES =
     ...TEXTSHAPE_TYPES,
     ...POINT_TYPES,
     ...VECTOR_PATH_TYPES,
+    ...SHAPE_GROUP_TYPES,
+    ...FRAME_TYPES,
 
     MOVE,
     ROTATE,
@@ -3938,22 +3950,10 @@ const ALL_VALUES =
             STAR_VALUE,
        TEXTSHAPE_VALUE,
            POINT_VALUE,
-     VECTOR_PATH_VALUE
+     VECTOR_PATH_VALUE,
+     SHAPE_GROUP_VALUE,
+           FRAME_VALUE
 ];
-
-
-// const ALL_TYPES =
-// [
-//     ...FLOW_TYPES,
-//     ...NUMBER_TYPES,
-//     ...TEXT_TYPES,
-//     ...COLOR_TYPES,
-//     ...FILL_TYPES,
-//     ...STROKE_TYPES,
-//     ...GRADIENT_TYPES,
-//     COLOR_STYLE,
-//     ...SHAPE_TYPES
-// ];
 
 
 const GROUP_NODE    = 'GROUP';
@@ -4937,6 +4937,12 @@ function getSineYSegment(_pointP, _point, _pointN)
 }
 
 
+
+
+
+
+
+
 class FigmaColorStyle
 extends FigmaObject
 {
@@ -5369,7 +5375,6 @@ extends GOperator
         this.param = this.node.paramFromId(this.paramId);
 
 
-        console.log('this.node =', this.node);
         if (isValid(this.param))
         {
             // if (   this.feedbackValue)
@@ -8010,6 +8015,12 @@ function parseVectorPathValue(str, i = -1)
     
     return [path, i - iStart];
 }
+
+
+
+
+
+
 
 
 
@@ -16013,8 +16024,8 @@ extends GShape
     {
         super.invalidate();
 
-        if (this.input ) this.input .invalidate();
-        if (this.round ) this.round .invalidate();
+        if (this.input) this.input.invalidate();
+        if (this.round) this.round.invalidate();
     }
 }
 
@@ -16970,7 +16981,7 @@ extends GShape
         if (this.input) 
             copy.input = this.input.copy();
 
-        if (this.points ) copy.points  = this.points .copy();
+        if (this.points ) copy.objects  = this.points .copy();
         if (this.closed ) copy.closed  = this.closed .copy();
         if (this.degree ) copy.degree  = this.degree .copy();
         if (this.winding) copy.winding = this.winding.copy();
@@ -21860,6 +21871,139 @@ function genParseVectorPath(parse)
 
 
 
+function genParseShapeGroup(parse)
+{
+    const [, nodeId, options, ignore] = genParseNodeStart(parse);
+
+
+    const group = new GShapeGroup(nodeId, options);
+
+
+    let nInputs = -1;
+
+    if (!ignore)
+    {
+        nInputs = parseInt(parse.move());
+        console.assert(nInputs => 0 && nInputs <= 1, 'nInputs must be [0, 1]');
+    }
+
+
+    if (parse.settings.logRequests) 
+        logReq(group, parse, ignore);
+
+
+    if (ignore) 
+    {
+        genParseNodeEnd(parse, group);
+        return parse.parsedNodes.find(n => n.nodeId == nodeId);
+    }
+
+
+    parse.nTab++;
+
+
+    if (nInputs == 1)
+        group.input = genParse(parse);
+
+
+    const nParamIds = genParseParamCount(parse);
+
+    for (let i = 0; i < nParamIds; i++)
+    {
+        const paramId = genParseParamId(parse);
+
+        parse.inParam = true;
+
+        switch (paramId)
+        {
+        case 'x':       group.x       = genParse(parse); break;
+        case 'y':       group.y       = genParse(parse); break;
+        case 'width':   group.width   = genParse(parse); break;
+        case 'height':  group.height  = genParse(parse); break;
+        case 'angle':   group.angle   = genParse(parse); break;
+        case 'objects': group.objects = genParse(parse); break;
+        case 'props':   group.props   = genParse(parse); break;
+        }
+    }
+
+
+    parse.inParam = false;
+    parse.nTab--;
+
+
+    genParseNodeEnd(parse, group);
+    return group;
+}
+
+
+
+function genParseFrame(parse)
+{
+    const [, nodeId, options, ignore] = genParseNodeStart(parse);
+
+
+    const frame = new GFrame(nodeId, options);
+
+
+    let nInputs = -1;
+
+    if (!ignore)
+    {
+        nInputs = parseInt(parse.move());
+        console.assert(nInputs => 0 && nInputs <= 1, 'nInputs must be [0, 1]');
+    }
+
+
+    if (parse.settings.logRequests) 
+        logReq(frame, parse, ignore);
+
+
+    if (ignore) 
+    {
+        genParseNodeEnd(parse, frame);
+        return parse.parsedNodes.find(n => n.nodeId == nodeId);
+    }
+
+
+    parse.nTab++;
+
+
+    if (nInputs == 1)
+        frame.input = genParse(parse);
+
+
+    const nParamIds = genParseParamCount(parse);
+
+    for (let i = 0; i < nParamIds; i++)
+    {
+        const paramId = genParseParamId(parse);
+
+        parse.inParam = true;
+
+        switch (paramId)
+        {
+        case 'x':       frame.x       = genParse(parse); break;
+        case 'y':       frame.y       = genParse(parse); break;
+        case 'width':   frame.width   = genParse(parse); break;
+        case 'height':  frame.height  = genParse(parse); break;
+        case 'angle':   frame.angle   = genParse(parse); break;
+        case 'round':   frame.round   = genParse(parse); break;
+        case 'objects': frame.objects = genParse(parse); break;
+        case 'props':   frame.props   = genParse(parse); break;
+        }
+    }
+
+
+    parse.inParam = false;
+    parse.nTab--;
+
+
+    genParseNodeEnd(parse, frame);
+    return frame;
+}
+
+
+
 function genParseMove(parse)
 {
     const [, nodeId, options, ignore] = genParseNodeStart(parse);
@@ -22972,11 +23116,16 @@ function genParse(parse, inParam = true)
     else if (parse.next == STAR                   ) result = genParseStar            (parse);
     else if (parse.next == TEXTSHAPE              ) result = genParseTextShape       (parse);
 
+    else if (parse.next == POINT_VALUE            ) result = genParsePointValue      (parse);
+    else if (parse.next == POINT                  ) result = genParsePoint           (parse);
     else if (parse.next == VECTOR_PATH_VALUE      ) result = genParseVectorPathValue (parse);
     else if (parse.next == VECTOR_PATH            ) result = genParseVectorPath      (parse);
 
-    else if (parse.next == POINT_VALUE            ) result = genParsePointValue      (parse);
-    else if (parse.next == POINT                  ) result = genParsePoint           (parse);
+    else if (parse.next == SHAPE_GROUP_VALUE      ) result = genParseShapeGroupValue (parse);
+    else if (parse.next == SHAPE_GROUP            ) result = genParseShapeGroup      (parse);
+
+    else if (parse.next == FRAME_VALUE            ) result = genParseFrameValue      (parse);
+    else if (parse.next == FRAME                  ) result = genParseFrame           (parse);
 
     else if (parse.next == MOVE                   ) result = genParseMove            (parse);
     else if (parse.next == ROTATE                 ) result = genParseRotate          (parse);

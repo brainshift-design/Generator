@@ -555,6 +555,139 @@ function genParseVectorPath(parse)
 
 
 
+function genParseShapeGroup(parse)
+{
+    const [, nodeId, options, ignore] = genParseNodeStart(parse);
+
+
+    const group = new GShapeGroup(nodeId, options);
+
+
+    let nInputs = -1;
+
+    if (!ignore)
+    {
+        nInputs = parseInt(parse.move());
+        console.assert(nInputs => 0 && nInputs <= 1, 'nInputs must be [0, 1]');
+    }
+
+
+    if (parse.settings.logRequests) 
+        logReq(group, parse, ignore);
+
+
+    if (ignore) 
+    {
+        genParseNodeEnd(parse, group);
+        return parse.parsedNodes.find(n => n.nodeId == nodeId);
+    }
+
+
+    parse.nTab++;
+
+
+    if (nInputs == 1)
+        group.input = genParse(parse);
+
+
+    const nParamIds = genParseParamCount(parse);
+
+    for (let i = 0; i < nParamIds; i++)
+    {
+        const paramId = genParseParamId(parse);
+
+        parse.inParam = true;
+
+        switch (paramId)
+        {
+        case 'x':       group.x       = genParse(parse); break;
+        case 'y':       group.y       = genParse(parse); break;
+        case 'width':   group.width   = genParse(parse); break;
+        case 'height':  group.height  = genParse(parse); break;
+        case 'angle':   group.angle   = genParse(parse); break;
+        case 'objects': group.objects = genParse(parse); break;
+        case 'props':   group.props   = genParse(parse); break;
+        }
+    }
+
+
+    parse.inParam = false;
+    parse.nTab--;
+
+
+    genParseNodeEnd(parse, group);
+    return group;
+}
+
+
+
+function genParseFrame(parse)
+{
+    const [, nodeId, options, ignore] = genParseNodeStart(parse);
+
+
+    const frame = new GFrame(nodeId, options);
+
+
+    let nInputs = -1;
+
+    if (!ignore)
+    {
+        nInputs = parseInt(parse.move());
+        console.assert(nInputs => 0 && nInputs <= 1, 'nInputs must be [0, 1]');
+    }
+
+
+    if (parse.settings.logRequests) 
+        logReq(frame, parse, ignore);
+
+
+    if (ignore) 
+    {
+        genParseNodeEnd(parse, frame);
+        return parse.parsedNodes.find(n => n.nodeId == nodeId);
+    }
+
+
+    parse.nTab++;
+
+
+    if (nInputs == 1)
+        frame.input = genParse(parse);
+
+
+    const nParamIds = genParseParamCount(parse);
+
+    for (let i = 0; i < nParamIds; i++)
+    {
+        const paramId = genParseParamId(parse);
+
+        parse.inParam = true;
+
+        switch (paramId)
+        {
+        case 'x':       frame.x       = genParse(parse); break;
+        case 'y':       frame.y       = genParse(parse); break;
+        case 'width':   frame.width   = genParse(parse); break;
+        case 'height':  frame.height  = genParse(parse); break;
+        case 'angle':   frame.angle   = genParse(parse); break;
+        case 'round':   frame.round   = genParse(parse); break;
+        case 'objects': frame.objects = genParse(parse); break;
+        case 'props':   frame.props   = genParse(parse); break;
+        }
+    }
+
+
+    parse.inParam = false;
+    parse.nTab--;
+
+
+    genParseNodeEnd(parse, frame);
+    return frame;
+}
+
+
+
 function genParseMove(parse)
 {
     const [, nodeId, options, ignore] = genParseNodeStart(parse);

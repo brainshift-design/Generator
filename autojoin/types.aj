@@ -12,6 +12,8 @@
 ../generator/types/figma/FigmaText.js
 ../generator/types/figma/FigmaPoint.js
 ../generator/types/figma/FigmaVectorPath.js
+../generator/types/figma/FigmaShapeGroup.js
+../generator/types/figma/FigmaFrame.js
 
 ../generator/types/figma/FigmaColorStyle.js
 
@@ -41,6 +43,8 @@
 ../generator/types/values/TextShapeValue.js
 ../generator/types/values/PointValue.js
 ../generator/types/values/VectorPathValue.js
+../generator/types/values/ShapeGroupValue.js
+../generator/types/values/FrameValue.js
 
 
 ../generator/types/flow/GList.js
