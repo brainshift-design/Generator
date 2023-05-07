@@ -78,7 +78,10 @@ extends OperatorBase
         if (count) this.paramCount.setValue(count, false, true, false);
         if (loop ) this.paramLoop .setValue(loop,  false, true, false);
 
-        this.outputs[0].types = [finalListTypeFromItems(value.items)];
+        this.outputs[0].types = 
+            value
+            ? [finalListTypeFromItems(value.items)]
+            : [LIST_VALUE];
     }
 
 

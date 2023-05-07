@@ -77,65 +77,75 @@ extends GOperator
         };
 
 
-        if (this.input)
+        if (count.value > 0)
         {
-            const nItems = 
-                this.options.enabled 
-                ? count.value 
-                : 1;
-            
-            
-            parse.repeats.push(repeat);
-
-
-            for (let i = 0, o = 0; i < nItems; i++)
+            if (this.input)
             {
-                if (this.loop.type != NUMBER_VALUE)
+                const nItems = 
+                    this.options.enabled 
+                    ? count.value 
+                    : 1;
+                
+                
+                parse.repeats.push(repeat);
+
+
+                for (let i = 0, o = 0; i < nItems; i++)
                 {
-                    this.invalidateRepeat(this.loop, this.nodeId);
+                    if (this.loop.type != NUMBER_VALUE)
+                    {
+                        this.invalidateRepeat(this.loop, this.nodeId);
 
-                    repeat.iteration = i;
-                    repeat.total     = nItems;
+                        repeat.iteration = i;
+                        repeat.total     = nItems;
+                    }
+                    
+                    
+                    this.input.invalidate();
+                    await this.input.eval(parse);
+
+                    
+                    for (let j = 0; j < this.input.objects.length; j++, o++)
+                    {
+                        const obj = copyFigmaObject(this.input.objects[j]);
+
+                        obj.nodeId = this.nodeId;
+
+                        if (obj.objectId != NULL) obj.objectId += ' ';
+                        obj.objectId += (o+1).toString();
+
+                        obj.listId = i;
+        
+                        this.objects.push(obj);
+                    }
+        
+
+                    const input = this.input.toValue();
+
+                    if (input)
+                        this.value.items.push(input.copy());
                 }
-                
-                
-                this.input.invalidate();
-                await this.input.eval(parse);
 
-                
-                for (let j = 0; j < this.input.objects.length; j++, o++)
-                {
-                    const obj = copyFigmaObject(this.input.objects[j]);
 
-                    obj.nodeId = this.nodeId;
-
-                    if (obj.objectId != NULL) obj.objectId += ' ';
-                    obj.objectId += (o+1).toString();
-
-                    obj.listId = i;
-    
-                    this.objects.push(obj);
-                }
-    
-
-                const input = this.input.toValue();
-
-                if (input)
-                    this.value.items.push(input.copy());
+                console.assert(parse.repeats.at(-1) == repeat, 'invalid nested repeat');
+                parse.repeats.pop();
             }
 
 
-            console.assert(parse.repeats.at(-1) == repeat, 'invalid nested repeat');
-            parse.repeats.pop();
+            this.updateValues =
+            [
+                ['value',  this.value     ],
+                ['count',  count          ],
+                ['loop',   NumberValue.NaN]
+            ];
         }
+        else
+        {
+            if (this.input)
+                await this.input.eval(parse);
 
-
-        this.updateValues =
-        [
-            ['value',  this.value     ],
-            ['count',  count          ],
-            ['loop',   NumberValue.NaN]
-        ];
+            this.updateValues = [['', NullValue]];
+        }
 
 
         this.validate();

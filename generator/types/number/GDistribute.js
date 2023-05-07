@@ -57,8 +57,17 @@ extends GNumberType
             : 0;
 
             
+        let startOffset;
+
+             if (from  .value == 2) startOffset = step;
+        else if (from  .value == 1
+              && repeat
+              && repeat.total == 1) startOffset = (end.toNumber() - start.toNumber()) / 2;
+        else                        startOffset = 0;
+
+
         this.value = new NumberValue(
-            start.toNumber() + step * iteration + (from.value == 2 ? step : 0),
+            start.toNumber() + step * iteration + startOffset,
             Math.max(start.decimals, end.decimals));
 
             
