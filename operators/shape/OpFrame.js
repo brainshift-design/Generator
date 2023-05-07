@@ -7,6 +7,7 @@ extends OpShape
     paramHeight;
     paramAngle;
     paramRound;
+    paramChildren;
 
 
 
@@ -18,16 +19,17 @@ extends OpShape
         this.variableInputs = true;
 
 
-        this.addNewInput();
-        this.addOutput(new Output([SHAPE_LIST_VALUE], this.output_genRequest));
+        this.addInput(this.createInputForObjects(SHAPE_VALUES, getNodeInputValuesForUndo));
+        this.addOutput(new Output([FRAME_VALUE], this.output_genRequest));
 
 
-        this.addParam(this.paramX      = new NumberParam('x',      'x',      true, true, true,   0));
-        this.addParam(this.paramY      = new NumberParam('y',      'y',      true, true, true,   0));
-        this.addParam(this.paramWidth  = new NumberParam('width',  'width',  true, true, true, 100,    0.01));
-        this.addParam(this.paramHeight = new NumberParam('height', 'height', true, true, true, 100,    0.01));
-        this.addParam(this.paramAngle  = new NumberParam('angle',  'angle',  true, true, true,   0, -180,   180));
-        this.addParam(this.paramRound  = new NumberParam('round',  'round',  true, true, true,   0,    0));
+        this.addParam(this.paramX        = new NumberParam('x',        'x',       true, true, true,   0));
+        this.addParam(this.paramY        = new NumberParam('y',        'y',       true, true, true,   0));
+        this.addParam(this.paramWidth    = new NumberParam('width',    'width',   true, true, true, 100,    0.01));
+        this.addParam(this.paramHeight   = new NumberParam('height',   'height',  true, true, true, 100,    0.01));
+        this.addParam(this.paramAngle    = new NumberParam('angle',    'angle',   true, true, true,   0, -180,   180));
+        this.addParam(this.paramRound    = new NumberParam('round',    'round',   true, true, true,   0,    0));
+        this.addParam(this.paramChildren = new ListParam  ('children', 'objects', true, true, true));
 
 
         this.paramWidth .addEventListener('change', () => this.updateRound());
@@ -38,60 +40,24 @@ extends OpShape
         this.paramAngle.controls[0].dragReverse = true;
 
 
+        this.paramChildren.input.types.push(SHAPE_LIST_VALUE);
+        this.paramChildren.listTypes = SHAPE_VALUES;
+        this.paramChildren.itemName  = 'object';
+        this.paramChildren.showZero  =  false;
+
+
         this.addBaseParams();
     }
     
     
     
-    addNewInput()
+    updateRound()
     {
-        const newInput = new Input(SHAPE_VALUES);
-        newInput.isNew = true;
+        const min = Math.min(this.paramWidth.value.value, this.paramHeight.value.value);
 
-        newInput.addEventListener('connect',    e => { onVariableConnectInput(e.detail.input); e.detail.input.isNew = false; });
-        newInput.addEventListener('disconnect', e => onVariableDisconnectInput(e.detail.input));
+        this.paramRound.controls[0].displayMin = 0;
+        this.paramRound.controls[0].displayMax = min/2;
 
-        this.addInput(newInput);
-
-        return newInput;
-    }
-
-
-
-    output_genRequest(gen)
-    {
-        // 'this' is the output
-
-        gen.scope.push({
-            nodeId:  this.node.id, 
-            paramId: NULL });
-
-        const [request, ignore] = this.node.genRequestStart(gen);
-        if (ignore) return request;
-
-
-        const connectedInputs = this.node.inputs.filter(i => i.connected && !i.param);
-
-
-        request.push(connectedInputs.length); // utility values like param count are stored as numbers
-        
-        for (const input of connectedInputs)
-            request.push(...pushInputOrParam(input, gen));
-
-        
-        gen.scope.pop();
-        pushUnique(gen.passedNodes, this.node);
-
-        return request;
-    }
-
-
-
-    updateValues(requestId, actionId, updateParamId, paramIds, values)
-    {
-        super.updateValues(requestId, actionId, updateParamId, paramIds, values);
-
-        const value = values[paramIds.findIndex(id => id == 'value')];
-        console.assert(value.type == SHAPE_LIST_VALUE, 'value.type must be SHAPE_LIST_VALUE');
+        this.paramRound.controls[0].update();
     }
 }

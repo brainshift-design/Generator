@@ -1,10 +1,10 @@
 class GFrame
 extends GShape
 {
-    input   = null;
+    input    = null;
 
-    round   = null;
-    objects = null;
+    round    = null;
+    children = null;
 
 
 
@@ -24,8 +24,8 @@ extends GShape
         if (this.input) 
             copy.input = this.input.copy();
 
-        if (this.round  ) copy.round   = this.round  .copy();
-        if (this.objects) copy.objects = this.objects.copy();
+        if (this.round   ) copy.round    = this.round   .copy();
+        if (this.children) copy.children = this.children.copy();
 
         return copy;
     }
@@ -40,8 +40,8 @@ extends GShape
 
         const [x, y, width, height, angle] = await this.evalBaseParams(parse);
 
-        const round   = this.round   ? (await this.round  .eval(parse)).toValue() : null;
-        const objects = this.objects ? (await this.objects.eval(parse)).toValue() : null;
+        const round    = this.round    ? (await this.round   .eval(parse)).toValue() : null;
+        const children = this.children ? (await this.children.eval(parse)).toValue() : null;
 
 
         let input = null;
@@ -52,27 +52,26 @@ extends GShape
 
             this.value = new FrameValue(
                 this.nodeId,
-                x       ?? input.x,
-                y       ?? input.y,
-                width   ?? input.width,
-                height  ?? input.height,
-                angle   ?? input.angle,
-                round   ?? input.round,
-                objects ?? input.objects);
+                x        ?? input.x,
+                y        ?? input.y,
+                width    ?? input.width,
+                height   ?? input.height,
+                angle    ?? input.angle,
+                round    ?? input.round,
+                children ?? input.children);
         }
         else
         {
-            this.value = new FrameValue(this.nodeId, x, y, width, height, angle, round, objects);
+            this.value = new FrameValue(this.nodeId, x, y, width, height, angle, round, children);
         }
 
 
         this.updateValues =
         [
-            ['value',   this.value        ],
-            ['round',   this.value.round  ],
-            ['objects', this.value.objects]
+            ['value',    this.value         ],
+            ['round',    this.value.round   ],
+            ['children', this.value.children]
         ];
-
 
 
         await this.evalShapeBase(parse, input);
@@ -94,41 +93,42 @@ extends GShape
             return;
             
 
-        // const objects = [];
+        if (   this.value.x
+            && this.value.y
+            && this.value.width
+            && this.value.height
+            && this.value.angle
+            && this.value.round)
+        {
+            const frame = new FigmaFrame(
+                this.nodeId,
+                NULL,
+                this.value.x     .value,
+                this.value.y     .value,
+                this.value.width .value,
+                this.value.height.value,
+                this.value.angle .value,
+                this.value.round .value);
 
-        // if (this.objects.objects)
-        // {
-        //     const objPoints = this.objects.objects.filter(o => o.type == POINT);
+            if (this.children.objects)
+            {
+                for (let i = 0; i < this.children.objects.length; i++)
+                {
+                    const obj = this.children.objects[i].copy();
 
-        //     for (const pt of objPoints)
-        //         points.push(new PointValue(
-        //             this.nodeId,
-        //             new NumberValue(pt.x), 
-        //             new NumberValue(pt.y)));
-        // }
+                    obj.nodeId = this.nodeId;
 
+                    if (obj.objectId != NULL) obj.objectId += ' ';
+                    obj.objectId += (i + 1).toString();
 
-        // if (   points.length >= 2
-        //     && this.value.closed 
-        //     && this.value.degree 
-        //     && this.value.winding
-        //     && this.value.round)
-        // {
-        //     this.objects =
-        //     [
-        //         new FigmaVectorPath(
-        //             this.nodeId,
-        //             NULL,
-        //             points,
-        //             this.value.closed .value,
-        //             this.value.degree .value,
-        //             this.value.winding.value,
-        //             this.value.round  .value)
-        //     ];
-        // }
-        // else
+                    frame.children.push(obj);
+                }
+            }
+
+            this.objects = [frame];
+        }
+        else
             this.objects = [];
-
 
         
         await super.evalObjects(parse);
@@ -140,28 +140,28 @@ extends GShape
     {
         super.pushValueUpdates(parse);
 
-        if (this.input  ) this.input  .pushValueUpdates(parse);
-        if (this.round  ) this.round  .pushValueUpdates(parse);
-        if (this.objects) this.objects.pushValueUpdates(parse);
+        if (this.input   ) this.input   .pushValueUpdates(parse);
+        if (this.round   ) this.round   .pushValueUpdates(parse);
+        if (this.children) this.children.pushValueUpdates(parse);
     }
 
 
 
     toValue()
     {
-        const group = new ShapeGroupValue(
+        const frame = new FrameValue(
             this.nodeId,
-            this.x      .toValue(),
-            this.y      .toValue(),
-            this.width  .toValue(),
-            this.height .toValue(),
-            this.angle  .toValue(),
-            this.round  .toValue(),
-            this.objects.toValue());
+            this.x       .toValue(),
+            this.y       .toValue(),
+            this.width   .toValue(),
+            this.height  .toValue(),
+            this.angle   .toValue(),
+            this.round   .toValue(),
+            this.children.toValue());
 
-        group.props = this.props.toValue();
+        frame.props = this.props.toValue();
 
-        return group;
+        return frame;
     }
 
 
@@ -169,8 +169,8 @@ extends GShape
     isValid()
     {
         return super.isValid()
-            && this.round  .isValid()
-            && this.objects.isValid();
+            && this.round   .isValid()
+            && this.children.isValid();
     }
 
 
@@ -179,8 +179,8 @@ extends GShape
     {
         super.invalidate();
 
-        if (this.input  ) this.input  .invalidate();
-        if (this.round  ) this.round  .invalidate();
-        if (this.objects) this.objects.invalidate();
+        if (this.input   ) this.input   .invalidate();
+        if (this.round   ) this.round   .invalidate();
+        if (this.children) this.children.invalidate();
     }
 }

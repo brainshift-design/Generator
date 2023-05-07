@@ -104,21 +104,13 @@ extends GShape
                 this.value.height.value,
                 this.value.angle .value);
 
-            if (   this.children
-                && this.children.items)
-            {
-                for (const child of this.children.items)
-                {
-                    if (child.objects)
-                        group.children.push(...child.objects);
-                }
-            }
+            if (this.children.objects)
+                group.children.push(...this.children.objects);
 
             this.objects = [group];
         }
         else
             this.objects = [];
-
 
         
         await super.evalObjects(parse);

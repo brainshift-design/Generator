@@ -31,9 +31,8 @@ extends OpShape
         
         this.paramChildren.input.types.push(SHAPE_LIST_VALUE);
         this.paramChildren.listTypes = SHAPE_VALUES;
-
-        this.paramChildren.itemName    = 'object';
-        this.paramChildren.showZero    =  false;
+        this.paramChildren.itemName  = 'object';
+        this.paramChildren.showZero  =  false;
 
 
         this.addBaseParams();

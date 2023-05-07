@@ -11,9 +11,9 @@ extends FigmaShape
 
 
 
-    constructor(nodeId, objectId, x, y, width, height, angle, round, children)
+    constructor(nodeId, objectId, x, y, width, height, angle, round, children = [])
     {
-        super(SHAPE_GROUP, nodeId, objectId);
+        super(FRAME, nodeId, objectId);
         
         this.x        = x;
         this.y        = y;

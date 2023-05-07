@@ -1083,7 +1083,7 @@ figma.ui.onmessage = function (msg) {
             break;
         // case 'figUpdateViewportRect':                 figPostMessageToUi({cmd: 'uiReturnUpdateViewportRect', viewportRect: figma.viewport.bounds }); break;
         case 'figUpdateObjectsAndStyles':
-            figUpdateObjects(msg);
+            figUpdateObjects(msg.objects);
             figUpdateStyles(msg);
             break;
         case 'figDeleteObjectsAndStyles':
@@ -1203,10 +1203,10 @@ function figCreateObject(objects, genObj) {
         objects.push(figObj);
     }
 }
-function figUpdateObjects(msg) {
+function figUpdateObjects(objects) {
     let curNodeId = NULL;
     let figObjects = null;
-    for (const genObj of msg.objects) {
+    for (const genObj of objects) {
         if (genObj.nodeId != curNodeId) {
             curNodeId = genObj.nodeId;
             figObjects = figObjectArrays.find(a => a.nodeId == genObj.nodeId);
@@ -1245,6 +1245,9 @@ function figUpdateObjects(msg) {
         point.parent.appendChild(point);
 }
 function figUpdateObject(figObj, genObj) {
+    console.log('figObj =', figObj);
+    console.log('genObj =', genObj);
+    console.log('');
     switch (genObj.type) {
         case RECTANGLE:
             figUpdateRect(figObj, genObj);
@@ -1269,6 +1272,12 @@ function figUpdateObject(figObj, genObj) {
             break;
         case VECTOR_PATH:
             figUpdateVectorPath(figObj, genObj);
+            break;
+        case SHAPE_GROUP:
+            figUpdateShapeGroup(figObj, genObj);
+            break;
+        case FRAME:
+            figUpdateFrame(figObj, genObj);
             break;
     }
 }
@@ -1630,26 +1639,72 @@ function figCreateShapeGroup(genGroup) {
         figGroup.name = makeObjectName(genGroup);
         if (!genShapeGroupIsValid(genGroup))
             return figGroup;
-        // figGroup.x     = genGroup.x;
-        // figGroup.y     = genGroup.y;
-        figGroup.angle = genGroup.y;
-        setObjectFills(figGroup, genGroup);
-        setObjectStrokes(figGroup, genGroup);
+        figGroup.x = 0; //    = genGroup.x;
+        figGroup.y = 0; //    = genGroup.y;
+        figGroup.rotation = genGroup.angle;
+        // setObjectFills  (figGroup, genGroup);
+        // setObjectStrokes(figGroup, genGroup);
     }
     return figGroup;
 }
 function figUpdateShapeGroup(figGroup, genGroup) {
     if (!genShapeGroupIsValid(genGroup))
         return;
-    figGroup.x = 0; //genPath.x;
-    figGroup.y = 0; //genPath.y;
-    figGroup.vectorPaths = [{
-            windingRule: genGroup.winding == 1 ? 'NONZERO' : 'EVENODD',
-            data: genGroup.pathData
-        }];
-    figGroup.cornerRadius = genGroup.round;
-    setObjectFills(figGroup, genGroup);
-    setObjectStrokes(figGroup, genGroup);
+    figGroup.x = 0; //    = genGroup.x;
+    figGroup.y = 0; //    = genGroup.y;
+    figGroup.rotation = genGroup.angle;
+    // setObjectFills  (figGroup, genGroup);
+    // setObjectStrokes(figGroup, genGroup);
+}
+///////////////////////////////////////////////////////////////////////////////////////////////////
+function genFrameIsValid(genGroup) {
+    return genGroup.x != null && !isNaN(genGroup.x)
+        && genGroup.y != null && !isNaN(genGroup.y)
+        && genGroup.width != null && !isNaN(genGroup.width)
+        && genGroup.height != null && !isNaN(genGroup.height)
+        && genGroup.round != null && !isNaN(genGroup.round)
+        && genGroup.angle != null && !isNaN(genGroup.angle);
+}
+function figCreateFrame(genFrame) {
+    //console.log(obj);
+    const figFrame = figma.createFrame();
+    figFrame.name = makeObjectName(genFrame);
+    if (!genFrameIsValid(genFrame))
+        return figFrame;
+    if (figFrame) {
+        figFrame.name = makeObjectName(genFrame);
+        if (!genFrameIsValid(genFrame))
+            return figFrame;
+        figFrame.x = genFrame.x;
+        figFrame.y = genFrame.y;
+        figFrame.resize(Math.max(0.01, genFrame.width), Math.max(0.01, genFrame.height));
+        figFrame.rotation = genFrame.angle;
+        figFrame.cornerRadius = genFrame.round;
+        const objects = [];
+        for (const obj of genFrame.children)
+            figCreateObject(objects, obj);
+        for (const obj of objects)
+            figFrame.appendChild(obj);
+        setObjectFills(figFrame, genFrame);
+        setObjectStrokes(figFrame, genFrame);
+    }
+    return figFrame;
+}
+function figUpdateFrame(figFrame, genFrame) {
+    if (!genFrameIsValid(genFrame))
+        return;
+    figFrame.x = genFrame.x;
+    figFrame.y = genFrame.y;
+    figFrame.resize(Math.max(0.01, genFrame.width), Math.max(0.01, genFrame.height));
+    figFrame.rotation = genFrame.angle;
+    figFrame.cornerRadius = genFrame.round;
+    // const objects = [];
+    // for (const obj of genFrame.children)
+    //     figCreateObject(objects, obj);
+    // for (const obj of objects)
+    figUpdateObjects(genFrame.children);
+    setObjectFills(figFrame, genFrame);
+    setObjectStrokes(figFrame, genFrame);
 }
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 // function figCreateFrame()
