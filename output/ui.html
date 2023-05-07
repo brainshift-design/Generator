@@ -9311,10 +9311,97 @@ function getSineYSegment(_pointP, _point, _pointN)
 }
 
 
+class FigmaShapeGroup
+extends FigmaShape
+{
+    x;
+    y;
+    width;
+    height;
+    angle;
+    children;
 
 
 
+    constructor(nodeId, objectId, x, y, width, height, angle, children = [])
+    {
+        super(SHAPE_GROUP, nodeId, objectId);
+        
+        this.x        = x;
+        this.y        = y;
+        this.width    = width;
+        this.height   = height;
+        this.angle    = angle;
+        this.children = clone(children);
+    }
 
+
+
+    copy()
+    {
+        const copy = new FigmaShapeGroup(
+            this.nodeId,
+            this.objectId,
+            this.x,
+            this.y,
+            this.width,
+            this.height,
+            this.angle,
+            this.children);
+
+        copy.copyBase(this);
+
+        return copy;
+    }
+}
+
+
+class FigmaFrame
+extends FigmaShape
+{
+    x;
+    y;
+    width;
+    height;
+    angle;
+    round;
+    children;
+
+
+
+    constructor(nodeId, objectId, x, y, width, height, angle, round, children)
+    {
+        super(SHAPE_GROUP, nodeId, objectId);
+        
+        this.x        = x;
+        this.y        = y;
+        this.width    = width;
+        this.height   = height;
+        this.angle    = angle;
+        this.round    = round;
+        this.children = clone(children);
+    }
+
+
+
+    copy()
+    {
+        const copy = new FigmaFrame(
+            this.nodeId,
+            this.objectId,
+            this.x,
+            this.y,
+            this.width,
+            this.height,
+            this.angle,
+            this.round,
+            this.children);
+
+        copy.copyBase(this);
+
+        return copy;
+    }
+}
 
 
 class FigmaColorStyle
@@ -10346,7 +10433,7 @@ extends GValue
 
     equals(fill)
     {
-        return fill
+        return super.equals(fill)
             && this.color  .equals(fill.color  )
             && this.opacity.equals(fill.opacity);
     }
@@ -12392,9 +12479,335 @@ function parseVectorPathValue(str, i = -1)
 
 
 
+class ShapeGroupValue
+extends ShapeValue
+{
+    x;
+    y;
+    width;
+    height;
+    angle;
+    children;
 
 
 
+    constructor(nodeId, x, y, width, height, angle, children)
+    {
+        super(SHAPE_GROUP_VALUE, nodeId);
+
+        this.x        = x;
+        this.y        = y;
+        this.width    = width;
+        this.height   = height;
+        this.angle    = angle;
+        this.children = children;
+    }
+
+
+
+    copy()
+    {
+        const copy = new ShapeGroupValue(
+            this.nodeId,
+            x            .copy(),
+            y            .copy(),
+            width        .copy(),
+            height       .copy(),
+            angle        .copy(),
+            this.children.copy());
+
+        copy.copyBase(this);
+
+        return copy;
+    }
+
+
+
+    equals(group)
+    {
+        return group
+            && this.x       .equals(group.x       )
+            && this.y       .equals(group.y       )
+            && this.width   .equals(group.width   )
+            && this.height  .equals(group.height  )
+            && this.angle   .equals(group.angle   )
+            && this.children.equals(group.children);
+    }
+
+
+
+    async eval(parse)
+    {
+        return this;
+    }
+
+
+
+    toString()
+    {
+        return      this.x       .toString()
+            + ' ' + this.y       .toString()
+            + ' ' + this.width   .toString()
+            + ' ' + this.height  .toString()
+            + ' ' + this.angle   .toString()
+            + ' ' + this.children.toString();
+    }
+
+
+
+    toDisplayString()
+    {
+        return      this.x       .toDisplayString()
+            + ' ' + this.y       .toDisplayString()
+            + ' ' + this.width   .toDisplayString()
+            + ' ' + this.height  .toDisplayString()
+            + ' ' + this.angle   .toDisplayString()
+            + ' ' + this.children.toDisplayString();
+    }
+
+
+
+    toValue()
+    {
+        return this.copy();
+    }
+
+
+
+    isValid()
+    {
+        return this.x       .isValid()
+            && this.y       .isValid()
+            && this.width   .isValid()
+            && this.height  .isValid()
+            && this.angle   .isValid()
+            && this.children.isValid()
+            && super.isValid();
+    }
+
+
+    
+    static NaN = new ShapeGroupValue(
+        '',
+        NumberValue.NaN,
+        NumberValue.NaN,
+        NumberValue.NaN,
+        NumberValue.NaN,
+        NumberValue.NaN,
+        ListValue  .NaN);
+}
+
+
+
+function parseShapeGroupValue(str, i = -1)
+{
+    if (   i <  0 && str    == NAN_DISPLAY
+        || i >= 0 && str[i] == NAN_DISPLAY)
+        return [ShapeGroupValue.NaN, 1];
+
+
+    if (i < 0)
+    {
+        str = str.split(' ');
+        i   = 0;
+    }
+
+
+    const iStart = i;
+
+    const x        = parseNumberValue(str[i]); i += x       [1];
+    const y        = parseNumberValue(str[i]); i += y       [1];
+    const width    = parseNumberValue(str[i]); i += width   [1];
+    const height   = parseNumberValue(str[i]); i += height  [1];
+    const angle    = parseNumberValue(str[i]); i += angle   [1];
+    const children = parseListValue  (str, i); i += children[1];
+
+    const group = new ShapeGroupValue(
+        '', // set node ID elsewhere
+        x       [0],
+        y       [0],
+        width   [0],
+        height  [0],
+        angle   [0],
+        children[0]);
+
+
+    i = parseShapeBaseValue(str, i, group);
+
+    
+    return [group, i - iStart];
+}
+
+
+
+class FrameValue
+extends ShapeValue
+{
+    x;
+    y;
+    width;
+    height;
+    angle;
+    round;
+    objects;
+
+
+
+    constructor(nodeId, x, y, width, height, angle, round, objects)
+    {
+        super(SHAPE_GROUP_VALUE, nodeId);
+
+        this.x       = x;
+        this.y       = y;
+        this.width   = width;
+        this.height  = height;
+        this.angle   = angle;
+        this.round   = round;
+        this.objects = objects;
+    }
+
+
+
+    copy()
+    {
+        const copy = new ShapeGroupValue(
+            this.nodeId,
+            x           .copy(),
+            y           .copy(),
+            width       .copy(),
+            height      .copy(),
+            angle       .copy(),
+            round       .copy(),
+            this.objects.copy());
+
+        copy.copyBase(this);
+
+        return copy;
+    }
+
+
+
+    equals(group)
+    {
+        return group
+            && this.x      .equals(group.x      )
+            && this.y      .equals(group.y      )
+            && this.width  .equals(group.width  )
+            && this.height .equals(group.height )
+            && this.angle  .equals(group.angle  )
+            && this.round  .equals(group.round  )
+            && this.objects.equals(group.objects);
+    }
+
+
+
+    async eval(parse)
+    {
+        return this;
+    }
+
+
+
+    toString()
+    {
+        return      this.x      .toString()
+            + ' ' + this.y      .toString()
+            + ' ' + this.width  .toString()
+            + ' ' + this.height .toString()
+            + ' ' + this.angle  .toString()
+            + ' ' + this.round  .toString()
+            + ' ' + this.objects.toString();
+    }
+
+
+
+    toDisplayString()
+    {
+        return      this.x      .toDisplayString()
+            + ' ' + this.y      .toDisplayString()
+            + ' ' + this.width  .toDisplayString()
+            + ' ' + this.height .toDisplayString()
+            + ' ' + this.angle  .toDisplayString()
+            + ' ' + this.round  .toDisplayString()
+            + ' ' + this.objects.toDisplayString();
+    }
+
+
+
+    toValue()
+    {
+        return this.copy();
+    }
+
+
+
+    isValid()
+    {
+        return this.x      .isValid()
+            && this.y      .isValid()
+            && this.width  .isValid()
+            && this.height .isValid()
+            && this.angle  .isValid()
+            && this.round  .isValid()
+            && this.objects.isValid()
+            && super.isValid();
+    }
+
+
+    
+    static NaN = new FrameValue(
+        '',
+        NumberValue.NaN,
+        NumberValue.NaN,
+        NumberValue.NaN,
+        NumberValue.NaN,
+        NumberValue.NaN,
+        NumberValue.NaN,
+        ListValue  .NaN);
+}
+
+
+
+function parseFrameValue(str, i = -1)
+{
+    if (   i <  0 && str    == NAN_DISPLAY
+        || i >= 0 && str[i] == NAN_DISPLAY)
+        return [FrameValue.NaN, 1];
+
+
+    if (i < 0)
+    {
+        str = str.split(' ');
+        i   = 0;
+    }
+
+
+    const iStart = i;
+
+    const x       = parseNumberValue(str[i]); i += x      [1];
+    const y       = parseNumberValue(str[i]); i += y      [1];
+    const width   = parseNumberValue(str[i]); i += width  [1];
+    const height  = parseNumberValue(str[i]); i += height [1];
+    const angle   = parseNumberValue(str[i]); i += angle  [1];
+    const round   = parseNumberValue(str[i]); i += round  [1];
+    const objects = parseListValue  (str, i); i += objects[1];
+
+    const frame = new FrameValue(
+        '', // set node ID elsewhere
+        x      [0],
+        y      [0],
+        width  [0],
+        height [0],
+        angle  [0],
+        round  [0],
+        objects[0]);
+
+
+    i = parseShapeBaseValue(str, i, frame);
+
+    
+    return [frame, i - iStart];
+}
 
 
 
@@ -21345,6 +21758,152 @@ extends GShape
 }
 
 
+class GPoint
+extends GOperator
+{
+    input = null;
+
+    x     = null;
+    y     = null;
+
+
+
+    constructor(nodeId, options)
+    {
+        super(POINT, nodeId, options);
+    }
+
+
+
+    copy()
+    {
+        const copy = new GPoint(this.nodeId, this.options);
+
+        copy.copyBase(this);
+
+        if (this.input) 
+            copy.input = this.input.copy();
+
+        if (this.x) copy.x = this.x.copy();
+        if (this.y) copy.y = this.y.copy();
+
+        return copy;
+    }
+
+
+
+    async eval(parse)
+    {
+        if (this.isCached())
+            return this;
+
+        
+        const x = this.x ? (await this.x.eval(parse)).toValue() : null;
+        const y = this.y ? (await this.y.eval(parse)).toValue() : null;
+
+
+        let input = null;
+
+        if (this.input)
+        {
+            input = (await this.input.eval(parse)).toValue();
+
+            this.value = new PointValue(
+                this.nodeId,
+                x ?? input.x,
+                y ?? input.y);
+        }
+        else
+        {
+            this.value = new PointValue(this.nodeId, x, y);
+        }
+
+       
+        this.updateValues =
+        [
+            ['value', this.value],
+            ['x',     x         ],
+            ['y',     y         ]
+        ];
+
+
+        await this.evalObjects(parse);
+
+
+        this.validate();
+
+        return this;
+    }
+
+
+
+    async evalObjects(parse, options = {})
+    {
+        if (!this.options.enabled)
+            return;
+            
+            
+        if (   this.value.x
+            && this.value.y)
+        {
+            const point = new FigmaPoint(
+                this.nodeId,
+                NULL,
+                this.value.x.value,
+                this.value.y.value);
+
+            this.objects = [point];
+        }
+
+        
+        await super.evalObjects(parse);
+    }
+
+
+
+    pushValueUpdates(parse)
+    {
+        super.pushValueUpdates(parse);
+
+        if (this.input) this.input.pushValueUpdates(parse);
+        if (this.x    ) this.x    .pushValueUpdates(parse);
+        if (this.y    ) this.y    .pushValueUpdates(parse);
+    }
+
+
+
+    toValue()
+    {
+        const rect = new PointValue(
+            this.nodeId,
+            this.x.toValue(),
+            this.y.toValue());
+
+        return rect;
+    }
+
+
+
+    isValid()
+    {
+        return super.isValid()
+            && this.x.isValid()
+            && this.y.isValid();
+    }
+
+
+
+    invalidate()
+    {
+        super.invalidate();
+
+        if (this.input) this.input.invalidate();
+        if (this.x    ) this.x    .invalidate();
+        if (this.y    ) this.y    .invalidate();
+    }
+}
+
+
 class GVectorPath
 extends GShape
 {
@@ -21543,6 +22102,368 @@ extends GShape
         if (this.degree ) this.degree .invalidate();
         if (this.winding) this.winding.invalidate();
         if (this.round  ) this.round  .invalidate();
+    }
+}
+
+
+class GShapeGroup
+extends GShape
+{
+    input    = null;
+
+    children = null;
+
+
+
+    constructor(nodeId, options)
+    {
+        super(SHAPE_GROUP, nodeId, options);
+    }
+
+
+
+    copy()
+    {
+        const copy = new GShapeGroup(this.nodeId, this.options);
+
+        copy.copyBase(this);
+
+        if (this.input) 
+            copy.input = this.input.copy();
+
+        if (this.children) copy.children = this.children.copy();
+
+        return copy;
+    }
+
+
+
+    async eval(parse)
+    {
+        if (this.isCached())
+            return this;
+
+
+        const [x, y, width, height, angle] = await this.evalBaseParams(parse);
+
+        const children = this.children ? (await this.children.eval(parse)).toValue() : null;
+
+
+        let input = null;
+
+        if (this.input)
+        {
+            input = (await this.input.eval(parse)).toValue();
+
+            this.value = new ShapeGroupValue(
+                this.nodeId,
+                x        ?? input.x,
+                y        ?? input.y,
+                width    ?? input.width,
+                height   ?? input.height,
+                angle    ?? input.angle,
+                children ?? input.children);
+        }
+        else
+        {
+            this.value = new ShapeGroupValue(this.nodeId, x, y, width, height, angle, children);
+        }
+
+
+        this.updateValues =
+        [
+            ['value',    this.value         ],
+            ['children', this.value.children]
+        ];
+
+
+
+        await this.evalShapeBase(parse, input);
+
+
+        await this.evalObjects(parse);
+
+
+        this.validate();
+
+        return this;
+    }
+
+
+
+    async evalObjects(parse, options = {})
+    {
+        if (!this.options.enabled)
+            return;
+            
+
+        if (   this.value.x
+            && this.value.y
+            && this.value.width
+            && this.value.height
+            && this.value.angle)
+        {
+            const group = new FigmaShapeGroup(
+                this.nodeId,
+                NULL,
+                this.value.x     .value,
+                this.value.y     .value,
+                this.value.width .value,
+                this.value.height.value,
+                this.value.angle .value);
+
+            if (   this.children
+                && this.children.items)
+            {
+                for (const child of this.children.items)
+                {
+                    if (child.objects)
+                        group.children.push(...child.objects);
+                }
+            }
+
+            this.objects = [group];
+        }
+        else
+            this.objects = [];
+
+
+        
+        await super.evalObjects(parse);
+    }
+
+
+
+    pushValueUpdates(parse)
+    {
+        super.pushValueUpdates(parse);
+
+        if (this.input   ) this.input   .pushValueUpdates(parse);
+        if (this.children) this.children.pushValueUpdates(parse);
+    }
+
+
+
+    toValue()
+    {
+        const group = new ShapeGroupValue(
+            this.nodeId,
+            this.x       .toValue(),
+            this.y       .toValue(),
+            this.width   .toValue(),
+            this.height  .toValue(),
+            this.angle   .toValue(),
+            this.children.toValue());
+
+        group.props = this.props.toValue();
+
+        return group;
+    }
+
+
+
+    isValid()
+    {
+        return super.isValid()
+            && this.children.isValid();
+    }
+
+
+
+    invalidate()
+    {
+        super.invalidate();
+
+        if (this.input   ) this.input   .invalidate();
+        if (this.children) this.children.invalidate();
+    }
+}
+
+
+class GFrame
+extends GShape
+{
+    input   = null;
+
+    round   = null;
+    objects = null;
+
+
+
+    constructor(nodeId, options)
+    {
+        super(FRAME, nodeId, options);
+    }
+
+
+
+    copy()
+    {
+        const copy = new GFrame(this.nodeId, this.options);
+
+        copy.copyBase(this);
+
+        if (this.input) 
+            copy.input = this.input.copy();
+
+        if (this.round  ) copy.round   = this.round  .copy();
+        if (this.objects) copy.objects = this.objects.copy();
+
+        return copy;
+    }
+
+
+
+    async eval(parse)
+    {
+        if (this.isCached())
+            return this;
+
+
+        const [x, y, width, height, angle] = await this.evalBaseParams(parse);
+
+        const round   = this.round   ? (await this.round  .eval(parse)).toValue() : null;
+        const objects = this.objects ? (await this.objects.eval(parse)).toValue() : null;
+
+
+        let input = null;
+
+        if (this.input)
+        {
+            input = (await this.input.eval(parse)).toValue();
+
+            this.value = new FrameValue(
+                this.nodeId,
+                x       ?? input.x,
+                y       ?? input.y,
+                width   ?? input.width,
+                height  ?? input.height,
+                angle   ?? input.angle,
+                round   ?? input.round,
+                objects ?? input.objects);
+        }
+        else
+        {
+            this.value = new FrameValue(this.nodeId, x, y, width, height, angle, round, objects);
+        }
+
+
+        this.updateValues =
+        [
+            ['value',   this.value        ],
+            ['round',   this.value.round  ],
+            ['objects', this.value.objects]
+        ];
+
+
+
+        await this.evalShapeBase(parse, input);
+
+
+        await this.evalObjects(parse);
+
+
+        this.validate();
+
+        return this;
+    }
+
+
+
+    async evalObjects(parse, options = {})
+    {
+        if (!this.options.enabled)
+            return;
+            
+
+        // const objects = [];
+
+        // if (this.objects.objects)
+        // {
+        //     const objPoints = this.objects.objects.filter(o => o.type == POINT);
+
+        //     for (const pt of objPoints)
+        //         points.push(new PointValue(
+        //             this.nodeId,
+        //             new NumberValue(pt.x), 
+        //             new NumberValue(pt.y)));
+        // }
+
+
+        // if (   points.length >= 2
+        //     && this.value.closed 
+        //     && this.value.degree 
+        //     && this.value.winding
+        //     && this.value.round)
+        // {
+        //     this.objects =
+        //     [
+        //         new FigmaVectorPath(
+        //             this.nodeId,
+        //             NULL,
+        //             points,
+        //             this.value.closed .value,
+        //             this.value.degree .value,
+        //             this.value.winding.value,
+        //             this.value.round  .value)
+        //     ];
+        // }
+        // else
+            this.objects = [];
+
+
+        
+        await super.evalObjects(parse);
+    }
+
+
+
+    pushValueUpdates(parse)
+    {
+        super.pushValueUpdates(parse);
+
+        if (this.input  ) this.input  .pushValueUpdates(parse);
+        if (this.round  ) this.round  .pushValueUpdates(parse);
+        if (this.objects) this.objects.pushValueUpdates(parse);
+    }
+
+
+
+    toValue()
+    {
+        const group = new ShapeGroupValue(
+            this.nodeId,
+            this.x      .toValue(),
+            this.y      .toValue(),
+            this.width  .toValue(),
+            this.height .toValue(),
+            this.angle  .toValue(),
+            this.round  .toValue(),
+            this.objects.toValue());
+
+        group.props = this.props.toValue();
+
+        return group;
+    }
+
+
+
+    isValid()
+    {
+        return super.isValid()
+            && this.round  .isValid()
+            && this.objects.isValid();
+    }
+
+
+
+    invalidate()
+    {
+        super.invalidate();
+
+        if (this.input  ) this.input  .invalidate();
+        if (this.round  ) this.round  .invalidate();
+        if (this.objects) this.objects.invalidate();
     }
 }
 
@@ -22222,152 +23143,6 @@ extends GOperator
     toValue()
     {
         return this.value.copy();
-    }
-}
-
-
-class GPoint
-extends GOperator
-{
-    input = null;
-
-    x     = null;
-    y     = null;
-
-
-
-    constructor(nodeId, options)
-    {
-        super(POINT, nodeId, options);
-    }
-
-
-
-    copy()
-    {
-        const copy = new GPoint(this.nodeId, this.options);
-
-        copy.copyBase(this);
-
-        if (this.input) 
-            copy.input = this.input.copy();
-
-        if (this.x) copy.x = this.x.copy();
-        if (this.y) copy.y = this.y.copy();
-
-        return copy;
-    }
-
-
-
-    async eval(parse)
-    {
-        if (this.isCached())
-            return this;
-
-        
-        const x = this.x ? (await this.x.eval(parse)).toValue() : null;
-        const y = this.y ? (await this.y.eval(parse)).toValue() : null;
-
-
-        let input = null;
-
-        if (this.input)
-        {
-            input = (await this.input.eval(parse)).toValue();
-
-            this.value = new PointValue(
-                this.nodeId,
-                x ?? input.x,
-                y ?? input.y);
-        }
-        else
-        {
-            this.value = new PointValue(this.nodeId, x, y);
-        }
-
-       
-        this.updateValues =
-        [
-            ['value', this.value],
-            ['x',     x         ],
-            ['y',     y         ]
-        ];
-
-
-        await this.evalObjects(parse);
-
-
-        this.validate();
-
-        return this;
-    }
-
-
-
-    async evalObjects(parse, options = {})
-    {
-        if (!this.options.enabled)
-            return;
-            
-            
-        if (   this.value.x
-            && this.value.y)
-        {
-            const point = new FigmaPoint(
-                this.nodeId,
-                NULL,
-                this.value.x.value,
-                this.value.y.value);
-
-            this.objects = [point];
-        }
-
-        
-        await super.evalObjects(parse);
-    }
-
-
-
-    pushValueUpdates(parse)
-    {
-        super.pushValueUpdates(parse);
-
-        if (this.input) this.input.pushValueUpdates(parse);
-        if (this.x    ) this.x    .pushValueUpdates(parse);
-        if (this.y    ) this.y    .pushValueUpdates(parse);
-    }
-
-
-
-    toValue()
-    {
-        const rect = new PointValue(
-            this.nodeId,
-            this.x.toValue(),
-            this.y.toValue());
-
-        return rect;
-    }
-
-
-
-    isValid()
-    {
-        return super.isValid()
-            && this.x.isValid()
-            && this.y.isValid();
-    }
-
-
-
-    invalidate()
-    {
-        super.invalidate();
-
-        if (this.input) this.input.invalidate();
-        if (this.x    ) this.x    .invalidate();
-        if (this.y    ) this.y    .invalidate();
     }
 }
 
@@ -26309,13 +27084,13 @@ function genParseShapeGroup(parse)
 
         switch (paramId)
         {
-        case 'x':       group.x       = genParse(parse); break;
-        case 'y':       group.y       = genParse(parse); break;
-        case 'width':   group.width   = genParse(parse); break;
-        case 'height':  group.height  = genParse(parse); break;
-        case 'angle':   group.angle   = genParse(parse); break;
-        case 'objects': group.objects = genParse(parse); break;
-        case 'props':   group.props   = genParse(parse); break;
+        case 'x':        group.x        = genParse(parse); break;
+        case 'y':        group.y        = genParse(parse); break;
+        case 'width':    group.width    = genParse(parse); break;
+        case 'height':   group.height   = genParse(parse); break;
+        case 'angle':    group.angle    = genParse(parse); break;
+        case 'children': group.children = genParse(parse); break;
+        case 'props':    group.props    = genParse(parse); break;
         }
     }
 
@@ -26375,14 +27150,14 @@ function genParseFrame(parse)
 
         switch (paramId)
         {
-        case 'x':       frame.x       = genParse(parse); break;
-        case 'y':       frame.y       = genParse(parse); break;
-        case 'width':   frame.width   = genParse(parse); break;
-        case 'height':  frame.height  = genParse(parse); break;
-        case 'angle':   frame.angle   = genParse(parse); break;
-        case 'round':   frame.round   = genParse(parse); break;
-        case 'objects': frame.objects = genParse(parse); break;
-        case 'props':   frame.props   = genParse(parse); break;
+        case 'x':        frame.x        = genParse(parse); break;
+        case 'y':        frame.y        = genParse(parse); break;
+        case 'width':    frame.width    = genParse(parse); break;
+        case 'height':   frame.height   = genParse(parse); break;
+        case 'angle':    frame.angle    = genParse(parse); break;
+        case 'round':    frame.round    = genParse(parse); break;
+        case 'children': frame.children = genParse(parse); break;
+        case 'props':    frame.props    = genParse(parse); break;
         }
     }
 
@@ -38325,10 +39100,97 @@ function getSineYSegment(_pointP, _point, _pointN)
 }
 
 
+class FigmaShapeGroup
+extends FigmaShape
+{
+    x;
+    y;
+    width;
+    height;
+    angle;
+    children;
 
 
 
+    constructor(nodeId, objectId, x, y, width, height, angle, children = [])
+    {
+        super(SHAPE_GROUP, nodeId, objectId);
+        
+        this.x        = x;
+        this.y        = y;
+        this.width    = width;
+        this.height   = height;
+        this.angle    = angle;
+        this.children = clone(children);
+    }
 
+
+
+    copy()
+    {
+        const copy = new FigmaShapeGroup(
+            this.nodeId,
+            this.objectId,
+            this.x,
+            this.y,
+            this.width,
+            this.height,
+            this.angle,
+            this.children);
+
+        copy.copyBase(this);
+
+        return copy;
+    }
+}
+
+
+class FigmaFrame
+extends FigmaShape
+{
+    x;
+    y;
+    width;
+    height;
+    angle;
+    round;
+    children;
+
+
+
+    constructor(nodeId, objectId, x, y, width, height, angle, round, children)
+    {
+        super(SHAPE_GROUP, nodeId, objectId);
+        
+        this.x        = x;
+        this.y        = y;
+        this.width    = width;
+        this.height   = height;
+        this.angle    = angle;
+        this.round    = round;
+        this.children = clone(children);
+    }
+
+
+
+    copy()
+    {
+        const copy = new FigmaFrame(
+            this.nodeId,
+            this.objectId,
+            this.x,
+            this.y,
+            this.width,
+            this.height,
+            this.angle,
+            this.round,
+            this.children);
+
+        copy.copyBase(this);
+
+        return copy;
+    }
+}
 
 
 class FigmaColorStyle
@@ -39360,7 +40222,7 @@ extends GValue
 
     equals(fill)
     {
-        return fill
+        return super.equals(fill)
             && this.color  .equals(fill.color  )
             && this.opacity.equals(fill.opacity);
     }
@@ -41406,9 +42268,335 @@ function parseVectorPathValue(str, i = -1)
 
 
 
+class ShapeGroupValue
+extends ShapeValue
+{
+    x;
+    y;
+    width;
+    height;
+    angle;
+    children;
 
 
 
+    constructor(nodeId, x, y, width, height, angle, children)
+    {
+        super(SHAPE_GROUP_VALUE, nodeId);
+
+        this.x        = x;
+        this.y        = y;
+        this.width    = width;
+        this.height   = height;
+        this.angle    = angle;
+        this.children = children;
+    }
+
+
+
+    copy()
+    {
+        const copy = new ShapeGroupValue(
+            this.nodeId,
+            x            .copy(),
+            y            .copy(),
+            width        .copy(),
+            height       .copy(),
+            angle        .copy(),
+            this.children.copy());
+
+        copy.copyBase(this);
+
+        return copy;
+    }
+
+
+
+    equals(group)
+    {
+        return group
+            && this.x       .equals(group.x       )
+            && this.y       .equals(group.y       )
+            && this.width   .equals(group.width   )
+            && this.height  .equals(group.height  )
+            && this.angle   .equals(group.angle   )
+            && this.children.equals(group.children);
+    }
+
+
+
+    async eval(parse)
+    {
+        return this;
+    }
+
+
+
+    toString()
+    {
+        return      this.x       .toString()
+            + ' ' + this.y       .toString()
+            + ' ' + this.width   .toString()
+            + ' ' + this.height  .toString()
+            + ' ' + this.angle   .toString()
+            + ' ' + this.children.toString();
+    }
+
+
+
+    toDisplayString()
+    {
+        return      this.x       .toDisplayString()
+            + ' ' + this.y       .toDisplayString()
+            + ' ' + this.width   .toDisplayString()
+            + ' ' + this.height  .toDisplayString()
+            + ' ' + this.angle   .toDisplayString()
+            + ' ' + this.children.toDisplayString();
+    }
+
+
+
+    toValue()
+    {
+        return this.copy();
+    }
+
+
+
+    isValid()
+    {
+        return this.x       .isValid()
+            && this.y       .isValid()
+            && this.width   .isValid()
+            && this.height  .isValid()
+            && this.angle   .isValid()
+            && this.children.isValid()
+            && super.isValid();
+    }
+
+
+    
+    static NaN = new ShapeGroupValue(
+        '',
+        NumberValue.NaN,
+        NumberValue.NaN,
+        NumberValue.NaN,
+        NumberValue.NaN,
+        NumberValue.NaN,
+        ListValue  .NaN);
+}
+
+
+
+function parseShapeGroupValue(str, i = -1)
+{
+    if (   i <  0 && str    == NAN_DISPLAY
+        || i >= 0 && str[i] == NAN_DISPLAY)
+        return [ShapeGroupValue.NaN, 1];
+
+
+    if (i < 0)
+    {
+        str = str.split(' ');
+        i   = 0;
+    }
+
+
+    const iStart = i;
+
+    const x        = parseNumberValue(str[i]); i += x       [1];
+    const y        = parseNumberValue(str[i]); i += y       [1];
+    const width    = parseNumberValue(str[i]); i += width   [1];
+    const height   = parseNumberValue(str[i]); i += height  [1];
+    const angle    = parseNumberValue(str[i]); i += angle   [1];
+    const children = parseListValue  (str, i); i += children[1];
+
+    const group = new ShapeGroupValue(
+        '', // set node ID elsewhere
+        x       [0],
+        y       [0],
+        width   [0],
+        height  [0],
+        angle   [0],
+        children[0]);
+
+
+    i = parseShapeBaseValue(str, i, group);
+
+    
+    return [group, i - iStart];
+}
+
+
+
+class FrameValue
+extends ShapeValue
+{
+    x;
+    y;
+    width;
+    height;
+    angle;
+    round;
+    objects;
+
+
+
+    constructor(nodeId, x, y, width, height, angle, round, objects)
+    {
+        super(SHAPE_GROUP_VALUE, nodeId);
+
+        this.x       = x;
+        this.y       = y;
+        this.width   = width;
+        this.height  = height;
+        this.angle   = angle;
+        this.round   = round;
+        this.objects = objects;
+    }
+
+
+
+    copy()
+    {
+        const copy = new ShapeGroupValue(
+            this.nodeId,
+            x           .copy(),
+            y           .copy(),
+            width       .copy(),
+            height      .copy(),
+            angle       .copy(),
+            round       .copy(),
+            this.objects.copy());
+
+        copy.copyBase(this);
+
+        return copy;
+    }
+
+
+
+    equals(group)
+    {
+        return group
+            && this.x      .equals(group.x      )
+            && this.y      .equals(group.y      )
+            && this.width  .equals(group.width  )
+            && this.height .equals(group.height )
+            && this.angle  .equals(group.angle  )
+            && this.round  .equals(group.round  )
+            && this.objects.equals(group.objects);
+    }
+
+
+
+    async eval(parse)
+    {
+        return this;
+    }
+
+
+
+    toString()
+    {
+        return      this.x      .toString()
+            + ' ' + this.y      .toString()
+            + ' ' + this.width  .toString()
+            + ' ' + this.height .toString()
+            + ' ' + this.angle  .toString()
+            + ' ' + this.round  .toString()
+            + ' ' + this.objects.toString();
+    }
+
+
+
+    toDisplayString()
+    {
+        return      this.x      .toDisplayString()
+            + ' ' + this.y      .toDisplayString()
+            + ' ' + this.width  .toDisplayString()
+            + ' ' + this.height .toDisplayString()
+            + ' ' + this.angle  .toDisplayString()
+            + ' ' + this.round  .toDisplayString()
+            + ' ' + this.objects.toDisplayString();
+    }
+
+
+
+    toValue()
+    {
+        return this.copy();
+    }
+
+
+
+    isValid()
+    {
+        return this.x      .isValid()
+            && this.y      .isValid()
+            && this.width  .isValid()
+            && this.height .isValid()
+            && this.angle  .isValid()
+            && this.round  .isValid()
+            && this.objects.isValid()
+            && super.isValid();
+    }
+
+
+    
+    static NaN = new FrameValue(
+        '',
+        NumberValue.NaN,
+        NumberValue.NaN,
+        NumberValue.NaN,
+        NumberValue.NaN,
+        NumberValue.NaN,
+        NumberValue.NaN,
+        ListValue  .NaN);
+}
+
+
+
+function parseFrameValue(str, i = -1)
+{
+    if (   i <  0 && str    == NAN_DISPLAY
+        || i >= 0 && str[i] == NAN_DISPLAY)
+        return [FrameValue.NaN, 1];
+
+
+    if (i < 0)
+    {
+        str = str.split(' ');
+        i   = 0;
+    }
+
+
+    const iStart = i;
+
+    const x       = parseNumberValue(str[i]); i += x      [1];
+    const y       = parseNumberValue(str[i]); i += y      [1];
+    const width   = parseNumberValue(str[i]); i += width  [1];
+    const height  = parseNumberValue(str[i]); i += height [1];
+    const angle   = parseNumberValue(str[i]); i += angle  [1];
+    const round   = parseNumberValue(str[i]); i += round  [1];
+    const objects = parseListValue  (str, i); i += objects[1];
+
+    const frame = new FrameValue(
+        '', // set node ID elsewhere
+        x      [0],
+        y      [0],
+        width  [0],
+        height [0],
+        angle  [0],
+        round  [0],
+        objects[0]);
+
+
+    i = parseShapeBaseValue(str, i, frame);
+
+    
+    return [frame, i - iStart];
+}
 
 
 
@@ -50359,6 +51547,152 @@ extends GShape
 }
 
 
+class GPoint
+extends GOperator
+{
+    input = null;
+
+    x     = null;
+    y     = null;
+
+
+
+    constructor(nodeId, options)
+    {
+        super(POINT, nodeId, options);
+    }
+
+
+
+    copy()
+    {
+        const copy = new GPoint(this.nodeId, this.options);
+
+        copy.copyBase(this);
+
+        if (this.input) 
+            copy.input = this.input.copy();
+
+        if (this.x) copy.x = this.x.copy();
+        if (this.y) copy.y = this.y.copy();
+
+        return copy;
+    }
+
+
+
+    async eval(parse)
+    {
+        if (this.isCached())
+            return this;
+
+        
+        const x = this.x ? (await this.x.eval(parse)).toValue() : null;
+        const y = this.y ? (await this.y.eval(parse)).toValue() : null;
+
+
+        let input = null;
+
+        if (this.input)
+        {
+            input = (await this.input.eval(parse)).toValue();
+
+            this.value = new PointValue(
+                this.nodeId,
+                x ?? input.x,
+                y ?? input.y);
+        }
+        else
+        {
+            this.value = new PointValue(this.nodeId, x, y);
+        }
+
+       
+        this.updateValues =
+        [
+            ['value', this.value],
+            ['x',     x         ],
+            ['y',     y         ]
+        ];
+
+
+        await this.evalObjects(parse);
+
+
+        this.validate();
+
+        return this;
+    }
+
+
+
+    async evalObjects(parse, options = {})
+    {
+        if (!this.options.enabled)
+            return;
+            
+            
+        if (   this.value.x
+            && this.value.y)
+        {
+            const point = new FigmaPoint(
+                this.nodeId,
+                NULL,
+                this.value.x.value,
+                this.value.y.value);
+
+            this.objects = [point];
+        }
+
+        
+        await super.evalObjects(parse);
+    }
+
+
+
+    pushValueUpdates(parse)
+    {
+        super.pushValueUpdates(parse);
+
+        if (this.input) this.input.pushValueUpdates(parse);
+        if (this.x    ) this.x    .pushValueUpdates(parse);
+        if (this.y    ) this.y    .pushValueUpdates(parse);
+    }
+
+
+
+    toValue()
+    {
+        const rect = new PointValue(
+            this.nodeId,
+            this.x.toValue(),
+            this.y.toValue());
+
+        return rect;
+    }
+
+
+
+    isValid()
+    {
+        return super.isValid()
+            && this.x.isValid()
+            && this.y.isValid();
+    }
+
+
+
+    invalidate()
+    {
+        super.invalidate();
+
+        if (this.input) this.input.invalidate();
+        if (this.x    ) this.x    .invalidate();
+        if (this.y    ) this.y    .invalidate();
+    }
+}
+
+
 class GVectorPath
 extends GShape
 {
@@ -50557,6 +51891,368 @@ extends GShape
         if (this.degree ) this.degree .invalidate();
         if (this.winding) this.winding.invalidate();
         if (this.round  ) this.round  .invalidate();
+    }
+}
+
+
+class GShapeGroup
+extends GShape
+{
+    input    = null;
+
+    children = null;
+
+
+
+    constructor(nodeId, options)
+    {
+        super(SHAPE_GROUP, nodeId, options);
+    }
+
+
+
+    copy()
+    {
+        const copy = new GShapeGroup(this.nodeId, this.options);
+
+        copy.copyBase(this);
+
+        if (this.input) 
+            copy.input = this.input.copy();
+
+        if (this.children) copy.children = this.children.copy();
+
+        return copy;
+    }
+
+
+
+    async eval(parse)
+    {
+        if (this.isCached())
+            return this;
+
+
+        const [x, y, width, height, angle] = await this.evalBaseParams(parse);
+
+        const children = this.children ? (await this.children.eval(parse)).toValue() : null;
+
+
+        let input = null;
+
+        if (this.input)
+        {
+            input = (await this.input.eval(parse)).toValue();
+
+            this.value = new ShapeGroupValue(
+                this.nodeId,
+                x        ?? input.x,
+                y        ?? input.y,
+                width    ?? input.width,
+                height   ?? input.height,
+                angle    ?? input.angle,
+                children ?? input.children);
+        }
+        else
+        {
+            this.value = new ShapeGroupValue(this.nodeId, x, y, width, height, angle, children);
+        }
+
+
+        this.updateValues =
+        [
+            ['value',    this.value         ],
+            ['children', this.value.children]
+        ];
+
+
+
+        await this.evalShapeBase(parse, input);
+
+
+        await this.evalObjects(parse);
+
+
+        this.validate();
+
+        return this;
+    }
+
+
+
+    async evalObjects(parse, options = {})
+    {
+        if (!this.options.enabled)
+            return;
+            
+
+        if (   this.value.x
+            && this.value.y
+            && this.value.width
+            && this.value.height
+            && this.value.angle)
+        {
+            const group = new FigmaShapeGroup(
+                this.nodeId,
+                NULL,
+                this.value.x     .value,
+                this.value.y     .value,
+                this.value.width .value,
+                this.value.height.value,
+                this.value.angle .value);
+
+            if (   this.children
+                && this.children.items)
+            {
+                for (const child of this.children.items)
+                {
+                    if (child.objects)
+                        group.children.push(...child.objects);
+                }
+            }
+
+            this.objects = [group];
+        }
+        else
+            this.objects = [];
+
+
+        
+        await super.evalObjects(parse);
+    }
+
+
+
+    pushValueUpdates(parse)
+    {
+        super.pushValueUpdates(parse);
+
+        if (this.input   ) this.input   .pushValueUpdates(parse);
+        if (this.children) this.children.pushValueUpdates(parse);
+    }
+
+
+
+    toValue()
+    {
+        const group = new ShapeGroupValue(
+            this.nodeId,
+            this.x       .toValue(),
+            this.y       .toValue(),
+            this.width   .toValue(),
+            this.height  .toValue(),
+            this.angle   .toValue(),
+            this.children.toValue());
+
+        group.props = this.props.toValue();
+
+        return group;
+    }
+
+
+
+    isValid()
+    {
+        return super.isValid()
+            && this.children.isValid();
+    }
+
+
+
+    invalidate()
+    {
+        super.invalidate();
+
+        if (this.input   ) this.input   .invalidate();
+        if (this.children) this.children.invalidate();
+    }
+}
+
+
+class GFrame
+extends GShape
+{
+    input   = null;
+
+    round   = null;
+    objects = null;
+
+
+
+    constructor(nodeId, options)
+    {
+        super(FRAME, nodeId, options);
+    }
+
+
+
+    copy()
+    {
+        const copy = new GFrame(this.nodeId, this.options);
+
+        copy.copyBase(this);
+
+        if (this.input) 
+            copy.input = this.input.copy();
+
+        if (this.round  ) copy.round   = this.round  .copy();
+        if (this.objects) copy.objects = this.objects.copy();
+
+        return copy;
+    }
+
+
+
+    async eval(parse)
+    {
+        if (this.isCached())
+            return this;
+
+
+        const [x, y, width, height, angle] = await this.evalBaseParams(parse);
+
+        const round   = this.round   ? (await this.round  .eval(parse)).toValue() : null;
+        const objects = this.objects ? (await this.objects.eval(parse)).toValue() : null;
+
+
+        let input = null;
+
+        if (this.input)
+        {
+            input = (await this.input.eval(parse)).toValue();
+
+            this.value = new FrameValue(
+                this.nodeId,
+                x       ?? input.x,
+                y       ?? input.y,
+                width   ?? input.width,
+                height  ?? input.height,
+                angle   ?? input.angle,
+                round   ?? input.round,
+                objects ?? input.objects);
+        }
+        else
+        {
+            this.value = new FrameValue(this.nodeId, x, y, width, height, angle, round, objects);
+        }
+
+
+        this.updateValues =
+        [
+            ['value',   this.value        ],
+            ['round',   this.value.round  ],
+            ['objects', this.value.objects]
+        ];
+
+
+
+        await this.evalShapeBase(parse, input);
+
+
+        await this.evalObjects(parse);
+
+
+        this.validate();
+
+        return this;
+    }
+
+
+
+    async evalObjects(parse, options = {})
+    {
+        if (!this.options.enabled)
+            return;
+            
+
+        // const objects = [];
+
+        // if (this.objects.objects)
+        // {
+        //     const objPoints = this.objects.objects.filter(o => o.type == POINT);
+
+        //     for (const pt of objPoints)
+        //         points.push(new PointValue(
+        //             this.nodeId,
+        //             new NumberValue(pt.x), 
+        //             new NumberValue(pt.y)));
+        // }
+
+
+        // if (   points.length >= 2
+        //     && this.value.closed 
+        //     && this.value.degree 
+        //     && this.value.winding
+        //     && this.value.round)
+        // {
+        //     this.objects =
+        //     [
+        //         new FigmaVectorPath(
+        //             this.nodeId,
+        //             NULL,
+        //             points,
+        //             this.value.closed .value,
+        //             this.value.degree .value,
+        //             this.value.winding.value,
+        //             this.value.round  .value)
+        //     ];
+        // }
+        // else
+            this.objects = [];
+
+
+        
+        await super.evalObjects(parse);
+    }
+
+
+
+    pushValueUpdates(parse)
+    {
+        super.pushValueUpdates(parse);
+
+        if (this.input  ) this.input  .pushValueUpdates(parse);
+        if (this.round  ) this.round  .pushValueUpdates(parse);
+        if (this.objects) this.objects.pushValueUpdates(parse);
+    }
+
+
+
+    toValue()
+    {
+        const group = new ShapeGroupValue(
+            this.nodeId,
+            this.x      .toValue(),
+            this.y      .toValue(),
+            this.width  .toValue(),
+            this.height .toValue(),
+            this.angle  .toValue(),
+            this.round  .toValue(),
+            this.objects.toValue());
+
+        group.props = this.props.toValue();
+
+        return group;
+    }
+
+
+
+    isValid()
+    {
+        return super.isValid()
+            && this.round  .isValid()
+            && this.objects.isValid();
+    }
+
+
+
+    invalidate()
+    {
+        super.invalidate();
+
+        if (this.input  ) this.input  .invalidate();
+        if (this.round  ) this.round  .invalidate();
+        if (this.objects) this.objects.invalidate();
     }
 }
 
@@ -51236,152 +52932,6 @@ extends GOperator
     toValue()
     {
         return this.value.copy();
-    }
-}
-
-
-class GPoint
-extends GOperator
-{
-    input = null;
-
-    x     = null;
-    y     = null;
-
-
-
-    constructor(nodeId, options)
-    {
-        super(POINT, nodeId, options);
-    }
-
-
-
-    copy()
-    {
-        const copy = new GPoint(this.nodeId, this.options);
-
-        copy.copyBase(this);
-
-        if (this.input) 
-            copy.input = this.input.copy();
-
-        if (this.x) copy.x = this.x.copy();
-        if (this.y) copy.y = this.y.copy();
-
-        return copy;
-    }
-
-
-
-    async eval(parse)
-    {
-        if (this.isCached())
-            return this;
-
-        
-        const x = this.x ? (await this.x.eval(parse)).toValue() : null;
-        const y = this.y ? (await this.y.eval(parse)).toValue() : null;
-
-
-        let input = null;
-
-        if (this.input)
-        {
-            input = (await this.input.eval(parse)).toValue();
-
-            this.value = new PointValue(
-                this.nodeId,
-                x ?? input.x,
-                y ?? input.y);
-        }
-        else
-        {
-            this.value = new PointValue(this.nodeId, x, y);
-        }
-
-       
-        this.updateValues =
-        [
-            ['value', this.value],
-            ['x',     x         ],
-            ['y',     y         ]
-        ];
-
-
-        await this.evalObjects(parse);
-
-
-        this.validate();
-
-        return this;
-    }
-
-
-
-    async evalObjects(parse, options = {})
-    {
-        if (!this.options.enabled)
-            return;
-            
-            
-        if (   this.value.x
-            && this.value.y)
-        {
-            const point = new FigmaPoint(
-                this.nodeId,
-                NULL,
-                this.value.x.value,
-                this.value.y.value);
-
-            this.objects = [point];
-        }
-
-        
-        await super.evalObjects(parse);
-    }
-
-
-
-    pushValueUpdates(parse)
-    {
-        super.pushValueUpdates(parse);
-
-        if (this.input) this.input.pushValueUpdates(parse);
-        if (this.x    ) this.x    .pushValueUpdates(parse);
-        if (this.y    ) this.y    .pushValueUpdates(parse);
-    }
-
-
-
-    toValue()
-    {
-        const rect = new PointValue(
-            this.nodeId,
-            this.x.toValue(),
-            this.y.toValue());
-
-        return rect;
-    }
-
-
-
-    isValid()
-    {
-        return super.isValid()
-            && this.x.isValid()
-            && this.y.isValid();
-    }
-
-
-
-    invalidate()
-    {
-        super.invalidate();
-
-        if (this.input) this.input.invalidate();
-        if (this.x    ) this.x    .invalidate();
-        if (this.y    ) this.y    .invalidate();
     }
 }
 
@@ -64806,12 +66356,12 @@ extends Parameter
     setValue(value, createAction, updateControl = true, dispatchEvents = true) 
     {
         if (!(value instanceof VectorPathValue))
-            console.assert(false, 'RectangleParam.setValue(value) is ' + typeof value + ', must be a VectorPathValue');
+            console.assert(false, 'VectorPathParam.setValue(value) is ' + typeof value + ', must be a VectorPathValue');
 
         console.assert(
                value.type 
             && value.type == VECTOR_PATH_VALUE, 
-            'RectangleParam value.type must be VECTOR_PATH_VALUE');
+            'VectorPathParam value.type must be VECTOR_PATH_VALUE');
 
 
         this.preSetValue(value, createAction, dispatchEvents);
@@ -64907,10 +66457,338 @@ extends Parameter
 }
 
 
+class   ShapeGroupParam
+extends Parameter
+{
+    defaultValue;
+
+    oldValue = null;
+    
+
+    value;
+    
+
+    
+    constructor(id,
+                name, 
+                showName,
+                hasInput,
+                hasOutput,
+                defaultValue = new VectorPathValue())
+    {
+        super(SHAPE_GROUP_VALUE, id, name);
+
+        this.defaultValue = defaultValue;
+        this.value        = defaultValue;
+
+
+        this.controls.push(new TextControl(
+            null,
+            this,
+            this.id,
+            this.name,
+            ''));
+
+        this.controls[0].textbox.style.textAlign = 'center';
+   
+        this.div.appendChild(this.controls[0].div);
+
+       
+        if (hasInput)  this.initInput([SHAPE_GROUP_VALUE], getParamInputValuesForUndo, this.input_getBackInitValue);
+        if (hasOutput) this.initOutput([SHAPE_GROUP_VALUE], this.output_genRequest, getParamOutputValuesForUndo, this.output_backInit);
+    }
 
 
 
+    input_getBackInitValue()
+    {
+        // 'this' is the input
 
+        return this.param.value;
+    }
+
+
+
+    output_backInit(value)
+    {
+        // 'this' is the output
+
+        console.assert(value.type == SHAPE_GROUP_VALUE, 'expected SHAPE_GROUP_VALUE in backInit()');
+        
+        this.param.setValue(value, false, true, false);
+    }
+
+
+
+    setValue(value, createAction, updateControl = true, dispatchEvents = true) 
+    {
+        if (!(value instanceof ShapeGroupValue))
+            console.assert(false, 'ShapeGroupParam.setValue(value) is ' + typeof value + ', must be a ShapeGroupValue');
+
+        console.assert(
+               value.type 
+            && value.type == SHAPE_GROUP_VALUE, 
+            'ShapeGroupParam value.type must be SHAPE_GROUP_VALUE');
+
+
+        this.preSetValue(value, createAction, dispatchEvents);
+
+
+        this.value = value.copy();
+
+
+        super.setValue(this.value, createAction, updateControl, dispatchEvents);
+
+
+        this.oldValue = this.value;
+    }    
+
+
+
+    isVisible()
+    {
+        return this.controls[0].div.style.display != 'none';
+    }
+
+
+
+    genRequest(gen)
+    {
+        // this function exists because a parameter without an output
+        // should still be able to generate a request
+        
+        // 'this' is the param
+
+        if (    this.output
+            && !isEmpty(this.output.cache)
+            &&  gen.passedNodes.includes(this.node))
+            return this.output.cache;
+
+
+        const request = [];
+
+        if (   this.input
+            && this.input.connected)
+        {
+            if (this.input.connectedOutput.supportsTypes([SHAPE_GROUP_VALUE]))
+                request.push(...pushInputOrParam(this.input, gen));
+            else
+                console.assert(false, 'invalid input for ShapeGroupParam (' + this.node.id + ')');
+        }
+
+        else request.push( 
+            SHAPE_GROUP_VALUE, 
+            (new ShapeGroupValue()).toString());
+
+        return request;
+    }
+
+
+
+    output_genRequest(gen)
+    {
+        return this.param.genRequest(gen);
+    }
+
+
+
+    updateControls()
+    {
+        checkControlVisible(this, this.controls[0]);
+        
+
+        enableElementText(this.controls[0].div, false);
+
+        this.controls[0].readOnly = true;
+        
+        this.controls[0].textbox.style.fontStyle  = 'italic';
+        this.controls[0].textbox.style.fontWeight = '500';
+
+        this.controls[0].textbox.value            = 'rectangle';
+
+
+        if (this.input ) this.input .updateControl();
+        if (this.output) this.output.updateControl();
+    }
+
+
+
+    isDefault = () => this.value.equals(this.defaultValue);
+
+
+
+    loadParam(_param)
+    {
+        this.setValue(parseVectorPathValue(_param[2])[0], true, true, false);
+    }
+}
+
+
+class   FrameParam
+extends Parameter
+{
+    defaultValue;
+
+    oldValue = null;
+    
+
+    value;
+    
+
+    
+    constructor(id,
+                name, 
+                showName,
+                hasInput,
+                hasOutput,
+                defaultValue = new VectorPathValue())
+    {
+        super(FRAME_VALUE, id, name);
+
+        this.defaultValue = defaultValue;
+        this.value        = defaultValue;
+
+
+        this.controls.push(new TextControl(
+            null,
+            this,
+            this.id,
+            this.name,
+            ''));
+
+        this.controls[0].textbox.style.textAlign = 'center';
+   
+        this.div.appendChild(this.controls[0].div);
+
+       
+        if (hasInput)  this.initInput([FRAME_VALUE], getParamInputValuesForUndo, this.input_getBackInitValue);
+        if (hasOutput) this.initOutput([FRAME_VALUE], this.output_genRequest, getParamOutputValuesForUndo, this.output_backInit);
+    }
+
+
+
+    input_getBackInitValue()
+    {
+        // 'this' is the input
+
+        return this.param.value;
+    }
+
+
+
+    output_backInit(value)
+    {
+        // 'this' is the output
+
+        console.assert(value.type == FRAME_VALUE, 'expected FRAME_VALUE in backInit()');
+        
+        this.param.setValue(value, false, true, false);
+    }
+
+
+
+    setValue(value, createAction, updateControl = true, dispatchEvents = true) 
+    {
+        if (!(value instanceof FrameValue))
+            console.assert(false, 'FrameParam.setValue(value) is ' + typeof value + ', must be a FrameValue');
+
+        console.assert(
+               value.type 
+            && value.type == FRAME_VALUE, 
+            'FrameParam value.type must be FRAME_VALUE');
+
+
+        this.preSetValue(value, createAction, dispatchEvents);
+
+
+        this.value = value.copy();
+
+
+        super.setValue(this.value, createAction, updateControl, dispatchEvents);
+
+
+        this.oldValue = this.value;
+    }    
+
+
+
+    isVisible()
+    {
+        return this.controls[0].div.style.display != 'none';
+    }
+
+
+
+    genRequest(gen)
+    {
+        // this function exists because a parameter without an output
+        // should still be able to generate a request
+        
+        // 'this' is the param
+
+        if (    this.output
+            && !isEmpty(this.output.cache)
+            &&  gen.passedNodes.includes(this.node))
+            return this.output.cache;
+
+
+        const request = [];
+
+        if (   this.input
+            && this.input.connected)
+        {
+            if (this.input.connectedOutput.supportsTypes([FRAME_VALUE]))
+                request.push(...pushInputOrParam(this.input, gen));
+            else
+                console.assert(false, 'invalid input for FrameParam (' + this.node.id + ')');
+        }
+
+        else request.push( 
+            FRAME_VALUE, 
+            (new FrameValue()).toString());
+
+        return request;
+    }
+
+
+
+    output_genRequest(gen)
+    {
+        return this.param.genRequest(gen);
+    }
+
+
+
+    updateControls()
+    {
+        checkControlVisible(this, this.controls[0]);
+        
+
+        enableElementText(this.controls[0].div, false);
+
+        this.controls[0].readOnly = true;
+        
+        this.controls[0].textbox.style.fontStyle  = 'italic';
+        this.controls[0].textbox.style.fontWeight = '500';
+
+        this.controls[0].textbox.value            = 'rectangle';
+
+
+        if (this.input ) this.input .updateControl();
+        if (this.output) this.output.updateControl();
+    }
+
+
+
+    isDefault = () => this.value.equals(this.defaultValue);
+
+
+
+    loadParam(_param)
+    {
+        this.setValue(parseVectorPathValue(_param[2])[0], true, true, false);
+    }
+}
 
 
 class   Input
@@ -77864,7 +79742,7 @@ extends OpShape
     paramWidth;
     paramHeight;
     paramAngle;
-    paramObjects;
+    paramChildren;
 
 
     
@@ -77879,24 +79757,34 @@ extends OpShape
         this.addOutput(new Output([SHAPE_GROUP_VALUE], this.output_genRequest));
 
 
-        this.addParam(this.paramX       = new NumberParam('x',       'x',       true, true, true,   0));
-        this.addParam(this.paramY       = new NumberParam('y',       'y',       true, true, true,   0));
-        this.addParam(this.paramWidth   = new NumberParam('width',   'width',   true, true, true, 100,    0.01));
-        this.addParam(this.paramHeight  = new NumberParam('height',  'height',  true, true, true, 100,    0.01));
-        this.addParam(this.paramAngle   = new NumberParam('angle',   'angle',   true, true, true,   0, -180,   180));
-        this.addParam(this.paramObjects = new ListParam  ('objects', 'objects', true, true, true));
+        this.addParam(this.paramX        = new NumberParam('x',        'x',       true, true,  true,   0));
+        this.addParam(this.paramY        = new NumberParam('y',        'y',       true, true,  true,   0));
+        this.addParam(this.paramWidth    = new NumberParam('width',    'width',   true, false, true, 100,    0.01));
+        this.addParam(this.paramHeight   = new NumberParam('height',   'height',  true, false, true, 100,    0.01));
+        this.addParam(this.paramAngle    = new NumberParam('angle',    'angle',   true, true,  true,   0, -180,   180));
+        this.addParam(this.paramChildren = new ListParam  ('children', 'objects', true, true,  true));
 
         
-        this.paramObjects.input.types.push(SHAPE_LIST_VALUE);
-        this.paramObjects.listTypes = SHAPE_VALUES;
+        this.paramChildren.input.types.push(SHAPE_LIST_VALUE);
+        this.paramChildren.listTypes = SHAPE_VALUES;
 
-        this.paramPoints.itemName    = 'point';
-        this.paramPoints.showZero    =  false;
-
-        this.paramDegree.reverseMenu =  true;
+        this.paramChildren.itemName    = 'object';
+        this.paramChildren.showZero    =  false;
 
 
         this.addBaseParams();
+    }
+
+
+
+    updateParams()
+    {
+        super.updateParams();
+
+        this.paramWidth .enableControlText(false);
+        this.paramHeight.enableControlText(false);
+
+        //this.updateParamControls();
     }
 }
 

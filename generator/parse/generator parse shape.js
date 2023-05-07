@@ -600,13 +600,13 @@ function genParseShapeGroup(parse)
 
         switch (paramId)
         {
-        case 'x':       group.x       = genParse(parse); break;
-        case 'y':       group.y       = genParse(parse); break;
-        case 'width':   group.width   = genParse(parse); break;
-        case 'height':  group.height  = genParse(parse); break;
-        case 'angle':   group.angle   = genParse(parse); break;
-        case 'objects': group.objects = genParse(parse); break;
-        case 'props':   group.props   = genParse(parse); break;
+        case 'x':        group.x        = genParse(parse); break;
+        case 'y':        group.y        = genParse(parse); break;
+        case 'width':    group.width    = genParse(parse); break;
+        case 'height':   group.height   = genParse(parse); break;
+        case 'angle':    group.angle    = genParse(parse); break;
+        case 'children': group.children = genParse(parse); break;
+        case 'props':    group.props    = genParse(parse); break;
         }
     }
 
@@ -666,14 +666,14 @@ function genParseFrame(parse)
 
         switch (paramId)
         {
-        case 'x':       frame.x       = genParse(parse); break;
-        case 'y':       frame.y       = genParse(parse); break;
-        case 'width':   frame.width   = genParse(parse); break;
-        case 'height':  frame.height  = genParse(parse); break;
-        case 'angle':   frame.angle   = genParse(parse); break;
-        case 'round':   frame.round   = genParse(parse); break;
-        case 'objects': frame.objects = genParse(parse); break;
-        case 'props':   frame.props   = genParse(parse); break;
+        case 'x':        frame.x        = genParse(parse); break;
+        case 'y':        frame.y        = genParse(parse); break;
+        case 'width':    frame.width    = genParse(parse); break;
+        case 'height':   frame.height   = genParse(parse); break;
+        case 'angle':    frame.angle    = genParse(parse); break;
+        case 'round':    frame.round    = genParse(parse); break;
+        case 'children': frame.children = genParse(parse); break;
+        case 'props':    frame.props    = genParse(parse); break;
         }
     }
 

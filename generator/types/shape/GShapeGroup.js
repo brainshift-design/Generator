@@ -1,9 +1,9 @@
-class GVectorPath
+class GShapeGroup
 extends GShape
 {
-    input   = null;
+    input    = null;
 
-    objects  = null;
+    children = null;
 
 
 
@@ -23,7 +23,7 @@ extends GShape
         if (this.input) 
             copy.input = this.input.copy();
 
-        if (this.objects) copy.points = this.objects.copy();
+        if (this.children) copy.children = this.children.copy();
 
         return copy;
     }
@@ -38,7 +38,7 @@ extends GShape
 
         const [x, y, width, height, angle] = await this.evalBaseParams(parse);
 
-        const objects = this.objects ? (await this.objects .eval(parse)).toValue() : null;
+        const children = this.children ? (await this.children.eval(parse)).toValue() : null;
 
 
         let input = null;
@@ -49,23 +49,23 @@ extends GShape
 
             this.value = new ShapeGroupValue(
                 this.nodeId,
-                x       ?? input.x,
-                y       ?? input.y,
-                width   ?? input.width,
-                height  ?? input.height,
-                angle   ?? input.angle,
-                objects ?? input.objects);
+                x        ?? input.x,
+                y        ?? input.y,
+                width    ?? input.width,
+                height   ?? input.height,
+                angle    ?? input.angle,
+                children ?? input.children);
         }
         else
         {
-            this.value = new ShapeGroupValue(this.nodeId, x, y, width, height, angle, objects);
+            this.value = new ShapeGroupValue(this.nodeId, x, y, width, height, angle, children);
         }
 
 
         this.updateValues =
         [
-            ['value',   this.value      ],
-            ['objects', this.value.objects]
+            ['value',    this.value         ],
+            ['children', this.value.children]
         ];
 
 
@@ -89,39 +89,34 @@ extends GShape
             return;
             
 
-        // const objects = [];
+        if (   this.value.x
+            && this.value.y
+            && this.value.width
+            && this.value.height
+            && this.value.angle)
+        {
+            const group = new FigmaShapeGroup(
+                this.nodeId,
+                NULL,
+                this.value.x     .value,
+                this.value.y     .value,
+                this.value.width .value,
+                this.value.height.value,
+                this.value.angle .value);
 
-        // if (this.objects.objects)
-        // {
-        //     const objPoints = this.objects.objects.filter(o => o.type == POINT);
+            if (   this.children
+                && this.children.items)
+            {
+                for (const child of this.children.items)
+                {
+                    if (child.objects)
+                        group.children.push(...child.objects);
+                }
+            }
 
-        //     for (const pt of objPoints)
-        //         points.push(new PointValue(
-        //             this.nodeId,
-        //             new NumberValue(pt.x), 
-        //             new NumberValue(pt.y)));
-        // }
-
-
-        // if (   points.length >= 2
-        //     && this.value.closed 
-        //     && this.value.degree 
-        //     && this.value.winding
-        //     && this.value.round)
-        // {
-        //     this.objects =
-        //     [
-        //         new FigmaVectorPath(
-        //             this.nodeId,
-        //             NULL,
-        //             points,
-        //             this.value.closed .value,
-        //             this.value.degree .value,
-        //             this.value.winding.value,
-        //             this.value.round  .value)
-        //     ];
-        // }
-        // else
+            this.objects = [group];
+        }
+        else
             this.objects = [];
 
 
@@ -135,8 +130,8 @@ extends GShape
     {
         super.pushValueUpdates(parse);
 
-        if (this.input  ) this.input  .pushValueUpdates(parse);
-        if (this.objects) this.objects.pushValueUpdates(parse);
+        if (this.input   ) this.input   .pushValueUpdates(parse);
+        if (this.children) this.children.pushValueUpdates(parse);
     }
 
 
@@ -145,12 +140,12 @@ extends GShape
     {
         const group = new ShapeGroupValue(
             this.nodeId,
-            this.x      .toValue(),
-            this.y      .toValue(),
-            this.width  .toValue(),
-            this.height .toValue(),
-            this.angle  .toValue(),
-            this.objects.toValue());
+            this.x       .toValue(),
+            this.y       .toValue(),
+            this.width   .toValue(),
+            this.height  .toValue(),
+            this.angle   .toValue(),
+            this.children.toValue());
 
         group.props = this.props.toValue();
 
@@ -162,7 +157,7 @@ extends GShape
     isValid()
     {
         return super.isValid()
-            && this.objects.isValid();
+            && this.children.isValid();
     }
 
 
@@ -171,7 +166,7 @@ extends GShape
     {
         super.invalidate();
 
-        if (this.input  ) this.input  .invalidate();
-        if (this.objects) this.objects.invalidate();
+        if (this.input   ) this.input   .invalidate();
+        if (this.children) this.children.invalidate();
     }
 }

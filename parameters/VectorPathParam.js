@@ -64,12 +64,12 @@ extends Parameter
     setValue(value, createAction, updateControl = true, dispatchEvents = true) 
     {
         if (!(value instanceof VectorPathValue))
-            console.assert(false, 'RectangleParam.setValue(value) is ' + typeof value + ', must be a VectorPathValue');
+            console.assert(false, 'VectorPathParam.setValue(value) is ' + typeof value + ', must be a VectorPathValue');
 
         console.assert(
                value.type 
             && value.type == VECTOR_PATH_VALUE, 
-            'RectangleParam value.type must be VECTOR_PATH_VALUE');
+            'VectorPathParam value.type must be VECTOR_PATH_VALUE');
 
 
         this.preSetValue(value, createAction, dispatchEvents);

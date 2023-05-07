@@ -1185,14 +1185,23 @@ function figCreateObject(objects, genObj) {
         case VECTOR_PATH:
             figObj = figCreateVectorPath(genObj);
             break;
+        case SHAPE_GROUP:
+            figObj = figCreateShapeGroup(genObj);
+            break;
+        case FRAME:
+            figObj = figCreateFrame(genObj);
+            break;
     }
-    console.assert(!!figObj, 'no Figma object created');
-    figObj.setPluginData('id', genObj.objectId);
-    figObj.setPluginData('type', genObj.type);
-    figObj.setPluginData('nodeId', genObj.nodeId);
-    if (genObj.type == POINT)
-        figPoints.push(figObj);
-    objects.push(figObj);
+    console.assert(genObj.type == SHAPE_GROUP // cannot exist without children
+        || !!figObj, 'no Figma object created');
+    if (figObj) {
+        figObj.setPluginData('id', genObj.objectId);
+        figObj.setPluginData('type', genObj.type);
+        figObj.setPluginData('nodeId', genObj.nodeId);
+        if (genObj.type == POINT)
+            figPoints.push(figObj);
+        objects.push(figObj);
+    }
 }
 function figUpdateObjects(msg) {
     let curNodeId = NULL;
@@ -1600,6 +1609,47 @@ function figUpdateVectorPath(figPath, genPath) {
     figPath.cornerRadius = genPath.round;
     setObjectFills(figPath, genPath);
     setObjectStrokes(figPath, genPath);
+}
+///////////////////////////////////////////////////////////////////////////////////////////////////
+function genShapeGroupIsValid(genGroup) {
+    return genGroup.x != null && !isNaN(genGroup.x)
+        && genGroup.y != null && !isNaN(genGroup.y)
+        && genGroup.width != null && !isNaN(genGroup.width)
+        && genGroup.height != null && !isNaN(genGroup.height)
+        && genGroup.angle != null && !isNaN(genGroup.angle);
+}
+function figCreateShapeGroup(genGroup) {
+    //console.log(obj);
+    const objects = [];
+    for (const obj of genGroup.children)
+        figCreateObject(objects, obj);
+    const figGroup = !isEmpty(objects)
+        ? figma.group(objects, figma.currentPage)
+        : null;
+    if (figGroup) {
+        figGroup.name = makeObjectName(genGroup);
+        if (!genShapeGroupIsValid(genGroup))
+            return figGroup;
+        // figGroup.x     = genGroup.x;
+        // figGroup.y     = genGroup.y;
+        figGroup.angle = genGroup.y;
+        setObjectFills(figGroup, genGroup);
+        setObjectStrokes(figGroup, genGroup);
+    }
+    return figGroup;
+}
+function figUpdateShapeGroup(figGroup, genGroup) {
+    if (!genShapeGroupIsValid(genGroup))
+        return;
+    figGroup.x = 0; //genPath.x;
+    figGroup.y = 0; //genPath.y;
+    figGroup.vectorPaths = [{
+            windingRule: genGroup.winding == 1 ? 'NONZERO' : 'EVENODD',
+            data: genGroup.pathData
+        }];
+    figGroup.cornerRadius = genGroup.round;
+    setObjectFills(figGroup, genGroup);
+    setObjectStrokes(figGroup, genGroup);
 }
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 // function figCreateFrame()
