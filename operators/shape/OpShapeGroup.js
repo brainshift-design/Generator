@@ -1,5 +1,5 @@
 class   OpShapeGroup
-extends OpShape
+extends OpShapeBase
 {
     paramX;
     paramY;

@@ -67,11 +67,11 @@ function genRequest(request)
         
         for (const node of parse.parsedNodes)
         {
-            if (node.options.active)
+            if (node.options.active === true)
             {
                 node.objects.forEach(o => genPushUpdateObject(parse, o));
 
-                if (!!node.colorStyle) 
+                if (node.colorStyle) 
                     genPushUpdateColorStyle(parse, node.colorStyle);
             }
         }

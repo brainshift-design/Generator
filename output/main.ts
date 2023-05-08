@@ -1412,8 +1412,7 @@ function figDeleteStylesFromNodeIds(nodeIds, mustDelete)
             
             if (!existing) 
             {
-                if (!s.removed)
-                    s.remove();
+                s.remove();
             }
             else if (mustDelete)
             {
@@ -1612,7 +1611,7 @@ figma.ui.onmessage = function(msg)
         // case 'figUpdateViewportRect':                 figPostMessageToUi({cmd: 'uiReturnUpdateViewportRect', viewportRect: figma.viewport.bounds }); break;
      
         case 'figUpdateObjectsAndStyles':
-            figUpdateObjects(msg.objects);
+            figUpdateObjects(null, msg.objects);
             figUpdateStyles(msg);
             break;
      
@@ -1777,7 +1776,7 @@ function figCreateObject(objects, genObj)
 
 
 
-function figUpdateObjects(objects)
+function figUpdateObjects(parent, objects)
 {
     let curNodeId  = NULL;
     let figObjects = null;
@@ -1803,9 +1802,20 @@ function figUpdateObjects(objects)
         }
 
 
-        const figObj = figObjects.objects.find(o => 
-               o.removed
-            || o.name == makeObjectName(genObj));
+        let figObj;
+        
+        if (parent)
+        {
+            figObj = parent.children.find(o => 
+                   o.removed
+                || o.name == makeObjectName(genObj));
+         }
+        else
+        {
+            figObj = figObjects.objects.find(o => 
+                   o.removed
+                || o.name == makeObjectName(genObj));
+        }
 
         
         if (   isValid(figObj)
@@ -1847,10 +1857,6 @@ function figUpdateObjects(objects)
 
 function figUpdateObject(figObj, genObj)
 {
-    console.log('figObj =', figObj);
-    console.log('genObj =', genObj);
-    console.log('');
-    
     switch (genObj.type)
     {
         case RECTANGLE:   figUpdateRect      (figObj, genObj);  break;
@@ -2682,7 +2688,7 @@ function figUpdateFrame(figFrame, genFrame)
     //     figCreateObject(objects, obj);
 
     // for (const obj of objects)
-        figUpdateObjects(genFrame.children);
+        figUpdateObjects(figFrame, genFrame.children);
 
 
     setObjectFills  (figFrame, genFrame);

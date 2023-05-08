@@ -868,8 +868,7 @@ function figDeleteStylesFromNodeIds(nodeIds, mustDelete) {
         const nodeId = s.getPluginData('nodeId');
         const existing = parseBool(s.getPluginData('existing'));
         if (!existing) {
-            if (!s.removed)
-                s.remove();
+            s.remove();
         }
         else if (mustDelete) {
             removeFromArrayWhere(figStyleArrays, a => a.nodeId == nodeId);
@@ -1087,7 +1086,7 @@ figma.ui.onmessage = function (msg) {
             break;
         // case 'figUpdateViewportRect':                 figPostMessageToUi({cmd: 'uiReturnUpdateViewportRect', viewportRect: figma.viewport.bounds }); break;
         case 'figUpdateObjectsAndStyles':
-            figUpdateObjects(msg.objects);
+            figUpdateObjects(null, msg.objects);
             figUpdateStyles(msg);
             break;
         case 'figDeleteObjectsAndStyles':
@@ -1207,7 +1206,7 @@ function figCreateObject(objects, genObj) {
         objects.push(figObj);
     }
 }
-function figUpdateObjects(objects) {
+function figUpdateObjects(parent, objects) {
     let curNodeId = NULL;
     let figObjects = null;
     for (const genObj of objects) {
@@ -1223,8 +1222,15 @@ function figUpdateObjects(objects) {
                     });
             }
         }
-        const figObj = figObjects.objects.find(o => o.removed
-            || o.name == makeObjectName(genObj));
+        let figObj;
+        if (parent) {
+            figObj = parent.children.find(o => o.removed
+                || o.name == makeObjectName(genObj));
+        }
+        else {
+            figObj = figObjects.objects.find(o => o.removed
+                || o.name == makeObjectName(genObj));
+        }
         if (isValid(figObj)
             && figObj.removed) {
             removeFrom(figObjects.objects, figObj);
@@ -1249,9 +1255,6 @@ function figUpdateObjects(objects) {
         point.parent.appendChild(point);
 }
 function figUpdateObject(figObj, genObj) {
-    console.log('figObj =', figObj);
-    console.log('genObj =', genObj);
-    console.log('');
     switch (genObj.type) {
         case RECTANGLE:
             figUpdateRect(figObj, genObj);
@@ -1706,7 +1709,7 @@ function figUpdateFrame(figFrame, genFrame) {
     // for (const obj of genFrame.children)
     //     figCreateObject(objects, obj);
     // for (const obj of objects)
-    figUpdateObjects(genFrame.children);
+    figUpdateObjects(figFrame, genFrame.children);
     setObjectFills(figFrame, genFrame);
     setObjectStrokes(figFrame, genFrame);
 }

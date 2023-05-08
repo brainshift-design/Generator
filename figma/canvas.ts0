@@ -80,8 +80,7 @@ function figDeleteStylesFromNodeIds(nodeIds, mustDelete)
             
             if (!existing) 
             {
-                if (!s.removed)
-                    s.remove();
+                s.remove();
             }
             else if (mustDelete)
             {

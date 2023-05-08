@@ -1,5 +1,5 @@
 class GShape
-extends GOperator
+extends GShapeBase
 {
     x      = null;
     y      = null;
@@ -20,13 +20,6 @@ extends GOperator
 
     copyBase(base)
     {
-        //if (base.value ) this.value  = base.value .copy();
-        if (base.x     ) this.x      = base.x     .copy();
-        if (base.y     ) this.y      = base.y     .copy();
-        if (base.width ) this.width  = base.width .copy();
-        if (base.height) this.height = base.height.copy();
-        if (base.angle ) this.angle  = base.angle .copy();
-
         this.copyProperties(base.props);
     }
 
@@ -39,24 +32,11 @@ extends GOperator
 
 
 
-    async evalBaseParams(parse, evalHeight = true)
-    {
-        const x      = this.x      ? (await this.x     .eval(parse)).toValue() : null;
-        const y      = this.y      ? (await this.y     .eval(parse)).toValue() : null;
-        const width  = this.width  ? (await this.width .eval(parse)).toValue() : null;
-
-        const height = evalHeight
-                    && this.height ? (await this.height.eval(parse)).toValue() : null;
-
-        const angle  = this.angle  ? (await this.angle .eval(parse)).toValue() : null;
-
-        return [x, y, width, height, angle];
-    }
-
-
-
     async evalShapeBase(parse, input, evalHeight = true)
     {
+        super.evalShapeBase(parse, input, evalHeight);
+
+
         let props = this.props ? (await this.props.eval(parse)).toValue() : null;
 
         if (   props
@@ -72,20 +52,7 @@ extends GOperator
             this.value.props = props;
 
             
-        this.updateValues = [];
-
-
-        if (this.value.x     != undefined) this.updateValues.push(['x',     this.value.x    ]);
-        if (this.value.y     != undefined) this.updateValues.push(['y',     this.value.y    ]);
-        if (this.value.width != undefined) this.updateValues.push(['width', this.value.width]);
-
-        if (   evalHeight // lines don't have height
-            && this.value.height != undefined)
-            this.updateValues.push(['height', this.value.height]);
-
-        if (this.value.angle != undefined) this.updateValues.push(['angle',  this.value.angle]);
-
-        if (this.value.props != undefined) this.updateValues.push(['props',  this.value.props]);
+        if (this.value.props != undefined) this.updateValues.push(['props', this.value.props]);
     }
 
 
@@ -175,20 +142,14 @@ extends GOperator
     {
         super.pushValueUpdates(parse);
 
-        if (this.x     ) this.x     .pushValueUpdates(parse);
-        if (this.y     ) this.y     .pushValueUpdates(parse);
-        if (this.width ) this.width .pushValueUpdates(parse);
-        if (this.height) this.height.pushValueUpdates(parse);
-        if (this.angle ) this.angle .pushValueUpdates(parse);
-        if (this.props ) this.props .pushValueUpdates(parse);
+        if (this.props) this.props.pushValueUpdates(parse);
     }
 
 
     
     evalStyle(options = {})
     {
-        // for (const style of this.styles)
-        //     style.nodeId = this.nodeId;
+
     }
 
 
@@ -196,12 +157,7 @@ extends GOperator
     isValid()
     {
         return super.isValid()
-            && this.x     .isValid()
-            && this.y     .isValid()
-            && this.width .isValid()
-            && this.height.isValid()
-            && this.angle .isValid()
-            && this.props .isValid();
+            && this.props.isValid();
     }
 
 
@@ -210,11 +166,6 @@ extends GOperator
     {
         super.invalidate();
 
-        if (this.x     ) this.x     .invalidate();
-        if (this.y     ) this.y     .invalidate();
-        if (this.width ) this.width .invalidate();
-        if (this.height) this.height.invalidate();
-        if (this.angle ) this.angle .invalidate();
-        if (this.props ) this.props .invalidate();
+        if (this.props) this.props.invalidate();
     }
 }

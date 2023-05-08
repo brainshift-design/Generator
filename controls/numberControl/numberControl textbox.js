@@ -87,14 +87,20 @@ NumberControl.prototype.initTextbox = function()
                 if (   e.shiftKey 
                     && index > 0)
                 {
-                    while (params[--index].controls[0].readOnly); // ; on purpose
-                    params[index].controls[0].showTextbox();
+                    while (index >= 0
+                        && params[--index].controls[0].readOnly); // ; on purpose
+
+                    if (params[index].controls[0].showTextbox)
+                        params[index].controls[0].showTextbox();
                 }
                 else if (!e.shiftKey 
                       && index < params.length-1) 
                 {
-                    while (params[++index].controls[0].readOnly); // ; on purpose
-                    params[index].controls[0].showTextbox();
+                    while (index < params.length-1
+                        && params[++index].controls[0].readOnly); // ; on purpose
+
+                    if (params[index].controls[0].showTextbox)
+                        params[index].controls[0].showTextbox();
                 }
             }
 
