@@ -1,5 +1,5 @@
 class GShapeGroup
-extends GShape
+extends GShapeBase
 {
     input    = null;
 
@@ -107,10 +107,30 @@ extends GShape
             if (this.children.objects)
                 group.children.push(...this.children.objects);
 
+
+            if (this.children.objects)
+            {
+                for (let i = 0; i < this.children.objects.length; i++)
+                {
+                    const obj = this.children.objects[i].copy();
+                    obj.listId = -1;
+                    group.children.push(obj);
+                }
+            }
+
             this.objects = [group];
+
+
+            this.updateValues.push(['nObjects', new NumberValue(
+                this.children.objects 
+                ? this.children.objects.length
+                : 0)]);
         }
         else
+        {
             this.objects = [];
+            this.updateValues.push(['nObjects', new NumberValue(0)]);
+        }
 
         
         await super.evalObjects(parse);

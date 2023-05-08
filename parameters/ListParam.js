@@ -3,11 +3,13 @@ extends Parameter
 {
     defaultValue;
 
-    oldValue = null;
+    oldValue     = null;
     
 
     itemName;
-    showZero = false;
+    showZero     = false;
+
+    getItemCount = null;
 
     
     value;
@@ -157,9 +159,14 @@ extends Parameter
         this.controls[0].textbox.style.fontStyle  = 'italic';
         this.controls[0].textbox.style.fontWeight = '500';
 
-        const nItems = this.value.items
-            .filter(i => isEmpty(this.listTypes) || this.listTypes.includes(i.type))
-            .length;
+        const nItems = 
+            this.getItemCount
+            ? this.getItemCount()
+            : this.value.items
+                  .filter(i => 
+                         isEmpty(this.listTypes) 
+                      || this.listTypes.includes(i.type))
+                  .length;
 
         this.controls[0].textbox.value = 
               (nItems != 0 || this.showZero ? nItems + ' ' : '') 

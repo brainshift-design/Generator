@@ -110,26 +110,30 @@ extends GShape
                 this.value.angle .value,
                 this.value.round .value);
 
+
             if (this.children.objects)
             {
                 for (let i = 0; i < this.children.objects.length; i++)
                 {
                     const obj = this.children.objects[i].copy();
-
-                    //obj.nodeId = this.nodeId;
                     obj.listId = -1;
-
-                    // if (obj.objectId != NULL) obj.objectId += ' ';
-                    // obj.objectId += (i + 1).toString();
-
                     frame.children.push(obj);
                 }
             }
 
             this.objects = [frame];
+
+
+            this.updateValues.push(['nObjects', new NumberValue(
+                this.children.objects 
+                ? this.children.objects.length
+                : 0)]);
         }
         else
+        {
             this.objects = [];
+            this.updateValues.push(['nObjects', new NumberValue(0)]);
+        }
 
         
         await super.evalObjects(parse);

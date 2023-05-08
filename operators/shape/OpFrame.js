@@ -41,9 +41,10 @@ extends OpShape
 
 
         this.paramChildren.input.types.push(SHAPE_LIST_VALUE);
-        this.paramChildren.listTypes = SHAPE_VALUES;
-        this.paramChildren.itemName  = 'object';
-        this.paramChildren.showZero  =  false;
+        this.paramChildren.listTypes    = SHAPE_VALUES;
+        this.paramChildren.itemName     = 'object';
+        this.paramChildren.showZero     =  false;
+        this.paramChildren.getItemCount = () => 0;
 
 
         this.addBaseParams();
@@ -59,5 +60,16 @@ extends OpShape
         this.paramRound.controls[0].displayMax = min/2;
 
         this.paramRound.controls[0].update();
+    }
+
+
+
+    updateValues(requestId, actionId, updateParamId, paramIds, values)
+    {
+        const nObjects = values[paramIds.findIndex(id => id == 'nObjects')];
+
+        this.paramChildren.getItemCount = () => nObjects.value;
+
+        super.updateValues(requestId, actionId, updateParamId, paramIds, values);
     }
 }

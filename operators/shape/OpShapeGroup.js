@@ -33,6 +33,7 @@ extends OpShapeBase
         this.paramChildren.listTypes = SHAPE_VALUES;
         this.paramChildren.itemName  = 'object';
         this.paramChildren.showZero  =  false;
+        this.paramChildren.getItemCount = () => 0;
 
 
         this.addBaseParams();
@@ -48,5 +49,16 @@ extends OpShapeBase
         this.paramHeight.enableControlText(false);
 
         //this.updateParamControls();
+    }
+
+
+
+    updateValues(requestId, actionId, updateParamId, paramIds, values)
+    {
+        const nObjects = values[paramIds.findIndex(id => id == 'nObjects')];
+
+        this.paramChildren.getItemCount = () => nObjects.value;
+
+        super.updateValues(requestId, actionId, updateParamId, paramIds, values);
     }
 }
