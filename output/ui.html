@@ -8933,7 +8933,7 @@ extends FigmaShape
     {
         super(VECTOR_PATH, nodeId, objectId);
         
-        this.points = [...points];
+        this.points = clone(points);
         this.closed = closed;
         this.degree = degree;
 
@@ -8957,7 +8957,7 @@ extends FigmaShape
         copy.x        = this.x;
         copy.y        = this.y;
 
-        copy.points   = [...this.points];
+        copy.points   = clone(this.points);
         copy.closed   = this.closed;
         copy.degree   = this.degree;
 
@@ -22390,10 +22390,11 @@ extends GShape
                 {
                     const obj = this.children.objects[i].copy();
 
-                    obj.nodeId = this.nodeId;
+                    //obj.nodeId = this.nodeId;
+                    obj.listId = -1;
 
-                    if (obj.objectId != NULL) obj.objectId += ' ';
-                    obj.objectId += (i + 1).toString();
+                    // if (obj.objectId != NULL) obj.objectId += ' ';
+                    // obj.objectId += (i + 1).toString();
 
                     frame.children.push(obj);
                 }
@@ -24295,11 +24296,13 @@ function genRequest(request)
         
         for (const node of parse.parsedNodes)
         {
-            node.objects.forEach(o => genPushUpdateObject(parse, o));
+            if (node.options.active)
+            {
+                node.objects.forEach(o => genPushUpdateObject(parse, o));
 
-            if (   node instanceof GShape
-                && node.options.active)
-                if (!!node.colorStyle) genPushUpdateColorStyle(parse, node.colorStyle);
+                if (!!node.colorStyle) 
+                    genPushUpdateColorStyle(parse, node.colorStyle);
+            }
         }
 
 
@@ -38714,7 +38717,7 @@ extends FigmaShape
     {
         super(VECTOR_PATH, nodeId, objectId);
         
-        this.points = [...points];
+        this.points = clone(points);
         this.closed = closed;
         this.degree = degree;
 
@@ -38738,7 +38741,7 @@ extends FigmaShape
         copy.x        = this.x;
         copy.y        = this.y;
 
-        copy.points   = [...this.points];
+        copy.points   = clone(this.points);
         copy.closed   = this.closed;
         copy.degree   = this.degree;
 
@@ -52171,10 +52174,11 @@ extends GShape
                 {
                     const obj = this.children.objects[i].copy();
 
-                    obj.nodeId = this.nodeId;
+                    //obj.nodeId = this.nodeId;
+                    obj.listId = -1;
 
-                    if (obj.objectId != NULL) obj.objectId += ' ';
-                    obj.objectId += (i + 1).toString();
+                    // if (obj.objectId != NULL) obj.objectId += ' ';
+                    // obj.objectId += (i + 1).toString();
 
                     frame.children.push(obj);
                 }

@@ -116,10 +116,11 @@ extends GShape
                 {
                     const obj = this.children.objects[i].copy();
 
-                    obj.nodeId = this.nodeId;
+                    //obj.nodeId = this.nodeId;
+                    obj.listId = -1;
 
-                    if (obj.objectId != NULL) obj.objectId += ' ';
-                    obj.objectId += (i + 1).toString();
+                    // if (obj.objectId != NULL) obj.objectId += ' ';
+                    // obj.objectId += (i + 1).toString();
 
                     frame.children.push(obj);
                 }

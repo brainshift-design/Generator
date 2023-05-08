@@ -1343,7 +1343,7 @@ function figDeleteObjectsFromNodeIds(nodeIds)
 
     figma.currentPage
         .findAll(o => nodeIds.includes(o.getPluginData('nodeId')))
-        .forEach(o => o.remove());
+        .forEach(o => { if (!o.removed) o.remove(); });
 
     figObjectArrays = figObjectArrays.filter(a => !nodeIds.includes(a.nodeId));
 }
@@ -1367,7 +1367,8 @@ function figDeleteObjectsExcept(nodeIds, ignoreObjects)
             
             if (!ignoreObjects.find(o => obj.name == makeObjectName(o)))
             {
-                obj.remove();
+                if (!obj.removed)
+                    obj.remove();
 
                 removeFromArray(objArray.objects, obj);
 
@@ -1387,7 +1388,8 @@ function figDeleteObjectsExcept(nodeIds, ignoreObjects)
 function figDeleteAllObjects()
 {
     for (const obj of figma.currentPage.children)
-        if (obj.getPluginData('id') != null) 
+        if (    obj.getPluginData('id') != null
+            && !obj.removed) 
             obj.remove();
 }
 
@@ -1410,7 +1412,8 @@ function figDeleteStylesFromNodeIds(nodeIds, mustDelete)
             
             if (!existing) 
             {
-                s.remove();
+                if (!s.removed)
+                    s.remove();
             }
             else if (mustDelete)
             {

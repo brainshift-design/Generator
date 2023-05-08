@@ -18,7 +18,7 @@ extends FigmaShape
     {
         super(VECTOR_PATH, nodeId, objectId);
         
-        this.points = [...points];
+        this.points = clone(points);
         this.closed = closed;
         this.degree = degree;
 
@@ -42,7 +42,7 @@ extends FigmaShape
         copy.x        = this.x;
         copy.y        = this.y;
 
-        copy.points   = [...this.points];
+        copy.points   = clone(this.points);
         copy.closed   = this.closed;
         copy.degree   = this.degree;
 
