@@ -12,9 +12,9 @@ extends FigmaShape
 
 
 
-    constructor(nodeId, objectId, x, y, width, height, angle, round, points, convex)
+    constructor(nodeId, nodeName, objectId, x, y, width, height, angle, round, points, convex)
     {
-        super(STAR, nodeId, objectId);
+        super(STAR, nodeId, nodeName, objectId);
         
         this.x      = x;
         this.y      = y;
@@ -32,6 +32,7 @@ extends FigmaShape
     {
         const copy = new FigmaStar(
             this.nodeId,
+            this.nodeName,
             this.objectId,
             this.x,
             this.y,

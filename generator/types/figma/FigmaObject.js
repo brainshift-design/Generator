@@ -2,16 +2,18 @@ class FigmaObject
 {
     type;
     
-    nodeId = '';
+    nodeId   = '';
+    nodeName = '';
 
     uniqueId;
 
 
 
-    constructor(type, nodeId)
+    constructor(type, nodeId, nodeName)
     {
         this.type     = type;
         this.nodeId   = nodeId;
+        this.nodeName = nodeName;
         this.uniqueId = Math.round(Math.random() * 10000);
     }
 
@@ -53,6 +55,8 @@ function copyFigmaObject(obj)
         case TEXTSHAPE:   return FigmaText      .prototype.copy.call(obj);
         case POINT:       return FigmaPoint     .prototype.copy.call(obj);
         case VECTOR_PATH: return FigmaVectorPath.prototype.copy.call(obj);
+        case SHAPE_GROUP: return FigmaShapeGroup.prototype.copy.call(obj);
+        case FRAME:       return FigmaFrame     .prototype.copy.call(obj);
     }
 
     console.assert(false, 'invalid Figma object type \'' + obj.type + '\'');

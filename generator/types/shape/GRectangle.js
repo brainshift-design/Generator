@@ -99,6 +99,7 @@ extends GShape
             [
                 new FigmaRectangle(
                                 this.nodeId,
+                                this.nodeName,
                                 NULL,
                                 this.value.x     .value,
                                 this.value.y     .value,

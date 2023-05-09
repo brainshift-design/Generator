@@ -14,9 +14,9 @@ extends FigmaShape
 
 
 
-    constructor(nodeId, objectId, points, closed, degree, winding, round)
+    constructor(nodeId, nodeName, objectId, points, closed, degree, winding, round)
     {
-        super(VECTOR_PATH, nodeId, objectId);
+        super(VECTOR_PATH, nodeId, nodeName, objectId);
         
         this.points = clone(points);
         this.closed = closed;
@@ -34,6 +34,7 @@ extends FigmaShape
     {
         const copy = new FigmaVectorPath(
             this.nodeId,
+            this.nodeName,
             this.objectId,
             [], 0, 0,
             this.winding,

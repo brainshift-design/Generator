@@ -75,7 +75,7 @@ extends GShape
             return;
 
             
-        const colorStyle = new FigmaColorStyle(this.nodeId, this.id, this.name);
+        const colorStyle = new FigmaColorStyle(this.nodeId, this.nodeName, this.id, this.name);
 
         colorStyle.existing = this.existing;
 

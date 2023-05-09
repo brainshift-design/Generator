@@ -5,9 +5,9 @@ extends FigmaShape
 
 
 
-    constructor(nodeId, objectId, children = [])
+    constructor(nodeId, nodeName, objectId, children = [])
     {
-        super(SHAPE_GROUP, nodeId, objectId);
+        super(SHAPE_GROUP, nodeId, nodeName, objectId);
         
         this.children = clone(children);
     }
@@ -18,6 +18,7 @@ extends FigmaShape
     {
         const copy = new FigmaShapeGroup(
             this.nodeId,
+            this.nodeName,
             this.objectId,
             this.children);
 

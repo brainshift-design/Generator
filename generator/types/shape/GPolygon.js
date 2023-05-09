@@ -105,6 +105,7 @@ extends GShape
             [
                 new FigmaPolygon(
                                 this.nodeId,
+                                this.nodeName,
                                 NULL,
                                 this.x      .toValue().value,
                                 this.y      .toValue().value,

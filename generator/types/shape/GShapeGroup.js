@@ -87,6 +87,7 @@ extends GShapeBase
         {
             const group = new FigmaShapeGroup(
                 this.nodeId,
+                this.nodeName,
                 NULL);
 
 

@@ -112,6 +112,7 @@ extends GShape
            [
                new FigmaStar(
                                this.nodeId,
+                               this.nodeName,
                                NULL,
                                this.x     .toValue().value,
                                this.y     .toValue().value,

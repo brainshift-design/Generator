@@ -175,6 +175,7 @@ extends GShape
             [
                 new FigmaText(
                     this.nodeId,
+                    this.nodeName,
                     NULL,
                     this.value.text         .value,
                     this.value.x            .value,

@@ -8,9 +8,9 @@ extends FigmaShape
 
 
 
-    constructor(nodeId, objectId, x, y, width, angle)
+    constructor(nodeId, nodeName, objectId, x, y, width, angle)
     {
-        super(LINE, nodeId, objectId);
+        super(LINE, nodeId, nodeName, objectId);
         
         this.x     = x;
         this.y     = y;
@@ -24,6 +24,7 @@ extends FigmaShape
     {
         const copy = new FigmaLine(
             this.nodeId,
+            this.nodeName,
             this.objectId,
             this.x,
             this.y,

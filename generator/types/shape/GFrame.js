@@ -102,6 +102,7 @@ extends GShape
         {
             const frame = new FigmaFrame(
                 this.nodeId,
+                this.nodeName,
                 NULL,
                 this.value.x     .value,
                 this.value.y     .value,

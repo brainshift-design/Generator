@@ -1301,8 +1301,8 @@ function figUpdateObject(figObj, genObj) {
     }
 }
 function makeObjectName(obj) {
-    return OBJECT_PREFIX + obj.nodeId
-        + (obj.objectId != '' ? ' ' + obj.objectId : '');
+    return OBJECT_PREFIX + obj.nodeName; //
+    //  + (obj.objectId != '' ? ' ' + obj.objectId : '');
 }
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 function genRectIsValid(genRect) {

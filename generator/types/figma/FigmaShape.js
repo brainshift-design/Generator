@@ -13,9 +13,9 @@ extends FigmaObject
 
 
 
-    constructor(type, nodeId, objectId)
+    constructor(type, nodeId, nodeName, objectId)
     {
-        super(type, nodeId);
+        super(type, nodeId, nodeName);
 
         this.objectId = objectId;
     }

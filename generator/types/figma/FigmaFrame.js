@@ -11,9 +11,9 @@ extends FigmaShape
 
 
 
-    constructor(nodeId, objectId, x, y, width, height, angle, round, children = [])
+    constructor(nodeId, nodeName, objectId, x, y, width, height, angle, round, children = [])
     {
-        super(FRAME, nodeId, objectId);
+        super(FRAME, nodeId, nodeName, objectId);
         
         this.x        = x;
         this.y        = y;
@@ -30,6 +30,7 @@ extends FigmaShape
     {
         const copy = new FigmaFrame(
             this.nodeId,
+            this.nodeName,
             this.objectId,
             this.x,
             this.y,

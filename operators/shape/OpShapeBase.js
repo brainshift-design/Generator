@@ -8,6 +8,16 @@ extends OperatorBase
 
 
 
+    setName(newName, options = {})
+    {
+        super.setName(newName, options);
+
+        if (isValid(options.updateNodes))
+            pushUnique(options.updateNodes, this);
+    }
+
+
+
     output_genRequest(gen)
     {
         // 'this' is the output
