@@ -40,7 +40,7 @@ extends OpShape
         this.paramAngle.controls[0].dragReverse = true;
 
 
-        this.paramChildren.input.types.push(SHAPE_LIST_VALUE);
+        this.paramChildren.input.types.push(SHAPE_LIST_VALUE, ...SHAPE_VALUES);
         this.paramChildren.listTypes    = SHAPE_VALUES;
         this.paramChildren.itemName     = 'object';
         this.paramChildren.showZero     = false;
