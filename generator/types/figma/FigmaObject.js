@@ -2,19 +2,22 @@ class FigmaObject
 {
     type;
     
-    nodeId   = '';
-    nodeName = '';
+    nodeId     = '';
+
+    objectId   = NULL;
+    objectName = NULL;
 
     uniqueId;
 
 
 
-    constructor(type, nodeId, nodeName)
+    constructor(type, nodeId, objectId, objectName)
     {
-        this.type     = type;
-        this.nodeId   = nodeId;
-        this.nodeName = nodeName;
-        this.uniqueId = Math.round(Math.random() * 10000);
+        this.type       = type;
+        this.nodeId     = nodeId;
+        this.objectId   = objectId;
+        this.objectName = objectName;
+        this.uniqueId   = Math.round(Math.random() * 10000);
     }
 
 

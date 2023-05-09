@@ -8,7 +8,7 @@ extends FigmaObject
 
 
 
-    constructor(nodeId, nodeName, styleId, styleName)
+    constructor(nodeId, styleId, styleName)
     {
         super(COLOR_STYLE, nodeId, nodeName);
 
@@ -20,7 +20,7 @@ extends FigmaObject
 
     copy()
     {
-        const copy = new FigmaColorStyle(this.nodeId, this.nodeName, this.id, this.name);
+        const copy = new FigmaColorStyle(this.nodeId, this.id, this.name);
 
         copy.copyBase(this);
 

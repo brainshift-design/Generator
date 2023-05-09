@@ -88,8 +88,8 @@ extends GOperator
         {
             const point = new FigmaPoint(
                 this.nodeId,
+                this.nodeId,
                 this.nodeName,
-                NULL,
                 this.value.x.value,
                 this.value.y.value);
 

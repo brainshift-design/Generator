@@ -10,9 +10,9 @@ extends FigmaShape
 
 
 
-    constructor(nodeId, nodeName, objectId, x, y, width, height, angle, round)
+    constructor(nodeId, objectId, objectName, x, y, width, height, angle, round)
     {
-        super(RECTANGLE, nodeId, nodeName, objectId);
+        super(RECTANGLE, nodeId, objectId, objectName);
         
         this.x      = x;
         this.y      = y;
@@ -28,8 +28,8 @@ extends FigmaShape
     {
         const copy = new FigmaRectangle(
             this.nodeId,
-            this.nodeName,
             this.objectId,
+            this.objectName,
             this.x,
             this.y,
             this.width,

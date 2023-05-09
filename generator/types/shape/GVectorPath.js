@@ -125,7 +125,8 @@ extends GShape
             [
                 new FigmaVectorPath(
                     this.nodeId,
-                    NULL,
+                    this.nodeName,
+                    this.nodeId,
                     points,
                     this.value.closed .value,
                     this.value.degree .value,

@@ -6,9 +6,9 @@ extends FigmaShape
 
     
 
-    constructor(nodeId, nodeName, objectId, x, y)
+    constructor(nodeId, objectId, objectName, x, y)
     {
-        super(POINT, nodeId, nodeName, objectId);
+        super(POINT, nodeId, objectId, objectName);
         
         this.x = x;
         this.y = y;
@@ -20,8 +20,8 @@ extends FigmaShape
     {
         const copy = new FigmaPoint(
             this.nodeId,
-            this.nodeName, 
             this.objectId,
+            this.objectName, 
             this.x,
             this.y);
 

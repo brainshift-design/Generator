@@ -1,8 +1,6 @@
 class FigmaShape
 extends FigmaObject
 {
-    objectId = NULL;
-
     fills    = [];
     strokes  = [];
 
@@ -13,11 +11,9 @@ extends FigmaObject
 
 
 
-    constructor(type, nodeId, nodeName, objectId)
+    constructor(type, nodeId, objectId, objectName)
     {
-        super(type, nodeId, nodeName);
-
-        this.objectId = objectId;
+        super(type, nodeId, objectId, objectName);
     }
 
 

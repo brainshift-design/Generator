@@ -17,9 +17,9 @@ extends FigmaShape
 
 
 
-    constructor(nodeId, nodeName, objectId, text, x, y, width, height, angle, font, style, size, alignH, alignV, lineHeight, letterSpacing)
+    constructor(nodeId, objectId, objectName, text, x, y, width, height, angle, font, style, size, alignH, alignV, lineHeight, letterSpacing)
     {
-        super(TEXTSHAPE, nodeId, nodeName, objectId);
+        super(TEXTSHAPE, nodeId, objectId, objectName);
         
         this.text          = text;
         this.x             = x;
@@ -42,8 +42,8 @@ extends FigmaShape
     {
         const copy = new FigmaText(
             this.nodeId,
-            this.nodeName,
             this.objectId,
+            this.objectName,
             this.text,
             this.x,
             this.y,
