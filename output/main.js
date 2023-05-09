@@ -1164,7 +1164,6 @@ function updatePointSize_(point, genPoint) {
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 function figCreateObject(objects, genObj) {
     let figObj;
-    console.log('figCreateObject genObj =', genObj);
     switch (genObj.type) {
         case RECTANGLE:
             figObj = figCreateRect(genObj);
@@ -1197,7 +1196,7 @@ function figCreateObject(objects, genObj) {
             figObj = figCreateFrame(genObj);
             break;
     }
-    console.log('figCreateObject figObj =', figObj);
+    console.log('figObj =', figObj);
     console.assert(genObj.type == SHAPE_GROUP // cannot exist without children
         || !!figObj, 'no Figma object created');
     if (figObj) {
@@ -1210,6 +1209,9 @@ function figCreateObject(objects, genObj) {
     }
 }
 function figUpdateObjects(parent, objects) {
+    // console.log('figUpdateObjects parent =', parent);
+    // console.log('figUpdateObjects objects =', objects);
+    // console.log('');
     let curNodeId = NULL;
     let figObjects = null;
     for (const genObj of objects) {
@@ -1229,6 +1231,7 @@ function figUpdateObjects(parent, objects) {
         if (parent) {
             figObj = parent.children.find(o => o.removed
                 || o.name == makeObjectName(genObj));
+            console.log('parent figObj =', figObj);
         }
         else {
             figObj = figObjects.objects.find(o => o.removed
@@ -1243,7 +1246,7 @@ function figUpdateObjects(parent, objects) {
         if (!isValid(figObj)
             || figObj.removed) // no existing object, create new object
          {
-            console.log('create genObj =', genObj);
+            console.log('create');
             figCreateObject(figObjects.objects, genObj);
         }
         else if (figObj.getPluginData('type') == genObj.type.toString()) // update existing object
@@ -1253,7 +1256,6 @@ function figUpdateObjects(parent, objects) {
         }
         else // delete existing object, create new object
          {
-            console.log('recreate');
             figObj.remove();
             if (figPoints.includes(figObj))
                 removeFromArray(figPoints, figObj);

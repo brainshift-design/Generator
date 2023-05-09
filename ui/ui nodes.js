@@ -827,6 +827,19 @@ function uiUpdateValuesAndObjects(requestId, actionId, updateNodeId, updateParam
     }
 
 
+    if (isLastChunk)
+    {
+        uiQueueMessageToFigma({
+            cmd:          'figDeleteObjectsExcept',
+            updateNodeId:  updateNodeId,
+            updateParamId: updateParamId,
+            nodeIds:       nodes.map(n => n.id),
+            ignoreObjects: [...requestObjects]});
+
+        requestObjects = [];
+    }
+
+
     graphView.updateNodes(nodes);
     graphView.updateScrollWithBounds();
 
@@ -837,24 +850,10 @@ function uiUpdateValuesAndObjects(requestId, actionId, updateNodeId, updateParam
 
     if (isLastChunk)
     {
-        console.log('requestObjects =', [...requestObjects]);
-
-        uiQueueMessageToFigma({
-            cmd:          'figDeleteObjectsExcept',
-            updateNodeId:  updateNodeId,
-            updateParamId: updateParamId,
-            nodeIds:       nodes.map(n => n.id),
-            ignoreObjects: [...requestObjects]});
-
-        requestObjects = [];
-
-
         if (graphView.loadingNodes)
         {
             uiSaveNodes(graph.nodes.map(n => n.id));
-            
             graph.updatePages();
-            //graph.updateSavedPages();
         }
 
         graphView.creatingNodes      = false;

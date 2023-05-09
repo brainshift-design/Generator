@@ -62398,11 +62398,6 @@ GraphView.prototype.selectFromClick = function(node, ctrl, shift, alt)
     node.div.moved = false;
 
 
-    const nodes = [node];
-
-    // if (node.type == GROUP_NODE)
-    //     pushUnique(nodes, node.children);
-
     if (   ctrl
         && shift
         && alt)
@@ -62439,7 +62434,7 @@ GraphView.prototype.selectFromClick = function(node, ctrl, shift, alt)
             {
                 node.selected      = false;
                 node.deselectTimer = -1;
-            }, 200);
+            }, 300);
         }
     }
 }
@@ -70326,29 +70321,26 @@ Operator.prototype.createHeader = function()
 
     this.header.addEventListener('dblclick', e =>
     {
-        e.preventDefault();
-
-        
         const bounds = boundingRect(this.label);
 
         if (  !getCtrlKey(e)
             && e.clientX >= bounds.left && e.clientX < bounds.right
             && e.clientY >= bounds.top  && e.clientY < bounds.bottom)
         {
+            e.stopPropagation();
             this.showLabelTextbox();
         }
         else if (!this.header.ignoreDoubleClick)
         {
+            e.stopPropagation();
+
             actionManager.do(new MakeActiveNodesAction([this.id], e.shiftKey));
             
-            console.log('this.deselectTimer =', this.deselectTimer);
             if (this.deselectTimer > -1)
             {
                 clearTimeout(this.deselectTimer);
                 this.deselectTimer = -1;
             }
-
-            e.stopPropagation();
         }
 
 
@@ -90579,6 +90571,19 @@ function uiUpdateValuesAndObjects(requestId, actionId, updateNodeId, updateParam
     }
 
 
+    if (isLastChunk)
+    {
+        uiQueueMessageToFigma({
+            cmd:          'figDeleteObjectsExcept',
+            updateNodeId:  updateNodeId,
+            updateParamId: updateParamId,
+            nodeIds:       nodes.map(n => n.id),
+            ignoreObjects: [...requestObjects]});
+
+        requestObjects = [];
+    }
+
+
     graphView.updateNodes(nodes);
     graphView.updateScrollWithBounds();
 
@@ -90589,24 +90594,10 @@ function uiUpdateValuesAndObjects(requestId, actionId, updateNodeId, updateParam
 
     if (isLastChunk)
     {
-        console.log('requestObjects =', [...requestObjects]);
-
-        uiQueueMessageToFigma({
-            cmd:          'figDeleteObjectsExcept',
-            updateNodeId:  updateNodeId,
-            updateParamId: updateParamId,
-            nodeIds:       nodes.map(n => n.id),
-            ignoreObjects: [...requestObjects]});
-
-        requestObjects = [];
-
-
         if (graphView.loadingNodes)
         {
             uiSaveNodes(graph.nodes.map(n => n.id));
-            
             graph.updatePages();
-            //graph.updateSavedPages();
         }
 
         graphView.creatingNodes      = false;

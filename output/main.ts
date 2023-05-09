@@ -1625,8 +1625,8 @@ figma.ui.onmessage = function(msg)
             figDeleteObjectsExcept(msg.nodeIds, msg.ignoreObjects);
             break; 
     
-        case 'figTriggerUndo': figma.triggerUndo(); break; 
-        case 'figCommitUndo':  figma.commitUndo();  break; 
+        case 'figTriggerUndo': figma.triggerUndo(); break;
+        case 'figCommitUndo':  figma.commitUndo();  break;
 
         // case 'figValidateLicense':
         //     figValidateLicense(msg.license);
@@ -1635,8 +1635,8 @@ figma.ui.onmessage = function(msg)
 
 
     figPostMessageToUi({
-        cmd:      'uiEndFigMessage',
-        msgCmd:    msg.cmd });
+        cmd:    'uiEndFigMessage',
+        msgCmd:  msg.cmd });
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
@@ -1738,7 +1738,6 @@ function updatePointSize_(point, genPoint)
 function figCreateObject(objects, genObj)
 {
     let figObj;
-    console.log('figCreateObject genObj =', genObj);
 
     switch (genObj.type)
     {
@@ -1753,8 +1752,7 @@ function figCreateObject(objects, genObj)
         case SHAPE_GROUP: figObj = figCreateShapeGroup(genObj);  break;
         case FRAME:       figObj = figCreateFrame     (genObj);  break;
     }
-
-    console.log('figCreateObject figObj =', figObj);
+    console.log('figObj =', figObj);
 
     console.assert(
            genObj.type == SHAPE_GROUP // cannot exist without children
@@ -1780,6 +1778,10 @@ function figCreateObject(objects, genObj)
 
 function figUpdateObjects(parent, objects)
 {
+    // console.log('figUpdateObjects parent =', parent);
+    // console.log('figUpdateObjects objects =', objects);
+    // console.log('');
+
     let curNodeId  = NULL;
     let figObjects = null;
 
@@ -1811,6 +1813,7 @@ function figUpdateObjects(parent, objects)
             figObj = parent.children.find(o => 
                    o.removed
                 || o.name == makeObjectName(genObj));
+            console.log('parent figObj =', figObj);
         }
         else
         {
@@ -1833,7 +1836,7 @@ function figUpdateObjects(parent, objects)
         if (  !isValid(figObj)
             || figObj.removed) // no existing object, create new object
         {
-            console.log('create genObj =', genObj);
+            console.log('create');
             figCreateObject(figObjects.objects, genObj);
         }
 
@@ -1845,7 +1848,6 @@ function figUpdateObjects(parent, objects)
     
         else // delete existing object, create new object
         {
-            console.log('recreate');
             figObj.remove();
 
             if (figPoints.includes(figObj))
@@ -2637,7 +2639,7 @@ function figCreateFrame(genFrame)
         figFrame.y = genFrame.y;
     
         figFrame.resize(
-            Math.max(0.01, genFrame.width), 
+            Math.max(0.01, genFrame.width ), 
             Math.max(0.01, genFrame.height));
             
         figFrame.rotation     = genFrame.angle;
@@ -2673,7 +2675,7 @@ function figUpdateFrame(figFrame, genFrame)
     figFrame.y = genFrame.y;
 
     figFrame.resize(
-        Math.max(0.01, genFrame.width), 
+        Math.max(0.01, genFrame.width ), 
         Math.max(0.01, genFrame.height));
         
     figFrame.rotation     = genFrame.angle;

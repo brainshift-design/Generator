@@ -418,29 +418,26 @@ Operator.prototype.createHeader = function()
 
     this.header.addEventListener('dblclick', e =>
     {
-        e.preventDefault();
-
-        
         const bounds = boundingRect(this.label);
 
         if (  !getCtrlKey(e)
             && e.clientX >= bounds.left && e.clientX < bounds.right
             && e.clientY >= bounds.top  && e.clientY < bounds.bottom)
         {
+            e.stopPropagation();
             this.showLabelTextbox();
         }
         else if (!this.header.ignoreDoubleClick)
         {
+            e.stopPropagation();
+
             actionManager.do(new MakeActiveNodesAction([this.id], e.shiftKey));
             
-            console.log('this.deselectTimer =', this.deselectTimer);
             if (this.deselectTimer > -1)
             {
                 clearTimeout(this.deselectTimer);
                 this.deselectTimer = -1;
             }
-
-            e.stopPropagation();
         }
 
 

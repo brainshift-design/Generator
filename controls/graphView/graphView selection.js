@@ -144,11 +144,6 @@ GraphView.prototype.selectFromClick = function(node, ctrl, shift, alt)
     node.div.moved = false;
 
 
-    const nodes = [node];
-
-    // if (node.type == GROUP_NODE)
-    //     pushUnique(nodes, node.children);
-
     if (   ctrl
         && shift
         && alt)
@@ -185,7 +180,7 @@ GraphView.prototype.selectFromClick = function(node, ctrl, shift, alt)
             {
                 node.selected      = false;
                 node.deselectTimer = -1;
-            }, 200);
+            }, 300);
         }
     }
 }
