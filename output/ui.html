@@ -8493,19 +8493,22 @@ class FigmaObject
 {
     type;
     
-    nodeId   = '';
-    nodeName = '';
+    nodeId     = '';
+
+    objectId   = NULL;
+    objectName = NULL;
 
     uniqueId;
 
 
 
-    constructor(type, nodeId, nodeName)
+    constructor(type, nodeId, objectId, objectName)
     {
-        this.type     = type;
-        this.nodeId   = nodeId;
-        this.nodeName = nodeName;
-        this.uniqueId = Math.round(Math.random() * 10000);
+        this.type       = type;
+        this.nodeId     = nodeId;
+        this.objectId   = objectId;
+        this.objectName = objectName;
+        this.uniqueId   = Math.round(Math.random() * 10000);
     }
 
 
@@ -8558,8 +8561,6 @@ function copyFigmaObject(obj)
 class FigmaShape
 extends FigmaObject
 {
-    objectId = NULL;
-
     fills    = [];
     strokes  = [];
 
@@ -8570,11 +8571,9 @@ extends FigmaObject
 
 
 
-    constructor(type, nodeId, nodeName, objectId)
+    constructor(type, nodeId, objectId, objectName)
     {
-        super(type, nodeId, nodeName);
-
-        this.objectId = objectId;
+        super(type, nodeId, objectId, objectName);
     }
 
 
@@ -8606,9 +8605,9 @@ extends FigmaShape
 
 
 
-    constructor(nodeId, nodeName, objectId, x, y, width, height, angle, round)
+    constructor(nodeId, objectId, objectName, x, y, width, height, angle, round)
     {
-        super(RECTANGLE, nodeId, nodeName, objectId);
+        super(RECTANGLE, nodeId, objectId, objectName);
         
         this.x      = x;
         this.y      = y;
@@ -8624,8 +8623,8 @@ extends FigmaShape
     {
         const copy = new FigmaRectangle(
             this.nodeId,
-            this.nodeName,
             this.objectId,
+            this.objectName,
             this.x,
             this.y,
             this.width,
@@ -8650,9 +8649,9 @@ extends FigmaShape
 
 
 
-    constructor(nodeId, nodeName, objectId, x, y, width, angle)
+    constructor(nodeId, objectId, objectName, x, y, width, angle)
     {
-        super(LINE, nodeId, nodeName, objectId);
+        super(LINE, nodeId, objectId, objectName);
         
         this.x     = x;
         this.y     = y;
@@ -8666,8 +8665,8 @@ extends FigmaShape
     {
         const copy = new FigmaLine(
             this.nodeId,
-            this.nodeName,
             this.objectId,
+            this.objectName,
             this.x,
             this.y,
             this.width,
@@ -8691,9 +8690,9 @@ extends FigmaShape
 
     
 
-    constructor(nodeId, nodeName, objectId, x, y, width, height, angle)
+    constructor(nodeId, objectId, objectName, x, y, width, height, angle)
     {
-        super(ELLIPSE, nodeId, nodeName, objectId);
+        super(ELLIPSE, nodeId, objectId, objectName);
         
         this.x      = x;
         this.y      = y;
@@ -8708,8 +8707,8 @@ extends FigmaShape
     {
         const copy = new FigmaEllipse(
             this.nodeId,
-            this.nodeName,
             this.objectId,
+            this.objectName,
             this.x,
             this.y,
             this.width,
@@ -8736,9 +8735,9 @@ extends FigmaShape
 
 
 
-    constructor(nodeId, nodeName, objectId, x, y, width, height, angle, round, corners)
+    constructor(nodeId, objectId, objectName, x, y, width, height, angle, round, corners)
     {
-        super(POLYGON, nodeId, nodeName, objectId);
+        super(POLYGON, nodeId, objectId, objectName);
         
         this.x       = x;
         this.y       = y;
@@ -8755,8 +8754,8 @@ extends FigmaShape
     {
         const copy = new FigmaPolygon(
             this.nodeId,
-            this.nodeName,
             this.objectId,
+            this.objectName,
             this.x,
             this.y,
             this.width,
@@ -8786,9 +8785,9 @@ extends FigmaShape
 
 
 
-    constructor(nodeId, nodeName, objectId, x, y, width, height, angle, round, points, convex)
+    constructor(nodeId, objectId, objectName, x, y, width, height, angle, round, points, convex)
     {
-        super(STAR, nodeId, nodeName, objectId);
+        super(STAR, nodeId, objectId, objectName);
         
         this.x      = x;
         this.y      = y;
@@ -8806,8 +8805,8 @@ extends FigmaShape
     {
         const copy = new FigmaStar(
             this.nodeId,
-            this.nodeName,
             this.objectId,
+            this.objectName,
             this.x,
             this.y,
             this.width,
@@ -8843,9 +8842,9 @@ extends FigmaShape
 
 
 
-    constructor(nodeId, nodeName, objectId, text, x, y, width, height, angle, font, style, size, alignH, alignV, lineHeight, letterSpacing)
+    constructor(nodeId, objectId, objectName, text, x, y, width, height, angle, font, style, size, alignH, alignV, lineHeight, letterSpacing)
     {
-        super(TEXTSHAPE, nodeId, nodeName, objectId);
+        super(TEXTSHAPE, nodeId, objectId, objectName);
         
         this.text          = text;
         this.x             = x;
@@ -8868,8 +8867,8 @@ extends FigmaShape
     {
         const copy = new FigmaText(
             this.nodeId,
-            this.nodeName,
             this.objectId,
+            this.objectName,
             this.text,
             this.x,
             this.y,
@@ -8899,9 +8898,9 @@ extends FigmaShape
 
     
 
-    constructor(nodeId, nodeName, objectId, x, y)
+    constructor(nodeId, objectId, objectName, x, y)
     {
-        super(POINT, nodeId, nodeName, objectId);
+        super(POINT, nodeId, objectId, objectName);
         
         this.x = x;
         this.y = y;
@@ -8913,8 +8912,8 @@ extends FigmaShape
     {
         const copy = new FigmaPoint(
             this.nodeId,
-            this.nodeName, 
             this.objectId,
+            this.objectName, 
             this.x,
             this.y);
 
@@ -8941,9 +8940,9 @@ extends FigmaShape
 
 
 
-    constructor(nodeId, nodeName, objectId, points, closed, degree, winding, round)
+    constructor(nodeId, objectId, objectName, points, closed, degree, winding, round)
     {
-        super(VECTOR_PATH, nodeId, nodeName, objectId);
+        super(VECTOR_PATH, nodeId, objectId, objectName);
         
         this.points = clone(points);
         this.closed = closed;
@@ -8961,8 +8960,8 @@ extends FigmaShape
     {
         const copy = new FigmaVectorPath(
             this.nodeId,
-            this.nodeName,
             this.objectId,
+            this.objectName,
             [], 0, 0,
             this.winding,
             this.round);
@@ -9331,9 +9330,9 @@ extends FigmaShape
 
 
 
-    constructor(nodeId, nodeName, objectId, children = [])
+    constructor(nodeId, objectId, objectName, children = [])
     {
-        super(SHAPE_GROUP, nodeId, nodeName, objectId);
+        super(SHAPE_GROUP, nodeId, objectId, objectName);
         
         this.children = clone(children);
     }
@@ -9344,8 +9343,8 @@ extends FigmaShape
     {
         const copy = new FigmaShapeGroup(
             this.nodeId,
-            this.nodeName,
             this.objectId,
+            this.objectName,
             this.children);
 
         copy.copyBase(this);
@@ -9368,9 +9367,9 @@ extends FigmaShape
 
 
 
-    constructor(nodeId, nodeName, objectId, x, y, width, height, angle, round, children = [])
+    constructor(nodeId, objectId, objectName, x, y, width, height, angle, round, children = [])
     {
-        super(FRAME, nodeId, nodeName, objectId);
+        super(FRAME, nodeId, objectId, objectName);
         
         this.x        = x;
         this.y        = y;
@@ -9387,8 +9386,8 @@ extends FigmaShape
     {
         const copy = new FigmaFrame(
             this.nodeId,
-            this.nodeName,
             this.objectId,
+            this.objectName,
             this.x,
             this.y,
             this.width,
@@ -9414,7 +9413,7 @@ extends FigmaObject
 
 
 
-    constructor(nodeId, nodeName, styleId, styleName)
+    constructor(nodeId, styleId, styleName)
     {
         super(COLOR_STYLE, nodeId, nodeName);
 
@@ -9426,7 +9425,7 @@ extends FigmaObject
 
     copy()
     {
-        const copy = new FigmaColorStyle(this.nodeId, this.nodeName, this.id, this.name);
+        const copy = new FigmaColorStyle(this.nodeId, this.id, this.name);
 
         copy.copyBase(this);
 
@@ -12819,8 +12818,9 @@ extends GOperator
 
                     obj.nodeId = this.nodeId;
 
-                    if (obj.objectId != NULL) obj.objectId += ' ';
-                    obj.objectId += (o + 1).toString();
+                    obj.objectId = this.nodeId + '/' + obj.objectId;
+                    // if (obj.objectId != NULL) obj.objectId += ' ';
+                    // obj.objectId += (o + 1).toString();
                     
                     obj.listId = i;
 
@@ -20788,7 +20788,7 @@ extends GShape
                 new FigmaRectangle(
                                 this.nodeId,
                                 this.nodeName,
-                                NULL,
+                                this.nodeId,
                                 this.value.x     .value,
                                 this.value.y     .value,
                                 this.value.width .value,
@@ -20938,7 +20938,7 @@ extends GShape
                 new FigmaLine(
                     this.nodeId,
                     this.nodeName,
-                    NULL,
+                    this.nodeId,
                     this.value.x    .value,
                     this.value.y    .value,
                     this.value.width.value,
@@ -21074,8 +21074,8 @@ extends GShape
            [
                new FigmaEllipse(
                     this.nodeId,
+                    this.nodeId,
                     this.nodeName,
-                    NULL,
                     this.x     .toValue().value,
                     this.y     .toValue().value,
                     this.width .toValue().value,
@@ -21232,8 +21232,8 @@ extends GShape
             [
                 new FigmaPolygon(
                                 this.nodeId,
+                                this.nodeId,
                                 this.nodeName,
-                                NULL,
                                 this.x      .toValue().value,
                                 this.y      .toValue().value,
                                 this.width  .toValue().value,
@@ -21414,8 +21414,8 @@ extends GShape
            [
                new FigmaStar(
                                this.nodeId,
+                               this.nodeId,
                                this.nodeName,
-                               NULL,
                                this.x     .toValue().value,
                                this.y     .toValue().value,
                                this.width .toValue().value,
@@ -21664,8 +21664,8 @@ extends GShape
             [
                 new FigmaText(
                     this.nodeId,
+                    this.nodeId,
                     this.nodeName,
-                    NULL,
                     this.value.text         .value,
                     this.value.x            .value,
                     this.value.y            .value,
@@ -21867,8 +21867,8 @@ extends GOperator
         {
             const point = new FigmaPoint(
                 this.nodeId,
+                this.nodeId,
                 this.nodeName,
-                NULL,
                 this.value.x.value,
                 this.value.y.value);
 
@@ -22051,7 +22051,8 @@ extends GShape
             [
                 new FigmaVectorPath(
                     this.nodeId,
-                    NULL,
+                    this.nodeName,
+                    this.nodeId,
                     points,
                     this.value.closed .value,
                     this.value.degree .value,
@@ -22215,17 +22216,18 @@ extends GShapeBase
         {
             const group = new FigmaShapeGroup(
                 this.nodeId,
-                this.nodeName,
-                NULL);
+                this.nodeId,
+                this.nodeName);
 
 
             if (this.children.objects)
             {
                 for (let i = 0; i < this.children.objects.length; i++)
                 {
-                    const obj = this.children.objects[i].copy();
-                    obj.nodeId = this.nodeId;
-                    obj.listId = -1;
+                    const obj    = this.children.objects[i].copy();
+                    obj.nodeId   = this.nodeId;
+                    obj.objectId = this.nodeId + '/' + obj.objectId;
+                    obj.listId   = -1;
                     group.children.push(obj);
                 }
             }
@@ -22393,8 +22395,8 @@ extends GShape
         {
             const frame = new FigmaFrame(
                 this.nodeId,
+                this.nodeId,
                 this.nodeName,
-                NULL,
                 this.value.x     .value,
                 this.value.y     .value,
                 this.value.width .value,
@@ -22407,9 +22409,10 @@ extends GShape
             {
                 for (let i = 0; i < this.children.objects.length; i++)
                 {
-                    const obj  = this.children.objects[i].copy();
-                    obj.nodeId = this.nodeId;
-                    obj.listId = -1;
+                    const obj    = this.children.objects[i].copy();
+                    obj.nodeId   = this.nodeId;
+                    obj.objectId = this.nodeId + '/' + obj.objectId;
+                    obj.listId   = -1;
                     frame.children.push(obj);
                 }
             }
@@ -23240,7 +23243,7 @@ extends GShape
             return;
 
             
-        const colorStyle = new FigmaColorStyle(this.nodeId, this.nodeName, this.id, this.name);
+        const colorStyle = new FigmaColorStyle(this.nodeId, this.id, this.name);
 
         colorStyle.existing = this.existing;
 
@@ -38299,19 +38302,22 @@ class FigmaObject
 {
     type;
     
-    nodeId   = '';
-    nodeName = '';
+    nodeId     = '';
+
+    objectId   = NULL;
+    objectName = NULL;
 
     uniqueId;
 
 
 
-    constructor(type, nodeId, nodeName)
+    constructor(type, nodeId, objectId, objectName)
     {
-        this.type     = type;
-        this.nodeId   = nodeId;
-        this.nodeName = nodeName;
-        this.uniqueId = Math.round(Math.random() * 10000);
+        this.type       = type;
+        this.nodeId     = nodeId;
+        this.objectId   = objectId;
+        this.objectName = objectName;
+        this.uniqueId   = Math.round(Math.random() * 10000);
     }
 
 
@@ -38364,8 +38370,6 @@ function copyFigmaObject(obj)
 class FigmaShape
 extends FigmaObject
 {
-    objectId = NULL;
-
     fills    = [];
     strokes  = [];
 
@@ -38376,11 +38380,9 @@ extends FigmaObject
 
 
 
-    constructor(type, nodeId, nodeName, objectId)
+    constructor(type, nodeId, objectId, objectName)
     {
-        super(type, nodeId, nodeName);
-
-        this.objectId = objectId;
+        super(type, nodeId, objectId, objectName);
     }
 
 
@@ -38412,9 +38414,9 @@ extends FigmaShape
 
 
 
-    constructor(nodeId, nodeName, objectId, x, y, width, height, angle, round)
+    constructor(nodeId, objectId, objectName, x, y, width, height, angle, round)
     {
-        super(RECTANGLE, nodeId, nodeName, objectId);
+        super(RECTANGLE, nodeId, objectId, objectName);
         
         this.x      = x;
         this.y      = y;
@@ -38430,8 +38432,8 @@ extends FigmaShape
     {
         const copy = new FigmaRectangle(
             this.nodeId,
-            this.nodeName,
             this.objectId,
+            this.objectName,
             this.x,
             this.y,
             this.width,
@@ -38456,9 +38458,9 @@ extends FigmaShape
 
 
 
-    constructor(nodeId, nodeName, objectId, x, y, width, angle)
+    constructor(nodeId, objectId, objectName, x, y, width, angle)
     {
-        super(LINE, nodeId, nodeName, objectId);
+        super(LINE, nodeId, objectId, objectName);
         
         this.x     = x;
         this.y     = y;
@@ -38472,8 +38474,8 @@ extends FigmaShape
     {
         const copy = new FigmaLine(
             this.nodeId,
-            this.nodeName,
             this.objectId,
+            this.objectName,
             this.x,
             this.y,
             this.width,
@@ -38497,9 +38499,9 @@ extends FigmaShape
 
     
 
-    constructor(nodeId, nodeName, objectId, x, y, width, height, angle)
+    constructor(nodeId, objectId, objectName, x, y, width, height, angle)
     {
-        super(ELLIPSE, nodeId, nodeName, objectId);
+        super(ELLIPSE, nodeId, objectId, objectName);
         
         this.x      = x;
         this.y      = y;
@@ -38514,8 +38516,8 @@ extends FigmaShape
     {
         const copy = new FigmaEllipse(
             this.nodeId,
-            this.nodeName,
             this.objectId,
+            this.objectName,
             this.x,
             this.y,
             this.width,
@@ -38542,9 +38544,9 @@ extends FigmaShape
 
 
 
-    constructor(nodeId, nodeName, objectId, x, y, width, height, angle, round, corners)
+    constructor(nodeId, objectId, objectName, x, y, width, height, angle, round, corners)
     {
-        super(POLYGON, nodeId, nodeName, objectId);
+        super(POLYGON, nodeId, objectId, objectName);
         
         this.x       = x;
         this.y       = y;
@@ -38561,8 +38563,8 @@ extends FigmaShape
     {
         const copy = new FigmaPolygon(
             this.nodeId,
-            this.nodeName,
             this.objectId,
+            this.objectName,
             this.x,
             this.y,
             this.width,
@@ -38592,9 +38594,9 @@ extends FigmaShape
 
 
 
-    constructor(nodeId, nodeName, objectId, x, y, width, height, angle, round, points, convex)
+    constructor(nodeId, objectId, objectName, x, y, width, height, angle, round, points, convex)
     {
-        super(STAR, nodeId, nodeName, objectId);
+        super(STAR, nodeId, objectId, objectName);
         
         this.x      = x;
         this.y      = y;
@@ -38612,8 +38614,8 @@ extends FigmaShape
     {
         const copy = new FigmaStar(
             this.nodeId,
-            this.nodeName,
             this.objectId,
+            this.objectName,
             this.x,
             this.y,
             this.width,
@@ -38649,9 +38651,9 @@ extends FigmaShape
 
 
 
-    constructor(nodeId, nodeName, objectId, text, x, y, width, height, angle, font, style, size, alignH, alignV, lineHeight, letterSpacing)
+    constructor(nodeId, objectId, objectName, text, x, y, width, height, angle, font, style, size, alignH, alignV, lineHeight, letterSpacing)
     {
-        super(TEXTSHAPE, nodeId, nodeName, objectId);
+        super(TEXTSHAPE, nodeId, objectId, objectName);
         
         this.text          = text;
         this.x             = x;
@@ -38674,8 +38676,8 @@ extends FigmaShape
     {
         const copy = new FigmaText(
             this.nodeId,
-            this.nodeName,
             this.objectId,
+            this.objectName,
             this.text,
             this.x,
             this.y,
@@ -38705,9 +38707,9 @@ extends FigmaShape
 
     
 
-    constructor(nodeId, nodeName, objectId, x, y)
+    constructor(nodeId, objectId, objectName, x, y)
     {
-        super(POINT, nodeId, nodeName, objectId);
+        super(POINT, nodeId, objectId, objectName);
         
         this.x = x;
         this.y = y;
@@ -38719,8 +38721,8 @@ extends FigmaShape
     {
         const copy = new FigmaPoint(
             this.nodeId,
-            this.nodeName, 
             this.objectId,
+            this.objectName, 
             this.x,
             this.y);
 
@@ -38747,9 +38749,9 @@ extends FigmaShape
 
 
 
-    constructor(nodeId, nodeName, objectId, points, closed, degree, winding, round)
+    constructor(nodeId, objectId, objectName, points, closed, degree, winding, round)
     {
-        super(VECTOR_PATH, nodeId, nodeName, objectId);
+        super(VECTOR_PATH, nodeId, objectId, objectName);
         
         this.points = clone(points);
         this.closed = closed;
@@ -38767,8 +38769,8 @@ extends FigmaShape
     {
         const copy = new FigmaVectorPath(
             this.nodeId,
-            this.nodeName,
             this.objectId,
+            this.objectName,
             [], 0, 0,
             this.winding,
             this.round);
@@ -39137,9 +39139,9 @@ extends FigmaShape
 
 
 
-    constructor(nodeId, nodeName, objectId, children = [])
+    constructor(nodeId, objectId, objectName, children = [])
     {
-        super(SHAPE_GROUP, nodeId, nodeName, objectId);
+        super(SHAPE_GROUP, nodeId, objectId, objectName);
         
         this.children = clone(children);
     }
@@ -39150,8 +39152,8 @@ extends FigmaShape
     {
         const copy = new FigmaShapeGroup(
             this.nodeId,
-            this.nodeName,
             this.objectId,
+            this.objectName,
             this.children);
 
         copy.copyBase(this);
@@ -39174,9 +39176,9 @@ extends FigmaShape
 
 
 
-    constructor(nodeId, nodeName, objectId, x, y, width, height, angle, round, children = [])
+    constructor(nodeId, objectId, objectName, x, y, width, height, angle, round, children = [])
     {
-        super(FRAME, nodeId, nodeName, objectId);
+        super(FRAME, nodeId, objectId, objectName);
         
         this.x        = x;
         this.y        = y;
@@ -39193,8 +39195,8 @@ extends FigmaShape
     {
         const copy = new FigmaFrame(
             this.nodeId,
-            this.nodeName,
             this.objectId,
+            this.objectName,
             this.x,
             this.y,
             this.width,
@@ -39220,7 +39222,7 @@ extends FigmaObject
 
 
 
-    constructor(nodeId, nodeName, styleId, styleName)
+    constructor(nodeId, styleId, styleName)
     {
         super(COLOR_STYLE, nodeId, nodeName);
 
@@ -39232,7 +39234,7 @@ extends FigmaObject
 
     copy()
     {
-        const copy = new FigmaColorStyle(this.nodeId, this.nodeName, this.id, this.name);
+        const copy = new FigmaColorStyle(this.nodeId, this.id, this.name);
 
         copy.copyBase(this);
 
@@ -42625,8 +42627,9 @@ extends GOperator
 
                     obj.nodeId = this.nodeId;
 
-                    if (obj.objectId != NULL) obj.objectId += ' ';
-                    obj.objectId += (o + 1).toString();
+                    obj.objectId = this.nodeId + '/' + obj.objectId;
+                    // if (obj.objectId != NULL) obj.objectId += ' ';
+                    // obj.objectId += (o + 1).toString();
                     
                     obj.listId = i;
 
@@ -50594,7 +50597,7 @@ extends GShape
                 new FigmaRectangle(
                                 this.nodeId,
                                 this.nodeName,
-                                NULL,
+                                this.nodeId,
                                 this.value.x     .value,
                                 this.value.y     .value,
                                 this.value.width .value,
@@ -50744,7 +50747,7 @@ extends GShape
                 new FigmaLine(
                     this.nodeId,
                     this.nodeName,
-                    NULL,
+                    this.nodeId,
                     this.value.x    .value,
                     this.value.y    .value,
                     this.value.width.value,
@@ -50880,8 +50883,8 @@ extends GShape
            [
                new FigmaEllipse(
                     this.nodeId,
+                    this.nodeId,
                     this.nodeName,
-                    NULL,
                     this.x     .toValue().value,
                     this.y     .toValue().value,
                     this.width .toValue().value,
@@ -51038,8 +51041,8 @@ extends GShape
             [
                 new FigmaPolygon(
                                 this.nodeId,
+                                this.nodeId,
                                 this.nodeName,
-                                NULL,
                                 this.x      .toValue().value,
                                 this.y      .toValue().value,
                                 this.width  .toValue().value,
@@ -51220,8 +51223,8 @@ extends GShape
            [
                new FigmaStar(
                                this.nodeId,
+                               this.nodeId,
                                this.nodeName,
-                               NULL,
                                this.x     .toValue().value,
                                this.y     .toValue().value,
                                this.width .toValue().value,
@@ -51470,8 +51473,8 @@ extends GShape
             [
                 new FigmaText(
                     this.nodeId,
+                    this.nodeId,
                     this.nodeName,
-                    NULL,
                     this.value.text         .value,
                     this.value.x            .value,
                     this.value.y            .value,
@@ -51673,8 +51676,8 @@ extends GOperator
         {
             const point = new FigmaPoint(
                 this.nodeId,
+                this.nodeId,
                 this.nodeName,
-                NULL,
                 this.value.x.value,
                 this.value.y.value);
 
@@ -51857,7 +51860,8 @@ extends GShape
             [
                 new FigmaVectorPath(
                     this.nodeId,
-                    NULL,
+                    this.nodeName,
+                    this.nodeId,
                     points,
                     this.value.closed .value,
                     this.value.degree .value,
@@ -52021,17 +52025,18 @@ extends GShapeBase
         {
             const group = new FigmaShapeGroup(
                 this.nodeId,
-                this.nodeName,
-                NULL);
+                this.nodeId,
+                this.nodeName);
 
 
             if (this.children.objects)
             {
                 for (let i = 0; i < this.children.objects.length; i++)
                 {
-                    const obj = this.children.objects[i].copy();
-                    obj.nodeId = this.nodeId;
-                    obj.listId = -1;
+                    const obj    = this.children.objects[i].copy();
+                    obj.nodeId   = this.nodeId;
+                    obj.objectId = this.nodeId + '/' + obj.objectId;
+                    obj.listId   = -1;
                     group.children.push(obj);
                 }
             }
@@ -52199,8 +52204,8 @@ extends GShape
         {
             const frame = new FigmaFrame(
                 this.nodeId,
+                this.nodeId,
                 this.nodeName,
-                NULL,
                 this.value.x     .value,
                 this.value.y     .value,
                 this.value.width .value,
@@ -52213,9 +52218,10 @@ extends GShape
             {
                 for (let i = 0; i < this.children.objects.length; i++)
                 {
-                    const obj  = this.children.objects[i].copy();
-                    obj.nodeId = this.nodeId;
-                    obj.listId = -1;
+                    const obj    = this.children.objects[i].copy();
+                    obj.nodeId   = this.nodeId;
+                    obj.objectId = this.nodeId + '/' + obj.objectId;
+                    obj.listId   = -1;
                     frame.children.push(obj);
                 }
             }
@@ -53046,7 +53052,7 @@ extends GShape
             return;
 
             
-        const colorStyle = new FigmaColorStyle(this.nodeId, this.nodeName, this.id, this.name);
+        const colorStyle = new FigmaColorStyle(this.nodeId, this.id, this.name);
 
         colorStyle.existing = this.existing;
 
@@ -79821,7 +79827,7 @@ extends OpShapeBase
         this.canDisable = true;
 
 
-        this.addInput(this.createInputForObjects([SHAPE_GROUP_VALUE], getNodeInputValuesForUndo));
+        this.addInput (this.createInputForObjects([SHAPE_GROUP_VALUE], getNodeInputValuesForUndo));
         this.addOutput(new Output([SHAPE_GROUP_VALUE], this.output_genRequest));
 
 
@@ -79925,7 +79931,9 @@ extends OpShape
     
     updateRound()
     {
-        const min = Math.min(this.paramWidth.value.value, this.paramHeight.value.value);
+        const min = Math.min(
+            this.paramWidth .value.value, 
+            this.paramHeight.value.value);
 
         this.paramRound.controls[0].displayMin = 0;
         this.paramRound.controls[0].displayMax = min/2;
@@ -85411,7 +85419,7 @@ extends Action
     constructor(nodeId, newName)
     {
         super(
-            RENAME_ACTION,
+             RENAME_ACTION,
             'RENAME \'' + nodeId + '\' to \'' + newName + '\'');
 
         this.affectsConnections = false;

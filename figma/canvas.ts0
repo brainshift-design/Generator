@@ -33,7 +33,7 @@ function figDeleteObjectsExcept(nodeIds, ignoreObjects)
             const obj = objArray.objects[j];
             
             
-            if (!ignoreObjects.find(o => obj.name == makeObjectName(o)))
+            if (!findObject(obj, ignoreObjects))//ignoreObjects.find(o => obj.name == makeObjectName(o)))
             {
                 if (!obj.removed)
                     obj.remove();
@@ -49,6 +49,29 @@ function figDeleteObjectsExcept(nodeIds, ignoreObjects)
         if (isEmpty(objArray.objects))
             removeFromArray(figObjectArrays, objArray);
     }
+}
+
+
+
+function findObject(obj, ignoreObjects)
+{
+    if (   obj.type == SHAPE_GROUP
+        || obj.type == FRAME)
+    {
+        for (const child of obj.children)
+        {
+            const found = findObject(child, ignoreObjects);
+            if (found) return found;
+        }
+    }
+    else
+    {
+        const found = ignoreObjects.find(o => o.objectId == obj.getPluginData('objectId'));
+        if (found) return found;
+    }
+
+    
+    return null;
 }
 
 

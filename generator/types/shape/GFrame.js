@@ -102,8 +102,8 @@ extends GShape
         {
             const frame = new FigmaFrame(
                 this.nodeId,
+                this.nodeId,
                 this.nodeName,
-                NULL,
                 this.value.x     .value,
                 this.value.y     .value,
                 this.value.width .value,
@@ -116,9 +116,10 @@ extends GShape
             {
                 for (let i = 0; i < this.children.objects.length; i++)
                 {
-                    const obj  = this.children.objects[i].copy();
-                    obj.nodeId = this.nodeId;
-                    obj.listId = -1;
+                    const obj    = this.children.objects[i].copy();
+                    obj.nodeId   = this.nodeId;
+                    obj.objectId = this.nodeId + '/' + obj.objectId;
+                    obj.listId   = -1;
                     frame.children.push(obj);
                 }
             }

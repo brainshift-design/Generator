@@ -12,7 +12,7 @@ extends Action
     constructor(nodeId, newName)
     {
         super(
-            RENAME_ACTION,
+             RENAME_ACTION,
             'RENAME \'' + nodeId + '\' to \'' + newName + '\'');
 
         this.affectsConnections = false;

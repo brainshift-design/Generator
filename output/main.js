@@ -841,7 +841,8 @@ function figDeleteObjectsExcept(nodeIds, ignoreObjects) {
             continue;
         for (let j = objArray.objects.length - 1; j >= 0; j--) {
             const obj = objArray.objects[j];
-            if (!ignoreObjects.find(o => obj.name == makeObjectName(o))) {
+            if (!findObject(obj, ignoreObjects)) //ignoreObjects.find(o => obj.name == makeObjectName(o)))
+             {
                 if (!obj.removed)
                     obj.remove();
                 removeFromArray(objArray.objects, obj);
@@ -852,6 +853,22 @@ function figDeleteObjectsExcept(nodeIds, ignoreObjects) {
         if (isEmpty(objArray.objects))
             removeFromArray(figObjectArrays, objArray);
     }
+}
+function findObject(obj, ignoreObjects) {
+    if (obj.type == SHAPE_GROUP
+        || obj.type == FRAME) {
+        for (const child of obj.children) {
+            const found = findObject(child, ignoreObjects);
+            if (found)
+                return found;
+        }
+    }
+    else {
+        const found = ignoreObjects.find(o => o.objectId == obj.getPluginData('objectId'));
+        if (found)
+            return found;
+    }
+    return null;
 }
 function figDeleteAllObjects() {
     for (const obj of figma.currentPage.children)
@@ -1203,6 +1220,7 @@ function figCreateObject(objects, genObj) {
         figObj.setPluginData('id', genObj.objectId);
         figObj.setPluginData('type', genObj.type);
         figObj.setPluginData('nodeId', genObj.nodeId);
+        figObj.setPluginData('objectId', genObj.objectId);
         if (genObj.type == POINT)
             figPoints.push(figObj);
         objects.push(figObj);
@@ -1231,7 +1249,7 @@ function figUpdateObjects(parent, objects) {
         if (parent) {
             figObj = parent.children.find(o => o.removed
                 || o.name == makeObjectName(genObj));
-            console.log('parent figObj =', figObj);
+            //console.log('parent figObj =', figObj);
         }
         else {
             figObj = figObjects.objects.find(o => o.removed
@@ -1246,12 +1264,12 @@ function figUpdateObjects(parent, objects) {
         if (!isValid(figObj)
             || figObj.removed) // no existing object, create new object
          {
-            console.log('create');
+            //console.log('create');
             figCreateObject(figObjects.objects, genObj);
         }
         else if (figObj.getPluginData('type') == genObj.type.toString()) // update existing object
          {
-            console.log('update');
+            //console.log('update');
             figUpdateObject(figObj, genObj);
         }
         else // delete existing object, create new object
@@ -1301,8 +1319,7 @@ function figUpdateObject(figObj, genObj) {
     }
 }
 function makeObjectName(obj) {
-    return OBJECT_PREFIX + obj.nodeName; //
-    //  + (obj.objectId != '' ? ' ' + obj.objectId : '');
+    return OBJECT_PREFIX + obj.objectName;
 }
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 function genRectIsValid(genRect) {
@@ -1686,7 +1703,7 @@ function figCreateFrame(genFrame) {
     if (!genFrameIsValid(genFrame))
         return figFrame;
     if (figFrame) {
-        figFrame.name = makeObjectName(genFrame);
+        //figFrame.name = makeObjectName(genFrame);
         if (!genFrameIsValid(genFrame))
             return figFrame;
         figFrame.x = genFrame.x;

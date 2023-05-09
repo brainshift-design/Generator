@@ -16,7 +16,7 @@ extends OpShapeBase
         this.canDisable = true;
 
 
-        this.addInput(this.createInputForObjects([SHAPE_GROUP_VALUE], getNodeInputValuesForUndo));
+        this.addInput (this.createInputForObjects([SHAPE_GROUP_VALUE], getNodeInputValuesForUndo));
         this.addOutput(new Output([SHAPE_GROUP_VALUE], this.output_genRequest));
 
 
