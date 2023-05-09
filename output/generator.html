@@ -4054,6 +4054,7 @@ const DELETE_ACTION              = 'DELETE';
 const DISCONNECT_ACTION          = 'DISCONNECT';
 const LINK_STYLE_ACTION          = 'LINK_STYLE';
 const MAKE_ACTIVE_ACTION         = 'MAKE_ACTIVE';
+const MAKE_PASSIVE_ACTION        = 'MAKE_PASSIVE';
 const PASTE_ACTION               = 'PASTE';
 const RECONNECT_ACTION           = 'RECONNECT';
 const REMOVE_ACTION              = 'REMOVE';
@@ -4940,24 +4941,14 @@ function getSineYSegment(_pointP, _point, _pointN)
 class FigmaShapeGroup
 extends FigmaShape
 {
-    x;
-    y;
-    width;
-    height;
-    angle;
     children;
 
 
 
-    constructor(nodeId, objectId, x, y, width, height, angle, children = [])
+    constructor(nodeId, objectId, children = [])
     {
         super(SHAPE_GROUP, nodeId, objectId);
         
-        this.x        = x;
-        this.y        = y;
-        this.width    = width;
-        this.height   = height;
-        this.angle    = angle;
         this.children = clone(children);
     }
 
@@ -4968,11 +4959,6 @@ extends FigmaShape
         const copy = new FigmaShapeGroup(
             this.nodeId,
             this.objectId,
-            this.x,
-            this.y,
-            this.width,
-            this.height,
-            this.angle,
             this.children);
 
         copy.copyBase(this);
@@ -8108,24 +8094,14 @@ function parseVectorPathValue(str, i = -1)
 class ShapeGroupValue
 extends ShapeValue
 {
-    x;
-    y;
-    width;
-    height;
-    angle;
     children;
 
 
 
-    constructor(nodeId, x, y, width, height, angle, children)
+    constructor(nodeId, children)
     {
         super(SHAPE_GROUP_VALUE, nodeId);
 
-        this.x        = x;
-        this.y        = y;
-        this.width    = width;
-        this.height   = height;
-        this.angle    = angle;
         this.children = children;
     }
 
@@ -8135,11 +8111,6 @@ extends ShapeValue
     {
         const copy = new ShapeGroupValue(
             this.nodeId,
-            x            .copy(),
-            y            .copy(),
-            width        .copy(),
-            height       .copy(),
-            angle        .copy(),
             this.children.copy());
 
         copy.copyBase(this);
@@ -8152,11 +8123,6 @@ extends ShapeValue
     equals(group)
     {
         return group
-            && this.x       .equals(group.x       )
-            && this.y       .equals(group.y       )
-            && this.width   .equals(group.width   )
-            && this.height  .equals(group.height  )
-            && this.angle   .equals(group.angle   )
             && this.children.equals(group.children);
     }
 
@@ -8171,24 +8137,14 @@ extends ShapeValue
 
     toString()
     {
-        return      this.x       .toString()
-            + ' ' + this.y       .toString()
-            + ' ' + this.width   .toString()
-            + ' ' + this.height  .toString()
-            + ' ' + this.angle   .toString()
-            + ' ' + this.children.toString();
+        return this.children.toString();
     }
 
 
 
     toDisplayString()
     {
-        return      this.x       .toDisplayString()
-            + ' ' + this.y       .toDisplayString()
-            + ' ' + this.width   .toDisplayString()
-            + ' ' + this.height  .toDisplayString()
-            + ' ' + this.angle   .toDisplayString()
-            + ' ' + this.children.toDisplayString();
+        return this.children.toDisplayString();
     }
 
 
@@ -8202,12 +8158,7 @@ extends ShapeValue
 
     isValid()
     {
-        return this.x       .isValid()
-            && this.y       .isValid()
-            && this.width   .isValid()
-            && this.height  .isValid()
-            && this.angle   .isValid()
-            && this.children.isValid()
+        return this.children.isValid()
             && super.isValid();
     }
 
@@ -8215,12 +8166,7 @@ extends ShapeValue
     
     static NaN = new ShapeGroupValue(
         '',
-        NumberValue.NaN,
-        NumberValue.NaN,
-        NumberValue.NaN,
-        NumberValue.NaN,
-        NumberValue.NaN,
-        ListValue  .NaN);
+        ListValue.NaN);
 }
 
 
@@ -8241,20 +8187,10 @@ function parseShapeGroupValue(str, i = -1)
 
     const iStart = i;
 
-    const x        = parseNumberValue(str[i]); i += x       [1];
-    const y        = parseNumberValue(str[i]); i += y       [1];
-    const width    = parseNumberValue(str[i]); i += width   [1];
-    const height   = parseNumberValue(str[i]); i += height  [1];
-    const angle    = parseNumberValue(str[i]); i += angle   [1];
     const children = parseListValue  (str, i); i += children[1];
 
     const group = new ShapeGroupValue(
         '', // set node ID elsewhere
-        x       [0],
-        y       [0],
-        width   [0],
-        height  [0],
-        angle   [0],
         children[0]);
 
 
@@ -8489,7 +8425,9 @@ extends GOperator
             {
                 for (let j = 0; j < this.inputs[i].objects.length; j++, o++)
                 {
-                    const obj = this.inputs[i].objects[j].copy();
+                    //console.log('this.inputs[i].objects[j] =', this.inputs[i].objects[j]);
+                    //const obj = this.inputs[i].objects[j].copy();
+                    const obj = copyFigmaObject(this.inputs[i].objects[j]);
 
                     obj.nodeId = this.nodeId;
 
@@ -17831,7 +17769,7 @@ extends GShapeBase
             return this;
 
 
-        const [x, y, width, height, angle] = await this.evalBaseParams(parse);
+        await this.evalBaseParams(parse);
 
         const children = this.children ? (await this.children.eval(parse)).toValue() : null;
 
@@ -17844,16 +17782,11 @@ extends GShapeBase
 
             this.value = new ShapeGroupValue(
                 this.nodeId,
-                x        ?? input.x,
-                y        ?? input.y,
-                width    ?? input.width,
-                height   ?? input.height,
-                angle    ?? input.angle,
                 children ?? input.children);
         }
         else
         {
-            this.value = new ShapeGroupValue(this.nodeId, x, y, width, height, angle, children);
+            this.value = new ShapeGroupValue(this.nodeId, children);
         }
 
 
@@ -17862,7 +17795,6 @@ extends GShapeBase
             ['value',    this.value         ],
             ['children', this.value.children]
         ];
-
 
 
         await this.evalShapeBase(parse, input);
@@ -17884,23 +17816,11 @@ extends GShapeBase
             return;
             
 
-        if (   this.value.x
-            && this.value.y
-            && this.value.width
-            && this.value.height
-            && this.value.angle)
+        if (this.value.children)
         {
             const group = new FigmaShapeGroup(
                 this.nodeId,
-                NULL,
-                this.value.x     .value,
-                this.value.y     .value,
-                this.value.width .value,
-                this.value.height.value,
-                this.value.angle .value);
-
-            if (this.children.objects)
-                group.children.push(...this.children.objects);
+                NULL);
 
 
             if (this.children.objects)
@@ -17908,13 +17828,14 @@ extends GShapeBase
                 for (let i = 0; i < this.children.objects.length; i++)
                 {
                     const obj = this.children.objects[i].copy();
+                    obj.nodeId = this.nodeId;
                     obj.listId = -1;
                     group.children.push(obj);
                 }
             }
 
-            this.objects = [group];
 
+            this.objects = [group];
 
             this.updateValues.push(['nObjects', new NumberValue(
                 this.children.objects 
@@ -17947,14 +17868,7 @@ extends GShapeBase
     {
         const group = new ShapeGroupValue(
             this.nodeId,
-            this.x       .toValue(),
-            this.y       .toValue(),
-            this.width   .toValue(),
-            this.height  .toValue(),
-            this.angle   .toValue(),
             this.children.toValue());
-
-        group.props = this.props.toValue();
 
         return group;
     }
@@ -18096,14 +18010,15 @@ extends GShape
             {
                 for (let i = 0; i < this.children.objects.length; i++)
                 {
-                    const obj = this.children.objects[i].copy();
+                    const obj  = this.children.objects[i].copy();
+                    obj.nodeId = this.nodeId;
                     obj.listId = -1;
                     frame.children.push(obj);
                 }
             }
 
-            this.objects = [frame];
 
+            this.objects = [frame];
 
             this.updateValues.push(['nObjects', new NumberValue(
                 this.children.objects 
@@ -20259,8 +20174,8 @@ function genQueueChunk(requestId, actionId, updateNodeId, updateParamId, nodeVal
         updateParamId: updateParamId,
         chunkId:       nodeValChunkId,
         values:        [...nodeValChunk].map(v => v.toString()),
-        objects:       [...objChunk],
-        styles:        [...styleChunk],
+        objects:       [...objChunk    ],
+        styles:        [...styleChunk  ],
         updatedNodes:  updatedNodes,
         totalNodes:    totalNodes,
         isLastChunk:   isLastChunk
@@ -20294,6 +20209,7 @@ function genUpdateNodeProgress(nodeId, progress)
         progress: progress
     });
 }
+
 
 
 function getObjectBounds(objects)
@@ -22790,13 +22706,11 @@ function genParseShapeGroup(parse)
 
         switch (paramId)
         {
-        case 'x':        group.x        = genParse(parse); break;
-        case 'y':        group.y        = genParse(parse); break;
-        case 'width':    group.width    = genParse(parse); break;
-        case 'height':   group.height   = genParse(parse); break;
-        case 'angle':    group.angle    = genParse(parse); break;
+        case 'x':                         genParse(parse); break;
+        case 'y':                         genParse(parse); break;
+        case 'width':                     genParse(parse); break;
+        case 'height':                    genParse(parse); break;
         case 'children': group.children = genParse(parse); break;
-        case 'props':    group.props    = genParse(parse); break;
         }
     }
 

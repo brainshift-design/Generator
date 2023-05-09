@@ -600,13 +600,11 @@ function genParseShapeGroup(parse)
 
         switch (paramId)
         {
-        case 'x':        group.x        = genParse(parse); break;
-        case 'y':        group.y        = genParse(parse); break;
-        case 'width':    group.width    = genParse(parse); break;
-        case 'height':   group.height   = genParse(parse); break;
-        case 'angle':    group.angle    = genParse(parse); break;
+        case 'x':                         genParse(parse); break;
+        case 'y':                         genParse(parse); break;
+        case 'width':                     genParse(parse); break;
+        case 'height':                    genParse(parse); break;
         case 'children': group.children = genParse(parse); break;
-        case 'props':    group.props    = genParse(parse); break;
         }
     }
 

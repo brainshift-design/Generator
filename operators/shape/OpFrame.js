@@ -19,7 +19,7 @@ extends OpShape
         this.variableInputs = true;
 
 
-        this.addInput(this.createInputForObjects(SHAPE_VALUES, getNodeInputValuesForUndo));
+        this.addInput(this.createInputForObjects([FRAME_VALUE], getNodeInputValuesForUndo));
         this.addOutput(new Output([FRAME_VALUE], this.output_genRequest));
 
 
@@ -43,7 +43,7 @@ extends OpShape
         this.paramChildren.input.types.push(SHAPE_LIST_VALUE);
         this.paramChildren.listTypes    = SHAPE_VALUES;
         this.paramChildren.itemName     = 'object';
-        this.paramChildren.showZero     =  false;
+        this.paramChildren.showZero     = false;
         this.paramChildren.getItemCount = () => 0;
 
 

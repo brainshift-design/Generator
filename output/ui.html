@@ -8428,6 +8428,7 @@ const DELETE_ACTION              = 'DELETE';
 const DISCONNECT_ACTION          = 'DISCONNECT';
 const LINK_STYLE_ACTION          = 'LINK_STYLE';
 const MAKE_ACTIVE_ACTION         = 'MAKE_ACTIVE';
+const MAKE_PASSIVE_ACTION        = 'MAKE_PASSIVE';
 const PASTE_ACTION               = 'PASTE';
 const RECONNECT_ACTION           = 'RECONNECT';
 const REMOVE_ACTION              = 'REMOVE';
@@ -9314,24 +9315,14 @@ function getSineYSegment(_pointP, _point, _pointN)
 class FigmaShapeGroup
 extends FigmaShape
 {
-    x;
-    y;
-    width;
-    height;
-    angle;
     children;
 
 
 
-    constructor(nodeId, objectId, x, y, width, height, angle, children = [])
+    constructor(nodeId, objectId, children = [])
     {
         super(SHAPE_GROUP, nodeId, objectId);
         
-        this.x        = x;
-        this.y        = y;
-        this.width    = width;
-        this.height   = height;
-        this.angle    = angle;
         this.children = clone(children);
     }
 
@@ -9342,11 +9333,6 @@ extends FigmaShape
         const copy = new FigmaShapeGroup(
             this.nodeId,
             this.objectId,
-            this.x,
-            this.y,
-            this.width,
-            this.height,
-            this.angle,
             this.children);
 
         copy.copyBase(this);
@@ -12482,24 +12468,14 @@ function parseVectorPathValue(str, i = -1)
 class ShapeGroupValue
 extends ShapeValue
 {
-    x;
-    y;
-    width;
-    height;
-    angle;
     children;
 
 
 
-    constructor(nodeId, x, y, width, height, angle, children)
+    constructor(nodeId, children)
     {
         super(SHAPE_GROUP_VALUE, nodeId);
 
-        this.x        = x;
-        this.y        = y;
-        this.width    = width;
-        this.height   = height;
-        this.angle    = angle;
         this.children = children;
     }
 
@@ -12509,11 +12485,6 @@ extends ShapeValue
     {
         const copy = new ShapeGroupValue(
             this.nodeId,
-            x            .copy(),
-            y            .copy(),
-            width        .copy(),
-            height       .copy(),
-            angle        .copy(),
             this.children.copy());
 
         copy.copyBase(this);
@@ -12526,11 +12497,6 @@ extends ShapeValue
     equals(group)
     {
         return group
-            && this.x       .equals(group.x       )
-            && this.y       .equals(group.y       )
-            && this.width   .equals(group.width   )
-            && this.height  .equals(group.height  )
-            && this.angle   .equals(group.angle   )
             && this.children.equals(group.children);
     }
 
@@ -12545,24 +12511,14 @@ extends ShapeValue
 
     toString()
     {
-        return      this.x       .toString()
-            + ' ' + this.y       .toString()
-            + ' ' + this.width   .toString()
-            + ' ' + this.height  .toString()
-            + ' ' + this.angle   .toString()
-            + ' ' + this.children.toString();
+        return this.children.toString();
     }
 
 
 
     toDisplayString()
     {
-        return      this.x       .toDisplayString()
-            + ' ' + this.y       .toDisplayString()
-            + ' ' + this.width   .toDisplayString()
-            + ' ' + this.height  .toDisplayString()
-            + ' ' + this.angle   .toDisplayString()
-            + ' ' + this.children.toDisplayString();
+        return this.children.toDisplayString();
     }
 
 
@@ -12576,12 +12532,7 @@ extends ShapeValue
 
     isValid()
     {
-        return this.x       .isValid()
-            && this.y       .isValid()
-            && this.width   .isValid()
-            && this.height  .isValid()
-            && this.angle   .isValid()
-            && this.children.isValid()
+        return this.children.isValid()
             && super.isValid();
     }
 
@@ -12589,12 +12540,7 @@ extends ShapeValue
     
     static NaN = new ShapeGroupValue(
         '',
-        NumberValue.NaN,
-        NumberValue.NaN,
-        NumberValue.NaN,
-        NumberValue.NaN,
-        NumberValue.NaN,
-        ListValue  .NaN);
+        ListValue.NaN);
 }
 
 
@@ -12615,20 +12561,10 @@ function parseShapeGroupValue(str, i = -1)
 
     const iStart = i;
 
-    const x        = parseNumberValue(str[i]); i += x       [1];
-    const y        = parseNumberValue(str[i]); i += y       [1];
-    const width    = parseNumberValue(str[i]); i += width   [1];
-    const height   = parseNumberValue(str[i]); i += height  [1];
-    const angle    = parseNumberValue(str[i]); i += angle   [1];
     const children = parseListValue  (str, i); i += children[1];
 
     const group = new ShapeGroupValue(
         '', // set node ID elsewhere
-        x       [0],
-        y       [0],
-        width   [0],
-        height  [0],
-        angle   [0],
         children[0]);
 
 
@@ -12863,7 +12799,9 @@ extends GOperator
             {
                 for (let j = 0; j < this.inputs[i].objects.length; j++, o++)
                 {
-                    const obj = this.inputs[i].objects[j].copy();
+                    //console.log('this.inputs[i].objects[j] =', this.inputs[i].objects[j]);
+                    //const obj = this.inputs[i].objects[j].copy();
+                    const obj = copyFigmaObject(this.inputs[i].objects[j]);
 
                     obj.nodeId = this.nodeId;
 
@@ -22205,7 +22143,7 @@ extends GShapeBase
             return this;
 
 
-        const [x, y, width, height, angle] = await this.evalBaseParams(parse);
+        await this.evalBaseParams(parse);
 
         const children = this.children ? (await this.children.eval(parse)).toValue() : null;
 
@@ -22218,16 +22156,11 @@ extends GShapeBase
 
             this.value = new ShapeGroupValue(
                 this.nodeId,
-                x        ?? input.x,
-                y        ?? input.y,
-                width    ?? input.width,
-                height   ?? input.height,
-                angle    ?? input.angle,
                 children ?? input.children);
         }
         else
         {
-            this.value = new ShapeGroupValue(this.nodeId, x, y, width, height, angle, children);
+            this.value = new ShapeGroupValue(this.nodeId, children);
         }
 
 
@@ -22236,7 +22169,6 @@ extends GShapeBase
             ['value',    this.value         ],
             ['children', this.value.children]
         ];
-
 
 
         await this.evalShapeBase(parse, input);
@@ -22258,23 +22190,11 @@ extends GShapeBase
             return;
             
 
-        if (   this.value.x
-            && this.value.y
-            && this.value.width
-            && this.value.height
-            && this.value.angle)
+        if (this.value.children)
         {
             const group = new FigmaShapeGroup(
                 this.nodeId,
-                NULL,
-                this.value.x     .value,
-                this.value.y     .value,
-                this.value.width .value,
-                this.value.height.value,
-                this.value.angle .value);
-
-            if (this.children.objects)
-                group.children.push(...this.children.objects);
+                NULL);
 
 
             if (this.children.objects)
@@ -22282,13 +22202,14 @@ extends GShapeBase
                 for (let i = 0; i < this.children.objects.length; i++)
                 {
                     const obj = this.children.objects[i].copy();
+                    obj.nodeId = this.nodeId;
                     obj.listId = -1;
                     group.children.push(obj);
                 }
             }
 
-            this.objects = [group];
 
+            this.objects = [group];
 
             this.updateValues.push(['nObjects', new NumberValue(
                 this.children.objects 
@@ -22321,14 +22242,7 @@ extends GShapeBase
     {
         const group = new ShapeGroupValue(
             this.nodeId,
-            this.x       .toValue(),
-            this.y       .toValue(),
-            this.width   .toValue(),
-            this.height  .toValue(),
-            this.angle   .toValue(),
             this.children.toValue());
-
-        group.props = this.props.toValue();
 
         return group;
     }
@@ -22470,14 +22384,15 @@ extends GShape
             {
                 for (let i = 0; i < this.children.objects.length; i++)
                 {
-                    const obj = this.children.objects[i].copy();
+                    const obj  = this.children.objects[i].copy();
+                    obj.nodeId = this.nodeId;
                     obj.listId = -1;
                     frame.children.push(obj);
                 }
             }
 
-            this.objects = [frame];
 
+            this.objects = [frame];
 
             this.updateValues.push(['nObjects', new NumberValue(
                 this.children.objects 
@@ -24633,8 +24548,8 @@ function genQueueChunk(requestId, actionId, updateNodeId, updateParamId, nodeVal
         updateParamId: updateParamId,
         chunkId:       nodeValChunkId,
         values:        [...nodeValChunk].map(v => v.toString()),
-        objects:       [...objChunk],
-        styles:        [...styleChunk],
+        objects:       [...objChunk    ],
+        styles:        [...styleChunk  ],
         updatedNodes:  updatedNodes,
         totalNodes:    totalNodes,
         isLastChunk:   isLastChunk
@@ -24668,6 +24583,7 @@ function genUpdateNodeProgress(nodeId, progress)
         progress: progress
     });
 }
+
 
 
 function getObjectBounds(objects)
@@ -27164,13 +27080,11 @@ function genParseShapeGroup(parse)
 
         switch (paramId)
         {
-        case 'x':        group.x        = genParse(parse); break;
-        case 'y':        group.y        = genParse(parse); break;
-        case 'width':    group.width    = genParse(parse); break;
-        case 'height':   group.height   = genParse(parse); break;
-        case 'angle':    group.angle    = genParse(parse); break;
+        case 'x':                         genParse(parse); break;
+        case 'y':                         genParse(parse); break;
+        case 'width':                     genParse(parse); break;
+        case 'height':                    genParse(parse); break;
         case 'children': group.children = genParse(parse); break;
-        case 'props':    group.props    = genParse(parse); break;
         }
     }
 
@@ -38297,6 +38211,7 @@ const DELETE_ACTION              = 'DELETE';
 const DISCONNECT_ACTION          = 'DISCONNECT';
 const LINK_STYLE_ACTION          = 'LINK_STYLE';
 const MAKE_ACTIVE_ACTION         = 'MAKE_ACTIVE';
+const MAKE_PASSIVE_ACTION        = 'MAKE_PASSIVE';
 const PASTE_ACTION               = 'PASTE';
 const RECONNECT_ACTION           = 'RECONNECT';
 const REMOVE_ACTION              = 'REMOVE';
@@ -39183,24 +39098,14 @@ function getSineYSegment(_pointP, _point, _pointN)
 class FigmaShapeGroup
 extends FigmaShape
 {
-    x;
-    y;
-    width;
-    height;
-    angle;
     children;
 
 
 
-    constructor(nodeId, objectId, x, y, width, height, angle, children = [])
+    constructor(nodeId, objectId, children = [])
     {
         super(SHAPE_GROUP, nodeId, objectId);
         
-        this.x        = x;
-        this.y        = y;
-        this.width    = width;
-        this.height   = height;
-        this.angle    = angle;
         this.children = clone(children);
     }
 
@@ -39211,11 +39116,6 @@ extends FigmaShape
         const copy = new FigmaShapeGroup(
             this.nodeId,
             this.objectId,
-            this.x,
-            this.y,
-            this.width,
-            this.height,
-            this.angle,
             this.children);
 
         copy.copyBase(this);
@@ -42351,24 +42251,14 @@ function parseVectorPathValue(str, i = -1)
 class ShapeGroupValue
 extends ShapeValue
 {
-    x;
-    y;
-    width;
-    height;
-    angle;
     children;
 
 
 
-    constructor(nodeId, x, y, width, height, angle, children)
+    constructor(nodeId, children)
     {
         super(SHAPE_GROUP_VALUE, nodeId);
 
-        this.x        = x;
-        this.y        = y;
-        this.width    = width;
-        this.height   = height;
-        this.angle    = angle;
         this.children = children;
     }
 
@@ -42378,11 +42268,6 @@ extends ShapeValue
     {
         const copy = new ShapeGroupValue(
             this.nodeId,
-            x            .copy(),
-            y            .copy(),
-            width        .copy(),
-            height       .copy(),
-            angle        .copy(),
             this.children.copy());
 
         copy.copyBase(this);
@@ -42395,11 +42280,6 @@ extends ShapeValue
     equals(group)
     {
         return group
-            && this.x       .equals(group.x       )
-            && this.y       .equals(group.y       )
-            && this.width   .equals(group.width   )
-            && this.height  .equals(group.height  )
-            && this.angle   .equals(group.angle   )
             && this.children.equals(group.children);
     }
 
@@ -42414,24 +42294,14 @@ extends ShapeValue
 
     toString()
     {
-        return      this.x       .toString()
-            + ' ' + this.y       .toString()
-            + ' ' + this.width   .toString()
-            + ' ' + this.height  .toString()
-            + ' ' + this.angle   .toString()
-            + ' ' + this.children.toString();
+        return this.children.toString();
     }
 
 
 
     toDisplayString()
     {
-        return      this.x       .toDisplayString()
-            + ' ' + this.y       .toDisplayString()
-            + ' ' + this.width   .toDisplayString()
-            + ' ' + this.height  .toDisplayString()
-            + ' ' + this.angle   .toDisplayString()
-            + ' ' + this.children.toDisplayString();
+        return this.children.toDisplayString();
     }
 
 
@@ -42445,12 +42315,7 @@ extends ShapeValue
 
     isValid()
     {
-        return this.x       .isValid()
-            && this.y       .isValid()
-            && this.width   .isValid()
-            && this.height  .isValid()
-            && this.angle   .isValid()
-            && this.children.isValid()
+        return this.children.isValid()
             && super.isValid();
     }
 
@@ -42458,12 +42323,7 @@ extends ShapeValue
     
     static NaN = new ShapeGroupValue(
         '',
-        NumberValue.NaN,
-        NumberValue.NaN,
-        NumberValue.NaN,
-        NumberValue.NaN,
-        NumberValue.NaN,
-        ListValue  .NaN);
+        ListValue.NaN);
 }
 
 
@@ -42484,20 +42344,10 @@ function parseShapeGroupValue(str, i = -1)
 
     const iStart = i;
 
-    const x        = parseNumberValue(str[i]); i += x       [1];
-    const y        = parseNumberValue(str[i]); i += y       [1];
-    const width    = parseNumberValue(str[i]); i += width   [1];
-    const height   = parseNumberValue(str[i]); i += height  [1];
-    const angle    = parseNumberValue(str[i]); i += angle   [1];
     const children = parseListValue  (str, i); i += children[1];
 
     const group = new ShapeGroupValue(
         '', // set node ID elsewhere
-        x       [0],
-        y       [0],
-        width   [0],
-        height  [0],
-        angle   [0],
         children[0]);
 
 
@@ -42732,7 +42582,9 @@ extends GOperator
             {
                 for (let j = 0; j < this.inputs[i].objects.length; j++, o++)
                 {
-                    const obj = this.inputs[i].objects[j].copy();
+                    //console.log('this.inputs[i].objects[j] =', this.inputs[i].objects[j]);
+                    //const obj = this.inputs[i].objects[j].copy();
+                    const obj = copyFigmaObject(this.inputs[i].objects[j]);
 
                     obj.nodeId = this.nodeId;
 
@@ -52074,7 +51926,7 @@ extends GShapeBase
             return this;
 
 
-        const [x, y, width, height, angle] = await this.evalBaseParams(parse);
+        await this.evalBaseParams(parse);
 
         const children = this.children ? (await this.children.eval(parse)).toValue() : null;
 
@@ -52087,16 +51939,11 @@ extends GShapeBase
 
             this.value = new ShapeGroupValue(
                 this.nodeId,
-                x        ?? input.x,
-                y        ?? input.y,
-                width    ?? input.width,
-                height   ?? input.height,
-                angle    ?? input.angle,
                 children ?? input.children);
         }
         else
         {
-            this.value = new ShapeGroupValue(this.nodeId, x, y, width, height, angle, children);
+            this.value = new ShapeGroupValue(this.nodeId, children);
         }
 
 
@@ -52105,7 +51952,6 @@ extends GShapeBase
             ['value',    this.value         ],
             ['children', this.value.children]
         ];
-
 
 
         await this.evalShapeBase(parse, input);
@@ -52127,23 +51973,11 @@ extends GShapeBase
             return;
             
 
-        if (   this.value.x
-            && this.value.y
-            && this.value.width
-            && this.value.height
-            && this.value.angle)
+        if (this.value.children)
         {
             const group = new FigmaShapeGroup(
                 this.nodeId,
-                NULL,
-                this.value.x     .value,
-                this.value.y     .value,
-                this.value.width .value,
-                this.value.height.value,
-                this.value.angle .value);
-
-            if (this.children.objects)
-                group.children.push(...this.children.objects);
+                NULL);
 
 
             if (this.children.objects)
@@ -52151,13 +51985,14 @@ extends GShapeBase
                 for (let i = 0; i < this.children.objects.length; i++)
                 {
                     const obj = this.children.objects[i].copy();
+                    obj.nodeId = this.nodeId;
                     obj.listId = -1;
                     group.children.push(obj);
                 }
             }
 
-            this.objects = [group];
 
+            this.objects = [group];
 
             this.updateValues.push(['nObjects', new NumberValue(
                 this.children.objects 
@@ -52190,14 +52025,7 @@ extends GShapeBase
     {
         const group = new ShapeGroupValue(
             this.nodeId,
-            this.x       .toValue(),
-            this.y       .toValue(),
-            this.width   .toValue(),
-            this.height  .toValue(),
-            this.angle   .toValue(),
             this.children.toValue());
-
-        group.props = this.props.toValue();
 
         return group;
     }
@@ -52339,14 +52167,15 @@ extends GShape
             {
                 for (let i = 0; i < this.children.objects.length; i++)
                 {
-                    const obj = this.children.objects[i].copy();
+                    const obj  = this.children.objects[i].copy();
+                    obj.nodeId = this.nodeId;
                     obj.listId = -1;
                     frame.children.push(obj);
                 }
             }
 
-            this.objects = [frame];
 
+            this.objects = [frame];
 
             this.updateValues.push(['nObjects', new NumberValue(
                 this.children.objects 
@@ -57803,7 +57632,7 @@ const iconTextShape         = '<svg width="13" height="16" viewBox="0 0 13 16" f
 const iconSelected          = '<svg width="19" height="19" viewBox="0 0 19 19" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="4.5" y="4.5" width="4" height="4" stroke="white"/><circle cx="12.5" cy="6.5" r="2" stroke="white"/><line x1="4.4364" y1="15.069" x2="8.9364" y2="10.3022" stroke="white"/><path d="M10.3349 14.75L12.5 11L14.6651 14.75H10.3349Z" stroke="white"/><rect x="0.5" y="0.5" width="2" height="2" stroke="white"/><rect x="0.5" y="16.5" width="2" height="2" stroke="white"/><rect x="16.5" y="16.5" width="2" height="2" stroke="white"/><rect x="16.5" y="0.5" width="2" height="2" stroke="white"/><rect x="3" y="1" width="13" height="1" fill="white"/><rect x="3" y="17" width="13" height="1" fill="white"/><rect x="17" y="16" width="13" height="1" transform="rotate(-90 17 16)" fill="white"/><rect x="1" y="16" width="13" height="1" transform="rotate(-90 1 16)" fill="white"/></svg>';
 const iconPoint             = '<svg width="5" height="5" viewBox="0 0 5 5" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="2.5" cy="2.5" r="2.07507" fill="white"/></svg>';
 const iconVectorPath        = '<svg width="18" height="17" viewBox="0 0 18 17" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="2.50012" cy="1" r="0.75" stroke="white" stroke-width="0.5"/><circle cx="15.4999" cy="16.0002" r="0.75" stroke="white" stroke-width="0.5"/><path d="M2.8714 11.9166C9 -13 10 29 15.1694 5.03541" stroke="white" stroke-width="1.5"/><circle cx="15.5001" cy="4" r="1.5" stroke="white"/><circle cx="2.49988" cy="13" r="1.5" stroke="white"/><rect x="2" y="9" width="1" height="1" fill="white"/><rect x="2" y="7" width="1" height="1" fill="white"/><rect x="2" y="5" width="1" height="1" fill="white"/><rect x="2" y="3" width="1" height="1" fill="white"/><rect x="15" y="13" width="1" height="1" fill="white"/><rect x="15" y="11" width="1" height="1" fill="white"/><rect x="15" y="9" width="1" height="1" fill="white"/><rect x="15" y="7" width="1" height="1" fill="white"/></svg>';
-const iconShapeGroup        = '<svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M0 3H1V1H3V0H0V3Z" fill="white"/><path d="M16 13L15 13L15 15L13 15L13 16L16 16L16 13Z" fill="white"/><path d="M3 16L3 15L1 15L1 13L-4.37114e-08 13L0 16L3 16Z" fill="white"/><path d="M13 0L13 1L15 1L15 3L16 3L16 0L13 0Z" fill="white"/><rect y="6" width="1" height="4" fill="white"/><rect x="10" width="1" height="4" transform="rotate(90 10 0)" fill="white"/><rect x="15" y="6" width="1" height="4" fill="white"/><rect x="10" y="15" width="1" height="4" transform="rotate(90 10 15)" fill="white"/></svg>';
+const iconShapeGroup        = '<svg width="12" height="12" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M2 12.0004L2 11.0004L1 11.0004L1 10L-4.37113e-08 10L0 12.0004L2 12.0004Z" fill="white"/><path d="M10.0002 0.000182931L10.0002 1.00018L11.0002 1.00018L11.0002 2.00055L12.0002 2.00055L12.0002 0.000183105L10.0002 0.000182931Z" fill="white"/><path d="M-0.000183193 2.00018H0.999817L0.999817 1.00018H2.00018V0.000183149L-0.000183105 0.000183105L-0.000183193 2.00018Z" fill="white"/><path d="M12.0004 10.0004L11.0004 10.0004L11.0004 11.0004L10 11.0004L10 12.0004L12.0004 12.0004L12.0004 10.0004Z" fill="white"/><rect y="5" width="1" height="2" fill="white"/><rect x="7" width="1" height="2" transform="rotate(90 7 0)" fill="white"/><rect x="11" y="5" width="1" height="2" fill="white"/><rect x="7" y="11" width="1" height="2" transform="rotate(90 7 11)" fill="white"/></svg>';
 const iconFrame             = '<svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" clip-rule="evenodd" d="M4 0H3V3H0V4H3V12H0V13H3V16H4V13H12V16H13V13H16V12H13V4H16V3H13V0H12V3H4V0ZM12 12V4H4V12H12Z" fill="white"/></svg>';
 
 const iconMove              = '<svg width="19" height="19" viewBox="0 0 19 19" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="6.5" y="6.5" width="6" height="6" stroke="white"/><path d="M17.3034 9.48924L15.6526 7.83845L16.5019 6.98914L19 9.48725L16.4764 12.011L15.629 11.1636L17.3034 9.48924Z" fill="white"/><path d="M1.69664 9.51085L3.34744 11.1616L2.49812 12.011L7.84779e-06 9.51284L2.52365 6.98914L3.371 7.83649L1.69664 9.51085Z" fill="white"/><path d="M9.4892 1.69664L7.8384 3.34743L6.98909 2.49812L9.48721 7.5202e-06L12.0109 2.52365L11.1636 3.371L9.4892 1.69664Z" fill="white"/><path d="M9.5108 17.3034L11.1616 15.6526L12.0109 16.5019L9.51279 19L6.98909 16.4764L7.83644 15.629L9.5108 17.3034Z" fill="white"/></svg>'; 
@@ -62584,12 +62413,12 @@ GraphView.prototype.selectFromClick = function(node, ctrl, shift, alt)
           && alt)
     {
         if (isMac) this.selectedNodes = [node, ...getNodesBeforeNode(node)];
-        else       this.selectedNodes = [node, ...getNodesAfterNode(node)];
+        else       this.selectedNodes = [node, ...getNodesAfterNode (node)];
     }
     else if (ctrl
           && shift)
     {
-        if (isMac) this.selectedNodes = [node, ...getNodesAfterNode(node)];
+        if (isMac) this.selectedNodes = [node, ...getNodesAfterNode (node)];
         else       this.selectedNodes = [node, ...getNodesBeforeNode(node)];
     }
     else if (ctrl
@@ -62603,7 +62432,15 @@ GraphView.prototype.selectFromClick = function(node, ctrl, shift, alt)
     }
     else if (node.selected)
     {
-        if (shift) node.selected = false;
+        if (   shift
+            && node.deselectTimer < 0) 
+        {
+            node.deselectTimer = setTimeout(() => 
+            {
+                node.selected      = false;
+                node.deselectTimer = -1;
+            }, 200);
+        }
     }
 }
 
@@ -68837,11 +68674,13 @@ class Operator
     defaultWidth;
     labelOffsetFactor;
 
+    deselectTimer      = -1;
+
 
     _creatingButton    = null; // this is used to place the node under its creating button
 
     
-    requestCache       = []; // for nodes without an output
+    requestCache       = [];   // for nodes without an output
 
 
     // node UI
@@ -70495,12 +70334,23 @@ Operator.prototype.createHeader = function()
         if (  !getCtrlKey(e)
             && e.clientX >= bounds.left && e.clientX < bounds.right
             && e.clientY >= bounds.top  && e.clientY < bounds.bottom)
+        {
             this.showLabelTextbox();
+        }
         else if (!this.header.ignoreDoubleClick)
         {
             actionManager.do(new MakeActiveNodesAction([this.id], e.shiftKey));
+            
+            console.log('this.deselectTimer =', this.deselectTimer);
+            if (this.deselectTimer > -1)
+            {
+                clearTimeout(this.deselectTimer);
+                this.deselectTimer = -1;
+            }
+
             e.stopPropagation();
         }
+
 
         this.header.ignoreDoubleClick = false;
     });
@@ -79905,14 +79755,13 @@ extends OpShape
 }
 
 
-class   OpShapeGroup
+class OpShapeGroup
 extends OpShapeBase
 {
     paramX;
     paramY;
     paramWidth;
     paramHeight;
-    paramAngle;
     paramChildren;
 
 
@@ -79924,22 +79773,21 @@ extends OpShapeBase
         this.canDisable = true;
 
 
-        this.addInput(this.createInputForObjects(SHAPE_VALUES, getNodeInputValuesForUndo));
+        this.addInput(this.createInputForObjects([SHAPE_GROUP_VALUE], getNodeInputValuesForUndo));
         this.addOutput(new Output([SHAPE_GROUP_VALUE], this.output_genRequest));
 
 
-        this.addParam(this.paramX        = new NumberParam('x',        'x',       true, true,  true,   0));
-        this.addParam(this.paramY        = new NumberParam('y',        'y',       true, true,  true,   0));
-        this.addParam(this.paramWidth    = new NumberParam('width',    'width',   true, false, true, 100,    0.01));
-        this.addParam(this.paramHeight   = new NumberParam('height',   'height',  true, false, true, 100,    0.01));
-        this.addParam(this.paramAngle    = new NumberParam('angle',    'angle',   true, true,  true,   0, -180,   180));
+        this.addParam(this.paramX        = new NumberParam('x',        'x',       true, false, false,   0));
+        this.addParam(this.paramY        = new NumberParam('y',        'y',       true, false, false,   0));
+        this.addParam(this.paramWidth    = new NumberParam('width',    'width',   true, false, false, 100, 0.01));
+        this.addParam(this.paramHeight   = new NumberParam('height',   'height',  true, false, false, 100, 0.01));
         this.addParam(this.paramChildren = new ListParam  ('children', 'objects', true, true,  true));
 
         
         this.paramChildren.input.types.push(SHAPE_LIST_VALUE);
-        this.paramChildren.listTypes = SHAPE_VALUES;
-        this.paramChildren.itemName  = 'object';
-        this.paramChildren.showZero  =  false;
+        this.paramChildren.listTypes    = SHAPE_VALUES;
+        this.paramChildren.itemName     = 'object';
+        this.paramChildren.showZero     = false;
         this.paramChildren.getItemCount = () => 0;
 
 
@@ -79952,10 +79800,12 @@ extends OpShapeBase
     {
         super.updateParams();
 
+        this.paramX     .enableControlText(false);
+        this.paramY     .enableControlText(false);
         this.paramWidth .enableControlText(false);
         this.paramHeight.enableControlText(false);
 
-        //this.updateParamControls();
+        this.updateParamControls();
     }
 
 
@@ -79992,7 +79842,7 @@ extends OpShape
         this.variableInputs = true;
 
 
-        this.addInput(this.createInputForObjects(SHAPE_VALUES, getNodeInputValuesForUndo));
+        this.addInput(this.createInputForObjects([FRAME_VALUE], getNodeInputValuesForUndo));
         this.addOutput(new Output([FRAME_VALUE], this.output_genRequest));
 
 
@@ -80016,7 +79866,7 @@ extends OpShape
         this.paramChildren.input.types.push(SHAPE_LIST_VALUE);
         this.paramChildren.listTypes    = SHAPE_VALUES;
         this.paramChildren.itemName     = 'object';
-        this.paramChildren.showZero     =  false;
+        this.paramChildren.showZero     = false;
         this.paramChildren.getItemCount = () => 0;
 
 
@@ -88216,6 +88066,8 @@ onmessage = e =>
         case 'uiHideClearUndoWarning':            uiHideClearUndoWarning           ();             break;
 
         case 'uiUpdateZoom':                      uiUpdateZoom                     (msg.zoom);     break;
+
+        case 'uiUpdateGroupBounds':               uiUpdateGroupBounds              (msg);          break;
     }
 }    
 
@@ -90299,18 +90151,36 @@ function uiMakeNodesActive(nodes, shiftKey = false)
 {
     if (!shiftKey)
     {
-        for (const node of graph.currentPage.nodes)
+        const treeNodes = [];
+
+        for (const node of nodes)
+            pushUnique(treeNodes, getAllNodesFromNode(node));
+
+        for (const node of treeNodes)
             if (node.active)
                 uiMakeNodePassive(node);
+
+
+        for (const node of nodes)
+        {
+            if (node.active) continue;
+            
+            pushUnique(graphView.activeNodes, node);
+            node._active = true;
+        }
     }
-
-
-    for (const node of nodes)
+    else
     {
-        if (node.active) continue;
-        
-        pushUnique(graphView.activeNodes, node);
-        node._active = true;
+        for (const node of nodes)
+        {
+            if (node.active)
+                uiMakeNodePassive(node);
+            else
+            {
+                pushUnique(graphView.activeNodes, node);
+                node._active = true;
+            }
+        }
     }
 }
 
@@ -90326,10 +90196,9 @@ function uiMakeNodePassive(node)
 
 function uiMakeNodeLeftPassive(node, fromNode = null)
 {
-    for (const input of node.inputs)//headerInputs)
+    for (const input of node.inputs)
     {
-        if (    input.connected
-            //&& !input.connectedOutput.param
+        if (   input.connected
             && (  !fromNode
                 || input.connectedOutput.node != fromNode))
         {
@@ -90343,16 +90212,14 @@ function uiMakeNodeLeftPassive(node, fromNode = null)
 
 function uiMakeNodeRightPassive(node, fromNode = null)
 {
-    for (const output of node.outputs)//headerOutputs)
+    for (const output of node.outputs)
     {
-        for (const connInput of output.connectedInputs)//.filter(i => !i.param))
+        for (const connInput of output.connectedInputs)
         {
             uiMakeNodePassive(connInput.node);
             uiMakeNodeRightPassive(connInput.node, node);
         }
     }
-
-    //uiMakeNodeLeftPassive(node, fromNode);//
 }
 
 
@@ -90722,6 +90589,8 @@ function uiUpdateValuesAndObjects(requestId, actionId, updateNodeId, updateParam
 
     if (isLastChunk)
     {
+        console.log('requestObjects =', [...requestObjects]);
+
         uiQueueMessageToFigma({
             cmd:          'figDeleteObjectsExcept',
             updateNodeId:  updateNodeId,
@@ -91125,6 +90994,18 @@ function getConnsFromNodes(nodes)
     }
 
     return conns;
+}
+
+
+
+function uiUpdateGroupBounds(msg)
+{
+    const node = nodeFromId(msg.nodeId);
+
+    node.paramX     .setValue(new NumberValue(msg.x     ), false, true, true);
+    node.paramY     .setValue(new NumberValue(msg.y     ), false, true, true);
+    node.paramWidth .setValue(new NumberValue(msg.width ), false, true, true);
+    node.paramHeight.setValue(new NumberValue(msg.height), false, true, true);
 }
 
 

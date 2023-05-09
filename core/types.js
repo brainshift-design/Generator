@@ -464,6 +464,7 @@ const DELETE_ACTION              = 'DELETE';
 const DISCONNECT_ACTION          = 'DISCONNECT';
 const LINK_STYLE_ACTION          = 'LINK_STYLE';
 const MAKE_ACTIVE_ACTION         = 'MAKE_ACTIVE';
+const MAKE_PASSIVE_ACTION        = 'MAKE_PASSIVE';
 const PASTE_ACTION               = 'PASTE';
 const RECONNECT_ACTION           = 'RECONNECT';
 const REMOVE_ACTION              = 'REMOVE';

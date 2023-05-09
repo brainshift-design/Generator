@@ -159,12 +159,12 @@ GraphView.prototype.selectFromClick = function(node, ctrl, shift, alt)
           && alt)
     {
         if (isMac) this.selectedNodes = [node, ...getNodesBeforeNode(node)];
-        else       this.selectedNodes = [node, ...getNodesAfterNode(node)];
+        else       this.selectedNodes = [node, ...getNodesAfterNode (node)];
     }
     else if (ctrl
           && shift)
     {
-        if (isMac) this.selectedNodes = [node, ...getNodesAfterNode(node)];
+        if (isMac) this.selectedNodes = [node, ...getNodesAfterNode (node)];
         else       this.selectedNodes = [node, ...getNodesBeforeNode(node)];
     }
     else if (ctrl
@@ -178,6 +178,14 @@ GraphView.prototype.selectFromClick = function(node, ctrl, shift, alt)
     }
     else if (node.selected)
     {
-        if (shift) node.selected = false;
+        if (   shift
+            && node.deselectTimer < 0) 
+        {
+            node.deselectTimer = setTimeout(() => 
+            {
+                node.selected      = false;
+                node.deselectTimer = -1;
+            }, 200);
+        }
     }
 }

@@ -426,12 +426,23 @@ Operator.prototype.createHeader = function()
         if (  !getCtrlKey(e)
             && e.clientX >= bounds.left && e.clientX < bounds.right
             && e.clientY >= bounds.top  && e.clientY < bounds.bottom)
+        {
             this.showLabelTextbox();
+        }
         else if (!this.header.ignoreDoubleClick)
         {
             actionManager.do(new MakeActiveNodesAction([this.id], e.shiftKey));
+            
+            console.log('this.deselectTimer =', this.deselectTimer);
+            if (this.deselectTimer > -1)
+            {
+                clearTimeout(this.deselectTimer);
+                this.deselectTimer = -1;
+            }
+
             e.stopPropagation();
         }
+
 
         this.header.ignoreDoubleClick = false;
     });

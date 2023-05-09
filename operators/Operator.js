@@ -74,11 +74,13 @@ class Operator
     defaultWidth;
     labelOffsetFactor;
 
+    deselectTimer      = -1;
+
 
     _creatingButton    = null; // this is used to place the node under its creating button
 
     
-    requestCache       = []; // for nodes without an output
+    requestCache       = [];   // for nodes without an output
 
 
     // node UI

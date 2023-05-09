@@ -50,7 +50,9 @@ extends GOperator
             {
                 for (let j = 0; j < this.inputs[i].objects.length; j++, o++)
                 {
-                    const obj = this.inputs[i].objects[j].copy();
+                    //console.log('this.inputs[i].objects[j] =', this.inputs[i].objects[j]);
+                    //const obj = this.inputs[i].objects[j].copy();
+                    const obj = copyFigmaObject(this.inputs[i].objects[j]);
 
                     obj.nodeId = this.nodeId;
 

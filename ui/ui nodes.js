@@ -399,18 +399,36 @@ function uiMakeNodesActive(nodes, shiftKey = false)
 {
     if (!shiftKey)
     {
-        for (const node of graph.currentPage.nodes)
+        const treeNodes = [];
+
+        for (const node of nodes)
+            pushUnique(treeNodes, getAllNodesFromNode(node));
+
+        for (const node of treeNodes)
             if (node.active)
                 uiMakeNodePassive(node);
+
+
+        for (const node of nodes)
+        {
+            if (node.active) continue;
+            
+            pushUnique(graphView.activeNodes, node);
+            node._active = true;
+        }
     }
-
-
-    for (const node of nodes)
+    else
     {
-        if (node.active) continue;
-        
-        pushUnique(graphView.activeNodes, node);
-        node._active = true;
+        for (const node of nodes)
+        {
+            if (node.active)
+                uiMakeNodePassive(node);
+            else
+            {
+                pushUnique(graphView.activeNodes, node);
+                node._active = true;
+            }
+        }
     }
 }
 
@@ -426,10 +444,9 @@ function uiMakeNodePassive(node)
 
 function uiMakeNodeLeftPassive(node, fromNode = null)
 {
-    for (const input of node.inputs)//headerInputs)
+    for (const input of node.inputs)
     {
-        if (    input.connected
-            //&& !input.connectedOutput.param
+        if (   input.connected
             && (  !fromNode
                 || input.connectedOutput.node != fromNode))
         {
@@ -443,16 +460,14 @@ function uiMakeNodeLeftPassive(node, fromNode = null)
 
 function uiMakeNodeRightPassive(node, fromNode = null)
 {
-    for (const output of node.outputs)//headerOutputs)
+    for (const output of node.outputs)
     {
-        for (const connInput of output.connectedInputs)//.filter(i => !i.param))
+        for (const connInput of output.connectedInputs)
         {
             uiMakeNodePassive(connInput.node);
             uiMakeNodeRightPassive(connInput.node, node);
         }
     }
-
-    //uiMakeNodeLeftPassive(node, fromNode);//
 }
 
 
@@ -822,6 +837,8 @@ function uiUpdateValuesAndObjects(requestId, actionId, updateNodeId, updateParam
 
     if (isLastChunk)
     {
+        console.log('requestObjects =', [...requestObjects]);
+
         uiQueueMessageToFigma({
             cmd:          'figDeleteObjectsExcept',
             updateNodeId:  updateNodeId,
@@ -1225,4 +1242,16 @@ function getConnsFromNodes(nodes)
     }
 
     return conns;
+}
+
+
+
+function uiUpdateGroupBounds(msg)
+{
+    const node = nodeFromId(msg.nodeId);
+
+    node.paramX     .setValue(new NumberValue(msg.x     ), false, true, true);
+    node.paramY     .setValue(new NumberValue(msg.y     ), false, true, true);
+    node.paramWidth .setValue(new NumberValue(msg.width ), false, true, true);
+    node.paramHeight.setValue(new NumberValue(msg.height), false, true, true);
 }

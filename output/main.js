@@ -571,6 +571,7 @@ const DELETE_ACTION = 'DELETE';
 const DISCONNECT_ACTION = 'DISCONNECT';
 const LINK_STYLE_ACTION = 'LINK_STYLE';
 const MAKE_ACTIVE_ACTION = 'MAKE_ACTIVE';
+const MAKE_PASSIVE_ACTION = 'MAKE_PASSIVE';
 const PASTE_ACTION = 'PASTE';
 const RECONNECT_ACTION = 'RECONNECT';
 const REMOVE_ACTION = 'REMOVE';
@@ -1163,6 +1164,7 @@ function updatePointSize_(point, genPoint) {
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 function figCreateObject(objects, genObj) {
     let figObj;
+    console.log('figCreateObject genObj =', genObj);
     switch (genObj.type) {
         case RECTANGLE:
             figObj = figCreateRect(genObj);
@@ -1195,6 +1197,7 @@ function figCreateObject(objects, genObj) {
             figObj = figCreateFrame(genObj);
             break;
     }
+    console.log('figCreateObject figObj =', figObj);
     console.assert(genObj.type == SHAPE_GROUP // cannot exist without children
         || !!figObj, 'no Figma object created');
     if (figObj) {
@@ -1239,11 +1242,18 @@ function figUpdateObjects(parent, objects) {
         }
         if (!isValid(figObj)
             || figObj.removed) // no existing object, create new object
+         {
+            console.log('create genObj =', genObj);
             figCreateObject(figObjects.objects, genObj);
+        }
         else if (figObj.getPluginData('type') == genObj.type.toString()) // update existing object
+         {
+            console.log('update');
             figUpdateObject(figObj, genObj);
+        }
         else // delete existing object, create new object
          {
+            console.log('recreate');
             figObj.remove();
             if (figPoints.includes(figObj))
                 removeFromArray(figPoints, figObj);
@@ -1628,11 +1638,7 @@ function figUpdateVectorPath(figPath, genPath) {
 }
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 function genShapeGroupIsValid(genGroup) {
-    return genGroup.x != null && !isNaN(genGroup.x)
-        && genGroup.y != null && !isNaN(genGroup.y)
-        && genGroup.width != null && !isNaN(genGroup.width)
-        && genGroup.height != null && !isNaN(genGroup.height)
-        && genGroup.angle != null && !isNaN(genGroup.angle);
+    return true;
 }
 function figCreateShapeGroup(genGroup) {
     //console.log(obj);
@@ -1646,22 +1652,21 @@ function figCreateShapeGroup(genGroup) {
         figGroup.name = makeObjectName(genGroup);
         if (!genShapeGroupIsValid(genGroup))
             return figGroup;
-        figGroup.x = 0; //    = genGroup.x;
-        figGroup.y = 0; //    = genGroup.y;
-        figGroup.rotation = genGroup.angle;
-        // setObjectFills  (figGroup, genGroup);
-        // setObjectStrokes(figGroup, genGroup);
     }
     return figGroup;
 }
 function figUpdateShapeGroup(figGroup, genGroup) {
     if (!genShapeGroupIsValid(genGroup))
         return;
-    figGroup.x = 0; //    = genGroup.x;
-    figGroup.y = 0; //    = genGroup.y;
-    figGroup.rotation = genGroup.angle;
-    // setObjectFills  (figGroup, genGroup);
-    // setObjectStrokes(figGroup, genGroup);
+    figUpdateObjects(figGroup, genGroup.children);
+    figPostMessageToUi({
+        cmd: 'uiUpdateGroupBounds',
+        nodeId: genGroup.nodeId,
+        x: figGroup.x,
+        y: figGroup.y,
+        width: figGroup.width,
+        height: figGroup.height
+    });
 }
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 function genFrameIsValid(genGroup) {
@@ -1705,26 +1710,10 @@ function figUpdateFrame(figFrame, genFrame) {
     figFrame.resize(Math.max(0.01, genFrame.width), Math.max(0.01, genFrame.height));
     figFrame.rotation = genFrame.angle;
     figFrame.cornerRadius = genFrame.round;
-    // const objects = [];
-    // for (const obj of genFrame.children)
-    //     figCreateObject(objects, obj);
-    // for (const obj of objects)
     figUpdateObjects(figFrame, genFrame.children);
     setObjectFills(figFrame, genFrame);
     setObjectStrokes(figFrame, genFrame);
 }
-///////////////////////////////////////////////////////////////////////////////////////////////////
-// function figCreateFrame()
-// {
-//     let frame = figma.createFrame();
-//     frame.name = 'Generator';
-//     let tx : Paint = {type: 'SOLID', color: {r: 0, g: 0, b: 0}, opacity: 0};
-//     frame.fills = [tx];
-//     //frame.resize(
-//     //    (nCols*rectSize + (nCols-1)*hgap),
-//     //    (nRows*rectSize + (nRows-1)*hgap));
-//     return frame;
-// }
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 function getObjectFills(objFills) {
     const fills = [];

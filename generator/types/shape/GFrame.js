@@ -115,14 +115,15 @@ extends GShape
             {
                 for (let i = 0; i < this.children.objects.length; i++)
                 {
-                    const obj = this.children.objects[i].copy();
+                    const obj  = this.children.objects[i].copy();
+                    obj.nodeId = this.nodeId;
                     obj.listId = -1;
                     frame.children.push(obj);
                 }
             }
 
-            this.objects = [frame];
 
+            this.objects = [frame];
 
             this.updateValues.push(['nObjects', new NumberValue(
                 this.children.objects 

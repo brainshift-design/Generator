@@ -36,7 +36,7 @@ extends GShapeBase
             return this;
 
 
-        const [x, y, width, height, angle] = await this.evalBaseParams(parse);
+        await this.evalBaseParams(parse);
 
         const children = this.children ? (await this.children.eval(parse)).toValue() : null;
 
@@ -49,16 +49,11 @@ extends GShapeBase
 
             this.value = new ShapeGroupValue(
                 this.nodeId,
-                x        ?? input.x,
-                y        ?? input.y,
-                width    ?? input.width,
-                height   ?? input.height,
-                angle    ?? input.angle,
                 children ?? input.children);
         }
         else
         {
-            this.value = new ShapeGroupValue(this.nodeId, x, y, width, height, angle, children);
+            this.value = new ShapeGroupValue(this.nodeId, children);
         }
 
 
@@ -67,7 +62,6 @@ extends GShapeBase
             ['value',    this.value         ],
             ['children', this.value.children]
         ];
-
 
 
         await this.evalShapeBase(parse, input);
@@ -89,23 +83,11 @@ extends GShapeBase
             return;
             
 
-        if (   this.value.x
-            && this.value.y
-            && this.value.width
-            && this.value.height
-            && this.value.angle)
+        if (this.value.children)
         {
             const group = new FigmaShapeGroup(
                 this.nodeId,
-                NULL,
-                this.value.x     .value,
-                this.value.y     .value,
-                this.value.width .value,
-                this.value.height.value,
-                this.value.angle .value);
-
-            if (this.children.objects)
-                group.children.push(...this.children.objects);
+                NULL);
 
 
             if (this.children.objects)
@@ -113,13 +95,14 @@ extends GShapeBase
                 for (let i = 0; i < this.children.objects.length; i++)
                 {
                     const obj = this.children.objects[i].copy();
+                    obj.nodeId = this.nodeId;
                     obj.listId = -1;
                     group.children.push(obj);
                 }
             }
 
-            this.objects = [group];
 
+            this.objects = [group];
 
             this.updateValues.push(['nObjects', new NumberValue(
                 this.children.objects 
@@ -152,14 +135,7 @@ extends GShapeBase
     {
         const group = new ShapeGroupValue(
             this.nodeId,
-            this.x       .toValue(),
-            this.y       .toValue(),
-            this.width   .toValue(),
-            this.height  .toValue(),
-            this.angle   .toValue(),
             this.children.toValue());
-
-        group.props = this.props.toValue();
 
         return group;
     }

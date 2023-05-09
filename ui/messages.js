@@ -47,6 +47,8 @@ onmessage = e =>
         case 'uiHideClearUndoWarning':            uiHideClearUndoWarning           ();             break;
 
         case 'uiUpdateZoom':                      uiUpdateZoom                     (msg.zoom);     break;
+
+        case 'uiUpdateGroupBounds':               uiUpdateGroupBounds              (msg);          break;
     }
 }    
 

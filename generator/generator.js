@@ -319,8 +319,8 @@ function genQueueChunk(requestId, actionId, updateNodeId, updateParamId, nodeVal
         updateParamId: updateParamId,
         chunkId:       nodeValChunkId,
         values:        [...nodeValChunk].map(v => v.toString()),
-        objects:       [...objChunk],
-        styles:        [...styleChunk],
+        objects:       [...objChunk    ],
+        styles:        [...styleChunk  ],
         updatedNodes:  updatedNodes,
         totalNodes:    totalNodes,
         isLastChunk:   isLastChunk
