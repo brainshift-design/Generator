@@ -30,12 +30,12 @@ extends ShapeValue
     {
         const copy = new ShapeGroupValue(
             this.nodeId,
-            x           .copy(),
-            y           .copy(),
-            width       .copy(),
-            height      .copy(),
-            angle       .copy(),
-            round       .copy(),
+            this.x      .copy(),
+            this.y      .copy(),
+            this.width  .copy(),
+            this.height .copy(),
+            this.angle  .copy(),
+            this.round  .copy(),
             this.objects.copy());
 
         copy.copyBase(this);

@@ -111,8 +111,8 @@ extends GOperator
 
                         obj.nodeId = this.nodeId;
 
-                        if (obj.objectId != NULL) obj.objectId += ' ';
-                        obj.objectId += (o+1).toString();
+                        obj.objectId    = this.nodeId + ':' + (o+1).toString() + obj.objectId;
+                        obj.objectName += ' ' + (o+1).toString();
 
                         obj.listId = i;
         

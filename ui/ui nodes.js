@@ -749,6 +749,7 @@ function uiUpdateValuesAndObjects(requestId, actionId, updateNodeId, updateParam
 
                 switch (type)
                 {
+                    case        LIST_VALUE: value = parseListValue      (values[i++])[0];  break;
                     case      NUMBER_VALUE: value = parseNumberValue    (values[i++])[0];  break;
                     case        TEXT_VALUE: value = parseTextValue      (values[i++])[0];  break;
                     case       COLOR_VALUE: value = parseColorValue     (values[i++])[0];  break;
@@ -762,13 +763,14 @@ function uiUpdateValuesAndObjects(requestId, actionId, updateNodeId, updateParam
                     case   TEXTSHAPE_VALUE: value = parseTextShapeValue (values[i++])[0];  break;
                     case       POINT_VALUE: value = parsePointValue     (values[i++])[0];  break;
                     case VECTOR_PATH_VALUE: value = parseVectorPathValue(values[i++])[0];  break;
-                    case        LIST_VALUE: value = parseListValue      (values[i++])[0];  break;
+                    case SHAPE_GROUP_VALUE: value = parseShapeGroupValue(values[i++])[0];  break;
+                    case       FRAME_VALUE: value = parseFrameValue     (values[i++])[0];  break;
                     
                     default: console.assert(false, 'unknown type \'' + type + '\'');
                 }
 
                 if (value.nodeId)
-                    value.nodeId = nodeId; 
+                    value.nodeId = nodeId;
     
                 _values.push(value);
             }
