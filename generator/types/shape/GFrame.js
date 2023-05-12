@@ -41,7 +41,11 @@ extends GShape
         const [x, y, width, height, angle] = await this.evalBaseParams(parse);
 
         const round    = this.round    ? (await this.round   .eval(parse)).toValue() : null;
-        const children = this.children ? (await this.children.eval(parse)).toValue() : null;
+        let   children = this.children ? (await this.children.eval(parse)).toValue() : null;
+
+
+        if (SHAPE_VALUES.includes(children.type))
+            children = new ListValue([children]);
 
 
         let input = null;
@@ -62,10 +66,21 @@ extends GShape
         }
         else
         {
-            this.value = new FrameValue(this.nodeId, x, y, width, height, angle, round, children);
+            this.value = new FrameValue(
+                this.nodeId, 
+                x, 
+                y, 
+                width,
+                height, 
+                angle, 
+                round, 
+                children);
         }
 
 
+        if (this.nodeId == 'frame2')
+            console.log('this.value.children =', this.value.children);
+            
         this.updateValues =
         [
             ['value',    this.value         ],

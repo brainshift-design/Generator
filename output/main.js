@@ -1229,9 +1229,6 @@ function figCreateObject(genObj, addObject) {
     }
 }
 function figUpdateObjects(figParent, genObjects) {
-    console.log('figUpdateObjects figParent =', figParent);
-    console.log('figUpdateObjects genObjects =', genObjects);
-    console.log('');
     let curNodeId = NULL;
     let figObjects = null;
     for (const genObj of genObjects) {
@@ -1252,16 +1249,13 @@ function figUpdateObjects(figParent, genObjects) {
             : figObjects.objects;
         const addObject = obj => {
             if (figParent)
-                figParent.appendChild(obj); //children = [...figParent.children, obj];
+                figParent.appendChild(obj);
             else
                 figObjects.objects.push(obj);
         };
         let figObj;
-        console.log('parent =', figParent);
-        console.log('objects =', [...objects]);
         figObj = objects.find(o => o.removed
-            || o.getPluginData('objectId') == genObj.objectId); //name == makeObjectName(genObj));
-        console.log('found figObj =', figObj);
+            || o.getPluginData('objectId') == genObj.objectId);
         if (figObj != undefined
             && figObj != null
             && figObj.removed) {
@@ -1273,12 +1267,10 @@ function figUpdateObjects(figParent, genObjects) {
             || figObj == null
             || figObj.removed) // no existing object, create new object
          {
-            console.log('create');
             figCreateObject(genObj, addObject);
         }
         else if (figObj.getPluginData('type') == genObj.type.toString()) // update existing object
          {
-            console.log('update');
             figUpdateObject(figObj, genObj);
         }
         else // delete existing object, create new object

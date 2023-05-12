@@ -68,10 +68,14 @@ extends OpShape
 
     updateValues(requestId, actionId, updateParamId, paramIds, values)
     {
+        console.log('OpFrame updateValues paramIds = ', [...paramIds]);
+        console.log('OpFrame updateValues values = ', [...values]);
+        super.updateValues(requestId, actionId, updateParamId, paramIds, values);
+        
+        const children = values[paramIds.findIndex(id => id == 'children')];
         const nObjects = values[paramIds.findIndex(id => id == 'nObjects')];
 
         this.paramChildren.getItemCount = () => nObjects.value;
-
-        super.updateValues(requestId, actionId, updateParamId, paramIds, values);
+        this.paramChildren.output.types = [finalListTypeFromItems(children.items)];
     }
 }

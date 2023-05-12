@@ -6423,12 +6423,7 @@ extends GValue
         super(LIST_VALUE);
 
         if (items)
-        {
-            this.items = [];
-            
-            for (const item of items)
-                this.items.push(item.copy());
-        }
+            this.items = items.map(i => i.copy());
     }
 
 
@@ -6468,7 +6463,7 @@ extends GValue
 
     isValid()
     {
-        return this.items
+        return  this.items
             && !this.items.find(i => !i.isValid());
     }
 
@@ -8219,36 +8214,36 @@ extends ShapeValue
     height;
     angle;
     round;
-    objects;
+    children;
 
 
 
-    constructor(nodeId, x, y, width, height, angle, round, objects)
+    constructor(nodeId, x, y, width, height, angle, round, children)
     {
-        super(SHAPE_GROUP_VALUE, nodeId);
+        super(FRAME_VALUE, nodeId);
 
-        this.x       = x;
-        this.y       = y;
-        this.width   = width;
-        this.height  = height;
-        this.angle   = angle;
-        this.round   = round;
-        this.objects = objects;
+        this.x        = x;
+        this.y        = y;
+        this.width    = width;
+        this.height   = height;
+        this.angle    = angle;
+        this.round    = round;
+        this.children = children;
     }
 
 
 
     copy()
     {
-        const copy = new ShapeGroupValue(
+        const copy = new FrameValue(
             this.nodeId,
-            this.x      .copy(),
-            this.y      .copy(),
-            this.width  .copy(),
-            this.height .copy(),
-            this.angle  .copy(),
-            this.round  .copy(),
-            this.objects.copy());
+            this.x       .copy(),
+            this.y       .copy(),
+            this.width   .copy(),
+            this.height  .copy(),
+            this.angle   .copy(),
+            this.round   .copy(),
+            this.children.copy());
 
         copy.copyBase(this);
 
@@ -8257,16 +8252,16 @@ extends ShapeValue
 
 
 
-    equals(group)
+    equals(frame)
     {
-        return group
-            && this.x      .equals(group.x      )
-            && this.y      .equals(group.y      )
-            && this.width  .equals(group.width  )
-            && this.height .equals(group.height )
-            && this.angle  .equals(group.angle  )
-            && this.round  .equals(group.round  )
-            && this.objects.equals(group.objects);
+        return frame
+            && this.x       .equals(frame.x       )
+            && this.y       .equals(frame.y       )
+            && this.width   .equals(frame.width   )
+            && this.height  .equals(frame.height  )
+            && this.angle   .equals(frame.angle   )
+            && this.round   .equals(frame.round   )
+            && this.children.equals(frame.children);
     }
 
 
@@ -8280,26 +8275,26 @@ extends ShapeValue
 
     toString()
     {
-        return      this.x      .toString()
-            + ' ' + this.y      .toString()
-            + ' ' + this.width  .toString()
-            + ' ' + this.height .toString()
-            + ' ' + this.angle  .toString()
-            + ' ' + this.round  .toString()
-            + ' ' + this.objects.toString();
+        return      this.x       .toString()
+            + ' ' + this.y       .toString()
+            + ' ' + this.width   .toString()
+            + ' ' + this.height  .toString()
+            + ' ' + this.angle   .toString()
+            + ' ' + this.round   .toString()
+            + ' ' + this.children.toString();
     }
 
 
 
     toDisplayString()
     {
-        return      this.x      .toDisplayString()
-            + ' ' + this.y      .toDisplayString()
-            + ' ' + this.width  .toDisplayString()
-            + ' ' + this.height .toDisplayString()
-            + ' ' + this.angle  .toDisplayString()
-            + ' ' + this.round  .toDisplayString()
-            + ' ' + this.objects.toDisplayString();
+        return      this.x       .toDisplayString()
+            + ' ' + this.y       .toDisplayString()
+            + ' ' + this.width   .toDisplayString()
+            + ' ' + this.height  .toDisplayString()
+            + ' ' + this.angle   .toDisplayString()
+            + ' ' + this.round   .toDisplayString()
+            + ' ' + this.children.toDisplayString();
     }
 
 
@@ -8313,13 +8308,13 @@ extends ShapeValue
 
     isValid()
     {
-        return this.x      .isValid()
-            && this.y      .isValid()
-            && this.width  .isValid()
-            && this.height .isValid()
-            && this.angle  .isValid()
-            && this.round  .isValid()
-            && this.objects.isValid()
+        return this.x       .isValid()
+            && this.y       .isValid()
+            && this.width   .isValid()
+            && this.height  .isValid()
+            && this.angle   .isValid()
+            && this.round   .isValid()
+            && this.children.isValid()
             && super.isValid();
     }
 
@@ -8354,23 +8349,23 @@ function parseFrameValue(str, i = -1)
 
     const iStart = i;
 
-    const x       = parseNumberValue(str[i]); i += x      [1];
-    const y       = parseNumberValue(str[i]); i += y      [1];
-    const width   = parseNumberValue(str[i]); i += width  [1];
-    const height  = parseNumberValue(str[i]); i += height [1];
-    const angle   = parseNumberValue(str[i]); i += angle  [1];
-    const round   = parseNumberValue(str[i]); i += round  [1];
-    const objects = parseListValue  (str, i); i += objects[1];
+    const x        = parseNumberValue(str[i]); i += x      [1];
+    const y        = parseNumberValue(str[i]); i += y      [1];
+    const width    = parseNumberValue(str[i]); i += width  [1];
+    const height   = parseNumberValue(str[i]); i += height [1];
+    const angle    = parseNumberValue(str[i]); i += angle  [1];
+    const round    = parseNumberValue(str[i]); i += round  [1];
+    const children = parseListValue  (str, i); i += children[1];
 
     const frame = new FrameValue(
         '', // set node ID elsewhere
-        x      [0],
-        y      [0],
-        width  [0],
-        height [0],
-        angle  [0],
-        round  [0],
-        objects[0]);
+        x       [0],
+        y       [0],
+        width   [0],
+        height  [0],
+        angle   [0],
+        round   [0],
+        children[0]);
 
 
     i = parseShapeBaseValue(str, i, frame);
@@ -16072,9 +16067,6 @@ extends GOperator
 
     async evalShapeBase(parse, input, evalHeight = true)
     {
-        this.updateValues = [];
-
-
         if (this.value.x     != undefined) this.updateValues.push(['x',     this.value.x    ]);
         if (this.value.y     != undefined) this.updateValues.push(['y',     this.value.y    ]);
         if (this.value.width != undefined) this.updateValues.push(['width', this.value.width]);
@@ -16188,7 +16180,8 @@ extends GShapeBase
             this.value.props = props;
 
             
-        if (this.value.props != undefined) this.updateValues.push(['props', this.value.props]);
+        if (this.value.props != undefined) 
+            this.updateValues.push(['props', this.value.props]);
     }
 
 
@@ -17955,7 +17948,11 @@ extends GShape
         const [x, y, width, height, angle] = await this.evalBaseParams(parse);
 
         const round    = this.round    ? (await this.round   .eval(parse)).toValue() : null;
-        const children = this.children ? (await this.children.eval(parse)).toValue() : null;
+        let   children = this.children ? (await this.children.eval(parse)).toValue() : null;
+
+
+        if (SHAPE_VALUES.includes(children.type))
+            children = new ListValue([children]);
 
 
         let input = null;
@@ -17976,10 +17973,21 @@ extends GShape
         }
         else
         {
-            this.value = new FrameValue(this.nodeId, x, y, width, height, angle, round, children);
+            this.value = new FrameValue(
+                this.nodeId, 
+                x, 
+                y, 
+                width,
+                height, 
+                angle, 
+                round, 
+                children);
         }
 
 
+        if (this.nodeId == 'frame2')
+            console.log('this.value.children =', this.value.children);
+            
         this.updateValues =
         [
             ['value',    this.value         ],

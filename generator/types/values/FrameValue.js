@@ -7,36 +7,36 @@ extends ShapeValue
     height;
     angle;
     round;
-    objects;
+    children;
 
 
 
-    constructor(nodeId, x, y, width, height, angle, round, objects)
+    constructor(nodeId, x, y, width, height, angle, round, children)
     {
-        super(SHAPE_GROUP_VALUE, nodeId);
+        super(FRAME_VALUE, nodeId);
 
-        this.x       = x;
-        this.y       = y;
-        this.width   = width;
-        this.height  = height;
-        this.angle   = angle;
-        this.round   = round;
-        this.objects = objects;
+        this.x        = x;
+        this.y        = y;
+        this.width    = width;
+        this.height   = height;
+        this.angle    = angle;
+        this.round    = round;
+        this.children = children;
     }
 
 
 
     copy()
     {
-        const copy = new ShapeGroupValue(
+        const copy = new FrameValue(
             this.nodeId,
-            this.x      .copy(),
-            this.y      .copy(),
-            this.width  .copy(),
-            this.height .copy(),
-            this.angle  .copy(),
-            this.round  .copy(),
-            this.objects.copy());
+            this.x       .copy(),
+            this.y       .copy(),
+            this.width   .copy(),
+            this.height  .copy(),
+            this.angle   .copy(),
+            this.round   .copy(),
+            this.children.copy());
 
         copy.copyBase(this);
 
@@ -45,16 +45,16 @@ extends ShapeValue
 
 
 
-    equals(group)
+    equals(frame)
     {
-        return group
-            && this.x      .equals(group.x      )
-            && this.y      .equals(group.y      )
-            && this.width  .equals(group.width  )
-            && this.height .equals(group.height )
-            && this.angle  .equals(group.angle  )
-            && this.round  .equals(group.round  )
-            && this.objects.equals(group.objects);
+        return frame
+            && this.x       .equals(frame.x       )
+            && this.y       .equals(frame.y       )
+            && this.width   .equals(frame.width   )
+            && this.height  .equals(frame.height  )
+            && this.angle   .equals(frame.angle   )
+            && this.round   .equals(frame.round   )
+            && this.children.equals(frame.children);
     }
 
 
@@ -68,26 +68,26 @@ extends ShapeValue
 
     toString()
     {
-        return      this.x      .toString()
-            + ' ' + this.y      .toString()
-            + ' ' + this.width  .toString()
-            + ' ' + this.height .toString()
-            + ' ' + this.angle  .toString()
-            + ' ' + this.round  .toString()
-            + ' ' + this.objects.toString();
+        return      this.x       .toString()
+            + ' ' + this.y       .toString()
+            + ' ' + this.width   .toString()
+            + ' ' + this.height  .toString()
+            + ' ' + this.angle   .toString()
+            + ' ' + this.round   .toString()
+            + ' ' + this.children.toString();
     }
 
 
 
     toDisplayString()
     {
-        return      this.x      .toDisplayString()
-            + ' ' + this.y      .toDisplayString()
-            + ' ' + this.width  .toDisplayString()
-            + ' ' + this.height .toDisplayString()
-            + ' ' + this.angle  .toDisplayString()
-            + ' ' + this.round  .toDisplayString()
-            + ' ' + this.objects.toDisplayString();
+        return      this.x       .toDisplayString()
+            + ' ' + this.y       .toDisplayString()
+            + ' ' + this.width   .toDisplayString()
+            + ' ' + this.height  .toDisplayString()
+            + ' ' + this.angle   .toDisplayString()
+            + ' ' + this.round   .toDisplayString()
+            + ' ' + this.children.toDisplayString();
     }
 
 
@@ -101,13 +101,13 @@ extends ShapeValue
 
     isValid()
     {
-        return this.x      .isValid()
-            && this.y      .isValid()
-            && this.width  .isValid()
-            && this.height .isValid()
-            && this.angle  .isValid()
-            && this.round  .isValid()
-            && this.objects.isValid()
+        return this.x       .isValid()
+            && this.y       .isValid()
+            && this.width   .isValid()
+            && this.height  .isValid()
+            && this.angle   .isValid()
+            && this.round   .isValid()
+            && this.children.isValid()
             && super.isValid();
     }
 
@@ -142,23 +142,23 @@ function parseFrameValue(str, i = -1)
 
     const iStart = i;
 
-    const x       = parseNumberValue(str[i]); i += x      [1];
-    const y       = parseNumberValue(str[i]); i += y      [1];
-    const width   = parseNumberValue(str[i]); i += width  [1];
-    const height  = parseNumberValue(str[i]); i += height [1];
-    const angle   = parseNumberValue(str[i]); i += angle  [1];
-    const round   = parseNumberValue(str[i]); i += round  [1];
-    const objects = parseListValue  (str, i); i += objects[1];
+    const x        = parseNumberValue(str[i]); i += x      [1];
+    const y        = parseNumberValue(str[i]); i += y      [1];
+    const width    = parseNumberValue(str[i]); i += width  [1];
+    const height   = parseNumberValue(str[i]); i += height [1];
+    const angle    = parseNumberValue(str[i]); i += angle  [1];
+    const round    = parseNumberValue(str[i]); i += round  [1];
+    const children = parseListValue  (str, i); i += children[1];
 
     const frame = new FrameValue(
         '', // set node ID elsewhere
-        x      [0],
-        y      [0],
-        width  [0],
-        height [0],
-        angle  [0],
-        round  [0],
-        objects[0]);
+        x       [0],
+        y       [0],
+        width   [0],
+        height  [0],
+        angle   [0],
+        round   [0],
+        children[0]);
 
 
     i = parseShapeBaseValue(str, i, frame);

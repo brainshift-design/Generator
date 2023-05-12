@@ -52,7 +52,8 @@ extends GShapeBase
             this.value.props = props;
 
             
-        if (this.value.props != undefined) this.updateValues.push(['props', this.value.props]);
+        if (this.value.props != undefined) 
+            this.updateValues.push(['props', this.value.props]);
     }
 
 

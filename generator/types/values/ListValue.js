@@ -10,12 +10,7 @@ extends GValue
         super(LIST_VALUE);
 
         if (items)
-        {
-            this.items = [];
-            
-            for (const item of items)
-                this.items.push(item.copy());
-        }
+            this.items = items.map(i => i.copy());
     }
 
 
@@ -55,7 +50,7 @@ extends GValue
 
     isValid()
     {
-        return this.items
+        return  this.items
             && !this.items.find(i => !i.isValid());
     }
 
