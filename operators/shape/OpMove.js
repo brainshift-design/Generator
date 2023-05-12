@@ -21,7 +21,7 @@ extends OperatorBase
         this.addParam(this.paramY = new NumberParam('y', 'y', true, true, true));
 
 
-        this.inputs[0].addEventListener('connect',    e => this.outputs[0].types = [finalListTypeFromTypes(this.inputs[0].connectedOutput.types)]);
+        this.inputs[0].addEventListener('connect',    e => this.outputs[0].types = [...this.inputs[0].connectedOutput.types]);
         this.inputs[0].addEventListener('disconnect', e => this.outputs[0].types = [SHAPE_VALUE]);
     }
     
