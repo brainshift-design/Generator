@@ -4141,7 +4141,7 @@ class FigmaObject
 
     copyBase(base)
     {
-        this.uniqueId         = base.uniqueId;
+        this.uniqueId = base.uniqueId;
     }
 
 
@@ -5073,6 +5073,9 @@ class GNode
     updateValues = [];
 
 
+    objects      = []; 
+
+
 
     constructor(type, options) 
     {
@@ -5090,10 +5093,19 @@ class GNode
 
 
 
-    copyBase(src)
+    copyBase(base)
     {
-        this.options = clone(src.options);
-        this.data    = clone(src.data   );
+        this.options = clone(base.options);
+        this.data    = clone(base.data   );
+
+        this.copyObjects(base.objects);
+    }
+
+
+
+    copyObjects(objects)
+    {
+        this.objects = objects.map(o => o.copy());
     }
 
 
@@ -5299,21 +5311,19 @@ extends GNode
     feedbackValue = null; // () => {}
 
 
-    objects = []; // held by Operator because nodes like List and Repeat can also generate objects
-
-    
+   
     
     constructor(type, nodeId, options)
     {
         super(type, options);
 
-        this.nodeId       = nodeId;
-        this.nodeName     = options.nodeName;
+        this.nodeId   = nodeId;
+        this.nodeName = options.nodeName;
 
-        this.valid        = false;
-        this.topLevel     = false;
+        this.valid    = false;
+        this.topLevel = false;
 
-        this.value        = null;
+        this.value    = null;
     }
 
 
@@ -5327,15 +5337,6 @@ extends GNode
 
         this.valid    = base.valid;
         this.topLevel = base.topLevel;
-
-        this.copyObjects(base.objects);
-    }
-
-
-
-    copyObjects(objects)
-    {
-        this.objects = objects.map(o => o.copy());
     }
 
 
@@ -6423,7 +6424,17 @@ extends GValue
         super(LIST_VALUE);
 
         if (items)
-            this.items = items.map(i => i.copy());
+        {
+            this.items = [];
+
+            for (const item of items)
+            {
+                if (item.type == FRAME_VALUE)
+                    console.log('item =', item);
+                this.items  .push(item.copy());
+                this.objects.push(...item.objects.map(o => o.copy()));
+            }
+        }
     }
 
 
@@ -6685,6 +6696,8 @@ extends GValue
 
     copyBase(base)
     {
+        super.copyBase(base);
+        
         this.nodeId = base.nodeId;
 
         this.props  = base.props.copy();
@@ -8106,6 +8119,8 @@ extends ShapeValue
         super(SHAPE_GROUP_VALUE, nodeId);
 
         this.children = children;
+
+        this.objects  = children.objects.map(o => o.copy());
     }
 
 
@@ -8229,6 +8244,8 @@ extends ShapeValue
         this.angle    = angle;
         this.round    = round;
         this.children = children;
+
+        this.objects  = children.objects.map(o => o.copy());
     }
 
 
@@ -8455,10 +8472,16 @@ extends GOperator
                 if (LIST_VALUES.includes(input.type))
                 {
                     for (const item of input.items)
+                    {
                         this.value.items.push(item.copy());   
+                        this.value.objects.push(...item.objects.map(o => o.copy()));
+                    }
                 }
                 else
+                {
                     this.value.items.push(input.copy());
+                    this.value.objects.push(...input.objects.map(o => o.copy()));
+                }
             }
         }
 
@@ -16039,6 +16062,8 @@ extends GOperator
 
     copyBase(base)
     {
+        super.copyBase(base);
+        
         //if (base.value ) this.value  = base.value .copy();
         if (base.x     ) this.x      = base.x     .copy();
         if (base.y     ) this.y      = base.y     .copy();
@@ -16148,6 +16173,8 @@ extends GShapeBase
 
     copyBase(base)
     {
+        super.copyBase(base);
+        
         this.copyProperties(base.props);
     }
 
@@ -16263,6 +16290,10 @@ extends GShapeBase
                 }
             }
         }
+
+
+        if (this.value)
+            this.value.objects = this.objects.map(o => o.copy());
     }
 
 
@@ -16983,7 +17014,16 @@ extends GShape
         }
         else
         {
-            this.value = new StarValue(this.nodeId, x, y, width, height, angle, round, points, convex);
+            this.value = new StarValue(
+                this.nodeId, 
+                x, 
+                y, 
+                width, 
+                height, 
+                angle, 
+                round, 
+                points, 
+                convex);
         }
 
              
@@ -17023,7 +17063,7 @@ extends GShape
            && this.round
            && this.points
            && this.convex)
-       {
+        {
            this.objects = 
            [
                new FigmaStar(
@@ -17039,53 +17079,54 @@ extends GShape
                                this.points.toValue().value,
                                this.convex.toValue().value)
            ];
-       }
+        }
 
        
-       super.evalObjects(parse);
-   }
+        super.evalObjects(parse);
+    }
 
 
 
-   pushValueUpdates(parse)
-   {
-      super.pushValueUpdates(parse);
+    pushValueUpdates(parse)
+    {
+        super.pushValueUpdates(parse);
 
-      if (this.input ) this.input .pushValueUpdates(parse);
-      if (this.round ) this.round .pushValueUpdates(parse);
-      if (this.points) this.points.pushValueUpdates(parse);
-      if (this.convex) this.convex.pushValueUpdates(parse);
+        if (this.input ) this.input .pushValueUpdates(parse);
+        if (this.round ) this.round .pushValueUpdates(parse);
+        if (this.points) this.points.pushValueUpdates(parse);
+        if (this.convex) this.convex.pushValueUpdates(parse);
     }
 
 
 
     toValue()
     {
-       const star = new StarValue(
-           this.nodeId,
-           this.x     .toValue(),
-           this.y     .toValue(),
-           this.width .toValue(),
-           this.height.toValue(),
-           this.angle .toValue(),
-           this.round .toValue(),
-           this.points.toValue(),
-           this.convex.toValue());
-
-        star.props = this.props.toValue();
-
+        const star = new StarValue(
+            this.nodeId,
+            this.x     .toValue(),
+            this.y     .toValue(),
+            this.width .toValue(),
+            this.height.toValue(),
+            this.angle .toValue(),
+            this.round .toValue(),
+            this.points.toValue(),
+            this.convex.toValue());
+ 
+        star.props   = this.props.toValue();
+        star.objects = this.objects.map(o => o.copy());
+ 
         return star;
-   }
+    }
 
 
 
-   isValid()
-   {
-      return super.isValid()
-          && this.round .isValid()
-          && this.points.isValid()
-          && this.convex.isValid();
-   }
+    isValid()
+    {
+        return super.isValid()
+            && this.round .isValid()
+            && this.points.isValid()
+            && this.convex.isValid();
+    }
 
 
 
@@ -17951,7 +17992,9 @@ extends GShape
         let   children = this.children ? (await this.children.eval(parse)).toValue() : null;
 
 
-        if (SHAPE_VALUES.includes(children.type))
+        if (   children
+            && SHAPE_VALUES.includes(children.type)
+            && children.type != SHAPE_LIST_VALUE)
             children = new ListValue([children]);
 
 
@@ -17984,10 +18027,8 @@ extends GShape
                 children);
         }
 
+        console.log(this.nodeId + '.value =', this.value);
 
-        if (this.nodeId == 'frame2')
-            console.log('this.value.children =', this.value.children);
-            
         this.updateValues =
         [
             ['value',    this.value         ],
@@ -18034,25 +18075,18 @@ extends GShape
                 this.value.round .value);
 
 
-            if (this.children.objects)
+            for (let i = 0; i < this.value.children.objects.length; i++)
             {
-                for (let i = 0; i < this.children.objects.length; i++)
-                {
-                    const obj    = this.children.objects[i].copy();
-                    obj.nodeId   = this.nodeId;
-                    obj.objectId = this.nodeId + '/' + obj.objectId;
-                    obj.listId   = -1;
-                    frame.children.push(obj);
-                }
+                const obj    = this.value.children.objects[i].copy();
+                obj.nodeId   = this.nodeId;
+                obj.objectId = this.nodeId + '/' + obj.objectId;
+                obj.listId   = -1;
+                frame.children.push(obj);
             }
 
 
             this.objects = [frame];
-
-            this.updateValues.push(['nObjects', new NumberValue(
-                this.children.objects 
-                ? this.children.objects.length
-                : 0)]);
+            this.updateValues.push(['nObjects', new NumberValue(this.value.children.objects.length)]);
         }
         else
         {

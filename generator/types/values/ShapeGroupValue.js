@@ -10,6 +10,8 @@ extends ShapeValue
         super(SHAPE_GROUP_VALUE, nodeId);
 
         this.children = children;
+
+        this.objects  = children.objects.map(o => o.copy());
     }
 
 

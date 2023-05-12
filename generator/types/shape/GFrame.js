@@ -44,7 +44,9 @@ extends GShape
         let   children = this.children ? (await this.children.eval(parse)).toValue() : null;
 
 
-        if (SHAPE_VALUES.includes(children.type))
+        if (   children
+            && SHAPE_VALUES.includes(children.type)
+            && children.type != SHAPE_LIST_VALUE)
             children = new ListValue([children]);
 
 
@@ -77,10 +79,8 @@ extends GShape
                 children);
         }
 
+        console.log(this.nodeId + '.value =', this.value);
 
-        if (this.nodeId == 'frame2')
-            console.log('this.value.children =', this.value.children);
-            
         this.updateValues =
         [
             ['value',    this.value         ],
@@ -127,25 +127,18 @@ extends GShape
                 this.value.round .value);
 
 
-            if (this.children.objects)
+            for (let i = 0; i < this.value.children.objects.length; i++)
             {
-                for (let i = 0; i < this.children.objects.length; i++)
-                {
-                    const obj    = this.children.objects[i].copy();
-                    obj.nodeId   = this.nodeId;
-                    obj.objectId = this.nodeId + '/' + obj.objectId;
-                    obj.listId   = -1;
-                    frame.children.push(obj);
-                }
+                const obj    = this.value.children.objects[i].copy();
+                obj.nodeId   = this.nodeId;
+                obj.objectId = this.nodeId + '/' + obj.objectId;
+                obj.listId   = -1;
+                frame.children.push(obj);
             }
 
 
             this.objects = [frame];
-
-            this.updateValues.push(['nObjects', new NumberValue(
-                this.children.objects 
-                ? this.children.objects.length
-                : 0)]);
+            this.updateValues.push(['nObjects', new NumberValue(this.value.children.objects.length)]);
         }
         else
         {

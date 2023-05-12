@@ -67,7 +67,16 @@ extends GShape
         }
         else
         {
-            this.value = new StarValue(this.nodeId, x, y, width, height, angle, round, points, convex);
+            this.value = new StarValue(
+                this.nodeId, 
+                x, 
+                y, 
+                width, 
+                height, 
+                angle, 
+                round, 
+                points, 
+                convex);
         }
 
              
@@ -107,7 +116,7 @@ extends GShape
            && this.round
            && this.points
            && this.convex)
-       {
+        {
            this.objects = 
            [
                new FigmaStar(
@@ -123,53 +132,54 @@ extends GShape
                                this.points.toValue().value,
                                this.convex.toValue().value)
            ];
-       }
+        }
 
        
-       super.evalObjects(parse);
-   }
+        super.evalObjects(parse);
+    }
 
 
 
-   pushValueUpdates(parse)
-   {
-      super.pushValueUpdates(parse);
+    pushValueUpdates(parse)
+    {
+        super.pushValueUpdates(parse);
 
-      if (this.input ) this.input .pushValueUpdates(parse);
-      if (this.round ) this.round .pushValueUpdates(parse);
-      if (this.points) this.points.pushValueUpdates(parse);
-      if (this.convex) this.convex.pushValueUpdates(parse);
+        if (this.input ) this.input .pushValueUpdates(parse);
+        if (this.round ) this.round .pushValueUpdates(parse);
+        if (this.points) this.points.pushValueUpdates(parse);
+        if (this.convex) this.convex.pushValueUpdates(parse);
     }
 
 
 
     toValue()
     {
-       const star = new StarValue(
-           this.nodeId,
-           this.x     .toValue(),
-           this.y     .toValue(),
-           this.width .toValue(),
-           this.height.toValue(),
-           this.angle .toValue(),
-           this.round .toValue(),
-           this.points.toValue(),
-           this.convex.toValue());
-
-        star.props = this.props.toValue();
-
+        const star = new StarValue(
+            this.nodeId,
+            this.x     .toValue(),
+            this.y     .toValue(),
+            this.width .toValue(),
+            this.height.toValue(),
+            this.angle .toValue(),
+            this.round .toValue(),
+            this.points.toValue(),
+            this.convex.toValue());
+ 
+        star.props   = this.props.toValue();
+        star.objects = this.objects.map(o => o.copy());
+ 
         return star;
-   }
+    }
 
 
 
-   isValid()
-   {
-      return super.isValid()
-          && this.round .isValid()
-          && this.points.isValid()
-          && this.convex.isValid();
-   }
+    isValid()
+    {
+        return super.isValid()
+            && this.round .isValid()
+            && this.points.isValid()
+            && this.convex.isValid();
+    }
 
 
 

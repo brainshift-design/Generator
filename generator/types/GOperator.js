@@ -11,21 +11,19 @@ extends GNode
     feedbackValue = null; // () => {}
 
 
-    objects = []; // held by Operator because nodes like List and Repeat can also generate objects
-
-    
+   
     
     constructor(type, nodeId, options)
     {
         super(type, options);
 
-        this.nodeId       = nodeId;
-        this.nodeName     = options.nodeName;
+        this.nodeId   = nodeId;
+        this.nodeName = options.nodeName;
 
-        this.valid        = false;
-        this.topLevel     = false;
+        this.valid    = false;
+        this.topLevel = false;
 
-        this.value        = null;
+        this.value    = null;
     }
 
 
@@ -39,15 +37,6 @@ extends GNode
 
         this.valid    = base.valid;
         this.topLevel = base.topLevel;
-
-        this.copyObjects(base.objects);
-    }
-
-
-
-    copyObjects(objects)
-    {
-        this.objects = objects.map(o => o.copy());
     }
 
 

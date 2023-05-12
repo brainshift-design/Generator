@@ -68,8 +68,6 @@ extends OpShape
 
     updateValues(requestId, actionId, updateParamId, paramIds, values)
     {
-        console.log('OpFrame updateValues paramIds = ', [...paramIds]);
-        console.log('OpFrame updateValues values = ', [...values]);
         super.updateValues(requestId, actionId, updateParamId, paramIds, values);
         
         const children = values[paramIds.findIndex(id => id == 'children')];

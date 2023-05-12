@@ -20,6 +20,8 @@ extends GShapeBase
 
     copyBase(base)
     {
+        super.copyBase(base);
+        
         this.copyProperties(base.props);
     }
 
@@ -135,6 +137,10 @@ extends GShapeBase
                 }
             }
         }
+
+
+        if (this.value)
+            this.value.objects = this.objects.map(o => o.copy());
     }
 
 

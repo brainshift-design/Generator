@@ -77,10 +77,16 @@ extends GOperator
                 if (LIST_VALUES.includes(input.type))
                 {
                     for (const item of input.items)
+                    {
                         this.value.items.push(item.copy());   
+                        this.value.objects.push(...item.objects.map(o => o.copy()));
+                    }
                 }
                 else
+                {
                     this.value.items.push(input.copy());
+                    this.value.objects.push(...input.objects.map(o => o.copy()));
+                }
             }
         }
 

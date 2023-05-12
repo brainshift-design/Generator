@@ -23,6 +23,8 @@ extends GValue
 
     copyBase(base)
     {
+        super.copyBase(base);
+        
         this.nodeId = base.nodeId;
 
         this.props  = base.props.copy();

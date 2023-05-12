@@ -24,7 +24,7 @@ class FigmaObject
 
     copyBase(base)
     {
-        this.uniqueId         = base.uniqueId;
+        this.uniqueId = base.uniqueId;
     }
 
 
