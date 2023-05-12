@@ -1982,7 +1982,7 @@ function figUpdateRect(figRect, genRect)
         return;
 
 
-    figRect.name = genRect.objectName;
+    figRect.name = makeObjectName(genRect);
 
     figRect.x    = genRect.x;
     figRect.y    = genRect.y;
@@ -2055,7 +2055,7 @@ function figUpdateLine(figLine, genLine)
         return;
 
 
-    figLine.name = genLine.objectName;
+    figLine.name = makeObjectName(genLine);
 
     figLine.x    = genLine.x;
     figLine.y    = genLine.y;
@@ -2130,7 +2130,7 @@ function figUpdateEllipse(figEllipse, genEllipse)
         return;
 
 
-    figEllipse.name = genEllipse.objectName;
+    figEllipse.name = makeObjectName(genEllipse);
 
     figEllipse.x    = genEllipse.x;
     figEllipse.y    = genEllipse.y;
@@ -2208,7 +2208,7 @@ function figUpdatePolygon(figPoly, genPoly)
         return;
 
 
-    figPoly.name = genPoly.objectName;
+    figPoly.name = makeObjectName(genPoly);
 
     figPoly.x    = genPoly.x;
     figPoly.y    = genPoly.y;
@@ -2290,7 +2290,7 @@ function figUpdateStar(figStar, genStar)
         return;
 
 
-    figStar.name = genStar.objectName;
+    figStar.name = makeObjectName(genStar);
 
     figStar.x    = genStar.x;
     figStar.y    = genStar.y;
@@ -2407,7 +2407,7 @@ function figUpdateText(figText, genText)
     })();
 
 
-    figText.name = genText.objectName;
+    figText.name = makeObjectName(genText);
 
     figText.x    = genText.x;
     figText.y    = genText.y;
@@ -2501,7 +2501,7 @@ function figUpdatePoint(figPoint, genPoint)
         return;
 
 
-    figPoint.name = genPoint.objectName;
+    figPoint.name = makeObjectName(genPoint);
 
     const size    = 8 / curZoom;
 
@@ -2568,7 +2568,7 @@ function figUpdateVectorPath(figPath, genPath)
         return;
 
 
-    figPath.name = genPath.objectName;
+    figPath.name = makeObjectName(genPath);
 
     figPath.x    = 0; //genPath.x;
     figPath.y    = 0; //genPath.y;
@@ -2638,7 +2638,7 @@ function figUpdateShapeGroup(figGroup, genGroup)
     }
 
 
-    figGroup.name = genGroup.objectName;
+    figGroup.name = makeObjectName(genGroup);
 
 
     figUpdateObjects(figGroup, genGroup.children);
@@ -2724,7 +2724,7 @@ function figUpdateFrame(figFrame, genFrame)
         return;
 
 
-    figFrame.name = genFrame.objectName;
+    figFrame.name = makeObjectName(genFrame);
 
     figFrame.x    = genFrame.x;
     figFrame.y    = genFrame.y;

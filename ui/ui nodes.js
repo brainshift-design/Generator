@@ -831,6 +831,7 @@ function uiUpdateValuesAndObjects(requestId, actionId, updateNodeId, updateParam
 
     if (isLastChunk)
     {
+        console.log('requestObjects =', [...requestObjects]);
         uiQueueMessageToFigma({
             cmd:          'figDeleteObjectsExcept',
             updateNodeId:  updateNodeId,
