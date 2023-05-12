@@ -9,7 +9,7 @@ extends FigmaShape
     {
         super(SHAPE_GROUP, nodeId, objectId, objectName);
         
-        this.children = clone(children);
+        this.children = children.map(c => c.copy());
     }
 
 

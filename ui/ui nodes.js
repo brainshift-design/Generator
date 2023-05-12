@@ -1256,3 +1256,12 @@ function uiUpdateGroupBounds(msg)
     node.paramWidth .setValue(new NumberValue(msg.width ), false, true, true);
     node.paramHeight.setValue(new NumberValue(msg.height), false, true, true);
 }
+
+
+
+function editSelectedGroup()
+{
+    const groupNode = graphView.selectedNodes[0];
+
+    
+}

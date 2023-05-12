@@ -22,8 +22,8 @@ extends FigmaObject
     {
         super.copyBase(base);
         
-        this.fills            = clone(base.fills);
-        this.strokes          = clone(base.strokes);
+        this.fills            = [...base.fills  ];
+        this.strokes          = [...base.strokes];
 
         this.strokeWeight     = base.strokeWeight;
         this.strokeAlign      = base.strokeAlign;

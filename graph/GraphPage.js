@@ -193,11 +193,11 @@ class GraphPage
 
         let json =
               tab + '{'
-            + tab + HTAB + '"id": "'      + this.id      + '",'
-            + tab + HTAB + '"name": "'    + this.name    + '",'
-            + tab + HTAB + '"zoom": "'    + this.zoom    + '",'
-            + tab + HTAB + '"panx": "'    + this.pan.x   + '",'
-            + tab + HTAB + '"pany": "'    + this.pan.y   + '",'
+            + tab + HTAB + '"id": "'   + this.id    + '",'
+            + tab + HTAB + '"name": "' + this.name  + '",'
+            + tab + HTAB + '"zoom": "' + this.zoom  + '",'
+            + tab + HTAB + '"panx": "' + this.pan.x + '",'
+            + tab + HTAB + '"pany": "' + this.pan.y + '",'
             + tab + HTAB + '"groups":'
             + tab + HTAB + '[';
 
@@ -247,13 +247,16 @@ class GraphPage
             if (isNaN(this.zoom)) this._zoom = 1;
 
 
-            for (const _group of data.groups)
+            if (isValid(data.groups))
             {
-                const group = new GraphPage(_group.id, _group.name);
-                group._pan  = point(_group.panx, _group.pany);
-                group._zoom = _group.zoom;
+                for (const _group of data.groups)
+                {
+                    const group = new GraphPage(_group.id, _group.name);
+                    group._pan  = point(_group.panx, _group.pany);
+                    group._zoom = _group.zoom;
 
-                this.groups.push(group);
+                    this.groups.push(group);
+                }
             }
         }
     }

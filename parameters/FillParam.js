@@ -429,7 +429,10 @@ extends Parameter
 
 
 
-    isDefault = () => this.value.equals(this.defaultValue);
+    isDefault = () => 
+    {
+        this.value.equals(this.defaultValue);
+    };
 
 
 

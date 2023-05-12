@@ -36,8 +36,8 @@ class GNode
 
     copyBase(src)
     {
-        this.options  = clone(src.options);
-        this.data     = clone(src.data);
+        this.options = clone(src.options);
+        this.data    = clone(src.data   );
     }
 
 

@@ -3985,7 +3985,7 @@ a
                         <path d="M31.7883 8.10361C31.5684 7.46198 31.265 6.88767 30.878 6.3807C30.4997 5.86581 30.0423 5.42617 29.5058 5.06179C28.978 4.6974 28.3711 4.42411 27.685 4.24192C26.9989 4.05181 26.2512 3.95675 25.442 3.95675C23.9907 3.95675 22.6976 4.28549 21.5629 4.94297C20.4283 5.60044 19.5355 6.56686 18.8846 7.8422C18.2424 9.10963 17.9214 10.6543 17.9214 12.4762C17.9214 14.314 18.2424 15.8706 18.8846 17.1459C19.5267 18.4213 20.4195 19.3916 21.5629 20.057C22.7064 20.7145 24.0346 21.0433 25.5476 21.0433C26.9197 21.0433 28.1072 20.8056 29.11 20.3303C30.1215 19.855 30.8999 19.1817 31.4453 18.3104C31.9907 17.4311 32.2633 16.4013 32.2633 15.221L33.3716 15.3755H26.0357V11.9297H37V14.8527C37 16.936 36.5074 18.7381 35.5223 20.259C34.5371 21.7799 33.1825 22.9523 31.4585 23.7761C29.7345 24.592 27.7554 25 25.5212 25C23.0319 25 20.8461 24.497 18.9637 23.491C17.0902 22.477 15.6256 21.0393 14.5701 19.1778C13.5234 17.3083 13 15.0903 13 12.5238C13 10.5593 13.3079 8.80466 13.9236 7.25998C14.5481 5.71531 15.4189 4.40431 16.536 3.327C17.6531 2.24176 18.9637 1.41793 20.4678 0.855513C21.972 0.285171 23.608 0 25.376 0C26.8714 0 28.2655 0.198035 29.5586 0.594106C30.8516 0.982256 31.9995 1.53676 33.0022 2.25761C34.0137 2.97845 34.845 3.83397 35.4959 4.82414C36.1468 5.81432 36.5734 6.90748 36.7757 8.10361H31.7883Z" fill="white"/>
                         <path d="M50 12.5C50 14.9853 47.9853 17 45.5 17C43.0147 17 41 14.9853 41 12.5C41 10.0147 43.0147 8 45.5 8C47.9853 8 50 10.0147 50 12.5Z" fill="white"/>
                         <path fill-rule="evenodd" clip-rule="evenodd" d="M4.5 16C6.433 16 8 14.433 8 12.5C8 10.567 6.433 9 4.5 9C2.567 9 1 10.567 1 12.5C1 14.433 2.567 16 4.5 16ZM4.5 17C6.98528 17 9 14.9853 9 12.5C9 10.0147 6.98528 8 4.5 8C2.01472 8 0 10.0147 0 12.5C0 14.9853 2.01472 17 4.5 17Z" fill="white"/>
-                        </svg>
+                    </svg>
                 </div>
 
                 <div id='aboutVersion'>version  _</div>
@@ -8516,14 +8516,6 @@ class FigmaObject
     copyBase(base)
     {
         this.uniqueId         = base.uniqueId;
-
-        this.fills            = clone(base.fills);
-        this.strokes          = clone(base.strokes);
-    
-        this.strokeWeight     = base.strokeWeight;
-        this.strokeAlign      = base.strokeAlign;
-        this.strokeJoin       = base.strokeJoin;
-        this.strokeMiterLimit = base.strokeMiterLimit;
     }
 
 
@@ -8582,8 +8574,8 @@ extends FigmaObject
     {
         super.copyBase(base);
         
-        this.fills            = clone(base.fills);
-        this.strokes          = clone(base.strokes);
+        this.fills            = [...base.fills  ];
+        this.strokes          = [...base.strokes];
 
         this.strokeWeight     = base.strokeWeight;
         this.strokeAlign      = base.strokeAlign;
@@ -8944,7 +8936,7 @@ extends FigmaShape
     {
         super(VECTOR_PATH, nodeId, objectId, objectName);
         
-        this.points = clone(points);
+        this.points = points.map(p => p.copy());
         this.closed = closed;
         this.degree = degree;
 
@@ -8969,7 +8961,7 @@ extends FigmaShape
         copy.x        = this.x;
         copy.y        = this.y;
 
-        copy.points   = clone(this.points);
+        copy.points   = this.points.map(p => p.copy());
         copy.closed   = this.closed;
         copy.degree   = this.degree;
 
@@ -9334,7 +9326,7 @@ extends FigmaShape
     {
         super(SHAPE_GROUP, nodeId, objectId, objectName);
         
-        this.children = clone(children);
+        this.children = children.map(c => c.copy());
     }
 
 
@@ -9377,7 +9369,7 @@ extends FigmaShape
         this.height   = height;
         this.angle    = angle;
         this.round    = round;
-        this.children = clone(children);
+        this.children = children.map(c => c.copy());
     }
 
 
@@ -9415,7 +9407,7 @@ extends FigmaObject
 
     constructor(nodeId, styleId, styleName)
     {
-        super(COLOR_STYLE, nodeId, nodeName);
+        super(COLOR_STYLE, nodeId);
 
         this.id   = styleId;
         this.name = styleName;
@@ -9474,8 +9466,8 @@ class GNode
 
     copyBase(src)
     {
-        this.options  = clone(src.options);
-        this.data     = clone(src.data);
+        this.options = clone(src.options);
+        this.data    = clone(src.data   );
     }
 
 
@@ -10436,8 +10428,7 @@ extends GValue
 
     equals(fill)
     {
-        return super.equals(fill)
-            && this.color  .equals(fill.color  )
+        return this.color  .equals(fill.color  )
             && this.opacity.equals(fill.opacity);
     }
 
@@ -13034,7 +13025,7 @@ extends GOperator
                 await this.input.eval(parse);
 
             this.value   = this.input.toValue();
-            this.objects = clone(this.input.objects);
+            this.objects = this.input.objects.map(o => o.copy());
         }
         else
         {
@@ -13623,12 +13614,12 @@ extends GOperator
                     {
                         const obj = copyFigmaObject(this.input.objects[j]);
 
-                        obj.nodeId = this.nodeId;
+                        obj.nodeId      = this.nodeId;
 
                         obj.objectId    = this.nodeId + ':' + (o+1).toString() + obj.objectId;
                         obj.objectName += ' ' + (o+1).toString();
 
-                        obj.listId = i;
+                        obj.listId      = i;
         
                         this.objects.push(obj);
                     }
@@ -22573,7 +22564,7 @@ extends GOperator
 
         this.objects = 
             this.input 
-            ? clone(this.input.objects)
+            ? this.input.objects.map(o => o.copy())
             : [];
 
             
@@ -22743,7 +22734,7 @@ extends GOperator
 
         this.objects = 
             this.input 
-            ? clone(this.input.objects) 
+            ? this.input.objects.map(o => o.copy())
             : [];
 
 
@@ -23003,7 +22994,7 @@ extends GOperator
 
         this.objects = 
             this.input 
-            ? clone(this.input.objects) 
+            ? this.input.objects.map(o => o.copy())
             : [];
 
 
@@ -23267,12 +23258,12 @@ extends GShape
 
 
 
-    pushValueUpdates(parse)
-    {
-        super.pushValueUpdates(parse);
+    // pushValueUpdates(parse)
+    // {
+    //     super.pushValueUpdates(parse);
 
-        if (this.colorStyle) this.colorStyle.pushValueUpdates(parse);
-    }
+    //     if (this.colorStyle) this.colorStyle.pushValueUpdates(parse);
+    // }
 
 
 
@@ -24033,18 +24024,18 @@ function enableFeatures(subscription, beta)
 
     updateElementDisplay(menuItemLogObjectUpdates    .div, subscription && beta);
     
-    updateElementDisplay(menuItemList                .div, subscription && beta);
+    //updateElementDisplay(menuItemList                .div, subscription && beta);
     updateElementDisplay(menuFlowSep1                .div, subscription && beta);
     //updateElementDisplay(menuItemExpandList          .div, subscription && beta);
-    updateElementDisplay(menuItemItems               .div, subscription && beta);
-    updateElementDisplay(menuFlowSep2                .div, subscription && beta);
-    updateElementDisplay(menuItemSelect              .div, subscription && beta);
-    updateElementDisplay(menuItemCount               .div, subscription && beta);
-    updateElementDisplay(menuFlowSep3                .div, subscription && beta);
+    updateElementDisplay(menuItemItems               .div, subscription);
+    updateElementDisplay(menuFlowSep2                .div, subscription);
+    //updateElementDisplay(menuItemSelect              .div, subscription);
+    updateElementDisplay(menuItemCount               .div, subscription);
+    //updateElementDisplay(menuFlowSep3                .div, subscription && beta);
     //updateElementDisplay(menuItemStart               .div, subscription && beta);
     updateElementDisplay(menuItemRepeat              .div, subscription && beta);
     // updateElementDisplay(menuItemCache               .div, subscription && beta);
-    // updateElementDisplay(menuItemCopy                .div, subscription && beta);
+    updateElementDisplay(menuItemCopy                .div, subscription && beta);
     
     updateElementDisplay(menuItemSequence              .div, subscription && beta);    
     updateElementDisplay(menuItemSolve               .div, subscription && beta);    
@@ -38329,14 +38320,6 @@ class FigmaObject
     copyBase(base)
     {
         this.uniqueId         = base.uniqueId;
-
-        this.fills            = clone(base.fills);
-        this.strokes          = clone(base.strokes);
-    
-        this.strokeWeight     = base.strokeWeight;
-        this.strokeAlign      = base.strokeAlign;
-        this.strokeJoin       = base.strokeJoin;
-        this.strokeMiterLimit = base.strokeMiterLimit;
     }
 
 
@@ -38395,8 +38378,8 @@ extends FigmaObject
     {
         super.copyBase(base);
         
-        this.fills            = clone(base.fills);
-        this.strokes          = clone(base.strokes);
+        this.fills            = [...base.fills  ];
+        this.strokes          = [...base.strokes];
 
         this.strokeWeight     = base.strokeWeight;
         this.strokeAlign      = base.strokeAlign;
@@ -38757,7 +38740,7 @@ extends FigmaShape
     {
         super(VECTOR_PATH, nodeId, objectId, objectName);
         
-        this.points = clone(points);
+        this.points = points.map(p => p.copy());
         this.closed = closed;
         this.degree = degree;
 
@@ -38782,7 +38765,7 @@ extends FigmaShape
         copy.x        = this.x;
         copy.y        = this.y;
 
-        copy.points   = clone(this.points);
+        copy.points   = this.points.map(p => p.copy());
         copy.closed   = this.closed;
         copy.degree   = this.degree;
 
@@ -39147,7 +39130,7 @@ extends FigmaShape
     {
         super(SHAPE_GROUP, nodeId, objectId, objectName);
         
-        this.children = clone(children);
+        this.children = children.map(c => c.copy());
     }
 
 
@@ -39190,7 +39173,7 @@ extends FigmaShape
         this.height   = height;
         this.angle    = angle;
         this.round    = round;
-        this.children = clone(children);
+        this.children = children.map(c => c.copy());
     }
 
 
@@ -39228,7 +39211,7 @@ extends FigmaObject
 
     constructor(nodeId, styleId, styleName)
     {
-        super(COLOR_STYLE, nodeId, nodeName);
+        super(COLOR_STYLE, nodeId);
 
         this.id   = styleId;
         this.name = styleName;
@@ -39287,8 +39270,8 @@ class GNode
 
     copyBase(src)
     {
-        this.options  = clone(src.options);
-        this.data     = clone(src.data);
+        this.options = clone(src.options);
+        this.data    = clone(src.data   );
     }
 
 
@@ -40249,8 +40232,7 @@ extends GValue
 
     equals(fill)
     {
-        return super.equals(fill)
-            && this.color  .equals(fill.color  )
+        return this.color  .equals(fill.color  )
             && this.opacity.equals(fill.opacity);
     }
 
@@ -42847,7 +42829,7 @@ extends GOperator
                 await this.input.eval(parse);
 
             this.value   = this.input.toValue();
-            this.objects = clone(this.input.objects);
+            this.objects = this.input.objects.map(o => o.copy());
         }
         else
         {
@@ -43436,12 +43418,12 @@ extends GOperator
                     {
                         const obj = copyFigmaObject(this.input.objects[j]);
 
-                        obj.nodeId = this.nodeId;
+                        obj.nodeId      = this.nodeId;
 
                         obj.objectId    = this.nodeId + ':' + (o+1).toString() + obj.objectId;
                         obj.objectName += ' ' + (o+1).toString();
 
-                        obj.listId = i;
+                        obj.listId      = i;
         
                         this.objects.push(obj);
                     }
@@ -52386,7 +52368,7 @@ extends GOperator
 
         this.objects = 
             this.input 
-            ? clone(this.input.objects)
+            ? this.input.objects.map(o => o.copy())
             : [];
 
             
@@ -52556,7 +52538,7 @@ extends GOperator
 
         this.objects = 
             this.input 
-            ? clone(this.input.objects) 
+            ? this.input.objects.map(o => o.copy())
             : [];
 
 
@@ -52816,7 +52798,7 @@ extends GOperator
 
         this.objects = 
             this.input 
-            ? clone(this.input.objects) 
+            ? this.input.objects.map(o => o.copy())
             : [];
 
 
@@ -53080,12 +53062,12 @@ extends GShape
 
 
 
-    pushValueUpdates(parse)
-    {
-        super.pushValueUpdates(parse);
+    // pushValueUpdates(parse)
+    // {
+    //     super.pushValueUpdates(parse);
 
-        if (this.colorStyle) this.colorStyle.pushValueUpdates(parse);
-    }
+    //     if (this.colorStyle) this.colorStyle.pushValueUpdates(parse);
+    // }
 
 
 
@@ -53846,18 +53828,18 @@ function enableFeatures(subscription, beta)
 
     updateElementDisplay(menuItemLogObjectUpdates    .div, subscription && beta);
     
-    updateElementDisplay(menuItemList                .div, subscription && beta);
+    //updateElementDisplay(menuItemList                .div, subscription && beta);
     updateElementDisplay(menuFlowSep1                .div, subscription && beta);
     //updateElementDisplay(menuItemExpandList          .div, subscription && beta);
-    updateElementDisplay(menuItemItems               .div, subscription && beta);
-    updateElementDisplay(menuFlowSep2                .div, subscription && beta);
-    updateElementDisplay(menuItemSelect              .div, subscription && beta);
-    updateElementDisplay(menuItemCount               .div, subscription && beta);
-    updateElementDisplay(menuFlowSep3                .div, subscription && beta);
+    updateElementDisplay(menuItemItems               .div, subscription);
+    updateElementDisplay(menuFlowSep2                .div, subscription);
+    //updateElementDisplay(menuItemSelect              .div, subscription);
+    updateElementDisplay(menuItemCount               .div, subscription);
+    //updateElementDisplay(menuFlowSep3                .div, subscription && beta);
     //updateElementDisplay(menuItemStart               .div, subscription && beta);
     updateElementDisplay(menuItemRepeat              .div, subscription && beta);
     // updateElementDisplay(menuItemCache               .div, subscription && beta);
-    // updateElementDisplay(menuItemCopy                .div, subscription && beta);
+    updateElementDisplay(menuItemCopy                .div, subscription && beta);
     
     updateElementDisplay(menuItemSequence              .div, subscription && beta);    
     updateElementDisplay(menuItemSolve               .div, subscription && beta);    
@@ -59032,7 +59014,7 @@ function initGeneratorMenus()
 
     menuMainHelp = new Menu('Help and subscription', false);
     menuMainHelp.addItems([
-        // new MenuItem('Help page',    {callback:  () => window.open('http://www.bourt.com/generator/help', '_blank')}),
+      // new MenuItem('Help page',   {callback:  () => window.open('http://www.bourt.com/generator/help', '_blank')}),
       //new MenuItem('',             {separator: true}),
         new MenuItem('Subscription', {callback:  () => showProductKeyDialog()}),
       //new MenuItem('',             {separator: true}),
@@ -59058,24 +59040,24 @@ function initGeneratorMenus()
         menuFlowSep2          = new MenuItem('',                  {separator: true}),
         menuItemSelect        = new MenuItem('Select',            {icon: iconSelect,     callback: e => actionManager.do(getCreateNodeAction(SELECT,       btnNumber.div, getCreateOptions(e)))}),
         menuItemIfElse        = new MenuItem('I&hairsp;f / else', {icon: iconIfElse,     callback: e => actionManager.do(getCreateNodeAction(IF_ELSE,      btnNumber.div, getCreateOptions(e))), disambiguate: true}),
-        //menuItemExpandList    = new MenuItem('Expand',          {icon: iconExpandList, callback: e => actionManager.do(getCreateNodeAction(LIST_EXPAND,  btnNumber.div, getCreateOptions(e)))}),
+        //menuItemExpandList  = new MenuItem('Expand',            {icon: iconExpandList, callback: e => actionManager.do(getCreateNodeAction(LIST_EXPAND,  btnNumber.div, getCreateOptions(e)))}),
         menuFlowSep2          = new MenuItem('',                  {separator: true}),
         menuItemCopy          = new MenuItem('Copy',              {icon: iconCopy,   callback: e => actionManager.do(getCreateNodeAction(COPY,         btnNumber.div, getCreateOptions(e)))}),
         menuFlowSep3          = new MenuItem('',                  {separator: true}),
-        //settinmenuItemStart         = new MenuItem('Start',             {icon: iconStart,      callback: e => actionManager.do(getCreateNodeAction(START,        btnNumber.div, getCreateOptions(e)))}),
+        //settinmenuItemStart = new MenuItem('Start',             {icon: iconStart,      callback: e => actionManager.do(getCreateNodeAction(START,        btnNumber.div, getCreateOptions(e)))}),
         menuItemRepeat        = new MenuItem('Repeat',            {icon: iconRepeat,     callback: e => actionManager.do(getCreateNodeAction(REPEAT,       btnNumber.div, getCreateOptions(e)))})]);
-        // menuFlowSep3          = new MenuItem('',                  {separator: true}),
-        // menuItemCache         = new MenuItem('Cache',             {icon: iconCache,  callback: e => actionManager.do(getCreateNodeAction(CACHE,        btnNumber.div, getCreateOptions(e)))}),
+     // menuFlowSep3          = new MenuItem('',                  {separator: true}),
+     // menuItemCache         = new MenuItem('Cache',             {icon: iconCache,  callback: e => actionManager.do(getCreateNodeAction(CACHE,        btnNumber.div, getCreateOptions(e)))}),
     
 
     menuMath = new Menu('Math', true, false);
     menuMath.addItems([
-        new MenuItem('Power',       {icon: iconExponent, callback: e => actionManager.do(getCreateNodeAction(NUMBER_EXPONENT, btnNumber.div, getCreateOptions(e)))}),
-        new MenuItem('Multiply',    {icon: iconMultiply, callback: e => actionManager.do(getCreateNodeAction(NUMBER_MULTIPLY, btnNumber.div, getCreateOptions(e)))}),
-        new MenuItem('Divide',      {icon: iconDivide,   callback: e => actionManager.do(getCreateNodeAction(NUMBER_DIVIDE,   btnNumber.div, getCreateOptions(e)))}),
-        new MenuItem('Remainder',   {icon: iconModulo,   callback: e => actionManager.do(getCreateNodeAction(NUMBER_MODULO,   btnNumber.div, getCreateOptions(e)))}),
-        new MenuItem('Add',         {icon: iconAdd,      callback: e => actionManager.do(getCreateNodeAction(NUMBER_ADD,      btnNumber.div, getCreateOptions(e)))}),
-        new MenuItem('Subtract',    {icon: iconSubtract, callback: e => actionManager.do(getCreateNodeAction(NUMBER_SUBTRACT, btnNumber.div, getCreateOptions(e)))})]);
+        new MenuItem('Power',     {icon: iconExponent, callback: e => actionManager.do(getCreateNodeAction(NUMBER_EXPONENT, btnNumber.div, getCreateOptions(e)))}),
+        new MenuItem('Multiply',  {icon: iconMultiply, callback: e => actionManager.do(getCreateNodeAction(NUMBER_MULTIPLY, btnNumber.div, getCreateOptions(e)))}),
+        new MenuItem('Divide',    {icon: iconDivide,   callback: e => actionManager.do(getCreateNodeAction(NUMBER_DIVIDE,   btnNumber.div, getCreateOptions(e)))}),
+        new MenuItem('Remainder', {icon: iconModulo,   callback: e => actionManager.do(getCreateNodeAction(NUMBER_MODULO,   btnNumber.div, getCreateOptions(e)))}),
+        new MenuItem('Add',       {icon: iconAdd,      callback: e => actionManager.do(getCreateNodeAction(NUMBER_ADD,      btnNumber.div, getCreateOptions(e)))}),
+        new MenuItem('Subtract',  {icon: iconSubtract, callback: e => actionManager.do(getCreateNodeAction(NUMBER_SUBTRACT, btnNumber.div, getCreateOptions(e)))})]);
         
 
     menuBoolean = new Menu('Boolean', true, false);
@@ -59269,7 +59251,7 @@ function initGeneratorMenus()
 
     menuNode = new Menu('Node menu', false, false);
     menuNode.addItems([
-        menuItemNodeEditGroup      = new MenuItem('Edit group...',   {callback: e => { hideAllMenus();  }}),
+        menuItemNodeEditGroup      = new MenuItem('Edit group...',   {callback: e => { hideAllMenus(); editSelectedGroup(); }}),
         menuItemNodeSepGroup       = new MenuItem('',                {separator: true}),
         menuItemNodeCopy           = new MenuItem('Copy',            {shortcut:  osCtrl() + 'C',       callback: () => graphView.copySelectedNodes() }),
         menuItemNodePaste          = new MenuItem('Paste here',      {shortcut:  osCtrl() + 'V',       callback: e => { hideAllMenus(); graphView.pasteCopiedNodes(false); }}),
@@ -64603,7 +64585,10 @@ extends Parameter
 
 
 
-    isDefault = () => this.value.equals(this.defaultValue);
+    isDefault = () => 
+    {
+        this.value.equals(this.defaultValue);
+    };
 
 
 
@@ -69831,10 +69816,25 @@ function areConnected(node1, node2)
 
 
 
-function onVariableConnectInput(input)
+function onSimpleVariableConnectInput(input)
 {
     input.node.addNewInput();
+}
 
+
+
+function onSimpleVariableDisconnectInput(input)
+{
+    removeFromArray(input.node.inputs, input);
+
+    input.node.inputControls.removeChild(input.div);
+}
+
+
+
+function onVariableConnectInput(input)
+{
+    onSimpleVariableConnectInput(input);
     updateOutputListTypeFromConnectedInputs(input.node);
 }
 
@@ -69842,10 +69842,7 @@ function onVariableConnectInput(input)
 
 function onVariableDisconnectInput(input)
 {
-    removeFromArray(input.node.inputs, input);
-
-    input.node.inputControls.removeChild(input.div);
-
+    onSimpleVariableDisconnectInput(input);
     updateOutputListTypeFromConnectedInputs(input.node);
 }
 
@@ -74304,8 +74301,8 @@ extends OperatorWithValue
         const newInput = new Input([NUMBER_VALUE, NUMBER_LIST_VALUE, LIST_VALUE]);
         newInput.isNew = true;
 
-        newInput.addEventListener('connect',    e => { onVariableConnectInput(e.detail.input); e.detail.input.isNew = false; });
-        newInput.addEventListener('disconnect', e => onVariableDisconnectInput(e.detail.input));
+        newInput.addEventListener('connect',    e => { onSimpleVariableConnectInput(e.detail.input); e.detail.input.isNew = false; });
+        newInput.addEventListener('disconnect', e => onSimpleVariableDisconnectInput(e.detail.input));
 
         this.addInput(newInput);
 
@@ -74381,8 +74378,8 @@ extends OperatorWithSymbol
         const newInput = new Input([NUMBER_VALUE, NUMBER_LIST_VALUE, LIST_VALUE]);
         newInput.isNew = true;
 
-        newInput.addEventListener('connect',    e => { onVariableConnectInput(e.detail.input); e.detail.input.isNew = false; });
-        newInput.addEventListener('disconnect', e => onVariableDisconnectInput(e.detail.input));
+        newInput.addEventListener('connect',    e => { onSimpleVariableConnectInput(e.detail.input); e.detail.input.isNew = false; });
+        newInput.addEventListener('disconnect', e => onSimpleVariableDisconnectInput(e.detail.input));
 
         this.addInput(newInput);
 
@@ -74476,7 +74473,6 @@ extends OperatorWithSymbol
         return '';
     }
 }
-
 
 
 class   OpAdd
@@ -74724,8 +74720,8 @@ extends OperatorWithValue
         const newInput = new Input([NUMBER_VALUE, NUMBER_LIST_VALUE, LIST_VALUE]);
         newInput.isNew = true;
 
-        newInput.addEventListener('connect',    e => { onVariableConnectInput(e.detail.input); e.detail.input.isNew = false; });
-        newInput.addEventListener('disconnect', e => onVariableDisconnectInput(e.detail.input));
+        newInput.addEventListener('connect',    e => { onSimpleVariableConnectInput(e.detail.input); e.detail.input.isNew = false; });
+        newInput.addEventListener('disconnect', e => onSimpleVariableDisconnectInput(e.detail.input));
 
         this.addInput(newInput);
 
@@ -74820,8 +74816,8 @@ extends OperatorWithValue
         const newInput = new Input([NUMBER_VALUE, NUMBER_LIST_VALUE, LIST_VALUE]);
         newInput.isNew = true;
 
-        newInput.addEventListener('connect',    e => { onVariableConnectInput(e.detail.input); e.detail.input.isNew = false; });
-        newInput.addEventListener('disconnect', e => onVariableDisconnectInput(e.detail.input));
+        newInput.addEventListener('connect',    e => { onSimpleVariableConnectInput(e.detail.input); e.detail.input.isNew = false; });
+        newInput.addEventListener('disconnect', e => onSimpleVariableDisconnectInput(e.detail.input));
 
         this.addInput(newInput);
 
@@ -82127,11 +82123,11 @@ class GraphPage
 
         let json =
               tab + '{'
-            + tab + HTAB + '"id": "'      + this.id      + '",'
-            + tab + HTAB + '"name": "'    + this.name    + '",'
-            + tab + HTAB + '"zoom": "'    + this.zoom    + '",'
-            + tab + HTAB + '"panx": "'    + this.pan.x   + '",'
-            + tab + HTAB + '"pany": "'    + this.pan.y   + '",'
+            + tab + HTAB + '"id": "'   + this.id    + '",'
+            + tab + HTAB + '"name": "' + this.name  + '",'
+            + tab + HTAB + '"zoom": "' + this.zoom  + '",'
+            + tab + HTAB + '"panx": "' + this.pan.x + '",'
+            + tab + HTAB + '"pany": "' + this.pan.y + '",'
             + tab + HTAB + '"groups":'
             + tab + HTAB + '[';
 
@@ -82181,13 +82177,16 @@ class GraphPage
             if (isNaN(this.zoom)) this._zoom = 1;
 
 
-            for (const _group of data.groups)
+            if (isValid(data.groups))
             {
-                const group = new GraphPage(_group.id, _group.name);
-                group._pan  = point(_group.panx, _group.pany);
-                group._zoom = _group.zoom;
+                for (const _group of data.groups)
+                {
+                    const group = new GraphPage(_group.id, _group.name);
+                    group._pan  = point(_group.panx, _group.pany);
+                    group._zoom = _group.zoom;
 
-                this.groups.push(group);
+                    this.groups.push(group);
+                }
             }
         }
     }
@@ -84760,7 +84759,8 @@ function GroupNodesAction_createInputNodes(action)
         // create param node 
         // set it to the left of the input node
         const paramNode = createNode(GROUP_PARAM);
-        action.group.addNode(paramNode);
+        paramNode.group = action.group;
+        graph.addNode(paramNode);
 
         paramNode.setPosition(
             input.node.div.offsetX - defNodeWidth - 100,
@@ -84810,7 +84810,8 @@ function GroupNodesAction_createOutputNodes(action)
         // create param node 
         // set it to the left of the input node
         const paramNode = createNode(GROUP_PARAM);
-        action.group.addNode(paramNode);
+        paramNode.group = action.group;
+        graph.addNode(paramNode);
 
         paramNode.setPosition(
             input.node.div.offsetX + defNodeWidth + 100,
@@ -91071,6 +91072,15 @@ function uiUpdateGroupBounds(msg)
     node.paramY     .setValue(new NumberValue(msg.y     ), false, true, true);
     node.paramWidth .setValue(new NumberValue(msg.width ), false, true, true);
     node.paramHeight.setValue(new NumberValue(msg.height), false, true, true);
+}
+
+
+
+function editSelectedGroup()
+{
+    const groupNode = graphView.selectedNodes[0];
+
+    
 }
 
 

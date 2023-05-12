@@ -21,7 +21,7 @@ extends FigmaShape
         this.height   = height;
         this.angle    = angle;
         this.round    = round;
-        this.children = clone(children);
+        this.children = children.map(c => c.copy());
     }
 
 

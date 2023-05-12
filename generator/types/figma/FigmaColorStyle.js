@@ -10,7 +10,7 @@ extends FigmaObject
 
     constructor(nodeId, styleId, styleName)
     {
-        super(COLOR_STYLE, nodeId, nodeName);
+        super(COLOR_STYLE, nodeId);
 
         this.id   = styleId;
         this.name = styleName;

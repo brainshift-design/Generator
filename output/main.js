@@ -1179,7 +1179,7 @@ function updatePointSize_(point, genPoint) {
     point.strokeWeight = 1.25 / curZoom;
 }
 ///////////////////////////////////////////////////////////////////////////////////////////////////
-function figCreateObject(objects, genObj) {
+function figCreateObject(genObj, addObject) {
     let figObj;
     switch (genObj.type) {
         case RECTANGLE:
@@ -1213,7 +1213,6 @@ function figCreateObject(objects, genObj) {
             figObj = figCreateFrame(genObj);
             break;
     }
-    console.log('figObj =', figObj);
     console.assert(genObj.type == SHAPE_GROUP // cannot exist without children
         || !!figObj, 'no Figma object created');
     if (figObj) {
@@ -1223,16 +1222,18 @@ function figCreateObject(objects, genObj) {
         figObj.setPluginData('objectId', genObj.objectId);
         if (genObj.type == POINT)
             figPoints.push(figObj);
-        objects.push(figObj);
+        // console.log('objects =', objects);
+        // console.log('figObj =', figObj);
+        addObject(figObj);
     }
 }
-function figUpdateObjects(parent, objects) {
+function figUpdateObjects(figParent, genObjects) {
     // console.log('figUpdateObjects parent =', parent);
     // console.log('figUpdateObjects objects =', objects);
     // console.log('');
     let curNodeId = NULL;
     let figObjects = null;
-    for (const genObj of objects) {
+    for (const genObj of genObjects) {
         if (genObj.nodeId != curNodeId) {
             curNodeId = genObj.nodeId;
             figObjects = figObjectArrays.find(a => a.nodeId == genObj.nodeId);
@@ -1245,31 +1246,38 @@ function figUpdateObjects(parent, objects) {
                     });
             }
         }
+        let objects = figParent
+            ? figParent.children
+            : figObjects.objects;
+        const addObject = obj => {
+            if (figParent)
+                figParent.appendChild(obj); //children = [...figParent.children, obj];
+            else
+                figObjects.objects.push(obj);
+        };
         let figObj;
-        if (parent) {
-            figObj = parent.children.find(o => o.removed
-                || o.name == makeObjectName(genObj));
-            //console.log('parent figObj =', figObj);
-        }
-        else {
-            figObj = figObjects.objects.find(o => o.removed
-                || o.name == makeObjectName(genObj));
-        }
-        if (isValid(figObj)
+        console.log('parent =', figParent);
+        console.log('objects =', [...objects]);
+        figObj = objects.find(o => o.removed
+            || o.getPluginData('objectId') == genObj.objectId); //name == makeObjectName(genObj));
+        console.log('found figObj =', figObj);
+        if (figObj != undefined
+            && figObj != null
             && figObj.removed) {
-            removeFrom(figObjects.objects, figObj);
+            removeFrom(objects, figObj);
             if (figPoints.includes(figObj))
                 removeFromArray(figPoints, figObj);
         }
-        if (!isValid(figObj)
+        if (figObj == undefined
+            || figObj == null
             || figObj.removed) // no existing object, create new object
          {
-            //console.log('create');
-            figCreateObject(figObjects.objects, genObj);
+            console.log('create');
+            figCreateObject(genObj, addObject);
         }
         else if (figObj.getPluginData('type') == genObj.type.toString()) // update existing object
          {
-            //console.log('update');
+            console.log('update');
             figUpdateObject(figObj, genObj);
         }
         else // delete existing object, create new object
@@ -1277,7 +1285,7 @@ function figUpdateObjects(parent, objects) {
             figObj.remove();
             if (figPoints.includes(figObj))
                 removeFromArray(figPoints, figObj);
-            figCreateObject(figObjects.objects, genObj);
+            figCreateObject(genObj, addObject);
         }
     }
     // put points on top
@@ -1661,9 +1669,9 @@ function genShapeGroupIsValid(genGroup) {
 }
 function figCreateShapeGroup(genGroup) {
     //console.log(obj);
-    const objects = [];
+    let objects = [];
     for (const obj of genGroup.children)
-        figCreateObject(objects, obj);
+        figCreateObject(obj, o => objects = [...objects, o]);
     const figGroup = !isEmpty(objects)
         ? figma.group(objects, figma.currentPage)
         : null;
@@ -1697,6 +1705,7 @@ function genFrameIsValid(genGroup) {
         && genGroup.angle != null && !isNaN(genGroup.angle);
 }
 function figCreateFrame(genFrame) {
+    console.log('figCreateFrame()');
     //console.log(obj);
     const figFrame = figma.createFrame();
     figFrame.name = makeObjectName(genFrame);
@@ -1711,9 +1720,9 @@ function figCreateFrame(genFrame) {
         figFrame.resize(Math.max(0.01, genFrame.width), Math.max(0.01, genFrame.height));
         figFrame.rotation = genFrame.angle;
         figFrame.cornerRadius = genFrame.round;
-        const objects = [];
+        let objects = [];
         for (const obj of genFrame.children)
-            figCreateObject(objects, obj);
+            figCreateObject(obj, o => objects = [...objects, o]);
         for (const obj of objects)
             figFrame.appendChild(obj);
         setObjectFills(figFrame, genFrame);
@@ -1722,8 +1731,10 @@ function figCreateFrame(genFrame) {
     return figFrame;
 }
 function figUpdateFrame(figFrame, genFrame) {
+    console.log('1 figUpdateFrame()');
     if (!genFrameIsValid(genFrame))
         return;
+    console.log('2 figUpdateFrame()');
     figFrame.x = genFrame.x;
     figFrame.y = genFrame.y;
     figFrame.resize(Math.max(0.01, genFrame.width), Math.max(0.01, genFrame.height));

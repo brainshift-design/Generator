@@ -50,7 +50,7 @@ extends GOperator
                 await this.input.eval(parse);
 
             this.value   = this.input.toValue();
-            this.objects = clone(this.input.objects);
+            this.objects = this.input.objects.map(o => o.copy());
         }
         else
         {

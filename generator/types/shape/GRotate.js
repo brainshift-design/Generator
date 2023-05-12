@@ -99,7 +99,7 @@ extends GOperator
 
         this.objects = 
             this.input 
-            ? clone(this.input.objects) 
+            ? this.input.objects.map(o => o.copy())
             : [];
 
 

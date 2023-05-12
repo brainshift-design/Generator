@@ -25,14 +25,6 @@ class FigmaObject
     copyBase(base)
     {
         this.uniqueId         = base.uniqueId;
-
-        this.fills            = clone(base.fills);
-        this.strokes          = clone(base.strokes);
-    
-        this.strokeWeight     = base.strokeWeight;
-        this.strokeAlign      = base.strokeAlign;
-        this.strokeJoin       = base.strokeJoin;
-        this.strokeMiterLimit = base.strokeMiterLimit;
     }
 
 

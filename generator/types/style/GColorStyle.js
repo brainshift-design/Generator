@@ -95,12 +95,12 @@ extends GShape
 
 
 
-    pushValueUpdates(parse)
-    {
-        super.pushValueUpdates(parse);
+    // pushValueUpdates(parse)
+    // {
+    //     super.pushValueUpdates(parse);
 
-        if (this.colorStyle) this.colorStyle.pushValueUpdates(parse);
-    }
+    //     if (this.colorStyle) this.colorStyle.pushValueUpdates(parse);
+    // }
 
 
 

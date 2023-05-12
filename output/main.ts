@@ -1758,7 +1758,7 @@ function updatePointSize_(point, genPoint)
 
 
 
-function figCreateObject(objects, genObj)
+function figCreateObject(genObj, addObject)
 {
     let figObj;
 
@@ -1775,8 +1775,8 @@ function figCreateObject(objects, genObj)
         case SHAPE_GROUP: figObj = figCreateShapeGroup(genObj);  break;
         case FRAME:       figObj = figCreateFrame     (genObj);  break;
     }
-    console.log('figObj =', figObj);
 
+    
     console.assert(
            genObj.type == SHAPE_GROUP // cannot exist without children
         || !!figObj, 
@@ -1793,14 +1793,15 @@ function figCreateObject(objects, genObj)
         if (genObj.type == POINT)
             figPoints.push(figObj);
 
-
-        objects.push(figObj);
+        // console.log('objects =', objects);
+        // console.log('figObj =', figObj);
+        addObject(figObj);
     }
 }
 
 
 
-function figUpdateObjects(parent, objects)
+function figUpdateObjects(figParent, genObjects)
 {
     // console.log('figUpdateObjects parent =', parent);
     // console.log('figUpdateObjects objects =', objects);
@@ -1810,7 +1811,7 @@ function figUpdateObjects(parent, objects)
     let figObjects = null;
 
 
-    for (const genObj of objects)
+    for (const genObj of genObjects)
     {
         if (genObj.nodeId != curNodeId)
         {
@@ -1830,43 +1831,53 @@ function figUpdateObjects(parent, objects)
         }
 
 
+        let objects =
+            figParent
+            ? figParent.children
+            : figObjects.objects;
+
+        const addObject = obj =>
+        {
+            if (figParent) 
+                figParent.appendChild(obj);//children = [...figParent.children, obj];
+            else           
+                figObjects.objects.push(obj);
+        };
+
+
         let figObj;
-        
-        if (parent)
-        {
-            figObj = parent.children.find(o => 
-                   o.removed
-                || o.name == makeObjectName(genObj));
-            //console.log('parent figObj =', figObj);
-        }
-        else
-        {
-            figObj = figObjects.objects.find(o => 
-                   o.removed
-                || o.name == makeObjectName(genObj));
-        }
 
         
-        if (   isValid(figObj)
+        console.log('parent =', figParent);
+        console.log('objects =', [...objects]);
+        figObj = objects.find(o => 
+               o.removed
+            || o.getPluginData('objectId') == genObj.objectId)//name == makeObjectName(genObj));
+        console.log('found figObj =', figObj);
+
+        
+        if (   figObj != undefined
+            && figObj != null
             && figObj.removed)
         {
-            removeFrom(figObjects.objects, figObj);
+            removeFrom(objects, figObj);
         
             if (figPoints.includes(figObj))
                 removeFromArray(figPoints, figObj);
         }
 
 
-        if (  !isValid(figObj)
+        if (   figObj == undefined
+            || figObj == null
             || figObj.removed) // no existing object, create new object
         {
-            //console.log('create');
-            figCreateObject(figObjects.objects, genObj);
+            console.log('create');
+            figCreateObject(genObj, addObject);
         }
 
         else if (figObj.getPluginData('type') == genObj.type.toString()) // update existing object
         {
-            //console.log('update');
+            console.log('update');
             figUpdateObject(figObj, genObj);
         }
     
@@ -1877,7 +1888,7 @@ function figUpdateObjects(parent, objects)
             if (figPoints.includes(figObj))
                 removeFromArray(figPoints, figObj);
 
-            figCreateObject(figObjects.objects, genObj);
+            figCreateObject(genObj, addObject);
         }
     }
 
@@ -2576,10 +2587,10 @@ function figCreateShapeGroup(genGroup)
 {
     //console.log(obj);
 
-    const objects = [];
+    let objects = [];
 
     for (const obj of genGroup.children)
-        figCreateObject(objects, obj);
+        figCreateObject(obj, o => objects = [...objects, o]);
 
 
     const figGroup = 
@@ -2640,6 +2651,7 @@ function genFrameIsValid(genGroup)
 
 function figCreateFrame(genFrame)
 {
+    console.log('figCreateFrame()');
     //console.log(obj);
 
     const figFrame = figma.createFrame();
@@ -2669,10 +2681,10 @@ function figCreateFrame(genFrame)
         figFrame.cornerRadius = genFrame.round;
             
     
-        const objects = [];
+        let objects = [];
 
         for (const obj of genFrame.children)
-            figCreateObject(objects, obj);
+            figCreateObject(obj, o => objects = [...objects, o]);
 
         for (const obj of objects)
             figFrame.appendChild(obj);
@@ -2690,8 +2702,10 @@ function figCreateFrame(genFrame)
 
 function figUpdateFrame(figFrame, genFrame)
 {
+    console.log('1 figUpdateFrame()');
     if (!genFrameIsValid(genFrame))
         return;
+    console.log('2 figUpdateFrame()');
 
 
     figFrame.x = genFrame.x;

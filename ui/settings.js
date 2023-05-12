@@ -256,18 +256,18 @@ function enableFeatures(subscription, beta)
 
     updateElementDisplay(menuItemLogObjectUpdates    .div, subscription && beta);
     
-    updateElementDisplay(menuItemList                .div, subscription && beta);
+    //updateElementDisplay(menuItemList                .div, subscription && beta);
     updateElementDisplay(menuFlowSep1                .div, subscription && beta);
     //updateElementDisplay(menuItemExpandList          .div, subscription && beta);
-    updateElementDisplay(menuItemItems               .div, subscription && beta);
-    updateElementDisplay(menuFlowSep2                .div, subscription && beta);
-    updateElementDisplay(menuItemSelect              .div, subscription && beta);
-    updateElementDisplay(menuItemCount               .div, subscription && beta);
-    updateElementDisplay(menuFlowSep3                .div, subscription && beta);
+    updateElementDisplay(menuItemItems               .div, subscription);
+    updateElementDisplay(menuFlowSep2                .div, subscription);
+    //updateElementDisplay(menuItemSelect              .div, subscription);
+    updateElementDisplay(menuItemCount               .div, subscription);
+    //updateElementDisplay(menuFlowSep3                .div, subscription && beta);
     //updateElementDisplay(menuItemStart               .div, subscription && beta);
     updateElementDisplay(menuItemRepeat              .div, subscription && beta);
     // updateElementDisplay(menuItemCache               .div, subscription && beta);
-    // updateElementDisplay(menuItemCopy                .div, subscription && beta);
+    updateElementDisplay(menuItemCopy                .div, subscription && beta);
     
     updateElementDisplay(menuItemSequence              .div, subscription && beta);    
     updateElementDisplay(menuItemSolve               .div, subscription && beta);    

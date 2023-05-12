@@ -60,8 +60,7 @@ extends GValue
 
     equals(fill)
     {
-        return super.equals(fill)
-            && this.color  .equals(fill.color  )
+        return this.color  .equals(fill.color  )
             && this.opacity.equals(fill.opacity);
     }
 

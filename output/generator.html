@@ -4142,14 +4142,6 @@ class FigmaObject
     copyBase(base)
     {
         this.uniqueId         = base.uniqueId;
-
-        this.fills            = clone(base.fills);
-        this.strokes          = clone(base.strokes);
-    
-        this.strokeWeight     = base.strokeWeight;
-        this.strokeAlign      = base.strokeAlign;
-        this.strokeJoin       = base.strokeJoin;
-        this.strokeMiterLimit = base.strokeMiterLimit;
     }
 
 
@@ -4208,8 +4200,8 @@ extends FigmaObject
     {
         super.copyBase(base);
         
-        this.fills            = clone(base.fills);
-        this.strokes          = clone(base.strokes);
+        this.fills            = [...base.fills  ];
+        this.strokes          = [...base.strokes];
 
         this.strokeWeight     = base.strokeWeight;
         this.strokeAlign      = base.strokeAlign;
@@ -4570,7 +4562,7 @@ extends FigmaShape
     {
         super(VECTOR_PATH, nodeId, objectId, objectName);
         
-        this.points = clone(points);
+        this.points = points.map(p => p.copy());
         this.closed = closed;
         this.degree = degree;
 
@@ -4595,7 +4587,7 @@ extends FigmaShape
         copy.x        = this.x;
         copy.y        = this.y;
 
-        copy.points   = clone(this.points);
+        copy.points   = this.points.map(p => p.copy());
         copy.closed   = this.closed;
         copy.degree   = this.degree;
 
@@ -4960,7 +4952,7 @@ extends FigmaShape
     {
         super(SHAPE_GROUP, nodeId, objectId, objectName);
         
-        this.children = clone(children);
+        this.children = children.map(c => c.copy());
     }
 
 
@@ -5003,7 +4995,7 @@ extends FigmaShape
         this.height   = height;
         this.angle    = angle;
         this.round    = round;
-        this.children = clone(children);
+        this.children = children.map(c => c.copy());
     }
 
 
@@ -5041,7 +5033,7 @@ extends FigmaObject
 
     constructor(nodeId, styleId, styleName)
     {
-        super(COLOR_STYLE, nodeId, nodeName);
+        super(COLOR_STYLE, nodeId);
 
         this.id   = styleId;
         this.name = styleName;
@@ -5100,8 +5092,8 @@ class GNode
 
     copyBase(src)
     {
-        this.options  = clone(src.options);
-        this.data     = clone(src.data);
+        this.options = clone(src.options);
+        this.data    = clone(src.data   );
     }
 
 
@@ -6062,8 +6054,7 @@ extends GValue
 
     equals(fill)
     {
-        return super.equals(fill)
-            && this.color  .equals(fill.color  )
+        return this.color  .equals(fill.color  )
             && this.opacity.equals(fill.opacity);
     }
 
@@ -8660,7 +8651,7 @@ extends GOperator
                 await this.input.eval(parse);
 
             this.value   = this.input.toValue();
-            this.objects = clone(this.input.objects);
+            this.objects = this.input.objects.map(o => o.copy());
         }
         else
         {
@@ -9249,12 +9240,12 @@ extends GOperator
                     {
                         const obj = copyFigmaObject(this.input.objects[j]);
 
-                        obj.nodeId = this.nodeId;
+                        obj.nodeId      = this.nodeId;
 
                         obj.objectId    = this.nodeId + ':' + (o+1).toString() + obj.objectId;
                         obj.objectName += ' ' + (o+1).toString();
 
-                        obj.listId = i;
+                        obj.listId      = i;
         
                         this.objects.push(obj);
                     }
@@ -18199,7 +18190,7 @@ extends GOperator
 
         this.objects = 
             this.input 
-            ? clone(this.input.objects)
+            ? this.input.objects.map(o => o.copy())
             : [];
 
             
@@ -18369,7 +18360,7 @@ extends GOperator
 
         this.objects = 
             this.input 
-            ? clone(this.input.objects) 
+            ? this.input.objects.map(o => o.copy())
             : [];
 
 
@@ -18629,7 +18620,7 @@ extends GOperator
 
         this.objects = 
             this.input 
-            ? clone(this.input.objects) 
+            ? this.input.objects.map(o => o.copy())
             : [];
 
 
@@ -18893,12 +18884,12 @@ extends GShape
 
 
 
-    pushValueUpdates(parse)
-    {
-        super.pushValueUpdates(parse);
+    // pushValueUpdates(parse)
+    // {
+    //     super.pushValueUpdates(parse);
 
-        if (this.colorStyle) this.colorStyle.pushValueUpdates(parse);
-    }
+    //     if (this.colorStyle) this.colorStyle.pushValueUpdates(parse);
+    // }
 
 
 
@@ -19659,18 +19650,18 @@ function enableFeatures(subscription, beta)
 
     updateElementDisplay(menuItemLogObjectUpdates    .div, subscription && beta);
     
-    updateElementDisplay(menuItemList                .div, subscription && beta);
+    //updateElementDisplay(menuItemList                .div, subscription && beta);
     updateElementDisplay(menuFlowSep1                .div, subscription && beta);
     //updateElementDisplay(menuItemExpandList          .div, subscription && beta);
-    updateElementDisplay(menuItemItems               .div, subscription && beta);
-    updateElementDisplay(menuFlowSep2                .div, subscription && beta);
-    updateElementDisplay(menuItemSelect              .div, subscription && beta);
-    updateElementDisplay(menuItemCount               .div, subscription && beta);
-    updateElementDisplay(menuFlowSep3                .div, subscription && beta);
+    updateElementDisplay(menuItemItems               .div, subscription);
+    updateElementDisplay(menuFlowSep2                .div, subscription);
+    //updateElementDisplay(menuItemSelect              .div, subscription);
+    updateElementDisplay(menuItemCount               .div, subscription);
+    //updateElementDisplay(menuFlowSep3                .div, subscription && beta);
     //updateElementDisplay(menuItemStart               .div, subscription && beta);
     updateElementDisplay(menuItemRepeat              .div, subscription && beta);
     // updateElementDisplay(menuItemCache               .div, subscription && beta);
-    // updateElementDisplay(menuItemCopy                .div, subscription && beta);
+    updateElementDisplay(menuItemCopy                .div, subscription && beta);
     
     updateElementDisplay(menuItemSequence              .div, subscription && beta);    
     updateElementDisplay(menuItemSolve               .div, subscription && beta);    

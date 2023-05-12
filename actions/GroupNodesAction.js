@@ -108,7 +108,8 @@ function GroupNodesAction_createInputNodes(action)
         // create param node 
         // set it to the left of the input node
         const paramNode = createNode(GROUP_PARAM);
-        action.group.addNode(paramNode);
+        paramNode.group = action.group;
+        graph.addNode(paramNode);
 
         paramNode.setPosition(
             input.node.div.offsetX - defNodeWidth - 100,
@@ -158,7 +159,8 @@ function GroupNodesAction_createOutputNodes(action)
         // create param node 
         // set it to the left of the input node
         const paramNode = createNode(GROUP_PARAM);
-        action.group.addNode(paramNode);
+        paramNode.group = action.group;
+        graph.addNode(paramNode);
 
         paramNode.setPosition(
             input.node.div.offsetX + defNodeWidth + 100,
