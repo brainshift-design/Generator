@@ -1355,23 +1355,24 @@ function figDeleteObjectsExcept(nodeIds, ignoreObjects)
 {
     for (let i = figObjectArrays.length-1; i >= 0; i--)
     {
-        const objArray = figObjectArrays[i];
+        const figObjArray = figObjectArrays[i];
 
-        if (!nodeIds.includes(objArray.nodeId))
+        if (!nodeIds.includes(figObjArray.nodeId))
             continue;
 
 
-        for (let j = objArray.objects.length-1; j >= 0; j--)
+        for (let j = figObjArray.objects.length-1; j >= 0; j--)
         {
-            const obj = objArray.objects[j];
+            const obj = figObjArray.objects[j];
             
             
-            if (!findObject(obj, ignoreObjects))//ignoreObjects.find(o => obj.name == makeObjectName(o)))
+            if (    obj.removed
+                || !findObject(obj, ignoreObjects))//ignoreObjects.find(o => obj.name == makeObjectName(o)))
             {
                 if (!obj.removed)
                     obj.remove();
 
-                removeFromArray(objArray.objects, obj);
+                removeFromArray(figObjArray.objects, obj);
 
                 if (figPoints.includes(obj))
                     removeFromArray(figPoints, obj);
@@ -1379,8 +1380,8 @@ function figDeleteObjectsExcept(nodeIds, ignoreObjects)
         }
         
 
-        if (isEmpty(objArray.objects))
-            removeFromArray(figObjectArrays, objArray);
+        if (isEmpty(figObjArray.objects))
+            removeFromArray(figObjectArrays, figObjArray);
     }
 }
 
@@ -2589,7 +2590,7 @@ function figUpdateVectorPath(figPath, genPath)
 
 function genShapeGroupIsValid(genGroup)
 {
-    return true;
+    return genGroup.children.length > 0;
 }
 
 
@@ -2626,7 +2627,10 @@ function figCreateShapeGroup(genGroup)
 function figUpdateShapeGroup(figGroup, genGroup)
 {
     if (!genShapeGroupIsValid(genGroup))
+    {
+        figGroup.remove();
         return;
+    }
 
 
     figUpdateObjects(figGroup, genGroup.children);

@@ -888,7 +888,7 @@ function figUpdateVectorPath(figPath, genPath)
 
 function genShapeGroupIsValid(genGroup)
 {
-    return true;
+    return genGroup.children.length > 0;
 }
 
 
@@ -925,7 +925,10 @@ function figCreateShapeGroup(genGroup)
 function figUpdateShapeGroup(figGroup, genGroup)
 {
     if (!genShapeGroupIsValid(genGroup))
+    {
+        figGroup.remove();
         return;
+    }
 
 
     figUpdateObjects(figGroup, genGroup.children);
