@@ -22609,7 +22609,8 @@ extends GOperator
             
         for (const obj of this.objects)
         {
-            obj.nodeId = this.nodeId;
+            obj.nodeId   = this.nodeId;
+            obj.objectId = this.nodeId + '/' + obj.objectId;
 
             if (obj.type == VECTOR_PATH)
             {
@@ -22782,7 +22783,8 @@ extends GOperator
         
         for (const obj of this.objects)
         {
-            obj.nodeId = this.nodeId;
+            obj.nodeId   = this.nodeId;
+            obj.objectId = this.nodeId + '/' + obj.objectId;
 
 
             obj.angle = 
@@ -23042,7 +23044,8 @@ extends GOperator
 
         for (const obj of this.objects)
         {
-            obj.nodeId = this.nodeId;
+            obj.nodeId   = this.nodeId;
+            obj.objectId = this.nodeId + '/' + obj.objectId;
 
 
             const bw = bounds.width  != 0 ? bounds.width  : 1;
@@ -52452,7 +52455,8 @@ extends GOperator
             
         for (const obj of this.objects)
         {
-            obj.nodeId = this.nodeId;
+            obj.nodeId   = this.nodeId;
+            obj.objectId = this.nodeId + '/' + obj.objectId;
 
             if (obj.type == VECTOR_PATH)
             {
@@ -52625,7 +52629,8 @@ extends GOperator
         
         for (const obj of this.objects)
         {
-            obj.nodeId = this.nodeId;
+            obj.nodeId   = this.nodeId;
+            obj.objectId = this.nodeId + '/' + obj.objectId;
 
 
             obj.angle = 
@@ -52885,7 +52890,8 @@ extends GOperator
 
         for (const obj of this.objects)
         {
-            obj.nodeId = this.nodeId;
+            obj.nodeId   = this.nodeId;
+            obj.objectId = this.nodeId + '/' + obj.objectId;
 
 
             const bw = bounds.width  != 0 ? bounds.width  : 1;
@@ -90728,7 +90734,6 @@ function uiUpdateValuesAndObjects(requestId, actionId, updateNodeId, updateParam
 
     if (isLastChunk)
     {
-        console.log('requestObjects =', [...requestObjects]);
         uiQueueMessageToFigma({
             cmd:          'figDeleteObjectsExcept',
             updateNodeId:  updateNodeId,

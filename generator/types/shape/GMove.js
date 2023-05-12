@@ -86,7 +86,8 @@ extends GOperator
             
         for (const obj of this.objects)
         {
-            obj.nodeId = this.nodeId;
+            obj.nodeId   = this.nodeId;
+            obj.objectId = this.nodeId + '/' + obj.objectId;
 
             if (obj.type == VECTOR_PATH)
             {

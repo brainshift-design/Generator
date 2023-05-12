@@ -113,7 +113,8 @@ extends GOperator
 
         for (const obj of this.objects)
         {
-            obj.nodeId = this.nodeId;
+            obj.nodeId   = this.nodeId;
+            obj.objectId = this.nodeId + '/' + obj.objectId;
 
 
             const bw = bounds.width  != 0 ? bounds.width  : 1;
