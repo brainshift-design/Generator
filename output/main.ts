@@ -1803,12 +1803,13 @@ function figCreateObject(genObj, addObject)
 
 function figUpdateObjects(figParent, genObjects)
 {
-    // console.log('figUpdateObjects parent =', parent);
-    // console.log('figUpdateObjects objects =', objects);
-    // console.log('');
+    console.log('figUpdateObjects figParent =', figParent);
+    console.log('figUpdateObjects genObjects =', genObjects);
+    console.log('');
 
     let curNodeId  = NULL;
     let figObjects = null;
+
 
 
     for (const genObj of genObjects)
@@ -1890,6 +1891,16 @@ function figUpdateObjects(figParent, genObjects)
 
             figCreateObject(genObj, addObject);
         }
+    }
+
+
+    // delete removed objects from parent
+    
+    if (figParent)
+    {
+        for (const figObj of figParent.children)
+            if (!genObjects.find(o => o.objectId == figObj.getPluginData('objectId')))
+                figObj.remove();
     }
 
 
@@ -2651,9 +2662,6 @@ function genFrameIsValid(genGroup)
 
 function figCreateFrame(genFrame)
 {
-    console.log('figCreateFrame()');
-    //console.log(obj);
-
     const figFrame = figma.createFrame();
 
     figFrame.name = makeObjectName(genFrame);
@@ -2664,8 +2672,6 @@ function figCreateFrame(genFrame)
 
     if (figFrame)
     {
-        //figFrame.name = makeObjectName(genFrame);
-        
         if (!genFrameIsValid(genFrame))
             return figFrame;
         
@@ -2702,10 +2708,8 @@ function figCreateFrame(genFrame)
 
 function figUpdateFrame(figFrame, genFrame)
 {
-    console.log('1 figUpdateFrame()');
     if (!genFrameIsValid(genFrame))
         return;
-    console.log('2 figUpdateFrame()');
 
 
     figFrame.x = genFrame.x;
