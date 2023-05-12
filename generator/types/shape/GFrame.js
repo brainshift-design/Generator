@@ -79,7 +79,6 @@ extends GShape
                 children);
         }
 
-        console.log(this.nodeId + '.value =', this.value);
 
         this.updateValues =
         [

@@ -1355,6 +1355,7 @@ function figCreateRect(obj) {
 function figUpdateRect(figRect, genRect) {
     if (!genRectIsValid(genRect))
         return;
+    figRect.name = genRect.objectName;
     figRect.x = genRect.x;
     figRect.y = genRect.y;
     if (figRect.width != genRect.width
@@ -1390,6 +1391,7 @@ function figCreateLine(obj) {
 function figUpdateLine(figLine, genLine) {
     if (!genLineIsValid(genLine))
         return;
+    figLine.name = genLine.objectName;
     figLine.x = genLine.x;
     figLine.y = genLine.y;
     if (figLine.width != genLine.width)
@@ -1427,6 +1429,7 @@ function figCreateEllipse(obj) {
 function figUpdateEllipse(figEllipse, genEllipse) {
     if (!genEllipseIsValid(genEllipse))
         return;
+    figEllipse.name = genEllipse.objectName;
     figEllipse.x = genEllipse.x;
     figEllipse.y = genEllipse.y;
     if (figEllipse.width != genEllipse.width
@@ -1466,6 +1469,7 @@ function figCreatePolygon(obj) {
 function figUpdatePolygon(figPoly, genPoly) {
     if (!genPolyIsValid(genPoly))
         return;
+    figPoly.name = genPoly.objectName;
     figPoly.x = genPoly.x;
     figPoly.y = genPoly.y;
     if (figPoly.width != genPoly.width
@@ -1509,6 +1513,7 @@ function figCreateStar(obj) {
 function figUpdateStar(figStar, genStar) {
     if (!genStarIsValid(genStar))
         return;
+    figStar.name = genStar.objectName;
     figStar.x = genStar.x;
     figStar.y = genStar.y;
     if (figStar.width != genStar.width
@@ -1575,6 +1580,7 @@ function figUpdateText(figText, genText) {
             //setTextStyle(figText, genText);
         });
     })();
+    figText.name = genText.objectName;
     figText.x = genText.x;
     figText.y = genText.y;
     if (figText.width != genText.width
@@ -1621,6 +1627,7 @@ function figCreatePoint(genPoint) {
 function figUpdatePoint(figPoint, genPoint) {
     if (!genPointIsValid(genPoint))
         return;
+    figPoint.name = genPoint.objectName;
     const size = 8 / curZoom;
     figPoint.x = genPoint.x - size / 2;
     figPoint.y = genPoint.y - size / 2;
@@ -1652,6 +1659,7 @@ function figCreateVectorPath(genPath) {
 function figUpdateVectorPath(figPath, genPath) {
     if (!genVectorPathIsValid(genPath))
         return;
+    figPath.name = genPath.objectName;
     figPath.x = 0; //genPath.x;
     figPath.y = 0; //genPath.y;
     figPath.vectorPaths = [{
@@ -1686,6 +1694,7 @@ function figUpdateShapeGroup(figGroup, genGroup) {
         figGroup.remove();
         return;
     }
+    figGroup.name = genGroup.objectName;
     figUpdateObjects(figGroup, genGroup.children);
     figPostMessageToUi({
         cmd: 'uiUpdateGroupBounds',
@@ -1731,6 +1740,7 @@ function figCreateFrame(genFrame) {
 function figUpdateFrame(figFrame, genFrame) {
     if (!genFrameIsValid(genFrame))
         return;
+    figFrame.name = genFrame.objectName;
     figFrame.x = genFrame.x;
     figFrame.y = genFrame.y;
     figFrame.resize(Math.max(0.01, genFrame.width), Math.max(0.01, genFrame.height));

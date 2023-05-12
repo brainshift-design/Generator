@@ -15,8 +15,6 @@ extends GValue
 
             for (const item of items)
             {
-                if (item.type == FRAME_VALUE)
-                    console.log('item =', item);
                 this.items  .push(item.copy());
                 this.objects.push(...item.objects.map(o => o.copy()));
             }
