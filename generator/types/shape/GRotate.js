@@ -147,7 +147,7 @@ extends GOperator
                     
                     p.x.value = 
                           bounds.x 
-                        + bounds.width/2 
+                        + bounds.width/2
                         + v.x;
 
                     p.y.value = 

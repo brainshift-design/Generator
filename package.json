@@ -1,21 +1,17 @@
 {
-  "name":        "Generator",
-  "version":     "132",
+  "name": "Generator",
+  "version": "132",
   "description": "Generative design for Figma",
-  "author":      "Brainshift",
-  "license":     "Proprietary",
-
+  "author": "Brainshift",
+  "license": "Proprietary",
   "main": "output/main.js",
-  "scripts": 
-  {
+  "scripts": {
     "build": "tsc -p tsconfig.json",
     "watch": "tsc ",
-    "lint":  "eslint ./"
+    "lint": "eslint ./"
   },
-
-  "devDependencies": 
-  {
-    "@figma/plugin-typings": "^1.62.0",
-    "eslint":                "^8.14.0"
+  "devDependencies": {
+    "@figma/plugin-typings": "^1.64.0",
+    "eslint": "^8.14.0"
   }
 }

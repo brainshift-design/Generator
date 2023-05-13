@@ -43,7 +43,6 @@ extends GShape
         const round    = this.round    ? (await this.round   .eval(parse)).toValue() : null;
         let   children = this.children ? (await this.children.eval(parse)).toValue() : null;
 
-
         if (   children
             && SHAPE_VALUES.includes(children.type)
             && children.type != SHAPE_LIST_VALUE)
@@ -126,22 +125,40 @@ extends GShape
                 this.value.round .value);
 
 
-            for (let i = 0; i < this.value.children.objects.length; i++)
+            if (LIST_VALUES.includes(this.value.type))
             {
-                const obj    = this.value.children.objects[i].copy();
-                obj.nodeId   = this.nodeId;
-                obj.objectId = this.nodeId + '/' + obj.objectId;
-                obj.listId   = -1;
-                frame.children.push(obj);
+                for (let i = 0; i < this.value.children.objects.length; i++)
+                {
+                    const obj    = this.value.children.objects[i].copy();
+                    obj.nodeId   = this.nodeId;
+                    obj.objectId = this.nodeId + '/' + obj.objectId;
+                    obj.listId   = -1;
+                    frame.children.push(obj);
+                }
+            }
+            else
+            {
+                for (let i = 0; i < this.value.objects.length; i++)
+                {
+                    const obj    = this.value.objects[i].copy();
+                    obj.nodeId   = this.nodeId;
+                    obj.objectId = this.nodeId + '/' + obj.objectId;
+                    obj.listId   = -1;
+                    frame.children.push(obj);
+                }
             }
 
 
-            this.objects = [frame];
+            this.objects       = [frame];
+            this.value.objects = [frame];
+
             this.updateValues.push(['nObjects', new NumberValue(this.value.children.objects.length)]);
         }
         else
         {
-            this.objects = [];
+            this.objects       = [];
+            this.value.objects = [];
+            
             this.updateValues.push(['nObjects', new NumberValue(0)]);
         }
 
@@ -164,19 +181,7 @@ extends GShape
 
     toValue()
     {
-        const frame = new FrameValue(
-            this.nodeId,
-            this.x       .toValue(),
-            this.y       .toValue(),
-            this.width   .toValue(),
-            this.height  .toValue(),
-            this.angle   .toValue(),
-            this.round   .toValue(),
-            this.children.toValue());
-
-        frame.props = this.props.toValue();
-
-        return frame;
+        return this.value.copy();
     }
 
 
