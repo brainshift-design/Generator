@@ -449,6 +449,7 @@ const FRAME_TYPES = [FRAME_VALUE, FRAME];
 const MOVE = 'MOVE';
 const ROTATE = 'ROT';
 const SCALE = 'SCALE';
+const SKEW = 'SKEW';
 const POINT = 'PT';
 const POINT_VALUE = 'PT#';
 const POINT_TYPES = [
@@ -483,7 +484,8 @@ const SHAPE_TYPES = [
     ...FRAME_TYPES,
     MOVE,
     ROTATE,
-    SCALE
+    SCALE,
+    SKEW
 ];
 const ALL_VALUES = [
     LIST_VALUE,

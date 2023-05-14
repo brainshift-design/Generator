@@ -151,7 +151,7 @@
 ../generator/types/shape/GMove.js
 ../generator/types/shape/GRotate.js
 ../generator/types/shape/GScale.js
-
+../generator/types/shape/GSkew.js
 
 
 ../generator/types/style/GColorStyle.js

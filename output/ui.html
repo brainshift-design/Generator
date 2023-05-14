@@ -8253,7 +8253,8 @@ const FRAME_TYPES       = [FRAME_VALUE, FRAME];
 const MOVE              = 'MOVE';
 const ROTATE            = 'ROT';
 const SCALE             = 'SCALE';
- 
+const SKEW              = 'SKEW';
+
  
 const POINT             = 'PT';
 const POINT_VALUE       = 'PT#';
@@ -8300,7 +8301,8 @@ const SHAPE_TYPES =
 
     MOVE,
     ROTATE,
-    SCALE
+    SCALE,
+    SKEW
 ];
 
 
@@ -22834,12 +22836,13 @@ extends GOperator
         }
 
        
-        const _bounds = this.evalObjects(parse, 
-        {
-            angle:   angle, 
-            centerX: centerX, 
-            centerY: centerY
-        });
+        const _bounds = this.evalObjects(
+            parse, 
+            {
+                angle:   angle, 
+                centerX: centerX, 
+                centerY: centerY
+            });
 
 
         const bounds = new RectangleValue(
@@ -22883,25 +22886,21 @@ extends GOperator
         const bounds = getObjBounds(this.objects);
         const angle  = options.angle.toNumber()/360*Tau;
 
-        
+        const dx = 
+            bounds.width != 0
+            ? (0.5 + options.centerX.toNumber() / (bounds.width /2)) * bounds.width
+            : 0;
+
+        const dy = 
+            bounds.height != 0
+            ? (0.5 + options.centerY.toNumber() / (bounds.height/2)) * bounds.height
+            : 0;
+
+            
         for (const obj of this.objects)
         {
             obj.nodeId   = this.nodeId;
             obj.objectId = this.nodeId + '/' + obj.objectId;
-
-
-            // const bw = bounds.width  != 0 ? bounds.width  : 1;
-            // const bh = bounds.height != 0 ? bounds.height : 1;
-
-            const dx = 
-                bounds.width != 0
-                ? (0.5 + options.centerX.toNumber() / (bounds.width /2)) * bounds.width
-                : 0;
-
-            const dy = 
-                bounds.height != 0
-                ? (0.5 + options.centerY.toNumber() / (bounds.height/2)) * bounds.height
-                : 0;
 
 
             let xform = clone(obj.relativeTransform);
@@ -23136,13 +23135,14 @@ extends GOperator
         }
 
        
-        const _bounds = this.evalObjects(parse, 
-        {
-            x:       x, 
-            y:       y, 
-            centerX: centerX, 
-            centerY: centerY
-        });
+        const _bounds = this.evalObjects(
+            parse, 
+            {
+                x:       x, 
+                y:       y, 
+                centerX: centerX, 
+                centerY: centerY
+            });
 
 
         const bounds = new RectangleValue(
@@ -23186,6 +23186,20 @@ extends GOperator
 
         const bounds = getObjBounds(this.objects);
 
+        const x = options.x.toNumber() / bounds.width;
+        const y = options.y.toNumber() / bounds.height;
+
+        
+        const dx = 
+            bounds.width != 0
+            ? (0.5 + options.centerX.toNumber() / (bounds.width /2)) * bounds.width
+            : 0;
+
+        const dy = 
+            bounds.height != 0
+            ? (0.5 + options.centerY.toNumber() / (bounds.height/2)) * bounds.height
+            : 0;
+
 
         for (const obj of this.objects)
         {
@@ -23195,6 +23209,34 @@ extends GOperator
 
             const bw = bounds.width  != 0 ? bounds.width  : 1;
             const bh = bounds.height != 0 ? bounds.height : 1;
+
+
+            let xform = clone(obj.relativeTransform);
+            if (xform.length == 2) xform = [...xform, [0, 0, 1]];
+
+
+            xform = mulm3m3(
+                xform,
+                [[1, 0, dx],
+                 [0, 1, dy],
+                 [0, 0, 1 ]]);
+
+            xform = mulm3m3(
+                xform,
+                [[x, 0, 0],
+                 [0, y, 0],
+                 [0, 0, 1]]);
+
+            xform = mulm3m3(
+                xform,
+                [[1, 0, -dx],
+                 [0, 1, -dy],
+                 [0, 0,  1 ]]);
+
+
+            obj.relativeTransform =
+                [xform[0],
+                 xform[1]];
 
 
             if (obj.type == VECTOR_PATH)
@@ -23337,6 +23379,307 @@ extends GOperator
         if (this.y    ) this.y    .invalidate();
         if (this.centerX   ) this.centerX   .invalidate();
         if (this.centerY   ) this.centerY   .invalidate();
+    }
+
+
+
+    toValue()
+    {
+        return this.value.copy();
+    }
+}
+
+
+class GSkew
+extends GOperator
+{
+    input   = null;
+
+    x       = null;
+    y       = null;
+    centerX = null;
+    centerY = null;
+
+
+
+    constructor(nodeId, options)
+    {
+        super(SKEW, nodeId, options);
+    }
+
+
+
+    copy()
+    {
+        const copy = new GSkew(this.nodeId, this.options);
+
+        copy.copyBase(this);
+
+        if (this.input) 
+            copy.input = this.input.copy();
+
+        //if (this.value) copy.value = this.value.copy();
+        if (this.x      ) copy.x       = this.x      .copy();
+        if (this.y      ) copy.y       = this.y      .copy();
+        if (this.centerX) copy.centerX = this.centerX.copy();
+        if (this.centerY) copy.centerY = this.centerY.copy();
+
+        return copy;
+    }
+
+
+
+    async eval(parse)
+    {
+        if (this.isCached())
+            return this;
+
+            
+        const x       = this.x       ? (await this.x      .eval(parse)).toValue() : null;
+        const y       = this.y       ? (await this.y      .eval(parse)).toValue() : null;
+        const centerX = this.centerX ? (await this.centerX.eval(parse)).toValue() : null;
+        const centerY = this.centerY ? (await this.centerY.eval(parse)).toValue() : null;
+
+
+        if (this.input)
+        {
+            this.value = (await this.input.eval(parse)).toValue();
+            this.value.nodeId = this.nodeId;
+        }
+        else
+        {
+            this.value = NullValue;
+        }
+
+        
+        this.evalObjects(
+            parse, 
+            {
+                x:       x, 
+                y:       y, 
+                centerX: centerX, 
+                centerY: centerY
+            });
+
+
+        this.updateValues =
+        [
+            ['value',   this.value],
+            ['x',       x         ],
+            ['y',       y         ],
+            ['centerX', centerX   ],
+            ['centerY', centerY   ]
+        ];
+
+
+        this.validate();
+
+        return this;
+    }
+
+
+
+    evalObjects(parse, options = {})
+    {
+        if (!this.options.enabled)
+            return;
+            
+
+        this.objects = 
+            this.input 
+            ? this.input.objects.map(o => o.copy())
+            : [];
+
+            
+        const bounds = getObjBounds(this.objects);
+
+        // const bw = bounds.width  != 0 ? bounds.width  : 1;
+        // const bh = bounds.height != 0 ? bounds.height : 1;
+
+        const x = options.x.toNumber() / bounds.width;
+        const y = options.y.toNumber() / bounds.height;
+
+        const dx = 
+            bounds.width != 0
+            ? (0.5 + options.centerX.toNumber() / (bounds.width /2)) * bounds.width
+            : 0;
+
+        const dy = 
+            bounds.height != 0
+            ? (0.5 + options.centerY.toNumber() / (bounds.height/2)) * bounds.height
+            : 0;
+
+            
+        for (const obj of this.objects)
+        {
+            obj.nodeId   = this.nodeId;
+            obj.objectId = this.nodeId + '/' + obj.objectId;
+
+
+            let xform = clone(obj.relativeTransform);
+            if (xform.length == 2) xform = [...xform, [0, 0, 1]];
+
+
+            xform = mulm3m3(
+                xform,
+                [[1, 0, dx],
+                 [0, 1, dy],
+                 [0, 0, 1 ]]);
+
+
+            obj.width  /= Math.cos(y);
+            obj.height /= Math.cos(x);
+
+            xform = mulm3m3(
+                xform,
+                [[1,           Math.tan(x), 0],
+                 [Math.tan(y), 1,           0],
+                 [0,           0,           1]]);
+
+
+            xform = mulm3m3(
+                xform,
+                [[1, 0, -dx],
+                 [0, 1, -dy],
+                 [0, 0,  1 ]]);
+
+
+            obj.relativeTransform =
+                [xform[0],
+                 xform[1]];
+
+
+            //      if (obj.type == VECTOR_PATH)
+            //      {
+            //          const x  = Math.max(0, options.x.toNumber()/100);
+            //          const y  = Math.max(0, options.y.toNumber()/100);
+     
+            //          const dx = 0.5;// + options.centerX.toNumber() / (bounds.width /2);
+            //          const dy = 0.5;// + options.centerY.toNumber() / (bounds.height/2);
+     
+     
+            //          for (const p of obj.points)
+            //          {
+            //              const d = distance_(
+            //                  p.x.value, 
+            //                  p.y.value, 
+            //                  bounds.x + dx * bounds.width, 
+            //                  bounds.y + dy * bounds.height);
+     
+            //              const a = anglev_(
+            //                  bounds.x + dx * bounds.width, 
+            //                  bounds.y + dy * bounds.height, 
+            //                  p.x.value, 
+            //                  p.y.value);
+     
+            //              const v = mulv(
+            //                  vector(a, d),
+            //                  point(x, y));
+     
+                         
+            //              p.x.value = 
+            //                    bounds.x 
+            //                  + bounds.width/2 
+            //                  + v.x;
+     
+            //              p.y.value = 
+            //                    bounds.y
+            //                  + bounds.height/2
+            //                  + v.y;
+            //          }
+     
+     
+            //          FigmaVectorPath.prototype.updatePathData.call(obj);
+            //      }
+            //      else
+            //      {
+            //          const x  = Math.max(0, options.x.toNumber()/100);
+            //          const y  = Math.max(0, options.y.toNumber()/100);
+                     
+     
+            //          const dx = 0.5;
+            //             //  bounds.width != 0
+            //             //  ? options.centerX.toNumber() / (bounds.width /2)
+            //             //  : options.centerX.toNumber();
+     
+            //          const dy = 0.5;
+            //             //  bounds.height != 0
+            //             //  ? options.centerY.toNumber() / (bounds.height/2)
+            //             //  : options.centerY.toNumber();
+     
+     
+            //          obj.width  *= x;
+            //          obj.height *= y;
+     
+     
+            //          const angle = anglev_(
+            //              bounds.x + ((dx + 0.5) * bounds.width ), 
+            //              bounds.y + ((dy + 0.5) * bounds.height),
+            //              obj.x,
+            //              obj.y);
+     
+            //          const halfd = distance_(
+            //              bounds.x + ((dx + 0.5) * bounds.width ), 
+            //              bounds.y + ((dy + 0.5) * bounds.height),
+            //              obj.x,
+            //              obj.y);
+     
+     
+            //          const a = 0;
+            //          const v = vector(angle - a, halfd);
+     
+            //          v.x *= x;
+            //          v.y *= y;
+     
+            //          obj.x = 
+            //                bounds.x 
+            //              + bounds.width /2 
+            //              + v.x 
+            //              - (dx - 0.5) * bw * Math.cos(-a) 
+            //              - (dy - 0.5) * bh * Math.sin( a);
+     
+            //          obj.y = 
+            //                bounds.y
+            //              + bounds.height/2
+            //              + v.y 
+            //              - (dx - 0.5) * bw * Math.sin(-a) 
+            //              - (dy - 0.5) * bh * Math.cos( a);
+            //      }
+        }
+
+        
+        super.evalObjects(parse);
+    }
+
+
+
+    pushValueUpdates(parse)
+    {
+        super.pushValueUpdates(parse);
+
+        if (this.input) this.input.pushValueUpdates(parse);
+        if (this.x    ) this.x    .pushValueUpdates(parse);
+        if (this.y    ) this.y    .pushValueUpdates(parse);
+    }
+
+
+
+    isValid()
+    {
+        return super.isValid()
+            && this.x.isValid()
+            && this.y.isValid();
+    }
+
+
+
+    invalidate()
+    {
+        super.invalidate();
+
+        if (this.input ) this.input .invalidate();
+        if (this.x     ) this.x     .invalidate();
+        if (this.y     ) this.y     .invalidate();
     }
 
 
@@ -27505,8 +27848,8 @@ function genParseScale(parse)
     if (nInputs == 1)
         scale.input = genParse(parse);
 
-    scale.x  = genParse(parse);
-    scale.y  = genParse(parse);
+    scale.x       = genParse(parse);
+    scale.y       = genParse(parse);
     scale.centerX = genParse(parse);
     scale.centerY = genParse(parse);
 
@@ -27517,6 +27860,56 @@ function genParseScale(parse)
 
     genParseNodeEnd(parse, scale);
     return scale;
+}
+
+
+
+function genParseSkew(parse)
+{
+    const [, nodeId, options, ignore] = genParseNodeStart(parse);
+
+
+    const skew = new GSkew(nodeId, options);
+
+
+    let nInputs = -1;
+
+    if (!ignore)
+    {
+        nInputs = parseInt(parse.move());
+        console.assert(nInputs => 0 && nInputs <= 1, 'nInputs must be [0, 1]');
+    }
+
+
+    if (parse.settings.logRequests) 
+        logReq(skew, parse, ignore);
+
+
+    if (ignore) 
+    {
+        genParseNodeEnd(parse, skew);
+        return parse.parsedNodes.find(n => n.nodeId == nodeId);
+    }
+
+
+    parse.nTab++;
+
+
+    if (nInputs == 1)
+        skew.input = genParse(parse);
+
+    skew.x       = genParse(parse);
+    skew.y       = genParse(parse);
+    skew.centerX = genParse(parse);
+    skew.centerY = genParse(parse);
+
+
+    parse.inParam = false;
+    parse.nTab--;
+
+
+    genParseNodeEnd(parse, skew);
+    return skew;
 }
 
 
@@ -28500,6 +28893,7 @@ function genParse(parse, inParam = true)
     else if (parse.next == MOVE                   ) result = genParseMove            (parse);
     else if (parse.next == ROTATE                 ) result = genParseRotate          (parse);
     else if (parse.next == SCALE                  ) result = genParseScale           (parse);
+    else if (parse.next == SKEW                   ) result = genParseSkew            (parse);
 
     else if (parse.next == GROUP_NODE             ) result = genParseGroupNode       (parse);
     else if (parse.next == GROUP_PARAM            ) result = genParseGroupParam      (parse);
@@ -38244,7 +38638,8 @@ const FRAME_TYPES       = [FRAME_VALUE, FRAME];
 const MOVE              = 'MOVE';
 const ROTATE            = 'ROT';
 const SCALE             = 'SCALE';
- 
+const SKEW              = 'SKEW';
+
  
 const POINT             = 'PT';
 const POINT_VALUE       = 'PT#';
@@ -38291,7 +38686,8 @@ const SHAPE_TYPES =
 
     MOVE,
     ROTATE,
-    SCALE
+    SCALE,
+    SKEW
 ];
 
 
@@ -52825,12 +53221,13 @@ extends GOperator
         }
 
        
-        const _bounds = this.evalObjects(parse, 
-        {
-            angle:   angle, 
-            centerX: centerX, 
-            centerY: centerY
-        });
+        const _bounds = this.evalObjects(
+            parse, 
+            {
+                angle:   angle, 
+                centerX: centerX, 
+                centerY: centerY
+            });
 
 
         const bounds = new RectangleValue(
@@ -52874,25 +53271,21 @@ extends GOperator
         const bounds = getObjBounds(this.objects);
         const angle  = options.angle.toNumber()/360*Tau;
 
-        
+        const dx = 
+            bounds.width != 0
+            ? (0.5 + options.centerX.toNumber() / (bounds.width /2)) * bounds.width
+            : 0;
+
+        const dy = 
+            bounds.height != 0
+            ? (0.5 + options.centerY.toNumber() / (bounds.height/2)) * bounds.height
+            : 0;
+
+            
         for (const obj of this.objects)
         {
             obj.nodeId   = this.nodeId;
             obj.objectId = this.nodeId + '/' + obj.objectId;
-
-
-            // const bw = bounds.width  != 0 ? bounds.width  : 1;
-            // const bh = bounds.height != 0 ? bounds.height : 1;
-
-            const dx = 
-                bounds.width != 0
-                ? (0.5 + options.centerX.toNumber() / (bounds.width /2)) * bounds.width
-                : 0;
-
-            const dy = 
-                bounds.height != 0
-                ? (0.5 + options.centerY.toNumber() / (bounds.height/2)) * bounds.height
-                : 0;
 
 
             let xform = clone(obj.relativeTransform);
@@ -53127,13 +53520,14 @@ extends GOperator
         }
 
        
-        const _bounds = this.evalObjects(parse, 
-        {
-            x:       x, 
-            y:       y, 
-            centerX: centerX, 
-            centerY: centerY
-        });
+        const _bounds = this.evalObjects(
+            parse, 
+            {
+                x:       x, 
+                y:       y, 
+                centerX: centerX, 
+                centerY: centerY
+            });
 
 
         const bounds = new RectangleValue(
@@ -53177,6 +53571,20 @@ extends GOperator
 
         const bounds = getObjBounds(this.objects);
 
+        const x = options.x.toNumber() / bounds.width;
+        const y = options.y.toNumber() / bounds.height;
+
+        
+        const dx = 
+            bounds.width != 0
+            ? (0.5 + options.centerX.toNumber() / (bounds.width /2)) * bounds.width
+            : 0;
+
+        const dy = 
+            bounds.height != 0
+            ? (0.5 + options.centerY.toNumber() / (bounds.height/2)) * bounds.height
+            : 0;
+
 
         for (const obj of this.objects)
         {
@@ -53186,6 +53594,34 @@ extends GOperator
 
             const bw = bounds.width  != 0 ? bounds.width  : 1;
             const bh = bounds.height != 0 ? bounds.height : 1;
+
+
+            let xform = clone(obj.relativeTransform);
+            if (xform.length == 2) xform = [...xform, [0, 0, 1]];
+
+
+            xform = mulm3m3(
+                xform,
+                [[1, 0, dx],
+                 [0, 1, dy],
+                 [0, 0, 1 ]]);
+
+            xform = mulm3m3(
+                xform,
+                [[x, 0, 0],
+                 [0, y, 0],
+                 [0, 0, 1]]);
+
+            xform = mulm3m3(
+                xform,
+                [[1, 0, -dx],
+                 [0, 1, -dy],
+                 [0, 0,  1 ]]);
+
+
+            obj.relativeTransform =
+                [xform[0],
+                 xform[1]];
 
 
             if (obj.type == VECTOR_PATH)
@@ -53328,6 +53764,307 @@ extends GOperator
         if (this.y    ) this.y    .invalidate();
         if (this.centerX   ) this.centerX   .invalidate();
         if (this.centerY   ) this.centerY   .invalidate();
+    }
+
+
+
+    toValue()
+    {
+        return this.value.copy();
+    }
+}
+
+
+class GSkew
+extends GOperator
+{
+    input   = null;
+
+    x       = null;
+    y       = null;
+    centerX = null;
+    centerY = null;
+
+
+
+    constructor(nodeId, options)
+    {
+        super(SKEW, nodeId, options);
+    }
+
+
+
+    copy()
+    {
+        const copy = new GSkew(this.nodeId, this.options);
+
+        copy.copyBase(this);
+
+        if (this.input) 
+            copy.input = this.input.copy();
+
+        //if (this.value) copy.value = this.value.copy();
+        if (this.x      ) copy.x       = this.x      .copy();
+        if (this.y      ) copy.y       = this.y      .copy();
+        if (this.centerX) copy.centerX = this.centerX.copy();
+        if (this.centerY) copy.centerY = this.centerY.copy();
+
+        return copy;
+    }
+
+
+
+    async eval(parse)
+    {
+        if (this.isCached())
+            return this;
+
+            
+        const x       = this.x       ? (await this.x      .eval(parse)).toValue() : null;
+        const y       = this.y       ? (await this.y      .eval(parse)).toValue() : null;
+        const centerX = this.centerX ? (await this.centerX.eval(parse)).toValue() : null;
+        const centerY = this.centerY ? (await this.centerY.eval(parse)).toValue() : null;
+
+
+        if (this.input)
+        {
+            this.value = (await this.input.eval(parse)).toValue();
+            this.value.nodeId = this.nodeId;
+        }
+        else
+        {
+            this.value = NullValue;
+        }
+
+        
+        this.evalObjects(
+            parse, 
+            {
+                x:       x, 
+                y:       y, 
+                centerX: centerX, 
+                centerY: centerY
+            });
+
+
+        this.updateValues =
+        [
+            ['value',   this.value],
+            ['x',       x         ],
+            ['y',       y         ],
+            ['centerX', centerX   ],
+            ['centerY', centerY   ]
+        ];
+
+
+        this.validate();
+
+        return this;
+    }
+
+
+
+    evalObjects(parse, options = {})
+    {
+        if (!this.options.enabled)
+            return;
+            
+
+        this.objects = 
+            this.input 
+            ? this.input.objects.map(o => o.copy())
+            : [];
+
+            
+        const bounds = getObjBounds(this.objects);
+
+        // const bw = bounds.width  != 0 ? bounds.width  : 1;
+        // const bh = bounds.height != 0 ? bounds.height : 1;
+
+        const x = options.x.toNumber() / bounds.width;
+        const y = options.y.toNumber() / bounds.height;
+
+        const dx = 
+            bounds.width != 0
+            ? (0.5 + options.centerX.toNumber() / (bounds.width /2)) * bounds.width
+            : 0;
+
+        const dy = 
+            bounds.height != 0
+            ? (0.5 + options.centerY.toNumber() / (bounds.height/2)) * bounds.height
+            : 0;
+
+            
+        for (const obj of this.objects)
+        {
+            obj.nodeId   = this.nodeId;
+            obj.objectId = this.nodeId + '/' + obj.objectId;
+
+
+            let xform = clone(obj.relativeTransform);
+            if (xform.length == 2) xform = [...xform, [0, 0, 1]];
+
+
+            xform = mulm3m3(
+                xform,
+                [[1, 0, dx],
+                 [0, 1, dy],
+                 [0, 0, 1 ]]);
+
+
+            obj.width  /= Math.cos(y);
+            obj.height /= Math.cos(x);
+
+            xform = mulm3m3(
+                xform,
+                [[1,           Math.tan(x), 0],
+                 [Math.tan(y), 1,           0],
+                 [0,           0,           1]]);
+
+
+            xform = mulm3m3(
+                xform,
+                [[1, 0, -dx],
+                 [0, 1, -dy],
+                 [0, 0,  1 ]]);
+
+
+            obj.relativeTransform =
+                [xform[0],
+                 xform[1]];
+
+
+            //      if (obj.type == VECTOR_PATH)
+            //      {
+            //          const x  = Math.max(0, options.x.toNumber()/100);
+            //          const y  = Math.max(0, options.y.toNumber()/100);
+     
+            //          const dx = 0.5;// + options.centerX.toNumber() / (bounds.width /2);
+            //          const dy = 0.5;// + options.centerY.toNumber() / (bounds.height/2);
+     
+     
+            //          for (const p of obj.points)
+            //          {
+            //              const d = distance_(
+            //                  p.x.value, 
+            //                  p.y.value, 
+            //                  bounds.x + dx * bounds.width, 
+            //                  bounds.y + dy * bounds.height);
+     
+            //              const a = anglev_(
+            //                  bounds.x + dx * bounds.width, 
+            //                  bounds.y + dy * bounds.height, 
+            //                  p.x.value, 
+            //                  p.y.value);
+     
+            //              const v = mulv(
+            //                  vector(a, d),
+            //                  point(x, y));
+     
+                         
+            //              p.x.value = 
+            //                    bounds.x 
+            //                  + bounds.width/2 
+            //                  + v.x;
+     
+            //              p.y.value = 
+            //                    bounds.y
+            //                  + bounds.height/2
+            //                  + v.y;
+            //          }
+     
+     
+            //          FigmaVectorPath.prototype.updatePathData.call(obj);
+            //      }
+            //      else
+            //      {
+            //          const x  = Math.max(0, options.x.toNumber()/100);
+            //          const y  = Math.max(0, options.y.toNumber()/100);
+                     
+     
+            //          const dx = 0.5;
+            //             //  bounds.width != 0
+            //             //  ? options.centerX.toNumber() / (bounds.width /2)
+            //             //  : options.centerX.toNumber();
+     
+            //          const dy = 0.5;
+            //             //  bounds.height != 0
+            //             //  ? options.centerY.toNumber() / (bounds.height/2)
+            //             //  : options.centerY.toNumber();
+     
+     
+            //          obj.width  *= x;
+            //          obj.height *= y;
+     
+     
+            //          const angle = anglev_(
+            //              bounds.x + ((dx + 0.5) * bounds.width ), 
+            //              bounds.y + ((dy + 0.5) * bounds.height),
+            //              obj.x,
+            //              obj.y);
+     
+            //          const halfd = distance_(
+            //              bounds.x + ((dx + 0.5) * bounds.width ), 
+            //              bounds.y + ((dy + 0.5) * bounds.height),
+            //              obj.x,
+            //              obj.y);
+     
+     
+            //          const a = 0;
+            //          const v = vector(angle - a, halfd);
+     
+            //          v.x *= x;
+            //          v.y *= y;
+     
+            //          obj.x = 
+            //                bounds.x 
+            //              + bounds.width /2 
+            //              + v.x 
+            //              - (dx - 0.5) * bw * Math.cos(-a) 
+            //              - (dy - 0.5) * bh * Math.sin( a);
+     
+            //          obj.y = 
+            //                bounds.y
+            //              + bounds.height/2
+            //              + v.y 
+            //              - (dx - 0.5) * bw * Math.sin(-a) 
+            //              - (dy - 0.5) * bh * Math.cos( a);
+            //      }
+        }
+
+        
+        super.evalObjects(parse);
+    }
+
+
+
+    pushValueUpdates(parse)
+    {
+        super.pushValueUpdates(parse);
+
+        if (this.input) this.input.pushValueUpdates(parse);
+        if (this.x    ) this.x    .pushValueUpdates(parse);
+        if (this.y    ) this.y    .pushValueUpdates(parse);
+    }
+
+
+
+    isValid()
+    {
+        return super.isValid()
+            && this.x.isValid()
+            && this.y.isValid();
+    }
+
+
+
+    invalidate()
+    {
+        super.invalidate();
+
+        if (this.input ) this.input .invalidate();
+        if (this.x     ) this.x     .invalidate();
+        if (this.y     ) this.y     .invalidate();
     }
 
 
@@ -58051,9 +58788,10 @@ const iconVectorPath        = '<svg width="18" height="17" viewBox="0 0 18 17" f
 const iconShapeGroup        = '<svg width="12" height="12" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M2 12.0004L2 11.0004L1 11.0004L1 10L-4.37113e-08 10L0 12.0004L2 12.0004Z" fill="white"/><path d="M10.0002 0.000182931L10.0002 1.00018L11.0002 1.00018L11.0002 2.00055L12.0002 2.00055L12.0002 0.000183105L10.0002 0.000182931Z" fill="white"/><path d="M-0.000183193 2.00018H0.999817L0.999817 1.00018H2.00018V0.000183149L-0.000183105 0.000183105L-0.000183193 2.00018Z" fill="white"/><path d="M12.0004 10.0004L11.0004 10.0004L11.0004 11.0004L10 11.0004L10 12.0004L12.0004 12.0004L12.0004 10.0004Z" fill="white"/><rect y="5" width="1" height="2" fill="white"/><rect x="7" width="1" height="2" transform="rotate(90 7 0)" fill="white"/><rect x="11" y="5" width="1" height="2" fill="white"/><rect x="7" y="11" width="1" height="2" transform="rotate(90 7 11)" fill="white"/></svg>';
 const iconFrame             = '<svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" clip-rule="evenodd" d="M4 0H3V3H0V4H3V12H0V13H3V16H4V13H12V16H13V13H16V12H13V4H16V3H13V0H12V3H4V0ZM12 12V4H4V12H12Z" fill="white"/></svg>';
 
-const iconMove              = '<svg width="19" height="19" viewBox="0 0 19 19" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="6.5" y="6.5" width="6" height="6" stroke="white"/><path d="M17.3034 9.48924L15.6526 7.83845L16.5019 6.98914L19 9.48725L16.4764 12.011L15.629 11.1636L17.3034 9.48924Z" fill="white"/><path d="M1.69664 9.51085L3.34744 11.1616L2.49812 12.011L7.84779e-06 9.51284L2.52365 6.98914L3.371 7.83649L1.69664 9.51085Z" fill="white"/><path d="M9.4892 1.69664L7.8384 3.34743L6.98909 2.49812L9.48721 7.5202e-06L12.0109 2.52365L11.1636 3.371L9.4892 1.69664Z" fill="white"/><path d="M9.5108 17.3034L11.1616 15.6526L12.0109 16.5019L9.51279 19L6.98909 16.4764L7.83644 15.629L9.5108 17.3034Z" fill="white"/></svg>'; 
-const iconRotate            = '<svg width="18" height="19" viewBox="0 0 18 19" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="5.5" y="6.5" width="6" height="6" stroke="white"/><path d="M4.91298 3.01223L3.75264 4.17257L4.60195 5.02188L7.10007 2.52376L4.57642 6.10352e-05L3.72907 0.847412L4.89376 2.0121C3.3015 2.07772 2.08097 2.42201 1.25143 3.25155C0.319557 4.18342 3.8147e-05 5.60873 3.8147e-05 7.50015H1.00004C1.00004 5.67144 1.32045 4.59674 1.95854 3.95865C2.52509 3.3921 3.43585 3.07599 4.91298 3.01223Z" fill="white"/><path d="M17.1001 11.4999C17.1001 13.3913 16.7806 14.8166 15.8487 15.7485C15.0192 16.578 13.7986 16.9223 12.2064 16.9879L13.3711 18.1526L12.5237 19L10.0001 16.4763L12.4982 13.9782L13.3475 14.8275L12.1872 15.9878C13.6643 15.924 14.575 15.6079 15.1416 15.0414C15.7797 14.4033 16.1001 13.3286 16.1001 11.4999H17.1001Z" fill="white"/></svg>'; 
-const iconScale             = '<svg width="15" height="15" viewBox="0 0 15 15" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M0 0V15H15V9H14V14L1 14V1L6 1V0H0Z" fill="white"/><path d="M10 1V2.38419e-07L15 0V5H14V1.70718L6.70718 9H10V10H5V5H6V8.29297L13.293 1L10 1Z" fill="white"/></svg>'; 
+const iconMove              = '<svg width="17" height="18" viewBox="0 0 17 18" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M1.69662 8.51082L3.70749 10.5217L2.86015 11.373L-1.54856e-05 8.51282L2.86015 5.65259L3.70752 6.49995L1.69662 8.51082Z" fill="white"/><path d="M8.50169 1.70956L6.49078 3.72043L5.63948 2.87309L8.4997 0.0129241L11.3599 2.87309L10.5126 3.72046L8.50169 1.70956Z" fill="white"/><path d="M15.3029 8.51469L13.292 6.50378L14.1394 5.65248L16.9995 8.5127L14.1394 11.3729L13.292 10.5256L15.3029 8.51469Z" fill="white"/><path d="M8.49782 15.3158L10.5087 13.305L11.36 14.1523L8.49981 17.0125L5.63959 14.1523L6.48694 13.3049L8.49782 15.3158Z" fill="white"/><rect x="8" y="0.990723" width="1" height="15.0186" fill="white"/><rect x="1" y="9" width="0.999999" height="15" transform="rotate(-90 1 9)" fill="white"/></svg>'; 
+const iconRotate            = '<svg width="14" height="19" viewBox="0 0 14 19" fill="none" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" clip-rule="evenodd" d="M7.9445 4.22796C5.01044 3.44178 1.99459 5.18299 1.20841 8.11705C0.713397 9.96445 1.21988 11.8445 2.39733 13.1809L1.64699 13.842C0.257648 12.265 -0.342805 10.0425 0.242481 7.85823C1.1716 4.3907 4.73579 2.33291 8.20332 3.26204L7.9445 4.22796Z" fill="white"/><path fill-rule="evenodd" clip-rule="evenodd" d="M5.08235 14.772C8.01642 15.5582 11.0323 13.817 11.8184 10.883C12.3135 9.03555 11.807 7.15553 10.6295 5.81905L11.3799 5.158C12.7692 6.73498 13.3697 8.95745 12.7844 11.1418C11.8553 14.6093 8.29106 16.6671 4.82353 15.738L5.08235 14.772Z" fill="white"/><path d="M7.41666 3.52189L5.40579 1.51099L6.25314 0.659682L9.1133 3.5199L6.25314 6.38012L5.40576 5.53277L7.41666 3.52189Z" fill="white"/><path d="M5.61019 15.4781L7.62106 17.489L6.77372 18.3403L3.91356 15.4801L6.77372 12.6199L7.62109 13.4672L5.61019 15.4781Z" fill="white"/></svg>'; 
+const iconScale             = '<svg width="15" height="15" viewBox="0 0 15 15" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M0 0V15H15V9H14V14L1 14V1L6 1V0H0Z" fill="white"/><path d="M10 1V2.38419e-07L15 0V5H14V1.70718L6.70718 9H10V10H5V5H6V8.29297L13.293 1L10 1Z" fill="white"/></svg>';
+const iconSkew              = '<svg width="19" height="17" viewBox="0 0 19 17" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M2.75185 13.0498L4.85299 15.1509L4.04961 16.0462L0.564758 12.5613L4.02604 9.1001L4.85299 9.96779L2.77106 12.0496H8.03782V13.0498H2.75185Z" fill="white"/><path d="M16.2802 3.02754L14.1492 0.896574L14.9986 0.0472195L18.4673 3.516L15.0221 6.9613L14.1492 6.13945L16.261 4.02766L10.9942 4.02766L10.9942 3.02754L16.2802 3.02754Z" fill="white"/><rect x="8.03784" y="12.0476" width="3.98492" height="1" fill="white"/><rect x="10.9941" y="4.02979" width="3.94812" height="1" transform="rotate(-180 10.9941 4.02979)" fill="white"/><path d="M10.9083 12.532L13.0237 9.01649L14.0898 9.62791L12.0117 13.0475L10.9083 12.532Z" fill="white"/><path d="M8.20062 3.47107L6.03195 7.05296L4.94104 6.43312L7.02151 3.02985L8.20062 3.47107Z" fill="white"/></svg>'; 
 
 
 const iconGroup             = '<svg width="17" height="17" viewBox="0 -1 17 17" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M3 0.5H14C15.3807 0.5 16.5 1.61929 16.5 3V15.5H0.5V3C0.5 1.61929 1.61929 0.5 3 0.5Z" stroke="white"/><rect width="4" height="1" transform="matrix(-1 0 0 1 14 4)" fill="white"/><rect width="4" height="1" transform="matrix(-1 0 0 1 9 6)" fill="white"/><rect width="4" height="1" transform="matrix(-1 0 0 1 12 9)" fill="white"/><rect width="4" height="1" transform="matrix(-1 0 0 1 7 11)" fill="white"/></svg>';
@@ -59559,9 +60297,10 @@ function initGeneratorMenus()
 
     menuTransform = new Menu('Transform', true, false);
     menuTransform.addItems([
-                                new MenuItem('Move',   {icon: iconMove,   callback: e => actionManager.do(getCreateNodeAction(MOVE,        btnShape.div, getCreateOptions(e)))}),
-                                new MenuItem('Rotate', {icon: iconRotate, callback: e => actionManager.do(getCreateNodeAction(ROTATE,      btnShape.div, getCreateOptions(e)))}),
-                                new MenuItem('Scale',  {icon: iconScale,  callback: e => actionManager.do(getCreateNodeAction(SCALE,       btnShape.div, getCreateOptions(e)))})]);
+        new MenuItem('Move',   {icon: iconMove,   callback: e => actionManager.do(getCreateNodeAction(MOVE,   btnShape.div, getCreateOptions(e)))}),
+        new MenuItem('Rotate', {icon: iconRotate, callback: e => actionManager.do(getCreateNodeAction(ROTATE, btnShape.div, getCreateOptions(e)))}),
+        new MenuItem('Scale',  {icon: iconScale,  callback: e => actionManager.do(getCreateNodeAction(SCALE,  btnShape.div, getCreateOptions(e)))}),
+        new MenuItem('Skew',   {icon: iconSkew,   callback: e => actionManager.do(getCreateNodeAction(SKEW,   btnShape.div, getCreateOptions(e)))})]);
 
 
     menuShape = new Menu('Shapes', true, false);
@@ -80627,6 +81366,75 @@ extends OperatorBase
 
 
 
+class   OpSkew
+extends OperatorBase
+{
+    paramX;
+    paramY;
+    paramCenterX;
+    paramCenterY;
+
+
+
+    constructor()
+    {
+        super(SKEW, 'skew', 'skew');
+
+        this.canDisable = true;
+
+        
+        this.addInput (new Input (SHAPE_VALUES));
+        this.addOutput(new Output([SHAPE_VALUE], this.output_genRequest));
+
+
+        this.addParam(this.paramX       = new NumberParam('x',       'x',        true, true, true));
+        this.addParam(this.paramY       = new NumberParam('y',       'y',        true, true, true));
+        this.addParam(this.paramCenterX = new NumberParam('centerX', 'center x', true, true, true, 0));
+        this.addParam(this.paramCenterY = new NumberParam('centerY', 'center y', true, true, true, 0));
+
+
+        this.inputs[0].addEventListener('connect',    e => this.outputs[0].types = [...this.inputs[0].connectedOutput.types]);
+        this.inputs[0].addEventListener('disconnect', e => this.outputs[0].types = [SHAPE_VALUE]);
+    }
+    
+    
+
+    output_genRequest(gen)
+    {
+        // 'this' is the output
+
+        gen.scope.push({
+            nodeId:  this.node.id, 
+            paramId: NULL });
+
+        const [request, ignore] = this.node.genRequestStart(gen);
+        if (ignore) return request;
+
+
+        const input = this.node.inputs[0];
+
+
+        request.push(input.connected ? 1 : 0);
+
+        if (input.connected)
+            request.push(...pushInputOrParam(input, gen));
+
+        request.push(...this.node.paramX      .genRequest(gen));
+        request.push(...this.node.paramY      .genRequest(gen));
+        request.push(...this.node.paramCenterX.genRequest(gen));
+        request.push(...this.node.paramCenterY.genRequest(gen));
+
+        
+        gen.scope.pop();
+        pushUnique(gen.passedNodes, this.node);
+
+
+        return request;
+    }
+}
+
+
+
 class   OpColorStyle
 extends OperatorBase
 {
@@ -90305,6 +91113,7 @@ function createNode(nodeType, creatingButton = null, createdNodeId = -1, options
         case MOVE:                    node = new OpMove();              break;
         case ROTATE:                  node = new OpRotate();            break;
         case SCALE:                   node = new OpScale();             break;
+        case SKEW:                    node = new OpSkew();              break;
 
         case POINT:                   node = new OpPoint();             break;
 

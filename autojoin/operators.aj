@@ -136,7 +136,7 @@
 ../operators/shape/OpMove.js
 ../operators/shape/OpRotate.js
 ../operators/shape/OpScale.js
-
+../operators/shape/OpSkew.js
 
 
 ../operators/style/OpColorStyle.js

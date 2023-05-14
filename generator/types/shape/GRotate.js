@@ -57,12 +57,13 @@ extends GOperator
         }
 
        
-        const _bounds = this.evalObjects(parse, 
-        {
-            angle:   angle, 
-            centerX: centerX, 
-            centerY: centerY
-        });
+        const _bounds = this.evalObjects(
+            parse, 
+            {
+                angle:   angle, 
+                centerX: centerX, 
+                centerY: centerY
+            });
 
 
         const bounds = new RectangleValue(
@@ -106,25 +107,21 @@ extends GOperator
         const bounds = getObjBounds(this.objects);
         const angle  = options.angle.toNumber()/360*Tau;
 
-        
+        const dx = 
+            bounds.width != 0
+            ? (0.5 + options.centerX.toNumber() / (bounds.width /2)) * bounds.width
+            : 0;
+
+        const dy = 
+            bounds.height != 0
+            ? (0.5 + options.centerY.toNumber() / (bounds.height/2)) * bounds.height
+            : 0;
+
+            
         for (const obj of this.objects)
         {
             obj.nodeId   = this.nodeId;
             obj.objectId = this.nodeId + '/' + obj.objectId;
-
-
-            // const bw = bounds.width  != 0 ? bounds.width  : 1;
-            // const bh = bounds.height != 0 ? bounds.height : 1;
-
-            const dx = 
-                bounds.width != 0
-                ? (0.5 + options.centerX.toNumber() / (bounds.width /2)) * bounds.width
-                : 0;
-
-            const dy = 
-                bounds.height != 0
-                ? (0.5 + options.centerY.toNumber() / (bounds.height/2)) * bounds.height
-                : 0;
 
 
             let xform = clone(obj.relativeTransform);

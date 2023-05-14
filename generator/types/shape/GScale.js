@@ -60,13 +60,14 @@ extends GOperator
         }
 
        
-        const _bounds = this.evalObjects(parse, 
-        {
-            x:       x, 
-            y:       y, 
-            centerX: centerX, 
-            centerY: centerY
-        });
+        const _bounds = this.evalObjects(
+            parse, 
+            {
+                x:       x, 
+                y:       y, 
+                centerX: centerX, 
+                centerY: centerY
+            });
 
 
         const bounds = new RectangleValue(
@@ -110,6 +111,20 @@ extends GOperator
 
         const bounds = getObjBounds(this.objects);
 
+        const x = options.x.toNumber() / bounds.width;
+        const y = options.y.toNumber() / bounds.height;
+
+        
+        const dx = 
+            bounds.width != 0
+            ? (0.5 + options.centerX.toNumber() / (bounds.width /2)) * bounds.width
+            : 0;
+
+        const dy = 
+            bounds.height != 0
+            ? (0.5 + options.centerY.toNumber() / (bounds.height/2)) * bounds.height
+            : 0;
+
 
         for (const obj of this.objects)
         {
@@ -119,6 +134,34 @@ extends GOperator
 
             const bw = bounds.width  != 0 ? bounds.width  : 1;
             const bh = bounds.height != 0 ? bounds.height : 1;
+
+
+            let xform = clone(obj.relativeTransform);
+            if (xform.length == 2) xform = [...xform, [0, 0, 1]];
+
+
+            xform = mulm3m3(
+                xform,
+                [[1, 0, dx],
+                 [0, 1, dy],
+                 [0, 0, 1 ]]);
+
+            xform = mulm3m3(
+                xform,
+                [[x, 0, 0],
+                 [0, y, 0],
+                 [0, 0, 1]]);
+
+            xform = mulm3m3(
+                xform,
+                [[1, 0, -dx],
+                 [0, 1, -dy],
+                 [0, 0,  1 ]]);
+
+
+            obj.relativeTransform =
+                [xform[0],
+                 xform[1]];
 
 
             if (obj.type == VECTOR_PATH)

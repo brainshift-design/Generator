@@ -817,8 +817,8 @@ function genParseScale(parse)
     if (nInputs == 1)
         scale.input = genParse(parse);
 
-    scale.x  = genParse(parse);
-    scale.y  = genParse(parse);
+    scale.x       = genParse(parse);
+    scale.y       = genParse(parse);
     scale.centerX = genParse(parse);
     scale.centerY = genParse(parse);
 
@@ -829,4 +829,54 @@ function genParseScale(parse)
 
     genParseNodeEnd(parse, scale);
     return scale;
+}
+
+
+
+function genParseSkew(parse)
+{
+    const [, nodeId, options, ignore] = genParseNodeStart(parse);
+
+
+    const skew = new GSkew(nodeId, options);
+
+
+    let nInputs = -1;
+
+    if (!ignore)
+    {
+        nInputs = parseInt(parse.move());
+        console.assert(nInputs => 0 && nInputs <= 1, 'nInputs must be [0, 1]');
+    }
+
+
+    if (parse.settings.logRequests) 
+        logReq(skew, parse, ignore);
+
+
+    if (ignore) 
+    {
+        genParseNodeEnd(parse, skew);
+        return parse.parsedNodes.find(n => n.nodeId == nodeId);
+    }
+
+
+    parse.nTab++;
+
+
+    if (nInputs == 1)
+        skew.input = genParse(parse);
+
+    skew.x       = genParse(parse);
+    skew.y       = genParse(parse);
+    skew.centerX = genParse(parse);
+    skew.centerY = genParse(parse);
+
+
+    parse.inParam = false;
+    parse.nTab--;
+
+
+    genParseNodeEnd(parse, skew);
+    return skew;
 }

@@ -99,6 +99,7 @@ function createNode(nodeType, creatingButton = null, createdNodeId = -1, options
         case MOVE:                    node = new OpMove();              break;
         case ROTATE:                  node = new OpRotate();            break;
         case SCALE:                   node = new OpScale();             break;
+        case SKEW:                    node = new OpSkew();              break;
 
         case POINT:                   node = new OpPoint();             break;
 
