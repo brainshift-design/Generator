@@ -104,6 +104,7 @@ extends GOperator
 
 
         const bounds = getObjBounds(this.objects);
+        const angle  = options.angle.toNumber()/360*Tau;
 
         
         for (const obj of this.objects)
@@ -112,96 +113,131 @@ extends GOperator
             obj.objectId = this.nodeId + '/' + obj.objectId;
 
 
-            obj.angle = 
-                isValid(obj.angle)
-                ? obj.angle + options.angle.toNumber()
-                : options.angle.toNumber(); 
-
-
             const bw = bounds.width  != 0 ? bounds.width  : 1;
             const bh = bounds.height != 0 ? bounds.height : 1;
 
-
-            if (obj.type == VECTOR_PATH)
-            {
-                const dx = 0.5 + options.centerX.toNumber() / (bounds.width /2);
-                const dy = 0.5 + options.centerY.toNumber() / (bounds.height/2);
+            const dx = (0.5 + options.centerX.toNumber() / (bounds.width /2)) * bw;
+            const dy = (0.5 + options.centerY.toNumber() / (bounds.height/2)) * bh;
 
 
-                for (const p of obj.points)
-                {
-                    const d = distance_(
-                        p.x.value, 
-                        p.y.value, 
-                        bounds.x + dx * bounds.width, 
-                        bounds.y + dy * bounds.height);
+            let xform = clone(obj.relativeTransform);
+            if (xform.length == 2) xform = [...xform, [0, 0, 1]];
 
-                    const a = anglev_(
-                        bounds.x + dx * bounds.width, 
-                        bounds.y + dy * bounds.height, 
-                        p.x.value, 
-                        p.y.value);
 
-                    const v = vector(a + options.angle.toNumber()/360*Tau, d);
+            xform = mulm3m3(
+                xform,
+                [[1, 0, dx],
+                 [0, 1, dy],
+                 [0, 0, 1 ]]);
+
+            xform = mulm3m3(
+                xform,
+                [[ Math.cos(angle), Math.sin(angle), 0],
+                 [-Math.sin(angle), Math.cos(angle), 0],
+                 [ 0,               0,               1]]);
+
+            xform = mulm3m3(
+                xform,
+                [[1, 0, -dx],
+                 [0, 1, -dy],
+                 [0, 0,  1 ]]);
+
+
+            obj.relativeTransform =
+                [xform[0],
+                 xform[1]];
+
+
+             // obj.angle = 
+            //     isValid(obj.angle)
+            //     ? obj.angle + options.angle.toNumber()
+            //     : options.angle.toNumber(); 
+
+
+            //const bw = bounds.width  != 0 ? bounds.width  : 1;
+            //const bh = bounds.height != 0 ? bounds.height : 1;
+
+
+            // if (obj.type == VECTOR_PATH)
+            // {
+            //     const dx = 0.5 + options.centerX.toNumber() / (bounds.width /2);
+            //     const dy = 0.5 + options.centerY.toNumber() / (bounds.height/2);
+
+
+            //     for (const p of obj.points)
+            //     {
+            //         const d = distance_(
+            //             p.x.value, 
+            //             p.y.value, 
+            //             bounds.x + dx * bounds.width, 
+            //             bounds.y + dy * bounds.height);
+
+            //         const a = anglev_(
+            //             bounds.x + dx * bounds.width, 
+            //             bounds.y + dy * bounds.height, 
+            //             p.x.value, 
+            //             p.y.value);
+
+            //         const v = vector(a + options.angle.toNumber()/360*Tau, d);
 
                     
-                    p.x.value = 
-                          bounds.x 
-                        + bounds.width/2
-                        + v.x;
+            //         p.x.value = 
+            //               bounds.x 
+            //             + bounds.width/2
+            //             + v.x;
 
-                    p.y.value = 
-                          bounds.y
-                        + bounds.height/2
-                        + v.y;
-                }
-
-
-                FigmaVectorPath.prototype.updatePathData.call(obj);
-            }
-            else
-            {
-                const dx = 
-                    bounds.width != 0
-                    ? options.centerX.toNumber() / (bounds.width /2)
-                    : options.centerX.toNumber();
-
-                const dy = 
-                    bounds.height != 0
-                    ? options.centerY.toNumber() / (bounds.height/2)
-                    : options.centerY.toNumber();
+            //         p.y.value = 
+            //               bounds.y
+            //             + bounds.height/2
+            //             + v.y;
+            //     }
 
 
-                const angle = anglev_(
-                    bounds.x + bounds.width /2, 
-                    bounds.y + bounds.height/2,
-                    obj.x,
-                    obj.y);
+            //     FigmaVectorPath.prototype.updatePathData.call(obj);
+            // }
+            // else
+            // {
+            //     const dx = 
+            //         bounds.width != 0
+            //         ? options.centerX.toNumber() / (bounds.width /2)
+            //         : options.centerX.toNumber();
 
-                const halfd = distance_(
-                    bounds.x + bounds.width /2,
-                    bounds.y + bounds.height/2,
-                    obj.x,
-                    obj.y);
-
-                const a = obj.angle/360*Tau;
-                const v = vector(angle - a, halfd);
+            //     const dy = 
+            //         bounds.height != 0
+            //         ? options.centerY.toNumber() / (bounds.height/2)
+            //         : options.centerY.toNumber();
 
 
-                obj.x = 
-                      bounds.x 
-                    + bounds.width /2 
-                    + v.x 
-                    - dx * bw * Math.cos(-a) 
-                    - dy * bh * Math.sin( a);
+            //     const angle = anglev_(
+            //         bounds.x + bounds.width /2, 
+            //         bounds.y + bounds.height/2,
+            //         obj.x,
+            //         obj.y);
 
-                obj.y = 
-                      bounds.y
-                    + bounds.height/2
-                    + v.y 
-                    - dx * bw * Math.sin(-a) 
-                    - dy * bh * Math.cos( a);
-            }
+            //     const halfd = distance_(
+            //         bounds.x + bounds.width /2,
+            //         bounds.y + bounds.height/2,
+            //         obj.x,
+            //         obj.y);
+
+            //     const a = obj.angle/360*Tau;
+            //     const v = vector(angle - a, halfd);
+
+
+            //     obj.x = 
+            //           bounds.x 
+            //         + bounds.width /2 
+            //         + v.x 
+            //         - dx * bw * Math.cos(-a) 
+            //         - dy * bh * Math.sin( a);
+
+            //     obj.y = 
+            //           bounds.y
+            //         + bounds.height/2
+            //         + v.y 
+            //         - dx * bw * Math.sin(-a) 
+            //         - dy * bh * Math.cos( a);
+            // }
         }
 
         

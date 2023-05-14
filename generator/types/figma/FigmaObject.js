@@ -2,29 +2,34 @@ class FigmaObject
 {
     type;
     
-    nodeId     = '';
-
-    objectId   = NULL;
-    objectName = NULL;
+    nodeId            = '';
+    
+    objectId          = NULL;
+    objectName        = NULL;
 
     uniqueId;
+
+    relativeTransform;
 
 
 
     constructor(type, nodeId, objectId, objectName)
     {
-        this.type       = type;
-        this.nodeId     = nodeId;
-        this.objectId   = objectId;
-        this.objectName = objectName;
-        this.uniqueId   = Math.round(Math.random() * 10000);
+        this.type              = type;
+        this.nodeId            = nodeId;
+        this.objectId          = objectId;
+        this.objectName        = objectName;
+        this.uniqueId          = Math.round(Math.random() * 10000);
+
+        this.relativeTransform = clone(identity);
     }
 
 
 
     copyBase(base)
     {
-        this.uniqueId = base.uniqueId;
+        this.uniqueId          = base.uniqueId;
+        this.relativeTransform = clone(base.relativeTransform);
     }
 
 

@@ -437,7 +437,12 @@ function uiMakeNodesActive(nodes, shiftKey = false)
 function uiMakeNodePassive(node)
 {
     if (node.active)
+    {
         node.makePassive();
+        node.updateNode();
+        
+        uiDeleteObjectsAndStyles([node.id], false);
+    }
 }
 
 

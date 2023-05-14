@@ -32,7 +32,7 @@ extends Action
                 this.oldActiveNodeIds, 
                 getActiveNodesFromNodeId(id).map(n => n.id))); 
 
-        uiDeleteObjectsAndStyles(this.oldActiveNodeIds, false);
+        //uiDeleteObjectsAndStyles(this.oldActiveNodeIds, false);
 
         const newActiveNodes = this.newActiveNodeIds.map(id => nodeFromId(id));
 

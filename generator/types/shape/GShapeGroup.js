@@ -135,11 +135,7 @@ extends GShapeBase
 
     toValue()
     {
-        const group = new ShapeGroupValue(
-            this.nodeId,
-            this.children.toValue());
-
-        return group;
+        return this.value.copy();
     }
 
 

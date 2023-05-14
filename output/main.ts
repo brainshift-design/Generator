@@ -1923,7 +1923,7 @@ function figUpdateObject(figObj, genObj)
 
 function makeObjectName(obj)
 {
-    return OBJECT_PREFIX + obj.objectName;
+    return OBJECT_PREFIX + obj.objectId;//objectName;
 }
 
 
@@ -1944,34 +1944,36 @@ function genRectIsValid(genRect)
 
 
 
-function figCreateRect(obj)
+function figCreateRect(genRect)
 {
     //console.log(obj);
 
-    const rect = figma.createRectangle();
+    const figRect = figma.createRectangle();
 
-    rect.name = makeObjectName(obj);
+    figRect.name = makeObjectName(genRect);
 
-    if (!genRectIsValid(obj))
-        return rect;
+    if (!genRectIsValid(genRect))
+        return figRect;
 
 
-    rect.x = obj.x;
-    rect.y = obj.y;
+    figRect.x = genRect.x;
+    figRect.y = genRect.y;
 
-    rect.resize(
-        Math.max(0.01, obj.width), 
-        Math.max(0.01, obj.height));
+    figRect.resize(
+        Math.max(0.01, genRect.width), 
+        Math.max(0.01, genRect.height));
         
-    rect.rotation     = obj.angle;
-    rect.cornerRadius = obj.round;
+    figRect.rotation          = genRect.angle;
+    figRect.cornerRadius      = genRect.round;
+
+    figRect.relativeTransform = genRect.relativeTransform;
 
 
-    setObjectFills  (rect, obj);
-    setObjectStrokes(rect, obj);
+    setObjectFills  (figRect, genRect);
+    setObjectStrokes(figRect, genRect);
 
 
-    return rect;
+    return figRect;
 }
 
 
@@ -1995,8 +1997,10 @@ function figUpdateRect(figRect, genRect)
             Math.max(0.01, genRect.height));
     }
 
-    figRect.rotation     = genRect.angle;
-    figRect.cornerRadius = genRect.round;
+    figRect.rotation          = genRect.angle;
+    figRect.cornerRadius      = genRect.round;
+
+    figRect.relativeTransform = genRect.relativeTransform;
 
 
     setObjectFills  (figRect, genRect);
@@ -2019,32 +2023,34 @@ function genLineIsValid(genLine)
 
 
 
-function figCreateLine(obj)
+function figCreateLine(genLine)
 {
     //console.log(obj);
 
-    const line = figma.createLine();
+    const figLine = figma.createLine();
 
-    line.name = makeObjectName(obj);
-
-
-    if (!genLineIsValid(obj))
-        return line;
+    figLine.name = makeObjectName(genLine);
 
 
-    line.x = obj.x;
-    line.y = obj.y;
+    if (!genLineIsValid(genLine))
+        return figLine;
+
+
+    figLine.x = genLine.x;
+    figLine.y = genLine.y;
     
-    line.resize(Math.max(0.01, obj.width), 0);
+    figLine.resize(Math.max(0.01, genLine.width), 0);
         
-    line.rotation = obj.angle;
+    figLine.rotation          = genLine.angle;
+
+    figLine.relativeTransform = genLine.relativeTransform;
 
 
-    setObjectFills  (line, obj);
-    setObjectStrokes(line, obj);
+    setObjectFills  (figLine, genLine);
+    setObjectStrokes(figLine, genLine);
 
     
-    return line;
+    return figLine;
 }
 
 
@@ -2063,7 +2069,9 @@ function figUpdateLine(figLine, genLine)
     if (figLine.width != genLine.width)
         figLine.resize(Math.max(0.01, genLine.width), 0);
 
-    figLine.rotation = genLine.angle;
+    figLine.rotation          = genLine.angle;
+
+    figLine.relativeTransform = genLine.relativeTransform;
 
 
     setObjectFills  (figLine, genLine);
@@ -2087,39 +2095,41 @@ function genEllipseIsValid(genEllipse)
 
 
 
-function figCreateEllipse(obj)
+function figCreateEllipse(genEllipse)
 {
     //console.log(obj);
 
-    const ellipse = figma.createEllipse();
+    const figEllipse = figma.createEllipse();
 
-    ellipse.name = makeObjectName(obj);
+    figEllipse.name = makeObjectName(genEllipse);
 
-    if (!genEllipseIsValid(obj))
-        return ellipse;
+    if (!genEllipseIsValid(genEllipse))
+        return figEllipse;
 
 
-    ellipse.x        = obj.x;
-    ellipse.y        = obj.y;
+    figEllipse.x                 = genEllipse.x;
+    figEllipse.y                 = genEllipse.y;
+        
+    figEllipse.rotation          = genEllipse.angle;
 
-    ellipse.rotation = obj.angle;
+    figEllipse.relativeTransform = genEllipse.relativeTransform;
 
     
-    if (figPoints.includes(ellipse))
-        updatePointSize(ellipse);
+    if (figPoints.includes(figEllipse))
+        updatePointSize(figEllipse);
         
     else
     {
-        ellipse.resize(
-            Math.max(0.01, obj.width), 
-            Math.max(0.01, obj.height));
+        figEllipse.resize(
+            Math.max(0.01, genEllipse.width), 
+            Math.max(0.01, genEllipse.height));
 
-        setObjectFills  (ellipse, obj);
-        setObjectStrokes(ellipse, obj);
+        setObjectFills  (figEllipse, genEllipse);
+        setObjectStrokes(figEllipse, genEllipse);
     }
 
     
-    return ellipse;
+    return figEllipse;
 }
 
 
@@ -2143,7 +2153,9 @@ function figUpdateEllipse(figEllipse, genEllipse)
             Math.max(0.01, genEllipse.height));
     }
 
-    figEllipse.rotation = genEllipse.angle;
+    figEllipse.rotation          = genEllipse.angle;
+
+    figEllipse.relativeTransform = genEllipse.relativeTransform;
 
 
     setObjectFills  (figEllipse, genEllipse);
@@ -2169,35 +2181,37 @@ function genPolyIsValid(genPoly)
 
 
 
-function figCreatePolygon(obj)
+function figCreatePolygon(genPoly)
 {
     //console.log(obj);
 
-    const poly = figma.createPolygon();
+    const figPoly = figma.createPolygon();
 
-    poly.name = makeObjectName(obj);
+    figPoly.name = makeObjectName(genPoly);
 
-    if (!genPolyIsValid(obj))
-        return poly;
+    if (!genPolyIsValid(genPoly))
+        return figPoly;
 
 
-    poly.x = obj.x;
-    poly.y = obj.y;
+    figPoly.x = genPoly.x;
+    figPoly.y = genPoly.y;
     
-    poly.resize(
-        Math.max(0.01, obj.width), 
-        Math.max(0.01, obj.height));
+    figPoly.resize(
+        Math.max(0.01, genPoly.width), 
+        Math.max(0.01, genPoly.height));
         
-    poly.rotation     = obj.angle;
-    poly.cornerRadius = obj.round;
-    poly.pointCount   = obj.corners;
+    figPoly.rotation          = genPoly.angle;
+    figPoly.cornerRadius      = genPoly.round;
+    figPoly.pointCount        = genPoly.corners;
+
+    figPoly.relativeTransform = genPoly.relativeTransform;
 
 
-    setObjectFills  (poly, obj);
-    setObjectStrokes(poly, obj);
+    setObjectFills  (figPoly, genPoly);
+    setObjectStrokes(figPoly, genPoly);
 
 
-    return poly;
+    return figPoly;
 }
 
 
@@ -2221,9 +2235,11 @@ function figUpdatePolygon(figPoly, genPoly)
             Math.max(0.01, genPoly.height));
     }
 
-    figPoly.rotation     = genPoly.angle;
-    figPoly.cornerRadius = genPoly.round;
-    figPoly.pointCount   = genPoly.corners;
+    figPoly.rotation          = genPoly.angle;
+    figPoly.cornerRadius      = genPoly.round;
+    figPoly.pointCount        = genPoly.corners;
+
+    figPoly.relativeTransform = genPoly.relativeTransform;
 
 
     setObjectFills  (figPoly, genPoly);
@@ -2250,36 +2266,38 @@ function genStarIsValid(genStar)
 
 
 
-function figCreateStar(obj)
+function figCreateStar(genStar)
 {
     //console.log(obj);
 
-    const star = figma.createStar();
+    const figStar = figma.createStar();
 
-    star.name = makeObjectName(obj);
+    figStar.name = makeObjectName(genStar);
 
-    if (!genStarIsValid(obj))
-        return star;
+    if (!genStarIsValid(genStar))
+        return figStar;
 
 
-    star.x = obj.x;
-    star.y = obj.y;
+    figStar.x = genStar.x;
+    figStar.y = genStar.y;
     
-    star.resize(
-        Math.max(0.01, obj.width), 
-        Math.max(0.01, obj.height));
+    figStar.resize(
+        Math.max(0.01, genStar.width), 
+        Math.max(0.01, genStar.height));
         
-    star.rotation     = obj.angle;
-    star.cornerRadius = obj.round;
-    star.pointCount   = obj.points;
-    star.innerRadius  = obj.convex / 100;
+    figStar.rotation          = genStar.angle;
+    figStar.cornerRadius      = genStar.round;
+    figStar.pointCount        = genStar.points;
+    figStar.innerRadius       = genStar.convex / 100;
+
+    figStar.relativeTransform = genStar.relativeTransform;
 
 
-    setObjectFills  (star, obj);
-    setObjectStrokes(star, obj);
+    setObjectFills  (figStar, genStar);
+    setObjectStrokes(figStar, genStar);
 
 
-    return star;
+    return figStar;
 }
 
 
@@ -2303,10 +2321,12 @@ function figUpdateStar(figStar, genStar)
             Math.max(0.01, genStar.height));
     }
 
-    figStar.rotation     = genStar.angle;
-    figStar.cornerRadius = genStar.round;
-    figStar.pointCount   = genStar.points;
-    figStar.innerRadius  = genStar.convex / 100;
+    figStar.rotation          = genStar.angle;
+    figStar.cornerRadius      = genStar.round;
+    figStar.pointCount        = genStar.points;
+    figStar.innerRadius       = genStar.convex / 100;
+
+    figStar.relativeTransform = genStar.relativeTransform;
 
 
     setObjectFills  (figStar, genStar);
@@ -2333,19 +2353,19 @@ function genTextIsValid(genText)
 
 
 
-function figCreateText(obj)
+function figCreateText(genText)
 {
-    const text = figma.createText();
+    const figText = figma.createText();
     
-    text.name = makeObjectName(obj);
+    figText.name = makeObjectName(genText);
 
-    if (!genTextIsValid(obj))
-        return text;
+    if (!genTextIsValid(genText))
+        return figText;
 
 
     const fontName = 
     { 
-        family: obj.font, 
+        family: genText.font, 
         style: 'Regular' 
     };
 
@@ -2353,31 +2373,33 @@ function figCreateText(obj)
     {
         await figma.loadFontAsync(fontName); 
 
-        text.fontName   = fontName;
-        text.fontSize   = Math.max(1, obj.size);
+        figText.fontName   = fontName;
+        figText.fontSize   = Math.max(1, genText.size);
         
-        text.characters = obj.text;
+        figText.characters = genText.text;
 
         //setTextStyle(text, obj);
     })();
 
 
-    text.x = obj.x;
-    text.y = obj.y;
+    figText.x = genText.x;
+    figText.y = genText.y;
 
 
-    text.resize(
-        Math.max(0.01, obj.width), 
-        Math.max(0.01, obj.height));
+    figText.resize(
+        Math.max(0.01, genText.width), 
+        Math.max(0.01, genText.height));
         
-    text.rotation   = obj.angle;
+    figText.rotation = genText.angle;
     
-
-    setObjectFills  (text, obj);
-    setObjectStrokes(text, obj);
+    figText.relativeTransform = genText.relativeTransform;
 
 
-    return text;
+    setObjectFills  (figText, genText);
+    setObjectStrokes(figText, genText);
+
+
+    return figText;
 }
 
 
@@ -2421,7 +2443,9 @@ function figUpdateText(figText, genText)
             Math.max(0.01, genText.height));
     }
 
-    figText.rotation     = genText.angle;
+    figText.rotation = genText.angle;
+
+    figText.relativeTransform = genText.relativeTransform;
 
 
     setObjectFills  (figText, genText);
@@ -2456,41 +2480,43 @@ function figCreatePoint(genPoint)
 {    
     // console.log('genPoint =', genPoint);
 
-    const point = figma.createEllipse();
+    const figPoint = figma.createEllipse();
 
-    point.name = makeObjectName(genPoint);
+    figPoint.name = makeObjectName(genPoint);
 
     if (!genPointIsValid(genPoint))
-        return point;
+        return figPoint;
 
 
-    point.rotation = 0;
+    figPoint.rotation = 0;
 
     
-    if (figPoints.includes(point))
-        updatePointSize_(point, genPoint);
+    if (figPoints.includes(figPoint))
+        updatePointSize_(figPoint, genPoint);
 
     else
     {
         const size = 8 / curZoom;
 
-        point.x = genPoint.x - size/2;
-        point.y = genPoint.y - size/2;
+        figPoint.x = genPoint.x - size/2;
+        figPoint.y = genPoint.y - size/2;
 
-        point.resizeWithoutConstraints(size, size);
+        figPoint.resizeWithoutConstraints(size, size);
+
+        figPoint.relativeTransform = genPoint.relativeTransform;
 
         
-        point.fills            =  getObjectFills([['SOLID', '255 255 255 100']]);
-        point.strokes          =  getObjectFills([['SOLID',  '12 140 233 100']]);
+        figPoint.fills            =  getObjectFills([['SOLID', '255 255 255 100']]);
+        figPoint.strokes          =  getObjectFills([['SOLID',  '12 140 233 100']]);
 
-        point.strokeWeight     =  1.25 / curZoom;
-        point.strokeAlign      = 'INSIDE';
-        point.strokeJoin       = 'MITER';
-        point.strokeMiterLimit =  2;
+        figPoint.strokeWeight     =  1.25 / curZoom;
+        figPoint.strokeAlign      = 'INSIDE';
+        figPoint.strokeJoin       = 'MITER';
+        figPoint.strokeMiterLimit =  2;
     }
 
     
-    return point;
+    return figPoint;
 }
 
 
@@ -2509,6 +2535,8 @@ function figUpdatePoint(figPoint, genPoint)
     figPoint.y    = genPoint.y - size/2;
 
     figPoint.resizeWithoutConstraints(size, size);
+
+    figPoint.relativeTransform = genPoint.relativeTransform;
 
 
     figPoint.strokeWeight =  1.25 / curZoom;
@@ -2550,8 +2578,10 @@ function figCreateVectorPath(genPath)
     }];
 
 
-    figPath.cornerRadius = genPath.round;
+    figPath.cornerRadius      = genPath.round;
 
+    figPath.relativeTransform = genPath.relativeTransform;
+    
 
     setObjectFills  (figPath, genPath);
     setObjectStrokes(figPath, genPath);
@@ -2580,8 +2610,10 @@ function figUpdateVectorPath(figPath, genPath)
     }];
 
 
-    figPath.cornerRadius = genPath.round;
+    figPath.cornerRadius      = genPath.round;
     
+    figPath.relativeTransform = genPath.relativeTransform;
+
 
     setObjectFills  (figPath, genPath);
     setObjectStrokes(figPath, genPath);
@@ -2624,6 +2656,9 @@ function figCreateShapeGroup(genGroup)
     }
 
 
+    figGroup.relativeTransform = genGroup.relativeTransform;
+
+
     return figGroup;
 }
 
@@ -2639,6 +2674,8 @@ function figUpdateShapeGroup(figGroup, genGroup)
 
 
     figGroup.name = makeObjectName(genGroup);
+
+    figGroup.relativeTransform = genGroup.relativeTransform;
 
 
     figUpdateObjects(figGroup, genGroup.children);
@@ -2695,10 +2732,12 @@ function figCreateFrame(genFrame)
             Math.max(0.01, genFrame.width ), 
             Math.max(0.01, genFrame.height));
             
-        figFrame.rotation     = genFrame.angle;
-        figFrame.cornerRadius = genFrame.round;
+        figFrame.rotation          = genFrame.angle;
+        figFrame.cornerRadius      = genFrame.round;
             
+        figFrame.relativeTransform = genFrame.relativeTransform;
     
+
         let objects = [];
 
         for (const obj of genFrame.children)
@@ -2733,8 +2772,10 @@ function figUpdateFrame(figFrame, genFrame)
         Math.max(0.01, genFrame.width ), 
         Math.max(0.01, genFrame.height));
         
-    figFrame.rotation     = genFrame.angle;
-    figFrame.cornerRadius = genFrame.round;
+    figFrame.rotation          = genFrame.angle;
+    figFrame.cornerRadius      = genFrame.round;
+
+    figFrame.relativeTransform = genFrame.relativeTransform;
         
 
     figUpdateObjects(figFrame, genFrame.children);

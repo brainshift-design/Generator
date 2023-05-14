@@ -29,7 +29,7 @@ extends GShapeBase
 
     copyProperties(props)
     {
-        this.props = props.map(p => p.copy());
+        this.props = props.copy();
     }
 
 
