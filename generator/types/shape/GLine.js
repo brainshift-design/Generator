@@ -60,7 +60,7 @@ extends GShape
         await this.evalShapeBase(parse, input, false);
 
 
-        await this.evalObjects(parse);
+        this.evalObjects(parse);
 
 
         this.validate();
@@ -81,17 +81,22 @@ extends GShape
             && this.width 
             && this.angle)
         {
-            this.objects = 
-            [
-                new FigmaLine(
-                    this.nodeId,
-                    this.nodeName,
-                    this.nodeId,
-                    this.value.x    .value,
-                    this.value.y    .value,
-                    this.value.width.value,
-                    this.value.angle.value)
-            ];
+            const line = new FigmaLine(
+                this.nodeId,
+                this.nodeId,
+                this.nodeName,
+                this.value.x    .value,
+                this.value.y    .value,
+                this.value.width.value,
+                this.value.angle.value);
+
+            line.createDefaultTransform(
+                this.value.x    .value,
+                this.value.y    .value,
+                this.value.angle.value/360*Tau);
+
+            this.objects       = [line];
+            this.value.objects = [line];
         }
 
         
@@ -118,7 +123,8 @@ extends GShape
             this.width .toValue(),
             this.angle .toValue());
 
-        line.props = this.props.toValue();
+        line.props   = this.props.toValue();
+        line.objects = this.objects.map(o => o.copy());
 
         return line;
     }
@@ -129,6 +135,6 @@ extends GShape
     {
         super.invalidate();
 
-        if (this.input ) this.input .invalidate();
+        if (this.input) this.input.invalidate();
     }
 }

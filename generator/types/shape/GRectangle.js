@@ -72,7 +72,7 @@ extends GShape
         await this.evalShapeBase(parse, input);
 
 
-        await this.evalObjects(parse);
+        this.evalObjects(parse);
 
 
         this.validate();
@@ -82,7 +82,7 @@ extends GShape
 
 
 
-    async evalObjects(parse, options = {})
+    evalObjects(parse, options = {})
     {
         if (!this.options.enabled)
             return;
@@ -95,23 +95,28 @@ extends GShape
             && this.value.angle
             && this.value.round)
         {
-            this.objects =
-            [
-                new FigmaRectangle(
-                                this.nodeId,
-                                this.nodeName,
-                                this.nodeId,
-                                this.value.x     .value,
-                                this.value.y     .value,
-                                this.value.width .value,
-                                this.value.height.value,
-                                this.value.angle .value,
-                    Math.max(0, this.value.round .value))
-            ];
+            const rect = new FigmaRectangle(
+                            this.nodeId,
+                            this.nodeId,
+                            this.nodeName,
+                            this.value.x     .value,
+                            this.value.y     .value,
+                            this.value.width .value,
+                            this.value.height.value,
+                            this.value.angle .value,
+                Math.max(0, this.value.round .value));
+
+            rect.createDefaultTransform(
+                this.value.x    .value,
+                this.value.y    .value,
+                this.value.angle.value/360*Tau);
+
+            this.objects       = [rect];
+            this.value.objects = [rect];
         }
 
 
-        await super.evalObjects(parse);
+        super.evalObjects(parse);
     }
 
 
@@ -137,7 +142,8 @@ extends GShape
             this.angle .toValue(),
             this.round .toValue());
 
-        rect.props = this.props.toValue();
+        rect.props   = this.props.toValue();
+        rect.objects = this.objects.map(o => o.copy());
 
         return rect;
     }

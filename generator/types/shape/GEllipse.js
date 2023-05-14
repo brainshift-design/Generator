@@ -60,7 +60,7 @@ extends GShape
         await this.evalShapeBase(parse, input);
 
 
-        await this.evalObjects(parse);
+        this.evalObjects(parse);
 
 
         this.validate();
@@ -82,18 +82,23 @@ extends GShape
            && this.height 
            && this.angle)
        {
-           this.objects = 
-           [
-               new FigmaEllipse(
-                    this.nodeId,
-                    this.nodeId,
-                    this.nodeName,
-                    this.x     .toValue().value,
-                    this.y     .toValue().value,
-                    this.width .toValue().value,
-                    this.height.toValue().value,
-                    this.angle .toValue().value)
-           ];
+            const ellipse = new FigmaEllipse(
+                this.nodeId,
+                this.nodeId,
+                this.nodeName,
+                this.value.x     .value,
+                this.value.y     .value,
+                this.value.width .value,
+                this.value.height.value,
+                this.value.angle .value);
+
+            ellipse.createDefaultTransform(
+                this.value.x    .value,
+                this.value.y    .value,
+                this.value.angle.value/360*Tau);
+
+            this.objects       = [ellipse];
+            this.value.objects = [ellipse];
        }
 
        
@@ -121,7 +126,8 @@ extends GShape
            this.height.toValue(),
            this.angle .toValue());
 
-        ellipse.props = this.props.toValue();
+        ellipse.props   = this.props.toValue();
+        ellipse.objects = this.objects.map(o => o.copy());
         
         return ellipse;
     }

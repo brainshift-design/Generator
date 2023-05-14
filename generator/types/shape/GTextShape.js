@@ -139,7 +139,7 @@ extends GShape
         await this.evalShapeBase(parse, input);
 
 
-        await this.evalObjects(parse);
+        this.evalObjects(parse);
 
 
         this.validate();
@@ -171,26 +171,30 @@ extends GShape
         {
             const fontName = figUniqueFontNames[this.value.font.value];
 
-            this.objects = 
-            [
-                new FigmaText(
-                    this.nodeId,
-                    this.nodeId,
-                    this.nodeName,
-                    this.value.text         .value,
-                    this.value.x            .value,
-                    this.value.y            .value,
-                    this.value.width        .value,
-                    this.value.height       .value,
-                    this.value.angle        .value,
-                    fontName,
-                    this.value.style        .value,
-                    this.value.size         .value,
-                    this.value.alignH       .value,
-                    this.value.alignV       .value,
-                    this.value.lineHeight   .value,
-                    this.value.letterSpacing.value)
-            ];
+            const text = new FigmaText(
+                this.nodeId,
+                this.nodeId,
+                this.nodeName,
+                this.value.text         .value,
+                this.value.x            .value,
+                this.value.y            .value,
+                this.value.width        .value,
+                this.value.height       .value,
+                this.value.angle        .value,
+                fontName,
+                this.value.style        .value,
+                this.value.size         .value,
+                this.value.alignH       .value,
+                this.value.alignV       .value,
+                this.value.lineHeight   .value,
+                this.value.letterSpacing.value);
+
+            text.createDefaultTransform(
+                this.value.x    .value,
+                this.value.y    .value,
+                this.value.angle.value/360*Tau);
+
+            this.objects = [text];
         }
 
         
@@ -243,7 +247,7 @@ extends GShape
 
     toValue()
     {
-        const rect = new TextShapeValue(
+        const text = new TextShapeValue(
             this.nodeId,
             this.text         .toValue(),
             this.x            .toValue(),
@@ -259,9 +263,10 @@ extends GShape
             this.lineHeight   .toValue(),
             this.letterSpacing.toValue());
 
-        rect.props = this.props.toValue();
+        text.props   = this.props.toValue();
+        text.objects = this.objects.map(o => o.copy());
 
-        return rect;
+        return text;
     }
 
 

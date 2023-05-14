@@ -90,7 +90,7 @@ extends GShape
         await this.evalShapeBase(parse, input);
 
 
-        await this.evalObjects(parse);
+        this.evalObjects(parse);
 
 
         this.validate();
@@ -100,7 +100,7 @@ extends GShape
 
 
 
-    async evalObjects(parse, options = {})
+    evalObjects(parse, options = {})
     {
         if (!this.options.enabled)
             return;
@@ -149,6 +149,12 @@ extends GShape
             }
 
 
+            frame.createDefaultTransform(
+                this.value.x    .value,
+                this.value.y    .value,
+                this.value.angle.value/360*Tau);
+
+
             this.objects       = [frame];
             this.value.objects = [frame];
 
@@ -163,7 +169,7 @@ extends GShape
         }
 
         
-        await super.evalObjects(parse);
+        super.evalObjects(parse);
     }
 
 

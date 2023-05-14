@@ -5,8 +5,7 @@ const Phi = (Math.sqrt(5) + 1) / 2; // 1.618
 
 const identity = Object.freeze(
     [[1, 0, 0],
-     [0, 1, 0],
-     [0, 0, 1]]);
+     [0, 1, 0]]);
 
 
 

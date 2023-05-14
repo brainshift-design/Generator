@@ -92,7 +92,7 @@ extends GShape
         await this.evalShapeBase(parse, input);
 
 
-        await this.evalObjects(parse);
+        this.evalObjects(parse);
 
 
         this.validate();
@@ -102,7 +102,7 @@ extends GShape
 
 
 
-   evalObjects(parse, options = {})
+   async evalObjects(parse, options = {})
    {
        if (!this.options.enabled)
            return;
@@ -117,25 +117,30 @@ extends GShape
            && this.points
            && this.convex)
         {
-           this.objects = 
-           [
-               new FigmaStar(
-                               this.nodeId,
-                               this.nodeId,
-                               this.nodeName,
-                               this.x     .toValue().value,
-                               this.y     .toValue().value,
-                               this.width .toValue().value,
-                               this.height.toValue().value,
-                               this.angle .toValue().value,
-                   Math.max(0, this.round .toValue().value),
-                               this.points.toValue().value,
-                               this.convex.toValue().value)
-           ];
+            const star = new FigmaStar(
+                            this.nodeId,
+                            this.nodeId,
+                            this.nodeName,
+                            this.value.x     .value,
+                            this.value.y     .value,
+                            this.value.width .value,
+                            this.value.height.value,
+                            this.value.angle .value,
+                Math.max(0, this.value.round .value),
+                            this.value.points.value,
+                            this.value.convex.value);
+
+            star.createDefaultTransform(
+                this.value.x    .value,
+                this.value.y    .value,
+                this.value.angle.value/360*Tau);
+
+            this.objects       = [star];
+            this.value.objects = [star];
         }
 
        
-        super.evalObjects(parse);
+        await super.evalObjects(parse);
     }
 
 

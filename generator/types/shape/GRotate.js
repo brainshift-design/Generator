@@ -57,7 +57,7 @@ extends GOperator
         }
 
        
-        const _bounds = await this.evalObjects(parse, 
+        const _bounds = this.evalObjects(parse, 
         {
             angle:   angle, 
             centerX: centerX, 
@@ -113,11 +113,18 @@ extends GOperator
             obj.objectId = this.nodeId + '/' + obj.objectId;
 
 
-            const bw = bounds.width  != 0 ? bounds.width  : 1;
-            const bh = bounds.height != 0 ? bounds.height : 1;
+            // const bw = bounds.width  != 0 ? bounds.width  : 1;
+            // const bh = bounds.height != 0 ? bounds.height : 1;
 
-            const dx = (0.5 + options.centerX.toNumber() / (bounds.width /2)) * bw;
-            const dy = (0.5 + options.centerY.toNumber() / (bounds.height/2)) * bh;
+            const dx = 
+                bounds.width != 0
+                ? (0.5 + options.centerX.toNumber() / (bounds.width /2)) * bounds.width
+                : 0;
+
+            const dy = 
+                bounds.height != 0
+                ? (0.5 + options.centerY.toNumber() / (bounds.height/2)) * bounds.height
+                : 0;
 
 
             let xform = clone(obj.relativeTransform);

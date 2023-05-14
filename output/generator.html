@@ -679,8 +679,7 @@ const Phi = (Math.sqrt(5) + 1) / 2; // 1.618
 
 const identity = Object.freeze(
     [[1, 0, 0],
-     [0, 1, 0],
-     [0, 0, 1]]);
+     [0, 1, 0]]);
 
 
 
@@ -4125,10 +4124,10 @@ class FigmaObject
 {
     type;
     
-    nodeId            = '';
+    nodeId     = '';
     
-    objectId          = NULL;
-    objectName        = NULL;
+    objectId   = NULL;
+    objectName = NULL;
 
     uniqueId;
 
@@ -4161,6 +4160,15 @@ class FigmaObject
     {
         console.assert(false, 'invalid use of abstract class FigmaObject');
         return null;
+    }
+
+
+
+    createDefaultTransform(x, y, angle)
+    {
+        this.relativeTransform =
+            [[ Math.cos(angle), Math.sin(angle), x],
+             [-Math.sin(angle), Math.cos(angle), y]];
     }
 }
 
@@ -16415,7 +16423,7 @@ extends GShape
         await this.evalShapeBase(parse, input);
 
 
-        await this.evalObjects(parse);
+        this.evalObjects(parse);
 
 
         this.validate();
@@ -16425,7 +16433,7 @@ extends GShape
 
 
 
-    async evalObjects(parse, options = {})
+    evalObjects(parse, options = {})
     {
         if (!this.options.enabled)
             return;
@@ -16438,23 +16446,28 @@ extends GShape
             && this.value.angle
             && this.value.round)
         {
-            this.objects =
-            [
-                new FigmaRectangle(
-                                this.nodeId,
-                                this.nodeName,
-                                this.nodeId,
-                                this.value.x     .value,
-                                this.value.y     .value,
-                                this.value.width .value,
-                                this.value.height.value,
-                                this.value.angle .value,
-                    Math.max(0, this.value.round .value))
-            ];
+            const rect = new FigmaRectangle(
+                            this.nodeId,
+                            this.nodeId,
+                            this.nodeName,
+                            this.value.x     .value,
+                            this.value.y     .value,
+                            this.value.width .value,
+                            this.value.height.value,
+                            this.value.angle .value,
+                Math.max(0, this.value.round .value));
+
+            rect.createDefaultTransform(
+                this.value.x    .value,
+                this.value.y    .value,
+                this.value.angle.value/360*Tau);
+
+            this.objects       = [rect];
+            this.value.objects = [rect];
         }
 
 
-        await super.evalObjects(parse);
+        super.evalObjects(parse);
     }
 
 
@@ -16480,7 +16493,8 @@ extends GShape
             this.angle .toValue(),
             this.round .toValue());
 
-        rect.props = this.props.toValue();
+        rect.props   = this.props.toValue();
+        rect.objects = this.objects.map(o => o.copy());
 
         return rect;
     }
@@ -16567,7 +16581,7 @@ extends GShape
         await this.evalShapeBase(parse, input, false);
 
 
-        await this.evalObjects(parse);
+        this.evalObjects(parse);
 
 
         this.validate();
@@ -16588,17 +16602,22 @@ extends GShape
             && this.width 
             && this.angle)
         {
-            this.objects = 
-            [
-                new FigmaLine(
-                    this.nodeId,
-                    this.nodeName,
-                    this.nodeId,
-                    this.value.x    .value,
-                    this.value.y    .value,
-                    this.value.width.value,
-                    this.value.angle.value)
-            ];
+            const line = new FigmaLine(
+                this.nodeId,
+                this.nodeId,
+                this.nodeName,
+                this.value.x    .value,
+                this.value.y    .value,
+                this.value.width.value,
+                this.value.angle.value);
+
+            line.createDefaultTransform(
+                this.value.x    .value,
+                this.value.y    .value,
+                this.value.angle.value/360*Tau);
+
+            this.objects       = [line];
+            this.value.objects = [line];
         }
 
         
@@ -16625,7 +16644,8 @@ extends GShape
             this.width .toValue(),
             this.angle .toValue());
 
-        line.props = this.props.toValue();
+        line.props   = this.props.toValue();
+        line.objects = this.objects.map(o => o.copy());
 
         return line;
     }
@@ -16636,7 +16656,7 @@ extends GShape
     {
         super.invalidate();
 
-        if (this.input ) this.input .invalidate();
+        if (this.input) this.input.invalidate();
     }
 }
 
@@ -16703,7 +16723,7 @@ extends GShape
         await this.evalShapeBase(parse, input);
 
 
-        await this.evalObjects(parse);
+        this.evalObjects(parse);
 
 
         this.validate();
@@ -16725,18 +16745,23 @@ extends GShape
            && this.height 
            && this.angle)
        {
-           this.objects = 
-           [
-               new FigmaEllipse(
-                    this.nodeId,
-                    this.nodeId,
-                    this.nodeName,
-                    this.x     .toValue().value,
-                    this.y     .toValue().value,
-                    this.width .toValue().value,
-                    this.height.toValue().value,
-                    this.angle .toValue().value)
-           ];
+            const ellipse = new FigmaEllipse(
+                this.nodeId,
+                this.nodeId,
+                this.nodeName,
+                this.value.x     .value,
+                this.value.y     .value,
+                this.value.width .value,
+                this.value.height.value,
+                this.value.angle .value);
+
+            ellipse.createDefaultTransform(
+                this.value.x    .value,
+                this.value.y    .value,
+                this.value.angle.value/360*Tau);
+
+            this.objects       = [ellipse];
+            this.value.objects = [ellipse];
        }
 
        
@@ -16764,7 +16789,8 @@ extends GShape
            this.height.toValue(),
            this.angle .toValue());
 
-        ellipse.props = this.props.toValue();
+        ellipse.props   = this.props.toValue();
+        ellipse.objects = this.objects.map(o => o.copy());
         
         return ellipse;
     }
@@ -16859,7 +16885,7 @@ extends GShape
         await this.evalShapeBase(parse, input);
 
 
-        await this.evalObjects(parse);
+        this.evalObjects(parse);
 
 
         this.validate();
@@ -16883,20 +16909,25 @@ extends GShape
             && this.round
             && this.corners)
         {
-            this.objects = 
-            [
-                new FigmaPolygon(
-                                this.nodeId,
-                                this.nodeId,
-                                this.nodeName,
-                                this.x      .toValue().value,
-                                this.y      .toValue().value,
-                                this.width  .toValue().value,
-                                this.height .toValue().value,
-                                this.angle  .toValue().value,
-                    Math.max(0, this.round  .toValue().value),
-                                this.corners.toValue().value)
-            ];
+            const poly = new FigmaPolygon(
+                            this.nodeId,
+                            this.nodeId,
+                            this.nodeName,
+                            this.value.x      .value,
+                            this.value.y      .value,
+                            this.value.width  .value,
+                            this.value.height .value,
+                            this.value.angle  .value,
+                Math.max(0, this.value.round  .value),
+                            this.value.corners.value);
+
+            poly.createDefaultTransform(
+                this.value.x    .value,
+                this.value.y    .value,
+                this.value.angle.value/360*Tau);
+
+            this.objects       = [poly];
+            this.value.objects = [poly];
         }
 
         
@@ -16928,7 +16959,8 @@ extends GShape
             this.round  .toValue(),
             this.corners.toValue());
 
-        poly.props = this.props.toValue();
+        poly.props   = this.props.toValue();
+        poly.objects = this.objects.map(o => o.copy());
 
         return poly;
     }
@@ -17049,7 +17081,7 @@ extends GShape
         await this.evalShapeBase(parse, input);
 
 
-        await this.evalObjects(parse);
+        this.evalObjects(parse);
 
 
         this.validate();
@@ -17059,7 +17091,7 @@ extends GShape
 
 
 
-   evalObjects(parse, options = {})
+   async evalObjects(parse, options = {})
    {
        if (!this.options.enabled)
            return;
@@ -17074,25 +17106,30 @@ extends GShape
            && this.points
            && this.convex)
         {
-           this.objects = 
-           [
-               new FigmaStar(
-                               this.nodeId,
-                               this.nodeId,
-                               this.nodeName,
-                               this.x     .toValue().value,
-                               this.y     .toValue().value,
-                               this.width .toValue().value,
-                               this.height.toValue().value,
-                               this.angle .toValue().value,
-                   Math.max(0, this.round .toValue().value),
-                               this.points.toValue().value,
-                               this.convex.toValue().value)
-           ];
+            const star = new FigmaStar(
+                            this.nodeId,
+                            this.nodeId,
+                            this.nodeName,
+                            this.value.x     .value,
+                            this.value.y     .value,
+                            this.value.width .value,
+                            this.value.height.value,
+                            this.value.angle .value,
+                Math.max(0, this.value.round .value),
+                            this.value.points.value,
+                            this.value.convex.value);
+
+            star.createDefaultTransform(
+                this.value.x    .value,
+                this.value.y    .value,
+                this.value.angle.value/360*Tau);
+
+            this.objects       = [star];
+            this.value.objects = [star];
         }
 
        
-        super.evalObjects(parse);
+        await super.evalObjects(parse);
     }
 
 
@@ -17293,7 +17330,7 @@ extends GShape
         await this.evalShapeBase(parse, input);
 
 
-        await this.evalObjects(parse);
+        this.evalObjects(parse);
 
 
         this.validate();
@@ -17325,26 +17362,30 @@ extends GShape
         {
             const fontName = figUniqueFontNames[this.value.font.value];
 
-            this.objects = 
-            [
-                new FigmaText(
-                    this.nodeId,
-                    this.nodeId,
-                    this.nodeName,
-                    this.value.text         .value,
-                    this.value.x            .value,
-                    this.value.y            .value,
-                    this.value.width        .value,
-                    this.value.height       .value,
-                    this.value.angle        .value,
-                    fontName,
-                    this.value.style        .value,
-                    this.value.size         .value,
-                    this.value.alignH       .value,
-                    this.value.alignV       .value,
-                    this.value.lineHeight   .value,
-                    this.value.letterSpacing.value)
-            ];
+            const text = new FigmaText(
+                this.nodeId,
+                this.nodeId,
+                this.nodeName,
+                this.value.text         .value,
+                this.value.x            .value,
+                this.value.y            .value,
+                this.value.width        .value,
+                this.value.height       .value,
+                this.value.angle        .value,
+                fontName,
+                this.value.style        .value,
+                this.value.size         .value,
+                this.value.alignH       .value,
+                this.value.alignV       .value,
+                this.value.lineHeight   .value,
+                this.value.letterSpacing.value);
+
+            text.createDefaultTransform(
+                this.value.x    .value,
+                this.value.y    .value,
+                this.value.angle.value/360*Tau);
+
+            this.objects = [text];
         }
 
         
@@ -17397,7 +17438,7 @@ extends GShape
 
     toValue()
     {
-        const rect = new TextShapeValue(
+        const text = new TextShapeValue(
             this.nodeId,
             this.text         .toValue(),
             this.x            .toValue(),
@@ -17413,9 +17454,10 @@ extends GShape
             this.lineHeight   .toValue(),
             this.letterSpacing.toValue());
 
-        rect.props = this.props.toValue();
+        text.props   = this.props.toValue();
+        text.objects = this.objects.map(o => o.copy());
 
-        return rect;
+        return text;
     }
 
 
@@ -17499,7 +17541,10 @@ extends GOperator
         }
         else
         {
-            this.value = new PointValue(this.nodeId, x, y);
+            this.value = new PointValue(
+                this.nodeId, 
+                x, 
+                y);
         }
 
        
@@ -17511,7 +17556,7 @@ extends GOperator
         ];
 
 
-        await this.evalObjects(parse);
+        this.evalObjects(parse);
 
 
         this.validate();
@@ -17521,7 +17566,7 @@ extends GOperator
 
 
 
-    async evalObjects(parse, options = {})
+    evalObjects(parse, options = {})
     {
         if (!this.options.enabled)
             return;
@@ -17530,18 +17575,28 @@ extends GOperator
         if (   this.value.x
             && this.value.y)
         {
-            const point = new FigmaPoint(
+           const point = new FigmaPoint(
                 this.nodeId,
                 this.nodeId,
                 this.nodeName,
                 this.value.x.value,
-                this.value.y.value);
+                this.value.y.value)
 
-            this.objects = [point];
+            point.createDefaultTransform(
+                this.value.x.value,
+                this.value.y.value,
+                0);
+
+            this.objects       = [point];
+            this.value.objects = [point];
         }
 
         
-        await super.evalObjects(parse);
+        if (this.value)
+            this.value.objects = this.objects.map(o => o.copy());
+
+
+        super.evalObjects(parse);
     }
 
 
@@ -17559,12 +17614,14 @@ extends GOperator
 
     toValue()
     {
-        const rect = new PointValue(
+        const point = new PointValue(
             this.nodeId,
             this.x.toValue(),
             this.y.toValue());
 
-        return rect;
+        point.objects = this.objects.map(o => o.copy());
+
+        return point;
     }
 
 
@@ -17676,7 +17733,7 @@ extends GShape
         await this.evalShapeBase(parse, input);
 
 
-        await this.evalObjects(parse);
+        this.evalObjects(parse);
 
 
         this.validate();
@@ -17712,21 +17769,29 @@ extends GShape
             && this.value.winding
             && this.value.round)
         {
-            this.objects =
-            [
-                new FigmaVectorPath(
-                    this.nodeId,
-                    this.nodeName,
-                    this.nodeId,
-                    points,
-                    this.value.closed .value,
-                    this.value.degree .value,
-                    this.value.winding.value,
-                    this.value.round  .value)
-            ];
+            const path = new FigmaVectorPath(
+                this.nodeId,
+                this.nodeId,
+                this.nodeName,
+                points,
+                this.value.closed .value,
+                this.value.degree .value,
+                this.value.winding.value,
+                this.value.round  .value);
+                
+            path.createDefaultTransform(
+                this.value.x    .value,
+                this.value.y    .value,
+                this.value.angle.value/360*Tau);
+
+            this.objects       = [path];
+            this.value.objects = [path];
         }
         else
-            this.objects = [];
+        {
+            this.objects       = [];
+            this.value.objects = [];
+        }
 
 
         
@@ -17759,7 +17824,8 @@ extends GShape
             this.winding.toValue(),
             this.round  .toValue());
 
-        path.props = this.props.toValue();
+        path.props   = this.props.toValue();
+        path.objects = this.objects.map(o => o.copy());
 
         return path;
     }
@@ -17861,7 +17927,7 @@ extends GShapeBase
         await this.evalShapeBase(parse, input);
 
 
-        await this.evalObjects(parse);
+        this.evalObjects(parse);
 
 
         this.validate();
@@ -18044,7 +18110,7 @@ extends GShape
         await this.evalShapeBase(parse, input);
 
 
-        await this.evalObjects(parse);
+        this.evalObjects(parse);
 
 
         this.validate();
@@ -18054,7 +18120,7 @@ extends GShape
 
 
 
-    async evalObjects(parse, options = {})
+    evalObjects(parse, options = {})
     {
         if (!this.options.enabled)
             return;
@@ -18103,6 +18169,12 @@ extends GShape
             }
 
 
+            frame.createDefaultTransform(
+                this.value.x    .value,
+                this.value.y    .value,
+                this.value.angle.value/360*Tau);
+
+
             this.objects       = [frame];
             this.value.objects = [frame];
 
@@ -18117,7 +18189,7 @@ extends GShape
         }
 
         
-        await super.evalObjects(parse);
+        super.evalObjects(parse);
     }
 
 
@@ -18216,7 +18288,7 @@ extends GOperator
         }
 
         
-        await this.evalObjects(parse, {x: x, y: y});
+        this.evalObjects(parse, {x: x, y: y});
 
 
         this.updateValues =
@@ -18234,7 +18306,7 @@ extends GOperator
 
 
 
-    async evalObjects(parse, options = {})
+    evalObjects(parse, options = {})
     {
         if (!this.options.enabled)
             return;
@@ -18286,7 +18358,7 @@ extends GOperator
         }
 
         
-        await super.evalObjects(parse);
+        super.evalObjects(parse);
     }
 
 
@@ -18388,7 +18460,7 @@ extends GOperator
         }
 
        
-        const _bounds = await this.evalObjects(parse, 
+        const _bounds = this.evalObjects(parse, 
         {
             angle:   angle, 
             centerX: centerX, 
@@ -18444,11 +18516,18 @@ extends GOperator
             obj.objectId = this.nodeId + '/' + obj.objectId;
 
 
-            const bw = bounds.width  != 0 ? bounds.width  : 1;
-            const bh = bounds.height != 0 ? bounds.height : 1;
+            // const bw = bounds.width  != 0 ? bounds.width  : 1;
+            // const bh = bounds.height != 0 ? bounds.height : 1;
 
-            const dx = (0.5 + options.centerX.toNumber() / (bounds.width /2)) * bw;
-            const dy = (0.5 + options.centerY.toNumber() / (bounds.height/2)) * bh;
+            const dx = 
+                bounds.width != 0
+                ? (0.5 + options.centerX.toNumber() / (bounds.width /2)) * bounds.width
+                : 0;
+
+            const dy = 
+                bounds.height != 0
+                ? (0.5 + options.centerY.toNumber() / (bounds.height/2)) * bounds.height
+                : 0;
 
 
             let xform = clone(obj.relativeTransform);
@@ -18683,7 +18762,7 @@ extends GOperator
         }
 
        
-        const _bounds = await this.evalObjects(parse, 
+        const _bounds = this.evalObjects(parse, 
         {
             x:       x, 
             y:       y, 

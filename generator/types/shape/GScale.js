@@ -60,7 +60,7 @@ extends GOperator
         }
 
        
-        const _bounds = await this.evalObjects(parse, 
+        const _bounds = this.evalObjects(parse, 
         {
             x:       x, 
             y:       y, 

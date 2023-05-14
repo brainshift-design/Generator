@@ -77,7 +77,7 @@ extends GShape
         await this.evalShapeBase(parse, input);
 
 
-        await this.evalObjects(parse);
+        this.evalObjects(parse);
 
 
         this.validate();
@@ -101,20 +101,25 @@ extends GShape
             && this.round
             && this.corners)
         {
-            this.objects = 
-            [
-                new FigmaPolygon(
-                                this.nodeId,
-                                this.nodeId,
-                                this.nodeName,
-                                this.x      .toValue().value,
-                                this.y      .toValue().value,
-                                this.width  .toValue().value,
-                                this.height .toValue().value,
-                                this.angle  .toValue().value,
-                    Math.max(0, this.round  .toValue().value),
-                                this.corners.toValue().value)
-            ];
+            const poly = new FigmaPolygon(
+                            this.nodeId,
+                            this.nodeId,
+                            this.nodeName,
+                            this.value.x      .value,
+                            this.value.y      .value,
+                            this.value.width  .value,
+                            this.value.height .value,
+                            this.value.angle  .value,
+                Math.max(0, this.value.round  .value),
+                            this.value.corners.value);
+
+            poly.createDefaultTransform(
+                this.value.x    .value,
+                this.value.y    .value,
+                this.value.angle.value/360*Tau);
+
+            this.objects       = [poly];
+            this.value.objects = [poly];
         }
 
         
@@ -146,7 +151,8 @@ extends GShape
             this.round  .toValue(),
             this.corners.toValue());
 
-        poly.props = this.props.toValue();
+        poly.props   = this.props.toValue();
+        poly.objects = this.objects.map(o => o.copy());
 
         return poly;
     }

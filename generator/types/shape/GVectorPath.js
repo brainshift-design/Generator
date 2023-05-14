@@ -85,7 +85,7 @@ extends GShape
         await this.evalShapeBase(parse, input);
 
 
-        await this.evalObjects(parse);
+        this.evalObjects(parse);
 
 
         this.validate();
@@ -121,21 +121,29 @@ extends GShape
             && this.value.winding
             && this.value.round)
         {
-            this.objects =
-            [
-                new FigmaVectorPath(
-                    this.nodeId,
-                    this.nodeName,
-                    this.nodeId,
-                    points,
-                    this.value.closed .value,
-                    this.value.degree .value,
-                    this.value.winding.value,
-                    this.value.round  .value)
-            ];
+            const path = new FigmaVectorPath(
+                this.nodeId,
+                this.nodeId,
+                this.nodeName,
+                points,
+                this.value.closed .value,
+                this.value.degree .value,
+                this.value.winding.value,
+                this.value.round  .value);
+                
+            path.createDefaultTransform(
+                this.value.x    .value,
+                this.value.y    .value,
+                this.value.angle.value/360*Tau);
+
+            this.objects       = [path];
+            this.value.objects = [path];
         }
         else
-            this.objects = [];
+        {
+            this.objects       = [];
+            this.value.objects = [];
+        }
 
 
         
@@ -168,7 +176,8 @@ extends GShape
             this.winding.toValue(),
             this.round  .toValue());
 
-        path.props = this.props.toValue();
+        path.props   = this.props.toValue();
+        path.objects = this.objects.map(o => o.copy());
 
         return path;
     }

@@ -55,7 +55,10 @@ extends GOperator
         }
         else
         {
-            this.value = new PointValue(this.nodeId, x, y);
+            this.value = new PointValue(
+                this.nodeId, 
+                x, 
+                y);
         }
 
        
@@ -67,7 +70,7 @@ extends GOperator
         ];
 
 
-        await this.evalObjects(parse);
+        this.evalObjects(parse);
 
 
         this.validate();
@@ -77,7 +80,7 @@ extends GOperator
 
 
 
-    async evalObjects(parse, options = {})
+    evalObjects(parse, options = {})
     {
         if (!this.options.enabled)
             return;
@@ -86,18 +89,28 @@ extends GOperator
         if (   this.value.x
             && this.value.y)
         {
-            const point = new FigmaPoint(
+           const point = new FigmaPoint(
                 this.nodeId,
                 this.nodeId,
                 this.nodeName,
                 this.value.x.value,
-                this.value.y.value);
+                this.value.y.value)
 
-            this.objects = [point];
+            point.createDefaultTransform(
+                this.value.x.value,
+                this.value.y.value,
+                0);
+
+            this.objects       = [point];
+            this.value.objects = [point];
         }
 
         
-        await super.evalObjects(parse);
+        if (this.value)
+            this.value.objects = this.objects.map(o => o.copy());
+
+
+        super.evalObjects(parse);
     }
 
 
@@ -115,12 +128,14 @@ extends GOperator
 
     toValue()
     {
-        const rect = new PointValue(
+        const point = new PointValue(
             this.nodeId,
             this.x.toValue(),
             this.y.toValue());
 
-        return rect;
+        point.objects = this.objects.map(o => o.copy());
+
+        return point;
     }
 
 

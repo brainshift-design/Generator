@@ -2,10 +2,10 @@ class FigmaObject
 {
     type;
     
-    nodeId            = '';
+    nodeId     = '';
     
-    objectId          = NULL;
-    objectName        = NULL;
+    objectId   = NULL;
+    objectName = NULL;
 
     uniqueId;
 
@@ -38,6 +38,15 @@ class FigmaObject
     {
         console.assert(false, 'invalid use of abstract class FigmaObject');
         return null;
+    }
+
+
+
+    createDefaultTransform(x, y, angle)
+    {
+        this.relativeTransform =
+            [[ Math.cos(angle), Math.sin(angle), x],
+             [-Math.sin(angle), Math.cos(angle), y]];
     }
 }
 

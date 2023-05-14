@@ -54,7 +54,7 @@ extends GOperator
         }
 
         
-        await this.evalObjects(parse, {x: x, y: y});
+        this.evalObjects(parse, {x: x, y: y});
 
 
         this.updateValues =
@@ -72,7 +72,7 @@ extends GOperator
 
 
 
-    async evalObjects(parse, options = {})
+    evalObjects(parse, options = {})
     {
         if (!this.options.enabled)
             return;
@@ -124,7 +124,7 @@ extends GOperator
         }
 
         
-        await super.evalObjects(parse);
+        super.evalObjects(parse);
     }
 
 
