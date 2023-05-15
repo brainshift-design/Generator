@@ -97,7 +97,7 @@ extends GShapeBase
                 {
                     const obj    = this.children.objects[i].copy();
                     obj.nodeId   = this.nodeId;
-                    obj.objectId = this.nodeId + '/' + obj.objectId;
+                    obj.objectId = obj.objectId + OBJECT_SEPARATOR + this.nodeId;
                     obj.listId   = -1;
                     group.children.push(obj);
                 }

@@ -63,8 +63,8 @@ extends GOperator
         const _bounds = this.evalObjects(
             parse, 
             {
-                x:       x, 
-                y:       y, 
+                scaleX:  x, 
+                scaleY:  y, 
                 centerX: centerX, 
                 centerY: centerY
             });
@@ -110,67 +110,45 @@ extends GOperator
 
 
         const bounds = getObjBounds(this.objects);
+        //console.log('bounds =', bounds);
+    
 
-        const x = options.x.toNumber() / bounds.width;
-        const y = options.y.toNumber() / bounds.height;
+        const sx = options.scaleX .toNumber() / bounds.width;
+        const sy = options.scaleY .toNumber() / bounds.height;
+
+        const cx = options.centerX.toNumber() / bounds.width;
+        const cy = options.centerY.toNumber() / bounds.height;
 
         
-        const dx = 
-            bounds.width != 0
-            ? (0.5 + options.centerX.toNumber() / (bounds.width /2)) * bounds.width
-            : 0;
+        // const dx = 
+        //     bounds.width != 0
+        //     ? (0.5 + options.centerX.toNumber() / (bounds.width /2)) * bounds.width
+        //     : 0;
 
-        const dy = 
-            bounds.height != 0
-            ? (0.5 + options.centerY.toNumber() / (bounds.height/2)) * bounds.height
-            : 0;
+        // const dy = 
+        //     bounds.height != 0
+        //     ? (0.5 + options.centerY.toNumber() / (bounds.height/2)) * bounds.height
+        //     : 0;
+
+
+        // const bw = bounds.width  != 0 ? bounds.width  : 1;
+        // const bh = bounds.height != 0 ? bounds.height : 1;
+
+
+        const dx = 0.5 + -sx/2 + cx;
+        const dy = 0.5 + -sy/2 + cy;
 
 
         for (const obj of this.objects)
         {
             obj.nodeId   = this.nodeId;
-            obj.objectId = this.nodeId + '/' + obj.objectId;
-
-
-            const bw = bounds.width  != 0 ? bounds.width  : 1;
-            const bh = bounds.height != 0 ? bounds.height : 1;
-
-
-            let xform = clone(obj.relativeTransform);
-            if (xform.length == 2) xform = [...xform, [0, 0, 1]];
-
-
-            xform = mulm3m3(
-                xform,
-                [[1, 0, dx],
-                 [0, 1, dy],
-                 [0, 0, 1 ]]);
-
-            xform = mulm3m3(
-                xform,
-                [[x, 0, 0],
-                 [0, y, 0],
-                 [0, 0, 1]]);
-
-            xform = mulm3m3(
-                xform,
-                [[1, 0, -dx],
-                 [0, 1, -dy],
-                 [0, 0,  1 ]]);
-
-
-            obj.relativeTransform =
-                [xform[0],
-                 xform[1]];
+            obj.objectId = obj.objectId + OBJECT_SEPARATOR + this.nodeId;
 
 
             if (obj.type == VECTOR_PATH)
             {
-                const x  = Math.max(0, options.x.toNumber()/100);
-                const y  = Math.max(0, options.y.toNumber()/100);
-
-                const dx = 0.5 + options.centerX.toNumber() / (bounds.width /2);
-                const dy = 0.5 + options.centerY.toNumber() / (bounds.height/2);
+                const x  = Math.max(0, options.scaleX.toNumber()/100);
+                const y  = Math.max(0, options.scaleY.toNumber()/100);
 
 
                 for (const p of obj.points)
@@ -208,57 +186,80 @@ extends GOperator
             }
             else
             {
-                const x  = Math.max(0, options.x.toNumber()/100);
-                const y  = Math.max(0, options.y.toNumber()/100);
+                // const x = Math.max(0, options.scaleX.toNumber()/100);
+                // const y = Math.max(0, options.scaleY.toNumber()/100);
                 
 
-                const dx = 
-                    bounds.width != 0
-                    ? options.centerX.toNumber() / (bounds.width /2)
-                    : options.centerX.toNumber();
+                // const dx = 
+                //     bounds.width != 0
+                //     ? options.centerX.toNumber() / (bounds.width /2)
+                //     : options.centerX.toNumber();
 
-                const dy = 
-                    bounds.height != 0
-                    ? options.centerY.toNumber() / (bounds.height/2)
-                    : options.centerY.toNumber();
+                // const dy = 
+                //     bounds.height != 0
+                //     ? options.centerY.toNumber() / (bounds.height/2)
+                //     : options.centerY.toNumber();
 
+                // const dx = 0.5 + options.centerX.toNumber() / (bounds.width /2);
+                // const dy = 0.5 + options.centerY.toNumber() / (bounds.height/2);
 
-                obj.width  *= x;
-                obj.height *= y;
-
-
-                const angle = anglev_(
-                    bounds.x + ((dx + 0.5) * bounds.width ), 
-                    bounds.y + ((dy + 0.5) * bounds.height),
-                    obj.x,
-                    obj.y);
-
-                const halfd = distance_(
-                    bounds.x + ((dx + 0.5) * bounds.width ), 
-                    bounds.y + ((dy + 0.5) * bounds.height),
-                    obj.x,
-                    obj.y);
+                obj.width  *= sx;
+                obj.height *= sy;
 
 
-                const a = 0;
-                const v = vector(angle - a, halfd);
+                // update transform
 
-                v.x *= x;
-                v.y *= y;
+                let xform = clone(obj.relativeTransform);
+                if (xform.length == 2) xform = [...xform, [0, 0, 1]];
+    
+    // console.log('dx =', dx);
+    // console.log('dy =', dy);
 
-                obj.x = 
-                      bounds.x 
-                    + bounds.width /2 
-                    + v.x 
-                    - (dx - 0.5) * bw * Math.cos(-a) 
-                    - (dy - 0.5) * bh * Math.sin( a);
+                xform = mulm3m3(
+                    xform,
+                    [[sx, 0,  dx * bounds.width ],
+                     [0,  sy, dy * bounds.height],
+                     [0,  0,  1                 ]]);
+    
+    
+                obj.relativeTransform =
+                    [xform[0],
+                     xform[1]];
 
-                obj.y = 
-                      bounds.y
-                    + bounds.height/2
-                    + v.y 
-                    - (dx - 0.5) * bw * Math.sin(-a) 
-                    - (dy - 0.5) * bh * Math.cos( a);
+
+                // // update properties
+                // const angle = anglev_(
+                //     bounds.x + ((dx + 0.5) * bounds.width ), 
+                //     bounds.y + ((dy + 0.5) * bounds.height),
+                //     obj.x,
+                //     obj.y);
+
+                // const halfd = distance_(
+                //     bounds.x + ((dx + 0.5) * bounds.width ), 
+                //     bounds.y + ((dy + 0.5) * bounds.height),
+                //     obj.x,
+                //     obj.y);
+
+
+                // const a = 0;
+                // const v = vector(angle - a, halfd);
+
+                // v.x *= x;
+                // v.y *= y;
+
+                // obj.x = 
+                //       bounds.x 
+                //     + bounds.width /2 
+                //     + v.x 
+                //     - (dx - 0.5) * bw * Math.cos(-a) 
+                //     - (dy - 0.5) * bh * Math.sin( a);
+
+                // obj.y = 
+                //       bounds.y
+                //     + bounds.height/2
+                //     + v.y 
+                //     - (dx - 0.5) * bw * Math.sin(-a) 
+                //     - (dy - 0.5) * bh * Math.cos( a);
             }
         }
 

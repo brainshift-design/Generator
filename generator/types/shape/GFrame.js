@@ -131,7 +131,7 @@ extends GShape
                 {
                     const obj    = this.value.children.objects[i].copy();
                     obj.nodeId   = this.nodeId;
-                    obj.objectId = this.nodeId + '/' + obj.objectId;
+                    obj.objectId = obj.objectId + OBJECT_SEPARATOR + this.nodeId;
                     obj.listId   = -1;
                     frame.children.push(obj);
                 }
@@ -142,7 +142,7 @@ extends GShape
                 {
                     const obj    = this.value.objects[i].copy();
                     obj.nodeId   = this.nodeId;
-                    obj.objectId = this.nodeId + '/' + obj.objectId;
+                    obj.objectId = obj.objectId + OBJECT_SEPARATOR + this.nodeId;
                     obj.listId   = -1;
                     frame.children.push(obj);
                 }

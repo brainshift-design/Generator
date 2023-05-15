@@ -3,6 +3,8 @@ const NAN_DISPLAY         = '?';
     
 const UNKNOWN_CHAR        = '?';
 const UNKNOWN_DISPLAY     = UNKNOWN_CHAR;//'🤷‍♂️';
+
+const OBJECT_SEPARATOR    = '>';
     
 
 const  TRUE_DISPLAY_LIGHT = '<svg width="13" height="11" viewBox="0 1 13 11" fill="none" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" clip-rule="evenodd" d="M12.3645 1.82058L10.2676 0.599976L5.1191 8.58091L2.44314 6.06144L0.800003 7.67327L5.54161 12.1958L12.3645 1.82058Z" fill="#2AD400"/></svg>';

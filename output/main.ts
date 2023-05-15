@@ -1924,7 +1924,7 @@ function figUpdateObject(figObj, genObj)
 
 function makeObjectName(obj)
 {
-    return OBJECT_PREFIX + obj.objectId;//objectName;
+    return OBJECT_PREFIX + obj.objectName;
 }
 
 
@@ -1967,6 +1967,7 @@ function figCreateRect(genRect)
     //figRect.rotation          = genRect.angle;
     figRect.cornerRadius      = genRect.round;
 
+    console.log('genRect =', genRect);
     figRect.relativeTransform = genRect.relativeTransform;
 
 
@@ -2001,6 +2002,7 @@ function figUpdateRect(figRect, genRect)
     //figRect.rotation          = genRect.angle;
     figRect.cornerRadius      = genRect.round;
 
+    console.log('genRect =', genRect);
     figRect.relativeTransform = genRect.relativeTransform;
 
 

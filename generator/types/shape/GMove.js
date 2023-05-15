@@ -87,7 +87,7 @@ extends GOperator
         for (const obj of this.objects)
         {
             obj.nodeId   = this.nodeId;
-            obj.objectId = this.nodeId + '/' + obj.objectId;
+            obj.objectId = obj.objectId + OBJECT_SEPARATOR + this.nodeId;
 
 
             let xform = clone(obj.relativeTransform);

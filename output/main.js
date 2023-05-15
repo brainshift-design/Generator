@@ -1326,7 +1326,7 @@ function figUpdateObject(figObj, genObj) {
     }
 }
 function makeObjectName(obj) {
-    return OBJECT_PREFIX + obj.objectId; //objectName;
+    return OBJECT_PREFIX + obj.objectName;
 }
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 function genRectIsValid(genRect) {
@@ -1348,6 +1348,7 @@ function figCreateRect(genRect) {
     figRect.resize(Math.max(0.01, genRect.width), Math.max(0.01, genRect.height));
     //figRect.rotation          = genRect.angle;
     figRect.cornerRadius = genRect.round;
+    console.log('genRect =', genRect);
     figRect.relativeTransform = genRect.relativeTransform;
     setObjectFills(figRect, genRect);
     setObjectStrokes(figRect, genRect);
@@ -1365,6 +1366,7 @@ function figUpdateRect(figRect, genRect) {
     }
     //figRect.rotation          = genRect.angle;
     figRect.cornerRadius = genRect.round;
+    console.log('genRect =', genRect);
     figRect.relativeTransform = genRect.relativeTransform;
     setObjectFills(figRect, genRect);
     setObjectStrokes(figRect, genRect);

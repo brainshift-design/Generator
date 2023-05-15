@@ -56,7 +56,7 @@ extends GOperator
 
                     obj.nodeId = this.nodeId;
 
-                    obj.objectId = this.nodeId + '/' + obj.objectId;
+                    obj.objectId = obj.objectId + OBJECT_SEPARATOR + this.nodeId;
                     // if (obj.objectId != NULL) obj.objectId += ' ';
                     // obj.objectId += (o + 1).toString();
                     
