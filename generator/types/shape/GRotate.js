@@ -125,7 +125,6 @@ extends GOperator
 
 
             let xform = clone(obj.relativeTransform);
-            if (xform.length == 2) xform = [...xform, [0, 0, 1]];
 
 
             xform = mulm3m3(
@@ -147,9 +146,7 @@ extends GOperator
                  [0, 0,  1 ]]);
 
 
-            obj.relativeTransform =
-                [xform[0],
-                 xform[1]];
+            obj.relativeTransform = xform;
 
 
              // obj.angle = 

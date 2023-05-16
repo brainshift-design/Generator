@@ -679,7 +679,8 @@ const Phi = (Math.sqrt(5) + 1) / 2; // 1.618
 
 const identity = Object.freeze(
     [[1, 0, 0],
-     [0, 1, 0]]);
+     [0, 1, 0],
+     [0, 0, 1]]);
 
 
 
@@ -4172,7 +4173,8 @@ class FigmaObject
     {
         this.relativeTransform =
             [[ Math.cos(angle), Math.sin(angle), x],
-             [-Math.sin(angle), Math.cos(angle), y]];
+             [-Math.sin(angle), Math.cos(angle), y],
+             [ 0,               0,               1]];
     }
 }
 
@@ -18329,7 +18331,6 @@ extends GOperator
 
 
             let xform = clone(obj.relativeTransform);
-            if (xform.length == 2) xform = [...xform, [0, 0, 1]];
 
 
             xform = mulm3m3(
@@ -18339,9 +18340,7 @@ extends GOperator
                  [0, 0, 1                   ]]);
 
 
-            obj.relativeTransform =
-                [xform[0],
-                 xform[1]];
+            obj.relativeTransform = xform;
 
 
             // if (obj.type == VECTOR_PATH)
@@ -18532,7 +18531,6 @@ extends GOperator
 
 
             let xform = clone(obj.relativeTransform);
-            if (xform.length == 2) xform = [...xform, [0, 0, 1]];
 
 
             xform = mulm3m3(
@@ -18554,9 +18552,7 @@ extends GOperator
                  [0, 0,  1 ]]);
 
 
-            obj.relativeTransform =
-                [xform[0],
-                 xform[1]];
+            obj.relativeTransform = xform;
 
 
              // obj.angle = 
@@ -18850,8 +18846,8 @@ extends GOperator
 
             if (obj.type == VECTOR_PATH)
             {
-                const x  = Math.max(0, options.scaleX.toNumber()/100);
-                const y  = Math.max(0, options.scaleY.toNumber()/100);
+                // const sx  = Math.max(0, options.scaleX.toNumber()/100);
+                // const sy  = Math.max(0, options.scaleY.toNumber()/100);
 
 
                 for (const p of obj.points)
@@ -18870,7 +18866,7 @@ extends GOperator
 
                     const v = mulv(
                         vector(a, d),
-                        point(x, y));
+                        point(sx, sy));
 
                     
                     p.x.value = 
@@ -18913,10 +18909,7 @@ extends GOperator
                 // update transform
 
                 let xform = clone(obj.relativeTransform);
-                if (xform.length == 2) xform = [...xform, [0, 0, 1]];
     
-    // console.log('dx =', dx);
-    // console.log('dy =', dy);
 
                 xform = mulm3m3(
                     xform,
@@ -18925,9 +18918,7 @@ extends GOperator
                      [0,  0,  1                 ]]);
     
     
-                obj.relativeTransform =
-                    [xform[0],
-                     xform[1]];
+                obj.relativeTransform = xform;
 
 
                 // // update properties
@@ -19146,14 +19137,13 @@ extends GOperator
 
 
             let xform = clone(obj.relativeTransform);
-            if (xform.length == 2) xform = [...xform, [0, 0, 1]];
 
 
             xform = mulm3m3(
                 xform,
-                [[1, 0, dx],
-                 [0, 1, dy],
-                 [0, 0, 1 ]]);
+                [[1/Math.cos(y/2), 0,               dx],
+                 [0,               1/Math.cos(x/2), dy],
+                 [0,               0,               1 ]]);
 
 
             obj.width  /= Math.cos(y);
@@ -19173,9 +19163,7 @@ extends GOperator
                  [0, 0,  1 ]]);
 
 
-            obj.relativeTransform =
-                [xform[0],
-                 xform[1]];
+            obj.relativeTransform = xform;
 
 
             //      if (obj.type == VECTOR_PATH)

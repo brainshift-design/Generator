@@ -125,14 +125,13 @@ extends GOperator
 
 
             let xform = clone(obj.relativeTransform);
-            if (xform.length == 2) xform = [...xform, [0, 0, 1]];
 
 
             xform = mulm3m3(
                 xform,
-                [[1, 0, dx],
-                 [0, 1, dy],
-                 [0, 0, 1 ]]);
+                [[1/Math.cos(y/2), 0,               dx],
+                 [0,               1/Math.cos(x/2), dy],
+                 [0,               0,               1 ]]);
 
 
             obj.width  /= Math.cos(y);
@@ -152,9 +151,7 @@ extends GOperator
                  [0, 0,  1 ]]);
 
 
-            obj.relativeTransform =
-                [xform[0],
-                 xform[1]];
+            obj.relativeTransform = xform;
 
 
             //      if (obj.type == VECTOR_PATH)

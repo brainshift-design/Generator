@@ -80,9 +80,13 @@ function findObject(obj, ignoreObjects)
 function figDeleteAllObjects()
 {
     for (const obj of figma.currentPage.children)
-        if (    obj.getPluginData('id') != null
+    {
+        console.log('obj.getPluginData(\'objectId\') =', obj.getPluginData('objectId'));
+
+        if (    obj.getPluginData('objectId') != ''
             && !obj.removed) 
             obj.remove();
+    }
 }
 
 

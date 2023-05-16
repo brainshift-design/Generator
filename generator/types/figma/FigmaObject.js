@@ -46,7 +46,8 @@ class FigmaObject
     {
         this.relativeTransform =
             [[ Math.cos(angle), Math.sin(angle), x],
-             [-Math.sin(angle), Math.cos(angle), y]];
+             [-Math.sin(angle), Math.cos(angle), y],
+             [ 0,               0,               1]];
     }
 }
 

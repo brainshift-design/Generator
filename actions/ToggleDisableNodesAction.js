@@ -10,7 +10,7 @@ extends Action
         super(
             TOGGLE_DISABLE_ACTION,
               'TOGGLE DISABLE ' + selectedIds.length 
-            + ' ' + countStringselectedIds.length, 'node');
+            + ' ' + countString(selectedIds.length, 'node'));
 
         this.selectedIds = [...selectedIds];
     }

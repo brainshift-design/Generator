@@ -147,8 +147,8 @@ extends GOperator
 
             if (obj.type == VECTOR_PATH)
             {
-                const x  = Math.max(0, options.scaleX.toNumber()/100);
-                const y  = Math.max(0, options.scaleY.toNumber()/100);
+                // const sx  = Math.max(0, options.scaleX.toNumber()/100);
+                // const sy  = Math.max(0, options.scaleY.toNumber()/100);
 
 
                 for (const p of obj.points)
@@ -167,7 +167,7 @@ extends GOperator
 
                     const v = mulv(
                         vector(a, d),
-                        point(x, y));
+                        point(sx, sy));
 
                     
                     p.x.value = 
@@ -210,10 +210,7 @@ extends GOperator
                 // update transform
 
                 let xform = clone(obj.relativeTransform);
-                if (xform.length == 2) xform = [...xform, [0, 0, 1]];
     
-    // console.log('dx =', dx);
-    // console.log('dy =', dy);
 
                 xform = mulm3m3(
                     xform,
@@ -222,9 +219,7 @@ extends GOperator
                      [0,  0,  1                 ]]);
     
     
-                obj.relativeTransform =
-                    [xform[0],
-                     xform[1]];
+                obj.relativeTransform = xform;
 
 
                 // // update properties
