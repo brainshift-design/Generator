@@ -59,7 +59,8 @@ function uiNotify(text, options = {})
     if (options.buttonAction == undefined) options.buttonAction = NULL;
 
 
-    uiQueueMessageToFigma({ 
+    uiQueueMessageToFigma(
+    { 
         cmd:         'figNotify',
         text:         text,
         prefix:       options.prefix,

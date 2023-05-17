@@ -8913,7 +8913,7 @@ extends FigmaShape
     x;
     y;
 
-    
+
 
     constructor(nodeId, objectId, objectName, x, y)
     {
@@ -39289,7 +39289,7 @@ extends FigmaShape
     x;
     y;
 
-    
+
 
     constructor(nodeId, objectId, objectName, x, y)
     {
@@ -92540,7 +92540,8 @@ function uiNotify(text, options = {})
     if (options.buttonAction == undefined) options.buttonAction = NULL;
 
 
-    uiQueueMessageToFigma({ 
+    uiQueueMessageToFigma(
+    { 
         cmd:         'figNotify',
         text:         text,
         prefix:       options.prefix,

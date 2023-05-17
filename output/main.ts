@@ -1730,33 +1730,36 @@ function updatePointSizes()
 
 
 
-function updatePointSize(point)
+function updatePointSize(figPoint)
 {
-    const _x = point.x + point.width /2;
-    const _y = point.y + point.height/2;
+    // const _x = point.x + point.width /2;
+    // const _y = point.y + point.height/2;
+
+    figPoint.strokeWeight = 1.25 / curZoom;
 
     const size = 8 / curZoom;
-    point.resizeWithoutConstraints(size, size);
+    figPoint.resizeWithoutConstraints(size, size);
 
-    point.x = _x - point.width /2;
-    point.y = _y - point.height/2;
+    // point.x = _x - point.width /2;
+    // point.y = _y - point.height/2;
 
-    point.strokeWeight = 1.25 / curZoom;
+    convertExistingPointTransform(figPoint);
 }
 
 
 
 
-function updatePointSize_(point, genPoint)
+function updatePointSize_(figPoint, genPoint)
 {
+    figPoint.strokeWeight = 1.25 / curZoom;
+    
     const size = 8 / curZoom;
+    figPoint.resizeWithoutConstraints(size, size);
 
-    point.resizeWithoutConstraints(size, size);
+    // point.x = genPoint.x - size/2;
+    // point.y = genPoint.y - size/2;
 
-    point.x = genPoint.x - size/2;
-    point.y = genPoint.y - size/2;
-
-    point.strokeWeight = 1.25 / curZoom;
+    convertPointTransform(figPoint, genPoint);
 }
 
 
@@ -1972,7 +1975,7 @@ function figCreateRect(genRect)
     figRect.cornerRadius      = genRect.round;
 
 
-    setFigmaTransform(figRect, genRect);
+    setObjectTransform(figRect, genRect);
 
 
     setObjectFills  (figRect, genRect);
@@ -2007,7 +2010,7 @@ function figUpdateRect(figRect, genRect)
     figRect.cornerRadius = genRect.round;
 
 
-    setFigmaTransform(figRect, genRect);
+    setObjectTransform(figRect, genRect);
 
 
     setObjectFills  (figRect, genRect);
@@ -2051,7 +2054,7 @@ function figCreateLine(genLine)
     //figLine.rotation          = genLine.angle;
 
 
-    setFigmaTransform(figLine, genLine);
+    setObjectTransform(figLine, genLine);
 
 
     setObjectFills  (figLine, genLine);
@@ -2080,7 +2083,7 @@ function figUpdateLine(figLine, genLine)
     //figLine.rotation          = genLine.angle;
 
 
-    setFigmaTransform(figLine, genLine);
+    setObjectTransform(figLine, genLine);
 
 
     setObjectFills  (figLine, genLine);
@@ -2122,7 +2125,7 @@ function figCreateEllipse(genEllipse)
     //figEllipse.rotation          = genEllipse.angle;
 
 
-    setFigmaTransform(figEllipse, genEllipse);
+    setObjectTransform(figEllipse, genEllipse);
 
     
     if (figPoints.includes(figEllipse))
@@ -2166,7 +2169,7 @@ function figUpdateEllipse(figEllipse, genEllipse)
     //figEllipse.rotation = genEllipse.angle;
 
 
-    setFigmaTransform(figEllipse, genEllipse);
+    setObjectTransform(figEllipse, genEllipse);
 
 
     setObjectFills  (figEllipse, genEllipse);
@@ -2216,7 +2219,7 @@ function figCreatePolygon(genPoly)
     figPoly.pointCount        = genPoly.corners;
 
 
-    setFigmaTransform(figPoly, genPoly);
+    setObjectTransform(figPoly, genPoly);
 
 
     setObjectFills  (figPoly, genPoly);
@@ -2252,7 +2255,7 @@ function figUpdatePolygon(figPoly, genPoly)
     figPoly.pointCount        = genPoly.corners;
 
 
-    setFigmaTransform(figPoly, genPoly);
+    setObjectTransform(figPoly, genPoly);
 
 
     setObjectFills  (figPoly, genPoly);
@@ -2304,7 +2307,7 @@ function figCreateStar(genStar)
     figStar.innerRadius       = genStar.convex / 100;
 
 
-    setFigmaTransform(figStar, genStar);
+    setObjectTransform(figStar, genStar);
 
 
     setObjectFills  (figStar, genStar);
@@ -2341,7 +2344,7 @@ function figUpdateStar(figStar, genStar)
     figStar.innerRadius       = genStar.convex / 100;
 
 
-    setFigmaTransform(figStar, genStar);
+    setObjectTransform(figStar, genStar);
 
 
     setObjectFills  (figStar, genStar);
@@ -2408,7 +2411,7 @@ function figCreateText(genText)
     //figText.rotation = genText.angle;
     
 
-    setFigmaTransform(figText, genText);
+    setObjectTransform(figText, genText);
 
 
     setObjectFills  (figText, genText);
@@ -2462,7 +2465,7 @@ function figUpdateText(figText, genText)
     //figText.rotation = genText.angle;
 
 
-    setFigmaTransform(figText, genText);
+    setObjectTransform(figText, genText);
 
 
     setObjectFills  (figText, genText);
@@ -2513,15 +2516,20 @@ function figCreatePoint(genPoint)
 
     else
     {
-        const size = 8 / curZoom;
+        figPoint.x = genPoint.x;
+        figPoint.y = genPoint.y;
 
-        figPoint.x = genPoint.x;// - size/2;
-        figPoint.y = genPoint.y;// - size/2;
+
+        const size = 8 / curZoom;
 
         figPoint.resizeWithoutConstraints(size, size);
 
 
-        convertFigmaTransform(figPoint, genPoint);
+        convertPointTransform(figPoint, genPoint);
+
+
+        figPoint.setPluginData('actualX', genPoint.relativeTransform[0][2].toString());
+        figPoint.setPluginData('actualY', genPoint.relativeTransform[1][2].toString());
 
         
         figPoint.fills            =  getObjectFills([['SOLID', '255 255 255 100']]);
@@ -2549,15 +2557,24 @@ function figUpdatePoint(figPoint, genPoint)
 
     figPoint.name = makeObjectName(genPoint);
 
-    const size = 8 / curZoom;
 
-    //figPoint.x = genPoint.x - size/2;
-    //figPoint.y = genPoint.y - size/2;
+    figPoint.x = genPoint.x;
+    figPoint.y = genPoint.y;
+
+    figPoint.setPluginData('actualX', genPoint.actualX);
+    figPoint.setPluginData('actualY', genPoint.actualY);
+
+
+    const size = 8 / curZoom;
 
     figPoint.resizeWithoutConstraints(size, size);
 
 
-    convertFigmaTransform(figPoint, genPoint);
+    convertPointTransform(figPoint, genPoint);
+
+
+    figPoint.setPluginData('actualX', genPoint.relativeTransform[0][2].toString());
+    figPoint.setPluginData('actualY', genPoint.relativeTransform[1][2].toString());
 
 
     figPoint.strokeWeight = 1.25 / curZoom;
@@ -2602,7 +2619,7 @@ function figCreateVectorPath(genPath)
     figPath.cornerRadius      = genPath.round;
 
 
-    setFigmaTransform(figPath, genPath);
+    setObjectTransform(figPath, genPath);
     
 
     setObjectFills  (figPath, genPath);
@@ -2635,7 +2652,7 @@ function figUpdateVectorPath(figPath, genPath)
     figPath.cornerRadius      = genPath.round;
     
 
-    setFigmaTransform(figPath, genPath);
+    setObjectTransform(figPath, genPath);
 
 
     setObjectFills  (figPath, genPath);
@@ -2679,7 +2696,7 @@ function figCreateShapeGroup(genGroup)
     }
 
 
-    setFigmaTransform(figGroup, genGroup);
+    setObjectTransform(figGroup, genGroup);
 
 
     return figGroup;
@@ -2699,7 +2716,7 @@ function figUpdateShapeGroup(figGroup, genGroup)
     figGroup.name = makeObjectName(genGroup);
 
 
-    setFigmaTransform(figGroup, genGroup);
+    setObjectTransform(figGroup, genGroup);
 
 
     figUpdateObjects(figGroup, genGroup.children);
@@ -2760,7 +2777,7 @@ function figCreateFrame(genFrame)
         figFrame.cornerRadius      = genFrame.round;
 
         
-        setFigmaTransform(figFrame, genFrame);
+        setObjectTransform(figFrame, genFrame);
 
 
         let objects = [];
@@ -2801,7 +2818,7 @@ function figUpdateFrame(figFrame, genFrame)
     figFrame.cornerRadius      = genFrame.round;
 
 
-    setFigmaTransform(figFrame, genFrame);
+    setObjectTransform(figFrame, genFrame);
         
 
     figUpdateObjects(figFrame, genFrame.children);
@@ -2817,7 +2834,7 @@ function figUpdateFrame(figFrame, genFrame)
 
 
 
-function setFigmaTransform(figObj, genObj)
+function setObjectTransform(figObj, genObj)
 {
     if (   figObj.width  != genObj.width
         || figObj.height != genObj.height)
@@ -2828,17 +2845,51 @@ function setFigmaTransform(figObj, genObj)
     }
 
 
-    convertFigmaTransform(figObj, genObj);
+    convertObjectTransform(figObj, genObj);
 }
 
 
 
-function convertFigmaTransform(figObj, genObj)
+function convertObjectTransform(figObj, genObj)
 {
     figObj.relativeTransform = 
     [
         genObj.relativeTransform[0],
         genObj.relativeTransform[1]
+    ];
+}
+
+
+
+function convertPointTransform(figObj, genObj)
+{
+    const m0 = genObj.relativeTransform[0];
+    const m1 = genObj.relativeTransform[1];
+    
+
+    const size = 8 / curZoom;
+
+    figObj.relativeTransform = 
+    [
+        [m0[0], m0[1], m0[2] - size/2],
+        [m1[0], m1[1], m1[2] - size/2],
+    ];
+}
+
+
+
+function convertExistingPointTransform(figPoint)
+{
+    const m0 = figPoint.relativeTransform[0];
+    const m1 = figPoint.relativeTransform[1];
+    
+
+    const size = 8 / curZoom;
+
+    figPoint.relativeTransform = 
+    [
+        [m0[0], m0[1], parseFloat(figPoint.getPluginData('actualX')) - size/2],
+        [m1[0], m1[1], parseFloat(figPoint.getPluginData('actualY')) - size/2]
     ];
 }
 

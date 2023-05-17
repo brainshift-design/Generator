@@ -4,7 +4,7 @@ extends FigmaShape
     x;
     y;
 
-    
+
 
     constructor(nodeId, objectId, objectName, x, y)
     {
