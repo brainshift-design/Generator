@@ -25,14 +25,17 @@
 ../generator/types/GParam.js
 
 
+../generator/types/values/ListValue.js
 ../generator/types/values/NumberValue.js
 ../generator/types/values/TextValue.js
 ../generator/types/values/ColorValue.js
 ../generator/types/values/FillValue.js
 ../generator/types/values/StrokeValue.js
-../generator/types/values/ListValue.js
-
 //../generator/types/values/ColorStopValue.js
+../generator/types/values/DropShadowValue.js
+../generator/types/values/InnerShadowValue.js
+../generator/types/values/LayerBlurValue.js
+../generator/types/values/BackBlurValue.js
 
 ../generator/types/values/ShapeValue.js
 ../generator/types/values/RectangleValue.js
@@ -131,7 +134,14 @@
 ../generator/types/color/GColorBlend modes.js
 
 
+../generator/types/style/GColorStyle.js
+../generator/types/style/GFill.js
+../generator/types/style/GStroke.js
 ../generator/types/style/GColorStop.js
+../generator/types/style/GDropShadow.js
+../generator/types/style/GInnerShadow.js
+../generator/types/style/GLayerBlur.js
+../generator/types/style/GBackBlur.js
 
 
 ../generator/types/shape/GShapeBase.js
@@ -152,11 +162,6 @@
 ../generator/types/shape/GRotate.js
 ../generator/types/shape/GScale.js
 ../generator/types/shape/GSkew.js
-
-
-../generator/types/style/GColorStyle.js
-../generator/types/style/GFill.js
-../generator/types/style/GStroke.js
 
 
 ../generator/types/group/GGroupNode.js

@@ -142,6 +142,10 @@
 ../operators/style/OpColorStyle.js
 ../operators/style/OpFill.js
 ../operators/style/OpStroke.js
+../operators/style/OpDropShadow.js
+../operators/style/OpInnerShadow.js
+../operators/style/OpLayerBlur.js
+../operators/style/OpBackBlur.js
 
 
 //../operators/style/OpColorStop.js

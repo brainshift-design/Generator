@@ -60,11 +60,11 @@ extends ShapeValue
 
     isValid()
     {
-        return this.x     .isValid()
-            && this.y     .isValid()
-            && this.width .isValid()
-            && this.angle .isValid()
-            && super.isValid();
+        return super.isValid()
+            && this.x    .isValid()
+            && this.y    .isValid()
+            && this.width.isValid()
+            && this.angle.isValid();
     }
 
 

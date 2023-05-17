@@ -101,13 +101,13 @@ extends ShapeValue
 
     isValid()
     {
-        return this.x     .isValid()
+        return super.isValid()
+            && this.x     .isValid()
             && this.y     .isValid()
             && this.width .isValid()
             && this.height.isValid()
             && this.angle .isValid()
-            && this.round .isValid()
-            && super.isValid();
+            && this.round .isValid();
     }
 
 

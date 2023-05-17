@@ -202,14 +202,14 @@ const TEXT_TYPES =
 ];
 
 
-const COLOR_VALUE       = 'COL#';  
-const COLOR             = 'COL';   
-const VALID_COLOR       = 'CVAL';  
-const CORRECT_COLOR     = 'CCOR';  
-const COLOR_CONTRAST    = 'CCNT';  
-const COLORBLIND        = 'BLND';  
-const COLOR_INTERPOLATE = 'CLERP'; 
-const COLOR_BLEND       = 'CBLND';
+const COLOR_VALUE        = 'COL#';  
+const COLOR              = 'COL';   
+const VALID_COLOR        = 'CVAL';  
+const CORRECT_COLOR      = 'CCOR';  
+const COLOR_CONTRAST     = 'CCNT';  
+const COLORBLIND         = 'BLND';  
+const COLOR_INTERPOLATE  = 'CLERP'; 
+const COLOR_BLEND        = 'CBLND';
 
 
 const COLOR_TYPES =
@@ -223,72 +223,89 @@ const COLOR_TYPES =
 ];
 
 
-const FILL_VALUE        = 'FILL#';
-const FILL              = 'FILL';
-const FILL_TYPES        = [FILL_VALUE, FILL];
+const FILL_VALUE         = 'FILL#';
+const FILL               = 'FILL';
+const FILL_TYPES         = [FILL_VALUE, FILL];
+  
+const STROKE_VALUE       = 'STRK#';
+const STROKE             = 'STRK';
+const STROKE_TYPES       = [STROKE_VALUE, STROKE];
+  
+const COLOR_STOP_VALUE   = 'CSTOP#';
+const COLOR_STOP         = 'CSTOP';
+  
+const GRADIENT_VALUE     = 'GRAD#';
+const GRADIENT           = 'GRAD';
+const GRADIENT_TYPES     = [GRADIENT_VALUE, GRADIENT];
  
-const STROKE_VALUE      = 'STRK#';
-const STROKE            = 'STRK';
-const STROKE_TYPES      = [STROKE_VALUE, STROKE];
- 
-const COLOR_STOP_VALUE  = 'CSTOP#';
-const COLOR_STOP        = 'CSTOP';
- 
-const GRADIENT_VALUE    = 'GRAD#';
-const GRADIENT          = 'GRAD';
-const GRADIENT_TYPES    = [GRADIENT_VALUE, GRADIENT];
- 
- 
-const COLOR_STYLE       = 'CSTL';
- 
- 
-const SHAPE_VALUE       = 'SHP#'; // abstract placeholder
- 
-const RECTANGLE_VALUE   = 'RECT#';
-const RECTANGLE         = 'RECT'; 
-const RECTANGLE_TYPES   = [RECTANGLE_VALUE, RECTANGLE];
- 
-const LINE_VALUE        = 'LINE#';
-const LINE              = 'LINE'; 
-const LINE_TYPES        = [LINE_VALUE, LINE];
- 
-const ELLIPSE_VALUE     = 'ELPS#';
-const ELLIPSE           = 'ELPS'; 
-const ELLIPSE_TYPES     = [ELLIPSE_VALUE, ELLIPSE];
- 
-const POLYGON_VALUE     = 'POLY#';
-const POLYGON           = 'POLY'; 
-const POLYGON_TYPES     = [POLYGON_VALUE, POLYGON];
- 
-const STAR_VALUE        = 'STAR#';
-const STAR              = 'STAR'; 
-const STAR_TYPES        = [STAR_VALUE, STAR];
- 
-const TEXTSHAPE_VALUE   = 'TXTS#';
-const TEXTSHAPE         = 'TXTS'; 
-const TEXTSHAPE_TYPES   = [TEXTSHAPE_VALUE, TEXTSHAPE];
 
-const VECTOR_PATH_VALUE = 'VEC#';
-const VECTOR_PATH       = 'VEC'; 
-const VECTOR_PATH_TYPES = [VECTOR_PATH_VALUE, VECTOR_PATH];
+const DROP_SHADOW_VALUE  = 'DRSH#';
+const DROP_SHADOW        = 'DRSH';
+const DROP_SHADOW_TYPES  = [DROP_SHADOW_VALUE, DROP_SHADOW];
 
-const SHAPE_GROUP_VALUE = 'SGRP#';
-const SHAPE_GROUP       = 'SGRP';
-const SHAPE_GROUP_TYPES = [SHAPE_GROUP_VALUE, SHAPE_GROUP];
+const INNER_SHADOW_VALUE = 'INSH#';
+const INNER_SHADOW       = 'INSH';
+const INNER_SHADOW_TYPES = [INNER_SHADOW_VALUE, INNER_SHADOW];
 
-const FRAME_VALUE       = 'FRM#';
-const FRAME             = 'FRM';
-const FRAME_TYPES       = [FRAME_VALUE, FRAME];
+const LAYER_BLUR_VALUE   = 'LBLR#';
+const LAYER_BLUR         = 'LBLR';
+const LAYER_BLUR_TYPES   = [LAYER_BLUR_VALUE, LAYER_BLUR];
+
+const BACK_BLUR_VALUE    = 'DRSH#';
+const BACK_BLUR          = 'DRSH';
+const BACK_BLUR_TYPES    = [BACK_BLUR_VALUE, BACK_BLUR];
 
 
-const MOVE              = 'MOVE';
-const ROTATE            = 'ROT';
-const SCALE             = 'SCALE';
-const SKEW              = 'SKEW';
-
+const COLOR_STYLE        = 'CSTL';
  
-const POINT             = 'PT';
-const POINT_VALUE       = 'PT#';
+ 
+const SHAPE_VALUE        = 'SHP#'; // abstract placeholder
+ 
+const RECTANGLE_VALUE    = 'RECT#';
+const RECTANGLE          = 'RECT'; 
+const RECTANGLE_TYPES    = [RECTANGLE_VALUE, RECTANGLE];
+ 
+const LINE_VALUE         = 'LINE#';
+const LINE               = 'LINE'; 
+const LINE_TYPES         = [LINE_VALUE, LINE];
+  
+const ELLIPSE_VALUE      = 'ELPS#';
+const ELLIPSE            = 'ELPS'; 
+const ELLIPSE_TYPES      = [ELLIPSE_VALUE, ELLIPSE];
+  
+const POLYGON_VALUE      = 'POLY#';
+const POLYGON            = 'POLY'; 
+const POLYGON_TYPES      = [POLYGON_VALUE, POLYGON];
+  
+const STAR_VALUE         = 'STAR#';
+const STAR               = 'STAR'; 
+const STAR_TYPES         = [STAR_VALUE, STAR];
+  
+const TEXTSHAPE_VALUE    = 'TXTS#';
+const TEXTSHAPE          = 'TXTS'; 
+const TEXTSHAPE_TYPES    = [TEXTSHAPE_VALUE, TEXTSHAPE];
+ 
+const VECTOR_PATH_VALUE  = 'VEC#';
+const VECTOR_PATH        = 'VEC'; 
+const VECTOR_PATH_TYPES  = [VECTOR_PATH_VALUE, VECTOR_PATH];
+ 
+const SHAPE_GROUP_VALUE  = 'SGRP#';
+const SHAPE_GROUP        = 'SGRP';
+const SHAPE_GROUP_TYPES  = [SHAPE_GROUP_VALUE, SHAPE_GROUP];
+ 
+const FRAME_VALUE        = 'FRM#';
+const FRAME              = 'FRM';
+const FRAME_TYPES        = [FRAME_VALUE, FRAME];
+ 
+
+const MOVE               = 'MOVE';
+const ROTATE             = 'ROT';
+const SCALE              = 'SCALE';
+const SKEW               = 'SKEW';
+ 
+  
+const POINT              = 'PT';
+const POINT_VALUE        = 'PT#';
 
 
 const POINT_TYPES =

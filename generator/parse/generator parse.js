@@ -104,6 +104,7 @@ function genParse(parse, inParam = true)
           || parse.next == NUMBER_LIST_VALUE             
           || parse.next ==   TEXT_LIST_VALUE             
           || parse.next ==  SHAPE_LIST_VALUE      ) result = genParseListValue       (parse);
+
     else if (parse.next == LIST                   ) result = genParseList            (parse);
     else if (parse.next == LIST_EXPAND            ) result = genParseExpandList      (parse);
     else if (parse.next == ITEMS                  ) result = genParseItems           (parse);
@@ -186,6 +187,18 @@ function genParse(parse, inParam = true)
      
     else if (parse.next == COLOR_STOP_VALUE       ) result = genParseColorStopValue  (parse);
     else if (parse.next == COLOR_STOP             ) result = genParseColorStop       (parse);
+     
+    else if (parse.next == DROP_SHADOW_VALUE      ) result = genParseDropShadowValue (parse);
+    else if (parse.next == DROP_SHADOW            ) result = genParseDropShadow      (parse);
+     
+    else if (parse.next == INNER_SHADOW_VALUE     ) result = genParseInnerShadowValue(parse);
+    else if (parse.next == INNER_SHADOW           ) result = genParseInnerShadow     (parse);
+     
+    else if (parse.next == LAYER_BLUR_VALUE       ) result = genParseLayerBlurValue  (parse);
+    else if (parse.next == LAYER_BLUR             ) result = genParseLayerBlur       (parse);
+     
+    else if (parse.next == BACK_BLUR_VALUE        ) result = genParseBackBlurValue   (parse);
+    else if (parse.next == BACK_BLUR              ) result = genParseBackBlur        (parse);
      
     else if (parse.next == COLOR_STYLE            ) result = genParseColorStyle      (parse);
      

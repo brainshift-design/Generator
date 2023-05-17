@@ -107,16 +107,19 @@ extends GOperator
         const bounds = getObjBounds(this.objects);
         const angle  = options.angle.toNumber()/360*Tau;
 
-        const dx = 
-            bounds.width != 0
-            ? (0.5 + options.centerX.toNumber() / (bounds.width /2)) * bounds.width
-            : 0;
+        
+        // let dx = 
+        //     bounds.width != 0
+        //     ? (0.5 + options.centerX.toNumber() / (bounds.width /2)) * bounds.width
+        //     : 0;
 
-        const dy = 
-            bounds.height != 0
-            ? (0.5 + options.centerY.toNumber() / (bounds.height/2)) * bounds.height
-            : 0;
+        // let dy = 
+        //     bounds.height != 0
+        //     ? (0.5 + options.centerY.toNumber() / (bounds.height/2)) * bounds.height
+        //     : 0;
 
+        console.log('bounds =', bounds);
+        // console.log('dx =', dx);
             
         for (const obj of this.objects)
         {
@@ -127,11 +130,15 @@ extends GOperator
             let xform = clone(obj.relativeTransform);
 
 
+            const dx = xform[0][2] - (bounds.x + bounds.width /2);
+            const dy = xform[1][2] - (bounds.y + bounds.height/2);
+
+
             xform = mulm3m3(
                 xform,
-                [[1, 0, dx],
-                 [0, 1, dy],
-                 [0, 0, 1 ]]);
+                [[1, 0, -dx],
+                 [0, 1, -dy],
+                 [0, 0,  1 ]]);
 
             xform = mulm3m3(
                 xform,
@@ -141,9 +148,9 @@ extends GOperator
 
             xform = mulm3m3(
                 xform,
-                [[1, 0, -dx],
-                 [0, 1, -dy],
-                 [0, 0,  1 ]]);
+                [[1, 0, dx],
+                 [0, 1, dy],
+                 [0, 0, 1 ]]);
 
 
             obj.relativeTransform = xform;

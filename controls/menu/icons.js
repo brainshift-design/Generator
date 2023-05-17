@@ -80,6 +80,11 @@ const iconColorBlend        = '<svg width="14" height="15" viewBox="-1 0 15 15" 
  
 const iconFill              = '<svg width="12" height="12" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="6" cy="6" r="6" fill="white"/></svg>';
 const iconStroke            = '<svg width="12" height="12" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="6" cy="6" r="5.4" stroke="white" stroke-width="1.2"/></svg>';
+
+const iconDropShadow        = '';
+const iconInnerShadow       = '';
+const iconLayerBlur         = '';
+const iconBackBlur          = '';
  
 const iconStyle             = '<svg width="12" height="9"  viewBox="0 0 12 9"  fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="7.5" cy="1.5" r="1.5" transform="rotate(90 7.5 1.5)" fill="white"/><circle cx="1.5" cy="1.5" r="1.5" transform="rotate(90 1.5 1.5)" fill="white"/><circle cx="7.5" cy="7.5" r="1.5" transform="rotate(90 7.5 7.5)" fill="white"/><circle cx="1.5" cy="7.5" r="1.5" transform="rotate(90 1.5 7.5)" fill="white"/></svg>';
 const iconColorStyle        = '<svg width="12" height="12" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" clip-rule="evenodd" d="M9.53553 9.53552C8.63071 10.4403 7.38071 11 6 11C3.23858 11 1 8.76141 1 6C1 4.61929 1.55965 3.36929 2.46447 2.46448L6 6L9.53553 9.53552ZM12 6C12 9.31372 9.31371 12 6 12C2.68629 12 0 9.31372 0 6C0 4.34314 0.67157 2.84314 1.75735 1.75735C1.77346 1.74124 1.78965 1.72525 1.80592 1.70935C2.88722 0.652252 4.36652 0.000518799 5.99803 0C5.99869 0 5.99934 0 6 0C9.31305 0 11.9989 2.68521 12 5.99802C12 5.99869 12 5.99933 12 6Z" fill="white"/></svg>';

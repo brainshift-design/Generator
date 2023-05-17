@@ -417,6 +417,18 @@ const COLOR_STOP = 'CSTOP';
 const GRADIENT_VALUE = 'GRAD#';
 const GRADIENT = 'GRAD';
 const GRADIENT_TYPES = [GRADIENT_VALUE, GRADIENT];
+const DROP_SHADOW_VALUE = 'DRSH#';
+const DROP_SHADOW = 'DRSH';
+const DROP_SHADOW_TYPES = [DROP_SHADOW_VALUE, DROP_SHADOW];
+const INNER_SHADOW_VALUE = 'INSH#';
+const INNER_SHADOW = 'INSH';
+const INNER_SHADOW_TYPES = [INNER_SHADOW_VALUE, INNER_SHADOW];
+const LAYER_BLUR_VALUE = 'LBLR#';
+const LAYER_BLUR = 'LBLR';
+const LAYER_BLUR_TYPES = [LAYER_BLUR_VALUE, LAYER_BLUR];
+const BACK_BLUR_VALUE = 'DRSH#';
+const BACK_BLUR = 'DRSH';
+const BACK_BLUR_TYPES = [BACK_BLUR_VALUE, BACK_BLUR];
 const COLOR_STYLE = 'CSTL';
 const SHAPE_VALUE = 'SHP#'; // abstract placeholder
 const RECTANGLE_VALUE = 'RECT#';
@@ -1168,21 +1180,15 @@ function updatePointSizes() {
     }
 }
 function updatePointSize(figPoint) {
-    // const _x = point.x + point.width /2;
-    // const _y = point.y + point.height/2;
     figPoint.strokeWeight = 1.25 / curZoom;
     const size = 8 / curZoom;
     figPoint.resizeWithoutConstraints(size, size);
-    // point.x = _x - point.width /2;
-    // point.y = _y - point.height/2;
     convertExistingPointTransform(figPoint);
 }
 function updatePointSize_(figPoint, genPoint) {
     figPoint.strokeWeight = 1.25 / curZoom;
     const size = 8 / curZoom;
     figPoint.resizeWithoutConstraints(size, size);
-    // point.x = genPoint.x - size/2;
-    // point.y = genPoint.y - size/2;
     convertPointTransform(figPoint, genPoint);
 }
 ///////////////////////////////////////////////////////////////////////////////////////////////////
@@ -1342,17 +1348,10 @@ function genRectIsValid(genRect) {
         && genRect.round != null && !isNaN(genRect.round);
 }
 function figCreateRect(genRect) {
-    //console.log(obj);
     const figRect = figma.createRectangle();
     figRect.name = makeObjectName(genRect);
     if (!genRectIsValid(genRect))
         return figRect;
-    //figRect.x = genRect.x;
-    //figRect.y = genRect.y;
-    // figRect.resize(
-    //     Math.max(0.01, genRect.width), 
-    //     Math.max(0.01, genRect.height));
-    //figRect.rotation          = genRect.angle;
     figRect.cornerRadius = genRect.round;
     setObjectTransform(figRect, genRect);
     setObjectFills(figRect, genRect);
@@ -1363,16 +1362,6 @@ function figUpdateRect(figRect, genRect) {
     if (!genRectIsValid(genRect))
         return;
     figRect.name = makeObjectName(genRect);
-    //figRect.x    = genRect.x;
-    //figRect.y    = genRect.y;
-    // if (   figRect.width  != genRect.width
-    //     || figRect.height != genRect.height)
-    // {
-    //     figRect.resize(
-    //         Math.max(0.01, genRect.width), 
-    //         Math.max(0.01, genRect.height));
-    // }
-    //figRect.rotation          = genRect.angle;
     figRect.cornerRadius = genRect.round;
     setObjectTransform(figRect, genRect);
     setObjectFills(figRect, genRect);
@@ -1386,15 +1375,10 @@ function genLineIsValid(genLine) {
         && genLine.angle != null && !isNaN(genLine.angle);
 }
 function figCreateLine(genLine) {
-    //console.log(obj);
     const figLine = figma.createLine();
     figLine.name = makeObjectName(genLine);
     if (!genLineIsValid(genLine))
         return figLine;
-    //figLine.x = genLine.x;
-    //figLine.y = genLine.y;
-    //figLine.resize(Math.max(0.01, genLine.width), 0);
-    //figLine.rotation          = genLine.angle;
     setObjectTransform(figLine, genLine);
     setObjectFills(figLine, genLine);
     setObjectStrokes(figLine, genLine);
@@ -1404,11 +1388,6 @@ function figUpdateLine(figLine, genLine) {
     if (!genLineIsValid(genLine))
         return;
     figLine.name = makeObjectName(genLine);
-    //figLine.x    = genLine.x;
-    //figLine.y    = genLine.y;
-    // if (figLine.width != genLine.width)
-    //     figLine.resize(Math.max(0.01, genLine.width), 0);
-    //figLine.rotation          = genLine.angle;
     setObjectTransform(figLine, genLine);
     setObjectFills(figLine, genLine);
     setObjectStrokes(figLine, genLine);
@@ -1422,21 +1401,14 @@ function genEllipseIsValid(genEllipse) {
         && genEllipse.angle != null && !isNaN(genEllipse.angle);
 }
 function figCreateEllipse(genEllipse) {
-    //console.log(obj);
     const figEllipse = figma.createEllipse();
     figEllipse.name = makeObjectName(genEllipse);
     if (!genEllipseIsValid(genEllipse))
         return figEllipse;
-    //figEllipse.x                 = genEllipse.x;
-    //figEllipse.y                 = genEllipse.y;
-    //figEllipse.rotation          = genEllipse.angle;
     setObjectTransform(figEllipse, genEllipse);
     if (figPoints.includes(figEllipse))
         updatePointSize(figEllipse);
     else {
-        //     figEllipse.resize(
-        //         Math.max(0.01, genEllipse.width), 
-        //         Math.max(0.01, genEllipse.height));
         setObjectFills(figEllipse, genEllipse);
         setObjectStrokes(figEllipse, genEllipse);
     }
@@ -1446,16 +1418,6 @@ function figUpdateEllipse(figEllipse, genEllipse) {
     if (!genEllipseIsValid(genEllipse))
         return;
     figEllipse.name = makeObjectName(genEllipse);
-    //figEllipse.x    = genEllipse.x;
-    //figEllipse.y    = genEllipse.y;
-    // if (   figEllipse.width  != genEllipse.width
-    //     || figEllipse.height != genEllipse.height)
-    // {
-    //     figEllipse.resize(
-    //         Math.max(0.01, genEllipse.width), 
-    //         Math.max(0.01, genEllipse.height));
-    // }
-    //figEllipse.rotation = genEllipse.angle;
     setObjectTransform(figEllipse, genEllipse);
     setObjectFills(figEllipse, genEllipse);
     setObjectStrokes(figEllipse, genEllipse);
@@ -1471,17 +1433,10 @@ function genPolyIsValid(genPoly) {
         && genPoly.corners != null && !isNaN(genPoly.corners);
 }
 function figCreatePolygon(genPoly) {
-    //console.log(obj);
     const figPoly = figma.createPolygon();
     figPoly.name = makeObjectName(genPoly);
     if (!genPolyIsValid(genPoly))
         return figPoly;
-    //figPoly.x = genPoly.x;
-    //figPoly.y = genPoly.y;
-    // figPoly.resize(
-    //     Math.max(0.01, genPoly.width), 
-    //     Math.max(0.01, genPoly.height));
-    //figPoly.rotation          = genPoly.angle;
     figPoly.cornerRadius = genPoly.round;
     figPoly.pointCount = genPoly.corners;
     setObjectTransform(figPoly, genPoly);
@@ -1493,16 +1448,6 @@ function figUpdatePolygon(figPoly, genPoly) {
     if (!genPolyIsValid(genPoly))
         return;
     figPoly.name = makeObjectName(genPoly);
-    //figPoly.x    = genPoly.x;
-    //figPoly.y    = genPoly.y;
-    // if (   figPoly.width  != genPoly.width
-    //     || figPoly.height != genPoly.height)
-    // {
-    //     figPoly.resize(
-    //         Math.max(0.01, genPoly.width), 
-    //         Math.max(0.01, genPoly.height));
-    // }
-    //figPoly.rotation          = genPoly.angle;
     figPoly.cornerRadius = genPoly.round;
     figPoly.pointCount = genPoly.corners;
     setObjectTransform(figPoly, genPoly);
@@ -1521,17 +1466,10 @@ function genStarIsValid(genStar) {
         && genStar.convex != null && !isNaN(genStar.convex);
 }
 function figCreateStar(genStar) {
-    //console.log(obj);
     const figStar = figma.createStar();
     figStar.name = makeObjectName(genStar);
     if (!genStarIsValid(genStar))
         return figStar;
-    //figStar.x = genStar.x;
-    //figStar.y = genStar.y;
-    // figStar.resize(
-    //     Math.max(0.01, genStar.width), 
-    //     Math.max(0.01, genStar.height));
-    //figStar.rotation          = genStar.angle;
     figStar.cornerRadius = genStar.round;
     figStar.pointCount = genStar.points;
     figStar.innerRadius = genStar.convex / 100;
@@ -1544,16 +1482,6 @@ function figUpdateStar(figStar, genStar) {
     if (!genStarIsValid(genStar))
         return;
     figStar.name = makeObjectName(genStar);
-    //figStar.x    = genStar.x;
-    //figStar.y    = genStar.y;
-    // if (   figStar.width  != genStar.width
-    //     || figStar.height != genStar.height)
-    // {
-    //     figStar.resize(
-    //         Math.max(0.01, genStar.width), 
-    //         Math.max(0.01, genStar.height));
-    // }
-    //figStar.rotation          = genStar.angle;
     figStar.cornerRadius = genStar.round;
     figStar.pointCount = genStar.points;
     figStar.innerRadius = genStar.convex / 100;
@@ -1587,15 +1515,8 @@ function figCreateText(genText) {
             figText.fontName = fontName;
             figText.fontSize = Math.max(1, genText.size);
             figText.characters = genText.text;
-            //setTextStyle(text, obj);
         });
     })();
-    //figText.x = genText.x;
-    //figText.y = genText.y;
-    // figText.resize(
-    //     Math.max(0.01, genText.width), 
-    //     Math.max(0.01, genText.height));
-    //figText.rotation = genText.angle;
     setObjectTransform(figText, genText);
     setObjectFills(figText, genText);
     setObjectStrokes(figText, genText);
@@ -1614,20 +1535,9 @@ function figUpdateText(figText, genText) {
             figText.fontName = fontName;
             figText.fontSize = Math.max(1, genText.size);
             figText.characters = genText.text;
-            //setTextStyle(figText, genText);
         });
     })();
     figText.name = makeObjectName(genText);
-    //figText.x    = genText.x;
-    //figText.y    = genText.y;
-    // if (   figText.width  != genText.width
-    //     || figText.height != genText.height)
-    // {
-    //     figText.resize(
-    //         Math.max(0.01, genText.width), 
-    //         Math.max(0.01, genText.height));
-    // }
-    //figText.rotation = genText.angle;
     setObjectTransform(figText, genText);
     setObjectFills(figText, genText);
     setObjectStrokes(figText, genText);
@@ -1643,7 +1553,6 @@ function genPointIsValid(genPoint) {
         && genPoint.y != null && !isNaN(genPoint.y);
 }
 function figCreatePoint(genPoint) {
-    //console.log('genPoint =', genPoint);
     const figPoint = figma.createEllipse();
     figPoint.name = makeObjectName(genPoint);
     if (!genPointIsValid(genPoint))
@@ -1656,9 +1565,9 @@ function figCreatePoint(genPoint) {
         figPoint.y = genPoint.y;
         const size = 8 / curZoom;
         figPoint.resizeWithoutConstraints(size, size);
-        convertPointTransform(figPoint, genPoint);
         figPoint.setPluginData('actualX', genPoint.relativeTransform[0][2].toString());
         figPoint.setPluginData('actualY', genPoint.relativeTransform[1][2].toString());
+        convertPointTransform(figPoint, genPoint);
         figPoint.fills = getObjectFills([['SOLID', '255 255 255 100']]);
         figPoint.strokes = getObjectFills([['SOLID', '12 140 233 100']]);
         figPoint.strokeWeight = 1.25 / curZoom;
@@ -1669,19 +1578,16 @@ function figCreatePoint(genPoint) {
     return figPoint;
 }
 function figUpdatePoint(figPoint, genPoint) {
-    // console.log('genPoint =', genPoint);
     if (!genPointIsValid(genPoint))
         return;
     figPoint.name = makeObjectName(genPoint);
     figPoint.x = genPoint.x;
     figPoint.y = genPoint.y;
-    figPoint.setPluginData('actualX', genPoint.actualX);
-    figPoint.setPluginData('actualY', genPoint.actualY);
     const size = 8 / curZoom;
     figPoint.resizeWithoutConstraints(size, size);
-    convertPointTransform(figPoint, genPoint);
     figPoint.setPluginData('actualX', genPoint.relativeTransform[0][2].toString());
     figPoint.setPluginData('actualY', genPoint.relativeTransform[1][2].toString());
+    convertPointTransform(figPoint, genPoint);
     figPoint.strokeWeight = 1.25 / curZoom;
 }
 ///////////////////////////////////////////////////////////////////////////////////////////////////
@@ -1690,13 +1596,10 @@ function genVectorPathIsValid(genPath) {
         && genPath.round != null && !isNaN(genPath.round);
 }
 function figCreateVectorPath(genPath) {
-    //console.log(obj);
     const figPath = figma.createVector();
     figPath.name = makeObjectName(genPath);
     if (!genVectorPathIsValid(genPath))
         return figPath;
-    //figPath.x = 0; //genPath.x;
-    //figPath.y = 0; //genPath.y;
     figPath.vectorPaths = [{
             windingRule: genPath.winding == 1 ? 'NONZERO' : 'EVENODD',
             data: genPath.pathData
@@ -1711,8 +1614,6 @@ function figUpdateVectorPath(figPath, genPath) {
     if (!genVectorPathIsValid(genPath))
         return;
     figPath.name = makeObjectName(genPath);
-    //figPath.x    = 0; //genPath.x;
-    //figPath.y    = 0; //genPath.y;
     figPath.vectorPaths = [{
             windingRule: genPath.winding == 1 ? 'NONZERO' : 'EVENODD',
             data: genPath.pathData
@@ -1727,7 +1628,6 @@ function genShapeGroupIsValid(genGroup) {
     return genGroup.children.length > 0;
 }
 function figCreateShapeGroup(genGroup) {
-    //console.log(obj);
     let objects = [];
     for (const obj of genGroup.children)
         figCreateObject(obj, o => objects = [...objects, o]);
@@ -1776,12 +1676,6 @@ function figCreateFrame(genFrame) {
     if (figFrame) {
         if (!genFrameIsValid(genFrame))
             return figFrame;
-        //figFrame.x = genFrame.x;
-        //figFrame.y = genFrame.y;
-        // figFrame.resize(
-        //     Math.max(0.01, genFrame.width ), 
-        //     Math.max(0.01, genFrame.height));
-        //figFrame.rotation          = genFrame.angle;
         figFrame.cornerRadius = genFrame.round;
         setObjectTransform(figFrame, genFrame);
         let objects = [];
@@ -1798,12 +1692,6 @@ function figUpdateFrame(figFrame, genFrame) {
     if (!genFrameIsValid(genFrame))
         return;
     figFrame.name = makeObjectName(genFrame);
-    //figFrame.x    = genFrame.x;
-    //figFrame.y    = genFrame.y;
-    // figFrame.resize(
-    //     Math.max(0.01, genFrame.width ), 
-    //     Math.max(0.01, genFrame.height));
-    //figFrame.rotation          = genFrame.angle;
     figFrame.cornerRadius = genFrame.round;
     setObjectTransform(figFrame, genFrame);
     figUpdateObjects(figFrame, genFrame.children);
@@ -1831,8 +1719,8 @@ function convertPointTransform(figObj, genObj) {
     const size = 8 / curZoom;
     figObj.relativeTransform =
         [
-            [m0[0], m0[1], m0[2] - size / 2],
-            [m1[0], m1[1], m1[2] - size / 2],
+            [m0[0], m0[1], m0[2]],
+            [m1[0], m1[1], m1[2]] //,// - size/2],
         ];
 }
 function convertExistingPointTransform(figPoint) {
@@ -1841,8 +1729,8 @@ function convertExistingPointTransform(figPoint) {
     const size = 8 / curZoom;
     figPoint.relativeTransform =
         [
-            [m0[0], m0[1], parseFloat(figPoint.getPluginData('actualX')) - size / 2],
-            [m1[0], m1[1], parseFloat(figPoint.getPluginData('actualY')) - size / 2]
+            [m0[0], m0[1], parseFloat(figPoint.getPluginData('actualX'))],
+            [m1[0], m1[1], parseFloat(figPoint.getPluginData('actualY'))] // - size/2]
         ];
 }
 function getObjectFills(objFills) {

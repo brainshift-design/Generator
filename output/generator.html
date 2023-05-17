@@ -3800,14 +3800,14 @@ const TEXT_TYPES =
 ];
 
 
-const COLOR_VALUE       = 'COL#';  
-const COLOR             = 'COL';   
-const VALID_COLOR       = 'CVAL';  
-const CORRECT_COLOR     = 'CCOR';  
-const COLOR_CONTRAST    = 'CCNT';  
-const COLORBLIND        = 'BLND';  
-const COLOR_INTERPOLATE = 'CLERP'; 
-const COLOR_BLEND       = 'CBLND';
+const COLOR_VALUE        = 'COL#';  
+const COLOR              = 'COL';   
+const VALID_COLOR        = 'CVAL';  
+const CORRECT_COLOR      = 'CCOR';  
+const COLOR_CONTRAST     = 'CCNT';  
+const COLORBLIND         = 'BLND';  
+const COLOR_INTERPOLATE  = 'CLERP'; 
+const COLOR_BLEND        = 'CBLND';
 
 
 const COLOR_TYPES =
@@ -3821,72 +3821,89 @@ const COLOR_TYPES =
 ];
 
 
-const FILL_VALUE        = 'FILL#';
-const FILL              = 'FILL';
-const FILL_TYPES        = [FILL_VALUE, FILL];
+const FILL_VALUE         = 'FILL#';
+const FILL               = 'FILL';
+const FILL_TYPES         = [FILL_VALUE, FILL];
+  
+const STROKE_VALUE       = 'STRK#';
+const STROKE             = 'STRK';
+const STROKE_TYPES       = [STROKE_VALUE, STROKE];
+  
+const COLOR_STOP_VALUE   = 'CSTOP#';
+const COLOR_STOP         = 'CSTOP';
+  
+const GRADIENT_VALUE     = 'GRAD#';
+const GRADIENT           = 'GRAD';
+const GRADIENT_TYPES     = [GRADIENT_VALUE, GRADIENT];
  
-const STROKE_VALUE      = 'STRK#';
-const STROKE            = 'STRK';
-const STROKE_TYPES      = [STROKE_VALUE, STROKE];
- 
-const COLOR_STOP_VALUE  = 'CSTOP#';
-const COLOR_STOP        = 'CSTOP';
- 
-const GRADIENT_VALUE    = 'GRAD#';
-const GRADIENT          = 'GRAD';
-const GRADIENT_TYPES    = [GRADIENT_VALUE, GRADIENT];
- 
- 
-const COLOR_STYLE       = 'CSTL';
- 
- 
-const SHAPE_VALUE       = 'SHP#'; // abstract placeholder
- 
-const RECTANGLE_VALUE   = 'RECT#';
-const RECTANGLE         = 'RECT'; 
-const RECTANGLE_TYPES   = [RECTANGLE_VALUE, RECTANGLE];
- 
-const LINE_VALUE        = 'LINE#';
-const LINE              = 'LINE'; 
-const LINE_TYPES        = [LINE_VALUE, LINE];
- 
-const ELLIPSE_VALUE     = 'ELPS#';
-const ELLIPSE           = 'ELPS'; 
-const ELLIPSE_TYPES     = [ELLIPSE_VALUE, ELLIPSE];
- 
-const POLYGON_VALUE     = 'POLY#';
-const POLYGON           = 'POLY'; 
-const POLYGON_TYPES     = [POLYGON_VALUE, POLYGON];
- 
-const STAR_VALUE        = 'STAR#';
-const STAR              = 'STAR'; 
-const STAR_TYPES        = [STAR_VALUE, STAR];
- 
-const TEXTSHAPE_VALUE   = 'TXTS#';
-const TEXTSHAPE         = 'TXTS'; 
-const TEXTSHAPE_TYPES   = [TEXTSHAPE_VALUE, TEXTSHAPE];
 
-const VECTOR_PATH_VALUE = 'VEC#';
-const VECTOR_PATH       = 'VEC'; 
-const VECTOR_PATH_TYPES = [VECTOR_PATH_VALUE, VECTOR_PATH];
+const DROP_SHADOW_VALUE  = 'DRSH#';
+const DROP_SHADOW        = 'DRSH';
+const DROP_SHADOW_TYPES  = [DROP_SHADOW_VALUE, DROP_SHADOW];
 
-const SHAPE_GROUP_VALUE = 'SGRP#';
-const SHAPE_GROUP       = 'SGRP';
-const SHAPE_GROUP_TYPES = [SHAPE_GROUP_VALUE, SHAPE_GROUP];
+const INNER_SHADOW_VALUE = 'INSH#';
+const INNER_SHADOW       = 'INSH';
+const INNER_SHADOW_TYPES = [INNER_SHADOW_VALUE, INNER_SHADOW];
 
-const FRAME_VALUE       = 'FRM#';
-const FRAME             = 'FRM';
-const FRAME_TYPES       = [FRAME_VALUE, FRAME];
+const LAYER_BLUR_VALUE   = 'LBLR#';
+const LAYER_BLUR         = 'LBLR';
+const LAYER_BLUR_TYPES   = [LAYER_BLUR_VALUE, LAYER_BLUR];
+
+const BACK_BLUR_VALUE    = 'DRSH#';
+const BACK_BLUR          = 'DRSH';
+const BACK_BLUR_TYPES    = [BACK_BLUR_VALUE, BACK_BLUR];
 
 
-const MOVE              = 'MOVE';
-const ROTATE            = 'ROT';
-const SCALE             = 'SCALE';
-const SKEW              = 'SKEW';
-
+const COLOR_STYLE        = 'CSTL';
  
-const POINT             = 'PT';
-const POINT_VALUE       = 'PT#';
+ 
+const SHAPE_VALUE        = 'SHP#'; // abstract placeholder
+ 
+const RECTANGLE_VALUE    = 'RECT#';
+const RECTANGLE          = 'RECT'; 
+const RECTANGLE_TYPES    = [RECTANGLE_VALUE, RECTANGLE];
+ 
+const LINE_VALUE         = 'LINE#';
+const LINE               = 'LINE'; 
+const LINE_TYPES         = [LINE_VALUE, LINE];
+  
+const ELLIPSE_VALUE      = 'ELPS#';
+const ELLIPSE            = 'ELPS'; 
+const ELLIPSE_TYPES      = [ELLIPSE_VALUE, ELLIPSE];
+  
+const POLYGON_VALUE      = 'POLY#';
+const POLYGON            = 'POLY'; 
+const POLYGON_TYPES      = [POLYGON_VALUE, POLYGON];
+  
+const STAR_VALUE         = 'STAR#';
+const STAR               = 'STAR'; 
+const STAR_TYPES         = [STAR_VALUE, STAR];
+  
+const TEXTSHAPE_VALUE    = 'TXTS#';
+const TEXTSHAPE          = 'TXTS'; 
+const TEXTSHAPE_TYPES    = [TEXTSHAPE_VALUE, TEXTSHAPE];
+ 
+const VECTOR_PATH_VALUE  = 'VEC#';
+const VECTOR_PATH        = 'VEC'; 
+const VECTOR_PATH_TYPES  = [VECTOR_PATH_VALUE, VECTOR_PATH];
+ 
+const SHAPE_GROUP_VALUE  = 'SGRP#';
+const SHAPE_GROUP        = 'SGRP';
+const SHAPE_GROUP_TYPES  = [SHAPE_GROUP_VALUE, SHAPE_GROUP];
+ 
+const FRAME_VALUE        = 'FRM#';
+const FRAME              = 'FRM';
+const FRAME_TYPES        = [FRAME_VALUE, FRAME];
+ 
+
+const MOVE               = 'MOVE';
+const ROTATE             = 'ROT';
+const SCALE              = 'SCALE';
+const SKEW               = 'SKEW';
+ 
+  
+const POINT              = 'PT';
+const POINT_VALUE        = 'PT#';
 
 
 const POINT_TYPES =
@@ -5426,7 +5443,10 @@ function getObjBounds(objects)
         }
  
         else if (obj.type == POINT)
-            bounds = expandRect_(bounds, point(obj.x, obj.y));
+            bounds = expandRect_(bounds, 
+                point(
+                    obj.relativeTransform[0][2], 
+                    obj.relativeTransform[1][2]));
 
         else
             bounds = expandRect(bounds, new Rect(obj.x, obj.y, obj.width, obj.height));
@@ -5539,6 +5559,263 @@ extends GOperator
 
         if (this.node) this.node.invalidate();
     }
+}
+
+
+class ListValue
+extends GValue
+{
+    items;
+
+
+
+    constructor(items = [])
+    {
+        super(LIST_VALUE);
+
+        if (items)
+        {
+            this.items = [];
+
+            for (const item of items)
+            {
+                this.items  .push(item.copy());
+                this.objects.push(...item.objects.map(o => o.copy()));
+            }
+        }
+    }
+
+
+
+    copy()
+    {
+        const copy = new ListValue(this.items);
+
+        copy.copyBase(this);
+
+        return copy;
+    }
+
+
+
+    equals(list)
+    {
+        if (!list)                                  return false;
+        if (!(list instanceof ListValue))           return false;
+        if (this.items.length != list.items.length) return false;
+            
+        for (let i = 0; i < this.items.length; i++)
+            if (!this.items[i].equals(list.items[i]))
+                return false;
+
+        return true;
+    }
+
+
+
+    async eval(parse)
+    {
+        return this;
+    }
+
+
+
+    isValid()
+    {
+        return  this.items
+            && !this.items.find(i => !i.isValid());
+    }
+
+
+
+    toValue()
+    {
+        return this.copy();
+    }
+
+
+
+    toJson()
+    {
+        if (!this.items)
+            return '';
+
+
+        let str = '';
+        
+        
+        str += this.items.length;
+
+        for (let i = 0; i < this.items.length; i++)
+        {
+            const item = this.items[i];
+
+            str += ' ' + item.type + ' ';
+            str += item.toJson();
+        }
+
+
+        return str;
+    }
+
+
+
+    toString()
+    {
+        if (!this.items)
+            return '';
+
+
+        let str = '';
+        
+        
+        str += this.items.length;
+
+        for (let i = 0; i < this.items.length; i++)
+        {
+            const item = this.items[i];
+
+            str += ' ' + item.type + ' ';
+            str += item.toString();
+        }
+
+
+        return str;
+    }
+
+
+
+    toDisplayString()
+    {
+        if (!this.items)
+            return '';
+
+
+        let str = '';
+        
+        
+        str += this.items.length;
+
+        for (let i = 0; i < this.items.length; i++)
+        {
+            const item = this.items[i];
+
+            str += ' ' + item.type + ' ';
+            str += item.toDisplayString();
+        }
+
+
+        return str;
+    }
+
+
+
+    getNaN()
+    {
+        return ListValue.NaN;
+    }
+
+
+
+    static NaN = Object.freeze(new ListValue(null));
+}
+
+
+
+function parseListValue(str, i = -1)
+{
+    if (i < 0)
+    {
+        str = str.split(' ');
+        i   = 0;
+    }
+        
+
+    const iStart = i;
+
+    const list = new ListValue();
+    
+
+    const nInputs = parseInt(str[i++]);
+
+
+    for (let j = 0; j < nInputs; j++)
+    {
+        const type = str[i++];
+        
+        switch (type)
+        {
+            case      NUMBER_VALUE: { const num     = parseNumberValue    (str[i]);  i += num    [1];  list.items.push(num    [0]);  break; }
+            case        TEXT_VALUE: { const text    = parseTextValue      (str[i]);  i += text   [1];  list.items.push(text   [0]);  break; }
+            case       COLOR_VALUE: { const color   = parseColorValue     (str, i);  i += color  [1];  list.items.push(color  [0]);  break; }
+            case        FILL_VALUE: { const fill    = parseFillValue      (str, i);  i += fill   [1];  list.items.push(fill   [0]);  break; }
+            case      STROKE_VALUE: { const stroke  = parseStrokeValue    (str, i);  i += stroke [1];  list.items.push(stroke [0]);  break; }
+            case   RECTANGLE_VALUE: { const rect    = parseRectangleValue (str, i);  i += rect   [1];  list.items.push(rect   [0]);  break; }
+            case        LINE_VALUE: { const line    = parseLineValue      (str, i);  i += line   [1];  list.items.push(line   [0]);  break; }
+            case     ELLIPSE_VALUE: { const ellipse = parseEllipseValue   (str, i);  i += ellipse[1];  list.items.push(ellipse[0]);  break; }
+            case     POLYGON_VALUE: { const poly    = parsePolygonValue   (str, i);  i += poly   [1];  list.items.push(poly   [0]);  break; }
+            case        STAR_VALUE: { const star    = parseStarValue      (str, i);  i += star   [1];  list.items.push(star   [0]);  break; }
+            case   TEXTSHAPE_VALUE: { const text    = parseTextShapeValue (str, i);  i += text   [1];  list.items.push(text   [0]);  break; }
+            case       POINT_VALUE: { const point   = parsePointValue     (str, i);  i += point  [1];  list.items.push(point  [0]);  break; }
+            case VECTOR_PATH_VALUE: { const path    = parseVectorPathValue(str, i);  i += path   [1];  list.items.push(path   [0]);  break; }
+            case        LIST_VALUE:  
+            case NUMBER_LIST_VALUE:  
+            case   TEXT_LIST_VALUE:  
+            case  SHAPE_LIST_VALUE: { const _list   = parseListValue      (str, i);  i += _list  [1];  list.items.push(_list  [0]);  break; }
+        }
+    }
+
+    
+    return [
+        list, 
+        i - iStart];
+}
+
+
+
+function finalListTypeFromItems(items)
+{
+    const types = [];
+    
+    for (const item of items)
+    {
+        if (   item.type ==        LIST_VALUE
+            || item.type == NUMBER_LIST_VALUE
+            || item.type ==   TEXT_LIST_VALUE
+            || item.type ==  SHAPE_LIST_VALUE)
+            types.push(finalListTypeFromItems(item.items));
+        else
+            types.push(item.type);
+    }
+
+    return finalListTypeFromTypes(types);
+}
+
+
+
+function finalListTypeFromTypes(types)
+{
+    let _type = NULL;
+
+    for (const type of types)
+    {
+        if (_type == NULL)   
+            _type = type;
+
+        else if (_type != type
+              && !SHAPE_VALUES.includes(_type)
+              && !SHAPE_VALUES.includes( type))
+        { 
+            _type = ANY_VALUE;
+            break; 
+        }
+    }
+
+
+         if (  _type == NUMBER_VALUE || _type == NUMBER_LIST_VALUE)  return NUMBER_LIST_VALUE;
+    else if (  _type ==   TEXT_VALUE || _type ==   TEXT_LIST_VALUE)  return   TEXT_LIST_VALUE;
+    else if (SHAPE_VALUES.includes(_type))                           return  SHAPE_LIST_VALUE;
+    else                                                             return        LIST_VALUE;
 }
 
 
@@ -6438,34 +6715,59 @@ function parseStrokeValue(str, i = -1)
 // }
 
 
-class ListValue
+class DropShadowValue
 extends GValue
 {
-    items;
+    x;
+    y;
+    blur;
+    spread;
+    fill;
+    blend;
+    behind;
 
 
 
-    constructor(items = [])
+    constructor(x      = new NumberValue(0), 
+                y      = new NumberValue(0), 
+                blur   = new NumberValue(0), 
+                spread = new NumberValue(0), 
+                fill   = FillValue.NaN,
+                blend  = new NumberValue(0),
+                behind = new NumberValue(0))
     {
-        super(LIST_VALUE);
+        super(DROP_SHADOW_VALUE);
 
-        if (items)
-        {
-            this.items = [];
-
-            for (const item of items)
-            {
-                this.items  .push(item.copy());
-                this.objects.push(...item.objects.map(o => o.copy()));
-            }
-        }
+        this.x      = x;
+        this.y      = y;
+        this.blur   = blur;
+        this.spread = spread;
+        this.fill   = fill;
+        this.blend  = blend;
+        this.behind = behind;
     }
+
+
+    
+    // static create(x, y, blur, spread, fill, blend, behind)
+    // {
+    //     return new FillValue(
+    //         new Number,
+    //         new NumberValue(opacity));
+    // }
 
 
 
     copy()
     {
-        const copy = new ListValue(this.items);
+        const copy = new DropShadowValue(
+            this.x     .copy(),
+            this.y     .copy(),
+            this.blur  .copy(),
+            this.spread.copy(),
+            this.fill  .copy(),
+            this.blend .copy(),
+            this.behind.copy());
 
         copy.copyBase(this);
 
@@ -6474,17 +6776,15 @@ extends GValue
 
 
 
-    equals(list)
+    equals(shadow)
     {
-        if (!list)                                  return false;
-        if (!(list instanceof ListValue))           return false;
-        if (this.items.length != list.items.length) return false;
-            
-        for (let i = 0; i < this.items.length; i++)
-            if (!this.items[i].equals(list.items[i]))
-                return false;
-
-        return true;
+        return this.x     .equals(shadow.x     )
+            && this.y     .equals(shadow.y     )
+            && this.blur  .equals(shadow.blur  )
+            && this.spread.equals(shadow.spread)
+            && this.fill  .equals(shadow.fill  )
+            && this.blend .equals(shadow.blend )
+            && this.behind.equals(shadow.behind);
     }
 
 
@@ -6496,203 +6796,133 @@ extends GValue
 
 
 
-    isValid()
-    {
-        return  this.items
-            && !this.items.find(i => !i.isValid());
-    }
+    // toRgba()
+    // {
+    //     return [
+    //         ...this.color.toRgb(),
+    //         this.opacity.value / 100 ];
+    // }
 
 
 
-    toValue()
-    {
-        return this.copy();
-    }
-
-
-
-    toJson()
-    {
-        if (!this.items)
-            return '';
-
-
-        let str = '';
-        
-        
-        str += this.items.length;
-
-        for (let i = 0; i < this.items.length; i++)
-        {
-            const item = this.items[i];
-
-            str += ' ' + item.type + ' ';
-            str += item.toJson();
-        }
-
-
-        return str;
-    }
+    // toFigma()
+    // {
+    //     return [['SOLID', this.toString()]];
+    // }
 
 
 
     toString()
     {
-        if (!this.items)
-            return '';
-
-
-        let str = '';
-        
-        
-        str += this.items.length;
-
-        for (let i = 0; i < this.items.length; i++)
-        {
-            const item = this.items[i];
-
-            str += ' ' + item.type + ' ';
-            str += item.toString();
-        }
-
-
-        return str;
+        return      this.x     .toString()
+            + ' ' + this.y     .toString()
+            + ' ' + this.blur  .toString()
+            + ' ' + this.spread.toString()
+            + ' ' + this.fill  .toString()
+            + ' ' + this.blend .toString()
+            + ' ' + this.behind.toString();
     }
 
 
 
     toDisplayString()
     {
-        if (!this.items)
-            return '';
+        return      this.x     .toDisplayString()
+            + ' ' + this.y     .toDisplayString()
+            + ' ' + this.blur  .toDisplayString()
+            + ' ' + this.spread.toDisplayString()
+            + ' ' + this.fill  .toDisplayString()
+            + ' ' + this.blend .toDisplayString()
+            + ' ' + this.behind.toDisplayString();
+    }
 
 
-        let str = '';
-        
-        
-        str += this.items.length;
 
-        for (let i = 0; i < this.items.length; i++)
-        {
-            const item = this.items[i];
-
-            str += ' ' + item.type + ' ';
-            str += item.toDisplayString();
-        }
-
-
-        return str;
+    isValid()
+    {
+        return super.isValid()
+            && this.x     .isValid()
+            && this.y     .isValid()
+            && this.blur  .isValid()
+            && this.spread.isValid()
+            && this.fill  .isValid()
+            && this.blend .isValid()
+            && this.behind.isValid();
     }
 
 
 
     getNaN()
     {
-        return ListValue.NaN;
+        return DropShadowValue.NaN;
     }
 
 
 
-    static NaN = Object.freeze(new ListValue(null));
+    static NaN = Object.freeze(new DropShadowValue(
+        NumberValue.NaN,
+        NumberValue.NaN,
+        NumberValue.NaN,
+        NumberValue.NaN,
+        ColorValue .NaN,
+        NumberValue.NaN,
+        NumberValue.NaN));
+
+
+
+    // static default = Object.freeze(DropShadowValue.create(217, 217, 217, 100));
 }
 
 
 
-function parseListValue(str, i = -1)
+function parseDropShadowValue(str, i = -1)
 {
+    if (   i <  0 && str    == NAN_DISPLAY
+        || i >= 0 && str[i] == NAN_DISPLAY)
+        return [DropShadowValue.NaN, 1];
+
+
     if (i < 0)
     {
         str = str.split(' ');
         i   = 0;
     }
-        
+
 
     const iStart = i;
 
-    const list = new ListValue();
-    
+    const x      = parseNumberValue(str[i]); i += x     [1];
+    const y      = parseNumberValue(str[i]); i += y     [1];
+    const blur   = parseNumberValue(str[i]); i += blur  [1];
+    const spread = parseNumberValue(str[i]); i += spread[1];
+    const fill   = parseFillValue  (str[i]); i += fill  [1];
+    const blend  = parseNumberValue(str[i]); i += blend [1];
+    const behind = parseNumberValue(str[i]); i += behind[1];
 
-    const nInputs = parseInt(str[i++]);
+
+    const shadow = new DropShadowValue(
+        '', // set node ID elsewhere
+        x     [0],
+        y     [0],
+        blur  [0],
+        spread[0],
+        fill  [0],
+        blend [0],
+        behind[0]);
 
 
-    for (let j = 0; j < nInputs; j++)
-    {
-        const type = str[i++];
-        
-        switch (type)
-        {
-            case      NUMBER_VALUE: { const num     = parseNumberValue    (str[i]);  i += num    [1];  list.items.push(num    [0]);  break; }
-            case        TEXT_VALUE: { const text    = parseTextValue      (str[i]);  i += text   [1];  list.items.push(text   [0]);  break; }
-            case       COLOR_VALUE: { const color   = parseColorValue     (str, i);  i += color  [1];  list.items.push(color  [0]);  break; }
-            case        FILL_VALUE: { const fill    = parseFillValue      (str, i);  i += fill   [1];  list.items.push(fill   [0]);  break; }
-            case      STROKE_VALUE: { const stroke  = parseStrokeValue    (str, i);  i += stroke [1];  list.items.push(stroke [0]);  break; }
-            case   RECTANGLE_VALUE: { const rect    = parseRectangleValue (str, i);  i += rect   [1];  list.items.push(rect   [0]);  break; }
-            case        LINE_VALUE: { const line    = parseLineValue      (str, i);  i += line   [1];  list.items.push(line   [0]);  break; }
-            case     ELLIPSE_VALUE: { const ellipse = parseEllipseValue   (str, i);  i += ellipse[1];  list.items.push(ellipse[0]);  break; }
-            case     POLYGON_VALUE: { const poly    = parsePolygonValue   (str, i);  i += poly   [1];  list.items.push(poly   [0]);  break; }
-            case        STAR_VALUE: { const star    = parseStarValue      (str, i);  i += star   [1];  list.items.push(star   [0]);  break; }
-            case   TEXTSHAPE_VALUE: { const text    = parseTextShapeValue (str, i);  i += text   [1];  list.items.push(text   [0]);  break; }
-            case       POINT_VALUE: { const point   = parsePointValue     (str, i);  i += point  [1];  list.items.push(point  [0]);  break; }
-            case VECTOR_PATH_VALUE: { const path    = parseVectorPathValue(str, i);  i += path   [1];  list.items.push(path   [0]);  break; }
-            case        LIST_VALUE:  
-            case NUMBER_LIST_VALUE:  
-            case   TEXT_LIST_VALUE:  
-            case  SHAPE_LIST_VALUE: { const _list   = parseListValue      (str, i);  i += _list  [1];  list.items.push(_list  [0]);  break; }
-        }
-    }
-
-    
-    return [
-        list, 
-        i - iStart];
+    return [shadow, i - iStart];
 }
 
 
 
-function finalListTypeFromItems(items)
-{
-    const types = [];
-    
-    for (const item of items)
-    {
-        if (   item.type ==        LIST_VALUE
-            || item.type == NUMBER_LIST_VALUE
-            || item.type ==   TEXT_LIST_VALUE
-            || item.type ==  SHAPE_LIST_VALUE)
-            types.push(finalListTypeFromItems(item.items));
-        else
-            types.push(item.type);
-    }
-
-    return finalListTypeFromTypes(types);
-}
 
 
 
-function finalListTypeFromTypes(types)
-{
-    let _type = NULL;
-
-    for (const type of types)
-    {
-        if (_type == NULL)   
-            _type = type;
-
-        else if (_type != type
-              && !SHAPE_VALUES.includes(_type)
-              && !SHAPE_VALUES.includes( type))
-        { 
-            _type = ANY_VALUE;
-            break; 
-        }
-    }
 
 
-         if (  _type == NUMBER_VALUE || _type == NUMBER_LIST_VALUE)  return NUMBER_LIST_VALUE;
-    else if (  _type ==   TEXT_VALUE || _type ==   TEXT_LIST_VALUE)  return   TEXT_LIST_VALUE;
-    else if (SHAPE_VALUES.includes(_type))                           return  SHAPE_LIST_VALUE;
-    else                                                             return        LIST_VALUE;
-}
+
+
 
 
 /*
@@ -6850,13 +7080,13 @@ extends ShapeValue
 
     isValid()
     {
-        return this.x     .isValid()
+        return super.isValid()
+            && this.x     .isValid()
             && this.y     .isValid()
             && this.width .isValid()
             && this.height.isValid()
             && this.angle .isValid()
-            && this.round .isValid()
-            && super.isValid();
+            && this.round .isValid();
     }
 
 
@@ -6977,11 +7207,11 @@ extends ShapeValue
 
     isValid()
     {
-        return this.x     .isValid()
-            && this.y     .isValid()
-            && this.width .isValid()
-            && this.angle .isValid()
-            && super.isValid();
+        return super.isValid()
+            && this.x    .isValid()
+            && this.y    .isValid()
+            && this.width.isValid()
+            && this.angle.isValid();
     }
 
 
@@ -7128,12 +7358,12 @@ extends ShapeValue
     
     isValid()
     {
-        return this.x     .isValid()
+        return super.isValid()
+            && this.x     .isValid()
             && this.y     .isValid()
             && this.width .isValid()
             && this.height.isValid()
-            && this.angle .isValid()
-            && super.isValid();
+            && this.angle .isValid();
     }
 
 
@@ -7295,14 +7525,14 @@ extends ShapeValue
 
     isValid()
     {
-        return this.x      .isValid()
+        return super.isValid()
+            && this.x      .isValid()
             && this.y      .isValid()
             && this.width  .isValid()
             && this.height .isValid()
             && this.angle  .isValid()
             && this.round  .isValid()
-            && this.corners.isValid()
-            && super.isValid();
+            && this.corners.isValid();
     }
 
 
@@ -7479,15 +7709,15 @@ extends ShapeValue
 
     isValid()
     {
-        return this.x     .isValid()
+        return super.isValid()
+            && this.x     .isValid()
             && this.y     .isValid()
             && this.width .isValid()
             && this.height.isValid()
             && this.angle .isValid()
             && this.round .isValid()
             && this.points.isValid()
-            && this.convex.isValid()
-            && super.isValid();
+            && this.convex.isValid();
     }
 
 
@@ -7694,7 +7924,8 @@ extends ShapeValue
 
     isValid()
     {
-        return this.text         .isValid()
+        return super.isValid()
+            && this.text         .isValid()
             && this.x            .isValid()
             && this.y            .isValid()
             && this.width        .isValid()
@@ -7706,8 +7937,7 @@ extends ShapeValue
             && this.alignH       .isValid()
             && this.alignV       .isValid()
             && this.lineHeight   .isValid()
-            && this.letterSpacing.isValid()
-            && super.isValid();
+            && this.letterSpacing.isValid();
     }
 
 
@@ -8071,12 +8301,12 @@ extends ShapeValue
 
     isValid()
     {
-        return this.points .isValid()
+        return super.isValid()
+            && this.points .isValid()
             && this.closed .isValid()
             && this.degree .isValid()
             && this.winding.isValid()
-            && this.round  .isValid()
-            && super.isValid();
+            && this.round  .isValid();
     }
 
 
@@ -15969,6 +16199,390 @@ function blendLuminosity(col, back, opacity)
 }
 
 
+class GColorStyle
+extends GShape
+{
+    id;
+
+    colorStyle;
+
+    existing;
+    linked;
+
+
+
+    constructor(nodeId, options, styleId)
+    {
+        super(COLOR_STYLE, nodeId, options);
+
+        this.id == styleId;
+    }
+
+
+
+    copy()
+    {
+        const copy = new GColorStyle(this.nodeId, this.options);
+
+        copy.id         = this.id;
+        copy.colorStyle = this.colorStyle.copy();
+        
+        copy.existing   = this.existing;
+        copy.linked     = this.linked;
+
+        return copy;
+    }
+
+
+
+    async eval(parse)
+    {
+        if (this.isCached())
+            return this;
+
+            
+        this.value = (await this.value.eval(parse)).toValue();
+
+
+        if (   this.value.isValid()
+            && (  !this.existing
+                || this.linked))
+        {
+            if (this.value.type == COLOR_VALUE)
+                this.value = FillValue.fromRgb(scaleRgb(this.value.toRgb()), 0xff);
+
+            const rgba       = this.value.toRgba();
+            const rgbaStripe = rgb_a(getStripeBackColor(rgba), rgba[3]);
+
+            this.evalStyle({rgba: rgbaStripe});
+        }
+        else
+            this.value = FillValue.NaN;
+
+
+        this.updateValues = [['value', this.value]];
+
+
+        this.validate();
+
+        return this;
+    }
+
+
+
+    evalStyle(options = {})
+    {
+        if (!this.options.enabled)
+            return;
+
+            
+        const colorStyle = new FigmaColorStyle(this.nodeId, this.id, this.name);
+
+        colorStyle.existing = this.existing;
+
+
+        colorStyle.paints = 
+        [
+            [ 'SOLID', 
+                      Math.round(options.rgba[0] * 0xff)
+              + ' ' + Math.round(options.rgba[1] * 0xff)
+              + ' ' + Math.round(options.rgba[2] * 0xff)
+              + ' ' + Math.round(options.rgba[3] * 100 ) ]
+        ];
+
+
+        this.colorStyle = colorStyle;
+    }
+
+
+
+    // pushValueUpdates(parse)
+    // {
+    //     super.pushValueUpdates(parse);
+
+    //     if (this.colorStyle) this.colorStyle.pushValueUpdates(parse);
+    // }
+
+
+
+    invalidate()
+    {
+        super.invalidate();
+
+        if (this.colorStyle) this.colorStyle.invalidate();
+    }
+}
+
+
+class GFill
+extends GOperator
+{
+    input   = null;
+
+    color   = null;
+    opacity = null;
+
+
+
+    constructor(nodeId, options)
+    {
+        super(FILL, nodeId, options);
+    }
+
+
+
+    copy()
+    {
+        const copy = new GFill(this.nodeId, this.options);
+
+        copy.copyBase(this);
+
+        if (this.input) 
+            copy.input = this.input.copy();
+
+        if (this.color  ) copy.color   = this.color  .copy();
+        if (this.opacity) copy.opacity = this.opacity.copy();
+
+        return copy;
+    }
+
+
+
+    async eval(parse)
+    {
+        if (this.isCached())
+            return this;
+``
+
+        const color   = this.color   ? (await this.color  .eval(parse)).toValue() : null;
+        const opacity = this.opacity ? (await this.opacity.eval(parse)).toValue() : null;
+
+        
+        if (this.input)
+        {
+            const input = (await this.input.eval(parse)).toValue();
+
+            this.value = new FillValue(
+                color   ?? input.color,
+                opacity ?? input.opacity);
+        }
+        else
+        {
+            this.value = new FillValue(color, opacity);
+        }
+
+
+        this.updateValues =
+        [
+            ['color',   this.value.color  ],
+            ['opacity', this.value.opacity]
+        ];
+        
+
+        this.validate();
+
+        return this;
+    }
+
+
+
+    pushValueUpdates(parse)
+    {
+        super.pushValueUpdates(parse);
+
+        if (this.input  ) this.input  .pushValueUpdates(parse);
+        if (this.color  ) this.color  .pushValueUpdates(parse);
+        if (this.opacity) this.opacity.pushValueUpdates(parse);
+    }
+    
+    
+    
+    toValue()
+    {
+        return this.options.enabled
+            ? new FillValue(
+                this.color   ? this.color  .toValue() : this.input.color  .toValue(),
+                this.opacity ? this.opacity.toValue() : this.input.opacity.toValue())
+            : FillValue.NaN;
+    }
+
+
+
+    isValid()
+    {
+        return this.color  .isValid()
+            && this.opacity.isValid();
+    }
+
+
+
+    invalidate()
+    {
+        super.invalidate();
+
+        if (this.input  ) this.input  .invalidate();
+        if (this.color  ) this.color  .invalidate();
+        if (this.opacity) this.opacity.invalidate();
+    }
+}
+
+
+class GStroke
+extends GShape
+{
+    input  = null;
+
+    fill   = null;
+    weight = null;
+    fit    = null;
+    join   = null;
+    miter  = null;
+
+
+
+    constructor(nodeId, options)
+    {
+        super(STROKE, nodeId, options);
+    }
+
+
+
+    copy()
+    {
+        const copy = new GStroke(this.nodeId, this.options);
+
+        copy.copyBase(this);
+
+        if (this.input) 
+            copy.input = this.input.copy();
+
+        if (this.fill  ) copy.fill   = this.fill  .copy();
+        if (this.weight) copy.weight = this.weight.copy();
+        if (this.fit   ) copy.fit    = this.fit   .copy();
+        if (this.join  ) copy.join   = this.join  .copy();
+        if (this.miter ) copy.miter  = this.miter .copy();
+
+        return copy;
+    }
+
+
+
+    async eval(parse)
+    {
+        if (this.isCached())
+            return this;
+
+        let fill = this.fill ? (await this.fill.eval(parse)).toValue() : null;
+
+        fill = this.validateFill(fill);
+
+
+        const weight = this.weight ? (await this.weight.eval(parse)).toValue() : null;
+        const fit    = this.fit    ? (await this.fit   .eval(parse)).toValue() : null;
+        const join   = this.join   ? (await this.join  .eval(parse)).toValue() : null;
+        const miter  = this.miter  ? (await this.miter .eval(parse)).toValue() : null;
+
+
+        if (this.input)
+        {
+            const input = (await this.input.eval(parse)).toValue();
+
+            this.value = new StrokeValue(
+                fill   ?? input.fill,
+                weight ?? input.weight,
+                fit    ?? input.fit,
+                join   ?? input.join,
+                miter  ?? input.miter);
+        }
+        else
+        {
+            this.value = new StrokeValue(fill, weight, fit, join, miter);
+        }
+
+
+        this.updateValues =
+        [
+            ['fill',   this.value.fill  ],
+            ['weight', this.value.weight],
+            ['fit',    this.value.fit   ],
+            ['join',   this.value.join  ],
+            ['miter',  this.value.miter ]
+        ];
+        
+
+        this.validate();
+
+        return this;
+    }
+
+
+
+    validateFill(fill)
+    {
+        if (!fill)
+            return null;
+
+
+        if (fill.type == COLOR_VALUE)
+            return FillValue.fromRgb(scaleRgb(fill.toRgb()), 0xff);
+        else
+            return fill;
+    }
+
+
+
+    pushValueUpdates(parse)
+    {
+        super.pushValueUpdates(parse);
+
+        if (this.input ) this.input .pushValueUpdates(parse);
+        if (this.fill  ) this.fill  .pushValueUpdates(parse);
+        if (this.weight) this.weight.pushValueUpdates(parse);
+        if (this.fit   ) this.fit   .pushValueUpdates(parse);
+        if (this.join  ) this.join  .pushValueUpdates(parse);
+        if (this.miter ) this.miter .pushValueUpdates(parse);
+    }    
+    
+    
+    toValue()
+    {
+        return new StrokeValue(
+            this.options.enabled
+            ? this.validateFill(this.fill ? this.fill.toValue() : this.input.fill.toValue())
+            : FillValue.NaN,
+            this.weight ? this.weight.toValue() : this.input.weight.toValue(),
+            this.fit    ? this.fit   .toValue() : this.input.fit   .toValue(),
+            this.join   ? this.join  .toValue() : this.input.join  .toValue(),
+            this.miter  ? this.miter .toValue() : this.input.miter .toValue());
+    }                 
+
+
+
+    isValid()
+    {
+        return this.fill  .isValid()
+            && this.weight.isValid()
+            && this.fit   .isValid()
+            && this.join  .isValid()
+            && this.miter .isValid();
+    }
+
+
+
+    invalidate()
+    {
+        super.invalidate();
+
+        if (this.input ) this.input .invalidate();
+        if (this.fill  ) this.fill  .invalidate();
+        if (this.weight) this.weight.invalidate();
+        if (this.fit   ) this.fit   .invalidate();
+        if (this.join  ) this.join  .invalidate();
+        if (this.miter ) this.miter .invalidate();
+    }
+}
+
+
 class GColorStop
 extends GOperator
 {
@@ -16064,6 +16678,180 @@ extends GOperator
         if (this.position) this.position.invalidate();
     }
 }
+
+
+class GDropShadow
+extends GOperator
+{
+    input  = null;
+
+    x      = null;
+    y      = null;
+    blur   = null;
+    spread = null;
+    fill   = null;
+    blend  = null;
+    behind = null;
+
+
+
+    constructor(nodeId, options)
+    {
+        super(DROP_SHADOW, nodeId, options);
+    }
+
+
+
+    copy()
+    {
+        const copy = new GDropShadow(this.nodeId, this.options);
+
+        copy.copyBase(this);
+
+        if (this.input) 
+            copy.input = this.input.copy();
+
+        if (this.x     ) copy.x      = this.x     .copy();
+        if (this.y     ) copy.y      = this.y     .copy();
+        if (this.blur  ) copy.blur   = this.blur  .copy();
+        if (this.spread) copy.spread = this.spread.copy();
+        if (this.fill  ) copy.fill   = this.fill  .copy();
+        if (this.blend ) copy.blend  = this.blend .copy();
+        if (this.behind) copy.behind = this.behind.copy();
+
+        return copy;
+    }
+
+
+
+    async eval(parse)
+    {
+        if (this.isCached())
+            return this;
+``
+
+        const x      = this.x      ? (await this.x     .eval(parse)).toValue() : null;
+        const y      = this.y      ? (await this.y     .eval(parse)).toValue() : null;
+        const blur   = this.blur   ? (await this.blur  .eval(parse)).toValue() : null;
+        const spread = this.spread ? (await this.spread.eval(parse)).toValue() : null;
+        const fill   = this.fill   ? (await this.fill  .eval(parse)).toValue() : null;
+        const blend  = this.blend  ? (await this.blend .eval(parse)).toValue() : null;
+        const behind = this.behind ? (await this.behind.eval(parse)).toValue() : null;
+
+        
+        if (this.input)
+        {
+            const input = (await this.input.eval(parse)).toValue();
+
+            this.value = new DropShadowValue(
+                x      ?? input.x,
+                y      ?? input.y,
+                blur   ?? input.blur,
+                spread ?? input.spread,
+                fill   ?? input.fill,
+                blend  ?? input.blend,
+                behind ?? input.behind);
+        }
+        else
+        {
+            this.value = new DropShadowValue(
+                x, 
+                y, 
+                blur, 
+                spread, 
+                fill, 
+                blend, 
+                behind);
+        }
+
+
+        this.updateValues =
+        [
+            ['x',      this.value.x     ],
+            ['y',      this.value.y     ],
+            ['blur',   this.value.blur  ],
+            ['spread', this.value.spread],
+            ['fill',   this.value.fill  ],
+            ['blend',  this.value.blend ],
+            ['behind', this.value.behind]
+        ];
+        
+
+        this.validate();
+
+        return this;
+    }
+
+
+
+    pushValueUpdates(parse)
+    {
+        super.pushValueUpdates(parse);
+
+        if (this.input ) this.input .pushValueUpdates(parse);
+        if (this.x     ) this.x     .pushValueUpdates(parse);
+        if (this.y     ) this.y     .pushValueUpdates(parse);
+        if (this.blur  ) this.blur  .pushValueUpdates(parse);
+        if (this.spread) this.spread.pushValueUpdates(parse);
+        if (this.fill  ) this.fill  .pushValueUpdates(parse);
+        if (this.blend ) this.blend .pushValueUpdates(parse);
+        if (this.behind) this.behind.pushValueUpdates(parse);
+    }
+    
+    
+    
+    toValue()
+    {
+        return this.options.enabled
+            ? new DropShadowValue(
+                this.x      ? this.x     .toValue() : this.input.x     .toValue(),
+                this.y      ? this.y     .toValue() : this.input.y     .toValue(),
+                this.blur   ? this.blur  .toValue() : this.input.blur  .toValue(),
+                this.spread ? this.spread.toValue() : this.input.spread.toValue(),
+                this.fill   ? this.fill  .toValue() : this.input.fill  .toValue(),
+                this.blend  ? this.blend .toValue() : this.input.blend .toValue(),
+                this.behind ? this.behind.toValue() : this.input.behind.toValue())
+            : DropShadowValue.NaN;
+    }
+
+
+
+    isValid()
+    {
+        return this.x     .isValid()
+            && this.y     .isValid()
+            && this.blur  .isValid()
+            && this.spread.isValid()
+            && this.fill  .isValid()
+            && this.blend .isValid()
+            && this.behind.isValid();
+    }
+
+
+
+    invalidate()
+    {
+        super.invalidate();
+
+        if (this.input ) this.input .invalidate();
+        if (this.x     ) this.x     .invalidate();
+        if (this.y     ) this.y     .invalidate();
+        if (this.blur  ) this.blur  .invalidate();
+        if (this.spread) this.spread.invalidate();
+        if (this.fill  ) this.fill  .invalidate();
+        if (this.blend ) this.blend .invalidate();
+        if (this.behind) this.behind.invalidate();
+    }
+}
+
+
+
+
+
+
+
+
+
 
 
 class GShapeBase
@@ -18513,16 +19301,19 @@ extends GOperator
         const bounds = getObjBounds(this.objects);
         const angle  = options.angle.toNumber()/360*Tau;
 
-        const dx = 
-            bounds.width != 0
-            ? (0.5 + options.centerX.toNumber() / (bounds.width /2)) * bounds.width
-            : 0;
+        
+        // let dx = 
+        //     bounds.width != 0
+        //     ? (0.5 + options.centerX.toNumber() / (bounds.width /2)) * bounds.width
+        //     : 0;
 
-        const dy = 
-            bounds.height != 0
-            ? (0.5 + options.centerY.toNumber() / (bounds.height/2)) * bounds.height
-            : 0;
+        // let dy = 
+        //     bounds.height != 0
+        //     ? (0.5 + options.centerY.toNumber() / (bounds.height/2)) * bounds.height
+        //     : 0;
 
+        console.log('bounds =', bounds);
+        // console.log('dx =', dx);
             
         for (const obj of this.objects)
         {
@@ -18533,11 +19324,15 @@ extends GOperator
             let xform = clone(obj.relativeTransform);
 
 
+            const dx = xform[0][2] - (bounds.x + bounds.width /2);
+            const dy = xform[1][2] - (bounds.y + bounds.height/2);
+
+
             xform = mulm3m3(
                 xform,
-                [[1, 0, dx],
-                 [0, 1, dy],
-                 [0, 0, 1 ]]);
+                [[1, 0, -dx],
+                 [0, 1, -dy],
+                 [0, 0,  1 ]]);
 
             xform = mulm3m3(
                 xform,
@@ -18547,9 +19342,9 @@ extends GOperator
 
             xform = mulm3m3(
                 xform,
-                [[1, 0, -dx],
-                 [0, 1, -dy],
-                 [0, 0,  1 ]]);
+                [[1, 0, dx],
+                 [0, 1, dy],
+                 [0, 0, 1 ]]);
 
 
             obj.relativeTransform = xform;
@@ -19304,390 +20099,6 @@ extends GOperator
     toValue()
     {
         return this.value.copy();
-    }
-}
-
-
-class GColorStyle
-extends GShape
-{
-    id;
-
-    colorStyle;
-
-    existing;
-    linked;
-
-
-
-    constructor(nodeId, options, styleId)
-    {
-        super(COLOR_STYLE, nodeId, options);
-
-        this.id == styleId;
-    }
-
-
-
-    copy()
-    {
-        const copy = new GColorStyle(this.nodeId, this.options);
-
-        copy.id         = this.id;
-        copy.colorStyle = this.colorStyle.copy();
-        
-        copy.existing   = this.existing;
-        copy.linked     = this.linked;
-
-        return copy;
-    }
-
-
-
-    async eval(parse)
-    {
-        if (this.isCached())
-            return this;
-
-            
-        this.value = (await this.value.eval(parse)).toValue();
-
-
-        if (   this.value.isValid()
-            && (  !this.existing
-                || this.linked))
-        {
-            if (this.value.type == COLOR_VALUE)
-                this.value = FillValue.fromRgb(scaleRgb(this.value.toRgb()), 0xff);
-
-            const rgba       = this.value.toRgba();
-            const rgbaStripe = rgb_a(getStripeBackColor(rgba), rgba[3]);
-
-            this.evalStyle({rgba: rgbaStripe});
-        }
-        else
-            this.value = FillValue.NaN;
-
-
-        this.updateValues = [['value', this.value]];
-
-
-        this.validate();
-
-        return this;
-    }
-
-
-
-    evalStyle(options = {})
-    {
-        if (!this.options.enabled)
-            return;
-
-            
-        const colorStyle = new FigmaColorStyle(this.nodeId, this.id, this.name);
-
-        colorStyle.existing = this.existing;
-
-
-        colorStyle.paints = 
-        [
-            [ 'SOLID', 
-                      Math.round(options.rgba[0] * 0xff)
-              + ' ' + Math.round(options.rgba[1] * 0xff)
-              + ' ' + Math.round(options.rgba[2] * 0xff)
-              + ' ' + Math.round(options.rgba[3] * 100 ) ]
-        ];
-
-
-        this.colorStyle = colorStyle;
-    }
-
-
-
-    // pushValueUpdates(parse)
-    // {
-    //     super.pushValueUpdates(parse);
-
-    //     if (this.colorStyle) this.colorStyle.pushValueUpdates(parse);
-    // }
-
-
-
-    invalidate()
-    {
-        super.invalidate();
-
-        if (this.colorStyle) this.colorStyle.invalidate();
-    }
-}
-
-
-class GFill
-extends GOperator
-{
-    input   = null;
-
-    color   = null;
-    opacity = null;
-
-
-
-    constructor(nodeId, options)
-    {
-        super(FILL, nodeId, options);
-    }
-
-
-
-    copy()
-    {
-        const copy = new GFill(this.nodeId, this.options);
-
-        copy.copyBase(this);
-
-        if (this.input) 
-            copy.input = this.input.copy();
-
-        if (this.color  ) copy.color   = this.color  .copy();
-        if (this.opacity) copy.opacity = this.opacity.copy();
-
-        return copy;
-    }
-
-
-
-    async eval(parse)
-    {
-        if (this.isCached())
-            return this;
-``
-
-        const color   = this.color   ? (await this.color  .eval(parse)).toValue() : null;
-        const opacity = this.opacity ? (await this.opacity.eval(parse)).toValue() : null;
-
-        
-        if (this.input)
-        {
-            const input = (await this.input.eval(parse)).toValue();
-
-            this.value = new FillValue(
-                color   ?? input.color,
-                opacity ?? input.opacity);
-        }
-        else
-        {
-            this.value = new FillValue(color, opacity);
-        }
-
-
-        this.updateValues =
-        [
-            ['color',   this.value.color  ],
-            ['opacity', this.value.opacity]
-        ];
-        
-
-        this.validate();
-
-        return this;
-    }
-
-
-
-    pushValueUpdates(parse)
-    {
-        super.pushValueUpdates(parse);
-
-        if (this.input  ) this.input  .pushValueUpdates(parse);
-        if (this.color  ) this.color  .pushValueUpdates(parse);
-        if (this.opacity) this.opacity.pushValueUpdates(parse);
-    }
-    
-    
-    
-    toValue()
-    {
-        return this.options.enabled
-        ? new FillValue(
-            this.color   ? this.color  .toValue() : this.input.color  .toValue(),
-            this.opacity ? this.opacity.toValue() : this.input.opacity.toValue())
-            : FillValue.NaN;
-    }
-
-
-
-    isValid()
-    {
-        return this.color  .isValid()
-            && this.opacity.isValid();
-    }
-
-
-
-    invalidate()
-    {
-        super.invalidate();
-
-        if (this.input  ) this.input  .invalidate();
-        if (this.color  ) this.color  .invalidate();
-        if (this.opacity) this.opacity.invalidate();
-    }
-}
-
-
-class GStroke
-extends GShape
-{
-    input  = null;
-
-    fill   = null;
-    weight = null;
-    fit    = null;
-    join   = null;
-    miter  = null;
-
-
-
-    constructor(nodeId, options)
-    {
-        super(STROKE, nodeId, options);
-    }
-
-
-
-    copy()
-    {
-        const copy = new GStroke(this.nodeId, this.options);
-
-        copy.copyBase(this);
-
-        if (this.input) 
-            copy.input = this.input.copy();
-
-        if (this.fill  ) copy.fill   = this.fill  .copy();
-        if (this.weight) copy.weight = this.weight.copy();
-        if (this.fit   ) copy.fit    = this.fit   .copy();
-        if (this.join  ) copy.join   = this.join  .copy();
-        if (this.miter ) copy.miter  = this.miter .copy();
-
-        return copy;
-    }
-
-
-
-    async eval(parse)
-    {
-        if (this.isCached())
-            return this;
-
-        let fill = this.fill ? (await this.fill.eval(parse)).toValue() : null;
-
-        fill = this.validateFill(fill);
-
-
-        const weight = this.weight ? (await this.weight.eval(parse)).toValue() : null;
-        const fit    = this.fit    ? (await this.fit   .eval(parse)).toValue() : null;
-        const join   = this.join   ? (await this.join  .eval(parse)).toValue() : null;
-        const miter  = this.miter  ? (await this.miter .eval(parse)).toValue() : null;
-
-
-        if (this.input)
-        {
-            const input = (await this.input.eval(parse)).toValue();
-
-            this.value = new StrokeValue(
-                fill   ?? input.fill,
-                weight ?? input.weight,
-                fit    ?? input.fit,
-                join   ?? input.join,
-                miter  ?? input.miter);
-        }
-        else
-        {
-            this.value = new StrokeValue(fill, weight, fit, join, miter);
-        }
-
-
-        this.updateValues =
-        [
-            ['fill',   this.value.fill  ],
-            ['weight', this.value.weight],
-            ['fit',    this.value.fit   ],
-            ['join',   this.value.join  ],
-            ['miter',  this.value.miter ]
-        ];
-        
-
-        this.validate();
-
-        return this;
-    }
-
-
-
-    validateFill(fill)
-    {
-        if (!fill)
-            return null;
-
-
-        if (fill.type == COLOR_VALUE)
-            return FillValue.fromRgb(scaleRgb(fill.toRgb()), 0xff);
-        else
-            return fill;
-    }
-
-
-
-    pushValueUpdates(parse)
-    {
-        super.pushValueUpdates(parse);
-
-        if (this.input ) this.input .pushValueUpdates(parse);
-        if (this.fill  ) this.fill  .pushValueUpdates(parse);
-        if (this.weight) this.weight.pushValueUpdates(parse);
-        if (this.fit   ) this.fit   .pushValueUpdates(parse);
-        if (this.join  ) this.join  .pushValueUpdates(parse);
-        if (this.miter ) this.miter .pushValueUpdates(parse);
-    }    
-    
-    
-    toValue()
-    {
-        return new StrokeValue(
-            this.options.enabled
-            ? this.validateFill(this.fill ? this.fill.toValue() : this.input.fill.toValue())
-            : FillValue.NaN,
-            this.weight ? this.weight.toValue() : this.input.weight.toValue(),
-            this.fit    ? this.fit   .toValue() : this.input.fit   .toValue(),
-            this.join   ? this.join  .toValue() : this.input.join  .toValue(),
-            this.miter  ? this.miter .toValue() : this.input.miter .toValue());
-    }                 
-
-
-
-    isValid()
-    {
-        return this.fill  .isValid()
-            && this.weight.isValid()
-            && this.fit   .isValid()
-            && this.join  .isValid()
-            && this.miter .isValid();
-    }
-
-
-
-    invalidate()
-    {
-        super.invalidate();
-
-        if (this.input ) this.input .invalidate();
-        if (this.fill  ) this.fill  .invalidate();
-        if (this.weight) this.weight.invalidate();
-        if (this.fit   ) this.fit   .invalidate();
-        if (this.join  ) this.join  .invalidate();
-        if (this.miter ) this.miter .invalidate();
     }
 }
 
@@ -23770,6 +24181,90 @@ function genParseColorStop(parse)
 
 
 
+function genParseDropShadowValue(parse)
+{
+    parse.pos++; // DROP_SHADOW_VALUE
+
+    const stroke = parse.move();
+
+    if (parse.settings.logRequests) 
+        logReqValue(DROP_SHADOW_VALUE, stroke, parse);
+
+    return parseDropShadowValue(stroke)[0];
+}
+
+
+
+function genParseDropShadow(parse)
+{
+    const [, nodeId, options, ignore] = genParseNodeStart(parse);
+
+
+    const shadow = new GDropShadow(nodeId, options);
+
+    shadow.hasInputs = options.hasInputs;
+
+
+    let nInputs = -1;
+
+    if (!ignore)
+    {
+        nInputs = parseInt(parse.move());
+        console.assert(nInputs => 0 && nInputs <= 1, 'nInputs must be [0, 1]');
+    }
+
+
+    if (parse.settings.logRequests) 
+        logReq(shadow, parse, ignore, nInputs);
+
+
+    if (ignore)
+    {
+        genParseNodeEnd(parse, shadow);
+        return parse.parsedNodes.find(n => n.nodeId == nodeId);
+    }
+
+
+    parse.nTab++;
+
+
+    let paramIds;
+
+    if (nInputs == 1)
+    {
+        shadow.input = genParse(parse);
+        paramIds = parse.move().split(',');
+    }
+    else
+        paramIds = ['x', 'y', 'blur', 'spread', 'fill', 'blend', 'behind'];
+
+
+    parse.inParam = false;
+
+    for (const id of paramIds)
+    {
+        switch (id)
+        {
+        case 'x':      shadow.x      = genParse(parse); break;
+        case 'y':      shadow.y      = genParse(parse); break;
+        case 'blur':   shadow.blur   = genParse(parse); break;
+        case 'spread': shadow.spread = genParse(parse); break;
+        case 'fill':   shadow.fill   = genParse(parse); break;
+        case 'blend':  shadow.blend  = genParse(parse); break;
+        case 'behind': shadow.behind = genParse(parse); break;
+        }
+    }
+    
+    
+    parse.nTab--;
+
+
+    genParseNodeEnd(parse, shadow);
+    return shadow;
+}
+
+
+
 // function genParseColorStyleValue(parse)
 // {
 //     parse.pos++; // COLOR_STYLE_VALUE
@@ -24404,6 +24899,7 @@ function genParse(parse, inParam = true)
           || parse.next == NUMBER_LIST_VALUE             
           || parse.next ==   TEXT_LIST_VALUE             
           || parse.next ==  SHAPE_LIST_VALUE      ) result = genParseListValue       (parse);
+
     else if (parse.next == LIST                   ) result = genParseList            (parse);
     else if (parse.next == LIST_EXPAND            ) result = genParseExpandList      (parse);
     else if (parse.next == ITEMS                  ) result = genParseItems           (parse);
@@ -24486,6 +24982,18 @@ function genParse(parse, inParam = true)
      
     else if (parse.next == COLOR_STOP_VALUE       ) result = genParseColorStopValue  (parse);
     else if (parse.next == COLOR_STOP             ) result = genParseColorStop       (parse);
+     
+    else if (parse.next == DROP_SHADOW_VALUE      ) result = genParseDropShadowValue (parse);
+    else if (parse.next == DROP_SHADOW            ) result = genParseDropShadow      (parse);
+     
+    else if (parse.next == INNER_SHADOW_VALUE     ) result = genParseInnerShadowValue(parse);
+    else if (parse.next == INNER_SHADOW           ) result = genParseInnerShadow     (parse);
+     
+    else if (parse.next == LAYER_BLUR_VALUE       ) result = genParseLayerBlurValue  (parse);
+    else if (parse.next == LAYER_BLUR             ) result = genParseLayerBlur       (parse);
+     
+    else if (parse.next == BACK_BLUR_VALUE        ) result = genParseBackBlurValue   (parse);
+    else if (parse.next == BACK_BLUR              ) result = genParseBackBlur        (parse);
      
     else if (parse.next == COLOR_STYLE            ) result = genParseColorStyle      (parse);
      

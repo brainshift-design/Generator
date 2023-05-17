@@ -655,14 +655,14 @@ const TEXT_TYPES =
 ];
 
 
-const COLOR_VALUE       = 'COL#';  
-const COLOR             = 'COL';   
-const VALID_COLOR       = 'CVAL';  
-const CORRECT_COLOR     = 'CCOR';  
-const COLOR_CONTRAST    = 'CCNT';  
-const COLORBLIND        = 'BLND';  
-const COLOR_INTERPOLATE = 'CLERP'; 
-const COLOR_BLEND       = 'CBLND';
+const COLOR_VALUE        = 'COL#';  
+const COLOR              = 'COL';   
+const VALID_COLOR        = 'CVAL';  
+const CORRECT_COLOR      = 'CCOR';  
+const COLOR_CONTRAST     = 'CCNT';  
+const COLORBLIND         = 'BLND';  
+const COLOR_INTERPOLATE  = 'CLERP'; 
+const COLOR_BLEND        = 'CBLND';
 
 
 const COLOR_TYPES =
@@ -676,72 +676,89 @@ const COLOR_TYPES =
 ];
 
 
-const FILL_VALUE        = 'FILL#';
-const FILL              = 'FILL';
-const FILL_TYPES        = [FILL_VALUE, FILL];
+const FILL_VALUE         = 'FILL#';
+const FILL               = 'FILL';
+const FILL_TYPES         = [FILL_VALUE, FILL];
+  
+const STROKE_VALUE       = 'STRK#';
+const STROKE             = 'STRK';
+const STROKE_TYPES       = [STROKE_VALUE, STROKE];
+  
+const COLOR_STOP_VALUE   = 'CSTOP#';
+const COLOR_STOP         = 'CSTOP';
+  
+const GRADIENT_VALUE     = 'GRAD#';
+const GRADIENT           = 'GRAD';
+const GRADIENT_TYPES     = [GRADIENT_VALUE, GRADIENT];
  
-const STROKE_VALUE      = 'STRK#';
-const STROKE            = 'STRK';
-const STROKE_TYPES      = [STROKE_VALUE, STROKE];
- 
-const COLOR_STOP_VALUE  = 'CSTOP#';
-const COLOR_STOP        = 'CSTOP';
- 
-const GRADIENT_VALUE    = 'GRAD#';
-const GRADIENT          = 'GRAD';
-const GRADIENT_TYPES    = [GRADIENT_VALUE, GRADIENT];
- 
- 
-const COLOR_STYLE       = 'CSTL';
- 
- 
-const SHAPE_VALUE       = 'SHP#'; // abstract placeholder
- 
-const RECTANGLE_VALUE   = 'RECT#';
-const RECTANGLE         = 'RECT'; 
-const RECTANGLE_TYPES   = [RECTANGLE_VALUE, RECTANGLE];
- 
-const LINE_VALUE        = 'LINE#';
-const LINE              = 'LINE'; 
-const LINE_TYPES        = [LINE_VALUE, LINE];
- 
-const ELLIPSE_VALUE     = 'ELPS#';
-const ELLIPSE           = 'ELPS'; 
-const ELLIPSE_TYPES     = [ELLIPSE_VALUE, ELLIPSE];
- 
-const POLYGON_VALUE     = 'POLY#';
-const POLYGON           = 'POLY'; 
-const POLYGON_TYPES     = [POLYGON_VALUE, POLYGON];
- 
-const STAR_VALUE        = 'STAR#';
-const STAR              = 'STAR'; 
-const STAR_TYPES        = [STAR_VALUE, STAR];
- 
-const TEXTSHAPE_VALUE   = 'TXTS#';
-const TEXTSHAPE         = 'TXTS'; 
-const TEXTSHAPE_TYPES   = [TEXTSHAPE_VALUE, TEXTSHAPE];
 
-const VECTOR_PATH_VALUE = 'VEC#';
-const VECTOR_PATH       = 'VEC'; 
-const VECTOR_PATH_TYPES = [VECTOR_PATH_VALUE, VECTOR_PATH];
+const DROP_SHADOW_VALUE  = 'DRSH#';
+const DROP_SHADOW        = 'DRSH';
+const DROP_SHADOW_TYPES  = [DROP_SHADOW_VALUE, DROP_SHADOW];
 
-const SHAPE_GROUP_VALUE = 'SGRP#';
-const SHAPE_GROUP       = 'SGRP';
-const SHAPE_GROUP_TYPES = [SHAPE_GROUP_VALUE, SHAPE_GROUP];
+const INNER_SHADOW_VALUE = 'INSH#';
+const INNER_SHADOW       = 'INSH';
+const INNER_SHADOW_TYPES = [INNER_SHADOW_VALUE, INNER_SHADOW];
 
-const FRAME_VALUE       = 'FRM#';
-const FRAME             = 'FRM';
-const FRAME_TYPES       = [FRAME_VALUE, FRAME];
+const LAYER_BLUR_VALUE   = 'LBLR#';
+const LAYER_BLUR         = 'LBLR';
+const LAYER_BLUR_TYPES   = [LAYER_BLUR_VALUE, LAYER_BLUR];
+
+const BACK_BLUR_VALUE    = 'DRSH#';
+const BACK_BLUR          = 'DRSH';
+const BACK_BLUR_TYPES    = [BACK_BLUR_VALUE, BACK_BLUR];
 
 
-const MOVE              = 'MOVE';
-const ROTATE            = 'ROT';
-const SCALE             = 'SCALE';
-const SKEW              = 'SKEW';
-
+const COLOR_STYLE        = 'CSTL';
  
-const POINT             = 'PT';
-const POINT_VALUE       = 'PT#';
+ 
+const SHAPE_VALUE        = 'SHP#'; // abstract placeholder
+ 
+const RECTANGLE_VALUE    = 'RECT#';
+const RECTANGLE          = 'RECT'; 
+const RECTANGLE_TYPES    = [RECTANGLE_VALUE, RECTANGLE];
+ 
+const LINE_VALUE         = 'LINE#';
+const LINE               = 'LINE'; 
+const LINE_TYPES         = [LINE_VALUE, LINE];
+  
+const ELLIPSE_VALUE      = 'ELPS#';
+const ELLIPSE            = 'ELPS'; 
+const ELLIPSE_TYPES      = [ELLIPSE_VALUE, ELLIPSE];
+  
+const POLYGON_VALUE      = 'POLY#';
+const POLYGON            = 'POLY'; 
+const POLYGON_TYPES      = [POLYGON_VALUE, POLYGON];
+  
+const STAR_VALUE         = 'STAR#';
+const STAR               = 'STAR'; 
+const STAR_TYPES         = [STAR_VALUE, STAR];
+  
+const TEXTSHAPE_VALUE    = 'TXTS#';
+const TEXTSHAPE          = 'TXTS'; 
+const TEXTSHAPE_TYPES    = [TEXTSHAPE_VALUE, TEXTSHAPE];
+ 
+const VECTOR_PATH_VALUE  = 'VEC#';
+const VECTOR_PATH        = 'VEC'; 
+const VECTOR_PATH_TYPES  = [VECTOR_PATH_VALUE, VECTOR_PATH];
+ 
+const SHAPE_GROUP_VALUE  = 'SGRP#';
+const SHAPE_GROUP        = 'SGRP';
+const SHAPE_GROUP_TYPES  = [SHAPE_GROUP_VALUE, SHAPE_GROUP];
+ 
+const FRAME_VALUE        = 'FRM#';
+const FRAME              = 'FRM';
+const FRAME_TYPES        = [FRAME_VALUE, FRAME];
+ 
+
+const MOVE               = 'MOVE';
+const ROTATE             = 'ROT';
+const SCALE              = 'SCALE';
+const SKEW               = 'SKEW';
+ 
+  
+const POINT              = 'PT';
+const POINT_VALUE        = 'PT#';
 
 
 const POINT_TYPES =
@@ -1732,16 +1749,10 @@ function updatePointSizes()
 
 function updatePointSize(figPoint)
 {
-    // const _x = point.x + point.width /2;
-    // const _y = point.y + point.height/2;
-
     figPoint.strokeWeight = 1.25 / curZoom;
 
     const size = 8 / curZoom;
     figPoint.resizeWithoutConstraints(size, size);
-
-    // point.x = _x - point.width /2;
-    // point.y = _y - point.height/2;
 
     convertExistingPointTransform(figPoint);
 }
@@ -1755,9 +1766,6 @@ function updatePointSize_(figPoint, genPoint)
     
     const size = 8 / curZoom;
     figPoint.resizeWithoutConstraints(size, size);
-
-    // point.x = genPoint.x - size/2;
-    // point.y = genPoint.y - size/2;
 
     convertPointTransform(figPoint, genPoint);
 }
@@ -1954,8 +1962,6 @@ function genRectIsValid(genRect)
 
 function figCreateRect(genRect)
 {
-    //console.log(obj);
-
     const figRect = figma.createRectangle();
 
     figRect.name = makeObjectName(genRect);
@@ -1964,15 +1970,7 @@ function figCreateRect(genRect)
         return figRect;
 
 
-    //figRect.x = genRect.x;
-    //figRect.y = genRect.y;
-
-    // figRect.resize(
-    //     Math.max(0.01, genRect.width), 
-    //     Math.max(0.01, genRect.height));
-        
-    //figRect.rotation          = genRect.angle;
-    figRect.cornerRadius      = genRect.round;
+    figRect.cornerRadius = genRect.round;
 
 
     setObjectTransform(figRect, genRect);
@@ -1995,20 +1993,8 @@ function figUpdateRect(figRect, genRect)
 
     figRect.name = makeObjectName(genRect);
 
-    //figRect.x    = genRect.x;
-    //figRect.y    = genRect.y;
 
-    // if (   figRect.width  != genRect.width
-    //     || figRect.height != genRect.height)
-    // {
-    //     figRect.resize(
-    //         Math.max(0.01, genRect.width), 
-    //         Math.max(0.01, genRect.height));
-    // }
-
-    //figRect.rotation          = genRect.angle;
     figRect.cornerRadius = genRect.round;
-
 
     setObjectTransform(figRect, genRect);
 
@@ -2035,8 +2021,6 @@ function genLineIsValid(genLine)
 
 function figCreateLine(genLine)
 {
-    //console.log(obj);
-
     const figLine = figma.createLine();
 
     figLine.name = makeObjectName(genLine);
@@ -2044,14 +2028,6 @@ function figCreateLine(genLine)
 
     if (!genLineIsValid(genLine))
         return figLine;
-
-
-    //figLine.x = genLine.x;
-    //figLine.y = genLine.y;
-    
-    //figLine.resize(Math.max(0.01, genLine.width), 0);
-        
-    //figLine.rotation          = genLine.angle;
 
 
     setObjectTransform(figLine, genLine);
@@ -2073,14 +2049,6 @@ function figUpdateLine(figLine, genLine)
 
 
     figLine.name = makeObjectName(genLine);
-
-    //figLine.x    = genLine.x;
-    //figLine.y    = genLine.y;
-
-    // if (figLine.width != genLine.width)
-    //     figLine.resize(Math.max(0.01, genLine.width), 0);
-
-    //figLine.rotation          = genLine.angle;
 
 
     setObjectTransform(figLine, genLine);
@@ -2109,20 +2077,13 @@ function genEllipseIsValid(genEllipse)
 
 function figCreateEllipse(genEllipse)
 {
-    //console.log(obj);
-
     const figEllipse = figma.createEllipse();
+
 
     figEllipse.name = makeObjectName(genEllipse);
 
     if (!genEllipseIsValid(genEllipse))
         return figEllipse;
-
-
-    //figEllipse.x                 = genEllipse.x;
-    //figEllipse.y                 = genEllipse.y;
-        
-    //figEllipse.rotation          = genEllipse.angle;
 
 
     setObjectTransform(figEllipse, genEllipse);
@@ -2133,10 +2094,6 @@ function figCreateEllipse(genEllipse)
         
     else
     {
-    //     figEllipse.resize(
-    //         Math.max(0.01, genEllipse.width), 
-    //         Math.max(0.01, genEllipse.height));
-
         setObjectFills  (figEllipse, genEllipse);
         setObjectStrokes(figEllipse, genEllipse);
     }
@@ -2154,19 +2111,6 @@ function figUpdateEllipse(figEllipse, genEllipse)
 
 
     figEllipse.name = makeObjectName(genEllipse);
-
-    //figEllipse.x    = genEllipse.x;
-    //figEllipse.y    = genEllipse.y;
-
-    // if (   figEllipse.width  != genEllipse.width
-    //     || figEllipse.height != genEllipse.height)
-    // {
-    //     figEllipse.resize(
-    //         Math.max(0.01, genEllipse.width), 
-    //         Math.max(0.01, genEllipse.height));
-    // }
-
-    //figEllipse.rotation = genEllipse.angle;
 
 
     setObjectTransform(figEllipse, genEllipse);
@@ -2197,8 +2141,6 @@ function genPolyIsValid(genPoly)
 
 function figCreatePolygon(genPoly)
 {
-    //console.log(obj);
-
     const figPoly = figma.createPolygon();
 
     figPoly.name = makeObjectName(genPoly);
@@ -2207,16 +2149,8 @@ function figCreatePolygon(genPoly)
         return figPoly;
 
 
-    //figPoly.x = genPoly.x;
-    //figPoly.y = genPoly.y;
-    
-    // figPoly.resize(
-    //     Math.max(0.01, genPoly.width), 
-    //     Math.max(0.01, genPoly.height));
-        
-    //figPoly.rotation          = genPoly.angle;
-    figPoly.cornerRadius      = genPoly.round;
-    figPoly.pointCount        = genPoly.corners;
+    figPoly.cornerRadius = genPoly.round;
+    figPoly.pointCount   = genPoly.corners;
 
 
     setObjectTransform(figPoly, genPoly);
@@ -2239,20 +2173,9 @@ function figUpdatePolygon(figPoly, genPoly)
 
     figPoly.name = makeObjectName(genPoly);
 
-    //figPoly.x    = genPoly.x;
-    //figPoly.y    = genPoly.y;
 
-    // if (   figPoly.width  != genPoly.width
-    //     || figPoly.height != genPoly.height)
-    // {
-    //     figPoly.resize(
-    //         Math.max(0.01, genPoly.width), 
-    //         Math.max(0.01, genPoly.height));
-    // }
-
-    //figPoly.rotation          = genPoly.angle;
-    figPoly.cornerRadius      = genPoly.round;
-    figPoly.pointCount        = genPoly.corners;
+    figPoly.cornerRadius = genPoly.round;
+    figPoly.pointCount   = genPoly.corners;
 
 
     setObjectTransform(figPoly, genPoly);
@@ -2284,8 +2207,6 @@ function genStarIsValid(genStar)
 
 function figCreateStar(genStar)
 {
-    //console.log(obj);
-
     const figStar = figma.createStar();
 
     figStar.name = makeObjectName(genStar);
@@ -2294,17 +2215,9 @@ function figCreateStar(genStar)
         return figStar;
 
 
-    //figStar.x = genStar.x;
-    //figStar.y = genStar.y;
-    
-    // figStar.resize(
-    //     Math.max(0.01, genStar.width), 
-    //     Math.max(0.01, genStar.height));
-        
-    //figStar.rotation          = genStar.angle;
-    figStar.cornerRadius      = genStar.round;
-    figStar.pointCount        = genStar.points;
-    figStar.innerRadius       = genStar.convex / 100;
+    figStar.cornerRadius = genStar.round;
+    figStar.pointCount   = genStar.points;
+    figStar.innerRadius  = genStar.convex / 100;
 
 
     setObjectTransform(figStar, genStar);
@@ -2327,21 +2240,10 @@ function figUpdateStar(figStar, genStar)
 
     figStar.name = makeObjectName(genStar);
 
-    //figStar.x    = genStar.x;
-    //figStar.y    = genStar.y;
 
-    // if (   figStar.width  != genStar.width
-    //     || figStar.height != genStar.height)
-    // {
-    //     figStar.resize(
-    //         Math.max(0.01, genStar.width), 
-    //         Math.max(0.01, genStar.height));
-    // }
-
-    //figStar.rotation          = genStar.angle;
-    figStar.cornerRadius      = genStar.round;
-    figStar.pointCount        = genStar.points;
-    figStar.innerRadius       = genStar.convex / 100;
+    figStar.cornerRadius = genStar.round;
+    figStar.pointCount   = genStar.points;
+    figStar.innerRadius  = genStar.convex / 100;
 
 
     setObjectTransform(figStar, genStar);
@@ -2395,21 +2297,8 @@ function figCreateText(genText)
         figText.fontSize   = Math.max(1, genText.size);
         
         figText.characters = genText.text;
-
-        //setTextStyle(text, obj);
     })();
 
-
-    //figText.x = genText.x;
-    //figText.y = genText.y;
-
-
-    // figText.resize(
-    //     Math.max(0.01, genText.width), 
-    //     Math.max(0.01, genText.height));
-        
-    //figText.rotation = genText.angle;
-    
 
     setObjectTransform(figText, genText);
 
@@ -2443,26 +2332,10 @@ function figUpdateText(figText, genText)
         figText.fontSize   = Math.max(1, genText.size);
 
         figText.characters = genText.text;
-
-        //setTextStyle(figText, genText);
     })();
 
 
     figText.name = makeObjectName(genText);
-
-    //figText.x    = genText.x;
-    //figText.y    = genText.y;
-
-
-    // if (   figText.width  != genText.width
-    //     || figText.height != genText.height)
-    // {
-    //     figText.resize(
-    //         Math.max(0.01, genText.width), 
-    //         Math.max(0.01, genText.height));
-    // }
-
-    //figText.rotation = genText.angle;
 
 
     setObjectTransform(figText, genText);
@@ -2498,8 +2371,6 @@ function genPointIsValid(genPoint)
 
 function figCreatePoint(genPoint)
 {    
-    //console.log('genPoint =', genPoint);
-
     const figPoint = figma.createEllipse();
 
     figPoint.name = makeObjectName(genPoint);
@@ -2525,13 +2396,13 @@ function figCreatePoint(genPoint)
         figPoint.resizeWithoutConstraints(size, size);
 
 
-        convertPointTransform(figPoint, genPoint);
-
-
         figPoint.setPluginData('actualX', genPoint.relativeTransform[0][2].toString());
         figPoint.setPluginData('actualY', genPoint.relativeTransform[1][2].toString());
 
-        
+
+        convertPointTransform(figPoint, genPoint);
+
+       
         figPoint.fills            =  getObjectFills([['SOLID', '255 255 255 100']]);
         figPoint.strokes          =  getObjectFills([['SOLID',  '12 140 233 100']]);
 
@@ -2549,8 +2420,6 @@ function figCreatePoint(genPoint)
 
 function figUpdatePoint(figPoint, genPoint)
 {
-    // console.log('genPoint =', genPoint);
-
     if (!genPointIsValid(genPoint))
         return;
 
@@ -2561,20 +2430,17 @@ function figUpdatePoint(figPoint, genPoint)
     figPoint.x = genPoint.x;
     figPoint.y = genPoint.y;
 
-    figPoint.setPluginData('actualX', genPoint.actualX);
-    figPoint.setPluginData('actualY', genPoint.actualY);
-
 
     const size = 8 / curZoom;
 
     figPoint.resizeWithoutConstraints(size, size);
 
 
-    convertPointTransform(figPoint, genPoint);
-
-
     figPoint.setPluginData('actualX', genPoint.relativeTransform[0][2].toString());
     figPoint.setPluginData('actualY', genPoint.relativeTransform[1][2].toString());
+
+
+    convertPointTransform(figPoint, genPoint);
 
 
     figPoint.strokeWeight = 1.25 / curZoom;
@@ -2596,8 +2462,6 @@ function genVectorPathIsValid(genPath)
 
 function figCreateVectorPath(genPath)
 {
-    //console.log(obj);
-
     const figPath = figma.createVector();
 
     figPath.name = makeObjectName(genPath);
@@ -2606,17 +2470,13 @@ function figCreateVectorPath(genPath)
         return figPath;
 
     
-    //figPath.x = 0; //genPath.x;
-    //figPath.y = 0; //genPath.y;
-
-
     figPath.vectorPaths = [{
         windingRule: genPath.winding == 1 ? 'NONZERO' : 'EVENODD',
         data:        genPath.pathData
     }];
 
 
-    figPath.cornerRadius      = genPath.round;
+    figPath.cornerRadius = genPath.round;
 
 
     setObjectTransform(figPath, genPath);
@@ -2639,9 +2499,6 @@ function figUpdateVectorPath(figPath, genPath)
 
     figPath.name = makeObjectName(genPath);
 
-    //figPath.x    = 0; //genPath.x;
-    //figPath.y    = 0; //genPath.y;
-
     
     figPath.vectorPaths = [{
         windingRule: genPath.winding == 1 ? 'NONZERO' : 'EVENODD',
@@ -2649,7 +2506,7 @@ function figUpdateVectorPath(figPath, genPath)
     }];
 
 
-    figPath.cornerRadius      = genPath.round;
+    figPath.cornerRadius = genPath.round;
     
 
     setObjectTransform(figPath, genPath);
@@ -2674,8 +2531,6 @@ function genShapeGroupIsValid(genGroup)
 
 function figCreateShapeGroup(genGroup)
 {
-    //console.log(obj);
-
     let objects = [];
 
     for (const obj of genGroup.children)
@@ -2766,15 +2621,7 @@ function figCreateFrame(genFrame)
             return figFrame;
         
         
-        //figFrame.x = genFrame.x;
-        //figFrame.y = genFrame.y;
-    
-        // figFrame.resize(
-        //     Math.max(0.01, genFrame.width ), 
-        //     Math.max(0.01, genFrame.height));
-            
-        //figFrame.rotation          = genFrame.angle;
-        figFrame.cornerRadius      = genFrame.round;
+        figFrame.cornerRadius = genFrame.round;
 
         
         setObjectTransform(figFrame, genFrame);
@@ -2807,15 +2654,8 @@ function figUpdateFrame(figFrame, genFrame)
 
     figFrame.name = makeObjectName(genFrame);
 
-    //figFrame.x    = genFrame.x;
-    //figFrame.y    = genFrame.y;
 
-    // figFrame.resize(
-    //     Math.max(0.01, genFrame.width ), 
-    //     Math.max(0.01, genFrame.height));
-        
-    //figFrame.rotation          = genFrame.angle;
-    figFrame.cornerRadius      = genFrame.round;
+    figFrame.cornerRadius = genFrame.round;
 
 
     setObjectTransform(figFrame, genFrame);
@@ -2871,8 +2711,8 @@ function convertPointTransform(figObj, genObj)
 
     figObj.relativeTransform = 
     [
-        [m0[0], m0[1], m0[2] - size/2],
-        [m1[0], m1[1], m1[2] - size/2],
+        [m0[0], m0[1], m0[2]],// - size/2],
+        [m1[0], m1[1], m1[2]]//,// - size/2],
     ];
 }
 
@@ -2888,8 +2728,8 @@ function convertExistingPointTransform(figPoint)
 
     figPoint.relativeTransform = 
     [
-        [m0[0], m0[1], parseFloat(figPoint.getPluginData('actualX')) - size/2],
-        [m1[0], m1[1], parseFloat(figPoint.getPluginData('actualY')) - size/2]
+        [m0[0], m0[1], parseFloat(figPoint.getPluginData('actualX'))],// - size/2],
+        [m1[0], m1[1], parseFloat(figPoint.getPluginData('actualY'))]// - size/2]
     ];
 }
 

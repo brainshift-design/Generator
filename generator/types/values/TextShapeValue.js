@@ -105,7 +105,8 @@ extends ShapeValue
 
     isValid()
     {
-        return this.text         .isValid()
+        return super.isValid()
+            && this.text         .isValid()
             && this.x            .isValid()
             && this.y            .isValid()
             && this.width        .isValid()
@@ -117,8 +118,7 @@ extends ShapeValue
             && this.alignH       .isValid()
             && this.alignV       .isValid()
             && this.lineHeight   .isValid()
-            && this.letterSpacing.isValid()
-            && super.isValid();
+            && this.letterSpacing.isValid();
     }
 
 

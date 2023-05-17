@@ -94,12 +94,12 @@ extends ShapeValue
 
     isValid()
     {
-        return this.points .isValid()
+        return super.isValid()
+            && this.points .isValid()
             && this.closed .isValid()
             && this.degree .isValid()
             && this.winding.isValid()
-            && this.round  .isValid()
-            && super.isValid();
+            && this.round  .isValid();
     }
 
 

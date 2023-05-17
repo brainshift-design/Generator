@@ -238,6 +238,90 @@ function genParseColorStop(parse)
 
 
 
+function genParseDropShadowValue(parse)
+{
+    parse.pos++; // DROP_SHADOW_VALUE
+
+    const stroke = parse.move();
+
+    if (parse.settings.logRequests) 
+        logReqValue(DROP_SHADOW_VALUE, stroke, parse);
+
+    return parseDropShadowValue(stroke)[0];
+}
+
+
+
+function genParseDropShadow(parse)
+{
+    const [, nodeId, options, ignore] = genParseNodeStart(parse);
+
+
+    const shadow = new GDropShadow(nodeId, options);
+
+    shadow.hasInputs = options.hasInputs;
+
+
+    let nInputs = -1;
+
+    if (!ignore)
+    {
+        nInputs = parseInt(parse.move());
+        console.assert(nInputs => 0 && nInputs <= 1, 'nInputs must be [0, 1]');
+    }
+
+
+    if (parse.settings.logRequests) 
+        logReq(shadow, parse, ignore, nInputs);
+
+
+    if (ignore)
+    {
+        genParseNodeEnd(parse, shadow);
+        return parse.parsedNodes.find(n => n.nodeId == nodeId);
+    }
+
+
+    parse.nTab++;
+
+
+    let paramIds;
+
+    if (nInputs == 1)
+    {
+        shadow.input = genParse(parse);
+        paramIds = parse.move().split(',');
+    }
+    else
+        paramIds = ['x', 'y', 'blur', 'spread', 'fill', 'blend', 'behind'];
+
+
+    parse.inParam = false;
+
+    for (const id of paramIds)
+    {
+        switch (id)
+        {
+        case 'x':      shadow.x      = genParse(parse); break;
+        case 'y':      shadow.y      = genParse(parse); break;
+        case 'blur':   shadow.blur   = genParse(parse); break;
+        case 'spread': shadow.spread = genParse(parse); break;
+        case 'fill':   shadow.fill   = genParse(parse); break;
+        case 'blend':  shadow.blend  = genParse(parse); break;
+        case 'behind': shadow.behind = genParse(parse); break;
+        }
+    }
+    
+    
+    parse.nTab--;
+
+
+    genParseNodeEnd(parse, shadow);
+    return shadow;
+}
+
+
+
 // function genParseColorStyleValue(parse)
 // {
 //     parse.pos++; // COLOR_STYLE_VALUE
