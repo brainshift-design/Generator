@@ -1768,12 +1768,11 @@ function updatePointSizes()
 
 function updatePointSize(figPoint)
 {
-    figPoint.strokeWeight = 1.25 / curZoom;
-
-    const size = 8 / curZoom;
+    const size = Math.max(0.01, 1/curZoom);
     figPoint.resizeWithoutConstraints(size, size);
 
     convertExistingPointTransform(figPoint);
+    updatePointStyles(figPoint);
 }
 
 
@@ -1781,12 +1780,23 @@ function updatePointSize(figPoint)
 
 function updatePointSize_(figPoint, genPoint)
 {
-    figPoint.strokeWeight = 1.25 / curZoom;
-    
-    const size = 8 / curZoom;
+    const size = Math.max(0.01, 1/curZoom);
     figPoint.resizeWithoutConstraints(size, size);
 
     convertPointTransform(figPoint, genPoint);
+    updatePointStyles(figPoint);
+}
+
+
+
+function updatePointStyles(figPoint)
+{
+    figPoint.fills   = getObjectFills([['SOLID', 255, 255, 255, 100]]);
+    figPoint.effects = getObjectEffects(
+    [
+        ['DROP_SHADOW', 12/255, 140/255, 233/255, 1, 0, 0, 0, 3.5/curZoom, 'NORMAL', true, true],
+        ['DROP_SHADOW', 1,      1,       1,       1, 0, 0, 0, 2.5/curZoom, 'NORMAL', true, true]
+    ]);
 }
 
 
@@ -2374,8 +2384,7 @@ function figCreatePoint(genPoint)
         figPoint.y = genPoint.y;
 
 
-        const size = 8 / curZoom;
-
+        const size = Math.max(0.01, 1/curZoom);
         figPoint.resizeWithoutConstraints(size, size);
 
 
@@ -2384,15 +2393,7 @@ function figCreatePoint(genPoint)
 
 
         convertPointTransform(figPoint, genPoint);
-
-       
-        figPoint.fills            =  getObjectFills([['SOLID', '255 255 255 100']]);
-        figPoint.strokes          =  getObjectFills([['SOLID',  '12 140 233 100']]);
-
-        figPoint.strokeWeight     =  1.25 / curZoom;
-        figPoint.strokeAlign      = 'INSIDE';
-        figPoint.strokeJoin       = 'MITER';
-        figPoint.strokeMiterLimit =  2;
+        updatePointStyles(figPoint);
     }
 
     
@@ -2414,8 +2415,7 @@ function figUpdatePoint(figPoint, genPoint)
     figPoint.y = genPoint.y;
 
 
-    const size = 8 / curZoom;
-
+    const size = Math.max(0.01, 1/curZoom);
     figPoint.resizeWithoutConstraints(size, size);
 
 
@@ -2424,9 +2424,7 @@ function figUpdatePoint(figPoint, genPoint)
 
 
     convertPointTransform(figPoint, genPoint);
-
-
-    figPoint.strokeWeight = 1.25 / curZoom;
+    updatePointStyles(figPoint);
 }
 
 
@@ -2677,14 +2675,13 @@ function convertPointTransform(figObj, genObj)
     const m0 = genObj.relativeTransform[0];
     const m1 = genObj.relativeTransform[1];
     
-
-    //const size = 8 / curZoom;
-
     figObj.relativeTransform = 
     [
-        [m0[0], m0[1], m0[2]],// - size/2],
-        [m1[0], m1[1], m1[2]]//,// - size/2],
+        [m0[0], m0[1], m0[2]],
+        [m1[0], m1[1], m1[2]]
     ];
+
+    figObj.rotation = 0;
 }
 
 
@@ -2694,13 +2691,10 @@ function convertExistingPointTransform(figPoint)
     const m0 = figPoint.relativeTransform[0];
     const m1 = figPoint.relativeTransform[1];
     
-
-    //const size = 8 / curZoom;
-
     figPoint.relativeTransform = 
     [
-        [m0[0], m0[1], parseFloat(figPoint.getPluginData('actualX'))],// - size/2],
-        [m1[0], m1[1], parseFloat(figPoint.getPluginData('actualY'))]// - size/2]
+        [m0[0], m0[1], parseFloat(figPoint.getPluginData('actualX'))],
+        [m1[0], m1[1], parseFloat(figPoint.getPluginData('actualY'))]
     ];
 }
 
@@ -2754,8 +2748,6 @@ function getObjectEffects(genObjEffects)
 
     for (const effect of genObjEffects)
     {
-        // const effect = _effect[1].split(' ');
-
         const type = effect[0];
 
         switch (type)
