@@ -1,5 +1,5 @@
 class GColorStyle
-extends GShape
+extends GOperator
 {
     id;
 

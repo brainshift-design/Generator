@@ -17,7 +17,7 @@ extends OpShapeBase
 
         this.paramProperties.itemName  = 'style';
         this.paramProperties.showZero  = false;
-        this.paramProperties.listTypes = [COLOR_VALUE, FILL_VALUE, STROKE_VALUE];
+        this.paramProperties.listTypes = [...STYLE_VALUES];
         this.paramProperties.input.types.push(...this.paramProperties.listTypes);
     }
 }

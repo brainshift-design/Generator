@@ -1,13 +1,15 @@
 class FigmaShape
 extends FigmaObject
 {
-    fills    = [];
-    strokes  = [];
+    fills   = [];
+    strokes = [];
 
     strokeWeight;
     strokeAlign;
     strokeJoin;
     strokeMiterLimit;
+
+    effects = [];
 
 
 
@@ -22,8 +24,9 @@ extends FigmaObject
     {
         super.copyBase(base);
         
-        this.fills            = [...base.fills  ];
-        this.strokes          = [...base.strokes];
+        this.fills            = clone(base.fills  );
+        this.strokes          = clone(base.strokes);
+        this.effects          = clone(base.effects);
 
         this.strokeWeight     = base.strokeWeight;
         this.strokeAlign      = base.strokeAlign;

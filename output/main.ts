@@ -709,6 +709,27 @@ const BACK_BLUR          = 'DRSH';
 const BACK_BLUR_TYPES    = [BACK_BLUR_VALUE, BACK_BLUR];
 
 
+const EFFECT_TYPES =
+[
+    ...DROP_SHADOW_TYPES,
+    ...INNER_SHADOW_TYPES,
+    ...LAYER_BLUR_TYPES,
+    ...BACK_BLUR_TYPES
+];
+
+
+const STYLE_VALUES =
+[
+    COLOR_VALUE, 
+    FILL_VALUE, 
+    STROKE_VALUE,
+    DROP_SHADOW_VALUE,
+    INNER_SHADOW_VALUE,
+    LAYER_BLUR_VALUE,
+    BACK_BLUR_VALUE
+];
+
+
 const COLOR_STYLE        = 'CSTL';
  
  
@@ -978,22 +999,22 @@ const BLEND_LUMINOSITY  = 'BLUM';
 
 const BlendModes =
 [
-    [BLEND_NORMAL,      'normal'     ],
-    [BLEND_DARKEN,      'darken'     ],
-    [BLEND_MULTIPLY,    'multiply'   ],
-    [BLEND_COLOR_BURN,  'color burn' ],
-    [BLEND_LIGNTEN,     'lighten'    ],
-    [BLEND_SCREEN,      'screen'     ],
-    [BLEND_COLOR_DODGE, 'color dodge'],
-    [BLEND_OVERLAY,     'overlay'    ],
-    [BLEND_SOFT_LIGHT,  'soft light' ],
-    [BLEND_HARD_LIGHT,  'hard light' ],
-    [BLEND_DIFFERENCE,  'difference' ],
-    [BLEND_EXCLUSION,   'exclusion'  ],
-    [BLEND_HUE,         'hue'        ],
-    [BLEND_SATURATION,  'saturation' ],
-    [BLEND_COLOR,       'color'      ],
-    [BLEND_LUMINOSITY,  'luminosity' ]
+    [BLEND_NORMAL,      'normal',      'NORMAL'     ],
+    [BLEND_DARKEN,      'darken',      'DARKEN'     ],
+    [BLEND_MULTIPLY,    'multiply',    'MULTIPLY'   ],
+    [BLEND_COLOR_BURN,  'color burn',  'COLOR_BURN' ],
+    [BLEND_LIGNTEN,     'lighten',     'LIGHTEN'    ],
+    [BLEND_SCREEN,      'screen',      'SCREEN'     ],
+    [BLEND_COLOR_DODGE, 'color dodge', 'COLOR_DODGE'],
+    [BLEND_OVERLAY,     'overlay',     'OVERLAY'    ],
+    [BLEND_SOFT_LIGHT,  'soft light',  'SOFT_LIGHT' ],
+    [BLEND_HARD_LIGHT,  'hard light',  'HARD_LIGHT' ],
+    [BLEND_DIFFERENCE,  'difference',  'DIFFERENCE' ],
+    [BLEND_EXCLUSION,   'exclusion',   'EXCLUSION'  ],
+    [BLEND_HUE,         'hue',         'HUE'        ],
+    [BLEND_SATURATION,  'saturation',  'SATURATION' ],
+    [BLEND_COLOR,       'color',       'COLOR'      ],
+    [BLEND_LUMINOSITY,  'luminosity',  'LUMINOSITY' ]
 ];
 
 
@@ -1433,8 +1454,6 @@ function figDeleteAllObjects()
 {
     for (const obj of figma.currentPage.children)
     {
-        console.log('obj.getPluginData(\'objectId\') =', obj.getPluginData('objectId'));
-
         if (    obj.getPluginData('objectId') != ''
             && !obj.removed) 
             obj.remove();
@@ -1974,10 +1993,7 @@ function figCreateRect(genRect)
 
 
     setObjectTransform(figRect, genRect);
-
-
-    setObjectFills  (figRect, genRect);
-    setObjectStrokes(figRect, genRect);
+    setObjectProps    (figRect, genRect);
 
 
     return figRect;
@@ -1997,10 +2013,7 @@ function figUpdateRect(figRect, genRect)
     figRect.cornerRadius = genRect.round;
 
     setObjectTransform(figRect, genRect);
-
-
-    setObjectFills  (figRect, genRect);
-    setObjectStrokes(figRect, genRect);
+    setObjectProps    (figRect, genRect);
 }
 
 
@@ -2031,10 +2044,7 @@ function figCreateLine(genLine)
 
 
     setObjectTransform(figLine, genLine);
-
-
-    setObjectFills  (figLine, genLine);
-    setObjectStrokes(figLine, genLine);
+    setObjectProps    (figLine, genLine);
 
     
     return figLine;
@@ -2052,10 +2062,7 @@ function figUpdateLine(figLine, genLine)
 
 
     setObjectTransform(figLine, genLine);
-
-
-    setObjectFills  (figLine, genLine);
-    setObjectStrokes(figLine, genLine);
+    setObjectProps    (figLine, genLine);
 }
 
 
@@ -2093,10 +2100,7 @@ function figCreateEllipse(genEllipse)
         updatePointSize(figEllipse);
         
     else
-    {
-        setObjectFills  (figEllipse, genEllipse);
-        setObjectStrokes(figEllipse, genEllipse);
-    }
+        setObjectProps(figEllipse, genEllipse);
 
     
     return figEllipse;
@@ -2114,10 +2118,7 @@ function figUpdateEllipse(figEllipse, genEllipse)
 
 
     setObjectTransform(figEllipse, genEllipse);
-
-
-    setObjectFills  (figEllipse, genEllipse);
-    setObjectStrokes(figEllipse, genEllipse);
+    setObjectProps    (figEllipse, genEllipse);
 }
 
 
@@ -2154,10 +2155,7 @@ function figCreatePolygon(genPoly)
 
 
     setObjectTransform(figPoly, genPoly);
-
-
-    setObjectFills  (figPoly, genPoly);
-    setObjectStrokes(figPoly, genPoly);
+    setObjectProps    (figPoly, genPoly);
 
 
     return figPoly;
@@ -2179,10 +2177,7 @@ function figUpdatePolygon(figPoly, genPoly)
 
 
     setObjectTransform(figPoly, genPoly);
-
-
-    setObjectFills  (figPoly, genPoly);
-    setObjectStrokes(figPoly, genPoly);
+    setObjectProps    (figPoly, genPoly);
 }
 
 
@@ -2221,10 +2216,7 @@ function figCreateStar(genStar)
 
 
     setObjectTransform(figStar, genStar);
-
-
-    setObjectFills  (figStar, genStar);
-    setObjectStrokes(figStar, genStar);
+    setObjectProps    (figStar, genStar);
 
 
     return figStar;
@@ -2247,10 +2239,7 @@ function figUpdateStar(figStar, genStar)
 
 
     setObjectTransform(figStar, genStar);
-
-
-    setObjectFills  (figStar, genStar);
-    setObjectStrokes(figStar, genStar);
+    setObjectProps    (figStar, genStar);
 }
 
 
@@ -2301,10 +2290,7 @@ function figCreateText(genText)
 
 
     setObjectTransform(figText, genText);
-
-
-    setObjectFills  (figText, genText);
-    setObjectStrokes(figText, genText);
+    setObjectProps    (figText, genText);
 
 
     return figText;
@@ -2339,10 +2325,7 @@ function figUpdateText(figText, genText)
 
 
     setObjectTransform(figText, genText);
-
-
-    setObjectFills  (figText, genText);
-    setObjectStrokes(figText, genText);
+    setObjectProps    (figText, genText);
 }
 
 
@@ -2480,10 +2463,7 @@ function figCreateVectorPath(genPath)
 
 
     setObjectTransform(figPath, genPath);
-    
-
-    setObjectFills  (figPath, genPath);
-    setObjectStrokes(figPath, genPath);
+    setObjectProps    (figPath, genPath);
 
 
     return figPath;
@@ -2510,10 +2490,7 @@ function figUpdateVectorPath(figPath, genPath)
     
 
     setObjectTransform(figPath, genPath);
-
-
-    setObjectFills  (figPath, genPath);
-    setObjectStrokes(figPath, genPath);
+    setObjectProps    (figPath, genPath);
 }
 
 
@@ -2625,6 +2602,7 @@ function figCreateFrame(genFrame)
 
         
         setObjectTransform(figFrame, genFrame);
+        setObjectProps    (figFrame, genFrame);
 
 
         let objects = [];
@@ -2634,10 +2612,6 @@ function figCreateFrame(genFrame)
 
         for (const obj of objects)
             figFrame.appendChild(obj);
-        
-    
-        setObjectFills  (figFrame, genFrame);
-        setObjectStrokes(figFrame, genFrame);
     }
 
 
@@ -2659,13 +2633,10 @@ function figUpdateFrame(figFrame, genFrame)
 
 
     setObjectTransform(figFrame, genFrame);
+    setObjectProps    (figFrame, genFrame);
         
 
     figUpdateObjects(figFrame, genFrame.children);
-
-
-    setObjectFills  (figFrame, genFrame);
-    setObjectStrokes(figFrame, genFrame);
 }
 
 
@@ -2684,7 +2655,7 @@ function setObjectTransform(figObj, genObj)
             Math.max(0.01, genObj.height));
     }
 
-
+    
     convertObjectTransform(figObj, genObj);
 }
 
@@ -2707,7 +2678,7 @@ function convertPointTransform(figObj, genObj)
     const m1 = genObj.relativeTransform[1];
     
 
-    const size = 8 / curZoom;
+    //const size = 8 / curZoom;
 
     figObj.relativeTransform = 
     [
@@ -2724,7 +2695,7 @@ function convertExistingPointTransform(figPoint)
     const m1 = figPoint.relativeTransform[1];
     
 
-    const size = 8 / curZoom;
+    //const size = 8 / curZoom;
 
     figPoint.relativeTransform = 
     [
@@ -2735,25 +2706,23 @@ function convertExistingPointTransform(figPoint)
 
 
 
-function getObjectFills(objFills)
+function getObjectFills(genObjFills)
 {
     const fills = [];
 
 
-    for (const _fill of objFills)
+    for (const fill of genObjFills)
     {
-        const fill = _fill[1].split(' ');
-
-        switch (_fill[0])
+        switch (fill[0])
         {
             case 'SOLID':
             {
                 const color = {
-                    r: Math.min(Math.max(0, parseFloat(fill[0]) / 0xff), 1), 
-                    g: Math.min(Math.max(0, parseFloat(fill[1]) / 0xff), 1), 
-                    b: Math.min(Math.max(0, parseFloat(fill[2]) / 0xff), 1) };
+                    r: Math.min(Math.max(0, fill[1] / 0xff), 1), 
+                    g: Math.min(Math.max(0, fill[2] / 0xff), 1), 
+                    b: Math.min(Math.max(0, fill[3] / 0xff), 1) };
 
-                const opacity = Math.min(Math.max(0, parseFloat(fill[3]) / 100), 1);
+                const opacity = Math.min(Math.max(0, fill[4] / 100), 1);
 
                 if (   !isNaN(color.r)
                     && !isNaN(color.g)
@@ -2778,35 +2747,156 @@ function getObjectFills(objFills)
 
 
 
-function setObjectFills(obj, src)
+function getObjectEffects(genObjEffects)
 {
-    if (   !!src.fills
-        &&  !isEmpty(src.fills))
-        obj.fills = getObjectFills(src.fills);
-    else
-        obj.fills = [];
+    const effects = [];
+
+
+    for (const effect of genObjEffects)
+    {
+        // const effect = _effect[1].split(' ');
+
+        const type = effect[0];
+
+        switch (type)
+        {
+            case 'DROP_SHADOW':
+            {
+                const color = {
+                    r: Math.min(Math.max(0, effect[1]), 1), 
+                    g: Math.min(Math.max(0, effect[2]), 1), 
+                    b: Math.min(Math.max(0, effect[3]), 1),
+                    a: Math.min(Math.max(0, effect[4]), 1) };
+
+                const offset = {
+                    x: effect[5],
+                    y: effect[6] };
+
+                const radius = effect[ 7];
+                const spread = effect[ 8];
+                const blend  = effect[ 9];
+                const behind = effect[10];
+  
+
+                if (   !isNaN(color.r)
+                    && !isNaN(color.g)
+                    && !isNaN(color.b)
+                    && !isNaN(color.a)
+                    && !isNaN(offset.x)
+                    && !isNaN(offset.y)
+                    && !isNaN(radius)
+                    && !isNaN(spread))
+                    effects.push(
+                    {
+                        type:                 type, 
+                        color:                color,
+                        offset:               offset,
+                        radius:               radius,
+                        spread:               spread,
+                        visible:              true,
+                        blendMode:            blend,
+                        showShadowBehindNode: behind
+                    });
+
+                break;
+            }
+
+            case 'INNER_SHADOW':
+            {
+                const color = {
+                    r: Math.min(Math.max(0, effect[1]), 1), 
+                    g: Math.min(Math.max(0, effect[2]), 1), 
+                    b: Math.min(Math.max(0, effect[3]), 1),
+                    a: Math.min(Math.max(0, effect[4]), 1) };
+
+                const offset = {
+                    x: effect[5],
+                    y: effect[6] };
+
+                const radius = effect[ 7];
+                const spread = effect[ 8];
+                const blend  = effect[ 9];
+  
+
+                if (   !isNaN(color.r)
+                    && !isNaN(color.g)
+                    && !isNaN(color.b)
+                    && !isNaN(color.a)
+                    && !isNaN(offset.x)
+                    && !isNaN(offset.y)
+                    && !isNaN(radius)
+                    && !isNaN(spread))
+                    effects.push(
+                    {
+                        type:       type, 
+                        color:      color,
+                        offset:     offset,
+                        radius:     radius,
+                        spread:     spread,
+                        visible:    true,
+                        blendMode:  blend
+                    });
+
+                break;
+            }
+        }
+    }
+
+
+    return effects;
 }
 
 
 
-function setObjectStrokes(obj, src)
+function setObjectProps(figObj, genObj)
 {
-    if (    src.strokes != null
-        && !isEmpty(src.strokes))
-    {
-        obj.strokes      = getObjectFills(src.strokes);
+    setObjectFills  (figObj, genObj);
+    setObjectStrokes(figObj, genObj);
+    setObjectEffects(figObj, genObj);
+}
 
-        obj.strokeWeight = Math.max(0, src.strokeWeight);
-        obj.strokeAlign  = src.strokeAlign;
-        obj.strokeJoin   = src.strokeJoin;
+
+
+function setObjectFills(figObj, genObj)
+{
+    if (   !!genObj.fills
+        &&  !isEmpty(genObj.fills))
+        figObj.fills = getObjectFills(genObj.fills);
+    else
+        figObj.fills = [];
+}
+
+
+
+function setObjectStrokes(figObj, genObj)
+{
+    if (    genObj.strokes != null
+        && !isEmpty(genObj.strokes))
+    {
+        figObj.strokes      = getObjectFills(genObj.strokes);
+
+        figObj.strokeWeight = Math.max(0, genObj.strokeWeight);
+        figObj.strokeAlign  = genObj.strokeAlign;
+        figObj.strokeJoin   = genObj.strokeJoin;
         
-        const miterAngle = src.strokeMiterLimit / 360 * Math.PI*2;
+        const miterAngle = genObj.strokeMiterLimit / 360 * Math.PI*2;
         const miterLimit = 1 / Math.sin(miterAngle/2);
         
-        obj.strokeMiterLimit = Math.min(Math.max(0, miterLimit), 16);
+        figObj.strokeMiterLimit = Math.min(Math.max(0, miterLimit), 16);
     }
     else
-        obj.strokes = [];
+        figObj.strokes = [];
+}
+
+
+
+function setObjectEffects(figObj, genObj)
+{
+    if (   !!genObj.effects
+        &&  !isEmpty(genObj.effects))
+        figObj.effects = getObjectEffects(genObj.effects);
+    else
+        figObj.effects = [];
 }
 
 

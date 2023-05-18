@@ -42,9 +42,7 @@ extends GShapeBase
         let props = this.props ? (await this.props.eval(parse)).toValue() : null;
 
         if (   props
-            && (   props.type ==  COLOR_VALUE
-                || props.type ==   FILL_VALUE
-                || props.type == STROKE_VALUE))
+            && STYLE_VALUES.includes(props.type))
             props = new ListValue([props]);
 
 
@@ -79,10 +77,10 @@ extends GShapeBase
 
                     obj.fills.push([
                         'SOLID', 
-                                rgb[0]
-                        + ' ' + rgb[1]
-                        + ' ' + rgb[2]
-                        + ' ' + '255']);
+                        rgb[0], 
+                        rgb[1], 
+                        rgb[2], 
+                        255   ]);
                 }
 
                 else if (prop.type == FILL_VALUE)
@@ -95,10 +93,10 @@ extends GShapeBase
 
                     obj.fills.push([
                         'SOLID', 
-                                rgb[0]
-                        + ' ' + rgb[1]
-                        + ' ' + rgb[2]
-                        + ' ' + prop.opacity.toValue().toNumber()]);
+                        rgb[0], 
+                        rgb[1], 
+                        rgb[2], 
+                        prop.opacity.toValue().toNumber() ]);
                 }
 
                 else if (prop.type == STROKE_VALUE)
@@ -111,10 +109,10 @@ extends GShapeBase
 
                     obj.strokes.push([
                         'SOLID', 
-                                rgb[0]
-                        + ' ' + rgb[1]
-                        + ' ' + rgb[2]
-                        + ' ' + prop.fill.opacity.toValue().toNumber()]);
+                        rgb[0],
+                        rgb[1],
+                        rgb[2],
+                        prop.fill.opacity.toValue().toNumber() ]);
 
 
                     obj.strokeWeight = prop.weight.toValue().toNumber();
@@ -134,6 +132,49 @@ extends GShapeBase
                     }
 
                     obj.strokeMiterLimit = prop.miter.toValue().value;
+                }
+
+                else if (prop.type == DROP_SHADOW_VALUE)
+                {
+                    if (!obj.effects) 
+                        obj.effects = [];
+
+
+                    const rgba = prop.fill.toRgba();
+
+                    obj.effects.push([
+                        'DROP_SHADOW', 
+                        rgba[0],
+                        rgba[1],
+                        rgba[2],
+                        rgba[3],
+                        prop.x.toNumber(),
+                        prop.y.toNumber(),
+                        prop.blur.toNumber(),
+                        prop.spread.toNumber(),
+                        BlendModes[prop.blend.value][2],
+                        prop.behind.value > 0 ]);
+                }
+
+                else if (prop.type == INNER_SHADOW_VALUE)
+                {
+                    if (!obj.effects) 
+                        obj.effects = [];
+
+
+                    const rgba = prop.fill.toRgba();
+
+                    obj.effects.push([
+                        'INNER_SHADOW', 
+                        rgba[0],
+                        rgba[1],
+                        rgba[2],
+                        rgba[3],
+                        prop.x.toNumber(),
+                        prop.y.toNumber(),
+                        prop.blur.toNumber(),
+                        prop.spread.toNumber(),
+                        BlendModes[prop.blend.value][2] ]);
                 }
             }
         }

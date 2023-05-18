@@ -38,11 +38,11 @@ extends OperatorBase
         }
 
 
-        this.circleBack     = createDiv('styleCircleBack');
-        this.circleCheckers = createDiv('styleCircleCheckers');
-        this.circle         = createDiv('styleCircle');
+        this.circleBack       = createDiv('styleCircleBack');
+        this.circleCheckers   = createDiv('styleCircleCheckers');
+        this.circle           = createDiv('styleCircle');
 
-        this.styleCircle    = createDiv('styleCircleWrapper');;
+        this.styleCircle      = createDiv('styleCircleWrapper');;
         this.styleCircle.over = false;
 
         this.styleCircle.addEventListener('pointerenter', e => { this.styleCircle.over = true;  this.updateLinkIcon(); });

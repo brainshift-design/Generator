@@ -26,9 +26,9 @@ extends OperatorBase
         this.addParam(this.paramY      = new NumberParam('y',      'y',           true,  true, true, 4));
         this.addParam(this.paramBlur   = new NumberParam('blur',   'blur',        true,  true, true, 4, 0));
         this.addParam(this.paramSpread = new NumberParam('spread', 'spread',      true,  true, true, 0));
-        this.addParam(this.paramFill   = new FillParam  ('fill',   'fill',        false, true, true, new FillValue(ColorValue.fromRgb([0, 0, 0]), 0.25)));
+        this.addParam(this.paramFill   = new FillParam  ('fill',   'fill',        false, true, true, new FillValue(ColorValue.fromRgb([0, 0, 0]), new NumberValue(25))));
         this.addParam(this.paramBlend  = new SelectParam('blend',  'blend',       false, true, true, BlendModes.map(bm => bm[1]), 0));
-        this.addParam(this.paramBehind = new NumberParam('behind', 'show behind', true,  true, true, 1, 0, 1));
+        this.addParam(this.paramBehind = new NumberParam('behind', 'show behind', true,  true, true, 0, 0, 1));
     }
     
     
@@ -127,133 +127,4 @@ extends OperatorBase
 
         return request;
     }
-
-
-
-    // updateValues(requestId, actionId, updateParamId, paramIds, values)
-    // {
-    //     const color = values[paramIds.findIndex(id => id == 'color')];
-
-    //     this._color = 
-    //         color.isValid()
-    //         ? color.toDataColor()
-    //         : dataColor_NaN;
-
-
-    //     this.outputs[0].types =
-    //            this.inputs[0].connected
-    //         && this.inputs[0].connectedOutput.supportsTypes(SHAPE_TYPES)
-    //         ? [...this.inputs[0].connectedOutput.types, FILL_VALUE]
-    //         : [FILL_VALUE];
-
-
-    //     super.updateValues(requestId, actionId, updateParamId, paramIds, values);
-    // }
-
-
-
-    // updateHeader()
-    // {
-    //     //console.log(this.id + '.OpFill.updateHeader()');
-        
-    //     Operator.prototype.updateHeader.call(this);
-
-
-    //     const colors = this.getHeaderColors();
-
-
-    //     this.header.style.background = 
-    //         !rgbaIsNaN(colors.stripeBack)
-    //         ? rgba2style(colors.stripeBack) 
-    //         : rgba2style(rgb_a(rgbDocumentBody, 0.95));
-
-    //     this.colorBack.backStyleLight =
-    //     this.colorBack.backStyleDark  =
-    //         rgbaIsOk(colors.stripeBack)
-    //         ? rgba2style(colors.stripeBack)
-    //         : 'transparent';
-
-
-    //     this.checkers.style.height = this.header.offsetHeight;
-
-    //     this.checkers.style.background =
-    //         darkMode
-    //         ?   'linear-gradient(45deg, #222 25%, transparent 25%, transparent 75%, #222 75%), '
-    //           + 'linear-gradient(45deg, #222 25%, transparent 25%, transparent 75%, #222 75%)'
-    //         :   'linear-gradient(45deg, #ddd 25%, transparent 25%, transparent 75%, #ddd 75%), '
-    //           + 'linear-gradient(45deg, #ddd 25%, transparent 25%, transparent 75%, #ddd 75%)';
-
-    //     this.checkers.style.display            = !rgbIsNaN(colors.back) ? 'inline-block' : 'none';
-    //     this.checkers.style.backgroundColor    = darkMode ? '#444' : '#fff';
-
-    //     this.checkers.style.backgroundSize     = '22px 22px';
-    //     this.checkers.style.backgroundPosition = '0 0, 11px 11px';
-
-    //     this.checkers.style.left               = '-3px';
-    //     this.checkers.style.width              = 'calc(100% + 3px)';
-                       
-
-    //     this.inputs[0] .colorLight = 
-    //     this.inputs[0] .colorDark  = colors.input;
-    //     this.inputs[0] .wireColor  = colors.wire;
-
-    //     this.outputs[0].colorLight =
-    //     this.outputs[0].colorDark  = colors.output;
-    //     this.outputs[0].wireColor  = colors.wire;
-
-
-    //     this.updateWarningOverlay();
-    //     this.updateWarningOverlayStyle(colors.back);
-    // }
-
-
-
-    // updateHeaderLabel()
-    // {
-    //     super.updateHeaderLabel();
-        
-    //     const colors = this.getHeaderColors();
-    //     this.label.style.color = rgb2style(colors.text);
-    // }
-
-
-
-    // getHeaderColors(options = {})
-    // {
-    //     const colors = super.getHeaderColors();
-
-    //     const opacity = 
-    //         this.paramOpacity.value.isValid() 
-    //         ? this.paramOpacity.value.value/100 
-    //         : Number.NaN;
-
-
-    //     colors.back       = rgb_a(colors.back,       opacity);
-    //     colors.stripeBack = rgb_a(colors.stripeBack, opacity);
-    //     colors.text       = getTextColorFromBackColor(colors.stripeBack, colors.back[3]);
-    //     colors.input      = rgb_a(colors.text, 0.2);
-    //     colors.output     = rgb_a(colors.text, 0.2);
-
-    //     colors.wire = 
-    //         !rgbaIsNaN(colors.stripeBack)
-    //         ? colors.stripeBack
-    //         : rgb_a(rgbFromType(ANY_VALUE, false));
-
-
-    //     return colors;
-    // }
-
-
-
-    // updateParams()
-    // {
-    //     const enable = 
-    //           !this.inputs[0].connected
-    //         || this.inputs[0].connectedOutput.supportsTypes(SHAPE_TYPES);
-
-    //     this.paramColor  .enableControlText(enable);
-    //     this.paramOpacity.enableControlText(enable);
-
-    //     this.updateParamControls();
-    // }
 }

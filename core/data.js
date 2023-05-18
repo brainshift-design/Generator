@@ -17,7 +17,8 @@ function rgbFromTypeMode(type, active, mode)
             ? (mode ? rgbActiveTextDark   : rgbActiveTextLight)
             : (mode ? rgbTextDark         : rgbTextLight      );
 
-    else if (SHAPE_TYPES.includes(type))
+    else if (SHAPE_TYPES.includes(type)
+         || EFFECT_TYPES.includes(type))
         return active 
             ? (mode ? rgbActiveShapeDark  : rgbActiveShapeLight)
             : (mode ? rgbShapeDark        : rgbShapeLight      );

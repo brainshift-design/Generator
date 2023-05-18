@@ -256,6 +256,27 @@ const BACK_BLUR          = 'DRSH';
 const BACK_BLUR_TYPES    = [BACK_BLUR_VALUE, BACK_BLUR];
 
 
+const EFFECT_TYPES =
+[
+    ...DROP_SHADOW_TYPES,
+    ...INNER_SHADOW_TYPES,
+    ...LAYER_BLUR_TYPES,
+    ...BACK_BLUR_TYPES
+];
+
+
+const STYLE_VALUES =
+[
+    COLOR_VALUE, 
+    FILL_VALUE, 
+    STROKE_VALUE,
+    DROP_SHADOW_VALUE,
+    INNER_SHADOW_VALUE,
+    LAYER_BLUR_VALUE,
+    BACK_BLUR_VALUE
+];
+
+
 const COLOR_STYLE        = 'CSTL';
  
  
@@ -525,20 +546,20 @@ const BLEND_LUMINOSITY  = 'BLUM';
 
 const BlendModes =
 [
-    [BLEND_NORMAL,      'normal'     ],
-    [BLEND_DARKEN,      'darken'     ],
-    [BLEND_MULTIPLY,    'multiply'   ],
-    [BLEND_COLOR_BURN,  'color burn' ],
-    [BLEND_LIGNTEN,     'lighten'    ],
-    [BLEND_SCREEN,      'screen'     ],
-    [BLEND_COLOR_DODGE, 'color dodge'],
-    [BLEND_OVERLAY,     'overlay'    ],
-    [BLEND_SOFT_LIGHT,  'soft light' ],
-    [BLEND_HARD_LIGHT,  'hard light' ],
-    [BLEND_DIFFERENCE,  'difference' ],
-    [BLEND_EXCLUSION,   'exclusion'  ],
-    [BLEND_HUE,         'hue'        ],
-    [BLEND_SATURATION,  'saturation' ],
-    [BLEND_COLOR,       'color'      ],
-    [BLEND_LUMINOSITY,  'luminosity' ]
+    [BLEND_NORMAL,      'normal',      'NORMAL'     ],
+    [BLEND_DARKEN,      'darken',      'DARKEN'     ],
+    [BLEND_MULTIPLY,    'multiply',    'MULTIPLY'   ],
+    [BLEND_COLOR_BURN,  'color burn',  'COLOR_BURN' ],
+    [BLEND_LIGNTEN,     'lighten',     'LIGHTEN'    ],
+    [BLEND_SCREEN,      'screen',      'SCREEN'     ],
+    [BLEND_COLOR_DODGE, 'color dodge', 'COLOR_DODGE'],
+    [BLEND_OVERLAY,     'overlay',     'OVERLAY'    ],
+    [BLEND_SOFT_LIGHT,  'soft light',  'SOFT_LIGHT' ],
+    [BLEND_HARD_LIGHT,  'hard light',  'HARD_LIGHT' ],
+    [BLEND_DIFFERENCE,  'difference',  'DIFFERENCE' ],
+    [BLEND_EXCLUSION,   'exclusion',   'EXCLUSION'  ],
+    [BLEND_HUE,         'hue',         'HUE'        ],
+    [BLEND_SATURATION,  'saturation',  'SATURATION' ],
+    [BLEND_COLOR,       'color',       'COLOR'      ],
+    [BLEND_LUMINOSITY,  'luminosity',  'LUMINOSITY' ]
 ];

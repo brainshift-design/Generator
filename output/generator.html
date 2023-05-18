@@ -451,7 +451,8 @@ function rgbFromTypeMode(type, active, mode)
             ? (mode ? rgbActiveTextDark   : rgbActiveTextLight)
             : (mode ? rgbTextDark         : rgbTextLight      );
 
-    else if (SHAPE_TYPES.includes(type))
+    else if (SHAPE_TYPES.includes(type)
+         || EFFECT_TYPES.includes(type))
         return active 
             ? (mode ? rgbActiveShapeDark  : rgbActiveShapeLight)
             : (mode ? rgbShapeDark        : rgbShapeLight      );
@@ -3854,6 +3855,27 @@ const BACK_BLUR          = 'DRSH';
 const BACK_BLUR_TYPES    = [BACK_BLUR_VALUE, BACK_BLUR];
 
 
+const EFFECT_TYPES =
+[
+    ...DROP_SHADOW_TYPES,
+    ...INNER_SHADOW_TYPES,
+    ...LAYER_BLUR_TYPES,
+    ...BACK_BLUR_TYPES
+];
+
+
+const STYLE_VALUES =
+[
+    COLOR_VALUE, 
+    FILL_VALUE, 
+    STROKE_VALUE,
+    DROP_SHADOW_VALUE,
+    INNER_SHADOW_VALUE,
+    LAYER_BLUR_VALUE,
+    BACK_BLUR_VALUE
+];
+
+
 const COLOR_STYLE        = 'CSTL';
  
  
@@ -4123,22 +4145,22 @@ const BLEND_LUMINOSITY  = 'BLUM';
 
 const BlendModes =
 [
-    [BLEND_NORMAL,      'normal'     ],
-    [BLEND_DARKEN,      'darken'     ],
-    [BLEND_MULTIPLY,    'multiply'   ],
-    [BLEND_COLOR_BURN,  'color burn' ],
-    [BLEND_LIGNTEN,     'lighten'    ],
-    [BLEND_SCREEN,      'screen'     ],
-    [BLEND_COLOR_DODGE, 'color dodge'],
-    [BLEND_OVERLAY,     'overlay'    ],
-    [BLEND_SOFT_LIGHT,  'soft light' ],
-    [BLEND_HARD_LIGHT,  'hard light' ],
-    [BLEND_DIFFERENCE,  'difference' ],
-    [BLEND_EXCLUSION,   'exclusion'  ],
-    [BLEND_HUE,         'hue'        ],
-    [BLEND_SATURATION,  'saturation' ],
-    [BLEND_COLOR,       'color'      ],
-    [BLEND_LUMINOSITY,  'luminosity' ]
+    [BLEND_NORMAL,      'normal',      'NORMAL'     ],
+    [BLEND_DARKEN,      'darken',      'DARKEN'     ],
+    [BLEND_MULTIPLY,    'multiply',    'MULTIPLY'   ],
+    [BLEND_COLOR_BURN,  'color burn',  'COLOR_BURN' ],
+    [BLEND_LIGNTEN,     'lighten',     'LIGHTEN'    ],
+    [BLEND_SCREEN,      'screen',      'SCREEN'     ],
+    [BLEND_COLOR_DODGE, 'color dodge', 'COLOR_DODGE'],
+    [BLEND_OVERLAY,     'overlay',     'OVERLAY'    ],
+    [BLEND_SOFT_LIGHT,  'soft light',  'SOFT_LIGHT' ],
+    [BLEND_HARD_LIGHT,  'hard light',  'HARD_LIGHT' ],
+    [BLEND_DIFFERENCE,  'difference',  'DIFFERENCE' ],
+    [BLEND_EXCLUSION,   'exclusion',   'EXCLUSION'  ],
+    [BLEND_HUE,         'hue',         'HUE'        ],
+    [BLEND_SATURATION,  'saturation',  'SATURATION' ],
+    [BLEND_COLOR,       'color',       'COLOR'      ],
+    [BLEND_LUMINOSITY,  'luminosity',  'LUMINOSITY' ]
 ];
 
 
@@ -4221,13 +4243,15 @@ function copyFigmaObject(obj)
 class FigmaShape
 extends FigmaObject
 {
-    fills    = [];
-    strokes  = [];
+    fills   = [];
+    strokes = [];
 
     strokeWeight;
     strokeAlign;
     strokeJoin;
     strokeMiterLimit;
+
+    effects = [];
 
 
 
@@ -4242,8 +4266,9 @@ extends FigmaObject
     {
         super.copyBase(base);
         
-        this.fills            = [...base.fills  ];
-        this.strokes          = [...base.strokes];
+        this.fills            = clone(base.fills  );
+        this.strokes          = clone(base.strokes);
+        this.effects          = clone(base.effects);
 
         this.strokeWeight     = base.strokeWeight;
         this.strokeAlign      = base.strokeAlign;
@@ -6916,6 +6941,193 @@ function parseDropShadowValue(str, i = -1)
 
 
 
+class InnerShadowValue
+extends GValue
+{
+    x;
+    y;
+    blur;
+    spread;
+    fill;
+    blend;
+
+
+
+    constructor(x      = new NumberValue(0), 
+                y      = new NumberValue(0), 
+                blur   = new NumberValue(0), 
+                spread = new NumberValue(0), 
+                fill   = FillValue.NaN,
+                blend  = new NumberValue(0))
+    {
+        super(INNER_SHADOW_VALUE);
+
+        this.x      = x;
+        this.y      = y;
+        this.blur   = blur;
+        this.spread = spread;
+        this.fill   = fill;
+        this.blend  = blend;
+    }
+
+
+    
+    // static create(x, y, blur, spread, fill, blend)
+    // {
+    //     return new FillValue(
+    //         new Number,
+    //         new NumberValue(opacity));
+    // }
+
+
+
+    copy()
+    {
+        const copy = new InnerShadowValue(
+            this.x     .copy(),
+            this.y     .copy(),
+            this.blur  .copy(),
+            this.spread.copy(),
+            this.fill  .copy(),
+            this.blend .copy());
+
+        copy.copyBase(this);
+
+        return copy;
+    }
+
+
+
+    equals(shadow)
+    {
+        return this.x     .equals(shadow.x     )
+            && this.y     .equals(shadow.y     )
+            && this.blur  .equals(shadow.blur  )
+            && this.spread.equals(shadow.spread)
+            && this.fill  .equals(shadow.fill  )
+            && this.blend .equals(shadow.blend );
+    }
+
+
+
+    async eval(parse)
+    {
+        return this;
+    }
+
+
+
+    // toRgba()
+    // {
+    //     return [
+    //         ...this.color.toRgb(),
+    //         this.opacity.value / 100 ];
+    // }
+
+
+
+    // toFigma()
+    // {
+    //     return [['SOLID', this.toString()]];
+    // }
+
+
+
+    toString()
+    {
+        return      this.x     .toString()
+            + ' ' + this.y     .toString()
+            + ' ' + this.blur  .toString()
+            + ' ' + this.spread.toString()
+            + ' ' + this.fill  .toString()
+            + ' ' + this.blend .toString();
+    }
+
+
+
+    toDisplayString()
+    {
+        return      this.x     .toDisplayString()
+            + ' ' + this.y     .toDisplayString()
+            + ' ' + this.blur  .toDisplayString()
+            + ' ' + this.spread.toDisplayString()
+            + ' ' + this.fill  .toDisplayString()
+            + ' ' + this.blend .toDisplayString();
+    }
+
+
+
+    isValid()
+    {
+        return super.isValid()
+            && this.x     .isValid()
+            && this.y     .isValid()
+            && this.blur  .isValid()
+            && this.spread.isValid()
+            && this.fill  .isValid()
+            && this.blend .isValid();
+    }
+
+
+
+    getNaN()
+    {
+        return InnerShadowValue.NaN;
+    }
+
+
+
+    static NaN = Object.freeze(new InnerShadowValue(
+        NumberValue.NaN,
+        NumberValue.NaN,
+        NumberValue.NaN,
+        NumberValue.NaN,
+        ColorValue .NaN,
+        NumberValue.NaN));
+
+
+
+    // static default = Object.freeze(InnerShadowValue.create(217, 217, 217, 100));
+}
+
+
+
+function parseInnerShadowValue(str, i = -1)
+{
+    if (   i <  0 && str    == NAN_DISPLAY
+        || i >= 0 && str[i] == NAN_DISPLAY)
+        return [InnerShadowValue.NaN, 1];
+
+
+    if (i < 0)
+    {
+        str = str.split(' ');
+        i   = 0;
+    }
+
+
+    const iStart = i;
+
+    const x      = parseNumberValue(str[i]); i += x     [1];
+    const y      = parseNumberValue(str[i]); i += y     [1];
+    const blur   = parseNumberValue(str[i]); i += blur  [1];
+    const spread = parseNumberValue(str[i]); i += spread[1];
+    const fill   = parseFillValue  (str[i]); i += fill  [1];
+    const blend  = parseNumberValue(str[i]); i += blend [1];
+
+
+    const shadow = new InnerShadowValue(
+        '', // set node ID elsewhere
+        x     [0],
+        y     [0],
+        blur  [0],
+        spread[0],
+        fill  [0],
+        blend [0]);
+
+
+    return [shadow, i - iStart];
+}
 
 
 
@@ -16200,7 +16412,7 @@ function blendLuminosity(col, back, opacity)
 
 
 class GColorStyle
-extends GShape
+extends GOperator
 {
     id;
 
@@ -16428,7 +16640,7 @@ extends GOperator
 
 
 class GStroke
-extends GShape
+extends GOperator
 {
     input  = null;
 
@@ -16845,7 +17057,159 @@ extends GOperator
 }
 
 
+class GInnerShadow
+extends GOperator
+{
+    input  = null;
 
+    x      = null;
+    y      = null;
+    blur   = null;
+    spread = null;
+    fill   = null;
+    blend  = null;
+
+
+
+    constructor(nodeId, options)
+    {
+        super(INNER_SHADOW, nodeId, options);
+    }
+
+
+
+    copy()
+    {
+        const copy = new GDropShadow(this.nodeId, this.options);
+
+        copy.copyBase(this);
+
+        if (this.input) 
+            copy.input = this.input.copy();
+
+        if (this.x     ) copy.x      = this.x     .copy();
+        if (this.y     ) copy.y      = this.y     .copy();
+        if (this.blur  ) copy.blur   = this.blur  .copy();
+        if (this.spread) copy.spread = this.spread.copy();
+        if (this.fill  ) copy.fill   = this.fill  .copy();
+        if (this.blend ) copy.blend  = this.blend .copy();
+
+        return copy;
+    }
+
+
+
+    async eval(parse)
+    {
+        if (this.isCached())
+            return this;
+``
+
+        const x      = this.x      ? (await this.x     .eval(parse)).toValue() : null;
+        const y      = this.y      ? (await this.y     .eval(parse)).toValue() : null;
+        const blur   = this.blur   ? (await this.blur  .eval(parse)).toValue() : null;
+        const spread = this.spread ? (await this.spread.eval(parse)).toValue() : null;
+        const fill   = this.fill   ? (await this.fill  .eval(parse)).toValue() : null;
+        const blend  = this.blend  ? (await this.blend .eval(parse)).toValue() : null;
+
+        
+        if (this.input)
+        {
+            const input = (await this.input.eval(parse)).toValue();
+
+            this.value = new InnerShadowValue(
+                x      ?? input.x,
+                y      ?? input.y,
+                blur   ?? input.blur,
+                spread ?? input.spread,
+                fill   ?? input.fill,
+                blend  ?? input.blend);
+        }
+        else
+        {
+            this.value = new InnerShadowValue(
+                x, 
+                y, 
+                blur, 
+                spread, 
+                fill, 
+                blend);
+        }
+
+
+        this.updateValues =
+        [
+            ['x',      this.value.x     ],
+            ['y',      this.value.y     ],
+            ['blur',   this.value.blur  ],
+            ['spread', this.value.spread],
+            ['fill',   this.value.fill  ],
+            ['blend',  this.value.blend ],
+        ];
+        
+
+        this.validate();
+
+        return this;
+    }
+
+
+
+    pushValueUpdates(parse)
+    {
+        super.pushValueUpdates(parse);
+
+        if (this.input ) this.input .pushValueUpdates(parse);
+        if (this.x     ) this.x     .pushValueUpdates(parse);
+        if (this.y     ) this.y     .pushValueUpdates(parse);
+        if (this.blur  ) this.blur  .pushValueUpdates(parse);
+        if (this.spread) this.spread.pushValueUpdates(parse);
+        if (this.fill  ) this.fill  .pushValueUpdates(parse);
+        if (this.blend ) this.blend .pushValueUpdates(parse);
+    }
+    
+    
+    
+    toValue()
+    {
+        return this.options.enabled
+            ? new InnerShadowValue(
+                this.x      ? this.x     .toValue() : this.input.x     .toValue(),
+                this.y      ? this.y     .toValue() : this.input.y     .toValue(),
+                this.blur   ? this.blur  .toValue() : this.input.blur  .toValue(),
+                this.spread ? this.spread.toValue() : this.input.spread.toValue(),
+                this.fill   ? this.fill  .toValue() : this.input.fill  .toValue(),
+                this.blend  ? this.blend .toValue() : this.input.blend .toValue())
+            : InnerShadowValue.NaN;
+    }
+
+
+
+    isValid()
+    {
+        return this.x     .isValid()
+            && this.y     .isValid()
+            && this.blur  .isValid()
+            && this.spread.isValid()
+            && this.fill  .isValid()
+            && this.blend .isValid();
+    }
+
+
+
+    invalidate()
+    {
+        super.invalidate();
+
+        if (this.input ) this.input .invalidate();
+        if (this.x     ) this.x     .invalidate();
+        if (this.y     ) this.y     .invalidate();
+        if (this.blur  ) this.blur  .invalidate();
+        if (this.spread) this.spread.invalidate();
+        if (this.fill  ) this.fill  .invalidate();
+        if (this.blend ) this.blend .invalidate();
+    }
+}
 
 
 
@@ -17007,9 +17371,7 @@ extends GShapeBase
         let props = this.props ? (await this.props.eval(parse)).toValue() : null;
 
         if (   props
-            && (   props.type ==  COLOR_VALUE
-                || props.type ==   FILL_VALUE
-                || props.type == STROKE_VALUE))
+            && STYLE_VALUES.includes(props.type))
             props = new ListValue([props]);
 
 
@@ -17044,10 +17406,10 @@ extends GShapeBase
 
                     obj.fills.push([
                         'SOLID', 
-                                rgb[0]
-                        + ' ' + rgb[1]
-                        + ' ' + rgb[2]
-                        + ' ' + '255']);
+                        rgb[0], 
+                        rgb[1], 
+                        rgb[2], 
+                        255   ]);
                 }
 
                 else if (prop.type == FILL_VALUE)
@@ -17060,10 +17422,10 @@ extends GShapeBase
 
                     obj.fills.push([
                         'SOLID', 
-                                rgb[0]
-                        + ' ' + rgb[1]
-                        + ' ' + rgb[2]
-                        + ' ' + prop.opacity.toValue().toNumber()]);
+                        rgb[0], 
+                        rgb[1], 
+                        rgb[2], 
+                        prop.opacity.toValue().toNumber() ]);
                 }
 
                 else if (prop.type == STROKE_VALUE)
@@ -17076,10 +17438,10 @@ extends GShapeBase
 
                     obj.strokes.push([
                         'SOLID', 
-                                rgb[0]
-                        + ' ' + rgb[1]
-                        + ' ' + rgb[2]
-                        + ' ' + prop.fill.opacity.toValue().toNumber()]);
+                        rgb[0],
+                        rgb[1],
+                        rgb[2],
+                        prop.fill.opacity.toValue().toNumber() ]);
 
 
                     obj.strokeWeight = prop.weight.toValue().toNumber();
@@ -17099,6 +17461,49 @@ extends GShapeBase
                     }
 
                     obj.strokeMiterLimit = prop.miter.toValue().value;
+                }
+
+                else if (prop.type == DROP_SHADOW_VALUE)
+                {
+                    if (!obj.effects) 
+                        obj.effects = [];
+
+
+                    const rgba = prop.fill.toRgba();
+
+                    obj.effects.push([
+                        'DROP_SHADOW', 
+                        rgba[0],
+                        rgba[1],
+                        rgba[2],
+                        rgba[3],
+                        prop.x.toNumber(),
+                        prop.y.toNumber(),
+                        prop.blur.toNumber(),
+                        prop.spread.toNumber(),
+                        BlendModes[prop.blend.value][2],
+                        prop.behind.value > 0 ]);
+                }
+
+                else if (prop.type == INNER_SHADOW_VALUE)
+                {
+                    if (!obj.effects) 
+                        obj.effects = [];
+
+
+                    const rgba = prop.fill.toRgba();
+
+                    obj.effects.push([
+                        'INNER_SHADOW', 
+                        rgba[0],
+                        rgba[1],
+                        rgba[2],
+                        rgba[3],
+                        prop.x.toNumber(),
+                        prop.y.toNumber(),
+                        prop.blur.toNumber(),
+                        prop.spread.toNumber(),
+                        BlendModes[prop.blend.value][2] ]);
                 }
             }
         }
@@ -24252,6 +24657,75 @@ function genParseDropShadow(parse)
         case 'fill':   shadow.fill   = genParse(parse); break;
         case 'blend':  shadow.blend  = genParse(parse); break;
         case 'behind': shadow.behind = genParse(parse); break;
+        }
+    }
+    
+    
+    parse.nTab--;
+
+
+    genParseNodeEnd(parse, shadow);
+    return shadow;
+}
+
+
+
+function genParseInnerShadow(parse)
+{
+    const [, nodeId, options, ignore] = genParseNodeStart(parse);
+
+
+    const shadow = new GInnerShadow(nodeId, options);
+
+    shadow.hasInputs = options.hasInputs;
+
+
+    let nInputs = -1;
+
+    if (!ignore)
+    {
+        nInputs = parseInt(parse.move());
+        console.assert(nInputs => 0 && nInputs <= 1, 'nInputs must be [0, 1]');
+    }
+
+
+    if (parse.settings.logRequests) 
+        logReq(shadow, parse, ignore, nInputs);
+
+
+    if (ignore)
+    {
+        genParseNodeEnd(parse, shadow);
+        return parse.parsedNodes.find(n => n.nodeId == nodeId);
+    }
+
+
+    parse.nTab++;
+
+
+    let paramIds;
+
+    if (nInputs == 1)
+    {
+        shadow.input = genParse(parse);
+        paramIds = parse.move().split(',');
+    }
+    else
+        paramIds = ['x', 'y', 'blur', 'spread', 'fill', 'blend'];
+
+
+    parse.inParam = false;
+
+    for (const id of paramIds)
+    {
+        switch (id)
+        {
+        case 'x':      shadow.x      = genParse(parse); break;
+        case 'y':      shadow.y      = genParse(parse); break;
+        case 'blur':   shadow.blur   = genParse(parse); break;
+        case 'spread': shadow.spread = genParse(parse); break;
+        case 'fill':   shadow.fill   = genParse(parse); break;
+        case 'blend':  shadow.blend  = genParse(parse); break;
         }
     }
     

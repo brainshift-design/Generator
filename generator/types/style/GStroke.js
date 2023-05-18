@@ -1,5 +1,5 @@
 class GStroke
-extends GShape
+extends GOperator
 {
     input  = null;
 
