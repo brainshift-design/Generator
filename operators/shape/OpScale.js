@@ -33,7 +33,9 @@ extends OperatorBase
         this.paramScaleX.controls[0].setMin(0);
         this.paramScaleY.controls[0].setMin(0);
 
+        this.paramShowCenter.controls[0].allowEditDecimals = false;
 
+        
         this.inputs[0].addEventListener('connect',    e => this.outputs[0].types = [...this.inputs[0].connectedOutput.types]);
         this.inputs[0].addEventListener('disconnect', e => this.outputs[0].types = [SHAPE_VALUE]);
     }

@@ -28,6 +28,8 @@ extends OperatorBase
         this.paramAngle.controls[0].suffix      = '°';
         this.paramAngle.controls[0].dragReverse = true;
 
+        this.paramShowCenter.controls[0].allowEditDecimals = false;
+
 
         this.inputs[0].addEventListener('connect',    e => this.outputs[0].types = [...this.inputs[0].connectedOutput.types]);
         this.inputs[0].addEventListener('disconnect', e => this.outputs[0].types = [SHAPE_VALUE]);

@@ -1592,6 +1592,19 @@ function figCreatePoint(genPoint) {
         figPoint.resizeWithoutConstraints(size, size);
         figPoint.setPluginData('actualX', genPoint.relativeTransform[0][2].toString());
         figPoint.setPluginData('actualY', genPoint.relativeTransform[1][2].toString());
+        // if (genPoint.isCenter)
+        // {
+        //     figPoint.vectorPaths = [{
+        //         windingRule: 'NONZERO',
+        //         data:        getLinearPathData(
+        //                      [
+        //                          {x: 0,            y: -2.5/curZoom},
+        //                          {x: -2.5/curZoom, y: 0           },
+        //                          {x: 0,            y: 2.5/curZoom },
+        //                          {x: 2.5/curZoom,  y: 0           }
+        //                      ]) + ' Z'
+        //     }];
+        // }
         convertPointTransform(figPoint, genPoint);
         updatePointStyles(figPoint);
     }
