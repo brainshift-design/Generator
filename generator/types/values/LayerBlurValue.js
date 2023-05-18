@@ -130,7 +130,6 @@ function parseLayerBlurValue(str, i = -1)
 
 
     const shadow = new LayerBlurValue(
-        '', // set node ID elsewhere
         radius[0]);
 
 

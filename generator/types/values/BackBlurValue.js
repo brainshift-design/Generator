@@ -130,7 +130,6 @@ function parseBackBlurValue(str, i = -1)
 
 
     const shadow = new BackBlurValue(
-        '', // set node ID elsewhere
         radius[0]);
 
 

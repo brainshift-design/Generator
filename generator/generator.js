@@ -108,6 +108,7 @@ function genPushUpdateValue(parse, nodeId, paramId, value)
         && v.paramId    == paramId
         && v.value.type == value.type);
 
+        
     parse.updateValues.push(
     {
         nodeId:  nodeId,

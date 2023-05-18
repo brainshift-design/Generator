@@ -152,7 +152,7 @@ extends GValue
         NumberValue.NaN,
         NumberValue.NaN,
         NumberValue.NaN,
-        ColorValue .NaN,
+        FillValue .NaN,
         NumberValue.NaN,
         NumberValue.NaN,
         false));
@@ -183,13 +183,12 @@ function parseDropShadowValue(str, i = -1)
     const y      = parseNumberValue(str[i]); i += y     [1];
     const blur   = parseNumberValue(str[i]); i += blur  [1];
     const spread = parseNumberValue(str[i]); i += spread[1];
-    const fill   = parseFillValue  (str[i]); i += fill  [1];
+    const fill   = parseFillValue  (str, i); i += fill  [1];
     const blend  = parseNumberValue(str[i]); i += blend [1];
     const behind = parseNumberValue(str[i]); i += behind[1];
 
 
     const shadow = new DropShadowValue(
-        '', // set node ID elsewhere
         x     [0],
         y     [0],
         blur  [0],

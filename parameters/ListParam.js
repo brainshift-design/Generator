@@ -159,6 +159,7 @@ extends Parameter
         this.controls[0].textbox.style.fontStyle  = 'italic';
         this.controls[0].textbox.style.fontWeight = '500';
 
+        
         const nItems = 
             this.getItemCount
             ? this.getItemCount()
