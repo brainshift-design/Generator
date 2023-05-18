@@ -2,9 +2,9 @@ class   OpRotate
 extends OperatorBase
 {
     paramAngle;
-    
     paramCenterX;
     paramCenterY;
+    paramShowCenter;
 
 
 
@@ -19,9 +19,10 @@ extends OperatorBase
         this.addOutput(new Output([SHAPE_VALUE], this.output_genRequest));
 
 
-        this.addParam(this.paramAngle   = new NumberParam('angle',   'angle',    true, true, true, 0));
-        this.addParam(this.paramCenterX = new NumberParam('centerX', 'center x', true, true, true, 0));
-        this.addParam(this.paramCenterY = new NumberParam('centerY', 'center y', true, true, true, 0));
+        this.addParam(this.paramAngle      = new NumberParam('angle',      'angle',       true, true, true, 0));
+        this.addParam(this.paramCenterX    = new NumberParam('centerX',    'center x',    true, true, true, 0));
+        this.addParam(this.paramCenterY    = new NumberParam('centerY',    'center y',    true, true, true, 0));
+        this.addParam(this.paramShowCenter = new NumberParam('showCenter', 'show center', true, true, true, 0, 0, 1));
 
 
         this.paramAngle.controls[0].suffix      = '°';
@@ -54,9 +55,10 @@ extends OperatorBase
         if (input.connected)
             request.push(...pushInputOrParam(input, gen));
 
-        request.push(...this.node.paramAngle  .genRequest(gen));
-        request.push(...this.node.paramCenterX.genRequest(gen));
-        request.push(...this.node.paramCenterY.genRequest(gen));
+        request.push(...this.node.paramAngle     .genRequest(gen));
+        request.push(...this.node.paramCenterX   .genRequest(gen));
+        request.push(...this.node.paramCenterY   .genRequest(gen));
+        request.push(...this.node.paramShowCenter.genRequest(gen));
 
         
         gen.scope.pop();

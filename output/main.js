@@ -234,6 +234,21 @@ function removeFromArrayWhere(array, where) {
 function cleanStyleId(styleId) {
     return styleId.split(',')[0] + ',';
 }
+function getLinearPathData(points) {
+    let pathData = '';
+    if (points.length < 2)
+        return pathData;
+    pathData += 'M';
+    pathData += ' ' + points[0].x;
+    pathData += ' ' + points[0].y;
+    for (let i = 1; i < points.length; i++) {
+        pathData +=
+            ' L'
+                + ' ' + points[i].x
+                + ' ' + points[i].y;
+    }
+    return pathData;
+}
 const LIST_VALUE = 'LIST#';
 const NUMBER_LIST_VALUE = 'NLIST#';
 const TEXT_LIST_VALUE = 'TLIST#';
@@ -1208,8 +1223,8 @@ function updatePointSize_(figPoint, genPoint) {
 function updatePointStyles(figPoint) {
     figPoint.fills = getObjectFills([['SOLID', 255, 255, 255, 100]]);
     figPoint.effects = getObjectEffects([
-        ['DROP_SHADOW', 12 / 255, 140 / 255, 233 / 255, 1, 0, 0, 0, 3.5 / curZoom, 'NORMAL', true, true],
-        ['DROP_SHADOW', 1, 1, 1, 1, 0, 0, 0, 2.5 / curZoom, 'NORMAL', true, true]
+        ['DROP_SHADOW', 12 / 255, 140 / 255, 233 / 255, 1, 0, 0, 0, 3.6 / curZoom, 'NORMAL', true, true],
+        ['DROP_SHADOW', 1, 1, 1, 1, 0, 0, 0, 2.4 / curZoom, 'NORMAL', true, true]
     ]);
 }
 ///////////////////////////////////////////////////////////////////////////////////////////////////
@@ -1561,7 +1576,9 @@ function genPointIsValid(genPoint) {
         && genPoint.y != null && !isNaN(genPoint.y);
 }
 function figCreatePoint(genPoint) {
-    const figPoint = figma.createEllipse();
+    const figPoint = genPoint.isCenter
+        ? figma.createRectangle()
+        : figma.createEllipse();
     figPoint.name = makeObjectName(genPoint);
     if (!genPointIsValid(genPoint))
         return figPoint;

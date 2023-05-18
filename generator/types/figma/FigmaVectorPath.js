@@ -114,33 +114,6 @@ function getPathDataFromPoints(points, closed, degree)
 
 
 
-function getLinearPathData(points)
-{
-    let pathData = '';
-
-
-    if (points.length < 2)
-        return pathData;
-
-
-    pathData += 'M';
-    pathData += ' ' + points[0].x;
-    pathData += ' ' + points[0].y;
-
-    for (let i = 1; i < points.length; i++)
-    {
-        pathData += 
-              ' L'
-            + ' ' + points[i].x
-            + ' ' + points[i].y;
-    }
-
-
-    return pathData;
-}
-
-
-
 function getQuadraticPathData(points, closed)
 {
     let pathData = '';

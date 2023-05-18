@@ -3,15 +3,17 @@ extends FigmaShape
 {
     x;
     y;
+    isCenter;
 
 
 
-    constructor(nodeId, objectId, objectName, x, y)
+    constructor(nodeId, objectId, objectName, x, y, isCenter = false)
     {
         super(POINT, nodeId, objectId, objectName);
         
-        this.x = x;
-        this.y = y;
+        this.x        = x;
+        this.y        = y;
+        this.isCenter = isCenter;
     }
 
 
@@ -23,7 +25,8 @@ extends FigmaShape
             this.objectId,
             this.objectName, 
             this.x,
-            this.y);
+            this.y,
+            this.isCenter);
 
         copy.copyBase(this);
 

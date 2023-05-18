@@ -1,11 +1,12 @@
 class GRotate
 extends GOperator
 {
-    input   = null;
-
-    angle   = null;
-    centerX = null;
-    centerY = null;
+    input      = null;
+   
+    angle      = null;
+    centerX    = null;
+    centerY    = null;
+    showCenter = null;
 
 
 
@@ -25,10 +26,10 @@ extends GOperator
         if (this.input) 
             copy.input = this.input.copy();
 
-        //if (this.value  ) copy.value   = this.value  .copy();
-        if (this.angle  ) copy.angle   = this.angle  .copy();
-        if (this.centerX) copy.centerX = this.centerX.copy();
-        if (this.centerY) copy.centerY = this.centerY.copy();
+        if (this.angle     ) copy.angle      = this.angle     .copy();
+        if (this.centerX   ) copy.centerX    = this.centerX   .copy();
+        if (this.centerY   ) copy.centerY    = this.centerY   .copy();
+        if (this.showCenter) copy.showCenter = this.showCenter.copy();
 
         return copy;
     }
@@ -41,9 +42,10 @@ extends GOperator
             return this;
 
         //console.log('this.centerX =', this.centerX);
-        const angle   = this.angle   ? (await this.angle  .eval(parse)).toValue() : null;
-        const centerX = this.centerX ? (await this.centerX.eval(parse)).toValue() : null;
-        const centerY = this.centerY ? (await this.centerY.eval(parse)).toValue() : null;
+        const angle      = this.angle      ? (await this.angle     .eval(parse)).toValue() : null;
+        const centerX    = this.centerX    ? (await this.centerX   .eval(parse)).toValue() : null;
+        const centerY    = this.centerY    ? (await this.centerY   .eval(parse)).toValue() : null;
+        const showCenter = this.showCenter ? (await this.showCenter.eval(parse)).toValue() : null;
 
 
         if (this.input)
@@ -60,9 +62,10 @@ extends GOperator
         const _bounds = this.evalObjects(
             parse, 
             {
-                angle:   angle, 
-                centerX: centerX, 
-                centerY: centerY
+                angle:      angle, 
+                centerX:    centerX, 
+                centerY:    centerY,
+                showCenter: showCenter
             });
 
 
@@ -77,11 +80,12 @@ extends GOperator
 
         this.updateValues =
         [
-            ['value',   this.value],
-            ['angle',   angle     ],
-            ['centerX', centerX   ],
-            ['centerY', centerY   ],
-            ['bounds',  bounds    ]
+            ['value',      this.value],
+            ['angle',      angle     ],
+            ['centerX',    centerX   ],
+            ['centerY',    centerY   ],
+            ['showCenter', showCenter],
+            ['bounds',     bounds    ]
         ];
 
 
@@ -107,7 +111,10 @@ extends GOperator
         const bounds = getObjBounds(this.objects);
         const angle  = options.angle.toNumber()/360*Tau;
 
-        
+        const cx     = bounds.x + bounds.width  * (0.5 + (options.centerX.toNumber()) / (bounds.width ));
+        const cy     = bounds.y + bounds.height * (0.5 + (options.centerY.toNumber()) / (bounds.height));
+
+
         // let dx = 
         //     bounds.width != 0
         //     ? (0.5 + options.centerX.toNumber() / (bounds.width /2)) * bounds.width
@@ -127,36 +134,39 @@ extends GOperator
             obj.objectId = obj.objectId + OBJECT_SEPARATOR + this.nodeId;
 
 
-            let xform = clone(obj.relativeTransform);
+            if (   bounds.width  > 0
+                && bounds.height > 0)
+            {
+                let xform = clone(obj.relativeTransform);
 
 
-            const dx = xform[0][2] - (bounds.x + bounds.width /2);
-            const dy = xform[1][2] - (bounds.y + bounds.height/2);
+                const dx = xform[0][2] - cx;
+                const dy = xform[1][2] - cy;
 
 
-            xform = mulm3m3(
-                xform,
-                [[1, 0, -dx],
-                 [0, 1, -dy],
-                 [0, 0,  1 ]]);
+                xform = mulm3m3(
+                    xform,
+                    [[1, 0, -dx],
+                     [0, 1, -dy],
+                     [0, 0,  1 ]]);
 
-            xform = mulm3m3(
-                xform,
-                [[ Math.cos(angle), Math.sin(angle), 0],
-                 [-Math.sin(angle), Math.cos(angle), 0],
-                 [ 0,               0,               1]]);
+                xform = mulm3m3(
+                    xform,
+                    [[ Math.cos(angle), Math.sin(angle), 0],
+                     [-Math.sin(angle), Math.cos(angle), 0],
+                     [ 0,               0,               1]]);
 
-            xform = mulm3m3(
-                xform,
-                [[1, 0, dx],
-                 [0, 1, dy],
-                 [0, 0, 1 ]]);
-
-
-            obj.relativeTransform = xform;
+                xform = mulm3m3(
+                    xform,
+                    [[1, 0, dx],
+                     [0, 1, dy],
+                     [0, 0, 1 ]]);
 
 
-             // obj.angle = 
+                obj.relativeTransform = xform;
+            }
+
+            // obj.angle = 
             //     isValid(obj.angle)
             //     ? obj.angle + options.angle.toNumber()
             //     : options.angle.toNumber(); 
@@ -249,6 +259,23 @@ extends GOperator
         }
 
         
+        if (this.showCenter.toValue().value > 0)
+        {
+            const center = new FigmaPoint(
+                this.nodeId,
+                this.nodeId,
+                this.nodeName + ' center',
+                cx,
+                cy,
+                true)
+
+            center.createDefaultTransform(cx, cy, 0);
+
+            this.objects      .push(center);
+            this.value.objects.push(center);
+        };
+
+
         await super.evalObjects(parse);
 
 
@@ -261,10 +288,11 @@ extends GOperator
     {
         super.pushValueUpdates(parse);
 
-        if (this.input  ) this.input  .pushValueUpdates(parse);
-        if (this.angle  ) this.angle  .pushValueUpdates(parse);
-        if (this.centerX) this.centerX.pushValueUpdates(parse);
-        if (this.centerY) this.centerY.pushValueUpdates(parse);
+        if (this.input     ) this.input     .pushValueUpdates(parse);
+        if (this.angle     ) this.angle     .pushValueUpdates(parse);
+        if (this.centerX   ) this.centerX   .pushValueUpdates(parse);
+        if (this.centerY   ) this.centerY   .pushValueUpdates(parse);
+        if (this.showCenter) this.showCenter.pushValueUpdates(parse);
     }
 
 
@@ -272,9 +300,10 @@ extends GOperator
     isValid()
     {
         return super.isValid()
-            && this.angle  .isValid()
-            && this.centerX.isValid()
-            && this.centerY.isValid();
+            && this.angle     .isValid()
+            && this.centerX   .isValid()
+            && this.centerY   .isValid()
+            && this.showCenter.isValid();
     }
 
 
@@ -283,10 +312,11 @@ extends GOperator
     {
         super.invalidate();
 
-        if (this.input  ) this.input  .invalidate();
-        if (this.angle  ) this.angle  .invalidate();
-        if (this.centerX) this.centerX.invalidate();
-        if (this.centerY) this.centerY.invalidate();
+        if (this.input     ) this.input     .invalidate();
+        if (this.angle     ) this.angle     .invalidate();
+        if (this.centerX   ) this.centerX   .invalidate();
+        if (this.centerY   ) this.centerY   .invalidate();
+        if (this.showCenter) this.showCenter.invalidate();
     }
 
 

@@ -1,12 +1,13 @@
 class GScale
 extends GOperator
 {
-    input   = null;
-
-    x       = null;
-    y       = null;
-    centerX = null;
-    centerY = null;
+    input      = null;
+   
+    scaleX     = null;
+    scaleY     = null;
+    centerX    = null;
+    centerY    = null;
+    showCenter = null;
 
 
 
@@ -26,11 +27,11 @@ extends GOperator
         if (this.input) 
             copy.input = this.input.copy();
 
-        //if (this.value) copy.value = this.value.copy();
-        if (this.x      ) copy.x       = this.x      .copy();
-        if (this.y      ) copy.y       = this.y      .copy();
-        if (this.centerX) copy.centerX = this.centerX.copy();
-        if (this.centerY) copy.centerY = this.centerY.copy();
+        if (this.scaleX    ) copy.scaleX     = this.scaleX    .copy();
+        if (this.scaleY    ) copy.scaleY     = this.scaleY    .copy();
+        if (this.centerX   ) copy.centerX    = this.centerX   .copy();
+        if (this.centerY   ) copy.centerY    = this.centerY   .copy();
+        if (this.showCenter) copy.showCenter = this.showCenter.copy();
 
         return copy;
     }
@@ -43,15 +44,16 @@ extends GOperator
             return this;
 
 
-        const x       = this.x       ? (await this.x      .eval(parse)).toValue() : null;
-        const y       = this.y       ? (await this.y      .eval(parse)).toValue() : null;
-        const centerX = this.centerX ? (await this.centerX.eval(parse)).toValue() : null;
-        const centerY = this.centerY ? (await this.centerY.eval(parse)).toValue() : null;
+        const scaleX     = this.scaleX     ? (await this.scaleX    .eval(parse)).toValue() : null;
+        const scaleY     = this.scaleY     ? (await this.scaleY    .eval(parse)).toValue() : null;
+        const centerX    = this.centerX    ? (await this.centerX   .eval(parse)).toValue() : null;
+        const centerY    = this.centerY    ? (await this.centerY   .eval(parse)).toValue() : null;
+        const showCenter = this.showCenter ? (await this.showCenter.eval(parse)).toValue() : null;
 
 
         if (this.input)
         {
-            this.value = (await this.input.eval(parse)).toValue();
+            this.value        = (await this.input.eval(parse)).toValue();
             this.value.nodeId = this.nodeId;
         }
         else
@@ -63,10 +65,11 @@ extends GOperator
         const _bounds = this.evalObjects(
             parse, 
             {
-                scaleX:  x, 
-                scaleY:  y, 
-                centerX: centerX, 
-                centerY: centerY
+                scaleX:     scaleX, 
+                scaleY:     scaleY, 
+                centerX:    centerX, 
+                centerY:    centerY,
+                showCenter: showCenter
             });
 
 
@@ -81,12 +84,13 @@ extends GOperator
 
         this.updateValues =
         [
-            ['value',   this.value],
-            ['x',       x         ],
-            ['y',       y         ],
-            ['centerX', centerX   ],
-            ['centerY', centerY   ],
-            ['bounds',  bounds    ]
+            ['value',      this.value],
+            ['scaleX',     scaleX    ],
+            ['scaleY',     scaleY    ],
+            ['centerX',    centerX   ],
+            ['centerY',    centerY   ],
+            ['showCenter', showCenter],
+            ['bounds',     bounds    ]
         ];
         
 
@@ -113,11 +117,14 @@ extends GOperator
         //console.log('bounds =', bounds);
     
 
-        const sx = options.scaleX .toNumber() / bounds.width;
-        const sy = options.scaleY .toNumber() / bounds.height;
+        const sx = options.scaleX.toNumber() / 100;
+        const sy = options.scaleY.toNumber() / 100;
 
-        const cx = options.centerX.toNumber() / bounds.width;
-        const cy = options.centerY.toNumber() / bounds.height;
+        // const cx = options.centerX.toNumber() / bounds.width;
+        // const cy = options.centerY.toNumber() / bounds.height;
+
+        const cx     = bounds.x + bounds.width  * (0.5 + (options.centerX.toNumber()) / (bounds.width ));
+        const cy     = bounds.y + bounds.height * (0.5 + (options.centerY.toNumber()) / (bounds.height));
 
         
         // const dx = 
@@ -135,8 +142,8 @@ extends GOperator
         // const bh = bounds.height != 0 ? bounds.height : 1;
 
 
-        const dx = 0.5 + -sx/2 + cx;
-        const dy = 0.5 + -sy/2 + cy;
+        // const dx = 0.5 + -sx/2 + cx;
+        // const dy = 0.5 + -sy/2 + cy;
 
 
         for (const obj of this.objects)
@@ -145,120 +152,170 @@ extends GOperator
             obj.objectId = obj.objectId + OBJECT_SEPARATOR + this.nodeId;
 
 
-            if (obj.type == VECTOR_PATH)
+            if (   bounds.width  > 0
+                && bounds.height > 0)
             {
-                // const sx  = Math.max(0, options.scaleX.toNumber()/100);
-                // const sy  = Math.max(0, options.scaleY.toNumber()/100);
-
-
-                for (const p of obj.points)
-                {
-                    const d = distance_(
-                        p.x.value, 
-                        p.y.value, 
-                        bounds.x + dx * bounds.width, 
-                        bounds.y + dy * bounds.height);
-
-                    const a = anglev_(
-                        bounds.x + dx * bounds.width, 
-                        bounds.y + dy * bounds.height, 
-                        p.x.value, 
-                        p.y.value);
-
-                    const v = mulv(
-                        vector(a, d),
-                        point(sx, sy));
-
-                    
-                    p.x.value = 
-                          bounds.x 
-                        + bounds.width/2 
-                        + v.x;
-
-                    p.y.value = 
-                          bounds.y
-                        + bounds.height/2
-                        + v.y;
-                }
-
-
-                FigmaVectorPath.prototype.updatePathData.call(obj);
-            }
-            else
-            {
-                // const x = Math.max(0, options.scaleX.toNumber()/100);
-                // const y = Math.max(0, options.scaleY.toNumber()/100);
-                
-
-                // const dx = 
-                //     bounds.width != 0
-                //     ? options.centerX.toNumber() / (bounds.width /2)
-                //     : options.centerX.toNumber();
-
-                // const dy = 
-                //     bounds.height != 0
-                //     ? options.centerY.toNumber() / (bounds.height/2)
-                //     : options.centerY.toNumber();
-
-                // const dx = 0.5 + options.centerX.toNumber() / (bounds.width /2);
-                // const dy = 0.5 + options.centerY.toNumber() / (bounds.height/2);
-
-                obj.width  *= sx;
-                obj.height *= sy;
-
-
-                // update transform
-
                 let xform = clone(obj.relativeTransform);
-    
+
+
+                const dx = xform[0][2] - cx;
+                const dy = xform[1][2] - cy;
+
 
                 xform = mulm3m3(
                     xform,
-                    [[sx, 0,  dx * bounds.width ],
-                     [0,  sy, dy * bounds.height],
-                     [0,  0,  1                 ]]);
-    
-    
+                    [[1, 0, -dx],
+                     [0, 1, -dy],
+                     [0, 0,  1 ]]);
+
+                xform = mulm3m3(
+                    xform,
+                    [[sx, 0,  0],
+                     [0,  sy, 0],
+                     [0,  0,  1]]);
+
+                xform = mulm3m3(
+                    xform,
+                    [[1, 0, dx],
+                     [0, 1, dy],
+                     [0, 0, 1 ]]);
+
+
                 obj.relativeTransform = xform;
-
-
-                // // update properties
-                // const angle = anglev_(
-                //     bounds.x + ((dx + 0.5) * bounds.width ), 
-                //     bounds.y + ((dy + 0.5) * bounds.height),
-                //     obj.x,
-                //     obj.y);
-
-                // const halfd = distance_(
-                //     bounds.x + ((dx + 0.5) * bounds.width ), 
-                //     bounds.y + ((dy + 0.5) * bounds.height),
-                //     obj.x,
-                //     obj.y);
-
-
-                // const a = 0;
-                // const v = vector(angle - a, halfd);
-
-                // v.x *= x;
-                // v.y *= y;
-
-                // obj.x = 
-                //       bounds.x 
-                //     + bounds.width /2 
-                //     + v.x 
-                //     - (dx - 0.5) * bw * Math.cos(-a) 
-                //     - (dy - 0.5) * bh * Math.sin( a);
-
-                // obj.y = 
-                //       bounds.y
-                //     + bounds.height/2
-                //     + v.y 
-                //     - (dx - 0.5) * bw * Math.sin(-a) 
-                //     - (dy - 0.5) * bh * Math.cos( a);
             }
+
+
+            // if (obj.type == VECTOR_PATH)
+            // {
+            //     // const sx  = Math.max(0, options.scaleX.toNumber()/100);
+            //     // const sy  = Math.max(0, options.scaleY.toNumber()/100);
+
+
+            //     for (const p of obj.points)
+            //     {
+            //         const d = distance_(
+            //             p.x.value, 
+            //             p.y.value, 
+            //             bounds.x + dx * bounds.width, 
+            //             bounds.y + dy * bounds.height);
+
+            //         const a = anglev_(
+            //             bounds.x + dx * bounds.width, 
+            //             bounds.y + dy * bounds.height, 
+            //             p.x.value, 
+            //             p.y.value);
+
+            //         const v = mulv(
+            //             vector(a, d),
+            //             point(sx, sy));
+
+                    
+            //         p.x.value = 
+            //               bounds.x 
+            //             + bounds.width/2 
+            //             + v.x;
+
+            //         p.y.value = 
+            //               bounds.y
+            //             + bounds.height/2
+            //             + v.y;
+            //     }
+
+
+            //     FigmaVectorPath.prototype.updatePathData.call(obj);
+            // }
+            // else
+            // {
+            //     // const x = Math.max(0, options.scaleX.toNumber()/100);
+            //     // const y = Math.max(0, options.scaleY.toNumber()/100);
+                
+
+            //     // const dx = 
+            //     //     bounds.width != 0
+            //     //     ? options.centerX.toNumber() / (bounds.width /2)
+            //     //     : options.centerX.toNumber();
+
+            //     // const dy = 
+            //     //     bounds.height != 0
+            //     //     ? options.centerY.toNumber() / (bounds.height/2)
+            //     //     : options.centerY.toNumber();
+
+            //     // const dx = 0.5 + options.centerX.toNumber() / (bounds.width /2);
+            //     // const dy = 0.5 + options.centerY.toNumber() / (bounds.height/2);
+
+            //     obj.width  *= sx;
+            //     obj.height *= sy;
+
+
+            //     // update transform
+
+            //     let xform = clone(obj.relativeTransform);
+    
+
+            //     xform = mulm3m3(
+            //         xform,
+            //         [[sx, 0,  dx * bounds.width ],
+            //          [0,  sy, dy * bounds.height],
+            //          [0,  0,  1                 ]]);
+    
+    
+            //     obj.relativeTransform = xform;
+
+
+            //     // // update properties
+            //     // const angle = anglev_(
+            //     //     bounds.x + ((dx + 0.5) * bounds.width ), 
+            //     //     bounds.y + ((dy + 0.5) * bounds.height),
+            //     //     obj.x,
+            //     //     obj.y);
+
+            //     // const halfd = distance_(
+            //     //     bounds.x + ((dx + 0.5) * bounds.width ), 
+            //     //     bounds.y + ((dy + 0.5) * bounds.height),
+            //     //     obj.x,
+            //     //     obj.y);
+
+
+            //     // const a = 0;
+            //     // const v = vector(angle - a, halfd);
+
+            //     // v.x *= x;
+            //     // v.y *= y;
+
+            //     // obj.x = 
+            //     //       bounds.x 
+            //     //     + bounds.width /2 
+            //     //     + v.x 
+            //     //     - (dx - 0.5) * bw * Math.cos(-a) 
+            //     //     - (dy - 0.5) * bh * Math.sin( a);
+
+            //     // obj.y = 
+            //     //       bounds.y
+            //     //     + bounds.height/2
+            //     //     + v.y 
+            //     //     - (dx - 0.5) * bw * Math.sin(-a) 
+            //     //     - (dy - 0.5) * bh * Math.cos( a);
+            // }
         }
 
         
+        if (this.showCenter.toValue().value > 0)
+        {
+            const center = new FigmaPoint(
+                this.nodeId,
+                this.nodeId,
+                this.nodeName + ' center',
+                cx,
+                cy,
+                true)
+
+            center.createDefaultTransform(cx, cy, 0);
+
+            this.objects      .push(center);
+            this.value.objects.push(center);
+        };
+
+
         await super.evalObjects(parse);
 
 
@@ -271,11 +328,12 @@ extends GOperator
     {
         super.pushValueUpdates(parse);
 
-        if (this.input  ) this.input  .pushValueUpdates(parse);
-        if (this.x      ) this.x      .pushValueUpdates(parse);
-        if (this.y      ) this.y      .pushValueUpdates(parse);
-        if (this.centerX) this.centerX.pushValueUpdates(parse);
-        if (this.centerY) this.centerY.pushValueUpdates(parse);
+        if (this.input     ) this.input     .pushValueUpdates(parse);
+        if (this.scaleX    ) this.scaleX    .pushValueUpdates(parse);
+        if (this.scaleY    ) this.scaleY    .pushValueUpdates(parse);
+        if (this.centerX   ) this.centerX   .pushValueUpdates(parse);
+        if (this.centerY   ) this.centerY   .pushValueUpdates(parse);
+        if (this.showCenter) this.showCenter.pushValueUpdates(parse);
     }
 
 
@@ -283,10 +341,11 @@ extends GOperator
     isValid()
     {
         return super.isValid()
-            && this.x .isValid()
-            && this.y .isValid()
-            && this.centerX.isValid()
-            && this.centerY.isValid();
+            && this.scaleX    .isValid()
+            && this.scaleY    .isValid()
+            && this.centerX   .isValid()
+            && this.centerY   .isValid()
+            && this.showCenter.isValid();
     }
 
 
@@ -295,11 +354,12 @@ extends GOperator
     {
         super.invalidate();
 
-        if (this.input) this.input.invalidate();
-        if (this.x    ) this.x    .invalidate();
-        if (this.y    ) this.y    .invalidate();
+        if (this.input     ) this.input     .invalidate();
+        if (this.scaleX    ) this.scaleX    .invalidate();
+        if (this.scaleY    ) this.scaleY    .invalidate();
         if (this.centerX   ) this.centerX   .invalidate();
         if (this.centerY   ) this.centerY   .invalidate();
+        if (this.showCenter) this.showCenter.invalidate();
     }
 
 
