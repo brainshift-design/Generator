@@ -8,26 +8,29 @@ extends GValue
     fill;
     blend;
     behind;
+    visible;
 
 
 
-    constructor(x      = new NumberValue(0), 
-                y      = new NumberValue(0), 
-                blur   = new NumberValue(0), 
-                spread = new NumberValue(0), 
-                fill   = FillValue.NaN,
-                blend  = new NumberValue(0),
-                behind = new NumberValue(0))
+    constructor(x       = new NumberValue(0), 
+                y       = new NumberValue(0), 
+                blur    = new NumberValue(0), 
+                spread  = new NumberValue(0), 
+                fill    = FillValue.NaN,
+                blend   = new NumberValue(0),
+                behind  = new NumberValue(0),
+                visible = true)
     {
         super(DROP_SHADOW_VALUE);
 
-        this.x      = x;
-        this.y      = y;
-        this.blur   = blur;
-        this.spread = spread;
-        this.fill   = fill;
-        this.blend  = blend;
-        this.behind = behind;
+        this.x       = x;
+        this.y       = y;
+        this.blur    = blur;
+        this.spread  = spread;
+        this.fill    = fill;
+        this.blend   = blend;
+        this.behind  = behind;
+        this.visible = visible;
     }
 
 
@@ -50,7 +53,8 @@ extends GValue
             this.spread.copy(),
             this.fill  .copy(),
             this.blend .copy(),
-            this.behind.copy());
+            this.behind.copy(),
+            this.visible);
 
         copy.copyBase(this);
 
@@ -67,7 +71,8 @@ extends GValue
             && this.spread.equals(shadow.spread)
             && this.fill  .equals(shadow.fill  )
             && this.blend .equals(shadow.blend )
-            && this.behind.equals(shadow.behind);
+            && this.behind.equals(shadow.behind)
+            && this.visible === shadow.visible;
     }
 
 
@@ -149,8 +154,8 @@ extends GValue
         NumberValue.NaN,
         ColorValue .NaN,
         NumberValue.NaN,
-        NumberValue.NaN));
-
+        NumberValue.NaN,
+        false));
 
 
     // static default = Object.freeze(DropShadowValue.create(217, 217, 217, 100));

@@ -1779,6 +1779,7 @@ function getObjectEffects(genObjEffects) {
                     const spread = effect[8];
                     const blend = effect[9];
                     const behind = effect[10];
+                    const visible = effect[11];
                     if (!isNaN(color.r)
                         && !isNaN(color.g)
                         && !isNaN(color.b)
@@ -1793,7 +1794,7 @@ function getObjectEffects(genObjEffects) {
                             offset: offset,
                             radius: radius,
                             spread: spread,
-                            visible: true,
+                            visible: visible,
                             blendMode: blend,
                             showShadowBehindNode: behind
                         });
@@ -1814,6 +1815,7 @@ function getObjectEffects(genObjEffects) {
                     const radius = effect[7];
                     const spread = effect[8];
                     const blend = effect[9];
+                    const visible = effect[10];
                     if (!isNaN(color.r)
                         && !isNaN(color.g)
                         && !isNaN(color.b)
@@ -1828,7 +1830,7 @@ function getObjectEffects(genObjEffects) {
                             offset: offset,
                             radius: radius,
                             spread: spread,
-                            visible: true,
+                            visible: visible,
                             blendMode: blend
                         });
                     break;
@@ -1836,10 +1838,11 @@ function getObjectEffects(genObjEffects) {
             case 'LAYER_BLUR':
                 {
                     const radius = effect[1];
+                    const visible = effect[2];
                     if (!isNaN(radius))
                         effects.push({
                             type: type,
-                            visible: true,
+                            visible: visible,
                             radius: radius
                         });
                     break;
@@ -1847,10 +1850,11 @@ function getObjectEffects(genObjEffects) {
             case 'BACKGROUND_BLUR':
                 {
                     const radius = effect[1];
+                    const visible = effect[2];
                     if (!isNaN(radius))
                         effects.push({
                             type: type,
-                            visible: true,
+                            visible: visible,
                             radius: radius
                         });
                     break;

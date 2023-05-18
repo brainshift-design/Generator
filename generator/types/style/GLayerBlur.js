@@ -43,11 +43,15 @@ extends GOperator
         {
             const input = (await this.input.eval(parse)).toValue();
 
-            this.value = new LayerBlurValue(radius ?? input.radius);
+            this.value = new LayerBlurValue(
+                radius ?? input.radius,
+                this.options.enabled);
         }
         else
         {
-            this.value = new LayerBlurValue(radius);
+            this.value = new LayerBlurValue(
+                radius,
+                this.options.enabled);
         }
 
 
@@ -75,10 +79,9 @@ extends GOperator
     
     toValue()
     {
-        return this.options.enabled
-            ? new LayerBlurValue(
-                this.radius ? this.radius.toValue() : this.input.radius.toValue())
-            : LayerBlurValue.NaN;
+        return new LayerBlurValue(
+            this.radius ? this.radius.toValue() : this.input.radius.toValue(),
+            this.options.enabled);
     }
 
 

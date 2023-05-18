@@ -153,7 +153,8 @@ extends GShapeBase
                         prop.blur.toNumber(),
                         prop.spread.toNumber(),
                         BlendModes[prop.blend.value][2],
-                        prop.behind.value > 0 ]);
+                        prop.behind.value > 0,
+                        prop.visible ]);
                 }
 
                 else if (prop.type == INNER_SHADOW_VALUE)
@@ -174,7 +175,8 @@ extends GShapeBase
                         prop.y.toNumber(),
                         prop.blur.toNumber(),
                         prop.spread.toNumber(),
-                        BlendModes[prop.blend.value][2] ]);
+                        BlendModes[prop.blend.value][2],
+                        prop.visible ]);
                 }
 
                 else if (prop.type == LAYER_BLUR_VALUE)
@@ -185,7 +187,8 @@ extends GShapeBase
 
                     obj.effects.push([
                         'LAYER_BLUR', 
-                        prop.radius.toNumber() ]);
+                        prop.radius.toNumber(),
+                        prop.visible ]);
                 }
 
                 else if (prop.type == BACK_BLUR_VALUE)
@@ -196,7 +199,8 @@ extends GShapeBase
 
                     obj.effects.push([
                         'BACKGROUND_BLUR', 
-                        prop.radius.toNumber() ]);
+                        prop.radius.toNumber(),
+                        prop.visible ]);
                 }
             }
         }

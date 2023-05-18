@@ -2,14 +2,17 @@ class BackBlurValue
 extends GValue
 {
     radius;
+    visible;
 
 
 
-    constructor(radius = new NumberValue(0))
+    constructor(radius  = new NumberValue(0),
+                visible = true)
     {
         super(BACK_BLUR_VALUE);
 
-        this.radius = radius;
+        this.radius  = radius;
+        this.visible = visible;
     }
 
 
@@ -25,7 +28,9 @@ extends GValue
 
     copy()
     {
-        const copy = new LayerBlurValue(this.radius.copy());
+        const copy = new BackBlurValue(
+            this.radius.copy(),
+            this.visible);
 
         copy.copyBase(this);
 
@@ -36,7 +41,8 @@ extends GValue
 
     equals(blur)
     {
-        return this.radius.equals(blur.radius);
+        return this.radius.equals(blur.radius)
+            && this.visible === blur.visible;
     }
 
 
@@ -93,7 +99,9 @@ extends GValue
 
 
 
-    static NaN = Object.freeze(new BackBlurValue(NumberValue.NaN));
+    static NaN = Object.freeze(new BackBlurValue(
+        NumberValue.NaN,
+        false));
 
 
 

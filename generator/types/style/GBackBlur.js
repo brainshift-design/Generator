@@ -43,11 +43,15 @@ extends GOperator
         {
             const input = (await this.input.eval(parse)).toValue();
 
-            this.value = new BackBlurValue(radius ?? input.radius);
+            this.value = new BackBlurValue(
+                radius ?? input.radius,
+                this.options.enabled);
         }
         else
         {
-            this.value = new BackBlurValue(radius);
+            this.value = new BackBlurValue(
+                radius,
+                this.options.enabled);
         }
 
 
@@ -75,10 +79,9 @@ extends GOperator
     
     toValue()
     {
-        return this.options.enabled
-            ? new BackBlurValue(
-                this.radius ? this.radius.toValue() : this.input.radius.toValue())
-            : BackBlurValue.NaN;
+        return new BackBlurValue(
+            this.radius ? this.radius.toValue() : this.input.radius.toValue(),
+            this.options.enabled);
     }
 
 

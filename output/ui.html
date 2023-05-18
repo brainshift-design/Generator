@@ -11124,26 +11124,29 @@ extends GValue
     fill;
     blend;
     behind;
+    visible;
 
 
 
-    constructor(x      = new NumberValue(0), 
-                y      = new NumberValue(0), 
-                blur   = new NumberValue(0), 
-                spread = new NumberValue(0), 
-                fill   = FillValue.NaN,
-                blend  = new NumberValue(0),
-                behind = new NumberValue(0))
+    constructor(x       = new NumberValue(0), 
+                y       = new NumberValue(0), 
+                blur    = new NumberValue(0), 
+                spread  = new NumberValue(0), 
+                fill    = FillValue.NaN,
+                blend   = new NumberValue(0),
+                behind  = new NumberValue(0),
+                visible = true)
     {
         super(DROP_SHADOW_VALUE);
 
-        this.x      = x;
-        this.y      = y;
-        this.blur   = blur;
-        this.spread = spread;
-        this.fill   = fill;
-        this.blend  = blend;
-        this.behind = behind;
+        this.x       = x;
+        this.y       = y;
+        this.blur    = blur;
+        this.spread  = spread;
+        this.fill    = fill;
+        this.blend   = blend;
+        this.behind  = behind;
+        this.visible = visible;
     }
 
 
@@ -11166,7 +11169,8 @@ extends GValue
             this.spread.copy(),
             this.fill  .copy(),
             this.blend .copy(),
-            this.behind.copy());
+            this.behind.copy(),
+            this.visible);
 
         copy.copyBase(this);
 
@@ -11183,7 +11187,8 @@ extends GValue
             && this.spread.equals(shadow.spread)
             && this.fill  .equals(shadow.fill  )
             && this.blend .equals(shadow.blend )
-            && this.behind.equals(shadow.behind);
+            && this.behind.equals(shadow.behind)
+            && this.visible === shadow.visible;
     }
 
 
@@ -11265,8 +11270,8 @@ extends GValue
         NumberValue.NaN,
         ColorValue .NaN,
         NumberValue.NaN,
-        NumberValue.NaN));
-
+        NumberValue.NaN,
+        false));
 
 
     // static default = Object.freeze(DropShadowValue.create(217, 217, 217, 100));
@@ -11324,24 +11329,27 @@ extends GValue
     spread;
     fill;
     blend;
+    visible;
 
 
 
-    constructor(x      = new NumberValue(0), 
-                y      = new NumberValue(0), 
-                blur   = new NumberValue(0), 
-                spread = new NumberValue(0), 
-                fill   = FillValue.NaN,
-                blend  = new NumberValue(0))
+    constructor(x       = new NumberValue(0), 
+                y       = new NumberValue(0), 
+                blur    = new NumberValue(0), 
+                spread  = new NumberValue(0), 
+                fill    = FillValue.NaN,
+                blend   = new NumberValue(0),
+                visible = true)
     {
         super(INNER_SHADOW_VALUE);
 
-        this.x      = x;
-        this.y      = y;
-        this.blur   = blur;
-        this.spread = spread;
-        this.fill   = fill;
-        this.blend  = blend;
+        this.x       = x;
+        this.y       = y;
+        this.blur    = blur;
+        this.spread  = spread;
+        this.fill    = fill;
+        this.blend   = blend;
+        this.visible = visible;
     }
 
 
@@ -11363,7 +11371,8 @@ extends GValue
             this.blur  .copy(),
             this.spread.copy(),
             this.fill  .copy(),
-            this.blend .copy());
+            this.blend .copy(),
+            this.visible);
 
         copy.copyBase(this);
 
@@ -11379,7 +11388,8 @@ extends GValue
             && this.blur  .equals(shadow.blur  )
             && this.spread.equals(shadow.spread)
             && this.fill  .equals(shadow.fill  )
-            && this.blend .equals(shadow.blend );
+            && this.blend .equals(shadow.blend )
+            && this.visible === shadow.visible;
     }
 
 
@@ -11457,7 +11467,8 @@ extends GValue
         NumberValue.NaN,
         NumberValue.NaN,
         ColorValue .NaN,
-        NumberValue.NaN));
+        NumberValue.NaN,
+        false));
 
 
 
@@ -11509,14 +11520,17 @@ class LayerBlurValue
 extends GValue
 {
     radius;
+    visible;
 
 
 
-    constructor(radius = new NumberValue(0))
+    constructor(radius  = new NumberValue(0), 
+                visible = true)
     {
         super(LAYER_BLUR_VALUE);
 
-        this.radius = radius;
+        this.radius  = radius;
+        this.visible = visible;
     }
 
 
@@ -11532,7 +11546,9 @@ extends GValue
 
     copy()
     {
-        const copy = new LayerBlurValue(this.radius.copy());
+        const copy = new LayerBlurValue(
+            this.radius.copy(),
+            this.visible);
 
         copy.copyBase(this);
 
@@ -11543,7 +11559,8 @@ extends GValue
 
     equals(blur)
     {
-        return this.radius.equals(blur.radius);
+        return this.radius.equals(blur.radius)
+            && this.visible === blur.visible;
     }
 
 
@@ -11600,7 +11617,9 @@ extends GValue
 
 
 
-    static NaN = Object.freeze(new LayerBlurValue(NumberValue.NaN));
+    static NaN = Object.freeze(new LayerBlurValue(
+        NumberValue.NaN,
+        false));
 
 
 
@@ -11642,14 +11661,17 @@ class BackBlurValue
 extends GValue
 {
     radius;
+    visible;
 
 
 
-    constructor(radius = new NumberValue(0))
+    constructor(radius  = new NumberValue(0),
+                visible = true)
     {
         super(BACK_BLUR_VALUE);
 
-        this.radius = radius;
+        this.radius  = radius;
+        this.visible = visible;
     }
 
 
@@ -11665,7 +11687,9 @@ extends GValue
 
     copy()
     {
-        const copy = new LayerBlurValue(this.radius.copy());
+        const copy = new BackBlurValue(
+            this.radius.copy(),
+            this.visible);
 
         copy.copyBase(this);
 
@@ -11676,7 +11700,8 @@ extends GValue
 
     equals(blur)
     {
-        return this.radius.equals(blur.radius);
+        return this.radius.equals(blur.radius)
+            && this.visible === blur.visible;
     }
 
 
@@ -11733,7 +11758,9 @@ extends GValue
 
 
 
-    static NaN = Object.freeze(new BackBlurValue(NumberValue.NaN));
+    static NaN = Object.freeze(new BackBlurValue(
+        NumberValue.NaN,
+        false));
 
 
 
@@ -21596,7 +21623,8 @@ extends GOperator
                 spread ?? input.spread,
                 fill   ?? input.fill,
                 blend  ?? input.blend,
-                behind ?? input.behind);
+                behind ?? input.behind,
+                this.options.enabled);
         }
         else
         {
@@ -21607,7 +21635,8 @@ extends GOperator
                 spread, 
                 fill, 
                 blend, 
-                behind);
+                behind,
+                this.options.enabled);
         }
 
 
@@ -21648,16 +21677,15 @@ extends GOperator
     
     toValue()
     {
-        return this.options.enabled
-            ? new DropShadowValue(
-                this.x      ? this.x     .toValue() : this.input.x     .toValue(),
-                this.y      ? this.y     .toValue() : this.input.y     .toValue(),
-                this.blur   ? this.blur  .toValue() : this.input.blur  .toValue(),
-                this.spread ? this.spread.toValue() : this.input.spread.toValue(),
-                this.fill   ? this.fill  .toValue() : this.input.fill  .toValue(),
-                this.blend  ? this.blend .toValue() : this.input.blend .toValue(),
-                this.behind ? this.behind.toValue() : this.input.behind.toValue())
-            : DropShadowValue.NaN;
+        return new DropShadowValue(
+            this.x      ? this.x     .toValue() : this.input.x     .toValue(),
+            this.y      ? this.y     .toValue() : this.input.y     .toValue(),
+            this.blur   ? this.blur  .toValue() : this.input.blur  .toValue(),
+            this.spread ? this.spread.toValue() : this.input.spread.toValue(),
+            this.fill   ? this.fill  .toValue() : this.input.fill  .toValue(),
+            this.blend  ? this.blend .toValue() : this.input.blend .toValue(),
+            this.behind ? this.behind.toValue() : this.input.behind.toValue(),
+            this.options.enabled);
     }
 
 
@@ -21714,7 +21742,7 @@ extends GOperator
 
     copy()
     {
-        const copy = new GDropShadow(this.nodeId, this.options);
+        const copy = new GInnerShadow(this.nodeId, this.options);
 
         copy.copyBase(this);
 
@@ -21757,7 +21785,8 @@ extends GOperator
                 blur   ?? input.blur,
                 spread ?? input.spread,
                 fill   ?? input.fill,
-                blend  ?? input.blend);
+                blend  ?? input.blend,
+                this.options.enabled);
         }
         else
         {
@@ -21767,7 +21796,8 @@ extends GOperator
                 blur, 
                 spread, 
                 fill, 
-                blend);
+                blend,
+                this.options.enabled);
         }
 
 
@@ -21806,15 +21836,14 @@ extends GOperator
     
     toValue()
     {
-        return this.options.enabled
-            ? new InnerShadowValue(
-                this.x      ? this.x     .toValue() : this.input.x     .toValue(),
-                this.y      ? this.y     .toValue() : this.input.y     .toValue(),
-                this.blur   ? this.blur  .toValue() : this.input.blur  .toValue(),
-                this.spread ? this.spread.toValue() : this.input.spread.toValue(),
-                this.fill   ? this.fill  .toValue() : this.input.fill  .toValue(),
-                this.blend  ? this.blend .toValue() : this.input.blend .toValue())
-            : InnerShadowValue.NaN;
+        return new InnerShadowValue(
+            this.x      ? this.x     .toValue() : this.input.x     .toValue(),
+            this.y      ? this.y     .toValue() : this.input.y     .toValue(),
+            this.blur   ? this.blur  .toValue() : this.input.blur  .toValue(),
+            this.spread ? this.spread.toValue() : this.input.spread.toValue(),
+            this.fill   ? this.fill  .toValue() : this.input.fill  .toValue(),
+            this.blend  ? this.blend .toValue() : this.input.blend .toValue(),
+            this.options.enabled);
     }
 
 
@@ -21891,11 +21920,15 @@ extends GOperator
         {
             const input = (await this.input.eval(parse)).toValue();
 
-            this.value = new LayerBlurValue(radius ?? input.radius);
+            this.value = new LayerBlurValue(
+                radius ?? input.radius,
+                this.options.enabled);
         }
         else
         {
-            this.value = new LayerBlurValue(radius);
+            this.value = new LayerBlurValue(
+                radius,
+                this.options.enabled);
         }
 
 
@@ -21923,10 +21956,9 @@ extends GOperator
     
     toValue()
     {
-        return this.options.enabled
-            ? new LayerBlurValue(
-                this.radius ? this.radius.toValue() : this.input.radius.toValue())
-            : LayerBlurValue.NaN;
+        return new LayerBlurValue(
+            this.radius ? this.radius.toValue() : this.input.radius.toValue(),
+            this.options.enabled);
     }
 
 
@@ -21993,11 +22025,15 @@ extends GOperator
         {
             const input = (await this.input.eval(parse)).toValue();
 
-            this.value = new BackBlurValue(radius ?? input.radius);
+            this.value = new BackBlurValue(
+                radius ?? input.radius,
+                this.options.enabled);
         }
         else
         {
-            this.value = new BackBlurValue(radius);
+            this.value = new BackBlurValue(
+                radius,
+                this.options.enabled);
         }
 
 
@@ -22025,10 +22061,9 @@ extends GOperator
     
     toValue()
     {
-        return this.options.enabled
-            ? new BackBlurValue(
-                this.radius ? this.radius.toValue() : this.input.radius.toValue())
-            : BackBlurValue.NaN;
+        return new BackBlurValue(
+            this.radius ? this.radius.toValue() : this.input.radius.toValue(),
+            this.options.enabled);
     }
 
 
@@ -22314,7 +22349,8 @@ extends GShapeBase
                         prop.blur.toNumber(),
                         prop.spread.toNumber(),
                         BlendModes[prop.blend.value][2],
-                        prop.behind.value > 0 ]);
+                        prop.behind.value > 0,
+                        prop.visible ]);
                 }
 
                 else if (prop.type == INNER_SHADOW_VALUE)
@@ -22335,7 +22371,8 @@ extends GShapeBase
                         prop.y.toNumber(),
                         prop.blur.toNumber(),
                         prop.spread.toNumber(),
-                        BlendModes[prop.blend.value][2] ]);
+                        BlendModes[prop.blend.value][2],
+                        prop.visible ]);
                 }
 
                 else if (prop.type == LAYER_BLUR_VALUE)
@@ -22346,7 +22383,8 @@ extends GShapeBase
 
                     obj.effects.push([
                         'LAYER_BLUR', 
-                        prop.radius.toNumber() ]);
+                        prop.radius.toNumber(),
+                        prop.visible ]);
                 }
 
                 else if (prop.type == BACK_BLUR_VALUE)
@@ -22357,7 +22395,8 @@ extends GShapeBase
 
                     obj.effects.push([
                         'BACKGROUND_BLUR', 
-                        prop.radius.toNumber() ]);
+                        prop.radius.toNumber(),
+                        prop.visible ]);
                 }
             }
         }
@@ -43132,26 +43171,29 @@ extends GValue
     fill;
     blend;
     behind;
+    visible;
 
 
 
-    constructor(x      = new NumberValue(0), 
-                y      = new NumberValue(0), 
-                blur   = new NumberValue(0), 
-                spread = new NumberValue(0), 
-                fill   = FillValue.NaN,
-                blend  = new NumberValue(0),
-                behind = new NumberValue(0))
+    constructor(x       = new NumberValue(0), 
+                y       = new NumberValue(0), 
+                blur    = new NumberValue(0), 
+                spread  = new NumberValue(0), 
+                fill    = FillValue.NaN,
+                blend   = new NumberValue(0),
+                behind  = new NumberValue(0),
+                visible = true)
     {
         super(DROP_SHADOW_VALUE);
 
-        this.x      = x;
-        this.y      = y;
-        this.blur   = blur;
-        this.spread = spread;
-        this.fill   = fill;
-        this.blend  = blend;
-        this.behind = behind;
+        this.x       = x;
+        this.y       = y;
+        this.blur    = blur;
+        this.spread  = spread;
+        this.fill    = fill;
+        this.blend   = blend;
+        this.behind  = behind;
+        this.visible = visible;
     }
 
 
@@ -43174,7 +43216,8 @@ extends GValue
             this.spread.copy(),
             this.fill  .copy(),
             this.blend .copy(),
-            this.behind.copy());
+            this.behind.copy(),
+            this.visible);
 
         copy.copyBase(this);
 
@@ -43191,7 +43234,8 @@ extends GValue
             && this.spread.equals(shadow.spread)
             && this.fill  .equals(shadow.fill  )
             && this.blend .equals(shadow.blend )
-            && this.behind.equals(shadow.behind);
+            && this.behind.equals(shadow.behind)
+            && this.visible === shadow.visible;
     }
 
 
@@ -43273,8 +43317,8 @@ extends GValue
         NumberValue.NaN,
         ColorValue .NaN,
         NumberValue.NaN,
-        NumberValue.NaN));
-
+        NumberValue.NaN,
+        false));
 
 
     // static default = Object.freeze(DropShadowValue.create(217, 217, 217, 100));
@@ -43332,24 +43376,27 @@ extends GValue
     spread;
     fill;
     blend;
+    visible;
 
 
 
-    constructor(x      = new NumberValue(0), 
-                y      = new NumberValue(0), 
-                blur   = new NumberValue(0), 
-                spread = new NumberValue(0), 
-                fill   = FillValue.NaN,
-                blend  = new NumberValue(0))
+    constructor(x       = new NumberValue(0), 
+                y       = new NumberValue(0), 
+                blur    = new NumberValue(0), 
+                spread  = new NumberValue(0), 
+                fill    = FillValue.NaN,
+                blend   = new NumberValue(0),
+                visible = true)
     {
         super(INNER_SHADOW_VALUE);
 
-        this.x      = x;
-        this.y      = y;
-        this.blur   = blur;
-        this.spread = spread;
-        this.fill   = fill;
-        this.blend  = blend;
+        this.x       = x;
+        this.y       = y;
+        this.blur    = blur;
+        this.spread  = spread;
+        this.fill    = fill;
+        this.blend   = blend;
+        this.visible = visible;
     }
 
 
@@ -43371,7 +43418,8 @@ extends GValue
             this.blur  .copy(),
             this.spread.copy(),
             this.fill  .copy(),
-            this.blend .copy());
+            this.blend .copy(),
+            this.visible);
 
         copy.copyBase(this);
 
@@ -43387,7 +43435,8 @@ extends GValue
             && this.blur  .equals(shadow.blur  )
             && this.spread.equals(shadow.spread)
             && this.fill  .equals(shadow.fill  )
-            && this.blend .equals(shadow.blend );
+            && this.blend .equals(shadow.blend )
+            && this.visible === shadow.visible;
     }
 
 
@@ -43465,7 +43514,8 @@ extends GValue
         NumberValue.NaN,
         NumberValue.NaN,
         ColorValue .NaN,
-        NumberValue.NaN));
+        NumberValue.NaN,
+        false));
 
 
 
@@ -43517,14 +43567,17 @@ class LayerBlurValue
 extends GValue
 {
     radius;
+    visible;
 
 
 
-    constructor(radius = new NumberValue(0))
+    constructor(radius  = new NumberValue(0), 
+                visible = true)
     {
         super(LAYER_BLUR_VALUE);
 
-        this.radius = radius;
+        this.radius  = radius;
+        this.visible = visible;
     }
 
 
@@ -43540,7 +43593,9 @@ extends GValue
 
     copy()
     {
-        const copy = new LayerBlurValue(this.radius.copy());
+        const copy = new LayerBlurValue(
+            this.radius.copy(),
+            this.visible);
 
         copy.copyBase(this);
 
@@ -43551,7 +43606,8 @@ extends GValue
 
     equals(blur)
     {
-        return this.radius.equals(blur.radius);
+        return this.radius.equals(blur.radius)
+            && this.visible === blur.visible;
     }
 
 
@@ -43608,7 +43664,9 @@ extends GValue
 
 
 
-    static NaN = Object.freeze(new LayerBlurValue(NumberValue.NaN));
+    static NaN = Object.freeze(new LayerBlurValue(
+        NumberValue.NaN,
+        false));
 
 
 
@@ -43650,14 +43708,17 @@ class BackBlurValue
 extends GValue
 {
     radius;
+    visible;
 
 
 
-    constructor(radius = new NumberValue(0))
+    constructor(radius  = new NumberValue(0),
+                visible = true)
     {
         super(BACK_BLUR_VALUE);
 
-        this.radius = radius;
+        this.radius  = radius;
+        this.visible = visible;
     }
 
 
@@ -43673,7 +43734,9 @@ extends GValue
 
     copy()
     {
-        const copy = new LayerBlurValue(this.radius.copy());
+        const copy = new BackBlurValue(
+            this.radius.copy(),
+            this.visible);
 
         copy.copyBase(this);
 
@@ -43684,7 +43747,8 @@ extends GValue
 
     equals(blur)
     {
-        return this.radius.equals(blur.radius);
+        return this.radius.equals(blur.radius)
+            && this.visible === blur.visible;
     }
 
 
@@ -43741,7 +43805,9 @@ extends GValue
 
 
 
-    static NaN = Object.freeze(new BackBlurValue(NumberValue.NaN));
+    static NaN = Object.freeze(new BackBlurValue(
+        NumberValue.NaN,
+        false));
 
 
 
@@ -53604,7 +53670,8 @@ extends GOperator
                 spread ?? input.spread,
                 fill   ?? input.fill,
                 blend  ?? input.blend,
-                behind ?? input.behind);
+                behind ?? input.behind,
+                this.options.enabled);
         }
         else
         {
@@ -53615,7 +53682,8 @@ extends GOperator
                 spread, 
                 fill, 
                 blend, 
-                behind);
+                behind,
+                this.options.enabled);
         }
 
 
@@ -53656,16 +53724,15 @@ extends GOperator
     
     toValue()
     {
-        return this.options.enabled
-            ? new DropShadowValue(
-                this.x      ? this.x     .toValue() : this.input.x     .toValue(),
-                this.y      ? this.y     .toValue() : this.input.y     .toValue(),
-                this.blur   ? this.blur  .toValue() : this.input.blur  .toValue(),
-                this.spread ? this.spread.toValue() : this.input.spread.toValue(),
-                this.fill   ? this.fill  .toValue() : this.input.fill  .toValue(),
-                this.blend  ? this.blend .toValue() : this.input.blend .toValue(),
-                this.behind ? this.behind.toValue() : this.input.behind.toValue())
-            : DropShadowValue.NaN;
+        return new DropShadowValue(
+            this.x      ? this.x     .toValue() : this.input.x     .toValue(),
+            this.y      ? this.y     .toValue() : this.input.y     .toValue(),
+            this.blur   ? this.blur  .toValue() : this.input.blur  .toValue(),
+            this.spread ? this.spread.toValue() : this.input.spread.toValue(),
+            this.fill   ? this.fill  .toValue() : this.input.fill  .toValue(),
+            this.blend  ? this.blend .toValue() : this.input.blend .toValue(),
+            this.behind ? this.behind.toValue() : this.input.behind.toValue(),
+            this.options.enabled);
     }
 
 
@@ -53722,7 +53789,7 @@ extends GOperator
 
     copy()
     {
-        const copy = new GDropShadow(this.nodeId, this.options);
+        const copy = new GInnerShadow(this.nodeId, this.options);
 
         copy.copyBase(this);
 
@@ -53765,7 +53832,8 @@ extends GOperator
                 blur   ?? input.blur,
                 spread ?? input.spread,
                 fill   ?? input.fill,
-                blend  ?? input.blend);
+                blend  ?? input.blend,
+                this.options.enabled);
         }
         else
         {
@@ -53775,7 +53843,8 @@ extends GOperator
                 blur, 
                 spread, 
                 fill, 
-                blend);
+                blend,
+                this.options.enabled);
         }
 
 
@@ -53814,15 +53883,14 @@ extends GOperator
     
     toValue()
     {
-        return this.options.enabled
-            ? new InnerShadowValue(
-                this.x      ? this.x     .toValue() : this.input.x     .toValue(),
-                this.y      ? this.y     .toValue() : this.input.y     .toValue(),
-                this.blur   ? this.blur  .toValue() : this.input.blur  .toValue(),
-                this.spread ? this.spread.toValue() : this.input.spread.toValue(),
-                this.fill   ? this.fill  .toValue() : this.input.fill  .toValue(),
-                this.blend  ? this.blend .toValue() : this.input.blend .toValue())
-            : InnerShadowValue.NaN;
+        return new InnerShadowValue(
+            this.x      ? this.x     .toValue() : this.input.x     .toValue(),
+            this.y      ? this.y     .toValue() : this.input.y     .toValue(),
+            this.blur   ? this.blur  .toValue() : this.input.blur  .toValue(),
+            this.spread ? this.spread.toValue() : this.input.spread.toValue(),
+            this.fill   ? this.fill  .toValue() : this.input.fill  .toValue(),
+            this.blend  ? this.blend .toValue() : this.input.blend .toValue(),
+            this.options.enabled);
     }
 
 
@@ -53899,11 +53967,15 @@ extends GOperator
         {
             const input = (await this.input.eval(parse)).toValue();
 
-            this.value = new LayerBlurValue(radius ?? input.radius);
+            this.value = new LayerBlurValue(
+                radius ?? input.radius,
+                this.options.enabled);
         }
         else
         {
-            this.value = new LayerBlurValue(radius);
+            this.value = new LayerBlurValue(
+                radius,
+                this.options.enabled);
         }
 
 
@@ -53931,10 +54003,9 @@ extends GOperator
     
     toValue()
     {
-        return this.options.enabled
-            ? new LayerBlurValue(
-                this.radius ? this.radius.toValue() : this.input.radius.toValue())
-            : LayerBlurValue.NaN;
+        return new LayerBlurValue(
+            this.radius ? this.radius.toValue() : this.input.radius.toValue(),
+            this.options.enabled);
     }
 
 
@@ -54001,11 +54072,15 @@ extends GOperator
         {
             const input = (await this.input.eval(parse)).toValue();
 
-            this.value = new BackBlurValue(radius ?? input.radius);
+            this.value = new BackBlurValue(
+                radius ?? input.radius,
+                this.options.enabled);
         }
         else
         {
-            this.value = new BackBlurValue(radius);
+            this.value = new BackBlurValue(
+                radius,
+                this.options.enabled);
         }
 
 
@@ -54033,10 +54108,9 @@ extends GOperator
     
     toValue()
     {
-        return this.options.enabled
-            ? new BackBlurValue(
-                this.radius ? this.radius.toValue() : this.input.radius.toValue())
-            : BackBlurValue.NaN;
+        return new BackBlurValue(
+            this.radius ? this.radius.toValue() : this.input.radius.toValue(),
+            this.options.enabled);
     }
 
 
@@ -54322,7 +54396,8 @@ extends GShapeBase
                         prop.blur.toNumber(),
                         prop.spread.toNumber(),
                         BlendModes[prop.blend.value][2],
-                        prop.behind.value > 0 ]);
+                        prop.behind.value > 0,
+                        prop.visible ]);
                 }
 
                 else if (prop.type == INNER_SHADOW_VALUE)
@@ -54343,7 +54418,8 @@ extends GShapeBase
                         prop.y.toNumber(),
                         prop.blur.toNumber(),
                         prop.spread.toNumber(),
-                        BlendModes[prop.blend.value][2] ]);
+                        BlendModes[prop.blend.value][2],
+                        prop.visible ]);
                 }
 
                 else if (prop.type == LAYER_BLUR_VALUE)
@@ -54354,7 +54430,8 @@ extends GShapeBase
 
                     obj.effects.push([
                         'LAYER_BLUR', 
-                        prop.radius.toNumber() ]);
+                        prop.radius.toNumber(),
+                        prop.visible ]);
                 }
 
                 else if (prop.type == BACK_BLUR_VALUE)
@@ -54365,7 +54442,8 @@ extends GShapeBase
 
                     obj.effects.push([
                         'BACKGROUND_BLUR', 
-                        prop.radius.toNumber() ]);
+                        prop.radius.toNumber(),
+                        prop.visible ]);
                 }
             }
         }

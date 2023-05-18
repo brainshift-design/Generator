@@ -21,7 +21,7 @@ extends GOperator
 
     copy()
     {
-        const copy = new GDropShadow(this.nodeId, this.options);
+        const copy = new GInnerShadow(this.nodeId, this.options);
 
         copy.copyBase(this);
 
@@ -64,7 +64,8 @@ extends GOperator
                 blur   ?? input.blur,
                 spread ?? input.spread,
                 fill   ?? input.fill,
-                blend  ?? input.blend);
+                blend  ?? input.blend,
+                this.options.enabled);
         }
         else
         {
@@ -74,7 +75,8 @@ extends GOperator
                 blur, 
                 spread, 
                 fill, 
-                blend);
+                blend,
+                this.options.enabled);
         }
 
 
@@ -113,15 +115,14 @@ extends GOperator
     
     toValue()
     {
-        return this.options.enabled
-            ? new InnerShadowValue(
-                this.x      ? this.x     .toValue() : this.input.x     .toValue(),
-                this.y      ? this.y     .toValue() : this.input.y     .toValue(),
-                this.blur   ? this.blur  .toValue() : this.input.blur  .toValue(),
-                this.spread ? this.spread.toValue() : this.input.spread.toValue(),
-                this.fill   ? this.fill  .toValue() : this.input.fill  .toValue(),
-                this.blend  ? this.blend .toValue() : this.input.blend .toValue())
-            : InnerShadowValue.NaN;
+        return new InnerShadowValue(
+            this.x      ? this.x     .toValue() : this.input.x     .toValue(),
+            this.y      ? this.y     .toValue() : this.input.y     .toValue(),
+            this.blur   ? this.blur  .toValue() : this.input.blur  .toValue(),
+            this.spread ? this.spread.toValue() : this.input.spread.toValue(),
+            this.fill   ? this.fill  .toValue() : this.input.fill  .toValue(),
+            this.blend  ? this.blend .toValue() : this.input.blend .toValue(),
+            this.options.enabled);
     }
 
 

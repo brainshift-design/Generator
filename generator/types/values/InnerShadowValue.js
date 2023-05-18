@@ -7,24 +7,27 @@ extends GValue
     spread;
     fill;
     blend;
+    visible;
 
 
 
-    constructor(x      = new NumberValue(0), 
-                y      = new NumberValue(0), 
-                blur   = new NumberValue(0), 
-                spread = new NumberValue(0), 
-                fill   = FillValue.NaN,
-                blend  = new NumberValue(0))
+    constructor(x       = new NumberValue(0), 
+                y       = new NumberValue(0), 
+                blur    = new NumberValue(0), 
+                spread  = new NumberValue(0), 
+                fill    = FillValue.NaN,
+                blend   = new NumberValue(0),
+                visible = true)
     {
         super(INNER_SHADOW_VALUE);
 
-        this.x      = x;
-        this.y      = y;
-        this.blur   = blur;
-        this.spread = spread;
-        this.fill   = fill;
-        this.blend  = blend;
+        this.x       = x;
+        this.y       = y;
+        this.blur    = blur;
+        this.spread  = spread;
+        this.fill    = fill;
+        this.blend   = blend;
+        this.visible = visible;
     }
 
 
@@ -46,7 +49,8 @@ extends GValue
             this.blur  .copy(),
             this.spread.copy(),
             this.fill  .copy(),
-            this.blend .copy());
+            this.blend .copy(),
+            this.visible);
 
         copy.copyBase(this);
 
@@ -62,7 +66,8 @@ extends GValue
             && this.blur  .equals(shadow.blur  )
             && this.spread.equals(shadow.spread)
             && this.fill  .equals(shadow.fill  )
-            && this.blend .equals(shadow.blend );
+            && this.blend .equals(shadow.blend )
+            && this.visible === shadow.visible;
     }
 
 
@@ -140,7 +145,8 @@ extends GValue
         NumberValue.NaN,
         NumberValue.NaN,
         ColorValue .NaN,
-        NumberValue.NaN));
+        NumberValue.NaN,
+        false));
 
 
 
