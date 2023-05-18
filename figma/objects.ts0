@@ -1095,6 +1095,36 @@ function getObjectEffects(genObjEffects)
 
                 break;
             }
+
+            case 'LAYER_BLUR':
+            {
+                const radius = effect[1];
+
+                if (!isNaN(radius))
+                    effects.push(
+                    {
+                        type:    type, 
+                        visible: true,
+                        radius:  radius
+                    });
+
+                break;
+            }
+
+            case 'BACKGROUND_BLUR':
+            {
+                const radius = effect[1];
+
+                if (!isNaN(radius))
+                    effects.push(
+                    {
+                        type:    type, 
+                        visible: true,
+                        radius:  radius
+                    });
+
+                break;
+            }
         }
     }
 

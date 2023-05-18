@@ -8224,8 +8224,8 @@ const LAYER_BLUR_VALUE   = 'LBLR#';
 const LAYER_BLUR         = 'LBLR';
 const LAYER_BLUR_TYPES   = [LAYER_BLUR_VALUE, LAYER_BLUR];
 
-const BACK_BLUR_VALUE    = 'DRSH#';
-const BACK_BLUR          = 'DRSH';
+const BACK_BLUR_VALUE    = 'BBLR#';
+const BACK_BLUR          = 'BBLR';
 const BACK_BLUR_TYPES    = [BACK_BLUR_VALUE, BACK_BLUR];
 
 
@@ -11505,9 +11505,269 @@ function parseInnerShadowValue(str, i = -1)
 
 
 
+class LayerBlurValue
+extends GValue
+{
+    radius;
 
 
 
+    constructor(radius = new NumberValue(0))
+    {
+        super(LAYER_BLUR_VALUE);
+
+        this.radius = radius;
+    }
+
+
+    
+    // static create(x, y, blur, spread, fill, blend)
+    // {
+    //     return new FillValue(
+    //         new Number,
+    //         new NumberValue(opacity));
+    // }
+
+
+
+    copy()
+    {
+        const copy = new LayerBlurValue(this.radius.copy());
+
+        copy.copyBase(this);
+
+        return copy;
+    }
+
+
+
+    equals(blur)
+    {
+        return this.radius.equals(blur.radius);
+    }
+
+
+
+    async eval(parse)
+    {
+        return this;
+    }
+
+
+
+    // toRgba()
+    // {
+    //     return [
+    //         ...this.color.toRgb(),
+    //         this.opacity.value / 100 ];
+    // }
+
+
+
+    // toFigma()
+    // {
+    //     return [['SOLID', this.toString()]];
+    // }
+
+
+
+    toString()
+    {
+        return this.radius.toString();
+    }
+
+
+
+    toDisplayString()
+    {
+        return this.radius.toDisplayString();
+    }
+
+
+
+    isValid()
+    {
+        return super.isValid()
+            && this.radius.isValid();
+    }
+
+
+
+    getNaN()
+    {
+        return LayerBlurValue.NaN;
+    }
+
+
+
+    static NaN = Object.freeze(new LayerBlurValue(NumberValue.NaN));
+
+
+
+    // static default = Object.freeze(LayerBlurValue.create(217, 217, 217, 100));
+}
+
+
+
+function parseLayerBlurValue(str, i = -1)
+{
+    if (   i <  0 && str    == NAN_DISPLAY
+        || i >= 0 && str[i] == NAN_DISPLAY)
+        return [LayerBlurValue.NaN, 1];
+
+
+    if (i < 0)
+    {
+        str = str.split(' ');
+        i   = 0;
+    }
+
+
+    const iStart = i;
+
+    const radius = parseNumberValue(str[i]); i += radius[1];
+
+
+    const shadow = new LayerBlurValue(
+        '', // set node ID elsewhere
+        radius[0]);
+
+
+    return [shadow, i - iStart];
+}
+
+
+
+class BackBlurValue
+extends GValue
+{
+    radius;
+
+
+
+    constructor(radius = new NumberValue(0))
+    {
+        super(BACK_BLUR_VALUE);
+
+        this.radius = radius;
+    }
+
+
+    
+    // static create(x, y, blur, spread, fill, blend)
+    // {
+    //     return new FillValue(
+    //         new Number,
+    //         new NumberValue(opacity));
+    // }
+
+
+
+    copy()
+    {
+        const copy = new LayerBlurValue(this.radius.copy());
+
+        copy.copyBase(this);
+
+        return copy;
+    }
+
+
+
+    equals(blur)
+    {
+        return this.radius.equals(blur.radius);
+    }
+
+
+
+    async eval(parse)
+    {
+        return this;
+    }
+
+
+
+    // toRgba()
+    // {
+    //     return [
+    //         ...this.color.toRgb(),
+    //         this.opacity.value / 100 ];
+    // }
+
+
+
+    // toFigma()
+    // {
+    //     return [['SOLID', this.toString()]];
+    // }
+
+
+
+    toString()
+    {
+        return this.radius.toString();
+    }
+
+
+
+    toDisplayString()
+    {
+        return this.radius.toDisplayString();
+    }
+
+
+
+    isValid()
+    {
+        return super.isValid()
+            && this.radius.isValid();
+    }
+
+
+
+    getNaN()
+    {
+        return BackBlurValue.NaN;
+    }
+
+
+
+    static NaN = Object.freeze(new BackBlurValue(NumberValue.NaN));
+
+
+
+    // static default = Object.freeze(BackBlurValue.create(217, 217, 217, 100));
+}
+
+
+
+function parseBackBlurValue(str, i = -1)
+{
+    if (   i <  0 && str    == NAN_DISPLAY
+        || i >= 0 && str[i] == NAN_DISPLAY)
+        return [BackBlurValue.NaN, 1];
+
+
+    if (i < 0)
+    {
+        str = str.split(' ');
+        i   = 0;
+    }
+
+
+    const iStart = i;
+
+    const radius = parseNumberValue(str[i]); i += radius[1];
+
+
+    const shadow = new BackBlurValue(
+        '', // set node ID elsewhere
+        radius[0]);
+
+
+    return [shadow, i - iStart];
+}
 
 
 
@@ -21586,10 +21846,208 @@ extends GOperator
 }
 
 
+class GLayerBlur
+extends GOperator
+{
+    input  = null;
+
+    radius = null;
 
 
 
+    constructor(nodeId, options)
+    {
+        super(LAYER_BLUR, nodeId, options);
+    }
 
+
+
+    copy()
+    {
+        const copy = new GLayerBlur(this.nodeId, this.options);
+
+        copy.copyBase(this);
+
+        if (this.input) 
+            copy.input = this.input.copy();
+
+        if (this.radius) copy.radius = this.radius.copy();
+
+        return copy;
+    }
+
+
+
+    async eval(parse)
+    {
+        if (this.isCached())
+            return this;
+``
+
+        const radius = this.radius ? (await this.radius.eval(parse)).toValue() : null;
+
+        
+        if (this.input)
+        {
+            const input = (await this.input.eval(parse)).toValue();
+
+            this.value = new LayerBlurValue(radius ?? input.radius);
+        }
+        else
+        {
+            this.value = new LayerBlurValue(radius);
+        }
+
+
+        this.updateValues =
+        [
+            ['radius', this.value.radius]
+        ];
+        
+
+        this.validate();
+
+        return this;
+    }
+
+
+
+    pushValueUpdates(parse)
+    {
+        super.pushValueUpdates(parse);
+
+        if (this.radius) this.radius.pushValueUpdates(parse);
+    }
+    
+    
+    
+    toValue()
+    {
+        return this.options.enabled
+            ? new LayerBlurValue(
+                this.radius ? this.radius.toValue() : this.input.radius.toValue())
+            : LayerBlurValue.NaN;
+    }
+
+
+
+    isValid()
+    {
+        return this.radius.isValid();
+    }
+
+
+
+    invalidate()
+    {
+        super.invalidate();
+
+        if (this.input ) this.input .invalidate();
+        if (this.radius) this.radius.invalidate();
+    }
+}
+
+
+class GBackBlur
+extends GOperator
+{
+    input  = null;
+
+    radius = null;
+
+
+
+    constructor(nodeId, options)
+    {
+        super(BACK_BLUR, nodeId, options);
+    }
+
+
+
+    copy()
+    {
+        const copy = new GBackBlur(this.nodeId, this.options);
+
+        copy.copyBase(this);
+
+        if (this.input) 
+            copy.input = this.input.copy();
+
+        if (this.radius) copy.radius = this.radius.copy();
+
+        return copy;
+    }
+
+
+
+    async eval(parse)
+    {
+        if (this.isCached())
+            return this;
+``
+
+        const radius = this.radius ? (await this.radius.eval(parse)).toValue() : null;
+
+        
+        if (this.input)
+        {
+            const input = (await this.input.eval(parse)).toValue();
+
+            this.value = new BackBlurValue(radius ?? input.radius);
+        }
+        else
+        {
+            this.value = new BackBlurValue(radius);
+        }
+
+
+        this.updateValues =
+        [
+            ['radius', this.value.radius]
+        ];
+        
+
+        this.validate();
+
+        return this;
+    }
+
+
+
+    pushValueUpdates(parse)
+    {
+        super.pushValueUpdates(parse);
+
+        if (this.radius) this.radius.pushValueUpdates(parse);
+    }
+    
+    
+    
+    toValue()
+    {
+        return this.options.enabled
+            ? new BackBlurValue(
+                this.radius ? this.radius.toValue() : this.input.radius.toValue())
+            : BackBlurValue.NaN;
+    }
+
+
+
+    isValid()
+    {
+        return this.radius.isValid();
+    }
+
+
+
+    invalidate()
+    {
+        super.invalidate();
+
+        if (this.input ) this.input .invalidate();
+        if (this.radius) this.radius.invalidate();
+    }
+}
 
 
 class GShapeBase
@@ -21878,6 +22336,28 @@ extends GShapeBase
                         prop.blur.toNumber(),
                         prop.spread.toNumber(),
                         BlendModes[prop.blend.value][2] ]);
+                }
+
+                else if (prop.type == LAYER_BLUR_VALUE)
+                {
+                    if (!obj.effects) 
+                        obj.effects = [];
+
+
+                    obj.effects.push([
+                        'LAYER_BLUR', 
+                        prop.radius.toNumber() ]);
+                }
+
+                else if (prop.type == BACK_BLUR_VALUE)
+                {
+                    if (!obj.effects) 
+                        obj.effects = [];
+
+
+                    obj.effects.push([
+                        'BACKGROUND_BLUR', 
+                        prop.radius.toNumber() ]);
                 }
             }
         }
@@ -28964,12 +29444,12 @@ function genParseDropShadowValue(parse)
 {
     parse.pos++; // DROP_SHADOW_VALUE
 
-    const stroke = parse.move();
+    const shadow = parse.move();
 
     if (parse.settings.logRequests) 
-        logReqValue(DROP_SHADOW_VALUE, stroke, parse);
+        logReqValue(DROP_SHADOW_VALUE, shadow, parse);
 
-    return parseDropShadowValue(stroke)[0];
+    return parseDropShadowValue(shadow)[0];
 }
 
 
@@ -29044,6 +29524,20 @@ function genParseDropShadow(parse)
 
 
 
+function genParseInnerShadowValue(parse)
+{
+    parse.pos++; // INNER_SHADOW_VALUE
+
+    const shadow = parse.move();
+
+    if (parse.settings.logRequests) 
+        logReqValue(INNER_SHADOW_VALUE, shadow, parse);
+
+    return parseInnerShadowValue(shadow)[0];
+}
+
+
+
 function genParseInnerShadow(parse)
 {
     const [, nodeId, options, ignore] = genParseNodeStart(parse);
@@ -29109,6 +29603,162 @@ function genParseInnerShadow(parse)
 
     genParseNodeEnd(parse, shadow);
     return shadow;
+}
+
+
+
+function genParseLayerBlurValue(parse)
+{
+    parse.pos++; // LAYER_BLUR_VALUE
+
+    const blur = parse.move();
+
+    if (parse.settings.logRequests) 
+        logReqValue(LAYER_BLUR_VALUE, blur, parse);
+
+    return parseLayerBlurValue(blur)[0];
+}
+
+
+
+function genParseLayerBlur(parse)
+{
+    const [, nodeId, options, ignore] = genParseNodeStart(parse);
+
+
+    const blur = new GLayerBlur(nodeId, options);
+
+    blur.hasInputs = options.hasInputs;
+
+
+    let nInputs = -1;
+
+    if (!ignore)
+    {
+        nInputs = parseInt(parse.move());
+        console.assert(nInputs => 0 && nInputs <= 1, 'nInputs must be [0, 1]');
+    }
+
+
+    if (parse.settings.logRequests) 
+        logReq(blur, parse, ignore, nInputs);
+
+
+    if (ignore)
+    {
+        genParseNodeEnd(parse, blur);
+        return parse.parsedNodes.find(n => n.nodeId == nodeId);
+    }
+
+
+    parse.nTab++;
+
+
+    let paramIds;
+
+    if (nInputs == 1)
+    {
+        blur.input = genParse(parse);
+        paramIds = parse.move().split(',');
+    }
+    else
+        paramIds = ['radius'];
+
+
+    parse.inParam = false;
+
+    for (const id of paramIds)
+    {
+        switch (id)
+        {
+        case 'radius': blur.radius = genParse(parse); break;
+        }
+    }
+    
+    
+    parse.nTab--;
+
+
+    genParseNodeEnd(parse, blur);
+    return blur;
+}
+
+
+
+function genParseBackBlurValue(parse)
+{
+    parse.pos++; // BACK_BLUR_VALUE
+
+    const blur = parse.move();
+
+    if (parse.settings.logRequests) 
+        logReqValue(BACK_BLUR_VALUE, blur, parse);
+
+    return parseBackBlurValue(blur)[0];
+}
+
+
+
+function genParseBackBlur(parse)
+{
+    const [, nodeId, options, ignore] = genParseNodeStart(parse);
+
+
+    const blur = new GBackBlur(nodeId, options);
+
+    blur.hasInputs = options.hasInputs;
+
+
+    let nInputs = -1;
+
+    if (!ignore)
+    {
+        nInputs = parseInt(parse.move());
+        console.assert(nInputs => 0 && nInputs <= 1, 'nInputs must be [0, 1]');
+    }
+
+
+    if (parse.settings.logRequests) 
+        logReq(blur, parse, ignore, nInputs);
+
+
+    if (ignore)
+    {
+        genParseNodeEnd(parse, blur);
+        return parse.parsedNodes.find(n => n.nodeId == nodeId);
+    }
+
+
+    parse.nTab++;
+
+
+    let paramIds;
+
+    if (nInputs == 1)
+    {
+        blur.input = genParse(parse);
+        paramIds = parse.move().split(',');
+    }
+    else
+        paramIds = ['radius'];
+
+
+    parse.inParam = false;
+
+    for (const id of paramIds)
+    {
+        switch (id)
+        {
+        case 'radius': blur.radius = genParse(parse); break;
+        }
+    }
+    
+    
+    parse.nTab--;
+
+
+    genParseNodeEnd(parse, blur);
+    return blur;
 }
 
 
@@ -39582,8 +40232,8 @@ const LAYER_BLUR_VALUE   = 'LBLR#';
 const LAYER_BLUR         = 'LBLR';
 const LAYER_BLUR_TYPES   = [LAYER_BLUR_VALUE, LAYER_BLUR];
 
-const BACK_BLUR_VALUE    = 'DRSH#';
-const BACK_BLUR          = 'DRSH';
+const BACK_BLUR_VALUE    = 'BBLR#';
+const BACK_BLUR          = 'BBLR';
 const BACK_BLUR_TYPES    = [BACK_BLUR_VALUE, BACK_BLUR];
 
 
@@ -42863,9 +43513,269 @@ function parseInnerShadowValue(str, i = -1)
 
 
 
+class LayerBlurValue
+extends GValue
+{
+    radius;
 
 
 
+    constructor(radius = new NumberValue(0))
+    {
+        super(LAYER_BLUR_VALUE);
+
+        this.radius = radius;
+    }
+
+
+    
+    // static create(x, y, blur, spread, fill, blend)
+    // {
+    //     return new FillValue(
+    //         new Number,
+    //         new NumberValue(opacity));
+    // }
+
+
+
+    copy()
+    {
+        const copy = new LayerBlurValue(this.radius.copy());
+
+        copy.copyBase(this);
+
+        return copy;
+    }
+
+
+
+    equals(blur)
+    {
+        return this.radius.equals(blur.radius);
+    }
+
+
+
+    async eval(parse)
+    {
+        return this;
+    }
+
+
+
+    // toRgba()
+    // {
+    //     return [
+    //         ...this.color.toRgb(),
+    //         this.opacity.value / 100 ];
+    // }
+
+
+
+    // toFigma()
+    // {
+    //     return [['SOLID', this.toString()]];
+    // }
+
+
+
+    toString()
+    {
+        return this.radius.toString();
+    }
+
+
+
+    toDisplayString()
+    {
+        return this.radius.toDisplayString();
+    }
+
+
+
+    isValid()
+    {
+        return super.isValid()
+            && this.radius.isValid();
+    }
+
+
+
+    getNaN()
+    {
+        return LayerBlurValue.NaN;
+    }
+
+
+
+    static NaN = Object.freeze(new LayerBlurValue(NumberValue.NaN));
+
+
+
+    // static default = Object.freeze(LayerBlurValue.create(217, 217, 217, 100));
+}
+
+
+
+function parseLayerBlurValue(str, i = -1)
+{
+    if (   i <  0 && str    == NAN_DISPLAY
+        || i >= 0 && str[i] == NAN_DISPLAY)
+        return [LayerBlurValue.NaN, 1];
+
+
+    if (i < 0)
+    {
+        str = str.split(' ');
+        i   = 0;
+    }
+
+
+    const iStart = i;
+
+    const radius = parseNumberValue(str[i]); i += radius[1];
+
+
+    const shadow = new LayerBlurValue(
+        '', // set node ID elsewhere
+        radius[0]);
+
+
+    return [shadow, i - iStart];
+}
+
+
+
+class BackBlurValue
+extends GValue
+{
+    radius;
+
+
+
+    constructor(radius = new NumberValue(0))
+    {
+        super(BACK_BLUR_VALUE);
+
+        this.radius = radius;
+    }
+
+
+    
+    // static create(x, y, blur, spread, fill, blend)
+    // {
+    //     return new FillValue(
+    //         new Number,
+    //         new NumberValue(opacity));
+    // }
+
+
+
+    copy()
+    {
+        const copy = new LayerBlurValue(this.radius.copy());
+
+        copy.copyBase(this);
+
+        return copy;
+    }
+
+
+
+    equals(blur)
+    {
+        return this.radius.equals(blur.radius);
+    }
+
+
+
+    async eval(parse)
+    {
+        return this;
+    }
+
+
+
+    // toRgba()
+    // {
+    //     return [
+    //         ...this.color.toRgb(),
+    //         this.opacity.value / 100 ];
+    // }
+
+
+
+    // toFigma()
+    // {
+    //     return [['SOLID', this.toString()]];
+    // }
+
+
+
+    toString()
+    {
+        return this.radius.toString();
+    }
+
+
+
+    toDisplayString()
+    {
+        return this.radius.toDisplayString();
+    }
+
+
+
+    isValid()
+    {
+        return super.isValid()
+            && this.radius.isValid();
+    }
+
+
+
+    getNaN()
+    {
+        return BackBlurValue.NaN;
+    }
+
+
+
+    static NaN = Object.freeze(new BackBlurValue(NumberValue.NaN));
+
+
+
+    // static default = Object.freeze(BackBlurValue.create(217, 217, 217, 100));
+}
+
+
+
+function parseBackBlurValue(str, i = -1)
+{
+    if (   i <  0 && str    == NAN_DISPLAY
+        || i >= 0 && str[i] == NAN_DISPLAY)
+        return [BackBlurValue.NaN, 1];
+
+
+    if (i < 0)
+    {
+        str = str.split(' ');
+        i   = 0;
+    }
+
+
+    const iStart = i;
+
+    const radius = parseNumberValue(str[i]); i += radius[1];
+
+
+    const shadow = new BackBlurValue(
+        '', // set node ID elsewhere
+        radius[0]);
+
+
+    return [shadow, i - iStart];
+}
 
 
 
@@ -52944,10 +53854,208 @@ extends GOperator
 }
 
 
+class GLayerBlur
+extends GOperator
+{
+    input  = null;
+
+    radius = null;
 
 
 
+    constructor(nodeId, options)
+    {
+        super(LAYER_BLUR, nodeId, options);
+    }
 
+
+
+    copy()
+    {
+        const copy = new GLayerBlur(this.nodeId, this.options);
+
+        copy.copyBase(this);
+
+        if (this.input) 
+            copy.input = this.input.copy();
+
+        if (this.radius) copy.radius = this.radius.copy();
+
+        return copy;
+    }
+
+
+
+    async eval(parse)
+    {
+        if (this.isCached())
+            return this;
+``
+
+        const radius = this.radius ? (await this.radius.eval(parse)).toValue() : null;
+
+        
+        if (this.input)
+        {
+            const input = (await this.input.eval(parse)).toValue();
+
+            this.value = new LayerBlurValue(radius ?? input.radius);
+        }
+        else
+        {
+            this.value = new LayerBlurValue(radius);
+        }
+
+
+        this.updateValues =
+        [
+            ['radius', this.value.radius]
+        ];
+        
+
+        this.validate();
+
+        return this;
+    }
+
+
+
+    pushValueUpdates(parse)
+    {
+        super.pushValueUpdates(parse);
+
+        if (this.radius) this.radius.pushValueUpdates(parse);
+    }
+    
+    
+    
+    toValue()
+    {
+        return this.options.enabled
+            ? new LayerBlurValue(
+                this.radius ? this.radius.toValue() : this.input.radius.toValue())
+            : LayerBlurValue.NaN;
+    }
+
+
+
+    isValid()
+    {
+        return this.radius.isValid();
+    }
+
+
+
+    invalidate()
+    {
+        super.invalidate();
+
+        if (this.input ) this.input .invalidate();
+        if (this.radius) this.radius.invalidate();
+    }
+}
+
+
+class GBackBlur
+extends GOperator
+{
+    input  = null;
+
+    radius = null;
+
+
+
+    constructor(nodeId, options)
+    {
+        super(BACK_BLUR, nodeId, options);
+    }
+
+
+
+    copy()
+    {
+        const copy = new GBackBlur(this.nodeId, this.options);
+
+        copy.copyBase(this);
+
+        if (this.input) 
+            copy.input = this.input.copy();
+
+        if (this.radius) copy.radius = this.radius.copy();
+
+        return copy;
+    }
+
+
+
+    async eval(parse)
+    {
+        if (this.isCached())
+            return this;
+``
+
+        const radius = this.radius ? (await this.radius.eval(parse)).toValue() : null;
+
+        
+        if (this.input)
+        {
+            const input = (await this.input.eval(parse)).toValue();
+
+            this.value = new BackBlurValue(radius ?? input.radius);
+        }
+        else
+        {
+            this.value = new BackBlurValue(radius);
+        }
+
+
+        this.updateValues =
+        [
+            ['radius', this.value.radius]
+        ];
+        
+
+        this.validate();
+
+        return this;
+    }
+
+
+
+    pushValueUpdates(parse)
+    {
+        super.pushValueUpdates(parse);
+
+        if (this.radius) this.radius.pushValueUpdates(parse);
+    }
+    
+    
+    
+    toValue()
+    {
+        return this.options.enabled
+            ? new BackBlurValue(
+                this.radius ? this.radius.toValue() : this.input.radius.toValue())
+            : BackBlurValue.NaN;
+    }
+
+
+
+    isValid()
+    {
+        return this.radius.isValid();
+    }
+
+
+
+    invalidate()
+    {
+        super.invalidate();
+
+        if (this.input ) this.input .invalidate();
+        if (this.radius) this.radius.invalidate();
+    }
+}
 
 
 class GShapeBase
@@ -53236,6 +54344,28 @@ extends GShapeBase
                         prop.blur.toNumber(),
                         prop.spread.toNumber(),
                         BlendModes[prop.blend.value][2] ]);
+                }
+
+                else if (prop.type == LAYER_BLUR_VALUE)
+                {
+                    if (!obj.effects) 
+                        obj.effects = [];
+
+
+                    obj.effects.push([
+                        'LAYER_BLUR', 
+                        prop.radius.toNumber() ]);
+                }
+
+                else if (prop.type == BACK_BLUR_VALUE)
+                {
+                    if (!obj.effects) 
+                        obj.effects = [];
+
+
+                    obj.effects.push([
+                        'BACKGROUND_BLUR', 
+                        prop.radius.toNumber() ]);
                 }
             }
         }
@@ -60552,8 +61682,8 @@ const iconStroke            = '<svg width="12" height="12" viewBox="0 0 12 12" f
 
 const iconDropShadow        = '<svg width="18" height="14" viewBox="0 0 18 14" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="0.5" y="0.5" width="14" height="10" rx="2.5" stroke="white"/><path fill-rule="evenodd" clip-rule="evenodd" d="M13 13H4.5V14H13C15.7614 14 18 11.7614 18 9V4.5H17V9C17 11.2091 15.2091 13 13 13Z" fill="white"/></svg>';
 const iconInnerShadow       = '<svg width="17" height="13" viewBox="0 0 17 13" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="0.5" y="0.5" width="16" height="12" rx="3.5" stroke="white"/><path fill-rule="evenodd" clip-rule="evenodd" d="M5 4H13V3H5C3.89543 3 3 3.89543 3 5V9H4V5C4 4.44772 4.44772 4 5 4Z" fill="white"/></svg>';
-const iconLayerBlur         = '<svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="17" cy="1" r="1" fill="white"/><circle cx="17" cy="17" r="1" fill="white"/><circle cx="1" cy="17" r="1" fill="white"/><circle cx="9" cy="17" r="1" fill="white"/><circle cx="1" cy="9" r="1" fill="white"/><circle cx="9" cy="1" r="1" fill="white"/><circle cx="17" cy="9" r="1" fill="white"/><circle cx="17" cy="5" r="1" fill="white"/><circle cx="17" cy="13" r="1" fill="white"/><circle cx="13" cy="17" r="1" fill="white"/><circle cx="5" cy="17" r="1" fill="white"/><circle cx="1" cy="13" r="1" fill="white"/><circle cx="1" cy="5" r="1" fill="white"/><circle cx="5" cy="1" r="1" fill="white"/><circle cx="13" cy="1" r="1" fill="white"/><circle cx="1" cy="1" r="1" fill="white"/><circle cx="11.5" cy="11.5" r="1.75" stroke="white" stroke-width="0.5"/><circle cx="6.5" cy="6.5" r="1.75" stroke="white" stroke-width="0.5"/><circle cx="6.5" cy="11.5" r="1.75" stroke="white" stroke-width="0.5"/><circle cx="11.5" cy="6.5" r="1.75" stroke="white" stroke-width="0.5"/></svg>';
-const iconBackBlur          = '<svg width="18" height="17" viewBox="0 0 18 17" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="10" cy="10" r="1" fill="white"/><circle cx="7" cy="10" r="1" fill="white"/><circle cx="7" cy="7" r="1" fill="white"/><circle cx="10" cy="7" r="1" fill="white"/><circle cx="8.5" cy="2.5" r="1.75" stroke="white" stroke-width="0.5"/><circle cx="8.5" cy="14.5" r="1.75" stroke="white" stroke-width="0.5"/><circle cx="14.5" cy="2.5" r="1.75" stroke="white" stroke-width="0.5"/><circle cx="14.5" cy="14.5" r="1.75" stroke="white" stroke-width="0.5"/><circle cx="14.5" cy="8.5" r="1.75" stroke="white" stroke-width="0.5"/><circle cx="2.5" cy="2.5" r="1.75" stroke="white" stroke-width="0.5"/><circle cx="2.5" cy="14.5" r="1.75" stroke="white" stroke-width="0.5"/><circle cx="2.5" cy="8.5" r="1.75" stroke="white" stroke-width="0.5"/></svg>';
+const iconLayerBlur         = '<svg width="14" height="12" viewBox="0 0 14 12" fill="none" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" clip-rule="evenodd" d="M0.998167 8.05875L8.07118 0.985738L9.48538 0.985718L1.20262 9.26842L0.998167 8.05875Z" fill="white"/><path fill-rule="evenodd" clip-rule="evenodd" d="M1.28738 3.53431L3.58506 1.23663L5.23285 1.00305L1.00306 5.23285L1.28738 3.53431Z" fill="white"/><path fill-rule="evenodd" clip-rule="evenodd" d="M2.33889 10.9607L11.8316 1.46793L12.6685 2.04527L3.17572 11.5381L2.33889 10.9607Z" fill="white"/><path fill-rule="evenodd" clip-rule="evenodd" d="M5.55367 11.9887L13.7769 3.76541L13.9883 4.96827L6.96779 11.9887L5.55367 11.9887Z" fill="white"/><path fill-rule="evenodd" clip-rule="evenodd" d="M9.78752 11.9975L13.9803 7.80472L13.7052 9.49392L11.4814 11.7178L9.78752 11.9975Z" fill="white"/></svg>';
+const iconBackBlur          = '<svg width="19" height="19" viewBox="0 0 19 19" fill="none" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" clip-rule="evenodd" d="M5.71073 4.20947L9.91062 0.00958244L11.3248 0.00964355L7.33873 3.99568L5.71073 4.20947Z" fill="white"/><path fill-rule="evenodd" clip-rule="evenodd" d="M0.00939768 9.91086L3.23113 6.68913L3.0016 8.33287L0.00939768 11.3251V9.91086Z" fill="white"/><path fill-rule="evenodd" clip-rule="evenodd" d="M-0.00196382 5.67961L5.66844 0.00920442L7.08266 0.00919537L-0.0020246 7.09382L-0.00196382 5.67961Z" fill="white"/><path fill-rule="evenodd" clip-rule="evenodd" d="M0.00464991 1.43043L1.43035 0.00476074H2.84457L0.00464823 2.84464L0.00464991 1.43043Z" fill="white"/><path fill-rule="evenodd" clip-rule="evenodd" d="M0.000778337 14.1621L3.00728 11.1556L3.23891 12.3381L0.000778337 15.5763V14.1621Z" fill="white"/><path fill-rule="evenodd" clip-rule="evenodd" d="M10.1623 4.00063L14.1482 0.0147217L15.5624 0.014775L11.5765 4.00063L10.1623 4.00063Z" fill="white"/><path fill-rule="evenodd" clip-rule="evenodd" d="M0.00222073 18.4034L4.3922 14.0134L5.24229 14.5775L0.716447 19.1034L0.00222073 18.4034Z" fill="white"/><path fill-rule="evenodd" clip-rule="evenodd" d="M13.9114 4.49413L18.395 0.0105257L19.13 0.689819L14.7394 5.08031L13.9114 4.49413Z" fill="white"/><path fill-rule="evenodd" clip-rule="evenodd" d="M3.64643 19.0018L7.65467 14.9936L9.06888 14.9935L5.06065 19.0018L3.64643 19.0018Z" fill="white"/><path fill-rule="evenodd" clip-rule="evenodd" d="M15.8234 6.82477L19.0047 3.64348L19.0047 5.05767L15.9864 8.07604L15.8234 6.82477Z" fill="white"/><path fill-rule="evenodd" clip-rule="evenodd" d="M7.89217 18.9987L11.8935 14.9974L13.6351 14.67L9.30643 18.9987L7.89217 18.9987Z" fill="white"/><path fill-rule="evenodd" clip-rule="evenodd" d="M16.0006 10.8902L19.0052 7.88562L19.0052 9.2999L15.6194 12.6856L16.0006 10.8902Z" fill="white"/><path fill-rule="evenodd" clip-rule="evenodd" d="M12.1351 18.9984L18.9938 12.1397L18.9939 13.5539L13.5494 18.9984L12.1351 18.9984Z" fill="white"/><path fill-rule="evenodd" clip-rule="evenodd" d="M16.2932 18.9911L18.992 16.2923L18.992 17.7065L17.7075 18.9911L16.2932 18.9911Z" fill="white"/></svg>';
  
 const iconStyle             = '<svg width="12" height="9"  viewBox="0 0 12 9"  fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="7.5" cy="1.5" r="1.5" transform="rotate(90 7.5 1.5)" fill="white"/><circle cx="1.5" cy="1.5" r="1.5" transform="rotate(90 1.5 1.5)" fill="white"/><circle cx="7.5" cy="7.5" r="1.5" transform="rotate(90 7.5 7.5)" fill="white"/><circle cx="1.5" cy="7.5" r="1.5" transform="rotate(90 1.5 7.5)" fill="white"/></svg>';
 const iconColorStyle        = '<svg width="12" height="12" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" clip-rule="evenodd" d="M9.53553 9.53552C8.63071 10.4403 7.38071 11 6 11C3.23858 11 1 8.76141 1 6C1 4.61929 1.55965 3.36929 2.46447 2.46448L6 6L9.53553 9.53552ZM12 6C12 9.31372 9.31371 12 6 12C2.68629 12 0 9.31372 0 6C0 4.34314 0.67157 2.84314 1.75735 1.75735C1.77346 1.74124 1.78965 1.72525 1.80592 1.70935C2.88722 0.652252 4.36652 0.000518799 5.99803 0C5.99869 0 5.99934 0 6 0C9.31305 0 11.9989 2.68521 12 5.99802C12 5.99869 12 5.99933 12 6Z" fill="white"/></svg>';
@@ -84275,7 +85405,7 @@ extends OperatorBase
     {
         // 'this' is the input
 
-        return new DropShadowValue(
+        return new InnerShadowValue(
             node.paramX     .value,
             node.paramY     .value,
             node.paramBlur  .value,
@@ -84290,7 +85420,7 @@ extends OperatorBase
     {
         // 'this' is the output
 
-        console.assert(value.type == DROP_SHADOW_VALUE, 'expected DROP_SHADOW_VALUE in backInit()');
+        console.assert(value.type == INNER_SHADOW_VALUE, 'expected INNER_SHADOW_VALUE in backInit()');
 
         this.node.paramX     .setValue(value.x,      false, true, false);
         this.node.paramY     .setValue(value.y,      false, true, false);
@@ -84365,10 +85495,206 @@ extends OperatorBase
 }
 
 
+class OpLayerBlur
+extends OperatorBase
+{
+    paramRadius;
+
+
+    
+    constructor()
+    {
+        super(LAYER_BLUR, 'layerBlur', 'layer blur');
+
+        this.canDisable = true;
+        
+
+        this.addInput (new Input([LAYER_BLUR_VALUE], getNodeInputValuesForUndo, this.input_getBackInitValue));
+        this.addOutput(new Output([LAYER_BLUR_VALUE], this.output_genRequest, getNodeOutputValuesForUndo, this.output_backInit));
+
+
+        this.addParam(this.paramRadius = new NumberParam('radius', 'radius', true, true, true, 4, 0));
+    }
+    
+    
+    
+    input_getBackInitValue()
+    {
+        // 'this' is the input
+
+        return new LayerBlurValue(
+            node.paramRadius.value);
+    }
 
 
 
+    output_backInit(value)
+    {
+        // 'this' is the output
 
+        console.assert(value.type == LAYER_BLUR_VALUE, 'expected LAYER_BLUR_VALUE in backInit()');
+
+        this.node.paramRadius.setValue(value.radius, false, true, false);
+    }
+
+
+
+    output_genRequest(gen)
+    {
+        // 'this' is the output
+
+        gen.scope.push({
+            nodeId:  this.node.id, 
+            paramId: NULL });
+
+
+        const hasInputs = this.node.paramRadius.input.connected;
+
+        const options   = (hasInputs ? 1 : 0) << 20;
+    
+    
+        const [request, ignore] = this.node.genRequestStart(gen, options);
+        if (ignore) return request;
+
+
+        const input = this.node.inputs[0];
+
+
+        request.push(input.connected ? 1 : 0);
+
+
+        if (input.connected)
+        {
+            request.push(...pushInputOrParam(input, gen));
+
+
+            const paramIds = [];
+
+            for (const param of this.node.params)
+                if (   param.input 
+                    && param.input.connected)
+                    paramIds.push(param.id);
+
+            request.push(paramIds.join(','));
+
+
+            for (const param of this.node.params)
+                if (param.input.connected) request.push(...param.genRequest(gen));            
+        }
+        else
+        {
+            for (const param of this.node.params)
+                request.push(...param.genRequest(gen));            
+        }
+
+        
+        gen.scope.pop();
+        pushUnique(gen.passedNodes, this.node);
+
+        return request;
+    }
+}
+
+
+class OpBackBlur
+extends OperatorBase
+{
+    paramRadius;
+
+
+    
+    constructor()
+    {
+        super(BACK_BLUR, 'backBlur', 'back blur');
+
+        this.canDisable = true;
+        
+
+        this.addInput (new Input([BACK_BLUR_VALUE], getNodeInputValuesForUndo, this.input_getBackInitValue));
+        this.addOutput(new Output([BACK_BLUR_VALUE], this.output_genRequest, getNodeOutputValuesForUndo, this.output_backInit));
+
+
+        this.addParam(this.paramRadius = new NumberParam('radius', 'radius', true, true, true, 4, 0));
+    }
+    
+    
+    
+    input_getBackInitValue()
+    {
+        // 'this' is the input
+
+        return new BackBlurValue(
+            node.paramRadius.value);
+    }
+
+
+
+    output_backInit(value)
+    {
+        // 'this' is the output
+
+        console.assert(value.type == BACK_BLUR_VALUE, 'expected BACK_BLUR_VALUE in backInit()');
+
+        this.node.paramRadius.setValue(value.radius, false, true, false);
+    }
+
+
+
+    output_genRequest(gen)
+    {
+        // 'this' is the output
+
+        gen.scope.push({
+            nodeId:  this.node.id, 
+            paramId: NULL });
+
+
+        const hasInputs = this.node.paramRadius.input.connected;
+
+        const options   = (hasInputs ? 1 : 0) << 20;
+    
+    
+        const [request, ignore] = this.node.genRequestStart(gen, options);
+        if (ignore) return request;
+
+
+        const input = this.node.inputs[0];
+
+
+        request.push(input.connected ? 1 : 0);
+
+
+        if (input.connected)
+        {
+            request.push(...pushInputOrParam(input, gen));
+
+
+            const paramIds = [];
+
+            for (const param of this.node.params)
+                if (   param.input 
+                    && param.input.connected)
+                    paramIds.push(param.id);
+
+            request.push(paramIds.join(','));
+
+
+            for (const param of this.node.params)
+                if (param.input.connected) request.push(...param.genRequest(gen));            
+        }
+        else
+        {
+            for (const param of this.node.params)
+                request.push(...param.genRequest(gen));            
+        }
+
+        
+        gen.scope.pop();
+        pushUnique(gen.passedNodes, this.node);
+
+        return request;
+    }
+}
 
 
 class   OpGroupNode
@@ -93160,7 +94486,7 @@ function createNode(nodeType, creatingButton = null, createdNodeId = -1, options
 
         case DROP_SHADOW:             node = new OpDropShadow();        break;
         case INNER_SHADOW:            node = new OpInnerShadow();       break;
-        case LAYER_BLUR:              node = new OpStyleBlur();         break;
+        case LAYER_BLUR:              node = new OpLayerBlur();         break;
         case BACK_BLUR:               node = new OpBackBlur();          break;
 
         case COLOR_STYLE:             node = new OpColorStyle(options); break;

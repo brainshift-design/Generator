@@ -704,8 +704,8 @@ const LAYER_BLUR_VALUE   = 'LBLR#';
 const LAYER_BLUR         = 'LBLR';
 const LAYER_BLUR_TYPES   = [LAYER_BLUR_VALUE, LAYER_BLUR];
 
-const BACK_BLUR_VALUE    = 'DRSH#';
-const BACK_BLUR          = 'DRSH';
+const BACK_BLUR_VALUE    = 'BBLR#';
+const BACK_BLUR          = 'BBLR';
 const BACK_BLUR_TYPES    = [BACK_BLUR_VALUE, BACK_BLUR];
 
 
@@ -2835,6 +2835,36 @@ function getObjectEffects(genObjEffects)
                         spread:     spread,
                         visible:    true,
                         blendMode:  blend
+                    });
+
+                break;
+            }
+
+            case 'LAYER_BLUR':
+            {
+                const radius = effect[1];
+
+                if (!isNaN(radius))
+                    effects.push(
+                    {
+                        type:    type, 
+                        visible: true,
+                        radius:  radius
+                    });
+
+                break;
+            }
+
+            case 'BACKGROUND_BLUR':
+            {
+                const radius = effect[1];
+
+                if (!isNaN(radius))
+                    effects.push(
+                    {
+                        type:    type, 
+                        visible: true,
+                        radius:  radius
                     });
 
                 break;

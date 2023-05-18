@@ -3850,8 +3850,8 @@ const LAYER_BLUR_VALUE   = 'LBLR#';
 const LAYER_BLUR         = 'LBLR';
 const LAYER_BLUR_TYPES   = [LAYER_BLUR_VALUE, LAYER_BLUR];
 
-const BACK_BLUR_VALUE    = 'DRSH#';
-const BACK_BLUR          = 'DRSH';
+const BACK_BLUR_VALUE    = 'BBLR#';
+const BACK_BLUR          = 'BBLR';
 const BACK_BLUR_TYPES    = [BACK_BLUR_VALUE, BACK_BLUR];
 
 
@@ -7131,9 +7131,269 @@ function parseInnerShadowValue(str, i = -1)
 
 
 
+class LayerBlurValue
+extends GValue
+{
+    radius;
 
 
 
+    constructor(radius = new NumberValue(0))
+    {
+        super(LAYER_BLUR_VALUE);
+
+        this.radius = radius;
+    }
+
+
+    
+    // static create(x, y, blur, spread, fill, blend)
+    // {
+    //     return new FillValue(
+    //         new Number,
+    //         new NumberValue(opacity));
+    // }
+
+
+
+    copy()
+    {
+        const copy = new LayerBlurValue(this.radius.copy());
+
+        copy.copyBase(this);
+
+        return copy;
+    }
+
+
+
+    equals(blur)
+    {
+        return this.radius.equals(blur.radius);
+    }
+
+
+
+    async eval(parse)
+    {
+        return this;
+    }
+
+
+
+    // toRgba()
+    // {
+    //     return [
+    //         ...this.color.toRgb(),
+    //         this.opacity.value / 100 ];
+    // }
+
+
+
+    // toFigma()
+    // {
+    //     return [['SOLID', this.toString()]];
+    // }
+
+
+
+    toString()
+    {
+        return this.radius.toString();
+    }
+
+
+
+    toDisplayString()
+    {
+        return this.radius.toDisplayString();
+    }
+
+
+
+    isValid()
+    {
+        return super.isValid()
+            && this.radius.isValid();
+    }
+
+
+
+    getNaN()
+    {
+        return LayerBlurValue.NaN;
+    }
+
+
+
+    static NaN = Object.freeze(new LayerBlurValue(NumberValue.NaN));
+
+
+
+    // static default = Object.freeze(LayerBlurValue.create(217, 217, 217, 100));
+}
+
+
+
+function parseLayerBlurValue(str, i = -1)
+{
+    if (   i <  0 && str    == NAN_DISPLAY
+        || i >= 0 && str[i] == NAN_DISPLAY)
+        return [LayerBlurValue.NaN, 1];
+
+
+    if (i < 0)
+    {
+        str = str.split(' ');
+        i   = 0;
+    }
+
+
+    const iStart = i;
+
+    const radius = parseNumberValue(str[i]); i += radius[1];
+
+
+    const shadow = new LayerBlurValue(
+        '', // set node ID elsewhere
+        radius[0]);
+
+
+    return [shadow, i - iStart];
+}
+
+
+
+class BackBlurValue
+extends GValue
+{
+    radius;
+
+
+
+    constructor(radius = new NumberValue(0))
+    {
+        super(BACK_BLUR_VALUE);
+
+        this.radius = radius;
+    }
+
+
+    
+    // static create(x, y, blur, spread, fill, blend)
+    // {
+    //     return new FillValue(
+    //         new Number,
+    //         new NumberValue(opacity));
+    // }
+
+
+
+    copy()
+    {
+        const copy = new LayerBlurValue(this.radius.copy());
+
+        copy.copyBase(this);
+
+        return copy;
+    }
+
+
+
+    equals(blur)
+    {
+        return this.radius.equals(blur.radius);
+    }
+
+
+
+    async eval(parse)
+    {
+        return this;
+    }
+
+
+
+    // toRgba()
+    // {
+    //     return [
+    //         ...this.color.toRgb(),
+    //         this.opacity.value / 100 ];
+    // }
+
+
+
+    // toFigma()
+    // {
+    //     return [['SOLID', this.toString()]];
+    // }
+
+
+
+    toString()
+    {
+        return this.radius.toString();
+    }
+
+
+
+    toDisplayString()
+    {
+        return this.radius.toDisplayString();
+    }
+
+
+
+    isValid()
+    {
+        return super.isValid()
+            && this.radius.isValid();
+    }
+
+
+
+    getNaN()
+    {
+        return BackBlurValue.NaN;
+    }
+
+
+
+    static NaN = Object.freeze(new BackBlurValue(NumberValue.NaN));
+
+
+
+    // static default = Object.freeze(BackBlurValue.create(217, 217, 217, 100));
+}
+
+
+
+function parseBackBlurValue(str, i = -1)
+{
+    if (   i <  0 && str    == NAN_DISPLAY
+        || i >= 0 && str[i] == NAN_DISPLAY)
+        return [BackBlurValue.NaN, 1];
+
+
+    if (i < 0)
+    {
+        str = str.split(' ');
+        i   = 0;
+    }
+
+
+    const iStart = i;
+
+    const radius = parseNumberValue(str[i]); i += radius[1];
+
+
+    const shadow = new BackBlurValue(
+        '', // set node ID elsewhere
+        radius[0]);
+
+
+    return [shadow, i - iStart];
+}
 
 
 
@@ -17212,10 +17472,208 @@ extends GOperator
 }
 
 
+class GLayerBlur
+extends GOperator
+{
+    input  = null;
+
+    radius = null;
 
 
 
+    constructor(nodeId, options)
+    {
+        super(LAYER_BLUR, nodeId, options);
+    }
 
+
+
+    copy()
+    {
+        const copy = new GLayerBlur(this.nodeId, this.options);
+
+        copy.copyBase(this);
+
+        if (this.input) 
+            copy.input = this.input.copy();
+
+        if (this.radius) copy.radius = this.radius.copy();
+
+        return copy;
+    }
+
+
+
+    async eval(parse)
+    {
+        if (this.isCached())
+            return this;
+``
+
+        const radius = this.radius ? (await this.radius.eval(parse)).toValue() : null;
+
+        
+        if (this.input)
+        {
+            const input = (await this.input.eval(parse)).toValue();
+
+            this.value = new LayerBlurValue(radius ?? input.radius);
+        }
+        else
+        {
+            this.value = new LayerBlurValue(radius);
+        }
+
+
+        this.updateValues =
+        [
+            ['radius', this.value.radius]
+        ];
+        
+
+        this.validate();
+
+        return this;
+    }
+
+
+
+    pushValueUpdates(parse)
+    {
+        super.pushValueUpdates(parse);
+
+        if (this.radius) this.radius.pushValueUpdates(parse);
+    }
+    
+    
+    
+    toValue()
+    {
+        return this.options.enabled
+            ? new LayerBlurValue(
+                this.radius ? this.radius.toValue() : this.input.radius.toValue())
+            : LayerBlurValue.NaN;
+    }
+
+
+
+    isValid()
+    {
+        return this.radius.isValid();
+    }
+
+
+
+    invalidate()
+    {
+        super.invalidate();
+
+        if (this.input ) this.input .invalidate();
+        if (this.radius) this.radius.invalidate();
+    }
+}
+
+
+class GBackBlur
+extends GOperator
+{
+    input  = null;
+
+    radius = null;
+
+
+
+    constructor(nodeId, options)
+    {
+        super(BACK_BLUR, nodeId, options);
+    }
+
+
+
+    copy()
+    {
+        const copy = new GBackBlur(this.nodeId, this.options);
+
+        copy.copyBase(this);
+
+        if (this.input) 
+            copy.input = this.input.copy();
+
+        if (this.radius) copy.radius = this.radius.copy();
+
+        return copy;
+    }
+
+
+
+    async eval(parse)
+    {
+        if (this.isCached())
+            return this;
+``
+
+        const radius = this.radius ? (await this.radius.eval(parse)).toValue() : null;
+
+        
+        if (this.input)
+        {
+            const input = (await this.input.eval(parse)).toValue();
+
+            this.value = new BackBlurValue(radius ?? input.radius);
+        }
+        else
+        {
+            this.value = new BackBlurValue(radius);
+        }
+
+
+        this.updateValues =
+        [
+            ['radius', this.value.radius]
+        ];
+        
+
+        this.validate();
+
+        return this;
+    }
+
+
+
+    pushValueUpdates(parse)
+    {
+        super.pushValueUpdates(parse);
+
+        if (this.radius) this.radius.pushValueUpdates(parse);
+    }
+    
+    
+    
+    toValue()
+    {
+        return this.options.enabled
+            ? new BackBlurValue(
+                this.radius ? this.radius.toValue() : this.input.radius.toValue())
+            : BackBlurValue.NaN;
+    }
+
+
+
+    isValid()
+    {
+        return this.radius.isValid();
+    }
+
+
+
+    invalidate()
+    {
+        super.invalidate();
+
+        if (this.input ) this.input .invalidate();
+        if (this.radius) this.radius.invalidate();
+    }
+}
 
 
 class GShapeBase
@@ -17504,6 +17962,28 @@ extends GShapeBase
                         prop.blur.toNumber(),
                         prop.spread.toNumber(),
                         BlendModes[prop.blend.value][2] ]);
+                }
+
+                else if (prop.type == LAYER_BLUR_VALUE)
+                {
+                    if (!obj.effects) 
+                        obj.effects = [];
+
+
+                    obj.effects.push([
+                        'LAYER_BLUR', 
+                        prop.radius.toNumber() ]);
+                }
+
+                else if (prop.type == BACK_BLUR_VALUE)
+                {
+                    if (!obj.effects) 
+                        obj.effects = [];
+
+
+                    obj.effects.push([
+                        'BACKGROUND_BLUR', 
+                        prop.radius.toNumber() ]);
                 }
             }
         }
@@ -24590,12 +25070,12 @@ function genParseDropShadowValue(parse)
 {
     parse.pos++; // DROP_SHADOW_VALUE
 
-    const stroke = parse.move();
+    const shadow = parse.move();
 
     if (parse.settings.logRequests) 
-        logReqValue(DROP_SHADOW_VALUE, stroke, parse);
+        logReqValue(DROP_SHADOW_VALUE, shadow, parse);
 
-    return parseDropShadowValue(stroke)[0];
+    return parseDropShadowValue(shadow)[0];
 }
 
 
@@ -24670,6 +25150,20 @@ function genParseDropShadow(parse)
 
 
 
+function genParseInnerShadowValue(parse)
+{
+    parse.pos++; // INNER_SHADOW_VALUE
+
+    const shadow = parse.move();
+
+    if (parse.settings.logRequests) 
+        logReqValue(INNER_SHADOW_VALUE, shadow, parse);
+
+    return parseInnerShadowValue(shadow)[0];
+}
+
+
+
 function genParseInnerShadow(parse)
 {
     const [, nodeId, options, ignore] = genParseNodeStart(parse);
@@ -24735,6 +25229,162 @@ function genParseInnerShadow(parse)
 
     genParseNodeEnd(parse, shadow);
     return shadow;
+}
+
+
+
+function genParseLayerBlurValue(parse)
+{
+    parse.pos++; // LAYER_BLUR_VALUE
+
+    const blur = parse.move();
+
+    if (parse.settings.logRequests) 
+        logReqValue(LAYER_BLUR_VALUE, blur, parse);
+
+    return parseLayerBlurValue(blur)[0];
+}
+
+
+
+function genParseLayerBlur(parse)
+{
+    const [, nodeId, options, ignore] = genParseNodeStart(parse);
+
+
+    const blur = new GLayerBlur(nodeId, options);
+
+    blur.hasInputs = options.hasInputs;
+
+
+    let nInputs = -1;
+
+    if (!ignore)
+    {
+        nInputs = parseInt(parse.move());
+        console.assert(nInputs => 0 && nInputs <= 1, 'nInputs must be [0, 1]');
+    }
+
+
+    if (parse.settings.logRequests) 
+        logReq(blur, parse, ignore, nInputs);
+
+
+    if (ignore)
+    {
+        genParseNodeEnd(parse, blur);
+        return parse.parsedNodes.find(n => n.nodeId == nodeId);
+    }
+
+
+    parse.nTab++;
+
+
+    let paramIds;
+
+    if (nInputs == 1)
+    {
+        blur.input = genParse(parse);
+        paramIds = parse.move().split(',');
+    }
+    else
+        paramIds = ['radius'];
+
+
+    parse.inParam = false;
+
+    for (const id of paramIds)
+    {
+        switch (id)
+        {
+        case 'radius': blur.radius = genParse(parse); break;
+        }
+    }
+    
+    
+    parse.nTab--;
+
+
+    genParseNodeEnd(parse, blur);
+    return blur;
+}
+
+
+
+function genParseBackBlurValue(parse)
+{
+    parse.pos++; // BACK_BLUR_VALUE
+
+    const blur = parse.move();
+
+    if (parse.settings.logRequests) 
+        logReqValue(BACK_BLUR_VALUE, blur, parse);
+
+    return parseBackBlurValue(blur)[0];
+}
+
+
+
+function genParseBackBlur(parse)
+{
+    const [, nodeId, options, ignore] = genParseNodeStart(parse);
+
+
+    const blur = new GBackBlur(nodeId, options);
+
+    blur.hasInputs = options.hasInputs;
+
+
+    let nInputs = -1;
+
+    if (!ignore)
+    {
+        nInputs = parseInt(parse.move());
+        console.assert(nInputs => 0 && nInputs <= 1, 'nInputs must be [0, 1]');
+    }
+
+
+    if (parse.settings.logRequests) 
+        logReq(blur, parse, ignore, nInputs);
+
+
+    if (ignore)
+    {
+        genParseNodeEnd(parse, blur);
+        return parse.parsedNodes.find(n => n.nodeId == nodeId);
+    }
+
+
+    parse.nTab++;
+
+
+    let paramIds;
+
+    if (nInputs == 1)
+    {
+        blur.input = genParse(parse);
+        paramIds = parse.move().split(',');
+    }
+    else
+        paramIds = ['radius'];
+
+
+    parse.inParam = false;
+
+    for (const id of paramIds)
+    {
+        switch (id)
+        {
+        case 'radius': blur.radius = genParse(parse); break;
+        }
+    }
+    
+    
+    parse.nTab--;
+
+
+    genParseNodeEnd(parse, blur);
+    return blur;
 }
 
 

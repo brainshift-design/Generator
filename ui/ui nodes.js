@@ -86,7 +86,7 @@ function createNode(nodeType, creatingButton = null, createdNodeId = -1, options
 
         case DROP_SHADOW:             node = new OpDropShadow();        break;
         case INNER_SHADOW:            node = new OpInnerShadow();       break;
-        case LAYER_BLUR:              node = new OpStyleBlur();         break;
+        case LAYER_BLUR:              node = new OpLayerBlur();         break;
         case BACK_BLUR:               node = new OpBackBlur();          break;
 
         case COLOR_STYLE:             node = new OpColorStyle(options); break;

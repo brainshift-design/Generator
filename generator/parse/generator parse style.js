@@ -242,12 +242,12 @@ function genParseDropShadowValue(parse)
 {
     parse.pos++; // DROP_SHADOW_VALUE
 
-    const stroke = parse.move();
+    const shadow = parse.move();
 
     if (parse.settings.logRequests) 
-        logReqValue(DROP_SHADOW_VALUE, stroke, parse);
+        logReqValue(DROP_SHADOW_VALUE, shadow, parse);
 
-    return parseDropShadowValue(stroke)[0];
+    return parseDropShadowValue(shadow)[0];
 }
 
 
@@ -322,6 +322,20 @@ function genParseDropShadow(parse)
 
 
 
+function genParseInnerShadowValue(parse)
+{
+    parse.pos++; // INNER_SHADOW_VALUE
+
+    const shadow = parse.move();
+
+    if (parse.settings.logRequests) 
+        logReqValue(INNER_SHADOW_VALUE, shadow, parse);
+
+    return parseInnerShadowValue(shadow)[0];
+}
+
+
+
 function genParseInnerShadow(parse)
 {
     const [, nodeId, options, ignore] = genParseNodeStart(parse);
@@ -387,6 +401,162 @@ function genParseInnerShadow(parse)
 
     genParseNodeEnd(parse, shadow);
     return shadow;
+}
+
+
+
+function genParseLayerBlurValue(parse)
+{
+    parse.pos++; // LAYER_BLUR_VALUE
+
+    const blur = parse.move();
+
+    if (parse.settings.logRequests) 
+        logReqValue(LAYER_BLUR_VALUE, blur, parse);
+
+    return parseLayerBlurValue(blur)[0];
+}
+
+
+
+function genParseLayerBlur(parse)
+{
+    const [, nodeId, options, ignore] = genParseNodeStart(parse);
+
+
+    const blur = new GLayerBlur(nodeId, options);
+
+    blur.hasInputs = options.hasInputs;
+
+
+    let nInputs = -1;
+
+    if (!ignore)
+    {
+        nInputs = parseInt(parse.move());
+        console.assert(nInputs => 0 && nInputs <= 1, 'nInputs must be [0, 1]');
+    }
+
+
+    if (parse.settings.logRequests) 
+        logReq(blur, parse, ignore, nInputs);
+
+
+    if (ignore)
+    {
+        genParseNodeEnd(parse, blur);
+        return parse.parsedNodes.find(n => n.nodeId == nodeId);
+    }
+
+
+    parse.nTab++;
+
+
+    let paramIds;
+
+    if (nInputs == 1)
+    {
+        blur.input = genParse(parse);
+        paramIds = parse.move().split(',');
+    }
+    else
+        paramIds = ['radius'];
+
+
+    parse.inParam = false;
+
+    for (const id of paramIds)
+    {
+        switch (id)
+        {
+        case 'radius': blur.radius = genParse(parse); break;
+        }
+    }
+    
+    
+    parse.nTab--;
+
+
+    genParseNodeEnd(parse, blur);
+    return blur;
+}
+
+
+
+function genParseBackBlurValue(parse)
+{
+    parse.pos++; // BACK_BLUR_VALUE
+
+    const blur = parse.move();
+
+    if (parse.settings.logRequests) 
+        logReqValue(BACK_BLUR_VALUE, blur, parse);
+
+    return parseBackBlurValue(blur)[0];
+}
+
+
+
+function genParseBackBlur(parse)
+{
+    const [, nodeId, options, ignore] = genParseNodeStart(parse);
+
+
+    const blur = new GBackBlur(nodeId, options);
+
+    blur.hasInputs = options.hasInputs;
+
+
+    let nInputs = -1;
+
+    if (!ignore)
+    {
+        nInputs = parseInt(parse.move());
+        console.assert(nInputs => 0 && nInputs <= 1, 'nInputs must be [0, 1]');
+    }
+
+
+    if (parse.settings.logRequests) 
+        logReq(blur, parse, ignore, nInputs);
+
+
+    if (ignore)
+    {
+        genParseNodeEnd(parse, blur);
+        return parse.parsedNodes.find(n => n.nodeId == nodeId);
+    }
+
+
+    parse.nTab++;
+
+
+    let paramIds;
+
+    if (nInputs == 1)
+    {
+        blur.input = genParse(parse);
+        paramIds = parse.move().split(',');
+    }
+    else
+        paramIds = ['radius'];
+
+
+    parse.inParam = false;
+
+    for (const id of paramIds)
+    {
+        switch (id)
+        {
+        case 'radius': blur.radius = genParse(parse); break;
+        }
+    }
+    
+    
+    parse.nTab--;
+
+
+    genParseNodeEnd(parse, blur);
+    return blur;
 }
 
 

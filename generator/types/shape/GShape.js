@@ -176,6 +176,28 @@ extends GShapeBase
                         prop.spread.toNumber(),
                         BlendModes[prop.blend.value][2] ]);
                 }
+
+                else if (prop.type == LAYER_BLUR_VALUE)
+                {
+                    if (!obj.effects) 
+                        obj.effects = [];
+
+
+                    obj.effects.push([
+                        'LAYER_BLUR', 
+                        prop.radius.toNumber() ]);
+                }
+
+                else if (prop.type == BACK_BLUR_VALUE)
+                {
+                    if (!obj.effects) 
+                        obj.effects = [];
+
+
+                    obj.effects.push([
+                        'BACKGROUND_BLUR', 
+                        prop.radius.toNumber() ]);
+                }
             }
         }
 
