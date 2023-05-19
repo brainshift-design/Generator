@@ -2,8 +2,6 @@ const point_NaN = point(Number.NaN, Number.NaN);
 
 
 
-function point(x, y) { return {x: x, y: y}; }
-
 function pointIsNaN(p) { return isNaN(p.x) || isNaN(p.y); }
 
 

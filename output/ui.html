@@ -4839,6 +4839,34 @@ function getLinearPathData(points)
 }
 
 
+
+function point(x, y) { return {x: x, y: y}; }
+
+
+
+function mulv2m3(v, m)
+{
+    let v3 = [v.x, v.y, 1];
+    let r  = mulv3m3(v3, m);
+
+    return point(r[0], r[1]);
+}
+
+
+
+function mulv3m3(v, m)
+{
+    let r = [0, 0, 0];
+
+    for (let i = 0; i < 3; i++)
+        for (let j = 0; j < 3; j++)
+            r[i] += v[j] * m[i][j];
+
+    return r;
+}
+
+
+
 function rgbFromType(type, active)
 {
     return rgbFromTypeMode(type, active, darkMode);
@@ -5397,29 +5425,6 @@ function signedPosOnLine(p0, p1, p)
 
 
 
-function mulv3m3(v, m)
-{
-    let r = [0, 0, 0];
-
-    for (let i = 0; i < 3; i++)
-        for (let j = 0; j < 3; j++)
-            r[i] += v[j] * m[i][j];
-
-    return r;
-}
-
-
-
-function mulv2m3(v, m)
-{
-    let v3 = [v.x, v.y, 1];
-    let r  = mulv3m3(v3, m);
-
-    return point(r[0], r[1]);
-}
-
-
-
 function mulm3m3(m1, m2)
 {
     const m = [[0, 0, 0],
@@ -5711,8 +5716,6 @@ function angleDiff(a1, a2)
 const point_NaN = point(Number.NaN, Number.NaN);
 
 
-
-function point(x, y) { return {x: x, y: y}; }
 
 function pointIsNaN(p) { return isNaN(p.x) || isNaN(p.y); }
 
@@ -8576,7 +8579,7 @@ class FigmaObject
 
     uniqueId;
 
-    relativeTransform;
+    xform;
 
 
 
@@ -8588,15 +8591,15 @@ class FigmaObject
         this.objectName        = objectName;
         this.uniqueId          = Math.round(Math.random() * 10000);
 
-        this.relativeTransform = clone(identity);
+        this.xform = clone(identity);
     }
 
 
 
     copyBase(base)
     {
-        this.uniqueId          = base.uniqueId;
-        this.relativeTransform = clone(base.relativeTransform);
+        this.uniqueId = base.uniqueId;
+        this.xform    = clone(base.xform);
     }
 
 
@@ -8611,7 +8614,7 @@ class FigmaObject
 
     createDefaultTransform(x, y, angle)
     {
-        this.relativeTransform =
+        this.xform =
             [[ Math.cos(angle), Math.sin(angle), x],
              [-Math.sin(angle), Math.cos(angle), y],
              [ 0,               0,               1]];
@@ -9847,8 +9850,8 @@ function getObjBounds(objects)
         else if (obj.type == POINT)
             bounds = expandRect_(bounds, 
                 point(
-                    obj.relativeTransform[0][2], 
-                    obj.relativeTransform[1][2]));
+                    obj.x, //xform[0][2], 
+                    obj.y));//xform[1][2]));
 
         else
             bounds = expandRect(bounds, new Rect(obj.x, obj.y, obj.width, obj.height));
@@ -23681,8 +23684,8 @@ extends GOperator
                 this.value.y.value)
 
             point.createDefaultTransform(
-                this.value.x.value,
-                this.value.y.value,
+                0, //this.value.x.value,
+                0, //this.value.y.value,
                 0);
 
             this.objects       = [point];
@@ -24422,7 +24425,7 @@ extends GOperator
             obj.objectId = obj.objectId + OBJECT_SEPARATOR + this.nodeId;
 
 
-            let xform = clone(obj.relativeTransform);
+            let xform = clone(obj.xform);
 
 
             xform = mulm3m3(
@@ -24432,7 +24435,7 @@ extends GOperator
                  [0, 0, 1                   ]]);
 
 
-            obj.relativeTransform = xform;
+            // obj.xform = xform;
 
 
             // if (obj.type == VECTOR_PATH)
@@ -24450,7 +24453,17 @@ extends GOperator
             //     obj.x += options.x.toNumber();
             //     obj.y += options.y.toNumber();
             // }
-        }
+
+
+            let p = point(obj.x, obj.y);
+                
+            p = mulv2m3(p, xform);
+
+            obj.x = p.x;
+            obj.y = p.y;
+
+            obj.xform = clone(identity);
+    }
 
         
         super.evalObjects(parse);
@@ -24606,6 +24619,7 @@ extends GOperator
             : [];
 
 
+        //console.log('this.objects =', this.objects);
         const bounds = getObjBounds(this.objects);
         const angle  = options.angle.toNumber()/360*Tau;
 
@@ -24635,11 +24649,13 @@ extends GOperator
             if (   bounds.width  > 0
                 && bounds.height > 0)
             {
-                let xform = obj.relativeTransform;
+                let xform = obj.xform;
 
 
-                const dx = xform[0][2] - cx;
-                const dy = xform[1][2] - cy;
+                const dx = /*obj.x*/ - cx;
+                const dy = /*obj.y*/ - cy;
+                // const dx = xform[0][2] - cx;
+                // const dy = xform[1][2] - cy;
 
 
                 xform = mulm3m3(
@@ -24661,8 +24677,17 @@ extends GOperator
                      [0, 0, 1 ]]);
 
 
-                obj.relativeTransform = xform;
+                let p = point(obj.x, obj.y);
+                
+                p = mulv2m3(p, xform);
+
+                obj.x = p.x;
+                obj.y = p.y;
+
+                //obj.xform = xform;
                 //console.log('rotate xform =', clone(xform));
+
+                obj.xform = clone(identity);
             }
 
             // obj.angle = 
@@ -24984,11 +25009,14 @@ extends GOperator
             if (   bounds.width  > 0
                 && bounds.height > 0)
             {
-                let xform = obj.relativeTransform;
+                let xform = obj.xform;
+                //console.log('xform =', xform);
 
 
-                const dx = xform[0][2] - cx;
-                const dy = xform[1][2] - cy;
+                const dx = /*obj.x*/ - cx;
+                const dy = /*obj.y*/ - cy;
+                // const dx = xform[0][2] - cx;
+                // const dy = xform[1][2] - cy;
 
 
                 xform = mulm3m3(
@@ -25010,12 +25038,22 @@ extends GOperator
                      [0, 0, 1 ]]);
 
 
-                obj.relativeTransform = xform;
+                //obj.xform = xform;
                 //console.log('scale xform =', clone(xform));
 
 
-                if (obj.width ) obj.width  *= sx;
-                if (obj.height) obj.height *= sy;
+                let p = point(obj.x, obj.y);
+                
+                p = mulv2m3(p, xform);
+
+                obj.x = p.x;
+                obj.y = p.y;
+
+                // if (obj.width ) obj.width  *= sx;
+                // if (obj.height) obj.height *= sy;
+
+
+                obj.xform = clone(identity);
             }
 
 
@@ -25083,7 +25121,7 @@ extends GOperator
 
             //     // update transform
 
-            //     let xform = clone(obj.relativeTransform);
+            //     let xform = clone(obj.xform);
     
 
             //     xform = mulm3m3(
@@ -25093,7 +25131,7 @@ extends GOperator
             //          [0,  0,  1                 ]]);
     
     
-            //     obj.relativeTransform = xform;
+            //     obj.xform = xform;
 
 
             //     // // update properties
@@ -25331,7 +25369,7 @@ extends GOperator
             obj.objectId = obj.objectId + OBJECT_SEPARATOR + this.nodeId;
 
 
-            let xform = clone(obj.relativeTransform);
+            let xform = clone(obj.xform);
 
 
             xform = mulm3m3(
@@ -25358,7 +25396,7 @@ extends GOperator
                  [0, 0,  1 ]]);
 
 
-            obj.relativeTransform = xform;
+            obj.xform = xform;
 
 
             //      if (obj.type == VECTOR_PATH)
@@ -34405,6 +34443,34 @@ function getLinearPathData(points)
 }
 
 
+
+function point(x, y) { return {x: x, y: y}; }
+
+
+
+function mulv2m3(v, m)
+{
+    let v3 = [v.x, v.y, 1];
+    let r  = mulv3m3(v3, m);
+
+    return point(r[0], r[1]);
+}
+
+
+
+function mulv3m3(v, m)
+{
+    let r = [0, 0, 0];
+
+    for (let i = 0; i < 3; i++)
+        for (let j = 0; j < 3; j++)
+            r[i] += v[j] * m[i][j];
+
+    return r;
+}
+
+
+
 function rgbFromType(type, active)
 {
     return rgbFromTypeMode(type, active, darkMode);
@@ -34963,29 +35029,6 @@ function signedPosOnLine(p0, p1, p)
 
 
 
-function mulv3m3(v, m)
-{
-    let r = [0, 0, 0];
-
-    for (let i = 0; i < 3; i++)
-        for (let j = 0; j < 3; j++)
-            r[i] += v[j] * m[i][j];
-
-    return r;
-}
-
-
-
-function mulv2m3(v, m)
-{
-    let v3 = [v.x, v.y, 1];
-    let r  = mulv3m3(v3, m);
-
-    return point(r[0], r[1]);
-}
-
-
-
 function mulm3m3(m1, m2)
 {
     const m = [[0, 0, 0],
@@ -35277,8 +35320,6 @@ function angleDiff(a1, a2)
 const point_NaN = point(Number.NaN, Number.NaN);
 
 
-
-function point(x, y) { return {x: x, y: y}; }
 
 function pointIsNaN(p) { return isNaN(p.x) || isNaN(p.y); }
 
@@ -40728,7 +40769,7 @@ class FigmaObject
 
     uniqueId;
 
-    relativeTransform;
+    xform;
 
 
 
@@ -40740,15 +40781,15 @@ class FigmaObject
         this.objectName        = objectName;
         this.uniqueId          = Math.round(Math.random() * 10000);
 
-        this.relativeTransform = clone(identity);
+        this.xform = clone(identity);
     }
 
 
 
     copyBase(base)
     {
-        this.uniqueId          = base.uniqueId;
-        this.relativeTransform = clone(base.relativeTransform);
+        this.uniqueId = base.uniqueId;
+        this.xform    = clone(base.xform);
     }
 
 
@@ -40763,7 +40804,7 @@ class FigmaObject
 
     createDefaultTransform(x, y, angle)
     {
-        this.relativeTransform =
+        this.xform =
             [[ Math.cos(angle), Math.sin(angle), x],
              [-Math.sin(angle), Math.cos(angle), y],
              [ 0,               0,               1]];
@@ -41999,8 +42040,8 @@ function getObjBounds(objects)
         else if (obj.type == POINT)
             bounds = expandRect_(bounds, 
                 point(
-                    obj.relativeTransform[0][2], 
-                    obj.relativeTransform[1][2]));
+                    obj.x, //xform[0][2], 
+                    obj.y));//xform[1][2]));
 
         else
             bounds = expandRect(bounds, new Rect(obj.x, obj.y, obj.width, obj.height));
@@ -55833,8 +55874,8 @@ extends GOperator
                 this.value.y.value)
 
             point.createDefaultTransform(
-                this.value.x.value,
-                this.value.y.value,
+                0, //this.value.x.value,
+                0, //this.value.y.value,
                 0);
 
             this.objects       = [point];
@@ -56574,7 +56615,7 @@ extends GOperator
             obj.objectId = obj.objectId + OBJECT_SEPARATOR + this.nodeId;
 
 
-            let xform = clone(obj.relativeTransform);
+            let xform = clone(obj.xform);
 
 
             xform = mulm3m3(
@@ -56584,7 +56625,7 @@ extends GOperator
                  [0, 0, 1                   ]]);
 
 
-            obj.relativeTransform = xform;
+            // obj.xform = xform;
 
 
             // if (obj.type == VECTOR_PATH)
@@ -56602,7 +56643,17 @@ extends GOperator
             //     obj.x += options.x.toNumber();
             //     obj.y += options.y.toNumber();
             // }
-        }
+
+
+            let p = point(obj.x, obj.y);
+                
+            p = mulv2m3(p, xform);
+
+            obj.x = p.x;
+            obj.y = p.y;
+
+            obj.xform = clone(identity);
+    }
 
         
         super.evalObjects(parse);
@@ -56758,6 +56809,7 @@ extends GOperator
             : [];
 
 
+        //console.log('this.objects =', this.objects);
         const bounds = getObjBounds(this.objects);
         const angle  = options.angle.toNumber()/360*Tau;
 
@@ -56787,11 +56839,13 @@ extends GOperator
             if (   bounds.width  > 0
                 && bounds.height > 0)
             {
-                let xform = obj.relativeTransform;
+                let xform = obj.xform;
 
 
-                const dx = xform[0][2] - cx;
-                const dy = xform[1][2] - cy;
+                const dx = /*obj.x*/ - cx;
+                const dy = /*obj.y*/ - cy;
+                // const dx = xform[0][2] - cx;
+                // const dy = xform[1][2] - cy;
 
 
                 xform = mulm3m3(
@@ -56813,8 +56867,17 @@ extends GOperator
                      [0, 0, 1 ]]);
 
 
-                obj.relativeTransform = xform;
+                let p = point(obj.x, obj.y);
+                
+                p = mulv2m3(p, xform);
+
+                obj.x = p.x;
+                obj.y = p.y;
+
+                //obj.xform = xform;
                 //console.log('rotate xform =', clone(xform));
+
+                obj.xform = clone(identity);
             }
 
             // obj.angle = 
@@ -57136,11 +57199,14 @@ extends GOperator
             if (   bounds.width  > 0
                 && bounds.height > 0)
             {
-                let xform = obj.relativeTransform;
+                let xform = obj.xform;
+                //console.log('xform =', xform);
 
 
-                const dx = xform[0][2] - cx;
-                const dy = xform[1][2] - cy;
+                const dx = /*obj.x*/ - cx;
+                const dy = /*obj.y*/ - cy;
+                // const dx = xform[0][2] - cx;
+                // const dy = xform[1][2] - cy;
 
 
                 xform = mulm3m3(
@@ -57162,12 +57228,22 @@ extends GOperator
                      [0, 0, 1 ]]);
 
 
-                obj.relativeTransform = xform;
+                //obj.xform = xform;
                 //console.log('scale xform =', clone(xform));
 
 
-                if (obj.width ) obj.width  *= sx;
-                if (obj.height) obj.height *= sy;
+                let p = point(obj.x, obj.y);
+                
+                p = mulv2m3(p, xform);
+
+                obj.x = p.x;
+                obj.y = p.y;
+
+                // if (obj.width ) obj.width  *= sx;
+                // if (obj.height) obj.height *= sy;
+
+
+                obj.xform = clone(identity);
             }
 
 
@@ -57235,7 +57311,7 @@ extends GOperator
 
             //     // update transform
 
-            //     let xform = clone(obj.relativeTransform);
+            //     let xform = clone(obj.xform);
     
 
             //     xform = mulm3m3(
@@ -57245,7 +57321,7 @@ extends GOperator
             //          [0,  0,  1                 ]]);
     
     
-            //     obj.relativeTransform = xform;
+            //     obj.xform = xform;
 
 
             //     // // update properties
@@ -57483,7 +57559,7 @@ extends GOperator
             obj.objectId = obj.objectId + OBJECT_SEPARATOR + this.nodeId;
 
 
-            let xform = clone(obj.relativeTransform);
+            let xform = clone(obj.xform);
 
 
             xform = mulm3m3(
@@ -57510,7 +57586,7 @@ extends GOperator
                  [0, 0,  1 ]]);
 
 
-            obj.relativeTransform = xform;
+            obj.xform = xform;
 
 
             //      if (obj.type == VECTOR_PATH)

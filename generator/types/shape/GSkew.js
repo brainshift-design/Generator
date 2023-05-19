@@ -124,7 +124,7 @@ extends GOperator
             obj.objectId = obj.objectId + OBJECT_SEPARATOR + this.nodeId;
 
 
-            let xform = clone(obj.relativeTransform);
+            let xform = clone(obj.xform);
 
 
             xform = mulm3m3(
@@ -151,7 +151,7 @@ extends GOperator
                  [0, 0,  1 ]]);
 
 
-            obj.relativeTransform = xform;
+            obj.xform = xform;
 
 
             //      if (obj.type == VECTOR_PATH)

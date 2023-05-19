@@ -97,8 +97,8 @@ extends GOperator
                 this.value.y.value)
 
             point.createDefaultTransform(
-                this.value.x.value,
-                this.value.y.value,
+                0, //this.value.x.value,
+                0, //this.value.y.value,
                 0);
 
             this.objects       = [point];

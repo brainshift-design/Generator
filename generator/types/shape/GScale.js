@@ -155,11 +155,14 @@ extends GOperator
             if (   bounds.width  > 0
                 && bounds.height > 0)
             {
-                let xform = obj.relativeTransform;
+                let xform = obj.xform;
+                //console.log('xform =', xform);
 
 
-                const dx = xform[0][2] - cx;
-                const dy = xform[1][2] - cy;
+                const dx = /*obj.x*/ - cx;
+                const dy = /*obj.y*/ - cy;
+                // const dx = xform[0][2] - cx;
+                // const dy = xform[1][2] - cy;
 
 
                 xform = mulm3m3(
@@ -181,12 +184,22 @@ extends GOperator
                      [0, 0, 1 ]]);
 
 
-                obj.relativeTransform = xform;
+                //obj.xform = xform;
                 //console.log('scale xform =', clone(xform));
 
 
-                if (obj.width ) obj.width  *= sx;
-                if (obj.height) obj.height *= sy;
+                let p = point(obj.x, obj.y);
+                
+                p = mulv2m3(p, xform);
+
+                obj.x = p.x;
+                obj.y = p.y;
+
+                // if (obj.width ) obj.width  *= sx;
+                // if (obj.height) obj.height *= sy;
+
+
+                obj.xform = clone(identity);
             }
 
 
@@ -254,7 +267,7 @@ extends GOperator
 
             //     // update transform
 
-            //     let xform = clone(obj.relativeTransform);
+            //     let xform = clone(obj.xform);
     
 
             //     xform = mulm3m3(
@@ -264,7 +277,7 @@ extends GOperator
             //          [0,  0,  1                 ]]);
     
     
-            //     obj.relativeTransform = xform;
+            //     obj.xform = xform;
 
 
             //     // // update properties

@@ -108,6 +108,7 @@ extends GOperator
             : [];
 
 
+        //console.log('this.objects =', this.objects);
         const bounds = getObjBounds(this.objects);
         const angle  = options.angle.toNumber()/360*Tau;
 
@@ -137,11 +138,13 @@ extends GOperator
             if (   bounds.width  > 0
                 && bounds.height > 0)
             {
-                let xform = obj.relativeTransform;
+                let xform = obj.xform;
 
 
-                const dx = xform[0][2] - cx;
-                const dy = xform[1][2] - cy;
+                const dx = /*obj.x*/ - cx;
+                const dy = /*obj.y*/ - cy;
+                // const dx = xform[0][2] - cx;
+                // const dy = xform[1][2] - cy;
 
 
                 xform = mulm3m3(
@@ -163,8 +166,17 @@ extends GOperator
                      [0, 0, 1 ]]);
 
 
-                obj.relativeTransform = xform;
+                let p = point(obj.x, obj.y);
+                
+                p = mulv2m3(p, xform);
+
+                obj.x = p.x;
+                obj.y = p.y;
+
+                //obj.xform = xform;
                 //console.log('rotate xform =', clone(xform));
+
+                obj.xform = clone(identity);
             }
 
             // obj.angle = 

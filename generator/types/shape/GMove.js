@@ -90,7 +90,7 @@ extends GOperator
             obj.objectId = obj.objectId + OBJECT_SEPARATOR + this.nodeId;
 
 
-            let xform = clone(obj.relativeTransform);
+            let xform = clone(obj.xform);
 
 
             xform = mulm3m3(
@@ -100,7 +100,7 @@ extends GOperator
                  [0, 0, 1                   ]]);
 
 
-            obj.relativeTransform = xform;
+            // obj.xform = xform;
 
 
             // if (obj.type == VECTOR_PATH)
@@ -118,7 +118,17 @@ extends GOperator
             //     obj.x += options.x.toNumber();
             //     obj.y += options.y.toNumber();
             // }
-        }
+
+
+            let p = point(obj.x, obj.y);
+                
+            p = mulv2m3(p, xform);
+
+            obj.x = p.x;
+            obj.y = p.y;
+
+            obj.xform = clone(identity);
+    }
 
         
         super.evalObjects(parse);

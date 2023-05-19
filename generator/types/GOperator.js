@@ -103,8 +103,8 @@ function getObjBounds(objects)
         else if (obj.type == POINT)
             bounds = expandRect_(bounds, 
                 point(
-                    obj.relativeTransform[0][2], 
-                    obj.relativeTransform[1][2]));
+                    obj.x, //xform[0][2], 
+                    obj.y));//xform[1][2]));
 
         else
             bounds = expandRect(bounds, new Rect(obj.x, obj.y, obj.width, obj.height));

@@ -9,7 +9,7 @@ class FigmaObject
 
     uniqueId;
 
-    relativeTransform;
+    xform;
 
 
 
@@ -21,15 +21,15 @@ class FigmaObject
         this.objectName        = objectName;
         this.uniqueId          = Math.round(Math.random() * 10000);
 
-        this.relativeTransform = clone(identity);
+        this.xform = clone(identity);
     }
 
 
 
     copyBase(base)
     {
-        this.uniqueId          = base.uniqueId;
-        this.relativeTransform = clone(base.relativeTransform);
+        this.uniqueId = base.uniqueId;
+        this.xform    = clone(base.xform);
     }
 
 
@@ -44,7 +44,7 @@ class FigmaObject
 
     createDefaultTransform(x, y, angle)
     {
-        this.relativeTransform =
+        this.xform =
             [[ Math.cos(angle), Math.sin(angle), x],
              [-Math.sin(angle), Math.cos(angle), y],
              [ 0,               0,               1]];
