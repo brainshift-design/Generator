@@ -30,6 +30,9 @@ const OBJECT_PREFIX = GENERATOR_LOGO + ' '; //'G ';
 const nodeTag = 'G_NODE';
 const connTag = 'G_CONN';
 const pageTag = 'G_PAGE';
+const identity = Object.freeze([[1, 0, 0],
+    [0, 1, 0],
+    [0, 0, 1]]);
 function toInt(f) { return Math.floor(f) | 0; }
 function nextPow2(x) {
     x = toInt(x);
@@ -1208,23 +1211,23 @@ function updatePointSizes() {
             updatePointSize(point);
     }
 }
-function updatePointSize(figPoint) {
+function updatePointSize(figPoint, isCenter) {
     const size = Math.max(0.01, 1 / curZoom);
     figPoint.resizeWithoutConstraints(size, size);
     convertExistingPointTransform(figPoint);
-    updatePointStyles(figPoint);
+    updatePointStyles(figPoint, isCenter);
 }
 function updatePointSize_(figPoint, genPoint) {
     const size = Math.max(0.01, 1 / curZoom);
     figPoint.resizeWithoutConstraints(size, size);
     convertPointTransform(figPoint, genPoint);
-    updatePointStyles(figPoint);
+    updatePointStyles(figPoint, genPoint.isCenter);
 }
-function updatePointStyles(figPoint) {
+function updatePointStyles(figPoint, isCenter) {
     figPoint.fills = getObjectFills([['SOLID', 255, 255, 255, 100]]);
     figPoint.effects = getObjectEffects([
-        ['DROP_SHADOW', 12 / 255, 140 / 255, 233 / 255, 1, 0, 0, 0, 3.6 / curZoom, 'NORMAL', true, true],
-        ['DROP_SHADOW', 1, 1, 1, 1, 0, 0, 0, 2.4 / curZoom, 'NORMAL', true, true]
+        ['DROP_SHADOW', 12 / 255, 140 / 255, 233 / 255, 1, 0, 0, 0, (isCenter ? 2.6 : 3.6) / curZoom, 'NORMAL', true, true],
+        ['DROP_SHADOW', 1, 1, 1, 1, 0, 0, 0, (isCenter ? 1.6 : 2.4) / curZoom, 'NORMAL', true, true]
     ]);
 }
 ///////////////////////////////////////////////////////////////////////////////////////////////////
@@ -1606,7 +1609,7 @@ function figCreatePoint(genPoint) {
         //     }];
         // }
         convertPointTransform(figPoint, genPoint);
-        updatePointStyles(figPoint);
+        updatePointStyles(figPoint, genPoint.isCenter);
     }
     return figPoint;
 }
@@ -1621,7 +1624,7 @@ function figUpdatePoint(figPoint, genPoint) {
     figPoint.setPluginData('actualX', genPoint.relativeTransform[0][2].toString());
     figPoint.setPluginData('actualY', genPoint.relativeTransform[1][2].toString());
     convertPointTransform(figPoint, genPoint);
-    updatePointStyles(figPoint);
+    updatePointStyles(figPoint, genPoint.isCenter);
 }
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 function genVectorPathIsValid(genPath) {

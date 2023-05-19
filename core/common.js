@@ -18,6 +18,13 @@ const pageTag          = 'G_PAGE';
 
 
 
+const identity = Object.freeze(
+    [[1, 0, 0],
+     [0, 1, 0],
+     [0, 0, 1]]);
+
+
+
 function toInt(f) { return Math.floor(f) | 0; }
 
 

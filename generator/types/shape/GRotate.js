@@ -137,18 +137,18 @@ extends GOperator
             if (   bounds.width  > 0
                 && bounds.height > 0)
             {
-                let xform = clone(obj.relativeTransform);
+                let xform = obj.relativeTransform;
 
 
                 const dx = xform[0][2] - cx;
                 const dy = xform[1][2] - cy;
 
 
-                xform = mulm3m3(
-                    xform,
-                    [[1, 0, -dx],
-                     [0, 1, -dy],
-                     [0, 0,  1 ]]);
+                // xform = mulm3m3(
+                //     xform,
+                //     [[1, 0, -dx],
+                //      [0, 1, -dy],
+                //      [0, 0,  1 ]]);
 
                 xform = mulm3m3(
                     xform,
@@ -156,14 +156,15 @@ extends GOperator
                      [-Math.sin(angle), Math.cos(angle), 0],
                      [ 0,               0,               1]]);
 
-                xform = mulm3m3(
-                    xform,
-                    [[1, 0, dx],
-                     [0, 1, dy],
-                     [0, 0, 1 ]]);
+                // xform = mulm3m3(
+                //     xform,
+                //     [[1, 0, dx],
+                //      [0, 1, dy],
+                //      [0, 0, 1 ]]);
 
 
                 obj.relativeTransform = xform;
+                //console.log('rotate xform =', clone(xform));
             }
 
             // obj.angle = 
