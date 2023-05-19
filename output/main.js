@@ -1240,8 +1240,8 @@ function updatePointStyles(figPoint) {
     const isCenter = parseBool(figPoint.getPluginData('isCenter'));
     figPoint.fills = getObjectFills([['SOLID', 255, 255, 255, 100]]);
     figPoint.effects = getObjectEffects([
-        ['DROP_SHADOW', 12 / 255, 140 / 255, 233 / 255, 1, 0, 0, 0, (isCenter ? 2.6 : 3.6) / curZoom, 'NORMAL', true, true],
-        ['DROP_SHADOW', 1, 1, 1, 1, 0, 0, 0, (isCenter ? 1.6 : 2.4) / curZoom, 'NORMAL', true, true]
+        ['DROP_SHADOW', 12 / 255, 140 / 255, 233 / 255, 1, 0, 0, 0, (3.6) / curZoom, 'NORMAL', true, true],
+        ['DROP_SHADOW', 1, 1, 1, 1, 0, 0, 0, (2.4) / curZoom, 'NORMAL', true, true]
     ]);
 }
 ///////////////////////////////////////////////////////////////////////////////////////////////////
@@ -1760,7 +1760,7 @@ function convertPointTransform(figPoint, genPoint) {
     figPoint.y = genPoint.y; //p.y;
     figPoint.setPluginData('actualX', genPoint.x.toString()); //genPoint.xform[0][2].toString());
     figPoint.setPluginData('actualY', genPoint.y.toString()); //genPoint.xform[1][2].toString());
-    figPoint.rotation = 0;
+    figPoint.rotation = genPoint.isCenter ? 45 : 0;
 }
 function setExistingPointTransform(figPoint) {
     figPoint.resizeWithoutConstraints(0.01, 0.01);
