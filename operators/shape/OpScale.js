@@ -22,9 +22,9 @@ extends OperatorBase
 
         this.addParam(this.paramScaleX     = new NumberParam('scaleX',     'width',       true, true, true, 100));
         this.addParam(this.paramScaleY     = new NumberParam('scaleY',     'height',      true, true, true, 100));
-        this.addParam(this.paramCenterX    = new NumberParam('centerX',    'center x',    true, true, true,   0));
-        this.addParam(this.paramCenterY    = new NumberParam('centerY',    'center y',    true, true, true,   0));
-        this.addParam(this.paramShowCenter = new NumberParam('showCenter', 'show center', true, true, true, 0, 0, 1));
+        this.addParam(this.paramCenterX    = new NumberParam('centerX',    'center x',    true, true, true,  50, 0, 100));
+        this.addParam(this.paramCenterY    = new NumberParam('centerY',    'center y',    true, true, true,  50, 0, 100));
+        this.addParam(this.paramShowCenter = new NumberParam('showCenter', 'show center', true, true, true,   0, 0, 1));
 
 
         this.paramScaleX.controls[0].suffix = '%';
@@ -33,9 +33,20 @@ extends OperatorBase
         this.paramScaleX.controls[0].setMin(0);
         this.paramScaleY.controls[0].setMin(0);
 
+
+        this.paramCenterX.controls[0].suffix = '%';
+        this.paramCenterY.controls[0].suffix = '%';
+
+        this.paramCenterX.controls[0].min = Number.MIN_SAFE_INTEGER;
+        this.paramCenterX.controls[0].max = Number.MAX_SAFE_INTEGER;
+
+        this.paramCenterY.controls[0].min = Number.MIN_SAFE_INTEGER;
+        this.paramCenterY.controls[0].max = Number.MAX_SAFE_INTEGER;
+
+
         this.paramShowCenter.controls[0].allowEditDecimals = false;
 
-        
+
         this.inputs[0].addEventListener('connect',    e => this.outputs[0].types = [...this.inputs[0].connectedOutput.types]);
         this.inputs[0].addEventListener('disconnect', e => this.outputs[0].types = [SHAPE_VALUE]);
     }
@@ -78,35 +89,35 @@ extends OperatorBase
 
 
 
-    updateValues(requestId, actionId, updateParamId, paramIds, values)
-    {
-        super.updateValues(requestId, actionId, updateParamId, paramIds, values);
+    // updateValues(requestId, actionId, updateParamId, paramIds, values)
+    // {
+    //     super.updateValues(requestId, actionId, updateParamId, paramIds, values);
 
 
-        const bounds = values[paramIds.findIndex(id => id == 'bounds')];
+    //     // const bounds = values[paramIds.findIndex(id => id == 'bounds')];
 
         
-        if (bounds.width.value > 0)
-        {
-            this.paramCenterX.controls[0].displayMin = -bounds.width.value/2;
-            this.paramCenterX.controls[0].displayMax =  bounds.width.value/2;
-        }
-        else
-        {
-            this.paramCenterX.controls[0].displayMin = this.paramCenterX.controls[0].min;
-            this.paramCenterX.controls[0].displayMax = this.paramCenterX.controls[0].max;
-        }
+    //     // if (bounds.width.value > 0)
+    //     // {
+    //     //     this.paramCenterX.controls[0].displayMin = -bounds.width.value/2;
+    //     //     this.paramCenterX.controls[0].displayMax =  bounds.width.value/2;
+    //     // }
+    //     // else
+    //     // {
+    //     //     this.paramCenterX.controls[0].displayMin = this.paramCenterX.controls[0].min;
+    //     //     this.paramCenterX.controls[0].displayMax = this.paramCenterX.controls[0].max;
+    //     // }
 
 
-        if (bounds.height.value > 0)
-        {
-            this.paramCenterY.controls[0].displayMin = -bounds.height.value/2;
-            this.paramCenterY.controls[0].displayMax =  bounds.height.value/2;
-        }
-        else
-        {
-            this.paramCenterY.controls[0].displayMin = this.paramCenterY.controls[0].min;
-            this.paramCenterY.controls[0].displayMax = this.paramCenterY.controls[0].max;
-        }
-    }
+    //     // if (bounds.height.value > 0)
+    //     // {
+    //     //     this.paramCenterY.controls[0].displayMin = -bounds.height.value/2;
+    //     //     this.paramCenterY.controls[0].displayMax =  bounds.height.value/2;
+    //     // }
+    //     // else
+    //     // {
+    //     //     this.paramCenterY.controls[0].displayMin = this.paramCenterY.controls[0].min;
+    //     //     this.paramCenterY.controls[0].displayMax = this.paramCenterY.controls[0].max;
+    //     // }
+    // }
 }

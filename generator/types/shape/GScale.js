@@ -123,8 +123,8 @@ extends GOperator
         // const cx = options.centerX.toNumber() / bounds.width;
         // const cy = options.centerY.toNumber() / bounds.height;
 
-        const cx     = bounds.x + bounds.width  * (0.5 + (options.centerX.toNumber()) / (bounds.width ));
-        const cy     = bounds.y + bounds.height * (0.5 + (options.centerY.toNumber()) / (bounds.height));
+        const cx     = bounds.x + bounds.width  * options.centerX.toNumber()/100;
+        const cy     = bounds.y + bounds.height * options.centerY.toNumber()/100;
 
         
         // const dx = 
@@ -162,11 +162,11 @@ extends GOperator
                 const dy = xform[1][2] - cy;
 
 
-                // xform = mulm3m3(
-                //     xform,
-                //     [[1, 0, -dx],
-                //      [0, 1, -dy],
-                //      [0, 0,  1 ]]);
+                xform = mulm3m3(
+                    xform,
+                    [[1, 0, -dx],
+                     [0, 1, -dy],
+                     [0, 0,  1 ]]);
 
                 xform = mulm3m3(
                     xform,
@@ -174,15 +174,19 @@ extends GOperator
                      [0,  sy, 0],
                      [0,  0,  1]]);
 
-                // xform = mulm3m3(
-                //     xform,
-                //     [[1, 0, dx],
-                //      [0, 1, dy],
-                //      [0, 0, 1 ]]);
+                xform = mulm3m3(
+                    xform,
+                    [[1, 0, dx],
+                     [0, 1, dy],
+                     [0, 0, 1 ]]);
 
 
                 obj.relativeTransform = xform;
                 //console.log('scale xform =', clone(xform));
+
+
+                if (obj.width ) obj.width  *= sx;
+                if (obj.height) obj.height *= sy;
             }
 
 

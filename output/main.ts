@@ -1799,13 +1799,13 @@ function updatePointSizes()
 
 
 
-function updatePointSize(figPoint, isCenter)
+function updatePointSize(figPoint)
 {
-    const size = Math.max(0.01, 1/curZoom);
-    figPoint.resizeWithoutConstraints(size, size);
+    // const size = Math.max(0.01, 1/curZoom);
+    // figPoint.resizeWithoutConstraints(size, size);
 
-    convertExistingPointTransform(figPoint);
-    updatePointStyles(figPoint, isCenter);
+    setExistingPointTransform(figPoint);
+    updatePointStyles(figPoint);
 }
 
 
@@ -1813,17 +1813,18 @@ function updatePointSize(figPoint, isCenter)
 
 function updatePointSize_(figPoint, genPoint)
 {
-    const size = Math.max(0.01, 1/curZoom);
-    figPoint.resizeWithoutConstraints(size, size);
+    // const size = Math.max(0.01, 1/curZoom);
+    // figPoint.resizeWithoutConstraints(size, size);
 
-    convertPointTransform(figPoint, genPoint);
-    updatePointStyles(figPoint, genPoint.isCenter);
+    setPointTransform(figPoint, genPoint);
+    updatePointStyles(figPoint);
 }
 
 
 
-function updatePointStyles(figPoint, isCenter)
+function updatePointStyles(figPoint)
 {
+    const isCenter = parseBool(figPoint.getPluginData('isCenter'));
     figPoint.fills   = getObjectFills([['SOLID', 255, 255, 255, 100]]);
     figPoint.effects = getObjectEffects(
     [
@@ -2404,6 +2405,8 @@ function figCreatePoint(genPoint)
 
     figPoint.name = makeObjectName(genPoint);
 
+    figPoint.setPluginData('isCenter', boolToString(genPoint.isCenter));
+
 
     if (!genPointIsValid(genPoint))
         return figPoint;
@@ -2417,12 +2420,12 @@ function figCreatePoint(genPoint)
 
     else
     {
-        figPoint.x = genPoint.x;
-        figPoint.y = genPoint.y;
+        //figPoint.x = genPoint.x;
+        //figPoint.y = genPoint.y;
 
 
-        const size = Math.max(0.01, 1/curZoom);
-        figPoint.resizeWithoutConstraints(size, size);
+        // const size = Math.max(0.01, 1/curZoom);
+        // figPoint.resizeWithoutConstraints(size, size);
 
 
         figPoint.setPluginData('actualX', genPoint.relativeTransform[0][2].toString());
@@ -2444,8 +2447,8 @@ function figCreatePoint(genPoint)
         // }
 
 
-        convertPointTransform(figPoint, genPoint);
-        updatePointStyles(figPoint, genPoint.isCenter);
+        setPointTransform(figPoint, genPoint);
+        updatePointStyles(figPoint);
     }
 
     
@@ -2463,20 +2466,15 @@ function figUpdatePoint(figPoint, genPoint)
     figPoint.name = makeObjectName(genPoint);
 
 
-    figPoint.x = genPoint.x;
-    figPoint.y = genPoint.y;
-
-
-    const size = Math.max(0.01, 1/curZoom);
-    figPoint.resizeWithoutConstraints(size, size);
+    // figPoint.x = 0;//genPoint.x;
+    // figPoint.y = 0;//genPoint.y;
 
 
     figPoint.setPluginData('actualX', genPoint.relativeTransform[0][2].toString());
     figPoint.setPluginData('actualY', genPoint.relativeTransform[1][2].toString());
 
-
-    convertPointTransform(figPoint, genPoint);
-    updatePointStyles(figPoint, genPoint.isCenter);
+    setPointTransform(figPoint, genPoint);
+    updatePointStyles(figPoint);
 }
 
 
@@ -2697,13 +2695,13 @@ function figUpdateFrame(figFrame, genFrame)
 
 function setObjectTransform(figObj, genObj)
 {
-    if (   figObj.width  != genObj.width
-        || figObj.height != genObj.height)
-    {
-        figObj.resize(
-            Math.max(0.01, genObj.width), 
-            Math.max(0.01, genObj.height));
-    }
+    // if (   figObj.width  != genObj.width
+    //     || figObj.height != genObj.height)
+    // {
+        figObj.resizeWithoutConstraints(
+            Math.max(0.01, genObj.width ),// * genObj.relativeTransform[0][0]), 
+            Math.max(0.01, genObj.height));// * genObj.relativeTransform[1][1]));
+    // }
 
     
     convertObjectTransform(figObj, genObj);
@@ -2713,27 +2711,48 @@ function setObjectTransform(figObj, genObj)
 
 function convertObjectTransform(figObj, genObj)
 {
+    const m0 = genObj.relativeTransform[0];
+    const m1 = genObj.relativeTransform[1];
+
     figObj.relativeTransform = 
     [
-        genObj.relativeTransform[0],
-        genObj.relativeTransform[1]
+        m0,//[1,     m0[1], m0[2]],
+        m1//[m1[0], 1,     m1[2]]
     ];
 }
 
 
 
-function convertPointTransform(figObj, genObj)
+function setPointTransform(figPoint, genPoint)
 {
-    const m0 = genObj.relativeTransform[0];
-    const m1 = genObj.relativeTransform[1];
+    figPoint.resizeWithoutConstraints(0.01, 0.01);
+
+    convertPointTransform(figPoint, genPoint);
+}
+
+
+
+function convertPointTransform(figPoint, genPoint)
+{
+    const m0 = genPoint.relativeTransform[0];
+    const m1 = genPoint.relativeTransform[1];
     
-    figObj.relativeTransform = 
+    figPoint.relativeTransform = 
     [
-        [m0[0], m0[1], m0[2]],
-        [m1[0], m1[1], m1[2]]
+        [1,     m0[1], m0[2]],
+        [m1[0], 1,     m1[2]]
     ];
 
-    figObj.rotation = 0;
+    figPoint.rotation = 0;
+}
+
+
+
+function setExistingPointTransform(figPoint)
+{
+    figPoint.resizeWithoutConstraints(0.01, 0.01);
+
+    convertExistingPointTransform(figPoint);
 }
 
 

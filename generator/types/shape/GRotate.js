@@ -111,8 +111,8 @@ extends GOperator
         const bounds = getObjBounds(this.objects);
         const angle  = options.angle.toNumber()/360*Tau;
 
-        const cx     = bounds.x + bounds.width  * (0.5 + (options.centerX.toNumber()) / (bounds.width ));
-        const cy     = bounds.y + bounds.height * (0.5 + (options.centerY.toNumber()) / (bounds.height));
+        const cx     = bounds.x + bounds.width  * options.centerX.toNumber()/100;
+        const cy     = bounds.y + bounds.height * options.centerY.toNumber()/100;
 
 
         // let dx = 
@@ -144,11 +144,11 @@ extends GOperator
                 const dy = xform[1][2] - cy;
 
 
-                // xform = mulm3m3(
-                //     xform,
-                //     [[1, 0, -dx],
-                //      [0, 1, -dy],
-                //      [0, 0,  1 ]]);
+                xform = mulm3m3(
+                    xform,
+                    [[1, 0, -dx],
+                     [0, 1, -dy],
+                     [0, 0,  1 ]]);
 
                 xform = mulm3m3(
                     xform,
@@ -156,11 +156,11 @@ extends GOperator
                      [-Math.sin(angle), Math.cos(angle), 0],
                      [ 0,               0,               1]]);
 
-                // xform = mulm3m3(
-                //     xform,
-                //     [[1, 0, dx],
-                //      [0, 1, dy],
-                //      [0, 0, 1 ]]);
+                xform = mulm3m3(
+                    xform,
+                    [[1, 0, dx],
+                     [0, 1, dy],
+                     [0, 0, 1 ]]);
 
 
                 obj.relativeTransform = xform;
