@@ -108,7 +108,6 @@ extends GOperator
             : [];
 
 
-        //console.log('this.objects =', this.objects);
         const bounds = getObjBounds(this.objects);
         const angle  = options.angle.toNumber()/360*Tau;
 
@@ -116,19 +115,6 @@ extends GOperator
         const cy     = bounds.y + bounds.height * options.centerY.toNumber()/100;
 
 
-        // let dx = 
-        //     bounds.width != 0
-        //     ? (0.5 + options.centerX.toNumber() / (bounds.width /2)) * bounds.width
-        //     : 0;
-
-        // let dy = 
-        //     bounds.height != 0
-        //     ? (0.5 + options.centerY.toNumber() / (bounds.height/2)) * bounds.height
-        //     : 0;
-
-        //console.log('bounds =', bounds);
-        // console.log('dx =', dx);
-            
         for (const obj of this.objects)
         {
             obj.nodeId   = this.nodeId;
@@ -138,55 +124,13 @@ extends GOperator
             if (   bounds.width  > 0
                 && bounds.height > 0)
             {
-                let xform = obj.xform;
-
-
-                const dx = /*obj.x*/ - cx;
-                const dy = /*obj.y*/ - cy;
-                // const dx = xform[0][2] - cx;
-                // const dy = xform[1][2] - cy;
-
-
-                xform = mulm3m3(
-                    xform,
-                    [[1, 0, -dx],
-                     [0, 1, -dy],
-                     [0, 0,  1 ]]);
-
-                xform = mulm3m3(
-                    xform,
+                applyTransform(
+                    obj,
+                    cx, cy,
                     [[ Math.cos(angle), Math.sin(angle), 0],
                      [-Math.sin(angle), Math.cos(angle), 0],
                      [ 0,               0,               1]]);
-
-                xform = mulm3m3(
-                    xform,
-                    [[1, 0, dx],
-                     [0, 1, dy],
-                     [0, 0, 1 ]]);
-
-
-                let p = point(obj.x, obj.y);
-                
-                p = mulv2m3(p, xform);
-
-                obj.x = p.x;
-                obj.y = p.y;
-
-                //obj.xform = xform;
-                //console.log('rotate xform =', clone(xform));
-
-                obj.xform = clone(identity);
             }
-
-            // obj.angle = 
-            //     isValid(obj.angle)
-            //     ? obj.angle + options.angle.toNumber()
-            //     : options.angle.toNumber(); 
-
-
-            //const bw = bounds.width  != 0 ? bounds.width  : 1;
-            //const bh = bounds.height != 0 ? bounds.height : 1;
 
 
             // if (obj.type == VECTOR_PATH)

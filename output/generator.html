@@ -31,6 +31,10 @@ const identity = Object.freeze(
 
 
 
+function sqr (x) { return x*x;   };
+function cube(x) { return x*x*x; };
+
+
 function toInt(f) { return Math.floor(f) | 0; }
 
 
@@ -768,11 +772,6 @@ function ceilTo(x, dec)
     const div = Math.ceil(Math.pow(10, dec));
     return Math.ceil((x + Number.EPSILON) * div) / div;    
 }
-
-
-
-function sqr (x) { return x*x;   };
-function cube(x) { return x*x*x; };
 
 
 
@@ -4211,13 +4210,13 @@ class FigmaObject
 
     constructor(type, nodeId, objectId, objectName)
     {
-        this.type              = type;
-        this.nodeId            = nodeId;
-        this.objectId          = objectId;
-        this.objectName        = objectName;
-        this.uniqueId          = Math.round(Math.random() * 10000);
+        this.type       = type;
+        this.nodeId     = nodeId;
+        this.objectId   = objectId;
+        this.objectName = objectName;
+        this.uniqueId   = Math.round(Math.random() * 10000);
 
-        this.xform = clone(identity);
+        this.xform      = clone(identity);
     }
 
 
@@ -4225,6 +4224,7 @@ class FigmaObject
     copyBase(base)
     {
         this.uniqueId = base.uniqueId;
+        
         this.xform    = clone(base.xform);
     }
 
@@ -4270,9 +4270,43 @@ function copyFigmaObject(obj)
 }
 
 
+
+function applyTransform(obj, cx, cy, xform)
+{
+    // add to object's "total" transformation
+
+    // obj.xform = mulm3m3(
+    //     obj.xform,
+    //     [[1, 0, cx],
+    //      [0, 1, cy],
+    //      [0, 0, 1 ]]);
+
+    obj.xform = mulm3m3(obj.xform, xform);
+
+    // obj.xform = mulm3m3(
+    //     obj.xform,
+    //     [[1, 0, -cx],
+    //      [0, 1, -cy],
+    //      [0, 0,  1 ]]);
+
+
+    // apply only this transformation to the position (only for points)
+
+    const p = mulv2m3(
+        point(obj.x, obj.y), 
+        xform);
+
+    obj.x = p.x;
+    obj.y = p.y;
+}
+
+
 class FigmaShape
 extends FigmaObject
 {
+    skewX;
+    skewY;
+
     fills   = [];
     strokes = [];
 
@@ -4288,6 +4322,9 @@ extends FigmaObject
     constructor(type, nodeId, objectId, objectName)
     {
         super(type, nodeId, objectId, objectName);
+
+        this.skewX = 0;
+        this.skewY = 0;
     }
 
 
@@ -4295,7 +4332,10 @@ extends FigmaObject
     copyBase(base)
     {
         super.copyBase(base);
-        
+
+        this.skewX            = base.skewX;
+        this.skewY            = base.skewY;
+
         this.fills            = clone(base.fills  );
         this.strokes          = clone(base.strokes);
         this.effects          = clone(base.effects);
@@ -4317,7 +4357,6 @@ extends FigmaShape
     height;
     angle;
     round;
-
 
 
     constructor(nodeId, objectId, objectName, x, y, width, height, angle, round)
@@ -20045,51 +20084,22 @@ extends GOperator
             : [];
 
             
+        const x = options.x.toNumber();
+        const y = options.y.toNumber();
+
+
         for (const obj of this.objects)
         {
             obj.nodeId   = this.nodeId;
             obj.objectId = obj.objectId + OBJECT_SEPARATOR + this.nodeId;
 
-
-            let xform = clone(obj.xform);
-
-
-            xform = mulm3m3(
-                xform,
-                [[1, 0, options.x.toNumber()],
-                 [0, 1, options.y.toNumber()],
-                 [0, 0, 1                   ]]);
-
-
-            // obj.xform = xform;
-
-
-            // if (obj.type == VECTOR_PATH)
-            // {
-            //     for (const p of obj.points)
-            //     {
-            //         p.x.value += options.x.toNumber();
-            //         p.y.value += options.y.toNumber();
-            //     }
-
-            //     FigmaVectorPath.prototype.updatePathData.call(obj);
-            // }
-            // else
-            // {
-            //     obj.x += options.x.toNumber();
-            //     obj.y += options.y.toNumber();
-            // }
-
-
-            let p = point(obj.x, obj.y);
-                
-            p = mulv2m3(p, xform);
-
-            obj.x = p.x;
-            obj.y = p.y;
-
-            obj.xform = clone(identity);
-    }
+            applyTransform(
+                obj,
+                0, 0,
+                [[1, 0, x],
+                 [0, 1, y],
+                 [0, 0, 1]]);
+        }
 
         
         super.evalObjects(parse);
@@ -20245,7 +20255,6 @@ extends GOperator
             : [];
 
 
-        //console.log('this.objects =', this.objects);
         const bounds = getObjBounds(this.objects);
         const angle  = options.angle.toNumber()/360*Tau;
 
@@ -20253,19 +20262,6 @@ extends GOperator
         const cy     = bounds.y + bounds.height * options.centerY.toNumber()/100;
 
 
-        // let dx = 
-        //     bounds.width != 0
-        //     ? (0.5 + options.centerX.toNumber() / (bounds.width /2)) * bounds.width
-        //     : 0;
-
-        // let dy = 
-        //     bounds.height != 0
-        //     ? (0.5 + options.centerY.toNumber() / (bounds.height/2)) * bounds.height
-        //     : 0;
-
-        //console.log('bounds =', bounds);
-        // console.log('dx =', dx);
-            
         for (const obj of this.objects)
         {
             obj.nodeId   = this.nodeId;
@@ -20275,55 +20271,13 @@ extends GOperator
             if (   bounds.width  > 0
                 && bounds.height > 0)
             {
-                let xform = obj.xform;
-
-
-                const dx = /*obj.x*/ - cx;
-                const dy = /*obj.y*/ - cy;
-                // const dx = xform[0][2] - cx;
-                // const dy = xform[1][2] - cy;
-
-
-                xform = mulm3m3(
-                    xform,
-                    [[1, 0, -dx],
-                     [0, 1, -dy],
-                     [0, 0,  1 ]]);
-
-                xform = mulm3m3(
-                    xform,
+                applyTransform(
+                    obj,
+                    cx, cy,
                     [[ Math.cos(angle), Math.sin(angle), 0],
                      [-Math.sin(angle), Math.cos(angle), 0],
                      [ 0,               0,               1]]);
-
-                xform = mulm3m3(
-                    xform,
-                    [[1, 0, dx],
-                     [0, 1, dy],
-                     [0, 0, 1 ]]);
-
-
-                let p = point(obj.x, obj.y);
-                
-                p = mulv2m3(p, xform);
-
-                obj.x = p.x;
-                obj.y = p.y;
-
-                //obj.xform = xform;
-                //console.log('rotate xform =', clone(xform));
-
-                obj.xform = clone(identity);
             }
-
-            // obj.angle = 
-            //     isValid(obj.angle)
-            //     ? obj.angle + options.angle.toNumber()
-            //     : options.angle.toNumber(); 
-
-
-            //const bw = bounds.width  != 0 ? bounds.width  : 1;
-            //const bh = bounds.height != 0 ? bounds.height : 1;
 
 
             // if (obj.type == VECTOR_PATH)
@@ -20594,38 +20548,14 @@ extends GOperator
 
 
         const bounds = getObjBounds(this.objects);
-        //console.log('bounds =', bounds);
+
+        const sx     = options.scaleX.toNumber() / 100;
+        const sy     = options.scaleY.toNumber() / 100;
     
-
-        const sx = options.scaleX.toNumber() / 100;
-        const sy = options.scaleY.toNumber() / 100;
-
-        // const cx = options.centerX.toNumber() / bounds.width;
-        // const cy = options.centerY.toNumber() / bounds.height;
-
         const cx     = bounds.x + bounds.width  * options.centerX.toNumber()/100;
         const cy     = bounds.y + bounds.height * options.centerY.toNumber()/100;
 
         
-        // const dx = 
-        //     bounds.width != 0
-        //     ? (0.5 + options.centerX.toNumber() / (bounds.width /2)) * bounds.width
-        //     : 0;
-
-        // const dy = 
-        //     bounds.height != 0
-        //     ? (0.5 + options.centerY.toNumber() / (bounds.height/2)) * bounds.height
-        //     : 0;
-
-
-        // const bw = bounds.width  != 0 ? bounds.width  : 1;
-        // const bh = bounds.height != 0 ? bounds.height : 1;
-
-
-        // const dx = 0.5 + -sx/2 + cx;
-        // const dy = 0.5 + -sy/2 + cy;
-
-
         for (const obj of this.objects)
         {
             obj.nodeId   = this.nodeId;
@@ -20635,51 +20565,12 @@ extends GOperator
             if (   bounds.width  > 0
                 && bounds.height > 0)
             {
-                let xform = obj.xform;
-                //console.log('xform =', xform);
-
-
-                const dx = /*obj.x*/ - cx;
-                const dy = /*obj.y*/ - cy;
-                // const dx = xform[0][2] - cx;
-                // const dy = xform[1][2] - cy;
-
-
-                xform = mulm3m3(
-                    xform,
-                    [[1, 0, -dx],
-                     [0, 1, -dy],
-                     [0, 0,  1 ]]);
-
-                xform = mulm3m3(
-                    xform,
+                applyTransform(
+                    obj,
+                    cx, cy,
                     [[sx, 0,  0],
                      [0,  sy, 0],
                      [0,  0,  1]]);
-
-                xform = mulm3m3(
-                    xform,
-                    [[1, 0, dx],
-                     [0, 1, dy],
-                     [0, 0, 1 ]]);
-
-
-                //obj.xform = xform;
-                //console.log('scale xform =', clone(xform));
-
-
-                let p = point(obj.x, obj.y);
-                
-                p = mulv2m3(p, xform);
-
-                obj.x = p.x;
-                obj.y = p.y;
-
-                // if (obj.width ) obj.width  *= sx;
-                // if (obj.height) obj.height *= sy;
-
-
-                obj.xform = clone(identity);
             }
 
 
@@ -20872,12 +20763,13 @@ extends GOperator
 class GSkew
 extends GOperator
 {
-    input   = null;
+    input      = null;
 
-    x       = null;
-    y       = null;
-    centerX = null;
-    centerY = null;
+    skewX      = null;
+    skewY      = null;
+    centerX    = null;
+    centerY    = null;
+    showCenter = null;
 
 
 
@@ -20897,11 +20789,11 @@ extends GOperator
         if (this.input) 
             copy.input = this.input.copy();
 
-        //if (this.value) copy.value = this.value.copy();
-        if (this.x      ) copy.x       = this.x      .copy();
-        if (this.y      ) copy.y       = this.y      .copy();
-        if (this.centerX) copy.centerX = this.centerX.copy();
-        if (this.centerY) copy.centerY = this.centerY.copy();
+        if (this.skewX     ) copy.skewX      = this.skewX     .copy();
+        if (this.skewY     ) copy.skewY      = this.skewY     .copy();
+        if (this.centerX   ) copy.centerX    = this.centerX   .copy();
+        if (this.centerY   ) copy.centerY    = this.centerY   .copy();
+        if (this.showCenter) copy.showCenter = this.showCenter.copy();
 
         return copy;
     }
@@ -20914,10 +20806,11 @@ extends GOperator
             return this;
 
             
-        const x       = this.x       ? (await this.x      .eval(parse)).toValue() : null;
-        const y       = this.y       ? (await this.y      .eval(parse)).toValue() : null;
-        const centerX = this.centerX ? (await this.centerX.eval(parse)).toValue() : null;
-        const centerY = this.centerY ? (await this.centerY.eval(parse)).toValue() : null;
+        const skewX      = this.skewX      ? (await this.skewX     .eval(parse)).toValue() : null;
+        const skewY      = this.skewY      ? (await this.skewY     .eval(parse)).toValue() : null;
+        const centerX    = this.centerX    ? (await this.centerX   .eval(parse)).toValue() : null;
+        const centerY    = this.centerY    ? (await this.centerY   .eval(parse)).toValue() : null;
+        const showCenter = this.showCenter ? (await this.showCenter.eval(parse)).toValue() : null;
 
 
         if (this.input)
@@ -20931,23 +20824,35 @@ extends GOperator
         }
 
         
-        this.evalObjects(
+        const _bounds = this.evalObjects(
             parse, 
             {
-                x:       x, 
-                y:       y, 
-                centerX: centerX, 
-                centerY: centerY
+                skewX:      skewX, 
+                skewY:      skewY, 
+                centerX:    centerX, 
+                centerY:    centerY,
+                showCenter: showCenter
             });
 
 
+        const bounds = new RectangleValue(
+            this.nodeId,
+            new NumberValue(_bounds.x     ), 
+            new NumberValue(_bounds.y     ), 
+            new NumberValue(_bounds.width ),
+            new NumberValue(_bounds.height),
+            new NumberValue(0),
+            new NumberValue(0));
+
         this.updateValues =
         [
-            ['value',   this.value],
-            ['x',       x         ],
-            ['y',       y         ],
-            ['centerX', centerX   ],
-            ['centerY', centerY   ]
+            ['value',      this.value],
+            ['skewX',      skewX     ],
+            ['skewY',      skewY     ],
+            ['centerX',    centerX   ],
+            ['centerY',    centerY   ],
+            ['showCenter', showCenter],
+            ['bounds',     bounds    ]
         ];
 
 
@@ -20972,57 +20877,29 @@ extends GOperator
             
         const bounds = getObjBounds(this.objects);
 
-        // const bw = bounds.width  != 0 ? bounds.width  : 1;
-        // const bh = bounds.height != 0 ? bounds.height : 1;
+        const sx     = options.skewX.toNumber() / 100;
+        const sy     = options.skewY.toNumber() / 100;
 
-        const x = options.x.toNumber() / bounds.width;
-        const y = options.y.toNumber() / bounds.height;
+        const cx     = bounds.x + bounds.width  * options.centerX.toNumber()/100;
+        const cy     = bounds.y + bounds.height * options.centerY.toNumber()/100;
 
-        const dx = 
-            bounds.width != 0
-            ? (0.5 + options.centerX.toNumber() / (bounds.width /2)) * bounds.width
-            : 0;
 
-        const dy = 
-            bounds.height != 0
-            ? (0.5 + options.centerY.toNumber() / (bounds.height/2)) * bounds.height
-            : 0;
-
-            
         for (const obj of this.objects)
         {
             obj.nodeId   = this.nodeId;
             obj.objectId = obj.objectId + OBJECT_SEPARATOR + this.nodeId;
 
 
-            let xform = clone(obj.xform);
-
-
-            xform = mulm3m3(
-                xform,
-                [[1/Math.cos(y/2), 0,               dx],
-                 [0,               1/Math.cos(x/2), dy],
-                 [0,               0,               1 ]]);
-
-
-            obj.width  /= Math.cos(y);
-            obj.height /= Math.cos(x);
-
-            xform = mulm3m3(
-                xform,
-                [[1,           Math.tan(x), 0],
-                 [Math.tan(y), 1,           0],
-                 [0,           0,           1]]);
-
-
-            xform = mulm3m3(
-                xform,
-                [[1, 0, -dx],
-                 [0, 1, -dy],
-                 [0, 0,  1 ]]);
-
-
-            obj.xform = xform;
+            if (   bounds.width  > 0
+                && bounds.height > 0)
+            {
+                applyTransform(
+                    obj,
+                    cx, cy,
+                    [[1,  sx, 0],
+                     [sy, 1,  0],
+                     [0,  0,  1]]);
+            }
 
 
             //      if (obj.type == VECTOR_PATH)
@@ -21124,7 +21001,27 @@ extends GOperator
         }
 
         
+        if (this.showCenter.toValue().value > 0)
+        {
+            const center = new FigmaPoint(
+                this.nodeId,
+                this.nodeId,
+                this.nodeName + ' center',
+                cx,
+                cy,
+                true)
+
+            center.createDefaultTransform(cx, cy, 0);
+
+            this.objects      .push(center);
+            this.value.objects.push(center);
+        };
+
+
         super.evalObjects(parse);
+
+
+        return bounds;
     }
 
 
@@ -21134,8 +21031,8 @@ extends GOperator
         super.pushValueUpdates(parse);
 
         if (this.input) this.input.pushValueUpdates(parse);
-        if (this.x    ) this.x    .pushValueUpdates(parse);
-        if (this.y    ) this.y    .pushValueUpdates(parse);
+        if (this.skewX    ) this.skewX    .pushValueUpdates(parse);
+        if (this.skewY    ) this.skewY    .pushValueUpdates(parse);
     }
 
 
@@ -21143,8 +21040,8 @@ extends GOperator
     isValid()
     {
         return super.isValid()
-            && this.x.isValid()
-            && this.y.isValid();
+            && this.skewX.isValid()
+            && this.skewY.isValid();
     }
 
 
@@ -21154,8 +21051,8 @@ extends GOperator
         super.invalidate();
 
         if (this.input ) this.input .invalidate();
-        if (this.x     ) this.x     .invalidate();
-        if (this.y     ) this.y     .invalidate();
+        if (this.skewX     ) this.skewX     .invalidate();
+        if (this.skewY     ) this.skewY     .invalidate();
     }
 
 
@@ -24993,10 +24890,11 @@ function genParseSkew(parse)
     if (nInputs == 1)
         skew.input = genParse(parse);
 
-    skew.x       = genParse(parse);
-    skew.y       = genParse(parse);
-    skew.centerX = genParse(parse);
-    skew.centerY = genParse(parse);
+    skew.skewX      = genParse(parse);
+    skew.skewY      = genParse(parse);
+    skew.centerX    = genParse(parse);
+    skew.centerY    = genParse(parse);
+    skew.showCenter = genParse(parse);
 
 
     parse.inParam = false;

@@ -1,6 +1,9 @@
 class FigmaShape
 extends FigmaObject
 {
+    skewX;
+    skewY;
+
     fills   = [];
     strokes = [];
 
@@ -16,6 +19,9 @@ extends FigmaObject
     constructor(type, nodeId, objectId, objectName)
     {
         super(type, nodeId, objectId, objectName);
+
+        this.skewX = 0;
+        this.skewY = 0;
     }
 
 
@@ -23,7 +29,10 @@ extends FigmaObject
     copyBase(base)
     {
         super.copyBase(base);
-        
+
+        this.skewX            = base.skewX;
+        this.skewY            = base.skewY;
+
         this.fills            = clone(base.fills  );
         this.strokes          = clone(base.strokes);
         this.effects          = clone(base.effects);

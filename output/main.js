@@ -33,6 +33,10 @@ const pageTag = 'G_PAGE';
 const identity = Object.freeze([[1, 0, 0],
     [0, 1, 0],
     [0, 0, 1]]);
+function sqr(x) { return x * x; }
+;
+function cube(x) { return x * x * x; }
+;
 function toInt(f) { return Math.floor(f) | 0; }
 function nextPow2(x) {
     x = toInt(x);
@@ -1227,7 +1231,7 @@ function updatePointSizes() {
 function updatePointSize(figPoint) {
     // const size = Math.max(0.01, 1/curZoom);
     // figPoint.resizeWithoutConstraints(size, size);
-    setExistingPointTransform(figPoint);
+    updateExistingPointTransform(figPoint);
     updatePointStyles(figPoint);
 }
 function updatePointSize_(figPoint, genPoint) {
@@ -1238,11 +1242,17 @@ function updatePointSize_(figPoint, genPoint) {
 }
 function updatePointStyles(figPoint) {
     const isCenter = parseBool(figPoint.getPluginData('isCenter'));
-    figPoint.fills = getObjectFills([['SOLID', 255, 255, 255, 100]]);
-    figPoint.effects = getObjectEffects([
-        ['DROP_SHADOW', 12 / 255, 140 / 255, 233 / 255, 1, 0, 0, 0, (3.6) / curZoom, 'NORMAL', true, true],
-        ['DROP_SHADOW', 1, 1, 1, 1, 0, 0, 0, (2.4) / curZoom, 'NORMAL', true, true]
-    ]);
+    const color = isCenter
+        ? [0xf2, 0x48, 0x22]
+        : [0xff, 0xff, 0xff];
+    const border = isCenter
+        ? [255, 255, 255]
+        : [12, 140, 233];
+    figPoint.fills = getObjectFills([['SOLID', color[0], color[1], color[2], 100]]);
+    const effects = [];
+    effects.push(...getObjectEffects([['DROP_SHADOW', border[0] / 255, border[1] / 255, border[2] / 255, 1, 0, 0, 0, (isCenter ? 3 : 3.6) / curZoom, 'NORMAL', true, true]]));
+    effects.push(...getObjectEffects([['DROP_SHADOW', color[0] / 255, color[1] / 255, color[2] / 255, 1, 0, 0, 0, 2.4 / curZoom, 'NORMAL', true, true]]));
+    figPoint.effects = effects;
 }
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 function figCreateObject(genObj, addObject) {
@@ -1722,60 +1732,31 @@ function figUpdateFrame(figFrame, genFrame) {
 }
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 function setObjectTransform(figObj, genObj) {
-    figObj.x =
-        // if (   figObj.width  != genObj.width
-        //     || figObj.height != genObj.height)
-        // {
-        figObj.resizeWithoutConstraints(Math.max(0.01, genObj.width), // * genObj.xform[0][0]), 
-        Math.max(0.01, genObj.height)); // * genObj.xform[1][1]));
-    // }
-    convertObjectTransform(figObj, genObj);
-}
-function convertObjectTransform(figObj, genObj) {
-    const m0 = genObj.xform[0];
-    const m1 = genObj.xform[1];
-    figObj.xform =
+    // make axis vectors == 1
+    const scaleX = Math.sqrt(sqr(genObj.xform[0][0]) + sqr(genObj.xform[1][0]));
+    const scaleY = Math.sqrt(sqr(genObj.xform[0][1]) + sqr(genObj.xform[1][1]));
+    genObj.xform[0][0] /= scaleX;
+    genObj.xform[1][0] /= scaleX;
+    genObj.xform[0][1] /= scaleY;
+    genObj.xform[1][1] /= scaleY;
+    // do magic to make object transform correctly ???
+    figObj.relativeTransform =
         [
-            m0,
-            m1 //[m1[0], 1,     m1[2]]
+            genObj.xform[0],
+            genObj.xform[1]
         ];
+    figObj.resizeWithoutConstraints(Math.max(0.01, genObj.width * scaleX), Math.max(0.01, genObj.height * scaleY));
 }
 function setPointTransform(figPoint, genPoint) {
     figPoint.resizeWithoutConstraints(0.01, 0.01);
-    convertPointTransform(figPoint, genPoint);
-}
-function convertPointTransform(figPoint, genPoint) {
-    // const m0 = genPoint.xform[0];
-    // const m1 = genPoint.xform[1];
-    // figPoint.relativeTransform = 
-    // [
-    //     [1,     m0[1], m0[2]],
-    //     [m1[0], 1,     m1[2]]
-    // ];
-    // let p = point(
-    //     genPoint.x, 
-    //     genPoint.y);
-    // p = mulv2m3(p, genPoint.xform);
-    figPoint.x = genPoint.x; //p.x;
-    figPoint.y = genPoint.y; //p.y;
-    figPoint.setPluginData('actualX', genPoint.x.toString()); //genPoint.xform[0][2].toString());
-    figPoint.setPluginData('actualY', genPoint.y.toString()); //genPoint.xform[1][2].toString());
+    figPoint.setPluginData('actualX', genPoint.x.toString());
+    figPoint.setPluginData('actualY', genPoint.y.toString());
+    figPoint.x = genPoint.x;
+    figPoint.y = genPoint.y;
     figPoint.rotation = genPoint.isCenter ? 45 : 0;
 }
-function setExistingPointTransform(figPoint) {
+function updateExistingPointTransform(figPoint) {
     figPoint.resizeWithoutConstraints(0.01, 0.01);
-    convertExistingPointTransform(figPoint);
-}
-function convertExistingPointTransform(figPoint) {
-    // const m0 = figPoint.xform[0];
-    // const m1 = figPoint.xform[1];
-    // figPoint.relativeTransform = 
-    // [
-    //     [m0[0], m0[1], parseFloat(figPoint.getPluginData('actualX'))],
-    //     [m1[0], m1[1], parseFloat(figPoint.getPluginData('actualY'))]
-    // ];
-    //figPoint.x = parseFloat(figPoint.getPluginData('actualX'));
-    //figPoint.y = parseFloat(figPoint.getPluginData('actualY'));
 }
 function getObjectFills(genObjFills) {
     const fills = [];

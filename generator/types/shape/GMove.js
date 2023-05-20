@@ -84,51 +84,22 @@ extends GOperator
             : [];
 
             
+        const x = options.x.toNumber();
+        const y = options.y.toNumber();
+
+
         for (const obj of this.objects)
         {
             obj.nodeId   = this.nodeId;
             obj.objectId = obj.objectId + OBJECT_SEPARATOR + this.nodeId;
 
-
-            let xform = clone(obj.xform);
-
-
-            xform = mulm3m3(
-                xform,
-                [[1, 0, options.x.toNumber()],
-                 [0, 1, options.y.toNumber()],
-                 [0, 0, 1                   ]]);
-
-
-            // obj.xform = xform;
-
-
-            // if (obj.type == VECTOR_PATH)
-            // {
-            //     for (const p of obj.points)
-            //     {
-            //         p.x.value += options.x.toNumber();
-            //         p.y.value += options.y.toNumber();
-            //     }
-
-            //     FigmaVectorPath.prototype.updatePathData.call(obj);
-            // }
-            // else
-            // {
-            //     obj.x += options.x.toNumber();
-            //     obj.y += options.y.toNumber();
-            // }
-
-
-            let p = point(obj.x, obj.y);
-                
-            p = mulv2m3(p, xform);
-
-            obj.x = p.x;
-            obj.y = p.y;
-
-            obj.xform = clone(identity);
-    }
+            applyTransform(
+                obj,
+                0, 0,
+                [[1, 0, x],
+                 [0, 1, y],
+                 [0, 0, 1]]);
+        }
 
         
         super.evalObjects(parse);

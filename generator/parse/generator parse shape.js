@@ -869,10 +869,11 @@ function genParseSkew(parse)
     if (nInputs == 1)
         skew.input = genParse(parse);
 
-    skew.x       = genParse(parse);
-    skew.y       = genParse(parse);
-    skew.centerX = genParse(parse);
-    skew.centerY = genParse(parse);
+    skew.skewX      = genParse(parse);
+    skew.skewY      = genParse(parse);
+    skew.centerX    = genParse(parse);
+    skew.centerY    = genParse(parse);
+    skew.showCenter = genParse(parse);
 
 
     parse.inParam = false;

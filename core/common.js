@@ -25,6 +25,10 @@ const identity = Object.freeze(
 
 
 
+function sqr (x) { return x*x;   };
+function cube(x) { return x*x*x; };
+
+
 function toInt(f) { return Math.floor(f) | 0; }
 
 

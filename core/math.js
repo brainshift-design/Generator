@@ -35,11 +35,6 @@ function ceilTo(x, dec)
 
 
 
-function sqr (x) { return x*x;   };
-function cube(x) { return x*x*x; };
-
-
-
 function distance(p1, p2)
 {
     const dx = p2.x - p1.x;

@@ -9,7 +9,6 @@ extends FigmaShape
     round;
 
 
-
     constructor(nodeId, objectId, objectName, x, y, width, height, angle, round)
     {
         super(RECTANGLE, nodeId, objectId, objectName);

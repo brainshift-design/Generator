@@ -114,38 +114,14 @@ extends GOperator
 
 
         const bounds = getObjBounds(this.objects);
-        //console.log('bounds =', bounds);
+
+        const sx     = options.scaleX.toNumber() / 100;
+        const sy     = options.scaleY.toNumber() / 100;
     
-
-        const sx = options.scaleX.toNumber() / 100;
-        const sy = options.scaleY.toNumber() / 100;
-
-        // const cx = options.centerX.toNumber() / bounds.width;
-        // const cy = options.centerY.toNumber() / bounds.height;
-
         const cx     = bounds.x + bounds.width  * options.centerX.toNumber()/100;
         const cy     = bounds.y + bounds.height * options.centerY.toNumber()/100;
 
         
-        // const dx = 
-        //     bounds.width != 0
-        //     ? (0.5 + options.centerX.toNumber() / (bounds.width /2)) * bounds.width
-        //     : 0;
-
-        // const dy = 
-        //     bounds.height != 0
-        //     ? (0.5 + options.centerY.toNumber() / (bounds.height/2)) * bounds.height
-        //     : 0;
-
-
-        // const bw = bounds.width  != 0 ? bounds.width  : 1;
-        // const bh = bounds.height != 0 ? bounds.height : 1;
-
-
-        // const dx = 0.5 + -sx/2 + cx;
-        // const dy = 0.5 + -sy/2 + cy;
-
-
         for (const obj of this.objects)
         {
             obj.nodeId   = this.nodeId;
@@ -155,51 +131,12 @@ extends GOperator
             if (   bounds.width  > 0
                 && bounds.height > 0)
             {
-                let xform = obj.xform;
-                //console.log('xform =', xform);
-
-
-                const dx = /*obj.x*/ - cx;
-                const dy = /*obj.y*/ - cy;
-                // const dx = xform[0][2] - cx;
-                // const dy = xform[1][2] - cy;
-
-
-                xform = mulm3m3(
-                    xform,
-                    [[1, 0, -dx],
-                     [0, 1, -dy],
-                     [0, 0,  1 ]]);
-
-                xform = mulm3m3(
-                    xform,
+                applyTransform(
+                    obj,
+                    cx, cy,
                     [[sx, 0,  0],
                      [0,  sy, 0],
                      [0,  0,  1]]);
-
-                xform = mulm3m3(
-                    xform,
-                    [[1, 0, dx],
-                     [0, 1, dy],
-                     [0, 0, 1 ]]);
-
-
-                //obj.xform = xform;
-                //console.log('scale xform =', clone(xform));
-
-
-                let p = point(obj.x, obj.y);
-                
-                p = mulv2m3(p, xform);
-
-                obj.x = p.x;
-                obj.y = p.y;
-
-                // if (obj.width ) obj.width  *= sx;
-                // if (obj.height) obj.height *= sy;
-
-
-                obj.xform = clone(identity);
             }
 
 

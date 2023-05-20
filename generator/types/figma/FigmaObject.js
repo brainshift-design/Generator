@@ -15,13 +15,13 @@ class FigmaObject
 
     constructor(type, nodeId, objectId, objectName)
     {
-        this.type              = type;
-        this.nodeId            = nodeId;
-        this.objectId          = objectId;
-        this.objectName        = objectName;
-        this.uniqueId          = Math.round(Math.random() * 10000);
+        this.type       = type;
+        this.nodeId     = nodeId;
+        this.objectId   = objectId;
+        this.objectName = objectName;
+        this.uniqueId   = Math.round(Math.random() * 10000);
 
-        this.xform = clone(identity);
+        this.xform      = clone(identity);
     }
 
 
@@ -29,6 +29,7 @@ class FigmaObject
     copyBase(base)
     {
         this.uniqueId = base.uniqueId;
+        
         this.xform    = clone(base.xform);
     }
 
@@ -71,4 +72,35 @@ function copyFigmaObject(obj)
 
     console.assert(false, 'invalid Figma object type \'' + obj.type + '\'');
     return null;
+}
+
+
+
+function applyTransform(obj, cx, cy, xform)
+{
+    // add to object's "total" transformation
+
+    // obj.xform = mulm3m3(
+    //     obj.xform,
+    //     [[1, 0, cx],
+    //      [0, 1, cy],
+    //      [0, 0, 1 ]]);
+
+    obj.xform = mulm3m3(obj.xform, xform);
+
+    // obj.xform = mulm3m3(
+    //     obj.xform,
+    //     [[1, 0, -cx],
+    //      [0, 1, -cy],
+    //      [0, 0,  1 ]]);
+
+
+    // apply only this transformation to the position (only for points)
+
+    const p = mulv2m3(
+        point(obj.x, obj.y), 
+        xform);
+
+    obj.x = p.x;
+    obj.y = p.y;
 }
