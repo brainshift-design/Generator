@@ -56,17 +56,17 @@ extends GValue
 
 
 
-    isValid()
+    toValue()
     {
-        return  this.items
-            && !this.items.find(i => !i.isValid());
+        return this.copy();
     }
 
 
 
-    toValue()
+    isValid()
     {
-        return this.copy();
+        return  this.items
+            && !this.items.find(i => !i.isValid());
     }
 
 
@@ -206,6 +206,8 @@ function parseListValue(str, i = -1)
             case    TEXTSHAPE_VALUE: { const text    = parseTextShapeValue  (str, i);  i += text   [1];  list.items.push(text   [0]);  break; }
             case        POINT_VALUE: { const point   = parsePointValue      (str, i);  i += point  [1];  list.items.push(point  [0]);  break; }
             case  VECTOR_PATH_VALUE: { const path    = parseVectorPathValue (str, i);  i += path   [1];  list.items.push(path   [0]);  break; }
+            case  SHAPE_GROUP_VALUE: { const group   = parseShapeGroupValue (str, i);  i += group  [1];  list.items.push(group  [0]);  break; }
+            case        FRAME_VALUE: { const frame   = parseFrameValue      (str, i);  i += frame  [1];  list.items.push(frame  [0]);  break; }
         }
     }
 

@@ -861,6 +861,7 @@ figma.showUI(__html__, {
 });
 var curZoom = figma.viewport.zoom;
 setInterval(() => updatePointSizes(), 100);
+var showIds = false;
 // figma.currentPage
 //     .getPluginDataKeys()
 //     .forEach(k => figma.currentPage.setPluginData(k, figma.currentPage.getPluginData(k).replace('\\', '\\\\')));
@@ -1190,6 +1191,9 @@ figma.ui.onmessage = function (msg) {
             figLinkNodeToExistingColorStyle(msg.nodeId, msg.styleId);
             break;
         // case 'figUpdateViewportRect':                 figPostMessageToUi({cmd: 'uiReturnUpdateViewportRect', viewportRect: figma.viewport.bounds }); break;
+        case 'figUpdateShowIds':
+            showIds = msg.showIds;
+            break;
         case 'figUpdateObjectsAndStyles':
             figUpdateObjects(null, msg.objects);
             figUpdateStyles(msg);
@@ -1426,7 +1430,7 @@ function figUpdateObject(figObj, genObj) {
     }
 }
 function makeObjectName(obj) {
-    return OBJECT_PREFIX + obj.objectName;
+    return OBJECT_PREFIX + (showIds ? obj.objectId : obj.objectName);
 }
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 function genRectIsValid(genRect) {

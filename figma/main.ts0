@@ -26,6 +26,8 @@ var curZoom = figma.viewport.zoom;
 setInterval(() => updatePointSizes(), 100);
 
 
+var showIds = false;
+
 
 // figma.currentPage
 //     .getPluginDataKeys()

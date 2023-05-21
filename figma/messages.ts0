@@ -73,6 +73,10 @@ figma.ui.onmessage = function(msg)
         case 'figLinkNodeToExistingColorStyle':       figLinkNodeToExistingColorStyle      (msg.nodeId, msg.styleId);                     break;
      
         // case 'figUpdateViewportRect':                 figPostMessageToUi({cmd: 'uiReturnUpdateViewportRect', viewportRect: figma.viewport.bounds }); break;
+        
+        case 'figUpdateShowIds':                      
+            showIds = msg.showIds; 
+            break;
      
         case 'figUpdateObjectsAndStyles':
             figUpdateObjects(null, msg.objects);

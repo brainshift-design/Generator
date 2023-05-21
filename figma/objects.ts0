@@ -246,7 +246,7 @@ function figUpdateObject(figObj, genObj)
 
 function makeObjectName(obj)
 {
-    return OBJECT_PREFIX + obj.objectName;
+    return OBJECT_PREFIX + (showIds ? obj.objectId : obj.objectName);
 }
 
 

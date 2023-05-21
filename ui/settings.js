@@ -136,6 +136,7 @@ function updateSettingAndMenu(settingName, valid, value, save = true)
         case 'logRawValues':                  updateSettingAndMenu_(valid, settingName, value, menuItemLogRawValues                 ); break;
     } 
 
+
     if (   save
         && settingName != 'showAllColorSpaces')
         uiSetLocalData(settingName, boolToString(value));
@@ -147,6 +148,17 @@ function updateSettingAndMenu_(valid, setting, value, menu)
 {
     if (valid) 
         settings[setting] = value;  
+
+
+    if (setting == 'showNodeId')
+    {
+        uiPostMessageToFigma(
+        {
+            cmd:    'figUpdateShowIds',
+            showIds: settings.showNodeId
+        });
+    }
+
 
     if (menu)
         menu.setChecked(settings[setting]);
