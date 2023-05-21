@@ -294,26 +294,28 @@ function initGeneratorMenus()
     menuMainDebug = new Menu('Debug', false);
     menuMainDebug.addItems([
         menuItemShowNodeId = new MenuItem('Show IDs',
-                             {
-                                 checkCallback: () => settings.showNodeId, 
-                                 callback:      () => 
-                                 {
-                                     updateSettingAndMenu('showNodeId', true, !settings.showNodeId);
+                            {
+                                checkCallback: () => settings.showNodeId, 
+                                callback:      () => 
+                                {
+                                    updateSettingAndMenu('showNodeId', true, !settings.showNodeId);
                                      
-                                     graph.nodes.forEach(n => n.updateNode());
-                                     graph.nodes.forEach(n => n.updateMeasureData());
-                                     graph.nodes.forEach(n => n.updateHeaderLabelOffsetX());
+                                    graph.nodes.forEach(n => n.updateNode());
+                                    graph.nodes.forEach(n => n.updateMeasureData());
+                                    graph.nodes.forEach(n => n.updateHeaderLabelOffsetX());
 
-                                     graph.updatePages();
-                                 }
-                             }),
-                             new MenuItem('',                             {separator: true}),
-                             new MenuItem('Log generator',                {childMenu: menuDebugGenerator}),
-                             new MenuItem('Log storage',                  {childMenu: menuDebugStorage}),
-                             new MenuItem('',                             {separator: true}),   
-                             new MenuItem('Delete',                       {childMenu: menuDebugDelete}),
-                             new MenuItem('',                             {separator: true}),   
-        menuItemDataMode   = new MenuItem('Restart in debug mode',        {checkCallback: () => settings.dataMode, callback: () => uiRestartGenerator(true)})]);
+                                    graph.updatePages();
+
+                                    pushUpdate(null, graph.nodes.filter(n => n.active));
+                                }
+                            }),
+                            new MenuItem('',                      {separator: true}),
+                            new MenuItem('Log generator',         {childMenu: menuDebugGenerator}),
+                            new MenuItem('Log storage',           {childMenu: menuDebugStorage}),
+                            new MenuItem('',                      {separator: true}),   
+                            new MenuItem('Delete',                {childMenu: menuDebugDelete}),
+                            new MenuItem('',                      {separator: true}),   
+        menuItemDataMode  = new MenuItem('Restart in debug mode', {checkCallback: () => settings.dataMode, callback: () => uiRestartGenerator(true)})]);
                      
 
     menuMainHelp = new Menu('Help and subscription', false);
