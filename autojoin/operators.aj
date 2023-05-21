@@ -120,6 +120,20 @@
 ../operators/color/OpColorBlend.js
 
 
+../operators/style/OpColorStyle.js
+../operators/style/OpFill.js
+../operators/style/OpStroke.js
+../operators/style/OpDropShadow.js
+../operators/style/OpInnerShadow.js
+../operators/style/OpLayerBlur.js
+../operators/style/OpBackBlur.js
+../operators/style/OpLayerMask.js
+
+
+//../operators/style/OpColorStop.js
+//../operators/style/OpGradient.js
+
+
 ../operators/shape/OpShapeBase.js
 ../operators/shape/OpShape.js
 ../operators/shape/OpRectangle.js
@@ -138,19 +152,12 @@
 ../operators/shape/OpScale.js
 ../operators/shape/OpSkew.js
 
-
-../operators/style/OpColorStyle.js
-../operators/style/OpFill.js
-../operators/style/OpStroke.js
-../operators/style/OpDropShadow.js
-../operators/style/OpInnerShadow.js
-../operators/style/OpLayerBlur.js
-../operators/style/OpBackBlur.js
-
-
-//../operators/style/OpColorStop.js
-//../operators/style/OpGradient.js
-
+../operators/shape/boolean/OpShapeBooleanBase.js
+../operators/shape/boolean/OpShapeBoolean.js
+../operators/shape/boolean/OpShapeUnion.js
+../operators/shape/boolean/OpShapeSubtract.js
+../operators/shape/boolean/OpShapeIntersect.js
+../operators/shape/boolean/OpShapeExclude.js
 
 
 ../operators/group/OpGroupNode.js

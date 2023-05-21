@@ -14,6 +14,8 @@ extends FigmaObject
 
     effects = [];
 
+    isMask  = false;
+
 
 
     constructor(type, nodeId, objectId, objectName)

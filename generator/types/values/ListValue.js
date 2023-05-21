@@ -196,6 +196,7 @@ function parseListValue(str, i = -1)
             case INNER_SHADOW_VALUE: { const shadow  = parseInnerShadowValue(str, i);  i += shadow [1];  list.items.push(shadow [0]);  break; }
             case   LAYER_BLUR_VALUE: { const blur    = parseLayerBlurValue  (str, i);  i += blur   [1];  list.items.push(blur   [0]);  break; }
             case    BACK_BLUR_VALUE: { const blur    = parseBackBlurValue   (str, i);  i += blur   [1];  list.items.push(blur   [0]);  break; }
+            case   LAYER_MASK_VALUE: { const mask    = parseLayerMaskValue  (str[i]);  i += mask   [1];  list.items.push(mask   [0]);  break; }
 
             case    RECTANGLE_VALUE: { const rect    = parseRectangleValue  (str, i);  i += rect   [1];  list.items.push(rect   [0]);  break; }
             case         LINE_VALUE: { const line    = parseLineValue       (str, i);  i += line   [1];  list.items.push(line   [0]);  break; }

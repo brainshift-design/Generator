@@ -75,7 +75,10 @@ extends Parameter
     setValue(value, createAction, updateControl = true, dispatchEvents = true) 
     {
         if (!(value instanceof ListValue))
-            console.assert(false, 'ListParam.setValue(value) is ' + typeof value + ', must be a ListValue');
+        {
+            //console.log('value =', value);
+            console.assert(false, 'ListParam.setValue(): value is ' + typeof value + ', must be a ListValue');
+        }
 
         console.assert(
                value.type 

@@ -8087,7 +8087,7 @@ const NUMBER_DIVIDE           = 'DIV';
 const NUMBER_MODULO           = 'MOD';   
 const NUMBER_EXPONENT         = 'EXP';
 
-const NUMBER_BOOLEAN          = 'BOOL';  
+const NUMBER_BOOLEAN          = 'NBOOL';  
 const NUMBER_NOT              = 'NOT';
 const NUMBER_AND              = 'AND';
 const NUMBER_OR               = 'OR';
@@ -8119,7 +8119,7 @@ const MATH_TYPES =
 ];
 
 
-const BOOLEAN_TYPES =
+const NUMBER_BOOLEAN_TYPES =
 [
     NUMBER_BOOLEAN,
     NUMBER_NOT,
@@ -8168,7 +8168,7 @@ const NUMBER_TYPES =
     NUMBER_ANIMATE,
 
     ...MATH_TYPES,
-    ...BOOLEAN_TYPES,
+    ...NUMBER_BOOLEAN_TYPES,
     ...CONDITION_TYPES,
     ...TRIG_TYPES
 ];
@@ -8257,13 +8257,18 @@ const BACK_BLUR_VALUE    = 'BBLR#';
 const BACK_BLUR          = 'BBLR';
 const BACK_BLUR_TYPES    = [BACK_BLUR_VALUE, BACK_BLUR];
 
+const LAYER_MASK_VALUE   = 'MASK#';
+const LAYER_MASK         = 'MASK';
+const LAYER_MASK_TYPES   = [LAYER_MASK_VALUE, LAYER_MASK];
+
 
 const EFFECT_TYPES =
 [
     ...DROP_SHADOW_TYPES,
     ...INNER_SHADOW_TYPES,
     ...LAYER_BLUR_TYPES,
-    ...BACK_BLUR_TYPES
+    ...BACK_BLUR_TYPES,
+    ...LAYER_MASK_TYPES
 ];
 
 
@@ -8275,7 +8280,8 @@ const STYLE_VALUES =
     DROP_SHADOW_VALUE,
     INNER_SHADOW_VALUE,
     LAYER_BLUR_VALUE,
-    BACK_BLUR_VALUE
+    BACK_BLUR_VALUE,
+    LAYER_MASK_VALUE
 ];
 
 
@@ -8338,6 +8344,26 @@ const POINT_TYPES =
 ];
 
 
+const BOOLEAN            = 'BOOL';
+const BOOLEAN_VALUE      = 'BOOL#';
+
+const BOOL_UNION         = 'BOOLU';
+const BOOL_SUBTRACT      = 'BOOLS';
+const BOOL_INTERSECT     = 'BOOLI';
+const BOOL_EXCLUDE       = 'BOOLE';
+
+
+const BOOLEAN_TYPES =
+[
+    BOOLEAN,
+    BOOLEAN_VALUE,
+    BOOL_UNION,
+    BOOL_SUBTRACT,
+    BOOL_INTERSECT,
+    BOOL_EXCLUDE
+]
+
+
 const SHAPE_VALUES =
 [
     SHAPE_VALUE,
@@ -8351,7 +8377,8 @@ const SHAPE_VALUES =
     POINT_VALUE,
     VECTOR_PATH_VALUE,
     SHAPE_GROUP_VALUE,
-    FRAME_VALUE
+    FRAME_VALUE,
+    BOOLEAN_VALUE
 ];
 
 
@@ -8369,6 +8396,7 @@ const SHAPE_TYPES =
     ...VECTOR_PATH_TYPES,
     ...SHAPE_GROUP_TYPES,
     ...FRAME_TYPES,
+    ...BOOLEAN_TYPES,
 
     MOVE,
     ROTATE,
@@ -8690,6 +8718,8 @@ extends FigmaObject
     strokeMiterLimit;
 
     effects = [];
+
+    isMask  = false;
 
 
 
@@ -9427,6 +9457,40 @@ function getSineYSegment(_pointP, _point, _pointN)
 }
 
 
+class FigmaBoolean
+extends FigmaShape
+{
+    operation;
+    children;
+
+
+
+    constructor(nodeId, objectId, objectName, operation, children = [])
+    {
+        super(BOOLEAN, nodeId, objectId, objectName);
+        
+        this.operation = operation;
+        this.children  = children.map(c => c.copy());
+    }
+
+
+
+    copy()
+    {
+        const copy = new FigmaBoolean(
+            this.nodeId,
+            this.objectId,
+            this.objectName,
+            this.operation,
+            this.children);
+
+        copy.copyBase(this);
+
+        return copy;
+    }
+}
+
+
 class FigmaShapeGroup
 extends FigmaShape
 {
@@ -9734,22 +9798,23 @@ function displayValue(type, value)
 
     switch (type)
     {
-        case        LIST_VALUE: return parseListValue      (value)[0].toDisplayString();
-        case      NUMBER_VALUE: return parseNumberValue    (value)[0].toDisplayString();
-        case        TEXT_VALUE: const val = parseTextValue (value)[0]; return val == '' ? '\'\'' : val.toDisplayString();
-        case       COLOR_VALUE: return parseColorValue     (value)[0].toDisplayString();
-        case        FILL_VALUE: return parseFillValue      (value)[0].toDisplayString();
-        case      STROKE_VALUE: return parseStrokeValue    (value)[0].toDisplayString();
-        case   RECTANGLE_VALUE: return parseRectangleValue (value)[0].toDisplayString();
-        case        LINE_VALUE: return parseLineValue      (value)[0].toDisplayString();
-        case     ELLIPSE_VALUE: return parseEllipseValue   (value)[0].toDisplayString();
-        case     POLYGON_VALUE: return parsePolygonValue   (value)[0].toDisplayString();
-        case        STAR_VALUE: return parseStarValue      (value)[0].toDisplayString();
-        case   TEXTSHAPE_VALUE: return parseTextShapeValue (value)[0].toDisplayString();
-        case       POINT_VALUE: return parsePointValue     (value)[0].toDisplayString();
-        case VECTOR_PATH_VALUE: return parseVectorPathValue(value)[0].toDisplayString();
-        case SHAPE_GROUP_VALUE: return parseShapeGroupValue(value)[0].toDisplayString();
-        case       FRAME_VALUE: return parseFrameValue     (value)[0].toDisplayString();
+        case        LIST_VALUE: return parseListValue        (value)[0].toDisplayString();
+        case      NUMBER_VALUE: return parseNumberValue      (value)[0].toDisplayString();
+        case        TEXT_VALUE: const val = parseTextValue   (value)[0]; return val == '' ? '\'\'' : val.toDisplayString();
+        case       COLOR_VALUE: return parseColorValue       (value)[0].toDisplayString();
+        case        FILL_VALUE: return parseFillValue        (value)[0].toDisplayString();
+        case      STROKE_VALUE: return parseStrokeValue      (value)[0].toDisplayString();
+        case   RECTANGLE_VALUE: return parseRectangleValue   (value)[0].toDisplayString();
+        case        LINE_VALUE: return parseLineValue        (value)[0].toDisplayString();
+        case     ELLIPSE_VALUE: return parseEllipseValue     (value)[0].toDisplayString();
+        case     POLYGON_VALUE: return parsePolygonValue     (value)[0].toDisplayString();
+        case        STAR_VALUE: return parseStarValue        (value)[0].toDisplayString();
+        case   TEXTSHAPE_VALUE: return parseTextShapeValue   (value)[0].toDisplayString();
+        case       POINT_VALUE: return parsePointValue       (value)[0].toDisplayString();
+        case VECTOR_PATH_VALUE: return parseVectorPathValue  (value)[0].toDisplayString();
+        case     BOOLEAN_VALUE: return parseShapeBooleanValue(value)[0].toDisplayString();
+        case SHAPE_GROUP_VALUE: return parseShapeGroupValue  (value)[0].toDisplayString();
+        case       FRAME_VALUE: return parseFrameValue       (value)[0].toDisplayString();
     }
 
 
@@ -9762,22 +9827,23 @@ function nullFromType(type)
 {
     switch (type)
     {
-        case        LIST_VALUE: return       ListValue.NaN;
-        case      NUMBER_VALUE: return     NumberValue.NaN;
-        case        TEXT_VALUE: return new TextValue();
-        case       COLOR_VALUE: return      ColorValue.NaN;
-        case        FILL_VALUE: return       FillValue.NaN;
-        case      STROKE_VALUE: return     StrokeValue.NaN;
-        case   RECTANGLE_VALUE: return  RectangleValue.NaN;
-        case        LINE_VALUE: return       LineValue.NaN;
-        case     ELLIPSE_VALUE: return    EllipseValue.NaN;
-        case     POLYGON_VALUE: return    PolygonValue.NaN;
-        case        STAR_VALUE: return       StarValue.NaN;
-        case   TEXTSHAPE_VALUE: return  TextShapeValue.NaN;
-        case       POINT_VALUE: return      PointValue.NaN;
-        case VECTOR_PATH_VALUE: return VectorPathValue.NaN;
-        case SHAPE_GROUP_VALUE: return ShapeGroupValue.NaN;
-        case       FRAME_VALUE: return      FrameValue.NaN;
+        case        LIST_VALUE: return         ListValue.NaN;
+        case      NUMBER_VALUE: return       NumberValue.NaN;
+        case        TEXT_VALUE: return       new TextValue();
+        case       COLOR_VALUE: return        ColorValue.NaN;
+        case        FILL_VALUE: return         FillValue.NaN;
+        case      STROKE_VALUE: return       StrokeValue.NaN;
+        case   RECTANGLE_VALUE: return    RectangleValue.NaN;
+        case        LINE_VALUE: return         LineValue.NaN;
+        case     ELLIPSE_VALUE: return      EllipseValue.NaN;
+        case     POLYGON_VALUE: return      PolygonValue.NaN;
+        case        STAR_VALUE: return         StarValue.NaN;
+        case   TEXTSHAPE_VALUE: return    TextShapeValue.NaN;
+        case       POINT_VALUE: return        PointValue.NaN;
+        case VECTOR_PATH_VALUE: return   VectorPathValue.NaN;
+        case     BOOLEAN_VALUE: return ShapeBooleanValue.NaN;
+        case SHAPE_GROUP_VALUE: return   ShapeGroupValue.NaN;
+        case       FRAME_VALUE: return        FrameValue.NaN;
     }
 
     console.assert(false, 'cannot determine null value from type \'' + type + '\'');
@@ -10204,6 +10270,7 @@ function parseListValue(str, i = -1)
             case INNER_SHADOW_VALUE: { const shadow  = parseInnerShadowValue(str, i);  i += shadow [1];  list.items.push(shadow [0]);  break; }
             case   LAYER_BLUR_VALUE: { const blur    = parseLayerBlurValue  (str, i);  i += blur   [1];  list.items.push(blur   [0]);  break; }
             case    BACK_BLUR_VALUE: { const blur    = parseBackBlurValue   (str, i);  i += blur   [1];  list.items.push(blur   [0]);  break; }
+            case   LAYER_MASK_VALUE: { const mask    = parseLayerMaskValue  (str[i]);  i += mask   [1];  list.items.push(mask   [0]);  break; }
 
             case    RECTANGLE_VALUE: { const rect    = parseRectangleValue  (str, i);  i += rect   [1];  list.items.push(rect   [0]);  break; }
             case         LINE_VALUE: { const line    = parseLineValue       (str, i);  i += line   [1];  list.items.push(line   [0]);  break; }
@@ -11846,6 +11913,92 @@ function parseBackBlurValue(str, i = -1)
 
 
 
+class LayerMaskValue
+extends GValue
+{
+    visible;
+
+
+
+    constructor(visible = true)
+    {
+        super(LAYER_MASK_VALUE);
+
+        this.visible = visible;
+    }
+
+
+    
+    copy()
+    {
+        const copy = new LayerMaskValue(this.visible);
+
+        copy.copyBase(this);
+
+        return copy;
+    }
+
+
+
+    equals(mask)
+    {
+        return this.visible === mask.visible;
+    }
+
+
+
+    async eval(parse)
+    {
+        return this;
+    }
+
+
+
+    toString()
+    {
+        return 'mask';
+    }
+
+
+
+    toDisplayString()
+    {
+        return 'mask';
+    }
+
+
+
+    isValid()
+    {
+        return super.isValid();
+    }
+
+
+
+    getNaN()
+    {
+        return LayerMaskValue.NaN;
+    }
+
+
+
+    static NaN = Object.freeze(new LayerMaskValue(false));
+}
+
+
+
+function parseLayerMaskValue(str)
+{
+    const mask = 
+        str == NAN_DISPLAY
+        ? LayerMaskValue.NaN
+        : new LayerMaskValue(true);
+
+    return [mask, 1];
+}
+
+
+
 /*
     This is getting closer to Figma now, so here the format changes,
     and objects hold stroke values directly, which incoming stroke values just set.
@@ -13282,20 +13435,22 @@ function parseVectorPathValue(str, i = -1)
 
 
 
-class ShapeGroupValue
+class ShapeBooleanValue
 extends ShapeValue
 {
+    operation;
     children;
 
 
 
-    constructor(nodeId, children)
+    constructor(nodeId, operation, children)
     {
-        super(SHAPE_GROUP_VALUE, nodeId);
+        super(BOOLEAN_VALUE, nodeId);
 
-        this.children = children;
+        this.operation = operation;
+        this.children  = children;
 
-        this.objects  = children.objects.map(o => o.copy());
+        this.objects   = children.objects.map(o => o.copy());
     }
 
 
@@ -13304,7 +13459,8 @@ extends ShapeValue
     {
         const copy = new ShapeGroupValue(
             this.nodeId,
-            this.children.copy());
+            this.operation.copy(),
+            this.children .copy());
 
         copy.copyBase(this);
 
@@ -13313,10 +13469,11 @@ extends ShapeValue
 
 
 
-    equals(group)
+    equals(bool)
     {
-        return group
-            && this.children.equals(group.children);
+        return bool
+            && this.operation.equals(bool.operation)
+            && this.children .equals(bool.children );
     }
 
 
@@ -13330,14 +13487,16 @@ extends ShapeValue
 
     toString()
     {
-        return this.children.toString();
+        return      this.operation.toString()
+            + ' ' + this.children .toString();
     }
 
 
 
     toDisplayString()
     {
-        return this.children.toDisplayString();
+        return      this.operation.toDisplayString()
+            + ' ' + this.children .toDisplayString();
     }
 
 
@@ -13351,8 +13510,125 @@ extends ShapeValue
 
     isValid()
     {
-        return this.children.isValid()
-            && super.isValid();
+        return super.isValid()
+            && this.operation.isValid()
+            && this.children .isValid();
+    }
+
+
+    
+    static NaN = new ShapeBooleanValue(
+        '',
+        NumberValue.NaN,
+        ListValue  .NaN);
+}
+
+
+
+function parseShapeBooleanValue(str, i = -1)
+{
+    if (   i <  0 && str    == NAN_DISPLAY
+        || i >= 0 && str[i] == NAN_DISPLAY)
+        return [ShapeBooleanValue.NaN, 1];
+
+
+    if (i < 0)
+    {
+        str = str.split(' ');
+        i   = 0;
+    }
+
+
+    const iStart = i;
+
+    const operation = parseNumberValue(str[i]); i += operation[1];
+    const children  = parseListValue  (str, i); i += children [1];
+
+    const bool = new ShapeBooleanValue(
+        '', // set node ID elsewhere
+        operation[0],
+        children [0]);
+
+
+    i = parseShapeBaseValue(str, i, bool);
+
+    
+    return [bool, i - iStart];
+}
+
+
+
+class ShapeGroupValue
+extends ShapeValue
+{
+    items = [];
+
+
+
+    constructor(nodeId, items = [])
+    {
+        super(SHAPE_GROUP_VALUE, nodeId);
+
+        this.items = items;
+
+        //this.objects  = children.objects.map(o => o.copy());
+    }
+
+
+
+    copy()
+    {
+        const copy = new ShapeGroupValue(
+            this.nodeId,
+            this.items.copy());
+
+        copy.copyBase(this);
+
+        return copy;
+    }
+
+
+
+    equals(group)
+    {
+        return group
+            && this.items.equals(group.children);
+    }
+
+
+
+    async eval(parse)
+    {
+        return this;
+    }
+
+
+
+    toString()
+    {
+        return this.items.toString();
+    }
+
+
+
+    toDisplayString()
+    {
+        return this.items.toDisplayString();
+    }
+
+
+
+    toValue()
+    {
+        return this.copy();
+    }
+
+
+
+    isValid()
+    {
+        return super.isValid()
+            && this.items.isValid();
     }
 
 
@@ -13620,17 +13896,11 @@ extends GOperator
             {
                 for (let j = 0; j < this.inputs[i].objects.length; j++, o++)
                 {
-                    //console.log('this.inputs[i].objects[j] =', this.inputs[i].objects[j]);
-                    //const obj = this.inputs[i].objects[j].copy();
                     const obj = copyFigmaObject(this.inputs[i].objects[j]);
 
-                    obj.nodeId = this.nodeId;
-
+                    obj.nodeId   = this.nodeId;
                     obj.objectId = obj.objectId + OBJECT_SEPARATOR + this.nodeId;
-                    // if (obj.objectId != NULL) obj.objectId += ' ';
-                    // obj.objectId += (o + 1).toString();
-                    
-                    obj.listId = i;
+                    obj.listId   = i;
 
                     this.objects.push(obj);
                 }
@@ -22133,6 +22403,53 @@ extends GOperator
 }
 
 
+class GLayerMask
+extends GOperator
+{
+    constructor(nodeId, options)
+    {
+        super(LAYER_MASK, nodeId, options);
+    }
+
+
+
+    copy()
+    {
+        const copy = new GLayerMask(this.nodeId, this.options);
+
+        copy.copyBase(this);
+
+        return copy;
+    }
+
+
+
+    async eval(parse)
+    {
+        if (this.isCached())
+            return this;
+``
+
+        this.value = new LayerMaskValue(this.options.enabled);
+
+
+        this.updateValues = [['', NullValue]];
+
+
+        this.validate();
+
+        return this;
+    }
+
+
+
+    toValue()
+    {
+        return new LayerMaskValue(this.options.enabled);
+    }
+}
+
+
 class GShapeBase
 extends GOperator
 {
@@ -22446,6 +22763,9 @@ extends GShapeBase
                         prop.radius.toNumber(),
                         prop.visible ]);
                 }
+
+                else if (prop.type == LAYER_MASK_VALUE)
+                    obj.isMask = true;
             }
         }
 
@@ -24001,9 +24321,7 @@ extends GShape
 class GShapeGroup
 extends GShapeBase
 {
-    input    = null;
-
-    children = null;
+    inputs = [];
 
 
 
@@ -24020,10 +24338,7 @@ extends GShapeBase
 
         copy.copyBase(this);
 
-        if (this.input) 
-            copy.input = this.input.copy();
-
-        if (this.children) copy.children = this.children.copy();
+        copy.inputs = this.inputs.map(i => i.copy());
 
         return copy;
     }
@@ -24036,38 +24351,68 @@ extends GShapeBase
             return this;
 
 
-        await this.evalBaseParams(parse);
+        this.value = new ShapeGroupValue(this.nodeId);
 
-        const children = this.children ? (await this.children.eval(parse)).toValue() : null;
+        //this.objects = [];
 
 
-        let input = null;
-
-        if (this.input)
+        for (let i = 0, o = 0; i < this.inputs.length; i++)
         {
-            input = (await this.input.eval(parse)).toValue();
+            await this.inputs[i].eval(parse);
 
-            this.value = new ShapeGroupValue(
-                this.nodeId,
-                children ?? input.children);
+            
+            // first copy the input objects
+
+            // if (this.options.enabled)
+            // {
+            //     for (let j = 0; j < this.inputs[i].objects.length; j++, o++)
+            //     {
+            //         const obj = copyFigmaObject(this.inputs[i].objects[j]);
+
+            //         obj.nodeId   = this.nodeId;
+            //         obj.objectId = obj.objectId + OBJECT_SEPARATOR + this.nodeId;
+            //         obj.listId   = -1;
+
+            //         this.objects.push(obj);
+            //     }
+            // }
+
+
+            // now create the output value
+
+            const input = this.inputs[i].toValue();
+
+            if (   input
+                && this.options.enabled)            
+            {
+                if (   input.type == SHAPE_LIST_VALUE
+                    || input.type == LIST_VALUE)
+                {
+                    for (const item of input.items)
+                    {
+                        if (!SHAPE_VALUES.includes(item.type))
+                            continue;
+
+                        this.value.items.push(item.copy());   
+                        //this.value.objects.push(...item.objects.map(o => o.copy()));
+                    }
+                }
+                else
+                {
+                    this.value.items.push(input.copy());
+                    //this.value.objects.push(...input.objects.map(o => o.copy()));
+                }
+            }
         }
-        else
-        {
-            this.value = new ShapeGroupValue(this.nodeId, children);
-        }
 
 
-        this.updateValues =
-        [
-            ['value',    this.value         ],
-            ['children', this.value.children]
-        ];
-
-
-        await this.evalShapeBase(parse, input);
+        //await this.evalShapeBase(parse, input);
 
 
         this.evalObjects(parse);
+
+
+        this.updateValues = [['value', this.value]];
 
 
         this.validate();
@@ -24083,7 +24428,7 @@ extends GShapeBase
             return;
             
 
-        if (this.value.children)
+        if (this.value.items)
         {
             const group = new FigmaShapeGroup(
                 this.nodeId,
@@ -24091,30 +24436,31 @@ extends GShapeBase
                 this.nodeName);
 
 
-            if (this.children.objects)
+            for (const item of this.value.items)
             {
-                for (let i = 0; i < this.children.objects.length; i++)
+                for (let i = 0; i < item.objects.length; i++)
                 {
-                    const obj    = this.children.objects[i].copy();
+                    const obj    = item.objects[i].copy();
                     obj.nodeId   = this.nodeId;
                     obj.objectId = obj.objectId + OBJECT_SEPARATOR + this.nodeId;
                     obj.listId   = -1;
+
                     group.children.push(obj);
                 }
             }
-
+            
 
             this.objects = [group];
 
-            this.updateValues.push(['nObjects', new NumberValue(
-                this.children.objects 
-                ? this.children.objects.length
-                : 0)]);
+            // this.updateValues.push(['nObjects', new NumberValue(
+            //     this.items.objects 
+            //     ? this.items.objects.length
+            //     : 0)]);
         }
         else
         {
             this.objects = [];
-            this.updateValues.push(['nObjects', new NumberValue(0)]);
+            // this.updateValues.push(['nObjects', new NumberValue(0)]);
         }
 
         
@@ -24127,8 +24473,7 @@ extends GShapeBase
     {
         super.pushValueUpdates(parse);
 
-        if (this.input   ) this.input   .pushValueUpdates(parse);
-        if (this.children) this.children.pushValueUpdates(parse);
+        this.inputs.forEach(i => i.pushValueUpdates(parse));
     }
 
 
@@ -24142,8 +24487,14 @@ extends GShapeBase
 
     isValid()
     {
-        return super.isValid()
-            && this.children.isValid();
+        if (!super.isValid()) 
+            return false;
+
+        for (const input of this.inputs)
+            if (!input.isValid())
+                return false;
+
+        return true;
     }
 
 
@@ -24152,8 +24503,7 @@ extends GShapeBase
     {
         super.invalidate();
 
-        if (this.input   ) this.input   .invalidate();
-        if (this.children) this.children.invalidate();
+        this.inputs.forEach(i => i.invalidate());
     }
 }
 
@@ -24370,6 +24720,193 @@ extends GShape
         if (this.children) this.children.invalidate();
     }
 }
+
+
+class GShapeBoolean
+extends GShapeBase
+{
+    input     = null;
+
+    operation = null
+    children  = null;
+
+
+
+    constructor(nodeId, options)
+    {
+        super(BOOLEAN, nodeId, options);
+    }
+
+
+
+    copy()
+    {
+        const copy = new GShapeBoolean(this.nodeId, this.options);
+
+        copy.copyBase(this);
+
+        if (this.input) 
+            copy.input = this.input.copy();
+
+        if (this.operation) copy.operation = this.operation.copy();
+        if (this.children ) copy.children  = this.children .copy();
+
+        return copy;
+    }
+
+
+
+    async eval(parse)
+    {
+        if (this.isCached())
+            return this;
+
+
+        await this.evalBaseParams(parse);
+
+        const operation = this.operation ? (await this.operation.eval(parse)).toValue() : null;
+        let   children  = this.children  ? (await this.children .eval(parse)).toValue() : null;
+
+
+        if (   children
+            && SHAPE_VALUES.includes(children.type)
+            && children.type != SHAPE_LIST_VALUE)
+            children = new ListValue([children]);
+
+
+        let input = null;
+
+        if (this.input)
+        {
+            input = (await this.input.eval(parse)).toValue();
+
+            this.value = new ShapeBooleanValue(
+                this.nodeId,
+                operation ?? input.operation,
+                children  ?? input.children);
+        }
+        else
+        {
+            this.value = new ShapeBooleanValue(
+                this.nodeId, 
+                operation,
+                children);
+        }
+
+
+        this.updateValues =
+        [
+            ['value',     this.value          ],
+            ['operation', this.value.operation],
+            ['children',  this.value.children ]
+        ];
+
+
+        await this.evalShapeBase(parse, input);
+
+
+        this.evalObjects(parse);
+
+
+        this.validate();
+
+        return this;
+    }
+
+
+
+    async evalObjects(parse, options = {})
+    {
+        if (!this.options.enabled)
+            return;
+            
+
+        if (this.value.children)
+        {
+            const bool = new FigmaBoolean(
+                this.nodeId,
+                this.nodeId,
+                this.nodeName,
+                this.operation);
+
+
+            if (this.children.objects)
+            {
+                for (let i = 0; i < this.children.objects.length; i++)
+                {
+                    const obj    = this.children.objects[i].copy();
+                    obj.nodeId   = this.nodeId;
+                    obj.objectId = obj.objectId + OBJECT_SEPARATOR + this.nodeId;
+                    obj.listId   = -1;
+                    bool.children.push(obj);
+                }
+            }
+
+
+            this.objects = [bool];
+
+            this.updateValues.push(['nObjects', new NumberValue(
+                this.children.objects 
+                ? this.children.objects.length
+                : 0)]);
+        }
+        else
+        {
+            this.objects = [];
+            this.updateValues.push(['nObjects', new NumberValue(0)]);
+        }
+
+        
+        await super.evalObjects(parse);
+    }
+
+
+
+    pushValueUpdates(parse)
+    {
+        super.pushValueUpdates(parse);
+
+        if (this.input   ) this.input   .pushValueUpdates(parse);
+        if (this.children) this.children.pushValueUpdates(parse);
+    }
+
+
+
+    toValue()
+    {
+        return this.value.copy();
+    }
+
+
+
+    isValid()
+    {
+        return super.isValid()
+            && this.children.isValid();
+    }
+
+
+
+    invalidate()
+    {
+        super.invalidate();
+
+        if (this.input   ) this.input   .invalidate();
+        if (this.children) this.children.invalidate();
+    }
+}
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 class GMove
@@ -25884,8 +26421,8 @@ function updateMenuItemShowBoolValues()
 {
     graph.nodes
         .filter(n => 
-                 BOOLEAN_TYPES.includes(n.type)
-            || CONDITION_TYPES.includes(n.type)
+               NUMBER_BOOLEAN_TYPES.includes(n.type)
+            ||      CONDITION_TYPES.includes(n.type)
             || n.type == IF_ELSE)
         .forEach(n => n.updateNode());
 }
@@ -28950,12 +29487,12 @@ function genParseVectorPath(parse)
 
 
 
-function genParseShapeGroup(parse)
+function genParseShapeBoolean(parse)
 {
     const [, nodeId, options, ignore] = genParseNodeStart(parse);
 
 
-    const group = new GShapeGroup(nodeId, options);
+    const bool = new GShapeBoolean(nodeId, options);
 
 
     let nInputs = -1;
@@ -28968,12 +29505,12 @@ function genParseShapeGroup(parse)
 
 
     if (parse.settings.logRequests) 
-        logReq(group, parse, ignore);
+        logReq(bool, parse, ignore);
 
 
     if (ignore) 
     {
-        genParseNodeEnd(parse, group);
+        genParseNodeEnd(parse, bool);
         return parse.parsedNodes.find(n => n.nodeId == nodeId);
     }
 
@@ -28982,7 +29519,7 @@ function genParseShapeGroup(parse)
 
 
     if (nInputs == 1)
-        group.input = genParse(parse);
+        bool.input = genParse(parse);
 
 
     const nParamIds = genParseParamCount(parse);
@@ -28995,16 +29532,54 @@ function genParseShapeGroup(parse)
 
         switch (paramId)
         {
-        case 'x':                         genParse(parse); break;
-        case 'y':                         genParse(parse); break;
-        case 'width':                     genParse(parse); break;
-        case 'height':                    genParse(parse); break;
-        case 'children': group.children = genParse(parse); break;
+        case 'children':  bool.children  = genParse(parse); break;
+        case 'operation': bool.operation = genParse(parse); break;
         }
     }
 
 
     parse.inParam = false;
+    parse.nTab--;
+
+
+    genParseNodeEnd(parse, bool);
+    return bool;
+}
+
+
+
+function genParseShapeGroup(parse)
+{
+    const [, nodeId, options, ignore] = genParseNodeStart(parse);
+
+
+    const group = new GShapeGroup(nodeId, options);
+
+
+    let nInputs = 0;
+    
+    if (!ignore)
+        nInputs = parseInt(parse.move());
+
+
+    if (parse.settings.logRequests) 
+        logReq(group, parse, ignore, nInputs);
+
+
+    if (ignore) 
+    {
+        genParseNodeEnd(parse, group);
+        return parse.parsedNodes.find(n => n.nodeId == nodeId);
+    }
+
+
+    parse.nTab++;
+
+
+    for (let i = 0; i < nInputs; i++)
+        group.inputs.push(genParse(parse));
+
+
     parse.nTab--;
 
 
@@ -29843,6 +30418,45 @@ function genParseBackBlur(parse)
 
 
 
+function genParseLayerMaskValue(parse)
+{
+    parse.pos++; // LAYER_MASK_VALUE
+
+    const mask = parse.move();
+
+    if (parse.settings.logRequests) 
+        logReqValue(LAYER_MASK_VALUE, mask, parse);
+
+    return parseLayerMaskValue(mask)[0];
+}
+
+
+
+function genParseLayerMask(parse)
+{
+    const [, nodeId, options, ignore] = genParseNodeStart(parse);
+
+
+    const mask = new GLayerMask(nodeId, options);
+
+
+    if (parse.settings.logRequests) 
+        logReq(mask, parse, ignore);
+
+
+    if (ignore)
+    {
+        genParseNodeEnd(parse, mask);
+        return parse.parsedNodes.find(n => n.nodeId == nodeId);
+    }
+
+
+    genParseNodeEnd(parse, mask);
+    return mask;
+}
+
+
+
 // function genParseColorStyleValue(parse)
 // {
 //     parse.pos++; // COLOR_STYLE_VALUE
@@ -30471,137 +31085,143 @@ function genParse(parse, inParam = true)
     let result = null;
 
 
-         if (parse.next == PARAM                  ) result = genParseParam           (parse);
+         if (parse.next == PARAM                  ) result = genParseParam            (parse);
         
     else if (parse.next ==        LIST_VALUE             
           || parse.next == NUMBER_LIST_VALUE             
           || parse.next ==   TEXT_LIST_VALUE             
-          || parse.next ==  SHAPE_LIST_VALUE      ) result = genParseListValue       (parse);
-
-    else if (parse.next == LIST                   ) result = genParseList            (parse);
-    else if (parse.next == LIST_EXPAND            ) result = genParseExpandList      (parse);
-    else if (parse.next == ITEMS                  ) result = genParseItems           (parse);
-    else if (parse.next == SELECT                 ) result = genParseSelect          (parse);
-    else if (parse.next == LIST_COUNT             ) result = genParseListCount       (parse);
-    else if (parse.next == IF_ELSE                ) result = genParseIfElse          (parse);
-    else if (parse.next == START                  ) result = genParseStart           (parse);
-    else if (parse.next == REPEAT                 ) result = genParseRepeat          (parse);
-    else if (parse.next == CACHE                  ) result = genParseCache           (parse);
-    else if (parse.next == COPY                   ) result = genParseCopy            (parse);
+          || parse.next ==  SHAPE_LIST_VALUE      ) result = genParseListValue        (parse);
+ 
+    else if (parse.next == LIST                   ) result = genParseList             (parse);
+    else if (parse.next == LIST_EXPAND            ) result = genParseExpandList       (parse);
+    else if (parse.next == ITEMS                  ) result = genParseItems            (parse);
+    else if (parse.next == SELECT                 ) result = genParseSelect           (parse);
+    else if (parse.next == LIST_COUNT             ) result = genParseListCount        (parse);
+    else if (parse.next == IF_ELSE                ) result = genParseIfElse           (parse);
+    else if (parse.next == START                  ) result = genParseStart            (parse);
+    else if (parse.next == REPEAT                 ) result = genParseRepeat           (parse);
+    else if (parse.next == CACHE                  ) result = genParseCache            (parse);
+    else if (parse.next == COPY                   ) result = genParseCopy             (parse);
+     
+    else if (parse.next == NUMBER_VALUE           ) result = genParseNumValue         (parse);
+    else if (parse.next == NUMBER                 ) result = genParseNumber           (parse);
+     
+    else if (parse.next == NUMBER_SIGN            ) result = genParseSign             (parse);
+    else if (parse.next == NUMBER_ABSOLUTE        ) result = genParseAbsolute         (parse);
+    else if (parse.next == NUMBER_ROUND           ) result = genParseRound            (parse);
+    else if (parse.next == NUMBER_LIMITS          ) result = genParseLimits           (parse);
+    else if (parse.next == NUMBER_RANDOM          ) result = genParseRandom           (parse);
+    else if (parse.next == NUMBER_CONSTANT        ) result = genParseConstant         (parse);
+    else if (parse.next == NUMBER_DISTRIBUTE      ) result = genParseDistribute       (parse);
+    else if (parse.next == NUMBER_SEQUENCE        ) result = genParseSequence         (parse);
+    else if (parse.next == NUMBER_INTERPOLATE     ) result = genParseInterpolate      (parse);
+    else if (parse.next == NUMBER_SOLVE           ) result = genParseSolve            (parse);
+    else if (parse.next == NUMBER_ANIMATE         ) result = genParseAnimate          (parse);
     
-    else if (parse.next == NUMBER_VALUE           ) result = genParseNumValue        (parse);
-    else if (parse.next == NUMBER                 ) result = genParseNumber          (parse);
-    
-    else if (parse.next == NUMBER_SIGN            ) result = genParseSign            (parse);
-    else if (parse.next == NUMBER_ABSOLUTE        ) result = genParseAbsolute        (parse);
-    else if (parse.next == NUMBER_ROUND           ) result = genParseRound           (parse);
-    else if (parse.next == NUMBER_LIMITS          ) result = genParseLimits          (parse);
-    else if (parse.next == NUMBER_RANDOM          ) result = genParseRandom          (parse);
-    else if (parse.next == NUMBER_CONSTANT        ) result = genParseConstant        (parse);
-    else if (parse.next == NUMBER_DISTRIBUTE      ) result = genParseDistribute      (parse);
-    else if (parse.next == NUMBER_SEQUENCE        ) result = genParseSequence        (parse);
-    else if (parse.next == NUMBER_INTERPOLATE     ) result = genParseInterpolate     (parse);
-    else if (parse.next == NUMBER_SOLVE           ) result = genParseSolve           (parse);
-    else if (parse.next == NUMBER_ANIMATE         ) result = genParseAnimate         (parse);
-    
-    else if (parse.next == NUMBER_MATH            ) result = genParseMath            (parse, (nodeId, options) => new GMath          (nodeId, options));
-    else if (parse.next == NUMBER_ADD             ) result = genParseArithmetic      (parse, (nodeId, options) => new GAdd           (nodeId, options));
-    else if (parse.next == NUMBER_SUBTRACT        ) result = genParseArithmetic      (parse, (nodeId, options) => new GSubtract      (nodeId, options));
-    else if (parse.next == NUMBER_MULTIPLY        ) result = genParseArithmetic      (parse, (nodeId, options) => new GMultiply      (nodeId, options));
-    else if (parse.next == NUMBER_DIVIDE          ) result = genParseArithmetic      (parse, (nodeId, options) => new GDivide        (nodeId, options));
-    else if (parse.next == NUMBER_MODULO          ) result = genParseArithmetic      (parse, (nodeId, options) => new GModulo        (nodeId, options));
-    else if (parse.next == NUMBER_EXPONENT        ) result = genParseArithmetic      (parse, (nodeId, options) => new GExponent      (nodeId, options));
-    
-    else if (parse.next == NUMBER_BOOLEAN         ) result = genParseBoolean         (parse);
-    else if (parse.next == NUMBER_NOT             ) result = genParseArithmetic      (parse, (nodeId, options) => new GNot           (nodeId, options));
-    else if (parse.next == NUMBER_AND             ) result = genParseArithmetic      (parse, (nodeId, options) => new GAnd           (nodeId, options));
-    else if (parse.next == NUMBER_OR              ) result = genParseArithmetic      (parse, (nodeId, options) => new GOr            (nodeId, options));
-    else if (parse.next == NUMBER_XOR             ) result = genParseArithmetic      (parse, (nodeId, options) => new GXor           (nodeId, options));
-    
-    else if (parse.next == NUMBER_CONDITION       ) result = genParseCondition       (parse);
-    else if (parse.next == NUMBER_EQUAL           ) result = genParseConditionBase   (parse, (nodeId, options) => new GEqual         (nodeId, options));
-    else if (parse.next == NUMBER_NOT_EQUAL       ) result = genParseConditionBase   (parse, (nodeId, options) => new GNotEqual      (nodeId, options));
-    else if (parse.next == NUMBER_LESS            ) result = genParseConditionBase   (parse, (nodeId, options) => new GLess          (nodeId, options));
-    else if (parse.next == NUMBER_LESS_OR_EQUAL   ) result = genParseConditionBase   (parse, (nodeId, options) => new GLessOrEqual   (nodeId, options));
-    else if (parse.next == NUMBER_GREATER         ) result = genParseConditionBase   (parse, (nodeId, options) => new GGreater       (nodeId, options));
-    else if (parse.next == NUMBER_GREATER_OR_EQUAL) result = genParseConditionBase   (parse, (nodeId, options) => new GGreaterOrEqual(nodeId, options));
-
-    else if (parse.next == NUMBER_TRIG            ) result = genParseTrigonometric   (parse);
-    else if (parse.next == NUMBER_SIN             ) result = genParseTrigBase        (parse, (nodeId, options) => new GSine          (nodeId, options));
-    else if (parse.next == NUMBER_COS             ) result = genParseTrigBase        (parse, (nodeId, options) => new GCosine        (nodeId, options));
-    else if (parse.next == NUMBER_TAN             ) result = genParseTrigBase        (parse, (nodeId, options) => new GTangent       (nodeId, options));
-
-    else if (parse.next == TEXT_VALUE             ) result = genParseTextValue       (parse);
-    else if (parse.next == TEXT                   ) result = genParseText            (parse);
-    else if (parse.next == TEXT_LENGTH            ) result = genParseTextLength      (parse);
-    else if (parse.next == TEXT_TRIM              ) result = genParseTextTrim        (parse);
-    else if (parse.next == TEXT_SUBSTRING         ) result = genParseTextSubstring   (parse);
-    else if (parse.next == TEXT_CHAR              ) result = genParseTextCharacter   (parse);
-    else if (parse.next == NUMBER_TO_TEXT         ) result = genParseNumberToText    (parse);
-    else if (parse.next == TEXT_REPLACE           ) result = genParseTextReplace     (parse);
-    else if (parse.next == TEXT_JOIN              ) result = genParseTextJoin        (parse);
-    else if (parse.next == TEXT_CSV               ) result = genParseTextCSV         (parse);
-    else if (parse.next == TEXT_FETCH             ) result = genParseTextFetch       (parse);
-
-    else if (parse.next == COLOR_VALUE            ) result = genParseColorValue      (parse);
-    else if (parse.next == COLOR                  ) result = genParseColor           (parse);
-    else if (parse.next == VALID_COLOR            ) result = genParseValidColor      (parse);
-    else if (parse.next == CORRECT_COLOR          ) result = genParseCorrectColor    (parse);
-    else if (parse.next == COLOR_CONTRAST         ) result = genParseColorContrast   (parse);
-    else if (parse.next == COLORBLIND             ) result = genParseColorBlind      (parse);
-    else if (parse.next == COLOR_INTERPOLATE      ) result = genParseColorInterpolate(parse);
-    else if (parse.next == COLOR_BLEND            ) result = genParseColorBlend      (parse);
+    else if (parse.next == NUMBER_MATH            ) result = genParseMath             (parse, (nodeId, options) => new GMath          (nodeId, options));
+    else if (parse.next == NUMBER_ADD             ) result = genParseArithmetic       (parse, (nodeId, options) => new GAdd           (nodeId, options));
+    else if (parse.next == NUMBER_SUBTRACT        ) result = genParseArithmetic       (parse, (nodeId, options) => new GSubtract      (nodeId, options));
+    else if (parse.next == NUMBER_MULTIPLY        ) result = genParseArithmetic       (parse, (nodeId, options) => new GMultiply      (nodeId, options));
+    else if (parse.next == NUMBER_DIVIDE          ) result = genParseArithmetic       (parse, (nodeId, options) => new GDivide        (nodeId, options));
+    else if (parse.next == NUMBER_MODULO          ) result = genParseArithmetic       (parse, (nodeId, options) => new GModulo        (nodeId, options));
+    else if (parse.next == NUMBER_EXPONENT        ) result = genParseArithmetic       (parse, (nodeId, options) => new GExponent      (nodeId, options));
      
-    else if (parse.next == FILL_VALUE             ) result = genParseFillValue       (parse);
-    else if (parse.next == FILL                   ) result = genParseFill            (parse);
+    else if (parse.next == NUMBER_BOOLEAN         ) result = genParseBoolean          (parse);
+    else if (parse.next == NUMBER_NOT             ) result = genParseArithmetic       (parse, (nodeId, options) => new GNot           (nodeId, options));
+    else if (parse.next == NUMBER_AND             ) result = genParseArithmetic       (parse, (nodeId, options) => new GAnd           (nodeId, options));
+    else if (parse.next == NUMBER_OR              ) result = genParseArithmetic       (parse, (nodeId, options) => new GOr            (nodeId, options));
+    else if (parse.next == NUMBER_XOR             ) result = genParseArithmetic       (parse, (nodeId, options) => new GXor           (nodeId, options));
      
-    else if (parse.next == STROKE_VALUE           ) result = genParseStrokeValue     (parse);
-    else if (parse.next == STROKE                 ) result = genParseStroke          (parse);
-     
-    else if (parse.next == COLOR_STOP_VALUE       ) result = genParseColorStopValue  (parse);
-    else if (parse.next == COLOR_STOP             ) result = genParseColorStop       (parse);
-     
-    else if (parse.next == DROP_SHADOW_VALUE      ) result = genParseDropShadowValue (parse);
-    else if (parse.next == DROP_SHADOW            ) result = genParseDropShadow      (parse);
-     
-    else if (parse.next == INNER_SHADOW_VALUE     ) result = genParseInnerShadowValue(parse);
-    else if (parse.next == INNER_SHADOW           ) result = genParseInnerShadow     (parse);
-     
-    else if (parse.next == LAYER_BLUR_VALUE       ) result = genParseLayerBlurValue  (parse);
-    else if (parse.next == LAYER_BLUR             ) result = genParseLayerBlur       (parse);
-     
-    else if (parse.next == BACK_BLUR_VALUE        ) result = genParseBackBlurValue   (parse);
-    else if (parse.next == BACK_BLUR              ) result = genParseBackBlur        (parse);
-     
-    else if (parse.next == COLOR_STYLE            ) result = genParseColorStyle      (parse);
-     
-    else if (parse.next == RECTANGLE              ) result = genParseRectangle       (parse);
-    else if (parse.next == LINE                   ) result = genParseLine            (parse);
-    else if (parse.next == ELLIPSE                ) result = genParseEllipse         (parse);
-    else if (parse.next == POLYGON                ) result = genParsePolygon         (parse);
-    else if (parse.next == STAR                   ) result = genParseStar            (parse);
-    else if (parse.next == TEXTSHAPE              ) result = genParseTextShape       (parse);
+    else if (parse.next == NUMBER_CONDITION       ) result = genParseCondition        (parse);
+    else if (parse.next == NUMBER_EQUAL           ) result = genParseConditionBase    (parse, (nodeId, options) => new GEqual         (nodeId, options));
+    else if (parse.next == NUMBER_NOT_EQUAL       ) result = genParseConditionBase    (parse, (nodeId, options) => new GNotEqual      (nodeId, options));
+    else if (parse.next == NUMBER_LESS            ) result = genParseConditionBase    (parse, (nodeId, options) => new GLess          (nodeId, options));
+    else if (parse.next == NUMBER_LESS_OR_EQUAL   ) result = genParseConditionBase    (parse, (nodeId, options) => new GLessOrEqual   (nodeId, options));
+    else if (parse.next == NUMBER_GREATER         ) result = genParseConditionBase    (parse, (nodeId, options) => new GGreater       (nodeId, options));
+    else if (parse.next == NUMBER_GREATER_OR_EQUAL) result = genParseConditionBase    (parse, (nodeId, options) => new GGreaterOrEqual(nodeId, options));
+ 
+    else if (parse.next == NUMBER_TRIG            ) result = genParseTrigonometric    (parse);
+    else if (parse.next == NUMBER_SIN             ) result = genParseTrigBase         (parse, (nodeId, options) => new GSine          (nodeId, options));
+    else if (parse.next == NUMBER_COS             ) result = genParseTrigBase         (parse, (nodeId, options) => new GCosine        (nodeId, options));
+    else if (parse.next == NUMBER_TAN             ) result = genParseTrigBase         (parse, (nodeId, options) => new GTangent       (nodeId, options));
+ 
+    else if (parse.next == TEXT_VALUE             ) result = genParseTextValue        (parse);
+    else if (parse.next == TEXT                   ) result = genParseText             (parse);
+    else if (parse.next == TEXT_LENGTH            ) result = genParseTextLength       (parse);
+    else if (parse.next == TEXT_TRIM              ) result = genParseTextTrim         (parse);
+    else if (parse.next == TEXT_SUBSTRING         ) result = genParseTextSubstring    (parse);
+    else if (parse.next == TEXT_CHAR              ) result = genParseTextCharacter    (parse);
+    else if (parse.next == NUMBER_TO_TEXT         ) result = genParseNumberToText     (parse);
+    else if (parse.next == TEXT_REPLACE           ) result = genParseTextReplace      (parse);
+    else if (parse.next == TEXT_JOIN              ) result = genParseTextJoin         (parse);
+    else if (parse.next == TEXT_CSV               ) result = genParseTextCSV          (parse);
+    else if (parse.next == TEXT_FETCH             ) result = genParseTextFetch        (parse);
+ 
+    else if (parse.next == COLOR_VALUE            ) result = genParseColorValue       (parse);
+    else if (parse.next == COLOR                  ) result = genParseColor            (parse);
+    else if (parse.next == VALID_COLOR            ) result = genParseValidColor       (parse);
+    else if (parse.next == CORRECT_COLOR          ) result = genParseCorrectColor     (parse);
+    else if (parse.next == COLOR_CONTRAST         ) result = genParseColorContrast    (parse);
+    else if (parse.next == COLORBLIND             ) result = genParseColorBlind       (parse);
+    else if (parse.next == COLOR_INTERPOLATE      ) result = genParseColorInterpolate (parse);
+    else if (parse.next == COLOR_BLEND            ) result = genParseColorBlend       (parse);
+      
+    else if (parse.next == FILL_VALUE             ) result = genParseFillValue        (parse);
+    else if (parse.next == FILL                   ) result = genParseFill             (parse);
+      
+    else if (parse.next == STROKE_VALUE           ) result = genParseStrokeValue      (parse);
+    else if (parse.next == STROKE                 ) result = genParseStroke           (parse);
+      
+    else if (parse.next == COLOR_STOP_VALUE       ) result = genParseColorStopValue   (parse);
+    else if (parse.next == COLOR_STOP             ) result = genParseColorStop        (parse);
+      
+    else if (parse.next == DROP_SHADOW_VALUE      ) result = genParseDropShadowValue  (parse);
+    else if (parse.next == DROP_SHADOW            ) result = genParseDropShadow       (parse);
+      
+    else if (parse.next == INNER_SHADOW_VALUE     ) result = genParseInnerShadowValue (parse);
+    else if (parse.next == INNER_SHADOW           ) result = genParseInnerShadow      (parse);
+      
+    else if (parse.next == LAYER_BLUR_VALUE       ) result = genParseLayerBlurValue   (parse);
+    else if (parse.next == LAYER_BLUR             ) result = genParseLayerBlur        (parse);
+      
+    else if (parse.next == BACK_BLUR_VALUE        ) result = genParseBackBlurValue    (parse);
+    else if (parse.next == BACK_BLUR              ) result = genParseBackBlur         (parse);
 
-    else if (parse.next == POINT_VALUE            ) result = genParsePointValue      (parse);
-    else if (parse.next == POINT                  ) result = genParsePoint           (parse);
-    else if (parse.next == VECTOR_PATH_VALUE      ) result = genParseVectorPathValue (parse);
-    else if (parse.next == VECTOR_PATH            ) result = genParseVectorPath      (parse);
+    else if (parse.next == LAYER_MASK_VALUE       ) result = genParseLayerMaskValue   (parse);
+    else if (parse.next == LAYER_MASK             ) result = genParseLayerMask        (parse);
+      
+    else if (parse.next == COLOR_STYLE            ) result = genParseColorStyle       (parse);
+      
+    else if (parse.next == RECTANGLE              ) result = genParseRectangle        (parse);
+    else if (parse.next == LINE                   ) result = genParseLine             (parse);
+    else if (parse.next == ELLIPSE                ) result = genParseEllipse          (parse);
+    else if (parse.next == POLYGON                ) result = genParsePolygon          (parse);
+    else if (parse.next == STAR                   ) result = genParseStar             (parse);
+    else if (parse.next == TEXTSHAPE              ) result = genParseTextShape        (parse);
+ 
+    else if (parse.next == POINT_VALUE            ) result = genParsePointValue       (parse);
+    else if (parse.next == POINT                  ) result = genParsePoint            (parse);
+    else if (parse.next == VECTOR_PATH_VALUE      ) result = genParseVectorPathValue  (parse);
+    else if (parse.next == VECTOR_PATH            ) result = genParseVectorPath       (parse);
 
-    else if (parse.next == SHAPE_GROUP_VALUE      ) result = genParseShapeGroupValue (parse);
-    else if (parse.next == SHAPE_GROUP            ) result = genParseShapeGroup      (parse);
+    else if (parse.next == BOOLEAN_VALUE          ) result = genParseShapeBooleanValue(parse);
+    else if (parse.next == BOOLEAN                ) result = genParseShapeBoolean     (parse);
 
-    else if (parse.next == FRAME_VALUE            ) result = genParseFrameValue      (parse);
-    else if (parse.next == FRAME                  ) result = genParseFrame           (parse);
-
-    else if (parse.next == MOVE                   ) result = genParseMove            (parse);
-    else if (parse.next == ROTATE                 ) result = genParseRotate          (parse);
-    else if (parse.next == SCALE                  ) result = genParseScale           (parse);
-    else if (parse.next == SKEW                   ) result = genParseSkew            (parse);
-
-    else if (parse.next == GROUP_NODE             ) result = genParseGroupNode       (parse);
-    else if (parse.next == GROUP_PARAM            ) result = genParseGroupParam      (parse);
-
-    else if (parse.next == COMMENT                ) result = genParseComment         (parse);
+    else if (parse.next == SHAPE_GROUP_VALUE      ) result = genParseShapeGroupValue  (parse);
+    else if (parse.next == SHAPE_GROUP            ) result = genParseShapeGroup       (parse);
+ 
+    else if (parse.next == FRAME_VALUE            ) result = genParseFrameValue       (parse);
+    else if (parse.next == FRAME                  ) result = genParseFrame            (parse);
+ 
+    else if (parse.next == MOVE                   ) result = genParseMove             (parse);
+    else if (parse.next == ROTATE                 ) result = genParseRotate           (parse);
+    else if (parse.next == SCALE                  ) result = genParseScale            (parse);
+    else if (parse.next == SKEW                   ) result = genParseSkew             (parse);
+ 
+    else if (parse.next == GROUP_NODE             ) result = genParseGroupNode        (parse);
+    else if (parse.next == GROUP_PARAM            ) result = genParseGroupParam       (parse);
+ 
+    else if (parse.next == COMMENT                ) result = genParseComment          (parse);
 
     else console.assert(false, 'unknown parse token \'' + parse.next + '\' @ ' + parse.pos);
 
@@ -40175,7 +40795,7 @@ const NUMBER_DIVIDE           = 'DIV';
 const NUMBER_MODULO           = 'MOD';   
 const NUMBER_EXPONENT         = 'EXP';
 
-const NUMBER_BOOLEAN          = 'BOOL';  
+const NUMBER_BOOLEAN          = 'NBOOL';  
 const NUMBER_NOT              = 'NOT';
 const NUMBER_AND              = 'AND';
 const NUMBER_OR               = 'OR';
@@ -40207,7 +40827,7 @@ const MATH_TYPES =
 ];
 
 
-const BOOLEAN_TYPES =
+const NUMBER_BOOLEAN_TYPES =
 [
     NUMBER_BOOLEAN,
     NUMBER_NOT,
@@ -40256,7 +40876,7 @@ const NUMBER_TYPES =
     NUMBER_ANIMATE,
 
     ...MATH_TYPES,
-    ...BOOLEAN_TYPES,
+    ...NUMBER_BOOLEAN_TYPES,
     ...CONDITION_TYPES,
     ...TRIG_TYPES
 ];
@@ -40345,13 +40965,18 @@ const BACK_BLUR_VALUE    = 'BBLR#';
 const BACK_BLUR          = 'BBLR';
 const BACK_BLUR_TYPES    = [BACK_BLUR_VALUE, BACK_BLUR];
 
+const LAYER_MASK_VALUE   = 'MASK#';
+const LAYER_MASK         = 'MASK';
+const LAYER_MASK_TYPES   = [LAYER_MASK_VALUE, LAYER_MASK];
+
 
 const EFFECT_TYPES =
 [
     ...DROP_SHADOW_TYPES,
     ...INNER_SHADOW_TYPES,
     ...LAYER_BLUR_TYPES,
-    ...BACK_BLUR_TYPES
+    ...BACK_BLUR_TYPES,
+    ...LAYER_MASK_TYPES
 ];
 
 
@@ -40363,7 +40988,8 @@ const STYLE_VALUES =
     DROP_SHADOW_VALUE,
     INNER_SHADOW_VALUE,
     LAYER_BLUR_VALUE,
-    BACK_BLUR_VALUE
+    BACK_BLUR_VALUE,
+    LAYER_MASK_VALUE
 ];
 
 
@@ -40426,6 +41052,26 @@ const POINT_TYPES =
 ];
 
 
+const BOOLEAN            = 'BOOL';
+const BOOLEAN_VALUE      = 'BOOL#';
+
+const BOOL_UNION         = 'BOOLU';
+const BOOL_SUBTRACT      = 'BOOLS';
+const BOOL_INTERSECT     = 'BOOLI';
+const BOOL_EXCLUDE       = 'BOOLE';
+
+
+const BOOLEAN_TYPES =
+[
+    BOOLEAN,
+    BOOLEAN_VALUE,
+    BOOL_UNION,
+    BOOL_SUBTRACT,
+    BOOL_INTERSECT,
+    BOOL_EXCLUDE
+]
+
+
 const SHAPE_VALUES =
 [
     SHAPE_VALUE,
@@ -40439,7 +41085,8 @@ const SHAPE_VALUES =
     POINT_VALUE,
     VECTOR_PATH_VALUE,
     SHAPE_GROUP_VALUE,
-    FRAME_VALUE
+    FRAME_VALUE,
+    BOOLEAN_VALUE
 ];
 
 
@@ -40457,6 +41104,7 @@ const SHAPE_TYPES =
     ...VECTOR_PATH_TYPES,
     ...SHAPE_GROUP_TYPES,
     ...FRAME_TYPES,
+    ...BOOLEAN_TYPES,
 
     MOVE,
     ROTATE,
@@ -40778,6 +41426,8 @@ extends FigmaObject
     strokeMiterLimit;
 
     effects = [];
+
+    isMask  = false;
 
 
 
@@ -41515,6 +42165,40 @@ function getSineYSegment(_pointP, _point, _pointN)
 }
 
 
+class FigmaBoolean
+extends FigmaShape
+{
+    operation;
+    children;
+
+
+
+    constructor(nodeId, objectId, objectName, operation, children = [])
+    {
+        super(BOOLEAN, nodeId, objectId, objectName);
+        
+        this.operation = operation;
+        this.children  = children.map(c => c.copy());
+    }
+
+
+
+    copy()
+    {
+        const copy = new FigmaBoolean(
+            this.nodeId,
+            this.objectId,
+            this.objectName,
+            this.operation,
+            this.children);
+
+        copy.copyBase(this);
+
+        return copy;
+    }
+}
+
+
 class FigmaShapeGroup
 extends FigmaShape
 {
@@ -41822,22 +42506,23 @@ function displayValue(type, value)
 
     switch (type)
     {
-        case        LIST_VALUE: return parseListValue      (value)[0].toDisplayString();
-        case      NUMBER_VALUE: return parseNumberValue    (value)[0].toDisplayString();
-        case        TEXT_VALUE: const val = parseTextValue (value)[0]; return val == '' ? '\'\'' : val.toDisplayString();
-        case       COLOR_VALUE: return parseColorValue     (value)[0].toDisplayString();
-        case        FILL_VALUE: return parseFillValue      (value)[0].toDisplayString();
-        case      STROKE_VALUE: return parseStrokeValue    (value)[0].toDisplayString();
-        case   RECTANGLE_VALUE: return parseRectangleValue (value)[0].toDisplayString();
-        case        LINE_VALUE: return parseLineValue      (value)[0].toDisplayString();
-        case     ELLIPSE_VALUE: return parseEllipseValue   (value)[0].toDisplayString();
-        case     POLYGON_VALUE: return parsePolygonValue   (value)[0].toDisplayString();
-        case        STAR_VALUE: return parseStarValue      (value)[0].toDisplayString();
-        case   TEXTSHAPE_VALUE: return parseTextShapeValue (value)[0].toDisplayString();
-        case       POINT_VALUE: return parsePointValue     (value)[0].toDisplayString();
-        case VECTOR_PATH_VALUE: return parseVectorPathValue(value)[0].toDisplayString();
-        case SHAPE_GROUP_VALUE: return parseShapeGroupValue(value)[0].toDisplayString();
-        case       FRAME_VALUE: return parseFrameValue     (value)[0].toDisplayString();
+        case        LIST_VALUE: return parseListValue        (value)[0].toDisplayString();
+        case      NUMBER_VALUE: return parseNumberValue      (value)[0].toDisplayString();
+        case        TEXT_VALUE: const val = parseTextValue   (value)[0]; return val == '' ? '\'\'' : val.toDisplayString();
+        case       COLOR_VALUE: return parseColorValue       (value)[0].toDisplayString();
+        case        FILL_VALUE: return parseFillValue        (value)[0].toDisplayString();
+        case      STROKE_VALUE: return parseStrokeValue      (value)[0].toDisplayString();
+        case   RECTANGLE_VALUE: return parseRectangleValue   (value)[0].toDisplayString();
+        case        LINE_VALUE: return parseLineValue        (value)[0].toDisplayString();
+        case     ELLIPSE_VALUE: return parseEllipseValue     (value)[0].toDisplayString();
+        case     POLYGON_VALUE: return parsePolygonValue     (value)[0].toDisplayString();
+        case        STAR_VALUE: return parseStarValue        (value)[0].toDisplayString();
+        case   TEXTSHAPE_VALUE: return parseTextShapeValue   (value)[0].toDisplayString();
+        case       POINT_VALUE: return parsePointValue       (value)[0].toDisplayString();
+        case VECTOR_PATH_VALUE: return parseVectorPathValue  (value)[0].toDisplayString();
+        case     BOOLEAN_VALUE: return parseShapeBooleanValue(value)[0].toDisplayString();
+        case SHAPE_GROUP_VALUE: return parseShapeGroupValue  (value)[0].toDisplayString();
+        case       FRAME_VALUE: return parseFrameValue       (value)[0].toDisplayString();
     }
 
 
@@ -41850,22 +42535,23 @@ function nullFromType(type)
 {
     switch (type)
     {
-        case        LIST_VALUE: return       ListValue.NaN;
-        case      NUMBER_VALUE: return     NumberValue.NaN;
-        case        TEXT_VALUE: return new TextValue();
-        case       COLOR_VALUE: return      ColorValue.NaN;
-        case        FILL_VALUE: return       FillValue.NaN;
-        case      STROKE_VALUE: return     StrokeValue.NaN;
-        case   RECTANGLE_VALUE: return  RectangleValue.NaN;
-        case        LINE_VALUE: return       LineValue.NaN;
-        case     ELLIPSE_VALUE: return    EllipseValue.NaN;
-        case     POLYGON_VALUE: return    PolygonValue.NaN;
-        case        STAR_VALUE: return       StarValue.NaN;
-        case   TEXTSHAPE_VALUE: return  TextShapeValue.NaN;
-        case       POINT_VALUE: return      PointValue.NaN;
-        case VECTOR_PATH_VALUE: return VectorPathValue.NaN;
-        case SHAPE_GROUP_VALUE: return ShapeGroupValue.NaN;
-        case       FRAME_VALUE: return      FrameValue.NaN;
+        case        LIST_VALUE: return         ListValue.NaN;
+        case      NUMBER_VALUE: return       NumberValue.NaN;
+        case        TEXT_VALUE: return       new TextValue();
+        case       COLOR_VALUE: return        ColorValue.NaN;
+        case        FILL_VALUE: return         FillValue.NaN;
+        case      STROKE_VALUE: return       StrokeValue.NaN;
+        case   RECTANGLE_VALUE: return    RectangleValue.NaN;
+        case        LINE_VALUE: return         LineValue.NaN;
+        case     ELLIPSE_VALUE: return      EllipseValue.NaN;
+        case     POLYGON_VALUE: return      PolygonValue.NaN;
+        case        STAR_VALUE: return         StarValue.NaN;
+        case   TEXTSHAPE_VALUE: return    TextShapeValue.NaN;
+        case       POINT_VALUE: return        PointValue.NaN;
+        case VECTOR_PATH_VALUE: return   VectorPathValue.NaN;
+        case     BOOLEAN_VALUE: return ShapeBooleanValue.NaN;
+        case SHAPE_GROUP_VALUE: return   ShapeGroupValue.NaN;
+        case       FRAME_VALUE: return        FrameValue.NaN;
     }
 
     console.assert(false, 'cannot determine null value from type \'' + type + '\'');
@@ -42292,6 +42978,7 @@ function parseListValue(str, i = -1)
             case INNER_SHADOW_VALUE: { const shadow  = parseInnerShadowValue(str, i);  i += shadow [1];  list.items.push(shadow [0]);  break; }
             case   LAYER_BLUR_VALUE: { const blur    = parseLayerBlurValue  (str, i);  i += blur   [1];  list.items.push(blur   [0]);  break; }
             case    BACK_BLUR_VALUE: { const blur    = parseBackBlurValue   (str, i);  i += blur   [1];  list.items.push(blur   [0]);  break; }
+            case   LAYER_MASK_VALUE: { const mask    = parseLayerMaskValue  (str[i]);  i += mask   [1];  list.items.push(mask   [0]);  break; }
 
             case    RECTANGLE_VALUE: { const rect    = parseRectangleValue  (str, i);  i += rect   [1];  list.items.push(rect   [0]);  break; }
             case         LINE_VALUE: { const line    = parseLineValue       (str, i);  i += line   [1];  list.items.push(line   [0]);  break; }
@@ -43934,6 +44621,92 @@ function parseBackBlurValue(str, i = -1)
 
 
 
+class LayerMaskValue
+extends GValue
+{
+    visible;
+
+
+
+    constructor(visible = true)
+    {
+        super(LAYER_MASK_VALUE);
+
+        this.visible = visible;
+    }
+
+
+    
+    copy()
+    {
+        const copy = new LayerMaskValue(this.visible);
+
+        copy.copyBase(this);
+
+        return copy;
+    }
+
+
+
+    equals(mask)
+    {
+        return this.visible === mask.visible;
+    }
+
+
+
+    async eval(parse)
+    {
+        return this;
+    }
+
+
+
+    toString()
+    {
+        return 'mask';
+    }
+
+
+
+    toDisplayString()
+    {
+        return 'mask';
+    }
+
+
+
+    isValid()
+    {
+        return super.isValid();
+    }
+
+
+
+    getNaN()
+    {
+        return LayerMaskValue.NaN;
+    }
+
+
+
+    static NaN = Object.freeze(new LayerMaskValue(false));
+}
+
+
+
+function parseLayerMaskValue(str)
+{
+    const mask = 
+        str == NAN_DISPLAY
+        ? LayerMaskValue.NaN
+        : new LayerMaskValue(true);
+
+    return [mask, 1];
+}
+
+
+
 /*
     This is getting closer to Figma now, so here the format changes,
     and objects hold stroke values directly, which incoming stroke values just set.
@@ -45370,20 +46143,22 @@ function parseVectorPathValue(str, i = -1)
 
 
 
-class ShapeGroupValue
+class ShapeBooleanValue
 extends ShapeValue
 {
+    operation;
     children;
 
 
 
-    constructor(nodeId, children)
+    constructor(nodeId, operation, children)
     {
-        super(SHAPE_GROUP_VALUE, nodeId);
+        super(BOOLEAN_VALUE, nodeId);
 
-        this.children = children;
+        this.operation = operation;
+        this.children  = children;
 
-        this.objects  = children.objects.map(o => o.copy());
+        this.objects   = children.objects.map(o => o.copy());
     }
 
 
@@ -45392,7 +46167,8 @@ extends ShapeValue
     {
         const copy = new ShapeGroupValue(
             this.nodeId,
-            this.children.copy());
+            this.operation.copy(),
+            this.children .copy());
 
         copy.copyBase(this);
 
@@ -45401,10 +46177,11 @@ extends ShapeValue
 
 
 
-    equals(group)
+    equals(bool)
     {
-        return group
-            && this.children.equals(group.children);
+        return bool
+            && this.operation.equals(bool.operation)
+            && this.children .equals(bool.children );
     }
 
 
@@ -45418,14 +46195,16 @@ extends ShapeValue
 
     toString()
     {
-        return this.children.toString();
+        return      this.operation.toString()
+            + ' ' + this.children .toString();
     }
 
 
 
     toDisplayString()
     {
-        return this.children.toDisplayString();
+        return      this.operation.toDisplayString()
+            + ' ' + this.children .toDisplayString();
     }
 
 
@@ -45439,8 +46218,125 @@ extends ShapeValue
 
     isValid()
     {
-        return this.children.isValid()
-            && super.isValid();
+        return super.isValid()
+            && this.operation.isValid()
+            && this.children .isValid();
+    }
+
+
+    
+    static NaN = new ShapeBooleanValue(
+        '',
+        NumberValue.NaN,
+        ListValue  .NaN);
+}
+
+
+
+function parseShapeBooleanValue(str, i = -1)
+{
+    if (   i <  0 && str    == NAN_DISPLAY
+        || i >= 0 && str[i] == NAN_DISPLAY)
+        return [ShapeBooleanValue.NaN, 1];
+
+
+    if (i < 0)
+    {
+        str = str.split(' ');
+        i   = 0;
+    }
+
+
+    const iStart = i;
+
+    const operation = parseNumberValue(str[i]); i += operation[1];
+    const children  = parseListValue  (str, i); i += children [1];
+
+    const bool = new ShapeBooleanValue(
+        '', // set node ID elsewhere
+        operation[0],
+        children [0]);
+
+
+    i = parseShapeBaseValue(str, i, bool);
+
+    
+    return [bool, i - iStart];
+}
+
+
+
+class ShapeGroupValue
+extends ShapeValue
+{
+    items = [];
+
+
+
+    constructor(nodeId, items = [])
+    {
+        super(SHAPE_GROUP_VALUE, nodeId);
+
+        this.items = items;
+
+        //this.objects  = children.objects.map(o => o.copy());
+    }
+
+
+
+    copy()
+    {
+        const copy = new ShapeGroupValue(
+            this.nodeId,
+            this.items.copy());
+
+        copy.copyBase(this);
+
+        return copy;
+    }
+
+
+
+    equals(group)
+    {
+        return group
+            && this.items.equals(group.children);
+    }
+
+
+
+    async eval(parse)
+    {
+        return this;
+    }
+
+
+
+    toString()
+    {
+        return this.items.toString();
+    }
+
+
+
+    toDisplayString()
+    {
+        return this.items.toDisplayString();
+    }
+
+
+
+    toValue()
+    {
+        return this.copy();
+    }
+
+
+
+    isValid()
+    {
+        return super.isValid()
+            && this.items.isValid();
     }
 
 
@@ -45708,17 +46604,11 @@ extends GOperator
             {
                 for (let j = 0; j < this.inputs[i].objects.length; j++, o++)
                 {
-                    //console.log('this.inputs[i].objects[j] =', this.inputs[i].objects[j]);
-                    //const obj = this.inputs[i].objects[j].copy();
                     const obj = copyFigmaObject(this.inputs[i].objects[j]);
 
-                    obj.nodeId = this.nodeId;
-
+                    obj.nodeId   = this.nodeId;
                     obj.objectId = obj.objectId + OBJECT_SEPARATOR + this.nodeId;
-                    // if (obj.objectId != NULL) obj.objectId += ' ';
-                    // obj.objectId += (o + 1).toString();
-                    
-                    obj.listId = i;
+                    obj.listId   = i;
 
                     this.objects.push(obj);
                 }
@@ -54221,6 +55111,53 @@ extends GOperator
 }
 
 
+class GLayerMask
+extends GOperator
+{
+    constructor(nodeId, options)
+    {
+        super(LAYER_MASK, nodeId, options);
+    }
+
+
+
+    copy()
+    {
+        const copy = new GLayerMask(this.nodeId, this.options);
+
+        copy.copyBase(this);
+
+        return copy;
+    }
+
+
+
+    async eval(parse)
+    {
+        if (this.isCached())
+            return this;
+``
+
+        this.value = new LayerMaskValue(this.options.enabled);
+
+
+        this.updateValues = [['', NullValue]];
+
+
+        this.validate();
+
+        return this;
+    }
+
+
+
+    toValue()
+    {
+        return new LayerMaskValue(this.options.enabled);
+    }
+}
+
+
 class GShapeBase
 extends GOperator
 {
@@ -54534,6 +55471,9 @@ extends GShapeBase
                         prop.radius.toNumber(),
                         prop.visible ]);
                 }
+
+                else if (prop.type == LAYER_MASK_VALUE)
+                    obj.isMask = true;
             }
         }
 
@@ -56089,9 +57029,7 @@ extends GShape
 class GShapeGroup
 extends GShapeBase
 {
-    input    = null;
-
-    children = null;
+    inputs = [];
 
 
 
@@ -56108,10 +57046,7 @@ extends GShapeBase
 
         copy.copyBase(this);
 
-        if (this.input) 
-            copy.input = this.input.copy();
-
-        if (this.children) copy.children = this.children.copy();
+        copy.inputs = this.inputs.map(i => i.copy());
 
         return copy;
     }
@@ -56124,38 +57059,68 @@ extends GShapeBase
             return this;
 
 
-        await this.evalBaseParams(parse);
+        this.value = new ShapeGroupValue(this.nodeId);
 
-        const children = this.children ? (await this.children.eval(parse)).toValue() : null;
+        //this.objects = [];
 
 
-        let input = null;
-
-        if (this.input)
+        for (let i = 0, o = 0; i < this.inputs.length; i++)
         {
-            input = (await this.input.eval(parse)).toValue();
+            await this.inputs[i].eval(parse);
 
-            this.value = new ShapeGroupValue(
-                this.nodeId,
-                children ?? input.children);
+            
+            // first copy the input objects
+
+            // if (this.options.enabled)
+            // {
+            //     for (let j = 0; j < this.inputs[i].objects.length; j++, o++)
+            //     {
+            //         const obj = copyFigmaObject(this.inputs[i].objects[j]);
+
+            //         obj.nodeId   = this.nodeId;
+            //         obj.objectId = obj.objectId + OBJECT_SEPARATOR + this.nodeId;
+            //         obj.listId   = -1;
+
+            //         this.objects.push(obj);
+            //     }
+            // }
+
+
+            // now create the output value
+
+            const input = this.inputs[i].toValue();
+
+            if (   input
+                && this.options.enabled)            
+            {
+                if (   input.type == SHAPE_LIST_VALUE
+                    || input.type == LIST_VALUE)
+                {
+                    for (const item of input.items)
+                    {
+                        if (!SHAPE_VALUES.includes(item.type))
+                            continue;
+
+                        this.value.items.push(item.copy());   
+                        //this.value.objects.push(...item.objects.map(o => o.copy()));
+                    }
+                }
+                else
+                {
+                    this.value.items.push(input.copy());
+                    //this.value.objects.push(...input.objects.map(o => o.copy()));
+                }
+            }
         }
-        else
-        {
-            this.value = new ShapeGroupValue(this.nodeId, children);
-        }
 
 
-        this.updateValues =
-        [
-            ['value',    this.value         ],
-            ['children', this.value.children]
-        ];
-
-
-        await this.evalShapeBase(parse, input);
+        //await this.evalShapeBase(parse, input);
 
 
         this.evalObjects(parse);
+
+
+        this.updateValues = [['value', this.value]];
 
 
         this.validate();
@@ -56171,7 +57136,7 @@ extends GShapeBase
             return;
             
 
-        if (this.value.children)
+        if (this.value.items)
         {
             const group = new FigmaShapeGroup(
                 this.nodeId,
@@ -56179,30 +57144,31 @@ extends GShapeBase
                 this.nodeName);
 
 
-            if (this.children.objects)
+            for (const item of this.value.items)
             {
-                for (let i = 0; i < this.children.objects.length; i++)
+                for (let i = 0; i < item.objects.length; i++)
                 {
-                    const obj    = this.children.objects[i].copy();
+                    const obj    = item.objects[i].copy();
                     obj.nodeId   = this.nodeId;
                     obj.objectId = obj.objectId + OBJECT_SEPARATOR + this.nodeId;
                     obj.listId   = -1;
+
                     group.children.push(obj);
                 }
             }
-
+            
 
             this.objects = [group];
 
-            this.updateValues.push(['nObjects', new NumberValue(
-                this.children.objects 
-                ? this.children.objects.length
-                : 0)]);
+            // this.updateValues.push(['nObjects', new NumberValue(
+            //     this.items.objects 
+            //     ? this.items.objects.length
+            //     : 0)]);
         }
         else
         {
             this.objects = [];
-            this.updateValues.push(['nObjects', new NumberValue(0)]);
+            // this.updateValues.push(['nObjects', new NumberValue(0)]);
         }
 
         
@@ -56215,8 +57181,7 @@ extends GShapeBase
     {
         super.pushValueUpdates(parse);
 
-        if (this.input   ) this.input   .pushValueUpdates(parse);
-        if (this.children) this.children.pushValueUpdates(parse);
+        this.inputs.forEach(i => i.pushValueUpdates(parse));
     }
 
 
@@ -56230,8 +57195,14 @@ extends GShapeBase
 
     isValid()
     {
-        return super.isValid()
-            && this.children.isValid();
+        if (!super.isValid()) 
+            return false;
+
+        for (const input of this.inputs)
+            if (!input.isValid())
+                return false;
+
+        return true;
     }
 
 
@@ -56240,8 +57211,7 @@ extends GShapeBase
     {
         super.invalidate();
 
-        if (this.input   ) this.input   .invalidate();
-        if (this.children) this.children.invalidate();
+        this.inputs.forEach(i => i.invalidate());
     }
 }
 
@@ -56458,6 +57428,193 @@ extends GShape
         if (this.children) this.children.invalidate();
     }
 }
+
+
+class GShapeBoolean
+extends GShapeBase
+{
+    input     = null;
+
+    operation = null
+    children  = null;
+
+
+
+    constructor(nodeId, options)
+    {
+        super(BOOLEAN, nodeId, options);
+    }
+
+
+
+    copy()
+    {
+        const copy = new GShapeBoolean(this.nodeId, this.options);
+
+        copy.copyBase(this);
+
+        if (this.input) 
+            copy.input = this.input.copy();
+
+        if (this.operation) copy.operation = this.operation.copy();
+        if (this.children ) copy.children  = this.children .copy();
+
+        return copy;
+    }
+
+
+
+    async eval(parse)
+    {
+        if (this.isCached())
+            return this;
+
+
+        await this.evalBaseParams(parse);
+
+        const operation = this.operation ? (await this.operation.eval(parse)).toValue() : null;
+        let   children  = this.children  ? (await this.children .eval(parse)).toValue() : null;
+
+
+        if (   children
+            && SHAPE_VALUES.includes(children.type)
+            && children.type != SHAPE_LIST_VALUE)
+            children = new ListValue([children]);
+
+
+        let input = null;
+
+        if (this.input)
+        {
+            input = (await this.input.eval(parse)).toValue();
+
+            this.value = new ShapeBooleanValue(
+                this.nodeId,
+                operation ?? input.operation,
+                children  ?? input.children);
+        }
+        else
+        {
+            this.value = new ShapeBooleanValue(
+                this.nodeId, 
+                operation,
+                children);
+        }
+
+
+        this.updateValues =
+        [
+            ['value',     this.value          ],
+            ['operation', this.value.operation],
+            ['children',  this.value.children ]
+        ];
+
+
+        await this.evalShapeBase(parse, input);
+
+
+        this.evalObjects(parse);
+
+
+        this.validate();
+
+        return this;
+    }
+
+
+
+    async evalObjects(parse, options = {})
+    {
+        if (!this.options.enabled)
+            return;
+            
+
+        if (this.value.children)
+        {
+            const bool = new FigmaBoolean(
+                this.nodeId,
+                this.nodeId,
+                this.nodeName,
+                this.operation);
+
+
+            if (this.children.objects)
+            {
+                for (let i = 0; i < this.children.objects.length; i++)
+                {
+                    const obj    = this.children.objects[i].copy();
+                    obj.nodeId   = this.nodeId;
+                    obj.objectId = obj.objectId + OBJECT_SEPARATOR + this.nodeId;
+                    obj.listId   = -1;
+                    bool.children.push(obj);
+                }
+            }
+
+
+            this.objects = [bool];
+
+            this.updateValues.push(['nObjects', new NumberValue(
+                this.children.objects 
+                ? this.children.objects.length
+                : 0)]);
+        }
+        else
+        {
+            this.objects = [];
+            this.updateValues.push(['nObjects', new NumberValue(0)]);
+        }
+
+        
+        await super.evalObjects(parse);
+    }
+
+
+
+    pushValueUpdates(parse)
+    {
+        super.pushValueUpdates(parse);
+
+        if (this.input   ) this.input   .pushValueUpdates(parse);
+        if (this.children) this.children.pushValueUpdates(parse);
+    }
+
+
+
+    toValue()
+    {
+        return this.value.copy();
+    }
+
+
+
+    isValid()
+    {
+        return super.isValid()
+            && this.children.isValid();
+    }
+
+
+
+    invalidate()
+    {
+        super.invalidate();
+
+        if (this.input   ) this.input   .invalidate();
+        if (this.children) this.children.invalidate();
+    }
+}
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 class GMove
@@ -57972,8 +59129,8 @@ function updateMenuItemShowBoolValues()
 {
     graph.nodes
         .filter(n => 
-                 BOOLEAN_TYPES.includes(n.type)
-            || CONDITION_TYPES.includes(n.type)
+               NUMBER_BOOLEAN_TYPES.includes(n.type)
+            ||      CONDITION_TYPES.includes(n.type)
             || n.type == IF_ELSE)
         .forEach(n => n.updateNode());
 }
@@ -61835,16 +62992,15 @@ const iconColorBlend        = '<svg width="14" height="15" viewBox="-1 0 15 15" 
  
 const iconFill              = '<svg width="12" height="12" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="6" cy="6" r="6" fill="white"/></svg>';
 const iconStroke            = '<svg width="12" height="12" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="6" cy="6" r="5.4" stroke="white" stroke-width="1.2"/></svg>';
-
-const iconDropShadow        = '<svg width="18" height="14" viewBox="0 0 18 14" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="0.5" y="0.5" width="14" height="10" rx="2.5" stroke="white"/><path fill-rule="evenodd" clip-rule="evenodd" d="M13 13H4.5V14H13C15.7614 14 18 11.7614 18 9V4.5H17V9C17 11.2091 15.2091 13 13 13Z" fill="white"/></svg>';
-const iconInnerShadow       = '<svg width="17" height="13" viewBox="0 0 17 13" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="0.5" y="0.5" width="16" height="12" rx="3.5" stroke="white"/><path fill-rule="evenodd" clip-rule="evenodd" d="M5 4H13V3H5C3.89543 3 3 3.89543 3 5V9H4V5C4 4.44772 4.44772 4 5 4Z" fill="white"/></svg>';
-const iconLayerBlur         = '<svg width="13" height="11" viewBox="0 0 13 11" fill="none" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" clip-rule="evenodd" d="M0.501931 4.93746L5.43076 0.00863648L6.84491 0.00863647L0.501933 6.35167L0.501931 4.93746Z" fill="white"/><path fill-rule="evenodd" clip-rule="evenodd" d="M0.91582 8.76625L9.66142 0.0205855L10.8491 0.247192L1.48311 9.61315L0.91582 8.76625Z" fill="white"/><path fill-rule="evenodd" clip-rule="evenodd" d="M3.16822 10.7565L12.5211 1.40378L13.0928 2.24621L4.35151 10.9875L3.16822 10.7565Z" fill="white"/><path fill-rule="evenodd" clip-rule="evenodd" d="M7.18107 10.9863L13.4891 4.67827L13.4891 6.09248L8.59528 10.9863L7.18107 10.9863Z" fill="white"/></svg>';
-const iconBackBlur          = '<svg width="13" height="11" viewBox="0 0 13 11" fill="none" xmlns="http://www.w3.org/2000/svg"><line x1="5.21326" y1="0.433143" x2="0.440406" y2="5.206" stroke="white"/><line x1="9.27869" y1="0.610389" x2="0.978629" y2="8.91045" stroke="white"/><line x1="12.0522" y1="2.07963" x2="3.56403" y2="10.5678" stroke="white"/><line x1="12.5882" y1="5.78641" x2="7.86875" y2="10.5058" stroke="white"/><rect x="0.5" y="0.5" width="12" height="10" rx="3.5" stroke="white"/></svg>';
- 
+const iconMask              = '<svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" clip-rule="evenodd" d="M4.5 0.80426C1.83597 2.10266 0 4.83704 0 8C0 11.0375 1.69293 13.6797 4.18674 15.0344C4.28983 15.0905 4.39423 15.1443 4.5 15.1958C5.55719 15.7109 6.74484 16 8 16C12.4183 16 16 12.4183 16 8C16 3.58173 12.4183 0 8 0C6.74469 0 5.55728 0.28894 4.5 0.80426ZM15 8C15 11.866 11.866 15 8 15C7.14575 15 6.32724 14.847 5.57037 14.5668C7.64352 13.1213 9 10.7191 9 8C9 5.28094 7.64349 2.87872 5.57031 1.43317C6.32718 1.15302 7.14572 1 8 1C11.866 1 15 4.13403 15 8Z" fill="white"/></svg>';
 const iconStyle             = '<svg width="12" height="9"  viewBox="0 0 12 9"  fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="7.5" cy="1.5" r="1.5" transform="rotate(90 7.5 1.5)" fill="white"/><circle cx="1.5" cy="1.5" r="1.5" transform="rotate(90 1.5 1.5)" fill="white"/><circle cx="7.5" cy="7.5" r="1.5" transform="rotate(90 7.5 7.5)" fill="white"/><circle cx="1.5" cy="7.5" r="1.5" transform="rotate(90 1.5 7.5)" fill="white"/></svg>';
 const iconColorStyle        = '<svg width="12" height="12" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" clip-rule="evenodd" d="M9.53553 9.53552C8.63071 10.4403 7.38071 11 6 11C3.23858 11 1 8.76141 1 6C1 4.61929 1.55965 3.36929 2.46447 2.46448L6 6L9.53553 9.53552ZM12 6C12 9.31372 9.31371 12 6 12C2.68629 12 0 9.31372 0 6C0 4.34314 0.67157 2.84314 1.75735 1.75735C1.77346 1.74124 1.78965 1.72525 1.80592 1.70935C2.88722 0.652252 4.36652 0.000518799 5.99803 0C5.99869 0 5.99934 0 6 0C9.31305 0 11.9989 2.68521 12 5.99802C12 5.99869 12 5.99933 12 6Z" fill="white"/></svg>';
 const iconColorStyleReplace = '<svg width="15" height="15" viewBox="0 0 15 15" fill="none" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" clip-rule="evenodd" d="M5.18718 13.3189L7.83883 10.6673L8.54594 11.3744L5.89429 14.026C4.62509 15.2952 2.5673 15.2952 1.2981 14.026C0.0288918 12.7568 0.0288916 10.699 1.2981 9.42982L3.94975 6.77817L4.65685 7.48528L2.0052 10.1369C1.12652 11.0156 1.12652 12.4402 2.0052 13.3189C2.88388 14.1976 4.3085 14.1976 5.18718 13.3189ZM11.3744 8.54594L10.6673 7.83883L13.3189 5.18718C14.1976 4.3085 14.1976 2.88388 13.3189 2.0052C12.4402 1.12652 11.0156 1.12652 10.1369 2.0052L7.48528 4.65685L6.77817 3.94975L9.42982 1.2981C10.699 0.0288935 12.7568 0.0288931 14.026 1.2981C15.2952 2.5673 15.2952 4.62509 14.026 5.89429L11.3744 8.54594ZM5.92375 10.1664L10.1664 5.92375L9.40036 5.15772L5.15772 9.40036L5.92375 10.1664Z" fill="white"/></svg>';
-
+const iconDropShadow        = '<svg width="18" height="14" viewBox="0 0 18 14" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="0.5" y="0.5" width="14" height="10" rx="2.5" stroke="white"/><path fill-rule="evenodd" clip-rule="evenodd" d="M13 13H4.5V14H13C15.7614 14 18 11.7614 18 9V4.5H17V9C17 11.2091 15.2091 13 13 13Z" fill="white"/></svg>';
+const iconInnerShadow       = '<svg width="17" height="13" viewBox="0 0 17 13" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="0.5" y="0.5" width="16" height="12" rx="3.5" stroke="white"/><path fill-rule="evenodd" clip-rule="evenodd" d="M5 4H13V3H5C3.89543 3 3 3.89543 3 5V9H4V5C4 4.44772 4.44772 4 5 4Z" fill="white"/></svg>';
+const iconLayerBlur         = '<svg width="15" height="12" viewBox="0 0 15 12" fill="none" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" clip-rule="evenodd" d="M0.00242553 9.06282L8.06639 0.9988L9.48059 0.998779L0.256423 10.2229L0.00242553 9.06282Z" fill="white"/><path fill-rule="evenodd" clip-rule="evenodd" d="M0.452312 4.37771L3.45318 1.37684L5.24118 1.00305L0.00200153 6.24223L0.452312 4.37771Z" fill="white"/><path fill-rule="evenodd" clip-rule="evenodd" d="M1.64012 11.6677L12.2897 1.01819L13.3811 1.34094L2.73919 11.9829L1.64012 11.6677Z" fill="white"/><path fill-rule="evenodd" clip-rule="evenodd" d="M5.55088 11.9998L14.747 2.80362L14.9934 3.97146L6.965 11.9998L5.55088 11.9998Z" fill="white"/><path fill-rule="evenodd" clip-rule="evenodd" d="M9.79585 11.9974L15.0001 6.79314L14.6124 8.59506L11.569 11.6384L9.79585 11.9974Z" fill="white"/></svg>';
+const iconBackBlur          = '<svg width="15" height="11" viewBox="0 0 15 11" fill="none" xmlns="http://www.w3.org/2000/svg"><line x1="6.21326" y1="0.433143" x2="0.447288" y2="6.19912" stroke="white"/><line x1="10.2787" y1="0.610389" x2="1.25317" y2="9.63592" stroke="white"/><line x1="13.6388" y1="1.49308" x2="4.56403" y2="10.5678" stroke="white"/><line x1="14.5184" y1="4.85624" x2="8.86875" y2="10.5059" stroke="white"/><rect x="0.5" y="0.5" width="14" height="10" rx="2.5" stroke="white"/></svg>';
+ 
 const iconShapes            = '<svg width="17" height="19" viewBox="0 -1 17 19" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="1.53844" y="1.49869" width="5" height="5" stroke="white"/><circle cx="12.8668" cy="3.99869" r="3" stroke="white"/><line x1="0.933922" y1="16.7012" x2="7.26322" y2="10.3719" stroke="white"/><path d="M9.61918 15.709L12.8668 10.084L16.1144 15.709H9.61918Z" stroke="white"/></svg>';
 
 const iconRectangle         = '<svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="0.5" y="0.5" width="15" height="15" stroke="white"/></svg>';
@@ -61856,6 +63012,10 @@ const iconTextShape         = '<svg width="13" height="16" viewBox="0 0 13 16" f
 const iconSelected          = '<svg width="19" height="19" viewBox="0 0 19 19" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="4.5" y="4.5" width="4" height="4" stroke="white"/><circle cx="12.5" cy="6.5" r="2" stroke="white"/><line x1="4.4364" y1="15.069" x2="8.9364" y2="10.3022" stroke="white"/><path d="M10.3349 14.75L12.5 11L14.6651 14.75H10.3349Z" stroke="white"/><rect x="0.5" y="0.5" width="2" height="2" stroke="white"/><rect x="0.5" y="16.5" width="2" height="2" stroke="white"/><rect x="16.5" y="16.5" width="2" height="2" stroke="white"/><rect x="16.5" y="0.5" width="2" height="2" stroke="white"/><rect x="3" y="1" width="13" height="1" fill="white"/><rect x="3" y="17" width="13" height="1" fill="white"/><rect x="17" y="16" width="13" height="1" transform="rotate(-90 17 16)" fill="white"/><rect x="1" y="16" width="13" height="1" transform="rotate(-90 1 16)" fill="white"/></svg>';
 const iconPoint             = '<svg width="5" height="5" viewBox="0 0 5 5" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="2.5" cy="2.5" r="2.07507" fill="white"/></svg>';
 const iconVectorPath        = '<svg width="18" height="17" viewBox="0 0 18 17" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="2.50012" cy="1" r="0.75" stroke="white" stroke-width="0.5"/><circle cx="15.4999" cy="16.0002" r="0.75" stroke="white" stroke-width="0.5"/><path d="M2.8714 11.9166C9 -13 10 29 15.1694 5.03541" stroke="white" stroke-width="1.5"/><circle cx="15.5001" cy="4" r="1.5" stroke="white"/><circle cx="2.49988" cy="13" r="1.5" stroke="white"/><rect x="2" y="9" width="1" height="1" fill="white"/><rect x="2" y="7" width="1" height="1" fill="white"/><rect x="2" y="5" width="1" height="1" fill="white"/><rect x="2" y="3" width="1" height="1" fill="white"/><rect x="15" y="13" width="1" height="1" fill="white"/><rect x="15" y="11" width="1" height="1" fill="white"/><rect x="15" y="9" width="1" height="1" fill="white"/><rect x="15" y="7" width="1" height="1" fill="white"/></svg>';
+const iconBoolUnion         = '<svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M11 0H0V11H5V16H16V5H11V0Z" fill="white"/></svg>';
+const iconBoolSubtract      = '<svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" clip-rule="evenodd" d="M0 11V0H11V5H16V16H5V11H0ZM1 1H10V10H1V1Z" fill="white"/></svg>';
+const iconBoolIntersect     = '<svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" clip-rule="evenodd" d="M11 5V0H0V11H5V16H16V5H11ZM10 1H1V10H5V5H10V1ZM6 11H11V6H15V15H6V11Z" fill="white"/></svg>';
+const iconBoolExclude       = '<svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" clip-rule="evenodd" d="M11 0H0V11H5V16H16V5H11V0ZM11 5H5V11H11V5Z" fill="white"/></svg>';
 const iconShapeGroup        = '<svg width="12" height="12" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M2 12.0004L2 11.0004L1 11.0004L1 10L-4.37113e-08 10L0 12.0004L2 12.0004Z" fill="white"/><path d="M10.0002 0.000182931L10.0002 1.00018L11.0002 1.00018L11.0002 2.00055L12.0002 2.00055L12.0002 0.000183105L10.0002 0.000182931Z" fill="white"/><path d="M-0.000183193 2.00018H0.999817L0.999817 1.00018H2.00018V0.000183149L-0.000183105 0.000183105L-0.000183193 2.00018Z" fill="white"/><path d="M12.0004 10.0004L11.0004 10.0004L11.0004 11.0004L10 11.0004L10 12.0004L12.0004 12.0004L12.0004 10.0004Z" fill="white"/><rect y="5" width="1" height="2" fill="white"/><rect x="7" width="1" height="2" transform="rotate(90 7 0)" fill="white"/><rect x="11" y="5" width="1" height="2" fill="white"/><rect x="7" y="11" width="1" height="2" transform="rotate(90 7 11)" fill="white"/></svg>';
 const iconFrame             = '<svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" clip-rule="evenodd" d="M4 0H3V3H0V4H3V12H0V13H3V16H4V13H12V16H13V13H16V12H13V4H16V3H13V0H12V3H4V0ZM12 12V4H4V12H12Z" fill="white"/></svg>';
 
@@ -63351,15 +64511,17 @@ function initGeneratorMenus()
     
     menuStyle = new Menu('Styles', true, false);
     menuStyle.addItems([
-        menuItemStyleFill        = new MenuItem('Fill',            {icon: iconFill,        callback: e => actionManager.do(getCreateNodeAction(FILL,   btnColor.div, getCreateOptions(e)))}),
-        menuItemStyleStroke      = new MenuItem('Stroke',          {icon: iconStroke,      callback: e => actionManager.do(getCreateNodeAction(STROKE, btnColor.div, getCreateOptions(e)))}),
-        menuItemStyleSep1        = new MenuItem('',                {separator: true}),
-        menuItemStyleDropShadow  = new MenuItem('Drop shadow',     {icon: iconDropShadow,  callback: e => actionManager.do(getCreateNodeAction(DROP_SHADOW,  btnColor.div, getCreateOptions(e)))}),
-        menuItemStyleInnerShadow = new MenuItem('Inner shadow',    {icon: iconInnerShadow, callback: e => actionManager.do(getCreateNodeAction(INNER_SHADOW, btnColor.div, getCreateOptions(e)))}),
-        menuItemStyleLayerBlur   = new MenuItem('Layer blur',      {icon: iconLayerBlur,   callback: e => actionManager.do(getCreateNodeAction(LAYER_BLUR,   btnColor.div, getCreateOptions(e)))}),
-        menuItemStyleBackBlur    = new MenuItem('Background blur', {icon: iconBackBlur,    callback: e => actionManager.do(getCreateNodeAction(BACK_BLUR,    btnColor.div, getCreateOptions(e)))}),
+        menuItemStyleFill        = new MenuItem('Fill',            {icon: iconFill,        callback: e => actionManager.do(getCreateNodeAction(FILL,         btnStyle.div, getCreateOptions(e)))}),
+        menuItemStyleStroke      = new MenuItem('Stroke',          {icon: iconStroke,      callback: e => actionManager.do(getCreateNodeAction(STROKE,       btnStyle.div, getCreateOptions(e)))}),
         menuItemStyleSep2        = new MenuItem('',                {separator: true}),
-                                   new MenuItem('Color style',     {icon: iconColorStyle,  callback: e => actionManager.do(getCreateNodeAction(COLOR_STYLE,  btnColor.div, getCreateOptions(e, {existing: true})))})]);
+                                   new MenuItem('Color style',     {icon: iconColorStyle,  callback: e => actionManager.do(getCreateNodeAction(COLOR_STYLE,  btnStyle.div, getCreateOptions(e, {existing: true})))}),
+        menuItemStyleSep1        = new MenuItem('',                {separator: true}),
+        menuItemStyleDropShadow  = new MenuItem('Drop shadow',     {icon: iconDropShadow,  callback: e => actionManager.do(getCreateNodeAction(DROP_SHADOW,  btnStyle.div, getCreateOptions(e)))}),
+        menuItemStyleInnerShadow = new MenuItem('Inner shadow',    {icon: iconInnerShadow, callback: e => actionManager.do(getCreateNodeAction(INNER_SHADOW, btnStyle.div, getCreateOptions(e)))}),
+        menuItemStyleLayerBlur   = new MenuItem('Layer blur',      {icon: iconLayerBlur,   callback: e => actionManager.do(getCreateNodeAction(LAYER_BLUR,   btnStyle.div, getCreateOptions(e)))}),
+        menuItemStyleBackBlur    = new MenuItem('Background blur', {icon: iconBackBlur,    callback: e => actionManager.do(getCreateNodeAction(BACK_BLUR,    btnStyle.div, getCreateOptions(e)))}),
+                                   new MenuItem('',                {separator: true}),
+                                   new MenuItem('Mask',            {icon: iconMask,        callback: e => actionManager.do(getCreateNodeAction(LAYER_MASK,   btnStyle.div, getCreateOptions(e)))})]);
                                  //new MenuItem('Color style',     {icon: iconColorStyle,  childMenu: menuColorStyle, callback: e => actionManager.do(getCreateNodeAction(COLOR_STYLE,  btnColor.div, getCreateOptions(e)))})]);
     
     
@@ -63389,6 +64551,8 @@ function initGeneratorMenus()
         menuItemShapeSelected = new MenuItem('Selected objects...', {icon: iconSelected,   enabled: false}),
                                 new MenuItem('',                    {separator: true}),
                                 new MenuItem('Shapes',              {childMenu: menuShapes}),
+                                new MenuItem('',                    {separator: true}),
+                                new MenuItem('Boolean',             {icon: iconBoolUnion,  callback: e => actionManager.do(getCreateNodeAction(BOOLEAN,     btnShape.div, getCreateOptions(e)))}),
                                 new MenuItem('',                    {separator: true}),
                                 new MenuItem('Frame',               {icon: iconFrame,      callback: e => actionManager.do(getCreateNodeAction(FRAME,       btnShape.div, getCreateOptions(e)))}),
                                 new MenuItem('Group',               {icon: iconShapeGroup, callback: e => actionManager.do(getCreateNodeAction(SHAPE_GROUP, btnShape.div, getCreateOptions(e)))}),
@@ -69420,7 +70584,10 @@ extends Parameter
     setValue(value, createAction, updateControl = true, dispatchEvents = true) 
     {
         if (!(value instanceof ListValue))
-            console.assert(false, 'ListParam.setValue(value) is ' + typeof value + ', must be a ListValue');
+        {
+            //console.log('value =', value);
+            console.assert(false, 'ListParam.setValue(): value is ' + typeof value + ', must be a ListValue');
+        }
 
         console.assert(
                value.type 
@@ -83419,1150 +84586,6 @@ extends OpColorBase
 }
 
 
-class   OpShapeBase
-extends OperatorBase
-{
-    constructor(type, id, name, defWidth = defNodeWidth)
-    {
-        super(type, id, name, defWidth);
-    }
-
-
-
-    setName(newName, options = {})
-    {
-        super.setName(newName, options);
-
-        if (isValid(options.updateNodes))
-            pushUnique(options.updateNodes, this);
-    }
-
-
-
-    output_genRequest(gen)
-    {
-        // 'this' is the output
-
-        gen.scope.push({
-            nodeId:  this.node.id, 
-            paramId: NULL });
-
-        const [request, ignore] = this.node.genRequestStart(gen);
-        if (ignore) return request;
-                
-        
-        const paramIds = [];
-        
-        
-        const input = this.node.inputs[0];
-
-
-        request.push(input.connected ? 1 : 0);
-
-
-        if (input.connected)
-        {
-            request.push(...pushInputOrParam(input, gen));
-
-            for (const param of this.node.params)
-                if (   param.input 
-                    && param.input.connected
-                    && param.canShow())
-                    paramIds.push(param.id);
-        }
-        else
-        {
-            for (const param of this.node.params)
-                if (param.canShow())
-                    paramIds.push(param.id);
-        }
-
-
-        request.push(paramIds.length);
-
-        for (const paramId of paramIds)
-            request.push(paramId, ...this.node.params.find(p => p.id == paramId).genRequest(gen));            
-
-
-        gen.scope.pop();
-        pushUnique(gen.passedNodes, this.node);
-
-        return request;
-    }
-
-
-
-    updateParams()
-    {
-        const enable = !this.inputs[0].connected;
-        
-        for (const param of this.params)
-            param.enableControlText(enable);
-
-        this.updateParamControls();
-    }
-}
-
-
-
-class   OpShape
-extends OpShapeBase
-{
-    paramProperties;
-
-
-    constructor(type, id, name, defWidth = defNodeWidth)
-    {
-        super(type, id, name, defWidth);
-    }
-
-
-
-    addBaseParams()
-    {
-        this.addParam(this.paramProperties = new ListParam('props', 'styles', true, true, true));
-
-        this.paramProperties.itemName  = 'style';
-        this.paramProperties.showZero  = false;
-        this.paramProperties.listTypes = [...STYLE_VALUES];
-        this.paramProperties.input.types.push(...this.paramProperties.listTypes);
-    }
-}
-
-
-
-class   OpRectangle
-extends OpShape
-{
-    paramX;
-    paramY;
-    paramWidth;
-    paramHeight;
-    paramAngle;
-    paramRound;
-
-
-    
-    constructor()
-    {
-        super(RECTANGLE, 'rect', 'rectangle');
-
-        this.canDisable = true;
-        
-
-        this.addInput (this.createInputForObjects([RECTANGLE_VALUE], getNodeInputValuesForUndo));
-        this.addOutput(new Output([RECTANGLE_VALUE], this.output_genRequest));
-
-
-        this.addParam(this.paramX      = new NumberParam('x',      'x',      true, true, true,   0));
-        this.addParam(this.paramY      = new NumberParam('y',      'y',      true, true, true,   0));
-        this.addParam(this.paramWidth  = new NumberParam('width',  'width',  true, true, true, 100,    0.01));
-        this.addParam(this.paramHeight = new NumberParam('height', 'height', true, true, true, 100,    0.01));
-        this.addParam(this.paramAngle  = new NumberParam('angle',  'angle',  true, true, true,   0, -180,   180));
-        this.addParam(this.paramRound  = new NumberParam('round',  'round',  true, true, true,   0,    0));
-
-
-        this.paramWidth .addEventListener('change', () => this.updateRound());
-        this.paramHeight.addEventListener('change', () => this.updateRound());
-
-        this.paramAngle.controls[0].setSuffix('°', true);
-        this.paramAngle.controls[0].wrapValue   = true;
-        this.paramAngle.controls[0].dragReverse = true;
-
-
-        this.addBaseParams();
-    }
-
-
-
-    updateRound()
-    {
-        const min = Math.min(this.paramWidth.value.value, this.paramHeight.value.value);
-
-        this.paramRound.controls[0].displayMin = 0;
-        this.paramRound.controls[0].displayMax = min/2;
-
-        this.paramRound.controls[0].update();
-    }
-}
-
-
-class   OpLine
-extends OpShape
-{
-    paramX;
-    paramY;
-    paramWidth;
-    paramAngle;
-
-
-    
-    constructor()
-    {
-        super(LINE, 'line', 'line');
-
-        this.canDisable = true;
-
-        
-        this.addInput (this.createInputForObjects([LINE_VALUE], getNodeInputValuesForUndo));
-        this.addOutput(new Output([LINE_VALUE], this.output_genRequest));
-
-        this.addParam(this.paramX      = new NumberParam('x',      'x',      true, true, true,   0));
-        this.addParam(this.paramY      = new NumberParam('y',      'y',      true, true, true,   0));
-        this.addParam(this.paramWidth  = new NumberParam('width',  'width',  true, true, true, 100,    0.01));
-        this.addParam(this.paramAngle  = new NumberParam('angle',  'angle',  true, true, true,   0, -180,   180));
-        
-
-        this.paramAngle.controls[0].setSuffix('°', true);
-        this.paramAngle.controls[0].wrapValue   = true;
-        this.paramAngle.controls[0].dragReverse = true;
-
-
-        this.addBaseParams();
-    }
-}
-
-
-class   OpEllipse
-extends OpShape
-{
-    paramX;
-    paramY;
-    paramWidth;
-    paramHeight;
-    paramAngle;
-
-
-    
-    constructor()
-    {
-        super(ELLIPSE, 'ellipse', 'ellipse');
-
-        this.canDisable = true;
-        
-
-        this.addInput (this.createInputForObjects([ELLIPSE_VALUE], getNodeInputValuesForUndo));
-        this.addOutput(new Output([ELLIPSE_VALUE], this.output_genRequest));
-
-
-        this.addParam(this.paramX      = new NumberParam('x',      'x',      true, true, true,   0));
-        this.addParam(this.paramY      = new NumberParam('y',      'y',      true, true, true,   0));
-        this.addParam(this.paramWidth  = new NumberParam('width',  'width',  true, true, true, 100,    0.01));
-        this.addParam(this.paramHeight = new NumberParam('height', 'height', true, true, true, 100,    0.01));
-        this.addParam(this.paramAngle  = new NumberParam('angle',  'angle',  true, true, true,   0, -180,   180));
-        
-
-        this.paramAngle.controls[0].setSuffix('°', true);
-        this.paramAngle.controls[0].wrapValue   = true;
-        this.paramAngle.controls[0].dragReverse = true;
-
-
-        this.addBaseParams();
-    }
-}
-
-
-class   OpPolygon
-extends OpShape
-{
-    paramX;
-    paramY;
-    paramWidth;
-    paramHeight;
-    paramAngle;
-    paramRound;
-    paramCorners;
-
-
-    
-    constructor()
-    {
-        super(POLYGON, 'poly', 'polygon');
-
-        this.canDisable = true;
-
-        
-        this.addInput (this.createInputForObjects([POLYGON_VALUE], getNodeInputValuesForUndo));
-        this.addOutput(new Output([POLYGON_VALUE], this.output_genRequest));
-
-        this.addParam(this.paramX       = new NumberParam('x',       'x',       true, true, true,   0));
-        this.addParam(this.paramY       = new NumberParam('y',       'y',       true, true, true,   0));
-        this.addParam(this.paramWidth   = new NumberParam('width',   'width',   true, true, true, 100,    0.01));
-        this.addParam(this.paramHeight  = new NumberParam('height',  'height',  true, true, true, 100,    0.01));
-        this.addParam(this.paramAngle   = new NumberParam('angle',   'angle',   true, true, true,   0, -180,   180));
-        this.addParam(this.paramRound   = new NumberParam('round',   'round',   true, true, true,   0,    0));
-        this.addParam(this.paramCorners = new NumberParam('corners', 'corners', true, true, true,   3,    3));
-        
-
-        this.paramAngle.controls[0].setSuffix('°', true);
-        this.paramAngle.controls[0].wrapValue   = true;
-        this.paramAngle.controls[0].dragReverse = true;
-
-
-        this.addBaseParams();
-    }
-
-
-
-    updateRound()
-    {
-        const control = this.paramRound.controls[0];
-        const min     = Math.min(this.paramWidth.value, this.paramHeight.value);
-
-        control.setMin(0);
-        control.setMax(min/2);
-
-        control.update();
-    }
-}
-
-
-class   OpStar
-extends OpShape
-{
-    paramX;
-    paramY;
-    paramWidth;
-    paramHeight;
-    paramAngle;
-    paramRound;
-    paramPoints;
-    paramConvex;
-
-
-    
-    constructor()
-    {
-        super(STAR, 'star', 'star');
-
-        this.canDisable = true;
-
-        
-        this.addInput (this.createInputForObjects([STAR_VALUE], getNodeInputValuesForUndo));
-        this.addOutput(new Output([STAR_VALUE], this.output_genRequest));
-
-        this.addParam(this.paramX      = new NumberParam('x',      'x',      true, true, true,   0));
-        this.addParam(this.paramY      = new NumberParam('y',      'y',      true, true, true,   0));
-        this.addParam(this.paramWidth  = new NumberParam('width',  'width',  true, true, true, 100,    0.01));
-        this.addParam(this.paramHeight = new NumberParam('height', 'height', true, true, true, 100,    0.01));
-        this.addParam(this.paramAngle  = new NumberParam('angle',  'angle',  true, true, true,   0, -180,   180));
-        this.addParam(this.paramRound  = new NumberParam('round',  'round',  true, true, true,   0,    0));
-        this.addParam(this.paramPoints = new NumberParam('points', 'points', true, true, true,   5,    3));
-        this.addParam(this.paramConvex = new NumberParam('convex', 'convex', true, true, true,   38.2, 0, 100));
-        
-
-        this.paramAngle.controls[0].setSuffix('°', true);
-        this.paramAngle.controls[0].wrapValue   = true;
-        this.paramAngle.controls[0].dragReverse = true;
-
-        this.paramConvex.controls[0].setSuffix('%', true);
-
-
-        this.addBaseParams();
-    }
-
-
-
-    updateRound()
-    {
-        const control = this.paramRound.controls[0];
-        const min     = Math.min(this.paramWidth.value, this.paramHeight.value);
-
-        control.setMin(0);
-        control.setMax(min/2);
-
-        this.paramRound.controls[0].update();
-    }
-}
-
-
-class   OpTextShape
-extends OpShape
-{
-    paramText;
-    paramX;
-    paramY;
-    paramWidth;
-    paramHeight;
-    paramAngle;
-    paramFont;
-    paramStyle;
-    paramSize;
-    paramAlignH;
-    paramAlignV;
-    paramLineHeight;
-    paramLetterSpacing;
-
-
-    
-    constructor()
-    {
-        super(TEXTSHAPE, 'text', 'text');
-
-        this.canDisable = true;
-        
-
-        this.addInput (this.createInputForObjects([TEXTSHAPE_VALUE], getNodeInputValuesForUndo));
-        this.addOutput(new Output([TEXTSHAPE_VALUE], this.output_genRequest));
-
-
-        const interIndex = figUniqueFontNames.findIndex(f => f == 'Inter');
-
-      
-        this.addParam(this.paramText          = new   TextParam('text',          '',       true,  true));
-        this.addParam(this.paramX             = new NumberParam('x',             'x',      true,  true, true,   0));
-        this.addParam(this.paramY             = new NumberParam('y',             'y',      true,  true, true,   0));
-        this.addParam(this.paramWidth         = new NumberParam('width',         'width',  true,  true, true, 100,    0.01));
-        this.addParam(this.paramHeight        = new NumberParam('height',        'height', true,  true, true, 100,    0.01));
-        this.addParam(this.paramAngle         = new NumberParam('angle',         'angle',  true,  true, true,   0, -180,   180));
-        this.addParam(this.paramFont          = new SelectParam('font',          'font',   false, true, true, figUniqueFontNames, interIndex));
-        this.addParam(this.paramStyle         = new SelectParam('style',         'style',  false, true, true, [''], 0));
-        this.addParam(this.paramSize          = new NumberParam('size',          'size',   true,  true, true,  12, 1));
-        this.addParam(this.paramAlignH        = new SelectParam('alignH',        'align',  true,  true, true, ['left', 'center', 'right', 'justify'], 0));
-        this.addParam(this.paramAlignV        = new SelectParam('alignV',        'align',  true,  true, true, ['bottom', 'middle', 'top'], 1));
-        this.addParam(this.paramLineHeight    = new NumberParam('lineHeight',    'line',   true,  true, true, 100));
-        this.addParam(this.paramLetterSpacing = new NumberParam('letterSpacing', 'letter', true,  true, true, 0));
-
-
-        this.paramText.controls[0].textbox.style.textAlign = 'center';
-
-        this.paramAngle.controls[0].setSuffix('°', true);
-        this.paramAngle.controls[0].wrapValue   = true;
-        this.paramAngle.controls[0].dragReverse = true;
-
-        this.paramLineHeight   .controls[0].setSuffix('%', true);
-        this.paramLetterSpacing.controls[0].setSuffix('%', true);
-
-        this.addBaseParams();
-    }
-
-
-
-    updateParams()
-    {
-        const fontName = figUniqueFontNames[this.paramFont.value.toNumber()];
-        
-        this.paramStyle.setOptions(
-            figFonts
-                .filter(f => f.fontName.family == fontName)
-                .map(f => f.fontName.style));
-
-        this.paramStyle.controls[0].setMax(this.paramStyle.options.length-1);
-
-        super.updateParamControls();
-    }
-}
-
-
-class   OpPoint
-extends OpShapeBase
-{
-    paramX;
-    paramY;
-
-    zoom = 1;
-
-
-
-    constructor()
-    {
-        super(POINT, 'point', 'point');
-
-        this.addInput (new Input ([POINT_VALUE], getNodeInputValuesForUndo, this.input_getBackInitValue));
-        this.addOutput(new Output([POINT_VALUE], this.output_genRequest, getNodeOutputValuesForUndo, this.output_backInit));
-
-        this.addParam(this.paramX = new NumberParam('x', 'x', true, true, true, 0));
-        this.addParam(this.paramX = new NumberParam('y', 'y', true, true, true, 0));
-    }
-
-
-
-    input_getBackInitValue()
-    {
-        // 'this' is the input
-
-        return new PointValue(
-            this.nodeId,
-            this.node.paramX.value,
-            this.node.paramY.value);
-    }
-
-
-
-    output_backInit(value)
-    {
-        // 'this' is the output
-
-        console.assert(value.type == POINT_VALUE, 'expected POINT_VALUE in backInit()');
-        
-        this.node.paramX.setValue(value.x, false, true, false);
-        this.node.paramY.setValue(value.y, false, true, false);
-    }
-
-
-
-//     paramIsConsideredDefault(param)
-//     {
-//         return  param.isDefault()
-//             && !this.inputs[0].connected;
-//     }
-
-
-
-//     toJavascript(gen)
-//     {
-//         const conn = this.inputs[0].connected;
-
-
-//         gen.nTab++;
-//         const defs = this.toJsDefs(gen);
-//         gen.nTab--;
-
-
-//         let js = gen.NL + 'function ' + this.name + '(';
-        
-//         if (   conn 
-//             && defs == NULL)
-//             js += 'input';
-
-//         js += ')';
-
-
-//         js += gen.NL + '{';
-//         gen.nTab++;
-
-
-//         js += defs;
-
-
-//         js += gen.NL + 'return ';
-//         js += conn ? 'input' : this.toJsCode(gen);
-//         js += ';'
-
-
-//         gen.nTab--;
-//         js += gen.NL + '}';
-
-
-//         return js;
-//     }
-
-
-
-//     toJsDefs(gen)
-//     {
-//         if (  !this.inputs[0].connected
-//             || gen.connectedOut(this))
-//             return '';
-
-        
-//         let js = '';
-
-
-//         js += gen.NL + 'const input = ';
-//         js += this.inputs[0].connectedOutput.toJsCode(gen);
-//         js += ';';
-
-
-//         return js;
-//     }
-
-
-
-//     toJsCode(gen)
-//     {
-//         return this.inputs[0].connected
-//              ? this.inputs[0].connectedOutput.toJsCode(gen)
-//              : this.paramValue.value.toJsCode(gen);
-//     }
-}
-
-
-class   OpVectorPath
-extends OpShape
-{
-    paramPoints;
-    paramClosed;
-    paramDegree;
-    paramWinding;
-    paramRound;
-
-
-    
-    constructor()
-    {
-        super(VECTOR_PATH, 'path', 'path');
-
-        this.canDisable = true;
-
-
-        this.addInput(this.createInputForObjects([VECTOR_PATH_VALUE], getNodeInputValuesForUndo));
-        this.addOutput(new Output([VECTOR_PATH_VALUE], this.output_genRequest));
-
-
-        this.addParam(this.paramPoints  = new ListParam  ('points',  'points',  true,  true, true));
-        this.addParam(this.paramClosed  = new SelectParam('closed',  'closed',  false, true, true, ['open', 'closed'], 0));
-        this.addParam(this.paramDegree  = new SelectParam('degree',  'degree',  false, true, true, ['linear', 'quadratic', 'cubic', 'smooth', 'sine X', 'sine Y'], 3));
-        this.addParam(this.paramWinding = new SelectParam('winding', 'winding', false, true, true, ['even-odd', 'non-zero']));
-        this.addParam(this.paramRound   = new NumberParam('round',   'round',   true,  true, true, 0, 0));
-
-        
-        this.paramPoints.input.types.push(SHAPE_LIST_VALUE);
-        this.paramPoints.listTypes = [POINT_VALUE];
-
-        this.paramPoints.itemName    = 'point';
-        this.paramPoints.showZero    =  false;
-
-        this.paramDegree.reverseMenu =  true;
-
-
-        this.addBaseParams();
-    }
-}
-
-
-class OpShapeGroup
-extends OpShapeBase
-{
-    paramX;
-    paramY;
-    paramWidth;
-    paramHeight;
-    paramChildren;
-
-
-    
-    constructor()
-    {
-        super(SHAPE_GROUP, 'group', 'group');
-
-        this.canDisable = true;
-
-
-        this.addInput (this.createInputForObjects([SHAPE_GROUP_VALUE], getNodeInputValuesForUndo));
-        this.addOutput(new Output([SHAPE_GROUP_VALUE], this.output_genRequest));
-
-
-        this.addParam(this.paramX        = new NumberParam('x',        'x',       true, false, false,   0));
-        this.addParam(this.paramY        = new NumberParam('y',        'y',       true, false, false,   0));
-        this.addParam(this.paramWidth    = new NumberParam('width',    'width',   true, false, false, 100, 0.01));
-        this.addParam(this.paramHeight   = new NumberParam('height',   'height',  true, false, false, 100, 0.01));
-        this.addParam(this.paramChildren = new ListParam  ('children', 'objects', true, true,  true));
-
-        
-        this.paramChildren.input.types.push(SHAPE_LIST_VALUE, ...SHAPE_VALUES);
-        this.paramChildren.listTypes    = SHAPE_VALUES;
-        this.paramChildren.itemName     = 'object';
-        this.paramChildren.showZero     = false;
-        this.paramChildren.getItemCount = () => 0;
-
-
-        this.addBaseParams();
-    }
-
-
-
-    updateParams()
-    {
-        super.updateParams();
-
-        this.paramX     .enableControlText(false);
-        this.paramY     .enableControlText(false);
-        this.paramWidth .enableControlText(false);
-        this.paramHeight.enableControlText(false);
-
-        this.updateParamControls();
-    }
-
-
-
-    updateValues(requestId, actionId, updateParamId, paramIds, values)
-    {
-        const nObjects = values[paramIds.findIndex(id => id == 'nObjects')];
-
-        this.paramChildren.getItemCount = () => nObjects.value;
-
-        super.updateValues(requestId, actionId, updateParamId, paramIds, values);
-    }
-}
-
-
-class   OpFrame
-extends OpShape
-{
-    paramX;
-    paramY;
-    paramWidth;
-    paramHeight;
-    paramAngle;
-    paramRound;
-    paramChildren;
-
-
-
-    constructor()
-    {
-        super(FRAME, 'frame', 'frame');
-
-        this.canDisable     = true;
-        this.variableInputs = true;
-
-
-        this.addInput(this.createInputForObjects([FRAME_VALUE], getNodeInputValuesForUndo));
-        this.addOutput(new Output([FRAME_VALUE], this.output_genRequest));
-
-
-        this.addParam(this.paramX        = new NumberParam('x',        'x',       true, true, true,   0));
-        this.addParam(this.paramY        = new NumberParam('y',        'y',       true, true, true,   0));
-        this.addParam(this.paramWidth    = new NumberParam('width',    'width',   true, true, true, 100,    0.01));
-        this.addParam(this.paramHeight   = new NumberParam('height',   'height',  true, true, true, 100,    0.01));
-        this.addParam(this.paramAngle    = new NumberParam('angle',    'angle',   true, true, true,   0, -180,   180));
-        this.addParam(this.paramRound    = new NumberParam('round',    'round',   true, true, true,   0,    0));
-        this.addParam(this.paramChildren = new ListParam  ('children', 'objects', true, true, true));
-
-
-        this.paramWidth .addEventListener('change', () => this.updateRound());
-        this.paramHeight.addEventListener('change', () => this.updateRound());
-
-        this.paramAngle.controls[0].setSuffix('°', true);
-        this.paramAngle.controls[0].wrapValue   = true;
-        this.paramAngle.controls[0].dragReverse = true;
-
-
-        this.paramChildren.input.types.push(SHAPE_LIST_VALUE, ...SHAPE_VALUES);
-        this.paramChildren.listTypes    = SHAPE_VALUES;
-        this.paramChildren.itemName     = 'object';
-        this.paramChildren.showZero     = false;
-        this.paramChildren.getItemCount = () => 0;
-
-
-        this.addBaseParams();
-    }
-    
-    
-    
-    updateRound()
-    {
-        const min = Math.min(
-            this.paramWidth .value.value, 
-            this.paramHeight.value.value);
-
-        this.paramRound.controls[0].displayMin = 0;
-        this.paramRound.controls[0].displayMax = min/2;
-
-        this.paramRound.controls[0].update();
-    }
-
-
-
-    updateValues(requestId, actionId, updateParamId, paramIds, values)
-    {
-        super.updateValues(requestId, actionId, updateParamId, paramIds, values);
-        
-        const children = values[paramIds.findIndex(id => id == 'children')];
-        const nObjects = values[paramIds.findIndex(id => id == 'nObjects')];
-
-        this.paramChildren.getItemCount = () => nObjects.value;
-        this.paramChildren.output.types = [finalListTypeFromItems(children.items)];
-    }
-}
-
-
-
-class   OpMove
-extends OperatorBase
-{
-    paramX;
-    paramY;
-
-
-
-    constructor()
-    {
-        super(MOVE, 'move', 'move');
-
-        this.canDisable = true;
-
-        
-        this.addInput (new Input (SHAPE_VALUES));
-        this.addOutput(new Output([SHAPE_VALUE], this.output_genRequest));
-
-
-        this.addParam(this.paramX = new NumberParam('x', 'x', true, true, true));
-        this.addParam(this.paramY = new NumberParam('y', 'y', true, true, true));
-
-
-        this.inputs[0].addEventListener('connect',    e => this.outputs[0].types = [...this.inputs[0].connectedOutput.types]);
-        this.inputs[0].addEventListener('disconnect', e => this.outputs[0].types = [SHAPE_VALUE]);
-    }
-    
-    
-
-    output_genRequest(gen)
-    {
-        // 'this' is the output
-
-        gen.scope.push({
-            nodeId:  this.node.id, 
-            paramId: NULL });
-
-        const [request, ignore] = this.node.genRequestStart(gen);
-        if (ignore) return request;
-
-
-        const input = this.node.inputs[0];
-
-
-        request.push(input.connected ? 1 : 0);
-
-        if (input.connected)
-            request.push(...pushInputOrParam(input, gen));
-
-        request.push(...this.node.paramX.genRequest(gen));
-        request.push(...this.node.paramY.genRequest(gen));
-
-        
-        gen.scope.pop();
-        pushUnique(gen.passedNodes, this.node);
-
-
-        return request;
-    }
-}
-
-
-
-class   OpRotate
-extends OperatorBase
-{
-    paramAngle;
-    paramCenterX;
-    paramCenterY;
-    paramShowCenter;
-
-
-
-    constructor()
-    {
-        super(ROTATE, 'rotate', 'rotate');
-
-        this.canDisable = true;
-
-        
-        this.addInput (new Input ([...SHAPE_VALUES, LIST_VALUE]));
-        this.addOutput(new Output([SHAPE_VALUE], this.output_genRequest));
-
-
-        this.addParam(this.paramAngle      = new NumberParam('angle',      'angle',       true, true, true, 0));
-        this.addParam(this.paramCenterX    = new NumberParam('centerX',    'center x',    true, true, true, 50, 0, 100));
-        this.addParam(this.paramCenterY    = new NumberParam('centerY',    'center y',    true, true, true, 50, 0, 100));
-        this.addParam(this.paramShowCenter = new NumberParam('showCenter', 'show center', true, true, true, 0, 0, 1));
-
-
-        this.paramAngle.controls[0].suffix      = '°';
-        this.paramAngle.controls[0].dragReverse = true;
-
-
-        this.paramCenterX.controls[0].suffix = '%';
-        this.paramCenterY.controls[0].suffix = '%';
-
-        this.paramCenterX.controls[0].min = Number.MIN_SAFE_INTEGER;
-        this.paramCenterX.controls[0].max = Number.MAX_SAFE_INTEGER;
-
-        this.paramCenterY.controls[0].min = Number.MIN_SAFE_INTEGER;
-        this.paramCenterY.controls[0].max = Number.MAX_SAFE_INTEGER;
-
-
-        this.paramShowCenter.controls[0].allowEditDecimals = false;
-
-
-        this.inputs[0].addEventListener('connect',    e => this.outputs[0].types = [...this.inputs[0].connectedOutput.types]);
-        this.inputs[0].addEventListener('disconnect', e => this.outputs[0].types = [SHAPE_VALUE]);
-    }
-    
-    
-
-    output_genRequest(gen)
-    {
-        // 'this' is the output
-
-        gen.scope.push({
-            nodeId:  this.node.id, 
-            paramId: NULL });
-
-        const [request, ignore] = this.node.genRequestStart(gen);
-        if (ignore) return request;
-
-
-        const input = this.node.inputs[0];
-
-
-        request.push(input.connected ? 1 : 0);
-
-        if (input.connected)
-            request.push(...pushInputOrParam(input, gen));
-
-        request.push(...this.node.paramAngle     .genRequest(gen));
-        request.push(...this.node.paramCenterX   .genRequest(gen));
-        request.push(...this.node.paramCenterY   .genRequest(gen));
-        request.push(...this.node.paramShowCenter.genRequest(gen));
-
-        
-        gen.scope.pop();
-        pushUnique(gen.passedNodes, this.node);
-
-
-        return request;
-    }
-
-
-
-    // updateValues(requestId, actionId, updateParamId, paramIds, values)
-    // {
-    //     super.updateValues(requestId, actionId, updateParamId, paramIds, values);
-
-
-    //     const bounds = values[paramIds.findIndex(id => id == 'bounds')];
-
-
-    //     if (bounds.width.value > 0)
-    //     {
-    //         this.paramCenterX.controls[0].displayMin = -bounds.width.value/2;
-    //         this.paramCenterX.controls[0].displayMax =  bounds.width.value/2;
-    //     }
-    //     else
-    //     {
-    //         this.paramCenterX.controls[0].displayMin = this.paramCenterX.controls[0].min;
-    //         this.paramCenterX.controls[0].displayMax = this.paramCenterX.controls[0].max;
-    //     }
-
-
-    //     if (bounds.height.value > 0)
-    //     {
-    //         this.paramCenterY.controls[0].displayMin = -bounds.height.value/2;
-    //         this.paramCenterY.controls[0].displayMax =  bounds.height.value/2;
-    //     }
-    //     else
-    //     {
-    //         this.paramCenterY.controls[0].displayMin = this.paramCenterY.controls[0].min;
-    //         this.paramCenterY.controls[0].displayMax = this.paramCenterY.controls[0].max;
-    //     }
-    // }
-}
-
-
-
-class   OpScale
-extends OperatorBase
-{
-    paramScaleX;
-    paramScaleY;
-    paramCenterX;
-    paramCenterY;
-    paramShowCenter;
-
-
-
-    constructor()
-    {
-        super(SCALE, 'scale', 'scale');
-
-        this.canDisable = true;
-
-        
-        this.addInput (new Input ([...SHAPE_VALUES, LIST_VALUE]));
-        this.addOutput(new Output([SHAPE_VALUE], this.output_genRequest));
-
-
-        this.addParam(this.paramScaleX     = new NumberParam('scaleX',     'width',       true, true, true, 100));
-        this.addParam(this.paramScaleY     = new NumberParam('scaleY',     'height',      true, true, true, 100));
-        this.addParam(this.paramCenterX    = new NumberParam('centerX',    'center x',    true, true, true,  50, 0, 100));
-        this.addParam(this.paramCenterY    = new NumberParam('centerY',    'center y',    true, true, true,  50, 0, 100));
-        this.addParam(this.paramShowCenter = new NumberParam('showCenter', 'show center', true, true, true,   0, 0, 1));
-
-
-        this.paramScaleX.controls[0].suffix = '%';
-        this.paramScaleY.controls[0].suffix = '%';
-
-        this.paramScaleX.controls[0].setMin(0);
-        this.paramScaleY.controls[0].setMin(0);
-
-
-        this.paramCenterX.controls[0].suffix = '%';
-        this.paramCenterY.controls[0].suffix = '%';
-
-        this.paramCenterX.controls[0].min = Number.MIN_SAFE_INTEGER;
-        this.paramCenterX.controls[0].max = Number.MAX_SAFE_INTEGER;
-
-        this.paramCenterY.controls[0].min = Number.MIN_SAFE_INTEGER;
-        this.paramCenterY.controls[0].max = Number.MAX_SAFE_INTEGER;
-
-
-        this.paramShowCenter.controls[0].allowEditDecimals = false;
-
-
-        this.inputs[0].addEventListener('connect',    e => this.outputs[0].types = [...this.inputs[0].connectedOutput.types]);
-        this.inputs[0].addEventListener('disconnect', e => this.outputs[0].types = [SHAPE_VALUE]);
-    }
-    
-    
-
-    output_genRequest(gen)
-    {
-        // 'this' is the output
-
-        gen.scope.push({
-            nodeId:  this.node.id, 
-            paramId: NULL });
-
-        const [request, ignore] = this.node.genRequestStart(gen);
-        if (ignore) return request;
-
-
-        const input = this.node.inputs[0];
-
-
-        request.push(input.connected ? 1 : 0);
-
-        if (input.connected)
-            request.push(...pushInputOrParam(input, gen));
-
-        request.push(...this.node.paramScaleX    .genRequest(gen));
-        request.push(...this.node.paramScaleY    .genRequest(gen));
-        request.push(...this.node.paramCenterX   .genRequest(gen));
-        request.push(...this.node.paramCenterY   .genRequest(gen));
-        request.push(...this.node.paramShowCenter.genRequest(gen));
-
-        
-        gen.scope.pop();
-        pushUnique(gen.passedNodes, this.node);
-
-
-        return request;
-    }
-
-
-
-    // updateValues(requestId, actionId, updateParamId, paramIds, values)
-    // {
-    //     super.updateValues(requestId, actionId, updateParamId, paramIds, values);
-
-
-    //     // const bounds = values[paramIds.findIndex(id => id == 'bounds')];
-
-        
-    //     // if (bounds.width.value > 0)
-    //     // {
-    //     //     this.paramCenterX.controls[0].displayMin = -bounds.width.value/2;
-    //     //     this.paramCenterX.controls[0].displayMax =  bounds.width.value/2;
-    //     // }
-    //     // else
-    //     // {
-    //     //     this.paramCenterX.controls[0].displayMin = this.paramCenterX.controls[0].min;
-    //     //     this.paramCenterX.controls[0].displayMax = this.paramCenterX.controls[0].max;
-    //     // }
-
-
-    //     // if (bounds.height.value > 0)
-    //     // {
-    //     //     this.paramCenterY.controls[0].displayMin = -bounds.height.value/2;
-    //     //     this.paramCenterY.controls[0].displayMax =  bounds.height.value/2;
-    //     // }
-    //     // else
-    //     // {
-    //     //     this.paramCenterY.controls[0].displayMin = this.paramCenterY.controls[0].min;
-    //     //     this.paramCenterY.controls[0].displayMax = this.paramCenterY.controls[0].max;
-    //     // }
-    // }
-}
-
-
-
-class   OpSkew
-extends OperatorBase
-{
-    paramSkewX;
-    paramSkewY;
-    paramCenterX;
-    paramCenterY;
-    paramShowCenter;
-
-
-
-    constructor()
-    {
-        super(SKEW, 'skew', 'skew');
-
-        this.canDisable = true;
-
-        
-        this.addInput (new Input ([...SHAPE_VALUES, LIST_VALUE]));
-        this.addOutput(new Output([SHAPE_VALUE], this.output_genRequest));
-
-
-        this.addParam(this.paramSkewX      = new NumberParam('skewX',      'skew x',      true, true, true));
-        this.addParam(this.paramSkewY      = new NumberParam('skewX',      'skew y',      true, true, true));
-        this.addParam(this.paramCenterX    = new NumberParam('centerX',    'center x',    true, true, true, 50, 0, 100));
-        this.addParam(this.paramCenterY    = new NumberParam('centerY',    'center y',    true, true, true, 50, 0, 100));
-        this.addParam(this.paramShowCenter = new NumberParam('showCenter', 'show center', true, true, true, 0, 0, 1));
-
-
-        this.paramCenterX.controls[0].suffix = '%';
-        this.paramCenterY.controls[0].suffix = '%';
-
-        this.paramCenterX.controls[0].min = Number.MIN_SAFE_INTEGER;
-        this.paramCenterX.controls[0].max = Number.MAX_SAFE_INTEGER;
-
-        this.paramCenterY.controls[0].min = Number.MIN_SAFE_INTEGER;
-        this.paramCenterY.controls[0].max = Number.MAX_SAFE_INTEGER;
-
-
-        this.paramShowCenter.controls[0].allowEditDecimals = false;
-
-
-        this.inputs[0].addEventListener('connect',    e => this.outputs[0].types = [...this.inputs[0].connectedOutput.types]);
-        this.inputs[0].addEventListener('disconnect', e => this.outputs[0].types = [SHAPE_VALUE]);
-    }
-    
-    
-
-    output_genRequest(gen)
-    {
-        // 'this' is the output
-
-        gen.scope.push({
-            nodeId:  this.node.id, 
-            paramId: NULL });
-
-        const [request, ignore] = this.node.genRequestStart(gen);
-        if (ignore) return request;
-
-
-        const input = this.node.inputs[0];
-
-
-        request.push(input.connected ? 1 : 0);
-
-        if (input.connected)
-            request.push(...pushInputOrParam(input, gen));
-
-        request.push(...this.node.paramSkewX     .genRequest(gen));
-        request.push(...this.node.paramSkewY     .genRequest(gen));
-        request.push(...this.node.paramCenterX   .genRequest(gen));
-        request.push(...this.node.paramCenterY   .genRequest(gen));
-        request.push(...this.node.paramShowCenter.genRequest(gen));
-
-        
-        gen.scope.pop();
-        pushUnique(gen.passedNodes, this.node);
-
-
-        return request;
-    }
-}
-
-
-
 class   OpColorStyle
 extends OperatorBase
 {
@@ -85896,6 +85919,1359 @@ extends OperatorBase
         pushUnique(gen.passedNodes, this.node);
 
         return request;
+    }
+}
+
+
+class OpLayerMask
+extends OperatorBase
+{
+    constructor()
+    {
+        super(LAYER_MASK, 'mask', 'mask');
+
+        this.canDisable = true;
+        
+
+        this.addOutput(new Output([LAYER_MASK_VALUE], this.output_genRequest, getNodeOutputValuesForUndo, this.output_backInit));
+    }
+    
+    
+    
+    output_genRequest(gen)
+    {
+        // 'this' is the output
+
+        gen.scope.push({
+            nodeId:  this.node.id, 
+            paramId: NULL });
+
+
+        const [request, ignore] = this.node.genRequestStart(gen);
+        if (ignore) return request;
+
+
+        gen.scope.pop();
+        pushUnique(gen.passedNodes, this.node);
+
+        return request;
+    }
+}
+
+
+class   OpShapeBase
+extends OperatorBase
+{
+    constructor(type, id, name, defWidth = defNodeWidth)
+    {
+        super(type, id, name, defWidth);
+    }
+
+
+
+    setName(newName, options = {})
+    {
+        super.setName(newName, options);
+
+        if (isValid(options.updateNodes))
+            pushUnique(options.updateNodes, this);
+    }
+
+
+
+    output_genRequest(gen)
+    {
+        // 'this' is the output
+
+        gen.scope.push({
+            nodeId:  this.node.id, 
+            paramId: NULL });
+
+        const [request, ignore] = this.node.genRequestStart(gen);
+        if (ignore) return request;
+                
+        
+        const paramIds = [];
+        
+        
+        const input = this.node.inputs[0];
+
+
+        request.push(input.connected ? 1 : 0);
+
+
+        if (input.connected)
+        {
+            request.push(...pushInputOrParam(input, gen));
+
+            for (const param of this.node.params)
+                if (   param.input 
+                    && param.input.connected
+                    && param.canShow())
+                    paramIds.push(param.id);
+        }
+        else
+        {
+            for (const param of this.node.params)
+                if (param.canShow())
+                    paramIds.push(param.id);
+        }
+
+
+        request.push(paramIds.length);
+
+        for (const paramId of paramIds)
+            request.push(paramId, ...this.node.params.find(p => p.id == paramId).genRequest(gen));            
+
+
+        gen.scope.pop();
+        pushUnique(gen.passedNodes, this.node);
+
+        return request;
+    }
+
+
+
+    updateParams()
+    {
+        const enable = !this.inputs[0].connected;
+        
+        for (const param of this.params)
+            param.enableControlText(enable);
+
+        this.updateParamControls();
+    }
+}
+
+
+
+class   OpShape
+extends OpShapeBase
+{
+    paramProperties;
+
+
+    constructor(type, id, name, defWidth = defNodeWidth)
+    {
+        super(type, id, name, defWidth);
+    }
+
+
+
+    addBaseParams()
+    {
+        this.addParam(this.paramProperties = new ListParam('props', 'styles', true, true, true));
+
+        this.paramProperties.itemName  = 'style';
+        this.paramProperties.showZero  = false;
+        this.paramProperties.listTypes = [...STYLE_VALUES];
+        this.paramProperties.input.types.push(...this.paramProperties.listTypes);
+    }
+}
+
+
+
+class   OpRectangle
+extends OpShape
+{
+    paramX;
+    paramY;
+    paramWidth;
+    paramHeight;
+    paramAngle;
+    paramRound;
+
+
+    
+    constructor()
+    {
+        super(RECTANGLE, 'rect', 'rectangle');
+
+        this.canDisable = true;
+        
+
+        this.addInput (this.createInputForObjects([RECTANGLE_VALUE], getNodeInputValuesForUndo));
+        this.addOutput(new Output([RECTANGLE_VALUE], this.output_genRequest));
+
+
+        this.addParam(this.paramX      = new NumberParam('x',      'x',      true, true, true,   0));
+        this.addParam(this.paramY      = new NumberParam('y',      'y',      true, true, true,   0));
+        this.addParam(this.paramWidth  = new NumberParam('width',  'width',  true, true, true, 100,    0.01));
+        this.addParam(this.paramHeight = new NumberParam('height', 'height', true, true, true, 100,    0.01));
+        this.addParam(this.paramAngle  = new NumberParam('angle',  'angle',  true, true, true,   0, -180,   180));
+        this.addParam(this.paramRound  = new NumberParam('round',  'round',  true, true, true,   0,    0));
+
+
+        this.paramWidth .addEventListener('change', () => this.updateRound());
+        this.paramHeight.addEventListener('change', () => this.updateRound());
+
+        this.paramAngle.controls[0].setSuffix('°', true);
+        this.paramAngle.controls[0].wrapValue   = true;
+        this.paramAngle.controls[0].dragReverse = true;
+
+
+        this.addBaseParams();
+    }
+
+
+
+    updateRound()
+    {
+        const min = Math.min(this.paramWidth.value.value, this.paramHeight.value.value);
+
+        this.paramRound.controls[0].displayMin = 0;
+        this.paramRound.controls[0].displayMax = min/2;
+
+        this.paramRound.controls[0].update();
+    }
+}
+
+
+class   OpLine
+extends OpShape
+{
+    paramX;
+    paramY;
+    paramWidth;
+    paramAngle;
+
+
+    
+    constructor()
+    {
+        super(LINE, 'line', 'line');
+
+        this.canDisable = true;
+
+        
+        this.addInput (this.createInputForObjects([LINE_VALUE], getNodeInputValuesForUndo));
+        this.addOutput(new Output([LINE_VALUE], this.output_genRequest));
+
+        this.addParam(this.paramX      = new NumberParam('x',      'x',      true, true, true,   0));
+        this.addParam(this.paramY      = new NumberParam('y',      'y',      true, true, true,   0));
+        this.addParam(this.paramWidth  = new NumberParam('width',  'width',  true, true, true, 100,    0.01));
+        this.addParam(this.paramAngle  = new NumberParam('angle',  'angle',  true, true, true,   0, -180,   180));
+        
+
+        this.paramAngle.controls[0].setSuffix('°', true);
+        this.paramAngle.controls[0].wrapValue   = true;
+        this.paramAngle.controls[0].dragReverse = true;
+
+
+        this.addBaseParams();
+    }
+}
+
+
+class   OpEllipse
+extends OpShape
+{
+    paramX;
+    paramY;
+    paramWidth;
+    paramHeight;
+    paramAngle;
+
+
+    
+    constructor()
+    {
+        super(ELLIPSE, 'ellipse', 'ellipse');
+
+        this.canDisable = true;
+        
+
+        this.addInput (this.createInputForObjects([ELLIPSE_VALUE], getNodeInputValuesForUndo));
+        this.addOutput(new Output([ELLIPSE_VALUE], this.output_genRequest));
+
+
+        this.addParam(this.paramX      = new NumberParam('x',      'x',      true, true, true,   0));
+        this.addParam(this.paramY      = new NumberParam('y',      'y',      true, true, true,   0));
+        this.addParam(this.paramWidth  = new NumberParam('width',  'width',  true, true, true, 100,    0.01));
+        this.addParam(this.paramHeight = new NumberParam('height', 'height', true, true, true, 100,    0.01));
+        this.addParam(this.paramAngle  = new NumberParam('angle',  'angle',  true, true, true,   0, -180,   180));
+        
+
+        this.paramAngle.controls[0].setSuffix('°', true);
+        this.paramAngle.controls[0].wrapValue   = true;
+        this.paramAngle.controls[0].dragReverse = true;
+
+
+        this.addBaseParams();
+    }
+}
+
+
+class   OpPolygon
+extends OpShape
+{
+    paramX;
+    paramY;
+    paramWidth;
+    paramHeight;
+    paramAngle;
+    paramRound;
+    paramCorners;
+
+
+    
+    constructor()
+    {
+        super(POLYGON, 'poly', 'polygon');
+
+        this.canDisable = true;
+
+        
+        this.addInput (this.createInputForObjects([POLYGON_VALUE], getNodeInputValuesForUndo));
+        this.addOutput(new Output([POLYGON_VALUE], this.output_genRequest));
+
+        this.addParam(this.paramX       = new NumberParam('x',       'x',       true, true, true,   0));
+        this.addParam(this.paramY       = new NumberParam('y',       'y',       true, true, true,   0));
+        this.addParam(this.paramWidth   = new NumberParam('width',   'width',   true, true, true, 100,    0.01));
+        this.addParam(this.paramHeight  = new NumberParam('height',  'height',  true, true, true, 100,    0.01));
+        this.addParam(this.paramAngle   = new NumberParam('angle',   'angle',   true, true, true,   0, -180,   180));
+        this.addParam(this.paramRound   = new NumberParam('round',   'round',   true, true, true,   0,    0));
+        this.addParam(this.paramCorners = new NumberParam('corners', 'corners', true, true, true,   3,    3));
+        
+
+        this.paramAngle.controls[0].setSuffix('°', true);
+        this.paramAngle.controls[0].wrapValue   = true;
+        this.paramAngle.controls[0].dragReverse = true;
+
+
+        this.addBaseParams();
+    }
+
+
+
+    updateRound()
+    {
+        const control = this.paramRound.controls[0];
+        const min     = Math.min(this.paramWidth.value, this.paramHeight.value);
+
+        control.setMin(0);
+        control.setMax(min/2);
+
+        control.update();
+    }
+}
+
+
+class   OpStar
+extends OpShape
+{
+    paramX;
+    paramY;
+    paramWidth;
+    paramHeight;
+    paramAngle;
+    paramRound;
+    paramPoints;
+    paramConvex;
+
+
+    
+    constructor()
+    {
+        super(STAR, 'star', 'star');
+
+        this.canDisable = true;
+
+        
+        this.addInput (this.createInputForObjects([STAR_VALUE], getNodeInputValuesForUndo));
+        this.addOutput(new Output([STAR_VALUE], this.output_genRequest));
+
+        this.addParam(this.paramX      = new NumberParam('x',      'x',      true, true, true,   0));
+        this.addParam(this.paramY      = new NumberParam('y',      'y',      true, true, true,   0));
+        this.addParam(this.paramWidth  = new NumberParam('width',  'width',  true, true, true, 100,    0.01));
+        this.addParam(this.paramHeight = new NumberParam('height', 'height', true, true, true, 100,    0.01));
+        this.addParam(this.paramAngle  = new NumberParam('angle',  'angle',  true, true, true,   0, -180,   180));
+        this.addParam(this.paramRound  = new NumberParam('round',  'round',  true, true, true,   0,    0));
+        this.addParam(this.paramPoints = new NumberParam('points', 'points', true, true, true,   5,    3));
+        this.addParam(this.paramConvex = new NumberParam('convex', 'convex', true, true, true,   38.2, 0, 100));
+        
+
+        this.paramAngle.controls[0].setSuffix('°', true);
+        this.paramAngle.controls[0].wrapValue   = true;
+        this.paramAngle.controls[0].dragReverse = true;
+
+        this.paramConvex.controls[0].setSuffix('%', true);
+
+
+        this.addBaseParams();
+    }
+
+
+
+    updateRound()
+    {
+        const control = this.paramRound.controls[0];
+        const min     = Math.min(this.paramWidth.value, this.paramHeight.value);
+
+        control.setMin(0);
+        control.setMax(min/2);
+
+        this.paramRound.controls[0].update();
+    }
+}
+
+
+class   OpTextShape
+extends OpShape
+{
+    paramText;
+    paramX;
+    paramY;
+    paramWidth;
+    paramHeight;
+    paramAngle;
+    paramFont;
+    paramStyle;
+    paramSize;
+    paramAlignH;
+    paramAlignV;
+    paramLineHeight;
+    paramLetterSpacing;
+
+
+    
+    constructor()
+    {
+        super(TEXTSHAPE, 'text', 'text');
+
+        this.canDisable = true;
+        
+
+        this.addInput (this.createInputForObjects([TEXTSHAPE_VALUE], getNodeInputValuesForUndo));
+        this.addOutput(new Output([TEXTSHAPE_VALUE], this.output_genRequest));
+
+
+        const interIndex = figUniqueFontNames.findIndex(f => f == 'Inter');
+
+      
+        this.addParam(this.paramText          = new   TextParam('text',          '',       true,  true));
+        this.addParam(this.paramX             = new NumberParam('x',             'x',      true,  true, true,   0));
+        this.addParam(this.paramY             = new NumberParam('y',             'y',      true,  true, true,   0));
+        this.addParam(this.paramWidth         = new NumberParam('width',         'width',  true,  true, true, 100,    0.01));
+        this.addParam(this.paramHeight        = new NumberParam('height',        'height', true,  true, true, 100,    0.01));
+        this.addParam(this.paramAngle         = new NumberParam('angle',         'angle',  true,  true, true,   0, -180,   180));
+        this.addParam(this.paramFont          = new SelectParam('font',          'font',   false, true, true, figUniqueFontNames, interIndex));
+        this.addParam(this.paramStyle         = new SelectParam('style',         'style',  false, true, true, [''], 0));
+        this.addParam(this.paramSize          = new NumberParam('size',          'size',   true,  true, true,  12, 1));
+        this.addParam(this.paramAlignH        = new SelectParam('alignH',        'align',  true,  true, true, ['left', 'center', 'right', 'justify'], 0));
+        this.addParam(this.paramAlignV        = new SelectParam('alignV',        'align',  true,  true, true, ['bottom', 'middle', 'top'], 1));
+        this.addParam(this.paramLineHeight    = new NumberParam('lineHeight',    'line',   true,  true, true, 100));
+        this.addParam(this.paramLetterSpacing = new NumberParam('letterSpacing', 'letter', true,  true, true, 0));
+
+
+        this.paramText.controls[0].textbox.style.textAlign = 'center';
+
+        this.paramAngle.controls[0].setSuffix('°', true);
+        this.paramAngle.controls[0].wrapValue   = true;
+        this.paramAngle.controls[0].dragReverse = true;
+
+        this.paramLineHeight   .controls[0].setSuffix('%', true);
+        this.paramLetterSpacing.controls[0].setSuffix('%', true);
+
+        this.addBaseParams();
+    }
+
+
+
+    updateParams()
+    {
+        const fontName = figUniqueFontNames[this.paramFont.value.toNumber()];
+        
+        this.paramStyle.setOptions(
+            figFonts
+                .filter(f => f.fontName.family == fontName)
+                .map(f => f.fontName.style));
+
+        this.paramStyle.controls[0].setMax(this.paramStyle.options.length-1);
+
+        super.updateParamControls();
+    }
+}
+
+
+class   OpPoint
+extends OpShapeBase
+{
+    paramX;
+    paramY;
+
+    zoom = 1;
+
+
+
+    constructor()
+    {
+        super(POINT, 'point', 'point');
+
+        this.addInput (new Input ([POINT_VALUE], getNodeInputValuesForUndo, this.input_getBackInitValue));
+        this.addOutput(new Output([POINT_VALUE], this.output_genRequest, getNodeOutputValuesForUndo, this.output_backInit));
+
+        this.addParam(this.paramX = new NumberParam('x', 'x', true, true, true, 0));
+        this.addParam(this.paramX = new NumberParam('y', 'y', true, true, true, 0));
+    }
+
+
+
+    input_getBackInitValue()
+    {
+        // 'this' is the input
+
+        return new PointValue(
+            this.nodeId,
+            this.node.paramX.value,
+            this.node.paramY.value);
+    }
+
+
+
+    output_backInit(value)
+    {
+        // 'this' is the output
+
+        console.assert(value.type == POINT_VALUE, 'expected POINT_VALUE in backInit()');
+        
+        this.node.paramX.setValue(value.x, false, true, false);
+        this.node.paramY.setValue(value.y, false, true, false);
+    }
+
+
+
+//     paramIsConsideredDefault(param)
+//     {
+//         return  param.isDefault()
+//             && !this.inputs[0].connected;
+//     }
+
+
+
+//     toJavascript(gen)
+//     {
+//         const conn = this.inputs[0].connected;
+
+
+//         gen.nTab++;
+//         const defs = this.toJsDefs(gen);
+//         gen.nTab--;
+
+
+//         let js = gen.NL + 'function ' + this.name + '(';
+        
+//         if (   conn 
+//             && defs == NULL)
+//             js += 'input';
+
+//         js += ')';
+
+
+//         js += gen.NL + '{';
+//         gen.nTab++;
+
+
+//         js += defs;
+
+
+//         js += gen.NL + 'return ';
+//         js += conn ? 'input' : this.toJsCode(gen);
+//         js += ';'
+
+
+//         gen.nTab--;
+//         js += gen.NL + '}';
+
+
+//         return js;
+//     }
+
+
+
+//     toJsDefs(gen)
+//     {
+//         if (  !this.inputs[0].connected
+//             || gen.connectedOut(this))
+//             return '';
+
+        
+//         let js = '';
+
+
+//         js += gen.NL + 'const input = ';
+//         js += this.inputs[0].connectedOutput.toJsCode(gen);
+//         js += ';';
+
+
+//         return js;
+//     }
+
+
+
+//     toJsCode(gen)
+//     {
+//         return this.inputs[0].connected
+//              ? this.inputs[0].connectedOutput.toJsCode(gen)
+//              : this.paramValue.value.toJsCode(gen);
+//     }
+}
+
+
+class   OpVectorPath
+extends OpShape
+{
+    paramPoints;
+    paramClosed;
+    paramDegree;
+    paramWinding;
+    paramRound;
+
+
+    
+    constructor()
+    {
+        super(VECTOR_PATH, 'path', 'path');
+
+        this.canDisable = true;
+
+
+        this.addInput(this.createInputForObjects([VECTOR_PATH_VALUE], getNodeInputValuesForUndo));
+        this.addOutput(new Output([VECTOR_PATH_VALUE], this.output_genRequest));
+
+
+        this.addParam(this.paramPoints  = new ListParam  ('points',  'points',  true,  true, true));
+        this.addParam(this.paramClosed  = new SelectParam('closed',  'closed',  false, true, true, ['open', 'closed'], 0));
+        this.addParam(this.paramDegree  = new SelectParam('degree',  'degree',  false, true, true, ['linear', 'quadratic', 'cubic', 'smooth', 'sine X', 'sine Y'], 3));
+        this.addParam(this.paramWinding = new SelectParam('winding', 'winding', false, true, true, ['even-odd', 'non-zero']));
+        this.addParam(this.paramRound   = new NumberParam('round',   'round',   true,  true, true, 0, 0));
+
+        
+        this.paramPoints.input.types.push(SHAPE_LIST_VALUE);
+        this.paramPoints.listTypes = [POINT_VALUE];
+
+        this.paramPoints.itemName    = 'point';
+        this.paramPoints.showZero    =  false;
+
+        this.paramDegree.reverseMenu =  true;
+
+
+        this.addBaseParams();
+    }
+}
+
+
+class OpShapeGroup
+extends OpShapeBase
+{
+    constructor()
+    {
+        super(SHAPE_GROUP, 'group', 'group');
+
+        this.variableInputs = true;
+        this.canDisable     = true;
+
+
+        this.addNewInput();
+        this.addOutput(new Output([SHAPE_GROUP_VALUE], this.output_genRequest));
+
+
+        this.addBaseParams();
+    }
+
+
+
+    addNewInput()
+    {
+        const newInput = new Input([SHAPE_LIST_VALUE, ...SHAPE_VALUES]);
+        newInput.isNew = true;
+
+        newInput.addEventListener('connect',    e => { onSimpleVariableConnectInput(e.detail.input); e.detail.input.isNew = false; });
+        newInput.addEventListener('disconnect', e => onSimpleVariableDisconnectInput(e.detail.input));
+
+        this.addInput(newInput);
+
+        return newInput;
+    }
+
+
+
+    output_genRequest(gen)
+    {
+        // 'this' is the output
+
+        gen.scope.push({
+            nodeId:  this.node.id, 
+            paramId: NULL });
+
+        const [request, ignore] = this.node.genRequestStart(gen);
+        if (ignore) return request;
+
+
+        const connectedInputs = this.node.inputs.filter(i => i.connected && !i.param);
+
+
+        request.push(connectedInputs.length); // utility values like param count are stored as numbers
+        
+        for (const input of connectedInputs)
+            request.push(...pushInputOrParam(input, gen));
+
+        
+        gen.scope.pop();
+        pushUnique(gen.passedNodes, this.node);
+
+        return request;
+    }
+}
+
+
+class   OpFrame
+extends OpShape
+{
+    paramX;
+    paramY;
+    paramWidth;
+    paramHeight;
+    paramAngle;
+    paramRound;
+    paramChildren;
+
+
+
+    constructor()
+    {
+        super(FRAME, 'frame', 'frame');
+
+        this.canDisable     = true;
+        this.variableInputs = true;
+
+
+        this.addInput(this.createInputForObjects([FRAME_VALUE], getNodeInputValuesForUndo));
+        this.addOutput(new Output([FRAME_VALUE], this.output_genRequest));
+
+
+        this.addParam(this.paramX        = new NumberParam('x',        'x',       true, true, true,   0));
+        this.addParam(this.paramY        = new NumberParam('y',        'y',       true, true, true,   0));
+        this.addParam(this.paramWidth    = new NumberParam('width',    'width',   true, true, true, 100,    0.01));
+        this.addParam(this.paramHeight   = new NumberParam('height',   'height',  true, true, true, 100,    0.01));
+        this.addParam(this.paramAngle    = new NumberParam('angle',    'angle',   true, true, true,   0, -180,   180));
+        this.addParam(this.paramRound    = new NumberParam('round',    'round',   true, true, true,   0,    0));
+        this.addParam(this.paramChildren = new ListParam  ('children', 'objects', true, true, true));
+
+
+        this.paramWidth .addEventListener('change', () => this.updateRound());
+        this.paramHeight.addEventListener('change', () => this.updateRound());
+
+        this.paramAngle.controls[0].setSuffix('°', true);
+        this.paramAngle.controls[0].wrapValue   = true;
+        this.paramAngle.controls[0].dragReverse = true;
+
+
+        this.paramChildren.input.types.push(SHAPE_LIST_VALUE, ...SHAPE_VALUES);
+        this.paramChildren.listTypes    = SHAPE_VALUES;
+        this.paramChildren.itemName     = 'object';
+        this.paramChildren.showZero     = false;
+        this.paramChildren.getItemCount = () => 0;
+
+
+        this.addBaseParams();
+    }
+    
+    
+    
+    updateRound()
+    {
+        const min = Math.min(
+            this.paramWidth .value.value, 
+            this.paramHeight.value.value);
+
+        this.paramRound.controls[0].displayMin = 0;
+        this.paramRound.controls[0].displayMax = min/2;
+
+        this.paramRound.controls[0].update();
+    }
+
+
+
+    updateValues(requestId, actionId, updateParamId, paramIds, values)
+    {
+        super.updateValues(requestId, actionId, updateParamId, paramIds, values);
+        
+        const children = values[paramIds.findIndex(id => id == 'children')];
+        const nObjects = values[paramIds.findIndex(id => id == 'nObjects')];
+
+        this.paramChildren.getItemCount = () => nObjects.value;
+        this.paramChildren.output.types = [finalListTypeFromItems(children.items)];
+    }
+}
+
+
+
+class   OpMove
+extends OperatorBase
+{
+    paramX;
+    paramY;
+
+
+
+    constructor()
+    {
+        super(MOVE, 'move', 'move');
+
+        this.canDisable = true;
+
+        
+        this.addInput (new Input (SHAPE_VALUES));
+        this.addOutput(new Output([SHAPE_VALUE], this.output_genRequest));
+
+
+        this.addParam(this.paramX = new NumberParam('x', 'x', true, true, true));
+        this.addParam(this.paramY = new NumberParam('y', 'y', true, true, true));
+
+
+        this.inputs[0].addEventListener('connect',    e => this.outputs[0].types = [...this.inputs[0].connectedOutput.types]);
+        this.inputs[0].addEventListener('disconnect', e => this.outputs[0].types = [SHAPE_VALUE]);
+    }
+    
+    
+
+    output_genRequest(gen)
+    {
+        // 'this' is the output
+
+        gen.scope.push({
+            nodeId:  this.node.id, 
+            paramId: NULL });
+
+        const [request, ignore] = this.node.genRequestStart(gen);
+        if (ignore) return request;
+
+
+        const input = this.node.inputs[0];
+
+
+        request.push(input.connected ? 1 : 0);
+
+        if (input.connected)
+            request.push(...pushInputOrParam(input, gen));
+
+        request.push(...this.node.paramX.genRequest(gen));
+        request.push(...this.node.paramY.genRequest(gen));
+
+        
+        gen.scope.pop();
+        pushUnique(gen.passedNodes, this.node);
+
+
+        return request;
+    }
+}
+
+
+
+class   OpRotate
+extends OperatorBase
+{
+    paramAngle;
+    paramCenterX;
+    paramCenterY;
+    paramShowCenter;
+
+
+
+    constructor()
+    {
+        super(ROTATE, 'rotate', 'rotate');
+
+        this.canDisable = true;
+
+        
+        this.addInput (new Input ([...SHAPE_VALUES, LIST_VALUE]));
+        this.addOutput(new Output([SHAPE_VALUE], this.output_genRequest));
+
+
+        this.addParam(this.paramAngle      = new NumberParam('angle',      'angle',       true, true, true, 0));
+        this.addParam(this.paramCenterX    = new NumberParam('centerX',    'center x',    true, true, true, 50, 0, 100));
+        this.addParam(this.paramCenterY    = new NumberParam('centerY',    'center y',    true, true, true, 50, 0, 100));
+        this.addParam(this.paramShowCenter = new NumberParam('showCenter', 'show center', true, true, true, 0, 0, 1));
+
+
+        this.paramAngle.controls[0].suffix      = '°';
+        this.paramAngle.controls[0].dragReverse = true;
+
+
+        this.paramCenterX.controls[0].suffix = '%';
+        this.paramCenterY.controls[0].suffix = '%';
+
+        this.paramCenterX.controls[0].min = Number.MIN_SAFE_INTEGER;
+        this.paramCenterX.controls[0].max = Number.MAX_SAFE_INTEGER;
+
+        this.paramCenterY.controls[0].min = Number.MIN_SAFE_INTEGER;
+        this.paramCenterY.controls[0].max = Number.MAX_SAFE_INTEGER;
+
+
+        this.paramShowCenter.controls[0].allowEditDecimals = false;
+
+
+        this.inputs[0].addEventListener('connect',    e => this.outputs[0].types = [...this.inputs[0].connectedOutput.types]);
+        this.inputs[0].addEventListener('disconnect', e => this.outputs[0].types = [SHAPE_VALUE]);
+    }
+    
+    
+
+    output_genRequest(gen)
+    {
+        // 'this' is the output
+
+        gen.scope.push({
+            nodeId:  this.node.id, 
+            paramId: NULL });
+
+        const [request, ignore] = this.node.genRequestStart(gen);
+        if (ignore) return request;
+
+
+        const input = this.node.inputs[0];
+
+
+        request.push(input.connected ? 1 : 0);
+
+        if (input.connected)
+            request.push(...pushInputOrParam(input, gen));
+
+        request.push(...this.node.paramAngle     .genRequest(gen));
+        request.push(...this.node.paramCenterX   .genRequest(gen));
+        request.push(...this.node.paramCenterY   .genRequest(gen));
+        request.push(...this.node.paramShowCenter.genRequest(gen));
+
+        
+        gen.scope.pop();
+        pushUnique(gen.passedNodes, this.node);
+
+
+        return request;
+    }
+
+
+
+    // updateValues(requestId, actionId, updateParamId, paramIds, values)
+    // {
+    //     super.updateValues(requestId, actionId, updateParamId, paramIds, values);
+
+
+    //     const bounds = values[paramIds.findIndex(id => id == 'bounds')];
+
+
+    //     if (bounds.width.value > 0)
+    //     {
+    //         this.paramCenterX.controls[0].displayMin = -bounds.width.value/2;
+    //         this.paramCenterX.controls[0].displayMax =  bounds.width.value/2;
+    //     }
+    //     else
+    //     {
+    //         this.paramCenterX.controls[0].displayMin = this.paramCenterX.controls[0].min;
+    //         this.paramCenterX.controls[0].displayMax = this.paramCenterX.controls[0].max;
+    //     }
+
+
+    //     if (bounds.height.value > 0)
+    //     {
+    //         this.paramCenterY.controls[0].displayMin = -bounds.height.value/2;
+    //         this.paramCenterY.controls[0].displayMax =  bounds.height.value/2;
+    //     }
+    //     else
+    //     {
+    //         this.paramCenterY.controls[0].displayMin = this.paramCenterY.controls[0].min;
+    //         this.paramCenterY.controls[0].displayMax = this.paramCenterY.controls[0].max;
+    //     }
+    // }
+}
+
+
+
+class   OpScale
+extends OperatorBase
+{
+    paramScaleX;
+    paramScaleY;
+    paramCenterX;
+    paramCenterY;
+    paramShowCenter;
+
+
+
+    constructor()
+    {
+        super(SCALE, 'scale', 'scale');
+
+        this.canDisable = true;
+
+        
+        this.addInput (new Input ([...SHAPE_VALUES, LIST_VALUE]));
+        this.addOutput(new Output([SHAPE_VALUE], this.output_genRequest));
+
+
+        this.addParam(this.paramScaleX     = new NumberParam('scaleX',     'width',       true, true, true, 100));
+        this.addParam(this.paramScaleY     = new NumberParam('scaleY',     'height',      true, true, true, 100));
+        this.addParam(this.paramCenterX    = new NumberParam('centerX',    'center x',    true, true, true,  50, 0, 100));
+        this.addParam(this.paramCenterY    = new NumberParam('centerY',    'center y',    true, true, true,  50, 0, 100));
+        this.addParam(this.paramShowCenter = new NumberParam('showCenter', 'show center', true, true, true,   0, 0, 1));
+
+
+        this.paramScaleX.controls[0].suffix = '%';
+        this.paramScaleY.controls[0].suffix = '%';
+
+        this.paramScaleX.controls[0].setMin(0);
+        this.paramScaleY.controls[0].setMin(0);
+
+
+        this.paramCenterX.controls[0].suffix = '%';
+        this.paramCenterY.controls[0].suffix = '%';
+
+        this.paramCenterX.controls[0].min = Number.MIN_SAFE_INTEGER;
+        this.paramCenterX.controls[0].max = Number.MAX_SAFE_INTEGER;
+
+        this.paramCenterY.controls[0].min = Number.MIN_SAFE_INTEGER;
+        this.paramCenterY.controls[0].max = Number.MAX_SAFE_INTEGER;
+
+
+        this.paramShowCenter.controls[0].allowEditDecimals = false;
+
+
+        this.inputs[0].addEventListener('connect',    e => this.outputs[0].types = [...this.inputs[0].connectedOutput.types]);
+        this.inputs[0].addEventListener('disconnect', e => this.outputs[0].types = [SHAPE_VALUE]);
+    }
+    
+    
+
+    output_genRequest(gen)
+    {
+        // 'this' is the output
+
+        gen.scope.push({
+            nodeId:  this.node.id, 
+            paramId: NULL });
+
+        const [request, ignore] = this.node.genRequestStart(gen);
+        if (ignore) return request;
+
+
+        const input = this.node.inputs[0];
+
+
+        request.push(input.connected ? 1 : 0);
+
+        if (input.connected)
+            request.push(...pushInputOrParam(input, gen));
+
+        request.push(...this.node.paramScaleX    .genRequest(gen));
+        request.push(...this.node.paramScaleY    .genRequest(gen));
+        request.push(...this.node.paramCenterX   .genRequest(gen));
+        request.push(...this.node.paramCenterY   .genRequest(gen));
+        request.push(...this.node.paramShowCenter.genRequest(gen));
+
+        
+        gen.scope.pop();
+        pushUnique(gen.passedNodes, this.node);
+
+
+        return request;
+    }
+
+
+
+    // updateValues(requestId, actionId, updateParamId, paramIds, values)
+    // {
+    //     super.updateValues(requestId, actionId, updateParamId, paramIds, values);
+
+
+    //     // const bounds = values[paramIds.findIndex(id => id == 'bounds')];
+
+        
+    //     // if (bounds.width.value > 0)
+    //     // {
+    //     //     this.paramCenterX.controls[0].displayMin = -bounds.width.value/2;
+    //     //     this.paramCenterX.controls[0].displayMax =  bounds.width.value/2;
+    //     // }
+    //     // else
+    //     // {
+    //     //     this.paramCenterX.controls[0].displayMin = this.paramCenterX.controls[0].min;
+    //     //     this.paramCenterX.controls[0].displayMax = this.paramCenterX.controls[0].max;
+    //     // }
+
+
+    //     // if (bounds.height.value > 0)
+    //     // {
+    //     //     this.paramCenterY.controls[0].displayMin = -bounds.height.value/2;
+    //     //     this.paramCenterY.controls[0].displayMax =  bounds.height.value/2;
+    //     // }
+    //     // else
+    //     // {
+    //     //     this.paramCenterY.controls[0].displayMin = this.paramCenterY.controls[0].min;
+    //     //     this.paramCenterY.controls[0].displayMax = this.paramCenterY.controls[0].max;
+    //     // }
+    // }
+}
+
+
+
+class   OpSkew
+extends OperatorBase
+{
+    paramSkewX;
+    paramSkewY;
+    paramCenterX;
+    paramCenterY;
+    paramShowCenter;
+
+
+
+    constructor()
+    {
+        super(SKEW, 'skew', 'skew');
+
+        this.canDisable = true;
+
+        
+        this.addInput (new Input ([...SHAPE_VALUES, LIST_VALUE]));
+        this.addOutput(new Output([SHAPE_VALUE], this.output_genRequest));
+
+
+        this.addParam(this.paramSkewX      = new NumberParam('skewX',      'skew x',      true, true, true));
+        this.addParam(this.paramSkewY      = new NumberParam('skewX',      'skew y',      true, true, true));
+        this.addParam(this.paramCenterX    = new NumberParam('centerX',    'center x',    true, true, true, 50, 0, 100));
+        this.addParam(this.paramCenterY    = new NumberParam('centerY',    'center y',    true, true, true, 50, 0, 100));
+        this.addParam(this.paramShowCenter = new NumberParam('showCenter', 'show center', true, true, true, 0, 0, 1));
+
+
+        this.paramCenterX.controls[0].suffix = '%';
+        this.paramCenterY.controls[0].suffix = '%';
+
+        this.paramCenterX.controls[0].min = Number.MIN_SAFE_INTEGER;
+        this.paramCenterX.controls[0].max = Number.MAX_SAFE_INTEGER;
+
+        this.paramCenterY.controls[0].min = Number.MIN_SAFE_INTEGER;
+        this.paramCenterY.controls[0].max = Number.MAX_SAFE_INTEGER;
+
+
+        this.paramShowCenter.controls[0].allowEditDecimals = false;
+
+
+        this.inputs[0].addEventListener('connect',    e => this.outputs[0].types = [...this.inputs[0].connectedOutput.types]);
+        this.inputs[0].addEventListener('disconnect', e => this.outputs[0].types = [SHAPE_VALUE]);
+    }
+    
+    
+
+    output_genRequest(gen)
+    {
+        // 'this' is the output
+
+        gen.scope.push({
+            nodeId:  this.node.id, 
+            paramId: NULL });
+
+        const [request, ignore] = this.node.genRequestStart(gen);
+        if (ignore) return request;
+
+
+        const input = this.node.inputs[0];
+
+
+        request.push(input.connected ? 1 : 0);
+
+        if (input.connected)
+            request.push(...pushInputOrParam(input, gen));
+
+        request.push(...this.node.paramSkewX     .genRequest(gen));
+        request.push(...this.node.paramSkewY     .genRequest(gen));
+        request.push(...this.node.paramCenterX   .genRequest(gen));
+        request.push(...this.node.paramCenterY   .genRequest(gen));
+        request.push(...this.node.paramShowCenter.genRequest(gen));
+
+        
+        gen.scope.pop();
+        pushUnique(gen.passedNodes, this.node);
+
+
+        return request;
+    }
+}
+
+
+
+class OpShapeBooleanBase
+extends OpShapeBase
+{
+    paramX;
+    paramY;
+    paramWidth;
+    paramHeight;
+    paramChildren;
+
+
+    
+    constructor(type, id, name)
+    {
+        super(type, id, name);
+
+        this.canDisable = true;
+
+
+        this.addInput (this.createInputForObjects([BOOLEAN_VALUE], getNodeInputValuesForUndo));
+        this.addOutput(new Output([BOOLEAN_VALUE], this.output_genRequest));
+
+
+        this.addParam(this.paramX        = new NumberParam('x',        'x',       true, false, false,   0));
+        this.addParam(this.paramY        = new NumberParam('y',        'y',       true, false, false,   0));
+        this.addParam(this.paramWidth    = new NumberParam('width',    'width',   true, false, false, 100, 0.01));
+        this.addParam(this.paramHeight   = new NumberParam('height',   'height',  true, false, false, 100, 0.01));
+        this.addParam(this.paramChildren = new ListParam  ('children', 'objects', true, true,  true));
+
+        
+        this.paramChildren.input.types.push(SHAPE_LIST_VALUE, ...SHAPE_VALUES);
+        this.paramChildren.listTypes    = SHAPE_VALUES;
+        this.paramChildren.itemName     = 'object';
+        this.paramChildren.showZero     = false;
+        this.paramChildren.getItemCount = () => 0;
+
+
+        this.addBaseParams();
+    }
+
+
+
+    updateParams()
+    {
+        super.updateParams();
+
+        this.paramX     .enableControlText(false);
+        this.paramY     .enableControlText(false);
+        this.paramWidth .enableControlText(false);
+        this.paramHeight.enableControlText(false);
+
+        this.updateParamControls();
+    }
+
+
+
+    updateValues(requestId, actionId, updateParamId, paramIds, values)
+    {
+        const nObjects = values[paramIds.findIndex(id => id == 'nObjects')];
+
+        this.paramChildren.getItemCount = () => nObjects.value;
+
+        super.updateValues(requestId, actionId, updateParamId, paramIds, values);
+    }
+}
+
+
+class OpShapeBoolean
+extends OpShapeBase
+{
+    paramOperation;
+    paramX;
+    paramY;
+    paramWidth;
+    paramHeight;
+    paramChildren;
+
+
+    
+    constructor()
+    {
+        super(BOOLEAN, 'boolean', 'boolean');
+
+        this.canDisable = true;
+
+
+        this.addInput (this.createInputForObjects([BOOLEAN_VALUE], getNodeInputValuesForUndo));
+        this.addOutput(new Output([BOOLEAN_VALUE], this.output_genRequest));
+
+
+        this.addParam(this.paramOperation = new SelectParam('operation', '',        false, true,  true,  ['union', 'subtract', 'intersect', 'exclude'], 0));
+        this.addParam(this.paramX         = new NumberParam('x',         'x',       true,  false, false,   0));
+        this.addParam(this.paramY         = new NumberParam('y',         'y',       true,  false, false,   0));
+        this.addParam(this.paramWidth     = new NumberParam('width',     'width',   true,  false, false, 100, 0.01));
+        this.addParam(this.paramHeight    = new NumberParam('height',    'height',  true,  false, false, 100, 0.01));
+        this.addParam(this.paramChildren  = new ListParam  ('children',  'objects', true,  true,  true));
+
+        
+        this.paramChildren.input.types.push(SHAPE_LIST_VALUE, ...SHAPE_VALUES);
+        this.paramChildren.listTypes    = SHAPE_VALUES;
+        this.paramChildren.itemName     = 'object';
+        this.paramChildren.showZero     = false;
+        this.paramChildren.getItemCount = () => 0;
+
+
+        this.addBaseParams();
+    }
+
+
+
+    updateParams()
+    {
+        super.updateParams();
+
+        this.paramOperation.enableControlText(true);
+        this.paramX        .enableControlText(false);
+        this.paramY        .enableControlText(false);
+        this.paramWidth    .enableControlText(false);
+        this.paramHeight   .enableControlText(false);
+
+        this.updateParamControls();
+    }
+
+
+
+    updateValues(requestId, actionId, updateParamId, paramIds, values)
+    {
+        const nObjects = values[paramIds.findIndex(id => id == 'nObjects')];
+
+        this.paramChildren.getItemCount = () => nObjects.value;
+
+        super.updateValues(requestId, actionId, updateParamId, paramIds, values);
+    }
+}
+
+
+class   OpShapeUnion
+extends OpShapeBooleanBase
+{
+    constructor()
+    {
+        super(BOOL_UNION, 'union', 'union');
+    }
+}
+
+
+class   OpShapeSubtract
+extends OpShapeBooleanBase
+{
+    constructor()
+    {
+        super(BOOL_SUBTRACT, 'subtract', 'subtract');
+    }
+}
+
+
+class   OpShapeIntersect
+extends OpShapeBooleanBase
+{
+    constructor()
+    {
+        super(BOOL_INTERSECT, 'intersect', 'intersect');
+    }
+}
+
+
+class   OpShapeExclude
+extends OpShapeBooleanBase
+{
+    constructor()
+    {
+        super(BOOL_EXCLUDE, 'exclude', 'exclude');
     }
 }
 
@@ -94692,6 +96068,8 @@ function createNode(nodeType, creatingButton = null, createdNodeId = -1, options
         case LAYER_BLUR:              node = new OpLayerBlur();         break;
         case BACK_BLUR:               node = new OpBackBlur();          break;
 
+        case LAYER_MASK:              node = new OpLayerMask();         break;
+
         case COLOR_STYLE:             node = new OpColorStyle(options); break;
 
         case RECTANGLE:               node = new OpRectangle();         break;
@@ -94703,6 +96081,8 @@ function createNode(nodeType, creatingButton = null, createdNodeId = -1, options
         case VECTOR_PATH:             node = new OpVectorPath();        break;
         case SHAPE_GROUP:             node = new OpShapeGroup();        break;
         case FRAME:                   node = new OpFrame();             break;
+
+        case BOOLEAN:                 node = new OpShapeBoolean();      break;
 
         case MOVE:                    node = new OpMove();              break;
         case ROTATE:                  node = new OpRotate();            break;
@@ -95363,29 +96743,31 @@ function uiUpdateValuesAndObjects(requestId, actionId, updateNodeId, updateParam
 
                 switch (type)
                 {
-                    case         LIST_VALUE: value = parseListValue       (values[i++])[0];  break;
-
-                    case       NUMBER_VALUE: value = parseNumberValue     (values[i++])[0];  break;
-                    case         TEXT_VALUE: value = parseTextValue       (values[i++])[0];  break;
-                    case        COLOR_VALUE: value = parseColorValue      (values[i++])[0];  break;
-
-                    case         FILL_VALUE: value = parseFillValue       (values[i++])[0];  break;
-                    case       STROKE_VALUE: value = parseStrokeValue     (values[i++])[0];  break;
-                    case  DROP_SHADOW_VALUE: value = parseDropShadowValue (values[i++])[0];  break;
-                    case INNER_SHADOW_VALUE: value = parseInnerShadowValue(values[i++])[0];  break;
-                    case   LAYER_BLUR_VALUE: value = parseLayerBlurValue  (values[i++])[0];  break;
-                    case    BACK_BLUR_VALUE: value = parseBackBlurValue   (values[i++])[0];  break;
-
-                    case    RECTANGLE_VALUE: value = parseRectangleValue  (values[i++])[0];  break;
-                    case         LINE_VALUE: value = parseLineValue       (values[i++])[0];  break;
-                    case      ELLIPSE_VALUE: value = parseEllipseValue    (values[i++])[0];  break;
-                    case      POLYGON_VALUE: value = parsePolygonValue    (values[i++])[0];  break;
-                    case         STAR_VALUE: value = parseStarValue       (values[i++])[0];  break;
-                    case    TEXTSHAPE_VALUE: value = parseTextShapeValue  (values[i++])[0];  break;
-                    case        POINT_VALUE: value = parsePointValue      (values[i++])[0];  break;
-                    case  VECTOR_PATH_VALUE: value = parseVectorPathValue (values[i++])[0];  break;
-                    case  SHAPE_GROUP_VALUE: value = parseShapeGroupValue (values[i++])[0];  break;
-                    case        FRAME_VALUE: value = parseFrameValue      (values[i++])[0];  break;
+                    case         LIST_VALUE: value = parseListValue        (values[i++])[0];  break;
+  
+                    case       NUMBER_VALUE: value = parseNumberValue      (values[i++])[0];  break;
+                    case         TEXT_VALUE: value = parseTextValue        (values[i++])[0];  break;
+                    case        COLOR_VALUE: value = parseColorValue       (values[i++])[0];  break;
+  
+                    case         FILL_VALUE: value = parseFillValue        (values[i++])[0];  break;
+                    case       STROKE_VALUE: value = parseStrokeValue      (values[i++])[0];  break;
+                    case  DROP_SHADOW_VALUE: value = parseDropShadowValue  (values[i++])[0];  break;
+                    case INNER_SHADOW_VALUE: value = parseInnerShadowValue (values[i++])[0];  break;
+                    case   LAYER_BLUR_VALUE: value = parseLayerBlurValue   (values[i++])[0];  break;
+                    case    BACK_BLUR_VALUE: value = parseBackBlurValue    (values[i++])[0];  break;
+                    case   LAYER_MASK_VALUE: value = parseLayerMaskValue   (values[i++])[0];  break;
+  
+                    case    RECTANGLE_VALUE: value = parseRectangleValue   (values[i++])[0];  break;
+                    case         LINE_VALUE: value = parseLineValue        (values[i++])[0];  break;
+                    case      ELLIPSE_VALUE: value = parseEllipseValue     (values[i++])[0];  break;
+                    case      POLYGON_VALUE: value = parsePolygonValue     (values[i++])[0];  break;
+                    case         STAR_VALUE: value = parseStarValue        (values[i++])[0];  break;
+                    case    TEXTSHAPE_VALUE: value = parseTextShapeValue   (values[i++])[0];  break;
+                    case        POINT_VALUE: value = parsePointValue       (values[i++])[0];  break;
+                    case  VECTOR_PATH_VALUE: value = parseVectorPathValue  (values[i++])[0];  break;
+                    case      BOOLEAN_VALUE: value = parseShapeBooleanValue(values[i++])[0];  break;
+                    case  SHAPE_GROUP_VALUE: value = parseShapeGroupValue  (values[i++])[0];  break;
+                    case        FRAME_VALUE: value = parseFrameValue       (values[i++])[0];  break;
                     
                     default: console.assert(false, 'unknown type \'' + type + '\'');
                 }
@@ -95885,6 +97267,13 @@ function editSelectedGroup()
     const groupNode = graphView.selectedNodes[0];
 
     
+    // set group as current page
+
+
+    // hide page nodes
+
+
+    // show group nodes
 }
 
 

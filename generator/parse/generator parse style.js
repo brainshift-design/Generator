@@ -561,6 +561,45 @@ function genParseBackBlur(parse)
 
 
 
+function genParseLayerMaskValue(parse)
+{
+    parse.pos++; // LAYER_MASK_VALUE
+
+    const mask = parse.move();
+
+    if (parse.settings.logRequests) 
+        logReqValue(LAYER_MASK_VALUE, mask, parse);
+
+    return parseLayerMaskValue(mask)[0];
+}
+
+
+
+function genParseLayerMask(parse)
+{
+    const [, nodeId, options, ignore] = genParseNodeStart(parse);
+
+
+    const mask = new GLayerMask(nodeId, options);
+
+
+    if (parse.settings.logRequests) 
+        logReq(mask, parse, ignore);
+
+
+    if (ignore)
+    {
+        genParseNodeEnd(parse, mask);
+        return parse.parsedNodes.find(n => n.nodeId == nodeId);
+    }
+
+
+    genParseNodeEnd(parse, mask);
+    return mask;
+}
+
+
+
 // function genParseColorStyleValue(parse)
 // {
 //     parse.pos++; // COLOR_STYLE_VALUE

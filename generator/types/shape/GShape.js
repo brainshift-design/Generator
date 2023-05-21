@@ -202,6 +202,9 @@ extends GShapeBase
                         prop.radius.toNumber(),
                         prop.visible ]);
                 }
+
+                else if (prop.type == LAYER_MASK_VALUE)
+                    obj.isMask = true;
             }
         }
 

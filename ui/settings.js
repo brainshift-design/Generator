@@ -223,8 +223,8 @@ function updateMenuItemShowBoolValues()
 {
     graph.nodes
         .filter(n => 
-                 BOOLEAN_TYPES.includes(n.type)
-            || CONDITION_TYPES.includes(n.type)
+               NUMBER_BOOLEAN_TYPES.includes(n.type)
+            ||      CONDITION_TYPES.includes(n.type)
             || n.type == IF_ELSE)
         .forEach(n => n.updateNode());
 }

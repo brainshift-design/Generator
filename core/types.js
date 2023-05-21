@@ -85,7 +85,7 @@ const NUMBER_DIVIDE           = 'DIV';
 const NUMBER_MODULO           = 'MOD';   
 const NUMBER_EXPONENT         = 'EXP';
 
-const NUMBER_BOOLEAN          = 'BOOL';  
+const NUMBER_BOOLEAN          = 'NBOOL';  
 const NUMBER_NOT              = 'NOT';
 const NUMBER_AND              = 'AND';
 const NUMBER_OR               = 'OR';
@@ -117,7 +117,7 @@ const MATH_TYPES =
 ];
 
 
-const BOOLEAN_TYPES =
+const NUMBER_BOOLEAN_TYPES =
 [
     NUMBER_BOOLEAN,
     NUMBER_NOT,
@@ -166,7 +166,7 @@ const NUMBER_TYPES =
     NUMBER_ANIMATE,
 
     ...MATH_TYPES,
-    ...BOOLEAN_TYPES,
+    ...NUMBER_BOOLEAN_TYPES,
     ...CONDITION_TYPES,
     ...TRIG_TYPES
 ];
@@ -255,13 +255,18 @@ const BACK_BLUR_VALUE    = 'BBLR#';
 const BACK_BLUR          = 'BBLR';
 const BACK_BLUR_TYPES    = [BACK_BLUR_VALUE, BACK_BLUR];
 
+const LAYER_MASK_VALUE   = 'MASK#';
+const LAYER_MASK         = 'MASK';
+const LAYER_MASK_TYPES   = [LAYER_MASK_VALUE, LAYER_MASK];
+
 
 const EFFECT_TYPES =
 [
     ...DROP_SHADOW_TYPES,
     ...INNER_SHADOW_TYPES,
     ...LAYER_BLUR_TYPES,
-    ...BACK_BLUR_TYPES
+    ...BACK_BLUR_TYPES,
+    ...LAYER_MASK_TYPES
 ];
 
 
@@ -273,7 +278,8 @@ const STYLE_VALUES =
     DROP_SHADOW_VALUE,
     INNER_SHADOW_VALUE,
     LAYER_BLUR_VALUE,
-    BACK_BLUR_VALUE
+    BACK_BLUR_VALUE,
+    LAYER_MASK_VALUE
 ];
 
 
@@ -336,6 +342,26 @@ const POINT_TYPES =
 ];
 
 
+const BOOLEAN            = 'BOOL';
+const BOOLEAN_VALUE      = 'BOOL#';
+
+const BOOL_UNION         = 'BOOLU';
+const BOOL_SUBTRACT      = 'BOOLS';
+const BOOL_INTERSECT     = 'BOOLI';
+const BOOL_EXCLUDE       = 'BOOLE';
+
+
+const BOOLEAN_TYPES =
+[
+    BOOLEAN,
+    BOOLEAN_VALUE,
+    BOOL_UNION,
+    BOOL_SUBTRACT,
+    BOOL_INTERSECT,
+    BOOL_EXCLUDE
+]
+
+
 const SHAPE_VALUES =
 [
     SHAPE_VALUE,
@@ -349,7 +375,8 @@ const SHAPE_VALUES =
     POINT_VALUE,
     VECTOR_PATH_VALUE,
     SHAPE_GROUP_VALUE,
-    FRAME_VALUE
+    FRAME_VALUE,
+    BOOLEAN_VALUE
 ];
 
 
@@ -367,6 +394,7 @@ const SHAPE_TYPES =
     ...VECTOR_PATH_TYPES,
     ...SHAPE_GROUP_TYPES,
     ...FRAME_TYPES,
+    ...BOOLEAN_TYPES,
 
     MOVE,
     ROTATE,

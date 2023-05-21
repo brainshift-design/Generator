@@ -50,17 +50,11 @@ extends GOperator
             {
                 for (let j = 0; j < this.inputs[i].objects.length; j++, o++)
                 {
-                    //console.log('this.inputs[i].objects[j] =', this.inputs[i].objects[j]);
-                    //const obj = this.inputs[i].objects[j].copy();
                     const obj = copyFigmaObject(this.inputs[i].objects[j]);
 
-                    obj.nodeId = this.nodeId;
-
+                    obj.nodeId   = this.nodeId;
                     obj.objectId = obj.objectId + OBJECT_SEPARATOR + this.nodeId;
-                    // if (obj.objectId != NULL) obj.objectId += ' ';
-                    // obj.objectId += (o + 1).toString();
-                    
-                    obj.listId = i;
+                    obj.listId   = i;
 
                     this.objects.push(obj);
                 }

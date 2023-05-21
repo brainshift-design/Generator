@@ -3713,7 +3713,7 @@ const NUMBER_DIVIDE           = 'DIV';
 const NUMBER_MODULO           = 'MOD';   
 const NUMBER_EXPONENT         = 'EXP';
 
-const NUMBER_BOOLEAN          = 'BOOL';  
+const NUMBER_BOOLEAN          = 'NBOOL';  
 const NUMBER_NOT              = 'NOT';
 const NUMBER_AND              = 'AND';
 const NUMBER_OR               = 'OR';
@@ -3745,7 +3745,7 @@ const MATH_TYPES =
 ];
 
 
-const BOOLEAN_TYPES =
+const NUMBER_BOOLEAN_TYPES =
 [
     NUMBER_BOOLEAN,
     NUMBER_NOT,
@@ -3794,7 +3794,7 @@ const NUMBER_TYPES =
     NUMBER_ANIMATE,
 
     ...MATH_TYPES,
-    ...BOOLEAN_TYPES,
+    ...NUMBER_BOOLEAN_TYPES,
     ...CONDITION_TYPES,
     ...TRIG_TYPES
 ];
@@ -3883,13 +3883,18 @@ const BACK_BLUR_VALUE    = 'BBLR#';
 const BACK_BLUR          = 'BBLR';
 const BACK_BLUR_TYPES    = [BACK_BLUR_VALUE, BACK_BLUR];
 
+const LAYER_MASK_VALUE   = 'MASK#';
+const LAYER_MASK         = 'MASK';
+const LAYER_MASK_TYPES   = [LAYER_MASK_VALUE, LAYER_MASK];
+
 
 const EFFECT_TYPES =
 [
     ...DROP_SHADOW_TYPES,
     ...INNER_SHADOW_TYPES,
     ...LAYER_BLUR_TYPES,
-    ...BACK_BLUR_TYPES
+    ...BACK_BLUR_TYPES,
+    ...LAYER_MASK_TYPES
 ];
 
 
@@ -3901,7 +3906,8 @@ const STYLE_VALUES =
     DROP_SHADOW_VALUE,
     INNER_SHADOW_VALUE,
     LAYER_BLUR_VALUE,
-    BACK_BLUR_VALUE
+    BACK_BLUR_VALUE,
+    LAYER_MASK_VALUE
 ];
 
 
@@ -3964,6 +3970,26 @@ const POINT_TYPES =
 ];
 
 
+const BOOLEAN            = 'BOOL';
+const BOOLEAN_VALUE      = 'BOOL#';
+
+const BOOL_UNION         = 'BOOLU';
+const BOOL_SUBTRACT      = 'BOOLS';
+const BOOL_INTERSECT     = 'BOOLI';
+const BOOL_EXCLUDE       = 'BOOLE';
+
+
+const BOOLEAN_TYPES =
+[
+    BOOLEAN,
+    BOOLEAN_VALUE,
+    BOOL_UNION,
+    BOOL_SUBTRACT,
+    BOOL_INTERSECT,
+    BOOL_EXCLUDE
+]
+
+
 const SHAPE_VALUES =
 [
     SHAPE_VALUE,
@@ -3977,7 +4003,8 @@ const SHAPE_VALUES =
     POINT_VALUE,
     VECTOR_PATH_VALUE,
     SHAPE_GROUP_VALUE,
-    FRAME_VALUE
+    FRAME_VALUE,
+    BOOLEAN_VALUE
 ];
 
 
@@ -3995,6 +4022,7 @@ const SHAPE_TYPES =
     ...VECTOR_PATH_TYPES,
     ...SHAPE_GROUP_TYPES,
     ...FRAME_TYPES,
+    ...BOOLEAN_TYPES,
 
     MOVE,
     ROTATE,
@@ -4316,6 +4344,8 @@ extends FigmaObject
     strokeMiterLimit;
 
     effects = [];
+
+    isMask  = false;
 
 
 
@@ -5053,6 +5083,40 @@ function getSineYSegment(_pointP, _point, _pointN)
 }
 
 
+class FigmaBoolean
+extends FigmaShape
+{
+    operation;
+    children;
+
+
+
+    constructor(nodeId, objectId, objectName, operation, children = [])
+    {
+        super(BOOLEAN, nodeId, objectId, objectName);
+        
+        this.operation = operation;
+        this.children  = children.map(c => c.copy());
+    }
+
+
+
+    copy()
+    {
+        const copy = new FigmaBoolean(
+            this.nodeId,
+            this.objectId,
+            this.objectName,
+            this.operation,
+            this.children);
+
+        copy.copyBase(this);
+
+        return copy;
+    }
+}
+
+
 class FigmaShapeGroup
 extends FigmaShape
 {
@@ -5360,22 +5424,23 @@ function displayValue(type, value)
 
     switch (type)
     {
-        case        LIST_VALUE: return parseListValue      (value)[0].toDisplayString();
-        case      NUMBER_VALUE: return parseNumberValue    (value)[0].toDisplayString();
-        case        TEXT_VALUE: const val = parseTextValue (value)[0]; return val == '' ? '\'\'' : val.toDisplayString();
-        case       COLOR_VALUE: return parseColorValue     (value)[0].toDisplayString();
-        case        FILL_VALUE: return parseFillValue      (value)[0].toDisplayString();
-        case      STROKE_VALUE: return parseStrokeValue    (value)[0].toDisplayString();
-        case   RECTANGLE_VALUE: return parseRectangleValue (value)[0].toDisplayString();
-        case        LINE_VALUE: return parseLineValue      (value)[0].toDisplayString();
-        case     ELLIPSE_VALUE: return parseEllipseValue   (value)[0].toDisplayString();
-        case     POLYGON_VALUE: return parsePolygonValue   (value)[0].toDisplayString();
-        case        STAR_VALUE: return parseStarValue      (value)[0].toDisplayString();
-        case   TEXTSHAPE_VALUE: return parseTextShapeValue (value)[0].toDisplayString();
-        case       POINT_VALUE: return parsePointValue     (value)[0].toDisplayString();
-        case VECTOR_PATH_VALUE: return parseVectorPathValue(value)[0].toDisplayString();
-        case SHAPE_GROUP_VALUE: return parseShapeGroupValue(value)[0].toDisplayString();
-        case       FRAME_VALUE: return parseFrameValue     (value)[0].toDisplayString();
+        case        LIST_VALUE: return parseListValue        (value)[0].toDisplayString();
+        case      NUMBER_VALUE: return parseNumberValue      (value)[0].toDisplayString();
+        case        TEXT_VALUE: const val = parseTextValue   (value)[0]; return val == '' ? '\'\'' : val.toDisplayString();
+        case       COLOR_VALUE: return parseColorValue       (value)[0].toDisplayString();
+        case        FILL_VALUE: return parseFillValue        (value)[0].toDisplayString();
+        case      STROKE_VALUE: return parseStrokeValue      (value)[0].toDisplayString();
+        case   RECTANGLE_VALUE: return parseRectangleValue   (value)[0].toDisplayString();
+        case        LINE_VALUE: return parseLineValue        (value)[0].toDisplayString();
+        case     ELLIPSE_VALUE: return parseEllipseValue     (value)[0].toDisplayString();
+        case     POLYGON_VALUE: return parsePolygonValue     (value)[0].toDisplayString();
+        case        STAR_VALUE: return parseStarValue        (value)[0].toDisplayString();
+        case   TEXTSHAPE_VALUE: return parseTextShapeValue   (value)[0].toDisplayString();
+        case       POINT_VALUE: return parsePointValue       (value)[0].toDisplayString();
+        case VECTOR_PATH_VALUE: return parseVectorPathValue  (value)[0].toDisplayString();
+        case     BOOLEAN_VALUE: return parseShapeBooleanValue(value)[0].toDisplayString();
+        case SHAPE_GROUP_VALUE: return parseShapeGroupValue  (value)[0].toDisplayString();
+        case       FRAME_VALUE: return parseFrameValue       (value)[0].toDisplayString();
     }
 
 
@@ -5388,22 +5453,23 @@ function nullFromType(type)
 {
     switch (type)
     {
-        case        LIST_VALUE: return       ListValue.NaN;
-        case      NUMBER_VALUE: return     NumberValue.NaN;
-        case        TEXT_VALUE: return new TextValue();
-        case       COLOR_VALUE: return      ColorValue.NaN;
-        case        FILL_VALUE: return       FillValue.NaN;
-        case      STROKE_VALUE: return     StrokeValue.NaN;
-        case   RECTANGLE_VALUE: return  RectangleValue.NaN;
-        case        LINE_VALUE: return       LineValue.NaN;
-        case     ELLIPSE_VALUE: return    EllipseValue.NaN;
-        case     POLYGON_VALUE: return    PolygonValue.NaN;
-        case        STAR_VALUE: return       StarValue.NaN;
-        case   TEXTSHAPE_VALUE: return  TextShapeValue.NaN;
-        case       POINT_VALUE: return      PointValue.NaN;
-        case VECTOR_PATH_VALUE: return VectorPathValue.NaN;
-        case SHAPE_GROUP_VALUE: return ShapeGroupValue.NaN;
-        case       FRAME_VALUE: return      FrameValue.NaN;
+        case        LIST_VALUE: return         ListValue.NaN;
+        case      NUMBER_VALUE: return       NumberValue.NaN;
+        case        TEXT_VALUE: return       new TextValue();
+        case       COLOR_VALUE: return        ColorValue.NaN;
+        case        FILL_VALUE: return         FillValue.NaN;
+        case      STROKE_VALUE: return       StrokeValue.NaN;
+        case   RECTANGLE_VALUE: return    RectangleValue.NaN;
+        case        LINE_VALUE: return         LineValue.NaN;
+        case     ELLIPSE_VALUE: return      EllipseValue.NaN;
+        case     POLYGON_VALUE: return      PolygonValue.NaN;
+        case        STAR_VALUE: return         StarValue.NaN;
+        case   TEXTSHAPE_VALUE: return    TextShapeValue.NaN;
+        case       POINT_VALUE: return        PointValue.NaN;
+        case VECTOR_PATH_VALUE: return   VectorPathValue.NaN;
+        case     BOOLEAN_VALUE: return ShapeBooleanValue.NaN;
+        case SHAPE_GROUP_VALUE: return   ShapeGroupValue.NaN;
+        case       FRAME_VALUE: return        FrameValue.NaN;
     }
 
     console.assert(false, 'cannot determine null value from type \'' + type + '\'');
@@ -5830,6 +5896,7 @@ function parseListValue(str, i = -1)
             case INNER_SHADOW_VALUE: { const shadow  = parseInnerShadowValue(str, i);  i += shadow [1];  list.items.push(shadow [0]);  break; }
             case   LAYER_BLUR_VALUE: { const blur    = parseLayerBlurValue  (str, i);  i += blur   [1];  list.items.push(blur   [0]);  break; }
             case    BACK_BLUR_VALUE: { const blur    = parseBackBlurValue   (str, i);  i += blur   [1];  list.items.push(blur   [0]);  break; }
+            case   LAYER_MASK_VALUE: { const mask    = parseLayerMaskValue  (str[i]);  i += mask   [1];  list.items.push(mask   [0]);  break; }
 
             case    RECTANGLE_VALUE: { const rect    = parseRectangleValue  (str, i);  i += rect   [1];  list.items.push(rect   [0]);  break; }
             case         LINE_VALUE: { const line    = parseLineValue       (str, i);  i += line   [1];  list.items.push(line   [0]);  break; }
@@ -7472,6 +7539,92 @@ function parseBackBlurValue(str, i = -1)
 
 
 
+class LayerMaskValue
+extends GValue
+{
+    visible;
+
+
+
+    constructor(visible = true)
+    {
+        super(LAYER_MASK_VALUE);
+
+        this.visible = visible;
+    }
+
+
+    
+    copy()
+    {
+        const copy = new LayerMaskValue(this.visible);
+
+        copy.copyBase(this);
+
+        return copy;
+    }
+
+
+
+    equals(mask)
+    {
+        return this.visible === mask.visible;
+    }
+
+
+
+    async eval(parse)
+    {
+        return this;
+    }
+
+
+
+    toString()
+    {
+        return 'mask';
+    }
+
+
+
+    toDisplayString()
+    {
+        return 'mask';
+    }
+
+
+
+    isValid()
+    {
+        return super.isValid();
+    }
+
+
+
+    getNaN()
+    {
+        return LayerMaskValue.NaN;
+    }
+
+
+
+    static NaN = Object.freeze(new LayerMaskValue(false));
+}
+
+
+
+function parseLayerMaskValue(str)
+{
+    const mask = 
+        str == NAN_DISPLAY
+        ? LayerMaskValue.NaN
+        : new LayerMaskValue(true);
+
+    return [mask, 1];
+}
+
+
+
 /*
     This is getting closer to Figma now, so here the format changes,
     and objects hold stroke values directly, which incoming stroke values just set.
@@ -8908,20 +9061,22 @@ function parseVectorPathValue(str, i = -1)
 
 
 
-class ShapeGroupValue
+class ShapeBooleanValue
 extends ShapeValue
 {
+    operation;
     children;
 
 
 
-    constructor(nodeId, children)
+    constructor(nodeId, operation, children)
     {
-        super(SHAPE_GROUP_VALUE, nodeId);
+        super(BOOLEAN_VALUE, nodeId);
 
-        this.children = children;
+        this.operation = operation;
+        this.children  = children;
 
-        this.objects  = children.objects.map(o => o.copy());
+        this.objects   = children.objects.map(o => o.copy());
     }
 
 
@@ -8930,7 +9085,8 @@ extends ShapeValue
     {
         const copy = new ShapeGroupValue(
             this.nodeId,
-            this.children.copy());
+            this.operation.copy(),
+            this.children .copy());
 
         copy.copyBase(this);
 
@@ -8939,10 +9095,11 @@ extends ShapeValue
 
 
 
-    equals(group)
+    equals(bool)
     {
-        return group
-            && this.children.equals(group.children);
+        return bool
+            && this.operation.equals(bool.operation)
+            && this.children .equals(bool.children );
     }
 
 
@@ -8956,14 +9113,16 @@ extends ShapeValue
 
     toString()
     {
-        return this.children.toString();
+        return      this.operation.toString()
+            + ' ' + this.children .toString();
     }
 
 
 
     toDisplayString()
     {
-        return this.children.toDisplayString();
+        return      this.operation.toDisplayString()
+            + ' ' + this.children .toDisplayString();
     }
 
 
@@ -8977,8 +9136,125 @@ extends ShapeValue
 
     isValid()
     {
-        return this.children.isValid()
-            && super.isValid();
+        return super.isValid()
+            && this.operation.isValid()
+            && this.children .isValid();
+    }
+
+
+    
+    static NaN = new ShapeBooleanValue(
+        '',
+        NumberValue.NaN,
+        ListValue  .NaN);
+}
+
+
+
+function parseShapeBooleanValue(str, i = -1)
+{
+    if (   i <  0 && str    == NAN_DISPLAY
+        || i >= 0 && str[i] == NAN_DISPLAY)
+        return [ShapeBooleanValue.NaN, 1];
+
+
+    if (i < 0)
+    {
+        str = str.split(' ');
+        i   = 0;
+    }
+
+
+    const iStart = i;
+
+    const operation = parseNumberValue(str[i]); i += operation[1];
+    const children  = parseListValue  (str, i); i += children [1];
+
+    const bool = new ShapeBooleanValue(
+        '', // set node ID elsewhere
+        operation[0],
+        children [0]);
+
+
+    i = parseShapeBaseValue(str, i, bool);
+
+    
+    return [bool, i - iStart];
+}
+
+
+
+class ShapeGroupValue
+extends ShapeValue
+{
+    items = [];
+
+
+
+    constructor(nodeId, items = [])
+    {
+        super(SHAPE_GROUP_VALUE, nodeId);
+
+        this.items = items;
+
+        //this.objects  = children.objects.map(o => o.copy());
+    }
+
+
+
+    copy()
+    {
+        const copy = new ShapeGroupValue(
+            this.nodeId,
+            this.items.copy());
+
+        copy.copyBase(this);
+
+        return copy;
+    }
+
+
+
+    equals(group)
+    {
+        return group
+            && this.items.equals(group.children);
+    }
+
+
+
+    async eval(parse)
+    {
+        return this;
+    }
+
+
+
+    toString()
+    {
+        return this.items.toString();
+    }
+
+
+
+    toDisplayString()
+    {
+        return this.items.toDisplayString();
+    }
+
+
+
+    toValue()
+    {
+        return this.copy();
+    }
+
+
+
+    isValid()
+    {
+        return super.isValid()
+            && this.items.isValid();
     }
 
 
@@ -9246,17 +9522,11 @@ extends GOperator
             {
                 for (let j = 0; j < this.inputs[i].objects.length; j++, o++)
                 {
-                    //console.log('this.inputs[i].objects[j] =', this.inputs[i].objects[j]);
-                    //const obj = this.inputs[i].objects[j].copy();
                     const obj = copyFigmaObject(this.inputs[i].objects[j]);
 
-                    obj.nodeId = this.nodeId;
-
+                    obj.nodeId   = this.nodeId;
                     obj.objectId = obj.objectId + OBJECT_SEPARATOR + this.nodeId;
-                    // if (obj.objectId != NULL) obj.objectId += ' ';
-                    // obj.objectId += (o + 1).toString();
-                    
-                    obj.listId = i;
+                    obj.listId   = i;
 
                     this.objects.push(obj);
                 }
@@ -17759,6 +18029,53 @@ extends GOperator
 }
 
 
+class GLayerMask
+extends GOperator
+{
+    constructor(nodeId, options)
+    {
+        super(LAYER_MASK, nodeId, options);
+    }
+
+
+
+    copy()
+    {
+        const copy = new GLayerMask(this.nodeId, this.options);
+
+        copy.copyBase(this);
+
+        return copy;
+    }
+
+
+
+    async eval(parse)
+    {
+        if (this.isCached())
+            return this;
+``
+
+        this.value = new LayerMaskValue(this.options.enabled);
+
+
+        this.updateValues = [['', NullValue]];
+
+
+        this.validate();
+
+        return this;
+    }
+
+
+
+    toValue()
+    {
+        return new LayerMaskValue(this.options.enabled);
+    }
+}
+
+
 class GShapeBase
 extends GOperator
 {
@@ -18072,6 +18389,9 @@ extends GShapeBase
                         prop.radius.toNumber(),
                         prop.visible ]);
                 }
+
+                else if (prop.type == LAYER_MASK_VALUE)
+                    obj.isMask = true;
             }
         }
 
@@ -19627,9 +19947,7 @@ extends GShape
 class GShapeGroup
 extends GShapeBase
 {
-    input    = null;
-
-    children = null;
+    inputs = [];
 
 
 
@@ -19646,10 +19964,7 @@ extends GShapeBase
 
         copy.copyBase(this);
 
-        if (this.input) 
-            copy.input = this.input.copy();
-
-        if (this.children) copy.children = this.children.copy();
+        copy.inputs = this.inputs.map(i => i.copy());
 
         return copy;
     }
@@ -19662,38 +19977,68 @@ extends GShapeBase
             return this;
 
 
-        await this.evalBaseParams(parse);
+        this.value = new ShapeGroupValue(this.nodeId);
 
-        const children = this.children ? (await this.children.eval(parse)).toValue() : null;
+        //this.objects = [];
 
 
-        let input = null;
-
-        if (this.input)
+        for (let i = 0, o = 0; i < this.inputs.length; i++)
         {
-            input = (await this.input.eval(parse)).toValue();
+            await this.inputs[i].eval(parse);
 
-            this.value = new ShapeGroupValue(
-                this.nodeId,
-                children ?? input.children);
+            
+            // first copy the input objects
+
+            // if (this.options.enabled)
+            // {
+            //     for (let j = 0; j < this.inputs[i].objects.length; j++, o++)
+            //     {
+            //         const obj = copyFigmaObject(this.inputs[i].objects[j]);
+
+            //         obj.nodeId   = this.nodeId;
+            //         obj.objectId = obj.objectId + OBJECT_SEPARATOR + this.nodeId;
+            //         obj.listId   = -1;
+
+            //         this.objects.push(obj);
+            //     }
+            // }
+
+
+            // now create the output value
+
+            const input = this.inputs[i].toValue();
+
+            if (   input
+                && this.options.enabled)            
+            {
+                if (   input.type == SHAPE_LIST_VALUE
+                    || input.type == LIST_VALUE)
+                {
+                    for (const item of input.items)
+                    {
+                        if (!SHAPE_VALUES.includes(item.type))
+                            continue;
+
+                        this.value.items.push(item.copy());   
+                        //this.value.objects.push(...item.objects.map(o => o.copy()));
+                    }
+                }
+                else
+                {
+                    this.value.items.push(input.copy());
+                    //this.value.objects.push(...input.objects.map(o => o.copy()));
+                }
+            }
         }
-        else
-        {
-            this.value = new ShapeGroupValue(this.nodeId, children);
-        }
 
 
-        this.updateValues =
-        [
-            ['value',    this.value         ],
-            ['children', this.value.children]
-        ];
-
-
-        await this.evalShapeBase(parse, input);
+        //await this.evalShapeBase(parse, input);
 
 
         this.evalObjects(parse);
+
+
+        this.updateValues = [['value', this.value]];
 
 
         this.validate();
@@ -19709,7 +20054,7 @@ extends GShapeBase
             return;
             
 
-        if (this.value.children)
+        if (this.value.items)
         {
             const group = new FigmaShapeGroup(
                 this.nodeId,
@@ -19717,30 +20062,31 @@ extends GShapeBase
                 this.nodeName);
 
 
-            if (this.children.objects)
+            for (const item of this.value.items)
             {
-                for (let i = 0; i < this.children.objects.length; i++)
+                for (let i = 0; i < item.objects.length; i++)
                 {
-                    const obj    = this.children.objects[i].copy();
+                    const obj    = item.objects[i].copy();
                     obj.nodeId   = this.nodeId;
                     obj.objectId = obj.objectId + OBJECT_SEPARATOR + this.nodeId;
                     obj.listId   = -1;
+
                     group.children.push(obj);
                 }
             }
-
+            
 
             this.objects = [group];
 
-            this.updateValues.push(['nObjects', new NumberValue(
-                this.children.objects 
-                ? this.children.objects.length
-                : 0)]);
+            // this.updateValues.push(['nObjects', new NumberValue(
+            //     this.items.objects 
+            //     ? this.items.objects.length
+            //     : 0)]);
         }
         else
         {
             this.objects = [];
-            this.updateValues.push(['nObjects', new NumberValue(0)]);
+            // this.updateValues.push(['nObjects', new NumberValue(0)]);
         }
 
         
@@ -19753,8 +20099,7 @@ extends GShapeBase
     {
         super.pushValueUpdates(parse);
 
-        if (this.input   ) this.input   .pushValueUpdates(parse);
-        if (this.children) this.children.pushValueUpdates(parse);
+        this.inputs.forEach(i => i.pushValueUpdates(parse));
     }
 
 
@@ -19768,8 +20113,14 @@ extends GShapeBase
 
     isValid()
     {
-        return super.isValid()
-            && this.children.isValid();
+        if (!super.isValid()) 
+            return false;
+
+        for (const input of this.inputs)
+            if (!input.isValid())
+                return false;
+
+        return true;
     }
 
 
@@ -19778,8 +20129,7 @@ extends GShapeBase
     {
         super.invalidate();
 
-        if (this.input   ) this.input   .invalidate();
-        if (this.children) this.children.invalidate();
+        this.inputs.forEach(i => i.invalidate());
     }
 }
 
@@ -19996,6 +20346,193 @@ extends GShape
         if (this.children) this.children.invalidate();
     }
 }
+
+
+class GShapeBoolean
+extends GShapeBase
+{
+    input     = null;
+
+    operation = null
+    children  = null;
+
+
+
+    constructor(nodeId, options)
+    {
+        super(BOOLEAN, nodeId, options);
+    }
+
+
+
+    copy()
+    {
+        const copy = new GShapeBoolean(this.nodeId, this.options);
+
+        copy.copyBase(this);
+
+        if (this.input) 
+            copy.input = this.input.copy();
+
+        if (this.operation) copy.operation = this.operation.copy();
+        if (this.children ) copy.children  = this.children .copy();
+
+        return copy;
+    }
+
+
+
+    async eval(parse)
+    {
+        if (this.isCached())
+            return this;
+
+
+        await this.evalBaseParams(parse);
+
+        const operation = this.operation ? (await this.operation.eval(parse)).toValue() : null;
+        let   children  = this.children  ? (await this.children .eval(parse)).toValue() : null;
+
+
+        if (   children
+            && SHAPE_VALUES.includes(children.type)
+            && children.type != SHAPE_LIST_VALUE)
+            children = new ListValue([children]);
+
+
+        let input = null;
+
+        if (this.input)
+        {
+            input = (await this.input.eval(parse)).toValue();
+
+            this.value = new ShapeBooleanValue(
+                this.nodeId,
+                operation ?? input.operation,
+                children  ?? input.children);
+        }
+        else
+        {
+            this.value = new ShapeBooleanValue(
+                this.nodeId, 
+                operation,
+                children);
+        }
+
+
+        this.updateValues =
+        [
+            ['value',     this.value          ],
+            ['operation', this.value.operation],
+            ['children',  this.value.children ]
+        ];
+
+
+        await this.evalShapeBase(parse, input);
+
+
+        this.evalObjects(parse);
+
+
+        this.validate();
+
+        return this;
+    }
+
+
+
+    async evalObjects(parse, options = {})
+    {
+        if (!this.options.enabled)
+            return;
+            
+
+        if (this.value.children)
+        {
+            const bool = new FigmaBoolean(
+                this.nodeId,
+                this.nodeId,
+                this.nodeName,
+                this.operation);
+
+
+            if (this.children.objects)
+            {
+                for (let i = 0; i < this.children.objects.length; i++)
+                {
+                    const obj    = this.children.objects[i].copy();
+                    obj.nodeId   = this.nodeId;
+                    obj.objectId = obj.objectId + OBJECT_SEPARATOR + this.nodeId;
+                    obj.listId   = -1;
+                    bool.children.push(obj);
+                }
+            }
+
+
+            this.objects = [bool];
+
+            this.updateValues.push(['nObjects', new NumberValue(
+                this.children.objects 
+                ? this.children.objects.length
+                : 0)]);
+        }
+        else
+        {
+            this.objects = [];
+            this.updateValues.push(['nObjects', new NumberValue(0)]);
+        }
+
+        
+        await super.evalObjects(parse);
+    }
+
+
+
+    pushValueUpdates(parse)
+    {
+        super.pushValueUpdates(parse);
+
+        if (this.input   ) this.input   .pushValueUpdates(parse);
+        if (this.children) this.children.pushValueUpdates(parse);
+    }
+
+
+
+    toValue()
+    {
+        return this.value.copy();
+    }
+
+
+
+    isValid()
+    {
+        return super.isValid()
+            && this.children.isValid();
+    }
+
+
+
+    invalidate()
+    {
+        super.invalidate();
+
+        if (this.input   ) this.input   .invalidate();
+        if (this.children) this.children.invalidate();
+    }
+}
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 class GMove
@@ -21510,8 +22047,8 @@ function updateMenuItemShowBoolValues()
 {
     graph.nodes
         .filter(n => 
-                 BOOLEAN_TYPES.includes(n.type)
-            || CONDITION_TYPES.includes(n.type)
+               NUMBER_BOOLEAN_TYPES.includes(n.type)
+            ||      CONDITION_TYPES.includes(n.type)
             || n.type == IF_ELSE)
         .forEach(n => n.updateNode());
 }
@@ -24576,12 +25113,12 @@ function genParseVectorPath(parse)
 
 
 
-function genParseShapeGroup(parse)
+function genParseShapeBoolean(parse)
 {
     const [, nodeId, options, ignore] = genParseNodeStart(parse);
 
 
-    const group = new GShapeGroup(nodeId, options);
+    const bool = new GShapeBoolean(nodeId, options);
 
 
     let nInputs = -1;
@@ -24594,12 +25131,12 @@ function genParseShapeGroup(parse)
 
 
     if (parse.settings.logRequests) 
-        logReq(group, parse, ignore);
+        logReq(bool, parse, ignore);
 
 
     if (ignore) 
     {
-        genParseNodeEnd(parse, group);
+        genParseNodeEnd(parse, bool);
         return parse.parsedNodes.find(n => n.nodeId == nodeId);
     }
 
@@ -24608,7 +25145,7 @@ function genParseShapeGroup(parse)
 
 
     if (nInputs == 1)
-        group.input = genParse(parse);
+        bool.input = genParse(parse);
 
 
     const nParamIds = genParseParamCount(parse);
@@ -24621,16 +25158,54 @@ function genParseShapeGroup(parse)
 
         switch (paramId)
         {
-        case 'x':                         genParse(parse); break;
-        case 'y':                         genParse(parse); break;
-        case 'width':                     genParse(parse); break;
-        case 'height':                    genParse(parse); break;
-        case 'children': group.children = genParse(parse); break;
+        case 'children':  bool.children  = genParse(parse); break;
+        case 'operation': bool.operation = genParse(parse); break;
         }
     }
 
 
     parse.inParam = false;
+    parse.nTab--;
+
+
+    genParseNodeEnd(parse, bool);
+    return bool;
+}
+
+
+
+function genParseShapeGroup(parse)
+{
+    const [, nodeId, options, ignore] = genParseNodeStart(parse);
+
+
+    const group = new GShapeGroup(nodeId, options);
+
+
+    let nInputs = 0;
+    
+    if (!ignore)
+        nInputs = parseInt(parse.move());
+
+
+    if (parse.settings.logRequests) 
+        logReq(group, parse, ignore, nInputs);
+
+
+    if (ignore) 
+    {
+        genParseNodeEnd(parse, group);
+        return parse.parsedNodes.find(n => n.nodeId == nodeId);
+    }
+
+
+    parse.nTab++;
+
+
+    for (let i = 0; i < nInputs; i++)
+        group.inputs.push(genParse(parse));
+
+
     parse.nTab--;
 
 
@@ -25469,6 +26044,45 @@ function genParseBackBlur(parse)
 
 
 
+function genParseLayerMaskValue(parse)
+{
+    parse.pos++; // LAYER_MASK_VALUE
+
+    const mask = parse.move();
+
+    if (parse.settings.logRequests) 
+        logReqValue(LAYER_MASK_VALUE, mask, parse);
+
+    return parseLayerMaskValue(mask)[0];
+}
+
+
+
+function genParseLayerMask(parse)
+{
+    const [, nodeId, options, ignore] = genParseNodeStart(parse);
+
+
+    const mask = new GLayerMask(nodeId, options);
+
+
+    if (parse.settings.logRequests) 
+        logReq(mask, parse, ignore);
+
+
+    if (ignore)
+    {
+        genParseNodeEnd(parse, mask);
+        return parse.parsedNodes.find(n => n.nodeId == nodeId);
+    }
+
+
+    genParseNodeEnd(parse, mask);
+    return mask;
+}
+
+
+
 // function genParseColorStyleValue(parse)
 // {
 //     parse.pos++; // COLOR_STYLE_VALUE
@@ -26097,137 +26711,143 @@ function genParse(parse, inParam = true)
     let result = null;
 
 
-         if (parse.next == PARAM                  ) result = genParseParam           (parse);
+         if (parse.next == PARAM                  ) result = genParseParam            (parse);
         
     else if (parse.next ==        LIST_VALUE             
           || parse.next == NUMBER_LIST_VALUE             
           || parse.next ==   TEXT_LIST_VALUE             
-          || parse.next ==  SHAPE_LIST_VALUE      ) result = genParseListValue       (parse);
-
-    else if (parse.next == LIST                   ) result = genParseList            (parse);
-    else if (parse.next == LIST_EXPAND            ) result = genParseExpandList      (parse);
-    else if (parse.next == ITEMS                  ) result = genParseItems           (parse);
-    else if (parse.next == SELECT                 ) result = genParseSelect          (parse);
-    else if (parse.next == LIST_COUNT             ) result = genParseListCount       (parse);
-    else if (parse.next == IF_ELSE                ) result = genParseIfElse          (parse);
-    else if (parse.next == START                  ) result = genParseStart           (parse);
-    else if (parse.next == REPEAT                 ) result = genParseRepeat          (parse);
-    else if (parse.next == CACHE                  ) result = genParseCache           (parse);
-    else if (parse.next == COPY                   ) result = genParseCopy            (parse);
+          || parse.next ==  SHAPE_LIST_VALUE      ) result = genParseListValue        (parse);
+ 
+    else if (parse.next == LIST                   ) result = genParseList             (parse);
+    else if (parse.next == LIST_EXPAND            ) result = genParseExpandList       (parse);
+    else if (parse.next == ITEMS                  ) result = genParseItems            (parse);
+    else if (parse.next == SELECT                 ) result = genParseSelect           (parse);
+    else if (parse.next == LIST_COUNT             ) result = genParseListCount        (parse);
+    else if (parse.next == IF_ELSE                ) result = genParseIfElse           (parse);
+    else if (parse.next == START                  ) result = genParseStart            (parse);
+    else if (parse.next == REPEAT                 ) result = genParseRepeat           (parse);
+    else if (parse.next == CACHE                  ) result = genParseCache            (parse);
+    else if (parse.next == COPY                   ) result = genParseCopy             (parse);
+     
+    else if (parse.next == NUMBER_VALUE           ) result = genParseNumValue         (parse);
+    else if (parse.next == NUMBER                 ) result = genParseNumber           (parse);
+     
+    else if (parse.next == NUMBER_SIGN            ) result = genParseSign             (parse);
+    else if (parse.next == NUMBER_ABSOLUTE        ) result = genParseAbsolute         (parse);
+    else if (parse.next == NUMBER_ROUND           ) result = genParseRound            (parse);
+    else if (parse.next == NUMBER_LIMITS          ) result = genParseLimits           (parse);
+    else if (parse.next == NUMBER_RANDOM          ) result = genParseRandom           (parse);
+    else if (parse.next == NUMBER_CONSTANT        ) result = genParseConstant         (parse);
+    else if (parse.next == NUMBER_DISTRIBUTE      ) result = genParseDistribute       (parse);
+    else if (parse.next == NUMBER_SEQUENCE        ) result = genParseSequence         (parse);
+    else if (parse.next == NUMBER_INTERPOLATE     ) result = genParseInterpolate      (parse);
+    else if (parse.next == NUMBER_SOLVE           ) result = genParseSolve            (parse);
+    else if (parse.next == NUMBER_ANIMATE         ) result = genParseAnimate          (parse);
     
-    else if (parse.next == NUMBER_VALUE           ) result = genParseNumValue        (parse);
-    else if (parse.next == NUMBER                 ) result = genParseNumber          (parse);
-    
-    else if (parse.next == NUMBER_SIGN            ) result = genParseSign            (parse);
-    else if (parse.next == NUMBER_ABSOLUTE        ) result = genParseAbsolute        (parse);
-    else if (parse.next == NUMBER_ROUND           ) result = genParseRound           (parse);
-    else if (parse.next == NUMBER_LIMITS          ) result = genParseLimits          (parse);
-    else if (parse.next == NUMBER_RANDOM          ) result = genParseRandom          (parse);
-    else if (parse.next == NUMBER_CONSTANT        ) result = genParseConstant        (parse);
-    else if (parse.next == NUMBER_DISTRIBUTE      ) result = genParseDistribute      (parse);
-    else if (parse.next == NUMBER_SEQUENCE        ) result = genParseSequence        (parse);
-    else if (parse.next == NUMBER_INTERPOLATE     ) result = genParseInterpolate     (parse);
-    else if (parse.next == NUMBER_SOLVE           ) result = genParseSolve           (parse);
-    else if (parse.next == NUMBER_ANIMATE         ) result = genParseAnimate         (parse);
-    
-    else if (parse.next == NUMBER_MATH            ) result = genParseMath            (parse, (nodeId, options) => new GMath          (nodeId, options));
-    else if (parse.next == NUMBER_ADD             ) result = genParseArithmetic      (parse, (nodeId, options) => new GAdd           (nodeId, options));
-    else if (parse.next == NUMBER_SUBTRACT        ) result = genParseArithmetic      (parse, (nodeId, options) => new GSubtract      (nodeId, options));
-    else if (parse.next == NUMBER_MULTIPLY        ) result = genParseArithmetic      (parse, (nodeId, options) => new GMultiply      (nodeId, options));
-    else if (parse.next == NUMBER_DIVIDE          ) result = genParseArithmetic      (parse, (nodeId, options) => new GDivide        (nodeId, options));
-    else if (parse.next == NUMBER_MODULO          ) result = genParseArithmetic      (parse, (nodeId, options) => new GModulo        (nodeId, options));
-    else if (parse.next == NUMBER_EXPONENT        ) result = genParseArithmetic      (parse, (nodeId, options) => new GExponent      (nodeId, options));
-    
-    else if (parse.next == NUMBER_BOOLEAN         ) result = genParseBoolean         (parse);
-    else if (parse.next == NUMBER_NOT             ) result = genParseArithmetic      (parse, (nodeId, options) => new GNot           (nodeId, options));
-    else if (parse.next == NUMBER_AND             ) result = genParseArithmetic      (parse, (nodeId, options) => new GAnd           (nodeId, options));
-    else if (parse.next == NUMBER_OR              ) result = genParseArithmetic      (parse, (nodeId, options) => new GOr            (nodeId, options));
-    else if (parse.next == NUMBER_XOR             ) result = genParseArithmetic      (parse, (nodeId, options) => new GXor           (nodeId, options));
-    
-    else if (parse.next == NUMBER_CONDITION       ) result = genParseCondition       (parse);
-    else if (parse.next == NUMBER_EQUAL           ) result = genParseConditionBase   (parse, (nodeId, options) => new GEqual         (nodeId, options));
-    else if (parse.next == NUMBER_NOT_EQUAL       ) result = genParseConditionBase   (parse, (nodeId, options) => new GNotEqual      (nodeId, options));
-    else if (parse.next == NUMBER_LESS            ) result = genParseConditionBase   (parse, (nodeId, options) => new GLess          (nodeId, options));
-    else if (parse.next == NUMBER_LESS_OR_EQUAL   ) result = genParseConditionBase   (parse, (nodeId, options) => new GLessOrEqual   (nodeId, options));
-    else if (parse.next == NUMBER_GREATER         ) result = genParseConditionBase   (parse, (nodeId, options) => new GGreater       (nodeId, options));
-    else if (parse.next == NUMBER_GREATER_OR_EQUAL) result = genParseConditionBase   (parse, (nodeId, options) => new GGreaterOrEqual(nodeId, options));
-
-    else if (parse.next == NUMBER_TRIG            ) result = genParseTrigonometric   (parse);
-    else if (parse.next == NUMBER_SIN             ) result = genParseTrigBase        (parse, (nodeId, options) => new GSine          (nodeId, options));
-    else if (parse.next == NUMBER_COS             ) result = genParseTrigBase        (parse, (nodeId, options) => new GCosine        (nodeId, options));
-    else if (parse.next == NUMBER_TAN             ) result = genParseTrigBase        (parse, (nodeId, options) => new GTangent       (nodeId, options));
-
-    else if (parse.next == TEXT_VALUE             ) result = genParseTextValue       (parse);
-    else if (parse.next == TEXT                   ) result = genParseText            (parse);
-    else if (parse.next == TEXT_LENGTH            ) result = genParseTextLength      (parse);
-    else if (parse.next == TEXT_TRIM              ) result = genParseTextTrim        (parse);
-    else if (parse.next == TEXT_SUBSTRING         ) result = genParseTextSubstring   (parse);
-    else if (parse.next == TEXT_CHAR              ) result = genParseTextCharacter   (parse);
-    else if (parse.next == NUMBER_TO_TEXT         ) result = genParseNumberToText    (parse);
-    else if (parse.next == TEXT_REPLACE           ) result = genParseTextReplace     (parse);
-    else if (parse.next == TEXT_JOIN              ) result = genParseTextJoin        (parse);
-    else if (parse.next == TEXT_CSV               ) result = genParseTextCSV         (parse);
-    else if (parse.next == TEXT_FETCH             ) result = genParseTextFetch       (parse);
-
-    else if (parse.next == COLOR_VALUE            ) result = genParseColorValue      (parse);
-    else if (parse.next == COLOR                  ) result = genParseColor           (parse);
-    else if (parse.next == VALID_COLOR            ) result = genParseValidColor      (parse);
-    else if (parse.next == CORRECT_COLOR          ) result = genParseCorrectColor    (parse);
-    else if (parse.next == COLOR_CONTRAST         ) result = genParseColorContrast   (parse);
-    else if (parse.next == COLORBLIND             ) result = genParseColorBlind      (parse);
-    else if (parse.next == COLOR_INTERPOLATE      ) result = genParseColorInterpolate(parse);
-    else if (parse.next == COLOR_BLEND            ) result = genParseColorBlend      (parse);
+    else if (parse.next == NUMBER_MATH            ) result = genParseMath             (parse, (nodeId, options) => new GMath          (nodeId, options));
+    else if (parse.next == NUMBER_ADD             ) result = genParseArithmetic       (parse, (nodeId, options) => new GAdd           (nodeId, options));
+    else if (parse.next == NUMBER_SUBTRACT        ) result = genParseArithmetic       (parse, (nodeId, options) => new GSubtract      (nodeId, options));
+    else if (parse.next == NUMBER_MULTIPLY        ) result = genParseArithmetic       (parse, (nodeId, options) => new GMultiply      (nodeId, options));
+    else if (parse.next == NUMBER_DIVIDE          ) result = genParseArithmetic       (parse, (nodeId, options) => new GDivide        (nodeId, options));
+    else if (parse.next == NUMBER_MODULO          ) result = genParseArithmetic       (parse, (nodeId, options) => new GModulo        (nodeId, options));
+    else if (parse.next == NUMBER_EXPONENT        ) result = genParseArithmetic       (parse, (nodeId, options) => new GExponent      (nodeId, options));
      
-    else if (parse.next == FILL_VALUE             ) result = genParseFillValue       (parse);
-    else if (parse.next == FILL                   ) result = genParseFill            (parse);
+    else if (parse.next == NUMBER_BOOLEAN         ) result = genParseBoolean          (parse);
+    else if (parse.next == NUMBER_NOT             ) result = genParseArithmetic       (parse, (nodeId, options) => new GNot           (nodeId, options));
+    else if (parse.next == NUMBER_AND             ) result = genParseArithmetic       (parse, (nodeId, options) => new GAnd           (nodeId, options));
+    else if (parse.next == NUMBER_OR              ) result = genParseArithmetic       (parse, (nodeId, options) => new GOr            (nodeId, options));
+    else if (parse.next == NUMBER_XOR             ) result = genParseArithmetic       (parse, (nodeId, options) => new GXor           (nodeId, options));
      
-    else if (parse.next == STROKE_VALUE           ) result = genParseStrokeValue     (parse);
-    else if (parse.next == STROKE                 ) result = genParseStroke          (parse);
-     
-    else if (parse.next == COLOR_STOP_VALUE       ) result = genParseColorStopValue  (parse);
-    else if (parse.next == COLOR_STOP             ) result = genParseColorStop       (parse);
-     
-    else if (parse.next == DROP_SHADOW_VALUE      ) result = genParseDropShadowValue (parse);
-    else if (parse.next == DROP_SHADOW            ) result = genParseDropShadow      (parse);
-     
-    else if (parse.next == INNER_SHADOW_VALUE     ) result = genParseInnerShadowValue(parse);
-    else if (parse.next == INNER_SHADOW           ) result = genParseInnerShadow     (parse);
-     
-    else if (parse.next == LAYER_BLUR_VALUE       ) result = genParseLayerBlurValue  (parse);
-    else if (parse.next == LAYER_BLUR             ) result = genParseLayerBlur       (parse);
-     
-    else if (parse.next == BACK_BLUR_VALUE        ) result = genParseBackBlurValue   (parse);
-    else if (parse.next == BACK_BLUR              ) result = genParseBackBlur        (parse);
-     
-    else if (parse.next == COLOR_STYLE            ) result = genParseColorStyle      (parse);
-     
-    else if (parse.next == RECTANGLE              ) result = genParseRectangle       (parse);
-    else if (parse.next == LINE                   ) result = genParseLine            (parse);
-    else if (parse.next == ELLIPSE                ) result = genParseEllipse         (parse);
-    else if (parse.next == POLYGON                ) result = genParsePolygon         (parse);
-    else if (parse.next == STAR                   ) result = genParseStar            (parse);
-    else if (parse.next == TEXTSHAPE              ) result = genParseTextShape       (parse);
+    else if (parse.next == NUMBER_CONDITION       ) result = genParseCondition        (parse);
+    else if (parse.next == NUMBER_EQUAL           ) result = genParseConditionBase    (parse, (nodeId, options) => new GEqual         (nodeId, options));
+    else if (parse.next == NUMBER_NOT_EQUAL       ) result = genParseConditionBase    (parse, (nodeId, options) => new GNotEqual      (nodeId, options));
+    else if (parse.next == NUMBER_LESS            ) result = genParseConditionBase    (parse, (nodeId, options) => new GLess          (nodeId, options));
+    else if (parse.next == NUMBER_LESS_OR_EQUAL   ) result = genParseConditionBase    (parse, (nodeId, options) => new GLessOrEqual   (nodeId, options));
+    else if (parse.next == NUMBER_GREATER         ) result = genParseConditionBase    (parse, (nodeId, options) => new GGreater       (nodeId, options));
+    else if (parse.next == NUMBER_GREATER_OR_EQUAL) result = genParseConditionBase    (parse, (nodeId, options) => new GGreaterOrEqual(nodeId, options));
+ 
+    else if (parse.next == NUMBER_TRIG            ) result = genParseTrigonometric    (parse);
+    else if (parse.next == NUMBER_SIN             ) result = genParseTrigBase         (parse, (nodeId, options) => new GSine          (nodeId, options));
+    else if (parse.next == NUMBER_COS             ) result = genParseTrigBase         (parse, (nodeId, options) => new GCosine        (nodeId, options));
+    else if (parse.next == NUMBER_TAN             ) result = genParseTrigBase         (parse, (nodeId, options) => new GTangent       (nodeId, options));
+ 
+    else if (parse.next == TEXT_VALUE             ) result = genParseTextValue        (parse);
+    else if (parse.next == TEXT                   ) result = genParseText             (parse);
+    else if (parse.next == TEXT_LENGTH            ) result = genParseTextLength       (parse);
+    else if (parse.next == TEXT_TRIM              ) result = genParseTextTrim         (parse);
+    else if (parse.next == TEXT_SUBSTRING         ) result = genParseTextSubstring    (parse);
+    else if (parse.next == TEXT_CHAR              ) result = genParseTextCharacter    (parse);
+    else if (parse.next == NUMBER_TO_TEXT         ) result = genParseNumberToText     (parse);
+    else if (parse.next == TEXT_REPLACE           ) result = genParseTextReplace      (parse);
+    else if (parse.next == TEXT_JOIN              ) result = genParseTextJoin         (parse);
+    else if (parse.next == TEXT_CSV               ) result = genParseTextCSV          (parse);
+    else if (parse.next == TEXT_FETCH             ) result = genParseTextFetch        (parse);
+ 
+    else if (parse.next == COLOR_VALUE            ) result = genParseColorValue       (parse);
+    else if (parse.next == COLOR                  ) result = genParseColor            (parse);
+    else if (parse.next == VALID_COLOR            ) result = genParseValidColor       (parse);
+    else if (parse.next == CORRECT_COLOR          ) result = genParseCorrectColor     (parse);
+    else if (parse.next == COLOR_CONTRAST         ) result = genParseColorContrast    (parse);
+    else if (parse.next == COLORBLIND             ) result = genParseColorBlind       (parse);
+    else if (parse.next == COLOR_INTERPOLATE      ) result = genParseColorInterpolate (parse);
+    else if (parse.next == COLOR_BLEND            ) result = genParseColorBlend       (parse);
+      
+    else if (parse.next == FILL_VALUE             ) result = genParseFillValue        (parse);
+    else if (parse.next == FILL                   ) result = genParseFill             (parse);
+      
+    else if (parse.next == STROKE_VALUE           ) result = genParseStrokeValue      (parse);
+    else if (parse.next == STROKE                 ) result = genParseStroke           (parse);
+      
+    else if (parse.next == COLOR_STOP_VALUE       ) result = genParseColorStopValue   (parse);
+    else if (parse.next == COLOR_STOP             ) result = genParseColorStop        (parse);
+      
+    else if (parse.next == DROP_SHADOW_VALUE      ) result = genParseDropShadowValue  (parse);
+    else if (parse.next == DROP_SHADOW            ) result = genParseDropShadow       (parse);
+      
+    else if (parse.next == INNER_SHADOW_VALUE     ) result = genParseInnerShadowValue (parse);
+    else if (parse.next == INNER_SHADOW           ) result = genParseInnerShadow      (parse);
+      
+    else if (parse.next == LAYER_BLUR_VALUE       ) result = genParseLayerBlurValue   (parse);
+    else if (parse.next == LAYER_BLUR             ) result = genParseLayerBlur        (parse);
+      
+    else if (parse.next == BACK_BLUR_VALUE        ) result = genParseBackBlurValue    (parse);
+    else if (parse.next == BACK_BLUR              ) result = genParseBackBlur         (parse);
 
-    else if (parse.next == POINT_VALUE            ) result = genParsePointValue      (parse);
-    else if (parse.next == POINT                  ) result = genParsePoint           (parse);
-    else if (parse.next == VECTOR_PATH_VALUE      ) result = genParseVectorPathValue (parse);
-    else if (parse.next == VECTOR_PATH            ) result = genParseVectorPath      (parse);
+    else if (parse.next == LAYER_MASK_VALUE       ) result = genParseLayerMaskValue   (parse);
+    else if (parse.next == LAYER_MASK             ) result = genParseLayerMask        (parse);
+      
+    else if (parse.next == COLOR_STYLE            ) result = genParseColorStyle       (parse);
+      
+    else if (parse.next == RECTANGLE              ) result = genParseRectangle        (parse);
+    else if (parse.next == LINE                   ) result = genParseLine             (parse);
+    else if (parse.next == ELLIPSE                ) result = genParseEllipse          (parse);
+    else if (parse.next == POLYGON                ) result = genParsePolygon          (parse);
+    else if (parse.next == STAR                   ) result = genParseStar             (parse);
+    else if (parse.next == TEXTSHAPE              ) result = genParseTextShape        (parse);
+ 
+    else if (parse.next == POINT_VALUE            ) result = genParsePointValue       (parse);
+    else if (parse.next == POINT                  ) result = genParsePoint            (parse);
+    else if (parse.next == VECTOR_PATH_VALUE      ) result = genParseVectorPathValue  (parse);
+    else if (parse.next == VECTOR_PATH            ) result = genParseVectorPath       (parse);
 
-    else if (parse.next == SHAPE_GROUP_VALUE      ) result = genParseShapeGroupValue (parse);
-    else if (parse.next == SHAPE_GROUP            ) result = genParseShapeGroup      (parse);
+    else if (parse.next == BOOLEAN_VALUE          ) result = genParseShapeBooleanValue(parse);
+    else if (parse.next == BOOLEAN                ) result = genParseShapeBoolean     (parse);
 
-    else if (parse.next == FRAME_VALUE            ) result = genParseFrameValue      (parse);
-    else if (parse.next == FRAME                  ) result = genParseFrame           (parse);
-
-    else if (parse.next == MOVE                   ) result = genParseMove            (parse);
-    else if (parse.next == ROTATE                 ) result = genParseRotate          (parse);
-    else if (parse.next == SCALE                  ) result = genParseScale           (parse);
-    else if (parse.next == SKEW                   ) result = genParseSkew            (parse);
-
-    else if (parse.next == GROUP_NODE             ) result = genParseGroupNode       (parse);
-    else if (parse.next == GROUP_PARAM            ) result = genParseGroupParam      (parse);
-
-    else if (parse.next == COMMENT                ) result = genParseComment         (parse);
+    else if (parse.next == SHAPE_GROUP_VALUE      ) result = genParseShapeGroupValue  (parse);
+    else if (parse.next == SHAPE_GROUP            ) result = genParseShapeGroup       (parse);
+ 
+    else if (parse.next == FRAME_VALUE            ) result = genParseFrameValue       (parse);
+    else if (parse.next == FRAME                  ) result = genParseFrame            (parse);
+ 
+    else if (parse.next == MOVE                   ) result = genParseMove             (parse);
+    else if (parse.next == ROTATE                 ) result = genParseRotate           (parse);
+    else if (parse.next == SCALE                  ) result = genParseScale            (parse);
+    else if (parse.next == SKEW                   ) result = genParseSkew             (parse);
+ 
+    else if (parse.next == GROUP_NODE             ) result = genParseGroupNode        (parse);
+    else if (parse.next == GROUP_PARAM            ) result = genParseGroupParam       (parse);
+ 
+    else if (parse.next == COMMENT                ) result = genParseComment          (parse);
 
     else console.assert(false, 'unknown parse token \'' + parse.next + '\' @ ' + parse.pos);
 

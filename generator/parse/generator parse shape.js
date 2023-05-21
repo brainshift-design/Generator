@@ -555,12 +555,12 @@ function genParseVectorPath(parse)
 
 
 
-function genParseShapeGroup(parse)
+function genParseShapeBoolean(parse)
 {
     const [, nodeId, options, ignore] = genParseNodeStart(parse);
 
 
-    const group = new GShapeGroup(nodeId, options);
+    const bool = new GShapeBoolean(nodeId, options);
 
 
     let nInputs = -1;
@@ -573,12 +573,12 @@ function genParseShapeGroup(parse)
 
 
     if (parse.settings.logRequests) 
-        logReq(group, parse, ignore);
+        logReq(bool, parse, ignore);
 
 
     if (ignore) 
     {
-        genParseNodeEnd(parse, group);
+        genParseNodeEnd(parse, bool);
         return parse.parsedNodes.find(n => n.nodeId == nodeId);
     }
 
@@ -587,7 +587,7 @@ function genParseShapeGroup(parse)
 
 
     if (nInputs == 1)
-        group.input = genParse(parse);
+        bool.input = genParse(parse);
 
 
     const nParamIds = genParseParamCount(parse);
@@ -600,16 +600,54 @@ function genParseShapeGroup(parse)
 
         switch (paramId)
         {
-        case 'x':                         genParse(parse); break;
-        case 'y':                         genParse(parse); break;
-        case 'width':                     genParse(parse); break;
-        case 'height':                    genParse(parse); break;
-        case 'children': group.children = genParse(parse); break;
+        case 'children':  bool.children  = genParse(parse); break;
+        case 'operation': bool.operation = genParse(parse); break;
         }
     }
 
 
     parse.inParam = false;
+    parse.nTab--;
+
+
+    genParseNodeEnd(parse, bool);
+    return bool;
+}
+
+
+
+function genParseShapeGroup(parse)
+{
+    const [, nodeId, options, ignore] = genParseNodeStart(parse);
+
+
+    const group = new GShapeGroup(nodeId, options);
+
+
+    let nInputs = 0;
+    
+    if (!ignore)
+        nInputs = parseInt(parse.move());
+
+
+    if (parse.settings.logRequests) 
+        logReq(group, parse, ignore, nInputs);
+
+
+    if (ignore) 
+    {
+        genParseNodeEnd(parse, group);
+        return parse.parsedNodes.find(n => n.nodeId == nodeId);
+    }
+
+
+    parse.nTab++;
+
+
+    for (let i = 0; i < nInputs; i++)
+        group.inputs.push(genParse(parse));
+
+
     parse.nTab--;
 
 

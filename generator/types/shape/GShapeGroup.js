@@ -1,9 +1,7 @@
 class GShapeGroup
 extends GShapeBase
 {
-    input    = null;
-
-    children = null;
+    inputs = [];
 
 
 
@@ -20,10 +18,7 @@ extends GShapeBase
 
         copy.copyBase(this);
 
-        if (this.input) 
-            copy.input = this.input.copy();
-
-        if (this.children) copy.children = this.children.copy();
+        copy.inputs = this.inputs.map(i => i.copy());
 
         return copy;
     }
@@ -36,38 +31,68 @@ extends GShapeBase
             return this;
 
 
-        await this.evalBaseParams(parse);
+        this.value = new ShapeGroupValue(this.nodeId);
 
-        const children = this.children ? (await this.children.eval(parse)).toValue() : null;
+        //this.objects = [];
 
 
-        let input = null;
-
-        if (this.input)
+        for (let i = 0, o = 0; i < this.inputs.length; i++)
         {
-            input = (await this.input.eval(parse)).toValue();
+            await this.inputs[i].eval(parse);
 
-            this.value = new ShapeGroupValue(
-                this.nodeId,
-                children ?? input.children);
+            
+            // first copy the input objects
+
+            // if (this.options.enabled)
+            // {
+            //     for (let j = 0; j < this.inputs[i].objects.length; j++, o++)
+            //     {
+            //         const obj = copyFigmaObject(this.inputs[i].objects[j]);
+
+            //         obj.nodeId   = this.nodeId;
+            //         obj.objectId = obj.objectId + OBJECT_SEPARATOR + this.nodeId;
+            //         obj.listId   = -1;
+
+            //         this.objects.push(obj);
+            //     }
+            // }
+
+
+            // now create the output value
+
+            const input = this.inputs[i].toValue();
+
+            if (   input
+                && this.options.enabled)            
+            {
+                if (   input.type == SHAPE_LIST_VALUE
+                    || input.type == LIST_VALUE)
+                {
+                    for (const item of input.items)
+                    {
+                        if (!SHAPE_VALUES.includes(item.type))
+                            continue;
+
+                        this.value.items.push(item.copy());   
+                        //this.value.objects.push(...item.objects.map(o => o.copy()));
+                    }
+                }
+                else
+                {
+                    this.value.items.push(input.copy());
+                    //this.value.objects.push(...input.objects.map(o => o.copy()));
+                }
+            }
         }
-        else
-        {
-            this.value = new ShapeGroupValue(this.nodeId, children);
-        }
 
 
-        this.updateValues =
-        [
-            ['value',    this.value         ],
-            ['children', this.value.children]
-        ];
-
-
-        await this.evalShapeBase(parse, input);
+        //await this.evalShapeBase(parse, input);
 
 
         this.evalObjects(parse);
+
+
+        this.updateValues = [['value', this.value]];
 
 
         this.validate();
@@ -83,7 +108,7 @@ extends GShapeBase
             return;
             
 
-        if (this.value.children)
+        if (this.value.items)
         {
             const group = new FigmaShapeGroup(
                 this.nodeId,
@@ -91,30 +116,31 @@ extends GShapeBase
                 this.nodeName);
 
 
-            if (this.children.objects)
+            for (const item of this.value.items)
             {
-                for (let i = 0; i < this.children.objects.length; i++)
+                for (let i = 0; i < item.objects.length; i++)
                 {
-                    const obj    = this.children.objects[i].copy();
+                    const obj    = item.objects[i].copy();
                     obj.nodeId   = this.nodeId;
                     obj.objectId = obj.objectId + OBJECT_SEPARATOR + this.nodeId;
                     obj.listId   = -1;
+
                     group.children.push(obj);
                 }
             }
-
+            
 
             this.objects = [group];
 
-            this.updateValues.push(['nObjects', new NumberValue(
-                this.children.objects 
-                ? this.children.objects.length
-                : 0)]);
+            // this.updateValues.push(['nObjects', new NumberValue(
+            //     this.items.objects 
+            //     ? this.items.objects.length
+            //     : 0)]);
         }
         else
         {
             this.objects = [];
-            this.updateValues.push(['nObjects', new NumberValue(0)]);
+            // this.updateValues.push(['nObjects', new NumberValue(0)]);
         }
 
         
@@ -127,8 +153,7 @@ extends GShapeBase
     {
         super.pushValueUpdates(parse);
 
-        if (this.input   ) this.input   .pushValueUpdates(parse);
-        if (this.children) this.children.pushValueUpdates(parse);
+        this.inputs.forEach(i => i.pushValueUpdates(parse));
     }
 
 
@@ -142,8 +167,14 @@ extends GShapeBase
 
     isValid()
     {
-        return super.isValid()
-            && this.children.isValid();
+        if (!super.isValid()) 
+            return false;
+
+        for (const input of this.inputs)
+            if (!input.isValid())
+                return false;
+
+        return true;
     }
 
 
@@ -152,7 +183,6 @@ extends GShapeBase
     {
         super.invalidate();
 
-        if (this.input   ) this.input   .invalidate();
-        if (this.children) this.children.invalidate();
+        this.inputs.forEach(i => i.invalidate());
     }
 }

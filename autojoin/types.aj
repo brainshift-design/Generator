@@ -12,6 +12,7 @@
 ../generator/types/figma/FigmaText.js
 ../generator/types/figma/FigmaPoint.js
 ../generator/types/figma/FigmaVectorPath.js
+../generator/types/figma/FigmaBoolean.js
 ../generator/types/figma/FigmaShapeGroup.js
 ../generator/types/figma/FigmaFrame.js
 
@@ -36,6 +37,7 @@
 ../generator/types/values/InnerShadowValue.js
 ../generator/types/values/LayerBlurValue.js
 ../generator/types/values/BackBlurValue.js
+../generator/types/values/LayerMaskValue.js
 
 ../generator/types/values/ShapeValue.js
 ../generator/types/values/RectangleValue.js
@@ -46,6 +48,7 @@
 ../generator/types/values/TextShapeValue.js
 ../generator/types/values/PointValue.js
 ../generator/types/values/VectorPathValue.js
+../generator/types/values/ShapeBooleanValue.js
 ../generator/types/values/ShapeGroupValue.js
 ../generator/types/values/FrameValue.js
 
@@ -142,6 +145,7 @@
 ../generator/types/style/GInnerShadow.js
 ../generator/types/style/GLayerBlur.js
 ../generator/types/style/GBackBlur.js
+../generator/types/style/GLayerMask.js
 
 
 ../generator/types/shape/GShapeBase.js
@@ -156,6 +160,12 @@
 ../generator/types/shape/GVectorPath.js
 ../generator/types/shape/GShapeGroup.js
 ../generator/types/shape/GFrame.js
+
+../generator/types/shape/boolean/GShapeBoolean.js
+../generator/types/shape/boolean/GShapeUnion.js
+../generator/types/shape/boolean/GShapeSubtract.js
+../generator/types/shape/boolean/GShapeIntersect.js
+../generator/types/shape/boolean/GShapeExclude.js
 
 
 ../generator/types/shape/GMove.js

@@ -1,17 +1,17 @@
 class ShapeGroupValue
 extends ShapeValue
 {
-    children;
+    items = [];
 
 
 
-    constructor(nodeId, children)
+    constructor(nodeId, items = [])
     {
         super(SHAPE_GROUP_VALUE, nodeId);
 
-        this.children = children;
+        this.items = items;
 
-        this.objects  = children.objects.map(o => o.copy());
+        //this.objects  = children.objects.map(o => o.copy());
     }
 
 
@@ -20,7 +20,7 @@ extends ShapeValue
     {
         const copy = new ShapeGroupValue(
             this.nodeId,
-            this.children.copy());
+            this.items.copy());
 
         copy.copyBase(this);
 
@@ -32,7 +32,7 @@ extends ShapeValue
     equals(group)
     {
         return group
-            && this.children.equals(group.children);
+            && this.items.equals(group.children);
     }
 
 
@@ -46,14 +46,14 @@ extends ShapeValue
 
     toString()
     {
-        return this.children.toString();
+        return this.items.toString();
     }
 
 
 
     toDisplayString()
     {
-        return this.children.toDisplayString();
+        return this.items.toDisplayString();
     }
 
 
@@ -67,8 +67,8 @@ extends ShapeValue
 
     isValid()
     {
-        return this.children.isValid()
-            && super.isValid();
+        return super.isValid()
+            && this.items.isValid();
     }
 
 
