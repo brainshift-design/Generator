@@ -72,7 +72,11 @@ class Parse
 
     move()
     {
-        return this.request[this.pos++];
+        //return this.request[this.pos++];
+
+        const token = this.request[this.pos++];
+        console.log('token =', token);
+        return token;
     }
 
 
@@ -182,11 +186,11 @@ function genParse(parse, inParam = true)
     else if (parse.next == FILL_VALUE             ) result = genParseFillValue        (parse);
     else if (parse.next == FILL                   ) result = genParseFill             (parse);
       
-    else if (parse.next == STROKE_VALUE           ) result = genParseStrokeValue      (parse);
-    else if (parse.next == STROKE                 ) result = genParseStroke           (parse);
-      
     else if (parse.next == COLOR_STOP_VALUE       ) result = genParseColorStopValue   (parse);
     else if (parse.next == COLOR_STOP             ) result = genParseColorStop        (parse);
+      
+    else if (parse.next == STROKE_VALUE           ) result = genParseStrokeValue      (parse);
+    else if (parse.next == STROKE                 ) result = genParseStroke           (parse);
       
     else if (parse.next == DROP_SHADOW_VALUE      ) result = genParseDropShadowValue  (parse);
     else if (parse.next == DROP_SHADOW            ) result = genParseDropShadow       (parse);

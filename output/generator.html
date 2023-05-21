@@ -3393,6 +3393,7 @@ const UNKNOWN_CHAR        = '?';
 const UNKNOWN_DISPLAY     = UNKNOWN_CHAR;//'🤷‍♂️';
 
 const OBJECT_SEPARATOR    = '>';
+const  INPUT_SEPARATOR    = ':';
     
 
 const  TRUE_DISPLAY_LIGHT = '<svg width="13" height="11" viewBox="0 1 13 11" fill="none" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" clip-rule="evenodd" d="M12.3645 1.82058L10.2676 0.599976L5.1191 8.58091L2.44314 6.06144L0.800003 7.67327L5.54161 12.1958L12.3645 1.82058Z" fill="#2AD400"/></svg>';
@@ -4230,6 +4231,8 @@ class FigmaObject
     objectId   = NULL;
     objectName = NULL;
 
+    inputIndex = -1; // for unique object IDs
+
     uniqueId;
 
     xform;
@@ -4251,9 +4254,10 @@ class FigmaObject
 
     copyBase(base)
     {
-        this.uniqueId = base.uniqueId;
+        this.inputIndex = base.inputIndex;
+        this.uniqueId   = base.uniqueId;
         
-        this.xform    = clone(base.xform);
+        this.xform      = clone(base.xform);
     }
 
 
@@ -4289,6 +4293,7 @@ function copyFigmaObject(obj)
         case TEXTSHAPE:   return FigmaText      .prototype.copy.call(obj);
         case POINT:       return FigmaPoint     .prototype.copy.call(obj);
         case VECTOR_PATH: return FigmaVectorPath.prototype.copy.call(obj);
+        case BOOLEAN:     return FigmaBoolean   .prototype.copy.call(obj);
         case SHAPE_GROUP: return FigmaShapeGroup.prototype.copy.call(obj);
         case FRAME:       return FigmaFrame     .prototype.copy.call(obj);
     }
@@ -5884,30 +5889,31 @@ function parseListValue(str, i = -1)
             case         LIST_VALUE:  
             case  NUMBER_LIST_VALUE:  
             case    TEXT_LIST_VALUE:  
-            case   SHAPE_LIST_VALUE: { const _list   = parseListValue       (str, i);  i += _list  [1];  list.items.push(_list  [0]);  break; }
+            case   SHAPE_LIST_VALUE: { const _list   = parseListValue        (str, i);  i += _list  [1];  list.items.push(_list  [0]);  break; }
  
-            case       NUMBER_VALUE: { const num     = parseNumberValue     (str[i]);  i += num    [1];  list.items.push(num    [0]);  break; }
-            case         TEXT_VALUE: { const text    = parseTextValue       (str[i]);  i += text   [1];  list.items.push(text   [0]);  break; }
-            case        COLOR_VALUE: { const color   = parseColorValue      (str, i);  i += color  [1];  list.items.push(color  [0]);  break; }
+            case       NUMBER_VALUE: { const num     = parseNumberValue      (str[i]);  i += num    [1];  list.items.push(num    [0]);  break; }
+            case         TEXT_VALUE: { const text    = parseTextValue        (str[i]);  i += text   [1];  list.items.push(text   [0]);  break; }
+            case        COLOR_VALUE: { const color   = parseColorValue       (str, i);  i += color  [1];  list.items.push(color  [0]);  break; }
 
-            case         FILL_VALUE: { const fill    = parseFillValue       (str, i);  i += fill   [1];  list.items.push(fill   [0]);  break; }
-            case       STROKE_VALUE: { const stroke  = parseStrokeValue     (str, i);  i += stroke [1];  list.items.push(stroke [0]);  break; }
-            case  DROP_SHADOW_VALUE: { const shadow  = parseDropShadowValue (str, i);  i += shadow [1];  list.items.push(shadow [0]);  break; }
-            case INNER_SHADOW_VALUE: { const shadow  = parseInnerShadowValue(str, i);  i += shadow [1];  list.items.push(shadow [0]);  break; }
-            case   LAYER_BLUR_VALUE: { const blur    = parseLayerBlurValue  (str, i);  i += blur   [1];  list.items.push(blur   [0]);  break; }
-            case    BACK_BLUR_VALUE: { const blur    = parseBackBlurValue   (str, i);  i += blur   [1];  list.items.push(blur   [0]);  break; }
-            case   LAYER_MASK_VALUE: { const mask    = parseLayerMaskValue  (str[i]);  i += mask   [1];  list.items.push(mask   [0]);  break; }
+            case         FILL_VALUE: { const fill    = parseFillValue        (str, i);  i += fill   [1];  list.items.push(fill   [0]);  break; }
+            case       STROKE_VALUE: { const stroke  = parseStrokeValue      (str, i);  i += stroke [1];  list.items.push(stroke [0]);  break; }
+            case  DROP_SHADOW_VALUE: { const shadow  = parseDropShadowValue  (str, i);  i += shadow [1];  list.items.push(shadow [0]);  break; }
+            case INNER_SHADOW_VALUE: { const shadow  = parseInnerShadowValue (str, i);  i += shadow [1];  list.items.push(shadow [0]);  break; }
+            case   LAYER_BLUR_VALUE: { const blur    = parseLayerBlurValue   (str, i);  i += blur   [1];  list.items.push(blur   [0]);  break; }
+            case    BACK_BLUR_VALUE: { const blur    = parseBackBlurValue    (str, i);  i += blur   [1];  list.items.push(blur   [0]);  break; }
+            case   LAYER_MASK_VALUE: { const mask    = parseLayerMaskValue   (str[i]);  i += mask   [1];  list.items.push(mask   [0]);  break; }
 
-            case    RECTANGLE_VALUE: { const rect    = parseRectangleValue  (str, i);  i += rect   [1];  list.items.push(rect   [0]);  break; }
-            case         LINE_VALUE: { const line    = parseLineValue       (str, i);  i += line   [1];  list.items.push(line   [0]);  break; }
-            case      ELLIPSE_VALUE: { const ellipse = parseEllipseValue    (str, i);  i += ellipse[1];  list.items.push(ellipse[0]);  break; }
-            case      POLYGON_VALUE: { const poly    = parsePolygonValue    (str, i);  i += poly   [1];  list.items.push(poly   [0]);  break; }
-            case         STAR_VALUE: { const star    = parseStarValue       (str, i);  i += star   [1];  list.items.push(star   [0]);  break; }
-            case    TEXTSHAPE_VALUE: { const text    = parseTextShapeValue  (str, i);  i += text   [1];  list.items.push(text   [0]);  break; }
-            case        POINT_VALUE: { const point   = parsePointValue      (str, i);  i += point  [1];  list.items.push(point  [0]);  break; }
-            case  VECTOR_PATH_VALUE: { const path    = parseVectorPathValue (str, i);  i += path   [1];  list.items.push(path   [0]);  break; }
-            case  SHAPE_GROUP_VALUE: { const group   = parseShapeGroupValue (str, i);  i += group  [1];  list.items.push(group  [0]);  break; }
-            case        FRAME_VALUE: { const frame   = parseFrameValue      (str, i);  i += frame  [1];  list.items.push(frame  [0]);  break; }
+            case    RECTANGLE_VALUE: { const rect    = parseRectangleValue   (str, i);  i += rect   [1];  list.items.push(rect   [0]);  break; }
+            case         LINE_VALUE: { const line    = parseLineValue        (str, i);  i += line   [1];  list.items.push(line   [0]);  break; }
+            case      ELLIPSE_VALUE: { const ellipse = parseEllipseValue     (str, i);  i += ellipse[1];  list.items.push(ellipse[0]);  break; }
+            case      POLYGON_VALUE: { const poly    = parsePolygonValue     (str, i);  i += poly   [1];  list.items.push(poly   [0]);  break; }
+            case         STAR_VALUE: { const star    = parseStarValue        (str, i);  i += star   [1];  list.items.push(star   [0]);  break; }
+            case    TEXTSHAPE_VALUE: { const text    = parseTextShapeValue   (str, i);  i += text   [1];  list.items.push(text   [0]);  break; }
+            case        POINT_VALUE: { const point   = parsePointValue       (str, i);  i += point  [1];  list.items.push(point  [0]);  break; }
+            case  VECTOR_PATH_VALUE: { const path    = parseVectorPathValue  (str, i);  i += path   [1];  list.items.push(path   [0]);  break; }
+            case      BOOLEAN_VALUE: { const group   = parseShapeBooleanValue(str, i);  i += group  [1];  list.items.push(group  [0]);  break; }
+            case  SHAPE_GROUP_VALUE: { const group   = parseShapeGroupValue  (str, i);  i += group  [1];  list.items.push(group  [0]);  break; }
+            case        FRAME_VALUE: { const frame   = parseFrameValue       (str, i);  i += frame  [1];  list.items.push(frame  [0]);  break; }
         }
     }
 
@@ -6623,6 +6629,131 @@ function parseFillValue(str, i = -1)
 // }
 
 
+class ColorStopValue
+extends GValue
+{
+    fill;
+    position;
+
+
+
+    constructor(fill     = FillValue.NaN, 
+                position = new NumberValue(1))
+    {
+        if (fill.type != FILL_VALUE)
+            console.assert(false, 'fill.type is ' + fill.type + ', must be FILL_VALUE');
+
+
+        super(COLOR_STOP_VALUE);
+
+        this.fill     = fill    .copy();
+        this.position = position.copy();
+
+        this.valid    = true;
+    }
+
+
+    
+    copy()
+    {
+        const copy = new ColorStopValue(
+            this.fill    .copy(),
+            this.position.copy());
+
+        copy.copyBase(this);
+
+        return copy;
+    }
+
+
+
+    isValid()
+    {
+        return this.fill    .isValid()
+            && this.position.isValid();
+    }
+
+
+
+    equals(stop)
+    {
+        return stop
+            && this.fill    .equals(stop.fill    )
+            && this.position.equals(stop.position);
+    }
+
+
+
+    async eval(parse)
+    {
+        return this;
+    }
+
+
+
+    toValue()
+    {
+        return this.copy();
+    }
+
+
+
+    toString()
+    {
+        return      this.fill    .toString()
+            + ' ' + this.position.toString();
+    }
+
+
+
+    toDisplayString()
+    {
+        return      this.fill    .toDisplayString()
+            + ' ' + this.position.toDisplayString();
+    }
+
+
+
+    getNaN()
+    {
+        return ColorStopValue.NaN;
+    }
+
+
+
+    static NaN = Object.freeze(new ColorStopValue(
+        FillValue  .NaN,
+        NumberValue.NaN));
+}
+
+
+
+function parseColorStopValue(str, i = -1)
+{
+    if (   i <  0 && str    == NAN_DISPLAY
+        || i >= 0 && str[i] == NAN_DISPLAY)
+        return [ColorStopValue.NaN, 1];
+
+
+    if (i < 0)
+    {
+        str = str.split(' ');
+        i   = 0;
+    }
+
+
+    const iStart = i;
+
+    const fill     = parseFillValue  (str, i); i += fill    [1];
+    const position = parseNumberValue(str[i]); i += position[1];
+
+
+    return [
+        new ColorStopValue(fill[0], position[0]),
+        i - iStart ];
+}
+
+
 class StrokeValue
 extends GValue
 {
@@ -6657,32 +6788,6 @@ extends GValue
 
 
     
-    // static create(r, g, b, opacity)
-    // {
-    //     console.assert(
-    //         typeof opacity == 'number',
-    //         'opacity must be a number');
-
-    //     return new FillValue(
-    //         ColorValue.create(1, r, g, b),
-    //         new NumberValue(opacity));
-    // }
-
-
-
-    // static fromRgb(rgb, opacity)
-    // {
-    //     console.assert(
-    //         typeof opacity == 'number',
-    //         'opacity must be a number');
-
-    //     return new FillValue(
-    //         ColorValue.fromRgb(rgb),
-    //         new NumberValue(opacity));
-    // }
-
-
-
     copy()
     {
         const copy = new StrokeValue(
@@ -6726,41 +6831,6 @@ extends GValue
     {
         return this;
     }
-
-
-
-    // toFigma()
-    // {
-    //     let align, join;
-
-        
-    //     switch (this.fit.value)
-    //     {
-    //         case 0: align = 'INSIDE';  break;
-    //         case 1: align = 'CENTER';  break;
-    //         case 2: align = 'OUTSIDE'; break;
-    //     }
-        
-    //     switch (this.join.value)
-    //     {
-    //         case 0: join = 'MITER'; break;
-    //         case 1: join = 'BEVEL'; break;
-    //         case 2: join = 'ROUND'; break;
-    //     }
-
-        
-    //     return this.isValid()
-    //         ? {
-    //               strokes:          this.fill.toFigma(),
-    //               strokeWeight:     this.weight.value,
-    //               strokeAlign:      align,
-    //               strokeJoin:       join,
-    //               strokeMiterLimit: this.miter.value
-    //           }
-    //         : {
-    //               strokes: []
-    //           };
-    // }
 
 
 
@@ -9337,30 +9407,31 @@ function parseShapeGroupValue(str, i = -1)
             case         LIST_VALUE:  
             case  NUMBER_LIST_VALUE:  
             case    TEXT_LIST_VALUE:  
-            case   SHAPE_LIST_VALUE: { const _list   = parseListValue       (str, i);  i += _list  [1];  group.items.push(_list  [0]);  break; }
+            case   SHAPE_LIST_VALUE: { const _list   = parseListValue        (str, i);  i += _list  [1];  group.items.push(_list  [0]);  break; }
  
-            case       NUMBER_VALUE: { const num     = parseNumberValue     (str[i]);  i += num    [1];  group.items.push(num    [0]);  break; }
-            case         TEXT_VALUE: { const text    = parseTextValue       (str[i]);  i += text   [1];  group.items.push(text   [0]);  break; }
-            case        COLOR_VALUE: { const color   = parseColorValue      (str, i);  i += color  [1];  group.items.push(color  [0]);  break; }
+            case       NUMBER_VALUE: { const num     = parseNumberValue      (str[i]);  i += num    [1];  group.items.push(num    [0]);  break; }
+            case         TEXT_VALUE: { const text    = parseTextValue        (str[i]);  i += text   [1];  group.items.push(text   [0]);  break; }
+            case        COLOR_VALUE: { const color   = parseColorValue       (str, i);  i += color  [1];  group.items.push(color  [0]);  break; }
 
-            case         FILL_VALUE: { const fill    = parseFillValue       (str, i);  i += fill   [1];  group.items.push(fill   [0]);  break; }
-            case       STROKE_VALUE: { const stroke  = parseStrokeValue     (str, i);  i += stroke [1];  group.items.push(stroke [0]);  break; }
-            case  DROP_SHADOW_VALUE: { const shadow  = parseDropShadowValue (str, i);  i += shadow [1];  group.items.push(shadow [0]);  break; }
-            case INNER_SHADOW_VALUE: { const shadow  = parseInnerShadowValue(str, i);  i += shadow [1];  group.items.push(shadow [0]);  break; }
-            case   LAYER_BLUR_VALUE: { const blur    = parseLayerBlurValue  (str, i);  i += blur   [1];  group.items.push(blur   [0]);  break; }
-            case    BACK_BLUR_VALUE: { const blur    = parseBackBlurValue   (str, i);  i += blur   [1];  group.items.push(blur   [0]);  break; }
-            case   LAYER_MASK_VALUE: { const mask    = parseLayerMaskValue  (str[i]);  i += mask   [1];  group.items.push(mask   [0]);  break; }
+            case         FILL_VALUE: { const fill    = parseFillValue        (str, i);  i += fill   [1];  group.items.push(fill   [0]);  break; }
+            case       STROKE_VALUE: { const stroke  = parseStrokeValue      (str, i);  i += stroke [1];  group.items.push(stroke [0]);  break; }
+            case  DROP_SHADOW_VALUE: { const shadow  = parseDropShadowValue  (str, i);  i += shadow [1];  group.items.push(shadow [0]);  break; }
+            case INNER_SHADOW_VALUE: { const shadow  = parseInnerShadowValue (str, i);  i += shadow [1];  group.items.push(shadow [0]);  break; }
+            case   LAYER_BLUR_VALUE: { const blur    = parseLayerBlurValue   (str, i);  i += blur   [1];  group.items.push(blur   [0]);  break; }
+            case    BACK_BLUR_VALUE: { const blur    = parseBackBlurValue    (str, i);  i += blur   [1];  group.items.push(blur   [0]);  break; }
+            case   LAYER_MASK_VALUE: { const mask    = parseLayerMaskValue   (str[i]);  i += mask   [1];  group.items.push(mask   [0]);  break; }
 
-            case    RECTANGLE_VALUE: { const rect    = parseRectangleValue  (str, i);  i += rect   [1];  group.items.push(rect   [0]);  break; }
-            case         LINE_VALUE: { const line    = parseLineValue       (str, i);  i += line   [1];  group.items.push(line   [0]);  break; }
-            case      ELLIPSE_VALUE: { const ellipse = parseEllipseValue    (str, i);  i += ellipse[1];  group.items.push(ellipse[0]);  break; }
-            case      POLYGON_VALUE: { const poly    = parsePolygonValue    (str, i);  i += poly   [1];  group.items.push(poly   [0]);  break; }
-            case         STAR_VALUE: { const star    = parseStarValue       (str, i);  i += star   [1];  group.items.push(star   [0]);  break; }
-            case    TEXTSHAPE_VALUE: { const text    = parseTextShapeValue  (str, i);  i += text   [1];  group.items.push(text   [0]);  break; }
-            case        POINT_VALUE: { const point   = parsePointValue      (str, i);  i += point  [1];  group.items.push(point  [0]);  break; }
-            case  VECTOR_PATH_VALUE: { const path    = parseVectorPathValue (str, i);  i += path   [1];  group.items.push(path   [0]);  break; }
-            case  SHAPE_GROUP_VALUE: { const _group  = parseShapeGroupValue (str, i);  i += _group [1];  group.items.push(_group [0]);  break; }
-            case        FRAME_VALUE: { const frame   = parseFrameValue      (str, i);  i += frame  [1];  group.items.push(frame  [0]);  break; }
+            case    RECTANGLE_VALUE: { const rect    = parseRectangleValue   (str, i);  i += rect   [1];  group.items.push(rect   [0]);  break; }
+            case         LINE_VALUE: { const line    = parseLineValue        (str, i);  i += line   [1];  group.items.push(line   [0]);  break; }
+            case      ELLIPSE_VALUE: { const ellipse = parseEllipseValue     (str, i);  i += ellipse[1];  group.items.push(ellipse[0]);  break; }
+            case      POLYGON_VALUE: { const poly    = parsePolygonValue     (str, i);  i += poly   [1];  group.items.push(poly   [0]);  break; }
+            case         STAR_VALUE: { const star    = parseStarValue        (str, i);  i += star   [1];  group.items.push(star   [0]);  break; }
+            case    TEXTSHAPE_VALUE: { const text    = parseTextShapeValue   (str, i);  i += text   [1];  group.items.push(text   [0]);  break; }
+            case        POINT_VALUE: { const point   = parsePointValue       (str, i);  i += point  [1];  group.items.push(point  [0]);  break; }
+            case  VECTOR_PATH_VALUE: { const path    = parseVectorPathValue  (str, i);  i += path   [1];  group.items.push(path   [0]);  break; }
+            case      BOOLEAN_VALUE: { const path    = parseShapeBooleanValue(str, i);  i += path   [1];  group.items.push(path   [0]);  break; }
+            case  SHAPE_GROUP_VALUE: { const _group  = parseShapeGroupValue  (str, i);  i += _group [1];  group.items.push(_group [0]);  break; }
+            case        FRAME_VALUE: { const frame   = parseFrameValue       (str, i);  i += frame  [1];  group.items.push(frame  [0]);  break; }
         }
     }
 
@@ -14684,8 +14755,7 @@ extends GTextType
         this.value = await evalJoinInputs(this.inputs, parse);
         
 
-        this.updateValues =
-            genPushUpdateValue(parse, this.nodeId, 'value', this.value);
+        this.updateValues = [['value', this.value]];
 
 
         this.validate();
@@ -17319,6 +17389,135 @@ extends GOperator
 }
 
 
+class GColorStop
+extends GOperator
+{
+    input    = null;
+
+    fill     = null;
+    position = null;
+
+
+
+    constructor(nodeId, options)
+    {
+        super(COLOR_STOP, nodeId, options);
+    }
+
+
+
+    copy()
+    {
+        const copy = new GColorStop(this.nodeId, this.options);
+
+        copy.copyBase(this);
+
+        if (this.input) 
+            copy.input = this.input.copy();
+
+        if (this.fill    ) copy.fill     = this.fill    .copy();
+        if (this.position) copy.position = this.position.copy();
+
+        return copy;
+    }
+
+
+
+    async eval(parse)
+    {
+        if (this.isCached())
+            return this;
+
+        let fill = this.fill ? (await this.fill.eval(parse)).toValue() : null;
+
+        fill = this.validateFill(fill);
+
+
+        const position = this.position ? (await this.position.eval(parse)).toValue() : null;
+
+
+        if (this.input)
+        {
+            const input = (await this.input.eval(parse)).toValue();
+
+            this.value = new ColorStopValue(
+                fill     ?? input.fill,
+                position ?? input.position);
+        }
+        else
+        {
+            this.value = new ColorStopValue(fill, position);
+        }
+
+
+        this.updateValues =
+        [
+            ['fill',     this.value.fill    ],
+            ['position', this.value.position]
+        ];
+        
+
+        this.validate();
+
+        return this;
+    }
+
+
+
+    validateFill(fill)
+    {
+        if (!fill)
+            return null;
+
+
+        if (fill.type == COLOR_VALUE)
+            return FillValue.fromRgb(scaleRgb(fill.toRgb()), 0xff);
+        else
+            return fill;
+    }
+
+
+
+    pushValueUpdates(parse)
+    {
+        super.pushValueUpdates(parse);
+
+        if (this.input   ) this.input   .pushValueUpdates(parse);
+        if (this.fill    ) this.fill    .pushValueUpdates(parse);
+        if (this.position) this.position.pushValueUpdates(parse);
+    }    
+    
+    
+    toValue()
+    {
+        return new StrokeValue(
+            this.options.enabled
+            ? this.validateFill(this.fill ? this.fill.toValue() : this.input.fill.toValue())
+            : FillValue.NaN,
+            this.position ? this.position.toValue() : this.input.position.toValue());
+    }                 
+
+
+
+    isValid()
+    {
+        return this.fill    .isValid()
+            && this.position.isValid();
+    }
+
+
+
+    invalidate()
+    {
+        super.invalidate();
+
+        if (this.input   ) this.input   .invalidate();
+        if (this.fill    ) this.fill    .invalidate();
+        if (this.position) this.position.invalidate();
+    }
+}
+
+
 class GStroke
 extends GOperator
 {
@@ -17471,103 +17670,6 @@ extends GOperator
         if (this.fit   ) this.fit   .invalidate();
         if (this.join  ) this.join  .invalidate();
         if (this.miter ) this.miter .invalidate();
-    }
-}
-
-
-class GColorStop
-extends GOperator
-{
-    input    = null;
-
-    fill     = null;
-    position = null;
-
-
-
-    constructor(nodeId, options)
-    {
-        super(COLOR_STOP, nodeId, options);
-    }
-
-
-    
-    copy()
-    {
-        const copy = new GColorStop(this.nodeId, this.options);
-
-        copy.copyBase(this);
-
-        if (this.input) 
-            copy.input = this.input.copy();
-
-        if (this.fill    ) copy.fill     = this.fill    .copy();
-        if (this.position) copy.position = this.position.copy();
-
-        return copy;
-    }
-
-
-
-    async eval(parse)
-    {
-        if (!this.valid)
-        {
-            this.result = new ColorStopValue();
-
-
-            if (this.input)
-            {
-                this.result = (await this.input.eval(parse)).copy();
-
-                console.assert(
-                    this.result.type == COLOR_STOP_VALUE, 
-                    'this.result.type must be COLOR_STOP_VALUE');
-
-                if (this.result.isValid())
-                {
-                    if (this.fill    ) this.result.fill     = (await this.fill    .eval(parse)).copy();
-                    if (this.position) this.result.position = (await this.position.eval(parse)).copy();
-                }
-            }
-            else
-            {
-                this.result.fill     = (await this.fill    .eval(parse)).copy();
-                this.result.position = (await this.position.eval(parse)).copy();
-            }
-
-
-            this.result.valid = true;
-            this.valid        = true;
-
-
-            this.updateValues = [['value', this.result]];
-        }
-
-
-        return this;
-    }
-
-
-
-    pushValueUpdates(parse)
-    {
-        super.pushValueUpdates(parse);
-
-        if (this.input   ) this.input   .pushValueUpdates(parse);
-        if (this.fill    ) this.fill    .pushValueUpdates(parse);
-        if (this.position) this.position.pushValueUpdates(parse);
-    }
-
-
-
-    invalidate()
-    {
-        super.invalidate();
-
-        if (this.input   ) this.input   .invalidate();
-        if (this.fill    ) this.fill    .invalidate();
-        if (this.position) this.position.invalidate();
     }
 }
 
@@ -20095,13 +20197,13 @@ extends GShapeBase
                             continue;
 
                         this.value.items.push(item.copy());   
-                        this.value.objects.push(...item.objects.map(o => o.copy()));
+                        //this.value.objects.push(...item.objects.map(o => this.copyObject(o, i)));
                     }
                 }
                 else
                 {
                     this.value.items.push(input.copy());
-                    this.value.objects.push(...input.objects.map(o => o.copy()));
+                    //this.value.objects.push(...input.objects.map(o => this.copyObject(o, i)));
                 }
             }
         }
@@ -20123,11 +20225,29 @@ extends GShapeBase
 
 
 
+    copyObject(obj, inputIndex)
+    {
+        const copy = obj.copy(); 
+    
+        if (this.inputs.length > 1)
+            copy.inputIndex = inputIndex; 
+    
+        return copy;
+    }
+    
+
+    
     async evalObjects(parse, options = {})
     {
         if (!this.options.enabled)
             return;
             
+
+        if (this.nodeId == 'group2')
+        {
+            console.log('this.value =', this.value);
+            //console.log('input.objects =', [...input.objects]);
+        }
 
         if (this.value.items)
         {
@@ -20141,10 +20261,16 @@ extends GShapeBase
             {
                 for (let i = 0; i < item.objects.length; i++)
                 {
-                    const obj    = item.objects[i].copy();
-                    obj.nodeId   = this.nodeId;
-                    obj.objectId = obj.objectId + OBJECT_SEPARATOR + this.nodeId;
-                    obj.listId   = -1;
+                    const obj  = item.objects[i].copy();
+                    obj.nodeId = this.nodeId;
+
+                    obj.objectId = 
+                          obj.objectId 
+                        + OBJECT_SEPARATOR 
+                        //+ (obj.inputIndex >= 0 ? obj.inputIndex + INPUT_SEPARATOR : '')
+                        + this.nodeId;
+
+                    obj.listId = -1;
 
                     group.children.push(obj);
                 }
@@ -25659,6 +25785,85 @@ function genParseFillParam(parse)
 
 
 
+function genParseColorStopValue(parse)
+{
+    parse.pos++; // COLOR_STOP_VALUE
+
+    const stop = parse.move();
+
+    if (parse.settings.logRequests) 
+        logReqValue(COLOR_STOP_VALUE, stop, parse);
+
+    return parseColorStopValue(stop)[0];
+}
+
+
+
+function genParseColorStop(parse)
+{
+    const [, nodeId, options, ignore] = genParseNodeStart(parse);
+
+
+    const stop = new GColorStop(nodeId, options);
+
+    stop.hasInputs = options.hasInputs;
+
+
+    let nInputs = -1;
+
+    if (!ignore)
+    {
+        nInputs = parseInt(parse.move());
+        console.assert(nInputs => 0 && nInputs <= 1, 'nInputs must be [0, 1]');
+    }
+
+
+    if (parse.settings.logRequests) 
+        logReq(stop, parse, ignore, nInputs);
+
+
+    if (ignore)
+    {
+        genParseNodeEnd(parse, stop);
+        return parse.parsedNodes.find(n => n.nodeId == nodeId);
+    }
+
+
+    parse.nTab++;
+
+
+    let paramIds;
+
+    if (nInputs == 1)
+    {
+        stop.input = genParse(parse);
+        paramIds = parse.move().split(',');
+    }
+    else
+        paramIds = ['fill', 'position'];
+
+
+    parse.inParam = false;
+
+    for (const id of paramIds)
+    {
+        switch (id)
+        {
+        case 'fill':     stop.fill     = genParse(parse); break;
+        case 'position': stop.position = genParse(parse); break;
+        }
+    }
+    
+    
+    parse.nTab--;
+
+
+    genParseNodeEnd(parse, stop);
+    return stop;
+}
+
+
+
 function genParseStrokeValue(parse)
 {
     parse.pos++; // STROKE_VALUE
@@ -26772,7 +26977,11 @@ class Parse
 
     move()
     {
-        return this.request[this.pos++];
+        //return this.request[this.pos++];
+
+        const token = this.request[this.pos++];
+        console.log('token =', token);
+        return token;
     }
 
 
@@ -26882,11 +27091,11 @@ function genParse(parse, inParam = true)
     else if (parse.next == FILL_VALUE             ) result = genParseFillValue        (parse);
     else if (parse.next == FILL                   ) result = genParseFill             (parse);
       
-    else if (parse.next == STROKE_VALUE           ) result = genParseStrokeValue      (parse);
-    else if (parse.next == STROKE                 ) result = genParseStroke           (parse);
-      
     else if (parse.next == COLOR_STOP_VALUE       ) result = genParseColorStopValue   (parse);
     else if (parse.next == COLOR_STOP             ) result = genParseColorStop        (parse);
+      
+    else if (parse.next == STROKE_VALUE           ) result = genParseStrokeValue      (parse);
+    else if (parse.next == STROKE                 ) result = genParseStroke           (parse);
       
     else if (parse.next == DROP_SHADOW_VALUE      ) result = genParseDropShadowValue  (parse);
     else if (parse.next == DROP_SHADOW            ) result = genParseDropShadow       (parse);

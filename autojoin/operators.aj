@@ -122,6 +122,8 @@
 
 ../operators/style/OpColorStyle.js
 ../operators/style/OpFill.js
+../operators/style/OpColorStop.js
+//../operators/style/OpGradient.js
 ../operators/style/OpStroke.js
 ../operators/style/OpDropShadow.js
 ../operators/style/OpInnerShadow.js
@@ -130,8 +132,6 @@
 ../operators/style/OpLayerMask.js
 
 
-//../operators/style/OpColorStop.js
-//../operators/style/OpGradient.js
 
 
 ../operators/shape/OpShapeBase.js

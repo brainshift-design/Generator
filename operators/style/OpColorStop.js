@@ -1,51 +1,104 @@
-class   OpColorStop
+class OpColorStop
 extends OpColorBase
 {
     paramFill;
     paramPosition;
 
+    checkers;
+    colorBack;
+
+
     
     constructor()
     {
-        super(COLOR_STOP, 'stop', 'stop');
+        super(COLOR_STOP, 'colorStop', 'color stop');
 
-
-        this.addInput(new Input([COLOR_STOP, COLOR_STOP_VALUE]));
-        this.addOutput(new Output([COLOR_STOP], this.output_genRequest));
-
-        this.addParam(this.paramFill     = new FillParam ('fill',     '',         false, true, true));
-        this.addParam(this.paramPosition = new NumberParam('position', 'position', true,  true, true, 100, 0, 100));
-
-        //this.paramFill.setValue([FillValue.default], false, true, false);
+        this.canDisable = true;
         
+
+        this.colorBack      = createDiv('colorBack');
+        this.checkersHolder = createDiv('nodeHeaderCheckersHolder');
+        this.checkers       = createDiv('nodeHeaderCheckers');
+        
+        this.inner.appendChild(this.colorBack);
+        this.inner.insertBefore(this.checkersHolder, this.header);
+
+        this.checkersHolder.appendChild(this.checkers);
+
+
+        this.addInput (new Input([COLOR_STOP_VALUE], getNodeInputValuesForUndo));
+        this.addOutput(new Output([COLOR_STOP_VALUE], this.output_genRequest, getNodeOutputValuesForUndo));
+
+
+        this.addParam(this.paramFill     = new FillParam  ('fill',     'fill',     false, true, true, FillValue.create(0, 0, 0, 100)));
+        this.addParam(this.paramPosition = new NumberParam('position', 'position', true,  true, true, 0, 0, 100));
+
+
         this.paramPosition.controls[0].suffix = '%';
+
+        this.paramPosition.controls[0].min = Number.MIN_SAFE_INTEGER;
+        this.paramPosition.controls[0].max = Number.MAX_SAFE_INTEGER;
     }
     
     
     
+    // canAutoConnectFrom(output)
+    // {
+    //     return output.supportsTypes(FILL_TYPES)
+    //         || output.supportsTypes(COLOR_TYPES);
+    // }
+
+
+
     output_genRequest(gen)
     {
         // 'this' is the output
-
-        // if (!isEmpty(this.cache))
-        //     return this.cache;
-
 
         gen.scope.push({
             nodeId:  this.node.id, 
             paramId: NULL });
 
-        const [request, ignore] = this.node.genRequestStart(gen);
+
+        const hasInputs =
+               this.node.paramFill    .input.connected
+            || this.node.paramPosition.input.connected;
+
+        const options = (hasInputs ? 1 : 0) << 20;
+
+
+        const [request, ignore] = this.node.genRequestStart(gen, options);
         if (ignore) return request;
 
         
         const input = this.node.inputs[0];
 
+
+        request.push(input.connected ? 1 : 0);
+
+
         if (input.connected)
+        {
             request.push(...pushInputOrParam(input, gen));
 
-        request.push(...this.node.paramFill    .genRequest(gen));
-        request.push(...this.node.paramPosition.genRequest(gen));
+
+            const paramIds = [];
+
+            for (const param of this.node.params)
+                if (   param.input 
+                    && param.input.connected)
+                    paramIds.push(param.id);
+
+            request.push(paramIds.join(','));
+
+
+            for (const param of this.node.params)
+                if (param.input.connected) request.push(...param.genRequest(gen));            
+        }
+        else
+        {
+            for (const param of this.node.params)
+                request.push(...param.genRequest(gen));            
+        }
 
 
         gen.scope.pop();
@@ -58,25 +111,143 @@ extends OpColorBase
 
     updateValues(requestId, actionId, updateParamId, paramIds, values)
     {
-        const stop = values[paramIds.findIndex(id => id == 'value')];
+        const fill = values[paramIds.findIndex(id => id == 'fill')];
 
-        
-        if (stop.isValid())
-        {
-            this.paramFill    .setValue([stop.fill],   false, true, false);
-            this.paramPosition.setValue(stop.position, false, true, false);
+        this._color = 
+               fill
+            && fill.isValid()
+            ? fill.color.toDataColor()
+            : dataColor_NaN;
 
-            // this._color = stop.color.toDataColor();
-        }
-        else
-        {
-            this.paramFill    .setValue([FillValue.NaN], false, true, false);
-            this.paramPosition.setValue( NumberValue   .NaN,  false, true, false);
             
-            this._color = dataColor_NaN;
-        }
+        // this.outputs[0].types =
+        //        this.inputs[0].connected
+        //     && this.inputs[0].connectedOutput.supportsTypes(SHAPE_TYPES)
+        //     ? [...this.inputs[0].connectedOutput.types, COLOR_STOP_VALUE]
+        //     : [COLOR_STOP_VALUE];
 
 
         super.updateValues(requestId, actionId, updateParamId, paramIds, values);
+    }
+
+
+
+    updateHeader()
+    {
+        //console.log(this.id + '.OpStroke.updateHeader()');
+
+        Operator.prototype.updateHeader.call(this);
+
+
+        const colors = this.getHeaderColors();
+
+
+        this.header.style.background = 
+            !rgbaIsNaN(colors.stripeBack)
+            ? rgba2style(colors.stripeBack) 
+            : 'transparent';
+
+        this.colorBack.style.background = 
+            rgbIsOk(colors.stripeBack) //!rgbIsNaN(colors.back)
+            ? rgb2style(colors.stripeBack)
+            : rgba2style(rgb_a(rgbDocumentBody, 0.95));
+
+
+        this.colorBack.style.height = this.measureData.headerOffset.height;
+
+            
+        this.checkers.style.height = this.header.offsetHeight;
+
+        this.checkers.style.background =
+            darkMode
+            ?   'linear-gradient(45deg, #222 25%, transparent 25%, transparent 75%, #222 75%), '
+              + 'linear-gradient(45deg, #222 25%, transparent 25%, transparent 75%, #222 75%)'
+            :   'linear-gradient(45deg, #ddd 25%, transparent 25%, transparent 75%, #ddd 75%), '
+              + 'linear-gradient(45deg, #ddd 25%, transparent 25%, transparent 75%, #ddd 75%)';
+
+        this.checkers.style.display            = !rgbIsNaN(colors.back) ? 'inline-block' : 'none';
+        this.checkers.style.backgroundColor    = darkMode ? '#444' : '#fff';
+
+        this.checkers.style.backgroundSize     = '22px 22px';
+        this.checkers.style.backgroundPosition = '0 0, 11px 11px';
+                        
+        this.checkers.style.left               = '-3px';
+        this.checkers.style.width              = 'calc(100% + 3px)';
+
+
+        this.header.style.background = 
+            !rgbIsNaN(colors.stripeBack)
+            ? rgba2style(colors.stripeBack) 
+            : 'transparent';
+
+
+        this.inputs[0] .colorLight = 
+        this.inputs[0] .colorDark  = colors.input;
+        this.inputs[0] .wireColor  = colors.wire;
+
+        this.outputs[0].colorLight =
+        this.outputs[0].colorDark  = colors.output;
+        this.outputs[0].wireColor  = colors.wire;
+
+
+        this.updateWarningOverlay();
+        this.updateWarningOverlayStyle(colors.back, this.inputIsShape ? -1 : 45);
+    }
+
+
+
+    updateHeaderLabel()
+    {
+        super.updateHeaderLabel();
+        
+        const colors = this.getHeaderColors();
+        this.label.style.color = rgba2style(colors.text);
+    }
+
+
+
+    updateParams()
+    {
+        const enableFill = !this.paramFill.input.connected;
+ 
+        const enable = 
+               !this.inputs[0].connected
+            || !this.inputs[0].connectedOutput.supportsTypes(COLOR_STOP_TYPES);
+
+        this.paramFill    .enableControlText(enableFill);
+        this.paramPosition.enableControlText(enable);
+
+        this.updateParamControls();
+    }
+
+    
+
+    getHeaderColors(options = {})
+    {
+        const colors = super.getHeaderColors();
+
+        colors.back       = rgb_a(colors.back, this.paramFill.value.opacity.value/100);
+        colors.stripeBack = rgb_a(colors.stripeBack, this.paramFill.value.opacity.value/100);
+        colors.text       = getTextColorFromBackColor(colors.stripeBack, this.paramFill.value.opacity.value/100);
+        colors.input      = rgb_a(colors.text, 0.2);
+        colors.output     = rgb_a(colors.text, 0.2);
+
+        colors.wire = 
+            !rgbaIsNaN(colors.stripeBack)
+            ? colors.stripeBack
+            : rgbFromType(ANY_VALUE, false);
+
+        return colors;
+    }
+
+
+
+    updateWarningOverlayStyle(colBack, height = -1)
+    {
+        super.updateWarningOverlayStyle(colBack, height);
+        
+        this._warningOverlay.style.backgroundPosition = '-1.5px 0';
+        this._warningOverlay.style.backgroundSize     = 'calc(100% + 16px) 100%';
+        this._warningOverlay.style.display            = 'block';
     }
 }

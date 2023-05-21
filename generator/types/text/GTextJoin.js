@@ -31,8 +31,7 @@ extends GTextType
         this.value = await evalJoinInputs(this.inputs, parse);
         
 
-        this.updateValues =
-            genPushUpdateValue(parse, this.nodeId, 'value', this.value);
+        this.updateValues = [['value', this.value]];
 
 
         this.validate();

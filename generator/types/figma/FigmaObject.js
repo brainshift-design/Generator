@@ -7,6 +7,8 @@ class FigmaObject
     objectId   = NULL;
     objectName = NULL;
 
+    inputIndex = -1; // for unique object IDs
+
     uniqueId;
 
     xform;
@@ -28,9 +30,10 @@ class FigmaObject
 
     copyBase(base)
     {
-        this.uniqueId = base.uniqueId;
+        this.inputIndex = base.inputIndex;
+        this.uniqueId   = base.uniqueId;
         
-        this.xform    = clone(base.xform);
+        this.xform      = clone(base.xform);
     }
 
 
@@ -66,6 +69,7 @@ function copyFigmaObject(obj)
         case TEXTSHAPE:   return FigmaText      .prototype.copy.call(obj);
         case POINT:       return FigmaPoint     .prototype.copy.call(obj);
         case VECTOR_PATH: return FigmaVectorPath.prototype.copy.call(obj);
+        case BOOLEAN:     return FigmaBoolean   .prototype.copy.call(obj);
         case SHAPE_GROUP: return FigmaShapeGroup.prototype.copy.call(obj);
         case FRAME:       return FigmaFrame     .prototype.copy.call(obj);
     }

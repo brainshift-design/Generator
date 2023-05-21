@@ -1,40 +1,52 @@
 class   OpGradient
-extends OperatorBase
+extends OpColorBase
 {
-    paramType;
+    paramX1;
+    paramY1;
+    paramX2;
+    paramY2;
+    paramAspect;
 
-    paramX;
-    paramY;
-    paramWidth;
-    paramHeight;
-    paramAngle;
+    checkersHolder;
+    checkers;
+    colorBack;
+
 
 
     constructor()
     {
-        super(GRADIENT, 'grad', 'grad');
+        super(GRADIENT, 'grad', 'gradient');
 
+        this.canDisable     = true;
         this.variableInputs = true;
 
 
+        this.colorBack      = createDiv('colorBack');
+        this.checkersHolder = createDiv('nodeHeaderCheckersHolder');
+        this.checkers       = createDiv('nodeHeaderCheckers');
+
+        this.inner.appendChild(this.colorBack);
+        this.inner.insertBefore(this.checkersHolder, this.header);
+
+        this.checkersHolder.appendChild(this.checkers);
+
+
         this.addNewInput();
-        this.addOutput(new Output([GRADIENT], this.output_genRequest));
+        this.addOutput(new Output([GRADIENT_VALUE], this.output_genRequest, getNodeOutputValuesForUndo, this.output_backInit));
         
 
-        this.addParam(this.paramType   = new SelectParam('type', '', false, true, true, ['linear', 'radial', 'angular', 'diamond'], 0));
-
-        this.addParam(this.paramX      = new NumberParam('x',      'x',      true, true, true, 0));
-        this.addParam(this.paramY      = new NumberParam('y',      'y',      true, true, true, 0));
-        this.addParam(this.paramWidth  = new NumberParam('width',  'width',  true, true, true, 1));
-        this.addParam(this.paramHeight = new NumberParam('height', 'height', true, true, true, 1));
-        this.addParam(this.paramAngle  = new NumberParam('angle',  'angle',  true, true, true, 0));
+        this.addParam(this.paramX1     = new NumberParam('x1',     'x₁',     true, true, true, 0));
+        this.addParam(this.paramY1     = new NumberParam('y1',     'y₁',     true, true, true, 0));
+        this.addParam(this.paramX2     = new NumberParam('x2',     'x₂',     true, true, true, 0));
+        this.addParam(this.paramY2     = new NumberParam('y2',     'y₂',     true, true, true, 0));
+        this.addParam(this.paramAspect = new NumberParam('aspect', 'aspect', true, true, true, 0, 0));
     }
     
     
     
     addNewInput()
     {
-        const input = new Input([COLOR_TYPES]);
+        const input = new Input([COLOR_VALUE, FILL_VALUE, GRADIENT_VALUE]);
         input.isNew = true;
 
         input.addEventListener('connect',    () => { onVariableConnectInput(e.detail.input); input.isNew = false; });
@@ -51,49 +63,33 @@ extends OperatorBase
     {
         // 'this' is the output
 
-        // if (!isEmpty(this.cache))
-        //     return this.cache;
-
-
         gen.scope.push({
             nodeId:  this.node.id, 
             paramId: NULL });
 
-
         const [request, ignore] = this.node.genRequestStart(gen);
         if (ignore) return request;
-            
 
-        const connectedInputs = this.node.inputs.filter(i => i.connected);
+
+        const connectedInputs = this.node.inputs.filter(i => i.connected && !i.param);
 
 
         request.push(connectedInputs.length); // utility values like param count are stored as numbers
         
-        connectedInputs.forEach(input => 
-            request.push(...pushInputOrParam(input, gen)));
+        for (const input of connectedInputs)
+            request.push(...pushInputOrParam(input, gen));
 
-            
-        request.push(
-            ...this.node.paramX     .genRequest(gen),
-            ...this.node.paramY     .genRequest(gen),
-            ...this.node.paramWidth .genRequest(gen),
-            ...this.node.paramHeight.genRequest(gen),
-            ...this.node.paramAngle .genRequest(gen));
+        
+        request.push(...this.node.paramX1    .genRequest(gen));
+        request.push(...this.node.paramY1    .genRequest(gen));
+        request.push(...this.node.paramX2    .genRequest(gen));
+        request.push(...this.node.paramY2    .genRequest(gen));
+        request.push(...this.node.paramAspect.genRequest(gen));
 
-            
+        
         gen.scope.pop();
         pushUnique(gen.passedNodes, this.node);
-        
+
         return request;
     }
-
-
-
-    // updateValues(requestId, actionId, updateParamId, paramIds, values)
-    // {
-    //     super.updateValues(requestId, actionId, updateParamId, paramIds, values);
-
-    //     if (paramIds.includes('value'))
-    //         this.outputs[0].cache = [NUMBER_VALUE, values[0].toString()];
-    // }
 }

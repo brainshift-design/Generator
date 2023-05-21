@@ -14,7 +14,7 @@ extends GOperator
     }
 
 
-    
+
     copy()
     {
         const copy = new GColorStop(this.nodeId, this.options);
@@ -34,41 +34,55 @@ extends GOperator
 
     async eval(parse)
     {
-        if (!this.valid)
+        if (this.isCached())
+            return this;
+
+        let fill = this.fill ? (await this.fill.eval(parse)).toValue() : null;
+
+        fill = this.validateFill(fill);
+
+
+        const position = this.position ? (await this.position.eval(parse)).toValue() : null;
+
+
+        if (this.input)
         {
-            this.result = new ColorStopValue();
+            const input = (await this.input.eval(parse)).toValue();
 
-
-            if (this.input)
-            {
-                this.result = (await this.input.eval(parse)).copy();
-
-                console.assert(
-                    this.result.type == COLOR_STOP_VALUE, 
-                    'this.result.type must be COLOR_STOP_VALUE');
-
-                if (this.result.isValid())
-                {
-                    if (this.fill    ) this.result.fill     = (await this.fill    .eval(parse)).copy();
-                    if (this.position) this.result.position = (await this.position.eval(parse)).copy();
-                }
-            }
-            else
-            {
-                this.result.fill     = (await this.fill    .eval(parse)).copy();
-                this.result.position = (await this.position.eval(parse)).copy();
-            }
-
-
-            this.result.valid = true;
-            this.valid        = true;
-
-
-            this.updateValues = [['value', this.result]];
+            this.value = new ColorStopValue(
+                fill     ?? input.fill,
+                position ?? input.position);
+        }
+        else
+        {
+            this.value = new ColorStopValue(fill, position);
         }
 
 
+        this.updateValues =
+        [
+            ['fill',     this.value.fill    ],
+            ['position', this.value.position]
+        ];
+        
+
+        this.validate();
+
         return this;
+    }
+
+
+
+    validateFill(fill)
+    {
+        if (!fill)
+            return null;
+
+
+        if (fill.type == COLOR_VALUE)
+            return FillValue.fromRgb(scaleRgb(fill.toRgb()), 0xff);
+        else
+            return fill;
     }
 
 
@@ -80,6 +94,24 @@ extends GOperator
         if (this.input   ) this.input   .pushValueUpdates(parse);
         if (this.fill    ) this.fill    .pushValueUpdates(parse);
         if (this.position) this.position.pushValueUpdates(parse);
+    }    
+    
+    
+    toValue()
+    {
+        return new StrokeValue(
+            this.options.enabled
+            ? this.validateFill(this.fill ? this.fill.toValue() : this.input.fill.toValue())
+            : FillValue.NaN,
+            this.position ? this.position.toValue() : this.input.position.toValue());
+    }                 
+
+
+
+    isValid()
+    {
+        return this.fill    .isValid()
+            && this.position.isValid();
     }
 
 

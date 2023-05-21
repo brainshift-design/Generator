@@ -74,13 +74,13 @@ extends GShapeBase
                             continue;
 
                         this.value.items.push(item.copy());   
-                        this.value.objects.push(...item.objects.map(o => o.copy()));
+                        //this.value.objects.push(...item.objects.map(o => this.copyObject(o, i)));
                     }
                 }
                 else
                 {
                     this.value.items.push(input.copy());
-                    this.value.objects.push(...input.objects.map(o => o.copy()));
+                    //this.value.objects.push(...input.objects.map(o => this.copyObject(o, i)));
                 }
             }
         }
@@ -102,11 +102,29 @@ extends GShapeBase
 
 
 
+    copyObject(obj, inputIndex)
+    {
+        const copy = obj.copy(); 
+    
+        if (this.inputs.length > 1)
+            copy.inputIndex = inputIndex; 
+    
+        return copy;
+    }
+    
+
+    
     async evalObjects(parse, options = {})
     {
         if (!this.options.enabled)
             return;
             
+
+        if (this.nodeId == 'group2')
+        {
+            console.log('this.value =', this.value);
+            //console.log('input.objects =', [...input.objects]);
+        }
 
         if (this.value.items)
         {
@@ -120,10 +138,16 @@ extends GShapeBase
             {
                 for (let i = 0; i < item.objects.length; i++)
                 {
-                    const obj    = item.objects[i].copy();
-                    obj.nodeId   = this.nodeId;
-                    obj.objectId = obj.objectId + OBJECT_SEPARATOR + this.nodeId;
-                    obj.listId   = -1;
+                    const obj  = item.objects[i].copy();
+                    obj.nodeId = this.nodeId;
+
+                    obj.objectId = 
+                          obj.objectId 
+                        + OBJECT_SEPARATOR 
+                        //+ (obj.inputIndex >= 0 ? obj.inputIndex + INPUT_SEPARATOR : '')
+                        + this.nodeId;
+
+                    obj.listId = -1;
 
                     group.children.push(obj);
                 }

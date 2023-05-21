@@ -82,6 +82,7 @@ function createNode(nodeType, creatingButton = null, createdNodeId = -1, options
         case GRADIENT:                node = new OpGradient();          break;
 
         case FILL:                    node = new OpFill();              break;
+        case COLOR_STOP:              node = new OpColorStop();         break;
         case STROKE:                  node = new OpStroke();            break;
 
         case DROP_SHADOW:             node = new OpDropShadow();        break;
@@ -100,10 +101,9 @@ function createNode(nodeType, creatingButton = null, createdNodeId = -1, options
         case STAR:                    node = new OpStar();              break;
         case TEXTSHAPE:               node = new OpTextShape();         break;
         case VECTOR_PATH:             node = new OpVectorPath();        break;
+        case BOOLEAN:                 node = new OpShapeBoolean();      break;
         case SHAPE_GROUP:             node = new OpShapeGroup();        break;
         case FRAME:                   node = new OpFrame();             break;
-
-        case BOOLEAN:                 node = new OpShapeBoolean();      break;
 
         case MOVE:                    node = new OpMove();              break;
         case ROTATE:                  node = new OpRotate();            break;
@@ -771,6 +771,7 @@ function uiUpdateValuesAndObjects(requestId, actionId, updateNodeId, updateParam
                     case        COLOR_VALUE: value = parseColorValue       (values[i++])[0];  break;
   
                     case         FILL_VALUE: value = parseFillValue        (values[i++])[0];  break;
+                    case   COLOR_STOP_VALUE: value = parseColorStopValue   (values[i++])[0];  break;
                     case       STROKE_VALUE: value = parseStrokeValue      (values[i++])[0];  break;
                     case  DROP_SHADOW_VALUE: value = parseDropShadowValue  (values[i++])[0];  break;
                     case INNER_SHADOW_VALUE: value = parseInnerShadowValue (values[i++])[0];  break;

@@ -467,6 +467,9 @@ function initGeneratorMenus()
     menuStyle = new Menu('Styles', true, false);
     menuStyle.addItems([
         menuItemStyleFill        = new MenuItem('Fill',            {icon: iconFill,        callback: e => actionManager.do(getCreateNodeAction(FILL,         btnStyle.div, getCreateOptions(e)))}),
+                                   new MenuItem('',                {separator: true}),
+                                   new MenuItem('Color stop',      {icon: iconColorStop,   callback: e => actionManager.do(getCreateNodeAction(COLOR_STOP,   btnStyle.div, getCreateOptions(e)))}),
+                                   new MenuItem('',                {separator: true}),
         menuItemStyleStroke      = new MenuItem('Stroke',          {icon: iconStroke,      callback: e => actionManager.do(getCreateNodeAction(STROKE,       btnStyle.div, getCreateOptions(e)))}),
         menuItemStyleSep2        = new MenuItem('',                {separator: true}),
                                    new MenuItem('Color style',     {icon: iconColorStyle,  callback: e => actionManager.do(getCreateNodeAction(COLOR_STYLE,  btnStyle.div, getCreateOptions(e, {existing: true})))}),

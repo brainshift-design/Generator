@@ -6,13 +6,17 @@ extends GValue
 
 
 
-    constructor(fill     = FillValue.NaN,
-                position = NumberValue   .NaN)
+    constructor(fill     = FillValue.NaN, 
+                position = new NumberValue(1))
     {
+        if (fill.type != FILL_VALUE)
+            console.assert(false, 'fill.type is ' + fill.type + ', must be FILL_VALUE');
+
+
         super(COLOR_STOP_VALUE);
 
-        this.fill     = fill;
-        this.position = position;
+        this.fill     = fill    .copy();
+        this.position = position.copy();
 
         this.valid    = true;
     }
@@ -40,10 +44,11 @@ extends GValue
 
 
 
-    equals(col)
+    equals(stop)
     {
-        return this.fill    .equals(col.color   )
-            && this.position.equals(col.position);
+        return stop
+            && this.fill    .equals(stop.fill    )
+            && this.position.equals(stop.position);
     }
 
 
@@ -51,6 +56,13 @@ extends GValue
     async eval(parse)
     {
         return this;
+    }
+
+
+
+    toValue()
+    {
+        return this.copy();
     }
 
 
@@ -63,21 +75,49 @@ extends GValue
 
 
 
-    static NaN = new ColorStopValue(
-        FillValue.NaN,
-        NumberValue.NaN);
+    toDisplayString()
+    {
+        return      this.fill    .toDisplayString()
+            + ' ' + this.position.toDisplayString();
+    }
+
+
+
+    getNaN()
+    {
+        return ColorStopValue.NaN;
+    }
+
+
+
+    static NaN = Object.freeze(new ColorStopValue(
+        FillValue  .NaN,
+        NumberValue.NaN));
 }
 
 
 
-function parseColorStopValue(str)
+function parseColorStopValue(str, i = -1)
 {
-    if (str == NAN_DISPLAY)
-        return ColorStopValue.NaN;
+    if (   i <  0 && str    == NAN_DISPLAY
+        || i >= 0 && str[i] == NAN_DISPLAY)
+        return [ColorStopValue.NaN, 1];
 
-    const stop = str.split(' ');
 
-    return new ColorStopValue(
-        parseFillValue(str)[0],
-        parseNumberValue(stop[5])[0]);
+    if (i < 0)
+    {
+        str = str.split(' ');
+        i   = 0;
+    }
+
+
+    const iStart = i;
+
+    const fill     = parseFillValue  (str, i); i += fill    [1];
+    const position = parseNumberValue(str[i]); i += position[1];
+
+
+    return [
+        new ColorStopValue(fill[0], position[0]),
+        i - iStart ];
 }

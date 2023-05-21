@@ -32,32 +32,6 @@ extends GValue
 
 
     
-    // static create(r, g, b, opacity)
-    // {
-    //     console.assert(
-    //         typeof opacity == 'number',
-    //         'opacity must be a number');
-
-    //     return new FillValue(
-    //         ColorValue.create(1, r, g, b),
-    //         new NumberValue(opacity));
-    // }
-
-
-
-    // static fromRgb(rgb, opacity)
-    // {
-    //     console.assert(
-    //         typeof opacity == 'number',
-    //         'opacity must be a number');
-
-    //     return new FillValue(
-    //         ColorValue.fromRgb(rgb),
-    //         new NumberValue(opacity));
-    // }
-
-
-
     copy()
     {
         const copy = new StrokeValue(
@@ -101,41 +75,6 @@ extends GValue
     {
         return this;
     }
-
-
-
-    // toFigma()
-    // {
-    //     let align, join;
-
-        
-    //     switch (this.fit.value)
-    //     {
-    //         case 0: align = 'INSIDE';  break;
-    //         case 1: align = 'CENTER';  break;
-    //         case 2: align = 'OUTSIDE'; break;
-    //     }
-        
-    //     switch (this.join.value)
-    //     {
-    //         case 0: join = 'MITER'; break;
-    //         case 1: join = 'BEVEL'; break;
-    //         case 2: join = 'ROUND'; break;
-    //     }
-
-        
-    //     return this.isValid()
-    //         ? {
-    //               strokes:          this.fill.toFigma(),
-    //               strokeWeight:     this.weight.value,
-    //               strokeAlign:      align,
-    //               strokeJoin:       join,
-    //               strokeMiterLimit: this.miter.value
-    //           }
-    //         : {
-    //               strokes: []
-    //           };
-    // }
 
 
 

@@ -31,8 +31,9 @@
 ../generator/types/values/TextValue.js
 ../generator/types/values/ColorValue.js
 ../generator/types/values/FillValue.js
+../generator/types/values/ColorStopValue.js
+//../generator/types/values/GradientValue.js
 ../generator/types/values/StrokeValue.js
-//../generator/types/values/ColorStopValue.js
 ../generator/types/values/DropShadowValue.js
 ../generator/types/values/InnerShadowValue.js
 ../generator/types/values/LayerBlurValue.js
@@ -139,8 +140,9 @@
 
 ../generator/types/style/GColorStyle.js
 ../generator/types/style/GFill.js
-../generator/types/style/GStroke.js
 ../generator/types/style/GColorStop.js
+//../generator/types/style/GGradient.js
+../generator/types/style/GStroke.js
 ../generator/types/style/GDropShadow.js
 ../generator/types/style/GInnerShadow.js
 ../generator/types/style/GLayerBlur.js
