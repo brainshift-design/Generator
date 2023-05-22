@@ -64,6 +64,8 @@ extends GArithmetic
     {
         super.pushUpdateValues(parse);
 
+        this.input.forEach(i => i.pushUpdateValues(parse));
+        
         if (this.operation) this.operation.pushUpdateValues(parse);
     }
 

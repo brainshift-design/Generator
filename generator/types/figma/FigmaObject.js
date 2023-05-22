@@ -84,19 +84,19 @@ function applyTransform(obj, cx, cy, xform)
 {
     // add to object's "total" transformation
 
-    // obj.xform = mulm3m3(
-    //     obj.xform,
-    //     [[1, 0, cx],
-    //      [0, 1, cy],
-    //      [0, 0, 1 ]]);
+    obj.xform = mulm3m3(
+        obj.xform,
+        [[1, 0, cx],
+         [0, 1, cy],
+         [0, 0, 1 ]]);
 
     obj.xform = mulm3m3(obj.xform, xform);
 
-    // obj.xform = mulm3m3(
-    //     obj.xform,
-    //     [[1, 0, -cx],
-    //      [0, 1, -cy],
-    //      [0, 0,  1 ]]);
+    obj.xform = mulm3m3(
+        obj.xform,
+        [[1, 0, -cx],
+         [0, 1, -cy],
+         [0, 0,  1 ]]);
 
 
     // apply only this transformation to the position (only for points)

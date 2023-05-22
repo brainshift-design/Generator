@@ -4308,19 +4308,19 @@ function applyTransform(obj, cx, cy, xform)
 {
     // add to object's "total" transformation
 
-    // obj.xform = mulm3m3(
-    //     obj.xform,
-    //     [[1, 0, cx],
-    //      [0, 1, cy],
-    //      [0, 0, 1 ]]);
+    obj.xform = mulm3m3(
+        obj.xform,
+        [[1, 0, cx],
+         [0, 1, cy],
+         [0, 0, 1 ]]);
 
     obj.xform = mulm3m3(obj.xform, xform);
 
-    // obj.xform = mulm3m3(
-    //     obj.xform,
-    //     [[1, 0, -cx],
-    //      [0, 1, -cy],
-    //      [0, 0,  1 ]]);
+    obj.xform = mulm3m3(
+        obj.xform,
+        [[1, 0, -cx],
+         [0, 1, -cy],
+         [0, 0,  1 ]]);
 
 
     // apply only this transformation to the position (only for points)
@@ -6752,6 +6752,9 @@ function parseColorStopValue(str, i = -1)
         new ColorStopValue(fill[0], position[0]),
         i - iStart ];
 }
+
+
+
 
 
 class StrokeValue
@@ -10072,18 +10075,21 @@ extends GOperator
 
 
 
-    pushValueUpdates()
+    pushValueUpdates(parse)
     {
-        super.pushValueUpdates();
+        super.pushValueUpdates(parse);
 
-        if (this.index) this.index.pushValueUpdates();
+        if (this.input) this.input.pushValueUpdates(parse);
+        if (this.index) this.index.pushValueUpdates(parse);
     }
 
 
 
     toValue()
     {
-        return this.value.copy();
+        return this.value
+             ? this.value.copy()
+             : null;
     }
 
 
@@ -10092,6 +10098,7 @@ extends GOperator
     {
         super.invalidate();
 
+        if (this.input) this.input.invalidate();
         if (this.index) this.index.invalidate();
     }
 }
@@ -10252,8 +10259,8 @@ extends GOperator
 
         this.updateValues =
         [
-            ['condition', cond      ],
-            ['value',     this.value]
+            ['value',     this.value],
+            ['condition', cond      ]
         ];
         
         
@@ -13006,6 +13013,8 @@ extends GArithmetic
     {
         super.pushUpdateValues(parse);
 
+        this.input.forEach(i => i.pushUpdateValues(parse));
+        
         if (this.operation) this.operation.pushUpdateValues(parse);
     }
 
@@ -17446,7 +17455,9 @@ extends GOperator
         }
         else
         {
-            this.value = new ColorStopValue(fill, position);
+            this.value = new ColorStopValue(
+                fill, 
+                position);
         }
 
 
@@ -17514,6 +17525,156 @@ extends GOperator
         if (this.input   ) this.input   .invalidate();
         if (this.fill    ) this.fill    .invalidate();
         if (this.position) this.position.invalidate();
+    }
+}
+
+
+class GGradient
+extends GOperator
+{
+    inputs = [];
+
+    x1 = null;
+    y1 = null;
+    x2 = null;
+    y2 = null;
+    x3 = null;
+    y3 = null;
+
+
+
+    constructor(nodeId, options)
+    {
+        super(GRADIENT, nodeId, options);
+    }
+
+
+
+    copy()
+    {
+        const copy = new GGradient(this.nodeId, this.options);
+
+        copy.copyBase(this);
+
+        copy.inputs = this.inputs.map(i => i.copy());
+
+        if (this.x1) copy.x1 = this.x1.copy();
+        if (this.y1) copy.y1 = this.y1.copy();
+        if (this.x2) copy.x2 = this.x2.copy();
+        if (this.y2) copy.y2 = this.y2.copy();
+        if (this.x3) copy.x3 = this.x3.copy();
+        if (this.y3) copy.y3 = this.y3.copy();
+
+        return copy;
+    }
+
+
+
+    async eval(parse)
+    {
+        if (this.isCached())
+            return this;
+
+        const x1 = this.x1 ? (await this.x1.eval(parse)).toValue() : null;
+        const y1 = this.y1 ? (await this.y1.eval(parse)).toValue() : null;
+        const x2 = this.x2 ? (await this.x2.eval(parse)).toValue() : null;
+        const y2 = this.y2 ? (await this.y2.eval(parse)).toValue() : null;
+        const x3 = this.x3 ? (await this.x3.eval(parse)).toValue() : null;
+        const y3 = this.y3 ? (await this.y3.eval(parse)).toValue() : null;
+
+
+        // if (this.input)
+        // {
+        //     const input = (await this.input.eval(parse)).toValue();
+
+        //     this.value = new GradientValue(
+        //         x1 ?? input.x1,
+        //         y1 ?? input.y1,
+        //         x2 ?? input.x2,
+        //         y2 ?? input.y2,
+        //         x3 ?? input.x3,
+        //         y3 ?? input.y3);
+        // }
+        // else
+        // {
+        //     this.value = new GradientValue(
+        //         x1, 
+        //         y1, 
+        //         x2, 
+        //         y2, 
+        //         x3,
+        //         y3);
+        // }
+
+
+        this.updateValues =
+        [
+            ['x1', x1],
+            ['y1', y1],
+            ['x2', x2],
+            ['y2', y2],
+            ['x3', x3],
+            ['y3', y3]
+        ];
+        
+
+        this.validate();
+
+        return this;
+    }
+
+
+
+    pushValueUpdates(parse)
+    {
+        super.pushValueUpdates(parse);
+
+        this.inputs.forEach(i => i.pushValueUpdates(parse));
+
+        if (this.x1) this.x1.pushValueUpdates(parse);
+        if (this.y1) this.y1.pushValueUpdates(parse);
+        if (this.x2) this.x2.pushValueUpdates(parse);
+        if (this.y2) this.y2.pushValueUpdates(parse);
+        if (this.x3) this.x3.pushValueUpdates(parse);
+        if (this.y3) this.y3.pushValueUpdates(parse);
+    }    
+    
+    
+    toValue()
+    {
+        return new StrokeValue(
+            this.options.enabled
+            ? this.validateFill(this.fill ? this.fill.toValue() : this.input.fill.toValue())
+            : FillValue.NaN,
+            this.weight ? this.weight.toValue() : this.input.weight.toValue(),
+            this.fit    ? this.fit   .toValue() : this.input.fit   .toValue(),
+            this.join   ? this.join  .toValue() : this.input.join  .toValue(),
+            this.miter  ? this.miter .toValue() : this.input.miter .toValue());
+    }                 
+
+
+
+    isValid()
+    {
+        return this.fill  .isValid()
+            && this.weight.isValid()
+            && this.fit   .isValid()
+            && this.join  .isValid()
+            && this.miter .isValid();
+    }
+
+
+
+    invalidate()
+    {
+        super.invalidate();
+
+        if (this.input ) this.input .invalidate();
+        if (this.fill  ) this.fill  .invalidate();
+        if (this.weight) this.weight.invalidate();
+        if (this.fit   ) this.fit   .invalidate();
+        if (this.join  ) this.join  .invalidate();
+        if (this.miter ) this.miter .invalidate();
     }
 }
 
@@ -17587,7 +17748,12 @@ extends GOperator
         }
         else
         {
-            this.value = new StrokeValue(fill, weight, fit, join, miter);
+            this.value = new StrokeValue(
+                fill, 
+                weight, 
+                fit, 
+                join,
+                miter);
         }
 
 
@@ -22317,7 +22483,7 @@ function enableFeatures(subscription, beta)
     //updateMenuItemDisplay(menuItemColorBlend        .div, beta);
 
     //updateMenuItemDisplay(menuItemStyleFill         .div, subscription && beta);
-    updateElementDisplay(menuItemStyleStroke         .div, subscription && beta);
+    updateElementDisplay(menuItemLayerStroke         .div, subscription && beta);
     //updateMenuItemDisplay(menuItemStyleSep1         .div, subscription && beta);
     
     //updateMenuItemDisplay(menuItemNodeCopyAsJsCode    .div, subscription && beta);
@@ -25801,7 +25967,9 @@ function genParseColorStopValue(parse)
 
 function genParseColorStop(parse)
 {
+    console.log('1');
     const [, nodeId, options, ignore] = genParseNodeStart(parse);
+    console.log('2');
 
 
     const stop = new GColorStop(nodeId, options);
@@ -25955,60 +26123,6 @@ function genParseStrokeParam(parse)
         stroke.data.weight = genParse(parse);
 
     return stroke;
-}
-
-
-
-function genParseColorStopValue(parse)
-{
-    parse.pos++; // COLOR_STOP_VALUE
-
-    const stop = parse.move();
-
-    if (parse.settings.logRequests) 
-        logReqValue(COLOR_STOP_VALUE, stop, parse);
-
-    return parseColorStopValue(stop);
-}
-
-
-
-function genParseColorStop(parse)
-{
-    const [, nodeId, options, ignore] = genParseNodeStart(parse);
-
-
-    const stop = new GColorStop(nodeId, options);
-
-
-    if (parse.settings.logRequests) 
-        logReq(stop, parse, ignore);
-
-
-    if (ignore)
-    {
-        genParseNodeEnd(parse, stop);
-        return parse.parsedNodes.find(n => n.nodeId == nodeId);
-    }
-
-
-    parse.nTab++;
-
-
-    if (   parse.next == COLOR_STOP
-        || parse.next == COLOR_STOP_VALUE)
-        stop.input = genParse(parse);
-
-
-    stop.fill     = genParse(parse);
-    stop.position = genParse(parse);
-
-    
-    parse.nTab--;
-
-
-    genParseNodeEnd(parse, stop);
-    return stop;
 }
 
 
@@ -26980,7 +27094,7 @@ class Parse
         //return this.request[this.pos++];
 
         const token = this.request[this.pos++];
-        console.log('token =', token);
+        //console.log('token =', token);
         return token;
     }
 
@@ -27093,6 +27207,9 @@ function genParse(parse, inParam = true)
       
     else if (parse.next == COLOR_STOP_VALUE       ) result = genParseColorStopValue   (parse);
     else if (parse.next == COLOR_STOP             ) result = genParseColorStop        (parse);
+      
+    else if (parse.next == GRADIENT_VALUE         ) result = genParseGradientValue    (parse);
+    else if (parse.next == GRADIENT               ) result = genParseGradient         (parse);
       
     else if (parse.next == STROKE_VALUE           ) result = genParseStrokeValue      (parse);
     else if (parse.next == STROKE                 ) result = genParseStroke           (parse);

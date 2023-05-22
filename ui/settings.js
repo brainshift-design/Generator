@@ -292,7 +292,7 @@ function enableFeatures(subscription, beta)
     //updateMenuItemDisplay(menuItemColorBlend        .div, beta);
 
     //updateMenuItemDisplay(menuItemStyleFill         .div, subscription && beta);
-    updateElementDisplay(menuItemStyleStroke         .div, subscription && beta);
+    updateElementDisplay(menuItemLayerStroke         .div, subscription && beta);
     //updateMenuItemDisplay(menuItemStyleSep1         .div, subscription && beta);
     
     //updateMenuItemDisplay(menuItemNodeCopyAsJsCode    .div, subscription && beta);

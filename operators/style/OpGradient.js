@@ -5,7 +5,8 @@ extends OpColorBase
     paramY1;
     paramX2;
     paramY2;
-    paramAspect;
+    paramX3;
+    paramY3;
 
     checkersHolder;
     checkers;
@@ -35,18 +36,41 @@ extends OpColorBase
         this.addOutput(new Output([GRADIENT_VALUE], this.output_genRequest, getNodeOutputValuesForUndo, this.output_backInit));
         
 
-        this.addParam(this.paramX1     = new NumberParam('x1',     'x₁',     true, true, true, 0));
-        this.addParam(this.paramY1     = new NumberParam('y1',     'y₁',     true, true, true, 0));
-        this.addParam(this.paramX2     = new NumberParam('x2',     'x₂',     true, true, true, 0));
-        this.addParam(this.paramY2     = new NumberParam('y2',     'y₂',     true, true, true, 0));
-        this.addParam(this.paramAspect = new NumberParam('aspect', 'aspect', true, true, true, 0, 0));
+        this.addParam(this.paramX1 = new NumberParam('x1', 'x₁', true, true, true, 0, 0, 100));
+        this.addParam(this.paramY1 = new NumberParam('y1', 'y₁', true, true, true, 0, 0, 100));
+        this.addParam(this.paramX2 = new NumberParam('x2', 'x₂', true, true, true, 0, 0, 100));
+        this.addParam(this.paramY2 = new NumberParam('y2', 'y₂', true, true, true, 0, 0, 100));
+        this.addParam(this.paramX3 = new NumberParam('x3', 'x₃', true, true, true, 0, 0, 100));
+        this.addParam(this.paramY3 = new NumberParam('y3', 'y₃', true, true, true, 0, 0, 100));
+
+
+        this.paramX1.controls[0].suffix = '%';
+        this.paramY1.controls[0].suffix = '%';
+        this.paramX2.controls[0].suffix = '%';
+        this.paramY2.controls[0].suffix = '%';
+        this.paramX3.controls[0].suffix = '%';
+        this.paramY3.controls[0].suffix = '%';
+
+        this.paramX1.controls[0].min = Number.MIN_SAFE_INTEGER;
+        this.paramY1.controls[0].min = Number.MIN_SAFE_INTEGER;
+        this.paramX2.controls[0].min = Number.MIN_SAFE_INTEGER;
+        this.paramY2.controls[0].min = Number.MIN_SAFE_INTEGER;
+        this.paramX3.controls[0].min = Number.MIN_SAFE_INTEGER;
+        this.paramY3.controls[0].min = Number.MIN_SAFE_INTEGER;
+
+        this.paramX1.controls[0].max = Number.MAX_SAFE_INTEGER;
+        this.paramY1.controls[0].max = Number.MAX_SAFE_INTEGER;
+        this.paramX2.controls[0].max = Number.MAX_SAFE_INTEGER;
+        this.paramY2.controls[0].max = Number.MAX_SAFE_INTEGER;
+        this.paramX3.controls[0].max = Number.MAX_SAFE_INTEGER;
+        this.paramY3.controls[0].max = Number.MAX_SAFE_INTEGER;
     }
     
     
     
     addNewInput()
     {
-        const input = new Input([COLOR_VALUE, FILL_VALUE, GRADIENT_VALUE]);
+        const input = new Input([COLOR_VALUE, FILL_VALUE, COLOR_STOP_VALUE, GRADIENT_VALUE, LIST_VALUE]);
         input.isNew = true;
 
         input.addEventListener('connect',    () => { onVariableConnectInput(e.detail.input); input.isNew = false; });
@@ -80,11 +104,12 @@ extends OpColorBase
             request.push(...pushInputOrParam(input, gen));
 
         
-        request.push(...this.node.paramX1    .genRequest(gen));
-        request.push(...this.node.paramY1    .genRequest(gen));
-        request.push(...this.node.paramX2    .genRequest(gen));
-        request.push(...this.node.paramY2    .genRequest(gen));
-        request.push(...this.node.paramAspect.genRequest(gen));
+        request.push(...this.node.paramX1.genRequest(gen));
+        request.push(...this.node.paramY1.genRequest(gen));
+        request.push(...this.node.paramX2.genRequest(gen));
+        request.push(...this.node.paramY2.genRequest(gen));
+        request.push(...this.node.paramX3.genRequest(gen));
+        request.push(...this.node.paramY3.genRequest(gen));
 
         
         gen.scope.pop();

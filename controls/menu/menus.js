@@ -3,6 +3,7 @@ var btnFlow;
 var btnNumber;
 var btnText;
 var btnColor;
+var btnLayer;
 var btnStyle;
 var btnShape;
 var btnGroup;
@@ -29,6 +30,7 @@ var menuNumber;
 var menuString;
 var menuColor;
 var menuColorStyle;
+var menuLayer;
 var menuStyle;
 var menuShape;
 var menuGroup;
@@ -128,13 +130,13 @@ var menuItemColorblind;
 var menuItemColorBlend;
 
 
-var menuItemStyleFill;
-var menuItemStyleStroke;
-var menuItemStyleSep1;
-var menuItemStyleDropShadow;
-var menuItemStyleInnerShadow;
-var menuItemStyleLayerBlur;
-var menuItemStyleBackBlur;
+var menuItemLayerFill;
+var menuItemLayerStroke;
+var menuItemLayerSep1;
+var menuItemLayerDropShadow;
+var menuItemLayerInnerShadow;
+var menuItemLayerLayerBlur;
+var menuItemLayerBackBlur;
 var menuItemStyleSep2;
 
 
@@ -464,36 +466,39 @@ function initGeneratorMenus()
     };
 
     
+    menuLayer = new Menu('Layer', true, false);
+    menuLayer.addItems([
+        menuItemLayerFill        = new MenuItem('Fill',            {icon: iconFill,        callback: e => actionManager.do(getCreateNodeAction(FILL,         btnLayer.div, getCreateOptions(e)))}),
+                                   new MenuItem('Gradient',        {icon: iconGradient,    callback: e => actionManager.do(getCreateNodeAction(GRADIENT,     btnLayer.div, getCreateOptions(e)))}),
+                                   new MenuItem('Color stop',      {icon: iconColorStop,   callback: e => actionManager.do(getCreateNodeAction(COLOR_STOP,   btnLayer.div, getCreateOptions(e)))}),
+                                   new MenuItem('',                {separator: true}),
+        menuItemLayerStroke      = new MenuItem('Stroke',          {icon: iconStroke,      callback: e => actionManager.do(getCreateNodeAction(STROKE,       btnLayer.div, getCreateOptions(e)))}),
+        menuItemLayerSep1        = new MenuItem('',                {separator: true}),
+        menuItemLayerDropShadow  = new MenuItem('Drop shadow',     {icon: iconDropShadow,  callback: e => actionManager.do(getCreateNodeAction(DROP_SHADOW,  btnLayer.div, getCreateOptions(e)))}),
+        menuItemLayerInnerShadow = new MenuItem('Inner shadow',    {icon: iconInnerShadow, callback: e => actionManager.do(getCreateNodeAction(INNER_SHADOW, btnLayer.div, getCreateOptions(e)))}),
+        menuItemLayerLayerBlur   = new MenuItem('Layer blur',      {icon: iconLayerBlur,   callback: e => actionManager.do(getCreateNodeAction(LAYER_BLUR,   btnLayer.div, getCreateOptions(e)))}),
+        menuItemLayerBackBlur    = new MenuItem('Background blur', {icon: iconBackBlur,    callback: e => actionManager.do(getCreateNodeAction(BACK_BLUR,    btnLayer.div, getCreateOptions(e)))}),
+                                   new MenuItem('',                {separator: true}),
+                                   new MenuItem('Mask',            {icon: iconMask,        callback: e => actionManager.do(getCreateNodeAction(LAYER_MASK,   btnLayer.div, getCreateOptions(e)))})]);
+                                 //new MenuItem('Color style',     {icon: iconColorStyle,  childMenu: menuColorStyle, callback: e => actionManager.do(getCreateNodeAction(COLOR_STYLE,  btnColor.div, getCreateOptions(e)))})]);
+    
+    
     menuStyle = new Menu('Styles', true, false);
     menuStyle.addItems([
-        menuItemStyleFill        = new MenuItem('Fill',            {icon: iconFill,        callback: e => actionManager.do(getCreateNodeAction(FILL,         btnStyle.div, getCreateOptions(e)))}),
-                                   new MenuItem('',                {separator: true}),
-                                   new MenuItem('Color stop',      {icon: iconColorStop,   callback: e => actionManager.do(getCreateNodeAction(COLOR_STOP,   btnStyle.div, getCreateOptions(e)))}),
-                                   new MenuItem('',                {separator: true}),
-        menuItemStyleStroke      = new MenuItem('Stroke',          {icon: iconStroke,      callback: e => actionManager.do(getCreateNodeAction(STROKE,       btnStyle.div, getCreateOptions(e)))}),
-        menuItemStyleSep2        = new MenuItem('',                {separator: true}),
-                                   new MenuItem('Color style',     {icon: iconColorStyle,  callback: e => actionManager.do(getCreateNodeAction(COLOR_STYLE,  btnStyle.div, getCreateOptions(e, {existing: true})))}),
-        menuItemStyleSep1        = new MenuItem('',                {separator: true}),
-        menuItemStyleDropShadow  = new MenuItem('Drop shadow',     {icon: iconDropShadow,  callback: e => actionManager.do(getCreateNodeAction(DROP_SHADOW,  btnStyle.div, getCreateOptions(e)))}),
-        menuItemStyleInnerShadow = new MenuItem('Inner shadow',    {icon: iconInnerShadow, callback: e => actionManager.do(getCreateNodeAction(INNER_SHADOW, btnStyle.div, getCreateOptions(e)))}),
-        menuItemStyleLayerBlur   = new MenuItem('Layer blur',      {icon: iconLayerBlur,   callback: e => actionManager.do(getCreateNodeAction(LAYER_BLUR,   btnStyle.div, getCreateOptions(e)))}),
-        menuItemStyleBackBlur    = new MenuItem('Background blur', {icon: iconBackBlur,    callback: e => actionManager.do(getCreateNodeAction(BACK_BLUR,    btnStyle.div, getCreateOptions(e)))}),
-                                   new MenuItem('',                {separator: true}),
-                                   new MenuItem('Mask',            {icon: iconMask,        callback: e => actionManager.do(getCreateNodeAction(LAYER_MASK,   btnStyle.div, getCreateOptions(e)))})]);
-                                 //new MenuItem('Color style',     {icon: iconColorStyle,  childMenu: menuColorStyle, callback: e => actionManager.do(getCreateNodeAction(COLOR_STYLE,  btnColor.div, getCreateOptions(e)))})]);
+        new MenuItem('Color style', {icon: iconColorStyle, callback: e => actionManager.do(getCreateNodeAction(COLOR_STYLE, btnStyle.div, getCreateOptions(e, {existing: true})))})]);
     
     
     menuShapes = new Menu('Shapes', true, false);
     menuShapes.addItems([
-                                new MenuItem('Point',       {icon: iconPoint,      callback: e => actionManager.do(getCreateNodeAction(POINT,       btnShape.div, getCreateOptions(e)))}),
-                                new MenuItem('Vector path', {icon: iconVectorPath, callback: e => actionManager.do(getCreateNodeAction(VECTOR_PATH, btnShape.div, getCreateOptions(e)))}),
-                                new MenuItem('',            {separator: true}),
-                                new MenuItem('Rectangle',   {icon: iconRectangle,  callback: e => actionManager.do(getCreateNodeAction(RECTANGLE,   btnShape.div, getCreateOptions(e)))}),
-                                new MenuItem('Line',        {icon: iconLine,       callback: e => actionManager.do(getCreateNodeAction(LINE,        btnShape.div, getCreateOptions(e)))}),
-                                new MenuItem('Ellipse',     {icon: iconEllipse,    callback: e => actionManager.do(getCreateNodeAction(ELLIPSE,     btnShape.div, getCreateOptions(e)))}),
-                                new MenuItem('Polygon',     {icon: iconPolygon,    callback: e => actionManager.do(getCreateNodeAction(POLYGON,     btnShape.div, getCreateOptions(e)))}),
-                                new MenuItem('Star',        {icon: iconStar,       callback: e => actionManager.do(getCreateNodeAction(STAR,        btnShape.div, getCreateOptions(e)))}),
-                                new MenuItem('Text',        {icon: iconTextShape,  callback: e => actionManager.do(getCreateNodeAction(TEXTSHAPE,   btnShape.div, getCreateOptions(e)))})]);
+        new MenuItem('Point',       {icon: iconPoint,      callback: e => actionManager.do(getCreateNodeAction(POINT,       btnShape.div, getCreateOptions(e)))}),
+        new MenuItem('Vector path', {icon: iconVectorPath, callback: e => actionManager.do(getCreateNodeAction(VECTOR_PATH, btnShape.div, getCreateOptions(e)))}),
+        new MenuItem('',            {separator: true}),
+        new MenuItem('Rectangle',   {icon: iconRectangle,  callback: e => actionManager.do(getCreateNodeAction(RECTANGLE,   btnShape.div, getCreateOptions(e)))}),
+        new MenuItem('Line',        {icon: iconLine,       callback: e => actionManager.do(getCreateNodeAction(LINE,        btnShape.div, getCreateOptions(e)))}),
+        new MenuItem('Ellipse',     {icon: iconEllipse,    callback: e => actionManager.do(getCreateNodeAction(ELLIPSE,     btnShape.div, getCreateOptions(e)))}),
+        new MenuItem('Polygon',     {icon: iconPolygon,    callback: e => actionManager.do(getCreateNodeAction(POLYGON,     btnShape.div, getCreateOptions(e)))}),
+        new MenuItem('Star',        {icon: iconStar,       callback: e => actionManager.do(getCreateNodeAction(STAR,        btnShape.div, getCreateOptions(e)))}),
+        new MenuItem('Text',        {icon: iconTextShape,  callback: e => actionManager.do(getCreateNodeAction(TEXTSHAPE,   btnShape.div, getCreateOptions(e)))})]);
 
 
     menuTransform = new Menu('Transform', true, false);
@@ -656,6 +661,7 @@ function initGeneratorMenus()
     btnNumber = new MenuButton('', menuNumber, {useMenuName: true, highlight: () => currentMenus.includes(menuNumber), callback: () => updatePanMode(false)});
     btnText   = new MenuButton('', menuString, {useMenuName: true, highlight: () => currentMenus.includes(menuString), callback: () => updatePanMode(false)});
     btnColor  = new MenuButton('', menuColor,  {useMenuName: true, highlight: () => currentMenus.includes(menuColor ), callback: () => updatePanMode(false)});
+    btnLayer  = new MenuButton('', menuLayer,  {useMenuName: true, highlight: () => currentMenus.includes(menuLayer ), callback: () => updatePanMode(false)});
     btnStyle  = new MenuButton('', menuStyle,  {useMenuName: true, highlight: () => currentMenus.includes(menuStyle ), callback: () => updatePanMode(false)});
     btnShape  = new MenuButton('', menuShape,  {useMenuName: true, highlight: () => currentMenus.includes(menuShape ), callback: () => updatePanMode(false)});
     btnGroup  = new MenuButton('', menuGroup,  {useMenuName: true, highlight: () => currentMenus.includes(menuShape ), callback: () => updatePanMode(false)});
@@ -739,6 +745,7 @@ function initGeneratorMenus()
 
     btnMain   .setIcon(iconGenerator);
     btnShape  .setIcon(iconShapes);
+    btnLayer  .setIcon(iconBackBlur);
     btnStyle  .setIcon(iconStyle);
     btnGroup  .setIcon(iconGroup);
     btnHand   .setIcon(iconHand);

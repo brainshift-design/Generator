@@ -55,7 +55,9 @@ extends GOperator
         }
         else
         {
-            this.value = new ColorStopValue(fill, position);
+            this.value = new ColorStopValue(
+                fill, 
+                position);
         }
 
 

@@ -105,7 +105,9 @@ function genParseColorStopValue(parse)
 
 function genParseColorStop(parse)
 {
+    console.log('1');
     const [, nodeId, options, ignore] = genParseNodeStart(parse);
+    console.log('2');
 
 
     const stop = new GColorStop(nodeId, options);
@@ -259,60 +261,6 @@ function genParseStrokeParam(parse)
         stroke.data.weight = genParse(parse);
 
     return stroke;
-}
-
-
-
-function genParseColorStopValue(parse)
-{
-    parse.pos++; // COLOR_STOP_VALUE
-
-    const stop = parse.move();
-
-    if (parse.settings.logRequests) 
-        logReqValue(COLOR_STOP_VALUE, stop, parse);
-
-    return parseColorStopValue(stop);
-}
-
-
-
-function genParseColorStop(parse)
-{
-    const [, nodeId, options, ignore] = genParseNodeStart(parse);
-
-
-    const stop = new GColorStop(nodeId, options);
-
-
-    if (parse.settings.logRequests) 
-        logReq(stop, parse, ignore);
-
-
-    if (ignore)
-    {
-        genParseNodeEnd(parse, stop);
-        return parse.parsedNodes.find(n => n.nodeId == nodeId);
-    }
-
-
-    parse.nTab++;
-
-
-    if (   parse.next == COLOR_STOP
-        || parse.next == COLOR_STOP_VALUE)
-        stop.input = genParse(parse);
-
-
-    stop.fill     = genParse(parse);
-    stop.position = genParse(parse);
-
-    
-    parse.nTab--;
-
-
-    genParseNodeEnd(parse, stop);
-    return stop;
 }
 
 

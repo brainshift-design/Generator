@@ -67,7 +67,12 @@ extends GOperator
         }
         else
         {
-            this.value = new StrokeValue(fill, weight, fit, join, miter);
+            this.value = new StrokeValue(
+                fill, 
+                weight, 
+                fit, 
+                join,
+                miter);
         }
 
 

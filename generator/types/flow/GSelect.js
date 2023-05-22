@@ -106,18 +106,21 @@ extends GOperator
 
 
 
-    pushValueUpdates()
+    pushValueUpdates(parse)
     {
-        super.pushValueUpdates();
+        super.pushValueUpdates(parse);
 
-        if (this.index) this.index.pushValueUpdates();
+        if (this.input) this.input.pushValueUpdates(parse);
+        if (this.index) this.index.pushValueUpdates(parse);
     }
 
 
 
     toValue()
     {
-        return this.value.copy();
+        return this.value
+             ? this.value.copy()
+             : null;
     }
 
 
@@ -126,6 +129,7 @@ extends GOperator
     {
         super.invalidate();
 
+        if (this.input) this.input.invalidate();
         if (this.index) this.index.invalidate();
     }
 }

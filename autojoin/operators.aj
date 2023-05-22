@@ -123,7 +123,7 @@
 ../operators/style/OpColorStyle.js
 ../operators/style/OpFill.js
 ../operators/style/OpColorStop.js
-//../operators/style/OpGradient.js
+../operators/style/OpGradient.js
 ../operators/style/OpStroke.js
 ../operators/style/OpDropShadow.js
 ../operators/style/OpInnerShadow.js

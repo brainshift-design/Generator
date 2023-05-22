@@ -75,7 +75,7 @@ class Parse
         //return this.request[this.pos++];
 
         const token = this.request[this.pos++];
-        console.log('token =', token);
+        //console.log('token =', token);
         return token;
     }
 
@@ -188,6 +188,9 @@ function genParse(parse, inParam = true)
       
     else if (parse.next == COLOR_STOP_VALUE       ) result = genParseColorStopValue   (parse);
     else if (parse.next == COLOR_STOP             ) result = genParseColorStop        (parse);
+      
+    else if (parse.next == GRADIENT_VALUE         ) result = genParseGradientValue    (parse);
+    else if (parse.next == GRADIENT               ) result = genParseGradient         (parse);
       
     else if (parse.next == STROKE_VALUE           ) result = genParseStrokeValue      (parse);
     else if (parse.next == STROKE                 ) result = genParseStroke           (parse);
