@@ -36,7 +36,9 @@ extends EventTarget
 
     _connectedOutput = null;
     
+    
     get connectedOutput() { return this._connectedOutput; }
+
     set connectedOutput(output)
     {
         if (this._connectedOutput)

@@ -3,12 +3,13 @@ extends GOperator
 {
     inputs = [];
 
-    x1 = null;
-    y1 = null;
-    x2 = null;
-    y2 = null;
-    x3 = null;
-    y3 = null;
+    gradType = null;
+    x1       = null;
+    y1       = null;
+    x2       = null;
+    y2       = null;
+    aspect   = null;
+    angle    = null;
 
 
 
@@ -27,12 +28,13 @@ extends GOperator
 
         copy.inputs = this.inputs.map(i => i.copy());
 
-        if (this.x1) copy.x1 = this.x1.copy();
-        if (this.y1) copy.y1 = this.y1.copy();
-        if (this.x2) copy.x2 = this.x2.copy();
-        if (this.y2) copy.y2 = this.y2.copy();
-        if (this.x3) copy.x3 = this.x3.copy();
-        if (this.y3) copy.y3 = this.y3.copy();
+        if (this.gradType) copy.gradType = this.x1    .copy();
+        if (this.x1      ) copy.x1       = this.x1    .copy();
+        if (this.y1      ) copy.y1       = this.y1    .copy();
+        if (this.x2      ) copy.x2       = this.x2    .copy();
+        if (this.y2      ) copy.y2       = this.y2    .copy();
+        if (this.aspect  ) copy.aspect   = this.aspect.copy();
+        if (this.angle   ) copy.angle    = this.angle .copy();
 
         return copy;
     }
@@ -44,12 +46,13 @@ extends GOperator
         if (this.isCached())
             return this;
 
-        const x1 = this.x1 ? (await this.x1.eval(parse)).toValue() : null;
-        const y1 = this.y1 ? (await this.y1.eval(parse)).toValue() : null;
-        const x2 = this.x2 ? (await this.x2.eval(parse)).toValue() : null;
-        const y2 = this.y2 ? (await this.y2.eval(parse)).toValue() : null;
-        const x3 = this.x3 ? (await this.x3.eval(parse)).toValue() : null;
-        const y3 = this.y3 ? (await this.y3.eval(parse)).toValue() : null;
+        const gradType = this.gradType ? (await this.gradType.eval(parse)).toValue() : null;
+        const x1       = this.x1       ? (await this.x1      .eval(parse)).toValue() : null;
+        const y1       = this.y1       ? (await this.y1      .eval(parse)).toValue() : null;
+        const x2       = this.x2       ? (await this.x2      .eval(parse)).toValue() : null;
+        const y2       = this.y2       ? (await this.y2      .eval(parse)).toValue() : null;
+        const aspect   = this.aspect   ? (await this.aspect  .eval(parse)).toValue() : null;
+        const angle    = this.angle    ? (await this.angle   .eval(parse)).toValue() : null;
 
 
         // if (this.input)
@@ -78,12 +81,13 @@ extends GOperator
 
         this.updateValues =
         [
-            ['x1', x1],
-            ['y1', y1],
-            ['x2', x2],
-            ['y2', y2],
-            ['x3', x3],
-            ['y3', y3]
+            ['type',   gradType],
+            ['x1',     x1      ],
+            ['y1',     y1      ],
+            ['x2',     x2      ],
+            ['y2',     y2      ],
+            ['aspect', aspect  ],
+            ['angle',  angle   ]
         ];
         
 
@@ -100,36 +104,39 @@ extends GOperator
 
         this.inputs.forEach(i => i.pushValueUpdates(parse));
 
-        if (this.x1) this.x1.pushValueUpdates(parse);
-        if (this.y1) this.y1.pushValueUpdates(parse);
-        if (this.x2) this.x2.pushValueUpdates(parse);
-        if (this.y2) this.y2.pushValueUpdates(parse);
-        if (this.x3) this.x3.pushValueUpdates(parse);
-        if (this.y3) this.y3.pushValueUpdates(parse);
+        if (this.gradType) this.gradType.pushValueUpdates(parse);
+        if (this.x1      ) this.x1      .pushValueUpdates(parse);
+        if (this.y1      ) this.y1      .pushValueUpdates(parse);
+        if (this.x2      ) this.x2      .pushValueUpdates(parse);
+        if (this.y2      ) this.y2      .pushValueUpdates(parse);
+        if (this.aspect  ) this.aspect  .pushValueUpdates(parse);
+        if (this.angle   ) this.angle   .pushValueUpdates(parse);
     }    
     
     
     toValue()
     {
-        return new StrokeValue(
-            this.options.enabled
-            ? this.validateFill(this.fill ? this.fill.toValue() : this.input.fill.toValue())
-            : FillValue.NaN,
-            this.weight ? this.weight.toValue() : this.input.weight.toValue(),
-            this.fit    ? this.fit   .toValue() : this.input.fit   .toValue(),
-            this.join   ? this.join  .toValue() : this.input.join  .toValue(),
-            this.miter  ? this.miter .toValue() : this.input.miter .toValue());
+        return new GradientValue(
+            this.gradType ? this.gradType.toValue() : this.input.gradType.toValue(),
+            this.x1       ? this.x1      .toValue() : this.input.x1      .toValue(),
+            this.y1       ? this.y1      .toValue() : this.input.y1      .toValue(),
+            this.x2       ? this.x2      .toValue() : this.input.x2      .toValue(),
+            this.y2       ? this.y2      .toValue() : this.input.y2      .toValue(),
+            this.aspect   ? this.aspect  .toValue() : this.input.aspect  .toValue(),
+            this.angle    ? this.angle   .toValue() : this.input.angle   .toValue());
     }                 
 
 
 
     isValid()
     {
-        return this.fill  .isValid()
-            && this.weight.isValid()
-            && this.fit   .isValid()
-            && this.join  .isValid()
-            && this.miter .isValid();
+        return this.gradType.isValid()
+            && this.x1      .isValid()
+            && this.y1      .isValid()
+            && this.x2      .isValid()
+            && this.y2      .isValid()
+            && this.aspect  .isValid()
+            && this.angle   .isValid();
     }
 
 
@@ -138,11 +145,13 @@ extends GOperator
     {
         super.invalidate();
 
-        if (this.input ) this.input .invalidate();
-        if (this.fill  ) this.fill  .invalidate();
-        if (this.weight) this.weight.invalidate();
-        if (this.fit   ) this.fit   .invalidate();
-        if (this.join  ) this.join  .invalidate();
-        if (this.miter ) this.miter .invalidate();
+        if (this.input   ) this.input   .invalidate();
+        if (this.gradType) this.gradType.invalidate();
+        if (this.x1      ) this.x1      .invalidate();
+        if (this.y1      ) this.y1      .invalidate();
+        if (this.x2      ) this.x2      .invalidate();
+        if (this.y2      ) this.y2      .invalidate();
+        if (this.aspect  ) this.aspect  .invalidate();
+        if (this.angle   ) this.angle   .invalidate();
     }
 }
