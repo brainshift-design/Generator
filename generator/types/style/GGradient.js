@@ -55,6 +55,9 @@ extends GOperator
         const angle    = this.angle    ? (await this.angle   .eval(parse)).toValue() : null;
 
 
+        this.value = new GradientValue();
+
+
         // if (this.input)
         // {
         //     const input = (await this.input.eval(parse)).toValue();
@@ -81,13 +84,14 @@ extends GOperator
 
         this.updateValues =
         [
-            ['type',   gradType],
-            ['x1',     x1      ],
-            ['y1',     y1      ],
-            ['x2',     x2      ],
-            ['y2',     y2      ],
-            ['aspect', aspect  ],
-            ['angle',  angle   ]
+            ['value',  this.value],
+            ['type',   gradType  ],
+            ['x1',     x1        ],
+            ['y1',     y1        ],
+            ['x2',     x2        ],
+            ['y2',     y2        ],
+            ['aspect', aspect    ],
+            ['angle',  angle     ]
         ];
         
 
@@ -117,6 +121,7 @@ extends GOperator
     toValue()
     {
         return new GradientValue(
+            new ListValue(),
             this.gradType ? this.gradType.toValue() : this.input.gradType.toValue(),
             this.x1       ? this.x1      .toValue() : this.input.x1      .toValue(),
             this.y1       ? this.y1      .toValue() : this.input.y1      .toValue(),
@@ -145,7 +150,8 @@ extends GOperator
     {
         super.invalidate();
 
-        if (this.input   ) this.input   .invalidate();
+        this.inputs.forEach(i => i.invalidate());
+        
         if (this.gradType) this.gradType.invalidate();
         if (this.x1      ) this.x1      .invalidate();
         if (this.y1      ) this.y1      .invalidate();

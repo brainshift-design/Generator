@@ -2,7 +2,6 @@ class GradientValue
 extends GValue
 {
     stops;
-
     gradType;
     x1;
     y1;

@@ -169,6 +169,8 @@
 ../generator/types/shape/boolean/GShapeIntersect.js
 ../generator/types/shape/boolean/GShapeExclude.js
 
+../generator/types/shape/GRender.js
+
 
 ../generator/types/shape/GMove.js
 ../generator/types/shape/GRotate.js

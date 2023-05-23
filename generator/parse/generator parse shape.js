@@ -921,3 +921,44 @@ function genParseSkew(parse)
     genParseNodeEnd(parse, skew);
     return skew;
 }
+
+
+
+function genParseRender(parse)
+{
+    const [, nodeId, options, ignore] = genParseNodeStart(parse);
+
+
+    const render = new GRender(nodeId, options);
+
+
+    let nInputs = 0;
+    
+    if (!ignore)
+        nInputs = parseInt(parse.move());
+
+
+    if (parse.settings.logRequests) 
+        logReq(render, parse, ignore, nInputs);
+
+
+    if (ignore) 
+    {
+        genParseNodeEnd(parse, render);
+        return parse.parsedNodes.find(n => n.nodeId == nodeId);
+    }
+
+
+    parse.nTab++;
+
+
+    for (let i = 0; i < nInputs; i++)
+        render.inputs.push(genParse(parse));
+
+
+    parse.nTab--;
+
+
+    genParseNodeEnd(parse, render);
+    return render;
+}

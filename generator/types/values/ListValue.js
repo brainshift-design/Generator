@@ -191,6 +191,8 @@ function parseListValue(str, i = -1)
             case        COLOR_VALUE: { const color   = parseColorValue       (str, i);  i += color  [1];  list.items.push(color  [0]);  break; }
 
             case         FILL_VALUE: { const fill    = parseFillValue        (str, i);  i += fill   [1];  list.items.push(fill   [0]);  break; }
+            case   COLOR_STOP_VALUE: { const stop    = parseColorStopValue   (str, i);  i += stop   [1];  list.items.push(stop   [0]);  break; }
+            case     GRADIENT_VALUE: { const grad    = parseGradientValue    (str, i);  i += grad   [1];  list.items.push(grad   [0]);  break; }
             case       STROKE_VALUE: { const stroke  = parseStrokeValue      (str, i);  i += stroke [1];  list.items.push(stroke [0]);  break; }
             case  DROP_SHADOW_VALUE: { const shadow  = parseDropShadowValue  (str, i);  i += shadow [1];  list.items.push(shadow [0]);  break; }
             case INNER_SHADOW_VALUE: { const shadow  = parseInnerShadowValue (str, i);  i += shadow [1];  list.items.push(shadow [0]);  break; }

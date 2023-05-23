@@ -58,7 +58,14 @@ extends GShape
         }
         else
         {
-            this.value = new RectangleValue(this.nodeId, x, y, width, height, angle, round);
+            this.value = new RectangleValue(
+                this.nodeId, 
+                x, 
+                y, 
+                width, 
+                height, 
+                angle, 
+                round);
         }
 
        

@@ -3,13 +3,12 @@ class FigmaObject
     type;
     
     nodeId     = '';
+    uniqueId;
     
     objectId   = NULL;
     objectName = NULL;
 
     inputIndex = -1; // for unique object IDs
-
-    uniqueId;
 
     xform;
 
@@ -22,6 +21,7 @@ class FigmaObject
         this.objectId   = objectId;
         this.objectName = objectName;
         this.uniqueId   = Math.round(Math.random() * 10000);
+        this.final      = false;
 
         this.xform      = clone(identity);
     }
@@ -32,6 +32,7 @@ class FigmaObject
     {
         this.inputIndex = base.inputIndex;
         this.uniqueId   = base.uniqueId;
+        this.final      = base.final;
         
         this.xform      = clone(base.xform);
     }

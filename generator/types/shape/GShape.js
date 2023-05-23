@@ -62,17 +62,18 @@ extends GShapeBase
     {
         for (const obj of this.objects)
         {
+            console.assert(obj.fills,   'obj.fills must not be null'  );
+            console.assert(obj.strokes, 'obj.strokes must not be null');
+            console.assert(obj.effects, 'obj.effects must not be null');
+
             for (let i = this.value.props.items.length-1; i >= 0; i--)
             {
                 const prop = this.value.props.items[i];
+                console.log('prop =', prop);
                 
 
                 if (prop.type == COLOR_VALUE)
                 {
-                    if (!obj.fills) 
-                        obj.fills = [];
-
-
                     const rgb = scaleRgb(prop.toRgb());
 
                     obj.fills.push([
@@ -85,10 +86,6 @@ extends GShapeBase
 
                 else if (prop.type == FILL_VALUE)
                 {
-                    if (!obj.fills) 
-                        obj.fills = [];
-
-
                     const rgb = scaleRgb(prop.color.toRgb());
 
                     obj.fills.push([
@@ -99,12 +96,44 @@ extends GShapeBase
                         prop.opacity.toValue().toNumber() ]);
                 }
 
+                else if (prop.type == GRADIENT_VALUE)
+                {
+                    const gradient = 
+                    [
+                        '', // type
+                        [], // transform
+                        []  // stops
+                    ];
+
+
+                    switch(prop.gradType.value)
+                    {
+                        case 0: gradient[0] = 'GRADIENT_LINEAR';  break;
+                        case 1: gradient[0] = 'GRADIENT_RADIAL';  break;
+                        case 2: gradient[0] = 'GRADIENT_ANGULAR'; break;
+                        case 3: gradient[0] = 'GRADIENT_DIAMOND'; break;
+                    }
+
+
+                    for (let j = 0; j < prop.stops.length; j++)
+                    {
+                        const rgba = scaleRgb(prop.stops[j].toRgba());
+
+                        gradient[2].push([
+                            rgba[0], 
+                            rgba[1], 
+                            rgba[2], 
+                            rgba[3],
+                            prop.stops[j].position]);
+                    }
+
+
+                    console.log('gradient =', gradient);
+                    obj.fills.push(gradient);
+                }
+
                 else if (prop.type == STROKE_VALUE)
                 {
-                    if (!obj.strokes)
-                        obj.strokes = [];
-
-
                     const rgb = scaleRgb(prop.fill.color.toRgb());
 
                     obj.strokes.push([
@@ -136,10 +165,6 @@ extends GShapeBase
 
                 else if (prop.type == DROP_SHADOW_VALUE)
                 {
-                    if (!obj.effects) 
-                        obj.effects = [];
-
-
                     const rgba = prop.fill.toRgba();
 
                     obj.effects.push([
@@ -159,10 +184,6 @@ extends GShapeBase
 
                 else if (prop.type == INNER_SHADOW_VALUE)
                 {
-                    if (!obj.effects) 
-                        obj.effects = [];
-
-
                     const rgba = prop.fill.toRgba();
 
                     obj.effects.push([
@@ -181,10 +202,6 @@ extends GShapeBase
 
                 else if (prop.type == LAYER_BLUR_VALUE)
                 {
-                    if (!obj.effects) 
-                        obj.effects = [];
-
-
                     obj.effects.push([
                         'LAYER_BLUR', 
                         prop.radius.toNumber(),
@@ -193,10 +210,6 @@ extends GShapeBase
 
                 else if (prop.type == BACK_BLUR_VALUE)
                 {
-                    if (!obj.effects) 
-                        obj.effects = [];
-
-
                     obj.effects.push([
                         'BACKGROUND_BLUR', 
                         prop.radius.toNumber(),

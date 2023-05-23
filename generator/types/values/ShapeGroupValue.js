@@ -147,21 +147,21 @@ function parseShapeGroupValue(str, i = -1)
         switch (type)
         {
             case         LIST_VALUE:  
-            case  NUMBER_LIST_VALUE:  
-            case    TEXT_LIST_VALUE:  
+            // case  NUMBER_LIST_VALUE:  
+            // case    TEXT_LIST_VALUE:  
             case   SHAPE_LIST_VALUE: { const _list   = parseListValue        (str, i);  i += _list  [1];  group.items.push(_list  [0]);  break; }
  
-            case       NUMBER_VALUE: { const num     = parseNumberValue      (str[i]);  i += num    [1];  group.items.push(num    [0]);  break; }
-            case         TEXT_VALUE: { const text    = parseTextValue        (str[i]);  i += text   [1];  group.items.push(text   [0]);  break; }
-            case        COLOR_VALUE: { const color   = parseColorValue       (str, i);  i += color  [1];  group.items.push(color  [0]);  break; }
+            // case       NUMBER_VALUE: { const num     = parseNumberValue      (str[i]);  i += num    [1];  group.items.push(num    [0]);  break; }
+            // case         TEXT_VALUE: { const text    = parseTextValue        (str[i]);  i += text   [1];  group.items.push(text   [0]);  break; }
+            // case        COLOR_VALUE: { const color   = parseColorValue       (str, i);  i += color  [1];  group.items.push(color  [0]);  break; }
 
-            case         FILL_VALUE: { const fill    = parseFillValue        (str, i);  i += fill   [1];  group.items.push(fill   [0]);  break; }
-            case       STROKE_VALUE: { const stroke  = parseStrokeValue      (str, i);  i += stroke [1];  group.items.push(stroke [0]);  break; }
-            case  DROP_SHADOW_VALUE: { const shadow  = parseDropShadowValue  (str, i);  i += shadow [1];  group.items.push(shadow [0]);  break; }
-            case INNER_SHADOW_VALUE: { const shadow  = parseInnerShadowValue (str, i);  i += shadow [1];  group.items.push(shadow [0]);  break; }
-            case   LAYER_BLUR_VALUE: { const blur    = parseLayerBlurValue   (str, i);  i += blur   [1];  group.items.push(blur   [0]);  break; }
-            case    BACK_BLUR_VALUE: { const blur    = parseBackBlurValue    (str, i);  i += blur   [1];  group.items.push(blur   [0]);  break; }
-            case   LAYER_MASK_VALUE: { const mask    = parseLayerMaskValue   (str[i]);  i += mask   [1];  group.items.push(mask   [0]);  break; }
+            // case         FILL_VALUE: { const fill    = parseFillValue        (str, i);  i += fill   [1];  group.items.push(fill   [0]);  break; }
+            // case       STROKE_VALUE: { const stroke  = parseStrokeValue      (str, i);  i += stroke [1];  group.items.push(stroke [0]);  break; }
+            // case  DROP_SHADOW_VALUE: { const shadow  = parseDropShadowValue  (str, i);  i += shadow [1];  group.items.push(shadow [0]);  break; }
+            // case INNER_SHADOW_VALUE: { const shadow  = parseInnerShadowValue (str, i);  i += shadow [1];  group.items.push(shadow [0]);  break; }
+            // case   LAYER_BLUR_VALUE: { const blur    = parseLayerBlurValue   (str, i);  i += blur   [1];  group.items.push(blur   [0]);  break; }
+            // case    BACK_BLUR_VALUE: { const blur    = parseBackBlurValue    (str, i);  i += blur   [1];  group.items.push(blur   [0]);  break; }
+            // case   LAYER_MASK_VALUE: { const mask    = parseLayerMaskValue   (str[i]);  i += mask   [1];  group.items.push(mask   [0]);  break; }
 
             case    RECTANGLE_VALUE: { const rect    = parseRectangleValue   (str, i);  i += rect   [1];  group.items.push(rect   [0]);  break; }
             case         LINE_VALUE: { const line    = parseLineValue        (str, i);  i += line   [1];  group.items.push(line   [0]);  break; }

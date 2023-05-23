@@ -397,6 +397,8 @@ class Operator
         else if (type ==        TEXT_VALUE) return this.addParam(new       TextParam(id, id,           hasInput, hasOutput), volatile);
         else if (type ==       COLOR_VALUE) return this.addParam(new      ColorParam(id, id, showName, hasInput, hasOutput), volatile);
         else if (type ==        FILL_VALUE) return this.addParam(new       FillParam(id, id, showName, hasInput, hasOutput), volatile);
+        else if (type ==  COLOR_STOP_VALUE) return this.addParam(new  ColorStopParam(id, id, showName, hasInput, hasOutput), volatile);
+        else if (type ==    GRADIENT_VALUE) return this.addParam(new   GradientParam(id, id, showName, hasInput, hasOutput), volatile);
         else if (type ==      STROKE_VALUE) return this.addParam(new     StrokeParam(id, id, showName, hasInput, hasOutput), volatile);
         else if (type ==        LIST_VALUE) return this.addParam(new       ListParam(id, id, showName, hasInput, hasOutput), volatile);
         else if (type ==   RECTANGLE_VALUE) return this.addParam(new  RectangleParam(id, id, showName, hasInput, hasOutput), volatile);
@@ -421,6 +423,8 @@ class Operator
         else if (type ==        TEXT_VALUE) return this.insertParam(index, new       TextParam(id, id,           hasInput, hasOutput), volatile);
         else if (type ==       COLOR_VALUE) return this.insertParam(index, new      ColorParam(id, id, showName, hasInput, hasOutput), volatile);
         else if (type ==        FILL_VALUE) return this.insertParam(index, new       FillParam(id, id, showName, hasInput, hasOutput), volatile);
+        else if (type ==  COLOR_STOP_VALUE) return this.insertParam(index, new  ColorStopParam(id, id, showName, hasInput, hasOutput), volatile);
+        else if (type ==    GRADIENT_VALUE) return this.insertParam(index, new   GradientParam(id, id, showName, hasInput, hasOutput), volatile);
         else if (type ==      STROKE_VALUE) return this.insertParam(index, new     StrokeParam(id, id, showName, hasInput, hasOutput), volatile);
         else if (type ==        LIST_VALUE) return this.insertParam(index, new       ListParam(id, id, showName, hasInput, hasOutput), volatile);
         else if (type ==   RECTANGLE_VALUE) return this.insertParam(index, new  RectangleParam(id, id, showName, hasInput, hasOutput), volatile);

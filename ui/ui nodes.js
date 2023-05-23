@@ -100,6 +100,7 @@ function createNode(nodeType, creatingButton = null, createdNodeId = -1, options
         case POLYGON:                 node = new OpPolygon();           break;
         case STAR:                    node = new OpStar();              break;
         case TEXTSHAPE:               node = new OpTextShape();         break;
+        case POINT:                   node = new OpPoint();             break;
         case VECTOR_PATH:             node = new OpVectorPath();        break;
         case BOOLEAN:                 node = new OpShapeBoolean();      break;
         case SHAPE_GROUP:             node = new OpShapeGroup();        break;
@@ -110,7 +111,7 @@ function createNode(nodeType, creatingButton = null, createdNodeId = -1, options
         case SCALE:                   node = new OpScale();             break;
         case SKEW:                    node = new OpSkew();              break;
 
-        case POINT:                   node = new OpPoint();             break;
+        case RENDER:                  node = new OpRender();            break;
 
         case GROUP_NODE:              node = new OpGroupNode();         break;
         case GROUP_PARAM:             node = new OpGroupParam();        break;

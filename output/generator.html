@@ -3908,6 +3908,7 @@ const STYLE_VALUES =
 [
     COLOR_VALUE, 
     FILL_VALUE, 
+    GRADIENT_VALUE, 
     STROKE_VALUE,
     DROP_SHADOW_VALUE,
     INNER_SHADOW_VALUE,
@@ -3946,6 +3947,10 @@ const TEXTSHAPE_VALUE    = 'TXTS#';
 const TEXTSHAPE          = 'TXTS'; 
 const TEXTSHAPE_TYPES    = [TEXTSHAPE_VALUE, TEXTSHAPE];
  
+const POINT              = 'PT';
+const POINT_VALUE        = 'PT#';
+const POINT_TYPES        = [POINT_VALUE, POINT];
+
 const VECTOR_PATH_VALUE  = 'VEC#';
 const VECTOR_PATH        = 'VEC'; 
 const VECTOR_PATH_TYPES  = [VECTOR_PATH_VALUE, VECTOR_PATH];
@@ -3965,16 +3970,6 @@ const SCALE              = 'SCALE';
 const SKEW               = 'SKEW';
  
   
-const POINT              = 'PT';
-const POINT_VALUE        = 'PT#';
-
-
-const POINT_TYPES =
-[
-    POINT,
-    POINT_VALUE
-];
-
 
 const BOOLEAN            = 'BOOL';
 const BOOLEAN_VALUE      = 'BOOL#';
@@ -3994,6 +3989,9 @@ const BOOLEAN_TYPES =
     BOOL_INTERSECT,
     BOOL_EXCLUDE
 ]
+
+
+const RENDER             = 'RENDER';
 
 
 const SHAPE_VALUES =
@@ -4033,7 +4031,9 @@ const SHAPE_TYPES =
     MOVE,
     ROTATE,
     SCALE,
-    SKEW
+    SKEW,
+
+    RENDER
 ];
 
 
@@ -4049,6 +4049,8 @@ const ALL_VALUES =
            COLOR_VALUE,
  
             FILL_VALUE,
+      COLOR_STOP_VALUE,
+        GRADIENT_VALUE,
           STROKE_VALUE,
  
       COLOR_STOP_VALUE,
@@ -4232,13 +4234,12 @@ class FigmaObject
     type;
     
     nodeId     = '';
+    uniqueId;
     
     objectId   = NULL;
     objectName = NULL;
 
     inputIndex = -1; // for unique object IDs
-
-    uniqueId;
 
     xform;
 
@@ -4251,6 +4252,7 @@ class FigmaObject
         this.objectId   = objectId;
         this.objectName = objectName;
         this.uniqueId   = Math.round(Math.random() * 10000);
+        this.final      = false;
 
         this.xform      = clone(identity);
     }
@@ -4261,6 +4263,7 @@ class FigmaObject
     {
         this.inputIndex = base.inputIndex;
         this.uniqueId   = base.uniqueId;
+        this.final      = base.final;
         
         this.xform      = clone(base.xform);
     }
@@ -5905,6 +5908,8 @@ function parseListValue(str, i = -1)
             case        COLOR_VALUE: { const color   = parseColorValue       (str, i);  i += color  [1];  list.items.push(color  [0]);  break; }
 
             case         FILL_VALUE: { const fill    = parseFillValue        (str, i);  i += fill   [1];  list.items.push(fill   [0]);  break; }
+            case   COLOR_STOP_VALUE: { const stop    = parseColorStopValue   (str, i);  i += stop   [1];  list.items.push(stop   [0]);  break; }
+            case     GRADIENT_VALUE: { const grad    = parseGradientValue    (str, i);  i += grad   [1];  list.items.push(grad   [0]);  break; }
             case       STROKE_VALUE: { const stroke  = parseStrokeValue      (str, i);  i += stroke [1];  list.items.push(stroke [0]);  break; }
             case  DROP_SHADOW_VALUE: { const shadow  = parseDropShadowValue  (str, i);  i += shadow [1];  list.items.push(shadow [0]);  break; }
             case INNER_SHADOW_VALUE: { const shadow  = parseInnerShadowValue (str, i);  i += shadow [1];  list.items.push(shadow [0]);  break; }
@@ -6767,7 +6772,6 @@ class GradientValue
 extends GValue
 {
     stops;
-
     gradType;
     x1;
     y1;
@@ -9605,21 +9609,21 @@ function parseShapeGroupValue(str, i = -1)
         switch (type)
         {
             case         LIST_VALUE:  
-            case  NUMBER_LIST_VALUE:  
-            case    TEXT_LIST_VALUE:  
+            // case  NUMBER_LIST_VALUE:  
+            // case    TEXT_LIST_VALUE:  
             case   SHAPE_LIST_VALUE: { const _list   = parseListValue        (str, i);  i += _list  [1];  group.items.push(_list  [0]);  break; }
  
-            case       NUMBER_VALUE: { const num     = parseNumberValue      (str[i]);  i += num    [1];  group.items.push(num    [0]);  break; }
-            case         TEXT_VALUE: { const text    = parseTextValue        (str[i]);  i += text   [1];  group.items.push(text   [0]);  break; }
-            case        COLOR_VALUE: { const color   = parseColorValue       (str, i);  i += color  [1];  group.items.push(color  [0]);  break; }
+            // case       NUMBER_VALUE: { const num     = parseNumberValue      (str[i]);  i += num    [1];  group.items.push(num    [0]);  break; }
+            // case         TEXT_VALUE: { const text    = parseTextValue        (str[i]);  i += text   [1];  group.items.push(text   [0]);  break; }
+            // case        COLOR_VALUE: { const color   = parseColorValue       (str, i);  i += color  [1];  group.items.push(color  [0]);  break; }
 
-            case         FILL_VALUE: { const fill    = parseFillValue        (str, i);  i += fill   [1];  group.items.push(fill   [0]);  break; }
-            case       STROKE_VALUE: { const stroke  = parseStrokeValue      (str, i);  i += stroke [1];  group.items.push(stroke [0]);  break; }
-            case  DROP_SHADOW_VALUE: { const shadow  = parseDropShadowValue  (str, i);  i += shadow [1];  group.items.push(shadow [0]);  break; }
-            case INNER_SHADOW_VALUE: { const shadow  = parseInnerShadowValue (str, i);  i += shadow [1];  group.items.push(shadow [0]);  break; }
-            case   LAYER_BLUR_VALUE: { const blur    = parseLayerBlurValue   (str, i);  i += blur   [1];  group.items.push(blur   [0]);  break; }
-            case    BACK_BLUR_VALUE: { const blur    = parseBackBlurValue    (str, i);  i += blur   [1];  group.items.push(blur   [0]);  break; }
-            case   LAYER_MASK_VALUE: { const mask    = parseLayerMaskValue   (str[i]);  i += mask   [1];  group.items.push(mask   [0]);  break; }
+            // case         FILL_VALUE: { const fill    = parseFillValue        (str, i);  i += fill   [1];  group.items.push(fill   [0]);  break; }
+            // case       STROKE_VALUE: { const stroke  = parseStrokeValue      (str, i);  i += stroke [1];  group.items.push(stroke [0]);  break; }
+            // case  DROP_SHADOW_VALUE: { const shadow  = parseDropShadowValue  (str, i);  i += shadow [1];  group.items.push(shadow [0]);  break; }
+            // case INNER_SHADOW_VALUE: { const shadow  = parseInnerShadowValue (str, i);  i += shadow [1];  group.items.push(shadow [0]);  break; }
+            // case   LAYER_BLUR_VALUE: { const blur    = parseLayerBlurValue   (str, i);  i += blur   [1];  group.items.push(blur   [0]);  break; }
+            // case    BACK_BLUR_VALUE: { const blur    = parseBackBlurValue    (str, i);  i += blur   [1];  group.items.push(blur   [0]);  break; }
+            // case   LAYER_MASK_VALUE: { const mask    = parseLayerMaskValue   (str[i]);  i += mask   [1];  group.items.push(mask   [0]);  break; }
 
             case    RECTANGLE_VALUE: { const rect    = parseRectangleValue   (str, i);  i += rect   [1];  group.items.push(rect   [0]);  break; }
             case         LINE_VALUE: { const line    = parseLineValue        (str, i);  i += line   [1];  group.items.push(line   [0]);  break; }
@@ -17783,6 +17787,9 @@ extends GOperator
         const angle    = this.angle    ? (await this.angle   .eval(parse)).toValue() : null;
 
 
+        this.value = new GradientValue();
+
+
         // if (this.input)
         // {
         //     const input = (await this.input.eval(parse)).toValue();
@@ -17809,13 +17816,14 @@ extends GOperator
 
         this.updateValues =
         [
-            ['type',   gradType],
-            ['x1',     x1      ],
-            ['y1',     y1      ],
-            ['x2',     x2      ],
-            ['y2',     y2      ],
-            ['aspect', aspect  ],
-            ['angle',  angle   ]
+            ['value',  this.value],
+            ['type',   gradType  ],
+            ['x1',     x1        ],
+            ['y1',     y1        ],
+            ['x2',     x2        ],
+            ['y2',     y2        ],
+            ['aspect', aspect    ],
+            ['angle',  angle     ]
         ];
         
 
@@ -17845,6 +17853,7 @@ extends GOperator
     toValue()
     {
         return new GradientValue(
+            new ListValue(),
             this.gradType ? this.gradType.toValue() : this.input.gradType.toValue(),
             this.x1       ? this.x1      .toValue() : this.input.x1      .toValue(),
             this.y1       ? this.y1      .toValue() : this.input.y1      .toValue(),
@@ -17873,7 +17882,8 @@ extends GOperator
     {
         super.invalidate();
 
-        if (this.input   ) this.input   .invalidate();
+        this.inputs.forEach(i => i.invalidate());
+        
         if (this.gradType) this.gradType.invalidate();
         if (this.x1      ) this.x1      .invalidate();
         if (this.y1      ) this.y1      .invalidate();
@@ -18798,17 +18808,18 @@ extends GShapeBase
     {
         for (const obj of this.objects)
         {
+            console.assert(obj.fills,   'obj.fills must not be null'  );
+            console.assert(obj.strokes, 'obj.strokes must not be null');
+            console.assert(obj.effects, 'obj.effects must not be null');
+
             for (let i = this.value.props.items.length-1; i >= 0; i--)
             {
                 const prop = this.value.props.items[i];
+                console.log('prop =', prop);
                 
 
                 if (prop.type == COLOR_VALUE)
                 {
-                    if (!obj.fills) 
-                        obj.fills = [];
-
-
                     const rgb = scaleRgb(prop.toRgb());
 
                     obj.fills.push([
@@ -18821,10 +18832,6 @@ extends GShapeBase
 
                 else if (prop.type == FILL_VALUE)
                 {
-                    if (!obj.fills) 
-                        obj.fills = [];
-
-
                     const rgb = scaleRgb(prop.color.toRgb());
 
                     obj.fills.push([
@@ -18835,12 +18842,44 @@ extends GShapeBase
                         prop.opacity.toValue().toNumber() ]);
                 }
 
+                else if (prop.type == GRADIENT_VALUE)
+                {
+                    const gradient = 
+                    [
+                        '', // type
+                        [], // transform
+                        []  // stops
+                    ];
+
+
+                    switch(prop.gradType.value)
+                    {
+                        case 0: gradient[0] = 'GRADIENT_LINEAR';  break;
+                        case 1: gradient[0] = 'GRADIENT_RADIAL';  break;
+                        case 2: gradient[0] = 'GRADIENT_ANGULAR'; break;
+                        case 3: gradient[0] = 'GRADIENT_DIAMOND'; break;
+                    }
+
+
+                    for (let j = 0; j < prop.stops.length; j++)
+                    {
+                        const rgba = scaleRgb(prop.stops[j].toRgba());
+
+                        gradient[2].push([
+                            rgba[0], 
+                            rgba[1], 
+                            rgba[2], 
+                            rgba[3],
+                            prop.stops[j].position]);
+                    }
+
+
+                    console.log('gradient =', gradient);
+                    obj.fills.push(gradient);
+                }
+
                 else if (prop.type == STROKE_VALUE)
                 {
-                    if (!obj.strokes)
-                        obj.strokes = [];
-
-
                     const rgb = scaleRgb(prop.fill.color.toRgb());
 
                     obj.strokes.push([
@@ -18872,10 +18911,6 @@ extends GShapeBase
 
                 else if (prop.type == DROP_SHADOW_VALUE)
                 {
-                    if (!obj.effects) 
-                        obj.effects = [];
-
-
                     const rgba = prop.fill.toRgba();
 
                     obj.effects.push([
@@ -18895,10 +18930,6 @@ extends GShapeBase
 
                 else if (prop.type == INNER_SHADOW_VALUE)
                 {
-                    if (!obj.effects) 
-                        obj.effects = [];
-
-
                     const rgba = prop.fill.toRgba();
 
                     obj.effects.push([
@@ -18917,10 +18948,6 @@ extends GShapeBase
 
                 else if (prop.type == LAYER_BLUR_VALUE)
                 {
-                    if (!obj.effects) 
-                        obj.effects = [];
-
-
                     obj.effects.push([
                         'LAYER_BLUR', 
                         prop.radius.toNumber(),
@@ -18929,10 +18956,6 @@ extends GShapeBase
 
                 else if (prop.type == BACK_BLUR_VALUE)
                 {
-                    if (!obj.effects) 
-                        obj.effects = [];
-
-
                     obj.effects.push([
                         'BACKGROUND_BLUR', 
                         prop.radius.toNumber(),
@@ -19044,7 +19067,14 @@ extends GShape
         }
         else
         {
-            this.value = new RectangleValue(this.nodeId, x, y, width, height, angle, round);
+            this.value = new RectangleValue(
+                this.nodeId, 
+                x, 
+                y, 
+                width, 
+                height, 
+                angle, 
+                round);
         }
 
        
@@ -21106,6 +21136,192 @@ extends GShapeBase
 
 
 
+
+
+class GRender
+extends GShapeBase
+{
+    inputs = [];
+
+
+
+    constructor(nodeId, options)
+    {
+        super(RENDER, nodeId, options);
+    }
+
+
+
+    copy()
+    {
+        const copy = new GRender(this.nodeId, this.options);
+
+        copy.copyBase(this);
+
+        copy.inputs = this.inputs.map(i => i.copy());
+
+        return copy;
+    }
+
+
+
+    async eval(parse)
+    {
+        if (this.isCached())
+            return this;
+
+
+        // this.value = new ShapeGroupValue(this.nodeId);
+
+        //this.objects = [];
+
+
+        for (let i = 0, o = 0; i < this.inputs.length; i++)
+        {
+            await this.inputs[i].eval(parse);
+
+        
+            if (this.options.enabled)
+            {
+                for (let j = 0; j < this.inputs[i].objects.length; j++, o++)
+                {
+                    const obj = copyFigmaObject(this.inputs[i].objects[j]);
+
+                    obj.nodeId   = this.nodeId;
+                    obj.objectId = obj.objectId + OBJECT_SEPARATOR + this.nodeId;
+                    obj.listId   = -1;
+                    obj.final    = true;
+
+                    this.objects.push(obj);
+                }
+            }
+        }
+
+
+        //await this.evalShapeBase(parse, input);
+
+
+        // this.evalObjects(parse);
+
+
+        this.updateValues = [['', NullValue]];
+
+
+        this.validate();
+
+        return this;
+    }
+
+
+
+    // copyObject(obj, inputIndex)
+    // {
+    //     const copy = obj.copy(); 
+    
+    //     if (this.inputs.length > 1)
+    //         copy.inputIndex = inputIndex; 
+    
+    //     return copy;
+    // }
+    
+
+    
+    // async evalObjects(parse, options = {})
+    // {
+    //     if (!this.options.enabled)
+    //         return;
+            
+
+    //     if (this.nodeId == 'group2')
+    //     {
+    //         console.log('this.value =', this.value);
+    //         //console.log('input.objects =', [...input.objects]);
+    //     }
+
+    //     if (this.value.items)
+    //     {
+    //         const group = new FigmaShapeGroup(
+    //             this.nodeId,
+    //             this.nodeId,
+    //             this.nodeName);
+
+
+    //         for (const item of this.value.items)
+    //         {
+    //             for (let i = 0; i < item.objects.length; i++)
+    //             {
+    //                 const obj  = item.objects[i].copy();
+    //                 obj.nodeId = this.nodeId;
+
+    //                 obj.objectId = 
+    //                       obj.objectId 
+    //                     + OBJECT_SEPARATOR 
+    //                     //+ (obj.inputIndex >= 0 ? obj.inputIndex + INPUT_SEPARATOR : '')
+    //                     + this.nodeId;
+
+    //                 obj.listId = -1;
+
+    //                 group.children.push(obj);
+    //             }
+    //         }
+            
+
+    //         this.objects = [group];
+
+    //         // this.updateValues.push(['nObjects', new NumberValue(
+    //         //     this.items.objects 
+    //         //     ? this.items.objects.length
+    //         //     : 0)]);
+    //     }
+    //     else
+    //     {
+    //         this.objects = [];
+    //         // this.updateValues.push(['nObjects', new NumberValue(0)]);
+    //     }
+
+        
+    //     await super.evalObjects(parse);
+    // }
+
+
+
+    pushValueUpdates(parse)
+    {
+        super.pushValueUpdates(parse);
+
+        this.inputs.forEach(i => i.pushValueUpdates(parse));
+    }
+
+
+
+    // toValue()
+    // {
+    //     return this.value.copy();
+    // }
+
+
+
+    isValid()
+    {
+        if (!super.isValid()) 
+            return false;
+
+        for (const input of this.inputs)
+            if (!input.isValid())
+                return false;
+
+        return true;
+    }
+
+
+
+    invalidate()
+    {
+        super.invalidate();
+
+        this.inputs.forEach(i => i.invalidate());
+    }
+}
 
 
 class GMove
@@ -26770,6 +26986,47 @@ function genParseSkew(parse)
 }
 
 
+
+function genParseRender(parse)
+{
+    const [, nodeId, options, ignore] = genParseNodeStart(parse);
+
+
+    const render = new GRender(nodeId, options);
+
+
+    let nInputs = 0;
+    
+    if (!ignore)
+        nInputs = parseInt(parse.move());
+
+
+    if (parse.settings.logRequests) 
+        logReq(render, parse, ignore, nInputs);
+
+
+    if (ignore) 
+    {
+        genParseNodeEnd(parse, render);
+        return parse.parsedNodes.find(n => n.nodeId == nodeId);
+    }
+
+
+    parse.nTab++;
+
+
+    for (let i = 0; i < nInputs; i++)
+        render.inputs.push(genParse(parse));
+
+
+    parse.nTab--;
+
+
+    genParseNodeEnd(parse, render);
+    return render;
+}
+
+
 // function genParseColorStyleValue(parse)
 // {
 //     parse.pos++; // COLOR_STYLE_VALUE
@@ -27537,6 +27794,8 @@ function genParse(parse, inParam = true)
     else if (parse.next == ROTATE                 ) result = genParseRotate           (parse);
     else if (parse.next == SCALE                  ) result = genParseScale            (parse);
     else if (parse.next == SKEW                   ) result = genParseSkew             (parse);
+    
+    else if (parse.next == RENDER                 ) result = genParseRender           (parse);
  
     else if (parse.next == GROUP_NODE             ) result = genParseGroupNode        (parse);
     else if (parse.next == GROUP_PARAM            ) result = genParseGroupParam       (parse);

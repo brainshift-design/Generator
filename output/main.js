@@ -477,6 +477,7 @@ const EFFECT_TYPES = [
 const STYLE_VALUES = [
     COLOR_VALUE,
     FILL_VALUE,
+    GRADIENT_VALUE,
     STROKE_VALUE,
     DROP_SHADOW_VALUE,
     INNER_SHADOW_VALUE,
@@ -504,6 +505,9 @@ const STAR_TYPES = [STAR_VALUE, STAR];
 const TEXTSHAPE_VALUE = 'TXTS#';
 const TEXTSHAPE = 'TXTS';
 const TEXTSHAPE_TYPES = [TEXTSHAPE_VALUE, TEXTSHAPE];
+const POINT = 'PT';
+const POINT_VALUE = 'PT#';
+const POINT_TYPES = [POINT_VALUE, POINT];
 const VECTOR_PATH_VALUE = 'VEC#';
 const VECTOR_PATH = 'VEC';
 const VECTOR_PATH_TYPES = [VECTOR_PATH_VALUE, VECTOR_PATH];
@@ -517,12 +521,6 @@ const MOVE = 'MOVE';
 const ROTATE = 'ROT';
 const SCALE = 'SCALE';
 const SKEW = 'SKEW';
-const POINT = 'PT';
-const POINT_VALUE = 'PT#';
-const POINT_TYPES = [
-    POINT,
-    POINT_VALUE
-];
 const BOOLEAN = 'BOOL';
 const BOOLEAN_VALUE = 'BOOL#';
 const BOOL_UNION = 'BOOLU';
@@ -537,6 +535,7 @@ const BOOLEAN_TYPES = [
     BOOL_INTERSECT,
     BOOL_EXCLUDE
 ];
+const RENDER = 'RENDER';
 const SHAPE_VALUES = [
     SHAPE_VALUE,
     SHAPE_LIST_VALUE,
@@ -568,7 +567,8 @@ const SHAPE_TYPES = [
     MOVE,
     ROTATE,
     SCALE,
-    SKEW
+    SKEW,
+    RENDER
 ];
 const ALL_VALUES = [
     LIST_VALUE,
@@ -579,6 +579,8 @@ const ALL_VALUES = [
     TEXT_VALUE,
     COLOR_VALUE,
     FILL_VALUE,
+    COLOR_STOP_VALUE,
+    GRADIENT_VALUE,
     STROKE_VALUE,
     COLOR_STOP_VALUE,
     GRADIENT_VALUE,
@@ -960,6 +962,7 @@ function findObject(obj, ignoreObjects) {
 function figDeleteAllObjects() {
     for (const obj of figma.currentPage.children) {
         if (obj.getPluginData('objectId') != ''
+            && obj.getPluginData('final') != 'true'
             && !obj.removed)
             obj.remove();
     }
@@ -1324,6 +1327,7 @@ function figCreateObject(genObj, addObject) {
         figObj.setPluginData('type', genObj.type);
         figObj.setPluginData('nodeId', genObj.nodeId);
         figObj.setPluginData('objectId', genObj.objectId);
+        figObj.setPluginData('final', boolToString(genObj.final));
         if (genObj.type == POINT)
             figPoints.push(figObj);
         addObject(figObj);

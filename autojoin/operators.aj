@@ -159,6 +159,8 @@
 ../operators/shape/boolean/OpShapeIntersect.js
 ../operators/shape/boolean/OpShapeExclude.js
 
+../operators/shape/OpRender.js
+
 
 ../operators/group/OpGroupNode.js
 ../operators/group/OpGroupParam.js

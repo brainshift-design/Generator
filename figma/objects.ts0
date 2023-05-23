@@ -112,6 +112,7 @@ function figCreateObject(genObj, addObject)
         figObj.setPluginData('type',     genObj.type    );
         figObj.setPluginData('nodeId',   genObj.nodeId  );
         figObj.setPluginData('objectId', genObj.objectId);
+        figObj.setPluginData('final',    boolToString(genObj.final));
 
         
         if (genObj.type == POINT)
