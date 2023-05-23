@@ -772,6 +772,7 @@ function uiUpdateValuesAndObjects(requestId, actionId, updateNodeId, updateParam
   
                     case         FILL_VALUE: value = parseFillValue        (values[i++])[0];  break;
                     case   COLOR_STOP_VALUE: value = parseColorStopValue   (values[i++])[0];  break;
+                    case     GRADIENT_VALUE: value = parseGradientValue    (values[i++])[0];  break;
                     case       STROKE_VALUE: value = parseStrokeValue      (values[i++])[0];  break;
                     case  DROP_SHADOW_VALUE: value = parseDropShadowValue  (values[i++])[0];  break;
                     case INNER_SHADOW_VALUE: value = parseInnerShadowValue (values[i++])[0];  break;

@@ -27,7 +27,7 @@ extends OpColorBase
 
 
         this.addInput (new Input([COLOR_STOP_VALUE], getNodeInputValuesForUndo));
-        this.addOutput(new Output([COLOR_STOP_VALUE], this.output_genRequest, getNodeOutputValuesForUndo));
+        this.addOutput(new Output([COLOR_STOP_VALUE], this.output_genRequest));//, getNodeOutputValuesForUndo));
 
 
         this.addParam(this.paramFill     = new FillParam  ('fill',     'fill',     false, true, true, FillValue.create(0, 0, 0, 100)));

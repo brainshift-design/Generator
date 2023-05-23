@@ -42,13 +42,18 @@ function rgbFromTypeMode(type, active, mode)
     switch (type)
     {
         case COLOR_VALUE:           
-
         case COLOR:           
         case COLOR_INTERPOLATE:
         case CORRECT_COLOR:
         case COLOR_CONTRAST:
         case COLORBLIND:
         case COLOR_BLEND:
+
+        case COLOR_STOP_VALUE:
+        case COLOR_STOP:
+        case GRADIENT_VALUE:
+        case GRADIENT:
+
             return active 
                 ? (mode ? rgbActiveFlowDark   : rgbActiveFlowLight)
                 : (mode ? rgbFlowDark         : rgbFlowLight      );

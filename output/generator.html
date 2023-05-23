@@ -541,13 +541,18 @@ function rgbFromTypeMode(type, active, mode)
     switch (type)
     {
         case COLOR_VALUE:           
-
         case COLOR:           
         case COLOR_INTERPOLATE:
         case CORRECT_COLOR:
         case COLOR_CONTRAST:
         case COLORBLIND:
         case COLOR_BLEND:
+
+        case COLOR_STOP_VALUE:
+        case COLOR_STOP:
+        case GRADIENT_VALUE:
+        case GRADIENT:
+
             return active 
                 ? (mode ? rgbActiveFlowDark   : rgbActiveFlowLight)
                 : (mode ? rgbFlowDark         : rgbFlowLight      );
@@ -5434,6 +5439,8 @@ function displayValue(type, value)
         case        TEXT_VALUE: const val = parseTextValue   (value)[0]; return val == '' ? '\'\'' : val.toDisplayString();
         case       COLOR_VALUE: return parseColorValue       (value)[0].toDisplayString();
         case        FILL_VALUE: return parseFillValue        (value)[0].toDisplayString();
+        case  COLOR_STOP_VALUE: return parseColorStopValue   (value)[0].toDisplayString();
+        case    GRADIENT_VALUE: return parseGradientValue    (value)[0].toDisplayString();
         case      STROKE_VALUE: return parseStrokeValue      (value)[0].toDisplayString();
         case   RECTANGLE_VALUE: return parseRectangleValue   (value)[0].toDisplayString();
         case        LINE_VALUE: return parseLineValue        (value)[0].toDisplayString();
@@ -5463,6 +5470,8 @@ function nullFromType(type)
         case        TEXT_VALUE: return       new TextValue();
         case       COLOR_VALUE: return        ColorValue.NaN;
         case        FILL_VALUE: return         FillValue.NaN;
+        case  COLOR_STOP_VALUE: return    ColorStopValue.NaN;
+        case    GRADIENT_VALUE: return     GradientValue.NaN;
         case      STROKE_VALUE: return       StrokeValue.NaN;
         case   RECTANGLE_VALUE: return    RectangleValue.NaN;
         case        LINE_VALUE: return         LineValue.NaN;
