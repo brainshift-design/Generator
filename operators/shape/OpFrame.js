@@ -13,7 +13,7 @@ extends OpShape
 
     constructor()
     {
-        super(FRAME, 'frame', 'frame');
+        super(FRAME, 'frame', 'frame', iconFrame);
 
         this.canDisable     = true;
         this.variableInputs = true;

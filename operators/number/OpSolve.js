@@ -8,7 +8,7 @@ extends OperatorWithValue
 
     constructor()
     {
-        super(NUMBER_SOLVE, 'solve', 'solve', defNodeWidth, true);
+        super(NUMBER_SOLVE, 'solve', 'solve', iconSolve, defNodeWidth, true);
 
         this.canDisable = true;
         

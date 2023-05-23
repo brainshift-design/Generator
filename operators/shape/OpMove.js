@@ -8,7 +8,7 @@ extends OperatorBase
 
     constructor()
     {
-        super(MOVE, 'move', 'move');
+        super(MOVE, 'move', 'move', iconMove);
 
         this.canDisable = true;
 

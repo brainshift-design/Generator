@@ -7,7 +7,7 @@ extends OperatorWithValue
 
     constructor()
     {
-        super(TEXT_FETCH, 'fetch', 'fetch', defNodeWidth, true);
+        super(TEXT_FETCH, 'fetch', 'fetch', iconTextFetch, defNodeWidth, true);
 
         this.canDisable       = true;
 

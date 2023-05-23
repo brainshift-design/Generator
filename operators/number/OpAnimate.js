@@ -20,7 +20,7 @@ extends OperatorWithValue
 
     constructor()
     {
-        super(NUMBER_ANIMATE, 'anim', 'animate');
+        super(NUMBER_ANIMATE, 'anim', 'animate', '');
 
         //this.cached = false;
         

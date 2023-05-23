@@ -7,7 +7,7 @@ extends ResizableBase
 
     constructor()
     {
-        super(TEXT, 'text', 'text');
+        super(TEXT, 'text', 'text', '');
 
         this.alwaysSaveParams = true;
         this.alwaysLoadParams = true;

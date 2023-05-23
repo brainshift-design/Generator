@@ -8,7 +8,7 @@ extends OperatorBase
 
     constructor()
     {
-        super(TEXT_CSV, 'csv', 'csv');
+        super(TEXT_CSV, 'csv', 'csv', iconTextCSV);
 
 
         this.addInput(new Input([TEXT_VALUE]));

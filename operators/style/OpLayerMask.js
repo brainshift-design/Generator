@@ -3,7 +3,7 @@ extends OperatorBase
 {
     constructor()
     {
-        super(LAYER_MASK, 'mask', 'mask');
+        super(LAYER_MASK, 'mask', 'mask', iconMask);
 
         this.canDisable = true;
         

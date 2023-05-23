@@ -11,7 +11,7 @@ extends OperatorBase
 
     constructor()
     {
-        super(SCALE, 'scale', 'scale');
+        super(SCALE, 'scale', 'scale', iconScale);
 
         this.canDisable = true;
 

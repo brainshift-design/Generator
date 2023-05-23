@@ -36,6 +36,9 @@ class Operator
     defName;
 
 
+    icon;
+
+
     enabled;
     cached;
     
@@ -89,6 +92,7 @@ class Operator
     inner;
     header;
 
+    divIcon;
     divDisabled;
     
     progressWrapper    = null;
@@ -153,30 +157,35 @@ class Operator
 
 
 
-    constructor(type, id, name, defWidth = defNodeWidth, progressBar = false)
+    constructor(type, id, name, icon, defWidth = defNodeWidth, progressBar = false)
     {
         this.#type             = type;
 
         this.id                = id;
         this.id                = makeNodePath(this);
         
+        this.defId             = id;
+        this.defName           = name;
+
+        this.icon              = icon;
+
+        this.defaultWidth      = defWidth;
+        this.labelOffsetFactor = 0;
+
         this.enabled           = true;
         this.cached            = true;
         this.inert             = false;
         this.slow              = false;
 
-        this.defId             = id;
-        this.defName           = name;
-
-        this.defaultWidth      = defWidth;
-        this.labelOffsetFactor = 0;
-        
         this.valid             = false;
+
 
         this.createNode();
 
+
         if (progressBar)
             this.createProgressBar();
+
 
         this.setName(name);
     }    

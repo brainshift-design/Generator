@@ -12,7 +12,7 @@ extends OpShape
     
     constructor()
     {
-        super(RECTANGLE, 'rect', 'rectangle');
+        super(RECTANGLE, 'rect', 'rectangle', iconRectangle);
 
         this.canDisable = true;
         

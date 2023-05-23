@@ -3,7 +3,7 @@ extends OperatorWithValue
 {
     constructor()
     {
-        super(NUMBER_SIGN, 'sign', 'sign');
+        super(NUMBER_SIGN, 'sign', 'sign', iconSign);
 
         this.canDisable = true;
         

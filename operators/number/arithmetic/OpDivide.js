@@ -3,7 +3,7 @@ extends OpArithmetic
 {
     constructor()
     {
-        super(NUMBER_DIVIDE, 'div', 'divide', '/');//'÷');
+        super(NUMBER_DIVIDE, 'div', 'divide', '/', iconDivide);//'÷');
     }
 
 

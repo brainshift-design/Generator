@@ -6,9 +6,9 @@ extends OperatorWithValue
 
     
 
-    constructor(type, id, name, symbol)
+    constructor(type, id, name, symbol, icon)
     {
-        super(type, id, name);
+        super(type, id, name, icon);
 
         
         this._showOnlySymbol  = true;

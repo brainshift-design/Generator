@@ -3,6 +3,6 @@ extends OpTrigBase
 {
     constructor()
     {
-        super(NUMBER_COS, 'cos', 'cos');
+        super(NUMBER_COS, 'cos', 'cos', iconCosine);
     }
 }

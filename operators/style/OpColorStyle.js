@@ -20,7 +20,7 @@ extends OperatorBase
 
     constructor(options = {})
     {
-        super(COLOR_STYLE, 'style', 'style');
+        super(COLOR_STYLE, 'style', 'style', '');
 
         this.inert = true;
 

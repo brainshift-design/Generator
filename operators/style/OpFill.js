@@ -12,7 +12,7 @@ extends OpColorBase
 
     constructor()
     {
-        super(FILL, 'fill', 'fill');
+        super(FILL, 'fill', 'fill', iconFill);
 
         this.canDisable = true;
         

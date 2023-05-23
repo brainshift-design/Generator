@@ -8,7 +8,7 @@ extends OperatorWithValue
 
     constructor()
     {
-        super(NUMBER_ROUND, 'round', 'round');
+        super(NUMBER_ROUND, 'round', 'round', iconRound);
 
         this.canDisable = true;
         

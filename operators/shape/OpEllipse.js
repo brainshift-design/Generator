@@ -11,7 +11,7 @@ extends OpShape
     
     constructor()
     {
-        super(ELLIPSE, 'ellipse', 'ellipse');
+        super(ELLIPSE, 'ellipse', 'ellipse', iconEllipse);
 
         this.canDisable = true;
         

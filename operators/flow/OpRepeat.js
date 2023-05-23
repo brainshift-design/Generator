@@ -8,7 +8,7 @@ extends OperatorBase
 
     constructor()
     {
-        super(REPEAT, 'repeat', 'repeat');
+        super(REPEAT, 'repeat', 'repeat', iconRepeat);
 
         this.canDisable = true;
 

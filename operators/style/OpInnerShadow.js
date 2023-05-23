@@ -12,7 +12,7 @@ extends OperatorBase
     
     constructor()
     {
-        super(INNER_SHADOW, 'innerShadow', 'inner shadow');
+        super(INNER_SHADOW, 'innerShadow', 'inner shadow', iconInnerShadow);
 
         this.canDisable = true;
         

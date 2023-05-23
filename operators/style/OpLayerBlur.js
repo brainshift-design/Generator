@@ -7,7 +7,7 @@ extends OperatorBase
     
     constructor()
     {
-        super(LAYER_BLUR, 'layerBlur', 'layer blur');
+        super(LAYER_BLUR, 'layerBlur', 'layer blur', iconLayerBlur);
 
         this.canDisable = true;
         

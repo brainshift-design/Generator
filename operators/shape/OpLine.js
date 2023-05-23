@@ -10,7 +10,7 @@ extends OpShape
     
     constructor()
     {
-        super(LINE, 'line', 'line');
+        super(LINE, 'line', 'line', iconLine);
 
         this.canDisable = true;
 

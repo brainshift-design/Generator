@@ -10,7 +10,7 @@ extends OperatorBase
 
     constructor()
     {
-        super(ROTATE, 'rotate', 'rotate');
+        super(ROTATE, 'rotate', 'rotate', iconRotate);
 
         this.canDisable = true;
 

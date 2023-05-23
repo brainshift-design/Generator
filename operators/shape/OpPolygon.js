@@ -13,7 +13,7 @@ extends OpShape
     
     constructor()
     {
-        super(POLYGON, 'poly', 'polygon');
+        super(POLYGON, 'poly', 'polygon', iconPolygon);
 
         this.canDisable = true;
 

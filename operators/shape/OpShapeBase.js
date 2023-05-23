@@ -1,9 +1,9 @@
 class   OpShapeBase
 extends OperatorBase
 {
-    constructor(type, id, name, defWidth = defNodeWidth)
+    constructor(type, id, name, icon, defWidth = defNodeWidth)
     {
-        super(type, id, name, defWidth);
+        super(type, id, name, icon, defWidth);
     }
 
 

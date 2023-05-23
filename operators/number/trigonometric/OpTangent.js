@@ -3,6 +3,6 @@ extends OpTrigBase
 {
     constructor()
     {
-        super(NUMBER_TAN, 'tan', 'tan');
+        super(NUMBER_TAN, 'tan', 'tan', iconTangent);
     }
 }

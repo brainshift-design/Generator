@@ -11,7 +11,7 @@ extends OperatorBase
 
     constructor()
     {
-        super(SKEW, 'skew', 'skew');
+        super(SKEW, 'skew', 'skew', iconSkew);
 
         this.canDisable = true;
 

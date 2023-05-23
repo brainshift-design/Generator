@@ -12,7 +12,7 @@ extends OpShapeBase
     
     constructor()
     {
-        super(BOOLEAN, 'boolean', 'boolean');
+        super(BOOLEAN, 'boolean', 'boolean', iconBoolUnion);
 
         this.canDisable = true;
 

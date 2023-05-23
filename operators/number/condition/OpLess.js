@@ -3,6 +3,6 @@ extends OpConditionBase
 {
     constructor()
     {
-        super(NUMBER_LESS, 'less', 'less', '<');
+        super(NUMBER_LESS, 'less', 'less', '<', iconLess);
     }
 }

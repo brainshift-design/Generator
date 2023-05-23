@@ -28,7 +28,7 @@ extends OperatorBase
 
     constructor()
     {
-        super(GROUP_PARAM, 'param', 'parameter');
+        super(GROUP_PARAM, 'param', 'parameter', '');
 
         this.alwaysLoadParams = true;
 

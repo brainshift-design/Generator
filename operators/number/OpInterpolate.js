@@ -7,7 +7,7 @@ extends OperatorWithValue
 
     constructor()
     {
-        super(NUMBER_INTERPOLATE, 'inter', 'interpolate');
+        super(NUMBER_INTERPOLATE, 'inter', 'interpolate', iconInterpolate);
 
         this.addInput(new Input(NUMBER_TYPES));
         this.addInput(new Input(NUMBER_TYPES));

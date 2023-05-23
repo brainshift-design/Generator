@@ -7,7 +7,7 @@ extends OperatorBase
     
     constructor()
     {
-        super(LIST_COUNT, 'count', 'count');
+        super(LIST_COUNT, 'count', 'count', iconCount);
 
 
         this.addInput (new Input([LIST_VALUE]));

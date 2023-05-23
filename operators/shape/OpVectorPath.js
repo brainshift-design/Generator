@@ -11,7 +11,7 @@ extends OpShape
     
     constructor()
     {
-        super(VECTOR_PATH, 'path', 'path');
+        super(VECTOR_PATH, 'path', 'path', iconVectorPath);
 
         this.canDisable = true;
 

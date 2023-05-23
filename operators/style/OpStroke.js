@@ -14,7 +14,7 @@ extends OpColorBase
     
     constructor()
     {
-        super(STROKE, 'stroke', 'stroke');
+        super(STROKE, 'stroke', 'stroke', iconStroke);
 
         this.canDisable = true;
         

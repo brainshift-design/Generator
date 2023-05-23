@@ -9,7 +9,7 @@ extends OperatorBase
 
     constructor()
     {
-        super(NUMBER_DISTRIBUTE, 'distribute', 'distribute');
+        super(NUMBER_DISTRIBUTE, 'distribute', 'distribute', iconDistribute);
 
         this.cached = false;
         

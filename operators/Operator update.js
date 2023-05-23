@@ -226,6 +226,12 @@ Operator.prototype.updateHeaderLabel = function()
     this.label.style.fontSize   = this.active ? fontSize : 11;
     this.label.style.height     = this.active ? fontSize * 15 / 11 : 15;
 
+    this.divIcon.innerHTML = this.icon.replaceAll('white', rgba2style(colors.text));
+    this.divIcon.style.display = 
+        this.icon != '' 
+        ? 'inline' 
+        : 'none';
+
     this.label.style.fontWeight = graph.currentPage.zoom < 1.2 ? '600' : 'normal';
 }
 

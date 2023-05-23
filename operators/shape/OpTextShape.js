@@ -19,7 +19,7 @@ extends OpShape
     
     constructor()
     {
-        super(TEXTSHAPE, 'text', 'text');
+        super(TEXTSHAPE, 'text', 'text', iconTextShape);
 
         this.canDisable = true;
         

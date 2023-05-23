@@ -17,7 +17,7 @@ extends OpColorBase
 
     constructor()
     {
-        super(GRADIENT, 'grad', 'gradient');
+        super(GRADIENT, 'grad', 'gradient', iconGradient);
 
         this.canDisable     = true;
         this.variableInputs = true;

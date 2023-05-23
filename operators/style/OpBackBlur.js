@@ -7,7 +7,7 @@ extends OperatorBase
     
     constructor()
     {
-        super(BACK_BLUR, 'backBlur', 'back blur');
+        super(BACK_BLUR, 'backBlur', 'back blur', iconBackBlur);
 
         this.canDisable = true;
         

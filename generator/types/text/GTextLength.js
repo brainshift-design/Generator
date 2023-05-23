@@ -60,7 +60,7 @@ extends GOperator
     {
         super.pushValueUpdates(parse);
 
-        if (this.input) this.input.pushValueUpdates();
+        if (this.input) this.input.pushValueUpdates(parse);
     }
 
 

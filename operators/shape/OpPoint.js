@@ -10,7 +10,7 @@ extends OpShapeBase
 
     constructor()
     {
-        super(POINT, 'point', 'point');
+        super(POINT, 'point', 'point', iconPoint);
 
         this.addInput (new Input ([POINT_VALUE], getNodeInputValuesForUndo, this.input_getBackInitValue));
         this.addOutput(new Output([POINT_VALUE], this.output_genRequest, getNodeOutputValuesForUndo, this.output_backInit));

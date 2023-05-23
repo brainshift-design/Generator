@@ -10,7 +10,7 @@ extends OperatorBase
 
     constructor()
     {
-        super(IF_ELSE, 'ifElse', 'if/else');
+        super(IF_ELSE, 'ifElse', 'if/else', iconIfElse);
 
 
         this.addInput (new Input ([ANY_VALUE]));

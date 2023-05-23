@@ -3,7 +3,7 @@ extends OpShapeBase
 {
     constructor()
     {
-        super(SHAPE_GROUP, 'group', 'group');
+        super(SHAPE_GROUP, 'group', 'group', iconShapeGroup);
 
         this.variableInputs = true;
         this.canDisable     = true;

@@ -14,7 +14,7 @@ extends OpShape
     
     constructor()
     {
-        super(STAR, 'star', 'star');
+        super(STAR, 'star', 'star', iconStar);
 
         this.canDisable = true;
 

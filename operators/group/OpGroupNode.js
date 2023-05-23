@@ -3,7 +3,7 @@ extends OperatorBase
 {
     constructor()
     {
-        super(GROUP_NODE, 'group', 'group');
+        super(GROUP_NODE, 'group', 'group', iconGroup);
 
 
         this.saveParams = false;

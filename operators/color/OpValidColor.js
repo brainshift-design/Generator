@@ -9,7 +9,7 @@ extends OpColorBase
 
     constructor()
     {
-        super(VALID_COLOR, 'valid', 'valid', true);
+        super(VALID_COLOR, 'valid', 'valid', iconValidColor, true);
 
         this.canDisable = true;
         this.slow       = true;

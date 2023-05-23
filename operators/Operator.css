@@ -49,6 +49,18 @@
 }
 
 
+.nodeIcon
+{
+    display:      inline;
+    width:        19px;
+    height:       19px;
+    margin-right: 7px;
+    position:     relative;
+    top:         -1px;
+    /* box-shadow:   0 0 0 1px red inset; */
+}
+
+
 .nodeHeaderCheckersHolder
 {
     display:       inline-block;

@@ -1,9 +1,9 @@
 class   OpArithmetic
 extends OperatorWithSymbol
 {
-    constructor(type, id, name, symbol)
+    constructor(type, id, name, symbol, icon)
     {
-        super(type, id, name, symbol);
+        super(type, id, name, symbol, icon);
         
         this.variableInputs   = true;
         this.alwaysLoadParams = true;

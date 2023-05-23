@@ -7,7 +7,7 @@ extends OperatorWithValue
 
     constructor()
     {
-        super(NUMBER_CONSTANT, 'constant', 'constant');
+        super(NUMBER_CONSTANT, 'constant', 'constant', iconConstant);
 
         this.addOutput(new Output([NUMBER_VALUE], this.output_genRequest));
 

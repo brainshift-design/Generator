@@ -3246,6 +3246,18 @@ a
 }
 
 
+.nodeIcon
+{
+    display:      inline;
+    width:        19px;
+    height:       19px;
+    margin-right: 7px;
+    position:     relative;
+    top:         -1px;
+    /* box-shadow:   0 0 0 1px red inset; */
+}
+
+
 .nodeHeaderCheckersHolder
 {
     display:       inline-block;
@@ -18901,7 +18913,7 @@ extends GOperator
     {
         super.pushValueUpdates(parse);
 
-        if (this.input) this.input.pushValueUpdates();
+        if (this.input) this.input.pushValueUpdates(parse);
     }
 
 
@@ -52562,7 +52574,7 @@ extends GOperator
     {
         super.pushValueUpdates(parse);
 
-        if (this.input) this.input.pushValueUpdates();
+        if (this.input) this.input.pushValueUpdates(parse);
     }
 
 
@@ -64689,7 +64701,7 @@ const iconDistribute        = '<svg width="19" height="7" viewBox="0 0 19 7" fil
 const iconSequence          = '<svg width="16" height="11" viewBox="0 0 16 11" fill="none" xmlns="http://www.w3.org/2000/svg"><rect y="9" width="1" height="2" fill="white"/><rect x="5" y="6" width="1" height="5" fill="white"/><rect x="10" y="3" width="1" height="8" fill="white"/><rect x="15" width="1" height="11" fill="white"/></svg>';
 const iconInterpolate       = '<svg width="19" height="13" viewBox="0 -1 19 13" fill="none" xmlns="http://www.w3.org/2000/svg"><line x1="0.284818" y1="10.6077" x2="18.759" y2="0.444666" stroke="white"/><ellipse cx="9.99556" cy="5.22745" rx="1.45202" ry="2.24173" transform="rotate(-25.1301 9.99556 5.22745)" fill="white"/></svg>';
 const iconSolve             = '<svg width="18" height="14" viewBox="-4 0 18 14" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="5.5" cy="5.5" r="5" stroke="white"/><rect x="9.44473" y="8.55527" width="6.21958" height="1.25789" transform="rotate(45 9.44473 8.55527)" fill="white"/><path d="M4.40227 3L5.5 4.8457L6.61544 3H7.97167L6.33215 5.5L8 8H6.65085L5.5 6.19987L4.35977 8H3L4.65722 5.5L3.04249 3H4.40227Z" fill="white"/></svg>';
-const iconAnimate           = '<svg width="15" height="7" viewBox="0 0 15 7" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M6 0H15V1H6V0Z" fill="white"/><path d="M3 3H12V4H3V3Z" fill="white"/><path d="M0 6H9V7H0V6Z" fill="white"/></svg>';
+const iconAnimate           = '<svg width="9" height="13" viewBox="0 0 9 13" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M0 13V0L9 6.5L0 13Z" fill="white"/></svg>';
  
 const iconMath              = '<svg width="17" height="18" viewBox="0 0 17 18" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M14.138 6.57967V0.485922H13.1039V6.57967H14.138ZM16.6678 4.04984V3.01575H10.5741V4.04984H16.6678Z" fill="white"/><path d="M11.3681 15.5004L16.5755 10.293L15.8738 9.59129L10.6664 14.7987L11.3681 15.5004ZM15.8738 15.5004L16.5755 14.7987L11.3681 9.59129L10.6664 10.293L15.8738 15.5004Z" fill="white"/><path d="M0.576652 12.0288V13.0629H6.48574V12.0288H0.576652ZM3.5312 15.7589C3.76202 15.7589 3.95899 15.6789 4.12211 15.5188C4.28214 15.3557 4.36216 15.1588 4.36216 14.9279C4.36216 14.7063 4.28214 14.5155 4.12211 14.3555C3.95899 14.1955 3.76202 14.1154 3.5312 14.1154C3.30961 14.1154 3.11879 14.1955 2.95875 14.3555C2.79872 14.5155 2.7187 14.7063 2.7187 14.9279C2.7187 15.1588 2.79872 15.3557 2.95875 15.5188C3.11879 15.6789 3.30961 15.7589 3.5312 15.7589ZM3.5312 10.9762C3.68508 10.9762 3.82511 10.9393 3.9513 10.8654C4.07748 10.7916 4.1775 10.6915 4.25137 10.5654C4.32523 10.4392 4.36216 10.2991 4.36216 10.1453C4.36216 9.92367 4.28214 9.73286 4.12211 9.57282C3.95899 9.41278 3.76202 9.33276 3.5312 9.33276C3.30961 9.33276 3.11879 9.41278 2.95875 9.57282C2.79872 9.73286 2.7187 9.92367 2.7187 10.1453C2.7187 10.3761 2.79872 10.5731 2.95875 10.7362C3.11879 10.8962 3.30961 10.9762 3.5312 10.9762Z" fill="white"/><path d="M0.576652 3.01575V4.04984H6.48574V3.01575H0.576652Z" fill="white"/></svg>';
 const iconAdd               = '<svg width="12" height="11" viewBox="0 0 12 11" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M4.78932 10.1318V0.756822H6.38023V10.1318H4.78932ZM0.897271 6.23978V4.64887H10.2723V6.23978H0.897271Z" fill="white"/></svg>';
@@ -75825,6 +75837,9 @@ class Operator
     defName;
 
 
+    icon;
+
+
     enabled;
     cached;
     
@@ -75878,6 +75893,7 @@ class Operator
     inner;
     header;
 
+    divIcon;
     divDisabled;
     
     progressWrapper    = null;
@@ -75942,30 +75958,35 @@ class Operator
 
 
 
-    constructor(type, id, name, defWidth = defNodeWidth, progressBar = false)
+    constructor(type, id, name, icon, defWidth = defNodeWidth, progressBar = false)
     {
         this.#type             = type;
 
         this.id                = id;
         this.id                = makeNodePath(this);
         
+        this.defId             = id;
+        this.defName           = name;
+
+        this.icon              = icon;
+
+        this.defaultWidth      = defWidth;
+        this.labelOffsetFactor = 0;
+
         this.enabled           = true;
         this.cached            = true;
         this.inert             = false;
         this.slow              = false;
 
-        this.defId             = id;
-        this.defName           = name;
-
-        this.defaultWidth      = defWidth;
-        this.labelOffsetFactor = 0;
-        
         this.valid             = false;
+
 
         this.createNode();
 
+
         if (progressBar)
             this.createProgressBar();
+
 
         this.setName(name);
     }    
@@ -77626,17 +77647,24 @@ Operator.prototype.setPosition = function(x, y, updateTransform = true)
 
 Operator.prototype.createLabel = function()
 {
-    this.labelWrapper   = createDiv('nodeLabelWrapper');
+    this.labelWrapper      = createDiv('nodeLabelWrapper');
   
-    this.label          = createDiv('nodeLabel');
-    this.label.node     = this;
+    this.label             = createDiv('nodeLabel');
+    this.label.node        = this;
     
-    this.labelText      = createDiv('nodeLabelText');
-    this.labelText.node = this;
+    this.divIcon           = createDiv('nodeIcon');
+    this.divIcon.innerHTML = this.icon;
+
+    this.labelText         = createDiv('nodeLabelText');
+    this.labelText.node    = this;
     
+    this.label       .appendChild(this.divIcon);
     this.label       .appendChild(this.labelText);
+
     this.labelWrapper.appendChild(this.label);
     this.header      .appendChild(this.labelWrapper);
+
+    
 
 
     this.labelWrapper.addEventListener('pointerdown', e =>
@@ -78155,6 +78183,12 @@ Operator.prototype.updateHeaderLabel = function()
     this.label.style.fontSize   = this.active ? fontSize : 11;
     this.label.style.height     = this.active ? fontSize * 15 / 11 : 15;
 
+    this.divIcon.innerHTML = this.icon.replaceAll('white', rgba2style(colors.text));
+    this.divIcon.style.display = 
+        this.icon != '' 
+        ? 'inline' 
+        : 'none';
+
     this.label.style.fontWeight = graph.currentPage.zoom < 1.2 ? '600' : 'normal';
 }
 
@@ -78310,9 +78344,9 @@ extends OperatorBase
     
 
 
-    constructor(type, id, name, defWidth = defNodeWidth, progressBar = false)
+    constructor(type, id, name, icon, defWidth = defNodeWidth, progressBar = false)
     {
-        super(type, id, name, defWidth, progressBar);
+        super(type, id, name, icon, defWidth, progressBar);
 
         this.paramValue          = createParamFromType(type);
         this.paramValue.isResult = true;
@@ -78339,9 +78373,9 @@ extends OperatorWithValue
 
     
 
-    constructor(type, id, name, symbol)
+    constructor(type, id, name, symbol, icon)
     {
-        super(type, id, name);
+        super(type, id, name, icon);
 
         
         this._showOnlySymbol  = true;
@@ -78465,9 +78499,9 @@ extends OperatorBase
 
 
 
-    constructor(type, id, name)
+    constructor(type, id, name, icon)
     {
-        super(type, id, name);
+        super(type, id, name, icon);
 
         this.initSizer();
     }
@@ -78826,7 +78860,7 @@ extends OperatorBase
 {
     constructor()
     {
-        super(LIST, 'list', 'list');
+        super(LIST, 'list', 'list', iconList);
 
         this.canDisable     = true;
         this.variableInputs = true;
@@ -78967,7 +79001,7 @@ extends OperatorBase
 {
     constructor()
     {
-        super(ITEMS, 'items', 'items');
+        super(ITEMS, 'items', 'items', iconItems);
 
 
         this.addInput (new Input(LIST_VALUES));
@@ -79110,7 +79144,7 @@ extends OperatorBase
 
     constructor()
     {
-        super(SELECT, 'select', 'select');
+        super(SELECT, 'select', 'select', iconSelect);
 
         this.alwaysSaveParams = true;
 
@@ -79222,7 +79256,7 @@ extends OperatorBase
     
     constructor()
     {
-        super(LIST_COUNT, 'count', 'count');
+        super(LIST_COUNT, 'count', 'count', iconCount);
 
 
         this.addInput (new Input([LIST_VALUE]));
@@ -79292,7 +79326,7 @@ extends OperatorBase
 
     constructor()
     {
-        super(IF_ELSE, 'ifElse', 'if/else');
+        super(IF_ELSE, 'ifElse', 'if/else', iconIfElse);
 
 
         this.addInput (new Input ([ANY_VALUE]));
@@ -79733,7 +79767,7 @@ extends OperatorBase
 
     constructor()
     {
-        super(REPEAT, 'repeat', 'repeat');
+        super(REPEAT, 'repeat', 'repeat', iconRepeat);
 
         this.canDisable = true;
 
@@ -80007,7 +80041,7 @@ extends OperatorBase
 {
     constructor()
     {
-        super(COPY, 'copy', 'copy');
+        super(COPY, 'copy', 'copy', iconCopy);
 
         this.canDisable = true;
 
@@ -80264,7 +80298,7 @@ extends OperatorWithValue
 {
     constructor()
     {
-        super(NUMBER_SIGN, 'sign', 'sign');
+        super(NUMBER_SIGN, 'sign', 'sign', iconSign);
 
         this.canDisable = true;
         
@@ -80389,7 +80423,7 @@ extends OperatorWithValue
 {
     constructor()
     {
-        super(NUMBER_ABSOLUTE, 'abs', 'absolute');
+        super(NUMBER_ABSOLUTE, 'abs', 'absolute', iconAbsolute);
 
         this.canDisable = true;
         
@@ -80519,7 +80553,7 @@ extends OperatorWithValue
 
     constructor()
     {
-        super(NUMBER_ROUND, 'round', 'round');
+        super(NUMBER_ROUND, 'round', 'round', iconRound);
 
         this.canDisable = true;
         
@@ -80691,7 +80725,7 @@ extends OperatorWithValue
 
     constructor()
     {
-        super(NUMBER_LIMITS, 'limits', 'limits');
+        super(NUMBER_LIMITS, 'limits', 'limits', iconLimits);
 
         this.canDisable = true;
         
@@ -80769,7 +80803,7 @@ extends OperatorWithValue
 
     constructor()
     {
-        super(NUMBER_CONSTANT, 'constant', 'constant');
+        super(NUMBER_CONSTANT, 'constant', 'constant', iconConstant);
 
         this.addOutput(new Output([NUMBER_VALUE], this.output_genRequest));
 
@@ -80822,7 +80856,7 @@ extends OperatorBase
 
     constructor()
     {
-        super(NUMBER_DISTRIBUTE, 'distribute', 'distribute');
+        super(NUMBER_DISTRIBUTE, 'distribute', 'distribute', iconDistribute);
 
         this.cached = false;
         
@@ -80870,7 +80904,7 @@ extends OperatorBase
 
     constructor()
     {
-        super(NUMBER_SEQUENCE, 'sequence', 'sequence');
+        super(NUMBER_SEQUENCE, 'sequence', 'sequence', iconSequence);
 
         this.cached = false;
         
@@ -80917,7 +80951,7 @@ extends OperatorBase
 
     constructor()
     {
-        super(NUMBER_RANDOM, 'random', 'random');
+        super(NUMBER_RANDOM, 'random', 'random', iconRandom);
 
         this.cached = false;
         
@@ -80967,7 +81001,7 @@ extends OperatorWithValue
 
     constructor()
     {
-        super(NUMBER_INTERPOLATE, 'inter', 'interpolate');
+        super(NUMBER_INTERPOLATE, 'inter', 'interpolate', iconInterpolate);
 
         this.addInput(new Input(NUMBER_TYPES));
         this.addInput(new Input(NUMBER_TYPES));
@@ -81044,7 +81078,7 @@ extends OperatorWithValue
 
     constructor()
     {
-        super(NUMBER_TO_TEXT, 'numAsText', 'number as text');
+        super(NUMBER_TO_TEXT, 'numAsText', 'number as text', iconNumberToText);
 
 
         this.addOutput(new Output([TEXT_VALUE], this.output_genRequest));
@@ -81109,7 +81143,7 @@ extends OperatorWithValue
 
     constructor()
     {
-        super(NUMBER_SOLVE, 'solve', 'solve', defNodeWidth, true);
+        super(NUMBER_SOLVE, 'solve', 'solve', iconSolve, defNodeWidth, true);
 
         this.canDisable = true;
         
@@ -81212,7 +81246,7 @@ extends OperatorWithValue
 
     constructor()
     {
-        super(NUMBER_ANIMATE, 'anim', 'animate');
+        super(NUMBER_ANIMATE, 'anim', 'animate', '');
 
         //this.cached = false;
         
@@ -81432,7 +81466,7 @@ extends OperatorWithValue
 
     constructor()
     {
-        super(NUMBER_MATH, 'math', 'math');
+        super(NUMBER_MATH, 'math', 'math', iconMath);
 
         this.variableInputs   = true;
         this.alwaysLoadParams = true;
@@ -81510,9 +81544,9 @@ extends OperatorWithValue
 class   OpArithmetic
 extends OperatorWithSymbol
 {
-    constructor(type, id, name, symbol)
+    constructor(type, id, name, symbol, icon)
     {
-        super(type, id, name, symbol);
+        super(type, id, name, symbol, icon);
         
         this.variableInputs   = true;
         this.alwaysLoadParams = true;
@@ -81633,7 +81667,7 @@ extends OpArithmetic
 {
     constructor()
     {
-        super(NUMBER_ADD, 'add', 'add', '+');
+        super(NUMBER_ADD, 'add', 'add', '+', iconAdd);
     }
 
 
@@ -81665,7 +81699,7 @@ extends OpArithmetic
 {
     constructor()
     {
-        super(NUMBER_SUBTRACT, 'sub', 'subtract', '−');
+        super(NUMBER_SUBTRACT, 'sub', 'subtract', '−', iconSubtract);
     }
 
 
@@ -81697,7 +81731,7 @@ extends OpArithmetic
 {
     constructor()
     {
-        super(NUMBER_MULTIPLY, 'mul', 'multiply', '×');
+        super(NUMBER_MULTIPLY, 'mul', 'multiply', '×', iconMultiply);
     }
 
 
@@ -81729,7 +81763,7 @@ extends OpArithmetic
 {
     constructor()
     {
-        super(NUMBER_DIVIDE, 'div', 'divide', '/');//'÷');
+        super(NUMBER_DIVIDE, 'div', 'divide', '/', iconDivide);//'÷');
     }
 
 
@@ -81761,7 +81795,7 @@ extends OpArithmetic
 {
     constructor()
     {
-        super(NUMBER_MODULO, 'rem', 'remainder', '%');
+        super(NUMBER_MODULO, 'rem', 'remainder', '%', iconModulo);
     }
     
     
@@ -81810,7 +81844,7 @@ extends OpArithmetic
 {
     constructor()
     {
-        super(NUMBER_EXPONENT, 'pow', 'power', 'eˣ'); // placeholder symbol, actual symbol set in updateNode()
+        super(NUMBER_EXPONENT, 'pow', 'power', 'eˣ', iconExponent); // placeholder symbol, actual symbol set in updateNode()
     }
 
 
@@ -81850,7 +81884,7 @@ extends OperatorWithValue
 
     constructor()
     {
-        super(NUMBER_BOOLEAN, 'bool', 'boolean');
+        super(NUMBER_BOOLEAN, 'bool', 'boolean', iconBoolean);
 
         this.variableInputs   = true;
         this.alwaysLoadParams = true;
@@ -81947,9 +81981,9 @@ extends OperatorWithValue
 class   OpBooleanBase
 extends OperatorWithValue
 {
-    constructor(type, id, name)
+    constructor(type, id, name, icon)
     {
-        super(type, id, name);
+        super(type, id, name, icon);
 
         
         this.variableInputs   = true;
@@ -82052,7 +82086,7 @@ extends OpBooleanBase
 {
     constructor()
     {
-        super(NUMBER_NOT, 'not', 'not');
+        super(NUMBER_NOT, 'not', 'not', iconNot);
     }
 }
 
@@ -82062,7 +82096,7 @@ extends OpBooleanBase
 {
     constructor()
     {
-        super(NUMBER_AND, 'and', 'and');
+        super(NUMBER_AND, 'and', 'and', iconAnd);
     }
 }
 
@@ -82072,7 +82106,7 @@ extends OpBooleanBase
 {
     constructor()
     {
-        super(NUMBER_OR, 'or', 'or');
+        super(NUMBER_OR, 'or', 'or', iconOr);
     }
 }
 
@@ -82082,7 +82116,7 @@ extends OpBooleanBase
 {
     constructor()
     {
-        super(NUMBER_XOR, 'xor', 'xor');
+        super(NUMBER_XOR, 'xor', 'xor', iconXor);
     }
 }
 
@@ -82096,7 +82130,7 @@ extends OperatorWithValue
 
     constructor()
     {
-        super(NUMBER_CONDITION, 'cond', 'condition');
+        super(NUMBER_CONDITION, 'cond', 'condition', iconCondition);
 
         this.addInput(new Input([NUMBER_VALUE]));
         this.addInput(new Input([NUMBER_VALUE]));
@@ -82180,9 +82214,9 @@ function updateParamConditionText(param, unknown, offsetY = 0)
 class   OpConditionBase
 extends OperatorWithSymbol
 {
-    constructor(type, id, name, symbol)
+    constructor(type, id, name, symbol, icon)
     {
-        super(type, id, name, symbol);
+        super(type, id, name, symbol, icon);
 
         this.alwaysLoadParams = true;
 
@@ -82312,7 +82346,7 @@ extends OpConditionBase
 {
     constructor()
     {
-        super(NUMBER_EQUAL, 'equal', 'equal', '=');
+        super(NUMBER_EQUAL, 'equal', 'equal', '=', iconEqual);
     }
 }
 
@@ -82322,7 +82356,7 @@ extends OpConditionBase
 {
     constructor()
     {
-        super(NUMBER_NOT_EQUAL, 'notEqual', 'not equal', '≠');
+        super(NUMBER_NOT_EQUAL, 'notEqual', 'not equal', '≠', iconNotEqual);
     }
 }
 
@@ -82332,7 +82366,7 @@ extends OpConditionBase
 {
     constructor()
     {
-        super(NUMBER_LESS, 'less', 'less', '<');
+        super(NUMBER_LESS, 'less', 'less', '<', iconLess);
     }
 }
 
@@ -82342,7 +82376,7 @@ extends OpConditionBase
 {
     constructor()
     {
-        super(NUMBER_LESS_OR_EQUAL, 'lessOrEqual', 'less or equal', '≤');
+        super(NUMBER_LESS_OR_EQUAL, 'lessOrEqual', 'less or equal', '≤', iconLessOrEqual);
     }
 }
 
@@ -82352,7 +82386,7 @@ extends OpConditionBase
 {
     constructor()
     {
-        super(NUMBER_GREATER, 'greater', 'greater', '>');
+        super(NUMBER_GREATER, 'greater', 'greater', '>', iconGreater);
     }
 }
 
@@ -82362,7 +82396,7 @@ extends OpConditionBase
 {
     constructor()
     {
-        super(NUMBER_GREATER_OR_EQUAL, 'greaterOrEqual', 'greater or equal', '≥');
+        super(NUMBER_GREATER_OR_EQUAL, 'greaterOrEqual', 'greater or equal', '≥', iconGreaterOrEqual);
     }
 }
 
@@ -82376,7 +82410,7 @@ extends OperatorWithValue
 
     constructor()
     {
-        super(NUMBER_TRIG, 'trig', 'trigonometric');
+        super(NUMBER_TRIG, 'trig', 'trigonometric', iconSine);
 
         this.canDisable       = true;
         this.alwaysLoadParams = true;
@@ -82436,9 +82470,9 @@ extends OperatorWithValue
 class   OpTrigBase
 extends OperatorWithValue
 {
-    constructor(type, id, name, symbol)
+    constructor(type, id, name, symbol, icon)
     {
-        super(type, id, name, symbol);
+        super(type, id, name, symbol, icon);
 
         this.canDisable       = true;
         this.alwaysLoadParams = true;
@@ -82486,7 +82520,7 @@ extends OpTrigBase
 {
     constructor()
     {
-        super(NUMBER_SIN, 'sin', 'sin');
+        super(NUMBER_SIN, 'sin', 'sin', iconSine);
     }
 }
 
@@ -82496,7 +82530,7 @@ extends OpTrigBase
 {
     constructor()
     {
-        super(NUMBER_COS, 'cos', 'cos');
+        super(NUMBER_COS, 'cos', 'cos', iconCosine);
     }
 }
 
@@ -82506,7 +82540,7 @@ extends OpTrigBase
 {
     constructor()
     {
-        super(NUMBER_TAN, 'tan', 'tan');
+        super(NUMBER_TAN, 'tan', 'tan', iconTangent);
     }
 }
 
@@ -82520,7 +82554,7 @@ extends ResizableBase
 
     constructor()
     {
-        super(TEXT, 'text', 'text');
+        super(TEXT, 'text', 'text', '');
 
         this.alwaysSaveParams = true;
         this.alwaysLoadParams = true;
@@ -82640,7 +82674,7 @@ extends OperatorBase
 
     constructor()
     {
-        super(TEXT_LENGTH, 'length', 'length');
+        super(TEXT_LENGTH, 'length', 'length', iconTextLength);
 
 
         this.addInput(new Input([TEXT_VALUE]));
@@ -82699,7 +82733,7 @@ extends OperatorWithValue
 
     constructor()
     {
-        super(TEXT_TRIM, 'trim', 'trim');
+        super(TEXT_TRIM, 'trim', 'trim', iconTextTrim);
 
         this.canDisable = true;
         
@@ -82775,7 +82809,7 @@ extends OperatorWithValue
 
     constructor()
     {
-        super(TEXT_SUBSTRING, 'substring', 'substring');
+        super(TEXT_SUBSTRING, 'substring', 'substring', iconTextSubstring);
 
         this.canDisable = true;
         
@@ -82872,7 +82906,7 @@ extends OperatorWithValue
 
     constructor()
     {
-        super(TEXT_CHAR, 'charFromCode', 'char from code');
+        super(TEXT_CHAR, 'charFromCode', 'char from code', iconTextCharacter);
 
 
         this.addOutput(new Output([TEXT_VALUE], this.output_genRequest));
@@ -82940,7 +82974,7 @@ extends OperatorWithValue
 
     constructor()
     {
-        super(TEXT_REPLACE, 'replace', 'replace');
+        super(TEXT_REPLACE, 'replace', 'replace', iconTextReplace);
 
         this.canDisable       = true;
         
@@ -83013,7 +83047,7 @@ extends ResizableOperatorWithValue
 {
     constructor()
     {
-        super(TEXT_JOIN, 'join', 'join');
+        super(TEXT_JOIN, 'join', 'join', iconTextJoin);
 
         this.variableInputs   = true;
         this.alwaysLoadParams = true;
@@ -83119,7 +83153,7 @@ extends OperatorBase
 
     constructor()
     {
-        super(TEXT_CSV, 'csv', 'csv');
+        super(TEXT_CSV, 'csv', 'csv', iconTextCSV);
 
 
         this.addInput(new Input([TEXT_VALUE]));
@@ -83184,7 +83218,7 @@ extends OperatorWithValue
 
     constructor()
     {
-        super(TEXT_FETCH, 'fetch', 'fetch', defNodeWidth, true);
+        super(TEXT_FETCH, 'fetch', 'fetch', iconTextFetch, defNodeWidth, true);
 
         this.canDisable       = true;
 
@@ -83268,9 +83302,9 @@ extends Operator
     
 
 
-    constructor(type, id, name, progressBar = false, defWidth = defNodeWidth)
+    constructor(type, id, name, icon, progressBar = false, defWidth = defNodeWidth)
     {
-        super(type, id, name, defWidth, progressBar);
+        super(type, id, name, icon, defWidth, progressBar);
 
         this.showActiveArrow = true;
         
@@ -83486,7 +83520,7 @@ extends OpColorBase
 
     constructor(options = {})
     {
-        super(COLOR, 'color', 'color');
+        super(COLOR, 'color', 'color', iconColor);
 
         this.canDisable = true;
 
@@ -85121,7 +85155,7 @@ extends OpColorBase
 
     constructor()
     {
-        super(VALID_COLOR, 'valid', 'valid', true);
+        super(VALID_COLOR, 'valid', 'valid', iconValidColor, true);
 
         this.canDisable = true;
         this.slow       = true;
@@ -85297,7 +85331,7 @@ extends OpColorBase
 
     constructor()
     {
-        super(CORRECT_COLOR, 'corrected', 'corrected', true);
+        super(CORRECT_COLOR, 'corrected', 'corrected', iconCorrectColor, true);
 
         this.slow         = true;
         this.canDisable   = true;
@@ -85628,7 +85662,7 @@ extends OpColorBase
 
     constructor()
     {
-        super(COLOR_CONTRAST, 'contrast', 'contrast');
+        super(COLOR_CONTRAST, 'contrast', 'contrast', '');
 
 
         this.addInput(new Input(COLOR_TYPES));
@@ -85938,7 +85972,7 @@ extends OpColorBase
 
     constructor()
     {
-        super(COLORBLIND, 'colorblind', 'colorblind');
+        super(COLORBLIND, 'colorblind', 'colorblind', '');
 
         this.canDisable = true;
         
@@ -86181,7 +86215,7 @@ extends OpColorBase
 
     constructor()
     {
-        super(COLOR_INTERPOLATE, 'inter', 'interpolate');
+        super(COLOR_INTERPOLATE, 'inter', 'interpolate', iconColorInterpolate);
 
         
         this.addInput(new Input(COLOR_TYPES));
@@ -86282,7 +86316,7 @@ extends OpColorBase
 
     constructor()
     {
-        super(COLOR_BLEND, 'blend', 'blend');
+        super(COLOR_BLEND, 'blend', 'blend', iconColorBlend);
 
         
         this.addInput(new Input(COLOR_TYPES));
@@ -86386,7 +86420,7 @@ extends OperatorBase
 
     constructor(options = {})
     {
-        super(COLOR_STYLE, 'style', 'style');
+        super(COLOR_STYLE, 'style', 'style', '');
 
         this.inert = true;
 
@@ -86682,7 +86716,7 @@ extends OpColorBase
 
     constructor()
     {
-        super(FILL, 'fill', 'fill');
+        super(FILL, 'fill', 'fill', iconFill);
 
         this.canDisable = true;
         
@@ -86989,7 +87023,7 @@ extends OpColorBase
     
     constructor()
     {
-        super(COLOR_STOP, 'colorStop', 'color stop');
+        super(COLOR_STOP, 'colorStop', 'color stop', iconColorStop);
 
         this.canDisable = true;
         
@@ -87250,7 +87284,7 @@ extends OpColorBase
 
     constructor()
     {
-        super(GRADIENT, 'grad', 'gradient');
+        super(GRADIENT, 'grad', 'gradient', iconGradient);
 
         this.canDisable     = true;
         this.variableInputs = true;
@@ -87373,7 +87407,7 @@ extends OpColorBase
     
     constructor()
     {
-        super(STROKE, 'stroke', 'stroke');
+        super(STROKE, 'stroke', 'stroke', iconStroke);
 
         this.canDisable = true;
         
@@ -87636,7 +87670,7 @@ extends OperatorBase
     
     constructor()
     {
-        super(DROP_SHADOW, 'dropShadow', 'drop shadow');
+        super(DROP_SHADOW, 'dropShadow', 'drop shadow', iconDropShadow);
 
         this.canDisable = true;
         
@@ -87767,7 +87801,7 @@ extends OperatorBase
     
     constructor()
     {
-        super(INNER_SHADOW, 'innerShadow', 'inner shadow');
+        super(INNER_SHADOW, 'innerShadow', 'inner shadow', iconInnerShadow);
 
         this.canDisable = true;
         
@@ -87889,7 +87923,7 @@ extends OperatorBase
     
     constructor()
     {
-        super(LAYER_BLUR, 'layerBlur', 'layer blur');
+        super(LAYER_BLUR, 'layerBlur', 'layer blur', iconLayerBlur);
 
         this.canDisable = true;
         
@@ -87990,7 +88024,7 @@ extends OperatorBase
     
     constructor()
     {
-        super(BACK_BLUR, 'backBlur', 'back blur');
+        super(BACK_BLUR, 'backBlur', 'back blur', iconBackBlur);
 
         this.canDisable = true;
         
@@ -88087,7 +88121,7 @@ extends OperatorBase
 {
     constructor()
     {
-        super(LAYER_MASK, 'mask', 'mask');
+        super(LAYER_MASK, 'mask', 'mask', iconMask);
 
         this.canDisable = true;
         
@@ -88121,9 +88155,9 @@ extends OperatorBase
 class   OpShapeBase
 extends OperatorBase
 {
-    constructor(type, id, name, defWidth = defNodeWidth)
+    constructor(type, id, name, icon, defWidth = defNodeWidth)
     {
-        super(type, id, name, defWidth);
+        super(type, id, name, icon, defWidth);
     }
 
 
@@ -88210,9 +88244,9 @@ extends OpShapeBase
     paramProperties;
 
 
-    constructor(type, id, name, defWidth = defNodeWidth)
+    constructor(type, id, name, icon, defWidth = defNodeWidth)
     {
-        super(type, id, name, defWidth);
+        super(type, id, name, icon, defWidth);
     }
 
 
@@ -88244,7 +88278,7 @@ extends OpShape
     
     constructor()
     {
-        super(RECTANGLE, 'rect', 'rectangle');
+        super(RECTANGLE, 'rect', 'rectangle', iconRectangle);
 
         this.canDisable = true;
         
@@ -88298,7 +88332,7 @@ extends OpShape
     
     constructor()
     {
-        super(LINE, 'line', 'line');
+        super(LINE, 'line', 'line', iconLine);
 
         this.canDisable = true;
 
@@ -88335,7 +88369,7 @@ extends OpShape
     
     constructor()
     {
-        super(ELLIPSE, 'ellipse', 'ellipse');
+        super(ELLIPSE, 'ellipse', 'ellipse', iconEllipse);
 
         this.canDisable = true;
         
@@ -88376,7 +88410,7 @@ extends OpShape
     
     constructor()
     {
-        super(POLYGON, 'poly', 'polygon');
+        super(POLYGON, 'poly', 'polygon', iconPolygon);
 
         this.canDisable = true;
 
@@ -88432,7 +88466,7 @@ extends OpShape
     
     constructor()
     {
-        super(STAR, 'star', 'star');
+        super(STAR, 'star', 'star', iconStar);
 
         this.canDisable = true;
 
@@ -88496,7 +88530,7 @@ extends OpShape
     
     constructor()
     {
-        super(TEXTSHAPE, 'text', 'text');
+        super(TEXTSHAPE, 'text', 'text', iconTextShape);
 
         this.canDisable = true;
         
@@ -88565,7 +88599,7 @@ extends OpShapeBase
 
     constructor()
     {
-        super(POINT, 'point', 'point');
+        super(POINT, 'point', 'point', iconPoint);
 
         this.addInput (new Input ([POINT_VALUE], getNodeInputValuesForUndo, this.input_getBackInitValue));
         this.addOutput(new Output([POINT_VALUE], this.output_genRequest, getNodeOutputValuesForUndo, this.output_backInit));
@@ -88690,7 +88724,7 @@ extends OpShape
     
     constructor()
     {
-        super(VECTOR_PATH, 'path', 'path');
+        super(VECTOR_PATH, 'path', 'path', iconVectorPath);
 
         this.canDisable = true;
 
@@ -88725,7 +88759,7 @@ extends OpShapeBase
 {
     constructor()
     {
-        super(SHAPE_GROUP, 'group', 'group');
+        super(SHAPE_GROUP, 'group', 'group', iconShapeGroup);
 
         this.variableInputs = true;
         this.canDisable     = true;
@@ -88799,7 +88833,7 @@ extends OpShape
 
     constructor()
     {
-        super(FRAME, 'frame', 'frame');
+        super(FRAME, 'frame', 'frame', iconFrame);
 
         this.canDisable     = true;
         this.variableInputs = true;
@@ -88876,7 +88910,7 @@ extends OperatorBase
 
     constructor()
     {
-        super(MOVE, 'move', 'move');
+        super(MOVE, 'move', 'move', iconMove);
 
         this.canDisable = true;
 
@@ -88941,7 +88975,7 @@ extends OperatorBase
 
     constructor()
     {
-        super(ROTATE, 'rotate', 'rotate');
+        super(ROTATE, 'rotate', 'rotate', iconRotate);
 
         this.canDisable = true;
 
@@ -89062,7 +89096,7 @@ extends OperatorBase
 
     constructor()
     {
-        super(SCALE, 'scale', 'scale');
+        super(SCALE, 'scale', 'scale', iconScale);
 
         this.canDisable = true;
 
@@ -89188,7 +89222,7 @@ extends OperatorBase
 
     constructor()
     {
-        super(SKEW, 'skew', 'skew');
+        super(SKEW, 'skew', 'skew', iconSkew);
 
         this.canDisable = true;
 
@@ -89340,7 +89374,7 @@ extends OpShapeBase
     
     constructor()
     {
-        super(BOOLEAN, 'boolean', 'boolean');
+        super(BOOLEAN, 'boolean', 'boolean', iconBoolUnion);
 
         this.canDisable = true;
 
@@ -89440,7 +89474,7 @@ extends OpShapeBase
 {
     constructor()
     {
-        super(RENDER, 'render', 'render');
+        super(RENDER, 'render', 'render', iconRender);
 
         this.variableInputs = true;
         this.canDisable     = true;
@@ -89504,7 +89538,7 @@ extends OperatorBase
 {
     constructor()
     {
-        super(GROUP_NODE, 'group', 'group');
+        super(GROUP_NODE, 'group', 'group', iconGroup);
 
 
         this.saveParams = false;
@@ -89659,7 +89693,7 @@ extends OperatorBase
 
     constructor()
     {
-        super(GROUP_PARAM, 'param', 'parameter');
+        super(GROUP_PARAM, 'param', 'parameter', '');
 
         this.alwaysLoadParams = true;
 

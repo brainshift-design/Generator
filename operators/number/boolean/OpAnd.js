@@ -3,6 +3,6 @@ extends OpBooleanBase
 {
     constructor()
     {
-        super(NUMBER_AND, 'and', 'and');
+        super(NUMBER_AND, 'and', 'and', iconAnd);
     }
 }

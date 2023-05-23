@@ -3,7 +3,7 @@ extends OperatorBase
 {
     constructor()
     {
-        super(COPY, 'copy', 'copy');
+        super(COPY, 'copy', 'copy', iconCopy);
 
         this.canDisable = true;
 

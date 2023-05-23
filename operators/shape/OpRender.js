@@ -3,7 +3,7 @@ extends OpShapeBase
 {
     constructor()
     {
-        super(RENDER, 'render', 'render');
+        super(RENDER, 'render', 'render', iconRender);
 
         this.variableInputs = true;
         this.canDisable     = true;

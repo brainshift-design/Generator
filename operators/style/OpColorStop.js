@@ -11,7 +11,7 @@ extends OpColorBase
     
     constructor()
     {
-        super(COLOR_STOP, 'colorStop', 'color stop');
+        super(COLOR_STOP, 'colorStop', 'color stop', iconColorStop);
 
         this.canDisable = true;
         

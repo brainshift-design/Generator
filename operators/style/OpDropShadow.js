@@ -13,7 +13,7 @@ extends OperatorBase
     
     constructor()
     {
-        super(DROP_SHADOW, 'dropShadow', 'drop shadow');
+        super(DROP_SHADOW, 'dropShadow', 'drop shadow', iconDropShadow);
 
         this.canDisable = true;
         

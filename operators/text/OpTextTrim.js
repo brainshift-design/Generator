@@ -8,7 +8,7 @@ extends OperatorWithValue
 
     constructor()
     {
-        super(TEXT_TRIM, 'trim', 'trim');
+        super(TEXT_TRIM, 'trim', 'trim', iconTextTrim);
 
         this.canDisable = true;
         

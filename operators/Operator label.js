@@ -1,16 +1,23 @@
 Operator.prototype.createLabel = function()
 {
-    this.labelWrapper   = createDiv('nodeLabelWrapper');
+    this.labelWrapper      = createDiv('nodeLabelWrapper');
   
-    this.label          = createDiv('nodeLabel');
-    this.label.node     = this;
+    this.label             = createDiv('nodeLabel');
+    this.label.node        = this;
     
-    this.labelText      = createDiv('nodeLabelText');
-    this.labelText.node = this;
+    this.divIcon           = createDiv('nodeIcon');
+    this.divIcon.innerHTML = this.icon;
+
+    this.labelText         = createDiv('nodeLabelText');
+    this.labelText.node    = this;
     
+    this.label       .appendChild(this.divIcon);
     this.label       .appendChild(this.labelText);
+
     this.labelWrapper.appendChild(this.label);
     this.header      .appendChild(this.labelWrapper);
+
+    
 
 
     this.labelWrapper.addEventListener('pointerdown', e =>

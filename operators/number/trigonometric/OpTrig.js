@@ -7,7 +7,7 @@ extends OperatorWithValue
 
     constructor()
     {
-        super(NUMBER_TRIG, 'trig', 'trigonometric');
+        super(NUMBER_TRIG, 'trig', 'trigonometric', iconSine);
 
         this.canDisable       = true;
         this.alwaysLoadParams = true;
