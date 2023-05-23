@@ -7,6 +7,7 @@ const settings =
     minZoomForParams:              0.35,
     showPages:                     false,
     showAllColorSpaces:            false,
+    showNodeIcons:                 true,
     showBoolValues:                true,
     showOperationResults:          false,
     showClearUndoWarning:          true,
@@ -55,6 +56,7 @@ function updateSetting(settingName, value)
         case 'minZoomForParams':              settings.minZoomForParams              = value;  break;
         case 'showPages':                     settings.showPages                     = value;  break;
         case 'showAllColorSpaces':            settings.showAllColorSpaces            = value;  break;
+        case 'showNodeIcons':                 settings.showNodeIcons                 = value;  break;
         case 'showBoolValues':                settings.showBoolValues                = value;  break;
         case 'showOperationResults':          settings.showOperationResults          = value;  break;
         case 'showClearUndoWarning':          settings.showClearUndoWarning          = value;  break;
@@ -102,6 +104,7 @@ function updateSettingAndMenu(settingName, valid, value, save = true)
         case 'enableZoomedOutParams':         updateSettingAndMenu_(valid, settingName, value, menuItemEnableZoomedOutParams        ); break;
         case 'showPages':                     updateSettingAndMenu_(valid, settingName, value, menuItemShowPages                    ); break;
         case 'showAllColorSpaces':            updateSettingAndMenu_(valid, settingName, value, menuItemShowAllColorSpaces           ); break;
+        case 'showNodeIcons':                 updateSettingAndMenu_(valid, settingName, value, menuItemShowNodeIcons                ); break;
         case 'showBoolValues':                updateSettingAndMenu_(valid, settingName, value, menuItemShowBoolValues               ); break;
         case 'showOperationResults':          updateSettingAndMenu_(valid, settingName, value, menuItemShowOperationResults         ); break;
         case 'showClearUndoWarning':          updateSettingAndMenu_(valid, settingName, value, menuItemShowClearUndoWarning         ); break;
@@ -174,6 +177,7 @@ function updateSettingsMenus()
     menuItemEnableZoomedOutParams        .setChecked(settings.enableZoomedOutParams        );
     menuItemShowPages                    .setChecked(settings.showPages                    );
     menuItemShowAllColorSpaces           .setChecked(settings.showAllColorSpaces           );
+    menuItemShowNodeIcons                .setChecked(settings.showNodeIcons                );
     menuItemShowBoolValues               .setChecked(settings.showBoolValues               );
     menuItemShowOperationResults         .setChecked(settings.showOperationResults         );
     menuItemShowClearUndoWarning         .setChecked(settings.showClearUndoWarning         );
@@ -227,6 +231,13 @@ function updateMenuItemShowAllColorSpaces()
     graph.nodes
         .filter(n => COLOR_TYPES.includes(n.type))
         .forEach(n => n.updateNode());
+}
+
+
+
+function updateMenuItemShowNodeIcons()
+{
+    graph.nodes.forEach(n => n.updateNode());
 }
 
 
@@ -332,6 +343,7 @@ function loadLocalSettings()
         
     uiGetLocalData('enableZoomedOutParams'        );
     uiGetLocalData('minZoomForParams'             );
+    uiGetLocalData('showNodeIcons'                );
     uiGetLocalData('showBoolValues'               );
     uiGetLocalData('showPages'                    );
     uiGetLocalData('showOperationResults'         );

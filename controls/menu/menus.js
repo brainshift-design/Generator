@@ -85,6 +85,7 @@ var menuItemMinZoomForParams;
 var menuItemShowPages;
 var menuPrefSep1;
 var menuItemShowAllColorSpaces;
+var menuItemShowNodeIcons;
 var menuItemShowBoolValues;
 var menuItemShowOperationResults;
 var menuItemShowClearUndoWarning;
@@ -227,6 +228,7 @@ function initGeneratorMenus()
         menuPrefSep1                 = new MenuItem('',                              {separator: true}),    
         menuItemShowAllColorSpaces   = new MenuItem('Show all color spaces',         {checkCallback: () => settings.showAllColorSpaces,    callback: () => { updateSettingAndMenu('showAllColorSpaces',   true, !settings.showAllColorSpaces);    updateMenuItemShowAllColorSpaces();   }}),
         menuItemShowOperationResults = new MenuItem('Show operation results',        {checkCallback: () => settings.showOperationResults,  callback: () => { updateSettingAndMenu('showOperationResults', true, !settings.showOperationResults);  updateMenuItemShowOperationResults(); }}),
+        menuItemShowNodeIcons        = new MenuItem('Show node icons',               {checkCallback: () => settings.showNodeIcons,         callback: () => { updateSettingAndMenu('showNodeIcons',        true, !settings.showNodeIcons);         updateMenuItemShowNodeIcons();        }}),
         menuItemShowBoolValues       = new MenuItem('Show boolean values as   ✓ ✗', {checkCallback: () => settings.showBoolValues,        callback: () => { updateSettingAndMenu('showBoolValues',       true, !settings.showBoolValues);        updateMenuItemShowBoolValues();       }}),
                                        new MenuItem('',                              {separator: true}),    
         menuItemShowTooltips         = new MenuItem('Show tooltips',                 {childMenu: menuShowTooltips}),

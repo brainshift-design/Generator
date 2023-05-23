@@ -228,7 +228,8 @@ Operator.prototype.updateHeaderLabel = function()
 
     this.divIcon.innerHTML = this.icon.replaceAll('white', rgba2style(colors.text));
     this.divIcon.style.display = 
-        this.icon != '' 
+           this.icon != '' 
+        && settings.showNodeIcons
         ? 'inline' 
         : 'none';
 
