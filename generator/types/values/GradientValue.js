@@ -3,34 +3,34 @@ extends GValue
 {
     stops;
     gradType;
-    x1;
-    y1;
-    x2;
-    y2;
-    aspect;
+    x;
+    y;
+    size;
     angle;
+    aspect;
+    skew;
 
 
 
     constructor(stops    = new ListValue(),
                 gradType = new NumberValue(0),
-                x1       = new NumberValue(0),
-                y1       = new NumberValue(0),
-                x2       = new NumberValue(0),
-                y2       = new NumberValue(0),
+                x        = new NumberValue(0),
+                y        = new NumberValue(0),
+                size     = new NumberValue(0),
+                angle    = new NumberValue(0),
                 aspect   = new NumberValue(0),
-                angle    = new NumberValue(0))
+                skew     = new NumberValue(0))
     {
         super(GRADIENT_VALUE);
 
         this.stops    = stops   .copy();
         this.gradType = gradType.copy();
-        this.x1       = x1      .copy();
-        this.y1       = y1      .copy();
-        this.x2       = x2      .copy();
-        this.y2       = y2      .copy();
-        this.aspect   = aspect  .copy();
+        this.x        = x       .copy();
+        this.y        = y       .copy();
+        this.size     = size    .copy();
         this.angle    = angle   .copy();
+        this.aspect   = aspect  .copy();
+        this.skew     = skew    .copy();
 
         this.valid = true;
     }
@@ -42,12 +42,12 @@ extends GValue
         const copy = new GradientValue(
             this.stops,
             this.gradType,
-            this.x1,
-            this.y1,
-            this.x2,
-            this.y2,
+            this.x,
+            this.y,
+            this.size,
+            this.angle,
             this.aspect,
-            this.angle);
+            this.skew);
 
         copy.copyBase(this);
 
@@ -60,12 +60,12 @@ extends GValue
     {
         return this.stops   .isValid()
             && this.gradType.isValid()
-            && this.x1      .isValid()
-            && this.y1      .isValid()
-            && this.x2      .isValid()
-            && this.y2      .isValid()
+            && this.x       .isValid()
+            && this.y       .isValid()
+            && this.size    .isValid()
+            && this.angle   .isValid()
             && this.aspect  .isValid()
-            && this.angle   .isValid();
+            && this.skew    .isValid();
     }
 
 
@@ -75,12 +75,12 @@ extends GValue
         return grad
             && this.stops   .equals(grad.stops   )
             && this.gradType.equals(grad.gradType)
-            && this.x1      .equals(grad.x1      )
-            && this.y1      .equals(grad.y1      )
-            && this.x2      .equals(grad.x2      )
-            && this.y2      .equals(grad.y2      )
+            && this.x       .equals(grad.x       )
+            && this.y       .equals(grad.y       )
+            && this.size    .equals(grad.size    )
+            && this.angle   .equals(grad.angle   )
             && this.aspect  .equals(grad.aspect  )
-            && this.angle   .equals(grad.angle   );
+            && this.skew    .equals(grad.skew    );
     }
 
 
@@ -103,12 +103,12 @@ extends GValue
     {
         return      this.stops   .toString()
             + ' ' + this.gradType.toString()
-            + ' ' + this.x1      .toString()
-            + ' ' + this.y1      .toString()
-            + ' ' + this.x2      .toString()
-            + ' ' + this.y2      .toString()
+            + ' ' + this.x       .toString()
+            + ' ' + this.y       .toString()
+            + ' ' + this.size    .toString()
+            + ' ' + this.angle   .toString()
             + ' ' + this.aspect  .toString()
-            + ' ' + this.angle   .toString();
+            + ' ' + this.skew    .toString();
     }
 
 
@@ -117,12 +117,12 @@ extends GValue
     {
         return      this.stops   .toDisplayString()
             + ' ' + this.gradType.toDisplayString()
-            + ' ' + this.x1      .toDisplayString()
-            + ' ' + this.y1      .toDisplayString()
-            + ' ' + this.x2      .toDisplayString()
-            + ' ' + this.y2      .toDisplayString()
+            + ' ' + this.x       .toDisplayString()
+            + ' ' + this.y       .toDisplayString()
+            + ' ' + this.size    .toDisplayString()
+            + ' ' + this.angle   .toDisplayString()
             + ' ' + this.aspect  .toDisplayString()
-            + ' ' + this.angle   .toDisplayString();
+            + ' ' + this.skew    .toDisplayString();
     }
 
 
@@ -174,15 +174,15 @@ function parseGradientValue(str, i = -1)
 
     const stops    = parseListValue  (str, i); i += stops   [1];
     const gradType = parseNumberValue(str[i]); i += gradType[1];
-    const x1       = parseNumberValue(str[i]); i += x1      [1];
-    const y1       = parseNumberValue(str[i]); i += y1      [1];
-    const x2       = parseNumberValue(str[i]); i += x2      [1];
-    const y2       = parseNumberValue(str[i]); i += y2      [1];
-    const aspect   = parseNumberValue(str[i]); i += aspect  [1];
+    const x        = parseNumberValue(str[i]); i += x       [1];
+    const y        = parseNumberValue(str[i]); i += y       [1];
+    const size     = parseNumberValue(str[i]); i += size    [1];
     const angle    = parseNumberValue(str[i]); i += angle   [1];
+    const aspect   = parseNumberValue(str[i]); i += aspect  [1];
+    const skew     = parseNumberValue(str[i]); i += skew    [1];
 
 
     return [
-        new GradientValue(stops[0], gradType[0], x1[0], y1[0], x2[0], y2[0], aspect[0], angle[0]),
+        new GradientValue(stops[0], gradType[0], x[0], y[0], size[0], angle[0], aspect[0], skew[0]),
         i - iStart ];
 }

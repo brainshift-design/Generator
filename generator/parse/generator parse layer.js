@@ -138,12 +138,12 @@ function genParseGradient(parse)
 
 
     grad.gradType = genParse(parse); 
-    grad.x1       = genParse(parse); 
-    grad.y1       = genParse(parse); 
-    grad.x2       = genParse(parse); 
-    grad.y2       = genParse(parse); 
-    grad.aspect   = genParse(parse); 
+    grad.x        = genParse(parse); 
+    grad.y        = genParse(parse); 
+    grad.size     = genParse(parse); 
     grad.angle    = genParse(parse); 
+    grad.aspect   = genParse(parse); 
+    grad.skew     = genParse(parse); 
 
     
     parse.nTab--;

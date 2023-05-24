@@ -1113,7 +1113,7 @@ function determinant(m)
 
 
 
-function inverse(m)
+function inversem3(m)
 {
     return divm3s(adjugate(m), determinant(m));
 }
@@ -6773,34 +6773,34 @@ extends GValue
 {
     stops;
     gradType;
-    x1;
-    y1;
-    x2;
-    y2;
-    aspect;
+    x;
+    y;
+    size;
     angle;
+    aspect;
+    skew;
 
 
 
     constructor(stops    = new ListValue(),
                 gradType = new NumberValue(0),
-                x1       = new NumberValue(0),
-                y1       = new NumberValue(0),
-                x2       = new NumberValue(0),
-                y2       = new NumberValue(0),
+                x        = new NumberValue(0),
+                y        = new NumberValue(0),
+                size     = new NumberValue(0),
+                angle    = new NumberValue(0),
                 aspect   = new NumberValue(0),
-                angle    = new NumberValue(0))
+                skew     = new NumberValue(0))
     {
         super(GRADIENT_VALUE);
 
         this.stops    = stops   .copy();
         this.gradType = gradType.copy();
-        this.x1       = x1      .copy();
-        this.y1       = y1      .copy();
-        this.x2       = x2      .copy();
-        this.y2       = y2      .copy();
-        this.aspect   = aspect  .copy();
+        this.x        = x       .copy();
+        this.y        = y       .copy();
+        this.size     = size    .copy();
         this.angle    = angle   .copy();
+        this.aspect   = aspect  .copy();
+        this.skew     = skew    .copy();
 
         this.valid = true;
     }
@@ -6812,12 +6812,12 @@ extends GValue
         const copy = new GradientValue(
             this.stops,
             this.gradType,
-            this.x1,
-            this.y1,
-            this.x2,
-            this.y2,
+            this.x,
+            this.y,
+            this.size,
+            this.angle,
             this.aspect,
-            this.angle);
+            this.skew);
 
         copy.copyBase(this);
 
@@ -6830,12 +6830,12 @@ extends GValue
     {
         return this.stops   .isValid()
             && this.gradType.isValid()
-            && this.x1      .isValid()
-            && this.y1      .isValid()
-            && this.x2      .isValid()
-            && this.y2      .isValid()
+            && this.x       .isValid()
+            && this.y       .isValid()
+            && this.size    .isValid()
+            && this.angle   .isValid()
             && this.aspect  .isValid()
-            && this.angle   .isValid();
+            && this.skew    .isValid();
     }
 
 
@@ -6845,12 +6845,12 @@ extends GValue
         return grad
             && this.stops   .equals(grad.stops   )
             && this.gradType.equals(grad.gradType)
-            && this.x1      .equals(grad.x1      )
-            && this.y1      .equals(grad.y1      )
-            && this.x2      .equals(grad.x2      )
-            && this.y2      .equals(grad.y2      )
+            && this.x       .equals(grad.x       )
+            && this.y       .equals(grad.y       )
+            && this.size    .equals(grad.size    )
+            && this.angle   .equals(grad.angle   )
             && this.aspect  .equals(grad.aspect  )
-            && this.angle   .equals(grad.angle   );
+            && this.skew    .equals(grad.skew    );
     }
 
 
@@ -6873,12 +6873,12 @@ extends GValue
     {
         return      this.stops   .toString()
             + ' ' + this.gradType.toString()
-            + ' ' + this.x1      .toString()
-            + ' ' + this.y1      .toString()
-            + ' ' + this.x2      .toString()
-            + ' ' + this.y2      .toString()
+            + ' ' + this.x       .toString()
+            + ' ' + this.y       .toString()
+            + ' ' + this.size    .toString()
+            + ' ' + this.angle   .toString()
             + ' ' + this.aspect  .toString()
-            + ' ' + this.angle   .toString();
+            + ' ' + this.skew    .toString();
     }
 
 
@@ -6887,12 +6887,12 @@ extends GValue
     {
         return      this.stops   .toDisplayString()
             + ' ' + this.gradType.toDisplayString()
-            + ' ' + this.x1      .toDisplayString()
-            + ' ' + this.y1      .toDisplayString()
-            + ' ' + this.x2      .toDisplayString()
-            + ' ' + this.y2      .toDisplayString()
+            + ' ' + this.x       .toDisplayString()
+            + ' ' + this.y       .toDisplayString()
+            + ' ' + this.size    .toDisplayString()
+            + ' ' + this.angle   .toDisplayString()
             + ' ' + this.aspect  .toDisplayString()
-            + ' ' + this.angle   .toDisplayString();
+            + ' ' + this.skew    .toDisplayString();
     }
 
 
@@ -6944,16 +6944,16 @@ function parseGradientValue(str, i = -1)
 
     const stops    = parseListValue  (str, i); i += stops   [1];
     const gradType = parseNumberValue(str[i]); i += gradType[1];
-    const x1       = parseNumberValue(str[i]); i += x1      [1];
-    const y1       = parseNumberValue(str[i]); i += y1      [1];
-    const x2       = parseNumberValue(str[i]); i += x2      [1];
-    const y2       = parseNumberValue(str[i]); i += y2      [1];
-    const aspect   = parseNumberValue(str[i]); i += aspect  [1];
+    const x        = parseNumberValue(str[i]); i += x       [1];
+    const y        = parseNumberValue(str[i]); i += y       [1];
+    const size     = parseNumberValue(str[i]); i += size    [1];
     const angle    = parseNumberValue(str[i]); i += angle   [1];
+    const aspect   = parseNumberValue(str[i]); i += aspect  [1];
+    const skew     = parseNumberValue(str[i]); i += skew    [1];
 
 
     return [
-        new GradientValue(stops[0], gradType[0], x1[0], y1[0], x2[0], y2[0], aspect[0], angle[0]),
+        new GradientValue(stops[0], gradType[0], x[0], y[0], size[0], angle[0], aspect[0], skew[0]),
         i - iStart ];
 }
 
@@ -17753,12 +17753,12 @@ extends GOperator
     inputs = [];
 
     gradType = null;
-    x1       = null;
-    y1       = null;
-    x2       = null;
-    y2       = null;
-    aspect   = null;
+    x        = null;
+    y        = null;
+    size     = null;
     angle    = null;
+    aspect   = null;
+    skew     = null;
 
 
 
@@ -17777,13 +17777,13 @@ extends GOperator
 
         copy.inputs = this.inputs.map(i => i.copy());
 
-        if (this.gradType) copy.gradType = this.x1    .copy();
-        if (this.x1      ) copy.x1       = this.x1    .copy();
-        if (this.y1      ) copy.y1       = this.y1    .copy();
-        if (this.x2      ) copy.x2       = this.x2    .copy();
-        if (this.y2      ) copy.y2       = this.y2    .copy();
-        if (this.aspect  ) copy.aspect   = this.aspect.copy();
+        if (this.gradType) copy.gradType = this.x     .copy();
+        if (this.x       ) copy.x        = this.x     .copy();
+        if (this.y       ) copy.y        = this.y     .copy();
+        if (this.size    ) copy.size     = this.size  .copy();
         if (this.angle   ) copy.angle    = this.angle .copy();
+        if (this.aspect  ) copy.aspect   = this.aspect.copy();
+        if (this.skew    ) copy.skew     = this.skew  .copy();
 
         return copy;
     }
@@ -17796,12 +17796,12 @@ extends GOperator
             return this;
 
         const gradType = this.gradType ? (await this.gradType.eval(parse)).toValue() : null;
-        const x1       = this.x1       ? (await this.x1      .eval(parse)).toValue() : null;
-        const y1       = this.y1       ? (await this.y1      .eval(parse)).toValue() : null;
-        const x2       = this.x2       ? (await this.x2      .eval(parse)).toValue() : null;
-        const y2       = this.y2       ? (await this.y2      .eval(parse)).toValue() : null;
-        const aspect   = this.aspect   ? (await this.aspect  .eval(parse)).toValue() : null;
+        const x        = this.x        ? (await this.x       .eval(parse)).toValue() : null;
+        const y        = this.y        ? (await this.y       .eval(parse)).toValue() : null;
+        const size     = this.size     ? (await this.size    .eval(parse)).toValue() : null;
         const angle    = this.angle    ? (await this.angle   .eval(parse)).toValue() : null;
+        const aspect   = this.aspect   ? (await this.aspect  .eval(parse)).toValue() : null;
+        const skew     = this.skew     ? (await this.skew    .eval(parse)).toValue() : null;
 
 
         const stops = new ListValue();
@@ -17816,24 +17816,24 @@ extends GOperator
         this.value = new GradientValue(
             stops,
             gradType,
-            x1, 
-            y1, 
-            x2, 
-            y2, 
+            x, 
+            y, 
+            size, 
+            angle, 
             aspect,
-            angle);
+            skew);
 
             
         this.updateValues =
         [
             ['value',  this.value],
             ['type',   gradType  ],
-            ['x1',     x1        ],
-            ['y1',     y1        ],
-            ['x2',     x2        ],
-            ['y2',     y2        ],
+            ['x',      x         ],
+            ['y',      y         ],
+            ['size',   size      ],
+            ['angle',  angle     ],
             ['aspect', aspect    ],
-            ['angle',  angle     ]
+            ['skew',   skew      ]
         ];
         
 
@@ -17851,12 +17851,12 @@ extends GOperator
         this.inputs.forEach(i => i.pushValueUpdates(parse));
 
         if (this.gradType) this.gradType.pushValueUpdates(parse);
-        if (this.x1      ) this.x1      .pushValueUpdates(parse);
-        if (this.y1      ) this.y1      .pushValueUpdates(parse);
-        if (this.x2      ) this.x2      .pushValueUpdates(parse);
-        if (this.y2      ) this.y2      .pushValueUpdates(parse);
+        if (this.x      ) this.x      .pushValueUpdates(parse);
+        if (this.y      ) this.y      .pushValueUpdates(parse);
+        if (this.size      ) this.size      .pushValueUpdates(parse);
+        if (this.angle      ) this.angle      .pushValueUpdates(parse);
         if (this.aspect  ) this.aspect  .pushValueUpdates(parse);
-        if (this.angle   ) this.angle   .pushValueUpdates(parse);
+        if (this.skew   ) this.skew   .pushValueUpdates(parse);
     }    
     
     
@@ -17871,12 +17871,12 @@ extends GOperator
         return new GradientValue(
             stops,
             this.gradType ? this.gradType.toValue() : this.input.gradType.toValue(),
-            this.x1       ? this.x1      .toValue() : this.input.x1      .toValue(),
-            this.y1       ? this.y1      .toValue() : this.input.y1      .toValue(),
-            this.x2       ? this.x2      .toValue() : this.input.x2      .toValue(),
-            this.y2       ? this.y2      .toValue() : this.input.y2      .toValue(),
+            this.x       ? this.x      .toValue() : this.input.x1      .toValue(),
+            this.y       ? this.y      .toValue() : this.input.y1      .toValue(),
+            this.size       ? this.size      .toValue() : this.input.x2      .toValue(),
+            this.angle       ? this.angle      .toValue() : this.input.y2      .toValue(),
             this.aspect   ? this.aspect  .toValue() : this.input.aspect  .toValue(),
-            this.angle    ? this.angle   .toValue() : this.input.angle   .toValue());
+            this.skew    ? this.skew   .toValue() : this.input.angle   .toValue());
     }                 
 
 
@@ -17884,12 +17884,12 @@ extends GOperator
     isValid()
     {
         return this.gradType.isValid()
-            && this.x1      .isValid()
-            && this.y1      .isValid()
-            && this.x2      .isValid()
-            && this.y2      .isValid()
+            && this.x      .isValid()
+            && this.y      .isValid()
+            && this.size      .isValid()
+            && this.angle      .isValid()
             && this.aspect  .isValid()
-            && this.angle   .isValid();
+            && this.skew   .isValid();
     }
 
 
@@ -17901,12 +17901,12 @@ extends GOperator
         this.inputs.forEach(i => i.invalidate());
         
         if (this.gradType) this.gradType.invalidate();
-        if (this.x1      ) this.x1      .invalidate();
-        if (this.y1      ) this.y1      .invalidate();
-        if (this.x2      ) this.x2      .invalidate();
-        if (this.y2      ) this.y2      .invalidate();
+        if (this.x      ) this.x      .invalidate();
+        if (this.y      ) this.y      .invalidate();
+        if (this.size      ) this.size      .invalidate();
+        if (this.angle      ) this.angle      .invalidate();
         if (this.aspect  ) this.aspect  .invalidate();
-        if (this.angle   ) this.angle   .invalidate();
+        if (this.skew   ) this.skew   .invalidate();
     }
 }
 
@@ -18876,33 +18876,67 @@ extends GShapeBase
                     }
 
 
-                    const p0 = point(prop.x1.toNumber() / 100, prop.y1.toNumber() / 100);
-                    const p1 = point(prop.x2.toNumber() / 100, prop.y2.toNumber() / 100);
-
-                    const a  = angle(p0, p1) - Tau/4;
+                    const isLinear = prop.gradType.value == 0;
 
 
-                    let xform = clone(identity);
+                    let   x   = prop.x    .toNumber() / 100;
+                    let   y   = prop.y    .toNumber() / 100;
+                    const a   = prop.angle.toNumber()/360*Tau;
+                    let   s   = nozero(prop.size  .toNumber() / 100);
+                    let   asp = nozero(prop.aspect.toNumber() / 100);
+                    let   sk  = prop.skew .toNumber() / 100;
+
+
+                    if (isLinear)
+                    {
+                        //sk *= 2;
+                    }
+                    else
+                    {
+                        x  -= s * Math.cos(a);
+                        y  -= s * Math.sin(a);
+
+                        s  *= 2;
+                        //sk *= 4;
+
+                        asp /= 2;
+                    }
+
                     
-                    // xform = mulm3m3(xform,
-                    //     [[1, 0, p0.x],
-                    //      [0, 1, p0.y],
-                    //      [0, 0, 1   ]]);
+                    const p0 = point(x, y);
+                    const p1 = addv(p0, vector(a, s));
+                    
+                    const p2 = addv(
+                        addv(p0, vector(a + Tau/4, s * asp)),
+                        mulvs(unitv(subv(p1, p0)), distance(p0, p1) * sk));
 
-                    xform = mulm3m3(xform,
-                        [[p0.x, p0.y, p0.x],
-                         [p1.x, p1.y, p0.y],
-                         [0,    0,    1]]);
 
-                    // xform = mulm3m3(xform,
-                    //     [[ Math.cos(a), Math.sin(a), 0],
-                    //      [-Math.sin(a), Math.cos(a), 0],
-                    //      [ 0,           0,           1]]);
 
-                    // xform = mulm3m3(xform,
-                    //     [[1, 0, -p0.x],
-                    //      [0, 1, -p0.y],
-                    //      [0, 0,  1   ]]);
+                    // const v = crossv(
+                    //     addv(
+                    //         subv(p1, p0), 
+                    //         point(-sk, 0)));
+
+                    // const p2 = addv(
+                    //     p0, 
+                    //     mulvs(
+                    //         unitv(v), 
+                    //         -asp));//  Math.cos(angle_(v.x, v.y))));
+
+
+                    const identityHandles = 
+                        [[0,   1,   0],
+                         [0.5, 0.5, 1],
+                         [1,   1,   1]];
+
+
+                    let xform = [
+                        [p0.x, p1.x, p2.x],
+                        [p0.y, p1.y, p2.y],
+                        [1,    1,    1   ]];
+
+
+                    xform = mulm3m3(identityHandles, inversem3(xform));
 
 
                     gradient[1] = [
@@ -24722,12 +24756,12 @@ function genParseGradient(parse)
 
 
     grad.gradType = genParse(parse); 
-    grad.x1       = genParse(parse); 
-    grad.y1       = genParse(parse); 
-    grad.x2       = genParse(parse); 
-    grad.y2       = genParse(parse); 
-    grad.aspect   = genParse(parse); 
+    grad.x        = genParse(parse); 
+    grad.y        = genParse(parse); 
+    grad.size     = genParse(parse); 
     grad.angle    = genParse(parse); 
+    grad.aspect   = genParse(parse); 
+    grad.skew     = genParse(parse); 
 
     
     parse.nTab--;
@@ -28452,7 +28486,7 @@ function createColorSpace(R, G, B, Y, W, gamma, degamma, regamma, luminance)
         W:         W,
 
         lin2xyz:   rgbMatrix(R, G, B, W),
-        xyz2lin:   inverse(rgbMatrix(R, G, B, W)),
+        xyz2lin:   inversem3(rgbMatrix(R, G, B, W)),
 
         gamma:     gamma,
         
@@ -28474,7 +28508,7 @@ function rgbMatrix(R, G, B, W)
                 [ C0[1], C1[1], C2[1] ], 
                 [ C0[2], C1[2], C2[2] ] ];
 
-    const S = mulv3m3(W, inverse(M));
+    const S = mulv3m3(W, inversem3(M));
 
     return [ [ S[0]*C0[0], S[1]*C1[0], S[2]*C2[0] ],
              [ S[0]*C0[1], S[1]*C1[1], S[2]*C2[1] ],
@@ -29312,7 +29346,7 @@ const dataColor_NaN = Object.freeze([
 //              [-0.2263, 1.1653,  0.0457],
 //              [ 0,      0,       0.9182]];
 
-// const invHPE = inverse(HPE);
+// const invHPE = inversem3(HPE);
 
 
 // CIECAM02
@@ -29320,14 +29354,14 @@ const CAT = [[ 0.7328, 0.4296, -0.1624],
              [-0.7036, 1.6975,  0.0061],
              [ 0.0030, 0.0136,  0.9834]];
 
-const invCAT = inverse(CAT);
+const invCAT = inversem3(CAT);
 
 
 const M1 = [[ 0.8189330101, 0.3618667424, -0.1288597137 ],
             [ 0.0329845436, 0.9293118715,  0.0361456387 ],
             [ 0.0482003018, 0.2643662691,  0.6338517070 ]];
 
-const invM1 = inverse(M1);
+const invM1 = inversem3(M1);
 
 
 

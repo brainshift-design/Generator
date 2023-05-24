@@ -114,33 +114,67 @@ extends GShapeBase
                     }
 
 
-                    const p0 = point(prop.x1.toNumber() / 100, prop.y1.toNumber() / 100);
-                    const p1 = point(prop.x2.toNumber() / 100, prop.y2.toNumber() / 100);
-
-                    const a  = angle(p0, p1) - Tau/4;
+                    const isLinear = prop.gradType.value == 0;
 
 
-                    let xform = clone(identity);
+                    let   x   = prop.x    .toNumber() / 100;
+                    let   y   = prop.y    .toNumber() / 100;
+                    const a   = prop.angle.toNumber()/360*Tau;
+                    let   s   = nozero(prop.size  .toNumber() / 100);
+                    let   asp = nozero(prop.aspect.toNumber() / 100);
+                    let   sk  = prop.skew .toNumber() / 100;
+
+
+                    if (isLinear)
+                    {
+                        //sk *= 2;
+                    }
+                    else
+                    {
+                        x  -= s * Math.cos(a);
+                        y  -= s * Math.sin(a);
+
+                        s  *= 2;
+                        //sk *= 4;
+
+                        asp /= 2;
+                    }
+
                     
-                    // xform = mulm3m3(xform,
-                    //     [[1, 0, p0.x],
-                    //      [0, 1, p0.y],
-                    //      [0, 0, 1   ]]);
+                    const p0 = point(x, y);
+                    const p1 = addv(p0, vector(a, s));
+                    
+                    const p2 = addv(
+                        addv(p0, vector(a + Tau/4, s * asp)),
+                        mulvs(unitv(subv(p1, p0)), distance(p0, p1) * sk));
 
-                    xform = mulm3m3(xform,
-                        [[p0.x, p0.y, p0.x],
-                         [p1.x, p1.y, p0.y],
-                         [0,    0,    1]]);
 
-                    // xform = mulm3m3(xform,
-                    //     [[ Math.cos(a), Math.sin(a), 0],
-                    //      [-Math.sin(a), Math.cos(a), 0],
-                    //      [ 0,           0,           1]]);
 
-                    // xform = mulm3m3(xform,
-                    //     [[1, 0, -p0.x],
-                    //      [0, 1, -p0.y],
-                    //      [0, 0,  1   ]]);
+                    // const v = crossv(
+                    //     addv(
+                    //         subv(p1, p0), 
+                    //         point(-sk, 0)));
+
+                    // const p2 = addv(
+                    //     p0, 
+                    //     mulvs(
+                    //         unitv(v), 
+                    //         -asp));//  Math.cos(angle_(v.x, v.y))));
+
+
+                    const identityHandles = 
+                        [[0,   1,   0],
+                         [0.5, 0.5, 1],
+                         [1,   1,   1]];
+
+
+                    let xform = [
+                        [p0.x, p1.x, p2.x],
+                        [p0.y, p1.y, p2.y],
+                        [1,    1,    1   ]];
+
+
+                    xform = mulm3m3(identityHandles, inversem3(xform));
 
 
                     gradient[1] = [

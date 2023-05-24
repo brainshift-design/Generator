@@ -368,7 +368,7 @@ function determinant(m)
 
 
 
-function inverse(m)
+function inversem3(m)
 {
     return divm3s(adjugate(m), determinant(m));
 }

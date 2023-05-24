@@ -2916,6 +2916,9 @@ function getObjectFills(genObjFills)
             }
 
             case 'GRADIENT_LINEAR':
+            case 'GRADIENT_RADIAL':
+            case 'GRADIENT_ANGULAR':
+            case 'GRADIENT_DIAMOND':
             {
                 const xform = fill[1];
 

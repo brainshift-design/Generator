@@ -26,7 +26,7 @@ const dataColor_NaN = Object.freeze([
 //              [-0.2263, 1.1653,  0.0457],
 //              [ 0,      0,       0.9182]];
 
-// const invHPE = inverse(HPE);
+// const invHPE = inversem3(HPE);
 
 
 // CIECAM02
@@ -34,14 +34,14 @@ const CAT = [[ 0.7328, 0.4296, -0.1624],
              [-0.7036, 1.6975,  0.0061],
              [ 0.0030, 0.0136,  0.9834]];
 
-const invCAT = inverse(CAT);
+const invCAT = inversem3(CAT);
 
 
 const M1 = [[ 0.8189330101, 0.3618667424, -0.1288597137 ],
             [ 0.0329845436, 0.9293118715,  0.0361456387 ],
             [ 0.0482003018, 0.2643662691,  0.6338517070 ]];
 
-const invM1 = inverse(M1);
+const invM1 = inversem3(M1);
 
 
 

@@ -15,7 +15,7 @@ function createColorSpace(R, G, B, Y, W, gamma, degamma, regamma, luminance)
         W:         W,
 
         lin2xyz:   rgbMatrix(R, G, B, W),
-        xyz2lin:   inverse(rgbMatrix(R, G, B, W)),
+        xyz2lin:   inversem3(rgbMatrix(R, G, B, W)),
 
         gamma:     gamma,
         
@@ -37,7 +37,7 @@ function rgbMatrix(R, G, B, W)
                 [ C0[1], C1[1], C2[1] ], 
                 [ C0[2], C1[2], C2[2] ] ];
 
-    const S = mulv3m3(W, inverse(M));
+    const S = mulv3m3(W, inversem3(M));
 
     return [ [ S[0]*C0[0], S[1]*C1[0], S[2]*C2[0] ],
              [ S[0]*C0[1], S[1]*C1[1], S[2]*C2[1] ],
