@@ -41,7 +41,7 @@ extends Parameter
             this.name,
             ''));
 
-        this.controls[0].textbox.style.textAlign = 'center';
+        this.controls[0].textbox.style.textAlign  = 'center';
    
         this.div.appendChild(this.controls[0].div);
 

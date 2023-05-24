@@ -751,6 +751,7 @@ const STROKE_TYPES       = [STROKE_VALUE, STROKE];
   
 const COLOR_STOP_VALUE   = 'CSTOP#';
 const COLOR_STOP         = 'CSTOP';
+const COLOR_STOP_TYPES   = [COLOR_STOP_VALUE, COLOR_STOP];
   
 const GRADIENT_VALUE     = 'GRAD#';
 const GRADIENT           = 'GRAD';
@@ -2212,7 +2213,10 @@ function genEllipseIsValid(genEllipse)
         && genEllipse.y      != null && !isNaN(genEllipse.y     )
         && genEllipse.width  != null && !isNaN(genEllipse.width )
         && genEllipse.height != null && !isNaN(genEllipse.height)
-        && genEllipse.angle  != null && !isNaN(genEllipse.angle );
+        && genEllipse.angle  != null && !isNaN(genEllipse.angle )
+        && genEllipse.from   != null && !isNaN(genEllipse.from  )
+        && genEllipse.to     != null && !isNaN(genEllipse.to    )
+        && genEllipse.inner  != null && !isNaN(genEllipse.inner );
 }
 
 
@@ -2226,6 +2230,14 @@ function figCreateEllipse(genEllipse)
 
     if (!genEllipseIsValid(genEllipse))
         return figEllipse;
+
+
+    figEllipse.arcData =
+    {
+        startingAngle: genEllipse.from /360*(Math.PI*2),
+        endingAngle:   genEllipse.to   /360*(Math.PI*2),
+        innerRadius:   genEllipse.inner/100
+    };
 
 
     setObjectTransform(figEllipse, genEllipse);
@@ -2250,6 +2262,14 @@ function figUpdateEllipse(figEllipse, genEllipse)
 
 
     figEllipse.name = makeObjectName(genEllipse);
+
+
+    figEllipse.arcData =
+    {
+        startingAngle: genEllipse.from /360*(Math.PI*2),
+        endingAngle:   genEllipse.to   /360*(Math.PI*2),
+        innerRadius:   genEllipse.inner/100
+    };
 
 
     setObjectTransform(figEllipse, genEllipse);

@@ -6,6 +6,8 @@
 ../parameters/TextParam.js
 ../parameters/ColorParam.js
 ../parameters/FillParam.js
+../parameters/ColorStopParam.js
+../parameters/GradientParam.js
 ../parameters/StrokeParam.js
 ../parameters/ListParam.js
 ../parameters/RectangleParam.js

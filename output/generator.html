@@ -3867,6 +3867,7 @@ const STROKE_TYPES       = [STROKE_VALUE, STROKE];
   
 const COLOR_STOP_VALUE   = 'CSTOP#';
 const COLOR_STOP         = 'CSTOP';
+const COLOR_STOP_TYPES   = [COLOR_STOP_VALUE, COLOR_STOP];
   
 const GRADIENT_VALUE     = 'GRAD#';
 const GRADIENT           = 'GRAD';
@@ -4484,10 +4485,13 @@ extends FigmaShape
     width;
     height;
     angle;
+    from;
+    to;
+    inner;
 
     
 
-    constructor(nodeId, objectId, objectName, x, y, width, height, angle)
+    constructor(nodeId, objectId, objectName, x, y, width, height, angle, from, to, inner)
     {
         super(ELLIPSE, nodeId, objectId, objectName);
         
@@ -4496,6 +4500,9 @@ extends FigmaShape
         this.width  = width;
         this.height = height;
         this.angle  = angle;
+        this.from   = from;
+        this.to     = to;
+        this.inner  = inner;
     }
 
 
@@ -4510,7 +4517,10 @@ extends FigmaShape
             this.y,
             this.width,
             this.height,
-            this.angle);
+            this.angle,
+            this.from,
+            this.to,
+            this.inner);
 
         copy.copyBase(this);
 
@@ -8275,6 +8285,9 @@ extends ShapeValue
     width;
     height;
     angle;
+    from;
+    to;
+    inner;
 
 
 
@@ -8283,7 +8296,10 @@ extends ShapeValue
                 y      = new NumberValue(0), 
                 width  = new NumberValue(0), 
                 height = new NumberValue(0), 
-                angle  = new NumberValue(0))
+                angle  = new NumberValue(0),
+                from   = new NumberValue(0),
+                to     = new NumberValue(0),
+                inner  = new NumberValue(0))
     {
         super(ELLIPSE_VALUE, nodeId);
 
@@ -8292,6 +8308,9 @@ extends ShapeValue
         this.width  = width;
         this.height = height;
         this.angle  = angle;
+        this.from   = from;
+        this.to     = to;
+        this.inner  = inner;
     }
 
 
@@ -8304,7 +8323,10 @@ extends ShapeValue
             this.y     .copy(), 
             this.width .copy(), 
             this.height.copy(), 
-            this.angle .copy());
+            this.angle .copy(),
+            this.from  .copy(),
+            this.to    .copy(),
+            this.inner .copy());
 
         copy.copyBase(this);
 
@@ -8320,7 +8342,10 @@ extends ShapeValue
             && this.y     .equals(ellipse.y     )
             && this.width .equals(ellipse.width )
             && this.height.equals(ellipse.height)
-            && this.angle .equals(ellipse.angle );
+            && this.angle .equals(ellipse.angle )
+            && this.from  .equals(ellipse.from  )
+            && this.to    .equals(ellipse.to    )
+            && this.inner .equals(ellipse.inner );
     }
 
 
@@ -8339,7 +8364,10 @@ extends ShapeValue
             && this.y     .isValid()
             && this.width .isValid()
             && this.height.isValid()
-            && this.angle .isValid();
+            && this.angle .isValid()
+            && this.from  .isValid()
+            && this.to    .isValid()
+            && this.inner .isValid();
     }
 
 
@@ -8357,7 +8385,10 @@ extends ShapeValue
             + ' ' + this.y     .toString()
             + ' ' + this.width .toString()
             + ' ' + this.height.toString()
-            + ' ' + this.angle .toString();
+            + ' ' + this.angle .toString()
+            + ' ' + this.from  .toString()
+            + ' ' + this.to    .toString()
+            + ' ' + this.inner .toString();
     }
 
 
@@ -8368,13 +8399,19 @@ extends ShapeValue
             + ' ' + this.y     .toDisplayString()
             + ' ' + this.width .toDisplayString()
             + ' ' + this.height.toDisplayString()
-            + ' ' + this.angle .toDisplayString();
+            + ' ' + this.angle .toDisplayString()
+            + ' ' + this.from  .toDisplayString()
+            + ' ' + this.to    .toDisplayString()
+            + ' ' + this.inner .toDisplayString();
     }
 
 
 
     static NaN = new EllipseValue(
         '',
+        NumberValue.NaN,
+        NumberValue.NaN,
+        NumberValue.NaN,
         NumberValue.NaN,
         NumberValue.NaN,
         NumberValue.NaN,
@@ -8405,6 +8442,9 @@ function parseEllipseValue(str, i = -1)
     const width  = parseNumberValue(str[i]); i += width [1];
     const height = parseNumberValue(str[i]); i += height[1];
     const angle  = parseNumberValue(str[i]); i += angle [1];
+    const from   = parseNumberValue(str[i]); i += from  [1];
+    const to     = parseNumberValue(str[i]); i += to    [1];
+    const inner  = parseNumberValue(str[i]); i += inner [1];
 
 
     const ellipse = new EllipseValue(
@@ -8413,7 +8453,10 @@ function parseEllipseValue(str, i = -1)
         y     [0],
         width [0],
         height[0],
-        angle [0]);
+        angle [0],
+        from  [0],
+        to    [0],
+        inner [0]);
 
 
     i = parseShapeBaseValue(str, i, ellipse);
@@ -19182,7 +19225,7 @@ extends GShape
         if (this.input) 
             copy.input = this.input.copy();
 
-        if (this.round ) copy.round = this.round.copy();
+        if (this.round) copy.round = this.round.copy();
 
         return copy;
     }
@@ -19479,7 +19522,11 @@ extends GShape
 class GEllipse
 extends GShape
 {
-    input  = null;
+    input = null;
+
+    from  = null;
+    to    = null;
+    inner = null;
 
 
 
@@ -19499,6 +19546,10 @@ extends GShape
         if (this.input) 
             copy.input = this.input.copy();
 
+        if (this.from ) copy.from  = this.from .copy();
+        if (this.to   ) copy.to    = this.to   .copy();
+        if (this.inner) copy.inner = this.inner.copy();
+        
         return copy;
     }
 
@@ -19510,6 +19561,10 @@ extends GShape
 
 
         const [x, y, width, height, angle] = await this.evalBaseParams(parse);
+
+        const from  = this.from  ? (await this.from .eval(parse)).toValue() : null;
+        const to    = this.to    ? (await this.to   .eval(parse)).toValue() : null;
+        const inner = this.inner ? (await this.inner.eval(parse)).toValue() : null;
 
 
         let input = null;
@@ -19524,11 +19579,23 @@ extends GShape
                 y      ?? input.y,
                 width  ?? input.width,
                 height ?? input.height,
-                angle  ?? input.angle);
+                angle  ?? input.angle,
+                from   ?? input.from ,
+                to     ?? input.to   ,
+                inner  ?? input.inner);
         }
         else
         {
-            this.value = new EllipseValue(this.nodeId, x, y, width, height, angle);
+            this.value = new EllipseValue(
+                this.nodeId, 
+                x, 
+                y, 
+                width, 
+                height, 
+                angle,
+                from,
+                to, 
+                inner);
         }
 
 
@@ -19568,7 +19635,10 @@ extends GShape
                 this.value.y     .value,
                 this.value.width .value,
                 this.value.height.value,
-                this.value.angle .value);
+                this.value.angle .value,
+                this.value.from  .value,
+                this.value.to    .value,
+                this.value.inner .value);
 
             ellipse.createDefaultTransform(
                 this.value.x    .value,
@@ -19602,7 +19672,10 @@ extends GShape
            this.y     .toValue(),
            this.width .toValue(),
            this.height.toValue(),
-           this.angle .toValue());
+           this.angle .toValue(),
+           this.from  .toValue(),
+           this.to    .toValue(),
+           this.inner .toValue());
 
         ellipse.props   = this.props.toValue();
         ellipse.objects = this.objects.map(o => o.copy());
@@ -26403,6 +26476,9 @@ function genParseEllipse(parse)
         case 'width':  ellipse.width  = genParse(parse); break;
         case 'height': ellipse.height = genParse(parse); break;
         case 'angle':  ellipse.angle  = genParse(parse); break;
+        case 'from':   ellipse.from   = genParse(parse); break;
+        case 'to':     ellipse.to     = genParse(parse); break;
+        case 'inner':  ellipse.inner  = genParse(parse); break;
         case 'props':  ellipse.props  = genParse(parse); break;
         }
     }

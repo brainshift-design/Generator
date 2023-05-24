@@ -449,6 +449,7 @@ const STROKE = 'STRK';
 const STROKE_TYPES = [STROKE_VALUE, STROKE];
 const COLOR_STOP_VALUE = 'CSTOP#';
 const COLOR_STOP = 'CSTOP';
+const COLOR_STOP_TYPES = [COLOR_STOP_VALUE, COLOR_STOP];
 const GRADIENT_VALUE = 'GRAD#';
 const GRADIENT = 'GRAD';
 const GRADIENT_TYPES = [GRADIENT_VALUE, GRADIENT];
@@ -1492,13 +1493,22 @@ function genEllipseIsValid(genEllipse) {
         && genEllipse.y != null && !isNaN(genEllipse.y)
         && genEllipse.width != null && !isNaN(genEllipse.width)
         && genEllipse.height != null && !isNaN(genEllipse.height)
-        && genEllipse.angle != null && !isNaN(genEllipse.angle);
+        && genEllipse.angle != null && !isNaN(genEllipse.angle)
+        && genEllipse.from != null && !isNaN(genEllipse.from)
+        && genEllipse.to != null && !isNaN(genEllipse.to)
+        && genEllipse.inner != null && !isNaN(genEllipse.inner);
 }
 function figCreateEllipse(genEllipse) {
     const figEllipse = figma.createEllipse();
     figEllipse.name = makeObjectName(genEllipse);
     if (!genEllipseIsValid(genEllipse))
         return figEllipse;
+    figEllipse.arcData =
+        {
+            startingAngle: genEllipse.from / 360 * (Math.PI * 2),
+            endingAngle: genEllipse.to / 360 * (Math.PI * 2),
+            innerRadius: genEllipse.inner / 100
+        };
     setObjectTransform(figEllipse, genEllipse);
     if (figPoints.includes(figEllipse))
         updatePointSize(figEllipse);
@@ -1510,6 +1520,12 @@ function figUpdateEllipse(figEllipse, genEllipse) {
     if (!genEllipseIsValid(genEllipse))
         return;
     figEllipse.name = makeObjectName(genEllipse);
+    figEllipse.arcData =
+        {
+            startingAngle: genEllipse.from / 360 * (Math.PI * 2),
+            endingAngle: genEllipse.to / 360 * (Math.PI * 2),
+            innerRadius: genEllipse.inner / 100
+        };
     setObjectTransform(figEllipse, genEllipse);
     setObjectProps(figEllipse, genEllipse);
 }

@@ -233,6 +233,7 @@ const STROKE_TYPES       = [STROKE_VALUE, STROKE];
   
 const COLOR_STOP_VALUE   = 'CSTOP#';
 const COLOR_STOP         = 'CSTOP';
+const COLOR_STOP_TYPES   = [COLOR_STOP_VALUE, COLOR_STOP];
   
 const GRADIENT_VALUE     = 'GRAD#';
 const GRADIENT           = 'GRAD';

@@ -6,10 +6,13 @@ extends FigmaShape
     width;
     height;
     angle;
+    from;
+    to;
+    inner;
 
     
 
-    constructor(nodeId, objectId, objectName, x, y, width, height, angle)
+    constructor(nodeId, objectId, objectName, x, y, width, height, angle, from, to, inner)
     {
         super(ELLIPSE, nodeId, objectId, objectName);
         
@@ -18,6 +21,9 @@ extends FigmaShape
         this.width  = width;
         this.height = height;
         this.angle  = angle;
+        this.from   = from;
+        this.to     = to;
+        this.inner  = inner;
     }
 
 
@@ -32,7 +38,10 @@ extends FigmaShape
             this.y,
             this.width,
             this.height,
-            this.angle);
+            this.angle,
+            this.from,
+            this.to,
+            this.inner);
 
         copy.copyBase(this);
 

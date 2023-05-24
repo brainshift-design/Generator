@@ -2756,8 +2756,8 @@ a
 {
     color:                var(--figma-color-text);
 
-    font-family:          'Roboto Mono';
-    font-size:            10;
+    font-family:          Inter;
+    font-size:            11;
     position:             absolute;
     left:                 0px;
     top:                  0px;
@@ -8272,6 +8272,7 @@ const STROKE_TYPES       = [STROKE_VALUE, STROKE];
   
 const COLOR_STOP_VALUE   = 'CSTOP#';
 const COLOR_STOP         = 'CSTOP';
+const COLOR_STOP_TYPES   = [COLOR_STOP_VALUE, COLOR_STOP];
   
 const GRADIENT_VALUE     = 'GRAD#';
 const GRADIENT           = 'GRAD';
@@ -8889,10 +8890,13 @@ extends FigmaShape
     width;
     height;
     angle;
+    from;
+    to;
+    inner;
 
     
 
-    constructor(nodeId, objectId, objectName, x, y, width, height, angle)
+    constructor(nodeId, objectId, objectName, x, y, width, height, angle, from, to, inner)
     {
         super(ELLIPSE, nodeId, objectId, objectName);
         
@@ -8901,6 +8905,9 @@ extends FigmaShape
         this.width  = width;
         this.height = height;
         this.angle  = angle;
+        this.from   = from;
+        this.to     = to;
+        this.inner  = inner;
     }
 
 
@@ -8915,7 +8922,10 @@ extends FigmaShape
             this.y,
             this.width,
             this.height,
-            this.angle);
+            this.angle,
+            this.from,
+            this.to,
+            this.inner);
 
         copy.copyBase(this);
 
@@ -12680,6 +12690,9 @@ extends ShapeValue
     width;
     height;
     angle;
+    from;
+    to;
+    inner;
 
 
 
@@ -12688,7 +12701,10 @@ extends ShapeValue
                 y      = new NumberValue(0), 
                 width  = new NumberValue(0), 
                 height = new NumberValue(0), 
-                angle  = new NumberValue(0))
+                angle  = new NumberValue(0),
+                from   = new NumberValue(0),
+                to     = new NumberValue(0),
+                inner  = new NumberValue(0))
     {
         super(ELLIPSE_VALUE, nodeId);
 
@@ -12697,6 +12713,9 @@ extends ShapeValue
         this.width  = width;
         this.height = height;
         this.angle  = angle;
+        this.from   = from;
+        this.to     = to;
+        this.inner  = inner;
     }
 
 
@@ -12709,7 +12728,10 @@ extends ShapeValue
             this.y     .copy(), 
             this.width .copy(), 
             this.height.copy(), 
-            this.angle .copy());
+            this.angle .copy(),
+            this.from  .copy(),
+            this.to    .copy(),
+            this.inner .copy());
 
         copy.copyBase(this);
 
@@ -12725,7 +12747,10 @@ extends ShapeValue
             && this.y     .equals(ellipse.y     )
             && this.width .equals(ellipse.width )
             && this.height.equals(ellipse.height)
-            && this.angle .equals(ellipse.angle );
+            && this.angle .equals(ellipse.angle )
+            && this.from  .equals(ellipse.from  )
+            && this.to    .equals(ellipse.to    )
+            && this.inner .equals(ellipse.inner );
     }
 
 
@@ -12744,7 +12769,10 @@ extends ShapeValue
             && this.y     .isValid()
             && this.width .isValid()
             && this.height.isValid()
-            && this.angle .isValid();
+            && this.angle .isValid()
+            && this.from  .isValid()
+            && this.to    .isValid()
+            && this.inner .isValid();
     }
 
 
@@ -12762,7 +12790,10 @@ extends ShapeValue
             + ' ' + this.y     .toString()
             + ' ' + this.width .toString()
             + ' ' + this.height.toString()
-            + ' ' + this.angle .toString();
+            + ' ' + this.angle .toString()
+            + ' ' + this.from  .toString()
+            + ' ' + this.to    .toString()
+            + ' ' + this.inner .toString();
     }
 
 
@@ -12773,13 +12804,19 @@ extends ShapeValue
             + ' ' + this.y     .toDisplayString()
             + ' ' + this.width .toDisplayString()
             + ' ' + this.height.toDisplayString()
-            + ' ' + this.angle .toDisplayString();
+            + ' ' + this.angle .toDisplayString()
+            + ' ' + this.from  .toDisplayString()
+            + ' ' + this.to    .toDisplayString()
+            + ' ' + this.inner .toDisplayString();
     }
 
 
 
     static NaN = new EllipseValue(
         '',
+        NumberValue.NaN,
+        NumberValue.NaN,
+        NumberValue.NaN,
         NumberValue.NaN,
         NumberValue.NaN,
         NumberValue.NaN,
@@ -12810,6 +12847,9 @@ function parseEllipseValue(str, i = -1)
     const width  = parseNumberValue(str[i]); i += width [1];
     const height = parseNumberValue(str[i]); i += height[1];
     const angle  = parseNumberValue(str[i]); i += angle [1];
+    const from   = parseNumberValue(str[i]); i += from  [1];
+    const to     = parseNumberValue(str[i]); i += to    [1];
+    const inner  = parseNumberValue(str[i]); i += inner [1];
 
 
     const ellipse = new EllipseValue(
@@ -12818,7 +12858,10 @@ function parseEllipseValue(str, i = -1)
         y     [0],
         width [0],
         height[0],
-        angle [0]);
+        angle [0],
+        from  [0],
+        to    [0],
+        inner [0]);
 
 
     i = parseShapeBaseValue(str, i, ellipse);
@@ -23587,7 +23630,7 @@ extends GShape
         if (this.input) 
             copy.input = this.input.copy();
 
-        if (this.round ) copy.round = this.round.copy();
+        if (this.round) copy.round = this.round.copy();
 
         return copy;
     }
@@ -23884,7 +23927,11 @@ extends GShape
 class GEllipse
 extends GShape
 {
-    input  = null;
+    input = null;
+
+    from  = null;
+    to    = null;
+    inner = null;
 
 
 
@@ -23904,6 +23951,10 @@ extends GShape
         if (this.input) 
             copy.input = this.input.copy();
 
+        if (this.from ) copy.from  = this.from .copy();
+        if (this.to   ) copy.to    = this.to   .copy();
+        if (this.inner) copy.inner = this.inner.copy();
+        
         return copy;
     }
 
@@ -23915,6 +23966,10 @@ extends GShape
 
 
         const [x, y, width, height, angle] = await this.evalBaseParams(parse);
+
+        const from  = this.from  ? (await this.from .eval(parse)).toValue() : null;
+        const to    = this.to    ? (await this.to   .eval(parse)).toValue() : null;
+        const inner = this.inner ? (await this.inner.eval(parse)).toValue() : null;
 
 
         let input = null;
@@ -23929,11 +23984,23 @@ extends GShape
                 y      ?? input.y,
                 width  ?? input.width,
                 height ?? input.height,
-                angle  ?? input.angle);
+                angle  ?? input.angle,
+                from   ?? input.from ,
+                to     ?? input.to   ,
+                inner  ?? input.inner);
         }
         else
         {
-            this.value = new EllipseValue(this.nodeId, x, y, width, height, angle);
+            this.value = new EllipseValue(
+                this.nodeId, 
+                x, 
+                y, 
+                width, 
+                height, 
+                angle,
+                from,
+                to, 
+                inner);
         }
 
 
@@ -23973,7 +24040,10 @@ extends GShape
                 this.value.y     .value,
                 this.value.width .value,
                 this.value.height.value,
-                this.value.angle .value);
+                this.value.angle .value,
+                this.value.from  .value,
+                this.value.to    .value,
+                this.value.inner .value);
 
             ellipse.createDefaultTransform(
                 this.value.x    .value,
@@ -24007,7 +24077,10 @@ extends GShape
            this.y     .toValue(),
            this.width .toValue(),
            this.height.toValue(),
-           this.angle .toValue());
+           this.angle .toValue(),
+           this.from  .toValue(),
+           this.to    .toValue(),
+           this.inner .toValue());
 
         ellipse.props   = this.props.toValue();
         ellipse.objects = this.objects.map(o => o.copy());
@@ -30808,6 +30881,9 @@ function genParseEllipse(parse)
         case 'width':  ellipse.width  = genParse(parse); break;
         case 'height': ellipse.height = genParse(parse); break;
         case 'angle':  ellipse.angle  = genParse(parse); break;
+        case 'from':   ellipse.from   = genParse(parse); break;
+        case 'to':     ellipse.to     = genParse(parse); break;
+        case 'inner':  ellipse.inner  = genParse(parse); break;
         case 'props':  ellipse.props  = genParse(parse); break;
         }
     }
@@ -42100,6 +42176,7 @@ const STROKE_TYPES       = [STROKE_VALUE, STROKE];
   
 const COLOR_STOP_VALUE   = 'CSTOP#';
 const COLOR_STOP         = 'CSTOP';
+const COLOR_STOP_TYPES   = [COLOR_STOP_VALUE, COLOR_STOP];
   
 const GRADIENT_VALUE     = 'GRAD#';
 const GRADIENT           = 'GRAD';
@@ -42717,10 +42794,13 @@ extends FigmaShape
     width;
     height;
     angle;
+    from;
+    to;
+    inner;
 
     
 
-    constructor(nodeId, objectId, objectName, x, y, width, height, angle)
+    constructor(nodeId, objectId, objectName, x, y, width, height, angle, from, to, inner)
     {
         super(ELLIPSE, nodeId, objectId, objectName);
         
@@ -42729,6 +42809,9 @@ extends FigmaShape
         this.width  = width;
         this.height = height;
         this.angle  = angle;
+        this.from   = from;
+        this.to     = to;
+        this.inner  = inner;
     }
 
 
@@ -42743,7 +42826,10 @@ extends FigmaShape
             this.y,
             this.width,
             this.height,
-            this.angle);
+            this.angle,
+            this.from,
+            this.to,
+            this.inner);
 
         copy.copyBase(this);
 
@@ -46508,6 +46594,9 @@ extends ShapeValue
     width;
     height;
     angle;
+    from;
+    to;
+    inner;
 
 
 
@@ -46516,7 +46605,10 @@ extends ShapeValue
                 y      = new NumberValue(0), 
                 width  = new NumberValue(0), 
                 height = new NumberValue(0), 
-                angle  = new NumberValue(0))
+                angle  = new NumberValue(0),
+                from   = new NumberValue(0),
+                to     = new NumberValue(0),
+                inner  = new NumberValue(0))
     {
         super(ELLIPSE_VALUE, nodeId);
 
@@ -46525,6 +46617,9 @@ extends ShapeValue
         this.width  = width;
         this.height = height;
         this.angle  = angle;
+        this.from   = from;
+        this.to     = to;
+        this.inner  = inner;
     }
 
 
@@ -46537,7 +46632,10 @@ extends ShapeValue
             this.y     .copy(), 
             this.width .copy(), 
             this.height.copy(), 
-            this.angle .copy());
+            this.angle .copy(),
+            this.from  .copy(),
+            this.to    .copy(),
+            this.inner .copy());
 
         copy.copyBase(this);
 
@@ -46553,7 +46651,10 @@ extends ShapeValue
             && this.y     .equals(ellipse.y     )
             && this.width .equals(ellipse.width )
             && this.height.equals(ellipse.height)
-            && this.angle .equals(ellipse.angle );
+            && this.angle .equals(ellipse.angle )
+            && this.from  .equals(ellipse.from  )
+            && this.to    .equals(ellipse.to    )
+            && this.inner .equals(ellipse.inner );
     }
 
 
@@ -46572,7 +46673,10 @@ extends ShapeValue
             && this.y     .isValid()
             && this.width .isValid()
             && this.height.isValid()
-            && this.angle .isValid();
+            && this.angle .isValid()
+            && this.from  .isValid()
+            && this.to    .isValid()
+            && this.inner .isValid();
     }
 
 
@@ -46590,7 +46694,10 @@ extends ShapeValue
             + ' ' + this.y     .toString()
             + ' ' + this.width .toString()
             + ' ' + this.height.toString()
-            + ' ' + this.angle .toString();
+            + ' ' + this.angle .toString()
+            + ' ' + this.from  .toString()
+            + ' ' + this.to    .toString()
+            + ' ' + this.inner .toString();
     }
 
 
@@ -46601,13 +46708,19 @@ extends ShapeValue
             + ' ' + this.y     .toDisplayString()
             + ' ' + this.width .toDisplayString()
             + ' ' + this.height.toDisplayString()
-            + ' ' + this.angle .toDisplayString();
+            + ' ' + this.angle .toDisplayString()
+            + ' ' + this.from  .toDisplayString()
+            + ' ' + this.to    .toDisplayString()
+            + ' ' + this.inner .toDisplayString();
     }
 
 
 
     static NaN = new EllipseValue(
         '',
+        NumberValue.NaN,
+        NumberValue.NaN,
+        NumberValue.NaN,
         NumberValue.NaN,
         NumberValue.NaN,
         NumberValue.NaN,
@@ -46638,6 +46751,9 @@ function parseEllipseValue(str, i = -1)
     const width  = parseNumberValue(str[i]); i += width [1];
     const height = parseNumberValue(str[i]); i += height[1];
     const angle  = parseNumberValue(str[i]); i += angle [1];
+    const from   = parseNumberValue(str[i]); i += from  [1];
+    const to     = parseNumberValue(str[i]); i += to    [1];
+    const inner  = parseNumberValue(str[i]); i += inner [1];
 
 
     const ellipse = new EllipseValue(
@@ -46646,7 +46762,10 @@ function parseEllipseValue(str, i = -1)
         y     [0],
         width [0],
         height[0],
-        angle [0]);
+        angle [0],
+        from  [0],
+        to    [0],
+        inner [0]);
 
 
     i = parseShapeBaseValue(str, i, ellipse);
@@ -57415,7 +57534,7 @@ extends GShape
         if (this.input) 
             copy.input = this.input.copy();
 
-        if (this.round ) copy.round = this.round.copy();
+        if (this.round) copy.round = this.round.copy();
 
         return copy;
     }
@@ -57712,7 +57831,11 @@ extends GShape
 class GEllipse
 extends GShape
 {
-    input  = null;
+    input = null;
+
+    from  = null;
+    to    = null;
+    inner = null;
 
 
 
@@ -57732,6 +57855,10 @@ extends GShape
         if (this.input) 
             copy.input = this.input.copy();
 
+        if (this.from ) copy.from  = this.from .copy();
+        if (this.to   ) copy.to    = this.to   .copy();
+        if (this.inner) copy.inner = this.inner.copy();
+        
         return copy;
     }
 
@@ -57743,6 +57870,10 @@ extends GShape
 
 
         const [x, y, width, height, angle] = await this.evalBaseParams(parse);
+
+        const from  = this.from  ? (await this.from .eval(parse)).toValue() : null;
+        const to    = this.to    ? (await this.to   .eval(parse)).toValue() : null;
+        const inner = this.inner ? (await this.inner.eval(parse)).toValue() : null;
 
 
         let input = null;
@@ -57757,11 +57888,23 @@ extends GShape
                 y      ?? input.y,
                 width  ?? input.width,
                 height ?? input.height,
-                angle  ?? input.angle);
+                angle  ?? input.angle,
+                from   ?? input.from ,
+                to     ?? input.to   ,
+                inner  ?? input.inner);
         }
         else
         {
-            this.value = new EllipseValue(this.nodeId, x, y, width, height, angle);
+            this.value = new EllipseValue(
+                this.nodeId, 
+                x, 
+                y, 
+                width, 
+                height, 
+                angle,
+                from,
+                to, 
+                inner);
         }
 
 
@@ -57801,7 +57944,10 @@ extends GShape
                 this.value.y     .value,
                 this.value.width .value,
                 this.value.height.value,
-                this.value.angle .value);
+                this.value.angle .value,
+                this.value.from  .value,
+                this.value.to    .value,
+                this.value.inner .value);
 
             ellipse.createDefaultTransform(
                 this.value.x    .value,
@@ -57835,7 +57981,10 @@ extends GShape
            this.y     .toValue(),
            this.width .toValue(),
            this.height.toValue(),
-           this.angle .toValue());
+           this.angle .toValue(),
+           this.from  .toValue(),
+           this.to    .toValue(),
+           this.inner .toValue());
 
         ellipse.props   = this.props.toValue();
         ellipse.objects = this.objects.map(o => o.copy());
@@ -65106,7 +65255,7 @@ const iconColorBlend        = '<svg width="14" height="15" viewBox="-1 0 15 15" 
 
 const iconLayer             = '<svg width="15" height="11" viewBox="0 0 15 11" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="0.5" y="0.5" width="14" height="10" rx="2.5" stroke="white"/><rect x="2" y="2" width="11" height="7" rx="1" fill="white"/></svg>';
 const iconFill              = '<svg width="15" height="11" viewBox="0 0 15 11" fill="none" xmlns="http://www.w3.org/2000/svg"><rect width="15" height="11" rx="3" fill="white"/></svg>';
-const iconGradient          = '<svg width="15" height="11" viewBox="0 0 15 11" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="0.5" y="0.5" width="14" height="10" rx="2.5" stroke="white"/><path fill-rule="evenodd" clip-rule="evenodd" d="M1 1H14V3V4H13V5H12V6H11V5H10V4H9V5H8V6H7V5H6V4H5V5H4V6H3V5H2V4H1V3V1ZM2 5V6H1V5H2ZM5 6V5H6V6H5ZM5 6H4V7H5V6ZM9 6V5H10V6H9ZM9 6H8V7H9V6ZM11 3V4H12V3H11ZM13 6V7H12V6H13ZM13 6H14V5H13V6ZM3 3V4H4V3H3ZM7 4H8V3H7V4ZM6 7H7V8H6V7ZM11 7H10V8H11V7ZM2 7H3V8H2V7Z" fill="white"/></svg>';
+const iconGradient          = '<svg width="15" height="11" viewBox="0 0 15 11" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M5 6V7H4V6H5Z" fill="white"/><path d="M5 6H6V5H5V6Z" fill="white"/><path d="M9 6V7H8V6H9Z" fill="white"/><path d="M9 6H10V5H9V6Z" fill="white"/><path d="M12 6H13V7H12V6Z" fill="white"/><path d="M7 7H6V8H7V7Z" fill="white"/><path d="M11 7H10V8H11V7Z" fill="white"/><path d="M3 7H2V8H3V7Z" fill="white"/><path fill-rule="evenodd" clip-rule="evenodd" d="M0 3C0 1.34315 1.34315 0 3 0H12C13.6569 0 15 1.34315 15 3V8C15 9.65685 13.6569 11 12 11H3C1.34315 11 0 9.65685 0 8V3ZM1 4V5H2V6H1V8C1 9.10457 1.89543 10 3 10H12C13.1046 10 14 9.10457 14 8V6H13V5H14V4H13V5H12V6H11V5H10V4H9V5H8V6H7V5H6V4H5V5H4V6H3V5H2V4H1ZM11 3V4H12V3H11ZM3 3V4H4V3H3ZM7 4H8V3H7V4Z" fill="white"/></svg>';
 const iconColorStop         = '<svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" clip-rule="evenodd" d="M3.36166 4.49573L4.52176 3.33563L5.68186 4.49573L4.52176 5.65583L3.36166 4.49573ZM4.52176 8.48425L0.533234 4.49573L4.52176 0.507202L8.51028 4.49573L7.501 5.50501L8 8L5.50501 7.501L4.52176 8.48425Z" fill="white"/><path fill-rule="evenodd" clip-rule="evenodd" d="M16 2.00005L1.99999 16L1.08075 15.0808L15.0807 1.08081L16 2.00005Z" fill="white"/></svg>';
 const iconStroke            = '<svg width="15" height="11" viewBox="0 0 15 11" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="0.5" y="0.5" width="14" height="10" rx="2.5" stroke="white"/></svg>';
 const iconMask              = '<svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" clip-rule="evenodd" d="M4.5 0.80426C1.83597 2.10266 0 4.83704 0 8C0 11.0375 1.69293 13.6797 4.18674 15.0344C4.28983 15.0905 4.39423 15.1443 4.5 15.1958C5.55719 15.7109 6.74484 16 8 16C12.4183 16 16 12.4183 16 8C16 3.58173 12.4183 0 8 0C6.74469 0 5.55728 0.28894 4.5 0.80426ZM15 8C15 11.866 11.866 15 8 15C7.14575 15 6.32724 14.847 5.57037 14.5668C7.64352 13.1213 9 10.7191 9 8C9 5.28094 7.64349 2.87872 5.57031 1.43317C6.32718 1.15302 7.14572 1 8 1C11.866 1 15 4.13403 15 8Z" fill="white"/></svg>';
@@ -72186,6 +72335,12 @@ extends Parameter
 }
 
 
+
+
+
+
+
+
 class   StrokeParam
 extends Parameter
 {
@@ -72685,7 +72840,7 @@ extends Parameter
             this.name,
             ''));
 
-        this.controls[0].textbox.style.textAlign = 'center';
+        this.controls[0].textbox.style.textAlign  = 'center';
    
         this.div.appendChild(this.controls[0].div);
 
@@ -82920,8 +83075,11 @@ extends ResizableBase
 
         this.addParam(this.paramValue = new TextParam('value', '', false, false));
 
-        this.paramValue.controls[0].textbox.defPlaceholder  = '...';//' . . .';
-        this.paramValue.controls[0].textbox.style.textAlign = 'center';
+        this.paramValue.controls[0].textbox.defPlaceholder   = '...';//' . . .';
+        this.paramValue.controls[0].textbox.style.textAlign  = 'center';
+
+        this.paramValue.controls[0].textbox.style.fontFamily = 'Roboto Mono';
+        this.paramValue.controls[0].textbox.style.fontSize   = '10px';
 
 
         this.header.addEventListener('pointerdown', e => this.paramValue.controls[0].textbox.blur());
@@ -88709,6 +88867,9 @@ extends OpShape
     paramWidth;
     paramHeight;
     paramAngle;
+    paramFrom;
+    paramTo;
+    paramInner;
 
 
     
@@ -88728,11 +88889,24 @@ extends OpShape
         this.addParam(this.paramWidth  = new NumberParam('width',  'width',  true, true, true, 100,    0.01));
         this.addParam(this.paramHeight = new NumberParam('height', 'height', true, true, true, 100,    0.01));
         this.addParam(this.paramAngle  = new NumberParam('angle',  'angle',  true, true, true,   0, -180,   180));
+        this.addParam(this.paramInner  = new NumberParam('inner',  'inner',  true, true, true,   0, 0, 100));
+        this.addParam(this.paramFrom   = new NumberParam('from',   'from',   true, true, true,   0));
+        this.addParam(this.paramTo     = new NumberParam('to',     'to',     true, true, true, 360));
         
 
         this.paramAngle.controls[0].setSuffix('°', true);
+        this.paramFrom .controls[0].setSuffix('°', true);
+        this.paramTo   .controls[0].setSuffix('°', true);
+        this.paramInner.controls[0].setSuffix('%', true);
+
         this.paramAngle.controls[0].wrapValue   = true;
         this.paramAngle.controls[0].dragReverse = true;
+
+        this.paramFrom .controls[0].wrapValue   = true;
+        //this.paramFrom .controls[0].dragReverse = true;
+
+        this.paramTo   .controls[0].wrapValue   = true;
+        //this.paramTo   .controls[0].dragReverse = true;
 
 
         this.addBaseParams();

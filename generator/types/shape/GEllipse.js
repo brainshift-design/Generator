@@ -1,7 +1,11 @@
 class GEllipse
 extends GShape
 {
-    input  = null;
+    input = null;
+
+    from  = null;
+    to    = null;
+    inner = null;
 
 
 
@@ -21,6 +25,10 @@ extends GShape
         if (this.input) 
             copy.input = this.input.copy();
 
+        if (this.from ) copy.from  = this.from .copy();
+        if (this.to   ) copy.to    = this.to   .copy();
+        if (this.inner) copy.inner = this.inner.copy();
+        
         return copy;
     }
 
@@ -32,6 +40,10 @@ extends GShape
 
 
         const [x, y, width, height, angle] = await this.evalBaseParams(parse);
+
+        const from  = this.from  ? (await this.from .eval(parse)).toValue() : null;
+        const to    = this.to    ? (await this.to   .eval(parse)).toValue() : null;
+        const inner = this.inner ? (await this.inner.eval(parse)).toValue() : null;
 
 
         let input = null;
@@ -46,11 +58,23 @@ extends GShape
                 y      ?? input.y,
                 width  ?? input.width,
                 height ?? input.height,
-                angle  ?? input.angle);
+                angle  ?? input.angle,
+                from   ?? input.from ,
+                to     ?? input.to   ,
+                inner  ?? input.inner);
         }
         else
         {
-            this.value = new EllipseValue(this.nodeId, x, y, width, height, angle);
+            this.value = new EllipseValue(
+                this.nodeId, 
+                x, 
+                y, 
+                width, 
+                height, 
+                angle,
+                from,
+                to, 
+                inner);
         }
 
 
@@ -90,7 +114,10 @@ extends GShape
                 this.value.y     .value,
                 this.value.width .value,
                 this.value.height.value,
-                this.value.angle .value);
+                this.value.angle .value,
+                this.value.from  .value,
+                this.value.to    .value,
+                this.value.inner .value);
 
             ellipse.createDefaultTransform(
                 this.value.x    .value,
@@ -124,7 +151,10 @@ extends GShape
            this.y     .toValue(),
            this.width .toValue(),
            this.height.toValue(),
-           this.angle .toValue());
+           this.angle .toValue(),
+           this.from  .toValue(),
+           this.to    .toValue(),
+           this.inner .toValue());
 
         ellipse.props   = this.props.toValue();
         ellipse.objects = this.objects.map(o => o.copy());

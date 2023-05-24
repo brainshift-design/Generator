@@ -23,7 +23,7 @@ extends GShape
         if (this.input) 
             copy.input = this.input.copy();
 
-        if (this.round ) copy.round = this.round.copy();
+        if (this.round) copy.round = this.round.copy();
 
         return copy;
     }
