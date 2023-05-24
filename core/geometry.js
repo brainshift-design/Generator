@@ -223,9 +223,9 @@ function xmove(v)
 
 function xrotate(angle)
 {
-    return [[Math.cos(angle), -Math.sin(angle), 0],
-            [Math.sin(angle),  Math.cos(angle), 0],
-            [0,                0,               1]];
+    return [[ Math.cos(angle), Math.sin(angle), 0],
+            [-Math.sin(angle), Math.cos(angle), 0],
+            [ 0,               0,               1]];
 }
 
 

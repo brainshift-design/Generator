@@ -35,9 +35,6 @@ extends OpColorBase
 
 
         this.paramPosition.controls[0].suffix = '%';
-
-        this.paramPosition.controls[0].min = Number.MIN_SAFE_INTEGER;
-        this.paramPosition.controls[0].max = Number.MAX_SAFE_INTEGER;
     }
     
     

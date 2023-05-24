@@ -50,9 +50,9 @@ class FigmaObject
     createDefaultTransform(x, y, angle)
     {
         this.xform =
-            [[ Math.cos(angle), Math.sin(angle), x],
-             [-Math.sin(angle), Math.cos(angle), y],
-             [ 0,               0,               1]];
+            [[Math.cos(angle), -Math.sin(angle), x],
+             [Math.sin(angle),  Math.cos(angle), y],
+             [0,                0,               1]];
     }
 }
 

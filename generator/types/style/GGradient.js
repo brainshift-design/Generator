@@ -74,7 +74,7 @@ extends GOperator
             aspect,
             angle);
 
-
+            
         this.updateValues =
         [
             ['value',  this.value],
@@ -113,8 +113,14 @@ extends GOperator
     
     toValue()
     {
+        const stops = new ListValue();
+
+        for (let i = 0, o = 0; i < this.inputs.length; i++)
+            stops.items.push(this.inputs[i].toValue());
+
+
         return new GradientValue(
-            new ListValue(),
+            stops,
             this.gradType ? this.gradType.toValue() : this.input.gradType.toValue(),
             this.x1       ? this.x1      .toValue() : this.input.x1      .toValue(),
             this.y1       ? this.y1      .toValue() : this.input.y1      .toValue(),

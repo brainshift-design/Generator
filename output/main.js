@@ -1860,10 +1860,32 @@ function getObjectFills(genObjFills) {
                         && !isNaN(color.b)
                         && !isNaN(opacity))
                         fills.push({
-                            type: 'SOLID',
+                            type: fill[0],
                             color: color,
                             opacity: opacity
                         });
+                    break;
+                }
+            case 'GRADIENT_LINEAR':
+                {
+                    const xform = fill[1];
+                    const stops = [];
+                    for (const stop of fill[2]) {
+                        stops.push({
+                            color: {
+                                r: stop[0],
+                                g: stop[1],
+                                b: stop[2],
+                                a: stop[3]
+                            },
+                            position: stop[4]
+                        });
+                    }
+                    fills.push({
+                        type: fill[0],
+                        gradientTransform: xform,
+                        gradientStops: stops
+                    });
                     break;
                 }
         }

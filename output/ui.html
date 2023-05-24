@@ -2756,8 +2756,8 @@ a
 {
     color:                var(--figma-color-text);
 
-    font-family:          Inter;
-    font-size:            11;
+    font-family:          'Roboto Mono';
+    font-size:            10;
     position:             absolute;
     left:                 0px;
     top:                  0px;
@@ -4398,7 +4398,7 @@ a
 
 
 <div id='ttText' class='tooltip'>
-    <div id='ttTextString'>This is a text string.</div>
+    <div id='ttTextString'></div>
     <!-- <div class='tooltipBottom' id='tooltipTextBottom'><div class='ignoreButton' id='ignoreText' onclick="updateSettingAndMenu('showTooltipLongText', true, false); hideTooltip(ttText);">Don't show</div></div> -->
 </div>
 
@@ -5552,9 +5552,9 @@ function xmove(v)
 
 function xrotate(angle)
 {
-    return [[Math.cos(angle), -Math.sin(angle), 0],
-            [Math.sin(angle),  Math.cos(angle), 0],
-            [0,                0,               1]];
+    return [[ Math.cos(angle), Math.sin(angle), 0],
+            [-Math.sin(angle), Math.cos(angle), 0],
+            [ 0,               0,               1]];
 }
 
 
@@ -5973,9 +5973,9 @@ function xmove(v)
 
 function xrotate(angle)
 {
-    return [[Math.cos(angle), -Math.sin(angle), 0],
-            [Math.sin(angle),  Math.cos(angle), 0],
-            [0,                0,               1]];
+    return [[ Math.cos(angle), Math.sin(angle), 0],
+            [-Math.sin(angle), Math.cos(angle), 0],
+            [ 0,               0,               1]];
 }
 
 
@@ -8686,9 +8686,9 @@ class FigmaObject
     createDefaultTransform(x, y, angle)
     {
         this.xform =
-            [[ Math.cos(angle), Math.sin(angle), x],
-             [-Math.sin(angle), Math.cos(angle), y],
-             [ 0,               0,               1]];
+            [[Math.cos(angle), -Math.sin(angle), x],
+             [Math.sin(angle),  Math.cos(angle), y],
+             [0,                0,               1]];
     }
 }
 
@@ -22124,7 +22124,7 @@ extends GOperator
     
     toValue()
     {
-        return new StrokeValue(
+        return new ColorStopValue(
             this.options.enabled
             ? this.validateFill(this.fill ? this.fill.toValue() : this.input.fill.toValue())
             : FillValue.NaN,
@@ -22228,7 +22228,7 @@ extends GOperator
             aspect,
             angle);
 
-
+            
         this.updateValues =
         [
             ['value',  this.value],
@@ -22267,8 +22267,14 @@ extends GOperator
     
     toValue()
     {
+        const stops = new ListValue();
+
+        for (let i = 0, o = 0; i < this.inputs.length; i++)
+            stops.items.push(this.inputs[i].toValue());
+
+
         return new GradientValue(
-            new ListValue(),
+            stops,
             this.gradType ? this.gradType.toValue() : this.input.gradType.toValue(),
             this.x1       ? this.x1      .toValue() : this.input.x1      .toValue(),
             this.y1       ? this.y1      .toValue() : this.input.y1      .toValue(),
@@ -23230,7 +23236,6 @@ extends GShapeBase
             for (let i = this.value.props.items.length-1; i >= 0; i--)
             {
                 const prop = this.value.props.items[i];
-                console.log('prop =', prop);
                 
 
                 if (prop.type == COLOR_VALUE)
@@ -23276,25 +23281,54 @@ extends GShapeBase
                     }
 
 
-                    for (let j = 0; j < prop.stops.length; j++)
+                    const p0 = point(prop.x1.toNumber() / 100, prop.y1.toNumber() / 100);
+                    const p1 = point(prop.x2.toNumber() / 100, prop.y2.toNumber() / 100);
+
+                    const a  = angle(p0, p1) - Tau/4;
+
+
+                    let xform = clone(identity);
+                    
+                    // xform = mulm3m3(xform,
+                    //     [[1, 0, p0.x],
+                    //      [0, 1, p0.y],
+                    //      [0, 0, 1   ]]);
+
+                    xform = mulm3m3(xform,
+                        [[p0.x, p0.y, p0.x],
+                         [p1.x, p1.y, p0.y],
+                         [0,    0,    1]]);
+
+                    // xform = mulm3m3(xform,
+                    //     [[ Math.cos(a), Math.sin(a), 0],
+                    //      [-Math.sin(a), Math.cos(a), 0],
+                    //      [ 0,           0,           1]]);
+
+                    // xform = mulm3m3(xform,
+                    //     [[1, 0, -p0.x],
+                    //      [0, 1, -p0.y],
+                    //      [0, 0,  1   ]]);
+
+
+                    gradient[1] = [
+                        xform[0],
+                        xform[1] ];
+                        
+
+                    for (let j = 0; j < prop.stops.items.length; j++)
                     {
-                        const rgba = scaleRgb(prop.stops[j].toRgba());
+                        const item = prop.stops.items[j];
+                        const rgba = item.fill.toRgba();
 
                         gradient[2].push([
                             rgba[0], 
                             rgba[1], 
                             rgba[2], 
                             rgba[3],
-                            prop.stops[j].position]);
+                            item.position.toNumber() / 100]);
                     }
 
-                    
-                    gradient[1].push(
-                        [0, 0, 0],
-                        [50, 50, 0]);
 
-
-                    console.log('gradient =', gradient);
                     obj.fills.push(gradient);
                 }
 
@@ -36659,9 +36693,9 @@ function xmove(v)
 
 function xrotate(angle)
 {
-    return [[Math.cos(angle), -Math.sin(angle), 0],
-            [Math.sin(angle),  Math.cos(angle), 0],
-            [0,                0,               1]];
+    return [[ Math.cos(angle), Math.sin(angle), 0],
+            [-Math.sin(angle), Math.cos(angle), 0],
+            [ 0,               0,               1]];
 }
 
 
@@ -37080,9 +37114,9 @@ function xmove(v)
 
 function xrotate(angle)
 {
-    return [[Math.cos(angle), -Math.sin(angle), 0],
-            [Math.sin(angle),  Math.cos(angle), 0],
-            [0,                0,               1]];
+    return [[ Math.cos(angle), Math.sin(angle), 0],
+            [-Math.sin(angle), Math.cos(angle), 0],
+            [ 0,               0,               1]];
 }
 
 
@@ -42379,9 +42413,9 @@ class FigmaObject
     createDefaultTransform(x, y, angle)
     {
         this.xform =
-            [[ Math.cos(angle), Math.sin(angle), x],
-             [-Math.sin(angle), Math.cos(angle), y],
-             [ 0,               0,               1]];
+            [[Math.cos(angle), -Math.sin(angle), x],
+             [Math.sin(angle),  Math.cos(angle), y],
+             [0,                0,               1]];
     }
 }
 
@@ -55817,7 +55851,7 @@ extends GOperator
     
     toValue()
     {
-        return new StrokeValue(
+        return new ColorStopValue(
             this.options.enabled
             ? this.validateFill(this.fill ? this.fill.toValue() : this.input.fill.toValue())
             : FillValue.NaN,
@@ -55921,7 +55955,7 @@ extends GOperator
             aspect,
             angle);
 
-
+            
         this.updateValues =
         [
             ['value',  this.value],
@@ -55960,8 +55994,14 @@ extends GOperator
     
     toValue()
     {
+        const stops = new ListValue();
+
+        for (let i = 0, o = 0; i < this.inputs.length; i++)
+            stops.items.push(this.inputs[i].toValue());
+
+
         return new GradientValue(
-            new ListValue(),
+            stops,
             this.gradType ? this.gradType.toValue() : this.input.gradType.toValue(),
             this.x1       ? this.x1      .toValue() : this.input.x1      .toValue(),
             this.y1       ? this.y1      .toValue() : this.input.y1      .toValue(),
@@ -56923,7 +56963,6 @@ extends GShapeBase
             for (let i = this.value.props.items.length-1; i >= 0; i--)
             {
                 const prop = this.value.props.items[i];
-                console.log('prop =', prop);
                 
 
                 if (prop.type == COLOR_VALUE)
@@ -56969,25 +57008,54 @@ extends GShapeBase
                     }
 
 
-                    for (let j = 0; j < prop.stops.length; j++)
+                    const p0 = point(prop.x1.toNumber() / 100, prop.y1.toNumber() / 100);
+                    const p1 = point(prop.x2.toNumber() / 100, prop.y2.toNumber() / 100);
+
+                    const a  = angle(p0, p1) - Tau/4;
+
+
+                    let xform = clone(identity);
+                    
+                    // xform = mulm3m3(xform,
+                    //     [[1, 0, p0.x],
+                    //      [0, 1, p0.y],
+                    //      [0, 0, 1   ]]);
+
+                    xform = mulm3m3(xform,
+                        [[p0.x, p0.y, p0.x],
+                         [p1.x, p1.y, p0.y],
+                         [0,    0,    1]]);
+
+                    // xform = mulm3m3(xform,
+                    //     [[ Math.cos(a), Math.sin(a), 0],
+                    //      [-Math.sin(a), Math.cos(a), 0],
+                    //      [ 0,           0,           1]]);
+
+                    // xform = mulm3m3(xform,
+                    //     [[1, 0, -p0.x],
+                    //      [0, 1, -p0.y],
+                    //      [0, 0,  1   ]]);
+
+
+                    gradient[1] = [
+                        xform[0],
+                        xform[1] ];
+                        
+
+                    for (let j = 0; j < prop.stops.items.length; j++)
                     {
-                        const rgba = scaleRgb(prop.stops[j].toRgba());
+                        const item = prop.stops.items[j];
+                        const rgba = item.fill.toRgba();
 
                         gradient[2].push([
                             rgba[0], 
                             rgba[1], 
                             rgba[2], 
                             rgba[3],
-                            prop.stops[j].position]);
+                            item.position.toNumber() / 100]);
                     }
 
-                    
-                    gradient[1].push(
-                        [0, 0, 0],
-                        [50, 50, 0]);
 
-
-                    console.log('gradient =', gradient);
                     obj.fills.push(gradient);
                 }
 
@@ -63227,7 +63295,7 @@ TextControl.prototype.initTextarea = function()
     this.textbox                 = createTextarea('textControlTextarea');
 
     this.textbox.control         = this;
-    this.textbox.defPlaceholder  = ' . . .';
+    this.textbox.defPlaceholder  = '...';//' . . .';
     this.textbox.placeholder     = this.textbox.defPlaceholder;
 
     this.textbox.style.height    = defParamHeight;
@@ -64872,7 +64940,7 @@ const iconRotate            = '<svg width="14" height="19" viewBox="0 0 14 19" f
 const iconScale             = '<svg width="15" height="15" viewBox="0 0 15 15" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M0 0V15H15V9H14V14L1 14V1L6 1V0H0Z" fill="white"/><path d="M10 1V2.38419e-07L15 0V5H14V1.70718L6.70718 9H10V10H5V5H6V8.29297L13.293 1L10 1Z" fill="white"/></svg>';
 const iconSkew              = '<svg width="19" height="17" viewBox="0 0 19 17" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M2.75185 13.0498L4.85299 15.1509L4.04961 16.0462L0.564758 12.5613L4.02604 9.1001L4.85299 9.96779L2.77106 12.0496H8.03782V13.0498H2.75185Z" fill="white"/><path d="M16.2802 3.02754L14.1492 0.896574L14.9986 0.0472195L18.4673 3.516L15.0221 6.9613L14.1492 6.13945L16.261 4.02766L10.9942 4.02766L10.9942 3.02754L16.2802 3.02754Z" fill="white"/><rect x="8.03784" y="12.0476" width="3.98492" height="1" fill="white"/><rect x="10.9941" y="4.02979" width="3.94812" height="1" transform="rotate(-180 10.9941 4.02979)" fill="white"/><path d="M10.9083 12.532L13.0237 9.01649L14.0898 9.62791L12.0117 13.0475L10.9083 12.532Z" fill="white"/><path d="M8.20062 3.47107L6.03195 7.05296L4.94104 6.43312L7.02151 3.02985L8.20062 3.47107Z" fill="white"/></svg>'; 
 
-const iconRender            = '<svg width="17" height="13" viewBox="0 0 17 13" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="0.5" y="0.5" width="16" height="12" rx="2.5" stroke="white"/><path fill-rule="evenodd" clip-rule="evenodd" d="M12 3.63538L10.9288 3L7.60978 8.10104L5.89169 6.46061L5 7.31199L7.81525 10L12 3.63538Z" fill="white"/></svg>';
+const iconRender            = '<svg width="17" height="15" viewBox="0 0 17 15" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="0.5" y="0.5" width="16" height="14" rx="1.5" stroke="white"/><path fill-rule="evenodd" clip-rule="evenodd" d="M12 4.63538L10.9288 4L7.60978 9.10104L5.89169 7.46061L5 8.31199L7.81525 11L12 4.63538Z" fill="white"/></svg>';
 
 const iconGroup             = '<svg width="17" height="17" viewBox="0 -1 17 17" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M3 0.5H14C15.3807 0.5 16.5 1.61929 16.5 3V15.5H0.5V3C0.5 1.61929 1.61929 0.5 3 0.5Z" stroke="white"/><rect width="4" height="1" transform="matrix(-1 0 0 1 14 4)" fill="white"/><rect width="4" height="1" transform="matrix(-1 0 0 1 9 6)" fill="white"/><rect width="4" height="1" transform="matrix(-1 0 0 1 12 9)" fill="white"/><rect width="4" height="1" transform="matrix(-1 0 0 1 7 11)" fill="white"/></svg>';
 const iconGroupNode         = '<svg width="15" height="18" viewBox="0 -3 15 18" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M3 0.5H12C13.3807 0.5 14.5 1.61929 14.5 3V14.5H0.5V3C0.5 1.61929 1.61929 0.5 3 0.5Z" stroke="white"/><rect width="9" height="1" transform="matrix(-1 0 0 1 12 5)" fill="white"/><rect width="9" height="1" transform="matrix(-1 0 0 1 12 8)" fill="white"/><rect width="9" height="1" transform="matrix(-1 0 0 1 12 11)" fill="white"/></svg>';
@@ -82650,7 +82718,7 @@ extends ResizableBase
 
         this.addParam(this.paramValue = new TextParam('value', '', false, false));
 
-        this.paramValue.controls[0].textbox.defPlaceholder  = ' . . .';
+        this.paramValue.controls[0].textbox.defPlaceholder  = '...';//' . . .';
         this.paramValue.controls[0].textbox.style.textAlign = 'center';
 
 
@@ -87137,9 +87205,6 @@ extends OpColorBase
 
 
         this.paramPosition.controls[0].suffix = '%';
-
-        this.paramPosition.controls[0].min = Number.MIN_SAFE_INTEGER;
-        this.paramPosition.controls[0].max = Number.MAX_SAFE_INTEGER;
     }
     
     
@@ -87396,10 +87461,10 @@ extends OpColorBase
         
 
         this.addParam(this.paramType   = new SelectParam('type',   '',       false, true, true,  ['linear', 'radial', 'angular', 'diamond'], 0));
-        this.addParam(this.paramX1     = new NumberParam('x1',     'x ₁',    true,  true, true,  50, 0, 100));
-        this.addParam(this.paramY1     = new NumberParam('y1',     'y ₁',    true,  true, true,   0, 0, 100));
-        this.addParam(this.paramX2     = new NumberParam('x2',     'x ₂',    true,  true, true,  50, 0, 100));
-        this.addParam(this.paramY2     = new NumberParam('y2',     'y ₂',    true,  true, true, 100, 0, 100));
+        this.addParam(this.paramX1     = new NumberParam('x1',     'x ₁',    true,  true, true,   0));
+        this.addParam(this.paramY1     = new NumberParam('y1',     'y ₁',    true,  true, true,  50));
+        this.addParam(this.paramX2     = new NumberParam('x2',     'x ₂',    true,  true, true, 100));
+        this.addParam(this.paramY2     = new NumberParam('y2',     'y ₂',    true,  true, true,  50));
         this.addParam(this.paramAspect = new NumberParam('aspect', 'aspect', true,  true, true,  50, 0, 100));
         this.addParam(this.paramAngle  = new NumberParam('angle',  'angle',  true,  true, true,  90));
 

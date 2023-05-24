@@ -18,7 +18,7 @@ extends ResizableBase
 
         this.addParam(this.paramValue = new TextParam('value', '', false, false));
 
-        this.paramValue.controls[0].textbox.defPlaceholder  = ' . . .';
+        this.paramValue.controls[0].textbox.defPlaceholder  = '...';//' . . .';
         this.paramValue.controls[0].textbox.style.textAlign = 'center';
 
 

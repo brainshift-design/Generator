@@ -39,10 +39,10 @@ extends OpColorBase
         
 
         this.addParam(this.paramType   = new SelectParam('type',   '',       false, true, true,  ['linear', 'radial', 'angular', 'diamond'], 0));
-        this.addParam(this.paramX1     = new NumberParam('x1',     'x ₁',    true,  true, true,  50, 0, 100));
-        this.addParam(this.paramY1     = new NumberParam('y1',     'y ₁',    true,  true, true,   0, 0, 100));
-        this.addParam(this.paramX2     = new NumberParam('x2',     'x ₂',    true,  true, true,  50, 0, 100));
-        this.addParam(this.paramY2     = new NumberParam('y2',     'y ₂',    true,  true, true, 100, 0, 100));
+        this.addParam(this.paramX1     = new NumberParam('x1',     'x ₁',    true,  true, true,   0));
+        this.addParam(this.paramY1     = new NumberParam('y1',     'y ₁',    true,  true, true,  50));
+        this.addParam(this.paramX2     = new NumberParam('x2',     'x ₂',    true,  true, true, 100));
+        this.addParam(this.paramY2     = new NumberParam('y2',     'y ₂',    true,  true, true,  50));
         this.addParam(this.paramAspect = new NumberParam('aspect', 'aspect', true,  true, true,  50, 0, 100));
         this.addParam(this.paramAngle  = new NumberParam('angle',  'angle',  true,  true, true,  90));
 

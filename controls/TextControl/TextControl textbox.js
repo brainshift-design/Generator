@@ -3,7 +3,7 @@ TextControl.prototype.initTextarea = function()
     this.textbox                 = createTextarea('textControlTextarea');
 
     this.textbox.control         = this;
-    this.textbox.defPlaceholder  = ' . . .';
+    this.textbox.defPlaceholder  = '...';//' . . .';
     this.textbox.placeholder     = this.textbox.defPlaceholder;
 
     this.textbox.style.height    = defParamHeight;

@@ -101,7 +101,7 @@ extends GOperator
     
     toValue()
     {
-        return new StrokeValue(
+        return new ColorStopValue(
             this.options.enabled
             ? this.validateFill(this.fill ? this.fill.toValue() : this.input.fill.toValue())
             : FillValue.NaN,

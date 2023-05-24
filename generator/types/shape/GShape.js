@@ -69,7 +69,6 @@ extends GShapeBase
             for (let i = this.value.props.items.length-1; i >= 0; i--)
             {
                 const prop = this.value.props.items[i];
-                console.log('prop =', prop);
                 
 
                 if (prop.type == COLOR_VALUE)
@@ -115,25 +114,54 @@ extends GShapeBase
                     }
 
 
-                    for (let j = 0; j < prop.stops.length; j++)
+                    const p0 = point(prop.x1.toNumber() / 100, prop.y1.toNumber() / 100);
+                    const p1 = point(prop.x2.toNumber() / 100, prop.y2.toNumber() / 100);
+
+                    const a  = angle(p0, p1) - Tau/4;
+
+
+                    let xform = clone(identity);
+                    
+                    // xform = mulm3m3(xform,
+                    //     [[1, 0, p0.x],
+                    //      [0, 1, p0.y],
+                    //      [0, 0, 1   ]]);
+
+                    xform = mulm3m3(xform,
+                        [[p0.x, p0.y, p0.x],
+                         [p1.x, p1.y, p0.y],
+                         [0,    0,    1]]);
+
+                    // xform = mulm3m3(xform,
+                    //     [[ Math.cos(a), Math.sin(a), 0],
+                    //      [-Math.sin(a), Math.cos(a), 0],
+                    //      [ 0,           0,           1]]);
+
+                    // xform = mulm3m3(xform,
+                    //     [[1, 0, -p0.x],
+                    //      [0, 1, -p0.y],
+                    //      [0, 0,  1   ]]);
+
+
+                    gradient[1] = [
+                        xform[0],
+                        xform[1] ];
+                        
+
+                    for (let j = 0; j < prop.stops.items.length; j++)
                     {
-                        const rgba = scaleRgb(prop.stops[j].toRgba());
+                        const item = prop.stops.items[j];
+                        const rgba = item.fill.toRgba();
 
                         gradient[2].push([
                             rgba[0], 
                             rgba[1], 
                             rgba[2], 
                             rgba[3],
-                            prop.stops[j].position]);
+                            item.position.toNumber() / 100]);
                     }
 
-                    
-                    gradient[1].push(
-                        [0, 0, 0],
-                        [50, 50, 0]);
 
-
-                    console.log('gradient =', gradient);
                     obj.fills.push(gradient);
                 }
 

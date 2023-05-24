@@ -26,8 +26,8 @@
 {
     color:                var(--figma-color-text);
 
-    font-family:          Inter;
-    font-size:            11;
+    font-family:          'Roboto Mono';
+    font-size:            10;
     position:             absolute;
     left:                 0px;
     top:                  0px;
