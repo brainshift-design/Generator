@@ -102,12 +102,12 @@ extends GOperator
         this.inputs.forEach(i => i.pushValueUpdates(parse));
 
         if (this.gradType) this.gradType.pushValueUpdates(parse);
-        if (this.x      ) this.x      .pushValueUpdates(parse);
-        if (this.y      ) this.y      .pushValueUpdates(parse);
-        if (this.size      ) this.size      .pushValueUpdates(parse);
-        if (this.angle      ) this.angle      .pushValueUpdates(parse);
+        if (this.x       ) this.x       .pushValueUpdates(parse);
+        if (this.y       ) this.y       .pushValueUpdates(parse);
+        if (this.size    ) this.size    .pushValueUpdates(parse);
+        if (this.angle   ) this.angle   .pushValueUpdates(parse);
         if (this.aspect  ) this.aspect  .pushValueUpdates(parse);
-        if (this.skew   ) this.skew   .pushValueUpdates(parse);
+        if (this.skew    ) this.skew    .pushValueUpdates(parse);
     }    
     
     
@@ -122,12 +122,12 @@ extends GOperator
         return new GradientValue(
             stops,
             this.gradType ? this.gradType.toValue() : this.input.gradType.toValue(),
-            this.x       ? this.x      .toValue() : this.input.x1      .toValue(),
-            this.y       ? this.y      .toValue() : this.input.y1      .toValue(),
-            this.size       ? this.size      .toValue() : this.input.x2      .toValue(),
-            this.angle       ? this.angle      .toValue() : this.input.y2      .toValue(),
+            this.x        ? this.x       .toValue() : this.input.x1      .toValue(),
+            this.y        ? this.y       .toValue() : this.input.y1      .toValue(),
+            this.size     ? this.size    .toValue() : this.input.x2      .toValue(),
+            this.angle    ? this.angle   .toValue() : this.input.y2      .toValue(),
             this.aspect   ? this.aspect  .toValue() : this.input.aspect  .toValue(),
-            this.skew    ? this.skew   .toValue() : this.input.angle   .toValue());
+            this.skew     ? this.skew    .toValue() : this.input.angle   .toValue());
     }                 
 
 
@@ -135,12 +135,12 @@ extends GOperator
     isValid()
     {
         return this.gradType.isValid()
-            && this.x      .isValid()
-            && this.y      .isValid()
-            && this.size      .isValid()
-            && this.angle      .isValid()
+            && this.x       .isValid()
+            && this.y       .isValid()
+            && this.size    .isValid()
+            && this.angle   .isValid()
             && this.aspect  .isValid()
-            && this.skew   .isValid();
+            && this.skew    .isValid();
     }
 
 
@@ -152,11 +152,11 @@ extends GOperator
         this.inputs.forEach(i => i.invalidate());
         
         if (this.gradType) this.gradType.invalidate();
-        if (this.x      ) this.x      .invalidate();
-        if (this.y      ) this.y      .invalidate();
-        if (this.size      ) this.size      .invalidate();
-        if (this.angle      ) this.angle      .invalidate();
+        if (this.x       ) this.x       .invalidate();
+        if (this.y       ) this.y       .invalidate();
+        if (this.size    ) this.size    .invalidate();
+        if (this.angle   ) this.angle   .invalidate();
         if (this.aspect  ) this.aspect  .invalidate();
-        if (this.skew   ) this.skew   .invalidate();
+        if (this.skew    ) this.skew    .invalidate();
     }
 }
