@@ -221,76 +221,99 @@ function addGradientProp(obj, prop)
         xform[1] ];
         
 
-    for (let j = 0; j < prop.stops.items.length; j++)
-    {
-        const item = prop.stops.items[j];
-
-        if (item.type == COLOR_VALUE)
-        {
-            prop.stops.items[j] = new ColorStopValue(
-                FillValue.fromRgb(scaleRgb(item.toRgb()), 100),
-                NumberValue.NaN);
-        }
-        else if (item.type == FILL_VALUE)
-        {
-            prop.stops.items[j] = new ColorStopValue(
-                item,
-                NumberValue.NaN);
-        }
-    }
-
-
-    if (    prop.stops.items.length > 0
-        && !prop.stops.items[0].position.isValid()) 
-        prop.stops.items[0].position = new NumberValue(0);
-
-    if (    prop.stops.items.length > 1
-        && !prop.stops.items.at(-1).position.isValid()) 
-        prop.stops.items.at(-1).position = new NumberValue(100);
+    const stops = validateColorStops(prop.stops.items);
     
-    if (prop.stops.items.length > 2)
+    setColorStopPositions(stops);
+
+
+    for (let j = 0; j < stops.length; j++)
     {
-        for (let j = 1; j < prop.stops.items.length-1; j++)
-        {
-            const item = prop.stops.items[j];
-
-            if (!item.position.isValid())
-            {
-                let prevValid = j-1;
-                let nextValid = j+1;
-
-                while ( prevValid > 0
-                    && !prop.stops.items[prevValid].position.isValid()) 
-                    prevValid--;
-
-                while ( nextValid < prop.stops.items.length-1
-                    && !prop.stops.items[nextValid].position.isValid()) 
-                    nextValid++;
-                        
-                const pv = prop.stops.items[prevValid].position.toNumber();
-                const nv = prop.stops.items[nextValid].position.toNumber();
-
-                item.position = new NumberValue((pv + (nv - pv) * ((j - prevValid) / (nextValid - prevValid)))); 
-            }
-        }
-    }
-
-
-    for (let j = 0; j < prop.stops.items.length; j++)
-    {
-        const item = prop.stops.items[j];
-        const rgba = item.fill.toRgba();
+        const stop = stops[j];
+        const rgba = stop.fill.toRgba();
 
         gradient[2].push([
             rgba[0], 
             rgba[1], 
             rgba[2], 
             rgba[3],
-            item.position.toNumber() / 100]);
+            stop.position.toNumber() / 100]);
     }
 
 
     obj.fills.push(gradient);
+}
+
+
+
+function validateColorStops(_stops)
+{
+    const stops = [];
+
+
+    for (let i = 0; i < _stops.length; i++)
+    {
+        const stop = _stops[i];
+
+        if (stop.type == COLOR_VALUE)
+            stops.push(new ColorStopValue(
+                FillValue.fromRgb(scaleRgb(stop.toRgb()), 100),
+                NumberValue.NaN));
+
+        else if (stop.type == FILL_VALUE)
+            stops.push(new ColorStopValue(
+                stop,
+                NumberValue.NaN));
+
+        else if (stop.type == LIST_VALUE)
+            stops.push(...validateColorStops(stop.items));
+
+        else
+            stops.push(stop);
+    }
+
+
+    return stops;
+}
+
+
+
+function setColorStopPositions(stops)
+{
+    if (    stops.length > 0
+        && !stops[0].position.isValid()) 
+        stops[0].position = new NumberValue(0);
+
+    if (    stops.length > 1
+        && !stops.at(-1).position.isValid()) 
+        stops.at(-1).position = new NumberValue(100);
+    
+
+    if (stops.length > 2)
+    {
+        for (let j = 1; j < stops.length-1; j++)
+        {
+            const stop = stops[j];
+
+            if (!stop.position.isValid())
+            {
+                let prevValid = j-1;
+                let nextValid = j+1;
+
+                while ( prevValid > 0
+                    && !stops[prevValid].position.isValid()) 
+                    prevValid--;
+
+                while ( nextValid < stops.length-1
+                    && !stops[nextValid].position.isValid()) 
+                    nextValid++;
+                        
+                const pv = stops[prevValid].position.toNumber();
+                const nv = stops[nextValid].position.toNumber();
+
+                stop.position = new NumberValue((pv + (nv - pv) * ((j - prevValid) / (nextValid - prevValid)))); 
+            }
+        }
+    }
 }
 
 
