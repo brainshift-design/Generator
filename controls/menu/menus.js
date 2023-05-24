@@ -515,14 +515,14 @@ function initGeneratorMenus()
     menuShape.addItems([
         menuItemShapeSelected = new MenuItem('Selected objects...', {icon: iconSelected,   enabled: false}),
                                 new MenuItem('',                    {separator: true}),
-                                new MenuItem('Shapes',              {childMenu: menuShapes}),
+                                new MenuItem('Shapes',              {icon: iconShapes, childMenu: menuShapes}),
                                 new MenuItem('',                    {separator: true}),
                                 new MenuItem('Boolean',             {icon: iconBoolUnion,  callback: e => actionManager.do(getCreateNodeAction(BOOLEAN,     btnShape.div, getCreateOptions(e)))}),
                                 new MenuItem('',                    {separator: true}),
                                 new MenuItem('Frame',               {icon: iconFrame,      callback: e => actionManager.do(getCreateNodeAction(FRAME,       btnShape.div, getCreateOptions(e)))}),
                                 new MenuItem('Group',               {icon: iconShapeGroup, callback: e => actionManager.do(getCreateNodeAction(SHAPE_GROUP, btnShape.div, getCreateOptions(e)))}),
         menuItemShapeSep1     = new MenuItem('',                    {separator: true}),
-                                new MenuItem('Transform',           {childMenu: menuTransform}),
+                                new MenuItem('Transform',           {icon: iconMove, childMenu: menuTransform}),
                                 new MenuItem('',                    {separator: true}),
                                 new MenuItem('Render',              {icon: iconRender,     callback: e => actionManager.do(getCreateNodeAction(RENDER,       btnShape.div, getCreateOptions(e)))})]);
 
