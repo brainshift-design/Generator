@@ -82,7 +82,7 @@ extends GOperator
 
 
         if (fill.type == COLOR_VALUE)
-            return FillValue.fromRgb(scaleRgb(fill.toRgb()), 0xff);
+            return FillValue.fromRgb(scaleRgb(fill.toRgb()), 100);
         else
             return fill;
     }
