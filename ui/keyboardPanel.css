@@ -206,6 +206,25 @@
 }
 
 
+.shortcutEvent
+{
+    font-family:             Inter;
+    display:                 inline-block;
+    font-size:               11px;
+    color:                   #bcbcbc;
+    margin-left:             3px;
+    margin-right:            0px;
+    padding-left:            5px;
+    padding-right:           5px;
+    padding-top:             5px;
+    width:                   max(20px, fit-content);
+    height:                  19px;
+    border-radius:           2px;
+    font-variant-alternates: stylistic(), styleset();
+    font-feature-settings:   'salt' on, 'ss02' on;
+}
+
+
 .shortcutChar
 {
     padding-left:  9px;

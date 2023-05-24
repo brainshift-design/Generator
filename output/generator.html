@@ -17555,7 +17555,9 @@ extends GOperator
         }
         else
         {
-            this.value = new FillValue(color, opacity);
+            this.value = new FillValue(
+                color, 
+                opacity);
         }
 
 
@@ -18880,6 +18882,11 @@ extends GShapeBase
                             rgba[3],
                             prop.stops[j].position]);
                     }
+
+                    
+                    gradient[1].push(
+                        [0, 0, 0],
+                        [50, 50, 0]);
 
 
                     console.log('gradient =', gradient);

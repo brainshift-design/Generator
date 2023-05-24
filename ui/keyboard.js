@@ -127,7 +127,16 @@ document.addEventListener('keydown', e =>
     //       && getCtrlKey(e))
     //     layoutSelectedNodes();
 
-    // toggled operation results
+    // toggle node icons
+    else if (e.code == 'KeyI'
+          && getCtrlKey(e)
+          && e.shiftKey)
+    {
+        updateSettingAndMenu('showNodeIcons',  true, !settings.showNodeIcons);  
+        updateMenuItemShowNodeIcons();          
+    }
+
+    // toggle operation results
     else if (e.code == 'KeyR'
           && getCtrlKey(e)
           && e.shiftKey)

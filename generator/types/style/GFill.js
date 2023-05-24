@@ -52,7 +52,9 @@ extends GOperator
         }
         else
         {
-            this.value = new FillValue(color, opacity);
+            this.value = new FillValue(
+                color, 
+                opacity);
         }
 
 

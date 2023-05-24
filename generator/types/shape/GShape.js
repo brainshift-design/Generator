@@ -127,6 +127,11 @@ extends GShapeBase
                             prop.stops[j].position]);
                     }
 
+                    
+                    gradient[1].push(
+                        [0, 0, 0],
+                        [50, 50, 0]);
+
 
                     console.log('gradient =', gradient);
                     obj.fills.push(gradient);
