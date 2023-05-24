@@ -3,6 +3,8 @@ extends GTextType
 {
     inputs = [];
 
+    with;
+
 
     
     constructor(nodeId, options)
@@ -16,7 +18,10 @@ extends GTextType
     {
         const copy = new GTextJoin(this.nodeId, this.options);
         copy.copyBase(this);
+        
         copy.inputs = this.inputs.map(i => i.copy());
+        copy.with   = this.with;
+
         return copy;
     }
 
@@ -28,10 +33,16 @@ extends GTextType
             return this;
 
 
-        this.value = await evalJoinInputs(this.inputs, parse);
+        const _with = (await this.with.eval(parse)).toValue();
+
+        this.value = await evalJoinInputs(this.inputs, _with, parse);
         
 
-        this.updateValues = [['value', this.value]];
+        this.updateValues = 
+        [
+            ['value', this.value],
+            ['with',  _with     ]
+        ];
 
 
         this.validate();
@@ -60,7 +71,7 @@ extends GTextType
 
 
 
-async function evalJoinInputs(inputs, parse)
+async function evalJoinInputs(inputs, _with, parse)
 {
     if (isEmpty(inputs))
         return new TextValue();//TextValue.NaN;
@@ -71,6 +82,10 @@ async function evalJoinInputs(inputs, parse)
 
     for (let i = 0; i < inputs.length; i++)
     {
+        if (i > 0)
+            value.value += _with.value;
+
+            
         const val = (await inputs[i].eval(parse)).toValue();
 
         if (LIST_VALUES.includes(val.type))

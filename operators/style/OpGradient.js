@@ -19,6 +19,7 @@ extends OpColorBase
     {
         super(GRADIENT, 'grad', 'gradient', iconGradient);
 
+        this.iconOffsetY    = 1;
         this.canDisable     = true;
         this.variableInputs = true;
 

@@ -55,31 +55,24 @@ extends GOperator
         const angle    = this.angle    ? (await this.angle   .eval(parse)).toValue() : null;
 
 
-        this.value = new GradientValue();
+        const stops = new ListValue();
+
+        for (let i = 0, o = 0; i < this.inputs.length; i++)
+        {
+            await this.inputs[i].eval(parse);
+            stops.items.push(this.inputs[i].toValue());
+        }
 
 
-        // if (this.input)
-        // {
-        //     const input = (await this.input.eval(parse)).toValue();
-
-        //     this.value = new GradientValue(
-        //         x1 ?? input.x1,
-        //         y1 ?? input.y1,
-        //         x2 ?? input.x2,
-        //         y2 ?? input.y2,
-        //         x3 ?? input.x3,
-        //         y3 ?? input.y3);
-        // }
-        // else
-        // {
-        //     this.value = new GradientValue(
-        //         x1, 
-        //         y1, 
-        //         x2, 
-        //         y2, 
-        //         x3,
-        //         y3);
-        // }
+        this.value = new GradientValue(
+            stops,
+            gradType,
+            x1, 
+            y1, 
+            x2, 
+            y2, 
+            aspect,
+            angle);
 
 
         this.updateValues =

@@ -14,7 +14,8 @@ extends OpShape
     {
         super(RECTANGLE, 'rect', 'rectangle', iconRectangle);
 
-        this.canDisable = true;
+        this.iconOffsetY = -1;
+        this.canDisable  = true;
         
 
         this.addInput (this.createInputForObjects([RECTANGLE_VALUE], getNodeInputValuesForUndo));

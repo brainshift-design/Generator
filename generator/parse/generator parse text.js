@@ -261,9 +261,14 @@ function genParseTextJoin(parse, newNode)
 
     parse.nTab++;
 
+
     for (let i = 0; i < nInputs; i++)
         join.inputs.push(genParse(parse));
 
+
+    join.with = genParse(parse);
+
+    
     parse.nTab--;
 
         

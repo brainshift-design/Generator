@@ -37,6 +37,7 @@ class Operator
 
 
     icon;
+    iconOffsetY = 0;
 
 
     enabled;

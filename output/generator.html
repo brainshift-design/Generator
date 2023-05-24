@@ -14937,6 +14937,8 @@ extends GTextType
 {
     inputs = [];
 
+    with;
+
 
     
     constructor(nodeId, options)
@@ -14950,7 +14952,10 @@ extends GTextType
     {
         const copy = new GTextJoin(this.nodeId, this.options);
         copy.copyBase(this);
+        
         copy.inputs = this.inputs.map(i => i.copy());
+        copy.with   = this.with;
+
         return copy;
     }
 
@@ -14962,10 +14967,16 @@ extends GTextType
             return this;
 
 
-        this.value = await evalJoinInputs(this.inputs, parse);
+        const _with = (await this.with.eval(parse)).toValue();
+
+        this.value = await evalJoinInputs(this.inputs, _with, parse);
         
 
-        this.updateValues = [['value', this.value]];
+        this.updateValues = 
+        [
+            ['value', this.value],
+            ['with',  _with     ]
+        ];
 
 
         this.validate();
@@ -14994,7 +15005,7 @@ extends GTextType
 
 
 
-async function evalJoinInputs(inputs, parse)
+async function evalJoinInputs(inputs, _with, parse)
 {
     if (isEmpty(inputs))
         return new TextValue();//TextValue.NaN;
@@ -15005,6 +15016,10 @@ async function evalJoinInputs(inputs, parse)
 
     for (let i = 0; i < inputs.length; i++)
     {
+        if (i > 0)
+            value.value += _with.value;
+
+            
         const val = (await inputs[i].eval(parse)).toValue();
 
         if (LIST_VALUES.includes(val.type))
@@ -17787,31 +17802,24 @@ extends GOperator
         const angle    = this.angle    ? (await this.angle   .eval(parse)).toValue() : null;
 
 
-        this.value = new GradientValue();
+        const stops = new ListValue();
+
+        for (let i = 0, o = 0; i < this.inputs.length; i++)
+        {
+            await this.inputs[i].eval(parse);
+            stops.items.push(this.inputs[i].toValue());
+        }
 
 
-        // if (this.input)
-        // {
-        //     const input = (await this.input.eval(parse)).toValue();
-
-        //     this.value = new GradientValue(
-        //         x1 ?? input.x1,
-        //         y1 ?? input.y1,
-        //         x2 ?? input.x2,
-        //         y2 ?? input.y2,
-        //         x3 ?? input.x3,
-        //         y3 ?? input.y3);
-        // }
-        // else
-        // {
-        //     this.value = new GradientValue(
-        //         x1, 
-        //         y1, 
-        //         x2, 
-        //         y2, 
-        //         x3,
-        //         y3);
-        // }
+        this.value = new GradientValue(
+            stops,
+            gradType,
+            x1, 
+            y1, 
+            x2, 
+            y2, 
+            aspect,
+            angle);
 
 
         this.updateValues =
@@ -27371,9 +27379,14 @@ function genParseTextJoin(parse, newNode)
 
     parse.nTab++;
 
+
     for (let i = 0; i < nInputs; i++)
         join.inputs.push(genParse(parse));
 
+
+    join.with = genParse(parse);
+
+    
     parse.nTab--;
 
         

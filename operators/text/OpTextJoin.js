@@ -12,9 +12,11 @@ extends ResizableOperatorWithValue
         this.addOutput(new Output([TEXT_VALUE], this.output_genRequest));
 
         this.addParam(this.paramValue);
+        this.addParam(this.paramWith = new TextParam('with', 'with', true,  true));
 
 
         this.paramValue.controls[0].textbox.style.textAlign = 'center';
+        this.paramWith .controls[0].textbox.style.textAlign = 'center';
     }
     
     
@@ -70,6 +72,9 @@ extends ResizableOperatorWithValue
         for (const input of connectedInputs)
             request.push(...pushInputOrParam(input, gen));
 
+            
+        request.push(...this.node.paramWith.genRequest(gen));
+
         
         gen.scope.pop();
         pushUnique(gen.passedNodes, this.node);
@@ -93,6 +98,6 @@ extends ResizableOperatorWithValue
     {
         this.paramValue.controls[0].setSize(
             this.div.offsetWidth,
-            this.div.offsetHeight - Math.max(defHeaderHeight, this.header.offsetHeight));
+            this.div.offsetHeight - Math.max(defHeaderHeight, this.header.offsetHeight) - defParamHeight);
     }
 }
