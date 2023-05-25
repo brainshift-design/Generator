@@ -6582,7 +6582,7 @@ class Random
     get(index)
     {
         if (index >= this.cache.length)
-            this.updateCache(nextPow2(index));
+            this.updateCache(nextPow2(index+1));
 
         return this.cache[index] / -0x7fffffff;
     }
@@ -16224,6 +16224,12 @@ extends GNumberType
             min.value + this.random.get(iteration) * (max.value - min.value),
             Math.max(min.decimals, max.decimals));
 
+        if (!this.value.isValid())
+        {
+            console.log('iteration =', iteration);
+            console.log('this.random =', this.random);
+            console.log('this.value =', this.value);
+        }
 
         this.updateValues =
         [
@@ -23465,9 +23471,13 @@ function validateColorStops(_stops)
         const stop = _stops[i];
 
         if (stop.type == COLOR_VALUE)
+        {
+            // if (isNaN(stop.toRgb()[0]))
+            //     console.log('stop =', stop);
             stops.push(new ColorStopValue(
                 FillValue.fromRgb(scaleRgb(stop.toRgb()), 100),
                 NumberValue.NaN));
+        }
 
         else if (stop.type == FILL_VALUE)
             stops.push(new ColorStopValue(
@@ -23500,14 +23510,14 @@ function setColorStopPositions(stops)
 
     if (stops.length > 2)
     {
-        for (let j = 1; j < stops.length-1; j++)
+        for (let i = 1; i < stops.length-1; i++)
         {
-            const stop = stops[j];
+            const stop = stops[i];
 
             if (!stop.position.isValid())
             {
-                let prevValid = j-1;
-                let nextValid = j+1;
+                let prevValid = i-1;
+                let nextValid = i+1;
 
                 while ( prevValid > 0
                     && !stops[prevValid].position.isValid()) 
@@ -23520,7 +23530,7 @@ function setColorStopPositions(stops)
                 const pv = stops[prevValid].position.toNumber();
                 const nv = stops[nextValid].position.toNumber();
 
-                stop.position = new NumberValue((pv + (nv - pv) * ((j - prevValid) / (nextValid - prevValid)))); 
+               stop.position = new NumberValue((pv + (nv - pv) * ((i - prevValid) / (nextValid - prevValid)))); 
             }
         }
     }
@@ -37923,7 +37933,7 @@ class Random
     get(index)
     {
         if (index >= this.cache.length)
-            this.updateCache(nextPow2(index));
+            this.updateCache(nextPow2(index+1));
 
         return this.cache[index] / -0x7fffffff;
     }
@@ -50151,6 +50161,12 @@ extends GNumberType
             min.value + this.random.get(iteration) * (max.value - min.value),
             Math.max(min.decimals, max.decimals));
 
+        if (!this.value.isValid())
+        {
+            console.log('iteration =', iteration);
+            console.log('this.random =', this.random);
+            console.log('this.value =', this.value);
+        }
 
         this.updateValues =
         [
@@ -57392,9 +57408,13 @@ function validateColorStops(_stops)
         const stop = _stops[i];
 
         if (stop.type == COLOR_VALUE)
+        {
+            // if (isNaN(stop.toRgb()[0]))
+            //     console.log('stop =', stop);
             stops.push(new ColorStopValue(
                 FillValue.fromRgb(scaleRgb(stop.toRgb()), 100),
                 NumberValue.NaN));
+        }
 
         else if (stop.type == FILL_VALUE)
             stops.push(new ColorStopValue(
@@ -57427,14 +57447,14 @@ function setColorStopPositions(stops)
 
     if (stops.length > 2)
     {
-        for (let j = 1; j < stops.length-1; j++)
+        for (let i = 1; i < stops.length-1; i++)
         {
-            const stop = stops[j];
+            const stop = stops[i];
 
             if (!stop.position.isValid())
             {
-                let prevValid = j-1;
-                let nextValid = j+1;
+                let prevValid = i-1;
+                let nextValid = i+1;
 
                 while ( prevValid > 0
                     && !stops[prevValid].position.isValid()) 
@@ -57447,7 +57467,7 @@ function setColorStopPositions(stops)
                 const pv = stops[prevValid].position.toNumber();
                 const nv = stops[nextValid].position.toNumber();
 
-                stop.position = new NumberValue((pv + (nv - pv) * ((j - prevValid) / (nextValid - prevValid)))); 
+               stop.position = new NumberValue((pv + (nv - pv) * ((i - prevValid) / (nextValid - prevValid)))); 
             }
         }
     }

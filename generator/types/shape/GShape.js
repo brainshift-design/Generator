@@ -255,9 +255,13 @@ function validateColorStops(_stops)
         const stop = _stops[i];
 
         if (stop.type == COLOR_VALUE)
+        {
+            // if (isNaN(stop.toRgb()[0]))
+            //     console.log('stop =', stop);
             stops.push(new ColorStopValue(
                 FillValue.fromRgb(scaleRgb(stop.toRgb()), 100),
                 NumberValue.NaN));
+        }
 
         else if (stop.type == FILL_VALUE)
             stops.push(new ColorStopValue(
@@ -290,14 +294,14 @@ function setColorStopPositions(stops)
 
     if (stops.length > 2)
     {
-        for (let j = 1; j < stops.length-1; j++)
+        for (let i = 1; i < stops.length-1; i++)
         {
-            const stop = stops[j];
+            const stop = stops[i];
 
             if (!stop.position.isValid())
             {
-                let prevValid = j-1;
-                let nextValid = j+1;
+                let prevValid = i-1;
+                let nextValid = i+1;
 
                 while ( prevValid > 0
                     && !stops[prevValid].position.isValid()) 
@@ -310,7 +314,7 @@ function setColorStopPositions(stops)
                 const pv = stops[prevValid].position.toNumber();
                 const nv = stops[nextValid].position.toNumber();
 
-                stop.position = new NumberValue((pv + (nv - pv) * ((j - prevValid) / (nextValid - prevValid)))); 
+               stop.position = new NumberValue((pv + (nv - pv) * ((i - prevValid) / (nextValid - prevValid)))); 
             }
         }
     }

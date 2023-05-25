@@ -50,7 +50,7 @@ class Random
     get(index)
     {
         if (index >= this.cache.length)
-            this.updateCache(nextPow2(index));
+            this.updateCache(nextPow2(index+1));
 
         return this.cache[index] / -0x7fffffff;
     }
