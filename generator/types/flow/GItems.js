@@ -28,8 +28,9 @@ extends GOperator
         
         for (const key of this.keys())
         {
-            if (   key.length > 4
-                && key.substring(0, 4) == 'item')
+            if (this[key] instanceof GValue)
+            //    key.length > 4
+            //    && key.substring(0, 4) == 'item')
                 Object.assign(copy, {[key]: this[key]});
         }
 
@@ -69,8 +70,13 @@ extends GOperator
             {
                 const item = this.value.items[i];
 
-                Object.assign(this, {['item' + i]: item});
-                this.updateValues.push(['item' + i, item]);
+                const valueId =
+                    item.valueId != ''
+                    ? item.valueId
+                    : 'item' + i;
+
+                Object.assign(this, {[valueId]: item});
+                this.updateValues.push([valueId, item]);
             }
         }
         else

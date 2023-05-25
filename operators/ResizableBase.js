@@ -17,9 +17,9 @@ extends OperatorBase
 
 
 
-    constructor(type, id, name, icon)
+    constructor(type, id, name, icon, defWidth = defNodeWidth, progressBar = false)
     {
-        super(type, id, name, icon);
+        super(type, id, name, icon, defWidth, progressBar);
 
         this.initSizer();
     }

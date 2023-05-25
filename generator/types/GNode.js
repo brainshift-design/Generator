@@ -7,9 +7,7 @@ class GNode
 
     listId       = -1;
 
-
-    iteration     = 0;
-
+    iteration    = 0;
 
     options      = {};
     data         = {}; // for type conversion info

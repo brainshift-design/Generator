@@ -84,17 +84,23 @@ extends OperatorBase
                 const value = values[i];
                 if (!value.isValid()) continue;
 
-
-                const id = 'item' + i;
+                
+                const valueId = paramIds[i];
 
                 const param = oldParams.find(p => 
-                       p.id == id
+                       p.id   == valueId
                     && p.type == value.type);
+
+                const showName = value.type == NUMBER_VALUE;
+
 
                 if (   param
                     && paramIds.includes(param.id)) 
                 {
                     this.addParam(param, true);
+
+                    // if (param.type != TEXT)
+                    //     param.showName = true;
 
                     const _conn = oldParamConns.find(c =>
                            c.outputNodeId == this.id
@@ -106,8 +112,8 @@ extends OperatorBase
                         uiSaveConn(conn);
                     }
                 }
-                else       
-                    this.createAndAddParamByType(value.type, id, false, false, true, true);
+                else
+                    this.createAndAddParamByType(value.type, valueId, showName, false, true, true);
             }
         }
 

@@ -1,6 +1,10 @@
 class   OpTextJoin
 extends ResizableOperatorWithValue
 {
+    paramWith;
+
+
+
     constructor()
     {
         super(TEXT_JOIN, 'join', 'join', iconTextJoin);
@@ -17,6 +21,12 @@ extends ResizableOperatorWithValue
 
         this.paramValue.controls[0].textbox.style.textAlign = 'center';
         this.paramWith .controls[0].textbox.style.textAlign = 'center';
+
+        this.paramValue.controls[0].textbox.style.fontFamily = 'Roboto Mono';
+        this.paramValue.controls[0].textbox.style.fontSize   = '10px';
+
+        this.paramWith.controls[0].textbox.style.fontFamily = 'Roboto Mono';
+        this.paramWith.controls[0].textbox.style.fontSize   = '10px';
     }
     
     

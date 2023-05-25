@@ -5,9 +5,9 @@ extends ResizableBase
     
 
 
-    constructor(type, id, name, defWidth = defNodeWidth, progressBar = false)
+    constructor(type, id, name, icon, defWidth = defNodeWidth, progressBar = false)
     {
-        super(type, id, name, defWidth, progressBar);
+        super(type, id, name, icon, defWidth, progressBar);
 
         this.paramValue          = createParamFromType(type);
         this.paramValue.isResult = true;

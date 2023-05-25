@@ -1,5 +1,5 @@
 class   OpTextFetch
-extends OperatorWithValue
+extends ResizableOperatorWithValue
 {
     paramRequest;
 
@@ -10,6 +10,7 @@ extends OperatorWithValue
         super(TEXT_FETCH, 'fetch', 'fetch', iconTextFetch, defNodeWidth, true);
 
         this.canDisable       = true;
+        this.iconOffsetY      = -1;
 
         this.alwaysLoadParams = true;
         this.alwaysSaveParams = true;
@@ -23,10 +24,32 @@ extends OperatorWithValue
 
         this.paramValue  .controls[0].textbox.style.textAlign = 'center';
         this.paramRequest.controls[0].textbox.style.textAlign = 'center';
+
+        this.paramValue.controls[0].textbox.style.fontFamily = 'Roboto Mono';
+        this.paramValue.controls[0].textbox.style.fontSize   = '10px';
+
+        this.paramRequest.controls[0].textbox.style.fontFamily = 'Roboto Mono';
+        this.paramRequest.controls[0].textbox.style.fontSize   = '10px';
     }
 
 
 
+    setSize(w, h, updateTransform = true)
+    {
+        super.setSize(w, h, updateTransform);
+        this.updateValueParam();
+    }
+
+
+
+    setRect(x, y, w, h, updateTransform = true)
+    {
+        super.setRect(x, y, w, h, updateTransform);
+        this.updateValueParam();
+    }
+
+    
+    
     output_genRequest(gen)
     {
         // 'this' is the output
@@ -75,5 +98,14 @@ extends OperatorWithValue
         this.paramRequest.enableControlText(true);
 
         this.updateParamControls();
+    }
+
+
+
+    updateValueParam()
+    {
+        this.paramValue.controls[0].setSize(
+            this.div.offsetWidth,
+            this.div.offsetHeight - Math.max(defHeaderHeight, this.header.offsetHeight) - defParamHeight);
     }
 }

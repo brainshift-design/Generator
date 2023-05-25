@@ -3816,6 +3816,7 @@ const TEXT_JOIN      = 'TJOIN';
 const TEXT_CHAR      = 'TCHAR';
 const NUMBER_TO_TEXT = 'N2T';
 const TEXT_CSV       = 'TCSV';
+const TEXT_JSON      = 'TJSON';
 const TEXT_FETCH     = 'FETCH';
 
 
@@ -3832,6 +3833,7 @@ const TEXT_TYPES =
     TEXT_CHAR,
     NUMBER_TO_TEXT,
     TEXT_CSV,
+    TEXT_JSON,
     TEXT_FETCH
 ];
 
@@ -5262,9 +5264,7 @@ class GNode
 
     listId       = -1;
 
-
-    iteration     = 0;
-
+    iteration    = 0;
 
     options      = {};
     data         = {}; // for type conversion info
@@ -5364,9 +5364,15 @@ class GNode
 class GValue
 extends GNode
 {
+    valueId;
+
+
+
     constructor(type, options) 
     {
         super(type, options);
+
+        this.valueId = '';
     }
 
 
@@ -5375,6 +5381,15 @@ extends GNode
     {
         console.assert(false, 'abstract class GValue cannot be copied');
         return null;
+    }
+
+
+
+    copyBase(base)
+    {
+        this.valueId = base.valueId;
+
+        super.copyBase(base);
     }
 
 
@@ -10111,8 +10126,9 @@ extends GOperator
         
         for (const key of this.keys())
         {
-            if (   key.length > 4
-                && key.substring(0, 4) == 'item')
+            if (this[key] instanceof GValue)
+            //    key.length > 4
+            //    && key.substring(0, 4) == 'item')
                 Object.assign(copy, {[key]: this[key]});
         }
 
@@ -10152,8 +10168,13 @@ extends GOperator
             {
                 const item = this.value.items[i];
 
-                Object.assign(this, {['item' + i]: item});
-                this.updateValues.push(['item' + i, item]);
+                const valueId =
+                    item.valueId != ''
+                    ? item.valueId
+                    : 'item' + i;
+
+                Object.assign(this, {[valueId]: item});
+                this.updateValues.push([valueId, item]);
             }
         }
         else
@@ -15160,6 +15181,133 @@ extends GOperator
         this.validate();
 
         return this;
+    }
+
+
+
+    pushValueUpdates(parse)
+    {
+        super.pushValueUpdates(parse);
+
+        if (this.input    ) this.input    .pushValueUpdates(parse);
+        if (this.value    ) this.value    .pushValueUpdates(parse);
+        if (this.separator) this.separator.pushValueUpdates(parse);
+    }
+
+
+
+    // toValue()
+    // {
+    //     return this.value.copy();
+    // }
+
+
+
+    invalidate()
+    {
+        super.invalidate();
+
+        if (this.input    ) this.input    .invalidate();
+        if (this.value    ) this.value    .invalidate();
+        if (this.separator) this.separator.invalidate();
+    }
+}
+
+
+
+class GTextJson
+extends GOperator
+{
+    input;
+
+    value;
+
+
+
+    constructor(nodeId, options)
+    {
+        super(TEXT_JSON, nodeId, options);
+    }
+
+
+    
+    copy()
+    {
+        const copy = new GTextJson(this.nodeId, this.options);
+
+        copy.copyBase(this);
+
+        if (this.input) copy.input = this.input.copy();
+        if (this.value) copy.value = this.value.copy();
+
+        return copy;
+    }
+
+
+
+    async eval(parse)
+    {
+        if (this.isCached())
+            return this;
+
+
+        this.value = new ListValue();
+
+
+        if (this.input)
+        {
+            const input = (await this.input.eval(parse)).toValue();
+            console.assert(input.type == TEXT_VALUE, 'input must be TEXT_VALUE');
+
+            try
+            {
+                const json = JSON.parse(input.value);
+                this.evalItems(json);
+            }
+            catch (e)
+            {
+                this.value = new ListValue();
+            }
+        }
+    
+
+        this.updateValues =
+        [
+            ['value', this.value]
+        ];
+        
+
+        this.validate();
+
+        return this;
+    }
+
+
+
+    evalItems(json)
+    {
+        for (let key in json)
+        {
+            if (   typeof json[key] === 'object'
+                && json[key] !== null)
+                this.evalItems(json[key]);                
+
+            else
+            {
+                let value;
+
+                if (typeof json[key] === 'number')
+                    value = NumberValue.fromString(json[key].toString());
+                else if (typeof json[key] === 'boolean')
+                    value = new NumberValue(parseBool(json[key].toString()) ? 1 : 0);
+                else
+                    value = new TextValue(json[key]);
+
+                    
+                value.valueId = key;
+                this.value.items.push(value);
+            }
+        }
     }
 
 
@@ -27786,6 +27934,50 @@ function genParseTextCSV(parse)
 
 
 
+function genParseTextJson(parse)
+{
+    const [, nodeId, options, ignore] = genParseNodeStart(parse);
+
+
+    const json = new GTextJson(nodeId, options);
+   
+
+    let nInputs = -1;
+    
+    if (!ignore)
+    {
+        nInputs = parseInt(parse.move());
+        console.assert(nInputs == 0 || nInputs == 1, 'nInputs must be [0, 1]');
+    }
+
+    
+    if (parse.settings.logRequests) 
+        logReq(json, parse, ignore, nInputs);
+
+
+    if (ignore) 
+    {
+        genParseNodeEnd(parse, json);
+        return parse.parsedNodes.find(n => n.nodeId == nodeId);
+    }
+
+
+    parse.nTab++;
+
+
+    if (nInputs == 1)
+        json.input = genParse(parse);
+
+    
+    parse.nTab--;
+
+
+    genParseNodeEnd(parse, json);
+    return json;
+}
+
+
+
 function genParseTextFetch(parse)
 {
     const [, nodeId, options, ignore] = genParseNodeStart(parse);
@@ -28005,6 +28197,7 @@ function genParse(parse, inParam = true)
     else if (parse.next == TEXT_REPLACE           ) result = genParseTextReplace      (parse);
     else if (parse.next == TEXT_JOIN              ) result = genParseTextJoin         (parse);
     else if (parse.next == TEXT_CSV               ) result = genParseTextCSV          (parse);
+    else if (parse.next == TEXT_JSON              ) result = genParseTextJson         (parse);
     else if (parse.next == TEXT_FETCH             ) result = genParseTextFetch        (parse);
  
     else if (parse.next == COLOR_VALUE            ) result = genParseColorValue       (parse);

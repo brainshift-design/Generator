@@ -1,9 +1,15 @@
 class GValue
 extends GNode
 {
+    valueId;
+
+
+
     constructor(type, options) 
     {
         super(type, options);
+
+        this.valueId = '';
     }
 
 
@@ -12,6 +18,15 @@ extends GNode
     {
         console.assert(false, 'abstract class GValue cannot be copied');
         return null;
+    }
+
+
+
+    copyBase(base)
+    {
+        this.valueId = base.valueId;
+
+        super.copyBase(base);
     }
 
 

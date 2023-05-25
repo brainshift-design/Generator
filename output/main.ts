@@ -700,6 +700,7 @@ const TEXT_JOIN      = 'TJOIN';
 const TEXT_CHAR      = 'TCHAR';
 const NUMBER_TO_TEXT = 'N2T';
 const TEXT_CSV       = 'TCSV';
+const TEXT_JSON      = 'TJSON';
 const TEXT_FETCH     = 'FETCH';
 
 
@@ -716,6 +717,7 @@ const TEXT_TYPES =
     TEXT_CHAR,
     NUMBER_TO_TEXT,
     TEXT_CSV,
+    TEXT_JSON,
     TEXT_FETCH
 ];
 

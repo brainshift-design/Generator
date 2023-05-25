@@ -644,7 +644,7 @@ class Operator
 
     setRect(x, y, w, h, updateTransform = true)
     {
-        console.log('Operator.setRect()');
+        //console.log('Operator.setRect()');
 
         this.div.style.left   = x + 'px';
         this.div.style.top    = y + 'px';
@@ -1111,7 +1111,7 @@ class Operator
 
             if (index < 0)
             {
-                this.createAndAddParamByType(_param[0], _param[1], false, false, true, true);
+                this.createAndAddParamByType(_param[0], _param[1], true, false, true, true);
                 index = this.params.length-1;
             }
 
