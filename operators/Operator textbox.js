@@ -142,7 +142,7 @@ Operator.prototype.initLabelTextbox = function()
 
         this.textbox.dispatchEvent(new CustomEvent('finishedit', { 'detail': {
             'success':  success,
-            'value':    enteredValue,
+            returnValueId:    enteredValue,
             'oldValue': savedValue }}));
     
 

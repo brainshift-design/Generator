@@ -81,7 +81,7 @@ extends GShape
 
         this.updateValues =
         [
-            ['value',    this.value         ],
+            [returnValueId,    this.value         ],
             ['round',    this.value.round   ],
             ['children', this.value.children]
         ];

@@ -18,6 +18,8 @@ extends Control
     
     readOnly          = false;
     
+    tabSize           = 4;
+    
 
     confirmTimer      = null;
     

@@ -78,7 +78,7 @@ extends GColorType
 
         this.updateValues = 
         [
-            ['value',   this.value],
+            [returnValueId,   this.value],
             ['mode',    mode      ],
             ['opacity', opacity   ]
         ];

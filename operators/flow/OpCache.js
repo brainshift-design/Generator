@@ -18,8 +18,8 @@ extends OperatorBase
         //this.addOutput(new Output([], this.output_genRequest));
 
 
-        this.paramNumber = new NumberParam('value', '', false, false, true);
-        this.paramColor  = new  ColorParam('value', '', false, false, true);
+        this.paramNumber = new NumberParam(returnValueId, '', false, false, true);
+        this.paramColor  = new  ColorParam(returnValueId, '', false, false, true);
 
         this.paramNumber.volatile = true;
         this.paramColor .volatile = true;
@@ -76,7 +76,7 @@ extends OperatorBase
 
     updateValues(requestId, actionId, updateParamId, paramIds, values) // virtual
     {
-        const val = values[paramIds.findIndex(id => id == 'value')];
+        const val = values[paramIds.findIndex(id => id == returnValueId)];
 
         // this.headerColor =
         //     val && val.type == COLOR_VALUE

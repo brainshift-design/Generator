@@ -26,7 +26,7 @@ extends OperatorBase
 
     // genRequest(gen)
     // {
-    //     // 'this' is the node
+        // 'this' is the node
 
         gen.scope.push({
             nodeId:  this.node.id, 
@@ -81,26 +81,31 @@ extends OperatorBase
         {
             for (let i = 0; i < values.length - 1; i++) 
             {
-                const value = values[i];
-                if (!value.isValid()) continue;
-
-                
+                const value   = values[i];
                 const valueId = paramIds[i];
+    
+                if (  !value.isValid()
+                    || valueId == returnValueId) 
+                    continue;
 
+                // if (i == 0 && valueId == returnValueId)
+                //     continue;
+
+                    
                 const param = oldParams.find(p => 
                        p.id   == valueId
                     && p.type == value.type);
 
-                const showName = value.type == NUMBER_VALUE;
+                const showName = 
+                       value.type == NUMBER_VALUE ;
+//                    && value.valueId != '';
 
-
+                    
                 if (   param
-                    && paramIds.includes(param.id)) 
+                    && paramIds.includes(param.id))
+//                    && !(i == 0 && param.id != returnValueId)) 
                 {
                     this.addParam(param, true);
-
-                    // if (param.type != TEXT)
-                    //     param.showName = true;
 
                     const _conn = oldParamConns.find(c =>
                            c.outputNodeId == this.id
@@ -108,7 +113,12 @@ extends OperatorBase
 
                     if (_conn)
                     {
-                        const conn = uiConnect(param.output, nodeFromId(_conn.inputNodeId).inputFromId(_conn.inputId));
+                        const inputNode = nodeFromId(_conn.inputNodeId);
+
+                        const conn = uiConnect(
+                            param.output, 
+                            inputNode.inputFromId(_conn.inputId));
+
                         uiSaveConn(conn);
                     }
                 }
@@ -117,16 +127,17 @@ extends OperatorBase
             }
         }
 
-        else if (isEmpty(paramIds))
+        else if (paramIds.length <= 1)
             this.removeAllParams();
     
         
         super.updateValues(requestId, actionId, updateParamId, paramIds, values);
 
 
-        const value = values[paramIds.findIndex(id => id == 'value')];
+        const value = values[paramIds.findIndex(id => id == returnValueId)];
 
-        this.outputs[0].types = [finalListTypeFromItems(value.items)];
+        if (LIST_VALUES.includes(value.type))
+            this.outputs[0].types = [finalListTypeFromItems(value.items)];
     }
 
 

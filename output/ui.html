@@ -4427,6 +4427,7 @@ const nodeTag          = 'G_NODE';
 const connTag          = 'G_CONN';
 const pageTag          = 'G_PAGE';
 
+const returnValueId    = '-v﻿a﻿l﻿u﻿e-';
 
 
 const identity = Object.freeze(
@@ -6992,6 +6993,13 @@ function trimCharFromEnd(str, trim)
         str = str.substring(0, str.length - trim.length);
 
     return str;
+}
+
+
+
+function isValidFloatString(str) 
+{
+    return /^-?\d*\.?\d*(e-?\d+)?$/.test(str);
 }
 
 
@@ -9968,7 +9976,9 @@ extends GNode
 
     paramFromId(paramId)
     {
-        return this[paramId];
+        return paramId == returnValueId
+            ?  this.value
+            :  this[paramId];
     }
 
 
@@ -10084,7 +10094,11 @@ extends GOperator
         await this.node.eval(parse);
         this.node.feedbackValue = null;
 
+        console.log('this.paramId =', this.paramId);
+        console.log('this.node =', this.node);
+        console.log('this.node[this.paramId] =', this.node[this.paramId]);
         this.param = this.node.paramFromId(this.paramId);
+        console.log('this.param =', this.param);
 
 
         if (isValid(this.param))
@@ -14370,7 +14384,7 @@ extends GOperator
         }
 
 
-        this.updateValues = [['value', this.value]];
+        this.updateValues = [[returnValueId, this.value]];
 
 
         this.validate();
@@ -14466,7 +14480,7 @@ extends GOperator
 
 
 
-        this.updateValues = [['value', this.value]];
+        this.updateValues = [[returnValueId, this.value]];
 
 
         this.validate();
@@ -14555,6 +14569,9 @@ extends GOperator
 
             this.value   = this.input.toValue();
             this.objects = this.input.objects.map(o => o.copy());
+
+            // console.log('this.input =', this.input);
+            // console.log('this.value =', this.value);
         }
         else
         {
@@ -14573,7 +14590,7 @@ extends GOperator
             {
                 const item = this.value.items[i];
 
-                const valueId =
+                const valueId = 
                     item.valueId != ''
                     ? item.valueId
                     : 'item' + i;
@@ -14586,7 +14603,7 @@ extends GOperator
             this.updateValues.push(['', NullValue]);
 
 
-        this.updateValues.push(['value', this.value]);
+        this.updateValues.push([returnValueId, this.value]); // first so it can be separated out in OpItems
 
 
         for (let j = 0; j < this.objects.length; j++)
@@ -14611,12 +14628,15 @@ extends GOperator
 
     paramFromId(paramId)
     {
-        if (   paramId.length > 4
-            && paramId.substring(0, 4) == 'item'
-            && strIsNum(paramId.substring(4)))
-            return this[paramId];
+        return paramId != returnValueId
+              ? this[paramId]
+              : null;
+        // if (   paramId.length > 4
+        //     && paramId.substring(0, 4) == 'item'
+        //     && strIsNum(paramId.substring(4)))
+        //     return this[paramId];
 
-        return null;
+        // return null;
     }
 
 
@@ -14732,7 +14752,7 @@ extends GOperator
 
         this.updateValues =
         [
-            ['value',  this.value             ],
+            [returnValueId,  this.value             ],
             ['length', new NumberValue(length)],
             ['index',  index                  ]
         ];
@@ -14821,7 +14841,7 @@ extends GOperator
             this.value = NumberValue.NaN;
 
 
-        this.updateValues = [['value', this.value]];
+        this.updateValues = [[returnValueId, this.value]];
 
 
         this.validate();
@@ -14929,7 +14949,7 @@ extends GOperator
 
         this.updateValues =
         [
-            ['value',     this.value],
+            [returnValueId,     this.value],
             ['condition', cond      ]
         ];
         
@@ -15021,7 +15041,7 @@ extends GOperator
 
         this.updateValues =
         [
-            ['value',    this.value],
+            [returnValueId,    this.value],
             ['repeatId', repeatId  ]
         ];
 
@@ -15177,7 +15197,7 @@ extends GOperator
 
             this.updateValues =
             [
-                ['value',  this.value     ],
+                [returnValueId,  this.value     ],
                 ['count',  count          ],
                 ['loop',   NumberValue.NaN]
             ];
@@ -15299,7 +15319,7 @@ extends GOperator
             : NullValue;
 
 
-        this.updateValues = [['value', this.value]];
+        this.updateValues = [[returnValueId, this.value]];
         
         
         this.validate();
@@ -15377,7 +15397,7 @@ extends GOperator
             : NullValue;
 
 
-        this.updateValues = [['value', this.value]];
+        this.updateValues = [[returnValueId, this.value]];
 
         
         this.validate();
@@ -15483,7 +15503,7 @@ extends GNumberType
             this.value = this.feedbackValue();
 
 
-        this.updateValues = [['value', this.value]];    
+        this.updateValues = [[returnValueId, this.value]];    
 
 
         this.validate();
@@ -15568,7 +15588,7 @@ extends GNumberType
             this.value = NumberValue.NaN;
 
 
-        this.updateValues = [['value', this.value]];
+        this.updateValues = [[returnValueId, this.value]];
 
 
         this.validate();
@@ -15645,7 +15665,7 @@ extends GNumberType
             this.value = NumberValue.NaN;
 
 
-        this.updateValues = [['value', this.value]];
+        this.updateValues = [[returnValueId, this.value]];
 
 
         this.validate();
@@ -15750,7 +15770,7 @@ extends GNumberType
         [
             ['type',     type      ],
             ['decimals', dec       ],
-            ['value',    this.value]
+            [returnValueId,    this.value]
         ];
 
 
@@ -15845,7 +15865,7 @@ extends GNumberType
 
         this.updateValues =
         [
-            ['value', this.value],
+            [returnValueId, this.value],
             ['min',   min       ],
             ['max',   max       ]
         ];
@@ -15947,7 +15967,7 @@ extends GNumberType
         
         this.updateValues =
         [
-            ['value',   this.value],
+            [returnValueId,   this.value],
             ['constant', constant ]
         ];
 
@@ -16356,7 +16376,7 @@ extends GNumberType
         this.updateValues =
         [
             ['amount', amount    ],
-            ['value',  this.value]
+            [returnValueId,  this.value]
         ];
         
 
@@ -16452,7 +16472,7 @@ extends GNumberType
 
         this.updateValues =
         [
-            ['value',  this.value],
+            [returnValueId,  this.value],
             ['number', number    ],
             ['format', format    ]
         ];
@@ -16612,7 +16632,7 @@ extends GNumberType
                 else
                 {
                     this.value = NumberValue.NaN;
-                    genPushUpdateValue(parse, this.input.nodeId, 'value', start);
+                    genPushUpdateValue(parse, this.input.nodeId, returnValueId, start);
                     console.log('max solve iterations');
                 }
             }
@@ -16632,7 +16652,7 @@ extends GNumberType
 
         this.updateValues =
         [
-            ['value',   this.value],
+            [returnValueId,   this.value],
             ['current', current   ],
             ['target',  target    ]
         ];
@@ -16793,7 +16813,7 @@ extends GNumberType
 
         this.updateValues =
         [
-            ['value',  this.value],
+            [returnValueId,  this.value],
             ['from',   from      ],
             ['to',     to        ],
             ['curve',  curve     ],
@@ -16928,7 +16948,7 @@ extends GArithmetic
         this.updateValues =
         [
             ['operation', op        ],
-            ['value',     this.value]
+            [returnValueId,     this.value]
         ];
 
 
@@ -16985,7 +17005,7 @@ extends GArithmetic
 
         this.value = await evalAddInputs(this.inputs, parse);
         
-        this.updateValues = [['value', this.value]];
+        this.updateValues = [[returnValueId, this.value]];
 
         this.validate();
 
@@ -17068,7 +17088,7 @@ extends GArithmetic
         this.value = await evalSubtractInputs(this.inputs, parse);
 
 
-        this.updateValues = [['value', this.value]];
+        this.updateValues = [[returnValueId, this.value]];
 
 
         this.validate();
@@ -17182,7 +17202,7 @@ extends GArithmetic
         this.value = await evalMultiplyInputs(this.inputs, parse);
 
 
-        this.updateValues = [['value', this.value]];
+        this.updateValues = [[returnValueId, this.value]];
 
 
         this.validate();
@@ -17268,7 +17288,7 @@ extends GArithmetic
         this.value = await evalDivideInputs(this.inputs, parse);
     
         
-        this.updateValues = [['value', this.value]];
+        this.updateValues = [[returnValueId, this.value]];
 
 
         this.validate();
@@ -17403,7 +17423,7 @@ extends GArithmetic
         this.value = await evalModuloInputs(this.inputs, parse);
 
 
-        this.updateValues = [['value', this.value]];
+        this.updateValues = [[returnValueId, this.value]];
 
 
         this.validate();
@@ -17538,7 +17558,7 @@ extends GArithmetic
         this.value = await evalExponentInputs(this.inputs, parse);
 
 
-        this.updateValues = [['value', this.value]];
+        this.updateValues = [[returnValueId, this.value]];
 
 
         this.validate();
@@ -17674,7 +17694,7 @@ extends GArithmetic
         this.updateValues =
         [
             ['operation', op        ],
-            ['value',     this.value]
+            [returnValueId,     this.value]
         ];
 
 
@@ -17734,7 +17754,7 @@ extends GArithmetic
         this.value = await evalNandInputs(this.inputs, parse);
         
 
-        this.updateValues = [['value', this.value]];
+        this.updateValues = [[returnValueId, this.value]];
 
 
         this.validate();
@@ -17845,7 +17865,7 @@ extends GArithmetic
         this.value = await evalAndInputs(this.inputs, parse);
         
 
-        this.updateValues = [['value', this.value]];
+        this.updateValues = [[returnValueId, this.value]];
 
         
         this.validate();
@@ -17959,7 +17979,7 @@ extends GArithmetic
         this.value = await evalOrInputs(this.inputs, parse);
         
 
-        this.updateValues = [['value', this.value]];
+        this.updateValues = [[returnValueId, this.value]];
 
 
         this.validate();
@@ -18070,7 +18090,7 @@ extends GArithmetic
         this.value = await evalXorInputs(this.inputs, parse);
         
 
-        this.updateValues = [['value', this.value]];
+        this.updateValues = [[returnValueId, this.value]];
 
 
         this.validate();
@@ -18256,7 +18276,7 @@ extends GNumberType
         this.updateValues =
         [
             ['operation', op        ],
-            ['value',     this.value]
+            [returnValueId,     this.value]
         ];
 
 
@@ -18322,7 +18342,7 @@ extends GConditionBase
             parse);
             
 
-        this.updateValues = [['value', this.value]];
+        this.updateValues = [[returnValueId, this.value]];
 
 
         this.validate();
@@ -18366,7 +18386,7 @@ extends GConditionBase
             parse);
         
 
-        this.updateValues = [['value', this.value]];
+        this.updateValues = [[returnValueId, this.value]];
 
 
         this.validate();
@@ -18409,7 +18429,7 @@ extends GConditionBase
             parse);
             
 
-        this.updateValues = [['value', this.value]];
+        this.updateValues = [[returnValueId, this.value]];
 
 
         this.validate();
@@ -18452,7 +18472,7 @@ extends GConditionBase
             parse);
             
 
-        this.updateValues = [['value', this.value]];
+        this.updateValues = [[returnValueId, this.value]];
 
 
         this.validate();
@@ -18496,7 +18516,7 @@ extends GConditionBase
             parse);
         
 
-        this.updateValues = [['value', this.value]];
+        this.updateValues = [[returnValueId, this.value]];
 
 
         this.validate();
@@ -18542,7 +18562,7 @@ extends GConditionBase
             parse);
             
 
-        this.updateValues = [['value', this.value]];
+        this.updateValues = [[returnValueId, this.value]];
 
 
         this.validate();
@@ -18631,7 +18651,7 @@ extends GNumberType
 
         this.updateValues =
         [
-            ['value',    this.value],
+            [returnValueId,    this.value],
             ['function', func      ]
         ];
 
@@ -18695,7 +18715,7 @@ extends GTrigBase
         this.value = await evalSine(this.input, parse);
 
 
-        this.updateValues = [['value', this.value]];
+        this.updateValues = [[returnValueId, this.value]];
 
 
         this.validate();
@@ -18758,7 +18778,7 @@ extends GTrigBase
         this.value = await evalCosine(this.input, parse);
 
 
-        this.updateValues = [['value', this.value]];
+        this.updateValues = [[returnValueId, this.value]];
 
 
         this.validate();
@@ -18814,7 +18834,7 @@ extends GTrigBase
         this.value = await evalTangent(this.input, parse);
 
 
-        this.updateValues = [['value', this.value]];
+        this.updateValues = [[returnValueId, this.value]];
 
 
         this.validate();
@@ -18905,7 +18925,7 @@ extends GTextType
             this.value = new TextValue();//TextValue.NaN;
 
 
-        this.updateValues = [['value', this.value]];
+        this.updateValues = [[returnValueId, this.value]];
 
         
         this.validate();
@@ -19082,7 +19102,7 @@ extends GTextType
 
         this.updateValues =
         [
-            ['value', this.value],
+            [returnValueId, this.value],
             ['start', start     ],
             ['end',   end       ]
         ];
@@ -19191,7 +19211,7 @@ extends GTextType
 
         this.updateValues =
         [
-            ['value',  this.value             ],
+            [returnValueId,  this.value             ],
             ['length', new NumberValue(length)], // used to set start and end maxima
             ['start',  start                  ],
             ['end',    end                    ]
@@ -19274,7 +19294,7 @@ extends GTextType
 
         this.updateValues =
         [
-            ['value', this.value],
+            [returnValueId, this.value],
             ['code',  code      ]
         ];
 
@@ -19371,7 +19391,7 @@ extends GTextType
             
         this.updateValues =
         [
-            ['value', this.value],
+            [returnValueId, this.value],
             ['what',  _what     ],
             ['with',  _with     ]
         ];
@@ -19449,7 +19469,7 @@ extends GTextType
 
         this.updateValues = 
         [
-            ['value', this.value],
+            [returnValueId, this.value],
             ['with',  _with     ]
         ];
 
@@ -19578,7 +19598,7 @@ extends GOperator
 
         this.updateValues =
         [
-            ['value',     this.value],
+            [returnValueId,     this.value],
             ['separator', separator ]
         ];
         
@@ -19667,7 +19687,7 @@ extends GOperator
             try
             {
                 const json = JSON.parse(input.value);
-                this.evalItems(json);
+                this.value = this.evalItems(json);
             }
             catch (e)
             {
@@ -19678,7 +19698,7 @@ extends GOperator
 
         this.updateValues =
         [
-            ['value', this.value]
+            [returnValueId, this.value]
         ];
         
 
@@ -19691,17 +19711,24 @@ extends GOperator
 
     evalItems(json)
     {
+        let list = new ListValue();
+
+
         for (let key in json)
         {
             if (   typeof json[key] === 'object'
                 && json[key] !== null)
-                this.evalItems(json[key]);                
-
+            {
+                const obj = this.evalItems(json[key]);
+                obj.valueId = key;
+                list.items.push(obj);
+            }
             else
             {
                 let value;
 
-                if (typeof json[key] === 'number')
+                if (   typeof json[key] === 'number'
+                    || isValidFloatString(json[key]))
                     value = NumberValue.fromString(json[key].toString());
                 else if (typeof json[key] === 'boolean')
                     value = new NumberValue(parseBool(json[key].toString()) ? 1 : 0);
@@ -19710,9 +19737,12 @@ extends GOperator
 
                     
                 value.valueId = key;
-                this.value.items.push(value);
+                list.items.push(value);
             }
         }
+
+        
+        return list;
     }
 
 
@@ -19813,7 +19843,7 @@ extends GTextType
 
         this.updateValues =
         [
-            ['value',   this.value],
+            [returnValueId,   this.value],
             ['request', request   ]
         ];
         
@@ -20763,7 +20793,7 @@ extends GColorType
             
         this.updateValues =
         [
-            ['value',   this.value],
+            [returnValueId,   this.value],
             ['quality', quality   ]
         ];
         
@@ -20870,7 +20900,7 @@ extends GColorType
                 //     genPushUpdateValue(parse, this.nodeId, 'margin1', this.margin1);
                 //     genPushUpdateValue(parse, this.nodeId, 'margin2', this.margin2);
                 //     genPushUpdateValue(parse, this.nodeId, 'margin3', this.margin3);
-                //     genPushUpdateValue(parse, this.nodeId, 'value'  , this.value  );
+                //     genPushUpdateValue(parse, this.nodeId, returnValueId  , this.value  );
                 // }
                 // else
                 // {
@@ -20922,7 +20952,7 @@ extends GColorType
                                 ['margin1', new NumberValue(closest1    )],
                                 ['margin2', new NumberValue(closest2    )],
                                 ['margin3', new NumberValue(closest3    )],
-                                ['value',   this.value                   ]
+                                [returnValueId,   this.value                   ]
                             ];
                         }
                         else
@@ -20939,7 +20969,7 @@ extends GColorType
                                 ['margin1', NumberValue.NaN],
                                 ['margin2', NumberValue.NaN],
                                 ['margin3', NumberValue.NaN],
-                                ['value',   ColorValue .NaN]
+                                [returnValueId,   ColorValue .NaN]
                             ];
                         }
                     //}
@@ -20959,7 +20989,7 @@ extends GColorType
                     ['margin1', this.margin1],
                     ['margin2', this.margin2],
                     ['margin3', this.margin3],
-                    ['value',   this.value  ]
+                    [returnValueId,   this.value  ]
                 ];
             }
         }
@@ -20977,7 +21007,7 @@ extends GColorType
                 ['margin1', NumberValue.NaN],
                 ['margin2', NumberValue.NaN],
                 ['margin3', NumberValue.NaN],
-                ['value',   ColorValue .NaN]
+                [returnValueId,   ColorValue .NaN]
             ];
         }
 
@@ -21270,7 +21300,7 @@ extends GColorType
             ['l',     l         ],
             ['m',     m         ],
             ['s',     s         ],
-            ['value', this.value]
+            [returnValueId, this.value]
         ];
         
 
@@ -21400,7 +21430,7 @@ extends GColorType
             ['space',  space     ],
             ['amount', amount    ],
             ['gamma',  gamma     ],
-            ['value',  this.value]
+            [returnValueId,  this.value]
         ];
         
 
@@ -21551,7 +21581,7 @@ extends GColorType
 
         this.updateValues = 
         [
-            ['value',   this.value],
+            [returnValueId,   this.value],
             ['mode',    mode      ],
             ['opacity', opacity   ]
         ];
@@ -22049,7 +22079,7 @@ extends GOperator
             this.value = FillValue.NaN;
 
 
-        this.updateValues = [['value', this.value]];
+        this.updateValues = [[returnValueId, this.value]];
 
 
         this.validate();
@@ -22428,7 +22458,7 @@ extends GOperator
             
         this.updateValues =
         [
-            ['value',  this.value],
+            [returnValueId,  this.value],
             ['type',   gradType  ],
             ['x',      x         ],
             ['y',      y         ],
@@ -23859,7 +23889,7 @@ extends GShape
        
         this.updateValues =
         [
-            ['value', this.value      ],
+            [returnValueId, this.value      ],
             ['round', this.value.round]
         ];
 
@@ -24019,7 +24049,7 @@ extends GShape
         }
 
 
-        this.updateValues = [['value', this.value]];
+        this.updateValues = [[returnValueId, this.value]];
 
 
         await this.evalShapeBase(parse, input, false);
@@ -24185,7 +24215,7 @@ extends GShape
         }
 
 
-        this.updateValues = [['value', this.value]];
+        this.updateValues = [[returnValueId, this.value]];
 
 
         await this.evalShapeBase(parse, input);
@@ -24350,7 +24380,7 @@ extends GShape
         
         this.updateValues =
         [
-            ['value',   this.value        ],
+            [returnValueId,   this.value        ],
             ['round',   this.value.round  ],
             ['corners', this.value.corners]
         ];
@@ -24545,7 +24575,7 @@ extends GShape
              
         this.updateValues =
         [
-            ['value',  this.value       ],
+            [returnValueId,  this.value       ],
             ['round',  this.value.round ],
             ['points', this.value.points],
             ['convex', this.value.convex]
@@ -24784,7 +24814,7 @@ extends GShape
        
         this.updateValues =
         [
-            ['value',         this.value              ],
+            [returnValueId,         this.value              ],
             ['text',          this.value.text         ],
             ['x',             this.value.x            ],
             ['y',             this.value.y            ],
@@ -25024,7 +25054,7 @@ extends GOperator
        
         this.updateValues =
         [
-            ['value', this.value],
+            [returnValueId, this.value],
             ['x',     x         ],
             ['y',     y         ]
         ];
@@ -25195,7 +25225,7 @@ extends GShape
 
         this.updateValues =
         [
-            ['value',   this.value        ],
+            [returnValueId,   this.value        ],
             ['points',  this.value.points ],
             ['closed',  this.value.closed ],
             ['degree',  this.value.degree ],
@@ -25426,7 +25456,7 @@ extends GShapeBase
         this.evalObjects(parse);
 
 
-        this.updateValues = [['value', this.value]];
+        this.updateValues = [[returnValueId, this.value]];
 
 
         this.validate();
@@ -25629,7 +25659,7 @@ extends GShape
 
         this.updateValues =
         [
-            ['value',    this.value         ],
+            [returnValueId,    this.value         ],
             ['round',    this.value.round   ],
             ['children', this.value.children]
         ];
@@ -25834,7 +25864,7 @@ extends GShapeBase
 
         this.updateValues =
         [
-            ['value',     this.value          ],
+            [returnValueId,     this.value          ],
             ['operation', this.value.operation],
             ['children',  this.value.children ]
         ];
@@ -26194,7 +26224,7 @@ extends GOperator
 
         this.updateValues =
         [
-            ['value', this.value],
+            [returnValueId, this.value],
             ['x',     x         ],
             ['y',     y         ]
         ];
@@ -26362,7 +26392,7 @@ extends GOperator
 
         this.updateValues =
         [
-            ['value',      this.value],
+            [returnValueId,      this.value],
             ['angle',      angle     ],
             ['centerX',    centerX   ],
             ['centerY',    centerY   ],
@@ -26653,7 +26683,7 @@ extends GOperator
 
         this.updateValues =
         [
-            ['value',      this.value],
+            [returnValueId,      this.value],
             ['scaleX',     scaleX    ],
             ['scaleY',     scaleY    ],
             ['centerX',    centerX   ],
@@ -26981,7 +27011,7 @@ extends GOperator
 
         this.updateValues =
         [
-            ['value',      this.value],
+            [returnValueId,      this.value],
             ['skewX',      skewX     ],
             ['skewY',      skewY     ],
             ['centerX',    centerX   ],
@@ -27335,7 +27365,7 @@ extends GOperator
             this.value = NullValue;
 
 
-        this.updateValues = [['value', this.value]];
+        this.updateValues = [[returnValueId, this.value]];
 
 
         this.validate();
@@ -27400,7 +27430,7 @@ extends GOperator
         this.value = NullValue;
 
 
-        this.updateValues = [['value', this.value]];
+        this.updateValues = [[returnValueId, this.value]];
         
         
         this.validate();
@@ -28286,34 +28316,6 @@ function genUpdateNodeProgress(nodeId, progress)
 
 
 
-function getObjectBounds(objects)
-{
-    let boundsL = Number.MAX_SAFE_INTEGER;
-    let boundsT = Number.MAX_SAFE_INTEGER;
-    let boundsR = Number.MIN_SAFE_INTEGER;
-    let boundsB = Number.MIN_SAFE_INTEGER;
-    
-    for (const obj of objects)
-    {
-        switch (obj[0])
-        {
-            case RECTANGLE:
-                boundsL = Math.min(boundsL, obj[3]);
-                boundsT = Math.min(boundsT, obj[4]);
-                boundsR = Math.max(boundsR, obj[3] + obj[5]);
-                boundsB = Math.max(boundsB, obj[4] + obj[6]);
-                break;
-        }
-    }
-
-    return {
-        x: boundsL, 
-        y: boundsT,
-        w: boundsR - boundsL,
-        h: boundsB - boundsT };
-}
-
-
 function genParseColorValue(parse)
 {
     parse.pos++; // COLOR_VALUE
@@ -28495,7 +28497,7 @@ function genParseCorrectColor(parse)
         case 'margin1':  corr.margin1 = genParse(parse); break;
         case 'margin2':  corr.margin2 = genParse(parse); break;
         case 'margin3':  corr.margin3 = genParse(parse); break;
-        case 'value':    corr.value   = genParse(parse); break;
+        case returnValueId:    corr.value   = genParse(parse); break;
         }
     }
                 
@@ -35971,6 +35973,7 @@ const nodeTag          = 'G_NODE';
 const connTag          = 'G_CONN';
 const pageTag          = 'G_PAGE';
 
+const returnValueId    = '-v﻿a﻿l﻿u﻿e-';
 
 
 const identity = Object.freeze(
@@ -38536,6 +38539,13 @@ function trimCharFromEnd(str, trim)
         str = str.substring(0, str.length - trim.length);
 
     return str;
+}
+
+
+
+function isValidFloatString(str) 
+{
+    return /^-?\d*\.?\d*(e-?\d+)?$/.test(str);
 }
 
 
@@ -44098,7 +44108,9 @@ extends GNode
 
     paramFromId(paramId)
     {
-        return this[paramId];
+        return paramId == returnValueId
+            ?  this.value
+            :  this[paramId];
     }
 
 
@@ -44214,7 +44226,11 @@ extends GOperator
         await this.node.eval(parse);
         this.node.feedbackValue = null;
 
+        console.log('this.paramId =', this.paramId);
+        console.log('this.node =', this.node);
+        console.log('this.node[this.paramId] =', this.node[this.paramId]);
         this.param = this.node.paramFromId(this.paramId);
+        console.log('this.param =', this.param);
 
 
         if (isValid(this.param))
@@ -48500,7 +48516,7 @@ extends GOperator
         }
 
 
-        this.updateValues = [['value', this.value]];
+        this.updateValues = [[returnValueId, this.value]];
 
 
         this.validate();
@@ -48596,7 +48612,7 @@ extends GOperator
 
 
 
-        this.updateValues = [['value', this.value]];
+        this.updateValues = [[returnValueId, this.value]];
 
 
         this.validate();
@@ -48685,6 +48701,9 @@ extends GOperator
 
             this.value   = this.input.toValue();
             this.objects = this.input.objects.map(o => o.copy());
+
+            // console.log('this.input =', this.input);
+            // console.log('this.value =', this.value);
         }
         else
         {
@@ -48703,7 +48722,7 @@ extends GOperator
             {
                 const item = this.value.items[i];
 
-                const valueId =
+                const valueId = 
                     item.valueId != ''
                     ? item.valueId
                     : 'item' + i;
@@ -48716,7 +48735,7 @@ extends GOperator
             this.updateValues.push(['', NullValue]);
 
 
-        this.updateValues.push(['value', this.value]);
+        this.updateValues.push([returnValueId, this.value]); // first so it can be separated out in OpItems
 
 
         for (let j = 0; j < this.objects.length; j++)
@@ -48741,12 +48760,15 @@ extends GOperator
 
     paramFromId(paramId)
     {
-        if (   paramId.length > 4
-            && paramId.substring(0, 4) == 'item'
-            && strIsNum(paramId.substring(4)))
-            return this[paramId];
+        return paramId != returnValueId
+              ? this[paramId]
+              : null;
+        // if (   paramId.length > 4
+        //     && paramId.substring(0, 4) == 'item'
+        //     && strIsNum(paramId.substring(4)))
+        //     return this[paramId];
 
-        return null;
+        // return null;
     }
 
 
@@ -48862,7 +48884,7 @@ extends GOperator
 
         this.updateValues =
         [
-            ['value',  this.value             ],
+            [returnValueId,  this.value             ],
             ['length', new NumberValue(length)],
             ['index',  index                  ]
         ];
@@ -48951,7 +48973,7 @@ extends GOperator
             this.value = NumberValue.NaN;
 
 
-        this.updateValues = [['value', this.value]];
+        this.updateValues = [[returnValueId, this.value]];
 
 
         this.validate();
@@ -49059,7 +49081,7 @@ extends GOperator
 
         this.updateValues =
         [
-            ['value',     this.value],
+            [returnValueId,     this.value],
             ['condition', cond      ]
         ];
         
@@ -49151,7 +49173,7 @@ extends GOperator
 
         this.updateValues =
         [
-            ['value',    this.value],
+            [returnValueId,    this.value],
             ['repeatId', repeatId  ]
         ];
 
@@ -49307,7 +49329,7 @@ extends GOperator
 
             this.updateValues =
             [
-                ['value',  this.value     ],
+                [returnValueId,  this.value     ],
                 ['count',  count          ],
                 ['loop',   NumberValue.NaN]
             ];
@@ -49429,7 +49451,7 @@ extends GOperator
             : NullValue;
 
 
-        this.updateValues = [['value', this.value]];
+        this.updateValues = [[returnValueId, this.value]];
         
         
         this.validate();
@@ -49507,7 +49529,7 @@ extends GOperator
             : NullValue;
 
 
-        this.updateValues = [['value', this.value]];
+        this.updateValues = [[returnValueId, this.value]];
 
         
         this.validate();
@@ -49613,7 +49635,7 @@ extends GNumberType
             this.value = this.feedbackValue();
 
 
-        this.updateValues = [['value', this.value]];    
+        this.updateValues = [[returnValueId, this.value]];    
 
 
         this.validate();
@@ -49698,7 +49720,7 @@ extends GNumberType
             this.value = NumberValue.NaN;
 
 
-        this.updateValues = [['value', this.value]];
+        this.updateValues = [[returnValueId, this.value]];
 
 
         this.validate();
@@ -49775,7 +49797,7 @@ extends GNumberType
             this.value = NumberValue.NaN;
 
 
-        this.updateValues = [['value', this.value]];
+        this.updateValues = [[returnValueId, this.value]];
 
 
         this.validate();
@@ -49880,7 +49902,7 @@ extends GNumberType
         [
             ['type',     type      ],
             ['decimals', dec       ],
-            ['value',    this.value]
+            [returnValueId,    this.value]
         ];
 
 
@@ -49975,7 +49997,7 @@ extends GNumberType
 
         this.updateValues =
         [
-            ['value', this.value],
+            [returnValueId, this.value],
             ['min',   min       ],
             ['max',   max       ]
         ];
@@ -50077,7 +50099,7 @@ extends GNumberType
         
         this.updateValues =
         [
-            ['value',   this.value],
+            [returnValueId,   this.value],
             ['constant', constant ]
         ];
 
@@ -50486,7 +50508,7 @@ extends GNumberType
         this.updateValues =
         [
             ['amount', amount    ],
-            ['value',  this.value]
+            [returnValueId,  this.value]
         ];
         
 
@@ -50582,7 +50604,7 @@ extends GNumberType
 
         this.updateValues =
         [
-            ['value',  this.value],
+            [returnValueId,  this.value],
             ['number', number    ],
             ['format', format    ]
         ];
@@ -50742,7 +50764,7 @@ extends GNumberType
                 else
                 {
                     this.value = NumberValue.NaN;
-                    genPushUpdateValue(parse, this.input.nodeId, 'value', start);
+                    genPushUpdateValue(parse, this.input.nodeId, returnValueId, start);
                     console.log('max solve iterations');
                 }
             }
@@ -50762,7 +50784,7 @@ extends GNumberType
 
         this.updateValues =
         [
-            ['value',   this.value],
+            [returnValueId,   this.value],
             ['current', current   ],
             ['target',  target    ]
         ];
@@ -50923,7 +50945,7 @@ extends GNumberType
 
         this.updateValues =
         [
-            ['value',  this.value],
+            [returnValueId,  this.value],
             ['from',   from      ],
             ['to',     to        ],
             ['curve',  curve     ],
@@ -51058,7 +51080,7 @@ extends GArithmetic
         this.updateValues =
         [
             ['operation', op        ],
-            ['value',     this.value]
+            [returnValueId,     this.value]
         ];
 
 
@@ -51115,7 +51137,7 @@ extends GArithmetic
 
         this.value = await evalAddInputs(this.inputs, parse);
         
-        this.updateValues = [['value', this.value]];
+        this.updateValues = [[returnValueId, this.value]];
 
         this.validate();
 
@@ -51198,7 +51220,7 @@ extends GArithmetic
         this.value = await evalSubtractInputs(this.inputs, parse);
 
 
-        this.updateValues = [['value', this.value]];
+        this.updateValues = [[returnValueId, this.value]];
 
 
         this.validate();
@@ -51312,7 +51334,7 @@ extends GArithmetic
         this.value = await evalMultiplyInputs(this.inputs, parse);
 
 
-        this.updateValues = [['value', this.value]];
+        this.updateValues = [[returnValueId, this.value]];
 
 
         this.validate();
@@ -51398,7 +51420,7 @@ extends GArithmetic
         this.value = await evalDivideInputs(this.inputs, parse);
     
         
-        this.updateValues = [['value', this.value]];
+        this.updateValues = [[returnValueId, this.value]];
 
 
         this.validate();
@@ -51533,7 +51555,7 @@ extends GArithmetic
         this.value = await evalModuloInputs(this.inputs, parse);
 
 
-        this.updateValues = [['value', this.value]];
+        this.updateValues = [[returnValueId, this.value]];
 
 
         this.validate();
@@ -51668,7 +51690,7 @@ extends GArithmetic
         this.value = await evalExponentInputs(this.inputs, parse);
 
 
-        this.updateValues = [['value', this.value]];
+        this.updateValues = [[returnValueId, this.value]];
 
 
         this.validate();
@@ -51804,7 +51826,7 @@ extends GArithmetic
         this.updateValues =
         [
             ['operation', op        ],
-            ['value',     this.value]
+            [returnValueId,     this.value]
         ];
 
 
@@ -51864,7 +51886,7 @@ extends GArithmetic
         this.value = await evalNandInputs(this.inputs, parse);
         
 
-        this.updateValues = [['value', this.value]];
+        this.updateValues = [[returnValueId, this.value]];
 
 
         this.validate();
@@ -51975,7 +51997,7 @@ extends GArithmetic
         this.value = await evalAndInputs(this.inputs, parse);
         
 
-        this.updateValues = [['value', this.value]];
+        this.updateValues = [[returnValueId, this.value]];
 
         
         this.validate();
@@ -52089,7 +52111,7 @@ extends GArithmetic
         this.value = await evalOrInputs(this.inputs, parse);
         
 
-        this.updateValues = [['value', this.value]];
+        this.updateValues = [[returnValueId, this.value]];
 
 
         this.validate();
@@ -52200,7 +52222,7 @@ extends GArithmetic
         this.value = await evalXorInputs(this.inputs, parse);
         
 
-        this.updateValues = [['value', this.value]];
+        this.updateValues = [[returnValueId, this.value]];
 
 
         this.validate();
@@ -52386,7 +52408,7 @@ extends GNumberType
         this.updateValues =
         [
             ['operation', op        ],
-            ['value',     this.value]
+            [returnValueId,     this.value]
         ];
 
 
@@ -52452,7 +52474,7 @@ extends GConditionBase
             parse);
             
 
-        this.updateValues = [['value', this.value]];
+        this.updateValues = [[returnValueId, this.value]];
 
 
         this.validate();
@@ -52496,7 +52518,7 @@ extends GConditionBase
             parse);
         
 
-        this.updateValues = [['value', this.value]];
+        this.updateValues = [[returnValueId, this.value]];
 
 
         this.validate();
@@ -52539,7 +52561,7 @@ extends GConditionBase
             parse);
             
 
-        this.updateValues = [['value', this.value]];
+        this.updateValues = [[returnValueId, this.value]];
 
 
         this.validate();
@@ -52582,7 +52604,7 @@ extends GConditionBase
             parse);
             
 
-        this.updateValues = [['value', this.value]];
+        this.updateValues = [[returnValueId, this.value]];
 
 
         this.validate();
@@ -52626,7 +52648,7 @@ extends GConditionBase
             parse);
         
 
-        this.updateValues = [['value', this.value]];
+        this.updateValues = [[returnValueId, this.value]];
 
 
         this.validate();
@@ -52672,7 +52694,7 @@ extends GConditionBase
             parse);
             
 
-        this.updateValues = [['value', this.value]];
+        this.updateValues = [[returnValueId, this.value]];
 
 
         this.validate();
@@ -52761,7 +52783,7 @@ extends GNumberType
 
         this.updateValues =
         [
-            ['value',    this.value],
+            [returnValueId,    this.value],
             ['function', func      ]
         ];
 
@@ -52825,7 +52847,7 @@ extends GTrigBase
         this.value = await evalSine(this.input, parse);
 
 
-        this.updateValues = [['value', this.value]];
+        this.updateValues = [[returnValueId, this.value]];
 
 
         this.validate();
@@ -52888,7 +52910,7 @@ extends GTrigBase
         this.value = await evalCosine(this.input, parse);
 
 
-        this.updateValues = [['value', this.value]];
+        this.updateValues = [[returnValueId, this.value]];
 
 
         this.validate();
@@ -52944,7 +52966,7 @@ extends GTrigBase
         this.value = await evalTangent(this.input, parse);
 
 
-        this.updateValues = [['value', this.value]];
+        this.updateValues = [[returnValueId, this.value]];
 
 
         this.validate();
@@ -53035,7 +53057,7 @@ extends GTextType
             this.value = new TextValue();//TextValue.NaN;
 
 
-        this.updateValues = [['value', this.value]];
+        this.updateValues = [[returnValueId, this.value]];
 
         
         this.validate();
@@ -53212,7 +53234,7 @@ extends GTextType
 
         this.updateValues =
         [
-            ['value', this.value],
+            [returnValueId, this.value],
             ['start', start     ],
             ['end',   end       ]
         ];
@@ -53321,7 +53343,7 @@ extends GTextType
 
         this.updateValues =
         [
-            ['value',  this.value             ],
+            [returnValueId,  this.value             ],
             ['length', new NumberValue(length)], // used to set start and end maxima
             ['start',  start                  ],
             ['end',    end                    ]
@@ -53404,7 +53426,7 @@ extends GTextType
 
         this.updateValues =
         [
-            ['value', this.value],
+            [returnValueId, this.value],
             ['code',  code      ]
         ];
 
@@ -53501,7 +53523,7 @@ extends GTextType
             
         this.updateValues =
         [
-            ['value', this.value],
+            [returnValueId, this.value],
             ['what',  _what     ],
             ['with',  _with     ]
         ];
@@ -53579,7 +53601,7 @@ extends GTextType
 
         this.updateValues = 
         [
-            ['value', this.value],
+            [returnValueId, this.value],
             ['with',  _with     ]
         ];
 
@@ -53708,7 +53730,7 @@ extends GOperator
 
         this.updateValues =
         [
-            ['value',     this.value],
+            [returnValueId,     this.value],
             ['separator', separator ]
         ];
         
@@ -53797,7 +53819,7 @@ extends GOperator
             try
             {
                 const json = JSON.parse(input.value);
-                this.evalItems(json);
+                this.value = this.evalItems(json);
             }
             catch (e)
             {
@@ -53808,7 +53830,7 @@ extends GOperator
 
         this.updateValues =
         [
-            ['value', this.value]
+            [returnValueId, this.value]
         ];
         
 
@@ -53821,17 +53843,24 @@ extends GOperator
 
     evalItems(json)
     {
+        let list = new ListValue();
+
+
         for (let key in json)
         {
             if (   typeof json[key] === 'object'
                 && json[key] !== null)
-                this.evalItems(json[key]);                
-
+            {
+                const obj = this.evalItems(json[key]);
+                obj.valueId = key;
+                list.items.push(obj);
+            }
             else
             {
                 let value;
 
-                if (typeof json[key] === 'number')
+                if (   typeof json[key] === 'number'
+                    || isValidFloatString(json[key]))
                     value = NumberValue.fromString(json[key].toString());
                 else if (typeof json[key] === 'boolean')
                     value = new NumberValue(parseBool(json[key].toString()) ? 1 : 0);
@@ -53840,9 +53869,12 @@ extends GOperator
 
                     
                 value.valueId = key;
-                this.value.items.push(value);
+                list.items.push(value);
             }
         }
+
+        
+        return list;
     }
 
 
@@ -53943,7 +53975,7 @@ extends GTextType
 
         this.updateValues =
         [
-            ['value',   this.value],
+            [returnValueId,   this.value],
             ['request', request   ]
         ];
         
@@ -54893,7 +54925,7 @@ extends GColorType
             
         this.updateValues =
         [
-            ['value',   this.value],
+            [returnValueId,   this.value],
             ['quality', quality   ]
         ];
         
@@ -55000,7 +55032,7 @@ extends GColorType
                 //     genPushUpdateValue(parse, this.nodeId, 'margin1', this.margin1);
                 //     genPushUpdateValue(parse, this.nodeId, 'margin2', this.margin2);
                 //     genPushUpdateValue(parse, this.nodeId, 'margin3', this.margin3);
-                //     genPushUpdateValue(parse, this.nodeId, 'value'  , this.value  );
+                //     genPushUpdateValue(parse, this.nodeId, returnValueId  , this.value  );
                 // }
                 // else
                 // {
@@ -55052,7 +55084,7 @@ extends GColorType
                                 ['margin1', new NumberValue(closest1    )],
                                 ['margin2', new NumberValue(closest2    )],
                                 ['margin3', new NumberValue(closest3    )],
-                                ['value',   this.value                   ]
+                                [returnValueId,   this.value                   ]
                             ];
                         }
                         else
@@ -55069,7 +55101,7 @@ extends GColorType
                                 ['margin1', NumberValue.NaN],
                                 ['margin2', NumberValue.NaN],
                                 ['margin3', NumberValue.NaN],
-                                ['value',   ColorValue .NaN]
+                                [returnValueId,   ColorValue .NaN]
                             ];
                         }
                     //}
@@ -55089,7 +55121,7 @@ extends GColorType
                     ['margin1', this.margin1],
                     ['margin2', this.margin2],
                     ['margin3', this.margin3],
-                    ['value',   this.value  ]
+                    [returnValueId,   this.value  ]
                 ];
             }
         }
@@ -55107,7 +55139,7 @@ extends GColorType
                 ['margin1', NumberValue.NaN],
                 ['margin2', NumberValue.NaN],
                 ['margin3', NumberValue.NaN],
-                ['value',   ColorValue .NaN]
+                [returnValueId,   ColorValue .NaN]
             ];
         }
 
@@ -55400,7 +55432,7 @@ extends GColorType
             ['l',     l         ],
             ['m',     m         ],
             ['s',     s         ],
-            ['value', this.value]
+            [returnValueId, this.value]
         ];
         
 
@@ -55530,7 +55562,7 @@ extends GColorType
             ['space',  space     ],
             ['amount', amount    ],
             ['gamma',  gamma     ],
-            ['value',  this.value]
+            [returnValueId,  this.value]
         ];
         
 
@@ -55681,7 +55713,7 @@ extends GColorType
 
         this.updateValues = 
         [
-            ['value',   this.value],
+            [returnValueId,   this.value],
             ['mode',    mode      ],
             ['opacity', opacity   ]
         ];
@@ -56179,7 +56211,7 @@ extends GOperator
             this.value = FillValue.NaN;
 
 
-        this.updateValues = [['value', this.value]];
+        this.updateValues = [[returnValueId, this.value]];
 
 
         this.validate();
@@ -56558,7 +56590,7 @@ extends GOperator
             
         this.updateValues =
         [
-            ['value',  this.value],
+            [returnValueId,  this.value],
             ['type',   gradType  ],
             ['x',      x         ],
             ['y',      y         ],
@@ -57989,7 +58021,7 @@ extends GShape
        
         this.updateValues =
         [
-            ['value', this.value      ],
+            [returnValueId, this.value      ],
             ['round', this.value.round]
         ];
 
@@ -58149,7 +58181,7 @@ extends GShape
         }
 
 
-        this.updateValues = [['value', this.value]];
+        this.updateValues = [[returnValueId, this.value]];
 
 
         await this.evalShapeBase(parse, input, false);
@@ -58315,7 +58347,7 @@ extends GShape
         }
 
 
-        this.updateValues = [['value', this.value]];
+        this.updateValues = [[returnValueId, this.value]];
 
 
         await this.evalShapeBase(parse, input);
@@ -58480,7 +58512,7 @@ extends GShape
         
         this.updateValues =
         [
-            ['value',   this.value        ],
+            [returnValueId,   this.value        ],
             ['round',   this.value.round  ],
             ['corners', this.value.corners]
         ];
@@ -58675,7 +58707,7 @@ extends GShape
              
         this.updateValues =
         [
-            ['value',  this.value       ],
+            [returnValueId,  this.value       ],
             ['round',  this.value.round ],
             ['points', this.value.points],
             ['convex', this.value.convex]
@@ -58914,7 +58946,7 @@ extends GShape
        
         this.updateValues =
         [
-            ['value',         this.value              ],
+            [returnValueId,         this.value              ],
             ['text',          this.value.text         ],
             ['x',             this.value.x            ],
             ['y',             this.value.y            ],
@@ -59154,7 +59186,7 @@ extends GOperator
        
         this.updateValues =
         [
-            ['value', this.value],
+            [returnValueId, this.value],
             ['x',     x         ],
             ['y',     y         ]
         ];
@@ -59325,7 +59357,7 @@ extends GShape
 
         this.updateValues =
         [
-            ['value',   this.value        ],
+            [returnValueId,   this.value        ],
             ['points',  this.value.points ],
             ['closed',  this.value.closed ],
             ['degree',  this.value.degree ],
@@ -59556,7 +59588,7 @@ extends GShapeBase
         this.evalObjects(parse);
 
 
-        this.updateValues = [['value', this.value]];
+        this.updateValues = [[returnValueId, this.value]];
 
 
         this.validate();
@@ -59759,7 +59791,7 @@ extends GShape
 
         this.updateValues =
         [
-            ['value',    this.value         ],
+            [returnValueId,    this.value         ],
             ['round',    this.value.round   ],
             ['children', this.value.children]
         ];
@@ -59964,7 +59996,7 @@ extends GShapeBase
 
         this.updateValues =
         [
-            ['value',     this.value          ],
+            [returnValueId,     this.value          ],
             ['operation', this.value.operation],
             ['children',  this.value.children ]
         ];
@@ -60324,7 +60356,7 @@ extends GOperator
 
         this.updateValues =
         [
-            ['value', this.value],
+            [returnValueId, this.value],
             ['x',     x         ],
             ['y',     y         ]
         ];
@@ -60492,7 +60524,7 @@ extends GOperator
 
         this.updateValues =
         [
-            ['value',      this.value],
+            [returnValueId,      this.value],
             ['angle',      angle     ],
             ['centerX',    centerX   ],
             ['centerY',    centerY   ],
@@ -60783,7 +60815,7 @@ extends GOperator
 
         this.updateValues =
         [
-            ['value',      this.value],
+            [returnValueId,      this.value],
             ['scaleX',     scaleX    ],
             ['scaleY',     scaleY    ],
             ['centerX',    centerX   ],
@@ -61111,7 +61143,7 @@ extends GOperator
 
         this.updateValues =
         [
-            ['value',      this.value],
+            [returnValueId,      this.value],
             ['skewX',      skewX     ],
             ['skewY',      skewY     ],
             ['centerX',    centerX   ],
@@ -61465,7 +61497,7 @@ extends GOperator
             this.value = NullValue;
 
 
-        this.updateValues = [['value', this.value]];
+        this.updateValues = [[returnValueId, this.value]];
 
 
         this.validate();
@@ -61530,7 +61562,7 @@ extends GOperator
         this.value = NullValue;
 
 
-        this.updateValues = [['value', this.value]];
+        this.updateValues = [[returnValueId, this.value]];
         
         
         this.validate();
@@ -63025,7 +63057,7 @@ NumberControl.prototype.initTextbox = function()
        
         const e = new CustomEvent('finishedit', { 'detail': {
             'success':         success,
-            'value':           val,
+            returnValueId:           val,
             'oldValue':        savedVal,
             'valueString':     value     .replace(this.suffix, ''),
             'oldValueString':  savedValue.replace(this.suffix, ''),
@@ -63905,6 +63937,8 @@ extends Control
     
     readOnly          = false;
     
+    tabSize           = 4;
+    
 
     confirmTimer      = null;
     
@@ -64144,6 +64178,19 @@ TextControl.prototype.initTextarea = function()
         else if (e.code == 'Tab')
         {
             e.preventDefault();
+
+            const tab = Array(this.tabSize + 1).join(' ');
+
+            const selStart = this.textbox.selectionStart;
+            const selEnd   = this.textbox.selectionEnd;
+
+            this.textbox.value = 
+                  this.textbox.value.slice(0, selStart)
+                + tab
+                + this.textbox.value.slice(selEnd);
+
+            this.textbox.selectionStart = 
+            this.textbox.selectionEnd   = selStart + this.tabSize;
         }
     });
 
@@ -64225,7 +64272,7 @@ TextControl.prototype.initTextarea = function()
 
         const e = new CustomEvent('finishedit', { 'detail': {
             'success':         success,
-            'value':           value     .replace(this.suffix, ''),
+            returnValueId:           value     .replace(this.suffix, ''),
             'oldValue':        savedValue.replace(this.suffix, ''),
             'preventSetValue': false }});
 
@@ -65008,7 +65055,7 @@ ColorControl.prototype.initTextbox = function()
         
         const e = new CustomEvent('finishedit', { 'detail': {
             'success':         success,
-            'value':           value,
+            returnValueId:           value,
             'oldValue':        savedValue,
             'preventSetValue': false }});
             
@@ -71062,7 +71109,7 @@ function checkControlVisible(param, control)
 
 function createParamFromType(type, options = {})
 {
-    const id        = options.id        != undefined ? options.id        : 'value';
+    const id        = options.id        != undefined ? options.id        : returnValueId;
     const name      = options.name      != undefined ? options.name      : '';
     const showName  = options.showName  != undefined ? options.showName  : false;
     const hasInput  = options.hasInput  != undefined ? options.hasInput  : false;
@@ -79015,7 +79062,7 @@ Operator.prototype.initLabelTextbox = function()
 
         this.textbox.dispatchEvent(new CustomEvent('finishedit', { 'detail': {
             'success':  success,
-            'value':    enteredValue,
+            returnValueId:    enteredValue,
             'oldValue': savedValue }}));
     
 
@@ -79473,7 +79520,7 @@ extends OperatorBase
 
     updateValues(requestId, actionId, updateParamId, paramIds, values)
     {
-        const value = values[paramIds.findIndex(id => id == 'value')];
+        const value = values[paramIds.findIndex(id => id == returnValueId)];
 
         this.paramValue.setValue(value, false, true, false);
 
@@ -79963,7 +80010,7 @@ extends ResizableBase
 
     updateValues(requestId, actionId, updateParamId, paramIds, values)
     {
-        const value = values[paramIds.findIndex(id => id == 'value')];
+        const value = values[paramIds.findIndex(id => id == returnValueId)];
 
         this.paramValue.setValue(value, false, true, false);
 
@@ -80037,7 +80084,7 @@ extends OperatorBase
     {
         super.updateValues(requestId, actionId, updateParamId, paramIds, values);
 
-        const value = values[paramIds.findIndex(id => id == 'value')];
+        const value = values[paramIds.findIndex(id => id == returnValueId)];
         console.assert(LIST_VALUES.includes(value.type));
     }
 
@@ -80141,7 +80188,7 @@ extends OperatorBase
 
     // genRequest(gen)
     // {
-    //     // 'this' is the node
+        // 'this' is the node
 
         gen.scope.push({
             nodeId:  this.node.id, 
@@ -80196,26 +80243,31 @@ extends OperatorBase
         {
             for (let i = 0; i < values.length - 1; i++) 
             {
-                const value = values[i];
-                if (!value.isValid()) continue;
-
-                
+                const value   = values[i];
                 const valueId = paramIds[i];
+    
+                if (  !value.isValid()
+                    || valueId == returnValueId) 
+                    continue;
 
+                // if (i == 0 && valueId == returnValueId)
+                //     continue;
+
+                    
                 const param = oldParams.find(p => 
                        p.id   == valueId
                     && p.type == value.type);
 
-                const showName = value.type == NUMBER_VALUE;
+                const showName = 
+                       value.type == NUMBER_VALUE ;
+//                    && value.valueId != '';
 
-
+                    
                 if (   param
-                    && paramIds.includes(param.id)) 
+                    && paramIds.includes(param.id))
+//                    && !(i == 0 && param.id != returnValueId)) 
                 {
                     this.addParam(param, true);
-
-                    // if (param.type != TEXT)
-                    //     param.showName = true;
 
                     const _conn = oldParamConns.find(c =>
                            c.outputNodeId == this.id
@@ -80223,7 +80275,12 @@ extends OperatorBase
 
                     if (_conn)
                     {
-                        const conn = uiConnect(param.output, nodeFromId(_conn.inputNodeId).inputFromId(_conn.inputId));
+                        const inputNode = nodeFromId(_conn.inputNodeId);
+
+                        const conn = uiConnect(
+                            param.output, 
+                            inputNode.inputFromId(_conn.inputId));
+
                         uiSaveConn(conn);
                     }
                 }
@@ -80232,16 +80289,17 @@ extends OperatorBase
             }
         }
 
-        else if (isEmpty(paramIds))
+        else if (paramIds.length <= 1)
             this.removeAllParams();
     
         
         super.updateValues(requestId, actionId, updateParamId, paramIds, values);
 
 
-        const value = values[paramIds.findIndex(id => id == 'value')];
+        const value = values[paramIds.findIndex(id => id == returnValueId)];
 
-        this.outputs[0].types = [finalListTypeFromItems(value.items)];
+        if (LIST_VALUES.includes(value.type))
+            this.outputs[0].types = [finalListTypeFromItems(value.items)];
     }
 
 
@@ -80327,7 +80385,7 @@ extends OperatorBase
         super.updateValues(requestId, actionId, updateParamId, paramIds, values);
 
         
-        const value = values[paramIds.findIndex(id => id == 'value')];
+        const value = values[paramIds.findIndex(id => id == returnValueId)];
         this.length = values[paramIds.findIndex(id => id == 'length')];
 
         this.outputs[0].types = [value.type];
@@ -80384,7 +80442,7 @@ extends OperatorBase
 
         this.addInput (new Input([LIST_VALUE]));
 
-        this.addParam(this.paramValue = new NumberParam('value', 'value', false, false, true, 0, 0));
+        this.addParam(this.paramValue = new NumberParam(returnValueId, 'value', false, false, true, 0, 0));
     }
 
 
@@ -80953,7 +81011,7 @@ extends OperatorBase
 
     updateValues(requestId, actionId, updateParamId, paramIds, values)
     {
-        const value = values[paramIds.findIndex(id => id == 'value')];
+        const value = values[paramIds.findIndex(id => id == returnValueId)];
         const count = values[paramIds.findIndex(id => id == 'count')];
         const loop  = values[paramIds.findIndex(id => id == 'loop' )];
 
@@ -81027,8 +81085,8 @@ extends OperatorBase
         //this.addOutput(new Output([], this.output_genRequest));
 
 
-        this.paramNumber = new NumberParam('value', '', false, false, true);
-        this.paramColor  = new  ColorParam('value', '', false, false, true);
+        this.paramNumber = new NumberParam(returnValueId, '', false, false, true);
+        this.paramColor  = new  ColorParam(returnValueId, '', false, false, true);
 
         this.paramNumber.volatile = true;
         this.paramColor .volatile = true;
@@ -81085,7 +81143,7 @@ extends OperatorBase
 
     updateValues(requestId, actionId, updateParamId, paramIds, values) // virtual
     {
-        const val = values[paramIds.findIndex(id => id == 'value')];
+        const val = values[paramIds.findIndex(id => id == returnValueId)];
 
         // this.headerColor =
         //     val && val.type == COLOR_VALUE
@@ -81271,7 +81329,7 @@ extends OperatorBase
         this.addInput (new Input ([NUMBER_VALUE], getNodeInputValuesForUndo, this.input_getBackInitValue));
         this.addOutput(new Output([NUMBER_VALUE], this.output_genRequest, getNodeOutputValuesForUndo, this.output_backInit));
 
-        this.addParam(this.paramValue = new NumberParam('value', '', false, false, false));
+        this.addParam(this.paramValue = new NumberParam(returnValueId, '', false, false, false));
 
         this.alwaysLoadParams = true;
     }
@@ -82192,7 +82250,7 @@ extends OperatorWithValue
 
 
 class   OpNumberToText
-extends OperatorWithValue
+extends OperatorBase
 {
     paramNumber;
     paramFormat;
@@ -82206,7 +82264,6 @@ extends OperatorWithValue
 
         this.addOutput(new Output([TEXT_VALUE], this.output_genRequest));
 
-        this.addParam(this.paramValue);
         this.addParam(this.paramNumber = new NumberParam('number', 'number', false, true,  true));
         this.addParam(this.paramFormat = new SelectParam('format', 'format', false, true,  true, ['decimal', 'hexadecimal']));
     }
@@ -82247,7 +82304,6 @@ extends OperatorWithValue
 
     updateParams()
     {
-        this.paramValue .enableControlText(false);
         this.paramNumber.enableControlText(true);
         this.paramFormat.enableControlText(true);
 
@@ -83686,7 +83742,7 @@ extends ResizableBase
         this.addInput (new Input (TEXT_TYPES, getNodeInputValuesForUndo, this.input_getBackInitValue));
         this.addOutput(new Output([TEXT_VALUE], this.output_genRequest, getNodeOutputValuesForUndo, this.output_backInit));
 
-        this.addParam(this.paramValue = new TextParam('value', '', false, false));
+        this.addParam(this.paramValue = new TextParam(returnValueId, '', false, false));
 
         this.paramValue.controls[0].textbox.defPlaceholder   = '...';//' . . .';
         this.paramValue.controls[0].textbox.style.textAlign  = 'center';
@@ -84299,7 +84355,7 @@ extends OperatorBase
 
         this.addInput(new Input([TEXT_VALUE]));
 
-        this.addParam(this.paramValue     = new ListParam('value',     '',          false, false, true));
+        this.addParam(this.paramValue     = new ListParam(returnValueId,     '',          false, false, true));
         this.addParam(this.paramSeparator = new TextParam('separator', 'separator',        true, true, ','));
 
 
@@ -84366,7 +84422,7 @@ extends OperatorBase
 
         this.addInput(new Input([TEXT_VALUE]));
 
-        this.addParam(this.paramValue = new ListParam('value', 'values', false, false, true));
+        this.addParam(this.paramValue = new ListParam(returnValueId, 'values', false, false, true));
 
         this.paramValue.itemName = 'value';
     }
@@ -86461,7 +86517,7 @@ extends OpColorBase
 
     updateValues(requestId, actionId, updateParamId, paramIds, values)
     {
-        const col = values[paramIds.findIndex(id => id == 'value')];
+        const col = values[paramIds.findIndex(id => id == returnValueId)];
 
         this._color = 
             col
@@ -86649,7 +86705,7 @@ extends OpColorBase
                 || cached)
                 paramIds.push(param.id);
 
-        paramIds.push('value');
+        paramIds.push(returnValueId);
 
         request.push(paramIds.join(','));
 
@@ -86676,7 +86732,7 @@ extends OpColorBase
 
     updateValues(requestId, actionId, updateParamId, paramIds, values)
     {
-        const col = values[paramIds.findIndex(id => id == 'value')];
+        const col = values[paramIds.findIndex(id => id == returnValueId)];
 
         this._color = 
             col
@@ -87332,7 +87388,7 @@ extends OpColorBase
 
     updateValues(requestId, actionId, updateParamId, paramIds, values)
     {
-        const value = values[paramIds.findIndex(id => id == 'value')];
+        const value = values[paramIds.findIndex(id => id == returnValueId)];
 
         this._color = 
             value
@@ -87529,7 +87585,7 @@ extends OpColorBase
 
     updateValues(requestId, actionId, updateParamId, paramIds, values)
     {
-        const col = values[paramIds.findIndex(id => id == 'value')];
+        const col = values[paramIds.findIndex(id => id == returnValueId)];
 
         this._color = 
             col
@@ -87621,7 +87677,7 @@ extends OpColorBase
 
     updateValues(requestId, actionId, updateParamId, paramIds, values)
     {
-        const col = values[paramIds.findIndex(id => id == 'value')];
+        const col = values[paramIds.findIndex(id => id == returnValueId)];
 
         this._color = 
             col
@@ -87660,7 +87716,7 @@ extends OperatorBase
         this.inert = true;
 
 
-        this.addParam(this.paramValue = new FillParam('value', '', false, true, true, FillValue.NaN));
+        this.addParam(this.paramValue = new FillParam(returnValueId, '', false, true, true, FillValue.NaN));
 
         this.paramValue.input.getValuesForUndo = getNodeInputValuesForUndo;
         this.paramValue.input.addEventListener('disconnect', e => OpColorStyle_value_onDisconnectInput(this, e.detail.input));
@@ -91960,7 +92016,7 @@ class Graph
         //console.log('graph.connect()');
 
         if (input.connectedOutput == output)
-            return null;
+            return input.connection;//null;
             
 
         if (input.connectedOutput)
@@ -100368,13 +100424,13 @@ function uiUpdateValuesAndObjects(requestId, actionId, updateNodeId, updateParam
             graph.updatePages();
         }
 
-        graphView.creatingNodes      = false;
-        graphView.pastingNodes       = false;
-        graphView.loadingNodes       = false;
-        graphView.restoringNodes     = false;
+        graphView.creatingNodes  = false;
+        graphView.pastingNodes   = false;
+        graphView.loadingNodes   = false;
+        graphView.restoringNodes = false;
 
-        actionManager.undoing        = false;
-        actionManager.redoing        = false;
+        actionManager.undoing    = false;
+        actionManager.redoing    = false;
         
 
         loadingOverlay.style.display = 'none'; // for loading

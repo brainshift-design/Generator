@@ -110,7 +110,7 @@ class Graph
         //console.log('graph.connect()');
 
         if (input.connectedOutput == output)
-            return null;
+            return input.connection;//null;
             
 
         if (input.connectedOutput)

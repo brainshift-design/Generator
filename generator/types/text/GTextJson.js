@@ -45,7 +45,7 @@ extends GOperator
             try
             {
                 const json = JSON.parse(input.value);
-                this.evalItems(json);
+                this.value = this.evalItems(json);
             }
             catch (e)
             {
@@ -56,7 +56,7 @@ extends GOperator
 
         this.updateValues =
         [
-            ['value', this.value]
+            [returnValueId, this.value]
         ];
         
 
@@ -69,17 +69,24 @@ extends GOperator
 
     evalItems(json)
     {
+        let list = new ListValue();
+
+
         for (let key in json)
         {
             if (   typeof json[key] === 'object'
                 && json[key] !== null)
-                this.evalItems(json[key]);                
-
+            {
+                const obj = this.evalItems(json[key]);
+                obj.valueId = key;
+                list.items.push(obj);
+            }
             else
             {
                 let value;
 
-                if (typeof json[key] === 'number')
+                if (   typeof json[key] === 'number'
+                    || isValidFloatString(json[key]))
                     value = NumberValue.fromString(json[key].toString());
                 else if (typeof json[key] === 'boolean')
                     value = new NumberValue(parseBool(json[key].toString()) ? 1 : 0);
@@ -88,9 +95,12 @@ extends GOperator
 
                     
                 value.valueId = key;
-                this.value.items.push(value);
+                list.items.push(value);
             }
         }
+
+        
+        return list;
     }
 
 

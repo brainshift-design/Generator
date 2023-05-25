@@ -80,7 +80,7 @@ extends GOperator
 
         this.updateValues =
         [
-            ['value',      this.value],
+            [returnValueId,      this.value],
             ['angle',      angle     ],
             ['centerX',    centerX   ],
             ['centerY',    centerY   ],

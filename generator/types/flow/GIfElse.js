@@ -71,7 +71,7 @@ extends GOperator
 
         this.updateValues =
         [
-            ['value',     this.value],
+            [returnValueId,     this.value],
             ['condition', cond      ]
         ];
         

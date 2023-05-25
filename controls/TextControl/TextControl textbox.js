@@ -94,6 +94,19 @@ TextControl.prototype.initTextarea = function()
         else if (e.code == 'Tab')
         {
             e.preventDefault();
+
+            const tab = Array(this.tabSize + 1).join(' ');
+
+            const selStart = this.textbox.selectionStart;
+            const selEnd   = this.textbox.selectionEnd;
+
+            this.textbox.value = 
+                  this.textbox.value.slice(0, selStart)
+                + tab
+                + this.textbox.value.slice(selEnd);
+
+            this.textbox.selectionStart = 
+            this.textbox.selectionEnd   = selStart + this.tabSize;
         }
     });
 
@@ -175,7 +188,7 @@ TextControl.prototype.initTextarea = function()
 
         const e = new CustomEvent('finishedit', { 'detail': {
             'success':         success,
-            'value':           value     .replace(this.suffix, ''),
+            returnValueId:           value     .replace(this.suffix, ''),
             'oldValue':        savedValue.replace(this.suffix, ''),
             'preventSetValue': false }});
 

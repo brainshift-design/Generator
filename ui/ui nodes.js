@@ -886,13 +886,13 @@ function uiUpdateValuesAndObjects(requestId, actionId, updateNodeId, updateParam
             graph.updatePages();
         }
 
-        graphView.creatingNodes      = false;
-        graphView.pastingNodes       = false;
-        graphView.loadingNodes       = false;
-        graphView.restoringNodes     = false;
+        graphView.creatingNodes  = false;
+        graphView.pastingNodes   = false;
+        graphView.loadingNodes   = false;
+        graphView.restoringNodes = false;
 
-        actionManager.undoing        = false;
-        actionManager.redoing        = false;
+        actionManager.undoing    = false;
+        actionManager.redoing    = false;
         
 
         loadingOverlay.style.display = 'none'; // for loading

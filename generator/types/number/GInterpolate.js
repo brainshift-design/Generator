@@ -64,7 +64,7 @@ extends GNumberType
         this.updateValues =
         [
             ['amount', amount    ],
-            ['value',  this.value]
+            [returnValueId,  this.value]
         ];
         
 

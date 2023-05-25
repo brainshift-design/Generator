@@ -12,7 +12,7 @@ extends OperatorBase
 
         this.addInput (new Input([LIST_VALUE]));
 
-        this.addParam(this.paramValue = new NumberParam('value', 'value', false, false, true, 0, 0));
+        this.addParam(this.paramValue = new NumberParam(returnValueId, 'value', false, false, true, 0, 0));
     }
 
 

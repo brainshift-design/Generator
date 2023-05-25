@@ -179,7 +179,7 @@ function genParseCorrectColor(parse)
         case 'margin1':  corr.margin1 = genParse(parse); break;
         case 'margin2':  corr.margin2 = genParse(parse); break;
         case 'margin3':  corr.margin3 = genParse(parse); break;
-        case 'value':    corr.value   = genParse(parse); break;
+        case returnValueId:    corr.value   = genParse(parse); break;
         }
     }
                 

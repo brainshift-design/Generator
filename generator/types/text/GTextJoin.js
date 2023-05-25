@@ -40,7 +40,7 @@ extends GTextType
 
         this.updateValues = 
         [
-            ['value', this.value],
+            [returnValueId, this.value],
             ['with',  _with     ]
         ];
 

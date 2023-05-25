@@ -96,7 +96,7 @@ extends OpColorBase
                 || cached)
                 paramIds.push(param.id);
 
-        paramIds.push('value');
+        paramIds.push(returnValueId);
 
         request.push(paramIds.join(','));
 
@@ -123,7 +123,7 @@ extends OpColorBase
 
     updateValues(requestId, actionId, updateParamId, paramIds, values)
     {
-        const col = values[paramIds.findIndex(id => id == 'value')];
+        const col = values[paramIds.findIndex(id => id == returnValueId)];
 
         this._color = 
             col

@@ -27,7 +27,7 @@ extends GArithmetic
         this.value = await evalAndInputs(this.inputs, parse);
         
 
-        this.updateValues = [['value', this.value]];
+        this.updateValues = [[returnValueId, this.value]];
 
         
         this.validate();

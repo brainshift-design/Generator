@@ -357,7 +357,7 @@ NumberControl.prototype.initTextbox = function()
        
         const e = new CustomEvent('finishedit', { 'detail': {
             'success':         success,
-            'value':           val,
+            returnValueId:           val,
             'oldValue':        savedVal,
             'valueString':     value     .replace(this.suffix, ''),
             'oldValueString':  savedValue.replace(this.suffix, ''),

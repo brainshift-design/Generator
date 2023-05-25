@@ -25,7 +25,7 @@ extends OperatorBase
         this.inert = true;
 
 
-        this.addParam(this.paramValue = new FillParam('value', '', false, true, true, FillValue.NaN));
+        this.addParam(this.paramValue = new FillParam(returnValueId, '', false, true, true, FillValue.NaN));
 
         this.paramValue.input.getValuesForUndo = getNodeInputValuesForUndo;
         this.paramValue.input.addEventListener('disconnect', e => OpColorStyle_value_onDisconnectInput(this, e.detail.input));

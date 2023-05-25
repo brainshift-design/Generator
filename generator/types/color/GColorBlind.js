@@ -83,7 +83,7 @@ extends GColorType
             ['l',     l         ],
             ['m',     m         ],
             ['s',     s         ],
-            ['value', this.value]
+            [returnValueId, this.value]
         ];
         
 

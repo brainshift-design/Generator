@@ -1,5 +1,5 @@
 class   OpNumberToText
-extends OperatorWithValue
+extends OperatorBase
 {
     paramNumber;
     paramFormat;
@@ -13,7 +13,6 @@ extends OperatorWithValue
 
         this.addOutput(new Output([TEXT_VALUE], this.output_genRequest));
 
-        this.addParam(this.paramValue);
         this.addParam(this.paramNumber = new NumberParam('number', 'number', false, true,  true));
         this.addParam(this.paramFormat = new SelectParam('format', 'format', false, true,  true, ['decimal', 'hexadecimal']));
     }
@@ -54,7 +53,6 @@ extends OperatorWithValue
 
     updateParams()
     {
-        this.paramValue .enableControlText(false);
         this.paramNumber.enableControlText(true);
         this.paramFormat.enableControlText(true);
 

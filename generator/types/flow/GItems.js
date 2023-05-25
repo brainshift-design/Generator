@@ -52,6 +52,9 @@ extends GOperator
 
             this.value   = this.input.toValue();
             this.objects = this.input.objects.map(o => o.copy());
+
+            // console.log('this.input =', this.input);
+            // console.log('this.value =', this.value);
         }
         else
         {
@@ -70,7 +73,7 @@ extends GOperator
             {
                 const item = this.value.items[i];
 
-                const valueId =
+                const valueId = 
                     item.valueId != ''
                     ? item.valueId
                     : 'item' + i;
@@ -83,7 +86,7 @@ extends GOperator
             this.updateValues.push(['', NullValue]);
 
 
-        this.updateValues.push(['value', this.value]);
+        this.updateValues.push([returnValueId, this.value]); // first so it can be separated out in OpItems
 
 
         for (let j = 0; j < this.objects.length; j++)
@@ -108,12 +111,15 @@ extends GOperator
 
     paramFromId(paramId)
     {
-        if (   paramId.length > 4
-            && paramId.substring(0, 4) == 'item'
-            && strIsNum(paramId.substring(4)))
-            return this[paramId];
+        return paramId != returnValueId
+              ? this[paramId]
+              : null;
+        // if (   paramId.length > 4
+        //     && paramId.substring(0, 4) == 'item'
+        //     && strIsNum(paramId.substring(4)))
+        //     return this[paramId];
 
-        return null;
+        // return null;
     }
 
 

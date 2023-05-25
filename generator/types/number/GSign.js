@@ -47,7 +47,7 @@ extends GNumberType
             this.value = NumberValue.NaN;
 
 
-        this.updateValues = [['value', this.value]];
+        this.updateValues = [[returnValueId, this.value]];
 
 
         this.validate();

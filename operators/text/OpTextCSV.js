@@ -13,7 +13,7 @@ extends OperatorBase
 
         this.addInput(new Input([TEXT_VALUE]));
 
-        this.addParam(this.paramValue     = new ListParam('value',     '',          false, false, true));
+        this.addParam(this.paramValue     = new ListParam(returnValueId,     '',          false, false, true));
         this.addParam(this.paramSeparator = new TextParam('separator', 'separator',        true, true, ','));
 
 

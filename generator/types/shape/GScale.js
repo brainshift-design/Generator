@@ -84,7 +84,7 @@ extends GOperator
 
         this.updateValues =
         [
-            ['value',      this.value],
+            [returnValueId,      this.value],
             ['scaleX',     scaleX    ],
             ['scaleY',     scaleY    ],
             ['centerX',    centerX   ],

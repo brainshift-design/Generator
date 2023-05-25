@@ -70,7 +70,7 @@ extends GNumberType
 
         this.updateValues =
         [
-            ['value', this.value],
+            [returnValueId, this.value],
             ['min',   min       ],
             ['max',   max       ]
         ];

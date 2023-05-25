@@ -31,7 +31,7 @@ extends GConditionBase
             parse);
             
 
-        this.updateValues = [['value', this.value]];
+        this.updateValues = [[returnValueId, this.value]];
 
 
         this.validate();

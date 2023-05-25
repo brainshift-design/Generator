@@ -50,7 +50,7 @@ extends GArithmetic
         this.updateValues =
         [
             ['operation', op        ],
-            ['value',     this.value]
+            [returnValueId,     this.value]
         ];
 
 

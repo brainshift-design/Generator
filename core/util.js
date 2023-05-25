@@ -386,3 +386,10 @@ function trimCharFromEnd(str, trim)
 
     return str;
 }
+
+
+
+function isValidFloatString(str) 
+{
+    return /^-?\d*\.?\d*(e-?\d+)?$/.test(str);
+}

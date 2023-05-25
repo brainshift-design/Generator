@@ -60,7 +60,7 @@ extends GNumberType
 
         this.updateValues =
         [
-            ['value',  this.value],
+            [returnValueId,  this.value],
             ['number', number    ],
             ['format', format    ]
         ];

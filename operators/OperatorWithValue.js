@@ -17,7 +17,7 @@ extends OperatorBase
 
     updateValues(requestId, actionId, updateParamId, paramIds, values)
     {
-        const value = values[paramIds.findIndex(id => id == 'value')];
+        const value = values[paramIds.findIndex(id => id == returnValueId)];
 
         this.paramValue.setValue(value, false, true, false);
 

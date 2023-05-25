@@ -134,7 +134,7 @@ extends GOperator
 
             this.updateValues =
             [
-                ['value',  this.value     ],
+                [returnValueId,  this.value     ],
                 ['count',  count          ],
                 ['loop',   NumberValue.NaN]
             ];
