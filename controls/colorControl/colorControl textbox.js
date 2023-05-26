@@ -288,7 +288,7 @@ ColorControl.prototype.initTextbox = function()
         
         const e = new CustomEvent('finishedit', { 'detail': {
             'success':         success,
-            returnValueId:           value,
+            'value':           value,
             'oldValue':        savedValue,
             'preventSetValue': false }});
             

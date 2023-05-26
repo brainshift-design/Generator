@@ -290,18 +290,21 @@ function osCtrlShift(plus = true) { return isMac ? osShift(plus) + osCtrl(plus) 
 
 function getCreateNodeAction(type, creatingButton, options)
 {
-    let node = createNode(type);
+    //let node = 
+    //createNode(type);
 
-    if (isEmpty(node.headerOutputs))
-        options.autoConnect = true;
+    // if (isEmpty(node.headerOutputs))
+    //     options.autoConnect = true;
 
-    node = null;
+    //node = null;
 
 
-    return !!options.insert
-        &&  !options.autoConnect
-           ? new CreateInsertNodeAction(type, creatingButton, options)
-           : new CreateNodeAction      (type, creatingButton, options, !!options.autoConnect);
+    return  options.insert != undefined
+        &&  options.insert
+        && (    options.autoConnect == undefined
+            || !options.autoConnect)
+        ? new CreateInsertNodeAction(type, creatingButton, options)
+        : new CreateNodeAction      (type, creatingButton, options, options.autoConnect != undefined && options.autoConnect);
 }
 
 

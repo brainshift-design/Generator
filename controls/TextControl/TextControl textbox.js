@@ -188,7 +188,7 @@ TextControl.prototype.initTextarea = function()
 
         const e = new CustomEvent('finishedit', { 'detail': {
             'success':         success,
-            returnValueId:           value     .replace(this.suffix, ''),
+            'value':           value     .replace(this.suffix, ''),
             'oldValue':        savedValue.replace(this.suffix, ''),
             'preventSetValue': false }});
 

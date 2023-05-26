@@ -16,7 +16,7 @@ const nodeTag          = 'G_NODE';
 const connTag          = 'G_CONN';
 const pageTag          = 'G_PAGE';
 
-const returnValueId    = '-v﻿a﻿l﻿u﻿e-';
+const returnValueId    = 'value';//'-v﻿a﻿l﻿u﻿e-';
 
 
 const identity = Object.freeze(

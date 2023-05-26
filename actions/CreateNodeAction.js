@@ -29,6 +29,8 @@ extends Action
         this.options        = options;
 
         this.autoConnect    = autoConnect;
+
+        console.log('autoConnect =', autoConnect);
     }
 
 
@@ -47,9 +49,10 @@ extends Action
                 this.autoConnect
             && !isEmpty(this.prevSelectedIds)
             &&  canAutoConnectNode(this.node)
-            && !!this.options.autoConnect;
+            && this.options.autoConnect != undefined
+            && this.options.autoConnect;
 
-
+            
         graph.addNode(this.node, !autoConnect);
 
         this.createdNodeId = this.node.id;
