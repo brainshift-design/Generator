@@ -51,6 +51,7 @@ async function evalDivideInputs(inputs, parse)
     {
         const val0 = (await inputs[0].eval(parse)).toValue();
 
+
         if (    LIST_VALUES.includes(val0.type)
             && !isEmpty(val0.items))
         {
@@ -86,7 +87,7 @@ async function evalDivideInputs(inputs, parse)
             value.decimals = val0.decimals;
         }
 
-
+        
         for (let i = 1; i < inputs.length; i++)
         {
             const val = (await inputs[i].eval(parse)).toValue();

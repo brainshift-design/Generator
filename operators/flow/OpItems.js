@@ -73,8 +73,8 @@ extends OperatorBase
         const oldParamConns = this.getAllParamConnections();
 
 
-        this.disconnectAllParams(true);
-        this.removeAllParams();
+        this.disconnectParamsNotInList(paramIds, true);
+        this.removeParamsNotInList(paramIds);
 
 
         if (   paramIds.length > 1
@@ -90,9 +90,6 @@ extends OperatorBase
                     || valueId == returnValueId) 
                     continue;
 
-                // if (i == 0 && valueId == returnValueId)
-                //     continue;
-
                     
                 const param = oldParams.find(p => 
                        p.id   == valueId
@@ -100,31 +97,31 @@ extends OperatorBase
 
                 const showName = 
                        value.type == NUMBER_VALUE ;
-//                    && value.valueId != '';
 
                     
-                if (   param
-                    && paramIds.includes(param.id))
-//                    && !(i == 0 && param.id != returnValueId)) 
-                {
-                    this.addParam(param, true);
+                // if (   param
+                //     && paramIds.includes(param.id))
+                // {
+                //     this.addParam(param, true);
 
-                    const _conn = oldParamConns.find(c =>
-                           c.outputNodeId == this.id
-                        && c.outputId     == param.id);
+                //     const _conn = oldParamConns.find(c =>
+                //            c.outputNodeId == this.id
+                //         && c.outputId     == param.id);
 
-                    if (_conn)
-                    {
-                        const inputNode = nodeFromId(_conn.inputNodeId);
+                //     if (_conn)
+                //     {
+                //         const inputNode = nodeFromId(_conn.inputNodeId);
 
-                        const conn = uiConnect(
-                            param.output, 
-                            inputNode.inputFromId(_conn.inputId));
+                //         const conn = uiConnect(
+                //             param.output, 
+                //             inputNode.inputFromId(_conn.inputId));
 
-                        uiSaveConn(conn);
-                    }
-                }
-                else
+                //         uiSaveConn(conn);
+                //     }
+                // }
+                // else
+
+                if (!param)
                     this.createAndAddParamByType(value.type, valueId, showName, false, true, true);
             }
         }

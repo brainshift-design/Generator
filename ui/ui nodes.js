@@ -1034,6 +1034,8 @@ function uiDeleteSavedConn(conn)
 {
     if (settings.logRawSaveConnections)
     {
+        //console.trace();
+
         console.log(
              '%cDELETING SAVED CONN '
             + getConnString(conn, true),
@@ -1053,6 +1055,8 @@ function uiDeleteSavedConnection(key, outputNodeId, outputId, outputOrder, input
 {
     if (settings.logRawSaveConnections)
     {
+        //console.trace();
+
         console.log(
              '%cDELETING SAVED CONNECTION ' 
             + getConnectionString(
@@ -1112,6 +1116,8 @@ function uiDeleteSavedConnectionsToNodeId(nodeId)
 {
     if (settings.logRawSaveConnections)
     {
+        //console.trace();
+
         console.log(
             '%cDELETING SAVED CONNECTIONS TO ' + nodeId, 
             'color: black; background: #ddeeff;');

@@ -2114,7 +2114,6 @@ a
 
 :root
 {
-    --operatorSymbolSize: 26;
     --colorBackSize:      45px;
 }
 
@@ -3423,19 +3422,6 @@ a
                     translateY(-50%)
                     rotate(-45deg);
     display:        none;
-}
-
-
-.operatorSymbol
-{
-    font-family:    Inter;
-    font-size:      20px;
-    width:          auto;
-    height:         auto;
-    position:       absolute;
-    left:           50%;
-    transform:      translateX(-50%);
- /* box-shadow:     0 0 0 1px red inset; */
 }
 
 
@@ -8600,7 +8586,6 @@ const SET_PARAM_VALUE_ACTION     = 'SET_PARAM_VALUE';
 const SET_PARAM_SETTING_ACTION   = 'SET_PARAM_SETTING';
 const SET_NODE_RECT_ACTION       = 'SET_NODE_RECT';
 const TOGGLE_DISABLE_ACTION      = 'TOGGLE_DISABLE';
-//const TOGGLE_SYMBOL_ACTION       = 'TOGGLE_SYMBOL';
 const TOGGLE_PARAM_HEADER_ACTION = 'TOGGLE_PARAM_HEADER';
 const SET_CURRENT_GRAPH_ACTION   = 'SET_CURRENT_GRAPH';
 const CREATE_PAGE_ACTION         = 'CREATE_PAGE';
@@ -17315,6 +17300,7 @@ async function evalDivideInputs(inputs, parse)
     {
         const val0 = (await inputs[0].eval(parse)).toValue();
 
+
         if (    LIST_VALUES.includes(val0.type)
             && !isEmpty(val0.items))
         {
@@ -17350,7 +17336,7 @@ async function evalDivideInputs(inputs, parse)
             value.decimals = val0.decimals;
         }
 
-
+        
         for (let i = 1; i < inputs.length; i++)
         {
             const val = (await inputs[i].eval(parse)).toValue();
@@ -42739,7 +42725,6 @@ const SET_PARAM_VALUE_ACTION     = 'SET_PARAM_VALUE';
 const SET_PARAM_SETTING_ACTION   = 'SET_PARAM_SETTING';
 const SET_NODE_RECT_ACTION       = 'SET_NODE_RECT';
 const TOGGLE_DISABLE_ACTION      = 'TOGGLE_DISABLE';
-//const TOGGLE_SYMBOL_ACTION       = 'TOGGLE_SYMBOL';
 const TOGGLE_PARAM_HEADER_ACTION = 'TOGGLE_PARAM_HEADER';
 const SET_CURRENT_GRAPH_ACTION   = 'SET_CURRENT_GRAPH';
 const CREATE_PAGE_ACTION         = 'CREATE_PAGE';
@@ -51454,6 +51439,7 @@ async function evalDivideInputs(inputs, parse)
     {
         const val0 = (await inputs[0].eval(parse)).toValue();
 
+
         if (    LIST_VALUES.includes(val0.type)
             && !isEmpty(val0.items))
         {
@@ -51489,7 +51475,7 @@ async function evalDivideInputs(inputs, parse)
             value.decimals = val0.decimals;
         }
 
-
+        
         for (let i = 1; i < inputs.length; i++)
         {
             const val = (await inputs[i].eval(parse)).toValue();
@@ -67127,14 +67113,14 @@ function initGeneratorMenus()
 
     menuFlow = new Menu('Data flow', true, false);
     menuFlow.addItems([
-        menuItemList          = new MenuItem('List',              {icon: iconList,       callback: e => actionManager.do(getCreateNodeAction(LIST,         btnNumber.div, getCreateOptions(e)))}),
+        menuItemList          = new MenuItem('List',              {icon: iconList,       callback: e => actionManager.do(getCreateNodeAction(LIST,        btnNumber.div, getCreateOptions(e)))}),
         menuFlowSep1          = new MenuItem('',                  {separator: true}),     
-        menuItemItems         = new MenuItem('Items',             {icon: iconItems,      callback: e => actionManager.do(getCreateNodeAction(ITEMS,        btnNumber.div, getCreateOptions(e)))}),
-        menuItemCount         = new MenuItem('Count',             {icon: iconCount,      callback: e => actionManager.do(getCreateNodeAction(LIST_COUNT,   btnNumber.div, getCreateOptions(e)))}),
+        menuItemItems         = new MenuItem('Items',             {icon: iconItems,      callback: e => actionManager.do(getCreateNodeAction(ITEMS,       btnNumber.div, getCreateOptions(e)))}),
+        menuItemCount         = new MenuItem('Count',             {icon: iconCount,      callback: e => actionManager.do(getCreateNodeAction(LIST_COUNT,  btnNumber.div, getCreateOptions(e)))}),
         menuFlowSep2          = new MenuItem('',                  {separator: true}),
-        menuItemSelect        = new MenuItem('Select',            {icon: iconSelect,     callback: e => actionManager.do(getCreateNodeAction(SELECT,       btnNumber.div, getCreateOptions(e)))}),
-        menuItemIfElse        = new MenuItem('I&hairsp;f / else', {icon: iconIfElse,     callback: e => actionManager.do(getCreateNodeAction(IF_ELSE,      btnNumber.div, getCreateOptions(e))), disambiguate: true}),
-        //menuItemExpandList  = new MenuItem('Expand',            {icon: iconExpandList, callback: e => actionManager.do(getCreateNodeAction(LIST_EXPAND,  btnNumber.div, getCreateOptions(e)))}),
+        menuItemSelect        = new MenuItem('Select',            {icon: iconSelect,     callback: e => actionManager.do(getCreateNodeAction(SELECT,      btnNumber.div, getCreateOptions(e)))}),
+        menuItemIfElse        = new MenuItem('I&hairsp;f / else', {icon: iconIfElse,     callback: e => actionManager.do(getCreateNodeAction(IF_ELSE,     btnNumber.div, getCreateOptions(e))), disambiguate: true}),
+        //menuItemExpandList  = new MenuItem('Expand',            {icon: iconExpandList, callback: e => actionManager.do(getCreateNodeAction(LIST_EXPAND, btnNumber.div, getCreateOptions(e)))}),
         menuFlowSep2          = new MenuItem('',                  {separator: true}),
         menuItemCopy          = new MenuItem('Copy',              {icon: iconCopy,   callback: e => actionManager.do(getCreateNodeAction(COPY,         btnNumber.div, getCreateOptions(e)))}),
         menuFlowSep3          = new MenuItem('',                  {separator: true}),
@@ -67181,10 +67167,10 @@ function initGeneratorMenus()
     
     menuFunctions = new Menu('Functions', true, false);
     menuFunctions.addItems([
-        new MenuItem('Sign',     {icon: iconSign,     callback: e => actionManager.do(getCreateNodeAction(NUMBER_SIGN,        btnNumber.div, getCreateOptions(e)))}),
-        new MenuItem('Absolute', {icon: iconAbsolute, callback: e => actionManager.do(getCreateNodeAction(NUMBER_ABSOLUTE,    btnNumber.div, getCreateOptions(e)))}),
-        new MenuItem('Round',    {icon: iconRound,    callback: e => actionManager.do(getCreateNodeAction(NUMBER_ROUND,       btnNumber.div, getCreateOptions(e)))}),
-        new MenuItem('Limits',   {icon: iconLimits,   callback: e => actionManager.do(getCreateNodeAction(NUMBER_LIMITS,      btnNumber.div, getCreateOptions(e)))})]);
+        new MenuItem('Sign',     {icon: iconSign,     callback: e => actionManager.do(getCreateNodeAction(NUMBER_SIGN,     btnNumber.div, getCreateOptions(e)))}),
+        new MenuItem('Absolute', {icon: iconAbsolute, callback: e => actionManager.do(getCreateNodeAction(NUMBER_ABSOLUTE, btnNumber.div, getCreateOptions(e)))}),
+        new MenuItem('Round',    {icon: iconRound,    callback: e => actionManager.do(getCreateNodeAction(NUMBER_ROUND,    btnNumber.div, getCreateOptions(e)))}),
+        new MenuItem('Limits',   {icon: iconLimits,   callback: e => actionManager.do(getCreateNodeAction(NUMBER_LIMITS,   btnNumber.div, getCreateOptions(e)))})]);
         
 
     menuNumber = new Menu('Numbers', true, false);
@@ -77519,6 +77505,49 @@ class Operator
 
 
 
+    disconnectParamsNotInList(list, deleteSavedConnections = false)
+    {
+        for (let i = this.params.length-1; i >= 0; i--)
+        {
+            if (list.includes(this.params[i].id))
+                continue;
+
+
+            const param = this.params[i];
+
+            if (param.input && param.input.connected)
+            {
+                if (deleteSavedConnections)
+                    uiDeleteSavedConn(param.input.connection);
+
+                uiDisconnect(param.input);
+            }
+
+
+            if (param.output)
+            {
+                for (const input of param.output.connectedInputs)
+                {
+                    if (deleteSavedConnections)
+                        uiDeleteSavedConn(input.connection);
+
+                    uiDisconnect(input);
+                }
+            }
+        }
+    }
+
+
+
+    removeParamsNotInList(list)
+    {
+        for (let i = this.params.length-1; i >= 0; i--)
+            if (!list.includes(this.params[i].id))
+                this.removeParam(this.params[i]);
+    }
+
+
+
     updateParamDisplay() // must be called at the end of each final Op constructor
     {
         for (const param of this.params)
@@ -79544,121 +79573,6 @@ extends OperatorBase
 }
 
 
-// class   OperatorWithSymbol
-// extends OperatorWithValue
-// {
-//     _symbol;
-//     _showOnlySymbol;
-
-    
-
-//     constructor(type, id, name, symbol, icon)
-//     {
-//         super(type, id, name, icon);
-
-        
-//         this._showOnlySymbol  = true;
-
-
-//         this._symbol           = createDiv('operatorSymbol');
-//         this._symbol.innerHTML = symbol;
-//         this._symbol.clicked0  = false;
-        
-//         this._symbol.addEventListener('pointerenter', () => this._symbol.style.opacity = this._showOnlySymbol ? 1 : 0.65);
-//         this._symbol.addEventListener('pointerleave', () => this._symbol.style.opacity = 1);
-
-//         this._symbol.addEventListener('pointerdown', e => 
-//         { 
-//             if (e.button == 0)
-//             {
-//                 if (this._symbol.clicked0) // finish double click on small symbol
-//                 {
-//                     this._symbol.clicked0      = false;
-//                     this._symbol.style.opacity = 1;
-
-//                     actionManager.do(new ToggleOperatorSymbolAction(this.id, true));
-
-//                     this.header.ignoreDoubleClick = true;
-//                 }
-//                 else if (!this._showOnlySymbol) // start double cick on small symbol
-//                 {
-//                     this._symbol.clicked0 = true;
-//                     setTimeout(() => this._symbol.clicked0 = false, 250); // seems like a good default guess
-//                 }
-//             }
-//         });
-
-//         this.header.appendChild(this._symbol);
-
-        
-//         this.textbox.addEventListener('finishedit', e => 
-//         {
-//             if (this._showOnlySymbol)
-//                 actionManager.do(new ToggleOperatorSymbolAction(this.id, false), e.detail.value != e.detail.oldValue);
-//         });
-//     }
-    
-    
-    
-//     updateHeaderLabel()
-//     {
-//         //console.log('OperatorWithSymbol.updateHeaderLabel()');
-        
-//         super.updateHeaderLabel();
-
-
-//         const colBack = rgbFromType(this.type, this.active);
-//         const colText = isDark(colBack) ? [1, 1, 1] : [0, 0, 0];
-
-//         this._symbol.style.fontSize   = this._showOnlySymbol ? 17 : 12;
-//         this._symbol.style.fontWeight = this.active ? 'bold' : 'normal';
-//         this._symbol.style.color      = rgb2style(colText);
-//         this._symbol.style.left       = 'calc(50% + 1px)';
-        
-
-//         //const padding = this.header.connectionPadding;
-//         const inputs  = this.headerInputs;
-
-
-//         const [inputY, inputHeight] = getHeaderConnY(inputs);//, padding, 5);
-
-//         if (this._showOnlySymbol)
-//         {
-//             this._symbol.style.top = inputY[0]/2 + inputHeight/2 - 3;
-//         }
-//         else
-//         {
-//             this._symbol.style.top = inputY[0]/2 + inputHeight/2 - 13;
-//             this.label  .style.top = 'calc(50% - 2px)';
-//         }
-        
-
-//         this.label.style.visibility = this._showOnlySymbol ? 'hidden'  : 'visible';
-//     }
-
-
-
-//     toJsonBase(nTab = 0) 
-//     {
-//         let   pos = ' '.repeat(nTab);
-//         const tab = HTAB;
-
-//         return super.toJsonBase(nTab)
-//              + ',\n' + pos + tab + '"onlySymbol": "' + boolToString(this._showOnlySymbol) + '"';
-//     }
-
-
-
-//     loadParams(_node, pasting)
-//     {
-//         if (_node.onlySymbol != undefined)
-//             this._showOnlySymbol = isTrue(_node.onlySymbol);
-
-//         super.loadParams(_node, pasting);
-//     }
-// }
-
-
 const sizeBorderWidth = 4;
 
 
@@ -80250,8 +80164,8 @@ extends OperatorBase
         const oldParamConns = this.getAllParamConnections();
 
 
-        this.disconnectAllParams(true);
-        this.removeAllParams();
+        this.disconnectParamsNotInList(paramIds, true);
+        this.removeParamsNotInList(paramIds);
 
 
         if (   paramIds.length > 1
@@ -80267,9 +80181,6 @@ extends OperatorBase
                     || valueId == returnValueId) 
                     continue;
 
-                // if (i == 0 && valueId == returnValueId)
-                //     continue;
-
                     
                 const param = oldParams.find(p => 
                        p.id   == valueId
@@ -80277,31 +80188,31 @@ extends OperatorBase
 
                 const showName = 
                        value.type == NUMBER_VALUE ;
-//                    && value.valueId != '';
 
                     
-                if (   param
-                    && paramIds.includes(param.id))
-//                    && !(i == 0 && param.id != returnValueId)) 
-                {
-                    this.addParam(param, true);
+                // if (   param
+                //     && paramIds.includes(param.id))
+                // {
+                //     this.addParam(param, true);
 
-                    const _conn = oldParamConns.find(c =>
-                           c.outputNodeId == this.id
-                        && c.outputId     == param.id);
+                //     const _conn = oldParamConns.find(c =>
+                //            c.outputNodeId == this.id
+                //         && c.outputId     == param.id);
 
-                    if (_conn)
-                    {
-                        const inputNode = nodeFromId(_conn.inputNodeId);
+                //     if (_conn)
+                //     {
+                //         const inputNode = nodeFromId(_conn.inputNodeId);
 
-                        const conn = uiConnect(
-                            param.output, 
-                            inputNode.inputFromId(_conn.inputId));
+                //         const conn = uiConnect(
+                //             param.output, 
+                //             inputNode.inputFromId(_conn.inputId));
 
-                        uiSaveConn(conn);
-                    }
-                }
-                else
+                //         uiSaveConn(conn);
+                //     }
+                // }
+                // else
+
+                if (!param)
                     this.createAndAddParamByType(value.type, valueId, showName, false, true, true);
             }
         }
@@ -82742,9 +82653,9 @@ extends OperatorWithValue
 class   OpArithmetic
 extends OperatorWithValue
 {
-    constructor(type, id, name, icon)//symbol, icon)
+    constructor(type, id, name, icon)
     {
-        super(type, id, name, icon);//symbol, icon);
+        super(type, id, name, icon);
         
         this.variableInputs   = true;
         this.alwaysLoadParams = true;
@@ -82812,44 +82723,6 @@ extends OperatorWithValue
 
         this.updateParamControls();
     }
-
-
-
-    // updateHeaderLabel()
-    // {
-    //     //console.log('OperatorWithSymbol.updateHeaderLabel()');
-        
-    //     OperatorWithValue.prototype.updateHeaderLabel.call(this);
-
-
-    //     //const colBack = rgbFromType(this.type, this.active);
-    //     //const colText = isDark(colBack) ? [1, 1, 1] : [0, 0, 0];
-
-    //     // this._symbol.style.fontSize   = this._showOnlySymbol ? 17 : 12;
-    //     // this._symbol.style.fontWeight = this.active ? 'bold' : 'normal';
-    //     // this._symbol.style.color      = rgb2style(colText);
-    //     // this._symbol.style.left       = 'calc(50%)';
-        
-
-    //     //const padding = this.header.connectionPadding;
-    //     //const inputs  = this.headerInputs;
-
-
-    //     //const [inputY, inputHeight] = getHeaderConnY(inputs);//, padding, 5);
-
-    //     // if (this._showOnlySymbol)
-    //     // {
-    //     //     this._symbol.style.top = inputY[0]/2 + inputHeight/2;
-    //     // }
-    //     // else
-    //     // {
-    //     //     this._symbol.style.top = inputY[0]/2 + inputHeight/2 - 4;
-    //     //    this.label  .style.top = 'calc(50% - 1px)';
-    //     // }
-        
-
-    //     //this.label.style.visibility = this._showOnlySymbol ? 'hidden'  : 'visible';
-    // }
 
 
 
@@ -83008,23 +82881,6 @@ extends OpArithmetic
     
     
     
-    // updateNode()
-    // {
-    //     super.updateNode();
-
-    //     // this._symbol.innerHTML =
-    //     //     this._showOnlySymbol
-    //     //     ? '<span style="font-size: 14px;">x</span><span style="position: relative; left: -1px; top: -7px; font-size: 7px; font-weight: bold;">y</span>'
-    //     //     : '<span style="position: relative; top: -1.5px; font-size: 8px;">x</span><span style="position: relative; left: -0.5px; top: -5.15px; font-size: 3.75px; font-weight: bold;">y</span>';
-
-    //     // this._symbol.style.fontSize   = this._showOnlySymbol ? 11 : 8;
-    //     // this._symbol.style.fontWeight = 'bold';
-    //     // this._symbol.style.left       = 'calc(50% + ' + (this._showOnlySymbol ? 1.5 : 1) + 'px)';
-    //     // this._symbol.style.top        = parseFloat(this._symbol.style.top) + (this._showOnlySymbol ? 4 : 4.5);
-    // }
-
-
-
     toJsCode(gen)
     {
         if (isEmpty(this.connectedHeaderInputs))
@@ -83431,11 +83287,11 @@ function updateParamConditionText(param, unknown, offsetY = 0)
 
 
 class   OpConditionBase
-extends OperatorWithValue //Symbol
+extends OperatorWithValue
 {
-    constructor(type, id, name, icon)//symbol, icon)
+    constructor(type, id, name, icon)
     {
-        super(type, id, name, icon)//symbol, icon);
+        super(type, id, name, icon)
 
         this.alwaysLoadParams = true;
 
@@ -83512,44 +83368,6 @@ extends OperatorWithValue //Symbol
 
         this.updateParamControls();
     }
-
-
-
-    // updateHeaderLabel()
-    // {
-    //     //console.log('OperatorWithSymbol.updateHeaderLabel()');
-        
-    //     OperatorWithValue.prototype.updateHeaderLabel.call(this);
-
-
-    //     // const colBack = rgbFromType(this.type, this.active);
-    //     // const colText = isDark(colBack) ? [1, 1, 1] : [0, 0, 0];
-
-    //     // this._symbol.style.fontSize   = this._showOnlySymbol ? 17 : 12;
-    //     // this._symbol.style.fontWeight = this.active ? 'bold' : 'normal';
-    //     // this._symbol.style.color      = rgb2style(colText);
-    //     // this._symbol.style.left       = 'calc(50%)';
-        
-
-    //     //const padding = this.header.connectionPadding;
-    //     // const inputs  = this.headerInputs;
-
-
-    //     // const [inputY, inputHeight] = getHeaderConnY(inputs);//, padding, 5);
-
-    //     // if (this._showOnlySymbol)
-    //     // {
-    //     //     this._symbol.style.top = inputY[0]/2 + inputHeight/2 - 3;
-    //     // }
-    //     // else
-    //     // {
-    //     //     this._symbol.style.top = inputY[0]/2 + inputHeight/2 - 9;
-    //     //     this.label  .style.top = 'calc(50% - 2px)';
-    //     // }
-        
-
-    //     // this.label.style.visibility = this._showOnlySymbol ? 'hidden'  : 'visible';
-    // }
 
 
 
@@ -83697,9 +83515,9 @@ extends OperatorWithValue
 class   OpTrigBase
 extends OperatorWithValue
 {
-    constructor(type, id, name, icon)//symbol, icon)
+    constructor(type, id, name, icon)
     {
-        super(type, id, name, icon)//symbol, icon);
+        super(type, id, name, icon)
 
         this.canDisable       = true;
         this.alwaysLoadParams = true;
@@ -95922,52 +95740,6 @@ extends Action
 }
 
 
-// class ToggleOperatorSymbolAction
-// extends Action
-// {
-//     nodeId;
-//     get node() { return nodeFromId(this.nodeId) } 
-
-//     showOnlySymbol;
-
-
-
-//     constructor(nodeId, showOnlySymbol)
-//     {
-//         super(
-//             TOGGLE_SYMBOL_ACTION,
-//             'TOGGLE MATH SYMBOL ' + boolToString(showOnlySymbol));
-        
-//         this.affectsConnections = false;
-
-//         this.nodeId         = nodeId;
-//         this.showOnlySymbol = showOnlySymbol;
-//     }
-
-
-
-//     do(updateNodes)
-//     {
-//         this.node._showOnlySymbol = this.showOnlySymbol;
-
-//         this.node.updateNode();
-
-//         uiSaveNodes([this.nodeId]);
-//     }
-
-
-
-//     undo(updateNodes)
-//     {
-//         this.node._showOnlySymbol = !this.showOnlySymbol;
-
-//         this.node.updateNode();
-
-//         uiSaveNodes([this.nodeId]);
-//     }    
-// }
-
-
 class ToggleParamHeaderAction
 extends Action
 {
@@ -100643,6 +100415,8 @@ function uiDeleteSavedConn(conn)
 {
     if (settings.logRawSaveConnections)
     {
+        //console.trace();
+
         console.log(
              '%cDELETING SAVED CONN '
             + getConnString(conn, true),
@@ -100662,6 +100436,8 @@ function uiDeleteSavedConnection(key, outputNodeId, outputId, outputOrder, input
 {
     if (settings.logRawSaveConnections)
     {
+        //console.trace();
+
         console.log(
              '%cDELETING SAVED CONNECTION ' 
             + getConnectionString(
@@ -100721,6 +100497,8 @@ function uiDeleteSavedConnectionsToNodeId(nodeId)
 {
     if (settings.logRawSaveConnections)
     {
+        //console.trace();
+
         console.log(
             '%cDELETING SAVED CONNECTIONS TO ' + nodeId, 
             'color: black; background: #ddeeff;');

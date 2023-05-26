@@ -545,6 +545,49 @@ class Operator
 
 
 
+    disconnectParamsNotInList(list, deleteSavedConnections = false)
+    {
+        for (let i = this.params.length-1; i >= 0; i--)
+        {
+            if (list.includes(this.params[i].id))
+                continue;
+
+
+            const param = this.params[i];
+
+            if (param.input && param.input.connected)
+            {
+                if (deleteSavedConnections)
+                    uiDeleteSavedConn(param.input.connection);
+
+                uiDisconnect(param.input);
+            }
+
+
+            if (param.output)
+            {
+                for (const input of param.output.connectedInputs)
+                {
+                    if (deleteSavedConnections)
+                        uiDeleteSavedConn(input.connection);
+
+                    uiDisconnect(input);
+                }
+            }
+        }
+    }
+
+
+
+    removeParamsNotInList(list)
+    {
+        for (let i = this.params.length-1; i >= 0; i--)
+            if (!list.includes(this.params[i].id))
+                this.removeParam(this.params[i]);
+    }
+
+
+
     updateParamDisplay() // must be called at the end of each final Op constructor
     {
         for (const param of this.params)

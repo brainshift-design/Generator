@@ -4195,7 +4195,6 @@ const SET_PARAM_VALUE_ACTION     = 'SET_PARAM_VALUE';
 const SET_PARAM_SETTING_ACTION   = 'SET_PARAM_SETTING';
 const SET_NODE_RECT_ACTION       = 'SET_NODE_RECT';
 const TOGGLE_DISABLE_ACTION      = 'TOGGLE_DISABLE';
-//const TOGGLE_SYMBOL_ACTION       = 'TOGGLE_SYMBOL';
 const TOGGLE_PARAM_HEADER_ACTION = 'TOGGLE_PARAM_HEADER';
 const SET_CURRENT_GRAPH_ACTION   = 'SET_CURRENT_GRAPH';
 const CREATE_PAGE_ACTION         = 'CREATE_PAGE';
@@ -12910,6 +12909,7 @@ async function evalDivideInputs(inputs, parse)
     {
         const val0 = (await inputs[0].eval(parse)).toValue();
 
+
         if (    LIST_VALUES.includes(val0.type)
             && !isEmpty(val0.items))
         {
@@ -12945,7 +12945,7 @@ async function evalDivideInputs(inputs, parse)
             value.decimals = val0.decimals;
         }
 
-
+        
         for (let i = 1; i < inputs.length; i++)
         {
             const val = (await inputs[i].eval(parse)).toValue();
