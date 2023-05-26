@@ -3,6 +3,8 @@ extends ResizableOperatorWithValue
 {
     paramRequest;
 
+    cachedValue = '';
+
 
 
     constructor()
@@ -81,6 +83,7 @@ extends ResizableOperatorWithValue
             request.push(...pushInputOrParam(input, gen));
 
         request.push(...this.node.paramRequest.genRequest(gen));
+        request.push(TEXT_VALUE, encodeURIComponent(this.node.cachedValue));
 
         
         gen.scope.pop();
@@ -93,6 +96,10 @@ extends ResizableOperatorWithValue
 
     updateValues(requestId, actionId, updateParamId, paramIds, values)
     {
+        const value = values[paramIds.findIndex(id => id == returnValueId)];
+
+        this.cachedValue = value.value;
+        
         super.updateValues(requestId, actionId, updateParamId, paramIds, values);
         
         this.endNodeProgress();
@@ -131,5 +138,14 @@ extends ResizableOperatorWithValue
         this.paramRequest.controls[0].setSize(
             this.div.offsetWidth,
             hRequest);
+    }
+
+
+
+    invalidate()
+    {
+        this.cachedValue = '';
+
+        super.invalidate();
     }
 }

@@ -103,12 +103,12 @@ extends GOperator
 
 
 
-    invalidate()
+    invalidateInputs()
     {
-        super.invalidate();
+        super.invalidateInputs();
 
-        if (this.input0   ) this.input0   .invalidate();
-        if (this.input1   ) this.input1   .invalidate();
-        if (this.condition) this.condition.invalidate();
+        if (this.input0   ) this.input0   .invalidateInputs();
+        if (this.input1   ) this.input1   .invalidateInputs();
+        if (this.condition) this.condition.invalidateInputs();
     }
 }

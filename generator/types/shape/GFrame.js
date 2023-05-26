@@ -201,12 +201,12 @@ extends GShape
 
 
 
-    invalidate()
+    invalidateInputs()
     {
-        super.invalidate();
+        super.invalidateInputs();
 
-        if (this.input   ) this.input   .invalidate();
-        if (this.round   ) this.round   .invalidate();
-        if (this.children) this.children.invalidate();
+        if (this.input   ) this.input   .invalidateInputs();
+        if (this.round   ) this.round   .invalidateInputs();
+        if (this.children) this.children.invalidateInputs();
     }
 }

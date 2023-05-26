@@ -93,11 +93,11 @@ extends GOperator
 
 
 
-    invalidate()
+    invalidateInputs()
     {
-        super.invalidate();
+        super.invalidateInputs();
 
-        if (this.input ) this.input .invalidate();
-        if (this.radius) this.radius.invalidate();
+        if (this.input ) this.input .invalidateInputs();
+        if (this.radius) this.radius.invalidateInputs();
     }
 }

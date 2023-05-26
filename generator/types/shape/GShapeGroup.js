@@ -203,10 +203,10 @@ extends GShapeBase
 
 
 
-    invalidate()
+    invalidateInputs()
     {
-        super.invalidate();
+        super.invalidateInputs();
 
-        this.inputs.forEach(i => i.invalidate());
+        this.inputs.forEach(i => i.invalidateInputs());
     }
 }

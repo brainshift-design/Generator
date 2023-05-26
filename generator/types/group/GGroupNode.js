@@ -70,11 +70,11 @@ extends GOperator
 
 
 
-    invalidate()
+    invalidateInputs()
     {
-        super.invalidate();
+        super.invalidateInputs();
 
-        this.inputs.forEach(i => i.invalidate())
-        this.params.forEach(p => p.invalidate())
+        this.inputs.forEach(i => i.invalidateInputs())
+        this.params.forEach(p => p.invalidateInputs())
     }
 }

@@ -29,12 +29,12 @@ extends Operator
 
 
 
-    invalidate()
-    {
-        super.invalidate();
+    // invalidate()
+    // {
+    //     super.invalidate();
 
-        //this._color = dataColor_NaN;
-    }
+    //     //this._color = dataColor_NaN;
+    // }
 
 
 

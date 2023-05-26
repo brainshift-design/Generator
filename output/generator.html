@@ -5274,7 +5274,7 @@ class GNode
 
     listId       = -1;
 
-    iteration    = 0;
+    //iteration    = 0;
 
     options      = {};
     data         = {}; // for type conversion info
@@ -5358,12 +5358,12 @@ class GNode
     validate()
     {
         this.valid = true;
-        this.iteration++;
+        //this.iteration++;
     }
 
 
 
-    invalidate()
+    invalidateInputs()
     {
         this.valid = false;
     }
@@ -5747,11 +5747,11 @@ extends GOperator
 
 
 
-    invalidate()
+    invalidateInputs()
     {
-        super.invalidate();
+        super.invalidateInputs();
 
-        if (this.node) this.node.invalidate();
+        if (this.node) this.node.invalidateInputs();
     }
 }
 
@@ -10007,11 +10007,11 @@ extends GOperator
 
 
 
-    invalidate()
+    invalidateInputs()
     {
-        super.invalidate();
+        super.invalidateInputs();
 
-        this.inputs.forEach(i => i.invalidate());
+        this.inputs.forEach(i => i.invalidateInputs());
     }
 }
 
@@ -10103,11 +10103,11 @@ extends GOperator
 
 
 
-    invalidate()
+    invalidateInputs()
     {
-        super.invalidate();
+        super.invalidateInputs();
 
-        if (this.input) this.input.invalidate();
+        if (this.input) this.input.invalidateInputs();
     }
 }
 
@@ -10245,11 +10245,11 @@ extends GOperator
 
 
 
-    invalidate()
+    invalidateInputs()
     {
-        super.invalidate();
+        super.invalidateInputs();
 
-        if (this.input) this.input.invalidate();
+        if (this.input) this.input.invalidateInputs();
     }
 }
 
@@ -10381,12 +10381,12 @@ extends GOperator
 
 
 
-    invalidate()
+    invalidateInputs()
     {
-        super.invalidate();
+        super.invalidateInputs();
 
-        if (this.input) this.input.invalidate();
-        if (this.index) this.index.invalidate();
+        if (this.input) this.input.invalidateInputs();
+        if (this.index) this.index.invalidateInputs();
     }
 }
 
@@ -10464,11 +10464,11 @@ extends GOperator
 
 
 
-    invalidate()
+    invalidateInputs()
     {
-        super.invalidate();
+        super.invalidateInputs();
 
-        if (this.input) this.input.invalidate();
+        if (this.input) this.input.invalidateInputs();
     }
 }
 
@@ -10578,13 +10578,13 @@ extends GOperator
 
 
 
-    invalidate()
+    invalidateInputs()
     {
-        super.invalidate();
+        super.invalidateInputs();
 
-        if (this.input0   ) this.input0   .invalidate();
-        if (this.input1   ) this.input1   .invalidate();
-        if (this.condition) this.condition.invalidate();
+        if (this.input0   ) this.input0   .invalidateInputs();
+        if (this.input1   ) this.input1   .invalidateInputs();
+        if (this.condition) this.condition.invalidateInputs();
     }
 }
 
@@ -10761,7 +10761,7 @@ extends GOperator
                     }
                     
                     
-                    this.input.invalidate();
+                    this.input.invalidateInputs();
                     await this.input.eval(parse);
 
                     
@@ -10794,9 +10794,9 @@ extends GOperator
 
             this.updateValues =
             [
-                [returnValueId,  this.value     ],
-                ['count',  count          ],
-                ['loop',   NumberValue.NaN]
+                [returnValueId, this.value     ],
+                ['count',       count          ],
+                ['loop',        NumberValue.NaN]
             ];
         }
         else
@@ -10832,12 +10832,31 @@ extends GOperator
 
 
 
-    invalidate()
+    invalidateInputs()
     {
-        super.invalidate();
+        super.invalidateInputs();
 
-        if (this.input) this.input.invalidate();
-        if (this.count) this.count.invalidate();
+        if (this.input) this.input.invalidateInputs();
+        if (this.count) this.count.invalidateInputs();
+    }
+
+
+
+    invalidateRepeat(loop, nodeId)
+    {
+        if (loop.type == LIST)
+        {
+            for (const input of loop.inputs)
+            {
+                input.valid  = false;
+                input.loopId = nodeId;
+            }
+        }
+        else
+        {
+            loop.valid  = false;
+            loop.loopId = nodeId;
+        }
     }
 
 
@@ -10852,25 +10871,6 @@ extends GOperator
         else
         {
             loop.repeatCount = count;
-        }
-    }
-
-
-
-    invalidateRepeat(loop, nodeId)
-    {
-        if (loop.type == LIST)
-        {
-            for (const input of loop.inputs)
-            {
-                input.valid        = false;
-                input.loopId = nodeId;
-            }
-        }
-        else
-        {
-            loop.valid        = false;
-            loop.loopId = nodeId;
         }
     }
 }
@@ -10930,7 +10930,7 @@ extends GOperator
     {
         super.pushValueUpdates(parse);
 
-        // if (this.input  ) this.input  .invalidate();
+        // if (this.input  ) this.input  .invalidateInputs();
     }
 
 
@@ -10944,11 +10944,11 @@ extends GOperator
 
 
 
-    invalidate()
+    invalidateInputs()
     {
-        super.invalidate();
+        super.invalidateInputs();
 
-        // if (this.input  ) this.input  .invalidate();
+        // if (this.input  ) this.input  .invalidateInputs();
     }
 }
 
@@ -11011,11 +11011,11 @@ extends GOperator
 
 
 
-    invalidate()
+    invalidateInputs()
     {
-        super.invalidate();
+        super.invalidateInputs();
 
-        if (this.input) this.input.invalidate();
+        if (this.input) this.input.invalidateInputs();
     }
 }
 
@@ -11127,11 +11127,11 @@ extends GNumberType
 
 
 
-    invalidate()
+    invalidateInputs()
     {
-        super.invalidate();
+        super.invalidateInputs();
 
-        if (this.input) this.input.invalidate();
+        if (this.input) this.input.invalidateInputs();
     }
 }
 
@@ -11204,11 +11204,11 @@ extends GNumberType
 
 
 
-    invalidate()
+    invalidateInputs()
     {
-        super.invalidate();
+        super.invalidateInputs();
 
-        if (this.input) this.input.invalidate();
+        if (this.input) this.input.invalidateInputs();
     }
 }
 
@@ -11281,11 +11281,11 @@ extends GNumberType
 
 
 
-    invalidate()
+    invalidateInputs()
     {
-        super.invalidate();
+        super.invalidateInputs();
 
-        if (this.input) this.input.invalidate();
+        if (this.input) this.input.invalidateInputs();
     }
 }
 
@@ -11378,13 +11378,13 @@ extends GNumberType
 
 
 
-    invalidate()
+    invalidateInputs()
     {
-        super.invalidate();
+        super.invalidateInputs();
 
-        if (this.input   ) this.input   .invalidate();
-        if (this.type    ) this.type    .invalidate();
-        if (this.decimals) this.decimals.invalidate();
+        if (this.input   ) this.input   .invalidateInputs();
+        if (this.type    ) this.type    .invalidateInputs();
+        if (this.decimals) this.decimals.invalidateInputs();
     }
 }
 
@@ -11496,13 +11496,13 @@ extends GNumberType
 
 
 
-    invalidate()
+    invalidateInputs()
     {
-        super.invalidate();
+        super.invalidateInputs();
 
-        if (this.input) this.input.invalidate();
-        if (this.min  ) this.min  .invalidate();
-        if (this.max  ) this.max  .invalidate();
+        if (this.input) this.input.invalidateInputs();
+        if (this.min  ) this.min  .invalidateInputs();
+        if (this.max  ) this.max  .invalidateInputs();
     }
 }
 
@@ -11585,11 +11585,11 @@ extends GNumberType
 
 
 
-    invalidate()
+    invalidateInputs()
     {
-        super.invalidate();
+        super.invalidateInputs();
 
-        if (this.constant) this.constant.invalidate();
+        if (this.constant) this.constant.invalidateInputs();
     }
 }
 
@@ -11694,13 +11694,13 @@ extends GNumberType
 
 
 
-    invalidate()
+    invalidateInputs()
     {
-        super.invalidate();
+        super.invalidateInputs();
 
-        if (this.from ) this.from .invalidate();
-        if (this.start) this.start.invalidate();
-        if (this.end  ) this.end  .invalidate();
+        if (this.from ) this.from .invalidateInputs();
+        if (this.start) this.start.invalidateInputs();
+        if (this.end  ) this.end  .invalidateInputs();
     }
 }
 
@@ -11786,12 +11786,12 @@ extends GNumberType
 
 
 
-    invalidate()
+    invalidateInputs()
     {
-        super.invalidate();
+        super.invalidateInputs();
 
-        if (this.start) this.start.invalidate();
-        if (this.step ) this.step .invalidate();
+        if (this.start) this.start.invalidateInputs();
+        if (this.step ) this.step .invalidateInputs();
     }
 }
 
@@ -11895,13 +11895,13 @@ extends GNumberType
 
 
 
-    invalidate()
+    invalidateInputs()
     {
-        super.invalidate();
+        super.invalidateInputs();
 
-        if (this.seed) this.seed.invalidate();
-        if (this.min ) this.min .invalidate();
-        if (this.max ) this.max .invalidate();
+        if (this.seed) this.seed.invalidateInputs();
+        if (this.min ) this.min .invalidateInputs();
+        if (this.max ) this.max .invalidateInputs();
     }
 }
 
@@ -11995,13 +11995,13 @@ extends GNumberType
 
 
 
-    invalidate()
+    invalidateInputs()
     {
-        super.invalidate();
+        super.invalidateInputs();
 
-        if (this.input0) this.input0.invalidate();
-        if (this.input1) this.input1.invalidate();
-        if (this.amount) this.amount.invalidate();
+        if (this.input0) this.input0.invalidateInputs();
+        if (this.input1) this.input1.invalidateInputs();
+        if (this.amount) this.amount.invalidateInputs();
     }
 }
 
@@ -12092,12 +12092,12 @@ extends GNumberType
 
 
 
-    invalidate()
+    invalidateInputs()
     {
-        super.invalidate();
+        super.invalidateInputs();
 
-        if (this.number) this.number.invalidate();
-        if (this.format) this.format.invalidate();
+        if (this.number) this.number.invalidateInputs();
+        if (this.format) this.format.invalidateInputs();
     }
 }
 
@@ -12286,13 +12286,13 @@ extends GNumberType
 
 
 
-    invalidate()
+    invalidateInputs()
     {
-        super.invalidate();
+        super.invalidateInputs();
 
-        if (this.input  ) this.input  .invalidate();
-        if (this.current) this.current.invalidate();
-        if (this.target ) this.target .invalidate();
+        if (this.input  ) this.input  .invalidateInputs();
+        if (this.current) this.current.invalidateInputs();
+        if (this.target ) this.target .invalidateInputs();
     }
 }
 
@@ -12441,16 +12441,16 @@ extends GNumberType
 
 
 
-    invalidate()
+    invalidateInputs()
     {
-        super.invalidate();
+        super.invalidateInputs();
 
-        if (this.from  ) this.from  .invalidate();
-        if (this.to    ) this.to    .invalidate();
-        if (this.curve ) this.curve .invalidate();
-        if (this.type  ) this.type  .invalidate();
-        if (this.length) this.length.invalidate();
-        if (this.time  ) this.time  .invalidate();
+        if (this.from  ) this.from  .invalidateInputs();
+        if (this.to    ) this.to    .invalidateInputs();
+        if (this.curve ) this.curve .invalidateInputs();
+        if (this.type  ) this.type  .invalidateInputs();
+        if (this.length) this.length.invalidateInputs();
+        if (this.time  ) this.time  .invalidateInputs();
     }
 }
 
@@ -12483,11 +12483,11 @@ extends GNumberType
 
 
 
-    invalidate()
+    invalidateInputs()
     {
-        super.invalidate();
+        super.invalidateInputs();
 
-        this.inputs.forEach(i => i.invalidate());
+        this.inputs.forEach(i => i.invalidateInputs());
     }
 }
 
@@ -12565,11 +12565,11 @@ extends GArithmetic
 
 
 
-    invalidate()
+    invalidateInputs()
     {
-        super.invalidate();
+        super.invalidateInputs();
 
-        if (this.operation) this.operation.invalidate();
+        if (this.operation) this.operation.invalidateInputs();
     }
 }
 
@@ -13314,11 +13314,11 @@ extends GArithmetic
 
 
 
-    invalidate()
+    invalidateInputs()
     {
-        super.invalidate();
+        super.invalidateInputs();
 
-        if (this.operation) this.operation.invalidate();
+        if (this.operation) this.operation.invalidateInputs();
     }
 }
 
@@ -13792,12 +13792,12 @@ extends GNumberType
 
 
 
-    invalidate()
+    invalidateInputs()
     {
-        super.invalidate();
+        super.invalidateInputs();
 
-        if (this.input0) this.input0.invalidate();
-        if (this.input1) this.input1.invalidate();
+        if (this.input0) this.input0.invalidateInputs();
+        if (this.input1) this.input1.invalidateInputs();
     }
 }
 
@@ -13896,13 +13896,13 @@ extends GNumberType
 
 
 
-    invalidate()
+    invalidateInputs()
     {
-        super.invalidate();
+        super.invalidateInputs();
 
-        if (this.input0   ) this.input0   .invalidate();
-        if (this.input1   ) this.input1   .invalidate();
-        if (this.operation) this.operation.invalidate();
+        if (this.input0   ) this.input0   .invalidateInputs();
+        if (this.input1   ) this.input1   .invalidateInputs();
+        if (this.operation) this.operation.invalidateInputs();
     }
 }
 
@@ -14187,11 +14187,11 @@ extends GNumberType
 
 
 
-    invalidate()
+    invalidateInputs()
     {
-        super.invalidate();
+        super.invalidateInputs();
 
-        if (this.input) this.input.invalidate();
+        if (this.input) this.input.invalidateInputs();
     }
 }
 
@@ -14271,12 +14271,12 @@ extends GNumberType
 
 
 
-    invalidate()
+    invalidateInputs()
     {
-        super.invalidate();
+        super.invalidateInputs();
 
-        if (this.input   ) this.input   .invalidate();
-        if (this.function) this.function.invalidate();
+        if (this.input   ) this.input   .invalidateInputs();
+        if (this.function) this.function.invalidateInputs();
     }
 }
 
@@ -14549,11 +14549,11 @@ extends GTextType
 
 
 
-    invalidate()
+    invalidateInputs()
     {
-        super.invalidate();
+        super.invalidateInputs();
 
-        if (this.input) this.input.invalidate();
+        if (this.input) this.input.invalidateInputs();
     }
 }
 
@@ -14625,11 +14625,11 @@ extends GOperator
 
 
 
-    invalidate()
+    invalidateInputs()
     {
-        super.invalidate();
+        super.invalidateInputs();
 
-        if (this.input ) this.input .invalidate();
+        if (this.input ) this.input .invalidateInputs();
     }
 }
 
@@ -14724,13 +14724,13 @@ extends GTextType
 
 
 
-    invalidate()
+    invalidateInputs()
     {
-        super.invalidate();
+        super.invalidateInputs();
 
-        if (this.input) this.input.invalidate();
-        if (this.start) this.start.invalidate();
-        if (this.end  ) this.end  .invalidate();
+        if (this.input) this.input.invalidateInputs();
+        if (this.start) this.start.invalidateInputs();
+        if (this.end  ) this.end  .invalidateInputs();
     }
 }
 
@@ -14834,13 +14834,13 @@ extends GTextType
 
 
 
-    invalidate()
+    invalidateInputs()
     {
-        super.invalidate();
+        super.invalidateInputs();
 
-        if (this.input) this.input.invalidate();
-        if (this.start) this.start.invalidate();
-        if (this.end  ) this.end  .invalidate();
+        if (this.input) this.input.invalidateInputs();
+        if (this.start) this.start.invalidateInputs();
+        if (this.end  ) this.end  .invalidateInputs();
     }
 }
 
@@ -14914,12 +14914,12 @@ extends GTextType
 
 
 
-    invalidate()
+    invalidateInputs()
     {
-        super.invalidate();
+        super.invalidateInputs();
 
-        if (this.input) this.input.invalidate();
-        if (this.code ) this.code .invalidate();
+        if (this.input) this.input.invalidateInputs();
+        if (this.code ) this.code .invalidateInputs();
     }
 }
 
@@ -15013,13 +15013,13 @@ extends GTextType
 
 
 
-    invalidate()
+    invalidateInputs()
     {
-        super.invalidate();
+        super.invalidateInputs();
 
-        if (this.input) this.input.invalidate();
-        if (this.what ) this.what .invalidate();
-        if (this.with ) this.with .invalidate();
+        if (this.input) this.input.invalidateInputs();
+        if (this.what ) this.what .invalidateInputs();
+        if (this.with ) this.with .invalidateInputs();
     }
 }
 
@@ -15088,11 +15088,11 @@ extends GTextType
 
 
 
-    invalidate()
+    invalidateInputs()
     {
-        super.invalidate();
+        super.invalidateInputs();
 
-        this.inputs.forEach(i => i.invalidate());
+        this.inputs.forEach(i => i.invalidateInputs());
     }
 }
 
@@ -15226,13 +15226,13 @@ extends GOperator
 
 
 
-    invalidate()
+    invalidateInputs()
     {
-        super.invalidate();
+        super.invalidateInputs();
 
-        if (this.input    ) this.input    .invalidate();
-        if (this.value    ) this.value    .invalidate();
-        if (this.separator) this.separator.invalidate();
+        if (this.input    ) this.input    .invalidateInputs();
+        if (this.value    ) this.value    .invalidateInputs();
+        if (this.separator) this.separator.invalidateInputs();
     }
 }
 
@@ -15367,20 +15367,15 @@ extends GOperator
 
 
 
-    invalidate()
+    invalidateInputs()
     {
-        super.invalidate();
+        super.invalidateInputs();
 
-        if (this.input    ) this.input    .invalidate();
-        if (this.value    ) this.value    .invalidate();
-        if (this.separator) this.separator.invalidate();
+        if (this.input    ) this.input    .invalidateInputs();
+        if (this.value    ) this.value    .invalidateInputs();
+        if (this.separator) this.separator.invalidateInputs();
     }
 }
-
-
-
-//var fetchResolve = null;
-//fetchResponse = null;
 
 
 
@@ -15388,8 +15383,9 @@ class GTextFetch
 extends GTextType
 {
     input = null;
-
+    
     request;
+    cachedValue;
 
 
 
@@ -15409,7 +15405,8 @@ extends GTextType
         if (this.input) 
             copy.input = this.input.copy();
 
-        copy.request = this.request.copy();
+        copy.request     = this.request    .copy();
+        copy.cachedValue = this.cachedValue.copy();
 
         return copy;
     }
@@ -15422,31 +15419,40 @@ extends GTextType
             return this;
 
 
-        const request = (await this.request.eval(parse)).toValue();
+        const request     = (await this.request    .eval(parse)).toValue();
+        const cachedValue = (await this.cachedValue.eval(parse)).toValue();
+        // console.log('cachedValue =', cachedValue);
 
-
+        
         genInitNodeProgress(this.nodeId);
 
 
-        try 
+        if (cachedValue.value == '')
         {
-            await fetch(request.value)
-                .then(response => response.text())
-                .then(text => this.value = new TextValue(text));
+            try 
+            {
+                await fetch(request.value)
+                    .then(response => response.text())
+                    .then(text => this.value = new TextValue(text));
+            }
+            catch (e)
+            {
+                this.value = 
+                    request.value.trim() == NULL
+                    ? new TextValue()
+                    : new TextValue(e.message);
+            }
         }
-        catch (e)
+        else
         {
-            this.value = 
-                request.value.trim() == NULL
-                ? new TextValue() //TextValue.NaN
-                : new TextValue(e.message);
+            this.value = this.cachedValue.copy();
         }
 
 
         this.updateValues =
         [
-            [returnValueId,   this.value],
-            ['request', request   ]
+            [returnValueId, this.value],
+            ['request',     request   ]
         ];
         
         
@@ -15467,23 +15473,14 @@ extends GTextType
 
 
 
-    invalidate()
+    invalidateInputs()
     {
-        super.invalidate();
+        super.invalidateInputs();
 
-        if (this.input  ) this.input  .invalidate();
-        if (this.request) this.request.invalidate();
+        if (this.input  ) this.input  .invalidateInputs();
+        if (this.request) this.request.invalidateInputs();
     }
 }
-
-
-
-// function genFetchResponse(result, response)
-// {
-//     console.assert(fetchResolve, 'fetchResolve cannot be null');
-//     fetchResolve(response);
-//     console.log('resolve');
-// }
 
 
 class ColorCorrection
@@ -16257,15 +16254,15 @@ extends GColorType
 
 
 
-    invalidate()
+    invalidateInputs()
     {
-        super.invalidate();
+        super.invalidateInputs();
 
-        if (this.input) this.input.invalidate();
-        if (this.space) this.space.invalidate();
-        if (this.c1   ) this.c1   .invalidate();
-        if (this.c2   ) this.c2   .invalidate();
-        if (this.c3   ) this.c3   .invalidate();
+        if (this.input) this.input.invalidateInputs();
+        if (this.space) this.space.invalidateInputs();
+        if (this.c1   ) this.c1   .invalidateInputs();
+        if (this.c2   ) this.c2   .invalidateInputs();
+        if (this.c3   ) this.c3   .invalidateInputs();
     }
 }
 
@@ -16417,12 +16414,12 @@ extends GColorType
 
 
 
-    invalidate()
+    invalidateInputs()
     {
-        super.invalidate();
+        super.invalidateInputs();
 
-        if (this.input  ) this.input  .invalidate();
-        if (this.quality) this.quality.invalidate();
+        if (this.input  ) this.input  .invalidateInputs();
+        if (this.quality) this.quality.invalidateInputs();
     }
 }
 
@@ -16634,15 +16631,15 @@ extends GColorType
 
 
 
-    invalidate()
+    invalidateInputs()
     {
-        super.invalidate();
+        super.invalidateInputs();
 
-        if (this.input  ) this.input  .invalidate();
-        if (this.order  ) this.order  .invalidate();
-        if (this.margin1) this.margin1.invalidate();
-        if (this.margin2) this.margin2.invalidate();
-        if (this.margin3) this.margin3.invalidate();
+        if (this.input  ) this.input  .invalidateInputs();
+        if (this.order  ) this.order  .invalidateInputs();
+        if (this.margin1) this.margin1.invalidateInputs();
+        if (this.margin2) this.margin2.invalidateInputs();
+        if (this.margin3) this.margin3.invalidateInputs();
     }
 }
 
@@ -16804,14 +16801,14 @@ extends GColorType
 
 
 
-    invalidate()
+    invalidateInputs()
     {
-        super.invalidate();
+        super.invalidateInputs();
 
-        if (this.input0  ) this.input0  .invalidate();
-        if (this.input1  ) this.input1  .invalidate();
-        if (this.standard) this.standard.invalidate();
-        if (this.contrast) this.contrast.invalidate();
+        if (this.input0  ) this.input0  .invalidateInputs();
+        if (this.input1  ) this.input1  .invalidateInputs();
+        if (this.standard) this.standard.invalidateInputs();
+        if (this.contrast) this.contrast.invalidateInputs();
     }
 }
 
@@ -16925,14 +16922,14 @@ extends GColorType
 
 
 
-    invalidate()
+    invalidateInputs()
     {
-        super.invalidate();
+        super.invalidateInputs();
 
-        if (this.input ) this.input.invalidate();
-        if (this.l     ) this.l    .invalidate();
-        if (this.m     ) this.m    .invalidate();
-        if (this.s     ) this.s    .invalidate();
+        if (this.input ) this.input.invalidateInputs();
+        if (this.l     ) this.l    .invalidateInputs();
+        if (this.m     ) this.m    .invalidateInputs();
+        if (this.s     ) this.s    .invalidateInputs();
     }
 }
 
@@ -17089,15 +17086,15 @@ extends GColorType
 
 
 
-    invalidate()
+    invalidateInputs()
     {
-        super.invalidate();
+        super.invalidateInputs();
 
-        if (this.input0) this.input0.invalidate();
-        if (this.input1) this.input1.invalidate();
-        if (this.space ) this.space .invalidate();
-        if (this.amount) this.amount.invalidate();
-        if (this.gamma ) this.gamma .invalidate();
+        if (this.input0) this.input0.invalidateInputs();
+        if (this.input1) this.input1.invalidateInputs();
+        if (this.space ) this.space .invalidateInputs();
+        if (this.amount) this.amount.invalidateInputs();
+        if (this.gamma ) this.gamma .invalidateInputs();
     }
 }
 
@@ -17238,14 +17235,14 @@ extends GColorType
 
 
 
-    invalidate()
+    invalidateInputs()
     {
-        super.invalidate();
+        super.invalidateInputs();
 
-        if (this.input0 ) this.input0 .invalidate();
-        if (this.input1 ) this.input1 .invalidate();
-        if (this.mode   ) this.mode   .invalidate();
-        if (this.opacity) this.opacity.invalidate();
+        if (this.input0 ) this.input0 .invalidateInputs();
+        if (this.input1 ) this.input1 .invalidateInputs();
+        if (this.mode   ) this.mode   .invalidateInputs();
+        if (this.opacity) this.opacity.invalidateInputs();
     }
 }
 
@@ -17726,11 +17723,11 @@ extends GOperator
 
 
 
-    invalidate()
+    invalidateInputs()
     {
-        super.invalidate();
+        super.invalidateInputs();
 
-        if (this.colorStyle) this.colorStyle.invalidate();
+        if (this.colorStyle) this.colorStyle.invalidateInputs();
     }
 }
 
@@ -17839,13 +17836,13 @@ extends GOperator
 
 
 
-    invalidate()
+    invalidateInputs()
     {
-        super.invalidate();
+        super.invalidateInputs();
 
-        if (this.input  ) this.input  .invalidate();
-        if (this.color  ) this.color  .invalidate();
-        if (this.opacity) this.opacity.invalidate();
+        if (this.input  ) this.input  .invalidateInputs();
+        if (this.color  ) this.color  .invalidateInputs();
+        if (this.opacity) this.opacity.invalidateInputs();
     }
 }
 
@@ -17970,13 +17967,13 @@ extends GOperator
 
 
 
-    invalidate()
+    invalidateInputs()
     {
-        super.invalidate();
+        super.invalidateInputs();
 
-        if (this.input   ) this.input   .invalidate();
-        if (this.fill    ) this.fill    .invalidate();
-        if (this.position) this.position.invalidate();
+        if (this.input   ) this.input   .invalidateInputs();
+        if (this.fill    ) this.fill    .invalidateInputs();
+        if (this.position) this.position.invalidateInputs();
     }
 }
 
@@ -18128,19 +18125,19 @@ extends GOperator
 
 
 
-    invalidate()
+    invalidateInputs()
     {
-        super.invalidate();
+        super.invalidateInputs();
 
-        this.inputs.forEach(i => i.invalidate());
+        this.inputs.forEach(i => i.invalidateInputs());
         
-        if (this.gradType) this.gradType.invalidate();
-        if (this.x       ) this.x       .invalidate();
-        if (this.y       ) this.y       .invalidate();
-        if (this.size    ) this.size    .invalidate();
-        if (this.angle   ) this.angle   .invalidate();
-        if (this.aspect  ) this.aspect  .invalidate();
-        if (this.skew    ) this.skew    .invalidate();
+        if (this.gradType) this.gradType.invalidateInputs();
+        if (this.x       ) this.x       .invalidateInputs();
+        if (this.y       ) this.y       .invalidateInputs();
+        if (this.size    ) this.size    .invalidateInputs();
+        if (this.angle   ) this.angle   .invalidateInputs();
+        if (this.aspect  ) this.aspect  .invalidateInputs();
+        if (this.skew    ) this.skew    .invalidateInputs();
     }
 }
 
@@ -18292,16 +18289,16 @@ extends GOperator
 
 
 
-    invalidate()
+    invalidateInputs()
     {
-        super.invalidate();
+        super.invalidateInputs();
 
-        if (this.input ) this.input .invalidate();
-        if (this.fill  ) this.fill  .invalidate();
-        if (this.weight) this.weight.invalidate();
-        if (this.fit   ) this.fit   .invalidate();
-        if (this.join  ) this.join  .invalidate();
-        if (this.miter ) this.miter .invalidate();
+        if (this.input ) this.input .invalidateInputs();
+        if (this.fill  ) this.fill  .invalidateInputs();
+        if (this.weight) this.weight.invalidateInputs();
+        if (this.fit   ) this.fit   .invalidateInputs();
+        if (this.join  ) this.join  .invalidateInputs();
+        if (this.miter ) this.miter .invalidateInputs();
     }
 }
 
@@ -18456,18 +18453,18 @@ extends GOperator
 
 
 
-    invalidate()
+    invalidateInputs()
     {
-        super.invalidate();
+        super.invalidateInputs();
 
-        if (this.input ) this.input .invalidate();
-        if (this.x     ) this.x     .invalidate();
-        if (this.y     ) this.y     .invalidate();
-        if (this.blur  ) this.blur  .invalidate();
-        if (this.spread) this.spread.invalidate();
-        if (this.fill  ) this.fill  .invalidate();
-        if (this.blend ) this.blend .invalidate();
-        if (this.behind) this.behind.invalidate();
+        if (this.input ) this.input .invalidateInputs();
+        if (this.x     ) this.x     .invalidateInputs();
+        if (this.y     ) this.y     .invalidateInputs();
+        if (this.blur  ) this.blur  .invalidateInputs();
+        if (this.spread) this.spread.invalidateInputs();
+        if (this.fill  ) this.fill  .invalidateInputs();
+        if (this.blend ) this.blend .invalidateInputs();
+        if (this.behind) this.behind.invalidateInputs();
     }
 }
 
@@ -18613,17 +18610,17 @@ extends GOperator
 
 
 
-    invalidate()
+    invalidateInputs()
     {
-        super.invalidate();
+        super.invalidateInputs();
 
-        if (this.input ) this.input .invalidate();
-        if (this.x     ) this.x     .invalidate();
-        if (this.y     ) this.y     .invalidate();
-        if (this.blur  ) this.blur  .invalidate();
-        if (this.spread) this.spread.invalidate();
-        if (this.fill  ) this.fill  .invalidate();
-        if (this.blend ) this.blend .invalidate();
+        if (this.input ) this.input .invalidateInputs();
+        if (this.x     ) this.x     .invalidateInputs();
+        if (this.y     ) this.y     .invalidateInputs();
+        if (this.blur  ) this.blur  .invalidateInputs();
+        if (this.spread) this.spread.invalidateInputs();
+        if (this.fill  ) this.fill  .invalidateInputs();
+        if (this.blend ) this.blend .invalidateInputs();
     }
 }
 
@@ -18723,12 +18720,12 @@ extends GOperator
 
 
 
-    invalidate()
+    invalidateInputs()
     {
-        super.invalidate();
+        super.invalidateInputs();
 
-        if (this.input ) this.input .invalidate();
-        if (this.radius) this.radius.invalidate();
+        if (this.input ) this.input .invalidateInputs();
+        if (this.radius) this.radius.invalidateInputs();
     }
 }
 
@@ -18828,12 +18825,12 @@ extends GOperator
 
 
 
-    invalidate()
+    invalidateInputs()
     {
-        super.invalidate();
+        super.invalidateInputs();
 
-        if (this.input ) this.input .invalidate();
-        if (this.radius) this.radius.invalidate();
+        if (this.input ) this.input .invalidateInputs();
+        if (this.radius) this.radius.invalidateInputs();
     }
 }
 
@@ -18981,15 +18978,15 @@ extends GOperator
 
 
 
-    invalidate()
+    invalidateInputs()
     {
-        super.invalidate();
+        super.invalidateInputs();
 
-        if (this.x     ) this.x     .invalidate();
-        if (this.y     ) this.y     .invalidate();
-        if (this.width ) this.width .invalidate();
-        if (this.height) this.height.invalidate();
-        if (this.angle ) this.angle .invalidate();
+        if (this.x     ) this.x     .invalidateInputs();
+        if (this.y     ) this.y     .invalidateInputs();
+        if (this.width ) this.width .invalidateInputs();
+        if (this.height) this.height.invalidateInputs();
+        if (this.angle ) this.angle .invalidateInputs();
     }
 }
 
@@ -19110,11 +19107,11 @@ extends GShapeBase
 
 
 
-    invalidate()
+    invalidateInputs()
     {
-        super.invalidate();
+        super.invalidateInputs();
 
-        if (this.props) this.props.invalidate();
+        if (this.props) this.props.invalidateInputs();
     }
 }
 
@@ -19585,12 +19582,12 @@ extends GShape
 
 
 
-    invalidate()
+    invalidateInputs()
     {
-        super.invalidate();
+        super.invalidateInputs();
 
-        if (this.input) this.input.invalidate();
-        if (this.round) this.round.invalidate();
+        if (this.input) this.input.invalidateInputs();
+        if (this.round) this.round.invalidateInputs();
     }
 }
 
@@ -19728,11 +19725,11 @@ extends GShape
 
 
 
-    invalidate()
+    invalidateInputs()
     {
-        super.invalidate();
+        super.invalidateInputs();
 
-        if (this.input) this.input.invalidate();
+        if (this.input) this.input.invalidateInputs();
     }
 }
 
@@ -19903,11 +19900,11 @@ extends GShape
     
     
         
-    invalidate()
+    invalidateInputs()
     {
-        super.invalidate();
+        super.invalidateInputs();
 
-        if (this.input) this.input.invalidate();
+        if (this.input) this.input.invalidateInputs();
     }
 }
 
@@ -20082,13 +20079,13 @@ extends GShape
 
 
 
-    invalidate()
+    invalidateInputs()
     {
-        super.invalidate();
+        super.invalidateInputs();
 
-        if (this.input  ) this.input  .invalidate();
-        if (this.round  ) this.round  .invalidate();
-        if (this.corners) this.corners.invalidate();
+        if (this.input  ) this.input  .invalidateInputs();
+        if (this.round  ) this.round  .invalidateInputs();
+        if (this.corners) this.corners.invalidateInputs();
     }
 }
 
@@ -20283,14 +20280,14 @@ extends GShape
 
 
 
-   invalidate()
+   invalidateInputs()
    {
-      super.invalidate();
+      super.invalidateInputs();
 
-      if (this.input ) this.input .invalidate();
-      if (this.round ) this.round .invalidate();
-      if (this.points) this.points.invalidate();
-      if (this.convex) this.convex.invalidate();
+      if (this.input ) this.input .invalidateInputs();
+      if (this.round ) this.round .invalidateInputs();
+      if (this.points) this.points.invalidateInputs();
+      if (this.convex) this.convex.invalidateInputs();
    }
 }
 
@@ -20568,24 +20565,24 @@ extends GShape
 
 
 
-    invalidate()
+    invalidateInputs()
     {
-        super.invalidate();
+        super.invalidateInputs();
         
-        if (this.input        ) this.input        .invalidate();
-        if (this.text         ) this.text         .invalidate();
-        if (this.x            ) this.x            .invalidate();
-        if (this.y            ) this.y            .invalidate();
-        if (this.width        ) this.width        .invalidate();
-        if (this.height       ) this.height       .invalidate();
-        if (this.angle        ) this.angle        .invalidate();
-        if (this.font         ) this.font         .invalidate();
-        if (this.style        ) this.style        .invalidate();
-        if (this.size         ) this.size         .invalidate();
-        if (this.alignH       ) this.alignH       .invalidate();
-        if (this.alignV       ) this.alignV       .invalidate();
-        if (this.lineHeight   ) this.lineHeight   .invalidate();
-        if (this.letterSpacing) this.letterSpacing.invalidate();
+        if (this.input        ) this.input        .invalidateInputs();
+        if (this.text         ) this.text         .invalidateInputs();
+        if (this.x            ) this.x            .invalidateInputs();
+        if (this.y            ) this.y            .invalidateInputs();
+        if (this.width        ) this.width        .invalidateInputs();
+        if (this.height       ) this.height       .invalidateInputs();
+        if (this.angle        ) this.angle        .invalidateInputs();
+        if (this.font         ) this.font         .invalidateInputs();
+        if (this.style        ) this.style        .invalidateInputs();
+        if (this.size         ) this.size         .invalidateInputs();
+        if (this.alignH       ) this.alignH       .invalidateInputs();
+        if (this.alignV       ) this.alignV       .invalidateInputs();
+        if (this.lineHeight   ) this.lineHeight   .invalidateInputs();
+        if (this.letterSpacing) this.letterSpacing.invalidateInputs();
     }
 }
 
@@ -20741,13 +20738,13 @@ extends GOperator
 
 
 
-    invalidate()
+    invalidateInputs()
     {
-        super.invalidate();
+        super.invalidateInputs();
 
-        if (this.input) this.input.invalidate();
-        if (this.x    ) this.x    .invalidate();
-        if (this.y    ) this.y    .invalidate();
+        if (this.input) this.input.invalidateInputs();
+        if (this.x    ) this.x    .invalidateInputs();
+        if (this.y    ) this.y    .invalidateInputs();
     }
 }
 
@@ -20950,16 +20947,16 @@ extends GShape
 
 
 
-    invalidate()
+    invalidateInputs()
     {
-        super.invalidate();
+        super.invalidateInputs();
 
-        if (this.input  ) this.input  .invalidate();
-        if (this.points ) this.points .invalidate();
-        if (this.closed ) this.closed .invalidate();
-        if (this.degree ) this.degree .invalidate();
-        if (this.winding) this.winding.invalidate();
-        if (this.round  ) this.round  .invalidate();
+        if (this.input  ) this.input  .invalidateInputs();
+        if (this.points ) this.points .invalidateInputs();
+        if (this.closed ) this.closed .invalidateInputs();
+        if (this.degree ) this.degree .invalidateInputs();
+        if (this.winding) this.winding.invalidateInputs();
+        if (this.round  ) this.round  .invalidateInputs();
     }
 }
 
@@ -21169,11 +21166,11 @@ extends GShapeBase
 
 
 
-    invalidate()
+    invalidateInputs()
     {
-        super.invalidate();
+        super.invalidateInputs();
 
-        this.inputs.forEach(i => i.invalidate());
+        this.inputs.forEach(i => i.invalidateInputs());
     }
 }
 
@@ -21381,13 +21378,13 @@ extends GShape
 
 
 
-    invalidate()
+    invalidateInputs()
     {
-        super.invalidate();
+        super.invalidateInputs();
 
-        if (this.input   ) this.input   .invalidate();
-        if (this.round   ) this.round   .invalidate();
-        if (this.children) this.children.invalidate();
+        if (this.input   ) this.input   .invalidateInputs();
+        if (this.round   ) this.round   .invalidateInputs();
+        if (this.children) this.children.invalidateInputs();
     }
 }
 
@@ -21557,12 +21554,12 @@ extends GShapeBase
 
 
 
-    invalidate()
+    invalidateInputs()
     {
-        super.invalidate();
+        super.invalidateInputs();
 
-        if (this.input   ) this.input   .invalidate();
-        if (this.children) this.children.invalidate();
+        if (this.input   ) this.input   .invalidateInputs();
+        if (this.children) this.children.invalidateInputs();
     }
 }
 
@@ -21756,11 +21753,11 @@ extends GShapeBase
 
 
 
-    invalidate()
+    invalidateInputs()
     {
-        super.invalidate();
+        super.invalidateInputs();
 
-        this.inputs.forEach(i => i.invalidate());
+        this.inputs.forEach(i => i.invalidateInputs());
     }
 }
 
@@ -21894,13 +21891,13 @@ extends GOperator
 
 
 
-    invalidate()
+    invalidateInputs()
     {
-        super.invalidate();
+        super.invalidateInputs();
 
-        if (this.input ) this.input .invalidate();
-        if (this.x     ) this.x     .invalidate();
-        if (this.y     ) this.y     .invalidate();
+        if (this.input ) this.input .invalidateInputs();
+        if (this.x     ) this.x     .invalidateInputs();
+        if (this.y     ) this.y     .invalidateInputs();
     }
 
 
@@ -22179,15 +22176,15 @@ extends GOperator
 
 
 
-    invalidate()
+    invalidateInputs()
     {
-        super.invalidate();
+        super.invalidateInputs();
 
-        if (this.input     ) this.input     .invalidate();
-        if (this.angle     ) this.angle     .invalidate();
-        if (this.centerX   ) this.centerX   .invalidate();
-        if (this.centerY   ) this.centerY   .invalidate();
-        if (this.showCenter) this.showCenter.invalidate();
+        if (this.input     ) this.input     .invalidateInputs();
+        if (this.angle     ) this.angle     .invalidateInputs();
+        if (this.centerX   ) this.centerX   .invalidateInputs();
+        if (this.centerY   ) this.centerY   .invalidateInputs();
+        if (this.showCenter) this.showCenter.invalidateInputs();
     }
 
 
@@ -22506,16 +22503,16 @@ extends GOperator
 
 
 
-    invalidate()
+    invalidateInputs()
     {
-        super.invalidate();
+        super.invalidateInputs();
 
-        if (this.input     ) this.input     .invalidate();
-        if (this.scaleX    ) this.scaleX    .invalidate();
-        if (this.scaleY    ) this.scaleY    .invalidate();
-        if (this.centerX   ) this.centerX   .invalidate();
-        if (this.centerY   ) this.centerY   .invalidate();
-        if (this.showCenter) this.showCenter.invalidate();
+        if (this.input     ) this.input     .invalidateInputs();
+        if (this.scaleX    ) this.scaleX    .invalidateInputs();
+        if (this.scaleY    ) this.scaleY    .invalidateInputs();
+        if (this.centerX   ) this.centerX   .invalidateInputs();
+        if (this.centerY   ) this.centerY   .invalidateInputs();
+        if (this.showCenter) this.showCenter.invalidateInputs();
     }
 
 
@@ -22813,13 +22810,13 @@ extends GOperator
 
 
 
-    invalidate()
+    invalidateInputs()
     {
-        super.invalidate();
+        super.invalidateInputs();
 
-        if (this.input ) this.input .invalidate();
-        if (this.skewX     ) this.skewX     .invalidate();
-        if (this.skewY     ) this.skewY     .invalidate();
+        if (this.input) this.inputinvalidate();
+        if (this.skewX) this.skewX.invalidateInputs();
+        if (this.skewY) this.skewY.invalidateInputs();
     }
 
 
@@ -22903,12 +22900,12 @@ extends GOperator
 
 
 
-    invalidate()
+    invalidateInputs()
     {
-        super.invalidate();
+        super.invalidateInputs();
 
-        this.inputs.forEach(i => i.invalidate())
-        this.params.forEach(p => p.invalidate())
+        this.inputs.forEach(i => i.invalidateInputs())
+        this.params.forEach(p => p.invalidateInputs())
     }
 }
 
@@ -22993,11 +22990,11 @@ extends GOperator
 
 
 
-    invalidate()
+    invalidateInputs()
     {
-        super.invalidate();
+        super.invalidateInputs();
 
-        if (this.input) this.input.invalidate();
+        if (this.input) this.input.invalidateInputs();
     }
 }
 
@@ -28021,7 +28018,8 @@ function genParseTextFetch(parse)
     if (nInputs == 1)
         fetch.input = genParse(parse);
 
-    fetch.request = genParse(parse);
+    fetch.request     = genParse(parse);
+    fetch.cachedValue = genParse(parse);
 
     
     parse.nTab--;

@@ -495,7 +495,8 @@ function genParseTextFetch(parse)
     if (nInputs == 1)
         fetch.input = genParse(parse);
 
-    fetch.request = genParse(parse);
+    fetch.request     = genParse(parse);
+    fetch.cachedValue = genParse(parse);
 
     
     parse.nTab--;

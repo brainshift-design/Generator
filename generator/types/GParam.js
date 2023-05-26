@@ -98,10 +98,10 @@ extends GOperator
 
 
 
-    invalidate()
+    invalidateInputs()
     {
-        super.invalidate();
+        super.invalidateInputs();
 
-        if (this.node) this.node.invalidate();
+        if (this.node) this.node.invalidateInputs();
     }
 }

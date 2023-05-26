@@ -284,13 +284,13 @@ extends GOperator
 
 
 
-    invalidate()
+    invalidateInputs()
     {
-        super.invalidate();
+        super.invalidateInputs();
 
-        if (this.input ) this.input .invalidate();
-        if (this.skewX     ) this.skewX     .invalidate();
-        if (this.skewY     ) this.skewY     .invalidate();
+        if (this.input) this.inputinvalidate();
+        if (this.skewX) this.skewX.invalidateInputs();
+        if (this.skewY) this.skewY.invalidateInputs();
     }
 
 

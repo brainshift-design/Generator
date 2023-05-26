@@ -83,11 +83,11 @@ extends GNumberType
 
 
 
-    invalidate()
+    invalidateInputs()
     {
-        super.invalidate();
+        super.invalidateInputs();
 
-        if (this.number) this.number.invalidate();
-        if (this.format) this.format.invalidate();
+        if (this.number) this.number.invalidateInputs();
+        if (this.format) this.format.invalidateInputs();
     }
 }

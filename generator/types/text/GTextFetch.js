@@ -1,14 +1,10 @@
-//var fetchResolve = null;
-//fetchResponse = null;
-
-
-
 class GTextFetch
 extends GTextType
 {
     input = null;
-
+    
     request;
+    cachedValue;
 
 
 
@@ -28,7 +24,8 @@ extends GTextType
         if (this.input) 
             copy.input = this.input.copy();
 
-        copy.request = this.request.copy();
+        copy.request     = this.request    .copy();
+        copy.cachedValue = this.cachedValue.copy();
 
         return copy;
     }
@@ -41,31 +38,40 @@ extends GTextType
             return this;
 
 
-        const request = (await this.request.eval(parse)).toValue();
+        const request     = (await this.request    .eval(parse)).toValue();
+        const cachedValue = (await this.cachedValue.eval(parse)).toValue();
+        // console.log('cachedValue =', cachedValue);
 
-
+        
         genInitNodeProgress(this.nodeId);
 
 
-        try 
+        if (cachedValue.value == '')
         {
-            await fetch(request.value)
-                .then(response => response.text())
-                .then(text => this.value = new TextValue(text));
+            try 
+            {
+                await fetch(request.value)
+                    .then(response => response.text())
+                    .then(text => this.value = new TextValue(text));
+            }
+            catch (e)
+            {
+                this.value = 
+                    request.value.trim() == NULL
+                    ? new TextValue()
+                    : new TextValue(e.message);
+            }
         }
-        catch (e)
+        else
         {
-            this.value = 
-                request.value.trim() == NULL
-                ? new TextValue() //TextValue.NaN
-                : new TextValue(e.message);
+            this.value = this.cachedValue.copy();
         }
 
 
         this.updateValues =
         [
-            [returnValueId,   this.value],
-            ['request', request   ]
+            [returnValueId, this.value],
+            ['request',     request   ]
         ];
         
         
@@ -86,20 +92,11 @@ extends GTextType
 
 
 
-    invalidate()
+    invalidateInputs()
     {
-        super.invalidate();
+        super.invalidateInputs();
 
-        if (this.input  ) this.input  .invalidate();
-        if (this.request) this.request.invalidate();
+        if (this.input  ) this.input  .invalidateInputs();
+        if (this.request) this.request.invalidateInputs();
     }
 }
-
-
-
-// function genFetchResponse(result, response)
-// {
-//     console.assert(fetchResolve, 'fetchResolve cannot be null');
-//     fetchResolve(response);
-//     console.log('resolve');
-// }

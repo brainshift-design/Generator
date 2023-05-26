@@ -145,15 +145,15 @@ extends GOperator
 
 
 
-    invalidate()
+    invalidateInputs()
     {
-        super.invalidate();
+        super.invalidateInputs();
 
-        if (this.input ) this.input .invalidate();
-        if (this.fill  ) this.fill  .invalidate();
-        if (this.weight) this.weight.invalidate();
-        if (this.fit   ) this.fit   .invalidate();
-        if (this.join  ) this.join  .invalidate();
-        if (this.miter ) this.miter .invalidate();
+        if (this.input ) this.input .invalidateInputs();
+        if (this.fill  ) this.fill  .invalidateInputs();
+        if (this.weight) this.weight.invalidateInputs();
+        if (this.fit   ) this.fit   .invalidateInputs();
+        if (this.join  ) this.join  .invalidateInputs();
+        if (this.miter ) this.miter .invalidateInputs();
     }
 }

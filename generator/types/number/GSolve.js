@@ -181,12 +181,12 @@ extends GNumberType
 
 
 
-    invalidate()
+    invalidateInputs()
     {
-        super.invalidate();
+        super.invalidateInputs();
 
-        if (this.input  ) this.input  .invalidate();
-        if (this.current) this.current.invalidate();
-        if (this.target ) this.target .invalidate();
+        if (this.input  ) this.input  .invalidateInputs();
+        if (this.current) this.current.invalidateInputs();
+        if (this.target ) this.target .invalidateInputs();
     }
 }

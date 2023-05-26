@@ -104,10 +104,10 @@ extends GOperator
 
 
 
-    invalidate()
+    invalidateInputs()
     {
-        super.invalidate();
+        super.invalidateInputs();
 
-        if (this.colorStyle) this.colorStyle.invalidate();
+        if (this.colorStyle) this.colorStyle.invalidateInputs();
     }
 }

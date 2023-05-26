@@ -196,15 +196,15 @@ extends GShape
 
 
 
-    invalidate()
+    invalidateInputs()
     {
-        super.invalidate();
+        super.invalidateInputs();
 
-        if (this.input  ) this.input  .invalidate();
-        if (this.points ) this.points .invalidate();
-        if (this.closed ) this.closed .invalidate();
-        if (this.degree ) this.degree .invalidate();
-        if (this.winding) this.winding.invalidate();
-        if (this.round  ) this.round  .invalidate();
+        if (this.input  ) this.input  .invalidateInputs();
+        if (this.points ) this.points .invalidateInputs();
+        if (this.closed ) this.closed .invalidateInputs();
+        if (this.degree ) this.degree .invalidateInputs();
+        if (this.winding) this.winding.invalidateInputs();
+        if (this.round  ) this.round  .invalidateInputs();
     }
 }

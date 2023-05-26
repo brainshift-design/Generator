@@ -52,7 +52,7 @@ extends GOperator
     {
         super.pushValueUpdates(parse);
 
-        // if (this.input  ) this.input  .invalidate();
+        // if (this.input  ) this.input  .invalidateInputs();
     }
 
 
@@ -66,10 +66,10 @@ extends GOperator
 
 
 
-    invalidate()
+    invalidateInputs()
     {
-        super.invalidate();
+        super.invalidateInputs();
 
-        // if (this.input  ) this.input  .invalidate();
+        // if (this.input  ) this.input  .invalidateInputs();
     }
 }

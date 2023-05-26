@@ -141,15 +141,15 @@ extends GNumberType
 
 
 
-    invalidate()
+    invalidateInputs()
     {
-        super.invalidate();
+        super.invalidateInputs();
 
-        if (this.from  ) this.from  .invalidate();
-        if (this.to    ) this.to    .invalidate();
-        if (this.curve ) this.curve .invalidate();
-        if (this.type  ) this.type  .invalidate();
-        if (this.length) this.length.invalidate();
-        if (this.time  ) this.time  .invalidate();
+        if (this.from  ) this.from  .invalidateInputs();
+        if (this.to    ) this.to    .invalidateInputs();
+        if (this.curve ) this.curve .invalidateInputs();
+        if (this.type  ) this.type  .invalidateInputs();
+        if (this.length) this.length.invalidateInputs();
+        if (this.time  ) this.time  .invalidateInputs();
     }
 }

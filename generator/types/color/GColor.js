@@ -213,14 +213,14 @@ extends GColorType
 
 
 
-    invalidate()
+    invalidateInputs()
     {
-        super.invalidate();
+        super.invalidateInputs();
 
-        if (this.input) this.input.invalidate();
-        if (this.space) this.space.invalidate();
-        if (this.c1   ) this.c1   .invalidate();
-        if (this.c2   ) this.c2   .invalidate();
-        if (this.c3   ) this.c3   .invalidate();
+        if (this.input) this.input.invalidateInputs();
+        if (this.space) this.space.invalidateInputs();
+        if (this.c1   ) this.c1   .invalidateInputs();
+        if (this.c2   ) this.c2   .invalidateInputs();
+        if (this.c3   ) this.c3   .invalidateInputs();
     }
 }

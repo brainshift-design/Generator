@@ -101,7 +101,7 @@ extends GOperator
                     }
                     
                     
-                    this.input.invalidate();
+                    this.input.invalidateInputs();
                     await this.input.eval(parse);
 
                     
@@ -134,9 +134,9 @@ extends GOperator
 
             this.updateValues =
             [
-                [returnValueId,  this.value     ],
-                ['count',  count          ],
-                ['loop',   NumberValue.NaN]
+                [returnValueId, this.value     ],
+                ['count',       count          ],
+                ['loop',        NumberValue.NaN]
             ];
         }
         else
@@ -172,12 +172,31 @@ extends GOperator
 
 
 
-    invalidate()
+    invalidateInputs()
     {
-        super.invalidate();
+        super.invalidateInputs();
 
-        if (this.input) this.input.invalidate();
-        if (this.count) this.count.invalidate();
+        if (this.input) this.input.invalidateInputs();
+        if (this.count) this.count.invalidateInputs();
+    }
+
+
+
+    invalidateRepeat(loop, nodeId)
+    {
+        if (loop.type == LIST)
+        {
+            for (const input of loop.inputs)
+            {
+                input.valid  = false;
+                input.loopId = nodeId;
+            }
+        }
+        else
+        {
+            loop.valid  = false;
+            loop.loopId = nodeId;
+        }
     }
 
 
@@ -192,25 +211,6 @@ extends GOperator
         else
         {
             loop.repeatCount = count;
-        }
-    }
-
-
-
-    invalidateRepeat(loop, nodeId)
-    {
-        if (loop.type == LIST)
-        {
-            for (const input of loop.inputs)
-            {
-                input.valid        = false;
-                input.loopId = nodeId;
-            }
-        }
-        else
-        {
-            loop.valid        = false;
-            loop.loopId = nodeId;
         }
     }
 }

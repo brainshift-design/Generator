@@ -14,10 +14,10 @@ extends GNumberType
 
 
 
-    invalidate()
+    invalidateInputs()
     {
-        super.invalidate();
+        super.invalidateInputs();
 
-        if (this.input) this.input.invalidate();
+        if (this.input) this.input.invalidateInputs();
     }
 }

@@ -139,16 +139,16 @@ extends GOperator
 
 
 
-    invalidate()
+    invalidateInputs()
     {
-        super.invalidate();
+        super.invalidateInputs();
 
-        if (this.input ) this.input .invalidate();
-        if (this.x     ) this.x     .invalidate();
-        if (this.y     ) this.y     .invalidate();
-        if (this.blur  ) this.blur  .invalidate();
-        if (this.spread) this.spread.invalidate();
-        if (this.fill  ) this.fill  .invalidate();
-        if (this.blend ) this.blend .invalidate();
+        if (this.input ) this.input .invalidateInputs();
+        if (this.x     ) this.x     .invalidateInputs();
+        if (this.y     ) this.y     .invalidateInputs();
+        if (this.blur  ) this.blur  .invalidateInputs();
+        if (this.spread) this.spread.invalidateInputs();
+        if (this.fill  ) this.fill  .invalidateInputs();
+        if (this.blend ) this.blend .invalidateInputs();
     }
 }

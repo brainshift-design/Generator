@@ -305,16 +305,16 @@ extends GOperator
 
 
 
-    invalidate()
+    invalidateInputs()
     {
-        super.invalidate();
+        super.invalidateInputs();
 
-        if (this.input     ) this.input     .invalidate();
-        if (this.scaleX    ) this.scaleX    .invalidate();
-        if (this.scaleY    ) this.scaleY    .invalidate();
-        if (this.centerX   ) this.centerX   .invalidate();
-        if (this.centerY   ) this.centerY   .invalidate();
-        if (this.showCenter) this.showCenter.invalidate();
+        if (this.input     ) this.input     .invalidateInputs();
+        if (this.scaleX    ) this.scaleX    .invalidateInputs();
+        if (this.scaleY    ) this.scaleY    .invalidateInputs();
+        if (this.centerX   ) this.centerX   .invalidateInputs();
+        if (this.centerY   ) this.centerY   .invalidateInputs();
+        if (this.showCenter) this.showCenter.invalidateInputs();
     }
 
 

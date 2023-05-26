@@ -271,23 +271,23 @@ extends GShape
 
 
 
-    invalidate()
+    invalidateInputs()
     {
-        super.invalidate();
+        super.invalidateInputs();
         
-        if (this.input        ) this.input        .invalidate();
-        if (this.text         ) this.text         .invalidate();
-        if (this.x            ) this.x            .invalidate();
-        if (this.y            ) this.y            .invalidate();
-        if (this.width        ) this.width        .invalidate();
-        if (this.height       ) this.height       .invalidate();
-        if (this.angle        ) this.angle        .invalidate();
-        if (this.font         ) this.font         .invalidate();
-        if (this.style        ) this.style        .invalidate();
-        if (this.size         ) this.size         .invalidate();
-        if (this.alignH       ) this.alignH       .invalidate();
-        if (this.alignV       ) this.alignV       .invalidate();
-        if (this.lineHeight   ) this.lineHeight   .invalidate();
-        if (this.letterSpacing) this.letterSpacing.invalidate();
+        if (this.input        ) this.input        .invalidateInputs();
+        if (this.text         ) this.text         .invalidateInputs();
+        if (this.x            ) this.x            .invalidateInputs();
+        if (this.y            ) this.y            .invalidateInputs();
+        if (this.width        ) this.width        .invalidateInputs();
+        if (this.height       ) this.height       .invalidateInputs();
+        if (this.angle        ) this.angle        .invalidateInputs();
+        if (this.font         ) this.font         .invalidateInputs();
+        if (this.style        ) this.style        .invalidateInputs();
+        if (this.size         ) this.size         .invalidateInputs();
+        if (this.alignH       ) this.alignH       .invalidateInputs();
+        if (this.alignV       ) this.alignV       .invalidateInputs();
+        if (this.lineHeight   ) this.lineHeight   .invalidateInputs();
+        if (this.letterSpacing) this.letterSpacing.invalidateInputs();
     }
 }

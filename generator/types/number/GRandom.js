@@ -96,12 +96,12 @@ extends GNumberType
 
 
 
-    invalidate()
+    invalidateInputs()
     {
-        super.invalidate();
+        super.invalidateInputs();
 
-        if (this.seed) this.seed.invalidate();
-        if (this.min ) this.min .invalidate();
-        if (this.max ) this.max .invalidate();
+        if (this.seed) this.seed.invalidateInputs();
+        if (this.min ) this.min .invalidateInputs();
+        if (this.max ) this.max .invalidateInputs();
     }
 }
