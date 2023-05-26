@@ -74,9 +74,6 @@ extends GOperator
 
         for (let key in json)
         {
-            if (key == 'value')
-                key = '_value';
-
             if (   typeof json[key] === 'object'
                 && json[key] !== null)
             {
@@ -97,7 +94,11 @@ extends GOperator
                     value = new TextValue(json[key]);
 
                     
-                value.valueId = key;
+                value.valueId = 
+                    key == 'value'
+                    ? '(value)'
+                    : key;
+
                 list.items.push(value);
             }
         }

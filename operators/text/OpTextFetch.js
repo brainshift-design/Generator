@@ -36,7 +36,11 @@ extends ResizableOperatorWithValue
 
     setSize(w, h, updateTransform = true)
     {
-        super.setSize(w, h, updateTransform);
+        super.setSize(
+            w, 
+            Math.max(defHeaderHeight + 2 * defParamHeight, h), 
+            updateTransform);
+
         this.updateValueParam();
     }
 
@@ -44,7 +48,13 @@ extends ResizableOperatorWithValue
 
     setRect(x, y, w, h, updateTransform = true)
     {
-        super.setRect(x, y, w, h, updateTransform);
+        super.setRect(
+            x, 
+            y, 
+            w, 
+            Math.max(defHeaderHeight + 2 * defParamHeight, h), 
+            updateTransform);
+
         this.updateValueParam();
     }
 
@@ -104,8 +114,20 @@ extends ResizableOperatorWithValue
 
     updateValueParam()
     {
+        const totalHeight = 
+              this.div.offsetHeight 
+            - Math.max(defHeaderHeight, this.header.offsetHeight);
+            //- defParamHeight;
+
+        const hRequest = defParamHeight; //Math.max(defParamHeight, totalHeight * 0.35);
+        const hValue   = totalHeight - hRequest;
+
         this.paramValue.controls[0].setSize(
             this.div.offsetWidth,
-            this.div.offsetHeight - Math.max(defHeaderHeight, this.header.offsetHeight) - defParamHeight);
+            hValue);
+
+        this.paramRequest.controls[0].setSize(
+            this.div.offsetWidth,
+            hRequest);
     }
 }

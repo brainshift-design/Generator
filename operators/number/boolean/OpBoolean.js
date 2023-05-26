@@ -9,6 +9,8 @@ extends OperatorWithValue
     {
         super(NUMBER_BOOLEAN, 'bool', 'boolean', iconBoolean);
 
+        this.iconOffsetY      = -1;
+
         this.variableInputs   = true;
         this.alwaysLoadParams = true;
 

@@ -3,6 +3,8 @@ extends OpConditionBase
 {
     constructor()
     {
-        super(NUMBER_GREATER, 'greater', 'greater', '>', iconGreater);
+        super(NUMBER_GREATER, 'greater', 'greater', iconGreater);
+
+        this.iconOffsetY = 2;
     }
 }

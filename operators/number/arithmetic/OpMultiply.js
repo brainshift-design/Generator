@@ -3,7 +3,9 @@ extends OpArithmetic
 {
     constructor()
     {
-        super(NUMBER_MULTIPLY, 'mul', 'multiply', '×', iconMultiply);
+        super(NUMBER_MULTIPLY, 'mul', 'multiply', iconMultiply);
+
+        this.iconOffsetY = 2;
     }
 
 

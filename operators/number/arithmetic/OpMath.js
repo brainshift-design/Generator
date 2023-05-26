@@ -9,6 +9,8 @@ extends OperatorWithValue
     {
         super(NUMBER_MATH, 'math', 'math', iconMath);
 
+        this.iconOffsetY      = -1;
+
         this.variableInputs   = true;
         this.alwaysLoadParams = true;
 

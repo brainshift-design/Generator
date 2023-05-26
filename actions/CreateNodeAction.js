@@ -29,8 +29,6 @@ extends Action
         this.options        = options;
 
         this.autoConnect    = autoConnect;
-
-        console.log('autoConnect =', autoConnect);
     }
 
 

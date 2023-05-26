@@ -5,6 +5,8 @@ extends OperatorBase
     {
         super(ITEMS, 'items', 'items', iconItems);
 
+        this.iconOffsetY = 1;
+
 
         this.addInput (new Input(LIST_VALUES));
         this.addOutput(new Output([LIST_VALUE], this.output_genRequest));

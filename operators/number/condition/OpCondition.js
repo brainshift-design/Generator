@@ -8,6 +8,9 @@ extends OperatorWithValue
     constructor()
     {
         super(NUMBER_CONDITION, 'cond', 'condition', iconCondition);
+        
+        this.iconOffsetY = -1;
+
 
         this.addInput(new Input([NUMBER_VALUE]));
         this.addInput(new Input([NUMBER_VALUE]));

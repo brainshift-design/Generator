@@ -1,9 +1,9 @@
 class   OpTrigBase
 extends OperatorWithValue
 {
-    constructor(type, id, name, symbol, icon)
+    constructor(type, id, name, icon)//symbol, icon)
     {
-        super(type, id, name, symbol, icon);
+        super(type, id, name, icon)//symbol, icon);
 
         this.canDisable       = true;
         this.alwaysLoadParams = true;

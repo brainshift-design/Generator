@@ -1,44 +1,44 @@
-class ToggleOperatorSymbolAction
-extends Action
-{
-    nodeId;
-    get node() { return nodeFromId(this.nodeId) } 
+// class ToggleOperatorSymbolAction
+// extends Action
+// {
+//     nodeId;
+//     get node() { return nodeFromId(this.nodeId) } 
 
-    showOnlySymbol;
+//     showOnlySymbol;
 
 
 
-    constructor(nodeId, showOnlySymbol)
-    {
-        super(
-            TOGGLE_SYMBOL_ACTION,
-            'TOGGLE MATH SYMBOL ' + boolToString(showOnlySymbol));
+//     constructor(nodeId, showOnlySymbol)
+//     {
+//         super(
+//             TOGGLE_SYMBOL_ACTION,
+//             'TOGGLE MATH SYMBOL ' + boolToString(showOnlySymbol));
         
-        this.affectsConnections = false;
+//         this.affectsConnections = false;
 
-        this.nodeId         = nodeId;
-        this.showOnlySymbol = showOnlySymbol;
-    }
-
-
-
-    do(updateNodes)
-    {
-        this.node._showOnlySymbol = this.showOnlySymbol;
-
-        this.node.updateNode();
-
-        uiSaveNodes([this.nodeId]);
-    }
+//         this.nodeId         = nodeId;
+//         this.showOnlySymbol = showOnlySymbol;
+//     }
 
 
 
-    undo(updateNodes)
-    {
-        this.node._showOnlySymbol = !this.showOnlySymbol;
+//     do(updateNodes)
+//     {
+//         this.node._showOnlySymbol = this.showOnlySymbol;
 
-        this.node.updateNode();
+//         this.node.updateNode();
 
-        uiSaveNodes([this.nodeId]);
-    }    
-}
+//         uiSaveNodes([this.nodeId]);
+//     }
+
+
+
+//     undo(updateNodes)
+//     {
+//         this.node._showOnlySymbol = !this.showOnlySymbol;
+
+//         this.node.updateNode();
+
+//         uiSaveNodes([this.nodeId]);
+//     }    
+// }

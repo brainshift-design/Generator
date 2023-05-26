@@ -3,7 +3,9 @@ extends OpArithmetic
 {
     constructor()
     {
-        super(NUMBER_DIVIDE, 'div', 'divide', '/', iconDivide);//'÷');
+        super(NUMBER_DIVIDE, 'div', 'divide', iconDivide);
+
+        this.iconOffsetY = 1;
     }
 
 

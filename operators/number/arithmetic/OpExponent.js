@@ -3,7 +3,9 @@ extends OpArithmetic
 {
     constructor()
     {
-        super(NUMBER_EXPONENT, 'pow', 'power', 'eˣ', iconExponent); // placeholder symbol, actual symbol set in updateNode()
+        super(NUMBER_EXPONENT, 'pow', 'power', iconExponent);
+
+        this.iconOffsetY = -1;
     }
 
 

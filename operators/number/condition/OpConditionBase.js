@@ -1,9 +1,9 @@
 class   OpConditionBase
-extends OperatorWithSymbol
+extends OperatorWithValue //Symbol
 {
-    constructor(type, id, name, symbol, icon)
+    constructor(type, id, name, icon)//symbol, icon)
     {
-        super(type, id, name, symbol, icon);
+        super(type, id, name, icon)//symbol, icon);
 
         this.alwaysLoadParams = true;
 
@@ -83,41 +83,41 @@ extends OperatorWithSymbol
 
 
 
-    updateHeaderLabel()
-    {
-        //console.log('OperatorWithSymbol.updateHeaderLabel()');
+    // updateHeaderLabel()
+    // {
+    //     //console.log('OperatorWithSymbol.updateHeaderLabel()');
         
-        OperatorWithValue.prototype.updateHeaderLabel.call(this);
+    //     OperatorWithValue.prototype.updateHeaderLabel.call(this);
 
 
-        const colBack = rgbFromType(this.type, this.active);
-        const colText = isDark(colBack) ? [1, 1, 1] : [0, 0, 0];
+    //     // const colBack = rgbFromType(this.type, this.active);
+    //     // const colText = isDark(colBack) ? [1, 1, 1] : [0, 0, 0];
 
-        this._symbol.style.fontSize   = this._showOnlySymbol ? 17 : 12;
-        this._symbol.style.fontWeight = this.active ? 'bold' : 'normal';
-        this._symbol.style.color      = rgb2style(colText);
-        this._symbol.style.left       = 'calc(50%)';
-        
-
-        //const padding = this.header.connectionPadding;
-        const inputs  = this.headerInputs;
-
-
-        const [inputY, inputHeight] = getHeaderConnY(inputs);//, padding, 5);
-
-        if (this._showOnlySymbol)
-        {
-            this._symbol.style.top = inputY[0]/2 + inputHeight/2 - 3;
-        }
-        else
-        {
-            this._symbol.style.top = inputY[0]/2 + inputHeight/2 - 9;
-            this.label  .style.top = 'calc(50% - 2px)';
-        }
+    //     // this._symbol.style.fontSize   = this._showOnlySymbol ? 17 : 12;
+    //     // this._symbol.style.fontWeight = this.active ? 'bold' : 'normal';
+    //     // this._symbol.style.color      = rgb2style(colText);
+    //     // this._symbol.style.left       = 'calc(50%)';
         
 
-        this.label.style.visibility = this._showOnlySymbol ? 'hidden'  : 'visible';
-    }
+    //     //const padding = this.header.connectionPadding;
+    //     // const inputs  = this.headerInputs;
+
+
+    //     // const [inputY, inputHeight] = getHeaderConnY(inputs);//, padding, 5);
+
+    //     // if (this._showOnlySymbol)
+    //     // {
+    //     //     this._symbol.style.top = inputY[0]/2 + inputHeight/2 - 3;
+    //     // }
+    //     // else
+    //     // {
+    //     //     this._symbol.style.top = inputY[0]/2 + inputHeight/2 - 9;
+    //     //     this.label  .style.top = 'calc(50% - 2px)';
+    //     // }
+        
+
+    //     // this.label.style.visibility = this._showOnlySymbol ? 'hidden'  : 'visible';
+    // }
 
 
 

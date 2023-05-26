@@ -30,6 +30,7 @@ const OBJECT_PREFIX = GENERATOR_LOGO + ' '; //'G ';
 const nodeTag = 'G_NODE';
 const connTag = 'G_CONN';
 const pageTag = 'G_PAGE';
+const returnValueId = 'value'; //'-v﻿a﻿l﻿u﻿e-';
 const identity = Object.freeze([[1, 0, 0],
     [0, 1, 0],
     [0, 0, 1]]);
@@ -674,7 +675,7 @@ const SET_PARAM_VALUE_ACTION = 'SET_PARAM_VALUE';
 const SET_PARAM_SETTING_ACTION = 'SET_PARAM_SETTING';
 const SET_NODE_RECT_ACTION = 'SET_NODE_RECT';
 const TOGGLE_DISABLE_ACTION = 'TOGGLE_DISABLE';
-const TOGGLE_SYMBOL_ACTION = 'TOGGLE_SYMBOL';
+//const TOGGLE_SYMBOL_ACTION       = 'TOGGLE_SYMBOL';
 const TOGGLE_PARAM_HEADER_ACTION = 'TOGGLE_PARAM_HEADER';
 const SET_CURRENT_GRAPH_ACTION = 'SET_CURRENT_GRAPH';
 const CREATE_PAGE_ACTION = 'CREATE_PAGE';
