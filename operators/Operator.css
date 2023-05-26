@@ -210,19 +210,6 @@
 }
 
 
-.operatorSymbol
-{
-    font-family:    Inter;
-    font-size:      20px;
-    width:          auto;
-    height:         auto;
-    position:       absolute;
-    left:           50%;
-    transform:      translateX(-50%);
- /* box-shadow:     0 0 0 1px red inset; */
-}
-
-
 .colorWarningOverlay
 {
     width:            100%;

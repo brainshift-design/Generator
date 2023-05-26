@@ -37,7 +37,6 @@
 ../operators/Operator update.js
 ../operators/OperatorBase.js
 ../operators/OperatorWithValue.js
-../operators/OperatorWithSymbol.js
 ../operators/ResizableBase.js
 ../operators/ResizableOperatorWithValue.js
 

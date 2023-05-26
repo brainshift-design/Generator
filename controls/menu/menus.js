@@ -343,14 +343,14 @@ function initGeneratorMenus()
 
     menuFlow = new Menu('Data flow', true, false);
     menuFlow.addItems([
-        menuItemList          = new MenuItem('List',              {icon: iconList,       callback: e => actionManager.do(getCreateNodeAction(LIST,         btnNumber.div, getCreateOptions(e)))}),
+        menuItemList          = new MenuItem('List',              {icon: iconList,       callback: e => actionManager.do(getCreateNodeAction(LIST,        btnNumber.div, getCreateOptions(e)))}),
         menuFlowSep1          = new MenuItem('',                  {separator: true}),     
-        menuItemItems         = new MenuItem('Items',             {icon: iconItems,      callback: e => actionManager.do(getCreateNodeAction(ITEMS,        btnNumber.div, getCreateOptions(e)))}),
-        menuItemCount         = new MenuItem('Count',             {icon: iconCount,      callback: e => actionManager.do(getCreateNodeAction(LIST_COUNT,   btnNumber.div, getCreateOptions(e)))}),
+        menuItemItems         = new MenuItem('Items',             {icon: iconItems,      callback: e => actionManager.do(getCreateNodeAction(ITEMS,       btnNumber.div, getCreateOptions(e)))}),
+        menuItemCount         = new MenuItem('Count',             {icon: iconCount,      callback: e => actionManager.do(getCreateNodeAction(LIST_COUNT,  btnNumber.div, getCreateOptions(e)))}),
         menuFlowSep2          = new MenuItem('',                  {separator: true}),
-        menuItemSelect        = new MenuItem('Select',            {icon: iconSelect,     callback: e => actionManager.do(getCreateNodeAction(SELECT,       btnNumber.div, getCreateOptions(e)))}),
-        menuItemIfElse        = new MenuItem('I&hairsp;f / else', {icon: iconIfElse,     callback: e => actionManager.do(getCreateNodeAction(IF_ELSE,      btnNumber.div, getCreateOptions(e))), disambiguate: true}),
-        //menuItemExpandList  = new MenuItem('Expand',            {icon: iconExpandList, callback: e => actionManager.do(getCreateNodeAction(LIST_EXPAND,  btnNumber.div, getCreateOptions(e)))}),
+        menuItemSelect        = new MenuItem('Select',            {icon: iconSelect,     callback: e => actionManager.do(getCreateNodeAction(SELECT,      btnNumber.div, getCreateOptions(e)))}),
+        menuItemIfElse        = new MenuItem('I&hairsp;f / else', {icon: iconIfElse,     callback: e => actionManager.do(getCreateNodeAction(IF_ELSE,     btnNumber.div, getCreateOptions(e))), disambiguate: true}),
+        //menuItemExpandList  = new MenuItem('Expand',            {icon: iconExpandList, callback: e => actionManager.do(getCreateNodeAction(LIST_EXPAND, btnNumber.div, getCreateOptions(e)))}),
         menuFlowSep2          = new MenuItem('',                  {separator: true}),
         menuItemCopy          = new MenuItem('Copy',              {icon: iconCopy,   callback: e => actionManager.do(getCreateNodeAction(COPY,         btnNumber.div, getCreateOptions(e)))}),
         menuFlowSep3          = new MenuItem('',                  {separator: true}),
@@ -397,10 +397,10 @@ function initGeneratorMenus()
     
     menuFunctions = new Menu('Functions', true, false);
     menuFunctions.addItems([
-        new MenuItem('Sign',     {icon: iconSign,     callback: e => actionManager.do(getCreateNodeAction(NUMBER_SIGN,        btnNumber.div, getCreateOptions(e)))}),
-        new MenuItem('Absolute', {icon: iconAbsolute, callback: e => actionManager.do(getCreateNodeAction(NUMBER_ABSOLUTE,    btnNumber.div, getCreateOptions(e)))}),
-        new MenuItem('Round',    {icon: iconRound,    callback: e => actionManager.do(getCreateNodeAction(NUMBER_ROUND,       btnNumber.div, getCreateOptions(e)))}),
-        new MenuItem('Limits',   {icon: iconLimits,   callback: e => actionManager.do(getCreateNodeAction(NUMBER_LIMITS,      btnNumber.div, getCreateOptions(e)))})]);
+        new MenuItem('Sign',     {icon: iconSign,     callback: e => actionManager.do(getCreateNodeAction(NUMBER_SIGN,     btnNumber.div, getCreateOptions(e)))}),
+        new MenuItem('Absolute', {icon: iconAbsolute, callback: e => actionManager.do(getCreateNodeAction(NUMBER_ABSOLUTE, btnNumber.div, getCreateOptions(e)))}),
+        new MenuItem('Round',    {icon: iconRound,    callback: e => actionManager.do(getCreateNodeAction(NUMBER_ROUND,    btnNumber.div, getCreateOptions(e)))}),
+        new MenuItem('Limits',   {icon: iconLimits,   callback: e => actionManager.do(getCreateNodeAction(NUMBER_LIMITS,   btnNumber.div, getCreateOptions(e)))})]);
         
 
     menuNumber = new Menu('Numbers', true, false);
