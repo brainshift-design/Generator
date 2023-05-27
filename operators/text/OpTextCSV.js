@@ -8,15 +8,15 @@ extends OperatorBase
 
     constructor()
     {
-        super(TEXT_CSV, 'csv', 'csv', iconTextCSV);
+        super(TEXT_CSV, 'split', 'split', iconTextCSV);
 
         this.iconOffsetY = 1;
 
 
         this.addInput(new Input([TEXT_VALUE]));
 
-        this.addParam(this.paramValue     = new ListParam('value', '',          false, false, true));
-        this.addParam(this.paramSeparator = new TextParam('separator',   'separator', true, true, ','));
+        this.addParam(this.paramValue     = new ListParam('value',     '',          false, false, true));
+        this.addParam(this.paramSeparator = new TextParam('separator', 'separator', true, true, ','));
 
 
         this.paramValue.itemName = 'value';

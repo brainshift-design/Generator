@@ -1257,7 +1257,7 @@ function onVariableListConnectInput(input)
 
 
 
-function onVariableDisconnectInput(input)
+function onVariableListDisconnectInput(input)
 {
     onVariableDisconnectInput(input);
     updateOutputListTypeFromConnectedInputs(input.node);

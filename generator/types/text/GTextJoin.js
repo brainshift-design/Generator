@@ -36,8 +36,8 @@ extends GTextType
         const _with = (await this.with.eval(parse)).toValue();
 
         this.value = await evalJoinInputs(this.inputs, _with, parse);
-        console.log('this.value =', this.value);
 
+        
         this.updateValues = 
         [
             ['value', this.value],

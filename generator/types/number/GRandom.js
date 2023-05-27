@@ -63,12 +63,12 @@ extends GNumberType
             min.value + this.random.get(iteration) * (max.value - min.value),
             Math.max(min.decimals, max.decimals));
 
-        if (!this.value.isValid())
-        {
-            console.log('iteration =', iteration);
-            console.log('this.random =', this.random);
-            console.log('this.value =', this.value);
-        }
+        // if (!this.value.isValid())
+        // {
+        //     console.log('iteration =', iteration);
+        //     console.log('this.random =', this.random);
+        //     console.log('this.value =', this.value);
+        // }
 
         this.updateValues =
         [

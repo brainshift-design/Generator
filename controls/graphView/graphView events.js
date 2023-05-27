@@ -84,6 +84,8 @@ GraphView.prototype.createEvents = function()
             }
             else if (document.activeElement.type != 'text') // selection, unless a textbox is in focus
             {
+                window.getSelection().removeAllRanges();
+                
                 this.lastSelectedNodes = [...this.selectedNodes];
 
                 this.startSelection(

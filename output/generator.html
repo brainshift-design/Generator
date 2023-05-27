@@ -11868,12 +11868,12 @@ extends GNumberType
             min.value + this.random.get(iteration) * (max.value - min.value),
             Math.max(min.decimals, max.decimals));
 
-        if (!this.value.isValid())
-        {
-            console.log('iteration =', iteration);
-            console.log('this.random =', this.random);
-            console.log('this.value =', this.value);
-        }
+        // if (!this.value.isValid())
+        // {
+        //     console.log('iteration =', iteration);
+        //     console.log('this.random =', this.random);
+        //     console.log('this.value =', this.value);
+        // }
 
         this.updateValues =
         [
@@ -15069,8 +15069,8 @@ extends GTextType
         const _with = (await this.with.eval(parse)).toValue();
 
         this.value = await evalJoinInputs(this.inputs, _with, parse);
-        console.log('this.value =', this.value);
 
+        
         this.updateValues = 
         [
             ['value', this.value],
@@ -21148,11 +21148,11 @@ extends GShapeBase
             return;
             
 
-        if (this.nodeId == 'group2')
-        {
-            console.log('this.value =', this.value);
-            //console.log('input.objects =', [...input.objects]);
-        }
+        // if (this.nodeId == 'group2')
+        // {
+        //     console.log('this.value =', this.value);
+        //     //console.log('input.objects =', [...input.objects]);
+        // }
 
         if (this.value.items)
         {

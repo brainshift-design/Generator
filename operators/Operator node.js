@@ -133,7 +133,10 @@ Operator.prototype.createHeader = function()
 
 
         if (e.button == 0)
+        {
             hideAllMenus();
+            window.getSelection().removeAllRanges();
+        }
 
 
         if (   e.button == 0

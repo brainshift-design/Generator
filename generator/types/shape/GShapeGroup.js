@@ -120,11 +120,11 @@ extends GShapeBase
             return;
             
 
-        if (this.nodeId == 'group2')
-        {
-            console.log('this.value =', this.value);
-            //console.log('input.objects =', [...input.objects]);
-        }
+        // if (this.nodeId == 'group2')
+        // {
+        //     console.log('this.value =', this.value);
+        //     //console.log('input.objects =', [...input.objects]);
+        // }
 
         if (this.value.items)
         {

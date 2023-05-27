@@ -49,10 +49,13 @@ document.addEventListener('keydown', e =>
     else if (e.code == 'KeyC'
           && getCtrlKey(e))
     {
-        e.preventDefault();
+        if (window.getSelection().toString().length == 0)
+        {
+            e.preventDefault();
 
-        if (e.shiftKey) graphView.copySelectedNodesAsJavascript();
-        else            graphView.copySelectedNodes();
+            if (e.shiftKey) graphView.copySelectedNodesAsJavascript();
+            else            graphView.copySelectedNodes();
+        }
     }    
 
     // paste

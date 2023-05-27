@@ -19,6 +19,16 @@ TextControl.prototype.initTextarea = function()
             graphView.putNodeOnTop(this.param.node);
 
 
+        hideAllMenus();
+
+
+        if (e.button == 1)
+        {
+            e.preventDefault();
+            return;
+        }
+
+
         if (this.readOnly)
         {
             //e.preventDefault();
@@ -34,11 +44,7 @@ TextControl.prototype.initTextarea = function()
             return;
 
 
-        if (e.button == 1)
-        {
-            e.preventDefault();
-        }
-        else if (e.button == 2)
+        if (e.button == 2)
         {
             e.preventDefault();
             e.stopPropagation();
