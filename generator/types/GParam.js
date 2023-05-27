@@ -46,7 +46,9 @@ extends GOperator
         // console.log('this.node =', this.node);
         // console.log('this.node[this.paramId] =', this.node[this.paramId]);
         this.param = this.node.paramFromId(this.paramId);
-        // console.log('this.param =', this.param);
+
+        // if (this.nodeId == 'items3')
+        //     console.log('this.param =', this.param);
 
 
         if (isValid(this.param))

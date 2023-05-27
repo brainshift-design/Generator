@@ -77,6 +77,8 @@ extends GOperator
                     
                     this.objects.push(obj);
                 }
+
+                //console.log('GSelect.value =', this.value);
             }
             else
             {

@@ -5,7 +5,7 @@ extends OpArithmetic
     {
         super(NUMBER_DIVIDE, 'div', 'divide', iconDivide);
 
-        this.iconOffsetY = 1;
+        this.iconOffsetY = 0;
     }
 
 

@@ -97,8 +97,6 @@ extends ResizableBase
 
         this.updateValueParam();
 
-        console.log(this.paramValue.value);
-
         this.updateParamControls();
     }
 

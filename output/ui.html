@@ -10096,7 +10096,9 @@ extends GOperator
         // console.log('this.node =', this.node);
         // console.log('this.node[this.paramId] =', this.node[this.paramId]);
         this.param = this.node.paramFromId(this.paramId);
-        // console.log('this.param =', this.param);
+
+        // if (this.nodeId == 'items3')
+        //     console.log('this.param =', this.param);
 
 
         if (isValid(this.param))
@@ -14747,6 +14749,8 @@ extends GOperator
                     
                     this.objects.push(obj);
                 }
+
+                //console.log('GSelect.value =', this.value);
             }
             else
             {
@@ -44307,7 +44311,9 @@ extends GOperator
         // console.log('this.node =', this.node);
         // console.log('this.node[this.paramId] =', this.node[this.paramId]);
         this.param = this.node.paramFromId(this.paramId);
-        // console.log('this.param =', this.param);
+
+        // if (this.nodeId == 'items3')
+        //     console.log('this.param =', this.param);
 
 
         if (isValid(this.param))
@@ -48958,6 +48964,8 @@ extends GOperator
                     
                     this.objects.push(obj);
                 }
+
+                //console.log('GSelect.value =', this.value);
             }
             else
             {
@@ -67352,7 +67360,7 @@ function initGeneratorMenus()
                              new MenuItem('Number',        {icon: iconNumber,      callback: e => actionManager.do(getCreateNodeAction(NUMBER,             btnNumber.div, getCreateOptions(e)))}),
                              new MenuItem('',              {separator: true}),
                              new MenuItem('Constant',      {icon: iconConstant,    callback: e => actionManager.do(getCreateNodeAction(NUMBER_CONSTANT,    btnNumber.div, getCreateOptions(e)))}),
-                             new MenuItem('Values',        {icon: iconRound,       childMenu: menuFunctions}),
+                             new MenuItem('Values',        {icon: iconAbsolute,    childMenu: menuFunctions}),
                              new MenuItem('Arithmetic',    {icon: iconMath,        childMenu: menuMath,      callback: e => actionManager.do(getCreateNodeAction(NUMBER_MATH,      btnNumber.div, getCreateOptions(e)))}),
                              new MenuItem('Boolean',       {icon: iconBoolean,     childMenu: menuBoolean,   callback: e => actionManager.do(getCreateNodeAction(NUMBER_BOOLEAN,   btnNumber.div, getCreateOptions(e)))}),
                              new MenuItem('Conditional',   {icon: iconCondition,   childMenu: menuCondition, callback: e => actionManager.do(getCreateNodeAction(NUMBER_CONDITION, btnNumber.div, getCreateOptions(e)))}),
@@ -79559,19 +79567,25 @@ Operator.prototype.updateHeaderLabel = function()
     this.label.style.color      = rgba2style(colors.text);
     this.label.style.fontSize   = this.active ? fontSize : 11;
     this.label.style.height     = this.active ? fontSize * 15 / 11 : 15;
+    this.label.style.fontWeight = graph.currentPage.zoom < 1.2 ? '600' : 'normal';
 
+
+    this.updateIcon();
+}
+
+
+
+Operator.prototype.updateIcon = function()
+{
+    const colors = this.getHeaderColors();
 
     this.divIcon.innerHTML     = this.icon.replaceAll('white', rgba2style(colors.text));
-    //this.divIcon.style.top     = this.iconOffsetY + 'px';
     this.divIcon.style.top     = (this.iconOffsetY * Math.pow(Math.min(graph.currentPage.zoom, 1), 3)).toString() + 'px';
     this.divIcon.style.display = 
            this.icon != '' 
         && settings.showNodeIcons
         ? 'inline' 
         : 'none';
-
-
-    this.label.style.fontWeight = graph.currentPage.zoom < 1.2 ? '600' : 'normal';
 }
 
 
@@ -82759,7 +82773,7 @@ extends OperatorWithValue
 
     constructor()
     {
-        super(NUMBER_MATH, 'arith', 'arithmetic', iconMath);
+        super(NUMBER_MATH, 'arith', 'arithmetic', '');
 
         this.iconOffsetY      = -1;
 
@@ -82829,6 +82843,20 @@ extends OperatorWithValue
     {
         this.paramValue    .enableControlText(false);
         this.paramOperation.enableControlText(true);
+
+        
+        switch (this.paramOperation.value.value)
+        {
+            case 0: this.icon = iconSubtract; this.iconOffsetY = -2; break;
+            case 1: this.icon = iconAdd;      this.iconOffsetY =  1; break;
+            case 2: this.icon = iconModulo;   this.iconOffsetY =  1; break;
+            case 3: this.icon = iconDivide;   this.iconOffsetY =  0; break;
+            case 4: this.icon = iconMultiply; this.iconOffsetY =  2; break;
+            case 5: this.icon = iconExponent; this.iconOffsetY = -2; break;
+        }
+
+        this.updateIcon();
+
 
         this.updateParamControls();
     }
@@ -83028,7 +83056,7 @@ extends OpArithmetic
     {
         super(NUMBER_DIVIDE, 'div', 'divide', iconDivide);
 
-        this.iconOffsetY = 1;
+        this.iconOffsetY = 0;
     }
 
 
@@ -83096,7 +83124,7 @@ extends OpArithmetic
     {
         super(NUMBER_EXPONENT, 'pow', 'power', iconExponent);
 
-        this.iconOffsetY = -1;
+        this.iconOffsetY = -2;
     }
 
 
@@ -83136,7 +83164,7 @@ extends OperatorWithValue
 
     constructor()
     {
-        super(NUMBER_BOOLEAN, 'bool', 'boolean', iconBoolean);
+        super(NUMBER_BOOLEAN, 'bool', 'boolean', '');
 
         this.iconOffsetY      = -1;
 
@@ -83225,6 +83253,17 @@ extends OperatorWithValue
         this.paramValue.controls[0].text.style.letterSpacing = settings.showBoolValues ? '0.1em' : 0;
 
         this.paramValue.controls[0].showBar = !this.isUnknown();
+
+
+        switch (this.paramOperation.value.value)
+        {
+            case 0: this.icon = iconNot; this.iconOffsetY = -1; break;
+            case 1: this.icon = iconXor; this.iconOffsetY =  2; break;
+            case 2: this.icon = iconOr;  this.iconOffsetY =  1; break;
+            case 3: this.icon = iconAnd; this.iconOffsetY =  1; break;
+        }
+
+        this.updateIcon();
 
 
         this.updateParamControls();
@@ -83353,6 +83392,8 @@ extends OpBooleanBase
     constructor()
     {
         super(NUMBER_AND, 'and', 'and', iconAnd);
+
+        this.iconOffsetY = 1;
     }
 }
 
@@ -83363,6 +83404,8 @@ extends OpBooleanBase
     constructor()
     {
         super(NUMBER_OR, 'or', 'or', iconOr);
+
+        this.iconOffsetY = 1;
     }
 }
 
@@ -83388,7 +83431,7 @@ extends OperatorWithValue
 
     constructor()
     {
-        super(NUMBER_CONDITION, 'cond', 'condition', iconCondition);
+        super(NUMBER_CONDITION, 'cond', 'condition', '');
         
         this.iconOffsetY = -1;
 
@@ -83451,6 +83494,19 @@ extends OperatorWithValue
 
 
         updateParamConditionText(this.paramValue, this.isUnknown());
+
+
+        switch (this.paramOperation.value.value)
+        {
+            case 0: this.icon = iconLess;           this.iconOffsetY = 1; break;
+            case 1: this.icon = iconLessOrEqual;    this.iconOffsetY = 0; break;
+            case 2: this.icon = iconNotEqual;       this.iconOffsetY = 2; break;
+            case 3: this.icon = iconEqual;          this.iconOffsetY = 0; break;
+            case 4: this.icon = iconGreaterOrEqual; this.iconOffsetY = 0; break;
+            case 5: this.icon = iconGreater;        this.iconOffsetY = 1; break;
+        }
+
+        this.updateIcon();
 
 
         this.updateParamControls();
@@ -83874,8 +83930,6 @@ extends ResizableBase
         this.paramValue.controls[0].valueText = this.isUnknown() ? UNKNOWN_DISPLAY : '';
 
         this.updateValueParam();
-
-        console.log(this.paramValue.value);
 
         this.updateParamControls();
     }

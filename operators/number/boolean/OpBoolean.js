@@ -7,7 +7,7 @@ extends OperatorWithValue
 
     constructor()
     {
-        super(NUMBER_BOOLEAN, 'bool', 'boolean', iconBoolean);
+        super(NUMBER_BOOLEAN, 'bool', 'boolean', '');
 
         this.iconOffsetY      = -1;
 
@@ -96,6 +96,17 @@ extends OperatorWithValue
         this.paramValue.controls[0].text.style.letterSpacing = settings.showBoolValues ? '0.1em' : 0;
 
         this.paramValue.controls[0].showBar = !this.isUnknown();
+
+
+        switch (this.paramOperation.value.value)
+        {
+            case 0: this.icon = iconNot; this.iconOffsetY = -1; break;
+            case 1: this.icon = iconXor; this.iconOffsetY =  2; break;
+            case 2: this.icon = iconOr;  this.iconOffsetY =  1; break;
+            case 3: this.icon = iconAnd; this.iconOffsetY =  1; break;
+        }
+
+        this.updateIcon();
 
 
         this.updateParamControls();

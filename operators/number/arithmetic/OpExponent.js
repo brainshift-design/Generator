@@ -5,7 +5,7 @@ extends OpArithmetic
     {
         super(NUMBER_EXPONENT, 'pow', 'power', iconExponent);
 
-        this.iconOffsetY = -1;
+        this.iconOffsetY = -2;
     }
 
 
