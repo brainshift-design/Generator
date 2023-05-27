@@ -1847,7 +1847,9 @@ function setObjectTransform(figObj, genObj) {
             genObj.xform[0],
             genObj.xform[1]
         ];
-    figObj.resizeWithoutConstraints(Math.max(0.01, genObj.width * scaleX), Math.max(0.01, genObj.height * scaleY));
+    figObj.resizeWithoutConstraints(Math.max(0.01, genObj.width * scaleX), genObj.height
+        ? Math.max(0.01, genObj.height * scaleY)
+        : 0);
 }
 function setPointTransform(figPoint, genPoint) {
     figPoint.resizeWithoutConstraints(0.01, 0.01);

@@ -2873,7 +2873,9 @@ function setObjectTransform(figObj, genObj)
 
     figObj.resizeWithoutConstraints(
         Math.max(0.01, genObj.width  * scaleX),
-        Math.max(0.01, genObj.height * scaleY));
+        genObj.height
+        ? Math.max(0.01, genObj.height * scaleY)
+        : 0);
 }
 
 
