@@ -46,9 +46,6 @@ extends GOperator
 
             this.value   = this.input.toValue();
             this.objects = this.input.objects.map(o => o.copy());
-
-            //console.log('this.input =', this.input);
-            //console.log('this.value =', this.value.toString());
         }
         else
         {
@@ -106,14 +103,8 @@ extends GOperator
     paramFromId(paramId)
     {
         return paramId != 'value'
-              ? this[paramId]
+              ? this.value.items.find(i => i.valueId == paramId) //this[paramId]
               : null;
-        // if (   paramId.length > 4
-        //     && paramId.substring(0, 4) == 'item'
-        //     && strIsNum(paramId.substring(4)))
-        //     return this[paramId];
-
-        // return null;
     }
 
 

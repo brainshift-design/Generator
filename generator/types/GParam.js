@@ -42,13 +42,7 @@ extends GOperator
         await this.node.eval(parse);
         this.node.feedbackValue = null;
 
-        // console.log('this.paramId =', this.paramId);
-        // console.log('this.node =', this.node);
-        // console.log('this.node[this.paramId] =', this.node[this.paramId]);
         this.param = this.node.paramFromId(this.paramId);
-
-        // if (this.nodeId == 'items3')
-        //     console.log('this.param =', this.param);
 
 
         if (isValid(this.param))
@@ -57,12 +51,8 @@ extends GOperator
             //     //&& this.param.type == NUMBER_VALUE)
             //     this.param = this.feedbackValue();
             
-            if (   !this.node.valid
-                || !this.value) // could have been deleted from OpRepeat for example
-            {
-                const value = (await this.param.eval(parse)).toValue();
-                this.value = value;
-            }
+            const value = (await this.param.eval(parse)).toValue();
+            this.value = value;
             
             //this.param.feedbackValue = null;
             return this.value;
