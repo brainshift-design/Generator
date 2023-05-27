@@ -106,16 +106,12 @@ extends GShape
             let    y = this.value.y     .value;
             let    w = this.value.width .value;
             let    h = this.value.height.value;
-            const  a = this.value.angle .value;
-            const _a = a/360*Tau;
+            let    a = this.value.angle .value;
+            let   _a = a/360*Tau;
             const  r = Math.max(0, this.value.round.value);
 
 
-            if (w < 0) x += w;// * Math.sin(_a);
-            if (h < 0) y += h;// * Math.sin(_a);
-
-            w = Math.abs(w);
-            h = Math.abs(h);
+            [x, y, w, h, a, _a] = validateObjectRect(x, y, w, h, a, _a);
 
 
             if (   w != 0 

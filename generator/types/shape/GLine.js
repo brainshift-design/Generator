@@ -81,13 +81,15 @@ extends GShape
             && this.width 
             && this.angle)
         {
-            let x = this.value.x     .value;
-            let y = this.value.y     .value;
-            let w = this.value.width .value;
+            let  x = this.value.x     .value;
+            let  y = this.value.y     .value;
+            let  w = this.value.width .value;
+            let  a = this.value.angle .value;
+            let _a = a/360*Tau;
 
-            if (w < 0) x += w;
 
-            w = Math.abs(w);
+            [x, y, w, , a, _a] = validateObjectRect(x, y, w, 0, a, _a);
+
 
             if (w != 0)
             {
@@ -95,15 +97,9 @@ extends GShape
                     this.nodeId,
                     this.nodeId,
                     this.nodeName,
-                    x,
-                    y,
-                    w,
-                    this.value.angle.value);
+                    x, y, w, a);
 
-                line.createDefaultTransform(
-                    x,
-                    y,
-                    this.value.angle.value/360*Tau);
+                line.createDefaultTransform(x, y, _a);
 
                 this      .objects = [line];
                 this.value.objects = [line];

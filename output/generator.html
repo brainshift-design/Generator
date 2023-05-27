@@ -19006,6 +19006,35 @@ extends GOperator
 }
 
 
+
+function validateObjectRect(x, y, w, h, a, _a)
+{
+    if (w < 0)
+    {
+        x += w * Math.cos(_a);
+        y += w * Math.sin(_a);
+    }
+
+    if (h < 0)
+    {
+        // a += 180;
+        // while (a > 360) a -= 360;
+
+        // _a = a/360*Tau;
+
+        y += h * Math.cos(_a);// - w * Math.sin(_a);
+        x -= h * Math.sin(_a);// - w * Math.cos(_a);
+    }
+  
+    
+    w = Math.abs(w);
+    h = Math.abs(h);
+
+
+    return [x, y, w, h, a, _a];
+}
+
+
 class GShape
 extends GShapeBase
 {
@@ -19538,16 +19567,12 @@ extends GShape
             let    y = this.value.y     .value;
             let    w = this.value.width .value;
             let    h = this.value.height.value;
-            const  a = this.value.angle .value;
-            const _a = a/360*Tau;
+            let    a = this.value.angle .value;
+            let   _a = a/360*Tau;
             const  r = Math.max(0, this.value.round.value);
 
 
-            if (w < 0) x += w;// * Math.sin(_a);
-            if (h < 0) y += h;// * Math.sin(_a);
-
-            w = Math.abs(w);
-            h = Math.abs(h);
+            [x, y, w, h, a, _a] = validateObjectRect(x, y, w, h, a, _a);
 
 
             if (   w != 0 
@@ -19707,13 +19732,15 @@ extends GShape
             && this.width 
             && this.angle)
         {
-            let x = this.value.x     .value;
-            let y = this.value.y     .value;
-            let w = this.value.width .value;
+            let  x = this.value.x     .value;
+            let  y = this.value.y     .value;
+            let  w = this.value.width .value;
+            let  a = this.value.angle .value;
+            let _a = a/360*Tau;
 
-            if (w < 0) x += w;
 
-            w = Math.abs(w);
+            [x, y, w, , a, _a] = validateObjectRect(x, y, w, 0, a, _a);
+
 
             if (w != 0)
             {
@@ -19721,15 +19748,9 @@ extends GShape
                     this.nodeId,
                     this.nodeId,
                     this.nodeName,
-                    x,
-                    y,
-                    w,
-                    this.value.angle.value);
+                    x, y, w, a);
 
-                line.createDefaultTransform(
-                    x,
-                    y,
-                    this.value.angle.value/360*Tau);
+                line.createDefaultTransform(x, y, _a);
 
                 this      .objects = [line];
                 this.value.objects = [line];
@@ -19890,16 +19911,19 @@ extends GShape
            && this.height 
            && this.angle)
        {
-            let x = this.value.x     .value;
-            let y = this.value.y     .value;
-            let w = this.value.width .value;
-            let h = this.value.height.value;
+            let    x = this.value.x     .value;
+            let    y = this.value.y     .value;
+            let    w = this.value.width .value;
+            let    h = this.value.height.value;
+            let    a = this.value.angle .value;
+            let   _a = a/360*Tau;
+            const  f = this.value.from .value;
+            const  t = this.value.to   .value;
+            const  i = this.value.inner.value;
 
-            if (w < 0) x += w;
-            if (h < 0) y += h;
 
-            w = Math.abs(w);
-            h = Math.abs(h);
+            [x, y, w, h, a, _a] = validateObjectRect(x, y, w, h, a, _a);
+
 
             if (   w != 0 
                 && h != 0)
@@ -19908,19 +19932,9 @@ extends GShape
                     this.nodeId,
                     this.nodeId,
                     this.nodeName,
-                    x,
-                    y,
-                    w,
-                    h,
-                    this.value.angle .value,
-                    this.value.from  .value,
-                    this.value.to    .value,
-                    this.value.inner .value);
+                    x, y, w, h, a, f, t, i);
 
-                ellipse.createDefaultTransform(
-                    x,
-                    y,
-                    this.value.angle.value/360*Tau);
+                ellipse.createDefaultTransform(x, y, _a);
 
                 this      .objects = [ellipse];
                 this.value.objects = [ellipse];
@@ -20080,23 +20094,28 @@ extends GShape
             && this.round
             && this.corners)
         {
+            let    x = this.value.x      .value;
+            let    y = this.value.y      .value;
+            let    w = this.value.width  .value;
+            let    h = this.value.height .value;
+            let    a = this.value.angle  .value;
+            let   _a = a/360*Tau;
+            const  r = Math.max(0, this.value.round.value);
+            const  c = this.value.corners.value;
+
+
+            [x, y, w, h, a, _a] = validateObjectRect(x, y, w, h, a, _a);
+
+
             const poly = new FigmaPolygon(
-                            this.nodeId,
-                            this.nodeId,
-                            this.nodeName,
-                            this.value.x      .value,
-                            this.value.y      .value,
-                            this.value.width  .value,
-                            this.value.height .value,
-                            this.value.angle  .value,
-                Math.max(0, this.value.round  .value),
-                            this.value.corners.value);
+                this.nodeId,
+                this.nodeId,
+                this.nodeName,
+                x, y, w, h, a, r, c);
 
-            poly.createDefaultTransform(
-                this.value.x    .value,
-                this.value.y    .value,
-                this.value.angle.value/360*Tau);
+            poly.createDefaultTransform(x, y, _a);
 
+            
             this.objects       = [poly];
             this.value.objects = [poly];
         }

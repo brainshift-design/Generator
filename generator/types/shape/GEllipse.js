@@ -106,16 +106,19 @@ extends GShape
            && this.height 
            && this.angle)
        {
-            let x = this.value.x     .value;
-            let y = this.value.y     .value;
-            let w = this.value.width .value;
-            let h = this.value.height.value;
+            let    x = this.value.x     .value;
+            let    y = this.value.y     .value;
+            let    w = this.value.width .value;
+            let    h = this.value.height.value;
+            let    a = this.value.angle .value;
+            let   _a = a/360*Tau;
+            const  f = this.value.from .value;
+            const  t = this.value.to   .value;
+            const  i = this.value.inner.value;
 
-            if (w < 0) x += w;
-            if (h < 0) y += h;
 
-            w = Math.abs(w);
-            h = Math.abs(h);
+            [x, y, w, h, a, _a] = validateObjectRect(x, y, w, h, a, _a);
+
 
             if (   w != 0 
                 && h != 0)
@@ -124,19 +127,9 @@ extends GShape
                     this.nodeId,
                     this.nodeId,
                     this.nodeName,
-                    x,
-                    y,
-                    w,
-                    h,
-                    this.value.angle .value,
-                    this.value.from  .value,
-                    this.value.to    .value,
-                    this.value.inner .value);
+                    x, y, w, h, a, f, t, i);
 
-                ellipse.createDefaultTransform(
-                    x,
-                    y,
-                    this.value.angle.value/360*Tau);
+                ellipse.createDefaultTransform(x, y, _a);
 
                 this      .objects = [ellipse];
                 this.value.objects = [ellipse];

@@ -105,3 +105,32 @@ extends GOperator
         if (this.angle ) this.angle .invalidateInputs();
     }
 }
+
+
+
+function validateObjectRect(x, y, w, h, a, _a)
+{
+    if (w < 0)
+    {
+        x += w * Math.cos(_a);
+        y += w * Math.sin(_a);
+    }
+
+    if (h < 0)
+    {
+        // a += 180;
+        // while (a > 360) a -= 360;
+
+        // _a = a/360*Tau;
+
+        y += h * Math.cos(_a);// - w * Math.sin(_a);
+        x -= h * Math.sin(_a);// - w * Math.cos(_a);
+    }
+  
+    
+    w = Math.abs(w);
+    h = Math.abs(h);
+
+
+    return [x, y, w, h, a, _a];
+}

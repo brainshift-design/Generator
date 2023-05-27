@@ -101,23 +101,28 @@ extends GShape
             && this.round
             && this.corners)
         {
+            let    x = this.value.x      .value;
+            let    y = this.value.y      .value;
+            let    w = this.value.width  .value;
+            let    h = this.value.height .value;
+            let    a = this.value.angle  .value;
+            let   _a = a/360*Tau;
+            const  r = Math.max(0, this.value.round.value);
+            const  c = this.value.corners.value;
+
+
+            [x, y, w, h, a, _a] = validateObjectRect(x, y, w, h, a, _a);
+
+
             const poly = new FigmaPolygon(
-                            this.nodeId,
-                            this.nodeId,
-                            this.nodeName,
-                            this.value.x      .value,
-                            this.value.y      .value,
-                            this.value.width  .value,
-                            this.value.height .value,
-                            this.value.angle  .value,
-                Math.max(0, this.value.round  .value),
-                            this.value.corners.value);
+                this.nodeId,
+                this.nodeId,
+                this.nodeName,
+                x, y, w, h, a, r, c);
 
-            poly.createDefaultTransform(
-                this.value.x    .value,
-                this.value.y    .value,
-                this.value.angle.value/360*Tau);
+            poly.createDefaultTransform(x, y, _a);
 
+            
             this.objects       = [poly];
             this.value.objects = [poly];
         }
