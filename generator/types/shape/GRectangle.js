@@ -102,24 +102,41 @@ extends GShape
             && this.value.angle
             && this.value.round)
         {
-            const rect = new FigmaRectangle(
-                            this.nodeId,
-                            this.nodeId,
-                            this.nodeName,
-                            this.value.x     .value,
-                            this.value.y     .value,
-                            this.value.width .value,
-                            this.value.height.value,
-                            this.value.angle .value,
-                Math.max(0, this.value.round .value));
+            let    x = this.value.x     .value;
+            let    y = this.value.y     .value;
+            let    w = this.value.width .value;
+            let    h = this.value.height.value;
+            const  a = this.value.angle .value;
+            const _a = a/360*Tau;
+            const  r = Math.max(0, this.value.round.value);
 
-            rect.createDefaultTransform(
-                this.value.x    .value,
-                this.value.y    .value,
-                this.value.angle.value/360*Tau);
 
-            this.objects       = [rect];
-            this.value.objects = [rect];
+            if (w < 0) x += w;// * Math.sin(_a);
+            if (h < 0) y += h;// * Math.sin(_a);
+
+            w = Math.abs(w);
+            h = Math.abs(h);
+
+
+            if (   w != 0 
+                && h != 0)
+            {
+                const rect = new FigmaRectangle(
+                    this.nodeId,
+                    this.nodeId,
+                    this.nodeName,
+                    x, y, w, h, a, r);
+
+                rect.createDefaultTransform(x, y, _a);
+
+                this      .objects = [rect];
+                this.value.objects = [rect];
+            }
+            else
+            {
+                this      .objects = [];
+                this.value.objects = [];
+            }
         }
 
 

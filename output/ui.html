@@ -23933,24 +23933,41 @@ extends GShape
             && this.value.angle
             && this.value.round)
         {
-            const rect = new FigmaRectangle(
-                            this.nodeId,
-                            this.nodeId,
-                            this.nodeName,
-                            this.value.x     .value,
-                            this.value.y     .value,
-                            this.value.width .value,
-                            this.value.height.value,
-                            this.value.angle .value,
-                Math.max(0, this.value.round .value));
+            let    x = this.value.x     .value;
+            let    y = this.value.y     .value;
+            let    w = this.value.width .value;
+            let    h = this.value.height.value;
+            const  a = this.value.angle .value;
+            const _a = a/360*Tau;
+            const  r = Math.max(0, this.value.round.value);
 
-            rect.createDefaultTransform(
-                this.value.x    .value,
-                this.value.y    .value,
-                this.value.angle.value/360*Tau);
 
-            this.objects       = [rect];
-            this.value.objects = [rect];
+            if (w < 0) x += w;// * Math.sin(_a);
+            if (h < 0) y += h;// * Math.sin(_a);
+
+            w = Math.abs(w);
+            h = Math.abs(h);
+
+
+            if (   w != 0 
+                && h != 0)
+            {
+                const rect = new FigmaRectangle(
+                    this.nodeId,
+                    this.nodeId,
+                    this.nodeName,
+                    x, y, w, h, a, r);
+
+                rect.createDefaultTransform(x, y, _a);
+
+                this      .objects = [rect];
+                this.value.objects = [rect];
+            }
+            else
+            {
+                this      .objects = [];
+                this.value.objects = [];
+            }
         }
 
 
@@ -24089,22 +24106,38 @@ extends GShape
             && this.width 
             && this.angle)
         {
-            const line = new FigmaLine(
-                this.nodeId,
-                this.nodeId,
-                this.nodeName,
-                this.value.x    .value,
-                this.value.y    .value,
-                this.value.width.value,
-                this.value.angle.value);
+            let x = this.value.x     .value;
+            let y = this.value.y     .value;
+            let w = this.value.width .value;
 
-            line.createDefaultTransform(
-                this.value.x    .value,
-                this.value.y    .value,
-                this.value.angle.value/360*Tau);
+            if (w < 0) x += w;
 
-            this.objects       = [line];
-            this.value.objects = [line];
+            w = Math.abs(w);
+
+            if (w != 0)
+            {
+                const line = new FigmaLine(
+                    this.nodeId,
+                    this.nodeId,
+                    this.nodeName,
+                    x,
+                    y,
+                    w,
+                    this.value.angle.value);
+
+                line.createDefaultTransform(
+                    x,
+                    y,
+                    this.value.angle.value/360*Tau);
+
+                this      .objects = [line];
+                this.value.objects = [line];
+            }
+            else
+            {
+                this      .objects = [];
+                this.value.objects = [];
+            }
         }
 
         
@@ -24256,26 +24289,46 @@ extends GShape
            && this.height 
            && this.angle)
        {
-            const ellipse = new FigmaEllipse(
-                this.nodeId,
-                this.nodeId,
-                this.nodeName,
-                this.value.x     .value,
-                this.value.y     .value,
-                this.value.width .value,
-                this.value.height.value,
-                this.value.angle .value,
-                this.value.from  .value,
-                this.value.to    .value,
-                this.value.inner .value);
+            let x = this.value.x     .value;
+            let y = this.value.y     .value;
+            let w = this.value.width .value;
+            let h = this.value.height.value;
 
-            ellipse.createDefaultTransform(
-                this.value.x    .value,
-                this.value.y    .value,
-                this.value.angle.value/360*Tau);
+            if (w < 0) x += w;
+            if (h < 0) y += h;
 
-            this.objects       = [ellipse];
-            this.value.objects = [ellipse];
+            w = Math.abs(w);
+            h = Math.abs(h);
+
+            if (   w != 0 
+                && h != 0)
+            {
+                const ellipse = new FigmaEllipse(
+                    this.nodeId,
+                    this.nodeId,
+                    this.nodeName,
+                    x,
+                    y,
+                    w,
+                    h,
+                    this.value.angle .value,
+                    this.value.from  .value,
+                    this.value.to    .value,
+                    this.value.inner .value);
+
+                ellipse.createDefaultTransform(
+                    x,
+                    y,
+                    this.value.angle.value/360*Tau);
+
+                this      .objects = [ellipse];
+                this.value.objects = [ellipse];
+            }
+            else
+            {
+                this      .objects = [];
+                this.value.objects = [];
+            }
        }
 
        
@@ -58091,24 +58144,41 @@ extends GShape
             && this.value.angle
             && this.value.round)
         {
-            const rect = new FigmaRectangle(
-                            this.nodeId,
-                            this.nodeId,
-                            this.nodeName,
-                            this.value.x     .value,
-                            this.value.y     .value,
-                            this.value.width .value,
-                            this.value.height.value,
-                            this.value.angle .value,
-                Math.max(0, this.value.round .value));
+            let    x = this.value.x     .value;
+            let    y = this.value.y     .value;
+            let    w = this.value.width .value;
+            let    h = this.value.height.value;
+            const  a = this.value.angle .value;
+            const _a = a/360*Tau;
+            const  r = Math.max(0, this.value.round.value);
 
-            rect.createDefaultTransform(
-                this.value.x    .value,
-                this.value.y    .value,
-                this.value.angle.value/360*Tau);
 
-            this.objects       = [rect];
-            this.value.objects = [rect];
+            if (w < 0) x += w;// * Math.sin(_a);
+            if (h < 0) y += h;// * Math.sin(_a);
+
+            w = Math.abs(w);
+            h = Math.abs(h);
+
+
+            if (   w != 0 
+                && h != 0)
+            {
+                const rect = new FigmaRectangle(
+                    this.nodeId,
+                    this.nodeId,
+                    this.nodeName,
+                    x, y, w, h, a, r);
+
+                rect.createDefaultTransform(x, y, _a);
+
+                this      .objects = [rect];
+                this.value.objects = [rect];
+            }
+            else
+            {
+                this      .objects = [];
+                this.value.objects = [];
+            }
         }
 
 
@@ -58247,22 +58317,38 @@ extends GShape
             && this.width 
             && this.angle)
         {
-            const line = new FigmaLine(
-                this.nodeId,
-                this.nodeId,
-                this.nodeName,
-                this.value.x    .value,
-                this.value.y    .value,
-                this.value.width.value,
-                this.value.angle.value);
+            let x = this.value.x     .value;
+            let y = this.value.y     .value;
+            let w = this.value.width .value;
 
-            line.createDefaultTransform(
-                this.value.x    .value,
-                this.value.y    .value,
-                this.value.angle.value/360*Tau);
+            if (w < 0) x += w;
 
-            this.objects       = [line];
-            this.value.objects = [line];
+            w = Math.abs(w);
+
+            if (w != 0)
+            {
+                const line = new FigmaLine(
+                    this.nodeId,
+                    this.nodeId,
+                    this.nodeName,
+                    x,
+                    y,
+                    w,
+                    this.value.angle.value);
+
+                line.createDefaultTransform(
+                    x,
+                    y,
+                    this.value.angle.value/360*Tau);
+
+                this      .objects = [line];
+                this.value.objects = [line];
+            }
+            else
+            {
+                this      .objects = [];
+                this.value.objects = [];
+            }
         }
 
         
@@ -58414,26 +58500,46 @@ extends GShape
            && this.height 
            && this.angle)
        {
-            const ellipse = new FigmaEllipse(
-                this.nodeId,
-                this.nodeId,
-                this.nodeName,
-                this.value.x     .value,
-                this.value.y     .value,
-                this.value.width .value,
-                this.value.height.value,
-                this.value.angle .value,
-                this.value.from  .value,
-                this.value.to    .value,
-                this.value.inner .value);
+            let x = this.value.x     .value;
+            let y = this.value.y     .value;
+            let w = this.value.width .value;
+            let h = this.value.height.value;
 
-            ellipse.createDefaultTransform(
-                this.value.x    .value,
-                this.value.y    .value,
-                this.value.angle.value/360*Tau);
+            if (w < 0) x += w;
+            if (h < 0) y += h;
 
-            this.objects       = [ellipse];
-            this.value.objects = [ellipse];
+            w = Math.abs(w);
+            h = Math.abs(h);
+
+            if (   w != 0 
+                && h != 0)
+            {
+                const ellipse = new FigmaEllipse(
+                    this.nodeId,
+                    this.nodeId,
+                    this.nodeName,
+                    x,
+                    y,
+                    w,
+                    h,
+                    this.value.angle .value,
+                    this.value.from  .value,
+                    this.value.to    .value,
+                    this.value.inner .value);
+
+                ellipse.createDefaultTransform(
+                    x,
+                    y,
+                    this.value.angle.value/360*Tau);
+
+                this      .objects = [ellipse];
+                this.value.objects = [ellipse];
+            }
+            else
+            {
+                this      .objects = [];
+                this.value.objects = [];
+            }
        }
 
        
@@ -89551,8 +89657,8 @@ extends OpShape
 
         this.addParam(this.paramX      = new NumberParam('x',      'x',      true, true, true,   0));
         this.addParam(this.paramY      = new NumberParam('y',      'y',      true, true, true,   0));
-        this.addParam(this.paramWidth  = new NumberParam('width',  'width',  true, true, true, 100,    0.01));
-        this.addParam(this.paramHeight = new NumberParam('height', 'height', true, true, true, 100,    0.01));
+        this.addParam(this.paramWidth  = new NumberParam('width',  'width',  true, true, true, 100));
+        this.addParam(this.paramHeight = new NumberParam('height', 'height', true, true, true, 100));
         this.addParam(this.paramAngle  = new NumberParam('angle',  'angle',  true, true, true,   0, -180,   180));
         this.addParam(this.paramRound  = new NumberParam('round',  'round',  true, true, true,   0,    0));
 
@@ -89604,8 +89710,8 @@ extends OpShape
 
         this.addParam(this.paramX      = new NumberParam('x',      'x',      true, true, true,   0));
         this.addParam(this.paramY      = new NumberParam('y',      'y',      true, true, true,   0));
-        this.addParam(this.paramWidth  = new NumberParam('width',  'width',  true, true, true, 100,    0.01));
-        this.addParam(this.paramAngle  = new NumberParam('angle',  'angle',  true, true, true,   0, -180,   180));
+        this.addParam(this.paramWidth  = new NumberParam('width',  'width',  true, true, true, 100));
+        this.addParam(this.paramAngle  = new NumberParam('angle',  'angle',  true, true, true,   0, -180, 180));
         
 
         this.paramAngle.controls[0].setSuffix('°', true);
@@ -89646,9 +89752,9 @@ extends OpShape
 
         this.addParam(this.paramX      = new NumberParam('x',      'x',      true, true, true,   0));
         this.addParam(this.paramY      = new NumberParam('y',      'y',      true, true, true,   0));
-        this.addParam(this.paramWidth  = new NumberParam('width',  'width',  true, true, true, 100,    0.01));
-        this.addParam(this.paramHeight = new NumberParam('height', 'height', true, true, true, 100,    0.01));
-        this.addParam(this.paramAngle  = new NumberParam('angle',  'angle',  true, true, true,   0, -180,   180));
+        this.addParam(this.paramWidth  = new NumberParam('width',  'width',  true, true, true, 100));
+        this.addParam(this.paramHeight = new NumberParam('height', 'height', true, true, true, 100));
+        this.addParam(this.paramAngle  = new NumberParam('angle',  'angle',  true, true, true,   0, -180, 180));
         this.addParam(this.paramInner  = new NumberParam('inner',  'inner',  true, true, true,   0, 0, 100));
         this.addParam(this.paramFrom   = new NumberParam('from',   'from',   true, true, true,   0));
         this.addParam(this.paramTo     = new NumberParam('to',     'to',     true, true, true, 360));
@@ -90131,12 +90237,12 @@ extends OpShape
         this.addOutput(new Output([FRAME_VALUE], this.output_genRequest));
 
 
-        this.addParam(this.paramX        = new NumberParam('x',        'x',       true, true, true,   0));
-        this.addParam(this.paramY        = new NumberParam('y',        'y',       true, true, true,   0));
-        this.addParam(this.paramWidth    = new NumberParam('width',    'width',   true, true, true, 100,    0.01));
-        this.addParam(this.paramHeight   = new NumberParam('height',   'height',  true, true, true, 100,    0.01));
-        this.addParam(this.paramAngle    = new NumberParam('angle',    'angle',   true, true, true,   0, -180,   180));
-        this.addParam(this.paramRound    = new NumberParam('round',    'round',   true, true, true,   0,    0));
+        this.addParam(this.paramX        = new NumberParam('x',        'x',       true, true, true, 0));
+        this.addParam(this.paramY        = new NumberParam('y',        'y',       true, true, true, 0));
+        this.addParam(this.paramWidth    = new NumberParam('width',    'width',   true, true, true, 100, 0.01));
+        this.addParam(this.paramHeight   = new NumberParam('height',   'height',  true, true, true, 100, 0.01));
+        this.addParam(this.paramAngle    = new NumberParam('angle',    'angle',   true, true, true, 0, -180, 180));
+        this.addParam(this.paramRound    = new NumberParam('round',    'round',   true, true, true, 0, 0));
         this.addParam(this.paramChildren = new ListParam  ('children', 'objects', true, true, true));
 
 

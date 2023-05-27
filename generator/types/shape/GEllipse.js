@@ -106,26 +106,46 @@ extends GShape
            && this.height 
            && this.angle)
        {
-            const ellipse = new FigmaEllipse(
-                this.nodeId,
-                this.nodeId,
-                this.nodeName,
-                this.value.x     .value,
-                this.value.y     .value,
-                this.value.width .value,
-                this.value.height.value,
-                this.value.angle .value,
-                this.value.from  .value,
-                this.value.to    .value,
-                this.value.inner .value);
+            let x = this.value.x     .value;
+            let y = this.value.y     .value;
+            let w = this.value.width .value;
+            let h = this.value.height.value;
 
-            ellipse.createDefaultTransform(
-                this.value.x    .value,
-                this.value.y    .value,
-                this.value.angle.value/360*Tau);
+            if (w < 0) x += w;
+            if (h < 0) y += h;
 
-            this.objects       = [ellipse];
-            this.value.objects = [ellipse];
+            w = Math.abs(w);
+            h = Math.abs(h);
+
+            if (   w != 0 
+                && h != 0)
+            {
+                const ellipse = new FigmaEllipse(
+                    this.nodeId,
+                    this.nodeId,
+                    this.nodeName,
+                    x,
+                    y,
+                    w,
+                    h,
+                    this.value.angle .value,
+                    this.value.from  .value,
+                    this.value.to    .value,
+                    this.value.inner .value);
+
+                ellipse.createDefaultTransform(
+                    x,
+                    y,
+                    this.value.angle.value/360*Tau);
+
+                this      .objects = [ellipse];
+                this.value.objects = [ellipse];
+            }
+            else
+            {
+                this      .objects = [];
+                this.value.objects = [];
+            }
        }
 
        
