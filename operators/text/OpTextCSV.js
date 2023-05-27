@@ -10,6 +10,8 @@ extends OperatorBase
     {
         super(TEXT_CSV, 'csv', 'csv', iconTextCSV);
 
+        this.iconOffsetY = 1;
+
 
         this.addInput(new Input([TEXT_VALUE]));
 
@@ -19,7 +21,7 @@ extends OperatorBase
 
         this.paramValue.itemName = 'value';
 
-        this.paramSeparator.controls[0].textbox.style.textAlign = 'center';
+        setControlFont(this.paramSeparator.controls[0].textbox, 'Roboto Mono', 10, 'center');
     }
 
 

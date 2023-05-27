@@ -15,7 +15,8 @@ extends OpShape
     {
         super(POLYGON, 'poly', 'polygon', iconPolygon);
 
-        this.canDisable = true;
+        this.canDisable  = true;
+        this.iconOffsetY = -2;
 
         
         this.addInput (this.createInputForObjects([POLYGON_VALUE], getNodeInputValuesForUndo));

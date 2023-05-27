@@ -11,6 +11,7 @@ extends OperatorWithValue
         super(TEXT_REPLACE, 'replace', 'replace', iconTextReplace);
 
         this.canDisable       = true;
+        this.iconOffsetY      = -2;
         
         this.alwaysLoadParams = true;
         this.alwaysSaveParams = true;
@@ -24,9 +25,9 @@ extends OperatorWithValue
         this.addParam(this.paramWith = new TextParam('with', 'with', true,  true));
 
 
-        this.paramValue.controls[0].textbox.style.textAlign = 'center';
-        this.paramWhat .controls[0].textbox.style.textAlign = 'center';
-        this.paramWith .controls[0].textbox.style.textAlign = 'center';
+        setControlFont(this.paramValue.controls[0].textbox, 'Roboto Mono', 10, 'center');
+        setControlFont(this.paramWhat .controls[0].textbox, 'Roboto Mono', 10, 'center');
+        setControlFont(this.paramWith .controls[0].textbox, 'Roboto Mono', 10, 'center');
     }
 
 

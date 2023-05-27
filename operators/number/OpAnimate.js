@@ -23,6 +23,7 @@ extends OperatorWithValue
         super(NUMBER_ANIMATE, 'anim', 'animate', '');
 
         //this.cached = false;
+        this.iconOffsetY = -1;
         
 
         this.addOutput(new Output([NUMBER_VALUE], this.output_genRequest));

@@ -396,3 +396,12 @@ function isValidFloatString(str)
 {
     return /^-?\d*\.?\d*(e-?\d+)?$/.test(str);
 }
+
+
+
+function setControlFont(control, family, size, align = 'left')
+{
+    control.style.fontFamily = family;
+    control.style.fontSize   = size + 'px';
+    control.style.textAlign  = align;
+}

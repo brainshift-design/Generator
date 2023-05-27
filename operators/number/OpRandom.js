@@ -11,7 +11,9 @@ extends OperatorBase
     {
         super(NUMBER_RANDOM, 'random', 'random', iconRandom);
 
-        this.cached = false;
+        this.cached      = false;
+        this.iconOffsetY = 1;
+
         
         this.addOutput(new Output([NUMBER_VALUE], this.output_genRequest));
 

@@ -11,6 +11,8 @@ extends OpColorBase
     {
         super(COLOR_INTERPOLATE, 'inter', 'interpolate', iconColorInterpolate);
 
+        this.iconOffsetY = -3;
+
         
         this.addInput(new Input(COLOR_TYPES));
         this.addInput(new Input(COLOR_TYPES));

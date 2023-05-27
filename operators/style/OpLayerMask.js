@@ -5,7 +5,8 @@ extends OperatorBase
     {
         super(LAYER_MASK, 'mask', 'mask', iconMask);
 
-        this.canDisable = true;
+        this.canDisable  = true;
+        this.iconOffsetY = -1;
         
 
         this.addOutput(new Output([LAYER_MASK_VALUE], this.output_genRequest, getNodeOutputValuesForUndo, this.output_backInit));

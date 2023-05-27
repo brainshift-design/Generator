@@ -2600,6 +2600,15 @@ function isValidFloatString(str)
 }
 
 
+
+function setControlFont(control, family, size, align = 'left')
+{
+    control.style.fontFamily = family;
+    control.style.fontSize   = size + 'px';
+    control.style.textAlign  = align;
+}
+
+
 "use strict";
 
 // Base64 / binary data / UTF-8 strings utilities

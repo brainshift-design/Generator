@@ -9,6 +9,8 @@ extends OperatorWithValue
     {
         super(TEXT_CHAR, 'charFromCode', 'char from code', iconTextCharacter);
 
+        this.iconOffsetY = 2;
+
 
         this.addOutput(new Output([TEXT_VALUE], this.output_genRequest));
 
@@ -18,6 +20,8 @@ extends OperatorWithValue
 
         this.paramCode.controls[0].showHex           = true;
         this.paramCode.controls[0].allowEditDecimals = false;
+
+        setControlFont(this.paramCode.controls[0].textbox, 'Roboto Mono', 10, 'center');
     }
 
 

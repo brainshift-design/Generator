@@ -16,7 +16,8 @@ extends OpShape
     {
         super(STAR, 'star', 'star', iconStar);
 
-        this.canDisable = true;
+        this.canDisable  = true;
+        this.iconOffsetY = -3;
 
         
         this.addInput (this.createInputForObjects([STAR_VALUE], getNodeInputValuesForUndo));

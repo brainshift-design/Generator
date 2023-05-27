@@ -11,8 +11,9 @@ extends OpColorBase
     {
         super(VALID_COLOR, 'valid', 'valid', iconValidColor, true);
 
-        this.canDisable = true;
-        this.slow       = true;
+        this.canDisable  = true;
+        this.slow        = true;
+        this.iconOffsetY = -1;
 
         
         this.addInput(new Input(COLOR_TYPES));

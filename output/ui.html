@@ -6993,6 +6993,15 @@ function isValidFloatString(str)
 }
 
 
+
+function setControlFont(control, family, size, align = 'left')
+{
+    control.style.fontFamily = family;
+    control.style.fontSize   = size + 'px';
+    control.style.textAlign  = align;
+}
+
+
 "use strict";
 
 // Base64 / binary data / UTF-8 strings utilities
@@ -38553,6 +38562,15 @@ function trimCharFromEnd(str, trim)
 function isValidFloatString(str) 
 {
     return /^-?\d*\.?\d*(e-?\d+)?$/.test(str);
+}
+
+
+
+function setControlFont(control, family, size, align = 'left')
+{
+    control.style.fontFamily = family;
+    control.style.fontSize   = size + 'px';
+    control.style.textAlign  = align;
 }
 
 
@@ -80387,6 +80405,8 @@ extends OperatorBase
     {
         super(LIST_COUNT, 'count', 'count', iconCount);
 
+        this.iconOffsetY = 1;
+
 
         this.addInput (new Input([LIST_VALUE]));
 
@@ -81172,7 +81192,8 @@ extends OperatorBase
     {
         super(COPY, 'copy', 'copy', iconCopy);
 
-        this.canDisable = true;
+        this.canDisable  = true;
+        this.iconOffsetY = 1;
 
 
         this.addInput (new Input(ALL_VALUES));
@@ -81429,7 +81450,8 @@ extends OperatorWithValue
     {
         super(NUMBER_SIGN, 'sign', 'sign', iconSign);
 
-        this.canDisable = true;
+        this.canDisable  = true;
+        this.iconOffsetY = 1;
         
 
         this.addInput (new Input (NUMBER_TYPES));
@@ -81934,6 +81956,9 @@ extends OperatorWithValue
     {
         super(NUMBER_CONSTANT, 'constant', 'constant', iconConstant);
 
+        this.iconOffsetY = -3;
+
+
         this.addOutput(new Output([NUMBER_VALUE], this.output_genRequest));
 
         this.addParam(this.paramValue);
@@ -82084,7 +82109,9 @@ extends OperatorBase
     {
         super(NUMBER_RANDOM, 'random', 'random', iconRandom);
 
-        this.cached = false;
+        this.cached      = false;
+        this.iconOffsetY = 1;
+
         
         this.addOutput(new Output([NUMBER_VALUE], this.output_genRequest));
 
@@ -82378,6 +82405,7 @@ extends OperatorWithValue
         super(NUMBER_ANIMATE, 'anim', 'animate', '');
 
         //this.cached = false;
+        this.iconOffsetY = -1;
         
 
         this.addOutput(new Output([NUMBER_VALUE], this.output_genRequest));
@@ -83632,11 +83660,9 @@ extends ResizableBase
 
         this.addParam(this.paramValue = new TextParam('value', '', false, false));
 
-        this.paramValue.controls[0].textbox.defPlaceholder   = '...';//' . . .';
-        this.paramValue.controls[0].textbox.style.textAlign  = 'center';
-
-        this.paramValue.controls[0].textbox.style.fontFamily = 'Roboto Mono';
-        this.paramValue.controls[0].textbox.style.fontSize   = '10px';
+        this.paramValue.controls[0].textbox.defPlaceholder = '...';//' . . .';
+        
+        setControlFont(this.paramValue.controls[0].textbox, 'Roboto Mono', 10, 'center');
 
 
         this.header.addEventListener('pointerdown', e => this.paramValue.controls[0].textbox.blur());
@@ -83816,10 +83842,9 @@ extends OperatorWithValue
         this.addParam(this.paramEnd   = new TextParam('end',   'end',   true, true, ' '));
 
 
-        this.paramValue.controls[0].textbox.style.textAlign = 'center';
-
-        this.paramStart.controls[0].textbox.style.textAlign = 'center';
-        this.paramEnd  .controls[0].textbox.style.textAlign = 'center';
+        setControlFont(this.paramValue.controls[0].textbox, 'Roboto Mono', 10, 'center');
+        setControlFont(this.paramStart.controls[0].textbox, 'Roboto Mono', 10, 'center');
+        setControlFont(this.paramEnd  .controls[0].textbox, 'Roboto Mono', 10, 'center');
     }
 
 
@@ -83881,7 +83906,8 @@ extends OperatorWithValue
     {
         super(TEXT_SUBSTRING, 'substring', 'substring', iconTextSubstring);
 
-        this.canDisable = true;
+        this.canDisable  = true;
+        this.iconOffsetY = 1;
         
 
         this.addInput (new Input (TEXT_TYPES));
@@ -83892,8 +83918,9 @@ extends OperatorWithValue
         this.addParam(this.paramEnd   = new NumberParam('end',   'end',   true, true, true, 0, 0));
 
 
-        this.paramValue.controls[0].textbox.style.textAlign = 'center';
         this.paramValue.controls[0].textbox.defPlaceholder  = '';
+
+        setControlFont(this.paramValue.controls[0].textbox, 'Roboto Mono', 10, 'center');
 
         this.paramStart.controls[0].allowEditDecimals = false;
         this.paramEnd  .controls[0].allowEditDecimals = false;
@@ -83978,6 +84005,8 @@ extends OperatorWithValue
     {
         super(TEXT_CHAR, 'charFromCode', 'char from code', iconTextCharacter);
 
+        this.iconOffsetY = 2;
+
 
         this.addOutput(new Output([TEXT_VALUE], this.output_genRequest));
 
@@ -83987,6 +84016,8 @@ extends OperatorWithValue
 
         this.paramCode.controls[0].showHex           = true;
         this.paramCode.controls[0].allowEditDecimals = false;
+
+        setControlFont(this.paramCode.controls[0].textbox, 'Roboto Mono', 10, 'center');
     }
 
 
@@ -84047,6 +84078,7 @@ extends OperatorWithValue
         super(TEXT_REPLACE, 'replace', 'replace', iconTextReplace);
 
         this.canDisable       = true;
+        this.iconOffsetY      = -2;
         
         this.alwaysLoadParams = true;
         this.alwaysSaveParams = true;
@@ -84060,9 +84092,9 @@ extends OperatorWithValue
         this.addParam(this.paramWith = new TextParam('with', 'with', true,  true));
 
 
-        this.paramValue.controls[0].textbox.style.textAlign = 'center';
-        this.paramWhat .controls[0].textbox.style.textAlign = 'center';
-        this.paramWith .controls[0].textbox.style.textAlign = 'center';
+        setControlFont(this.paramValue.controls[0].textbox, 'Roboto Mono', 10, 'center');
+        setControlFont(this.paramWhat .controls[0].textbox, 'Roboto Mono', 10, 'center');
+        setControlFont(this.paramWith .controls[0].textbox, 'Roboto Mono', 10, 'center');
     }
 
 
@@ -84133,14 +84165,8 @@ extends ResizableOperatorWithValue
         this.addParam(this.paramWith = new TextParam('with', 'with', true,  true));
 
 
-        this.paramValue.controls[0].textbox.style.textAlign = 'center';
-        this.paramWith .controls[0].textbox.style.textAlign = 'center';
-
-        this.paramValue.controls[0].textbox.style.fontFamily = 'Roboto Mono';
-        this.paramValue.controls[0].textbox.style.fontSize   = '10px';
-
-        this.paramWith.controls[0].textbox.style.fontFamily = 'Roboto Mono';
-        this.paramWith.controls[0].textbox.style.fontSize   = '10px';
+        setControlFont(this.paramValue.controls[0].textbox, 'Roboto Mono', 10, 'center');
+        setControlFont(this.paramWith .controls[0].textbox, 'Roboto Mono', 10, 'center');
     }
     
     
@@ -84266,6 +84292,8 @@ extends OperatorBase
     {
         super(TEXT_CSV, 'csv', 'csv', iconTextCSV);
 
+        this.iconOffsetY = 1;
+
 
         this.addInput(new Input([TEXT_VALUE]));
 
@@ -84275,7 +84303,7 @@ extends OperatorBase
 
         this.paramValue.itemName = 'value';
 
-        this.paramSeparator.controls[0].textbox.style.textAlign = 'center';
+        setControlFont(this.paramSeparator.controls[0].textbox, 'Roboto Mono', 10, 'center');
     }
 
 
@@ -84410,14 +84438,8 @@ extends ResizableOperatorWithValue
         this.addParam(this.paramRequest = new TextParam('request', 'request', true,  true));
 
 
-        this.paramValue  .controls[0].textbox.style.textAlign  = 'center';
-        this.paramRequest.controls[0].textbox.style.textAlign  = 'center';
-
-        this.paramValue  .controls[0].textbox.style.fontFamily = 'Roboto Mono';
-        this.paramValue  .controls[0].textbox.style.fontSize   = '10px';
-
-        this.paramRequest.controls[0].textbox.style.fontFamily = 'Roboto Mono';
-        this.paramRequest.controls[0].textbox.style.fontSize   = '10px';
+        setControlFont(this.paramValue  .controls[0].textbox, 'Roboto Mono', 10, 'center');
+        setControlFont(this.paramRequest.controls[0].textbox, 'Roboto Mono', 10, 'center');
     }
 
 
@@ -86403,8 +86425,9 @@ extends OpColorBase
     {
         super(VALID_COLOR, 'valid', 'valid', iconValidColor, true);
 
-        this.canDisable = true;
-        this.slow       = true;
+        this.canDisable  = true;
+        this.slow        = true;
+        this.iconOffsetY = -1;
 
         
         this.addInput(new Input(COLOR_TYPES));
@@ -86582,6 +86605,7 @@ extends OpColorBase
         this.slow         = true;
         this.canDisable   = true;
         this.subscription = true;
+        this.iconOffsetY  = -1;
 
         
         this.addInput(new Input(COLOR_TYPES));
@@ -87463,6 +87487,8 @@ extends OpColorBase
     {
         super(COLOR_INTERPOLATE, 'inter', 'interpolate', iconColorInterpolate);
 
+        this.iconOffsetY = -3;
+
         
         this.addInput(new Input(COLOR_TYPES));
         this.addInput(new Input(COLOR_TYPES));
@@ -87563,6 +87589,8 @@ extends OpColorBase
     constructor()
     {
         super(COLOR_BLEND, 'blend', 'blend', iconColorBlend);
+
+        this.iconOffsetY = -1;
 
         
         this.addInput(new Input(COLOR_TYPES));
@@ -88639,7 +88667,8 @@ extends OpColorBase
     {
         super(STROKE, 'stroke', 'stroke', iconStroke);
 
-        this.canDisable = true;
+        this.canDisable  = true;
+        this.iconOffsetY = 1;
         
 
         this.colorBack      = createDiv('colorBack');
@@ -89256,7 +89285,8 @@ extends OperatorBase
     {
         super(BACK_BLUR, 'backBlur', 'back blur', iconBackBlur);
 
-        this.canDisable = true;
+        this.canDisable  = true;
+        this.iconOffsetY = 1;
         
 
         this.addInput (new Input([BACK_BLUR_VALUE], getNodeInputValuesForUndo, this.input_getBackInitValue));
@@ -89353,7 +89383,8 @@ extends OperatorBase
     {
         super(LAYER_MASK, 'mask', 'mask', iconMask);
 
-        this.canDisable = true;
+        this.canDisable  = true;
+        this.iconOffsetY = -1;
         
 
         this.addOutput(new Output([LAYER_MASK_VALUE], this.output_genRequest, getNodeOutputValuesForUndo, this.output_backInit));
@@ -89605,7 +89636,8 @@ extends OpShape
     {
         super(ELLIPSE, 'ellipse', 'ellipse', iconEllipse);
 
-        this.canDisable = true;
+        this.canDisable  = true;
+        this.iconOffsetY = -1;
         
 
         this.addInput (this.createInputForObjects([ELLIPSE_VALUE], getNodeInputValuesForUndo));
@@ -89659,7 +89691,8 @@ extends OpShape
     {
         super(POLYGON, 'poly', 'polygon', iconPolygon);
 
-        this.canDisable = true;
+        this.canDisable  = true;
+        this.iconOffsetY = -2;
 
         
         this.addInput (this.createInputForObjects([POLYGON_VALUE], getNodeInputValuesForUndo));
@@ -89715,7 +89748,8 @@ extends OpShape
     {
         super(STAR, 'star', 'star', iconStar);
 
-        this.canDisable = true;
+        this.canDisable  = true;
+        this.iconOffsetY = -3;
 
         
         this.addInput (this.createInputForObjects([STAR_VALUE], getNodeInputValuesForUndo));
@@ -89849,6 +89883,9 @@ extends OpShapeBase
     {
         super(POINT, 'point', 'point', iconPoint);
 
+        this.iconOffsetY = -1;
+
+
         this.addInput (new Input ([POINT_VALUE], getNodeInputValuesForUndo, this.input_getBackInitValue));
         this.addOutput(new Output([POINT_VALUE], this.output_genRequest, getNodeOutputValuesForUndo, this.output_backInit));
 
@@ -89974,7 +90011,8 @@ extends OpShape
     {
         super(VECTOR_PATH, 'path', 'path', iconVectorPath);
 
-        this.canDisable = true;
+        this.canDisable  = true;
+        this.iconOffsetY = -1;
 
 
         this.addInput(this.createInputForObjects([VECTOR_PATH_VALUE], getNodeInputValuesForUndo));
@@ -90086,6 +90124,7 @@ extends OpShape
 
         this.canDisable     = true;
         this.variableInputs = true;
+        this.iconOffsetY    = -1;
 
 
         this.addInput(this.createInputForObjects([FRAME_VALUE], getNodeInputValuesForUndo));
@@ -90731,6 +90770,7 @@ extends OpShapeBase
 
         this.variableInputs = true;
         this.canDisable     = true;
+        this.iconOffsetY    = -1;
 
 
         this.addNewInput();

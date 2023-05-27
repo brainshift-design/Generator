@@ -16,7 +16,8 @@ extends OpShape
     {
         super(ELLIPSE, 'ellipse', 'ellipse', iconEllipse);
 
-        this.canDisable = true;
+        this.canDisable  = true;
+        this.iconOffsetY = -1;
         
 
         this.addInput (this.createInputForObjects([ELLIPSE_VALUE], getNodeInputValuesForUndo));

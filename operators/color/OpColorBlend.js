@@ -10,6 +10,8 @@ extends OpColorBase
     {
         super(COLOR_BLEND, 'blend', 'blend', iconColorBlend);
 
+        this.iconOffsetY = -1;
+
         
         this.addInput(new Input(COLOR_TYPES));
         this.addInput(new Input(COLOR_TYPES));

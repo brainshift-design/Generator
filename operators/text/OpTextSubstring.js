@@ -10,7 +10,8 @@ extends OperatorWithValue
     {
         super(TEXT_SUBSTRING, 'substring', 'substring', iconTextSubstring);
 
-        this.canDisable = true;
+        this.canDisable  = true;
+        this.iconOffsetY = 1;
         
 
         this.addInput (new Input (TEXT_TYPES));
@@ -21,8 +22,9 @@ extends OperatorWithValue
         this.addParam(this.paramEnd   = new NumberParam('end',   'end',   true, true, true, 0, 0));
 
 
-        this.paramValue.controls[0].textbox.style.textAlign = 'center';
         this.paramValue.controls[0].textbox.defPlaceholder  = '';
+
+        setControlFont(this.paramValue.controls[0].textbox, 'Roboto Mono', 10, 'center');
 
         this.paramStart.controls[0].allowEditDecimals = false;
         this.paramEnd  .controls[0].allowEditDecimals = false;

@@ -19,14 +19,8 @@ extends ResizableOperatorWithValue
         this.addParam(this.paramWith = new TextParam('with', 'with', true,  true));
 
 
-        this.paramValue.controls[0].textbox.style.textAlign = 'center';
-        this.paramWith .controls[0].textbox.style.textAlign = 'center';
-
-        this.paramValue.controls[0].textbox.style.fontFamily = 'Roboto Mono';
-        this.paramValue.controls[0].textbox.style.fontSize   = '10px';
-
-        this.paramWith.controls[0].textbox.style.fontFamily = 'Roboto Mono';
-        this.paramWith.controls[0].textbox.style.fontSize   = '10px';
+        setControlFont(this.paramValue.controls[0].textbox, 'Roboto Mono', 10, 'center');
+        setControlFont(this.paramWith .controls[0].textbox, 'Roboto Mono', 10, 'center');
     }
     
     

@@ -5,7 +5,8 @@ extends OperatorBase
     {
         super(COPY, 'copy', 'copy', iconCopy);
 
-        this.canDisable = true;
+        this.canDisable  = true;
+        this.iconOffsetY = 1;
 
 
         this.addInput (new Input(ALL_VALUES));

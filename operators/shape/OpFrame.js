@@ -17,6 +17,7 @@ extends OpShape
 
         this.canDisable     = true;
         this.variableInputs = true;
+        this.iconOffsetY    = -1;
 
 
         this.addInput(this.createInputForObjects([FRAME_VALUE], getNodeInputValuesForUndo));

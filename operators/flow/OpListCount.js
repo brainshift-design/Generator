@@ -9,6 +9,8 @@ extends OperatorBase
     {
         super(LIST_COUNT, 'count', 'count', iconCount);
 
+        this.iconOffsetY = 1;
+
 
         this.addInput (new Input([LIST_VALUE]));
 

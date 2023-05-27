@@ -18,6 +18,7 @@ extends OpColorBase
         this.slow         = true;
         this.canDisable   = true;
         this.subscription = true;
+        this.iconOffsetY  = -1;
 
         
         this.addInput(new Input(COLOR_TYPES));

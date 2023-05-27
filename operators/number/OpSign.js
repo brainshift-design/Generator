@@ -5,7 +5,8 @@ extends OperatorWithValue
     {
         super(NUMBER_SIGN, 'sign', 'sign', iconSign);
 
-        this.canDisable = true;
+        this.canDisable  = true;
+        this.iconOffsetY = 1;
         
 
         this.addInput (new Input (NUMBER_TYPES));

@@ -12,6 +12,9 @@ extends OpShapeBase
     {
         super(POINT, 'point', 'point', iconPoint);
 
+        this.iconOffsetY = -1;
+
+
         this.addInput (new Input ([POINT_VALUE], getNodeInputValuesForUndo, this.input_getBackInitValue));
         this.addOutput(new Output([POINT_VALUE], this.output_genRequest, getNodeOutputValuesForUndo, this.output_backInit));
 

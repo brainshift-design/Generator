@@ -13,7 +13,8 @@ extends OpShape
     {
         super(VECTOR_PATH, 'path', 'path', iconVectorPath);
 
-        this.canDisable = true;
+        this.canDisable  = true;
+        this.iconOffsetY = -1;
 
 
         this.addInput(this.createInputForObjects([VECTOR_PATH_VALUE], getNodeInputValuesForUndo));

@@ -16,7 +16,8 @@ extends OpColorBase
     {
         super(STROKE, 'stroke', 'stroke', iconStroke);
 
-        this.canDisable = true;
+        this.canDisable  = true;
+        this.iconOffsetY = 1;
         
 
         this.colorBack      = createDiv('colorBack');

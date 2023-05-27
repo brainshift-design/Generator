@@ -9,6 +9,9 @@ extends OperatorWithValue
     {
         super(NUMBER_CONSTANT, 'constant', 'constant', iconConstant);
 
+        this.iconOffsetY = -3;
+
+
         this.addOutput(new Output([NUMBER_VALUE], this.output_genRequest));
 
         this.addParam(this.paramValue);
