@@ -264,7 +264,7 @@ class Menu
             top    = getTopHeight() + Math.max(8, graphHeight - height);
             
             if (!subMenu)
-                left  += 10; // so it doesn't hit a menu item by accident once the menu appears
+                left += 10; // so it doesn't hit a menu item by accident once the menu appears
         }
 
 

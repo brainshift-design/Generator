@@ -9,21 +9,21 @@ TextControl.prototype.initEvents = function()
         }
 
 
-        if (   !graphView.spaceDown
-            &&  this.pointerEvents)
-        {
-            // if (graphView.tempConn)
-            //     this.div.style.cursor = 'default';
-
-                
-            // this.textbox.style.visibility = 'visible';
-            // this.textbox.style.opacity    = '100%';
-    
-            this.update();
-        }
-                else if (!currentTooltip)
+        //if (   !graphView.spaceDown
+        //    &&  this.pointerEvents)
+        //{
+        //    // if (graphView.tempConn)
+        //    //     this.div.style.cursor = 'default';
+//
+        //        
+        //    // this.textbox.style.visibility = 'visible';
+        //    // this.textbox.style.opacity    = '100%';
+    //
+        //    this.update();
+        //}
+        //else 
+        if (!currentTooltip)
             initTextTooltip(this.value);
-
     });
 
 

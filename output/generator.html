@@ -10307,11 +10307,14 @@ extends GOperator
         {
             const input = (await this.input.eval(parse)).toValue();
 
-            length = input.items.length;
 
-
-            if (length > 0)
+            if (   !!input
+                && !!input.items
+                &&   input.items.length > 0)
             {
+                length = input.items.length;
+
+
                 index.value = Math.min(Math.max(0, index.value), input.items.length-1);
 
                 index = 

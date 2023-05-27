@@ -163,12 +163,14 @@ function showTooltip(source, tooltip)
     const ttRect = tooltip.getBoundingClientRect();
 
     
-    if (ttRect.bottom > graphView.div.offsetHeight + getTopHeight() - 8)
+    if (ttRect.bottom > getTopHeight() + graphView.div.offsetHeight - 8)
     {
-        tooltipArrow.style.borderColor = '#1e1e1e transparent transparent transparent';
-        tooltipArrow.style.top         = srcRect.y;
+        let y = srcRect.y;
 
-        tooltip.style.top = srcRect.y - ttRect.height + 1;
+        tooltipArrow.style.borderColor = '#1e1e1e transparent transparent transparent';
+        tooltipArrow.style.top         = y;
+
+        tooltip.style.top = y - ttRect.height + 1;
     }
     else
     {
