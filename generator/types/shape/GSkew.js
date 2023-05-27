@@ -84,7 +84,7 @@ extends GOperator
 
         this.updateValues =
         [
-            [returnValueId,      this.value],
+            ['value',      this.value],
             ['skewX',      skewX     ],
             ['skewY',      skewY     ],
             ['centerX',    centerX   ],

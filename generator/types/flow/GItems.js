@@ -3,11 +3,6 @@ extends GOperator
 {
     input = null;
 
-    //item0
-    //item1
-    //item2
-    //...
-
 
 
     constructor(nodeId, options)
@@ -47,14 +42,13 @@ extends GOperator
 
         if (this.input)
         {
-            //if (!this.input.value)
-                await this.input.eval(parse);
+            await this.input.eval(parse);
 
             this.value   = this.input.toValue();
             this.objects = this.input.objects.map(o => o.copy());
 
-            // console.log('this.input =', this.input);
-            // console.log('this.value =', this.value);
+            console.log('this.input =', this.input);
+            //console.log('this.value =', this.value.toString());
         }
         else
         {
@@ -86,7 +80,7 @@ extends GOperator
             this.updateValues.push(['', NullValue]);
 
 
-        this.updateValues.push([returnValueId, this.value]); // first so it can be separated out in OpItems
+        this.updateValues.push(['value', this.value]); // first so it can be separated out in OpItems
 
 
         for (let j = 0; j < this.objects.length; j++)
@@ -111,7 +105,7 @@ extends GOperator
 
     paramFromId(paramId)
     {
-        return paramId != returnValueId
+        return paramId != 'value'
               ? this[paramId]
               : null;
         // if (   paramId.length > 4

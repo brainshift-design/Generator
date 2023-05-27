@@ -110,7 +110,7 @@ extends GNumberType
 
         this.updateValues =
         [
-            [returnValueId,  this.value],
+            ['value',  this.value],
             ['from',   from      ],
             ['to',     to        ],
             ['curve',  curve     ],

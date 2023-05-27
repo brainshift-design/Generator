@@ -71,7 +71,7 @@ extends GTextType
 
         this.updateValues =
         [
-            [returnValueId,  this.value             ],
+            ['value',  this.value             ],
             ['length', new NumberValue(length)], // used to set start and end maxima
             ['start',  start                  ],
             ['end',    end                    ]

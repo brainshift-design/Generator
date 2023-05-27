@@ -43,7 +43,7 @@ extends GNode
 
     paramFromId(paramId)
     {
-        return paramId == returnValueId
+        return paramId == 'value'
             ?  this.value
             :  this[paramId];
     }

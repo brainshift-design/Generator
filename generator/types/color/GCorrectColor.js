@@ -72,7 +72,7 @@ extends GColorType
                 //     genPushUpdateValue(parse, this.nodeId, 'margin1', this.margin1);
                 //     genPushUpdateValue(parse, this.nodeId, 'margin2', this.margin2);
                 //     genPushUpdateValue(parse, this.nodeId, 'margin3', this.margin3);
-                //     genPushUpdateValue(parse, this.nodeId, returnValueId  , this.value  );
+                //     genPushUpdateValue(parse, this.nodeId, 'value'  , this.value  );
                 // }
                 // else
                 // {
@@ -124,7 +124,7 @@ extends GColorType
                                 ['margin1', new NumberValue(closest1    )],
                                 ['margin2', new NumberValue(closest2    )],
                                 ['margin3', new NumberValue(closest3    )],
-                                [returnValueId,   this.value                   ]
+                                ['value',   this.value                   ]
                             ];
                         }
                         else
@@ -141,7 +141,7 @@ extends GColorType
                                 ['margin1', NumberValue.NaN],
                                 ['margin2', NumberValue.NaN],
                                 ['margin3', NumberValue.NaN],
-                                [returnValueId,   ColorValue .NaN]
+                                ['value',   ColorValue .NaN]
                             ];
                         }
                     //}
@@ -161,7 +161,7 @@ extends GColorType
                     ['margin1', this.margin1],
                     ['margin2', this.margin2],
                     ['margin3', this.margin3],
-                    [returnValueId,   this.value  ]
+                    ['value',   this.value  ]
                 ];
             }
         }
@@ -179,7 +179,7 @@ extends GColorType
                 ['margin1', NumberValue.NaN],
                 ['margin2', NumberValue.NaN],
                 ['margin3', NumberValue.NaN],
-                [returnValueId,   ColorValue .NaN]
+                ['value',   ColorValue .NaN]
             ];
         }
 

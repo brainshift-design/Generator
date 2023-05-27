@@ -63,7 +63,7 @@ extends GTextType
 
         this.updateValues =
         [
-            [returnValueId, this.value],
+            ['value', this.value],
             ['start', start     ],
             ['end',   end       ]
         ];

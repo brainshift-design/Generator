@@ -50,7 +50,7 @@ extends GNumberType
 
         this.updateValues =
         [
-            [returnValueId,    this.value],
+            ['value',    this.value],
             ['function', func      ]
         ];
 

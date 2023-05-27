@@ -3,7 +3,7 @@ extends GOperator
 {
     input;
 
-    value;
+    //value;
 
 
 
@@ -21,7 +21,7 @@ extends GOperator
         copy.copyBase(this);
 
         if (this.input) copy.input = this.input.copy();
-        if (this.value) copy.value = this.value.copy();
+        //if (this.value) copy.value = this.value.copy();
 
         return copy;
     }
@@ -40,8 +40,7 @@ extends GOperator
         if (this.input)
         {
             const input = (await this.input.eval(parse)).toValue();
-            console.assert(input.type == TEXT_VALUE, 'input must be TEXT_VALUE');
-
+            
             try
             {
                 const json = JSON.parse(input.value);
@@ -56,7 +55,7 @@ extends GOperator
 
         this.updateValues =
         [
-            [returnValueId, this.value]
+            ['value', this.value]
         ];
         
 
@@ -96,7 +95,7 @@ extends GOperator
                     
                 value.valueId = 
                     key == 'value'
-                    ? '(value)'
+                    ? '(value)' // reserved param name in Generator
                     : key;
 
                 list.items.push(value);
@@ -114,8 +113,8 @@ extends GOperator
         super.pushValueUpdates(parse);
 
         if (this.input    ) this.input    .pushValueUpdates(parse);
-        if (this.value    ) this.value    .pushValueUpdates(parse);
-        if (this.separator) this.separator.pushValueUpdates(parse);
+        //if (this.value    ) this.value    .pushValueUpdates(parse);
+        //if (this.separator) this.separator.pushValueUpdates(parse);
     }
 
 
@@ -132,7 +131,7 @@ extends GOperator
         super.invalidateInputs();
 
         if (this.input    ) this.input    .invalidateInputs();
-        if (this.value    ) this.value    .invalidateInputs();
-        if (this.separator) this.separator.invalidateInputs();
+        //if (this.value    ) this.value    .invalidateInputs();
+        //if (this.separator) this.separator.invalidateInputs();
     }
 }

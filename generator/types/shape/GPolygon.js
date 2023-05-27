@@ -68,7 +68,7 @@ extends GShape
         
         this.updateValues =
         [
-            [returnValueId,   this.value        ],
+            ['value',   this.value        ],
             ['round',   this.value.round  ],
             ['corners', this.value.corners]
         ];

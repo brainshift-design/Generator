@@ -8,7 +8,7 @@ extends OperatorBase
 
     constructor()
     {
-        super(NUMBER_TO_TEXT, 'numAsText', 'number as text', iconNumberToText);
+        super(NUMBER_TO_TEXT, 'numAsText', 'number text', iconNumberToText);
 
 
         this.addOutput(new Output([TEXT_VALUE], this.output_genRequest));

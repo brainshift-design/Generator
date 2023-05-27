@@ -87,7 +87,7 @@ extends OperatorBase
                 const valueId = paramIds[i];
     
                 if (  !value.isValid()
-                    || valueId == returnValueId) 
+                    || valueId == 'value') 
                     continue;
 
                     
@@ -133,7 +133,7 @@ extends OperatorBase
         super.updateValues(requestId, actionId, updateParamId, paramIds, values);
 
 
-        const value = values[paramIds.findIndex(id => id == returnValueId)];
+        const value = values[paramIds.findIndex(id => id == 'value')];
 
         if (LIST_VALUES.includes(value.type))
             this.outputs[0].types = [finalListTypeFromItems(value.items)];

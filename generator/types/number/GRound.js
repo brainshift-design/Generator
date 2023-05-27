@@ -74,7 +74,7 @@ extends GNumberType
         [
             ['type',     type      ],
             ['decimals', dec       ],
-            [returnValueId,    this.value]
+            ['value',    this.value]
         ];
 
 

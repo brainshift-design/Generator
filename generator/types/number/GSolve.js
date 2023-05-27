@@ -124,7 +124,7 @@ extends GNumberType
                 else
                 {
                     this.value = NumberValue.NaN;
-                    genPushUpdateValue(parse, this.input.nodeId, returnValueId, start);
+                    genPushUpdateValue(parse, this.input.nodeId, 'value', start);
                     console.log('max solve iterations');
                 }
             }
@@ -144,7 +144,7 @@ extends GNumberType
 
         this.updateValues =
         [
-            [returnValueId,   this.value],
+            ['value',   this.value],
             ['current', current   ],
             ['target',  target    ]
         ];

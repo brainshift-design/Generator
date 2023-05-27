@@ -73,7 +73,7 @@ extends GShape
 
         this.updateValues =
         [
-            [returnValueId,   this.value        ],
+            ['value',   this.value        ],
             ['points',  this.value.points ],
             ['closed',  this.value.closed ],
             ['degree',  this.value.degree ],

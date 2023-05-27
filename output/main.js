@@ -30,7 +30,6 @@ const OBJECT_PREFIX = GENERATOR_LOGO + ' '; //'G ';
 const nodeTag = 'G_NODE';
 const connTag = 'G_CONN';
 const pageTag = 'G_PAGE';
-const returnValueId = 'value'; //'-v﻿a﻿l﻿u﻿e-';
 const identity = Object.freeze([[1, 0, 0],
     [0, 1, 0],
     [0, 0, 1]]);

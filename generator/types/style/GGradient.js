@@ -77,7 +77,7 @@ extends GOperator
             
         this.updateValues =
         [
-            [returnValueId,  this.value],
+            ['value',  this.value],
             ['type',   gradType  ],
             ['x',      x         ],
             ['y',      y         ],

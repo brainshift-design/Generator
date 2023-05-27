@@ -40,7 +40,6 @@ extends GTextType
 
         const request     = (await this.request    .eval(parse)).toValue();
         const cachedValue = (await this.cachedValue.eval(parse)).toValue();
-        // console.log('cachedValue =', cachedValue);
 
         
         genInitNodeProgress(this.nodeId);
@@ -70,8 +69,8 @@ extends GTextType
 
         this.updateValues =
         [
-            [returnValueId, this.value],
-            ['request',     request   ]
+            ['value',   this.value],
+            ['request', request   ]
         ];
         
         
@@ -98,5 +97,7 @@ extends GTextType
 
         if (this.input  ) this.input  .invalidateInputs();
         if (this.request) this.request.invalidateInputs();
+
+        this.cachedValue = new TextValue();
     }
 }

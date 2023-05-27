@@ -281,7 +281,7 @@ function checkControlVisible(param, control)
 
 function createParamFromType(type, options = {})
 {
-    const id        = options.id        != undefined ? options.id        : returnValueId;
+    const id        = options.id        != undefined ? options.id        : 'value';
     const name      = options.name      != undefined ? options.name      : '';
     const showName  = options.showName  != undefined ? options.showName  : false;
     const hasInput  = options.hasInput  != undefined ? options.hasInput  : false;

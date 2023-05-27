@@ -49,7 +49,7 @@ extends GArithmetic
         this.updateValues =
         [
             ['operation', op        ],
-            [returnValueId,     this.value]
+            ['value',     this.value]
         ];
 
 

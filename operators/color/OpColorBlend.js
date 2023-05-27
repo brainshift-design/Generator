@@ -78,7 +78,7 @@ extends OpColorBase
 
     updateValues(requestId, actionId, updateParamId, paramIds, values)
     {
-        const col = values[paramIds.findIndex(id => id == returnValueId)];
+        const col = values[paramIds.findIndex(id => id == 'value')];
 
         this._color = 
             col

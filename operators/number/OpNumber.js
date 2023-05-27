@@ -12,7 +12,7 @@ extends OperatorBase
         this.addInput (new Input ([NUMBER_VALUE], getNodeInputValuesForUndo, this.input_getBackInitValue));
         this.addOutput(new Output([NUMBER_VALUE], this.output_genRequest, getNodeOutputValuesForUndo, this.output_backInit));
 
-        this.addParam(this.paramValue = new NumberParam(returnValueId, '', false, false, false));
+        this.addParam(this.paramValue = new NumberParam('value', '', false, false, false));
 
         this.alwaysLoadParams = true;
     }

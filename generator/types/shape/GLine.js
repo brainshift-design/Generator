@@ -54,7 +54,7 @@ extends GShape
         }
 
 
-        this.updateValues = [[returnValueId, this.value]];
+        this.updateValues = [['value', this.value]];
 
 
         await this.evalShapeBase(parse, input, false);

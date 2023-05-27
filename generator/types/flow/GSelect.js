@@ -93,7 +93,7 @@ extends GOperator
 
         this.updateValues =
         [
-            [returnValueId,  this.value             ],
+            ['value',  this.value             ],
             ['length', new NumberValue(length)],
             ['index',  index                  ]
         ];

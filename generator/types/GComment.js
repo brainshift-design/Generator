@@ -28,7 +28,7 @@ extends GOperator
         this.value = NullValue;
 
 
-        this.updateValues = [[returnValueId, this.value]];
+        this.updateValues = [['value', this.value]];
         
         
         this.validate();

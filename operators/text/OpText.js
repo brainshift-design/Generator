@@ -16,7 +16,7 @@ extends ResizableBase
         this.addInput (new Input (TEXT_TYPES, getNodeInputValuesForUndo, this.input_getBackInitValue));
         this.addOutput(new Output([TEXT_VALUE], this.output_genRequest, getNodeOutputValuesForUndo, this.output_backInit));
 
-        this.addParam(this.paramValue = new TextParam(returnValueId, '', false, false));
+        this.addParam(this.paramValue = new TextParam('value', '', false, false));
 
         this.paramValue.controls[0].textbox.defPlaceholder   = '...';//' . . .';
         this.paramValue.controls[0].textbox.style.textAlign  = 'center';

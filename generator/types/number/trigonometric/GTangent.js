@@ -30,7 +30,7 @@ extends GTrigBase
         this.value = await evalTangent(this.input, parse);
 
 
-        this.updateValues = [[returnValueId, this.value]];
+        this.updateValues = [['value', this.value]];
 
 
         this.validate();

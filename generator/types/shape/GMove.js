@@ -59,7 +59,7 @@ extends GOperator
 
         this.updateValues =
         [
-            [returnValueId, this.value],
+            ['value', this.value],
             ['x',     x         ],
             ['y',     y         ]
         ];

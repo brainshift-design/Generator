@@ -96,7 +96,7 @@ extends ResizableOperatorWithValue
 
     updateValues(requestId, actionId, updateParamId, paramIds, values)
     {
-        const value = values[paramIds.findIndex(id => id == returnValueId)];
+        const value = values[paramIds.findIndex(id => id == 'value')];
 
         this.cachedValue = value.value;
         
@@ -126,9 +126,8 @@ extends ResizableOperatorWithValue
         const totalHeight = 
               this.div.offsetHeight 
             - Math.max(defHeaderHeight, this.header.offsetHeight);
-            //- defParamHeight;
 
-        const hRequest = defParamHeight; //Math.max(defParamHeight, totalHeight * 0.35);
+        const hRequest = defParamHeight;
         const hValue   = totalHeight - hRequest;
 
         this.paramValue.controls[0].setSize(

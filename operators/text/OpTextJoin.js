@@ -45,10 +45,15 @@ extends ResizableOperatorWithValue
     }
 
 
-
     setSize(w, h, updateTransform = true)
     {
-        super.setSize(w, h, updateTransform);
+        const headerHeight = boundingRect(this.header).height / graph.currentPage.zoom;
+        
+        super.setSize(
+            w, 
+            Math.max(headerHeight + 2 * defParamHeight, h), 
+            updateTransform);
+
         this.updateValueParam();
     }
 
@@ -56,12 +61,20 @@ extends ResizableOperatorWithValue
 
     setRect(x, y, w, h, updateTransform = true)
     {
-        super.setRect(x, y, w, h, updateTransform);
+        const headerHeight = boundingRect(this.header).height / graph.currentPage.zoom;
+
+        super.setRect(
+            x, 
+            y, 
+            w, 
+            Math.max(headerHeight + 2 * defParamHeight, h), 
+            updateTransform);
+
         this.updateValueParam();
     }
 
-    
-    
+
+
     output_genRequest(gen)
     {
         // 'this' is the output
@@ -106,8 +119,21 @@ extends ResizableOperatorWithValue
 
     updateValueParam()
     {
+        const headerHeight = boundingRect(this.header).height / graph.currentPage.zoom;
+
+        const totalHeight = 
+              this.div.offsetHeight 
+            - Math.max(defHeaderHeight, headerHeight);
+
+        const hWith  = defParamHeight;
+        const hValue = totalHeight - hWith;
+
         this.paramValue.controls[0].setSize(
             this.div.offsetWidth,
-            this.div.offsetHeight - Math.max(defHeaderHeight, this.header.offsetHeight) - defParamHeight);
+            hValue);
+
+        this.paramWith.controls[0].setSize(
+            this.div.offsetWidth,
+            hWith);
     }
 }

@@ -54,7 +54,7 @@ extends GNumberType
             this.value = this.feedbackValue();
 
 
-        this.updateValues = [[returnValueId, this.value]];    
+        this.updateValues = [['value', this.value]];    
 
 
         this.validate();

@@ -92,7 +92,7 @@ extends GColorType
             ['space',  space     ],
             ['amount', amount    ],
             ['gamma',  gamma     ],
-            [returnValueId,  this.value]
+            ['value',  this.value]
         ];
         
 

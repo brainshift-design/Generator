@@ -72,7 +72,7 @@ extends GShapeBase
 
         this.updateValues =
         [
-            [returnValueId,     this.value          ],
+            ['value',     this.value          ],
             ['operation', this.value.operation],
             ['children',  this.value.children ]
         ];

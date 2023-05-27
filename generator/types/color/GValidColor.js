@@ -123,7 +123,7 @@ extends GColorType
             
         this.updateValues =
         [
-            [returnValueId,   this.value],
+            ['value',   this.value],
             ['quality', quality   ]
         ];
         

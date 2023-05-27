@@ -17,7 +17,7 @@ extends ResizableBase
 
     updateValues(requestId, actionId, updateParamId, paramIds, values)
     {
-        const value = values[paramIds.findIndex(id => id == returnValueId)];
+        const value = values[paramIds.findIndex(id => id == 'value')];
 
         this.paramValue.setValue(value, false, true, false);
 

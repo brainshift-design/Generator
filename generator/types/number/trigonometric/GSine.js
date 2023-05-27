@@ -30,7 +30,7 @@ extends GTrigBase
         this.value = await evalSine(this.input, parse);
 
 
-        this.updateValues = [[returnValueId, this.value]];
+        this.updateValues = [['value', this.value]];
 
 
         this.validate();

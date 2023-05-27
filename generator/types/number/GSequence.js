@@ -53,7 +53,7 @@ extends GNumberType
             start.toNumber() + step.toNumber() * iteration,
             Math.max(start.decimals, step.decimals));
 
-            
+
         this.updateValues =
         [
             ['start', start],
