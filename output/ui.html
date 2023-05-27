@@ -67340,7 +67340,7 @@ function initGeneratorMenus()
                              new MenuItem('Number',        {icon: iconNumber,      callback: e => actionManager.do(getCreateNodeAction(NUMBER,             btnNumber.div, getCreateOptions(e)))}),
                              new MenuItem('',              {separator: true}),
                              new MenuItem('Constant',      {icon: iconConstant,    callback: e => actionManager.do(getCreateNodeAction(NUMBER_CONSTANT,    btnNumber.div, getCreateOptions(e)))}),
-                             new MenuItem('Values',        {icon: iconAbsolute,    childMenu: menuFunctions}),
+                             new MenuItem('Basic',         {icon: iconAbsolute,    childMenu: menuFunctions}),
                              new MenuItem('Arithmetic',    {icon: iconMath,        childMenu: menuMath,      callback: e => actionManager.do(getCreateNodeAction(NUMBER_MATH,      btnNumber.div, getCreateOptions(e)))}),
                              new MenuItem('Boolean',       {icon: iconBoolean,     childMenu: menuBoolean,   callback: e => actionManager.do(getCreateNodeAction(NUMBER_BOOLEAN,   btnNumber.div, getCreateOptions(e)))}),
                              new MenuItem('Conditional',   {icon: iconCondition,   childMenu: menuCondition, callback: e => actionManager.do(getCreateNodeAction(NUMBER_CONDITION, btnNumber.div, getCreateOptions(e)))}),
@@ -90039,6 +90039,9 @@ extends OpShape
 
     updateParams()
     {
+        super.updateParams();
+
+
         const fontName = figUniqueFontNames[this.paramFont.value.toNumber()];
         
         this.paramStyle.setOptions(
@@ -90047,8 +90050,6 @@ extends OpShape
                 .map(f => f.fontName.style));
 
         this.paramStyle.controls[0].setMax(this.paramStyle.options.length-1);
-
-        super.updateParamControls();
     }
 }
 

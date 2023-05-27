@@ -63,6 +63,9 @@ extends OpShape
 
     updateParams()
     {
+        super.updateParams();
+
+
         const fontName = figUniqueFontNames[this.paramFont.value.toNumber()];
         
         this.paramStyle.setOptions(
@@ -71,7 +74,5 @@ extends OpShape
                 .map(f => f.fontName.style));
 
         this.paramStyle.controls[0].setMax(this.paramStyle.options.length-1);
-
-        super.updateParamControls();
     }
 }
