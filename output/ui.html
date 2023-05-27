@@ -19462,7 +19462,7 @@ extends GTextType
         const _with = (await this.with.eval(parse)).toValue();
 
         this.value = await evalJoinInputs(this.inputs, _with, parse);
-        
+        console.log('this.value =', this.value);
 
         this.updateValues = 
         [
@@ -19516,8 +19516,14 @@ async function evalJoinInputs(inputs, _with, parse)
 
         if (LIST_VALUES.includes(val.type))
         {
-            for (const item of val.items)
-        {
+            for (let j = 0; j < val.items.length; j++)
+            {
+                if (j > 0)
+                    value.value += _with.value;
+
+
+                const item = val.items[j];
+
                 if (item.type == TEXT_VALUE)
                     value.value += item.value;
             }
@@ -53658,7 +53664,7 @@ extends GTextType
         const _with = (await this.with.eval(parse)).toValue();
 
         this.value = await evalJoinInputs(this.inputs, _with, parse);
-        
+        console.log('this.value =', this.value);
 
         this.updateValues = 
         [
@@ -53712,8 +53718,14 @@ async function evalJoinInputs(inputs, _with, parse)
 
         if (LIST_VALUES.includes(val.type))
         {
-            for (const item of val.items)
-        {
+            for (let j = 0; j < val.items.length; j++)
+            {
+                if (j > 0)
+                    value.value += _with.value;
+
+
+                const item = val.items[j];
+
                 if (item.type == TEXT_VALUE)
                     value.value += item.value;
             }
@@ -77052,6 +77064,12 @@ class Wire
         const listType = 
                conn.output
             && arraysIntersect(conn.output.types, LIST_TYPES);//supportsTypes(LIST_TYPES);
+
+        // if (this.connection.input.node.nodeId == 'text')
+        // {
+        //     console.log('listType =', listType);
+        //     console.log('conn.output.types =', conn.output.types);
+        // }
     
     
         let width = 
@@ -78337,14 +78355,14 @@ function areConnected(node1, node2)
 
 
 
-function onSimpleVariableConnectInput(input)
+function onVariableConnectInput(input)
 {
     input.node.addNewInput();
 }
 
 
 
-function onSimpleVariableDisconnectInput(input)
+function onVariableDisconnectInput(input)
 {
     removeFromArray(input.node.inputs, input);
 
@@ -78353,9 +78371,9 @@ function onSimpleVariableDisconnectInput(input)
 
 
 
-function onVariableConnectInput(input)
+function onVariableListConnectInput(input)
 {
-    onSimpleVariableConnectInput(input);
+    onVariableConnectInput(input);
     updateOutputListTypeFromConnectedInputs(input.node);
 }
 
@@ -78363,7 +78381,7 @@ function onVariableConnectInput(input)
 
 function onVariableDisconnectInput(input)
 {
-    onSimpleVariableDisconnectInput(input);
+    onVariableDisconnectInput(input);
     updateOutputListTypeFromConnectedInputs(input.node);
 }
 
@@ -80120,8 +80138,8 @@ extends OperatorBase
         const newInput = new Input([ANY_VALUE]);
         newInput.isNew = true;
 
-        newInput.addEventListener('connect',    e => { onVariableConnectInput(e.detail.input); e.detail.input.isNew = false; });
-        newInput.addEventListener('disconnect', e => onVariableDisconnectInput(e.detail.input));
+        newInput.addEventListener('connect',    e => { onVariableListConnectInput(e.detail.input); e.detail.input.isNew = false; });
+        newInput.addEventListener('disconnect', e => onVariableListDisconnectInput(e.detail.input));
 
         this.addInput(newInput);
 
@@ -82759,8 +82777,8 @@ extends OperatorWithValue
         const newInput = new Input([NUMBER_VALUE, NUMBER_LIST_VALUE, LIST_VALUE]);
         newInput.isNew = true;
 
-        newInput.addEventListener('connect',    e => { onSimpleVariableConnectInput(e.detail.input); e.detail.input.isNew = false; });
-        newInput.addEventListener('disconnect', e => onSimpleVariableDisconnectInput(e.detail.input));
+        newInput.addEventListener('connect',    e => { onVariableConnectInput(e.detail.input); e.detail.input.isNew = false; });
+        newInput.addEventListener('disconnect', e => onVariableDisconnectInput(e.detail.input));
 
         this.addInput(newInput);
 
@@ -82850,8 +82868,8 @@ extends OperatorWithValue
         const newInput = new Input([NUMBER_VALUE, NUMBER_LIST_VALUE, LIST_VALUE]);
         newInput.isNew = true;
 
-        newInput.addEventListener('connect',    e => { onSimpleVariableConnectInput(e.detail.input); e.detail.input.isNew = false; });
-        newInput.addEventListener('disconnect', e => onSimpleVariableDisconnectInput(e.detail.input));
+        newInput.addEventListener('connect',    e => { onVariableConnectInput(e.detail.input); e.detail.input.isNew = false; });
+        newInput.addEventListener('disconnect', e => onVariableDisconnectInput(e.detail.input));
 
         this.addInput(newInput);
 
@@ -83151,8 +83169,8 @@ extends OperatorWithValue
         const newInput = new Input([NUMBER_VALUE, NUMBER_LIST_VALUE, LIST_VALUE]);
         newInput.isNew = true;
 
-        newInput.addEventListener('connect',    e => { onSimpleVariableConnectInput(e.detail.input); e.detail.input.isNew = false; });
-        newInput.addEventListener('disconnect', e => onSimpleVariableDisconnectInput(e.detail.input));
+        newInput.addEventListener('connect',    e => { onVariableConnectInput(e.detail.input); e.detail.input.isNew = false; });
+        newInput.addEventListener('disconnect', e => onVariableDisconnectInput(e.detail.input));
 
         this.addInput(newInput);
 
@@ -83258,8 +83276,8 @@ extends OperatorWithValue
         const newInput = new Input([NUMBER_VALUE, NUMBER_LIST_VALUE, LIST_VALUE]);
         newInput.isNew = true;
 
-        newInput.addEventListener('connect',    e => { onSimpleVariableConnectInput(e.detail.input); e.detail.input.isNew = false; });
-        newInput.addEventListener('disconnect', e => onSimpleVariableDisconnectInput(e.detail.input));
+        newInput.addEventListener('connect',    e => { onVariableConnectInput(e.detail.input); e.detail.input.isNew = false; });
+        newInput.addEventListener('disconnect', e => onVariableDisconnectInput(e.detail.input));
 
         this.addInput(newInput);
 
@@ -84337,6 +84355,7 @@ extends ResizableOperatorWithValue
 
         return newInput;
     }
+
 
 
     setSize(w, h, updateTransform = true)
@@ -88754,8 +88773,8 @@ extends OpColorBase
         const input = new Input([COLOR_VALUE, FILL_VALUE, COLOR_STOP_VALUE, GRADIENT_VALUE, LIST_VALUE]);
         input.isNew = true;
 
-        input.addEventListener('connect',    e => { onVariableConnectInput(e.detail.input); input.isNew = false; });
-        input.addEventListener('disconnect', e => onVariableDisconnectInput(e.detail.input));
+        input.addEventListener('connect',    e => { onVariableListConnectInput(e.detail.input); input.isNew = false; });
+        input.addEventListener('disconnect', e => onVariableListDisconnectInput(e.detail.input));
 
         this.addInput(input);
 
@@ -90220,8 +90239,8 @@ extends OpShapeBase
         const newInput = new Input([SHAPE_LIST_VALUE, ...SHAPE_VALUES]);
         newInput.isNew = true;
 
-        newInput.addEventListener('connect',    e => { onSimpleVariableConnectInput(e.detail.input); e.detail.input.isNew = false; });
-        newInput.addEventListener('disconnect', e => onSimpleVariableDisconnectInput(e.detail.input));
+        newInput.addEventListener('connect',    e => { onVariableConnectInput(e.detail.input); e.detail.input.isNew = false; });
+        newInput.addEventListener('disconnect', e => onVariableDisconnectInput(e.detail.input));
 
         this.addInput(newInput);
 
@@ -90940,8 +90959,8 @@ extends OpShapeBase
         const newInput = new Input([SHAPE_LIST_VALUE, ...SHAPE_VALUES]);
         newInput.isNew = true;
 
-        newInput.addEventListener('connect',    e => { onSimpleVariableConnectInput(e.detail.input); e.detail.input.isNew = false; });
-        newInput.addEventListener('disconnect', e => onSimpleVariableDisconnectInput(e.detail.input));
+        newInput.addEventListener('connect',    e => { onVariableConnectInput(e.detail.input); e.detail.input.isNew = false; });
+        newInput.addEventListener('disconnect', e => onVariableDisconnectInput(e.detail.input));
 
         this.addInput(newInput);
 

@@ -62,8 +62,8 @@ extends OpColorBase
         const input = new Input([COLOR_VALUE, FILL_VALUE, COLOR_STOP_VALUE, GRADIENT_VALUE, LIST_VALUE]);
         input.isNew = true;
 
-        input.addEventListener('connect',    e => { onVariableConnectInput(e.detail.input); input.isNew = false; });
-        input.addEventListener('disconnect', e => onVariableDisconnectInput(e.detail.input));
+        input.addEventListener('connect',    e => { onVariableListConnectInput(e.detail.input); input.isNew = false; });
+        input.addEventListener('disconnect', e => onVariableListDisconnectInput(e.detail.input));
 
         this.addInput(input);
 

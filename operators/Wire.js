@@ -514,6 +514,12 @@ class Wire
         const listType = 
                conn.output
             && arraysIntersect(conn.output.types, LIST_TYPES);//supportsTypes(LIST_TYPES);
+
+        // if (this.connection.input.node.nodeId == 'text')
+        // {
+        //     console.log('listType =', listType);
+        //     console.log('conn.output.types =', conn.output.types);
+        // }
     
     
         let width = 

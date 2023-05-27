@@ -39,6 +39,7 @@ extends ResizableOperatorWithValue
     }
 
 
+
     setSize(w, h, updateTransform = true)
     {
         const headerHeight = boundingRect(this.header).height / graph.currentPage.zoom;

@@ -1233,14 +1233,14 @@ function areConnected(node1, node2)
 
 
 
-function onSimpleVariableConnectInput(input)
+function onVariableConnectInput(input)
 {
     input.node.addNewInput();
 }
 
 
 
-function onSimpleVariableDisconnectInput(input)
+function onVariableDisconnectInput(input)
 {
     removeFromArray(input.node.inputs, input);
 
@@ -1249,9 +1249,9 @@ function onSimpleVariableDisconnectInput(input)
 
 
 
-function onVariableConnectInput(input)
+function onVariableListConnectInput(input)
 {
-    onSimpleVariableConnectInput(input);
+    onVariableConnectInput(input);
     updateOutputListTypeFromConnectedInputs(input.node);
 }
 
@@ -1259,7 +1259,7 @@ function onVariableConnectInput(input)
 
 function onVariableDisconnectInput(input)
 {
-    onSimpleVariableDisconnectInput(input);
+    onVariableDisconnectInput(input);
     updateOutputListTypeFromConnectedInputs(input.node);
 }
 

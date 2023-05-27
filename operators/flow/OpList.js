@@ -20,8 +20,8 @@ extends OperatorBase
         const newInput = new Input([ANY_VALUE]);
         newInput.isNew = true;
 
-        newInput.addEventListener('connect',    e => { onVariableConnectInput(e.detail.input); e.detail.input.isNew = false; });
-        newInput.addEventListener('disconnect', e => onVariableDisconnectInput(e.detail.input));
+        newInput.addEventListener('connect',    e => { onVariableListConnectInput(e.detail.input); e.detail.input.isNew = false; });
+        newInput.addEventListener('disconnect', e => onVariableListDisconnectInput(e.detail.input));
 
         this.addInput(newInput);
 

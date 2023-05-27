@@ -23,8 +23,8 @@ extends OpShapeBase
         const newInput = new Input([SHAPE_LIST_VALUE, ...SHAPE_VALUES]);
         newInput.isNew = true;
 
-        newInput.addEventListener('connect',    e => { onSimpleVariableConnectInput(e.detail.input); e.detail.input.isNew = false; });
-        newInput.addEventListener('disconnect', e => onSimpleVariableDisconnectInput(e.detail.input));
+        newInput.addEventListener('connect',    e => { onVariableConnectInput(e.detail.input); e.detail.input.isNew = false; });
+        newInput.addEventListener('disconnect', e => onVariableDisconnectInput(e.detail.input));
 
         this.addInput(newInput);
 

@@ -15069,7 +15069,7 @@ extends GTextType
         const _with = (await this.with.eval(parse)).toValue();
 
         this.value = await evalJoinInputs(this.inputs, _with, parse);
-        
+        console.log('this.value =', this.value);
 
         this.updateValues = 
         [
@@ -15123,8 +15123,14 @@ async function evalJoinInputs(inputs, _with, parse)
 
         if (LIST_VALUES.includes(val.type))
         {
-            for (const item of val.items)
-        {
+            for (let j = 0; j < val.items.length; j++)
+            {
+                if (j > 0)
+                    value.value += _with.value;
+
+
+                const item = val.items[j];
+
                 if (item.type == TEXT_VALUE)
                     value.value += item.value;
             }

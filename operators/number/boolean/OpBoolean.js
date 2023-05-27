@@ -32,8 +32,8 @@ extends OperatorWithValue
         const newInput = new Input([NUMBER_VALUE, NUMBER_LIST_VALUE, LIST_VALUE]);
         newInput.isNew = true;
 
-        newInput.addEventListener('connect',    e => { onSimpleVariableConnectInput(e.detail.input); e.detail.input.isNew = false; });
-        newInput.addEventListener('disconnect', e => onSimpleVariableDisconnectInput(e.detail.input));
+        newInput.addEventListener('connect',    e => { onVariableConnectInput(e.detail.input); e.detail.input.isNew = false; });
+        newInput.addEventListener('disconnect', e => onVariableDisconnectInput(e.detail.input));
 
         this.addInput(newInput);
 
