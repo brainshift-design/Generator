@@ -31997,7 +31997,7 @@ function genParseTextValue(parse)
     if (parse.settings.logRequests) 
         logReqValue(TEXT_VALUE, val, parse);
 
-    return parseTextValue(decodeURIComponent(val))[0];
+    return parseTextValue(val)[0];
 }
 
 
@@ -72052,9 +72052,7 @@ extends Parameter
 
     loadParam(_param)
     {
-        //console.log('_param[2] =', _param[2]);
-        const val = _param[2];//decodeURIComponent(_param[2]);
-        console.log('val =', val);
+        const val = _param[2];
 
         this.setValue(parseTextValue(val)[0], true, false, false);
 
@@ -83799,7 +83797,7 @@ extends ResizableBase
         this.addParam(this.paramValue = new TextParam('value', '', false, false));
 
         this.paramValue.controls[0].textbox.defPlaceholder = '...';//' . . .';
-        
+
         setControlFont(this.paramValue.controls[0].textbox, 'Roboto Mono', 10, 'center');
 
 
@@ -83876,6 +83874,8 @@ extends ResizableBase
         this.paramValue.controls[0].valueText = this.isUnknown() ? UNKNOWN_DISPLAY : '';
 
         this.updateValueParam();
+
+        console.log(this.paramValue.value);
 
         this.updateParamControls();
     }

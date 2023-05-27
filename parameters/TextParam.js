@@ -214,9 +214,7 @@ extends Parameter
 
     loadParam(_param)
     {
-        //console.log('_param[2] =', _param[2]);
-        const val = _param[2];//decodeURIComponent(_param[2]);
-        console.log('val =', val);
+        const val = _param[2];
 
         this.setValue(parseTextValue(val)[0], true, false, false);
 

@@ -7,7 +7,7 @@ function genParseTextValue(parse)
     if (parse.settings.logRequests) 
         logReqValue(TEXT_VALUE, val, parse);
 
-    return parseTextValue(decodeURIComponent(val))[0];
+    return parseTextValue(val)[0];
 }
 
 

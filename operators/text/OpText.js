@@ -19,7 +19,7 @@ extends ResizableBase
         this.addParam(this.paramValue = new TextParam('value', '', false, false));
 
         this.paramValue.controls[0].textbox.defPlaceholder = '...';//' . . .';
-        
+
         setControlFont(this.paramValue.controls[0].textbox, 'Roboto Mono', 10, 'center');
 
 
@@ -96,6 +96,8 @@ extends ResizableBase
         this.paramValue.controls[0].valueText = this.isUnknown() ? UNKNOWN_DISPLAY : '';
 
         this.updateValueParam();
+
+        console.log(this.paramValue.value);
 
         this.updateParamControls();
     }
