@@ -10,9 +10,10 @@ extends OperatorBase
     {
         super(NUMBER_SEQUENCE, 'sequence', 'sequence', iconSequence);
 
-        this.cached = false;
+        this.cached      = false;
+        this.iconOffsetY = 1;
         
-        
+
         this.addOutput(new Output([NUMBER_VALUE], this.output_genRequest));
 
         this.addParam(this.paramStart = new NumberParam('start', 'start', true, true, true, 0));

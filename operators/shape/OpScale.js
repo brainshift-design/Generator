@@ -13,7 +13,8 @@ extends OperatorBase
     {
         super(SCALE, 'scale', 'scale', iconScale);
 
-        this.canDisable = true;
+        this.canDisable  = true;
+        this.iconOffsetY = -1;
 
         
         this.addInput (new Input ([...SHAPE_VALUES, LIST_VALUE]));

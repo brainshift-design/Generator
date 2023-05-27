@@ -7,7 +7,7 @@ extends OperatorWithValue
 
     constructor()
     {
-        super(NUMBER_MATH, 'math', 'math', iconMath);
+        super(NUMBER_MATH, 'arith', 'arithmetic', iconMath);
 
         this.iconOffsetY      = -1;
 

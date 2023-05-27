@@ -12,7 +12,8 @@ extends OperatorBase
     {
         super(ROTATE, 'rotate', 'rotate', iconRotate);
 
-        this.canDisable = true;
+        this.canDisable  = true;
+        this.iconOffsetY = -3;
 
         
         this.addInput (new Input ([...SHAPE_VALUES, LIST_VALUE]));

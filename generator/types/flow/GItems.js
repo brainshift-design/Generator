@@ -47,7 +47,7 @@ extends GOperator
             this.value   = this.input.toValue();
             this.objects = this.input.objects.map(o => o.copy());
 
-            console.log('this.input =', this.input);
+            //console.log('this.input =', this.input);
             //console.log('this.value =', this.value.toString());
         }
         else

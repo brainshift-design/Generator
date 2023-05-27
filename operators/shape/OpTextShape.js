@@ -21,7 +21,8 @@ extends OpShape
     {
         super(TEXTSHAPE, 'text', 'text', iconTextShape);
 
-        this.canDisable = true;
+        this.canDisable  = true;
+        this.iconOffsetY = -1;
         
 
         this.addInput (this.createInputForObjects([TEXTSHAPE_VALUE], getNodeInputValuesForUndo));

@@ -13,7 +13,8 @@ extends OperatorBase
     {
         super(SKEW, 'skew', 'skew', iconSkew);
 
-        this.canDisable = true;
+        this.canDisable  = true;
+        this.iconOffsetY = -2;
 
         
         this.addInput (new Input ([...SHAPE_VALUES, LIST_VALUE]));

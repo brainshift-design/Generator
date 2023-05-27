@@ -1188,12 +1188,12 @@ function uiRemovePluginDataFromAllLocalStyles()
 
 
 
-// function uiCleanAllIds()
-// {
-//     uiQueueMessageToFigma({
-//         cmd: 'figCleanAllIds'
-//     });
-// }
+function uiCleanAllIds()
+{
+    uiQueueMessageToFigma({
+        cmd: 'figCleanAllIds'
+    });
+}
 
 
 

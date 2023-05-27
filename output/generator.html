@@ -9036,6 +9036,25 @@ extends ShapeValue
 
 
 
+    toJson()
+    {
+        return      this.text         .toJson()
+            + ' ' + this.x            .toJson()
+            + ' ' + this.y            .toJson()
+            + ' ' + this.width        .toJson()
+            + ' ' + this.height       .toJson()
+            + ' ' + this.angle        .toJson()
+            + ' ' + this.font         .toJson()
+            + ' ' + this.style        .toJson()
+            + ' ' + this.size         .toJson()
+            + ' ' + this.alignH       .toJson()
+            + ' ' + this.alignV       .toJson()
+            + ' ' + this.lineHeight   .toJson()
+            + ' ' + this.letterSpacing.toJson();
+    }
+
+
+
     static NaN = new TextShapeValue(
         '',
         TextValue.NaN,
@@ -10160,7 +10179,7 @@ extends GOperator
             this.value   = this.input.toValue();
             this.objects = this.input.objects.map(o => o.copy());
 
-            console.log('this.input =', this.input);
+            //console.log('this.input =', this.input);
             //console.log('this.value =', this.value.toString());
         }
         else
