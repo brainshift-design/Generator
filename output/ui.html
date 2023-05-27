@@ -62870,6 +62870,13 @@ NumberControl.prototype.initTextbox = function()
 
 
 
+    this.textbox.addEventListener('dblclick', e =>
+    {
+        e.stopPropagation();
+    });
+
+
+
     this.textbox.addEventListener('pointermove', e =>
     {
         e.stopPropagation();
@@ -64248,19 +64255,19 @@ TextControl.prototype.initTextarea = function()
             graphView.putNodeOnTop(this.param.node);
 
 
-        if (!this.canReact(e))
-            return;
-
-        
         if (this.readOnly)
         {
-            e.preventDefault();
-            //e.stopPropagation();
+            //e.preventDefault();
+            e.stopPropagation();
 
             //forwardEvent(e, this.param.node.div);
 
             return;
         }
+
+
+        if (!this.canReact(e))
+            return;
 
 
         if (e.button == 1)
@@ -64280,7 +64287,7 @@ TextControl.prototype.initTextarea = function()
     
     this.textbox.addEventListener('pointermove', e =>
     {
-        e.preventDefault();
+        //e.preventDefault();
         //e.stopPropagation();
     });
 
@@ -64297,6 +64304,13 @@ TextControl.prototype.initTextarea = function()
             menuTextbox.showAt(e.clientX, e.clientY, false, false);
         }
     });
+
+
+
+    // this.textbox.addEventListener('dblclick', e =>
+    // {
+    //     e.stopPropagation();
+    // });
 
 
 
@@ -64672,6 +64686,13 @@ TextControl.prototype.initEvents = function()
 
 
 
+    this.div.addEventListener('dblclick', e =>
+    {
+        e.stopPropagation();
+    });
+
+
+
     this.div.addEventListener('wheel', e =>
     {
         if (  !this.pointerEvents
@@ -64941,6 +64962,13 @@ ColorControl.prototype.initTextbox = function()
             initTextMenu(this.textbox);
             menuText.showAt(e.clientX, e.clientY, false, false);
         }
+    });
+
+
+
+    this.textbox.addEventListener('dblclick', e =>
+    {
+        e.stopPropagation();
     });
 
 
@@ -67432,7 +67460,7 @@ function initGeneratorMenus()
                                 new MenuItem('',                    {separator: true}),
                                 new MenuItem('Shapes',              {icon: iconShapes, childMenu: menuShapes}),
                                 new MenuItem('',                    {separator: true}),
-                                new MenuItem('Boolean',             {icon: iconBoolUnion,  callback: e => actionManager.do(getCreateNodeAction(BOOLEAN,     btnShape.div, getCreateOptions(e)))}),
+                                new MenuItem('Boolean',             {enabled: false, icon: iconBoolUnion,  callback: e => actionManager.do(getCreateNodeAction(BOOLEAN,     btnShape.div, getCreateOptions(e)))}),
                                 new MenuItem('',                    {separator: true}),
                                 new MenuItem('Frame',               {icon: iconFrame,      callback: e => actionManager.do(getCreateNodeAction(FRAME,       btnShape.div, getCreateOptions(e)))}),
                                 new MenuItem('Group',               {icon: iconShapeGroup, callback: e => actionManager.do(getCreateNodeAction(SHAPE_GROUP, btnShape.div, getCreateOptions(e)))}),
@@ -72024,7 +72052,11 @@ extends Parameter
 
     loadParam(_param)
     {
-        this.setValue(parseTextValue(decodeURIComponent(_param[2]))[0], true, false, false);
+        //console.log('_param[2] =', _param[2]);
+        const val = _param[2];//decodeURIComponent(_param[2]);
+        console.log('val =', val);
+
+        this.setValue(parseTextValue(val)[0], true, false, false);
 
         if (_param.length >= 4) // legacy
         {
@@ -97276,7 +97308,7 @@ var allUpdateNodes   = [];
 //uiRemoveSavedNodesAndConns(['color']);
 //uiRemovePluginDataFromAllLocalStyles();
 
-uiCleanAllIds();
+//uiCleanAllIds();
 
 
 

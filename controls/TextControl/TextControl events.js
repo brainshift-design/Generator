@@ -173,6 +173,13 @@ TextControl.prototype.initEvents = function()
 
 
 
+    this.div.addEventListener('dblclick', e =>
+    {
+        e.stopPropagation();
+    });
+
+
+
     this.div.addEventListener('wheel', e =>
     {
         if (  !this.pointerEvents

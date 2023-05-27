@@ -517,7 +517,7 @@ function initGeneratorMenus()
                                 new MenuItem('',                    {separator: true}),
                                 new MenuItem('Shapes',              {icon: iconShapes, childMenu: menuShapes}),
                                 new MenuItem('',                    {separator: true}),
-                                new MenuItem('Boolean',             {icon: iconBoolUnion,  callback: e => actionManager.do(getCreateNodeAction(BOOLEAN,     btnShape.div, getCreateOptions(e)))}),
+                                new MenuItem('Boolean',             {enabled: false, icon: iconBoolUnion,  callback: e => actionManager.do(getCreateNodeAction(BOOLEAN,     btnShape.div, getCreateOptions(e)))}),
                                 new MenuItem('',                    {separator: true}),
                                 new MenuItem('Frame',               {icon: iconFrame,      callback: e => actionManager.do(getCreateNodeAction(FRAME,       btnShape.div, getCreateOptions(e)))}),
                                 new MenuItem('Group',               {icon: iconShapeGroup, callback: e => actionManager.do(getCreateNodeAction(SHAPE_GROUP, btnShape.div, getCreateOptions(e)))}),

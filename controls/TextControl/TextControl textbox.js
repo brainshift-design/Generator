@@ -19,19 +19,19 @@ TextControl.prototype.initTextarea = function()
             graphView.putNodeOnTop(this.param.node);
 
 
-        if (!this.canReact(e))
-            return;
-
-        
         if (this.readOnly)
         {
-            e.preventDefault();
-            //e.stopPropagation();
+            //e.preventDefault();
+            e.stopPropagation();
 
             //forwardEvent(e, this.param.node.div);
 
             return;
         }
+
+
+        if (!this.canReact(e))
+            return;
 
 
         if (e.button == 1)
@@ -51,7 +51,7 @@ TextControl.prototype.initTextarea = function()
     
     this.textbox.addEventListener('pointermove', e =>
     {
-        e.preventDefault();
+        //e.preventDefault();
         //e.stopPropagation();
     });
 
@@ -68,6 +68,13 @@ TextControl.prototype.initTextarea = function()
             menuTextbox.showAt(e.clientX, e.clientY, false, false);
         }
     });
+
+
+
+    // this.textbox.addEventListener('dblclick', e =>
+    // {
+    //     e.stopPropagation();
+    // });
 
 
 

@@ -214,7 +214,11 @@ extends Parameter
 
     loadParam(_param)
     {
-        this.setValue(parseTextValue(decodeURIComponent(_param[2]))[0], true, false, false);
+        //console.log('_param[2] =', _param[2]);
+        const val = _param[2];//decodeURIComponent(_param[2]);
+        console.log('val =', val);
+
+        this.setValue(parseTextValue(val)[0], true, false, false);
 
         if (_param.length >= 4) // legacy
         {

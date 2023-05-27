@@ -33,6 +33,13 @@ ColorControl.prototype.initTextbox = function()
 
 
 
+    this.textbox.addEventListener('dblclick', e =>
+    {
+        e.stopPropagation();
+    });
+
+
+
     this.textbox.addEventListener('pointermove', e =>
     {
         e.stopPropagation();
