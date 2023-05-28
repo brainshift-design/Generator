@@ -1,4 +1,3 @@
-const Tau = Math.PI * 2;
 const phi = (Math.sqrt(5) - 1) / 2; // 0.618
 const Phi = (Math.sqrt(5) + 1) / 2; // 1.618
 
@@ -35,16 +34,6 @@ function ceilTo(x, dec)
 
 
 
-function distance(p1, p2)
-{
-    const dx = p2.x - p1.x;
-    const dy = p2.y - p1.y;
-
-    return Math.sqrt(dx*dx + dy*dy);
-}
-
-
-
 function distance_(x1, y1, x2, y2)
 {
     const dx = x2 - x1;
@@ -72,36 +61,11 @@ function equalv(v1, v2)
 
 
 
-function lengthv(v)
-{
-    return Math.sqrt(v.x*v.x + v.y*v.y);
-}
-
-
-
-function unitv(v)
-{
-    return point(
-        v.x == 0 ? 0 : v.x / lengthv(v),
-        v.y == 0 ? 0 : v.y / lengthv(v));
-}
-
-
-
 function addv(v1, v2)
 {
     return point(
         v1.x + v2.x,
         v1.y + v2.y);
-}	
-
-
-
-function subv(v1, v2)
-{
-    return point(
-        v1.x - v2.x,
-        v1.y - v2.y);
 }	
 
 
@@ -142,20 +106,6 @@ function crossv(v)
 
 
 
-function crossv2(v1, v2)
-{
-    // returns the magnitude of v1×v2 = ‖v1‖‖v2‖sinθ "perpendicular dot product",
-    // equivalent to dot(v1, cross(v2)) (same as in 3D with a Z component of 0)
-    // also the area of the parallelogram between the two vectors
-    // also determinant of 2×2 matrix built from the two vectors
-    // positive if turn from v1 to v2 is clockwise
-
-    return (v1.x * v2.y 
-          - v1.y * v2.x);
-}	
-
-
-
 function angle(v)
 {
     let angle = Math.atan2(v.y, v.x);
@@ -169,26 +119,6 @@ function angle(v)
 function angle_(x, y)
 {
     let angle = Math.atan2(y, x);
-    if (angle < 0) angle += Tau;
-
-    return angle;
-}
-
-
-
-function anglev(v1, v2)
-{
-    return anglev_(v1.x, v1.y, v2.x, v2.y);
-}
-
-
-
-function anglev_(x1, y1, x2, y2)
-{
-    const dx = x2 - x1;
-    const dy = y2 - y1;
-
-    let angle = Math.atan2(dy, dx);
     if (angle < 0) angle += Tau;
 
     return angle;
@@ -583,16 +513,4 @@ function normalAngle(angle)
     while (angle >= Tau) angle -= Tau;
 
     return angle; // [0, Tau|
-}
-
-
-
-function angleDiff(a1, a2)
-{
-    let diff = a2 - a1;
-
-    while (diff <= -Tau/2) diff += Tau;
-    while (diff >   Tau/2) diff -= Tau;
-
-    return diff; // |-Tau/2, Tau/2]
 }

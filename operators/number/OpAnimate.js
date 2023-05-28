@@ -218,8 +218,8 @@ extends OperatorWithValue
         }
 
 
-        setTimeout(() =>
-        {
+        // setTimeout(() =>
+        // {
             this.paramTime.setValue(
                 new NumberValue(
                     time, 
@@ -227,6 +227,6 @@ extends OperatorWithValue
                 false);
 
             pushUpdateFromParam(null, [this], this.paramTime);
-        });
+        // });
     }
 }

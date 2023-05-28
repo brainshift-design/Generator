@@ -93,7 +93,10 @@ extends GShape
     {
         if (!this.options.enabled)
             return;
-            
+     
+        
+        let objects = [];
+
             
         if (   this.value.x
             && this.value.y
@@ -123,17 +126,15 @@ extends GShape
                     this.nodeName,
                     x, y, w, h, a, r);
 
-                rect.createDefaultTransform(x, y, _a);
+                rect.createDefaultTransform(x, y, w, h, _a);
 
-                this      .objects = [rect];
-                this.value.objects = [rect];
-            }
-            else
-            {
-                this      .objects = [];
-                this.value.objects = [];
+                objects = [rect];
             }
         }
+
+
+        this      .objects = objects;
+        this.value.objects = objects;
 
 
         super.evalObjects(parse);

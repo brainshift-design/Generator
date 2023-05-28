@@ -33,6 +33,7 @@ const pageTag = 'G_PAGE';
 const identity = Object.freeze([[1, 0, 0],
     [0, 1, 0],
     [0, 0, 1]]);
+const Tau = Math.PI * 2;
 function sqr(x) { return x * x; }
 ;
 function cube(x) { return x * x * x; }
@@ -58,6 +59,50 @@ function gcd(a, b) {
         a = b;
         b = temp;
     }
+}
+function distance(p1, p2) {
+    const dx = p2.x - p1.x;
+    const dy = p2.y - p1.y;
+    return Math.sqrt(dx * dx + dy * dy);
+}
+function anglev(v1, v2) {
+    return anglev_(v1.x, v1.y, v2.x, v2.y);
+}
+function anglev_(x1, y1, x2, y2) {
+    const dx = x2 - x1;
+    const dy = y2 - y1;
+    let angle = Math.atan2(dy, dx);
+    if (angle < 0)
+        angle += Tau;
+    return angle;
+}
+function lengthv(v) {
+    return Math.sqrt(v.x * v.x + v.y * v.y);
+}
+function unitv(v) {
+    return point(v.x == 0 ? 0 : v.x / lengthv(v), v.y == 0 ? 0 : v.y / lengthv(v));
+}
+function dot(v1, v2) {
+    return v1.x * v2.x + v1.y * v2.y;
+}
+function angleDiff(a1, a2) {
+    let diff = a2 - a1;
+    while (diff <= -Tau / 2)
+        diff += Tau;
+    while (diff > Tau / 2)
+        diff -= Tau;
+    return diff; // |-Tau/2, Tau/2]
+}
+function crossv2(v1, v2) {
+    // returns the magnitude of v1×v2 = ‖v1‖‖v2‖sinθ "perpendicular dot product",
+    // equivalent to dot(v1, cross(v2)) (same as in 3D with a Z component of 0)
+    // also the area of the parallelogram between the two vectors
+    // also determinant of 2×2 matrix built from the two vectors
+    // positive if turn from v1 to v2 is clockwise
+    return v1.x * v2.y - v1.y * v2.x;
+}
+function subv(v1, v2) {
+    return point(v1.x - v2.x, v1.y - v2.y);
 }
 function toUtf8(str) {
     return decodeURI(encodeURIComponent(str));
@@ -1834,21 +1879,49 @@ function figUpdateFrame(figFrame, genFrame) {
 }
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 function setObjectTransform(figObj, genObj) {
+    const xp0 = genObj.xp0;
+    const xp1 = genObj.xp1;
+    const xp2 = genObj.xp2;
+    const right = subv(xp1, xp0);
+    const down = subv(xp2, xp0);
     // make axis vectors == 1
-    const scaleX = Math.sqrt(sqr(genObj.xform[0][0]) + sqr(genObj.xform[1][0]));
-    const scaleY = Math.sqrt(sqr(genObj.xform[0][1]) + sqr(genObj.xform[1][1]));
-    genObj.xform[0][0] /= scaleX;
-    genObj.xform[1][0] /= scaleX;
-    genObj.xform[0][1] /= scaleY;
-    genObj.xform[1][1] /= scaleY;
-    // do magic to make object transform correctly ???
+    // const scaleX = Math.sqrt(sqr(genObj.xform[0][0]) + sqr(genObj.xform[1][0]));
+    // const scaleY = Math.sqrt(sqr(genObj.xform[0][1]) + sqr(genObj.xform[1][1]));
+    // genObj.xform[0][0] /= scaleX;
+    // genObj.xform[1][0] /= scaleX;
+    // genObj.xform[0][1] /= scaleY;
+    // genObj.xform[1][1] /= scaleY;
+    console.log('xp0   =', xp0);
+    console.log('xp1   =', xp1);
+    console.log('xp2   =', xp2);
+    console.log('right =', right);
+    console.log('down  =', down);
+    console.log('');
+    const a = anglev(xp0, xp1);
+    const sinA = Math.sin(a);
+    const cosA = Math.cos(a);
+    // const scaleX = Math.sqrt(sqr(xp1.x - xp0.x) + sqr(xp1.y - xp0.y));
+    // const scaleY = Math.sqrt(sqr(xp2.x - xp0.x) + sqr(xp2.y - xp0.y));
+    // const skewX  = (xp2.x - xp0.x) / scaleY;
+    // const skewY  = (xp1.y - xp0.y) / scaleX;
+    const skewX = lengthv(down) * Math.cos(angleDiff(anglev(xp0, xp2), anglev(xp0, xp1))) / lengthv(right);
+    //dot(subv(xp2, xp0), subv(xp1, xp0)) / distance(xp0, xp1) / genObj.width;
+    const skewY = 0; //dot(subv(xp1, xp0), subv(xp2, xp0)) / distance(xp0, xp2) / genObj.height;
+    console.log('skewX =', skewX);
+    console.log('skewY =', skewY);
+    console.log('');
+    const xform = [[cosA + skewY * sinA, -sinA + skewX * cosA, xp0.x],
+        [sinA - skewY * cosA, cosA + skewX * sinA, xp0.y],
+        [0, 0, 1]];
     figObj.relativeTransform =
         [
-            genObj.xform[0],
-            genObj.xform[1]
+            xform[0],
+            xform[1]
         ];
-    figObj.resizeWithoutConstraints(Math.max(0.01, genObj.width * scaleX), genObj.height
-        ? Math.max(0.01, genObj.height * scaleY)
+    const scaleX = distance(xp0, xp1); // / Math.cos(Math.atan(skewY));
+    const scaleY = distance(xp0, xp2); // / Math.cos(Math.atan(skewX));
+    figObj.resizeWithoutConstraints(Math.max(0.01, scaleX), genObj.height
+        ? Math.max(0.01, scaleY)
         : 0);
 }
 function setPointTransform(figPoint, genPoint) {

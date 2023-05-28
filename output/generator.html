@@ -31,6 +31,9 @@ const identity = Object.freeze(
 
 
 
+const Tau = Math.PI * 2;
+
+
 function sqr (x) { return x*x;   };
 function cube(x) { return x*x*x; };
 
@@ -71,6 +74,93 @@ function gcd(a, b)
         b = temp;
     }
 }
+
+
+
+function distance(p1, p2)
+{
+    const dx = p2.x - p1.x;
+    const dy = p2.y - p1.y;
+
+    return Math.sqrt(dx*dx + dy*dy);
+}
+
+
+
+function anglev(v1, v2)
+{
+    return anglev_(v1.x, v1.y, v2.x, v2.y);
+}
+
+
+
+function anglev_(x1, y1, x2, y2)
+{
+    const dx = x2 - x1;
+    const dy = y2 - y1;
+
+    let angle = Math.atan2(dy, dx);
+    if (angle < 0) angle += Tau;
+
+    return angle;
+}
+
+
+
+function lengthv(v)
+{
+    return Math.sqrt(v.x*v.x + v.y*v.y);
+}
+
+
+
+function unitv(v)
+{
+    return point(
+        v.x == 0 ? 0 : v.x / lengthv(v),
+        v.y == 0 ? 0 : v.y / lengthv(v));
+}
+
+
+
+function dot(v1, v2)
+{
+    return v1.x * v2.x + v1.y * v2.y;
+}
+
+
+
+function angleDiff(a1, a2)
+{
+    let diff = a2 - a1;
+
+    while (diff <= -Tau/2) diff += Tau;
+    while (diff >   Tau/2) diff -= Tau;
+
+    return diff; // |-Tau/2, Tau/2]
+}
+
+
+
+function crossv2(v1, v2)
+{
+    // returns the magnitude of v1×v2 = ‖v1‖‖v2‖sinθ "perpendicular dot product",
+    // equivalent to dot(v1, cross(v2)) (same as in 3D with a Z component of 0)
+    // also the area of the parallelogram between the two vectors
+    // also determinant of 2×2 matrix built from the two vectors
+    // positive if turn from v1 to v2 is clockwise
+
+    return v1.x * v2.y - v1.y * v2.x;
+}	
+
+
+
+function subv(v1, v2)
+{
+    return point(
+        v1.x - v2.x,
+        v1.y - v2.y);
+}	
 
 
 
@@ -743,7 +833,6 @@ function getQueryVariable(strVar)
 }
 
 
-const Tau = Math.PI * 2;
 const phi = (Math.sqrt(5) - 1) / 2; // 0.618
 const Phi = (Math.sqrt(5) + 1) / 2; // 1.618
 
@@ -780,16 +869,6 @@ function ceilTo(x, dec)
 
 
 
-function distance(p1, p2)
-{
-    const dx = p2.x - p1.x;
-    const dy = p2.y - p1.y;
-
-    return Math.sqrt(dx*dx + dy*dy);
-}
-
-
-
 function distance_(x1, y1, x2, y2)
 {
     const dx = x2 - x1;
@@ -817,36 +896,11 @@ function equalv(v1, v2)
 
 
 
-function lengthv(v)
-{
-    return Math.sqrt(v.x*v.x + v.y*v.y);
-}
-
-
-
-function unitv(v)
-{
-    return point(
-        v.x == 0 ? 0 : v.x / lengthv(v),
-        v.y == 0 ? 0 : v.y / lengthv(v));
-}
-
-
-
 function addv(v1, v2)
 {
     return point(
         v1.x + v2.x,
         v1.y + v2.y);
-}	
-
-
-
-function subv(v1, v2)
-{
-    return point(
-        v1.x - v2.x,
-        v1.y - v2.y);
 }	
 
 
@@ -887,20 +941,6 @@ function crossv(v)
 
 
 
-function crossv2(v1, v2)
-{
-    // returns the magnitude of v1×v2 = ‖v1‖‖v2‖sinθ "perpendicular dot product",
-    // equivalent to dot(v1, cross(v2)) (same as in 3D with a Z component of 0)
-    // also the area of the parallelogram between the two vectors
-    // also determinant of 2×2 matrix built from the two vectors
-    // positive if turn from v1 to v2 is clockwise
-
-    return (v1.x * v2.y 
-          - v1.y * v2.x);
-}	
-
-
-
 function angle(v)
 {
     let angle = Math.atan2(v.y, v.x);
@@ -914,26 +954,6 @@ function angle(v)
 function angle_(x, y)
 {
     let angle = Math.atan2(y, x);
-    if (angle < 0) angle += Tau;
-
-    return angle;
-}
-
-
-
-function anglev(v1, v2)
-{
-    return anglev_(v1.x, v1.y, v2.x, v2.y);
-}
-
-
-
-function anglev_(x1, y1, x2, y2)
-{
-    const dx = x2 - x1;
-    const dy = y2 - y1;
-
-    let angle = Math.atan2(dy, dx);
     if (angle < 0) angle += Tau;
 
     return angle;
@@ -1328,18 +1348,6 @@ function normalAngle(angle)
     while (angle >= Tau) angle -= Tau;
 
     return angle; // [0, Tau|
-}
-
-
-
-function angleDiff(a1, a2)
-{
-    let diff = a2 - a1;
-
-    while (diff <= -Tau/2) diff += Tau;
-    while (diff >   Tau/2) diff -= Tau;
-
-    return diff; // |-Tau/2, Tau/2]
 }
 
 
@@ -4262,7 +4270,12 @@ class FigmaObject
 
     inputIndex = -1; // for unique object IDs
 
+    
     xform;
+
+    xp0; //  xp0 ------- xp1 
+    xp1; //   |
+    xp2; //  xp2
 
 
 
@@ -4287,6 +4300,10 @@ class FigmaObject
         this.final      = base.final;
         
         this.xform      = clone(base.xform);
+
+        this.xp0        = base.xp0;
+        this.xp1        = base.xp1;
+        this.xp2        = base.xp2;
     }
 
 
@@ -4299,12 +4316,16 @@ class FigmaObject
 
 
 
-    createDefaultTransform(x, y, angle)
+    createDefaultTransform(x, y, w, h, a)
     {
         this.xform =
-            [[Math.cos(angle), -Math.sin(angle), x],
-             [Math.sin(angle),  Math.cos(angle), y],
-             [0,                0,               1]];
+            [[Math.cos(a), -Math.sin(a), x],
+             [Math.sin(a),  Math.cos(a), y],
+             [0,            0,           1]];
+
+        this.xp0 = mulv2m3(point(x,     y    ), this.xform);
+        this.xp1 = mulv2m3(point(x + w, y    ), this.xform);
+        this.xp2 = mulv2m3(point(x,     y + h), this.xform);
     }
 }
 
@@ -4335,15 +4356,36 @@ function copyFigmaObject(obj)
 
 function applyTransform(obj, cx, cy, xform)
 {
-    // add to object's "total" transformation
-
-    obj.xform = mulm3m3(
-        obj.xform,
+    const xToOrigin = 
         [[1, 0, cx],
          [0, 1, cy],
-         [0, 0, 1 ]]);
+         [0, 0, 1 ]];
+
+    const xToPoint = 
+        [[1, 0, -cx],
+         [0, 1, -cy],
+         [0, 0,  1 ]];
+
+
+    // add to object's "total" transformation
+
+    obj.xform = mulm3m3(obj.xform, xToOrigin);
+    obj.xp0   = mulv2m3(obj.xp0,   xToOrigin);
+    obj.xp1   = mulv2m3(obj.xp1,   xToOrigin);
+    obj.xp2   = mulv2m3(obj.xp2,   xToOrigin);
+
 
     obj.xform = mulm3m3(obj.xform, xform);
+    obj.xp0   = mulv2m3(obj.xp0,   xform);
+    obj.xp1   = mulv2m3(obj.xp1,   xform);
+    obj.xp2   = mulv2m3(obj.xp2,   xform);
+
+
+    obj.xform = mulm3m3(obj.xform, xToPoint);
+    obj.xp0   = mulv2m3(obj.xp0,   xToPoint);
+    obj.xp1   = mulv2m3(obj.xp1,   xToPoint);
+    obj.xp2   = mulv2m3(obj.xp2,   xToPoint);
+
 
     obj.xform = mulm3m3(
         obj.xform,
@@ -19221,10 +19263,10 @@ function addGradientProp(obj, prop)
 
     if (!isLinear)
     {
-        x  -= s * Math.cos(a);
-        y  -= s * Math.sin(a);
+        x   -= s * Math.cos(a);
+        y   -= s * Math.sin(a);
 
-        s  *= 2;
+        s   *= 2;
 
         asp /= 2;
     }
@@ -19554,7 +19596,10 @@ extends GShape
     {
         if (!this.options.enabled)
             return;
-            
+     
+        
+        let objects = [];
+
             
         if (   this.value.x
             && this.value.y
@@ -19584,17 +19629,15 @@ extends GShape
                     this.nodeName,
                     x, y, w, h, a, r);
 
-                rect.createDefaultTransform(x, y, _a);
+                rect.createDefaultTransform(x, y, w, h, _a);
 
-                this      .objects = [rect];
-                this.value.objects = [rect];
-            }
-            else
-            {
-                this      .objects = [];
-                this.value.objects = [];
+                objects = [rect];
             }
         }
+
+
+        this      .objects = objects;
+        this.value.objects = objects;
 
 
         super.evalObjects(parse);
@@ -21938,18 +21981,18 @@ extends GOperator
         const x = options.x.toNumber();
         const y = options.y.toNumber();
 
+        const xform = 
+            [[1, 0, x],
+             [0, 1, y],
+             [0, 0, 1]];
 
+             
         for (const obj of this.objects)
         {
             obj.nodeId   = this.nodeId;
             obj.objectId = obj.objectId + OBJECT_SEPARATOR + this.nodeId;
 
-            applyTransform(
-                obj,
-                0, 0,
-                [[1, 0, x],
-                 [0, 1, y],
-                 [0, 0, 1]]);
+            applyTransform(obj, 0, 0, xform);
         }
 
         
@@ -22076,6 +22119,7 @@ extends GOperator
             new NumberValue(0),
             new NumberValue(0));
 
+            
         this.updateValues =
         [
             ['value',      this.value],
@@ -22107,110 +22151,27 @@ extends GOperator
 
 
         const bounds = getObjBounds(this.objects);
-        const angle  = options.angle.toNumber()/360*Tau;
 
-        const cx     = bounds.x + bounds.width  * options.centerX.toNumber()/100;
-        const cy     = bounds.y + bounds.height * options.centerY.toNumber()/100;
 
+        const a = options.angle.toNumber()/360*Tau;
+
+        const xform =
+            [[ Math.cos(a), Math.sin(a), 0],
+             [-Math.sin(a), Math.cos(a), 0],
+             [ 0,           0,           1]];
+        
+        
+        const cx = bounds.x + bounds.width  * options.centerX.toNumber()/100;
+        const cy = bounds.y + bounds.height * options.centerY.toNumber()/100;
 
         for (const obj of this.objects)
         {
             obj.nodeId   = this.nodeId;
             obj.objectId = obj.objectId + OBJECT_SEPARATOR + this.nodeId;
 
-
             if (   bounds.width  > 0
                 && bounds.height > 0)
-            {
-                applyTransform(
-                    obj,
-                    cx, cy,
-                    [[ Math.cos(angle), Math.sin(angle), 0],
-                     [-Math.sin(angle), Math.cos(angle), 0],
-                     [ 0,               0,               1]]);
-            }
-
-
-            // if (obj.type == VECTOR_PATH)
-            // {
-            //     const dx = 0.5 + options.centerX.toNumber() / (bounds.width /2);
-            //     const dy = 0.5 + options.centerY.toNumber() / (bounds.height/2);
-
-
-            //     for (const p of obj.points)
-            //     {
-            //         const d = distance_(
-            //             p.x.value, 
-            //             p.y.value, 
-            //             bounds.x + dx * bounds.width, 
-            //             bounds.y + dy * bounds.height);
-
-            //         const a = anglev_(
-            //             bounds.x + dx * bounds.width, 
-            //             bounds.y + dy * bounds.height, 
-            //             p.x.value, 
-            //             p.y.value);
-
-            //         const v = vector(a + options.angle.toNumber()/360*Tau, d);
-
-                    
-            //         p.x.value = 
-            //               bounds.x 
-            //             + bounds.width/2
-            //             + v.x;
-
-            //         p.y.value = 
-            //               bounds.y
-            //             + bounds.height/2
-            //             + v.y;
-            //     }
-
-
-            //     FigmaVectorPath.prototype.updatePathData.call(obj);
-            // }
-            // else
-            // {
-            //     const dx = 
-            //         bounds.width != 0
-            //         ? options.centerX.toNumber() / (bounds.width /2)
-            //         : options.centerX.toNumber();
-
-            //     const dy = 
-            //         bounds.height != 0
-            //         ? options.centerY.toNumber() / (bounds.height/2)
-            //         : options.centerY.toNumber();
-
-
-            //     const angle = anglev_(
-            //         bounds.x + bounds.width /2, 
-            //         bounds.y + bounds.height/2,
-            //         obj.x,
-            //         obj.y);
-
-            //     const halfd = distance_(
-            //         bounds.x + bounds.width /2,
-            //         bounds.y + bounds.height/2,
-            //         obj.x,
-            //         obj.y);
-
-            //     const a = obj.angle/360*Tau;
-            //     const v = vector(angle - a, halfd);
-
-
-            //     obj.x = 
-            //           bounds.x 
-            //         + bounds.width /2 
-            //         + v.x 
-            //         - dx * bw * Math.cos(-a) 
-            //         - dy * bh * Math.sin( a);
-
-            //     obj.y = 
-            //           bounds.y
-            //         + bounds.height/2
-            //         + v.y 
-            //         - dx * bw * Math.sin(-a) 
-            //         - dy * bh * Math.cos( a);
-            // }
+                applyTransform(obj, cx, cy, xform);
         }
 
         
@@ -22367,6 +22328,7 @@ extends GOperator
             new NumberValue(0),
             new NumberValue(0));
 
+
         this.updateValues =
         [
             ['value',      this.value],
@@ -22400,142 +22362,27 @@ extends GOperator
 
         const bounds = getObjBounds(this.objects);
 
-        const sx     = options.scaleX.toNumber() / 100;
-        const sy     = options.scaleY.toNumber() / 100;
-    
-        const cx     = bounds.x + bounds.width  * options.centerX.toNumber()/100;
-        const cy     = bounds.y + bounds.height * options.centerY.toNumber()/100;
 
+        const sx = options.scaleX.toNumber() / 100;
+        const sy = options.scaleY.toNumber() / 100;
+
+        const xform =
+            [[sx, 0,  0],
+             [0,  sy, 0],
+             [0,  0,  1]];
+    
+
+        const cx = bounds.x + bounds.width  * options.centerX.toNumber()/100;
+        const cy = bounds.y + bounds.height * options.centerY.toNumber()/100;
         
         for (const obj of this.objects)
         {
             obj.nodeId   = this.nodeId;
             obj.objectId = obj.objectId + OBJECT_SEPARATOR + this.nodeId;
 
-
             if (   bounds.width  > 0
                 && bounds.height > 0)
-            {
-                applyTransform(
-                    obj,
-                    cx, cy,
-                    [[sx, 0,  0],
-                     [0,  sy, 0],
-                     [0,  0,  1]]);
-            }
-
-
-            // if (obj.type == VECTOR_PATH)
-            // {
-            //     // const sx  = Math.max(0, options.scaleX.toNumber()/100);
-            //     // const sy  = Math.max(0, options.scaleY.toNumber()/100);
-
-
-            //     for (const p of obj.points)
-            //     {
-            //         const d = distance_(
-            //             p.x.value, 
-            //             p.y.value, 
-            //             bounds.x + dx * bounds.width, 
-            //             bounds.y + dy * bounds.height);
-
-            //         const a = anglev_(
-            //             bounds.x + dx * bounds.width, 
-            //             bounds.y + dy * bounds.height, 
-            //             p.x.value, 
-            //             p.y.value);
-
-            //         const v = mulv(
-            //             vector(a, d),
-            //             point(sx, sy));
-
-                    
-            //         p.x.value = 
-            //               bounds.x 
-            //             + bounds.width/2 
-            //             + v.x;
-
-            //         p.y.value = 
-            //               bounds.y
-            //             + bounds.height/2
-            //             + v.y;
-            //     }
-
-
-            //     FigmaVectorPath.prototype.updatePathData.call(obj);
-            // }
-            // else
-            // {
-            //     // const x = Math.max(0, options.scaleX.toNumber()/100);
-            //     // const y = Math.max(0, options.scaleY.toNumber()/100);
-                
-
-            //     // const dx = 
-            //     //     bounds.width != 0
-            //     //     ? options.centerX.toNumber() / (bounds.width /2)
-            //     //     : options.centerX.toNumber();
-
-            //     // const dy = 
-            //     //     bounds.height != 0
-            //     //     ? options.centerY.toNumber() / (bounds.height/2)
-            //     //     : options.centerY.toNumber();
-
-            //     // const dx = 0.5 + options.centerX.toNumber() / (bounds.width /2);
-            //     // const dy = 0.5 + options.centerY.toNumber() / (bounds.height/2);
-
-            //     obj.width  *= sx;
-            //     obj.height *= sy;
-
-
-            //     // update transform
-
-            //     let xform = clone(obj.xform);
-    
-
-            //     xform = mulm3m3(
-            //         xform,
-            //         [[sx, 0,  dx * bounds.width ],
-            //          [0,  sy, dy * bounds.height],
-            //          [0,  0,  1                 ]]);
-    
-    
-            //     obj.xform = xform;
-
-
-            //     // // update properties
-            //     // const angle = anglev_(
-            //     //     bounds.x + ((dx + 0.5) * bounds.width ), 
-            //     //     bounds.y + ((dy + 0.5) * bounds.height),
-            //     //     obj.x,
-            //     //     obj.y);
-
-            //     // const halfd = distance_(
-            //     //     bounds.x + ((dx + 0.5) * bounds.width ), 
-            //     //     bounds.y + ((dy + 0.5) * bounds.height),
-            //     //     obj.x,
-            //     //     obj.y);
-
-
-            //     // const a = 0;
-            //     // const v = vector(angle - a, halfd);
-
-            //     // v.x *= x;
-            //     // v.y *= y;
-
-            //     // obj.x = 
-            //     //       bounds.x 
-            //     //     + bounds.width /2 
-            //     //     + v.x 
-            //     //     - (dx - 0.5) * bw * Math.cos(-a) 
-            //     //     - (dy - 0.5) * bh * Math.sin( a);
-
-            //     // obj.y = 
-            //     //       bounds.y
-            //     //     + bounds.height/2
-            //     //     + v.y 
-            //     //     - (dx - 0.5) * bw * Math.sin(-a) 
-            //     //     - (dy - 0.5) * bh * Math.cos( a);
-            // }
+                applyTransform(obj, cx, cy, xform);
         }
 
         
@@ -22695,6 +22542,7 @@ extends GOperator
             new NumberValue(0),
             new NumberValue(0));
 
+            
         this.updateValues =
         [
             ['value',      this.value],
@@ -22728,127 +22576,27 @@ extends GOperator
             
         const bounds = getObjBounds(this.objects);
 
-        const sx     = options.skewX.toNumber() / 100;
-        const sy     = options.skewY.toNumber() / 100;
 
-        const cx     = bounds.x + bounds.width  * options.centerX.toNumber()/100;
-        const cy     = bounds.y + bounds.height * options.centerY.toNumber()/100;
+        const sx = options.skewX.toNumber() / 100;
+        const sy = options.skewY.toNumber() / 100;
 
+        const xform =
+            [[1,  sx, 0],
+             [sy, 1,  0],
+             [0,  0,  1]];
+
+
+        const cx = bounds.x + bounds.width  * options.centerX.toNumber()/100;
+        const cy = bounds.y + bounds.height * options.centerY.toNumber()/100;
 
         for (const obj of this.objects)
         {
             obj.nodeId   = this.nodeId;
             obj.objectId = obj.objectId + OBJECT_SEPARATOR + this.nodeId;
 
-
             if (   bounds.width  > 0
                 && bounds.height > 0)
-            {
-                applyTransform(
-                    obj,
-                    cx, cy,
-                    [[1,  sx, 0],
-                     [sy, 1,  0],
-                     [0,  0,  1]]);
-            }
-
-
-            //      if (obj.type == VECTOR_PATH)
-            //      {
-            //          const x  = Math.max(0, options.x.toNumber()/100);
-            //          const y  = Math.max(0, options.y.toNumber()/100);
-     
-            //          const dx = 0.5;// + options.centerX.toNumber() / (bounds.width /2);
-            //          const dy = 0.5;// + options.centerY.toNumber() / (bounds.height/2);
-     
-     
-            //          for (const p of obj.points)
-            //          {
-            //              const d = distance_(
-            //                  p.x.value, 
-            //                  p.y.value, 
-            //                  bounds.x + dx * bounds.width, 
-            //                  bounds.y + dy * bounds.height);
-     
-            //              const a = anglev_(
-            //                  bounds.x + dx * bounds.width, 
-            //                  bounds.y + dy * bounds.height, 
-            //                  p.x.value, 
-            //                  p.y.value);
-     
-            //              const v = mulv(
-            //                  vector(a, d),
-            //                  point(x, y));
-     
-                         
-            //              p.x.value = 
-            //                    bounds.x 
-            //                  + bounds.width/2 
-            //                  + v.x;
-     
-            //              p.y.value = 
-            //                    bounds.y
-            //                  + bounds.height/2
-            //                  + v.y;
-            //          }
-     
-     
-            //          FigmaVectorPath.prototype.updatePathData.call(obj);
-            //      }
-            //      else
-            //      {
-            //          const x  = Math.max(0, options.x.toNumber()/100);
-            //          const y  = Math.max(0, options.y.toNumber()/100);
-                     
-     
-            //          const dx = 0.5;
-            //             //  bounds.width != 0
-            //             //  ? options.centerX.toNumber() / (bounds.width /2)
-            //             //  : options.centerX.toNumber();
-     
-            //          const dy = 0.5;
-            //             //  bounds.height != 0
-            //             //  ? options.centerY.toNumber() / (bounds.height/2)
-            //             //  : options.centerY.toNumber();
-     
-     
-            //          obj.width  *= x;
-            //          obj.height *= y;
-     
-     
-            //          const angle = anglev_(
-            //              bounds.x + ((dx + 0.5) * bounds.width ), 
-            //              bounds.y + ((dy + 0.5) * bounds.height),
-            //              obj.x,
-            //              obj.y);
-     
-            //          const halfd = distance_(
-            //              bounds.x + ((dx + 0.5) * bounds.width ), 
-            //              bounds.y + ((dy + 0.5) * bounds.height),
-            //              obj.x,
-            //              obj.y);
-     
-     
-            //          const a = 0;
-            //          const v = vector(angle - a, halfd);
-     
-            //          v.x *= x;
-            //          v.y *= y;
-     
-            //          obj.x = 
-            //                bounds.x 
-            //              + bounds.width /2 
-            //              + v.x 
-            //              - (dx - 0.5) * bw * Math.cos(-a) 
-            //              - (dy - 0.5) * bh * Math.sin( a);
-     
-            //          obj.y = 
-            //                bounds.y
-            //              + bounds.height/2
-            //              + v.y 
-            //              - (dx - 0.5) * bw * Math.sin(-a) 
-            //              - (dy - 0.5) * bh * Math.cos( a);
-            //      }
+                applyTransform(obj, cx, cy, xform);
         }
 
         

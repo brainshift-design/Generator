@@ -184,10 +184,10 @@ function addGradientProp(obj, prop)
 
     if (!isLinear)
     {
-        x  -= s * Math.cos(a);
-        y  -= s * Math.sin(a);
+        x   -= s * Math.cos(a);
+        y   -= s * Math.sin(a);
 
-        s  *= 2;
+        s   *= 2;
 
         asp /= 2;
     }
