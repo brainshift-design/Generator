@@ -104,17 +104,14 @@ extends GOperator
 
     async evalObjects(parse, options = {})
     {
-        if (!this.options.enabled)
-            return;
-
-
-        this.objects = 
-            this.input 
-            ? this.input.objects.map(o => o.copy())
-            : [];
+        this      .objects = this.input ? this.input.objects.map(o => o.copy()) : [];
+        this.value.objects = this.input ? this.input.objects.map(o => o.copy()) : [];
 
 
         const bounds = getObjBounds(this.objects);
+
+        if (!this.options.enabled)
+            return bounds;
 
 
         const sx = options.scaleX.toNumber() / 100;

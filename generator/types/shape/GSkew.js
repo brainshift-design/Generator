@@ -53,7 +53,7 @@ extends GOperator
 
         if (this.input)
         {
-            this.value = (await this.input.eval(parse)).toValue();
+            this.value        = (await this.input.eval(parse)).toValue();
             this.value.nodeId = this.nodeId;
         }
         else
@@ -104,18 +104,15 @@ extends GOperator
 
     evalObjects(parse, options = {})
     {
-        if (!this.options.enabled)
-            return;
-            
+        this      .objects = this.input ? this.input.objects.map(o => o.copy()) : [];
+        this.value.objects = this.input ? this.input.objects.map(o => o.copy()) : [];
 
-        this.objects = 
-            this.input 
-            ? this.input.objects.map(o => o.copy())
-            : [];
 
-            
         const bounds = getObjBounds(this.objects);
 
+        if (!this.options.enabled)
+            return bounds;
+            
 
         const sx = options.skewX.toNumber() / 100;
         const sy = options.skewY.toNumber() / 100;

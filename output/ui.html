@@ -5486,6 +5486,16 @@ function crossv(v)
 
 
 
+function angle(v)
+{
+    let angle = Math.atan2(v.y, v.x);
+    if (angle < 0) angle += Tau;
+
+    return angle;
+}
+
+
+
 function angle_(x, y)
 {
     let angle = Math.atan2(y, x);
@@ -26392,16 +26402,14 @@ extends GOperator
 
     evalObjects(parse, options = {})
     {
+        this      .objects = this.input ? this.input.objects.map(o => o.copy()) : [];
+        this.value.objects = this.input ? this.input.objects.map(o => o.copy()) : [];
+
+            
         if (!this.options.enabled)
             return;
             
 
-        this.objects = 
-            this.input 
-            ? this.input.objects.map(o => o.copy())
-            : [];
-
-            
         const x = options.x.toNumber();
         const y = options.y.toNumber();
 
@@ -26564,15 +26572,13 @@ extends GOperator
 
     async evalObjects(parse, options = {})
     {
+        this      .objects = this.input ? this.input.objects.map(o => o.copy()) : [];
+        this.value.objects = this.input ? this.input.objects.map(o => o.copy()) : [];
+
+
         if (!this.options.enabled)
             return;
             
-
-        this.objects = 
-            this.input 
-            ? this.input.objects.map(o => o.copy())
-            : [];
-
 
         const bounds = getObjBounds(this.objects);
 
@@ -26774,17 +26780,14 @@ extends GOperator
 
     async evalObjects(parse, options = {})
     {
-        if (!this.options.enabled)
-            return;
-
-
-        this.objects = 
-            this.input 
-            ? this.input.objects.map(o => o.copy())
-            : [];
+        this      .objects = this.input ? this.input.objects.map(o => o.copy()) : [];
+        this.value.objects = this.input ? this.input.objects.map(o => o.copy()) : [];
 
 
         const bounds = getObjBounds(this.objects);
+
+        if (!this.options.enabled)
+            return bounds;
 
 
         const sx = options.scaleX.toNumber() / 100;
@@ -26937,7 +26940,7 @@ extends GOperator
 
         if (this.input)
         {
-            this.value = (await this.input.eval(parse)).toValue();
+            this.value        = (await this.input.eval(parse)).toValue();
             this.value.nodeId = this.nodeId;
         }
         else
@@ -26988,18 +26991,15 @@ extends GOperator
 
     evalObjects(parse, options = {})
     {
-        if (!this.options.enabled)
-            return;
-            
+        this      .objects = this.input ? this.input.objects.map(o => o.copy()) : [];
+        this.value.objects = this.input ? this.input.objects.map(o => o.copy()) : [];
 
-        this.objects = 
-            this.input 
-            ? this.input.objects.map(o => o.copy())
-            : [];
 
-            
         const bounds = getObjBounds(this.objects);
 
+        if (!this.options.enabled)
+            return bounds;
+            
 
         const sx = options.skewX.toNumber() / 100;
         const sy = options.skewY.toNumber() / 100;
@@ -36907,6 +36907,16 @@ function crossv(v)
     // returns a cross product of v and the unit vector pointing up the Z axis
 
     return point(v.y, -v.x);
+}
+
+
+
+function angle(v)
+{
+    let angle = Math.atan2(v.y, v.x);
+    if (angle < 0) angle += Tau;
+
+    return angle;
 }
 
 
@@ -60403,16 +60413,14 @@ extends GOperator
 
     evalObjects(parse, options = {})
     {
+        this      .objects = this.input ? this.input.objects.map(o => o.copy()) : [];
+        this.value.objects = this.input ? this.input.objects.map(o => o.copy()) : [];
+
+            
         if (!this.options.enabled)
             return;
             
 
-        this.objects = 
-            this.input 
-            ? this.input.objects.map(o => o.copy())
-            : [];
-
-            
         const x = options.x.toNumber();
         const y = options.y.toNumber();
 
@@ -60575,15 +60583,13 @@ extends GOperator
 
     async evalObjects(parse, options = {})
     {
+        this      .objects = this.input ? this.input.objects.map(o => o.copy()) : [];
+        this.value.objects = this.input ? this.input.objects.map(o => o.copy()) : [];
+
+
         if (!this.options.enabled)
             return;
             
-
-        this.objects = 
-            this.input 
-            ? this.input.objects.map(o => o.copy())
-            : [];
-
 
         const bounds = getObjBounds(this.objects);
 
@@ -60785,17 +60791,14 @@ extends GOperator
 
     async evalObjects(parse, options = {})
     {
-        if (!this.options.enabled)
-            return;
-
-
-        this.objects = 
-            this.input 
-            ? this.input.objects.map(o => o.copy())
-            : [];
+        this      .objects = this.input ? this.input.objects.map(o => o.copy()) : [];
+        this.value.objects = this.input ? this.input.objects.map(o => o.copy()) : [];
 
 
         const bounds = getObjBounds(this.objects);
+
+        if (!this.options.enabled)
+            return bounds;
 
 
         const sx = options.scaleX.toNumber() / 100;
@@ -60948,7 +60951,7 @@ extends GOperator
 
         if (this.input)
         {
-            this.value = (await this.input.eval(parse)).toValue();
+            this.value        = (await this.input.eval(parse)).toValue();
             this.value.nodeId = this.nodeId;
         }
         else
@@ -60999,18 +61002,15 @@ extends GOperator
 
     evalObjects(parse, options = {})
     {
-        if (!this.options.enabled)
-            return;
-            
+        this      .objects = this.input ? this.input.objects.map(o => o.copy()) : [];
+        this.value.objects = this.input ? this.input.objects.map(o => o.copy()) : [];
 
-        this.objects = 
-            this.input 
-            ? this.input.objects.map(o => o.copy())
-            : [];
 
-            
         const bounds = getObjBounds(this.objects);
 
+        if (!this.options.enabled)
+            return bounds;
+            
 
         const sx = options.skewX.toNumber() / 100;
         const sy = options.skewY.toNumber() / 100;
