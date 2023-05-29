@@ -106,6 +106,9 @@ extends GShape
             return;
             
 
+        const objects = [];
+        
+        
         if (   this.value.x
             && this.value.y
             && this.value.width
@@ -113,16 +116,20 @@ extends GShape
             && this.value.angle
             && this.value.round)
         {
+            let    x = this.value.x     .value;
+            let    y = this.value.y     .value;
+            let    w = this.value.width .value;
+            let    h = this.value.height.value;
+            let    a = this.value.angle .value;
+            let   _a = a/360*Tau;
+            const  r = Math.max(0, this.value.round.value);
+
+
             const frame = new FigmaFrame(
                 this.nodeId,
                 this.nodeId,
                 this.nodeName,
-                this.value.x     .value,
-                this.value.y     .value,
-                this.value.width .value,
-                this.value.height.value,
-                this.value.angle .value,
-                this.value.round .value);
+                x, y, w, h, a, r);
 
 
             if (LIST_VALUES.includes(this.value.type))
@@ -154,21 +161,18 @@ extends GShape
                 this.value.y    .value,
                 this.value.angle.value/360*Tau);
 
+            frame.createDefaultTransform(x, y, w, h, _a);
 
-            this.objects       = [frame];
-            this.value.objects = [frame];
-
-            this.updateValues.push(['nObjects', new NumberValue(this.value.children.objects.length)]);
-        }
-        else
-        {
-            this.objects       = [];
-            this.value.objects = [];
-            
-            this.updateValues.push(['nObjects', new NumberValue(0)]);
+            objects.push(frame, ...frame.createTransformPoints(parse, x, y, w, h, _a));
         }
 
         
+        this      .objects = objects;
+        this.value.objects = objects;
+
+        this.updateValues.push(['nObjects', new NumberValue(objects.length)]);
+
+
         super.evalObjects(parse);
     }
 

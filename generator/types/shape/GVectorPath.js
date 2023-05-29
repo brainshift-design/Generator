@@ -115,12 +115,20 @@ extends GShape
         }
 
 
+        const objects = [];
+
+
         if (   points.length >= 2
             && this.value.closed 
             && this.value.degree 
             && this.value.winding
             && this.value.round)
         {
+            let  x = this.value.x     .value;
+            let  y = this.value.y     .value;
+            let  a = this.value.angle .value;
+            let _a = a/360*Tau;
+
             const path = new FigmaVectorPath(
                 this.nodeId,
                 this.nodeId,
@@ -131,20 +139,14 @@ extends GShape
                 this.value.winding.value,
                 this.value.round  .value);
                 
-            path.createDefaultTransform(
-                this.value.x    .value,
-                this.value.y    .value,
-                this.value.angle.value/360*Tau);
+            path.createDefaultTransform(x, y, w, h, _a);
 
-            this.objects       = [path];
-            this.value.objects = [path];
-        }
-        else
-        {
-            this.objects       = [];
-            this.value.objects = [];
+            objects.push(path, ...path.createTransformPoints(parse, x, y, w, h, _a));
         }
 
+
+        this      .objects = objects;
+        this.value.objects = objects;
 
         
         await super.evalObjects(parse);

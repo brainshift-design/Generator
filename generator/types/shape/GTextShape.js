@@ -154,7 +154,10 @@ extends GShape
         if (!this.options.enabled)
             return;
 
-            
+        
+        const objects = [];
+
+
         if (   this.value.text
             && this.value.x 
             && this.value.y 
@@ -169,18 +172,21 @@ extends GShape
             && this.value.lineHeight
             && this.value.letterSpacing)
         {
+            let  x = this.value.x     .value;
+            let  y = this.value.y     .value;
+            let  w = this.value.width .value;
+            let  h = this.value.height.value;
+            let  a = this.value.angle .value;
+            let _a = a/360*Tau;
+
             const fontName = figUniqueFontNames[this.value.font.value];
 
             const text = new FigmaText(
                 this.nodeId,
                 this.nodeId,
                 this.nodeName,
-                this.value.text         .value,
-                this.value.x            .value,
-                this.value.y            .value,
-                this.value.width        .value,
-                this.value.height       .value,
-                this.value.angle        .value,
+                this.value.text.value,
+                x, y, w, h, a,
                 fontName,
                 this.value.style        .value,
                 this.value.size         .value,
@@ -189,13 +195,14 @@ extends GShape
                 this.value.lineHeight   .value,
                 this.value.letterSpacing.value);
 
-            text.createDefaultTransform(
-                this.value.x    .value,
-                this.value.y    .value,
-                this.value.angle.value/360*Tau);
+            text.createDefaultTransform(x, y, w, h, _a);
 
-            this.objects = [text];
+            objects.push(text, ...text.createTransformPoints(parse, x, y, w, h, _a));
         }
+
+        
+        this      .objects = objects;
+        this.value.objects = objects;
 
         
         await super.evalObjects(parse);

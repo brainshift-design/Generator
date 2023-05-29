@@ -93,6 +93,9 @@ extends GShape
             return;
             
             
+        const objects = [];
+
+
         if (   this.x 
             && this.y 
             && this.width 
@@ -120,14 +123,16 @@ extends GShape
                 this.nodeName,
                 x, y, w, h, a, r, c);
 
-            poly.createDefaultTransform(x, y, _a);
+            poly.createDefaultTransform(x, y, w, h, _a);
 
-            
-            this.objects       = [poly];
-            this.value.objects = [poly];
+            objects.push(poly, ...poly.createTransformPoints(parse, x, y, w, h, _a));
         }
 
         
+        this      .objects = objects;
+        this.value.objects = objects;
+
+
         super.evalObjects(parse);
     }
 

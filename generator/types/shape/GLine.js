@@ -75,7 +75,10 @@ extends GShape
         if (!this.options.enabled)
             return;
             
-            
+
+        const objects = [];
+
+
         if (   this.x 
             && this.y 
             && this.width 
@@ -99,19 +102,17 @@ extends GShape
                     this.nodeName,
                     x, y, w, a);
 
-                line.createDefaultTransform(x, y, _a);
-
-                this      .objects = [line];
-                this.value.objects = [line];
-            }
-            else
-            {
-                this      .objects = [];
-                this.value.objects = [];
+                line.createDefaultTransform(x, y, w, 0.01, _a);
+                
+                objects.push(line, ...line.createTransformPoints(parse, x, y, w, 0.01, _a));
             }
         }
 
         
+        this      .objects = objects;
+        this.value.objects = objects;
+
+
         super.evalObjects(parse);
     }
 

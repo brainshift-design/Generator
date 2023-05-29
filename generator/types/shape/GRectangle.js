@@ -95,7 +95,7 @@ extends GShape
             return;
      
         
-        let objects = [];
+        const objects = [];
 
             
         if (   this.value.x
@@ -120,20 +120,15 @@ extends GShape
             if (   w != 0 
                 && h != 0)
             {
-                const rect = new FigmaRectangle(this.nodeId, this.nodeId,        this.nodeName,        x,     y,    w, h, a, r);
-                rect. xp0  = new FigmaPoint    (this.nodeId, this.nodeId+'.xp0', this.nodeName+' ^ 0', x,     y,   );
-                rect. xp1  = new FigmaPoint    (this.nodeId, this.nodeId+'.xp1', this.nodeName+' ^ 1', x + w, y,   );
-                rect. xp2  = new FigmaPoint    (this.nodeId, this.nodeId+'.xp2', this.nodeName+' ^ 2', x,     y + h);
+                const rect = new FigmaRectangle(
+                    this.nodeId, 
+                    this.nodeId, 
+                    this.nodeName, 
+                    x, y, w, h, a, r);
 
-                rect    .createDefaultTransform(x,     y,     w, h, _a);
-                rect.xp0.createDefaultTransform(x,     y,     0, 0, _a);
-                rect.xp1.createDefaultTransform(x + w, y,     0, 0, _a);
-                rect.xp2.createDefaultTransform(x,     y + h, 0, 0, _a);
+                rect.createDefaultTransform(x, y, w, h, _a);
 
-                objects = [rect];
-                
-                if (parse.settings.showTransformPoints)
-                    objects.push(rect.xp0, rect.xp1, rect.xp2);
+                objects.push(rect, ...rect.createTransformPoints(parse, x, y, w, h, _a));
             }
         }
 

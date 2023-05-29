@@ -90,22 +90,25 @@ extends GShape
         this.validate();
 
         return this;
-   }
+    }
 
 
 
-   evalObjects(parse, options = {})
-   {
+    evalObjects(parse, options = {})
+    {
        if (!this.options.enabled)
            return;
            
            
-       if (   this.x 
-           && this.y 
-           && this.width 
-           && this.height 
-           && this.angle)
-       {
+        const objects = [];
+
+
+        if (   this.x 
+            && this.y 
+            && this.width 
+            && this.height 
+            && this.angle)
+        {
             let    x = this.value.x     .value;
             let    y = this.value.y     .value;
             let    w = this.value.width .value;
@@ -129,45 +132,43 @@ extends GShape
                     this.nodeName,
                     x, y, w, h, a, f, t, i);
 
-                ellipse.createDefaultTransform(x, y, _a);
+                ellipse.createDefaultTransform(x, y, w, h, _a);
 
-                this      .objects = [ellipse];
-                this.value.objects = [ellipse];
+                objects.push(ellipse, ...ellipse.createTransformPoints(parse, x, y, w, h, _a));
             }
-            else
-            {
-                this      .objects = [];
-                this.value.objects = [];
-            }
-       }
+        }
 
        
-       super.evalObjects(parse);
-   }
+        this      .objects = objects;
+        this.value.objects = objects;
+
+
+        super.evalObjects(parse);
+    }
    
     
         
-   pushValueUpdates(parse)
-   {
-       super.pushValueUpdates(parse);
-
-       if (this.input) this.input.pushValueUpdates(prase);
-   }
+    pushValueUpdates(parse)
+    {
+        super.pushValueUpdates(parse);
+ 
+        if (this.input) this.input.pushValueUpdates(prase);
+    }
 
    
 
-   toValue()
-   {
-       const ellipse = new EllipseValue(
-           this.nodeId,
-           this.x     .toValue(),
-           this.y     .toValue(),
-           this.width .toValue(),
-           this.height.toValue(),
-           this.angle .toValue(),
-           this.from  .toValue(),
-           this.to    .toValue(),
-           this.inner .toValue());
+    toValue()
+    {
+        const ellipse = new EllipseValue(
+            this.nodeId,
+            this.x     .toValue(),
+            this.y     .toValue(),
+            this.width .toValue(),
+            this.height.toValue(),
+            this.angle .toValue(),
+            this.from  .toValue(),
+            this.to    .toValue(),
+            this.inner .toValue());
 
         ellipse.props   = this.props.toValue();
         ellipse.objects = this.objects.map(o => o.copy());

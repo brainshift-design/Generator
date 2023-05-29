@@ -40,7 +40,6 @@ class FigmaObject
         this.final      = base.final;
         
         this.xform      = clone(base.xform);
-
         this.xp0        = !!base.xp0 ? base.xp0.copy() : null;
         this.xp1        = !!base.xp1 ? base.xp1.copy() : null;
         this.xp2        = !!base.xp2 ? base.xp2.copy() : null;
@@ -91,6 +90,23 @@ class FigmaObject
             this.xp2.x = mulv2m3(xp2, xform).x;
             this.xp2.y = mulv2m3(xp2, xform).y;
         }
+    }
+
+
+
+    createTransformPoints(parse, x, y, w, h, _a)
+    {
+        this.xp0 = new FigmaPoint(this.nodeId, this.objectId+'.xp0', this.objectName+' ^ 0', x,     y,   );
+        this.xp1 = new FigmaPoint(this.nodeId, this.objectId+'.xp1', this.objectName+' ^ 1', x + w, y,   );
+        this.xp2 = new FigmaPoint(this.nodeId, this.objectId+'.xp2', this.objectName+' ^ 2', x,     y + h);
+
+        this.xp0.createDefaultTransform(x,     y,     0, 0, _a);
+        this.xp1.createDefaultTransform(x + w, y,     0, 0, _a);
+        this.xp2.createDefaultTransform(x,     y + h, 0, 0, _a);
+
+        return parse.settings.showTransformPoints
+             ? [this.xp0, this.xp1, this.xp2]
+             : [];
     }
 }
 

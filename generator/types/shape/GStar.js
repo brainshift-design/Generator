@@ -108,38 +108,44 @@ extends GShape
            return;
            
            
-       if (   this.x 
-           && this.y 
-           && this.width 
-           && this.height 
-           && this.angle 
-           && this.round
-           && this.points
-           && this.convex)
+        const objects = [];
+
+
+        if (   this.x 
+            && this.y 
+            && this.width 
+            && this.height 
+            && this.angle 
+            && this.round
+            && this.points
+            && this.convex)
         {
+            let    x = this.value.x     .value;
+            let    y = this.value.y     .value;
+            let    w = this.value.width .value;
+            let    h = this.value.height.value;
+            let    a = this.value.angle .value;
+            let   _a = a/360*Tau;
+            const  r = Math.max(0, this.value.round .value);
+            const  p = this.value.points.value;
+            const  c = this.value.convex.value;
+
             const star = new FigmaStar(
-                            this.nodeId,
-                            this.nodeId,
-                            this.nodeName,
-                            this.value.x     .value,
-                            this.value.y     .value,
-                            this.value.width .value,
-                            this.value.height.value,
-                            this.value.angle .value,
-                Math.max(0, this.value.round .value),
-                            this.value.points.value,
-                            this.value.convex.value);
+                this.nodeId,
+                this.nodeId,
+                this.nodeName,
+                x, y, w, h, a, r, p, c);
 
-            star.createDefaultTransform(
-                this.value.x    .value,
-                this.value.y    .value,
-                this.value.angle.value/360*Tau);
+            star.createDefaultTransform(x, y, w, h, _a);
 
-            this.objects       = [star];
-            this.value.objects = [star];
+            objects.push(star, ...star.createTransformPoints(parse, x, y, w, h, _a));
         }
 
        
+        this      .objects = objects;
+        this.value.objects = objects;
+
+
         await super.evalObjects(parse);
     }
 
