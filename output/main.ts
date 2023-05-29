@@ -4306,15 +4306,12 @@ function applyFigmaTransform(figObj, tl, tr, bl)
     const vb = point(bl.x - tl.x, bl.y - tl.y);
 
 
-    const sx =  nozero(vr.x);// * signX;
-    const sy =  nozero(vb.y);// * signY;
+    const sx =  nozero(vr.x);
+    const sy =  nozero(vb.y);
     const kx = -vr.y;
     const ky = -vb.x;
     let   dx = -tl.x;
     let   dy = -tl.y;
-
-
-    const a = angle(vr);
 
 
     let xform = mulm3m3(
@@ -4323,12 +4320,10 @@ function applyFigmaTransform(figObj, tl, tr, bl)
          [0,       0,        1]],
         createTransform(dx, dy));
 
-    console.clear();
-    //console.log('a =', a);
-    console.log('xform =', '\n' + xform[0] + '\n' + xform[1] + '\n' + xform[2] + '\n');
-
     xform = inversem3(xform);
 
+
+    const a = angle(vr);
 
     if (   a >  Tau/4  
         && a <= Tau*3/4)

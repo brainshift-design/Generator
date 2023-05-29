@@ -110,16 +110,19 @@ extends GOperator
         const bounds = getObjBounds(this.objects);
 
 
-        const a = options.angle.toNumber()/360*Tau;
+        const a  = options.angle.toNumber()/360*Tau;
 
-        const xform =
-            [[ Math.cos(a), Math.sin(a), 0],
-             [-Math.sin(a), Math.cos(a), 0],
-             [ 0,           0,           1]];
-        
-        
         const cx = bounds.x + bounds.width  * options.centerX.toNumber()/100;
         const cy = bounds.y + bounds.height * options.centerY.toNumber()/100;
+
+
+        const xform = mulm3m3(
+            createTransform(cx, cy),
+            [[ Math.cos(a), Math.sin(a), 0],
+             [-Math.sin(a), Math.cos(a), 0],
+             [ 0,           0,           1]],
+            createTransform(-cx, -cy));
+       
 
         for (const obj of this.objects)
         {

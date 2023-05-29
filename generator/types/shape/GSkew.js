@@ -117,14 +117,17 @@ extends GOperator
         const sx = options.skewX.toNumber() / 100;
         const sy = options.skewY.toNumber() / 100;
 
-        const xform =
-            [[1,  sx, 0],
-             [sy, 1,  0],
-             [0,  0,  1]];
-
-
         const cx = bounds.x + bounds.width  * options.centerX.toNumber()/100;
         const cy = bounds.y + bounds.height * options.centerY.toNumber()/100;
+
+
+        const xform = mulm3m3(
+            createTransform(cx, cy),
+            [[1,  sx, 0],
+             [sy, 1,  0],
+             [0,  0,  1]],
+            createTransform(-cx, -cy));
+
 
         for (const obj of this.objects)
         {
