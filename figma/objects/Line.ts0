@@ -1,0 +1,42 @@
+function genLineIsValid(genLine)
+{
+    return genLine.x     != null && !isNaN(genLine.x    )
+        && genLine.y     != null && !isNaN(genLine.y    )
+        && genLine.width != null && !isNaN(genLine.width)
+        && genLine.angle != null && !isNaN(genLine.angle);
+}
+
+
+
+function figCreateLine(genLine)
+{
+    const figLine = figma.createLine();
+
+    figLine.name = makeObjectName(genLine);
+
+
+    if (!genLineIsValid(genLine))
+        return figLine;
+
+
+    setObjectTransform(figLine, genLine);
+    setObjectProps    (figLine, genLine);
+
+    
+    return figLine;
+}
+
+
+
+function figUpdateLine(figLine, genLine)
+{
+    if (!genLineIsValid(genLine))
+        return;
+
+
+    figLine.name = makeObjectName(genLine);
+
+
+    setObjectTransform(figLine, genLine);
+    setObjectProps    (figLine, genLine);
+}

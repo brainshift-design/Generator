@@ -1,0 +1,59 @@
+
+function genVectorPathIsValid(genPath)
+{
+    return genPath.winding != null && !isNaN(genPath.winding)
+        && genPath.round   != null && !isNaN(genPath.round  );
+}
+
+
+
+function figCreateVectorPath(genPath)
+{
+    const figPath = figma.createVector();
+
+    figPath.name = makeObjectName(genPath);
+
+    if (!genVectorPathIsValid(genPath))
+        return figPath;
+
+    
+    figPath.vectorPaths = [{
+        windingRule: genPath.winding == 1 ? 'NONZERO' : 'EVENODD',
+        data:        genPath.pathData
+    }];
+
+
+    figPath.cornerRadius = genPath.round;
+
+
+    setObjectTransform(figPath, genPath);
+    setObjectProps    (figPath, genPath);
+
+
+    return figPath;
+}
+
+
+
+function figUpdateVectorPath(figPath, genPath)
+{
+    if (!genVectorPathIsValid(genPath))
+        return;
+
+
+    figPath.name = makeObjectName(genPath);
+
+    
+    figPath.vectorPaths = [{
+        windingRule: genPath.winding == 1 ? 'NONZERO' : 'EVENODD',
+        data:        genPath.pathData
+    }];
+
+
+    figPath.cornerRadius = genPath.round;
+    
+
+    setObjectTransform(figPath, genPath);
+    setObjectProps    (figPath, genPath);
+}
+

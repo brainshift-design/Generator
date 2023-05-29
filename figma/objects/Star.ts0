@@ -1,0 +1,55 @@
+function genStarIsValid(genStar)
+{
+    return genStar.x      != null && !isNaN(genStar.x     )
+        && genStar.y      != null && !isNaN(genStar.y     )
+        && genStar.width  != null && !isNaN(genStar.width )
+        && genStar.height != null && !isNaN(genStar.height)
+        && genStar.angle  != null && !isNaN(genStar.angle )
+        && genStar.round  != null && !isNaN(genStar.round )
+        && genStar.points != null && !isNaN(genStar.points)
+        && genStar.convex != null && !isNaN(genStar.convex);
+}
+
+
+
+function figCreateStar(genStar)
+{
+    const figStar = figma.createStar();
+
+    figStar.name = makeObjectName(genStar);
+
+    if (!genStarIsValid(genStar))
+        return figStar;
+
+
+    figStar.cornerRadius = genStar.round;
+    figStar.pointCount   = genStar.points;
+    figStar.innerRadius  = genStar.convex / 100;
+
+
+    setObjectTransform(figStar, genStar);
+    setObjectProps    (figStar, genStar);
+
+
+    return figStar;
+}
+
+
+
+function figUpdateStar(figStar, genStar)
+{
+    if (!genStarIsValid(genStar))
+        return;
+
+
+    figStar.name = makeObjectName(genStar);
+
+
+    figStar.cornerRadius = genStar.round;
+    figStar.pointCount   = genStar.points;
+    figStar.innerRadius  = genStar.convex / 100;
+
+
+    setObjectTransform(figStar, genStar);
+    setObjectProps    (figStar, genStar);
+}

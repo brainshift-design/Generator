@@ -98,7 +98,7 @@ extends GOperator
             obj.nodeId   = this.nodeId;
             obj.objectId = obj.objectId + OBJECT_SEPARATOR + this.nodeId;
 
-            applyTransform(obj, 0, 0, xform);
+            obj.applyTransform(0, 0, xform);
         }
 
         

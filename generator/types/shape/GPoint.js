@@ -86,28 +86,25 @@ extends GOperator
             return;
             
             
+        let objects = [];
+
+
         if (   this.value.x
             && this.value.y)
         {
-           const point = new FigmaPoint(
-                this.nodeId,
-                this.nodeId,
-                this.nodeName,
-                this.value.x.value,
-                this.value.y.value)
+            const x = this.value.x.value;
+            const y = this.value.y.value;
 
-            point.createDefaultTransform(
-                0, //this.value.x.value,
-                0, //this.value.y.value,
-                0);
+            const point = new FigmaPoint(this.nodeId, this.nodeId, this.nodeName, x, y);
 
-            this.objects       = [point];
-            this.value.objects = [point];
+            point.createDefaultTransform(x, y, 0);
+
+            objects = [point];
         }
 
         
-        if (this.value)
-            this.value.objects = this.objects.map(o => o.copy());
+        this      .objects = objects;
+        this.value.objects = objects;
 
 
         super.evalObjects(parse);

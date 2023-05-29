@@ -240,58 +240,6 @@ function signedPosOnLine(p0, p1, p)
 
 
 
-function divm3s(m, s)
-{
-    for (let i = 0; i < 3; i++)
-        for (let j = 0; j < 3; j++)
-            m[i][j] /= s;
-
-    return m;
-}
-
-
-
-function cofactor(m)
-{
-    return [[  m[1][1] * m[2][2] - m[2][1] * m[1][2], -(m[1][0] * m[2][2] - m[2][0] * m[1][2]),  m[1][0] * m[2][1] - m[2][0] * m[1][1] ],
-            [-(m[0][1] * m[2][2] - m[2][1] * m[0][2]),  m[0][0] * m[2][2] - m[2][0] * m[0][2], -(m[0][0] * m[2][1] - m[2][0] * m[0][1])],
-            [  m[0][1] * m[1][2] - m[1][1] * m[0][2], -(m[0][0] * m[1][2] - m[1][0] * m[0][2]),  m[0][0] * m[1][1] - m[1][0] * m[0][1] ]]; 
-}
-
-
-
-function adjugate(m)
-{
-    return cofactor(transpose(m));
-}
-
-
-
-function determinant(m)
-{
-    return   m[0][0] * (m[1][1] * m[2][2] - m[1][2] * m[2][1])
-           - m[0][1] * (m[1][0] * m[2][2] - m[2][0] * m[1][2])
-           + m[0][2] * (m[1][0] * m[2][1] - m[2][0] * m[1][1]);
-}
-
-
-
-function inversem3(m)
-{
-    return divm3s(adjugate(m), determinant(m));
-}
-
-
-
-function transpose(m)
-{
-    return [[m[0][0], m[1][0], m[2][0]],
-            [m[0][1], m[1][1], m[2][1]],
-            [m[0][2], m[1][2], m[2][2]]];
-}
-
-
-
 function transform(p, xform)
 {
     return mulv2m3(p, xform);

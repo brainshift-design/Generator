@@ -1,0 +1,75 @@
+function genBooleanIsValid(genBool)
+{
+    return genBool.children.length > 0;
+}
+
+
+
+function figCreateBoolean(genBool)
+{
+    let objects = [];
+
+    for (const obj of genBool.children)
+        figCreateObject(obj, o => objects = [...objects, o]);
+
+
+    let figBool = null;
+
+    if (!isEmpty(objects))
+    {
+        switch (genBool.operation)
+        {
+            case 0: figBool = figma.union    (objects, figma.currentPage); break;
+            case 1: figBool = figma.subtract (objects, figma.currentPage); break;
+            case 2: figBool = figma.intersect(objects, figma.currentPage); break;
+            case 3: figBool = figma.exclude  (objects, figma.currentPage); break;
+        }
+    }
+
+
+    if (figBool)
+    {
+        figBool.name = makeObjectName(genBool);
+
+        setObjectTransform(figBool, genBool);
+
+        if (!genBooleanIsValid(genBool))
+            return figBool;
+    }
+
+
+    return figBool;
+}
+
+
+
+function figUpdateBoolean(figBool, genBool)
+{
+    if (!genBooleanIsValid(genBool))
+    {
+        figBool.remove();
+        return;
+    }
+
+
+    figBool.name = makeObjectName(genBool);
+
+
+    setObjectTransform(figBool, genBool);
+
+
+    figUpdateObjects(figBool, genBool.children);
+
+
+    // figPostMessageToUi({
+    //     cmd:   'uiUpdateGroupBounds',
+    //     nodeId: genBool.nodeId,
+    //     x:      figBool.x,
+    //     y:      figBool.y,
+    //     width:  figBool.width,
+    //     height: figBool.height
+    // });
+}
+
+
+

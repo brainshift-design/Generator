@@ -1,0 +1,69 @@
+function genFrameIsValid(genGroup)
+{
+    return genGroup.x      != null && !isNaN(genGroup.x     )
+        && genGroup.y      != null && !isNaN(genGroup.y     )
+        && genGroup.width  != null && !isNaN(genGroup.width )
+        && genGroup.height != null && !isNaN(genGroup.height)
+        && genGroup.round  != null && !isNaN(genGroup.round )
+        && genGroup.angle  != null && !isNaN(genGroup.angle );
+}
+
+
+
+function figCreateFrame(genFrame)
+{
+    const figFrame = figma.createFrame();
+
+    figFrame.name = makeObjectName(genFrame);
+
+    if (!genFrameIsValid(genFrame))
+        return figFrame;
+
+
+    if (figFrame)
+    {
+        if (!genFrameIsValid(genFrame))
+            return figFrame;
+        
+        
+        figFrame.cornerRadius = genFrame.round;
+
+        
+        setObjectTransform(figFrame, genFrame);
+        setObjectProps    (figFrame, genFrame);
+
+
+        let objects = [];
+
+        for (const obj of genFrame.children)
+            figCreateObject(obj, o => objects = [...objects, o]);
+
+        for (const obj of objects)
+            figFrame.appendChild(obj);
+    }
+
+
+    return figFrame;
+}
+
+
+
+function figUpdateFrame(figFrame, genFrame)
+{
+    if (!genFrameIsValid(genFrame))
+        return;
+
+
+    figFrame.name = makeObjectName(genFrame);
+
+
+    figFrame.cornerRadius = genFrame.round;
+
+
+    setObjectTransform(figFrame, genFrame);
+    setObjectProps    (figFrame, genFrame);
+        
+
+    figUpdateObjects(figFrame, genFrame.children);
+}
+

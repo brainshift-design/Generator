@@ -82,7 +82,7 @@ extends GOperator
             new NumberValue(0),
             new NumberValue(0));
 
-            
+
         this.updateValues =
         [
             ['value',      this.value],
@@ -136,7 +136,7 @@ extends GOperator
 
             if (   bounds.width  > 0
                 && bounds.height > 0)
-                applyTransform(obj, cx, cy, xform);
+                obj.applyTransform(cx, cy, xform);
         }
 
         
@@ -169,9 +169,12 @@ extends GOperator
     {
         super.pushValueUpdates(parse);
 
-        if (this.input) this.input.pushValueUpdates(parse);
-        if (this.skewX    ) this.skewX    .pushValueUpdates(parse);
-        if (this.skewY    ) this.skewY    .pushValueUpdates(parse);
+        if (this.input     ) this.input     .pushValueUpdates(parse);
+        if (this.skewX     ) this.skewX     .pushValueUpdates(parse);
+        if (this.skewY     ) this.skewY     .pushValueUpdates(parse);
+        if (this.centerX   ) this.centerX   .pushValueUpdates(parse);
+        if (this.centerY   ) this.centerY   .pushValueUpdates(parse);
+        if (this.showCenter) this.showCenter.pushValueUpdates(parse);
     }
 
 
@@ -179,8 +182,11 @@ extends GOperator
     isValid()
     {
         return super.isValid()
-            && this.skewX.isValid()
-            && this.skewY.isValid();
+            && this.skewX     .isValid()
+            && this.skewY     .isValid()
+            && this.centerX   .isValid()
+            && this.centerY   .isValid()
+            && this.showCenter.isValid();
     }
 
 
@@ -189,9 +195,12 @@ extends GOperator
     {
         super.invalidateInputs();
 
-        if (this.input) this.inputinvalidate();
-        if (this.skewX) this.skewX.invalidateInputs();
-        if (this.skewY) this.skewY.invalidateInputs();
+        if (this.input     ) this.input     .invalidateInputs();
+        if (this.skewX     ) this.skewX     .invalidateInputs();
+        if (this.skewY     ) this.skewY     .invalidateInputs();
+        if (this.centerX   ) this.centerX   .invalidateInputs();
+        if (this.centerY   ) this.centerY   .invalidateInputs();
+        if (this.showCenter) this.showCenter.invalidateInputs();
     }
 
 

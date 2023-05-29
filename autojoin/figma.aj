@@ -11,8 +11,9 @@
 ../figma/canvas.ts0
 ../figma/events.ts0
 ../figma/messages.ts0
-../figma/objects.ts0
 ../figma/styles.ts0
 ../figma/storage.ts0
 ../figma/ui.ts0
 ../figma/util.ts0
+
+../figma/objects/*.ts0

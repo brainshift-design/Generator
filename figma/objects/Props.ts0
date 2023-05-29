@@ -1,0 +1,263 @@
+function getObjectFills(genObjFills)
+{
+    const fills = [];
+
+
+    for (const fill of genObjFills)
+    {
+        switch (fill[0])
+        {
+            case 'SOLID':
+            {
+                const color = {
+                    r: Math.min(Math.max(0, fill[1] / 0xff), 1), 
+                    g: Math.min(Math.max(0, fill[2] / 0xff), 1), 
+                    b: Math.min(Math.max(0, fill[3] / 0xff), 1) };
+
+                const opacity = Math.min(Math.max(0, fill[4] / 100), 1);
+
+
+                if (   !isNaN(color.r)
+                    && !isNaN(color.g)
+                    && !isNaN(color.b)
+                    && !isNaN(opacity))
+                    fills.push(
+                    {
+                        type:    fill[0], 
+                        color:   color,
+                        opacity: opacity
+                    });
+
+
+                break;
+            }
+
+            case 'GRADIENT_LINEAR':
+            case 'GRADIENT_RADIAL':
+            case 'GRADIENT_ANGULAR':
+            case 'GRADIENT_DIAMOND':
+            {
+                const xform = fill[1];
+
+
+                const stops = [];
+
+                for (const stop of fill[2])
+                {
+                    stops.push({
+                        color: 
+                        {
+                            r: stop[0],
+                            g: stop[1],
+                            b: stop[2],
+                            a: stop[3]
+                        },
+                        position: stop[4]
+                    })    
+                }
+
+
+                fills.push(
+                {
+                    type:              fill[0],
+                    gradientTransform: xform,
+                    gradientStops:     stops
+                });
+
+
+                break;
+            }
+        }
+    }
+
+
+    return fills;
+}
+
+
+
+function getObjectEffects(genObjEffects)
+{
+    const effects = [];
+
+
+    for (const effect of genObjEffects)
+    {
+        const type = effect[0];
+
+        switch (type)
+        {
+            case 'DROP_SHADOW':
+            {
+                const color = {
+                    r: Math.min(Math.max(0, effect[1]), 1), 
+                    g: Math.min(Math.max(0, effect[2]), 1), 
+                    b: Math.min(Math.max(0, effect[3]), 1),
+                    a: Math.min(Math.max(0, effect[4]), 1) };
+
+                const offset = {
+                    x: effect[5],
+                    y: effect[6] };
+
+                const radius  = effect[ 7];
+                const spread  = effect[ 8];
+                const blend   = effect[ 9];
+                const behind  = effect[10];
+                const visible = effect[11];
+  
+
+                if (   !isNaN(color.r)
+                    && !isNaN(color.g)
+                    && !isNaN(color.b)
+                    && !isNaN(color.a)
+                    && !isNaN(offset.x)
+                    && !isNaN(offset.y)
+                    && !isNaN(radius)
+                    && !isNaN(spread))
+                    effects.push(
+                    {
+                        type:                 type, 
+                        color:                color,
+                        offset:               offset,
+                        radius:               radius,
+                        spread:               spread,
+                        visible:              visible,
+                        blendMode:            blend,
+                        showShadowBehindNode: behind
+                    });
+
+                break;
+            }
+
+            case 'INNER_SHADOW':
+            {
+                const color = {
+                    r: Math.min(Math.max(0, effect[1]), 1), 
+                    g: Math.min(Math.max(0, effect[2]), 1), 
+                    b: Math.min(Math.max(0, effect[3]), 1),
+                    a: Math.min(Math.max(0, effect[4]), 1) };
+
+                const offset = {
+                    x: effect[5],
+                    y: effect[6] };
+
+                const radius  = effect[ 7];
+                const spread  = effect[ 8];
+                const blend   = effect[ 9];
+                const visible = effect[10];
+  
+
+                if (   !isNaN(color.r)
+                    && !isNaN(color.g)
+                    && !isNaN(color.b)
+                    && !isNaN(color.a)
+                    && !isNaN(offset.x)
+                    && !isNaN(offset.y)
+                    && !isNaN(radius)
+                    && !isNaN(spread))
+                    effects.push(
+                    {
+                        type:       type, 
+                        color:      color,
+                        offset:     offset,
+                        radius:     radius,
+                        spread:     spread,
+                        visible:    visible,
+                        blendMode:  blend
+                    });
+
+                break;
+            }
+
+            case 'LAYER_BLUR':
+            {
+                const radius  = effect[1];
+                const visible = effect[2];
+
+                if (!isNaN(radius))
+                    effects.push(
+                    {
+                        type:    type, 
+                        visible: visible,
+                        radius:  radius
+                    });
+
+                break;
+            }
+
+            case 'BACKGROUND_BLUR':
+            {
+                const radius  = effect[1];
+                const visible = effect[2];
+
+                if (!isNaN(radius))
+                    effects.push(
+                    {
+                        type:    type, 
+                        visible: visible,
+                        radius:  radius
+                    });
+
+                break;
+            }
+        }
+    }
+
+
+    return effects;
+}
+
+
+
+function setObjectProps(figObj, genObj)
+{
+    setObjectFills  (figObj, genObj);
+    setObjectStrokes(figObj, genObj);
+    setObjectEffects(figObj, genObj);
+
+    figObj.isMask = genObj.isMask;
+}
+
+
+
+function setObjectFills(figObj, genObj)
+{
+    if (   !!genObj.fills
+        &&  !isEmpty(genObj.fills))
+        figObj.fills = getObjectFills(genObj.fills);
+    else
+        figObj.fills = [];
+}
+
+
+
+function setObjectStrokes(figObj, genObj)
+{
+    if (    genObj.strokes != null
+        && !isEmpty(genObj.strokes))
+    {
+        figObj.strokes      = getObjectFills(genObj.strokes);
+
+        figObj.strokeWeight = Math.max(0, genObj.strokeWeight);
+        figObj.strokeAlign  = genObj.strokeAlign;
+        figObj.strokeJoin   = genObj.strokeJoin;
+        
+        const miterAngle = genObj.strokeMiterLimit / 360 * Math.PI*2;
+        const miterLimit = 1 / Math.sin(miterAngle/2);
+        
+        figObj.strokeMiterLimit = Math.min(Math.max(0, miterLimit), 16);
+    }
+    else
+        figObj.strokes = [];
+}
+
+
+
+function setObjectEffects(figObj, genObj)
+{
+    if (   !!genObj.effects
+        &&  !isEmpty(genObj.effects))
+        figObj.effects = getObjectEffects(genObj.effects);
+    else
+        figObj.effects = [];
+}

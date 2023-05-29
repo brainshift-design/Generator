@@ -22,7 +22,7 @@ extends OperatorBase
 
 
         this.addParam(this.paramSkewX      = new NumberParam('skewX',      'skew x',      true, true, true));
-        this.addParam(this.paramSkewY      = new NumberParam('skewX',      'skew y',      true, true, true));
+        this.addParam(this.paramSkewY      = new NumberParam('skewY',      'skew y',      true, true, true));
         this.addParam(this.paramCenterX    = new NumberParam('centerX',    'center x',    true, true, true, 50, 0, 100));
         this.addParam(this.paramCenterY    = new NumberParam('centerY',    'center y',    true, true, true, 50, 0, 100));
         this.addParam(this.paramShowCenter = new NumberParam('showCenter', 'show center', true, true, true, 0, 0, 1));

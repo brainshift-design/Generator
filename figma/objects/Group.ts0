@@ -1,0 +1,63 @@
+function genShapeGroupIsValid(genGroup)
+{
+    return genGroup.children.length > 0;
+}
+
+
+
+function figCreateShapeGroup(genGroup)
+{
+    let objects = [];
+
+    for (const obj of genGroup.children)
+        figCreateObject(obj, o => objects = [...objects, o]);
+
+
+    const figGroup = 
+        !isEmpty(objects)
+        ? figma.group(objects, figma.currentPage)
+        : null;
+
+    if (figGroup)
+    {
+        figGroup.name = makeObjectName(genGroup);
+
+        //setObjectTransform(figGroup, genGroup);
+
+        if (!genShapeGroupIsValid(genGroup))
+            return figGroup;
+    }
+
+
+    return figGroup;
+}
+
+
+
+function figUpdateShapeGroup(figGroup, genGroup)
+{
+    if (!genShapeGroupIsValid(genGroup))
+    {
+        figGroup.remove();
+        return;
+    }
+
+
+    figGroup.name = makeObjectName(genGroup);
+
+
+    //setObjectTransform(figGroup, genGroup);
+
+
+    figUpdateObjects(figGroup, genGroup.children);
+
+
+    // figPostMessageToUi({
+    //     cmd:   'uiUpdateGroupBounds',
+    //     nodeId: genGroup.nodeId,
+    //     x:      figGroup.x,
+    //     y:      figGroup.y,
+    //     width:  figGroup.width,
+    //     height: figGroup.height
+    // });
+}

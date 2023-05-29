@@ -1,0 +1,48 @@
+function genRectIsValid(genRect)
+{
+    return genRect.x      != null && !isNaN(genRect.x     )
+        && genRect.y      != null && !isNaN(genRect.y     )
+        && genRect.width  != null && !isNaN(genRect.width )
+        && genRect.height != null && !isNaN(genRect.height)
+        && genRect.angle  != null && !isNaN(genRect.angle )
+        && genRect.round  != null && !isNaN(genRect.round );
+}
+
+
+
+function figCreateRect(genRect)
+{
+    const figRect = figma.createRectangle();
+
+    figRect.name = makeObjectName(genRect);
+
+    if (!genRectIsValid(genRect))
+        return figRect;
+
+
+    figRect.cornerRadius = genRect.round;
+
+
+    setObjectTransform(figRect, genRect);
+    setObjectProps    (figRect, genRect);
+
+
+    return figRect;
+}
+
+
+
+function figUpdateRect(figRect, genRect)
+{
+    if (!genRectIsValid(genRect))
+        return;
+
+
+    figRect.name = makeObjectName(genRect);
+
+
+    figRect.cornerRadius = genRect.round;
+
+    setObjectTransform(figRect, genRect);
+    setObjectProps    (figRect, genRect);
+}

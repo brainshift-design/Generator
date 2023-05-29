@@ -14,6 +14,8 @@ extends FigmaShape
         this.x        = x;
         this.y        = y;
         this.isCenter = isCenter;
+
+        this.createDefaultTransform(x, y, 0, 0);
     }
 
 

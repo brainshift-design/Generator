@@ -1,0 +1,92 @@
+function genTextIsValid(genText)
+{
+    return genText.text   != null
+        && genText.x      != null && !isNaN(genText.x     )
+        && genText.y      != null && !isNaN(genText.y     )
+        && genText.width  != null && !isNaN(genText.width )
+        && genText.height != null && !isNaN(genText.height)
+        && genText.angle  != null && !isNaN(genText.angle )
+        && genText.font   != null && genText.font != NULL
+        && genText.size   != null && !isNaN(genText.size  );
+}
+
+
+
+function figCreateText(genText)
+{
+    const figText = figma.createText();
+    
+    figText.name = makeObjectName(genText);
+
+    if (!genTextIsValid(genText))
+        return figText;
+
+
+    const fontName = 
+    { 
+        family: genText.font, 
+        style: 'Regular' 
+    };
+
+    (async function() 
+    {
+        await figma.loadFontAsync(fontName); 
+
+        figText.fontName   = fontName;
+        figText.fontSize   = Math.max(1, genText.size);
+        
+        figText.characters = genText.text;
+    })();
+
+
+    setObjectTransform(figText, genText);
+    setObjectProps    (figText, genText);
+
+
+    return figText;
+}
+
+
+
+function figUpdateText(figText, genText)
+{
+    if (!genTextIsValid(genText))
+        return;
+
+
+    const fontName = 
+    { 
+        family: genText.font, 
+        style: 'Regular' 
+    };
+
+    (async function() 
+    { 
+        await figma.loadFontAsync(fontName); 
+
+        figText.fontName   = fontName;
+        figText.fontSize   = Math.max(1, genText.size);
+
+        figText.characters = genText.text;
+    })();
+
+
+    figText.name = makeObjectName(genText);
+
+
+    setObjectTransform(figText, genText);
+    setObjectProps    (figText, genText);
+}
+
+
+
+function setTextStyle(figText, genText)
+{
+    //switch (genText.style)
+    //{
+
+    //}
+}
+
+
+

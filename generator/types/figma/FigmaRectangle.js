@@ -19,6 +19,8 @@ extends FigmaShape
         this.height = height;
         this.angle  = angle;
         this.round  = round;
+
+        this.createDefaultTransform(x, y, width, height, angle/360*Tau);
     }
 
 

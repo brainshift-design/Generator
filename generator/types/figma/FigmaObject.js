@@ -13,9 +13,9 @@ class FigmaObject
     
     xform;
 
-    xp0; //  xp0 ------- xp1 
-    xp1; //   |
-    xp2; //  xp2
+    xp0 = null; //  xp0 ------- xp1 
+    xp1 = null; //   |
+    xp2 = null; //  xp2
 
 
 
@@ -41,9 +41,9 @@ class FigmaObject
         
         this.xform      = clone(base.xform);
 
-        this.xp0        = base.xp0;
-        this.xp1        = base.xp1;
-        this.xp2        = base.xp2;
+        this.xp0        = !!base.xp0 ? base.xp0.copy() : null;
+        this.xp1        = !!base.xp1 ? base.xp1.copy() : null;
+        this.xp2        = !!base.xp2 ? base.xp2.copy() : null;
     }
 
 
@@ -56,16 +56,65 @@ class FigmaObject
 
 
 
-    createDefaultTransform(x, y, w, h, a)
+    createDefaultTransform(x, y, w, h, a = 0)
     {
         this.xform =
             [[Math.cos(a), -Math.sin(a), x],
              [Math.sin(a),  Math.cos(a), y],
              [0,            0,           1]];
+    }
 
-        this.xp0 = mulv2m3(point(x,     y    ), this.xform);
-        this.xp1 = mulv2m3(point(x + w, y    ), this.xform);
-        this.xp2 = mulv2m3(point(x,     y + h), this.xform);
+
+
+    applyTransform(cx, cy, xform)
+    {
+        // const xToOrigin = 
+        //     [[1, 0, cx],
+        //      [0, 1, cy],
+        //      [0, 0, 1 ]];
+
+        // const xToPoint = 
+        //     [[1, 0, -cx],
+        //      [0, 1, -cy],
+        //      [0, 0,  1 ]];
+
+
+        // add to object's "total" transformation
+
+        // this.xform = mulm3m3(this.xform, xToOrigin);
+        // this.xform = mulm3m3(this.xform, xform);
+        // this.xform = mulm3m3(this.xform, xToPoint);
+
+        // this.xform = mulm3m3(
+        //     this.xform,
+        //     [[1, 0, -cx],
+        //      [0, 1, -cy],
+        //      [0, 0,  1 ]]);
+
+
+        if (this.type == POINT)
+        {
+            const p = mulv2m3(point(this.x, this.y), xform);
+
+            this.x = p.x;
+            this.y = p.y;
+        }
+        else
+        {
+            const xp0  = point(this.xp0.x, this.xp0.y);
+            const xp1  = point(this.xp1.x, this.xp1.y);
+            const xp2  = point(this.xp2.x, this.xp2.y);
+
+
+            this.xp0.x = mulv2m3(xp0, xform).x;
+            this.xp0.y = mulv2m3(xp0, xform).y;
+
+            this.xp1.x = mulv2m3(xp1, xform).x;
+            this.xp1.y = mulv2m3(xp1, xform).y;
+
+            this.xp2.x = mulv2m3(xp2, xform).x;
+            this.xp2.y = mulv2m3(xp2, xform).y;
+        }
     }
 }
 
@@ -90,56 +139,4 @@ function copyFigmaObject(obj)
 
     console.assert(false, 'invalid Figma object type \'' + obj.type + '\'');
     return null;
-}
-
-
-
-function applyTransform(obj, cx, cy, xform)
-{
-    const xToOrigin = 
-        [[1, 0, cx],
-         [0, 1, cy],
-         [0, 0, 1 ]];
-
-    const xToPoint = 
-        [[1, 0, -cx],
-         [0, 1, -cy],
-         [0, 0,  1 ]];
-
-
-    // add to object's "total" transformation
-
-    obj.xform = mulm3m3(obj.xform, xToOrigin);
-    obj.xp0   = mulv2m3(obj.xp0,   xToOrigin);
-    obj.xp1   = mulv2m3(obj.xp1,   xToOrigin);
-    obj.xp2   = mulv2m3(obj.xp2,   xToOrigin);
-
-
-    obj.xform = mulm3m3(obj.xform, xform);
-    obj.xp0   = mulv2m3(obj.xp0,   xform);
-    obj.xp1   = mulv2m3(obj.xp1,   xform);
-    obj.xp2   = mulv2m3(obj.xp2,   xform);
-
-
-    obj.xform = mulm3m3(obj.xform, xToPoint);
-    obj.xp0   = mulv2m3(obj.xp0,   xToPoint);
-    obj.xp1   = mulv2m3(obj.xp1,   xToPoint);
-    obj.xp2   = mulv2m3(obj.xp2,   xToPoint);
-
-
-    obj.xform = mulm3m3(
-        obj.xform,
-        [[1, 0, -cx],
-         [0, 1, -cy],
-         [0, 0,  1 ]]);
-
-
-    // apply only this transformation to the position (only for points)
-
-    const p = mulv2m3(
-        point(obj.x, obj.y), 
-        xform);
-
-    obj.x = p.x;
-    obj.y = p.y;
 }

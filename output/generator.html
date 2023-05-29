@@ -195,6 +195,58 @@ function mulm3m3(...mm)
 
 
 
+function divm3s(m, s)
+{
+    for (let i = 0; i < 3; i++)
+        for (let j = 0; j < 3; j++)
+            m[i][j] /= s;
+
+    return m;
+}
+
+
+
+function adjugate(m)
+{
+    return cofactor(transpose(m));
+}
+
+
+
+function transpose(m)
+{
+    return [[m[0][0], m[1][0], m[2][0]],
+            [m[0][1], m[1][1], m[2][1]],
+            [m[0][2], m[1][2], m[2][2]]];
+}
+
+
+
+function cofactor(m)
+{
+    return [[  m[1][1] * m[2][2] - m[2][1] * m[1][2], -(m[1][0] * m[2][2] - m[2][0] * m[1][2]),  m[1][0] * m[2][1] - m[2][0] * m[1][1] ],
+            [-(m[0][1] * m[2][2] - m[2][1] * m[0][2]),  m[0][0] * m[2][2] - m[2][0] * m[0][2], -(m[0][0] * m[2][1] - m[2][0] * m[0][1])],
+            [  m[0][1] * m[1][2] - m[1][1] * m[0][2], -(m[0][0] * m[1][2] - m[1][0] * m[0][2]),  m[0][0] * m[1][1] - m[1][0] * m[0][1] ]]; 
+}
+
+
+
+function determinant(m)
+{
+    return   m[0][0] * (m[1][1] * m[2][2] - m[1][2] * m[2][1])
+           - m[0][1] * (m[1][0] * m[2][2] - m[2][0] * m[1][2])
+           + m[0][2] * (m[1][0] * m[2][1] - m[2][0] * m[1][1]);
+}
+
+
+
+function inversem3(m)
+{
+    return divm3s(adjugate(m), determinant(m));
+}
+
+
+
 function createTransform(x, y, scaleX, scaleY, angle, skewX = 0, skewY = 0)
 {
     const cosA = Math.cos(angle);
@@ -1160,58 +1212,6 @@ function signedPosOnLine(p0, p1, p)
     cp = transform(cp, xform);
 
     return (cp.x - p0.x) / nozero(p1.x - p0.x);
-}
-
-
-
-function divm3s(m, s)
-{
-    for (let i = 0; i < 3; i++)
-        for (let j = 0; j < 3; j++)
-            m[i][j] /= s;
-
-    return m;
-}
-
-
-
-function cofactor(m)
-{
-    return [[  m[1][1] * m[2][2] - m[2][1] * m[1][2], -(m[1][0] * m[2][2] - m[2][0] * m[1][2]),  m[1][0] * m[2][1] - m[2][0] * m[1][1] ],
-            [-(m[0][1] * m[2][2] - m[2][1] * m[0][2]),  m[0][0] * m[2][2] - m[2][0] * m[0][2], -(m[0][0] * m[2][1] - m[2][0] * m[0][1])],
-            [  m[0][1] * m[1][2] - m[1][1] * m[0][2], -(m[0][0] * m[1][2] - m[1][0] * m[0][2]),  m[0][0] * m[1][1] - m[1][0] * m[0][1] ]]; 
-}
-
-
-
-function adjugate(m)
-{
-    return cofactor(transpose(m));
-}
-
-
-
-function determinant(m)
-{
-    return   m[0][0] * (m[1][1] * m[2][2] - m[1][2] * m[2][1])
-           - m[0][1] * (m[1][0] * m[2][2] - m[2][0] * m[1][2])
-           + m[0][2] * (m[1][0] * m[2][1] - m[2][0] * m[1][1]);
-}
-
-
-
-function inversem3(m)
-{
-    return divm3s(adjugate(m), determinant(m));
-}
-
-
-
-function transpose(m)
-{
-    return [[m[0][0], m[1][0], m[2][0]],
-            [m[0][1], m[1][1], m[2][1]],
-            [m[0][2], m[1][2], m[2][2]]];
 }
 
 
@@ -4303,9 +4303,9 @@ class FigmaObject
     
     xform;
 
-    xp0; //  xp0 ------- xp1 
-    xp1; //   |
-    xp2; //  xp2
+    xp0 = null; //  xp0 ------- xp1 
+    xp1 = null; //   |
+    xp2 = null; //  xp2
 
 
 
@@ -4331,9 +4331,9 @@ class FigmaObject
         
         this.xform      = clone(base.xform);
 
-        this.xp0        = base.xp0;
-        this.xp1        = base.xp1;
-        this.xp2        = base.xp2;
+        this.xp0        = !!base.xp0 ? base.xp0.copy() : null;
+        this.xp1        = !!base.xp1 ? base.xp1.copy() : null;
+        this.xp2        = !!base.xp2 ? base.xp2.copy() : null;
     }
 
 
@@ -4346,16 +4346,65 @@ class FigmaObject
 
 
 
-    createDefaultTransform(x, y, w, h, a)
+    createDefaultTransform(x, y, w, h, a = 0)
     {
         this.xform =
             [[Math.cos(a), -Math.sin(a), x],
              [Math.sin(a),  Math.cos(a), y],
              [0,            0,           1]];
+    }
 
-        this.xp0 = mulv2m3(point(x,     y    ), this.xform);
-        this.xp1 = mulv2m3(point(x + w, y    ), this.xform);
-        this.xp2 = mulv2m3(point(x,     y + h), this.xform);
+
+
+    applyTransform(cx, cy, xform)
+    {
+        // const xToOrigin = 
+        //     [[1, 0, cx],
+        //      [0, 1, cy],
+        //      [0, 0, 1 ]];
+
+        // const xToPoint = 
+        //     [[1, 0, -cx],
+        //      [0, 1, -cy],
+        //      [0, 0,  1 ]];
+
+
+        // add to object's "total" transformation
+
+        // this.xform = mulm3m3(this.xform, xToOrigin);
+        // this.xform = mulm3m3(this.xform, xform);
+        // this.xform = mulm3m3(this.xform, xToPoint);
+
+        // this.xform = mulm3m3(
+        //     this.xform,
+        //     [[1, 0, -cx],
+        //      [0, 1, -cy],
+        //      [0, 0,  1 ]]);
+
+
+        if (this.type == POINT)
+        {
+            const p = mulv2m3(point(this.x, this.y), xform);
+
+            this.x = p.x;
+            this.y = p.y;
+        }
+        else
+        {
+            const xp0  = point(this.xp0.x, this.xp0.y);
+            const xp1  = point(this.xp1.x, this.xp1.y);
+            const xp2  = point(this.xp2.x, this.xp2.y);
+
+
+            this.xp0.x = mulv2m3(xp0, xform).x;
+            this.xp0.y = mulv2m3(xp0, xform).y;
+
+            this.xp1.x = mulv2m3(xp1, xform).x;
+            this.xp1.y = mulv2m3(xp1, xform).y;
+
+            this.xp2.x = mulv2m3(xp2, xform).x;
+            this.xp2.y = mulv2m3(xp2, xform).y;
+        }
     }
 }
 
@@ -4380,58 +4429,6 @@ function copyFigmaObject(obj)
 
     console.assert(false, 'invalid Figma object type \'' + obj.type + '\'');
     return null;
-}
-
-
-
-function applyTransform(obj, cx, cy, xform)
-{
-    const xToOrigin = 
-        [[1, 0, cx],
-         [0, 1, cy],
-         [0, 0, 1 ]];
-
-    const xToPoint = 
-        [[1, 0, -cx],
-         [0, 1, -cy],
-         [0, 0,  1 ]];
-
-
-    // add to object's "total" transformation
-
-    obj.xform = mulm3m3(obj.xform, xToOrigin);
-    obj.xp0   = mulv2m3(obj.xp0,   xToOrigin);
-    obj.xp1   = mulv2m3(obj.xp1,   xToOrigin);
-    obj.xp2   = mulv2m3(obj.xp2,   xToOrigin);
-
-
-    obj.xform = mulm3m3(obj.xform, xform);
-    obj.xp0   = mulv2m3(obj.xp0,   xform);
-    obj.xp1   = mulv2m3(obj.xp1,   xform);
-    obj.xp2   = mulv2m3(obj.xp2,   xform);
-
-
-    obj.xform = mulm3m3(obj.xform, xToPoint);
-    obj.xp0   = mulv2m3(obj.xp0,   xToPoint);
-    obj.xp1   = mulv2m3(obj.xp1,   xToPoint);
-    obj.xp2   = mulv2m3(obj.xp2,   xToPoint);
-
-
-    obj.xform = mulm3m3(
-        obj.xform,
-        [[1, 0, -cx],
-         [0, 1, -cy],
-         [0, 0,  1 ]]);
-
-
-    // apply only this transformation to the position (only for points)
-
-    const p = mulv2m3(
-        point(obj.x, obj.y), 
-        xform);
-
-    obj.x = p.x;
-    obj.y = p.y;
 }
 
 
@@ -4505,6 +4502,8 @@ extends FigmaShape
         this.height = height;
         this.angle  = angle;
         this.round  = round;
+
+        this.createDefaultTransform(x, y, width, height, angle/360*Tau);
     }
 
 
@@ -4805,6 +4804,8 @@ extends FigmaShape
         this.x        = x;
         this.y        = y;
         this.isCenter = isCenter;
+
+        this.createDefaultTransform(x, y, 0, 0);
     }
 
 
@@ -19653,18 +19654,17 @@ extends GShape
             if (   w != 0 
                 && h != 0)
             {
-                const rect = new FigmaRectangle(this.nodeId, this.nodeId, this.nodeName, x, y, w, h, a, r);
-                rect.createDefaultTransform(x, y, w, h, _a);
+                const rect = new FigmaRectangle(this.nodeId, this.nodeId,        this.nodeName,        x,     y,    w, h, a, r);
+                rect. xp0  = new FigmaPoint    (this.nodeId, this.nodeId+'.xp0', this.nodeName+' ^ 0', x,     y,   );
+                rect. xp1  = new FigmaPoint    (this.nodeId, this.nodeId+'.xp1', this.nodeName+' ^ 1', x + w, y,   );
+                rect. xp2  = new FigmaPoint    (this.nodeId, this.nodeId+'.xp2', this.nodeName+' ^ 2', x,     y + h);
 
-                const xp0 = new FigmaPoint(this.nodeId, this.nodeId+'.xp0', this.nodeName+' ^ 0', x,     y,   );
-                const xp1 = new FigmaPoint(this.nodeId, this.nodeId+'.xp1', this.nodeName+' ^ 1', x + w, y,   );
-                const xp2 = new FigmaPoint(this.nodeId, this.nodeId+'.xp2', this.nodeName+' ^ 2', x,     y + h);
+                rect    .createDefaultTransform(x,     y,     w, h, _a);
+                rect.xp0.createDefaultTransform(x,     y,     0, 0, _a);
+                rect.xp1.createDefaultTransform(x + w, y,     0, 0, _a);
+                rect.xp2.createDefaultTransform(x,     y + h, 0, 0, _a);
 
-                xp0.createDefaultTransform(x,     y,     w, h, _a);
-                xp1.createDefaultTransform(x + w, y,     w, h, _a);
-                xp2.createDefaultTransform(x,     y + h, w, h, _a);
-
-                objects = [rect, xp0, xp1, xp2];
+                objects = [rect, rect.xp0, rect.xp1, rect.xp2];
             }
         }
 
@@ -20838,28 +20838,25 @@ extends GOperator
             return;
             
             
+        let objects = [];
+
+
         if (   this.value.x
             && this.value.y)
         {
-           const point = new FigmaPoint(
-                this.nodeId,
-                this.nodeId,
-                this.nodeName,
-                this.value.x.value,
-                this.value.y.value)
+            const x = this.value.x.value;
+            const y = this.value.y.value;
 
-            point.createDefaultTransform(
-                0, //this.value.x.value,
-                0, //this.value.y.value,
-                0);
+            const point = new FigmaPoint(this.nodeId, this.nodeId, this.nodeName, x, y);
 
-            this.objects       = [point];
-            this.value.objects = [point];
+            point.createDefaultTransform(x, y, 0);
+
+            objects = [point];
         }
 
         
-        if (this.value)
-            this.value.objects = this.objects.map(o => o.copy());
+        this      .objects = objects;
+        this.value.objects = objects;
 
 
         super.evalObjects(parse);
@@ -22025,7 +22022,7 @@ extends GOperator
             obj.nodeId   = this.nodeId;
             obj.objectId = obj.objectId + OBJECT_SEPARATOR + this.nodeId;
 
-            applyTransform(obj, 0, 0, xform);
+            obj.applyTransform(0, 0, xform);
         }
 
         
@@ -22152,7 +22149,7 @@ extends GOperator
             new NumberValue(0),
             new NumberValue(0));
 
-            
+
         this.updateValues =
         [
             ['value',      this.value],
@@ -22204,7 +22201,7 @@ extends GOperator
 
             if (   bounds.width  > 0
                 && bounds.height > 0)
-                applyTransform(obj, cx, cy, xform);
+                obj.applyTransform(cx, cy, xform);
         }
 
         
@@ -22415,7 +22412,7 @@ extends GOperator
 
             if (   bounds.width  > 0
                 && bounds.height > 0)
-                applyTransform(obj, cx, cy, xform);
+                obj.applyTransform(cx, cy, xform);
         }
 
         
@@ -22575,7 +22572,7 @@ extends GOperator
             new NumberValue(0),
             new NumberValue(0));
 
-            
+
         this.updateValues =
         [
             ['value',      this.value],
@@ -22629,7 +22626,7 @@ extends GOperator
 
             if (   bounds.width  > 0
                 && bounds.height > 0)
-                applyTransform(obj, cx, cy, xform);
+                obj.applyTransform(cx, cy, xform);
         }
 
         
@@ -22662,9 +22659,12 @@ extends GOperator
     {
         super.pushValueUpdates(parse);
 
-        if (this.input) this.input.pushValueUpdates(parse);
-        if (this.skewX    ) this.skewX    .pushValueUpdates(parse);
-        if (this.skewY    ) this.skewY    .pushValueUpdates(parse);
+        if (this.input     ) this.input     .pushValueUpdates(parse);
+        if (this.skewX     ) this.skewX     .pushValueUpdates(parse);
+        if (this.skewY     ) this.skewY     .pushValueUpdates(parse);
+        if (this.centerX   ) this.centerX   .pushValueUpdates(parse);
+        if (this.centerY   ) this.centerY   .pushValueUpdates(parse);
+        if (this.showCenter) this.showCenter.pushValueUpdates(parse);
     }
 
 
@@ -22672,8 +22672,11 @@ extends GOperator
     isValid()
     {
         return super.isValid()
-            && this.skewX.isValid()
-            && this.skewY.isValid();
+            && this.skewX     .isValid()
+            && this.skewY     .isValid()
+            && this.centerX   .isValid()
+            && this.centerY   .isValid()
+            && this.showCenter.isValid();
     }
 
 
@@ -22682,9 +22685,12 @@ extends GOperator
     {
         super.invalidateInputs();
 
-        if (this.input) this.inputinvalidate();
-        if (this.skewX) this.skewX.invalidateInputs();
-        if (this.skewY) this.skewY.invalidateInputs();
+        if (this.input     ) this.input     .invalidateInputs();
+        if (this.skewX     ) this.skewX     .invalidateInputs();
+        if (this.skewY     ) this.skewY     .invalidateInputs();
+        if (this.centerX   ) this.centerX   .invalidateInputs();
+        if (this.centerY   ) this.centerY   .invalidateInputs();
+        if (this.showCenter) this.showCenter.invalidateInputs();
     }
 
 

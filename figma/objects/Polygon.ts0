@@ -1,0 +1,52 @@
+function genPolyIsValid(genPoly)
+{
+    return genPoly.x       != null && !isNaN(genPoly.x      )
+        && genPoly.y       != null && !isNaN(genPoly.y      )
+        && genPoly.width   != null && !isNaN(genPoly.width  )
+        && genPoly.height  != null && !isNaN(genPoly.height )
+        && genPoly.angle   != null && !isNaN(genPoly.angle  )
+        && genPoly.round   != null && !isNaN(genPoly.round  )
+        && genPoly.corners != null && !isNaN(genPoly.corners);
+}
+
+
+
+function figCreatePolygon(genPoly)
+{
+    const figPoly = figma.createPolygon();
+
+    figPoly.name = makeObjectName(genPoly);
+
+    if (!genPolyIsValid(genPoly))
+        return figPoly;
+
+
+    figPoly.cornerRadius = genPoly.round;
+    figPoly.pointCount   = genPoly.corners;
+
+
+    setObjectTransform(figPoly, genPoly);
+    setObjectProps    (figPoly, genPoly);
+
+
+    return figPoly;
+}
+
+
+
+function figUpdatePolygon(figPoly, genPoly)
+{
+    if (!genPolyIsValid(genPoly))
+        return;
+
+
+    figPoly.name = makeObjectName(genPoly);
+
+
+    figPoly.cornerRadius = genPoly.round;
+    figPoly.pointCount   = genPoly.corners;
+
+
+    setObjectTransform(figPoly, genPoly);
+    setObjectProps    (figPoly, genPoly);
+}

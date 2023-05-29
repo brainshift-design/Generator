@@ -78,7 +78,7 @@ extends GOperator
             new NumberValue(0),
             new NumberValue(0));
 
-            
+
         this.updateValues =
         [
             ['value',      this.value],
@@ -130,7 +130,7 @@ extends GOperator
 
             if (   bounds.width  > 0
                 && bounds.height > 0)
-                applyTransform(obj, cx, cy, xform);
+                obj.applyTransform(cx, cy, xform);
         }
 
         
