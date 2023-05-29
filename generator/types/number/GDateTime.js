@@ -8,7 +8,7 @@ extends GNumberType
     hours        = null;
     minutes      = null;
     seconds      = null;
-    milliseconds = null;
+    // milliseconds = null;
 
 
     
@@ -32,7 +32,7 @@ extends GNumberType
         copy.hours        = this.hours       .copy();
         copy.minutes      = this.minutes     .copy();
         copy.seconds      = this.seconds     .copy();
-        copy.milliseconds = this.milliseconds.copy();
+        // copy.milliseconds = this.milliseconds.copy();
 
         return copy;
     }
@@ -56,7 +56,7 @@ extends GNumberType
             const hours        = new NumberValue(dateTime.getHours()       );
             const minutes      = new NumberValue(dateTime.getMinutes()     );
             const seconds      = new NumberValue(dateTime.getSeconds()     );
-            const milliseconds = new NumberValue(dateTime.getMilliseconds());
+            // const milliseconds = new NumberValue(dateTime.getMilliseconds());
 
 
             this.updateValues =
@@ -66,8 +66,8 @@ extends GNumberType
                  ['dayOfWeek'   , dayOfWeek   ],
                  ['hours'       , hours       ],
                  ['minutes'     , minutes     ],
-                 ['seconds'     , seconds     ],
-                 ['milliseconds', milliseconds]];
+                 ['seconds'     , seconds     ]];//,
+                 //['milliseconds', milliseconds]];
         }
         else
             this.updateValues = [];
@@ -91,7 +91,7 @@ extends GNumberType
         if (this.hours       ) this.hours       .pushValueUpdates(parse);
         if (this.minutes     ) this.minutes     .pushValueUpdates(parse);
         if (this.seconds     ) this.seconds     .pushValueUpdates(parse);
-        if (this.milliseconds) this.milliseconds.pushValueUpdates(parse);
+        // if (this.milliseconds) this.milliseconds.pushValueUpdates(parse);
     }
 
 
@@ -106,7 +106,7 @@ extends GNumberType
             && (!this.hours        || this.hours       .isCached())
             && (!this.minutes      || this.minutes     .isCached())
             && (!this.seconds      || this.seconds     .isCached())
-            && (!this.milliseconds || this.milliseconds.isCached());
+            // && (!this.milliseconds || this.milliseconds.isCached());
     }
 
 
@@ -122,6 +122,6 @@ extends GNumberType
         if (this.hours       ) this.hours       .invalidateInputs();
         if (this.minutes     ) this.minutes     .invalidateInputs();
         if (this.seconds     ) this.seconds     .invalidateInputs();
-        if (this.milliseconds) this.milliseconds.invalidateInputs();
+        // if (this.milliseconds) this.milliseconds.invalidateInputs();
     }
 }

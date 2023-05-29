@@ -42,15 +42,14 @@
 
 
 ../operators/flow/OpList.js
-../operators/flow/OpExpandList.js
 ../operators/flow/OpItems.js
 ../operators/flow/OpSelect.js
 ../operators/flow/OpListCount.js
 ../operators/flow/OpIfElse.js
-../operators/flow/OpStart.js
 ../operators/flow/OpRepeat.js
 ../operators/flow/OpCache.js
 ../operators/flow/OpCopy.js
+../operators/flow/OpTimer.js
 
 ../operators/number/OpNumber.js
 ../operators/number/OpSign.js

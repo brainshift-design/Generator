@@ -8,7 +8,7 @@ extends OperatorBase
     paramHours;
     paramMinutes;
     paramSeconds;
-    paramMilliseconds;
+    // paramMilliseconds;
 
     updateTimer = -1;
 
@@ -19,7 +19,7 @@ extends OperatorBase
         super(NUMBER_DATETIME, 'dateTime', 'date & time', iconDateTime);
 
         this.canDisable  = true;
-        this.iconOffsetY = -2;
+        this.iconOffsetY = -4;
         
 
         this.addParam(this.paramYear         = new NumberParam('year'        , 'year',      true,  true,  true));
@@ -29,7 +29,7 @@ extends OperatorBase
         this.addParam(this.paramHours        = new NumberParam('hours'       , 'hours',     true,  true,  true, 0, 0,  23));
         this.addParam(this.paramMinutes      = new NumberParam('minutes'     , 'minutes',   true,  true,  true, 0, 0,  59));
         this.addParam(this.paramSeconds      = new NumberParam('seconds'     , 'seconds',   true,  true,  true, 0, 0,  59));
-        this.addParam(this.paramMilliseconds = new NumberParam('milliseconds', 'ms',        true,  true,  true, 0, 0, 999));
+        // this.addParam(this.paramMilliseconds = new NumberParam('milliseconds', 'ms',        true,  true,  true, 0, 0, 999));
     }
 
 
@@ -53,7 +53,7 @@ extends OperatorBase
         request.push(...this.paramHours       .genRequest(gen));
         request.push(...this.paramMinutes     .genRequest(gen));
         request.push(...this.paramSeconds     .genRequest(gen));
-        request.push(...this.paramMilliseconds.genRequest(gen));
+        // request.push(...this.paramMilliseconds.genRequest(gen));
 
 
         gen.scope.pop();
@@ -81,7 +81,7 @@ extends OperatorBase
         this.paramHours       .enableControlText(false);
         this.paramMinutes     .enableControlText(false);
         this.paramSeconds     .enableControlText(false);
-        this.paramMilliseconds.enableControlText(false);
+        // this.paramMilliseconds.enableControlText(false);
     
         this.updateParamControls();
     }
@@ -108,7 +108,7 @@ extends OperatorBase
             const hours        = dateTime.getHours();
             const minutes      = dateTime.getMinutes();
             const seconds      = dateTime.getSeconds();
-            const milliseconds = dateTime.getMilliseconds();
+            // const milliseconds = dateTime.getMilliseconds();
 
             this.paramYear        .setValue(new NumberValue(year)        , false, true, false);
             this.paramMonth       .setValue(new NumberValue(month)       , false, true, false);
@@ -117,7 +117,7 @@ extends OperatorBase
             this.paramHours       .setValue(new NumberValue(hours)       , false, true, false);
             this.paramMinutes     .setValue(new NumberValue(minutes)     , false, true, false);
             this.paramSeconds     .setValue(new NumberValue(seconds)     , false, true, false);
-            this.paramMilliseconds.setValue(new NumberValue(milliseconds), false, true, false);
+            // this.paramMilliseconds.setValue(new NumberValue(milliseconds), false, true, false);
             
             this.updateTimer = setTimeout(() => this.updateNode(), 100);
         }
@@ -127,10 +127,6 @@ extends OperatorBase
 
     toJsCode(gen)
     {
-        return this.inputs[0].connected
-             ? 'Math.min(Math.max(' 
-                    + this.paramMin.toJsCode(gen) + ', ' + this.inputs[0].connectedOutput.toJsCode(gen) + '), ' 
-                    + this.paramMax.toJsCode(gen) + ')'
-             : 'Number.NaN';
+        return '';
     }
 }

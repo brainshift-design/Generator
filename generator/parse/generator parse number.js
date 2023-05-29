@@ -113,7 +113,7 @@ function genParseDateTime(parse)
     dateTime.hours        = genParse(parse);
     dateTime.minutes      = genParse(parse);
     dateTime.seconds      = genParse(parse);
-    dateTime.milliseconds = genParse(parse);
+    // dateTime.milliseconds = genParse(parse);
 
 
     parse.nTab--;

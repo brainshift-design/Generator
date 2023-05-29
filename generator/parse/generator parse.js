@@ -108,15 +108,14 @@ function genParse(parse, inParam = true)
           || parse.next ==  SHAPE_LIST_VALUE      ) result = genParseListValue        (parse);
  
     else if (parse.next == LIST                   ) result = genParseList             (parse);
-    else if (parse.next == LIST_EXPAND            ) result = genParseExpandList       (parse);
     else if (parse.next == ITEMS                  ) result = genParseItems            (parse);
     else if (parse.next == SELECT                 ) result = genParseSelect           (parse);
     else if (parse.next == LIST_COUNT             ) result = genParseListCount        (parse);
     else if (parse.next == IF_ELSE                ) result = genParseIfElse           (parse);
-    else if (parse.next == START                  ) result = genParseStart            (parse);
     else if (parse.next == REPEAT                 ) result = genParseRepeat           (parse);
     else if (parse.next == CACHE                  ) result = genParseCache            (parse);
     else if (parse.next == COPY                   ) result = genParseCopy             (parse);
+    else if (parse.next == TIMER                  ) result = genParseTimer            (parse);
      
     else if (parse.next == NUMBER_VALUE           ) result = genParseNumValue         (parse);
     else if (parse.next == NUMBER                 ) result = genParseNumber           (parse);

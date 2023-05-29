@@ -410,15 +410,14 @@ const NUMBER_LIST_VALUE = 'NLIST#';
 const TEXT_LIST_VALUE = 'TLIST#';
 const SHAPE_LIST_VALUE = 'SLIST#';
 const LIST = 'LIST';
-const LIST_EXPAND = 'LEXP';
 const ITEMS = 'ITEMS';
 const SELECT = 'SEL';
 const LIST_COUNT = 'COUNT';
 const IF_ELSE = 'IF';
-const START = 'START';
 const REPEAT = 'REPT';
 const CACHE = 'CACHE';
 const COPY = 'COPY';
+const TIMER = 'TIMER';
 const ANY_VALUE = 'ANY#';
 const LIST_TYPES = [
     LIST_VALUE,
@@ -426,7 +425,6 @@ const LIST_TYPES = [
     TEXT_LIST_VALUE,
     SHAPE_LIST_VALUE,
     LIST,
-    LIST_EXPAND,
     ITEMS,
     LIST_COUNT,
     REPEAT
@@ -443,11 +441,11 @@ const FLOW_TYPES = [
     ITEMS,
     SELECT,
     IF_ELSE,
-    START,
     REPEAT,
     FOREACH,
     CACHE,
-    COPY
+    COPY,
+    TIMER
 ];
 const NUMBER_VALUE = 'NUM#';
 const NUMBER = 'NUM';

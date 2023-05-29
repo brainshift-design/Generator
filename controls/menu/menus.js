@@ -107,15 +107,16 @@ var menuItemEnableBetaFeatures;
 
 var menuItemList;  
 var menuFlowSep1;
-var menuItemExpandList;
 var menuItemItems;
 var menuItemSelect;
 var menuItemCount;
 var menuItemIfElse;
 var menuFlowSep2;
 var menuItemStart;
-var menuItemRepeat;
 var menuFlowSep3;
+var menuItemRepeat;
+var menuFlowSep4;
+var menuItemTimer;
 var menuItemCache;
 var menuItemCopy;
 
@@ -360,12 +361,12 @@ function initGeneratorMenus()
         menuFlowSep2          = new MenuItem('',                  {separator: true}),
         menuItemSelect        = new MenuItem('Select',            {icon: iconSelect,     callback: e => actionManager.do(getCreateNodeAction(SELECT,      btnNumber.div, getCreateOptions(e)))}),
         menuItemIfElse        = new MenuItem('I&hairsp;f / else', {icon: iconIfElse,     callback: e => actionManager.do(getCreateNodeAction(IF_ELSE,     btnNumber.div, getCreateOptions(e))), disambiguate: true}),
-        //menuItemExpandList  = new MenuItem('Expand',            {icon: iconExpandList, callback: e => actionManager.do(getCreateNodeAction(LIST_EXPAND, btnNumber.div, getCreateOptions(e)))}),
         menuFlowSep2          = new MenuItem('',                  {separator: true}),
         menuItemCopy          = new MenuItem('Copy',              {icon: iconCopy,   callback: e => actionManager.do(getCreateNodeAction(COPY,         btnNumber.div, getCreateOptions(e)))}),
         menuFlowSep3          = new MenuItem('',                  {separator: true}),
-        //settinmenuItemStart = new MenuItem('Start',             {icon: iconStart,      callback: e => actionManager.do(getCreateNodeAction(START,        btnNumber.div, getCreateOptions(e)))}),
-        menuItemRepeat        = new MenuItem('Repeat',            {icon: iconRepeat,     callback: e => actionManager.do(getCreateNodeAction(REPEAT,       btnNumber.div, getCreateOptions(e)))})]);
+        menuItemRepeat        = new MenuItem('Repeat',            {icon: iconRepeat,     callback: e => actionManager.do(getCreateNodeAction(REPEAT,       btnNumber.div, getCreateOptions(e)))}),
+        menuFlowSep4          = new MenuItem('',                  {separator: true}),
+        menuItemTimer         = new MenuItem('Timer ',            {icon: iconTimer,      callback: e => actionManager.do(getCreateNodeAction(TIMER,       btnNumber.div, getCreateOptions(e)))})]);
      // menuFlowSep3          = new MenuItem('',                  {separator: true}),
      // menuItemCache         = new MenuItem('Cache',             {icon: iconCache,  callback: e => actionManager.do(getCreateNodeAction(CACHE,        btnNumber.div, getCreateOptions(e)))}),
     

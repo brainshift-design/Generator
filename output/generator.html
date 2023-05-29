@@ -3706,22 +3706,17 @@ const   TEXT_LIST_VALUE       = 'TLIST#';
 const  SHAPE_LIST_VALUE       = 'SLIST#';
 
 const LIST                    = 'LIST';
-
-const LIST_EXPAND             = 'LEXP';
-
 const ITEMS                   = 'ITEMS';
 const SELECT                  = 'SEL';
 const LIST_COUNT              = 'COUNT';
 const IF_ELSE                 = 'IF';
-    
-const START                   = 'START';
 const REPEAT                  = 'REPT';
-    
 const CACHE                   = 'CACHE';
 const COPY                    = 'COPY';
+const TIMER                   = 'TIMER';
 
 
-const ANY_VALUE                = 'ANY#';
+const ANY_VALUE               = 'ANY#';
 
 
 const LIST_TYPES =
@@ -3731,7 +3726,6 @@ const LIST_TYPES =
     TEXT_LIST_VALUE,
     SHAPE_LIST_VALUE,
     LIST,
-    LIST_EXPAND,
     ITEMS,
     LIST_COUNT,
     REPEAT
@@ -3756,11 +3750,11 @@ const FLOW_TYPES =
     ITEMS,
     SELECT,
     IF_ELSE,
-    START,
     REPEAT,
     FOREACH,
     CACHE,
-    COPY
+    COPY,
+    TIMER
 ];
 
 
@@ -10113,101 +10107,6 @@ extends GOperator
 
 
 
-class GExpandList
-extends GOperator
-{
-    input = null;
-
-
-
-    constructor(nodeId, options)
-    {
-        super(LIST_EXPAND, nodeId, options);
-    }
-
-
-
-    copy()
-    {
-        const copy = new GItems(this.nodeId, this.options);
-        
-        copy.copyBase(this);
-
-        if (this.input) 
-            copy.input = this.input.copy();
-
-        return copy;
-    }
-
-
-
-    async eval(parse)
-    {
-        if (this.isCached())
-            return this;
-
-
-
-        if (this.input)
-        {
-            const input = (await this.input.eval(parse)).toValue();
-
-
-            this.value = new ListValue();
-
-            for (const item of input.items)
-            {
-                this.value.items.push(item);   
-
-                if (LIST_VALUES.includes(item.type))
-                {
-                    for (const listItem of item.items)
-                        this.value.items.push(listItem);
-                }
-            }
-        }
-        else
-        {
-            this.value = ListValue.NaN;
-        }
-
-
-
-        this.updateValues = [['value', this.value]];
-
-
-        this.validate();
-
-        return this;
-    }
-
-
-
-    pushValueUpdates(parse)
-    {
-        super.pushValueUpdates(parse);
-
-        if (this.input) this.input.pushValueUpdates(parse);
-    }
-
-
-
-    toValue()
-    {
-        return this.value.copy();
-    }
-
-
-
-    invalidateInputs()
-    {
-        super.invalidateInputs();
-
-        if (this.input) this.input.invalidateInputs();
-    }
-}
-
-
 class GItems
 extends GOperator
 {
@@ -10676,74 +10575,6 @@ extends GOperator
 
 
 
-class GStart
-extends GOperator
-{
-    //input = null;
-
-
-
-    constructor(nodeId, options)
-    {
-        super(START, nodeId, options);
-    }
-
-
-    
-    copy()
-    {
-        const copy = new GStart(this.nodeId, this.options);
-
-        copy.copyBase(this);
-
-        //if (this.input) copy.input = this.input.copy();
-        if (this.value) copy.value = this.value.copy();
-
-        return copy;
-    }
-
-
-
-    async eval(parse)
-    {
-        if (this.isCached())
-            return this;
-            
-
-        const repeatId = (await this.repeatId.eval(parse)).toValue();
-
-
-        // if (this.input)
-        // {
-        //     this.input = (await this.input.eval(parse)).copy();
-        //     this.value = this.input.toValue();
-        // }
-        // else
-            this.value = NullValue;
-
-
-        this.updateValues =
-        [
-            ['value',    this.value],
-            ['repeatId', repeatId  ]
-        ];
-
-
-        this.validate();
-
-        return this;
-    }
-
-
-
-    toValue()
-    {
-        return this.value ? this.value.copy() : null;
-    }
-}
-
-
-
 class GRepeat
 extends GOperator
 {
@@ -11102,6 +10933,86 @@ extends GOperator
         super.invalidateInputs();
 
         if (this.input) this.input.invalidateInputs();
+    }
+}
+
+
+
+class GTimer
+extends GOperator
+{
+    input = null;
+
+    delay = null;
+
+
+
+    constructor(nodeId, options)
+    {
+        super(TIMER, nodeId, options);
+    }
+
+
+    
+    copy()
+    {
+        const copy = new GTimer(this.nodeId, this.options);
+
+        copy.copyBase(this);
+
+        if (this.input) copy.input = this.input.copy();
+        if (this.delay) copy.delay = this.delay.copy();
+
+        return copy;
+    }
+
+
+
+    async eval(parse)
+    {
+        if (this.isCached())
+            return this;
+
+
+        const delay = (await this.delay.eval(parse)).toValue();
+            
+
+        if (this.input)
+        {
+            const input = (await this.input.eval(parse)).toValue();
+            this.value = input ? input : NullValue;
+        }
+        else
+            this.value = NullValue;
+            
+
+        this.updateValues = 
+        [
+            ['value', this.value],
+            ['delay', delay     ]
+        ];
+
+        
+        this.validate();
+
+        return this;
+    }
+
+
+
+    toValue()
+    {
+        return this.value.copy();
+    }
+
+
+
+    invalidateInputs()
+    {
+        super.invalidateInputs();
+
+        if (this.input) this.input.invalidateInputs();
+        if (this.delay) this.delay.invalidateInputs();
     }
 }
 
@@ -11691,7 +11602,7 @@ extends GNumberType
     hours        = null;
     minutes      = null;
     seconds      = null;
-    milliseconds = null;
+    // milliseconds = null;
 
 
     
@@ -11715,7 +11626,7 @@ extends GNumberType
         copy.hours        = this.hours       .copy();
         copy.minutes      = this.minutes     .copy();
         copy.seconds      = this.seconds     .copy();
-        copy.milliseconds = this.milliseconds.copy();
+        // copy.milliseconds = this.milliseconds.copy();
 
         return copy;
     }
@@ -11739,7 +11650,7 @@ extends GNumberType
             const hours        = new NumberValue(dateTime.getHours()       );
             const minutes      = new NumberValue(dateTime.getMinutes()     );
             const seconds      = new NumberValue(dateTime.getSeconds()     );
-            const milliseconds = new NumberValue(dateTime.getMilliseconds());
+            // const milliseconds = new NumberValue(dateTime.getMilliseconds());
 
 
             this.updateValues =
@@ -11749,8 +11660,8 @@ extends GNumberType
                  ['dayOfWeek'   , dayOfWeek   ],
                  ['hours'       , hours       ],
                  ['minutes'     , minutes     ],
-                 ['seconds'     , seconds     ],
-                 ['milliseconds', milliseconds]];
+                 ['seconds'     , seconds     ]];//,
+                 //['milliseconds', milliseconds]];
         }
         else
             this.updateValues = [];
@@ -11774,7 +11685,7 @@ extends GNumberType
         if (this.hours       ) this.hours       .pushValueUpdates(parse);
         if (this.minutes     ) this.minutes     .pushValueUpdates(parse);
         if (this.seconds     ) this.seconds     .pushValueUpdates(parse);
-        if (this.milliseconds) this.milliseconds.pushValueUpdates(parse);
+        // if (this.milliseconds) this.milliseconds.pushValueUpdates(parse);
     }
 
 
@@ -11789,7 +11700,7 @@ extends GNumberType
             && (!this.hours        || this.hours       .isCached())
             && (!this.minutes      || this.minutes     .isCached())
             && (!this.seconds      || this.seconds     .isCached())
-            && (!this.milliseconds || this.milliseconds.isCached());
+            // && (!this.milliseconds || this.milliseconds.isCached());
     }
 
 
@@ -11805,7 +11716,7 @@ extends GNumberType
         if (this.hours       ) this.hours       .invalidateInputs();
         if (this.minutes     ) this.minutes     .invalidateInputs();
         if (this.seconds     ) this.seconds     .invalidateInputs();
-        if (this.milliseconds) this.milliseconds.invalidateInputs();
+        // if (this.milliseconds) this.milliseconds.invalidateInputs();
     }
 }
 
@@ -23367,7 +23278,6 @@ function enableFeatures(subscription, beta)
     
     //updateElementDisplay(menuItemList                .div, subscription && beta);
     updateElementDisplay(menuFlowSep1                .div, subscription && beta);
-    //updateElementDisplay(menuItemExpandList          .div, subscription && beta);
     updateElementDisplay(menuItemItems               .div, subscription);
     updateElementDisplay(menuFlowSep2                .div, subscription);
     //updateElementDisplay(menuItemSelect              .div, subscription);
@@ -24454,50 +24364,6 @@ function genParseList(parse)
 
 
 
-function genParseExpandList(parse)
-{
-    const [, nodeId, options, ignore] = genParseNodeStart(parse);
-
-
-    const expand = new GExpandList(nodeId, options);
-
-    
-    let nInputs = -1;
-    
-    if (!ignore)
-    {
-        nInputs = parseInt(parse.move());
-        console.assert(nInputs == 0 || nInputs == 1, 'nInputs must be [0, 1]');
-    }
-
-
-    if (parse.settings.logRequests) 
-        logReq(expand, parse, ignore, nInputs);
-
-
-    if (ignore) 
-    {
-        genParseNodeEnd(parse, expand);
-        return parse.parsedNodes.find(n => n.nodeId == nodeId);
-    }
-
-
-    parse.nTab++;
-
-
-    if (nInputs == 1)
-        expand.input = genParse(parse);
-
-
-    parse.nTab--;
-
-
-    genParseNodeEnd(parse, expand);
-    return expand;
-}
-
-
-
 function genParseItems(parse)
 {
     const [, nodeId, options, ignore] = genParseNodeStart(parse);
@@ -24877,6 +24743,53 @@ function genParseCopy(parse)
 
     genParseNodeEnd(parse, copy);
     return copy;
+}
+
+
+
+function genParseTimer(parse)
+{
+    const [, nodeId, options, ignore] = genParseNodeStart(parse);
+
+
+    const timer = new GTimer(nodeId, options);
+
+
+    let nInputs = -1;
+    
+    if (!ignore)
+    {
+        nInputs = parseInt(parse.move());
+        console.assert(nInputs == 0 || nInputs == 1, 'nInputs must be [0, 1]');
+    }
+
+
+    if (parse.settings.logRequests) 
+        logReq(timer, parse, ignore, nInputs);
+
+
+    if (ignore) 
+    {
+        genParseNodeEnd(parse, timer);
+        return parse.parsedNodes.find(n => n.nodeId == nodeId);
+    }
+
+
+    parse.nTab++;
+
+
+    if (nInputs == 1)
+        timer.input = genParse(parse);
+
+
+    timer.delay = genParse(parse);
+
+
+    parse.nTab--;
+
+
+    genParseNodeEnd(parse, timer);
+    return timer;
 }
 
 
@@ -25801,7 +25714,7 @@ function genParseDateTime(parse)
     dateTime.hours        = genParse(parse);
     dateTime.minutes      = genParse(parse);
     dateTime.seconds      = genParse(parse);
-    dateTime.milliseconds = genParse(parse);
+    // dateTime.milliseconds = genParse(parse);
 
 
     parse.nTab--;
@@ -28220,15 +28133,14 @@ function genParse(parse, inParam = true)
           || parse.next ==  SHAPE_LIST_VALUE      ) result = genParseListValue        (parse);
  
     else if (parse.next == LIST                   ) result = genParseList             (parse);
-    else if (parse.next == LIST_EXPAND            ) result = genParseExpandList       (parse);
     else if (parse.next == ITEMS                  ) result = genParseItems            (parse);
     else if (parse.next == SELECT                 ) result = genParseSelect           (parse);
     else if (parse.next == LIST_COUNT             ) result = genParseListCount        (parse);
     else if (parse.next == IF_ELSE                ) result = genParseIfElse           (parse);
-    else if (parse.next == START                  ) result = genParseStart            (parse);
     else if (parse.next == REPEAT                 ) result = genParseRepeat           (parse);
     else if (parse.next == CACHE                  ) result = genParseCache            (parse);
     else if (parse.next == COPY                   ) result = genParseCopy             (parse);
+    else if (parse.next == TIMER                  ) result = genParseTimer            (parse);
      
     else if (parse.next == NUMBER_VALUE           ) result = genParseNumValue         (parse);
     else if (parse.next == NUMBER                 ) result = genParseNumber           (parse);

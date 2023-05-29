@@ -9,15 +9,14 @@ function createNode(nodeType, creatingButton = null, createdNodeId = -1, options
     switch (nodeType)
     {
         case LIST:                    node = new OpList();              break;
-        case LIST_EXPAND:             node = new OpExpandList();        break;
         case ITEMS:                   node = new OpItems();             break;
         case SELECT:                  node = new OpSelect();            break;
         case LIST_COUNT:              node = new OpListCount();         break;
         case IF_ELSE:                 node = new OpIfElse();            break;
-        case START:                   node = new OpStart();             break;
         case REPEAT:                  node = new OpRepeat();            break;
         case CACHE:                   node = new OpCache();             break;
         case COPY:                    node = new OpCopy();              break;
+        case TIMER:                   node = new OpTimer();             break;
 
         case NUMBER:                  node = new OpNumber();            break;
         case NUMBER_SIGN:             node = new OpSign();              break;
