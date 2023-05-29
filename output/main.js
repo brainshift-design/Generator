@@ -69,6 +69,12 @@ function distance(p1, p2) {
     const dy = p2.y - p1.y;
     return Math.sqrt(dx * dx + dy * dy);
 }
+function angle(v) {
+    let angle = Math.atan2(v.y, v.x);
+    if (angle < 0)
+        angle += Tau;
+    return angle;
+}
 function anglev(v1, v2) {
     return anglev_(v1.x, v1.y, v2.x, v2.y);
 }
@@ -150,7 +156,7 @@ function determinant(m) {
 function inversem3(m) {
     return divm3s(adjugate(m), determinant(m));
 }
-function createTransform(x, y, scaleX, scaleY, angle, skewX = 0, skewY = 0) {
+function createTransform(x = 0, y = 0, scaleX = 1, scaleY = 1, angle = 0, skewX = 0, skewY = 0) {
     const cosA = Math.cos(angle);
     const sinA = Math.sin(angle);
     return [[scaleX * cosA - skewY * sinA, -skewX * cosA + scaleY * sinA, x],
@@ -2748,11 +2754,36 @@ function setTextStyle(figText, genText) {
     //{
     //}
 }
+function createFigmaTransform(tl, tr, bl) {
+    // const unrotate = createTransform(0, 0, 1, 1, -);
+    // const rotate   = inversem3(unrotate);
+    // tr = mulv2m3(tr, unrotate);
+    // bl = mulv2m3(bl, unrotate);
+    const vr = point(tr.x - tl.x, tr.y - tl.y);
+    const vb = point(bl.x - tl.x, bl.y - tl.y);
+    const scaleX = vr.x;
+    const scaleY = vb.y;
+    const skewY = -vr.y;
+    const skewX = -vb.x;
+    const translateX = -tl.x; // + scaleX * Math.sin(a);
+    const translateY = -tl.y; // + scaleY * Math.cos(a);
+    const a = angle(vr);
+    const dx = translateX * Math.cos(a);
+    const dy = translateY * Math.sin(a);
+    let xform = createTransform(dx, dy, 1, 1);
+    console.clear();
+    console.log('xform =', '\n' + xform[0] + '\n' + xform[1] + '\n' + xform[2]);
+    xform = mulm3m3(xform, [[scaleX, skewX, translateX * scaleX],
+        [skewY, scaleY, translateY * scaleY],
+        [0, 0, 1]]);
+    //xform = mulm3m3(xform, rotate);
+    return inversem3(xform);
+}
 function setObjectTransform(figObj, genObj) {
     const xp0 = point(genObj.xp0.x, genObj.xp0.y);
     const xp1 = point(genObj.xp1.x, genObj.xp1.y);
     const xp2 = point(genObj.xp2.x, genObj.xp2.y);
-    const xform = createAffineTransformation(xp0, xp1, xp2);
+    const xform = createFigmaTransform(xp0, xp1, xp2);
     //console.log('xform =', xform);
     figObj.relativeTransform =
         [
@@ -2762,20 +2793,6 @@ function setObjectTransform(figObj, genObj) {
     const scaleX = distance(xp0, xp1); // / (1 - xform[0][1]);
     const scaleY = distance(xp0, xp2); // / (1 - xform[1][0]);
     figObj.resizeWithoutConstraints(Math.max(0.01, scaleX), genObj.height ? Math.max(0.01, scaleY) : 0);
-}
-function createAffineTransformation(tl, tr, bl) {
-    const vr = point(tr.x - tl.x, tr.y - tl.y);
-    const vb = point(bl.x - tl.x, bl.y - tl.y);
-    const scaleX = vr.x;
-    const scaleY = vb.y;
-    const skewY = -vr.y;
-    const skewX = -vb.x;
-    const translateX = tl.x;
-    const translateY = tl.y;
-    const matrix = [[scaleX, skewX, translateX],
-        [skewY, scaleY, translateY],
-        [0, 0, 1]];
-    return inversem3(matrix);
 }
 function setPointTransform(figPoint, genPoint) {
     figPoint.resizeWithoutConstraints(0.01, 0.01);

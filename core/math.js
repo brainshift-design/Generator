@@ -106,16 +106,6 @@ function crossv(v)
 
 
 
-function angle(v)
-{
-    let angle = Math.atan2(v.y, v.x);
-    if (angle < 0) angle += Tau;
-
-    return angle;
-}
-
-
-
 function angle_(x, y)
 {
     let angle = Math.atan2(y, x);

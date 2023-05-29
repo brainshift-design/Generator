@@ -90,6 +90,16 @@ function distance(p1, p2)
 
 
 
+function angle(v)
+{
+    let angle = Math.atan2(v.y, v.x);
+    if (angle < 0) angle += Tau;
+
+    return angle;
+}
+
+
+
 function anglev(v1, v2)
 {
     return anglev_(v1.x, v1.y, v2.x, v2.y);
@@ -241,7 +251,7 @@ function inversem3(m)
 
 
 
-function createTransform(x, y, scaleX, scaleY, angle, skewX = 0, skewY = 0)
+function createTransform(x = 0, y = 0, scaleX = 1, scaleY = 1, angle = 0, skewX = 0, skewY = 0)
 {
     const cosA = Math.cos(angle);
     const sinA = Math.sin(angle);
