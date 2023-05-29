@@ -14,6 +14,7 @@ const settings =
     showDebugMenu:                 false,
         
     showNodeId:                    false, // instead of name
+    showTransformPoints:           false,
 
     showTooltipLongText:           true,
     showTooltipColorInterpolation: true,
@@ -63,6 +64,7 @@ function updateSetting(settingName, value)
         case 'showDebugMenu':                 settings.showDebugMenu                 = value;  break;
                         
         case 'showNodeId':                    settings.showNodeId                    = value;  break;
+        case 'showTransformPoints':           settings.showTransformPoints           = value;  break;
 
         case 'showTooltipLongText':           settings.showTooltipLongText           = value;  break;
         case 'showTooltipColorInterpolation': settings.showTooltipColorInterpolation = value;  break;
@@ -111,6 +113,7 @@ function updateSettingAndMenu(settingName, valid, value, save = true)
         case 'showDebugMenu':                 updateSettingAndMenu_(valid, settingName, value, menuItemShowDebugMenu                ); break;
                       
         case 'showNodeId':                    updateSettingAndMenu_(valid, settingName, value, menuItemShowNodeId                   ); break;
+        case 'showTransformPoints':           updateSettingAndMenu_(valid, settingName, value, menuItemShowTransformPoints          ); break;
         
         case 'showTooltipLongText':           updateSettingAndMenu_(valid, settingName, value, menuItemShowTooltipLongText          ); break;
         case 'showTooltipColorContrast':      updateSettingAndMenu_(valid, settingName, value, menuItemShowTooltipColorContrast     ); break;
@@ -184,6 +187,7 @@ function updateSettingsMenus()
     menuItemShowDebugMenu                .setChecked(settings.showDebugMenu                );
                 
     menuItemShowNodeId                   .setChecked(settings.showNodeId                   );
+    menuItemShowTransformPoints          .setChecked(settings.showTransformPoints          );
 
     menuItemShowTooltipLongText          .setChecked(settings.showTooltipLongText          );
     menuItemShowTooltipColorInterpolation.setChecked(settings.showTooltipColorInterpolation);
@@ -351,6 +355,7 @@ function loadLocalSettings()
     uiGetLocalData('showDebugMenu'                );
         
     uiGetLocalData('showNodeId'                   );
+    uiGetLocalData('showTransformPoints'          );
 
     uiGetLocalData('showTooltipLongText'          );
     uiGetLocalData('showTooltipColorInterpolation');

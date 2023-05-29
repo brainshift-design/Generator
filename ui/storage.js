@@ -50,6 +50,7 @@ function uiReturnFigGetLocalData(msg)
         case 'showDebugMenu':
 
         case 'showNodeId':       
+        case 'showTransformPoints':       
 
         case 'showTooltipLongText':
         case 'showTooltipColorInterpolation':

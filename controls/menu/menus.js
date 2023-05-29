@@ -94,6 +94,7 @@ var menuItemShowDebugMenu;
 var menuPrefSep2;
 
 var menuItemShowNodeId;
+var menuItemShowTransformPoints;
 
 var menuItemDebug;
 var menuItemDebugLog;
@@ -310,6 +311,15 @@ function initGeneratorMenus()
 
                                     graph.updatePages();
 
+                                    pushUpdate(null, graph.nodes.filter(n => n.active));
+                                }
+                            }),
+        menuItemShowTransformPoints = new MenuItem('Show transform points', 
+                            {
+                                checkCallback: () => settings.showTransformPoints, 
+                                callback:      () => 
+                                {
+                                    updateSettingAndMenu('showTransformPoints', true, !settings.showTransformPoints);
                                     pushUpdate(null, graph.nodes.filter(n => n.active));
                                 }
                             }),

@@ -68,30 +68,6 @@ class FigmaObject
 
     applyTransform(cx, cy, xform)
     {
-        // const xToOrigin = 
-        //     [[1, 0, cx],
-        //      [0, 1, cy],
-        //      [0, 0, 1 ]];
-
-        // const xToPoint = 
-        //     [[1, 0, -cx],
-        //      [0, 1, -cy],
-        //      [0, 0,  1 ]];
-
-
-        // add to object's "total" transformation
-
-        // this.xform = mulm3m3(this.xform, xToOrigin);
-        // this.xform = mulm3m3(this.xform, xform);
-        // this.xform = mulm3m3(this.xform, xToPoint);
-
-        // this.xform = mulm3m3(
-        //     this.xform,
-        //     [[1, 0, -cx],
-        //      [0, 1, -cy],
-        //      [0, 0,  1 ]]);
-
-
         if (this.type == POINT)
         {
             const p = mulv2m3(point(this.x, this.y), xform);

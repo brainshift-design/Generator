@@ -23,8 +23,12 @@ function genRequest(request)
     const actionId             = parseInt(request[1]);
     const set                  = parseInt(request[2]);
 
-    const showAllColorSpaces   = (set >> 0) & 1 != 0;
-    const logRequests          = (set >> 1) & 1 != 0;
+    const settings =
+    {
+        showAllColorSpaces:  (set >> 0) & 1 != 0,
+        logRequests:         (set >> 1) & 1 != 0,
+        showTransformPoints: (set >> 2) & 1 != 0
+    };
 
 
     const updateNodeId         = request[3];
@@ -39,8 +43,7 @@ function genRequest(request)
         updateNodeId, 
         updateParamId, 
         viewportZoom,
-        showAllColorSpaces,
-        logRequests);
+        settings);
 
 
     const stackOverflowProtect = 100;
@@ -50,7 +53,7 @@ function genRequest(request)
         genParse(parse);
 
 
-    if (logRequests)
+    if (settings.logRequests)
         logRequest(parse);
 
 

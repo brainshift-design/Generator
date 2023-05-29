@@ -51,7 +51,7 @@ class Parse
 
 
 
-    constructor(request, firstPos, updateNodeId, updateParamId, viewportZoom, showAllColorSpaces, logRequests)
+    constructor(request, firstPos, updateNodeId, updateParamId, viewportZoom, settings)
     {
         this.request       = request;
           
@@ -63,9 +63,7 @@ class Parse
    
         this.viewportZoom  = viewportZoom;
 
-        
-        this.settings.showAllColorSpaces = showAllColorSpaces;
-        this.settings.logRequests        = logRequests;
+        this.settings      = settings;
     }
 
 

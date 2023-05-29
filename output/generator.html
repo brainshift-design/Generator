@@ -4368,30 +4368,6 @@ class FigmaObject
 
     applyTransform(cx, cy, xform)
     {
-        // const xToOrigin = 
-        //     [[1, 0, cx],
-        //      [0, 1, cy],
-        //      [0, 0, 1 ]];
-
-        // const xToPoint = 
-        //     [[1, 0, -cx],
-        //      [0, 1, -cy],
-        //      [0, 0,  1 ]];
-
-
-        // add to object's "total" transformation
-
-        // this.xform = mulm3m3(this.xform, xToOrigin);
-        // this.xform = mulm3m3(this.xform, xform);
-        // this.xform = mulm3m3(this.xform, xToPoint);
-
-        // this.xform = mulm3m3(
-        //     this.xform,
-        //     [[1, 0, -cx],
-        //      [0, 1, -cy],
-        //      [0, 0,  1 ]]);
-
-
         if (this.type == POINT)
         {
             const p = mulv2m3(point(this.x, this.y), xform);
@@ -19674,7 +19650,10 @@ extends GShape
                 rect.xp1.createDefaultTransform(x + w, y,     0, 0, _a);
                 rect.xp2.createDefaultTransform(x,     y + h, 0, 0, _a);
 
-                objects = [rect, rect.xp0, rect.xp1, rect.xp2];
+                objects = [rect];
+                
+                if (parse.settings.showTransformPoints)
+                    objects.push(rect.xp0, rect.xp1, rect.xp2);
             }
         }
 
@@ -22948,6 +22927,7 @@ const settings =
     showDebugMenu:                 false,
         
     showNodeId:                    false, // instead of name
+    showTransformPoints:           false,
 
     showTooltipLongText:           true,
     showTooltipColorInterpolation: true,
@@ -22997,6 +22977,7 @@ function updateSetting(settingName, value)
         case 'showDebugMenu':                 settings.showDebugMenu                 = value;  break;
                         
         case 'showNodeId':                    settings.showNodeId                    = value;  break;
+        case 'showTransformPoints':           settings.showTransformPoints           = value;  break;
 
         case 'showTooltipLongText':           settings.showTooltipLongText           = value;  break;
         case 'showTooltipColorInterpolation': settings.showTooltipColorInterpolation = value;  break;
@@ -23045,6 +23026,7 @@ function updateSettingAndMenu(settingName, valid, value, save = true)
         case 'showDebugMenu':                 updateSettingAndMenu_(valid, settingName, value, menuItemShowDebugMenu                ); break;
                       
         case 'showNodeId':                    updateSettingAndMenu_(valid, settingName, value, menuItemShowNodeId                   ); break;
+        case 'showTransformPoints':           updateSettingAndMenu_(valid, settingName, value, menuItemShowTransformPoints          ); break;
         
         case 'showTooltipLongText':           updateSettingAndMenu_(valid, settingName, value, menuItemShowTooltipLongText          ); break;
         case 'showTooltipColorContrast':      updateSettingAndMenu_(valid, settingName, value, menuItemShowTooltipColorContrast     ); break;
@@ -23118,6 +23100,7 @@ function updateSettingsMenus()
     menuItemShowDebugMenu                .setChecked(settings.showDebugMenu                );
                 
     menuItemShowNodeId                   .setChecked(settings.showNodeId                   );
+    menuItemShowTransformPoints          .setChecked(settings.showTransformPoints          );
 
     menuItemShowTooltipLongText          .setChecked(settings.showTooltipLongText          );
     menuItemShowTooltipColorInterpolation.setChecked(settings.showTooltipColorInterpolation);
@@ -23285,6 +23268,7 @@ function loadLocalSettings()
     uiGetLocalData('showDebugMenu'                );
         
     uiGetLocalData('showNodeId'                   );
+    uiGetLocalData('showTransformPoints'          );
 
     uiGetLocalData('showTooltipLongText'          );
     uiGetLocalData('showTooltipColorInterpolation');
@@ -23463,8 +23447,12 @@ function genRequest(request)
     const actionId             = parseInt(request[1]);
     const set                  = parseInt(request[2]);
 
-    const showAllColorSpaces   = (set >> 0) & 1 != 0;
-    const logRequests          = (set >> 1) & 1 != 0;
+    const settings =
+    {
+        showAllColorSpaces:  (set >> 0) & 1 != 0,
+        logRequests:         (set >> 1) & 1 != 0,
+        showTransformPoints: (set >> 2) & 1 != 0
+    };
 
 
     const updateNodeId         = request[3];
@@ -23479,8 +23467,7 @@ function genRequest(request)
         updateNodeId, 
         updateParamId, 
         viewportZoom,
-        showAllColorSpaces,
-        logRequests);
+        settings);
 
 
     const stackOverflowProtect = 100;
@@ -23490,7 +23477,7 @@ function genRequest(request)
         genParse(parse);
 
 
-    if (logRequests)
+    if (settings.logRequests)
         logRequest(parse);
 
 
@@ -27966,7 +27953,7 @@ class Parse
 
 
 
-    constructor(request, firstPos, updateNodeId, updateParamId, viewportZoom, showAllColorSpaces, logRequests)
+    constructor(request, firstPos, updateNodeId, updateParamId, viewportZoom, settings)
     {
         this.request       = request;
           
@@ -27978,9 +27965,7 @@ class Parse
    
         this.viewportZoom  = viewportZoom;
 
-        
-        this.settings.showAllColorSpaces = showAllColorSpaces;
-        this.settings.logRequests        = logRequests;
+        this.settings      = settings;
     }
 
 

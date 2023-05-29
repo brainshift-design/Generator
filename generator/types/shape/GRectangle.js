@@ -130,7 +130,10 @@ extends GShape
                 rect.xp1.createDefaultTransform(x + w, y,     0, 0, _a);
                 rect.xp2.createDefaultTransform(x,     y + h, 0, 0, _a);
 
-                objects = [rect, rect.xp0, rect.xp1, rect.xp2];
+                objects = [rect];
+                
+                if (parse.settings.showTransformPoints)
+                    objects.push(rect.xp0, rect.xp1, rect.xp2);
             }
         }
 
