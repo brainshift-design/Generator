@@ -397,6 +397,7 @@ function initGeneratorMenus()
     
     menuFunctions = new Menu('Functions', true, false);
     menuFunctions.addItems([
+        new MenuItem('Constant',    {icon: iconConstant,    callback: e => actionManager.do(getCreateNodeAction(NUMBER_CONSTANT,    btnNumber.div, getCreateOptions(e)))}),
         new MenuItem('Sign',        {icon: iconSign,        callback: e => actionManager.do(getCreateNodeAction(NUMBER_SIGN,        btnNumber.div, getCreateOptions(e)))}),
         new MenuItem('Absolute',    {icon: iconAbsolute,    callback: e => actionManager.do(getCreateNodeAction(NUMBER_ABSOLUTE,    btnNumber.div, getCreateOptions(e)))}),
         new MenuItem('Round',       {icon: iconRound,       callback: e => actionManager.do(getCreateNodeAction(NUMBER_ROUND,       btnNumber.div, getCreateOptions(e)))}),
@@ -408,7 +409,6 @@ function initGeneratorMenus()
     menuNumber.addItems([
                              new MenuItem('Number',        {icon: iconNumber,      callback: e => actionManager.do(getCreateNodeAction(NUMBER,             btnNumber.div, getCreateOptions(e)))}),
                              new MenuItem('',              {separator: true}),
-                             new MenuItem('Constant',      {icon: iconConstant,    callback: e => actionManager.do(getCreateNodeAction(NUMBER_CONSTANT,    btnNumber.div, getCreateOptions(e)))}),
                              new MenuItem('Basic',         {icon: iconAbsolute,    childMenu: menuFunctions}),
                              new MenuItem('Arithmetic',    {icon: iconMath,        childMenu: menuMath,      callback: e => actionManager.do(getCreateNodeAction(NUMBER_MATH,      btnNumber.div, getCreateOptions(e)))}),
                              new MenuItem('Boolean',       {icon: iconBoolean,     childMenu: menuBoolean,   callback: e => actionManager.do(getCreateNodeAction(NUMBER_BOOLEAN,   btnNumber.div, getCreateOptions(e)))}),

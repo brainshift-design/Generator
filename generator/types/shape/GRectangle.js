@@ -120,15 +120,18 @@ extends GShape
             if (   w != 0 
                 && h != 0)
             {
-                const rect = new FigmaRectangle(
-                    this.nodeId,
-                    this.nodeId,
-                    this.nodeName,
-                    x, y, w, h, a, r);
-
+                const rect = new FigmaRectangle(this.nodeId, this.nodeId, this.nodeName, x, y, w, h, a, r);
                 rect.createDefaultTransform(x, y, w, h, _a);
 
-                objects = [rect];
+                const xp0 = new FigmaPoint(this.nodeId, this.nodeId+'.xp0', this.nodeName+' ^ 0', x,     y,   );
+                const xp1 = new FigmaPoint(this.nodeId, this.nodeId+'.xp1', this.nodeName+' ^ 1', x + w, y,   );
+                const xp2 = new FigmaPoint(this.nodeId, this.nodeId+'.xp2', this.nodeName+' ^ 2', x,     y + h);
+
+                xp0.createDefaultTransform(x,     y,     w, h, _a);
+                xp1.createDefaultTransform(x + w, y,     w, h, _a);
+                xp2.createDefaultTransform(x,     y + h, w, h, _a);
+
+                objects = [rect, xp0, xp1, xp2];
             }
         }
 

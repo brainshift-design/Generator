@@ -25,7 +25,16 @@ const identity = Object.freeze(
 
 
 
-const Tau = Math.PI * 2;
+const Epsilon = 0.0000001;
+const Tau     = Math.PI * 2;
+
+
+
+function nozero(x)
+{
+    return x != 0 ? x : Epsilon;
+}
+
 
 
 function sqr (x) { return x*x;   };
@@ -133,6 +142,71 @@ function angleDiff(a1, a2)
 
     return diff; // |-Tau/2, Tau/2]
 }
+
+
+
+function mulv2m3(v, m)
+{
+    let v3 = [v.x, v.y, 1];
+    let r  = mulv3m3(v3, m);
+
+    return point(r[0], r[1]);
+}
+
+
+
+function mulm3m3(...mm)
+{
+    console.assert(mm.length > 0, 'mulm3m3() must take at least one argument');
+
+    let result = clone(mm[0]);
+
+    for (let a = 1; a < mm.length; a++)
+    {
+        const m1 = result;
+        const m2 = mm[a];
+
+        const m = [[0, 0, 0],
+                   [0, 0, 0],
+                   [0, 0, 0]];
+
+        for (let i = 0; i < 3; i++)
+        {
+            for (let j = 0; j < 3; j++)
+            {
+                /*	calculate the dot product of ith row 
+                    of this and jth column of m  */
+                for (let k = 0; k < 3; k++)
+                    m[i][j] += m1[i][k] * m2[k][j];
+            }
+        }
+
+        result = m;
+    }
+
+    return result;
+}
+
+
+
+function createTransform(x, y, scaleX, scaleY, angle, skewX = 0, skewY = 0)
+{
+    const cosA = Math.cos(angle);
+    const sinA = Math.sin(angle);
+
+    return [[scaleX*cosA -  skewY*sinA, -skewX*cosA + scaleY*sinA, x],
+            [ skewY*cosA + scaleX*sinA, scaleY*cosA +  skewX*sinA, y],
+            [0,                         0,                         1]];
+}
+
+
+
+function addv(v1, v2)
+{
+    return point(
+        v1.x + v2.x,
+        v1.y + v2.y);
+}	
 
 
 
@@ -558,16 +632,6 @@ function point(x, y) { return {x: x, y: y}; }
 
 
 
-function mulv2m3(v, m)
-{
-    let v3 = [v.x, v.y, 1];
-    let r  = mulv3m3(v3, m);
-
-    return point(r[0], r[1]);
-}
-
-
-
 function mulv3m3(v, m)
 {
     let r = [0, 0, 0];
@@ -577,4 +641,41 @@ function mulv3m3(v, m)
             r[i] += v[j] * m[i][j];
 
     return r;
+}
+
+
+
+function clone(val) 
+{
+    const type = typeof val;
+    
+    if (val === null) 
+      return null;
+
+    else if (type === 'undefined' 
+          || type === 'number' 
+          || type === 'string' 
+          || type === 'boolean') 
+        return val;
+
+    else if (type === 'object') 
+    {
+        if (val instanceof Array) 
+            return val.map(x => clone(x));
+
+        else if (val instanceof Uint8Array) 
+            return new Uint8Array(val);
+
+        else 
+        {
+            let obj = {};
+
+            for (const key in val) 
+                obj[key] = clone(val[key]);
+
+            return obj;
+        }
+    }
+
+    throw 'unknown';
 }

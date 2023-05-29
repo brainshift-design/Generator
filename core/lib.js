@@ -1,14 +1,3 @@
-const Epsilon = 0.0000001;
-
-
-
-function nozero(x)
-{
-    return x != 0 ? x : Epsilon;
-}
-
-
-
 function noNaN(x, replace)
 {
     return !isNaN(x) ? x : replace;

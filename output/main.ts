@@ -50,7 +50,16 @@ const identity = Object.freeze(
 
 
 
-const Tau = Math.PI * 2;
+const Epsilon = 0.0000001;
+const Tau     = Math.PI * 2;
+
+
+
+function nozero(x)
+{
+    return x != 0 ? x : Epsilon;
+}
+
 
 
 function sqr (x) { return x*x;   };
@@ -158,6 +167,71 @@ function angleDiff(a1, a2)
 
     return diff; // |-Tau/2, Tau/2]
 }
+
+
+
+function mulv2m3(v, m)
+{
+    let v3 = [v.x, v.y, 1];
+    let r  = mulv3m3(v3, m);
+
+    return point(r[0], r[1]);
+}
+
+
+
+function mulm3m3(...mm)
+{
+    console.assert(mm.length > 0, 'mulm3m3() must take at least one argument');
+
+    let result = clone(mm[0]);
+
+    for (let a = 1; a < mm.length; a++)
+    {
+        const m1 = result;
+        const m2 = mm[a];
+
+        const m = [[0, 0, 0],
+                   [0, 0, 0],
+                   [0, 0, 0]];
+
+        for (let i = 0; i < 3; i++)
+        {
+            for (let j = 0; j < 3; j++)
+            {
+                /*	calculate the dot product of ith row 
+                    of this and jth column of m  */
+                for (let k = 0; k < 3; k++)
+                    m[i][j] += m1[i][k] * m2[k][j];
+            }
+        }
+
+        result = m;
+    }
+
+    return result;
+}
+
+
+
+function createTransform(x, y, scaleX, scaleY, angle, skewX = 0, skewY = 0)
+{
+    const cosA = Math.cos(angle);
+    const sinA = Math.sin(angle);
+
+    return [[scaleX*cosA -  skewY*sinA, -skewX*cosA + scaleY*sinA, x],
+            [ skewY*cosA + scaleX*sinA, scaleY*cosA +  skewX*sinA, y],
+            [0,                         0,                         1]];
+}
+
+
+
+function addv(v1, v2)
+{
+    return point(
+        v1.x + v2.x,
+        v1.y + v2.y);
+}	
 
 
 
@@ -583,16 +657,6 @@ function point(x, y) { return {x: x, y: y}; }
 
 
 
-function mulv2m3(v, m)
-{
-    let v3 = [v.x, v.y, 1];
-    let r  = mulv3m3(v3, m);
-
-    return point(r[0], r[1]);
-}
-
-
-
 function mulv3m3(v, m)
 {
     let r = [0, 0, 0];
@@ -604,6 +668,42 @@ function mulv3m3(v, m)
     return r;
 }
 
+
+
+function clone(val) 
+{
+    const type = typeof val;
+    
+    if (val === null) 
+      return null;
+
+    else if (type === 'undefined' 
+          || type === 'number' 
+          || type === 'string' 
+          || type === 'boolean') 
+        return val;
+
+    else if (type === 'object') 
+    {
+        if (val instanceof Array) 
+            return val.map(x => clone(x));
+
+        else if (val instanceof Uint8Array) 
+            return new Uint8Array(val);
+
+        else 
+        {
+            let obj = {};
+
+            for (const key in val) 
+                obj[key] = clone(val[key]);
+
+            return obj;
+        }
+    }
+
+    throw 'unknown';
+}
 
 
 const LIST_VALUE              = 'LIST#';
@@ -2949,47 +3049,61 @@ function setObjectTransform(figObj, genObj)
     const down  = subv(xp2, xp0);
 
 
-    // make axis vectors == 1
+    // console.log('xp0   =', xp0);
+    // console.log('xp1   =', xp1);
+    // console.log('xp2   =', xp2);
+    // console.log('right =', right);
+    // console.log('down  =', down);
+    // console.log('');
+
+    const  a     = anglev(xp0, xp1);
+
+    const _xform = createTransform(0, 0, 1, 1, -a);
+
+    const _xp1   = addv(mulv2m3(subv(xp1, xp0), _xform), xp0);
+    const _xp2   = addv(mulv2m3(subv(xp2, xp0), _xform), xp0);
+
+    const _right = subv(_xp1, xp0);
+    const _down  = subv(_xp2, xp0);
+
+    const  skewX = lengthv( down) * Math.cos(angleDiff(anglev(xp0,  xp2), anglev(xp0,  xp1))) / lengthv( right);
+    const _skewX = lengthv(_down) * Math.cos(angleDiff(anglev(xp0, _xp2), anglev(xp0, _xp1))) / lengthv(_right);
+
+    console.log(' xp0    =',  xp0);
+    console.log('_xp1    =', _xp1);
+    console.log('_xp2    =', _xp2);
+    console.log('_right  =', _right);
+    console.log('_down   =', _down);
+    console.log('_skewX  =', _skewX);
+   
     
-    // const scaleX = Math.sqrt(sqr(genObj.xform[0][0]) + sqr(genObj.xform[1][0]));
-    // const scaleY = Math.sqrt(sqr(genObj.xform[0][1]) + sqr(genObj.xform[1][1]));
-
-    // genObj.xform[0][0] /= scaleX;
-    // genObj.xform[1][0] /= scaleX;
-    
-    // genObj.xform[0][1] /= scaleY;
-    // genObj.xform[1][1] /= scaleY;
-
-    console.log('xp0   =', xp0);
-    console.log('xp1   =', xp1);
-    console.log('xp2   =', xp2);
-    console.log('right =', right);
-    console.log('down  =', down);
-    console.log('');
-
-    const a     = anglev(xp0, xp1);
 
     const sinA  = Math.sin(a);
     const cosA  = Math.cos(a);
 
-    // const scaleX = Math.sqrt(sqr(xp1.x - xp0.x) + sqr(xp1.y - xp0.y));
-    // const scaleY = Math.sqrt(sqr(xp2.x - xp0.x) + sqr(xp2.y - xp0.y));
-    // const skewX  = (xp2.x - xp0.x) / scaleY;
-    // const skewY  = (xp1.y - xp0.y) / scaleX;
-    
-    const skewX = lengthv(down) * Math.cos(angleDiff(anglev(xp0, xp2), anglev(xp0, xp1))) / lengthv(right);
+    // const skewY = 0;//-lengthv(right) * Math.cos(angleDiff(anglev(xp0, xp1), anglev(xp0, xp2))) / lengthv(down );
 
-    //dot(subv(xp2, xp0), subv(xp1, xp0)) / distance(xp0, xp1) / genObj.width;
-    const skewY = 0;//dot(subv(xp1, xp0), subv(xp2, xp0)) / distance(xp0, xp2) / genObj.height;
-    console.log('skewX =', skewX);
-    console.log('skewY =', skewY);
-    console.log('');
+    // //dot(subv(xp2, xp0), subv(xp1, xp0)) / distance(xp0, xp1) / genObj.width;
+    // //const skewY = 0;//dot(subv(xp1, xp0), subv(xp2, xp0)) / distance(xp0, xp2) / genObj.height;
+    // console.log('skewX =', skewX);
+    // //console.log('skewY =', skewY);
+    // console.log('');
 
-    const xform = 
-        [[cosA + skewY*sinA, -sinA + skewX*cosA, xp0.x],
-         [sinA - skewY*cosA,  cosA + skewX*sinA, xp0.y],
-         [0,           0,          1    ]];
+    const xform = mulm3m3(
+
+        [[cosA, -sinA,  0    ],
+         [sinA,  cosA,  0    ],
+         [0,     0,     1    ]],
+ 
+        [[1,     skewX / Math.cos(a), 0    ],
+         [0,     1,     0    ],
+         [0,     0,     1    ]],
+
+        [[1,     0,     xp0.x],
+         [0,     1,     xp0.y],
+         [0,     0,     1    ]]);
     
+         
     figObj.relativeTransform = 
     [
         xform[0],
@@ -2998,13 +3112,11 @@ function setObjectTransform(figObj, genObj)
 
 
     const scaleX = distance(xp0, xp1);// / Math.cos(Math.atan(skewY));
-    const scaleY = distance(xp0, xp2);// / Math.cos(Math.atan(skewX));
+    const scaleY = distance(xp0, xp2);// / Math.cos(Math.atan(_skewX));
 
     figObj.resizeWithoutConstraints(
-        Math.max(0.01, scaleX),
-        genObj.height
-        ? Math.max(0.01, scaleY)
-        : 0);
+                        Math.max(0.01, scaleX),
+        genObj.height ? Math.max(0.01, scaleY) : 0);
 }
 
 

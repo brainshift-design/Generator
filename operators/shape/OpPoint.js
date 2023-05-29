@@ -12,6 +12,7 @@ extends OpShapeBase
     {
         super(POINT, 'point', 'point', iconPoint);
 
+        this.canDisable  = true;
         this.iconOffsetY = -1;
 
 
