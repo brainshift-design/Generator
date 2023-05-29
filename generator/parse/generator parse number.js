@@ -50,6 +50,81 @@ function genParseNumber(parse)
 
 
 
+function genParseConstant(parse)
+{
+    const [, nodeId, options, ignore] = genParseNodeStart(parse);
+
+
+    const _const = new GConstant(nodeId, options);
+
+
+    if (parse.settings.logRequests) 
+        logReq(_const, parse, ignore);
+
+
+    if (ignore) 
+    {
+        genParseNodeEnd(parse, _const);
+        return parse.parsedNodes.find(n => n.nodeId == nodeId);
+    }
+
+
+    parse.nTab++;
+
+
+    _const.constant = genParse(parse);
+
+
+    parse.nTab--;
+
+
+    genParseNodeEnd(parse, _const);
+    return _const;
+}
+
+
+
+function genParseDateTime(parse)
+{
+    const [, nodeId, options, ignore] = genParseNodeStart(parse);
+
+
+    const dateTime = new GDateTime(nodeId, options);
+
+
+    if (parse.settings.logRequests) 
+        logReq(dateTime, parse, ignore);
+
+
+    if (ignore) 
+    {
+        genParseNodeEnd(parse, dateTime);
+        return parse.parsedNodes.find(n => n.nodeId == nodeId);
+    }
+
+
+    parse.nTab++;
+
+
+    dateTime.year         = genParse(parse);
+    dateTime.month        = genParse(parse);
+    dateTime.date         = genParse(parse);
+    dateTime.dayOfWeek    = genParse(parse);
+    dateTime.hours        = genParse(parse);
+    dateTime.minutes      = genParse(parse);
+    dateTime.seconds      = genParse(parse);
+    dateTime.milliseconds = genParse(parse);
+
+
+    parse.nTab--;
+
+
+    genParseNodeEnd(parse, dateTime);
+    return dateTime;
+}
+
+
+
 function genParseSign(parse)
 {
     const [, nodeId, options, ignore] = genParseNodeStart(parse);
@@ -310,40 +385,6 @@ function genParseArithmetic(parse, newNode)
         
     genParseNodeEnd(parse, arith);
     return arith;
-}
-
-
-
-function genParseConstant(parse)
-{
-    const [, nodeId, options, ignore] = genParseNodeStart(parse);
-
-
-    const _const = new GConstant(nodeId, options);
-
-
-    if (parse.settings.logRequests) 
-        logReq(_const, parse, ignore);
-
-
-    if (ignore) 
-    {
-        genParseNodeEnd(parse, _const);
-        return parse.parsedNodes.find(n => n.nodeId == nodeId);
-    }
-
-
-    parse.nTab++;
-
-
-    _const.constant = genParse(parse);
-
-
-    parse.nTab--;
-
-
-    genParseNodeEnd(parse, _const);
-    return _const;
 }
 
 

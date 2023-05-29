@@ -8165,6 +8165,7 @@ const NUMBER_ABSOLUTE         = 'ABS';
 const NUMBER_ROUND            = 'ROUND';   
 const NUMBER_LIMITS           = 'LIM';   
 const NUMBER_CONSTANT         = 'CONST';  
+const NUMBER_DATETIME         = 'DATE';  
 const NUMBER_DISTRIBUTE       = 'DISTR';  
 const NUMBER_SEQUENCE         = 'SEQ';  
 const NUMBER_RANDOM           = 'RAND';  
@@ -8253,6 +8254,7 @@ const NUMBER_TYPES =
     NUMBER_ROUND,
     NUMBER_LIMITS,
     NUMBER_CONSTANT,
+    NUMBER_DATETIME,
     NUMBER_DISTRIBUTE,
     NUMBER_SEQUENCE,
     NUMBER_RANDOM,
@@ -16068,6 +16070,136 @@ extends GNumberType
         super.invalidateInputs();
 
         if (this.constant) this.constant.invalidateInputs();
+    }
+}
+
+
+
+class GDateTime
+extends GNumberType
+{
+    year         = null;
+    month        = null;
+    date         = null;
+    dayOfWeek    = null;
+    hours        = null;
+    minutes      = null;
+    seconds      = null;
+    milliseconds = null;
+
+
+    
+    constructor(nodeId, options)
+    {
+        super(NUMBER_LIMITS, nodeId, options);
+    }
+
+
+    
+    copy()
+    {
+        const copy = new GLimits(this.nodeId, this.options);
+
+        copy.copyBase(this);
+
+        copy.year         = this.year        .copy();
+        copy.month        = this.month       .copy();
+        copy.date         = this.date        .copy();
+        copy.dayOfWeek    = this.dayOfWeek   .copy();
+        copy.hours        = this.hours       .copy();
+        copy.minutes      = this.minutes     .copy();
+        copy.seconds      = this.seconds     .copy();
+        copy.milliseconds = this.milliseconds.copy();
+
+        return copy;
+    }
+
+
+
+    async eval(parse)
+    {
+        if (this.isCached())
+            return this;
+
+
+        if (this.options.enabled)
+        {
+            const dateTime = new Date();
+
+            const year         = new NumberValue(dateTime.getFullYear()    );
+            const month        = new NumberValue(dateTime.getMonth()+1     );
+            const date         = new NumberValue(dateTime.getDate()        );
+            const dayOfWeek    = new NumberValue(dateTime.getDay()         );
+            const hours        = new NumberValue(dateTime.getHours()       );
+            const minutes      = new NumberValue(dateTime.getMinutes()     );
+            const seconds      = new NumberValue(dateTime.getSeconds()     );
+            const milliseconds = new NumberValue(dateTime.getMilliseconds());
+
+
+            this.updateValues =
+                [['year'        , year        ],
+                 ['month'       , month       ],
+                 ['date'        , date        ],
+                 ['dayOfWeek'   , dayOfWeek   ],
+                 ['hours'       , hours       ],
+                 ['minutes'     , minutes     ],
+                 ['seconds'     , seconds     ],
+                 ['milliseconds', milliseconds]];
+        }
+        else
+            this.updateValues = [];
+
+        
+        this.validate();
+
+        return this;
+    }
+
+
+
+    pushValueUpdates(parse)
+    {
+        super.pushValueUpdates(parse);
+
+        if (this.year        ) this.year        .pushValueUpdates(parse);
+        if (this.month       ) this.month       .pushValueUpdates(parse);
+        if (this.date        ) this.date        .pushValueUpdates(parse);
+        if (this.dayOfWeek   ) this.dayOfWeek   .pushValueUpdates(parse);
+        if (this.hours       ) this.hours       .pushValueUpdates(parse);
+        if (this.minutes     ) this.minutes     .pushValueUpdates(parse);
+        if (this.seconds     ) this.seconds     .pushValueUpdates(parse);
+        if (this.milliseconds) this.milliseconds.pushValueUpdates(parse);
+    }
+
+
+
+    isCached()
+    {
+        return super.isCached()
+            && (!this.year         || this.year        .isCached())
+            && (!this.month        || this.month       .isCached())
+            && (!this.date         || this.date        .isCached())
+            && (!this.dayOfWeek    || this.dayOfWeek   .isCached())
+            && (!this.hours        || this.hours       .isCached())
+            && (!this.minutes      || this.minutes     .isCached())
+            && (!this.seconds      || this.seconds     .isCached())
+            && (!this.milliseconds || this.milliseconds.isCached());
+    }
+
+
+
+    invalidateInputs()
+    {
+        super.invalidateInputs();
+
+        if (this.year        ) this.year        .invalidateInputs();
+        if (this.month       ) this.month       .invalidateInputs();
+        if (this.date        ) this.date        .invalidateInputs();
+        if (this.dayOfWeek   ) this.dayOfWeek   .invalidateInputs();
+        if (this.hours       ) this.hours       .invalidateInputs();
+        if (this.minutes     ) this.minutes     .invalidateInputs();
+        if (this.seconds     ) this.seconds     .invalidateInputs();
+        if (this.milliseconds) this.milliseconds.invalidateInputs();
     }
 }
 
@@ -30000,6 +30132,81 @@ function genParseNumber(parse)
 
 
 
+function genParseConstant(parse)
+{
+    const [, nodeId, options, ignore] = genParseNodeStart(parse);
+
+
+    const _const = new GConstant(nodeId, options);
+
+
+    if (parse.settings.logRequests) 
+        logReq(_const, parse, ignore);
+
+
+    if (ignore) 
+    {
+        genParseNodeEnd(parse, _const);
+        return parse.parsedNodes.find(n => n.nodeId == nodeId);
+    }
+
+
+    parse.nTab++;
+
+
+    _const.constant = genParse(parse);
+
+
+    parse.nTab--;
+
+
+    genParseNodeEnd(parse, _const);
+    return _const;
+}
+
+
+
+function genParseDateTime(parse)
+{
+    const [, nodeId, options, ignore] = genParseNodeStart(parse);
+
+
+    const dateTime = new GDateTime(nodeId, options);
+
+
+    if (parse.settings.logRequests) 
+        logReq(dateTime, parse, ignore);
+
+
+    if (ignore) 
+    {
+        genParseNodeEnd(parse, dateTime);
+        return parse.parsedNodes.find(n => n.nodeId == nodeId);
+    }
+
+
+    parse.nTab++;
+
+
+    dateTime.year         = genParse(parse);
+    dateTime.month        = genParse(parse);
+    dateTime.date         = genParse(parse);
+    dateTime.dayOfWeek    = genParse(parse);
+    dateTime.hours        = genParse(parse);
+    dateTime.minutes      = genParse(parse);
+    dateTime.seconds      = genParse(parse);
+    dateTime.milliseconds = genParse(parse);
+
+
+    parse.nTab--;
+
+
+    genParseNodeEnd(parse, dateTime);
+    return dateTime;
+}
+
+
+
 function genParseSign(parse)
 {
     const [, nodeId, options, ignore] = genParseNodeStart(parse);
@@ -30260,40 +30467,6 @@ function genParseArithmetic(parse, newNode)
         
     genParseNodeEnd(parse, arith);
     return arith;
-}
-
-
-
-function genParseConstant(parse)
-{
-    const [, nodeId, options, ignore] = genParseNodeStart(parse);
-
-
-    const _const = new GConstant(nodeId, options);
-
-
-    if (parse.settings.logRequests) 
-        logReq(_const, parse, ignore);
-
-
-    if (ignore) 
-    {
-        genParseNodeEnd(parse, _const);
-        return parse.parsedNodes.find(n => n.nodeId == nodeId);
-    }
-
-
-    parse.nTab++;
-
-
-    _const.constant = genParse(parse);
-
-
-    parse.nTab--;
-
-
-    genParseNodeEnd(parse, _const);
-    return _const;
 }
 
 
@@ -32460,6 +32633,7 @@ function genParse(parse, inParam = true)
     else if (parse.next == NUMBER_LIMITS          ) result = genParseLimits           (parse);
     else if (parse.next == NUMBER_RANDOM          ) result = genParseRandom           (parse);
     else if (parse.next == NUMBER_CONSTANT        ) result = genParseConstant         (parse);
+    else if (parse.next == NUMBER_DATETIME        ) result = genParseDateTime         (parse);
     else if (parse.next == NUMBER_DISTRIBUTE      ) result = genParseDistribute       (parse);
     else if (parse.next == NUMBER_SEQUENCE        ) result = genParseSequence         (parse);
     else if (parse.next == NUMBER_INTERPOLATE     ) result = genParseInterpolate      (parse);
@@ -42207,6 +42381,7 @@ const NUMBER_ABSOLUTE         = 'ABS';
 const NUMBER_ROUND            = 'ROUND';   
 const NUMBER_LIMITS           = 'LIM';   
 const NUMBER_CONSTANT         = 'CONST';  
+const NUMBER_DATETIME         = 'DATE';  
 const NUMBER_DISTRIBUTE       = 'DISTR';  
 const NUMBER_SEQUENCE         = 'SEQ';  
 const NUMBER_RANDOM           = 'RAND';  
@@ -42295,6 +42470,7 @@ const NUMBER_TYPES =
     NUMBER_ROUND,
     NUMBER_LIMITS,
     NUMBER_CONSTANT,
+    NUMBER_DATETIME,
     NUMBER_DISTRIBUTE,
     NUMBER_SEQUENCE,
     NUMBER_RANDOM,
@@ -50110,6 +50286,136 @@ extends GNumberType
         super.invalidateInputs();
 
         if (this.constant) this.constant.invalidateInputs();
+    }
+}
+
+
+
+class GDateTime
+extends GNumberType
+{
+    year         = null;
+    month        = null;
+    date         = null;
+    dayOfWeek    = null;
+    hours        = null;
+    minutes      = null;
+    seconds      = null;
+    milliseconds = null;
+
+
+    
+    constructor(nodeId, options)
+    {
+        super(NUMBER_LIMITS, nodeId, options);
+    }
+
+
+    
+    copy()
+    {
+        const copy = new GLimits(this.nodeId, this.options);
+
+        copy.copyBase(this);
+
+        copy.year         = this.year        .copy();
+        copy.month        = this.month       .copy();
+        copy.date         = this.date        .copy();
+        copy.dayOfWeek    = this.dayOfWeek   .copy();
+        copy.hours        = this.hours       .copy();
+        copy.minutes      = this.minutes     .copy();
+        copy.seconds      = this.seconds     .copy();
+        copy.milliseconds = this.milliseconds.copy();
+
+        return copy;
+    }
+
+
+
+    async eval(parse)
+    {
+        if (this.isCached())
+            return this;
+
+
+        if (this.options.enabled)
+        {
+            const dateTime = new Date();
+
+            const year         = new NumberValue(dateTime.getFullYear()    );
+            const month        = new NumberValue(dateTime.getMonth()+1     );
+            const date         = new NumberValue(dateTime.getDate()        );
+            const dayOfWeek    = new NumberValue(dateTime.getDay()         );
+            const hours        = new NumberValue(dateTime.getHours()       );
+            const minutes      = new NumberValue(dateTime.getMinutes()     );
+            const seconds      = new NumberValue(dateTime.getSeconds()     );
+            const milliseconds = new NumberValue(dateTime.getMilliseconds());
+
+
+            this.updateValues =
+                [['year'        , year        ],
+                 ['month'       , month       ],
+                 ['date'        , date        ],
+                 ['dayOfWeek'   , dayOfWeek   ],
+                 ['hours'       , hours       ],
+                 ['minutes'     , minutes     ],
+                 ['seconds'     , seconds     ],
+                 ['milliseconds', milliseconds]];
+        }
+        else
+            this.updateValues = [];
+
+        
+        this.validate();
+
+        return this;
+    }
+
+
+
+    pushValueUpdates(parse)
+    {
+        super.pushValueUpdates(parse);
+
+        if (this.year        ) this.year        .pushValueUpdates(parse);
+        if (this.month       ) this.month       .pushValueUpdates(parse);
+        if (this.date        ) this.date        .pushValueUpdates(parse);
+        if (this.dayOfWeek   ) this.dayOfWeek   .pushValueUpdates(parse);
+        if (this.hours       ) this.hours       .pushValueUpdates(parse);
+        if (this.minutes     ) this.minutes     .pushValueUpdates(parse);
+        if (this.seconds     ) this.seconds     .pushValueUpdates(parse);
+        if (this.milliseconds) this.milliseconds.pushValueUpdates(parse);
+    }
+
+
+
+    isCached()
+    {
+        return super.isCached()
+            && (!this.year         || this.year        .isCached())
+            && (!this.month        || this.month       .isCached())
+            && (!this.date         || this.date        .isCached())
+            && (!this.dayOfWeek    || this.dayOfWeek   .isCached())
+            && (!this.hours        || this.hours       .isCached())
+            && (!this.minutes      || this.minutes     .isCached())
+            && (!this.seconds      || this.seconds     .isCached())
+            && (!this.milliseconds || this.milliseconds.isCached());
+    }
+
+
+
+    invalidateInputs()
+    {
+        super.invalidateInputs();
+
+        if (this.year        ) this.year        .invalidateInputs();
+        if (this.month       ) this.month       .invalidateInputs();
+        if (this.date        ) this.date        .invalidateInputs();
+        if (this.dayOfWeek   ) this.dayOfWeek   .invalidateInputs();
+        if (this.hours       ) this.hours       .invalidateInputs();
+        if (this.minutes     ) this.minutes     .invalidateInputs();
+        if (this.seconds     ) this.seconds     .invalidateInputs();
+        if (this.milliseconds) this.milliseconds.invalidateInputs();
     }
 }
 
@@ -65489,6 +65795,7 @@ const iconIfElse            = '<svg width="17" height="7" viewBox="-1 0 17 7" fi
 const iconNumber            = '<svg width="17" height="7" viewBox="0 0 17 7" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M14.4917 7C14.0139 7 13.5892 6.91793 13.2176 6.7538C12.8483 6.58967 12.5563 6.36122 12.3417 6.06844C12.1272 5.77567 12.0133 5.43742 12 5.05371H13.2475C13.2586 5.2378 13.3194 5.39861 13.43 5.53612C13.5406 5.67142 13.6877 5.77677 13.8713 5.85219C14.0548 5.9276 14.2605 5.9653 14.4884 5.9653C14.7317 5.9653 14.9473 5.92316 15.1353 5.83888C15.3234 5.75238 15.4705 5.6326 15.5766 5.47956C15.6828 5.32652 15.7348 5.15019 15.7326 4.95057C15.7348 4.7443 15.6817 4.56242 15.5733 4.40494C15.4649 4.24747 15.3079 4.12437 15.1022 4.03565C14.8987 3.94693 14.6532 3.90257 14.3656 3.90257H13.7651V2.95105H14.3656C14.6023 2.95105 14.8091 2.91001 14.986 2.82795C15.1652 2.74588 15.3057 2.63055 15.4074 2.48194C15.5092 2.33112 15.5589 2.157 15.5567 1.9596C15.5589 1.76664 15.5158 1.59918 15.4273 1.45722C15.3411 1.31305 15.2183 1.20105 15.059 1.1212C14.902 1.04135 14.7173 1.00143 14.505 1.00143C14.297 1.00143 14.1046 1.03913 13.9277 1.11454C13.7507 1.18996 13.608 1.29753 13.4997 1.43726C13.3913 1.57478 13.3338 1.73891 13.3271 1.92966H12.1427C12.1515 1.54816 12.261 1.21324 12.4711 0.924905C12.6835 0.634347 12.9666 0.408112 13.3205 0.246198C13.6744 0.0820661 14.0714 0 14.5116 0C14.965 0 15.3588 0.0853929 15.6927 0.256179C16.029 0.424746 16.2888 0.652091 16.4724 0.938213C16.656 1.22433 16.7478 1.5404 16.7478 1.88641C16.75 2.27012 16.6372 2.59173 16.4094 2.85124C16.1838 3.11074 15.8874 3.28042 15.5202 3.36027V3.4135C15.998 3.48004 16.3641 3.65748 16.6184 3.94582C16.875 4.23194 17.0022 4.58793 17 5.01378C17 5.39528 16.8916 5.73685 16.6748 6.0385C16.4603 6.33793 16.1639 6.57304 15.7856 6.74382C15.4096 6.91461 14.9783 7 14.4917 7Z" fill="white"/><path d="M5.04237 7V6.09634L7.66243 3.75289C7.90254 3.52136 8.10264 3.31567 8.26271 3.13584C8.42279 2.95601 8.54284 2.78179 8.62288 2.6132C8.70292 2.44461 8.74294 2.26477 8.74294 2.0737C8.74294 1.85565 8.69115 1.66908 8.58757 1.51397C8.48399 1.35662 8.34157 1.23523 8.16031 1.14981C7.97905 1.06439 7.66361 1.01493 7.43291 1.01493C7.19515 1.01493 6.98682 1.06214 6.80791 1.15655C6.629 1.24872 6.49011 1.38022 6.39124 1.55106C6.29473 1.7219 6.24647 1.92534 6.24647 2.16137H5C5 1.72302 5.10476 1.342 5.31427 1.0183C5.52378 0.694605 5.81215 0.443963 6.17938 0.266378C6.54896 0.0887927 6.97269 0 7.45056 0C7.9355 0 8.47105 0.0932886 8.83828 0.266378C9.20551 0.439467 9.49035 0.676622 9.6928 0.977842C9.8976 1.27906 10 1.62299 10 2.00963C10 2.26814 9.94821 2.52216 9.84463 2.77168C9.74105 3.02119 9.55862 3.29769 9.29732 3.60116C9.03837 3.90462 8.67467 4.27216 8.20622 4.70376L6.85028 5.90751V5.95472H10V7H5.04237Z" fill="white"/><path d="M3 0V7H1.70882V1.23389H1.66705L0 2.27979V1.11768L1.77146 0H3Z" fill="white"/></svg>';
 const iconRandom            = '<svg width="7" height="11" viewBox="0 0 7 11" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M2.57613 7.88313V7.82014C2.58313 7.15175 2.65312 6.61983 2.7861 6.22439C2.91908 5.82895 3.10805 5.50875 3.35302 5.26379C3.59798 5.01883 3.89193 4.79311 4.23488 4.58664C4.44135 4.46066 4.62682 4.31193 4.79129 4.14046C4.95577 3.96549 5.08525 3.76427 5.17973 3.5368C5.27772 3.30934 5.32671 3.05738 5.32671 2.78092C5.32671 2.43797 5.24622 2.14052 5.08525 1.88856C4.92427 1.6366 4.70906 1.44238 4.4396 1.3059C4.17014 1.16942 3.87094 1.10118 3.54199 1.10118C3.25503 1.10118 2.97857 1.16067 2.71261 1.27965C2.44665 1.39863 2.22444 1.58585 2.04597 1.84131C1.86749 2.09677 1.76426 2.43097 1.73626 2.84391H0.413467C0.441463 2.249 0.595439 1.73983 0.875396 1.31639C1.15885 0.89296 1.53155 0.56926 1.99347 0.345294C2.4589 0.121329 2.97507 0.00934601 3.54199 0.00934601C4.15789 0.00934601 4.69331 0.131827 5.14824 0.376789C5.60667 0.621752 5.96011 0.9577 6.20858 1.38463C6.46054 1.81157 6.58652 2.29799 6.58652 2.84391C6.58652 3.22885 6.52703 3.57705 6.40804 3.8885C6.29256 4.19995 6.12459 4.47816 5.90412 4.72312C5.68716 4.96808 5.4247 5.18505 5.11674 5.37402C4.80879 5.56649 4.56208 5.76946 4.37661 5.98293C4.19114 6.19289 4.05641 6.44311 3.97242 6.73356C3.88843 7.02402 3.84294 7.38621 3.83594 7.82014V7.88313H2.57613ZM3.24803 10.9907C2.98907 10.9907 2.76686 10.8979 2.58138 10.7124C2.39591 10.527 2.30318 10.3048 2.30318 10.0458C2.30318 9.78684 2.39591 9.56463 2.58138 9.37915C2.76686 9.19368 2.98907 9.10095 3.24803 9.10095C3.50699 9.10095 3.72921 9.19368 3.91468 9.37915C4.10015 9.56463 4.19289 9.78684 4.19289 10.0458C4.19289 10.2173 4.14914 10.3748 4.06166 10.5182C3.97767 10.6617 3.86394 10.7772 3.72046 10.8647C3.58048 10.9487 3.423 10.9907 3.24803 10.9907Z" fill="white"/></svg>';
 const iconConstant          = '<svg width="17" height="19" viewBox="0 0 17 19" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M3.05788 19V12.8733C3.05788 12.4342 3.18522 12.1014 3.43991 11.8749C3.69681 11.646 4.04894 11.5316 4.4963 11.5316C4.95252 11.5316 5.3578 11.6472 5.71215 11.8784C6.06871 12.1073 6.34886 12.426 6.55261 12.8347C6.75857 13.2411 6.86155 13.7105 6.86155 14.2429C6.86155 14.6143 6.80619 14.9704 6.69545 15.3113C6.58472 15.65 6.40533 15.9524 6.15729 16.2186C5.90925 16.4849 5.58037 16.695 5.17066 16.8492C4.76317 17.0033 4.26376 17.0804 3.67245 17.0804C3.07449 17.0804 2.56955 17.001 2.15762 16.8422C1.74791 16.681 1.41792 16.4615 1.16767 16.1836C0.919625 15.9034 0.73913 15.5846 0.626182 15.2273C0.515449 14.8676 0.460083 14.4893 0.460083 14.0923C0.460083 13.7116 0.505484 13.359 0.596285 13.0344C0.687086 12.7098 0.814428 12.4202 0.978313 12.1657C1.1422 11.9111 1.33155 11.6998 1.54637 11.5316L2.33701 12.2392C2.19084 12.3957 2.06571 12.5673 1.96162 12.7542C1.85975 12.9387 1.78113 13.1418 1.72576 13.3637C1.67261 13.5855 1.64382 13.8284 1.63939 14.0923C1.63939 14.4473 1.7014 14.7731 1.82542 15.0696C1.95166 15.3639 2.16205 15.5998 2.4566 15.7772C2.75336 15.9524 3.15864 16.04 3.67245 16.04C4.15967 16.04 4.55056 15.9594 4.84511 15.7983C5.14187 15.6371 5.3578 15.4211 5.4929 15.1502C5.62799 14.877 5.69554 14.5746 5.69554 14.2429C5.69111 13.9253 5.64238 13.6393 5.54937 13.3847C5.45635 13.1301 5.32569 12.9281 5.15737 12.7787C4.99127 12.6292 4.79306 12.5545 4.56274 12.5545C4.44315 12.5545 4.35235 12.5977 4.29034 12.6841C4.22832 12.7682 4.19732 12.8768 4.19732 13.0099V19H3.05788Z" fill="white"/><path d="M13.0339 8V7.22543L15.0424 5.21098C15.2345 5.01252 15.3945 4.83622 15.5226 4.68208C15.6507 4.52794 15.7467 4.37861 15.8107 4.2341C15.8748 4.0896 15.9068 3.93545 15.9068 3.77168C15.9068 3.58478 15.8653 3.42486 15.7825 3.29191C15.6996 3.15703 15.5857 3.05299 15.4407 2.97977C15.2957 2.90655 15.1309 2.86994 14.9463 2.86994C14.7561 2.86994 14.5895 2.9104 14.4463 2.99133C14.3032 3.07033 14.1921 3.18304 14.113 3.32948C14.0358 3.47592 13.9972 3.65029 13.9972 3.8526H13C13 3.47688 13.0838 3.15029 13.2514 2.87283C13.419 2.59538 13.6497 2.38054 13.9435 2.22832C14.2392 2.07611 14.5782 2 14.9605 2C15.3484 2 15.6893 2.07418 15.9831 2.22254C16.2768 2.37091 16.5047 2.57418 16.6667 2.83237C16.8305 3.09056 16.9124 3.38536 16.9124 3.71676C16.9124 3.93834 16.871 4.15607 16.7881 4.36994C16.7053 4.58382 16.5593 4.82081 16.3503 5.08093C16.1431 5.34104 15.8522 5.65607 15.4774 6.02601L14.4802 7.06358V7.10405H17V8H13.0339Z" fill="white"/><path d="M17 2.38419e-07V1L11.9544 1L11 8H10L8 3.3811L8.91932 2.98759L10.2404 6.17006L11.0812 0.0021975L11.0867 0.00294638V0L17 2.38419e-07Z" fill="white"/><path d="M13.6064 17.0714C13.0675 17.0714 12.6022 16.9504 12.2103 16.7082C11.8207 16.4636 11.521 16.1181 11.3111 15.6717C11.1011 15.2227 10.9962 14.6944 10.9962 14.0865C10.9962 13.4888 11.1011 12.9642 11.3111 12.5128C11.5233 12.0588 11.8196 11.7057 12.1998 11.4535C12.58 11.1988 13.0267 11.0714 13.5399 11.0714C13.8711 11.0714 14.1837 11.1294 14.4776 11.2454C14.7739 11.3589 15.0351 11.5355 15.2614 11.7751C15.49 12.0147 15.6696 12.3198 15.8002 12.6906C15.9308 13.0588 15.9962 13.4976 15.9962 14.0071V14.427H11.591V13.5039H14.782C14.7797 13.2417 14.7272 13.0084 14.6246 12.8041C14.5219 12.5973 14.3785 12.4346 14.1942 12.3161C14.0122 12.1975 13.8 12.1382 13.5574 12.1382C13.2985 12.1382 13.071 12.2063 12.8751 12.3425C12.6791 12.4762 12.5264 12.6527 12.4167 12.8722C12.3094 13.0891 12.2546 13.3274 12.2523 13.5872V14.393C12.2523 14.7309 12.3094 15.021 12.4237 15.2631C12.538 15.5027 12.6978 15.6868 12.9031 15.8154C13.1084 15.9415 13.3486 16.0046 13.6239 16.0046C13.8081 16.0046 13.9749 15.9768 14.1242 15.9213C14.2735 15.8633 14.403 15.7789 14.5126 15.6679C14.6222 15.5569 14.705 15.4195 14.761 15.2555L15.9437 15.3993C15.869 15.7372 15.7267 16.0323 15.5168 16.2845C15.3092 16.5342 15.0433 16.7284 14.719 16.8671C14.3948 17.0033 14.0239 17.0714 13.6064 17.0714Z" fill="white"/><path d="M5.94385 2V3.03274H0.460083V2H5.94385ZM2.44478 2V7.62512H1.26397V2H2.44478ZM3.96916 2H5.14664V5.98812C5.14664 6.14682 5.16999 6.26767 5.21668 6.35068C5.26338 6.43369 5.32787 6.49106 5.41015 6.5228C5.49243 6.5521 5.58805 6.56675 5.69701 6.56675C5.77485 6.56675 5.84934 6.56187 5.9205 6.5521C5.99166 6.54233 6.05059 6.53257 6.09729 6.5228V7.5592C5.99722 7.59094 5.88047 7.62024 5.74705 7.64709C5.61585 7.67639 5.46908 7.69104 5.30675 7.69104C4.90202 7.69104 4.57736 7.57019 4.33274 7.32848C4.09036 7.08678 3.96916 6.68028 3.96916 6.10897V2Z" fill="white"/></svg>';
+const iconDateTime          = '<svg width="18" height="19" viewBox="0 -1 18 19" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="2" y="4" width="2" height="2" fill="white"/><rect x="2" y="7" width="2" height="2" fill="white"/><rect x="2" y="10" width="2" height="2" fill="white"/><rect x="5" y="4" width="2" height="2" fill="white"/><rect x="5" y="7" width="2" height="2" fill="white"/><rect x="5" y="10" width="2" height="2" fill="white"/><rect x="8" y="4" width="2" height="2" fill="white"/><rect x="11" y="4" width="2" height="2" fill="white"/><path d="M13 8H12V13H16V12H13V8Z" fill="white"/><path fill-rule="evenodd" clip-rule="evenodd" d="M3 0H2V1H0V14H7.20703C7.85996 16.3085 9.98245 18 12.5 18C15.5376 18 18 15.5376 18 12.5C18 10.3627 16.7808 8.51007 15 7.59971V1H13V0H12V1H3V0ZM2 2V3H3V2H12V3H13V2H14V7.20703C13.5232 7.07217 13.02 7 12.5 7C11.5998 7 10.7501 7.21628 10 7.59971V7H8V9H8.25716C7.47182 9.95094 7 11.1704 7 12.5C7 12.6685 7.00758 12.8353 7.02242 13H1V2H2ZM12.5 17C14.9853 17 17 14.9853 17 12.5C17 10.0147 14.9853 8 12.5 8C10.0147 8 8 10.0147 8 12.5C8 14.9853 10.0147 17 12.5 17Z" fill="white"/></svg>';
 const iconDistribute        = '<svg width="19" height="7" viewBox="0 0 19 7" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="18" width="1" height="7" fill="white"/><rect width="1" height="7" fill="white"/><rect x="6" width="1" height="7" fill="white"/><rect x="3" y="3" width="1" height="1" fill="white"/><rect x="9" y="3" width="1" height="1" fill="white"/><rect x="15" y="3" width="1" height="1" fill="white"/><rect x="12" width="1" height="7" fill="white"/></svg>';
 const iconSequence          = '<svg width="16" height="11" viewBox="0 0 16 11" fill="none" xmlns="http://www.w3.org/2000/svg"><rect y="9" width="1" height="2" fill="white"/><rect x="5" y="6" width="1" height="5" fill="white"/><rect x="10" y="3" width="1" height="8" fill="white"/><rect x="15" width="1" height="11" fill="white"/></svg>';
 const iconInterpolate       = '<svg width="19" height="13" viewBox="0 -1 19 13" fill="none" xmlns="http://www.w3.org/2000/svg"><line x1="0.284818" y1="10.6077" x2="18.759" y2="0.444666" stroke="white"/><ellipse cx="9.99556" cy="5.22745" rx="1.45202" ry="2.24173" transform="rotate(-25.1301 9.99556 5.22745)" fill="white"/></svg>';
@@ -67019,6 +67326,7 @@ function initGeneratorMenus()
     menuFunctions = new Menu('Functions', true, false);
     menuFunctions.addItems([
         new MenuItem('Constant',    {icon: iconConstant,    callback: e => actionManager.do(getCreateNodeAction(NUMBER_CONSTANT,    btnNumber.div, getCreateOptions(e)))}),
+        new MenuItem('Date & time', {icon: iconDateTime,    callback: e => actionManager.do(getCreateNodeAction(NUMBER_DATETIME,    btnNumber.div, getCreateOptions(e)))}),
         new MenuItem('Sign',        {icon: iconSign,        callback: e => actionManager.do(getCreateNodeAction(NUMBER_SIGN,        btnNumber.div, getCreateOptions(e)))}),
         new MenuItem('Absolute',    {icon: iconAbsolute,    callback: e => actionManager.do(getCreateNodeAction(NUMBER_ABSOLUTE,    btnNumber.div, getCreateOptions(e)))}),
         new MenuItem('Round',       {icon: iconRound,       callback: e => actionManager.do(getCreateNodeAction(NUMBER_ROUND,       btnNumber.div, getCreateOptions(e)))}),
@@ -81826,6 +82134,144 @@ extends OperatorWithValue
         this.paramValue.enableControlText(false);
 
         this.updateParamControls();
+    }
+}
+
+
+class   OpDateTime
+extends OperatorBase
+{
+    paramYear;
+    paramMonth;
+    paramDate;
+    paramDayOfWeek;
+    paramHours;
+    paramMinutes;
+    paramSeconds;
+    paramMilliseconds;
+
+    updateTimer = -1;
+
+
+
+    constructor()
+    {
+        super(NUMBER_DATETIME, 'dateTime', 'date & time', iconDateTime);
+
+        this.canDisable  = true;
+        this.iconOffsetY = -2;
+        
+
+        this.addParam(this.paramYear         = new NumberParam('year'        , 'year',      true,  true,  true));
+        this.addParam(this.paramMonth        = new NumberParam('month'       , 'month',     true,  true,  true, 1, 0,  12));
+        this.addParam(this.paramDate         = new NumberParam('date'        , 'date',      true,  true,  true, 1, 1,  31));
+        this.addParam(this.paramDayOfWeek    = new NumberParam('dayOfWeek'   , 'dayOfWeek', true,  true,  true, 1, 1,   7));
+        this.addParam(this.paramHours        = new NumberParam('hours'       , 'hours',     true,  true,  true, 0, 0,  23));
+        this.addParam(this.paramMinutes      = new NumberParam('minutes'     , 'minutes',   true,  true,  true, 0, 0,  59));
+        this.addParam(this.paramSeconds      = new NumberParam('seconds'     , 'seconds',   true,  true,  true, 0, 0,  59));
+        this.addParam(this.paramMilliseconds = new NumberParam('milliseconds', 'ms',        true,  true,  true, 0, 0, 999));
+    }
+
+
+
+    genRequest(gen)
+    {
+        // 'this' is the node
+
+        gen.scope.push({
+            nodeId:  this.id, 
+            paramId: NULL });
+
+        const [request, ignore] = this.genRequestStart(gen);
+        if (ignore) return request;
+
+        
+        request.push(...this.paramYear        .genRequest(gen));
+        request.push(...this.paramMonth       .genRequest(gen));
+        request.push(...this.paramDate        .genRequest(gen));
+        request.push(...this.paramDayOfWeek   .genRequest(gen));
+        request.push(...this.paramHours       .genRequest(gen));
+        request.push(...this.paramMinutes     .genRequest(gen));
+        request.push(...this.paramSeconds     .genRequest(gen));
+        request.push(...this.paramMilliseconds.genRequest(gen));
+
+
+        gen.scope.pop();
+        pushUnique(gen.passedNodes, this);
+
+        return request;
+    }
+
+
+
+    
+    // updateValues(requestId, actionId, updateParamId, paramIds, values)
+    // {
+        
+    // }
+
+
+    
+    updateParams()
+    {
+        this.paramYear        .enableControlText(false);
+        this.paramMonth       .enableControlText(false);
+        this.paramDate        .enableControlText(false);
+        this.paramDayOfWeek   .enableControlText(false);
+        this.paramHours       .enableControlText(false);
+        this.paramMinutes     .enableControlText(false);
+        this.paramSeconds     .enableControlText(false);
+        this.paramMilliseconds.enableControlText(false);
+    
+        this.updateParamControls();
+    }
+
+
+
+    updateNode()
+    {
+        super.updateNode();
+
+
+        if (this.updateTimer >= 0) 
+            clearTimeout(this.updateTimer);
+
+
+        if (this.enabled)
+        {
+            const dateTime = new Date();
+
+            const year         = dateTime.getFullYear();
+            const month        = dateTime.getMonth()+1;
+            const date         = dateTime.getDate();
+            const dayOfWeek    = dateTime.getDay();
+            const hours        = dateTime.getHours();
+            const minutes      = dateTime.getMinutes();
+            const seconds      = dateTime.getSeconds();
+            const milliseconds = dateTime.getMilliseconds();
+
+            this.paramYear        .setValue(new NumberValue(year)        , false, true, false);
+            this.paramMonth       .setValue(new NumberValue(month)       , false, true, false);
+            this.paramDate        .setValue(new NumberValue(date)        , false, true, false);
+            this.paramDayOfWeek   .setValue(new NumberValue(dayOfWeek)   , false, true, false);
+            this.paramHours       .setValue(new NumberValue(hours)       , false, true, false);
+            this.paramMinutes     .setValue(new NumberValue(minutes)     , false, true, false);
+            this.paramSeconds     .setValue(new NumberValue(seconds)     , false, true, false);
+            this.paramMilliseconds.setValue(new NumberValue(milliseconds), false, true, false);
+            
+            this.updateTimer = setTimeout(() => this.updateNode(), 100);
+        }
+    }
+
+
+
+    toJsCode(gen)
+    {
+        return this.inputs[0].connected
+             ? 'Math.min(Math.max(' 
+                    + this.paramMin.toJsCode(gen) + ', ' + this.inputs[0].connectedOutput.toJsCode(gen) + '), ' 
+                    + this.paramMax.toJsCode(gen) + ')'
+             : 'Number.NaN';
     }
 }
 
@@ -99403,6 +99849,7 @@ function createNode(nodeType, creatingButton = null, createdNodeId = -1, options
         case NUMBER_LIMITS:           node = new OpLimits();            break;
         case NUMBER_RANDOM:           node = new OpRandom();            break;
         case NUMBER_CONSTANT:         node = new OpConstant();          break;
+        case NUMBER_DATETIME:         node = new OpDateTime();          break;
         case NUMBER_DISTRIBUTE:       node = new OpDistribute();        break;
         case NUMBER_SEQUENCE:         node = new OpSequence();          break;
         case NUMBER_INTERPOLATE:      node = new OpInterpolate();       break;
