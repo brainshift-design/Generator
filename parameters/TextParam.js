@@ -36,9 +36,12 @@ extends Parameter
             this.name,
             defaultValue);
 
+            
         if (name != NULL)
+        {
             this.controls[0].textbox.defPlaceholder =
             this.controls[0].textbox.placeholder    = name;
+        }
         
 
         this.controls[0].successOnFocusOut = true;
@@ -51,7 +54,7 @@ extends Parameter
         this.div.appendChild(this.controls[0].div);
 
        
-        if (hasInput)  this.initInput(TEXT_TYPES, getParamInputValuesForUndo, this.input_getBackInitValue);
+        if (hasInput)  this.initInput([TEXT_VALUE], getParamInputValuesForUndo, this.input_getBackInitValue);
         if (hasOutput) this.initOutput([TEXT_VALUE], this.output_genRequest, getParamOutputValuesForUndo, this.output_backInit);
 
 

@@ -65,7 +65,7 @@ TextControl.prototype.initTextarea = function()
 
     this.textbox.addEventListener('pointerup', e =>
     {
-        e.stopPropagation();
+        // e.stopPropagation();
 
 
         if (e.button == 2)

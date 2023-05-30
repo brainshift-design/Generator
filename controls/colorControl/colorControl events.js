@@ -157,53 +157,7 @@ ColorControl.prototype.initEvents = function()
         else if (graphView.tempConn
               && this.param)
         {
-            let savedInput = 
-                graphView.savedConn
-                ? graphView.savedConn.input
-                : null;
-
-
-            //console.log('graphView.tempConn =', graphView.tempConn);
-            
-            if (    graphView.tempConn.output
-                &&  this.param.input
-                &&  this.param.input.canConnectFrom(graphView.tempConn.output)
-                && !graphView.tempConn.output.node.isOrFollows(this.param.node)
-                && (  !this.param.input.connected // not already connected to this input
-                    || this.param.input.connectedOutput != graphView.tempConn.output
-                    || this.param.input == savedInput))
-            {
-                graphView.overInput = this.param.input;
-                    
-                this.param.input.mouseOver = true;
-                this.param.input.updateControl();
-
-                const rect = boundingRect(this.param.input.div);
-
-                graphView.tempConn.wire .inputPos = point(
-                    rect.x + rect.w/2,
-                    rect.y + rect.h/2 - getTopHeight());
-            }
-            else if ( graphView.tempConn.input
-                  &&  this.param.output
-                  &&  graphView.tempConn.input.canConnectFrom(this.param.output)
-                  && !this.param.node.isOrFollows(graphView.tempConn.input.node))
-            {
-                graphView.overOutput = this.param.output;
-                    
-                this.param.output.mouseOver = true;
-                this.param.output.updateControl();
-
-
-                const rect = boundingRect(this.param.output.div);
-
-                graphView.tempConn.wire .outputPos = point(
-                    rect.x + rect.w/2,
-                    rect.y + rect.h/2 - getTopHeight());
-
-
-                graphView.tempConn.input.updateControl();
-            }
+            this.checkDragConnection();
         }
         // else if (this.readOnly)
         // {
@@ -234,7 +188,7 @@ ColorControl.prototype.initEvents = function()
             {
                 const input = graphView.overInput;
                 
-                graphView.overInput   = null;
+                graphView.overInput = null;
                 
                 if (input) // will be null if data types don't match or there's no auto input for someo other reason
                 {
@@ -242,7 +196,8 @@ ColorControl.prototype.initEvents = function()
                     input.updateControl();
                 }
                 
-                graphView.tempConn.wire .inputPos = point_NaN;
+                graphView.tempConn.wire.inputPos = point_NaN;
+                //graphView.tempConn.output.updateControl();
             }
             else if (graphView.tempConn.input
                   && graphView.tempConn.input.node != this.param.node)
@@ -257,9 +212,8 @@ ColorControl.prototype.initEvents = function()
                     output.updateControl();
                 }
 
-                graphView.tempConn.wire .outputPos = point_NaN;
-
-                graphView.tempConn.input.updateControl();
+                graphView.tempConn.wire.outputPos = point_NaN;
+                //graphView.tempConn.input.updateControl();
            }
         }
     });

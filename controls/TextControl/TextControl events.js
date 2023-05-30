@@ -64,53 +64,7 @@ TextControl.prototype.initEvents = function()
         else if (graphView.tempConn
               && this.param)
         {
-            let savedInput = 
-                graphView.savedConn
-                ? graphView.savedConn.input
-                : null;
-
-
-            //console.log('graphView.tempConn =', graphView.tempConn);
-            
-            if (    graphView.tempConn.output
-                &&  this.param.input
-                &&  this.param.input.canConnectFrom(graphView.tempConn.output)
-                && !graphView.tempConn.output.node.isOrFollows(this.param.node)
-                && (  !this.param.input.connected // not already connected to this input
-                    || this.param.input.connectedOutput != graphView.tempConn.output
-                    || this.param.input == savedInput))
-            {
-                graphView.overInput = this.param.input;
-                    
-                this.param.input.mouseOver = true;
-                this.param.input.updateControl();
-
-                const rect = boundingRect(this.param.input.div);
-
-                graphView.tempConn.wire .inputPos = point(
-                    rect.x + rect.w/2,
-                    rect.y + rect.h/2 - getTopHeight());
-            }
-            else if ( graphView.tempConn.input
-                  &&  this.param.output
-                  &&  graphView.tempConn.input.canConnectFrom(this.param.output)
-                  && !this.param.node.isOrFollows(graphView.tempConn.input.node))
-            {
-                graphView.overOutput = this.param.output;
-                    
-                this.param.output.mouseOver = true;
-                this.param.output.updateControl();
-
-
-                const rect = boundingRect(this.param.output.div);
-
-                graphView.tempConn.wire .outputPos = point(
-                    rect.x + rect.w/2,
-                    rect.y + rect.h/2 - getTopHeight());
-
-
-                graphView.tempConn.input.updateControl();
-            }
+            this.checkDragConnection();
         }
         // else if (this.readOnly)
         // {
@@ -168,6 +122,87 @@ TextControl.prototype.initEvents = function()
 
                 graphView.tempConn.input.updateControl();
            }
+        }
+    });
+
+
+
+    this.div.addEventListener('pointerup', e =>
+    {
+        e.stopPropagation();
+
+
+        const param = this.param;
+
+
+        if (!this.canReact(e))
+            return;
+
+
+        if (panMode)
+            return;
+
+
+        clearTimeout(this.clickTimer);
+
+  
+        if (graphView.tempConn)
+        {
+            if (    graphView.tempConn.output
+                && !graphView.tempConn.output.node.isOrFollows(param.node)
+                &&  graphView.overInput)
+            {
+                graphView.endConnection(e.pointerId, getCtrlKey(e), e.shiftKey);
+                graphView.overInput.endConnection();
+            }
+            else if (graphView.tempConn.input
+                && !param.node.isOrFollows(graphView.tempConn.input.node)
+                &&  graphView.overOutput)
+            {
+                graphView.endConnection(e.pointerId, getCtrlKey(e), e.shiftKey);
+                graphView.overOutput.endConnection();
+            }
+        }
+
+
+        if (e.button == 0) 
+        {
+            this.buttonDown0 = false;
+            this.shiftDown   = false;
+
+            this.updateCursor();
+        }
+
+        else if (e.button == 1) 
+            this.buttonDown1 = false;
+
+        else if (e.button == 2) 
+        {
+            //e.stopPropagation();
+            this.buttonDown2 = false;
+        }
+
+
+
+        this.buttonDown0_ = false;
+    });    
+
+
+
+    document.addEventListener('pointerup', e =>
+    {
+        if (   e.button == 0 
+            && this.buttonDown0)
+        {
+            this.buttonDown0 = false;
+            this.unlockPointer(e.pointerId);
+
+            this.focus.style.boxShadow = '0 0 0 1px rgba(0, 0, 0, 0.1) inset';
+        }
+        else if (e.button == 1
+              && this.buttonDown1)
+        {
+            this.buttonDown1 = false;            
         }
     });
 

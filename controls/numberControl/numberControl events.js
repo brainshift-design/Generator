@@ -294,50 +294,7 @@ NumberControl.prototype.initEvents = function()
         else if (graphView.tempConn
               && param)
         {
-            let savedInput = 
-                graphView.savedConn
-                ? graphView.savedConn.input
-                : null;
-
-            if (    graphView.tempConn.output
-                &&  param.input
-                &&  param.input.canConnectFrom(graphView.tempConn.output)
-                && !graphView.tempConn.output.node.isOrFollows(param.node)
-                && (  !param.input.connected // not already connected to this input
-                    || param.input.connectedOutput != graphView.tempConn.output
-                    || param.input == savedInput))
-            {
-                graphView.overInput = param.input;
-                    
-                param.input.mouseOver = true;
-                param.input.updateControl();
-
-                const rect = boundingRect(param.input.div);
-
-                graphView.tempConn.wire.inputPos = point(
-                    rect.x + rect.w/2,
-                    rect.y + rect.h/2 - getTopHeight());
-            }
-            else if ( graphView.tempConn.input
-                  &&  param.output
-                  &&  graphView.tempConn.input.canConnectFrom(param.output)
-                  && !param.node.isOrFollows(graphView.tempConn.input.node))
-            {
-                graphView.overOutput = param.output;
-                    
-                param.output.mouseOver = true;
-                param.output.updateControl();
-
-
-                const rect = boundingRect(param.output.div);
-
-                graphView.tempConn.wire .outputPos = point(
-                    rect.x + rect.w/2,
-                    rect.y + rect.h/2 - getTopHeight());
-
-
-                graphView.tempConn.input.updateControl();
-            }
+            this.checkDragConnection();
         }
         else if (this.readOnly)
         {
@@ -531,8 +488,8 @@ NumberControl.prototype.initEvents = function()
 
             this.focus.style.boxShadow = '0 0 0 1px rgba(0, 0, 0, 0.1) inset';
         }
-        else if (   e.button == 1
-            && this.buttonDown1)
+        else if (e.button == 1
+              && this.buttonDown1)
         {
             this.buttonDown1 = false;            
         }

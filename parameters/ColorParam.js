@@ -79,7 +79,7 @@ extends Parameter
         this.div.appendChild(this.controls[0].div);
 
        
-        if (hasInput)  this.initInput(COLOR_TYPES, getParamInputValuesForUndo, this.input_getBackInitValue);
+        if (hasInput)  this.initInput([COLOR_VALUE], getParamInputValuesForUndo, this.input_getBackInitValue);
         if (hasOutput) this.initOutput([COLOR_VALUE], this.output_genRequest, getParamOutputValuesForUndo, this.output_backInit);
 
 
