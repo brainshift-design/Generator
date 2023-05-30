@@ -79,9 +79,9 @@ extends OperatorBase
 
     updateParams()
     {
+        super.updateParams();
+        
         this.paramIndex.controls[0].setMax(Math.max(0, this.length.value - 1));
-
-        this.updateParamControls();
     }
 
 

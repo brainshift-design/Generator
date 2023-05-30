@@ -103,8 +103,8 @@ extends GOperator
         }
 
         
-        this      .objects = objects;
-        this.value.objects = objects;
+        this      .objects = [...objects];
+        this.value.objects = [...objects];
 
 
         super.evalObjects(parse);

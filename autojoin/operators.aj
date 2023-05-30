@@ -150,6 +150,7 @@
 ../operators/shape/OpFrame.js
 
 ../operators/shape/OpMove.js
+../operators/shape/OpAffine.js
 ../operators/shape/OpRotate.js
 ../operators/shape/OpScale.js
 ../operators/shape/OpSkew.js

@@ -65,30 +65,34 @@ class FigmaObject
 
 
 
-    applyTransform(cx, cy, xform)
+    applyTransform(xform)
     {
         if (this.type == POINT)
         {
-            const p = mulv2m3(point(this.x, this.y), xform);
+            const p = mulv2m3(
+                point(
+                    this.x, 
+                    this.y), 
+                xform);
 
             this.x = p.x;
             this.y = p.y;
         }
         else
         {
-            const xp0  = point(this.xp0.x, this.xp0.y);
-            const xp1  = point(this.xp1.x, this.xp1.y);
-            const xp2  = point(this.xp2.x, this.xp2.y);
+            const xp0  = mulv2m3(point(this.xp0.x, this.xp0.y), xform);
+            const xp1  = mulv2m3(point(this.xp1.x, this.xp1.y), xform);
+            const xp2  = mulv2m3(point(this.xp2.x, this.xp2.y), xform);
 
 
-            this.xp0.x = mulv2m3(xp0, xform).x;
-            this.xp0.y = mulv2m3(xp0, xform).y;
+            this.xp0.x = xp0.x;
+            this.xp0.y = xp0.y;
 
-            this.xp1.x = mulv2m3(xp1, xform).x;
-            this.xp1.y = mulv2m3(xp1, xform).y;
+            this.xp1.x = xp1.x;
+            this.xp1.y = xp1.y;
 
-            this.xp2.x = mulv2m3(xp2, xform).x;
-            this.xp2.y = mulv2m3(xp2, xform).y;
+            this.xp2.x = xp2.x;
+            this.xp2.y = xp2.y;
         }
     }
 

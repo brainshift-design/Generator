@@ -8755,30 +8755,34 @@ class FigmaObject
 
 
 
-    applyTransform(cx, cy, xform)
+    applyTransform(xform)
     {
         if (this.type == POINT)
         {
-            const p = mulv2m3(point(this.x, this.y), xform);
+            const p = mulv2m3(
+                point(
+                    this.x, 
+                    this.y), 
+                xform);
 
             this.x = p.x;
             this.y = p.y;
         }
         else
         {
-            const xp0  = point(this.xp0.x, this.xp0.y);
-            const xp1  = point(this.xp1.x, this.xp1.y);
-            const xp2  = point(this.xp2.x, this.xp2.y);
+            const xp0  = mulv2m3(point(this.xp0.x, this.xp0.y), xform);
+            const xp1  = mulv2m3(point(this.xp1.x, this.xp1.y), xform);
+            const xp2  = mulv2m3(point(this.xp2.x, this.xp2.y), xform);
 
 
-            this.xp0.x = mulv2m3(xp0, xform).x;
-            this.xp0.y = mulv2m3(xp0, xform).y;
+            this.xp0.x = xp0.x;
+            this.xp0.y = xp0.y;
 
-            this.xp1.x = mulv2m3(xp1, xform).x;
-            this.xp1.y = mulv2m3(xp1, xform).y;
+            this.xp1.x = xp1.x;
+            this.xp1.y = xp1.y;
 
-            this.xp2.x = mulv2m3(xp2, xform).x;
-            this.xp2.y = mulv2m3(xp2, xform).y;
+            this.xp2.x = xp2.x;
+            this.xp2.y = xp2.y;
         }
     }
 
@@ -15989,14 +15993,13 @@ extends GNumberType
 class GDateTime
 extends GNumberType
 {
-    year         = null;
-    month        = null;
-    date         = null;
-    dayOfWeek    = null;
-    hours        = null;
-    minutes      = null;
-    seconds      = null;
-    // milliseconds = null;
+    seconds   = null;
+    minutes   = null;
+    hours     = null;
+    dayOfWeek = null;
+    date      = null;
+    month     = null;
+    year      = null;
 
 
     
@@ -16013,14 +16016,13 @@ extends GNumberType
 
         copy.copyBase(this);
 
-        copy.year         = this.year        .copy();
-        copy.month        = this.month       .copy();
-        copy.date         = this.date        .copy();
-        copy.dayOfWeek    = this.dayOfWeek   .copy();
-        copy.hours        = this.hours       .copy();
-        copy.minutes      = this.minutes     .copy();
-        copy.seconds      = this.seconds     .copy();
-        // copy.milliseconds = this.milliseconds.copy();
+        copy.seconds   = this.seconds  .copy();
+        copy.minutes   = this.minutes  .copy();
+        copy.hours     = this.hours    .copy();
+        copy.dayOfWeek = this.dayOfWeek.copy();
+        copy.date      = this.date     .copy();
+        copy.month     = this.month    .copy();
+        copy.year      = this.year     .copy();
 
         return copy;
     }
@@ -16037,25 +16039,23 @@ extends GNumberType
         {
             const dateTime = new Date();
 
-            const year         = new NumberValue(dateTime.getFullYear()    );
-            const month        = new NumberValue(dateTime.getMonth()       );
-            const date         = new NumberValue(dateTime.getDate()        );
-            const dayOfWeek    = new NumberValue(dateTime.getDay()         );
-            const hours        = new NumberValue(dateTime.getHours()       );
-            const minutes      = new NumberValue(dateTime.getMinutes()     );
-            const seconds      = new NumberValue(dateTime.getSeconds()     );
-            // const milliseconds = new NumberValue(dateTime.getMilliseconds());
+            const seconds   = new NumberValue(dateTime.getSeconds() );
+            const minutes   = new NumberValue(dateTime.getMinutes() );
+            const hours     = new NumberValue(dateTime.getHours()   );
+            const dayOfWeek = new NumberValue(dateTime.getDay()     );
+            const date      = new NumberValue(dateTime.getDate()    );
+            const month     = new NumberValue(dateTime.getMonth()   );
+            const year      = new NumberValue(dateTime.getFullYear());
 
 
             this.updateValues =
-                [['year'        , year        ],
-                 ['month'       , month       ],
-                 ['date'        , date        ],
-                 ['dayOfWeek'   , dayOfWeek   ],
-                 ['hours'       , hours       ],
-                 ['minutes'     , minutes     ],
-                 ['seconds'     , seconds     ]];//,
-                 //['milliseconds', milliseconds]];
+                [['seconds',   seconds  ],
+                 ['minutes',   minutes  ],
+                 ['hours',     hours    ],
+                 ['dayOfWeek', dayOfWeek],
+                 ['date',      date     ],
+                 ['month',     month    ],
+                 ['year',      year     ]];//,
         }
         else
             this.updateValues = [];
@@ -16072,14 +16072,13 @@ extends GNumberType
     {
         super.pushValueUpdates(parse);
 
-        if (this.year        ) this.year        .pushValueUpdates(parse);
-        if (this.month       ) this.month       .pushValueUpdates(parse);
-        if (this.date        ) this.date        .pushValueUpdates(parse);
-        if (this.dayOfWeek   ) this.dayOfWeek   .pushValueUpdates(parse);
-        if (this.hours       ) this.hours       .pushValueUpdates(parse);
-        if (this.minutes     ) this.minutes     .pushValueUpdates(parse);
-        if (this.seconds     ) this.seconds     .pushValueUpdates(parse);
-        // if (this.milliseconds) this.milliseconds.pushValueUpdates(parse);
+        if (this.year     ) this.year     .pushValueUpdates(parse);
+        if (this.month    ) this.month    .pushValueUpdates(parse);
+        if (this.date     ) this.date     .pushValueUpdates(parse);
+        if (this.dayOfWeek) this.dayOfWeek.pushValueUpdates(parse);
+        if (this.hours    ) this.hours    .pushValueUpdates(parse);
+        if (this.minutes  ) this.minutes  .pushValueUpdates(parse);
+        if (this.seconds  ) this.seconds  .pushValueUpdates(parse);
     }
 
 
@@ -16087,14 +16086,13 @@ extends GNumberType
     isCached()
     {
         return super.isCached()
-            && (!this.year         || this.year        .isCached())
-            && (!this.month        || this.month       .isCached())
-            && (!this.date         || this.date        .isCached())
-            && (!this.dayOfWeek    || this.dayOfWeek   .isCached())
-            && (!this.hours        || this.hours       .isCached())
-            && (!this.minutes      || this.minutes     .isCached())
-            && (!this.seconds      || this.seconds     .isCached())
-            // && (!this.milliseconds || this.milliseconds.isCached());
+            && (!this.year      || this.year     .isCached())
+            && (!this.month     || this.month    .isCached())
+            && (!this.date      || this.date     .isCached())
+            && (!this.dayOfWeek || this.dayOfWeek.isCached())
+            && (!this.hours     || this.hours    .isCached())
+            && (!this.minutes   || this.minutes  .isCached())
+            && (!this.seconds   || this.seconds  .isCached())
     }
 
 
@@ -16103,14 +16101,13 @@ extends GNumberType
     {
         super.invalidateInputs();
 
-        if (this.year        ) this.year        .invalidateInputs();
-        if (this.month       ) this.month       .invalidateInputs();
-        if (this.date        ) this.date        .invalidateInputs();
-        if (this.dayOfWeek   ) this.dayOfWeek   .invalidateInputs();
-        if (this.hours       ) this.hours       .invalidateInputs();
-        if (this.minutes     ) this.minutes     .invalidateInputs();
-        if (this.seconds     ) this.seconds     .invalidateInputs();
-        // if (this.milliseconds) this.milliseconds.invalidateInputs();
+        if (this.year     ) this.year     .invalidateInputs();
+        if (this.month    ) this.month    .invalidateInputs();
+        if (this.date     ) this.date     .invalidateInputs();
+        if (this.dayOfWeek) this.dayOfWeek.invalidateInputs();
+        if (this.hours    ) this.hours    .invalidateInputs();
+        if (this.minutes  ) this.minutes  .invalidateInputs();
+        if (this.seconds  ) this.seconds  .invalidateInputs();
     }
 }
 
@@ -23430,8 +23427,7 @@ extends GOperator
     copyBase(base)
     {
         super.copyBase(base);
-        
-        //if (base.value ) this.value  = base.value .copy();
+
         if (base.x     ) this.x      = base.x     .copy();
         if (base.y     ) this.y      = base.y     .copy();
         if (base.width ) this.width  = base.width .copy();
@@ -24106,8 +24102,8 @@ extends GShape
         }
 
 
-        this      .objects = objects;
-        this.value.objects = objects;
+        this      .objects = [...objects];
+        this.value.objects = [...objects];
 
 
         super.evalObjects(parse);
@@ -24273,8 +24269,8 @@ extends GShape
         }
 
         
-        this      .objects = objects;
-        this.value.objects = objects;
+        this      .objects = [...objects];
+        this.value.objects = [...objects];
 
 
         super.evalObjects(parse);
@@ -24458,8 +24454,8 @@ extends GShape
         }
 
        
-        this      .objects = objects;
-        this.value.objects = objects;
+        this      .objects = [...objects];
+        this.value.objects = [...objects];
 
 
         super.evalObjects(parse);
@@ -24637,8 +24633,8 @@ extends GShape
         }
 
         
-        this      .objects = objects;
-        this.value.objects = objects;
+        this      .objects = [...objects];
+        this.value.objects = [...objects];
 
 
         super.evalObjects(parse);
@@ -24841,8 +24837,8 @@ extends GShape
         }
 
        
-        this      .objects = objects;
-        this.value.objects = objects;
+        this      .objects = [...objects];
+        this.value.objects = [...objects];
 
 
         await super.evalObjects(parse);
@@ -25108,8 +25104,8 @@ extends GShape
         }
 
         
-        this      .objects = objects;
-        this.value.objects = objects;
+        this      .objects = [...objects];
+        this.value.objects = [...objects];
 
         
         await super.evalObjects(parse);
@@ -25312,8 +25308,8 @@ extends GOperator
         }
 
         
-        this      .objects = objects;
-        this.value.objects = objects;
+        this      .objects = [...objects];
+        this.value.objects = [...objects];
 
 
         super.evalObjects(parse);
@@ -25513,8 +25509,8 @@ extends GShape
         }
 
 
-        this      .objects = objects;
-        this.value.objects = objects;
+        this      .objects = [...objects];
+        this.value.objects = [...objects];
 
         
         await super.evalObjects(parse);
@@ -25963,8 +25959,8 @@ extends GShape
         }
 
         
-        this      .objects = objects;
-        this.value.objects = objects;
+        this      .objects = [...objects];
+        this.value.objects = [...objects];
 
         this.updateValues.push(['nObjects', new NumberValue(objects.length)]);
 
@@ -26472,10 +26468,7 @@ extends GOperator
         const x = options.x.toNumber();
         const y = options.y.toNumber();
 
-        const xform = 
-            [[1, 0, x],
-             [0, 1, y],
-             [0, 0, 1]];
+        const xform = createTransform(x, y);
 
              
         for (const obj of this.objects)
@@ -26483,7 +26476,7 @@ extends GOperator
             obj.nodeId   = this.nodeId;
             obj.objectId = obj.objectId + OBJECT_SEPARATOR + this.nodeId;
 
-            obj.applyTransform(0, 0, xform);
+            obj.applyTransform(xform);
         }
 
         
@@ -26530,15 +26523,158 @@ extends GOperator
 }
 
 
-class GRotate
+class GAffine
 extends GOperator
 {
     input      = null;
    
-    angle      = null;
     centerX    = null;
     centerY    = null;
     showCenter = null;
+
+
+
+    constructor(type, nodeId, options)
+    {
+        super(type, nodeId, options);
+    }
+
+
+
+    copyBase(base)
+    {
+        super.copyBase(base);
+
+        if (base.input) 
+            this.input = base.input.copy();
+
+        if (base.centerX   ) this.centerX    = base.centerX   .copy();
+        if (base.centerY   ) this.centerY    = base.centerY   .copy();
+        if (base.showCenter) this.showCenter = base.showCenter.copy();
+    }
+
+
+
+    async evalBaseParams(parse)
+    {
+        const centerX    = this.centerX    ? (await this.centerX   .eval(parse)).toValue() : null;
+        const centerY    = this.centerY    ? (await this.centerY   .eval(parse)).toValue() : null;
+        const showCenter = this.showCenter ? (await this.showCenter.eval(parse)).toValue() : null;
+
+        return [centerX, centerY, showCenter];
+    }
+
+
+
+    async evalAffineObjects(parse, options, getXform)
+    {
+        this.objects = this.input ? this.input.objects.map(o => o.copy()) : [];
+        //this.value.objects = this.input ? this.input.objects.map(o => o.copy()) : [];
+
+
+        const bounds = getObjBounds(this.objects);
+
+        if (!this.options.enabled)
+            return bounds;
+
+
+        const singlePoint = 
+               this.objects.length == 1 
+            && this.objects[0].type == POINT;
+
+
+        let _cx = options.centerX.toNumber();
+        let _cy = options.centerY.toNumber();
+
+        if (!singlePoint)
+        {
+            _cx /= 100;
+            _cy /= 100;
+        }
+
+
+        const cx = singlePoint  ?  this.objects[0].x + _cx  :  bounds.x + bounds.width  * _cx;
+        const cy = singlePoint  ?  this.objects[0].y + _cy  :  bounds.y + bounds.height * _cy;
+
+
+        const xform = mulm3m3(
+            createTransform(cx, cy),
+            getXform(),
+            createTransform(-cx, -cy));
+
+        
+        for (const obj of this.objects)
+        {
+            obj.nodeId   = this.nodeId;
+            obj.objectId = obj.objectId + OBJECT_SEPARATOR + this.nodeId;
+
+            obj.applyTransform(xform);
+        }
+
+        
+        if (  !isEmpty(this.objects)
+            && this.showCenter.toValue().value > 0)
+        {
+            const center = new FigmaPoint(
+                this.nodeId,
+                this.nodeId   + '.center',
+                this.nodeName + ' · center',
+                cx,
+                cy,
+                true);
+
+            center.createDefaultTransform(cx, cy, 0);
+
+            this.objects.push(center);
+        };
+
+
+        await super.evalObjects(parse);
+
+
+        return bounds;
+    }
+
+
+
+    pushValueUpdates(parse)
+    {
+        super.pushValueUpdates(parse);
+
+        if (this.input     ) this.input     .pushValueUpdates(parse);
+        if (this.centerX   ) this.centerX   .pushValueUpdates(parse);
+        if (this.centerY   ) this.centerY   .pushValueUpdates(parse);
+        if (this.showCenter) this.showCenter.pushValueUpdates(parse);
+    }
+
+
+
+    isValid()
+    {
+        return super.isValid()
+            && this.centerX   .isValid()
+            && this.centerY   .isValid()
+            && this.showCenter.isValid();
+    }
+
+
+
+    invalidateInputs()
+    {
+        super.invalidateInputs();
+
+        if (this.input     ) this.input     .invalidateInputs();
+        if (this.centerX   ) this.centerX   .invalidateInputs();
+        if (this.centerY   ) this.centerY   .invalidateInputs();
+        if (this.showCenter) this.showCenter.invalidateInputs();
+    }
+}
+
+
+class GRotate
+extends GAffine
+{
+    angle = null;
 
 
 
@@ -26555,13 +26691,7 @@ extends GOperator
 
         copy.copyBase(this);
 
-        if (this.input) 
-            copy.input = this.input.copy();
-
-        if (this.angle     ) copy.angle      = this.angle     .copy();
-        if (this.centerX   ) copy.centerX    = this.centerX   .copy();
-        if (this.centerY   ) copy.centerY    = this.centerY   .copy();
-        if (this.showCenter) copy.showCenter = this.showCenter.copy();
+        if (this.angle) copy.angle = this.angle.copy();
 
         return copy;
     }
@@ -26573,16 +26703,15 @@ extends GOperator
         if (this.isCached())
             return this;
 
-        //console.log('this.centerX =', this.centerX);
-        const angle      = this.angle      ? (await this.angle     .eval(parse)).toValue() : null;
-        const centerX    = this.centerX    ? (await this.centerX   .eval(parse)).toValue() : null;
-        const centerY    = this.centerY    ? (await this.centerY   .eval(parse)).toValue() : null;
-        const showCenter = this.showCenter ? (await this.showCenter.eval(parse)).toValue() : null;
+
+        const angle = this.angle ? (await this.angle.eval(parse)).toValue() : null;
+
+        const [centerX, centerY, showCenter] = await this.evalBaseParams(parse);
 
 
         if (this.input)
         {
-            this.value = (await this.input.eval(parse)).toValue();
+            this.value        = (await this.input.eval(parse)).toValue();
             this.value.nodeId = this.nodeId;
         }
         else
@@ -26629,66 +26758,14 @@ extends GOperator
 
 
 
-    async evalObjects(parse, options = {})
+    async evalObjects(parse, options)
     {
-        this.objects = this.input ? this.input.objects.map(o => o.copy()) : [];
-        //this.value.objects = this.input ? this.input.objects.map(o => o.copy()) : [];
+        const a = options.angle.toNumber()/360*Tau;
 
-
-        if (!this.options.enabled)
-            return;
-            
-
-        const bounds = getObjBounds(this.objects);
-
-
-        const a  = options.angle.toNumber()/360*Tau;
-
-        const cx = bounds.x + bounds.width  * options.centerX.toNumber()/100;
-        const cy = bounds.y + bounds.height * options.centerY.toNumber()/100;
-
-
-        const xform = mulm3m3(
-            createTransform(cx, cy),
-            [[ Math.cos(a), Math.sin(a), 0],
-             [-Math.sin(a), Math.cos(a), 0],
-             [ 0,           0,           1]],
-            createTransform(-cx, -cy));
-       
-
-        for (const obj of this.objects)
-        {
-            obj.nodeId   = this.nodeId;
-            obj.objectId = obj.objectId + OBJECT_SEPARATOR + this.nodeId;
-
-            if (   bounds.width  > 0
-                && bounds.height > 0)
-                obj.applyTransform(cx, cy, xform);
-        }
-
-        
-        if (  !isEmpty(this.objects)
-            && this.showCenter.toValue().value > 0)
-        {
-            const center = new FigmaPoint(
-                this.nodeId,
-                this.nodeId,
-                this.nodeName + ' center',
-                cx,
-                cy,
-                true)
-
-            center.createDefaultTransform(cx, cy, 0);
-
-            this.objects      .push(center);
-            //this.value.objects.push(center);
-        };
-
-
-        await super.evalObjects(parse);
-
-
-        return bounds;
+        return this.evalAffineObjects(parse, options,
+            () => [[ Math.cos(a), Math.sin(a), 0],
+                   [-Math.sin(a), Math.cos(a), 0],
+                   [ 0,           0,           1]]);
     }
 
 
@@ -26697,11 +26774,7 @@ extends GOperator
     {
         super.pushValueUpdates(parse);
 
-        if (this.input     ) this.input     .pushValueUpdates(parse);
-        if (this.angle     ) this.angle     .pushValueUpdates(parse);
-        if (this.centerX   ) this.centerX   .pushValueUpdates(parse);
-        if (this.centerY   ) this.centerY   .pushValueUpdates(parse);
-        if (this.showCenter) this.showCenter.pushValueUpdates(parse);
+        if (this.angle) this.angle.pushValueUpdates(parse);
     }
 
 
@@ -26709,10 +26782,7 @@ extends GOperator
     isValid()
     {
         return super.isValid()
-            && this.angle     .isValid()
-            && this.centerX   .isValid()
-            && this.centerY   .isValid()
-            && this.showCenter.isValid();
+            && this.angle.isValid();
     }
 
 
@@ -26721,11 +26791,7 @@ extends GOperator
     {
         super.invalidateInputs();
 
-        if (this.input     ) this.input     .invalidateInputs();
-        if (this.angle     ) this.angle     .invalidateInputs();
-        if (this.centerX   ) this.centerX   .invalidateInputs();
-        if (this.centerY   ) this.centerY   .invalidateInputs();
-        if (this.showCenter) this.showCenter.invalidateInputs();
+        if (this.angle) this.angle.invalidateInputs();
     }
 
 
@@ -26738,15 +26804,10 @@ extends GOperator
 
 
 class GScale
-extends GOperator
+extends GAffine
 {
-    input      = null;
-   
-    scaleX     = null;
-    scaleY     = null;
-    centerX    = null;
-    centerY    = null;
-    showCenter = null;
+    scaleX = null;
+    scaleY = null;
 
 
 
@@ -26763,14 +26824,8 @@ extends GOperator
 
         copy.copyBase(this);
 
-        if (this.input) 
-            copy.input = this.input.copy();
-
-        if (this.scaleX    ) copy.scaleX     = this.scaleX    .copy();
-        if (this.scaleY    ) copy.scaleY     = this.scaleY    .copy();
-        if (this.centerX   ) copy.centerX    = this.centerX   .copy();
-        if (this.centerY   ) copy.centerY    = this.centerY   .copy();
-        if (this.showCenter) copy.showCenter = this.showCenter.copy();
+        if (this.scaleX) copy.scaleX = this.scaleX.copy();
+        if (this.scaleY) copy.scaleY = this.scaleY.copy();
 
         return copy;
     }
@@ -26783,11 +26838,10 @@ extends GOperator
             return this;
 
 
-        const scaleX     = this.scaleX     ? (await this.scaleX    .eval(parse)).toValue() : null;
-        const scaleY     = this.scaleY     ? (await this.scaleY    .eval(parse)).toValue() : null;
-        const centerX    = this.centerX    ? (await this.centerX   .eval(parse)).toValue() : null;
-        const centerY    = this.centerY    ? (await this.centerY   .eval(parse)).toValue() : null;
-        const showCenter = this.showCenter ? (await this.showCenter.eval(parse)).toValue() : null;
+        const scaleX = this.scaleX ? (await this.scaleX.eval(parse)).toValue() : null;
+        const scaleY = this.scaleY ? (await this.scaleY.eval(parse)).toValue() : null;
+
+        const [centerX, centerY, showCenter] = await this.evalBaseParams(parse);
 
 
         if (this.input)
@@ -26841,66 +26895,15 @@ extends GOperator
 
 
 
-    async evalObjects(parse, options = {})
+    async evalObjects(parse, options)
     {
-        this.objects = this.input ? this.input.objects.map(o => o.copy()) : [];
-        //this.value.objects = this.input ? this.input.objects.map(o => o.copy()) : [];
-
-
-        const bounds = getObjBounds(this.objects);
-
-        if (!this.options.enabled)
-            return bounds;
-
-
         const sx = options.scaleX.toNumber() / 100;
         const sy = options.scaleY.toNumber() / 100;
 
-        const cx = bounds.x + bounds.width  * options.centerX.toNumber()/100;
-        const cy = bounds.y + bounds.height * options.centerY.toNumber()/100;
-
-
-        const xform = mulm3m3(
-            createTransform(cx, cy),
-            [[sx, 0,  0],
-             [0,  sy, 0],
-             [0,  0,  1]],
-            createTransform(-cx, -cy));
-
-        
-        for (const obj of this.objects)
-        {
-            obj.nodeId   = this.nodeId;
-            obj.objectId = obj.objectId + OBJECT_SEPARATOR + this.nodeId;
-
-            if (   bounds.width  > 0
-                && bounds.height > 0)
-                obj.applyTransform(cx, cy, xform);
-        }
-
-        
-        if (  !isEmpty(this.objects)
-            && this.showCenter.toValue().value > 0)
-        {
-            const center = new FigmaPoint(
-                this.nodeId,
-                this.nodeId,
-                this.nodeName + ' center',
-                cx,
-                cy,
-                true)
-
-            center.createDefaultTransform(cx, cy, 0);
-
-            this.objects      .push(center);
-            this.value.objects.push(center);
-        };
-
-
-        await super.evalObjects(parse);
-
-
-        return bounds;
+        return this.evalAffineObjects(parse, options,
+            () => [[sx, 0,  0],
+                   [0,  sy, 0],
+                   [0,  0,  1]]);
     }
 
 
@@ -26909,12 +26912,8 @@ extends GOperator
     {
         super.pushValueUpdates(parse);
 
-        if (this.input     ) this.input     .pushValueUpdates(parse);
-        if (this.scaleX    ) this.scaleX    .pushValueUpdates(parse);
-        if (this.scaleY    ) this.scaleY    .pushValueUpdates(parse);
-        if (this.centerX   ) this.centerX   .pushValueUpdates(parse);
-        if (this.centerY   ) this.centerY   .pushValueUpdates(parse);
-        if (this.showCenter) this.showCenter.pushValueUpdates(parse);
+        if (this.scaleX) this.scaleX.pushValueUpdates(parse);
+        if (this.scaleY) this.scaleY.pushValueUpdates(parse);
     }
 
 
@@ -26922,11 +26921,8 @@ extends GOperator
     isValid()
     {
         return super.isValid()
-            && this.scaleX    .isValid()
-            && this.scaleY    .isValid()
-            && this.centerX   .isValid()
-            && this.centerY   .isValid()
-            && this.showCenter.isValid();
+            && this.scaleX.isValid()
+            && this.scaleY.isValid();
     }
 
 
@@ -26935,12 +26931,8 @@ extends GOperator
     {
         super.invalidateInputs();
 
-        if (this.input     ) this.input     .invalidateInputs();
-        if (this.scaleX    ) this.scaleX    .invalidateInputs();
-        if (this.scaleY    ) this.scaleY    .invalidateInputs();
-        if (this.centerX   ) this.centerX   .invalidateInputs();
-        if (this.centerY   ) this.centerY   .invalidateInputs();
-        if (this.showCenter) this.showCenter.invalidateInputs();
+        if (this.scaleX) this.scaleX.invalidateInputs();
+        if (this.scaleY) this.scaleY.invalidateInputs();
     }
 
 
@@ -26953,15 +26945,10 @@ extends GOperator
 
 
 class GSkew
-extends GOperator
+extends GAffine
 {
-    input      = null;
-
     skewX      = null;
     skewY      = null;
-    centerX    = null;
-    centerY    = null;
-    showCenter = null;
 
 
 
@@ -26978,14 +26965,8 @@ extends GOperator
 
         copy.copyBase(this);
 
-        if (this.input) 
-            copy.input = this.input.copy();
-
         if (this.skewX     ) copy.skewX      = this.skewX     .copy();
         if (this.skewY     ) copy.skewY      = this.skewY     .copy();
-        if (this.centerX   ) copy.centerX    = this.centerX   .copy();
-        if (this.centerY   ) copy.centerY    = this.centerY   .copy();
-        if (this.showCenter) copy.showCenter = this.showCenter.copy();
 
         return copy;
     }
@@ -26998,11 +26979,10 @@ extends GOperator
             return this;
 
             
-        const skewX      = this.skewX      ? (await this.skewX     .eval(parse)).toValue() : null;
-        const skewY      = this.skewY      ? (await this.skewY     .eval(parse)).toValue() : null;
-        const centerX    = this.centerX    ? (await this.centerX   .eval(parse)).toValue() : null;
-        const centerY    = this.centerY    ? (await this.centerY   .eval(parse)).toValue() : null;
-        const showCenter = this.showCenter ? (await this.showCenter.eval(parse)).toValue() : null;
+        const skewX = this.skewX ? (await this.skewX.eval(parse)).toValue() : null;
+        const skewY = this.skewY ? (await this.skewY.eval(parse)).toValue() : null;
+
+        const [centerX, centerY, showCenter] = await this.evalBaseParams(parse);
 
 
         if (this.input)
@@ -27056,66 +27036,15 @@ extends GOperator
 
 
 
-    evalObjects(parse, options = {})
+    evalObjects(parse, options)
     {
-        this.objects = this.input ? this.input.objects.map(o => o.copy()) : [];
-        //this.value.objects = this.input ? this.input.objects.map(o => o.copy()) : [];
-
-
-        const bounds = getObjBounds(this.objects);
-
-        if (!this.options.enabled)
-            return bounds;
-            
-
         const sx = options.skewX.toNumber() / 100;
         const sy = options.skewY.toNumber() / 100;
 
-        const cx = bounds.x + bounds.width  * options.centerX.toNumber()/100;
-        const cy = bounds.y + bounds.height * options.centerY.toNumber()/100;
-
-
-        const xform = mulm3m3(
-            createTransform(cx, cy),
-            [[1,  sx, 0],
-             [sy, 1,  0],
-             [0,  0,  1]],
-            createTransform(-cx, -cy));
-
-
-        for (const obj of this.objects)
-        {
-            obj.nodeId   = this.nodeId;
-            obj.objectId = obj.objectId + OBJECT_SEPARATOR + this.nodeId;
-
-            if (   bounds.width  > 0
-                && bounds.height > 0)
-                obj.applyTransform(cx, cy, xform);
-        }
-
-        
-        if (  !isEmpty(this.objects)
-            && this.showCenter.toValue().value > 0)
-        {
-            const center = new FigmaPoint(
-                this.nodeId,
-                this.nodeId,
-                this.nodeName + ' center',
-                cx,
-                cy,
-                true)
-
-            center.createDefaultTransform(cx, cy, 0);
-
-            this.objects      .push(center);
-            this.value.objects.push(center);
-        };
-
-
-        super.evalObjects(parse);
-
-
-        return bounds;
+        return this.evalAffineObjects(parse, options,
+            () => [[1,  sx, 0],
+                   [sy, 1,  0],
+                   [0,  0,  1]]);
     }
 
 
@@ -27124,12 +27053,8 @@ extends GOperator
     {
         super.pushValueUpdates(parse);
 
-        if (this.input     ) this.input     .pushValueUpdates(parse);
-        if (this.skewX     ) this.skewX     .pushValueUpdates(parse);
-        if (this.skewY     ) this.skewY     .pushValueUpdates(parse);
-        if (this.centerX   ) this.centerX   .pushValueUpdates(parse);
-        if (this.centerY   ) this.centerY   .pushValueUpdates(parse);
-        if (this.showCenter) this.showCenter.pushValueUpdates(parse);
+        if (this.skewX) this.skewX.pushValueUpdates(parse);
+        if (this.skewY) this.skewY.pushValueUpdates(parse);
     }
 
 
@@ -27137,11 +27062,8 @@ extends GOperator
     isValid()
     {
         return super.isValid()
-            && this.skewX     .isValid()
-            && this.skewY     .isValid()
-            && this.centerX   .isValid()
-            && this.centerY   .isValid()
-            && this.showCenter.isValid();
+            && this.skewX.isValid()
+            && this.skewY.isValid();
     }
 
 
@@ -27150,12 +27072,8 @@ extends GOperator
     {
         super.invalidateInputs();
 
-        if (this.input     ) this.input     .invalidateInputs();
-        if (this.skewX     ) this.skewX     .invalidateInputs();
-        if (this.skewY     ) this.skewY     .invalidateInputs();
-        if (this.centerX   ) this.centerX   .invalidateInputs();
-        if (this.centerY   ) this.centerY   .invalidateInputs();
-        if (this.showCenter) this.showCenter.invalidateInputs();
+        if (this.skewX) this.skewX.invalidateInputs();
+        if (this.skewY) this.skewY.invalidateInputs();
     }
 
 
@@ -30104,14 +30022,13 @@ function genParseDateTime(parse)
     parse.nTab++;
 
 
-    dateTime.year         = genParse(parse);
-    dateTime.month        = genParse(parse);
-    dateTime.date         = genParse(parse);
-    dateTime.dayOfWeek    = genParse(parse);
-    dateTime.hours        = genParse(parse);
-    dateTime.minutes      = genParse(parse);
     dateTime.seconds      = genParse(parse);
-    // dateTime.milliseconds = genParse(parse);
+    dateTime.minutes      = genParse(parse);
+    dateTime.hours        = genParse(parse);
+    dateTime.dayOfWeek    = genParse(parse);
+    dateTime.date         = genParse(parse);
+    dateTime.month        = genParse(parse);
+    dateTime.year         = genParse(parse);
 
 
     parse.nTab--;
@@ -42886,30 +42803,34 @@ class FigmaObject
 
 
 
-    applyTransform(cx, cy, xform)
+    applyTransform(xform)
     {
         if (this.type == POINT)
         {
-            const p = mulv2m3(point(this.x, this.y), xform);
+            const p = mulv2m3(
+                point(
+                    this.x, 
+                    this.y), 
+                xform);
 
             this.x = p.x;
             this.y = p.y;
         }
         else
         {
-            const xp0  = point(this.xp0.x, this.xp0.y);
-            const xp1  = point(this.xp1.x, this.xp1.y);
-            const xp2  = point(this.xp2.x, this.xp2.y);
+            const xp0  = mulv2m3(point(this.xp0.x, this.xp0.y), xform);
+            const xp1  = mulv2m3(point(this.xp1.x, this.xp1.y), xform);
+            const xp2  = mulv2m3(point(this.xp2.x, this.xp2.y), xform);
 
 
-            this.xp0.x = mulv2m3(xp0, xform).x;
-            this.xp0.y = mulv2m3(xp0, xform).y;
+            this.xp0.x = xp0.x;
+            this.xp0.y = xp0.y;
 
-            this.xp1.x = mulv2m3(xp1, xform).x;
-            this.xp1.y = mulv2m3(xp1, xform).y;
+            this.xp1.x = xp1.x;
+            this.xp1.y = xp1.y;
 
-            this.xp2.x = mulv2m3(xp2, xform).x;
-            this.xp2.y = mulv2m3(xp2, xform).y;
+            this.xp2.x = xp2.x;
+            this.xp2.y = xp2.y;
         }
     }
 
@@ -50120,14 +50041,13 @@ extends GNumberType
 class GDateTime
 extends GNumberType
 {
-    year         = null;
-    month        = null;
-    date         = null;
-    dayOfWeek    = null;
-    hours        = null;
-    minutes      = null;
-    seconds      = null;
-    // milliseconds = null;
+    seconds   = null;
+    minutes   = null;
+    hours     = null;
+    dayOfWeek = null;
+    date      = null;
+    month     = null;
+    year      = null;
 
 
     
@@ -50144,14 +50064,13 @@ extends GNumberType
 
         copy.copyBase(this);
 
-        copy.year         = this.year        .copy();
-        copy.month        = this.month       .copy();
-        copy.date         = this.date        .copy();
-        copy.dayOfWeek    = this.dayOfWeek   .copy();
-        copy.hours        = this.hours       .copy();
-        copy.minutes      = this.minutes     .copy();
-        copy.seconds      = this.seconds     .copy();
-        // copy.milliseconds = this.milliseconds.copy();
+        copy.seconds   = this.seconds  .copy();
+        copy.minutes   = this.minutes  .copy();
+        copy.hours     = this.hours    .copy();
+        copy.dayOfWeek = this.dayOfWeek.copy();
+        copy.date      = this.date     .copy();
+        copy.month     = this.month    .copy();
+        copy.year      = this.year     .copy();
 
         return copy;
     }
@@ -50168,25 +50087,23 @@ extends GNumberType
         {
             const dateTime = new Date();
 
-            const year         = new NumberValue(dateTime.getFullYear()    );
-            const month        = new NumberValue(dateTime.getMonth()       );
-            const date         = new NumberValue(dateTime.getDate()        );
-            const dayOfWeek    = new NumberValue(dateTime.getDay()         );
-            const hours        = new NumberValue(dateTime.getHours()       );
-            const minutes      = new NumberValue(dateTime.getMinutes()     );
-            const seconds      = new NumberValue(dateTime.getSeconds()     );
-            // const milliseconds = new NumberValue(dateTime.getMilliseconds());
+            const seconds   = new NumberValue(dateTime.getSeconds() );
+            const minutes   = new NumberValue(dateTime.getMinutes() );
+            const hours     = new NumberValue(dateTime.getHours()   );
+            const dayOfWeek = new NumberValue(dateTime.getDay()     );
+            const date      = new NumberValue(dateTime.getDate()    );
+            const month     = new NumberValue(dateTime.getMonth()   );
+            const year      = new NumberValue(dateTime.getFullYear());
 
 
             this.updateValues =
-                [['year'        , year        ],
-                 ['month'       , month       ],
-                 ['date'        , date        ],
-                 ['dayOfWeek'   , dayOfWeek   ],
-                 ['hours'       , hours       ],
-                 ['minutes'     , minutes     ],
-                 ['seconds'     , seconds     ]];//,
-                 //['milliseconds', milliseconds]];
+                [['seconds',   seconds  ],
+                 ['minutes',   minutes  ],
+                 ['hours',     hours    ],
+                 ['dayOfWeek', dayOfWeek],
+                 ['date',      date     ],
+                 ['month',     month    ],
+                 ['year',      year     ]];//,
         }
         else
             this.updateValues = [];
@@ -50203,14 +50120,13 @@ extends GNumberType
     {
         super.pushValueUpdates(parse);
 
-        if (this.year        ) this.year        .pushValueUpdates(parse);
-        if (this.month       ) this.month       .pushValueUpdates(parse);
-        if (this.date        ) this.date        .pushValueUpdates(parse);
-        if (this.dayOfWeek   ) this.dayOfWeek   .pushValueUpdates(parse);
-        if (this.hours       ) this.hours       .pushValueUpdates(parse);
-        if (this.minutes     ) this.minutes     .pushValueUpdates(parse);
-        if (this.seconds     ) this.seconds     .pushValueUpdates(parse);
-        // if (this.milliseconds) this.milliseconds.pushValueUpdates(parse);
+        if (this.year     ) this.year     .pushValueUpdates(parse);
+        if (this.month    ) this.month    .pushValueUpdates(parse);
+        if (this.date     ) this.date     .pushValueUpdates(parse);
+        if (this.dayOfWeek) this.dayOfWeek.pushValueUpdates(parse);
+        if (this.hours    ) this.hours    .pushValueUpdates(parse);
+        if (this.minutes  ) this.minutes  .pushValueUpdates(parse);
+        if (this.seconds  ) this.seconds  .pushValueUpdates(parse);
     }
 
 
@@ -50218,14 +50134,13 @@ extends GNumberType
     isCached()
     {
         return super.isCached()
-            && (!this.year         || this.year        .isCached())
-            && (!this.month        || this.month       .isCached())
-            && (!this.date         || this.date        .isCached())
-            && (!this.dayOfWeek    || this.dayOfWeek   .isCached())
-            && (!this.hours        || this.hours       .isCached())
-            && (!this.minutes      || this.minutes     .isCached())
-            && (!this.seconds      || this.seconds     .isCached())
-            // && (!this.milliseconds || this.milliseconds.isCached());
+            && (!this.year      || this.year     .isCached())
+            && (!this.month     || this.month    .isCached())
+            && (!this.date      || this.date     .isCached())
+            && (!this.dayOfWeek || this.dayOfWeek.isCached())
+            && (!this.hours     || this.hours    .isCached())
+            && (!this.minutes   || this.minutes  .isCached())
+            && (!this.seconds   || this.seconds  .isCached())
     }
 
 
@@ -50234,14 +50149,13 @@ extends GNumberType
     {
         super.invalidateInputs();
 
-        if (this.year        ) this.year        .invalidateInputs();
-        if (this.month       ) this.month       .invalidateInputs();
-        if (this.date        ) this.date        .invalidateInputs();
-        if (this.dayOfWeek   ) this.dayOfWeek   .invalidateInputs();
-        if (this.hours       ) this.hours       .invalidateInputs();
-        if (this.minutes     ) this.minutes     .invalidateInputs();
-        if (this.seconds     ) this.seconds     .invalidateInputs();
-        // if (this.milliseconds) this.milliseconds.invalidateInputs();
+        if (this.year     ) this.year     .invalidateInputs();
+        if (this.month    ) this.month    .invalidateInputs();
+        if (this.date     ) this.date     .invalidateInputs();
+        if (this.dayOfWeek) this.dayOfWeek.invalidateInputs();
+        if (this.hours    ) this.hours    .invalidateInputs();
+        if (this.minutes  ) this.minutes  .invalidateInputs();
+        if (this.seconds  ) this.seconds  .invalidateInputs();
     }
 }
 
@@ -57561,8 +57475,7 @@ extends GOperator
     copyBase(base)
     {
         super.copyBase(base);
-        
-        //if (base.value ) this.value  = base.value .copy();
+
         if (base.x     ) this.x      = base.x     .copy();
         if (base.y     ) this.y      = base.y     .copy();
         if (base.width ) this.width  = base.width .copy();
@@ -58237,8 +58150,8 @@ extends GShape
         }
 
 
-        this      .objects = objects;
-        this.value.objects = objects;
+        this      .objects = [...objects];
+        this.value.objects = [...objects];
 
 
         super.evalObjects(parse);
@@ -58404,8 +58317,8 @@ extends GShape
         }
 
         
-        this      .objects = objects;
-        this.value.objects = objects;
+        this      .objects = [...objects];
+        this.value.objects = [...objects];
 
 
         super.evalObjects(parse);
@@ -58589,8 +58502,8 @@ extends GShape
         }
 
        
-        this      .objects = objects;
-        this.value.objects = objects;
+        this      .objects = [...objects];
+        this.value.objects = [...objects];
 
 
         super.evalObjects(parse);
@@ -58768,8 +58681,8 @@ extends GShape
         }
 
         
-        this      .objects = objects;
-        this.value.objects = objects;
+        this      .objects = [...objects];
+        this.value.objects = [...objects];
 
 
         super.evalObjects(parse);
@@ -58972,8 +58885,8 @@ extends GShape
         }
 
        
-        this      .objects = objects;
-        this.value.objects = objects;
+        this      .objects = [...objects];
+        this.value.objects = [...objects];
 
 
         await super.evalObjects(parse);
@@ -59239,8 +59152,8 @@ extends GShape
         }
 
         
-        this      .objects = objects;
-        this.value.objects = objects;
+        this      .objects = [...objects];
+        this.value.objects = [...objects];
 
         
         await super.evalObjects(parse);
@@ -59443,8 +59356,8 @@ extends GOperator
         }
 
         
-        this      .objects = objects;
-        this.value.objects = objects;
+        this      .objects = [...objects];
+        this.value.objects = [...objects];
 
 
         super.evalObjects(parse);
@@ -59644,8 +59557,8 @@ extends GShape
         }
 
 
-        this      .objects = objects;
-        this.value.objects = objects;
+        this      .objects = [...objects];
+        this.value.objects = [...objects];
 
         
         await super.evalObjects(parse);
@@ -60094,8 +60007,8 @@ extends GShape
         }
 
         
-        this      .objects = objects;
-        this.value.objects = objects;
+        this      .objects = [...objects];
+        this.value.objects = [...objects];
 
         this.updateValues.push(['nObjects', new NumberValue(objects.length)]);
 
@@ -60603,10 +60516,7 @@ extends GOperator
         const x = options.x.toNumber();
         const y = options.y.toNumber();
 
-        const xform = 
-            [[1, 0, x],
-             [0, 1, y],
-             [0, 0, 1]];
+        const xform = createTransform(x, y);
 
              
         for (const obj of this.objects)
@@ -60614,7 +60524,7 @@ extends GOperator
             obj.nodeId   = this.nodeId;
             obj.objectId = obj.objectId + OBJECT_SEPARATOR + this.nodeId;
 
-            obj.applyTransform(0, 0, xform);
+            obj.applyTransform(xform);
         }
 
         
@@ -60661,15 +60571,158 @@ extends GOperator
 }
 
 
-class GRotate
+class GAffine
 extends GOperator
 {
     input      = null;
    
-    angle      = null;
     centerX    = null;
     centerY    = null;
     showCenter = null;
+
+
+
+    constructor(type, nodeId, options)
+    {
+        super(type, nodeId, options);
+    }
+
+
+
+    copyBase(base)
+    {
+        super.copyBase(base);
+
+        if (base.input) 
+            this.input = base.input.copy();
+
+        if (base.centerX   ) this.centerX    = base.centerX   .copy();
+        if (base.centerY   ) this.centerY    = base.centerY   .copy();
+        if (base.showCenter) this.showCenter = base.showCenter.copy();
+    }
+
+
+
+    async evalBaseParams(parse)
+    {
+        const centerX    = this.centerX    ? (await this.centerX   .eval(parse)).toValue() : null;
+        const centerY    = this.centerY    ? (await this.centerY   .eval(parse)).toValue() : null;
+        const showCenter = this.showCenter ? (await this.showCenter.eval(parse)).toValue() : null;
+
+        return [centerX, centerY, showCenter];
+    }
+
+
+
+    async evalAffineObjects(parse, options, getXform)
+    {
+        this.objects = this.input ? this.input.objects.map(o => o.copy()) : [];
+        //this.value.objects = this.input ? this.input.objects.map(o => o.copy()) : [];
+
+
+        const bounds = getObjBounds(this.objects);
+
+        if (!this.options.enabled)
+            return bounds;
+
+
+        const singlePoint = 
+               this.objects.length == 1 
+            && this.objects[0].type == POINT;
+
+
+        let _cx = options.centerX.toNumber();
+        let _cy = options.centerY.toNumber();
+
+        if (!singlePoint)
+        {
+            _cx /= 100;
+            _cy /= 100;
+        }
+
+
+        const cx = singlePoint  ?  this.objects[0].x + _cx  :  bounds.x + bounds.width  * _cx;
+        const cy = singlePoint  ?  this.objects[0].y + _cy  :  bounds.y + bounds.height * _cy;
+
+
+        const xform = mulm3m3(
+            createTransform(cx, cy),
+            getXform(),
+            createTransform(-cx, -cy));
+
+        
+        for (const obj of this.objects)
+        {
+            obj.nodeId   = this.nodeId;
+            obj.objectId = obj.objectId + OBJECT_SEPARATOR + this.nodeId;
+
+            obj.applyTransform(xform);
+        }
+
+        
+        if (  !isEmpty(this.objects)
+            && this.showCenter.toValue().value > 0)
+        {
+            const center = new FigmaPoint(
+                this.nodeId,
+                this.nodeId   + '.center',
+                this.nodeName + ' · center',
+                cx,
+                cy,
+                true);
+
+            center.createDefaultTransform(cx, cy, 0);
+
+            this.objects.push(center);
+        };
+
+
+        await super.evalObjects(parse);
+
+
+        return bounds;
+    }
+
+
+
+    pushValueUpdates(parse)
+    {
+        super.pushValueUpdates(parse);
+
+        if (this.input     ) this.input     .pushValueUpdates(parse);
+        if (this.centerX   ) this.centerX   .pushValueUpdates(parse);
+        if (this.centerY   ) this.centerY   .pushValueUpdates(parse);
+        if (this.showCenter) this.showCenter.pushValueUpdates(parse);
+    }
+
+
+
+    isValid()
+    {
+        return super.isValid()
+            && this.centerX   .isValid()
+            && this.centerY   .isValid()
+            && this.showCenter.isValid();
+    }
+
+
+
+    invalidateInputs()
+    {
+        super.invalidateInputs();
+
+        if (this.input     ) this.input     .invalidateInputs();
+        if (this.centerX   ) this.centerX   .invalidateInputs();
+        if (this.centerY   ) this.centerY   .invalidateInputs();
+        if (this.showCenter) this.showCenter.invalidateInputs();
+    }
+}
+
+
+class GRotate
+extends GAffine
+{
+    angle = null;
 
 
 
@@ -60686,13 +60739,7 @@ extends GOperator
 
         copy.copyBase(this);
 
-        if (this.input) 
-            copy.input = this.input.copy();
-
-        if (this.angle     ) copy.angle      = this.angle     .copy();
-        if (this.centerX   ) copy.centerX    = this.centerX   .copy();
-        if (this.centerY   ) copy.centerY    = this.centerY   .copy();
-        if (this.showCenter) copy.showCenter = this.showCenter.copy();
+        if (this.angle) copy.angle = this.angle.copy();
 
         return copy;
     }
@@ -60704,16 +60751,15 @@ extends GOperator
         if (this.isCached())
             return this;
 
-        //console.log('this.centerX =', this.centerX);
-        const angle      = this.angle      ? (await this.angle     .eval(parse)).toValue() : null;
-        const centerX    = this.centerX    ? (await this.centerX   .eval(parse)).toValue() : null;
-        const centerY    = this.centerY    ? (await this.centerY   .eval(parse)).toValue() : null;
-        const showCenter = this.showCenter ? (await this.showCenter.eval(parse)).toValue() : null;
+
+        const angle = this.angle ? (await this.angle.eval(parse)).toValue() : null;
+
+        const [centerX, centerY, showCenter] = await this.evalBaseParams(parse);
 
 
         if (this.input)
         {
-            this.value = (await this.input.eval(parse)).toValue();
+            this.value        = (await this.input.eval(parse)).toValue();
             this.value.nodeId = this.nodeId;
         }
         else
@@ -60760,66 +60806,14 @@ extends GOperator
 
 
 
-    async evalObjects(parse, options = {})
+    async evalObjects(parse, options)
     {
-        this.objects = this.input ? this.input.objects.map(o => o.copy()) : [];
-        //this.value.objects = this.input ? this.input.objects.map(o => o.copy()) : [];
+        const a = options.angle.toNumber()/360*Tau;
 
-
-        if (!this.options.enabled)
-            return;
-            
-
-        const bounds = getObjBounds(this.objects);
-
-
-        const a  = options.angle.toNumber()/360*Tau;
-
-        const cx = bounds.x + bounds.width  * options.centerX.toNumber()/100;
-        const cy = bounds.y + bounds.height * options.centerY.toNumber()/100;
-
-
-        const xform = mulm3m3(
-            createTransform(cx, cy),
-            [[ Math.cos(a), Math.sin(a), 0],
-             [-Math.sin(a), Math.cos(a), 0],
-             [ 0,           0,           1]],
-            createTransform(-cx, -cy));
-       
-
-        for (const obj of this.objects)
-        {
-            obj.nodeId   = this.nodeId;
-            obj.objectId = obj.objectId + OBJECT_SEPARATOR + this.nodeId;
-
-            if (   bounds.width  > 0
-                && bounds.height > 0)
-                obj.applyTransform(cx, cy, xform);
-        }
-
-        
-        if (  !isEmpty(this.objects)
-            && this.showCenter.toValue().value > 0)
-        {
-            const center = new FigmaPoint(
-                this.nodeId,
-                this.nodeId,
-                this.nodeName + ' center',
-                cx,
-                cy,
-                true)
-
-            center.createDefaultTransform(cx, cy, 0);
-
-            this.objects      .push(center);
-            //this.value.objects.push(center);
-        };
-
-
-        await super.evalObjects(parse);
-
-
-        return bounds;
+        return this.evalAffineObjects(parse, options,
+            () => [[ Math.cos(a), Math.sin(a), 0],
+                   [-Math.sin(a), Math.cos(a), 0],
+                   [ 0,           0,           1]]);
     }
 
 
@@ -60828,11 +60822,7 @@ extends GOperator
     {
         super.pushValueUpdates(parse);
 
-        if (this.input     ) this.input     .pushValueUpdates(parse);
-        if (this.angle     ) this.angle     .pushValueUpdates(parse);
-        if (this.centerX   ) this.centerX   .pushValueUpdates(parse);
-        if (this.centerY   ) this.centerY   .pushValueUpdates(parse);
-        if (this.showCenter) this.showCenter.pushValueUpdates(parse);
+        if (this.angle) this.angle.pushValueUpdates(parse);
     }
 
 
@@ -60840,10 +60830,7 @@ extends GOperator
     isValid()
     {
         return super.isValid()
-            && this.angle     .isValid()
-            && this.centerX   .isValid()
-            && this.centerY   .isValid()
-            && this.showCenter.isValid();
+            && this.angle.isValid();
     }
 
 
@@ -60852,11 +60839,7 @@ extends GOperator
     {
         super.invalidateInputs();
 
-        if (this.input     ) this.input     .invalidateInputs();
-        if (this.angle     ) this.angle     .invalidateInputs();
-        if (this.centerX   ) this.centerX   .invalidateInputs();
-        if (this.centerY   ) this.centerY   .invalidateInputs();
-        if (this.showCenter) this.showCenter.invalidateInputs();
+        if (this.angle) this.angle.invalidateInputs();
     }
 
 
@@ -60869,15 +60852,10 @@ extends GOperator
 
 
 class GScale
-extends GOperator
+extends GAffine
 {
-    input      = null;
-   
-    scaleX     = null;
-    scaleY     = null;
-    centerX    = null;
-    centerY    = null;
-    showCenter = null;
+    scaleX = null;
+    scaleY = null;
 
 
 
@@ -60894,14 +60872,8 @@ extends GOperator
 
         copy.copyBase(this);
 
-        if (this.input) 
-            copy.input = this.input.copy();
-
-        if (this.scaleX    ) copy.scaleX     = this.scaleX    .copy();
-        if (this.scaleY    ) copy.scaleY     = this.scaleY    .copy();
-        if (this.centerX   ) copy.centerX    = this.centerX   .copy();
-        if (this.centerY   ) copy.centerY    = this.centerY   .copy();
-        if (this.showCenter) copy.showCenter = this.showCenter.copy();
+        if (this.scaleX) copy.scaleX = this.scaleX.copy();
+        if (this.scaleY) copy.scaleY = this.scaleY.copy();
 
         return copy;
     }
@@ -60914,11 +60886,10 @@ extends GOperator
             return this;
 
 
-        const scaleX     = this.scaleX     ? (await this.scaleX    .eval(parse)).toValue() : null;
-        const scaleY     = this.scaleY     ? (await this.scaleY    .eval(parse)).toValue() : null;
-        const centerX    = this.centerX    ? (await this.centerX   .eval(parse)).toValue() : null;
-        const centerY    = this.centerY    ? (await this.centerY   .eval(parse)).toValue() : null;
-        const showCenter = this.showCenter ? (await this.showCenter.eval(parse)).toValue() : null;
+        const scaleX = this.scaleX ? (await this.scaleX.eval(parse)).toValue() : null;
+        const scaleY = this.scaleY ? (await this.scaleY.eval(parse)).toValue() : null;
+
+        const [centerX, centerY, showCenter] = await this.evalBaseParams(parse);
 
 
         if (this.input)
@@ -60972,66 +60943,15 @@ extends GOperator
 
 
 
-    async evalObjects(parse, options = {})
+    async evalObjects(parse, options)
     {
-        this.objects = this.input ? this.input.objects.map(o => o.copy()) : [];
-        //this.value.objects = this.input ? this.input.objects.map(o => o.copy()) : [];
-
-
-        const bounds = getObjBounds(this.objects);
-
-        if (!this.options.enabled)
-            return bounds;
-
-
         const sx = options.scaleX.toNumber() / 100;
         const sy = options.scaleY.toNumber() / 100;
 
-        const cx = bounds.x + bounds.width  * options.centerX.toNumber()/100;
-        const cy = bounds.y + bounds.height * options.centerY.toNumber()/100;
-
-
-        const xform = mulm3m3(
-            createTransform(cx, cy),
-            [[sx, 0,  0],
-             [0,  sy, 0],
-             [0,  0,  1]],
-            createTransform(-cx, -cy));
-
-        
-        for (const obj of this.objects)
-        {
-            obj.nodeId   = this.nodeId;
-            obj.objectId = obj.objectId + OBJECT_SEPARATOR + this.nodeId;
-
-            if (   bounds.width  > 0
-                && bounds.height > 0)
-                obj.applyTransform(cx, cy, xform);
-        }
-
-        
-        if (  !isEmpty(this.objects)
-            && this.showCenter.toValue().value > 0)
-        {
-            const center = new FigmaPoint(
-                this.nodeId,
-                this.nodeId,
-                this.nodeName + ' center',
-                cx,
-                cy,
-                true)
-
-            center.createDefaultTransform(cx, cy, 0);
-
-            this.objects      .push(center);
-            this.value.objects.push(center);
-        };
-
-
-        await super.evalObjects(parse);
-
-
-        return bounds;
+        return this.evalAffineObjects(parse, options,
+            () => [[sx, 0,  0],
+                   [0,  sy, 0],
+                   [0,  0,  1]]);
     }
 
 
@@ -61040,12 +60960,8 @@ extends GOperator
     {
         super.pushValueUpdates(parse);
 
-        if (this.input     ) this.input     .pushValueUpdates(parse);
-        if (this.scaleX    ) this.scaleX    .pushValueUpdates(parse);
-        if (this.scaleY    ) this.scaleY    .pushValueUpdates(parse);
-        if (this.centerX   ) this.centerX   .pushValueUpdates(parse);
-        if (this.centerY   ) this.centerY   .pushValueUpdates(parse);
-        if (this.showCenter) this.showCenter.pushValueUpdates(parse);
+        if (this.scaleX) this.scaleX.pushValueUpdates(parse);
+        if (this.scaleY) this.scaleY.pushValueUpdates(parse);
     }
 
 
@@ -61053,11 +60969,8 @@ extends GOperator
     isValid()
     {
         return super.isValid()
-            && this.scaleX    .isValid()
-            && this.scaleY    .isValid()
-            && this.centerX   .isValid()
-            && this.centerY   .isValid()
-            && this.showCenter.isValid();
+            && this.scaleX.isValid()
+            && this.scaleY.isValid();
     }
 
 
@@ -61066,12 +60979,8 @@ extends GOperator
     {
         super.invalidateInputs();
 
-        if (this.input     ) this.input     .invalidateInputs();
-        if (this.scaleX    ) this.scaleX    .invalidateInputs();
-        if (this.scaleY    ) this.scaleY    .invalidateInputs();
-        if (this.centerX   ) this.centerX   .invalidateInputs();
-        if (this.centerY   ) this.centerY   .invalidateInputs();
-        if (this.showCenter) this.showCenter.invalidateInputs();
+        if (this.scaleX) this.scaleX.invalidateInputs();
+        if (this.scaleY) this.scaleY.invalidateInputs();
     }
 
 
@@ -61084,15 +60993,10 @@ extends GOperator
 
 
 class GSkew
-extends GOperator
+extends GAffine
 {
-    input      = null;
-
     skewX      = null;
     skewY      = null;
-    centerX    = null;
-    centerY    = null;
-    showCenter = null;
 
 
 
@@ -61109,14 +61013,8 @@ extends GOperator
 
         copy.copyBase(this);
 
-        if (this.input) 
-            copy.input = this.input.copy();
-
         if (this.skewX     ) copy.skewX      = this.skewX     .copy();
         if (this.skewY     ) copy.skewY      = this.skewY     .copy();
-        if (this.centerX   ) copy.centerX    = this.centerX   .copy();
-        if (this.centerY   ) copy.centerY    = this.centerY   .copy();
-        if (this.showCenter) copy.showCenter = this.showCenter.copy();
 
         return copy;
     }
@@ -61129,11 +61027,10 @@ extends GOperator
             return this;
 
             
-        const skewX      = this.skewX      ? (await this.skewX     .eval(parse)).toValue() : null;
-        const skewY      = this.skewY      ? (await this.skewY     .eval(parse)).toValue() : null;
-        const centerX    = this.centerX    ? (await this.centerX   .eval(parse)).toValue() : null;
-        const centerY    = this.centerY    ? (await this.centerY   .eval(parse)).toValue() : null;
-        const showCenter = this.showCenter ? (await this.showCenter.eval(parse)).toValue() : null;
+        const skewX = this.skewX ? (await this.skewX.eval(parse)).toValue() : null;
+        const skewY = this.skewY ? (await this.skewY.eval(parse)).toValue() : null;
+
+        const [centerX, centerY, showCenter] = await this.evalBaseParams(parse);
 
 
         if (this.input)
@@ -61187,66 +61084,15 @@ extends GOperator
 
 
 
-    evalObjects(parse, options = {})
+    evalObjects(parse, options)
     {
-        this.objects = this.input ? this.input.objects.map(o => o.copy()) : [];
-        //this.value.objects = this.input ? this.input.objects.map(o => o.copy()) : [];
-
-
-        const bounds = getObjBounds(this.objects);
-
-        if (!this.options.enabled)
-            return bounds;
-            
-
         const sx = options.skewX.toNumber() / 100;
         const sy = options.skewY.toNumber() / 100;
 
-        const cx = bounds.x + bounds.width  * options.centerX.toNumber()/100;
-        const cy = bounds.y + bounds.height * options.centerY.toNumber()/100;
-
-
-        const xform = mulm3m3(
-            createTransform(cx, cy),
-            [[1,  sx, 0],
-             [sy, 1,  0],
-             [0,  0,  1]],
-            createTransform(-cx, -cy));
-
-
-        for (const obj of this.objects)
-        {
-            obj.nodeId   = this.nodeId;
-            obj.objectId = obj.objectId + OBJECT_SEPARATOR + this.nodeId;
-
-            if (   bounds.width  > 0
-                && bounds.height > 0)
-                obj.applyTransform(cx, cy, xform);
-        }
-
-        
-        if (  !isEmpty(this.objects)
-            && this.showCenter.toValue().value > 0)
-        {
-            const center = new FigmaPoint(
-                this.nodeId,
-                this.nodeId,
-                this.nodeName + ' center',
-                cx,
-                cy,
-                true)
-
-            center.createDefaultTransform(cx, cy, 0);
-
-            this.objects      .push(center);
-            this.value.objects.push(center);
-        };
-
-
-        super.evalObjects(parse);
-
-
-        return bounds;
+        return this.evalAffineObjects(parse, options,
+            () => [[1,  sx, 0],
+                   [sy, 1,  0],
+                   [0,  0,  1]]);
     }
 
 
@@ -61255,12 +61101,8 @@ extends GOperator
     {
         super.pushValueUpdates(parse);
 
-        if (this.input     ) this.input     .pushValueUpdates(parse);
-        if (this.skewX     ) this.skewX     .pushValueUpdates(parse);
-        if (this.skewY     ) this.skewY     .pushValueUpdates(parse);
-        if (this.centerX   ) this.centerX   .pushValueUpdates(parse);
-        if (this.centerY   ) this.centerY   .pushValueUpdates(parse);
-        if (this.showCenter) this.showCenter.pushValueUpdates(parse);
+        if (this.skewX) this.skewX.pushValueUpdates(parse);
+        if (this.skewY) this.skewY.pushValueUpdates(parse);
     }
 
 
@@ -61268,11 +61110,8 @@ extends GOperator
     isValid()
     {
         return super.isValid()
-            && this.skewX     .isValid()
-            && this.skewY     .isValid()
-            && this.centerX   .isValid()
-            && this.centerY   .isValid()
-            && this.showCenter.isValid();
+            && this.skewX.isValid()
+            && this.skewY.isValid();
     }
 
 
@@ -61281,12 +61120,8 @@ extends GOperator
     {
         super.invalidateInputs();
 
-        if (this.input     ) this.input     .invalidateInputs();
-        if (this.skewX     ) this.skewX     .invalidateInputs();
-        if (this.skewY     ) this.skewY     .invalidateInputs();
-        if (this.centerX   ) this.centerX   .invalidateInputs();
-        if (this.centerY   ) this.centerY   .invalidateInputs();
-        if (this.showCenter) this.showCenter.invalidateInputs();
+        if (this.skewX) this.skewX.invalidateInputs();
+        if (this.skewY) this.skewY.invalidateInputs();
     }
 
 
@@ -62448,7 +62283,7 @@ extends Control
     
 
 
-    setMin(min, displayMin = min)
+    setMin(displayMin = Number.MIN_SAFE_INTEGER, min = Number.MIN_SAFE_INTEGER)
     {
         this.min        = min;
         this.displayMin = displayMin;
@@ -62456,26 +62291,10 @@ extends Control
 
 
 
-    setMax(max, displayMax = max)
+    setMax(displayMax = Number.MAX_SAFE_INTEGER, max = Number.MAX_SAFE_INTEGER)
     {
         this.max        = max;
         this.displayMax = displayMax;
-    }
-
-
-
-    resetMin()
-    {
-        this.min        = Number.MIN_SAFE_INTEGER;
-        this.displayMin = Number.MIN_SAFE_INTEGER;
-    }
-
-
-
-    resetMax()
-    {
-        this.max        = Number.MAX_SAFE_INTEGER;
-        this.displayMax = Number.MAX_SAFE_INTEGER;
     }
 
 
@@ -77832,8 +77651,8 @@ class Operator
 
         if (value.type == NUMBER_VALUE)
         {
-            param.controls[0].setMin(value.min, value.displayMin);
-            param.controls[0].setMax(value.max, value.displayMax);
+            param.controls[0].setMin(value.displayMin, value.min);
+            param.controls[0].setMax(value.displayMax, value.max);
         }
             
         param.setValue(value.value, true, true, false);
@@ -80293,9 +80112,9 @@ extends OperatorBase
 
     updateParams()
     {
+        super.updateParams();
+        
         this.paramIndex.controls[0].setMax(Math.max(0, this.length.value - 1));
-
-        this.updateParamControls();
     }
 
 
@@ -81988,14 +81807,13 @@ extends OperatorWithValue
 class   OpDateTime
 extends OperatorBase
 {
-    paramYear;
-    paramMonth;
-    paramDate;
-    paramDayOfWeek;
-    paramHours;
-    paramMinutes;
     paramSeconds;
-    // paramMilliseconds;
+    paramMinutes;
+    paramHours;
+    paramDayOfWeek;
+    paramDate;
+    paramMonth;
+    paramYear;
 
     updateTimer = -1;
 
@@ -82009,14 +81827,13 @@ extends OperatorBase
         this.iconOffsetY = -4;
         
 
-        this.addParam(this.paramYear         = new NumberParam('year'        , 'year',      true,  true,  true));
-        this.addParam(this.paramMonth        = new NumberParam('month'       , 'month',     true,  true,  true, 1, 1,  12));
-        this.addParam(this.paramDate         = new NumberParam('date'        , 'date',      true,  true,  true, 1, 1,  31));
-        this.addParam(this.paramDayOfWeek    = new NumberParam('dayOfWeek'   , 'week day', true,  true,  true, 1, 1,   7));
-        this.addParam(this.paramHours        = new NumberParam('hours'       , 'hours',     true,  true,  true, 0, 0,  23));
-        this.addParam(this.paramMinutes      = new NumberParam('minutes'     , 'minutes',   true,  true,  true, 0, 0,  59));
-        this.addParam(this.paramSeconds      = new NumberParam('seconds'     , 'seconds',   true,  true,  true, 0, 0,  59));
-        // this.addParam(this.paramMilliseconds = new NumberParam('milliseconds', 'ms',        true,  true,  true, 0, 0, 999));
+        this.addParam(this.paramHours     = new NumberParam('hours',     'hours',    true,  true,  true, 0, 0,  23));
+        this.addParam(this.paramMinutes   = new NumberParam('minutes',   'minutes',  true,  true,  true, 0, 0,  59));
+        this.addParam(this.paramSeconds   = new NumberParam('seconds',   'seconds',  true,  true,  true, 0, 0,  59));
+        this.addParam(this.paramDayOfWeek = new NumberParam('dayOfWeek', 'week day', true,  true,  true, 1, 1,   7));
+        this.addParam(this.paramDate      = new NumberParam('date',      'date',     true,  true,  true, 1, 1,  31));
+        this.addParam(this.paramMonth     = new NumberParam('month',     'month',    true,  true,  true, 1, 1,  12));
+        this.addParam(this.paramYear      = new NumberParam('year',      'year',     true,  true,  true));
     }
 
 
@@ -82033,14 +81850,13 @@ extends OperatorBase
         if (ignore) return request;
 
         
-        request.push(...this.paramYear        .genRequest(gen));
-        request.push(...this.paramMonth       .genRequest(gen));
-        request.push(...this.paramDate        .genRequest(gen));
-        request.push(...this.paramDayOfWeek   .genRequest(gen));
-        request.push(...this.paramHours       .genRequest(gen));
-        request.push(...this.paramMinutes     .genRequest(gen));
-        request.push(...this.paramSeconds     .genRequest(gen));
-        // request.push(...this.paramMilliseconds.genRequest(gen));
+        request.push(...this.paramSeconds  .genRequest(gen));
+        request.push(...this.paramMinutes  .genRequest(gen));
+        request.push(...this.paramHours    .genRequest(gen));
+        request.push(...this.paramDayOfWeek.genRequest(gen));
+        request.push(...this.paramDate     .genRequest(gen));
+        request.push(...this.paramMonth    .genRequest(gen));
+        request.push(...this.paramYear     .genRequest(gen));
 
 
         gen.scope.pop();
@@ -82052,23 +81868,15 @@ extends OperatorBase
 
 
     
-    // updateValues(requestId, actionId, updateParamId, paramIds, values)
-    // {
-        
-    // }
-
-
-    
     updateParams()
     {
-        this.paramYear        .enableControlText(false);
-        this.paramMonth       .enableControlText(false);
-        this.paramDate        .enableControlText(false);
-        this.paramDayOfWeek   .enableControlText(false);
-        this.paramHours       .enableControlText(false);
-        this.paramMinutes     .enableControlText(false);
-        this.paramSeconds     .enableControlText(false);
-        // this.paramMilliseconds.enableControlText(false);
+        this.paramSeconds  .enableControlText(false);
+        this.paramMinutes  .enableControlText(false);
+        this.paramHours    .enableControlText(false);
+        this.paramDayOfWeek.enableControlText(false);
+        this.paramDate     .enableControlText(false);
+        this.paramMonth    .enableControlText(false);
+        this.paramYear     .enableControlText(false);
     
         this.updateParamControls();
     }
@@ -82088,23 +81896,21 @@ extends OperatorBase
         {
             const dateTime = new Date();
 
-            const year         = dateTime.getFullYear();
-            const month        = dateTime.getMonth()+1;
-            const date         = dateTime.getDate();
-            const dayOfWeek    = dateTime.getDay();
-            const hours        = dateTime.getHours();
-            const minutes      = dateTime.getMinutes();
-            const seconds      = dateTime.getSeconds();
-            // const milliseconds = dateTime.getMilliseconds();
+            const seconds   = dateTime.getSeconds();
+            const minutes   = dateTime.getMinutes();
+            const hours     = dateTime.getHours();
+            const dayOfWeek = dateTime.getDay();
+            const date      = dateTime.getDate();
+            const month     = dateTime.getMonth()+1;
+            const year      = dateTime.getFullYear();
 
-            this.paramYear        .setValue(new NumberValue(year)        , false, true, false);
-            this.paramMonth       .setValue(new NumberValue(month)       , false, true, false);
-            this.paramDate        .setValue(new NumberValue(date)        , false, true, false);
-            this.paramDayOfWeek   .setValue(new NumberValue(dayOfWeek)   , false, true, false);
-            this.paramHours       .setValue(new NumberValue(hours)       , false, true, false);
-            this.paramMinutes     .setValue(new NumberValue(minutes)     , false, true, false);
-            this.paramSeconds     .setValue(new NumberValue(seconds)     , false, true, false);
-            // this.paramMilliseconds.setValue(new NumberValue(milliseconds), false, true, false);
+            this.paramSeconds  .setValue(new NumberValue(seconds),   false, true, false);
+            this.paramMinutes  .setValue(new NumberValue(minutes),   false, true, false);
+            this.paramHours    .setValue(new NumberValue(hours),     false, true, false);
+            this.paramDayOfWeek.setValue(new NumberValue(dayOfWeek), false, true, false);
+            this.paramDate     .setValue(new NumberValue(date),      false, true, false);
+            this.paramMonth    .setValue(new NumberValue(month),     false, true, false);
+            this.paramYear     .setValue(new NumberValue(year),      false, true, false);
             
             this.updateTimer = setTimeout(() => this.updateNode(), 100);
         }
@@ -84080,7 +83886,7 @@ extends OperatorWithValue
         this.addParam(this.paramEnd   = new NumberParam('end',   'end',   true, true, true, 0, 0));
 
 
-        this.paramValue.controls[0].textbox.defPlaceholder  = '';
+        this.paramValue.controls[0].textbox.defPlaceholder = '';
 
         setControlFont(this.paramValue.controls[0].textbox, 'Roboto Mono', 10, 'center');
 
@@ -84136,8 +83942,8 @@ extends OperatorWithValue
         }
         else
         {
-            this.paramStart.controls[0].resetMax();
-            this.paramEnd  .controls[0].resetMax();
+            this.paramStart.controls[0].setMax();
+            this.paramEnd  .controls[0].setMax();
         }
     }
 
@@ -90417,36 +90223,38 @@ extends OperatorBase
 
 
 
-class   OpRotate
+class   OpAffine
 extends OperatorBase
 {
-    paramAngle;
     paramCenterX;
     paramCenterY;
     paramShowCenter;
 
 
 
-    constructor()
+    constructor(type, id, name, icon)
     {
-        super(ROTATE, 'rotate', 'rotate', iconRotate);
+        super(type, id, name, icon);
 
         this.canDisable  = true;
-        this.iconOffsetY = -3;
+        this.iconOffsetY = -1;
 
         
         this.addInput (new Input ([...SHAPE_VALUES, LIST_VALUE]));
         this.addOutput(new Output([SHAPE_VALUE], this.output_genRequest));
 
 
-        this.addParam(this.paramAngle      = new NumberParam('angle',      'angle',       true, true, true, 0));
-        this.addParam(this.paramCenterX    = new NumberParam('centerX',    'center x',    true, true, true, 50, 0, 100));
-        this.addParam(this.paramCenterY    = new NumberParam('centerY',    'center y',    true, true, true, 50, 0, 100));
-        this.addParam(this.paramShowCenter = new NumberParam('showCenter', 'show center', true, true, true, 0, 0, 1));
+        this.inputs[0].addEventListener('connect',    () => OpAffine_onConnectInput   (this));
+        this.inputs[0].addEventListener('disconnect', () => OpAffine_onDisconnectInput(this));
+    }
+    
+    
 
-
-        this.paramAngle.controls[0].suffix      = '°';
-        this.paramAngle.controls[0].dragReverse = true;
+    addBaseParams()
+    {
+        this.addParam(this.paramCenterX    = new NumberParam('centerX',    'center x',    true, true, true,  50, 0, 100));
+        this.addParam(this.paramCenterY    = new NumberParam('centerY',    'center y',    true, true, true,  50, 0, 100));
+        this.addParam(this.paramShowCenter = new NumberParam('showCenter', 'show center', true, true, true,   0, 0, 1));
 
 
         this.paramCenterX.controls[0].suffix = '%';
@@ -90460,10 +90268,96 @@ extends OperatorBase
 
 
         this.paramShowCenter.controls[0].allowEditDecimals = false;
+    }
 
 
-        this.inputs[0].addEventListener('connect',    e => this.outputs[0].types = [...this.inputs[0].connectedOutput.types]);
-        this.inputs[0].addEventListener('disconnect', e => this.outputs[0].types = [SHAPE_VALUE]);
+
+    setPointOffset()
+    {
+        this.paramCenterX.controls[0].suffix = '';
+        this.paramCenterY.controls[0].suffix = '';
+    }
+
+
+
+    setOtherOffset()
+    {
+        this.paramCenterX.controls[0].suffix = '%';
+        this.paramCenterY.controls[0].suffix = '%';
+    }
+}
+
+
+
+function setAffineOffset(node, 
+                            x, 
+                            y, 
+                            minX = Number.MIN_SAFE_INTEGER, 
+                            minY = Number.MIN_SAFE_INTEGER, 
+                            maxX = Number.MAX_SAFE_INTEGER, 
+                            maxY = Number.MAX_SAFE_INTEGER) 
+{
+    // node.paramCenterX.setValue(new NumberValue(x));
+    // node.paramCenterY.setValue(new NumberValue(y));
+
+    node.paramCenterX.controls[0].setMin(minX);
+    node.paramCenterX.controls[0].setMax(maxX);
+
+    node.paramCenterY.controls[0].setMin(minY);
+    node.paramCenterY.controls[0].setMax(maxY);
+}
+
+
+
+function OpAffine_onConnectInput(node)
+{
+    node.outputs[0].types = [...node.inputs[0].connectedOutput.types];    
+
+
+    if (   node.inputs[0].connectedOutput.types.length == 1
+        && node.inputs[0].connectedOutput.types[0] == POINT_VALUE)
+    {
+        node.setPointOffset();
+        setAffineOffset(node, 0, 0);
+    }
+    else
+    {
+        node.setOtherOffset();
+        setAffineOffset(node, 50, 50, 0, 0, 100, 100);
+    }
+}
+
+
+
+function OpAffine_onDisconnectInput(node)
+{
+    node.outputs[0].types = [SHAPE_VALUE];
+
+    node.setOtherOffset();
+    setAffineOffset(node, 50, 50, 0, 0, 100, 100);
+}
+
+
+
+class   OpRotate
+extends OpAffine
+{
+    paramAngle;
+
+
+
+    constructor()
+    {
+        super(ROTATE, 'rotate', 'rotate', iconRotate);
+
+
+        this.addParam(this.paramAngle = new NumberParam('angle', 'angle', true, true, true, 0));
+
+        this.paramAngle.controls[0].suffix      = '°';
+        this.paramAngle.controls[0].dragReverse = true;
+
+
+        this.addBaseParams();
     }
     
     
@@ -90500,52 +90394,14 @@ extends OperatorBase
 
         return request;
     }
-
-
-
-    // updateValues(requestId, actionId, updateParamId, paramIds, values)
-    // {
-    //     super.updateValues(requestId, actionId, updateParamId, paramIds, values);
-
-
-    //     const bounds = values[paramIds.findIndex(id => id == 'bounds')];
-
-
-    //     if (bounds.width.value > 0)
-    //     {
-    //         this.paramCenterX.controls[0].displayMin = -bounds.width.value/2;
-    //         this.paramCenterX.controls[0].displayMax =  bounds.width.value/2;
-    //     }
-    //     else
-    //     {
-    //         this.paramCenterX.controls[0].displayMin = this.paramCenterX.controls[0].min;
-    //         this.paramCenterX.controls[0].displayMax = this.paramCenterX.controls[0].max;
-    //     }
-
-
-    //     if (bounds.height.value > 0)
-    //     {
-    //         this.paramCenterY.controls[0].displayMin = -bounds.height.value/2;
-    //         this.paramCenterY.controls[0].displayMax =  bounds.height.value/2;
-    //     }
-    //     else
-    //     {
-    //         this.paramCenterY.controls[0].displayMin = this.paramCenterY.controls[0].min;
-    //         this.paramCenterY.controls[0].displayMax = this.paramCenterY.controls[0].max;
-    //     }
-    // }
 }
 
 
-
 class   OpScale
-extends OperatorBase
+extends OpAffine
 {
     paramScaleX;
     paramScaleY;
-    paramCenterX;
-    paramCenterY;
-    paramShowCenter;
 
 
 
@@ -90553,19 +90409,9 @@ extends OperatorBase
     {
         super(SCALE, 'scale', 'scale', iconScale);
 
-        this.canDisable  = true;
-        this.iconOffsetY = -1;
 
-        
-        this.addInput (new Input ([...SHAPE_VALUES, LIST_VALUE]));
-        this.addOutput(new Output([SHAPE_VALUE], this.output_genRequest));
-
-
-        this.addParam(this.paramScaleX     = new NumberParam('scaleX',     'width',       true, true, true, 100));
-        this.addParam(this.paramScaleY     = new NumberParam('scaleY',     'height',      true, true, true, 100));
-        this.addParam(this.paramCenterX    = new NumberParam('centerX',    'center x',    true, true, true,  50, 0, 100));
-        this.addParam(this.paramCenterY    = new NumberParam('centerY',    'center y',    true, true, true,  50, 0, 100));
-        this.addParam(this.paramShowCenter = new NumberParam('showCenter', 'show center', true, true, true,   0, 0, 1));
+        this.addParam(this.paramScaleX = new NumberParam('scaleX', 'width',  true, true, true, 100));
+        this.addParam(this.paramScaleY = new NumberParam('scaleY', 'height', true, true, true, 100));
 
 
         this.paramScaleX.controls[0].suffix = '%';
@@ -90575,21 +90421,7 @@ extends OperatorBase
         this.paramScaleY.controls[0].setMin(0);
 
 
-        this.paramCenterX.controls[0].suffix = '%';
-        this.paramCenterY.controls[0].suffix = '%';
-
-        this.paramCenterX.controls[0].min = Number.MIN_SAFE_INTEGER;
-        this.paramCenterX.controls[0].max = Number.MAX_SAFE_INTEGER;
-
-        this.paramCenterY.controls[0].min = Number.MIN_SAFE_INTEGER;
-        this.paramCenterY.controls[0].max = Number.MAX_SAFE_INTEGER;
-
-
-        this.paramShowCenter.controls[0].allowEditDecimals = false;
-
-
-        this.inputs[0].addEventListener('connect',    e => this.outputs[0].types = [...this.inputs[0].connectedOutput.types]);
-        this.inputs[0].addEventListener('disconnect', e => this.outputs[0].types = [SHAPE_VALUE]);
+        this.addBaseParams();
     }
     
     
@@ -90627,52 +90459,15 @@ extends OperatorBase
 
         return request;
     }
-
-
-
-    // updateValues(requestId, actionId, updateParamId, paramIds, values)
-    // {
-    //     super.updateValues(requestId, actionId, updateParamId, paramIds, values);
-
-
-    //     // const bounds = values[paramIds.findIndex(id => id == 'bounds')];
-
-        
-    //     // if (bounds.width.value > 0)
-    //     // {
-    //     //     this.paramCenterX.controls[0].displayMin = -bounds.width.value/2;
-    //     //     this.paramCenterX.controls[0].displayMax =  bounds.width.value/2;
-    //     // }
-    //     // else
-    //     // {
-    //     //     this.paramCenterX.controls[0].displayMin = this.paramCenterX.controls[0].min;
-    //     //     this.paramCenterX.controls[0].displayMax = this.paramCenterX.controls[0].max;
-    //     // }
-
-
-    //     // if (bounds.height.value > 0)
-    //     // {
-    //     //     this.paramCenterY.controls[0].displayMin = -bounds.height.value/2;
-    //     //     this.paramCenterY.controls[0].displayMax =  bounds.height.value/2;
-    //     // }
-    //     // else
-    //     // {
-    //     //     this.paramCenterY.controls[0].displayMin = this.paramCenterY.controls[0].min;
-    //     //     this.paramCenterY.controls[0].displayMax = this.paramCenterY.controls[0].max;
-    //     // }
-    // }
 }
 
 
 
 class   OpSkew
-extends OperatorBase
+extends OpAffine
 {
     paramSkewX;
     paramSkewY;
-    paramCenterX;
-    paramCenterY;
-    paramShowCenter;
 
 
 
@@ -90680,36 +90475,12 @@ extends OperatorBase
     {
         super(SKEW, 'skew', 'skew', iconSkew);
 
-        this.canDisable  = true;
-        this.iconOffsetY = -2;
 
-        
-        this.addInput (new Input ([...SHAPE_VALUES, LIST_VALUE]));
-        this.addOutput(new Output([SHAPE_VALUE], this.output_genRequest));
-
-
-        this.addParam(this.paramSkewX      = new NumberParam('skewX',      'skew x',      true, true, true));
-        this.addParam(this.paramSkewY      = new NumberParam('skewY',      'skew y',      true, true, true));
-        this.addParam(this.paramCenterX    = new NumberParam('centerX',    'center x',    true, true, true, 50, 0, 100));
-        this.addParam(this.paramCenterY    = new NumberParam('centerY',    'center y',    true, true, true, 50, 0, 100));
-        this.addParam(this.paramShowCenter = new NumberParam('showCenter', 'show center', true, true, true, 0, 0, 1));
-
-
-        this.paramCenterX.controls[0].suffix = '%';
-        this.paramCenterY.controls[0].suffix = '%';
-
-        this.paramCenterX.controls[0].min = Number.MIN_SAFE_INTEGER;
-        this.paramCenterX.controls[0].max = Number.MAX_SAFE_INTEGER;
-
-        this.paramCenterY.controls[0].min = Number.MIN_SAFE_INTEGER;
-        this.paramCenterY.controls[0].max = Number.MAX_SAFE_INTEGER;
-
-
-        this.paramShowCenter.controls[0].allowEditDecimals = false;
-
-
-        this.inputs[0].addEventListener('connect',    e => this.outputs[0].types = [...this.inputs[0].connectedOutput.types]);
-        this.inputs[0].addEventListener('disconnect', e => this.outputs[0].types = [SHAPE_VALUE]);
+        this.addParam(this.paramSkewX = new NumberParam('skewX', 'skew x', true, true, true));
+        this.addParam(this.paramSkewY = new NumberParam('skewY', 'skew y', true, true, true));
+    
+    
+        this.addBaseParams();
     }
     
     

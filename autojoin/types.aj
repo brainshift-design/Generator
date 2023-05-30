@@ -174,6 +174,7 @@
 
 
 ../generator/types/shape/GMove.js
+../generator/types/shape/GAffine.js
 ../generator/types/shape/GRotate.js
 ../generator/types/shape/GScale.js
 ../generator/types/shape/GSkew.js

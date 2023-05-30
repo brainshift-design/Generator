@@ -85,10 +85,7 @@ extends GOperator
         const x = options.x.toNumber();
         const y = options.y.toNumber();
 
-        const xform = 
-            [[1, 0, x],
-             [0, 1, y],
-             [0, 0, 1]];
+        const xform = createTransform(x, y);
 
              
         for (const obj of this.objects)
@@ -96,7 +93,7 @@ extends GOperator
             obj.nodeId   = this.nodeId;
             obj.objectId = obj.objectId + OBJECT_SEPARATOR + this.nodeId;
 
-            obj.applyTransform(0, 0, xform);
+            obj.applyTransform(xform);
         }
 
         

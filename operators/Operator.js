@@ -868,8 +868,8 @@ class Operator
 
         if (value.type == NUMBER_VALUE)
         {
-            param.controls[0].setMin(value.min, value.displayMin);
-            param.controls[0].setMax(value.max, value.displayMax);
+            param.controls[0].setMin(value.displayMin, value.min);
+            param.controls[0].setMax(value.displayMax, value.max);
         }
             
         param.setValue(value.value, true, true, false);

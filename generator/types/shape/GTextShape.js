@@ -201,8 +201,8 @@ extends GShape
         }
 
         
-        this      .objects = objects;
-        this.value.objects = objects;
+        this      .objects = [...objects];
+        this.value.objects = [...objects];
 
         
         await super.evalObjects(parse);

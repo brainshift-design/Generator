@@ -167,8 +167,8 @@ extends GShape
         }
 
         
-        this      .objects = objects;
-        this.value.objects = objects;
+        this      .objects = [...objects];
+        this.value.objects = [...objects];
 
         this.updateValues.push(['nObjects', new NumberValue(objects.length)]);
 
