@@ -690,6 +690,11 @@ const SHAPE_VALUES = [
     FRAME_VALUE,
     BOOLEAN_VALUE
 ];
+const AFFINE_TYPES = [
+    ROTATE,
+    SCALE,
+    SKEW
+];
 const SHAPE_TYPES = [
     ...SHAPE_VALUES,
     ...RECTANGLE_TYPES,
@@ -704,9 +709,7 @@ const SHAPE_TYPES = [
     ...FRAME_TYPES,
     ...BOOLEAN_TYPES,
     MOVE,
-    ROTATE,
-    SCALE,
-    SKEW,
+    ...AFFINE_TYPES,
     RENDER
 ];
 const ALL_VALUES = [

@@ -252,6 +252,7 @@ function updateMenuItemShowBoolValues()
         .filter(n => 
                NUMBER_BOOLEAN_TYPES.includes(n.type)
             ||      CONDITION_TYPES.includes(n.type)
+            ||         AFFINE_TYPES.includes(n.type)
             || n.type == IF_ELSE)
         .forEach(n => n.updateNode());
 }

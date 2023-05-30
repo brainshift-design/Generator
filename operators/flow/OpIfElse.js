@@ -28,34 +28,10 @@ extends OperatorBase
         this.inputs[1].addEventListener('disconnect', () => OpIfElse_onDisconnectInput(this, 1));
 
 
-        let menuItemTrue;
-        let menuItemFalse;
-
-        this.menuBool = new Menu('L', true, false);
-        this.menuBool.minWidth = 130;
-        this.menuBool.addItems([
-            menuItemTrue  = new MenuItem('true',  {icon:  TRUE_DISPLAY_MENU, callback: () => { hideAllMenus(); this.paramCondition.setValue(new NumberValue(1), true); }}),
-            menuItemFalse = new MenuItem('false', {icon: FALSE_DISPLAY_MENU, callback: () => { hideAllMenus(); this.paramCondition.setValue(new NumberValue(0), true); }})]);
-
-        this.paramCondition.controls[0].div.addEventListener('pointerdown', e => this.showParamMenu(e, this.paramCondition, this.menuBool));
+        this.menuBool = createBoolMenu(this.paramCondition);
     }
     
     
-
-    showParamMenu(e, param, menu)
-    {
-        if (e.button == 2)
-        {
-            e.preventDefault();
-            e.stopPropagation();
-
-            param.controls[0].buttonDown2 = true;
-
-            menu.showAt(e.clientX, e.clientY, false);
-        }
-    }
-
-
 
     canAutoConnectFrom(output)
     {

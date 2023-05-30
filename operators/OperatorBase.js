@@ -8,6 +8,21 @@ extends Operator
 
 
 
+    showParamMenu(e, param, menu)
+    {
+        if (e.button == 2)
+        {
+            e.preventDefault();
+            e.stopPropagation();
+
+            param.controls[0].buttonDown2 = true;
+
+            menu.showAt(e.clientX, e.clientY, false);
+        }
+    }
+
+
+
     updateHeader()
     {
         //console.log(this.id + '.OperatorBase.updateHeader()');
@@ -37,4 +52,21 @@ extends Operator
             output.wireColor  = colors.wire;
         }
     }
+}
+
+
+
+function createBoolMenu(param)
+{
+    const menu = new Menu('L', true, false);
+
+    menu.minWidth = 130;
+    
+    menu.addItems([
+        new MenuItem('true',  {icon:  TRUE_DISPLAY_MENU, callback: () => { hideAllMenus(); param.setValue(new NumberValue(1), true); }}),
+        new MenuItem('false', {icon: FALSE_DISPLAY_MENU, callback: () => { hideAllMenus(); param.setValue(new NumberValue(0), true); }})]);
+
+    param.controls[0].div.addEventListener('pointerdown', e => param.node.showParamMenu(e, param, param.node.menuBool));
+
+    return menu;
 }

@@ -1147,6 +1147,14 @@ const SHAPE_VALUES =
 ];
 
 
+const AFFINE_TYPES =
+[
+    ROTATE,
+    SCALE,
+    SKEW
+];
+
+
 const SHAPE_TYPES =
 [
     ...SHAPE_VALUES,
@@ -1164,9 +1172,7 @@ const SHAPE_TYPES =
     ...BOOLEAN_TYPES,
 
     MOVE,
-    ROTATE,
-    SCALE,
-    SKEW,
+    ...AFFINE_TYPES,
 
     RENDER
 ];

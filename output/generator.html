@@ -4078,6 +4078,14 @@ const SHAPE_VALUES =
 ];
 
 
+const AFFINE_TYPES =
+[
+    ROTATE,
+    SCALE,
+    SKEW
+];
+
+
 const SHAPE_TYPES =
 [
     ...SHAPE_VALUES,
@@ -4095,9 +4103,7 @@ const SHAPE_TYPES =
     ...BOOLEAN_TYPES,
 
     MOVE,
-    ROTATE,
-    SCALE,
-    SKEW,
+    ...AFFINE_TYPES,
 
     RENDER
 ];
@@ -23166,6 +23172,7 @@ function updateMenuItemShowBoolValues()
         .filter(n => 
                NUMBER_BOOLEAN_TYPES.includes(n.type)
             ||      CONDITION_TYPES.includes(n.type)
+            ||         AFFINE_TYPES.includes(n.type)
             || n.type == IF_ELSE)
         .forEach(n => n.updateNode());
 }

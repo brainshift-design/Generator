@@ -53,4 +53,15 @@ extends OpAffine
 
         return request;
     }
+
+
+
+    updateParams()
+    {
+        super.updateParams();
+
+        updateParamConditionText(this.paramShowCenter, this.isUnknown(), 1);
+
+        this.updateParamControls();
+    }
 }

@@ -92,21 +92,6 @@ extends OpColorBase
 
 
 
-    showParamMenu(e, param, menu)
-    {
-        if (e.button == 2)
-        {
-            e.preventDefault();
-            e.stopPropagation();
-
-            param.controls[0].buttonDown2 = true;
-
-            menu.showAt(e.clientX, e.clientY, false);
-        }
-    }
-
-
-
     output_genRequest(gen)
     {
         // 'this' is the output

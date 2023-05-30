@@ -8472,6 +8472,14 @@ const SHAPE_VALUES =
 ];
 
 
+const AFFINE_TYPES =
+[
+    ROTATE,
+    SCALE,
+    SKEW
+];
+
+
 const SHAPE_TYPES =
 [
     ...SHAPE_VALUES,
@@ -8489,9 +8497,7 @@ const SHAPE_TYPES =
     ...BOOLEAN_TYPES,
 
     MOVE,
-    ROTATE,
-    SCALE,
-    SKEW,
+    ...AFFINE_TYPES,
 
     RENDER
 ];
@@ -27560,6 +27566,7 @@ function updateMenuItemShowBoolValues()
         .filter(n => 
                NUMBER_BOOLEAN_TYPES.includes(n.type)
             ||      CONDITION_TYPES.includes(n.type)
+            ||         AFFINE_TYPES.includes(n.type)
             || n.type == IF_ELSE)
         .forEach(n => n.updateNode());
 }
@@ -42520,6 +42527,14 @@ const SHAPE_VALUES =
 ];
 
 
+const AFFINE_TYPES =
+[
+    ROTATE,
+    SCALE,
+    SKEW
+];
+
+
 const SHAPE_TYPES =
 [
     ...SHAPE_VALUES,
@@ -42537,9 +42552,7 @@ const SHAPE_TYPES =
     ...BOOLEAN_TYPES,
 
     MOVE,
-    ROTATE,
-    SCALE,
-    SKEW,
+    ...AFFINE_TYPES,
 
     RENDER
 ];
@@ -61608,6 +61621,7 @@ function updateMenuItemShowBoolValues()
         .filter(n => 
                NUMBER_BOOLEAN_TYPES.includes(n.type)
             ||      CONDITION_TYPES.includes(n.type)
+            ||         AFFINE_TYPES.includes(n.type)
             || n.type == IF_ELSE)
         .forEach(n => n.updateNode());
 }
@@ -79345,6 +79359,21 @@ extends Operator
 
 
 
+    showParamMenu(e, param, menu)
+    {
+        if (e.button == 2)
+        {
+            e.preventDefault();
+            e.stopPropagation();
+
+            param.controls[0].buttonDown2 = true;
+
+            menu.showAt(e.clientX, e.clientY, false);
+        }
+    }
+
+
+
     updateHeader()
     {
         //console.log(this.id + '.OperatorBase.updateHeader()');
@@ -79374,6 +79403,23 @@ extends Operator
             output.wireColor  = colors.wire;
         }
     }
+}
+
+
+
+function createBoolMenu(param)
+{
+    const menu = new Menu('L', true, false);
+
+    menu.minWidth = 130;
+    
+    menu.addItems([
+        new MenuItem('true',  {icon:  TRUE_DISPLAY_MENU, callback: () => { hideAllMenus(); param.setValue(new NumberValue(1), true); }}),
+        new MenuItem('false', {icon: FALSE_DISPLAY_MENU, callback: () => { hideAllMenus(); param.setValue(new NumberValue(0), true); }})]);
+
+    param.controls[0].div.addEventListener('pointerdown', e => param.node.showParamMenu(e, param, param.node.menuBool));
+
+    return menu;
 }
 
 
@@ -80244,34 +80290,10 @@ extends OperatorBase
         this.inputs[1].addEventListener('disconnect', () => OpIfElse_onDisconnectInput(this, 1));
 
 
-        let menuItemTrue;
-        let menuItemFalse;
-
-        this.menuBool = new Menu('L', true, false);
-        this.menuBool.minWidth = 130;
-        this.menuBool.addItems([
-            menuItemTrue  = new MenuItem('true',  {icon:  TRUE_DISPLAY_MENU, callback: () => { hideAllMenus(); this.paramCondition.setValue(new NumberValue(1), true); }}),
-            menuItemFalse = new MenuItem('false', {icon: FALSE_DISPLAY_MENU, callback: () => { hideAllMenus(); this.paramCondition.setValue(new NumberValue(0), true); }})]);
-
-        this.paramCondition.controls[0].div.addEventListener('pointerdown', e => this.showParamMenu(e, this.paramCondition, this.menuBool));
+        this.menuBool = createBoolMenu(this.paramCondition);
     }
     
     
-
-    showParamMenu(e, param, menu)
-    {
-        if (e.button == 2)
-        {
-            e.preventDefault();
-            e.stopPropagation();
-
-            param.controls[0].buttonDown2 = true;
-
-            menu.showAt(e.clientX, e.clientY, false);
-        }
-    }
-
-
 
     canAutoConnectFrom(output)
     {
@@ -87284,21 +87306,6 @@ extends OpColorBase
 
 
 
-    showParamMenu(e, param, menu)
-    {
-        if (e.button == 2)
-        {
-            e.preventDefault();
-            e.stopPropagation();
-
-            param.controls[0].buttonDown2 = true;
-
-            menu.showAt(e.clientX, e.clientY, false);
-        }
-    }
-
-
-
     output_genRequest(gen)
     {
         // 'this' is the output
@@ -90231,6 +90238,9 @@ extends OperatorBase
     paramShowCenter;
 
 
+    menuBool;
+
+
 
     constructor(type, id, name, icon)
     {
@@ -90268,6 +90278,9 @@ extends OperatorBase
 
 
         this.paramShowCenter.controls[0].allowEditDecimals = false;
+
+
+        this.menuBool = createBoolMenu(this.paramShowCenter);
     }
 
 
@@ -90394,6 +90407,17 @@ extends OpAffine
 
         return request;
     }
+
+
+
+    updateParams()
+    {
+        super.updateParams();
+
+        updateParamConditionText(this.paramShowCenter, this.isUnknown(), 1);
+
+        this.updateParamControls();
+    }
 }
 
 
@@ -90459,6 +90483,17 @@ extends OpAffine
 
         return request;
     }
+
+
+
+    updateParams()
+    {
+        super.updateParams();
+
+        updateParamConditionText(this.paramShowCenter, this.isUnknown(), 1);
+
+        this.updateParamControls();
+    }
 }
 
 
@@ -90517,6 +90552,17 @@ extends OpAffine
 
 
         return request;
+    }
+
+
+
+    updateParams()
+    {
+        super.updateParams();
+
+        updateParamConditionText(this.paramShowCenter, this.isUnknown(), 1);
+
+        this.updateParamControls();
     }
 }
 

@@ -6,6 +6,9 @@ extends OperatorBase
     paramShowCenter;
 
 
+    menuBool;
+
+
 
     constructor(type, id, name, icon)
     {
@@ -43,6 +46,9 @@ extends OperatorBase
 
 
         this.paramShowCenter.controls[0].allowEditDecimals = false;
+
+
+        this.menuBool = createBoolMenu(this.paramShowCenter);
     }
 
 
