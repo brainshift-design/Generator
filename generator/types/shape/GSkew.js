@@ -104,8 +104,8 @@ extends GOperator
 
     evalObjects(parse, options = {})
     {
-        this      .objects = this.input ? this.input.objects.map(o => o.copy()) : [];
-        this.value.objects = this.input ? this.input.objects.map(o => o.copy()) : [];
+        this.objects = this.input ? this.input.objects.map(o => o.copy()) : [];
+        //this.value.objects = this.input ? this.input.objects.map(o => o.copy()) : [];
 
 
         const bounds = getObjBounds(this.objects);
@@ -140,7 +140,8 @@ extends GOperator
         }
 
         
-        if (this.showCenter.toValue().value > 0)
+        if (  !isEmpty(this.objects)
+            && this.showCenter.toValue().value > 0)
         {
             const center = new FigmaPoint(
                 this.nodeId,

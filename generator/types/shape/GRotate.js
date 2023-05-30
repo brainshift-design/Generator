@@ -99,8 +99,8 @@ extends GOperator
 
     async evalObjects(parse, options = {})
     {
-        this      .objects = this.input ? this.input.objects.map(o => o.copy()) : [];
-        this.value.objects = this.input ? this.input.objects.map(o => o.copy()) : [];
+        this.objects = this.input ? this.input.objects.map(o => o.copy()) : [];
+        //this.value.objects = this.input ? this.input.objects.map(o => o.copy()) : [];
 
 
         if (!this.options.enabled)
@@ -135,7 +135,8 @@ extends GOperator
         }
 
         
-        if (this.showCenter.toValue().value > 0)
+        if (  !isEmpty(this.objects)
+            && this.showCenter.toValue().value > 0)
         {
             const center = new FigmaPoint(
                 this.nodeId,
@@ -148,7 +149,7 @@ extends GOperator
             center.createDefaultTransform(cx, cy, 0);
 
             this.objects      .push(center);
-            this.value.objects.push(center);
+            //this.value.objects.push(center);
         };
 
 

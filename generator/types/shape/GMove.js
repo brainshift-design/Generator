@@ -74,8 +74,8 @@ extends GOperator
 
     evalObjects(parse, options = {})
     {
-        this      .objects = this.input ? this.input.objects.map(o => o.copy()) : [];
-        this.value.objects = this.input ? this.input.objects.map(o => o.copy()) : [];
+        this.objects = this.input ? this.input.objects.map(o => o.copy()) : [];
+        //this.value.objects = this.input ? this.input.objects.map(o => o.copy()) : [];
 
             
         if (!this.options.enabled)
