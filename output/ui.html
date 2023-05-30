@@ -16038,7 +16038,7 @@ extends GNumberType
             const dateTime = new Date();
 
             const year         = new NumberValue(dateTime.getFullYear()    );
-            const month        = new NumberValue(dateTime.getMonth()+1     );
+            const month        = new NumberValue(dateTime.getMonth()       );
             const date         = new NumberValue(dateTime.getDate()        );
             const dayOfWeek    = new NumberValue(dateTime.getDay()         );
             const hours        = new NumberValue(dateTime.getHours()       );
@@ -50166,7 +50166,7 @@ extends GNumberType
             const dateTime = new Date();
 
             const year         = new NumberValue(dateTime.getFullYear()    );
-            const month        = new NumberValue(dateTime.getMonth()+1     );
+            const month        = new NumberValue(dateTime.getMonth()       );
             const date         = new NumberValue(dateTime.getDate()        );
             const dayOfWeek    = new NumberValue(dateTime.getDay()         );
             const hours        = new NumberValue(dateTime.getHours()       );
@@ -67101,7 +67101,6 @@ function initGeneratorMenus()
         menuFlowSep2          = new MenuItem('',                  {separator: true}),
         menuItemSelect        = new MenuItem('Select',            {icon: iconSelect,     callback: e => actionManager.do(getCreateNodeAction(SELECT,      btnNumber.div, getCreateOptions(e)))}),
         menuItemIfElse        = new MenuItem('I&hairsp;f / else', {icon: iconIfElse,     callback: e => actionManager.do(getCreateNodeAction(IF_ELSE,     btnNumber.div, getCreateOptions(e))), disambiguate: true}),
-        menuFlowSep2          = new MenuItem('',                  {separator: true}),
         menuItemCopy          = new MenuItem('Copy',              {icon: iconCopy,   callback: e => actionManager.do(getCreateNodeAction(COPY,         btnNumber.div, getCreateOptions(e)))}),
         menuFlowSep3          = new MenuItem('',                  {separator: true}),
         menuItemRepeat        = new MenuItem('Repeat',            {icon: iconRepeat,     callback: e => actionManager.do(getCreateNodeAction(REPEAT,       btnNumber.div, getCreateOptions(e)))}),
@@ -69284,7 +69283,7 @@ GraphView.prototype.pasteCopiedNodes = function(pasteConnected, clientX = Number
         const x = (clientX - graph.currentPage.pan.x) / graph.currentPage.zoom;
         const y = (clientY - graph.currentPage.pan.y) / graph.currentPage.zoom;
             
-        actionManager.do(new PasteNodesAction(text, pasteConnected, false, x, y));
+        actionManager.do(new PasteNodesAction(text, pasteConnected, false, false, x, y));
     });
 };
 
@@ -81997,9 +81996,9 @@ extends OperatorBase
         
 
         this.addParam(this.paramYear         = new NumberParam('year'        , 'year',      true,  true,  true));
-        this.addParam(this.paramMonth        = new NumberParam('month'       , 'month',     true,  true,  true, 1, 0,  12));
+        this.addParam(this.paramMonth        = new NumberParam('month'       , 'month',     true,  true,  true, 1, 1,  12));
         this.addParam(this.paramDate         = new NumberParam('date'        , 'date',      true,  true,  true, 1, 1,  31));
-        this.addParam(this.paramDayOfWeek    = new NumberParam('dayOfWeek'   , 'dayOfWeek', true,  true,  true, 1, 1,   7));
+        this.addParam(this.paramDayOfWeek    = new NumberParam('dayOfWeek'   , 'week day', true,  true,  true, 1, 1,   7));
         this.addParam(this.paramHours        = new NumberParam('hours'       , 'hours',     true,  true,  true, 0, 0,  23));
         this.addParam(this.paramMinutes      = new NumberParam('minutes'     , 'minutes',   true,  true,  true, 0, 0,  59));
         this.addParam(this.paramSeconds      = new NumberParam('seconds'     , 'seconds',   true,  true,  true, 0, 0,  59));
@@ -94847,6 +94846,9 @@ extends Action
 
     pasteConnected;
 
+    isDuplicate;
+    isLoading;
+
     pastedNodeIds = [];
     pastedNodePos = [];
 
@@ -94859,7 +94861,7 @@ extends Action
 
 
 
-    constructor(copiedNodesJson, pasteConnected, isDuplicate = false, x = Number.NaN, y = Number.NaN)
+    constructor(copiedNodesJson, pasteConnected, isDuplicate = false, isLoading = false, x = Number.NaN, y = Number.NaN)
     {
         const data = JSON.parse(copiedNodesJson);
 
@@ -94871,6 +94873,7 @@ extends Action
         this.pasteConnected  = pasteConnected;
 
         this.isDuplicate     = isDuplicate;
+        this.isLoading       = isLoading;
         
         this.x               = x;
         this.y               = y;
@@ -94928,7 +94931,12 @@ extends Action
         this.pastedNodePos = nodes.map(n => point(n.div.offsetLeft, n.div.offsetTop));
 
 
-        this.notify(nodes, this.isDuplicate, this.pasteConnected && !isEmpty(_conns));
+        this.notify(
+            nodes,
+               this.pasteConnected 
+            && !isEmpty(_conns), 
+            this.isDuplicate, 
+            this.isLoading)
     }
 
 
@@ -94952,9 +94960,14 @@ extends Action
 
 
 
-    notify(nodes, isDuplicate, pasteConnected)
+    notify(nodes, pasteConnected, isDuplicate, isLoading)
     {
-        let action = isDuplicate ? 'Duplicated' : 'Pasted';
+        let action = 
+            isDuplicate 
+            ? 'Duplicated' 
+            : isLoading
+            ? 'Loaded'
+            : 'Pasted';
 
         if (pasteConnected)
             action += ' & connected';
@@ -100904,7 +100917,7 @@ function uiImportFromLocalFile()
 {
     loadFromLocalFile(json => 
     {
-        actionManager.do(new PasteNodesAction(json, false));
+        actionManager.do(new PasteNodesAction(json, false, false, true));
     });
 }
 
