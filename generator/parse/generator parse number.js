@@ -388,6 +388,40 @@ function genParseArithmetic(parse, newNode)
 
 
 
+function genParseArray(parse)
+{
+    const [, nodeId, options, ignore] = genParseNodeStart(parse);
+
+
+    const array = new GArray(nodeId, options);
+
+
+    if (parse.settings.logRequests) 
+        logReq(array, parse, ignore);
+
+
+    if (ignore) 
+    {
+        genParseNodeEnd(parse, array);
+        return parse.parsedNodes.find(n => n.nodeId == nodeId);
+    }
+
+
+    parse.nTab++;
+
+
+    array.values = genParse(parse);
+
+
+    parse.nTab--;
+
+
+    genParseNodeEnd(parse, array);
+    return array;
+}
+
+
+
 function genParseDistribute(parse)
 {
     const [, nodeId, options, ignore] = genParseNodeStart(parse);

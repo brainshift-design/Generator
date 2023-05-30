@@ -65,6 +65,7 @@ const NUMBER_ROUND            = 'ROUND';
 const NUMBER_LIMITS           = 'LIM';   
 const NUMBER_CONSTANT         = 'CONST';  
 const NUMBER_DATETIME         = 'DATE';  
+const NUMBER_ARRAY            = 'ARRAY';  
 const NUMBER_DISTRIBUTE       = 'DISTR';  
 const NUMBER_SEQUENCE         = 'SEQ';  
 const NUMBER_RANDOM           = 'RAND';  
@@ -154,6 +155,7 @@ const NUMBER_TYPES =
     NUMBER_LIMITS,
     NUMBER_CONSTANT,
     NUMBER_DATETIME,
+    NUMBER_ARRAY,
     NUMBER_DISTRIBUTE,
     NUMBER_SEQUENCE,
     NUMBER_RANDOM,

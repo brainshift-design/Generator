@@ -20,6 +20,13 @@ function getDigitCount(i)
 
 
 
+function getDecimalFactor(dec)
+{
+    return Math.pow(10, -dec);
+}
+
+
+
 function isDigit(c)
 {
     return c >= '0' 

@@ -42,9 +42,6 @@ extends GNumberType
             return this;
 
 
-        // input not used for evaluation
-
-            
         const seed = (await this.seed.eval(parse)).toValue();
         const min  = (await this.min .eval(parse)).toValue();
         const max  = (await this.max .eval(parse)).toValue();
@@ -63,12 +60,6 @@ extends GNumberType
             min.value + this.random.get(iteration) * (max.value - min.value),
             Math.max(min.decimals, max.decimals));
 
-        // if (!this.value.isValid())
-        // {
-        //     console.log('iteration =', iteration);
-        //     console.log('this.random =', this.random);
-        //     console.log('this.value =', this.value);
-        // }
 
         this.updateValues =
         [
