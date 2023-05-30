@@ -20,7 +20,10 @@ extends OperatorBase
         this.addParam(this.paramPoints = new ListParam('points', 'points', true, true, true));
 
 
-        this.paramPoints.itemName = 'point';
+        this.paramPoints.itemName  = 'point';
+        this.paramPoints.showZero  = false;
+        this.paramPoints.listTypes = [POINT_VALUE, SHAPE_LIST_VALUE, LIST_VALUE];
+        this.paramPoints.input.types.push(...this.paramPoints.listTypes);
 
         // this.inputs[0].addEventListener('connect',    e => this.outputs[0].types = [...this.inputs[0].connectedOutput.types]);
         // this.inputs[0].addEventListener('disconnect', e => this.outputs[0].types = [SHAPE_VALUE]);

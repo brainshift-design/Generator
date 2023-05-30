@@ -161,7 +161,7 @@
     vertical-align: top;
     left:           50%;
     text-rendering: geometricPrecision;
- /* box-shadow:     0 0 0 1px orange inset; */
+ box-shadow:     0 0 0 1px orange inset;
 }
 
 

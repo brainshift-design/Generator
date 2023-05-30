@@ -10748,8 +10748,8 @@ extends GOperator
             this.updateValues =
             [
                 ['value', this.value     ],
-                ['count',       count          ],
-                ['loop',        NumberValue.NaN]
+                ['count', count          ],
+                ['loop',  NumberValue.NaN]
             ];
         }
         else
@@ -22866,24 +22866,61 @@ extends GOperator
             return this;
 
             
-        const points = this.points ? (await this.points.eval(parse)).toValue() : null;
+        let points = this.points ? (await this.points.eval(parse)).toValue() : null;
+
+        if (   points
+            && points.type == POINT_VALUE)
+            points = new ListValue([points]);
 
 
-        this.evalObjects(parse, {points: points});
+        this.value   = new ListValue();
+
+        this.objects = [];
 
 
         if (this.input)
         {
-            this.value = new ListValue();
+            for (let i = 0, o = 0; i < points.items.length; i++)
+            {
+                this.input.invalidateInputs();
+                let input = (await this.input.eval(parse)).toValue();
+
+
+                if (!LIST_VALUES.includes(input.type))
+                    input = new ListValue([input]);
+
+                
+                for (let j = 0; j < this.input.objects.length; j++, o++)
+                {
+                    const obj = copyFigmaObject(this.input.objects[o % input.items.length]);
+
+                    obj.nodeId      = this.nodeId;
+
+                    obj.objectId    = this.nodeId + ':' + (o+1).toString() + obj.objectId;
+                    obj.objectName += ' ' + (o+1).toString();
+
+                    obj.listId      = i;
+    
+
+                    obj.applyTransform(createTransform(
+                        -obj.xp0.x + points.items[i].x,
+                        -obj.xp0.y + points.items[i].y));
+
+
+                    this.objects.push(obj);
+                }
+            }
         }
-        else
-            this.value = NullValue;
 
         
         this.updateValues =
         [
-            ['points', points]
+            //['value',  this.value],
+            ['points', points    ]
         ];
+
+
+        this.evalObjects(parse, {points: points});
 
 
         this.validate();
@@ -22893,35 +22930,35 @@ extends GOperator
 
 
 
-    evalObjects(parse, options = {})
-    {
-        this.objects = this.input ? this.input.objects.map(o => o.copy()) : [];
-        //this.value.objects = this.input ? this.input.objects.map(o => o.copy()) : [];
+    // evalObjects(parse, options = {})
+    // {
+    //     this.objects = this.input ? this.input.objects.map(o => o.copy()) : [];
+    //     //this.value.objects = this.input ? this.input.objects.map(o => o.copy()) : [];
 
             
-        if (!this.options.enabled)
-            return;
+    //     if (!this.options.enabled)
+    //         return;
             
 
-        // const x = options.x.toNumber();
-        // const y = options.y.toNumber();
+    //     // const x = options.x.toNumber();
+    //     // const y = options.y.toNumber();
 
-        // const xform = createTransform(x, y);
+    //     // const xform = createTransform(x, y);
 
 
-        // let i = 0;
+    //     // let i = 0;
         
-        // for (const obj of this.objects)
-        // {
-        //     obj.nodeId   = this.nodeId;
-        //     obj.objectId = obj.objectId + OBJECT_SEPARATOR + this.nodeId;
+    //     // for (const obj of this.objects)
+    //     // {
+    //     //     obj.nodeId   = this.nodeId;
+    //     //     obj.objectId = obj.objectId + OBJECT_SEPARATOR + this.nodeId;
 
-        //     obj.applyTransform(xform);
-        // }
+    //     //     obj.applyTransform(xform);
+    //     // }
 
         
-        super.evalObjects(parse);
-    }
+    //     super.evalObjects(parse);
+    // }
 
 
 

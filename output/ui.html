@@ -3378,7 +3378,7 @@ a
     vertical-align: top;
     left:           50%;
     text-rendering: geometricPrecision;
- /* box-shadow:     0 0 0 1px orange inset; */
+ box-shadow:     0 0 0 1px orange inset;
 }
 
 
@@ -15142,8 +15142,8 @@ extends GOperator
             this.updateValues =
             [
                 ['value', this.value     ],
-                ['count',       count          ],
-                ['loop',        NumberValue.NaN]
+                ['count', count          ],
+                ['loop',  NumberValue.NaN]
             ];
         }
         else
@@ -27260,24 +27260,61 @@ extends GOperator
             return this;
 
             
-        const points = this.points ? (await this.points.eval(parse)).toValue() : null;
+        let points = this.points ? (await this.points.eval(parse)).toValue() : null;
+
+        if (   points
+            && points.type == POINT_VALUE)
+            points = new ListValue([points]);
 
 
-        this.evalObjects(parse, {points: points});
+        this.value   = new ListValue();
+
+        this.objects = [];
 
 
         if (this.input)
         {
-            this.value = new ListValue();
+            for (let i = 0, o = 0; i < points.items.length; i++)
+            {
+                this.input.invalidateInputs();
+                let input = (await this.input.eval(parse)).toValue();
+
+
+                if (!LIST_VALUES.includes(input.type))
+                    input = new ListValue([input]);
+
+                
+                for (let j = 0; j < this.input.objects.length; j++, o++)
+                {
+                    const obj = copyFigmaObject(this.input.objects[o % input.items.length]);
+
+                    obj.nodeId      = this.nodeId;
+
+                    obj.objectId    = this.nodeId + ':' + (o+1).toString() + obj.objectId;
+                    obj.objectName += ' ' + (o+1).toString();
+
+                    obj.listId      = i;
+    
+
+                    obj.applyTransform(createTransform(
+                        -obj.xp0.x + points.items[i].x,
+                        -obj.xp0.y + points.items[i].y));
+
+
+                    this.objects.push(obj);
+                }
+            }
         }
-        else
-            this.value = NullValue;
 
         
         this.updateValues =
         [
-            ['points', points]
+            //['value',  this.value],
+            ['points', points    ]
         ];
+
+
+        this.evalObjects(parse, {points: points});
 
 
         this.validate();
@@ -27287,35 +27324,35 @@ extends GOperator
 
 
 
-    evalObjects(parse, options = {})
-    {
-        this.objects = this.input ? this.input.objects.map(o => o.copy()) : [];
-        //this.value.objects = this.input ? this.input.objects.map(o => o.copy()) : [];
+    // evalObjects(parse, options = {})
+    // {
+    //     this.objects = this.input ? this.input.objects.map(o => o.copy()) : [];
+    //     //this.value.objects = this.input ? this.input.objects.map(o => o.copy()) : [];
 
             
-        if (!this.options.enabled)
-            return;
+    //     if (!this.options.enabled)
+    //         return;
             
 
-        // const x = options.x.toNumber();
-        // const y = options.y.toNumber();
+    //     // const x = options.x.toNumber();
+    //     // const y = options.y.toNumber();
 
-        // const xform = createTransform(x, y);
+    //     // const xform = createTransform(x, y);
 
 
-        // let i = 0;
+    //     // let i = 0;
         
-        // for (const obj of this.objects)
-        // {
-        //     obj.nodeId   = this.nodeId;
-        //     obj.objectId = obj.objectId + OBJECT_SEPARATOR + this.nodeId;
+    //     // for (const obj of this.objects)
+    //     // {
+    //     //     obj.nodeId   = this.nodeId;
+    //     //     obj.objectId = obj.objectId + OBJECT_SEPARATOR + this.nodeId;
 
-        //     obj.applyTransform(xform);
-        // }
+    //     //     obj.applyTransform(xform);
+    //     // }
 
         
-        super.evalObjects(parse);
-    }
+    //     super.evalObjects(parse);
+    // }
 
 
 
@@ -49547,8 +49584,8 @@ extends GOperator
             this.updateValues =
             [
                 ['value', this.value     ],
-                ['count',       count          ],
-                ['loop',        NumberValue.NaN]
+                ['count', count          ],
+                ['loop',  NumberValue.NaN]
             ];
         }
         else
@@ -61665,24 +61702,61 @@ extends GOperator
             return this;
 
             
-        const points = this.points ? (await this.points.eval(parse)).toValue() : null;
+        let points = this.points ? (await this.points.eval(parse)).toValue() : null;
+
+        if (   points
+            && points.type == POINT_VALUE)
+            points = new ListValue([points]);
 
 
-        this.evalObjects(parse, {points: points});
+        this.value   = new ListValue();
+
+        this.objects = [];
 
 
         if (this.input)
         {
-            this.value = new ListValue();
+            for (let i = 0, o = 0; i < points.items.length; i++)
+            {
+                this.input.invalidateInputs();
+                let input = (await this.input.eval(parse)).toValue();
+
+
+                if (!LIST_VALUES.includes(input.type))
+                    input = new ListValue([input]);
+
+                
+                for (let j = 0; j < this.input.objects.length; j++, o++)
+                {
+                    const obj = copyFigmaObject(this.input.objects[o % input.items.length]);
+
+                    obj.nodeId      = this.nodeId;
+
+                    obj.objectId    = this.nodeId + ':' + (o+1).toString() + obj.objectId;
+                    obj.objectName += ' ' + (o+1).toString();
+
+                    obj.listId      = i;
+    
+
+                    obj.applyTransform(createTransform(
+                        -obj.xp0.x + points.items[i].x,
+                        -obj.xp0.y + points.items[i].y));
+
+
+                    this.objects.push(obj);
+                }
+            }
         }
-        else
-            this.value = NullValue;
 
         
         this.updateValues =
         [
-            ['points', points]
+            //['value',  this.value],
+            ['points', points    ]
         ];
+
+
+        this.evalObjects(parse, {points: points});
 
 
         this.validate();
@@ -61692,35 +61766,35 @@ extends GOperator
 
 
 
-    evalObjects(parse, options = {})
-    {
-        this.objects = this.input ? this.input.objects.map(o => o.copy()) : [];
-        //this.value.objects = this.input ? this.input.objects.map(o => o.copy()) : [];
+    // evalObjects(parse, options = {})
+    // {
+    //     this.objects = this.input ? this.input.objects.map(o => o.copy()) : [];
+    //     //this.value.objects = this.input ? this.input.objects.map(o => o.copy()) : [];
 
             
-        if (!this.options.enabled)
-            return;
+    //     if (!this.options.enabled)
+    //         return;
             
 
-        // const x = options.x.toNumber();
-        // const y = options.y.toNumber();
+    //     // const x = options.x.toNumber();
+    //     // const y = options.y.toNumber();
 
-        // const xform = createTransform(x, y);
+    //     // const xform = createTransform(x, y);
 
 
-        // let i = 0;
+    //     // let i = 0;
         
-        // for (const obj of this.objects)
-        // {
-        //     obj.nodeId   = this.nodeId;
-        //     obj.objectId = obj.objectId + OBJECT_SEPARATOR + this.nodeId;
+    //     // for (const obj of this.objects)
+    //     // {
+    //     //     obj.nodeId   = this.nodeId;
+    //     //     obj.objectId = obj.objectId + OBJECT_SEPARATOR + this.nodeId;
 
-        //     obj.applyTransform(xform);
-        // }
+    //     //     obj.applyTransform(xform);
+    //     // }
 
         
-        super.evalObjects(parse);
-    }
+    //     super.evalObjects(parse);
+    // }
 
 
 
@@ -79217,16 +79291,7 @@ Operator.prototype.createHeader = function()
 
     this.header.addEventListener('dblclick', e =>
     {
-        const bounds = boundingRect(this.label);
-
-        if (  !getCtrlKey(e)
-            && e.clientX >= bounds.left && e.clientX < bounds.right
-            && e.clientY >= bounds.top  && e.clientY < bounds.bottom)
-        {
-            e.stopPropagation();
-            this.showLabelTextbox();
-        }
-        else if (!this.header.ignoreDoubleClick)
+        if (!this.header.ignoreDoubleClick)
         {
             e.stopPropagation();
 
@@ -79237,6 +79302,20 @@ Operator.prototype.createHeader = function()
                 clearTimeout(this.deselectTimer);
                 this.deselectTimer = -1;
             }
+        }
+
+
+        this.header.ignoreDoubleClick = false;
+    });
+
+
+
+    this.labelText.addEventListener('dblclick', e =>
+    {
+        if (!getCtrlKey(e))
+        {
+            e.stopPropagation();
+            this.showLabelTextbox();
         }
 
 
@@ -82526,7 +82605,8 @@ extends OperatorBase
         this.paramDate     .enableControlText(false);
         this.paramMonth    .enableControlText(false);
         this.paramYear     .enableControlText(false);
-    
+
+        
         this.updateParamControls();
     }
 
@@ -91437,7 +91517,10 @@ extends OperatorBase
         this.addParam(this.paramPoints = new ListParam('points', 'points', true, true, true));
 
 
-        this.paramPoints.itemName = 'point';
+        this.paramPoints.itemName  = 'point';
+        this.paramPoints.showZero  = false;
+        this.paramPoints.listTypes = [POINT_VALUE, SHAPE_LIST_VALUE, LIST_VALUE];
+        this.paramPoints.input.types.push(...this.paramPoints.listTypes);
 
         // this.inputs[0].addEventListener('connect',    e => this.outputs[0].types = [...this.inputs[0].connectedOutput.types]);
         // this.inputs[0].addEventListener('disconnect', e => this.outputs[0].types = [SHAPE_VALUE]);

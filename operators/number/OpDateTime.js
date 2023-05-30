@@ -71,7 +71,8 @@ extends OperatorBase
         this.paramDate     .enableControlText(false);
         this.paramMonth    .enableControlText(false);
         this.paramYear     .enableControlText(false);
-    
+
+        
         this.updateParamControls();
     }
 

@@ -421,16 +421,7 @@ Operator.prototype.createHeader = function()
 
     this.header.addEventListener('dblclick', e =>
     {
-        const bounds = boundingRect(this.label);
-
-        if (  !getCtrlKey(e)
-            && e.clientX >= bounds.left && e.clientX < bounds.right
-            && e.clientY >= bounds.top  && e.clientY < bounds.bottom)
-        {
-            e.stopPropagation();
-            this.showLabelTextbox();
-        }
-        else if (!this.header.ignoreDoubleClick)
+        if (!this.header.ignoreDoubleClick)
         {
             e.stopPropagation();
 
@@ -441,6 +432,20 @@ Operator.prototype.createHeader = function()
                 clearTimeout(this.deselectTimer);
                 this.deselectTimer = -1;
             }
+        }
+
+
+        this.header.ignoreDoubleClick = false;
+    });
+
+
+
+    this.labelText.addEventListener('dblclick', e =>
+    {
+        if (!getCtrlKey(e))
+        {
+            e.stopPropagation();
+            this.showLabelTextbox();
         }
 
 
