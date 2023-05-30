@@ -662,6 +662,7 @@ const MOVE = 'MOVE';
 const ROTATE = 'ROT';
 const SCALE = 'SCALE';
 const SKEW = 'SKEW';
+const PLACE = 'PLACE';
 const BOOLEAN = 'BOOL';
 const BOOLEAN_VALUE = 'BOOL#';
 const BOOL_UNION = 'BOOLU';
@@ -712,6 +713,7 @@ const SHAPE_TYPES = [
     ...BOOLEAN_TYPES,
     MOVE,
     ...AFFINE_TYPES,
+    PLACE,
     RENDER
 ];
 const ALL_VALUES = [

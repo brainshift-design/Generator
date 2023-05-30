@@ -1,38 +1,29 @@
-class GMove
+class GPlace
 extends GOperator
 {
     input = null;
 
-    x     = null;
-    y     = null;
-
-    coords;
+    points = null;
 
 
 
     constructor(nodeId, options)
     {
-        super(MOVE, nodeId, options);
-
-        this.coords = clone(identity);
+        super(PLACE, nodeId, options);
     }
 
 
 
     copy()
     {
-        const copy = new GMove(this.nodeId, this.options);
+        const copy = new GPlace(this.nodeId, this.options);
 
         copy.copyBase(this);
 
         if (this.input) 
             copy.input = this.input.copy();
 
-        //if (this.value) copy.value = this.value.copy();
-        if (this.x) copy.x = this.x.copy();
-        if (this.y) copy.y = this.y.copy();
-
-        copy.coords = clone(this.coords);
+        if (this.points) copy.x = this.points.copy();
 
         return copy;
     }
@@ -45,29 +36,23 @@ extends GOperator
             return this;
 
             
-        const x = this.x ? (await this.x.eval(parse)).toValue() : null;
-        const y = this.y ? (await this.y.eval(parse)).toValue() : null;
+        const points = this.points ? (await this.points.eval(parse)).toValue() : null;
+
+
+        this.evalObjects(parse, {points: points});
 
 
         if (this.input)
         {
-            this.value = (await this.input.eval(parse)).toValue();
-            this.value.nodeId = this.nodeId;
+            this.value = new ListValue();
         }
         else
-        {
             this.value = NullValue;
-        }
 
         
-        this.evalObjects(parse, {x: x, y: y});
-
-
         this.updateValues =
         [
-            ['value', this.value],
-            ['x',     x         ],
-            ['y',     y         ]
+            ['points', points]
         ];
 
 
@@ -88,21 +73,21 @@ extends GOperator
             return;
             
 
-        const x = options.x.toNumber();
-        const y = options.y.toNumber();
+        // const x = options.x.toNumber();
+        // const y = options.y.toNumber();
 
-        const xform = createTransform(x, y);
+        // const xform = createTransform(x, y);
 
-             
-        for (const obj of this.objects)
-        {
-            obj.nodeId   = this.nodeId;
-            obj.objectId = obj.objectId + OBJECT_SEPARATOR + this.nodeId;
 
-            obj.applyTransform(xform);
+        // let i = 0;
+        
+        // for (const obj of this.objects)
+        // {
+        //     obj.nodeId   = this.nodeId;
+        //     obj.objectId = obj.objectId + OBJECT_SEPARATOR + this.nodeId;
 
-            this.coords = mulm3m3(this.coords, xform);
-        }
+        //     obj.applyTransform(xform);
+        // }
 
         
         super.evalObjects(parse);
@@ -115,7 +100,7 @@ extends GOperator
         super.pushValueUpdates(parse);
 
         if (this.input) this.input.pushValueUpdates(parse);
-        if (this.x    ) this.x    .pushValueUpdates(parse);
+        if (this.points    ) this.points    .pushValueUpdates(parse);
         if (this.y    ) this.y    .pushValueUpdates(parse);
     }
 
@@ -124,7 +109,7 @@ extends GOperator
     isValid()
     {
         return super.isValid()
-            && this.x.isValid()
+            && this.points.isValid()
             && this.y.isValid();
     }
 
@@ -135,7 +120,7 @@ extends GOperator
         super.invalidateInputs();
 
         if (this.input ) this.input .invalidateInputs();
-        if (this.x     ) this.x     .invalidateInputs();
+        if (this.points     ) this.points     .invalidateInputs();
         if (this.y     ) this.y     .invalidateInputs();
     }
 

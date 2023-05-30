@@ -8437,7 +8437,8 @@ const MOVE               = 'MOVE';
 const ROTATE             = 'ROT';
 const SCALE              = 'SCALE';
 const SKEW               = 'SKEW';
- 
+
+const PLACE              = 'PLACE';
   
 
 const BOOLEAN            = 'BOOL';
@@ -8507,6 +8508,8 @@ const SHAPE_TYPES =
 
     MOVE,
     ...AFFINE_TYPES,
+
+    PLACE,
 
     RENDER
 ];
@@ -8715,7 +8718,7 @@ class FigmaObject
 
     inputIndex = -1; // for unique object IDs
 
-    
+
     xform;
 
     xp0 = null; //  xp0 ------- xp1 
@@ -8745,6 +8748,7 @@ class FigmaObject
         this.final      = base.final;
         
         this.xform      = clone(base.xform);
+
         this.xp0        = !!base.xp0 ? base.xp0.copy() : null;
         this.xp1        = !!base.xp1 ? base.xp1.copy() : null;
         this.xp2        = !!base.xp2 ? base.xp2.copy() : null;
@@ -8774,20 +8778,33 @@ class FigmaObject
     {
         if (this.type == POINT)
         {
-            const p = mulv2m3(
-                point(
-                    this.x, 
-                    this.y), 
-                xform);
+            let p = point(this.x, this.y);
+
+            //p = mulv2m3(p, inversem3(coords));
+            p = mulv2m3(point(this.x, this.y), xform);
+            //p = mulv2m3(p, coords);
 
             this.x = p.x;
             this.y = p.y;
         }
         else
         {
-            const xp0  = mulv2m3(point(this.xp0.x, this.xp0.y), xform);
-            const xp1  = mulv2m3(point(this.xp1.x, this.xp1.y), xform);
-            const xp2  = mulv2m3(point(this.xp2.x, this.xp2.y), xform);
+            let xp0  = point(this.xp0.x, this.xp0.y);
+            let xp1  = point(this.xp1.x, this.xp1.y);
+            let xp2  = point(this.xp2.x, this.xp2.y);
+
+
+            //xp0 = mulv2m3(xp0, inversem3(coords));
+            xp0 = mulv2m3(point(xp0.x, xp0.y), xform);
+            //xp0 = mulv2m3(xp0, coords);
+
+            //xp1 = mulv2m3(xp1, inversem3(coords));
+            xp1 = mulv2m3(point(xp1.x, xp1.y), xform);
+            //xp1 = mulv2m3(xp1, coords);
+
+            //xp2 = mulv2m3(xp2, inversem3(coords));
+            xp2 = mulv2m3(point(xp2.x, xp2.y), xform);
+            //xp2 = mulv2m3(xp2, coords);
 
 
             this.xp0.x = xp0.x;
@@ -26493,11 +26510,15 @@ extends GOperator
     x     = null;
     y     = null;
 
+    coords;
+
 
 
     constructor(nodeId, options)
     {
         super(MOVE, nodeId, options);
+
+        this.coords = clone(identity);
     }
 
 
@@ -26514,6 +26535,8 @@ extends GOperator
         //if (this.value) copy.value = this.value.copy();
         if (this.x) copy.x = this.x.copy();
         if (this.y) copy.y = this.y.copy();
+
+        copy.coords = clone(this.coords);
 
         return copy;
     }
@@ -26581,6 +26604,8 @@ extends GOperator
             obj.objectId = obj.objectId + OBJECT_SEPARATOR + this.nodeId;
 
             obj.applyTransform(xform);
+
+            this.coords = mulm3m3(this.coords, xform);
         }
 
         
@@ -26636,11 +26661,15 @@ extends GOperator
     centerY    = null;
     showCenter = null;
 
+    coords;
+
 
 
     constructor(type, nodeId, options)
     {
         super(type, nodeId, options);
+
+        this.coords = clone(identity);
     }
 
 
@@ -26655,6 +26684,8 @@ extends GOperator
         if (base.centerX   ) this.centerX    = base.centerX   .copy();
         if (base.centerY   ) this.centerY    = base.centerY   .copy();
         if (base.showCenter) this.showCenter = base.showCenter.copy();
+
+        this.coords = clone(base.coords);
     }
 
 
@@ -26713,7 +26744,9 @@ extends GOperator
             obj.objectId = obj.objectId + OBJECT_SEPARATOR + this.nodeId;
 
             obj.applyTransform(xform);
-        }
+
+            this.coords = mulm3m3(this.coords, xform);
+         }
 
         
         if (  !isEmpty(this.objects)
@@ -27178,6 +27211,141 @@ extends GAffine
 
         if (this.skewX) this.skewX.invalidateInputs();
         if (this.skewY) this.skewY.invalidateInputs();
+    }
+
+
+
+    toValue()
+    {
+        return this.value.copy();
+    }
+}
+
+
+class GPlace
+extends GOperator
+{
+    input = null;
+
+    points = null;
+
+
+
+    constructor(nodeId, options)
+    {
+        super(PLACE, nodeId, options);
+    }
+
+
+
+    copy()
+    {
+        const copy = new GPlace(this.nodeId, this.options);
+
+        copy.copyBase(this);
+
+        if (this.input) 
+            copy.input = this.input.copy();
+
+        if (this.points) copy.x = this.points.copy();
+
+        return copy;
+    }
+
+
+
+    async eval(parse)
+    {
+        if (this.isCached())
+            return this;
+
+            
+        const points = this.points ? (await this.points.eval(parse)).toValue() : null;
+
+
+        this.evalObjects(parse, {points: points});
+
+
+        if (this.input)
+        {
+            this.value = new ListValue();
+        }
+        else
+            this.value = NullValue;
+
+        
+        this.updateValues =
+        [
+            ['points', points]
+        ];
+
+
+        this.validate();
+
+        return this;
+    }
+
+
+
+    evalObjects(parse, options = {})
+    {
+        this.objects = this.input ? this.input.objects.map(o => o.copy()) : [];
+        //this.value.objects = this.input ? this.input.objects.map(o => o.copy()) : [];
+
+            
+        if (!this.options.enabled)
+            return;
+            
+
+        // const x = options.x.toNumber();
+        // const y = options.y.toNumber();
+
+        // const xform = createTransform(x, y);
+
+
+        // let i = 0;
+        
+        // for (const obj of this.objects)
+        // {
+        //     obj.nodeId   = this.nodeId;
+        //     obj.objectId = obj.objectId + OBJECT_SEPARATOR + this.nodeId;
+
+        //     obj.applyTransform(xform);
+        // }
+
+        
+        super.evalObjects(parse);
+    }
+
+
+
+    pushValueUpdates(parse)
+    {
+        super.pushValueUpdates(parse);
+
+        if (this.input) this.input.pushValueUpdates(parse);
+        if (this.points    ) this.points    .pushValueUpdates(parse);
+        if (this.y    ) this.y    .pushValueUpdates(parse);
+    }
+
+
+
+    isValid()
+    {
+        return super.isValid()
+            && this.points.isValid()
+            && this.y.isValid();
+    }
+
+
+
+    invalidateInputs()
+    {
+        super.invalidateInputs();
+
+        if (this.input ) this.input .invalidateInputs();
+        if (this.points     ) this.points     .invalidateInputs();
+        if (this.y     ) this.y     .invalidateInputs();
     }
 
 
@@ -31858,6 +32026,53 @@ function genParseSkew(parse)
 
 
 
+function genParsePlace(parse)
+{
+    const [, nodeId, options, ignore] = genParseNodeStart(parse);
+
+
+    const place = new GPlace(nodeId, options);
+
+
+    let nInputs = -1;
+
+    if (!ignore)
+    {
+        nInputs = parseInt(parse.move());
+        console.assert(nInputs => 0 && nInputs <= 1, 'nInputs must be [0, 1]');
+    }
+
+
+    if (parse.settings.logRequests) 
+        logReq(place, parse, ignore);
+
+
+    if (ignore) 
+    {
+        genParseNodeEnd(parse, place);
+        return parse.parsedNodes.find(n => n.nodeId == nodeId);
+    }
+
+
+    parse.nTab++;
+
+
+    if (nInputs == 1)
+        place.input = genParse(parse);
+
+    place.points = genParse(parse);
+
+
+    parse.inParam = false;
+    parse.nTab--;
+
+
+    genParseNodeEnd(parse, place);
+    return place;
+}
+
+
+
 function genParseRender(parse)
 {
     const [, nodeId, options, ignore] = genParseNodeStart(parse);
@@ -32715,6 +32930,8 @@ function genParse(parse, inParam = true)
     else if (parse.next == ROTATE                 ) result = genParseRotate           (parse);
     else if (parse.next == SCALE                  ) result = genParseScale            (parse);
     else if (parse.next == SKEW                   ) result = genParseSkew             (parse);
+
+    else if (parse.next == PLACE                  ) result = genParsePlace            (parse);
     
     else if (parse.next == RENDER                 ) result = genParseRender           (parse);
  
@@ -42625,7 +42842,8 @@ const MOVE               = 'MOVE';
 const ROTATE             = 'ROT';
 const SCALE              = 'SCALE';
 const SKEW               = 'SKEW';
- 
+
+const PLACE              = 'PLACE';
   
 
 const BOOLEAN            = 'BOOL';
@@ -42695,6 +42913,8 @@ const SHAPE_TYPES =
 
     MOVE,
     ...AFFINE_TYPES,
+
+    PLACE,
 
     RENDER
 ];
@@ -42903,7 +43123,7 @@ class FigmaObject
 
     inputIndex = -1; // for unique object IDs
 
-    
+
     xform;
 
     xp0 = null; //  xp0 ------- xp1 
@@ -42933,6 +43153,7 @@ class FigmaObject
         this.final      = base.final;
         
         this.xform      = clone(base.xform);
+
         this.xp0        = !!base.xp0 ? base.xp0.copy() : null;
         this.xp1        = !!base.xp1 ? base.xp1.copy() : null;
         this.xp2        = !!base.xp2 ? base.xp2.copy() : null;
@@ -42962,20 +43183,33 @@ class FigmaObject
     {
         if (this.type == POINT)
         {
-            const p = mulv2m3(
-                point(
-                    this.x, 
-                    this.y), 
-                xform);
+            let p = point(this.x, this.y);
+
+            //p = mulv2m3(p, inversem3(coords));
+            p = mulv2m3(point(this.x, this.y), xform);
+            //p = mulv2m3(p, coords);
 
             this.x = p.x;
             this.y = p.y;
         }
         else
         {
-            const xp0  = mulv2m3(point(this.xp0.x, this.xp0.y), xform);
-            const xp1  = mulv2m3(point(this.xp1.x, this.xp1.y), xform);
-            const xp2  = mulv2m3(point(this.xp2.x, this.xp2.y), xform);
+            let xp0  = point(this.xp0.x, this.xp0.y);
+            let xp1  = point(this.xp1.x, this.xp1.y);
+            let xp2  = point(this.xp2.x, this.xp2.y);
+
+
+            //xp0 = mulv2m3(xp0, inversem3(coords));
+            xp0 = mulv2m3(point(xp0.x, xp0.y), xform);
+            //xp0 = mulv2m3(xp0, coords);
+
+            //xp1 = mulv2m3(xp1, inversem3(coords));
+            xp1 = mulv2m3(point(xp1.x, xp1.y), xform);
+            //xp1 = mulv2m3(xp1, coords);
+
+            //xp2 = mulv2m3(xp2, inversem3(coords));
+            xp2 = mulv2m3(point(xp2.x, xp2.y), xform);
+            //xp2 = mulv2m3(xp2, coords);
 
 
             this.xp0.x = xp0.x;
@@ -60681,11 +60915,15 @@ extends GOperator
     x     = null;
     y     = null;
 
+    coords;
+
 
 
     constructor(nodeId, options)
     {
         super(MOVE, nodeId, options);
+
+        this.coords = clone(identity);
     }
 
 
@@ -60702,6 +60940,8 @@ extends GOperator
         //if (this.value) copy.value = this.value.copy();
         if (this.x) copy.x = this.x.copy();
         if (this.y) copy.y = this.y.copy();
+
+        copy.coords = clone(this.coords);
 
         return copy;
     }
@@ -60769,6 +61009,8 @@ extends GOperator
             obj.objectId = obj.objectId + OBJECT_SEPARATOR + this.nodeId;
 
             obj.applyTransform(xform);
+
+            this.coords = mulm3m3(this.coords, xform);
         }
 
         
@@ -60824,11 +61066,15 @@ extends GOperator
     centerY    = null;
     showCenter = null;
 
+    coords;
+
 
 
     constructor(type, nodeId, options)
     {
         super(type, nodeId, options);
+
+        this.coords = clone(identity);
     }
 
 
@@ -60843,6 +61089,8 @@ extends GOperator
         if (base.centerX   ) this.centerX    = base.centerX   .copy();
         if (base.centerY   ) this.centerY    = base.centerY   .copy();
         if (base.showCenter) this.showCenter = base.showCenter.copy();
+
+        this.coords = clone(base.coords);
     }
 
 
@@ -60901,7 +61149,9 @@ extends GOperator
             obj.objectId = obj.objectId + OBJECT_SEPARATOR + this.nodeId;
 
             obj.applyTransform(xform);
-        }
+
+            this.coords = mulm3m3(this.coords, xform);
+         }
 
         
         if (  !isEmpty(this.objects)
@@ -61366,6 +61616,141 @@ extends GAffine
 
         if (this.skewX) this.skewX.invalidateInputs();
         if (this.skewY) this.skewY.invalidateInputs();
+    }
+
+
+
+    toValue()
+    {
+        return this.value.copy();
+    }
+}
+
+
+class GPlace
+extends GOperator
+{
+    input = null;
+
+    points = null;
+
+
+
+    constructor(nodeId, options)
+    {
+        super(PLACE, nodeId, options);
+    }
+
+
+
+    copy()
+    {
+        const copy = new GPlace(this.nodeId, this.options);
+
+        copy.copyBase(this);
+
+        if (this.input) 
+            copy.input = this.input.copy();
+
+        if (this.points) copy.x = this.points.copy();
+
+        return copy;
+    }
+
+
+
+    async eval(parse)
+    {
+        if (this.isCached())
+            return this;
+
+            
+        const points = this.points ? (await this.points.eval(parse)).toValue() : null;
+
+
+        this.evalObjects(parse, {points: points});
+
+
+        if (this.input)
+        {
+            this.value = new ListValue();
+        }
+        else
+            this.value = NullValue;
+
+        
+        this.updateValues =
+        [
+            ['points', points]
+        ];
+
+
+        this.validate();
+
+        return this;
+    }
+
+
+
+    evalObjects(parse, options = {})
+    {
+        this.objects = this.input ? this.input.objects.map(o => o.copy()) : [];
+        //this.value.objects = this.input ? this.input.objects.map(o => o.copy()) : [];
+
+            
+        if (!this.options.enabled)
+            return;
+            
+
+        // const x = options.x.toNumber();
+        // const y = options.y.toNumber();
+
+        // const xform = createTransform(x, y);
+
+
+        // let i = 0;
+        
+        // for (const obj of this.objects)
+        // {
+        //     obj.nodeId   = this.nodeId;
+        //     obj.objectId = obj.objectId + OBJECT_SEPARATOR + this.nodeId;
+
+        //     obj.applyTransform(xform);
+        // }
+
+        
+        super.evalObjects(parse);
+    }
+
+
+
+    pushValueUpdates(parse)
+    {
+        super.pushValueUpdates(parse);
+
+        if (this.input) this.input.pushValueUpdates(parse);
+        if (this.points    ) this.points    .pushValueUpdates(parse);
+        if (this.y    ) this.y    .pushValueUpdates(parse);
+    }
+
+
+
+    isValid()
+    {
+        return super.isValid()
+            && this.points.isValid()
+            && this.y.isValid();
+    }
+
+
+
+    invalidateInputs()
+    {
+        super.invalidateInputs();
+
+        if (this.input ) this.input .invalidateInputs();
+        if (this.points     ) this.points     .invalidateInputs();
+        if (this.y     ) this.y     .invalidateInputs();
     }
 
 
@@ -65792,6 +66177,8 @@ const iconRotate            = '<svg width="14" height="19" viewBox="0 0 14 19" f
 const iconScale             = '<svg width="15" height="15" viewBox="0 0 15 15" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M0 0V15H15V9H14V14L1 14V1L6 1V0H0Z" fill="white"/><path d="M10 1V2.38419e-07L15 0V5H14V1.70718L6.70718 9H10V10H5V5H6V8.29297L13.293 1L10 1Z" fill="white"/></svg>';
 const iconSkew              = '<svg width="19" height="17" viewBox="0 0 19 17" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M2.75185 13.0498L4.85299 15.1509L4.04961 16.0462L0.564758 12.5613L4.02604 9.1001L4.85299 9.96779L2.77106 12.0496H8.03782V13.0498H2.75185Z" fill="white"/><path d="M16.2802 3.02754L14.1492 0.896574L14.9986 0.0472195L18.4673 3.516L15.0221 6.9613L14.1492 6.13945L16.261 4.02766L10.9942 4.02766L10.9942 3.02754L16.2802 3.02754Z" fill="white"/><rect x="8.03784" y="12.0476" width="3.98492" height="1" fill="white"/><rect x="10.9941" y="4.02979" width="3.94812" height="1" transform="rotate(-180 10.9941 4.02979)" fill="white"/><path d="M10.9083 12.532L13.0237 9.01649L14.0898 9.62791L12.0117 13.0475L10.9083 12.532Z" fill="white"/><path d="M8.20062 3.47107L6.03195 7.05296L4.94104 6.43312L7.02151 3.02985L8.20062 3.47107Z" fill="white"/></svg>'; 
 
+const iconPlace             = '<svg width="19" height="17" viewBox="0 0 19 17" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="16.5371" cy="15.5" r="1.5" fill="white"/><path fill-rule="evenodd" clip-rule="evenodd" d="M15.711 9.60649L18.1232 6.79155L19.0227 7.56237L16.0318 11.0527L16.0168 11.0398L15.9972 11.0787L11.9998 9.05711L12.5344 8L15.711 9.60649Z" fill="white"/><path d="M4.5 3.60622C6.33275 -0.178262 14.5351 -1.28238 15.8513 10.4285" stroke="white"/><rect x="0.5" y="7.5" width="8" height="8" stroke="white"/></svg>'; 
+
 const iconRender            = '<svg width="17" height="15" viewBox="0 0 17 15" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="0.5" y="0.5" width="16" height="14" rx="1.5" stroke="white"/><path fill-rule="evenodd" clip-rule="evenodd" d="M12 4.63538L10.9288 4L7.60978 9.10104L5.89169 7.46061L5 8.31199L7.81525 11L12 4.63538Z" fill="white"/></svg>';
 
 const iconGroup             = '<svg width="17" height="17" viewBox="0 -1 17 17" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M3 0.5H14C15.3807 0.5 16.5 1.61929 16.5 3V15.5H0.5V3C0.5 1.61929 1.61929 0.5 3 0.5Z" stroke="white"/><rect width="4" height="1" transform="matrix(-1 0 0 1 14 4)" fill="white"/><rect width="4" height="1" transform="matrix(-1 0 0 1 9 6)" fill="white"/><rect width="4" height="1" transform="matrix(-1 0 0 1 12 9)" fill="white"/><rect width="4" height="1" transform="matrix(-1 0 0 1 7 11)" fill="white"/></svg>';
@@ -67352,6 +67739,7 @@ function initGeneratorMenus()
                                 new MenuItem('Group',               {icon: iconShapeGroup, callback: e => actionManager.do(getCreateNodeAction(SHAPE_GROUP, btnShape.div, getCreateOptions(e)))}),
         menuItemShapeSep1     = new MenuItem('',                    {separator: true}),
                                 new MenuItem('Transform',           {icon: iconMove, childMenu: menuTransform}),
+                                new MenuItem('Place',               {icon: iconPlace, callback: e => actionManager.do(getCreateNodeAction(PLACE, btnShape.div, getCreateOptions(e)))}),
                                 new MenuItem('',                    {separator: true}),
                                 new MenuItem('Render',              {icon: iconRender,     callback: e => actionManager.do(getCreateNodeAction(RENDER,       btnShape.div, getCreateOptions(e)))})]);
 
@@ -91027,6 +91415,69 @@ extends OpShapeBooleanBase
 }
 
 
+class   OpPlace
+extends OperatorBase
+{
+    paramPoints;
+
+
+
+    constructor()
+    {
+        super(PLACE, 'place', 'place', iconPlace);
+
+        this.canDisable  = true;
+        this.iconOffsetY = -2;
+
+        
+        this.addInput (new Input (SHAPE_VALUES));
+        this.addOutput(new Output([SHAPE_LIST_VALUE], this.output_genRequest));
+
+
+        this.addParam(this.paramPoints = new ListParam('points', 'points', true, true, true));
+
+
+        this.paramPoints.itemName = 'point';
+
+        // this.inputs[0].addEventListener('connect',    e => this.outputs[0].types = [...this.inputs[0].connectedOutput.types]);
+        // this.inputs[0].addEventListener('disconnect', e => this.outputs[0].types = [SHAPE_VALUE]);
+    }
+    
+    
+
+    output_genRequest(gen)
+    {
+        // 'this' is the output
+
+        gen.scope.push({
+            nodeId:  this.node.id, 
+            paramId: NULL });
+
+        const [request, ignore] = this.node.genRequestStart(gen);
+        if (ignore) return request;
+
+
+        const input = this.node.inputs[0];
+
+
+        request.push(input.connected ? 1 : 0);
+
+        if (input.connected)
+            request.push(...pushInputOrParam(input, gen));
+
+        request.push(...this.node.paramPoints.genRequest(gen));
+
+        
+        gen.scope.pop();
+        pushUnique(gen.passedNodes, this.node);
+
+
+        return request;
+    }
+}
+
+
+
 class OpRender
 extends OpShapeBase
 {
@@ -99893,6 +100344,8 @@ function createNode(nodeType, creatingButton = null, createdNodeId = -1, options
         case ROTATE:                  node = new OpRotate();            break;
         case SCALE:                   node = new OpScale();             break;
         case SKEW:                    node = new OpSkew();              break;
+        
+        case PLACE:                   node = new OpPlace();             break;
 
         case RENDER:                  node = new OpRender();            break;
 

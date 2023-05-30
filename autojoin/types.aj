@@ -180,6 +180,8 @@
 ../generator/types/shape/GScale.js
 ../generator/types/shape/GSkew.js
 
+../generator/types/shape/GPlace.js
+
 
 ../generator/types/group/GGroupNode.js
 ../generator/types/group/GGroupParam.js

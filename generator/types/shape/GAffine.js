@@ -7,11 +7,15 @@ extends GOperator
     centerY    = null;
     showCenter = null;
 
+    coords;
+
 
 
     constructor(type, nodeId, options)
     {
         super(type, nodeId, options);
+
+        this.coords = clone(identity);
     }
 
 
@@ -26,6 +30,8 @@ extends GOperator
         if (base.centerX   ) this.centerX    = base.centerX   .copy();
         if (base.centerY   ) this.centerY    = base.centerY   .copy();
         if (base.showCenter) this.showCenter = base.showCenter.copy();
+
+        this.coords = clone(base.coords);
     }
 
 
@@ -84,7 +90,9 @@ extends GOperator
             obj.objectId = obj.objectId + OBJECT_SEPARATOR + this.nodeId;
 
             obj.applyTransform(xform);
-        }
+
+            this.coords = mulm3m3(this.coords, xform);
+         }
 
         
         if (  !isEmpty(this.objects)

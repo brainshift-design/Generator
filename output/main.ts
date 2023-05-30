@@ -1105,7 +1105,8 @@ const MOVE               = 'MOVE';
 const ROTATE             = 'ROT';
 const SCALE              = 'SCALE';
 const SKEW               = 'SKEW';
- 
+
+const PLACE              = 'PLACE';
   
 
 const BOOLEAN            = 'BOOL';
@@ -1175,6 +1176,8 @@ const SHAPE_TYPES =
 
     MOVE,
     ...AFFINE_TYPES,
+
+    PLACE,
 
     RENDER
 ];

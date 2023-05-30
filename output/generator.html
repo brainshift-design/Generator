@@ -4043,7 +4043,8 @@ const MOVE               = 'MOVE';
 const ROTATE             = 'ROT';
 const SCALE              = 'SCALE';
 const SKEW               = 'SKEW';
- 
+
+const PLACE              = 'PLACE';
   
 
 const BOOLEAN            = 'BOOL';
@@ -4113,6 +4114,8 @@ const SHAPE_TYPES =
 
     MOVE,
     ...AFFINE_TYPES,
+
+    PLACE,
 
     RENDER
 ];
@@ -4321,7 +4324,7 @@ class FigmaObject
 
     inputIndex = -1; // for unique object IDs
 
-    
+
     xform;
 
     xp0 = null; //  xp0 ------- xp1 
@@ -4351,6 +4354,7 @@ class FigmaObject
         this.final      = base.final;
         
         this.xform      = clone(base.xform);
+
         this.xp0        = !!base.xp0 ? base.xp0.copy() : null;
         this.xp1        = !!base.xp1 ? base.xp1.copy() : null;
         this.xp2        = !!base.xp2 ? base.xp2.copy() : null;
@@ -4380,20 +4384,33 @@ class FigmaObject
     {
         if (this.type == POINT)
         {
-            const p = mulv2m3(
-                point(
-                    this.x, 
-                    this.y), 
-                xform);
+            let p = point(this.x, this.y);
+
+            //p = mulv2m3(p, inversem3(coords));
+            p = mulv2m3(point(this.x, this.y), xform);
+            //p = mulv2m3(p, coords);
 
             this.x = p.x;
             this.y = p.y;
         }
         else
         {
-            const xp0  = mulv2m3(point(this.xp0.x, this.xp0.y), xform);
-            const xp1  = mulv2m3(point(this.xp1.x, this.xp1.y), xform);
-            const xp2  = mulv2m3(point(this.xp2.x, this.xp2.y), xform);
+            let xp0  = point(this.xp0.x, this.xp0.y);
+            let xp1  = point(this.xp1.x, this.xp1.y);
+            let xp2  = point(this.xp2.x, this.xp2.y);
+
+
+            //xp0 = mulv2m3(xp0, inversem3(coords));
+            xp0 = mulv2m3(point(xp0.x, xp0.y), xform);
+            //xp0 = mulv2m3(xp0, coords);
+
+            //xp1 = mulv2m3(xp1, inversem3(coords));
+            xp1 = mulv2m3(point(xp1.x, xp1.y), xform);
+            //xp1 = mulv2m3(xp1, coords);
+
+            //xp2 = mulv2m3(xp2, inversem3(coords));
+            xp2 = mulv2m3(point(xp2.x, xp2.y), xform);
+            //xp2 = mulv2m3(xp2, coords);
 
 
             this.xp0.x = xp0.x;
@@ -22099,11 +22116,15 @@ extends GOperator
     x     = null;
     y     = null;
 
+    coords;
+
 
 
     constructor(nodeId, options)
     {
         super(MOVE, nodeId, options);
+
+        this.coords = clone(identity);
     }
 
 
@@ -22120,6 +22141,8 @@ extends GOperator
         //if (this.value) copy.value = this.value.copy();
         if (this.x) copy.x = this.x.copy();
         if (this.y) copy.y = this.y.copy();
+
+        copy.coords = clone(this.coords);
 
         return copy;
     }
@@ -22187,6 +22210,8 @@ extends GOperator
             obj.objectId = obj.objectId + OBJECT_SEPARATOR + this.nodeId;
 
             obj.applyTransform(xform);
+
+            this.coords = mulm3m3(this.coords, xform);
         }
 
         
@@ -22242,11 +22267,15 @@ extends GOperator
     centerY    = null;
     showCenter = null;
 
+    coords;
+
 
 
     constructor(type, nodeId, options)
     {
         super(type, nodeId, options);
+
+        this.coords = clone(identity);
     }
 
 
@@ -22261,6 +22290,8 @@ extends GOperator
         if (base.centerX   ) this.centerX    = base.centerX   .copy();
         if (base.centerY   ) this.centerY    = base.centerY   .copy();
         if (base.showCenter) this.showCenter = base.showCenter.copy();
+
+        this.coords = clone(base.coords);
     }
 
 
@@ -22319,7 +22350,9 @@ extends GOperator
             obj.objectId = obj.objectId + OBJECT_SEPARATOR + this.nodeId;
 
             obj.applyTransform(xform);
-        }
+
+            this.coords = mulm3m3(this.coords, xform);
+         }
 
         
         if (  !isEmpty(this.objects)
@@ -22784,6 +22817,141 @@ extends GAffine
 
         if (this.skewX) this.skewX.invalidateInputs();
         if (this.skewY) this.skewY.invalidateInputs();
+    }
+
+
+
+    toValue()
+    {
+        return this.value.copy();
+    }
+}
+
+
+class GPlace
+extends GOperator
+{
+    input = null;
+
+    points = null;
+
+
+
+    constructor(nodeId, options)
+    {
+        super(PLACE, nodeId, options);
+    }
+
+
+
+    copy()
+    {
+        const copy = new GPlace(this.nodeId, this.options);
+
+        copy.copyBase(this);
+
+        if (this.input) 
+            copy.input = this.input.copy();
+
+        if (this.points) copy.x = this.points.copy();
+
+        return copy;
+    }
+
+
+
+    async eval(parse)
+    {
+        if (this.isCached())
+            return this;
+
+            
+        const points = this.points ? (await this.points.eval(parse)).toValue() : null;
+
+
+        this.evalObjects(parse, {points: points});
+
+
+        if (this.input)
+        {
+            this.value = new ListValue();
+        }
+        else
+            this.value = NullValue;
+
+        
+        this.updateValues =
+        [
+            ['points', points]
+        ];
+
+
+        this.validate();
+
+        return this;
+    }
+
+
+
+    evalObjects(parse, options = {})
+    {
+        this.objects = this.input ? this.input.objects.map(o => o.copy()) : [];
+        //this.value.objects = this.input ? this.input.objects.map(o => o.copy()) : [];
+
+            
+        if (!this.options.enabled)
+            return;
+            
+
+        // const x = options.x.toNumber();
+        // const y = options.y.toNumber();
+
+        // const xform = createTransform(x, y);
+
+
+        // let i = 0;
+        
+        // for (const obj of this.objects)
+        // {
+        //     obj.nodeId   = this.nodeId;
+        //     obj.objectId = obj.objectId + OBJECT_SEPARATOR + this.nodeId;
+
+        //     obj.applyTransform(xform);
+        // }
+
+        
+        super.evalObjects(parse);
+    }
+
+
+
+    pushValueUpdates(parse)
+    {
+        super.pushValueUpdates(parse);
+
+        if (this.input) this.input.pushValueUpdates(parse);
+        if (this.points    ) this.points    .pushValueUpdates(parse);
+        if (this.y    ) this.y    .pushValueUpdates(parse);
+    }
+
+
+
+    isValid()
+    {
+        return super.isValid()
+            && this.points.isValid()
+            && this.y.isValid();
+    }
+
+
+
+    invalidateInputs()
+    {
+        super.invalidateInputs();
+
+        if (this.input ) this.input .invalidateInputs();
+        if (this.points     ) this.points     .invalidateInputs();
+        if (this.y     ) this.y     .invalidateInputs();
     }
 
 
@@ -27464,6 +27632,53 @@ function genParseSkew(parse)
 
 
 
+function genParsePlace(parse)
+{
+    const [, nodeId, options, ignore] = genParseNodeStart(parse);
+
+
+    const place = new GPlace(nodeId, options);
+
+
+    let nInputs = -1;
+
+    if (!ignore)
+    {
+        nInputs = parseInt(parse.move());
+        console.assert(nInputs => 0 && nInputs <= 1, 'nInputs must be [0, 1]');
+    }
+
+
+    if (parse.settings.logRequests) 
+        logReq(place, parse, ignore);
+
+
+    if (ignore) 
+    {
+        genParseNodeEnd(parse, place);
+        return parse.parsedNodes.find(n => n.nodeId == nodeId);
+    }
+
+
+    parse.nTab++;
+
+
+    if (nInputs == 1)
+        place.input = genParse(parse);
+
+    place.points = genParse(parse);
+
+
+    parse.inParam = false;
+    parse.nTab--;
+
+
+    genParseNodeEnd(parse, place);
+    return place;
+}
+
+
+
 function genParseRender(parse)
 {
     const [, nodeId, options, ignore] = genParseNodeStart(parse);
@@ -28321,6 +28536,8 @@ function genParse(parse, inParam = true)
     else if (parse.next == ROTATE                 ) result = genParseRotate           (parse);
     else if (parse.next == SCALE                  ) result = genParseScale            (parse);
     else if (parse.next == SKEW                   ) result = genParseSkew             (parse);
+
+    else if (parse.next == PLACE                  ) result = genParsePlace            (parse);
     
     else if (parse.next == RENDER                 ) result = genParseRender           (parse);
  

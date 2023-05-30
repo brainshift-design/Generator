@@ -237,6 +237,8 @@ function genParse(parse, inParam = true)
     else if (parse.next == ROTATE                 ) result = genParseRotate           (parse);
     else if (parse.next == SCALE                  ) result = genParseScale            (parse);
     else if (parse.next == SKEW                   ) result = genParseSkew             (parse);
+
+    else if (parse.next == PLACE                  ) result = genParsePlace            (parse);
     
     else if (parse.next == RENDER                 ) result = genParseRender           (parse);
  

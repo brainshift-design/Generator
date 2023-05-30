@@ -10,7 +10,7 @@ class FigmaObject
 
     inputIndex = -1; // for unique object IDs
 
-    
+
     xform;
 
     xp0 = null; //  xp0 ------- xp1 
@@ -40,6 +40,7 @@ class FigmaObject
         this.final      = base.final;
         
         this.xform      = clone(base.xform);
+
         this.xp0        = !!base.xp0 ? base.xp0.copy() : null;
         this.xp1        = !!base.xp1 ? base.xp1.copy() : null;
         this.xp2        = !!base.xp2 ? base.xp2.copy() : null;
@@ -69,20 +70,33 @@ class FigmaObject
     {
         if (this.type == POINT)
         {
-            const p = mulv2m3(
-                point(
-                    this.x, 
-                    this.y), 
-                xform);
+            let p = point(this.x, this.y);
+
+            //p = mulv2m3(p, inversem3(coords));
+            p = mulv2m3(point(this.x, this.y), xform);
+            //p = mulv2m3(p, coords);
 
             this.x = p.x;
             this.y = p.y;
         }
         else
         {
-            const xp0  = mulv2m3(point(this.xp0.x, this.xp0.y), xform);
-            const xp1  = mulv2m3(point(this.xp1.x, this.xp1.y), xform);
-            const xp2  = mulv2m3(point(this.xp2.x, this.xp2.y), xform);
+            let xp0  = point(this.xp0.x, this.xp0.y);
+            let xp1  = point(this.xp1.x, this.xp1.y);
+            let xp2  = point(this.xp2.x, this.xp2.y);
+
+
+            //xp0 = mulv2m3(xp0, inversem3(coords));
+            xp0 = mulv2m3(point(xp0.x, xp0.y), xform);
+            //xp0 = mulv2m3(xp0, coords);
+
+            //xp1 = mulv2m3(xp1, inversem3(coords));
+            xp1 = mulv2m3(point(xp1.x, xp1.y), xform);
+            //xp1 = mulv2m3(xp1, coords);
+
+            //xp2 = mulv2m3(xp2, inversem3(coords));
+            xp2 = mulv2m3(point(xp2.x, xp2.y), xform);
+            //xp2 = mulv2m3(xp2, coords);
 
 
             this.xp0.x = xp0.x;

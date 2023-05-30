@@ -163,6 +163,8 @@
 ../operators/shape/boolean/OpShapeIntersect.js
 ../operators/shape/boolean/OpShapeExclude.js
 
+../operators/shape/OpPlace.js
+
 ../operators/shape/OpRender.js
 
 
