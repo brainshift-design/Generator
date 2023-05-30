@@ -242,7 +242,7 @@ GraphView.prototype.pasteCopiedNodes = function(pasteConnected, clientX = Number
         const x = (clientX - graph.currentPage.pan.x) / graph.currentPage.zoom;
         const y = (clientY - graph.currentPage.pan.y) / graph.currentPage.zoom;
             
-        actionManager.do(new PasteNodesAction(text, pasteConnected, false, x, y));
+        actionManager.do(new PasteNodesAction(text, pasteConnected, false, false, x, y));
     });
 };
 

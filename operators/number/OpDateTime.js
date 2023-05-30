@@ -23,9 +23,9 @@ extends OperatorBase
         
 
         this.addParam(this.paramYear         = new NumberParam('year'        , 'year',      true,  true,  true));
-        this.addParam(this.paramMonth        = new NumberParam('month'       , 'month',     true,  true,  true, 1, 0,  12));
+        this.addParam(this.paramMonth        = new NumberParam('month'       , 'month',     true,  true,  true, 1, 1,  12));
         this.addParam(this.paramDate         = new NumberParam('date'        , 'date',      true,  true,  true, 1, 1,  31));
-        this.addParam(this.paramDayOfWeek    = new NumberParam('dayOfWeek'   , 'dayOfWeek', true,  true,  true, 1, 1,   7));
+        this.addParam(this.paramDayOfWeek    = new NumberParam('dayOfWeek'   , 'week day', true,  true,  true, 1, 1,   7));
         this.addParam(this.paramHours        = new NumberParam('hours'       , 'hours',     true,  true,  true, 0, 0,  23));
         this.addParam(this.paramMinutes      = new NumberParam('minutes'     , 'minutes',   true,  true,  true, 0, 0,  59));
         this.addParam(this.paramSeconds      = new NumberParam('seconds'     , 'seconds',   true,  true,  true, 0, 0,  59));

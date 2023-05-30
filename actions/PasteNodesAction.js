@@ -5,6 +5,9 @@ extends Action
 
     pasteConnected;
 
+    isDuplicate;
+    isLoading;
+
     pastedNodeIds = [];
     pastedNodePos = [];
 
@@ -17,7 +20,7 @@ extends Action
 
 
 
-    constructor(copiedNodesJson, pasteConnected, isDuplicate = false, x = Number.NaN, y = Number.NaN)
+    constructor(copiedNodesJson, pasteConnected, isDuplicate = false, isLoading = false, x = Number.NaN, y = Number.NaN)
     {
         const data = JSON.parse(copiedNodesJson);
 
@@ -29,6 +32,7 @@ extends Action
         this.pasteConnected  = pasteConnected;
 
         this.isDuplicate     = isDuplicate;
+        this.isLoading       = isLoading;
         
         this.x               = x;
         this.y               = y;
@@ -86,7 +90,12 @@ extends Action
         this.pastedNodePos = nodes.map(n => point(n.div.offsetLeft, n.div.offsetTop));
 
 
-        this.notify(nodes, this.isDuplicate, this.pasteConnected && !isEmpty(_conns));
+        this.notify(
+            nodes,
+               this.pasteConnected 
+            && !isEmpty(_conns), 
+            this.isDuplicate, 
+            this.isLoading)
     }
 
 
@@ -110,9 +119,14 @@ extends Action
 
 
 
-    notify(nodes, isDuplicate, pasteConnected)
+    notify(nodes, pasteConnected, isDuplicate, isLoading)
     {
-        let action = isDuplicate ? 'Duplicated' : 'Pasted';
+        let action = 
+            isDuplicate 
+            ? 'Duplicated' 
+            : isLoading
+            ? 'Loaded'
+            : 'Pasted';
 
         if (pasteConnected)
             action += ' & connected';

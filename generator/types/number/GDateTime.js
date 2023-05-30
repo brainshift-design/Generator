@@ -50,7 +50,7 @@ extends GNumberType
             const dateTime = new Date();
 
             const year         = new NumberValue(dateTime.getFullYear()    );
-            const month        = new NumberValue(dateTime.getMonth()+1     );
+            const month        = new NumberValue(dateTime.getMonth()       );
             const date         = new NumberValue(dateTime.getDate()        );
             const dayOfWeek    = new NumberValue(dateTime.getDay()         );
             const hours        = new NumberValue(dateTime.getHours()       );

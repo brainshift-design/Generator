@@ -1251,7 +1251,7 @@ function uiImportFromLocalFile()
 {
     loadFromLocalFile(json => 
     {
-        actionManager.do(new PasteNodesAction(json, false));
+        actionManager.do(new PasteNodesAction(json, false, false, true));
     });
 }
 
