@@ -19,6 +19,9 @@ extends OperatorBase
 
         this.addParam(this.paramIndex = new NumberParam('index', 'index', true, true, false, 0, 0));
         this.paramIndex.controls[0].allowEditDecimals = false;
+
+
+        this.length = new NumberValue(0);
     }
 
 
@@ -79,9 +82,11 @@ extends OperatorBase
 
     updateParams()
     {
-        super.updateParams();
+        // super.updateParams();
         
         this.paramIndex.controls[0].setMax(Math.max(0, this.length.value - 1));
+
+        this.updateParamControls();
     }
 
 

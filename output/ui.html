@@ -80332,6 +80332,9 @@ extends OperatorBase
 
         this.addParam(this.paramIndex = new NumberParam('index', 'index', true, true, false, 0, 0));
         this.paramIndex.controls[0].allowEditDecimals = false;
+
+
+        this.length = new NumberValue(0);
     }
 
 
@@ -80392,9 +80395,11 @@ extends OperatorBase
 
     updateParams()
     {
-        super.updateParams();
+        // super.updateParams();
         
         this.paramIndex.controls[0].setMax(Math.max(0, this.length.value - 1));
+
+        this.updateParamControls();
     }
 
 
@@ -94333,7 +94338,7 @@ function deleteNodesAction_disconnect(act, input, ignoreNodeIds = [])
 function deleteNodesAction_deleteNodes(act)
 {
     uiDeleteNodes(act.nodeIds);
-    uiDeleteObjectsAndStyles(act.oldActiveNodeIds); // clean up now irrelevant objects
+    uiDeleteObjectsAndStyles(act.nodeIds); // clean up now irrelevant objects
 }
 
 
