@@ -3386,7 +3386,7 @@ function setObjectStrokes(figObj, genObj)
 
 
 
-function setObjectStroke_(figObj, fills, weight, align, join, miterLimit, dashes)
+function setObjectStroke_(figObj, fills, weight, align, join, miterLimit, dashes = [])
 {
     figObj.strokes          = fills
     

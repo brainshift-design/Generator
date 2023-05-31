@@ -2230,7 +2230,7 @@ function setObjectStrokes(figObj, genObj) {
     else
         figObj.strokes = [];
 }
-function setObjectStroke_(figObj, fills, weight, align, join, miterLimit, dashes) {
+function setObjectStroke_(figObj, fills, weight, align, join, miterLimit, dashes = []) {
     figObj.strokes = fills;
     figObj.strokeWeight = Math.max(0, weight);
     figObj.strokeAlign = align;
