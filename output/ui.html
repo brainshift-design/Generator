@@ -8873,6 +8873,7 @@ class FigmaObject
         }
 
 
+        console.log('affectSpace =', affectSpace);
         if (affectSpace)
         {
             this.cp0 = mulv2m3(this.cp0, inversem3(coords));
@@ -26784,7 +26785,7 @@ extends GOperator
             obj.nodeId   = this.nodeId;
             obj.objectId = obj.objectId + OBJECT_SEPARATOR + this.nodeId;
 
-            obj.applyTransform(xform, options.affectSpace);
+            obj.applyTransform(xform, options.affectSpace.value > 0);
 
             this.coords = mulm3m3(this.coords, xform);
          }
@@ -43364,6 +43365,7 @@ class FigmaObject
         }
 
 
+        console.log('affectSpace =', affectSpace);
         if (affectSpace)
         {
             this.cp0 = mulv2m3(this.cp0, inversem3(coords));
@@ -61275,7 +61277,7 @@ extends GOperator
             obj.nodeId   = this.nodeId;
             obj.objectId = obj.objectId + OBJECT_SEPARATOR + this.nodeId;
 
-            obj.applyTransform(xform, options.affectSpace);
+            obj.applyTransform(xform, options.affectSpace.value > 0);
 
             this.coords = mulm3m3(this.coords, xform);
          }

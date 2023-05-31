@@ -172,6 +172,7 @@ class FigmaObject
         }
 
 
+        console.log('affectSpace =', affectSpace);
         if (affectSpace)
         {
             this.cp0 = mulv2m3(this.cp0, inversem3(coords));
