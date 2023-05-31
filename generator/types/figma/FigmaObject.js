@@ -13,8 +13,9 @@ class FigmaObject
 
     xform;
 
+    xc  = null;
     xp0 = null; //  xp0 ------- xp1 
-    xp1 = null; //   |
+    xp1 = null; //   |     xc
     xp2 = null; //  xp2
 
     cp0 = null; //  cp0 ------- cp1 
@@ -49,6 +50,7 @@ class FigmaObject
         
         this.xform      = clone(base.xform);
 
+        //this.xc         = !!base.xc  ? base.xc .copy() : null;
         this.xp0        = !!base.xp0 ? base.xp0.copy() : null;
         this.xp1        = !!base.xp1 ? base.xp1.copy() : null;
         this.xp2        = !!base.xp2 ? base.xp2.copy() : null;
@@ -78,11 +80,11 @@ class FigmaObject
 
 
 
-    createTransformPoints(parse, x, y, w, h, _a)
+    createTransformPoints(parse, x, y, w, h)
     {
-        this.xp0 = new FigmaPoint(this.nodeId, this.objectId+'.xp0', this.objectName+' ^ 0', x,     y,     false, false);
-        this.xp1 = new FigmaPoint(this.nodeId, this.objectId+'.xp1', this.objectName+' ^ 1', x + w, y,     false, false);
-        this.xp2 = new FigmaPoint(this.nodeId, this.objectId+'.xp2', this.objectName+' ^ 2', x,     y + h, false, false);
+        this.xp0 = new FigmaPoint(this.nodeId, this.objectId+'.0', this.objectName+' ^ 0', x,     y,     false, false);
+        this.xp1 = new FigmaPoint(this.nodeId, this.objectId+'.1', this.objectName+' ^ 1', x + w, y,     false, false);
+        this.xp2 = new FigmaPoint(this.nodeId, this.objectId+'.2', this.objectName+' ^ 2', x,     y + h, false, false);
 
         this.xp0.createDefaultTransform(x,     y    );
         this.xp1.createDefaultTransform(x + w, y    );
@@ -132,34 +134,21 @@ class FigmaObject
 
         if (this.type == POINT)
         {
-            let p = point(this.x, this.y);
-
-            p = mulv2m3(p, inversem3(coords));
-            p = mulv2m3(p, xform);
-            p = mulv2m3(p, coords);
+            const p = transformPoint(point(this.x, this.y), xform, coords);
 
             this.x = p.x;
             this.y = p.y;
         }
         else
         {
-            let xp0 = point(this.xp0.x, this.xp0.y);
-            let xp1 = point(this.xp1.x, this.xp1.y);
-            let xp2 = point(this.xp2.x, this.xp2.y);
+            //const xc  = transformPoint(point(this.xc .x, this.xc .y), xform, coords);
+            const xp0 = transformPoint(point(this.xp0.x, this.xp0.y), xform, coords);
+            const xp1 = transformPoint(point(this.xp1.x, this.xp1.y), xform, coords);
+            const xp2 = transformPoint(point(this.xp2.x, this.xp2.y), xform, coords);
 
 
-            xp0 = mulv2m3(xp0, inversem3(coords));
-            xp0 = mulv2m3(xp0, xform);
-            xp0 = mulv2m3(xp0, coords);
-
-            xp1 = mulv2m3(xp1, inversem3(coords));
-            xp1 = mulv2m3(xp1, xform);
-            xp1 = mulv2m3(xp1, coords);
-
-            xp2 = mulv2m3(xp2, inversem3(coords));
-            xp2 = mulv2m3(xp2, xform);
-            xp2 = mulv2m3(xp2, coords);
-
+            //this.xc .x = xc .x;
+            //this.xc .y = xc .y;
 
             this.xp0.x = xp0.x;
             this.xp0.y = xp0.y;
@@ -172,7 +161,6 @@ class FigmaObject
         }
 
 
-        console.log('affectSpace =', affectSpace);
         if (affectSpace)
         {
             this.cp0 = mulv2m3(this.cp0, inversem3(coords));
@@ -188,6 +176,17 @@ class FigmaObject
             this.cp2 = mulv2m3(this.cp2, coords);
         }
     }
+}
+
+
+
+function transformPoint(p, xform, coords)
+{
+    p = mulv2m3(p, inversem3(coords));
+    p = mulv2m3(p, xform);
+    p = mulv2m3(p, coords);
+
+    return p;
 }
 
 

@@ -188,9 +188,9 @@ extends GShape
                 this.value.lineHeight   .value,
                 this.value.letterSpacing.value);
 
-            text.createDefaultTransform(x, y, _a);
+            text.createDefaultTransform(x, y);
 
-            objects.push(text, ...text.createTransformPoints(parse, x, y, w, h, _a));
+            objects.push(text, ...text.createTransformPoints(parse, x, y, w, h));
         }
 
         

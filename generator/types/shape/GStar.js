@@ -121,8 +121,6 @@ extends GShape
             let    y = this.value.y     .value;
             let    w = this.value.width .value;
             let    h = this.value.height.value;
-            let    a = 0;
-            let   _a = a/360*Tau;
             const  r = Math.max(0, this.value.round .value);
             const  p = this.value.points.value;
             const  c = this.value.convex.value;
@@ -133,9 +131,9 @@ extends GShape
                 this.nodeName,
                 x, y, w, h, r, p, c);
 
-            star.createDefaultTransform(x, y, _a);
+            star.createDefaultTransform(x, y);
 
-            objects.push(star, ...star.createTransformPoints(parse, x, y, w, h, _a));
+            objects.push(star, ...star.createTransformPoints(parse, x, y, w, h));
         }
 
        

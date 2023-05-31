@@ -100,9 +100,9 @@ extends GShape
                     this.nodeName,
                     x, y, w, a);
 
-                line.createDefaultTransform(x, y, _a);
+                line.createDefaultTransform(x, y);
                 
-                objects.push(line, ...line.createTransformPoints(parse, x, y, w, 0.01, _a));
+                objects.push(line, ...line.createTransformPoints(parse, x, y, w, 0.01));
             }
         }
 

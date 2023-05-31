@@ -103,8 +103,8 @@ extends GOperator
         {
             const center = new FigmaPoint(
                 this.nodeId,
-                this.nodeId   + '.center',
-                this.nodeName + ' · center',
+                this.nodeId   + '.c',
+                this.nodeName + ' · c',
                 cx,
                 cy,
                 true);

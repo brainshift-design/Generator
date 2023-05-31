@@ -164,9 +164,9 @@ extends GShape
                 this.value.x.value,
                 this.value.y.value);
 
-            frame.createDefaultTransform(x, y, _a);
+            frame.createDefaultTransform(x, y);
 
-            objects.push(frame, ...frame.createTransformPoints(parse, x, y, w, h, _a));
+            objects.push(frame, ...frame.createTransformPoints(parse, x, y, w, h));
         }
 
         

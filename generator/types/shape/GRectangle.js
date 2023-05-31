@@ -123,9 +123,9 @@ extends GShape
                     this.nodeName, 
                     x, y, w, h, a, r);
 
-                rect.createDefaultTransform(x, y, _a);
+                rect.createDefaultTransform(x, y);
 
-                objects.push(rect, ...rect.createTransformPoints(parse, x, y, w, h, _a));
+                objects.push(rect, ...rect.createTransformPoints(parse, x, y, w, h));
             }
         }
 

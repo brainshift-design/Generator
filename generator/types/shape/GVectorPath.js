@@ -143,9 +143,9 @@ extends GShape
             let  a = 0;
             let _a = a/360*Tau;
 
-            path.createDefaultTransform(x, y, w, h, _a);
+            path.createDefaultTransform(x, y);
 
-            objects.push(path, ...path.createTransformPoints(parse, x, y, w, h, _a));
+            objects.push(path, ...path.createTransformPoints(parse, x, y, w, h));
         }
 
 

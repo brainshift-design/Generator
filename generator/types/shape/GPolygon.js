@@ -128,9 +128,9 @@ extends GShape
                 this.nodeName,
                 x, y, w, h, r, c);
 
-            poly.createDefaultTransform(x, y, _a);
+            poly.createDefaultTransform(x, y);
 
-            objects.push(poly, ...poly.createTransformPoints(parse, x, y, w, h, _a));
+            objects.push(poly, ...poly.createTransformPoints(parse, x, y, w, h));
         }
 
         
