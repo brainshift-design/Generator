@@ -3244,6 +3244,7 @@ a
     position:      relative;
     width:         100%;
     height:        auto;
+    overflow:      hidden;
     border-radius: 4px 4px 0 0;
     padding:       0;
     box-shadow:    0 0 0 1px var(--figma-color-bg-tertiary);
@@ -3262,17 +3263,6 @@ a
     z-index:       1;
  /* overflow:      visible; */
  /* box-shadow:    0 0 0 1px red inset; */
-}
-
-
-.nodeIcon
-{
-    display:      inline;
-    width:        19px;
-    height:       19px;
-    margin-right: 7px;
-    position:     relative;
-    /* box-shadow:   0 0 0 1px red inset; */
 }
 
 
@@ -3301,7 +3291,7 @@ a
     left:          0;
     top:           0; 
     border-radius: 4px 4px 0 0;
-    /* pointer-events: none; */
+    pointer-events: none;
     /* box-shadow:    0 0 0 1px blue inset; */
 }
 
@@ -3343,7 +3333,7 @@ a
     width:      100%;
     height:     100%;   
     overflow:   hidden;
- /* box-shadow: 0 0 0 1px blue inset; */
+    /* box-shadow: 0 0 0 1px blue inset; */
 }
 
 
@@ -3359,8 +3349,33 @@ a
     z-index:        1000;
     white-space:    nowrap;
     font-weight:    600;
-    box-shadow:     0 0 0 1px magenta inset;
+    /* box-shadow:     0 0 0 1px magenta inset; */
 }
+
+
+.nodeIcon
+{
+    display:       inline;
+    width:         19px;
+    height:        19px;
+    margin-right:  7px;
+    position:      relative;
+    pointer-events: none;
+    /* box-shadow:   0 0 0 1px red inset; */
+}
+
+
+.headerIcon
+{
+    width:          14px;
+    height:         14px;
+    position:       absolute;
+    left:           50%;
+    top:            50%;
+    transform:      translateX(-50%)
+                    translateY(-50%);
+    pointer-events: none;
+}    
 
 
 .nodeLabelText
@@ -3377,7 +3392,7 @@ a
     vertical-align: top;
     left:           50%;
     text-rendering: geometricPrecision;
-    box-shadow:     0 0 0 1px orange inset;
+    /* box-shadow:     0 0 0 1px orange inset; */
 }
 
 
@@ -3632,19 +3647,6 @@ a
     left:           0;
     top:            0;
 }
-
-
-.headerIcon
-{
-    width:          14px;
-    height:         14px;
-    /* pointer-events: none; */
-    position:       absolute;
-    left:           50%;
-    top:            50%;
-    transform:      translateX(-50%)
-                    translateY(-50%);
-}    
 
 
 .reorderArrows
@@ -67721,10 +67723,10 @@ function initGeneratorMenus()
                              new MenuItem('Conditional',   {icon: iconCondition,   /*childMenu: menuCondition,*/ callback: e => actionManager.do(getCreateNodeAction(NUMBER_CONDITION, btnNumber.div, getCreateOptions(e)))}),
                              new MenuItem('Trigonometric', {icon: iconSine,        /*childMenu: menuTrig,     */ callback: e => actionManager.do(getCreateNodeAction(NUMBER_TRIG,      btnNumber.div, getCreateOptions(e)))}),
                              new MenuItem('',              {separator: true}),
-        menuItemArray      = new MenuItem('Define...',     {icon: iconArray,       callback: e => actionManager.do(getCreateNodeAction(NUMBER_ARRAY,       btnNumber.div, getCreateOptions(e)))}),
-        menuItemDistribute = new MenuItem('Distribute...', {icon: iconDistribute,  callback: e => actionManager.do(getCreateNodeAction(NUMBER_DISTRIBUTE,  btnNumber.div, getCreateOptions(e)))}),
-        menuItemSequence   = new MenuItem('Sequence...',   {icon: iconSequence,    callback: e => actionManager.do(getCreateNodeAction(NUMBER_SEQUENCE,    btnNumber.div, getCreateOptions(e)))}),
-                             new MenuItem('Random...',     {icon: iconRandom,      callback: e => actionManager.do(getCreateNodeAction(NUMBER_RANDOM,      btnNumber.div, getCreateOptions(e)))}),
+        menuItemArray      = new MenuItem('Define . . .',     {icon: iconArray,       callback: e => actionManager.do(getCreateNodeAction(NUMBER_ARRAY,       btnNumber.div, getCreateOptions(e)))}),
+        menuItemDistribute = new MenuItem('Distribute . . .', {icon: iconDistribute,  callback: e => actionManager.do(getCreateNodeAction(NUMBER_DISTRIBUTE,  btnNumber.div, getCreateOptions(e)))}),
+        menuItemSequence   = new MenuItem('Sequence . . .',   {icon: iconSequence,    callback: e => actionManager.do(getCreateNodeAction(NUMBER_SEQUENCE,    btnNumber.div, getCreateOptions(e)))}),
+                             new MenuItem('Random . . .',     {icon: iconRandom,      callback: e => actionManager.do(getCreateNodeAction(NUMBER_RANDOM,      btnNumber.div, getCreateOptions(e)))}),
                              new MenuItem('',              {separator: true}),
         menuItemSolve      = new MenuItem('Solve',         {icon: iconSolve,       callback: e => actionManager.do(getCreateNodeAction(NUMBER_SOLVE,       btnNumber.div, getCreateOptions(e)))}),
         menuItemNumberSep1 = new MenuItem('',              {separator: true}),
@@ -79319,40 +79321,18 @@ Operator.prototype.createHeader = function()
 
 
 
-    // this.label.addEventListener('pointerdown', e =>
-    // {
-    //     console.log('icon.pointerdown');
-    // });
-    // this.divIcon.addEventListener('dblclick', e =>
-    // {
-    //     console.log('icon.dblclick');
-    //     if (!getCtrlKey(e))
-    //         e.preventDefault();
-    // });
-
-
-
-    // this.label.addEventListener('pointerdown', e =>
-    // {
-    //     if (e.target.matches('.labelText'))
-    //         console.log('labelText.pointerdown');
-    // });
-
-
-
-    this.label.addEventListener('dblclick', e =>
+    this.labelText.addEventListener('pointerdown', e =>
     {
-        console.log('label.dblclick');
-        if (e.target.matches('.labelText'))
-        {
-            console.log('labelText.dblclick');
+        e.preventDefault();
+        e.stopImmediatePropagation();
+    });
+
     
-            if (!getCtrlKey(e))
-            {
-                e.stopPropagation();
-                this.showLabelTextbox();
-            }
-        }
+
+    this.labelText.addEventListener('dblclick', e =>
+    {
+        e.stopPropagation();
+        this.showLabelTextbox();
     });
 };
 
@@ -79428,6 +79408,7 @@ Operator.prototype.createLabel = function()
   
     this.label             = createDiv('nodeLabel');
     this.label.node        = this;
+    this.label.clickTimer  = -1; 
     
     this.divIcon           = createDiv('nodeIcon');
     this.divIcon.innerHTML = this.icon;

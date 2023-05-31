@@ -434,40 +434,18 @@ Operator.prototype.createHeader = function()
 
 
 
-    // this.label.addEventListener('pointerdown', e =>
-    // {
-    //     console.log('icon.pointerdown');
-    // });
-    // this.divIcon.addEventListener('dblclick', e =>
-    // {
-    //     console.log('icon.dblclick');
-    //     if (!getCtrlKey(e))
-    //         e.preventDefault();
-    // });
-
-
-
-    // this.label.addEventListener('pointerdown', e =>
-    // {
-    //     if (e.target.matches('.labelText'))
-    //         console.log('labelText.pointerdown');
-    // });
-
-
-
-    this.label.addEventListener('dblclick', e =>
+    this.labelText.addEventListener('pointerdown', e =>
     {
-        console.log('label.dblclick');
-        if (e.target.matches('.labelText'))
-        {
-            console.log('labelText.dblclick');
+        e.preventDefault();
+        e.stopImmediatePropagation();
+    });
+
     
-            if (!getCtrlKey(e))
-            {
-                e.stopPropagation();
-                this.showLabelTextbox();
-            }
-        }
+
+    this.labelText.addEventListener('dblclick', e =>
+    {
+        e.stopPropagation();
+        this.showLabelTextbox();
     });
 };
 

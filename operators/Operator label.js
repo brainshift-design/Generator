@@ -4,6 +4,7 @@ Operator.prototype.createLabel = function()
   
     this.label             = createDiv('nodeLabel');
     this.label.node        = this;
+    this.label.clickTimer  = -1; 
     
     this.divIcon           = createDiv('nodeIcon');
     this.divIcon.innerHTML = this.icon;
