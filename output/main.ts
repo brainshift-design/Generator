@@ -815,6 +815,46 @@ function pushUniqueExcept(array, item, except)
 }
 
 
+
+function getFigmaTransform(tl, tr, bl)
+{
+    let vr = point(tr.x - tl.x, tr.y - tl.y);
+    let vb = point(bl.x - tl.x, bl.y - tl.y);
+
+
+    let sx =  nozero(vr.x);
+    let sy =  nozero(vb.y);
+
+    let kx = -vr.y;
+    let ky = -vb.x;
+    
+    let dx = -tl.x;
+    let dy = -tl.y;
+
+
+    let xform = mulm3m3(
+        [[1,       ky / sy,  0],
+         [kx / sx, 1,        0],
+         [0,       0,        1]],
+        createTransform(dx, dy));
+
+    xform = inversem3(xform);
+
+
+    const a = angle(vr);
+
+    if (   a > Tau/4  
+        && a < Tau*3/4)
+        xform = mulm3m3(xform, createTransform(0, 0, 1, 1, Tau/2));
+        
+    if (determinant(xform) < 0)
+        xform = mulm3m3(xform, createTransform(0, 0, -1, 1, 0));
+
+
+    return xform;
+}
+
+
 const LIST_VALUE              = 'LIST#';
 
 const NUMBER_LIST_VALUE       = 'NLIST#';
@@ -3429,7 +3469,7 @@ function setEmptyObjectStroke(obj)
         obj,
         [{ type: 'SOLID', 
            color: {r: 1, g: 1, b: 1},
-           opacity: 0.3 }],
+           opacity: 0.5 }],
          1 / curZoom,
         'CENTER',
         'MITER',
@@ -3713,75 +3753,13 @@ function setStylePaints(style, src)
 
 function applyFigmaTransform(figObj, tl, tr, bl) 
 {
-    let vr = point(tr.x - tl.x, tr.y - tl.y);
-    let vb = point(bl.x - tl.x, bl.y - tl.y);
-
-
-    // if (vb.y < 0)
-    // {
-    //     const dp = subv(tl, tr);
-        
-    //     tl = subv(tl, dp);
-    //     tr = subv(tr, dp);
-    //     bl = subv(bl, dp);
-    // }
-
-
-    let sx =  nozero(vr.x);
-    let sy =  nozero(vb.y);
-
-    let kx = -vr.y;
-    let ky = -vb.x;
-    
-    let dx = -tl.x;
-    let dy = -tl.y;
-
-
-    // if (sy >= 0 && ky < 0)
-    // {
-    //     sy = -sy;
-    //     ky = -ky;
-    // }
-
-
-    let xform = mulm3m3(
-        [[1,       ky / sy,  0],
-         [kx / sx, 1,        0],
-         [0,       0,        1]],
-        createTransform(dx, dy));
-
-    xform = inversem3(xform);
-
-
-    const a = angle(vr);
-
-    if (   a > Tau/4  
-        && a < Tau*3/4)
-        xform = mulm3m3(xform, createTransform(0, 0, 1, 1, Tau/2));
-        
-    if (determinant(xform) < 0)
-        xform = mulm3m3(xform, createTransform(0, 0, -1, 1, 0));
-        
-
+    const xform = getFigmaTransform(tl, tr, bl);
 
     figObj.relativeTransform = 
     [
         xform[0],
         xform[1]
     ];
-
-
-
-    console.clear();
-    console.log('vr =', vr);
-    console.log('vb =', vb);
-    console.log('a =', a);
-    console.log('sx =', sx);
-    console.log('sy =', sy);
-    console.log('kx =', kx);
-    console.log('ky =', ky);
-    console.log('xform =', '\n'+xform[0]+'\n'+xform[1]+'\n'+xform[2]+'\n');
-    console.log('det =', determinant(xform));
 }
 
 

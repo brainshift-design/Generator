@@ -62,7 +62,13 @@ extends GOperator
         }
 
         
-        this.evalObjects(parse, {x: x, y: y});
+        this.evalObjects(
+            parse, 
+            {
+                x:           x, 
+                y:           y,
+                affectSpace: affectSpace
+            });
 
 
         this.updateValues =

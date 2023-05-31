@@ -761,8 +761,9 @@ function genParseMove(parse)
     if (nInputs == 1)
         move.input = genParse(parse);
 
-    move.x = genParse(parse);
-    move.y = genParse(parse);
+    move.x           = genParse(parse);
+    move.y           = genParse(parse);
+    move.affectSpace = genParse(parse);
 
 
     parse.inParam = false;
@@ -809,10 +810,11 @@ function genParseRotate(parse)
     if (nInputs == 1)
         rotate.input = genParse(parse);
 
-    rotate.angle      = genParse(parse);
-    rotate.centerX    = genParse(parse);
-    rotate.centerY    = genParse(parse);
-    rotate.showCenter = genParse(parse);
+    rotate.angle       = genParse(parse);
+    rotate.centerX     = genParse(parse);
+    rotate.centerY     = genParse(parse);
+    rotate.showCenter  = genParse(parse);
+    rotate.affectSpace = genParse(parse);
 
     
     parse.inParam = false;
@@ -859,11 +861,12 @@ function genParseScale(parse)
     if (nInputs == 1)
         scale.input = genParse(parse);
 
-    scale.scaleX     = genParse(parse);
-    scale.scaleY     = genParse(parse);
-    scale.centerX    = genParse(parse);
-    scale.centerY    = genParse(parse);
-    scale.showCenter = genParse(parse);
+    scale.scaleX      = genParse(parse);
+    scale.scaleY      = genParse(parse);
+    scale.centerX     = genParse(parse);
+    scale.centerY     = genParse(parse);
+    scale.showCenter  = genParse(parse);
+    scale.affectSpace = genParse(parse);
 
     
     parse.inParam = false;
@@ -910,11 +913,12 @@ function genParseSkew(parse)
     if (nInputs == 1)
         skew.input = genParse(parse);
 
-    skew.skewX      = genParse(parse);
-    skew.skewY      = genParse(parse);
-    skew.centerX    = genParse(parse);
-    skew.centerY    = genParse(parse);
-    skew.showCenter = genParse(parse);
+    skew.skewX       = genParse(parse);
+    skew.skewY       = genParse(parse);
+    skew.centerX     = genParse(parse);
+    skew.centerY     = genParse(parse);
+    skew.showCenter  = genParse(parse);
+    skew.affectSpace = genParse(parse);
 
 
     parse.inParam = false;

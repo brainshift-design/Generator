@@ -17,6 +17,10 @@ class FigmaObject
     xp1 = null; //   |
     xp2 = null; //  xp2
 
+    cp0 = null; //  cp0 ------- cp1 
+    cp1 = null; //   |
+    cp2 = null; //  cp2
+
 
 
     constructor(type, nodeId, objectId, objectName)
@@ -29,6 +33,10 @@ class FigmaObject
         this.final      = false;
 
         this.xform      = clone(identity);
+
+        this.cp0        = point(0, 0);
+        this.cp1        = point(1, 0);
+        this.cp2        = point(0, 1);
     }
 
 
@@ -44,6 +52,10 @@ class FigmaObject
         this.xp0        = !!base.xp0 ? base.xp0.copy() : null;
         this.xp1        = !!base.xp1 ? base.xp1.copy() : null;
         this.xp2        = !!base.xp2 ? base.xp2.copy() : null;
+
+        this.cp0        = base.cp0;
+        this.cp1        = base.cp1;
+        this.cp2        = base.cp2;
     }
 
 
@@ -68,35 +80,38 @@ class FigmaObject
 
     applyTransform(xform, affectSpace = false)
     {
+        const coords = getFigmaTransform(this.cp0, this.cp1, this.cp2);
+
+
         if (this.type == POINT)
         {
             let p = point(this.x, this.y);
 
-            //p = mulv2m3(p, inversem3(coords));
+            p = mulv2m3(p, inversem3(coords));
             p = mulv2m3(point(this.x, this.y), xform);
-            //p = mulv2m3(p, coords);
+            p = mulv2m3(p, coords);
 
             this.x = p.x;
             this.y = p.y;
         }
         else
         {
-            let xp0  = point(this.xp0.x, this.xp0.y);
-            let xp1  = point(this.xp1.x, this.xp1.y);
-            let xp2  = point(this.xp2.x, this.xp2.y);
+            let xp0 = point(this.xp0.x, this.xp0.y);
+            let xp1 = point(this.xp1.x, this.xp1.y);
+            let xp2 = point(this.xp2.x, this.xp2.y);
 
 
-            //xp0 = mulv2m3(xp0, inversem3(coords));
+            xp0 = mulv2m3(xp0, inversem3(coords));
             xp0 = mulv2m3(point(xp0.x, xp0.y), xform);
-            //xp0 = mulv2m3(xp0, coords);
+            xp0 = mulv2m3(xp0, coords);
 
-            //xp1 = mulv2m3(xp1, inversem3(coords));
+            xp1 = mulv2m3(xp1, inversem3(coords));
             xp1 = mulv2m3(point(xp1.x, xp1.y), xform);
-            //xp1 = mulv2m3(xp1, coords);
+            xp1 = mulv2m3(xp1, coords);
 
-            //xp2 = mulv2m3(xp2, inversem3(coords));
+            xp2 = mulv2m3(xp2, inversem3(coords));
             xp2 = mulv2m3(point(xp2.x, xp2.y), xform);
-            //xp2 = mulv2m3(xp2, coords);
+            xp2 = mulv2m3(xp2, coords);
 
 
             this.xp0.x = xp0.x;
@@ -108,23 +123,39 @@ class FigmaObject
             this.xp2.x = xp2.x;
             this.xp2.y = xp2.y;
         }
+
+
+        if (affectSpace)
+        {
+            this.cp0 = mulv2m3(this.cp0, inversem3(coords));
+            this.cp0 = mulv2m3(this.cp0, xform);
+            this.cp0 = mulv2m3(this.cp0, coords);
+
+            this.cp1 = mulv2m3(this.cp1, inversem3(coords));
+            this.cp1 = mulv2m3(this.cp1, xform);
+            this.cp1 = mulv2m3(this.cp1, coords);
+
+            this.cp2 = mulv2m3(this.cp2, inversem3(coords));
+            this.cp2 = mulv2m3(this.cp2, xform);
+            this.cp2 = mulv2m3(this.cp2, coords);
+        }
     }
 
 
 
     createTransformPoints(parse, x, y, w, h, _a)
     {
-        this.xp0 = new FigmaPoint(this.nodeId, this.objectId+'.xp0', this.objectName+' ^ 0', x,     y,   );
-        this.xp1 = new FigmaPoint(this.nodeId, this.objectId+'.xp1', this.objectName+' ^ 1', x + w, y,   );
-        this.xp2 = new FigmaPoint(this.nodeId, this.objectId+'.xp2', this.objectName+' ^ 2', x,     y + h);
+        this.xp0 = new FigmaPoint(this.nodeId, this.objectId+'.xp0', this.objectName+' ^ 0', x,     y,     false, false);
+        this.xp1 = new FigmaPoint(this.nodeId, this.objectId+'.xp1', this.objectName+' ^ 1', x + w, y,     false, false);
+        this.xp2 = new FigmaPoint(this.nodeId, this.objectId+'.xp2', this.objectName+' ^ 2', x,     y + h, false, false);
 
         this.xp0.createDefaultTransform(x,     y,     0, 0, _a);
         this.xp1.createDefaultTransform(x + w, y,     0, 0, _a);
         this.xp2.createDefaultTransform(x,     y + h, 0, 0, _a);
 
         return parse.settings.showTransformPoints
-             ? [this.xp0, this.xp1, this.xp2]
-             : [];
+            ? [this.xp0, this.xp1, this.xp2]
+            : [];
     }
 }
 

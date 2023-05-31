@@ -311,7 +311,7 @@ function setEmptyObjectStroke(obj)
         obj,
         [{ type: 'SOLID', 
            color: {r: 1, g: 1, b: 1},
-           opacity: 0.3 }],
+           opacity: 0.5 }],
          1 / curZoom,
         'CENTER',
         'MITER',

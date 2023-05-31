@@ -27,7 +27,7 @@ extends OperatorBase
         this.addParam(this.paramAffectSpace = new NumberParam('affectSpace', 'affect space', true, true, true,   0, 0,   1));
 
 
-        this.paramAffectCenter.controls[0].allowEditDecimals = false;
+        this.paramAffectSpace.controls[0].allowEditDecimals = false;
         this.menuBoolAffectSpace = createBoolMenu(this.paramAffectSpace);
 
 
