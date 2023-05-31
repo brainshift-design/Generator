@@ -174,6 +174,18 @@ function crossv2(v1, v2) {
     // positive if turn from v1 to v2 is clockwise
     return v1.x * v2.y - v1.y * v2.x;
 }
+function addv(v1, v2) {
+    return point(v1.x + v2.x, v1.y + v2.y);
+}
+function mulv(v1, v2) {
+    return point(v1.x * v2.x, v1.y * v2.y);
+}
+function mulvs(v, s) {
+    return point(v.x * s, v.y * s);
+}
+function divvs(v, s) {
+    return point(v.x / s, v.y / s);
+}
 function subv(v1, v2) {
     return point(v1.x - v2.x, v1.y - v2.y);
 }
@@ -1389,181 +1401,6 @@ function figPostMessageToUi(msg) {
 //     figPostMessageToGenerator({cmd: 'genEndFigMessage'}); 
 // }
 ///////////////////////////////////////////////////////////////////////////////////////////////////
-function figGetAllLocalColorStyles(nodeId, px, py) {
-    const _styles = figma.getLocalPaintStyles();
-    const styles = new Array();
-    for (const _style of _styles) {
-        const _nodeId = _style.getPluginData('nodeId');
-        const _existing = _style.getPluginData('existing');
-        const existing = !!_existing;
-        const style = {
-            id: _style.id,
-            nodeId: _nodeId,
-            name: _style.name,
-            existing: existing,
-            paints: new Array()
-        };
-        let onlyPaint = true;
-        for (const _paint of _style.paints) {
-            if (_paint.type == 'SOLID') {
-                style.paints.push([
-                    _paint.color.r,
-                    _paint.color.g,
-                    _paint.color.b,
-                    _paint.opacity
-                ]);
-            }
-            else {
-                onlyPaint = false;
-                break;
-            }
-        }
-        if (onlyPaint)
-            styles.push(style);
-    }
-    figPostMessageToUi({
-        cmd: 'uiReturnFigGetAllLocalColorStyles',
-        nodeId: nodeId,
-        px: px,
-        py: py,
-        styles: JSON.stringify(styles)
-    });
-}
-function figLinkNodeToExistingColorStyle(nodeId, styleId) {
-    const localStyles = figma.getLocalPaintStyles();
-    if (styleId != NULL)
-        figLinkColorStyle(localStyles, nodeId, styleId);
-    else
-        figClearColorStyle(localStyles, nodeId);
-}
-function figLinkColorStyle(localStyles, nodeId, styleId, clearExisting = true) {
-    const figStyles = figStyleArrays.find(a => a.nodeId == nodeId);
-    if (figStyles
-        && clearExisting)
-        figClearColorStyle(localStyles, nodeId);
-    const figStyle = localStyles.find(s => s.id == styleId);
-    console.assert(!!figStyle, 'figStyle should be found here');
-    figStyle.setPluginData('type', COLOR_STYLE);
-    figStyle.setPluginData('nodeId', nodeId);
-    figStyle.setPluginData('existing', boolToString(true));
-    figStyleArrays.push({
-        nodeId: nodeId,
-        existing: true,
-        styles: [figStyle]
-    });
-    return figStyle;
-}
-function figClearColorStyle(localStyles, nodeId) {
-    const figStyle = localStyles.find(s => s.getPluginData('nodeId') == nodeId);
-    //console.assert(!!figStyle, 'figStyle should be found here');
-    if (figStyle) // could have been deleted
-     {
-        figStyle.setPluginData('type', NULL);
-        figStyle.setPluginData('nodeId', NULL);
-        figStyle.setPluginData('existing', NULL);
-        removeFromArrayWhere(figStyleArrays, a => a.nodeId == nodeId);
-    }
-    return figStyle;
-}
-function figCreateColorStyle(styles, genStyle) {
-    const figStyle = figma.createPaintStyle();
-    figStyle.setPluginData('type', genStyle.type);
-    figStyle.setPluginData('nodeId', genStyle.nodeId);
-    figStyle.setPluginData('existing', boolToString(genStyle.existing));
-    figStyle.name = genStyle.styleName;
-    setStylePaints(figStyle, genStyle);
-    styles.push(figStyle);
-    figPostMessageToUi({
-        cmd: 'uiSetStyleId',
-        nodeId: genStyle.nodeId,
-        styleId: figStyle.id
-    });
-    return figStyle;
-}
-function figUpdateStyles(msg) {
-    let curNodeId = NULL;
-    let figStyles;
-    for (const genStyle of msg.styles) {
-        if (genStyle.nodeId != curNodeId) {
-            curNodeId = genStyle.nodeId;
-            figStyles = figStyleArrays.find(a => a.nodeId == genStyle.nodeId);
-            if (!figStyles) {
-                figStyles = {
-                    nodeId: genStyle.nodeId,
-                    existing: genStyle.existing,
-                    styles: []
-                };
-                figStyleArrays.push(figStyles);
-            }
-        }
-        else
-            figStyles = null;
-        const figStyle = figStyles.styles[0];
-        const localStyles = figma.getLocalPaintStyles();
-        const localStyle = localStyles.find(s => s.getPluginData('nodeId') == genStyle.nodeId);
-        if (isValid(figStyle)
-            && !isValid(localStyle)) // removed
-         {
-            removeFrom(figStyles.styles, figStyle);
-        }
-        const existing = isValid(figStyle)
-            && isValid(localStyle)
-            && figStyle.getPluginData('existing');
-        if (!isValid(figStyle)
-            || !isValid(localStyle)) // no existing style, create new style
-         {
-            if (!existing) {
-                styleChangingFromGenerator = true;
-                figLinkNodeToExistingColorStyle(genStyle.nodeId, genStyle.id);
-                //figCreateColorStyle(figStyles.styles, genStyle);
-            }
-        }
-        else if (isValid(figStyle)
-            && figStyle.getPluginData('type') == genStyle.type) // update existing style
-         {
-            styleChangingFromGenerator = true;
-            figUpdateColorStyle(localStyle, genStyle);
-        }
-        // else // delete existing style, create new style
-        // {
-        //     if (!existing)
-        //     {
-        //         localStyle.remove();
-        //         styleChangingFromGenerator = true;
-        //         figCreateColorStyle(figStyles.styles, genStyle);
-        //     }
-        // }
-    }
-}
-function figUpdateColorStyle(figStyle, genStyle) {
-    setStylePaints(figStyle, genStyle);
-    figStyle.name = genStyle.name;
-}
-function getStylePaints(stylePaints) {
-    const paints = new Array();
-    for (const _paint of stylePaints) {
-        const fill = _paint[1].split(' ');
-        switch (_paint[0]) {
-            case 'SOLID':
-                paints.push({
-                    type: 'SOLID',
-                    color: { r: Math.min(Math.max(0, parseFloat(fill[0]) / 0xff), 1),
-                        g: Math.min(Math.max(0, parseFloat(fill[1]) / 0xff), 1),
-                        b: Math.min(Math.max(0, parseFloat(fill[2]) / 0xff), 1) },
-                    opacity: Math.min(Math.max(0, parseFloat(fill[3]) / 100), 1)
-                });
-                break;
-        }
-    }
-    return paints;
-}
-function setStylePaints(style, src) {
-    if (!!src.paints
-        && !isEmpty(src.paints))
-        style.paints = getStylePaints(src.paints);
-    else
-        style.paints = [];
-}
 function figLoadLocal(key) {
     return __awaiter(this, void 0, void 0, function* () {
         return yield figma.clientStorage.getAsync(key);
@@ -2030,189 +1867,6 @@ function figNotify(text, prefix = 'Generator ', delay = 400, error = false, butt
 //     }
 //     return 'ERROR_TYPE';
 // }
-function genBooleanIsValid(genBool) {
-    return genBool.children.length > 0;
-}
-function figCreateBoolean(genBool) {
-    let objects = [];
-    for (const obj of genBool.children)
-        figCreateObject(obj, o => objects = [...objects, o]);
-    let figBool = null;
-    if (!isEmpty(objects)) {
-        switch (genBool.operation) {
-            case 0:
-                figBool = figma.union(objects, figma.currentPage);
-                break;
-            case 1:
-                figBool = figma.subtract(objects, figma.currentPage);
-                break;
-            case 2:
-                figBool = figma.intersect(objects, figma.currentPage);
-                break;
-            case 3:
-                figBool = figma.exclude(objects, figma.currentPage);
-                break;
-        }
-    }
-    if (figBool) {
-        figBool.name = makeObjectName(genBool);
-        setObjectTransform(figBool, genBool);
-        if (!genBooleanIsValid(genBool))
-            return figBool;
-    }
-    return figBool;
-}
-function figUpdateBoolean(figBool, genBool) {
-    if (!genBooleanIsValid(genBool)) {
-        figBool.remove();
-        return;
-    }
-    figBool.name = makeObjectName(genBool);
-    setObjectTransform(figBool, genBool);
-    figUpdateObjects(figBool, genBool.children);
-    // figPostMessageToUi({
-    //     cmd:   'uiUpdateGroupBounds',
-    //     nodeId: genBool.nodeId,
-    //     x:      figBool.x,
-    //     y:      figBool.y,
-    //     width:  figBool.width,
-    //     height: figBool.height
-    // });
-}
-function genEllipseIsValid(genEllipse) {
-    return genEllipse.x != null && !isNaN(genEllipse.x)
-        && genEllipse.y != null && !isNaN(genEllipse.y)
-        && genEllipse.width != null && !isNaN(genEllipse.width)
-        && genEllipse.height != null && !isNaN(genEllipse.height)
-        //&& genEllipse.angle  != null && !isNaN(genEllipse.angle )
-        && genEllipse.from != null && !isNaN(genEllipse.from)
-        && genEllipse.to != null && !isNaN(genEllipse.to)
-        && genEllipse.inner != null && !isNaN(genEllipse.inner);
-}
-function figCreateEllipse(genEllipse) {
-    const figEllipse = figma.createEllipse();
-    figEllipse.name = makeObjectName(genEllipse);
-    if (!genEllipseIsValid(genEllipse))
-        return figEllipse;
-    figEllipse.arcData =
-        {
-            startingAngle: genEllipse.from / 360 * (Math.PI * 2),
-            endingAngle: genEllipse.to / 360 * (Math.PI * 2),
-            innerRadius: genEllipse.inner / 100
-        };
-    setObjectTransform(figEllipse, genEllipse);
-    if (figPoints.includes(figEllipse))
-        updatePointSize(figEllipse);
-    else
-        setObjectProps(figEllipse, genEllipse);
-    return figEllipse;
-}
-function figUpdateEllipse(figEllipse, genEllipse) {
-    if (!genEllipseIsValid(genEllipse))
-        return;
-    figEllipse.name = makeObjectName(genEllipse);
-    figEllipse.arcData =
-        {
-            startingAngle: genEllipse.from / 360 * (Math.PI * 2),
-            endingAngle: genEllipse.to / 360 * (Math.PI * 2),
-            innerRadius: genEllipse.inner / 100
-        };
-    setObjectTransform(figEllipse, genEllipse);
-    setObjectProps(figEllipse, genEllipse);
-}
-function genFrameIsValid(genGroup) {
-    return genGroup.x != null && !isNaN(genGroup.x)
-        && genGroup.y != null && !isNaN(genGroup.y)
-        && genGroup.width != null && !isNaN(genGroup.width)
-        && genGroup.height != null && !isNaN(genGroup.height)
-        && genGroup.round != null && !isNaN(genGroup.round);
-    //&& genGroup.angle  != null && !isNaN(genGroup.angle );
-}
-function figCreateFrame(genFrame) {
-    const figFrame = figma.createFrame();
-    figFrame.name = makeObjectName(genFrame);
-    if (!genFrameIsValid(genFrame))
-        return figFrame;
-    if (figFrame) {
-        if (!genFrameIsValid(genFrame))
-            return figFrame;
-        figFrame.cornerRadius = genFrame.round;
-        setObjectTransform(figFrame, genFrame);
-        setObjectProps(figFrame, genFrame);
-        let objects = [];
-        for (const obj of genFrame.children)
-            figCreateObject(obj, o => objects = [...objects, o]);
-        for (const obj of objects)
-            figFrame.appendChild(obj);
-    }
-    return figFrame;
-}
-function figUpdateFrame(figFrame, genFrame) {
-    if (!genFrameIsValid(genFrame))
-        return;
-    figFrame.name = makeObjectName(genFrame);
-    figFrame.cornerRadius = genFrame.round;
-    setObjectTransform(figFrame, genFrame);
-    setObjectProps(figFrame, genFrame);
-    figUpdateObjects(figFrame, genFrame.children);
-}
-function genShapeGroupIsValid(genGroup) {
-    return genGroup.children.length > 0;
-}
-function figCreateShapeGroup(genGroup) {
-    let objects = [];
-    for (const obj of genGroup.children)
-        figCreateObject(obj, o => objects = [...objects, o]);
-    const figGroup = !isEmpty(objects)
-        ? figma.group(objects, figma.currentPage)
-        : null;
-    if (figGroup) {
-        figGroup.name = makeObjectName(genGroup);
-        //setObjectTransform(figGroup, genGroup);
-        if (!genShapeGroupIsValid(genGroup))
-            return figGroup;
-    }
-    return figGroup;
-}
-function figUpdateShapeGroup(figGroup, genGroup) {
-    if (!genShapeGroupIsValid(genGroup)) {
-        figGroup.remove();
-        return;
-    }
-    figGroup.name = makeObjectName(genGroup);
-    //setObjectTransform(figGroup, genGroup);
-    figUpdateObjects(figGroup, genGroup.children);
-    // figPostMessageToUi({
-    //     cmd:   'uiUpdateGroupBounds',
-    //     nodeId: genGroup.nodeId,
-    //     x:      figGroup.x,
-    //     y:      figGroup.y,
-    //     width:  figGroup.width,
-    //     height: figGroup.height
-    // });
-}
-function genLineIsValid(genLine) {
-    return genLine.x != null && !isNaN(genLine.x)
-        && genLine.y != null && !isNaN(genLine.y)
-        && genLine.width != null && !isNaN(genLine.width);
-    //&& genLine.angle != null && !isNaN(genLine.angle);
-}
-function figCreateLine(genLine) {
-    const figLine = figma.createLine();
-    figLine.name = makeObjectName(genLine);
-    if (!genLineIsValid(genLine))
-        return figLine;
-    setObjectTransform(figLine, genLine);
-    setObjectProps(figLine, genLine);
-    return figLine;
-}
-function figUpdateLine(figLine, genLine) {
-    if (!genLineIsValid(genLine))
-        return;
-    figLine.name = makeObjectName(genLine);
-    setObjectTransform(figLine, genLine);
-    setObjectProps(figLine, genLine);
-}
 function makeObjectName(obj) {
     return OBJECT_PREFIX + (showIds ? obj.objectId : obj.objectName);
 }
@@ -2365,97 +2019,6 @@ function figUpdateObject(figObj, genObj) {
             figUpdateFrame(figObj, genObj);
             break;
     }
-}
-var figPoints = [];
-function genPointIsValid(genPoint) {
-    return genPoint.x != null && !isNaN(genPoint.x)
-        && genPoint.y != null && !isNaN(genPoint.y);
-}
-function figCreatePoint(genPoint) {
-    const figPoint = genPoint.isCenter
-        ? figma.createRectangle()
-        : figma.createEllipse();
-    figPoint.name = makeObjectName(genPoint);
-    figPoint.setPluginData('isCenter', boolToString(genPoint.isCenter));
-    if (!genPointIsValid(genPoint))
-        return figPoint;
-    //figPoint.rotation = 0;
-    if (figPoints.includes(figPoint))
-        updatePointSize_(figPoint, genPoint);
-    else {
-        setPointTransform(figPoint, genPoint);
-        updatePointStyles(figPoint);
-    }
-    return figPoint;
-}
-function figUpdatePoint(figPoint, genPoint) {
-    if (!genPointIsValid(genPoint))
-        return;
-    figPoint.name = makeObjectName(genPoint);
-    setPointTransform(figPoint, genPoint);
-    updatePointStyles(figPoint);
-}
-function updatePointSizes() {
-    if (figma.viewport.zoom != curZoom) {
-        figPostMessageToUi({
-            cmd: 'uiUpdateZoom',
-            zoom: figma.viewport.zoom
-        });
-        curZoom = figma.viewport.zoom;
-        for (const point of figPoints)
-            updatePointSize(point);
-    }
-}
-function updatePointSize(figPoint) {
-    updateExistingPointTransform(figPoint);
-    updatePointStyles(figPoint);
-}
-function updatePointSize_(figPoint, genPoint) {
-    setPointTransform(figPoint, genPoint);
-    updatePointStyles(figPoint);
-}
-function updatePointStyles(figPoint) {
-    const isCenter = parseBool(figPoint.getPluginData('isCenter'));
-    const color = isCenter
-        ? [0xf2, 0x48, 0x22]
-        : [0xff, 0xff, 0xff];
-    const border = isCenter
-        ? [255, 255, 255]
-        : [12, 140, 233];
-    figPoint.fills = getObjectFills([['SOLID', color[0], color[1], color[2], 100]]);
-    const effects = [];
-    effects.push(...getObjectEffects([['DROP_SHADOW', border[0] / 255, border[1] / 255, border[2] / 255, 1, 0, 0, 0, (isCenter ? 3 : 3.6) / curZoom, 'NORMAL', true, true]]));
-    effects.push(...getObjectEffects([['DROP_SHADOW', color[0] / 255, color[1] / 255, color[2] / 255, 1, 0, 0, 0, 2.4 / curZoom, 'NORMAL', true, true]]));
-    figPoint.effects = effects;
-}
-function genPolyIsValid(genPoly) {
-    return genPoly.x != null && !isNaN(genPoly.x)
-        && genPoly.y != null && !isNaN(genPoly.y)
-        && genPoly.width != null && !isNaN(genPoly.width)
-        && genPoly.height != null && !isNaN(genPoly.height)
-        //&& genPoly.angle   != null && !isNaN(genPoly.angle  )
-        && genPoly.round != null && !isNaN(genPoly.round)
-        && genPoly.corners != null && !isNaN(genPoly.corners);
-}
-function figCreatePolygon(genPoly) {
-    const figPoly = figma.createPolygon();
-    figPoly.name = makeObjectName(genPoly);
-    if (!genPolyIsValid(genPoly))
-        return figPoly;
-    figPoly.cornerRadius = genPoly.round;
-    figPoly.pointCount = genPoly.corners;
-    setObjectTransform(figPoly, genPoly);
-    setObjectProps(figPoly, genPoly);
-    return figPoly;
-}
-function figUpdatePolygon(figPoly, genPoly) {
-    if (!genPolyIsValid(genPoly))
-        return;
-    figPoly.name = makeObjectName(genPoly);
-    figPoly.cornerRadius = genPoly.round;
-    figPoly.pointCount = genPoly.corners;
-    setObjectTransform(figPoly, genPoly);
-    setObjectProps(figPoly, genPoly);
 }
 function getObjectFills(genObjFills) {
     const fills = [];
@@ -2648,6 +2211,519 @@ function setObjectEffects(figObj, genObj) {
     else
         figObj.effects = [];
 }
+function figGetAllLocalColorStyles(nodeId, px, py) {
+    const _styles = figma.getLocalPaintStyles();
+    const styles = new Array();
+    for (const _style of _styles) {
+        const _nodeId = _style.getPluginData('nodeId');
+        const _existing = _style.getPluginData('existing');
+        const existing = !!_existing;
+        const style = {
+            id: _style.id,
+            nodeId: _nodeId,
+            name: _style.name,
+            existing: existing,
+            paints: new Array()
+        };
+        let onlyPaint = true;
+        for (const _paint of _style.paints) {
+            if (_paint.type == 'SOLID') {
+                style.paints.push([
+                    _paint.color.r,
+                    _paint.color.g,
+                    _paint.color.b,
+                    _paint.opacity
+                ]);
+            }
+            else {
+                onlyPaint = false;
+                break;
+            }
+        }
+        if (onlyPaint)
+            styles.push(style);
+    }
+    figPostMessageToUi({
+        cmd: 'uiReturnFigGetAllLocalColorStyles',
+        nodeId: nodeId,
+        px: px,
+        py: py,
+        styles: JSON.stringify(styles)
+    });
+}
+function figLinkNodeToExistingColorStyle(nodeId, styleId) {
+    const localStyles = figma.getLocalPaintStyles();
+    if (styleId != NULL)
+        figLinkColorStyle(localStyles, nodeId, styleId);
+    else
+        figClearColorStyle(localStyles, nodeId);
+}
+function figLinkColorStyle(localStyles, nodeId, styleId, clearExisting = true) {
+    const figStyles = figStyleArrays.find(a => a.nodeId == nodeId);
+    if (figStyles
+        && clearExisting)
+        figClearColorStyle(localStyles, nodeId);
+    const figStyle = localStyles.find(s => s.id == styleId);
+    console.assert(!!figStyle, 'figStyle should be found here');
+    figStyle.setPluginData('type', COLOR_STYLE);
+    figStyle.setPluginData('nodeId', nodeId);
+    figStyle.setPluginData('existing', boolToString(true));
+    figStyleArrays.push({
+        nodeId: nodeId,
+        existing: true,
+        styles: [figStyle]
+    });
+    return figStyle;
+}
+function figClearColorStyle(localStyles, nodeId) {
+    const figStyle = localStyles.find(s => s.getPluginData('nodeId') == nodeId);
+    //console.assert(!!figStyle, 'figStyle should be found here');
+    if (figStyle) // could have been deleted
+     {
+        figStyle.setPluginData('type', NULL);
+        figStyle.setPluginData('nodeId', NULL);
+        figStyle.setPluginData('existing', NULL);
+        removeFromArrayWhere(figStyleArrays, a => a.nodeId == nodeId);
+    }
+    return figStyle;
+}
+function figCreateColorStyle(styles, genStyle) {
+    const figStyle = figma.createPaintStyle();
+    figStyle.setPluginData('type', genStyle.type);
+    figStyle.setPluginData('nodeId', genStyle.nodeId);
+    figStyle.setPluginData('existing', boolToString(genStyle.existing));
+    figStyle.name = genStyle.styleName;
+    setStylePaints(figStyle, genStyle);
+    styles.push(figStyle);
+    figPostMessageToUi({
+        cmd: 'uiSetStyleId',
+        nodeId: genStyle.nodeId,
+        styleId: figStyle.id
+    });
+    return figStyle;
+}
+function figUpdateStyles(msg) {
+    let curNodeId = NULL;
+    let figStyles;
+    for (const genStyle of msg.styles) {
+        if (genStyle.nodeId != curNodeId) {
+            curNodeId = genStyle.nodeId;
+            figStyles = figStyleArrays.find(a => a.nodeId == genStyle.nodeId);
+            if (!figStyles) {
+                figStyles = {
+                    nodeId: genStyle.nodeId,
+                    existing: genStyle.existing,
+                    styles: []
+                };
+                figStyleArrays.push(figStyles);
+            }
+        }
+        else
+            figStyles = null;
+        const figStyle = figStyles.styles[0];
+        const localStyles = figma.getLocalPaintStyles();
+        const localStyle = localStyles.find(s => s.getPluginData('nodeId') == genStyle.nodeId);
+        if (isValid(figStyle)
+            && !isValid(localStyle)) // removed
+         {
+            removeFrom(figStyles.styles, figStyle);
+        }
+        const existing = isValid(figStyle)
+            && isValid(localStyle)
+            && figStyle.getPluginData('existing');
+        if (!isValid(figStyle)
+            || !isValid(localStyle)) // no existing style, create new style
+         {
+            if (!existing) {
+                styleChangingFromGenerator = true;
+                figLinkNodeToExistingColorStyle(genStyle.nodeId, genStyle.id);
+                //figCreateColorStyle(figStyles.styles, genStyle);
+            }
+        }
+        else if (isValid(figStyle)
+            && figStyle.getPluginData('type') == genStyle.type) // update existing style
+         {
+            styleChangingFromGenerator = true;
+            figUpdateColorStyle(localStyle, genStyle);
+        }
+        // else // delete existing style, create new style
+        // {
+        //     if (!existing)
+        //     {
+        //         localStyle.remove();
+        //         styleChangingFromGenerator = true;
+        //         figCreateColorStyle(figStyles.styles, genStyle);
+        //     }
+        // }
+    }
+}
+function figUpdateColorStyle(figStyle, genStyle) {
+    setStylePaints(figStyle, genStyle);
+    figStyle.name = genStyle.name;
+}
+function getStylePaints(stylePaints) {
+    const paints = new Array();
+    for (const _paint of stylePaints) {
+        const fill = _paint[1].split(' ');
+        switch (_paint[0]) {
+            case 'SOLID':
+                paints.push({
+                    type: 'SOLID',
+                    color: { r: Math.min(Math.max(0, parseFloat(fill[0]) / 0xff), 1),
+                        g: Math.min(Math.max(0, parseFloat(fill[1]) / 0xff), 1),
+                        b: Math.min(Math.max(0, parseFloat(fill[2]) / 0xff), 1) },
+                    opacity: Math.min(Math.max(0, parseFloat(fill[3]) / 100), 1)
+                });
+                break;
+        }
+    }
+    return paints;
+}
+function setStylePaints(style, src) {
+    if (!!src.paints
+        && !isEmpty(src.paints))
+        style.paints = getStylePaints(src.paints);
+    else
+        style.paints = [];
+}
+function applyFigmaTransform(figObj, tl, tr, bl) {
+    let vr = point(tr.x - tl.x, tr.y - tl.y);
+    let vb = point(bl.x - tl.x, bl.y - tl.y);
+    // if (vb.y < 0)
+    // {
+    //     const dp = subv(tl, tr);
+    //     tl = subv(tl, dp);
+    //     tr = subv(tr, dp);
+    //     bl = subv(bl, dp);
+    // }
+    let sx = nozero(vr.x);
+    let sy = nozero(vb.y);
+    let kx = -vr.y;
+    let ky = -vb.x;
+    let dx = -tl.x;
+    let dy = -tl.y;
+    // if (sy >= 0 && ky < 0)
+    // {
+    //     sy = -sy;
+    //     ky = -ky;
+    // }
+    let xform = mulm3m3([[1, ky / sy, 0],
+        [kx / sx, 1, 0],
+        [0, 0, 1]], createTransform(dx, dy));
+    xform = inversem3(xform);
+    const a = angle(vr);
+    if (a > Tau / 4
+        && a < Tau * 3 / 4)
+        xform = mulm3m3(xform, createTransform(0, 0, 1, 1, Tau / 2));
+    figObj.relativeTransform =
+        [
+            xform[0],
+            xform[1]
+        ];
+    console.clear();
+    console.log('vr =', vr);
+    console.log('vb =', vb);
+    console.log('a =', a);
+    console.log('sx =', sx);
+    console.log('sy =', sy);
+    console.log('kx =', kx);
+    console.log('ky =', ky);
+    console.log('xform =', '\n' + xform[0] + '\n' + xform[1] + '\n' + xform[2] + '\n');
+}
+function setObjectTransform(figObj, genObj) {
+    const xp0 = point(genObj.xp0.x, genObj.xp0.y);
+    const xp1 = point(genObj.xp1.x, genObj.xp1.y);
+    const xp2 = point(genObj.xp2.x, genObj.xp2.y);
+    applyFigmaTransform(figObj, xp0, xp1, xp2);
+    const scaleX = distance(xp0, xp1);
+    const scaleY = distance(xp0, xp2);
+    figObj.resizeWithoutConstraints(Math.max(0.01, scaleX), genObj.height ? Math.max(0.01, scaleY) : 0);
+}
+function setPointTransform(figPoint, genPoint) {
+    figPoint.resizeWithoutConstraints(0.01, 0.01);
+    figPoint.setPluginData('actualX', genPoint.x.toString());
+    figPoint.setPluginData('actualY', genPoint.y.toString());
+    figPoint.x = genPoint.x;
+    figPoint.y = genPoint.y;
+    figPoint.rotation = genPoint.isCenter ? 45 : 0;
+}
+function updateExistingPointTransform(figPoint) {
+    figPoint.resizeWithoutConstraints(0.01, 0.01);
+}
+function genBooleanIsValid(genBool) {
+    return genBool.children.length > 0;
+}
+function figCreateBoolean(genBool) {
+    let objects = [];
+    for (const obj of genBool.children)
+        figCreateObject(obj, o => objects = [...objects, o]);
+    let figBool = null;
+    if (!isEmpty(objects)) {
+        switch (genBool.operation) {
+            case 0:
+                figBool = figma.union(objects, figma.currentPage);
+                break;
+            case 1:
+                figBool = figma.subtract(objects, figma.currentPage);
+                break;
+            case 2:
+                figBool = figma.intersect(objects, figma.currentPage);
+                break;
+            case 3:
+                figBool = figma.exclude(objects, figma.currentPage);
+                break;
+        }
+    }
+    if (figBool) {
+        figBool.name = makeObjectName(genBool);
+        setObjectTransform(figBool, genBool);
+        if (!genBooleanIsValid(genBool))
+            return figBool;
+    }
+    return figBool;
+}
+function figUpdateBoolean(figBool, genBool) {
+    if (!genBooleanIsValid(genBool)) {
+        figBool.remove();
+        return;
+    }
+    figBool.name = makeObjectName(genBool);
+    setObjectTransform(figBool, genBool);
+    figUpdateObjects(figBool, genBool.children);
+    // figPostMessageToUi({
+    //     cmd:   'uiUpdateGroupBounds',
+    //     nodeId: genBool.nodeId,
+    //     x:      figBool.x,
+    //     y:      figBool.y,
+    //     width:  figBool.width,
+    //     height: figBool.height
+    // });
+}
+function genEllipseIsValid(genEllipse) {
+    return genEllipse.x != null && !isNaN(genEllipse.x)
+        && genEllipse.y != null && !isNaN(genEllipse.y)
+        && genEllipse.width != null && !isNaN(genEllipse.width)
+        && genEllipse.height != null && !isNaN(genEllipse.height)
+        //&& genEllipse.angle  != null && !isNaN(genEllipse.angle )
+        && genEllipse.from != null && !isNaN(genEllipse.from)
+        && genEllipse.to != null && !isNaN(genEllipse.to)
+        && genEllipse.inner != null && !isNaN(genEllipse.inner);
+}
+function figCreateEllipse(genEllipse) {
+    const figEllipse = figma.createEllipse();
+    figEllipse.name = makeObjectName(genEllipse);
+    if (!genEllipseIsValid(genEllipse))
+        return figEllipse;
+    figEllipse.arcData =
+        {
+            startingAngle: genEllipse.from / 360 * (Math.PI * 2),
+            endingAngle: genEllipse.to / 360 * (Math.PI * 2),
+            innerRadius: genEllipse.inner / 100
+        };
+    setObjectTransform(figEllipse, genEllipse);
+    if (figPoints.includes(figEllipse))
+        updatePointSize(figEllipse);
+    else
+        setObjectProps(figEllipse, genEllipse);
+    return figEllipse;
+}
+function figUpdateEllipse(figEllipse, genEllipse) {
+    if (!genEllipseIsValid(genEllipse))
+        return;
+    figEllipse.name = makeObjectName(genEllipse);
+    figEllipse.arcData =
+        {
+            startingAngle: genEllipse.from / 360 * (Math.PI * 2),
+            endingAngle: genEllipse.to / 360 * (Math.PI * 2),
+            innerRadius: genEllipse.inner / 100
+        };
+    setObjectTransform(figEllipse, genEllipse);
+    setObjectProps(figEllipse, genEllipse);
+}
+function genFrameIsValid(genGroup) {
+    return genGroup.x != null && !isNaN(genGroup.x)
+        && genGroup.y != null && !isNaN(genGroup.y)
+        && genGroup.width != null && !isNaN(genGroup.width)
+        && genGroup.height != null && !isNaN(genGroup.height)
+        && genGroup.round != null && !isNaN(genGroup.round);
+    //&& genGroup.angle  != null && !isNaN(genGroup.angle );
+}
+function figCreateFrame(genFrame) {
+    const figFrame = figma.createFrame();
+    figFrame.name = makeObjectName(genFrame);
+    if (!genFrameIsValid(genFrame))
+        return figFrame;
+    if (figFrame) {
+        if (!genFrameIsValid(genFrame))
+            return figFrame;
+        figFrame.cornerRadius = genFrame.round;
+        setObjectTransform(figFrame, genFrame);
+        setObjectProps(figFrame, genFrame);
+        let objects = [];
+        for (const obj of genFrame.children)
+            figCreateObject(obj, o => objects = [...objects, o]);
+        for (const obj of objects)
+            figFrame.appendChild(obj);
+    }
+    return figFrame;
+}
+function figUpdateFrame(figFrame, genFrame) {
+    if (!genFrameIsValid(genFrame))
+        return;
+    figFrame.name = makeObjectName(genFrame);
+    figFrame.cornerRadius = genFrame.round;
+    setObjectTransform(figFrame, genFrame);
+    setObjectProps(figFrame, genFrame);
+    figUpdateObjects(figFrame, genFrame.children);
+}
+function genShapeGroupIsValid(genGroup) {
+    return genGroup.children.length > 0;
+}
+function figCreateShapeGroup(genGroup) {
+    let objects = [];
+    for (const obj of genGroup.children)
+        figCreateObject(obj, o => objects = [...objects, o]);
+    const figGroup = !isEmpty(objects)
+        ? figma.group(objects, figma.currentPage)
+        : null;
+    if (figGroup) {
+        figGroup.name = makeObjectName(genGroup);
+        //setObjectTransform(figGroup, genGroup);
+        if (!genShapeGroupIsValid(genGroup))
+            return figGroup;
+    }
+    return figGroup;
+}
+function figUpdateShapeGroup(figGroup, genGroup) {
+    if (!genShapeGroupIsValid(genGroup)) {
+        figGroup.remove();
+        return;
+    }
+    figGroup.name = makeObjectName(genGroup);
+    //setObjectTransform(figGroup, genGroup);
+    figUpdateObjects(figGroup, genGroup.children);
+    // figPostMessageToUi({
+    //     cmd:   'uiUpdateGroupBounds',
+    //     nodeId: genGroup.nodeId,
+    //     x:      figGroup.x,
+    //     y:      figGroup.y,
+    //     width:  figGroup.width,
+    //     height: figGroup.height
+    // });
+}
+function genLineIsValid(genLine) {
+    return genLine.x != null && !isNaN(genLine.x)
+        && genLine.y != null && !isNaN(genLine.y)
+        && genLine.width != null && !isNaN(genLine.width);
+    //&& genLine.angle != null && !isNaN(genLine.angle);
+}
+function figCreateLine(genLine) {
+    const figLine = figma.createLine();
+    figLine.name = makeObjectName(genLine);
+    if (!genLineIsValid(genLine))
+        return figLine;
+    setObjectTransform(figLine, genLine);
+    setObjectProps(figLine, genLine);
+    return figLine;
+}
+function figUpdateLine(figLine, genLine) {
+    if (!genLineIsValid(genLine))
+        return;
+    figLine.name = makeObjectName(genLine);
+    setObjectTransform(figLine, genLine);
+    setObjectProps(figLine, genLine);
+}
+var figPoints = [];
+function genPointIsValid(genPoint) {
+    return genPoint.x != null && !isNaN(genPoint.x)
+        && genPoint.y != null && !isNaN(genPoint.y);
+}
+function figCreatePoint(genPoint) {
+    const figPoint = genPoint.isCenter
+        ? figma.createRectangle()
+        : figma.createEllipse();
+    figPoint.name = makeObjectName(genPoint);
+    figPoint.setPluginData('isCenter', boolToString(genPoint.isCenter));
+    if (!genPointIsValid(genPoint))
+        return figPoint;
+    //figPoint.rotation = 0;
+    if (figPoints.includes(figPoint))
+        updatePointSize_(figPoint, genPoint);
+    else {
+        setPointTransform(figPoint, genPoint);
+        updatePointStyles(figPoint);
+    }
+    return figPoint;
+}
+function figUpdatePoint(figPoint, genPoint) {
+    if (!genPointIsValid(genPoint))
+        return;
+    figPoint.name = makeObjectName(genPoint);
+    setPointTransform(figPoint, genPoint);
+    updatePointStyles(figPoint);
+}
+function updatePointSizes() {
+    if (figma.viewport.zoom != curZoom) {
+        figPostMessageToUi({
+            cmd: 'uiUpdateZoom',
+            zoom: figma.viewport.zoom
+        });
+        curZoom = figma.viewport.zoom;
+        for (const point of figPoints)
+            updatePointSize(point);
+    }
+}
+function updatePointSize(figPoint) {
+    updateExistingPointTransform(figPoint);
+    updatePointStyles(figPoint);
+}
+function updatePointSize_(figPoint, genPoint) {
+    setPointTransform(figPoint, genPoint);
+    updatePointStyles(figPoint);
+}
+function updatePointStyles(figPoint) {
+    const isCenter = parseBool(figPoint.getPluginData('isCenter'));
+    const color = isCenter
+        ? [0xf2, 0x48, 0x22]
+        : [0xff, 0xff, 0xff];
+    const border = isCenter
+        ? [255, 255, 255]
+        : [12, 140, 233];
+    figPoint.fills = getObjectFills([['SOLID', color[0], color[1], color[2], 100]]);
+    const effects = [];
+    effects.push(...getObjectEffects([['DROP_SHADOW', border[0] / 255, border[1] / 255, border[2] / 255, 1, 0, 0, 0, (isCenter ? 3 : 3.6) / curZoom, 'NORMAL', true, true]]));
+    effects.push(...getObjectEffects([['DROP_SHADOW', color[0] / 255, color[1] / 255, color[2] / 255, 1, 0, 0, 0, 2.4 / curZoom, 'NORMAL', true, true]]));
+    figPoint.effects = effects;
+}
+function genPolyIsValid(genPoly) {
+    return genPoly.x != null && !isNaN(genPoly.x)
+        && genPoly.y != null && !isNaN(genPoly.y)
+        && genPoly.width != null && !isNaN(genPoly.width)
+        && genPoly.height != null && !isNaN(genPoly.height)
+        //&& genPoly.angle   != null && !isNaN(genPoly.angle  )
+        && genPoly.round != null && !isNaN(genPoly.round)
+        && genPoly.corners != null && !isNaN(genPoly.corners);
+}
+function figCreatePolygon(genPoly) {
+    const figPoly = figma.createPolygon();
+    figPoly.name = makeObjectName(genPoly);
+    if (!genPolyIsValid(genPoly))
+        return figPoly;
+    figPoly.cornerRadius = genPoly.round;
+    figPoly.pointCount = genPoly.corners;
+    setObjectTransform(figPoly, genPoly);
+    setObjectProps(figPoly, genPoly);
+    return figPoly;
+}
+function figUpdatePolygon(figPoly, genPoly) {
+    if (!genPolyIsValid(genPoly))
+        return;
+    figPoly.name = makeObjectName(genPoly);
+    figPoly.cornerRadius = genPoly.round;
+    figPoly.pointCount = genPoly.corners;
+    setObjectTransform(figPoly, genPoly);
+    setObjectProps(figPoly, genPoly);
+}
 function genRectIsValid(genRect) {
     return genRect.x != null && !isNaN(genRect.x)
         && genRect.y != null && !isNaN(genRect.y)
@@ -2760,49 +2836,6 @@ function setTextStyle(figText, genText) {
     //switch (genText.style)
     //{
     //}
-}
-function applyFigmaTransform(figObj, tl, tr, bl) {
-    const vr = point(tr.x - tl.x, tr.y - tl.y);
-    const vb = point(bl.x - tl.x, bl.y - tl.y);
-    const sx = nozero(vr.x);
-    const sy = nozero(vb.y);
-    const kx = -vr.y;
-    const ky = -vb.x;
-    let dx = -tl.x;
-    let dy = -tl.y;
-    let xform = mulm3m3([[1, ky / sy, 0],
-        [kx / sx, 1, 0],
-        [0, 0, 1]], createTransform(dx, dy));
-    xform = inversem3(xform);
-    const a = angle(vr);
-    if (a > Tau / 4
-        && a <= Tau * 3 / 4)
-        xform = mulm3m3(xform, createTransform(0, 0, 1, 1, Tau / 2));
-    figObj.relativeTransform =
-        [
-            xform[0],
-            xform[1]
-        ];
-}
-function setObjectTransform(figObj, genObj) {
-    const xp0 = point(genObj.xp0.x, genObj.xp0.y);
-    const xp1 = point(genObj.xp1.x, genObj.xp1.y);
-    const xp2 = point(genObj.xp2.x, genObj.xp2.y);
-    applyFigmaTransform(figObj, xp0, xp1, xp2);
-    const scaleX = distance(xp0, xp1);
-    const scaleY = distance(xp0, xp2);
-    figObj.resizeWithoutConstraints(Math.max(0.01, scaleX), genObj.height ? Math.max(0.01, scaleY) : 0);
-}
-function setPointTransform(figPoint, genPoint) {
-    figPoint.resizeWithoutConstraints(0.01, 0.01);
-    figPoint.setPluginData('actualX', genPoint.x.toString());
-    figPoint.setPluginData('actualY', genPoint.y.toString());
-    figPoint.x = genPoint.x;
-    figPoint.y = genPoint.y;
-    figPoint.rotation = genPoint.isCenter ? 45 : 0;
-}
-function updateExistingPointTransform(figPoint) {
-    figPoint.resizeWithoutConstraints(0.01, 0.01);
 }
 function genVectorPathIsValid(genPath) {
     return genPath.winding != null && !isNaN(genPath.winding)

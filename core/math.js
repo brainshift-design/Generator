@@ -61,42 +61,6 @@ function equalv(v1, v2)
 
 
 
-function addv(v1, v2)
-{
-    return point(
-        v1.x + v2.x,
-        v1.y + v2.y);
-}	
-
-
-
-function mulv(v1, v2)
-{
-    return point(
-        v1.x * v2.x,
-        v1.y * v2.y);
-}	
-
-
-
-function mulvs(v, s)
-{
-    return point(
-        v.x * s,
-        v.y * s);
-}	
-
-
-
-function divvs(v, s)
-{
-    return point(
-        v.x / s,
-        v.y / s);
-}	
-
-
-
 function crossv(v)
 {
     // returns a cross product of v and the unit vector pointing up the Z axis

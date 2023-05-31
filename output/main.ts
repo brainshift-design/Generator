@@ -310,6 +310,42 @@ function crossv2(v1, v2)
 
 
 
+function addv(v1, v2)
+{
+    return point(
+        v1.x + v2.x,
+        v1.y + v2.y);
+}	
+
+
+
+function mulv(v1, v2)
+{
+    return point(
+        v1.x * v2.x,
+        v1.y * v2.y);
+}	
+
+
+
+function mulvs(v, s)
+{
+    return point(
+        v.x * s,
+        v.y * s);
+}	
+
+
+
+function divvs(v, s)
+{
+    return point(
+        v.x / s,
+        v.y / s);
+}	
+
+
+
 function subv(v1, v2)
 {
     return point(
@@ -2105,278 +2141,6 @@ function figPostMessageToUi(msg)
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 
 
-function figGetAllLocalColorStyles(nodeId, px, py)
-{
-    const _styles = figma.getLocalPaintStyles();
-
-
-    const styles = new Array();
-
-    for (const _style of _styles)
-    {
-        const _nodeId   = _style.getPluginData('nodeId');
-        const _existing = _style.getPluginData('existing');
-
-        const existing = !!_existing;
-
-        const style = { 
-            id:       _style.id,
-            nodeId:   _nodeId,
-            name:     _style.name,
-            existing: existing,
-            paints:   new Array()
-        };
-
-        
-        let onlyPaint = true;
-
-        for (const _paint of _style.paints)
-        {
-            if (_paint.type == 'SOLID')
-            {
-                style.paints.push([
-                    _paint.color.r,
-                    _paint.color.g,
-                    _paint.color.b,
-                    _paint.opacity]);
-            }
-            else
-            {
-                onlyPaint = false;
-                break;
-            }
-        }
-
-
-        if (onlyPaint)
-            styles.push(style);
-    }
-
-
-    figPostMessageToUi({
-        cmd:   'uiReturnFigGetAllLocalColorStyles',
-        nodeId: nodeId,
-        px:     px,
-        py:     py,
-        styles: JSON.stringify(styles)});
-}
-
-
-
-function figLinkNodeToExistingColorStyle(nodeId, styleId)
-{
-    const localStyles = figma.getLocalPaintStyles();
-
-    if (styleId != NULL) figLinkColorStyle(localStyles, nodeId, styleId);
-    else                 figClearColorStyle(localStyles, nodeId);
-}
-
-
-
-function figLinkColorStyle(localStyles, nodeId, styleId, clearExisting = true)
-{
-    const figStyles = figStyleArrays.find(a => a.nodeId == nodeId);
-    
-    if (   figStyles 
-        && clearExisting) 
-        figClearColorStyle(localStyles, nodeId);
-
-
-    const figStyle = localStyles.find(s => s.id == styleId);
-    console.assert(!!figStyle, 'figStyle should be found here');
-
-
-    figStyle.setPluginData('type',     COLOR_STYLE);
-    figStyle.setPluginData('nodeId',   nodeId);
-    figStyle.setPluginData('existing', boolToString(true));
-
-
-    figStyleArrays.push({
-        nodeId:   nodeId, 
-        existing: true, 
-        styles:   [figStyle]});
-
-
-    return figStyle;
-}
-
-
-
-function figClearColorStyle(localStyles, nodeId)
-{
-    const figStyle = localStyles.find(s => s.getPluginData('nodeId') == nodeId);
-    //console.assert(!!figStyle, 'figStyle should be found here');
-
-    if (figStyle) // could have been deleted
-    {
-        figStyle.setPluginData('type',     NULL);
-        figStyle.setPluginData('nodeId',   NULL);
-        figStyle.setPluginData('existing', NULL);
-
-        removeFromArrayWhere(figStyleArrays, a => a.nodeId == nodeId);
-    }
-
-    return figStyle;
-}
-
-
-
-function figCreateColorStyle(styles, genStyle)
-{
-    const figStyle = figma.createPaintStyle();
-
-
-    figStyle.setPluginData('type',     genStyle.type);
-    figStyle.setPluginData('nodeId',   genStyle.nodeId);
-    figStyle.setPluginData('existing', boolToString(genStyle.existing));
-
-    figStyle.name = genStyle.styleName;
-
-
-    setStylePaints(figStyle, genStyle);
-
-
-    styles.push(figStyle);
-
-
-    figPostMessageToUi({
-        cmd:    'uiSetStyleId',
-        nodeId:  genStyle.nodeId,
-        styleId: figStyle.id });
-
-    
-    return figStyle;
-}
-
-
-
-function figUpdateStyles(msg)
-{
-    let curNodeId = NULL;
-    let figStyles;
-
-
-    for (const genStyle of msg.styles)
-    {
-        if (genStyle.nodeId != curNodeId)
-        {
-            curNodeId = genStyle.nodeId;
-            
-            figStyles = figStyleArrays.find(a => a.nodeId == genStyle.nodeId);
-
-            if (!figStyles) 
-            {
-                figStyles = {
-                    nodeId:   genStyle.nodeId, 
-                    existing: genStyle.existing, 
-                    styles:   [] };
-
-                figStyleArrays.push(figStyles);
-            }
-        }
-        else
-            figStyles = null;
-
-
-        const figStyle    = figStyles.styles[0];
-        
-        const localStyles = figma.getLocalPaintStyles();
-        const localStyle  = localStyles.find(s => s.getPluginData('nodeId') == genStyle.nodeId);
-
-
-        if (    isValid(figStyle)
-            && !isValid(localStyle)) // removed
-        {
-            removeFrom(figStyles.styles, figStyle);
-        }
-
-
-        const existing = 
-               isValid(figStyle)
-            && isValid(localStyle)
-            && figStyle.getPluginData('existing');
-
-
-        if (   !isValid(figStyle)
-            || !isValid(localStyle)) // no existing style, create new style
-        {
-            if (!existing)
-            {
-                styleChangingFromGenerator = true;
-                figLinkNodeToExistingColorStyle(genStyle.nodeId, genStyle.id);
-                //figCreateColorStyle(figStyles.styles, genStyle);
-            }
-        }
-        else 
-        if (isValid(figStyle) 
-              && figStyle.getPluginData('type') == genStyle.type) // update existing style
-        {
-            styleChangingFromGenerator = true;
-            figUpdateColorStyle(localStyle, genStyle);
-        }
-        // else // delete existing style, create new style
-        // {
-        //     if (!existing)
-        //     {
-        //         localStyle.remove();
-        //         styleChangingFromGenerator = true;
-        //         figCreateColorStyle(figStyles.styles, genStyle);
-        //     }
-        // }
-    }
-}
-
-
-
-function figUpdateColorStyle(figStyle, genStyle)
-{
-    setStylePaints(figStyle, genStyle);
-
-    figStyle.name = genStyle.name;
-}
-
-
-
-function getStylePaints(stylePaints)
-{
-    const paints = new Array();
-
-    for (const _paint of stylePaints)
-    {
-        const fill = _paint[1].split(' ');
-
-        switch (_paint[0])
-        {
-            case 'SOLID':
-                paints.push(
-                {
-                    type:  'SOLID', 
-                    color: { r: Math.min(Math.max(0, parseFloat(fill[0]) / 0xff), 1), 
-                             g: Math.min(Math.max(0, parseFloat(fill[1]) / 0xff), 1), 
-                             b: Math.min(Math.max(0, parseFloat(fill[2]) / 0xff), 1) },
-                    opacity: Math.min(Math.max(0, parseFloat(fill[3]) / 100), 1)
-                });
-
-                break;
-        }
-    }
-
-    return paints;
-}
-
-
-
-function setStylePaints(style, src)
-{
-    if (   !!src.paints
-        &&  !isEmpty(src.paints))
-        style.paints = getStylePaints(src.paints);
-    else
-        style.paints = [];
-}
-
-
-
 async function figLoadLocal(key)
 {
     return await figma.clientStorage.getAsync(key); 
@@ -3151,6 +2915,826 @@ function figNotify(text, prefix = 'Generator ', delay = 400, error = false, butt
 // }
 
 
+function makeObjectName(obj)
+{
+    return OBJECT_PREFIX + (showIds ? obj.objectId : obj.objectName);
+}
+
+
+
+function figCreateObject(genObj, addObject)
+{
+    let figObj;
+
+    switch (genObj.type)
+    {
+        case RECTANGLE:   figObj = figCreateRect      (genObj);  break;
+        case LINE:        figObj = figCreateLine      (genObj);  break;
+        case ELLIPSE:     figObj = figCreateEllipse   (genObj);  break;
+        case POLYGON:     figObj = figCreatePolygon   (genObj);  break;
+        case STAR:        figObj = figCreateStar      (genObj);  break;
+        case TEXTSHAPE:   figObj = figCreateText      (genObj);  break;
+        case POINT:       figObj = figCreatePoint     (genObj);  break;
+        case VECTOR_PATH: figObj = figCreateVectorPath(genObj);  break;
+        case BOOLEAN:     figObj = figCreateBoolean   (genObj);  break;
+        case SHAPE_GROUP: figObj = figCreateShapeGroup(genObj);  break;
+        case FRAME:       figObj = figCreateFrame     (genObj);  break;
+    }
+
+    
+    console.assert(
+           genObj.type == SHAPE_GROUP // cannot exist without children
+        || !!figObj, 
+        'no Figma object created');
+
+    if (figObj)
+    {
+        figObj.setPluginData('id',       genObj.objectId);
+        figObj.setPluginData('type',     genObj.type    );
+        figObj.setPluginData('nodeId',   genObj.nodeId  );
+        figObj.setPluginData('objectId', genObj.objectId);
+        figObj.setPluginData('final',    boolToString(genObj.final));
+
+        
+        if (genObj.type == POINT)
+            figPoints.push(figObj);
+
+
+        addObject(figObj);
+    }
+}
+
+
+
+function figUpdateObjects(figParent, genObjects)
+{
+    let curNodeId  = NULL;
+    let figObjects = null;
+
+
+
+    for (const genObj of genObjects)
+    {
+        if (genObj.nodeId != curNodeId)
+        {
+            curNodeId  = genObj.nodeId;
+            
+            figObjects = figObjectArrays.find(a => a.nodeId == genObj.nodeId);
+
+            if (!figObjects)
+            {
+                figObjectArrays.push(figObjects = 
+                {
+                    nodeId:   genObj.nodeId, 
+                    existing: genObj.existing,
+                    objects:  []
+                });
+            }
+        }
+
+
+        let objects =
+            figParent
+            ? figParent.children
+            : figObjects.objects;
+
+        const addObject = obj =>
+        {
+            if (figParent) figParent.appendChild(obj);
+            else           figObjects.objects.push(obj);
+        };
+
+
+        let figObj;
+
+        
+        figObj = objects.find(o => 
+               o.removed
+            || o.getPluginData('objectId') == genObj.objectId)
+
+        
+        if (   figObj != undefined
+            && figObj != null
+            && figObj.removed)
+        {
+            removeFrom(objects, figObj);
+        
+            if (figPoints.includes(figObj))
+                removeFromArray(figPoints, figObj);
+        }
+
+
+        if (   figObj == undefined
+            || figObj == null
+            || figObj.removed) // no existing object, create new object
+        {
+            figCreateObject(genObj, addObject);
+        }
+
+        else if (figObj.getPluginData('type') == genObj.type.toString()) // update existing object
+        {
+            figUpdateObject(figObj, genObj);
+        }
+    
+        else // delete existing object, create new object
+        {
+            figObj.remove();
+
+            if (figPoints.includes(figObj))
+                removeFromArray(figPoints, figObj);
+
+            figCreateObject(genObj, addObject);
+        }
+    }
+
+
+    // delete removed objects from parent
+    
+    if (figParent)
+    {
+        for (const figObj of figParent.children)
+            if (!genObjects.find(o => o.objectId == figObj.getPluginData('objectId')))
+                figObj.remove();
+    }
+
+
+    // put points on top
+    
+    for (const point of figPoints)
+        point.parent.appendChild(point);
+}
+
+
+
+function figUpdateObject(figObj, genObj)
+{
+    switch (genObj.type)
+    {
+        case RECTANGLE:   figUpdateRect      (figObj, genObj);  break;
+        case LINE:        figUpdateLine      (figObj, genObj);  break;
+        case ELLIPSE:     figUpdateEllipse   (figObj, genObj);  break;
+        case POLYGON:     figUpdatePolygon   (figObj, genObj);  break;
+        case STAR:        figUpdateStar      (figObj, genObj);  break;
+        case TEXTSHAPE:   figUpdateText      (figObj, genObj);  break;
+        case POINT:       figUpdatePoint     (figObj, genObj);  break;
+        case VECTOR_PATH: figUpdateVectorPath(figObj, genObj);  break;
+        case BOOLEAN:     figUpdateBoolean   (figObj, genObj);  break;
+        case SHAPE_GROUP: figUpdateShapeGroup(figObj, genObj);  break;
+        case FRAME:       figUpdateFrame     (figObj, genObj);  break;
+    }
+}
+
+
+
+function getObjectFills(genObjFills)
+{
+    const fills = [];
+
+
+    for (const fill of genObjFills)
+    {
+        switch (fill[0])
+        {
+            case 'SOLID':
+            {
+                const color = {
+                    r: Math.min(Math.max(0, fill[1] / 0xff), 1), 
+                    g: Math.min(Math.max(0, fill[2] / 0xff), 1), 
+                    b: Math.min(Math.max(0, fill[3] / 0xff), 1) };
+
+                const opacity = Math.min(Math.max(0, fill[4] / 100), 1);
+
+
+                if (   !isNaN(color.r)
+                    && !isNaN(color.g)
+                    && !isNaN(color.b)
+                    && !isNaN(opacity))
+                    fills.push(
+                    {
+                        type:    fill[0], 
+                        color:   color,
+                        opacity: opacity
+                    });
+
+
+                break;
+            }
+
+            case 'GRADIENT_LINEAR':
+            case 'GRADIENT_RADIAL':
+            case 'GRADIENT_ANGULAR':
+            case 'GRADIENT_DIAMOND':
+            {
+                const xform = fill[1];
+
+
+                const stops = [];
+
+                for (const stop of fill[2])
+                {
+                    stops.push({
+                        color: 
+                        {
+                            r: stop[0],
+                            g: stop[1],
+                            b: stop[2],
+                            a: stop[3]
+                        },
+                        position: stop[4]
+                    })    
+                }
+
+
+                fills.push(
+                {
+                    type:              fill[0],
+                    gradientTransform: xform,
+                    gradientStops:     stops
+                });
+
+
+                break;
+            }
+        }
+    }
+
+
+    return fills;
+}
+
+
+
+function getObjectEffects(genObjEffects)
+{
+    const effects = [];
+
+
+    for (const effect of genObjEffects)
+    {
+        const type = effect[0];
+
+        switch (type)
+        {
+            case 'DROP_SHADOW':
+            {
+                const color = {
+                    r: Math.min(Math.max(0, effect[1]), 1), 
+                    g: Math.min(Math.max(0, effect[2]), 1), 
+                    b: Math.min(Math.max(0, effect[3]), 1),
+                    a: Math.min(Math.max(0, effect[4]), 1) };
+
+                const offset = {
+                    x: effect[5],
+                    y: effect[6] };
+
+                const radius  = effect[ 7];
+                const spread  = effect[ 8];
+                const blend   = effect[ 9];
+                const behind  = effect[10];
+                const visible = effect[11];
+  
+
+                if (   !isNaN(color.r)
+                    && !isNaN(color.g)
+                    && !isNaN(color.b)
+                    && !isNaN(color.a)
+                    && !isNaN(offset.x)
+                    && !isNaN(offset.y)
+                    && !isNaN(radius)
+                    && !isNaN(spread))
+                    effects.push(
+                    {
+                        type:                 type, 
+                        color:                color,
+                        offset:               offset,
+                        radius:               radius,
+                        spread:               spread,
+                        visible:              visible,
+                        blendMode:            blend,
+                        showShadowBehindNode: behind
+                    });
+
+                break;
+            }
+
+            case 'INNER_SHADOW':
+            {
+                const color = {
+                    r: Math.min(Math.max(0, effect[1]), 1), 
+                    g: Math.min(Math.max(0, effect[2]), 1), 
+                    b: Math.min(Math.max(0, effect[3]), 1),
+                    a: Math.min(Math.max(0, effect[4]), 1) };
+
+                const offset = {
+                    x: effect[5],
+                    y: effect[6] };
+
+                const radius  = effect[ 7];
+                const spread  = effect[ 8];
+                const blend   = effect[ 9];
+                const visible = effect[10];
+  
+
+                if (   !isNaN(color.r)
+                    && !isNaN(color.g)
+                    && !isNaN(color.b)
+                    && !isNaN(color.a)
+                    && !isNaN(offset.x)
+                    && !isNaN(offset.y)
+                    && !isNaN(radius)
+                    && !isNaN(spread))
+                    effects.push(
+                    {
+                        type:       type, 
+                        color:      color,
+                        offset:     offset,
+                        radius:     radius,
+                        spread:     spread,
+                        visible:    visible,
+                        blendMode:  blend
+                    });
+
+                break;
+            }
+
+            case 'LAYER_BLUR':
+            {
+                const radius  = effect[1];
+                const visible = effect[2];
+
+                if (!isNaN(radius))
+                    effects.push(
+                    {
+                        type:    type, 
+                        visible: visible,
+                        radius:  radius
+                    });
+
+                break;
+            }
+
+            case 'BACKGROUND_BLUR':
+            {
+                const radius  = effect[1];
+                const visible = effect[2];
+
+                if (!isNaN(radius))
+                    effects.push(
+                    {
+                        type:    type, 
+                        visible: visible,
+                        radius:  radius
+                    });
+
+                break;
+            }
+        }
+    }
+
+
+    return effects;
+}
+
+
+
+function setObjectProps(figObj, genObj)
+{
+    setObjectFills  (figObj, genObj);
+    setObjectStrokes(figObj, genObj);
+    setObjectEffects(figObj, genObj);
+
+    figObj.isMask = genObj.isMask;
+}
+
+
+
+function setObjectFills(figObj, genObj)
+{
+    if (   !!genObj.fills
+        &&  !isEmpty(genObj.fills))
+        figObj.fills = getObjectFills(genObj.fills);
+    else
+        figObj.fills = [];
+}
+
+
+
+function setObjectStrokes(figObj, genObj)
+{
+    if (    genObj.strokes != null
+        && !isEmpty(genObj.strokes))
+    {
+        figObj.strokes      = getObjectFills(genObj.strokes);
+
+        figObj.strokeWeight = Math.max(0, genObj.strokeWeight);
+        figObj.strokeAlign  = genObj.strokeAlign;
+        figObj.strokeJoin   = genObj.strokeJoin;
+        
+        const miterAngle = genObj.strokeMiterLimit / 360 * Math.PI*2;
+        const miterLimit = 1 / Math.sin(miterAngle/2);
+        
+        figObj.strokeMiterLimit = Math.min(Math.max(0, miterLimit), 16);
+    }
+    else
+        figObj.strokes = [];
+}
+
+
+
+function setObjectEffects(figObj, genObj)
+{
+    if (   !!genObj.effects
+        &&  !isEmpty(genObj.effects))
+        figObj.effects = getObjectEffects(genObj.effects);
+    else
+        figObj.effects = [];
+}
+
+
+function figGetAllLocalColorStyles(nodeId, px, py)
+{
+    const _styles = figma.getLocalPaintStyles();
+
+
+    const styles = new Array();
+
+    for (const _style of _styles)
+    {
+        const _nodeId   = _style.getPluginData('nodeId');
+        const _existing = _style.getPluginData('existing');
+
+        const existing = !!_existing;
+
+        const style = { 
+            id:       _style.id,
+            nodeId:   _nodeId,
+            name:     _style.name,
+            existing: existing,
+            paints:   new Array()
+        };
+
+        
+        let onlyPaint = true;
+
+        for (const _paint of _style.paints)
+        {
+            if (_paint.type == 'SOLID')
+            {
+                style.paints.push([
+                    _paint.color.r,
+                    _paint.color.g,
+                    _paint.color.b,
+                    _paint.opacity]);
+            }
+            else
+            {
+                onlyPaint = false;
+                break;
+            }
+        }
+
+
+        if (onlyPaint)
+            styles.push(style);
+    }
+
+
+    figPostMessageToUi({
+        cmd:   'uiReturnFigGetAllLocalColorStyles',
+        nodeId: nodeId,
+        px:     px,
+        py:     py,
+        styles: JSON.stringify(styles)});
+}
+
+
+
+function figLinkNodeToExistingColorStyle(nodeId, styleId)
+{
+    const localStyles = figma.getLocalPaintStyles();
+
+    if (styleId != NULL) figLinkColorStyle(localStyles, nodeId, styleId);
+    else                 figClearColorStyle(localStyles, nodeId);
+}
+
+
+
+function figLinkColorStyle(localStyles, nodeId, styleId, clearExisting = true)
+{
+    const figStyles = figStyleArrays.find(a => a.nodeId == nodeId);
+    
+    if (   figStyles 
+        && clearExisting) 
+        figClearColorStyle(localStyles, nodeId);
+
+
+    const figStyle = localStyles.find(s => s.id == styleId);
+    console.assert(!!figStyle, 'figStyle should be found here');
+
+
+    figStyle.setPluginData('type',     COLOR_STYLE);
+    figStyle.setPluginData('nodeId',   nodeId);
+    figStyle.setPluginData('existing', boolToString(true));
+
+
+    figStyleArrays.push({
+        nodeId:   nodeId, 
+        existing: true, 
+        styles:   [figStyle]});
+
+
+    return figStyle;
+}
+
+
+
+function figClearColorStyle(localStyles, nodeId)
+{
+    const figStyle = localStyles.find(s => s.getPluginData('nodeId') == nodeId);
+    //console.assert(!!figStyle, 'figStyle should be found here');
+
+    if (figStyle) // could have been deleted
+    {
+        figStyle.setPluginData('type',     NULL);
+        figStyle.setPluginData('nodeId',   NULL);
+        figStyle.setPluginData('existing', NULL);
+
+        removeFromArrayWhere(figStyleArrays, a => a.nodeId == nodeId);
+    }
+
+    return figStyle;
+}
+
+
+
+function figCreateColorStyle(styles, genStyle)
+{
+    const figStyle = figma.createPaintStyle();
+
+
+    figStyle.setPluginData('type',     genStyle.type);
+    figStyle.setPluginData('nodeId',   genStyle.nodeId);
+    figStyle.setPluginData('existing', boolToString(genStyle.existing));
+
+    figStyle.name = genStyle.styleName;
+
+
+    setStylePaints(figStyle, genStyle);
+
+
+    styles.push(figStyle);
+
+
+    figPostMessageToUi({
+        cmd:    'uiSetStyleId',
+        nodeId:  genStyle.nodeId,
+        styleId: figStyle.id });
+
+    
+    return figStyle;
+}
+
+
+
+function figUpdateStyles(msg)
+{
+    let curNodeId = NULL;
+    let figStyles;
+
+
+    for (const genStyle of msg.styles)
+    {
+        if (genStyle.nodeId != curNodeId)
+        {
+            curNodeId = genStyle.nodeId;
+            
+            figStyles = figStyleArrays.find(a => a.nodeId == genStyle.nodeId);
+
+            if (!figStyles) 
+            {
+                figStyles = {
+                    nodeId:   genStyle.nodeId, 
+                    existing: genStyle.existing, 
+                    styles:   [] };
+
+                figStyleArrays.push(figStyles);
+            }
+        }
+        else
+            figStyles = null;
+
+
+        const figStyle    = figStyles.styles[0];
+        
+        const localStyles = figma.getLocalPaintStyles();
+        const localStyle  = localStyles.find(s => s.getPluginData('nodeId') == genStyle.nodeId);
+
+
+        if (    isValid(figStyle)
+            && !isValid(localStyle)) // removed
+        {
+            removeFrom(figStyles.styles, figStyle);
+        }
+
+
+        const existing = 
+               isValid(figStyle)
+            && isValid(localStyle)
+            && figStyle.getPluginData('existing');
+
+
+        if (   !isValid(figStyle)
+            || !isValid(localStyle)) // no existing style, create new style
+        {
+            if (!existing)
+            {
+                styleChangingFromGenerator = true;
+                figLinkNodeToExistingColorStyle(genStyle.nodeId, genStyle.id);
+                //figCreateColorStyle(figStyles.styles, genStyle);
+            }
+        }
+        else 
+        if (isValid(figStyle) 
+              && figStyle.getPluginData('type') == genStyle.type) // update existing style
+        {
+            styleChangingFromGenerator = true;
+            figUpdateColorStyle(localStyle, genStyle);
+        }
+        // else // delete existing style, create new style
+        // {
+        //     if (!existing)
+        //     {
+        //         localStyle.remove();
+        //         styleChangingFromGenerator = true;
+        //         figCreateColorStyle(figStyles.styles, genStyle);
+        //     }
+        // }
+    }
+}
+
+
+
+function figUpdateColorStyle(figStyle, genStyle)
+{
+    setStylePaints(figStyle, genStyle);
+
+    figStyle.name = genStyle.name;
+}
+
+
+
+function getStylePaints(stylePaints)
+{
+    const paints = new Array();
+
+    for (const _paint of stylePaints)
+    {
+        const fill = _paint[1].split(' ');
+
+        switch (_paint[0])
+        {
+            case 'SOLID':
+                paints.push(
+                {
+                    type:  'SOLID', 
+                    color: { r: Math.min(Math.max(0, parseFloat(fill[0]) / 0xff), 1), 
+                             g: Math.min(Math.max(0, parseFloat(fill[1]) / 0xff), 1), 
+                             b: Math.min(Math.max(0, parseFloat(fill[2]) / 0xff), 1) },
+                    opacity: Math.min(Math.max(0, parseFloat(fill[3]) / 100), 1)
+                });
+
+                break;
+        }
+    }
+
+    return paints;
+}
+
+
+
+function setStylePaints(style, src)
+{
+    if (   !!src.paints
+        &&  !isEmpty(src.paints))
+        style.paints = getStylePaints(src.paints);
+    else
+        style.paints = [];
+}
+
+
+
+function applyFigmaTransform(figObj, tl, tr, bl) 
+{
+    let vr = point(tr.x - tl.x, tr.y - tl.y);
+    let vb = point(bl.x - tl.x, bl.y - tl.y);
+
+
+    // if (vb.y < 0)
+    // {
+    //     const dp = subv(tl, tr);
+        
+    //     tl = subv(tl, dp);
+    //     tr = subv(tr, dp);
+    //     bl = subv(bl, dp);
+    // }
+
+
+    let sx =  nozero(vr.x);
+    let sy =  nozero(vb.y);
+
+    let kx = -vr.y;
+    let ky = -vb.x;
+    
+    let dx = -tl.x;
+    let dy = -tl.y;
+
+
+    // if (sy >= 0 && ky < 0)
+    // {
+    //     sy = -sy;
+    //     ky = -ky;
+    // }
+
+
+    let xform = mulm3m3(
+        [[1,       ky / sy,  0],
+         [kx / sx, 1,        0],
+         [0,       0,        1]],
+        createTransform(dx, dy));
+
+    xform = inversem3(xform);
+
+
+    const a = angle(vr);
+
+    if (   a > Tau/4  
+        && a < Tau*3/4)
+        xform = mulm3m3(xform, createTransform(0, 0, 1, 1, Tau/2));
+
+
+    figObj.relativeTransform = 
+    [
+        xform[0],
+        xform[1]
+    ];
+
+
+
+    console.clear();
+    console.log('vr =', vr);
+    console.log('vb =', vb);
+    console.log('a =', a);
+    console.log('sx =', sx);
+    console.log('sy =', sy);
+    console.log('kx =', kx);
+    console.log('ky =', ky);
+    console.log('xform =', '\n'+xform[0]+'\n'+xform[1]+'\n'+xform[2]+'\n');
+}
+
+
+
+function setObjectTransform(figObj, genObj)
+{
+    const xp0   = point(genObj.xp0.x, genObj.xp0.y);
+    const xp1   = point(genObj.xp1.x, genObj.xp1.y);
+    const xp2   = point(genObj.xp2.x, genObj.xp2.y);
+
+    applyFigmaTransform(figObj, xp0, xp1, xp2);
+
+
+    const scaleX = distance(xp0, xp1);
+    const scaleY = distance(xp0, xp2);
+
+    figObj.resizeWithoutConstraints(
+                        Math.max(0.01, scaleX),
+        genObj.height ? Math.max(0.01, scaleY) : 0);
+}
+
+
+ 
+function setPointTransform(figPoint, genPoint)
+{
+    figPoint.resizeWithoutConstraints(0.01, 0.01);
+
+
+    figPoint.setPluginData('actualX', genPoint.x.toString());
+    figPoint.setPluginData('actualY', genPoint.y.toString());
+
+
+    figPoint.x        = genPoint.x;
+    figPoint.y        = genPoint.y;
+
+    figPoint.rotation = genPoint.isCenter ? 45 : 0;
+}
+
+
+
+function updateExistingPointTransform(figPoint)
+{
+    figPoint.resizeWithoutConstraints(0.01, 0.01);
+}
+
+
 function genBooleanIsValid(genBool)
 {
     return genBool.children.length > 0;
@@ -3483,177 +4067,6 @@ function figUpdateLine(figLine, genLine)
 
 
 
-function makeObjectName(obj)
-{
-    return OBJECT_PREFIX + (showIds ? obj.objectId : obj.objectName);
-}
-
-
-
-function figCreateObject(genObj, addObject)
-{
-    let figObj;
-
-    switch (genObj.type)
-    {
-        case RECTANGLE:   figObj = figCreateRect      (genObj);  break;
-        case LINE:        figObj = figCreateLine      (genObj);  break;
-        case ELLIPSE:     figObj = figCreateEllipse   (genObj);  break;
-        case POLYGON:     figObj = figCreatePolygon   (genObj);  break;
-        case STAR:        figObj = figCreateStar      (genObj);  break;
-        case TEXTSHAPE:   figObj = figCreateText      (genObj);  break;
-        case POINT:       figObj = figCreatePoint     (genObj);  break;
-        case VECTOR_PATH: figObj = figCreateVectorPath(genObj);  break;
-        case BOOLEAN:     figObj = figCreateBoolean   (genObj);  break;
-        case SHAPE_GROUP: figObj = figCreateShapeGroup(genObj);  break;
-        case FRAME:       figObj = figCreateFrame     (genObj);  break;
-    }
-
-    
-    console.assert(
-           genObj.type == SHAPE_GROUP // cannot exist without children
-        || !!figObj, 
-        'no Figma object created');
-
-    if (figObj)
-    {
-        figObj.setPluginData('id',       genObj.objectId);
-        figObj.setPluginData('type',     genObj.type    );
-        figObj.setPluginData('nodeId',   genObj.nodeId  );
-        figObj.setPluginData('objectId', genObj.objectId);
-        figObj.setPluginData('final',    boolToString(genObj.final));
-
-        
-        if (genObj.type == POINT)
-            figPoints.push(figObj);
-
-
-        addObject(figObj);
-    }
-}
-
-
-
-function figUpdateObjects(figParent, genObjects)
-{
-    let curNodeId  = NULL;
-    let figObjects = null;
-
-
-
-    for (const genObj of genObjects)
-    {
-        if (genObj.nodeId != curNodeId)
-        {
-            curNodeId  = genObj.nodeId;
-            
-            figObjects = figObjectArrays.find(a => a.nodeId == genObj.nodeId);
-
-            if (!figObjects)
-            {
-                figObjectArrays.push(figObjects = 
-                {
-                    nodeId:   genObj.nodeId, 
-                    existing: genObj.existing,
-                    objects:  []
-                });
-            }
-        }
-
-
-        let objects =
-            figParent
-            ? figParent.children
-            : figObjects.objects;
-
-        const addObject = obj =>
-        {
-            if (figParent) figParent.appendChild(obj);
-            else           figObjects.objects.push(obj);
-        };
-
-
-        let figObj;
-
-        
-        figObj = objects.find(o => 
-               o.removed
-            || o.getPluginData('objectId') == genObj.objectId)
-
-        
-        if (   figObj != undefined
-            && figObj != null
-            && figObj.removed)
-        {
-            removeFrom(objects, figObj);
-        
-            if (figPoints.includes(figObj))
-                removeFromArray(figPoints, figObj);
-        }
-
-
-        if (   figObj == undefined
-            || figObj == null
-            || figObj.removed) // no existing object, create new object
-        {
-            figCreateObject(genObj, addObject);
-        }
-
-        else if (figObj.getPluginData('type') == genObj.type.toString()) // update existing object
-        {
-            figUpdateObject(figObj, genObj);
-        }
-    
-        else // delete existing object, create new object
-        {
-            figObj.remove();
-
-            if (figPoints.includes(figObj))
-                removeFromArray(figPoints, figObj);
-
-            figCreateObject(genObj, addObject);
-        }
-    }
-
-
-    // delete removed objects from parent
-    
-    if (figParent)
-    {
-        for (const figObj of figParent.children)
-            if (!genObjects.find(o => o.objectId == figObj.getPluginData('objectId')))
-                figObj.remove();
-    }
-
-
-    // put points on top
-    
-    for (const point of figPoints)
-        point.parent.appendChild(point);
-}
-
-
-
-function figUpdateObject(figObj, genObj)
-{
-    switch (genObj.type)
-    {
-        case RECTANGLE:   figUpdateRect      (figObj, genObj);  break;
-        case LINE:        figUpdateLine      (figObj, genObj);  break;
-        case ELLIPSE:     figUpdateEllipse   (figObj, genObj);  break;
-        case POLYGON:     figUpdatePolygon   (figObj, genObj);  break;
-        case STAR:        figUpdateStar      (figObj, genObj);  break;
-        case TEXTSHAPE:   figUpdateText      (figObj, genObj);  break;
-        case POINT:       figUpdatePoint     (figObj, genObj);  break;
-        case VECTOR_PATH: figUpdateVectorPath(figObj, genObj);  break;
-        case BOOLEAN:     figUpdateBoolean   (figObj, genObj);  break;
-        case SHAPE_GROUP: figUpdateShapeGroup(figObj, genObj);  break;
-        case FRAME:       figUpdateFrame     (figObj, genObj);  break;
-    }
-}
-
-
-
 var figPoints = [];
 
 
@@ -3836,271 +4249,6 @@ function figUpdatePolygon(figPoly, genPoly)
     setObjectProps    (figPoly, genPoly);
 }
 
-
-
-function getObjectFills(genObjFills)
-{
-    const fills = [];
-
-
-    for (const fill of genObjFills)
-    {
-        switch (fill[0])
-        {
-            case 'SOLID':
-            {
-                const color = {
-                    r: Math.min(Math.max(0, fill[1] / 0xff), 1), 
-                    g: Math.min(Math.max(0, fill[2] / 0xff), 1), 
-                    b: Math.min(Math.max(0, fill[3] / 0xff), 1) };
-
-                const opacity = Math.min(Math.max(0, fill[4] / 100), 1);
-
-
-                if (   !isNaN(color.r)
-                    && !isNaN(color.g)
-                    && !isNaN(color.b)
-                    && !isNaN(opacity))
-                    fills.push(
-                    {
-                        type:    fill[0], 
-                        color:   color,
-                        opacity: opacity
-                    });
-
-
-                break;
-            }
-
-            case 'GRADIENT_LINEAR':
-            case 'GRADIENT_RADIAL':
-            case 'GRADIENT_ANGULAR':
-            case 'GRADIENT_DIAMOND':
-            {
-                const xform = fill[1];
-
-
-                const stops = [];
-
-                for (const stop of fill[2])
-                {
-                    stops.push({
-                        color: 
-                        {
-                            r: stop[0],
-                            g: stop[1],
-                            b: stop[2],
-                            a: stop[3]
-                        },
-                        position: stop[4]
-                    })    
-                }
-
-
-                fills.push(
-                {
-                    type:              fill[0],
-                    gradientTransform: xform,
-                    gradientStops:     stops
-                });
-
-
-                break;
-            }
-        }
-    }
-
-
-    return fills;
-}
-
-
-
-function getObjectEffects(genObjEffects)
-{
-    const effects = [];
-
-
-    for (const effect of genObjEffects)
-    {
-        const type = effect[0];
-
-        switch (type)
-        {
-            case 'DROP_SHADOW':
-            {
-                const color = {
-                    r: Math.min(Math.max(0, effect[1]), 1), 
-                    g: Math.min(Math.max(0, effect[2]), 1), 
-                    b: Math.min(Math.max(0, effect[3]), 1),
-                    a: Math.min(Math.max(0, effect[4]), 1) };
-
-                const offset = {
-                    x: effect[5],
-                    y: effect[6] };
-
-                const radius  = effect[ 7];
-                const spread  = effect[ 8];
-                const blend   = effect[ 9];
-                const behind  = effect[10];
-                const visible = effect[11];
-  
-
-                if (   !isNaN(color.r)
-                    && !isNaN(color.g)
-                    && !isNaN(color.b)
-                    && !isNaN(color.a)
-                    && !isNaN(offset.x)
-                    && !isNaN(offset.y)
-                    && !isNaN(radius)
-                    && !isNaN(spread))
-                    effects.push(
-                    {
-                        type:                 type, 
-                        color:                color,
-                        offset:               offset,
-                        radius:               radius,
-                        spread:               spread,
-                        visible:              visible,
-                        blendMode:            blend,
-                        showShadowBehindNode: behind
-                    });
-
-                break;
-            }
-
-            case 'INNER_SHADOW':
-            {
-                const color = {
-                    r: Math.min(Math.max(0, effect[1]), 1), 
-                    g: Math.min(Math.max(0, effect[2]), 1), 
-                    b: Math.min(Math.max(0, effect[3]), 1),
-                    a: Math.min(Math.max(0, effect[4]), 1) };
-
-                const offset = {
-                    x: effect[5],
-                    y: effect[6] };
-
-                const radius  = effect[ 7];
-                const spread  = effect[ 8];
-                const blend   = effect[ 9];
-                const visible = effect[10];
-  
-
-                if (   !isNaN(color.r)
-                    && !isNaN(color.g)
-                    && !isNaN(color.b)
-                    && !isNaN(color.a)
-                    && !isNaN(offset.x)
-                    && !isNaN(offset.y)
-                    && !isNaN(radius)
-                    && !isNaN(spread))
-                    effects.push(
-                    {
-                        type:       type, 
-                        color:      color,
-                        offset:     offset,
-                        radius:     radius,
-                        spread:     spread,
-                        visible:    visible,
-                        blendMode:  blend
-                    });
-
-                break;
-            }
-
-            case 'LAYER_BLUR':
-            {
-                const radius  = effect[1];
-                const visible = effect[2];
-
-                if (!isNaN(radius))
-                    effects.push(
-                    {
-                        type:    type, 
-                        visible: visible,
-                        radius:  radius
-                    });
-
-                break;
-            }
-
-            case 'BACKGROUND_BLUR':
-            {
-                const radius  = effect[1];
-                const visible = effect[2];
-
-                if (!isNaN(radius))
-                    effects.push(
-                    {
-                        type:    type, 
-                        visible: visible,
-                        radius:  radius
-                    });
-
-                break;
-            }
-        }
-    }
-
-
-    return effects;
-}
-
-
-
-function setObjectProps(figObj, genObj)
-{
-    setObjectFills  (figObj, genObj);
-    setObjectStrokes(figObj, genObj);
-    setObjectEffects(figObj, genObj);
-
-    figObj.isMask = genObj.isMask;
-}
-
-
-
-function setObjectFills(figObj, genObj)
-{
-    if (   !!genObj.fills
-        &&  !isEmpty(genObj.fills))
-        figObj.fills = getObjectFills(genObj.fills);
-    else
-        figObj.fills = [];
-}
-
-
-
-function setObjectStrokes(figObj, genObj)
-{
-    if (    genObj.strokes != null
-        && !isEmpty(genObj.strokes))
-    {
-        figObj.strokes      = getObjectFills(genObj.strokes);
-
-        figObj.strokeWeight = Math.max(0, genObj.strokeWeight);
-        figObj.strokeAlign  = genObj.strokeAlign;
-        figObj.strokeJoin   = genObj.strokeJoin;
-        
-        const miterAngle = genObj.strokeMiterLimit / 360 * Math.PI*2;
-        const miterLimit = 1 / Math.sin(miterAngle/2);
-        
-        figObj.strokeMiterLimit = Math.min(Math.max(0, miterLimit), 16);
-    }
-    else
-        figObj.strokes = [];
-}
-
-
-
-function setObjectEffects(figObj, genObj)
-{
-    if (   !!genObj.effects
-        &&  !isEmpty(genObj.effects))
-        figObj.effects = getObjectEffects(genObj.effects);
-    else
-        figObj.effects = [];
-}
 
 
 function genRectIsValid(genRect)
@@ -4305,87 +4453,6 @@ function setTextStyle(figText, genText)
 
 
 
-
-
-function applyFigmaTransform(figObj, tl, tr, bl) 
-{
-    const vr = point(tr.x - tl.x, tr.y - tl.y);
-    const vb = point(bl.x - tl.x, bl.y - tl.y);
-
-
-    const sx =  nozero(vr.x);
-    const sy =  nozero(vb.y);
-    const kx = -vr.y;
-    const ky = -vb.x;
-    let   dx = -tl.x;
-    let   dy = -tl.y;
-
-
-    let xform = mulm3m3(
-        [[1,       ky / sy,  0],
-         [kx / sx, 1,        0],
-         [0,       0,        1]],
-        createTransform(dx, dy));
-
-    xform = inversem3(xform);
-
-
-    const a = angle(vr);
-
-    if (   a >  Tau/4  
-        && a <= Tau*3/4)
-        xform = mulm3m3(xform, createTransform(0, 0, 1, 1, Tau/2));
-
-
-    figObj.relativeTransform = 
-    [
-        xform[0],
-        xform[1]
-    ];
-}
-
-
-
-function setObjectTransform(figObj, genObj)
-{
-    const xp0   = point(genObj.xp0.x, genObj.xp0.y);
-    const xp1   = point(genObj.xp1.x, genObj.xp1.y);
-    const xp2   = point(genObj.xp2.x, genObj.xp2.y);
-
-    applyFigmaTransform(figObj, xp0, xp1, xp2);
-
-
-    const scaleX = distance(xp0, xp1);
-    const scaleY = distance(xp0, xp2);
-
-    figObj.resizeWithoutConstraints(
-                        Math.max(0.01, scaleX),
-        genObj.height ? Math.max(0.01, scaleY) : 0);
-}
-
-
- 
-function setPointTransform(figPoint, genPoint)
-{
-    figPoint.resizeWithoutConstraints(0.01, 0.01);
-
-
-    figPoint.setPluginData('actualX', genPoint.x.toString());
-    figPoint.setPluginData('actualY', genPoint.y.toString());
-
-
-    figPoint.x        = genPoint.x;
-    figPoint.y        = genPoint.y;
-
-    figPoint.rotation = genPoint.isCenter ? 45 : 0;
-}
-
-
-
-function updateExistingPointTransform(figPoint)
-{
-    figPoint.resizeWithoutConstraints(0.01, 0.01);
-}
 
 
 
