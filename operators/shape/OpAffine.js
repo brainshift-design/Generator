@@ -4,9 +4,11 @@ extends OperatorBase
     paramCenterX;
     paramCenterY;
     paramShowCenter;
+    paramAffectSpace;
 
 
-    menuBool;
+    menuBoolShowCenter;
+    menuBoolAffectSpace;
 
 
 
@@ -30,9 +32,10 @@ extends OperatorBase
 
     addBaseParams()
     {
-        this.addParam(this.paramCenterX    = new NumberParam('centerX',    'center x',    true, true, true,  50, 0, 100));
-        this.addParam(this.paramCenterY    = new NumberParam('centerY',    'center y',    true, true, true,  50, 0, 100));
-        this.addParam(this.paramShowCenter = new NumberParam('showCenter', 'show center', true, true, true,   0, 0, 1));
+        this.addParam(this.paramCenterX     = new NumberParam('centerX',     'center x',     true, true, true,  50, 0, 100));
+        this.addParam(this.paramCenterY     = new NumberParam('centerY',     'center y',     true, true, true,  50, 0, 100));
+        this.addParam(this.paramShowCenter  = new NumberParam('showCenter',  'show center',  true, true, true,   0, 0,   1));
+        this.addParam(this.paramAffectSpace = new NumberParam('affectSpace', 'affect space', true, true, true,   0, 0,   1));
 
 
         this.paramCenterX.controls[0].suffix = '%';
@@ -45,10 +48,12 @@ extends OperatorBase
         this.paramCenterY.controls[0].max = Number.MAX_SAFE_INTEGER;
 
 
-        this.paramShowCenter.controls[0].allowEditDecimals = false;
+        this.paramShowCenter .controls[0].allowEditDecimals = false;
+        this.paramAffectSpace.controls[0].allowEditDecimals = false;
 
 
-        this.menuBool = createBoolMenu(this.paramShowCenter);
+        this.menuBoolShowCenter  = createBoolMenu(this.paramShowCenter );
+        this.menuBoolAffectSpace = createBoolMenu(this.paramAffectSpace);
     }
 
 

@@ -3,6 +3,10 @@ extends OperatorBase
 {
     paramX;
     paramY;
+    paramAffectSpace;
+
+
+    menuBoolAffectSpace;
 
 
 
@@ -18,8 +22,13 @@ extends OperatorBase
         this.addOutput(new Output([SHAPE_VALUE], this.output_genRequest));
 
 
-        this.addParam(this.paramX = new NumberParam('x', 'x', true, true, true));
-        this.addParam(this.paramY = new NumberParam('y', 'y', true, true, true));
+        this.addParam(this.paramX           = new NumberParam('x', 'x',                      true, true, true));
+        this.addParam(this.paramY           = new NumberParam('y', 'y',                      true, true, true));
+        this.addParam(this.paramAffectSpace = new NumberParam('affectSpace', 'affect space', true, true, true,   0, 0,   1));
+
+
+        this.paramAffectCenter.controls[0].allowEditDecimals = false;
+        this.menuBoolAffectSpace = createBoolMenu(this.paramAffectSpace);
 
 
         this.inputs[0].addEventListener('connect',    e => this.outputs[0].types = [...this.inputs[0].connectedOutput.types]);
@@ -48,8 +57,9 @@ extends OperatorBase
         if (input.connected)
             request.push(...pushInputOrParam(input, gen));
 
-        request.push(...this.node.paramX.genRequest(gen));
-        request.push(...this.node.paramY.genRequest(gen));
+        request.push(...this.node.paramX          .genRequest(gen));
+        request.push(...this.node.paramY          .genRequest(gen));
+        request.push(...this.node.paramAffectSpace.genRequest(gen));
 
         
         gen.scope.pop();
@@ -57,5 +67,16 @@ extends OperatorBase
 
 
         return request;
+    }
+
+
+
+    updateParams()
+    {
+        super.updateParams();
+
+        updateParamConditionText(this.paramAffectSpace, false /*this.isUnknown()*/, 1);
+
+        this.updateParamControls();
     }
 }

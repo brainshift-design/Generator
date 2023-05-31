@@ -1,10 +1,11 @@
 class GMove
 extends GOperator
 {
-    input = null;
+    input       = null;
 
-    x     = null;
-    y     = null;
+    x           = null;
+    y           = null;
+    affectSpace = null;
 
     coords;
 
@@ -28,9 +29,9 @@ extends GOperator
         if (this.input) 
             copy.input = this.input.copy();
 
-        //if (this.value) copy.value = this.value.copy();
-        if (this.x) copy.x = this.x.copy();
-        if (this.y) copy.y = this.y.copy();
+        if (this.x          ) copy.x           = this.x          .copy();
+        if (this.y          ) copy.y           = this.y          .copy();
+        if (this.affectSpace) copy.affectSpace = this.affectSpace.copy();
 
         copy.coords = clone(this.coords);
 
@@ -45,8 +46,9 @@ extends GOperator
             return this;
 
             
-        const x = this.x ? (await this.x.eval(parse)).toValue() : null;
-        const y = this.y ? (await this.y.eval(parse)).toValue() : null;
+        const x           = this.x           ? (await this.x          .eval(parse)).toValue() : null;
+        const y           = this.y           ? (await this.y          .eval(parse)).toValue() : null;
+        const affectSpace = this.affectSpace ? (await this.affectSpace.eval(parse)).toValue() : null;
 
 
         if (this.input)
@@ -65,9 +67,10 @@ extends GOperator
 
         this.updateValues =
         [
-            ['value', this.value],
-            ['x',     x         ],
-            ['y',     y         ]
+            ['value',       this.value ],
+            ['x',           x          ],
+            ['y',           y          ],
+            ['affectSpace', affectSpace]
         ];
 
 
@@ -88,8 +91,9 @@ extends GOperator
             return;
             
 
-        const x = options.x.toNumber();
-        const y = options.y.toNumber();
+        const x           = options.x          .toNumber();
+        const y           = options.y          .toNumber();
+        const affectSpace = options.affectSpace.toNumber();
 
         const xform = createTransform(x, y);
 
@@ -99,7 +103,7 @@ extends GOperator
             obj.nodeId   = this.nodeId;
             obj.objectId = obj.objectId + OBJECT_SEPARATOR + this.nodeId;
 
-            obj.applyTransform(xform);
+            obj.applyTransform(xform, affectSpace > 0);
 
             this.coords = mulm3m3(this.coords, xform);
         }
@@ -114,9 +118,10 @@ extends GOperator
     {
         super.pushValueUpdates(parse);
 
-        if (this.input) this.input.pushValueUpdates(parse);
-        if (this.x    ) this.x    .pushValueUpdates(parse);
-        if (this.y    ) this.y    .pushValueUpdates(parse);
+        if (this.input      ) this.input      .pushValueUpdates(parse);
+        if (this.x          ) this.x          .pushValueUpdates(parse);
+        if (this.y          ) this.y          .pushValueUpdates(parse);
+        if (this.affectSpace) this.affectSpace.pushValueUpdates(parse);
     }
 
 
@@ -124,8 +129,9 @@ extends GOperator
     isValid()
     {
         return super.isValid()
-            && this.x.isValid()
-            && this.y.isValid();
+            && this.x          .isValid()
+            && this.y          .isValid()
+            && this.affectSpace.isValid();
     }
 
 
@@ -134,9 +140,10 @@ extends GOperator
     {
         super.invalidateInputs();
 
-        if (this.input ) this.input .invalidateInputs();
-        if (this.x     ) this.x     .invalidateInputs();
-        if (this.y     ) this.y     .invalidateInputs();
+        if (this.input      ) this.input      .invalidateInputs();
+        if (this.x          ) this.x          .invalidateInputs();
+        if (this.y          ) this.y          .invalidateInputs();
+        if (this.affectSpace) this.affectSpace.invalidateInputs();
     }
 
 

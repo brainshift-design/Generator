@@ -1,11 +1,12 @@
 class GAffine
 extends GOperator
 {
-    input      = null;
-   
-    centerX    = null;
-    centerY    = null;
-    showCenter = null;
+    input       = null;
+    
+    centerX     = null;
+    centerY     = null;
+    showCenter  = null;
+    affectSpace = null;
 
     coords;
 
@@ -27,9 +28,10 @@ extends GOperator
         if (base.input) 
             this.input = base.input.copy();
 
-        if (base.centerX   ) this.centerX    = base.centerX   .copy();
-        if (base.centerY   ) this.centerY    = base.centerY   .copy();
-        if (base.showCenter) this.showCenter = base.showCenter.copy();
+        if (base.centerX    ) this.centerX     = base.centerX    .copy();
+        if (base.centerY    ) this.centerY     = base.centerY    .copy();
+        if (base.showCenter ) this.showCenter  = base.showCenter .copy();
+        if (base.affectSpace) this.affectSpace = base.affectSpace.copy();
 
         this.coords = clone(base.coords);
     }
@@ -38,11 +40,12 @@ extends GOperator
 
     async evalBaseParams(parse)
     {
-        const centerX    = this.centerX    ? (await this.centerX   .eval(parse)).toValue() : null;
-        const centerY    = this.centerY    ? (await this.centerY   .eval(parse)).toValue() : null;
-        const showCenter = this.showCenter ? (await this.showCenter.eval(parse)).toValue() : null;
+        const centerX     = this.centerX     ? (await this.centerX    .eval(parse)).toValue() : null;
+        const centerY     = this.centerY     ? (await this.centerY    .eval(parse)).toValue() : null;
+        const showCenter  = this.showCenter  ? (await this.showCenter .eval(parse)).toValue() : null;
+        const affectSpace = this.affectSpace ? (await this.affectSpace.eval(parse)).toValue() : null;
 
-        return [centerX, centerY, showCenter];
+        return [centerX, centerY, showCenter, affectSpace];
     }
 
 
@@ -89,7 +92,7 @@ extends GOperator
             obj.nodeId   = this.nodeId;
             obj.objectId = obj.objectId + OBJECT_SEPARATOR + this.nodeId;
 
-            obj.applyTransform(xform);
+            obj.applyTransform(xform, options.affectSpace);
 
             this.coords = mulm3m3(this.coords, xform);
          }
@@ -124,10 +127,11 @@ extends GOperator
     {
         super.pushValueUpdates(parse);
 
-        if (this.input     ) this.input     .pushValueUpdates(parse);
-        if (this.centerX   ) this.centerX   .pushValueUpdates(parse);
-        if (this.centerY   ) this.centerY   .pushValueUpdates(parse);
-        if (this.showCenter) this.showCenter.pushValueUpdates(parse);
+        if (this.input      ) this.input      .pushValueUpdates(parse);
+        if (this.centerX    ) this.centerX    .pushValueUpdates(parse);
+        if (this.centerY    ) this.centerY    .pushValueUpdates(parse);
+        if (this.showCenter ) this.showCenter .pushValueUpdates(parse);
+        if (this.affectSpace) this.affectSpace.pushValueUpdates(parse);
     }
 
 
@@ -135,9 +139,10 @@ extends GOperator
     isValid()
     {
         return super.isValid()
-            && this.centerX   .isValid()
-            && this.centerY   .isValid()
-            && this.showCenter.isValid();
+            && this.centerX    .isValid()
+            && this.centerY    .isValid()
+            && this.showCenter .isValid()
+            && this.affectSpace.isValid();
     }
 
 
@@ -146,9 +151,10 @@ extends GOperator
     {
         super.invalidateInputs();
 
-        if (this.input     ) this.input     .invalidateInputs();
-        if (this.centerX   ) this.centerX   .invalidateInputs();
-        if (this.centerY   ) this.centerY   .invalidateInputs();
-        if (this.showCenter) this.showCenter.invalidateInputs();
+        if (this.input      ) this.input      .invalidateInputs();
+        if (this.centerX    ) this.centerX    .invalidateInputs();
+        if (this.centerY    ) this.centerY    .invalidateInputs();
+        if (this.showCenter ) this.showCenter .invalidateInputs();
+        if (this.affectSpace) this.affectSpace.invalidateInputs();
     }
 }

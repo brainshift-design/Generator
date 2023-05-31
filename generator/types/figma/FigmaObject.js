@@ -66,7 +66,7 @@ class FigmaObject
 
 
 
-    applyTransform(xform)
+    applyTransform(xform, affectSpace = false)
     {
         if (this.type == POINT)
         {

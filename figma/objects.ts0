@@ -104,6 +104,9 @@ function figUpdateObjects(figParent, genObjects)
         
             if (figPoints.includes(figObj))
                 removeFromArray(figPoints, figObj);
+
+            if (figEmptyObjects.includes(figObj))
+                removeFromArray(figEmptyObjects, figObj);
         }
 
 
@@ -125,6 +128,9 @@ function figUpdateObjects(figParent, genObjects)
 
             if (figPoints.includes(figObj))
                 removeFromArray(figPoints, figObj);
+
+            if (figEmptyObjects.includes(figObj))
+                removeFromArray(figEmptyObjects, figObj);
 
             figCreateObject(genObj, addObject);
         }

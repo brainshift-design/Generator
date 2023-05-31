@@ -23,7 +23,13 @@ figma.showUI(
 
 
 var curZoom = figma.viewport.zoom;
-setInterval(() => updatePointSizes(), 100);
+
+setInterval(() => 
+{
+    updatePointSizes();
+    updateEmptyObjects();
+}, 
+100);
 
 
 var showIds = false;

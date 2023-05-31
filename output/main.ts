@@ -288,15 +288,6 @@ function createTransform(x = 0, y = 0, scaleX = 1, scaleY = 1, angle = 0, skewX 
 
 
 
-function addv(v1, v2)
-{
-    return point(
-        v1.x + v2.x,
-        v1.y + v2.y);
-}	
-
-
-
 function crossv2(v1, v2)
 {
     // returns the magnitude of v1×v2 = ‖v1‖‖v2‖sinθ "perpendicular dot product",
@@ -801,6 +792,26 @@ function clone(val)
     }
 
     throw 'unknown';
+}
+
+
+
+function pushUnique(array, item)
+{
+    if (Array.isArray(item))
+        item.forEach(i => pushUnique(array, i));
+    else if (!array.includes(item))
+        array.push(item);
+}
+
+
+
+function pushUniqueExcept(array, item, except)
+{
+    if (Array.isArray(item))
+        item.forEach(i => pushUniqueExcept(array, i, except));
+    else if (!array.find(except))
+        array.push(item);
 }
 
 
@@ -1698,7 +1709,13 @@ figma.showUI(
 
 
 var curZoom = figma.viewport.zoom;
-setInterval(() => updatePointSizes(), 100);
+
+setInterval(() => 
+{
+    updatePointSizes();
+    updateEmptyObjects();
+}, 
+100);
 
 
 var showIds = false;
@@ -1776,6 +1793,10 @@ function figDeleteObjectsFromNodeIds(nodeIds)
         if (nodeIds.includes(figPoints[i].getPluginData('nodeId')))
             figPoints.splice(i, 1);
 
+    for (let i = figEmptyObjects.length-1; i >= 0; i--)
+        if (nodeIds.includes(figEmptyObjects[i].getPluginData('nodeId')))
+            figEmptyObjects.splice(i, 1);
+
     figma.currentPage
         .findAll(o => nodeIds.includes(o.getPluginData('nodeId')))
         .forEach(o => { if (!o.removed) o.remove(); });
@@ -1810,6 +1831,9 @@ function figDeleteObjectsExcept(nodeIds, ignoreObjects)
 
                 if (figPoints.includes(obj))
                     removeFromArray(figPoints, obj);
+
+                if (figEmptyObjects.includes(obj))
+                    removeFromArray(figEmptyObjects, obj);
             }
         }
         
@@ -3021,6 +3045,9 @@ function figUpdateObjects(figParent, genObjects)
         
             if (figPoints.includes(figObj))
                 removeFromArray(figPoints, figObj);
+
+            if (figEmptyObjects.includes(figObj))
+                removeFromArray(figEmptyObjects, figObj);
         }
 
 
@@ -3042,6 +3069,9 @@ function figUpdateObjects(figParent, genObjects)
 
             if (figPoints.includes(figObj))
                 removeFromArray(figPoints, figObj);
+
+            if (figEmptyObjects.includes(figObj))
+                removeFromArray(figEmptyObjects, figObj);
 
             figCreateObject(genObj, addObject);
         }
@@ -3083,6 +3113,10 @@ function figUpdateObject(figObj, genObj)
         case FRAME:       figUpdateFrame     (figObj, genObj);  break;
     }
 }
+
+
+
+const figEmptyObjects = [];
 
 
 
@@ -3312,7 +3346,12 @@ function setObjectFills(figObj, genObj)
 {
     if (   !!genObj.fills
         &&  !isEmpty(genObj.fills))
+    {
         figObj.fills = getObjectFills(genObj.fills);
+
+        if (figEmptyObjects.includes(figObj))
+            removeFromArray(figEmptyObjects, figObj);
+    }
     else
         figObj.fills = [];
 }
@@ -3324,19 +3363,43 @@ function setObjectStrokes(figObj, genObj)
     if (    genObj.strokes != null
         && !isEmpty(genObj.strokes))
     {
-        figObj.strokes      = getObjectFills(genObj.strokes);
+        setObjectStroke_(
+            figObj,
+            getObjectFills(genObj.strokes),
+            genObj.strokeWeight,
+            genObj.strokeAlign,
+            genObj.strokeJoin,
+            genObj.strokeMiterLimit);
 
-        figObj.strokeWeight = Math.max(0, genObj.strokeWeight);
-        figObj.strokeAlign  = genObj.strokeAlign;
-        figObj.strokeJoin   = genObj.strokeJoin;
-        
-        const miterAngle = genObj.strokeMiterLimit / 360 * Math.PI*2;
-        const miterLimit = 1 / Math.sin(miterAngle/2);
-        
-        figObj.strokeMiterLimit = Math.min(Math.max(0, miterLimit), 16);
+        if (figEmptyObjects.includes(figObj))
+            removeFromArray(figEmptyObjects, figObj);
+    }
+    else if (isEmpty(genObj.fills  )
+          && isEmpty(genObj.strokes))
+    {
+        setEmptyObjectStroke(figObj);
+        pushUnique(figEmptyObjects, figObj);
     }
     else
         figObj.strokes = [];
+}
+
+
+
+function setObjectStroke_(figObj, fills, weight, align, join, miterLimit, dashes)
+{
+    figObj.strokes          = fills
+    
+    figObj.strokeWeight     = Math.max(0, weight);
+    figObj.strokeAlign      = align;
+    figObj.strokeJoin       = join;
+    
+    const  miterAngle = miterLimit/360*Tau;
+    const _miterLimit = 1 / Math.sin(miterAngle/2);
+    
+    figObj.strokeMiterLimit = Math.min(Math.max(0, _miterLimit), 16);
+
+    figObj.dashPattern      = dashes;
 }
 
 
@@ -3348,6 +3411,31 @@ function setObjectEffects(figObj, genObj)
         figObj.effects = getObjectEffects(genObj.effects);
     else
         figObj.effects = [];
+}
+
+
+
+function updateEmptyObjects()
+{
+    for (const obj of figEmptyObjects)
+        setEmptyObjectStroke(obj);
+}
+
+
+
+function setEmptyObjectStroke(obj)
+{
+    setObjectStroke_(
+        obj,
+        [{ type: 'SOLID', 
+           color: {r: 1, g: 1, b: 1},
+           opacity: 0.3 }],
+         1 / curZoom,
+        'CENTER',
+        'MITER',
+        1,
+        [ 1 / curZoom, 
+          3 / curZoom]);
 }
 
 

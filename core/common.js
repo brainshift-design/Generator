@@ -263,15 +263,6 @@ function createTransform(x = 0, y = 0, scaleX = 1, scaleY = 1, angle = 0, skewX 
 
 
 
-function addv(v1, v2)
-{
-    return point(
-        v1.x + v2.x,
-        v1.y + v2.y);
-}	
-
-
-
 function crossv2(v1, v2)
 {
     // returns the magnitude of v1×v2 = ‖v1‖‖v2‖sinθ "perpendicular dot product",
@@ -776,4 +767,24 @@ function clone(val)
     }
 
     throw 'unknown';
+}
+
+
+
+function pushUnique(array, item)
+{
+    if (Array.isArray(item))
+        item.forEach(i => pushUnique(array, i));
+    else if (!array.includes(item))
+        array.push(item);
+}
+
+
+
+function pushUniqueExcept(array, item, except)
+{
+    if (Array.isArray(item))
+        item.forEach(i => pushUniqueExcept(array, i, except));
+    else if (!array.find(except))
+        array.push(item);
 }

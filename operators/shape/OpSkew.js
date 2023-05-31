@@ -40,11 +40,12 @@ extends OpAffine
         if (input.connected)
             request.push(...pushInputOrParam(input, gen));
 
-        request.push(...this.node.paramSkewX     .genRequest(gen));
-        request.push(...this.node.paramSkewY     .genRequest(gen));
-        request.push(...this.node.paramCenterX   .genRequest(gen));
-        request.push(...this.node.paramCenterY   .genRequest(gen));
-        request.push(...this.node.paramShowCenter.genRequest(gen));
+        request.push(...this.node.paramSkewX      .genRequest(gen));
+        request.push(...this.node.paramSkewY      .genRequest(gen));
+        request.push(...this.node.paramCenterX    .genRequest(gen));
+        request.push(...this.node.paramCenterY    .genRequest(gen));
+        request.push(...this.node.paramShowCenter .genRequest(gen));
+        request.push(...this.node.paramAffectSpace.genRequest(gen));
 
         
         gen.scope.pop();
@@ -61,6 +62,7 @@ extends OpAffine
         super.updateParams();
 
         updateParamConditionText(this.paramShowCenter, false /*this.isUnknown()*/, 1);
+        updateParamConditionText(this.paramAffectSpace, false /*this.isUnknown()*/, 1);
 
         this.updateParamControls();
     }
