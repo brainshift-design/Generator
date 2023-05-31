@@ -1,16 +1,16 @@
 Operator.prototype.createLabel = function()
 {
-    this.labelWrapper      = createDiv('nodeLabelWrapper');
+    this.labelWrapper         = createDiv('nodeLabelWrapper');
   
-    this.label             = createDiv('nodeLabel');
-    this.label.node        = this;
-    this.label.clickTimer  = -1; 
+    this.label                = createDiv('nodeLabel');
+    this.label.node           = this;
     
-    this.divIcon           = createDiv('nodeIcon');
-    this.divIcon.innerHTML = this.icon;
-
-    this.labelText         = createDiv('nodeLabelText');
-    this.labelText.node    = this;
+    this.divIcon              = createDiv('nodeIcon');
+    this.divIcon.innerHTML    = this.icon;
+    
+    this.labelText            = createDiv('nodeLabelText');
+    this.labelText.node       = this;
+    this.labelText.clickTimer = -1; 
     
     this.label       .appendChild(this.divIcon);
     this.label       .appendChild(this.labelText);

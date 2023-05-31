@@ -436,11 +436,15 @@ Operator.prototype.createHeader = function()
 
     this.labelText.addEventListener('pointerdown', e =>
     {
-        e.preventDefault();
-        e.stopImmediatePropagation();
+        if (this.labelText.clickTimer >= 0)
+            e.stopPropagation();
+
+        this.labelText.clickTimer = setTimeout(
+            () => this.labelText.clickTimer = -1, 
+            300);
     });
 
-    
+
 
     this.labelText.addEventListener('dblclick', e =>
     {
