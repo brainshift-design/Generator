@@ -68,7 +68,7 @@ class FigmaObject
 
 
 
-    createDefaultTransform(x, y, w, h, a = 0)
+    createDefaultTransform(x, y, a = 0)
     {
         this.xform =
             [[Math.cos(a), -Math.sin(a), x],
@@ -78,9 +78,56 @@ class FigmaObject
 
 
 
+    createTransformPoints(parse, x, y, w, h, _a)
+    {
+        this.xp0 = new FigmaPoint(this.nodeId, this.objectId+'.xp0', this.objectName+' ^ 0', x,     y,     false, false);
+        this.xp1 = new FigmaPoint(this.nodeId, this.objectId+'.xp1', this.objectName+' ^ 1', x + w, y,     false, false);
+        this.xp2 = new FigmaPoint(this.nodeId, this.objectId+'.xp2', this.objectName+' ^ 2', x,     y + h, false, false);
+
+        this.xp0.createDefaultTransform(x,     y    );
+        this.xp1.createDefaultTransform(x + w, y    );
+        this.xp2.createDefaultTransform(x,     y + h);
+
+        return parse.settings.showTransformPoints
+            ? [this.xp0, this.xp1, this.xp2]
+            : [];
+    }
+
+
+
+    getTransform()
+    {
+        let vr = point(this.cp1.x - this.cp0.x, this.cp1.y - this.cp0.y);
+        let vb = point(this.cp2.x - this.cp0.x, this.cp2.y - this.cp0.y);
+    
+    
+        let sx = nozero(vr.x);
+        let sy = nozero(vb.y);
+    
+        let kx = -vr.y;
+        let ky = -vb.x;
+        
+        let dx = -this.cp0.x;
+        let dy = -this.cp0.y;
+    
+    
+        let xform = mulm3m3(
+            [[sx, ky, 0],
+             [kx, sy, 0],
+             [0,  0,  1]],
+            createTransform(dx, dy));
+    
+        xform = inversem3(xform);
+        
+    
+        return xform;
+    }
+    
+    
+
     applyTransform(xform, affectSpace = false)
     {
-        const coords = getFigmaTransform(this.cp0, this.cp1, this.cp2);
+        const coords = this.getTransform();
 
 
         if (this.type == POINT)
@@ -88,7 +135,7 @@ class FigmaObject
             let p = point(this.x, this.y);
 
             p = mulv2m3(p, inversem3(coords));
-            p = mulv2m3(point(this.x, this.y), xform);
+            p = mulv2m3(p, xform);
             p = mulv2m3(p, coords);
 
             this.x = p.x;
@@ -102,15 +149,15 @@ class FigmaObject
 
 
             xp0 = mulv2m3(xp0, inversem3(coords));
-            xp0 = mulv2m3(point(xp0.x, xp0.y), xform);
+            xp0 = mulv2m3(xp0, xform);
             xp0 = mulv2m3(xp0, coords);
 
             xp1 = mulv2m3(xp1, inversem3(coords));
-            xp1 = mulv2m3(point(xp1.x, xp1.y), xform);
+            xp1 = mulv2m3(xp1, xform);
             xp1 = mulv2m3(xp1, coords);
 
             xp2 = mulv2m3(xp2, inversem3(coords));
-            xp2 = mulv2m3(point(xp2.x, xp2.y), xform);
+            xp2 = mulv2m3(xp2, xform);
             xp2 = mulv2m3(xp2, coords);
 
 
@@ -139,23 +186,6 @@ class FigmaObject
             this.cp2 = mulv2m3(this.cp2, xform);
             this.cp2 = mulv2m3(this.cp2, coords);
         }
-    }
-
-
-
-    createTransformPoints(parse, x, y, w, h, _a)
-    {
-        this.xp0 = new FigmaPoint(this.nodeId, this.objectId+'.xp0', this.objectName+' ^ 0', x,     y,     false, false);
-        this.xp1 = new FigmaPoint(this.nodeId, this.objectId+'.xp1', this.objectName+' ^ 1', x + w, y,     false, false);
-        this.xp2 = new FigmaPoint(this.nodeId, this.objectId+'.xp2', this.objectName+' ^ 2', x,     y + h, false, false);
-
-        this.xp0.createDefaultTransform(x,     y,     0, 0, _a);
-        this.xp1.createDefaultTransform(x + w, y,     0, 0, _a);
-        this.xp2.createDefaultTransform(x,     y + h, 0, 0, _a);
-
-        return parse.settings.showTransformPoints
-            ? [this.xp0, this.xp1, this.xp2]
-            : [];
     }
 }
 

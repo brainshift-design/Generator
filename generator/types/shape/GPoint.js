@@ -97,7 +97,7 @@ extends GOperator
 
             const point = new FigmaPoint(this.nodeId, this.nodeId, this.nodeName, x, y);
 
-            point.createDefaultTransform(x, y, 0, 0, 0);
+            point.createDefaultTransform(x, y);
 
             objects = [point];
         }

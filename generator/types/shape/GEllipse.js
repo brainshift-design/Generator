@@ -39,7 +39,7 @@ extends GShape
             return this;
 
 
-        const [x, y, width, height]/*, angle]*/ = await this.evalBaseParams(parse);
+        const [x, y, width, height] = await this.evalBaseParams(parse);
 
         const from  = this.from  ? (await this.from .eval(parse)).toValue() : null;
         const to    = this.to    ? (await this.to   .eval(parse)).toValue() : null;
@@ -58,7 +58,6 @@ extends GShape
                 y      ?? input.y,
                 width  ?? input.width,
                 height ?? input.height,
-                //angle  ?? input.angle,
                 from   ?? input.from,
                 to     ?? input.to,
                 inner  ?? input.inner);
@@ -71,7 +70,6 @@ extends GShape
                 y, 
                 width, 
                 height, 
-                //angle,
                 from,
                 to, 
                 inner);
@@ -107,13 +105,12 @@ extends GShape
             && this.y 
             && this.width 
             && this.height) 
-            //&& this.angle)
         {
             let    x = this.value.x     .value;
             let    y = this.value.y     .value;
             let    w = this.value.width .value;
             let    h = this.value.height.value;
-            let    a = 0;//this.value.angle .value;
+            let    a = 0;
             let   _a = a/360*Tau;
             const  f = this.value.from .value;
             const  t = this.value.to   .value;
@@ -132,7 +129,7 @@ extends GShape
                     this.nodeName,
                     x, y, w, h, a, f, t, i);
 
-                ellipse.createDefaultTransform(x, y, w, h, _a);
+                ellipse.createDefaultTransform(x, y, _a);
 
                 objects.push(ellipse, ...ellipse.createTransformPoints(parse, x, y, w, h, _a));
             }
@@ -165,7 +162,6 @@ extends GShape
             this.y     .toValue(),
             this.width .toValue(),
             this.height.toValue(),
-            //this.angle .toValue(),
             this.from  .toValue(),
             this.to    .toValue(),
             this.inner .toValue());

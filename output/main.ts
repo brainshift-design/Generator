@@ -815,46 +815,6 @@ function pushUniqueExcept(array, item, except)
 }
 
 
-
-function getFigmaTransform(tl, tr, bl)
-{
-    let vr = point(tr.x - tl.x, tr.y - tl.y);
-    let vb = point(bl.x - tl.x, bl.y - tl.y);
-
-
-    let sx =  nozero(vr.x);
-    let sy =  nozero(vb.y);
-
-    let kx = -vr.y;
-    let ky = -vb.x;
-    
-    let dx = -tl.x;
-    let dy = -tl.y;
-
-
-    let xform = mulm3m3(
-        [[1,       ky / sy,  0],
-         [kx / sx, 1,        0],
-         [0,       0,        1]],
-        createTransform(dx, dy));
-
-    xform = inversem3(xform);
-
-
-    const a = angle(vr);
-
-    if (   a > Tau/4  
-        && a < Tau*3/4)
-        xform = mulm3m3(xform, createTransform(0, 0, 1, 1, Tau/2));
-        
-    if (determinant(xform) < 0)
-        xform = mulm3m3(xform, createTransform(0, 0, -1, 1, 0));
-
-
-    return xform;
-}
-
-
 const LIST_VALUE              = 'LIST#';
 
 const NUMBER_LIST_VALUE       = 'NLIST#';
@@ -3446,8 +3406,8 @@ function setObjectStroke_(figObj, fills, weight, align, join, miterLimit, dashes
 
 function setObjectEffects(figObj, genObj)
 {
-    if (   !!genObj.effects
-        &&  !isEmpty(genObj.effects))
+    if (  !!genObj.effects
+        && !isEmpty(genObj.effects))
         figObj.effects = getObjectEffects(genObj.effects);
     else
         figObj.effects = [];
@@ -3475,7 +3435,7 @@ function setEmptyObjectStroke(obj)
         'MITER',
         1,
         [ 1 / curZoom, 
-          3 / curZoom]);
+          2 / curZoom]);
 }
 
 
@@ -3747,6 +3707,46 @@ function setStylePaints(style, src)
         style.paints = getStylePaints(src.paints);
     else
         style.paints = [];
+}
+
+
+
+function getFigmaTransform(tl, tr, bl)
+{
+    let vr = point(tr.x - tl.x, tr.y - tl.y);
+    let vb = point(bl.x - tl.x, bl.y - tl.y);
+
+
+    let sx =  nozero(vr.x);
+    let sy =  nozero(vb.y);
+
+    let kx = -vr.y;
+    let ky = -vb.x;
+    
+    let dx = -tl.x;
+    let dy = -tl.y;
+
+
+    let xform = mulm3m3(
+        [[1,       ky / sy,  0],
+         [kx / sx, 1,        0],
+         [0,       0,        1]],
+        createTransform(dx, dy));
+
+    xform = inversem3(xform);
+
+
+    const a = angle(vr);
+
+    if (   a > Tau/4  
+        && a < Tau*3/4)
+        xform = mulm3m3(xform, createTransform(0, 0, 1, 1, Tau/2));
+        
+    if (determinant(xform) < 0)
+        xform = mulm3m3(xform, createTransform(0, 0, -1, 1, 0));
+
+
+    return xform;
 }
 
 

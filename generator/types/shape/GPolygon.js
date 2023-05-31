@@ -38,7 +38,7 @@ extends GShape
             return this;
 
             
-        const [x, y, width, height]/*, angle]*/ = await this.evalBaseParams(parse);
+        const [x, y, width, height] = await this.evalBaseParams(parse);
 
         const round   = this.round   ? (await this.round  .eval(parse)).toValue() : null;
         const corners = this.corners ? (await this.corners.eval(parse)).toValue() : null;
@@ -56,7 +56,6 @@ extends GShape
                 y       ?? input.y,
                 width   ?? input.width,
                 height  ?? input.height,
-                //angle   ?? input.angle,
                 round   ?? input.round,
                 corners ?? input.corners);
         }
@@ -68,7 +67,6 @@ extends GShape
                 y, 
                 width, 
                 height, 
-                //angle, 
                 round, 
                 corners);
         }
@@ -108,7 +106,6 @@ extends GShape
             && this.y 
             && this.width 
             && this.height 
-            //&& this.angle 
             && this.round
             && this.corners)
         {
@@ -116,7 +113,7 @@ extends GShape
             let    y = this.value.y      .value;
             let    w = this.value.width  .value;
             let    h = this.value.height .value;
-            let    a = 0;//this.value.angle  .value;
+            let    a = 0;
             let   _a = a/360*Tau;
             const  r = Math.max(0, this.value.round.value);
             const  c = this.value.corners.value;
@@ -129,9 +126,9 @@ extends GShape
                 this.nodeId,
                 this.nodeId,
                 this.nodeName,
-                x, y, w, h, /*a,*/ r, c);
+                x, y, w, h, r, c);
 
-            poly.createDefaultTransform(x, y, w, h, _a);
+            poly.createDefaultTransform(x, y, _a);
 
             objects.push(poly, ...poly.createTransformPoints(parse, x, y, w, h, _a));
         }
@@ -165,7 +162,6 @@ extends GShape
             this.y      .toValue(),
             this.width  .toValue(),
             this.height .toValue(),
-            //this.angle  .toValue(),
             this.round  .toValue(),
             this.corners.toValue());
 

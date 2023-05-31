@@ -68,7 +68,6 @@ extends GAffine
             new NumberValue(_bounds.y     ), 
             new NumberValue(_bounds.width ),
             new NumberValue(_bounds.height),
-            new NumberValue(0),
             new NumberValue(0));
 
 

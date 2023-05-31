@@ -420,7 +420,6 @@ Operator.prototype.createHeader = function()
 
     this.header.addEventListener('dblclick', e =>
     {
-        console.log('header.dblclick');
         e.stopPropagation();
 
         actionManager.do(new MakeActiveNodesAction([this.id], e.shiftKey));

@@ -137,9 +137,11 @@ extends GShape
                 for (let i = 0; i < this.value.children.objects.length; i++)
                 {
                     const obj    = this.value.children.objects[i].copy();
+
                     obj.nodeId   = this.nodeId;
                     obj.objectId = obj.objectId + OBJECT_SEPARATOR + this.nodeId;
                     obj.listId   = -1;
+                    
                     frame.children.push(obj);
                 }
             }
@@ -148,20 +150,21 @@ extends GShape
                 for (let i = 0; i < this.value.objects.length; i++)
                 {
                     const obj    = this.value.objects[i].copy();
+                    
                     obj.nodeId   = this.nodeId;
                     obj.objectId = obj.objectId + OBJECT_SEPARATOR + this.nodeId;
                     obj.listId   = -1;
+                    
                     frame.children.push(obj);
                 }
             }
 
 
             frame.createDefaultTransform(
-                this.value.x    .value,
-                this.value.y    .value,
-                0);//this.value.angle.value/360*Tau);
+                this.value.x.value,
+                this.value.y.value);
 
-            frame.createDefaultTransform(x, y, w, h, _a);
+            frame.createDefaultTransform(x, y, _a);
 
             objects.push(frame, ...frame.createTransformPoints(parse, x, y, w, h, _a));
         }

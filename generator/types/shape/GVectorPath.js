@@ -27,7 +27,7 @@ extends GShape
         if (this.input) 
             copy.input = this.input.copy();
 
-        if (this.points ) copy.objects  = this.points .copy();
+        if (this.points ) copy.points  = this.points .copy();
         if (this.closed ) copy.closed  = this.closed .copy();
         if (this.degree ) copy.degree  = this.degree .copy();
         if (this.winding) copy.winding = this.winding.copy();
@@ -124,11 +124,6 @@ extends GShape
             && this.value.winding
             && this.value.round)
         {
-            let  x = this.value.x     .value;
-            let  y = this.value.y     .value;
-            let  a = this.value.angle .value;
-            let _a = a/360*Tau;
-
             const path = new FigmaVectorPath(
                 this.nodeId,
                 this.nodeId,
@@ -138,7 +133,16 @@ extends GShape
                 this.value.degree .value,
                 this.value.winding.value,
                 this.value.round  .value);
-                
+
+            const bounds = getObjBounds([path]);
+
+            let  x = bounds.x;
+            let  y = bounds.y;
+            let  w = bounds.w;
+            let  h = bounds.h;
+            let  a = 0;
+            let _a = a/360*Tau;
+
             path.createDefaultTransform(x, y, w, h, _a);
 
             objects.push(path, ...path.createTransformPoints(parse, x, y, w, h, _a));

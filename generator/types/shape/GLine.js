@@ -1,7 +1,7 @@
 class GLine
 extends GShape
 {
-    input  = null;
+    input = null;
 
 
 
@@ -32,7 +32,7 @@ extends GShape
             return this;
 
 
-        const [x, y, width, height]/*, angle]*/ = await this.evalBaseParams(parse, false);
+        const [x, y, width, height] = await this.evalBaseParams(parse, false);
 
             
         let input = null;
@@ -45,12 +45,11 @@ extends GShape
                 this.nodeId,
                 x     ?? input.x,
                 y     ?? input.y,
-                width ?? input.width);//,
-                //angle ?? input.angle);
+                width ?? input.width);
         }
         else
         {
-            this.value = new LineValue(this.nodeId, x, y, width);//, angle);
+            this.value = new LineValue(this.nodeId, x, y, width);
         }
 
 
@@ -82,12 +81,11 @@ extends GShape
         if (   this.x 
             && this.y 
             && this.width) 
-            //&& this.angle)
         {
             let  x = this.value.x     .value;
             let  y = this.value.y     .value;
             let  w = this.value.width .value;
-            let  a = 0;//this.value.angle .value;
+            let  a = 0;
             let _a = a/360*Tau;
 
 
@@ -102,7 +100,7 @@ extends GShape
                     this.nodeName,
                     x, y, w, a);
 
-                line.createDefaultTransform(x, y, w, 0.01, _a);
+                line.createDefaultTransform(x, y, _a);
                 
                 objects.push(line, ...line.createTransformPoints(parse, x, y, w, 0.01, _a));
             }
@@ -133,8 +131,7 @@ extends GShape
             this.nodeId,
             this.x     .toValue(),
             this.y     .toValue(),
-            this.width .toValue());//,
-            //this.angle .toValue());
+            this.width .toValue());
 
         line.props   = this.props.toValue();
         line.objects = this.objects.map(o => o.copy());

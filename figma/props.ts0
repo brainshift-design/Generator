@@ -288,8 +288,8 @@ function setObjectStroke_(figObj, fills, weight, align, join, miterLimit, dashes
 
 function setObjectEffects(figObj, genObj)
 {
-    if (   !!genObj.effects
-        &&  !isEmpty(genObj.effects))
+    if (  !!genObj.effects
+        && !isEmpty(genObj.effects))
         figObj.effects = getObjectEffects(genObj.effects);
     else
         figObj.effects = [];
@@ -317,5 +317,5 @@ function setEmptyObjectStroke(obj)
         'MITER',
         1,
         [ 1 / curZoom, 
-          3 / curZoom]);
+          2 / curZoom]);
 }

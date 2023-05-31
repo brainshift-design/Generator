@@ -109,7 +109,7 @@ extends GOperator
                 cy,
                 true);
 
-            center.createDefaultTransform(cx, cy, 0);
+            center.createDefaultTransform(cx, cy);
 
             this.objects.push(center);
         };
