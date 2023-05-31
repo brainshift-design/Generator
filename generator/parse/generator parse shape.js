@@ -47,7 +47,7 @@ function genParseRectangle(parse)
         case 'y':      rect.y      = genParse(parse); break;
         case 'width':  rect.width  = genParse(parse); break;
         case 'height': rect.height = genParse(parse); break;
-        case 'angle':  rect.angle  = genParse(parse); break;
+        //case 'angle':  rect.angle  = genParse(parse); break;
         case 'round':  rect.round  = genParse(parse); break;
         case 'props':  rect.props  = genParse(parse); break;
         }
@@ -112,7 +112,7 @@ function genParseLine(parse)
         case 'x':     line.x     = genParse(parse); break;
         case 'y':     line.y     = genParse(parse); break;
         case 'width': line.width = genParse(parse); break;
-        case 'angle': line.angle = genParse(parse); break;
+        //case 'angle': line.angle = genParse(parse); break;
         case 'props': line.props = genParse(parse); break;
         }
     }
@@ -177,7 +177,7 @@ function genParseEllipse(parse)
         case 'y':      ellipse.y      = genParse(parse); break;
         case 'width':  ellipse.width  = genParse(parse); break;
         case 'height': ellipse.height = genParse(parse); break;
-        case 'angle':  ellipse.angle  = genParse(parse); break;
+        //case 'angle':  ellipse.angle  = genParse(parse); break;
         case 'from':   ellipse.from   = genParse(parse); break;
         case 'to':     ellipse.to     = genParse(parse); break;
         case 'inner':  ellipse.inner  = genParse(parse); break;
@@ -245,7 +245,7 @@ function genParsePolygon(parse)
         case 'y':       poly.y       = genParse(parse); break;
         case 'width':   poly.width   = genParse(parse); break;
         case 'height':  poly.height  = genParse(parse); break;
-        case 'angle':   poly.angle   = genParse(parse); break;
+        //case 'angle':   poly.angle   = genParse(parse); break;
         case 'round':   poly.round   = genParse(parse); break;
         case 'corners': poly.corners = genParse(parse); break;
         case 'props':   poly.props   = genParse(parse); break;
@@ -312,7 +312,7 @@ function genParseStar(parse)
         case 'y':      star.y      = genParse(parse); break;
         case 'width':  star.width  = genParse(parse); break;
         case 'height': star.height = genParse(parse); break;
-        case 'angle':  star.angle  = genParse(parse); break;
+        //case 'angle':  star.angle  = genParse(parse); break;
         case 'round':  star.round  = genParse(parse); break;
         case 'points': star.points = genParse(parse); break;
         case 'convex': star.convex = genParse(parse); break;
@@ -381,7 +381,7 @@ function genParseTextShape(parse)
         case 'y':             text.y             = genParse(parse); break;
         case 'width':         text.width         = genParse(parse); break;
         case 'height':        text.height        = genParse(parse); break;
-        case 'angle':         text.angle         = genParse(parse); break;
+        //case 'angle':         text.angle         = genParse(parse); break;
         case 'font':          text.font          = genParse(parse); break;
         case 'style':         text.style         = genParse(parse); break;
         case 'size':          text.size          = genParse(parse); break;
@@ -709,7 +709,7 @@ function genParseFrame(parse)
         case 'y':        frame.y        = genParse(parse); break;
         case 'width':    frame.width    = genParse(parse); break;
         case 'height':   frame.height   = genParse(parse); break;
-        case 'angle':    frame.angle    = genParse(parse); break;
+        //case 'angle':    frame.angle    = genParse(parse); break;
         case 'round':    frame.round    = genParse(parse); break;
         case 'children': frame.children = genParse(parse); break;
         case 'props':    frame.props    = genParse(parse); break;

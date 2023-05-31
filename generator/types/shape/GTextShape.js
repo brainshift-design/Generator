@@ -8,7 +8,7 @@ extends GShape
     y             = null;
     width         = null;
     height        = null;
-    angle         = null;
+    //angle         = null;
     font          = null;
     style         = null;
     size          = null;
@@ -40,7 +40,7 @@ extends GShape
         if (this.y            ) copy.y             = this.y            .copy();
         if (this.width        ) copy.width         = this.width        .copy();
         if (this.height       ) copy.height        = this.height       .copy();
-        if (this.angle        ) copy.angle         = this.angle        .copy();
+        //if (this.angle        ) copy.angle         = this.angle        .copy();
         if (this.font         ) copy.font          = this.font         .copy();
         if (this.style        ) copy.style         = this.style        .copy();
         if (this.size         ) copy.size          = this.size         .copy();
@@ -65,7 +65,7 @@ extends GShape
         const y             = this.y             ? (await this.y            .eval(parse)).toValue() : null;
         const width         = this.width         ? (await this.width        .eval(parse)).toValue() : null;
         const height        = this.height        ? (await this.height       .eval(parse)).toValue() : null;
-        const angle         = this.angle         ? (await this.angle        .eval(parse)).toValue() : null;
+        //const angle         = this.angle         ? (await this.angle        .eval(parse)).toValue() : null;
         const font          = this.font          ? (await this.font         .eval(parse)).toValue() : null;
         const style         = this.style         ? (await this.style        .eval(parse)).toValue() : null;
         const size          = this.size          ? (await this.size         .eval(parse)).toValue() : null;
@@ -88,7 +88,7 @@ extends GShape
                 y             ?? input.y,
                 width         ?? input.width,
                 height        ?? input.height,
-                angle         ?? input.angle,
+                //angle         ?? input.angle,
                 font          ?? input.font,
                 style         ?? input.style,
                 size          ?? input.size,
@@ -106,7 +106,7 @@ extends GShape
                 y, 
                 width, 
                 height, 
-                angle, 
+                //angle, 
                 font, 
                 style,
                 size,
@@ -125,7 +125,7 @@ extends GShape
             ['y',             this.value.y            ],
             ['width',         this.value.width        ],
             ['height',        this.value.height       ],
-            ['angle',         this.value.angle        ],
+            //['angle',         this.value.angle        ],
             ['font',          this.value.font         ],
             ['style',         this.value.style        ],
             ['size',          this.value.size         ],
@@ -163,7 +163,7 @@ extends GShape
             && this.value.y 
             && this.value.width 
             && this.value.height 
-            && this.value.angle
+            //&& this.value.angle
             && this.value.font
             && this.value.style
             && this.value.size
@@ -176,7 +176,7 @@ extends GShape
             let  y = this.value.y     .value;
             let  w = this.value.width .value;
             let  h = this.value.height.value;
-            let  a = this.value.angle .value;
+            let  a = 0;//this.value.angle .value;
             let _a = a/360*Tau;
 
             const fontName = figUniqueFontNames[this.value.font.value];
@@ -186,7 +186,7 @@ extends GShape
                 this.nodeId,
                 this.nodeName,
                 this.value.text.value,
-                x, y, w, h, a,
+                x, y, w, h, //a,
                 fontName,
                 this.value.style        .value,
                 this.value.size         .value,
@@ -220,7 +220,7 @@ extends GShape
         if (this.y            ) this.y            .pushValueUpdates(parse);
         if (this.width        ) this.width        .pushValueUpdates(parse);
         if (this.height       ) this.height       .pushValueUpdates(parse);
-        if (this.angle        ) this.angle        .pushValueUpdates(parse);
+        //if (this.angle        ) this.angle        .pushValueUpdates(parse);
         if (this.font         ) this.font         .pushValueUpdates(parse);
         if (this.style        ) this.style        .pushValueUpdates(parse);
         if (this.size         ) this.size         .pushValueUpdates(parse);
@@ -239,7 +239,7 @@ extends GShape
             && this.y            .isValid()
             && this.width        .isValid()
             && this.height       .isValid()
-            && this.angle        .isValid()
+            //&& this.angle        .isValid()
             && this.font         .isValid()
             && this.style        .isValid()
             && this.size         .isValid()
@@ -261,7 +261,7 @@ extends GShape
             this.y            .toValue(),
             this.width        .toValue(),
             this.height       .toValue(),
-            this.angle        .toValue(),
+            //this.angle        .toValue(),
             this.font         .toValue(),
             this.style        .toValue(),
             this.size         .toValue(),
@@ -288,7 +288,7 @@ extends GShape
         if (this.y            ) this.y            .invalidateInputs();
         if (this.width        ) this.width        .invalidateInputs();
         if (this.height       ) this.height       .invalidateInputs();
-        if (this.angle        ) this.angle        .invalidateInputs();
+        //if (this.angle        ) this.angle        .invalidateInputs();
         if (this.font         ) this.font         .invalidateInputs();
         if (this.style        ) this.style        .invalidateInputs();
         if (this.size         ) this.size         .invalidateInputs();

@@ -5,7 +5,7 @@ extends GShapeBase
     y      = null;
     width  = null;
     height = null;
-    angle  = null;
+    //angle  = null;
 
     props  = null;
    

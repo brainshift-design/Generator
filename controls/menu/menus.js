@@ -193,7 +193,6 @@ var menuItemNodeUngroup;
 var menuItemNodeSep2;
 var menuItemNodeRename;
 //var menuItemNodeEdit;
-var menuItemNodeLeaveOnCanvas;
 var menuItemNodeSep3;
 var menuItemNodeSelect;
 // var menuItemNodeBringToFront;
@@ -617,12 +616,11 @@ function initGeneratorMenus()
         menuItemNodeSep2           = new MenuItem('',                {separator: true}),
         menuItemNodeSelect         = new MenuItem('Select',          {childMenu: menuNodeSelect}),
         menuItemNodeSep3           = new MenuItem('',                {separator: true}),
-        // menuItemNodeRename      = new MenuItem('Rename',          {shortcut:  osCtrl() + 'R',       callback: e => { hideAllMenus(); graphView.renameSelectedNode(); }}),
+        menuItemNodeRename         = new MenuItem('Rename',          {shortcut:  osCtrl() + 'R',       callback: e => { hideAllMenus(); graphView.renameSelectedNode(); }}),
         // menuItemNodeEdit           = new MenuItem('Edit...',      {callback: e => { hideAllMenus(); graphView.editSelectedCustomNode(); }}),
         //                              new MenuItem('',             {separator: true}),
         // menuItemNodeActivate    = new MenuItem('Activate',        {callback: () => makeSelectedNodesActive()}),
         menuItemNodeEnableDisable  = new MenuItem('Enable/Disable',  {shortcut:  osCtrlShift() + 'E',  callback: () => actionManager.do(new ToggleDisableNodesAction(graphView.selectedNodes.map(n => n.id)))}),
-        menuItemNodeLeaveOnCanvas  = new MenuItem('Leave on canvas', {callback: e => { hideAllMenus(); }}),
         menuItemNodeSep4           = new MenuItem('',                {separator: true}),
         menuItemNodeRemove         = new MenuItem('Remove',          {shortcut:  osCtrl() + '⌫',      callback: e => { hideAllMenus(); graphView.removeSelectedNodes(true); }})]);
 
@@ -643,10 +641,9 @@ function initGeneratorMenus()
         updateElementDisplay(menuItemNodeEditGroup    .div, hasGroups && single);
         updateElementDisplay(menuItemNodeSepGroup     .div, hasGroups && single);
         updateElementDisplay(menuItemNodeUngroup      .div, hasGroups);
-        updateElementDisplay(menuItemNodeSep2         .div, single);
-      //updateMenuItemDisplay(menuItemNodeRename      .div, single);
+        //updateElementDisplay(menuItemNodeSep2         .div, single);
+        updateElementDisplay(menuItemNodeRename       .div, single);
         //updateElementDisplay(menuItemNodeEdit       .div, single);
-        updateElementDisplay(menuItemNodeLeaveOnCanvas.div, hasObjects);
         updateElementDisplay(menuItemNodeSep3         .div, single);
         updateElementDisplay(menuItemNodeSelect       .div, single);
         updateElementDisplay(menuItemNodeSep4         .div, canDisable);

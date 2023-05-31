@@ -5,7 +5,7 @@ extends FigmaShape
     y;
     width;
     height;
-    angle;
+    //angle;
     from;
     to;
     inner;
@@ -20,7 +20,7 @@ extends FigmaShape
         this.y      = y;
         this.width  = width;
         this.height = height;
-        this.angle  = angle;
+        //this.angle  = angle;
         this.from   = from;
         this.to     = to;
         this.inner  = inner;
@@ -38,7 +38,7 @@ extends FigmaShape
             this.y,
             this.width,
             this.height,
-            this.angle,
+            //this.angle,
             this.from,
             this.to,
             this.inner);

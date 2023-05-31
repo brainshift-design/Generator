@@ -148,6 +148,15 @@ document.addEventListener('keydown', e =>
         updateMenuItemShowOperationResults();          
     }
 
+    // rename selected node
+    else if (e.code == 'KeyR'
+          && getCtrlKey(e)
+          && !e.shiftKey
+          && !e.altKey)
+    {
+        graphView.renameSelectedNode();
+    }
+
     // escape
     else if (e.key == 'Escape')
     {

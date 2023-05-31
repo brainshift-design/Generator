@@ -5,7 +5,7 @@ function genTextIsValid(genText)
         && genText.y      != null && !isNaN(genText.y     )
         && genText.width  != null && !isNaN(genText.width )
         && genText.height != null && !isNaN(genText.height)
-        && genText.angle  != null && !isNaN(genText.angle )
+        //&& genText.angle  != null && !isNaN(genText.angle )
         && genText.font   != null && genText.font != NULL
         && genText.size   != null && !isNaN(genText.size  );
 }

@@ -39,7 +39,7 @@ extends GShape
             return this;
 
 
-        const [x, y, width, height, angle] = await this.evalBaseParams(parse);
+        const [x, y, width, height]/*, angle]*/ = await this.evalBaseParams(parse);
 
         const from  = this.from  ? (await this.from .eval(parse)).toValue() : null;
         const to    = this.to    ? (await this.to   .eval(parse)).toValue() : null;
@@ -58,9 +58,9 @@ extends GShape
                 y      ?? input.y,
                 width  ?? input.width,
                 height ?? input.height,
-                angle  ?? input.angle,
-                from   ?? input.from ,
-                to     ?? input.to   ,
+                //angle  ?? input.angle,
+                from   ?? input.from,
+                to     ?? input.to,
                 inner  ?? input.inner);
         }
         else
@@ -71,7 +71,7 @@ extends GShape
                 y, 
                 width, 
                 height, 
-                angle,
+                //angle,
                 from,
                 to, 
                 inner);
@@ -106,14 +106,14 @@ extends GShape
         if (   this.x 
             && this.y 
             && this.width 
-            && this.height 
-            && this.angle)
+            && this.height) 
+            //&& this.angle)
         {
             let    x = this.value.x     .value;
             let    y = this.value.y     .value;
             let    w = this.value.width .value;
             let    h = this.value.height.value;
-            let    a = this.value.angle .value;
+            let    a = 0;//this.value.angle .value;
             let   _a = a/360*Tau;
             const  f = this.value.from .value;
             const  t = this.value.to   .value;
@@ -165,7 +165,7 @@ extends GShape
             this.y     .toValue(),
             this.width .toValue(),
             this.height.toValue(),
-            this.angle .toValue(),
+            //this.angle .toValue(),
             this.from  .toValue(),
             this.to    .toValue(),
             this.inner .toValue());

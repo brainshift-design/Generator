@@ -4,7 +4,7 @@ function genStarIsValid(genStar)
         && genStar.y      != null && !isNaN(genStar.y     )
         && genStar.width  != null && !isNaN(genStar.width )
         && genStar.height != null && !isNaN(genStar.height)
-        && genStar.angle  != null && !isNaN(genStar.angle )
+        //&& genStar.angle  != null && !isNaN(genStar.angle )
         && genStar.round  != null && !isNaN(genStar.round )
         && genStar.points != null && !isNaN(genStar.points)
         && genStar.convex != null && !isNaN(genStar.convex);

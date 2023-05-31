@@ -6,7 +6,7 @@ extends OpShape
     paramY;
     paramWidth;
     paramHeight;
-    paramAngle;
+    //paramAngle;
     paramFont;
     paramStyle;
     paramSize;
@@ -37,7 +37,7 @@ extends OpShape
         this.addParam(this.paramY             = new NumberParam('y',             'y',      true,  true, true,   0));
         this.addParam(this.paramWidth         = new NumberParam('width',         'width',  true,  true, true, 100,    0.01));
         this.addParam(this.paramHeight        = new NumberParam('height',        'height', true,  true, true, 100,    0.01));
-        this.addParam(this.paramAngle         = new NumberParam('angle',         'angle',  true,  true, true,   0, -180,   180));
+        //this.addParam(this.paramAngle         = new NumberParam('angle',         'angle',  true,  true, true,   0, -180,   180));
         this.addParam(this.paramFont          = new SelectParam('font',          'font',   false, true, true, figUniqueFontNames, interIndex));
         this.addParam(this.paramStyle         = new SelectParam('style',         'style',  false, true, true, [''], 0));
         this.addParam(this.paramSize          = new NumberParam('size',          'size',   true,  true, true,  12, 1));
@@ -49,9 +49,9 @@ extends OpShape
 
         this.paramText.controls[0].textbox.style.textAlign = 'center';
 
-        this.paramAngle.controls[0].setSuffix('°', true);
-        this.paramAngle.controls[0].wrapValue   = true;
-        this.paramAngle.controls[0].dragReverse = true;
+        // this.paramAngle.controls[0].setSuffix('°', true);
+        // this.paramAngle.controls[0].wrapValue   = true;
+        // this.paramAngle.controls[0].dragReverse = true;
 
         this.paramLineHeight   .controls[0].setSuffix('%', true);
         this.paramLetterSpacing.controls[0].setSuffix('%', true);

@@ -4,7 +4,7 @@ function genPolyIsValid(genPoly)
         && genPoly.y       != null && !isNaN(genPoly.y      )
         && genPoly.width   != null && !isNaN(genPoly.width  )
         && genPoly.height  != null && !isNaN(genPoly.height )
-        && genPoly.angle   != null && !isNaN(genPoly.angle  )
+        //&& genPoly.angle   != null && !isNaN(genPoly.angle  )
         && genPoly.round   != null && !isNaN(genPoly.round  )
         && genPoly.corners != null && !isNaN(genPoly.corners);
 }

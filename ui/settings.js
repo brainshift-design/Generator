@@ -313,7 +313,7 @@ function enableFeatures(subscription, beta)
     //updateMenuItemDisplay(menuItemNodeCopyAsJsCode    .div, subscription && beta);
     updateElementDisplay(menuItemNodeCopyAsJsFunction.div, subscription && beta);
 
-    updateElementDisplay(shortcutCopyAsJavascript        , subscription && beta);
+    // updateElementDisplay(shortcutCopyAsJavascript        , subscription && beta);
 
 
     graph.nodes.forEach(n => n.updateSubscribeStatus(subscription));

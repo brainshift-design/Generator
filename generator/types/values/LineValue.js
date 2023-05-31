@@ -4,22 +4,22 @@ extends ShapeValue
     x;
     y;
     width;
-    angle;
+    //angle;
 
 
 
     constructor(nodeId,
                 x      = new NumberValue(0), 
                 y      = new NumberValue(0), 
-                width  = new NumberValue(0), 
-                angle  = new NumberValue(0))
+                width  = new NumberValue(0))//, 
+                //angle  = new NumberValue(0))
     {
         super(LINE_VALUE, nodeId);
 
         this.x      = x;
         this.y      = y;
         this.width  = width;
-        this.angle  = angle;
+        //this.angle  = angle;
     }
 
 
@@ -30,8 +30,8 @@ extends ShapeValue
             this.nodeId,
             this.x    .copy(), 
             this.y    .copy(), 
-            this.width.copy(), 
-            this.angle.copy());
+            this.width.copy())//, 
+            //this.angle.copy());
 
         copy.copyBase(this);
 
@@ -45,8 +45,8 @@ extends ShapeValue
         return line
             && this.x     .equals(line.x    )
             && this.y     .equals(line.y    )
-            && this.width .equals(line.width)
-            && this.angle .equals(line.angle);
+            && this.width .equals(line.width);
+            //&& this.angle .equals(line.angle);
     }
 
 
@@ -63,8 +63,8 @@ extends ShapeValue
         return super.isValid()
             && this.x    .isValid()
             && this.y    .isValid()
-            && this.width.isValid()
-            && this.angle.isValid();
+            && this.width.isValid();
+            //&& this.angle.isValid();
     }
 
 
@@ -80,8 +80,8 @@ extends ShapeValue
     {
         return      this.x     .toString()
             + ' ' + this.y     .toString()
-            + ' ' + this.width .toString()
-            + ' ' + this.angle .toString();
+            + ' ' + this.width .toString();
+            //+ ' ' + this.angle .toString();
     }
 
 
@@ -90,8 +90,8 @@ extends ShapeValue
     {
         return      this.x     .toDisplayString()
             + ' ' + this.y     .toDisplayString()
-            + ' ' + this.width .toDisplayString()
-            + ' ' + this.angle .toDisplayString();
+            + ' ' + this.width .toDisplayString();
+            //+ ' ' + this.angle .toDisplayString();
     }
 
 
@@ -125,15 +125,15 @@ function parseLineValue(str, i = -1)
     const x     = parseNumberValue(str[i]); i += x    [1];
     const y     = parseNumberValue(str[i]); i += y    [1];
     const width = parseNumberValue(str[i]); i += width[1];
-    const angle = parseNumberValue(str[i]); i += angle[1];
+    //const angle = parseNumberValue(str[i]); i += angle[1];
 
 
     const line = new LineValue(
         '', // set node ID elsewhere
         x    [0],
         y    [0],
-        width[0],
-        angle[0]);
+        width[0]);//,
+        //angle[0]);
 
 
     i = parseShapeBaseValue(str, i, line);

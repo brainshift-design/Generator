@@ -5,11 +5,11 @@ extends FigmaShape
     y;
     width;
     height;
-    angle;
+    //angle;
     round;
 
 
-    constructor(nodeId, objectId, objectName, x, y, width, height, angle, round)
+    constructor(nodeId, objectId, objectName, x, y, width, height, /*angle,*/ round)
     {
         super(RECTANGLE, nodeId, objectId, objectName);
         
@@ -17,7 +17,7 @@ extends FigmaShape
         this.y      = y;
         this.width  = width;
         this.height = height;
-        this.angle  = angle;
+        //this.angle  = angle;
         this.round  = round;
 
         this.createDefaultTransform(x, y, width, height, angle/360*Tau);
@@ -35,7 +35,7 @@ extends FigmaShape
             this.y,
             this.width,
             this.height,
-            this.angle,
+            //this.angle,
             this.round);
 
         copy.copyBase(this);

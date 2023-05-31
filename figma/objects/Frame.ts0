@@ -4,8 +4,8 @@ function genFrameIsValid(genGroup)
         && genGroup.y      != null && !isNaN(genGroup.y     )
         && genGroup.width  != null && !isNaN(genGroup.width )
         && genGroup.height != null && !isNaN(genGroup.height)
-        && genGroup.round  != null && !isNaN(genGroup.round )
-        && genGroup.angle  != null && !isNaN(genGroup.angle );
+        && genGroup.round  != null && !isNaN(genGroup.round );
+        //&& genGroup.angle  != null && !isNaN(genGroup.angle );
 }
 
 

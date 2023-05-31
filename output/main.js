@@ -2084,7 +2084,7 @@ function genEllipseIsValid(genEllipse) {
         && genEllipse.y != null && !isNaN(genEllipse.y)
         && genEllipse.width != null && !isNaN(genEllipse.width)
         && genEllipse.height != null && !isNaN(genEllipse.height)
-        && genEllipse.angle != null && !isNaN(genEllipse.angle)
+        //&& genEllipse.angle  != null && !isNaN(genEllipse.angle )
         && genEllipse.from != null && !isNaN(genEllipse.from)
         && genEllipse.to != null && !isNaN(genEllipse.to)
         && genEllipse.inner != null && !isNaN(genEllipse.inner);
@@ -2125,8 +2125,8 @@ function genFrameIsValid(genGroup) {
         && genGroup.y != null && !isNaN(genGroup.y)
         && genGroup.width != null && !isNaN(genGroup.width)
         && genGroup.height != null && !isNaN(genGroup.height)
-        && genGroup.round != null && !isNaN(genGroup.round)
-        && genGroup.angle != null && !isNaN(genGroup.angle);
+        && genGroup.round != null && !isNaN(genGroup.round);
+    //&& genGroup.angle  != null && !isNaN(genGroup.angle );
 }
 function figCreateFrame(genFrame) {
     const figFrame = figma.createFrame();
@@ -2194,8 +2194,8 @@ function figUpdateShapeGroup(figGroup, genGroup) {
 function genLineIsValid(genLine) {
     return genLine.x != null && !isNaN(genLine.x)
         && genLine.y != null && !isNaN(genLine.y)
-        && genLine.width != null && !isNaN(genLine.width)
-        && genLine.angle != null && !isNaN(genLine.angle);
+        && genLine.width != null && !isNaN(genLine.width);
+    //&& genLine.angle != null && !isNaN(genLine.angle);
 }
 function figCreateLine(genLine) {
     const figLine = figma.createLine();
@@ -2433,7 +2433,7 @@ function genPolyIsValid(genPoly) {
         && genPoly.y != null && !isNaN(genPoly.y)
         && genPoly.width != null && !isNaN(genPoly.width)
         && genPoly.height != null && !isNaN(genPoly.height)
-        && genPoly.angle != null && !isNaN(genPoly.angle)
+        //&& genPoly.angle   != null && !isNaN(genPoly.angle  )
         && genPoly.round != null && !isNaN(genPoly.round)
         && genPoly.corners != null && !isNaN(genPoly.corners);
 }
@@ -2653,7 +2653,7 @@ function genRectIsValid(genRect) {
         && genRect.y != null && !isNaN(genRect.y)
         && genRect.width != null && !isNaN(genRect.width)
         && genRect.height != null && !isNaN(genRect.height)
-        && genRect.angle != null && !isNaN(genRect.angle)
+        //&& genRect.angle  != null && !isNaN(genRect.angle )
         && genRect.round != null && !isNaN(genRect.round);
 }
 function figCreateRect(genRect) {
@@ -2679,7 +2679,7 @@ function genStarIsValid(genStar) {
         && genStar.y != null && !isNaN(genStar.y)
         && genStar.width != null && !isNaN(genStar.width)
         && genStar.height != null && !isNaN(genStar.height)
-        && genStar.angle != null && !isNaN(genStar.angle)
+        //&& genStar.angle  != null && !isNaN(genStar.angle )
         && genStar.round != null && !isNaN(genStar.round)
         && genStar.points != null && !isNaN(genStar.points)
         && genStar.convex != null && !isNaN(genStar.convex);
@@ -2712,7 +2712,7 @@ function genTextIsValid(genText) {
         && genText.y != null && !isNaN(genText.y)
         && genText.width != null && !isNaN(genText.width)
         && genText.height != null && !isNaN(genText.height)
-        && genText.angle != null && !isNaN(genText.angle)
+        //&& genText.angle  != null && !isNaN(genText.angle )
         && genText.font != null && genText.font != NULL
         && genText.size != null && !isNaN(genText.size);
 }

@@ -84,7 +84,6 @@ Operator.prototype.createHeader = function()
     this.header = createDiv('nodeHeader');
     
     this.header.connectionPadding = 8;
-    this.header.ignoreDoubleClick = false; // used by child objects that need to be double clicked
 
 
     this.createLabel();
@@ -421,35 +420,40 @@ Operator.prototype.createHeader = function()
 
     this.header.addEventListener('dblclick', e =>
     {
-        if (!this.header.ignoreDoubleClick)
+        console.log('header.dblclick');
+        e.stopPropagation();
+
+        actionManager.do(new MakeActiveNodesAction([this.id], e.shiftKey));
+        
+        if (this.deselectTimer > -1)
         {
-            e.stopPropagation();
-
-            actionManager.do(new MakeActiveNodesAction([this.id], e.shiftKey));
-            
-            if (this.deselectTimer > -1)
-            {
-                clearTimeout(this.deselectTimer);
-                this.deselectTimer = -1;
-            }
+            clearTimeout(this.deselectTimer);
+            this.deselectTimer = -1;
         }
-
-
-        this.header.ignoreDoubleClick = false;
     });
 
 
 
+    this.divIcon.addEventListener('dblclick', e =>
+    {
+        if (!getCtrlKey(e))
+            e.preventDefault();
+    });
+
+
+
+    this.labelText.addEventListener('pointerdown', e =>
+    {
+        console.log('labelText.pointerdown');
+    });
     this.labelText.addEventListener('dblclick', e =>
     {
+        console.log('labelText.dblclick');
         if (!getCtrlKey(e))
         {
             e.stopPropagation();
             this.showLabelTextbox();
         }
-
-
-        this.header.ignoreDoubleClick = false;
     });
 };
 

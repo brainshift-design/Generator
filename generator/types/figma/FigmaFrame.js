@@ -5,7 +5,7 @@ extends FigmaShape
     y;
     width;
     height;
-    angle;
+    //angle;
     round;
     children;
 
@@ -19,7 +19,7 @@ extends FigmaShape
         this.y        = y;
         this.width    = width;
         this.height   = height;
-        this.angle    = angle;
+        //this.angle    = angle;
         this.round    = round;
         this.children = children.map(c => c.copy());
     }
@@ -36,7 +36,7 @@ extends FigmaShape
             this.y,
             this.width,
             this.height,
-            this.angle,
+            //this.angle,
             this.round,
             this.children);
 

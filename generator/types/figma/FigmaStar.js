@@ -5,14 +5,14 @@ extends FigmaShape
     y;
     width;
     height;
-    angle;
+    //angle;
     round;
     points;
     convex;
 
 
 
-    constructor(nodeId, objectId, objectName, x, y, width, height, angle, round, points, convex)
+    constructor(nodeId, objectId, objectName, x, y, width, height, /*angle,*/ round, points, convex)
     {
         super(STAR, nodeId, objectId, objectName);
         
@@ -20,7 +20,7 @@ extends FigmaShape
         this.y      = y;
         this.width  = width;
         this.height = height;
-        this.angle  = angle;
+        //this.angle  = angle;
         this.round  = round;
         this.points = points;
         this.convex = convex;
@@ -38,7 +38,7 @@ extends FigmaShape
             this.y,
             this.width,
             this.height,
-            this.angle,
+            //this.angle,
             this.round,
             this.points,
             this.convex);

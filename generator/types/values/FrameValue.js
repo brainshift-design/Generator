@@ -5,13 +5,13 @@ extends ShapeValue
     y;
     width;
     height;
-    angle;
+    //angle;
     round;
     children;
 
 
 
-    constructor(nodeId, x, y, width, height, angle, round, children)
+    constructor(nodeId, x, y, width, height, /*angle,*/ round, children)
     {
         super(FRAME_VALUE, nodeId);
 
@@ -19,7 +19,7 @@ extends ShapeValue
         this.y        = y;
         this.width    = width;
         this.height   = height;
-        this.angle    = angle;
+        //this.angle    = angle;
         this.round    = round;
         this.children = children;
 
@@ -36,7 +36,7 @@ extends ShapeValue
             this.y       .copy(),
             this.width   .copy(),
             this.height  .copy(),
-            this.angle   .copy(),
+            //this.angle   .copy(),
             this.round   .copy(),
             this.children.copy());
 
@@ -54,7 +54,7 @@ extends ShapeValue
             && this.y       .equals(frame.y       )
             && this.width   .equals(frame.width   )
             && this.height  .equals(frame.height  )
-            && this.angle   .equals(frame.angle   )
+            //&& this.angle   .equals(frame.angle   )
             && this.round   .equals(frame.round   )
             && this.children.equals(frame.children);
     }
@@ -74,7 +74,7 @@ extends ShapeValue
             + ' ' + this.y       .toString()
             + ' ' + this.width   .toString()
             + ' ' + this.height  .toString()
-            + ' ' + this.angle   .toString()
+            //+ ' ' + this.angle   .toString()
             + ' ' + this.round   .toString()
             + ' ' + this.children.toString();
     }
@@ -87,7 +87,7 @@ extends ShapeValue
             + ' ' + this.y       .toDisplayString()
             + ' ' + this.width   .toDisplayString()
             + ' ' + this.height  .toDisplayString()
-            + ' ' + this.angle   .toDisplayString()
+            //+ ' ' + this.angle   .toDisplayString()
             + ' ' + this.round   .toDisplayString()
             + ' ' + this.children.toDisplayString();
     }
@@ -107,7 +107,7 @@ extends ShapeValue
             && this.y       .isValid()
             && this.width   .isValid()
             && this.height  .isValid()
-            && this.angle   .isValid()
+            //&& this.angle   .isValid()
             && this.round   .isValid()
             && this.children.isValid()
             && super.isValid();
@@ -120,7 +120,7 @@ extends ShapeValue
         NumberValue.NaN,
         NumberValue.NaN,
         NumberValue.NaN,
-        NumberValue.NaN,
+        //NumberValue.NaN,
         NumberValue.NaN,
         NumberValue.NaN,
         ListValue  .NaN);
@@ -148,7 +148,7 @@ function parseFrameValue(str, i = -1)
     const y        = parseNumberValue(str[i]); i += y      [1];
     const width    = parseNumberValue(str[i]); i += width  [1];
     const height   = parseNumberValue(str[i]); i += height [1];
-    const angle    = parseNumberValue(str[i]); i += angle  [1];
+    //const angle    = parseNumberValue(str[i]); i += angle  [1];
     const round    = parseNumberValue(str[i]); i += round  [1];
     const children = parseListValue  (str, i); i += children[1];
 
@@ -158,7 +158,7 @@ function parseFrameValue(str, i = -1)
         y       [0],
         width   [0],
         height  [0],
-        angle   [0],
+        //angle   [0],
         round   [0],
         children[0]);
 

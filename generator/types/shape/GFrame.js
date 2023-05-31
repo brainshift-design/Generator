@@ -38,7 +38,7 @@ extends GShape
             return this;
 
 
-        const [x, y, width, height, angle] = await this.evalBaseParams(parse);
+        const [x, y, width, height]/*, angle]*/ = await this.evalBaseParams(parse);
 
         const round    = this.round    ? (await this.round   .eval(parse)).toValue() : null;
         let   children = this.children ? (await this.children.eval(parse)).toValue() : null;
@@ -61,7 +61,7 @@ extends GShape
                 y        ?? input.y,
                 width    ?? input.width,
                 height   ?? input.height,
-                angle    ?? input.angle,
+                //angle    ?? input.angle,
                 round    ?? input.round,
                 children ?? input.children);
         }
@@ -73,7 +73,7 @@ extends GShape
                 y, 
                 width,
                 height, 
-                angle, 
+                //angle, 
                 round, 
                 children);
         }
@@ -113,14 +113,14 @@ extends GShape
             && this.value.y
             && this.value.width
             && this.value.height
-            && this.value.angle
+            //&& this.value.angle
             && this.value.round)
         {
             let    x = this.value.x     .value;
             let    y = this.value.y     .value;
             let    w = this.value.width .value;
             let    h = this.value.height.value;
-            let    a = this.value.angle .value;
+            let    a = 0;//this.value.angle .value;
             let   _a = a/360*Tau;
             const  r = Math.max(0, this.value.round.value);
 
@@ -159,7 +159,7 @@ extends GShape
             frame.createDefaultTransform(
                 this.value.x    .value,
                 this.value.y    .value,
-                this.value.angle.value/360*Tau);
+                0);//this.value.angle.value/360*Tau);
 
             frame.createDefaultTransform(x, y, w, h, _a);
 
