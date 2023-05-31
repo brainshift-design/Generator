@@ -27,7 +27,6 @@
     position:      relative;
     width:         100%;
     height:        auto;
-    overflow:      hidden;
     border-radius: 4px 4px 0 0;
     padding:       0;
     box-shadow:    0 0 0 1px var(--figma-color-bg-tertiary);
@@ -38,7 +37,7 @@
 
 .nodeHeader
 {
-    background:   'magenta';
+    /* background:   'magenta'; */
     display:       flex;
     width:         100%;
     position:      relative;
@@ -85,7 +84,7 @@
     left:          0;
     top:           0; 
     border-radius: 4px 4px 0 0;
-    pointer-events: none;
+    /* pointer-events: none; */
     /* box-shadow:    0 0 0 1px blue inset; */
 }
 
@@ -139,11 +138,11 @@
     width:          auto;
     height:         auto;
     position:       absolute;
-    pointer-events: none;
+    /* pointer-events: none; */
     z-index:        1000;
     white-space:    nowrap;
     font-weight:    600;
- box-shadow:     0 0 0 1px magenta inset;
+    box-shadow:     0 0 0 1px magenta inset;
 }
 
 
@@ -161,7 +160,7 @@
     vertical-align: top;
     left:           50%;
     text-rendering: geometricPrecision;
- box-shadow:     0 0 0 1px orange inset;
+    box-shadow:     0 0 0 1px orange inset;
 }
 
 
@@ -422,7 +421,7 @@
 {
     width:          14px;
     height:         14px;
-    pointer-events: none;
+    /* pointer-events: none; */
     position:       absolute;
     left:           50%;
     top:            50%;

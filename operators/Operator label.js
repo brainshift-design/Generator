@@ -22,7 +22,7 @@ Operator.prototype.createLabel = function()
 
     this.labelWrapper.addEventListener('pointerdown', e =>
     {
-        e.preventDefault();
+        //e.preventDefault();
     });
 
     

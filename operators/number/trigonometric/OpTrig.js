@@ -59,6 +59,17 @@ extends OperatorWithValue
         this.paramValue   .enableControlText(false);
         this.paramFunction.enableControlText(true);
 
+
+        switch (this.paramFunction.value.value)
+        {
+            case 0: this.icon = iconSine;    break;
+            case 1: this.icon = iconCosine;  break;
+            case 2: this.icon = iconTangent; break;
+        }
+
+        this.updateIcon();
+
+
         this.updateParamControls();
     }
 }
