@@ -2415,6 +2415,8 @@ function applyFigmaTransform(figObj, tl, tr, bl) {
     if (a > Tau / 4
         && a < Tau * 3 / 4)
         xform = mulm3m3(xform, createTransform(0, 0, 1, 1, Tau / 2));
+    if (determinant(xform) < 0)
+        xform = mulm3m3(xform, createTransform(0, 0, -1, 1, 0));
     figObj.relativeTransform =
         [
             xform[0],
@@ -2429,6 +2431,7 @@ function applyFigmaTransform(figObj, tl, tr, bl) {
     console.log('kx =', kx);
     console.log('ky =', ky);
     console.log('xform =', '\n' + xform[0] + '\n' + xform[1] + '\n' + xform[2] + '\n');
+    console.log('det =', determinant(xform));
 }
 function setObjectTransform(figObj, genObj) {
     const xp0 = point(genObj.xp0.x, genObj.xp0.y);
