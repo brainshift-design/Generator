@@ -9286,9 +9286,9 @@ extends FigmaShape
 
 
 
-    constructor(nodeId, objectId, objectName, x, y, isCenter = false)
+    constructor(nodeId, objectId, objectName, x, y, isDeco = false, isCenter = false)
     {
-        super(POINT, nodeId, objectId, objectName, true);
+        super(POINT, nodeId, objectId, objectName, isDeco);
         
         this.x        = x;
         this.y        = y;
@@ -9307,6 +9307,7 @@ extends FigmaShape
             this.objectName, 
             this.x,
             this.y,
+            this.isDeco,
             this.isCenter);
 
         copy.copyBase(this);
@@ -44066,9 +44067,9 @@ extends FigmaShape
 
 
 
-    constructor(nodeId, objectId, objectName, x, y, isCenter = false)
+    constructor(nodeId, objectId, objectName, x, y, isDeco = false, isCenter = false)
     {
-        super(POINT, nodeId, objectId, objectName, true);
+        super(POINT, nodeId, objectId, objectName, isDeco);
         
         this.x        = x;
         this.y        = y;
@@ -44087,6 +44088,7 @@ extends FigmaShape
             this.objectName, 
             this.x,
             this.y,
+            this.isDeco,
             this.isCenter);
 
         copy.copyBase(this);
