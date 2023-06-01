@@ -139,16 +139,6 @@ extends GShape
 
 
 
-    pushValueUpdates(parse)
-    {
-        super.pushValueUpdates(parse);
-
-        if (this.input) this.input.pushValueUpdates(parse);
-        if (this.round) this.round.pushValueUpdates(parse);
-    }
-
-
-
     toValue()
     {
         const rect = new RectangleValue(
@@ -171,6 +161,16 @@ extends GShape
     {
         return super.isValid()
             && this.round.isValid();
+    }
+
+
+
+    pushValueUpdates(parse)
+    {
+        super.pushValueUpdates(parse);
+
+        if (this.input) this.input.pushValueUpdates(parse);
+        if (this.round) this.round.pushValueUpdates(parse);
     }
 
 
