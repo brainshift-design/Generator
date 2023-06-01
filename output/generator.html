@@ -4538,16 +4538,20 @@ extends FigmaObject
 
     effects = [];
 
+    isDeco;
+
     isMask  = false;
 
 
 
-    constructor(type, nodeId, objectId, objectName)
+    constructor(type, nodeId, objectId, objectName, isDeco = false)
     {
         super(type, nodeId, objectId, objectName);
 
-        this.skewX = 0;
-        this.skewY = 0;
+        this.skewX  = 0;
+        this.skewY  = 0;
+
+        this.isDeco = isDeco;
     }
 
 
@@ -4567,6 +4571,8 @@ extends FigmaObject
         this.strokeAlign      = base.strokeAlign;
         this.strokeJoin       = base.strokeJoin;
         this.strokeMiterLimit = base.strokeMiterLimit;
+
+        this.isDeco           = base.isDeco;
     }
 }
 
@@ -4880,18 +4886,16 @@ extends FigmaShape
 {
     x;
     y;
-    isDeco;
     isCenter;
 
 
 
-    constructor(nodeId, objectId, objectName, x, y, isDeco = false, isCenter = false)
+    constructor(nodeId, objectId, objectName, x, y, isCenter = false)
     {
-        super(POINT, nodeId, objectId, objectName);
+        super(POINT, nodeId, objectId, objectName, true);
         
         this.x        = x;
         this.y        = y;
-        this.isDeco   = isDeco;
         this.isCenter = isCenter;
 
         this.createDefaultTransform(x, y);
@@ -4907,7 +4911,6 @@ extends FigmaShape
             this.objectName, 
             this.x,
             this.y,
-            this.isDeco,
             this.isCenter);
 
         copy.copyBase(this);
@@ -22203,12 +22206,18 @@ extends GShapeBase
             {
                 for (let j = 0; j < this.inputs[i].objects.length; j++, o++)
                 {
-                    const obj = copyFigmaObject(this.inputs[i].objects[j]);
+                    let obj = this.inputs[i].objects[j];
+
+                    obj = copyFigmaObject(obj);
 
                     obj.nodeId   = this.nodeId;
                     obj.objectId = obj.objectId + OBJECT_SEPARATOR + this.nodeId;
                     obj.listId   = -1;
-                    obj.final    = true;
+
+                    if (  (   !isEmpty(obj.fills)
+                           || !isEmpty(obj.strokes))
+                        && !obj.isDeco)
+                        obj.final = true;
 
                     this.objects.push(obj);
                 }

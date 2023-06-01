@@ -45,12 +45,18 @@ extends GShapeBase
             {
                 for (let j = 0; j < this.inputs[i].objects.length; j++, o++)
                 {
-                    const obj = copyFigmaObject(this.inputs[i].objects[j]);
+                    let obj = this.inputs[i].objects[j];
+
+                    obj = copyFigmaObject(obj);
 
                     obj.nodeId   = this.nodeId;
                     obj.objectId = obj.objectId + OBJECT_SEPARATOR + this.nodeId;
                     obj.listId   = -1;
-                    obj.final    = true;
+
+                    if (  (   !isEmpty(obj.fills)
+                           || !isEmpty(obj.strokes))
+                        && !obj.isDeco)
+                        obj.final = true;
 
                     this.objects.push(obj);
                 }

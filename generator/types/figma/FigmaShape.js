@@ -14,16 +14,20 @@ extends FigmaObject
 
     effects = [];
 
+    isDeco;
+
     isMask  = false;
 
 
 
-    constructor(type, nodeId, objectId, objectName)
+    constructor(type, nodeId, objectId, objectName, isDeco = false)
     {
         super(type, nodeId, objectId, objectName);
 
-        this.skewX = 0;
-        this.skewY = 0;
+        this.skewX  = 0;
+        this.skewY  = 0;
+
+        this.isDeco = isDeco;
     }
 
 
@@ -43,5 +47,7 @@ extends FigmaObject
         this.strokeAlign      = base.strokeAlign;
         this.strokeJoin       = base.strokeJoin;
         this.strokeMiterLimit = base.strokeMiterLimit;
+
+        this.isDeco           = base.isDeco;
     }
 }

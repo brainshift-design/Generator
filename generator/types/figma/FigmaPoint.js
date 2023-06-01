@@ -3,18 +3,16 @@ extends FigmaShape
 {
     x;
     y;
-    isDeco;
     isCenter;
 
 
 
-    constructor(nodeId, objectId, objectName, x, y, isDeco = false, isCenter = false)
+    constructor(nodeId, objectId, objectName, x, y, isCenter = false)
     {
-        super(POINT, nodeId, objectId, objectName);
+        super(POINT, nodeId, objectId, objectName, true);
         
         this.x        = x;
         this.y        = y;
-        this.isDeco   = isDeco;
         this.isCenter = isCenter;
 
         this.createDefaultTransform(x, y);
@@ -30,7 +28,6 @@ extends FigmaShape
             this.objectName, 
             this.x,
             this.y,
-            this.isDeco,
             this.isCenter);
 
         copy.copyBase(this);

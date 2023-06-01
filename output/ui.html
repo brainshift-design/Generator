@@ -8934,16 +8934,20 @@ extends FigmaObject
 
     effects = [];
 
+    isDeco;
+
     isMask  = false;
 
 
 
-    constructor(type, nodeId, objectId, objectName)
+    constructor(type, nodeId, objectId, objectName, isDeco = false)
     {
         super(type, nodeId, objectId, objectName);
 
-        this.skewX = 0;
-        this.skewY = 0;
+        this.skewX  = 0;
+        this.skewY  = 0;
+
+        this.isDeco = isDeco;
     }
 
 
@@ -8963,6 +8967,8 @@ extends FigmaObject
         this.strokeAlign      = base.strokeAlign;
         this.strokeJoin       = base.strokeJoin;
         this.strokeMiterLimit = base.strokeMiterLimit;
+
+        this.isDeco           = base.isDeco;
     }
 }
 
@@ -9276,18 +9282,16 @@ extends FigmaShape
 {
     x;
     y;
-    isDeco;
     isCenter;
 
 
 
-    constructor(nodeId, objectId, objectName, x, y, isDeco = false, isCenter = false)
+    constructor(nodeId, objectId, objectName, x, y, isCenter = false)
     {
-        super(POINT, nodeId, objectId, objectName);
+        super(POINT, nodeId, objectId, objectName, true);
         
         this.x        = x;
         this.y        = y;
-        this.isDeco   = isDeco;
         this.isCenter = isCenter;
 
         this.createDefaultTransform(x, y);
@@ -9303,7 +9307,6 @@ extends FigmaShape
             this.objectName, 
             this.x,
             this.y,
-            this.isDeco,
             this.isCenter);
 
         copy.copyBase(this);
@@ -26599,12 +26602,18 @@ extends GShapeBase
             {
                 for (let j = 0; j < this.inputs[i].objects.length; j++, o++)
                 {
-                    const obj = copyFigmaObject(this.inputs[i].objects[j]);
+                    let obj = this.inputs[i].objects[j];
+
+                    obj = copyFigmaObject(obj);
 
                     obj.nodeId   = this.nodeId;
                     obj.objectId = obj.objectId + OBJECT_SEPARATOR + this.nodeId;
                     obj.listId   = -1;
-                    obj.final    = true;
+
+                    if (  (   !isEmpty(obj.fills)
+                           || !isEmpty(obj.strokes))
+                        && !obj.isDeco)
+                        obj.final = true;
 
                     this.objects.push(obj);
                 }
@@ -43705,16 +43714,20 @@ extends FigmaObject
 
     effects = [];
 
+    isDeco;
+
     isMask  = false;
 
 
 
-    constructor(type, nodeId, objectId, objectName)
+    constructor(type, nodeId, objectId, objectName, isDeco = false)
     {
         super(type, nodeId, objectId, objectName);
 
-        this.skewX = 0;
-        this.skewY = 0;
+        this.skewX  = 0;
+        this.skewY  = 0;
+
+        this.isDeco = isDeco;
     }
 
 
@@ -43734,6 +43747,8 @@ extends FigmaObject
         this.strokeAlign      = base.strokeAlign;
         this.strokeJoin       = base.strokeJoin;
         this.strokeMiterLimit = base.strokeMiterLimit;
+
+        this.isDeco           = base.isDeco;
     }
 }
 
@@ -44047,18 +44062,16 @@ extends FigmaShape
 {
     x;
     y;
-    isDeco;
     isCenter;
 
 
 
-    constructor(nodeId, objectId, objectName, x, y, isDeco = false, isCenter = false)
+    constructor(nodeId, objectId, objectName, x, y, isCenter = false)
     {
-        super(POINT, nodeId, objectId, objectName);
+        super(POINT, nodeId, objectId, objectName, true);
         
         this.x        = x;
         this.y        = y;
-        this.isDeco   = isDeco;
         this.isCenter = isCenter;
 
         this.createDefaultTransform(x, y);
@@ -44074,7 +44087,6 @@ extends FigmaShape
             this.objectName, 
             this.x,
             this.y,
-            this.isDeco,
             this.isCenter);
 
         copy.copyBase(this);
@@ -61370,12 +61382,18 @@ extends GShapeBase
             {
                 for (let j = 0; j < this.inputs[i].objects.length; j++, o++)
                 {
-                    const obj = copyFigmaObject(this.inputs[i].objects[j]);
+                    let obj = this.inputs[i].objects[j];
+
+                    obj = copyFigmaObject(obj);
 
                     obj.nodeId   = this.nodeId;
                     obj.objectId = obj.objectId + OBJECT_SEPARATOR + this.nodeId;
                     obj.listId   = -1;
-                    obj.final    = true;
+
+                    if (  (   !isEmpty(obj.fills)
+                           || !isEmpty(obj.strokes))
+                        && !obj.isDeco)
+                        obj.final = true;
 
                     this.objects.push(obj);
                 }
@@ -68405,13 +68423,13 @@ function initGeneratorMenus()
                                 new MenuItem('',                    {separator: true}),
                                 new MenuItem('Shapes',              {/*icon: iconShapes,*/ childMenu: menuShapes}),
                                 new MenuItem('',                    {separator: true}),
-                                new MenuItem('Boolean',             {enabled: false, icon: iconBoolUnion,  callback: e => actionManager.do(getCreateNodeAction(BOOLEAN,     btnShape.div, getCreateOptions(e)))}),
-                                new MenuItem('',                    {separator: true}),
                                 new MenuItem('Frame',               {icon: iconFrame,      callback: e => actionManager.do(getCreateNodeAction(FRAME,       btnShape.div, getCreateOptions(e)))}),
                                 new MenuItem('Group',               {icon: iconShapeGroup, callback: e => actionManager.do(getCreateNodeAction(SHAPE_GROUP, btnShape.div, getCreateOptions(e)))}),
+                                new MenuItem('Boolean',             {enabled: false, icon: iconBoolUnion,  callback: e => actionManager.do(getCreateNodeAction(BOOLEAN,     btnShape.div, getCreateOptions(e)))}),
         menuItemShapeSep1     = new MenuItem('',                    {separator: true}),
-                                new MenuItem('Transform',           {/*icon: iconMove,*/ childMenu: menuTransform}),
                                 new MenuItem('Place',               {icon: iconPlace, callback: e => actionManager.do(getCreateNodeAction(PLACE, btnShape.div, getCreateOptions(e)))}),
+                                new MenuItem('',                    {separator: true}),
+                                new MenuItem('Transform',           {/*icon: iconMove,*/ childMenu: menuTransform}),
                                 new MenuItem('',                    {separator: true}),
                                 new MenuItem('Render',              {icon: iconRender,     callback: e => actionManager.do(getCreateNodeAction(RENDER,       btnShape.div, getCreateOptions(e)))})]);
 
