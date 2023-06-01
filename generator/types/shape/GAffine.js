@@ -107,6 +107,7 @@ extends GOperator
                 this.nodeName + ' • center',
                 cx,
                 cy,
+                true,
                 true);
 
             center.createDefaultTransform(cx, cy);

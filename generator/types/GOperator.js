@@ -102,7 +102,8 @@ function getObjBounds(objects)
             }
         }
  
-        else if (obj.type == POINT)
+        else if (obj.type == POINT
+             && !obj.isDeco)
             bounds = expandRect_(bounds, 
                 point(
                     obj.x, //xform[0][2], 

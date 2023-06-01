@@ -4389,9 +4389,9 @@ class FigmaObject
 
     createTransformPoints(parse, x, y, w, h)
     {
-        this.xp0 = new FigmaPoint(this.nodeId, this.objectId+'.0', this.objectName+' ^ 0', x,     y,     false, false);
-        this.xp1 = new FigmaPoint(this.nodeId, this.objectId+'.1', this.objectName+' ^ 1', x + w, y,     false, false);
-        this.xp2 = new FigmaPoint(this.nodeId, this.objectId+'.2', this.objectName+' ^ 2', x,     y + h, false, false);
+        this.xp0 = new FigmaPoint(this.nodeId, this.objectId+'.0', this.objectName+' ^ 0', x,     y,     true);
+        this.xp1 = new FigmaPoint(this.nodeId, this.objectId+'.1', this.objectName+' ^ 1', x + w, y,     true);
+        this.xp2 = new FigmaPoint(this.nodeId, this.objectId+'.2', this.objectName+' ^ 2', x,     y + h, true);
 
         this.xp0.createDefaultTransform(x,     y    );
         this.xp1.createDefaultTransform(x + w, y    );
@@ -4878,16 +4878,18 @@ extends FigmaShape
 {
     x;
     y;
+    isDeco;
     isCenter;
 
 
 
-    constructor(nodeId, objectId, objectName, x, y, isCenter = false)
+    constructor(nodeId, objectId, objectName, x, y, isDeco = false, isCenter = false)
     {
         super(POINT, nodeId, objectId, objectName);
         
         this.x        = x;
         this.y        = y;
+        this.isDeco   = isDeco;
         this.isCenter = isCenter;
 
         this.createDefaultTransform(x, y);
@@ -4903,6 +4905,7 @@ extends FigmaShape
             this.objectName, 
             this.x,
             this.y,
+            this.isDeco,
             this.isCenter);
 
         copy.copyBase(this);
@@ -5798,7 +5801,8 @@ function getObjBounds(objects)
             }
         }
  
-        else if (obj.type == POINT)
+        else if (obj.type == POINT
+             && !obj.isDeco)
             bounds = expandRect_(bounds, 
                 point(
                     obj.x, //xform[0][2], 
@@ -22515,6 +22519,7 @@ extends GOperator
                 this.nodeName + ' • center',
                 cx,
                 cy,
+                true,
                 true);
 
             center.createDefaultTransform(cx, cy);
