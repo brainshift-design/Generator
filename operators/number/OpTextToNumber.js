@@ -1,19 +1,19 @@
-class   OpNumberToText
+class   OpTextToNumber
 extends OperatorBase
 {
-    paramNumber;
+    paramText;
     paramFormat;
 
 
 
     constructor()
     {
-        super(NUMBER_TO_TEXT, 'numToText', 'to text', '');
+        super(TEXT_TO_NUMBER, 'textToNum', 'to number', '');
 
 
-        this.addOutput(new Output([TEXT_VALUE], this.output_genRequest));
+        this.addOutput(new Output([NUMBER_VALUE], this.output_genRequest));
 
-        this.addParam(this.paramNumber = new NumberParam('number', 'number', false, true,  true));
+        this.addParam(this.paramText   = new TextParam  ('text',   '',              true,  true));
         this.addParam(this.paramFormat = new SelectParam('format', 'format', false, true,  true, ['decimal', 'hexadecimal']));
     }
 
@@ -31,7 +31,7 @@ extends OperatorBase
         if (ignore) return request;
 
         
-        request.push(...this.node.paramNumber.genRequest(gen));
+        request.push(...this.node.paramText  .genRequest(gen));
         request.push(...this.node.paramFormat.genRequest(gen));
 
         
@@ -45,10 +45,8 @@ extends OperatorBase
 
     updateParams()
     {
-        this.paramNumber.enableControlText(true);
+        this.paramText  .enableControlText(true);
         this.paramFormat.enableControlText(true);
-
-        this.paramNumber.controls[0].showHex = this.paramFormat.value.value > 0;
 
         this.updateParamControls();
     }

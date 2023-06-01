@@ -1,30 +1,28 @@
-class GNumberToText
+class GTextToNumber
 extends GNumberType
 {
-    //input = null;
-
-    number;
+    text;
     format;
 
 
     
     constructor(nodeId, options)
     {
-        super(NUMBER_TO_TEXT, nodeId, options);
+        super(TEXT_TO_NUMBER, nodeId, options);
     }
 
 
     
     copy()
     {
-        const copy = new GNumberToText(this.nodeId, this.options);
+        const copy = new GTextToNumber(this.nodeId, this.options);
 
         copy.copyBase(this);
 
         if (this.input) 
             copy.input = this.input.copy();
 
-        copy.number = this.number.copy();
+        copy.text   = this.text.copy();
         copy.format = this.format.copy();
 
         return copy;
@@ -38,30 +36,30 @@ extends GNumberType
             return this;
 
 
-        const number = (await this.number.eval(parse)).toValue();
+        const text   = (await this.text  .eval(parse)).toValue();
         const format = (await this.format.eval(parse)).toValue();
 
 
-        let str = NAN_CHAR;
+        let num = Number.NaN;
 
         switch (format.value)
         {
             case 0: // dec
-                str = numToString(number.value, -number.decimals);
+                num = parseFloat(text.value);
             break;
 
             case 1: // hex
-                str = numToString(Math.round(number.value), number.decimals, true).toUpperCase();
+                num = parseInt(text.value, 16);
                 break;
         }
 
-        this.value = new TextValue(str);
+        this.value = new NumberValue(num);
 
 
         this.updateValues =
         [
             ['value',  this.value],
-            ['number', number    ],
+            ['text',   text      ],
             ['format', format    ]
         ];
 
@@ -77,7 +75,7 @@ extends GNumberType
     {
         super.pushValueUpdates(parse);
 
-        if (this.number) this.number.pushValueUpdates(parse);
+        if (this.text  ) this.text  .pushValueUpdates(parse);
         if (this.format) this.format.pushValueUpdates(parse);
     }
 
@@ -87,7 +85,7 @@ extends GNumberType
     {
         super.invalidateInputs(from);
 
-        if (this.number) this.number.invalidateInputs(from);
+        if (this.text  ) this.text  .invalidateInputs(from);
         if (this.format) this.format.invalidateInputs(from);
     }
 }

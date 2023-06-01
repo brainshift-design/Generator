@@ -13,7 +13,7 @@ function createNode(nodeType, creatingButton = null, createdNodeId = -1, options
         case SELECT:                  node = new OpSelect();            break;
         case LIST_COUNT:              node = new OpListCount();         break;
         case IF_ELSE:                 node = new OpIfElse();            break;
-        case START:                node = new OpStart();          break;
+        case START:                   node = new OpStart();             break;
         case REPEAT:                  node = new OpRepeat();            break;
         case CACHE:                   node = new OpCache();             break;
         case COPY:                    node = new OpCopy();              break;
@@ -69,6 +69,7 @@ function createNode(nodeType, creatingButton = null, createdNodeId = -1, options
         case TEXT_CHAR:               node = new OpTextCharacter();     break;
         case TEXT_REPLACE:            node = new OpTextReplace();       break;
         case TEXT_JOIN:               node = new OpTextJoin();          break;
+        case TEXT_TO_NUMBER:          node = new OpTextToNumber();      break;
         case TEXT_CSV:                node = new OpTextCSV();           break;
         case TEXT_JSON:               node = new OpTextJson();          break;
         case TEXT_FETCH:              node = new OpTextFetch();         break;

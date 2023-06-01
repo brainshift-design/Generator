@@ -65,6 +65,7 @@
 ../operators/number/OpRandom.js
 ../operators/number/OpInterpolate.js
 ../operators/number/OpNumberToText.js
+../operators/number/OpTextToNumber.js
 ../operators/number/OpSolve.js
 ../operators/number/OpAnimate.js
 

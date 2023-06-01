@@ -28,6 +28,7 @@ var menuDebugDelete;
 var menuFlow;
 var menuNumber;
 var menuString;
+var menuConvert;
 var menuColor;
 var menuColorStyle;
 var menuLayer;
@@ -440,6 +441,14 @@ function initGeneratorMenus()
         menuItemAnimate    = new MenuItem('Animate',       {icon: iconAnimate,     callback: e => actionManager.do(getCreateNodeAction(NUMBER_ANIMATE,     btnNumber.div, getCreateOptions(e)))})]);
         
     
+    menuConvert = new Menu('Text', true, false);
+    menuConvert.addItems([
+        new MenuItem('Text to number',       {icon: iconTextToNumber,  callback: e => actionManager.do(getCreateNodeAction(TEXT_TO_NUMBER, btnText.div, getCreateOptions(e)))}),
+        new MenuItem('Number to text',       {icon: iconNumberToText,  callback: e => actionManager.do(getCreateNodeAction(NUMBER_TO_TEXT, btnText.div, getCreateOptions(e)))}),
+        new MenuItem('',                     {separator: true}),
+        new MenuItem('Unicode to character', {icon: iconTextCharacter, callback: e => actionManager.do(getCreateNodeAction(TEXT_CHAR,      btnText.div, getCreateOptions(e)))})]);
+    
+
     menuString = new Menu('Text', true, false);
     menuString.addItems([
         new MenuItem('Text',                {icon: iconText,          callback: e => actionManager.do(getCreateNodeAction(TEXT,           btnText.div, getCreateOptions(e)))}),
@@ -452,9 +461,7 @@ function initGeneratorMenus()
         new MenuItem('',                    {separator: true}),
         new MenuItem('Length',              {icon: iconTextLength,    callback: e => actionManager.do(getCreateNodeAction(TEXT_LENGTH,    btnText.div, getCreateOptions(e)))}),
         new MenuItem('',                    {separator: true}),
-        new MenuItem('Character from code', {icon: iconTextCharacter, callback: e => actionManager.do(getCreateNodeAction(TEXT_CHAR,      btnText.div, getCreateOptions(e)))}),
-        new MenuItem('Number to text',      {icon: iconNumberToText,  callback: e => actionManager.do(getCreateNodeAction(NUMBER_TO_TEXT, btnText.div, getCreateOptions(e)))}),
-        new MenuItem('',                    {separator: true}),
+        new MenuItem('Convert',             {childMenu: menuConvert}),
         new MenuItem('Parse JSON',          {icon: iconTextJson,      callback: e => actionManager.do(getCreateNodeAction(TEXT_JSON,      btnText.div, getCreateOptions(e)))}),
         new MenuItem('',                    {separator: true}),
         new MenuItem('Fetch',               {icon: iconTextFetch,     callback: e => actionManager.do(getCreateNodeAction(TEXT_FETCH,     btnText.div, getCreateOptions(e)))})]);
@@ -531,14 +538,14 @@ function initGeneratorMenus()
     menuShape.addItems([
         menuItemShapeSelected = new MenuItem('Selected objects...', {icon: iconSelected,   enabled: false}),
                                 new MenuItem('',                    {separator: true}),
-                                new MenuItem('Shapes',              {icon: iconShapes, childMenu: menuShapes}),
+                                new MenuItem('Shapes',              {/*icon: iconShapes,*/ childMenu: menuShapes}),
                                 new MenuItem('',                    {separator: true}),
                                 new MenuItem('Boolean',             {enabled: false, icon: iconBoolUnion,  callback: e => actionManager.do(getCreateNodeAction(BOOLEAN,     btnShape.div, getCreateOptions(e)))}),
                                 new MenuItem('',                    {separator: true}),
                                 new MenuItem('Frame',               {icon: iconFrame,      callback: e => actionManager.do(getCreateNodeAction(FRAME,       btnShape.div, getCreateOptions(e)))}),
                                 new MenuItem('Group',               {icon: iconShapeGroup, callback: e => actionManager.do(getCreateNodeAction(SHAPE_GROUP, btnShape.div, getCreateOptions(e)))}),
         menuItemShapeSep1     = new MenuItem('',                    {separator: true}),
-                                new MenuItem('Transform',           {icon: iconMove, childMenu: menuTransform}),
+                                new MenuItem('Transform',           {/*icon: iconMove,*/ childMenu: menuTransform}),
                                 new MenuItem('Place',               {icon: iconPlace, callback: e => actionManager.do(getCreateNodeAction(PLACE, btnShape.div, getCreateOptions(e)))}),
                                 new MenuItem('',                    {separator: true}),
                                 new MenuItem('Render',              {icon: iconRender,     callback: e => actionManager.do(getCreateNodeAction(RENDER,       btnShape.div, getCreateOptions(e)))})]);

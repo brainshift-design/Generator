@@ -332,17 +332,8 @@ function genParseNumberToText(parse)
     const num2text = new GNumberToText(nodeId, options);
    
 
-    let nInputs = -1;
-    
-    if (!ignore)
-    {
-        nInputs = parseInt(parse.move());
-        console.assert(nInputs == 0 || nInputs == 1, 'nInputs must be [0, 1]');
-    }
-
-    
     if (parse.settings.logRequests) 
-        logReq(num2text, parse, ignore, nInputs);
+        logReq(num2text, parse, ignore);
 
 
     if (ignore) 
@@ -355,9 +346,6 @@ function genParseNumberToText(parse)
     parse.nTab++;
 
 
-    if (nInputs == 1)
-        num2text.input = genParse(parse);
-
     num2text.number = genParse(parse);
     num2text.format = genParse(parse);
 
@@ -367,6 +355,41 @@ function genParseNumberToText(parse)
 
     genParseNodeEnd(parse, num2text);
     return num2text;
+}
+
+
+
+function genParseTextToNumber(parse)
+{
+    const [, nodeId, options, ignore] = genParseNodeStart(parse);
+
+
+    const text2num = new GTextToNumber(nodeId, options);
+   
+
+    if (parse.settings.logRequests) 
+        logReq(text2num, parse, ignore);
+
+
+    if (ignore) 
+    {
+        genParseNodeEnd(parse, text2num);
+        return parse.parsedNodes.find(n => n.nodeId == nodeId);
+    }
+
+
+    parse.nTab++;
+
+
+    text2num.text   = genParse(parse);
+    text2num.format = genParse(parse);
+
+    
+    parse.nTab--;
+
+
+    genParseNodeEnd(parse, text2num);
+    return text2num;
 }
 
 

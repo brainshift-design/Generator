@@ -539,6 +539,19 @@ const TRIG_TYPES = [
     NUMBER_COS,
     NUMBER_TAN
 ];
+const TEXT_VALUE = 'TEXT#';
+const TEXT = 'TEXT';
+const TEXT_LENGTH = 'TLEN';
+const TEXT_TRIM = 'TTRIM';
+const TEXT_SUBSTRING = 'TSUB';
+const TEXT_REPLACE = 'TREPL';
+const TEXT_JOIN = 'TJOIN';
+const TEXT_CHAR = 'TCHAR';
+const NUMBER_TO_TEXT = 'N2T';
+const TEXT_TO_NUMBER = 'T2N';
+const TEXT_CSV = 'TCSV';
+const TEXT_JSON = 'TJSON';
+const TEXT_FETCH = 'FETCH';
 const NUMBER_TYPES = [
     NUMBER_VALUE,
     NUMBER_LIST_VALUE,
@@ -556,23 +569,12 @@ const NUMBER_TYPES = [
     NUMBER_INTERPOLATE,
     NUMBER_SOLVE,
     NUMBER_ANIMATE,
+    TEXT_TO_NUMBER,
     ...MATH_TYPES,
     ...NUMBER_BOOLEAN_TYPES,
     ...CONDITION_TYPES,
     ...TRIG_TYPES
 ];
-const TEXT_VALUE = 'TEXT#';
-const TEXT = 'TEXT';
-const TEXT_LENGTH = 'TLEN';
-const TEXT_TRIM = 'TTRIM';
-const TEXT_SUBSTRING = 'TSUB';
-const TEXT_REPLACE = 'TREPL';
-const TEXT_JOIN = 'TJOIN';
-const TEXT_CHAR = 'TCHAR';
-const NUMBER_TO_TEXT = 'N2T';
-const TEXT_CSV = 'TCSV';
-const TEXT_JSON = 'TJSON';
-const TEXT_FETCH = 'FETCH';
 const TEXT_TYPES = [
     TEXT_VALUE,
     TEXT_LIST_VALUE,

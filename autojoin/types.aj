@@ -80,7 +80,6 @@
 ../generator/types/number/GSequence.js
 ../generator/types/number/GRandom.js
 ../generator/types/number/GInterpolate.js
-../generator/types/number/GNumberToText.js
 ../generator/types/number/GSolve.js
 ../generator/types/number/GAnimate.js
 
@@ -121,6 +120,8 @@
 ../generator/types/text/GTextLength.js
 ../generator/types/text/GTextTrim.js
 ../generator/types/text/GTextSubstring.js
+../generator/types/text/GNumberToText.js
+../generator/types/text/GTextToNumber.js
 ../generator/types/text/GTextCharacter.js
 ../generator/types/text/GTextReplace.js
 ../generator/types/text/GTextJoin.js
