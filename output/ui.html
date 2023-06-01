@@ -83123,7 +83123,7 @@ extends OperatorBase
 
 
 class   OpArray
-extends OperatorBase
+extends ResizableBase
 {
     paramValues;
 
@@ -83140,6 +83140,22 @@ extends OperatorBase
         this.addOutput(new Output([NUMBER_VALUE], this.output_genRequest));
 
         this.addParam(this.paramValues = new TextParam('values', 'values', true, true));
+    }
+
+
+
+    setSize(w, h, updateTransform = true)
+    {
+        super.setSize(w, h, updateTransform);
+        this.updateValueParam();
+    }
+
+
+
+    setRect(x, y, w, h, updateTransform = true)
+    {
+        super.setRect(x, y, w, h, updateTransform);
+        this.updateValueParam();
     }
 
 
@@ -83164,7 +83180,26 @@ extends OperatorBase
 
         return request;
     }
+
+
+
+    updateParams()
+    {
+        super.updateParams();
+
+        this.updateValueParam();
+    }
+
+
+
+    updateValueParam()
+    {
+        this.paramValues.controls[0].setSize(
+            this.div.offsetWidth,
+            this.div.offsetHeight - Math.max(defHeaderHeight, this.header.offsetHeight));
+    }
 }
+
 
 
 class   OpDistribute
@@ -84881,12 +84916,12 @@ extends ResizableBase
 
         this.addParam(this.paramValue = new TextParam('value', '', false, false));
 
-        this.paramValue.controls[0].textbox.defPlaceholder = '...';//' . . .';
+        this.paramValue.controls[0].textbox.defPlaceholder = '...';
 
         setControlFont(this.paramValue.controls[0].textbox, 'Roboto Mono', 10, 'center');
 
 
-        this.header.addEventListener('pointerdown', e => this.paramValue.controls[0].textbox.blur());
+        //this.header.addEventListener('pointerdown', e => this.paramValue.controls[0].textbox.blur());
     }
 
 
@@ -85224,7 +85259,7 @@ extends OperatorWithValue
 
     constructor()
     {
-        super(TEXT_CHAR, 'charFromCode', 'char from code', iconTextCharacter);
+        super(TEXT_CHAR, 'charFromCode', 'code char', iconTextCharacter);
 
         this.iconOffsetY = 2;
 

@@ -18,12 +18,12 @@ extends ResizableBase
 
         this.addParam(this.paramValue = new TextParam('value', '', false, false));
 
-        this.paramValue.controls[0].textbox.defPlaceholder = '...';//' . . .';
+        this.paramValue.controls[0].textbox.defPlaceholder = '...';
 
         setControlFont(this.paramValue.controls[0].textbox, 'Roboto Mono', 10, 'center');
 
 
-        this.header.addEventListener('pointerdown', e => this.paramValue.controls[0].textbox.blur());
+        //this.header.addEventListener('pointerdown', e => this.paramValue.controls[0].textbox.blur());
     }
 
 

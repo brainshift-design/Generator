@@ -7,7 +7,7 @@ extends OperatorWithValue
 
     constructor()
     {
-        super(TEXT_CHAR, 'charFromCode', 'char from code', iconTextCharacter);
+        super(TEXT_CHAR, 'charFromCode', 'code char', iconTextCharacter);
 
         this.iconOffsetY = 2;
 
