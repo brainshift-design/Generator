@@ -41,7 +41,6 @@ extends GOperator
             : NullValue;
 
 
-        //this.updateValues = [['value', this.value]];
         this.updateValues = [['', NullValue]];
 
 

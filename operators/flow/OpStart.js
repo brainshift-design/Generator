@@ -20,8 +20,8 @@ extends OperatorBase
         this.addParam(this.paramFeedback = new NumberParam('feedback', '', false, false, true));
 
         
-        this.inputs[0].addEventListener('connect',    () => OpCopy_onConnectInput(this));
-        this.inputs[0].addEventListener('disconnect', () => OpCopy_onDisconnectInput(this));
+        this.inputs[0].addEventListener('connect',    () => OpStart_onConnectInput(this));
+        this.inputs[0].addEventListener('disconnect', () => OpStart_onDisconnectInput(this));
     }
 
 
@@ -64,6 +64,8 @@ extends OperatorBase
 
     updateParams()
     {
+        //super.updateParams();
+
         this.paramFeedback.enableControlText(true);
         this.paramFeedback.controls[0].valueText = '↱';
 
@@ -101,14 +103,16 @@ extends OperatorBase
 
 
 
-function OpCopy_onConnectInput(node)
+function OpStart_onConnectInput(node)
 {
+    node. inputs[0].types = [...node.inputs[0].connectedOutput.types];
     node.outputs[0].types = [...node.inputs[0].connectedOutput.types];
 }
 
 
 
-function OpCopy_onDisconnectInput(node)
+function OpStart_onDisconnectInput(node)
 {
+    node. inputs[0].types = ALL_VALUES;
     node.outputs[0].types = [ANY_VALUE];
 }
