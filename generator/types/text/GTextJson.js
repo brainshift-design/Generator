@@ -126,12 +126,12 @@ extends GOperator
 
 
 
-    invalidateInputs()
+    invalidateInputs(from)
     {
-        super.invalidateInputs();
+        super.invalidateInputs(from);
 
-        if (this.input    ) this.input    .invalidateInputs();
-        //if (this.value    ) this.value    .invalidateInputs();
-        //if (this.separator) this.separator.invalidateInputs();
+        if (this.input    ) this.input    .invalidateInputs(from);
+        //if (this.value    ) this.value    .invalidateInputs(from);
+        //if (this.separator) this.separator.invalidateInputs(from);
     }
 }

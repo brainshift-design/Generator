@@ -204,14 +204,14 @@ extends GColorType
 
 
 
-    invalidateInputs()
+    invalidateInputs(from)
     {
-        super.invalidateInputs();
+        super.invalidateInputs(from);
 
-        if (this.input  ) this.input  .invalidateInputs();
-        if (this.order  ) this.order  .invalidateInputs();
-        if (this.margin1) this.margin1.invalidateInputs();
-        if (this.margin2) this.margin2.invalidateInputs();
-        if (this.margin3) this.margin3.invalidateInputs();
+        if (this.input  ) this.input  .invalidateInputs(from);
+        if (this.order  ) this.order  .invalidateInputs(from);
+        if (this.margin1) this.margin1.invalidateInputs(from);
+        if (this.margin2) this.margin2.invalidateInputs(from);
+        if (this.margin3) this.margin3.invalidateInputs(from);
     }
 }

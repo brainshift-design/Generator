@@ -70,10 +70,10 @@ extends GArithmetic
 
 
 
-    invalidateInputs()
+    invalidateInputs(from)
     {
-        super.invalidateInputs();
+        super.invalidateInputs(from);
 
-        if (this.operation) this.operation.invalidateInputs();
+        if (this.operation) this.operation.invalidateInputs(from);
     }
 }

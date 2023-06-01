@@ -102,12 +102,12 @@ extends GOperator
 
 
 
-    invalidateInputs()
+    invalidateInputs(from)
     {
-        super.invalidateInputs();
+        super.invalidateInputs(from);
 
-        if (this.input  ) this.input  .invalidateInputs();
-        if (this.color  ) this.color  .invalidateInputs();
-        if (this.opacity) this.opacity.invalidateInputs();
+        if (this.input  ) this.input  .invalidateInputs(from);
+        if (this.color  ) this.color  .invalidateInputs(from);
+        if (this.opacity) this.opacity.invalidateInputs(from);
     }
 }

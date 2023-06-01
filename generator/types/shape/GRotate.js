@@ -115,11 +115,11 @@ extends GAffine
 
 
 
-    invalidateInputs()
+    invalidateInputs(from)
     {
-        super.invalidateInputs();
+        super.invalidateInputs(from);
 
-        if (this.angle) this.angle.invalidateInputs();
+        if (this.angle) this.angle.invalidateInputs(from);
     }
 
 

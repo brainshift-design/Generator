@@ -826,6 +826,7 @@ const ITEMS                   = 'ITEMS';
 const SELECT                  = 'SEL';
 const LIST_COUNT              = 'COUNT';
 const IF_ELSE                 = 'IF';
+const START                   = 'START';
 const REPEAT                  = 'REPT';
 const CACHE                   = 'CACHE';
 const COPY                    = 'COPY';
@@ -866,6 +867,7 @@ const FLOW_TYPES =
     ITEMS,
     SELECT,
     IF_ELSE,
+    START,
     REPEAT,
     FOREACH,
     CACHE,

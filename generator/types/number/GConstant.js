@@ -75,10 +75,10 @@ extends GNumberType
 
 
 
-    invalidateInputs()
+    invalidateInputs(from)
     {
-        super.invalidateInputs();
+        super.invalidateInputs(from);
 
-        if (this.constant) this.constant.invalidateInputs();
+        if (this.constant) this.constant.invalidateInputs(from);
     }
 }

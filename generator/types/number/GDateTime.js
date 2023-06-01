@@ -105,16 +105,16 @@ extends GNumberType
 
 
 
-    invalidateInputs()
+    invalidateInputs(from)
     {
-        super.invalidateInputs();
+        super.invalidateInputs(from);
 
-        if (this.year     ) this.year     .invalidateInputs();
-        if (this.month    ) this.month    .invalidateInputs();
-        if (this.date     ) this.date     .invalidateInputs();
-        if (this.dayOfWeek) this.dayOfWeek.invalidateInputs();
-        if (this.hours    ) this.hours    .invalidateInputs();
-        if (this.minutes  ) this.minutes  .invalidateInputs();
-        if (this.seconds  ) this.seconds  .invalidateInputs();
+        if (this.year     ) this.year     .invalidateInputs(from);
+        if (this.month    ) this.month    .invalidateInputs(from);
+        if (this.date     ) this.date     .invalidateInputs(from);
+        if (this.dayOfWeek) this.dayOfWeek.invalidateInputs(from);
+        if (this.hours    ) this.hours    .invalidateInputs(from);
+        if (this.minutes  ) this.minutes  .invalidateInputs(from);
+        if (this.seconds  ) this.seconds  .invalidateInputs(from);
     }
 }

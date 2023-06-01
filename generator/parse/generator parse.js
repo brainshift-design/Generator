@@ -112,6 +112,7 @@ function genParse(parse, inParam = true)
     else if (parse.next == SELECT                 ) result = genParseSelect           (parse);
     else if (parse.next == LIST_COUNT             ) result = genParseListCount        (parse);
     else if (parse.next == IF_ELSE                ) result = genParseIfElse           (parse);
+    else if (parse.next == START                  ) result = genParseStart            (parse);
     else if (parse.next == REPEAT                 ) result = genParseRepeat           (parse);
     else if (parse.next == CACHE                  ) result = genParseCache            (parse);
     else if (parse.next == COPY                   ) result = genParseCopy             (parse);

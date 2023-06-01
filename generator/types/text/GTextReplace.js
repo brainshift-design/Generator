@@ -86,12 +86,12 @@ extends GTextType
 
 
 
-    invalidateInputs()
+    invalidateInputs(from)
     {
-        super.invalidateInputs();
+        super.invalidateInputs(from);
 
-        if (this.input) this.input.invalidateInputs();
-        if (this.what ) this.what .invalidateInputs();
-        if (this.with ) this.with .invalidateInputs();
+        if (this.input) this.input.invalidateInputs(from);
+        if (this.what ) this.what .invalidateInputs(from);
+        if (this.with ) this.with .invalidateInputs(from);
     }
 }

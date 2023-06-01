@@ -90,10 +90,10 @@ extends GOperator
 
 
 
-    invalidateInputs()
+    invalidateInputs(from)
     {
-        super.invalidateInputs();
+        super.invalidateInputs(from);
 
-        if (this.node) this.node.invalidateInputs();
+        if (this.node) this.node.invalidateInputs(from);
     }
 }

@@ -114,11 +114,11 @@ extends GShapeBase
 
 
 
-    invalidateInputs()
+    invalidateInputs(from)
     {
-        super.invalidateInputs();
+        super.invalidateInputs(from);
 
-        if (this.props) this.props.invalidateInputs();
+        if (this.props) this.props.invalidateInputs(from);
     }
 }
 

@@ -59,6 +59,7 @@
 ../generator/types/flow/GSelect.js
 ../generator/types/flow/GListCount.js
 ../generator/types/flow/GIfElse.js
+../generator/types/flow/GStart.js
 ../generator/types/flow/GRepeat.js
 ../generator/types/flow/GCache.js
 ../generator/types/flow/GCopy.js

@@ -25,6 +25,7 @@ extends OperatorBase
         this.paramCount.affectsHeader = false;
 
         this.paramLoop.input.types.push(NUMBER_LIST_VALUE);
+        this.paramLoop.input.types.push(START);
     }
     
     
@@ -90,8 +91,8 @@ extends OperatorBase
     {
         this.paramCount.enableControlText(true);
 
-        this.paramLoop .enableControlText(true);
-        this.paramLoop .controls[0].valueText = '↵';
+        this.paramLoop.enableControlText(true);
+        this.paramLoop.controls[0].valueText = '↵';
 
         this.updateParamControls();
     }

@@ -1,9 +1,13 @@
 {
-  "name":            "Generator",
-  "id":              "899028246731755335",
-  "api":             "1.0.0",
-  "main":            "output/main.js",
-  "ui":              "output/ui.html",
-  "editorType":      ["figma"],
-  "permissions":     [ "currentuser", "activeusers" ]
+  "name":          "Generator",
+  "id":            "899028246731755335",
+  "api":           "1.0.0",
+  "main":          "output/main.js",
+  "ui":            "output/ui.html",
+  "editorType":    [ "figma" ],
+  "permissions":   [ "currentuser", "activeusers" ],
+  "networkAccess": {
+    "allowedDomains": ["*"],
+    "reasoning":      "Generator lets the user request data from web APIs."
+  }
 }

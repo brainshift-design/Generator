@@ -85,12 +85,12 @@ extends GNumberType
 
 
 
-    invalidateInputs()
+    invalidateInputs(from)
     {
-        super.invalidateInputs();
+        super.invalidateInputs(from);
 
-        if (this.input   ) this.input   .invalidateInputs();
-        if (this.type    ) this.type    .invalidateInputs();
-        if (this.decimals) this.decimals.invalidateInputs();
+        if (this.input   ) this.input   .invalidateInputs(from);
+        if (this.type    ) this.type    .invalidateInputs(from);
+        if (this.decimals) this.decimals.invalidateInputs(from);
     }
 }

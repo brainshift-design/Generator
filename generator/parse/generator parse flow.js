@@ -323,12 +323,12 @@ function genParseStart(parse)
 
 
 
-function genParseRepeat(parse)
+function genParseStart(parse)
 {
     const [, nodeId, options, ignore] = genParseNodeStart(parse);
 
 
-    const rep = new GRepeat(nodeId, options);
+    const feedback = new GStart(nodeId, options);
 
 
     let nInputs = -1;
@@ -341,12 +341,12 @@ function genParseRepeat(parse)
 
 
     if (parse.settings.logRequests) 
-        logReq(rep, parse, ignore, nInputs);
+        logReq(feedback, parse, ignore, nInputs);
 
 
     if (ignore) 
     {
-        genParseNodeEnd(parse, rep);
+        genParseNodeEnd(parse, feedback);
         return parse.parsedNodes.find(n => n.nodeId == nodeId);
     }
 
@@ -355,17 +355,61 @@ function genParseRepeat(parse)
 
 
     if (nInputs == 1)
-        rep.input = genParse(parse);
-
-    rep.count = genParse(parse);
-    rep.loop  = genParse(parse);  // don't set target here
+        feedback.input = genParse(parse);
 
 
     parse.nTab--;
 
 
-    genParseNodeEnd(parse, rep);
-    return rep;
+    genParseNodeEnd(parse, feedback);
+    return feedback;
+}
+
+
+
+function genParseRepeat(parse)
+{
+    const [, nodeId, options, ignore] = genParseNodeStart(parse);
+
+
+    const repeat = new GRepeat(nodeId, options);
+
+
+    let nInputs = -1;
+    
+    if (!ignore)
+    {
+        nInputs = parseInt(parse.move());
+        console.assert(nInputs == 0 || nInputs == 1, 'nInputs must be [0, 1]');
+    }
+
+
+    if (parse.settings.logRequests) 
+        logReq(repeat, parse, ignore, nInputs);
+
+
+    if (ignore) 
+    {
+        genParseNodeEnd(parse, repeat);
+        return parse.parsedNodes.find(n => n.nodeId == nodeId);
+    }
+
+
+    parse.nTab++;
+
+
+    if (nInputs == 1)
+        repeat.input = genParse(parse);
+
+    repeat.count = genParse(parse);
+    repeat.loop  = genParse(parse);  // don't set target here
+
+
+    parse.nTab--;
+
+
+    genParseNodeEnd(parse, repeat);
+    return repeat;
 }
 
 

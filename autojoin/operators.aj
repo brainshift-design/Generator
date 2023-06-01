@@ -46,6 +46,7 @@
 ../operators/flow/OpSelect.js
 ../operators/flow/OpListCount.js
 ../operators/flow/OpIfElse.js
+../operators/flow/OpStart.js
 ../operators/flow/OpRepeat.js
 ../operators/flow/OpCache.js
 ../operators/flow/OpCopy.js

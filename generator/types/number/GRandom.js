@@ -87,12 +87,12 @@ extends GNumberType
 
 
 
-    invalidateInputs()
+    invalidateInputs(from)
     {
-        super.invalidateInputs();
+        super.invalidateInputs(from);
 
-        if (this.seed) this.seed.invalidateInputs();
-        if (this.min ) this.min .invalidateInputs();
-        if (this.max ) this.max .invalidateInputs();
+        if (this.seed) this.seed.invalidateInputs(from);
+        if (this.min ) this.min .invalidateInputs(from);
+        if (this.max ) this.max .invalidateInputs(from);
     }
 }

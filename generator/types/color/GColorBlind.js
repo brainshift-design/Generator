@@ -106,13 +106,13 @@ extends GColorType
 
 
 
-    invalidateInputs()
+    invalidateInputs(from)
     {
-        super.invalidateInputs();
+        super.invalidateInputs(from);
 
-        if (this.input ) this.input.invalidateInputs();
-        if (this.l     ) this.l    .invalidateInputs();
-        if (this.m     ) this.m    .invalidateInputs();
-        if (this.s     ) this.s    .invalidateInputs();
+        if (this.input ) this.input.invalidateInputs(from);
+        if (this.l     ) this.l    .invalidateInputs(from);
+        if (this.m     ) this.m    .invalidateInputs(from);
+        if (this.s     ) this.s    .invalidateInputs(from);
     }
 }

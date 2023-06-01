@@ -123,12 +123,12 @@ extends GAffine
 
 
 
-    invalidateInputs()
+    invalidateInputs(from)
     {
-        super.invalidateInputs();
+        super.invalidateInputs(from);
 
-        if (this.scaleX) this.scaleX.invalidateInputs();
-        if (this.scaleY) this.scaleY.invalidateInputs();
+        if (this.scaleX) this.scaleX.invalidateInputs(from);
+        if (this.scaleY) this.scaleY.invalidateInputs(from);
     }
 
 

@@ -145,18 +145,18 @@ extends GOperator
 
 
 
-    invalidateInputs()
+    invalidateInputs(from)
     {
-        super.invalidateInputs();
+        super.invalidateInputs(from);
 
-        this.inputs.forEach(i => i.invalidateInputs());
+        this.inputs.forEach(i => i.invalidateInputs(from));
         
-        if (this.gradType) this.gradType.invalidateInputs();
-        if (this.x       ) this.x       .invalidateInputs();
-        if (this.y       ) this.y       .invalidateInputs();
-        if (this.size    ) this.size    .invalidateInputs();
-        if (this.angle   ) this.angle   .invalidateInputs();
-        if (this.aspect  ) this.aspect  .invalidateInputs();
-        if (this.skew    ) this.skew    .invalidateInputs();
+        if (this.gradType) this.gradType.invalidateInputs(from);
+        if (this.x       ) this.x       .invalidateInputs(from);
+        if (this.y       ) this.y       .invalidateInputs(from);
+        if (this.size    ) this.size    .invalidateInputs(from);
+        if (this.angle   ) this.angle   .invalidateInputs(from);
+        if (this.aspect  ) this.aspect  .invalidateInputs(from);
+        if (this.skew    ) this.skew    .invalidateInputs(from);
     }
 }

@@ -97,12 +97,12 @@ extends GNumberType
 
 
 
-    invalidateInputs()
+    invalidateInputs(from)
     {
-        super.invalidateInputs();
+        super.invalidateInputs(from);
 
-        if (this.from ) this.from .invalidateInputs();
-        if (this.start) this.start.invalidateInputs();
-        if (this.end  ) this.end  .invalidateInputs();
+        if (this.from ) this.from .invalidateInputs(from);
+        if (this.start) this.start.invalidateInputs(from);
+        if (this.end  ) this.end  .invalidateInputs(from);
     }
 }

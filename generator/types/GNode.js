@@ -96,7 +96,7 @@ class GNode
 
 
 
-    invalidateInputs()
+    invalidateInputs(from)
     {
         this.valid = false;
     }

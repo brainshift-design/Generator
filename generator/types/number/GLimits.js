@@ -104,12 +104,12 @@ extends GNumberType
 
 
 
-    invalidateInputs()
+    invalidateInputs(from)
     {
-        super.invalidateInputs();
+        super.invalidateInputs(from);
 
-        if (this.input) this.input.invalidateInputs();
-        if (this.min  ) this.min  .invalidateInputs();
-        if (this.max  ) this.max  .invalidateInputs();
+        if (this.input) this.input.invalidateInputs(from);
+        if (this.min  ) this.min  .invalidateInputs(from);
+        if (this.max  ) this.max  .invalidateInputs(from);
     }
 }

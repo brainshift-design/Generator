@@ -77,8 +77,8 @@ extends GOperator
         }
 
 
-        const cx = singlePoint  ?  this.objects[0].x + _cx  :  bounds.x + bounds.width  * _cx;
-        const cy = singlePoint  ?  this.objects[0].y + _cy  :  bounds.y + bounds.height * _cy;
+        const cx = singlePoint ? this.objects[0].x + _cx : bounds.x + bounds.width  * _cx;
+        const cy = singlePoint ? this.objects[0].y + _cy : bounds.y + bounds.height * _cy;
 
 
         const xform = mulm3m3(
@@ -103,8 +103,8 @@ extends GOperator
         {
             const center = new FigmaPoint(
                 this.nodeId,
-                this.nodeId   + '.c',
-                this.nodeName + ' · c',
+                this.nodeId   + '.center',
+                this.nodeName + ' • center',
                 cx,
                 cy,
                 true);
@@ -147,14 +147,14 @@ extends GOperator
 
 
 
-    invalidateInputs()
+    invalidateInputs(from)
     {
-        super.invalidateInputs();
+        super.invalidateInputs(from);
 
-        if (this.input      ) this.input      .invalidateInputs();
-        if (this.centerX    ) this.centerX    .invalidateInputs();
-        if (this.centerY    ) this.centerY    .invalidateInputs();
-        if (this.showCenter ) this.showCenter .invalidateInputs();
-        if (this.affectSpace) this.affectSpace.invalidateInputs();
+        if (this.input      ) this.input      .invalidateInputs(from);
+        if (this.centerX    ) this.centerX    .invalidateInputs(from);
+        if (this.centerY    ) this.centerY    .invalidateInputs(from);
+        if (this.showCenter ) this.showCenter .invalidateInputs(from);
+        if (this.affectSpace) this.affectSpace.invalidateInputs(from);
     }
 }

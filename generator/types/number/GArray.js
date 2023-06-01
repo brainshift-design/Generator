@@ -86,10 +86,10 @@ extends GNumberType
 
 
 
-    invalidateInputs()
+    invalidateInputs(from)
     {
-        super.invalidateInputs();
+        super.invalidateInputs(from);
 
-        if (this.values) this.values.invalidateInputs();
+        if (this.values) this.values.invalidateInputs(from);
     }
 }

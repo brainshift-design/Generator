@@ -188,13 +188,13 @@ extends GShape
 
 
 
-   invalidateInputs()
+   invalidateInputs(from)
    {
-      super.invalidateInputs();
+      super.invalidateInputs(from);
 
-      if (this.input ) this.input .invalidateInputs();
-      if (this.round ) this.round .invalidateInputs();
-      if (this.points) this.points.invalidateInputs();
-      if (this.convex) this.convex.invalidateInputs();
+      if (this.input ) this.input .invalidateInputs(from);
+      if (this.round ) this.round .invalidateInputs(from);
+      if (this.points) this.points.invalidateInputs(from);
+      if (this.convex) this.convex.invalidateInputs(from);
    }
 }

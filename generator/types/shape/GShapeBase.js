@@ -93,15 +93,15 @@ extends GOperator
 
 
 
-    invalidateInputs()
+    invalidateInputs(from)
     {
-        super.invalidateInputs();
+        super.invalidateInputs(from);
 
-        if (this.x     ) this.x     .invalidateInputs();
-        if (this.y     ) this.y     .invalidateInputs();
-        if (this.width ) this.width .invalidateInputs();
-        if (this.height) this.height.invalidateInputs();
-        //if (this.angle ) this.angle .invalidateInputs();
+        if (this.x     ) this.x     .invalidateInputs(from);
+        if (this.y     ) this.y     .invalidateInputs(from);
+        if (this.width ) this.width .invalidateInputs(from);
+        if (this.height) this.height.invalidateInputs(from);
+        //if (this.angle ) this.angle .invalidateInputs(from);
     }
 }
 

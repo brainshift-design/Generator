@@ -6,6 +6,8 @@ extends GOperator
     count;
     loop;
 
+    iterationObjects = [];
+
 
 
     constructor(nodeId, options)
@@ -54,10 +56,12 @@ extends GOperator
         if (this.loop.type != NUMBER_VALUE)
         {
             console.assert(
-                   this.loop.type == NUMBER_DISTRIBUTE
+                   this.loop.type == NUMBER_ARRAY
+                || this.loop.type == NUMBER_DISTRIBUTE
                 || this.loop.type == NUMBER_SEQUENCE
                 || this.loop.type == NUMBER_RANDOM
-                || this.loop.type == LIST,
+                || this.loop.type == LIST
+                || this.loop.type == PARAM, // for OpStart
                 'only volatile types can be repeated');
 
             this.setRepeatCount(this.loop, count.value);
@@ -94,16 +98,18 @@ extends GOperator
                 {
                     if (this.loop.type != NUMBER_VALUE)
                     {
-                        this.invalidateRepeat(this.loop, this.nodeId);
+                        this.invalidateRepeat(parse, this.loop, this.nodeId);
 
                         repeat.iteration = i;
                         repeat.total     = nItems;
                     }
                     
                     
-                    this.input.invalidateInputs();
+                    this.input.invalidateInputs(this);
                     await this.input.eval(parse);
-
+                    
+                   
+                    this.iterationObjects = [];
                     
                     for (let j = 0; j < this.input.objects.length; j++, o++)
                     {
@@ -111,14 +117,16 @@ extends GOperator
 
                         obj.nodeId      = this.nodeId;
 
-                        obj.objectId    = this.nodeId + ':' + (o+1).toString() + obj.objectId;
+                        obj.objectId    = obj.objectId + OBJECT_SEPARATOR + this.nodeId + ':' + (o+1).toString();
                         obj.objectName += ' ' + (o+1).toString();
 
                         obj.listId      = i;
         
                         this.objects.push(obj);
+                        this.iterationObjects.push(obj);
                     }
         
+
 
                     const input = this.input.toValue();
 
@@ -172,31 +180,36 @@ extends GOperator
 
 
 
-    invalidateInputs()
+    invalidateInputs(src)
     {
-        super.invalidateInputs();
+        super.invalidateInputs(src);
 
-        if (this.input) this.input.invalidateInputs();
-        if (this.count) this.count.invalidateInputs();
+        if (this.input) this.input.invalidateInputs(src);
+        if (this.count) this.count.invalidateInputs(src);
     }
 
 
 
-    invalidateRepeat(loop, nodeId)
+    invalidateRepeat(parse, loop, nodeId)
     {
         if (loop.type == LIST)
         {
             for (const input of loop.inputs)
-            {
-                input.valid  = false;
-                input.loopId = nodeId;
-            }
+                this.invalidateLoopInput(parse, input);
         }
         else
-        {
-            loop.valid  = false;
-            loop.loopId = nodeId;
-        }
+            this.invalidateLoopInput(parse, loop);
+    }
+
+
+
+    invalidateLoopInput(parse, input)
+    {
+        if (input.type == PARAM)
+            input = parse.parsedNodes.find(n => n.nodeId == input.nodeId);
+
+        input.valid  = false;
+        input.loopId = this.nodeId;
     }
 
 

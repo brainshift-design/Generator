@@ -163,11 +163,11 @@ extends GShapeBase
 
 
 
-    invalidateInputs()
+    invalidateInputs(from)
     {
-        super.invalidateInputs();
+        super.invalidateInputs(from);
 
-        if (this.input   ) this.input   .invalidateInputs();
-        if (this.children) this.children.invalidateInputs();
+        if (this.input   ) this.input   .invalidateInputs(from);
+        if (this.children) this.children.invalidateInputs(from);
     }
 }

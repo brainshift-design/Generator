@@ -66,11 +66,11 @@ extends GTextType
 
 
 
-    invalidateInputs()
+    invalidateInputs(from)
     {
-        super.invalidateInputs();
+        super.invalidateInputs(from);
 
-        if (this.input) this.input.invalidateInputs();
-        if (this.code ) this.code .invalidateInputs();
+        if (this.input) this.input.invalidateInputs(from);
+        if (this.code ) this.code .invalidateInputs(from);
     }
 }

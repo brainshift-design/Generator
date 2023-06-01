@@ -97,9 +97,8 @@ extends GOperator
             return;
             
 
-        const x           = options.x          .toNumber();
-        const y           = options.y          .toNumber();
-        const affectSpace = options.affectSpace.toNumber();
+        const x     = options.x.toNumber();
+        const y     = options.y.toNumber();
 
         const xform = createTransform(x, y);
 
@@ -109,9 +108,9 @@ extends GOperator
             obj.nodeId   = this.nodeId;
             obj.objectId = obj.objectId + OBJECT_SEPARATOR + this.nodeId;
 
-            obj.applyTransform(xform, affectSpace > 0);
+            obj.applyTransform(xform, options.affectSpace.value > 0);
 
-            this.coords = mulm3m3(this.coords, xform);
+            this.coords  = mulm3m3(this.coords, xform);
         }
 
         
@@ -142,14 +141,14 @@ extends GOperator
 
 
 
-    invalidateInputs()
+    invalidateInputs(from)
     {
-        super.invalidateInputs();
+        super.invalidateInputs(from);
 
-        if (this.input      ) this.input      .invalidateInputs();
-        if (this.x          ) this.x          .invalidateInputs();
-        if (this.y          ) this.y          .invalidateInputs();
-        if (this.affectSpace) this.affectSpace.invalidateInputs();
+        if (this.input      ) this.input      .invalidateInputs(from);
+        if (this.x          ) this.x          .invalidateInputs(from);
+        if (this.y          ) this.y          .invalidateInputs(from);
+        if (this.affectSpace) this.affectSpace.invalidateInputs(from);
     }
 
 

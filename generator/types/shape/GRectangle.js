@@ -121,7 +121,7 @@ extends GShape
                     this.nodeId, 
                     this.nodeId, 
                     this.nodeName, 
-                    x, y, w, h, a, r);
+                    x, y, w, h, r);
 
                 rect.createDefaultTransform(x, y);
 
@@ -175,11 +175,11 @@ extends GShape
 
 
 
-    invalidateInputs()
+    invalidateInputs(from)
     {
-        super.invalidateInputs();
+        super.invalidateInputs(from);
 
-        if (this.input) this.input.invalidateInputs();
-        if (this.round) this.round.invalidateInputs();
+        if (this.input) this.input.invalidateInputs(from);
+        if (this.round) this.round.invalidateInputs(from);
     }
 }

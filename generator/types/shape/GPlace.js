@@ -52,7 +52,7 @@ extends GOperator
         {
             for (let i = 0, o = 0; i < points.items.length; i++)
             {
-                this.input.invalidateInputs();
+                this.input.invalidateInputs(from);
                 let input = (await this.input.eval(parse)).toValue();
 
 
@@ -152,13 +152,13 @@ extends GOperator
 
 
 
-    invalidateInputs()
+    invalidateInputs(from)
     {
-        super.invalidateInputs();
+        super.invalidateInputs(from);
 
-        if (this.input ) this.input .invalidateInputs();
-        if (this.points     ) this.points     .invalidateInputs();
-        if (this.y     ) this.y     .invalidateInputs();
+        if (this.input ) this.input .invalidateInputs(from);
+        if (this.points     ) this.points     .invalidateInputs(from);
+        if (this.y     ) this.y     .invalidateInputs(from);
     }
 
 

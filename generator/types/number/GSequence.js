@@ -78,11 +78,11 @@ extends GNumberType
 
 
 
-    invalidateInputs()
+    invalidateInputs(from)
     {
-        super.invalidateInputs();
+        super.invalidateInputs(from);
 
-        if (this.start) this.start.invalidateInputs();
-        if (this.step ) this.step .invalidateInputs();
+        if (this.start) this.start.invalidateInputs(from);
+        if (this.step ) this.step .invalidateInputs(from);
     }
 }

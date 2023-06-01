@@ -91,12 +91,12 @@ extends GTextType
 
 
 
-    invalidateInputs()
+    invalidateInputs(from)
     {
-        super.invalidateInputs();
+        super.invalidateInputs(from);
 
-        if (this.input  ) this.input  .invalidateInputs();
-        if (this.request) this.request.invalidateInputs();
+        if (this.input  ) this.input  .invalidateInputs(from);
+        if (this.request) this.request.invalidateInputs(from);
 
         this.cachedValue = new TextValue();
     }
