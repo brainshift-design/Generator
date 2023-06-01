@@ -57,13 +57,7 @@ extends GOperator
 
     evalObjects(parse, options = {})
     {
-        // if (this.feedback)
-        //     console.log('this.feedback.iterationObjects =', this.feedback.iterationObjects);
-
-        
         const repeat = parse.repeats.find(r => r.repeatId == this.loopId);
-        console.log('this.loopId =', this.loopId);
-        console.log('repeat =', repeat);
 
         this.updateObjects(
                this.feedback
@@ -90,7 +84,7 @@ extends GOperator
         for (const obj of this.objects)
         {
             obj.nodeId   = this.nodeId;
-            obj.objectId = obj.objectId + OBJECT_SEPARATOR + this.nodeId + (iteration != '' ? ':' + iteration : '');
+            obj.objectId = obj.objectId + OBJECT_SEPARATOR + this.nodeId;// + (iteration != '' ? ':' + iteration : '');
         }
     }
     

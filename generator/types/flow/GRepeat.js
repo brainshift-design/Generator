@@ -115,6 +115,9 @@ extends GOperator
                     {
                         const obj = copyFigmaObject(this.input.objects[j]);
 
+                        this.iterationObjects.push(obj.copy());
+
+
                         obj.nodeId      = this.nodeId;
 
                         obj.objectId    = obj.objectId + OBJECT_SEPARATOR + this.nodeId + ':' + (o+1).toString();
@@ -123,7 +126,6 @@ extends GOperator
                         obj.listId      = i;
         
                         this.objects.push(obj);
-                        this.iterationObjects.push(obj);
                     }
         
 
