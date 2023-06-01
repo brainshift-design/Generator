@@ -1,12 +1,6 @@
 class GShape
 extends GShapeBase
 {
-    x      = null;
-    y      = null;
-    width  = null;
-    height = null;
-    //angle  = null;
-
     props  = null;
    
 

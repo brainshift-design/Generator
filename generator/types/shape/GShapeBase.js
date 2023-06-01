@@ -5,7 +5,6 @@ extends GOperator
     y      = null;
     width  = null;
     height = null;
-    //angle  = null;
 
 
 
@@ -24,7 +23,6 @@ extends GOperator
         if (base.y     ) this.y      = base.y     .copy();
         if (base.width ) this.width  = base.width .copy();
         if (base.height) this.height = base.height.copy();
-        //if (base.angle ) this.angle  = base.angle .copy();
     }
 
 
@@ -38,9 +36,7 @@ extends GOperator
         const height = evalHeight
                     && this.height ? (await this.height.eval(parse)).toValue() : null;
 
-        //const angle  = this.angle  ? (await this.angle .eval(parse)).toValue() : null;
-
-        return [x, y, width, height];//, angle];
+        return [x, y, width, height];
     }
 
 
@@ -54,8 +50,6 @@ extends GOperator
         if (   evalHeight // lines don't have height
             && this.value.height != undefined)
             this.updateValues.push(['height', this.value.height]);
-
-        //if (this.value.angle != undefined) this.updateValues.push(['angle',  this.value.angle]);
     }
 
 
@@ -68,7 +62,6 @@ extends GOperator
         if (this.y     ) this.y     .pushValueUpdates(parse);
         if (this.width ) this.width .pushValueUpdates(parse);
         if (this.height) this.height.pushValueUpdates(parse);
-        //if (this.angle ) this.angle .pushValueUpdates(parse);
     }
 
 
@@ -88,7 +81,6 @@ extends GOperator
             && this.y     .isValid()
             && this.width .isValid()
             && this.height.isValid();
-            //&& this.angle .isValid();
     }
 
 
@@ -101,7 +93,6 @@ extends GOperator
         if (this.y     ) this.y     .invalidateInputs(from);
         if (this.width ) this.width .invalidateInputs(from);
         if (this.height) this.height.invalidateInputs(from);
-        //if (this.angle ) this.angle .invalidateInputs(from);
     }
 }
 
@@ -117,13 +108,8 @@ function validateObjectRect(x, y, w, h, a, _a)
 
     if (h < 0)
     {
-        // a += 180;
-        // while (a > 360) a -= 360;
-
-        // _a = a/360*Tau;
-
-        y += h * Math.cos(_a);// - w * Math.sin(_a);
-        x -= h * Math.sin(_a);// - w * Math.cos(_a);
+        y += h * Math.cos(_a);
+        x -= h * Math.sin(_a);
     }
   
     

@@ -117,14 +117,12 @@ extends GOperator
 
                         this.iterationObjects.push(obj.copy());
 
-
                         obj.nodeId      = this.nodeId;
+                        obj.listId      = i;
 
                         obj.objectId    = obj.objectId + OBJECT_SEPARATOR + this.nodeId + ':' + (o+1).toString();
                         obj.objectName += ' ' + (o+1).toString();
 
-                        obj.listId      = i;
-        
                         this.objects.push(obj);
                     }
         
