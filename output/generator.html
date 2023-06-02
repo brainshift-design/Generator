@@ -3766,7 +3766,7 @@ const NUMBER_ROUND            = 'ROUND';
 const NUMBER_LIMITS           = 'LIM';   
 const NUMBER_CONSTANT         = 'CONST';  
 const NUMBER_DATETIME         = 'DATE';  
-const NUMBER_ARRAY            = 'ARRAY';  
+const NUMBER_DEFINE            = 'ARRAY';  
 const NUMBER_DISTRIBUTE       = 'DISTR';  
 const NUMBER_SEQUENCE         = 'SEQ';  
 const NUMBER_RANDOM           = 'RAND';  
@@ -3871,7 +3871,7 @@ const NUMBER_TYPES =
     NUMBER_LIMITS,
     NUMBER_CONSTANT,
     NUMBER_DATETIME,
-    NUMBER_ARRAY,
+    NUMBER_DEFINE,
     NUMBER_DISTRIBUTE,
     NUMBER_SEQUENCE,
     NUMBER_RANDOM,
@@ -10839,7 +10839,7 @@ extends GOperator
         if (this.loop.type != NUMBER_VALUE)
         {
             console.assert(
-                   this.loop.type == NUMBER_ARRAY
+                   this.loop.type == NUMBER_DEFINE
                 || this.loop.type == NUMBER_DISTRIBUTE
                 || this.loop.type == NUMBER_SEQUENCE
                 || this.loop.type == NUMBER_RANDOM
@@ -11934,7 +11934,7 @@ extends GNumberType
 
 
 
-class GArray
+class GDefine
 extends GNumberType
 {
     values;
@@ -11946,14 +11946,14 @@ extends GNumberType
 
     constructor(nodeId, options)
     {
-        super(NUMBER_ARRAY, nodeId, options);
+        super(NUMBER_DEFINE, nodeId, options);
     }
 
 
     
     copy()
     {
-        const copy = new GArray(this.nodeId, this.options);
+        const copy = new GDefine(this.nodeId, this.options);
 
         copy.copyBase(this);
 
@@ -26535,7 +26535,7 @@ function genParseArray(parse)
     const [, nodeId, options, ignore] = genParseNodeStart(parse);
 
 
-    const array = new GArray(nodeId, options);
+    const array = new GDefine(nodeId, options);
 
 
     if (parse.settings.logRequests) 
@@ -28801,7 +28801,7 @@ function genParse(parse, inParam = true)
     else if (parse.next == NUMBER_RANDOM          ) result = genParseRandom           (parse);
     else if (parse.next == NUMBER_CONSTANT        ) result = genParseConstant         (parse);
     else if (parse.next == NUMBER_DATETIME        ) result = genParseDateTime         (parse);
-    else if (parse.next == NUMBER_ARRAY           ) result = genParseArray            (parse);
+    else if (parse.next == NUMBER_DEFINE           ) result = genParseArray            (parse);
     else if (parse.next == NUMBER_DISTRIBUTE      ) result = genParseDistribute       (parse);
     else if (parse.next == NUMBER_SEQUENCE        ) result = genParseSequence         (parse);
     else if (parse.next == NUMBER_INTERPOLATE     ) result = genParseInterpolate      (parse);

@@ -478,7 +478,7 @@ const NUMBER_ROUND = 'ROUND';
 const NUMBER_LIMITS = 'LIM';
 const NUMBER_CONSTANT = 'CONST';
 const NUMBER_DATETIME = 'DATE';
-const NUMBER_ARRAY = 'ARRAY';
+const NUMBER_DEFINE = 'ARRAY';
 const NUMBER_DISTRIBUTE = 'DISTR';
 const NUMBER_SEQUENCE = 'SEQ';
 const NUMBER_RANDOM = 'RAND';
@@ -562,7 +562,7 @@ const NUMBER_TYPES = [
     NUMBER_LIMITS,
     NUMBER_CONSTANT,
     NUMBER_DATETIME,
-    NUMBER_ARRAY,
+    NUMBER_DEFINE,
     NUMBER_DISTRIBUTE,
     NUMBER_SEQUENCE,
     NUMBER_RANDOM,
@@ -2256,13 +2256,19 @@ function updateEmptyObjects() {
         setEmptyObjectStroke(obj);
 }
 function setEmptyObjectStroke(obj) {
-    const back = figma.currentPage.backgrounds[0];
-    const l = back.color.r * 0.2126
-        + back.color.g * 0.7152
-        + back.color.b * 0.0722;
-    const phantomColor = l > 0.5
-        ? { r: 0, g: 0, b: 0 }
-        : { r: 1, g: 1, b: 1 };
+    const back = figma.currentPage.backgrounds.find(b => b.type == 'SOLID');
+    let phantomColor;
+    if (back) {
+        const l = back.color.r * 0.2126
+            + back.color.g * 0.7152
+            + back.color.b * 0.0722;
+        phantomColor =
+            l > 0.5
+                ? { r: 0, g: 0, b: 0 }
+                : { r: 1, g: 1, b: 1 };
+    }
+    else
+        phantomColor = { r: 1, g: 0, b: 1 };
     setObjectStroke_(obj, [{ type: 'SOLID',
             color: phantomColor,
             opacity: 0.5 }], 1 / curZoom, 'CENTER', 'MITER', 1, [1 / curZoom,

@@ -393,7 +393,7 @@ function genParseArray(parse)
     const [, nodeId, options, ignore] = genParseNodeStart(parse);
 
 
-    const array = new GArray(nodeId, options);
+    const array = new GDefine(nodeId, options);
 
 
     if (parse.settings.logRequests) 

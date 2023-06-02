@@ -56,7 +56,7 @@ extends GOperator
         if (this.loop.type != NUMBER_VALUE)
         {
             console.assert(
-                   this.loop.type == NUMBER_ARRAY
+                   this.loop.type == NUMBER_DEFINE
                 || this.loop.type == NUMBER_DISTRIBUTE
                 || this.loop.type == NUMBER_SEQUENCE
                 || this.loop.type == NUMBER_RANDOM

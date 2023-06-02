@@ -2811,7 +2811,7 @@ a
 
     border-radius:        0.5px;
     
-    /* box-shadow:           0 0 0 1px inset red; */
+    box-shadow:           0 0 0 1px inset red;
 }
 
 
@@ -8188,7 +8188,7 @@ const NUMBER_ROUND            = 'ROUND';
 const NUMBER_LIMITS           = 'LIM';   
 const NUMBER_CONSTANT         = 'CONST';  
 const NUMBER_DATETIME         = 'DATE';  
-const NUMBER_ARRAY            = 'ARRAY';  
+const NUMBER_DEFINE            = 'ARRAY';  
 const NUMBER_DISTRIBUTE       = 'DISTR';  
 const NUMBER_SEQUENCE         = 'SEQ';  
 const NUMBER_RANDOM           = 'RAND';  
@@ -8293,7 +8293,7 @@ const NUMBER_TYPES =
     NUMBER_LIMITS,
     NUMBER_CONSTANT,
     NUMBER_DATETIME,
-    NUMBER_ARRAY,
+    NUMBER_DEFINE,
     NUMBER_DISTRIBUTE,
     NUMBER_SEQUENCE,
     NUMBER_RANDOM,
@@ -15261,7 +15261,7 @@ extends GOperator
         if (this.loop.type != NUMBER_VALUE)
         {
             console.assert(
-                   this.loop.type == NUMBER_ARRAY
+                   this.loop.type == NUMBER_DEFINE
                 || this.loop.type == NUMBER_DISTRIBUTE
                 || this.loop.type == NUMBER_SEQUENCE
                 || this.loop.type == NUMBER_RANDOM
@@ -16356,7 +16356,7 @@ extends GNumberType
 
 
 
-class GArray
+class GDefine
 extends GNumberType
 {
     values;
@@ -16368,14 +16368,14 @@ extends GNumberType
 
     constructor(nodeId, options)
     {
-        super(NUMBER_ARRAY, nodeId, options);
+        super(NUMBER_DEFINE, nodeId, options);
     }
 
 
     
     copy()
     {
-        const copy = new GArray(this.nodeId, this.options);
+        const copy = new GDefine(this.nodeId, this.options);
 
         copy.copyBase(this);
 
@@ -30957,7 +30957,7 @@ function genParseArray(parse)
     const [, nodeId, options, ignore] = genParseNodeStart(parse);
 
 
-    const array = new GArray(nodeId, options);
+    const array = new GDefine(nodeId, options);
 
 
     if (parse.settings.logRequests) 
@@ -33223,7 +33223,7 @@ function genParse(parse, inParam = true)
     else if (parse.next == NUMBER_RANDOM          ) result = genParseRandom           (parse);
     else if (parse.next == NUMBER_CONSTANT        ) result = genParseConstant         (parse);
     else if (parse.next == NUMBER_DATETIME        ) result = genParseDateTime         (parse);
-    else if (parse.next == NUMBER_ARRAY           ) result = genParseArray            (parse);
+    else if (parse.next == NUMBER_DEFINE           ) result = genParseArray            (parse);
     else if (parse.next == NUMBER_DISTRIBUTE      ) result = genParseDistribute       (parse);
     else if (parse.next == NUMBER_SEQUENCE        ) result = genParseSequence         (parse);
     else if (parse.next == NUMBER_INTERPOLATE     ) result = genParseInterpolate      (parse);
@@ -42969,7 +42969,7 @@ const NUMBER_ROUND            = 'ROUND';
 const NUMBER_LIMITS           = 'LIM';   
 const NUMBER_CONSTANT         = 'CONST';  
 const NUMBER_DATETIME         = 'DATE';  
-const NUMBER_ARRAY            = 'ARRAY';  
+const NUMBER_DEFINE            = 'ARRAY';  
 const NUMBER_DISTRIBUTE       = 'DISTR';  
 const NUMBER_SEQUENCE         = 'SEQ';  
 const NUMBER_RANDOM           = 'RAND';  
@@ -43074,7 +43074,7 @@ const NUMBER_TYPES =
     NUMBER_LIMITS,
     NUMBER_CONSTANT,
     NUMBER_DATETIME,
-    NUMBER_ARRAY,
+    NUMBER_DEFINE,
     NUMBER_DISTRIBUTE,
     NUMBER_SEQUENCE,
     NUMBER_RANDOM,
@@ -50042,7 +50042,7 @@ extends GOperator
         if (this.loop.type != NUMBER_VALUE)
         {
             console.assert(
-                   this.loop.type == NUMBER_ARRAY
+                   this.loop.type == NUMBER_DEFINE
                 || this.loop.type == NUMBER_DISTRIBUTE
                 || this.loop.type == NUMBER_SEQUENCE
                 || this.loop.type == NUMBER_RANDOM
@@ -51137,7 +51137,7 @@ extends GNumberType
 
 
 
-class GArray
+class GDefine
 extends GNumberType
 {
     values;
@@ -51149,14 +51149,14 @@ extends GNumberType
 
     constructor(nodeId, options)
     {
-        super(NUMBER_ARRAY, nodeId, options);
+        super(NUMBER_DEFINE, nodeId, options);
     }
 
 
     
     copy()
     {
-        const copy = new GArray(this.nodeId, this.options);
+        const copy = new GDefine(this.nodeId, this.options);
 
         copy.copyBase(this);
 
@@ -68386,7 +68386,7 @@ function initGeneratorMenus()
                              new MenuItem('Conditional',   {icon: iconCondition,   /*childMenu: menuCondition,*/ callback: e => actionManager.do(getCreateNodeAction(NUMBER_CONDITION, btnNumber.div, getCreateOptions(e)))}),
                              new MenuItem('Trigonometric', {icon: iconSine,        /*childMenu: menuTrig,     */ callback: e => actionManager.do(getCreateNodeAction(NUMBER_TRIG,      btnNumber.div, getCreateOptions(e)))}),
                              new MenuItem('',              {separator: true}),
-        menuItemArray      = new MenuItem('Define . . .',     {icon: iconArray,       callback: e => actionManager.do(getCreateNodeAction(NUMBER_ARRAY,       btnNumber.div, getCreateOptions(e)))}),
+        menuItemArray      = new MenuItem('Define . . .',     {icon: iconArray,       callback: e => actionManager.do(getCreateNodeAction(NUMBER_DEFINE,       btnNumber.div, getCreateOptions(e)))}),
         menuItemDistribute = new MenuItem('Distribute . . .', {icon: iconDistribute,  callback: e => actionManager.do(getCreateNodeAction(NUMBER_DISTRIBUTE,  btnNumber.div, getCreateOptions(e)))}),
         menuItemSequence   = new MenuItem('Sequence . . .',   {icon: iconSequence,    callback: e => actionManager.do(getCreateNodeAction(NUMBER_SEQUENCE,    btnNumber.div, getCreateOptions(e)))}),
                              new MenuItem('Random . . .',     {icon: iconRandom,      callback: e => actionManager.do(getCreateNodeAction(NUMBER_RANDOM,      btnNumber.div, getCreateOptions(e)))}),
@@ -83459,7 +83459,7 @@ extends OperatorBase
 }
 
 
-class   OpArray
+class   OpDefine
 extends ResizableBase
 {
     paramValues;
@@ -83468,7 +83468,7 @@ extends ResizableBase
 
     constructor()
     {
-        super(NUMBER_ARRAY, 'define', 'define', iconArray);
+        super(NUMBER_DEFINE, 'define', 'define', iconArray);
 
         this.cached      = false;
         this.iconOffsetY = 1;
@@ -101358,7 +101358,7 @@ function createNode(nodeType, creatingButton = null, createdNodeId = -1, options
         case NUMBER_RANDOM:           node = new OpRandom();            break;
         case NUMBER_CONSTANT:         node = new OpConstant();          break;
         case NUMBER_DATETIME:         node = new OpDateTime();          break;
-        case NUMBER_ARRAY:            node = new OpArray();             break;
+        case NUMBER_DEFINE:            node = new OpDefine();             break;
         case NUMBER_DISTRIBUTE:       node = new OpDistribute();        break;
         case NUMBER_SEQUENCE:         node = new OpSequence();          break;
         case NUMBER_INTERPOLATE:      node = new OpInterpolate();       break;

@@ -1,4 +1,4 @@
-class   OpArray
+class   OpDefine
 extends ResizableBase
 {
     paramValues;
@@ -7,7 +7,7 @@ extends ResizableBase
 
     constructor()
     {
-        super(NUMBER_ARRAY, 'define', 'define', iconArray);
+        super(NUMBER_DEFINE, 'define', 'define', iconArray);
 
         this.cached      = false;
         this.iconOffsetY = 1;

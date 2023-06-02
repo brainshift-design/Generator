@@ -59,7 +59,7 @@
 ../operators/number/OpLimits.js
 ../operators/number/OpConstant.js
 ../operators/number/OpDateTime.js
-../operators/number/OpArray.js
+../operators/number/OpDefine.js
 ../operators/number/OpDistribute.js
 ../operators/number/OpSequence.js
 ../operators/number/OpRandom.js

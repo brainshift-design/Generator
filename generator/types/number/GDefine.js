@@ -1,4 +1,4 @@
-class GArray
+class GDefine
 extends GNumberType
 {
     values;
@@ -10,14 +10,14 @@ extends GNumberType
 
     constructor(nodeId, options)
     {
-        super(NUMBER_ARRAY, nodeId, options);
+        super(NUMBER_DEFINE, nodeId, options);
     }
 
 
     
     copy()
     {
-        const copy = new GArray(this.nodeId, this.options);
+        const copy = new GDefine(this.nodeId, this.options);
 
         copy.copyBase(this);
 
