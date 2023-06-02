@@ -7,7 +7,7 @@ extends OperatorWithValue
 
     constructor()
     {
-        super(TEXT_CHAR, 'charFromCode', 'code char', iconTextCharacter);
+        super(TEXT_CHAR, 'codeToChar', 'to char', iconTextCharacter);
 
         this.iconOffsetY = 2;
 
@@ -20,6 +20,7 @@ extends OperatorWithValue
 
         this.paramCode.controls[0].showHex           = true;
         this.paramCode.controls[0].allowEditDecimals = false;
+        this.paramCode.controls[0].divider           = 0.56;
 
         setControlFont(this.paramCode.controls[0].textbox, 'Roboto Mono', 10, 'center');
     }

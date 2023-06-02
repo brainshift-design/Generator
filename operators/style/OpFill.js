@@ -34,7 +34,8 @@ extends OpColorBase
         this.addParam(this.paramColor   = new ColorParam ('color',   '',        false, true, true, ColorValue.fromRgb(rgbDefaultFill)));
         this.addParam(this.paramOpacity = new NumberParam('opacity', 'opacity', true,  true, true, 100, 0, 100));
 
-        this.paramOpacity.controls[0].suffix = '%';
+        this.paramOpacity.controls[0].suffix  = '%';
+        this.paramOpacity.controls[0].divider = 0.54;
     }
     
     

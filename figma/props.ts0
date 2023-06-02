@@ -307,14 +307,14 @@ function updateEmptyObjects()
 
 function setEmptyObjectStroke(obj)
 {
-    const back = figma.currentPage.backgrounds[0].color;
+    // const back = figma.currentPage.backgrounds[0].color;
     
-    const l = 
-          back.r * 0.2126
-        + back.g * 0.7152 
-        + back.b * 0.0722; 
+    const l = 0;
+    //       back.r * 0.2126
+    //     + back.g * 0.7152 
+    //     + back.b * 0.0722; 
         
-    const color = 
+    const phantomColor =
         l > 0.5
         ? {r: 0, g: 0, b: 0}
         : {r: 1, g: 1, b: 1};
@@ -322,7 +322,7 @@ function setEmptyObjectStroke(obj)
     setObjectStroke_(
         obj,
         [{ type:   'SOLID', 
-           color:   color,
+           color:   phantomColor,
            opacity: 0.5 }],
          1 / curZoom,
         'CENTER',

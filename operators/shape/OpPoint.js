@@ -21,6 +21,9 @@ extends OpShapeBase
 
         this.addParam(this.paramX = new NumberParam('x', 'x', true, true, true, 0));
         this.addParam(this.paramX = new NumberParam('y', 'y', true, true, true, 0));
+
+
+        this.setAllParamDividers(0.45);
     }
 
 

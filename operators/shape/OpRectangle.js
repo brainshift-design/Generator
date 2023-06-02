@@ -39,6 +39,7 @@ extends OpShape
 
 
         this.addBaseParams();
+        this.setAllParamDividers(0.53);
     }
 
 

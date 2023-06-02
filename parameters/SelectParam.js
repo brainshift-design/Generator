@@ -35,9 +35,12 @@ extends NumberParamBase
 
         this.controls[0].div.zIndex = 0;
 
-
         this.controls[0].div.style.display = 'inline-block';
         this.controls[0].div.style.width   = '100%';
+
+        this.controls[0].divName .style.display    = 'none';
+        this.controls[0].divValue.style.transform  = 'translateX(-50%) translateY(-50%)';
+        this.controls[0].divValue.style.marginLeft = 0;
 
        
         this.defaultValue = new NumberValue(defaultValue);

@@ -1,10 +1,12 @@
 class NumberControl
 extends Control
 {
-    bar;
-    text;
+    divBar;
+    divPrecision;
+    divName;
+    divValue;
     textbox;
-    focus;
+    divFocus;
 
     extLeft;
     extRight;
@@ -33,7 +35,9 @@ extends Control
     
     wrapValue             = false;
 
-    
+    divider               = 0.5;
+
+
     showName              = true;
     showHex               = false;
 
@@ -141,16 +145,20 @@ extends Control
         this.wheelScale            = wheelScale;
     
 
-        this.bar                   = createDiv('numberControlBar');
-        this.text                  = createDiv('numberControlText');
-        this.focus                 = createDiv('numberControlFocus');
+        this.divBar                = createDiv('numberControlBar');
+        this.divPrecision          = createDiv('numberControlPrecision');
+        this.divName               = createDiv('numberControlName');
+        this.divValue              = createDiv('numberControlValue');
+        this.divFocus              = createDiv('numberControlFocus');
         this.extLeft               = createDiv('numberControlExt numberControlExtLeft');
         this.extRight              = createDiv('numberControlExt numberControlExtRight');
 
 
-        this.div.appendChild(this.bar);
-        this.div.appendChild(this.text);
-        this.div.appendChild(this.focus);
+        this.div.appendChild(this.divBar);
+        this.div.appendChild(this.divPrecision);
+        this.div.appendChild(this.divName);
+        this.div.appendChild(this.divValue);
+        this.div.appendChild(this.divFocus);
         this.div.appendChild(this.extLeft);
         this.div.appendChild(this.extRight);
 
@@ -311,6 +319,7 @@ extends Control
 
 
         this.updateBar(sx, cx, v, sw, sh);
+        this.updatePrecision(sx, cx, v, sw, sh);
         this.updateColors();
         this.updateText();
         this.updateFocus(sw, sh);
@@ -329,11 +338,11 @@ extends Control
             
         if (    isNaN(this.value)
             || !this.showBar)
-            this.bar.style.display = 'none';
+            this.divBar.style.display = 'none';
 
         else
         {
-            this.bar.style.display = 'block';
+            this.divBar.style.display = 'block';
 
             const x =
                 this.displayAbsolute
@@ -342,21 +351,52 @@ extends Control
                    ? cx
                    : cx + v * sw);
 
-            this.bar.style.left   = Math.max(0, x);
-            this.bar.style.width  = Math.min(Math.max(0, Math.round(Math.abs(v) * sw) + Math.min(0, x)), Math.max(0, this.measureData.offsetRect.width - Math.max(0, x)));
+            this.divBar.style.left   = Math.max(0, x);
+            this.divBar.style.width  = Math.min(Math.max(0, Math.round(Math.abs(v) * sw) + Math.min(0, x)), Math.max(0, this.measureData.offsetRect.width - Math.max(0, x)));
 
-            this.bar.style.top    = sh * this.barTop;
-            this.bar.style.height = sh * (this.barBottom - this.barTop);
+            this.divBar.style.top    = sh * this.barTop;
+            this.divBar.style.height = sh * (this.barBottom - this.barTop);
         }
+    }
+
+
+
+    updatePrecision(sx, cx, v, sw, sh)
+    {
+        // if (this.dragReverse)
+        //     v *= -1;
+
+            
+        // if (    isNaN(this.value)
+        //     || !this.showBar)
+        //     this.bar.style.display = 'none';
+
+        // else
+        // {
+            this.divPrecision.style.display = 'block';
+
+            const x = cx; 
+            //     this.displayAbsolute
+            //     ? 0
+            //     : (v >= 0
+            //        ? cx
+            //        : cx + v * sw);
+
+            this.divPrecision.style.left   = Math.max(0, x);
+            this.divPrecision.style.width  = 10;//Math.min(Math.max(0, Math.round(Math.abs(v) * sw) + Math.min(0, x)), Math.max(0, this.measureData.offsetRect.width - Math.max(0, x)));
+
+            this.divPrecision.style.top    = 0;
+            this.divPrecision.style.height = sh;
+        // }
     }
 
 
 
     updateColors()
     {
-        this.div .style.background = darkMode ? this. backStyleDark : this. backStyleLight;
-        this.bar .style.background = darkMode ? this.valueStyleDark : this.valueStyleLight;
-        this.text.style.color      = darkMode ? this. textStyleDark : this. textStyleLight;
+        this.div     .style.background = darkMode ? this. backStyleDark : this. backStyleLight;
+        this.divBar  .style.background = darkMode ? this.valueStyleDark : this.valueStyleLight;
+        this.divValue.style.color      = darkMode ? this. textStyleDark : this. textStyleLight;
     }
 
 
@@ -364,11 +404,13 @@ extends Control
     updateText()
     {
         if (this.overrideText != '')
-            this.text.innerHTML = this.overrideText;
-
+        {
+            this.divName .innerHTML = '';
+            this.divValue.innerHTML = this.overrideText;
+        }
         else
         {
-            this.text.innerHTML = '';
+            this.divName.innerHTML = '';
             
             if (   this.name.length > 0
                 && this.showName
@@ -380,16 +422,38 @@ extends Control
                     ? rgba2style(rgb_a(style2rgba(this.textStyleDark ), 0.4))
                     : rgba2style(rgb_a(style2rgba(this.textStyleLight), 0.6));
 
-                this.text.innerHTML += '<span style="color: ' + nameStyle + ';">' + this.name + "</span>&nbsp;&nbsp;";
+                this.divName.innerHTML = '<span style="color: ' + nameStyle + ';">' + this.name + "</span>";
             }
+
             
             const valueText = this.getValueText();
 
-            this.text.innerHTML += 
+            this.divValue.innerHTML = 
                   valueText 
                 + (valueText == UNKNOWN_DISPLAY
                    ? ''
                    : this.suffix);
+        }
+
+
+        if (this.showName)
+        {
+            this.divName .style.display    = 'inline-block';
+            this.divName .style.right      = ((1-this.divider)*100) + '%';
+            this.divValue.style.left       = (   this.divider *100) + '%';
+            
+            this.divName .style.transform  = 'translateX(' + (-(1-this.divider)*100) + '%' + ') tranlateY(-50%)';
+            this.divValue.style.transform  = 'translateX(' + (-   this.divider *100) + '%' + ') tranlateY(-50%)';
+
+            this.divValue.style.marginLeft = '3px';
+        }
+        else
+        {
+            this.divName.style.display     = 'none';
+            
+            this.divValue.style.left       = '50%';
+            this.divValue.style.transform  = 'translateX(-50%) translateY(-50%)';
+            this.divValue.style.marginLeft = 0;
         }
     }
 
@@ -397,10 +461,10 @@ extends Control
 
     updateFocus(sw, sh)
     {
-        this.focus.style.left   = 0;
-        this.focus.style.top    = 0;
-        this.focus.style.width  = sw;
-        this.focus.style.height = sh;
+        this.divFocus.style.left   = 0;
+        this.divFocus.style.top    = 0;
+        this.divFocus.style.width  = sw;
+        this.divFocus.style.height = sh;
     }
 
 

@@ -47,21 +47,21 @@ NumberControl.prototype.initEvents = function()
 
             if (param)
             {
-                this.focus.style.boxShadow = '0 1px 0 0 ' + colShadow + ' inset';
+                this.divFocus.style.boxShadow = '0 1px 0 0 ' + colShadow + ' inset';
 
                 if (    param.node
                     &&  param.node.params.includes(param)
                     && !isLastInArray(param.node.params, param))
-                    this.focus.style.boxShadow += ', 0 -1px 0 0 ' + colShadow + ' inset';
+                    this.divFocus.style.boxShadow += ', 0 -1px 0 0 ' + colShadow + ' inset';
             }
             else
             {
-                this.focus.style.boxShadow  = '0 0 0 1px ' + colShadow + ' inset ';
+                this.divFocus.style.boxShadow  = '0 0 0 1px ' + colShadow + ' inset ';
             }
 
 
-            this.focus.style.visibility = 'visible';
-            this.focus.style.opacity    = '100%';
+            this.divFocus.style.visibility = 'visible';
+            this.divFocus.style.opacity    = '100%';
     
             this.update();
         }
@@ -153,14 +153,14 @@ NumberControl.prototype.initEvents = function()
 
             if (   !param
                 || !param.node.selected)
-                this.focus.style.boxShadow = '0 0 0 1px var(--figma-color-bg-brand) inset';
+                this.divFocus.style.boxShadow = '0 0 0 1px var(--figma-color-bg-brand) inset';
 
             else
             {
-                this.focus.style.boxShadow = '0 1px 0 0 var(--figma-color-bg-brand) inset';
+                this.divFocus.style.boxShadow = '0 1px 0 0 var(--figma-color-bg-brand) inset';
                     
                 if (param.index < param.node.params.length-1)
-                    this.focus.style.boxShadow += ', 0 -1px 0 0 var(--figma-color-bg-brand) inset';
+                    this.divFocus.style.boxShadow += ', 0 -1px 0 0 var(--figma-color-bg-brand) inset';
             }
 
 
@@ -322,8 +322,8 @@ NumberControl.prototype.initEvents = function()
 
         this.div.style.cursor       = 'default';
         
-        this.focus.style.visibility = 'hidden';
-        this.focus.style.opacity    = 0;
+        this.divFocus.style.visibility = 'hidden';
+        this.divFocus.style.opacity    = 0;
 
         this.update();
 
@@ -486,7 +486,7 @@ NumberControl.prototype.initEvents = function()
             this.buttonDown0 = false;
             this.unlockPointer(e.pointerId);
 
-            this.focus.style.boxShadow = '0 0 0 1px rgba(0, 0, 0, 0.1) inset';
+            this.divFocus.style.boxShadow = '0 0 0 1px rgba(0, 0, 0, 0.1) inset';
         }
         else if (e.button == 1
               && this.buttonDown1)

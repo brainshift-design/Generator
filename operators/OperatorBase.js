@@ -52,6 +52,15 @@ extends Operator
             output.wireColor  = colors.wire;
         }
     }
+
+
+
+    setAllParamDividers(divider)
+    {
+        for (const param of this.params)
+            if (param instanceof NumberParam)
+                param.controls[0].divider = divider;
+    }
 }
 
 

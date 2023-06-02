@@ -121,7 +121,7 @@ extends Parameter
 
         this.controls[0].text.style.transform       = 'translateX(-40%)';
 
-        this.controls[1].text.style.transform       = 'translateX(-68.5%) \
+        this.controls[1].divValue.style.transform   = 'translateX(-68.5%) \
                                                        translateY(-50%)';
 
         this.controls[0].textbox.style.position     = 'absolute';

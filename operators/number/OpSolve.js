@@ -22,6 +22,9 @@ extends OperatorWithValue
         this.addParam(this.paramValue);
         this.addParam(this.paramCurrent = new NumberParam('current', 'current', true,  true,  true, Number.NaN));
         this.addParam(this.paramTarget  = new NumberParam('target',  'target',  true,  true,  true));
+
+
+        this.setAllParamDividers(0.53);
     }
 
 

@@ -19,7 +19,33 @@
 }
 
 
-.numberControlText
+.numberControlPrecision
+{
+    display:        hidden;
+    position:       absolute;
+    pointer-events: none;
+    /* background:     red; */
+}
+
+
+.numberControlName
+{
+    font-family:          Inter;
+    font-size:            11px;
+    font-variant-numeric: tabular-nums;
+    letter-spacing:       -0.35px;
+    pointer-events:       none;
+    position:             absolute;
+    right:                50%;
+    top:                  50%;
+    transform:            translateY(-50%);
+    white-space:          nowrap;
+    margin-right:         3px;
+    /* box-shadow:           0 0 0 1px inset red; */
+}
+
+
+.numberControlValue
 {
     font-family:          Inter;
     font-size:            11px;
@@ -29,14 +55,14 @@
     position:             absolute;
     left:                 50%;
     top:                  50%;
-    transform:            translateX(-50%)
-                          translateY(-50%);
+    transform:            translateY(-50%);
     white-space:          nowrap;
+    margin-left:          3px;
     /* box-shadow:           0 0 0 1px inset yellow; */
 }
 
 
-.numberControlText .hash
+.numberControlValue .hash
 {
     font-size: 6;
     position:  relative;

@@ -87,6 +87,8 @@ extends OperatorWithValue
 
 
         this.label.insertBefore(this.btnPlay, this.labelText);
+
+        this.setAllParamDividers(0.44);
     }
 
 

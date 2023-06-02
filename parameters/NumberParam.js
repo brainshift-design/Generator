@@ -62,29 +62,31 @@ extends NumberParamBase
         this.controls[0].addEventListener('finishedit', e =>
         { 
             let   dec    = decCount(e.detail.valueString); 
-            const oldDec = decCount(e.detail.oldValueString);
+            //const oldDec = decCount(e.detail.oldValueString);
 
             
             if (!e.detail.success)
                 return;
 
 
+            //if (   Math.abs(e.detail.value - e.detail.oldValue) > Number.EPSILON
+            //    && dec >= oldDec)
             if (   Math.abs(e.detail.value - e.detail.oldValue) > Number.EPSILON
-                && dec >= oldDec)
+                && this.controls[0].allowEditDecimals)
             {
                 this.setValue(new NumberValue(e.detail.value, dec), true);
                 e.preventSetValue = true;
             }
-            else if (this.controls[0].allowEditDecimals)
-            {
-                if (Math.abs(e.detail.value - e.detail.oldValue) <= Number.EPSILON)
-                    dec += Math.log10(this.controls[0].valueScale);
-                else
-                    dec = oldDec;
+            // else if (this.controls[0].allowEditDecimals)
+            // {
+            //     if (Math.abs(e.detail.value - e.detail.oldValue) <= Number.EPSILON)
+            //         dec += Math.log10(this.controls[0].valueScale);
+            //     else
+            //         dec = oldDec;
 
-                this.setValue(new NumberValue(e.detail.value, dec), true);
-                e.preventSetValue = true;
-            }
+            //     this.setValue(new NumberValue(e.detail.value, dec), true);
+            //     e.preventSetValue = true;
+            // }
         });
 
 

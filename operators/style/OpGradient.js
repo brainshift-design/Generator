@@ -5,7 +5,7 @@ extends OpColorBase
     paramX;
     paramY;
     paramSize;
-    //paramAngle;
+    paramAngle;
     paramAspect;
     paramSkew;
 
@@ -42,7 +42,7 @@ extends OpColorBase
         this.addParam(this.paramX      = new NumberParam('x',      'x',      true,  true, true,   0));
         this.addParam(this.paramY      = new NumberParam('y',      'y',      true,  true, true,  50));
         this.addParam(this.paramSize   = new NumberParam('size',   'size',   true,  true, true, 100));
-        //this.addParam(this.paramAngle  = new NumberParam('angle',  'angle',  true,  true, true,   0));
+        this.addParam(this.paramAngle  = new NumberParam('angle',  'angle',  true,  true, true,   0));
         this.addParam(this.paramAspect = new NumberParam('aspect', 'aspect', true,  true, true,  50));
         this.addParam(this.paramSkew   = new NumberParam('skew',   'skew',   true,  true, true,   0));
 
@@ -50,7 +50,7 @@ extends OpColorBase
         this.paramX     .controls[0].suffix = '%';
         this.paramY     .controls[0].suffix = '%';
         this.paramSize  .controls[0].suffix = '%';
-        //this.paramAngle .controls[0].suffix = '°';
+        this.paramAngle .controls[0].suffix = '°';
         this.paramAspect.controls[0].suffix = '%';
         this.paramSkew  .controls[0].suffix = '%';
     }
@@ -97,7 +97,7 @@ extends OpColorBase
         request.push(...this.node.paramX     .genRequest(gen));
         request.push(...this.node.paramY     .genRequest(gen));
         request.push(...this.node.paramSize  .genRequest(gen));
-        //request.push(...this.node.paramAngle .genRequest(gen));
+        request.push(...this.node.paramAngle .genRequest(gen));
         request.push(...this.node.paramAspect.genRequest(gen));
         request.push(...this.node.paramSkew  .genRequest(gen));
 

@@ -110,26 +110,6 @@ NumberControl.prototype.initTextbox = function()
                         params[index].controls[0].showTextbox();
                 }
             }
-
-            // let tabs  = document.querySelectorAll('.numberControl, .selectControl, .select, .menuSelect, button, .menuButton');
-            // let index = this.tabIndex;
-
-            // for (let i = 0; i < tabs.length; i++) 
-            // {
-            //     if (   e.shiftKey && tabs[i].tabIndex == index - 1
-            //         ||               tabs[i].tabIndex == index + 1) 
-            //     {
-            //         if (tabs[i].className == 'slider')
-            //             tabs[i].showTextbox();
-            //         else 
-            //         {
-            //             document.activeElement.blur();
-            //             tabs[i].focus();
-            //         }
-
-            //         break;
-            //     }
-            // }
         }
 
         else if ((   e.key == 'ArrowUp'
@@ -390,7 +370,7 @@ NumberControl.prototype.initTextbox = function()
         
         this.textbox.blur();
 
-        this.text.style.display = 'block';
+        this.divValue.style.display = 'block';
 
         if (   this.inFocus
             && focusControl)
@@ -402,7 +382,7 @@ NumberControl.prototype.initTextbox = function()
 
 NumberControl.prototype.showTextbox = function()
 {
-    this.text.style.display = 'none';
+    this.divValue.style.display = 'none';
 
     this.inFocus = 
            hasFocus(this.div)

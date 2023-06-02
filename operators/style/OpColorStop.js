@@ -34,7 +34,8 @@ extends OpColorBase
         this.addParam(this.paramPosition = new NumberParam('position', 'position', true,  true, true, 0, 0, 100));
 
 
-        this.paramPosition.controls[0].suffix = '%';
+        this.paramPosition.controls[0].suffix  = '%';
+        this.paramPosition.controls[0].divider = 0.55;
     }
     
     
