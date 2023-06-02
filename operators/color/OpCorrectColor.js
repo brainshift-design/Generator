@@ -15,18 +15,17 @@ extends OpColorBase
     {
         super(CORRECT_COLOR, 'corrected', 'corrected', iconCorrectColor, true);
 
-        this.slow         = true;
-        this.canDisable   = true;
-        this.subscription = true;
-        this.iconOffsetY  = -1;
-
-        
-        this.addInput(new Input(COLOR_TYPES));
-        this.addOutput(new Output([COLOR_VALUE], this.output_genRequest));
-
+        this.slow             = true;
+        this.canDisable       = true;
+        this.subscription     = true;
+        this.iconOffsetY      = -1;
         this.alwaysSaveParams = true;
 
         
+        this.addInput(new Input([COLOR_VALUE]));
+        this.addOutput(new Output([COLOR_VALUE], this.output_genRequest));
+
+
         this.addParam(this.paramOrder = new SelectParam('order', '', false, true, true, [0, 1, 2, 3, 4, 5], 2));
         
         this.paramOrder.addEventListener('change', () => this.updateCorrections());
@@ -35,10 +34,6 @@ extends OpColorBase
         this.addParam(this.param1 = new NumberParam('margin1', '', true, true, true, 0));
         this.addParam(this.param2 = new NumberParam('margin2', '', true, true, true, 0));
         this.addParam(this.param3 = new NumberParam('margin3', '', true, true, true, 0));
-        
-        this.param1.controls[0].showNaNValueName = false;
-        this.param2.controls[0].showNaNValueName = false;
-        this.param3.controls[0].showNaNValueName = false;
 
 
         this.initCorrections('');
@@ -137,6 +132,9 @@ extends OpColorBase
 
 
         super.updateValues(requestId, actionId, updateParamId, paramIds, values);
+
+
+        //this.updateCorrectionNames();
     }
 
 
@@ -206,6 +204,7 @@ extends OpColorBase
     {
         this.updateColorSpace();
 
+        
         if (this.paramOrder.value.isValid())
         {
             const [i1, i2, i3] = getCorrectionsInOrder(this.paramOrder.value.value);
@@ -220,6 +219,15 @@ extends OpColorBase
             this.resetMargin(this.param2);
             this.resetMargin(this.param3);
         }
+    }
+
+
+
+    updateCorrectionNames()
+    {
+        this.param1.controls[0].showName = this.param1.value.isValid();
+        this.param2.controls[0].showName = this.param2.value.isValid();
+        this.param3.controls[0].showName = this.param3.value.isValid();
     }
 
 
@@ -248,7 +256,7 @@ extends OpColorBase
     resetMargin(margin)
     {
         margin.setName('', false);
-        margin.controls[0].name = '';
+        margin.controls[0].name = '<span style="position: relative; top: -1px; font-weight: 200;">±</span>';
         margin.controls[0].setMin(0);
         margin.controls[0].setMax(Number.MAX_SAFE_INTEGER);
     }
