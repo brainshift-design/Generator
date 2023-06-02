@@ -2256,11 +2256,10 @@ function updateEmptyObjects() {
         setEmptyObjectStroke(obj);
 }
 function setEmptyObjectStroke(obj) {
-    // const back = figma.currentPage.backgrounds[0].color;
-    const l = 0;
-    //       back.r * 0.2126
-    //     + back.g * 0.7152 
-    //     + back.b * 0.0722; 
+    const back = figma.currentPage.backgrounds[0];
+    const l = back.color.r * 0.2126
+        + back.color.g * 0.7152
+        + back.color.b * 0.0722;
     const phantomColor = l > 0.5
         ? { r: 0, g: 0, b: 0 }
         : { r: 1, g: 1, b: 1 };

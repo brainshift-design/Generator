@@ -3429,12 +3429,12 @@ function updateEmptyObjects()
 
 function setEmptyObjectStroke(obj)
 {
-    // const back = figma.currentPage.backgrounds[0].color;
+    const back = figma.currentPage.backgrounds[0] as SolidPaint;
     
-    const l = 0;
-    //       back.r * 0.2126
-    //     + back.g * 0.7152 
-    //     + back.b * 0.0722; 
+    const l =
+          back.color.r * 0.2126
+        + back.color.g * 0.7152 
+        + back.color.b * 0.0722; 
         
     const phantomColor =
         l > 0.5
