@@ -85,11 +85,26 @@ extends Control
 
         if (this.textbox)
         {
-            this.textbox.style.left   = (this.param && this.param.input ? 8 : 0) + 'px';
-            
-            this.textbox.style.width  = this.param && this.param.input ? 'calc(100% - 8px)' : '100%';
+            this.updateTextboxSize();
             this.textbox.style.height = Math.max(defParamHeight, h);
         }
+    }
+
+
+
+    updateTextboxSize()
+    {
+        const  input = this.param && this.param. input;
+        const output = this.param && this.param.output;
+
+        const left = input ? 12 : 0;
+
+        const dw = 
+              ( input ? 12 : 0) 
+            + (output ? 12 : 0);
+
+        this.textbox.style.left  = left + 'px';
+        this.textbox.style.width = 'calc(100% - ' + dw + 'px)';
     }
 
 
@@ -119,6 +134,11 @@ extends Control
 
     update()
     {
+        console.log('update()');
+        console.trace();
+        console.log('');
+
+        
         if (typeof this.value !== 'string')
             console.assert(false, 'TextControl.update() value is ' + typeof this.value + ', must be a string');
 
@@ -138,16 +158,7 @@ extends Control
             this.textbox.value = '';
 
 
-        const  input = this.param && this.param. input;
-        const output = this.param && this.param.output;
-
-        const left  = input ? 12 : 0;
-        const dw = 
-              ( input ? 12 : 0) 
-            + (output ? 12 : 0);
-
-        this.textbox.style.left  = left + 'px';
-        this.textbox.style.width = 'calc(100% - ' + dw + 'px)';
+        this.updateTextboxSize();
     }
 
 
