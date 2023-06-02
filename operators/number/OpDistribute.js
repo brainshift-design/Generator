@@ -13,7 +13,9 @@ extends OperatorBase
 
         this.cached = false;
         
+
         this.addOutput(new Output([NUMBER_VALUE], this.output_genRequest));
+
 
         this.addParam(this.paramFrom  = new SelectParam('from',  'from',  true, true, true, ['start', 'middle', 'end'], 1));
         this.addParam(this.paramStart = new NumberParam('start', 'start', true, true, true, 0));

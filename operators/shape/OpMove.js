@@ -22,12 +22,17 @@ extends OperatorBase
         this.addOutput(new Output([SHAPE_VALUE], this.output_genRequest));
 
 
-        this.addParam(this.paramX           = new NumberParam('x', 'x',                      true, true, true));
-        this.addParam(this.paramY           = new NumberParam('y', 'y',                      true, true, true));
+        this.addParam(this.paramX           = new NumberParam('x',           'X',            true, true, true));
+        this.addParam(this.paramY           = new NumberParam('y',           'Y',            true, true, true));
         this.addParam(this.paramAffectSpace = new NumberParam('affectSpace', 'affect space', true, true, true,   0, 0,   1));
 
 
+        this.paramX.controls[0].divider = 0.45;
+        this.paramY.controls[0].divider = 0.45;
+
         this.paramAffectSpace.controls[0].allowEditDecimals = false;
+        this.paramAffectSpace.controls[0].divider           = 0.72;
+
         this.menuBoolAffectSpace = createBoolMenu(this.paramAffectSpace);
 
 

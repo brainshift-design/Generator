@@ -17,6 +17,7 @@ extends OpColorBase
     menuS;
 
 
+    
     constructor()
     {
         super(COLORBLIND, 'colorblind', 'colorblind', '');

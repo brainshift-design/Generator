@@ -11,10 +11,14 @@ extends OpAffine
         super(SKEW, 'skew', 'skew', iconSkew);
 
 
-        this.addParam(this.paramSkewX = new NumberParam('skewX', 'skew x', true, true, true));
-        this.addParam(this.paramSkewY = new NumberParam('skewY', 'skew y', true, true, true));
+        this.addParam(this.paramSkewX = new NumberParam('skewX', 'skew X', true, true, true));
+        this.addParam(this.paramSkewY = new NumberParam('skewY', 'skew Y', true, true, true));
     
     
+        this.paramSkewX.controls[0].divider = 0.55;
+        this.paramSkewY.controls[0].divider = 0.55;
+
+
         this.addBaseParams();
     }
     

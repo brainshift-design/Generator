@@ -22,13 +22,17 @@ extends OperatorBase
         this.addOutput(new Output([DROP_SHADOW_VALUE], this.output_genRequest, getNodeOutputValuesForUndo, this.output_backInit));
 
 
-        this.addParam(this.paramX      = new NumberParam('x',      'y',           true,  true, true, 0));
-        this.addParam(this.paramY      = new NumberParam('y',      'y',           true,  true, true, 4));
+        this.addParam(this.paramX      = new NumberParam('x',      'X',           true,  true, true, 0));
+        this.addParam(this.paramY      = new NumberParam('y',      'Y',           true,  true, true, 4));
         this.addParam(this.paramBlur   = new NumberParam('blur',   'blur',        true,  true, true, 4, 0));
         this.addParam(this.paramSpread = new NumberParam('spread', 'spread',      true,  true, true, 0));
         this.addParam(this.paramFill   = new FillParam  ('fill',   'fill',        false, true, true, new FillValue(ColorValue.fromRgb([0, 0, 0]), new NumberValue(25))));
         this.addParam(this.paramBlend  = new SelectParam('blend',  'blend',       false, true, true, BlendModes.map(bm => bm[1]), 0));
         this.addParam(this.paramBehind = new NumberParam('behind', 'show behind', true,  true, true, 0, 0, 1));
+
+
+        this.setAllParamDividers(0.55);
+        this.paramBehind.controls[0].divider = 0.74;
     }
     
     
@@ -126,5 +130,16 @@ extends OperatorBase
         pushUnique(gen.passedNodes, this.node);
 
         return request;
+    }
+
+
+
+    updateParams()
+    {
+        this.paramBehind.enableControlText(true);
+
+        updateParamConditionText(this.paramBehind, this.isUnknown(), 1);
+
+        this.updateParamControls();
     }
 }

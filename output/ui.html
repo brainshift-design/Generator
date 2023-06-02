@@ -72714,9 +72714,9 @@ extends NumberParamBase
         this.controls[0].div.style.display = 'inline-block';
         this.controls[0].div.style.width   = '100%';
 
-        this.controls[0].divName .style.display    = 'none';
-        this.controls[0].divValue.style.transform  = 'translateX(-50%) translateY(-50%)';
-        this.controls[0].divValue.style.marginLeft = 0;
+        // this.controls[0].divName .style.display    = 'none';
+        // this.controls[0].divValue.style.transform  = 'translateX(-50%) translateY(-50%)';
+        // this.controls[0].divValue.style.marginLeft = 0;
 
        
         this.defaultValue = new NumberValue(defaultValue);
@@ -73606,8 +73606,8 @@ extends Parameter
 
         this.controls[0].text.style.transform       = 'translateX(-40%)';
 
-        this.controls[1].divValue.style.transform   = 'translateX(-68.5%) \
-                                                       translateY(-50%)';
+        // this.controls[1].divValue.style.transform   = 'translateX(-68.5%) \
+        //                                                translateY(-50%)';
 
         this.controls[0].textbox.style.position     = 'absolute';
         this.controls[0].textbox.style.left         =  0;
@@ -73872,34 +73872,38 @@ extends Parameter
             :   'linear-gradient(-45deg, #ddd 25%, transparent 25%, transparent 75%, #ddd 75%), '
               + 'linear-gradient(-45deg, #ddd 25%, transparent 25%, transparent 75%, #ddd 75%)';
 
-        this.checkers.style.display            = this.value.isValid() ? 'inline-block' : 'none';
-        this.checkers.style.backgroundColor    = darkMode ? '#444' : '#fff';
+        this.checkers.style.display               = this.value.isValid() ? 'inline-block' : 'none';
+        this.checkers.style.backgroundColor       = darkMode ? '#444' : '#fff';
+      
+        this.checkers.style.backgroundSize        = '22px 22px';
+        this.checkers.style.backgroundPosition    = '0 0, 11px 11px';
+      
+        this.checkers.style.left                  = '-3.5px';
+        this.checkers.style.width                 = 'calc(100% + 3.5px)';
+           
+           
+        this.controls[0].backStyleLight           = 
+        this.controls[0].backStyleDark            = 'transparent';
+            
+        this.controls[0].textStyleLight           = 
+        this.controls[0].textStyleDark            = rgba2style(rgbaText);
    
-        this.checkers.style.backgroundSize     = '22px 22px';
-        this.checkers.style.backgroundPosition = '0 0, 11px 11px';
    
-        this.checkers.style.left               = '-3.5px';
-        this.checkers.style.width              = 'calc(100% + 3.5px)';
-        
-        
-        this.controls[0].backStyleLight        = 
-        this.controls[0].backStyleDark         = 'transparent';
-         
-        this.controls[0].textStyleLight        = 
-        this.controls[0].textStyleDark         = rgba2style(rgbaText);
+        this.controls[1].backStyleLight           = 
+        this.controls[1].backStyleDark            = 'transparent';
 
 
-        this.controls[1].backStyleLight        = 
-        this.controls[1].backStyleDark         = 'transparent';
+        this.controls[1].textStyleLight           = 
+        this.controls[1].textStyleDark            = rgba2style(rgbaText);
 
-
-        this.controls[1].textStyleLight        = 
-        this.controls[1].textStyleDark         = rgba2style(rgbaText);
 
         this.controls[0].update();
         this.controls[1].update();
 
+        this.controls[1].divValue.style.transform = 'translateX(-68.5%) \
+                                                     translateY(-50%)';
 
+                                                     
         if (this.input ) this.input .updateControl();
         if (this.output) this.output.updateControl();
     }
@@ -79061,6 +79065,15 @@ class Operator
     
     
 
+    setAllParamDividers(divider)
+    {
+        for (const param of this.params)
+            if (param instanceof NumberParamBase)
+                param.controls[0].divider = divider;
+    }
+
+
+
     reset() // for the entire generation run
     {
         for (const input of this.inputs)
@@ -80795,15 +80808,6 @@ extends Operator
             output.wireColor  = colors.wire;
         }
     }
-
-
-
-    setAllParamDividers(divider)
-    {
-        for (const param of this.params)
-            if (param instanceof NumberParam)
-                param.controls[0].divider = divider;
-    }
 }
 
 
@@ -81688,6 +81692,8 @@ extends OperatorBase
 
         this.addParam(this.paramCondition = new NumberParam('condition', 'condition', true, true, true, 1, 0, 1));
 
+        this.paramCondition.controls[0].divider = 0.65;
+
 
         this.inputs[0].addEventListener('connect',    () => OpIfElse_onConnectInput(this, 0));
         this.inputs[0].addEventListener('disconnect', () => OpIfElse_onDisconnectInput(this, 0));
@@ -82130,6 +82136,7 @@ extends OperatorBase
 
 
         this.paramCount.controls[0].allowEditDecimals = false;
+        this.paramCount.controls[0].divider = 0.56;
         this.paramCount.affectsHeader = false;
 
         this.paramLoop.input.types.push(NUMBER_LIST_VALUE);
@@ -83040,6 +83047,9 @@ extends OperatorWithValue
         this.addParam(this.paramValue);
         this.addParam(this.paramType  = new SelectParam('type',     'type',     false, true,  true, ['floor', 'round', 'ceiling'], 1));
         this.addParam(this.paramDecimals   = new NumberParam('decimals', 'decimals', true,  true,  true, 0, 0, 10));
+
+
+        this.paramDecimals.controls[0].divider = 0.65;
     }
 
 
@@ -83354,6 +83364,9 @@ extends OperatorBase
         this.addParam(this.paramDate      = new NumberParam('date',      'date',     true,  true,  true, 1, 1,  31));
         this.addParam(this.paramMonth     = new NumberParam('month',     'month',    true,  true,  true, 1, 1,  12));
         this.addParam(this.paramYear      = new NumberParam('year',      'year',     true,  true,  true));
+
+
+        this.setAllParamDividers(0.57);
     }
 
 
@@ -83541,7 +83554,9 @@ extends OperatorBase
 
         this.cached = false;
         
+
         this.addOutput(new Output([NUMBER_VALUE], this.output_genRequest));
+
 
         this.addParam(this.paramFrom  = new SelectParam('from',  'from',  true, true, true, ['start', 'middle', 'end'], 1));
         this.addParam(this.paramStart = new NumberParam('start', 'start', true, true, true, 0));
@@ -83694,7 +83709,7 @@ extends OperatorWithValue
         this.addOutput(new Output([NUMBER_VALUE], this.output_genRequest));
 
         this.addParam(this.paramValue);
-        this.addParam(this.paramAmount = new NumberParam('amount', '', true, true, true, 50, 0, 100, 0));
+        this.addParam(this.paramAmount = new NumberParam('amount', '', false, true, true, 50, 0, 100, 0));
 
         
         this.paramAmount.controls[0].min = Number.MIN_SAFE_INTEGER; // allow
@@ -86517,6 +86532,9 @@ extends OpColorBase
             this.param2.setValue(new NumberValue(this._color[2] * rgbFactor[1]), false, true, false);
             this.param3.setValue(new NumberValue(this._color[3] * rgbFactor[2]), false, true, false);
         });
+
+
+        this.setAllParamDividers(0.45);
     }
 
 
@@ -88876,6 +88894,7 @@ extends OpColorBase
     menuS;
 
 
+    
     constructor()
     {
         super(COLORBLIND, 'colorblind', 'colorblind', '');
@@ -89118,8 +89137,8 @@ extends OpColorBase
 
 
         this.addParam(this.paramSpace  = new SelectParam('space',  '',  false, true, true, ColorSpaces.map(s => s[1]), 1));
-        this.addParam(this.paramAmount = new NumberParam('amount', '',  true,  true, true, 50, 0,  100, 0));
-        this.addParam(this.paramGamma  = new NumberParam('gamma',  'γ', true,  true, true, 1,  0.01, 4, 2));
+        this.addParam(this.paramAmount = new NumberParam('amount', '',  false,  true, true, 50, 0,  100, 0));
+        this.addParam(this.paramGamma  = new NumberParam('gamma',  'gamma', true,  true, true, 1,  0.01, 4, 2));
       
         
         this.paramSpace.controls[0].setMin(1);
@@ -89131,6 +89150,8 @@ extends OpColorBase
         this.paramAmount.controls[0].max = Number.MAX_SAFE_INTEGER; // extrapolation
 
         this.paramAmount.controls[0].setSuffix('%', true);
+
+        this.paramGamma.controls[0].divider = 0.54;
         
 
         this.header.connectionPadding = 12.5;
@@ -90561,13 +90582,17 @@ extends OperatorBase
         this.addOutput(new Output([DROP_SHADOW_VALUE], this.output_genRequest, getNodeOutputValuesForUndo, this.output_backInit));
 
 
-        this.addParam(this.paramX      = new NumberParam('x',      'y',           true,  true, true, 0));
-        this.addParam(this.paramY      = new NumberParam('y',      'y',           true,  true, true, 4));
+        this.addParam(this.paramX      = new NumberParam('x',      'X',           true,  true, true, 0));
+        this.addParam(this.paramY      = new NumberParam('y',      'Y',           true,  true, true, 4));
         this.addParam(this.paramBlur   = new NumberParam('blur',   'blur',        true,  true, true, 4, 0));
         this.addParam(this.paramSpread = new NumberParam('spread', 'spread',      true,  true, true, 0));
         this.addParam(this.paramFill   = new FillParam  ('fill',   'fill',        false, true, true, new FillValue(ColorValue.fromRgb([0, 0, 0]), new NumberValue(25))));
         this.addParam(this.paramBlend  = new SelectParam('blend',  'blend',       false, true, true, BlendModes.map(bm => bm[1]), 0));
         this.addParam(this.paramBehind = new NumberParam('behind', 'show behind', true,  true, true, 0, 0, 1));
+
+
+        this.setAllParamDividers(0.55);
+        this.paramBehind.controls[0].divider = 0.74;
     }
     
     
@@ -90666,7 +90691,19 @@ extends OperatorBase
 
         return request;
     }
+
+
+
+    updateParams()
+    {
+        this.paramBehind.enableControlText(true);
+
+        updateParamConditionText(this.paramBehind, this.isUnknown(), 1);
+
+        this.updateParamControls();
+    }
 }
+
 
 
 class OpInnerShadow
@@ -90692,12 +90729,15 @@ extends OperatorBase
         this.addOutput(new Output([INNER_SHADOW_VALUE], this.output_genRequest, getNodeOutputValuesForUndo, this.output_backInit));
 
 
-        this.addParam(this.paramX      = new NumberParam('x',      'y',      true,  true, true, 0));
-        this.addParam(this.paramY      = new NumberParam('y',      'y',      true,  true, true, 4));
+        this.addParam(this.paramX      = new NumberParam('x',      'X',      true,  true, true, 0));
+        this.addParam(this.paramY      = new NumberParam('y',      'Y',      true,  true, true, 4));
         this.addParam(this.paramBlur   = new NumberParam('blur',   'blur',   true,  true, true, 4, 0));
         this.addParam(this.paramSpread = new NumberParam('spread', 'spread', true,  true, true, 0));
         this.addParam(this.paramFill   = new FillParam  ('fill',   'fill',   false, true, true, new FillValue(ColorValue.fromRgb([0, 0, 0]), new NumberValue(25))));
         this.addParam(this.paramBlend  = new SelectParam('blend',  'blend',  false, true, true, BlendModes.map(bm => bm[1]), 0));
+
+
+        this.setAllParamDividers(0.55);
     }
     
     
@@ -90815,6 +90855,9 @@ extends OperatorBase
 
 
         this.addParam(this.paramRadius = new NumberParam('radius', 'radius', true, true, true, 4, 0));
+
+
+        this.paramRadius.controls[0].divider = 0.58;
     }
     
     
@@ -90917,6 +90960,9 @@ extends OperatorBase
 
 
         this.addParam(this.paramRadius = new NumberParam('radius', 'radius', true, true, true, 4, 0));
+
+
+        this.paramRadius.controls[0].divider = 0.58;
     }
     
     
@@ -91843,12 +91889,17 @@ extends OperatorBase
         this.addOutput(new Output([SHAPE_VALUE], this.output_genRequest));
 
 
-        this.addParam(this.paramX           = new NumberParam('x', 'x',                      true, true, true));
-        this.addParam(this.paramY           = new NumberParam('y', 'y',                      true, true, true));
+        this.addParam(this.paramX           = new NumberParam('x',           'X',            true, true, true));
+        this.addParam(this.paramY           = new NumberParam('y',           'Y',            true, true, true));
         this.addParam(this.paramAffectSpace = new NumberParam('affectSpace', 'affect space', true, true, true,   0, 0,   1));
 
 
+        this.paramX.controls[0].divider = 0.45;
+        this.paramY.controls[0].divider = 0.45;
+
         this.paramAffectSpace.controls[0].allowEditDecimals = false;
+        this.paramAffectSpace.controls[0].divider           = 0.72;
+
         this.menuBoolAffectSpace = createBoolMenu(this.paramAffectSpace);
 
 
@@ -91938,8 +91989,8 @@ extends OperatorBase
 
     addBaseParams()
     {
-        this.addParam(this.paramCenterX     = new NumberParam('centerX',     'center x',     true, true, true,  50, 0, 100));
-        this.addParam(this.paramCenterY     = new NumberParam('centerY',     'center y',     true, true, true,  50, 0, 100));
+        this.addParam(this.paramCenterX     = new NumberParam('centerX',     'center X',     true, true, true,  50, 0, 100));
+        this.addParam(this.paramCenterY     = new NumberParam('centerY',     'center Y',     true, true, true,  50, 0, 100));
         this.addParam(this.paramShowCenter  = new NumberParam('showCenter',  'show center',  true, true, true,   0, 0,   1));
         this.addParam(this.paramAffectSpace = new NumberParam('affectSpace', 'affect space', true, true, true,   0, 0,   1));
 
@@ -91956,6 +92007,11 @@ extends OperatorBase
 
         this.paramShowCenter .controls[0].allowEditDecimals = false;
         this.paramAffectSpace.controls[0].allowEditDecimals = false;
+
+        this.paramCenterX    .controls[0].divider = 0.55;
+        this.paramCenterY    .controls[0].divider = 0.55;
+        this.paramShowCenter .controls[0].divider = 0.72;
+        this.paramAffectSpace.controls[0].divider = 0.72;
 
 
         this.menuBoolShowCenter  = createBoolMenu(this.paramShowCenter );
@@ -92042,11 +92098,14 @@ extends OpAffine
     {
         super(ROTATE, 'rotate', 'rotate', iconRotate);
 
+        this.iconOffsetY = -3;
+
 
         this.addParam(this.paramAngle = new NumberParam('angle', 'angle', true, true, true, 0));
 
         this.paramAngle.controls[0].suffix      = '°';
         this.paramAngle.controls[0].dragReverse = true;
+        this.paramAngle.controls[0].divider     = 0.55;
 
 
         this.addBaseParams();
@@ -92119,8 +92178,11 @@ extends OpAffine
         this.addParam(this.paramScaleY = new NumberParam('scaleY', 'height', true, true, true, 100));
 
 
-        this.paramScaleX.controls[0].suffix = '%';
-        this.paramScaleY.controls[0].suffix = '%';
+        this.paramScaleX.controls[0].suffix  = '%';
+        this.paramScaleY.controls[0].suffix  = '%';
+
+        this.paramScaleX.controls[0].divider = 0.55;
+        this.paramScaleY.controls[0].divider = 0.55;
 
         this.paramScaleX.controls[0].setMin(0);
         this.paramScaleY.controls[0].setMin(0);
@@ -92194,10 +92256,14 @@ extends OpAffine
         super(SKEW, 'skew', 'skew', iconSkew);
 
 
-        this.addParam(this.paramSkewX = new NumberParam('skewX', 'skew x', true, true, true));
-        this.addParam(this.paramSkewY = new NumberParam('skewY', 'skew y', true, true, true));
+        this.addParam(this.paramSkewX = new NumberParam('skewX', 'skew X', true, true, true));
+        this.addParam(this.paramSkewY = new NumberParam('skewY', 'skew Y', true, true, true));
     
     
+        this.paramSkewX.controls[0].divider = 0.55;
+        this.paramSkewY.controls[0].divider = 0.55;
+
+
         this.addBaseParams();
     }
     

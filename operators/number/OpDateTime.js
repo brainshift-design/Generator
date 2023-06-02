@@ -28,6 +28,9 @@ extends OperatorBase
         this.addParam(this.paramDate      = new NumberParam('date',      'date',     true,  true,  true, 1, 1,  31));
         this.addParam(this.paramMonth     = new NumberParam('month',     'month',    true,  true,  true, 1, 1,  12));
         this.addParam(this.paramYear      = new NumberParam('year',      'year',     true,  true,  true));
+
+
+        this.setAllParamDividers(0.57);
     }
 
 

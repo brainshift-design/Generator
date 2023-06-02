@@ -21,8 +21,8 @@ extends OpColorBase
 
 
         this.addParam(this.paramSpace  = new SelectParam('space',  '',  false, true, true, ColorSpaces.map(s => s[1]), 1));
-        this.addParam(this.paramAmount = new NumberParam('amount', '',  true,  true, true, 50, 0,  100, 0));
-        this.addParam(this.paramGamma  = new NumberParam('gamma',  'γ', true,  true, true, 1,  0.01, 4, 2));
+        this.addParam(this.paramAmount = new NumberParam('amount', '',  false,  true, true, 50, 0,  100, 0));
+        this.addParam(this.paramGamma  = new NumberParam('gamma',  'gamma', true,  true, true, 1,  0.01, 4, 2));
       
         
         this.paramSpace.controls[0].setMin(1);
@@ -34,6 +34,8 @@ extends OpColorBase
         this.paramAmount.controls[0].max = Number.MAX_SAFE_INTEGER; // extrapolation
 
         this.paramAmount.controls[0].setSuffix('%', true);
+
+        this.paramGamma.controls[0].divider = 0.54;
         
 
         this.header.connectionPadding = 12.5;

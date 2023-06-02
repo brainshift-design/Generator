@@ -877,6 +877,15 @@ class Operator
     
     
 
+    setAllParamDividers(divider)
+    {
+        for (const param of this.params)
+            if (param instanceof NumberParamBase)
+                param.controls[0].divider = divider;
+    }
+
+
+
     reset() // for the entire generation run
     {
         for (const input of this.inputs)

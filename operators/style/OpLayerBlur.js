@@ -17,6 +17,9 @@ extends OperatorBase
 
 
         this.addParam(this.paramRadius = new NumberParam('radius', 'radius', true, true, true, 4, 0));
+
+
+        this.paramRadius.controls[0].divider = 0.58;
     }
     
     

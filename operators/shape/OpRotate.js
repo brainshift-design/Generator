@@ -9,11 +9,14 @@ extends OpAffine
     {
         super(ROTATE, 'rotate', 'rotate', iconRotate);
 
+        this.iconOffsetY = -3;
+
 
         this.addParam(this.paramAngle = new NumberParam('angle', 'angle', true, true, true, 0));
 
         this.paramAngle.controls[0].suffix      = '°';
         this.paramAngle.controls[0].dragReverse = true;
+        this.paramAngle.controls[0].divider     = 0.55;
 
 
         this.addBaseParams();

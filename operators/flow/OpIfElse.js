@@ -20,6 +20,8 @@ extends OperatorBase
 
         this.addParam(this.paramCondition = new NumberParam('condition', 'condition', true, true, true, 1, 0, 1));
 
+        this.paramCondition.controls[0].divider = 0.65;
+
 
         this.inputs[0].addEventListener('connect',    () => OpIfElse_onConnectInput(this, 0));
         this.inputs[0].addEventListener('disconnect', () => OpIfElse_onDisconnectInput(this, 0));

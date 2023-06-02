@@ -32,8 +32,8 @@ extends OperatorBase
 
     addBaseParams()
     {
-        this.addParam(this.paramCenterX     = new NumberParam('centerX',     'center x',     true, true, true,  50, 0, 100));
-        this.addParam(this.paramCenterY     = new NumberParam('centerY',     'center y',     true, true, true,  50, 0, 100));
+        this.addParam(this.paramCenterX     = new NumberParam('centerX',     'center X',     true, true, true,  50, 0, 100));
+        this.addParam(this.paramCenterY     = new NumberParam('centerY',     'center Y',     true, true, true,  50, 0, 100));
         this.addParam(this.paramShowCenter  = new NumberParam('showCenter',  'show center',  true, true, true,   0, 0,   1));
         this.addParam(this.paramAffectSpace = new NumberParam('affectSpace', 'affect space', true, true, true,   0, 0,   1));
 
@@ -50,6 +50,11 @@ extends OperatorBase
 
         this.paramShowCenter .controls[0].allowEditDecimals = false;
         this.paramAffectSpace.controls[0].allowEditDecimals = false;
+
+        this.paramCenterX    .controls[0].divider = 0.55;
+        this.paramCenterY    .controls[0].divider = 0.55;
+        this.paramShowCenter .controls[0].divider = 0.72;
+        this.paramAffectSpace.controls[0].divider = 0.72;
 
 
         this.menuBoolShowCenter  = createBoolMenu(this.paramShowCenter );

@@ -113,6 +113,9 @@ extends OpColorBase
             this.param2.setValue(new NumberValue(this._color[2] * rgbFactor[1]), false, true, false);
             this.param3.setValue(new NumberValue(this._color[3] * rgbFactor[2]), false, true, false);
         });
+
+
+        this.setAllParamDividers(0.45);
     }
 
 
