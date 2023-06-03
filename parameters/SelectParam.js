@@ -24,7 +24,6 @@ extends NumberParamBase
             this,
             this.id,
             this.name, 
-            showName,
             defaultValue,
             0,
             options.length-1,
@@ -52,7 +51,7 @@ extends NumberParamBase
         this.controls[0].successOnFocusOut = true;
         this.controls[0].barTop            = 0.8;
 
-        this.div.appendChild(this.controls[0].div);
+        this.divControls.appendChild(this.controls[0].div);
 
 
         if (hasInput)  this.initInput([NUMBER_VALUE], getParamInputValuesForUndo, this.input_getBackInitValue);

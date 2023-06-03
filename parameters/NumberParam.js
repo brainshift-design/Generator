@@ -12,14 +12,13 @@ extends NumberParamBase
                 decimals     = 0,
                 dragScale    = 0.05)
     {
-        super(NUMBER_VALUE, id, name);
+        super(NUMBER_VALUE, id, name, showName);
 
         
         this.controls[0] = new NumberControl(
             this,
             this.id,
             this.name, 
-            showName,
             defaultValue,
             min,
             max,
@@ -38,7 +37,7 @@ extends NumberParamBase
 
         this.controls[0].successOnFocusOut = true;
 
-        this.div.appendChild(this.controls[0].div);
+        this.divControls.appendChild(this.controls[0].div);
 
        
         if (hasInput)  this.initInput ([NUMBER_VALUE], getParamInputValuesForUndo, this.input_getBackInitValue);

@@ -142,6 +142,7 @@ extends Parameter
 
         enableElementText(this.controls[0].div, false);
 
+        
         this.controls[0].readOnly = true;
         
         this.controls[0].textbox.style.fontStyle  = 'italic';

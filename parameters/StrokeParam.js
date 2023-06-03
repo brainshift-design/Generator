@@ -15,7 +15,7 @@ extends Parameter
     checkersHolder;
     checkers;
 
-    controlWrapper;
+    //controlWrapper;
 
 
     text;
@@ -46,14 +46,13 @@ extends Parameter
         this.checkersHolder = createDiv();
         this.checkers       = createDiv();
 
-        this.controlWrapper = createDiv();
+        //this.controlWrapper = createDiv();
 
 
         this.controls.push(new ColorControl(
             this,
             this.id,
             'color', 
-            showName,
             defaultValue.fill.color)); 
 
         this.controls[0].showColor = false;
@@ -101,10 +100,10 @@ extends Parameter
         this.checkers.style.height                  = defParamHeight;
 
 
-        this.controlWrapper.style.position          = 'relative';
-        this.controlWrapper.style.display           = 'inline-block';
-        this.controlWrapper.style.width             = '100%';
-        this.controlWrapper.style.height            = defParamHeight;
+        // this.controlWrapper.style.position          = 'relative';
+        // this.controlWrapper.style.display           = 'inline-block';
+        // this.controlWrapper.style.width             = '100%';
+        // this.controlWrapper.style.height            = defParamHeight;
         //this.controlWrapper.style.zIndex            = 100;
 
 
@@ -125,12 +124,12 @@ extends Parameter
         this.controls[0].textbox.style.paddingLeft  =  14;
 
 
-        this.controlWrapper.appendChild(this.controls[0].div);
+        //this.controlWrapper.appendChild(this.controls[0].div);
         
         this.checkersHolder.appendChild(this.checkers);
         this.div.appendChild(this.checkersHolder);
 
-        this.div.appendChild(this.controlWrapper);
+        //this.div.appendChild(this.controlWrapper);
 
         this.div.appendChild(this.text);
 
@@ -276,11 +275,11 @@ extends Parameter
         const rgbaText   = getTextColorFromBackColor(rgbaStripe, rgba[3]);
 
 
-        this.controlWrapper.style.background =
-              !rgbaIsNaN(rgbaBack) 
-            && this.value.fill.opacity.isValid()
-            ? rgba2style(rgbaBack)
-            : noColorStyle(rgbaBack);//'transparent'; 
+        //this.controlWrapper.style.background =
+        //      !rgbaIsNaN(rgbaBack) 
+        //    && this.value.fill.opacity.isValid()
+        //    ? rgba2style(rgbaBack)
+        //    : noColorStyle(rgbaBack);//'transparent'; 
 
 
         this.updateWarningOverlay();

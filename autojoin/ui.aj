@@ -16,6 +16,7 @@
     ../controls/checkbox/*.css
 
     ../operators/*.css
+    ../Parameters/*.css
 
 ../html/ui_1.html
 

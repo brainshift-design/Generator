@@ -25,7 +25,7 @@ extends Parameter
                 hasOutput,
                 defaultValue = '')
     {
-        super(TEXT_VALUE, id, name);
+        super(TEXT_VALUE, id, name, showName);
 
         this.defaultValue = defaultValue;
 
@@ -34,7 +34,6 @@ extends Parameter
             this,
             this.id,
             this.name,
-            showName,
             defaultValue);
 
             
@@ -52,10 +51,10 @@ extends Parameter
         this.controls[0].div.style.width   = '100%';
 
 
-        this.div.appendChild(this.controls[0].div);
+        this.divControls.appendChild(this.controls[0].div);
 
        
-        if (hasInput)  this.initInput ([TEXT_VALUE], getParamInputValuesForUndo, this.input_getBackInitValue);
+        if (hasInput ) this.initInput ([TEXT_VALUE], getParamInputValuesForUndo, this.input_getBackInitValue);
         if (hasOutput) this.initOutput([TEXT_VALUE], this.output_genRequest, getParamOutputValuesForUndo, this.output_backInit);
 
 

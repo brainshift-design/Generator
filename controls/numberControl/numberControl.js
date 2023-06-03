@@ -104,12 +104,12 @@ extends Control
     
     
     
-    constructor(param, id, name, showName, defaultValue, min = Number.MIN_SAFE_INTEGER, max = Number.MAX_SAFE_INTEGER, dec = 0, dragScale = 0.05, wheelScale = 1, acc = 0, suffix = '')
+    constructor(param, id, name, defaultValue, min = Number.MIN_SAFE_INTEGER, max = Number.MAX_SAFE_INTEGER, dec = 0, dragScale = 0.05, wheelScale = 1, acc = 0, suffix = '')
     {
         const divValue = createDiv('numberControlValue');
 
 
-        super(divValue, param, id, name, showName);
+        super(divValue, param, id, name);
 
 
         this.value                 = defaultValue;
@@ -402,25 +402,25 @@ extends Control
     {
         if (this.overrideText != '')
         {
-            this.divName .innerHTML = '';
+            //this.divName .innerHTML = '';
             this.divValue.innerHTML = this.overrideText;
         }
         else
         {
-            this.divName.innerHTML = '';
+            // this.divName.innerHTML = '';
             
-            if (   this.name.length > 0
-                && this.showName
-                && (  !isNaN(this.value) 
-                    || this.showNanValueName))
-            {
-                // const nameStyle = 
-                //     darkMode 
-                //     ? rgba2style(rgb_a(style2rgba(this.textStyleDark ), 0.4))
-                //     : rgba2style(rgb_a(style2rgba(this.textStyleLight), 0.6));
+            // if (   this.name.length > 0
+            //     && this.showName
+            //     && (  !isNaN(this.value) 
+            //         || this.showNanValueName))
+            // {
+            //     // const nameStyle = 
+            //     //     darkMode 
+            //     //     ? rgba2style(rgb_a(style2rgba(this.textStyleDark ), 0.4))
+            //     //     : rgba2style(rgb_a(style2rgba(this.textStyleLight), 0.6));
 
-                this.divName.innerHTML = this.name;//'<span style="color: ' + nameStyle + ';">' + this.name + "</span>";
-            }
+            //     this.divName.innerHTML = this.name;//'<span style="color: ' + nameStyle + ';">' + this.name + "</span>";
+            // }
 
             
             const valueText = this.getValueText();
@@ -433,26 +433,26 @@ extends Control
         }
 
 
-        if (this.showName)
-        {
-            this.divName .style.display    = 'inline-block';
-            this.divName .style.right      = ((1-this.divider)*100) + '%';
-            this.divValue.style.left       = (   this.divider *100) + '%';
+        // if (this.showName)
+        // {
+        //     this.divName .style.display    = 'inline-block';
+        //     this.divName .style.right      = ((1-this.divider)*100) + '%';
+        //     this.divValue.style.left       = (   this.divider *100) + '%';
             
-            this.divName .style.transform  = 'translateX(' + (-(1-this.divider)*100) + '%' + ') tranlateY(-50%)';
-            this.divValue.style.transform  = 'translateX(' + (-   this.divider *100) + '%' + ') tranlateY(-50%)';
+        //     this.divName .style.transform  = 'translateX(' + (-(1-this.divider)*100) + '%' + ') tranlateY(-50%)';
+        //     this.divValue.style.transform  = 'translateX(' + (-   this.divider *100) + '%' + ') tranlateY(-50%)';
 
-            this.divValue.style.marginLeft = '3px';
-        }
-        else
-        {
-            this.divName.style.display     = 'none';
+        //     this.divValue.style.marginLeft = '3px';
+        // }
+        // else
+        // {
+            //this.divName.style.display     = 'none';
             
             this.divValue.style.left       = '50%';
             this.divValue.style.transform  = 'translateX(-50%) translateY(-50%)';
             this.divValue.style.marginLeft =  0;
             this.divValue.style.width      = 'auto';
-        }
+        // }
     }
 
 

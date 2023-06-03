@@ -2629,30 +2629,9 @@ a
 }
 
 
-.controlName
-{
-    color:                 var(--figma-color-bg-disabled);
-    font-family:           Inter;
-    font-size:             11px;
-    text-align:            right;
-    font-style:            normal;
-    font-weight:           normal;
-    font-variant-numeric:  tabular-nums;
-    letter-spacing:       -0.35px;
-    pointer-events:        none;
-    overflow:              hidden;
-    position:              absolute;
-    top:                   4px;
-    margin-right:          3px;
-    /* box-shadow:     0 0 0 1px inset yellow; */
-}
-
-
 .numberControl
 {
     padding:          0;
-    width:            74px;
-    height:           20px;
     position:         relative;
     overflow:         hidden;
     background-color: var(--figma-color-bg);
@@ -2691,7 +2670,7 @@ a
     transform:            translateY(-50%);
     white-space:          nowrap;
     margin-left:          3px;
-    /* box-shadow:           0 0 0 1px inset yellow; */
+    box-shadow:           0 0 0 1px inset orange;
 }
 
 
@@ -2780,12 +2759,9 @@ a
 .textControl
 {
     padding:       0;
-    /* width:      74px; */
-    /* height:     20px; */
     overflow:      visible;
     text-align:    center;
     touch-action:  none;
-    /* box-shadow:    0 0 0 1px orange inset; */
 }    
 
 
@@ -2920,7 +2896,7 @@ a
     /* transform:            translateX(-50%); */
     top:                  4px;
     white-space:          nowrap;
-    /* box-shadow:           0 0 0 1px inset yellow; */
+    box-shadow:           0 0 0 1px inset orange;
 }
 
 
@@ -3872,6 +3848,39 @@ a
     height:   12px;
     pointer-events: auto;
 }
+
+
+.paramName
+{
+    color:                 var(--figma-color-bg-disabled);
+    font-family:           Inter;
+    font-size:             11px;
+    text-align:            right;
+    font-style:            normal;
+    font-weight:           normal;
+    font-variant-numeric:  tabular-nums;
+    letter-spacing:       -0.35px;
+    pointer-events:        none;
+    overflow:              hidden;
+    width:                 100px;
+    position:              absolute;
+    top:                   4px;
+    margin-right:          3px;
+    box-shadow:            0 0 0 1px inset yellow;
+}
+
+
+
+.paramControls
+{
+    overflow:              hidden;
+    width:                 100%;
+    height:                auto;
+    /* position:              absolute; */
+    margin-right:          3px;
+    box-shadow:            0 0 0 1px inset red;
+}
+
 
 
 </style>
@@ -63197,17 +63206,10 @@ extends EventTarget
     name;
     savedName    = '';
 
-    showName;
-    divider      = 0.5;
-    minDiv       = 0;
-    maxDiv       = 200;
-
-
     overrideText = '';
-
-
+    
+    
     div;
-    divName;
     divValue;
 
 
@@ -63222,12 +63224,11 @@ extends EventTarget
  
 
     
-    constructor(divValue, param, id, name, showName, width = defNodeWidth, height = defParamHeight)
+    constructor(divValue, param, id, name, width = defNodeWidth, height = defParamHeight)
     {
         super();
 
         this.div           = createDiv('control');
-        this.divName       = createDiv('controlName');
         this.divValue      = divValue;
         
         this.param         = param;
@@ -63235,14 +63236,11 @@ extends EventTarget
         this.id            = id;
         this.name          = name;
 
-        this.showName      = showName;
-        this.divider       = 0.5;
 
         this.onstartchange = new Event('startchange');
         this.onchange      = new Event('change');
         this.onconfirm     = new Event('confirm');
 
-        this.div.appendChild(this.divName);
         this.div.appendChild(this.divValue);
 
         this.setSize(width, height);
@@ -63284,31 +63282,31 @@ extends EventTarget
             + (output ? 12 : 0);
 
 
-        if (this.showName)
-        {
-            const nameSize = this.divider <= 1 ? ((   this.divider *100) + '%') : (this.divider + 'px');
-            const  valSize = this.divider <= 1 ? (((1-this.divider)*100) + '%') : ('calc(100% - ' + this.divider + 'px)');
+        // if (this.showName)
+        // {
+        //     const nameSize = this.divider <= 1 ? ((   this.divider *100) + '%') : (this.divider + 'px');
+        //     const  valSize = this.divider <= 1 ? (((1-this.divider)*100) + '%') : ('calc(100% - ' + this.divider + 'px)');
 
 
-            this.divName .innerHTML        =  this.name;
+        //     this.divName .innerHTML        =  this.name;
 
-            this.divName .style.display    = 'inline-block';
-            this.divName .style.right      =  valSize;
-            this.divName .style.width      = 'calc(calc(' + nameSize + ' - ' + (input ? 12 : 0) + 'px) - 3px)';
+        //     this.divName .style.display    = 'inline-block';
+        //     this.divName .style.right      =  valSize;
+        //     this.divName .style.width      = 'calc(calc(' + nameSize + ' - ' + (input ? 12 : 0) + 'px) - 3px)';
             
-            this.divValue.style.left       =  nameSize;
-            this.divValue.style.marginLeft = '3px';
-            this.divValue.style.width      = 'calc(calc(' + valSize + ' - ' + (output ? 12 : 0) + 'px) - 3px)';
-        }
-        else
-        {
-            this.divName .style.display    = 'none';
+        //     this.divValue.style.left       =  nameSize;
+        //     this.divValue.style.marginLeft = '3px';
+        //     this.divValue.style.width      = 'calc(calc(' + valSize + ' - ' + (output ? 12 : 0) + 'px) - 3px)';
+        // }
+        // else
+        // {
+            //this.divName .style.display    = 'none';
 
             this.divValue.style.left       = '50%';
             this.divValue.style.transform  = 'translateX(-50%)';
             this.divValue.style.marginLeft =  0;
             this.divValue.style.width      = 'calc(100% - ' + dw + 'px)';
-        }
+        //}
     }
 
 
@@ -63539,12 +63537,12 @@ extends Control
     
     
     
-    constructor(param, id, name, showName, defaultValue, min = Number.MIN_SAFE_INTEGER, max = Number.MAX_SAFE_INTEGER, dec = 0, dragScale = 0.05, wheelScale = 1, acc = 0, suffix = '')
+    constructor(param, id, name, defaultValue, min = Number.MIN_SAFE_INTEGER, max = Number.MAX_SAFE_INTEGER, dec = 0, dragScale = 0.05, wheelScale = 1, acc = 0, suffix = '')
     {
         const divValue = createDiv('numberControlValue');
 
 
-        super(divValue, param, id, name, showName);
+        super(divValue, param, id, name);
 
 
         this.value                 = defaultValue;
@@ -63837,25 +63835,25 @@ extends Control
     {
         if (this.overrideText != '')
         {
-            this.divName .innerHTML = '';
+            //this.divName .innerHTML = '';
             this.divValue.innerHTML = this.overrideText;
         }
         else
         {
-            this.divName.innerHTML = '';
+            // this.divName.innerHTML = '';
             
-            if (   this.name.length > 0
-                && this.showName
-                && (  !isNaN(this.value) 
-                    || this.showNanValueName))
-            {
-                // const nameStyle = 
-                //     darkMode 
-                //     ? rgba2style(rgb_a(style2rgba(this.textStyleDark ), 0.4))
-                //     : rgba2style(rgb_a(style2rgba(this.textStyleLight), 0.6));
+            // if (   this.name.length > 0
+            //     && this.showName
+            //     && (  !isNaN(this.value) 
+            //         || this.showNanValueName))
+            // {
+            //     // const nameStyle = 
+            //     //     darkMode 
+            //     //     ? rgba2style(rgb_a(style2rgba(this.textStyleDark ), 0.4))
+            //     //     : rgba2style(rgb_a(style2rgba(this.textStyleLight), 0.6));
 
-                this.divName.innerHTML = this.name;//'<span style="color: ' + nameStyle + ';">' + this.name + "</span>";
-            }
+            //     this.divName.innerHTML = this.name;//'<span style="color: ' + nameStyle + ';">' + this.name + "</span>";
+            // }
 
             
             const valueText = this.getValueText();
@@ -63868,26 +63866,26 @@ extends Control
         }
 
 
-        if (this.showName)
-        {
-            this.divName .style.display    = 'inline-block';
-            this.divName .style.right      = ((1-this.divider)*100) + '%';
-            this.divValue.style.left       = (   this.divider *100) + '%';
+        // if (this.showName)
+        // {
+        //     this.divName .style.display    = 'inline-block';
+        //     this.divName .style.right      = ((1-this.divider)*100) + '%';
+        //     this.divValue.style.left       = (   this.divider *100) + '%';
             
-            this.divName .style.transform  = 'translateX(' + (-(1-this.divider)*100) + '%' + ') tranlateY(-50%)';
-            this.divValue.style.transform  = 'translateX(' + (-   this.divider *100) + '%' + ') tranlateY(-50%)';
+        //     this.divName .style.transform  = 'translateX(' + (-(1-this.divider)*100) + '%' + ') tranlateY(-50%)';
+        //     this.divValue.style.transform  = 'translateX(' + (-   this.divider *100) + '%' + ') tranlateY(-50%)';
 
-            this.divValue.style.marginLeft = '3px';
-        }
-        else
-        {
-            this.divName.style.display     = 'none';
+        //     this.divValue.style.marginLeft = '3px';
+        // }
+        // else
+        // {
+            //this.divName.style.display     = 'none';
             
             this.divValue.style.left       = '50%';
             this.divValue.style.transform  = 'translateX(-50%) translateY(-50%)';
             this.divValue.style.marginLeft =  0;
             this.divValue.style.width      = 'auto';
-        }
+        // }
     }
 
 
@@ -65185,12 +65183,12 @@ extends Control
     
     
 
-    constructor(param, id, name, showName, defaultValue = '')
+    constructor(param, id, name, defaultValue = '')
     {
         const textbox = createTextarea('textControlTextarea');
 
 
-        super(textbox, param, id, name, showName);
+        super(textbox, param, id, name);
 
 
         this.value = defaultValue;
@@ -65906,12 +65904,12 @@ extends Control
     
     
 
-    constructor(param, id, name, showName, defaultValue, dragScale = 0.05, wheelScale = 1, acc = 0)
+    constructor(param, id, name, defaultValue, dragScale = 0.05, wheelScale = 1, acc = 0)
     {
         const divValue = createDiv('colorControlText');
 
 
-        super(divValue, param, id, name, showName);
+        super(divValue, param, id, name);
 
 
         this.showColor   = true;
@@ -66021,8 +66019,8 @@ extends Control
         this.divValue.style.color = 
         this.textbox .style.color = darkMode ? this.textStyleDark : this.textStyleLight;
 
-        this.divName .style.color = !isDark(this.value.toRgb()) ? this.textStyleDark : this.textStyleLight;
-        this.divName .style.opacity = 0.5;
+        //this.divName .style.color = !isDark(this.value.toRgb()) ? this.textStyleDark : this.textStyleLight;
+        //this.divName .style.opacity = 0.5;
     };
 
 
@@ -66038,26 +66036,26 @@ extends Control
         this.textbox.value = this.divValue.innerText;
 
 
-        if (this.showName)
-        {
-            this.divName .style.display    = 'inline-block';
-            this.divName .style.right      = ((1-this.divider)*100) + '%';
-            this.divValue.style.left       = (   this.divider *100) + '%';
+        // if (this.showName)
+        // {
+        //     this.divName .style.display    = 'inline-block';
+        //     this.divName .style.right      = ((1-this.divider)*100) + '%';
+        //     this.divValue.style.left       = (   this.divider *100) + '%';
             
-            this.divName .style.transform  = 'translateX(' + (-(1-this.divider)*100) + '%' + ') tranlateY(-50%)';
-            this.divValue.style.transform  = 'translateX(' + (-   this.divider *100) + '%' + ') tranlateY(-50%)';
+        //     this.divName .style.transform  = 'translateX(' + (-(1-this.divider)*100) + '%' + ') tranlateY(-50%)';
+        //     this.divValue.style.transform  = 'translateX(' + (-   this.divider *100) + '%' + ') tranlateY(-50%)';
 
-            this.divValue.style.marginLeft = '3px';
-        }
-        else
-        {
-            this.divName.style.display     = 'none';
+        //     this.divValue.style.marginLeft = '3px';
+        // }
+        // else
+        // {
+        //     this.divName.style.display     = 'none';
             
             this.divValue.style.left       = '50%';
             this.divValue.style.transform  = 'translateX(-50%)';
             this.divValue.style.marginLeft =  0;
             this.divValue.style.width      = 'auto';
-        }
+        // }
     };
 
 
@@ -72168,6 +72166,13 @@ extends EventTarget
     get index() { return this.node.params.indexOf(this); }
 
 
+    showName;
+    divider        = 0.5;
+
+    divName;
+    divControls;
+
+
     controls       = [];
 
     proxy          = null;
@@ -72198,7 +72203,7 @@ extends EventTarget
 
 
 
-    constructor(type, id, name)
+    constructor(type, id, name, showName)
     {
         super();
 
@@ -72206,7 +72211,11 @@ extends EventTarget
         this.#name              = name;
         this.#type              = type;
 
+        this.showName           = showName;
+
         this._div               = createDiv();
+        this.divName            = createDiv('paramName');
+        this.divControls        = createDiv('paramControls');
 
         this.div.style.position = 'relative';
         this.div.style.padding  = 0;
@@ -72214,6 +72223,9 @@ extends EventTarget
 
         this.input              = null;
         this.output             = null;
+
+        this.div.appendChild(this.divName);
+        this.div.appendChild(this.divControls);
     }
 
 
@@ -72314,6 +72326,31 @@ extends EventTarget
         
         if (this.input ) this.input .updateControl();
         if (this.output) this.output.updateControl();
+
+
+        this.divName.innerHTML = this.name;
+
+
+        if (this.showName)
+        {
+            this.divName    .style.display    = 'inline-block';
+            this.divName    .style.right      = ((1-this.divider)*100) + '%';
+            this.divControls.style.left       = (   this.divider *100) + '%';
+            
+            this.divName    .style.transform  = 'translateX(' + (-(1-this.divider)*100) + '%' + ') tranlateY(-50%)';
+            this.divControls.style.transform  = 'translateX(' + (-   this.divider *100) + '%' + ') tranlateY(-50%)';
+
+            this.divControls.style.marginLeft = '3px';
+        }
+        else
+        {
+            this.divName    .style.display     = 'none';
+            
+            // this.divControls.style.left       = '50%';
+            //this.divControls.style.transform  = 'translateX(-50%) translateY(-50%)';
+            this.divControls.style.marginLeft =  0;
+            this.divControls.style.width      = 'auto';
+        }
     }
 
 
@@ -72666,14 +72703,13 @@ extends NumberParamBase
                 decimals     = 0,
                 dragScale    = 0.05)
     {
-        super(NUMBER_VALUE, id, name);
+        super(NUMBER_VALUE, id, name, showName);
 
         
         this.controls[0] = new NumberControl(
             this,
             this.id,
             this.name, 
-            showName,
             defaultValue,
             min,
             max,
@@ -72692,7 +72728,7 @@ extends NumberParamBase
 
         this.controls[0].successOnFocusOut = true;
 
-        this.div.appendChild(this.controls[0].div);
+        this.divControls.appendChild(this.controls[0].div);
 
        
         if (hasInput)  this.initInput ([NUMBER_VALUE], getParamInputValuesForUndo, this.input_getBackInitValue);
@@ -72816,7 +72852,6 @@ extends NumberParamBase
             this,
             this.id,
             this.name, 
-            showName,
             defaultValue,
             0,
             options.length-1,
@@ -72844,7 +72879,7 @@ extends NumberParamBase
         this.controls[0].successOnFocusOut = true;
         this.controls[0].barTop            = 0.8;
 
-        this.div.appendChild(this.controls[0].div);
+        this.divControls.appendChild(this.controls[0].div);
 
 
         if (hasInput)  this.initInput([NUMBER_VALUE], getParamInputValuesForUndo, this.input_getBackInitValue);
@@ -73019,7 +73054,7 @@ extends Parameter
                 hasOutput,
                 defaultValue = '')
     {
-        super(TEXT_VALUE, id, name);
+        super(TEXT_VALUE, id, name, showName);
 
         this.defaultValue = defaultValue;
 
@@ -73028,7 +73063,6 @@ extends Parameter
             this,
             this.id,
             this.name,
-            showName,
             defaultValue);
 
             
@@ -73046,10 +73080,10 @@ extends Parameter
         this.controls[0].div.style.width   = '100%';
 
 
-        this.div.appendChild(this.controls[0].div);
+        this.divControls.appendChild(this.controls[0].div);
 
        
-        if (hasInput)  this.initInput ([TEXT_VALUE], getParamInputValuesForUndo, this.input_getBackInitValue);
+        if (hasInput ) this.initInput ([TEXT_VALUE], getParamInputValuesForUndo, this.input_getBackInitValue);
         if (hasOutput) this.initOutput([TEXT_VALUE], this.output_genRequest, getParamOutputValuesForUndo, this.output_backInit);
 
 
@@ -73272,7 +73306,7 @@ extends Parameter
                 defaultValue = ColorValue.fromRgb([0x80, 0x80, 0x80]),
                 dragScale    = 0.05)
     {
-        super(COLOR_VALUE, id, name);
+        super(COLOR_VALUE, id, name, showName);
 
         this.defaultValue = defaultValue;
 
@@ -73281,7 +73315,6 @@ extends Parameter
             this,
             this.id,
             this.name, 
-            showName,
             defaultValue,   
             dragScale); 
 
@@ -73296,7 +73329,7 @@ extends Parameter
         this._warningOverlay = createDiv('colorValueWarningOverlay');
         this._warningOverlay.style.zIndex  = 21;
         
-        this.div.appendChild(this._warningOverlay);
+        this.divControls.appendChild(this._warningOverlay);
 
 
         this.checkers                      = createDiv();
@@ -73639,19 +73672,18 @@ extends Parameter
                 defaultValue = FillValue.NaN,
                 dragScale    = 0.05)
     {
-        super(FILL_VALUE, id, name);
+        super(FILL_VALUE, id, name, showName);
 
         this.checkersHolder = createDiv();
         this.checkers       = createDiv();
 
-        this.controlWrapper = createDiv();
+        //this.controlWrapper = createDiv();
 
 
         this.controls.push(new ColorControl(
             this,
             this.id,
             'color', 
-            showName,
             defaultValue.color,   
             dragScale)); 
 
@@ -73662,7 +73694,6 @@ extends Parameter
             this,
             this.id,
             'opacity', 
-            false,
             defaultValue.opacity.value,
             0,
             100,
@@ -73694,10 +73725,10 @@ extends Parameter
         this.checkers.style.height                  = defParamHeight;
 
 
-        this.controlWrapper.style.position          = 'relative';
-        this.controlWrapper.style.display           = 'inline-block';
-        this.controlWrapper.style.width             = '100%';
-        this.controlWrapper.style.height            = defParamHeight;
+        // this.controlWrapper.style.position          = 'relative';
+        // this.controlWrapper.style.display           = 'inline-block';
+        // this.controlWrapper.style.width             = '100%';
+        // this.controlWrapper.style.height            = defParamHeight;
         //this.controlWrapper.style.zIndex            = 100;
 
 
@@ -73717,7 +73748,7 @@ extends Parameter
         this.controls[1].showBar = false;//barTop                     = 0.8;
 
 
-        this.controls[0].text.style.transform       = 'translateX(-40%)';
+        this.controls[0].divValue.style.transform       = 'translateX(-40%)';
 
         // this.controls[1].divValue.style.transform   = 'translateX(-68.5%) \
         //                                                translateY(-50%)';
@@ -73736,13 +73767,13 @@ extends Parameter
         this.controls[1].textbox.style.background   = 'transparent';
 
 
-        this.controlWrapper.appendChild(this.controls[0].div);
-        this.controlWrapper.appendChild(this.controls[1].div);
+        this.divControls.appendChild(this.controls[0].div);
+        this.divControls.appendChild(this.controls[1].div);
         
         this.checkersHolder.appendChild(this.checkers);
         this.div.appendChild(this.checkersHolder);
 
-        this.div.appendChild(this.controlWrapper);
+        // this.div.appendChild(this.controlWrapper);
 
        
         if (hasInput)  this.initInput([FILL_VALUE, COLOR_VALUE], getParamInputValuesForUndo, this.input_getBackInitValue);
@@ -73950,11 +73981,11 @@ extends Parameter
         const rgbaText   = getTextColorFromBackColor(rgbaStripe, rgba[3]);
 
 
-        this.controlWrapper.style.background =
-              !rgbaIsNaN(rgbaBack) 
-            && this.value.opacity.isValid()
-            ? rgba2style(rgbaBack)
-            : noColorStyle(rgbaBack);//'transparent'; 
+        // this.controlWrapper.style.background =
+        //       !rgbaIsNaN(rgbaBack) 
+        //     && this.value.opacity.isValid()
+        //     ? rgba2style(rgbaBack)
+        //     : noColorStyle(rgbaBack);//'transparent'; 
 
 
         this.updateWarningOverlay();
@@ -74347,7 +74378,7 @@ extends Parameter
     checkersHolder;
     checkers;
 
-    controlWrapper;
+    //controlWrapper;
 
 
     text;
@@ -74378,14 +74409,13 @@ extends Parameter
         this.checkersHolder = createDiv();
         this.checkers       = createDiv();
 
-        this.controlWrapper = createDiv();
+        //this.controlWrapper = createDiv();
 
 
         this.controls.push(new ColorControl(
             this,
             this.id,
             'color', 
-            showName,
             defaultValue.fill.color)); 
 
         this.controls[0].showColor = false;
@@ -74433,10 +74463,10 @@ extends Parameter
         this.checkers.style.height                  = defParamHeight;
 
 
-        this.controlWrapper.style.position          = 'relative';
-        this.controlWrapper.style.display           = 'inline-block';
-        this.controlWrapper.style.width             = '100%';
-        this.controlWrapper.style.height            = defParamHeight;
+        // this.controlWrapper.style.position          = 'relative';
+        // this.controlWrapper.style.display           = 'inline-block';
+        // this.controlWrapper.style.width             = '100%';
+        // this.controlWrapper.style.height            = defParamHeight;
         //this.controlWrapper.style.zIndex            = 100;
 
 
@@ -74457,12 +74487,12 @@ extends Parameter
         this.controls[0].textbox.style.paddingLeft  =  14;
 
 
-        this.controlWrapper.appendChild(this.controls[0].div);
+        //this.controlWrapper.appendChild(this.controls[0].div);
         
         this.checkersHolder.appendChild(this.checkers);
         this.div.appendChild(this.checkersHolder);
 
-        this.div.appendChild(this.controlWrapper);
+        //this.div.appendChild(this.controlWrapper);
 
         this.div.appendChild(this.text);
 
@@ -74608,11 +74638,11 @@ extends Parameter
         const rgbaText   = getTextColorFromBackColor(rgbaStripe, rgba[3]);
 
 
-        this.controlWrapper.style.background =
-              !rgbaIsNaN(rgbaBack) 
-            && this.value.fill.opacity.isValid()
-            ? rgba2style(rgbaBack)
-            : noColorStyle(rgbaBack);//'transparent'; 
+        //this.controlWrapper.style.background =
+        //      !rgbaIsNaN(rgbaBack) 
+        //    && this.value.fill.opacity.isValid()
+        //    ? rgba2style(rgbaBack)
+        //    : noColorStyle(rgbaBack);//'transparent'; 
 
 
         this.updateWarningOverlay();
@@ -75963,6 +75993,7 @@ extends Parameter
 
         enableElementText(this.controls[0].div, false);
 
+        
         this.controls[0].readOnly = true;
         
         this.controls[0].textbox.style.fontStyle  = 'italic';
@@ -82769,7 +82800,7 @@ extends OperatorBase
         this.addInput (new Input ([NUMBER_VALUE], getNodeInputValuesForUndo, this.input_getBackInitValue));
         this.addOutput(new Output([NUMBER_VALUE], this.output_genRequest, getNodeOutputValuesForUndo, this.output_backInit));
 
-        this.addParam(this.paramValue = new NumberParam('value', '', false, false, false));
+        this.addParam(this.paramValue = new NumberParam('value', '', true, false, false));
 
         this.alwaysLoadParams = true;
     }
@@ -85446,7 +85477,7 @@ extends ResizableBase
         this.addInput (new Input (TEXT_TYPES, getNodeInputValuesForUndo, this.input_getBackInitValue));
         this.addOutput(new Output([TEXT_VALUE], this.output_genRequest, getNodeOutputValuesForUndo, this.output_backInit));
 
-        this.addParam(this.paramValue = new TextParam('value', '', false, false, false));
+        this.addParam(this.paramValue = new TextParam('value', '', true, false, false));
 
         this.paramValue.controls[0].textbox.defPlaceholder = '...';
         this.paramValue.controls[0].setFont('Roboto Mono', 10, 'center');

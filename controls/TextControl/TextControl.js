@@ -26,12 +26,12 @@ extends Control
     
     
 
-    constructor(param, id, name, showName, defaultValue = '')
+    constructor(param, id, name, defaultValue = '')
     {
         const textbox = createTextarea('textControlTextarea');
 
 
-        super(textbox, param, id, name, showName);
+        super(textbox, param, id, name);
 
 
         this.value = defaultValue;

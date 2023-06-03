@@ -1,8 +1,6 @@
 .numberControl
 {
     padding:          0;
-    width:            74px;
-    height:           20px;
     position:         relative;
     overflow:         hidden;
     background-color: var(--figma-color-bg);
@@ -41,7 +39,7 @@
     transform:            translateY(-50%);
     white-space:          nowrap;
     margin-left:          3px;
-    /* box-shadow:           0 0 0 1px inset yellow; */
+    box-shadow:           0 0 0 1px inset orange;
 }
 
 

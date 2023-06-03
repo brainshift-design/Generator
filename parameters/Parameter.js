@@ -15,6 +15,13 @@ extends EventTarget
     get index() { return this.node.params.indexOf(this); }
 
 
+    showName;
+    divider        = 0.5;
+
+    divName;
+    divControls;
+
+
     controls       = [];
 
     proxy          = null;
@@ -45,7 +52,7 @@ extends EventTarget
 
 
 
-    constructor(type, id, name)
+    constructor(type, id, name, showName)
     {
         super();
 
@@ -53,7 +60,11 @@ extends EventTarget
         this.#name              = name;
         this.#type              = type;
 
+        this.showName           = showName;
+
         this._div               = createDiv();
+        this.divName            = createDiv('paramName');
+        this.divControls        = createDiv('paramControls');
 
         this.div.style.position = 'relative';
         this.div.style.padding  = 0;
@@ -61,6 +72,9 @@ extends EventTarget
 
         this.input              = null;
         this.output             = null;
+
+        this.div.appendChild(this.divName);
+        this.div.appendChild(this.divControls);
     }
 
 
@@ -161,6 +175,31 @@ extends EventTarget
         
         if (this.input ) this.input .updateControl();
         if (this.output) this.output.updateControl();
+
+
+        this.divName.innerHTML = this.name;
+
+
+        if (this.showName)
+        {
+            this.divName    .style.display    = 'inline-block';
+            this.divName    .style.right      = ((1-this.divider)*100) + '%';
+            this.divControls.style.left       = (   this.divider *100) + '%';
+            
+            this.divName    .style.transform  = 'translateX(' + (-(1-this.divider)*100) + '%' + ') tranlateY(-50%)';
+            this.divControls.style.transform  = 'translateX(' + (-   this.divider *100) + '%' + ') tranlateY(-50%)';
+
+            this.divControls.style.marginLeft = '3px';
+        }
+        else
+        {
+            this.divName    .style.display     = 'none';
+            
+            // this.divControls.style.left       = '50%';
+            //this.divControls.style.transform  = 'translateX(-50%) translateY(-50%)';
+            this.divControls.style.marginLeft =  0;
+            this.divControls.style.width      = 'auto';
+        }
     }
 
 

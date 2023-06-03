@@ -39,19 +39,18 @@ extends Parameter
                 defaultValue = FillValue.NaN,
                 dragScale    = 0.05)
     {
-        super(FILL_VALUE, id, name);
+        super(FILL_VALUE, id, name, showName);
 
         this.checkersHolder = createDiv();
         this.checkers       = createDiv();
 
-        this.controlWrapper = createDiv();
+        //this.controlWrapper = createDiv();
 
 
         this.controls.push(new ColorControl(
             this,
             this.id,
             'color', 
-            showName,
             defaultValue.color,   
             dragScale)); 
 
@@ -62,7 +61,6 @@ extends Parameter
             this,
             this.id,
             'opacity', 
-            false,
             defaultValue.opacity.value,
             0,
             100,
@@ -94,10 +92,10 @@ extends Parameter
         this.checkers.style.height                  = defParamHeight;
 
 
-        this.controlWrapper.style.position          = 'relative';
-        this.controlWrapper.style.display           = 'inline-block';
-        this.controlWrapper.style.width             = '100%';
-        this.controlWrapper.style.height            = defParamHeight;
+        // this.controlWrapper.style.position          = 'relative';
+        // this.controlWrapper.style.display           = 'inline-block';
+        // this.controlWrapper.style.width             = '100%';
+        // this.controlWrapper.style.height            = defParamHeight;
         //this.controlWrapper.style.zIndex            = 100;
 
 
@@ -117,7 +115,7 @@ extends Parameter
         this.controls[1].showBar = false;//barTop                     = 0.8;
 
 
-        this.controls[0].text.style.transform       = 'translateX(-40%)';
+        this.controls[0].divValue.style.transform       = 'translateX(-40%)';
 
         // this.controls[1].divValue.style.transform   = 'translateX(-68.5%) \
         //                                                translateY(-50%)';
@@ -136,13 +134,13 @@ extends Parameter
         this.controls[1].textbox.style.background   = 'transparent';
 
 
-        this.controlWrapper.appendChild(this.controls[0].div);
-        this.controlWrapper.appendChild(this.controls[1].div);
+        this.divControls.appendChild(this.controls[0].div);
+        this.divControls.appendChild(this.controls[1].div);
         
         this.checkersHolder.appendChild(this.checkers);
         this.div.appendChild(this.checkersHolder);
 
-        this.div.appendChild(this.controlWrapper);
+        // this.div.appendChild(this.controlWrapper);
 
        
         if (hasInput)  this.initInput([FILL_VALUE, COLOR_VALUE], getParamInputValuesForUndo, this.input_getBackInitValue);
@@ -350,11 +348,11 @@ extends Parameter
         const rgbaText   = getTextColorFromBackColor(rgbaStripe, rgba[3]);
 
 
-        this.controlWrapper.style.background =
-              !rgbaIsNaN(rgbaBack) 
-            && this.value.opacity.isValid()
-            ? rgba2style(rgbaBack)
-            : noColorStyle(rgbaBack);//'transparent'; 
+        // this.controlWrapper.style.background =
+        //       !rgbaIsNaN(rgbaBack) 
+        //     && this.value.opacity.isValid()
+        //     ? rgba2style(rgbaBack)
+        //     : noColorStyle(rgbaBack);//'transparent'; 
 
 
         this.updateWarningOverlay();

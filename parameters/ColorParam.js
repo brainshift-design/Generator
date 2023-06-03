@@ -38,7 +38,7 @@ extends Parameter
                 defaultValue = ColorValue.fromRgb([0x80, 0x80, 0x80]),
                 dragScale    = 0.05)
     {
-        super(COLOR_VALUE, id, name);
+        super(COLOR_VALUE, id, name, showName);
 
         this.defaultValue = defaultValue;
 
@@ -47,7 +47,6 @@ extends Parameter
             this,
             this.id,
             this.name, 
-            showName,
             defaultValue,   
             dragScale); 
 
@@ -62,7 +61,7 @@ extends Parameter
         this._warningOverlay = createDiv('colorValueWarningOverlay');
         this._warningOverlay.style.zIndex  = 21;
         
-        this.div.appendChild(this._warningOverlay);
+        this.divControls.appendChild(this._warningOverlay);
 
 
         this.checkers                      = createDiv();
