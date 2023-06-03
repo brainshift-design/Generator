@@ -391,7 +391,7 @@ extends Control
 
     updateColors()
     {
-        this.div     .style.background = darkMode ? this. backStyleDark : this. backStyleLight;
+        //this.div     .style.background = darkMode ? this. backStyleDark : this. backStyleLight;
         this.divBar  .style.background = darkMode ? this.valueStyleDark : this.valueStyleLight;
         this.divValue.style.color      = darkMode ? this. textStyleDark : this. textStyleLight;
     }

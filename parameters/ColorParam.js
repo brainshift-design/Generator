@@ -61,20 +61,21 @@ extends Parameter
         this._warningOverlay = createDiv('colorValueWarningOverlay');
         this._warningOverlay.style.zIndex  = 21;
         
-        this.divControls.appendChild(this._warningOverlay);
-
-
+        
+        
         this.checkers                      = createDiv();
- 
+        
         this.checkers.style.position       = 'absolute';
         this.checkers.style.width          = '100%';
         this.checkers.style.height         = '20px';
         this.checkers.style.display        = 'none';
         this.checkers.style.pointerEvents  = 'none';
-
-
+        
+        
+        this.div.appendChild(this._warningOverlay);
         this.div.appendChild(this.checkers);
-        this.div.appendChild(this.controls[0].div);
+
+        this.divControls.appendChild(this.controls[0].div);
 
        
         if (hasInput)  this.initInput([COLOR_VALUE], getParamInputValuesForUndo, this.input_getBackInitValue);
@@ -237,10 +238,6 @@ extends Parameter
 
         this.checkers.style.left               = '-3.5px';
         this.checkers.style.width              = 'calc(100% + 3.5px)';
-
-
-        this.divName .style.color = !isDark(this.value.toRgb()) ? this.textStyleDark : this.textStyleLight;
-        this.divName .style.opacity = 0.5;
 
 
         super.updateControls();

@@ -156,9 +156,13 @@ extends Control
 
     updateColors()
     {
-        this.div    .style.background = darkMode ? this.backStyleDark : this.backStyleLight;
+        this.param.div.style.background = darkMode ? this.backStyleDark : this.backStyleLight;
+        
+        this.param.divName.style.color = !isDark(this.value.toRgb()) ? this.textStyleDark : this.textStyleLight;
+        this.param.divName.style.opacity = 0.5;
+        
         this.textbox.style.background = 'transparent';
-
+        
         this.divValue.style.color = 
         this.textbox .style.color = darkMode ? this.textStyleDark : this.textStyleLight;
     };
@@ -176,10 +180,19 @@ extends Control
         this.textbox.value = this.divValue.innerText;
 
         
-        this.divValue.style.left       = '50%';
-        this.divValue.style.transform  = 'translateX(-50%)';
-        this.divValue.style.marginLeft =  0;
-        this.divValue.style.width      = 'auto';
+        if (this.param.showName)
+        {
+            this.divValue.style.left       = 0;//(this.param.divider *100) + '%';
+            this.divValue.style.transform  = 'none';//translateX(' + (-   this.divider *100) + '%' + ') tranlateY(-50%)';
+            this.divValue.style.marginLeft = '3px';
+        }
+        else
+        {
+            this.divValue.style.left       = '50%';
+            this.divValue.style.transform  = 'translateX(-50%)';// translateY(-50%)';
+            this.divValue.style.marginLeft =  0;
+            // this.divValue.style.width      = 'auto';
+        }
     };
 
 

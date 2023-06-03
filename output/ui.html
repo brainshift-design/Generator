@@ -2610,14 +2610,14 @@ a
 
 .control
 {
-    /* box-shadow: 0 0 0 1px inset red; */
+    box-shadow: 0 0 0 1px inset rgb(144, 0, 255);
     overflow:   hidden;
     /* position:   absolute; */
     /* height:     auto; */
 }
 
 
-.figma-dark .control
+/* .figma-dark .control
 {
     background-color: rgba(56, 56, 56, 0.95);
 }
@@ -2626,7 +2626,7 @@ a
 .figma-light .control
 {
     background-color: rgba(255, 255, 255, 0.95);
-}
+} */
 
 
 .numberControl
@@ -2861,6 +2861,7 @@ a
     /* background-color: var(--figma-color-bg); */
     text-align:       center;
     touch-action:     none;
+    /* box-shadow:       0 0 0 1px red inset; */
 }    
 
 
@@ -63811,7 +63812,7 @@ extends Control
 
     updateColors()
     {
-        this.div     .style.background = darkMode ? this. backStyleDark : this. backStyleLight;
+        //this.div     .style.background = darkMode ? this. backStyleDark : this. backStyleLight;
         this.divBar  .style.background = darkMode ? this.valueStyleDark : this.valueStyleLight;
         this.divValue.style.color      = darkMode ? this. textStyleDark : this. textStyleLight;
     }
@@ -65976,9 +65977,13 @@ extends Control
 
     updateColors()
     {
-        this.div    .style.background = darkMode ? this.backStyleDark : this.backStyleLight;
+        this.param.div.style.background = darkMode ? this.backStyleDark : this.backStyleLight;
+        
+        this.param.divName.style.color = !isDark(this.value.toRgb()) ? this.textStyleDark : this.textStyleLight;
+        this.param.divName.style.opacity = 0.5;
+        
         this.textbox.style.background = 'transparent';
-
+        
         this.divValue.style.color = 
         this.textbox .style.color = darkMode ? this.textStyleDark : this.textStyleLight;
     };
@@ -65996,10 +66001,19 @@ extends Control
         this.textbox.value = this.divValue.innerText;
 
         
-        this.divValue.style.left       = '50%';
-        this.divValue.style.transform  = 'translateX(-50%)';
-        this.divValue.style.marginLeft =  0;
-        this.divValue.style.width      = 'auto';
+        if (this.param.showName)
+        {
+            this.divValue.style.left       = 0;//(this.param.divider *100) + '%';
+            this.divValue.style.transform  = 'none';//translateX(' + (-   this.divider *100) + '%' + ') tranlateY(-50%)';
+            this.divValue.style.marginLeft = '3px';
+        }
+        else
+        {
+            this.divValue.style.left       = '50%';
+            this.divValue.style.transform  = 'translateX(-50%)';// translateY(-50%)';
+            this.divValue.style.marginLeft =  0;
+            // this.divValue.style.width      = 'auto';
+        }
     };
 
 
@@ -73281,20 +73295,21 @@ extends Parameter
         this._warningOverlay = createDiv('colorValueWarningOverlay');
         this._warningOverlay.style.zIndex  = 21;
         
-        this.divControls.appendChild(this._warningOverlay);
-
-
+        
+        
         this.checkers                      = createDiv();
- 
+        
         this.checkers.style.position       = 'absolute';
         this.checkers.style.width          = '100%';
         this.checkers.style.height         = '20px';
         this.checkers.style.display        = 'none';
         this.checkers.style.pointerEvents  = 'none';
-
-
+        
+        
+        this.div.appendChild(this._warningOverlay);
         this.div.appendChild(this.checkers);
-        this.div.appendChild(this.controls[0].div);
+
+        this.divControls.appendChild(this.controls[0].div);
 
        
         if (hasInput)  this.initInput([COLOR_VALUE], getParamInputValuesForUndo, this.input_getBackInitValue);
@@ -73457,10 +73472,6 @@ extends Parameter
 
         this.checkers.style.left               = '-3.5px';
         this.checkers.style.width              = 'calc(100% + 3.5px)';
-
-
-        this.divName .style.color = !isDark(this.value.toRgb()) ? this.textStyleDark : this.textStyleLight;
-        this.divName .style.opacity = 0.5;
 
 
         super.updateControls();

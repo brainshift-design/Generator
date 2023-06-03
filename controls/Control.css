@@ -1,13 +1,13 @@
 .control
 {
-    /* box-shadow: 0 0 0 1px inset red; */
+    box-shadow: 0 0 0 1px inset rgb(144, 0, 255);
     overflow:   hidden;
     /* position:   absolute; */
     /* height:     auto; */
 }
 
 
-.figma-dark .control
+/* .figma-dark .control
 {
     background-color: rgba(56, 56, 56, 0.95);
 }
@@ -16,4 +16,4 @@
 .figma-light .control
 {
     background-color: rgba(255, 255, 255, 0.95);
-}
+} */
