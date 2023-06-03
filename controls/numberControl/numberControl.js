@@ -3,7 +3,6 @@ extends Control
 {
     divBar;
     divPrecision;
-    divValue;
     textbox;
     divFocus;
 
@@ -105,9 +104,12 @@ extends Control
     
     
     
-    constructor(div, param, id, name, showName, defaultValue, min = Number.MIN_SAFE_INTEGER, max = Number.MAX_SAFE_INTEGER, dec = 0, dragScale = 0.05, wheelScale = 1, acc = 0, suffix = '')
+    constructor(param, id, name, showName, defaultValue, min = Number.MIN_SAFE_INTEGER, max = Number.MAX_SAFE_INTEGER, dec = 0, dragScale = 0.05, wheelScale = 1, acc = 0, suffix = '')
     {
-        super(div, param, id, name, showName);
+        const divValue = createDiv('numberControlValue');
+
+
+        super(divValue, param, id, name, showName);
 
 
         this.value                 = defaultValue;
@@ -141,7 +143,7 @@ extends Control
 
         this.divBar                = createDiv('numberControlBar');
         this.divPrecision          = createDiv('numberControlPrecision');
-        this.divValue              = createDiv('numberControlValue');
+        this.divValue              = divValue;
         this.divFocus              = createDiv('numberControlFocus');
         this.extLeft               = createDiv('numberControlExt numberControlExtLeft');
         this.extRight              = createDiv('numberControlExt numberControlExtRight');
@@ -448,7 +450,8 @@ extends Control
             
             this.divValue.style.left       = '50%';
             this.divValue.style.transform  = 'translateX(-50%) translateY(-50%)';
-            this.divValue.style.marginLeft = 0;
+            this.divValue.style.marginLeft =  0;
+            this.divValue.style.width      = 'auto';
         }
     }
 

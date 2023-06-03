@@ -1,7 +1,6 @@
 class ColorControl
 extends Control
 {
-    showName          = false;
     showColor         = true;
 
     value;
@@ -12,10 +11,12 @@ extends Control
     dragScale;
     wheelScale;
              
+    nameStyleLight    = 'rgba(255, 255, 255, 0.5 )';
     backStyleLight    = 'rgba(255, 255, 255, 0.95)';
     valueStyleLight   = 'transparent';
     textStyleLight    = '#000';
                 
+    nameStyleDark     = 'rgba(56, 56, 56, 0.5 )';
     backStyleDark     = 'rgba(56, 56, 56, 0.95)';
     valueStyleDark    = 'transparent';
     textStyleDark     = '#eee';
@@ -46,26 +47,29 @@ extends Control
     
     
 
-    constructor(div, param, id, name, showName, defaultValue, dragScale = 0.05, wheelScale = 1, acc = 0)
+    constructor(param, id, name, showName, defaultValue, dragScale = 0.05, wheelScale = 1, acc = 0)
     {
-        super(div, param, id, name, showName);
+        const divValue = createDiv('colorControlText');
 
 
-        this.showColor         = true;
+        super(divValue, param, id, name, showName);
+
+
+        this.showColor   = true;
     
-        this.value             = defaultValue;
-        this.acc               = acc;
+        this.value       = defaultValue;
+        this.acc         = acc;
          
         
-        this.dragReverse       = false;
-        this.dragScale         = dragScale;
-        this.wheelScale        = wheelScale;
+        this.dragReverse = false;
+        this.dragScale   = dragScale;
+        this.wheelScale  = wheelScale;
                  
 
-        this.text  = createDiv('colorControlText');
-        this.focus = createDiv('colorControlFocus');
+        this.divValue    = divValue;
+        this.focus       = createDiv('colorControlFocus');
     
-        this.div.appendChild(this.text);
+        this.div.appendChild(this.divValue);
         this.div.appendChild(this.focus);
 
         
@@ -108,7 +112,6 @@ extends Control
         const oldValue = this.value.copy();
 
         this.value = value.copy();
-
         this.update();
         
         this.dispatchSetEvents(fireChangeEvent, value, oldValue, confirm);
@@ -156,27 +159,46 @@ extends Control
         this.div    .style.background = darkMode ? this.backStyleDark : this.backStyleLight;
         this.textbox.style.background = 'transparent';
 
-        this.text   .style.color = 
-        this.textbox.style.color = darkMode ? this.textStyleDark : this.textStyleLight;//rgba2style(rgb_a(getTextColorFromBackColor(rgbStripeBack), 0.7));//rgb2style(rgbStripeBack);
+        this.divValue.style.color = 
+        this.textbox .style.color = darkMode ? this.textStyleDark : this.textStyleLight;
+
+        this.divName .style.color = !isDark(this.value.toRgb()) ? this.textStyleDark : this.textStyleLight;
+        this.divName .style.opacity = 0.5;
     };
 
 
 
     updateText()
     {
-        this.text.innerHTML = '';
-        
-        if (   this.name.length > 0
-            && this.showName)
-            this.text.innerHTML += (this.name.trim() != '' ? '<span class="colorControlName">' + this.name + '</span>&nbsp;&nbsp;' : '');
-
-        this.text.innerHTML += 
+        this.divValue.innerHTML = 
                this.value.isValid()
             && rgbIsValid(this.value.toRgb())
             ? rgb2hex(this.value.toRgb())
             : UNKNOWN_DISPLAY;
 
-        this.textbox.value = this.text.innerHTML;
+        this.textbox.value = this.divValue.innerText;
+
+
+        if (this.showName)
+        {
+            this.divName .style.display    = 'inline-block';
+            this.divName .style.right      = ((1-this.divider)*100) + '%';
+            this.divValue.style.left       = (   this.divider *100) + '%';
+            
+            this.divName .style.transform  = 'translateX(' + (-(1-this.divider)*100) + '%' + ') tranlateY(-50%)';
+            this.divValue.style.transform  = 'translateX(' + (-   this.divider *100) + '%' + ') tranlateY(-50%)';
+
+            this.divValue.style.marginLeft = '3px';
+        }
+        else
+        {
+            this.divName.style.display     = 'none';
+            
+            this.divValue.style.left       = '50%';
+            this.divValue.style.transform  = 'translateX(-50%)';
+            this.divValue.style.marginLeft =  0;
+            this.divValue.style.width      = 'auto';
+        }
     };
 
 

@@ -50,7 +50,6 @@ extends Parameter
 
 
         this.controls.push(new ColorControl(
-            null,
             this,
             this.id,
             'color', 

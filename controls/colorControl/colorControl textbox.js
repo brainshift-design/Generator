@@ -129,8 +129,7 @@ ColorControl.prototype.initTextbox = function()
         {
             e.preventDefault();
 
-            // let text = this.textbox.value;
-
+            
             if (   this.textbox.selectionStart == this.textbox.selectionEnd
                 && this.textbox.selectionStart % 2 == 0
                 && this.textbox.selectionStart > 0)
@@ -257,7 +256,7 @@ ColorControl.prototype.initTextbox = function()
 
         this.textbox.shown = false;
 
-        this.text.style.display = 'block';
+        this.divValue.style.display = 'block';
         
         this.clicked = false;
     });
@@ -328,7 +327,7 @@ ColorControl.prototype.initTextbox = function()
         
         this.textbox.blur();
 
-        this.text.style.display = 'block';
+        this.divValue.style.display = 'block';
 
         if (   this.inFocus
             && focusControl)
@@ -343,7 +342,7 @@ ColorControl.prototype.initTextbox = function()
 
 ColorControl.prototype.showTextbox = function()
 {
-    this.text.style.display = 'none';
+    this.divValue.style.display = 'none';
 
     this.inFocus = 
            hasFocus(this.div)

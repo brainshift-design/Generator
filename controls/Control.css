@@ -21,14 +21,18 @@
 
 .controlName
 {
-    color:          var(--figma-color-bg-disabled);
-    font-family:    Inter;
-    font-size:      11px;
-    text-align:     right;
-    pointer-events: none;
-    overflow:       hidden;
-    position:       absolute;
-    top:            3px;
-    margin-right:   3px;
-    box-shadow:     0 0 0 1px inset yellow;
+    color:                 var(--figma-color-bg-disabled);
+    font-family:           Inter;
+    font-size:             11px;
+    text-align:            right;
+    font-style:            normal;
+    font-weight:           normal;
+    font-variant-numeric:  tabular-nums;
+    letter-spacing:       -0.35px;
+    pointer-events:        none;
+    overflow:              hidden;
+    position:              absolute;
+    top:                   4px;
+    margin-right:          3px;
+    /* box-shadow:     0 0 0 1px inset yellow; */
 }

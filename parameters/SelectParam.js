@@ -21,7 +21,6 @@ extends NumberParamBase
         super(NUMBER_VALUE, id, name);
 
         this.controls[0] = new NumberControl(
-            createDiv('numberControl'),
             this,
             this.id,
             this.name, 

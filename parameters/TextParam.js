@@ -38,11 +38,11 @@ extends Parameter
             defaultValue);
 
             
-        if (name != NULL)
-        {
-            this.controls[0].textbox.defPlaceholder =
-            this.controls[0].textbox.placeholder    = name;
-        }
+        // if (name != NULL)
+        // {
+        //     this.controls[0].textbox.defPlaceholder =
+        //     this.controls[0].textbox.placeholder    = name;
+        // }
         
 
         this.controls[0].successOnFocusOut = true;

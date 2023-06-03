@@ -16,7 +16,6 @@ extends NumberParamBase
 
         
         this.controls[0] = new NumberControl(
-            createDiv('numberControl'),
             this,
             this.id,
             this.name, 

@@ -3,8 +3,9 @@ const resizeEdgeWidth       = 8;
 
 
 var   overNumberControl     = null;
-var   numberControlChanging = null;
 var   overNumberControlCtrl = null;
+
+var   numberControlChanging = null;
 
 
 const graph                 = new Graph();

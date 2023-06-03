@@ -48,7 +48,6 @@ extends Parameter
 
 
         this.controls.push(new ColorControl(
-            null,
             this,
             this.id,
             'color', 
@@ -60,7 +59,6 @@ extends Parameter
 
 
         this.controls.push(new NumberControl(
-            null,
             this,
             this.id,
             'opacity', 
