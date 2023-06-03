@@ -1,6 +1,6 @@
-TextControl.prototype.initTextarea = function()
+TextControl.prototype.initTextarea = function(textbox)
 {
-    this.textbox                 = createTextarea('textControlTextarea');
+    this.textbox                 = textbox;
 
     this.textbox.control         = this;
     this.textbox.defPlaceholder  = '...';//' . . .';
@@ -31,11 +31,7 @@ TextControl.prototype.initTextarea = function()
 
         if (this.readOnly)
         {
-            //e.preventDefault();
             e.stopPropagation();
-
-            //forwardEvent(e, this.param.node.div);
-
             return;
         }
 

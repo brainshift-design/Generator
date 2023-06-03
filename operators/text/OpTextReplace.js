@@ -21,13 +21,13 @@ extends OperatorWithValue
         this.addOutput(new Output([TEXT_VALUE], this.output_genRequest));
 
         this.addParam(this.paramValue);
-        this.addParam(this.paramWhat = new TextParam('what', 'what', true,  true));
-        this.addParam(this.paramWith = new TextParam('with', 'with', true,  true));
+        this.addParam(this.paramWhat = new TextParam('what', 'what', false, true, true));
+        this.addParam(this.paramWith = new TextParam('with', 'with', false, true, true));
 
 
-        setControlFont(this.paramValue.controls[0].textbox, 'Roboto Mono', 10, 'center');
-        setControlFont(this.paramWhat .controls[0].textbox, 'Roboto Mono', 10, 'center');
-        setControlFont(this.paramWith .controls[0].textbox, 'Roboto Mono', 10, 'center');
+        this.paramValue.controls[0].setFont('Roboto Mono', 10, 'center');
+        this.paramWhat .controls[0].setFont('Roboto Mono', 10, 'center');
+        this.paramWith .controls[0].setFont('Roboto Mono', 10, 'center');
     }
 
 

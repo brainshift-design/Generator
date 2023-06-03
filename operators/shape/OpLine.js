@@ -4,8 +4,6 @@ extends OpShape
     paramX;
     paramY;
     paramWidth;
-    //paramAngle;
-
 
     
     constructor()
@@ -18,16 +16,10 @@ extends OpShape
         this.addInput (this.createInputForObjects([LINE_VALUE], getNodeInputValuesForUndo));
         this.addOutput(new Output([LINE_VALUE], this.output_genRequest));
 
-        this.addParam(this.paramX      = new NumberParam('x',      'x',      true, true, true,   0));
-        this.addParam(this.paramY      = new NumberParam('y',      'y',      true, true, true,   0));
+        this.addParam(this.paramX      = new NumberParam('x',      'X',      true, true, true,   0));
+        this.addParam(this.paramY      = new NumberParam('y',      'Y',      true, true, true,   0));
         this.addParam(this.paramWidth  = new NumberParam('width',  'width',  true, true, true, 100));
-        //this.addParam(this.paramAngle  = new NumberParam('angle',  'angle',  true, true, true,   0, -180, 180));
         
-
-        //this.paramAngle.controls[0].setSuffix('°', true);
-        //this.paramAngle.controls[0].wrapValue   = true;
-        //this.paramAngle.controls[0].dragReverse = true;
-
 
         this.addBaseParams();
     }

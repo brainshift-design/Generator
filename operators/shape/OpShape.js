@@ -13,7 +13,7 @@ extends OpShapeBase
 
     addBaseParams()
     {
-        this.addParam(this.paramProperties = new ListParam('props', 'styles', true, true, true));
+        this.addParam(this.paramProperties = new ListParam('props', 'styles', false, true, true));
 
         this.paramProperties.itemName  = 'style';
         this.paramProperties.showZero  = false;

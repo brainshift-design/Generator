@@ -13,7 +13,7 @@ extends OperatorBase
 
         this.addOutput(new Output([NUMBER_VALUE], this.output_genRequest));
 
-        this.addParam(this.paramText   = new TextParam  ('text',   '',              true,  true));
+        this.addParam(this.paramText   = new TextParam  ('text',   '',       false, true,  true));
         this.addParam(this.paramFormat = new SelectParam('format', 'format', false, true,  true, ['decimal', 'hexadecimal']));
     }
 

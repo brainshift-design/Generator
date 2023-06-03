@@ -4,8 +4,8 @@ extends Parameter
     defaultValue;
 
     oldValue = null;
-
     
+
     get valueText() { return this.controls[0].valueText; }
     set valueText(text) 
     {
@@ -20,6 +20,7 @@ extends Parameter
     
     constructor(id,
                 name, 
+                showName,
                 hasInput,
                 hasOutput,
                 defaultValue = '')
@@ -30,10 +31,10 @@ extends Parameter
 
 
         this.controls[0] = new TextControl(
-            null,
             this,
             this.id,
             this.name,
+            showName,
             defaultValue);
 
             
@@ -54,7 +55,7 @@ extends Parameter
         this.div.appendChild(this.controls[0].div);
 
        
-        if (hasInput)  this.initInput([TEXT_VALUE], getParamInputValuesForUndo, this.input_getBackInitValue);
+        if (hasInput)  this.initInput ([TEXT_VALUE], getParamInputValuesForUndo, this.input_getBackInitValue);
         if (hasOutput) this.initOutput([TEXT_VALUE], this.output_genRequest, getParamOutputValuesForUndo, this.output_backInit);
 
 

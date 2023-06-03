@@ -6,10 +6,21 @@ extends EventTarget
     id;
     
     name;
-    savedName   = '';
+    savedName    = '';
+
+    showName;
+    divider      = 0.5;
+    minDiv       = 0;
+    maxDiv       = 200;
+
+
+    overrideText = '';
 
 
     div;
+    divName;
+    divValue;
+
 
     width;
     height;
@@ -22,31 +33,30 @@ extends EventTarget
  
 
     
-    constructor(div, param, id, name, width = defNodeWidth, height = defParamHeight)
+    constructor(divValue, param, id, name, showName, width = defNodeWidth, height = defParamHeight)
     {
         super();
 
-
-        this.div               = div ? div : createDiv();
-        this.div.control       = this;
+        this.div           = createDiv('control');
+        this.divName       = createDiv('controlName');
+        this.divValue      = divValue;
         
-
-        this.param             = param;
+        this.param         = param;
         
-        
-        this.id                = id;
-        this.name              = name;
+        this.id            = id;
+        this.name          = name;
 
+        this.showName      = showName;
+        this.divider       = 0.5;
 
-        //this.div.style.display = 'inline';
+        this.onstartchange = new Event('startchange');
+        this.onchange      = new Event('change');
+        this.onconfirm     = new Event('confirm');
 
+        this.div.appendChild(this.divName);
+        this.div.appendChild(this.divValue);
 
         this.setSize(width, height);
-
-
-        this.onstartchange     = new Event('startchange');
-        this.onchange          = new Event('change');
-        this.onconfirm         = new Event('confirm');
     }
 
 
@@ -56,8 +66,8 @@ extends EventTarget
         this.width            = w;
         this.height           = h;
         
-        this.div.style.width  = w;
-        this.div.style.height = Math.max(20, h);
+        this.div.style.width  = w + 'px';
+        this.div.style.height = Math.max(20, h) + 'px';
     }
 
 
@@ -73,6 +83,47 @@ extends EventTarget
 
 
     
+    update()
+    {
+        const  input = this.param && this.param. input;
+        const output = this.param && this.param.output;
+
+        const left = input ? 12 : 0;
+
+        const dw = 
+              ( input ? 12 : 0) 
+            + (output ? 12 : 0);
+
+
+        if (this.showName)
+        {
+            const nameSize = this.divider <= 1 ? ((   this.divider *100) + '%') : (this.divider + 'px');
+            const  valSize = this.divider <= 1 ? (((1-this.divider)*100) + '%') : ('calc(100% - ' + this.divider + 'px)');
+
+
+            this.divName .innerHTML        =  this.name;
+
+            this.divName .style.display    = 'inline-block';
+            this.divName .style.right      =  valSize;
+            this.divName .style.width      = 'calc(calc(' + nameSize + ' - ' + (input ? 12 : 0) + 'px) - 3px)';
+            
+            this.divValue.style.left       =  nameSize;
+            this.divValue.style.marginLeft = '3px';
+            this.divValue.style.width      = 'calc(calc(' + valSize + ' - ' + (output ? 12 : 0) + 'px) - 3px)';
+        }
+        else
+        {
+            this.divName .style.display    = 'none';
+
+            this.divValue.style.left       = '50%';
+            this.divValue.style.transform  = 'translateX(-50%)';
+            this.divValue.style.marginLeft =  0;
+            this.divValue.style.width      = 'calc(100% - ' + dw + 'px)';
+        }
+    }
+
+
+
     lockPointer(pointerId)
     {
         clearTimeout(this.clickTimer);

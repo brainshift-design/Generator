@@ -22,7 +22,7 @@ extends OperatorWithValue
         this.paramCode.controls[0].allowEditDecimals = false;
         this.paramCode.controls[0].divider           = 0.56;
 
-        setControlFont(this.paramCode.controls[0].textbox, 'Roboto Mono', 10, 'center');
+        this.paramCode.controls[0].setFont('Roboto Mono', 10, 'center');
     }
 
 

@@ -77,8 +77,6 @@ Operator.prototype.updateBorder = function()
 
 Operator.prototype.updateHeader = function()
 {
-    //console.log(this.id + '.Operator.updateHeader()');
-    
     const height = this.updateHeaderInputsAndOutputs();
 
     this.header.style.height = height;
@@ -127,12 +125,12 @@ Operator.prototype.updateDisabled = function()
 
     const height = Math.min(this.measureData.divOffset.width, this.measureData.divOffset.height) + 70;
 
-    this.divDisabled.style.display   = this.enabled ? 'none' : 'inline-block';
-    this.divDisabled.style.zIndex    = 10000;
-    this.divDisabled.style.height    = height;
+    this.divDisabled.style.display   =  this.enabled ? 'none' : 'inline-block';
+    this.divDisabled.style.zIndex    =  10000;
+    this.divDisabled.style.height    =  height;
     this.divDisabled.style.transform = 'rotate(45deg)';
-    this.divDisabled.style.left      = (this.measureData.divOffset.width  - this.measureData.disabledOffset.width ) / 2;
-    this.divDisabled.style.top       = (this.measureData.divOffset.height - height) / 2;
+    this.divDisabled.style.left      =  (this.measureData.divOffset.width  - this.measureData.disabledOffset.width ) / 2;
+    this.divDisabled.style.top       =  (this.measureData.divOffset.height - height) / 2;
 }
 
 

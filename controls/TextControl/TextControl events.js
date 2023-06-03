@@ -13,7 +13,7 @@ TextControl.prototype.initEvents = function()
         //    &&  this.pointerEvents)
         //{
         //    // if (graphView.tempConn)
-        //    //     this.div.style.cursor = 'default';
+        //    //     this.divControl.style.cursor = 'default';
 //
         //        
         //    // this.textbox.style.visibility = 'visible';
@@ -80,7 +80,7 @@ TextControl.prototype.initEvents = function()
             return;
 
 
-        // this.div.style.cursor       = 'default';
+        // this.divControl.style.cursor       = 'default';
         
         // this.textbox.style.visibility = 'hidden';
         // this.textbox.style.opacity    = 0;

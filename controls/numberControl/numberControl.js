@@ -3,7 +3,6 @@ extends Control
 {
     divBar;
     divPrecision;
-    divName;
     divValue;
     textbox;
     divFocus;
@@ -35,10 +34,7 @@ extends Control
     
     wrapValue             = false;
 
-    divider               = 0.5;
 
-
-    showName              = true;
     showHex               = false;
 
                
@@ -73,8 +69,8 @@ extends Control
 
 
     valueText             = '';
-    overrideText          = '';
 
+    
     showNanValueName      = true; // show the name even if the value is NaN
     showBar               = true;
 
@@ -111,11 +107,9 @@ extends Control
     
     constructor(div, param, id, name, showName, defaultValue, min = Number.MIN_SAFE_INTEGER, max = Number.MAX_SAFE_INTEGER, dec = 0, dragScale = 0.05, wheelScale = 1, acc = 0, suffix = '')
     {
-        super(div, param, id, name);
+        super(div, param, id, name, showName);
 
 
-        this.showName              = showName;
-        
         this.value                 = defaultValue;
     
         this.min                   = min;
@@ -147,7 +141,6 @@ extends Control
 
         this.divBar                = createDiv('numberControlBar');
         this.divPrecision          = createDiv('numberControlPrecision');
-        this.divName               = createDiv('numberControlName');
         this.divValue              = createDiv('numberControlValue');
         this.divFocus              = createDiv('numberControlFocus');
         this.extLeft               = createDiv('numberControlExt numberControlExtLeft');
@@ -156,7 +149,6 @@ extends Control
 
         this.div.appendChild(this.divBar);
         this.div.appendChild(this.divPrecision);
-        this.div.appendChild(this.divName);
         this.div.appendChild(this.divValue);
         this.div.appendChild(this.divFocus);
         this.div.appendChild(this.extLeft);
@@ -297,6 +289,9 @@ extends Control
 
     update()
     {
+        super.update();
+
+
         if (typeof this.value !== 'number')
             console.assert(false, 'NumberControl.update() value is ' + typeof this.value + ', must be a number');
 
@@ -417,12 +412,12 @@ extends Control
                 && (  !isNaN(this.value) 
                     || this.showNanValueName))
             {
-                const nameStyle = 
-                    darkMode 
-                    ? rgba2style(rgb_a(style2rgba(this.textStyleDark ), 0.4))
-                    : rgba2style(rgb_a(style2rgba(this.textStyleLight), 0.6));
+                // const nameStyle = 
+                //     darkMode 
+                //     ? rgba2style(rgb_a(style2rgba(this.textStyleDark ), 0.4))
+                //     : rgba2style(rgb_a(style2rgba(this.textStyleLight), 0.6));
 
-                this.divName.innerHTML = '<span style="color: ' + nameStyle + ';">' + this.name + "</span>";
+                this.divName.innerHTML = this.name;//'<span style="color: ' + nameStyle + ';">' + this.name + "</span>";
             }
 
             
@@ -496,9 +491,9 @@ extends Control
 
     updateCursor()
     {
-        this.div.style.cursor = 
+        this.divValue.style.cursor = 
                this.readOnly 
-            || containsChild(this.div, this.textbox)
+            || containsChild(this.divValue, this.textbox)
             || graphView.wheelTimer 
             || this.delayUseTimer
             || overNumberControlCtrl == this

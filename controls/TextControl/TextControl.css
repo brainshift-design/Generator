@@ -10,20 +10,21 @@
 }    
 
 
-.figma-dark .textControl
+.figma-dark .textBehind::selection
 {
-    background-color: rgba(56, 56, 56, 0.95);
+    background-color: rgba(255, 255, 255, 0.05);
 }
 
 
-.figma-light .textControl
+.figma-light .textBehind::selection
 {
-    background-color: rgba(255, 255, 255, 0.95);
+    background-color: rgba(0, 0, 0, 0.05);
 }
 
 
 .textControlTextarea
 {
+    display:              inline-block;
     color:                var(--figma-color-text);
 
     font-family:          Inter;
@@ -33,7 +34,7 @@
     top:                  0px;
     /* left:                 50%; */
     /* transform:            translateX(-50%); */
-    width:                100%;
+    width:                80%;
     background-color:     transparent;
     z-index:              5000;
 
@@ -54,7 +55,7 @@
 
     border-radius:        0.5px;
     
-    /* box-shadow:           0 0 0 1px inset red; */
+    box-shadow:           0 0 0 1px inset green;
 }
 
 

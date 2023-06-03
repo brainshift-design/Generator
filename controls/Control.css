@@ -1,0 +1,34 @@
+.control
+{
+    /* box-shadow: 0 0 0 1px inset red; */
+    overflow:   hidden;
+    /* position:   absolute; */
+    /* height:     auto; */
+}
+
+
+.figma-dark .control
+{
+    background-color: rgba(56, 56, 56, 0.95);
+}
+
+
+.figma-light .control
+{
+    background-color: rgba(255, 255, 255, 0.95);
+}
+
+
+.controlName
+{
+    color:          var(--figma-color-bg-disabled);
+    font-family:    Inter;
+    font-size:      11px;
+    text-align:     right;
+    pointer-events: none;
+    overflow:       hidden;
+    position:       absolute;
+    top:            3px;
+    margin-right:   3px;
+    box-shadow:     0 0 0 1px inset yellow;
+}

@@ -48,10 +48,9 @@ extends Control
 
     constructor(div, param, id, name, showName, defaultValue, dragScale = 0.05, wheelScale = 1, acc = 0)
     {
-        super(div, param, id, name);
+        super(div, param, id, name, showName);
 
 
-        this.showName          = showName;
         this.showColor         = true;
     
         this.value             = defaultValue;
@@ -137,6 +136,10 @@ extends Control
     {
         if (!this.measureData.offsetRect)
             return;
+
+
+        super.update();
+
 
         const sw = this.measureData.clientRect.width;
         const sh = this.measureData.clientRect.height;

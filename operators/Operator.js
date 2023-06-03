@@ -110,7 +110,6 @@ class Operator
     outputControls;
 
     paramHolder;
-    //hiddenParamBack;
 
     subscribeCover;
     subscribeLabel;
@@ -404,7 +403,7 @@ class Operator
     createAndAddParamByType(type, id, showName, hasInput, hasOutput, volatile = false)
     {
              if (type ==      NUMBER_VALUE) return this.addParam(new     NumberParam(id, id, showName, hasInput, hasOutput), volatile);
-        else if (type ==        TEXT_VALUE) return this.addParam(new       TextParam(id, id,           hasInput, hasOutput), volatile);
+        else if (type ==        TEXT_VALUE) return this.addParam(new       TextParam(id, id, showName, hasInput, hasOutput), volatile);
         else if (type ==       COLOR_VALUE) return this.addParam(new      ColorParam(id, id, showName, hasInput, hasOutput), volatile);
         else if (type ==        FILL_VALUE) return this.addParam(new       FillParam(id, id, showName, hasInput, hasOutput), volatile);
         else if (type ==  COLOR_STOP_VALUE) return this.addParam(new  ColorStopParam(id, id, showName, hasInput, hasOutput), volatile);
@@ -430,7 +429,7 @@ class Operator
     createAndInsertParamByType(index, type, id, showName, hasInput, hasOutput, volatile = false)
     {
              if (type ==      NUMBER_VALUE) return this.insertParam(index, new     NumberParam(id, id, showName, hasInput, hasOutput), volatile);
-        else if (type ==        TEXT_VALUE) return this.insertParam(index, new       TextParam(id, id,           hasInput, hasOutput), volatile);
+        else if (type ==        TEXT_VALUE) return this.insertParam(index, new       TextParam(id, id, showName, hasInput, hasOutput), volatile);
         else if (type ==       COLOR_VALUE) return this.insertParam(index, new      ColorParam(id, id, showName, hasInput, hasOutput), volatile);
         else if (type ==        FILL_VALUE) return this.insertParam(index, new       FillParam(id, id, showName, hasInput, hasOutput), volatile);
         else if (type ==  COLOR_STOP_VALUE) return this.insertParam(index, new  ColorStopParam(id, id, showName, hasInput, hasOutput), volatile);
@@ -687,8 +686,6 @@ class Operator
 
     setRect(x, y, w, h, updateTransform = true)
     {
-        //console.log('Operator.setRect()');
-
         this.div.style.left   = x + 'px';
         this.div.style.top    = y + 'px';
         this.div.style.width  = w + 'px';

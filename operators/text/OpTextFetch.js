@@ -21,11 +21,11 @@ extends ResizableOperatorWithValue
         this.addOutput(new Output([TEXT_VALUE], this.output_genRequest));
 
         this.addParam(this.paramValue);
-        this.addParam(this.paramRequest = new TextParam('request', 'request', true,  true));
+        this.addParam(this.paramRequest = new TextParam('request', 'request', true, true, true));
 
 
-        setControlFont(this.paramValue  .controls[0].textbox, 'Roboto Mono', 10, 'center');
-        setControlFont(this.paramRequest.controls[0].textbox, 'Roboto Mono', 10, 'center');
+        this.paramValue  .controls[0].setFont('Roboto Mono', 10, 'center');
+        this.paramRequest.controls[0].setFont('Roboto Mono', 10, 'center');
     }
 
 
@@ -34,7 +34,7 @@ extends ResizableOperatorWithValue
     {
         super.setSize(
             w, 
-            Math.max(defHeaderHeight + 2 * defParamHeight, h), 
+            Math.max(defHeaderHeight + (settings.showOperationResults ? 2 : 1) * defParamHeight, h), 
             updateTransform);
 
         this.updateValueParam();

@@ -16,7 +16,7 @@ extends ResizableOperatorWithValue
         this.addOutput(new Output([TEXT_VALUE], this.output_genRequest));
 
         this.addParam(this.paramValue);
-        this.addParam(this.paramWith = new TextParam('with', 'with', true,  true));
+        this.addParam(this.paramWith = new TextParam('with', 'with', false, true, true));
 
 
         setControlFont(this.paramValue.controls[0].textbox, 'Roboto Mono', 10, 'center');

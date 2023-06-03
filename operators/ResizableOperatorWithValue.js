@@ -15,6 +15,28 @@ extends ResizableBase
 
 
 
+    setSize(w, h, updateTransform = true)
+    {
+        super.setSize(
+            w, 
+            settings.showOperationResults ? h : h - defParamHeight, 
+            updateTransform);
+    }
+
+
+
+    setRect(x, y, w, h, updateTransform = true)
+    {
+        super.setRect(
+            x,
+            y,
+            w, 
+            settings.showOperationResults ? h : h - defParamHeight, 
+            updateTransform);
+    }
+
+
+
     updateValues(requestId, actionId, updateParamId, paramIds, values)
     {
         const value = values[paramIds.findIndex(id => id == 'value')];

@@ -2609,6 +2609,42 @@ a
 }
 
 
+.control
+{
+    /* box-shadow: 0 0 0 1px inset red; */
+    overflow:   hidden;
+    /* position:   absolute; */
+    /* height:     auto; */
+}
+
+
+.figma-dark .control
+{
+    background-color: rgba(56, 56, 56, 0.95);
+}
+
+
+.figma-light .control
+{
+    background-color: rgba(255, 255, 255, 0.95);
+}
+
+
+.controlName
+{
+    color:          var(--figma-color-bg-disabled);
+    font-family:    Inter;
+    font-size:      11px;
+    text-align:     right;
+    pointer-events: none;
+    overflow:       hidden;
+    position:       absolute;
+    top:            3px;
+    margin-right:   3px;
+    box-shadow:     0 0 0 1px inset yellow;
+}
+
+
 .numberControl
 {
     padding:          0;
@@ -2636,23 +2672,6 @@ a
     position:       absolute;
     pointer-events: none;
     /* background:     red; */
-}
-
-
-.numberControlName
-{
-    font-family:          Inter;
-    font-size:            11px;
-    font-variant-numeric: tabular-nums;
-    letter-spacing:       -0.35px;
-    pointer-events:       none;
-    position:             absolute;
-    right:                50%;
-    top:                  50%;
-    transform:            translateY(-50%);
-    white-space:          nowrap;
-    margin-right:         3px;
-    /* box-shadow:           0 0 0 1px inset red; */
 }
 
 
@@ -2767,20 +2786,21 @@ a
 }    
 
 
-.figma-dark .textControl
+.figma-dark .textBehind::selection
 {
-    background-color: rgba(56, 56, 56, 0.95);
+    background-color: rgba(255, 255, 255, 0.05);
 }
 
 
-.figma-light .textControl
+.figma-light .textBehind::selection
 {
-    background-color: rgba(255, 255, 255, 0.95);
+    background-color: rgba(0, 0, 0, 0.05);
 }
 
 
 .textControlTextarea
 {
+    display:              inline-block;
     color:                var(--figma-color-text);
 
     font-family:          Inter;
@@ -2790,7 +2810,7 @@ a
     top:                  0px;
     /* left:                 50%; */
     /* transform:            translateX(-50%); */
-    width:                100%;
+    width:                80%;
     background-color:     transparent;
     z-index:              5000;
 
@@ -2811,7 +2831,7 @@ a
 
     border-radius:        0.5px;
     
-    /* box-shadow:           0 0 0 1px inset red; */
+    box-shadow:           0 0 0 1px inset green;
 }
 
 
@@ -3328,7 +3348,7 @@ a
     flex-direction: column;
     position:       relative;
     z-index:        2000;
-    /* box-shadow:  0 0 0 1px green inset; */
+    box-shadow:  0 0 0 1px magenta inset;
 }
 
 
@@ -20383,10 +20403,12 @@ extends GTextType
             }
             catch (e)
             {
+                // const parts = e.message.split(':');
+                
                 this.value = 
                     request.value.trim() == NULL
                     ? new TextValue()
-                    : new TextValue(e.message);
+                    : new TextValue('invalid request');//parts[Math.min(1, parts.length-1)]);
             }
         }
         else
@@ -55164,10 +55186,12 @@ extends GTextType
             }
             catch (e)
             {
+                // const parts = e.message.split(':');
+                
                 this.value = 
                     request.value.trim() == NULL
                     ? new TextValue()
-                    : new TextValue(e.message);
+                    : new TextValue('invalid request');//parts[Math.min(1, parts.length-1)]);
             }
         }
         else
@@ -63168,10 +63192,21 @@ extends EventTarget
     id;
     
     name;
-    savedName   = '';
+    savedName    = '';
+
+    showName;
+    divider      = 0.5;
+    minDiv       = 0;
+    maxDiv       = 200;
+
+
+    overrideText = '';
 
 
     div;
+    divName;
+    divValue;
+
 
     width;
     height;
@@ -63184,31 +63219,30 @@ extends EventTarget
  
 
     
-    constructor(div, param, id, name, width = defNodeWidth, height = defParamHeight)
+    constructor(divValue, param, id, name, showName, width = defNodeWidth, height = defParamHeight)
     {
         super();
 
-
-        this.div               = div ? div : createDiv();
-        this.div.control       = this;
+        this.div           = createDiv('control');
+        this.divName       = createDiv('controlName');
+        this.divValue      = divValue;
         
-
-        this.param             = param;
+        this.param         = param;
         
-        
-        this.id                = id;
-        this.name              = name;
+        this.id            = id;
+        this.name          = name;
 
+        this.showName      = showName;
+        this.divider       = 0.5;
 
-        //this.div.style.display = 'inline';
+        this.onstartchange = new Event('startchange');
+        this.onchange      = new Event('change');
+        this.onconfirm     = new Event('confirm');
 
+        this.div.appendChild(this.divName);
+        this.div.appendChild(this.divValue);
 
         this.setSize(width, height);
-
-
-        this.onstartchange     = new Event('startchange');
-        this.onchange          = new Event('change');
-        this.onconfirm         = new Event('confirm');
     }
 
 
@@ -63218,8 +63252,8 @@ extends EventTarget
         this.width            = w;
         this.height           = h;
         
-        this.div.style.width  = w;
-        this.div.style.height = Math.max(20, h);
+        this.div.style.width  = w + 'px';
+        this.div.style.height = Math.max(20, h) + 'px';
     }
 
 
@@ -63235,6 +63269,47 @@ extends EventTarget
 
 
     
+    update()
+    {
+        const  input = this.param && this.param. input;
+        const output = this.param && this.param.output;
+
+        const left = input ? 12 : 0;
+
+        const dw = 
+              ( input ? 12 : 0) 
+            + (output ? 12 : 0);
+
+
+        if (this.showName)
+        {
+            const nameSize = this.divider <= 1 ? ((   this.divider *100) + '%') : (this.divider + 'px');
+            const  valSize = this.divider <= 1 ? (((1-this.divider)*100) + '%') : ('calc(100% - ' + this.divider + 'px)');
+
+
+            this.divName .innerHTML        =  this.name;
+
+            this.divName .style.display    = 'inline-block';
+            this.divName .style.right      =  valSize;
+            this.divName .style.width      = 'calc(calc(' + nameSize + ' - ' + (input ? 12 : 0) + 'px) - 3px)';
+            
+            this.divValue.style.left       =  nameSize;
+            this.divValue.style.marginLeft = '3px';
+            this.divValue.style.width      = 'calc(calc(' + valSize + ' - ' + (output ? 12 : 0) + 'px) - 3px)';
+        }
+        else
+        {
+            this.divName .style.display    = 'none';
+
+            this.divValue.style.left       = '50%';
+            this.divValue.style.transform  = 'translateX(-50%)';
+            this.divValue.style.marginLeft =  0;
+            this.divValue.style.width      = 'calc(100% - ' + dw + 'px)';
+        }
+    }
+
+
+
     lockPointer(pointerId)
     {
         clearTimeout(this.clickTimer);
@@ -63360,7 +63435,6 @@ extends Control
 {
     divBar;
     divPrecision;
-    divName;
     divValue;
     textbox;
     divFocus;
@@ -63392,10 +63466,7 @@ extends Control
     
     wrapValue             = false;
 
-    divider               = 0.5;
 
-
-    showName              = true;
     showHex               = false;
 
                
@@ -63430,8 +63501,8 @@ extends Control
 
 
     valueText             = '';
-    overrideText          = '';
 
+    
     showNanValueName      = true; // show the name even if the value is NaN
     showBar               = true;
 
@@ -63468,11 +63539,9 @@ extends Control
     
     constructor(div, param, id, name, showName, defaultValue, min = Number.MIN_SAFE_INTEGER, max = Number.MAX_SAFE_INTEGER, dec = 0, dragScale = 0.05, wheelScale = 1, acc = 0, suffix = '')
     {
-        super(div, param, id, name);
+        super(div, param, id, name, showName);
 
 
-        this.showName              = showName;
-        
         this.value                 = defaultValue;
     
         this.min                   = min;
@@ -63504,7 +63573,6 @@ extends Control
 
         this.divBar                = createDiv('numberControlBar');
         this.divPrecision          = createDiv('numberControlPrecision');
-        this.divName               = createDiv('numberControlName');
         this.divValue              = createDiv('numberControlValue');
         this.divFocus              = createDiv('numberControlFocus');
         this.extLeft               = createDiv('numberControlExt numberControlExtLeft');
@@ -63513,7 +63581,6 @@ extends Control
 
         this.div.appendChild(this.divBar);
         this.div.appendChild(this.divPrecision);
-        this.div.appendChild(this.divName);
         this.div.appendChild(this.divValue);
         this.div.appendChild(this.divFocus);
         this.div.appendChild(this.extLeft);
@@ -63654,6 +63721,9 @@ extends Control
 
     update()
     {
+        super.update();
+
+
         if (typeof this.value !== 'number')
             console.assert(false, 'NumberControl.update() value is ' + typeof this.value + ', must be a number');
 
@@ -63774,12 +63844,12 @@ extends Control
                 && (  !isNaN(this.value) 
                     || this.showNanValueName))
             {
-                const nameStyle = 
-                    darkMode 
-                    ? rgba2style(rgb_a(style2rgba(this.textStyleDark ), 0.4))
-                    : rgba2style(rgb_a(style2rgba(this.textStyleLight), 0.6));
+                // const nameStyle = 
+                //     darkMode 
+                //     ? rgba2style(rgb_a(style2rgba(this.textStyleDark ), 0.4))
+                //     : rgba2style(rgb_a(style2rgba(this.textStyleLight), 0.6));
 
-                this.divName.innerHTML = '<span style="color: ' + nameStyle + ';">' + this.name + "</span>";
+                this.divName.innerHTML = this.name;//'<span style="color: ' + nameStyle + ';">' + this.name + "</span>";
             }
 
             
@@ -63853,9 +63923,9 @@ extends Control
 
     updateCursor()
     {
-        this.div.style.cursor = 
+        this.divValue.style.cursor = 
                this.readOnly 
-            || containsChild(this.div, this.textbox)
+            || containsChild(this.divValue, this.textbox)
             || graphView.wheelTimer 
             || this.delayUseTimer
             || overNumberControlCtrl == this
@@ -65087,6 +65157,7 @@ extends Control
     value;
 
 
+    textBehind;
     textbox;
     placeholder;
 
@@ -65108,22 +65179,22 @@ extends Control
     
     
 
-    constructor(div, param, id, name, defaultValue = '')
+    constructor(param, id, name, showName, defaultValue = '')
     {
-        super(div, param, id, name);
+        const textbox = createTextarea('textControlTextarea');
+
+
+        super(textbox, param, id, name, showName);
 
 
         this.value = defaultValue;
         
         
-        this.div.className = 'textControl';
-
-
-        this.initTextarea();
-        this.initEvents ();
+        this.initTextarea(textbox);
+        this.initEvents();
         
 
-        this.div.appendChild(this.textbox);
+        this.div.appendChild(textbox);
 
 
         createTooltipSrc(this.div, this.div, () => 
@@ -65164,30 +65235,38 @@ extends Control
 
     setSize(w, h)
     {
+        h = Math.max(defParamHeight, h);
+
         super.setSize(w, h);
 
-        if (this.textbox)
-        {
-            this.updateTextboxSize();
-            this.textbox.style.height = Math.max(defParamHeight, h);
-        }
+
+        if (this.textbox) 
+            this.textbox.style.height = h + 'px';
     }
 
 
 
-    updateTextboxSize()
+    // updateTextboxSize()
+    // {
+    //     const  input = this.param && this.param. input;
+    //     const output = this.param && this.param.output;
+
+    //     const left = input ? 12 : 0;
+
+    //     const dw = 
+    //           ( input ? 12 : 0) 
+    //         + (output ? 12 : 0);
+
+
+    //     // this.textbox.style.left  = left + 'px';
+    //     // this.textbox.style.width = 'calc(100% - ' + dw + 'px)';
+    // }
+
+
+
+    setFont(family, size, align)
     {
-        const  input = this.param && this.param. input;
-        const output = this.param && this.param.output;
-
-        const left = input ? 12 : 0;
-
-        const dw = 
-              ( input ? 12 : 0) 
-            + (output ? 12 : 0);
-
-        this.textbox.style.left  = left + 'px';
-        this.textbox.style.width = 'calc(100% - ' + dw + 'px)';
+        setControlFont(this.textbox, family, size, align);
     }
 
 
@@ -65217,18 +65296,16 @@ extends Control
 
     update()
     {
-        console.log('update()');
-        console.trace();
-        console.log('');
+        super.update();
 
-        
+
         if (typeof this.value !== 'string')
             console.assert(false, 'TextControl.update() value is ' + typeof this.value + ', must be a string');
 
         if (!this.measureData.offsetRect)
             return;
-
             
+
         this.textbox.placeholder = 
             this.value == NAN_CHAR
             ? UNKNOWN_DISPLAY
@@ -65239,9 +65316,6 @@ extends Control
             this.textbox.value = this.valueText;
         else if (this.value == NAN_CHAR)
             this.textbox.value = '';
-
-
-        this.updateTextboxSize();
     }
 
 
@@ -65257,9 +65331,9 @@ extends Control
 }
 
 
-TextControl.prototype.initTextarea = function()
+TextControl.prototype.initTextarea = function(textbox)
 {
-    this.textbox                 = createTextarea('textControlTextarea');
+    this.textbox                 = textbox;
 
     this.textbox.control         = this;
     this.textbox.defPlaceholder  = '...';//' . . .';
@@ -65290,11 +65364,7 @@ TextControl.prototype.initTextarea = function()
 
         if (this.readOnly)
         {
-            //e.preventDefault();
             e.stopPropagation();
-
-            //forwardEvent(e, this.param.node.div);
-
             return;
         }
 
@@ -65555,7 +65625,7 @@ TextControl.prototype.initEvents = function()
         //    &&  this.pointerEvents)
         //{
         //    // if (graphView.tempConn)
-        //    //     this.div.style.cursor = 'default';
+        //    //     this.divControl.style.cursor = 'default';
 //
         //        
         //    // this.textbox.style.visibility = 'visible';
@@ -65622,7 +65692,7 @@ TextControl.prototype.initEvents = function()
             return;
 
 
-        // this.div.style.cursor       = 'default';
+        // this.divControl.style.cursor       = 'default';
         
         // this.textbox.style.visibility = 'hidden';
         // this.textbox.style.opacity    = 0;
@@ -65831,10 +65901,9 @@ extends Control
 
     constructor(div, param, id, name, showName, defaultValue, dragScale = 0.05, wheelScale = 1, acc = 0)
     {
-        super(div, param, id, name);
+        super(div, param, id, name, showName);
 
 
-        this.showName          = showName;
         this.showColor         = true;
     
         this.value             = defaultValue;
@@ -65920,6 +65989,10 @@ extends Control
     {
         if (!this.measureData.offsetRect)
             return;
+
+
+        super.update();
+
 
         const sw = this.measureData.clientRect.width;
         const sh = this.measureData.clientRect.height;
@@ -66889,7 +66962,7 @@ const iconTextJoin          = '<svg width="19" height="8" viewBox="0 -1 19 8" fi
 const iconTextCharacter     = '<svg width="19" height="12" viewBox="0 0 19 12" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M14.2499 9H13L15.2756 3H16.7212L19 9H17.7501L16.0237 4.23047H15.9732L14.2499 9ZM14.2909 6.64746H17.6996V7.52051H14.2909V6.64746Z" fill="white"/><path d="M2.44963 8.99997C2.14265 8.99807 1.84298 8.94959 1.55062 8.85453C1.25825 8.75758 0.995126 8.60073 0.761236 8.384C0.527345 8.16537 0.341485 7.87545 0.203657 7.51424C0.0658285 7.15112 -0.00204155 6.7015 4.67531e-05 6.16538C4.67531e-05 5.66539 0.0585194 5.21957 0.175465 4.82794C0.29241 4.4363 0.460519 4.10551 0.679792 3.83555C0.899064 3.56369 1.16324 3.35646 1.47231 3.21388C1.78346 3.07129 2.13117 3 2.51542 3C2.91846 3 3.27556 3.07224 3.58672 3.21673C3.89997 3.36121 4.15265 3.55893 4.34478 3.80988C4.5369 4.05893 4.65593 4.3403 4.70188 4.65398H3.55853C3.50005 4.42965 3.37998 4.25094 3.19829 4.11787C3.0187 3.98288 2.79107 3.91539 2.51542 3.91539C2.07061 3.91539 1.72812 4.09125 1.48797 4.44296C1.2499 4.79467 1.12982 5.27755 1.12773 5.89162H1.17159C1.27392 5.72432 1.40652 5.58079 1.56941 5.46101C1.7323 5.34124 1.91607 5.24904 2.12073 5.1844C2.32747 5.11786 2.5457 5.08459 2.77541 5.08459C3.15131 5.08459 3.48857 5.16634 3.7872 5.32984C4.08791 5.49333 4.32598 5.71862 4.5014 6.00569C4.67682 6.29086 4.76348 6.61785 4.76139 6.98667C4.76348 7.3707 4.66742 7.71576 4.47321 8.02184C4.27899 8.32602 4.00856 8.56556 3.6619 8.74046C3.31524 8.91537 2.91115 9.00187 2.44963 8.99997ZM2.44337 8.14446C2.67099 8.14446 2.8746 8.09408 3.0542 7.99332C3.23379 7.89256 3.3758 7.75663 3.48021 7.58553C3.58463 7.41443 3.63579 7.22241 3.63371 7.00949C3.63579 6.80036 3.58567 6.6112 3.48335 6.442C3.38311 6.2728 3.24424 6.13877 3.06673 6.03991C2.88922 5.94105 2.68666 5.89162 2.45903 5.89162C2.28988 5.89162 2.13221 5.92109 1.98603 5.98002C1.83985 6.03896 1.71246 6.12071 1.60387 6.22527C1.49528 6.32793 1.40966 6.4477 1.34701 6.58458C1.28645 6.71956 1.25512 6.86405 1.25303 7.01804C1.25512 7.22146 1.30733 7.40872 1.40966 7.57982C1.51198 7.75093 1.65294 7.88781 1.83254 7.99047C2.01213 8.09313 2.21574 8.14446 2.44337 8.14446Z" fill="white"/><path d="M7.19764 8.99997C6.77998 8.99997 6.40617 8.92868 6.07622 8.78609C5.74626 8.64161 5.48418 8.44389 5.28997 8.19294C5.09784 7.94199 4.99552 7.65492 4.98299 7.33173H6.11067C6.13156 7.57127 6.24537 7.76709 6.45211 7.91918C6.65886 8.06937 6.90736 8.14446 7.19764 8.14446C7.42526 8.14446 7.62783 8.09693 7.80534 8.00188C7.98284 7.90682 8.12276 7.77469 8.22509 7.60549C8.32741 7.43629 8.37753 7.24332 8.37544 7.0266C8.37753 6.80606 8.32637 6.61025 8.22195 6.43915C8.11754 6.26804 7.97449 6.13401 7.79281 6.03706C7.61112 5.9382 7.40229 5.88877 7.16631 5.88877C6.97419 5.88687 6.7852 5.91919 6.59934 5.98573C6.41348 6.05227 6.26625 6.13972 6.15766 6.24808L5.10829 6.09124L5.44346 3.07985H9.16482V3.96387H6.40513L6.22031 5.51234H6.2579C6.37693 5.38497 6.54504 5.27946 6.76223 5.19581C6.97941 5.11026 7.21748 5.06748 7.47643 5.06748C7.86485 5.06748 8.21151 5.15113 8.51641 5.31843C8.8213 5.48383 9.06145 5.71196 9.23687 6.00284C9.41229 6.29371 9.5 6.62641 9.5 7.00093C9.5 7.38686 9.40185 7.73096 9.20555 8.03324C9.01133 8.33362 8.7409 8.57031 8.39424 8.74332C8.04967 8.91442 7.6508 8.99997 7.19764 8.99997Z" fill="white"/><rect x="11" width="1" height="12" fill="white"/></svg>';
 const iconNumberToText      = '<svg width="19" height="12" viewBox="0 0 19 12" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M16.2849 0V1.14446C16.2849 1.47359 16.224 1.8158 16.1022 2.17111C15.9839 2.52267 15.8208 2.85928 15.6129 3.18093C15.405 3.49883 15.1685 3.77186 14.9032 4L14 3.3885C14.1971 3.07807 14.3692 2.74334 14.5161 2.38429C14.6631 2.0215 14.7366 1.61197 14.7366 1.15568V0H16.2849ZM19 0V1.14446C19 1.47359 18.9391 1.8158 18.8172 2.17111C18.6989 2.52267 18.5358 2.85928 18.328 3.18093C18.1201 3.49883 17.8853 3.77186 17.6237 4L16.7204 3.3885C16.914 3.07807 17.0842 2.74334 17.2312 2.38429C17.3781 2.0215 17.4516 1.61197 17.4516 1.15568V0H19Z" fill="white"/><path d="M0 4V2.85554C0 2.52641 0.0590129 2.1842 0.177039 1.82889C0.298641 1.46985 0.463162 1.13137 0.670601 0.813464C0.881617 0.491819 1.11767 0.220664 1.37876 0L2.28004 0.6115C2.06903 0.944366 1.89199 1.29219 1.74893 1.65498C1.60944 2.01403 1.54149 2.41047 1.54506 2.84432V4H0ZM2.71996 4V2.85554C2.71996 2.52641 2.77897 2.1842 2.897 1.82889C3.0186 1.46985 3.18312 1.13137 3.39056 0.813464C3.60157 0.491819 3.83763 0.220664 4.09871 0L5 0.6115C4.78898 0.944366 4.61195 1.29219 4.46888 1.65498C4.3294 2.01403 4.26144 2.41047 4.26502 2.84432V4H2.71996Z" fill="white"/><path d="M5.42449 6.07985V11.9202H4.381V7.10932H4.34725L3 7.98194V7.01236L4.43163 6.07985H5.42449Z" fill="white"/><path d="M6.88705 11.9202V11.1559L8.88683 9.16825C9.07809 8.97243 9.23748 8.79848 9.36498 8.64639C9.49249 8.4943 9.58812 8.34696 9.65187 8.20437C9.71562 8.06179 9.7475 7.9097 9.7475 7.7481C9.7475 7.56369 9.70625 7.40589 9.62374 7.27471C9.54124 7.14164 9.4278 7.03897 9.28342 6.96673C9.13903 6.89449 8.97496 6.85836 8.7912 6.85836C8.60182 6.85836 8.43588 6.89829 8.29337 6.97814C8.15086 7.05608 8.04023 7.1673 7.96148 7.31179C7.8846 7.45627 7.84616 7.62833 7.84616 7.82795H6.8533C6.8533 7.45722 6.93674 7.13498 7.10363 6.86122C7.27051 6.58745 7.50021 6.37548 7.79272 6.22529C8.08711 6.0751 8.42463 6 8.80527 6C9.19154 6 9.53093 6.07319 9.82344 6.21958C10.116 6.36597 10.3428 6.56654 10.5041 6.82129C10.6672 7.07605 10.7488 7.36692 10.7488 7.69392C10.7488 7.91255 10.7075 8.12738 10.625 8.3384C10.5425 8.54943 10.3972 8.78327 10.1891 9.03992C9.98282 9.29658 9.69312 9.60741 9.31998 9.97243L8.32712 10.9962V11.0361H10.836V11.9202H6.88705Z" fill="white"/><path d="M13.8736 12C13.4686 12 13.1086 11.9297 12.7936 11.789C12.4804 11.6483 12.2329 11.4525 12.051 11.2015C11.8692 10.9506 11.7726 10.6606 11.7613 10.3317H12.8189C12.8283 10.4895 12.8798 10.6274 12.9736 10.7452C13.0673 10.8612 13.192 10.9515 13.3477 11.0162C13.5033 11.0808 13.6777 11.1131 13.8708 11.1131C14.0771 11.1131 14.2599 11.077 14.4193 11.0048C14.5787 10.9306 14.7034 10.8279 14.7934 10.6968C14.8834 10.5656 14.9274 10.4144 14.9256 10.2433C14.9274 10.0665 14.8824 9.91065 14.7905 9.77566C14.6987 9.64068 14.5655 9.53517 14.3912 9.45913C14.2186 9.38308 14.0105 9.34506 13.7667 9.34506H13.2577V8.52947H13.7667C13.9674 8.52947 14.1427 8.4943 14.2927 8.42395C14.4446 8.35361 14.5637 8.25475 14.6499 8.12738C14.7362 7.9981 14.7784 7.84886 14.7765 7.67966C14.7784 7.51426 14.7418 7.37072 14.6668 7.24905C14.5937 7.12548 14.4896 7.02947 14.3546 6.96103C14.2215 6.89259 14.0649 6.85836 13.8849 6.85836C13.7086 6.85836 13.5455 6.89068 13.3955 6.95532C13.2455 7.01996 13.1245 7.11217 13.0327 7.23194C12.9408 7.34981 12.892 7.49049 12.8864 7.65399H11.8823C11.8898 7.327 11.9826 7.03992 12.1607 6.79278C12.3407 6.54373 12.5808 6.34981 12.8808 6.21103C13.1808 6.07034 13.5174 6 13.8905 6C14.2749 6 14.6087 6.07319 14.8918 6.21958C15.1768 6.36407 15.3971 6.55894 15.5528 6.80418C15.7084 7.04943 15.7862 7.32034 15.7862 7.61692C15.7881 7.94582 15.6925 8.22148 15.4993 8.44392C15.3081 8.66635 15.0568 8.81179 14.7455 8.88023V8.92586C15.1506 8.98289 15.4609 9.13498 15.6765 9.38213C15.894 9.62738 16.0019 9.93251 16 10.2975C16 10.6245 15.9081 10.9173 15.7243 11.1759C15.5425 11.4325 15.2912 11.634 14.9706 11.7804C14.6518 11.9268 14.2861 12 13.8736 12Z" fill="white"/></svg>';
 const iconTextToNumber      = '<svg width="15" height="14" viewBox="0 0 15 14" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M4.2304 12.5956C2.58618 12.2978 1 10.0188 1 6.79778C1 3.57679 2.58618 1.29778 4.2304 1" stroke="white" stroke-width="1.1"/><path d="M11 12.5956C12.6442 12.2978 14.2304 10.0188 14.2304 6.79778C14.2304 3.57679 12.6442 1.29778 11 1" stroke="white" stroke-width="1.1"/><path d="M10 5L10 6.14446C10 6.47359 9.94099 6.8158 9.82296 7.17111C9.70136 7.53015 9.53684 7.86863 9.3294 8.18654C9.11838 8.50818 8.88233 8.77934 8.62124 9L7.71996 8.3885C7.93097 8.05563 8.10801 7.70781 8.25107 7.34502C8.39056 6.98597 8.45851 6.58953 8.45494 6.15568L8.45494 5L10 5ZM7.28004 5L7.28004 6.14446C7.28004 6.47359 7.22103 6.8158 7.103 7.17111C6.9814 7.53015 6.81688 7.86863 6.60944 8.18654C6.39843 8.50818 6.16237 8.77934 5.90129 9L5 8.3885C5.21102 8.05563 5.38805 7.70781 5.53112 7.34502C5.6706 6.98597 5.73856 6.58953 5.73498 6.15568L5.73498 5L7.28004 5Z" fill="white"/></svg>';
-const iconTextCSV           = '<svg width="15" height="11" viewBox="-1 0 15 11" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M2.37774 4.00024L2.32234 4.46899C2.28257 4.82695 2.21155 5.19058 2.10928 5.5599C2.00984 5.93206 1.90473 6.27439 1.79393 6.58689C1.68314 6.89939 1.10795 7.32127 1.03977 7.50024H0C0.0397727 7.32695 0.579446 6.91502 0.647628 6.61672C0.718651 6.31843 0.786833 5.9832 0.852173 5.61104C0.647628 5.40106 0.210938 5.5599 0 5.50024V4.00024H2.37774Z" fill="white"/><path d="M7.37774 4.00024L7.32234 4.46899C7.28257 4.82695 7.21155 5.19058 7.10928 5.5599C7.00984 5.93206 6.90473 6.27439 6.79393 6.58689C6.68314 6.89939 6.10795 7.32127 6.03977 7.50024H5C5.03977 7.32695 5.57945 6.91502 5.64763 6.61672C5.71865 6.31843 5.78683 5.9832 5.85217 5.61104C5.64763 5.40106 5.21094 5.5599 5 5.50024V4.00024H7.37774Z" fill="white"/><path d="M12.5 11C11.6716 11 11 10.3284 11 9.5C11 8.67157 11.6716 8 12.5 8C13.3284 8 14 8.67157 14 9.5C14 10.3284 13.3284 11 12.5 11Z" fill="white"/><path d="M12.5 7C11.6716 7 11 6.32843 11 5.5C11 4.67157 11.6716 4 12.5 4C13.3284 4 14 4.67157 14 5.5C14 6.32843 13.3284 7 12.5 7Z" fill="white"/><path d="M12.5 3C11.6716 3 11 2.32843 11 1.5C11 0.671573 11.6716 0 12.5 0C13.3284 0 14 0.671573 14 1.5C14 2.32843 13.3284 3 12.5 3Z" fill="white"/></svg>';
+const iconTextCSV           = '<svg width="14" height="11" viewBox="0 0 14 11" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M2.37774 5L2.32234 5.46875C2.28257 5.8267 2.21155 6.19034 2.10928 6.55966C2.00984 6.93182 1.90473 7.27415 1.79393 7.58665C1.68314 7.89915 1.10795 8.32102 1.03977 8.5H0C0.0397727 8.3267 0.579446 7.91477 0.647628 7.61648C0.718651 7.31818 0.786833 6.98296 0.852173 6.6108C0.647628 6.40081 0.210938 6.55966 0 6.5V5H2.37774Z" fill="white"/><path d="M7.37774 5L7.32234 5.46875C7.28257 5.8267 7.21155 6.19034 7.10928 6.55966C7.00984 6.93182 6.90473 7.27415 6.79393 7.58665C6.68314 7.89915 6.10795 8.32102 6.03977 8.5H5C5.03977 8.3267 5.57945 7.91477 5.64763 7.61648C5.71865 7.31818 5.78683 6.98296 5.85217 6.6108C5.64763 6.40081 5.21094 6.55966 5 6.5V5H7.37774Z" fill="white"/><path d="M12.5 11C11.6716 11 11 10.3284 11 9.5C11 8.67157 11.6716 8 12.5 8C13.3284 8 14 8.67157 14 9.5C14 10.3284 13.3284 11 12.5 11Z" fill="white"/><path d="M12.5 7C11.6716 7 11 6.32843 11 5.5C11 4.67157 11.6716 4 12.5 4C13.3284 4 14 4.67157 14 5.5C14 6.32843 13.3284 7 12.5 7Z" fill="white"/><path d="M12.5 3C11.6716 3 11 2.32843 11 1.5C11 0.671573 11.6716 0 12.5 0C13.3284 0 14 0.671573 14 1.5C14 2.32843 13.3284 3 12.5 3Z" fill="white"/></svg>';
 const iconTextJson          = '<svg width="15" height="11" viewBox="0 0 15 11" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M0.5 5.51719V4.98437C1.05152 4.98437 1.93627 4.88411 2.15423 4.68359C2.3755 4.48307 2.48614 4.14792 2.48614 3.67813V2.30313C2.48614 1.90781 2.52907 1.56549 2.61494 1.27617C2.70411 0.986849 2.84777 0.747657 3.04592 0.558594C3.24407 0.369532 3.50827 0.229167 3.83853 0.137501C4.16878 0.0458335 5.51453 0 6 0V0.842188C5.61691 0.842188 4.37684 0.89375 4.15557 0.996875C3.9376 1.1 3.78238 1.26042 3.68991 1.47813C3.60074 1.69297 3.55616 1.96797 3.55616 2.30313V4.02188C3.55616 4.24531 3.52148 4.4487 3.45213 4.63203C3.38608 4.81536 3.26223 4.97292 3.08059 5.10469C2.89896 5.23646 2.63971 5.33815 2.30285 5.40977C1.96929 5.48138 1.03501 5.51719 0.5 5.51719ZM6 11C5.51453 11 4.16878 10.9542 3.83853 10.8625C3.50827 10.7708 3.24407 10.6305 3.04592 10.4414C2.84777 10.2523 2.70411 10.0132 2.61494 9.72383C2.52907 9.4345 2.48614 9.09219 2.48614 8.69687V7.32188C2.48614 6.85208 2.3755 6.51693 2.15423 6.31641C1.93627 6.11589 1.05152 6.01562 0.5 6.01562V5.48281C1.03501 5.48281 1.96929 5.51862 2.30285 5.59023C2.63971 5.66185 2.89896 5.76354 3.08059 5.89531C3.26223 6.02708 3.38608 6.18464 3.45213 6.36797C3.52148 6.5513 3.55616 6.75469 3.55616 6.97813V8.69687C3.55616 9.03203 3.60074 9.30703 3.68991 9.52188C3.78238 9.73672 3.9376 9.8957 4.15557 9.99883C4.37684 10.1048 5.61691 10.1578 6 10.1578V11ZM0.5 6.01562V4.98437H2.1691V6.01562H0.5Z" fill="white"/><path d="M14.5 5.48281V6.01562C13.9485 6.01562 13.0621 6.11589 12.8408 6.31641C12.6228 6.51693 12.5139 6.85208 12.5139 7.32188V8.69687C12.5139 9.09219 12.4693 9.4345 12.3801 9.72383C12.2942 10.0132 12.1522 10.2523 11.9541 10.4414C11.7559 10.6305 11.4917 10.7708 11.1615 10.8625C10.8312 10.9542 9.48547 11 9 11V10.1578C9.38309 10.1578 10.6215 10.1048 10.8395 9.99883C11.0607 9.8957 11.216 9.73672 11.3051 9.52188C11.3976 9.30703 11.4438 9.03203 11.4438 8.69687V6.97813C11.4438 6.75469 11.4769 6.5513 11.5429 6.36797C11.6123 6.18464 11.7378 6.02708 11.9194 5.89531C12.101 5.76354 12.3586 5.66185 12.6922 5.59023C13.0291 5.51862 13.965 5.48281 14.5 5.48281ZM9 0C9.48547 0 10.8312 0.0458335 11.1615 0.137501C11.4917 0.229167 11.7559 0.369532 11.9541 0.558594C12.1522 0.747657 12.2942 0.986849 12.3801 1.27617C12.4693 1.56549 12.5139 1.90781 12.5139 2.30313V3.67813C12.5139 4.14792 12.6228 4.48307 12.8408 4.68359C13.0621 4.88411 13.9485 4.98437 14.5 4.98437V5.51719C13.965 5.51719 13.0291 5.48138 12.6922 5.40977C12.3586 5.33815 12.101 5.23646 11.9194 5.10469C11.7378 4.97292 11.6123 4.81536 11.5429 4.63203C11.4769 4.4487 11.4438 4.24531 11.4438 4.02188V2.30313C11.4438 1.96797 11.3976 1.69297 11.3051 1.47813C11.216 1.26042 11.0607 1.1 10.8395 0.996875C10.6215 0.89375 9.38309 0.842188 9 0.842188V0ZM14.5 4.98437V6.01562H12.8309V4.98437H14.5Z" fill="white"/></svg>';
 const iconTextFetch         = '<svg width="15" height="15" viewBox="0 0 15 15" fill="none" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" clip-rule="evenodd" d="M14.5 7.5C14.5 11.366 11.366 14.5 7.5 14.5C3.63401 14.5 0.5 11.366 0.5 7.5C0.5 3.63401 3.63401 0.5 7.5 0.5C11.366 0.5 14.5 3.63401 14.5 7.5ZM6.89681 1.84719C7.1396 1.58019 7.34416 1.5 7.5 1.5C7.65584 1.5 7.8604 1.58019 8.10319 1.84719C8.34611 2.11433 8.58782 2.52877 8.80109 3.0833C9.18541 4.08253 9.44589 5.45389 9.4925 7L5.5075 7C5.55411 5.45389 5.81459 4.08253 6.19891 3.0833C6.41218 2.52877 6.65389 2.11433 6.89681 1.84719ZM4.50708 7C4.55384 5.35511 4.82979 3.85731 5.26556 2.72432C5.39989 2.37505 5.55249 2.05238 5.72342 1.76738C3.4299 2.47736 1.72465 4.52586 1.52054 7H4.50708ZM1.52054 8H4.50708C4.55384 9.64489 4.82979 11.1427 5.26556 12.2757C5.39989 12.625 5.55249 12.9476 5.72342 13.2326C3.4299 12.5226 1.72465 10.4741 1.52054 8ZM5.5075 8L9.4925 8C9.44589 9.54611 9.18541 10.9175 8.80109 11.9167C8.58782 12.4712 8.34611 12.8857 8.10319 13.1528C7.8604 13.4198 7.65584 13.5 7.5 13.5C7.34416 13.5 7.1396 13.4198 6.89681 13.1528C6.65389 12.8857 6.41218 12.4712 6.19891 11.9167C5.81459 10.9175 5.55411 9.54611 5.5075 8ZM10.4929 8C10.4462 9.64489 10.1702 11.1427 9.73444 12.2757C9.60011 12.625 9.44751 12.9476 9.27658 13.2326C11.5701 12.5226 13.2754 10.4741 13.4795 8H10.4929ZM13.4795 7C13.2753 4.52586 11.5701 2.47736 9.27658 1.76738C9.44751 2.05238 9.60011 2.37505 9.73444 2.72432C10.1702 3.85731 10.4462 5.35511 10.4929 7H13.4795Z" fill="white"/></svg>';
 
@@ -68584,16 +68657,16 @@ function initGeneratorMenus()
         menuItemNodeCopy           = new MenuItem('Copy',            {shortcut:  osCtrl() + 'C',       callback: () => graphView.copySelectedNodes() }),
         menuItemNodePaste          = new MenuItem('Paste here',      {shortcut:  osCtrl() + 'V',       callback: e => { hideAllMenus(); graphView.pasteCopiedNodes(false); }}),
         menuItemNodePasteConnected = new MenuItem('Paste connected', {shortcut:  osCtrlShift() + 'D',  callback: e => { hideAllMenus(); graphView.pasteCopiedNodes(true ); }}),
-                                     new MenuItem('Copy/Paste as',   {childMenu: menuNodeCopyAs}),
+    //                                 new MenuItem('Copy/Paste as',   {childMenu: menuNodeCopyAs}),
                                    //new MenuItem('',                {separator: true}),
       //menuItemNodeLayout         = new MenuItem('Layout',          {enabled:   false, shortcut: osCtrl() + 'L', callback: e => { hideAllMenus(); layoutSelectedNodes(); }}),
         menuItemNodeSep1           = new MenuItem('',                {separator: true}),
         menuItemNodeGroupSelected  = new MenuItem('Group selected',  {shortcut:  osCtrl() + 'G',       callback: e => { hideAllMenus(); actionManager.do(new   GroupNodesAction(graphView.selectedNodes)); }}),
         menuItemNodeUngroup        = new MenuItem('Ungroup',         {                                 callback: e => { hideAllMenus(); actionManager.do(new UngroupNodesAction(graphView.selectedNodes)); }}),
         menuItemNodeSep2           = new MenuItem('',                {separator: true}),
+        menuItemNodeRename         = new MenuItem('Rename',          {shortcut:  osCtrl() + 'R',       callback: e => { hideAllMenus(); graphView.renameSelectedNode(); }}),
         menuItemNodeSelect         = new MenuItem('Select',          {childMenu: menuNodeSelect}),
         menuItemNodeSep3           = new MenuItem('',                {separator: true}),
-        menuItemNodeRename         = new MenuItem('Rename',          {shortcut:  osCtrl() + 'R',       callback: e => { hideAllMenus(); graphView.renameSelectedNode(); }}),
         // menuItemNodeEdit           = new MenuItem('Edit...',      {callback: e => { hideAllMenus(); graphView.editSelectedCustomNode(); }}),
         //                              new MenuItem('',             {separator: true}),
         // menuItemNodeActivate    = new MenuItem('Activate',        {callback: () => makeSelectedNodesActive()}),
@@ -72590,7 +72663,7 @@ extends NumberParamBase
         this.div.appendChild(this.controls[0].div);
 
        
-        if (hasInput)  this.initInput([NUMBER_VALUE], getParamInputValuesForUndo, this.input_getBackInitValue);
+        if (hasInput)  this.initInput ([NUMBER_VALUE], getParamInputValuesForUndo, this.input_getBackInitValue);
         if (hasOutput) this.initOutput([NUMBER_VALUE], this.output_genRequest, getParamOutputValuesForUndo, this.output_backInit);
 
 
@@ -72894,8 +72967,8 @@ extends Parameter
     defaultValue;
 
     oldValue = null;
-
     
+
     get valueText() { return this.controls[0].valueText; }
     set valueText(text) 
     {
@@ -72910,6 +72983,7 @@ extends Parameter
     
     constructor(id,
                 name, 
+                showName,
                 hasInput,
                 hasOutput,
                 defaultValue = '')
@@ -72920,10 +72994,10 @@ extends Parameter
 
 
         this.controls[0] = new TextControl(
-            null,
             this,
             this.id,
             this.name,
+            showName,
             defaultValue);
 
             
@@ -72944,7 +73018,7 @@ extends Parameter
         this.div.appendChild(this.controls[0].div);
 
        
-        if (hasInput)  this.initInput([TEXT_VALUE], getParamInputValuesForUndo, this.input_getBackInitValue);
+        if (hasInput)  this.initInput ([TEXT_VALUE], getParamInputValuesForUndo, this.input_getBackInitValue);
         if (hasOutput) this.initOutput([TEXT_VALUE], this.output_genRequest, getParamOutputValuesForUndo, this.output_backInit);
 
 
@@ -74061,10 +74135,10 @@ extends Parameter
 
 
         this.controls.push(new TextControl(
-            null,
             this,
             this.id,
             this.name,
+            showName,
             ''));
 
         this.controls[0].textbox.style.textAlign  = 'center';
@@ -74721,10 +74795,10 @@ extends Parameter
 
 
         this.controls.push(new TextControl(
-            null,
             this,
             this.id,
             this.name,
+            showName,
             ''));
 
         this.controls[0].textbox.style.textAlign  = 'center';
@@ -74906,10 +74980,10 @@ extends Parameter
 
 
         this.controls.push(new TextControl(
-            null,
             this,
             this.id,
             this.name,
+            showName,
             ''));
 
         this.controls[0].textbox.style.textAlign = 'center';
@@ -75073,10 +75147,10 @@ extends Parameter
 
 
         this.controls.push(new TextControl(
-            null,
             this,
             this.id,
             this.name,
+            showName,
             ''));
 
         this.controls[0].textbox.style.textAlign = 'center';
@@ -75240,10 +75314,10 @@ extends Parameter
 
 
         this.controls.push(new TextControl(
-            null,
             this,
             this.id,
             this.name,
+            showName,
             ''));
 
         this.controls[0].textbox.style.textAlign = 'center';
@@ -75407,10 +75481,10 @@ extends Parameter
 
 
         this.controls.push(new TextControl(
-            null,
             this,
             this.id,
             this.name,
+            showName,
             ''));
 
         this.controls[0].textbox.style.textAlign = 'center';
@@ -75574,10 +75648,10 @@ extends Parameter
 
 
         this.controls.push(new TextControl(
-            null,
             this,
             this.id,
             this.name,
+            showName,
             ''));
 
         this.controls[0].textbox.style.textAlign = 'center';
@@ -75746,10 +75820,10 @@ extends Parameter
 
 
         this.controls.push(new TextControl(
-            null,
             this,
             this.id,
             this.name,
+            showName,
             ''));
 
         this.controls[0].textbox.style.textAlign = 'center';
@@ -75916,10 +75990,10 @@ extends Parameter
 
 
         this.controls.push(new TextControl(
-            null,
             this,
             this.id,
             this.name,
+            showName,
             ''));
 
         this.controls[0].textbox.style.textAlign = 'center';
@@ -76083,10 +76157,10 @@ extends Parameter
 
 
         this.controls.push(new TextControl(
-            null,
             this,
             this.id,
             this.name,
+            showName,
             ''));
 
         this.controls[0].textbox.style.textAlign = 'center';
@@ -76250,10 +76324,10 @@ extends Parameter
 
 
         this.controls.push(new TextControl(
-            null,
             this,
             this.id,
             this.name,
+            showName,
             ''));
 
         this.controls[0].textbox.style.textAlign = 'center';
@@ -78309,7 +78383,6 @@ class Operator
     outputControls;
 
     paramHolder;
-    //hiddenParamBack;
 
     subscribeCover;
     subscribeLabel;
@@ -78603,7 +78676,7 @@ class Operator
     createAndAddParamByType(type, id, showName, hasInput, hasOutput, volatile = false)
     {
              if (type ==      NUMBER_VALUE) return this.addParam(new     NumberParam(id, id, showName, hasInput, hasOutput), volatile);
-        else if (type ==        TEXT_VALUE) return this.addParam(new       TextParam(id, id,           hasInput, hasOutput), volatile);
+        else if (type ==        TEXT_VALUE) return this.addParam(new       TextParam(id, id, showName, hasInput, hasOutput), volatile);
         else if (type ==       COLOR_VALUE) return this.addParam(new      ColorParam(id, id, showName, hasInput, hasOutput), volatile);
         else if (type ==        FILL_VALUE) return this.addParam(new       FillParam(id, id, showName, hasInput, hasOutput), volatile);
         else if (type ==  COLOR_STOP_VALUE) return this.addParam(new  ColorStopParam(id, id, showName, hasInput, hasOutput), volatile);
@@ -78629,7 +78702,7 @@ class Operator
     createAndInsertParamByType(index, type, id, showName, hasInput, hasOutput, volatile = false)
     {
              if (type ==      NUMBER_VALUE) return this.insertParam(index, new     NumberParam(id, id, showName, hasInput, hasOutput), volatile);
-        else if (type ==        TEXT_VALUE) return this.insertParam(index, new       TextParam(id, id,           hasInput, hasOutput), volatile);
+        else if (type ==        TEXT_VALUE) return this.insertParam(index, new       TextParam(id, id, showName, hasInput, hasOutput), volatile);
         else if (type ==       COLOR_VALUE) return this.insertParam(index, new      ColorParam(id, id, showName, hasInput, hasOutput), volatile);
         else if (type ==        FILL_VALUE) return this.insertParam(index, new       FillParam(id, id, showName, hasInput, hasOutput), volatile);
         else if (type ==  COLOR_STOP_VALUE) return this.insertParam(index, new  ColorStopParam(id, id, showName, hasInput, hasOutput), volatile);
@@ -78886,8 +78959,6 @@ class Operator
 
     setRect(x, y, w, h, updateTransform = true)
     {
-        //console.log('Operator.setRect()');
-
         this.div.style.left   = x + 'px';
         this.div.style.top    = y + 'px';
         this.div.style.width  = w + 'px';
@@ -80508,8 +80579,6 @@ Operator.prototype.updateBorder = function()
 
 Operator.prototype.updateHeader = function()
 {
-    //console.log(this.id + '.Operator.updateHeader()');
-    
     const height = this.updateHeaderInputsAndOutputs();
 
     this.header.style.height = height;
@@ -80558,12 +80627,12 @@ Operator.prototype.updateDisabled = function()
 
     const height = Math.min(this.measureData.divOffset.width, this.measureData.divOffset.height) + 70;
 
-    this.divDisabled.style.display   = this.enabled ? 'none' : 'inline-block';
-    this.divDisabled.style.zIndex    = 10000;
-    this.divDisabled.style.height    = height;
+    this.divDisabled.style.display   =  this.enabled ? 'none' : 'inline-block';
+    this.divDisabled.style.zIndex    =  10000;
+    this.divDisabled.style.height    =  height;
     this.divDisabled.style.transform = 'rotate(45deg)';
-    this.divDisabled.style.left      = (this.measureData.divOffset.width  - this.measureData.disabledOffset.width ) / 2;
-    this.divDisabled.style.top       = (this.measureData.divOffset.height - height) / 2;
+    this.divDisabled.style.left      =  (this.measureData.divOffset.width  - this.measureData.disabledOffset.width ) / 2;
+    this.divDisabled.style.top       =  (this.measureData.divOffset.height - height) / 2;
 }
 
 
@@ -81103,7 +81172,6 @@ extends OperatorBase
     }
 
 
-
     setSize(w, h, updateTransform = true)
     {
         let headerHeight = getStyleValue(this.header, 'offset-height');
@@ -81231,6 +81299,28 @@ extends ResizableBase
 
 
 
+    setSize(w, h, updateTransform = true)
+    {
+        super.setSize(
+            w, 
+            settings.showOperationResults ? h : h - defParamHeight, 
+            updateTransform);
+    }
+
+
+
+    setRect(x, y, w, h, updateTransform = true)
+    {
+        super.setRect(
+            x,
+            y,
+            w, 
+            settings.showOperationResults ? h : h - defParamHeight, 
+            updateTransform);
+    }
+
+
+
     updateValues(requestId, actionId, updateParamId, paramIds, values)
     {
         const value = values[paramIds.findIndex(id => id == 'value')];
@@ -81341,7 +81431,7 @@ extends OperatorBase
 
 
 class   OpItems
-extends OperatorBase
+extends ResizableBase
 {
     constructor()
     {
@@ -81355,6 +81445,20 @@ extends OperatorBase
 
         this.alwaysLoadParams = true;
         this.alwaysSaveParams = true;
+    }
+
+
+
+    setSize(w, h, updateTransform = true)
+    {
+        super.setSize(w, h, updateTransform);
+    }
+
+
+
+    setRect(x, y, w, h, updateTransform = true)
+    {
+        super.setRect(x, y, w, h, updateTransform);
     }
 
 
@@ -81437,9 +81541,6 @@ extends OperatorBase
                        p.id   == valueId
                     && p.type == value.type);
 
-                const showName = 
-                       value.type == NUMBER_VALUE ;
-
                     
                 // if (   param
                 //     && paramIds.includes(param.id))
@@ -81464,7 +81565,7 @@ extends OperatorBase
                 // else
 
                 if (!param)
-                    this.createAndAddParamByType(value.type, valueId, showName, false, true, true);
+                    this.createAndAddParamByType(value.type, valueId, true, false, true, true);
             }
         }
 
@@ -83487,7 +83588,7 @@ extends ResizableBase
         
         this.addOutput(new Output([NUMBER_VALUE], this.output_genRequest));
 
-        this.addParam(this.paramValues = new TextParam('values', 'values', true, true));
+        this.addParam(this.paramValues = new TextParam('values', 'values', false, true, true));
     }
 
 
@@ -83851,7 +83952,7 @@ extends OperatorBase
 
         this.addOutput(new Output([NUMBER_VALUE], this.output_genRequest));
 
-        this.addParam(this.paramText   = new TextParam  ('text',   '',              true,  true));
+        this.addParam(this.paramText   = new TextParam  ('text',   '',       false, true,  true));
         this.addParam(this.paramFormat = new SelectParam('format', 'format', false, true,  true, ['decimal', 'hexadecimal']));
     }
 
@@ -85318,11 +85419,10 @@ extends ResizableBase
         this.addInput (new Input (TEXT_TYPES, getNodeInputValuesForUndo, this.input_getBackInitValue));
         this.addOutput(new Output([TEXT_VALUE], this.output_genRequest, getNodeOutputValuesForUndo, this.output_backInit));
 
-        this.addParam(this.paramValue = new TextParam('value', '', false, false));
+        this.addParam(this.paramValue = new TextParam('value', '', false, false, false));
 
         this.paramValue.controls[0].textbox.defPlaceholder = '...';
-
-        setControlFont(this.paramValue.controls[0].textbox, 'Roboto Mono', 10, 'center');
+        this.paramValue.controls[0].setFont('Roboto Mono', 10, 'center');
 
 
         //this.header.addEventListener('pointerdown', e => this.paramValue.controls[0].textbox.blur());
@@ -85397,9 +85497,9 @@ extends ResizableBase
         this.paramValue.enableControlText(!this.inputs[0].connected);
         this.paramValue.controls[0].valueText = this.isUnknown() ? UNKNOWN_DISPLAY : '';
 
-        this.updateValueParam();
-
         this.updateParamControls();
+        
+        this.updateValueParam();
     }
 
 
@@ -85498,13 +85598,13 @@ extends OperatorWithValue
         this.addOutput(new Output([TEXT_VALUE], this.output_genRequest));
 
         this.addParam(this.paramValue);
-        this.addParam(this.paramStart = new TextParam('start', 'start', true, true, ' '));
-        this.addParam(this.paramEnd   = new TextParam('end',   'end',   true, true, ' '));
+        this.addParam(this.paramStart = new TextParam('start', 'start', false, true, true, ' '));
+        this.addParam(this.paramEnd   = new TextParam('end',   'end',   false, true, true, ' '));
 
 
-        setControlFont(this.paramValue.controls[0].textbox, 'Roboto Mono', 10, 'center');
-        setControlFont(this.paramStart.controls[0].textbox, 'Roboto Mono', 10, 'center');
-        setControlFont(this.paramEnd  .controls[0].textbox, 'Roboto Mono', 10, 'center');
+        this.paramValue.controls[0].setFont('Roboto Mono', 10, 'center');
+        this.paramStart.controls[0].setFont('Roboto Mono', 10, 'center');
+        this.paramEnd  .controls[0].setFont('Roboto Mono', 10, 'center');
     }
 
 
@@ -85678,7 +85778,7 @@ extends OperatorWithValue
         this.paramCode.controls[0].allowEditDecimals = false;
         this.paramCode.controls[0].divider           = 0.56;
 
-        setControlFont(this.paramCode.controls[0].textbox, 'Roboto Mono', 10, 'center');
+        this.paramCode.controls[0].setFont('Roboto Mono', 10, 'center');
     }
 
 
@@ -85749,13 +85849,13 @@ extends OperatorWithValue
         this.addOutput(new Output([TEXT_VALUE], this.output_genRequest));
 
         this.addParam(this.paramValue);
-        this.addParam(this.paramWhat = new TextParam('what', 'what', true,  true));
-        this.addParam(this.paramWith = new TextParam('with', 'with', true,  true));
+        this.addParam(this.paramWhat = new TextParam('what', 'what', false, true, true));
+        this.addParam(this.paramWith = new TextParam('with', 'with', false, true, true));
 
 
-        setControlFont(this.paramValue.controls[0].textbox, 'Roboto Mono', 10, 'center');
-        setControlFont(this.paramWhat .controls[0].textbox, 'Roboto Mono', 10, 'center');
-        setControlFont(this.paramWith .controls[0].textbox, 'Roboto Mono', 10, 'center');
+        this.paramValue.controls[0].setFont('Roboto Mono', 10, 'center');
+        this.paramWhat .controls[0].setFont('Roboto Mono', 10, 'center');
+        this.paramWith .controls[0].setFont('Roboto Mono', 10, 'center');
     }
 
 
@@ -85823,7 +85923,7 @@ extends ResizableOperatorWithValue
         this.addOutput(new Output([TEXT_VALUE], this.output_genRequest));
 
         this.addParam(this.paramValue);
-        this.addParam(this.paramWith = new TextParam('with', 'with', true,  true));
+        this.addParam(this.paramWith = new TextParam('with', 'with', false, true, true));
 
 
         setControlFont(this.paramValue.controls[0].textbox, 'Roboto Mono', 10, 'center');
@@ -85960,7 +86060,7 @@ extends OperatorBase
         this.addInput(new Input([TEXT_VALUE]));
 
         this.addParam(this.paramValue     = new ListParam('value',     '',          false, false, true));
-        this.addParam(this.paramSeparator = new TextParam('separator', 'separator', true, true, ','));
+        this.addParam(this.paramSeparator = new TextParam('separator', 'separator', false, true,  true, ','));
 
 
         this.paramValue.itemName = 'value';
@@ -86097,11 +86197,11 @@ extends ResizableOperatorWithValue
         this.addOutput(new Output([TEXT_VALUE], this.output_genRequest));
 
         this.addParam(this.paramValue);
-        this.addParam(this.paramRequest = new TextParam('request', 'request', true,  true));
+        this.addParam(this.paramRequest = new TextParam('request', 'request', true, true, true));
 
 
-        setControlFont(this.paramValue  .controls[0].textbox, 'Roboto Mono', 10, 'center');
-        setControlFont(this.paramRequest.controls[0].textbox, 'Roboto Mono', 10, 'center');
+        this.paramValue  .controls[0].setFont('Roboto Mono', 10, 'center');
+        this.paramRequest.controls[0].setFont('Roboto Mono', 10, 'center');
     }
 
 
@@ -86110,7 +86210,7 @@ extends ResizableOperatorWithValue
     {
         super.setSize(
             w, 
-            Math.max(defHeaderHeight + 2 * defParamHeight, h), 
+            Math.max(defHeaderHeight + (settings.showOperationResults ? 2 : 1) * defParamHeight, h), 
             updateTransform);
 
         this.updateValueParam();
@@ -91202,7 +91302,7 @@ extends OpShapeBase
 
     addBaseParams()
     {
-        this.addParam(this.paramProperties = new ListParam('props', 'styles', true, true, true));
+        this.addParam(this.paramProperties = new ListParam('props', 'styles', false, true, true));
 
         this.paramProperties.itemName  = 'style';
         this.paramProperties.showZero  = false;
@@ -91237,8 +91337,8 @@ extends OpShape
         this.addOutput(new Output([RECTANGLE_VALUE], this.output_genRequest));
 
 
-        this.addParam(this.paramX      = new NumberParam('x',      'x',      true, true, true,   0));
-        this.addParam(this.paramY      = new NumberParam('y',      'y',      true, true, true,   0));
+        this.addParam(this.paramX      = new NumberParam('x',      'X',      true, true, true,   0));
+        this.addParam(this.paramY      = new NumberParam('y',      'Y',      true, true, true,   0));
         this.addParam(this.paramWidth  = new NumberParam('width',  'width',  true, true, true, 100));
         this.addParam(this.paramHeight = new NumberParam('height', 'height', true, true, true, 100));
         //this.addParam(this.paramAngle  = new NumberParam('angle',  'angle',  true, true, true,   0, -180,   180));
@@ -91277,8 +91377,6 @@ extends OpShape
     paramX;
     paramY;
     paramWidth;
-    //paramAngle;
-
 
     
     constructor()
@@ -91291,16 +91389,10 @@ extends OpShape
         this.addInput (this.createInputForObjects([LINE_VALUE], getNodeInputValuesForUndo));
         this.addOutput(new Output([LINE_VALUE], this.output_genRequest));
 
-        this.addParam(this.paramX      = new NumberParam('x',      'x',      true, true, true,   0));
-        this.addParam(this.paramY      = new NumberParam('y',      'y',      true, true, true,   0));
+        this.addParam(this.paramX      = new NumberParam('x',      'X',      true, true, true,   0));
+        this.addParam(this.paramY      = new NumberParam('y',      'Y',      true, true, true,   0));
         this.addParam(this.paramWidth  = new NumberParam('width',  'width',  true, true, true, 100));
-        //this.addParam(this.paramAngle  = new NumberParam('angle',  'angle',  true, true, true,   0, -180, 180));
         
-
-        //this.paramAngle.controls[0].setSuffix('°', true);
-        //this.paramAngle.controls[0].wrapValue   = true;
-        //this.paramAngle.controls[0].dragReverse = true;
-
 
         this.addBaseParams();
     }
@@ -91314,8 +91406,6 @@ extends OpShape
     paramY;
     paramWidth;
     paramHeight;
-    //paramAngle;
-    paramFrom;
     paramTo;
     paramInner;
 
@@ -91333,29 +91423,21 @@ extends OpShape
         this.addOutput(new Output([ELLIPSE_VALUE], this.output_genRequest));
 
 
-        this.addParam(this.paramX      = new NumberParam('x',      'x',      true, true, true,   0));
-        this.addParam(this.paramY      = new NumberParam('y',      'y',      true, true, true,   0));
+        this.addParam(this.paramX      = new NumberParam('x',      'X',      true, true, true,   0));
+        this.addParam(this.paramY      = new NumberParam('y',      'Y',      true, true, true,   0));
         this.addParam(this.paramWidth  = new NumberParam('width',  'width',  true, true, true, 100));
         this.addParam(this.paramHeight = new NumberParam('height', 'height', true, true, true, 100));
-        //this.addParam(this.paramAngle  = new NumberParam('angle',  'angle',  true, true, true,   0, -180, 180));
         this.addParam(this.paramInner  = new NumberParam('inner',  'inner',  true, true, true,   0, 0, 100));
         this.addParam(this.paramFrom   = new NumberParam('from',   'from',   true, true, true,   0));
         this.addParam(this.paramTo     = new NumberParam('to',     'to',     true, true, true, 360));
         
 
-        //this.paramAngle.controls[0].setSuffix('°', true);
         this.paramFrom .controls[0].setSuffix('°', true);
         this.paramTo   .controls[0].setSuffix('°', true);
         this.paramInner.controls[0].setSuffix('%', true);
 
-        //this.paramAngle.controls[0].wrapValue   = true;
-        //this.paramAngle.controls[0].dragReverse = true;
-
         this.paramFrom .controls[0].wrapValue   = true;
-        //this.paramFrom .controls[0].dragReverse = true;
-
         this.paramTo   .controls[0].wrapValue   = true;
-        //this.paramTo   .controls[0].dragReverse = true;
 
 
         this.addBaseParams();
@@ -91370,8 +91452,6 @@ extends OpShape
     paramY;
     paramWidth;
     paramHeight;
-    //paramAngle;
-    paramRound;
     paramCorners;
 
 
@@ -91387,19 +91467,13 @@ extends OpShape
         this.addInput (this.createInputForObjects([POLYGON_VALUE], getNodeInputValuesForUndo));
         this.addOutput(new Output([POLYGON_VALUE], this.output_genRequest));
 
-        this.addParam(this.paramX       = new NumberParam('x',       'x',       true, true, true,   0));
-        this.addParam(this.paramY       = new NumberParam('y',       'y',       true, true, true,   0));
+        this.addParam(this.paramX       = new NumberParam('x',       'X',       true, true, true,   0));
+        this.addParam(this.paramY       = new NumberParam('y',       'Y',       true, true, true,   0));
         this.addParam(this.paramWidth   = new NumberParam('width',   'width',   true, true, true, 100,    0.01));
         this.addParam(this.paramHeight  = new NumberParam('height',  'height',  true, true, true, 100,    0.01));
-        //this.addParam(this.paramAngle   = new NumberParam('angle',   'angle',   true, true, true,   0, -180,   180));
         this.addParam(this.paramRound   = new NumberParam('round',   'round',   true, true, true,   0,    0));
         this.addParam(this.paramCorners = new NumberParam('corners', 'corners', true, true, true,   3,    3));
         
-
-        //this.paramAngle.controls[0].setSuffix('°', true);
-        //this.paramAngle.controls[0].wrapValue   = true;
-        //this.paramAngle.controls[0].dragReverse = true;
-
 
         this.addBaseParams();
     }
@@ -91426,7 +91500,6 @@ extends OpShape
     paramY;
     paramWidth;
     paramHeight;
-    //paramAngle;
     paramRound;
     paramPoints;
     paramConvex;
@@ -91444,19 +91517,14 @@ extends OpShape
         this.addInput (this.createInputForObjects([STAR_VALUE], getNodeInputValuesForUndo));
         this.addOutput(new Output([STAR_VALUE], this.output_genRequest));
 
-        this.addParam(this.paramX      = new NumberParam('x',      'x',      true, true, true, 0));
-        this.addParam(this.paramY      = new NumberParam('y',      'y',      true, true, true, 0));
+        this.addParam(this.paramX      = new NumberParam('x',      'X',      true, true, true, 0));
+        this.addParam(this.paramY      = new NumberParam('y',      'Y',      true, true, true, 0));
         this.addParam(this.paramWidth  = new NumberParam('width',  'width',  true, true, true, 100, 0.01));
         this.addParam(this.paramHeight = new NumberParam('height', 'height', true, true, true, 100, 0.01));
-        //this.addParam(this.paramAngle  = new NumberParam('angle',  'angle',  true, true, true, 0, -180, 180));
         this.addParam(this.paramRound  = new NumberParam('round',  'round',  true, true, true, 0, 0));
         this.addParam(this.paramPoints = new NumberParam('points', 'points', true, true, true, 5, 3));
         this.addParam(this.paramConvex = new NumberParam('convex', 'convex', true, true, true, 38.2, 0, 100));
         
-
-        // this.paramAngle.controls[0].setSuffix('°', true);
-        // this.paramAngle.controls[0].wrapValue   = true;
-        // this.paramAngle.controls[0].dragReverse = true;
 
         this.paramConvex.controls[0].setSuffix('%', true);
 

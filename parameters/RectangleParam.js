@@ -24,10 +24,10 @@ extends Parameter
 
 
         this.controls.push(new TextControl(
-            null,
             this,
             this.id,
             this.name,
+            showName,
             ''));
 
         this.controls[0].textbox.style.textAlign = 'center';

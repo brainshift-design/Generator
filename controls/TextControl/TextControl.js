@@ -4,6 +4,7 @@ extends Control
     value;
 
 
+    textBehind;
     textbox;
     placeholder;
 
@@ -25,22 +26,22 @@ extends Control
     
     
 
-    constructor(div, param, id, name, defaultValue = '')
+    constructor(param, id, name, showName, defaultValue = '')
     {
-        super(div, param, id, name);
+        const textbox = createTextarea('textControlTextarea');
+
+
+        super(textbox, param, id, name, showName);
 
 
         this.value = defaultValue;
         
         
-        this.div.className = 'textControl';
-
-
-        this.initTextarea();
-        this.initEvents ();
+        this.initTextarea(textbox);
+        this.initEvents();
         
 
-        this.div.appendChild(this.textbox);
+        this.div.appendChild(textbox);
 
 
         createTooltipSrc(this.div, this.div, () => 
@@ -81,30 +82,38 @@ extends Control
 
     setSize(w, h)
     {
+        h = Math.max(defParamHeight, h);
+
         super.setSize(w, h);
 
-        if (this.textbox)
-        {
-            this.updateTextboxSize();
-            this.textbox.style.height = Math.max(defParamHeight, h);
-        }
+
+        if (this.textbox) 
+            this.textbox.style.height = h + 'px';
     }
 
 
 
-    updateTextboxSize()
+    // updateTextboxSize()
+    // {
+    //     const  input = this.param && this.param. input;
+    //     const output = this.param && this.param.output;
+
+    //     const left = input ? 12 : 0;
+
+    //     const dw = 
+    //           ( input ? 12 : 0) 
+    //         + (output ? 12 : 0);
+
+
+    //     // this.textbox.style.left  = left + 'px';
+    //     // this.textbox.style.width = 'calc(100% - ' + dw + 'px)';
+    // }
+
+
+
+    setFont(family, size, align)
     {
-        const  input = this.param && this.param. input;
-        const output = this.param && this.param.output;
-
-        const left = input ? 12 : 0;
-
-        const dw = 
-              ( input ? 12 : 0) 
-            + (output ? 12 : 0);
-
-        this.textbox.style.left  = left + 'px';
-        this.textbox.style.width = 'calc(100% - ' + dw + 'px)';
+        setControlFont(this.textbox, family, size, align);
     }
 
 
@@ -134,18 +143,16 @@ extends Control
 
     update()
     {
-        console.log('update()');
-        console.trace();
-        console.log('');
+        super.update();
 
-        
+
         if (typeof this.value !== 'string')
             console.assert(false, 'TextControl.update() value is ' + typeof this.value + ', must be a string');
 
         if (!this.measureData.offsetRect)
             return;
-
             
+
         this.textbox.placeholder = 
             this.value == NAN_CHAR
             ? UNKNOWN_DISPLAY
@@ -156,9 +163,6 @@ extends Control
             this.textbox.value = this.valueText;
         else if (this.value == NAN_CHAR)
             this.textbox.value = '';
-
-
-        this.updateTextboxSize();
     }
 
 

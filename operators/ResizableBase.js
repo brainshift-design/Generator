@@ -234,7 +234,6 @@ extends OperatorBase
     }
 
 
-
     setSize(w, h, updateTransform = true)
     {
         let headerHeight = getStyleValue(this.header, 'offset-height');

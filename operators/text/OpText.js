@@ -16,11 +16,10 @@ extends ResizableBase
         this.addInput (new Input (TEXT_TYPES, getNodeInputValuesForUndo, this.input_getBackInitValue));
         this.addOutput(new Output([TEXT_VALUE], this.output_genRequest, getNodeOutputValuesForUndo, this.output_backInit));
 
-        this.addParam(this.paramValue = new TextParam('value', '', false, false));
+        this.addParam(this.paramValue = new TextParam('value', '', false, false, false));
 
         this.paramValue.controls[0].textbox.defPlaceholder = '...';
-
-        setControlFont(this.paramValue.controls[0].textbox, 'Roboto Mono', 10, 'center');
+        this.paramValue.controls[0].setFont('Roboto Mono', 10, 'center');
 
 
         //this.header.addEventListener('pointerdown', e => this.paramValue.controls[0].textbox.blur());
@@ -95,9 +94,9 @@ extends ResizableBase
         this.paramValue.enableControlText(!this.inputs[0].connected);
         this.paramValue.controls[0].valueText = this.isUnknown() ? UNKNOWN_DISPLAY : '';
 
-        this.updateValueParam();
-
         this.updateParamControls();
+        
+        this.updateValueParam();
     }
 
 

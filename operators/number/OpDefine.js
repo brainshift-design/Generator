@@ -15,7 +15,7 @@ extends ResizableBase
         
         this.addOutput(new Output([NUMBER_VALUE], this.output_genRequest));
 
-        this.addParam(this.paramValues = new TextParam('values', 'values', true, true));
+        this.addParam(this.paramValues = new TextParam('values', 'values', false, true, true));
     }
 
 

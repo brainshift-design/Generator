@@ -1,5 +1,5 @@
 class   OpItems
-extends OperatorBase
+extends ResizableBase
 {
     constructor()
     {
@@ -13,6 +13,20 @@ extends OperatorBase
 
         this.alwaysLoadParams = true;
         this.alwaysSaveParams = true;
+    }
+
+
+
+    setSize(w, h, updateTransform = true)
+    {
+        super.setSize(w, h, updateTransform);
+    }
+
+
+
+    setRect(x, y, w, h, updateTransform = true)
+    {
+        super.setRect(x, y, w, h, updateTransform);
     }
 
 
@@ -95,9 +109,6 @@ extends OperatorBase
                        p.id   == valueId
                     && p.type == value.type);
 
-                const showName = 
-                       value.type == NUMBER_VALUE ;
-
                     
                 // if (   param
                 //     && paramIds.includes(param.id))
@@ -122,7 +133,7 @@ extends OperatorBase
                 // else
 
                 if (!param)
-                    this.createAndAddParamByType(value.type, valueId, showName, false, true, true);
+                    this.createAndAddParamByType(value.type, valueId, true, false, true, true);
             }
         }
 

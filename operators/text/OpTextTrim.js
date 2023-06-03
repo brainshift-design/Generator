@@ -17,13 +17,13 @@ extends OperatorWithValue
         this.addOutput(new Output([TEXT_VALUE], this.output_genRequest));
 
         this.addParam(this.paramValue);
-        this.addParam(this.paramStart = new TextParam('start', 'start', true, true, ' '));
-        this.addParam(this.paramEnd   = new TextParam('end',   'end',   true, true, ' '));
+        this.addParam(this.paramStart = new TextParam('start', 'start', false, true, true, ' '));
+        this.addParam(this.paramEnd   = new TextParam('end',   'end',   false, true, true, ' '));
 
 
-        setControlFont(this.paramValue.controls[0].textbox, 'Roboto Mono', 10, 'center');
-        setControlFont(this.paramStart.controls[0].textbox, 'Roboto Mono', 10, 'center');
-        setControlFont(this.paramEnd  .controls[0].textbox, 'Roboto Mono', 10, 'center');
+        this.paramValue.controls[0].setFont('Roboto Mono', 10, 'center');
+        this.paramStart.controls[0].setFont('Roboto Mono', 10, 'center');
+        this.paramEnd  .controls[0].setFont('Roboto Mono', 10, 'center');
     }
 
 
