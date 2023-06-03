@@ -239,6 +239,10 @@ extends Parameter
         this.checkers.style.width              = 'calc(100% + 3.5px)';
 
 
+        this.divName .style.color = !isDark(this.value.toRgb()) ? this.textStyleDark : this.textStyleLight;
+        this.divName .style.opacity = 0.5;
+
+
         super.updateControls();
     }
 

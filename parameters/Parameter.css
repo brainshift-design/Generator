@@ -1,3 +1,11 @@
+.paramDiv
+{
+    /* background-color: var(--figma-color-bg); */
+    box-shadow: 0 0 0 1px inset cyan;
+    position:   relative;
+}
+
+
 .paramName
 {
     color:                 var(--figma-color-bg-disabled);
@@ -11,12 +19,12 @@
     pointer-events:        none;
     overflow:              hidden;
     width:                 100px;
+    height:                auto;
     position:              absolute;
     top:                   4px;
-    margin-right:          3px;
+    /* margin-right:          3px; */
     box-shadow:            0 0 0 1px inset yellow;
 }
-
 
 
 .paramControls
@@ -24,7 +32,7 @@
     overflow:              hidden;
     width:                 100%;
     height:                auto;
-    /* position:              absolute; */
     margin-right:          3px;
+    position:              absolute;
     box-shadow:            0 0 0 1px inset red;
 }

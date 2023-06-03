@@ -402,27 +402,10 @@ extends Control
     {
         if (this.overrideText != '')
         {
-            //this.divName .innerHTML = '';
             this.divValue.innerHTML = this.overrideText;
         }
         else
         {
-            // this.divName.innerHTML = '';
-            
-            // if (   this.name.length > 0
-            //     && this.showName
-            //     && (  !isNaN(this.value) 
-            //         || this.showNanValueName))
-            // {
-            //     // const nameStyle = 
-            //     //     darkMode 
-            //     //     ? rgba2style(rgb_a(style2rgba(this.textStyleDark ), 0.4))
-            //     //     : rgba2style(rgb_a(style2rgba(this.textStyleLight), 0.6));
-
-            //     this.divName.innerHTML = this.name;//'<span style="color: ' + nameStyle + ';">' + this.name + "</span>";
-            // }
-
-            
             const valueText = this.getValueText();
 
             this.divValue.innerHTML = 
@@ -433,26 +416,19 @@ extends Control
         }
 
 
-        // if (this.showName)
-        // {
-        //     this.divName .style.display    = 'inline-block';
-        //     this.divName .style.right      = ((1-this.divider)*100) + '%';
-        //     this.divValue.style.left       = (   this.divider *100) + '%';
-            
-        //     this.divName .style.transform  = 'translateX(' + (-(1-this.divider)*100) + '%' + ') tranlateY(-50%)';
-        //     this.divValue.style.transform  = 'translateX(' + (-   this.divider *100) + '%' + ') tranlateY(-50%)';
-
-        //     this.divValue.style.marginLeft = '3px';
-        // }
-        // else
-        // {
-            //this.divName.style.display     = 'none';
-            
+        if (this.param.showName)
+        {
+            this.divValue.style.left       = 0;//(   this.divider *100) + '%';
+            this.divValue.style.transform  = 'translateY(-50%)';//translateX(' + (-   this.divider *100) + '%' + ') tranlateY(-50%)';
+            this.divValue.style.marginLeft = '3px';
+        }
+        else
+        {
             this.divValue.style.left       = '50%';
             this.divValue.style.transform  = 'translateX(-50%) translateY(-50%)';
             this.divValue.style.marginLeft =  0;
             this.divValue.style.width      = 'auto';
-        // }
+        }
     }
 
 

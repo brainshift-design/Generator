@@ -161,9 +161,6 @@ extends Control
 
         this.divValue.style.color = 
         this.textbox .style.color = darkMode ? this.textStyleDark : this.textStyleLight;
-
-        //this.divName .style.color = !isDark(this.value.toRgb()) ? this.textStyleDark : this.textStyleLight;
-        //this.divName .style.opacity = 0.5;
     };
 
 
@@ -178,27 +175,11 @@ extends Control
 
         this.textbox.value = this.divValue.innerText;
 
-
-        // if (this.showName)
-        // {
-        //     this.divName .style.display    = 'inline-block';
-        //     this.divName .style.right      = ((1-this.divider)*100) + '%';
-        //     this.divValue.style.left       = (   this.divider *100) + '%';
-            
-        //     this.divName .style.transform  = 'translateX(' + (-(1-this.divider)*100) + '%' + ') tranlateY(-50%)';
-        //     this.divValue.style.transform  = 'translateX(' + (-   this.divider *100) + '%' + ') tranlateY(-50%)';
-
-        //     this.divValue.style.marginLeft = '3px';
-        // }
-        // else
-        // {
-        //     this.divName.style.display     = 'none';
-            
-            this.divValue.style.left       = '50%';
-            this.divValue.style.transform  = 'translateX(-50%)';
-            this.divValue.style.marginLeft =  0;
-            this.divValue.style.width      = 'auto';
-        // }
+        
+        this.divValue.style.left       = '50%';
+        this.divValue.style.transform  = 'translateX(-50%)';
+        this.divValue.style.marginLeft =  0;
+        this.divValue.style.width      = 'auto';
     };
 
 

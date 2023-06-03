@@ -84,31 +84,10 @@ extends EventTarget
             + (output ? 12 : 0);
 
 
-        // if (this.showName)
-        // {
-        //     const nameSize = this.divider <= 1 ? ((   this.divider *100) + '%') : (this.divider + 'px');
-        //     const  valSize = this.divider <= 1 ? (((1-this.divider)*100) + '%') : ('calc(100% - ' + this.divider + 'px)');
-
-
-        //     this.divName .innerHTML        =  this.name;
-
-        //     this.divName .style.display    = 'inline-block';
-        //     this.divName .style.right      =  valSize;
-        //     this.divName .style.width      = 'calc(calc(' + nameSize + ' - ' + (input ? 12 : 0) + 'px) - 3px)';
-            
-        //     this.divValue.style.left       =  nameSize;
-        //     this.divValue.style.marginLeft = '3px';
-        //     this.divValue.style.width      = 'calc(calc(' + valSize + ' - ' + (output ? 12 : 0) + 'px) - 3px)';
-        // }
-        // else
-        // {
-            //this.divName .style.display    = 'none';
-
-            this.divValue.style.left       = '50%';
-            this.divValue.style.transform  = 'translateX(-50%)';
-            this.divValue.style.marginLeft =  0;
-            this.divValue.style.width      = 'calc(100% - ' + dw + 'px)';
-        //}
+        // this.divValue.style.left       = '50%';
+        // this.divValue.style.transform  = 'translateX(-50%)';
+        // this.divValue.style.marginLeft =  0;
+        // this.divValue.style.width      = 'calc(100% - ' + dw + 'px)';
     }
 
 

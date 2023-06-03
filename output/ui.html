@@ -2634,7 +2634,7 @@ a
     padding:          0;
     position:         relative;
     overflow:         hidden;
-    background-color: var(--figma-color-bg);
+    /* background-color: var(--figma-color-bg); */
     text-align:       center;
     touch-action:     none;
     /* box-shadow:       0 0 0 1px red inset; */
@@ -2665,7 +2665,7 @@ a
     letter-spacing:       -0.35px;
     pointer-events:       none;
     position:             absolute;
-    left:                 50%;
+    /* left:                 50%; */
     top:                  50%;
     transform:            translateY(-50%);
     white-space:          nowrap;
@@ -2765,7 +2765,7 @@ a
 }    
 
 
-.figma-dark .textBehind::selection
+/* .figma-dark .textBehind::selection
 {
     background-color: rgba(255, 255, 255, 0.05);
 }
@@ -2774,7 +2774,7 @@ a
 .figma-light .textBehind::selection
 {
     background-color: rgba(0, 0, 0, 0.05);
-}
+} */
 
 
 .textControlTextarea
@@ -3850,6 +3850,14 @@ a
 }
 
 
+.paramDiv
+{
+    /* background-color: var(--figma-color-bg); */
+    box-shadow: 0 0 0 1px inset cyan;
+    position:   relative;
+}
+
+
 .paramName
 {
     color:                 var(--figma-color-bg-disabled);
@@ -3863,12 +3871,12 @@ a
     pointer-events:        none;
     overflow:              hidden;
     width:                 100px;
+    height:                auto;
     position:              absolute;
     top:                   4px;
-    margin-right:          3px;
+    /* margin-right:          3px; */
     box-shadow:            0 0 0 1px inset yellow;
 }
-
 
 
 .paramControls
@@ -3876,8 +3884,8 @@ a
     overflow:              hidden;
     width:                 100%;
     height:                auto;
-    /* position:              absolute; */
     margin-right:          3px;
+    position:              absolute;
     box-shadow:            0 0 0 1px inset red;
 }
 
@@ -63282,31 +63290,10 @@ extends EventTarget
             + (output ? 12 : 0);
 
 
-        // if (this.showName)
-        // {
-        //     const nameSize = this.divider <= 1 ? ((   this.divider *100) + '%') : (this.divider + 'px');
-        //     const  valSize = this.divider <= 1 ? (((1-this.divider)*100) + '%') : ('calc(100% - ' + this.divider + 'px)');
-
-
-        //     this.divName .innerHTML        =  this.name;
-
-        //     this.divName .style.display    = 'inline-block';
-        //     this.divName .style.right      =  valSize;
-        //     this.divName .style.width      = 'calc(calc(' + nameSize + ' - ' + (input ? 12 : 0) + 'px) - 3px)';
-            
-        //     this.divValue.style.left       =  nameSize;
-        //     this.divValue.style.marginLeft = '3px';
-        //     this.divValue.style.width      = 'calc(calc(' + valSize + ' - ' + (output ? 12 : 0) + 'px) - 3px)';
-        // }
-        // else
-        // {
-            //this.divName .style.display    = 'none';
-
-            this.divValue.style.left       = '50%';
-            this.divValue.style.transform  = 'translateX(-50%)';
-            this.divValue.style.marginLeft =  0;
-            this.divValue.style.width      = 'calc(100% - ' + dw + 'px)';
-        //}
+        // this.divValue.style.left       = '50%';
+        // this.divValue.style.transform  = 'translateX(-50%)';
+        // this.divValue.style.marginLeft =  0;
+        // this.divValue.style.width      = 'calc(100% - ' + dw + 'px)';
     }
 
 
@@ -63835,27 +63822,10 @@ extends Control
     {
         if (this.overrideText != '')
         {
-            //this.divName .innerHTML = '';
             this.divValue.innerHTML = this.overrideText;
         }
         else
         {
-            // this.divName.innerHTML = '';
-            
-            // if (   this.name.length > 0
-            //     && this.showName
-            //     && (  !isNaN(this.value) 
-            //         || this.showNanValueName))
-            // {
-            //     // const nameStyle = 
-            //     //     darkMode 
-            //     //     ? rgba2style(rgb_a(style2rgba(this.textStyleDark ), 0.4))
-            //     //     : rgba2style(rgb_a(style2rgba(this.textStyleLight), 0.6));
-
-            //     this.divName.innerHTML = this.name;//'<span style="color: ' + nameStyle + ';">' + this.name + "</span>";
-            // }
-
-            
             const valueText = this.getValueText();
 
             this.divValue.innerHTML = 
@@ -63866,26 +63836,19 @@ extends Control
         }
 
 
-        // if (this.showName)
-        // {
-        //     this.divName .style.display    = 'inline-block';
-        //     this.divName .style.right      = ((1-this.divider)*100) + '%';
-        //     this.divValue.style.left       = (   this.divider *100) + '%';
-            
-        //     this.divName .style.transform  = 'translateX(' + (-(1-this.divider)*100) + '%' + ') tranlateY(-50%)';
-        //     this.divValue.style.transform  = 'translateX(' + (-   this.divider *100) + '%' + ') tranlateY(-50%)';
-
-        //     this.divValue.style.marginLeft = '3px';
-        // }
-        // else
-        // {
-            //this.divName.style.display     = 'none';
-            
+        if (this.param.showName)
+        {
+            this.divValue.style.left       = 0;//(   this.divider *100) + '%';
+            this.divValue.style.transform  = 'translateY(-50%)';//translateX(' + (-   this.divider *100) + '%' + ') tranlateY(-50%)';
+            this.divValue.style.marginLeft = '3px';
+        }
+        else
+        {
             this.divValue.style.left       = '50%';
             this.divValue.style.transform  = 'translateX(-50%) translateY(-50%)';
             this.divValue.style.marginLeft =  0;
             this.divValue.style.width      = 'auto';
-        // }
+        }
     }
 
 
@@ -66018,9 +65981,6 @@ extends Control
 
         this.divValue.style.color = 
         this.textbox .style.color = darkMode ? this.textStyleDark : this.textStyleLight;
-
-        //this.divName .style.color = !isDark(this.value.toRgb()) ? this.textStyleDark : this.textStyleLight;
-        //this.divName .style.opacity = 0.5;
     };
 
 
@@ -66035,27 +65995,11 @@ extends Control
 
         this.textbox.value = this.divValue.innerText;
 
-
-        // if (this.showName)
-        // {
-        //     this.divName .style.display    = 'inline-block';
-        //     this.divName .style.right      = ((1-this.divider)*100) + '%';
-        //     this.divValue.style.left       = (   this.divider *100) + '%';
-            
-        //     this.divName .style.transform  = 'translateX(' + (-(1-this.divider)*100) + '%' + ') tranlateY(-50%)';
-        //     this.divValue.style.transform  = 'translateX(' + (-   this.divider *100) + '%' + ') tranlateY(-50%)';
-
-        //     this.divValue.style.marginLeft = '3px';
-        // }
-        // else
-        // {
-        //     this.divName.style.display     = 'none';
-            
-            this.divValue.style.left       = '50%';
-            this.divValue.style.transform  = 'translateX(-50%)';
-            this.divValue.style.marginLeft =  0;
-            this.divValue.style.width      = 'auto';
-        // }
+        
+        this.divValue.style.left       = '50%';
+        this.divValue.style.transform  = 'translateX(-50%)';
+        this.divValue.style.marginLeft =  0;
+        this.divValue.style.width      = 'auto';
     };
 
 
@@ -72175,7 +72119,16 @@ extends EventTarget
 
     controls       = [];
 
-    proxy          = null;
+    // proxy          = null;
+
+
+    backStyleLight  = 'rgba(255, 255, 255, 0.95)';
+    valueStyleLight = '#7772';
+    textStyleLight  = '#000';
+                
+    backStyleDark   = 'rgba(56, 56, 56, 0.95)';
+    valueStyleDark  = '#ffffff20';
+    textStyleDark   = '#eee';
 
 
     input;
@@ -72207,22 +72160,21 @@ extends EventTarget
     {
         super();
 
-        this._id                = id;
-        this.#name              = name;
-        this.#type              = type;
+        this._id                  = id;
+        this.#name                = name;
+        this.#type                = type;
+  
+        this.showName             = showName;
 
-        this.showName           = showName;
+        this._div                 = createDiv('paramDiv');
+        this.divName              = createDiv('paramName');
+        this.divControls          = createDiv('paramControls');
 
-        this._div               = createDiv();
-        this.divName            = createDiv('paramName');
-        this.divControls        = createDiv('paramControls');
+        this.div    .style.height = defParamHeight;
+        //this.divName.style.height = defParamHeight;
 
-        this.div.style.position = 'relative';
-        this.div.style.padding  = 0;
-        this.div.style.width    = '100%';
-
-        this.input              = null;
-        this.output             = null;
+        this.input                = null;
+        this.output               = null;
 
         this.div.appendChild(this.divName);
         this.div.appendChild(this.divControls);
@@ -72320,31 +72272,52 @@ extends EventTarget
 
     updateControls()
     {
-        checkControlVisible(this, this.controls[0]);
+        this.div.style.background = 
+            darkMode 
+            ? this.backStyleDark 
+            : this.backStyleLight;
 
-        this.controls[0].update();
-        
+
         if (this.input ) this.input .updateControl();
         if (this.output) this.output.updateControl();
+        
+       
+        this.controls.forEach(c => 
+        {
+            checkControlVisible(this, c);
+            c.update();
+        });
 
 
-        this.divName.innerHTML = this.name;
+        const  input = this.param && this.param. input;
+        const output = this.param && this.param.output;
+
+        const left = input ? 12 : 0;
+
+        const dw = 
+              ( input ? 12 : 0) 
+            + (output ? 12 : 0);
 
 
         if (this.showName)
         {
-            this.divName    .style.display    = 'inline-block';
-            this.divName    .style.right      = ((1-this.divider)*100) + '%';
-            this.divControls.style.left       = (   this.divider *100) + '%';
-            
-            this.divName    .style.transform  = 'translateX(' + (-(1-this.divider)*100) + '%' + ') tranlateY(-50%)';
-            this.divControls.style.transform  = 'translateX(' + (-   this.divider *100) + '%' + ') tranlateY(-50%)';
+            const nameSize = this.divider <= 1 ? ((   this.divider *100) + '%') : (this.divider + 'px');
+            const  valSize = this.divider <= 1 ? (((1-this.divider)*100) + '%') : ('calc(100% - ' + this.divider + 'px)');
 
+
+            this.divName .innerHTML           =  this.name;
+
+            this.divName .style.display       = 'inline-block';
+            this.divName .style.right         =  valSize;
+            this.divName .style.width         = 'calc(' + nameSize + ' - ' + (input ? 12 : 0) + 'px)';
+            
+            this.divControls.style.left       =  nameSize;
             this.divControls.style.marginLeft = '3px';
+            this.divControls.style.width      = 'calc(calc(' + valSize + ' - ' + (output ? 12 : 0) + 'px) - 3px)';
         }
         else
         {
-            this.divName    .style.display     = 'none';
+            this.divName    .style.display    = 'none';
             
             // this.divControls.style.left       = '50%';
             //this.divControls.style.transform  = 'translateX(-50%) translateY(-50%)';
@@ -72717,10 +72690,7 @@ extends NumberParamBase
             dragScale); 
 
             
-        this.controls[0].div.zIndex        = 0;
-
-        this.controls[0].div.style.display = 'inline-block';
-        this.controls[0].div.style.width   = '100%';
+        this.controls[0].div.zIndex = 0;
 
    
         this.defaultValue = new NumberValue(defaultValue, decimals);
@@ -72750,32 +72720,18 @@ extends NumberParamBase
 
         this.controls[0].addEventListener('finishedit', e =>
         { 
-            let   dec    = decCount(e.detail.valueString); 
-            //const oldDec = decCount(e.detail.oldValueString);
-
+            let dec = decCount(e.detail.valueString); 
             
             if (!e.detail.success)
                 return;
 
 
-            //if (   Math.abs(e.detail.value - e.detail.oldValue) > Number.EPSILON
-            //    && dec >= oldDec)
             if (   Math.abs(e.detail.value - e.detail.oldValue) > Number.EPSILON
                 && this.controls[0].allowEditDecimals)
             {
                 this.setValue(new NumberValue(e.detail.value, dec), true);
                 e.preventSetValue = true;
             }
-            // else if (this.controls[0].allowEditDecimals)
-            // {
-            //     if (Math.abs(e.detail.value - e.detail.oldValue) <= Number.EPSILON)
-            //         dec += Math.log10(this.controls[0].valueScale);
-            //     else
-            //         dec = oldDec;
-
-            //     this.setValue(new NumberValue(e.detail.value, dec), true);
-            //     e.preventSetValue = true;
-            // }
         });
 
 
@@ -72863,10 +72819,6 @@ extends NumberParamBase
 
         this.controls[0].div.style.display = 'inline-block';
         this.controls[0].div.style.width   = '100%';
-
-        // this.controls[0].divName .style.display    = 'none';
-        // this.controls[0].divValue.style.transform  = 'translateX(-50%) translateY(-50%)';
-        // this.controls[0].divValue.style.marginLeft = 0;
 
        
         this.defaultValue = new NumberValue(defaultValue);
@@ -73505,6 +73457,10 @@ extends Parameter
 
         this.checkers.style.left               = '-3.5px';
         this.checkers.style.width              = 'calc(100% + 3.5px)';
+
+
+        this.divName .style.color = !isDark(this.value.toRgb()) ? this.textStyleDark : this.textStyleLight;
+        this.divName .style.opacity = 0.5;
 
 
         super.updateControls();
@@ -82800,7 +82756,7 @@ extends OperatorBase
         this.addInput (new Input ([NUMBER_VALUE], getNodeInputValuesForUndo, this.input_getBackInitValue));
         this.addOutput(new Output([NUMBER_VALUE], this.output_genRequest, getNodeOutputValuesForUndo, this.output_backInit));
 
-        this.addParam(this.paramValue = new NumberParam('value', '', true, false, false));
+        this.addParam(this.paramValue = new NumberParam('value', 'value', true, false, false));
 
         this.alwaysLoadParams = true;
     }
@@ -85477,7 +85433,7 @@ extends ResizableBase
         this.addInput (new Input (TEXT_TYPES, getNodeInputValuesForUndo, this.input_getBackInitValue));
         this.addOutput(new Output([TEXT_VALUE], this.output_genRequest, getNodeOutputValuesForUndo, this.output_backInit));
 
-        this.addParam(this.paramValue = new TextParam('value', '', true, false, false));
+        this.addParam(this.paramValue = new TextParam('value', 'value', true, false, false));
 
         this.paramValue.controls[0].textbox.defPlaceholder = '...';
         this.paramValue.controls[0].setFont('Roboto Mono', 10, 'center');
@@ -89828,7 +89784,7 @@ extends OpColorBase
         this.addOutput(new Output([FILL_VALUE], this.output_genRequest, getNodeOutputValuesForUndo, this.output_backInit));
 
 
-        this.addParam(this.paramColor   = new ColorParam ('color',   '',        false, true, true, ColorValue.fromRgb(rgbDefaultFill)));
+        this.addParam(this.paramColor   = new ColorParam ('color',   'color',   true, true, true, ColorValue.fromRgb(rgbDefaultFill)));
         this.addParam(this.paramOpacity = new NumberParam('opacity', 'opacity', true,  true, true, 100, 0, 100));
 
         this.paramOpacity.controls[0].suffix  = '%';

@@ -24,7 +24,16 @@ extends EventTarget
 
     controls       = [];
 
-    proxy          = null;
+    // proxy          = null;
+
+
+    backStyleLight  = 'rgba(255, 255, 255, 0.95)';
+    valueStyleLight = '#7772';
+    textStyleLight  = '#000';
+                
+    backStyleDark   = 'rgba(56, 56, 56, 0.95)';
+    valueStyleDark  = '#ffffff20';
+    textStyleDark   = '#eee';
 
 
     input;
@@ -56,22 +65,21 @@ extends EventTarget
     {
         super();
 
-        this._id                = id;
-        this.#name              = name;
-        this.#type              = type;
+        this._id                  = id;
+        this.#name                = name;
+        this.#type                = type;
+  
+        this.showName             = showName;
 
-        this.showName           = showName;
+        this._div                 = createDiv('paramDiv');
+        this.divName              = createDiv('paramName');
+        this.divControls          = createDiv('paramControls');
 
-        this._div               = createDiv();
-        this.divName            = createDiv('paramName');
-        this.divControls        = createDiv('paramControls');
+        this.div    .style.height = defParamHeight;
+        //this.divName.style.height = defParamHeight;
 
-        this.div.style.position = 'relative';
-        this.div.style.padding  = 0;
-        this.div.style.width    = '100%';
-
-        this.input              = null;
-        this.output             = null;
+        this.input                = null;
+        this.output               = null;
 
         this.div.appendChild(this.divName);
         this.div.appendChild(this.divControls);
@@ -169,31 +177,52 @@ extends EventTarget
 
     updateControls()
     {
-        checkControlVisible(this, this.controls[0]);
+        this.div.style.background = 
+            darkMode 
+            ? this.backStyleDark 
+            : this.backStyleLight;
 
-        this.controls[0].update();
-        
+
         if (this.input ) this.input .updateControl();
         if (this.output) this.output.updateControl();
+        
+       
+        this.controls.forEach(c => 
+        {
+            checkControlVisible(this, c);
+            c.update();
+        });
 
 
-        this.divName.innerHTML = this.name;
+        const  input = this.param && this.param. input;
+        const output = this.param && this.param.output;
+
+        const left = input ? 12 : 0;
+
+        const dw = 
+              ( input ? 12 : 0) 
+            + (output ? 12 : 0);
 
 
         if (this.showName)
         {
-            this.divName    .style.display    = 'inline-block';
-            this.divName    .style.right      = ((1-this.divider)*100) + '%';
-            this.divControls.style.left       = (   this.divider *100) + '%';
-            
-            this.divName    .style.transform  = 'translateX(' + (-(1-this.divider)*100) + '%' + ') tranlateY(-50%)';
-            this.divControls.style.transform  = 'translateX(' + (-   this.divider *100) + '%' + ') tranlateY(-50%)';
+            const nameSize = this.divider <= 1 ? ((   this.divider *100) + '%') : (this.divider + 'px');
+            const  valSize = this.divider <= 1 ? (((1-this.divider)*100) + '%') : ('calc(100% - ' + this.divider + 'px)');
 
+
+            this.divName .innerHTML           =  this.name;
+
+            this.divName .style.display       = 'inline-block';
+            this.divName .style.right         =  valSize;
+            this.divName .style.width         = 'calc(' + nameSize + ' - ' + (input ? 12 : 0) + 'px)';
+            
+            this.divControls.style.left       =  nameSize;
             this.divControls.style.marginLeft = '3px';
+            this.divControls.style.width      = 'calc(calc(' + valSize + ' - ' + (output ? 12 : 0) + 'px) - 3px)';
         }
         else
         {
-            this.divName    .style.display     = 'none';
+            this.divName    .style.display    = 'none';
             
             // this.divControls.style.left       = '50%';
             //this.divControls.style.transform  = 'translateX(-50%) translateY(-50%)';

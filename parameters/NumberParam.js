@@ -26,10 +26,7 @@ extends NumberParamBase
             dragScale); 
 
             
-        this.controls[0].div.zIndex        = 0;
-
-        this.controls[0].div.style.display = 'inline-block';
-        this.controls[0].div.style.width   = '100%';
+        this.controls[0].div.zIndex = 0;
 
    
         this.defaultValue = new NumberValue(defaultValue, decimals);
@@ -59,32 +56,18 @@ extends NumberParamBase
 
         this.controls[0].addEventListener('finishedit', e =>
         { 
-            let   dec    = decCount(e.detail.valueString); 
-            //const oldDec = decCount(e.detail.oldValueString);
-
+            let dec = decCount(e.detail.valueString); 
             
             if (!e.detail.success)
                 return;
 
 
-            //if (   Math.abs(e.detail.value - e.detail.oldValue) > Number.EPSILON
-            //    && dec >= oldDec)
             if (   Math.abs(e.detail.value - e.detail.oldValue) > Number.EPSILON
                 && this.controls[0].allowEditDecimals)
             {
                 this.setValue(new NumberValue(e.detail.value, dec), true);
                 e.preventSetValue = true;
             }
-            // else if (this.controls[0].allowEditDecimals)
-            // {
-            //     if (Math.abs(e.detail.value - e.detail.oldValue) <= Number.EPSILON)
-            //         dec += Math.log10(this.controls[0].valueScale);
-            //     else
-            //         dec = oldDec;
-
-            //     this.setValue(new NumberValue(e.detail.value, dec), true);
-            //     e.preventSetValue = true;
-            // }
         });
 
 
