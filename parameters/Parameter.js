@@ -226,7 +226,7 @@ extends EventTarget
             // this.divControls.style.left       = '50%';
             //this.divControls.style.transform  = 'translateX(-50%) translateY(-50%)';
             this.divControls.style.marginLeft =  0;
-            this.divControls.style.width      = 'auto';
+            this.divControls.style.width      = '100%';
         }
     }
 

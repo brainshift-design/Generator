@@ -150,6 +150,7 @@ extends Control
 
 
         this.param.div.appendChild(this.divBar);
+
         this.div.appendChild(this.divPrecision);
         this.div.appendChild(this.divValue);
         this.div.appendChild(this.divFocus);
@@ -418,16 +419,18 @@ extends Control
 
         if (this.param.showName)
         {
-            this.divValue.style.left       =  0;//(   this.divider *100) + '%';
-            this.divValue.style.transform  = 'translateY(-50%)';//translateX(' + (-   this.divider *100) + '%' + ') tranlateY(-50%)';
-            this.divValue.style.marginLeft = '3px';
+            this.div.style.left       =  0;//(   this.divider *100) + '%';
+            // this.div.style.transform  = 'translateY(-50%)';//translateX(' + (-   this.divider *100) + '%' + ') tranlateY(-50%)';
+            this.div.style.marginLeft = '3px';
+            this.div.style.textAlign  = 'left';
         }
         else
         {
-            this.divValue.style.left       = '50%';
-            this.divValue.style.transform  = 'translateX(-50%) translateY(-50%)';
-            this.divValue.style.marginLeft =  0;
+            this.div.style.left       = '50%';
+            // this.div.style.transform  = 'translateX(-50%) translateY(-50%)';
+            this.div.style.marginLeft =  0;
             // this.divValue.style.width      = 'auto';
+            this.div.style.textAlign  = 'center';
         }
     }
 

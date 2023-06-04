@@ -2671,7 +2671,7 @@ a
     transform:            translateY(-50%);
     white-space:          nowrap;
     margin-left:          3px;
-    /* box-shadow:           0 0 0 1px inset orange; */
+    box-shadow:           0 0 0 1px inset orange;
 }
 
 
@@ -3888,7 +3888,7 @@ a
     height:                auto;
     margin-right:          3px;
     position:              absolute;
-    /* box-shadow:            0 0 0 1px inset red; */
+    box-shadow:            0 0 0 1px inset red;
 }
 
 
@@ -63573,6 +63573,7 @@ extends Control
 
 
         this.param.div.appendChild(this.divBar);
+
         this.div.appendChild(this.divPrecision);
         this.div.appendChild(this.divValue);
         this.div.appendChild(this.divFocus);
@@ -63841,16 +63842,18 @@ extends Control
 
         if (this.param.showName)
         {
-            this.divValue.style.left       =  0;//(   this.divider *100) + '%';
-            this.divValue.style.transform  = 'translateY(-50%)';//translateX(' + (-   this.divider *100) + '%' + ') tranlateY(-50%)';
-            this.divValue.style.marginLeft = '3px';
+            this.div.style.left       =  0;//(   this.divider *100) + '%';
+            // this.div.style.transform  = 'translateY(-50%)';//translateX(' + (-   this.divider *100) + '%' + ') tranlateY(-50%)';
+            this.div.style.marginLeft = '3px';
+            this.div.style.textAlign  = 'left';
         }
         else
         {
-            this.divValue.style.left       = '50%';
-            this.divValue.style.transform  = 'translateX(-50%) translateY(-50%)';
-            this.divValue.style.marginLeft =  0;
+            this.div.style.left       = '50%';
+            // this.div.style.transform  = 'translateX(-50%) translateY(-50%)';
+            this.div.style.marginLeft =  0;
             // this.divValue.style.width      = 'auto';
+            this.div.style.textAlign  = 'center';
         }
     }
 
@@ -68807,7 +68810,7 @@ function initGeneratorMenus()
 
     btnMain   .setIcon(iconGenerator);
     btnShape  .setIcon(iconShapes);
-    btnLayer  .setIcon(iconStroke);
+    btnLayer  .setIcon(iconGradient);
     btnStyle  .setIcon(iconStyle);
     btnGroup  .setIcon(iconGroup);
     btnHand   .setIcon(iconHand);
@@ -72347,7 +72350,7 @@ extends EventTarget
             // this.divControls.style.left       = '50%';
             //this.divControls.style.transform  = 'translateX(-50%) translateY(-50%)';
             this.divControls.style.marginLeft =  0;
-            this.divControls.style.width      = 'auto';
+            this.divControls.style.width      = '100%';
         }
     }
 
@@ -82778,7 +82781,7 @@ extends OperatorBase
         this.addInput (new Input ([NUMBER_VALUE], getNodeInputValuesForUndo, this.input_getBackInitValue));
         this.addOutput(new Output([NUMBER_VALUE], this.output_genRequest, getNodeOutputValuesForUndo, this.output_backInit));
 
-        this.addParam(this.paramValue = new NumberParam('value', 'value', true, false, false));
+        this.addParam(this.paramValue = new NumberParam('value', 'value', false, false, false));
 
         this.alwaysLoadParams = true;
     }
@@ -83857,7 +83860,7 @@ extends OperatorWithValue
         this.addOutput(new Output([NUMBER_VALUE], this.output_genRequest));
 
         this.addParam(this.paramValue);
-        this.addParam(this.paramAmount = new NumberParam('amount', '', false, true, true, 50, 0, 100, 0));
+        this.addParam(this.paramAmount = new NumberParam('amount', 'amount', false, true, true, 50, 0, 100, 0));
 
         
         this.paramAmount.controls[0].min = Number.MIN_SAFE_INTEGER; // allow

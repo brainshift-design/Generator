@@ -15,7 +15,7 @@ extends OperatorWithValue
         this.addOutput(new Output([NUMBER_VALUE], this.output_genRequest));
 
         this.addParam(this.paramValue);
-        this.addParam(this.paramAmount = new NumberParam('amount', '', false, true, true, 50, 0, 100, 0));
+        this.addParam(this.paramAmount = new NumberParam('amount', 'amount', false, true, true, 50, 0, 100, 0));
 
         
         this.paramAmount.controls[0].min = Number.MIN_SAFE_INTEGER; // allow
