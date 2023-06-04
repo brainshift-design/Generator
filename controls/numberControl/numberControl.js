@@ -149,13 +149,13 @@ extends Control
         this.extRight              = createDiv('numberControlExt numberControlExtRight');
 
 
-        this.param.div.appendChild(this.divBar);
-
         this.div.appendChild(this.divPrecision);
         this.div.appendChild(this.divValue);
-        this.div.appendChild(this.divFocus);
-        this.div.appendChild(this.extLeft);
-        this.div.appendChild(this.extRight);
+        
+        this.param.div.appendChild(this.divBar);
+        this.param.div.appendChild(this.extLeft);
+        this.param.div.appendChild(this.extRight);
+        this.param.div.appendChild(this.divFocus);
 
 
         this.initTextbox();
@@ -419,18 +419,14 @@ extends Control
 
         if (this.param.showName)
         {
-            this.div.style.left       =  0;//(   this.divider *100) + '%';
-            // this.div.style.transform  = 'translateY(-50%)';//translateX(' + (-   this.divider *100) + '%' + ') tranlateY(-50%)';
             this.div.style.marginLeft = '3px';
-            this.div.style.textAlign  = 'left';
+            this.divValue.style.left  = '0';
         }
         else
         {
-            this.div.style.left       = '50%';
-            // this.div.style.transform  = 'translateX(-50%) translateY(-50%)';
-            this.div.style.marginLeft =  0;
-            // this.divValue.style.width      = 'auto';
-            this.div.style.textAlign  = 'center';
+            this.div.style.marginLeft     =  0;
+            this.divValue.style.left      = '50%';
+            this.divValue.style.transform = 'translateX(-50%) translateY(-50%)';
         }
     }
 

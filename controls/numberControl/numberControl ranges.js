@@ -79,7 +79,7 @@ NumberControl.prototype.updateRanges = function(controlWidth, controlHeight)
                 div.style.zIndex = 0;
 
                 this.rangeDivs.push(div);
-                this.div.appendChild(div);
+                this.param.div.appendChild(div);
             
                 updateControlRangeDiv(range, div, controlWidth, controlHeight);
             }
@@ -100,8 +100,8 @@ NumberControl.prototype.resetRanges = function()
 NumberControl.prototype.resetRangeDivs = function()
 {
     for (const div of this.rangeDivs)
-        if (this.div.contains(div))
-            this.div.removeChild(div);
+        if (this.param.div.contains(div))
+            this.param.div.removeChild(div);
 
     this.rangeDivs = [];
 };

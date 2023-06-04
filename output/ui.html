@@ -63572,13 +63572,13 @@ extends Control
         this.extRight              = createDiv('numberControlExt numberControlExtRight');
 
 
-        this.param.div.appendChild(this.divBar);
-
         this.div.appendChild(this.divPrecision);
         this.div.appendChild(this.divValue);
-        this.div.appendChild(this.divFocus);
-        this.div.appendChild(this.extLeft);
-        this.div.appendChild(this.extRight);
+        
+        this.param.div.appendChild(this.divBar);
+        this.param.div.appendChild(this.extLeft);
+        this.param.div.appendChild(this.extRight);
+        this.param.div.appendChild(this.divFocus);
 
 
         this.initTextbox();
@@ -63842,18 +63842,14 @@ extends Control
 
         if (this.param.showName)
         {
-            this.div.style.left       =  0;//(   this.divider *100) + '%';
-            // this.div.style.transform  = 'translateY(-50%)';//translateX(' + (-   this.divider *100) + '%' + ') tranlateY(-50%)';
             this.div.style.marginLeft = '3px';
-            this.div.style.textAlign  = 'left';
+            this.divValue.style.left  = '0';
         }
         else
         {
-            this.div.style.left       = '50%';
-            // this.div.style.transform  = 'translateX(-50%) translateY(-50%)';
-            this.div.style.marginLeft =  0;
-            // this.divValue.style.width      = 'auto';
-            this.div.style.textAlign  = 'center';
+            this.div.style.marginLeft     =  0;
+            this.divValue.style.left      = '50%';
+            this.divValue.style.transform = 'translateX(-50%) translateY(-50%)';
         }
     }
 
@@ -64253,7 +64249,7 @@ NumberControl.prototype.initTextbox = function()
         }
 
 
-        this.div.parentNode.removeChild(this.textbox);
+        this.param.div.parentNode.removeChild(this.textbox);
         this.clicked = false;
     });
     
@@ -64337,7 +64333,7 @@ NumberControl.prototype.initTextbox = function()
 
         if (   this.inFocus
             && focusControl)
-            this.div.focus();
+            this.param.div.focus();
     };    
 };
 
@@ -64348,18 +64344,19 @@ NumberControl.prototype.showTextbox = function()
     this.divValue.style.display = 'none';
 
     this.inFocus = 
-           hasFocus(this.div)
+           hasFocus(this.param.div)
         && !this.clicked;
 
         
-    this.textbox.style.width     = this.div.offsetWidth;
+    this.textbox.style.top       = this.param.div.offsetTop;
+    this.textbox.style.width     = this.param.div.offsetWidth;
     this.textbox.style.height    = defParamHeight;
     this.textbox.style.textAlign = 'center';
 
 
     this.updateTextbox();
     
-    this.div.parentNode.appendChild(this.textbox);
+    this.param.div.parentNode.appendChild(this.textbox);
     
     this.textbox.focus();
     this.textbox.select();
@@ -64469,7 +64466,7 @@ NumberControl.prototype.updateRanges = function(controlWidth, controlHeight)
                 div.style.zIndex = 0;
 
                 this.rangeDivs.push(div);
-                this.div.appendChild(div);
+                this.param.div.appendChild(div);
             
                 updateControlRangeDiv(range, div, controlWidth, controlHeight);
             }
@@ -64490,8 +64487,8 @@ NumberControl.prototype.resetRanges = function()
 NumberControl.prototype.resetRangeDivs = function()
 {
     for (const div of this.rangeDivs)
-        if (this.div.contains(div))
-            this.div.removeChild(div);
+        if (this.param.div.contains(div))
+            this.param.div.removeChild(div);
 
     this.rangeDivs = [];
 };

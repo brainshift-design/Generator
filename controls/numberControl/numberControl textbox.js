@@ -290,7 +290,7 @@ NumberControl.prototype.initTextbox = function()
         }
 
 
-        this.div.parentNode.removeChild(this.textbox);
+        this.param.div.parentNode.removeChild(this.textbox);
         this.clicked = false;
     });
     
@@ -374,7 +374,7 @@ NumberControl.prototype.initTextbox = function()
 
         if (   this.inFocus
             && focusControl)
-            this.div.focus();
+            this.param.div.focus();
     };    
 };
 
@@ -385,18 +385,19 @@ NumberControl.prototype.showTextbox = function()
     this.divValue.style.display = 'none';
 
     this.inFocus = 
-           hasFocus(this.div)
+           hasFocus(this.param.div)
         && !this.clicked;
 
         
-    this.textbox.style.width     = this.div.offsetWidth;
+    this.textbox.style.top       = this.param.div.offsetTop;
+    this.textbox.style.width     = this.param.div.offsetWidth;
     this.textbox.style.height    = defParamHeight;
     this.textbox.style.textAlign = 'center';
 
 
     this.updateTextbox();
     
-    this.div.parentNode.appendChild(this.textbox);
+    this.param.div.parentNode.appendChild(this.textbox);
     
     this.textbox.focus();
     this.textbox.select();
