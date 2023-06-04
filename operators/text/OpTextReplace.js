@@ -25,9 +25,9 @@ extends OperatorWithValue
         this.addParam(this.paramWith = new TextParam('with', 'with', false, true, true));
 
 
-        this.paramValue.controls[0].setFont('Roboto Mono', 10, 'center');
-        this.paramWhat .controls[0].setFont('Roboto Mono', 10, 'center');
-        this.paramWith .controls[0].setFont('Roboto Mono', 10, 'center');
+        setControlFont(this.paramValue.controls[0].textbox, 'Roboto Mono', 10, 'center');
+        setControlFont(this.paramWhat .controls[0].textbox, 'Roboto Mono', 10, 'center');
+        setControlFont(this.paramWith .controls[0].textbox, 'Roboto Mono', 10, 'center');
     }
 
 

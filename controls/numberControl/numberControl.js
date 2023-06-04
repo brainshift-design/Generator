@@ -419,13 +419,13 @@ extends Control
 
         if (this.param.showName)
         {
-            this.div.style.marginLeft     = '3px';
+            this.divValue.style.marginLeft     = '3px';
             this.divValue.style.left      =  0;
             this.divValue.style.transform = 'translateY(-50%)';
         }
         else
         {
-            this.div.style.marginLeft     =  0;
+            this.divValue.style.marginLeft     =  0;
             this.divValue.style.left      = '50%';
             this.divValue.style.transform = 'translateX(-50%) translateY(-50%)';
         }

@@ -195,11 +195,11 @@ extends EventTarget
 
 
 
-        const left = this.input ? 12 : 0;
+        const left = this.input || this.output ? 12 : 0;
 
         const dw = 
-              (this. input ? 12 : 0) 
-            + (this.output ? 12 : 0);
+              (left > 0 ? 12 : 0) 
+            + (left > 0 ? 12 : 0);
 
 
         if (this.showName)

@@ -27,11 +27,11 @@ extends OpColorBase
         this.checkersHolder.appendChild(this.checkers);
 
 
-        this.addInput (new Input([FILL_VALUE], getNodeInputValuesForUndo, this.input_getBackInitValue));
+        this.addInput (new Input ([FILL_VALUE], getNodeInputValuesForUndo, this.input_getBackInitValue));
         this.addOutput(new Output([FILL_VALUE], this.output_genRequest, getNodeOutputValuesForUndo, this.output_backInit));
 
 
-        this.addParam(this.paramColor   = new ColorParam ('color',   'color',   true, true, true, ColorValue.fromRgb(rgbDefaultFill)));
+        this.addParam(this.paramColor   = new ColorParam ('color',   'color',   false, true, true, ColorValue.fromRgb(rgbDefaultFill)));
         this.addParam(this.paramOpacity = new NumberParam('opacity', 'opacity', true,  true, true, 100, 0, 100));
 
         this.paramOpacity.controls[0].suffix  = '%';

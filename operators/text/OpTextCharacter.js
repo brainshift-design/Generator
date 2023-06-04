@@ -20,9 +20,10 @@ extends OperatorWithValue
 
         this.paramCode.controls[0].showHex           = true;
         this.paramCode.controls[0].allowEditDecimals = false;
-        this.paramCode.controls[0].divider           = 0.56;
+        
+        this.paramCode.divider = 0.56;
 
-        this.paramCode.controls[0].setFont('Roboto Mono', 10, 'center');
+        setControlFont(this.paramCode.controls[0].divValue, 'Roboto Mono', 10, 'center');
     }
 
 

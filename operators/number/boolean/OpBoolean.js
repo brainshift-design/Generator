@@ -79,7 +79,7 @@ extends OperatorWithValue
         this.paramValue    .enableControlText(false);
         this.paramOperation.enableControlText(true);
 
-        this.paramValue.controls[0].text.style.fontStyle = 
+        this.paramValue.controls[0].divValue.style.fontStyle = 
                settings.showBoolValues 
             && this.paramValue.value.isValid()
             ? 'normal' 
@@ -93,7 +93,7 @@ extends OperatorWithValue
               && !isNaN(v))               this.paramValue.controls[0].valueText = v != 0 ? getTrueDisplay() : getFalseDisplay();
         else                              this.paramValue.controls[0].valueText = '';
 
-        this.paramValue.controls[0].text.style.letterSpacing = settings.showBoolValues ? '0.1em' : 0;
+        this.paramValue.controls[0].divValue.style.letterSpacing = settings.showBoolValues ? '0.1em' : 0;
 
         this.paramValue.controls[0].showBar = !this.isUnknown();
 

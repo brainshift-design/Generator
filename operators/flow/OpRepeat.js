@@ -22,8 +22,8 @@ extends OperatorBase
 
 
         this.paramCount.controls[0].allowEditDecimals = false;
-        this.paramCount.controls[0].divider = 0.56;
-        this.paramCount.affectsHeader = false;
+        this.paramCount.divider                       = 0.56;
+        this.paramCount.affectsHeader                 = false;
 
         this.paramLoop.input.types.push(NUMBER_LIST_VALUE);
         this.paramLoop.input.types.push(START);

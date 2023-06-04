@@ -16230,10 +16230,10 @@ extends GNumberType
 
         switch (Math.min(Math.max(0, constant.toNumber()), 5))
         {
-            case 0: value = 0.6180339887; break; // phi
-            case 1: value = 1.4142135623; break; // √̅2
-            case 2: value = 1.6180339887; break; // PHI
-            case 3: value = 2.7182818284; break; // e
+            case 0: value = 1.4142135623; break; // √̅2
+            case 1: value = 2.7182818284; break; // e
+            case 2: value = 0.6180339887; break; // phi
+            case 3: value = 1.6180339887; break; // PHI
             case 4: value = 3.1415926536; break; // pi
             case 5: value = 6.2831853072; break; // tau
         }
@@ -51013,10 +51013,10 @@ extends GNumberType
 
         switch (Math.min(Math.max(0, constant.toNumber()), 5))
         {
-            case 0: value = 0.6180339887; break; // phi
-            case 1: value = 1.4142135623; break; // √̅2
-            case 2: value = 1.6180339887; break; // PHI
-            case 3: value = 2.7182818284; break; // e
+            case 0: value = 1.4142135623; break; // √̅2
+            case 1: value = 2.7182818284; break; // e
+            case 2: value = 0.6180339887; break; // phi
+            case 3: value = 1.6180339887; break; // PHI
             case 4: value = 3.1415926536; break; // pi
             case 5: value = 6.2831853072; break; // tau
         }
@@ -63297,10 +63297,7 @@ extends EventTarget
         // this.divValue.style.transform  = 'translateX(-50%)';
         // this.divValue.style.marginLeft =  0;
 
-        this.div.style.width = 
-            this.param.showName
-            ? 'calc(100% - 3px)'
-            : '100%';
+        this.div.style.width = '100%';
     }
 
 
@@ -63846,13 +63843,13 @@ extends Control
 
         if (this.param.showName)
         {
-            this.div.style.marginLeft     = '3px';
+            this.divValue.style.marginLeft     = '3px';
             this.divValue.style.left      =  0;
             this.divValue.style.transform = 'translateY(-50%)';
         }
         else
         {
-            this.div.style.marginLeft     =  0;
+            this.divValue.style.marginLeft     =  0;
             this.divValue.style.left      = '50%';
             this.divValue.style.transform = 'translateX(-50%) translateY(-50%)';
         }
@@ -65242,13 +65239,6 @@ extends Control
     //     // this.textbox.style.left  = left + 'px';
     //     // this.textbox.style.width = 'calc(100% - ' + dw + 'px)';
     // }
-
-
-
-    setFont(family, size, align)
-    {
-        setControlFont(this.textbox, family, size, align);
-    }
 
 
 
@@ -72321,11 +72311,11 @@ extends EventTarget
 
 
 
-        const left = this.input ? 12 : 0;
+        const left = this.input || this.output ? 12 : 0;
 
         const dw = 
-              (this. input ? 12 : 0) 
-            + (this.output ? 12 : 0);
+              (left > 0 ? 12 : 0) 
+            + (left > 0 ? 12 : 0);
 
 
         if (this.showName)
@@ -81654,6 +81644,8 @@ extends OperatorBase
         this.addOutput(new Output([ANY_VALUE], this.output_genRequest));
 
         this.addParam(this.paramIndex = new NumberParam('index', 'index', true, true, false, 0, 0));
+
+        this.paramIndex.divider                       = 0.55;
         this.paramIndex.controls[0].allowEditDecimals = false;
 
 
@@ -81844,7 +81836,7 @@ extends OperatorBase
 
         this.addParam(this.paramCondition = new NumberParam('condition', 'condition', true, true, true, 1, 0, 1));
 
-        this.paramCondition.controls[0].divider = 0.65;
+        this.paramCondition.divider = 0.62;
 
 
         this.inputs[0].addEventListener('connect',    () => OpIfElse_onConnectInput(this, 0));
@@ -82288,8 +82280,8 @@ extends OperatorBase
 
 
         this.paramCount.controls[0].allowEditDecimals = false;
-        this.paramCount.controls[0].divider = 0.56;
-        this.paramCount.affectsHeader = false;
+        this.paramCount.divider                       = 0.56;
+        this.paramCount.affectsHeader                 = false;
 
         this.paramLoop.input.types.push(NUMBER_LIST_VALUE);
         this.paramLoop.input.types.push(START);
@@ -83449,7 +83441,9 @@ extends OperatorWithValue
         this.addOutput(new Output([NUMBER_VALUE], this.output_genRequest));
 
         this.addParam(this.paramValue);
-        this.addParam(this.paramConstant = new SelectParam('constant', 'constant', false, true, true, ['φ', '√2', 'Φ', 'e', 'π', 'τ'], 4));
+        this.addParam(this.paramConstant = new SelectParam('constant', 'constant', false, true, true, ['√2', 'e', 'φ', 'Φ', 'π', 'τ'], 4));
+
+        this.paramConstant.reverseMenu = true;
     }
 
 
@@ -84837,7 +84831,7 @@ extends OperatorWithValue
         this.paramValue    .enableControlText(false);
         this.paramOperation.enableControlText(true);
 
-        this.paramValue.controls[0].text.style.fontStyle = 
+        this.paramValue.controls[0].divValue.style.fontStyle = 
                settings.showBoolValues 
             && this.paramValue.value.isValid()
             ? 'normal' 
@@ -84851,7 +84845,7 @@ extends OperatorWithValue
               && !isNaN(v))               this.paramValue.controls[0].valueText = v != 0 ? getTrueDisplay() : getFalseDisplay();
         else                              this.paramValue.controls[0].valueText = '';
 
-        this.paramValue.controls[0].text.style.letterSpacing = settings.showBoolValues ? '0.1em' : 0;
+        this.paramValue.controls[0].divValue.style.letterSpacing = settings.showBoolValues ? '0.1em' : 0;
 
         this.paramValue.controls[0].showBar = !this.isUnknown();
 
@@ -85465,7 +85459,7 @@ extends ResizableBase
         this.addParam(this.paramValue = new TextParam('value', 'value', true, false, false));
 
         this.paramValue.controls[0].textbox.defPlaceholder = '...';
-        this.paramValue.controls[0].setFont('Roboto Mono', 10, 'center');
+        setControlFont(this.paramValue.controls[0].textbox, 'Roboto Mono', 10, 'center');
 
 
         //this.header.addEventListener('pointerdown', e => this.paramValue.controls[0].textbox.blur());
@@ -85645,9 +85639,9 @@ extends OperatorWithValue
         this.addParam(this.paramEnd   = new TextParam('end',   'end',   false, true, true, ' '));
 
 
-        this.paramValue.controls[0].setFont('Roboto Mono', 10, 'center');
-        this.paramStart.controls[0].setFont('Roboto Mono', 10, 'center');
-        this.paramEnd  .controls[0].setFont('Roboto Mono', 10, 'center');
+        setControlFont(this.paramValue.controls[0].textbox, 'Roboto Mono', 10, 'center');
+        setControlFont(this.paramStart.controls[0].textbox, 'Roboto Mono', 10, 'center');
+        setControlFont(this.paramEnd  .controls[0].textbox, 'Roboto Mono', 10, 'center');
     }
 
 
@@ -85819,9 +85813,10 @@ extends OperatorWithValue
 
         this.paramCode.controls[0].showHex           = true;
         this.paramCode.controls[0].allowEditDecimals = false;
-        this.paramCode.controls[0].divider           = 0.56;
+        
+        this.paramCode.divider = 0.56;
 
-        this.paramCode.controls[0].setFont('Roboto Mono', 10, 'center');
+        setControlFont(this.paramCode.controls[0].divValue, 'Roboto Mono', 10, 'center');
     }
 
 
@@ -85896,9 +85891,9 @@ extends OperatorWithValue
         this.addParam(this.paramWith = new TextParam('with', 'with', false, true, true));
 
 
-        this.paramValue.controls[0].setFont('Roboto Mono', 10, 'center');
-        this.paramWhat .controls[0].setFont('Roboto Mono', 10, 'center');
-        this.paramWith .controls[0].setFont('Roboto Mono', 10, 'center');
+        setControlFont(this.paramValue.controls[0].textbox, 'Roboto Mono', 10, 'center');
+        setControlFont(this.paramWhat .controls[0].textbox, 'Roboto Mono', 10, 'center');
+        setControlFont(this.paramWith .controls[0].textbox, 'Roboto Mono', 10, 'center');
     }
 
 
@@ -86243,8 +86238,8 @@ extends ResizableOperatorWithValue
         this.addParam(this.paramRequest = new TextParam('request', 'request', false, true, true));
 
 
-        this.paramValue  .controls[0].setFont('Roboto Mono', 10, 'center');
-        this.paramRequest.controls[0].setFont('Roboto Mono', 10, 'center');
+        setControlFont(this.paramValue  .controls[0].textbox, 'Roboto Mono', 10, 'center');
+        setControlFont(this.paramRequest.controls[0].textbox, 'Roboto Mono', 10, 'center');
     }
 
 
@@ -89809,11 +89804,11 @@ extends OpColorBase
         this.checkersHolder.appendChild(this.checkers);
 
 
-        this.addInput (new Input([FILL_VALUE], getNodeInputValuesForUndo, this.input_getBackInitValue));
+        this.addInput (new Input ([FILL_VALUE], getNodeInputValuesForUndo, this.input_getBackInitValue));
         this.addOutput(new Output([FILL_VALUE], this.output_genRequest, getNodeOutputValuesForUndo, this.output_backInit));
 
 
-        this.addParam(this.paramColor   = new ColorParam ('color',   'color',   true, true, true, ColorValue.fromRgb(rgbDefaultFill)));
+        this.addParam(this.paramColor   = new ColorParam ('color',   'color',   false, true, true, ColorValue.fromRgb(rgbDefaultFill)));
         this.addParam(this.paramOpacity = new NumberParam('opacity', 'opacity', true,  true, true, 100, 0, 100));
 
         this.paramOpacity.controls[0].suffix  = '%';

@@ -18,6 +18,8 @@ extends OperatorBase
         this.addOutput(new Output([ANY_VALUE], this.output_genRequest));
 
         this.addParam(this.paramIndex = new NumberParam('index', 'index', true, true, false, 0, 0));
+
+        this.paramIndex.divider                       = 0.55;
         this.paramIndex.controls[0].allowEditDecimals = false;
 
 

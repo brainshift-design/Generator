@@ -111,13 +111,6 @@ extends Control
 
 
 
-    setFont(family, size, align)
-    {
-        setControlFont(this.textbox, family, size, align);
-    }
-
-
-
     setValue(value, fireChangeEvent = true, updateControl = true)
     {
         if (typeof value != 'string')

@@ -19,7 +19,7 @@ extends ResizableBase
         this.addParam(this.paramValue = new TextParam('value', 'value', true, false, false));
 
         this.paramValue.controls[0].textbox.defPlaceholder = '...';
-        this.paramValue.controls[0].setFont('Roboto Mono', 10, 'center');
+        setControlFont(this.paramValue.controls[0].textbox, 'Roboto Mono', 10, 'center');
 
 
         //this.header.addEventListener('pointerdown', e => this.paramValue.controls[0].textbox.blur());
