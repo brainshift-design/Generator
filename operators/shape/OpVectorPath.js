@@ -36,7 +36,7 @@ extends OpShape
 
         this.paramDegree.reverseMenu =  true;
 
-        this.paramRound.controls[0].divider = 0.565;
+        this.paramRound.divider = 0.565;
 
 
         this.addBaseParams();

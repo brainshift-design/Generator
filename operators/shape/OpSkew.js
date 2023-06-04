@@ -15,8 +15,8 @@ extends OpAffine
         this.addParam(this.paramSkewY = new NumberParam('skewY', 'skew Y', true, true, true));
     
     
-        this.paramSkewX.controls[0].divider = 0.55;
-        this.paramSkewY.controls[0].divider = 0.55;
+        this.paramSkewX.divider = 0.55;
+        this.paramSkewY.divider = 0.55;
 
 
         this.addBaseParams();

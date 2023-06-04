@@ -23,7 +23,6 @@ extends OperatorBase
         this.addInput (new Input ([...SHAPE_VALUES, LIST_VALUE]));
         this.addOutput(new Output([SHAPE_VALUE], this.output_genRequest));
 
-
         this.inputs[0].addEventListener('connect',    () => OpAffine_onConnectInput   (this));
         this.inputs[0].addEventListener('disconnect', () => OpAffine_onDisconnectInput(this));
     }
@@ -51,10 +50,10 @@ extends OperatorBase
         this.paramShowCenter .controls[0].allowEditDecimals = false;
         this.paramAffectSpace.controls[0].allowEditDecimals = false;
 
-        this.paramCenterX    .controls[0].divider = 0.55;
-        this.paramCenterY    .controls[0].divider = 0.55;
-        this.paramShowCenter .controls[0].divider = 0.72;
-        this.paramAffectSpace.controls[0].divider = 0.72;
+        this.paramCenterX    .divider = 0.55;
+        this.paramCenterY    .divider = 0.55;
+        this.paramShowCenter .divider = 0.71;
+        this.paramAffectSpace.divider = 0.71;
 
 
         this.menuBoolShowCenter  = createBoolMenu(this.paramShowCenter );

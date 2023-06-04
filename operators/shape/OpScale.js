@@ -15,11 +15,11 @@ extends OpAffine
         this.addParam(this.paramScaleY = new NumberParam('scaleY', 'height', true, true, true, 100));
 
 
-        this.paramScaleX.controls[0].suffix  = '%';
-        this.paramScaleY.controls[0].suffix  = '%';
+        this.paramScaleX.controls[0].suffix = '%';
+        this.paramScaleY.controls[0].suffix = '%';
 
-        this.paramScaleX.controls[0].divider = 0.55;
-        this.paramScaleY.controls[0].divider = 0.55;
+        this.paramScaleX.divider            = 0.55;
+        this.paramScaleY.divider            = 0.55;
 
         this.paramScaleX.controls[0].setMin(0);
         this.paramScaleY.controls[0].setMin(0);

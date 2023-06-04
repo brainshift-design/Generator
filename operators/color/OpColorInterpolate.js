@@ -35,7 +35,7 @@ extends OpColorBase
 
         this.paramAmount.controls[0].setSuffix('%', true);
 
-        this.paramGamma.controls[0].divider = 0.54;
+        this.paramGamma.divider = 0.54;
         
 
         this.header.connectionPadding = 12.5;

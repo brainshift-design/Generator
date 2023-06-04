@@ -32,7 +32,7 @@ extends OperatorBase
 
 
         this.setAllParamDividers(0.55);
-        this.paramBehind.controls[0].divider = 0.74;
+        this.paramBehind.divider = 0.71;
     }
     
     

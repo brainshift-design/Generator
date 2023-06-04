@@ -16,7 +16,7 @@ extends OpAffine
 
         this.paramAngle.controls[0].suffix      = '°';
         this.paramAngle.controls[0].dragReverse = true;
-        this.paramAngle.controls[0].divider     = 0.55;
+        this.paramAngle.divider                 = 0.55;
 
 
         this.addBaseParams();
