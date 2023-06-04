@@ -2,7 +2,7 @@
 {
     box-shadow: 0 0 0 1px inset #9000ff;
     overflow:   hidden;
-    width:            10;
+    /* width:            10; */
     /* position:   absolute; */
     /* height:     auto; */
 }

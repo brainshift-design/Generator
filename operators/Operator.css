@@ -471,7 +471,7 @@
     top:            0;
     width:          100%;
     height:         100%;    
-    box-shadow:     0 0 0 1px red inset;
+    /* box-shadow:     0 0 0 1px red inset; */
     z-index:        10000;
     pointer-events: none;
 }

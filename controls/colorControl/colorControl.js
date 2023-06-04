@@ -70,7 +70,8 @@ extends Control
         this.focus       = createDiv('colorControlFocus');
     
         this.div.appendChild(this.divValue);
-        this.div.appendChild(this.focus);
+
+        this.param.div.appendChild(this.focus);
 
         
         this.initTextbox();
@@ -182,16 +183,15 @@ extends Control
         
         if (this.param.showName)
         {
-            this.divValue.style.left       = 0;//(this.param.divider *100) + '%';
-            this.divValue.style.transform  = 'none';//translateX(' + (-   this.divider *100) + '%' + ') tranlateY(-50%)';
             this.divValue.style.marginLeft = '3px';
+            this.divValue.style.left       =  0;
+            this.divValue.style.transform  = 'none';
         }
         else
         {
-            // this.divValue.style.left       = '50%';
-            // this.divValue.style.transform  = 'translateX(-50%)';// translateY(-50%)';
             this.divValue.style.marginLeft =  0;
-            // this.divValue.style.width      = 'auto';
+            this.divValue.style.left       = '50%';
+            this.divValue.style.transform  = 'translateX(-50%)';
         }
     };
 

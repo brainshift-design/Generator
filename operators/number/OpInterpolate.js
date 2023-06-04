@@ -9,6 +9,9 @@ extends OperatorWithValue
     {
         super(NUMBER_INTERPOLATE, 'inter', 'interpolate', iconInterpolate);
 
+        this.iconOffsetY = -2;
+
+
         this.addInput(new Input(NUMBER_TYPES));
         this.addInput(new Input(NUMBER_TYPES));
 

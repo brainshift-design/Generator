@@ -194,14 +194,12 @@ extends EventTarget
         });
 
 
-        const  input = this.param && this.param. input;
-        const output = this.param && this.param.output;
 
-        const left = input ? 12 : 0;
+        const left = this.input ? 12 : 0;
 
         const dw = 
-              ( input ? 12 : 0) 
-            + (output ? 12 : 0);
+              (this. input ? 12 : 0) 
+            + (this.output ? 12 : 0);
 
 
         if (this.showName)
@@ -213,11 +211,11 @@ extends EventTarget
    
             this.divName    .style.display    = 'inline-block';
             this.divName    .style.right      =  valSize;
-            this.divName    .style.width      = 'calc(' + nameSize + ' - ' + (input ? 12 : 0) + 'px)';
+            this.divName    .style.width      = 'calc(' + nameSize + ' - ' + (this.input ? 12 : 0) + 'px)';
             
             this.divControls.style.left       =  nameSize;
             this.divControls.style.marginLeft = '3px';
-            this.divControls.style.width      = 'calc(calc(' + valSize + ' - ' + (output ? 12 : 0) + 'px) - 3px)';
+            this.divControls.style.width      = 'calc(calc(' + valSize + ' - ' + (this.output ? 12 : 0) + 'px) - 3px)';
         }
         else
         {
@@ -226,7 +224,8 @@ extends EventTarget
             // this.divControls.style.left       = '50%';
             //this.divControls.style.transform  = 'translateX(-50%) translateY(-50%)';
             this.divControls.style.marginLeft =  0;
-            this.divControls.style.width      = '100%';
+            this.divControls.style.left       =  left+'px';
+            this.divControls.style.width      = 'calc(100% - ' + dw + 'px)';
         }
     }
 

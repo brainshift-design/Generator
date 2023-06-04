@@ -2612,7 +2612,7 @@ a
 {
     box-shadow: 0 0 0 1px inset #9000ff;
     overflow:   hidden;
-    width:            10;
+    /* width:            10; */
     /* position:   absolute; */
     /* height:     auto; */
 }
@@ -3715,7 +3715,7 @@ a
     top:            0;
     width:          100%;
     height:         100%;    
-    box-shadow:     0 0 0 1px red inset;
+    /* box-shadow:     0 0 0 1px red inset; */
     z-index:        10000;
     pointer-events: none;
 }
@@ -63296,7 +63296,11 @@ extends EventTarget
         // this.divValue.style.left       = '50%';
         // this.divValue.style.transform  = 'translateX(-50%)';
         // this.divValue.style.marginLeft =  0;
-        this.div.style.width      = 'calc(100% - ' + dw + 'px)';
+
+        this.div.style.width = 
+            this.param.showName
+            ? 'calc(100% - 3px)'
+            : '100%';
     }
 
 
@@ -63842,8 +63846,9 @@ extends Control
 
         if (this.param.showName)
         {
-            this.div.style.marginLeft = '3px';
-            this.divValue.style.left  = '0';
+            this.div.style.marginLeft     = '3px';
+            this.divValue.style.left      =  0;
+            this.divValue.style.transform = 'translateY(-50%)';
         }
         else
         {
@@ -65899,7 +65904,8 @@ extends Control
         this.focus       = createDiv('colorControlFocus');
     
         this.div.appendChild(this.divValue);
-        this.div.appendChild(this.focus);
+
+        this.param.div.appendChild(this.focus);
 
         
         this.initTextbox();
@@ -66011,16 +66017,15 @@ extends Control
         
         if (this.param.showName)
         {
-            this.divValue.style.left       = 0;//(this.param.divider *100) + '%';
-            this.divValue.style.transform  = 'none';//translateX(' + (-   this.divider *100) + '%' + ') tranlateY(-50%)';
             this.divValue.style.marginLeft = '3px';
+            this.divValue.style.left       =  0;
+            this.divValue.style.transform  = 'none';
         }
         else
         {
-            // this.divValue.style.left       = '50%';
-            // this.divValue.style.transform  = 'translateX(-50%)';// translateY(-50%)';
             this.divValue.style.marginLeft =  0;
-            // this.divValue.style.width      = 'auto';
+            this.divValue.style.left       = '50%';
+            this.divValue.style.transform  = 'translateX(-50%)';
         }
     };
 
@@ -66907,7 +66912,7 @@ const iconDateTime          = '<svg width="18" height="21" viewBox="0 -3 18 21" 
 const iconArray             = '<svg width="17" height="11" viewBox="0 -3 17 11" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M2.48667 0.0807575V5.98759H1.30863V1.26616H1.27598L0 2.11412V1.00658L1.37937 0.0807575H2.48667Z" fill="white"/><path d="M5.83103 5.98759V5.08772L7.81438 3.14089C7.98306 2.96784 8.12454 2.81209 8.2388 2.67365C8.35489 2.53521 8.44285 2.39965 8.50271 2.26698C8.56256 2.13238 8.59249 1.98721 8.59249 1.83146C8.59249 1.65841 8.55531 1.5094 8.48094 1.38441C8.40658 1.25751 8.30501 1.16041 8.17623 1.09311C8.04745 1.02389 7.90144 0.989279 7.73821 0.989279C7.56771 0.989279 7.41898 1.02581 7.29202 1.09888C7.16505 1.17194 7.06711 1.27674 6.99819 1.41326C6.92927 1.54977 6.8948 1.71225 6.8948 1.90068H5.77662C5.77662 1.5142 5.85914 1.17867 6.0242 0.894101C6.18925 0.609527 6.4205 0.389366 6.71796 0.23362C7.01542 0.0778732 7.35822 0 7.74637 0C8.1454 0 8.49273 0.0749891 8.78838 0.224967C9.08583 0.373023 9.31709 0.578762 9.48214 0.842185C9.64719 1.10561 9.72972 1.40749 9.72972 1.74782C9.72972 1.97087 9.688 2.19103 9.60457 2.4083C9.52295 2.62558 9.37694 2.86689 9.16655 3.13224C8.95615 3.39566 8.6596 3.71196 8.27689 4.08114L7.46342 4.92621V4.96658H9.80318V5.98759H5.83103Z" fill="white"/><path d="M14.8561 6.06835C14.4498 6.06835 14.088 5.99432 13.7706 5.84626C13.455 5.69629 13.2056 5.49055 13.0224 5.22905C12.841 4.96562 12.7476 4.66182 12.7422 4.31764H13.9284C13.9356 4.46185 13.9801 4.58875 14.0617 4.69835C14.1451 4.80603 14.2557 4.88967 14.3936 4.94928C14.5314 5.00889 14.6865 5.03869 14.8588 5.03869C15.0384 5.03869 15.1971 5.00504 15.3349 4.93774C15.4728 4.87044 15.5807 4.77719 15.6587 4.65798C15.7367 4.53876 15.7757 4.40128 15.7757 4.24554C15.7757 4.08787 15.734 3.94846 15.6505 3.82733C15.5689 3.70427 15.451 3.60813 15.2968 3.53891C15.1445 3.46969 14.9631 3.43508 14.7527 3.43508H14.2331V2.5179H14.7527C14.9305 2.5179 15.0874 2.48522 15.2234 2.41984C15.3612 2.35446 15.4682 2.26409 15.5444 2.14873C15.6206 2.03144 15.6587 1.89492 15.6587 1.73917C15.6587 1.59111 15.6251 1.46133 15.558 1.3498C15.4927 1.23636 15.4002 1.14791 15.2805 1.08446C15.1626 1.02101 15.0248 0.989279 14.867 0.989279C14.7074 0.989279 14.5614 1.02004 14.429 1.08157C14.2966 1.14118 14.1905 1.22674 14.1106 1.33827C14.0308 1.44979 13.9882 1.58054 13.9828 1.73052H12.8537C12.8591 1.39018 12.9507 1.09023 13.1285 0.830648C13.3062 0.571071 13.5457 0.368216 13.8467 0.222083C14.1496 0.0740277 14.4915 0 14.8724 0C15.2569 0 15.5934 0.0740277 15.8818 0.222083C16.1702 0.370138 16.3942 0.570109 16.5538 0.821996C16.7152 1.07196 16.795 1.35269 16.7932 1.66418C16.795 1.9949 16.698 2.27082 16.5021 2.49194C16.308 2.71307 16.055 2.85343 15.743 2.91304V2.95918C16.1529 3.01495 16.4649 3.16589 16.6789 3.412C16.8948 3.6562 17.0018 3.96192 17 4.32918C17.0018 4.66567 16.9102 4.96466 16.7252 5.22616C16.542 5.48766 16.289 5.6934 15.9661 5.84338C15.6433 5.99336 15.2733 6.06835 14.8561 6.06835Z" fill="white"/><path d="M4.86855 5.17999L4.8254 5.56683C4.79141 5.8763 4.72604 6.1846 4.62929 6.49173C4.53516 6.8012 4.4358 7.08137 4.33121 7.33223C4.22923 7.58309 4.14686 7.78002 4.08411 7.92303H3.00159C3.04081 7.78471 3.09441 7.59129 3.1624 7.34278C3.23038 7.09661 3.29444 6.81996 3.35458 6.51283C3.41472 6.2057 3.45264 5.89271 3.46833 5.57387L3.48794 5.17999H4.86855Z" fill="white"/><path d="M12.1554 5.17999L12.1123 5.56683C12.0783 5.8763 12.0129 6.1846 11.9162 6.49173C11.822 6.8012 11.7227 7.08137 11.6181 7.33223C11.5161 7.58309 11.4337 7.78002 11.371 7.92303H10.2885C10.3277 7.78471 10.3813 7.59129 10.4493 7.34278C10.5172 7.09661 10.5813 6.81996 10.6414 6.51283C10.7016 6.2057 10.7395 5.89271 10.7552 5.57387L10.7748 5.17999H12.1554Z" fill="white"/></svg>';
 const iconDistribute        = '<svg width="19" height="7" viewBox="0 0 19 7" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="18" width="1" height="7" fill="white"/><rect width="1" height="7" fill="white"/><rect x="6" width="1" height="7" fill="white"/><rect x="3" y="3" width="1" height="1" fill="white"/><rect x="9" y="3" width="1" height="1" fill="white"/><rect x="15" y="3" width="1" height="1" fill="white"/><rect x="12" width="1" height="7" fill="white"/></svg>';
 const iconSequence          = '<svg width="16" height="11" viewBox="0 0 16 11" fill="none" xmlns="http://www.w3.org/2000/svg"><rect y="9" width="1" height="2" fill="white"/><rect x="5" y="6" width="1" height="5" fill="white"/><rect x="10" y="3" width="1" height="8" fill="white"/><rect x="15" width="1" height="11" fill="white"/></svg>';
-const iconInterpolate       = '<svg width="19" height="13" viewBox="0 -1 19 13" fill="none" xmlns="http://www.w3.org/2000/svg"><line x1="0.284818" y1="10.6077" x2="18.759" y2="0.444666" stroke="white"/><ellipse cx="9.99556" cy="5.22745" rx="1.45202" ry="2.24173" transform="rotate(-25.1301 9.99556 5.22745)" fill="white"/></svg>';
+const iconInterpolate       = '<svg width="17" height="17" viewBox="0 0 17 17" fill="none" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" clip-rule="evenodd" d="M16.3083 1.39886L1.39882 16.3083L0.691711 15.6012L15.6012 0.691755L16.3083 1.39886Z" fill="white"/><circle cx="9" cy="8" r="2" fill="white"/></svg>';
 const iconSolve             = '<svg width="18" height="14" viewBox="-4 0 18 14" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="5.5" cy="5.5" r="5" stroke="white"/><rect x="9.44473" y="8.55527" width="6.21958" height="1.25789" transform="rotate(45 9.44473 8.55527)" fill="white"/><path d="M4.40227 3L5.5 4.8457L6.61544 3H7.97167L6.33215 5.5L8 8H6.65085L5.5 6.19987L4.35977 8H3L4.65722 5.5L3.04249 3H4.40227Z" fill="white"/></svg>';
 const iconAnimate           = '<svg width="9" height="13" viewBox="0 0 9 13" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M0 13V0L9 6.5L0 13Z" fill="white"/></svg>';
  
@@ -72315,14 +72320,12 @@ extends EventTarget
         });
 
 
-        const  input = this.param && this.param. input;
-        const output = this.param && this.param.output;
 
-        const left = input ? 12 : 0;
+        const left = this.input ? 12 : 0;
 
         const dw = 
-              ( input ? 12 : 0) 
-            + (output ? 12 : 0);
+              (this. input ? 12 : 0) 
+            + (this.output ? 12 : 0);
 
 
         if (this.showName)
@@ -72334,11 +72337,11 @@ extends EventTarget
    
             this.divName    .style.display    = 'inline-block';
             this.divName    .style.right      =  valSize;
-            this.divName    .style.width      = 'calc(' + nameSize + ' - ' + (input ? 12 : 0) + 'px)';
+            this.divName    .style.width      = 'calc(' + nameSize + ' - ' + (this.input ? 12 : 0) + 'px)';
             
             this.divControls.style.left       =  nameSize;
             this.divControls.style.marginLeft = '3px';
-            this.divControls.style.width      = 'calc(calc(' + valSize + ' - ' + (output ? 12 : 0) + 'px) - 3px)';
+            this.divControls.style.width      = 'calc(calc(' + valSize + ' - ' + (this.output ? 12 : 0) + 'px) - 3px)';
         }
         else
         {
@@ -72347,7 +72350,8 @@ extends EventTarget
             // this.divControls.style.left       = '50%';
             //this.divControls.style.transform  = 'translateX(-50%) translateY(-50%)';
             this.divControls.style.marginLeft =  0;
-            this.divControls.style.width      = '100%';
+            this.divControls.style.left       =  left+'px';
+            this.divControls.style.width      = 'calc(100% - ' + dw + 'px)';
         }
     }
 
@@ -83851,6 +83855,9 @@ extends OperatorWithValue
     {
         super(NUMBER_INTERPOLATE, 'inter', 'interpolate', iconInterpolate);
 
+        this.iconOffsetY = -2;
+
+
         this.addInput(new Input(NUMBER_TYPES));
         this.addInput(new Input(NUMBER_TYPES));
 
@@ -90097,7 +90104,8 @@ extends OpColorBase
     {
         super(COLOR_STOP, 'colorStop', 'color stop', iconColorStop);
 
-        this.canDisable = true;
+        this.canDisable  = true;
+        this.iconOffsetY = -1;
         
 
         this.colorBack      = createDiv('colorBack');

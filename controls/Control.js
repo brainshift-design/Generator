@@ -88,7 +88,11 @@ extends EventTarget
         // this.divValue.style.left       = '50%';
         // this.divValue.style.transform  = 'translateX(-50%)';
         // this.divValue.style.marginLeft =  0;
-        this.div.style.width      = 'calc(100% - ' + dw + 'px)';
+
+        this.div.style.width = 
+            this.param.showName
+            ? 'calc(100% - 3px)'
+            : '100%';
     }
 
 

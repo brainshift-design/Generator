@@ -13,7 +13,8 @@ extends OpColorBase
     {
         super(COLOR_STOP, 'colorStop', 'color stop', iconColorStop);
 
-        this.canDisable = true;
+        this.canDisable  = true;
+        this.iconOffsetY = -1;
         
 
         this.colorBack      = createDiv('colorBack');
