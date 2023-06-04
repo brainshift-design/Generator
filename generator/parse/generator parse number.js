@@ -106,13 +106,13 @@ function genParseDateTime(parse)
     parse.nTab++;
 
 
-    dateTime.seconds      = genParse(parse);
-    dateTime.minutes      = genParse(parse);
-    dateTime.hours        = genParse(parse);
-    dateTime.dayOfWeek    = genParse(parse);
-    dateTime.date         = genParse(parse);
-    dateTime.month        = genParse(parse);
-    dateTime.year         = genParse(parse);
+    dateTime.seconds   = genParse(parse);
+    dateTime.minutes   = genParse(parse);
+    dateTime.hours     = genParse(parse);
+    dateTime.dayOfWeek = genParse(parse);
+    dateTime.date      = genParse(parse);
+    dateTime.month     = genParse(parse);
+    dateTime.year      = genParse(parse);
 
 
     parse.nTab--;

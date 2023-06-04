@@ -893,7 +893,7 @@ class Operator
     {
         for (const param of this.params)
             if (param instanceof NumberParamBase)
-                param.controls[0].divider = divider;
+                param.divider = divider;
     }
 
 

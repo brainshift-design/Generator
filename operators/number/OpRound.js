@@ -17,11 +17,11 @@ extends OperatorWithValue
         this.addOutput(new Output([NUMBER_VALUE], this.output_genRequest));
 
         this.addParam(this.paramValue);
-        this.addParam(this.paramType  = new SelectParam('type',     'type',     false, true,  true, ['floor', 'round', 'ceiling'], 1));
-        this.addParam(this.paramDecimals   = new NumberParam('decimals', 'decimals', true,  true,  true, 0, 0, 10));
+        this.addParam(this.paramType     = new SelectParam('type',     'type',     false, true,  true, ['floor', 'round', 'ceiling'], 1));
+        this.addParam(this.paramDecimals = new NumberParam('decimals', 'decimals', true,  true,  true, 0, 0, 10));
 
 
-        this.paramDecimals.controls[0].divider = 0.65;
+        this.paramDecimals.divider = 0.61;
     }
 
 

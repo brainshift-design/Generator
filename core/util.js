@@ -348,3 +348,22 @@ function setControlFont(control, family, size, align = 'left')
     control.style.fontSize   = size + 'px';
     control.style.textAlign  = align;
 }
+
+
+
+function daysInMonth(month, year)
+{
+    if (month == 2)
+    {
+        return year % 4 != 0
+             ? 28
+             : 29;
+    }
+    else if (month == 4
+          || month == 7
+          || month == 9
+          || month == 11)
+        return 30;
+    else
+        return 31;
+}

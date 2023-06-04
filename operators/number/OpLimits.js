@@ -10,7 +10,8 @@ extends OperatorWithValue
     {
         super(NUMBER_LIMITS, 'limits', 'limits', iconLimits);
 
-        this.canDisable = true;
+        this.canDisable  = true;
+        this.iconOffsetY = 1;
         
 
         this.addInput (new Input (NUMBER_TYPES));
@@ -19,6 +20,9 @@ extends OperatorWithValue
         this.addParam(this.paramValue);
         this.addParam(this.paramMin = new NumberParam('min', 'min', true,  true,  true,    0));
         this.addParam(this.paramMax = new NumberParam('max', 'max', true,  true,  true, 1000));
+
+        this.paramMin.divider = 0.42;
+        this.paramMax.divider = 0.42;
     }
 
 

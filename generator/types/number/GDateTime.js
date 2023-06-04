@@ -63,7 +63,7 @@ extends GNumberType
                  ['dayOfWeek', dayOfWeek],
                  ['date',      date     ],
                  ['month',     month    ],
-                 ['year',      year     ]];//,
+                 ['year',      year     ]];
         }
         else
             this.updateValues = [];

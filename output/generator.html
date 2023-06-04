@@ -2655,6 +2655,25 @@ function setControlFont(control, family, size, align = 'left')
 }
 
 
+
+function daysInMonth(month, year)
+{
+    if (month == 2)
+    {
+        return year % 4 != 0
+             ? 28
+             : 29;
+    }
+    else if (month == 4
+          || month == 7
+          || month == 9
+          || month == 11)
+        return 30;
+    else
+        return 31;
+}
+
+
 "use strict";
 
 // Base64 / binary data / UTF-8 strings utilities
@@ -11876,7 +11895,7 @@ extends GNumberType
                  ['dayOfWeek', dayOfWeek],
                  ['date',      date     ],
                  ['month',     month    ],
-                 ['year',      year     ]];//,
+                 ['year',      year     ]];
         }
         else
             this.updateValues = [];
@@ -26250,13 +26269,13 @@ function genParseDateTime(parse)
     parse.nTab++;
 
 
-    dateTime.seconds      = genParse(parse);
-    dateTime.minutes      = genParse(parse);
-    dateTime.hours        = genParse(parse);
-    dateTime.dayOfWeek    = genParse(parse);
-    dateTime.date         = genParse(parse);
-    dateTime.month        = genParse(parse);
-    dateTime.year         = genParse(parse);
+    dateTime.seconds   = genParse(parse);
+    dateTime.minutes   = genParse(parse);
+    dateTime.hours     = genParse(parse);
+    dateTime.dayOfWeek = genParse(parse);
+    dateTime.date      = genParse(parse);
+    dateTime.month     = genParse(parse);
+    dateTime.year      = genParse(parse);
 
 
     parse.nTab--;

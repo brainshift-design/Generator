@@ -67,15 +67,18 @@ extends OperatorBase
     
     updateParams()
     {
-        this.paramSeconds  .enableControlText(false);
-        this.paramMinutes  .enableControlText(false);
-        this.paramHours    .enableControlText(false);
-        this.paramDayOfWeek.enableControlText(false);
-        this.paramDate     .enableControlText(false);
-        this.paramMonth    .enableControlText(false);
-        this.paramYear     .enableControlText(false);
+        this.paramSeconds  .enableControlText(true);
+        this.paramMinutes  .enableControlText(true);
+        this.paramHours    .enableControlText(true);
+        this.paramDayOfWeek.enableControlText(true);
+        this.paramDate     .enableControlText(true);
+        this.paramMonth    .enableControlText(true);
+        this.paramYear     .enableControlText(true);
 
-        
+        this.paramDate.controls[0].setMax(daysInMonth(
+            this.paramMonth.value.value,
+            this.paramYear .value.value));
+
         this.updateParamControls();
     }
 
