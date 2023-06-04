@@ -65,8 +65,8 @@ extends EventTarget
     {
         this.measureData = 
         {
-            offsetRect: offsetRect(this.div),
-            clientRect: clientRect(this.div)
+            offsetRect: offsetRect(this.param ? this.param.div : this.div),
+            clientRect: clientRect(this.param ? this.param.div : this.div)
         };
     }
 
@@ -77,17 +77,18 @@ extends EventTarget
         const  input = this.param && this.param. input;
         const output = this.param && this.param.output;
 
-        const left = input ? 12 : 0;
+        // const left = input ? 12 : 0;
 
         const dw = 
-              ( input ? 12 : 0) 
-            + (output ? 12 : 0);
+            //  ( input ? 12 : 0) 
+            //+ 
+            (output ? 12 : 0);
 
 
         // this.divValue.style.left       = '50%';
         // this.divValue.style.transform  = 'translateX(-50%)';
         // this.divValue.style.marginLeft =  0;
-        // this.divValue.style.width      = 'calc(100% - ' + dw + 'px)';
+        this.div.style.width      = 'calc(100% - ' + dw + 'px)';
     }
 
 

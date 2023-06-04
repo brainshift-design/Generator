@@ -11,8 +11,12 @@ GraphView.prototype.createEvents = function()
 
     this.div.addEventListener('pointerleave', e => 
     {
-        if (this.tempConn)
-            this.div.setPointerCapture(e.pointerId);
+        //try
+        //{
+            if (this.tempConn);
+                this.div.setPointerCapture(e.pointerId);
+        //}
+        //catch (e) {}
     });
 
 

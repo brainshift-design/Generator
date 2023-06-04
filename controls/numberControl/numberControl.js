@@ -149,7 +149,7 @@ extends Control
         this.extRight              = createDiv('numberControlExt numberControlExtRight');
 
 
-        this.div.appendChild(this.divBar);
+        this.param.div.appendChild(this.divBar);
         this.div.appendChild(this.divPrecision);
         this.div.appendChild(this.divValue);
         this.div.appendChild(this.divFocus);
@@ -301,7 +301,7 @@ extends Control
             return;
 
         const sx =  this.measureData.offsetRect.x;
-        const sw =  this.measureData.clientRect.width;
+        const sw =  this.param.div.offsetWidth;//this.measureData.clientRect.width;
         const sh =  this.measureData.clientRect.height;
 
         const cx = -this.displayMin / (this.displayMax - this.displayMin) * sw;
@@ -418,7 +418,7 @@ extends Control
 
         if (this.param.showName)
         {
-            this.divValue.style.left       = 0;//(   this.divider *100) + '%';
+            this.divValue.style.left       =  0;//(   this.divider *100) + '%';
             this.divValue.style.transform  = 'translateY(-50%)';//translateX(' + (-   this.divider *100) + '%' + ') tranlateY(-50%)';
             this.divValue.style.marginLeft = '3px';
         }
@@ -427,7 +427,7 @@ extends Control
             this.divValue.style.left       = '50%';
             this.divValue.style.transform  = 'translateX(-50%) translateY(-50%)';
             this.divValue.style.marginLeft =  0;
-            this.divValue.style.width      = 'auto';
+            // this.divValue.style.width      = 'auto';
         }
     }
 

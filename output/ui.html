@@ -2610,8 +2610,9 @@ a
 
 .control
 {
-    box-shadow: 0 0 0 1px inset rgb(144, 0, 255);
+    box-shadow: 0 0 0 1px inset #9000ff;
     overflow:   hidden;
+    width:            10;
     /* position:   absolute; */
     /* height:     auto; */
 }
@@ -2670,7 +2671,7 @@ a
     transform:            translateY(-50%);
     white-space:          nowrap;
     margin-left:          3px;
-    box-shadow:           0 0 0 1px inset orange;
+    /* box-shadow:           0 0 0 1px inset orange; */
 }
 
 
@@ -2897,7 +2898,7 @@ a
     /* transform:            translateX(-50%); */
     top:                  4px;
     white-space:          nowrap;
-    box-shadow:           0 0 0 1px inset orange;
+    /* box-shadow:           0 0 0 1px inset orange; */
 }
 
 
@@ -3854,7 +3855,7 @@ a
 .paramDiv
 {
     /* background-color: var(--figma-color-bg); */
-    box-shadow: 0 0 0 1px inset cyan;
+    /* box-shadow: 0 0 0 1px inset cyan; */
     position:   relative;
 }
 
@@ -3876,7 +3877,7 @@ a
     position:              absolute;
     top:                   4px;
     /* margin-right:          3px; */
-    box-shadow:            0 0 0 1px inset yellow;
+    /* box-shadow:            0 0 0 1px inset yellow; */
 }
 
 
@@ -3887,7 +3888,7 @@ a
     height:                auto;
     margin-right:          3px;
     position:              absolute;
-    box-shadow:            0 0 0 1px inset red;
+    /* box-shadow:            0 0 0 1px inset red; */
 }
 
 
@@ -63272,8 +63273,8 @@ extends EventTarget
     {
         this.measureData = 
         {
-            offsetRect: offsetRect(this.div),
-            clientRect: clientRect(this.div)
+            offsetRect: offsetRect(this.param ? this.param.div : this.div),
+            clientRect: clientRect(this.param ? this.param.div : this.div)
         };
     }
 
@@ -63284,17 +63285,18 @@ extends EventTarget
         const  input = this.param && this.param. input;
         const output = this.param && this.param.output;
 
-        const left = input ? 12 : 0;
+        // const left = input ? 12 : 0;
 
         const dw = 
-              ( input ? 12 : 0) 
-            + (output ? 12 : 0);
+            //  ( input ? 12 : 0) 
+            //+ 
+            (output ? 12 : 0);
 
 
         // this.divValue.style.left       = '50%';
         // this.divValue.style.transform  = 'translateX(-50%)';
         // this.divValue.style.marginLeft =  0;
-        // this.divValue.style.width      = 'calc(100% - ' + dw + 'px)';
+        this.div.style.width      = 'calc(100% - ' + dw + 'px)';
     }
 
 
@@ -63570,7 +63572,7 @@ extends Control
         this.extRight              = createDiv('numberControlExt numberControlExtRight');
 
 
-        this.div.appendChild(this.divBar);
+        this.param.div.appendChild(this.divBar);
         this.div.appendChild(this.divPrecision);
         this.div.appendChild(this.divValue);
         this.div.appendChild(this.divFocus);
@@ -63722,7 +63724,7 @@ extends Control
             return;
 
         const sx =  this.measureData.offsetRect.x;
-        const sw =  this.measureData.clientRect.width;
+        const sw =  this.param.div.offsetWidth;//this.measureData.clientRect.width;
         const sh =  this.measureData.clientRect.height;
 
         const cx = -this.displayMin / (this.displayMax - this.displayMin) * sw;
@@ -63839,7 +63841,7 @@ extends Control
 
         if (this.param.showName)
         {
-            this.divValue.style.left       = 0;//(   this.divider *100) + '%';
+            this.divValue.style.left       =  0;//(   this.divider *100) + '%';
             this.divValue.style.transform  = 'translateY(-50%)';//translateX(' + (-   this.divider *100) + '%' + ') tranlateY(-50%)';
             this.divValue.style.marginLeft = '3px';
         }
@@ -63848,7 +63850,7 @@ extends Control
             this.divValue.style.left       = '50%';
             this.divValue.style.transform  = 'translateX(-50%) translateY(-50%)';
             this.divValue.style.marginLeft =  0;
-            this.divValue.style.width      = 'auto';
+            // this.divValue.style.width      = 'auto';
         }
     }
 
@@ -64521,14 +64523,20 @@ function updateControlRangeDiv(range, div, controlWidth, controlHeight)
 
 NumberControl.prototype.initEvents = function()
 {
-    this.div.addEventListener('pointerenter', e =>
+    const controlDiv = 
+        this.param 
+        ? this.param.div 
+        : this.div;
+
+        
+    controlDiv.addEventListener('pointerenter', e =>
     {
         const param = this.param;
         
 
         if (this.delayUse > 0)
         {
-            this.div.style.cursor = 'default';
+            controlDiv.style.cursor = 'default';
             this.startDelayUseTimer();
         }
 
@@ -64556,7 +64564,7 @@ NumberControl.prototype.initEvents = function()
             if (   graphView.tempConn
                 ||   !settings.enableZoomedOutParams
                    && graph.currentPage.zoom <= settings.minZoomForParams)
-                this.div.style.cursor = 'default';
+                   controlDiv.style.cursor = 'default';
             else
                 this.updateCursor();
 
@@ -64590,7 +64598,7 @@ NumberControl.prototype.initEvents = function()
 
 
 
-    this.div.addEventListener('pointerdown', e =>
+    controlDiv.addEventListener('pointerdown', e =>
     {
         const param = this.param;
 
@@ -64715,7 +64723,7 @@ NumberControl.prototype.initEvents = function()
 
 
 
-    this.div.addEventListener('pointermove', e =>
+    controlDiv.addEventListener('pointermove', e =>
     {
         const param = this.param;
 
@@ -64741,7 +64749,7 @@ NumberControl.prototype.initEvents = function()
             this.updateCursor();
 
 
-        let rect = boundingRect(this.div);
+        let rect = boundingRect(controlDiv);
         
         this.mouseOver = 
                e.clientX >= rect.left
@@ -64825,7 +64833,7 @@ NumberControl.prototype.initEvents = function()
     
     
     
-    this.div.addEventListener('pointerleave', e =>
+    controlDiv.addEventListener('pointerleave', e =>
     {
         const param = this.param;
 
@@ -64841,7 +64849,7 @@ NumberControl.prototype.initEvents = function()
             return;
 
 
-        this.div.style.cursor       = 'default';
+        controlDiv.style.cursor        = 'default';
         
         this.divFocus.style.visibility = 'hidden';
         this.divFocus.style.opacity    = 0;
@@ -64887,7 +64895,7 @@ NumberControl.prototype.initEvents = function()
 
 
 
-    this.div.addEventListener('losecapture', () =>
+    controlDiv.addEventListener('losecapture', () =>
     {
         this.buttonDown0 = false;
         this.buttonDown1 = false;
@@ -64902,7 +64910,7 @@ NumberControl.prototype.initEvents = function()
 
 
 
-    this.div.addEventListener('pointerup', e =>
+    controlDiv.addEventListener('pointerup', e =>
     {
         const param = this.param;
 
@@ -65018,7 +65026,7 @@ NumberControl.prototype.initEvents = function()
 
 
     
-    this.div.addEventListener('wheel', e =>
+    controlDiv.addEventListener('wheel', e =>
     {
         const param = this.param;
 
@@ -65080,7 +65088,7 @@ NumberControl.prototype.initEvents = function()
 
     
     
-    this.div.addEventListener('keydown', e =>
+    controlDiv.addEventListener('keydown', e =>
     {
         if (   e.code == 'Enter'
             || e.code == 'NumpadEnter')
@@ -65096,7 +65104,7 @@ NumberControl.prototype.initEvents = function()
 
 
 
-    // this.div.addEventListener('keyup', e =>
+    // controlDiv.addEventListener('keyup', e =>
     // {
     //     // if (e.key == 'Shift')
     //     // {
@@ -65108,7 +65116,7 @@ NumberControl.prototype.initEvents = function()
 
 
 
-    this.div.addEventListener('focus', () =>
+    controlDiv.addEventListener('focus', () =>
     {
         if (   !graphView.spaceDown
             && !panMode
@@ -65983,7 +65991,7 @@ extends Control
         this.param.divName.style.opacity = 0.5;
         
         this.textbox.style.background = 'transparent';
-        
+
         this.divValue.style.color = 
         this.textbox .style.color = darkMode ? this.textStyleDark : this.textStyleLight;
     };
@@ -66009,8 +66017,8 @@ extends Control
         }
         else
         {
-            this.divValue.style.left       = '50%';
-            this.divValue.style.transform  = 'translateX(-50%)';// translateY(-50%)';
+            // this.divValue.style.left       = '50%';
+            // this.divValue.style.transform  = 'translateX(-50%)';// translateY(-50%)';
             this.divValue.style.marginLeft =  0;
             // this.divValue.style.width      = 'auto';
         }
@@ -71030,8 +71038,12 @@ GraphView.prototype.createEvents = function()
 
     this.div.addEventListener('pointerleave', e => 
     {
-        if (this.tempConn)
-            this.div.setPointerCapture(e.pointerId);
+        //try
+        //{
+            if (this.tempConn);
+                this.div.setPointerCapture(e.pointerId);
+        //}
+        //catch (e) {}
     });
 
 
@@ -72318,12 +72330,11 @@ extends EventTarget
             const nameSize = this.divider <= 1 ? ((   this.divider *100) + '%') : (this.divider + 'px');
             const  valSize = this.divider <= 1 ? (((1-this.divider)*100) + '%') : ('calc(100% - ' + this.divider + 'px)');
 
-
-            this.divName .innerHTML           =  this.name;
-
-            this.divName .style.display       = 'inline-block';
-            this.divName .style.right         =  valSize;
-            this.divName .style.width         = 'calc(' + nameSize + ' - ' + (input ? 12 : 0) + 'px)';
+            this.divName    .innerHTML        =  this.name;
+   
+            this.divName    .style.display    = 'inline-block';
+            this.divName    .style.right      =  valSize;
+            this.divName    .style.width      = 'calc(' + nameSize + ' - ' + (input ? 12 : 0) + 'px)';
             
             this.divControls.style.left       =  nameSize;
             this.divControls.style.marginLeft = '3px';
@@ -72704,14 +72715,12 @@ extends NumberParamBase
             dragScale); 
 
             
-        this.controls[0].div.zIndex = 0;
-
-   
         this.defaultValue = new NumberValue(defaultValue, decimals);
-
-
+        
+        
         this.controls[0].successOnFocusOut = true;
-
+        
+        this.controls[0].div.zIndex = 0;
         this.divControls.appendChild(this.controls[0].div);
 
        
@@ -80498,13 +80507,15 @@ Operator.prototype.showLabelTextbox = function()
             hasFocus(this.div)
         && !this.clicked;
 
-    this.textbox.style.width           = this.header.offsetWidth  - 2;
-    this.textbox.style.height          = this.header.offsetHeight - 4;
-    this.textbox.style.position        = 'absolute';
-    this.textbox.style.left            = '50%';
-    this.textbox.style.top             = '50%';
-    this.textbox.style.transform       = 'translateX(-50%) translateY(-50%)';
-    this.textbox.style.textAlign       = 'center';
+    this.textbox.style.width                = this.header.offsetWidth  - 4;
+    this.textbox.style.height               = this.header.offsetHeight - 4;
+    this.textbox.style.position             = 'absolute';
+    this.textbox.style.left                 = '50%';
+    this.textbox.style.top                  = '50%';
+    this.textbox.style.transform            = 'translateX(-50%) translateY(-50%)';
+    this.textbox.style.textAlign            = 'center';
+    this.textbox.style.margin               = '0 1px 0 0px';
+    this.textbox.style.borderRadius         = '2px 2px 0 0';
   //this.textbox.style.boxShadow       = '0 0 0 1px #a0a inset';
 
     this.textbox.style.backgroundColor = this.header.style.backgroundColor;

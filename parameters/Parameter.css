@@ -1,7 +1,7 @@
 .paramDiv
 {
     /* background-color: var(--figma-color-bg); */
-    box-shadow: 0 0 0 1px inset cyan;
+    /* box-shadow: 0 0 0 1px inset cyan; */
     position:   relative;
 }
 
@@ -23,7 +23,7 @@
     position:              absolute;
     top:                   4px;
     /* margin-right:          3px; */
-    box-shadow:            0 0 0 1px inset yellow;
+    /* box-shadow:            0 0 0 1px inset yellow; */
 }
 
 
@@ -34,5 +34,5 @@
     height:                auto;
     margin-right:          3px;
     position:              absolute;
-    box-shadow:            0 0 0 1px inset red;
+    /* box-shadow:            0 0 0 1px inset red; */
 }

@@ -209,12 +209,11 @@ extends EventTarget
             const nameSize = this.divider <= 1 ? ((   this.divider *100) + '%') : (this.divider + 'px');
             const  valSize = this.divider <= 1 ? (((1-this.divider)*100) + '%') : ('calc(100% - ' + this.divider + 'px)');
 
-
-            this.divName .innerHTML           =  this.name;
-
-            this.divName .style.display       = 'inline-block';
-            this.divName .style.right         =  valSize;
-            this.divName .style.width         = 'calc(' + nameSize + ' - ' + (input ? 12 : 0) + 'px)';
+            this.divName    .innerHTML        =  this.name;
+   
+            this.divName    .style.display    = 'inline-block';
+            this.divName    .style.right      =  valSize;
+            this.divName    .style.width      = 'calc(' + nameSize + ' - ' + (input ? 12 : 0) + 'px)';
             
             this.divControls.style.left       =  nameSize;
             this.divControls.style.marginLeft = '3px';

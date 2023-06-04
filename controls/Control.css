@@ -1,7 +1,8 @@
 .control
 {
-    box-shadow: 0 0 0 1px inset rgb(144, 0, 255);
+    box-shadow: 0 0 0 1px inset #9000ff;
     overflow:   hidden;
+    width:            10;
     /* position:   absolute; */
     /* height:     auto; */
 }

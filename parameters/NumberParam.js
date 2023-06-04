@@ -26,14 +26,12 @@ extends NumberParamBase
             dragScale); 
 
             
-        this.controls[0].div.zIndex = 0;
-
-   
         this.defaultValue = new NumberValue(defaultValue, decimals);
-
-
+        
+        
         this.controls[0].successOnFocusOut = true;
-
+        
+        this.controls[0].div.zIndex = 0;
         this.divControls.appendChild(this.controls[0].div);
 
        

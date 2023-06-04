@@ -162,7 +162,7 @@ extends Control
         this.param.divName.style.opacity = 0.5;
         
         this.textbox.style.background = 'transparent';
-        
+
         this.divValue.style.color = 
         this.textbox .style.color = darkMode ? this.textStyleDark : this.textStyleLight;
     };
@@ -188,8 +188,8 @@ extends Control
         }
         else
         {
-            this.divValue.style.left       = '50%';
-            this.divValue.style.transform  = 'translateX(-50%)';// translateY(-50%)';
+            // this.divValue.style.left       = '50%';
+            // this.divValue.style.transform  = 'translateX(-50%)';// translateY(-50%)';
             this.divValue.style.marginLeft =  0;
             // this.divValue.style.width      = 'auto';
         }

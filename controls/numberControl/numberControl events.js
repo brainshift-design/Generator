@@ -1,13 +1,19 @@
 NumberControl.prototype.initEvents = function()
 {
-    this.div.addEventListener('pointerenter', e =>
+    const controlDiv = 
+        this.param 
+        ? this.param.div 
+        : this.div;
+
+        
+    controlDiv.addEventListener('pointerenter', e =>
     {
         const param = this.param;
         
 
         if (this.delayUse > 0)
         {
-            this.div.style.cursor = 'default';
+            controlDiv.style.cursor = 'default';
             this.startDelayUseTimer();
         }
 
@@ -35,7 +41,7 @@ NumberControl.prototype.initEvents = function()
             if (   graphView.tempConn
                 ||   !settings.enableZoomedOutParams
                    && graph.currentPage.zoom <= settings.minZoomForParams)
-                this.div.style.cursor = 'default';
+                   controlDiv.style.cursor = 'default';
             else
                 this.updateCursor();
 
@@ -69,7 +75,7 @@ NumberControl.prototype.initEvents = function()
 
 
 
-    this.div.addEventListener('pointerdown', e =>
+    controlDiv.addEventListener('pointerdown', e =>
     {
         const param = this.param;
 
@@ -194,7 +200,7 @@ NumberControl.prototype.initEvents = function()
 
 
 
-    this.div.addEventListener('pointermove', e =>
+    controlDiv.addEventListener('pointermove', e =>
     {
         const param = this.param;
 
@@ -220,7 +226,7 @@ NumberControl.prototype.initEvents = function()
             this.updateCursor();
 
 
-        let rect = boundingRect(this.div);
+        let rect = boundingRect(controlDiv);
         
         this.mouseOver = 
                e.clientX >= rect.left
@@ -304,7 +310,7 @@ NumberControl.prototype.initEvents = function()
     
     
     
-    this.div.addEventListener('pointerleave', e =>
+    controlDiv.addEventListener('pointerleave', e =>
     {
         const param = this.param;
 
@@ -320,7 +326,7 @@ NumberControl.prototype.initEvents = function()
             return;
 
 
-        this.div.style.cursor       = 'default';
+        controlDiv.style.cursor        = 'default';
         
         this.divFocus.style.visibility = 'hidden';
         this.divFocus.style.opacity    = 0;
@@ -366,7 +372,7 @@ NumberControl.prototype.initEvents = function()
 
 
 
-    this.div.addEventListener('losecapture', () =>
+    controlDiv.addEventListener('losecapture', () =>
     {
         this.buttonDown0 = false;
         this.buttonDown1 = false;
@@ -381,7 +387,7 @@ NumberControl.prototype.initEvents = function()
 
 
 
-    this.div.addEventListener('pointerup', e =>
+    controlDiv.addEventListener('pointerup', e =>
     {
         const param = this.param;
 
@@ -497,7 +503,7 @@ NumberControl.prototype.initEvents = function()
 
 
     
-    this.div.addEventListener('wheel', e =>
+    controlDiv.addEventListener('wheel', e =>
     {
         const param = this.param;
 
@@ -559,7 +565,7 @@ NumberControl.prototype.initEvents = function()
 
     
     
-    this.div.addEventListener('keydown', e =>
+    controlDiv.addEventListener('keydown', e =>
     {
         if (   e.code == 'Enter'
             || e.code == 'NumpadEnter')
@@ -575,7 +581,7 @@ NumberControl.prototype.initEvents = function()
 
 
 
-    // this.div.addEventListener('keyup', e =>
+    // controlDiv.addEventListener('keyup', e =>
     // {
     //     // if (e.key == 'Shift')
     //     // {
@@ -587,7 +593,7 @@ NumberControl.prototype.initEvents = function()
 
 
 
-    this.div.addEventListener('focus', () =>
+    controlDiv.addEventListener('focus', () =>
     {
         if (   !graphView.spaceDown
             && !panMode
