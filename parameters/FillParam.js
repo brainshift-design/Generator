@@ -15,10 +15,8 @@ extends Parameter
     checkersHolder;
     checkers;
 
-    controlWrapper;
 
-   
-    
+        
     get valueText() { return this.controls[0].valueText; }
     set valueText(text) 
     {
@@ -43,8 +41,6 @@ extends Parameter
 
         this.checkersHolder = createDiv();
         this.checkers       = createDiv();
-
-        //this.controlWrapper = createDiv();
 
 
         this.controls.push(new ColorControl(
@@ -92,58 +88,47 @@ extends Parameter
         this.checkers.style.height                  = defParamHeight;
 
 
-        // this.controlWrapper.style.position          = 'relative';
-        // this.controlWrapper.style.display           = 'inline-block';
-        // this.controlWrapper.style.width             = '100%';
-        // this.controlWrapper.style.height            = defParamHeight;
-        //this.controlWrapper.style.zIndex            = 100;
-
-
-        this.controls[0].successOnFocusOut          = true;
-        this.controls[0].div.style.display          = 'inline';
-        this.controls[0].div.style.width            = '55%';
-        this.controls[0].div.style.position         = 'absolute';
-        this.controls[0].div.style.left             = 0;
+        // this.controls[0].successOnFocusOut          = true;
+        // this.controls[0].div.style.display          = 'inline';
+        // this.controls[0].div.style.width            = '55%';
+        // this.controls[0].div.style.position         = 'absolute';
+        // this.controls[0].div.style.left             = 0;
 
     
-        this.controls[1].successOnFocusOut          = true;
-        this.controls[1].div.style.display          = 'inline';
-        this.controls[1].div.style.width            = '45%';
-        this.controls[1].div.style.position         = 'absolute';
-        this.controls[1].div.style.right            = 0;
+        // this.controls[1].successOnFocusOut          = true;
+        // this.controls[1].div.style.display          = 'inline';
+        // this.controls[1].div.style.width            = '45%';
+        // this.controls[1].div.style.position         = 'absolute';
+        // this.controls[1].div.style.right            = 0;
 
-        this.controls[1].showBar = false;//barTop                     = 0.8;
+        this.controls[1].showBar                    = false;
 
 
-        this.controls[0].divValue.style.transform       = 'translateX(-40%)';
+        //this.controls[0].divValue.style.transform   = 'translateX(-40%)';
 
-        // this.controls[1].divValue.style.transform   = 'translateX(-68.5%) \
-        //                                                translateY(-50%)';
 
-        this.controls[0].textbox.style.position     = 'absolute';
-        this.controls[0].textbox.style.left         =  0;
-        this.controls[0].textbox.style.transform    = 'translateX(0)';
-        this.controls[0].textbox.style.textAlign    = 'right';
-        this.controls[0].textbox.style.paddingLeft  =  14;
+        // this.controls[0].textbox.style.position     = 'absolute';
+        // this.controls[0].textbox.style.left         =  0;
+        // this.controls[0].textbox.style.transform    = 'translateX(0)';
+        // this.controls[0].textbox.style.textAlign    = 'right';
+        // this.controls[0].textbox.style.paddingLeft  =  14;
         
-        this.controls[1].textbox.style.position     = 'absolute';
-        this.controls[1].textbox.style.right        =  0;
-        this.controls[1].textbox.style.transform    = 'translateX(6px)';
-        this.controls[1].textbox.style.textAlign    = 'left';
-        this.controls[1].textbox.style.paddingRight =  10;
-        this.controls[1].textbox.style.background   = 'transparent';
+        // this.controls[1].textbox.style.position     = 'absolute';
+        // this.controls[1].textbox.style.right        =  0;
+        // this.controls[1].textbox.style.transform    = 'translateX(6px)';
+        // this.controls[1].textbox.style.textAlign    = 'left';
+        // this.controls[1].textbox.style.paddingRight =  10;
+        // this.controls[1].textbox.style.background   = 'transparent';
 
 
-        this.divControls.appendChild(this.controls[0].div);
-        this.divControls.appendChild(this.controls[1].div);
+        this.divControls   .appendChild(this.controls[0].div);
+        this.divControls   .appendChild(this.controls[1].div);
         
-        this.checkersHolder.appendChild(this.checkers);
-        this.div.appendChild(this.checkersHolder);
-
-        // this.div.appendChild(this.controlWrapper);
+        this.checkersHolder.appendChild(this.checkers      );
+        this.div           .appendChild(this.checkersHolder);
 
        
-        if (hasInput)  this.initInput([FILL_VALUE, COLOR_VALUE], getParamInputValuesForUndo, this.input_getBackInitValue);
+        if (hasInput)  this.initInput ([FILL_VALUE, COLOR_VALUE], getParamInputValuesForUndo, this.input_getBackInitValue);
         if (hasOutput) this.initOutput([FILL_VALUE], this.output_genRequest, getParamOutputValuesForUndo, this.output_backInit);
 
 
@@ -348,17 +333,10 @@ extends Parameter
         const rgbaText   = getTextColorFromBackColor(rgbaStripe, rgba[3]);
 
 
-        // this.controlWrapper.style.background =
-        //       !rgbaIsNaN(rgbaBack) 
-        //     && this.value.opacity.isValid()
-        //     ? rgba2style(rgbaBack)
-        //     : noColorStyle(rgbaBack);//'transparent'; 
-
-
         this.updateWarningOverlay();
 
 
-        this.div.style.background = 'transparent';//noColorStyle(rgba);
+        this.div.style.backgroundColor = 'transparent';
 
 
         if (this.input)
@@ -376,36 +354,36 @@ extends Parameter
         }
 
 
-        this.checkers.style.background = 
-            darkMode
-            ?   'linear-gradient(-45deg, #222 25%, transparent 25%, transparent 75%, #222 75%), '
-              + 'linear-gradient(-45deg, #222 25%, transparent 25%, transparent 75%, #222 75%)'
-            :   'linear-gradient(-45deg, #ddd 25%, transparent 25%, transparent 75%, #ddd 75%), '
-              + 'linear-gradient(-45deg, #ddd 25%, transparent 25%, transparent 75%, #ddd 75%)';
+        this.checkers.style.background = 'transparent';
+            // darkMode
+            // ?   'linear-gradient(-45deg, #222 25%, transparent 25%, transparent 75%, #222 75%), '
+            //   + 'linear-gradient(-45deg, #222 25%, transparent 25%, transparent 75%, #222 75%)'
+            // :   'linear-gradient(-45deg, #ddd 25%, transparent 25%, transparent 75%, #ddd 75%), '
+            //   + 'linear-gradient(-45deg, #ddd 25%, transparent 25%, transparent 75%, #ddd 75%)';
 
-        this.checkers.style.display               = this.value.isValid() ? 'inline-block' : 'none';
-        this.checkers.style.backgroundColor       = darkMode ? '#444' : '#fff';
+       // this.checkers.style.display            = this.value.isValid() ? 'inline-block' : 'none';
+        //this.checkers.style.backgroundColor    = darkMode ? '#444' : '#fff';
       
-        this.checkers.style.backgroundSize        = '22px 22px';
-        this.checkers.style.backgroundPosition    = '0 0, 11px 11px';
+        // this.checkers.style.backgroundSize     = '22px 22px';
+        // this.checkers.style.backgroundPosition = '0 0, 11px 11px';
       
-        this.checkers.style.left                  = '-3.5px';
-        this.checkers.style.width                 = 'calc(100% + 3.5px)';
+        // this.checkers.style.left               = '-3.5px';
+        // this.checkers.style.width              = 'calc(100% + 3.5px)';
            
            
-        this.controls[0].backStyleLight           = 
-        this.controls[0].backStyleDark            = 'transparent';
+        this.controls[0].backStyleLight        = 
+        this.controls[0].backStyleDark         = 'transparent';
             
-        this.controls[0].textStyleLight           = 
-        this.controls[0].textStyleDark            = rgba2style(rgbaText);
+        this.controls[0].textStyleLight        = 
+        this.controls[0].textStyleDark         = rgba2style(rgbaText);
    
    
-        this.controls[1].backStyleLight           = 
-        this.controls[1].backStyleDark            = 'transparent';
+        this.controls[1].backStyleLight        = 
+        this.controls[1].backStyleDark         = 'transparent';
 
 
-        this.controls[1].textStyleLight           = 
-        this.controls[1].textStyleDark            = rgba2style(rgbaText);
+        this.controls[1].textStyleLight        = 
+        this.controls[1].textStyleDark         = rgba2style(rgbaText);
 
 
         this.controls[0].update();
@@ -417,6 +395,53 @@ extends Parameter
                                                      
         if (this.input ) this.input .updateControl();
         if (this.output) this.output.updateControl();
+
+
+        // const left = this.input || this.output ? 12 : 0;
+
+        // const dw = 
+        //       (left > 0 ? 12 : 0) 
+        //     + (left > 0 ? 12 : 0);
+
+
+        // if (this.showName)
+        // {
+        //     const nameSize = this.divider <= 1 ? ((   this.divider *100) + '%') : (this.divider + 'px');
+        //     const  valSize = this.divider <= 1 ? (((1-this.divider)*100) + '%') : ('calc(100% - ' + this.divider + 'px)');
+
+        //     this.divName    .innerHTML        =  this.name;
+   
+        //     this.divName    .style.display    = 'inline-block';
+        //     this.divName    .style.right      =  valSize;
+        //     this.divName    .style.width      = 'calc(' + nameSize + ' - ' + (this.input ? 12 : 0) + 'px)';
+            
+        //     this.divControls.style.left       =  nameSize;
+        //     this.divControls.style.marginLeft = '3px';
+        //     this.divControls.style.width      = 'calc(calc(' + valSize + ' - ' + (this.output ? 12 : 0) + 'px) - 3px)';
+        // }
+        // else
+        // {
+        //     this.divName    .style.display    = 'none';
+            
+        //     // this.divControls.style.left       = '50%';
+        //     //this.divControls.style.transform  = 'translateX(-50%) translateY(-50%)';
+        //     this.divControls.style.marginLeft =  0;
+        //     this.divControls.style.left       =  left+'px';
+        //     this.divControls.style.width      = 'calc(100% - ' + dw + 'px)';
+        // }
+
+
+        // this.controls[0].div.style.width = '55%';
+        // this.controls[1].div.style.width = '45%';
+
+        // this.controls[0].div.style.position = 'absolute';
+        // this.controls[1].div.style.position = 'absolute';
+        // this.controls[0].div.style.left = '0';
+        // this.controls[1].div.style.left  = '0';
+
+
+
+        super.updateControls();
     }
 
 

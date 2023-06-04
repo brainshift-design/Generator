@@ -203,7 +203,7 @@ function rgbToString(rgb)
 
 function colorStyle_(r, g, b, a)
 {
-    if (a != undefined)
+    if (a !== undefined)
     {
         return 'rgba('
             + Math.round(r * 0xff) + ', '

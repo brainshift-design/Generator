@@ -65,21 +65,20 @@ extends EventTarget
     {
         super();
 
-        this._id                  = id;
-        this.#name                = name;
-        this.#type                = type;
+        this._id              = id;
+        this.#name            = name;
+        this.#type            = type;
   
-        this.showName             = showName;
+        this.showName         = showName;
 
-        this._div                 = createDiv('paramDiv');
-        this.divName              = createDiv('paramName');
-        this.divControls          = createDiv('paramControls');
+        this._div             = createDiv('paramDiv');
+        this.divName          = createDiv('paramName');
+        this.divControls      = createDiv('paramControls');
 
-        this.div    .style.height = defParamHeight;
-        //this.divName.style.height = defParamHeight;
+        this.div.style.height = defParamHeight;
 
-        this.input                = null;
-        this.output               = null;
+        this.input            = null;
+        this.output           = null;
 
         this.div.appendChild(this.divName);
         this.div.appendChild(this.divControls);
@@ -192,7 +191,6 @@ extends EventTarget
             checkControlVisible(this, c);
             c.update();
         });
-
 
 
         const left = this.input || this.output ? 12 : 0;

@@ -15,7 +15,7 @@ extends NumberParamBase
         super(NUMBER_VALUE, id, name, showName);
 
         
-        this.controls[0] = new NumberControl(
+        this.controls.push(new NumberControl(
             this,
             this.id,
             this.name, 
@@ -23,7 +23,7 @@ extends NumberParamBase
             min,
             max,
             decimals,   
-            dragScale); 
+            dragScale)); 
 
             
         this.defaultValue = new NumberValue(defaultValue, decimals);

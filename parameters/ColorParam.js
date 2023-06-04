@@ -43,12 +43,12 @@ extends Parameter
         this.defaultValue = defaultValue;
 
 
-        this.controls[0] = new ColorControl(
+        this.controls.push(new ColorControl(
             this,
             this.id,
             this.name, 
             defaultValue,   
-            dragScale); 
+            dragScale)); 
 
         this.controls[0].successOnFocusOut = true;
         //this.controls[0].div.style.position        = '100';

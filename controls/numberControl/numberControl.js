@@ -160,6 +160,9 @@ extends Control
 
         this.initTextbox();
         this.initEvents ();
+
+
+        this.div.style.boxShadow = '0 0 0 2px blue inset';
     }
 
 
