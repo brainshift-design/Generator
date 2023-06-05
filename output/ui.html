@@ -63853,7 +63853,7 @@ extends Control
 
     updateColors()
     {
-        this.param.div.style.background = darkMode ? this. backStyleDark : this. backStyleLight;
+        //this.param.div.style.background = darkMode ? this. backStyleDark : this. backStyleLight;
         this.divBar   .style.background = darkMode ? this.valueStyleDark : this.valueStyleLight;
         this.divValue .style.color      = darkMode ? this. textStyleDark : this. textStyleLight;
     }
@@ -66020,7 +66020,7 @@ extends Control
 
     updateColors()
     {
-        this.param.div.style.background = darkMode ? this.backStyleDark : this.backStyleLight;
+        //this.param.div.style.background = darkMode ? this.backStyleDark : this.backStyleLight;
         
         this.param.divName.style.color = !isDark(this.value.toRgb()) ? this.textStyleDark : this.textStyleLight;
         this.param.divName.style.opacity = 0.5;
@@ -72342,10 +72342,10 @@ extends EventTarget
 
     updateControls()
     {
-        this.div.style.background = 
-            darkMode 
-            ? this.backStyleDark 
-            : this.backStyleLight;
+        // this.div.style.background = 
+        //     darkMode 
+        //     ? this.backStyleDark 
+        //     : this.backStyleLight;
 
 
         if (this.input ) this.input .updateControl();
@@ -72697,6 +72697,19 @@ extends Parameter
     
     
     
+    updateControls()
+    {
+        this.controls[0].div.style.width = '100%';
+        
+        this.div.style.background = 
+            darkMode 
+            ? this. backStyleDark 
+            : this. backStyleLight;
+
+        super.updateControls();
+    }
+
+
     updateValueText()
     {
         let unknown = false;
@@ -72854,14 +72867,6 @@ extends NumberParamBase
         console.assert(value.type == NUMBER_VALUE, 'expected NUMBER_VALUE in backInit()');
         
         this.param.setValue(value, false, true, false);
-    }
-
-
-    updateControls()
-    {
-        this.controls[0].div.style.width = '100%';
-
-        super.updateControls();
     }
 }
 
@@ -73975,8 +73980,8 @@ extends Parameter
 
     updateControls()
     {
-        // checkControlVisible(this, this.controls[0]);
-        // checkControlVisible(this, this.controls[1]);
+        checkControlVisible(this, this.controls[0]);
+        checkControlVisible(this, this.controls[1]);
 
 
         const noColor = 
@@ -73993,9 +73998,6 @@ extends Parameter
 
 
         this.updateWarningOverlay();
-
-
-        this.div.style.backgroundColor = 'transparent';
 
 
         if (this.input)
@@ -74044,21 +74046,15 @@ extends Parameter
         this.controls[1].textStyleLight        = 
         this.controls[1].textStyleDark         = rgba2style(rgbaText);
 
-
-        // if (this.input ) this.input .updateControl();
-        // if (this.output) this.output.updateControl();
-
-
-        this.controls[0].div.style.width = '55%';
-        this.controls[1].div.style.width = '45%';
-
-        // this.controls[0].div.style.position = 'absolute';
-        // this.controls[1].div.style.position = 'absolute';
-        // this.controls[0].div.style.left = '0';
-        // this.controls[1].div.style.left  = '0';
+        this.controls[0].div.style.width       = '55%';
+        this.controls[1].div.style.width       = '45%';
 
 
         super.updateControls();
+
+
+        this.div.style.background              = rgb2style(rgbaBack);
+        this.checkers.style.opacity            = 1 - rgbaBack[3];
     }
 
 

@@ -159,7 +159,7 @@ extends Control
 
     updateColors()
     {
-        this.param.div.style.background = darkMode ? this.backStyleDark : this.backStyleLight;
+        //this.param.div.style.background = darkMode ? this.backStyleDark : this.backStyleLight;
         
         this.param.divName.style.color = !isDark(this.value.toRgb()) ? this.textStyleDark : this.textStyleLight;
         this.param.divName.style.opacity = 0.5;

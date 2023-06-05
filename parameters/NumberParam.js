@@ -113,12 +113,4 @@ extends NumberParamBase
         
         this.param.setValue(value, false, true, false);
     }
-
-
-    updateControls()
-    {
-        this.controls[0].div.style.width = '100%';
-
-        super.updateControls();
-    }
 }

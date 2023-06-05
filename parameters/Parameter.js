@@ -176,10 +176,10 @@ extends EventTarget
 
     updateControls()
     {
-        this.div.style.background = 
-            darkMode 
-            ? this.backStyleDark 
-            : this.backStyleLight;
+        // this.div.style.background = 
+        //     darkMode 
+        //     ? this.backStyleDark 
+        //     : this.backStyleLight;
 
 
         if (this.input ) this.input .updateControl();

@@ -158,6 +158,19 @@ extends Parameter
     
     
     
+    updateControls()
+    {
+        this.controls[0].div.style.width = '100%';
+        
+        this.div.style.background = 
+            darkMode 
+            ? this. backStyleDark 
+            : this. backStyleLight;
+
+        super.updateControls();
+    }
+
+
     updateValueText()
     {
         let unknown = false;

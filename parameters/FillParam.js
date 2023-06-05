@@ -305,8 +305,8 @@ extends Parameter
 
     updateControls()
     {
-        // checkControlVisible(this, this.controls[0]);
-        // checkControlVisible(this, this.controls[1]);
+        checkControlVisible(this, this.controls[0]);
+        checkControlVisible(this, this.controls[1]);
 
 
         const noColor = 
@@ -323,9 +323,6 @@ extends Parameter
 
 
         this.updateWarningOverlay();
-
-
-        this.div.style.backgroundColor = 'transparent';
 
 
         if (this.input)
@@ -374,21 +371,15 @@ extends Parameter
         this.controls[1].textStyleLight        = 
         this.controls[1].textStyleDark         = rgba2style(rgbaText);
 
-
-        // if (this.input ) this.input .updateControl();
-        // if (this.output) this.output.updateControl();
-
-
-        this.controls[0].div.style.width = '55%';
-        this.controls[1].div.style.width = '45%';
-
-        // this.controls[0].div.style.position = 'absolute';
-        // this.controls[1].div.style.position = 'absolute';
-        // this.controls[0].div.style.left = '0';
-        // this.controls[1].div.style.left  = '0';
+        this.controls[0].div.style.width       = '55%';
+        this.controls[1].div.style.width       = '45%';
 
 
         super.updateControls();
+
+
+        this.div.style.background              = rgb2style(rgbaBack);
+        this.checkers.style.opacity            = 1 - rgbaBack[3];
     }
 
 
