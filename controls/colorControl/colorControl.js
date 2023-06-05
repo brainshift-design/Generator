@@ -66,11 +66,11 @@ extends Control
         this.wheelScale  = wheelScale;
                  
 
-        this.focus       = createDiv('colorControlFocus');
+        this.divFocus    = createDiv('colorControlFocus');
+        this.divValue    = divValue;
     
+        this.div.appendChild(this.divFocus);
         this.div.appendChild(this.divValue);
-
-        this.param.divControls.appendChild(this.focus);
 
         
         this.initTextbox();
@@ -183,28 +183,31 @@ extends Control
         this.textbox.value = this.divValue.innerText;
 
         
-        if (this.param.showName)
-        {
-            this.divValue.style.marginLeft = '3px';
-            this.divValue.style.left       =  0;
-            this.divValue.style.transform  = 'none';
-        }
-        else
-        {
-            this.divValue.style.marginLeft =  0;
-            this.divValue.style.left       = '50%';
-            this.divValue.style.transform  = 'translateX(-50%)';
-        }
+        // if (this.param.showName)
+        // {
+        //     this.divValue.style.marginLeft = '3px';
+        //     this.divValue.style.left       =  0;
+        //     this.divValue.style.transform  = 'none';
+        // }
+        // else
+        // {
+        //     this.divValue.style.marginLeft =  0;
+        this.divValue.style.position = 'static';    
+        this.divValue.style.width    = 'fit-content';    
+        this.divValue.style.margin   = '4px auto 0 auto';
+        // this.divValue.style.left       = '50%';
+            //his.divValue.style.transform  = 'translateX(-50%)';
+        // }
     };
 
 
 
     updateFocus(sw, sh)
     {
-        this.focus.style.left   = 0;
-        this.focus.style.top    = 0;
-        this.focus.style.width  = sw;
-        this.focus.style.height = sh;
+        this.divFocus.style.left   = 0;
+        this.divFocus.style.top    = 0;
+        this.divFocus.style.width  = sw;
+        this.divFocus.style.height = sh;
     };
 
 
@@ -218,16 +221,16 @@ extends Control
 
         if (this.param)
         {
-            this.focus.style.boxShadow = '0 1px 0 0 ' + colShadow + ' inset';
+            this.divFocus.style.boxShadow = '0 1px 0 0 ' + colShadow + ' inset';
 
             if (    this.param.node
                 &&  this.param.node.params.includes(this.param)
                 && !isLastInArray(this.param.node.params, this.param))
-                this.focus.style.boxShadow += ', 0 -1px 0 0 ' + colShadow + ' inset';
+                this.divFocus.style.boxShadow += ', 0 -1px 0 0 ' + colShadow + ' inset';
         }
         else
         {
-            this.focus.style.boxShadow  = '0 0 0 1px ' + colShadow + ' inset ';
+            this.divFocus.style.boxShadow  = '0 0 0 1px ' + colShadow + ' inset ';
         }
     }
 }

@@ -151,11 +151,12 @@ extends Control
 
         this.div.appendChild(this.divPrecision);
         this.div.appendChild(this.divValue);
+        this.div.appendChild(this.divFocus);
         
-        this.param.divControls.appendChild(this.divBar);
+        this.param.div.appendChild(this.divBar);
+
         this.param.divControls.appendChild(this.extLeft);
         this.param.divControls.appendChild(this.extRight);
-        this.param.divControls.appendChild(this.divFocus);
 
 
         this.initTextbox();
@@ -293,6 +294,15 @@ extends Control
 
 
 
+    formatValue = () => 
+    {
+        return [
+            this.param.div.offsetLeft,
+            this.param.div.offsetWidth ];
+    };
+
+
+
     update()
     {
         super.update();
@@ -304,8 +314,9 @@ extends Control
         if (!this.measureData.offsetRect)
             return;
 
-        const sx =  this.measureData.offsetRect.x;
-        const sw =  this.param.div.offsetWidth;//this.measureData.clientRect.width;
+            
+        const [sx, sw] = this.formatValue();
+
         const sh =  this.measureData.clientRect.height;
 
         const cx = -this.displayMin / (this.displayMax - this.displayMin) * sw;
@@ -353,7 +364,7 @@ extends Control
                    : cx + v * sw);
 
             this.divBar.style.left   = Math.max(0, x);
-            this.divBar.style.width  = Math.min(Math.max(0, Math.round(Math.abs(v) * sw) + Math.min(0, x)), Math.max(0, this.measureData.offsetRect.width - Math.max(0, x)));
+            this.divBar.style.width  = Math.min(Math.max(0, Math.round(Math.abs(v) * sw) + Math.min(0, x)), Math.max(0, sw - Math.max(0, x)));
 
             this.divBar.style.top    = sh * this.barTop;
             this.divBar.style.height = sh * (this.barBottom - this.barTop);
@@ -420,18 +431,21 @@ extends Control
         }
 
 
-        if (this.param.showName)
-        {
-            this.divValue.style.marginLeft     = '3px';
-            this.divValue.style.left      =  0;
-            this.divValue.style.transform = 'translateY(-50%)';
-        }
-        else
-        {
-            this.divValue.style.marginLeft     =  0;
-            this.divValue.style.left      = '50%';
-            this.divValue.style.transform = 'translateX(-50%) translateY(-50%)';
-        }
+        // if (this.param.showName)
+        // {
+        //     this.divValue.style.marginLeft = '3px';
+        //     this.divValue.style.left       =  0;
+        //     this.divValue.style.transform  = 'translateY(-50%)';
+        // }
+        // else
+        // {
+                this.divValue.style.position = 'static';
+                this.divValue.style.width    = 'fit-content';
+                this.divValue.style.margin   = '4px auto 0 auto';
+        //     this.divValue.style.marginLeft =  0;
+        //     this.divValue.style.left       = '50%';
+        //     this.divValue.style.transform  = 'translateX(-50%) translateY(-50%)';
+        // }
     }
 
 

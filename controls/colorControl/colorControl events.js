@@ -19,8 +19,8 @@ ColorControl.prototype.initEvents = function()
             this.updateFocusBorder();
 
 
-            this.focus.style.visibility = 'visible';
-            this.focus.style.opacity    = '100%';
+            this.divFocus.style.visibility = 'visible';
+            this.divFocus.style.opacity    = '100%';
     
             this.update();
         }
@@ -175,8 +175,8 @@ ColorControl.prototype.initEvents = function()
 
         this.div.style.cursor       = 'default';
         
-        this.focus.style.visibility = 'hidden';
-        this.focus.style.opacity    = 0;
+        this.divFocus.style.visibility = 'hidden';
+        this.divFocus.style.opacity    = 0;
 
         this.update();
 
@@ -296,7 +296,7 @@ ColorControl.prototype.initEvents = function()
             this.buttonDown0 = false;
             this.unlockPointer(e.pointerId);
 
-            this.focus.style.boxShadow = '0 0 0 1px rgba(0, 0, 0, 0.1) inset';
+            this.divFocus.style.boxShadow = '0 0 0 1px rgba(0, 0, 0, 0.1) inset';
 
             // if (    this.value != this.oldValue
             //     && !this.readOnly)

@@ -43,7 +43,6 @@ extends EventTarget
         this.onchange      = new Event('change');
         this.onconfirm     = new Event('confirm');
 
-        this.div.appendChild(this.divValue);
 
         this.setSize(width, height);
     }
@@ -65,8 +64,8 @@ extends EventTarget
     {
         this.measureData = 
         {
-            offsetRect: offsetRect(this.param ? this.param.div : this.div),
-            clientRect: clientRect(this.param ? this.param.div : this.div)
+            offsetRect: offsetRect(this.div),
+            clientRect: clientRect(this.div)
         };
     }
 
@@ -74,22 +73,7 @@ extends EventTarget
     
     update()
     {
-        const  input = this.param && this.param. input;
-        const output = this.param && this.param.output;
 
-        // const left = input ? 12 : 0;
-
-        const dw = 
-            //  ( input ? 12 : 0) 
-            //+ 
-            (output ? 12 : 0);
-
-
-        // this.divValue.style.left       = '50%';
-        // this.divValue.style.transform  = 'translateX(-50%)';
-        // this.divValue.style.marginLeft =  0;
-
-        //this.div.style.width = '100%';
     }
 
 

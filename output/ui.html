@@ -2610,7 +2610,7 @@ a
 
 .control
 {
-    /* box-shadow:  0 0 0 1px inset #9000ff; */
+    /* box-shadow:       0 0 0 4px purple inset; */
     overflow:    hidden;
     /* width:            10; */
     /* position:   absolute; */
@@ -2668,7 +2668,7 @@ a
     position:             absolute;
     /* left:                 50%; */
     top:                  50%;
-    transform:            translateY(-50%);
+    /* transform:            translateY(-50%); */
     white-space:          nowrap;
     margin-left:          3px;
     box-shadow:           0 0 0 1px inset orange;
@@ -2862,7 +2862,7 @@ a
     /* background-color: var(--figma-color-bg); */
     text-align:       center;
     touch-action:     none;
-    /* box-shadow:       0 0 0 1px red inset; */
+    /* box-shadow:       0 0 0 4px purple inset; */
 }    
 
 
@@ -63290,7 +63290,6 @@ extends EventTarget
         this.onchange      = new Event('change');
         this.onconfirm     = new Event('confirm');
 
-        this.div.appendChild(this.divValue);
 
         this.setSize(width, height);
     }
@@ -63312,8 +63311,8 @@ extends EventTarget
     {
         this.measureData = 
         {
-            offsetRect: offsetRect(this.param ? this.param.div : this.div),
-            clientRect: clientRect(this.param ? this.param.div : this.div)
+            offsetRect: offsetRect(this.div),
+            clientRect: clientRect(this.div)
         };
     }
 
@@ -63321,22 +63320,7 @@ extends EventTarget
     
     update()
     {
-        const  input = this.param && this.param. input;
-        const output = this.param && this.param.output;
 
-        // const left = input ? 12 : 0;
-
-        const dw = 
-            //  ( input ? 12 : 0) 
-            //+ 
-            (output ? 12 : 0);
-
-
-        // this.divValue.style.left       = '50%';
-        // this.divValue.style.transform  = 'translateX(-50%)';
-        // this.divValue.style.marginLeft =  0;
-
-        //this.div.style.width = '100%';
     }
 
 
@@ -63614,11 +63598,12 @@ extends Control
 
         this.div.appendChild(this.divPrecision);
         this.div.appendChild(this.divValue);
+        this.div.appendChild(this.divFocus);
         
-        this.param.divControls.appendChild(this.divBar);
+        this.param.div.appendChild(this.divBar);
+
         this.param.divControls.appendChild(this.extLeft);
         this.param.divControls.appendChild(this.extRight);
-        this.param.divControls.appendChild(this.divFocus);
 
 
         this.initTextbox();
@@ -63756,6 +63741,15 @@ extends Control
 
 
 
+    formatValue = () => 
+    {
+        return [
+            this.param.div.offsetLeft,
+            this.param.div.offsetWidth ];
+    };
+
+
+
     update()
     {
         super.update();
@@ -63767,8 +63761,9 @@ extends Control
         if (!this.measureData.offsetRect)
             return;
 
-        const sx =  this.measureData.offsetRect.x;
-        const sw =  this.param.div.offsetWidth;//this.measureData.clientRect.width;
+            
+        const [sx, sw] = this.formatValue();
+
         const sh =  this.measureData.clientRect.height;
 
         const cx = -this.displayMin / (this.displayMax - this.displayMin) * sw;
@@ -63816,7 +63811,7 @@ extends Control
                    : cx + v * sw);
 
             this.divBar.style.left   = Math.max(0, x);
-            this.divBar.style.width  = Math.min(Math.max(0, Math.round(Math.abs(v) * sw) + Math.min(0, x)), Math.max(0, this.measureData.offsetRect.width - Math.max(0, x)));
+            this.divBar.style.width  = Math.min(Math.max(0, Math.round(Math.abs(v) * sw) + Math.min(0, x)), Math.max(0, sw - Math.max(0, x)));
 
             this.divBar.style.top    = sh * this.barTop;
             this.divBar.style.height = sh * (this.barBottom - this.barTop);
@@ -63883,18 +63878,21 @@ extends Control
         }
 
 
-        if (this.param.showName)
-        {
-            this.divValue.style.marginLeft     = '3px';
-            this.divValue.style.left      =  0;
-            this.divValue.style.transform = 'translateY(-50%)';
-        }
-        else
-        {
-            this.divValue.style.marginLeft     =  0;
-            this.divValue.style.left      = '50%';
-            this.divValue.style.transform = 'translateX(-50%) translateY(-50%)';
-        }
+        // if (this.param.showName)
+        // {
+        //     this.divValue.style.marginLeft = '3px';
+        //     this.divValue.style.left       =  0;
+        //     this.divValue.style.transform  = 'translateY(-50%)';
+        // }
+        // else
+        // {
+                this.divValue.style.position = 'static';
+                this.divValue.style.width    = 'fit-content';
+                this.divValue.style.margin   = '4px auto 0 auto';
+        //     this.divValue.style.marginLeft =  0;
+        //     this.divValue.style.left       = '50%';
+        //     this.divValue.style.transform  = 'translateX(-50%) translateY(-50%)';
+        // }
     }
 
 
@@ -65929,11 +65927,11 @@ extends Control
         this.wheelScale  = wheelScale;
                  
 
-        this.focus       = createDiv('colorControlFocus');
+        this.divFocus    = createDiv('colorControlFocus');
+        this.divValue    = divValue;
     
+        this.div.appendChild(this.divFocus);
         this.div.appendChild(this.divValue);
-
-        this.param.divControls.appendChild(this.focus);
 
         
         this.initTextbox();
@@ -66046,28 +66044,31 @@ extends Control
         this.textbox.value = this.divValue.innerText;
 
         
-        if (this.param.showName)
-        {
-            this.divValue.style.marginLeft = '3px';
-            this.divValue.style.left       =  0;
-            this.divValue.style.transform  = 'none';
-        }
-        else
-        {
-            this.divValue.style.marginLeft =  0;
-            this.divValue.style.left       = '50%';
-            this.divValue.style.transform  = 'translateX(-50%)';
-        }
+        // if (this.param.showName)
+        // {
+        //     this.divValue.style.marginLeft = '3px';
+        //     this.divValue.style.left       =  0;
+        //     this.divValue.style.transform  = 'none';
+        // }
+        // else
+        // {
+        //     this.divValue.style.marginLeft =  0;
+        this.divValue.style.position = 'static';    
+        this.divValue.style.width    = 'fit-content';    
+        this.divValue.style.margin   = '4px auto 0 auto';
+        // this.divValue.style.left       = '50%';
+            //his.divValue.style.transform  = 'translateX(-50%)';
+        // }
     };
 
 
 
     updateFocus(sw, sh)
     {
-        this.focus.style.left   = 0;
-        this.focus.style.top    = 0;
-        this.focus.style.width  = sw;
-        this.focus.style.height = sh;
+        this.divFocus.style.left   = 0;
+        this.divFocus.style.top    = 0;
+        this.divFocus.style.width  = sw;
+        this.divFocus.style.height = sh;
     };
 
 
@@ -66081,16 +66082,16 @@ extends Control
 
         if (this.param)
         {
-            this.focus.style.boxShadow = '0 1px 0 0 ' + colShadow + ' inset';
+            this.divFocus.style.boxShadow = '0 1px 0 0 ' + colShadow + ' inset';
 
             if (    this.param.node
                 &&  this.param.node.params.includes(this.param)
                 && !isLastInArray(this.param.node.params, this.param))
-                this.focus.style.boxShadow += ', 0 -1px 0 0 ' + colShadow + ' inset';
+                this.divFocus.style.boxShadow += ', 0 -1px 0 0 ' + colShadow + ' inset';
         }
         else
         {
-            this.focus.style.boxShadow  = '0 0 0 1px ' + colShadow + ' inset ';
+            this.divFocus.style.boxShadow  = '0 0 0 1px ' + colShadow + ' inset ';
         }
     }
 }
@@ -66502,8 +66503,8 @@ ColorControl.prototype.initEvents = function()
             this.updateFocusBorder();
 
 
-            this.focus.style.visibility = 'visible';
-            this.focus.style.opacity    = '100%';
+            this.divFocus.style.visibility = 'visible';
+            this.divFocus.style.opacity    = '100%';
     
             this.update();
         }
@@ -66658,8 +66659,8 @@ ColorControl.prototype.initEvents = function()
 
         this.div.style.cursor       = 'default';
         
-        this.focus.style.visibility = 'hidden';
-        this.focus.style.opacity    = 0;
+        this.divFocus.style.visibility = 'hidden';
+        this.divFocus.style.opacity    = 0;
 
         this.update();
 
@@ -66779,7 +66780,7 @@ ColorControl.prototype.initEvents = function()
             this.buttonDown0 = false;
             this.unlockPointer(e.pointerId);
 
-            this.focus.style.boxShadow = '0 0 0 1px rgba(0, 0, 0, 0.1) inset';
+            this.divFocus.style.boxShadow = '0 0 0 1px rgba(0, 0, 0, 0.1) inset';
 
             // if (    this.value != this.oldValue
             //     && !this.readOnly)
