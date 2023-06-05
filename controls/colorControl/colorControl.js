@@ -66,12 +66,11 @@ extends Control
         this.wheelScale  = wheelScale;
                  
 
-        this.divValue    = divValue;
         this.focus       = createDiv('colorControlFocus');
     
         this.div.appendChild(this.divValue);
 
-        this.param.div.appendChild(this.focus);
+        this.param.divControls.appendChild(this.focus);
 
         
         this.initTextbox();

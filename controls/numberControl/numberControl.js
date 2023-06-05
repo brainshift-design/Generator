@@ -152,10 +152,10 @@ extends Control
         this.div.appendChild(this.divPrecision);
         this.div.appendChild(this.divValue);
         
-        this.param.div.appendChild(this.divBar);
-        this.param.div.appendChild(this.extLeft);
-        this.param.div.appendChild(this.extRight);
-        this.param.div.appendChild(this.divFocus);
+        this.param.divControls.appendChild(this.divBar);
+        this.param.divControls.appendChild(this.extLeft);
+        this.param.divControls.appendChild(this.extRight);
+        this.param.divControls.appendChild(this.divFocus);
 
 
         this.initTextbox();

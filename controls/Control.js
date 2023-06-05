@@ -89,7 +89,7 @@ extends EventTarget
         // this.divValue.style.transform  = 'translateX(-50%)';
         // this.divValue.style.marginLeft =  0;
 
-        this.div.style.width = '100%';
+        //this.div.style.width = '100%';
     }
 
 

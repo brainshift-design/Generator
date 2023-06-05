@@ -1,8 +1,8 @@
 ColorControl.prototype.initTextbox = function()
 {
-    this.textbox = createTextbox('colorControlTextbox');
-    this.textbox.control        = this;
-    this.textbox.shown          = false;
+    this.textbox         = createTextbox('colorControlTextbox');
+    this.textbox.control = this;
+    this.textbox.shown   = false;
 
 
 
@@ -251,8 +251,8 @@ ColorControl.prototype.initTextbox = function()
             this.savedSuccessOnFocusOut = null;
         }
 
-        if (this.div.parentNode.contains(this.textbox))
-            this.div.parentNode.removeChild(this.textbox);
+        if (this.param.div.parentNode.contains(this.textbox))
+            this.param.div.parentNode.removeChild(this.textbox);
 
         this.textbox.shown = false;
 
@@ -351,14 +351,13 @@ ColorControl.prototype.showTextbox = function()
     // this.textbox.style.boxShadow = '0 0 0 1px var(--figma-color-bg-brand)';
     // this.textbox.style.outline   = 'none';
 
-    this.textbox.style.width     = this.div.offsetWidth;
-    this.textbox.style.height    = defParamHeight;
-    this.textbox.style.textAlign = 'center';
+
+    this.param.formatControlTextbox(this);
 
     this.updateTextbox();
 
     
-    this.div.parentNode.appendChild(this.textbox);
+    this.param.div.parentNode.appendChild(this.textbox);
     
     this.textbox.focus();
     // this.textbox.select();

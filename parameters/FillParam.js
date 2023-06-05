@@ -75,9 +75,6 @@ extends Parameter
         this._warningOverlay                        = createDiv('colorValueWarningOverlay');
         this._warningOverlay.style.zIndex           = 11;
 
-        this.div.appendChild(this._warningOverlay);
-
-
         this.checkersHolder.style.position          = 'absolute';
         this.checkersHolder.style.width             = '100%';
         this.checkersHolder.style.height            = defParamHeight;
@@ -124,8 +121,10 @@ extends Parameter
         this.divControls   .appendChild(this.controls[0].div);
         this.divControls   .appendChild(this.controls[1].div);
         
-        this.checkersHolder.appendChild(this.checkers      );
-        this.div           .appendChild(this.checkersHolder);
+        this.checkersHolder.appendChild(this.checkers);
+
+        this.div           .insertBefore(this.checkersHolder,  this.divName);
+        this.div           .insertBefore(this._warningOverlay, this.divName);
 
        
         if (hasInput)  this.initInput ([FILL_VALUE, COLOR_VALUE], getParamInputValuesForUndo, this.input_getBackInitValue);
@@ -281,16 +280,6 @@ extends Parameter
         if (   this.input
             && this.input.connected)
         {
-            // if (this.input.connectedOutput.supportsTypes(COLOR_TYPES))
-            // {
-            //     request.push(
-            //         FILL_VALUE,
-            //         FillValue.fromRgb(
-            //             scaleRgb(dataColor2rgb(this.input.connectedOutput.node._color)), 0xff)
-            //             .toString());
-            // }
-            // else if (this.input.connectedOutput.supportsTypes(FILL_TYPES))
-                
             if (this.input.connectedOutput.supportsTypes([FILL_VALUE, COLOR_VALUE]))
                 request.push(...pushInputOrParam(this.input, gen));
             else
@@ -316,8 +305,8 @@ extends Parameter
 
     updateControls()
     {
-        checkControlVisible(this, this.controls[0]);
-        checkControlVisible(this, this.controls[1]);
+        // checkControlVisible(this, this.controls[0]);
+        // checkControlVisible(this, this.controls[1]);
 
 
         const noColor = 
@@ -354,21 +343,21 @@ extends Parameter
         }
 
 
-        this.checkers.style.background = 'transparent';
-            // darkMode
-            // ?   'linear-gradient(-45deg, #222 25%, transparent 25%, transparent 75%, #222 75%), '
-            //   + 'linear-gradient(-45deg, #222 25%, transparent 25%, transparent 75%, #222 75%)'
-            // :   'linear-gradient(-45deg, #ddd 25%, transparent 25%, transparent 75%, #ddd 75%), '
-            //   + 'linear-gradient(-45deg, #ddd 25%, transparent 25%, transparent 75%, #ddd 75%)';
+        this.checkers.style.background =
+            darkMode
+            ?   'linear-gradient(-45deg, #222 25%, transparent 25%, transparent 75%, #222 75%), '
+              + 'linear-gradient(-45deg, #222 25%, transparent 25%, transparent 75%, #222 75%)'
+            :   'linear-gradient(-45deg, #ddd 25%, transparent 25%, transparent 75%, #ddd 75%), '
+              + 'linear-gradient(-45deg, #ddd 25%, transparent 25%, transparent 75%, #ddd 75%)';
 
-       // this.checkers.style.display            = this.value.isValid() ? 'inline-block' : 'none';
-        //this.checkers.style.backgroundColor    = darkMode ? '#444' : '#fff';
+        this.checkers.style.display            = this.value.isValid() ? 'inline-block' : 'none';
+        this.checkers.style.backgroundColor    = darkMode ? '#444' : '#fff';
       
-        // this.checkers.style.backgroundSize     = '22px 22px';
-        // this.checkers.style.backgroundPosition = '0 0, 11px 11px';
+        this.checkers.style.backgroundSize     = '22px 22px';
+        this.checkers.style.backgroundPosition = '0 0, 11px 11px';
       
-        // this.checkers.style.left               = '-3.5px';
-        // this.checkers.style.width              = 'calc(100% + 3.5px)';
+        this.checkers.style.left               = '-3.5px';
+        this.checkers.style.width              = 'calc(100% + 3.5px)';
            
            
         this.controls[0].backStyleLight        = 
@@ -386,59 +375,17 @@ extends Parameter
         this.controls[1].textStyleDark         = rgba2style(rgbaText);
 
 
-        this.controls[0].update();
-        this.controls[1].update();
-
-        this.controls[1].divValue.style.transform = 'translateX(-68.5%) \
-                                                     translateY(-50%)';
-
-                                                     
-        if (this.input ) this.input .updateControl();
-        if (this.output) this.output.updateControl();
+        // if (this.input ) this.input .updateControl();
+        // if (this.output) this.output.updateControl();
 
 
-        // const left = this.input || this.output ? 12 : 0;
-
-        // const dw = 
-        //       (left > 0 ? 12 : 0) 
-        //     + (left > 0 ? 12 : 0);
-
-
-        // if (this.showName)
-        // {
-        //     const nameSize = this.divider <= 1 ? ((   this.divider *100) + '%') : (this.divider + 'px');
-        //     const  valSize = this.divider <= 1 ? (((1-this.divider)*100) + '%') : ('calc(100% - ' + this.divider + 'px)');
-
-        //     this.divName    .innerHTML        =  this.name;
-   
-        //     this.divName    .style.display    = 'inline-block';
-        //     this.divName    .style.right      =  valSize;
-        //     this.divName    .style.width      = 'calc(' + nameSize + ' - ' + (this.input ? 12 : 0) + 'px)';
-            
-        //     this.divControls.style.left       =  nameSize;
-        //     this.divControls.style.marginLeft = '3px';
-        //     this.divControls.style.width      = 'calc(calc(' + valSize + ' - ' + (this.output ? 12 : 0) + 'px) - 3px)';
-        // }
-        // else
-        // {
-        //     this.divName    .style.display    = 'none';
-            
-        //     // this.divControls.style.left       = '50%';
-        //     //this.divControls.style.transform  = 'translateX(-50%) translateY(-50%)';
-        //     this.divControls.style.marginLeft =  0;
-        //     this.divControls.style.left       =  left+'px';
-        //     this.divControls.style.width      = 'calc(100% - ' + dw + 'px)';
-        // }
-
-
-        // this.controls[0].div.style.width = '55%';
-        // this.controls[1].div.style.width = '45%';
+        this.controls[0].div.style.width = '55%';
+        this.controls[1].div.style.width = '45%';
 
         // this.controls[0].div.style.position = 'absolute';
         // this.controls[1].div.style.position = 'absolute';
         // this.controls[0].div.style.left = '0';
         // this.controls[1].div.style.left  = '0';
-
 
 
         super.updateControls();
@@ -542,6 +489,24 @@ extends Parameter
     
     
     
+    formatControlTextbox(control)
+    {
+        control.textbox.style.left = 
+            control == this.controls[0]
+            ? this.divControls.offsetLeft
+            : this.divControls.offsetLeft + this.controls[0].div.offsetWidth;
+     
+        
+        control.textbox.style.top       = this.div        .offsetTop;
+
+        control.textbox.style.width     = control.div.offsetWidth;
+        control.textbox.style.height    = defParamHeight;
+        
+        control.textbox.style.textAlign = 'center';
+    }
+
+
+
     loadParam(_param)
     {
         this.setValue(parseFillValue(_param[2])[0], true, true, false);

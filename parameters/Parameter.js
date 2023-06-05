@@ -219,8 +219,6 @@ extends EventTarget
         {
             this.divName    .style.display    = 'none';
             
-            // this.divControls.style.left       = '50%';
-            //this.divControls.style.transform  = 'translateX(-50%) translateY(-50%)';
             this.divControls.style.marginLeft =  0;
             this.divControls.style.left       =  left+'px';
             this.divControls.style.width      = 'calc(100% - ' + dw + 'px)';
@@ -272,6 +270,19 @@ extends EventTarget
     updateSetting(setting, value)
     {
 
+    }
+
+
+
+    formatControlTextbox(control)
+    {
+        control.textbox.style.left      = this.divControls.offsetLeft;
+        control.textbox.style.top       = this.div        .offsetTop;
+
+        control.textbox.style.width     = control.div.offsetWidth;
+        control.textbox.style.height    = defParamHeight;
+        
+        control.textbox.style.textAlign = 'center';
     }
 
 

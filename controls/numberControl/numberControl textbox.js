@@ -388,11 +388,8 @@ NumberControl.prototype.showTextbox = function()
            hasFocus(this.param.div)
         && !this.clicked;
 
-        
-    this.textbox.style.top       = this.param.div.offsetTop;
-    this.textbox.style.width     = this.param.div.offsetWidth;
-    this.textbox.style.height    = defParamHeight;
-    this.textbox.style.textAlign = 'center';
+
+    this.param.formatControlTextbox(this);
 
 
     this.updateTextbox();
