@@ -34,7 +34,7 @@ extends OpColorBase
         this.addOutput(new Output([STROKE_VALUE], this.output_genRequest, getNodeOutputValuesForUndo));
 
 
-        this.addParam(this.paramFill   = new FillParam  ('fill',   'fill',   true, true, true, FillValue.create(0, 0, 0, 100)));
+        this.addParam(this.paramFill   = new FillParam  ('fill',   'fill',   false, true, true, FillValue.create(0, 0, 0, 100)));
         this.addParam(this.paramWeight = new NumberParam('weight', 'weight', true,  true, true, 1, 0));
         this.addParam(this.paramFit    = new SelectParam('fit',    'align',  true,  true, true, ['inside', 'center', 'outside'], 0));
         this.addParam(this.paramJoin   = new SelectParam('join',   'join',   true,  true, true, ['miter', 'bevel', 'round'], 0));

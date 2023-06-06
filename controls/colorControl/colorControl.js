@@ -1,8 +1,6 @@
 class ColorControl
 extends Control
 {
-    showColor         = true;
-
     value;
     acc;
      
@@ -55,8 +53,6 @@ extends Control
         super(divValue, param, id, name);
 
 
-        this.showColor   = true;
-    
         this.value       = defaultValue;
         this.acc         = acc;
          
@@ -159,7 +155,10 @@ extends Control
 
     updateColors()
     {
-        //this.param.div.style.background = darkMode ? this.backStyleDark : this.backStyleLight;
+        // this.param.div.style.background = 
+        //     darkMode 
+        //     ? this.backStyleDark 
+        //     : this.backStyleLight;
         
         this.param.divName.style.color = !isDark(this.value.toRgb()) ? this.textStyleDark : this.textStyleLight;
         this.param.divName.style.opacity = 0.5;
@@ -167,7 +166,10 @@ extends Control
         this.textbox.style.background = 'transparent';
 
         this.divValue.style.color = 
-        this.textbox .style.color = darkMode ? this.textStyleDark : this.textStyleLight;
+        this.textbox .style.color = 
+            darkMode 
+            ? this.textStyleDark 
+            : this.textStyleLight;
     };
 
 

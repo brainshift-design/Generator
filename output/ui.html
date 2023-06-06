@@ -63853,9 +63853,8 @@ extends Control
 
     updateColors()
     {
-        //this.param.div.style.background = darkMode ? this. backStyleDark : this. backStyleLight;
-        this.divBar   .style.background = darkMode ? this.valueStyleDark : this.valueStyleLight;
-        this.divValue .style.color      = darkMode ? this. textStyleDark : this. textStyleLight;
+        this.divBar  .style.background = darkMode ? this.valueStyleDark : this.valueStyleLight;
+        this.divValue.style.color      = darkMode ? this. textStyleDark : this. textStyleLight;
     }
 
 
@@ -65862,8 +65861,6 @@ TextControl.prototype.initEvents = function()
 class ColorControl
 extends Control
 {
-    showColor         = true;
-
     value;
     acc;
      
@@ -65916,8 +65913,6 @@ extends Control
         super(divValue, param, id, name);
 
 
-        this.showColor   = true;
-    
         this.value       = defaultValue;
         this.acc         = acc;
          
@@ -66020,7 +66015,10 @@ extends Control
 
     updateColors()
     {
-        //this.param.div.style.background = darkMode ? this.backStyleDark : this.backStyleLight;
+        // this.param.div.style.background = 
+        //     darkMode 
+        //     ? this.backStyleDark 
+        //     : this.backStyleLight;
         
         this.param.divName.style.color = !isDark(this.value.toRgb()) ? this.textStyleDark : this.textStyleLight;
         this.param.divName.style.opacity = 0.5;
@@ -66028,7 +66026,10 @@ extends Control
         this.textbox.style.background = 'transparent';
 
         this.divValue.style.color = 
-        this.textbox .style.color = darkMode ? this.textStyleDark : this.textStyleLight;
+        this.textbox .style.color = 
+            darkMode 
+            ? this.textStyleDark 
+            : this.textStyleLight;
     };
 
 
@@ -72703,8 +72704,8 @@ extends Parameter
         
         this.div.style.background = 
             darkMode 
-            ? this. backStyleDark 
-            : this. backStyleLight;
+            ? this.backStyleDark 
+            : this.backStyleLight;
 
         super.updateControls();
     }
@@ -73321,7 +73322,8 @@ extends Parameter
     warningStyle;
 
 
-    showColorBack    = true;
+    showColorBack = true;
+
 
     checkers;
     
@@ -73387,7 +73389,7 @@ extends Parameter
         this.divControls.appendChild(this.controls[0].div);
 
        
-        if (hasInput)  this.initInput([COLOR_VALUE], getParamInputValuesForUndo, this.input_getBackInitValue);
+        if (hasInput)  this.initInput ([COLOR_VALUE], getParamInputValuesForUndo, this.input_getBackInitValue);
         if (hasOutput) this.initOutput([COLOR_VALUE], this.output_genRequest, getParamOutputValuesForUndo, this.output_backInit);
 
 
@@ -73507,14 +73509,14 @@ extends Parameter
 
         if (this.showColorBack)
         {
-            this.controls[0].backStyleLight   =
-            this.controls[0].backStyleDark    = rgba2style(rgbaStripe);
+            this.controls[0].backStyleLight  =
+            this.controls[0].backStyleDark   = rgba2style(rgbaStripe);
 
-            this.controls[0].valueStyleLight  = 
-            this.controls[0].valueStyleDark   = 'transparent';
+            this.controls[0].valueStyleLight = 
+            this.controls[0].valueStyleDark  = 'transparent';
 
-            this.controls[0].textStyleLight   = 
-            this.controls[0].textStyleDark    = rgba2style(rgbaText);
+            this.controls[0].textStyleLight  = 
+            this.controls[0].textStyleDark   = rgba2style(rgbaText);
         }
 
         
@@ -73587,6 +73589,40 @@ extends Parameter
     output_genRequest(gen)
     {
         return this.param.genRequest(gen);
+    }
+
+
+
+    updateControls()
+    {
+        const rgb       = this.value.toRgb();
+
+        const rgbStripe = getStripeBackColor(rgb);
+        const rgbBack   = rgbStripe;
+        const rgbText   = getTextColorFromBackColor(rgbStripe);
+
+
+        this.controls[0].backStyleLight = 
+        this.controls[0].backStyleDark  = 'transparent';
+            
+        this.controls[0].textStyleLight = 
+        this.controls[0].textStyleDark  = 
+            this.showColorBack
+            ? rgba2style(rgbText)
+            : darkMode
+              ? this.textStyleDark
+              : this.textStyleLight;
+
+
+        super.updateControls();
+
+
+        this.div.style.background = 
+            this.showColorBack
+            ? rgb2style(rgbBack)
+            : darkMode
+              ? this.backStyleDark
+              : this.backStyleLight;
     }
 
 
@@ -73724,8 +73760,6 @@ extends Parameter
             'color', 
             defaultValue.color,   
             dragScale)); 
-
-        this.controls[0].showColor = false;
 
 
         this.controls.push(new NumberControl(
@@ -74440,8 +74474,6 @@ extends Parameter
             this.id,
             'color', 
             defaultValue.fill.color)); 
-
-        this.controls[0].showColor = false;
 
 
         this.defaultValue                           = defaultValue;
@@ -86688,6 +86720,13 @@ extends OpColorBase
         this.param2.controls[0].epsilon = ColorEpsilon;
         this.param3.controls[0].epsilon = ColorEpsilon;
 
+        this.paramSpace.backStyleDark  =
+        this.paramSpace.backStyleLight = 'transparent';
+
+        
+        this.paramColor.showColorBack  = false;
+
+
         this.paramSpace.controls[0].delayUse = 100; // so that you carelessly drag it by grabbing the space param
                                                     // while already moving the mouse with an aim to drag
         this.paramSpace.input.outputMustBeCached = true;
@@ -86730,9 +86769,6 @@ extends OpColorBase
         this.paramHolder.removeChild(this.param3.div);
 
         
-        this.paramColor.controls[0].showColor = false;
-        this.paramColor.showColorBack         = false;
-
         this.paramColor.addEventListener('change', () => 
         {
             this._color = this.paramColor.value.toDataColor();
@@ -89851,7 +89887,8 @@ extends OpColorBase
     {
         super(FILL, 'fill', 'fill', iconFill);
 
-        this.canDisable = true;
+        this.canDisable  = true;
+        this.iconOffsetY = 1;
         
 
         this.colorBack      = createDiv('colorBack');
@@ -90549,7 +90586,7 @@ extends OpColorBase
         this.addOutput(new Output([STROKE_VALUE], this.output_genRequest, getNodeOutputValuesForUndo));
 
 
-        this.addParam(this.paramFill   = new FillParam  ('fill',   'fill',   true, true, true, FillValue.create(0, 0, 0, 100)));
+        this.addParam(this.paramFill   = new FillParam  ('fill',   'fill',   false, true, true, FillValue.create(0, 0, 0, 100)));
         this.addParam(this.paramWeight = new NumberParam('weight', 'weight', true,  true, true, 1, 0));
         this.addParam(this.paramFit    = new SelectParam('fit',    'align',  true,  true, true, ['inside', 'center', 'outside'], 0));
         this.addParam(this.paramJoin   = new SelectParam('join',   'join',   true,  true, true, ['miter', 'bevel', 'round'], 0));

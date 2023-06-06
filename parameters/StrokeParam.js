@@ -55,8 +55,6 @@ extends Parameter
             'color', 
             defaultValue.fill.color)); 
 
-        this.controls[0].showColor = false;
-
 
         this.defaultValue                           = defaultValue;
         this.value                                  = defaultValue;

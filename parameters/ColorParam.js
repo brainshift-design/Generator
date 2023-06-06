@@ -12,7 +12,8 @@ extends Parameter
     warningStyle;
 
 
-    showColorBack    = true;
+    showColorBack = true;
+
 
     checkers;
     
@@ -78,7 +79,7 @@ extends Parameter
         this.divControls.appendChild(this.controls[0].div);
 
        
-        if (hasInput)  this.initInput([COLOR_VALUE], getParamInputValuesForUndo, this.input_getBackInitValue);
+        if (hasInput)  this.initInput ([COLOR_VALUE], getParamInputValuesForUndo, this.input_getBackInitValue);
         if (hasOutput) this.initOutput([COLOR_VALUE], this.output_genRequest, getParamOutputValuesForUndo, this.output_backInit);
 
 
@@ -198,14 +199,14 @@ extends Parameter
 
         if (this.showColorBack)
         {
-            this.controls[0].backStyleLight   =
-            this.controls[0].backStyleDark    = rgba2style(rgbaStripe);
+            this.controls[0].backStyleLight  =
+            this.controls[0].backStyleDark   = rgba2style(rgbaStripe);
 
-            this.controls[0].valueStyleLight  = 
-            this.controls[0].valueStyleDark   = 'transparent';
+            this.controls[0].valueStyleLight = 
+            this.controls[0].valueStyleDark  = 'transparent';
 
-            this.controls[0].textStyleLight   = 
-            this.controls[0].textStyleDark    = rgba2style(rgbaText);
+            this.controls[0].textStyleLight  = 
+            this.controls[0].textStyleDark   = rgba2style(rgbaText);
         }
 
         
@@ -278,6 +279,40 @@ extends Parameter
     output_genRequest(gen)
     {
         return this.param.genRequest(gen);
+    }
+
+
+
+    updateControls()
+    {
+        const rgb       = this.value.toRgb();
+
+        const rgbStripe = getStripeBackColor(rgb);
+        const rgbBack   = rgbStripe;
+        const rgbText   = getTextColorFromBackColor(rgbStripe);
+
+
+        this.controls[0].backStyleLight = 
+        this.controls[0].backStyleDark  = 'transparent';
+            
+        this.controls[0].textStyleLight = 
+        this.controls[0].textStyleDark  = 
+            this.showColorBack
+            ? rgba2style(rgbText)
+            : darkMode
+              ? this.textStyleDark
+              : this.textStyleLight;
+
+
+        super.updateControls();
+
+
+        this.div.style.background = 
+            this.showColorBack
+            ? rgb2style(rgbBack)
+            : darkMode
+              ? this.backStyleDark
+              : this.backStyleLight;
     }
 
 

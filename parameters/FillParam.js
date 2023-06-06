@@ -50,8 +50,6 @@ extends Parameter
             defaultValue.color,   
             dragScale)); 
 
-        this.controls[0].showColor = false;
-
 
         this.controls.push(new NumberControl(
             this,

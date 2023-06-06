@@ -60,6 +60,13 @@ extends OpColorBase
         this.param2.controls[0].epsilon = ColorEpsilon;
         this.param3.controls[0].epsilon = ColorEpsilon;
 
+        this.paramSpace.backStyleDark  =
+        this.paramSpace.backStyleLight = 'transparent';
+
+        
+        this.paramColor.showColorBack  = false;
+
+
         this.paramSpace.controls[0].delayUse = 100; // so that you carelessly drag it by grabbing the space param
                                                     // while already moving the mouse with an aim to drag
         this.paramSpace.input.outputMustBeCached = true;
@@ -102,9 +109,6 @@ extends OpColorBase
         this.paramHolder.removeChild(this.param3.div);
 
         
-        this.paramColor.controls[0].showColor = false;
-        this.paramColor.showColorBack         = false;
-
         this.paramColor.addEventListener('change', () => 
         {
             this._color = this.paramColor.value.toDataColor();

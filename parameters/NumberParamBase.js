@@ -164,8 +164,8 @@ extends Parameter
         
         this.div.style.background = 
             darkMode 
-            ? this. backStyleDark 
-            : this. backStyleLight;
+            ? this.backStyleDark 
+            : this.backStyleLight;
 
         super.updateControls();
     }
