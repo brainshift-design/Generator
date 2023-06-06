@@ -430,21 +430,24 @@ extends Control
         }
 
 
-        // if (this.param.showName)
-        // {
-        //     this.divValue.style.marginLeft = '3px';
+        if (this.param.showName)
+        {
+            this.divValue.style.position = 'static';
+            this.divValue.style.width    = 'fit-content';
+            this.divValue.style.margin   = '4px auto 0 3px';
+    //     this.divValue.style.marginLeft = '3px';
         //     this.divValue.style.left       =  0;
         //     this.divValue.style.transform  = 'translateY(-50%)';
-        // }
-        // else
-        // {
+        }
+        else
+        {
                 this.divValue.style.position = 'static';
                 this.divValue.style.width    = 'fit-content';
                 this.divValue.style.margin   = '4px auto 0 auto';
         //     this.divValue.style.marginLeft =  0;
         //     this.divValue.style.left       = '50%';
         //     this.divValue.style.transform  = 'translateX(-50%) translateY(-50%)';
-        // }
+        }
     }
 
 
