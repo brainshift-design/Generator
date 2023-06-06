@@ -1,7 +1,7 @@
 .paramDiv
 {
     /* background-color: var(--figma-color-bg); */
-    /* box-shadow: 0 0 0 1px inset cyan; */
+    box-shadow: 0 0 0 1px inset cyan;
     position:   relative;
 }
 

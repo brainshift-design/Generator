@@ -37,18 +37,8 @@ extends Parameter
             defaultValue);
 
             
-        // if (name != NULL)
-        // {
-        //     this.controls[0].textbox.defPlaceholder =
-        //     this.controls[0].textbox.placeholder    = name;
-        // }
-        
-
         this.controls[0].successOnFocusOut = true;
         this.controls[0].div.zIndex        = 0;
-
-        this.controls[0].div.style.display = 'inline-block';
-        this.controls[0].div.style.width   = '100%';
 
 
         this.divControls.appendChild(this.controls[0].div);
@@ -61,7 +51,6 @@ extends Parameter
         this.controls[0].addEventListener('change', () => 
         { 
             this.setValue(this.value, true, false);
-            //this.changing = true;
         });
     }
 
@@ -176,6 +165,18 @@ extends Parameter
     output_genRequest(gen)
     {
         return this.param.genRequest(gen);
+    }
+
+
+
+    updateControls()
+    {
+        this.div.style.background = 
+            darkMode 
+            ? this.backStyleDark 
+            : this.backStyleLight;
+
+        super.updateControls();
     }
 
 

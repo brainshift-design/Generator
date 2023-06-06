@@ -3,7 +3,7 @@
     /* box-shadow:       0 0 0 4px purple inset; */
     overflow:    hidden;
     /* width:            10; */
-    /* position:   absolute; */
+    position:   relative;
     /* height:     auto; */
 }
 

@@ -54,8 +54,8 @@ extends EventTarget
         this.width            = w;
         this.height           = h;
         
-        this.div.style.width  = w + 'px';
-        this.div.style.height = Math.max(20, h) + 'px';
+        this.div.style.width  = '100%';//w + 'px';
+        this.div.style.height = '100%';//Math.max(20, h) + 'px';
     }
 
 

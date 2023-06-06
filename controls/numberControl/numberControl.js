@@ -146,7 +146,7 @@ extends Control
         this.divValue              = divValue;
         this.divFocus              = createDiv('numberControlFocus');
         this.extLeft               = createDiv('numberControlExt numberControlExtLeft');
-        this.extRight              = createDiv('numberControlExt numberControlExtRight');
+        this.extRight              = createDiv('numberControlExt num    berControlExtRight');
 
 
         this.div.appendChild(this.divPrecision);
@@ -431,10 +431,10 @@ extends Control
         }
 
 
-        this.divValue.style.position = 'absolute';
-        this.divValue.style.top = '50%';
+        this.divValue.style.position  = 'absolute';
+        this.divValue.style.top       = '50%';
         this.divValue.style.transform = 'translateY(-50%)';
-        this.divValue.style.width    = 'fit-content';
+        this.divValue.style.width     = 'fit-content';
 
         
         if (this.param.showName)

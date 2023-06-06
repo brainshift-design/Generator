@@ -1,22 +1,11 @@
 .textControl
 {
-    padding:       0;
+    /* padding:       0; */
     overflow:      visible;
-    text-align:    center;
+    /* text-align:    center; */
     touch-action:  none;
+    /* position:      relative; */
 }    
-
-
-/* .figma-dark .textBehind::selection
-{
-    background-color: rgba(255, 255, 255, 0.05);
-}
-
-
-.figma-light .textBehind::selection
-{
-    background-color: rgba(0, 0, 0, 0.05);
-} */
 
 
 .textControlTextarea
@@ -29,9 +18,7 @@
     position:             absolute;
     left:                 0px;
     top:                  0px;
-    /* left:                 50%; */
-    /* transform:            translateX(-50%); */
-    width:                80%;
+    width:                100%;
     background-color:     transparent;
     z-index:              5000;
 
@@ -52,7 +39,7 @@
 
     border-radius:        0.5px;
     
-    /* box-shadow:           0 0 0 1px inset green; */
+    box-shadow:           0 0 0 1px inset red;
 }
 
 

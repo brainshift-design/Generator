@@ -73,8 +73,8 @@ extends OperatorWithValue
 
         if (length.value > 0)
         {
-            this.paramStart.controls[0].setMax(length.value-1);
-            this.paramEnd  .controls[0].setMax(length.value-1);
+            this.paramStart.controls[0].setMax(length.value);
+            this.paramEnd  .controls[0].setMax(length.value);
         }
         else
         {

@@ -80,7 +80,7 @@ TextControl.prototype.initEvents = function()
             return;
 
 
-        // this.divControl.style.cursor       = 'default';
+        // this.divControl.style.cursor  = 'default';
         
         // this.textbox.style.visibility = 'hidden';
         // this.textbox.style.opacity    = 0;

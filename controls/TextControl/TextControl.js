@@ -50,6 +50,10 @@ extends Control
             && !hasFocus(this.textbox)
             ? ttText
             : null);
+
+
+        this.div.style.position  = 'relative';
+        this.div.style.boxShadow = '0 0 0 2px orange inset';
     }    
 
 
@@ -84,11 +88,15 @@ extends Control
     {
         h = Math.max(defParamHeight, h);
 
+
         super.setSize(w, h);
 
 
-        if (this.textbox) 
-            this.textbox.style.height = h + 'px';
+        // if (this.textbox) 
+        // {
+        //     this.textbox.style.width  = '100%';
+        //     this.textbox.style.height = '100%';
+        // }
     }
 
 
@@ -142,6 +150,7 @@ extends Control
         if (typeof this.value !== 'string')
             console.assert(false, 'TextControl.update() value is ' + typeof this.value + ', must be a string');
 
+            
         if (!this.measureData.offsetRect)
             return;
             
@@ -152,10 +161,11 @@ extends Control
             : this.textbox.defPlaceholder;
 
 
-        if (this.valueText != '')
-            this.textbox.value = this.valueText;
-        else if (this.value == NAN_CHAR)
-            this.textbox.value = '';
+        this.textbox.style.height = '100%';
+
+
+             if (this.valueText != '')   this.textbox.value = this.valueText;
+        else if (this.value == NAN_CHAR) this.textbox.value = '';
     }
 
 

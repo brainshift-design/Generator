@@ -16,7 +16,7 @@ extends ResizableBase
         this.addInput (new Input (TEXT_TYPES, getNodeInputValuesForUndo, this.input_getBackInitValue));
         this.addOutput(new Output([TEXT_VALUE], this.output_genRequest, getNodeOutputValuesForUndo, this.output_backInit));
 
-        this.addParam(this.paramValue = new TextParam('value', 'value', true, false, false));
+        this.addParam(this.paramValue = new TextParam('value', 'value', false, false, false));
 
         this.paramValue.controls[0].textbox.defPlaceholder = '...';
         setControlFont(this.paramValue.controls[0].textbox, 'Roboto Mono', 10, 'center');
@@ -103,10 +103,8 @@ extends ResizableBase
 
     updateValueParam()
     {
-        this.paramValue.controls[0].setSize(
-            this.div.offsetWidth,
-            this.div.offsetHeight - Math.max(defHeaderHeight, this.header.offsetHeight));
-    }
+        this.paramValue.div.style.width  = this.div.offsetWidth;
+        this.paramValue.div.style.height = this.div.offsetHeight - Math.max(defHeaderHeight, this.header.offsetHeight);    }
 
 
 

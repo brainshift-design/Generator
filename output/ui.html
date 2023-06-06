@@ -2613,7 +2613,7 @@ a
     /* box-shadow:       0 0 0 4px purple inset; */
     overflow:    hidden;
     /* width:            10; */
-    /* position:   absolute; */
+    position:   relative;
     /* height:     auto; */
 }
 
@@ -2633,12 +2633,9 @@ a
 .numberControl
 {
     padding:          0;
-    /* position:         relative; */
     overflow:         hidden;
-    /* background-color: var(--figma-color-bg); */
     text-align:       center;
     touch-action:     none;
-    /* box-shadow:       0 0 0 2px blue inset; */
 }    
 
 
@@ -2759,23 +2756,12 @@ a
 
 .textControl
 {
-    padding:       0;
+    /* padding:       0; */
     overflow:      visible;
-    text-align:    center;
+    /* text-align:    center; */
     touch-action:  none;
+    /* position:      relative; */
 }    
-
-
-/* .figma-dark .textBehind::selection
-{
-    background-color: rgba(255, 255, 255, 0.05);
-}
-
-
-.figma-light .textBehind::selection
-{
-    background-color: rgba(0, 0, 0, 0.05);
-} */
 
 
 .textControlTextarea
@@ -2788,9 +2774,7 @@ a
     position:             absolute;
     left:                 0px;
     top:                  0px;
-    /* left:                 50%; */
-    /* transform:            translateX(-50%); */
-    width:                80%;
+    width:                100%;
     background-color:     transparent;
     z-index:              5000;
 
@@ -2811,7 +2795,7 @@ a
 
     border-radius:        0.5px;
     
-    /* box-shadow:           0 0 0 1px inset green; */
+    box-shadow:           0 0 0 1px inset red;
 }
 
 
@@ -3855,7 +3839,7 @@ a
 .paramDiv
 {
     /* background-color: var(--figma-color-bg); */
-    /* box-shadow: 0 0 0 1px inset cyan; */
+    box-shadow: 0 0 0 1px inset cyan;
     position:   relative;
 }
 
@@ -63301,8 +63285,8 @@ extends EventTarget
         this.width            = w;
         this.height           = h;
         
-        this.div.style.width  = w + 'px';
-        this.div.style.height = Math.max(20, h) + 'px';
+        this.div.style.width  = '100%';//w + 'px';
+        this.div.style.height = '100%';//Math.max(20, h) + 'px';
     }
 
 
@@ -63593,7 +63577,7 @@ extends Control
         this.divValue              = divValue;
         this.divFocus              = createDiv('numberControlFocus');
         this.extLeft               = createDiv('numberControlExt numberControlExtLeft');
-        this.extRight              = createDiv('numberControlExt numberControlExtRight');
+        this.extRight              = createDiv('numberControlExt num    berControlExtRight');
 
 
         this.div.appendChild(this.divPrecision);
@@ -63878,10 +63862,10 @@ extends Control
         }
 
 
-        this.divValue.style.position = 'absolute';
-        this.divValue.style.top = '50%';
+        this.divValue.style.position  = 'absolute';
+        this.divValue.style.top       = '50%';
         this.divValue.style.transform = 'translateY(-50%)';
-        this.divValue.style.width    = 'fit-content';
+        this.divValue.style.width     = 'fit-content';
 
         
         if (this.param.showName)
@@ -65218,6 +65202,10 @@ extends Control
             && !hasFocus(this.textbox)
             ? ttText
             : null);
+
+
+        this.div.style.position  = 'relative';
+        this.div.style.boxShadow = '0 0 0 2px orange inset';
     }    
 
 
@@ -65252,11 +65240,15 @@ extends Control
     {
         h = Math.max(defParamHeight, h);
 
+
         super.setSize(w, h);
 
 
-        if (this.textbox) 
-            this.textbox.style.height = h + 'px';
+        // if (this.textbox) 
+        // {
+        //     this.textbox.style.width  = '100%';
+        //     this.textbox.style.height = '100%';
+        // }
     }
 
 
@@ -65310,6 +65302,7 @@ extends Control
         if (typeof this.value !== 'string')
             console.assert(false, 'TextControl.update() value is ' + typeof this.value + ', must be a string');
 
+            
         if (!this.measureData.offsetRect)
             return;
             
@@ -65320,10 +65313,11 @@ extends Control
             : this.textbox.defPlaceholder;
 
 
-        if (this.valueText != '')
-            this.textbox.value = this.valueText;
-        else if (this.value == NAN_CHAR)
-            this.textbox.value = '';
+        this.textbox.style.height = '100%';
+
+
+             if (this.valueText != '')   this.textbox.value = this.valueText;
+        else if (this.value == NAN_CHAR) this.textbox.value = '';
     }
 
 
@@ -65700,7 +65694,7 @@ TextControl.prototype.initEvents = function()
             return;
 
 
-        // this.divControl.style.cursor       = 'default';
+        // this.divControl.style.cursor  = 'default';
         
         // this.textbox.style.visibility = 'hidden';
         // this.textbox.style.opacity    = 0;
@@ -73109,18 +73103,8 @@ extends Parameter
             defaultValue);
 
             
-        // if (name != NULL)
-        // {
-        //     this.controls[0].textbox.defPlaceholder =
-        //     this.controls[0].textbox.placeholder    = name;
-        // }
-        
-
         this.controls[0].successOnFocusOut = true;
         this.controls[0].div.zIndex        = 0;
-
-        this.controls[0].div.style.display = 'inline-block';
-        this.controls[0].div.style.width   = '100%';
 
 
         this.divControls.appendChild(this.controls[0].div);
@@ -73133,7 +73117,6 @@ extends Parameter
         this.controls[0].addEventListener('change', () => 
         { 
             this.setValue(this.value, true, false);
-            //this.changing = true;
         });
     }
 
@@ -73248,6 +73231,18 @@ extends Parameter
     output_genRequest(gen)
     {
         return this.param.genRequest(gen);
+    }
+
+
+
+    updateControls()
+    {
+        this.div.style.background = 
+            darkMode 
+            ? this.backStyleDark 
+            : this.backStyleLight;
+
+        super.updateControls();
     }
 
 
@@ -85516,7 +85511,7 @@ extends ResizableBase
         this.addInput (new Input (TEXT_TYPES, getNodeInputValuesForUndo, this.input_getBackInitValue));
         this.addOutput(new Output([TEXT_VALUE], this.output_genRequest, getNodeOutputValuesForUndo, this.output_backInit));
 
-        this.addParam(this.paramValue = new TextParam('value', 'value', true, false, false));
+        this.addParam(this.paramValue = new TextParam('value', 'value', false, false, false));
 
         this.paramValue.controls[0].textbox.defPlaceholder = '...';
         setControlFont(this.paramValue.controls[0].textbox, 'Roboto Mono', 10, 'center');
@@ -85603,10 +85598,8 @@ extends ResizableBase
 
     updateValueParam()
     {
-        this.paramValue.controls[0].setSize(
-            this.div.offsetWidth,
-            this.div.offsetHeight - Math.max(defHeaderHeight, this.header.offsetHeight));
-    }
+        this.paramValue.div.style.width  = this.div.offsetWidth;
+        this.paramValue.div.style.height = this.div.offsetHeight - Math.max(defHeaderHeight, this.header.offsetHeight);    }
 
 
 
@@ -85826,8 +85819,8 @@ extends OperatorWithValue
 
         if (length.value > 0)
         {
-            this.paramStart.controls[0].setMax(length.value-1);
-            this.paramEnd  .controls[0].setMax(length.value-1);
+            this.paramStart.controls[0].setMax(length.value);
+            this.paramEnd  .controls[0].setMax(length.value);
         }
         else
         {
