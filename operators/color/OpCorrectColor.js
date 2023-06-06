@@ -188,7 +188,7 @@ extends OpColorBase
         case 'hsl':    this.paramOrder.setOptions(makeOptions('HSL')); break;
         case 'hclok':
         case 'hclab':
-        case 'hcluv': this.paramOrder.setOptions(makeOptions('HCL')); break;
+        case 'hcluv':  this.paramOrder.setOptions(makeOptions('HCL')); break;
         case 'oklab':  
         case 'lab':    this.paramOrder.setOptions(makeOptions('Lab')); break;
         case 'luv':    this.paramOrder.setOptions(makeOptions('Luv')); break;
@@ -212,12 +212,20 @@ extends OpColorBase
             this.updateMargin(this.param1, this.corrections[i1]);
             this.updateMargin(this.param2, this.corrections[i2]);
             this.updateMargin(this.param3, this.corrections[i3]);
+
+            this.param1.showName = true;
+            this.param2.showName = true;
+            this.param3.showName = true;
         }
         else
         {
             this.resetMargin(this.param1);
             this.resetMargin(this.param2);
             this.resetMargin(this.param3);
+
+            this.param1.showName = false;
+            this.param2.showName = false;
+            this.param3.showName = false;
         }
     }
 
