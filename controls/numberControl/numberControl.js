@@ -163,6 +163,7 @@ extends Control
         this.initEvents ();
 
 
+        this.div.style.position  = 'relative';
         this.div.style.boxShadow = '0 0 0 2px blue inset';
     }
 
@@ -430,23 +431,20 @@ extends Control
         }
 
 
+        this.divValue.style.position = 'absolute';
+        this.divValue.style.top = '50%';
+        this.divValue.style.transform = 'translateY(-50%)';
+        this.divValue.style.width    = 'fit-content';
+
+        
         if (this.param.showName)
         {
-            this.divValue.style.position = 'static';
-            this.divValue.style.width    = 'fit-content';
-            this.divValue.style.margin   = '4px auto 0 3px';
-    //     this.divValue.style.marginLeft = '3px';
-        //     this.divValue.style.left       =  0;
-        //     this.divValue.style.transform  = 'translateY(-50%)';
+            this.divValue.style.left = '3px';
         }
         else
         {
-                this.divValue.style.position = 'static';
-                this.divValue.style.width    = 'fit-content';
-                this.divValue.style.margin   = '4px auto 0 auto';
-        //     this.divValue.style.marginLeft =  0;
-        //     this.divValue.style.left       = '50%';
-        //     this.divValue.style.transform  = 'translateX(-50%) translateY(-50%)';
+            this.divValue.style.left       = '50%';
+            this.divValue.style.transform += ' translateX(-50%)';
         }
     }
 

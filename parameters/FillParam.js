@@ -63,57 +63,24 @@ extends Parameter
         this.controls[1].setSuffix('%', true);
 
 
-        // this.controls[0].div.zIndex                 = 100;
-        // this.controls[1].div.zIndex                 = 100;
-                   
-        this.defaultValue                           = defaultValue;
-        this.value                                  = defaultValue;
+        this.defaultValue                  = defaultValue;
+        this.value                         = defaultValue;
 
         
-        this._warningOverlay                        = createDiv('colorValueWarningOverlay');
-        this._warningOverlay.style.zIndex           = 11;
+        this._warningOverlay               = createDiv('colorValueWarningOverlay');
+        this._warningOverlay.style.zIndex  = 11;
 
-        this.checkersHolder.style.position          = 'absolute';
-        this.checkersHolder.style.width             = '100%';
-        this.checkersHolder.style.height            = defParamHeight;
-        this.checkersHolder.style.overflow          = 'hidden';
+        this.checkersHolder.style.position = 'absolute';
+        this.checkersHolder.style.width    = '100%';
+        this.checkersHolder.style.height   = defParamHeight;
+        this.checkersHolder.style.overflow = 'hidden';
 
-        this.checkers.style.position                = 'absolute';
-        this.checkers.style.width                   = '100%';
-        this.checkers.style.height                  = defParamHeight;
+        this.checkers.style.position       = 'absolute';
+        this.checkers.style.width          = '100%';
+        this.checkers.style.height         = defParamHeight;
 
-
-        // this.controls[0].successOnFocusOut          = true;
-        // this.controls[0].div.style.display          = 'inline';
-        // this.controls[0].div.style.width            = '55%';
-        // this.controls[0].div.style.position         = 'absolute';
-        // this.controls[0].div.style.left             = 0;
-
-    
-        // this.controls[1].successOnFocusOut          = true;
-        // this.controls[1].div.style.display          = 'inline';
-        // this.controls[1].div.style.width            = '45%';
-        // this.controls[1].div.style.position         = 'absolute';
-        // this.controls[1].div.style.right            = 0;
 
         this.controls[1].showBar                    = false;
-
-
-        //this.controls[0].divValue.style.transform   = 'translateX(-40%)';
-
-
-        // this.controls[0].textbox.style.position     = 'absolute';
-        // this.controls[0].textbox.style.left         =  0;
-        // this.controls[0].textbox.style.transform    = 'translateX(0)';
-        // this.controls[0].textbox.style.textAlign    = 'right';
-        // this.controls[0].textbox.style.paddingLeft  =  14;
-        
-        // this.controls[1].textbox.style.position     = 'absolute';
-        // this.controls[1].textbox.style.right        =  0;
-        // this.controls[1].textbox.style.transform    = 'translateX(6px)';
-        // this.controls[1].textbox.style.textAlign    = 'left';
-        // this.controls[1].textbox.style.paddingRight =  10;
-        // this.controls[1].textbox.style.background   = 'transparent';
 
 
         this.divControls   .appendChild(this.controls[0].div);
