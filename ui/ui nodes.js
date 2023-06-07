@@ -792,7 +792,7 @@ function uiUpdateValuesAndObjects(requestId, actionId, updateNodeId, updateParam
                     case      ELLIPSE_VALUE: value = parseEllipseValue     (values[i++])[0];  break;
                     case      POLYGON_VALUE: value = parsePolygonValue     (values[i++])[0];  break;
                     case         STAR_VALUE: value = parseStarValue        (values[i++])[0];  break;
-                    case    TEXT_SHAPE_VALUE: value = parseTextShapeValue   (values[i++])[0];  break;
+                    case   TEXT_SHAPE_VALUE: value = parseTextShapeValue   (values[i++])[0];  break;
                     case        POINT_VALUE: value = parsePointValue       (values[i++])[0];  break;
                     case  VECTOR_PATH_VALUE: value = parseVectorPathValue  (values[i++])[0];  break;
                     case      BOOLEAN_VALUE: value = parseShapeBooleanValue(values[i++])[0];  break;

@@ -86,8 +86,7 @@ extends GValue
 
     isValid()
     {
-        return super.isValid()
-            && this.radius.isValid();
+        return this.radius.isValid();
     }
 
 

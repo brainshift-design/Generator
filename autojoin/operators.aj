@@ -20,6 +20,10 @@
 ../parameters/VectorPathParam.js
 ../parameters/ShapeGroupParam.js
 ../parameters/FrameParam.js
+../parameters/DropShadowParam.js
+../parameters/InnerShadowParam.js
+../parameters/LayerBlurParam.js
+../parameters/BackBlurParam.js
 
 
 // these have to be added in order because of dependencies

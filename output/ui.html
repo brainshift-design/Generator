@@ -2668,7 +2668,7 @@ a
     /* transform:            translateY(-50%); */
     white-space:          nowrap;
     /* margin-left:          3px; */
-    box-shadow:           0 0 0 1px inset orange;
+    /* box-shadow:           0 0 0 1px inset orange; */
 }
 
 
@@ -2882,7 +2882,7 @@ a
     /* transform:            translateX(-50%); */
     top:                  4px;
     white-space:          nowrap;
-    box-shadow:           0 0 0 1px inset orange;
+    /* box-shadow:           0 0 0 1px inset orange; */
 }
 
 
@@ -3839,7 +3839,7 @@ a
 .paramDiv
 {
     /* background-color: var(--figma-color-bg); */
-    box-shadow: 0 0 0 1px inset cyan;
+    /* box-shadow: 0 0 0 1px inset cyan; */
     position:   relative;
 }
 
@@ -3861,7 +3861,7 @@ a
     position:              absolute;
     top:                   4px;
     /* margin-right:          3px; */
-    box-shadow:            0 0 0 1px inset yellow;
+    /* box-shadow:            0 0 0 1px inset yellow; */
 }
 
 
@@ -3873,7 +3873,7 @@ a
     margin-right: 3px;
     position:     absolute;
     white-space:  nowrap;
-    box-shadow:   0 0 0 3px inset green;
+    /* box-shadow:   0 0 0 3px inset green; */
 }
 
 
@@ -8547,7 +8547,8 @@ const SHAPE_VALUES =
     VECTOR_PATH_VALUE,
     SHAPE_GROUP_VALUE,
     FRAME_VALUE,
-    BOOLEAN_VALUE
+    BOOLEAN_VALUE,
+    DROP_SHADOW_VALUE
 ];
 
 
@@ -10115,25 +10116,29 @@ function displayValue(type, value)
 
     switch (type)
     {
-        case        LIST_VALUE: return parseListValue        (value)[0].toDisplayString();
-        case      NUMBER_VALUE: return parseNumberValue      (value)[0].toDisplayString();
-        case        TEXT_VALUE: const val = parseTextValue   (value)[0]; return val == '' ? '\'\'' : val.toDisplayString();
-        case       COLOR_VALUE: return parseColorValue       (value)[0].toDisplayString();
-        case        FILL_VALUE: return parseFillValue        (value)[0].toDisplayString();
-        case  COLOR_STOP_VALUE: return parseColorStopValue   (value)[0].toDisplayString();
-        case    GRADIENT_VALUE: return parseGradientValue    (value)[0].toDisplayString();
-        case      STROKE_VALUE: return parseStrokeValue      (value)[0].toDisplayString();
-        case   RECTANGLE_VALUE: return parseRectangleValue   (value)[0].toDisplayString();
-        case        LINE_VALUE: return parseLineValue        (value)[0].toDisplayString();
-        case     ELLIPSE_VALUE: return parseEllipseValue     (value)[0].toDisplayString();
-        case     POLYGON_VALUE: return parsePolygonValue     (value)[0].toDisplayString();
-        case        STAR_VALUE: return parseStarValue        (value)[0].toDisplayString();
+        case         LIST_VALUE: return parseListValue        (value)[0].toDisplayString();
+        case       NUMBER_VALUE: return parseNumberValue      (value)[0].toDisplayString();
+        case         TEXT_VALUE: const val = parseTextValue   (value)[0]; return val == '' ? '\'\'' : val.toDisplayString();
+        case        COLOR_VALUE: return parseColorValue       (value)[0].toDisplayString();
+        case         FILL_VALUE: return parseFillValue        (value)[0].toDisplayString();
+        case   COLOR_STOP_VALUE: return parseColorStopValue   (value)[0].toDisplayString();
+        case     GRADIENT_VALUE: return parseGradientValue    (value)[0].toDisplayString();
+        case       STROKE_VALUE: return parseStrokeValue      (value)[0].toDisplayString();
+        case    RECTANGLE_VALUE: return parseRectangleValue   (value)[0].toDisplayString();
+        case         LINE_VALUE: return parseLineValue        (value)[0].toDisplayString();
+        case      ELLIPSE_VALUE: return parseEllipseValue     (value)[0].toDisplayString();
+        case      POLYGON_VALUE: return parsePolygonValue     (value)[0].toDisplayString();
+        case         STAR_VALUE: return parseStarValue        (value)[0].toDisplayString();
         case   TEXT_SHAPE_VALUE: return parseTextShapeValue   (value)[0].toDisplayString();
-        case       POINT_VALUE: return parsePointValue       (value)[0].toDisplayString();
-        case VECTOR_PATH_VALUE: return parseVectorPathValue  (value)[0].toDisplayString();
-        case     BOOLEAN_VALUE: return parseShapeBooleanValue(value)[0].toDisplayString();
-        case SHAPE_GROUP_VALUE: return parseShapeGroupValue  (value)[0].toDisplayString();
-        case       FRAME_VALUE: return parseFrameValue       (value)[0].toDisplayString();
+        case        POINT_VALUE: return parsePointValue       (value)[0].toDisplayString();
+        case  VECTOR_PATH_VALUE: return parseVectorPathValue  (value)[0].toDisplayString();
+        case      BOOLEAN_VALUE: return parseShapeBooleanValue(value)[0].toDisplayString();
+        case  SHAPE_GROUP_VALUE: return parseShapeGroupValue  (value)[0].toDisplayString();
+        case        FRAME_VALUE: return parseFrameValue       (value)[0].toDisplayString();
+        case  DROP_SHADOW_VALUE: return parseDropShadowValue  (value)[0].toDisplayString();
+        case INNER_SHADOW_VALUE: return parseInnerShadowValue (value)[0].toDisplayString();
+        case   LAYER_BLUR_VALUE: return parseLayerBlurValue   (value)[0].toDisplayString();
+        case   LAYER_BACK_VALUE: return parseLayerBackValue   (value)[0].toDisplayString();
     }
 
 
@@ -10146,25 +10151,29 @@ function nullFromType(type)
 {
     switch (type)
     {
-        case        LIST_VALUE: return         ListValue.NaN;
-        case      NUMBER_VALUE: return       NumberValue.NaN;
-        case        TEXT_VALUE: return       new TextValue();
-        case       COLOR_VALUE: return        ColorValue.NaN;
-        case        FILL_VALUE: return         FillValue.NaN;
-        case  COLOR_STOP_VALUE: return    ColorStopValue.NaN;
-        case    GRADIENT_VALUE: return     GradientValue.NaN;
-        case      STROKE_VALUE: return       StrokeValue.NaN;
-        case   RECTANGLE_VALUE: return    RectangleValue.NaN;
-        case        LINE_VALUE: return         LineValue.NaN;
-        case     ELLIPSE_VALUE: return      EllipseValue.NaN;
-        case     POLYGON_VALUE: return      PolygonValue.NaN;
-        case        STAR_VALUE: return         StarValue.NaN;
+        case         LIST_VALUE: return         ListValue.NaN;
+        case       NUMBER_VALUE: return       NumberValue.NaN;
+        case         TEXT_VALUE: return       new TextValue();
+        case        COLOR_VALUE: return        ColorValue.NaN;
+        case         FILL_VALUE: return         FillValue.NaN;
+        case   COLOR_STOP_VALUE: return    ColorStopValue.NaN;
+        case     GRADIENT_VALUE: return     GradientValue.NaN;
+        case       STROKE_VALUE: return       StrokeValue.NaN;
+        case    RECTANGLE_VALUE: return    RectangleValue.NaN;
+        case         LINE_VALUE: return         LineValue.NaN;
+        case      ELLIPSE_VALUE: return      EllipseValue.NaN;
+        case      POLYGON_VALUE: return      PolygonValue.NaN;
+        case         STAR_VALUE: return         StarValue.NaN;
         case   TEXT_SHAPE_VALUE: return    TextShapeValue.NaN;
-        case       POINT_VALUE: return        PointValue.NaN;
-        case VECTOR_PATH_VALUE: return   VectorPathValue.NaN;
-        case     BOOLEAN_VALUE: return ShapeBooleanValue.NaN;
-        case SHAPE_GROUP_VALUE: return   ShapeGroupValue.NaN;
-        case       FRAME_VALUE: return        FrameValue.NaN;
+        case        POINT_VALUE: return        PointValue.NaN;
+        case  VECTOR_PATH_VALUE: return   VectorPathValue.NaN;
+        case      BOOLEAN_VALUE: return ShapeBooleanValue.NaN;
+        case  SHAPE_GROUP_VALUE: return   ShapeGroupValue.NaN;
+        case        FRAME_VALUE: return        FrameValue.NaN;
+        case  DROP_SHADOW_VALUE: return   DropShadowValue.NaN;
+        case INNER_SHADOW_VALUE: return  InnerShadowValue.NaN;
+        case   LAYER_BLUR_VALUE: return    LayerBlurValue.NaN;
+        case    BACK_BLUR_VALUE: return     BackBlurValue.NaN;
     }
 
     console.assert(false, 'cannot determine null value from type \'' + type + '\'');
@@ -10599,7 +10608,7 @@ function parseListValue(str, i = -1)
             case      ELLIPSE_VALUE: { const ellipse = parseEllipseValue     (str, i);  i += ellipse[1];  list.items.push(ellipse[0]);  break; }
             case      POLYGON_VALUE: { const poly    = parsePolygonValue     (str, i);  i += poly   [1];  list.items.push(poly   [0]);  break; }
             case         STAR_VALUE: { const star    = parseStarValue        (str, i);  i += star   [1];  list.items.push(star   [0]);  break; }
-            case    TEXT_SHAPE_VALUE: { const text    = parseTextShapeValue   (str, i);  i += text   [1];  list.items.push(text   [0]);  break; }
+            case   TEXT_SHAPE_VALUE: { const text    = parseTextShapeValue   (str, i);  i += text   [1];  list.items.push(text   [0]);  break; }
             case        POINT_VALUE: { const point   = parsePointValue       (str, i);  i += point  [1];  list.items.push(point  [0]);  break; }
             case  VECTOR_PATH_VALUE: { const path    = parseVectorPathValue  (str, i);  i += path   [1];  list.items.push(path   [0]);  break; }
             case      BOOLEAN_VALUE: { const group   = parseShapeBooleanValue(str, i);  i += group  [1];  list.items.push(group  [0]);  break; }
@@ -11944,8 +11953,7 @@ extends GValue
 
     isValid()
     {
-        return super.isValid()
-            && this.x     .isValid()
+        return this.x     .isValid()
             && this.y     .isValid()
             && this.blur  .isValid()
             && this.spread.isValid()
@@ -12142,8 +12150,7 @@ extends GValue
 
     isValid()
     {
-        return super.isValid()
-            && this.x     .isValid()
+        return this.x     .isValid()
             && this.y     .isValid()
             && this.blur  .isValid()
             && this.spread.isValid()
@@ -12302,8 +12309,7 @@ extends GValue
 
     isValid()
     {
-        return super.isValid()
-            && this.radius.isValid();
+        return this.radius.isValid();
     }
 
 
@@ -12442,8 +12448,7 @@ extends GValue
 
     isValid()
     {
-        return super.isValid()
-            && this.radius.isValid();
+        return this.radius.isValid();
     }
 
 
@@ -14614,13 +14619,13 @@ extends GOperator
                 {
                     for (const item of input.items)
                     {
-                        this.value.items.push(item.copy());   
+                        this.value.items  .push(item.copy());   
                         this.value.objects.push(...item.objects.map(o => o.copy()));
                     }
                 }
                 else
                 {
-                    this.value.items.push(input.copy());
+                    this.value.items  .push(input.copy());
                     this.value.objects.push(...input.objects.map(o => o.copy()));
                 }
             }
@@ -43351,7 +43356,8 @@ const SHAPE_VALUES =
     VECTOR_PATH_VALUE,
     SHAPE_GROUP_VALUE,
     FRAME_VALUE,
-    BOOLEAN_VALUE
+    BOOLEAN_VALUE,
+    DROP_SHADOW_VALUE
 ];
 
 
@@ -44919,25 +44925,29 @@ function displayValue(type, value)
 
     switch (type)
     {
-        case        LIST_VALUE: return parseListValue        (value)[0].toDisplayString();
-        case      NUMBER_VALUE: return parseNumberValue      (value)[0].toDisplayString();
-        case        TEXT_VALUE: const val = parseTextValue   (value)[0]; return val == '' ? '\'\'' : val.toDisplayString();
-        case       COLOR_VALUE: return parseColorValue       (value)[0].toDisplayString();
-        case        FILL_VALUE: return parseFillValue        (value)[0].toDisplayString();
-        case  COLOR_STOP_VALUE: return parseColorStopValue   (value)[0].toDisplayString();
-        case    GRADIENT_VALUE: return parseGradientValue    (value)[0].toDisplayString();
-        case      STROKE_VALUE: return parseStrokeValue      (value)[0].toDisplayString();
-        case   RECTANGLE_VALUE: return parseRectangleValue   (value)[0].toDisplayString();
-        case        LINE_VALUE: return parseLineValue        (value)[0].toDisplayString();
-        case     ELLIPSE_VALUE: return parseEllipseValue     (value)[0].toDisplayString();
-        case     POLYGON_VALUE: return parsePolygonValue     (value)[0].toDisplayString();
-        case        STAR_VALUE: return parseStarValue        (value)[0].toDisplayString();
+        case         LIST_VALUE: return parseListValue        (value)[0].toDisplayString();
+        case       NUMBER_VALUE: return parseNumberValue      (value)[0].toDisplayString();
+        case         TEXT_VALUE: const val = parseTextValue   (value)[0]; return val == '' ? '\'\'' : val.toDisplayString();
+        case        COLOR_VALUE: return parseColorValue       (value)[0].toDisplayString();
+        case         FILL_VALUE: return parseFillValue        (value)[0].toDisplayString();
+        case   COLOR_STOP_VALUE: return parseColorStopValue   (value)[0].toDisplayString();
+        case     GRADIENT_VALUE: return parseGradientValue    (value)[0].toDisplayString();
+        case       STROKE_VALUE: return parseStrokeValue      (value)[0].toDisplayString();
+        case    RECTANGLE_VALUE: return parseRectangleValue   (value)[0].toDisplayString();
+        case         LINE_VALUE: return parseLineValue        (value)[0].toDisplayString();
+        case      ELLIPSE_VALUE: return parseEllipseValue     (value)[0].toDisplayString();
+        case      POLYGON_VALUE: return parsePolygonValue     (value)[0].toDisplayString();
+        case         STAR_VALUE: return parseStarValue        (value)[0].toDisplayString();
         case   TEXT_SHAPE_VALUE: return parseTextShapeValue   (value)[0].toDisplayString();
-        case       POINT_VALUE: return parsePointValue       (value)[0].toDisplayString();
-        case VECTOR_PATH_VALUE: return parseVectorPathValue  (value)[0].toDisplayString();
-        case     BOOLEAN_VALUE: return parseShapeBooleanValue(value)[0].toDisplayString();
-        case SHAPE_GROUP_VALUE: return parseShapeGroupValue  (value)[0].toDisplayString();
-        case       FRAME_VALUE: return parseFrameValue       (value)[0].toDisplayString();
+        case        POINT_VALUE: return parsePointValue       (value)[0].toDisplayString();
+        case  VECTOR_PATH_VALUE: return parseVectorPathValue  (value)[0].toDisplayString();
+        case      BOOLEAN_VALUE: return parseShapeBooleanValue(value)[0].toDisplayString();
+        case  SHAPE_GROUP_VALUE: return parseShapeGroupValue  (value)[0].toDisplayString();
+        case        FRAME_VALUE: return parseFrameValue       (value)[0].toDisplayString();
+        case  DROP_SHADOW_VALUE: return parseDropShadowValue  (value)[0].toDisplayString();
+        case INNER_SHADOW_VALUE: return parseInnerShadowValue (value)[0].toDisplayString();
+        case   LAYER_BLUR_VALUE: return parseLayerBlurValue   (value)[0].toDisplayString();
+        case   LAYER_BACK_VALUE: return parseLayerBackValue   (value)[0].toDisplayString();
     }
 
 
@@ -44950,25 +44960,29 @@ function nullFromType(type)
 {
     switch (type)
     {
-        case        LIST_VALUE: return         ListValue.NaN;
-        case      NUMBER_VALUE: return       NumberValue.NaN;
-        case        TEXT_VALUE: return       new TextValue();
-        case       COLOR_VALUE: return        ColorValue.NaN;
-        case        FILL_VALUE: return         FillValue.NaN;
-        case  COLOR_STOP_VALUE: return    ColorStopValue.NaN;
-        case    GRADIENT_VALUE: return     GradientValue.NaN;
-        case      STROKE_VALUE: return       StrokeValue.NaN;
-        case   RECTANGLE_VALUE: return    RectangleValue.NaN;
-        case        LINE_VALUE: return         LineValue.NaN;
-        case     ELLIPSE_VALUE: return      EllipseValue.NaN;
-        case     POLYGON_VALUE: return      PolygonValue.NaN;
-        case        STAR_VALUE: return         StarValue.NaN;
+        case         LIST_VALUE: return         ListValue.NaN;
+        case       NUMBER_VALUE: return       NumberValue.NaN;
+        case         TEXT_VALUE: return       new TextValue();
+        case        COLOR_VALUE: return        ColorValue.NaN;
+        case         FILL_VALUE: return         FillValue.NaN;
+        case   COLOR_STOP_VALUE: return    ColorStopValue.NaN;
+        case     GRADIENT_VALUE: return     GradientValue.NaN;
+        case       STROKE_VALUE: return       StrokeValue.NaN;
+        case    RECTANGLE_VALUE: return    RectangleValue.NaN;
+        case         LINE_VALUE: return         LineValue.NaN;
+        case      ELLIPSE_VALUE: return      EllipseValue.NaN;
+        case      POLYGON_VALUE: return      PolygonValue.NaN;
+        case         STAR_VALUE: return         StarValue.NaN;
         case   TEXT_SHAPE_VALUE: return    TextShapeValue.NaN;
-        case       POINT_VALUE: return        PointValue.NaN;
-        case VECTOR_PATH_VALUE: return   VectorPathValue.NaN;
-        case     BOOLEAN_VALUE: return ShapeBooleanValue.NaN;
-        case SHAPE_GROUP_VALUE: return   ShapeGroupValue.NaN;
-        case       FRAME_VALUE: return        FrameValue.NaN;
+        case        POINT_VALUE: return        PointValue.NaN;
+        case  VECTOR_PATH_VALUE: return   VectorPathValue.NaN;
+        case      BOOLEAN_VALUE: return ShapeBooleanValue.NaN;
+        case  SHAPE_GROUP_VALUE: return   ShapeGroupValue.NaN;
+        case        FRAME_VALUE: return        FrameValue.NaN;
+        case  DROP_SHADOW_VALUE: return   DropShadowValue.NaN;
+        case INNER_SHADOW_VALUE: return  InnerShadowValue.NaN;
+        case   LAYER_BLUR_VALUE: return    LayerBlurValue.NaN;
+        case    BACK_BLUR_VALUE: return     BackBlurValue.NaN;
     }
 
     console.assert(false, 'cannot determine null value from type \'' + type + '\'');
@@ -45403,7 +45417,7 @@ function parseListValue(str, i = -1)
             case      ELLIPSE_VALUE: { const ellipse = parseEllipseValue     (str, i);  i += ellipse[1];  list.items.push(ellipse[0]);  break; }
             case      POLYGON_VALUE: { const poly    = parsePolygonValue     (str, i);  i += poly   [1];  list.items.push(poly   [0]);  break; }
             case         STAR_VALUE: { const star    = parseStarValue        (str, i);  i += star   [1];  list.items.push(star   [0]);  break; }
-            case    TEXT_SHAPE_VALUE: { const text    = parseTextShapeValue   (str, i);  i += text   [1];  list.items.push(text   [0]);  break; }
+            case   TEXT_SHAPE_VALUE: { const text    = parseTextShapeValue   (str, i);  i += text   [1];  list.items.push(text   [0]);  break; }
             case        POINT_VALUE: { const point   = parsePointValue       (str, i);  i += point  [1];  list.items.push(point  [0]);  break; }
             case  VECTOR_PATH_VALUE: { const path    = parseVectorPathValue  (str, i);  i += path   [1];  list.items.push(path   [0]);  break; }
             case      BOOLEAN_VALUE: { const group   = parseShapeBooleanValue(str, i);  i += group  [1];  list.items.push(group  [0]);  break; }
@@ -46748,8 +46762,7 @@ extends GValue
 
     isValid()
     {
-        return super.isValid()
-            && this.x     .isValid()
+        return this.x     .isValid()
             && this.y     .isValid()
             && this.blur  .isValid()
             && this.spread.isValid()
@@ -46946,8 +46959,7 @@ extends GValue
 
     isValid()
     {
-        return super.isValid()
-            && this.x     .isValid()
+        return this.x     .isValid()
             && this.y     .isValid()
             && this.blur  .isValid()
             && this.spread.isValid()
@@ -47106,8 +47118,7 @@ extends GValue
 
     isValid()
     {
-        return super.isValid()
-            && this.radius.isValid();
+        return this.radius.isValid();
     }
 
 
@@ -47246,8 +47257,7 @@ extends GValue
 
     isValid()
     {
-        return super.isValid()
-            && this.radius.isValid();
+        return this.radius.isValid();
     }
 
 
@@ -49418,13 +49428,13 @@ extends GOperator
                 {
                     for (const item of input.items)
                     {
-                        this.value.items.push(item.copy());   
+                        this.value.items  .push(item.copy());   
                         this.value.objects.push(...item.objects.map(o => o.copy()));
                     }
                 }
                 else
                 {
-                    this.value.items.push(input.copy());
+                    this.value.items  .push(input.copy());
                     this.value.objects.push(...input.objects.map(o => o.copy()));
                 }
             }
@@ -63599,7 +63609,7 @@ extends Control
 
 
         this.div.style.position  = 'relative';
-        this.div.style.boxShadow = '0 0 0 2px blue inset';
+        // this.div.style.boxShadow = '0 0 0 2px blue inset';
     }
 
 
@@ -65943,7 +65953,7 @@ extends Control
         this.initEvents ();
 
 
-        this.div.style.boxShadow = '0 0 0 1px red inset';
+        // this.div.style.boxShadow = '0 0 0 1px red inset';
     }    
     
 
@@ -76623,6 +76633,726 @@ extends Parameter
 }
 
 
+class   DropShadowParam
+extends Parameter
+{
+    defaultValue;
+
+    oldValue = null;
+    
+    value;
+
+
+    
+    constructor(id,
+                name, 
+                showName,
+                hasInput,
+                hasOutput,
+                defaultValue = new DropShadowValue())
+    {
+        super(DROP_SHADOW_VALUE, id, name, showName);
+
+        this.defaultValue = defaultValue;
+        this.value        = defaultValue;
+
+
+        this.controls.push(new TextControl(
+            this,
+            this.id,
+            this.name,
+            ''));
+
+        this.controls[0].textbox.style.textAlign  = 'center';
+   
+        this.divControls.appendChild(this.controls[0].div);
+
+       
+        if (hasInput)  this.initInput ([DROP_SHADOW_VALUE], getParamInputValuesForUndo, this.input_getBackInitValue);
+        if (hasOutput) this.initOutput([DROP_SHADOW_VALUE], this.output_genRequest, getParamOutputValuesForUndo, this.output_backInit);
+    }
+
+
+
+    input_getBackInitValue()
+    {
+        // 'this' is the input
+
+        return this.param.value;
+    }
+
+
+
+    output_backInit(value)
+    {
+        // 'this' is the output
+
+        console.assert(DROP_SHADOW_VALUES.includes(value.type), 'expected DROP_SHADOW_VALUE in backInit()');
+        
+        this.param.setValue(value, false, true, false);
+    }
+
+
+
+    setValue(value, createAction, updateControl = true, dispatchEvents = true) 
+    {
+        if (!(value instanceof DropShadowValue))
+        {
+            //console.log('value =', value);
+            console.assert(false, 'DropShadowParam.setValue(): value is ' + typeof value + ', must be a DropShadowValue');
+        }
+
+        console.assert(
+               value.type 
+            && value.type == DROP_SHADOW_VALUE, 
+            'DropShadowParam value.type must be DROP_SHADOW_VALUE');
+
+
+        this.preSetValue(value, createAction, dispatchEvents);
+
+
+        this.value = value.copy();
+
+
+        super.setValue(this.value, createAction, updateControl, dispatchEvents);
+
+
+        this.oldValue = this.value;
+    }    
+
+
+
+    isVisible()
+    {
+        return this.controls[0].div.style.display != 'none';
+    }
+
+
+
+    genRequest(gen)
+    {
+        // this function exists because a parameter without an output
+        // should still be able to generate a request
+        
+        // 'this' is the param
+
+        if (    this.output
+            && !isEmpty(this.output.cache)
+            &&  gen.passedNodes.includes(this.node))
+            return this.output.cache;
+
+
+        const request = [];
+
+        if (   this.input
+            && this.input.connected)
+        {
+            if (this.input.supportsTypes(this.input.connectedOutput.types))
+                request.push(...pushInputOrParam(this.input, gen));
+            else
+                console.assert(false, 'invalid input for DropShadowParam (' + this.node.id + ')');
+        }
+
+        else request.push( 
+            DROP_SHADOW_VALUE, 
+            (new DropShadowValue()).toString());
+
+        return request;
+    }
+
+
+
+    output_genRequest(gen)
+    {
+        return this.param.genRequest(gen);
+    }
+
+
+
+    updateControls()
+    {
+        checkControlVisible(this, this.controls[0]);
+        
+
+        this.div.style.background = 
+            darkMode 
+            ? this.backStyleDark 
+            : this.backStyleLight;
+
+
+        enableElementText(this.controls[0].div, false);
+
+        this.controls[0].readOnly = true;
+        
+        this.controls[0].textbox.style.fontStyle  = 'italic';
+        this.controls[0].textbox.style.fontWeight = '500';
+
+ 
+        this.controls[0].textbox.value = 'drop shadow';
+            //   'drop ' 
+            // +  printNum(this.value.x.value)  
+            // + ', ' 
+            // +  printNum(this.value.y.value)
+            // + 'B: ' + printNum(this.value.blur.value)
+            // + 'S: ' + printNum(this.value.spread.value);
+
+
+        super.updateControls();
+    }
+
+
+
+    isDefault = () => this.value.equals(this.defaultValue);
+
+
+
+    loadParam(_param)
+    {
+        this.setValue(parseDropShadowValue(_param[2])[0], true, true, false);
+    }
+}
+
+
+class   InnerShadowParam
+extends Parameter
+{
+    defaultValue;
+
+    oldValue = null;
+    
+    value;
+
+
+    
+    constructor(id,
+                name, 
+                showName,
+                hasInput,
+                hasOutput,
+                defaultValue = new InnerShadowValue())
+    {
+        super(INNER_SHADOW_VALUE, id, name, showName);
+
+        this.defaultValue = defaultValue;
+        this.value        = defaultValue;
+
+
+        this.controls.push(new TextControl(
+            this,
+            this.id,
+            this.name,
+            ''));
+
+        this.controls[0].textbox.style.textAlign  = 'center';
+   
+        this.divControls.appendChild(this.controls[0].div);
+
+       
+        if (hasInput)  this.initInput ([INNER_SHADOW_VALUE], getParamInputValuesForUndo, this.input_getBackInitValue);
+        if (hasOutput) this.initOutput([INNER_SHADOW_VALUE], this.output_genRequest, getParamOutputValuesForUndo, this.output_backInit);
+    }
+
+
+
+    input_getBackInitValue()
+    {
+        // 'this' is the input
+
+        return this.param.value;
+    }
+
+
+
+    output_backInit(value)
+    {
+        // 'this' is the output
+
+        console.assert(INNER_SHADOW_VALUES.includes(value.type), 'expected INNER_SHADOW_VALUE in backInit()');
+        
+        this.param.setValue(value, false, true, false);
+    }
+
+
+
+    setValue(value, createAction, updateControl = true, dispatchEvents = true) 
+    {
+        if (!(value instanceof InnerShadowValue))
+        {
+            //console.log('value =', value);
+            console.assert(false, 'InnerShadowParam.setValue(): value is ' + typeof value + ', must be a InnerShadowValue');
+        }
+
+        console.assert(
+               value.type 
+            && value.type == INNER_SHADOW_VALUE, 
+            'InnerShadowParam value.type must be INNER_SHADOW_VALUE');
+
+
+        this.preSetValue(value, createAction, dispatchEvents);
+
+
+        this.value = value.copy();
+
+
+        super.setValue(this.value, createAction, updateControl, dispatchEvents);
+
+
+        this.oldValue = this.value;
+    }    
+
+
+
+    isVisible()
+    {
+        return this.controls[0].div.style.display != 'none';
+    }
+
+
+
+    genRequest(gen)
+    {
+        // this function exists because a parameter without an output
+        // should still be able to generate a request
+        
+        // 'this' is the param
+
+        if (    this.output
+            && !isEmpty(this.output.cache)
+            &&  gen.passedNodes.includes(this.node))
+            return this.output.cache;
+
+
+        const request = [];
+
+        if (   this.input
+            && this.input.connected)
+        {
+            if (this.input.supportsTypes(this.input.connectedOutput.types))
+                request.push(...pushInputOrParam(this.input, gen));
+            else
+                console.assert(false, 'invalid input for InnerShadowParam (' + this.node.id + ')');
+        }
+
+        else request.push( 
+            INNER_SHADOW_VALUE, 
+            (new InnerShadowValue()).toString());
+
+        return request;
+    }
+
+
+
+    output_genRequest(gen)
+    {
+        return this.param.genRequest(gen);
+    }
+
+
+
+    updateControls()
+    {
+        checkControlVisible(this, this.controls[0]);
+        
+
+        this.div.style.background = 
+            darkMode 
+            ? this.backStyleDark 
+            : this.backStyleLight;
+
+
+        enableElementText(this.controls[0].div, false);
+
+        this.controls[0].readOnly = true;
+        
+        this.controls[0].textbox.style.fontStyle  = 'italic';
+        this.controls[0].textbox.style.fontWeight = '500';
+
+ 
+        this.controls[0].textbox.value = 'inner shadow';
+            //   'drop ' 
+            // +  printNum(this.value.x.value)  
+            // + ', ' 
+            // +  printNum(this.value.y.value)
+            // + 'B: ' + printNum(this.value.blur.value)
+            // + 'S: ' + printNum(this.value.spread.value);
+
+
+        super.updateControls();
+    }
+
+
+
+    isDefault = () => this.value.equals(this.defaultValue);
+
+
+
+    loadParam(_param)
+    {
+        this.setValue(parseInnerShadowValue(_param[2])[0], true, true, false);
+    }
+}
+
+
+class   LayerBlurParam
+extends Parameter
+{
+    defaultValue;
+
+    oldValue = null;
+    
+    value;
+
+
+    
+    constructor(id,
+                name, 
+                showName,
+                hasInput,
+                hasOutput,
+                defaultValue = new LayerBlurValue())
+    {
+        super(LAYER_BLUR_VALUE, id, name, showName);
+
+        this.defaultValue = defaultValue;
+        this.value        = defaultValue;
+
+
+        this.controls.push(new TextControl(
+            this,
+            this.id,
+            this.name,
+            ''));
+
+        this.controls[0].textbox.style.textAlign  = 'center';
+   
+        this.divControls.appendChild(this.controls[0].div);
+
+       
+        if (hasInput)  this.initInput ([LAYER_BLUR_VALUE], getParamInputValuesForUndo, this.input_getBackInitValue);
+        if (hasOutput) this.initOutput([LAYER_BLUR_VALUE], this.output_genRequest, getParamOutputValuesForUndo, this.output_backInit);
+    }
+
+
+
+    input_getBackInitValue()
+    {
+        // 'this' is the input
+
+        return this.param.value;
+    }
+
+
+
+    output_backInit(value)
+    {
+        // 'this' is the output
+
+        console.assert(LAYER_BLUR_VALUES.includes(value.type), 'expected LAYER_BLUR_VALUE in backInit()');
+        
+        this.param.setValue(value, false, true, false);
+    }
+
+
+
+    setValue(value, createAction, updateControl = true, dispatchEvents = true) 
+    {
+        if (!(value instanceof LayerBlurValue))
+        {
+            //console.log('value =', value);
+            console.assert(false, 'LayerBlurParam.setValue(): value is ' + typeof value + ', must be a LayerBlurValue');
+        }
+
+        console.assert(
+               value.type 
+            && value.type == LAYER_BLUR_VALUE, 
+            'LayerBlurParam value.type must be LAYER_BLUR_VALUE');
+
+
+        this.preSetValue(value, createAction, dispatchEvents);
+
+
+        this.value = value.copy();
+
+
+        super.setValue(this.value, createAction, updateControl, dispatchEvents);
+
+
+        this.oldValue = this.value;
+    }    
+
+
+
+    isVisible()
+    {
+        return this.controls[0].div.style.display != 'none';
+    }
+
+
+
+    genRequest(gen)
+    {
+        // this function exists because a parameter without an output
+        // should still be able to generate a request
+        
+        // 'this' is the param
+
+        if (    this.output
+            && !isEmpty(this.output.cache)
+            &&  gen.passedNodes.includes(this.node))
+            return this.output.cache;
+
+
+        const request = [];
+
+        if (   this.input
+            && this.input.connected)
+        {
+            if (this.input.supportsTypes(this.input.connectedOutput.types))
+                request.push(...pushInputOrParam(this.input, gen));
+            else
+                console.assert(false, 'invalid input for LayerBlurParam (' + this.node.id + ')');
+        }
+
+        else request.push( 
+            LAYER_BLUR_VALUE, 
+            (new LayerBlurValue()).toString());
+
+        return request;
+    }
+
+
+
+    output_genRequest(gen)
+    {
+        return this.param.genRequest(gen);
+    }
+
+
+
+    updateControls()
+    {
+        checkControlVisible(this, this.controls[0]);
+        
+
+        this.div.style.background = 
+            darkMode 
+            ? this.backStyleDark 
+            : this.backStyleLight;
+
+
+        enableElementText(this.controls[0].div, false);
+
+        this.controls[0].readOnly = true;
+        
+        this.controls[0].textbox.style.fontStyle  = 'italic';
+        this.controls[0].textbox.style.fontWeight = '500';
+
+ 
+        this.controls[0].textbox.value = 'layer blur';
+            //   'drop ' 
+            // +  printNum(this.value.x.value)  
+            // + ', ' 
+            // +  printNum(this.value.y.value)
+            // + 'B: ' + printNum(this.value.blur.value)
+            // + 'S: ' + printNum(this.value.spread.value);
+
+
+        super.updateControls();
+    }
+
+
+
+    isDefault = () => this.value.equals(this.defaultValue);
+
+
+
+    loadParam(_param)
+    {
+        this.setValue(parseLayerBlurValue(_param[2])[0], true, true, false);
+    }
+}
+
+
+class   BackBlurParam
+extends Parameter
+{
+    defaultValue;
+
+    oldValue = null;
+    
+    value;
+
+
+    
+    constructor(id,
+                name, 
+                showName,
+                hasInput,
+                hasOutput,
+                defaultValue = new BackBlurValue())
+    {
+        super(BACK_BLUR_VALUE, id, name, showName);
+
+        this.defaultValue = defaultValue;
+        this.value        = defaultValue;
+
+
+        this.controls.push(new TextControl(
+            this,
+            this.id,
+            this.name,
+            ''));
+
+        this.controls[0].textbox.style.textAlign  = 'center';
+   
+        this.divControls.appendChild(this.controls[0].div);
+
+       
+        if (hasInput)  this.initInput ([BACK_BLUR_VALUE], getParamInputValuesForUndo, this.input_getBackInitValue);
+        if (hasOutput) this.initOutput([BACK_BLUR_VALUE], this.output_genRequest, getParamOutputValuesForUndo, this.output_backInit);
+    }
+
+
+
+    input_getBackInitValue()
+    {
+        // 'this' is the input
+
+        return this.param.value;
+    }
+
+
+
+    output_backInit(value)
+    {
+        // 'this' is the output
+
+        console.assert(BACK_BLUR_VALUES.includes(value.type), 'expected BACK_BLUR_VALUE in backInit()');
+        
+        this.param.setValue(value, false, true, false);
+    }
+
+
+
+    setValue(value, createAction, updateControl = true, dispatchEvents = true) 
+    {
+        if (!(value instanceof BackBlurValue))
+        {
+            //console.log('value =', value);
+            console.assert(false, 'BackBlurParam.setValue(): value is ' + typeof value + ', must be a BackBlurValue');
+        }
+
+        console.assert(
+               value.type 
+            && value.type == BACK_BLUR_VALUE, 
+            'BackBlurParam value.type must be BACK_BLUR_VALUE');
+
+
+        this.preSetValue(value, createAction, dispatchEvents);
+
+
+        this.value = value.copy();
+
+
+        super.setValue(this.value, createAction, updateControl, dispatchEvents);
+
+
+        this.oldValue = this.value;
+    }    
+
+
+
+    isVisible()
+    {
+        return this.controls[0].div.style.display != 'none';
+    }
+
+
+
+    genRequest(gen)
+    {
+        // this function exists because a parameter without an output
+        // should still be able to generate a request
+        
+        // 'this' is the param
+
+        if (    this.output
+            && !isEmpty(this.output.cache)
+            &&  gen.passedNodes.includes(this.node))
+            return this.output.cache;
+
+
+        const request = [];
+
+        if (   this.input
+            && this.input.connected)
+        {
+            if (this.input.supportsTypes(this.input.connectedOutput.types))
+                request.push(...pushInputOrParam(this.input, gen));
+            else
+                console.assert(false, 'invalid input for BackBlurParam (' + this.node.id + ')');
+        }
+
+        else request.push( 
+            BACK_BLUR_VALUE, 
+            (new BackBlurValue()).toString());
+
+        return request;
+    }
+
+
+
+    output_genRequest(gen)
+    {
+        return this.param.genRequest(gen);
+    }
+
+
+
+    updateControls()
+    {
+        checkControlVisible(this, this.controls[0]);
+        
+
+        this.div.style.background = 
+            darkMode 
+            ? this.backStyleDark 
+            : this.backStyleLight;
+
+
+        enableElementText(this.controls[0].div, false);
+
+        this.controls[0].readOnly = true;
+        
+        this.controls[0].textbox.style.fontStyle  = 'italic';
+        this.controls[0].textbox.style.fontWeight = '500';
+
+ 
+        this.controls[0].textbox.value = 'back blur';
+            //   'drop ' 
+            // +  printNum(this.value.x.value)  
+            // + ', ' 
+            // +  printNum(this.value.y.value)
+            // + 'B: ' + printNum(this.value.blur.value)
+            // + 'S: ' + printNum(this.value.spread.value);
+
+
+        super.updateControls();
+    }
+
+
+
+    isDefault = () => this.value.equals(this.defaultValue);
+
+
+
+    loadParam(_param)
+    {
+        this.setValue(parseBackBlurValue(_param[2])[0], true, true, false);
+    }
+}
+
+
 class   Input
 extends EventTarget
 {
@@ -78833,22 +79563,26 @@ class Operator
 
     createAndAddParamByType(type, id, showName, hasInput, hasOutput, volatile = false)
     {
-             if (type ==       NUMBER_VALUE) return this.addParam(new     NumberParam(id, id, showName, hasInput, hasOutput), volatile);
-        else if (type ==         TEXT_VALUE) return this.addParam(new       TextParam(id, id, showName, hasInput, hasOutput), volatile);
-        else if (type ==        COLOR_VALUE) return this.addParam(new      ColorParam(id, id, showName, hasInput, hasOutput), volatile);
-        else if (type ==         FILL_VALUE) return this.addParam(new       FillParam(id, id, showName, hasInput, hasOutput), volatile);
-        else if (type ==   COLOR_STOP_VALUE) return this.addParam(new  ColorStopParam(id, id, showName, hasInput, hasOutput), volatile);
-        else if (type ==     GRADIENT_VALUE) return this.addParam(new   GradientParam(id, id, showName, hasInput, hasOutput), volatile);
-        else if (type ==       STROKE_VALUE) return this.addParam(new     StrokeParam(id, id, showName, hasInput, hasOutput), volatile);
-        else if (type ==         LIST_VALUE) return this.addParam(new       ListParam(id, id, showName, hasInput, hasOutput), volatile);
-        else if (type ==    RECTANGLE_VALUE) return this.addParam(new  RectangleParam(id, id, showName, hasInput, hasOutput), volatile);
-        else if (type ==         LINE_VALUE) return this.addParam(new       LineParam(id, id, showName, hasInput, hasOutput), volatile);
-        else if (type ==      ELLIPSE_VALUE) return this.addParam(new    EllipseParam(id, id, showName, hasInput, hasOutput), volatile);
-        else if (type ==      POLYGON_VALUE) return this.addParam(new    PolygonParam(id, id, showName, hasInput, hasOutput), volatile);
-        else if (type ==         STAR_VALUE) return this.addParam(new       StarParam(id, id, showName, hasInput, hasOutput), volatile);
-        else if (type ==   TEXT_SHAPE_VALUE) return this.addParam(new  TextShapeParam(id, id, showName, hasInput, hasOutput), volatile);
-        else if (type ==        POINT_VALUE) return this.addParam(new      PointParam(id, id, showName, hasInput, hasOutput), volatile);
-        else if (type ==  VECTOR_PATH_VALUE) return this.addParam(new VectorPathParam(id, id, showName, hasInput, hasOutput), volatile);
+             if (type ==       NUMBER_VALUE) return this.addParam(new      NumberParam(id, id, showName, hasInput, hasOutput), volatile);
+        else if (type ==         TEXT_VALUE) return this.addParam(new        TextParam(id, id, showName, hasInput, hasOutput), volatile);
+        else if (type ==        COLOR_VALUE) return this.addParam(new       ColorParam(id, id, showName, hasInput, hasOutput), volatile);
+        else if (type ==         FILL_VALUE) return this.addParam(new        FillParam(id, id, showName, hasInput, hasOutput), volatile);
+        else if (type ==   COLOR_STOP_VALUE) return this.addParam(new   ColorStopParam(id, id, showName, hasInput, hasOutput), volatile);
+        else if (type ==     GRADIENT_VALUE) return this.addParam(new    GradientParam(id, id, showName, hasInput, hasOutput), volatile);
+        else if (type ==       STROKE_VALUE) return this.addParam(new      StrokeParam(id, id, showName, hasInput, hasOutput), volatile);
+        else if (type ==         LIST_VALUE) return this.addParam(new        ListParam(id, id, showName, hasInput, hasOutput), volatile);
+        else if (type ==    RECTANGLE_VALUE) return this.addParam(new   RectangleParam(id, id, showName, hasInput, hasOutput), volatile);
+        else if (type ==         LINE_VALUE) return this.addParam(new        LineParam(id, id, showName, hasInput, hasOutput), volatile);
+        else if (type ==      ELLIPSE_VALUE) return this.addParam(new     EllipseParam(id, id, showName, hasInput, hasOutput), volatile);
+        else if (type ==      POLYGON_VALUE) return this.addParam(new     PolygonParam(id, id, showName, hasInput, hasOutput), volatile);
+        else if (type ==         STAR_VALUE) return this.addParam(new        StarParam(id, id, showName, hasInput, hasOutput), volatile);
+        else if (type ==   TEXT_SHAPE_VALUE) return this.addParam(new   TextShapeParam(id, id, showName, hasInput, hasOutput), volatile);
+        else if (type ==        POINT_VALUE) return this.addParam(new       PointParam(id, id, showName, hasInput, hasOutput), volatile);
+        else if (type ==  VECTOR_PATH_VALUE) return this.addParam(new  VectorPathParam(id, id, showName, hasInput, hasOutput), volatile);
+        else if (type ==  DROP_SHADOW_VALUE) return this.addParam(new  DropShadowParam(id, id, showName, hasInput, hasOutput), volatile);
+        else if (type == INNER_SHADOW_VALUE) return this.addParam(new InnerShadowParam(id, id, showName, hasInput, hasOutput), volatile);
+        else if (type ==   LAYER_BLUR_VALUE) return this.addParam(new   LayerBlurParam(id, id, showName, hasInput, hasOutput), volatile);
+        else if (type ==    BACK_BLUR_VALUE) return this.addParam(new    BackBlurParam(id, id, showName, hasInput, hasOutput), volatile);
 
         else console.assert(false, 'cannot add parameter of type \'' + type + '\'');
 
@@ -78859,22 +79593,26 @@ class Operator
 
     createAndInsertParamByType(index, type, id, showName, hasInput, hasOutput, volatile = false)
     {
-             if (type ==       NUMBER_VALUE) return this.insertParam(index, new     NumberParam(id, id, showName, hasInput, hasOutput), volatile);
-        else if (type ==         TEXT_VALUE) return this.insertParam(index, new       TextParam(id, id, showName, hasInput, hasOutput), volatile);
-        else if (type ==        COLOR_VALUE) return this.insertParam(index, new      ColorParam(id, id, showName, hasInput, hasOutput), volatile);
-        else if (type ==         FILL_VALUE) return this.insertParam(index, new       FillParam(id, id, showName, hasInput, hasOutput), volatile);
-        else if (type ==   COLOR_STOP_VALUE) return this.insertParam(index, new  ColorStopParam(id, id, showName, hasInput, hasOutput), volatile);
-        else if (type ==     GRADIENT_VALUE) return this.insertParam(index, new   GradientParam(id, id, showName, hasInput, hasOutput), volatile);
-        else if (type ==       STROKE_VALUE) return this.insertParam(index, new     StrokeParam(id, id, showName, hasInput, hasOutput), volatile);
-        else if (type ==         LIST_VALUE) return this.insertParam(index, new       ListParam(id, id, showName, hasInput, hasOutput), volatile);
-        else if (type ==    RECTANGLE_VALUE) return this.insertParam(index, new  RectangleParam(id, id, showName, hasInput, hasOutput), volatile);
-        else if (type ==         LINE_VALUE) return this.insertParam(index, new       LineParam(id, id, showName, hasInput, hasOutput), volatile);
-        else if (type ==      ELLIPSE_VALUE) return this.insertParam(index, new    EllipseParam(id, id, showName, hasInput, hasOutput), volatile);
-        else if (type ==      POLYGON_VALUE) return this.insertParam(index, new    PolygonParam(id, id, showName, hasInput, hasOutput), volatile);
-        else if (type ==         STAR_VALUE) return this.insertParam(index, new       StarParam(id, id, showName, hasInput, hasOutput), volatile);
-        else if (type ==   TEXT_SHAPE_VALUE) return this.insertParam(index, new  TextShapeParam(id, id, showName, hasInput, hasOutput), volatile);
-        else if (type ==        POINT_VALUE) return this.insertParam(index, new      PointParam(id, id, showName, hasInput, hasOutput), volatile);
-        else if (type ==  VECTOR_PATH_VALUE) return this.insertParam(index, new VectorPathParam(id, id, showName, hasInput, hasOutput), volatile);
+             if (type ==       NUMBER_VALUE) return this.insertParam(index, new      NumberParam(id, id, showName, hasInput, hasOutput), volatile);
+        else if (type ==         TEXT_VALUE) return this.insertParam(index, new        TextParam(id, id, showName, hasInput, hasOutput), volatile);
+        else if (type ==        COLOR_VALUE) return this.insertParam(index, new       ColorParam(id, id, showName, hasInput, hasOutput), volatile);
+        else if (type ==         FILL_VALUE) return this.insertParam(index, new        FillParam(id, id, showName, hasInput, hasOutput), volatile);
+        else if (type ==   COLOR_STOP_VALUE) return this.insertParam(index, new   ColorStopParam(id, id, showName, hasInput, hasOutput), volatile);
+        else if (type ==     GRADIENT_VALUE) return this.insertParam(index, new    GradientParam(id, id, showName, hasInput, hasOutput), volatile);
+        else if (type ==       STROKE_VALUE) return this.insertParam(index, new      StrokeParam(id, id, showName, hasInput, hasOutput), volatile);
+        else if (type ==         LIST_VALUE) return this.insertParam(index, new        ListParam(id, id, showName, hasInput, hasOutput), volatile);
+        else if (type ==    RECTANGLE_VALUE) return this.insertParam(index, new   RectangleParam(id, id, showName, hasInput, hasOutput), volatile);
+        else if (type ==         LINE_VALUE) return this.insertParam(index, new        LineParam(id, id, showName, hasInput, hasOutput), volatile);
+        else if (type ==      ELLIPSE_VALUE) return this.insertParam(index, new     EllipseParam(id, id, showName, hasInput, hasOutput), volatile);
+        else if (type ==      POLYGON_VALUE) return this.insertParam(index, new     PolygonParam(id, id, showName, hasInput, hasOutput), volatile);
+        else if (type ==         STAR_VALUE) return this.insertParam(index, new        StarParam(id, id, showName, hasInput, hasOutput), volatile);
+        else if (type ==   TEXT_SHAPE_VALUE) return this.insertParam(index, new   TextShapeParam(id, id, showName, hasInput, hasOutput), volatile);
+        else if (type ==        POINT_VALUE) return this.insertParam(index, new       PointParam(id, id, showName, hasInput, hasOutput), volatile);
+        else if (type ==  VECTOR_PATH_VALUE) return this.insertParam(index, new  VectorPathParam(id, id, showName, hasInput, hasOutput), volatile);
+        else if (type ==  DROP_SHADOW_VALUE) return this.insertParam(index, new  DropShadowParam(id, id, showName, hasInput, hasOutput), volatile);
+        else if (type == INNER_SHADOW_VALUE) return this.insertParam(index, new InnerShadowParam(id, id, showName, hasInput, hasOutput), volatile);
+        else if (type ==   LAYER_BLUR_VALUE) return this.insertParam(index, new   LayerBlurParam(id, id, showName, hasInput, hasOutput), volatile);
+        else if (type ==    BACK_BLUR_VALUE) return this.insertParam(index, new    BackBlurParam(id, id, showName, hasInput, hasOutput), volatile);
 
         else console.assert(false, 'cannot insert parameter of type \'' + type + '\'');
 
@@ -102392,7 +103130,7 @@ function uiUpdateValuesAndObjects(requestId, actionId, updateNodeId, updateParam
                     case      ELLIPSE_VALUE: value = parseEllipseValue     (values[i++])[0];  break;
                     case      POLYGON_VALUE: value = parsePolygonValue     (values[i++])[0];  break;
                     case         STAR_VALUE: value = parseStarValue        (values[i++])[0];  break;
-                    case    TEXT_SHAPE_VALUE: value = parseTextShapeValue   (values[i++])[0];  break;
+                    case   TEXT_SHAPE_VALUE: value = parseTextShapeValue   (values[i++])[0];  break;
                     case        POINT_VALUE: value = parsePointValue       (values[i++])[0];  break;
                     case  VECTOR_PATH_VALUE: value = parseVectorPathValue  (values[i++])[0];  break;
                     case      BOOLEAN_VALUE: value = parseShapeBooleanValue(values[i++])[0];  break;

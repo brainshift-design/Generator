@@ -164,7 +164,7 @@ extends Control
 
 
         this.div.style.position  = 'relative';
-        this.div.style.boxShadow = '0 0 0 2px blue inset';
+        // this.div.style.boxShadow = '0 0 0 2px blue inset';
     }
 
 

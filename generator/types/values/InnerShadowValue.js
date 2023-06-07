@@ -121,8 +121,7 @@ extends GValue
 
     isValid()
     {
-        return super.isValid()
-            && this.x     .isValid()
+        return this.x     .isValid()
             && this.y     .isValid()
             && this.blur  .isValid()
             && this.spread.isValid()

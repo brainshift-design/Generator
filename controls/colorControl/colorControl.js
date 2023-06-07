@@ -73,7 +73,7 @@ extends Control
         this.initEvents ();
 
 
-        this.div.style.boxShadow = '0 0 0 1px red inset';
+        // this.div.style.boxShadow = '0 0 0 1px red inset';
     }    
     
 
