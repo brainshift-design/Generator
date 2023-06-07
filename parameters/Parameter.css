@@ -8,7 +8,6 @@
 
 .paramName
 {
-    color:                 var(--figma-color-bg-disabled);
     font-family:           Inter;
     font-size:             11px;
     text-align:            right;
@@ -25,6 +24,10 @@
     /* margin-right:          3px; */
     /* box-shadow:            0 0 0 1px inset yellow; */
 }
+
+
+.figma-light .paramName { color: #0005; }
+.figma-dark  .paramName { color: #fff4; }
 
 
 .paramControls

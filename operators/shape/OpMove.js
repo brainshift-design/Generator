@@ -80,7 +80,7 @@ extends OperatorBase
     {
         super.updateParams();
 
-        updateParamConditionText(this.paramAffectSpace, false /*this.isUnknown()*/, 1);
+        updateParamConditionText(this.paramAffectSpace, false /*this.isUnknown()*/, false, 1);
 
         this.updateParamControls();
     }

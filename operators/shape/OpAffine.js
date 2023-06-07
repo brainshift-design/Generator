@@ -87,9 +87,6 @@ function setAffineOffset(node,
                             maxX = Number.MAX_SAFE_INTEGER, 
                             maxY = Number.MAX_SAFE_INTEGER) 
 {
-    // node.paramCenterX.setValue(new NumberValue(x));
-    // node.paramCenterY.setValue(new NumberValue(y));
-
     node.paramCenterX.controls[0].setMin(minX);
     node.paramCenterX.controls[0].setMax(maxX);
 

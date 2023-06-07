@@ -69,7 +69,7 @@ extends OperatorWithValue
         this.paramOperation.enableControlText(true);
 
 
-        updateParamConditionText(this.paramValue, this.isUnknown());
+        updateParamConditionText(this.paramValue, this.isUnknown(), true);
 
 
         switch (this.paramOperation.value.value)
@@ -91,13 +91,13 @@ extends OperatorWithValue
 
 
 
-function updateParamConditionText(param, unknown, offsetY = 0)
+function updateParamConditionText(param, unknown, color = true, offsetY = 0)
 {
     const v = Math.round(param.value.value);
 
          if (unknown)        param.controls[0].valueText = UNKNOWN_DISPLAY;
     else if (settings.showBoolValues
-          && !isNaN(v))      param.controls[0].valueText = '<span style="position: relative; top: ' + offsetY + 'px">' + (v != 0 ? getTrueDisplay() : getFalseDisplay()) + '</span>';
+          && !isNaN(v))      param.controls[0].valueText = '<span style="position: relative; top: ' + offsetY + 'px">' + (v != 0 ? getTrueDisplay(color) : getFalseDisplay(color)) + '</span>';
     else                     param.controls[0].valueText = '';
 
     param.controls[0].showBar = !settings.showBoolValues;//unknown;
