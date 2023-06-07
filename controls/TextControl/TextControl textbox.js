@@ -22,6 +22,16 @@ TextControl.prototype.initTextarea = function(textbox)
         hideAllMenus();
 
 
+        if (      graphView.overOutput 
+               && graphView.overOutput == this.param.output
+            ||    graphView.overInput  
+               && graphView.overInput  == this.param.input )
+        {
+            e.preventDefault();
+            return;
+        }
+
+
         if (e.button == 1)
         {
             e.preventDefault();

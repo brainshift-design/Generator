@@ -79,7 +79,15 @@ NumberControl.prototype.initEvents = function()
     {
         const param = this.param;
 
+    
+        if (   graphView.overOutput && graphView.overOutput == this.param.output
+            || graphView.overInput  && graphView.overInput  == this.param.input )
+        {
+            e.preventDefault();
+            return;
+        }
 
+        
         if (e.button == 0)
         {
             this.buttonDown0  = true;

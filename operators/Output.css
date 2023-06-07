@@ -46,5 +46,5 @@
     top:     -3px;
     width:    12px;
     height:   12px;
-    pointer-events: auto;
+    pointer-events: all;
 }

@@ -2741,7 +2741,7 @@ a
     box-shadow:     0 0 0 1px var(--activeObjectColor) inset;
     visibility:     hidden;
     opacity:        0;
-    z-index:        1100;
+    z-index:        5100;
 }
 
 
@@ -2795,7 +2795,7 @@ a
 
     border-radius:        0.5px;
     
-    box-shadow:           0 0 0 1px inset red;
+    /* box-shadow:           0 0 0 1px inset red; */
 }
 
 
@@ -3832,7 +3832,7 @@ a
     top:     -3px;
     width:    12px;
     height:   12px;
-    pointer-events: auto;
+    pointer-events: all;
 }
 
 
@@ -64639,7 +64639,15 @@ NumberControl.prototype.initEvents = function()
     {
         const param = this.param;
 
+    
+        if (   graphView.overOutput && graphView.overOutput == this.param.output
+            || graphView.overInput  && graphView.overInput  == this.param.input )
+        {
+            e.preventDefault();
+            return;
+        }
 
+        
         if (e.button == 0)
         {
             this.buttonDown0  = true;
@@ -65219,7 +65227,7 @@ extends Control
 
 
         this.div.style.position  = 'relative';
-        this.div.style.boxShadow = '0 0 0 2px orange inset';
+        // this.div.style.boxShadow = '0 0 0 2px orange inset';
     }    
 
 
@@ -65378,6 +65386,16 @@ TextControl.prototype.initTextarea = function(textbox)
 
 
         hideAllMenus();
+
+
+        if (      graphView.overOutput 
+               && graphView.overOutput == this.param.output
+            ||    graphView.overInput  
+               && graphView.overInput  == this.param.input )
+        {
+            e.preventDefault();
+            return;
+        }
 
 
         if (e.button == 1)
@@ -73501,68 +73519,69 @@ extends Parameter
 
 
 
-    updateControls()
-    {
-        this.updateWarningOverlay();
+    // updateControls()
+    // {
+    //     this.updateWarningOverlay();
 
 
-        const noColor = 
-            darkMode
-            ? rgbNoColorDark
-            : rgbNoColorLight;
+    //     const noColor = 
+    //         darkMode
+    //         ? rgbNoColorDark
+    //         : rgbNoColorLight;
 
 
-        const rgb        = this.value.toRgb();
-        const rgbaStripe = rgb_a(getStripeBackColor(rgb));
-        const rgbaText   = getTextColorFromBackColor(rgbaStripe, 1);
+    //     const rgb        = this.value.toRgb();
+    //     const rgbaStripe = rgb_a(getStripeBackColor(rgb));
+    //     const rgbaText   = getTextColorFromBackColor(rgbaStripe, 1);
         
 
-        if (this.showColorBack)
-        {
-            this.controls[0].backStyleLight  =
-            this.controls[0].backStyleDark   = rgba2style(rgbaStripe);
+    //     if (this.showColorBack)
+    //     {
+    //         this.controls[0].backStyleLight  =
+    //         this.controls[0].backStyleDark   = rgba2style(rgbaStripe);
 
-            this.controls[0].valueStyleLight = 
-            this.controls[0].valueStyleDark  = 'transparent';
+    //         this.controls[0].valueStyleLight = 
+    //         this.controls[0].valueStyleDark  = 'transparent';
 
-            this.controls[0].textStyleLight  = 
-            this.controls[0].textStyleDark   = rgba2style(rgbaText);
-        }
+    //         this.controls[0].textStyleLight  = 
+    //         this.controls[0].textStyleDark   = rgba2style(rgbaText);
+    //     }
 
-        
-        if (this.input)
-        {
-            this.input.colorLight  = 
-            this.input.colorDark   = rgb_a(rgbaText, 0.2);
-            this.input.wireColor   = !rgbIsNaN(rgbaStripe) ? rgbaStripe : noColor;
-        }
+    //     console.log('rgbaText =', rgbaText);
+    //     if (this.input)
+    //     {
+    //         this.input.colorLight  = 
+    //         this.input.colorDark   =  rgb_a(rgbaText, 0.2);
+    //         this.input.wireColor   = !rgbIsNaN(rgbaStripe) ? rgbaStripe : noColor;
+    //     }
 
-        if (this.output)
-        {
-            this.output.colorLight =
-            this.output.colorDark  = rgb_a(rgbaText, 0.2);
-            this.output.wireColor  = !rgbIsNaN(rgbaStripe) ? rgbaStripe : noColor;
-        }
-
-
-        this.checkers.style.background = 
-            darkMode
-            ?   'linear-gradient(45deg, #222 25%, transparent 25%, transparent 75%, #222 75%), '
-              + 'linear-gradient(45deg, #222 25%, transparent 25%, transparent 75%, #222 75%)'
-            :   'linear-gradient(45deg, #ddd 25%, transparent 25%, transparent 75%, #ddd 75%), '
-              + 'linear-gradient(45deg, #ddd 25%, transparent 25%, transparent 75%, #ddd 75%)';
-
-        this.checkers.style.backgroundColor    = darkMode ? '#444' : '#fff';
-
-        this.checkers.style.backgroundSize     = '22px 22px';
-        this.checkers.style.backgroundPosition = '0 0, 11px 11px';
-
-        this.checkers.style.left               = '-3.5px';
-        this.checkers.style.width              = 'calc(100% + 3.5px)';
+    //     if (this.output)
+    //     {
+    //         this.output.colorLight =
+    //         this.output.colorDark  =  rgb_a(rgbaText, 0.2);
+    //         this.output.wireColor  = !rgbIsNaN(rgbaStripe) ? rgbaStripe : noColor;
+    //     }
 
 
-        super.updateControls();
-    }
+    //     this.checkers.style.background = 
+    //         darkMode
+    //         ?   'linear-gradient(45deg, #222 25%, transparent 25%, transparent 75%, #222 75%), '
+    //           + 'linear-gradient(45deg, #222 25%, transparent 25%, transparent 75%, #222 75%)'
+    //         :   'linear-gradient(45deg, #ddd 25%, transparent 25%, transparent 75%, #ddd 75%), '
+    //           + 'linear-gradient(45deg, #ddd 25%, transparent 25%, transparent 75%, #ddd 75%)';
+
+
+    //     this.checkers.style.backgroundColor    = darkMode ? '#444' : '#fff';
+
+    //     this.checkers.style.backgroundSize     = '22px 22px';
+    //     this.checkers.style.backgroundPosition = '0 0, 11px 11px';
+
+    //     this.checkers.style.left               = '-3.5px';
+    //     this.checkers.style.width              = 'calc(100% + 3.5px)';
+
+
+    //     super.updateControls();
+    // }
 
 
 
@@ -73622,6 +73641,21 @@ extends Parameter
             : darkMode
               ? this.textStyleDark
               : this.textStyleLight;
+
+
+        if (this.input)
+        {
+            this.input.colorLight  = 
+            this.input.colorDark   =  rgb_a(rgbText, 0.2);
+            this.input.wireColor   = !rgbIsNaN(rgbStripe) ? rgbStripe : noColor;
+        }
+
+        if (this.output)
+        {
+            this.output.colorLight =
+            this.output.colorDark  =  rgb_a(rgbText, 0.2);
+            this.output.wireColor  = !rgbIsNaN(rgbStripe) ? rgbStripe : noColor;
+        }
 
 
         super.updateControls();
