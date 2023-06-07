@@ -176,10 +176,10 @@ extends EventTarget
 
     updateControls()
     {
-        // this.div.style.background = 
-        //     darkMode 
-        //     ? this.backStyleDark 
-        //     : this.backStyleLight;
+        this.div.style.background = 
+            darkMode 
+            ? this.backStyleDark 
+            : this.backStyleLight;
 
 
         if (this.input ) this.input .updateControl();
@@ -189,12 +189,6 @@ extends EventTarget
         checkParamVisible(this);
         
         
-        this.div.style.background = 
-            darkMode 
-            ? this.backStyleDark 
-            : this.backStyleLight;
-
-
         const left = this.input || this.output ? 12 : 0;
 
         const dw = 
@@ -225,6 +219,9 @@ extends EventTarget
             this.divControls.style.left       =  left+'px';
             this.divControls.style.width      = 'calc(100% - ' + dw + 'px)';
         }
+
+
+        this.controls.forEach(c => c.update());
     }
 
 

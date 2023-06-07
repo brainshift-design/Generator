@@ -153,12 +153,6 @@ extends Parameter
 
     updateControls()
     {
-        // this.div.style.background = 
-        //     darkMode 
-        //     ? this.backStyleDark 
-        //     : this.backStyleLight;
-
-
         enableElementText(this.controls[0].div, false);
 
 
@@ -185,8 +179,7 @@ extends Parameter
         this.controls[0].textbox.value = value;
 
 
-        if (this.input ) this.input .updateControl();
-        if (this.output) this.output.updateControl();
+        super.updateControls();
     }
 
 

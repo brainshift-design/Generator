@@ -12,14 +12,10 @@ GraphView.prototype.updateNodes = function(nodes = null, updateNodes = true)
 
     nodes.forEach(n => n.updateMeasureData());
 
-
     if (updateNodes)
     {
         nodes.forEach(n =>
         {
-            const rect = n.measureData.divOffset;
-            n.setRect(rect.x, rect.y, rect.w, rect.h, false);
-
             n.updateHeader(); 
             n.updateHeaderLabel();
             n.updateBorder();

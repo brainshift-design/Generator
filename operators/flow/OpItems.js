@@ -248,6 +248,14 @@ extends ResizableBase
 
         if (LIST_VALUES.includes(value.type))
             this.outputs[0].types = [finalListTypeFromItems(value.items)];
+
+       
+        const rect = this.measureData.divOffset;
+ 
+        if (this.scrollbar.style.display == 'none')
+            rect.h = defHeaderHeight + this.params.length * defParamHeight;
+        
+        this.setRect(rect.x, rect.y, rect.w, rect.h, false);
     }
 
 
@@ -267,7 +275,8 @@ extends ResizableBase
         const totalHeight = this.measureData.divOffset.height - defHeaderHeight;
 
         
-        if (this.measureData.paramOffset.height <= totalHeight)
+        if (   isEmpty(this.params)
+            || this.measureData.paramOffset.height <= totalHeight)
         {
             this.scrollbar.style.display = 'none';
         }

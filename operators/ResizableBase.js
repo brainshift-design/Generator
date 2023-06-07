@@ -257,7 +257,7 @@ extends OperatorBase
     setRect(x, y, w, h, updateTransform = true)
     {
         const headerHeight = getStyleValue(this.header, 'height');
-        const paramHeight  = settings.showOperationResults ? defParamHeight : 0;
+        const paramHeight  = this.paramValue && settings.showOperationResults ? defParamHeight : 0;
 
         const _w = Math.max(60, w);
         const _h = Math.max(parseFloat(headerHeight) + paramHeight, h);

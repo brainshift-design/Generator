@@ -70463,14 +70463,10 @@ GraphView.prototype.updateNodes = function(nodes = null, updateNodes = true)
 
     nodes.forEach(n => n.updateMeasureData());
 
-
     if (updateNodes)
     {
         nodes.forEach(n =>
         {
-            const rect = n.measureData.divOffset;
-            n.setRect(rect.x, rect.y, rect.w, rect.h, false);
-
             n.updateHeader(); 
             n.updateHeaderLabel();
             n.updateBorder();
@@ -72404,10 +72400,10 @@ extends EventTarget
 
     updateControls()
     {
-        // this.div.style.background = 
-        //     darkMode 
-        //     ? this.backStyleDark 
-        //     : this.backStyleLight;
+        this.div.style.background = 
+            darkMode 
+            ? this.backStyleDark 
+            : this.backStyleLight;
 
 
         if (this.input ) this.input .updateControl();
@@ -72417,12 +72413,6 @@ extends EventTarget
         checkParamVisible(this);
         
         
-        this.div.style.background = 
-            darkMode 
-            ? this.backStyleDark 
-            : this.backStyleLight;
-
-
         const left = this.input || this.output ? 12 : 0;
 
         const dw = 
@@ -72453,6 +72443,9 @@ extends EventTarget
             this.divControls.style.left       =  left+'px';
             this.divControls.style.width      = 'calc(100% - ' + dw + 'px)';
         }
+
+
+        this.controls.forEach(c => c.update());
     }
 
 
@@ -72929,6 +72922,19 @@ extends NumberParamBase
         
         this.param.setValue(value, false, true, false);
     }
+
+
+    // updateControls()
+    // {
+    //     this.controls[0].div.style.width = '100%';
+        
+    //     this.div.style.background = 
+    //         darkMode 
+    //         ? this. backStyleDark 
+    //         : this. backStyleLight;
+
+    //     super.updateControls();
+    // }
 }
 
 
@@ -74930,12 +74936,6 @@ extends Parameter
 
     updateControls()
     {
-        // this.div.style.background = 
-        //     darkMode 
-        //     ? this.backStyleDark 
-        //     : this.backStyleLight;
-
-
         enableElementText(this.controls[0].div, false);
 
 
@@ -74962,8 +74962,7 @@ extends Parameter
         this.controls[0].textbox.value = value;
 
 
-        if (this.input ) this.input .updateControl();
-        if (this.output) this.output.updateControl();
+        super.updateControls();
     }
 
 
@@ -82114,7 +82113,7 @@ extends OperatorBase
     setRect(x, y, w, h, updateTransform = true)
     {
         const headerHeight = getStyleValue(this.header, 'height');
-        const paramHeight  = settings.showOperationResults ? defParamHeight : 0;
+        const paramHeight  = this.paramValue && settings.showOperationResults ? defParamHeight : 0;
 
         const _w = Math.max(60, w);
         const _h = Math.max(parseFloat(headerHeight) + paramHeight, h);
@@ -82599,6 +82598,14 @@ extends ResizableBase
 
         if (LIST_VALUES.includes(value.type))
             this.outputs[0].types = [finalListTypeFromItems(value.items)];
+
+       
+        const rect = this.measureData.divOffset;
+ 
+        if (this.scrollbar.style.display == 'none')
+            rect.h = defHeaderHeight + this.params.length * defParamHeight;
+        
+        this.setRect(rect.x, rect.y, rect.w, rect.h, false);
     }
 
 
@@ -82618,7 +82625,8 @@ extends ResizableBase
         const totalHeight = this.measureData.divOffset.height - defHeaderHeight;
 
         
-        if (this.measureData.paramOffset.height <= totalHeight)
+        if (   isEmpty(this.params)
+            || this.measureData.paramOffset.height <= totalHeight)
         {
             this.scrollbar.style.display = 'none';
         }
