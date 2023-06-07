@@ -10673,12 +10673,11 @@ function finalListTypeFromTypes(types)
 
     for (const type of types)
     {
-        if (_type == NULL)   
+        if (_type == NULL)
             _type = type;
 
         else if (_type != type
-              && !SHAPE_VALUES.includes(_type)
-              && !SHAPE_VALUES.includes( type))
+              && SHAPE_VALUES.includes(_type) != SHAPE_VALUES.includes(type))
         { 
             _type = ANY_VALUE;
             break; 
@@ -45492,12 +45491,11 @@ function finalListTypeFromTypes(types)
 
     for (const type of types)
     {
-        if (_type == NULL)   
+        if (_type == NULL)
             _type = type;
 
         else if (_type != type
-              && !SHAPE_VALUES.includes(_type)
-              && !SHAPE_VALUES.includes( type))
+              && SHAPE_VALUES.includes(_type) != SHAPE_VALUES.includes(type))
         { 
             _type = ANY_VALUE;
             break; 
@@ -78722,12 +78720,12 @@ class Wire
         }
 
 
-        if (   output
-            && arraysIntersect(output.types, [COLOR_VALUE, FILL_VALUE, COLOR_STOP_VALUE, STROKE_VALUE]))
+        if (   output)
+            //&& arraysIntersect(output.types, [COLOR_VALUE, FILL_VALUE, COLOR_STOP_VALUE, STROKE_VALUE]))
             return output.wireColor;
 
-        else if (input
-              && arraysIntersect(input.types, [COLOR_VALUE, FILL_VALUE, COLOR_STOP_VALUE, STROKE_VALUE]))
+        else if (input)
+              //&& arraysIntersect(input.types, [COLOR_VALUE, FILL_VALUE, COLOR_STOP_VALUE, STROKE_VALUE]))
             return input.wireColor;
 
         else if (!isEmpty(types))

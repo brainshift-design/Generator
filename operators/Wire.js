@@ -104,12 +104,12 @@ class Wire
         }
 
 
-        if (   output
-            && arraysIntersect(output.types, [COLOR_VALUE, FILL_VALUE, COLOR_STOP_VALUE, STROKE_VALUE]))
+        if (   output)
+            //&& arraysIntersect(output.types, [COLOR_VALUE, FILL_VALUE, COLOR_STOP_VALUE, STROKE_VALUE]))
             return output.wireColor;
 
-        else if (input
-              && arraysIntersect(input.types, [COLOR_VALUE, FILL_VALUE, COLOR_STOP_VALUE, STROKE_VALUE]))
+        else if (input)
+              //&& arraysIntersect(input.types, [COLOR_VALUE, FILL_VALUE, COLOR_STOP_VALUE, STROKE_VALUE]))
             return input.wireColor;
 
         else if (!isEmpty(types))

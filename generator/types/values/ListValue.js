@@ -248,12 +248,11 @@ function finalListTypeFromTypes(types)
 
     for (const type of types)
     {
-        if (_type == NULL)   
+        if (_type == NULL)
             _type = type;
 
         else if (_type != type
-              && !SHAPE_VALUES.includes(_type)
-              && !SHAPE_VALUES.includes( type))
+              && SHAPE_VALUES.includes(_type) != SHAPE_VALUES.includes(type))
         { 
             _type = ANY_VALUE;
             break; 
