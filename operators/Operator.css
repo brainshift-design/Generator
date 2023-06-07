@@ -558,7 +558,6 @@
 .itemsScroll
 {
     display:       block;
-    background:    magenta;
     position:      absolute;
     width:         6px;
     height:        100px;
@@ -567,7 +566,8 @@
 }
 
 
-.itemsScroll:hover
-{
-    background: greenyellow;
-}
+.figma-light .itemsScroll { background: #0002; }
+.figma-dark  .itemsScroll { background: #fff2; }
+ 
+.figma-light .itemsScroll:hover { background: #0004; }
+.figma-dark  .itemsScroll:hover { background: #fff4; }

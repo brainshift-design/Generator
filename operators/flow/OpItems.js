@@ -44,8 +44,8 @@ extends ResizableBase
 
                 this.scrollbar.down = true;
 
-                this.scrollbar.sy  = e.clientY;
-                this.scrollbar.spy = this.scroll;
+                this.scrollbar.sy  =  e.clientY;
+                this.scrollbar.spy = -this.scroll;
 
                 this.scrollbar.setPointerCapture(e.pointerId);
             }
@@ -56,17 +56,35 @@ extends ResizableBase
         {
             if (this.scrollbar.down)
             {
-                const max = 
-                      this.measureData.paramOffset.height 
-                    - this.measureData.innerOffset.height 
-                    - 10;
+                const totalHeight = this.measureData.divOffset.height - defHeaderHeight;
 
-                this.scroll = Math.min(Math.max(
+                const scrollHeight = 
+                          (totalHeight - 10)
+                        *  totalHeight / this.measureData.paramOffset.height;
+        
+                const max = 
+                      this.measureData.innerOffset.height
+                    - scrollHeight
+                    - defHeaderHeight;
+
+                this.scroll = -Math.min(Math.max(
                     0, 
-                    this.scrollbar.spy + e.clientY - this.scrollbar.sy),
+                    this.scrollbar.spy + (e.clientY - this.scrollbar.sy)),
                     max);
 
+                    
                 this.updateScrollbar();
+
+
+                const wires = [];
+
+                for (const output of this.outputs.filter(o => o.param))
+                {
+                    for (const input of output.connectedInputs)
+                        wires.push(input.connection.wire);
+                }
+
+                graphView.updateWires(wires);
             }
         });
 
@@ -93,6 +111,7 @@ extends ResizableBase
             updateTransform);
 
         this.updateScrollbar();
+        this.updateNode();
     }
 
 
@@ -107,6 +126,7 @@ extends ResizableBase
             updateTransform);
 
         this.updateScrollbar();
+        this.updateNode();
     }
 
 
@@ -242,15 +262,6 @@ extends ResizableBase
 
 
 
-    updateNode()
-    {
-        super.updateNode();
-
-        this.updateScrollbar();
-    }
-
-
-
     updateScrollbar()
     {
         const totalHeight = this.measureData.divOffset.height - defHeaderHeight;
@@ -265,13 +276,14 @@ extends ResizableBase
             this.scrollbar.style.display = 'block';
             
             this.scrollbar.style.left = this.measureData.divOffset.width - 20;
-            this.scrollbar.style.top  = defHeaderHeight + 5 + this.scroll;
+            this.scrollbar.style.top  = defHeaderHeight + 5 - this.scroll;
 
             this.scrollbar.style.height = 
                   (totalHeight - 10)
-                *  totalHeight / this.measureData.paramOffset.height;
+                *  totalHeight / this.measureData.paramOffset.height
+                - 10;
 
-            this.paramHolder.style.top = -this.scroll;
+            this.paramHolder.style.top = this.scroll;
         }
     }
 }
