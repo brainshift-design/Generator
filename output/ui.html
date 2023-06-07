@@ -81692,7 +81692,16 @@ Operator.prototype.updateIcon = function()
 Operator.prototype.updateHeaderLabelText = function()
 {
     const prefix = this.type == REPEAT ? '...' : '';
-    const suffix = this.cached         ? ''    : '...';
+    
+    let suffix;
+    
+    if (this.type == LIST)
+        suffix = ' (' + this.inputs.filter(i => !i.isNew).length  + ')';
+    else if (this.type == ITEMS)
+        suffix = ' (' + this.params.length  + ')';
+    else 
+        suffix = this.cached ? '' : '...';
+
 
     this.labelText.innerHTML = 
           (settings.showNodeId ? this.id : prefix + this.name + suffix)
