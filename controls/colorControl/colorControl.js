@@ -185,21 +185,13 @@ extends Control
         this.textbox.value = this.divValue.innerText;
 
         
-        // if (this.param.showName)
-        // {
-        //     this.divValue.style.marginLeft = '3px';
-        //     this.divValue.style.left       =  0;
-        //     this.divValue.style.transform  = 'none';
-        // }
-        // else
-        // {
-        //     this.divValue.style.marginLeft =  0;
         this.divValue.style.position = 'static';    
         this.divValue.style.width    = 'fit-content';    
-        this.divValue.style.margin   = '4px auto 0 auto';
-        // this.divValue.style.left       = '50%';
-            //his.divValue.style.transform  = 'translateX(-50%)';
-        // }
+
+        this.divValue.style.margin = 
+            this.param.showName
+            ? '4px auto 0 3px'
+            : '4px auto 0 auto';
     };
 
 

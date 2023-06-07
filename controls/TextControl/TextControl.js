@@ -168,6 +168,11 @@ extends Control
         this.textbox.style.pointerEvents = this.readOnly ? 'none' : 'all';
 
 
+
+        if (this.param.showName)
+            this.textbox.style.textAlign = 'left';
+
+
              if (this.valueText != '')   this.textbox.value = this.valueText;
         else if (this.value == NAN_CHAR) this.textbox.value = '';
     }
