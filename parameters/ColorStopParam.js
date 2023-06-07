@@ -3,20 +3,10 @@ extends Parameter
 {
     defaultValue;
 
-    oldValue     = null;
-    
-
-    //itemName;
-    //showZero     = false;
-
-    //getItemCount = null;
-
+    oldValue = null;
     
     value;
 
-
-    //listTypes = []; // the only types to consider, unless it's empty, then it's all types
-    
 
     
     constructor(id,
@@ -31,8 +21,6 @@ extends Parameter
         this.defaultValue = defaultValue;
         this.value        = defaultValue;
 
-        //this.itemName     = 'item';
-
 
         this.controls.push(new TextControl(
             this,
@@ -45,7 +33,7 @@ extends Parameter
         this.divControls.appendChild(this.controls[0].div);
 
        
-        if (hasInput)  this.initInput([COLOR_STOP_VALUE], getParamInputValuesForUndo, this.input_getBackInitValue);
+        if (hasInput)  this.initInput ([COLOR_STOP_VALUE], getParamInputValuesForUndo, this.input_getBackInitValue);
         if (hasOutput) this.initOutput([COLOR_STOP_VALUE], this.output_genRequest, getParamOutputValuesForUndo, this.output_backInit);
     }
 
@@ -92,9 +80,6 @@ extends Parameter
 
 
         super.setValue(this.value, createAction, updateControl, dispatchEvents);
-
-        // if (this.output)
-        //     this.output.types = [finalListTypeFromItems(this.value.items)];
 
 
         this.oldValue = this.value;
@@ -172,19 +157,6 @@ extends Parameter
                     rgb2hex(this.value.fill.color.toRgb())
             + ' ' + this.value.fill.opacity.toNumber() + '%'
             + ' ' + this.value.position.toNumber() + '%';
-
-        // const nItems = 
-        //     this.getItemCount
-        //     ? this.getItemCount()
-        //     : this.value.items
-        //           .filter(i => 
-        //                  isEmpty(this.listTypes) 
-        //               || this.listTypes.includes(i.type))
-        //           .length;
-
-        // this.controls[0].textbox.value = 
-        //       (nItems != 0 || this.showZero ? nItems + ' ' : '') 
-        //     + countString(nItems, this.itemName);
 
 
         super.updateControls();
