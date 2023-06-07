@@ -169,15 +169,11 @@ extends Parameter
 
 
 
-    updateControls()
-    {
-        this.div.style.background = 
-            darkMode 
-            ? this.backStyleDark 
-            : this.backStyleLight;
+    // updateControls()
+    // {
 
-        super.updateControls();
-    }
+    //     super.updateControls();
+    // }
 
 
 

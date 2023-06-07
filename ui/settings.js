@@ -264,7 +264,12 @@ function updateMenuItemShowOperationResults()
     const nodes = graph.nodes
         .filter(n => n.params.find(p => p.isResult));
 
-    nodes.forEach(n => n.updateNode());
+    nodes.forEach(n => 
+    {
+        const rect = n.measureData.divOffset;
+        n.setRect(rect.x, rect.y, rect.w, rect.h, false);
+    });
+
     graphView.updateNodeTransforms(nodes);
 }
 

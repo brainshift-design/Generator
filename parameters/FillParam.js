@@ -270,8 +270,7 @@ extends Parameter
 
     updateControls()
     {
-        checkControlVisible(this, this.controls[0]);
-        checkControlVisible(this, this.controls[1]);
+        checkParamVisible(this);
 
 
         const noColor = 
@@ -312,7 +311,7 @@ extends Parameter
             :   'linear-gradient(-45deg, #ddd 25%, transparent 25%, transparent 75%, #ddd 75%), '
               + 'linear-gradient(-45deg, #ddd 25%, transparent 25%, transparent 75%, #ddd 75%)';
 
-              
+
         this.checkers.style.display            = this.value.isValid() ? 'inline-block' : 'none';
         this.checkers.style.backgroundColor    = darkMode ? '#444' : '#fff';
       

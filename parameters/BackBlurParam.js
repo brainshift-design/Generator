@@ -136,13 +136,13 @@ extends Parameter
 
     updateControls()
     {
-        checkControlVisible(this, this.controls[0]);
+        checkParamVisible(this);
         
 
-        this.div.style.background = 
-            darkMode 
-            ? this.backStyleDark 
-            : this.backStyleLight;
+        // this.div.style.background = 
+        //     darkMode 
+        //     ? this.backStyleDark 
+        //     : this.backStyleLight;
 
 
         enableElementText(this.controls[0].div, false);

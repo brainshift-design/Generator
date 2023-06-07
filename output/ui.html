@@ -3794,8 +3794,8 @@ a
 }
 
 
-.figma-light .itemsScroll { background: #0002; }
-.figma-dark  .itemsScroll { background: #fff2; }
+.figma-light .itemsScroll       { background: #0002; }
+.figma-dark  .itemsScroll       { background: #fff2; }
  
 .figma-light .itemsScroll:hover { background: #0004; }
 .figma-dark  .itemsScroll:hover { background: #fff4; }
@@ -28247,7 +28247,12 @@ function updateMenuItemShowOperationResults()
     const nodes = graph.nodes
         .filter(n => n.params.find(p => p.isResult));
 
-    nodes.forEach(n => n.updateNode());
+    nodes.forEach(n => 
+    {
+        const rect = n.measureData.divOffset;
+        n.setRect(rect.x, rect.y, rect.w, rect.h, false);
+    });
+
     graphView.updateNodeTransforms(nodes);
 }
 
@@ -63056,7 +63061,12 @@ function updateMenuItemShowOperationResults()
     const nodes = graph.nodes
         .filter(n => n.params.find(p => p.isResult));
 
-    nodes.forEach(n => n.updateNode());
+    nodes.forEach(n => 
+    {
+        const rect = n.measureData.divOffset;
+        n.setRect(rect.x, rect.y, rect.w, rect.h, false);
+    });
+
     graphView.updateNodeTransforms(nodes);
 }
 
@@ -70453,10 +70463,14 @@ GraphView.prototype.updateNodes = function(nodes = null, updateNodes = true)
 
     nodes.forEach(n => n.updateMeasureData());
 
+
     if (updateNodes)
     {
         nodes.forEach(n =>
         {
+            const rect = n.measureData.divOffset;
+            n.setRect(rect.x, rect.y, rect.w, rect.h, false);
+
             n.updateHeader(); 
             n.updateHeaderLabel();
             n.updateBorder();
@@ -72400,11 +72414,13 @@ extends EventTarget
         if (this.output) this.output.updateControl();
         
        
-        this.controls.forEach(c => 
-        {
-            checkControlVisible(this, c);
-            c.update();
-        });
+        checkParamVisible(this);
+        
+        
+        this.div.style.background = 
+            darkMode 
+            ? this.backStyleDark 
+            : this.backStyleLight;
 
 
         const left = this.input || this.output ? 12 : 0;
@@ -72557,9 +72573,9 @@ function setParamValue(param, value, updateParamId = '')
 
 
 
-function checkControlVisible(param, control)
+function checkParamVisible(param)
 {
-    control.div.style.display = 
+    param.div.style.display = 
           !param.isResult
         || settings.showOperationResults
         ? 'inline-block'
@@ -72746,10 +72762,10 @@ extends Parameter
     {
         this.controls[0].div.style.width = '100%';
         
-        this.div.style.background = 
-            darkMode 
-            ? this.backStyleDark 
-            : this.backStyleLight;
+        // this.div.style.background = 
+        //     darkMode 
+        //     ? this.backStyleDark 
+        //     : this.backStyleLight;
 
         super.updateControls();
     }
@@ -73284,15 +73300,11 @@ extends Parameter
 
 
 
-    updateControls()
-    {
-        this.div.style.background = 
-            darkMode 
-            ? this.backStyleDark 
-            : this.backStyleLight;
+    // updateControls()
+    // {
 
-        super.updateControls();
-    }
+    //     super.updateControls();
+    // }
 
 
 
@@ -74042,8 +74054,7 @@ extends Parameter
 
     updateControls()
     {
-        checkControlVisible(this, this.controls[0]);
-        checkControlVisible(this, this.controls[1]);
+        checkParamVisible(this);
 
 
         const noColor = 
@@ -74084,7 +74095,7 @@ extends Parameter
             :   'linear-gradient(-45deg, #ddd 25%, transparent 25%, transparent 75%, #ddd 75%), '
               + 'linear-gradient(-45deg, #ddd 25%, transparent 25%, transparent 75%, #ddd 75%)';
 
-              
+
         this.checkers.style.display            = this.value.isValid() ? 'inline-block' : 'none';
         this.checkers.style.backgroundColor    = darkMode ? '#444' : '#fff';
       
@@ -74381,13 +74392,13 @@ extends Parameter
 
     updateControls()
     {
-        checkControlVisible(this, this.controls[0]);
+        checkParamVisible(this);
         
 
-        this.div.style.background = 
-            darkMode 
-            ? this.backStyleDark 
-            : this.backStyleLight;
+        // this.div.style.background = 
+        //     darkMode 
+        //     ? this.backStyleDark 
+        //     : this.backStyleLight;
 
 
         enableElementText(this.controls[0].div, false);
@@ -74558,13 +74569,10 @@ extends Parameter
 
     updateControls()
     {
-        checkControlVisible(this, this.controls[0]);
-        
-
-        this.div.style.background = 
-            darkMode 
-            ? this.backStyleDark 
-            : this.backStyleLight;
+        // this.div.style.background = 
+        //     darkMode 
+        //     ? this.backStyleDark 
+        //     : this.backStyleLight;
 
 
         enableElementText(this.controls[0].div, false);
@@ -74731,13 +74739,10 @@ extends Parameter
 
     updateControls()
     {
-        checkControlVisible(this, this.controls[0]);
-        
-
-        this.div.style.background = 
-            darkMode 
-            ? this.backStyleDark 
-            : this.backStyleLight;
+        // this.div.style.background = 
+        //     darkMode 
+        //     ? this.backStyleDark 
+        //     : this.backStyleLight;
 
 
         enableElementText(this.controls[0].div, false);
@@ -74925,13 +74930,10 @@ extends Parameter
 
     updateControls()
     {
-        checkControlVisible(this, this.controls[0]);
-        
-
-        this.div.style.background = 
-            darkMode 
-            ? this.backStyleDark 
-            : this.backStyleLight;
+        // this.div.style.background = 
+        //     darkMode 
+        //     ? this.backStyleDark 
+        //     : this.backStyleLight;
 
 
         enableElementText(this.controls[0].div, false);
@@ -75113,13 +75115,10 @@ extends Parameter
 
     updateControls()
     {
-        checkControlVisible(this, this.controls[0]);
-        
-
-        this.div.style.background = 
-            darkMode 
-            ? this.backStyleDark 
-            : this.backStyleLight;
+        // this.div.style.background = 
+        //     darkMode 
+        //     ? this.backStyleDark 
+        //     : this.backStyleLight;
 
 
         enableElementText(this.controls[0].div, false);
@@ -75284,13 +75283,10 @@ extends Parameter
 
     updateControls()
     {
-        checkControlVisible(this, this.controls[0]);
-        
-
-        this.div.style.background = 
-            darkMode 
-            ? this.backStyleDark 
-            : this.backStyleLight;
+        // this.div.style.background = 
+        //     darkMode 
+        //     ? this.backStyleDark 
+        //     : this.backStyleLight;
 
 
         enableElementText(this.controls[0].div, false);
@@ -75455,13 +75451,10 @@ extends Parameter
 
     updateControls()
     {
-        checkControlVisible(this, this.controls[0]);
-        
-
-        this.div.style.background = 
-            darkMode 
-            ? this.backStyleDark 
-            : this.backStyleLight;
+        // this.div.style.background = 
+        //     darkMode 
+        //     ? this.backStyleDark 
+        //     : this.backStyleLight;
 
 
         enableElementText(this.controls[0].div, false);
@@ -75626,13 +75619,10 @@ extends Parameter
 
     updateControls()
     {
-        checkControlVisible(this, this.controls[0]);
-        
-
-        this.div.style.background = 
-            darkMode 
-            ? this.backStyleDark 
-            : this.backStyleLight;
+        // this.div.style.background = 
+        //     darkMode 
+        //     ? this.backStyleDark 
+        //     : this.backStyleLight;
 
 
         enableElementText(this.controls[0].div, false);
@@ -75797,13 +75787,10 @@ extends Parameter
 
     updateControls()
     {
-        checkControlVisible(this, this.controls[0]);
-        
-
-        this.div.style.background = 
-            darkMode 
-            ? this.backStyleDark 
-            : this.backStyleLight;
+        // this.div.style.background = 
+        //     darkMode 
+        //     ? this.backStyleDark 
+        //     : this.backStyleLight;
 
 
         enableElementText(this.controls[0].div, false);
@@ -75968,13 +75955,10 @@ extends Parameter
 
     updateControls()
     {
-        checkControlVisible(this, this.controls[0]);
-        
-
-        this.div.style.background = 
-            darkMode 
-            ? this.backStyleDark 
-            : this.backStyleLight;
+        // this.div.style.background = 
+        //     darkMode 
+        //     ? this.backStyleDark 
+        //     : this.backStyleLight;
 
 
         enableElementText(this.controls[0].div, false);
@@ -76142,13 +76126,10 @@ extends Parameter
 
     updateControls()
     {
-        checkControlVisible(this, this.controls[0]);
-        
-
-        this.div.style.background = 
-            darkMode 
-            ? this.backStyleDark 
-            : this.backStyleLight;
+        // this.div.style.background = 
+        //     darkMode 
+        //     ? this.backStyleDark 
+        //     : this.backStyleLight;
 
 
         enableElementText(this.controls[0].div, false);
@@ -76317,13 +76298,10 @@ extends Parameter
 
     updateControls()
     {
-        checkControlVisible(this, this.controls[0]);
-        
-
-        this.div.style.background = 
-            darkMode 
-            ? this.backStyleDark 
-            : this.backStyleLight;
+        // this.div.style.background = 
+        //     darkMode 
+        //     ? this.backStyleDark 
+        //     : this.backStyleLight;
 
 
         enableElementText(this.controls[0].div, false);
@@ -76488,9 +76466,6 @@ extends Parameter
 
     updateControls()
     {
-        checkControlVisible(this, this.controls[0]);
-        
-
         enableElementText(this.controls[0].div, false);
 
         this.controls[0].readOnly = true;
@@ -76654,7 +76629,7 @@ extends Parameter
 
     updateControls()
     {
-        checkControlVisible(this, this.controls[0]);
+        checkParamVisible(this);
         
 
         enableElementText(this.controls[0].div, false);
@@ -76822,13 +76797,13 @@ extends Parameter
 
     updateControls()
     {
-        checkControlVisible(this, this.controls[0]);
+        checkParamVisible(this);
         
 
-        this.div.style.background = 
-            darkMode 
-            ? this.backStyleDark 
-            : this.backStyleLight;
+        // this.div.style.background = 
+        //     darkMode 
+        //     ? this.backStyleDark 
+        //     : this.backStyleLight;
 
 
         enableElementText(this.controls[0].div, false);
@@ -77002,13 +76977,10 @@ extends Parameter
 
     updateControls()
     {
-        checkControlVisible(this, this.controls[0]);
-        
-
-        this.div.style.background = 
-            darkMode 
-            ? this.backStyleDark 
-            : this.backStyleLight;
+        // this.div.style.background = 
+        //     darkMode 
+        //     ? this.backStyleDark 
+        //     : this.backStyleLight;
 
 
         enableElementText(this.controls[0].div, false);
@@ -77182,13 +77154,10 @@ extends Parameter
 
     updateControls()
     {
-        checkControlVisible(this, this.controls[0]);
-        
-
-        this.div.style.background = 
-            darkMode 
-            ? this.backStyleDark 
-            : this.backStyleLight;
+        // this.div.style.background = 
+        //     darkMode 
+        //     ? this.backStyleDark 
+        //     : this.backStyleLight;
 
 
         enableElementText(this.controls[0].div, false);
@@ -77362,13 +77331,13 @@ extends Parameter
 
     updateControls()
     {
-        checkControlVisible(this, this.controls[0]);
+        checkParamVisible(this);
         
 
-        this.div.style.background = 
-            darkMode 
-            ? this.backStyleDark 
-            : this.backStyleLight;
+        // this.div.style.background = 
+        //     darkMode 
+        //     ? this.backStyleDark 
+        //     : this.backStyleLight;
 
 
         enableElementText(this.controls[0].div, false);
@@ -87039,10 +87008,15 @@ extends ResizableOperatorWithValue
     setSize(w, h, updateTransform = true)
     {
         const headerHeight = boundingRect(this.header).height / graph.currentPage.zoom;
-        
+
+        const height =
+            settings.showOperationResults
+            ? Math.max(headerHeight + 2 * defParamHeight, h)
+            : headerHeight + defParamHeight;
+
         super.setSize(
             w, 
-            Math.max(headerHeight + 2 * defParamHeight, h), 
+            height,
             updateTransform);
 
         this.updateValueParam();
@@ -87054,11 +87028,16 @@ extends ResizableOperatorWithValue
     {
         const headerHeight = boundingRect(this.header).height / graph.currentPage.zoom;
 
+        const height =
+            settings.showOperationResults
+            ? Math.max(headerHeight + 2 * defParamHeight, h)
+            : headerHeight + 2 * defParamHeight;
+
         super.setRect(
             x, 
             y, 
             w, 
-            Math.max(headerHeight + 2 * defParamHeight, h), 
+            height, 
             updateTransform);
 
         this.updateValueParam();
@@ -87295,9 +87274,16 @@ extends ResizableOperatorWithValue
 
     setSize(w, h, updateTransform = true)
     {
+        const headerHeight = boundingRect(this.header).height / graph.currentPage.zoom;
+
+        const height =
+            settings.showOperationResults
+            ? Math.max(headerHeight + 2 * defParamHeight, h)
+            : headerHeight + 2 * defParamHeight;
+
         super.setSize(
             w, 
-            Math.max(defHeaderHeight + (settings.showOperationResults ? 2 : 1) * defParamHeight, h), 
+            height, 
             updateTransform);
 
         this.updateValueParam();
@@ -87307,11 +87293,18 @@ extends ResizableOperatorWithValue
 
     setRect(x, y, w, h, updateTransform = true)
     {
+        const headerHeight = boundingRect(this.header).height / graph.currentPage.zoom;
+
+        const height =
+            settings.showOperationResults
+            ? Math.max(headerHeight + 2 * defParamHeight, h)
+            : headerHeight + 2 * defParamHeight;
+
         super.setRect(
             x, 
             y, 
             w, 
-            Math.max(defHeaderHeight + 2 * defParamHeight, h), 
+            height, 
             updateTransform);
 
         this.updateValueParam();

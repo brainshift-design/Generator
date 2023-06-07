@@ -134,9 +134,6 @@ extends Parameter
 
     updateControls()
     {
-        checkControlVisible(this, this.controls[0]);
-        
-
         enableElementText(this.controls[0].div, false);
 
         this.controls[0].readOnly = true;

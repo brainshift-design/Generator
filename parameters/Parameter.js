@@ -186,11 +186,13 @@ extends EventTarget
         if (this.output) this.output.updateControl();
         
        
-        this.controls.forEach(c => 
-        {
-            checkControlVisible(this, c);
-            c.update();
-        });
+        checkParamVisible(this);
+        
+        
+        this.div.style.background = 
+            darkMode 
+            ? this.backStyleDark 
+            : this.backStyleLight;
 
 
         const left = this.input || this.output ? 12 : 0;
@@ -343,9 +345,9 @@ function setParamValue(param, value, updateParamId = '')
 
 
 
-function checkControlVisible(param, control)
+function checkParamVisible(param)
 {
-    control.div.style.display = 
+    param.div.style.display = 
           !param.isResult
         || settings.showOperationResults
         ? 'inline-block'
