@@ -26,7 +26,7 @@ extends Parameter
                 hasOutput,
                 defaultValue = new ListValue())
     {
-        super(LIST_VALUE, id, name);
+        super(LIST_VALUE, id, name, showName);
 
         this.defaultValue = defaultValue;
         this.value        = defaultValue;
@@ -38,7 +38,6 @@ extends Parameter
             this,
             this.id,
             this.name,
-            showName,
             ''));
 
         this.controls[0].textbox.style.textAlign     = 'center';

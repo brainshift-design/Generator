@@ -27,7 +27,6 @@ extends Parameter
             this,
             this.id,
             this.name,
-            showName,
             ''));
 
         this.controls[0].textbox.style.textAlign = 'center';

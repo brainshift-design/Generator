@@ -17,7 +17,7 @@ extends Parameter
                 hasOutput,
                 defaultValue = new VectorPathValue())
     {
-        super(VECTOR_PATH_VALUE, id, name);
+        super(VECTOR_PATH_VALUE, id, name, showName);
 
         this.defaultValue = defaultValue;
         this.value        = defaultValue;
@@ -27,7 +27,6 @@ extends Parameter
             this,
             this.id,
             this.name,
-            showName,
             ''));
 
         this.controls[0].textbox.style.textAlign = 'center';
@@ -35,7 +34,7 @@ extends Parameter
         this.divControls.appendChild(this.controls[0].div);
 
        
-        if (hasInput)  this.initInput([VECTOR_PATH_VALUE], getParamInputValuesForUndo, this.input_getBackInitValue);
+        if (hasInput)  this.initInput ([VECTOR_PATH_VALUE], getParamInputValuesForUndo, this.input_getBackInitValue);
         if (hasOutput) this.initOutput([VECTOR_PATH_VALUE], this.output_genRequest, getParamOutputValuesForUndo, this.output_backInit);
     }
 
@@ -154,8 +153,7 @@ extends Parameter
         this.controls[0].textbox.value            = 'vector path';
 
 
-        if (this.input ) this.input .updateControl();
-        if (this.output) this.output.updateControl();
+        super.updateControls();
     }
 
 

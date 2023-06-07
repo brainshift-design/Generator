@@ -17,7 +17,7 @@ extends Parameter
                 hasOutput,
                 defaultValue = new LineValue())
     {
-        super(LINE_VALUE, id, name);
+        super(LINE_VALUE, id, name, showName);
 
         this.defaultValue = defaultValue;
         this.value        = defaultValue;
@@ -27,7 +27,6 @@ extends Parameter
             this,
             this.id,
             this.name,
-            showName,
             ''));
 
         this.controls[0].textbox.style.textAlign = 'center';
@@ -154,8 +153,7 @@ extends Parameter
         this.controls[0].textbox.value            = 'line';
 
 
-        if (this.input ) this.input .updateControl();
-        if (this.output) this.output.updateControl();
+        super.updateControls();
     }
 
 

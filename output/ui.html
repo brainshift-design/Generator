@@ -74023,6 +74023,7 @@ extends Parameter
             :   'linear-gradient(-45deg, #ddd 25%, transparent 25%, transparent 75%, #ddd 75%), '
               + 'linear-gradient(-45deg, #ddd 25%, transparent 25%, transparent 75%, #ddd 75%)';
 
+              
         this.checkers.style.display            = this.value.isValid() ? 'inline-block' : 'none';
         this.checkers.style.backgroundColor    = darkMode ? '#444' : '#fff';
       
@@ -74209,7 +74210,7 @@ extends Parameter
                 hasOutput,
                 defaultValue = new ColorStopValue())
     {
-        super(COLOR_STOP_VALUE, id, name);
+        super(COLOR_STOP_VALUE, id, name, showName);
 
         this.defaultValue = defaultValue;
         this.value        = defaultValue;
@@ -74221,12 +74222,11 @@ extends Parameter
             this,
             this.id,
             this.name,
-            showName,
             ''));
 
         this.controls[0].textbox.style.textAlign  = 'center';
    
-        this.div.appendChild(this.controls[0].div);
+        this.divControls.appendChild(this.controls[0].div);
 
        
         if (hasInput)  this.initInput([COLOR_STOP_VALUE], getParamInputValuesForUndo, this.input_getBackInitValue);
@@ -74371,8 +74371,7 @@ extends Parameter
         //     + countString(nItems, this.itemName);
 
 
-        if (this.input ) this.input .updateControl();
-        if (this.output) this.output.updateControl();
+        super.updateControls();
     }
 
 
@@ -74871,7 +74870,7 @@ extends Parameter
                 hasOutput,
                 defaultValue = new ListValue())
     {
-        super(LIST_VALUE, id, name);
+        super(LIST_VALUE, id, name, showName);
 
         this.defaultValue = defaultValue;
         this.value        = defaultValue;
@@ -74883,7 +74882,6 @@ extends Parameter
             this,
             this.id,
             this.name,
-            showName,
             ''));
 
         this.controls[0].textbox.style.textAlign     = 'center';
@@ -75070,7 +75068,7 @@ extends Parameter
                 hasOutput,
                 defaultValue = new RectangleValue())
     {
-        super(RECTANGLE_VALUE, id, name);
+        super(RECTANGLE_VALUE, id, name, showName);
 
         this.defaultValue = defaultValue;
         this.value        = defaultValue;
@@ -75080,7 +75078,6 @@ extends Parameter
             this,
             this.id,
             this.name,
-            showName,
             ''));
 
         this.controls[0].textbox.style.textAlign = 'center';
@@ -75207,8 +75204,7 @@ extends Parameter
         this.controls[0].textbox.innerHTML        = 'rectangle';
 
 
-        if (this.input ) this.input .updateControl();
-        if (this.output) this.output.updateControl();
+        super.updateControls();
     }
 
 
@@ -75243,7 +75239,7 @@ extends Parameter
                 hasOutput,
                 defaultValue = new LineValue())
     {
-        super(LINE_VALUE, id, name);
+        super(LINE_VALUE, id, name, showName);
 
         this.defaultValue = defaultValue;
         this.value        = defaultValue;
@@ -75253,7 +75249,6 @@ extends Parameter
             this,
             this.id,
             this.name,
-            showName,
             ''));
 
         this.controls[0].textbox.style.textAlign = 'center';
@@ -75380,8 +75375,7 @@ extends Parameter
         this.controls[0].textbox.value            = 'line';
 
 
-        if (this.input ) this.input .updateControl();
-        if (this.output) this.output.updateControl();
+        super.updateControls();
     }
 
 
@@ -75416,7 +75410,7 @@ extends Parameter
                 hasOutput,
                 defaultValue = new EllipseValue())
     {
-        super(ELLIPSE_VALUE, id, name);
+        super(ELLIPSE_VALUE, id, name, showName);
 
         this.defaultValue = defaultValue;
         this.value        = defaultValue;
@@ -75426,7 +75420,6 @@ extends Parameter
             this,
             this.id,
             this.name,
-            showName,
             ''));
 
         this.controls[0].textbox.style.textAlign = 'center';
@@ -75553,8 +75546,7 @@ extends Parameter
         this.controls[0].textbox.value            = 'ellipse';
 
 
-        if (this.input ) this.input .updateControl();
-        if (this.output) this.output.updateControl();
+        super.updateControls();
     }
 
 
@@ -75589,7 +75581,7 @@ extends Parameter
                 hasOutput,
                 defaultValue = new PolygonValue())
     {
-        super(POLYGON_VALUE, id, name);
+        super(POLYGON_VALUE, id, name, showName);
 
         this.defaultValue = defaultValue;
         this.value        = defaultValue;
@@ -75599,7 +75591,6 @@ extends Parameter
             this,
             this.id,
             this.name,
-            showName,
             ''));
 
         this.controls[0].textbox.style.textAlign = 'center';
@@ -75726,8 +75717,7 @@ extends Parameter
         this.controls[0].textbox.value            = 'polygon';
 
 
-        if (this.input ) this.input .updateControl();
-        if (this.output) this.output.updateControl();
+        super.updateControls();
     }
 
 
@@ -75762,7 +75752,7 @@ extends Parameter
                 hasOutput,
                 defaultValue = new StarValue())
     {
-        super(STAR_VALUE, id, name);
+        super(STAR_VALUE, id, name, showName);
 
         this.defaultValue = defaultValue;
         this.value        = defaultValue;
@@ -75772,7 +75762,6 @@ extends Parameter
             this,
             this.id,
             this.name,
-            showName,
             ''));
 
         this.controls[0].textbox.style.textAlign = 'center';
@@ -75899,8 +75888,7 @@ extends Parameter
         this.controls[0].textbox.value            = 'star';
 
 
-        if (this.input ) this.input .updateControl();
-        if (this.output) this.output.updateControl();
+        super.updateControls();
     }
 
 
@@ -75935,7 +75923,7 @@ extends Parameter
                 hasOutput,
                 defaultValue = new TextShapeValue())
     {
-        super(TEXT_SHAPE_VALUE, id, name);
+        super(TEXT_SHAPE_VALUE, id, name, showName);
 
         this.defaultValue = defaultValue;
         this.value        = defaultValue;
@@ -75945,7 +75933,6 @@ extends Parameter
             this,
             this.id,
             this.name,
-            showName,
             ''));
 
         this.controls[0].textbox.style.textAlign = 'center';
@@ -76072,8 +76059,7 @@ extends Parameter
         this.controls[0].textbox.value            = 'text';
 
 
-        if (this.input ) this.input .updateControl();
-        if (this.output) this.output.updateControl();
+        super.updateControls();
     }
 
 
@@ -76108,8 +76094,9 @@ extends Parameter
                 hasOutput,
                 defaultValue = new PointValue())
     {
-        super(POINT_VALUE, id, name);
+        super(POINT_VALUE, id, name, showName);
 
+        
         defaultValue.nodeId = this.nodeId;
 
         this.defaultValue = defaultValue;
@@ -76120,7 +76107,6 @@ extends Parameter
             this,
             this.id,
             this.name,
-            showName,
             ''));
 
         this.controls[0].textbox.style.textAlign = 'center';
@@ -76128,7 +76114,7 @@ extends Parameter
         this.divControls.appendChild(this.controls[0].div);
 
        
-        if (hasInput)  this.initInput([POINT_VALUE], getParamInputValuesForUndo, this.input_getBackInitValue);
+        if (hasInput)  this.initInput ([POINT_VALUE], getParamInputValuesForUndo, this.input_getBackInitValue);
         if (hasOutput) this.initOutput([POINT_VALUE], this.output_genRequest, getParamOutputValuesForUndo, this.output_backInit);
     }
 
@@ -76251,8 +76237,7 @@ extends Parameter
             + printNum(this.value.y.value);
 
 
-        if (this.input ) this.input .updateControl();
-        if (this.output) this.output.updateControl();
+        super.updateControls();
     }
 
 
@@ -76287,7 +76272,7 @@ extends Parameter
                 hasOutput,
                 defaultValue = new VectorPathValue())
     {
-        super(VECTOR_PATH_VALUE, id, name);
+        super(VECTOR_PATH_VALUE, id, name, showName);
 
         this.defaultValue = defaultValue;
         this.value        = defaultValue;
@@ -76297,7 +76282,6 @@ extends Parameter
             this,
             this.id,
             this.name,
-            showName,
             ''));
 
         this.controls[0].textbox.style.textAlign = 'center';
@@ -76305,7 +76289,7 @@ extends Parameter
         this.divControls.appendChild(this.controls[0].div);
 
        
-        if (hasInput)  this.initInput([VECTOR_PATH_VALUE], getParamInputValuesForUndo, this.input_getBackInitValue);
+        if (hasInput)  this.initInput ([VECTOR_PATH_VALUE], getParamInputValuesForUndo, this.input_getBackInitValue);
         if (hasOutput) this.initOutput([VECTOR_PATH_VALUE], this.output_genRequest, getParamOutputValuesForUndo, this.output_backInit);
     }
 
@@ -76424,8 +76408,7 @@ extends Parameter
         this.controls[0].textbox.value            = 'vector path';
 
 
-        if (this.input ) this.input .updateControl();
-        if (this.output) this.output.updateControl();
+        super.updateControls();
     }
 
 
@@ -76470,7 +76453,6 @@ extends Parameter
             this,
             this.id,
             this.name,
-            showName,
             ''));
 
         this.controls[0].textbox.style.textAlign = 'center';
@@ -76637,7 +76619,6 @@ extends Parameter
             this,
             this.id,
             this.name,
-            showName,
             ''));
 
         this.controls[0].textbox.style.textAlign = 'center';

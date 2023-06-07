@@ -26,7 +26,7 @@ extends Parameter
                 hasOutput,
                 defaultValue = new ColorStopValue())
     {
-        super(COLOR_STOP_VALUE, id, name);
+        super(COLOR_STOP_VALUE, id, name, showName);
 
         this.defaultValue = defaultValue;
         this.value        = defaultValue;
@@ -38,12 +38,11 @@ extends Parameter
             this,
             this.id,
             this.name,
-            showName,
             ''));
 
         this.controls[0].textbox.style.textAlign  = 'center';
    
-        this.div.appendChild(this.controls[0].div);
+        this.divControls.appendChild(this.controls[0].div);
 
        
         if (hasInput)  this.initInput([COLOR_STOP_VALUE], getParamInputValuesForUndo, this.input_getBackInitValue);
@@ -188,8 +187,7 @@ extends Parameter
         //     + countString(nItems, this.itemName);
 
 
-        if (this.input ) this.input .updateControl();
-        if (this.output) this.output.updateControl();
+        super.updateControls();
     }
 
 

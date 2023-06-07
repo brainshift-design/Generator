@@ -17,8 +17,9 @@ extends Parameter
                 hasOutput,
                 defaultValue = new PointValue())
     {
-        super(POINT_VALUE, id, name);
+        super(POINT_VALUE, id, name, showName);
 
+        
         defaultValue.nodeId = this.nodeId;
 
         this.defaultValue = defaultValue;
@@ -29,7 +30,6 @@ extends Parameter
             this,
             this.id,
             this.name,
-            showName,
             ''));
 
         this.controls[0].textbox.style.textAlign = 'center';
@@ -37,7 +37,7 @@ extends Parameter
         this.divControls.appendChild(this.controls[0].div);
 
        
-        if (hasInput)  this.initInput([POINT_VALUE], getParamInputValuesForUndo, this.input_getBackInitValue);
+        if (hasInput)  this.initInput ([POINT_VALUE], getParamInputValuesForUndo, this.input_getBackInitValue);
         if (hasOutput) this.initOutput([POINT_VALUE], this.output_genRequest, getParamOutputValuesForUndo, this.output_backInit);
     }
 
@@ -160,8 +160,7 @@ extends Parameter
             + printNum(this.value.y.value);
 
 
-        if (this.input ) this.input .updateControl();
-        if (this.output) this.output.updateControl();
+        super.updateControls();
     }
 
 
