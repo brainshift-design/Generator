@@ -4032,9 +4032,9 @@ const STAR_VALUE         = 'STAR#';
 const STAR               = 'STAR'; 
 const STAR_TYPES         = [STAR_VALUE, STAR];
   
-const TEXTSHAPE_VALUE    = 'TXTS#';
-const TEXTSHAPE          = 'TXTS'; 
-const TEXTSHAPE_TYPES    = [TEXTSHAPE_VALUE, TEXTSHAPE];
+const TEXT_SHAPE_VALUE    = 'TXTS#';
+const TEXT_SHAPE          = 'TXTS'; 
+const TEXT_SHAPE_TYPES    = [TEXT_SHAPE_VALUE, TEXT_SHAPE];
  
 const POINT              = 'PT';
 const POINT_VALUE        = 'PT#';
@@ -4093,7 +4093,7 @@ const SHAPE_VALUES =
     ELLIPSE_VALUE,
     POLYGON_VALUE,
     STAR_VALUE,
-    TEXTSHAPE_VALUE,
+    TEXT_SHAPE_VALUE,
     POINT_VALUE,
     VECTOR_PATH_VALUE,
     SHAPE_GROUP_VALUE,
@@ -4119,7 +4119,7 @@ const SHAPE_TYPES =
     ...ELLIPSE_TYPES,
     ...POLYGON_TYPES,
     ...STAR_TYPES,
-    ...TEXTSHAPE_TYPES,
+    ...TEXT_SHAPE_TYPES,
     ...POINT_TYPES,
     ...VECTOR_PATH_TYPES,
     ...SHAPE_GROUP_TYPES,
@@ -4160,7 +4160,7 @@ const ALL_VALUES =
          ELLIPSE_VALUE,
          POLYGON_VALUE,
             STAR_VALUE,
-       TEXTSHAPE_VALUE,
+       TEXT_SHAPE_VALUE,
            POINT_VALUE,
      VECTOR_PATH_VALUE,
      SHAPE_GROUP_VALUE,
@@ -4528,7 +4528,7 @@ function copyFigmaObject(obj)
         case ELLIPSE:     return FigmaEllipse   .prototype.copy.call(obj);
         case POLYGON:     return FigmaPolygon   .prototype.copy.call(obj);
         case STAR:        return FigmaStar      .prototype.copy.call(obj);
-        case TEXTSHAPE:   return FigmaText      .prototype.copy.call(obj);
+        case TEXT_SHAPE:   return FigmaText      .prototype.copy.call(obj);
         case POINT:       return FigmaPoint     .prototype.copy.call(obj);
         case VECTOR_PATH: return FigmaVectorPath.prototype.copy.call(obj);
         case BOOLEAN:     return FigmaBoolean   .prototype.copy.call(obj);
@@ -4854,7 +4854,7 @@ extends FigmaShape
 
     constructor(nodeId, objectId, objectName, text, x, y, width, height, /*angle,*/ font, style, size, alignH, alignV, lineHeight, letterSpacing)
     {
-        super(TEXTSHAPE, nodeId, objectId, objectName);
+        super(TEXT_SHAPE, nodeId, objectId, objectName);
         
         this.text          = text;
         this.x             = x;
@@ -5679,7 +5679,7 @@ function displayValue(type, value)
         case     ELLIPSE_VALUE: return parseEllipseValue     (value)[0].toDisplayString();
         case     POLYGON_VALUE: return parsePolygonValue     (value)[0].toDisplayString();
         case        STAR_VALUE: return parseStarValue        (value)[0].toDisplayString();
-        case   TEXTSHAPE_VALUE: return parseTextShapeValue   (value)[0].toDisplayString();
+        case   TEXT_SHAPE_VALUE: return parseTextShapeValue   (value)[0].toDisplayString();
         case       POINT_VALUE: return parsePointValue       (value)[0].toDisplayString();
         case VECTOR_PATH_VALUE: return parseVectorPathValue  (value)[0].toDisplayString();
         case     BOOLEAN_VALUE: return parseShapeBooleanValue(value)[0].toDisplayString();
@@ -5710,7 +5710,7 @@ function nullFromType(type)
         case     ELLIPSE_VALUE: return      EllipseValue.NaN;
         case     POLYGON_VALUE: return      PolygonValue.NaN;
         case        STAR_VALUE: return         StarValue.NaN;
-        case   TEXTSHAPE_VALUE: return    TextShapeValue.NaN;
+        case   TEXT_SHAPE_VALUE: return    TextShapeValue.NaN;
         case       POINT_VALUE: return        PointValue.NaN;
         case VECTOR_PATH_VALUE: return   VectorPathValue.NaN;
         case     BOOLEAN_VALUE: return ShapeBooleanValue.NaN;
@@ -6150,7 +6150,7 @@ function parseListValue(str, i = -1)
             case      ELLIPSE_VALUE: { const ellipse = parseEllipseValue     (str, i);  i += ellipse[1];  list.items.push(ellipse[0]);  break; }
             case      POLYGON_VALUE: { const poly    = parsePolygonValue     (str, i);  i += poly   [1];  list.items.push(poly   [0]);  break; }
             case         STAR_VALUE: { const star    = parseStarValue        (str, i);  i += star   [1];  list.items.push(star   [0]);  break; }
-            case    TEXTSHAPE_VALUE: { const text    = parseTextShapeValue   (str, i);  i += text   [1];  list.items.push(text   [0]);  break; }
+            case    TEXT_SHAPE_VALUE: { const text    = parseTextShapeValue   (str, i);  i += text   [1];  list.items.push(text   [0]);  break; }
             case        POINT_VALUE: { const point   = parsePointValue       (str, i);  i += point  [1];  list.items.push(point  [0]);  break; }
             case  VECTOR_PATH_VALUE: { const path    = parseVectorPathValue  (str, i);  i += path   [1];  list.items.push(path   [0]);  break; }
             case      BOOLEAN_VALUE: { const group   = parseShapeBooleanValue(str, i);  i += group  [1];  list.items.push(group  [0]);  break; }
@@ -6388,12 +6388,14 @@ extends GValue
     {
         super(TEXT_VALUE);
 
+
         if (typeof val !== 'string')
         {
             console.trace();
             console.assert(false, 'TextValue(value) is ' + typeof val + ', must be a string');
         }
 
+        
         this.value = val;
     }
 
@@ -9077,7 +9079,7 @@ extends ShapeValue
                 lineHeight    = new NumberValue(0),
                 letterSpacing = new NumberValue(0))
     {
-        super(TEXTSHAPE_VALUE, nodeId);
+        super(TEXT_SHAPE_VALUE, nodeId);
 
         this.text          = text;
         this.x             = x;
@@ -9899,7 +9901,7 @@ function parseShapeGroupValue(str, i = -1)
             case      ELLIPSE_VALUE: { const ellipse = parseEllipseValue     (str, i);  i += ellipse[1];  group.items.push(ellipse[0]);  break; }
             case      POLYGON_VALUE: { const poly    = parsePolygonValue     (str, i);  i += poly   [1];  group.items.push(poly   [0]);  break; }
             case         STAR_VALUE: { const star    = parseStarValue        (str, i);  i += star   [1];  group.items.push(star   [0]);  break; }
-            case    TEXTSHAPE_VALUE: { const text    = parseTextShapeValue   (str, i);  i += text   [1];  group.items.push(text   [0]);  break; }
+            case    TEXT_SHAPE_VALUE: { const text    = parseTextShapeValue   (str, i);  i += text   [1];  group.items.push(text   [0]);  break; }
             case        POINT_VALUE: { const point   = parsePointValue       (str, i);  i += point  [1];  group.items.push(point  [0]);  break; }
             case  VECTOR_PATH_VALUE: { const path    = parseVectorPathValue  (str, i);  i += path   [1];  group.items.push(path   [0]);  break; }
             case      BOOLEAN_VALUE: { const path    = parseShapeBooleanValue(str, i);  i += path   [1];  group.items.push(path   [0]);  break; }
@@ -20913,7 +20915,7 @@ extends GShape
 
     constructor(nodeId, options)
     {
-        super(TEXTSHAPE, nodeId, options);
+        super(TEXT_SHAPE, nodeId, options);
     }
 
 
@@ -28913,7 +28915,7 @@ function genParse(parse, inParam = true)
     else if (parse.next == ELLIPSE                ) result = genParseEllipse          (parse);
     else if (parse.next == POLYGON                ) result = genParsePolygon          (parse);
     else if (parse.next == STAR                   ) result = genParseStar             (parse);
-    else if (parse.next == TEXTSHAPE              ) result = genParseTextShape        (parse);
+    else if (parse.next == TEXT_SHAPE              ) result = genParseTextShape        (parse);
  
     else if (parse.next == POINT_VALUE            ) result = genParsePointValue       (parse);
     else if (parse.next == POINT                  ) result = genParsePoint            (parse);

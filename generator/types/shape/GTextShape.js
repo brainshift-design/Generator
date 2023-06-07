@@ -20,7 +20,7 @@ extends GShape
 
     constructor(nodeId, options)
     {
-        super(TEXTSHAPE, nodeId, options);
+        super(TEXT_SHAPE, nodeId, options);
     }
 
 

@@ -19,7 +19,7 @@ extends FigmaShape
 
     constructor(nodeId, objectId, objectName, text, x, y, width, height, /*angle,*/ font, style, size, alignH, alignV, lineHeight, letterSpacing)
     {
-        super(TEXTSHAPE, nodeId, objectId, objectName);
+        super(TEXT_SHAPE, nodeId, objectId, objectName);
         
         this.text          = text;
         this.x             = x;

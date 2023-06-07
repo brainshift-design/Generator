@@ -103,7 +103,7 @@ function createNode(nodeType, creatingButton = null, createdNodeId = -1, options
         case ELLIPSE:                 node = new OpEllipse();           break;
         case POLYGON:                 node = new OpPolygon();           break;
         case STAR:                    node = new OpStar();              break;
-        case TEXTSHAPE:               node = new OpTextShape();         break;
+        case TEXT_SHAPE:               node = new OpTextShape();         break;
         case POINT:                   node = new OpPoint();             break;
         case VECTOR_PATH:             node = new OpVectorPath();        break;
         case BOOLEAN:                 node = new OpShapeBoolean();      break;
@@ -792,7 +792,7 @@ function uiUpdateValuesAndObjects(requestId, actionId, updateNodeId, updateParam
                     case      ELLIPSE_VALUE: value = parseEllipseValue     (values[i++])[0];  break;
                     case      POLYGON_VALUE: value = parsePolygonValue     (values[i++])[0];  break;
                     case         STAR_VALUE: value = parseStarValue        (values[i++])[0];  break;
-                    case    TEXTSHAPE_VALUE: value = parseTextShapeValue   (values[i++])[0];  break;
+                    case    TEXT_SHAPE_VALUE: value = parseTextShapeValue   (values[i++])[0];  break;
                     case        POINT_VALUE: value = parsePointValue       (values[i++])[0];  break;
                     case  VECTOR_PATH_VALUE: value = parseVectorPathValue  (values[i++])[0];  break;
                     case      BOOLEAN_VALUE: value = parseShapeBooleanValue(values[i++])[0];  break;

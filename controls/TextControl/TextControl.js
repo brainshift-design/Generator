@@ -147,10 +147,13 @@ extends Control
         super.update();
 
 
-        if (typeof this.value !== 'string')
-            console.assert(false, 'TextControl.update() value is ' + typeof this.value + ', must be a string');
+        if (typeof this.textbox.value !== 'string')
+        {
+            //console.trace();
+            console.assert(false, 'TextControl.update() value is ' + typeof this.textbox.value + ', must be a string');
+        }
 
-            
+
         if (!this.measureData.offsetRect)
             return;
             
@@ -161,7 +164,8 @@ extends Control
             : this.textbox.defPlaceholder;
 
 
-        this.textbox.style.height = '100%';
+        this.textbox.style.height        = '100%';
+        this.textbox.style.pointerEvents = this.readOnly ? 'none' : 'all';
 
 
              if (this.valueText != '')   this.textbox.value = this.valueText;

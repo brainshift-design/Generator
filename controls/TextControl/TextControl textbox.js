@@ -31,6 +31,7 @@ TextControl.prototype.initTextarea = function(textbox)
 
         if (this.readOnly)
         {
+            e.preventDefault();
             e.stopPropagation();
             return;
         }

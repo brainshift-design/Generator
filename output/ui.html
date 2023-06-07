@@ -8481,9 +8481,9 @@ const STAR_VALUE         = 'STAR#';
 const STAR               = 'STAR'; 
 const STAR_TYPES         = [STAR_VALUE, STAR];
   
-const TEXTSHAPE_VALUE    = 'TXTS#';
-const TEXTSHAPE          = 'TXTS'; 
-const TEXTSHAPE_TYPES    = [TEXTSHAPE_VALUE, TEXTSHAPE];
+const TEXT_SHAPE_VALUE    = 'TXTS#';
+const TEXT_SHAPE          = 'TXTS'; 
+const TEXT_SHAPE_TYPES    = [TEXT_SHAPE_VALUE, TEXT_SHAPE];
  
 const POINT              = 'PT';
 const POINT_VALUE        = 'PT#';
@@ -8542,7 +8542,7 @@ const SHAPE_VALUES =
     ELLIPSE_VALUE,
     POLYGON_VALUE,
     STAR_VALUE,
-    TEXTSHAPE_VALUE,
+    TEXT_SHAPE_VALUE,
     POINT_VALUE,
     VECTOR_PATH_VALUE,
     SHAPE_GROUP_VALUE,
@@ -8568,7 +8568,7 @@ const SHAPE_TYPES =
     ...ELLIPSE_TYPES,
     ...POLYGON_TYPES,
     ...STAR_TYPES,
-    ...TEXTSHAPE_TYPES,
+    ...TEXT_SHAPE_TYPES,
     ...POINT_TYPES,
     ...VECTOR_PATH_TYPES,
     ...SHAPE_GROUP_TYPES,
@@ -8609,7 +8609,7 @@ const ALL_VALUES =
          ELLIPSE_VALUE,
          POLYGON_VALUE,
             STAR_VALUE,
-       TEXTSHAPE_VALUE,
+       TEXT_SHAPE_VALUE,
            POINT_VALUE,
      VECTOR_PATH_VALUE,
      SHAPE_GROUP_VALUE,
@@ -8977,7 +8977,7 @@ function copyFigmaObject(obj)
         case ELLIPSE:     return FigmaEllipse   .prototype.copy.call(obj);
         case POLYGON:     return FigmaPolygon   .prototype.copy.call(obj);
         case STAR:        return FigmaStar      .prototype.copy.call(obj);
-        case TEXTSHAPE:   return FigmaText      .prototype.copy.call(obj);
+        case TEXT_SHAPE:   return FigmaText      .prototype.copy.call(obj);
         case POINT:       return FigmaPoint     .prototype.copy.call(obj);
         case VECTOR_PATH: return FigmaVectorPath.prototype.copy.call(obj);
         case BOOLEAN:     return FigmaBoolean   .prototype.copy.call(obj);
@@ -9303,7 +9303,7 @@ extends FigmaShape
 
     constructor(nodeId, objectId, objectName, text, x, y, width, height, /*angle,*/ font, style, size, alignH, alignV, lineHeight, letterSpacing)
     {
-        super(TEXTSHAPE, nodeId, objectId, objectName);
+        super(TEXT_SHAPE, nodeId, objectId, objectName);
         
         this.text          = text;
         this.x             = x;
@@ -10128,7 +10128,7 @@ function displayValue(type, value)
         case     ELLIPSE_VALUE: return parseEllipseValue     (value)[0].toDisplayString();
         case     POLYGON_VALUE: return parsePolygonValue     (value)[0].toDisplayString();
         case        STAR_VALUE: return parseStarValue        (value)[0].toDisplayString();
-        case   TEXTSHAPE_VALUE: return parseTextShapeValue   (value)[0].toDisplayString();
+        case   TEXT_SHAPE_VALUE: return parseTextShapeValue   (value)[0].toDisplayString();
         case       POINT_VALUE: return parsePointValue       (value)[0].toDisplayString();
         case VECTOR_PATH_VALUE: return parseVectorPathValue  (value)[0].toDisplayString();
         case     BOOLEAN_VALUE: return parseShapeBooleanValue(value)[0].toDisplayString();
@@ -10159,7 +10159,7 @@ function nullFromType(type)
         case     ELLIPSE_VALUE: return      EllipseValue.NaN;
         case     POLYGON_VALUE: return      PolygonValue.NaN;
         case        STAR_VALUE: return         StarValue.NaN;
-        case   TEXTSHAPE_VALUE: return    TextShapeValue.NaN;
+        case   TEXT_SHAPE_VALUE: return    TextShapeValue.NaN;
         case       POINT_VALUE: return        PointValue.NaN;
         case VECTOR_PATH_VALUE: return   VectorPathValue.NaN;
         case     BOOLEAN_VALUE: return ShapeBooleanValue.NaN;
@@ -10599,7 +10599,7 @@ function parseListValue(str, i = -1)
             case      ELLIPSE_VALUE: { const ellipse = parseEllipseValue     (str, i);  i += ellipse[1];  list.items.push(ellipse[0]);  break; }
             case      POLYGON_VALUE: { const poly    = parsePolygonValue     (str, i);  i += poly   [1];  list.items.push(poly   [0]);  break; }
             case         STAR_VALUE: { const star    = parseStarValue        (str, i);  i += star   [1];  list.items.push(star   [0]);  break; }
-            case    TEXTSHAPE_VALUE: { const text    = parseTextShapeValue   (str, i);  i += text   [1];  list.items.push(text   [0]);  break; }
+            case    TEXT_SHAPE_VALUE: { const text    = parseTextShapeValue   (str, i);  i += text   [1];  list.items.push(text   [0]);  break; }
             case        POINT_VALUE: { const point   = parsePointValue       (str, i);  i += point  [1];  list.items.push(point  [0]);  break; }
             case  VECTOR_PATH_VALUE: { const path    = parseVectorPathValue  (str, i);  i += path   [1];  list.items.push(path   [0]);  break; }
             case      BOOLEAN_VALUE: { const group   = parseShapeBooleanValue(str, i);  i += group  [1];  list.items.push(group  [0]);  break; }
@@ -10837,12 +10837,14 @@ extends GValue
     {
         super(TEXT_VALUE);
 
+
         if (typeof val !== 'string')
         {
             console.trace();
             console.assert(false, 'TextValue(value) is ' + typeof val + ', must be a string');
         }
 
+        
         this.value = val;
     }
 
@@ -13526,7 +13528,7 @@ extends ShapeValue
                 lineHeight    = new NumberValue(0),
                 letterSpacing = new NumberValue(0))
     {
-        super(TEXTSHAPE_VALUE, nodeId);
+        super(TEXT_SHAPE_VALUE, nodeId);
 
         this.text          = text;
         this.x             = x;
@@ -14348,7 +14350,7 @@ function parseShapeGroupValue(str, i = -1)
             case      ELLIPSE_VALUE: { const ellipse = parseEllipseValue     (str, i);  i += ellipse[1];  group.items.push(ellipse[0]);  break; }
             case      POLYGON_VALUE: { const poly    = parsePolygonValue     (str, i);  i += poly   [1];  group.items.push(poly   [0]);  break; }
             case         STAR_VALUE: { const star    = parseStarValue        (str, i);  i += star   [1];  group.items.push(star   [0]);  break; }
-            case    TEXTSHAPE_VALUE: { const text    = parseTextShapeValue   (str, i);  i += text   [1];  group.items.push(text   [0]);  break; }
+            case    TEXT_SHAPE_VALUE: { const text    = parseTextShapeValue   (str, i);  i += text   [1];  group.items.push(text   [0]);  break; }
             case        POINT_VALUE: { const point   = parsePointValue       (str, i);  i += point  [1];  group.items.push(point  [0]);  break; }
             case  VECTOR_PATH_VALUE: { const path    = parseVectorPathValue  (str, i);  i += path   [1];  group.items.push(path   [0]);  break; }
             case      BOOLEAN_VALUE: { const path    = parseShapeBooleanValue(str, i);  i += path   [1];  group.items.push(path   [0]);  break; }
@@ -25362,7 +25364,7 @@ extends GShape
 
     constructor(nodeId, options)
     {
-        super(TEXTSHAPE, nodeId, options);
+        super(TEXT_SHAPE, nodeId, options);
     }
 
 
@@ -33362,7 +33364,7 @@ function genParse(parse, inParam = true)
     else if (parse.next == ELLIPSE                ) result = genParseEllipse          (parse);
     else if (parse.next == POLYGON                ) result = genParsePolygon          (parse);
     else if (parse.next == STAR                   ) result = genParseStar             (parse);
-    else if (parse.next == TEXTSHAPE              ) result = genParseTextShape        (parse);
+    else if (parse.next == TEXT_SHAPE              ) result = genParseTextShape        (parse);
  
     else if (parse.next == POINT_VALUE            ) result = genParsePointValue       (parse);
     else if (parse.next == POINT                  ) result = genParsePoint            (parse);
@@ -43283,9 +43285,9 @@ const STAR_VALUE         = 'STAR#';
 const STAR               = 'STAR'; 
 const STAR_TYPES         = [STAR_VALUE, STAR];
   
-const TEXTSHAPE_VALUE    = 'TXTS#';
-const TEXTSHAPE          = 'TXTS'; 
-const TEXTSHAPE_TYPES    = [TEXTSHAPE_VALUE, TEXTSHAPE];
+const TEXT_SHAPE_VALUE    = 'TXTS#';
+const TEXT_SHAPE          = 'TXTS'; 
+const TEXT_SHAPE_TYPES    = [TEXT_SHAPE_VALUE, TEXT_SHAPE];
  
 const POINT              = 'PT';
 const POINT_VALUE        = 'PT#';
@@ -43344,7 +43346,7 @@ const SHAPE_VALUES =
     ELLIPSE_VALUE,
     POLYGON_VALUE,
     STAR_VALUE,
-    TEXTSHAPE_VALUE,
+    TEXT_SHAPE_VALUE,
     POINT_VALUE,
     VECTOR_PATH_VALUE,
     SHAPE_GROUP_VALUE,
@@ -43370,7 +43372,7 @@ const SHAPE_TYPES =
     ...ELLIPSE_TYPES,
     ...POLYGON_TYPES,
     ...STAR_TYPES,
-    ...TEXTSHAPE_TYPES,
+    ...TEXT_SHAPE_TYPES,
     ...POINT_TYPES,
     ...VECTOR_PATH_TYPES,
     ...SHAPE_GROUP_TYPES,
@@ -43411,7 +43413,7 @@ const ALL_VALUES =
          ELLIPSE_VALUE,
          POLYGON_VALUE,
             STAR_VALUE,
-       TEXTSHAPE_VALUE,
+       TEXT_SHAPE_VALUE,
            POINT_VALUE,
      VECTOR_PATH_VALUE,
      SHAPE_GROUP_VALUE,
@@ -43779,7 +43781,7 @@ function copyFigmaObject(obj)
         case ELLIPSE:     return FigmaEllipse   .prototype.copy.call(obj);
         case POLYGON:     return FigmaPolygon   .prototype.copy.call(obj);
         case STAR:        return FigmaStar      .prototype.copy.call(obj);
-        case TEXTSHAPE:   return FigmaText      .prototype.copy.call(obj);
+        case TEXT_SHAPE:   return FigmaText      .prototype.copy.call(obj);
         case POINT:       return FigmaPoint     .prototype.copy.call(obj);
         case VECTOR_PATH: return FigmaVectorPath.prototype.copy.call(obj);
         case BOOLEAN:     return FigmaBoolean   .prototype.copy.call(obj);
@@ -44105,7 +44107,7 @@ extends FigmaShape
 
     constructor(nodeId, objectId, objectName, text, x, y, width, height, /*angle,*/ font, style, size, alignH, alignV, lineHeight, letterSpacing)
     {
-        super(TEXTSHAPE, nodeId, objectId, objectName);
+        super(TEXT_SHAPE, nodeId, objectId, objectName);
         
         this.text          = text;
         this.x             = x;
@@ -44930,7 +44932,7 @@ function displayValue(type, value)
         case     ELLIPSE_VALUE: return parseEllipseValue     (value)[0].toDisplayString();
         case     POLYGON_VALUE: return parsePolygonValue     (value)[0].toDisplayString();
         case        STAR_VALUE: return parseStarValue        (value)[0].toDisplayString();
-        case   TEXTSHAPE_VALUE: return parseTextShapeValue   (value)[0].toDisplayString();
+        case   TEXT_SHAPE_VALUE: return parseTextShapeValue   (value)[0].toDisplayString();
         case       POINT_VALUE: return parsePointValue       (value)[0].toDisplayString();
         case VECTOR_PATH_VALUE: return parseVectorPathValue  (value)[0].toDisplayString();
         case     BOOLEAN_VALUE: return parseShapeBooleanValue(value)[0].toDisplayString();
@@ -44961,7 +44963,7 @@ function nullFromType(type)
         case     ELLIPSE_VALUE: return      EllipseValue.NaN;
         case     POLYGON_VALUE: return      PolygonValue.NaN;
         case        STAR_VALUE: return         StarValue.NaN;
-        case   TEXTSHAPE_VALUE: return    TextShapeValue.NaN;
+        case   TEXT_SHAPE_VALUE: return    TextShapeValue.NaN;
         case       POINT_VALUE: return        PointValue.NaN;
         case VECTOR_PATH_VALUE: return   VectorPathValue.NaN;
         case     BOOLEAN_VALUE: return ShapeBooleanValue.NaN;
@@ -45401,7 +45403,7 @@ function parseListValue(str, i = -1)
             case      ELLIPSE_VALUE: { const ellipse = parseEllipseValue     (str, i);  i += ellipse[1];  list.items.push(ellipse[0]);  break; }
             case      POLYGON_VALUE: { const poly    = parsePolygonValue     (str, i);  i += poly   [1];  list.items.push(poly   [0]);  break; }
             case         STAR_VALUE: { const star    = parseStarValue        (str, i);  i += star   [1];  list.items.push(star   [0]);  break; }
-            case    TEXTSHAPE_VALUE: { const text    = parseTextShapeValue   (str, i);  i += text   [1];  list.items.push(text   [0]);  break; }
+            case    TEXT_SHAPE_VALUE: { const text    = parseTextShapeValue   (str, i);  i += text   [1];  list.items.push(text   [0]);  break; }
             case        POINT_VALUE: { const point   = parsePointValue       (str, i);  i += point  [1];  list.items.push(point  [0]);  break; }
             case  VECTOR_PATH_VALUE: { const path    = parseVectorPathValue  (str, i);  i += path   [1];  list.items.push(path   [0]);  break; }
             case      BOOLEAN_VALUE: { const group   = parseShapeBooleanValue(str, i);  i += group  [1];  list.items.push(group  [0]);  break; }
@@ -45639,12 +45641,14 @@ extends GValue
     {
         super(TEXT_VALUE);
 
+
         if (typeof val !== 'string')
         {
             console.trace();
             console.assert(false, 'TextValue(value) is ' + typeof val + ', must be a string');
         }
 
+        
         this.value = val;
     }
 
@@ -48328,7 +48332,7 @@ extends ShapeValue
                 lineHeight    = new NumberValue(0),
                 letterSpacing = new NumberValue(0))
     {
-        super(TEXTSHAPE_VALUE, nodeId);
+        super(TEXT_SHAPE_VALUE, nodeId);
 
         this.text          = text;
         this.x             = x;
@@ -49150,7 +49154,7 @@ function parseShapeGroupValue(str, i = -1)
             case      ELLIPSE_VALUE: { const ellipse = parseEllipseValue     (str, i);  i += ellipse[1];  group.items.push(ellipse[0]);  break; }
             case      POLYGON_VALUE: { const poly    = parsePolygonValue     (str, i);  i += poly   [1];  group.items.push(poly   [0]);  break; }
             case         STAR_VALUE: { const star    = parseStarValue        (str, i);  i += star   [1];  group.items.push(star   [0]);  break; }
-            case    TEXTSHAPE_VALUE: { const text    = parseTextShapeValue   (str, i);  i += text   [1];  group.items.push(text   [0]);  break; }
+            case    TEXT_SHAPE_VALUE: { const text    = parseTextShapeValue   (str, i);  i += text   [1];  group.items.push(text   [0]);  break; }
             case        POINT_VALUE: { const point   = parsePointValue       (str, i);  i += point  [1];  group.items.push(point  [0]);  break; }
             case  VECTOR_PATH_VALUE: { const path    = parseVectorPathValue  (str, i);  i += path   [1];  group.items.push(path   [0]);  break; }
             case      BOOLEAN_VALUE: { const path    = parseShapeBooleanValue(str, i);  i += path   [1];  group.items.push(path   [0]);  break; }
@@ -60164,7 +60168,7 @@ extends GShape
 
     constructor(nodeId, options)
     {
-        super(TEXTSHAPE, nodeId, options);
+        super(TEXT_SHAPE, nodeId, options);
     }
 
 
@@ -65299,10 +65303,13 @@ extends Control
         super.update();
 
 
-        if (typeof this.value !== 'string')
-            console.assert(false, 'TextControl.update() value is ' + typeof this.value + ', must be a string');
+        if (typeof this.textbox.value !== 'string')
+        {
+            //console.trace();
+            console.assert(false, 'TextControl.update() value is ' + typeof this.textbox.value + ', must be a string');
+        }
 
-            
+
         if (!this.measureData.offsetRect)
             return;
             
@@ -65313,7 +65320,8 @@ extends Control
             : this.textbox.defPlaceholder;
 
 
-        this.textbox.style.height = '100%';
+        this.textbox.style.height        = '100%';
+        this.textbox.style.pointerEvents = this.readOnly ? 'none' : 'all';
 
 
              if (this.valueText != '')   this.textbox.value = this.valueText;
@@ -65366,6 +65374,7 @@ TextControl.prototype.initTextarea = function(textbox)
 
         if (this.readOnly)
         {
+            e.preventDefault();
             e.stopPropagation();
             return;
         }
@@ -65699,6 +65708,7 @@ TextControl.prototype.initEvents = function()
         // this.textbox.style.visibility = 'hidden';
         // this.textbox.style.opacity    = 0;
 
+        
         this.update();
 
 
@@ -68599,7 +68609,7 @@ function initGeneratorMenus()
         new MenuItem('Ellipse',     {icon: iconEllipse,    callback: e => actionManager.do(getCreateNodeAction(ELLIPSE,     btnShape.div, getCreateOptions(e)))}),
         new MenuItem('Polygon',     {icon: iconPolygon,    callback: e => actionManager.do(getCreateNodeAction(POLYGON,     btnShape.div, getCreateOptions(e)))}),
         new MenuItem('Star',        {icon: iconStar,       callback: e => actionManager.do(getCreateNodeAction(STAR,        btnShape.div, getCreateOptions(e)))}),
-        new MenuItem('Text',        {icon: iconTextShape,  callback: e => actionManager.do(getCreateNodeAction(TEXTSHAPE,   btnShape.div, getCreateOptions(e)))})]);
+        new MenuItem('Text',        {icon: iconTextShape,  callback: e => actionManager.do(getCreateNodeAction(TEXT_SHAPE,   btnShape.div, getCreateOptions(e)))})]);
 
 
     menuTransform = new Menu('Transform', true, false);
@@ -72647,10 +72657,7 @@ extends Parameter
         else if (this.output
               && this.output.paramNode
               && this.output.paramNode.inputs[0].connected)
-        {
             request.push(...pushInputOrParam(this.output.paramNode.inputs[0], gen));
-            //request.push(...this.output.paramNode.inputs[0].connectedOutput.genRequest(gen));
-        }
 
         else request.push(
             NUMBER_VALUE, 
@@ -73273,9 +73280,9 @@ extends Parameter
 
         return pos 
             + '["' 
-                + this.type  + '", "' 
-                + id         + '", "' 
-                + value      + '", "' 
+                + this.type + '", "' 
+                + id        + '", "' 
+                + value     + '", "' 
                 + this.controls[0].getTextAlignment()
             + '"]';
     }
@@ -74334,6 +74341,12 @@ extends Parameter
         checkControlVisible(this, this.controls[0]);
         
 
+        this.div.style.background = 
+            darkMode 
+            ? this.backStyleDark 
+            : this.backStyleLight;
+
+
         enableElementText(this.controls[0].div, false);
 
         this.controls[0].readOnly = true;
@@ -74401,7 +74414,7 @@ extends Parameter
     //controlWrapper;
 
 
-    text;
+    divValue;
 
    
     
@@ -74443,22 +74456,22 @@ extends Parameter
         this.value                                  = defaultValue;
 
 
-        this.text                                   = createDiv();
+        this.divValue                               = createDiv();
 
-        this.text.style.position                    = 'absolute';
-        this.text.style.left                        = 0;
-        this.text.style.top                         = 0;
-        this.text.style.width                       = '100%';
-        this.text.style.height                      = defParamHeight - 4;
-        this.text.style.background                  = 'transparent';
-        this.text.style.fontFamily                  = 'Inter';
-        this.text.style.fontSize                    = 11;
-        this.text.style.fontWeight                  = '600';
-        this.text.style.fontStyle                   = 'italic';
-        this.text.style.textAlign                   = 'center';
-        this.text.style.paddingTop                  = '4px';
+        this.divValue.style.position                = 'absolute';
+        this.divValue.style.left                    = 0;
+        this.divValue.style.top                     = 0;
+        this.divValue.style.width                   = '100%';
+        this.divValue.style.height                  = defParamHeight - 4;
+        this.divValue.style.background              = 'transparent';
+        this.divValue.style.fontFamily              = 'Inter';
+        this.divValue.style.fontSize                = 11;
+        this.divValue.style.fontWeight              = '600';
+        this.divValue.style.fontStyle               = 'italic';
+        this.divValue.style.textAlign               = 'center';
+        this.divValue.style.paddingTop              = '4px';
 
-        this.text.addEventListener('pointerdown', e => 
+        this.divValue.addEventListener('pointerdown', e => 
         {
             if (e.button != 1) 
                 e.stopPropagation();
@@ -74512,7 +74525,7 @@ extends Parameter
 
         //this.div.appendChild(this.controlWrapper);
 
-        this.div.appendChild(this.text);
+        this.divControls.appendChild(this.divValue);
 
        
         if (hasInput)  this.initInput([STROKE_VALUE, FILL_VALUE, COLOR_VALUE], getParamInputValuesForUndo, this.input_getBackInitValue);
@@ -74669,9 +74682,9 @@ extends Parameter
         this.div.style.background = 'transparent';//noColorStyle(rgba);
 
 
-        this.text.innerHTML = 'stroke ' + this.value.weight.value;
+        this.divValue.innerHTML = 'stroke ' + this.value.weight.value;
 
-        this.text.style.color = rgba2style(rgbaText);
+        this.divValue.style.color = rgba2style(rgbaText);
 
 
         if (this.input)
@@ -74876,12 +74889,14 @@ extends Parameter
             showName,
             ''));
 
-        this.controls[0].textbox.style.textAlign  = 'center';
+        this.controls[0].textbox.style.textAlign     = 'center';
+        this.controls[0].readOnly                    = true;
    
-        this.div.appendChild(this.controls[0].div);
+        
+        this.divControls.appendChild(this.controls[0].div);
 
        
-        if (hasInput)  this.initInput([LIST_VALUE], getParamInputValuesForUndo, this.input_getBackInitValue);
+        if (hasInput)  this.initInput ([LIST_VALUE], getParamInputValuesForUndo, this.input_getBackInitValue);
         if (hasOutput) this.initOutput([LIST_VALUE], this.output_genRequest, getParamOutputValuesForUndo, this.output_backInit);
     }
 
@@ -74990,7 +75005,14 @@ extends Parameter
         checkControlVisible(this, this.controls[0]);
         
 
+        this.div.style.background = 
+            darkMode 
+            ? this.backStyleDark 
+            : this.backStyleLight;
+
+
         enableElementText(this.controls[0].div, false);
+
 
         this.controls[0].readOnly = true;
         
@@ -75007,9 +75029,12 @@ extends Parameter
                       || this.listTypes.includes(i.type))
                   .length;
 
-        this.controls[0].textbox.value = 
-              (nItems != 0 || this.showZero ? nItems + ' ' : '') 
-            + countString(nItems, this.itemName);
+        const value =
+              ((nItems != 0 || this.showZero) ? (nItems + ' ') : '') 
+            +  countString(nItems, this.itemName);
+
+
+        this.controls[0].textbox.value = value;
 
 
         if (this.input ) this.input .updateControl();
@@ -75063,10 +75088,10 @@ extends Parameter
 
         this.controls[0].textbox.style.textAlign = 'center';
    
-        this.div.appendChild(this.controls[0].div);
+        this.divControls.appendChild(this.controls[0].div);
 
        
-        if (hasInput)  this.initInput([RECTANGLE_VALUE], getParamInputValuesForUndo, this.input_getBackInitValue);
+        if (hasInput)  this.initInput ([RECTANGLE_VALUE], getParamInputValuesForUndo, this.input_getBackInitValue);
         if (hasOutput) this.initOutput([RECTANGLE_VALUE], this.output_genRequest, getParamOutputValuesForUndo, this.output_backInit);
     }
 
@@ -75085,7 +75110,7 @@ extends Parameter
     {
         // 'this' is the output
 
-        console.assert(value.type == RECTANGLE_VALUE, 'expected RECTANGLE_VALUE in backInit()');
+        console.assert(value.type == RECTANGLE_VALUE, 'expected ' + RECTANGLE_VALUE + 'in backInit()');
         
         this.param.setValue(value, false, true, false);
     }
@@ -75169,6 +75194,12 @@ extends Parameter
         checkControlVisible(this, this.controls[0]);
         
 
+        this.div.style.background = 
+            darkMode 
+            ? this.backStyleDark 
+            : this.backStyleLight;
+
+
         enableElementText(this.controls[0].div, false);
 
         this.controls[0].readOnly = true;
@@ -75176,7 +75207,7 @@ extends Parameter
         this.controls[0].textbox.style.fontStyle  = 'italic';
         this.controls[0].textbox.style.fontWeight = '500';
 
-        this.controls[0].textbox.value            = 'rectangle';
+        this.controls[0].textbox.innerHTML        = 'rectangle';
 
 
         if (this.input ) this.input .updateControl();
@@ -75230,7 +75261,7 @@ extends Parameter
 
         this.controls[0].textbox.style.textAlign = 'center';
    
-        this.div.appendChild(this.controls[0].div);
+        this.divControls.appendChild(this.controls[0].div);
 
        
         if (hasInput)  this.initInput([LINE_VALUE], getParamInputValuesForUndo, this.input_getBackInitValue);
@@ -75336,6 +75367,12 @@ extends Parameter
         checkControlVisible(this, this.controls[0]);
         
 
+        this.div.style.background = 
+            darkMode 
+            ? this.backStyleDark 
+            : this.backStyleLight;
+
+
         enableElementText(this.controls[0].div, false);
 
         this.controls[0].readOnly = true;
@@ -75397,7 +75434,7 @@ extends Parameter
 
         this.controls[0].textbox.style.textAlign = 'center';
    
-        this.div.appendChild(this.controls[0].div);
+        this.divControls.appendChild(this.controls[0].div);
 
        
         if (hasInput)  this.initInput([ELLIPSE_VALUE], getParamInputValuesForUndo, this.input_getBackInitValue);
@@ -75503,6 +75540,12 @@ extends Parameter
         checkControlVisible(this, this.controls[0]);
         
 
+        this.div.style.background = 
+            darkMode 
+            ? this.backStyleDark 
+            : this.backStyleLight;
+
+
         enableElementText(this.controls[0].div, false);
 
         this.controls[0].readOnly = true;
@@ -75564,7 +75607,7 @@ extends Parameter
 
         this.controls[0].textbox.style.textAlign = 'center';
    
-        this.div.appendChild(this.controls[0].div);
+        this.divControls.appendChild(this.controls[0].div);
 
        
         if (hasInput)  this.initInput([POLYGON_VALUE], getParamInputValuesForUndo, this.input_getBackInitValue);
@@ -75670,6 +75713,12 @@ extends Parameter
         checkControlVisible(this, this.controls[0]);
         
 
+        this.div.style.background = 
+            darkMode 
+            ? this.backStyleDark 
+            : this.backStyleLight;
+
+
         enableElementText(this.controls[0].div, false);
 
         this.controls[0].readOnly = true;
@@ -75731,7 +75780,7 @@ extends Parameter
 
         this.controls[0].textbox.style.textAlign = 'center';
    
-        this.div.appendChild(this.controls[0].div);
+        this.divControls.appendChild(this.controls[0].div);
 
        
         if (hasInput)  this.initInput([STAR_VALUE], getParamInputValuesForUndo, this.input_getBackInitValue);
@@ -75837,6 +75886,12 @@ extends Parameter
         checkControlVisible(this, this.controls[0]);
         
 
+        this.div.style.background = 
+            darkMode 
+            ? this.backStyleDark 
+            : this.backStyleLight;
+
+
         enableElementText(this.controls[0].div, false);
 
         this.controls[0].readOnly = true;
@@ -75864,7 +75919,177 @@ extends Parameter
 }
 
 
+class   TextShapeParam
+extends Parameter
+{
+    defaultValue;
 
+    oldValue = null;
+    
+
+    value;
+    
+
+    
+    constructor(id,
+                name, 
+                showName,
+                hasInput,
+                hasOutput,
+                defaultValue = new TextShapeValue())
+    {
+        super(TEXT_SHAPE_VALUE, id, name);
+
+        this.defaultValue = defaultValue;
+        this.value        = defaultValue;
+
+
+        this.controls.push(new TextControl(
+            this,
+            this.id,
+            this.name,
+            showName,
+            ''));
+
+        this.controls[0].textbox.style.textAlign = 'center';
+   
+        this.divControls.appendChild(this.controls[0].div);
+
+       
+        if (hasInput)  this.initInput ([TEXT_SHAPE_VALUE], getParamInputValuesForUndo, this.input_getBackInitValue);
+        if (hasOutput) this.initOutput([TEXT_SHAPE_VALUE], this.output_genRequest, getParamOutputValuesForUndo, this.output_backInit);
+    }
+
+
+
+    input_getBackInitValue()
+    {
+        // 'this' is the input
+
+        return this.param.value;
+    }
+
+
+
+    output_backInit(value)
+    {
+        // 'this' is the output
+
+        console.assert(value.type == TEXT_SHAPE_VALUE, 'expected TEXT_SHAPE_VALUE in backInit()');
+        
+        this.param.setValue(value, false, true, false);
+    }
+
+
+
+    setValue(value, createAction, updateControl = true, dispatchEvents = true) 
+    {
+        if (!(value instanceof TextShapeValue))
+            console.assert(false, 'TextShapeParam.setValue(value) is ' + typeof value + ', must be a TextShapeValue');
+
+        console.assert(
+               value.type 
+            && value.type == TEXT_SHAPE_VALUE, 
+            'TextShapeParam value.type must be TEXT_SHAPE_VALUE');
+
+
+        this.preSetValue(value, createAction, dispatchEvents);
+
+
+        this.value = value.copy();
+
+
+        super.setValue(this.value, createAction, updateControl, dispatchEvents);
+
+
+        this.oldValue = this.value;
+    }    
+
+
+
+    isVisible()
+    {
+        return this.controls[0].div.style.display != 'none';
+    }
+
+
+
+    genRequest(gen)
+    {
+        // this function exists because a parameter without an output
+        // should still be able to generate a request
+        
+        // 'this' is the param
+
+        if (    this.output
+            && !isEmpty(this.output.cache)
+            &&  gen.passedNodes.includes(this.node))
+            return this.output.cache;
+
+
+        const request = [];
+
+        if (   this.input
+            && this.input.connected)
+        {
+            if (this.input.connectedOutput.supportsTypes([TEXT_SHAPE_VALUE]))
+                request.push(...pushInputOrParam(this.input, gen));
+            else
+                console.assert(false, 'invalid input for TextShapeParam (' + this.node.id + ')');
+        }
+
+        else request.push( 
+            TEXT_SHAPE_VALUE, 
+            (new TextShapeValue()).toString());
+
+        return request;
+    }
+
+
+
+    output_genRequest(gen)
+    {
+        return this.param.genRequest(gen);
+    }
+
+
+
+    updateControls()
+    {
+        checkControlVisible(this, this.controls[0]);
+        
+
+        this.div.style.background = 
+            darkMode 
+            ? this.backStyleDark 
+            : this.backStyleLight;
+
+
+        enableElementText(this.controls[0].div, false);
+
+        this.controls[0].readOnly = true;
+        
+        this.controls[0].textbox.style.fontStyle  = 'italic';
+        this.controls[0].textbox.style.fontWeight = '500';
+
+        this.controls[0].textbox.value            = 'text';
+
+
+        if (this.input ) this.input .updateControl();
+        if (this.output) this.output.updateControl();
+    }
+
+
+
+    isDefault = () => this.value.equals(this.defaultValue);
+
+
+
+    loadParam(_param)
+    {
+        this.setValue(parseTextShapeValue(_param[2])[0], true, true, false);
+    }
+}
 
 
 class   PointParam
@@ -75903,7 +76128,7 @@ extends Parameter
 
         this.controls[0].textbox.style.textAlign = 'center';
        
-        this.div.appendChild(this.controls[0].div);
+        this.divControls.appendChild(this.controls[0].div);
 
        
         if (hasInput)  this.initInput([POINT_VALUE], getParamInputValuesForUndo, this.input_getBackInitValue);
@@ -76009,6 +76234,12 @@ extends Parameter
         checkControlVisible(this, this.controls[0]);
         
 
+        this.div.style.background = 
+            darkMode 
+            ? this.backStyleDark 
+            : this.backStyleLight;
+
+
         enableElementText(this.controls[0].div, false);
 
         
@@ -76074,7 +76305,7 @@ extends Parameter
 
         this.controls[0].textbox.style.textAlign = 'center';
    
-        this.div.appendChild(this.controls[0].div);
+        this.divControls.appendChild(this.controls[0].div);
 
        
         if (hasInput)  this.initInput([VECTOR_PATH_VALUE], getParamInputValuesForUndo, this.input_getBackInitValue);
@@ -76180,6 +76411,12 @@ extends Parameter
         checkControlVisible(this, this.controls[0]);
         
 
+        this.div.style.background = 
+            darkMode 
+            ? this.backStyleDark 
+            : this.backStyleLight;
+
+
         enableElementText(this.controls[0].div, false);
 
         this.controls[0].readOnly = true;
@@ -76187,7 +76424,7 @@ extends Parameter
         this.controls[0].textbox.style.fontStyle  = 'italic';
         this.controls[0].textbox.style.fontWeight = '500';
 
-        this.controls[0].textbox.value            = 'rectangle';
+        this.controls[0].textbox.value            = 'vector path';
 
 
         if (this.input ) this.input .updateControl();
@@ -77722,7 +77959,7 @@ function parseConnectionJsonAndConnect(_conn, pasteConnected)
         || !isDigit(inputId[0]) && !inputNode.params.find(p => p.id == inputId && p.input))
     {
         uiError(
-            'Cannot connect ' + connToString(_conn),
+           'Cannot connect ' + connToString(_conn),
             {
                 buttonText:   'Remove connection',
                 buttonAction: 'removeConnection,' + getStorageConnKey(_conn)
@@ -78751,22 +78988,22 @@ class Operator
 
     createAndAddParamByType(type, id, showName, hasInput, hasOutput, volatile = false)
     {
-             if (type ==      NUMBER_VALUE) return this.addParam(new     NumberParam(id, id, showName, hasInput, hasOutput), volatile);
-        else if (type ==        TEXT_VALUE) return this.addParam(new       TextParam(id, id, showName, hasInput, hasOutput), volatile);
-        else if (type ==       COLOR_VALUE) return this.addParam(new      ColorParam(id, id, showName, hasInput, hasOutput), volatile);
-        else if (type ==        FILL_VALUE) return this.addParam(new       FillParam(id, id, showName, hasInput, hasOutput), volatile);
-        else if (type ==  COLOR_STOP_VALUE) return this.addParam(new  ColorStopParam(id, id, showName, hasInput, hasOutput), volatile);
-        else if (type ==    GRADIENT_VALUE) return this.addParam(new   GradientParam(id, id, showName, hasInput, hasOutput), volatile);
-        else if (type ==      STROKE_VALUE) return this.addParam(new     StrokeParam(id, id, showName, hasInput, hasOutput), volatile);
-        else if (type ==        LIST_VALUE) return this.addParam(new       ListParam(id, id, showName, hasInput, hasOutput), volatile);
-        else if (type ==   RECTANGLE_VALUE) return this.addParam(new  RectangleParam(id, id, showName, hasInput, hasOutput), volatile);
-        else if (type ==        LINE_VALUE) return this.addParam(new       LineParam(id, id, showName, hasInput, hasOutput), volatile);
-        else if (type ==     ELLIPSE_VALUE) return this.addParam(new    EllipseParam(id, id, showName, hasInput, hasOutput), volatile);
-        else if (type ==     POLYGON_VALUE) return this.addParam(new    PolygonParam(id, id, showName, hasInput, hasOutput), volatile);
-        else if (type ==        STAR_VALUE) return this.addParam(new       StarParam(id, id, showName, hasInput, hasOutput), volatile);
-        else if (type ==   TEXTSHAPE_VALUE) return this.addParam(new  TextShapeParam(id, id, showName, hasInput, hasOutput), volatile);
-        else if (type ==       POINT_VALUE) return this.addParam(new      PointParam(id, id, showName, hasInput, hasOutput), volatile);
-        else if (type == VECTOR_PATH_VALUE) return this.addParam(new VectorPathParam(id, id, showName, hasInput, hasOutput), volatile);
+             if (type ==       NUMBER_VALUE) return this.addParam(new     NumberParam(id, id, showName, hasInput, hasOutput), volatile);
+        else if (type ==         TEXT_VALUE) return this.addParam(new       TextParam(id, id, showName, hasInput, hasOutput), volatile);
+        else if (type ==        COLOR_VALUE) return this.addParam(new      ColorParam(id, id, showName, hasInput, hasOutput), volatile);
+        else if (type ==         FILL_VALUE) return this.addParam(new       FillParam(id, id, showName, hasInput, hasOutput), volatile);
+        else if (type ==   COLOR_STOP_VALUE) return this.addParam(new  ColorStopParam(id, id, showName, hasInput, hasOutput), volatile);
+        else if (type ==     GRADIENT_VALUE) return this.addParam(new   GradientParam(id, id, showName, hasInput, hasOutput), volatile);
+        else if (type ==       STROKE_VALUE) return this.addParam(new     StrokeParam(id, id, showName, hasInput, hasOutput), volatile);
+        else if (type ==         LIST_VALUE) return this.addParam(new       ListParam(id, id, showName, hasInput, hasOutput), volatile);
+        else if (type ==    RECTANGLE_VALUE) return this.addParam(new  RectangleParam(id, id, showName, hasInput, hasOutput), volatile);
+        else if (type ==         LINE_VALUE) return this.addParam(new       LineParam(id, id, showName, hasInput, hasOutput), volatile);
+        else if (type ==      ELLIPSE_VALUE) return this.addParam(new    EllipseParam(id, id, showName, hasInput, hasOutput), volatile);
+        else if (type ==      POLYGON_VALUE) return this.addParam(new    PolygonParam(id, id, showName, hasInput, hasOutput), volatile);
+        else if (type ==         STAR_VALUE) return this.addParam(new       StarParam(id, id, showName, hasInput, hasOutput), volatile);
+        else if (type ==   TEXT_SHAPE_VALUE) return this.addParam(new  TextShapeParam(id, id, showName, hasInput, hasOutput), volatile);
+        else if (type ==        POINT_VALUE) return this.addParam(new      PointParam(id, id, showName, hasInput, hasOutput), volatile);
+        else if (type ==  VECTOR_PATH_VALUE) return this.addParam(new VectorPathParam(id, id, showName, hasInput, hasOutput), volatile);
 
         else console.assert(false, 'cannot add parameter of type \'' + type + '\'');
 
@@ -78777,22 +79014,22 @@ class Operator
 
     createAndInsertParamByType(index, type, id, showName, hasInput, hasOutput, volatile = false)
     {
-             if (type ==      NUMBER_VALUE) return this.insertParam(index, new     NumberParam(id, id, showName, hasInput, hasOutput), volatile);
-        else if (type ==        TEXT_VALUE) return this.insertParam(index, new       TextParam(id, id, showName, hasInput, hasOutput), volatile);
-        else if (type ==       COLOR_VALUE) return this.insertParam(index, new      ColorParam(id, id, showName, hasInput, hasOutput), volatile);
-        else if (type ==        FILL_VALUE) return this.insertParam(index, new       FillParam(id, id, showName, hasInput, hasOutput), volatile);
-        else if (type ==  COLOR_STOP_VALUE) return this.insertParam(index, new  ColorStopParam(id, id, showName, hasInput, hasOutput), volatile);
-        else if (type ==    GRADIENT_VALUE) return this.insertParam(index, new   GradientParam(id, id, showName, hasInput, hasOutput), volatile);
-        else if (type ==      STROKE_VALUE) return this.insertParam(index, new     StrokeParam(id, id, showName, hasInput, hasOutput), volatile);
-        else if (type ==        LIST_VALUE) return this.insertParam(index, new       ListParam(id, id, showName, hasInput, hasOutput), volatile);
-        else if (type ==   RECTANGLE_VALUE) return this.insertParam(index, new  RectangleParam(id, id, showName, hasInput, hasOutput), volatile);
-        else if (type ==        LINE_VALUE) return this.insertParam(index, new       LineParam(id, id, showName, hasInput, hasOutput), volatile);
-        else if (type ==     ELLIPSE_VALUE) return this.insertParam(index, new    EllipseParam(id, id, showName, hasInput, hasOutput), volatile);
-        else if (type ==     POLYGON_VALUE) return this.insertParam(index, new    PolygonParam(id, id, showName, hasInput, hasOutput), volatile);
-        else if (type ==        STAR_VALUE) return this.insertParam(index, new       StarParam(id, id, showName, hasInput, hasOutput), volatile);
-        else if (type ==   TEXTSHAPE_VALUE) return this.insertParam(index, new  TextShapeParam(id, id, showName, hasInput, hasOutput), volatile);
-        else if (type ==       POINT_VALUE) return this.insertParam(index, new      PointParam(id, id, showName, hasInput, hasOutput), volatile);
-        else if (type == VECTOR_PATH_VALUE) return this.insertParam(index, new VectorPathParam(id, id, showName, hasInput, hasOutput), volatile);
+             if (type ==       NUMBER_VALUE) return this.insertParam(index, new     NumberParam(id, id, showName, hasInput, hasOutput), volatile);
+        else if (type ==         TEXT_VALUE) return this.insertParam(index, new       TextParam(id, id, showName, hasInput, hasOutput), volatile);
+        else if (type ==        COLOR_VALUE) return this.insertParam(index, new      ColorParam(id, id, showName, hasInput, hasOutput), volatile);
+        else if (type ==         FILL_VALUE) return this.insertParam(index, new       FillParam(id, id, showName, hasInput, hasOutput), volatile);
+        else if (type ==   COLOR_STOP_VALUE) return this.insertParam(index, new  ColorStopParam(id, id, showName, hasInput, hasOutput), volatile);
+        else if (type ==     GRADIENT_VALUE) return this.insertParam(index, new   GradientParam(id, id, showName, hasInput, hasOutput), volatile);
+        else if (type ==       STROKE_VALUE) return this.insertParam(index, new     StrokeParam(id, id, showName, hasInput, hasOutput), volatile);
+        else if (type ==         LIST_VALUE) return this.insertParam(index, new       ListParam(id, id, showName, hasInput, hasOutput), volatile);
+        else if (type ==    RECTANGLE_VALUE) return this.insertParam(index, new  RectangleParam(id, id, showName, hasInput, hasOutput), volatile);
+        else if (type ==         LINE_VALUE) return this.insertParam(index, new       LineParam(id, id, showName, hasInput, hasOutput), volatile);
+        else if (type ==      ELLIPSE_VALUE) return this.insertParam(index, new    EllipseParam(id, id, showName, hasInput, hasOutput), volatile);
+        else if (type ==      POLYGON_VALUE) return this.insertParam(index, new    PolygonParam(id, id, showName, hasInput, hasOutput), volatile);
+        else if (type ==         STAR_VALUE) return this.insertParam(index, new       StarParam(id, id, showName, hasInput, hasOutput), volatile);
+        else if (type ==   TEXT_SHAPE_VALUE) return this.insertParam(index, new  TextShapeParam(id, id, showName, hasInput, hasOutput), volatile);
+        else if (type ==        POINT_VALUE) return this.insertParam(index, new      PointParam(id, id, showName, hasInput, hasOutput), volatile);
+        else if (type ==  VECTOR_PATH_VALUE) return this.insertParam(index, new VectorPathParam(id, id, showName, hasInput, hasOutput), volatile);
 
         else console.assert(false, 'cannot insert parameter of type \'' + type + '\'');
 
@@ -84228,7 +84465,6 @@ extends OperatorWithValue
 
         this.btnPlay.addEventListener('pointerenter', e => 
         { 
-            console.log('pointerenter');
             this.btnPlay.over = true;  
             this.updateHeader(); 
         });
@@ -91674,14 +91910,14 @@ extends OpShape
     
     constructor()
     {
-        super(TEXTSHAPE, 'text', 'text', iconTextShape);
+        super(TEXT_SHAPE, 'text', 'text', iconTextShape);
 
         this.canDisable  = true;
         this.iconOffsetY = -1;
         
 
-        this.addInput (this.createInputForObjects([TEXTSHAPE_VALUE], getNodeInputValuesForUndo));
-        this.addOutput(new Output([TEXTSHAPE_VALUE], this.output_genRequest));
+        this.addInput (this.createInputForObjects([TEXT_SHAPE_VALUE], getNodeInputValuesForUndo));
+        this.addOutput(new Output([TEXT_SHAPE_VALUE], this.output_genRequest));
 
 
         const interIndex = figUniqueFontNames.findIndex(f => f == 'Inter');
@@ -91882,7 +92118,7 @@ extends OpShape
         this.addOutput(new Output([VECTOR_PATH_VALUE], this.output_genRequest));
 
 
-        this.addParam(this.paramPoints  = new ListParam  ('points',  'points',  true,  true, true));
+        this.addParam(this.paramPoints  = new ListParam  ('points',  'points',  false, true, true));
         this.addParam(this.paramClosed  = new SelectParam('closed',  'closed',  false, true, true, ['open', 'closed'], 0));
         this.addParam(this.paramDegree  = new SelectParam('degree',  'degree',  false, true, true, ['linear', 'quadratic', 'cubic', 'smooth', 'sine X', 'sine Y'], 3));
         this.addParam(this.paramWinding = new SelectParam('winding', 'winding', false, true, true, ['even-odd', 'non-zero']));
@@ -93563,7 +93799,7 @@ extends OperatorBase
         this.div    .style.width   = 
         this.textbox.style.width   = width + 'px';
 
-        this.textbox.style.height  = this.div.offsetHeight;
+        this.textbox.style.height  =  this.div.offsetHeight;
         this.textbox.style.padding = '0';
         this.textbox.style.margin  = '0';
     }
@@ -93587,10 +93823,10 @@ extends OperatorBase
 
         if (this.selected)
         {
-            this.label.style.color        = 'var(--figma-color-bg-brand)';//rgb2style_a(hex2rgb(colFigmaBlue), 0.7);
-            this.label.style.textShadow   = '0 0 0 var(--figma-color-bg-brand)';// + colFigmaBlue;
+            this.label.style.color        = 'var(--figma-color-bg-brand)';
+            this.label.style.textShadow   = '0 0 0 var(--figma-color-bg-brand)';
 
-            this.textbox.style.color      = rgb2style_a(hex2rgb(colFigmaBlue), 0.7);
+            this.textbox.style.color      =  rgb2style_a(hex2rgb(colFigmaBlue), 0.7);
             this.textbox.style.textShadow = '0 0 0 ' + colFigmaBlue;
         }
         else
@@ -101063,6 +101299,15 @@ function resolveNodes(_nodes, first, last, nodes, pasting)
 
 function resolveConnections(nodes, _connections, first, last)
 {
+    _connections.sort((c1, c2) =>
+    {
+        if (c1.outputOrder != c2.outputOrder) return c1.outputOrder - c2.outputOrder;
+        if (c1.inputNodeId != c2.inputNodeId) return c1.inputNodeId - c2.inputNodeId;
+        if (c1.inputId     != c2.inputId    ) return c1.inputId     - c2.inputId;
+        return 0;
+    });
+
+
     return new Promise(resolve => 
         requestAnimationFrame(() => 
         {
@@ -101079,7 +101324,7 @@ function resolveConnections(nodes, _connections, first, last)
                 if (!outputNode)
                 { 
                     uiError(
-                        'Cannot connect  ' + strConn + ',  \'' + _conn.outputNodeId + '\' not found', 
+                        '(no output) Cannot connect  ' + strConn + ',  \'' + _conn.outputNodeId + '\' not found', 
                         {
                             buttonText:   'Remove connection',
                             buttonAction: 'removeConnection,' + getStorageConnKey(_conn)
@@ -101091,7 +101336,7 @@ function resolveConnections(nodes, _connections, first, last)
                 if (!inputNode) 
                 { 
                     uiError(
-                        'Cannot connect  ' + strConn + ',  \'' + _conn.inputNodeId + '\' not found',
+                        '(no input) Cannot connect  ' + strConn + ',  \'' + _conn.inputNodeId + '\' not found',
                         {
                             buttonText:   'Remove connection',
                             buttonAction: 'removeConnection,' + getStorageConnKey(_conn)
@@ -101155,7 +101400,7 @@ function parseConnectionsAndConnect(data, pasteConnected, setProgress = null)
         return 0;
     });
 
-
+    
     const connections = [];
     
     for (let i = 0; i < data.connections.length; i++)
@@ -101613,7 +101858,7 @@ function createNode(nodeType, creatingButton = null, createdNodeId = -1, options
         case ELLIPSE:                 node = new OpEllipse();           break;
         case POLYGON:                 node = new OpPolygon();           break;
         case STAR:                    node = new OpStar();              break;
-        case TEXTSHAPE:               node = new OpTextShape();         break;
+        case TEXT_SHAPE:               node = new OpTextShape();         break;
         case POINT:                   node = new OpPoint();             break;
         case VECTOR_PATH:             node = new OpVectorPath();        break;
         case BOOLEAN:                 node = new OpShapeBoolean();      break;
@@ -102302,7 +102547,7 @@ function uiUpdateValuesAndObjects(requestId, actionId, updateNodeId, updateParam
                     case      ELLIPSE_VALUE: value = parseEllipseValue     (values[i++])[0];  break;
                     case      POLYGON_VALUE: value = parsePolygonValue     (values[i++])[0];  break;
                     case         STAR_VALUE: value = parseStarValue        (values[i++])[0];  break;
-                    case    TEXTSHAPE_VALUE: value = parseTextShapeValue   (values[i++])[0];  break;
+                    case    TEXT_SHAPE_VALUE: value = parseTextShapeValue   (values[i++])[0];  break;
                     case        POINT_VALUE: value = parsePointValue       (values[i++])[0];  break;
                     case  VECTOR_PATH_VALUE: value = parseVectorPathValue  (values[i++])[0];  break;
                     case      BOOLEAN_VALUE: value = parseShapeBooleanValue(values[i++])[0];  break;

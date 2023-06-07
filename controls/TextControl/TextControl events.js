@@ -85,6 +85,7 @@ TextControl.prototype.initEvents = function()
         // this.textbox.style.visibility = 'hidden';
         // this.textbox.style.opacity    = 0;
 
+        
         this.update();
 
 

@@ -112,7 +112,7 @@ function displayValue(type, value)
         case     ELLIPSE_VALUE: return parseEllipseValue     (value)[0].toDisplayString();
         case     POLYGON_VALUE: return parsePolygonValue     (value)[0].toDisplayString();
         case        STAR_VALUE: return parseStarValue        (value)[0].toDisplayString();
-        case   TEXTSHAPE_VALUE: return parseTextShapeValue   (value)[0].toDisplayString();
+        case   TEXT_SHAPE_VALUE: return parseTextShapeValue   (value)[0].toDisplayString();
         case       POINT_VALUE: return parsePointValue       (value)[0].toDisplayString();
         case VECTOR_PATH_VALUE: return parseVectorPathValue  (value)[0].toDisplayString();
         case     BOOLEAN_VALUE: return parseShapeBooleanValue(value)[0].toDisplayString();
@@ -143,7 +143,7 @@ function nullFromType(type)
         case     ELLIPSE_VALUE: return      EllipseValue.NaN;
         case     POLYGON_VALUE: return      PolygonValue.NaN;
         case        STAR_VALUE: return         StarValue.NaN;
-        case   TEXTSHAPE_VALUE: return    TextShapeValue.NaN;
+        case   TEXT_SHAPE_VALUE: return    TextShapeValue.NaN;
         case       POINT_VALUE: return        PointValue.NaN;
         case VECTOR_PATH_VALUE: return   VectorPathValue.NaN;
         case     BOOLEAN_VALUE: return ShapeBooleanValue.NaN;

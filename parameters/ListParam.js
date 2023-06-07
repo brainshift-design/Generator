@@ -41,12 +41,14 @@ extends Parameter
             showName,
             ''));
 
-        this.controls[0].textbox.style.textAlign  = 'center';
+        this.controls[0].textbox.style.textAlign     = 'center';
+        this.controls[0].readOnly                    = true;
    
-        this.div.appendChild(this.controls[0].div);
+        
+        this.divControls.appendChild(this.controls[0].div);
 
        
-        if (hasInput)  this.initInput([LIST_VALUE], getParamInputValuesForUndo, this.input_getBackInitValue);
+        if (hasInput)  this.initInput ([LIST_VALUE], getParamInputValuesForUndo, this.input_getBackInitValue);
         if (hasOutput) this.initOutput([LIST_VALUE], this.output_genRequest, getParamOutputValuesForUndo, this.output_backInit);
     }
 
@@ -155,7 +157,14 @@ extends Parameter
         checkControlVisible(this, this.controls[0]);
         
 
+        this.div.style.background = 
+            darkMode 
+            ? this.backStyleDark 
+            : this.backStyleLight;
+
+
         enableElementText(this.controls[0].div, false);
+
 
         this.controls[0].readOnly = true;
         
@@ -172,9 +181,12 @@ extends Parameter
                       || this.listTypes.includes(i.type))
                   .length;
 
-        this.controls[0].textbox.value = 
-              (nItems != 0 || this.showZero ? nItems + ' ' : '') 
-            + countString(nItems, this.itemName);
+        const value =
+              ((nItems != 0 || this.showZero) ? (nItems + ' ') : '') 
+            +  countString(nItems, this.itemName);
+
+
+        this.controls[0].textbox.value = value;
 
 
         if (this.input ) this.input .updateControl();

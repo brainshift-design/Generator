@@ -200,7 +200,7 @@ function copyFigmaObject(obj)
         case ELLIPSE:     return FigmaEllipse   .prototype.copy.call(obj);
         case POLYGON:     return FigmaPolygon   .prototype.copy.call(obj);
         case STAR:        return FigmaStar      .prototype.copy.call(obj);
-        case TEXTSHAPE:   return FigmaText      .prototype.copy.call(obj);
+        case TEXT_SHAPE:   return FigmaText      .prototype.copy.call(obj);
         case POINT:       return FigmaPoint     .prototype.copy.call(obj);
         case VECTOR_PATH: return FigmaVectorPath.prototype.copy.call(obj);
         case BOOLEAN:     return FigmaBoolean   .prototype.copy.call(obj);

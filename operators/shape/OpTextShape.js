@@ -18,14 +18,14 @@ extends OpShape
     
     constructor()
     {
-        super(TEXTSHAPE, 'text', 'text', iconTextShape);
+        super(TEXT_SHAPE, 'text', 'text', iconTextShape);
 
         this.canDisable  = true;
         this.iconOffsetY = -1;
         
 
-        this.addInput (this.createInputForObjects([TEXTSHAPE_VALUE], getNodeInputValuesForUndo));
-        this.addOutput(new Output([TEXTSHAPE_VALUE], this.output_genRequest));
+        this.addInput (this.createInputForObjects([TEXT_SHAPE_VALUE], getNodeInputValuesForUndo));
+        this.addOutput(new Output([TEXT_SHAPE_VALUE], this.output_genRequest));
 
 
         const interIndex = figUniqueFontNames.findIndex(f => f == 'Inter');

@@ -73,7 +73,7 @@ extends OperatorBase
         this.div    .style.width   = 
         this.textbox.style.width   = width + 'px';
 
-        this.textbox.style.height  = this.div.offsetHeight;
+        this.textbox.style.height  =  this.div.offsetHeight;
         this.textbox.style.padding = '0';
         this.textbox.style.margin  = '0';
     }
@@ -97,10 +97,10 @@ extends OperatorBase
 
         if (this.selected)
         {
-            this.label.style.color        = 'var(--figma-color-bg-brand)';//rgb2style_a(hex2rgb(colFigmaBlue), 0.7);
-            this.label.style.textShadow   = '0 0 0 var(--figma-color-bg-brand)';// + colFigmaBlue;
+            this.label.style.color        = 'var(--figma-color-bg-brand)';
+            this.label.style.textShadow   = '0 0 0 var(--figma-color-bg-brand)';
 
-            this.textbox.style.color      = rgb2style_a(hex2rgb(colFigmaBlue), 0.7);
+            this.textbox.style.color      =  rgb2style_a(hex2rgb(colFigmaBlue), 0.7);
             this.textbox.style.textShadow = '0 0 0 ' + colFigmaBlue;
         }
         else

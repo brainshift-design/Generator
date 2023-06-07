@@ -32,7 +32,7 @@ extends Parameter
 
         this.controls[0].textbox.style.textAlign = 'center';
    
-        this.div.appendChild(this.controls[0].div);
+        this.divControls.appendChild(this.controls[0].div);
 
        
         if (hasInput)  this.initInput([VECTOR_PATH_VALUE], getParamInputValuesForUndo, this.input_getBackInitValue);
@@ -138,6 +138,12 @@ extends Parameter
         checkControlVisible(this, this.controls[0]);
         
 
+        this.div.style.background = 
+            darkMode 
+            ? this.backStyleDark 
+            : this.backStyleLight;
+
+
         enableElementText(this.controls[0].div, false);
 
         this.controls[0].readOnly = true;
@@ -145,7 +151,7 @@ extends Parameter
         this.controls[0].textbox.style.fontStyle  = 'italic';
         this.controls[0].textbox.style.fontWeight = '500';
 
-        this.controls[0].textbox.value            = 'rectangle';
+        this.controls[0].textbox.value            = 'vector path';
 
 
         if (this.input ) this.input .updateControl();

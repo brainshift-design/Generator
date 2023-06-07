@@ -1131,9 +1131,9 @@ const STAR_VALUE         = 'STAR#';
 const STAR               = 'STAR'; 
 const STAR_TYPES         = [STAR_VALUE, STAR];
   
-const TEXTSHAPE_VALUE    = 'TXTS#';
-const TEXTSHAPE          = 'TXTS'; 
-const TEXTSHAPE_TYPES    = [TEXTSHAPE_VALUE, TEXTSHAPE];
+const TEXT_SHAPE_VALUE    = 'TXTS#';
+const TEXT_SHAPE          = 'TXTS'; 
+const TEXT_SHAPE_TYPES    = [TEXT_SHAPE_VALUE, TEXT_SHAPE];
  
 const POINT              = 'PT';
 const POINT_VALUE        = 'PT#';
@@ -1192,7 +1192,7 @@ const SHAPE_VALUES =
     ELLIPSE_VALUE,
     POLYGON_VALUE,
     STAR_VALUE,
-    TEXTSHAPE_VALUE,
+    TEXT_SHAPE_VALUE,
     POINT_VALUE,
     VECTOR_PATH_VALUE,
     SHAPE_GROUP_VALUE,
@@ -1218,7 +1218,7 @@ const SHAPE_TYPES =
     ...ELLIPSE_TYPES,
     ...POLYGON_TYPES,
     ...STAR_TYPES,
-    ...TEXTSHAPE_TYPES,
+    ...TEXT_SHAPE_TYPES,
     ...POINT_TYPES,
     ...VECTOR_PATH_TYPES,
     ...SHAPE_GROUP_TYPES,
@@ -1259,7 +1259,7 @@ const ALL_VALUES =
          ELLIPSE_VALUE,
          POLYGON_VALUE,
             STAR_VALUE,
-       TEXTSHAPE_VALUE,
+       TEXT_SHAPE_VALUE,
            POINT_VALUE,
      VECTOR_PATH_VALUE,
      SHAPE_GROUP_VALUE,
@@ -2961,7 +2961,7 @@ function figCreateObject(genObj, addObject)
         case ELLIPSE:     figObj = figCreateEllipse   (genObj);  break;
         case POLYGON:     figObj = figCreatePolygon   (genObj);  break;
         case STAR:        figObj = figCreateStar      (genObj);  break;
-        case TEXTSHAPE:   figObj = figCreateText      (genObj);  break;
+        case TEXT_SHAPE:   figObj = figCreateText      (genObj);  break;
         case POINT:       figObj = figCreatePoint     (genObj);  break;
         case VECTOR_PATH: figObj = figCreateVectorPath(genObj);  break;
         case BOOLEAN:     figObj = figCreateBoolean   (genObj);  break;
@@ -3109,7 +3109,7 @@ function figUpdateObject(figObj, genObj)
         case ELLIPSE:     figUpdateEllipse   (figObj, genObj);  break;
         case POLYGON:     figUpdatePolygon   (figObj, genObj);  break;
         case STAR:        figUpdateStar      (figObj, genObj);  break;
-        case TEXTSHAPE:   figUpdateText      (figObj, genObj);  break;
+        case TEXT_SHAPE:   figUpdateText      (figObj, genObj);  break;
         case POINT:       figUpdatePoint     (figObj, genObj);  break;
         case VECTOR_PATH: figUpdateVectorPath(figObj, genObj);  break;
         case BOOLEAN:     figUpdateBoolean   (figObj, genObj);  break;

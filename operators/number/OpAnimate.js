@@ -48,7 +48,6 @@ extends OperatorWithValue
 
         this.btnPlay.addEventListener('pointerenter', e => 
         { 
-            console.log('pointerenter');
             this.btnPlay.over = true;  
             this.updateHeader(); 
         });

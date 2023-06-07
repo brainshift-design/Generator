@@ -18,7 +18,7 @@ extends Parameter
     //controlWrapper;
 
 
-    text;
+    divValue;
 
    
     
@@ -60,22 +60,22 @@ extends Parameter
         this.value                                  = defaultValue;
 
 
-        this.text                                   = createDiv();
+        this.divValue                               = createDiv();
 
-        this.text.style.position                    = 'absolute';
-        this.text.style.left                        = 0;
-        this.text.style.top                         = 0;
-        this.text.style.width                       = '100%';
-        this.text.style.height                      = defParamHeight - 4;
-        this.text.style.background                  = 'transparent';
-        this.text.style.fontFamily                  = 'Inter';
-        this.text.style.fontSize                    = 11;
-        this.text.style.fontWeight                  = '600';
-        this.text.style.fontStyle                   = 'italic';
-        this.text.style.textAlign                   = 'center';
-        this.text.style.paddingTop                  = '4px';
+        this.divValue.style.position                = 'absolute';
+        this.divValue.style.left                    = 0;
+        this.divValue.style.top                     = 0;
+        this.divValue.style.width                   = '100%';
+        this.divValue.style.height                  = defParamHeight - 4;
+        this.divValue.style.background              = 'transparent';
+        this.divValue.style.fontFamily              = 'Inter';
+        this.divValue.style.fontSize                = 11;
+        this.divValue.style.fontWeight              = '600';
+        this.divValue.style.fontStyle               = 'italic';
+        this.divValue.style.textAlign               = 'center';
+        this.divValue.style.paddingTop              = '4px';
 
-        this.text.addEventListener('pointerdown', e => 
+        this.divValue.addEventListener('pointerdown', e => 
         {
             if (e.button != 1) 
                 e.stopPropagation();
@@ -129,7 +129,7 @@ extends Parameter
 
         //this.div.appendChild(this.controlWrapper);
 
-        this.div.appendChild(this.text);
+        this.divControls.appendChild(this.divValue);
 
        
         if (hasInput)  this.initInput([STROKE_VALUE, FILL_VALUE, COLOR_VALUE], getParamInputValuesForUndo, this.input_getBackInitValue);
@@ -286,9 +286,9 @@ extends Parameter
         this.div.style.background = 'transparent';//noColorStyle(rgba);
 
 
-        this.text.innerHTML = 'stroke ' + this.value.weight.value;
+        this.divValue.innerHTML = 'stroke ' + this.value.weight.value;
 
-        this.text.style.color = rgba2style(rgbaText);
+        this.divValue.style.color = rgba2style(rgbaText);
 
 
         if (this.input)

@@ -207,9 +207,9 @@ extends Parameter
 
         return pos 
             + '["' 
-                + this.type  + '", "' 
-                + id         + '", "' 
-                + value      + '", "' 
+                + this.type + '", "' 
+                + id        + '", "' 
+                + value     + '", "' 
                 + this.controls[0].getTextAlignment()
             + '"]';
     }

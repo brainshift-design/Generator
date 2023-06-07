@@ -155,6 +155,12 @@ extends Parameter
         checkControlVisible(this, this.controls[0]);
         
 
+        this.div.style.background = 
+            darkMode 
+            ? this.backStyleDark 
+            : this.backStyleLight;
+
+
         enableElementText(this.controls[0].div, false);
 
         this.controls[0].readOnly = true;

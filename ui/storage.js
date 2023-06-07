@@ -480,6 +480,15 @@ function resolveNodes(_nodes, first, last, nodes, pasting)
 
 function resolveConnections(nodes, _connections, first, last)
 {
+    _connections.sort((c1, c2) =>
+    {
+        if (c1.outputOrder != c2.outputOrder) return c1.outputOrder - c2.outputOrder;
+        if (c1.inputNodeId != c2.inputNodeId) return c1.inputNodeId - c2.inputNodeId;
+        if (c1.inputId     != c2.inputId    ) return c1.inputId     - c2.inputId;
+        return 0;
+    });
+
+
     return new Promise(resolve => 
         requestAnimationFrame(() => 
         {
@@ -496,7 +505,7 @@ function resolveConnections(nodes, _connections, first, last)
                 if (!outputNode)
                 { 
                     uiError(
-                        'Cannot connect  ' + strConn + ',  \'' + _conn.outputNodeId + '\' not found', 
+                        '(no output) Cannot connect  ' + strConn + ',  \'' + _conn.outputNodeId + '\' not found', 
                         {
                             buttonText:   'Remove connection',
                             buttonAction: 'removeConnection,' + getStorageConnKey(_conn)
@@ -508,7 +517,7 @@ function resolveConnections(nodes, _connections, first, last)
                 if (!inputNode) 
                 { 
                     uiError(
-                        'Cannot connect  ' + strConn + ',  \'' + _conn.inputNodeId + '\' not found',
+                        '(no input) Cannot connect  ' + strConn + ',  \'' + _conn.inputNodeId + '\' not found',
                         {
                             buttonText:   'Remove connection',
                             buttonAction: 'removeConnection,' + getStorageConnKey(_conn)
@@ -572,7 +581,7 @@ function parseConnectionsAndConnect(data, pasteConnected, setProgress = null)
         return 0;
     });
 
-
+    
     const connections = [];
     
     for (let i = 0; i < data.connections.length; i++)

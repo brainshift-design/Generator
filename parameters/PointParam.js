@@ -34,7 +34,7 @@ extends Parameter
 
         this.controls[0].textbox.style.textAlign = 'center';
        
-        this.div.appendChild(this.controls[0].div);
+        this.divControls.appendChild(this.controls[0].div);
 
        
         if (hasInput)  this.initInput([POINT_VALUE], getParamInputValuesForUndo, this.input_getBackInitValue);
@@ -139,6 +139,12 @@ extends Parameter
     {
         checkControlVisible(this, this.controls[0]);
         
+
+        this.div.style.background = 
+            darkMode 
+            ? this.backStyleDark 
+            : this.backStyleLight;
+
 
         enableElementText(this.controls[0].div, false);
 
