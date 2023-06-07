@@ -123,12 +123,10 @@ extends ResizableOperatorWithValue
         const hWith  = defParamHeight;
         const hValue = totalHeight - hWith;
 
-        this.paramValue.controls[0].setSize(
-            this.div.offsetWidth,
-            hValue);
+        this.paramValue.div.style.width  = this.div.offsetWidth;
+        this.paramValue.div.style.height = hValue;    
 
-        this.paramWith.controls[0].setSize(
-            this.div.offsetWidth,
-            hWith);
+        this.paramWith.div.style.width  = this.div.offsetWidth;
+        this.paramWith.div.style.height = hWith;    
     }
 }

@@ -70,8 +70,7 @@ extends ResizableBase
 
     updateValueParam()
     {
-        this.paramValues.controls[0].setSize(
-            this.div.offsetWidth,
-            this.div.offsetHeight - Math.max(defHeaderHeight, this.header.offsetHeight));
+        this.paramValues.div.style.width  = this.div.offsetWidth;
+        this.paramValues.div.style.height = this.div.offsetHeight - Math.max(defHeaderHeight, this.header.offsetHeight);    
     }
 }
