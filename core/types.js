@@ -447,7 +447,12 @@ const ALL_VALUES =
            POINT_VALUE,
      VECTOR_PATH_VALUE,
      SHAPE_GROUP_VALUE,
-           FRAME_VALUE
+           FRAME_VALUE,
+
+     DROP_SHADOW_VALUE,
+    INNER_SHADOW_VALUE,
+      LAYER_BLUR_VALUE,
+       BACK_BLUR_VALUE
 ];
 
 
