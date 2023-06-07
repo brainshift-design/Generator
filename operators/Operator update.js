@@ -172,6 +172,7 @@ Operator.prototype.updateMeasureData = function()
         divBounds:          boundingRect(this.div),
         divOffset:          offsetRect  (this.div),
         innerOffset:        offsetRect  (this.inner),
+        paramOffset:        offsetRect  (this.paramHolder),
         headerOffset:       offsetRect  (this.header),
         labelWrapperBounds: boundingRect(this.labelWrapper),
         labelWrapperOffset: offsetRect  (this.labelWrapper),

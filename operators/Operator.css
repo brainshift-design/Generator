@@ -31,7 +31,7 @@
     border-radius: 4px 4px 0 0;
     padding:       0;
     box-shadow:    0 0 0 1px var(--figma-color-bg-tertiary);
-    overflow:      visible;
+    overflow:      hidden;
     /* box-shadow:    0 0 0 1px orange inset; */
 }    
 
@@ -43,7 +43,7 @@
     width:         100%;
     position:      relative;
     border-radius: 4px 4px 0 0;
-    z-index:       1;
+    z-index:       10000;
  /* overflow:      visible; */
  /* box-shadow:    0 0 0 1px red inset; */
 }
@@ -552,4 +552,22 @@
     right:  0;
     bottom: 0;
     cursor: nwse-resize;
+}
+
+
+.itemsScroll
+{
+    display:       block;
+    background:    magenta;
+    position:      absolute;
+    width:         6px;
+    height:        100px;
+    border-radius: 3px;
+    z-index:       10000;
+}
+
+
+.itemsScroll:hover
+{
+    background: greenyellow;
 }

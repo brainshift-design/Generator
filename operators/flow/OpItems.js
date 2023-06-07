@@ -1,6 +1,11 @@
 class   OpItems
 extends ResizableBase
 {
+    scrollbar;
+    scroll = 0;
+
+
+
     constructor()
     {
         super(ITEMS, 'items', 'items', iconItems);
@@ -13,20 +18,95 @@ extends ResizableBase
 
         this.alwaysLoadParams = true;
         this.alwaysSaveParams = true;
+
+
+        this.createScrollbar();
+    }
+
+
+
+    createScrollbar()
+    {
+        this.scrollbar = createDiv('itemsScroll');
+
+        this.scrollbar.down = false;
+        this.scrollbar.sy   = Number.NaN;
+        this.scrollbar.spy  = Number.NaN;
+
+        this.div.appendChild(this.scrollbar);
+
+
+        this.scrollbar.addEventListener('pointerdown', e =>
+        {
+            if (e.button == 0)
+            {
+                e.stopPropagation();
+
+                this.scrollbar.down = true;
+
+                this.scrollbar.sy  = e.clientY;
+                this.scrollbar.spy = this.scroll;
+
+                this.scrollbar.setPointerCapture(e.pointerId);
+            }
+        });
+
+
+        this.scrollbar.addEventListener('pointermove', e =>
+        {
+            if (this.scrollbar.down)
+            {
+                const max = 
+                      this.measureData.paramOffset.height 
+                    - this.measureData.innerOffset.height 
+                    - 10;
+
+                this.scroll = Math.min(Math.max(
+                    0, 
+                    this.scrollbar.spy + e.clientY - this.scrollbar.sy),
+                    max);
+
+                this.updateScrollbar();
+            }
+        });
+
+
+        this.scrollbar.addEventListener('pointerup', e =>
+        {
+            if (e.button == 0)
+            {
+                e.stopPropagation();
+
+                this.scrollbar.down = false;
+                this.scrollbar.releasePointerCapture(e.pointerId);
+            }
+        });
     }
 
 
 
     setSize(w, h, updateTransform = true)
     {
-        super.setSize(w, h, updateTransform);
+        super.setSize(
+            w, 
+            Math.min(h, defHeaderHeight + this.params.length * defParamHeight), 
+            updateTransform);
+
+        this.updateScrollbar();
     }
 
 
 
     setRect(x, y, w, h, updateTransform = true)
     {
-        super.setRect(x, y, w, h, updateTransform);
+        super.setRect(
+            x, 
+            y, 
+            w, 
+            Math.min(h, defHeaderHeight + this.params.length * defParamHeight), 
+            updateTransform);
+
+        this.updateScrollbar();
     }
 
 
@@ -158,5 +238,40 @@ extends ResizableBase
             param.enableControlText(false);
 
         this.updateParamControls();
+    }
+
+
+
+    updateNode()
+    {
+        super.updateNode();
+
+        this.updateScrollbar();
+    }
+
+
+
+    updateScrollbar()
+    {
+        const totalHeight = this.measureData.divOffset.height - defHeaderHeight;
+
+        
+        if (this.measureData.paramOffset.height <= totalHeight)
+        {
+            this.scrollbar.style.display = 'none';
+        }
+        else
+        {
+            this.scrollbar.style.display = 'block';
+            
+            this.scrollbar.style.left = this.measureData.divOffset.width - 20;
+            this.scrollbar.style.top  = defHeaderHeight + 5 + this.scroll;
+
+            this.scrollbar.style.height = 
+                  (totalHeight - 10)
+                *  totalHeight / this.measureData.paramOffset.height;
+
+            this.paramHolder.style.top = -this.scroll;
+        }
     }
 }
