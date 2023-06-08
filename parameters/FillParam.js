@@ -229,6 +229,9 @@ extends Parameter
 
     genRequest(gen)
     {
+        super.updateControls();
+
+
         // this function exists because a parameter without an output
         // should still be able to generate a request
         
@@ -338,9 +341,6 @@ extends Parameter
 
         this.controls[0].div.style.width       = '55%';
         this.controls[1].div.style.width       = '45%';
-
-
-        super.updateControls();
 
 
         this.div.style.background              = rgb2style(rgbaBack);

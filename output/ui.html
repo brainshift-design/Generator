@@ -10695,14 +10695,15 @@ function finalListTypeFromTypes(types)
             _type = type;
 
         else if (_type != type
-              && SHAPE_VALUES.includes(_type) != SHAPE_VALUES.includes(type))
+              ||     SHAPE_VALUES.includes(_type) 
+                 && !SHAPE_VALUES.includes( type))
         { 
             _type = ANY_VALUE;
             break; 
         }
     }
 
-
+    
          if (  _type == NUMBER_VALUE || _type == NUMBER_LIST_VALUE)  return NUMBER_LIST_VALUE;
     else if (  _type ==   TEXT_VALUE || _type ==   TEXT_LIST_VALUE)  return   TEXT_LIST_VALUE;
     else if (SHAPE_VALUES.includes(_type))                           return  SHAPE_LIST_VALUE;
@@ -45534,14 +45535,15 @@ function finalListTypeFromTypes(types)
             _type = type;
 
         else if (_type != type
-              && SHAPE_VALUES.includes(_type) != SHAPE_VALUES.includes(type))
+              ||     SHAPE_VALUES.includes(_type) 
+                 && !SHAPE_VALUES.includes( type))
         { 
             _type = ANY_VALUE;
             break; 
         }
     }
 
-
+    
          if (  _type == NUMBER_VALUE || _type == NUMBER_LIST_VALUE)  return NUMBER_LIST_VALUE;
     else if (  _type ==   TEXT_VALUE || _type ==   TEXT_LIST_VALUE)  return   TEXT_LIST_VALUE;
     else if (SHAPE_VALUES.includes(_type))                           return  SHAPE_LIST_VALUE;
@@ -72497,6 +72499,21 @@ extends EventTarget
 
 
         this.controls.forEach(c => c.update());
+
+
+        if (this.input)
+        {
+            this.input.colorLight  = 
+            this.input.colorDark   =  
+            this.input.wireColor   = rgbFromType(this.type, true);
+        }
+
+        if (this.output)
+        {
+            this.output.colorLight =
+            this.output.colorDark  = 
+            this.output.wireColor  = rgbFromType(this.type, true);
+        }
     }
 
 
@@ -72802,17 +72819,17 @@ extends Parameter
     
     
     
-    updateControls()
-    {
-        this.controls[0].div.style.width = '100%';
+    // updateControls()
+    // {
+    //     this.controls[0].div.style.width = '100%';
         
-        // this.div.style.background = 
-        //     darkMode 
-        //     ? this.backStyleDark 
-        //     : this.backStyleLight;
+    //     // this.div.style.background = 
+    //     //     darkMode 
+    //     //     ? this.backStyleDark 
+    //     //     : this.backStyleLight;
 
-        super.updateControls();
-    }
+    //     super.updateControls();
+    // }
 
 
     updateValueText()
@@ -73710,6 +73727,9 @@ extends Parameter
 
     updateControls()
     {
+        super.updateControls();
+
+
         const rgb       = this.value.toRgb();
 
         const rgbStripe = getStripeBackColor(rgb);
@@ -73742,9 +73762,6 @@ extends Parameter
             this.output.colorDark  =  rgb_a(rgbText, 0.2);
             this.output.wireColor  = !rgbIsNaN(rgbStripe) ? rgbStripe : noColor;
         }
-
-
-        super.updateControls();
 
 
         this.div.style.background = 
@@ -74070,6 +74087,9 @@ extends Parameter
 
     genRequest(gen)
     {
+        super.updateControls();
+
+
         // this function exists because a parameter without an output
         // should still be able to generate a request
         
@@ -74179,9 +74199,6 @@ extends Parameter
 
         this.controls[0].div.style.width       = '55%';
         this.controls[1].div.style.width       = '45%';
-
-
-        super.updateControls();
 
 
         this.div.style.background              = rgb2style(rgbaBack);
@@ -74449,14 +74466,11 @@ extends Parameter
 
     updateControls()
     {
+        super.updateControls();
+
+
         checkParamVisible(this);
         
-
-        // this.div.style.background = 
-        //     darkMode 
-        //     ? this.backStyleDark 
-        //     : this.backStyleLight;
-
 
         enableElementText(this.controls[0].div, false);
 
@@ -74472,7 +74486,29 @@ extends Parameter
             + ' ' + this.value.position.toNumber() + '%';
 
 
-        super.updateControls();
+        const rgba       = this.value.fill.toRgba();
+
+        const rgbaStripe = rgb_a(getStripeBackColor(rgba), rgba[3]);
+        const rgbaBack   = rgbaStripe;
+        const rgbaText   = getTextColorFromBackColor(rgbaStripe, rgba[3]);
+
+
+        //this.updateWarningOverlay();
+
+
+        if (this.input)
+        {
+            this.input.colorLight  = 
+            this.input.colorDark   = rgb_a(rgbaText, 0.2);
+            this.input.wireColor   = !rgbaIsNaN(rgbaBack) ? rgbaBack : noColor;
+        }
+
+        if (this.output)
+        {
+            this.output.colorLight =
+            this.output.colorDark  = rgb_a(rgbaText, 0.2);
+            this.output.wireColor  = !rgbaIsNaN(rgbaBack) ? rgbaBack : noColor;
+        }
     }
 
 
@@ -74796,6 +74832,9 @@ extends Parameter
 
     updateControls()
     {
+        super.updateControls();
+
+
         // this.div.style.background = 
         //     darkMode 
         //     ? this.backStyleDark 
@@ -74816,8 +74855,20 @@ extends Parameter
             + ' ' + this.value.weight.toNumber() + 'px';
 
 
-        super.updateControls();
-    }
+        // if (this.input)
+        // {
+        //     this.input.colorLight  = 
+        //     this.input.colorDark   =  rgb_a(rgbText, 0.2);
+        //     this.input.wireColor   = !rgbIsNaN(rgbStripe) ? rgbStripe : noColor;
+        // }
+
+        // if (this.output)
+        // {
+        //     this.output.colorLight =
+        //     this.output.colorDark  =  rgb_a(rgbText, 0.2);
+        //     this.output.wireColor  = !rgbIsNaN(rgbStripe) ? rgbStripe : noColor;
+        // }
+     }
 
 
 
@@ -78764,11 +78815,11 @@ class Wire
 
 
         if (   output)
-            //&& arraysIntersect(output.types, [COLOR_VALUE, FILL_VALUE, COLOR_STOP_VALUE, STROKE_VALUE]))
+//            && arraysIntersect(output.types, [COLOR_VALUE, FILL_VALUE, COLOR_STOP_VALUE, STROKE_VALUE]))
             return output.wireColor;
 
         else if (input)
-              //&& arraysIntersect(input.types, [COLOR_VALUE, FILL_VALUE, COLOR_STOP_VALUE, STROKE_VALUE]))
+  //            && arraysIntersect(input.types, [COLOR_VALUE, FILL_VALUE, COLOR_STOP_VALUE, STROKE_VALUE]))
             return input.wireColor;
 
         else if (!isEmpty(types))

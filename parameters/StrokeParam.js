@@ -136,6 +136,9 @@ extends Parameter
 
     updateControls()
     {
+        super.updateControls();
+
+
         // this.div.style.background = 
         //     darkMode 
         //     ? this.backStyleDark 
@@ -156,8 +159,20 @@ extends Parameter
             + ' ' + this.value.weight.toNumber() + 'px';
 
 
-        super.updateControls();
-    }
+        // if (this.input)
+        // {
+        //     this.input.colorLight  = 
+        //     this.input.colorDark   =  rgb_a(rgbText, 0.2);
+        //     this.input.wireColor   = !rgbIsNaN(rgbStripe) ? rgbStripe : noColor;
+        // }
+
+        // if (this.output)
+        // {
+        //     this.output.colorLight =
+        //     this.output.colorDark  =  rgb_a(rgbText, 0.2);
+        //     this.output.wireColor  = !rgbIsNaN(rgbStripe) ? rgbStripe : noColor;
+        // }
+     }
 
 
 

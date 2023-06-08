@@ -1883,7 +1883,6 @@ function figDeleteAllObjects()
     for (const obj of figma.currentPage.children)
     {
         if (    obj.getPluginData('objectId') != ''
-            //&&  obj.getPluginData('final'   ) != 'true'
             && !obj.removed) 
             obj.remove();
     }

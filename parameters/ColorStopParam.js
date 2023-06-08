@@ -136,14 +136,11 @@ extends Parameter
 
     updateControls()
     {
+        super.updateControls();
+
+
         checkParamVisible(this);
         
-
-        // this.div.style.background = 
-        //     darkMode 
-        //     ? this.backStyleDark 
-        //     : this.backStyleLight;
-
 
         enableElementText(this.controls[0].div, false);
 
@@ -159,7 +156,29 @@ extends Parameter
             + ' ' + this.value.position.toNumber() + '%';
 
 
-        super.updateControls();
+        const rgba       = this.value.fill.toRgba();
+
+        const rgbaStripe = rgb_a(getStripeBackColor(rgba), rgba[3]);
+        const rgbaBack   = rgbaStripe;
+        const rgbaText   = getTextColorFromBackColor(rgbaStripe, rgba[3]);
+
+
+        //this.updateWarningOverlay();
+
+
+        if (this.input)
+        {
+            this.input.colorLight  = 
+            this.input.colorDark   = rgb_a(rgbaText, 0.2);
+            this.input.wireColor   = !rgbaIsNaN(rgbaBack) ? rgbaBack : noColor;
+        }
+
+        if (this.output)
+        {
+            this.output.colorLight =
+            this.output.colorDark  = rgb_a(rgbaText, 0.2);
+            this.output.wireColor  = !rgbaIsNaN(rgbaBack) ? rgbaBack : noColor;
+        }
     }
 
 

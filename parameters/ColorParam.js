@@ -286,6 +286,9 @@ extends Parameter
 
     updateControls()
     {
+        super.updateControls();
+
+
         const rgb       = this.value.toRgb();
 
         const rgbStripe = getStripeBackColor(rgb);
@@ -318,9 +321,6 @@ extends Parameter
             this.output.colorDark  =  rgb_a(rgbText, 0.2);
             this.output.wireColor  = !rgbIsNaN(rgbStripe) ? rgbStripe : noColor;
         }
-
-
-        super.updateControls();
 
 
         this.div.style.background = 

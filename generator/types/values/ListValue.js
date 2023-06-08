@@ -252,14 +252,15 @@ function finalListTypeFromTypes(types)
             _type = type;
 
         else if (_type != type
-              && SHAPE_VALUES.includes(_type) != SHAPE_VALUES.includes(type))
+              ||     SHAPE_VALUES.includes(_type) 
+                 && !SHAPE_VALUES.includes( type))
         { 
             _type = ANY_VALUE;
             break; 
         }
     }
 
-
+    
          if (  _type == NUMBER_VALUE || _type == NUMBER_LIST_VALUE)  return NUMBER_LIST_VALUE;
     else if (  _type ==   TEXT_VALUE || _type ==   TEXT_LIST_VALUE)  return   TEXT_LIST_VALUE;
     else if (SHAPE_VALUES.includes(_type))                           return  SHAPE_LIST_VALUE;

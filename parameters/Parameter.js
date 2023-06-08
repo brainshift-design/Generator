@@ -222,6 +222,21 @@ extends EventTarget
 
 
         this.controls.forEach(c => c.update());
+
+
+        if (this.input)
+        {
+            this.input.colorLight  = 
+            this.input.colorDark   =  
+            this.input.wireColor   = rgbFromType(this.type, true);
+        }
+
+        if (this.output)
+        {
+            this.output.colorLight =
+            this.output.colorDark  = 
+            this.output.wireColor  = rgbFromType(this.type, true);
+        }
     }
 
 

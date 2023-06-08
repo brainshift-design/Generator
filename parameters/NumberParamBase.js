@@ -155,17 +155,17 @@ extends Parameter
     
     
     
-    updateControls()
-    {
-        this.controls[0].div.style.width = '100%';
+    // updateControls()
+    // {
+    //     this.controls[0].div.style.width = '100%';
         
-        // this.div.style.background = 
-        //     darkMode 
-        //     ? this.backStyleDark 
-        //     : this.backStyleLight;
+    //     // this.div.style.background = 
+    //     //     darkMode 
+    //     //     ? this.backStyleDark 
+    //     //     : this.backStyleLight;
 
-        super.updateControls();
-    }
+    //     super.updateControls();
+    // }
 
 
     updateValueText()
