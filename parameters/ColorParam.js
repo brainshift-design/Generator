@@ -286,9 +286,6 @@ extends Parameter
 
     updateControls()
     {
-        super.updateControls();
-
-
         const rgb       = this.value.toRgb();
 
         const rgbStripe = getStripeBackColor(rgb);
@@ -306,6 +303,9 @@ extends Parameter
             : darkMode
               ? this.textStyleDark
               : this.textStyleLight;
+
+
+        super.updateControls(false);
 
 
         if (this.input)

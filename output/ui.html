@@ -72451,13 +72451,16 @@ extends EventTarget
 
 
 
-    updateControls()
+    updateControls(updateBack = true)
     {
-        this.div.style.background = 
-            darkMode 
-            ? this.backStyleDark 
-            : this.backStyleLight;
-
+        if (updateBack)
+        {
+            this.div.style.background = 
+                darkMode 
+                ? this.backStyleDark 
+                : this.backStyleLight;
+        }
+        
 
         if (this.input ) this.input .updateControl();
         if (this.output) this.output.updateControl();
@@ -73727,9 +73730,6 @@ extends Parameter
 
     updateControls()
     {
-        super.updateControls();
-
-
         const rgb       = this.value.toRgb();
 
         const rgbStripe = getStripeBackColor(rgb);
@@ -73747,6 +73747,9 @@ extends Parameter
             : darkMode
               ? this.textStyleDark
               : this.textStyleLight;
+
+
+        super.updateControls(false);
 
 
         if (this.input)
@@ -74087,7 +74090,7 @@ extends Parameter
 
     genRequest(gen)
     {
-        super.updateControls();
+        super.updateControls(false);
 
 
         // this function exists because a parameter without an output
@@ -74131,6 +74134,9 @@ extends Parameter
 
     updateControls()
     {
+        super.updateControls();
+
+
         checkParamVisible(this);
 
 
@@ -74196,6 +74202,12 @@ extends Parameter
 
         this.controls[1].textStyleLight        = 
         this.controls[1].textStyleDark         = rgba2style(rgbaText);
+
+        this.controls[0].div.style.position    = 'absolute';
+        this.controls[1].div.style.position    = 'absolute';
+
+        this.controls[0].div.style.left        = '0';
+        this.controls[1].div.style.left        = '55%';
 
         this.controls[0].div.style.width       = '55%';
         this.controls[1].div.style.width       = '45%';

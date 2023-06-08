@@ -229,7 +229,7 @@ extends Parameter
 
     genRequest(gen)
     {
-        super.updateControls();
+        super.updateControls(false);
 
 
         // this function exists because a parameter without an output
@@ -273,6 +273,9 @@ extends Parameter
 
     updateControls()
     {
+        super.updateControls();
+
+
         checkParamVisible(this);
 
 
@@ -338,6 +341,12 @@ extends Parameter
 
         this.controls[1].textStyleLight        = 
         this.controls[1].textStyleDark         = rgba2style(rgbaText);
+
+        this.controls[0].div.style.position    = 'absolute';
+        this.controls[1].div.style.position    = 'absolute';
+
+        this.controls[0].div.style.left        = '0';
+        this.controls[1].div.style.left        = '55%';
 
         this.controls[0].div.style.width       = '55%';
         this.controls[1].div.style.width       = '45%';
