@@ -1883,7 +1883,7 @@ function figDeleteAllObjects()
     for (const obj of figma.currentPage.children)
     {
         if (    obj.getPluginData('objectId') != ''
-            &&  obj.getPluginData('final')    != 'true'
+            //&&  obj.getPluginData('final'   ) != 'true'
             && !obj.removed) 
             obj.remove();
     }
@@ -2951,7 +2951,8 @@ function figNotify(text, prefix = 'Generator ', delay = 400, error = false, butt
 
 function makeObjectName(obj)
 {
-    return OBJECT_PREFIX + (showIds ? obj.objectId : obj.objectName);
+    return (obj.final ? ''           : OBJECT_PREFIX )
+         + (showIds   ? obj.objectId : obj.objectName);
 }
 
 
@@ -2967,7 +2968,7 @@ function figCreateObject(genObj, addObject)
         case ELLIPSE:     figObj = figCreateEllipse   (genObj);  break;
         case POLYGON:     figObj = figCreatePolygon   (genObj);  break;
         case STAR:        figObj = figCreateStar      (genObj);  break;
-        case TEXT_SHAPE:   figObj = figCreateText      (genObj);  break;
+        case TEXT_SHAPE:  figObj = figCreateText      (genObj);  break;
         case POINT:       figObj = figCreatePoint     (genObj);  break;
         case VECTOR_PATH: figObj = figCreateVectorPath(genObj);  break;
         case BOOLEAN:     figObj = figCreateBoolean   (genObj);  break;
@@ -2981,7 +2982,8 @@ function figCreateObject(genObj, addObject)
         || !!figObj, 
         'no Figma object created');
 
-    if (figObj)
+    if (  !genObj.final
+        && figObj)
     {
         figObj.setPluginData('id',       genObj.objectId);
         figObj.setPluginData('type',     genObj.type    );
@@ -3039,14 +3041,11 @@ function figUpdateObjects(figParent, genObjects)
         };
 
 
-        let figObj;
-
-        
-        figObj = objects.find(o => 
+        let figObj = objects.find(o => 
                o.removed
             || o.getPluginData('objectId') == genObj.objectId)
 
-        
+
         if (   figObj != undefined
             && figObj != null
             && figObj.removed)

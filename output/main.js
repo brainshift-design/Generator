@@ -1145,7 +1145,7 @@ function findObject(obj, ignoreObjects) {
 function figDeleteAllObjects() {
     for (const obj of figma.currentPage.children) {
         if (obj.getPluginData('objectId') != ''
-            && obj.getPluginData('final') != 'true'
+            //&&  obj.getPluginData('final'   ) != 'true'
             && !obj.removed)
             obj.remove();
     }
@@ -1894,7 +1894,8 @@ function figNotify(text, prefix = 'Generator ', delay = 400, error = false, butt
 //     return 'ERROR_TYPE';
 // }
 function makeObjectName(obj) {
-    return OBJECT_PREFIX + (showIds ? obj.objectId : obj.objectName);
+    return (obj.final ? '' : OBJECT_PREFIX)
+        + (showIds ? obj.objectId : obj.objectName);
 }
 function figCreateObject(genObj, addObject) {
     let figObj;
@@ -1935,7 +1936,8 @@ function figCreateObject(genObj, addObject) {
     }
     console.assert(genObj.type == SHAPE_GROUP // cannot exist without children
         || !!figObj, 'no Figma object created');
-    if (figObj) {
+    if (!genObj.final
+        && figObj) {
         figObj.setPluginData('id', genObj.objectId);
         figObj.setPluginData('type', genObj.type);
         figObj.setPluginData('nodeId', genObj.nodeId);
@@ -1971,8 +1973,7 @@ function figUpdateObjects(figParent, genObjects) {
             else
                 figObjects.objects.push(obj);
         };
-        let figObj;
-        figObj = objects.find(o => o.removed
+        let figObj = objects.find(o => o.removed
             || o.getPluginData('objectId') == genObj.objectId);
         if (figObj != undefined
             && figObj != null

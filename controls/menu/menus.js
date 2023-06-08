@@ -562,7 +562,7 @@ function initGeneratorMenus()
                                 new MenuItem('',                    {separator: true}),
                                 new MenuItem('Transform',           {/*icon: iconMove,*/ childMenu: menuTransform}),
                                 new MenuItem('',                    {separator: true}),
-                                new MenuItem('Render',              {icon: iconRender,     callback: e => actionManager.do(getCreateNodeAction(RENDER,       btnShape.div, getCreateOptions(e)))})]);
+                                new MenuItem('Render',              {icon: iconRenderDown, callback: e => actionManager.do(getCreateNodeAction(RENDER,       btnShape.div, getCreateOptions(e)))})]);
 
 
     menuGroup = new Menu('Groups', true, false);

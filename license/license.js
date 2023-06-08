@@ -15,19 +15,20 @@ function createLicenseKey(license)
 
 
 
-function createLicenseFromDate(userId, strDate) // DDMMYYYY
+function createLicenseFromDate(userId, strDate, tier) // DDMMYYYY
 {
     return createLicense(
         userId,
         parseInt(strDate.substring(0, 2)),
         parseInt(strDate.substring(2, 4)),
-        parseInt(strDate.substring(4)));
+        parseInt(strDate.substring(4)),
+        tier);
 
 }
 
 
 
-function createLicense(userId, lastDay, lastMonth, lastYear, tier = 1)
+function createLicense(userId, lastDay, lastMonth, lastYear, tier)
 {
     return {
         userId:    userId,
@@ -128,11 +129,12 @@ function hashLicenseString(str, nBytes)
         let pos    = nBytes;
         let length = bytes.length - nBytes;
         
+
         while (length > 0)
         {
             for (let i = 0; i < nBytes; i++)
                 bytes[i] ^= bytes[pos+i];
-            
+                
             pos    += nBytes;
             length -= nBytes;
         }
@@ -148,26 +150,34 @@ function validateLicense(userId, licenseKey)
 {
     const now = new Date(Date.now());
 
-    const license = createLicense(
-        userId,
-        now.getDate(),
-        now.getMonth()+1, // months start at 0
-        now.getFullYear());
 
-
-    let   curCheck  = 0;
-    const maxCheck  = 31 * 24;
-
-
-    while (curCheck++ < maxCheck)
+    for (let tier = 0; tier <= 1; tier++)
     {
-        if (validateLicenseKey(license, licenseKey))
-            return license;
+        const license = createLicense(
+            userId,
+            now.getDate(),
+            now.getMonth()+1, // months start at 0
+            now.getFullYear(),
+            tier);
 
-        license.lastDay++; // err on the side of client, include current day if it's last
 
-        if (license.lastDay   > 31) { license.lastMonth++; license.lastDay   = 1; }
-        if (license.lastMonth > 12) { license.lastYear ++; license.lastMonth = 1; }
+        let   curCheck  = 0;
+        const maxCheck  = 31 * 24;
+
+
+        while (curCheck++ < maxCheck)
+        {
+            if (validateLicenseKey(license, licenseKey))
+            {
+                license.tier = tier;
+                return license;
+            }
+
+            license.lastDay++; // err on the side of client, include current day if it's last
+
+            if (license.lastDay   > 31) { license.lastMonth++; license.lastDay   = 1; }
+            if (license.lastMonth > 12) { license.lastYear ++; license.lastMonth = 1; }
+        }
     }
 
 

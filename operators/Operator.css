@@ -334,6 +334,15 @@
 }
 
 
+.btnRenderFinal
+{
+    width:          20px;
+    height:         17px;
+    margin-right:   6px;
+    pointer-events: all;
+}
+
+
 .styleCircleWrapper
 {
     display:        inline-block;

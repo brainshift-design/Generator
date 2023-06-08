@@ -3,6 +3,8 @@ extends GShapeBase
 {
     inputs = [];
 
+    finalize;
+
 
 
     constructor(nodeId, options)
@@ -41,7 +43,8 @@ extends GShapeBase
             await this.inputs[i].eval(parse);
 
         
-            if (this.options.enabled)
+            if (   this.options.enabled
+                && this.finalize.value > 0)
             {
                 for (let j = 0; j < this.inputs[i].objects.length; j++, o++)
                 {
