@@ -318,42 +318,45 @@ extends Parameter
               + 'linear-gradient(-45deg, #ddd 25%, transparent 25%, transparent 75%, #ddd 75%)';
 
 
-        this.checkers.style.display            = this.value.isValid() ? 'inline-block' : 'none';
-        this.checkers.style.backgroundColor    = darkMode ? '#444' : '#fff';
+        this.checkers.style.display               = this.value.isValid() ? 'inline-block' : 'none';
+        this.checkers.style.backgroundColor       = darkMode ? '#444' : '#fff';
+         
+        this.checkers.style.backgroundSize        = '22px 22px';
+        this.checkers.style.backgroundPosition    = '0 0, 11px 11px';
+         
+        this.checkers.style.left                  = '-3.5px';
+        this.checkers.style.width                 = 'calc(100% + 3.5px)';
+              
+              
+        this.controls[0].backStyleLight           = 
+        this.controls[0].backStyleDark            = 'transparent';
+               
+        this.controls[0].textStyleLight           = 
+        this.controls[0].textStyleDark            = rgba2style(rgbaText);
       
-        this.checkers.style.backgroundSize     = '22px 22px';
-        this.checkers.style.backgroundPosition = '0 0, 11px 11px';
       
-        this.checkers.style.left               = '-3.5px';
-        this.checkers.style.width              = 'calc(100% + 3.5px)';
-           
-           
-        this.controls[0].backStyleLight        = 
-        this.controls[0].backStyleDark         = 'transparent';
-            
-        this.controls[0].textStyleLight        = 
-        this.controls[0].textStyleDark         = rgba2style(rgbaText);
+        this.controls[1].backStyleLight           = 
+        this.controls[1].backStyleDark            = 'transparent';
    
    
-        this.controls[1].backStyleLight        = 
-        this.controls[1].backStyleDark         = 'transparent';
+        this.controls[1].textStyleLight           = 
+        this.controls[1].textStyleDark            = rgba2style(rgbaText);
+   
+        this.controls[0].div.style.position       = 'absolute';
+        this.controls[1].div.style.position       = 'absolute';
+   
+        this.controls[0].div.style.left           = '0';
+        this.controls[1].div.style.left           = '55%';
+   
+        this.controls[0].div.style.width          = '55%';
+        this.controls[1].div.style.width          = '45%';
+
+        this.controls[0].textbox.style.background = 'transparent';
+        this.controls[1].textbox.style.background = 'transparent';
 
 
-        this.controls[1].textStyleLight        = 
-        this.controls[1].textStyleDark         = rgba2style(rgbaText);
-
-        this.controls[0].div.style.position    = 'absolute';
-        this.controls[1].div.style.position    = 'absolute';
-
-        this.controls[0].div.style.left        = '0';
-        this.controls[1].div.style.left        = '55%';
-
-        this.controls[0].div.style.width       = '55%';
-        this.controls[1].div.style.width       = '45%';
-
-
-        this.div.style.background              = rgb2style(rgbaBack);
-        this.checkers.style.opacity            = 1 - rgbaBack[3];
+        this.div.style.background                 = rgb2style(rgbaBack);
+        this.checkers.style.opacity               = 1 - rgbaBack[3];
     }
 
 
