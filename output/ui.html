@@ -26309,7 +26309,7 @@ extends GShape
             return this;
 
 
-        const [x, y, width, height]/*, angle]*/ = await this.evalBaseParams(parse);
+        const [x, y, width, height] = await this.evalBaseParams(parse);
 
         const round    = this.round    ? (await this.round   .eval(parse)).toValue() : null;
         let   children = this.children ? (await this.children.eval(parse)).toValue() : null;
@@ -26332,7 +26332,6 @@ extends GShape
                 y        ?? input.y,
                 width    ?? input.width,
                 height   ?? input.height,
-                //angle    ?? input.angle,
                 round    ?? input.round,
                 children ?? input.children);
         }
@@ -26384,14 +26383,13 @@ extends GShape
             && this.value.y
             && this.value.width
             && this.value.height
-            //&& this.value.angle
             && this.value.round)
         {
             let    x = this.value.x     .value;
             let    y = this.value.y     .value;
             let    w = this.value.width .value;
             let    h = this.value.height.value;
-            let    a = 0;//this.value.angle .value;
+            let    a = 0;
             let   _a = a/360*Tau;
             const  r = Math.max(0, this.value.round.value);
 
@@ -61149,7 +61147,7 @@ extends GShape
             return this;
 
 
-        const [x, y, width, height]/*, angle]*/ = await this.evalBaseParams(parse);
+        const [x, y, width, height] = await this.evalBaseParams(parse);
 
         const round    = this.round    ? (await this.round   .eval(parse)).toValue() : null;
         let   children = this.children ? (await this.children.eval(parse)).toValue() : null;
@@ -61172,7 +61170,6 @@ extends GShape
                 y        ?? input.y,
                 width    ?? input.width,
                 height   ?? input.height,
-                //angle    ?? input.angle,
                 round    ?? input.round,
                 children ?? input.children);
         }
@@ -61224,14 +61221,13 @@ extends GShape
             && this.value.y
             && this.value.width
             && this.value.height
-            //&& this.value.angle
             && this.value.round)
         {
             let    x = this.value.x     .value;
             let    y = this.value.y     .value;
             let    w = this.value.width .value;
             let    h = this.value.height.value;
-            let    a = 0;//this.value.angle .value;
+            let    a = 0;
             let   _a = a/360*Tau;
             const  r = Math.max(0, this.value.round.value);
 
@@ -93095,7 +93091,6 @@ extends OpShape
     paramY;
     paramWidth;
     paramHeight;
-    //paramAngle;
     paramRound;
     paramChildren;
 
@@ -93114,21 +93109,16 @@ extends OpShape
         this.addOutput(new Output([FRAME_VALUE], this.output_genRequest));
 
 
-        this.addParam(this.paramX        = new NumberParam('x',        'x',       true, true, true, 0));
-        this.addParam(this.paramY        = new NumberParam('y',        'y',       true, true, true, 0));
-        this.addParam(this.paramWidth    = new NumberParam('width',    'width',   true, true, true, 100, 0.01));
-        this.addParam(this.paramHeight   = new NumberParam('height',   'height',  true, true, true, 100, 0.01));
-        //this.addParam(this.paramAngle    = new NumberParam('angle',    'angle',   true, true, true, 0, -180, 180));
-        this.addParam(this.paramRound    = new NumberParam('round',    'round',   true, true, true, 0, 0));
-        this.addParam(this.paramChildren = new ListParam  ('children', 'objects', true, true, true));
+        this.addParam(this.paramX        = new NumberParam('x',        'x',       true,  true, true, 0));
+        this.addParam(this.paramY        = new NumberParam('y',        'y',       true,  true, true, 0));
+        this.addParam(this.paramWidth    = new NumberParam('width',    'width',   true,  true, true, 100, 0.01));
+        this.addParam(this.paramHeight   = new NumberParam('height',   'height',  true,  true, true, 100, 0.01));
+        this.addParam(this.paramRound    = new NumberParam('round',    'round',   true,  true, true, 0, 0));
+        this.addParam(this.paramChildren = new ListParam  ('children', 'objects', false, true, true));
 
 
         this.paramWidth .addEventListener('change', () => this.updateRound());
         this.paramHeight.addEventListener('change', () => this.updateRound());
-
-        // this.paramAngle.controls[0].setSuffix('°', true);
-        // this.paramAngle.controls[0].wrapValue   = true;
-        // this.paramAngle.controls[0].dragReverse = true;
 
 
         this.paramChildren.input.types.push(SHAPE_LIST_VALUE, ...SHAPE_VALUES);
@@ -93815,7 +93805,7 @@ extends OperatorBase
         this.addOutput(new Output([SHAPE_LIST_VALUE], this.output_genRequest));
 
 
-        this.addParam(this.paramPoints = new ListParam('points', 'points', true, true, true));
+        this.addParam(this.paramPoints = new ListParam('points', 'points', false, true, true));
 
 
         this.paramPoints.itemName  = 'point';

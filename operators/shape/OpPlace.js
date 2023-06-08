@@ -17,7 +17,7 @@ extends OperatorBase
         this.addOutput(new Output([SHAPE_LIST_VALUE], this.output_genRequest));
 
 
-        this.addParam(this.paramPoints = new ListParam('points', 'points', true, true, true));
+        this.addParam(this.paramPoints = new ListParam('points', 'points', false, true, true));
 
 
         this.paramPoints.itemName  = 'point';
