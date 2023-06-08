@@ -49,8 +49,6 @@
             let   license = createLicenseFromDate(userId, date, tier);
             const key     = createLicenseKey(license);
             
-            console.log('key =', key);
-
 
             // const [p, q] = createCryptoPrimePair(65537n);
 
@@ -77,11 +75,11 @@
             }
 
 
-            // for (let i = -3; i <= 3; i++)
-            // {
-            //     const _key = key.substring(0, key.length-1) + String.fromCharCode(Number(key.charCodeAt(key.length-1))+i);
-            //     txt += '<br/>' + _key + ' ' + (validateLicense(id, _key ) ? '<font color="green">√</font>' : '<font color="red">X</font>');
-            // }
+            for (let i = -3; i <= 3; i++)
+            {
+                const _key = key.substring(0, key.length-1) + String.fromCharCode(Number(key.charCodeAt(key.length-1))+i);
+                txt += '<br/>' + _key + ' ' + (validateLicense(userId, _key) ? '<font color="green">√</font>' : '<font color="red">X</font>');
+            }
 
 
             text.innerHTML = txt;

@@ -130,7 +130,7 @@ function hashLicenseString(str, nBytes)
         let length = bytes.length - nBytes;
         
 
-        while (length > 0)
+        while (length > 1)
         {
             for (let i = 0; i < nBytes; i++)
                 bytes[i] ^= bytes[pos+i];

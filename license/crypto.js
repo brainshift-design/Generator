@@ -74,6 +74,9 @@ function createCryptoKeys(e = 65537n)
 
     const  d   = bigModInvert(e, _phi);
 
+    console.log('n =', n);
+    console.log('d =', d);
+    
     return {
         public:  {n:n, e:e },
         private: {n:n, d:d, p:p, q:q} };
@@ -81,8 +84,8 @@ function createCryptoKeys(e = 65537n)
 
 
 
-function encryptBlock(n, key, sign  ) { return bigPowMod(n, (sign   ? key.d : key.e), key.n); }        
-function decryptBlock(n, key, verify) { return bigPowMod(n, (verify ? key.e : key.d), key.n); }        
+function encryptDataBlock(n, key, sign  ) { return bigPowMod(n, (sign   ? key.d : key.e), key.n); }        
+function decryptDataBlock(n, key, verify) { return bigPowMod(n, (verify ? key.e : key.d), key.n); }        
 
 
 
@@ -96,6 +99,10 @@ function verify (data, key) { return decryptData(data, key, true); } // but I pr
 
 function encryptData(data, key, sign)
 {
+    console.log('data =', data);
+    console.log('key =',  key );
+    console.log('sign =', sign);
+
     // prep array should be a multiple of cryptoBufferSize
     const prep   = new Uint8Array(Math.ceil((data.length) / cryptoBufferSize) * cryptoBufferSize); 
     const cipher = new Uint8Array(prep.length);
@@ -115,7 +122,7 @@ function encryptData(data, key, sign)
         const blockSize  = Math.min(length, cryptoBufferSize);
         
         const block = bigFromBufferAt(prep, blockStart, cryptoBufferSize);
-        const enc   = encryptBlock(block, key, sign);
+        const enc   = encryptDataBlock(block, key, sign);
         
         bigToBufferAt(enc, cipher, blockStart, cryptoBufferSize);
         
@@ -143,7 +150,7 @@ function decryptData(cipher, key, verify)
         var blockSize  = Math.min(length, cryptoBufferSize);
 
         var block = bigFromBufferAt(cipher, blockStart, cryptoBufferSize);
-        var dec   = decryptBlock(block, key, verify);
+        var dec   = decryptDataBlock(block, key, verify);
         bigToBufferAt(dec, data, blockStart, cryptoBufferSize); 
 
         nBlock++;
