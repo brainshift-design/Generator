@@ -887,6 +887,17 @@ const BlendModes = [
     [BLEND_COLOR, 'color', 'COLOR'],
     [BLEND_LUMINOSITY, 'luminosity', 'LUMINOSITY']
 ];
+const FONT_WEIGHTS = [
+    ['thin', 100],
+    ['extra light', 200],
+    ['light', 300],
+    ['regular', 400],
+    ['medium', 500],
+    ['semi bold', 600],
+    ['bold', 700],
+    ['extra bold', 800],
+    ['black', 900]
+];
 const base32chars = '12345679ABCDEFGHJKLMNPQRSTUVWXYZ';
 function arrayToBase32(array, chars = base32chars) {
     let base32 = '';
@@ -2854,7 +2865,7 @@ function figCreateText(genText) {
         return __awaiter(this, void 0, void 0, function* () {
             const fontName = {
                 family: genText.font,
-                style: 'Regular'
+                style: genText.style
             };
             yield figma.loadFontAsync(fontName);
             figText.fontName = fontName;
@@ -2897,7 +2908,7 @@ function figUpdateText(figText, genText) {
         return __awaiter(this, void 0, void 0, function* () {
             const fontName = {
                 family: genText.font,
-                style: 'Regular'
+                style: genText.style
             };
             yield figma.loadFontAsync(fontName);
             figText.fontName = fontName;

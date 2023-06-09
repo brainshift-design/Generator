@@ -7,8 +7,8 @@ extends OpShape
     paramWidth;
     paramHeight;
     paramFont;
-    paramStyle;
     paramSize;
+    paramStyle;
     paramAlignH;
     paramAlignV;
     paramLineHeight;
@@ -37,8 +37,8 @@ extends OpShape
         this.addParam(this.paramWidth         = new NumberParam('width',         'width',  true,  true, true, 0));
         this.addParam(this.paramHeight        = new NumberParam('height',        'height', true,  true, true, 0));
         this.addParam(this.paramFont          = new SelectParam('font',          'font',   false, true, true, figUniqueFontNames, interIndex));
-        this.addParam(this.paramStyle         = new SelectParam('style',         'style',  false, true, true, [''], 0));
         this.addParam(this.paramSize          = new NumberParam('size',          'size',   true,  true, true,  12, 1));
+        this.addParam(this.paramStyle         = new SelectParam('style',         'style',  false, true, true, [''], 0));
         this.addParam(this.paramAlignH        = new SelectParam('alignH',        'align',  true,  true, true, ['left', 'center', 'right', 'justify'], 0));
         this.addParam(this.paramAlignV        = new SelectParam('alignV',        'align',  true,  true, true, ['bottom', 'middle', 'top'], 1));
         this.addParam(this.paramLineHeight    = new NumberParam('lineHeight',    'line',   true,  true, true, 100));
@@ -79,13 +79,10 @@ extends OpShape
             : '';
 
 
-        const fontName = figUniqueFontNames[this.paramFont.value.toNumber()];
+        const fontName   = figUniqueFontNames[this.paramFont.value.toNumber()];
+        const fontStyles = getFontStyles(fontName);
         
-        this.paramStyle.setOptions(
-            figFonts
-                .filter(f => f.fontName.family == fontName)
-                .map(f => f.fontName.style));
-
+        this.paramStyle.setOptions(fontStyles);
         this.paramStyle.controls[0].setMax(this.paramStyle.options.length-1);
 
 

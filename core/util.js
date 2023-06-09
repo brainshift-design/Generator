@@ -367,3 +367,23 @@ function daysInMonth(month, year)
     else
         return 31;
 }
+
+
+
+function getFontStyles(fontName)
+{
+    let fonts = figFonts.filter(f => f.fontName.family == fontName)
+
+
+    fonts.sort((a, b) =>
+    {
+        if (a.fontName.style != b.fontName.style)
+            return FONT_WEIGHTS.findIndex(w => w[0] == a.fontName.style.toLowerCase())
+                 - FONT_WEIGHTS.findIndex(w => w[0] == b.fontName.style.toLowerCase());
+
+        return 0;
+    });
+
+    
+    return fonts.map(f => f.fontName.style);
+}

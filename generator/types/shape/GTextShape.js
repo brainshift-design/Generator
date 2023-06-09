@@ -9,8 +9,8 @@ extends GShape
     width         = null;
     height        = null;
     font          = null;
-    style         = null;
     size          = null;
+    style         = null;
     alignH        = null;
     alignV        = null;
     lineHeight    = null;
@@ -165,12 +165,13 @@ extends GShape
             && this.value.lineHeight
             && this.value.letterSpacing)
         {
-            let  x = this.value.x     .value;
-            let  y = this.value.y     .value;
-            let  w = this.value.width .value;
-            let  h = this.value.height.value;
+            let x = this.value.x     .value;
+            let y = this.value.y     .value;
+            let w = this.value.width .value;
+            let h = this.value.height.value;
 
-            const fontName = figUniqueFontNames[this.value.font.value];
+            const fontName   = figUniqueFontNames[this.value.font.value];
+            const fontStyles = getFontStyles(fontName);
 
             const text = new FigmaText(
                 this.nodeId,
@@ -179,8 +180,8 @@ extends GShape
                 this.value.text.value,
                 x, y, w, h,
                 fontName,
-                this.value.style        .value,
                 this.value.size         .value,
+                fontStyles[Math.min(this.value.style.value, fontStyles.length-1)],
                 this.value.alignH       .value,
                 this.value.alignV       .value,
                 this.value.lineHeight   .value,

@@ -2674,6 +2674,26 @@ function daysInMonth(month, year)
 }
 
 
+
+function getFontStyles(fontName)
+{
+    let fonts = figFonts.filter(f => f.fontName.family == fontName)
+
+
+    fonts.sort((a, b) =>
+    {
+        if (a.fontName.style != b.fontName.style)
+            return FONT_WEIGHTS.findIndex(w => w[0] == a.fontName.style.toLowerCase())
+                 - FONT_WEIGHTS.findIndex(w => w[0] == b.fontName.style.toLowerCase());
+
+        return 0;
+    });
+
+    
+    return fonts.map(f => f.fontName.style);
+}
+
+
 "use strict";
 
 // Base64 / binary data / UTF-8 strings utilities
@@ -4338,6 +4358,21 @@ const BlendModes =
 ];
 
 
+
+const FONT_WEIGHTS =
+[
+    ['thin',        100],
+    ['extra light', 200],
+    ['light',       300],
+    ['regular',     400],
+    ['medium',      500],
+    ['semi bold',   600],
+    ['bold',        700],
+    ['extra bold',  800],
+    ['black',       900]
+];
+
+
 class FigmaObject
 {
     type;
@@ -4842,8 +4877,8 @@ extends FigmaShape
     width;
     height;
     font;
-    style;
     size;
+    style;
     alignH;
     alignV;
     lineHeight;
@@ -4851,7 +4886,7 @@ extends FigmaShape
 
 
 
-    constructor(nodeId, objectId, objectName, text, x, y, width, height, font, style, size, alignH, alignV, lineHeight, letterSpacing)
+    constructor(nodeId, objectId, objectName, text, x, y, width, height, font, size, style, alignH, alignV, lineHeight, letterSpacing)
     {
         super(TEXT_SHAPE, nodeId, objectId, objectName);
         
@@ -4861,8 +4896,8 @@ extends FigmaShape
         this.width         = width;
         this.height        = height;
         this.font          = font;
-        this.style         = style;
         this.size          = size;
+        this.style         = style;
         this.alignH        = alignH;
         this.alignV        = alignV;
         this.lineHeight    = lineHeight;
@@ -4883,8 +4918,8 @@ extends FigmaShape
             this.width,
             this.height,
             this.font,
-            this.style,
             this.size,
+            this.style,
             this.alignH,
             this.alignV,
             this.lineHeight,
@@ -20837,8 +20872,8 @@ extends GShape
     width         = null;
     height        = null;
     font          = null;
-    style         = null;
     size          = null;
+    style         = null;
     alignH        = null;
     alignV        = null;
     lineHeight    = null;
@@ -20993,12 +21028,13 @@ extends GShape
             && this.value.lineHeight
             && this.value.letterSpacing)
         {
-            let  x = this.value.x     .value;
-            let  y = this.value.y     .value;
-            let  w = this.value.width .value;
-            let  h = this.value.height.value;
+            let x = this.value.x     .value;
+            let y = this.value.y     .value;
+            let w = this.value.width .value;
+            let h = this.value.height.value;
 
-            const fontName = figUniqueFontNames[this.value.font.value];
+            const fontName   = figUniqueFontNames[this.value.font.value];
+            const fontStyles = getFontStyles(fontName);
 
             const text = new FigmaText(
                 this.nodeId,
@@ -21007,8 +21043,8 @@ extends GShape
                 this.value.text.value,
                 x, y, w, h,
                 fontName,
-                this.value.style        .value,
                 this.value.size         .value,
+                fontStyles[Math.min(this.value.style.value, fontStyles.length-1)],
                 this.value.alignH       .value,
                 this.value.alignV       .value,
                 this.value.lineHeight   .value,
@@ -27058,7 +27094,6 @@ function genParseRectangle(parse)
         case 'y':      rect.y      = genParse(parse); break;
         case 'width':  rect.width  = genParse(parse); break;
         case 'height': rect.height = genParse(parse); break;
-        //case 'angle':  rect.angle  = genParse(parse); break;
         case 'round':  rect.round  = genParse(parse); break;
         case 'props':  rect.props  = genParse(parse); break;
         }
@@ -27123,7 +27158,6 @@ function genParseLine(parse)
         case 'x':     line.x     = genParse(parse); break;
         case 'y':     line.y     = genParse(parse); break;
         case 'width': line.width = genParse(parse); break;
-        //case 'angle': line.angle = genParse(parse); break;
         case 'props': line.props = genParse(parse); break;
         }
     }
@@ -27188,7 +27222,6 @@ function genParseEllipse(parse)
         case 'y':      ellipse.y      = genParse(parse); break;
         case 'width':  ellipse.width  = genParse(parse); break;
         case 'height': ellipse.height = genParse(parse); break;
-        //case 'angle':  ellipse.angle  = genParse(parse); break;
         case 'from':   ellipse.from   = genParse(parse); break;
         case 'to':     ellipse.to     = genParse(parse); break;
         case 'inner':  ellipse.inner  = genParse(parse); break;
@@ -27256,7 +27289,6 @@ function genParsePolygon(parse)
         case 'y':       poly.y       = genParse(parse); break;
         case 'width':   poly.width   = genParse(parse); break;
         case 'height':  poly.height  = genParse(parse); break;
-        //case 'angle':   poly.angle   = genParse(parse); break;
         case 'round':   poly.round   = genParse(parse); break;
         case 'corners': poly.corners = genParse(parse); break;
         case 'props':   poly.props   = genParse(parse); break;
@@ -27323,7 +27355,6 @@ function genParseStar(parse)
         case 'y':      star.y      = genParse(parse); break;
         case 'width':  star.width  = genParse(parse); break;
         case 'height': star.height = genParse(parse); break;
-        //case 'angle':  star.angle  = genParse(parse); break;
         case 'round':  star.round  = genParse(parse); break;
         case 'points': star.points = genParse(parse); break;
         case 'convex': star.convex = genParse(parse); break;
@@ -27392,10 +27423,9 @@ function genParseTextShape(parse)
         case 'y':             text.y             = genParse(parse); break;
         case 'width':         text.width         = genParse(parse); break;
         case 'height':        text.height        = genParse(parse); break;
-        //case 'angle':         text.angle         = genParse(parse); break;
         case 'font':          text.font          = genParse(parse); break;
-        case 'style':         text.style         = genParse(parse); break;
         case 'size':          text.size          = genParse(parse); break;
+        case 'style':         text.style         = genParse(parse); break;
         case 'props':         text.props         = genParse(parse); break;
         case 'alignH':        text.alignH        = genParse(parse); break;
         case 'alignV':        text.alignV        = genParse(parse); break;

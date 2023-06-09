@@ -27,7 +27,7 @@ function figCreateText(genText)
         const fontName = 
         { 
             family: genText.font, 
-            style: 'Regular' 
+            style:  genText.style
         };
 
 
@@ -81,7 +81,7 @@ function figUpdateText(figText, genText)
         const fontName = 
         { 
             family: genText.font, 
-            style: 'Regular' 
+            style:  genText.style
         };
 
 
