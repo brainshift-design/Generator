@@ -3809,7 +3809,7 @@ function applyFigmaTransform(figObj, tl, tr, bl)
 
 
 
-function setObjectTransform(figObj, genObj)
+function setObjectTransform(figObj, genObj, setSize = true)
 {
     const xp0 = point(genObj.xp0.x, genObj.xp0.y);
     const xp1 = point(genObj.xp1.x, genObj.xp1.y);
@@ -3818,12 +3818,15 @@ function setObjectTransform(figObj, genObj)
     applyFigmaTransform(figObj, xp0, xp1, xp2);
 
 
-    const scaleX = distance(xp0, xp1);
-    const scaleY = distance(xp0, xp2);
+    if (setSize)
+    {
+        const scaleX = distance(xp0, xp1);
+        const scaleY = distance(xp0, xp2);
 
-    figObj.resizeWithoutConstraints(
-                        Math.max(0.01, scaleX),
+        figObj.resizeWithoutConstraints(
+                            Math.max(0.01, scaleX),
             genObj.height ? Math.max(0.01, scaleY) : 0.01);
+    }
 }
 
 
@@ -4639,7 +4642,7 @@ function figCreateVectorPath(genPath)
     figPath.cornerRadius = genPath.round;
 
 
-    setObjectTransform(figPath, genPath);
+    setObjectTransform(figPath, genPath, false);
     setObjectProps    (figPath, genPath);
 
 
@@ -4666,7 +4669,7 @@ function figUpdateVectorPath(figPath, genPath)
     figPath.cornerRadius = genPath.round;
     
 
-    setObjectTransform(figPath, genPath);
+    setObjectTransform(figPath, genPath, false);
     setObjectProps    (figPath, genPath);
 }
 

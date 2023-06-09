@@ -2494,14 +2494,16 @@ function applyFigmaTransform(figObj, tl, tr, bl) {
             xform[1]
         ];
 }
-function setObjectTransform(figObj, genObj) {
+function setObjectTransform(figObj, genObj, setSize = true) {
     const xp0 = point(genObj.xp0.x, genObj.xp0.y);
     const xp1 = point(genObj.xp1.x, genObj.xp1.y);
     const xp2 = point(genObj.xp2.x, genObj.xp2.y);
     applyFigmaTransform(figObj, xp0, xp1, xp2);
-    const scaleX = distance(xp0, xp1);
-    const scaleY = distance(xp0, xp2);
-    figObj.resizeWithoutConstraints(Math.max(0.01, scaleX), genObj.height ? Math.max(0.01, scaleY) : 0.01);
+    if (setSize) {
+        const scaleX = distance(xp0, xp1);
+        const scaleY = distance(xp0, xp2);
+        figObj.resizeWithoutConstraints(Math.max(0.01, scaleX), genObj.height ? Math.max(0.01, scaleY) : 0.01);
+    }
 }
 function setPointTransform(figPoint, genPoint) {
     figPoint.resizeWithoutConstraints(0.01, 0.01);
@@ -2961,7 +2963,7 @@ function figCreateVectorPath(genPath) {
             data: genPath.pathData
         }];
     figPath.cornerRadius = genPath.round;
-    setObjectTransform(figPath, genPath);
+    setObjectTransform(figPath, genPath, false);
     setObjectProps(figPath, genPath);
     return figPath;
 }
@@ -2974,6 +2976,6 @@ function figUpdateVectorPath(figPath, genPath) {
             data: genPath.pathData
         }];
     figPath.cornerRadius = genPath.round;
-    setObjectTransform(figPath, genPath);
+    setObjectTransform(figPath, genPath, false);
     setObjectProps(figPath, genPath);
 }
