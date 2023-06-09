@@ -3794,21 +3794,24 @@ function applyFigmaTransform(figObj, tl, tr, bl)
 
 
 
-function setObjectTransform(figObj, genObj)
+function setObjectTransform(figObj, genObj, setSize = true)
 {
-    const xp0   = point(genObj.xp0.x, genObj.xp0.y);
-    const xp1   = point(genObj.xp1.x, genObj.xp1.y);
-    const xp2   = point(genObj.xp2.x, genObj.xp2.y);
+    const xp0 = point(genObj.xp0.x, genObj.xp0.y);
+    const xp1 = point(genObj.xp1.x, genObj.xp1.y);
+    const xp2 = point(genObj.xp2.x, genObj.xp2.y);
 
     applyFigmaTransform(figObj, xp0, xp1, xp2);
 
 
-    const scaleX = distance(xp0, xp1);
-    const scaleY = distance(xp0, xp2);
+    if (setSize)
+    {
+        const scaleX = distance(xp0, xp1);
+        const scaleY = distance(xp0, xp2);
 
-    figObj.resizeWithoutConstraints(
-                        Math.max(0.01, scaleX),
-        genObj.height ? Math.max(0.01, scaleY) : 0);
+        figObj.resizeWithoutConstraints(
+                            Math.max(0.01, scaleX),
+            genObj.height ? Math.max(0.01, scaleY) : 0);
+    }
 }
 
 
@@ -4485,26 +4488,46 @@ function figCreateText(genText)
         return figText;
 
 
-    const fontName = 
-    { 
-        family: genText.font, 
-        style: 'Regular' 
-    };
-
     (async function() 
     {
+        const fontName = 
+        { 
+            family: genText.font, 
+            style: 'Regular' 
+        };
+
+
         await figma.loadFontAsync(fontName); 
 
-        figText.fontName   = fontName;
-        figText.fontSize   = Math.max(1, genText.size);
+        figText.fontName      = fontName;
+        figText.fontSize      = Math.max(1, genText.size);
         
-        figText.characters = genText.text;
+        figText.characters    = genText.text;
+
+        figText.lineHeight    = {unit: 'PERCENT', value: genText.lineHeight   };
+        figText.letterSpacing = {unit: 'PERCENT', value: genText.letterSpacing};
+
+
+             if (genText.alignH == 0) figText.textAlignHorizontal = 'LEFT';
+        else if (genText.alignH == 1) figText.textAlignHorizontal = 'CENTER';
+        else if (genText.alignH == 2) figText.textAlignHorizontal = 'RIGHT';
+        else if (genText.alignH == 3) figText.textAlignHorizontal = 'JUSTIFIED';
+
+             if (genText.alignV == 0) figText.textAlignVertical   = 'TOP';
+        else if (genText.alignV == 1) figText.textAlignVertical   = 'CENTER';
+        else if (genText.alignV == 2) figText.textAlignVertical   = 'BOTTOM';
+
+
+        if (     genText.width  == 0
+              && genText.height == 0) figText.textAutoResize = 'WIDTH_AND_HEIGHT';
+        else if (genText.height == 0) figText.textAutoResize = 'HEIGHT';
+        else                          figText.textAutoResize = 'NONE';
+        
+
+        setObjectTransform(figText, genText, false);
+        setObjectProps    (figText, genText);
+
     })();
-
-
-    setObjectTransform(figText, genText);
-    setObjectProps    (figText, genText);
-
 
     return figText;
 }
@@ -4513,32 +4536,52 @@ function figCreateText(genText)
 
 function figUpdateText(figText, genText)
 {
+    figText.name = makeObjectName(genText);
+
     if (!genTextIsValid(genText))
         return;
 
 
-    const fontName = 
-    { 
-        family: genText.font, 
-        style: 'Regular' 
-    };
-
     (async function() 
     { 
+        const fontName = 
+        { 
+            family: genText.font, 
+            style: 'Regular' 
+        };
+
+
         await figma.loadFontAsync(fontName); 
 
-        figText.fontName   = fontName;
-        figText.fontSize   = Math.max(1, genText.size);
+        figText.fontName      = fontName;
+        figText.fontSize      = Math.max(1, genText.size);
 
-        figText.characters = genText.text;
+        figText.characters    = genText.text;
+
+        figText.lineHeight    = {unit: 'PERCENT', value: genText.lineHeight   };
+        figText.letterSpacing = {unit: 'PERCENT', value: genText.letterSpacing};
+
+
+             if (genText.alignH == 0) figText.textAlignHorizontal = 'LEFT';
+        else if (genText.alignH == 1) figText.textAlignHorizontal = 'CENTER';
+        else if (genText.alignH == 2) figText.textAlignHorizontal = 'RIGHT';
+        else if (genText.alignH == 3) figText.textAlignHorizontal = 'JUSTIFIED';
+
+             if (genText.alignV == 0) figText.textAlignVertical   = 'TOP';
+        else if (genText.alignV == 1) figText.textAlignVertical   = 'CENTER';
+        else if (genText.alignV == 2) figText.textAlignVertical   = 'BOTTOM';
+
+
+        if (     genText.width  == 0
+              && genText.height == 0) figText.textAutoResize = 'WIDTH_AND_HEIGHT';
+        else if (genText.height == 0) figText.textAutoResize = 'HEIGHT';
+        else                          figText.textAutoResize = 'NONE';
+
+
+        setObjectTransform(figText, genText, false);
+        setObjectProps    (figText, genText);
+
     })();
-
-
-    figText.name = makeObjectName(genText);
-
-
-    setObjectTransform(figText, genText);
-    setObjectProps    (figText, genText);
 }
 
 

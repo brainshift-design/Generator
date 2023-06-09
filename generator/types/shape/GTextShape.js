@@ -169,8 +169,6 @@ extends GShape
             let  y = this.value.y     .value;
             let  w = this.value.width .value;
             let  h = this.value.height.value;
-            let  a = 0;
-            let _a = a/360*Tau;
 
             const fontName = figUniqueFontNames[this.value.font.value];
 

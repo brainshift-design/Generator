@@ -5,13 +5,12 @@ extends FigmaShape
     y;
     width;
     height;
-    //angle;
     round;
     corners;
 
 
 
-    constructor(nodeId, objectId, objectName, x, y, width, height, /*angle,*/ round, corners)
+    constructor(nodeId, objectId, objectName, x, y, width, height, round, corners)
     {
         super(POLYGON, nodeId, objectId, objectName);
         
@@ -19,7 +18,6 @@ extends FigmaShape
         this.y       = y;
         this.width   = width;
         this.height  = height;
-        //this.angle   = angle;
         this.round   = round;
         this.corners = corners;
     }
@@ -36,7 +34,6 @@ extends FigmaShape
             this.y,
             this.width,
             this.height,
-            //this.angle,
             this.round,
             this.corners);
 

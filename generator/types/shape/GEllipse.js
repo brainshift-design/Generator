@@ -127,7 +127,7 @@ extends GShape
                     this.nodeId,
                     this.nodeId,
                     this.nodeName,
-                    x, y, w, h, a, f, t, i);
+                    x, y, w, h, f, t, i);
 
                 ellipse.createDefaultTransform(x, y);
 

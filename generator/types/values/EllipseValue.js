@@ -5,7 +5,6 @@ extends ShapeValue
     y;
     width;
     height;
-    //angle;
     from;
     to;
     inner;
@@ -17,7 +16,6 @@ extends ShapeValue
                 y      = new NumberValue(0), 
                 width  = new NumberValue(0), 
                 height = new NumberValue(0), 
-                //angle  = new NumberValue(0),
                 from   = new NumberValue(0),
                 to     = new NumberValue(0),
                 inner  = new NumberValue(0))
@@ -28,7 +26,6 @@ extends ShapeValue
         this.y      = y;
         this.width  = width;
         this.height = height;
-        //this.angle  = angle;
         this.from   = from;
         this.to     = to;
         this.inner  = inner;
@@ -44,7 +41,6 @@ extends ShapeValue
             this.y     .copy(), 
             this.width .copy(), 
             this.height.copy(), 
-            //this.angle .copy(),
             this.from  .copy(),
             this.to    .copy(),
             this.inner .copy());
@@ -63,7 +59,6 @@ extends ShapeValue
             && this.y     .equals(ellipse.y     )
             && this.width .equals(ellipse.width )
             && this.height.equals(ellipse.height)
-            //&& this.angle .equals(ellipse.angle )
             && this.from  .equals(ellipse.from  )
             && this.to    .equals(ellipse.to    )
             && this.inner .equals(ellipse.inner );
@@ -85,7 +80,6 @@ extends ShapeValue
             && this.y     .isValid()
             && this.width .isValid()
             && this.height.isValid()
-            //&& this.angle .isValid()
             && this.from  .isValid()
             && this.to    .isValid()
             && this.inner .isValid();
@@ -106,7 +100,6 @@ extends ShapeValue
             + ' ' + this.y     .toString()
             + ' ' + this.width .toString()
             + ' ' + this.height.toString()
-            //+ ' ' + this.angle .toString()
             + ' ' + this.from  .toString()
             + ' ' + this.to    .toString()
             + ' ' + this.inner .toString();
@@ -120,7 +113,6 @@ extends ShapeValue
             + ' ' + this.y     .toDisplayString()
             + ' ' + this.width .toDisplayString()
             + ' ' + this.height.toDisplayString()
-            //+ ' ' + this.angle .toDisplayString()
             + ' ' + this.from  .toDisplayString()
             + ' ' + this.to    .toDisplayString()
             + ' ' + this.inner .toDisplayString();
@@ -134,7 +126,6 @@ extends ShapeValue
         NumberValue.NaN,
         NumberValue.NaN,
         NumberValue.NaN,
-        //NumberValue.NaN,
         NumberValue.NaN,
         NumberValue.NaN,
         NumberValue.NaN);
@@ -162,7 +153,6 @@ function parseEllipseValue(str, i = -1)
     const y      = parseNumberValue(str[i]); i += y     [1];
     const width  = parseNumberValue(str[i]); i += width [1];
     const height = parseNumberValue(str[i]); i += height[1];
-    //const angle  = parseNumberValue(str[i]); i += angle [1];
     const from   = parseNumberValue(str[i]); i += from  [1];
     const to     = parseNumberValue(str[i]); i += to    [1];
     const inner  = parseNumberValue(str[i]); i += inner [1];
@@ -174,7 +164,6 @@ function parseEllipseValue(str, i = -1)
         y     [0],
         width [0],
         height[0],
-        //angle [0],
         from  [0],
         to    [0],
         inner [0]);

@@ -5,7 +5,6 @@ extends ShapeValue
     y;
     width;
     height;
-    //angle;
     round;
     corners;
 
@@ -16,7 +15,6 @@ extends ShapeValue
                 y       = new NumberValue(0), 
                 width   = new NumberValue(0), 
                 height  = new NumberValue(0), 
-                //angle   = new NumberValue(0), 
                 round   = new NumberValue(0), 
                 corners = new NumberValue(0))
     {
@@ -26,7 +24,6 @@ extends ShapeValue
         this.y       = y;
         this.width   = width;
         this.height  = height;
-        //this.angle   = angle;
         this.round   = round;
         this.corners = corners;
     }
@@ -41,7 +38,6 @@ extends ShapeValue
             this.y      .copy(), 
             this.width  .copy(), 
             this.height .copy(), 
-            //this.angle  .copy(), 
             this.round  .copy(), 
             this.corners.copy());
     
@@ -59,7 +55,6 @@ extends ShapeValue
             && this.y      .equals(poly.y      )
             && this.width  .equals(poly.width  )
             && this.height .equals(poly.height )
-            //&& this.angle  .equals(poly.angle  )
             && this.round  .equals(poly.round  )
             && this.corners.equals(poly.corners);
     }
@@ -80,7 +75,6 @@ extends ShapeValue
             && this.y      .isValid()
             && this.width  .isValid()
             && this.height .isValid()
-            //&& this.angle  .isValid()
             && this.round  .isValid()
             && this.corners.isValid();
     }
@@ -100,7 +94,6 @@ extends ShapeValue
             + ' ' + this.y      .toString()
             + ' ' + this.width  .toString()
             + ' ' + this.height .toString()
-            //+ ' ' + this.angle  .toString()
             + ' ' + this.round  .toString()
             + ' ' + this.corners.toString();
     }
@@ -113,7 +106,6 @@ extends ShapeValue
             + ' ' + this.y      .toDisplayString()
             + ' ' + this.width  .toDisplayString()
             + ' ' + this.height .toDisplayString()
-            //+ ' ' + this.angle  .toDisplayString()
             + ' ' + this.round  .toDisplayString()
             + ' ' + this.corners.toDisplayString();
     }
@@ -126,7 +118,6 @@ extends ShapeValue
         NumberValue.NaN,
         NumberValue.NaN,
         NumberValue.NaN,
-        //NumberValue.NaN,
         NumberValue.NaN,
         NumberValue.NaN);
 }
@@ -153,7 +144,6 @@ function parsePolygonValue(str, i = -1)
     const y       = parseNumberValue(str[i]); i += y      [1];
     const width   = parseNumberValue(str[i]); i += width  [1];
     const height  = parseNumberValue(str[i]); i += height [1];
-    //const angle   = parseNumberValue(str[i]); i += angle  [1];
     const round   = parseNumberValue(str[i]); i += round  [1];
     const corners = parseNumberValue(str[i]); i += corners[1];
 
@@ -164,7 +154,6 @@ function parsePolygonValue(str, i = -1)
         y      [0],
         width  [0],
         height [0],
-        //angle  [0],
         round  [0],
         corners[0]);
 

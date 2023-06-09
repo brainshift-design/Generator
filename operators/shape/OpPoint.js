@@ -19,8 +19,8 @@ extends OpShapeBase
         this.addInput (new Input ([POINT_VALUE], getNodeInputValuesForUndo, this.input_getBackInitValue));
         this.addOutput(new Output([POINT_VALUE], this.output_genRequest, getNodeOutputValuesForUndo, this.output_backInit));
 
-        this.addParam(this.paramX = new NumberParam('x', 'x', true, true, true, 0));
-        this.addParam(this.paramX = new NumberParam('y', 'y', true, true, true, 0));
+        this.addParam(this.paramX = new NumberParam('x', 'X', true, true, true, 0));
+        this.addParam(this.paramX = new NumberParam('y', 'Y', true, true, true, 0));
 
 
         this.setAllParamDividers(0.45);

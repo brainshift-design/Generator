@@ -22,26 +22,46 @@ function figCreateText(genText)
         return figText;
 
 
-    const fontName = 
-    { 
-        family: genText.font, 
-        style: 'Regular' 
-    };
-
     (async function() 
     {
+        const fontName = 
+        { 
+            family: genText.font, 
+            style: 'Regular' 
+        };
+
+
         await figma.loadFontAsync(fontName); 
 
-        figText.fontName   = fontName;
-        figText.fontSize   = Math.max(1, genText.size);
+        figText.fontName      = fontName;
+        figText.fontSize      = Math.max(1, genText.size);
         
-        figText.characters = genText.text;
+        figText.characters    = genText.text;
+
+        figText.lineHeight    = {unit: 'PERCENT', value: genText.lineHeight   };
+        figText.letterSpacing = {unit: 'PERCENT', value: genText.letterSpacing};
+
+
+             if (genText.alignH == 0) figText.textAlignHorizontal = 'LEFT';
+        else if (genText.alignH == 1) figText.textAlignHorizontal = 'CENTER';
+        else if (genText.alignH == 2) figText.textAlignHorizontal = 'RIGHT';
+        else if (genText.alignH == 3) figText.textAlignHorizontal = 'JUSTIFIED';
+
+             if (genText.alignV == 0) figText.textAlignVertical   = 'TOP';
+        else if (genText.alignV == 1) figText.textAlignVertical   = 'CENTER';
+        else if (genText.alignV == 2) figText.textAlignVertical   = 'BOTTOM';
+
+
+        if (     genText.width  == 0
+              && genText.height == 0) figText.textAutoResize = 'WIDTH_AND_HEIGHT';
+        else if (genText.height == 0) figText.textAutoResize = 'HEIGHT';
+        else                          figText.textAutoResize = 'NONE';
+        
+
+        setObjectTransform(figText, genText, false);
+        setObjectProps    (figText, genText);
+
     })();
-
-
-    setObjectTransform(figText, genText);
-    setObjectProps    (figText, genText);
-
 
     return figText;
 }
@@ -50,32 +70,52 @@ function figCreateText(genText)
 
 function figUpdateText(figText, genText)
 {
+    figText.name = makeObjectName(genText);
+
     if (!genTextIsValid(genText))
         return;
 
 
-    const fontName = 
-    { 
-        family: genText.font, 
-        style: 'Regular' 
-    };
-
     (async function() 
     { 
+        const fontName = 
+        { 
+            family: genText.font, 
+            style: 'Regular' 
+        };
+
+
         await figma.loadFontAsync(fontName); 
 
-        figText.fontName   = fontName;
-        figText.fontSize   = Math.max(1, genText.size);
+        figText.fontName      = fontName;
+        figText.fontSize      = Math.max(1, genText.size);
 
-        figText.characters = genText.text;
+        figText.characters    = genText.text;
+
+        figText.lineHeight    = {unit: 'PERCENT', value: genText.lineHeight   };
+        figText.letterSpacing = {unit: 'PERCENT', value: genText.letterSpacing};
+
+
+             if (genText.alignH == 0) figText.textAlignHorizontal = 'LEFT';
+        else if (genText.alignH == 1) figText.textAlignHorizontal = 'CENTER';
+        else if (genText.alignH == 2) figText.textAlignHorizontal = 'RIGHT';
+        else if (genText.alignH == 3) figText.textAlignHorizontal = 'JUSTIFIED';
+
+             if (genText.alignV == 0) figText.textAlignVertical   = 'TOP';
+        else if (genText.alignV == 1) figText.textAlignVertical   = 'CENTER';
+        else if (genText.alignV == 2) figText.textAlignVertical   = 'BOTTOM';
+
+
+        if (     genText.width  == 0
+              && genText.height == 0) figText.textAutoResize = 'WIDTH_AND_HEIGHT';
+        else if (genText.height == 0) figText.textAutoResize = 'HEIGHT';
+        else                          figText.textAutoResize = 'NONE';
+
+
+        setObjectTransform(figText, genText, false);
+        setObjectProps    (figText, genText);
+
     })();
-
-
-    figText.name = makeObjectName(genText);
-
-
-    setObjectTransform(figText, genText);
-    setObjectProps    (figText, genText);
 }
 
 

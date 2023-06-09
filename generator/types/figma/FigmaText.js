@@ -6,7 +6,6 @@ extends FigmaShape
     y;
     width;
     height;
-    //angle;
     font;
     style;
     size;
@@ -17,7 +16,7 @@ extends FigmaShape
 
 
 
-    constructor(nodeId, objectId, objectName, text, x, y, width, height, /*angle,*/ font, style, size, alignH, alignV, lineHeight, letterSpacing)
+    constructor(nodeId, objectId, objectName, text, x, y, width, height, font, style, size, alignH, alignV, lineHeight, letterSpacing)
     {
         super(TEXT_SHAPE, nodeId, objectId, objectName);
         
@@ -26,7 +25,6 @@ extends FigmaShape
         this.y             = y;
         this.width         = width;
         this.height        = height;
-        //this.angle         = angle;
         this.font          = font;
         this.style         = style;
         this.size          = size;
@@ -49,7 +47,6 @@ extends FigmaShape
             this.y,
             this.width,
             this.height,
-            //this.angle,
             this.font,
             this.style,
             this.size,

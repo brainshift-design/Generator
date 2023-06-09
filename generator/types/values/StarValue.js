@@ -5,7 +5,6 @@ extends ShapeValue
     y;
     width;
     height;
-    //angle;
     round;
     points;
     convex;
@@ -17,7 +16,6 @@ extends ShapeValue
                 y      = new NumberValue(0), 
                 width  = new NumberValue(0), 
                 height = new NumberValue(0), 
-                //angle  = new NumberValue(0), 
                 round  = new NumberValue(0), 
                 points = new NumberValue(0),
                 convex = new NumberValue(0))
@@ -28,7 +26,6 @@ extends ShapeValue
         this.y      = y;
         this.width  = width;
         this.height = height;
-        //this.angle  = angle;
         this.round  = round;
         this.points = points;
         this.convex = convex;
@@ -44,7 +41,6 @@ extends ShapeValue
             this.y     .copy(), 
             this.width .copy(), 
             this.height.copy(), 
-            //this.angle .copy(), 
             this.round .copy(), 
             this.points.copy(),
             this.convex.copy());
@@ -63,7 +59,6 @@ extends ShapeValue
             && this.y     .equals(star.y     )
             && this.width .equals(star.width )
             && this.height.equals(star.height)
-            //&& this.angle .equals(star.angle )
             && this.round .equals(star.round )
             && this.points.equals(star.points)
             && this.convex.equals(star.convex);
@@ -85,7 +80,6 @@ extends ShapeValue
             && this.y     .isValid()
             && this.width .isValid()
             && this.height.isValid()
-            //&& this.angle .isValid()
             && this.round .isValid()
             && this.points.isValid()
             && this.convex.isValid();
@@ -106,7 +100,6 @@ extends ShapeValue
             + ' ' + this.y     .toString()
             + ' ' + this.width .toString()
             + ' ' + this.height.toString()
-            //+ ' ' + this.angle .toString()
             + ' ' + this.round .toString()
             + ' ' + this.points.toString()
             + ' ' + this.convex.toString();
@@ -120,7 +113,6 @@ extends ShapeValue
             + ' ' + this.y     .toDisplayString()
             + ' ' + this.width .toDisplayString()
             + ' ' + this.height.toDisplayString()
-            //+ ' ' + this.angle .toDisplayString()
             + ' ' + this.round .toDisplayString()
             + ' ' + this.points.toDisplayString()
             + ' ' + this.convex.toDisplayString();
@@ -134,7 +126,6 @@ extends ShapeValue
         NumberValue.NaN,
         NumberValue.NaN,
         NumberValue.NaN,
-        //NumberValue.NaN,
         NumberValue.NaN,
         NumberValue.NaN,
         NumberValue.NaN);
@@ -162,7 +153,6 @@ function parseStarValue(str, i = -1)
     const y      = parseNumberValue(str[i]); i += y     [1];
     const width  = parseNumberValue(str[i]); i += width [1];
     const height = parseNumberValue(str[i]); i += height[1];
-    //const angle  = parseNumberValue(str[i]); i += angle [1];
     const round  = parseNumberValue(str[i]); i += round [1];
     const points = parseNumberValue(str[i]); i += points[1];
     const convex = parseNumberValue(str[i]); i += convex[1];
@@ -174,7 +164,6 @@ function parseStarValue(str, i = -1)
         y     [0],
         width [0],
         height[0],
-        //angle [0],
         round [0],
         points[0],
         convex[0]);

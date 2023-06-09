@@ -9136,18 +9136,16 @@ extends FigmaShape
     x;
     y;
     width;
-    //angle;
 
 
 
-    constructor(nodeId, objectId, objectName, x, y, width)//, angle)
+    constructor(nodeId, objectId, objectName, x, y, width)
     {
         super(LINE, nodeId, objectId, objectName);
         
         this.x     = x;
         this.y     = y;
         this.width = width;
-        //this.angle = angle;
     }
 
 
@@ -9160,8 +9158,7 @@ extends FigmaShape
             this.objectName,
             this.x,
             this.y,
-            this.width);//,
-            //this.angle);
+            this.width);
 
         copy.copyBase(this);
 
@@ -9177,14 +9174,13 @@ extends FigmaShape
     y;
     width;
     height;
-    //angle;
     from;
     to;
     inner;
 
     
 
-    constructor(nodeId, objectId, objectName, x, y, width, height, angle, from, to, inner)
+    constructor(nodeId, objectId, objectName, x, y, width, height, from, to, inner)
     {
         super(ELLIPSE, nodeId, objectId, objectName);
         
@@ -9192,7 +9188,6 @@ extends FigmaShape
         this.y      = y;
         this.width  = width;
         this.height = height;
-        //this.angle  = angle;
         this.from   = from;
         this.to     = to;
         this.inner  = inner;
@@ -9210,7 +9205,6 @@ extends FigmaShape
             this.y,
             this.width,
             this.height,
-            //this.angle,
             this.from,
             this.to,
             this.inner);
@@ -9229,13 +9223,12 @@ extends FigmaShape
     y;
     width;
     height;
-    //angle;
     round;
     corners;
 
 
 
-    constructor(nodeId, objectId, objectName, x, y, width, height, /*angle,*/ round, corners)
+    constructor(nodeId, objectId, objectName, x, y, width, height, round, corners)
     {
         super(POLYGON, nodeId, objectId, objectName);
         
@@ -9243,7 +9236,6 @@ extends FigmaShape
         this.y       = y;
         this.width   = width;
         this.height  = height;
-        //this.angle   = angle;
         this.round   = round;
         this.corners = corners;
     }
@@ -9260,7 +9252,6 @@ extends FigmaShape
             this.y,
             this.width,
             this.height,
-            //this.angle,
             this.round,
             this.corners);
 
@@ -9278,14 +9269,13 @@ extends FigmaShape
     y;
     width;
     height;
-    //angle;
     round;
     points;
     convex;
 
 
 
-    constructor(nodeId, objectId, objectName, x, y, width, height, /*angle,*/ round, points, convex)
+    constructor(nodeId, objectId, objectName, x, y, width, height, round, points, convex)
     {
         super(STAR, nodeId, objectId, objectName);
         
@@ -9293,7 +9283,6 @@ extends FigmaShape
         this.y      = y;
         this.width  = width;
         this.height = height;
-        //this.angle  = angle;
         this.round  = round;
         this.points = points;
         this.convex = convex;
@@ -9311,7 +9300,6 @@ extends FigmaShape
             this.y,
             this.width,
             this.height,
-            //this.angle,
             this.round,
             this.points,
             this.convex);
@@ -9331,7 +9319,6 @@ extends FigmaShape
     y;
     width;
     height;
-    //angle;
     font;
     style;
     size;
@@ -9342,7 +9329,7 @@ extends FigmaShape
 
 
 
-    constructor(nodeId, objectId, objectName, text, x, y, width, height, /*angle,*/ font, style, size, alignH, alignV, lineHeight, letterSpacing)
+    constructor(nodeId, objectId, objectName, text, x, y, width, height, font, style, size, alignH, alignV, lineHeight, letterSpacing)
     {
         super(TEXT_SHAPE, nodeId, objectId, objectName);
         
@@ -9351,7 +9338,6 @@ extends FigmaShape
         this.y             = y;
         this.width         = width;
         this.height        = height;
-        //this.angle         = angle;
         this.font          = font;
         this.style         = style;
         this.size          = size;
@@ -9374,7 +9360,6 @@ extends FigmaShape
             this.y,
             this.width,
             this.height,
-            //this.angle,
             this.font,
             this.style,
             this.size,
@@ -9874,13 +9859,12 @@ extends FigmaShape
     y;
     width;
     height;
-    //angle;
     round;
     children;
 
 
 
-    constructor(nodeId, objectId, objectName, x, y, width, height, angle, round, children = [])
+    constructor(nodeId, objectId, objectName, x, y, width, height, round, children = [])
     {
         super(FRAME, nodeId, objectId, objectName);
         
@@ -9888,7 +9872,6 @@ extends FigmaShape
         this.y        = y;
         this.width    = width;
         this.height   = height;
-        //this.angle    = angle;
         this.round    = round;
         this.children = children.map(c => c.copy());
     }
@@ -9905,7 +9888,6 @@ extends FigmaShape
             this.y,
             this.width,
             this.height,
-            //this.angle,
             this.round,
             this.children);
 
@@ -12840,22 +12822,19 @@ extends ShapeValue
     x;
     y;
     width;
-    //angle;
 
 
 
     constructor(nodeId,
                 x      = new NumberValue(0), 
                 y      = new NumberValue(0), 
-                width  = new NumberValue(0))//, 
-                //angle  = new NumberValue(0))
+                width  = new NumberValue(0))
     {
         super(LINE_VALUE, nodeId);
 
-        this.x      = x;
-        this.y      = y;
-        this.width  = width;
-        //this.angle  = angle;
+        this.x     = x;
+        this.y     = y;
+        this.width = width;
     }
 
 
@@ -12866,8 +12845,7 @@ extends ShapeValue
             this.nodeId,
             this.x    .copy(), 
             this.y    .copy(), 
-            this.width.copy())//, 
-            //this.angle.copy());
+            this.width.copy())
 
         copy.copyBase(this);
 
@@ -12879,10 +12857,9 @@ extends ShapeValue
     equals(line)
     {
         return line
-            && this.x     .equals(line.x    )
-            && this.y     .equals(line.y    )
-            && this.width .equals(line.width);
-            //&& this.angle .equals(line.angle);
+            && this.x    .equals(line.x    )
+            && this.y    .equals(line.y    )
+            && this.width.equals(line.width);
     }
 
 
@@ -12900,7 +12877,6 @@ extends ShapeValue
             && this.x    .isValid()
             && this.y    .isValid()
             && this.width.isValid();
-            //&& this.angle.isValid();
     }
 
 
@@ -12914,20 +12890,18 @@ extends ShapeValue
 
     toString()
     {
-        return      this.x     .toString()
-            + ' ' + this.y     .toString()
-            + ' ' + this.width .toString();
-            //+ ' ' + this.angle .toString();
+        return      this.x    .toString()
+            + ' ' + this.y    .toString()
+            + ' ' + this.width.toString();
     }
 
 
 
     toDisplayString()
     {
-        return      this.x     .toDisplayString()
-            + ' ' + this.y     .toDisplayString()
-            + ' ' + this.width .toDisplayString();
-            //+ ' ' + this.angle .toDisplayString();
+        return      this.x    .toDisplayString()
+            + ' ' + this.y    .toDisplayString()
+            + ' ' + this.width.toDisplayString();
     }
 
 
@@ -12961,15 +12935,13 @@ function parseLineValue(str, i = -1)
     const x     = parseNumberValue(str[i]); i += x    [1];
     const y     = parseNumberValue(str[i]); i += y    [1];
     const width = parseNumberValue(str[i]); i += width[1];
-    //const angle = parseNumberValue(str[i]); i += angle[1];
 
 
     const line = new LineValue(
         '', // set node ID elsewhere
         x    [0],
         y    [0],
-        width[0]);//,
-        //angle[0]);
+        width[0]);
 
 
     i = parseShapeBaseValue(str, i, line);
@@ -12987,7 +12959,6 @@ extends ShapeValue
     y;
     width;
     height;
-    //angle;
     from;
     to;
     inner;
@@ -12999,7 +12970,6 @@ extends ShapeValue
                 y      = new NumberValue(0), 
                 width  = new NumberValue(0), 
                 height = new NumberValue(0), 
-                //angle  = new NumberValue(0),
                 from   = new NumberValue(0),
                 to     = new NumberValue(0),
                 inner  = new NumberValue(0))
@@ -13010,7 +12980,6 @@ extends ShapeValue
         this.y      = y;
         this.width  = width;
         this.height = height;
-        //this.angle  = angle;
         this.from   = from;
         this.to     = to;
         this.inner  = inner;
@@ -13026,7 +12995,6 @@ extends ShapeValue
             this.y     .copy(), 
             this.width .copy(), 
             this.height.copy(), 
-            //this.angle .copy(),
             this.from  .copy(),
             this.to    .copy(),
             this.inner .copy());
@@ -13045,7 +13013,6 @@ extends ShapeValue
             && this.y     .equals(ellipse.y     )
             && this.width .equals(ellipse.width )
             && this.height.equals(ellipse.height)
-            //&& this.angle .equals(ellipse.angle )
             && this.from  .equals(ellipse.from  )
             && this.to    .equals(ellipse.to    )
             && this.inner .equals(ellipse.inner );
@@ -13067,7 +13034,6 @@ extends ShapeValue
             && this.y     .isValid()
             && this.width .isValid()
             && this.height.isValid()
-            //&& this.angle .isValid()
             && this.from  .isValid()
             && this.to    .isValid()
             && this.inner .isValid();
@@ -13088,7 +13054,6 @@ extends ShapeValue
             + ' ' + this.y     .toString()
             + ' ' + this.width .toString()
             + ' ' + this.height.toString()
-            //+ ' ' + this.angle .toString()
             + ' ' + this.from  .toString()
             + ' ' + this.to    .toString()
             + ' ' + this.inner .toString();
@@ -13102,7 +13067,6 @@ extends ShapeValue
             + ' ' + this.y     .toDisplayString()
             + ' ' + this.width .toDisplayString()
             + ' ' + this.height.toDisplayString()
-            //+ ' ' + this.angle .toDisplayString()
             + ' ' + this.from  .toDisplayString()
             + ' ' + this.to    .toDisplayString()
             + ' ' + this.inner .toDisplayString();
@@ -13116,7 +13080,6 @@ extends ShapeValue
         NumberValue.NaN,
         NumberValue.NaN,
         NumberValue.NaN,
-        //NumberValue.NaN,
         NumberValue.NaN,
         NumberValue.NaN,
         NumberValue.NaN);
@@ -13144,7 +13107,6 @@ function parseEllipseValue(str, i = -1)
     const y      = parseNumberValue(str[i]); i += y     [1];
     const width  = parseNumberValue(str[i]); i += width [1];
     const height = parseNumberValue(str[i]); i += height[1];
-    //const angle  = parseNumberValue(str[i]); i += angle [1];
     const from   = parseNumberValue(str[i]); i += from  [1];
     const to     = parseNumberValue(str[i]); i += to    [1];
     const inner  = parseNumberValue(str[i]); i += inner [1];
@@ -13156,7 +13118,6 @@ function parseEllipseValue(str, i = -1)
         y     [0],
         width [0],
         height[0],
-        //angle [0],
         from  [0],
         to    [0],
         inner [0]);
@@ -13177,7 +13138,6 @@ extends ShapeValue
     y;
     width;
     height;
-    //angle;
     round;
     corners;
 
@@ -13188,7 +13148,6 @@ extends ShapeValue
                 y       = new NumberValue(0), 
                 width   = new NumberValue(0), 
                 height  = new NumberValue(0), 
-                //angle   = new NumberValue(0), 
                 round   = new NumberValue(0), 
                 corners = new NumberValue(0))
     {
@@ -13198,7 +13157,6 @@ extends ShapeValue
         this.y       = y;
         this.width   = width;
         this.height  = height;
-        //this.angle   = angle;
         this.round   = round;
         this.corners = corners;
     }
@@ -13213,7 +13171,6 @@ extends ShapeValue
             this.y      .copy(), 
             this.width  .copy(), 
             this.height .copy(), 
-            //this.angle  .copy(), 
             this.round  .copy(), 
             this.corners.copy());
     
@@ -13231,7 +13188,6 @@ extends ShapeValue
             && this.y      .equals(poly.y      )
             && this.width  .equals(poly.width  )
             && this.height .equals(poly.height )
-            //&& this.angle  .equals(poly.angle  )
             && this.round  .equals(poly.round  )
             && this.corners.equals(poly.corners);
     }
@@ -13252,7 +13208,6 @@ extends ShapeValue
             && this.y      .isValid()
             && this.width  .isValid()
             && this.height .isValid()
-            //&& this.angle  .isValid()
             && this.round  .isValid()
             && this.corners.isValid();
     }
@@ -13272,7 +13227,6 @@ extends ShapeValue
             + ' ' + this.y      .toString()
             + ' ' + this.width  .toString()
             + ' ' + this.height .toString()
-            //+ ' ' + this.angle  .toString()
             + ' ' + this.round  .toString()
             + ' ' + this.corners.toString();
     }
@@ -13285,7 +13239,6 @@ extends ShapeValue
             + ' ' + this.y      .toDisplayString()
             + ' ' + this.width  .toDisplayString()
             + ' ' + this.height .toDisplayString()
-            //+ ' ' + this.angle  .toDisplayString()
             + ' ' + this.round  .toDisplayString()
             + ' ' + this.corners.toDisplayString();
     }
@@ -13298,7 +13251,6 @@ extends ShapeValue
         NumberValue.NaN,
         NumberValue.NaN,
         NumberValue.NaN,
-        //NumberValue.NaN,
         NumberValue.NaN,
         NumberValue.NaN);
 }
@@ -13325,7 +13277,6 @@ function parsePolygonValue(str, i = -1)
     const y       = parseNumberValue(str[i]); i += y      [1];
     const width   = parseNumberValue(str[i]); i += width  [1];
     const height  = parseNumberValue(str[i]); i += height [1];
-    //const angle   = parseNumberValue(str[i]); i += angle  [1];
     const round   = parseNumberValue(str[i]); i += round  [1];
     const corners = parseNumberValue(str[i]); i += corners[1];
 
@@ -13336,7 +13287,6 @@ function parsePolygonValue(str, i = -1)
         y      [0],
         width  [0],
         height [0],
-        //angle  [0],
         round  [0],
         corners[0]);
 
@@ -13356,7 +13306,6 @@ extends ShapeValue
     y;
     width;
     height;
-    //angle;
     round;
     points;
     convex;
@@ -13368,7 +13317,6 @@ extends ShapeValue
                 y      = new NumberValue(0), 
                 width  = new NumberValue(0), 
                 height = new NumberValue(0), 
-                //angle  = new NumberValue(0), 
                 round  = new NumberValue(0), 
                 points = new NumberValue(0),
                 convex = new NumberValue(0))
@@ -13379,7 +13327,6 @@ extends ShapeValue
         this.y      = y;
         this.width  = width;
         this.height = height;
-        //this.angle  = angle;
         this.round  = round;
         this.points = points;
         this.convex = convex;
@@ -13395,7 +13342,6 @@ extends ShapeValue
             this.y     .copy(), 
             this.width .copy(), 
             this.height.copy(), 
-            //this.angle .copy(), 
             this.round .copy(), 
             this.points.copy(),
             this.convex.copy());
@@ -13414,7 +13360,6 @@ extends ShapeValue
             && this.y     .equals(star.y     )
             && this.width .equals(star.width )
             && this.height.equals(star.height)
-            //&& this.angle .equals(star.angle )
             && this.round .equals(star.round )
             && this.points.equals(star.points)
             && this.convex.equals(star.convex);
@@ -13436,7 +13381,6 @@ extends ShapeValue
             && this.y     .isValid()
             && this.width .isValid()
             && this.height.isValid()
-            //&& this.angle .isValid()
             && this.round .isValid()
             && this.points.isValid()
             && this.convex.isValid();
@@ -13457,7 +13401,6 @@ extends ShapeValue
             + ' ' + this.y     .toString()
             + ' ' + this.width .toString()
             + ' ' + this.height.toString()
-            //+ ' ' + this.angle .toString()
             + ' ' + this.round .toString()
             + ' ' + this.points.toString()
             + ' ' + this.convex.toString();
@@ -13471,7 +13414,6 @@ extends ShapeValue
             + ' ' + this.y     .toDisplayString()
             + ' ' + this.width .toDisplayString()
             + ' ' + this.height.toDisplayString()
-            //+ ' ' + this.angle .toDisplayString()
             + ' ' + this.round .toDisplayString()
             + ' ' + this.points.toDisplayString()
             + ' ' + this.convex.toDisplayString();
@@ -13485,7 +13427,6 @@ extends ShapeValue
         NumberValue.NaN,
         NumberValue.NaN,
         NumberValue.NaN,
-        //NumberValue.NaN,
         NumberValue.NaN,
         NumberValue.NaN,
         NumberValue.NaN);
@@ -13513,7 +13454,6 @@ function parseStarValue(str, i = -1)
     const y      = parseNumberValue(str[i]); i += y     [1];
     const width  = parseNumberValue(str[i]); i += width [1];
     const height = parseNumberValue(str[i]); i += height[1];
-    //const angle  = parseNumberValue(str[i]); i += angle [1];
     const round  = parseNumberValue(str[i]); i += round [1];
     const points = parseNumberValue(str[i]); i += points[1];
     const convex = parseNumberValue(str[i]); i += convex[1];
@@ -13525,7 +13465,6 @@ function parseStarValue(str, i = -1)
         y     [0],
         width [0],
         height[0],
-        //angle [0],
         round [0],
         points[0],
         convex[0]);
@@ -13547,7 +13486,6 @@ extends ShapeValue
     y;
     width;
     height;
-    //angle;
     font;
     style;
     size;
@@ -13564,7 +13502,6 @@ extends ShapeValue
                 y             = new NumberValue(0), 
                 width         = new NumberValue(0), 
                 height        = new NumberValue(0), 
-                //angle         = new NumberValue(0),
                 font          = new NumberValue(0),
                 style         = new NumberValue(0),
                 size          = new NumberValue(0),
@@ -13580,7 +13517,6 @@ extends ShapeValue
         this.y             = y;
         this.width         = width;
         this.height        = height;
-        //this.angle         = angle;
         this.font          = font;
         this.style         = style;
         this.size          = size;
@@ -13601,7 +13537,6 @@ extends ShapeValue
             this.y            .copy(), 
             this.width        .copy(), 
             this.height       .copy(), 
-            //this.angle        .copy(),
             this.font         .copy(),
             this.style        .copy(),
             this.size         .copy(),
@@ -13625,7 +13560,6 @@ extends ShapeValue
             && this.y            .equals(text.y            )
             && this.width        .equals(text.width        )
             && this.height       .equals(text.height       )
-            //&& this.angle        .equals(text.angle        )
             && this.font         .equals(text.font         )
             && this.style        .equals(text.style        )
             && this.size         .equals(text.size         )
@@ -13652,7 +13586,6 @@ extends ShapeValue
             && this.y            .isValid()
             && this.width        .isValid()
             && this.height       .isValid()
-            //&& this.angle        .isValid()
             && this.font         .isValid()
             && this.style        .isValid()
             && this.size         .isValid()
@@ -13678,7 +13611,6 @@ extends ShapeValue
             + ' ' + this.y            .toString()
             + ' ' + this.width        .toString()
             + ' ' + this.height       .toString()
-            //+ ' ' + this.angle        .toString()
             + ' ' + this.font         .toString()
             + ' ' + this.style        .toString()
             + ' ' + this.size         .toString()
@@ -13697,7 +13629,6 @@ extends ShapeValue
             + ' ' + this.y            .toDisplayString()
             + ' ' + this.width        .toDisplayString()
             + ' ' + this.height       .toDisplayString()
-            //+ ' ' + this.angle        .toDisplayString()
             + ' ' + this.font         .toDisplayString()
             + ' ' + this.style        .toDisplayString()
             + ' ' + this.size         .toDisplayString()
@@ -13716,7 +13647,6 @@ extends ShapeValue
             + ' ' + this.y            .toJson()
             + ' ' + this.width        .toJson()
             + ' ' + this.height       .toJson()
-            //+ ' ' + this.angle        .toJson()
             + ' ' + this.font         .toJson()
             + ' ' + this.style        .toJson()
             + ' ' + this.size         .toJson()
@@ -13735,7 +13665,6 @@ extends ShapeValue
         NumberValue.NaN,
         NumberValue.NaN,
         NumberValue.NaN,
-        //NumberValue.NaN,
         NumberValue.NaN,
         NumberValue.NaN,
         NumberValue.NaN,
@@ -13766,7 +13695,6 @@ function parseTextShapeValue(str, i = -1)
     const y             = parseNumberValue(str[i]); i += y            [1];
     const width         = parseNumberValue(str[i]); i += width        [1];
     const height        = parseNumberValue(str[i]); i += height       [1];
-    //const angle         = parseNumberValue(str[i]); i += angle        [1];
     const font          = parseNumberValue(str[i]); i += font         [1];
     const style         = parseNumberValue(str[i]); i += style        [1];
     const size          = parseNumberValue(str[i]); i += size         [1];
@@ -13783,7 +13711,6 @@ function parseTextShapeValue(str, i = -1)
         y            [0],
         width        [0],
         height       [0],
-        //angle        [0],
         font         [0],
         style        [0],
         size         [0],
@@ -14419,13 +14346,12 @@ extends ShapeValue
     y;
     width;
     height;
-    //angle;
     round;
     children;
 
 
 
-    constructor(nodeId, x, y, width, height, /*angle,*/ round, children)
+    constructor(nodeId, x, y, width, height, round, children)
     {
         super(FRAME_VALUE, nodeId);
 
@@ -14433,7 +14359,6 @@ extends ShapeValue
         this.y        = y;
         this.width    = width;
         this.height   = height;
-        //this.angle    = angle;
         this.round    = round;
         this.children = children;
 
@@ -14450,7 +14375,6 @@ extends ShapeValue
             this.y       .copy(),
             this.width   .copy(),
             this.height  .copy(),
-            //this.angle   .copy(),
             this.round   .copy(),
             this.children.copy());
 
@@ -14468,7 +14392,6 @@ extends ShapeValue
             && this.y       .equals(frame.y       )
             && this.width   .equals(frame.width   )
             && this.height  .equals(frame.height  )
-            //&& this.angle   .equals(frame.angle   )
             && this.round   .equals(frame.round   )
             && this.children.equals(frame.children);
     }
@@ -14488,7 +14411,6 @@ extends ShapeValue
             + ' ' + this.y       .toString()
             + ' ' + this.width   .toString()
             + ' ' + this.height  .toString()
-            //+ ' ' + this.angle   .toString()
             + ' ' + this.round   .toString()
             + ' ' + this.children.toString();
     }
@@ -14501,7 +14423,6 @@ extends ShapeValue
             + ' ' + this.y       .toDisplayString()
             + ' ' + this.width   .toDisplayString()
             + ' ' + this.height  .toDisplayString()
-            //+ ' ' + this.angle   .toDisplayString()
             + ' ' + this.round   .toDisplayString()
             + ' ' + this.children.toDisplayString();
     }
@@ -14521,7 +14442,6 @@ extends ShapeValue
             && this.y       .isValid()
             && this.width   .isValid()
             && this.height  .isValid()
-            //&& this.angle   .isValid()
             && this.round   .isValid()
             && this.children.isValid()
             && super.isValid();
@@ -14534,7 +14454,6 @@ extends ShapeValue
         NumberValue.NaN,
         NumberValue.NaN,
         NumberValue.NaN,
-        //NumberValue.NaN,
         NumberValue.NaN,
         NumberValue.NaN,
         ListValue  .NaN);
@@ -14562,7 +14481,6 @@ function parseFrameValue(str, i = -1)
     const y        = parseNumberValue(str[i]); i += y      [1];
     const width    = parseNumberValue(str[i]); i += width  [1];
     const height   = parseNumberValue(str[i]); i += height [1];
-    //const angle    = parseNumberValue(str[i]); i += angle  [1];
     const round    = parseNumberValue(str[i]); i += round  [1];
     const children = parseListValue  (str, i); i += children[1];
 
@@ -14572,7 +14490,6 @@ function parseFrameValue(str, i = -1)
         y       [0],
         width   [0],
         height  [0],
-        //angle   [0],
         round   [0],
         children[0]);
 
@@ -24934,7 +24851,7 @@ extends GShape
                     this.nodeId,
                     this.nodeId,
                     this.nodeName,
-                    x, y, w, h, a, f, t, i);
+                    x, y, w, h, f, t, i);
 
                 ellipse.createDefaultTransform(x, y);
 
@@ -25558,8 +25475,6 @@ extends GShape
             let  y = this.value.y     .value;
             let  w = this.value.width .value;
             let  h = this.value.height.value;
-            let  a = 0;
-            let _a = a/360*Tau;
 
             const fontName = figUniqueFontNames[this.value.font.value];
 
@@ -26343,7 +26258,6 @@ extends GShape
                 y, 
                 width,
                 height, 
-                //angle, 
                 round, 
                 children);
         }
@@ -42735,6 +42649,9 @@ function createCryptoKeys(e = 65537n)
 
     const  d   = bigModInvert(e, _phi);
 
+    console.log('n =', n);
+    console.log('d =', d);
+    
     return {
         public:  {n:n, e:e },
         private: {n:n, d:d, p:p, q:q} };
@@ -42742,8 +42659,8 @@ function createCryptoKeys(e = 65537n)
 
 
 
-function encryptBlock(n, key, sign  ) { return bigPowMod(n, (sign   ? key.d : key.e), key.n); }        
-function decryptBlock(n, key, verify) { return bigPowMod(n, (verify ? key.e : key.d), key.n); }        
+function encryptDataBlock(n, key, sign  ) { return bigPowMod(n, (sign   ? key.d : key.e), key.n); }        
+function decryptDataBlock(n, key, verify) { return bigPowMod(n, (verify ? key.e : key.d), key.n); }        
 
 
 
@@ -42757,6 +42674,10 @@ function verify (data, key) { return decryptData(data, key, true); } // but I pr
 
 function encryptData(data, key, sign)
 {
+    console.log('data =', data);
+    console.log('key =',  key );
+    console.log('sign =', sign);
+
     // prep array should be a multiple of cryptoBufferSize
     const prep   = new Uint8Array(Math.ceil((data.length) / cryptoBufferSize) * cryptoBufferSize); 
     const cipher = new Uint8Array(prep.length);
@@ -42776,7 +42697,7 @@ function encryptData(data, key, sign)
         const blockSize  = Math.min(length, cryptoBufferSize);
         
         const block = bigFromBufferAt(prep, blockStart, cryptoBufferSize);
-        const enc   = encryptBlock(block, key, sign);
+        const enc   = encryptDataBlock(block, key, sign);
         
         bigToBufferAt(enc, cipher, blockStart, cryptoBufferSize);
         
@@ -42804,7 +42725,7 @@ function decryptData(cipher, key, verify)
         var blockSize  = Math.min(length, cryptoBufferSize);
 
         var block = bigFromBufferAt(cipher, blockStart, cryptoBufferSize);
-        var dec   = decryptBlock(block, key, verify);
+        var dec   = decryptDataBlock(block, key, verify);
         bigToBufferAt(dec, data, blockStart, cryptoBufferSize); 
 
         nBlock++;
@@ -42948,7 +42869,7 @@ function hashLicenseString(str, nBytes)
         let length = bytes.length - nBytes;
         
 
-        while (length > 0)
+        while (length > 1)
         {
             for (let i = 0; i < nBytes; i++)
                 bytes[i] ^= bytes[pos+i];
@@ -43974,18 +43895,16 @@ extends FigmaShape
     x;
     y;
     width;
-    //angle;
 
 
 
-    constructor(nodeId, objectId, objectName, x, y, width)//, angle)
+    constructor(nodeId, objectId, objectName, x, y, width)
     {
         super(LINE, nodeId, objectId, objectName);
         
         this.x     = x;
         this.y     = y;
         this.width = width;
-        //this.angle = angle;
     }
 
 
@@ -43998,8 +43917,7 @@ extends FigmaShape
             this.objectName,
             this.x,
             this.y,
-            this.width);//,
-            //this.angle);
+            this.width);
 
         copy.copyBase(this);
 
@@ -44015,14 +43933,13 @@ extends FigmaShape
     y;
     width;
     height;
-    //angle;
     from;
     to;
     inner;
 
     
 
-    constructor(nodeId, objectId, objectName, x, y, width, height, angle, from, to, inner)
+    constructor(nodeId, objectId, objectName, x, y, width, height, from, to, inner)
     {
         super(ELLIPSE, nodeId, objectId, objectName);
         
@@ -44030,7 +43947,6 @@ extends FigmaShape
         this.y      = y;
         this.width  = width;
         this.height = height;
-        //this.angle  = angle;
         this.from   = from;
         this.to     = to;
         this.inner  = inner;
@@ -44048,7 +43964,6 @@ extends FigmaShape
             this.y,
             this.width,
             this.height,
-            //this.angle,
             this.from,
             this.to,
             this.inner);
@@ -44067,13 +43982,12 @@ extends FigmaShape
     y;
     width;
     height;
-    //angle;
     round;
     corners;
 
 
 
-    constructor(nodeId, objectId, objectName, x, y, width, height, /*angle,*/ round, corners)
+    constructor(nodeId, objectId, objectName, x, y, width, height, round, corners)
     {
         super(POLYGON, nodeId, objectId, objectName);
         
@@ -44081,7 +43995,6 @@ extends FigmaShape
         this.y       = y;
         this.width   = width;
         this.height  = height;
-        //this.angle   = angle;
         this.round   = round;
         this.corners = corners;
     }
@@ -44098,7 +44011,6 @@ extends FigmaShape
             this.y,
             this.width,
             this.height,
-            //this.angle,
             this.round,
             this.corners);
 
@@ -44116,14 +44028,13 @@ extends FigmaShape
     y;
     width;
     height;
-    //angle;
     round;
     points;
     convex;
 
 
 
-    constructor(nodeId, objectId, objectName, x, y, width, height, /*angle,*/ round, points, convex)
+    constructor(nodeId, objectId, objectName, x, y, width, height, round, points, convex)
     {
         super(STAR, nodeId, objectId, objectName);
         
@@ -44131,7 +44042,6 @@ extends FigmaShape
         this.y      = y;
         this.width  = width;
         this.height = height;
-        //this.angle  = angle;
         this.round  = round;
         this.points = points;
         this.convex = convex;
@@ -44149,7 +44059,6 @@ extends FigmaShape
             this.y,
             this.width,
             this.height,
-            //this.angle,
             this.round,
             this.points,
             this.convex);
@@ -44169,7 +44078,6 @@ extends FigmaShape
     y;
     width;
     height;
-    //angle;
     font;
     style;
     size;
@@ -44180,7 +44088,7 @@ extends FigmaShape
 
 
 
-    constructor(nodeId, objectId, objectName, text, x, y, width, height, /*angle,*/ font, style, size, alignH, alignV, lineHeight, letterSpacing)
+    constructor(nodeId, objectId, objectName, text, x, y, width, height, font, style, size, alignH, alignV, lineHeight, letterSpacing)
     {
         super(TEXT_SHAPE, nodeId, objectId, objectName);
         
@@ -44189,7 +44097,6 @@ extends FigmaShape
         this.y             = y;
         this.width         = width;
         this.height        = height;
-        //this.angle         = angle;
         this.font          = font;
         this.style         = style;
         this.size          = size;
@@ -44212,7 +44119,6 @@ extends FigmaShape
             this.y,
             this.width,
             this.height,
-            //this.angle,
             this.font,
             this.style,
             this.size,
@@ -44712,13 +44618,12 @@ extends FigmaShape
     y;
     width;
     height;
-    //angle;
     round;
     children;
 
 
 
-    constructor(nodeId, objectId, objectName, x, y, width, height, angle, round, children = [])
+    constructor(nodeId, objectId, objectName, x, y, width, height, round, children = [])
     {
         super(FRAME, nodeId, objectId, objectName);
         
@@ -44726,7 +44631,6 @@ extends FigmaShape
         this.y        = y;
         this.width    = width;
         this.height   = height;
-        //this.angle    = angle;
         this.round    = round;
         this.children = children.map(c => c.copy());
     }
@@ -44743,7 +44647,6 @@ extends FigmaShape
             this.y,
             this.width,
             this.height,
-            //this.angle,
             this.round,
             this.children);
 
@@ -47678,22 +47581,19 @@ extends ShapeValue
     x;
     y;
     width;
-    //angle;
 
 
 
     constructor(nodeId,
                 x      = new NumberValue(0), 
                 y      = new NumberValue(0), 
-                width  = new NumberValue(0))//, 
-                //angle  = new NumberValue(0))
+                width  = new NumberValue(0))
     {
         super(LINE_VALUE, nodeId);
 
-        this.x      = x;
-        this.y      = y;
-        this.width  = width;
-        //this.angle  = angle;
+        this.x     = x;
+        this.y     = y;
+        this.width = width;
     }
 
 
@@ -47704,8 +47604,7 @@ extends ShapeValue
             this.nodeId,
             this.x    .copy(), 
             this.y    .copy(), 
-            this.width.copy())//, 
-            //this.angle.copy());
+            this.width.copy())
 
         copy.copyBase(this);
 
@@ -47717,10 +47616,9 @@ extends ShapeValue
     equals(line)
     {
         return line
-            && this.x     .equals(line.x    )
-            && this.y     .equals(line.y    )
-            && this.width .equals(line.width);
-            //&& this.angle .equals(line.angle);
+            && this.x    .equals(line.x    )
+            && this.y    .equals(line.y    )
+            && this.width.equals(line.width);
     }
 
 
@@ -47738,7 +47636,6 @@ extends ShapeValue
             && this.x    .isValid()
             && this.y    .isValid()
             && this.width.isValid();
-            //&& this.angle.isValid();
     }
 
 
@@ -47752,20 +47649,18 @@ extends ShapeValue
 
     toString()
     {
-        return      this.x     .toString()
-            + ' ' + this.y     .toString()
-            + ' ' + this.width .toString();
-            //+ ' ' + this.angle .toString();
+        return      this.x    .toString()
+            + ' ' + this.y    .toString()
+            + ' ' + this.width.toString();
     }
 
 
 
     toDisplayString()
     {
-        return      this.x     .toDisplayString()
-            + ' ' + this.y     .toDisplayString()
-            + ' ' + this.width .toDisplayString();
-            //+ ' ' + this.angle .toDisplayString();
+        return      this.x    .toDisplayString()
+            + ' ' + this.y    .toDisplayString()
+            + ' ' + this.width.toDisplayString();
     }
 
 
@@ -47799,15 +47694,13 @@ function parseLineValue(str, i = -1)
     const x     = parseNumberValue(str[i]); i += x    [1];
     const y     = parseNumberValue(str[i]); i += y    [1];
     const width = parseNumberValue(str[i]); i += width[1];
-    //const angle = parseNumberValue(str[i]); i += angle[1];
 
 
     const line = new LineValue(
         '', // set node ID elsewhere
         x    [0],
         y    [0],
-        width[0]);//,
-        //angle[0]);
+        width[0]);
 
 
     i = parseShapeBaseValue(str, i, line);
@@ -47825,7 +47718,6 @@ extends ShapeValue
     y;
     width;
     height;
-    //angle;
     from;
     to;
     inner;
@@ -47837,7 +47729,6 @@ extends ShapeValue
                 y      = new NumberValue(0), 
                 width  = new NumberValue(0), 
                 height = new NumberValue(0), 
-                //angle  = new NumberValue(0),
                 from   = new NumberValue(0),
                 to     = new NumberValue(0),
                 inner  = new NumberValue(0))
@@ -47848,7 +47739,6 @@ extends ShapeValue
         this.y      = y;
         this.width  = width;
         this.height = height;
-        //this.angle  = angle;
         this.from   = from;
         this.to     = to;
         this.inner  = inner;
@@ -47864,7 +47754,6 @@ extends ShapeValue
             this.y     .copy(), 
             this.width .copy(), 
             this.height.copy(), 
-            //this.angle .copy(),
             this.from  .copy(),
             this.to    .copy(),
             this.inner .copy());
@@ -47883,7 +47772,6 @@ extends ShapeValue
             && this.y     .equals(ellipse.y     )
             && this.width .equals(ellipse.width )
             && this.height.equals(ellipse.height)
-            //&& this.angle .equals(ellipse.angle )
             && this.from  .equals(ellipse.from  )
             && this.to    .equals(ellipse.to    )
             && this.inner .equals(ellipse.inner );
@@ -47905,7 +47793,6 @@ extends ShapeValue
             && this.y     .isValid()
             && this.width .isValid()
             && this.height.isValid()
-            //&& this.angle .isValid()
             && this.from  .isValid()
             && this.to    .isValid()
             && this.inner .isValid();
@@ -47926,7 +47813,6 @@ extends ShapeValue
             + ' ' + this.y     .toString()
             + ' ' + this.width .toString()
             + ' ' + this.height.toString()
-            //+ ' ' + this.angle .toString()
             + ' ' + this.from  .toString()
             + ' ' + this.to    .toString()
             + ' ' + this.inner .toString();
@@ -47940,7 +47826,6 @@ extends ShapeValue
             + ' ' + this.y     .toDisplayString()
             + ' ' + this.width .toDisplayString()
             + ' ' + this.height.toDisplayString()
-            //+ ' ' + this.angle .toDisplayString()
             + ' ' + this.from  .toDisplayString()
             + ' ' + this.to    .toDisplayString()
             + ' ' + this.inner .toDisplayString();
@@ -47954,7 +47839,6 @@ extends ShapeValue
         NumberValue.NaN,
         NumberValue.NaN,
         NumberValue.NaN,
-        //NumberValue.NaN,
         NumberValue.NaN,
         NumberValue.NaN,
         NumberValue.NaN);
@@ -47982,7 +47866,6 @@ function parseEllipseValue(str, i = -1)
     const y      = parseNumberValue(str[i]); i += y     [1];
     const width  = parseNumberValue(str[i]); i += width [1];
     const height = parseNumberValue(str[i]); i += height[1];
-    //const angle  = parseNumberValue(str[i]); i += angle [1];
     const from   = parseNumberValue(str[i]); i += from  [1];
     const to     = parseNumberValue(str[i]); i += to    [1];
     const inner  = parseNumberValue(str[i]); i += inner [1];
@@ -47994,7 +47877,6 @@ function parseEllipseValue(str, i = -1)
         y     [0],
         width [0],
         height[0],
-        //angle [0],
         from  [0],
         to    [0],
         inner [0]);
@@ -48015,7 +47897,6 @@ extends ShapeValue
     y;
     width;
     height;
-    //angle;
     round;
     corners;
 
@@ -48026,7 +47907,6 @@ extends ShapeValue
                 y       = new NumberValue(0), 
                 width   = new NumberValue(0), 
                 height  = new NumberValue(0), 
-                //angle   = new NumberValue(0), 
                 round   = new NumberValue(0), 
                 corners = new NumberValue(0))
     {
@@ -48036,7 +47916,6 @@ extends ShapeValue
         this.y       = y;
         this.width   = width;
         this.height  = height;
-        //this.angle   = angle;
         this.round   = round;
         this.corners = corners;
     }
@@ -48051,7 +47930,6 @@ extends ShapeValue
             this.y      .copy(), 
             this.width  .copy(), 
             this.height .copy(), 
-            //this.angle  .copy(), 
             this.round  .copy(), 
             this.corners.copy());
     
@@ -48069,7 +47947,6 @@ extends ShapeValue
             && this.y      .equals(poly.y      )
             && this.width  .equals(poly.width  )
             && this.height .equals(poly.height )
-            //&& this.angle  .equals(poly.angle  )
             && this.round  .equals(poly.round  )
             && this.corners.equals(poly.corners);
     }
@@ -48090,7 +47967,6 @@ extends ShapeValue
             && this.y      .isValid()
             && this.width  .isValid()
             && this.height .isValid()
-            //&& this.angle  .isValid()
             && this.round  .isValid()
             && this.corners.isValid();
     }
@@ -48110,7 +47986,6 @@ extends ShapeValue
             + ' ' + this.y      .toString()
             + ' ' + this.width  .toString()
             + ' ' + this.height .toString()
-            //+ ' ' + this.angle  .toString()
             + ' ' + this.round  .toString()
             + ' ' + this.corners.toString();
     }
@@ -48123,7 +47998,6 @@ extends ShapeValue
             + ' ' + this.y      .toDisplayString()
             + ' ' + this.width  .toDisplayString()
             + ' ' + this.height .toDisplayString()
-            //+ ' ' + this.angle  .toDisplayString()
             + ' ' + this.round  .toDisplayString()
             + ' ' + this.corners.toDisplayString();
     }
@@ -48136,7 +48010,6 @@ extends ShapeValue
         NumberValue.NaN,
         NumberValue.NaN,
         NumberValue.NaN,
-        //NumberValue.NaN,
         NumberValue.NaN,
         NumberValue.NaN);
 }
@@ -48163,7 +48036,6 @@ function parsePolygonValue(str, i = -1)
     const y       = parseNumberValue(str[i]); i += y      [1];
     const width   = parseNumberValue(str[i]); i += width  [1];
     const height  = parseNumberValue(str[i]); i += height [1];
-    //const angle   = parseNumberValue(str[i]); i += angle  [1];
     const round   = parseNumberValue(str[i]); i += round  [1];
     const corners = parseNumberValue(str[i]); i += corners[1];
 
@@ -48174,7 +48046,6 @@ function parsePolygonValue(str, i = -1)
         y      [0],
         width  [0],
         height [0],
-        //angle  [0],
         round  [0],
         corners[0]);
 
@@ -48194,7 +48065,6 @@ extends ShapeValue
     y;
     width;
     height;
-    //angle;
     round;
     points;
     convex;
@@ -48206,7 +48076,6 @@ extends ShapeValue
                 y      = new NumberValue(0), 
                 width  = new NumberValue(0), 
                 height = new NumberValue(0), 
-                //angle  = new NumberValue(0), 
                 round  = new NumberValue(0), 
                 points = new NumberValue(0),
                 convex = new NumberValue(0))
@@ -48217,7 +48086,6 @@ extends ShapeValue
         this.y      = y;
         this.width  = width;
         this.height = height;
-        //this.angle  = angle;
         this.round  = round;
         this.points = points;
         this.convex = convex;
@@ -48233,7 +48101,6 @@ extends ShapeValue
             this.y     .copy(), 
             this.width .copy(), 
             this.height.copy(), 
-            //this.angle .copy(), 
             this.round .copy(), 
             this.points.copy(),
             this.convex.copy());
@@ -48252,7 +48119,6 @@ extends ShapeValue
             && this.y     .equals(star.y     )
             && this.width .equals(star.width )
             && this.height.equals(star.height)
-            //&& this.angle .equals(star.angle )
             && this.round .equals(star.round )
             && this.points.equals(star.points)
             && this.convex.equals(star.convex);
@@ -48274,7 +48140,6 @@ extends ShapeValue
             && this.y     .isValid()
             && this.width .isValid()
             && this.height.isValid()
-            //&& this.angle .isValid()
             && this.round .isValid()
             && this.points.isValid()
             && this.convex.isValid();
@@ -48295,7 +48160,6 @@ extends ShapeValue
             + ' ' + this.y     .toString()
             + ' ' + this.width .toString()
             + ' ' + this.height.toString()
-            //+ ' ' + this.angle .toString()
             + ' ' + this.round .toString()
             + ' ' + this.points.toString()
             + ' ' + this.convex.toString();
@@ -48309,7 +48173,6 @@ extends ShapeValue
             + ' ' + this.y     .toDisplayString()
             + ' ' + this.width .toDisplayString()
             + ' ' + this.height.toDisplayString()
-            //+ ' ' + this.angle .toDisplayString()
             + ' ' + this.round .toDisplayString()
             + ' ' + this.points.toDisplayString()
             + ' ' + this.convex.toDisplayString();
@@ -48323,7 +48186,6 @@ extends ShapeValue
         NumberValue.NaN,
         NumberValue.NaN,
         NumberValue.NaN,
-        //NumberValue.NaN,
         NumberValue.NaN,
         NumberValue.NaN,
         NumberValue.NaN);
@@ -48351,7 +48213,6 @@ function parseStarValue(str, i = -1)
     const y      = parseNumberValue(str[i]); i += y     [1];
     const width  = parseNumberValue(str[i]); i += width [1];
     const height = parseNumberValue(str[i]); i += height[1];
-    //const angle  = parseNumberValue(str[i]); i += angle [1];
     const round  = parseNumberValue(str[i]); i += round [1];
     const points = parseNumberValue(str[i]); i += points[1];
     const convex = parseNumberValue(str[i]); i += convex[1];
@@ -48363,7 +48224,6 @@ function parseStarValue(str, i = -1)
         y     [0],
         width [0],
         height[0],
-        //angle [0],
         round [0],
         points[0],
         convex[0]);
@@ -48385,7 +48245,6 @@ extends ShapeValue
     y;
     width;
     height;
-    //angle;
     font;
     style;
     size;
@@ -48402,7 +48261,6 @@ extends ShapeValue
                 y             = new NumberValue(0), 
                 width         = new NumberValue(0), 
                 height        = new NumberValue(0), 
-                //angle         = new NumberValue(0),
                 font          = new NumberValue(0),
                 style         = new NumberValue(0),
                 size          = new NumberValue(0),
@@ -48418,7 +48276,6 @@ extends ShapeValue
         this.y             = y;
         this.width         = width;
         this.height        = height;
-        //this.angle         = angle;
         this.font          = font;
         this.style         = style;
         this.size          = size;
@@ -48439,7 +48296,6 @@ extends ShapeValue
             this.y            .copy(), 
             this.width        .copy(), 
             this.height       .copy(), 
-            //this.angle        .copy(),
             this.font         .copy(),
             this.style        .copy(),
             this.size         .copy(),
@@ -48463,7 +48319,6 @@ extends ShapeValue
             && this.y            .equals(text.y            )
             && this.width        .equals(text.width        )
             && this.height       .equals(text.height       )
-            //&& this.angle        .equals(text.angle        )
             && this.font         .equals(text.font         )
             && this.style        .equals(text.style        )
             && this.size         .equals(text.size         )
@@ -48490,7 +48345,6 @@ extends ShapeValue
             && this.y            .isValid()
             && this.width        .isValid()
             && this.height       .isValid()
-            //&& this.angle        .isValid()
             && this.font         .isValid()
             && this.style        .isValid()
             && this.size         .isValid()
@@ -48516,7 +48370,6 @@ extends ShapeValue
             + ' ' + this.y            .toString()
             + ' ' + this.width        .toString()
             + ' ' + this.height       .toString()
-            //+ ' ' + this.angle        .toString()
             + ' ' + this.font         .toString()
             + ' ' + this.style        .toString()
             + ' ' + this.size         .toString()
@@ -48535,7 +48388,6 @@ extends ShapeValue
             + ' ' + this.y            .toDisplayString()
             + ' ' + this.width        .toDisplayString()
             + ' ' + this.height       .toDisplayString()
-            //+ ' ' + this.angle        .toDisplayString()
             + ' ' + this.font         .toDisplayString()
             + ' ' + this.style        .toDisplayString()
             + ' ' + this.size         .toDisplayString()
@@ -48554,7 +48406,6 @@ extends ShapeValue
             + ' ' + this.y            .toJson()
             + ' ' + this.width        .toJson()
             + ' ' + this.height       .toJson()
-            //+ ' ' + this.angle        .toJson()
             + ' ' + this.font         .toJson()
             + ' ' + this.style        .toJson()
             + ' ' + this.size         .toJson()
@@ -48573,7 +48424,6 @@ extends ShapeValue
         NumberValue.NaN,
         NumberValue.NaN,
         NumberValue.NaN,
-        //NumberValue.NaN,
         NumberValue.NaN,
         NumberValue.NaN,
         NumberValue.NaN,
@@ -48604,7 +48454,6 @@ function parseTextShapeValue(str, i = -1)
     const y             = parseNumberValue(str[i]); i += y            [1];
     const width         = parseNumberValue(str[i]); i += width        [1];
     const height        = parseNumberValue(str[i]); i += height       [1];
-    //const angle         = parseNumberValue(str[i]); i += angle        [1];
     const font          = parseNumberValue(str[i]); i += font         [1];
     const style         = parseNumberValue(str[i]); i += style        [1];
     const size          = parseNumberValue(str[i]); i += size         [1];
@@ -48621,7 +48470,6 @@ function parseTextShapeValue(str, i = -1)
         y            [0],
         width        [0],
         height       [0],
-        //angle        [0],
         font         [0],
         style        [0],
         size         [0],
@@ -49257,13 +49105,12 @@ extends ShapeValue
     y;
     width;
     height;
-    //angle;
     round;
     children;
 
 
 
-    constructor(nodeId, x, y, width, height, /*angle,*/ round, children)
+    constructor(nodeId, x, y, width, height, round, children)
     {
         super(FRAME_VALUE, nodeId);
 
@@ -49271,7 +49118,6 @@ extends ShapeValue
         this.y        = y;
         this.width    = width;
         this.height   = height;
-        //this.angle    = angle;
         this.round    = round;
         this.children = children;
 
@@ -49288,7 +49134,6 @@ extends ShapeValue
             this.y       .copy(),
             this.width   .copy(),
             this.height  .copy(),
-            //this.angle   .copy(),
             this.round   .copy(),
             this.children.copy());
 
@@ -49306,7 +49151,6 @@ extends ShapeValue
             && this.y       .equals(frame.y       )
             && this.width   .equals(frame.width   )
             && this.height  .equals(frame.height  )
-            //&& this.angle   .equals(frame.angle   )
             && this.round   .equals(frame.round   )
             && this.children.equals(frame.children);
     }
@@ -49326,7 +49170,6 @@ extends ShapeValue
             + ' ' + this.y       .toString()
             + ' ' + this.width   .toString()
             + ' ' + this.height  .toString()
-            //+ ' ' + this.angle   .toString()
             + ' ' + this.round   .toString()
             + ' ' + this.children.toString();
     }
@@ -49339,7 +49182,6 @@ extends ShapeValue
             + ' ' + this.y       .toDisplayString()
             + ' ' + this.width   .toDisplayString()
             + ' ' + this.height  .toDisplayString()
-            //+ ' ' + this.angle   .toDisplayString()
             + ' ' + this.round   .toDisplayString()
             + ' ' + this.children.toDisplayString();
     }
@@ -49359,7 +49201,6 @@ extends ShapeValue
             && this.y       .isValid()
             && this.width   .isValid()
             && this.height  .isValid()
-            //&& this.angle   .isValid()
             && this.round   .isValid()
             && this.children.isValid()
             && super.isValid();
@@ -49372,7 +49213,6 @@ extends ShapeValue
         NumberValue.NaN,
         NumberValue.NaN,
         NumberValue.NaN,
-        //NumberValue.NaN,
         NumberValue.NaN,
         NumberValue.NaN,
         ListValue  .NaN);
@@ -49400,7 +49240,6 @@ function parseFrameValue(str, i = -1)
     const y        = parseNumberValue(str[i]); i += y      [1];
     const width    = parseNumberValue(str[i]); i += width  [1];
     const height   = parseNumberValue(str[i]); i += height [1];
-    //const angle    = parseNumberValue(str[i]); i += angle  [1];
     const round    = parseNumberValue(str[i]); i += round  [1];
     const children = parseListValue  (str, i); i += children[1];
 
@@ -49410,7 +49249,6 @@ function parseFrameValue(str, i = -1)
         y       [0],
         width   [0],
         height  [0],
-        //angle   [0],
         round   [0],
         children[0]);
 
@@ -59772,7 +59610,7 @@ extends GShape
                     this.nodeId,
                     this.nodeId,
                     this.nodeName,
-                    x, y, w, h, a, f, t, i);
+                    x, y, w, h, f, t, i);
 
                 ellipse.createDefaultTransform(x, y);
 
@@ -60396,8 +60234,6 @@ extends GShape
             let  y = this.value.y     .value;
             let  w = this.value.width .value;
             let  h = this.value.height.value;
-            let  a = 0;
-            let _a = a/360*Tau;
 
             const fontName = figUniqueFontNames[this.value.font.value];
 
@@ -61181,7 +61017,6 @@ extends GShape
                 y, 
                 width,
                 height, 
-                //angle, 
                 round, 
                 children);
         }
@@ -92804,11 +92639,11 @@ extends OpShape
         const interIndex = figUniqueFontNames.findIndex(f => f == 'Inter');
 
       
-        this.addParam(this.paramText          = new   TextParam('text',          '',       false, true,  true));
-        this.addParam(this.paramX             = new NumberParam('x',             'x',      true,  true, true,   0));
-        this.addParam(this.paramY             = new NumberParam('y',             'y',      true,  true, true,   0));
-        this.addParam(this.paramWidth         = new NumberParam('width',         'width',  true,  true, true, 100,    0.01));
-        this.addParam(this.paramHeight        = new NumberParam('height',        'height', true,  true, true, 100,    0.01));
+        this.addParam(this.paramText          = new   TextParam('text',          '',       false, true, true));
+        this.addParam(this.paramX             = new NumberParam('x',             'X',      true,  true, true, 0));
+        this.addParam(this.paramY             = new NumberParam('y',             'Y',      true,  true, true, 0));
+        this.addParam(this.paramWidth         = new NumberParam('width',         'width',  true,  true, true, 0, 0.01));
+        this.addParam(this.paramHeight        = new NumberParam('height',        'height', true,  true, true, 0, 0.01));
         this.addParam(this.paramFont          = new SelectParam('font',          'font',   false, true, true, figUniqueFontNames, interIndex));
         this.addParam(this.paramStyle         = new SelectParam('style',         'style',  false, true, true, [''], 0));
         this.addParam(this.paramSize          = new NumberParam('size',          'size',   true,  true, true,  12, 1));
@@ -92831,6 +92666,10 @@ extends OpShape
     updateParams()
     {
         super.updateParams();
+
+
+        this.paramWidth .enableControlText(false);
+        this.paramHeight.enableControlText(false);
 
 
         const fontName = figUniqueFontNames[this.paramFont.value.toNumber()];
@@ -92866,8 +92705,8 @@ extends OpShapeBase
         this.addInput (new Input ([POINT_VALUE], getNodeInputValuesForUndo, this.input_getBackInitValue));
         this.addOutput(new Output([POINT_VALUE], this.output_genRequest, getNodeOutputValuesForUndo, this.output_backInit));
 
-        this.addParam(this.paramX = new NumberParam('x', 'x', true, true, true, 0));
-        this.addParam(this.paramX = new NumberParam('y', 'y', true, true, true, 0));
+        this.addParam(this.paramX = new NumberParam('x', 'X', true, true, true, 0));
+        this.addParam(this.paramX = new NumberParam('y', 'Y', true, true, true, 0));
 
 
         this.setAllParamDividers(0.45);
@@ -93112,8 +92951,8 @@ extends OpShape
         this.addOutput(new Output([FRAME_VALUE], this.output_genRequest));
 
 
-        this.addParam(this.paramX        = new NumberParam('x',        'x',       true,  true, true, 0));
-        this.addParam(this.paramY        = new NumberParam('y',        'y',       true,  true, true, 0));
+        this.addParam(this.paramX        = new NumberParam('x',        'X',       true,  true, true, 0));
+        this.addParam(this.paramY        = new NumberParam('y',        'Y',       true,  true, true, 0));
         this.addParam(this.paramWidth    = new NumberParam('width',    'width',   true,  true, true, 100, 0.01));
         this.addParam(this.paramHeight   = new NumberParam('height',   'height',  true,  true, true, 100, 0.01));
         this.addParam(this.paramRound    = new NumberParam('round',    'round',   true,  true, true, 0, 0));

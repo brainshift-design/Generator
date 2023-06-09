@@ -72,7 +72,6 @@ extends GShape
                 y, 
                 width,
                 height, 
-                //angle, 
                 round, 
                 children);
         }

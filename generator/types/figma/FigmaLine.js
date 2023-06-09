@@ -4,18 +4,16 @@ extends FigmaShape
     x;
     y;
     width;
-    //angle;
 
 
 
-    constructor(nodeId, objectId, objectName, x, y, width)//, angle)
+    constructor(nodeId, objectId, objectName, x, y, width)
     {
         super(LINE, nodeId, objectId, objectName);
         
         this.x     = x;
         this.y     = y;
         this.width = width;
-        //this.angle = angle;
     }
 
 
@@ -28,8 +26,7 @@ extends FigmaShape
             this.objectName,
             this.x,
             this.y,
-            this.width);//,
-            //this.angle);
+            this.width);
 
         copy.copyBase(this);
 
