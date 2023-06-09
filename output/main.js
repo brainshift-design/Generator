@@ -2219,9 +2219,9 @@ function getObjectEffects(genObjEffects) {
     }
     return effects;
 }
-function setObjectProps(figObj, genObj) {
+function setObjectProps(figObj, genObj, phantom = true) {
     setObjectFills(figObj, genObj);
-    setObjectStrokes(figObj, genObj);
+    setObjectStrokes(figObj, genObj, phantom);
     setObjectEffects(figObj, genObj);
     figObj.isMask = genObj.isMask;
 }
@@ -2235,7 +2235,7 @@ function setObjectFills(figObj, genObj) {
     else
         figObj.fills = [];
 }
-function setObjectStrokes(figObj, genObj) {
+function setObjectStrokes(figObj, genObj, phantom = true) {
     if (genObj.strokes != null
         && !isEmpty(genObj.strokes)) {
         setObjectStroke_(figObj, getObjectFills(genObj.strokes), genObj.strokeWeight, genObj.strokeAlign, genObj.strokeJoin, genObj.strokeMiterLimit);
@@ -2243,7 +2243,8 @@ function setObjectStrokes(figObj, genObj) {
             removeFromArray(figEmptyObjects, figObj);
     }
     else if (isEmpty(genObj.fills)
-        && isEmpty(genObj.strokes)) {
+        && isEmpty(genObj.strokes)
+        && phantom) {
         setEmptyObjectStroke(figObj);
         pushUnique(figEmptyObjects, figObj);
     }
@@ -2624,7 +2625,7 @@ function figCreateFrame(genFrame) {
             return figFrame;
         figFrame.cornerRadius = genFrame.round;
         setObjectTransform(figFrame, genFrame);
-        setObjectProps(figFrame, genFrame);
+        setObjectProps(figFrame, genFrame, genFrame.children.length == 0);
         let objects = [];
         for (const obj of genFrame.children)
             figCreateObject(obj, o => objects = [...objects, o]);
@@ -2639,7 +2640,7 @@ function figUpdateFrame(figFrame, genFrame) {
     figFrame.name = makeObjectName(genFrame);
     figFrame.cornerRadius = genFrame.round;
     setObjectTransform(figFrame, genFrame);
-    setObjectProps(figFrame, genFrame);
+    setObjectProps(figFrame, genFrame, genFrame.children.length == 0);
     figUpdateObjects(figFrame, genFrame.children);
 }
 function genShapeGroupIsValid(genGroup) {

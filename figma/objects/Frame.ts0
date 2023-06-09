@@ -30,7 +30,7 @@ function figCreateFrame(genFrame)
 
         
         setObjectTransform(figFrame, genFrame);
-        setObjectProps    (figFrame, genFrame);
+        setObjectProps    (figFrame, genFrame, genFrame.children.length == 0);
 
 
         let objects = [];
@@ -61,7 +61,7 @@ function figUpdateFrame(figFrame, genFrame)
 
 
     setObjectTransform(figFrame, genFrame);
-    setObjectProps    (figFrame, genFrame);
+    setObjectProps    (figFrame, genFrame, genFrame.children.length == 0);
         
 
     figUpdateObjects(figFrame, genFrame.children);

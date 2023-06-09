@@ -3354,10 +3354,10 @@ function getObjectEffects(genObjEffects)
 
 
 
-function setObjectProps(figObj, genObj)
+function setObjectProps(figObj, genObj, phantom = true)
 {
     setObjectFills  (figObj, genObj);
-    setObjectStrokes(figObj, genObj);
+    setObjectStrokes(figObj, genObj, phantom);
     setObjectEffects(figObj, genObj);
 
     figObj.isMask = genObj.isMask;
@@ -3381,7 +3381,7 @@ function setObjectFills(figObj, genObj)
 
 
 
-function setObjectStrokes(figObj, genObj)
+function setObjectStrokes(figObj, genObj, phantom = true)
 {
     if (    genObj.strokes != null
         && !isEmpty(genObj.strokes))
@@ -3398,7 +3398,8 @@ function setObjectStrokes(figObj, genObj)
             removeFromArray(figEmptyObjects, figObj);
     }
     else if (isEmpty(genObj.fills  )
-          && isEmpty(genObj.strokes))
+          && isEmpty(genObj.strokes)
+          && phantom)
     {
         setEmptyObjectStroke(figObj);
         pushUnique(figEmptyObjects, figObj);
@@ -4035,7 +4036,7 @@ function figCreateFrame(genFrame)
 
         
         setObjectTransform(figFrame, genFrame);
-        setObjectProps    (figFrame, genFrame);
+        setObjectProps    (figFrame, genFrame, genFrame.children.length == 0);
 
 
         let objects = [];
@@ -4066,7 +4067,7 @@ function figUpdateFrame(figFrame, genFrame)
 
 
     setObjectTransform(figFrame, genFrame);
-    setObjectProps    (figFrame, genFrame);
+    setObjectProps    (figFrame, genFrame, genFrame.children.length == 0);
         
 
     figUpdateObjects(figFrame, genFrame.children);

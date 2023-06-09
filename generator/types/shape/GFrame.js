@@ -137,7 +137,7 @@ extends GShape
                     obj.objectId = obj.objectId + OBJECT_SEPARATOR + this.nodeId;
                     obj.listId   = -1;
                     
-                    frame.children.push(obj);
+                    objects.push(obj);
                 }
             }
             else
@@ -150,25 +150,26 @@ extends GShape
                     obj.objectId = obj.objectId + OBJECT_SEPARATOR + this.nodeId;
                     obj.listId   = -1;
                     
-                    frame.children.push(obj);
+                    objects.push(obj);
                 }
             }
 
 
+            frame.children = objects;
+
+            
             frame.createDefaultTransform(
                 this.value.x.value,
                 this.value.y.value);
 
             frame.createDefaultTransform(x, y);
 
-            objects.push(frame, ...frame.createTransformPoints(parse, x, y, w, h));
-        }
-
         
-        this      .objects = [...objects];
-        this.value.objects = [...objects];
+            this      .objects = [frame, ...frame.createTransformPoints(parse, x, y, w, h)];
+            this.value.objects = [frame, ...frame.createTransformPoints(parse, x, y, w, h)];
 
-        this.updateValues.push(['nObjects', new NumberValue(objects.length)]);
+            this.updateValues.push(['nObjects', new NumberValue(objects.length)]);
+        }
 
 
         super.evalObjects(parse);
