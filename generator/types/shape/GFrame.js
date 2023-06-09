@@ -117,8 +117,6 @@ extends GShape
             let    y = this.value.y     .value;
             let    w = this.value.width .value;
             let    h = this.value.height.value;
-            let    a = 0;
-            let   _a = a/360*Tau;
             const  r = Math.max(0, this.value.round.value);
 
 
@@ -126,7 +124,7 @@ extends GShape
                 this.nodeId,
                 this.nodeId,
                 this.nodeName,
-                x, y, w, h, a, r);
+                x, y, w, h, r);
 
 
             if (LIST_VALUES.includes(this.value.type))

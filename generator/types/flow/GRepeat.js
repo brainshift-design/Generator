@@ -123,7 +123,8 @@ extends GOperator
                         obj.objectId    = obj.objectId + OBJECT_SEPARATOR + this.nodeId + ':' + (o+1).toString();
                         obj.objectName += ' ' + (o+1).toString();
 
-                        this.objects.push(obj);
+                        this      .objects.push(obj);
+                        this.value.objects.push(obj);
                     }
         
 
