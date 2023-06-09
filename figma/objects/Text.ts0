@@ -52,14 +52,14 @@ function figCreateText(genText)
         else if (genText.alignV == 2) figText.textAlignVertical   = 'BOTTOM';
 
 
+        setObjectTransform(figText, genText);
+        setObjectProps    (figText, genText);
+
+
         if (     genText.width  == 0
               && genText.height == 0) figText.textAutoResize = 'WIDTH_AND_HEIGHT';
-        else if (genText.height == 0) figText.textAutoResize = 'HEIGHT';
+        else if (genText.width  == 0) figText.textAutoResize = 'HEIGHT';
         else                          figText.textAutoResize = 'NONE';
-        
-
-        setObjectTransform(figText, genText, false);
-        setObjectProps    (figText, genText);
 
     })();
 
@@ -106,14 +106,14 @@ function figUpdateText(figText, genText)
         else if (genText.alignV == 2) figText.textAlignVertical   = 'BOTTOM';
 
 
+        setObjectTransform(figText, genText);
+        setObjectProps    (figText, genText);
+
+
         if (     genText.width  == 0
               && genText.height == 0) figText.textAutoResize = 'WIDTH_AND_HEIGHT';
-        else if (genText.height == 0) figText.textAutoResize = 'HEIGHT';
+        else if (genText.width  == 0) figText.textAutoResize = 'HEIGHT';
         else                          figText.textAutoResize = 'NONE';
-
-
-        setObjectTransform(figText, genText, false);
-        setObjectProps    (figText, genText);
 
     })();
 }

@@ -74,9 +74,6 @@ function createCryptoKeys(e = 65537n)
 
     const  d   = bigModInvert(e, _phi);
 
-    console.log('n =', n);
-    console.log('d =', d);
-    
     return {
         public:  {n:n, e:e },
         private: {n:n, d:d, p:p, q:q} };

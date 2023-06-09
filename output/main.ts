@@ -3794,7 +3794,7 @@ function applyFigmaTransform(figObj, tl, tr, bl)
 
 
 
-function setObjectTransform(figObj, genObj, setSize = true)
+function setObjectTransform(figObj, genObj)
 {
     const xp0 = point(genObj.xp0.x, genObj.xp0.y);
     const xp1 = point(genObj.xp1.x, genObj.xp1.y);
@@ -3803,15 +3803,12 @@ function setObjectTransform(figObj, genObj, setSize = true)
     applyFigmaTransform(figObj, xp0, xp1, xp2);
 
 
-    if (setSize)
-    {
-        const scaleX = distance(xp0, xp1);
-        const scaleY = distance(xp0, xp2);
+    const scaleX = distance(xp0, xp1);
+    const scaleY = distance(xp0, xp2);
 
-        figObj.resizeWithoutConstraints(
-                            Math.max(0.01, scaleX),
-            genObj.height ? Math.max(0.01, scaleY) : 0);
-    }
+    figObj.resizeWithoutConstraints(
+                        Math.max(0.01, scaleX),
+            genObj.height ? Math.max(0.01, scaleY) : 0.01);
 }
 
 
@@ -4518,14 +4515,14 @@ function figCreateText(genText)
         else if (genText.alignV == 2) figText.textAlignVertical   = 'BOTTOM';
 
 
+        setObjectTransform(figText, genText);
+        setObjectProps    (figText, genText);
+
+
         if (     genText.width  == 0
               && genText.height == 0) figText.textAutoResize = 'WIDTH_AND_HEIGHT';
-        else if (genText.height == 0) figText.textAutoResize = 'HEIGHT';
+        else if (genText.width  == 0) figText.textAutoResize = 'HEIGHT';
         else                          figText.textAutoResize = 'NONE';
-        
-
-        setObjectTransform(figText, genText, false);
-        setObjectProps    (figText, genText);
 
     })();
 
@@ -4572,14 +4569,14 @@ function figUpdateText(figText, genText)
         else if (genText.alignV == 2) figText.textAlignVertical   = 'BOTTOM';
 
 
+        setObjectTransform(figText, genText);
+        setObjectProps    (figText, genText);
+
+
         if (     genText.width  == 0
               && genText.height == 0) figText.textAutoResize = 'WIDTH_AND_HEIGHT';
-        else if (genText.height == 0) figText.textAutoResize = 'HEIGHT';
+        else if (genText.width  == 0) figText.textAutoResize = 'HEIGHT';
         else                          figText.textAutoResize = 'NONE';
-
-
-        setObjectTransform(figText, genText, false);
-        setObjectProps    (figText, genText);
 
     })();
 }
