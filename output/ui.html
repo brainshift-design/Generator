@@ -876,6 +876,188 @@
 
 
 
+#eulaBack
+{
+    display:          none;
+
+    z-index:          1;
+    
+    position:         fixed;
+    left:             0;
+    top:              0;
+    width:            100%;
+    height:           100%;
+    overflow:         auto;
+    pointer-events:   all;
+
+    background-color: #0005;
+}
+
+
+
+#eulaDialog
+{
+    display:       none;
+
+    font-family:   Inter;
+
+    z-index:       2;
+    position:      absolute;
+    top:           58px;
+    left:          calc(50%);
+    transform:     translateX(-50%);
+    width:         450px;
+    height:        calc(100% - 80px);
+
+    overflow:      hidden;
+    
+    color:         var(--figma-color-text);
+    background:    var(--figma-color-bg);
+    
+    border:        0.5px solid rgba(0, 0, 0, 0.2);
+
+    border-radius: 4px;
+}
+
+
+#eulaDialogContainer
+{
+    height:   calc(100% - 42px);
+    overflow: hidden;
+    padding:  0;
+    z-index:  1;
+    /* box-shadow: 0 0 0 1px red inset; */
+}
+
+
+#eulaDialogContent
+{
+    font-size:      12px;
+    margin:         0;
+    padding:        1px 0 5px 0;
+    position:       absolute;
+    pointer-events: all;
+    user-select:    text;
+    /* box-shadow:  0 0 0 1px blue inset; */
+}
+
+
+.figma-light #eulaDialog
+{
+    box-shadow: 0px 2px  7px rgba(0, 0, 0, 0.15),
+                0px 5px 17px rgba(0, 0, 0, 0.15);
+}
+
+
+.figma-dark #eulaDialog
+{
+    box-shadow: 0px 2px  7px rgba(0, 0, 0, 0.45),
+                0px 5px 25px rgba(0, 0, 0, 0.45),
+                0 0px 2px 0px #fff3 inset;
+}
+
+
+#eulaWatermark
+{
+    position:       absolute;
+    left:           50%;
+    top:            50%;
+    transform:      translateX(-41%)
+                    translateY(-34%);
+    font-size:      800px;
+    font-weight:    600;
+    white-space:    nowrap;
+    color:          var(--figma-color-bg-secondary);
+    z-index:        -1;
+    user-select:    none;
+    pointer-events: none;
+}
+
+
+
+#eulaTitle
+{
+    position:       relative;
+    height:         40px;
+    border-bottom:  1px solid rgb(0, 0, 0, 0.15);
+    border-top:     1px solid var(--figma-color-bg-tertiary);
+    border-bottom:  1px solid var(--figma-color-bg-tertiary);
+    background:     var(--figma-color-bg);
+    z-index:        10;
+}
+
+
+#eulaTitleText
+{
+    position:       absolute;
+    left:           16px;
+    top:            12px;
+    
+    font-style:     normal;
+    font-weight:    600;
+    font-size:      11px;
+    line-height:    16px;
+    
+    display:        flex;
+    align-items:    center;
+    letter-spacing: 0.005em;
+    
+    color:          var(--figma-color-text);
+
+    pointer-events: none;
+    user-select:    none;
+}
+
+
+#eulaBody
+{
+    margin:      25px 60px 0 60px;
+    font-weight: 200;
+}
+
+
+#eulaBody ol
+{
+    margin-left:   16px;
+    margin-top:    30px;
+    margin-bottom: 30px;
+    padding-left:  0;
+}
+
+#eulaBody li
+{
+    margin-bottom: 10px;
+}
+
+#eulaBody li::marker
+{
+    content: counter(list-item) ".  ";
+}
+
+#eulaBody .bold
+{
+    font-weight: 500;
+}
+
+
+
+#chkHideEula
+{
+    display:  inline-block;
+}
+
+
+
+#eulaScrollbarY
+{
+    width:   6px;
+    z-index: 1;
+    margin:  6px 0 18px 0;
+    display: none;
+}
+
+
+
 #aboutBack
 {
     display:          none;
@@ -4160,6 +4342,65 @@ a
             </div>
         </div>
         <div class='dialogScrollbar' id='whatsNewScrollbarY'></div>
+    </div>
+
+</div>
+
+
+
+<div id='eulaBack'></div>
+
+<div id='eulaDialog'>
+    
+    <div id='eulaTitle'>
+        <div id='eulaTitleText'>End-User License Agreement</div>
+        <div class='panelButton dialogButtonClose' id='eulaClose' onclick='hideAllMenus(); eulaClose.blur(); hideEulaDialog();'>
+            <svg width="30" height="30" viewBox="0 0 30 30" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path fill-rule="evenodd" clip-rule="evenodd" d="M16 15.293L20.6465 10.6465L21.3536 11.3536L16.7071 16.0001L21.3536 20.6465L20.6465 21.3536L16 16.7072L11.3536 21.3536L10.6465 20.6465L15.2929 16.0001L10.6465 11.3537L11.3536 10.6466L16 15.293Z" fill="var(--figma-color-text)" fill-opacity="0.8"/>
+            </svg>
+        </div>
+    </div>
+    
+    <div id='eulaDialogContainer'>
+        <div id='eulaDialogContent'>
+            <div id='eulaWatermark'>◦<span style="font-weight: 700; position: relative; top: 0.06em;">G</span>•</div>
+
+            <div id='eulaBody'>
+                <p style='font-weight: 500;'>By installing and using the Generator plugin for Figma ("Generator"), you agree to the following terms:</p>
+
+                <ol>
+                
+                    <li><span class='bold'>Grant of License:</span> You are granted a limited, non-transferable license to use Generator for personal or commercial purposes.</li>
+
+                    <li><span class='bold'>Plugin Usage:</span> Generator may be installed and used in Figma as an integrated plugin.</li>
+
+                    <li><span class='bold'>Subscription and Free Trial:</span> Generator operates on a monthly subscription basis. A free one-week trial period is available before the subscription begins. By subscribing, you agree to the subscription fees and terms.</li>
+
+                    <li><span class='bold'>Restrictions:</span> You must not modify, reverse engineer, distribute, or infringe upon any intellectual property rights of Generator or Brainshift.</li>
+
+                    <li><span class='bold'>Intellectual Property:</span> Generator and its associated intellectual property rights are owned by Brainshift.</li>
+
+                    <li><span class='bold'>Updates and Support:</span> Brainshift may provide updates or support for Generator at its discretion.</li>
+
+                    <li><span class='bold'>Disclaimer of Warranty:</span> Generator is provided "as is" without any warranties.</li>
+
+                    <li><span class='bold'>Limitation of Liability:</span> Brainshift is not liable for any damages arising from the use of Generator.</li>
+
+                    <li><span class='bold'>Termination:</span> This agreement may be terminated if you fail to comply with its terms.</li>
+
+                    <li><span class='bold'>Governing Law:</span> This agreement is governed by the laws of the European Union.</li>
+
+                    <li><span class='bold'>Entire Agreement:</span> This EULA constitutes the entire agreement between you and Brainshift.</li>
+                
+                </ol>
+
+
+                <p style='font-weight: 500;'>By using Generator, you agree to these terms. If you do not agree, do not install or use Generator.</p>
+                
+                <p><br/><br/><div id='chkHideEula'></div></p>
+            </div>
+        </div>
+        <div class='dialogScrollbar' id='eulaScrollbarY'></div>
     </div>
 
 </div>
@@ -91549,7 +91790,7 @@ extends OpColorBase
 class OpStroke
 extends OpColorBase
 {
-    paramFill;
+    paramFills;
     paramWeight;
     paramFit;
     paramJoin;
@@ -91582,11 +91823,19 @@ extends OpColorBase
         this.addOutput(new Output([STROKE_VALUE], this.output_genRequest, getNodeOutputValuesForUndo));
 
 
-        this.addParam(this.paramFill   = new FillParam  ('fill',   'fill',   false, true, true, FillValue.create(0, 0, 0, 100)));
+        this.addParam(this.paramFills  = new   ListParam('fills',  'fills',  false, true, true));
         this.addParam(this.paramWeight = new NumberParam('weight', 'weight', true,  true, true, 1, 0));
         this.addParam(this.paramFit    = new SelectParam('fit',    'align',  true,  true, true, ['inside', 'center', 'outside'], 0));
         this.addParam(this.paramJoin   = new SelectParam('join',   'join',   true,  true, true, ['miter', 'bevel', 'round'], 0));
         this.addParam(this.paramMiter  = new NumberParam('miter',  'miter',  true,  true, true, 28.96, 0, 180, 2));
+
+        this.paramFills.itemName  = 'fill';
+        this.paramFills.showZero  = false;
+        this.paramFills.listTypes = [COLOR_VALUE, FILL_VALUE, GRADIENT_VALUE];
+        this.paramFills.input.types.push(...this.paramFills.listTypes);
+
+        this.paramWeight.divider = 0.55;
+        this.paramMiter .divider = 0.43;
 
         this.paramMiter.controls[0].setSuffix('°', true);
         this.paramMiter.canShow = () => this.paramJoin.value == 0;
@@ -91612,7 +91861,7 @@ extends OpColorBase
 
 
         const hasInputs =
-               this.node.paramFill  .input.connected
+               this.node.paramFills .input.connected
             || this.node.paramWeight.input.connected
             || this.node.paramFit   .input.connected
             || this.node.paramJoin  .input.connected
@@ -91666,13 +91915,13 @@ extends OpColorBase
 
     updateValues(requestId, actionId, updateParamId, paramIds, values)
     {
-        const fill = values[paramIds.findIndex(id => id == 'fill')];
+        // const fill = values[paramIds.findIndex(id => id == 'fill')];
 
-        this._color = 
-               fill
-            && fill.isValid()
-            ? fill.color.toDataColor()
-            : dataColor_NaN;
+        // this._color = 
+        //        fill
+        //     && fill.isValid()
+        //     ? fill.color.toDataColor()
+        //     : dataColor_NaN;
 
             
         this.outputs[0].types =
@@ -91687,67 +91936,67 @@ extends OpColorBase
 
 
 
-    updateHeader()
-    {
-        //console.log(this.id + '.OpStroke.updateHeader()');
+    // updateHeader()
+    // {
+    //     //console.log(this.id + '.OpStroke.updateHeader()');
 
-        Operator.prototype.updateHeader.call(this);
-
-
-        const colors = this.getHeaderColors();
+    //     Operator.prototype.updateHeader.call(this);
 
 
-        this.header.style.background = 
-            !rgbaIsNaN(colors.stripeBack)
-            ? rgba2style(colors.stripeBack) 
-            : 'transparent';
-
-        this.colorBack.style.background = 
-            rgbIsOk(colors.stripeBack) //!rgbIsNaN(colors.back)
-            ? rgb2style(colors.stripeBack)
-            : rgba2style(rgb_a(rgbDocumentBody, 0.95));
+    //     const colors = this.getHeaderColors();
 
 
-        this.colorBack.style.height = this.measureData.headerOffset.height;
+    //     this.header.style.background = 
+    //         !rgbaIsNaN(colors.stripeBack)
+    //         ? rgba2style(colors.stripeBack) 
+    //         : 'transparent';
+
+    //     this.colorBack.style.background = 
+    //         rgbIsOk(colors.stripeBack) //!rgbIsNaN(colors.back)
+    //         ? rgb2style(colors.stripeBack)
+    //         : rgba2style(rgb_a(rgbDocumentBody, 0.95));
+
+
+    //     this.colorBack.style.height = this.measureData.headerOffset.height;
 
             
-        this.checkers.style.height = this.header.offsetHeight;
+    //     this.checkers.style.height = this.header.offsetHeight;
 
-        this.checkers.style.background =
-            darkMode
-            ?   'linear-gradient(45deg, #222 25%, transparent 25%, transparent 75%, #222 75%), '
-              + 'linear-gradient(45deg, #222 25%, transparent 25%, transparent 75%, #222 75%)'
-            :   'linear-gradient(45deg, #ddd 25%, transparent 25%, transparent 75%, #ddd 75%), '
-              + 'linear-gradient(45deg, #ddd 25%, transparent 25%, transparent 75%, #ddd 75%)';
+    //     this.checkers.style.background =
+    //         darkMode
+    //         ?   'linear-gradient(45deg, #222 25%, transparent 25%, transparent 75%, #222 75%), '
+    //           + 'linear-gradient(45deg, #222 25%, transparent 25%, transparent 75%, #222 75%)'
+    //         :   'linear-gradient(45deg, #ddd 25%, transparent 25%, transparent 75%, #ddd 75%), '
+    //           + 'linear-gradient(45deg, #ddd 25%, transparent 25%, transparent 75%, #ddd 75%)';
 
-        this.checkers.style.display            = !rgbIsNaN(colors.back) ? 'inline-block' : 'none';
-        this.checkers.style.backgroundColor    = darkMode ? '#444' : '#fff';
+    //     this.checkers.style.display            = !rgbIsNaN(colors.back) ? 'inline-block' : 'none';
+    //     this.checkers.style.backgroundColor    = darkMode ? '#444' : '#fff';
 
-        this.checkers.style.backgroundSize     = '22px 22px';
-        this.checkers.style.backgroundPosition = '0 0, 11px 11px';
+    //     this.checkers.style.backgroundSize     = '22px 22px';
+    //     this.checkers.style.backgroundPosition = '0 0, 11px 11px';
                         
-        this.checkers.style.left               = '-3px';
-        this.checkers.style.width              = 'calc(100% + 3px)';
+    //     this.checkers.style.left               = '-3px';
+    //     this.checkers.style.width              = 'calc(100% + 3px)';
 
 
-        this.header.style.background = 
-            !rgbIsNaN(colors.stripeBack)
-            ? rgba2style(colors.stripeBack) 
-            : 'transparent';
+    //     this.header.style.background = 
+    //         !rgbIsNaN(colors.stripeBack)
+    //         ? rgba2style(colors.stripeBack) 
+    //         : 'transparent';
 
 
-        this.inputs[0] .colorLight = 
-        this.inputs[0] .colorDark  = colors.input;
-        this.inputs[0] .wireColor  = colors.wire;
+    //     this.inputs[0] .colorLight = 
+    //     this.inputs[0] .colorDark  = colors.input;
+    //     this.inputs[0] .wireColor  = colors.wire;
 
-        this.outputs[0].colorLight =
-        this.outputs[0].colorDark  = colors.output;
-        this.outputs[0].wireColor  = colors.wire;
+    //     this.outputs[0].colorLight =
+    //     this.outputs[0].colorDark  = colors.output;
+    //     this.outputs[0].wireColor  = colors.wire;
 
 
-        this.updateWarningOverlay();
-        this.updateWarningOverlayStyle(colors.back, this.inputIsShape ? -1 : 45);
-    }
+    //     this.updateWarningOverlay();
+    //     this.updateWarningOverlayStyle(colors.back, this.inputIsShape ? -1 : 45);
+    // }
 
 
 
@@ -91763,13 +92012,13 @@ extends OpColorBase
 
     updateParams()
     {
-        const enableFill = !this.paramFill.input.connected;
+        const enableFills = !this.paramFills.input.connected;
  
         const enable = 
                !this.inputs[0].connected
             || !this.inputs[0].connectedOutput.supportsTypes(STROKE_TYPES);
 
-        this.paramFill  .enableControlText(enableFill);
+        this.paramFills .enableControlText(enableFills);
         this.paramWeight.enableControlText(enable);
         this.paramFit   .enableControlText(enable);
         this.paramJoin  .enableControlText(enable);
@@ -91780,23 +92029,23 @@ extends OpColorBase
 
     
 
-    getHeaderColors(options = {})
-    {
-        const colors = super.getHeaderColors();
+    // getHeaderColors(options = {})
+    // {
+    //     const colors = super.getHeaderColors();
 
-        colors.back       = rgb_a(colors.back, this.paramFill.value.opacity.value/100);
-        colors.stripeBack = rgb_a(colors.stripeBack, this.paramFill.value.opacity.value/100);
-        colors.text       = getTextColorFromBackColor(colors.stripeBack, this.paramFill.value.opacity.value/100);
-        colors.input      = rgb_a(colors.text, 0.2);
-        colors.output     = rgb_a(colors.text, 0.2);
+    //     colors.back       = rgb_a(colors.back, this.paramFills.value.opacity.value/100);
+    //     colors.stripeBack = rgb_a(colors.stripeBack, this.paramFills.value.opacity.value/100);
+    //     colors.text       = getTextColorFromBackColor(colors.stripeBack, this.paramFills.value.opacity.value/100);
+    //     colors.input      = rgb_a(colors.text, 0.2);
+    //     colors.output     = rgb_a(colors.text, 0.2);
 
-        colors.wire = 
-            !rgbaIsNaN(colors.stripeBack)
-            ? colors.stripeBack
-            : rgbFromType(ANY_VALUE, false);
+    //     colors.wire = 
+    //         !rgbaIsNaN(colors.stripeBack)
+    //         ? colors.stripeBack
+    //         : rgbFromType(ANY_VALUE, false);
 
-        return colors;
-    }
+    //     return colors;
+    // }
 
 
 
@@ -100292,6 +100541,196 @@ window.addEventListener('blur',  () => graph.updatePages());
 document.addEventListener('contextmenu', e => e.preventDefault());
 
 
+function initEulaDialog()
+{
+    //eula0.innerHTML = eula0.innerHTML.replace('%Ctrl%', osCtrl());
+
+
+    initCheckbox(chkHideEula, 'Don\'t show again', false);
+    chkHideEula.addEventListener('change', () => uiSetLocalData('showEula', generatorVersion));
+
+
+    eulaBack.addEventListener('pointerdown', e => { e.preventDefault(); });
+
+
+    eulaDialog.mouseOver = false;
+
+    eulaDialog.addEventListener('pointerenter', e => { eulaDialog.mouseOver = true;  updateEulaScroll(); });
+    eulaDialog.addEventListener('pointerleave', e => { eulaDialog.mouseOver = false; updateEulaScroll(); });
+    
+
+    let r = simpleIntHash(generatorVersion);
+    r = 3*r*r - 2*r*r*r;
+
+    eulaWatermark.style.left = Math.round(r * 100) + '%';
+
+
+    eulaDialogContainer.addEventListener('wheel', e =>
+    {    
+        const bounds = eulaDialogContent.getBoundingClientRect();
+
+        if (bounds.bottom - bounds.top <= eulaDialogContainer.clientHeight)
+            return;
+
+
+        let oy = eulaDialogContent.style.top = eulaDialogContent.offsetTop - e.deltaY / 3;
+
+        oy = Math.max(oy, eulaDialogContainer.clientHeight - eulaDialogContent.clientHeight + eulaTitle.clientHeight);
+        eulaDialogContent.style.top = Math.min(oy, getTopHeight());
+
+        updateEulaScroll();
+    });
+
+
+
+    eulaScrollbarY.addEventListener('pointerdown', e =>
+    {
+        if (e.button == 0)
+        {
+            eulaScrollbarY.moving = true;
+            eulaScrollbarY.yStart = eulaScrollbarY.offsetTop;
+            eulaScrollbarY.hStart = eulaScrollbarY.offsetHeight;
+            eulaScrollbarY.pStart = e.clientY;
+            eulaScrollbarY.setPointerCapture(e.pointerId);
+    
+            for (const node of graph.nodes)
+                node.div.sly = node.div.offsetTop;
+    
+            eulaDialogContent.topStart = eulaDialogContent.offsetTop;
+        }
+    });
+    
+    
+    
+    eulaScrollbarY.addEventListener('pointerup', e =>
+    {
+        if (   e.button == 0
+            && eulaScrollbarY.moving)
+        {
+            eulaScrollbarY.moving = false;
+            eulaScrollbarY.releasePointerCapture(e.pointerId);
+ 
+            let bounds = Rect.NaN;
+    
+            for (const node of graph.nodes)
+                bounds = expandRect(bounds, boundingRect(node.div));
+    
+            // if (bounds.t >= 0 && bounds.b < eulaDialog.clientHeight)
+            //     eulaScrollbarY.style.display = 'none';
+        }
+    });
+    
+    
+    
+    eulaScrollbarY.addEventListener('pointermove', e =>
+    {
+        if (eulaScrollbarY.moving)
+            updateEulaScrollbar(e.clientY);
+    });
+
+
+    eulaTitleText.innerHTML = 'Version ' + generatorVersion;
+}
+
+
+
+function showEulaDialog()
+{
+    eulaBack  .style.display = 'block';
+    eulaDialog.style.display = 'block';
+
+    updateEulaScroll();
+
+    dialogShown = true;
+}
+
+
+
+function hideEulaDialog()
+{
+    eulaBack  .style.display = 'none';
+    eulaDialog.style.display = 'none';
+
+    dialogShown = false;
+}
+
+
+
+eulaClose.addEventListener('pointerdown', e => e.stopPropagation());
+
+
+
+eulaBack.addEventListener('pointerdown', () =>
+{
+    hideEulaDialog();
+});
+
+
+
+/////////////////////////////////////////////////////////////////////////////////////
+
+
+
+function updateEulaScrollbar(clientY)
+{
+    let t = eulaScrollbarY.yStart + clientY - eulaScrollbarY.pStart;
+    let b = t + eulaScrollbarY.hStart;
+
+    t = Math.max(eulaTitle.clientHeight + smallScrollGap, t);
+    b = Math.min(b, eulaDialogContainer.clientHeight - largeScrollGap);
+
+    t = Math.max(smallScrollGap, Math.min(t, b - smallScrollGap));
+    b = Math.max(t + smallScrollGap, b);
+
+
+    let oy = 
+          eulaDialogContent.topStart 
+        - (clientY - eulaScrollbarY.pStart) / eulaScrollbarY.hStart * eulaDialogContainer.clientHeight;
+
+    oy = Math.max(oy, eulaDialogContainer.clientHeight - eulaDialogContent.clientHeight + eulaTitle.clientHeight);
+
+
+    eulaDialogContent.style.top = Math.min(
+        oy,
+        getTopHeight());
+
+
+    updateEulaScroll();
+}
+
+
+
+function updateEulaScroll()
+{
+    const x       = eulaDialog.clientLeft;
+    const w       = eulaDialog.clientWidth;
+    const h       = eulaDialogContainer.clientHeight;
+    const yOffset = getTopHeight();
+    
+    const bounds = eulaDialogContent.getBoundingClientRect();
+    
+    updateEulaScrollY(x, w, h, bounds, yOffset);
+}
+
+
+
+function updateEulaScrollY(x, w, h, bounds, yOffset)
+{
+    if (   eulaDialog.mouseOver
+        && bounds.bottom - bounds.top > h)
+    {
+        const height = sqr(h) / bounds.height - 2*smallScrollGap;
+
+        eulaScrollbarY.style.display = 'inline-block';
+        eulaScrollbarY.style.height  =  height;
+        eulaScrollbarY.style.left    =  x + w - smallScrollGap - 6;
+        eulaScrollbarY.style.top     =  yOffset - (bounds.top - 100) * h / bounds.height;
+    }
+    else
+       eulaScrollbarY.style.display = 'none';
+}
+
+
 
 var generatorStarted = false;
 
@@ -100394,6 +100833,9 @@ function uiReturnFigStartGenerator(msg)
 
     
     uiGetLocalData('showWhatsNew');
+
+
+    //showEulaDialog();
 
 
     currentUser  = msg.currentUser;

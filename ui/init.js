@@ -102,6 +102,9 @@ function uiReturnFigStartGenerator(msg)
     uiGetLocalData('showWhatsNew');
 
 
+    //showEulaDialog();
+
+
     currentUser  = msg.currentUser;
     productKey   = msg.productKey;
 

@@ -1,7 +1,7 @@
 class OpStroke
 extends OpColorBase
 {
-    paramFill;
+    paramFills;
     paramWeight;
     paramFit;
     paramJoin;
@@ -34,11 +34,19 @@ extends OpColorBase
         this.addOutput(new Output([STROKE_VALUE], this.output_genRequest, getNodeOutputValuesForUndo));
 
 
-        this.addParam(this.paramFill   = new FillParam  ('fill',   'fill',   false, true, true, FillValue.create(0, 0, 0, 100)));
+        this.addParam(this.paramFills  = new   ListParam('fills',  'fills',  false, true, true));
         this.addParam(this.paramWeight = new NumberParam('weight', 'weight', true,  true, true, 1, 0));
         this.addParam(this.paramFit    = new SelectParam('fit',    'align',  true,  true, true, ['inside', 'center', 'outside'], 0));
         this.addParam(this.paramJoin   = new SelectParam('join',   'join',   true,  true, true, ['miter', 'bevel', 'round'], 0));
         this.addParam(this.paramMiter  = new NumberParam('miter',  'miter',  true,  true, true, 28.96, 0, 180, 2));
+
+        this.paramFills.itemName  = 'fill';
+        this.paramFills.showZero  = false;
+        this.paramFills.listTypes = [COLOR_VALUE, FILL_VALUE, GRADIENT_VALUE];
+        this.paramFills.input.types.push(...this.paramFills.listTypes);
+
+        this.paramWeight.divider = 0.55;
+        this.paramMiter .divider = 0.43;
 
         this.paramMiter.controls[0].setSuffix('°', true);
         this.paramMiter.canShow = () => this.paramJoin.value == 0;
@@ -64,7 +72,7 @@ extends OpColorBase
 
 
         const hasInputs =
-               this.node.paramFill  .input.connected
+               this.node.paramFills .input.connected
             || this.node.paramWeight.input.connected
             || this.node.paramFit   .input.connected
             || this.node.paramJoin  .input.connected
@@ -118,13 +126,13 @@ extends OpColorBase
 
     updateValues(requestId, actionId, updateParamId, paramIds, values)
     {
-        const fill = values[paramIds.findIndex(id => id == 'fill')];
+        // const fill = values[paramIds.findIndex(id => id == 'fill')];
 
-        this._color = 
-               fill
-            && fill.isValid()
-            ? fill.color.toDataColor()
-            : dataColor_NaN;
+        // this._color = 
+        //        fill
+        //     && fill.isValid()
+        //     ? fill.color.toDataColor()
+        //     : dataColor_NaN;
 
             
         this.outputs[0].types =
@@ -139,67 +147,67 @@ extends OpColorBase
 
 
 
-    updateHeader()
-    {
-        //console.log(this.id + '.OpStroke.updateHeader()');
+    // updateHeader()
+    // {
+    //     //console.log(this.id + '.OpStroke.updateHeader()');
 
-        Operator.prototype.updateHeader.call(this);
-
-
-        const colors = this.getHeaderColors();
+    //     Operator.prototype.updateHeader.call(this);
 
 
-        this.header.style.background = 
-            !rgbaIsNaN(colors.stripeBack)
-            ? rgba2style(colors.stripeBack) 
-            : 'transparent';
-
-        this.colorBack.style.background = 
-            rgbIsOk(colors.stripeBack) //!rgbIsNaN(colors.back)
-            ? rgb2style(colors.stripeBack)
-            : rgba2style(rgb_a(rgbDocumentBody, 0.95));
+    //     const colors = this.getHeaderColors();
 
 
-        this.colorBack.style.height = this.measureData.headerOffset.height;
+    //     this.header.style.background = 
+    //         !rgbaIsNaN(colors.stripeBack)
+    //         ? rgba2style(colors.stripeBack) 
+    //         : 'transparent';
+
+    //     this.colorBack.style.background = 
+    //         rgbIsOk(colors.stripeBack) //!rgbIsNaN(colors.back)
+    //         ? rgb2style(colors.stripeBack)
+    //         : rgba2style(rgb_a(rgbDocumentBody, 0.95));
+
+
+    //     this.colorBack.style.height = this.measureData.headerOffset.height;
 
             
-        this.checkers.style.height = this.header.offsetHeight;
+    //     this.checkers.style.height = this.header.offsetHeight;
 
-        this.checkers.style.background =
-            darkMode
-            ?   'linear-gradient(45deg, #222 25%, transparent 25%, transparent 75%, #222 75%), '
-              + 'linear-gradient(45deg, #222 25%, transparent 25%, transparent 75%, #222 75%)'
-            :   'linear-gradient(45deg, #ddd 25%, transparent 25%, transparent 75%, #ddd 75%), '
-              + 'linear-gradient(45deg, #ddd 25%, transparent 25%, transparent 75%, #ddd 75%)';
+    //     this.checkers.style.background =
+    //         darkMode
+    //         ?   'linear-gradient(45deg, #222 25%, transparent 25%, transparent 75%, #222 75%), '
+    //           + 'linear-gradient(45deg, #222 25%, transparent 25%, transparent 75%, #222 75%)'
+    //         :   'linear-gradient(45deg, #ddd 25%, transparent 25%, transparent 75%, #ddd 75%), '
+    //           + 'linear-gradient(45deg, #ddd 25%, transparent 25%, transparent 75%, #ddd 75%)';
 
-        this.checkers.style.display            = !rgbIsNaN(colors.back) ? 'inline-block' : 'none';
-        this.checkers.style.backgroundColor    = darkMode ? '#444' : '#fff';
+    //     this.checkers.style.display            = !rgbIsNaN(colors.back) ? 'inline-block' : 'none';
+    //     this.checkers.style.backgroundColor    = darkMode ? '#444' : '#fff';
 
-        this.checkers.style.backgroundSize     = '22px 22px';
-        this.checkers.style.backgroundPosition = '0 0, 11px 11px';
+    //     this.checkers.style.backgroundSize     = '22px 22px';
+    //     this.checkers.style.backgroundPosition = '0 0, 11px 11px';
                         
-        this.checkers.style.left               = '-3px';
-        this.checkers.style.width              = 'calc(100% + 3px)';
+    //     this.checkers.style.left               = '-3px';
+    //     this.checkers.style.width              = 'calc(100% + 3px)';
 
 
-        this.header.style.background = 
-            !rgbIsNaN(colors.stripeBack)
-            ? rgba2style(colors.stripeBack) 
-            : 'transparent';
+    //     this.header.style.background = 
+    //         !rgbIsNaN(colors.stripeBack)
+    //         ? rgba2style(colors.stripeBack) 
+    //         : 'transparent';
 
 
-        this.inputs[0] .colorLight = 
-        this.inputs[0] .colorDark  = colors.input;
-        this.inputs[0] .wireColor  = colors.wire;
+    //     this.inputs[0] .colorLight = 
+    //     this.inputs[0] .colorDark  = colors.input;
+    //     this.inputs[0] .wireColor  = colors.wire;
 
-        this.outputs[0].colorLight =
-        this.outputs[0].colorDark  = colors.output;
-        this.outputs[0].wireColor  = colors.wire;
+    //     this.outputs[0].colorLight =
+    //     this.outputs[0].colorDark  = colors.output;
+    //     this.outputs[0].wireColor  = colors.wire;
 
 
-        this.updateWarningOverlay();
-        this.updateWarningOverlayStyle(colors.back, this.inputIsShape ? -1 : 45);
-    }
+    //     this.updateWarningOverlay();
+    //     this.updateWarningOverlayStyle(colors.back, this.inputIsShape ? -1 : 45);
+    // }
 
 
 
@@ -215,13 +223,13 @@ extends OpColorBase
 
     updateParams()
     {
-        const enableFill = !this.paramFill.input.connected;
+        const enableFills = !this.paramFills.input.connected;
  
         const enable = 
                !this.inputs[0].connected
             || !this.inputs[0].connectedOutput.supportsTypes(STROKE_TYPES);
 
-        this.paramFill  .enableControlText(enableFill);
+        this.paramFills .enableControlText(enableFills);
         this.paramWeight.enableControlText(enable);
         this.paramFit   .enableControlText(enable);
         this.paramJoin  .enableControlText(enable);
@@ -232,23 +240,23 @@ extends OpColorBase
 
     
 
-    getHeaderColors(options = {})
-    {
-        const colors = super.getHeaderColors();
+    // getHeaderColors(options = {})
+    // {
+    //     const colors = super.getHeaderColors();
 
-        colors.back       = rgb_a(colors.back, this.paramFill.value.opacity.value/100);
-        colors.stripeBack = rgb_a(colors.stripeBack, this.paramFill.value.opacity.value/100);
-        colors.text       = getTextColorFromBackColor(colors.stripeBack, this.paramFill.value.opacity.value/100);
-        colors.input      = rgb_a(colors.text, 0.2);
-        colors.output     = rgb_a(colors.text, 0.2);
+    //     colors.back       = rgb_a(colors.back, this.paramFills.value.opacity.value/100);
+    //     colors.stripeBack = rgb_a(colors.stripeBack, this.paramFills.value.opacity.value/100);
+    //     colors.text       = getTextColorFromBackColor(colors.stripeBack, this.paramFills.value.opacity.value/100);
+    //     colors.input      = rgb_a(colors.text, 0.2);
+    //     colors.output     = rgb_a(colors.text, 0.2);
 
-        colors.wire = 
-            !rgbaIsNaN(colors.stripeBack)
-            ? colors.stripeBack
-            : rgbFromType(ANY_VALUE, false);
+    //     colors.wire = 
+    //         !rgbaIsNaN(colors.stripeBack)
+    //         ? colors.stripeBack
+    //         : rgbFromType(ANY_VALUE, false);
 
-        return colors;
-    }
+    //     return colors;
+    // }
 
 
 
