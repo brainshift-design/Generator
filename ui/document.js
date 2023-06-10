@@ -55,6 +55,12 @@ true);
 
 document.addEventListener('pointerdown', function(e)
 {
+    if (   document.      pointerLockElement
+        || document.   mozPointerLockElement
+        || document.webkitPointerLockElement)
+        return;
+        
+
     if (e.button == 0)
     {
         if (   document.canResizeL

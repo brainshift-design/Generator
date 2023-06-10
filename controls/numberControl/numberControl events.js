@@ -336,6 +336,7 @@ NumberControl.prototype.initEvents = function()
 
         controlDiv.style.cursor        = 'default';
         
+        //this.divFocus.style.boxShadow  = 'none';
         this.divFocus.style.visibility = 'hidden';
         this.divFocus.style.opacity    = 0;
 
@@ -410,7 +411,23 @@ NumberControl.prototype.initEvents = function()
 
         clearTimeout(this.clickTimer);
 
-  
+
+        if (e.button == 0)
+        {
+            const colShadow = 
+                darkMode
+                ? 'rgba(255, 255, 255, 0.1)'
+                : 'rgba(0, 0, 0, 0.1)';
+
+            this.divFocus.style.boxShadow = '0 1px 0 0 ' + colShadow + ' inset';
+
+            if (    param.node
+                &&  param.node.params.includes(param)
+                && !isLastInArray(param.node.params, param))
+                this.divFocus.style.boxShadow += ', 0 -1px 0 0 ' + colShadow + ' inset';
+        }
+
+
         if (graphView.tempConn)
         {
             if (    graphView.tempConn.output
@@ -499,8 +516,6 @@ NumberControl.prototype.initEvents = function()
         {
             this.buttonDown0 = false;
             this.unlockPointer(e.pointerId);
-
-            this.divFocus.style.boxShadow = '0 0 0 1px rgba(0, 0, 0, 0.1) inset';
         }
         else if (e.button == 1
               && this.buttonDown1)

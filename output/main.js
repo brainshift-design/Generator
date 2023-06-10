@@ -2095,10 +2095,10 @@ function getObjectFills(genObjFills) {
                     for (const stop of fill[2]) {
                         stops.push({
                             color: {
-                                r: stop[0],
-                                g: stop[1],
-                                b: stop[2],
-                                a: stop[3]
+                                r: Math.min(Math.max(0, stop[0]), 1),
+                                g: Math.min(Math.max(0, stop[1]), 1),
+                                b: Math.min(Math.max(0, stop[2]), 1),
+                                a: Math.min(Math.max(0, stop[3]), 1)
                             },
                             position: stop[4]
                         });
