@@ -19,7 +19,7 @@ function figCreateLine(genLine)
         return figLine;
 
 
-    setObjectTransform(figLine, genLine);
+    setObjectTransform(figLine, genLine, true, 0);
     setObjectProps    (figLine, genLine);
 
     
@@ -37,6 +37,6 @@ function figUpdateLine(figLine, genLine)
     figLine.name = makeObjectName(genLine);
 
 
-    setObjectTransform(figLine, genLine);
+    setObjectTransform(figLine, genLine, true, 0);
     setObjectProps    (figLine, genLine);
 }

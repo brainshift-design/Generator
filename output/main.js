@@ -2495,7 +2495,7 @@ function applyFigmaTransform(figObj, tl, tr, bl) {
             xform[1]
         ];
 }
-function setObjectTransform(figObj, genObj, setSize = true) {
+function setObjectTransform(figObj, genObj, setSize = true, noHeight = 0.01) {
     const xp0 = point(genObj.xp0.x, genObj.xp0.y);
     const xp1 = point(genObj.xp1.x, genObj.xp1.y);
     const xp2 = point(genObj.xp2.x, genObj.xp2.y);
@@ -2689,7 +2689,7 @@ function figCreateLine(genLine) {
     figLine.name = makeObjectName(genLine);
     if (!genLineIsValid(genLine))
         return figLine;
-    setObjectTransform(figLine, genLine);
+    setObjectTransform(figLine, genLine, true, 0);
     setObjectProps(figLine, genLine);
     return figLine;
 }
@@ -2697,7 +2697,7 @@ function figUpdateLine(figLine, genLine) {
     if (!genLineIsValid(genLine))
         return;
     figLine.name = makeObjectName(genLine);
-    setObjectTransform(figLine, genLine);
+    setObjectTransform(figLine, genLine, true, 0);
     setObjectProps(figLine, genLine);
 }
 var figPoints = [];
