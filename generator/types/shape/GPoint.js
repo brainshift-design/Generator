@@ -62,12 +62,7 @@ extends GOperator
         }
 
        
-        this.updateValues =
-        [
-            ['value', this.value],
-            ['x',     x         ],
-            ['y',     y         ]
-        ];
+        this.updateValues = [['value', this.value]];
 
 
         this.evalObjects(parse);

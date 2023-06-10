@@ -5,6 +5,7 @@ extends OpShape
     paramY;
     paramWidth;
     paramHeight;
+    paramFrom;
     paramTo;
     paramInner;
 
@@ -40,5 +41,20 @@ extends OpShape
 
 
         this.addBaseParams();
+    }
+
+
+
+    updateValues(requestId, actionId, updateParamId, paramIds, values)
+    {
+        const value = values[paramIds.findIndex(id => id == 'value')];
+
+        this.paramX     .setValue(value.x,      false, true, false);
+        this.paramY     .setValue(value.y,      false, true, false);
+        this.paramWidth .setValue(value.width,  false, true, false);
+        this.paramHeight.setValue(value.height, false, true, false);
+        this.paramFrom  .setValue(value.from,   false, true, false);
+        this.paramTo    .setValue(value.to,     false, true, false);
+        this.paramInner .setValue(value.inner,  false, true, false);
     }
 }

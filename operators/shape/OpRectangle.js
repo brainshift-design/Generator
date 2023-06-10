@@ -5,7 +5,6 @@ extends OpShape
     paramY;
     paramWidth;
     paramHeight;
-    //paramAngle;
     paramRound;
 
 
@@ -26,20 +25,28 @@ extends OpShape
         this.addParam(this.paramY      = new NumberParam('y',      'Y',      true, true, true,   0));
         this.addParam(this.paramWidth  = new NumberParam('width',  'width',  true, true, true, 100));
         this.addParam(this.paramHeight = new NumberParam('height', 'height', true, true, true, 100));
-        //this.addParam(this.paramAngle  = new NumberParam('angle',  'angle',  true, true, true,   0, -180,   180));
         this.addParam(this.paramRound  = new NumberParam('round',  'round',  true, true, true,   0,    0));
 
 
         this.paramWidth .addEventListener('change', () => this.updateRound());
         this.paramHeight.addEventListener('change', () => this.updateRound());
 
-        //this.paramAngle.controls[0].setSuffix('°', true);
-        //this.paramAngle.controls[0].wrapValue   = true;
-        //this.paramAngle.controls[0].dragReverse = true;
-
 
         this.addBaseParams();
         this.setAllParamDividers(0.5);
+    }
+
+
+
+    updateValues(requestId, actionId, updateParamId, paramIds, values)
+    {
+        const value = values[paramIds.findIndex(id => id == 'value')];
+
+        this.paramX     .setValue(value.x,      false, true, false);
+        this.paramY     .setValue(value.y,      false, true, false);
+        this.paramWidth .setValue(value.width,  false, true, false);
+        this.paramHeight.setValue(value.height, false, true, false);
+        this.paramRound .setValue(value.round,  false, true, false);
     }
 
 

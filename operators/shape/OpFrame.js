@@ -63,12 +63,18 @@ extends OpShape
 
     updateValues(requestId, actionId, updateParamId, paramIds, values)
     {
-        super.updateValues(requestId, actionId, updateParamId, paramIds, values);
-        
-        const children = values[paramIds.findIndex(id => id == 'children')];
+        const value = values[paramIds.findIndex(id => id == 'value')];
+
+        this.paramX     .setValue(value.x,      false, true, false);
+        this.paramY     .setValue(value.y,      false, true, false);
+        this.paramWidth .setValue(value.width,  false, true, false);
+        this.paramHeight.setValue(value.height, false, true, false);
+        this.paramRound .setValue(value.round,  false, true, false);
+
+
         const nObjects = values[paramIds.findIndex(id => id == 'nObjects')];
 
         this.paramChildren.getItemCount = () => nObjects.value;
-        this.paramChildren.output.types = [finalListTypeFromItems(children.items)];
+        this.paramChildren.output.types = [finalListTypeFromItems(value.children.items)];
     }
 }

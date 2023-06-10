@@ -126,4 +126,14 @@ extends OpShapeBase
 //              ? this.inputs[0].connectedOutput.toJsCode(gen)
 //              : this.paramValue.value.toJsCode(gen);
 //     }
+
+
+
+    updateValues(requestId, actionId, updateParamId, paramIds, values)
+    {
+        const value = values[paramIds.findIndex(id => id == 'value')];
+
+        this.paramX.setValue(value.x, false, true, false);
+        this.paramY.setValue(value.y, false, true, false);
+    }
 }

@@ -39,6 +39,21 @@ extends OpShape
 
 
 
+    updateValues(requestId, actionId, updateParamId, paramIds, values)
+    {
+        const value = values[paramIds.findIndex(id => id == 'value')];
+
+        this.paramX     .setValue(value.x,      false, true, false);
+        this.paramY     .setValue(value.y,      false, true, false);
+        this.paramWidth .setValue(value.width,  false, true, false);
+        this.paramHeight.setValue(value.height, false, true, false);
+        this.paramRound .setValue(value.round,  false, true, false);
+        this.paramPoints.setValue(value.points, false, true, false);
+        this.paramConvex.setValue(value.convex, false, true, false);
+    }
+
+
+
     updateRound()
     {
         const control = this.paramRound.controls[0];

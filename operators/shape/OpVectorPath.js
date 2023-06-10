@@ -41,4 +41,17 @@ extends OpShape
 
         this.addBaseParams();
     }
+
+
+
+    updateValues(requestId, actionId, updateParamId, paramIds, values)
+    {
+        const value = values[paramIds.findIndex(id => id == 'value')];
+
+        this.paramPoints .setValue(value.paramPoints,  false, true, false);
+        this.paramClosed .setValue(value.paramClosed,  false, true, false);
+        this.paramDegree .setValue(value.paramDegree,  false, true, false);
+        this.paramWinding.setValue(value.paramWinding, false, true, false);
+        this.paramRound  .setValue(value.paramRound,   false, true, false);
+    }
 }

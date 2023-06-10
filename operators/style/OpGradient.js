@@ -111,4 +111,20 @@ extends OpColorBase
 
         return request;
     }
+
+
+
+    updateValues(requestId, actionId, updateParamId, paramIds, values)
+    {
+        const value = values[paramIds.findIndex(id => id == 'value')];
+
+        this.paramType  .setValue(value.gradType, false, true, false);
+        this.paramX     .setValue(value.x,        false, true, false);
+        this.paramY     .setValue(value.y,        false, true, false);
+        this.paramSize  .setValue(value.size,     false, true, false);
+        this.paramAngle .setValue(value.angle,    false, true, false);
+        this.paramAspect.setValue(value.aspect,   false, true, false);
+        this.paramSkew  .setValue(value.skew,     false, true, false);
+        this.paramBlend .setValue(value.blend,    false, true, false);
+    }
 }

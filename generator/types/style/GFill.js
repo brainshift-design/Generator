@@ -63,12 +63,7 @@ extends GOperator
         }
 
 
-        this.updateValues =
-        [
-            ['color',   this.value.color  ],
-            ['opacity', this.value.opacity],
-            ['blend',   this.value.blend  ]
-        ];
+        this.updateValues = [['value', this.value]];
         
 
         this.validate();

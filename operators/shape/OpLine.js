@@ -23,4 +23,15 @@ extends OpShape
 
         this.addBaseParams();
     }
+
+
+
+    updateValues(requestId, actionId, updateParamId, paramIds, values)
+    {
+        const value = values[paramIds.findIndex(id => id == 'value')];
+
+        this.paramX    .setValue(value.x,     false, true, false);
+        this.paramY    .setValue(value.y,     false, true, false);
+        this.paramWidth.setValue(value.width, false, true, false);
+    }
 }

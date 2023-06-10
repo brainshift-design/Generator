@@ -14852,19 +14852,19 @@ extends GOperator
             
             // first copy the input objects
 
-            if (this.options.enabled)
-            {
-                for (let j = 0; j < this.inputs[i].objects.length; j++, o++)
-                {
-                    const obj = copyFigmaObject(this.inputs[i].objects[j]);
+            // if (this.options.enabled)
+            // {
+            //     for (let j = 0; j < this.inputs[i].objects.length; j++, o++)
+            //     {
+            //         const obj = copyFigmaObject(this.inputs[i].objects[j]);
 
-                    obj.nodeId   = this.nodeId;
-                    obj.objectId = obj.objectId + OBJECT_SEPARATOR + this.nodeId;
-                    obj.listId   = i;
+            //         obj.nodeId   = this.nodeId;
+            //         obj.objectId = obj.objectId + OBJECT_SEPARATOR + this.nodeId;
+            //         obj.listId   = i;
 
-                    this.objects.push(obj);
-                }
-            }
+            //         this.objects.push(obj);
+            //     }
+            // }
 
 
             // now create the output value
@@ -14879,13 +14879,13 @@ extends GOperator
                     for (const item of input.items)
                     {
                         this.value.items  .push(item.copy());   
-                        this.value.objects.push(...item.objects.map(o => o.copy()));
+                        //this.value.objects.push(...item.objects.map(o => o.copy()));
                     }
                 }
                 else
                 {
                     this.value.items  .push(input.copy());
-                    this.value.objects.push(...input.objects.map(o => o.copy()));
+                    //this.value.objects.push(...input.objects.map(o => o.copy()));
                 }
             }
         }
@@ -23060,12 +23060,7 @@ extends GOperator
         }
 
 
-        this.updateValues =
-        [
-            ['color',   this.value.color  ],
-            ['opacity', this.value.opacity],
-            ['blend',   this.value.blend  ]
-        ];
+        this.updateValues = [['value', this.value]];
         
 
         this.validate();
@@ -23183,11 +23178,7 @@ extends GOperator
         }
 
 
-        this.updateValues =
-        [
-            ['fill',     this.value.fill    ],
-            ['position', this.value.position]
-        ];
+        this.updateValues = [['value', this.value]];
         
 
         this.validate();
@@ -23332,18 +23323,7 @@ extends GOperator
             blend);
 
             
-        this.updateValues =
-        [
-            ['value',  this.value],
-            ['type',   gradType  ],
-            ['x',      x         ],
-            ['y',      y         ],
-            ['size',   size      ],
-            ['angle',  angle     ],
-            ['aspect', aspect    ],
-            ['skew',   skew      ],
-            ['blend',  blend     ]
-        ];
+        this.updateValues = [['value', this.value]];
         
 
         this.validate();
@@ -24216,13 +24196,13 @@ extends GOperator
 
     async evalShapeBase(parse, input, evalHeight = true)
     {
-        if (this.value.x     != undefined) this.updateValues.push(['x',     this.value.x    ]);
-        if (this.value.y     != undefined) this.updateValues.push(['y',     this.value.y    ]);
-        if (this.value.width != undefined) this.updateValues.push(['width', this.value.width]);
+        // if (this.value.x     != undefined) this.updateValues.push(['x',     this.value.x    ]);
+        // if (this.value.y     != undefined) this.updateValues.push(['y',     this.value.y    ]);
+        // if (this.value.width != undefined) this.updateValues.push(['width', this.value.width]);
 
-        if (   evalHeight // lines don't have height
-            && this.value.height != undefined)
-            this.updateValues.push(['height', this.value.height]);
+        // if (   evalHeight // lines don't have height
+        //     && this.value.height != undefined)
+        //     this.updateValues.push(['height', this.value.height]);
     }
 
 
@@ -24782,11 +24762,7 @@ extends GShape
         }
 
        
-        this.updateValues =
-        [
-            ['value', this.value      ],
-            ['round', this.value.round]
-        ];
+        this.updateValues = [['value', this.value]];
 
 
         await this.evalShapeBase(parse, input);
@@ -25311,12 +25287,7 @@ extends GShape
         }
 
         
-        this.updateValues =
-        [
-            ['value',   this.value        ],
-            ['round',   this.value.round  ],
-            ['corners', this.value.corners]
-        ];
+        this.updateValues = [['value', this.value]];
         
 
         await this.evalShapeBase(parse, input);
@@ -25512,13 +25483,7 @@ extends GShape
         }
 
              
-        this.updateValues =
-        [
-            ['value',  this.value       ],
-            ['round',  this.value.round ],
-            ['points', this.value.points],
-            ['convex', this.value.convex]
-        ];
+        this.updateValues = [['value', this.value]];
 
 
         await this.evalShapeBase(parse, input);
@@ -25748,22 +25713,7 @@ extends GShape
         }
 
        
-        this.updateValues =
-        [
-            ['value',         this.value              ],
-            ['text',          this.value.text         ],
-            ['x',             this.value.x            ],
-            ['y',             this.value.y            ],
-            ['width',         this.value.width        ],
-            ['height',        this.value.height       ],
-            ['font',          this.value.font         ],
-            ['style',         this.value.style        ],
-            ['size',          this.value.size         ],
-            ['alignH',        this.value.alignH       ],
-            ['alignV',        this.value.alignV       ],
-            ['lineHeight',    this.value.lineHeight   ],
-            ['letterSpacing', this.value.letterSpacing]
-        ];
+        this.updateValues = [['value', this.value]];
         
 
         await this.evalShapeBase(parse, input);
@@ -25988,12 +25938,7 @@ extends GOperator
         }
 
        
-        this.updateValues =
-        [
-            ['value', this.value],
-            ['x',     x         ],
-            ['y',     y         ]
-        ];
+        this.updateValues = [['value', this.value]];
 
 
         this.evalObjects(parse);
@@ -26156,15 +26101,7 @@ extends GShape
         }
 
 
-        this.updateValues =
-        [
-            ['value',   this.value        ],
-            ['points',  this.value.points ],
-            ['closed',  this.value.closed ],
-            ['degree',  this.value.degree ],
-            ['winding', this.value.winding],
-            ['round',   this.value.round  ]
-        ];
+        this.updateValues = [['value', this.value]];
 
 
         await this.evalShapeBase(parse, input);
@@ -26592,12 +26529,7 @@ extends GShape
         }
 
 
-        this.updateValues =
-        [
-            ['value',    this.value         ],
-            ['round',    this.value.round   ],
-            ['children', this.value.children]
-        ];
+        this.updateValues = [['value', this.value]];
 
 
         await this.evalShapeBase(parse, input);
@@ -49687,19 +49619,19 @@ extends GOperator
             
             // first copy the input objects
 
-            if (this.options.enabled)
-            {
-                for (let j = 0; j < this.inputs[i].objects.length; j++, o++)
-                {
-                    const obj = copyFigmaObject(this.inputs[i].objects[j]);
+            // if (this.options.enabled)
+            // {
+            //     for (let j = 0; j < this.inputs[i].objects.length; j++, o++)
+            //     {
+            //         const obj = copyFigmaObject(this.inputs[i].objects[j]);
 
-                    obj.nodeId   = this.nodeId;
-                    obj.objectId = obj.objectId + OBJECT_SEPARATOR + this.nodeId;
-                    obj.listId   = i;
+            //         obj.nodeId   = this.nodeId;
+            //         obj.objectId = obj.objectId + OBJECT_SEPARATOR + this.nodeId;
+            //         obj.listId   = i;
 
-                    this.objects.push(obj);
-                }
-            }
+            //         this.objects.push(obj);
+            //     }
+            // }
 
 
             // now create the output value
@@ -49714,13 +49646,13 @@ extends GOperator
                     for (const item of input.items)
                     {
                         this.value.items  .push(item.copy());   
-                        this.value.objects.push(...item.objects.map(o => o.copy()));
+                        //this.value.objects.push(...item.objects.map(o => o.copy()));
                     }
                 }
                 else
                 {
                     this.value.items  .push(input.copy());
-                    this.value.objects.push(...input.objects.map(o => o.copy()));
+                    //this.value.objects.push(...input.objects.map(o => o.copy()));
                 }
             }
         }
@@ -57895,12 +57827,7 @@ extends GOperator
         }
 
 
-        this.updateValues =
-        [
-            ['color',   this.value.color  ],
-            ['opacity', this.value.opacity],
-            ['blend',   this.value.blend  ]
-        ];
+        this.updateValues = [['value', this.value]];
         
 
         this.validate();
@@ -58018,11 +57945,7 @@ extends GOperator
         }
 
 
-        this.updateValues =
-        [
-            ['fill',     this.value.fill    ],
-            ['position', this.value.position]
-        ];
+        this.updateValues = [['value', this.value]];
         
 
         this.validate();
@@ -58167,18 +58090,7 @@ extends GOperator
             blend);
 
             
-        this.updateValues =
-        [
-            ['value',  this.value],
-            ['type',   gradType  ],
-            ['x',      x         ],
-            ['y',      y         ],
-            ['size',   size      ],
-            ['angle',  angle     ],
-            ['aspect', aspect    ],
-            ['skew',   skew      ],
-            ['blend',  blend     ]
-        ];
+        this.updateValues = [['value', this.value]];
         
 
         this.validate();
@@ -59051,13 +58963,13 @@ extends GOperator
 
     async evalShapeBase(parse, input, evalHeight = true)
     {
-        if (this.value.x     != undefined) this.updateValues.push(['x',     this.value.x    ]);
-        if (this.value.y     != undefined) this.updateValues.push(['y',     this.value.y    ]);
-        if (this.value.width != undefined) this.updateValues.push(['width', this.value.width]);
+        // if (this.value.x     != undefined) this.updateValues.push(['x',     this.value.x    ]);
+        // if (this.value.y     != undefined) this.updateValues.push(['y',     this.value.y    ]);
+        // if (this.value.width != undefined) this.updateValues.push(['width', this.value.width]);
 
-        if (   evalHeight // lines don't have height
-            && this.value.height != undefined)
-            this.updateValues.push(['height', this.value.height]);
+        // if (   evalHeight // lines don't have height
+        //     && this.value.height != undefined)
+        //     this.updateValues.push(['height', this.value.height]);
     }
 
 
@@ -59617,11 +59529,7 @@ extends GShape
         }
 
        
-        this.updateValues =
-        [
-            ['value', this.value      ],
-            ['round', this.value.round]
-        ];
+        this.updateValues = [['value', this.value]];
 
 
         await this.evalShapeBase(parse, input);
@@ -60146,12 +60054,7 @@ extends GShape
         }
 
         
-        this.updateValues =
-        [
-            ['value',   this.value        ],
-            ['round',   this.value.round  ],
-            ['corners', this.value.corners]
-        ];
+        this.updateValues = [['value', this.value]];
         
 
         await this.evalShapeBase(parse, input);
@@ -60347,13 +60250,7 @@ extends GShape
         }
 
              
-        this.updateValues =
-        [
-            ['value',  this.value       ],
-            ['round',  this.value.round ],
-            ['points', this.value.points],
-            ['convex', this.value.convex]
-        ];
+        this.updateValues = [['value', this.value]];
 
 
         await this.evalShapeBase(parse, input);
@@ -60583,22 +60480,7 @@ extends GShape
         }
 
        
-        this.updateValues =
-        [
-            ['value',         this.value              ],
-            ['text',          this.value.text         ],
-            ['x',             this.value.x            ],
-            ['y',             this.value.y            ],
-            ['width',         this.value.width        ],
-            ['height',        this.value.height       ],
-            ['font',          this.value.font         ],
-            ['style',         this.value.style        ],
-            ['size',          this.value.size         ],
-            ['alignH',        this.value.alignH       ],
-            ['alignV',        this.value.alignV       ],
-            ['lineHeight',    this.value.lineHeight   ],
-            ['letterSpacing', this.value.letterSpacing]
-        ];
+        this.updateValues = [['value', this.value]];
         
 
         await this.evalShapeBase(parse, input);
@@ -60823,12 +60705,7 @@ extends GOperator
         }
 
        
-        this.updateValues =
-        [
-            ['value', this.value],
-            ['x',     x         ],
-            ['y',     y         ]
-        ];
+        this.updateValues = [['value', this.value]];
 
 
         this.evalObjects(parse);
@@ -60991,15 +60868,7 @@ extends GShape
         }
 
 
-        this.updateValues =
-        [
-            ['value',   this.value        ],
-            ['points',  this.value.points ],
-            ['closed',  this.value.closed ],
-            ['degree',  this.value.degree ],
-            ['winding', this.value.winding],
-            ['round',   this.value.round  ]
-        ];
+        this.updateValues = [['value', this.value]];
 
 
         await this.evalShapeBase(parse, input);
@@ -61427,12 +61296,7 @@ extends GShape
         }
 
 
-        this.updateValues =
-        [
-            ['value',    this.value         ],
-            ['round',    this.value.round   ],
-            ['children', this.value.children]
-        ];
+        this.updateValues = [['value', this.value]];
 
 
         await this.evalShapeBase(parse, input);
@@ -68853,8 +68717,8 @@ function initGeneratorMenus()
     menuSets = new Menu('Sets...', true, false);
     menuSets.addItems([
         menuItemArray      = new MenuItem('Define . . .',     {icon: iconArray,       callback: e => actionManager.do(getCreateNodeAction(NUMBER_DEFINE,       btnNumber.div, getCreateOptions(e)))}),
-        menuItemDistribute = new MenuItem('Distribute . . .', {icon: iconDistribute,  callback: e => actionManager.do(getCreateNodeAction(NUMBER_DISTRIBUTE,  btnNumber.div, getCreateOptions(e)))}),
         menuItemSequence   = new MenuItem('Sequence . . .',   {icon: iconSequence,    callback: e => actionManager.do(getCreateNodeAction(NUMBER_SEQUENCE,    btnNumber.div, getCreateOptions(e)))}),
+        menuItemDistribute = new MenuItem('Distribute . . .', {icon: iconDistribute,  callback: e => actionManager.do(getCreateNodeAction(NUMBER_DISTRIBUTE,  btnNumber.div, getCreateOptions(e)))}),
                              new MenuItem('Random . . .',     {icon: iconRandom,      callback: e => actionManager.do(getCreateNodeAction(NUMBER_RANDOM,      btnNumber.div, getCreateOptions(e)))})]);
         
     
@@ -91346,11 +91210,16 @@ extends OpColorBase
 
     updateValues(requestId, actionId, updateParamId, paramIds, values)
     {
-        const color = values[paramIds.findIndex(id => id == 'color')];
+        const value = values[paramIds.findIndex(id => id == 'value')];
+
+        this.paramColor  .setValue(value.color,   false, true, false);
+        this.paramOpacity.setValue(value.opacity, false, true, false);
+        this.paramBlend  .setValue(value.blend,   false, true, false);
+ 
 
         this._color = 
-            color.isValid()
-            ? color.toDataColor()
+            value.color.isValid()
+            ? value.color.toDataColor()
             : dataColor_NaN;
 
 
@@ -91361,7 +91230,7 @@ extends OpColorBase
             : [FILL_VALUE];
 
 
-        super.updateValues(requestId, actionId, updateParamId, paramIds, values);
+        //super.updateValues(requestId, actionId, updateParamId, paramIds, values);
     }
 
 
@@ -91642,12 +91511,16 @@ extends OpColorBase
 
     updateValues(requestId, actionId, updateParamId, paramIds, values)
     {
-        const fill = values[paramIds.findIndex(id => id == 'fill')];
+        const value = values[paramIds.findIndex(id => id == 'value')];
+
+        this.paramFill    .setValue(value.fill,     false, true, false);
+        this.paramPosition.setValue(value.position, false, true, false);
+
 
         this._color = 
-               fill
-            && fill.isValid()
-            ? fill.color.toDataColor()
+               value.fill
+            && value.fill.isValid()
+            ? value.fill.color.toDataColor()
             : dataColor_NaN;
 
             
@@ -91658,7 +91531,7 @@ extends OpColorBase
         //     : [COLOR_STOP_VALUE];
 
 
-        super.updateValues(requestId, actionId, updateParamId, paramIds, values);
+        // super.updateValues(requestId, actionId, updateParamId, paramIds, values);
     }
 
 
@@ -91896,6 +91769,22 @@ extends OpColorBase
         pushUnique(gen.passedNodes, this.node);
 
         return request;
+    }
+
+
+
+    updateValues(requestId, actionId, updateParamId, paramIds, values)
+    {
+        const value = values[paramIds.findIndex(id => id == 'value')];
+
+        this.paramType  .setValue(value.gradType, false, true, false);
+        this.paramX     .setValue(value.x,        false, true, false);
+        this.paramY     .setValue(value.y,        false, true, false);
+        this.paramSize  .setValue(value.size,     false, true, false);
+        this.paramAngle .setValue(value.angle,    false, true, false);
+        this.paramAspect.setValue(value.aspect,   false, true, false);
+        this.paramSkew  .setValue(value.skew,     false, true, false);
+        this.paramBlend .setValue(value.blend,    false, true, false);
     }
 }
 
@@ -92817,7 +92706,6 @@ extends OpShape
     paramY;
     paramWidth;
     paramHeight;
-    //paramAngle;
     paramRound;
 
 
@@ -92838,20 +92726,28 @@ extends OpShape
         this.addParam(this.paramY      = new NumberParam('y',      'Y',      true, true, true,   0));
         this.addParam(this.paramWidth  = new NumberParam('width',  'width',  true, true, true, 100));
         this.addParam(this.paramHeight = new NumberParam('height', 'height', true, true, true, 100));
-        //this.addParam(this.paramAngle  = new NumberParam('angle',  'angle',  true, true, true,   0, -180,   180));
         this.addParam(this.paramRound  = new NumberParam('round',  'round',  true, true, true,   0,    0));
 
 
         this.paramWidth .addEventListener('change', () => this.updateRound());
         this.paramHeight.addEventListener('change', () => this.updateRound());
 
-        //this.paramAngle.controls[0].setSuffix('°', true);
-        //this.paramAngle.controls[0].wrapValue   = true;
-        //this.paramAngle.controls[0].dragReverse = true;
-
 
         this.addBaseParams();
         this.setAllParamDividers(0.5);
+    }
+
+
+
+    updateValues(requestId, actionId, updateParamId, paramIds, values)
+    {
+        const value = values[paramIds.findIndex(id => id == 'value')];
+
+        this.paramX     .setValue(value.x,      false, true, false);
+        this.paramY     .setValue(value.y,      false, true, false);
+        this.paramWidth .setValue(value.width,  false, true, false);
+        this.paramHeight.setValue(value.height, false, true, false);
+        this.paramRound .setValue(value.round,  false, true, false);
     }
 
 
@@ -92893,6 +92789,17 @@ extends OpShape
 
         this.addBaseParams();
     }
+
+
+
+    updateValues(requestId, actionId, updateParamId, paramIds, values)
+    {
+        const value = values[paramIds.findIndex(id => id == 'value')];
+
+        this.paramX    .setValue(value.x,     false, true, false);
+        this.paramY    .setValue(value.y,     false, true, false);
+        this.paramWidth.setValue(value.width, false, true, false);
+    }
 }
 
 
@@ -92903,6 +92810,7 @@ extends OpShape
     paramY;
     paramWidth;
     paramHeight;
+    paramFrom;
     paramTo;
     paramInner;
 
@@ -92939,6 +92847,21 @@ extends OpShape
 
         this.addBaseParams();
     }
+
+
+
+    updateValues(requestId, actionId, updateParamId, paramIds, values)
+    {
+        const value = values[paramIds.findIndex(id => id == 'value')];
+
+        this.paramX     .setValue(value.x,      false, true, false);
+        this.paramY     .setValue(value.y,      false, true, false);
+        this.paramWidth .setValue(value.width,  false, true, false);
+        this.paramHeight.setValue(value.height, false, true, false);
+        this.paramFrom  .setValue(value.from,   false, true, false);
+        this.paramTo    .setValue(value.to,     false, true, false);
+        this.paramInner .setValue(value.inner,  false, true, false);
+    }
 }
 
 
@@ -92949,6 +92872,7 @@ extends OpShape
     paramY;
     paramWidth;
     paramHeight;
+    paramRound;
     paramCorners;
 
 
@@ -92973,6 +92897,20 @@ extends OpShape
         
 
         this.addBaseParams();
+    }
+
+
+
+    updateValues(requestId, actionId, updateParamId, paramIds, values)
+    {
+        const value = values[paramIds.findIndex(id => id == 'value')];
+
+        this.paramX      .setValue(value.x,       false, true, false);
+        this.paramY      .setValue(value.y,       false, true, false);
+        this.paramWidth  .setValue(value.width,   false, true, false);
+        this.paramHeight .setValue(value.height,  false, true, false);
+        this.paramRound  .setValue(value.round,   false, true, false);
+        this.paramCorners.setValue(value.corners, false, true, false);
     }
 
 
@@ -93027,6 +92965,21 @@ extends OpShape
 
 
         this.addBaseParams();
+    }
+
+
+
+    updateValues(requestId, actionId, updateParamId, paramIds, values)
+    {
+        const value = values[paramIds.findIndex(id => id == 'value')];
+
+        this.paramX     .setValue(value.x,      false, true, false);
+        this.paramY     .setValue(value.y,      false, true, false);
+        this.paramWidth .setValue(value.width,  false, true, false);
+        this.paramHeight.setValue(value.height, false, true, false);
+        this.paramRound .setValue(value.round,  false, true, false);
+        this.paramPoints.setValue(value.points, false, true, false);
+        this.paramConvex.setValue(value.convex, false, true, false);
     }
 
 
@@ -93097,6 +93050,26 @@ extends OpShape
         this.paramLetterSpacing.controls[0].setSuffix('%', true);
 
         this.addBaseParams();
+    }
+
+
+
+    updateValues(requestId, actionId, updateParamId, paramIds, values)
+    {
+        const value = values[paramIds.findIndex(id => id == 'value')];
+
+        this.paramText         .setValue(value.x,             false, true, false);
+        this.paramX            .setValue(value.x,             false, true, false);
+        this.paramY            .setValue(value.y,             false, true, false);
+        this.paramWidth        .setValue(value.width,         false, true, false);
+        this.paramHeight       .setValue(value.height,        false, true, false);
+        this.paramFont         .setValue(value.font,          false, true, false);
+        this.paramSize         .setValue(value.size,          false, true, false);
+        this.paramStyle        .setValue(value.style,         false, true, false);
+        this.paramAlignH       .setValue(value.alignH,        false, true, false);
+        this.paramAlignV       .setValue(value.alignV,        false, true, false);
+        this.paramLineHeight   .setValue(value.lineHeight,    false, true, false);
+        this.paramLetterSpacing.setValue(value.letterSpacing, false, true, false);
     }
 
 
@@ -93265,6 +93238,16 @@ extends OpShapeBase
 //              ? this.inputs[0].connectedOutput.toJsCode(gen)
 //              : this.paramValue.value.toJsCode(gen);
 //     }
+
+
+
+    updateValues(requestId, actionId, updateParamId, paramIds, values)
+    {
+        const value = values[paramIds.findIndex(id => id == 'value')];
+
+        this.paramX.setValue(value.x, false, true, false);
+        this.paramY.setValue(value.y, false, true, false);
+    }
 }
 
 
@@ -93310,6 +93293,19 @@ extends OpShape
 
 
         this.addBaseParams();
+    }
+
+
+
+    updateValues(requestId, actionId, updateParamId, paramIds, values)
+    {
+        const value = values[paramIds.findIndex(id => id == 'value')];
+
+        this.paramPoints .setValue(value.paramPoints,  false, true, false);
+        this.paramClosed .setValue(value.paramClosed,  false, true, false);
+        this.paramDegree .setValue(value.paramDegree,  false, true, false);
+        this.paramWinding.setValue(value.paramWinding, false, true, false);
+        this.paramRound  .setValue(value.paramRound,   false, true, false);
     }
 }
 
@@ -93444,13 +93440,19 @@ extends OpShape
 
     updateValues(requestId, actionId, updateParamId, paramIds, values)
     {
-        super.updateValues(requestId, actionId, updateParamId, paramIds, values);
-        
-        const children = values[paramIds.findIndex(id => id == 'children')];
+        const value = values[paramIds.findIndex(id => id == 'value')];
+
+        this.paramX     .setValue(value.x,      false, true, false);
+        this.paramY     .setValue(value.y,      false, true, false);
+        this.paramWidth .setValue(value.width,  false, true, false);
+        this.paramHeight.setValue(value.height, false, true, false);
+        this.paramRound .setValue(value.round,  false, true, false);
+
+
         const nObjects = values[paramIds.findIndex(id => id == 'nObjects')];
 
         this.paramChildren.getItemCount = () => nObjects.value;
-        this.paramChildren.output.types = [finalListTypeFromItems(children.items)];
+        this.paramChildren.output.types = [finalListTypeFromItems(value.children.items)];
     }
 }
 

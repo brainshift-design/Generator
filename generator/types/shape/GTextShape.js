@@ -112,22 +112,7 @@ extends GShape
         }
 
        
-        this.updateValues =
-        [
-            ['value',         this.value              ],
-            ['text',          this.value.text         ],
-            ['x',             this.value.x            ],
-            ['y',             this.value.y            ],
-            ['width',         this.value.width        ],
-            ['height',        this.value.height       ],
-            ['font',          this.value.font         ],
-            ['style',         this.value.style        ],
-            ['size',          this.value.size         ],
-            ['alignH',        this.value.alignH       ],
-            ['alignV',        this.value.alignV       ],
-            ['lineHeight',    this.value.lineHeight   ],
-            ['letterSpacing', this.value.letterSpacing]
-        ];
+        this.updateValues = [['value', this.value]];
         
 
         await this.evalShapeBase(parse, input);

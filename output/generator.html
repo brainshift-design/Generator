@@ -10129,19 +10129,19 @@ extends GOperator
             
             // first copy the input objects
 
-            if (this.options.enabled)
-            {
-                for (let j = 0; j < this.inputs[i].objects.length; j++, o++)
-                {
-                    const obj = copyFigmaObject(this.inputs[i].objects[j]);
+            // if (this.options.enabled)
+            // {
+            //     for (let j = 0; j < this.inputs[i].objects.length; j++, o++)
+            //     {
+            //         const obj = copyFigmaObject(this.inputs[i].objects[j]);
 
-                    obj.nodeId   = this.nodeId;
-                    obj.objectId = obj.objectId + OBJECT_SEPARATOR + this.nodeId;
-                    obj.listId   = i;
+            //         obj.nodeId   = this.nodeId;
+            //         obj.objectId = obj.objectId + OBJECT_SEPARATOR + this.nodeId;
+            //         obj.listId   = i;
 
-                    this.objects.push(obj);
-                }
-            }
+            //         this.objects.push(obj);
+            //     }
+            // }
 
 
             // now create the output value
@@ -10156,13 +10156,13 @@ extends GOperator
                     for (const item of input.items)
                     {
                         this.value.items  .push(item.copy());   
-                        this.value.objects.push(...item.objects.map(o => o.copy()));
+                        //this.value.objects.push(...item.objects.map(o => o.copy()));
                     }
                 }
                 else
                 {
                     this.value.items  .push(input.copy());
-                    this.value.objects.push(...input.objects.map(o => o.copy()));
+                    //this.value.objects.push(...input.objects.map(o => o.copy()));
                 }
             }
         }
@@ -18337,12 +18337,7 @@ extends GOperator
         }
 
 
-        this.updateValues =
-        [
-            ['color',   this.value.color  ],
-            ['opacity', this.value.opacity],
-            ['blend',   this.value.blend  ]
-        ];
+        this.updateValues = [['value', this.value]];
         
 
         this.validate();
@@ -18460,11 +18455,7 @@ extends GOperator
         }
 
 
-        this.updateValues =
-        [
-            ['fill',     this.value.fill    ],
-            ['position', this.value.position]
-        ];
+        this.updateValues = [['value', this.value]];
         
 
         this.validate();
@@ -18609,18 +18600,7 @@ extends GOperator
             blend);
 
             
-        this.updateValues =
-        [
-            ['value',  this.value],
-            ['type',   gradType  ],
-            ['x',      x         ],
-            ['y',      y         ],
-            ['size',   size      ],
-            ['angle',  angle     ],
-            ['aspect', aspect    ],
-            ['skew',   skew      ],
-            ['blend',  blend     ]
-        ];
+        this.updateValues = [['value', this.value]];
         
 
         this.validate();
@@ -19493,13 +19473,13 @@ extends GOperator
 
     async evalShapeBase(parse, input, evalHeight = true)
     {
-        if (this.value.x     != undefined) this.updateValues.push(['x',     this.value.x    ]);
-        if (this.value.y     != undefined) this.updateValues.push(['y',     this.value.y    ]);
-        if (this.value.width != undefined) this.updateValues.push(['width', this.value.width]);
+        // if (this.value.x     != undefined) this.updateValues.push(['x',     this.value.x    ]);
+        // if (this.value.y     != undefined) this.updateValues.push(['y',     this.value.y    ]);
+        // if (this.value.width != undefined) this.updateValues.push(['width', this.value.width]);
 
-        if (   evalHeight // lines don't have height
-            && this.value.height != undefined)
-            this.updateValues.push(['height', this.value.height]);
+        // if (   evalHeight // lines don't have height
+        //     && this.value.height != undefined)
+        //     this.updateValues.push(['height', this.value.height]);
     }
 
 
@@ -20059,11 +20039,7 @@ extends GShape
         }
 
        
-        this.updateValues =
-        [
-            ['value', this.value      ],
-            ['round', this.value.round]
-        ];
+        this.updateValues = [['value', this.value]];
 
 
         await this.evalShapeBase(parse, input);
@@ -20588,12 +20564,7 @@ extends GShape
         }
 
         
-        this.updateValues =
-        [
-            ['value',   this.value        ],
-            ['round',   this.value.round  ],
-            ['corners', this.value.corners]
-        ];
+        this.updateValues = [['value', this.value]];
         
 
         await this.evalShapeBase(parse, input);
@@ -20789,13 +20760,7 @@ extends GShape
         }
 
              
-        this.updateValues =
-        [
-            ['value',  this.value       ],
-            ['round',  this.value.round ],
-            ['points', this.value.points],
-            ['convex', this.value.convex]
-        ];
+        this.updateValues = [['value', this.value]];
 
 
         await this.evalShapeBase(parse, input);
@@ -21025,22 +20990,7 @@ extends GShape
         }
 
        
-        this.updateValues =
-        [
-            ['value',         this.value              ],
-            ['text',          this.value.text         ],
-            ['x',             this.value.x            ],
-            ['y',             this.value.y            ],
-            ['width',         this.value.width        ],
-            ['height',        this.value.height       ],
-            ['font',          this.value.font         ],
-            ['style',         this.value.style        ],
-            ['size',          this.value.size         ],
-            ['alignH',        this.value.alignH       ],
-            ['alignV',        this.value.alignV       ],
-            ['lineHeight',    this.value.lineHeight   ],
-            ['letterSpacing', this.value.letterSpacing]
-        ];
+        this.updateValues = [['value', this.value]];
         
 
         await this.evalShapeBase(parse, input);
@@ -21265,12 +21215,7 @@ extends GOperator
         }
 
        
-        this.updateValues =
-        [
-            ['value', this.value],
-            ['x',     x         ],
-            ['y',     y         ]
-        ];
+        this.updateValues = [['value', this.value]];
 
 
         this.evalObjects(parse);
@@ -21433,15 +21378,7 @@ extends GShape
         }
 
 
-        this.updateValues =
-        [
-            ['value',   this.value        ],
-            ['points',  this.value.points ],
-            ['closed',  this.value.closed ],
-            ['degree',  this.value.degree ],
-            ['winding', this.value.winding],
-            ['round',   this.value.round  ]
-        ];
+        this.updateValues = [['value', this.value]];
 
 
         await this.evalShapeBase(parse, input);
@@ -21869,12 +21806,7 @@ extends GShape
         }
 
 
-        this.updateValues =
-        [
-            ['value',    this.value         ],
-            ['round',    this.value.round   ],
-            ['children', this.value.children]
-        ];
+        this.updateValues = [['value', this.value]];
 
 
         await this.evalShapeBase(parse, input);

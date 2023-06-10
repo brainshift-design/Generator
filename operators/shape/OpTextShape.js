@@ -55,6 +55,26 @@ extends OpShape
 
 
 
+    updateValues(requestId, actionId, updateParamId, paramIds, values)
+    {
+        const value = values[paramIds.findIndex(id => id == 'value')];
+
+        this.paramText         .setValue(value.x,             false, true, false);
+        this.paramX            .setValue(value.x,             false, true, false);
+        this.paramY            .setValue(value.y,             false, true, false);
+        this.paramWidth        .setValue(value.width,         false, true, false);
+        this.paramHeight       .setValue(value.height,        false, true, false);
+        this.paramFont         .setValue(value.font,          false, true, false);
+        this.paramSize         .setValue(value.size,          false, true, false);
+        this.paramStyle        .setValue(value.style,         false, true, false);
+        this.paramAlignH       .setValue(value.alignH,        false, true, false);
+        this.paramAlignV       .setValue(value.alignV,        false, true, false);
+        this.paramLineHeight   .setValue(value.lineHeight,    false, true, false);
+        this.paramLetterSpacing.setValue(value.letterSpacing, false, true, false);
+    }
+
+
+
     updateParams()
     {
         super.updateParams();

@@ -61,11 +61,7 @@ extends GOperator
         }
 
 
-        this.updateValues =
-        [
-            ['fill',     this.value.fill    ],
-            ['position', this.value.position]
-        ];
+        this.updateValues = [['value', this.value]];
         
 
         this.validate();

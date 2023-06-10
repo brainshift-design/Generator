@@ -79,18 +79,7 @@ extends GOperator
             blend);
 
             
-        this.updateValues =
-        [
-            ['value',  this.value],
-            ['type',   gradType  ],
-            ['x',      x         ],
-            ['y',      y         ],
-            ['size',   size      ],
-            ['angle',  angle     ],
-            ['aspect', aspect    ],
-            ['skew',   skew      ],
-            ['blend',  blend     ]
-        ];
+        this.updateValues = [['value', this.value]];
         
 
         this.validate();

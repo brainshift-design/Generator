@@ -43,13 +43,13 @@ extends GOperator
 
     async evalShapeBase(parse, input, evalHeight = true)
     {
-        if (this.value.x     != undefined) this.updateValues.push(['x',     this.value.x    ]);
-        if (this.value.y     != undefined) this.updateValues.push(['y',     this.value.y    ]);
-        if (this.value.width != undefined) this.updateValues.push(['width', this.value.width]);
+        // if (this.value.x     != undefined) this.updateValues.push(['x',     this.value.x    ]);
+        // if (this.value.y     != undefined) this.updateValues.push(['y',     this.value.y    ]);
+        // if (this.value.width != undefined) this.updateValues.push(['width', this.value.width]);
 
-        if (   evalHeight // lines don't have height
-            && this.value.height != undefined)
-            this.updateValues.push(['height', this.value.height]);
+        // if (   evalHeight // lines don't have height
+        //     && this.value.height != undefined)
+        //     this.updateValues.push(['height', this.value.height]);
     }
 
 

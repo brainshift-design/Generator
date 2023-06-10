@@ -67,11 +67,7 @@ extends GShape
         }
 
        
-        this.updateValues =
-        [
-            ['value', this.value      ],
-            ['round', this.value.round]
-        ];
+        this.updateValues = [['value', this.value]];
 
 
         await this.evalShapeBase(parse, input);

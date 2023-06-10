@@ -111,12 +111,16 @@ extends OpColorBase
 
     updateValues(requestId, actionId, updateParamId, paramIds, values)
     {
-        const fill = values[paramIds.findIndex(id => id == 'fill')];
+        const value = values[paramIds.findIndex(id => id == 'value')];
+
+        this.paramFill    .setValue(value.fill,     false, true, false);
+        this.paramPosition.setValue(value.position, false, true, false);
+
 
         this._color = 
-               fill
-            && fill.isValid()
-            ? fill.color.toDataColor()
+               value.fill
+            && value.fill.isValid()
+            ? value.fill.color.toDataColor()
             : dataColor_NaN;
 
             
@@ -127,7 +131,7 @@ extends OpColorBase
         //     : [COLOR_STOP_VALUE];
 
 
-        super.updateValues(requestId, actionId, updateParamId, paramIds, values);
+        // super.updateValues(requestId, actionId, updateParamId, paramIds, values);
     }
 
 

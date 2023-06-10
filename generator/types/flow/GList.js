@@ -46,19 +46,19 @@ extends GOperator
             
             // first copy the input objects
 
-            if (this.options.enabled)
-            {
-                for (let j = 0; j < this.inputs[i].objects.length; j++, o++)
-                {
-                    const obj = copyFigmaObject(this.inputs[i].objects[j]);
+            // if (this.options.enabled)
+            // {
+            //     for (let j = 0; j < this.inputs[i].objects.length; j++, o++)
+            //     {
+            //         const obj = copyFigmaObject(this.inputs[i].objects[j]);
 
-                    obj.nodeId   = this.nodeId;
-                    obj.objectId = obj.objectId + OBJECT_SEPARATOR + this.nodeId;
-                    obj.listId   = i;
+            //         obj.nodeId   = this.nodeId;
+            //         obj.objectId = obj.objectId + OBJECT_SEPARATOR + this.nodeId;
+            //         obj.listId   = i;
 
-                    this.objects.push(obj);
-                }
-            }
+            //         this.objects.push(obj);
+            //     }
+            // }
 
 
             // now create the output value
@@ -73,13 +73,13 @@ extends GOperator
                     for (const item of input.items)
                     {
                         this.value.items  .push(item.copy());   
-                        this.value.objects.push(...item.objects.map(o => o.copy()));
+                        //this.value.objects.push(...item.objects.map(o => o.copy()));
                     }
                 }
                 else
                 {
                     this.value.items  .push(input.copy());
-                    this.value.objects.push(...input.objects.map(o => o.copy()));
+                    //this.value.objects.push(...input.objects.map(o => o.copy()));
                 }
             }
         }
